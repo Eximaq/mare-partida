@@ -16,7 +16,7 @@ with sync_playwright() as p:
  for size in SIZES+[(393,852)]:
   suffix=f'{size[0]}x{size[1]}';g=fixture(template);g.update(level=30,hp=10000,energy=1000,gold=10000,materials=1000);g['stats']['kills']=12
   for item in g['equipment'].values():item.update(rarity='legendary',level=30,plus=20)
-  c,q=page_for(b,g,size,errors);q.evaluate('MareEmberRenderer.boot');before=saved(q);q.locator('#enterHunt').click();q.locator('[data-area][data-current=true]').click();q.locator('#autoToggle').click();q.clock.run_for(100)
+  c,q=page_for(b,g,size,errors);q.evaluate('MareEmberRenderer.boot');before=saved(q);q.locator('#enterHunt').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.locator('#autoToggle').click();q.clock.run_for(100)
   assert q.evaluate('MareEmberRenderer.stats().monsters')==4
   physical(q);q.screenshot(path=str(OUT/f'arrival-{suffix}.png'))
   # The M menu is now maritime travel; local pathfinding remains covered by Node routes.
@@ -34,7 +34,7 @@ with sync_playwright() as p:
  # Sustained local auto-hunt: new visuals retain old reward and contract keys.
  g=fixture(template);g.update(level=20,hp=10000,energy=1000)
  for item in g['equipment'].values():item.update(rarity='legendary',level=20,plus=15)
- c,q=page_for(b,g,errors=errors);q.evaluate('MareEmberRenderer.boot');before=saved(q);q.locator('#enterHunt').click();q.locator('[data-area][data-current=true]').click()
+ c,q=page_for(b,g,errors=errors);q.evaluate('MareEmberRenderer.boot');before=saved(q);q.locator('#enterHunt').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click()
  for _ in range(80):
   q.clock.run_for(3000)
   if diag(q)['kills']>=before['stats']['kills']+20:break
@@ -42,7 +42,7 @@ with sync_playwright() as p:
  assert q.evaluate('JSON.parse(localStorage.getItem('+json.dumps(KEY)+')).gold')>=before['gold']
  q.screenshot(path=str(OUT/'combat-20-kills.png'));record('twenty_defeats_real_rewards',str(d['kills'])+' kills, damage, XP/gold and navigable monsters.');c.close()
  # Low-level arrival still playable, legacy Fenda da Névoa remains separate.
- c,q=page_for(b,template,errors=errors);q.evaluate('MareEmberRenderer.boot');q.locator('#enterHunt').click();q.locator('[data-area][data-current=true]').click();q.clock.run_for(15000);assert diag(q)['map']['id']=='embers';assert diag(q)['kills']>0;record('level_one_arrival');c.close()
- g=copy.deepcopy(template);g['area']='swamp';g['level']=10;c,q=page_for(b,g,errors=errors);q.locator('#enterHunt').click();q.locator('[data-area][data-current=true]').click();assert diag(q)['map']['id']=='hunt' and diag(q)['map']['width']==3200;assert all(not m.get('skin') for m in diag(q)['mobs']);c.close();record('legacy_swamp_preserved')
+ c,q=page_for(b,template,errors=errors);q.evaluate('MareEmberRenderer.boot');q.locator('#enterHunt').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.clock.run_for(15000);assert diag(q)['map']['id']=='embers';assert diag(q)['kills']>0;record('level_one_arrival');c.close()
+ g=copy.deepcopy(template);g['area']='swamp';g['level']=10;c,q=page_for(b,g,errors=errors);q.locator('#enterHunt').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();assert diag(q)['map']['id']=='hunt' and diag(q)['map']['width']==3200;assert all(not m.get('skin') for m in diag(q)['mobs']);c.close();record('legacy_swamp_preserved')
  assert not errors,errors;record('no_javascript_errors');b.close()
 (OUT/'results.json').write_text(json.dumps(results,indent=2,ensure_ascii=False),encoding='utf-8')

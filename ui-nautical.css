@@ -1978,3 +1978,66 @@ button {
 }
 @media(max-height:650px){.voyage-sea{height:340px;}.voyage-ship-art{width:60px;height:60px;}.voyage-destination{min-height:105px;padding:2px 0;gap:1px;}}
 @media(prefers-reduced-motion:reduce){.voyage-sea::before{animation:none;}}
+/* Region navigation and on-click dungeon briefing. */
+#panelOverlay.voyage-mode .dialog {width:min(1120px,calc(100vw - 28px));}
+#panelOverlay.voyage-mode .dialog-header {align-items:flex-start!important;}
+.voyage-region-tabs {display:flex;gap:8px;margin-top:14px;}
+.voyage-region-tabs [role=tab] {display:flex;align-items:center;gap:9px;padding:8px 17px;border:1px solid #8e7950;border-radius:2px;background:#152e36;color:#d4c6a5;font:700 13px/1.2 var(--ui-title);}
+.voyage-region-tabs [role=tab][aria-selected=true] {background:#e1c486;color:#2a241b;border-color:#f2d7a0;box-shadow:inset 0 -3px #b18b4b;}
+.voyage-region-tabs [role=tab]:disabled {opacity:.62;}
+.voyage-region-tabs small {font-size:9px;font-weight:400;color:#b5c2c4;}
+.archipelago-window {display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,1fr);align-items:start;}
+.voyage-overview.voyage-sea {height:auto;min-height:540px;padding:0 16px 18px;}
+.archipelago-window .voyage-intro {padding:16px 0;color:#b8d1d2;font-size:12px;}
+.archipelago-islands {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}
+.archipelago-island {display:grid;grid-template-columns:64px minmax(0,1fr);align-items:center;gap:10px;min-height:108px;padding:11px 9px;text-align:left;color:#f6e6bf;background:#122c38e8;border:1px solid #a78b5555;border-radius:3px;box-shadow:inset 0 1px #c9d8b60c;}
+.archipelago-island:hover,.archipelago-island:focus-visible {background:#244650;border-color:#e2c281;}
+.archipelago-island[aria-pressed=true] {border-color:#f0d08e;background:#304d50;box-shadow:inset 3px 0 #e3c780;}
+.archipelago-island .voyage-ship-art {width:64px;height:64px;}
+.archipelago-island-copy {display:flex;flex-direction:column;align-items:flex-start;gap:7px;min-width:0;}
+.archipelago-island strong {font:700 13px/1.3 var(--ui-title);overflow-wrap:break-word;}
+.archipelago-island .voyage-level {font-size:10px;padding:2px 7px;white-space:nowrap;}
+.archipelago-island small {font:10px/1.3 var(--ui-title);color:#b5c9c8;}
+.archipelago-island.is-future .voyage-ship-art {filter:saturate(.3) brightness(.8);}
+.archipelago-island.is-future small {color:#d7be8a;}
+.dungeon-placeholder {padding:90px 30px 35px;text-align:center;color:#b7c7c6;}
+.dungeon-placeholder>span {display:block;font:80px Georgia,serif;color:#a88e59;opacity:.55;}
+.dungeon-placeholder h3 {font:700 19px var(--ui-title);color:#e3cf9e;}
+.dungeon-placeholder p {font:12px/1.8 var(--ui-title);}
+.dungeon-details {padding:18px 22px 22px;background:#112a34;min-width:0;border-left:1px solid #b8995d55;}
+.dungeon-back {padding:5px 0;margin-bottom:15px;color:#b7d9d9;background:transparent;border:0;font:11px/1.3 var(--ui-title);text-decoration:underline;text-underline-offset:4px;}
+.dungeon-region-name {display:block;font:10px/1.5 var(--ui-title);color:#aebfc0;}
+#dungeonName {margin:7px 0 13px;font:700 24px/1.15 var(--ui-title);color:#f0dfb8;}
+.dungeon-range {display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border:1px solid #b58b4b;background:#53432c;color:#e6d7b5;font:11px var(--ui-title);}
+.dungeon-range strong {font:700 20px var(--ui-title);white-space:nowrap;color:#ffe2a3;}
+.dungeon-monster {display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:136px;margin-top:14px;overflow:hidden;position:relative;background:radial-gradient(ellipse at 50% 85%,#b8925030,transparent 65%),#0b1f29;border:1px solid #57707788;}
+.dungeon-monster img {display:block;image-rendering:pixelated;object-fit:contain;width:112px;height:112px;max-width:100%;}
+.dungeon-monster-crop {display:block;width:112px;height:112px;overflow:hidden;flex-shrink:0;}
+.dungeon-monster.is-sheet img {width:112px;height:auto;max-width:none;object-fit:initial;flex-shrink:0;}
+.dungeon-monster[data-state=unavailable] {justify-content:center;padding:0;gap:3px;color:#b1bec1;}
+.dungeon-silhouette {display:grid;place-items:center;width:52px;height:63px;border-radius:42% 42% 20% 20%;background:#3b4c56;font:700 34px Georgia,serif;color:#a8b3b9;}
+.dungeon-monster[data-state=unavailable] strong {font:700 11px var(--ui-title);}
+.dungeon-monster-name {margin:7px 0 13px;font:10px/1.5 var(--ui-title);text-align:center;color:#c4cbbd;}
+.dungeon-description {margin:0 0 14px;font:12px/1.65 var(--ui-title);color:#b6cdcc;}
+.dungeon-facts {margin:0;border-top:1px solid #5e756c66;}
+.dungeon-facts>div {display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-bottom:1px solid #5e756c55;font:10px/1.5 var(--ui-title);}
+.dungeon-facts dt {color:#a8bec0;}.dungeon-facts dd {margin:0;text-align:right;color:#efdbb2;}
+.dungeon-details h4 {margin:13px 0 7px;font:700 12px var(--ui-title);color:#dcc798;}
+.dungeon-drops {margin:0 0 16px;padding-left:15px;font:11px/1.8 var(--ui-title);color:#b7cecd;}
+.dungeon-pending {font:11px var(--ui-title);color:#a6babd;}
+.dungeon-travel {width:100%;margin-top:10px;font-size:11px;}
+@media(max-width:760px){
+ .archipelago-window {grid-template-columns:1fr;}
+ .voyage-overview.voyage-sea {padding:0 11px 14px;min-height:0;}
+ .archipelago-islands {gap:8px;}
+ .archipelago-island {grid-template-columns:1fr;justify-items:center;text-align:center;gap:3px;padding:8px 6px;min-height:140px;}
+ .archipelago-island .voyage-ship-art {width:54px;height:54px;}
+ .archipelago-island-copy {align-items:center;gap:5px;}
+ .archipelago-island strong {font-size:11px;}
+ .dungeon-placeholder {display:none;}
+ .archipelago-window.has-selection .voyage-overview {display:none;}
+ .dungeon-details {border-left:0;padding:15px;}
+ .voyage-region-tabs {gap:6px;margin-top:12px;}
+ .voyage-region-tabs [role=tab] {padding:8px 12px;font-size:12px;}
+ #dungeonName {font-size:23px;}
+}
