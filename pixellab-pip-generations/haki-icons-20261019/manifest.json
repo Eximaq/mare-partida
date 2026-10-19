@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-19",
+  "route": "MCP create_image_pro",
+  "job_id": "51238597-ec87-4038-b8da-085e3c730fca",
+  "asset_id": "46128af9-28dd-5c82-8774-8cfd6dc886dd",
+  "status": "completed; failed requested grid verification",
+  "inputs": {
+    "description": "Four distinct readable RPG icons in a precise two by two sheet, each icon fills its own 32 by 32 cell. Top left: clenched fist coated in polished black metal with silver glints. Top right: eye with a glowing crimson iris and perception rings. Bottom left: fragmented crown with black and crimson lightning. Bottom right: closed indigo book bound in silver with a luminous violet clasp. Bold single-color black outlines, low detail, limited navy crimson silver violet palette, dark miniature backgrounds, crisp pixel art, no text, no grid lines or frames.",
+    "width": 64,
+    "height": 64,
+    "no_background": false
+  },
+  "seed": "omitted",
+  "reported_usage": {
+    "generations": 10
+  },
+  "output_structure": "16 separate 64x64 opaque candidate icons; not the requested 2x2 sheet",
+  "proposed_selection": {
+    "armament": 1,
+    "observation": 2,
+    "conqueror": 5,
+    "book": 6
+  },
+  "selection_state": "Not integrated: user declined reduction and approved a separate native32 attempt.",
+  "local_work": "Downloaded PNGs unchanged. Compiled labeled inspection contact sheet and a clearly proposed nearest-neighbor 32x32 preview. No final resize or runtime integration yet."
+}

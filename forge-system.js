@@ -26,7 +26,7 @@
   }
   function normalizeItem(original,defs,random=null){
     const item=clone(original),def=defs[item.def];if(!def)return item;
-    if(def.kind==='pearl-box')return item;
+    if(['pearl-box','haki-book'].includes(def.kind))return item;
     if(isPearl(item,defs)){const p=pearlOf(item,defs);if(p)item.pearlId=p.id;item.forgeVersion=VERSION;return item;}
     item.level=Math.max(1,int(item.level));item.plus=int(item.plus);item.rarity=rarity[item.rarity]?item.rarity:(rarity[def.rarity]?def.rarity:'common');
     item.baseStats=item.baseStats&&['attack','defense','hp'].every(k=>Number.isFinite(item.baseStats[k])&&item.baseStats[k]>=0)?item.baseStats:{attack:def.attack||0,defense:def.defense||0,hp:def.hp||0};

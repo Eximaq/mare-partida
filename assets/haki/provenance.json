@@ -1,0 +1,99 @@
+{
+  "source": "PixelLab VFX Workbench",
+  "date": "2026-10-19",
+  "effects": [
+    {
+      "name": "armament",
+      "route": "MCP vfx_workbench",
+      "effect_id": "4a1b2680-2bf5-43bd-b39f-7b44c33a3703",
+      "step_id": "ac1a14e9-30ee-4e8e-a7ce-de19b6de1cb8",
+      "seed": "omitted",
+      "cost": "free for subscribers per live tool documentation",
+      "files": [
+        "armament.png",
+        "armament.json",
+        "armament.gif"
+      ],
+      "verification": "Every rendered frame inspected; original frame order, transparency and anchors preserved; no local painting",
+      "sha256": "f9ec353052a0f4fb7d2f23777e699663ceb0e21502c0491d87905c456b48ab2e"
+    },
+    {
+      "name": "observation",
+      "route": "MCP vfx_workbench",
+      "effect_id": "5ef446fe-f280-4687-8070-c86c6858e5f0",
+      "step_id": "4271ceba-6d69-4ce9-b3ea-52c32c33b57c",
+      "seed": "omitted",
+      "cost": "free for subscribers per live tool documentation",
+      "files": [
+        "observation.png",
+        "observation.json",
+        "observation.gif"
+      ],
+      "verification": "Every rendered frame inspected; original frame order, transparency and anchors preserved; no local painting",
+      "sha256": "9be12aa1cad5bece2f57fe2e6f46621732468a2774cf232642088105a718ac01"
+    },
+    {
+      "name": "conqueror",
+      "route": "MCP vfx_workbench",
+      "effect_id": "f8a7a8d6-5690-4dd3-8770-43a397118a2b",
+      "step_id": "0f663cd9-32cd-4618-8d87-5e252a23d686",
+      "seed": "omitted",
+      "cost": "free for subscribers per live tool documentation",
+      "files": [
+        "conqueror.png",
+        "conqueror.json",
+        "conqueror.gif"
+      ],
+      "verification": "Every rendered frame inspected; original frame order, transparency and anchors preserved; no local painting",
+      "sha256": "9ed893c11e51b0051324cd61d73bfb5b3d5f29292a8f1313f35c2d3230c414e8"
+    }
+  ],
+  "notes": "Original PixelLab VFX frames plus four native32 Pro icons. No resizing or recoloring of icon PNGs.",
+  "icons": {
+    "route": "MCP create_image_pro",
+    "job_id": "c78aff9d-b721-4d40-85a5-f2089f564fde",
+    "asset_id": "b1e175d2-37ba-51cf-82c8-ba78eb912775",
+    "selection": {
+      "armament": {
+        "candidate_label": 33,
+        "native_size": [
+          32,
+          32
+        ],
+        "source": "armament.png",
+        "sha256": "5a80e78f14ae05cdc89af4633f4436255326a22304c10436b5f3af267bddaf74",
+        "postprocessing": "none; original PNG copied byte-for-byte"
+      },
+      "observation": {
+        "candidate_label": 16,
+        "native_size": [
+          32,
+          32
+        ],
+        "source": "observation.png",
+        "sha256": "d16c8a52dbe3375683140272a3bd8fbe11d48d28105f6ad8c190f31b9e16bc53",
+        "postprocessing": "none; original PNG copied byte-for-byte"
+      },
+      "conqueror": {
+        "candidate_label": 23,
+        "native_size": [
+          32,
+          32
+        ],
+        "source": "conqueror.png",
+        "sha256": "2595042469a536e66c5aacf7d08d4c6815241674168c3f4c0b323d79b57609c0",
+        "postprocessing": "none; original PNG copied byte-for-byte"
+      },
+      "book": {
+        "candidate_label": 61,
+        "native_size": [
+          32,
+          32
+        ],
+        "source": "book.png",
+        "sha256": "8b3212c2c5f960c2a75fcf60eb808e3604d101899b23468df2b58b724d5211f3",
+        "postprocessing": "none; original PNG copied byte-for-byte"
+      }
+    }
+  }
+}

@@ -1,0 +1,84 @@
+[
+  {
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/haki-despertar-20261019",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment_prompt": "VFX de Combate (Sprite Sheets): Armamento: Overlay escuro e brilhante aplicado sobre os braços/armas do sprite do personagem. Observação: Rastro visual vermelho nos olhos durante a animação de ataque/esquiva. Rei: Efeito de onda de choque circular preta e vermelha, expandindo do centro para as bordas da tela.",
+    "MCP vfx_workbench": {
+      "argv": [
+        "0f663cd9-32cd-4618-8d87-5e252a23d686",
+        "render",
+        "{\"recipe\":{\"canvas\":{\"w\":24,\"h\":24},\"frames\":8,\"fps\":12,\"loop\":true,\"origin\":[12,12],\"ramps\":{\"main\":[\"#080b13\",\"#151b29\",\"#353c50\",\"#777f91\",\"#c6cdd9\"]},\"outline\":{\"mode\":\"black\"},\"layers\":[{\"id\":\"coat\",\"type\":\"shape\",\"points\":[[-5,-8],[3,-8],[6,-3],[5,6],[1,9],[-4,6],[-6,-1]],\"fill\":\"linear\",\"fill_angle\":-120,\"bevel\":2},{\"id\":\"shine\",\"type\":\"beam\",\"x\":12,\"y\":{\"wave\":{\"mid\":12,\"amp\":2,\"cycles\":1}},\"width\":2,\"height\":9,\"angle\":30,\"soft\":0,\"intensity\":0.8}]}}"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "ac1a14e9-30ee-4e8e-a7ce-de19b6de1cb8",
+        "export",
+        "--name",
+        "Mare Haki Armamento 20261019"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "0f663cd9-32cd-4618-8d87-5e252a23d686",
+        "render",
+        "{\"recipe\":{\"canvas\":{\"w\":40,\"h\":16},\"frames\":8,\"fps\":12,\"loop\":true,\"origin\":[30,8],\"ramps\":{\"main\":[\"#220a18\",\"#5e132b\",\"#b51c43\",\"#ef4d66\",\"#ffe4e6\"]},\"outline\":{\"mode\":\"none\"},\"layers\":[{\"id\":\"trail\",\"type\":\"beam\",\"height\":{\"wave\":{\"mid\":24,\"amp\":5,\"cycles\":1}},\"width\":3,\"soft\":0,\"angle\":-90,\"intensity\":0.7,\"top_fade\":0.6},{\"id\":\"eye\",\"type\":\"glow\",\"radius\":2,\"shape\":\"hard\",\"outline\":false},{\"id\":\"glint\",\"type\":\"rays\",\"count\":4,\"length\":3,\"inner\":1,\"width\":1,\"soft\":0,\"jitter\":0,\"intensity\":{\"wave\":{\"mid\":0.7,\"amp\":0.2,\"cycles\":1}}}]}}"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "4271ceba-6d69-4ce9-b3ea-52c32c33b57c",
+        "export",
+        "--name",
+        "Mare Haki Observacao 20261019"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "9c8293b3-3ec0-4cf9-83b0-58b53d7c6287",
+        "render",
+        "{\"recipe\":{\"canvas\":{\"w\":128,\"h\":128},\"frames\":12,\"fps\":15,\"loop\":false,\"origin\":[64,64],\"ramps\":{\"main\":[\"#100c15\",\"#250e1e\",\"#74152d\",\"#b42341\",\"#de3654\"]},\"outline\":{\"mode\":\"black\"},\"layers\":[{\"id\":\"pressure\",\"type\":\"ring\",\"radius\":{\"from\":3,\"to\":58},\"width\":{\"from\":4,\"to\":2},\"soft\":0,\"intensity\":0.7,\"dissolve\":{\"keys\":[[0,0],[0.95,0],[1,1]]}},{\"id\":\"echo\",\"type\":\"ring\",\"radius\":{\"from\":1,\"to\":46},\"width\":2,\"soft\":0,\"intensity\":0.4,\"life\":[0.15,1],\"dissolve\":{\"from\":0,\"to\":1}},{\"id\":\"rays\",\"type\":\"rays\",\"count\":9,\"inner\":{\"from\":2,\"to\":34},\"length\":{\"from\":10,\"to\":20},\"width\":2,\"soft\":0,\"intensity\":0.75,\"jitter\":0.4,\"dissolve\":{\"from\":0,\"to\":1}}]}}"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "0f663cd9-32cd-4618-8d87-5e252a23d686",
+        "export",
+        "--name",
+        "Mare Haki Rei 20261019"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Download each export PNG, JSON and GIF, decode and verify all frames and transparency. Copy sheets pixel-for-pixel to assets/haki; use JSON frame geometry and original anchors. Replay creates new step IDs: bind each next export to the preceding render result.",
+      "outputs": [
+        "armament.png",
+        "observation.png",
+        "conqueror.png",
+        "armament.json",
+        "observation.json",
+        "conqueror.json"
+      ]
+    }
+  }
+]

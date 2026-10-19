@@ -1,0 +1,63 @@
+{
+  "date": "2026-10-19",
+  "route": "MCP create_image_pro",
+  "job_id": "c78aff9d-b721-4d40-85a5-f2089f564fde",
+  "asset_id": "b1e175d2-37ba-51cf-82c8-ba78eb912775",
+  "status": "completed; verified native32",
+  "inputs": {
+    "description": "A single readable pirate RPG ability or item icon per image. Vary the alternatives across four subjects: a clenched fist coated in polished black metal with silver glints; an eye with a glowing crimson iris and perception rings; a fragmented crown with black and crimson lightning; a closed indigo book bound in silver with a luminous violet clasp. Each image contains exactly one complete centered subject, bold single-color black outline, low detail, limited navy crimson silver violet palette, fully painted dark navy miniature background. No sheets, grids, text, labels, frames or multiple icons in one image.",
+    "width": 32,
+    "height": 32,
+    "no_background": false
+  },
+  "seed": "omitted",
+  "reported_usage": {
+    "generations": 10
+  },
+  "output_structure": "64 separate native 32x32 opaque candidate icons",
+  "selection": {
+    "armament": {
+      "candidate_label": 33,
+      "native_size": [
+        32,
+        32
+      ],
+      "source": "armament.png",
+      "sha256": "5a80e78f14ae05cdc89af4633f4436255326a22304c10436b5f3af267bddaf74",
+      "postprocessing": "none; original PNG copied byte-for-byte"
+    },
+    "observation": {
+      "candidate_label": 16,
+      "native_size": [
+        32,
+        32
+      ],
+      "source": "observation.png",
+      "sha256": "d16c8a52dbe3375683140272a3bd8fbe11d48d28105f6ad8c190f31b9e16bc53",
+      "postprocessing": "none; original PNG copied byte-for-byte"
+    },
+    "conqueror": {
+      "candidate_label": 23,
+      "native_size": [
+        32,
+        32
+      ],
+      "source": "conqueror.png",
+      "sha256": "2595042469a536e66c5aacf7d08d4c6815241674168c3f4c0b323d79b57609c0",
+      "postprocessing": "none; original PNG copied byte-for-byte"
+    },
+    "book": {
+      "candidate_label": 61,
+      "native_size": [
+        32,
+        32
+      ],
+      "source": "book.png",
+      "sha256": "8b3212c2c5f960c2a75fcf60eb808e3604d101899b23468df2b58b724d5211f3",
+      "postprocessing": "none; original PNG copied byte-for-byte"
+    }
+  },
+  "selection_authority": "User explicitly delegated choosing the best variants; native32 retry separately approved.",
+  "verification": "All 64 PNG dimensions verified. Both candidate contact sheets inspected. Four selected themes readable, one icon per image, dark navy backgrounds, no text. Selected PNGs copied unchanged to runtime.",
+  "local_assembly": "icons-sheet.png joins the four selected native32 icons into a lossless 4x1 preview; no resized final assets."
+}

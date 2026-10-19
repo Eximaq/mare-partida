@@ -153,3 +153,15 @@ Capturas reais desta entrega em `evidence-ui-nautical/`, com galeria `index.html
 Compatibilidade: investimentos permanecem separados da base e do orçamento. A migração é idempotente e preserva cópia anterior no navegador. Checkpoint de arquivos em `C:/Users/Marcos/Desktop/MARE/backups/mare-partida-v12-before-ui-attributes-20261018`; restauração deve respeitar trabalho posterior. Nenhum save do usuário foi acessado pelos testes.
 
 Limites: sem paperdoll por peça de equipamento, sem mercado/cofre funcional; os botões existentes permanecem indisponíveis. Não foi feito balanceamento final do novo ritmo inicial. Próxima avaliação recomendada: playtest dos 50 pontos por classe e do tamanho dos textos, antes de expandir recursos.
+
+
+## 19/10/2026 — Despertar (Haki), branch feature/haki-despertar
+
+Base e2abfcb (PR #10). Adicionadas regras, estado persistente/efêmero, aba bloqueada com requisitos, livro consumível no fim do catálogo, drops de chefes Nv.30+, barra de Vontade, toggles manual/auto exclusivos e Rei/R com stun/debuff. Integração real em combate, conquistas e save transacional; preserva estoque e builds. Correção de foco da árvore ao redimensionar e da automação que não deve sobrescrever escolha manual. Três VFX do Workbench PixelLab preservados em RGBA, com export, metadados e blueprint; ícones 32×32 pagos ainda aguardam aprovação.
+
+Validação: 13 suítes Node, Haki end-to-end em cinco resoluções e 20+ abates, sete classes de talentos, UI/transações da constelação, build e Pages/cache (25 recursos). Capturas em `%TEMP%/mare-haki-qa/`, excluídas do Git. Regras, compatibilidade e rollback em `docs/HAKI.md`. Estado: desenvolvimento concluído para lógica/HUD/VFX; sprint artística parcial pelos ícones pendentes. Nenhuma nova geração paga ou liberação da prisão/chefes diários.
+
+
+### 19/10/2026 — Conclusão dos ícones Haki nativos32
+
+Primeira chamada Pro aprovada: 10 gerações; retornou 16 ícones individuais64 em vez da grade solicitada. O proprietário recusou a redução e aprovou uma nova chamada32 (10 gerações). As 64 alternativas nativas32 foram inspecionadas; seleção delegada 33/16/23/61, copiada sem alteração para Armamento, Observação, Rei e Livro. Ícones no painel, mochila e botão Rei/R; `iconsReady:true`. Originais preservados, nenhum asset64 reduzido entrou no jogo. Custo total confirmado desta etapa: 20 gerações. Manifestos/blueprints registram ambos os resultados. Suíte de navegador Haki verifica imagens realmente carregadas e dimensões nativas32, cinco resoluções, transações e combate; build/cache mantêm 25 recursos versionados. PR #11 deixa de depender de arte pendente e fica pronto para revisão/merge após validação.

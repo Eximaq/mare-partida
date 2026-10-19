@@ -1,0 +1,34 @@
+[
+  {
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/haki-icons-native32-20261019",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment_prompt": "Ícones de UI (32x32px): Armamento: Punho com textura metálica negra polida. Observação: Olho com íris vermelha brilhante e anéis de percepção. Rei: Coroa fragmentada com raios negros e vermelhos.",
+    "_comment": "Separately approved native32 retry, also including the proposed Livro da Vontade icon. No native64 output was reduced or used.",
+    "MCP create_image_pro": {
+      "description": "A single readable pirate RPG ability or item icon per image. Vary the alternatives across four subjects: a clenched fist coated in polished black metal with silver glints; an eye with a glowing crimson iris and perception rings; a fragmented crown with black and crimson lightning; a closed indigo book bound in silver with a luminous violet clasp. Each image contains exactly one complete centered subject, bold single-color black outline, low detail, limited navy crimson silver violet palette, fully painted dark navy miniature background. No sheets, grids, text, labels, frames or multiple icons in one image.",
+      "width": 32,
+      "height": 32,
+      "no_background": false
+    }
+  },
+  {
+    "MCP get_image": {
+      "job_id": "c78aff9d-b721-4d40-85a5-f2089f564fde"
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Download candidate PNGs. Verify every file is 32x32 and inspect all alternatives before selecting. In this run the delegated selection was labels 33 Armamento,16 Observação,23 Rei,61 Livro (API indices 32,15,22,60). Copy those PNG files unchanged into assets/haki and matching named originals here; join four icons without resampling for icons-sheet.png. Generation is unseeded: on replay use the new returned job ID and inspect again before accepting candidates. Enable iconsReady, use the crown on the Rei button, validate native image dimensions in the browser and update provenance.",
+      "outputs": [
+        "armament.png",
+        "observation.png",
+        "conqueror.png",
+        "book.png",
+        "icons-sheet.png"
+      ]
+    }
+  }
+]
