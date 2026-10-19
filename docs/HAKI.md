@@ -2,6 +2,24 @@
 
 ## Estado desta branch
 
+### Atalhos rápidos e nova arte — 19/10/2026
+
+Após `has_haki_unlocked`, o perfil mostra um widget de três ícones abaixo da Vontade: **H Armamento**, **J Observação**, **K Rei**. O chat muda de J para **L** em todos os rótulos. O botão antigo do Rei sai da hotbar para evitar duplicidade. Cliques e teclas passam pelas mesmas funções transacionais. Repetição de tecla, modificadores Ctrl/Alt/Meta, digitação (incluindo contenteditable), confirmações e janelas abertas não disparam os atalhos de combate.
+
+Armamento/Observação mostram ON, borda luminosa e `aria-pressed`; falta de Vontade dessatura/bloqueia os ícones, e o Rei também exige seus 50 pontos. No porto/morto, os botões ficam indisponíveis. O Rei agora tem **8s de recarga**, com cobertura circular e contador. Este é o valor inicial de balanceamento escolhido para o pedido de cooldown, configurado em `MareHaki.rules.kingCooldown`; os toggles não receberam cooldown artificial. `haki.kingReadyAt` persiste a liberação em milissegundos, sem reset ao viajar ou recarregar. Consumo e cooldown são revertidos juntos se o storage falhar. DEV → Limpar recargas / Sem recargas também cobre o Rei.
+
+O layout mobile reposiciona o menu de seis ícones abaixo do perfil expandido, observando a altura real para não cobrir seus botões. Movimento reduzido desativa a pulsação. Novas imagens e sheets têm revisão explícita na URL para evitar cache dos PNGs anteriores.
+
+**Artes finais:** três chamadas MCP `create_image_pro`, 32×32 nativo, `no_background:true`, prompts ingleses literais fornecidos pelo proprietário, sem referência, paleta ou seed enviados. Seleção delegada após aprovação de até 30 gerações: Armamento alternativa **2**, Observação **3**, Rei **6**. Todos os 192 candidatos foram decodificados e inspecionados; somente os três selecionados foram copiados byte a byte para o runtime, sem redução, recoloração ou reparo. O ícone do Livro permanece o anterior.
+
+Os VFX foram compostos no **PixelLab VFX Workbench**, gratuito para assinantes, conforme a adaptação de ferramenta aprovada: Armamento e Observação em **48×48, 8 frames, 12fps**; Rei em **128×128, 12 frames, 15fps**, ampliado no renderizador ao alcance espacial. Armamento traz obsidiana/veios roxos e preserva a máscara dos braços/arma; Observação traz olho/anéis/trilha/partículas carmesim e respeita a orientação; Rei expande o círculo com raios negros/vermelhos. O último frame do Rei é transparente para encerrar a onda; nenhum frame foi removido ou reordenado. PNGs, GIFs, pivôs e transparência verificados.
+
+**Custo confirmado desta atualização: 30 gerações**, 10 por ícone, zero pelo Workbench. Sem novas tentativas. Originais e histórico anteriores preservados. Exports, prompts exatos, receitas, seleção e auditoria: [manifesto](../pixellab-pip-generations/haki-quickcast-20261019/manifest.json), [blueprint](../pixellab-pip-generations/haki-quickcast-20261019/haki-quickcast.blueprint.json) e [verificação](../pixellab-pip-generations/haki-quickcast-20261019/verification.json).
+
+Validação da atualização: 14 suítes Node e sintaxe; Chromium `haki_quickcast_browser.py` (H/J/K, chat L, repeat/inputs/modais, rollback de cast/toggle, recarga após reload, cinza em zero e cinco resoluções); regressão `haki_browser.py` (livro, automação, drenagem, stun, 20+ abates e saves); `dev_tools_browser.py`; build Pages e regressão de cache com 26 recursos. Capturas em `%TEMP%/mare-haki-quickcast`, fora do Git.
+
+### Implementação inicial (histórico)
+
 Regras, HUD, integração de combate, consumo do livro, conquistas, três VFX do PixelLab Workbench e quatro ícones Pro nativos de 32×32 (incluindo o livro) implementados e integrados. A prisão e Chefes Diários continuam indisponíveis: este trabalho não os libera.
 
 ## Acesso e desbloqueio
@@ -12,7 +30,7 @@ O livro foi **acrescentado ao fim** de `itemDefs`; índices dos itens antigos n�
 
 ## Recurso e combate
 
-Reserva única de 100 Força de Vontade, mostrada abaixo de Vida/Energia no perfil compacto. Armamento e Observação são mutuamente exclusivos, tanto manualmente quanto na opção automática. Manual só em expedição, vivo; o Rei tem botão próprio na hotbar e atalho **R**, custa 50 e não possui opção automática.
+Reserva única de 100 Força de Vontade, mostrada abaixo de Vida/Energia no perfil compacto. Armamento e Observação são mutuamente exclusivos, tanto manualmente quanto na opção automática. Manual só em expedição, vivo; o Rei tem botão próprio no widget e atalho **K**, custa 50 e não possui opção automática.
 
 O primeiro golpe ofensivo ou recebido inicia combate e renova um timeout de 6s. A automação só ativa no início, com reserva positiva, respeitando um Haki já ligado manualmente. Novos golpes prolongam o mesmo combate; esgotar a reserva não cria ciclos de reativação. O modo automático pode ser alterado nas preferências para o próximo combate.
 
@@ -22,7 +40,7 @@ O primeiro golpe ofensivo ou recebido inicia combate e renova um timeout de 6s. 
 - Porto, morte, nova sessão/troca de mapa: nenhum Haki ativo. A reserva e preferências são preservadas; não há restauração grátis ao viajar nem regeneração offline.
 - Armamento: +0,15 de penetração física; defesa ×1,10. Passa pelas mesmas fórmulas dos talentos e armadura, sem dupla aplicação.
 - Observação: +0,15 esquiva e precisão; precisão limitada a 100%, esquiva combinada até 75% (base/talentos já limitados a 45%).
-- Rei: raio 360px com linha de visão; comuns recebem stun de 3s; chefes recebem −15% ATQ/DEF por 8s, sem stun. Repetir renova a duração, não multiplica a redução. Sem cooldown adicional solicitado; a reserva limita os usos.
+- Rei: raio 360px com linha de visão; comuns recebem stun de 3s; chefes recebem −15% ATQ/DEF por 8s, sem stun. Repetir renova a duração, não multiplica a redução. A atualização de atalhos acrescentou 8s de cooldown à limitação de reserva original.
 
 Buffs não alteram os atributos permanentes, o BP de conquistas nem o orçamento de PT. O livro registra uma vez os três eventos `hakiUnlocked`; as recompensas de conquistas continuam com resgate manual. Não concede `hakiMaximized`: treinamento/níveis de Haki não fazem parte deste escopo.
 

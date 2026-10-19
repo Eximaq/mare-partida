@@ -472,7 +472,7 @@
   function onScreenMobs(){return livingMobs().filter(m=>m.x>=camera.x&&m.x<=camera.x+W&&m.y>=camera.y&&m.y<=camera.y+H);}
   function tick(dt){if(!game||!session)return;world.time+=dt;session.elapsed+=dt;game.totalPlay+=dt;session.cooldowns=session.cooldowns.map(v=>Math.max(0,v-dt));session.guard=Math.max(0,session.guard-dt);session.blessing=Math.max(0,session.blessing-dt);session.lastHit=Math.max(0,session.lastHit-dt);session.bossNotice=Math.max(0,session.bossNotice-dt);if(session.bossNotice<=0)$('bossBanner').classList.add('hidden');world.hero.attackAnim=Math.max(0,world.hero.attackAnim-dt);world.hero.walking=Math.max(0,world.hero.walking-dt);
     MareHaki.tick(game,session.haki,dt,{alive:game.hp>0&&session.respawn<=0,inHunt:scene==='hunt'});
-    if(DEV_ACTIVE){if(game.devOptions?.infiniteWill&&game.has_haki_unlocked)game.haki.current=100;if(game.devOptions?.noCooldown){session.cooldowns=[0,0];game.talentCooldowns={};}}
+    if(DEV_ACTIVE){if(game.devOptions?.infiniteWill&&game.has_haki_unlocked)game.haki.current=100;if(game.devOptions?.noCooldown){session.cooldowns=[0,0];game.talentCooldowns={};game.haki.kingReadyAt=0;}}
     for(const m of world.mobs)m.hakiDebuff=Math.max(0,(m.hakiDebuff||0)-dt);
     const combat=bentoController();
     combat?.step(dt,{moving:world.hero.walking>0,inCombat:scene==='hunt',direction:world.hero.direction});
@@ -542,8 +542,24 @@
 
   function showHakiRequirements(){showConfirmation('Haki bloqueado','Requisitos: alcançar o nível 50 e consumir um Livro da Vontade. O livro tem 5% de chance em chefes de mundo aberto ou diários de nível 30 ou superior. Nível atual: '+game.level+'.',()=>{},'ENTENDI',false);}
   function updateHakiHUD(){
-    const show=game.has_haki_unlocked;const row=$('miniWillpower');row.classList.toggle('hidden',!show);$('hakiKing').classList.toggle('hidden',!show);
-    if(!show)return;$('willpowerFill').style.width=game.haki.current+'%';$('willpowerText').textContent=Math.floor(game.haki.current)+' / 100';row.setAttribute('aria-valuenow',Math.floor(game.haki.current));$('hakiKing').disabled=scene!=='hunt'||session.respawn>0||game.hp<=0||game.haki.current<50;
+    const show=game.has_haki_unlocked,row=$('miniWillpower'),widget=$('hakiQuickCast');row.classList.toggle('hidden',!show);widget.classList.toggle('hidden',!show);document.body.classList.toggle('has-haki',show);
+    if(!show)return;$('willpowerFill').style.width=game.haki.current+'%';$('willpowerText').textContent=Math.floor(game.haki.current)+' / 100';row.setAttribute('aria-valuenow',Math.floor(game.haki.current));
+    const unavailable=scene!=='hunt'||session.respawn>0||game.hp<=0,cd=MareHaki.cooldown(game);
+    for(const b of widget.querySelectorAll('button')){
+      const id=b.dataset.hakiToggle||'conqueror',king=id==='conqueror',active=king?session.haki.kingFX>0:session.haki.active===id,empty=king?game.haki.current<50:game.haki.current<=0;
+      b.disabled=unavailable||empty||(king&&cd>0);b.classList.toggle('is-active',active);b.classList.toggle('is-empty',empty);b.classList.toggle('is-cooling',king&&cd>0);
+      if(!king)b.setAttribute('aria-pressed',String(active));
+      const status=unavailable?'Disponível em expedição':king&&cd>0?'Recarga: '+Math.ceil(cd)+'s':empty?'Vontade insuficiente':active?'Ativo':'Pronto';
+      b.title=MareHaki.catalog.find(c=>c.id===id).name+' · '+(king?'K · 50 Vontade':'armament'===id?'H · 5 Vontade/s':'J · 5 Vontade/s')+' · '+status;
+      b.querySelector('.haki-quick-state').textContent=king&&cd>0?Math.ceil(cd)+'s':!king&&active?'ON':'';
+    }
+    $('hakiKing').style.setProperty('--haki-cooldown',(cd/MareHaki.rules.kingCooldown*360)+'deg');
+    $('hakiQuickStatus').textContent=unavailable?'Ative em uma expedição':game.haki.current<=0?'Vontade esgotada':session.haki.active?session.haki.active==='armament'?'Armamento ativo':'Observação ativa':'Haki pronto';
+  }
+  function toggleHaki(id){
+    if(!game||!session)return;if(!game.has_haki_unlocked){showHakiRequirements();return;}
+    const previous={haki:{...game.haki},runtime:{...session.haki}},result=MareHaki.toggle(game,session.haki,id,{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0});
+    if(!result.ok)toast(result.message,'danger');else try{localStorage.setItem(STORAGE_KEY,JSON.stringify(game));}catch{game.haki=previous.haki;session.haki=previous.runtime;toast('Não foi possível salvar. Ativação cancelada.','danger');}updateUI();
   }
   function castHakiKing(){
     if(!game||!session)return;if(!game.has_haki_unlocked){showHakiRequirements();return;}
@@ -927,7 +943,7 @@
     if(['restore','level','class','build','haki-kit','haki-unlock'].includes(command.type)){next.hp=d.maxHP;next.energy=d.maxEnergy;if(command.type==='restore')next.haki.current=100;}
     next.hp=Math.min(next.hp,d.maxHP);next.energy=Math.min(next.energy,d.maxEnergy);
     if(command.type==='low-hp')next.hp=Math.max(1,Math.round(d.maxHP*.2));
-    if(command.type==='cooldowns')next.talentCooldowns={};
+    if(command.type==='cooldowns'){next.talentCooldowns={};next.haki.kingReadyAt=0;}
     try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));}catch{devMessage='Não foi possível salvar. Comando cancelado.';renderPanel();return;}
     game=next;
     if(['class','build','talents-reset','attributes-reset','level','restore'].includes(command.type)){session.talents=MareTalentCombat.create();session.respawn=0;world.hero.combat=null;}
@@ -1559,7 +1575,7 @@ function applySceneHudLayout(){
     b=e.target.closest('[data-travel-island]');if(b){const island=MareArchipelago.get(b.dataset.travelIsland);if(island&&island.id===voyageUI.selected&&MareArchipelago.canTravel(island.id,game.level))worldChange(island.area);return;}
 
     b=e.target.closest('[data-use-haki-book]');if(b){const id=b.dataset.useHakiBook;showConfirmation('Despertar o Haki?','O Livro da Vontade será consumido. Os três tipos de Haki serão desbloqueados permanentemente.',()=>consumeHakiBook(id),'DESPERTAR',false);return;}
-    b=e.target.closest('[data-haki-toggle]');if(b){const previous={haki:{...game.haki},runtime:{...session.haki}},result=MareHaki.toggle(game,session.haki,b.dataset.hakiToggle,{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0});if(!result.ok)toast(result.message,'danger');else try{localStorage.setItem(STORAGE_KEY,JSON.stringify(game));}catch{game.haki=previous.haki;session.haki=previous.runtime;toast('Não foi possível salvar. Ativação cancelada.','danger');}updateUI();return;}
+    b=e.target.closest('[data-haki-toggle]');if(b){toggleHaki(b.dataset.hakiToggle);return;}
     b=e.target.closest('[data-haki-cast]');if(b){castHakiKing();return;}
     b=e.target.closest('[data-open-pearl-box]');if(b&&!b.disabled){const id=b.dataset.openPearlBox,item=game.inventory.find(i=>i.id===id);if(item&&itemBase(item).kind==='pearl-box'&&!item.locked)showConfirmation('Abrir '+itemBase(item).name+'?','A caixa será consumida para sortear uma pérola do mesmo nível. Os cinco atributos têm chances iguais.',()=>openPearlBox(id));return;}
     b=e.target.closest('[data-export]');if(b){exportSave();return;}
@@ -1612,7 +1628,7 @@ function applySceneHudLayout(){
   });
 
   window.addEventListener('keydown',(e)=>{
-    const isTyping=['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName);
+    const isTyping=['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)||document.activeElement?.isContentEditable;
     if(e.key==='Escape'){
       if(!$('startOverlay').classList.contains('hidden'))return;
       if(currentPanel){closePanel();return;}
@@ -1624,14 +1640,14 @@ function applySceneHudLayout(){
     if(e.key==='F8'&&MareDev.ENABLED){e.preventDefault();openPanel('dev');return;}
     const k=e.key.toLowerCase();
     if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)&&!currentPanel){e.preventDefault();keys.add(k);if(scene==='hunt'&&autoPlay){autoPlay=false;updateUI();}return;}
-    if(['i','m','p','j','o','f','c','1','2','q',' '].includes(k))e.preventDefault();
-    if(k==='r'){e.preventDefault();castHakiKing();return;}
+    if(['i','m','p','o','f','c','1','2','q',' '].includes(k))e.preventDefault();
+    if(['h','j','k'].includes(k)){if(e.ctrlKey||e.metaKey||e.altKey)return;e.preventDefault();if(e.repeat||currentPanel||document.querySelector('.confirmation-overlay'))return;if(k==='k')castHakiKing();else toggleHaki(k==='h'?'armament':'observation');return;}
     if(k==='i'){openPanel('inventory');return;}
     if(k==='m'){openPanel('modes');return;}
     if(k==='f'){openPanel('forge');return;}
     if(k==='c'){openPanel('contracts');return;}
     if(k==='p'){openPanel('character');return;}
-    if(k==='j'){toggleFloating('chat');return;}
+    if(k==='l'){e.preventDefault();toggleFloating('chat');return;}
     if(k==='o'){toggleFloating('expedition');return;}
     if(currentPanel)return;
     if(k==='1')useSkill(0,true);
@@ -1648,6 +1664,7 @@ function applySceneHudLayout(){
   });
   window.addEventListener('beforeunload',()=>saveGame());
   $('devLauncher').hidden=!MareDev.ENABLED;$('devLauncher').textContent=DEV_ACTIVE?'DEV ATIVO':'DEV';document.body.classList.toggle('dev-sandbox',DEV_ACTIVE);if(DEV_ACTIVE){document.title='[DEV] '+document.title;const badge=document.createElement('div');badge.className='dev-badge';badge.textContent='LABORATÓRIO · SAVE DE TESTE';document.body.append(badge);}
+  if(typeof ResizeObserver!=='undefined'){const profileSizer=new ResizeObserver(()=>{document.documentElement.style.setProperty('--profile-hud-bottom',Math.ceil(document.querySelector('.topbar').getBoundingClientRect().bottom+8)+'px');});profileSizer.observe(document.querySelector('.topbar'));}
   const previous=loadGame();if(previous){game=previous;let d=getDerived();game.hp=clamp(Number(game.hp)||1,0,d.maxHP);game.energy=clamp(Number(game.energy)||0,0,d.maxEnergy);startGame();toast('Bem-vindo de volta, '+game.name+'!','good');}else{$('startOverlay').classList.remove('hidden');openCreation(false);$('characterName').focus();}
   // Diagnóstico somente leitura para testes de regressão da demo local.
   window.__mareDiagnostics=()=>({dev:{active:DEV_ACTIVE,key:STORAGE_KEY,options:game?.devOptions},hakiBookDef:itemDefs.indexOf(MareHaki.book),haki:game?{...game.haki,...session?.haki,unlocked:game.has_haki_unlocked}:null,scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H},map:{id:activeMap().id,width:activeMap().width,height:activeMap().height},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):activeMap().id==='embers'?MareEmber.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,talents:session?.talents?MareTalentCombat.snapshot(session.talents):null,talentPoints:game?MareTalents.available(game):0,classId:game?.classId,combat:world.hero.combat?.snapshot()??null,energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,skillEnergySpent:session?.skillEnergySpent,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,type:m.type,name:monsterName(m),skin:m.skin,district:m.district,x:m.x,y:m.y,hp:m.hp,poison:m.talentPoison?{...m.talentPoison}:null,level:m.level,hakiDebuff:m.hakiDebuff||0,control:m.talentControl?{...m.talentControl}:null,emp:m.empRemaining||0,marks:m.assassinMarks||0,burn:m.ultimateBurn?{...m.ultimateBurn}:null,clonePoison:m.clonePoison?{...m.clonePoison}:null,wear:m.talentWear?{...m.talentWear}:null,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});

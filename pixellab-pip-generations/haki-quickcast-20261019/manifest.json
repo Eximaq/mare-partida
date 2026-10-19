@@ -1,0 +1,148 @@
+{
+  "route": "MCP create_image_pro + MCP vfx_workbench",
+  "selection_delegated": true,
+  "calls": [
+    {
+      "tool": "create_image_pro",
+      "request": {
+        "description": "16-bit pixel art icon, 32x32, a metallic clenched fist completely coated in shiny obsidian black armor, glowing dark purple veins, dark fantasy game UI, sharp edges, high contrast, clean outlines, isolated on transparent background --no blur, anti-aliasing",
+        "width": 32,
+        "height": 32,
+        "no_background": true
+      },
+      "job_id": "40c2b943-33dd-4701-8de8-5d982c876220",
+      "asset_id": "28569d93-768b-533e-8e5f-f4f291400a12",
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 10
+      },
+      "selected_display_label": 2,
+      "selected_index": 1,
+      "output": "armament-icon.png"
+    },
+    {
+      "tool": "create_image_pro",
+      "request": {
+        "description": "16-bit pixel art icon, 32x32, a glowing ominous red eye with pulsing concentric rings of perception, dark crimson aura, dark fantasy game UI, crisp pixel details, clean outlines, isolated on transparent background --no blur, gradient",
+        "width": 32,
+        "height": 32,
+        "no_background": true
+      },
+      "job_id": "8bb60103-a95a-4d55-9e5e-6aa1b97d46ce",
+      "asset_id": "ed4df783-51fa-52c8-bccd-aedad31de8ac",
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 10
+      },
+      "selected_display_label": 3,
+      "selected_index": 2,
+      "output": "observation-icon.png"
+    },
+    {
+      "tool": "create_image_pro",
+      "request": {
+        "description": "16-bit pixel art icon, 32x32, a cracked royal crown exploding with jagged dark red and black lightning arcs, intense power aura, dark fantasy game UI, vivid colors, clean outlines, isolated on transparent background --no blur",
+        "width": 32,
+        "height": 32,
+        "no_background": true
+      },
+      "job_id": "427293ae-e191-4c0d-9184-0c2738361032",
+      "asset_id": "d7fa9a68-4ed5-5445-83cf-c669c835caa8",
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 10
+      },
+      "selected_display_label": 6,
+      "selected_index": 5,
+      "output": "conqueror-icon.png"
+    }
+  ],
+  "vfx": {
+    "reported_usage": {
+      "generations": 0
+    },
+    "surface": "Subscriber VFX Workbench; composer rather than prompt-to-image",
+    "calls": [
+      {
+        "argv": [
+          "551e583d-8045-41bb-bf2f-fe04f4cdab14",
+          "render",
+          "{\"recipe\":{\"canvas\":{\"w\":48,\"h\":48},\"frames\":8,\"fps\":12,\"loop\":true,\"origin\":[24,24],\"ramps\":{\"main\":[\"#07070d\",\"#10101b\",\"#222032\",\"#514762\",\"#9589aa\"],\"purple\":[\"#160c28\",\"#3c1b61\",\"#7134a0\",\"#b45ee0\"]},\"outline\":{\"mode\":\"black\"},\"tones\":5,\"layers\":[{\"id\":\"obsidian\",\"type\":\"shape\",\"points\":[[-6,-11],[3,-11],[7,-5],[6,7],[2,11],[-5,8],[-7,-2]],\"fill\":\"linear\",\"fill_angle\":-125,\"bevel\":2},{\"id\":\"vein\",\"type\":\"bolt\",\"ramp\":\"purple\",\"start\":[21,15],\"end\":[26,31],\"segments\":5,\"jag\":0.12,\"branches\":1,\"branch_length\":0.2,\"width\":1,\"soft\":0,\"intensity\":{\"wave\":{\"mid\":0.7,\"amp\":0.2,\"cycles\":1}}},{\"id\":\"metal_glint\",\"type\":\"beam\",\"x\":23,\"y\":{\"wave\":{\"mid\":24,\"amp\":2,\"cycles\":1}},\"width\":1,\"height\":9,\"angle\":25,\"soft\":0,\"intensity\":0.9}]}}"
+        ],
+        "mode": "low"
+      },
+      {
+        "argv": [
+          "551e583d-8045-41bb-bf2f-fe04f4cdab14",
+          "render",
+          "{\"recipe\":{\"canvas\":{\"w\":48,\"h\":48},\"frames\":8,\"fps\":12,\"loop\":true,\"origin\":[30,24],\"ramps\":{\"main\":[\"#200716\",\"#590c28\",\"#a91436\",\"#e52b4d\",\"#ff97a1\"]},\"outline\":{\"mode\":\"none\"},\"tones\":5,\"layers\":[{\"id\":\"trail\",\"type\":\"beam\",\"height\":{\"wave\":{\"mid\":22,\"amp\":4,\"cycles\":1}},\"width\":2,\"angle\":-90,\"soft\":0,\"intensity\":0.7,\"top_fade\":0.8},{\"id\":\"eye\",\"type\":\"glow\",\"radius\":2,\"squash\":0.6,\"shape\":\"hard\",\"outline\":false},{\"id\":\"perception\",\"type\":\"ring\",\"radius\":{\"wave\":{\"mid\":5,\"amp\":1,\"cycles\":1}},\"width\":1,\"soft\":0,\"squash\":0.7,\"intensity\":0.65},{\"id\":\"motes\",\"type\":\"particles\",\"mode\":\"orbit\",\"count\":4,\"radius\":9,\"speed\":4,\"size\":[1,1],\"shrink\":0,\"shape\":\"dot\",\"spacing\":\"even\",\"intensity\":0.7}]}}"
+        ],
+        "mode": "low"
+      },
+      {
+        "argv": [
+          "551e583d-8045-41bb-bf2f-fe04f4cdab14",
+          "render",
+          "{\"recipe\":{\"canvas\":{\"w\":128,\"h\":128},\"frames\":12,\"fps\":15,\"loop\":false,\"origin\":[64,64],\"ramps\":{\"main\":[\"#08060c\",\"#200815\",\"#5d0e23\",\"#a01832\",\"#e5344d\"],\"black\":[\"#04040a\",\"#100815\",\"#2b0a1d\",\"#761229\",\"#bf1e38\"]},\"outline\":{\"mode\":\"black\"},\"tones\":5,\"layers\":[{\"id\":\"pressure\",\"type\":\"ring\",\"radius\":{\"from\":4,\"to\":58},\"width\":{\"from\":5,\"to\":2},\"soft\":0,\"intensity\":0.85,\"dissolve\":{\"keys\":[[0,0],[0.9,0],[1,1]]}},{\"id\":\"echo\",\"type\":\"ring\",\"radius\":{\"from\":2,\"to\":46},\"width\":2,\"soft\":0,\"intensity\":0.55,\"life\":[0.15,1],\"dissolve\":{\"from\":0,\"to\":1}},{\"id\":\"lightning_0\",\"type\":\"bolt\",\"ramp\":\"black\",\"start\":[64,64],\"end\":[22,32],\"segments\":8,\"jag\":0.2,\"branches\":2,\"branch_length\":0.25,\"width\":2,\"soft\":0,\"progress\":{\"from\":0.1,\"to\":1},\"flicker\":2,\"dissolve\":{\"keys\":[[0,0],[0.65,0],[1,1]]}},{\"id\":\"lightning_1\",\"type\":\"bolt\",\"ramp\":\"black\",\"start\":[64,64],\"end\":[107,37],\"segments\":8,\"jag\":0.2,\"branches\":2,\"branch_length\":0.25,\"width\":2,\"soft\":0,\"progress\":{\"from\":0.1,\"to\":1},\"flicker\":2,\"dissolve\":{\"keys\":[[0,0],[0.65,0],[1,1]]}},{\"id\":\"lightning_2\",\"type\":\"bolt\",\"ramp\":\"black\",\"start\":[64,64],\"end\":[33,107],\"segments\":8,\"jag\":0.2,\"branches\":2,\"branch_length\":0.25,\"width\":2,\"soft\":0,\"progress\":{\"from\":0.1,\"to\":1},\"flicker\":2,\"dissolve\":{\"keys\":[[0,0],[0.65,0],[1,1]]}},{\"id\":\"lightning_3\",\"type\":\"bolt\",\"ramp\":\"black\",\"start\":[64,64],\"end\":[103,99],\"segments\":8,\"jag\":0.2,\"branches\":2,\"branch_length\":0.25,\"width\":2,\"soft\":0,\"progress\":{\"from\":0.1,\"to\":1},\"flicker\":2,\"dissolve\":{\"keys\":[[0,0],[0.65,0],[1,1]]}}]}}"
+        ],
+        "mode": "low"
+      },
+      {
+        "argv": [
+          "ac28b1a7-5718-426f-9dfb-a7e38e7fa866",
+          "export",
+          "--name",
+          "Mare Haki Quickcast armament 20261019"
+        ],
+        "mode": "low"
+      },
+      {
+        "argv": [
+          "559abdf4-6a85-447b-841d-613c86816927",
+          "export",
+          "--name",
+          "Mare Haki Quickcast observation 20261019"
+        ],
+        "mode": "low"
+      },
+      {
+        "argv": [
+          "566ce8e5-7a59-462a-8e85-40b54e821c38",
+          "export",
+          "--name",
+          "Mare Haki Quickcast conqueror 20261019"
+        ],
+        "mode": "low"
+      }
+    ],
+    "effects": [
+      {
+        "name": "armament",
+        "effect_id": "e9f125ea-63b5-47e1-8079-95ddaf2b9215",
+        "image_id": "c80903c1-346e-4db2-80fe-eeb52642e158",
+        "frames": 8,
+        "width": 48,
+        "height": 48,
+        "fps": 12
+      },
+      {
+        "name": "observation",
+        "effect_id": "28a4b352-ff59-4436-b342-b13835dc2c5b",
+        "image_id": "b2cbf73b-a9ba-4b50-9d4d-43cb3c64b3f3",
+        "frames": 8,
+        "width": 48,
+        "height": 48,
+        "fps": 12
+      },
+      {
+        "name": "conqueror",
+        "effect_id": "16dcf99d-b7e9-4881-9326-2661d10bff82",
+        "image_id": "6edc3673-4335-4563-9457-46d1946f680a",
+        "frames": 12,
+        "width": 128,
+        "height": 128,
+        "fps": 15
+      }
+    ]
+  }
+}
