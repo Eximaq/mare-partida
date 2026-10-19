@@ -2,7 +2,7 @@
 
 Mapa atual de **32×32 tiles**, com células de **64px**: mundo de 2048×2048px. A revisão de 19/10/2026 reduziu pela metade a largura e a altura do mapa anterior (um quarto da área), preservando escala dos sprites e resolução das texturas. O ID de save continua `beach`; Fenda da Névoa mantém seu mapa anterior. Nenhum inventário, equipamento ou atributo é migrado por esta atualização.
 
-Sete setores conectados por rotas principais e alternativas: Cais das Cinzas, Rua dos Corsários, Mercado Calcinado, Estaleiro Partido, Pátio das Âncoras, Mirante do Farol Quebrado e Fortaleza da Caldeira. O painel Mapa oferece rotas reais até esses pontos, sem teletransporte. O cais tem interação de retorno ao porto.
+Sete setores conectados por rotas principais e alternativas: Cais das Cinzas, Rua dos Corsários, Mercado Calcinado, Estaleiro Partido, Pátio das Âncoras, Mirante do Farol Quebrado e Fortaleza da Caldeira. A circulação entre esses pontos continua pelo cenário. O menu Mapa agora abre a janela de viagens por navios (ver MAPA-NAVIOS.md), substituindo a antiga lista de rotas locais. O cais tem interação de retorno ao porto.
 
 `ember-world.js` concentra terreno, rotas, praças, decoração, colisões e distritos de spawn. A composição atual tem três níveis: cais baixo, bairro central e ruínas altas. Dois paredões de contenção têm colisão; cinco escadas/rampas são as passagens entre níveis. Ruas chegam às oito fachadas, cada uma com entrada e acesso explícitos em `frontages`.
 
@@ -27,7 +27,7 @@ Originais em `pixellab-pip-generations/ruinas-brasas-20261018/`; somente fontes 
 ## Verificação e recuperação
 
 - `node tests/ember-world.test.cjs`: dimensões, todos os setores alcançáveis, colisões, pontes, câmera e dimensões/hash dos assets.
-- `C:/Python313/python.exe tests/ember_browser.py`: exploração real nas três resoluções desktop e em mobile, chefe, retorno, persistência, vinte derrotas e mapa legado.
+- `C:/Python313/python.exe tests/ember_browser.py`: viagem por navio, movimentação manual, retorno, persistência, vinte derrotas e mapa legado nas três resoluções desktop e em mobile.
 - Os demais `tests/*.test.cjs` verificam personagens, combate, mundo, ilha e forja.
 - `python tools/build_pages.py`: pacote estático com os módulos e assets novos.
 
