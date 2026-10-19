@@ -1,5 +1,14 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Constelações, conquistas e finais passivos
+
+- Árvore conectada com tronco, ponte, finais, arraste/zoom e foco; removido o grid independente.
+- Nova aba Conquistas com 31 metas e até 72 PT extras quando todos os sistemas forem liberados; histórico observado, resgate único, orçamento derivado e hooks futuros.
+- 21 finais das sete classes integrados aos eventos reais de combate. Recursos na HUD, clone, campos, rebotes, escudos, CC e reviver com recargas persistidas.
+- Dois ramos, um intermediário e um final por build; finais custam 3 PT e exigem 50 comuns mais ponta avançada. Migração v2 mantém ranks antigos e saves.
+- Senhor do Submundo autoriza caixas Nv.1 nas caçadas, sem liberar gemas/pérolas diretas globalmente.
+- Sem novas gerações pagas. Grupos reais e sistemas de frutas/Haki/Bounty continuam futuros; estado e testes documentados em docs/TALENTOS.md.
+
 ## 19/10/2026 — Árvores de Talentos das sete classes
 
 - Personagem passa a apresentar seleção entre status e Talentos, com árvore responsiva e inspeção dos efeitos.
