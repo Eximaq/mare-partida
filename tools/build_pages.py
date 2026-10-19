@@ -13,7 +13,7 @@ web_files = ['index.html', 'styles.css', 'ui-nautical.css',
              'character-system.js', 'combat-animation.js', 'combat-assets.js',
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
              'forge-ui.js', 'game.js', 'island-assets.js', 'island-world.js',
-             'world-system.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js']
+             'world-system.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js']
 for f in web_files:
     if not (ROOT / f).is_file():
         raise SystemExit(f'Arquivo necessário ausente: {f}')

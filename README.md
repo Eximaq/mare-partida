@@ -8,7 +8,15 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Regiões e detalhes do Arquipélago
+## Entrega atual — Impel Down e origem exclusiva de Pérolas
+
+Abra **Mapa → Impel Down** para inspecionar os 100 andares, escala e marcos. A entrada fica **Em breve** em todos eles. A base de regras exige vitória sequencial, com escala de 0,5× nos andares 1–10, 2× nos 11–20 e progressão por blocos até 10× nos 91–100.
+
+Pérolas deixam de cair nas caçadas normais, inclusive em chefes. As já possuídas continuam utilizáveis na forja. Os marcos 5, 10…50 concederão uma Caixa de Pérolas Nível 1 cada quando a prisão for liberada. As caixas são consumíveis reais: abertura confirmada, uma pérola do mesmo nível e 20% para cada atributo. Gemas têm origem reservada à prisão; suas regras ainda serão definidas.
+
+Sem novas gerações pagas. Save compatível, migração idempotente e caixas excluídas da forja/equipamento. [Regras, disponibilidade e testes](docs/IMPEL-DOWN.md).
+
+## Histórico — Regiões e detalhes do Arquipélago
 
 O Mapa do Arquipélago agora organiza oito ilhas em **East Blue**, com faixas recomendadas de 1–10 até 71–80. **Alabasta** aparece bloqueada abaixo do título. Clicar em uma ilha abre seus detalhes: faixa de nível, descrição, chefe, drops e botão separado para viajar.
 

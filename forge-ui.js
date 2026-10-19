@@ -4,7 +4,7 @@
   function render({game,defs,item,ui,result,derive,icon,escapeHTML:E,fmt}){
     const F=root.MareForge,r=item?F.rarity[item.rarity]:null,definition=item?defs[item.def]:null;
     const slotNames={weapon:'Arma',head:'Cabeça',necklace:'Colar',coat:'Torso',legs:'Perneiras',boots:'Pés',cloak:'Capa',gloves:'Mãos',ring:'Anel',belt:'Cinto',charm:'Acessório'};
-    const gears=[...Object.values(game.equipment).filter(Boolean).map(i=>({item:i,where:'equipped'})),...game.inventory.filter(i=>!F.isPearl(i,defs)).map(i=>({item:i,where:'bag'}))];
+    const gears=[...Object.values(game.equipment).filter(i=>F.isGear(i,defs)).map(i=>({item:i,where:'equipped'})),...game.inventory.filter(i=>F.isGear(i,defs)).map(i=>({item:i,where:'bag'}))];
     const fusionGear=ui.tab==='fusion'&&ui.fusionMode!=='pearls',ids=(ui.fusionIds||[]).filter(Boolean),filters=ui.filters||{};
     const selectedRarity=gears.find(x=>ids.includes(x.item.id))?.item.rarity;
     const blocked=i=>ids.includes(i.id)?'Este equipamento já está em um slot':i.locked?'Item bloqueado':!game.inventory.some(x=>x.id===i.id)?'Equipado: retire para usar na fusão':i.sockets.some(Boolean)?'Remova as pérolas antes de fundir':['legendary','supreme'].includes(i.rarity)?'Receita de Supremo ainda não habilitada':selectedRarity&&i.rarity!==selectedRarity?'Selecione a mesma raridade':ids.length>=5&&!ids.includes(i.id)?'Cinco itens já selecionados':'';

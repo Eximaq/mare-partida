@@ -5,7 +5,7 @@
     Object.freeze({id:'east-blue',name:'East Blue',locked:false}),
     Object.freeze({id:'alabasta',name:'Alabasta',locked:true})
   ]);
-  const loot=Object.freeze(['Dobrões e experiência','Equipamentos da classe','Ferro Salgado, poções e pérolas']);
+  const loot=Object.freeze(['Dobrões e experiência','Equipamentos da classe','Ferro Salgado e poções']);
   const islands=Object.freeze([
     {id:'dawn',name:'Ilha Dawn',recommended:[1,10],area:'beach',minLevel:1,description:'Uma ilha inicial com cais, ruas em ruínas e uma fortaleza além da fenda. Percorra os setores e enfrente o guardião da região.',drops:loot,monster:{name:'Capitão da Caldeira',role:'Chefe',src:'assets/ruinas-brasas/caldera-captain.png',sheet:true}},
     {id:'conchas',name:'Cidade das Conchas',recommended:[11,20],area:'swamp',minLevel:8,description:'Uma região costeira envolta em névoa, com ruínas e criaturas hostis. Prepare seus equipamentos antes de seguir adiante.',drops:loot,monster:{name:'Guardião da Caldeira',role:'Chefe',src:'assets/monsters/boss.png',sheet:false}},

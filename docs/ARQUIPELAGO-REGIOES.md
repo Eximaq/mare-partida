@@ -19,13 +19,15 @@ Ilha Dawn é o nome atual de Ruínas de Brasas; Cidade das Conchas substitui Fen
 
 As faixas são recomendações; não alteram os requisitos existentes nem impõem nível máximo. Combate, economia, equipamentos e IDs de persistência permanecem iguais. A viagem reutiliza `worldChange`, inclusive a recuperação de vida/energia já existente.
 
+A aba adicional **Impel Down** permite inspecionar os 100 andares, sem entrada enquanto o modo estiver em breve. Pérolas deixam de ser drop de caçadas; ver [regra atual de loot](IMPEL-DOWN.md).
+
 ## Seleção e detalhes
 
 O clique em qualquer ilha abre nome, faixa recomendada, descrição, moldura do chefe, entrada, taxa de sucesso e drops. Não muda a cena nem o save. Apenas o botão **Viajar para esta ilha** realiza o teleporte, quando a área existe e o personagem cumpre seu requisito. As seis ilhas futuras têm detalhes acessíveis e viagem bloqueada, sem redirecionar para outro cenário.
 
 Os previews usam os sprites existentes: Capitão da Caldeira na Ilha Dawn e Guardião da Caldeira na Cidade das Conchas. A folha de oito direções do Capitão é recortada para uma única célula, sem editar o PNG. Não havendo monstro configurado, a moldura mostra uma silhueta com interrogação e **Indisponível**. O mesmo fallback cobre falhas ao carregar a imagem.
 
-Os drops das áreas atuais refletem `killMob`: dobrões/XP, equipamentos compatíveis, Ferro Salgado, poções e pérolas. As futuras mostram **A definir**. Não existe cálculo de sucesso de dungeon no jogo; o painel informa **Não estimada**.
+Os drops das áreas atuais refletem `killMob`: dobrões/XP, equipamentos compatíveis, Ferro Salgado e poções. As futuras mostram **A definir**. Não existe cálculo de sucesso de dungeon no jogo; o painel informa **Não estimada**.
 
 Trocar uma região habilitada limpa a seleção e reconstrói sua lista. Alabasta não recebe cliques nem libera conteúdo. Clicar novamente em East Blue ou reabrir a janela limpa os detalhes anteriores. No desktop a lista e os detalhes ficam lado a lado; no celular os detalhes substituem a lista, com **Voltar às ilhas**. Foco, teclado, Escape, água animada e preferência de movimento reduzido são mantidos.
 
