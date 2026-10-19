@@ -143,7 +143,7 @@ Não renomear/mover assets referenciados sem atualizar todos os manifests/import
 
 ### 6.1 Entrada na caçada
 
-No porto ou na caçada, jogador abre **Mapa** pelo menu, tecla M ou serviço de expedição -> janela de mar animado com navios em círculo -> clicar em navio disponível leva diretamente à região e inicia a caçada existente. Navio nível 1 leva a Ruínas de Brasas (personagem Nv. 1+); navio nível 2 leva a Fenda da Névoa (personagem Nv. 8+). Nível do navio identifica o destino e não substitui o requisito do personagem. Outros navios permanecem bloqueados como Em breve até seus mapas existirem. Não manter um menu Caçadas duplicando Mapa. Sair por portal ou botão, com confirmação quando apropriado; preservar XP, loot, itens e dinheiro.
+No porto ou na caçada, jogador abre **Mapa** pelo menu, tecla M ou serviço de expedição -> janela de mar animado com navios em círculo -> clicar em navio disponível leva diretamente à região e inicia a caçada existente. Navio nível 1 leva a Ruínas de Brasas (personagem Nv. 1+); navio nível 2 leva a Fenda da Névoa (personagem Nv. 8+). Metas recomendadas: Ruínas de Brasas 1–10; Fenda da Névoa 10–20. Essas faixas não alteram os requisitos de entrada nem impõem nível máximo. Destinos futuros mantêm meta a definir. Outros navios permanecem bloqueados como Em breve até seus mapas existirem. Não manter um menu Caçadas duplicando Mapa. Sair por portal ou botão, com confirmação quando apropriado; preservar XP, loot, itens e dinheiro.
 
 ### 6.2 Idle combat de ponta a ponta
 

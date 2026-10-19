@@ -2,13 +2,13 @@
 
 A opção **Mapa** substitui as duas entradas que duplicavam Mapa/Caçadas. Abre uma janela de escolha de destino, com água animada, bússola central e seis navios distribuídos em círculo. Não é um mapa de jogo: não existe personagem se movendo nessa água.
 
-| Navio | Destino | Requisito do personagem | Estado |
-|---|---|---|---|
-| Nível 1 | Ruínas de Brasas (`beach`) | Nv. 1 | Disponível |
-| Nível 2 | Fenda da Névoa (`swamp`) | Nv. 8 | Disponível a partir do requisito |
-| Níveis 3–6 | Destinos futuros | Ainda não definido | Em breve, sem ação |
+| Navio | Meta recomendada | Destino | Requisito do personagem | Estado |
+|---|---|---|---|---|
+| 1 | Nv. 1–10 | Ruínas de Brasas (`beach`) | Nv. 1 | Disponível |
+| 2 | Nv. 10–20 | Fenda da Névoa (`swamp`) | Nv. 8 | Disponível a partir do requisito |
+| 3–6 | A definir | Destinos futuros | Ainda não definido | Em breve, sem ação |
 
-O nível do navio identifica a rota. Não é o nível mínimo do personagem. Os requisitos vêm das regiões existentes (`zones`), sem alteração de progressão. Ao clicar em navio liberado, `worldChange` reutiliza a entrada de caçada: define a região, restaura vida/energia conforme o comportamento anterior, inicializa a sessão de combate, fecha a janela e salva. Não há novo custo, recompensa ou mapa criado pela janela.
+A meta é uma faixa recomendada, não uma trava de entrada ou limite máximo de personagem. As faixas 1–10 e 10–20 não alteram dano, XP ou requisitos. Os destinos futuros continuam com meta a definir. Os requisitos vêm das regiões existentes (`zones`), sem alteração de progressão. Ao clicar em navio liberado, `worldChange` reutiliza a entrada de caçada: define a região, restaura vida/energia conforme o comportamento anterior, inicializa a sessão de combate, fecha a janela e salva. Não há novo custo, recompensa ou mapa criado pela janela.
 
 Mapa aparece da mesma forma no porto e durante uma caçada. O ícone, tecla M, botão de viagem e NPC de expedição convergem para a mesma janela. Referências internas antigas a `hunts` são normalizadas para `map`. A antiga lista de regiões e a visão de rotas locais deixam de ocupar esse menu; movimentação, caminhos e câmera dos cenários permanecem intactos.
 

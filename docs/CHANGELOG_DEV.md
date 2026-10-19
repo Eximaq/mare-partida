@@ -1,5 +1,11 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Metas de nível nos navios
+
+- Ruínas de Brasas exibe Meta 1–10; Fenda da Névoa, Meta 10–20. São faixas recomendadas, com requisitos reais Nv. 1/Nv. 8 preservados.
+- Destinos futuros mostram Meta a definir e continuam bloqueados. Sem alteração de progressão, mapas, saves ou consumo pago.
+
+
 ## 19/10/2026 — Mapa de viagens por navios e menu de ícones
 
 - Unificação Mapa/Caçadas em janela de água animada, seis navios em círculo e bússola central; sem novo mapa de jogo.

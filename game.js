@@ -715,8 +715,8 @@
   }
   // Ship levels identify destinations; character requirements come from the existing zones.
   const voyageDestinations=[
-    {id:'ship-1',level:1,area:'beach',ship:0,x:23,y:70},
-    {id:'ship-2',level:2,area:'swamp',ship:1,x:23,y:30},
+    {id:'ship-1',level:1,goal:[1,10],area:'beach',ship:0,x:23,y:70},
+    {id:'ship-2',level:2,goal:[10,20],area:'swamp',ship:1,x:23,y:30},
     {id:'ship-3',level:3,area:null,ship:0,x:50,y:20},
     {id:'ship-4',level:4,area:null,ship:1,x:77,y:30},
     {id:'ship-5',level:5,area:null,ship:0,x:77,y:70},
@@ -725,9 +725,9 @@
   let mapReturnFocus=null;
   function renderVoyages(body){
     body.innerHTML=`<section class="voyage-window" aria-label="Destinos de viagem"><p class="voyage-intro">Escolha um navio e navegue até sua próxima caçada.</p><div class="voyage-sea"><div class="voyage-ring" aria-hidden="true"></div><div class="voyage-compass" aria-hidden="true"><span>N</span><svg viewBox="0 0 100 100"><path d="M50 4 61 39 96 50 61 61 50 96 39 61 4 50 39 39Z" fill="#c8ad6b"/><path d="M50 4 50 50 39 39ZM96 50 50 50 61 39ZM50 96 50 50 61 61ZM4 50 50 50 39 61Z" fill="#506e6f"/><circle cx="50" cy="50" r="8" fill="#142e39" stroke="#dac18d"/></svg></div>${voyageDestinations.map(d=>{
-      const zone=zones[d.area],future=!zone,locked=!future&&game.level<zone.min,name=zone?.name||'Destino futuro',status=future?'Em breve':locked?'Requer personagem Nv. '+zone.min:'Personagem Nv. '+zone.min+'+';
-      return `<button type="button" class="voyage-destination ${future?'is-future':locked?'is-locked':'is-available'}" data-voyage-id="${d.id}" ${zone?`data-area="${d.area}" data-current="${game.area===d.area}"`:''} style="--port-x:${d.x}%;--port-y:${d.y}%;--ship-x:${d.ship?100:0}%" ${future||locked?'disabled':''} aria-label="Navio nível ${d.level}, ${escapeHTML(name)}, ${status}"><span class="voyage-level">Nível ${d.level}</span><span class="voyage-ship-art" aria-hidden="true"></span><strong>${escapeHTML(name)}</strong><small>${status}</small>${zone&&scene==='hunt'&&game.area===d.area?'<em>Você está aqui</em>':''}</button>`;
-    }).join('')}</div><footer class="voyage-footer"><span>Rotas conhecidas do arquipélago</span><p>O nível do navio identifica a rota. Os requisitos do personagem aparecem em cada destino.</p></footer></section>`;
+      const zone=zones[d.area],future=!zone,locked=!future&&game.level<zone.min,name=zone?.name||'Destino futuro',goal=d.goal?'Meta '+d.goal[0]+'–'+d.goal[1]:'Meta a definir',status=future?'Em breve':locked?'Requer personagem Nv. '+zone.min:'Personagem Nv. '+zone.min+'+';
+      return `<button type="button" class="voyage-destination ${future?'is-future':locked?'is-locked':'is-available'}" data-voyage-id="${d.id}" ${zone?`data-area="${d.area}" data-current="${game.area===d.area}"`:''} style="--port-x:${d.x}%;--port-y:${d.y}%;--ship-x:${d.ship?100:0}%" ${future||locked?'disabled':''} aria-label="Navio ${d.level}, ${escapeHTML(name)}, ${goal}, ${status}"><span class="voyage-level">${goal}</span><span class="voyage-ship-art" aria-hidden="true"></span><strong>${escapeHTML(name)}</strong><small>${status}</small>${zone&&scene==='hunt'&&game.area===d.area?'<em>Você está aqui</em>':''}</button>`;
+    }).join('')}</div><footer class="voyage-footer"><span>Rotas conhecidas do arquipélago</span><p>As metas são faixas recomendadas de nível. Os requisitos de entrada aparecem em cada destino.</p></footer></section>`;
   }
   function renderPanel(){if(!currentPanel||!game)return;const body=$('dialogBody');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');$('panelOverlay').classList.toggle('voyage-mode',currentPanel==='map');if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={inventory:'Inventário',forge:'Forja das Correntes',character:'Seu aventureiro',map:'Mapa do Arquipélago',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel)));
     if(currentPanel==='shop'){body.innerHTML=`<div class="mini-heading">MERCADOR donquixote · SUPRIMENTOS</div><div class="item-detail">${itemIcon('potion','Poção de vida')}<h3>Poção de vida</h3><p>Restaura 44% da vida máxima.<br>Preço: <strong>35 dobrões</strong><br>Seu saldo: <strong>${fmt(game.gold)}</strong></p><button class="dialog-button" data-buy-potion="1" ${game.gold<35?'disabled':''}>COMPRAR 1 POÇÃO</button></div>`;}

@@ -20,6 +20,8 @@ with sync_playwright() as p:
   q.locator('#mainMenu [data-panel=inventory]').hover();assert q.locator('[data-panel=inventory] .menu-tooltip').is_visible()
   q.locator('#mainMenu [data-panel=forge]').focus();assert q.locator('[data-panel=forge] .menu-tooltip').is_visible();q.keyboard.press('Enter');assert q.locator('#dialogBody[data-view=forge]').is_visible();q.keyboard.press('Escape')
   panel(q,'map');assert q.locator('#panelOverlay.voyage-mode').is_visible();assert q.locator('.voyage-destination').count()==6
+  assert q.locator('[data-voyage-id=ship-1] .voyage-level').inner_text()=='Meta 1–10'
+  assert q.locator('[data-voyage-id=ship-2] .voyage-level').inner_text()=='Meta 10–20'
   assert diag(q)['scene']=='lobby' and diag(q)['hero']['x']==d0['hero']['x']
   assert q.locator('.voyage-destination:disabled').count()==4
   assert q.locator('.voyage-sea').evaluate('(e)=>getComputedStyle(e,"::before").animationName')=='voyage-water'
