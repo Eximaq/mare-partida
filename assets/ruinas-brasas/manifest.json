@@ -1,0 +1,314 @@
+{
+  "ready": true,
+  "texture_mode": "native64",
+  "tile_size": 64,
+  "grid": [
+    64,
+    64
+  ],
+  "monsters": {
+    "scorched-corsair": {
+      "directions": [
+        "south",
+        "south-east",
+        "east",
+        "north-east",
+        "north",
+        "north-west",
+        "west",
+        "south-west"
+      ],
+      "frame_width": 48,
+      "frame_height": 48,
+      "anchor": [
+        24,
+        45
+      ],
+      "anchors": {
+        "south": [
+          22.5,
+          45
+        ],
+        "south-east": [
+          22.5,
+          46
+        ],
+        "east": [
+          27.0,
+          46
+        ],
+        "north-east": [
+          24.5,
+          45
+        ],
+        "north": [
+          25.5,
+          44
+        ],
+        "north-west": [
+          25.0,
+          45
+        ],
+        "west": [
+          19.5,
+          46
+        ],
+        "south-west": [
+          22.5,
+          46
+        ]
+      },
+      "render_scale": 1.5,
+      "source_frame_size": [
+        64,
+        64
+      ],
+      "resize": "nearest-neighbor, explicitly requested 48x48 output",
+      "animations": {
+        "idle": {
+          "url": "assets/ruinas-brasas/scorched-corsair.png",
+          "frames": 1,
+          "frame_width": 48,
+          "frame_height": 48
+        }
+      }
+    },
+    "slag-warden": {
+      "directions": [
+        "south",
+        "south-east",
+        "east",
+        "north-east",
+        "north",
+        "north-west",
+        "west",
+        "south-west"
+      ],
+      "frame_width": 48,
+      "frame_height": 48,
+      "anchor": [
+        24,
+        45
+      ],
+      "anchors": {
+        "south": [
+          23.5,
+          44
+        ],
+        "south-east": [
+          24.0,
+          45
+        ],
+        "east": [
+          24.0,
+          45
+        ],
+        "north-east": [
+          22.5,
+          45
+        ],
+        "north": [
+          23.5,
+          44
+        ],
+        "north-west": [
+          25.0,
+          45
+        ],
+        "west": [
+          23.0,
+          45
+        ],
+        "south-west": [
+          24.0,
+          45
+        ]
+      },
+      "render_scale": 1.5,
+      "source_frame_size": [
+        64,
+        64
+      ],
+      "resize": "nearest-neighbor, explicitly requested 48x48 output",
+      "animations": {
+        "idle": {
+          "url": "assets/ruinas-brasas/slag-warden.png",
+          "frames": 1,
+          "frame_width": 48,
+          "frame_height": 48
+        }
+      }
+    },
+    "ash-lantern": {
+      "directions": [
+        "south",
+        "south-east",
+        "east",
+        "north-east",
+        "north",
+        "north-west",
+        "west",
+        "south-west"
+      ],
+      "frame_width": 48,
+      "frame_height": 48,
+      "anchor": [
+        24,
+        45
+      ],
+      "anchors": {
+        "south": [
+          24.5,
+          45
+        ],
+        "south-east": [
+          26.5,
+          45
+        ],
+        "east": [
+          23.5,
+          45
+        ],
+        "north-east": [
+          24.5,
+          45
+        ],
+        "north": [
+          23.0,
+          44
+        ],
+        "north-west": [
+          21.0,
+          45
+        ],
+        "west": [
+          23.0,
+          45
+        ],
+        "south-west": [
+          22.5,
+          45
+        ]
+      },
+      "render_scale": 1.5,
+      "source_frame_size": [
+        64,
+        64
+      ],
+      "resize": "nearest-neighbor, explicitly requested 48x48 output",
+      "animations": {
+        "idle": {
+          "url": "assets/ruinas-brasas/ash-lantern.png",
+          "frames": 1,
+          "frame_width": 48,
+          "frame_height": 48
+        }
+      }
+    },
+    "caldera-captain": {
+      "directions": [
+        "south",
+        "south-east",
+        "east",
+        "north-east",
+        "north",
+        "north-west",
+        "west",
+        "south-west"
+      ],
+      "frame_width": 48,
+      "frame_height": 48,
+      "anchor": [
+        24,
+        45
+      ],
+      "anchors": {
+        "south": [
+          22.5,
+          47
+        ],
+        "south-east": [
+          22.0,
+          47
+        ],
+        "east": [
+          28.5,
+          46
+        ],
+        "north-east": [
+          26.5,
+          45
+        ],
+        "north": [
+          23.5,
+          45
+        ],
+        "north-west": [
+          22.0,
+          45
+        ],
+        "west": [
+          18.0,
+          46
+        ],
+        "south-west": [
+          23.0,
+          45
+        ]
+      },
+      "render_scale": 1.5,
+      "source_frame_size": [
+        64,
+        64
+      ],
+      "resize": "nearest-neighbor, explicitly requested 48x48 output",
+      "animations": {
+        "idle": {
+          "url": "assets/ruinas-brasas/caldera-captain.png",
+          "frames": 1,
+          "frame_width": 48,
+          "frame_height": 48
+        }
+      }
+    }
+  },
+  "terrain": {
+    "water": {
+      "url": "assets/ruinas-brasas/water.png",
+      "width": 64,
+      "height": 64
+    },
+    "basalt": {
+      "url": "assets/ruinas-brasas/basalt.png",
+      "width": 64,
+      "height": 64
+    },
+    "street": {
+      "url": "assets/ruinas-brasas/street.png",
+      "width": 64,
+      "height": 64
+    },
+    "lava": {
+      "url": "assets/ruinas-brasas/lava.png",
+      "width": 64,
+      "height": 64
+    }
+  },
+  "props": {
+    "url": "assets/ruinas-brasas/ruin-props.png",
+    "grid": [
+      4,
+      4
+    ],
+    "cell_size": [
+      128,
+      128
+    ],
+    "fire_frames": [
+      12,
+      13,
+      14,
+      15
+    ]
+  }
+}
