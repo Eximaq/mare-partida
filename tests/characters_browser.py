@@ -35,7 +35,7 @@ with sync_playwright() as p:
         first=diag(page);assert first['classId']==cls and first['attributePoints']==0
         initial_save=saved(page)
         if cls=='sword':template=initial_save
-        page.locator('#enterHunt').click();page.locator('[data-area][data-current=true]').click()
+        page.locator('#enterHunt').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click()
         for _ in range(55):
             page.clock.run_for(1000)
             d=diag(page)
@@ -108,7 +108,7 @@ with sync_playwright() as p:
     page.clock.run_for(100)
     page.locator('#attributePointsHud').click();page.locator('#healThreshold').select_option('0.8')
     assert saved(page)['preferences']['healThreshold']==.8
-    page.locator('#closePanel').click();page.locator('#enterHunt').click();page.locator('[data-area][data-current=true]').click();page.clock.run_for(100)
+    page.locator('#closePanel').click();page.locator('#enterHunt').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click();page.clock.run_for(100)
     d=diag(page)
     assert d['healingDone']>0 and d['hp']>20 and d['cooldowns'][0]>0 and d['energy']<d['stats']['maxEnergy']
     assert d['guard']>0 and d['skillUses'][1]>0
@@ -117,7 +117,7 @@ with sync_playwright() as p:
     record('healer_real_heal_buff_cooldown','Configured 80% threshold persists; injured solo healer restores HP, spends energy, activates real protection and respects cooldown.')
     context.close()
     full={**healer,'hp':9999}
-    context,page=new_page(full);page.clock.run_for(50);page.locator('#enterHunt').click();page.locator('[data-area][data-current=true]').click();page.locator('#skill1').click();page.clock.run_for(50)
+    context,page=new_page(full);page.clock.run_for(50);page.locator('#enterHunt').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click();page.locator('#skill1').click();page.clock.run_for(50)
     assert diag(page)['skillUses'][0]==0 and diag(page)['cooldowns'][0]==0
     record('healer_no_wasted_full_health_heal','Full-health heal does not consume energy or start cooldown.')
     context.close()

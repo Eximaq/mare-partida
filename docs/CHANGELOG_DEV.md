@@ -1,5 +1,14 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Regiões e detalhes do Arquipélago
+
+- Abas abaixo do título: East Blue padrão, Alabasta bloqueada. Oito ilhas com faixas sequenciais de dez níveis.
+- Ilha Dawn e Cidade das Conchas renomeiam as áreas existentes; IDs beach/swamp, entrada Nv. 1/Nv. 8, terrenos, combate e saves preservados.
+- Clique inspeciona; botão separado realiza a viagem. Seis destinos futuros inspecionáveis com viagem bloqueada.
+- Preview dos chefes existentes e fallback Indisponível para ausência de configuração ou erro de imagem. Drops reais nas duas áreas; sem porcentagens fictícias.
+- Catálogo archipelago.js incluído no preview ao vivo e no build Pages com hash de cache. HUD por ícones e água animada preservadas.
+- Regras e verificação: docs/ARQUIPELAGO-REGIOES.md. Sem consumo de gerações pagas.
+
 ## 19/10/2026 — Metas de nível nos navios
 
 - Ruínas de Brasas exibe Meta 1–10; Fenda da Névoa, Meta 10–20. São faixas recomendadas, com requisitos reais Nv. 1/Nv. 8 preservados.

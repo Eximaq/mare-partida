@@ -9,7 +9,7 @@ def page_for(browser,seed=None,size=(1366,768),errors=None):
     if seed:c.add_init_script("if(!sessionStorage.seeded){localStorage.setItem("+json.dumps(KEY)+","+json.dumps(json.dumps(seed))+");sessionStorage.seeded='1'}")
     q=c.new_page()
     if errors is not None:q.on('pageerror',lambda e:errors.append(str(e)))
-    q.clock.install();q.goto('http://127.0.0.1:8123/');q.wait_for_load_state('networkidle');return c,q
+    q.clock.install();q.goto('http://127.0.0.1:8123/');q.wait_for_load_state('networkidle');q.wait_for_function('typeof __mareDiagnostics==="function"');return c,q
 def saved(q):return json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
 def create(q):
     q.locator('#characterName').fill('Nauta Polimento');q.locator('#nextToClass').click();q.locator('#createCharacter').click();q.clock.run_for(100)

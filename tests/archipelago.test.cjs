@@ -1,0 +1,36 @@
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const a=require('../archipelago.js');
+const names=['Ilha Dawn','Cidade das Conchas','Orange Town','Ilha dos Animais Raros','Vilarejo Syrup','Baratie','Parque Arlong','Loguetown'];
+assert.deepEqual(a.list('east-blue').map(i=>i.name),names);
+assert.equal(new Set(a.islands.map(i=>i.id)).size,8);
+a.islands.forEach((i,n)=>{
+  assert.deepEqual(i.recommended,[n*10+1,n*10+10]);
+  assert.equal(i.order,n+1);
+  assert.equal(a.get(i.id),i);
+  assert(Object.isFrozen(i));
+});
+assert.deepEqual(a.regions.map(r=>[r.id,r.locked]),[['east-blue',false],['alabasta',true]]);
+assert.deepEqual(a.list('alabasta'),[]);
+assert.deepEqual(a.list('missing'),[]);
+assert.equal(a.byArea(null),null);
+assert.equal(a.byArea('missing'),null);
+assert.equal(a.get('missing'),null);
+assert.equal(a.byArea('beach').id,'dawn');
+assert.equal(a.byArea('swamp').id,'conchas');
+assert.equal(a.canTravel('dawn',1),true);
+assert.equal(a.canTravel('dawn',80),true);
+assert.equal(a.canTravel('conchas',7),false);
+assert.equal(a.canTravel('conchas',8),true);
+for(const level of [undefined,null,NaN,Infinity,'10',-1,0])assert.equal(a.canTravel('dawn',level),false);
+assert.equal(a.canTravel('missing',80),false);
+for(const i of a.islands.slice(2)){
+  assert.equal(i.area,null);assert.equal(i.monster,null);assert.equal(i.drops,null);
+  assert.equal(a.canTravel(i.id,999),false);
+}
+for(const i of a.islands.slice(0,2)){
+  assert(fs.existsSync(path.join(__dirname,'..',i.monster.src)));
+  assert(i.drops.length>0);
+}
+console.log('Archipelago: catalog, progression, compatibility, gates and preview sources passed.');
