@@ -10,7 +10,8 @@ def diag(q):return q.evaluate('__mareDiagnostics()')
 def open_tree(q):
     q.locator('.bottom-nav [data-panel=character]').click()
     q.locator('#characterTabs [data-character-tab=talents]').click()
-def choose(q,node):q.locator('[data-talent-select="'+node+'"]').click()
+def choose(q,node):
+    q.locator('[data-talent-select="'+node+'"]').focus();q.locator('[data-talent-select="'+node+'"]').click()
 def add(q,node,n=1):
     choose(q,node)
     for _ in range(n):q.locator('[data-talent-add]').click()

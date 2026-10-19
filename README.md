@@ -8,7 +8,15 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Árvores de Talentos
+## Entrega atual — Constelações, Conquistas e Talentos Finais
+
+**Personagem → Talentos** agora abre uma constelação conectada, com zoom/arraste, tronco central, rotas que acendem, ponte intermediária e três opções finais por classe. Mantidos dois ramos simultâneos e um intermediário; o final também tem escolha única e exige 50 PT comuns, um intermediário e cinco pontos em um último tier, custando 3 PT.
+
+A nova aba **Conquistas** reúne 31 marcos, resgate único e progresso persistente: abates, riqueza, níveis, BP, exploração e a estrutura futura de Impel Down, frutas, Haki e Bounty Bosses. O orçamento combina 1 PT por nível com os pontos resgatados; sistemas futuros ficam Em breve. Os 21 finais entram no combate, com recursos de HUD, escudos, revive, clone, ricochetes e campos de dano/controle. Senhor do Submundo é a exceção explícita para caixas Nv.1 nas caçadas.
+
+Migração v2 preserva as builds atuais. Efeitos de grupo usam contratos para aliados reais; o jogo permanece solo. [Regras, valores, disponibilidade e testes](docs/TALENTOS.md).
+
+## Histórico — Árvores de Talentos
 
 O menu **Personagem** agora abre a seleção **Personagem / Talentos**. Cada uma das sete classes tem três ramos com cinco tiers, limite de dois ramos investidos e três talentos exclusivos dos quais apenas um pode ser escolhido. O jogador recebe 1 PT por nível, incluindo o primeiro, separado dos pontos de atributos.
 

@@ -76,11 +76,14 @@ Facção define identidade visual, contexto, reputação e eventuais passivos le
 
 ### 3.4 Talentos passivos implementados
 
-- Acesso por Personagem → Talentos; preservar a seleção inicial entre status e talentos.
-- 1 PT por nível, inclusive nível 1; separado dos cinco pontos de atributos por nível a partir do 2.
+- Acesso por Personagem → Talentos; preservar as três opções Personagem, Talentos e Conquistas. A árvore é uma constelação com zoom/arraste e linhas de dependência, sem retornar ao grid de cards.
+- 1 PT por nível, inclusive nível 1, mais recompensas únicas resgatadas no Diário de Conquistas; separado dos cinco pontos de atributos por nível a partir do 2.
 - Sete árvores independentes, três ramos por classe, máximo dois investidos; cinco tiers com dez graduações por nó e requisito de cinco pontos no nó anterior.
 - Três exclusivos por classe, escolha única por build, custo de 1 PT e requisito de 10 PT comuns. Não transformar esses passivos em botões ativos.
-- Prévia, confirmação transacional, migração e reset gratuito somente no porto. Somente a classe ativa concede bônus. Não limpar recarga do escudo ao redefinir.
+- Tiers avançados novos exigem a ponte intermediária. Um final por classe, custo 3 PT, exige 50 PT comuns, intermediário e 5 pontos em um último tier. Preservar ranks v1 herdados sem dar finais grátis.
+- Conquistas usam catálogo e ledger de IDs únicos, sem resgates repetidos; sistemas futuros ficam bloqueados. BP de prévia e buffs temporários não entram no marco. Hooks por IDs canônicos em `achievement-system.js`.
+- Os 21 finais ficam em `ultimate-system.js`. Campos e filas não podem gerar cadeias recursivas. Senhor do Submundo é a única exceção atual para caixas Nv.1 fora da prisão.
+- Prévia, confirmação transacional, migração v2 e reset gratuito somente no porto. Somente a classe ativa concede bônus. Não limpar recargas de escudo, imortalidade, EMP ou reviver ao redefinir.
 - Catálogo e regras em `talent-system.js`; gatilhos em `talent-combat.js`; UI em `talent-ui.js`. Reutilizar os contratos para aliados reais quando houver party, sem simular jogadores nem anunciar multiplayer disponível.
 - Regras e parâmetros completos em `docs/TALENTOS.md`; executar os testes específicos antes de alterar talentos ou combate.
 

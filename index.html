@@ -22,6 +22,8 @@
   <script defer src="forge-ui.js"></script>
   <script defer src="prison-system.js"></script>
   <script defer src="archipelago.js"></script>
+  <script defer src="achievement-system.js"></script>
+  <script defer src="ultimate-system.js"></script>
   <script defer src="talent-system.js"></script>
   <script defer src="talent-combat.js"></script>
   <script defer src="talent-ui.js"></script>
@@ -38,6 +40,7 @@
     </section>
     <header class="topbar" aria-label="Perfil do aventureiro">
       <div class="profile-heading"><canvas id="miniPortrait" width="64" height="64" aria-label="Avatar do personagem"></canvas><div><div class="profile-name-row"><strong id="miniName">Aventureiro</strong><span id="miniLevel">Nv.1</span></div><span id="miniClass">Espadachim</span></div><button type="button" data-hud="status" title="Personagem e atributos (P)" aria-label="Abrir atributos">⌘</button></div>
+      <div id="miniTalentResource" class="profile-resource talent-resource hidden"><span id="miniTalentLabel">Vigor</span><span class="mini-meter"><i id="miniTalentFill"></i></span><b id="miniTalentText"></b></div>
       <div class="profile-resource"><span>Vida</span><span class="mini-meter"><i id="miniHP"></i></span><b id="miniHPText">100 / 100</b></div>
       <div class="profile-resource energy"><span>Energia</span><span class="mini-meter energy"><i id="miniEnergy"></i></span><b id="miniEnergyText">70 / 70</b></div>
       <div class="profile-xp"><span>Experiência <b id="miniXPText">0 / 80</b></span><span class="mini-meter xp"><i id="miniXP"></i></span></div>
@@ -58,7 +61,7 @@
             <div class="avatar-frame"><canvas id="portrait" width="72" height="72" aria-label="Retrato do personagem"></canvas><div class="avatar-corner"></div></div>
             <div class="hero-title"><div id="heroFaction" class="faction-label">PIRATA</div><span class="subtitle">NÍVEL <b id="heroLevel">1</b> <span class="class-tag" id="heroClass">ESPADACHIM</span></span><h2 id="heroName">Aventureiro</h2><div class="hero-power">PODER <strong id="heroPower">000</strong></div></div>
           </div>
-          <button id="changePath" class="identity-quick" type="button" title="Escolher facção e classe">◆ FACÇÃO E CLASSE <span>↗</span></button><div class="meters"><div class="meter-label"><span>VIDA</span><span id="hpText">100 / 100</span></div><div class="meter hp"><span id="hpFill"></span></div><div class="meter-label"><span>ENERGIA</span><span id="energyText">70 / 70</span></div><div class="meter energy"><span id="energyFill"></span></div><div class="meter-label"><span>EXPERIÊNCIA</span><span id="xpText">0 / 80</span></div><div class="meter xp"><span id="xpFill"></span></div></div>
+          <button id="changePath" class="identity-quick" type="button" title="Escolher facção e classe">◆ FACÇÃO E CLASSE <span>↗</span></button><div class="meters"><div id="talentResourceHUD" class="talent-resource-meter hidden"><div class="meter-label"><span id="talentResourceLabel">Vigor</span><span id="talentResourceValue"></span></div><div class="meter"><span id="talentResourceFill"></span></div></div><div class="meter-label"><span>VIDA</span><span id="hpText">100 / 100</span></div><div class="meter hp"><span id="hpFill"></span></div><div class="meter-label"><span>ENERGIA</span><span id="energyText">70 / 70</span></div><div class="meter energy"><span id="energyFill"></span></div><div class="meter-label"><span>EXPERIÊNCIA</span><span id="xpText">0 / 80</span></div><div class="meter xp"><span id="xpFill"></span></div></div>
           <div class="currency-line"><span><span class="small-symbol gold-symbol">✦</span> DOBRÕES</span><strong id="goldAmount">0</strong></div>
         </section>
         <section class="panel-block character-stats"><div class="section-heading"><span>ATRIBUTOS</span><button class="text-button" data-panel="character">DETALHES ↗</button></div><div class="stat-grid"><div><span>ATAQUE</span><b id="statAttack">0</b></div><div><span>DEFESA</span><b id="statDefense">0</b></div><div><span>CRÍTICO</span><b id="statCrit">0%</b></div><div><span>VELOCIDADE</span><b id="statSpeed">0.0/s</b></div></div></section>

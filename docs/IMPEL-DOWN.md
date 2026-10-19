@@ -1,4 +1,4 @@
-# Impel Down — prévia e origem exclusiva de pérolas
+# Impel Down — prévia e recompensas de pérolas
 
 Atualização de UI/UX em 19/10/2026. **M** e o botão correspondente da HUD abrem **Modos de jogo**, uma lista suspensa de ícone + texto. Escolha **Mapa do Arquipélago** para as viagens ou **Impel Down** para a prisão. Impel Down não aparece mais dentro do mapa geográfico. NPC de expedição e comandos de viagem convergem para a lista. Os seis ícones da HUD são mantidos.
 
@@ -37,11 +37,11 @@ Fórmula: `f <= 10 ? 0.5 : ceil(f / 10)`. É crescimento linear por blocos, sem 
 
 ## Loot e compatibilidade
 
-Monstros dos mapas normais, inclusive chefes, deixam de fornecer Pérolas. A antiga rolagem de 5% foi removida e o sorteio de equipamentos aceita somente definições de equipamento. Gemas, Pérolas e Caixas de Pérolas são reservadas à origem `impel-down` pela política `canDrop`.
+Monstros dos mapas normais, inclusive chefes, deixam de fornecer Pérolas. A antiga rolagem de 5% foi removida e o sorteio de equipamentos aceita somente definições de equipamento. Gemas e Pérolas diretas são reservadas à origem `impel-down` pela política `canDrop`. A expansão de Talentos introduz uma exceção explícita: o final **Senhor do Submundo**, equipado no Gatuno, pode gerar uma Caixa de Pérolas Nv.1 em comuns, com 0,5% de chance. A origem `underworld` aceita somente caixas, sem liberar gemas ou pérolas diretas; chamadas `world` normais continuam bloqueadas. Abrir a caixa preserva sua origem no item recebido. [Regras do final](TALENTOS.md).
 
 Gemas não existiam como item, moeda ou tabela de drops no projeto. Sua origem foi reservada, mas atributos, tipos e recompensas não foram inventados nesta etapa. A interface informa que essas regras serão definidas futuramente.
 
-Pérolas já possuídas ou instaladas continuam intactas. Imbuimento, remoção e fusão permanecem disponíveis, usando o estoque existente; a fusão transforma pérolas já obtidas e não é uma nova fonte de drop. Nenhum equipamento, percentual de pérola, refino ou saldo antigo é convertido. Enquanto a prisão estiver fechada, não há nova fonte jogável de Pérolas.
+Pérolas já possuídas ou instaladas continuam intactas. Imbuimento, remoção e fusão permanecem disponíveis, usando o estoque existente; a fusão transforma pérolas já obtidas e não é uma nova fonte de drop. Nenhum equipamento, percentual de pérola, refino ou saldo antigo é convertido. Enquanto a prisão estiver fechada, somente as caixas raras de Senhor do Submundo constituem nova fonte jogável. O modo Impel Down não foi liberado por esta exceção.
 
 ## Caixas e marcos
 
@@ -59,7 +59,7 @@ O catálogo é append-only: os 33 equipamentos e 25 índices de pérolas antigos
 
 `prison-system.js` centraliza regras, disponibilidade, escala, marcos, migração e abertura de caixas. `game.js` integra a prévia e o inventário; `forge-system.js`/`forge-ui.js` excluem consumíveis. Ícones novos em `assets/ui/items/pearl-box-1.svg` a `pearl-box-3.svg` são vetores locais. Não há gerações pagas ou edição dos sprites existentes.
 
-`index.html`, `tools/dev_server.py` e `tools/build_pages.py` incluem o módulo. O build Pages mantém caminhos relativos e hashes de conteúdo, agora com 17 recursos JS/CSS versionados. Documentos anteriores sobre drops descrevem o histórico; esta regra substitui a obtenção por caçadas.
+`index.html`, `tools/dev_server.py` e `tools/build_pages.py` incluem o módulo. O build Pages mantém caminhos relativos e hashes de conteúdo, com 22 recursos JS/CSS versionados após a expansão de talentos. Documentos anteriores sobre drops descrevem o histórico; esta regra substitui a obtenção por caçadas.
 
 Validação específica: `node tests/prison-system.test.cjs` e `python tests/prison_browser.py`. A primeira verifica os 100 andares, bloqueio de produção, sequência de vitórias, dez marcos únicos, mochila cheia, cinco resultados em cada nível de caixa, falhas sem consumo, migração e exclusão da forja. A segunda usa saves isolados, desktop/celular, navegação de abas, entrada bloqueada, caixas reais no inventário e rolagens forçadas de loot nos dois mapas. Resultados e capturas locais ficam em `docs/evidence-impel-down/`, fora do Git.
 

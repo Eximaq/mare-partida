@@ -41,7 +41,7 @@
     return save;
   }
   // Existing pearls and fusion remain usable; only prison rewards create new supply.
-  const canDrop=(kind,source)=>!['pearl','gem','pearl-box'].includes(kind)||source==='impel-down';
+  const canDrop=(kind,source)=>!['pearl','gem','pearl-box'].includes(kind)||source==='impel-down'||(kind==='pearl-box'&&source==='underworld');
   const allItems=save=>[...(save.inventory||[]),...Object.values(save.equipment||{}).filter(Boolean)];
   const unique=save=>new Set(allItems(save).map(i=>i.id)).size===allItems(save).length;
   function openBox(original,id,defs,random=Math.random,now=Date.now()){
@@ -56,7 +56,7 @@
       const roll=random();if(!Number.isFinite(roll)||roll<0||roll>=1)throw Error('RNG inválido');
       const chosen=candidates[Math.floor(roll*candidates.length)],newId='pearl-from-'+id;
       if(allItems(original).some(i=>i.id===newId))return fail('Identidade de recompensa duplicada.');
-      const save=migrate(original),pearl={id:newId,def:chosen.index,pearlId:chosen.pearlId,level:1,plus:0,locked:false,obtainedAt:now,origin:`Impel Down · ${box.name}`};
+      const save=migrate(original),pearl={id:newId,def:chosen.index,pearlId:chosen.pearlId,level:1,plus:0,locked:false,obtainedAt:now,origin:`${item.origin||'Impel Down'} · ${box.name}`};
       save.inventory.splice(save.inventory.findIndex(i=>i.id===id),1,pearl);
       return {ok:true,state:save,item:pearl,name:chosen.name};
     }catch{return fail('A caixa não foi aberta; nenhum item foi consumido.');}
