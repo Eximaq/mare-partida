@@ -2,7 +2,7 @@
 
 > **Instalação:** coloque este arquivo na raiz do projeto atual com o nome exato `AGENTS.md`. Este documento orienta o trabalho do Codex; ele **não executa tarefas automaticamente**. Para cada sessão, informe qual sprint executar.
 >
-> **Estado:** guia do projeto e roadmap pretendido, **não relatório de funcionalidades concluídas**. Atualizado em 18/10/2026.
+> **Estado:** guia do projeto e roadmap pretendido, **não relatório de funcionalidades concluídas**. Atualizado em 19/10/2026.
 
 ## 0. Missão e princípio inegociável
 
@@ -111,7 +111,7 @@ Não renomear/mover assets referenciados sem atualizar todos os manifests/import
 
 ### 5.1 Requisitos
 
-- Lobby **muito maior do que viewport**, com porto, praça, comércio, forja, cais, guilda/expedição e locais transitáveis.
+- Lobby com porto, praça, comércio, forja, cais e serviços em composição compacta. Aplicar o padrão de dimensões abaixo aos mapas futuros; não aumentar o mundo apenas para superar a viewport.
 - Cada região de caça possui bounds finitos, áreas seguras de spawn, obstáculos, pontos de retorno, props, monstros e subáreas de progressão.
 - **Separação obrigatória de world coordinates e screen coordinates**. Canvas não é o tamanho total do mundo; viewport/câmera revelam uma parcela dele.
 - Câmera com smooth follow, clamp a bounds, tratamento para mundo menor que viewport, zoom coerente com Pixel Art, sem mostrar vazio fora dos limites.
@@ -127,7 +127,17 @@ Não renomear/mover assets referenciados sem atualizar todos os manifests/import
 - **Fenda da Névoa:** ruínas úmidas, névoa e criaturas espectrais.
 - **Costa dos Náufragos:** praia e destroços, animais e saqueadores.
 
-As dimensões 2400×1600/2600×1700 usadas anteriormente e 3000×2000/3200×2200 propostas em prompts são **alvos flexíveis**, não comprovação de implementação. Medir mapas reais, densidade e desempenho; preferir mundo coeso a muitos espaços vazios ou props aleatórios.
+### 5.3 Padrão de tamanho e composição — decisão do proprietário em 19/10/2026
+
+- **Todos os mapas futuros usam, por padrão, grade de 32×32 tiles com células de 64×64px: mundo de 2048×2048px.** Tamanho de tile não é tamanho de sprite: monstros continuam com frames 48×48 e cenário com escala proporcional.
+- Só ampliar ou alterar essas dimensões com pedido/autorização explícita do proprietário para o mapa em questão. Não copiar dimensões maiores de prompts antigos. Mapas legados não são redimensionados automaticamente; nesta sprint, somente Ruínas de Brasas muda de tamanho.
+- Reduzir 64×64 para 32×32 significa metade da largura e da altura (um quarto da área), preservando a escala dos personagens e a resolução das texturas.
+- Planejar ruas e praças antes dos objetos. Toda casa deve ter fachada, entrada desobstruída e acesso demonstrável à rua; carga e destroços devem pertencer a um cais, oficina, praça ou ruína reconhecível.
+- Pontes apenas sobre um vão real (água, lava ou ravina), com orientação da arte, corredor navegável e extremidades apoiadas nas duas margens. Nunca espalhar pontes decorativas sobre chão firme ou sem ligação com a rota.
+- Elevações devem ter bordas/paredões legíveis, colisão correspondente e escadas/rampas em locais planejados; não permitir atravessar o paredão como se fosse piso plano.
+- Validar caminho de ida e volta para cada ponto de interesse, acessos das casas, travessias e escadas; revisar a composição completa e em jogo nas três resoluções desktop e em uma tela móvel.
+- Preferir poucos setores distintos e próximos, rotas alternativas com função, áreas de combate legíveis e pontos de respiro a terrenos vazios ou repetição de casas.
+
 
 ## 6. Lobby, caçadas e combate
 
