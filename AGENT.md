@@ -129,9 +129,9 @@ Não renomear/mover assets referenciados sem atualizar todos os manifests/import
 
 ### 5.3 Padrão de tamanho e composição — decisão do proprietário em 19/10/2026
 
-- **Todos os mapas futuros usam, por padrão, grade de 32×32 tiles com células de 64×64px: mundo de 2048×2048px.** Tamanho de tile não é tamanho de sprite: monstros continuam com frames 48×48 e cenário com escala proporcional.
+- **Todos os mapas futuros usam, por padrão, grade de 16×16 tiles com células de 64×64px: mundo de 1024×1024px.** Tamanho de tile não é tamanho de sprite: monstros continuam com frames 48×48 e cenário com escala proporcional.
 - Só ampliar ou alterar essas dimensões com pedido/autorização explícita do proprietário para o mapa em questão. Não copiar dimensões maiores de prompts antigos. Mapas legados não são redimensionados automaticamente; nesta sprint, somente Ruínas de Brasas muda de tamanho.
-- Reduzir 64×64 para 32×32 significa metade da largura e da altura (um quarto da área), preservando a escala dos personagens e a resolução das texturas.
+- O proprietário considerou 32×32 ainda grande; o padrão passou a 16×16, preservando escala dos personagens e resolução das texturas. Priorizar quatro setores próximos, em vez de tentar conservar muitos setores em um mapa reduzido.
 - Planejar ruas e praças antes dos objetos. Toda casa deve ter fachada, entrada desobstruída e acesso demonstrável à rua; carga e destroços devem pertencer a um cais, oficina, praça ou ruína reconhecível.
 - Pontes apenas sobre um vão real (água, lava ou ravina), com orientação da arte, corredor navegável e extremidades apoiadas nas duas margens. Nunca espalhar pontes decorativas sobre chão firme ou sem ligação com a rota.
 - Elevações devem ter bordas/paredões legíveis, colisão correspondente e escadas/rampas em locais planejados; não permitir atravessar o paredão como se fosse piso plano.

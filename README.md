@@ -8,17 +8,15 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Ruínas de Brasas compacta
+## Entrega atual — Ruínas de Brasas 16×16
 
-Ilha reorganizada em **32×32 tiles de 64px** (2048×2048px): metade da largura/altura anteriores. Três níveis com paredões e cinco escadas, ruas ligadas às oito fachadas, uma ponte real sobre a fenda de lava e sete pontos de interesse próximos. Cais, bairro queimado, estaleiro e fortaleza têm composições próprias; monstros continuam com frames **48×48**.
+Ilha reduzida novamente para **16×16 tiles de 64px (1024×1024px)**. Quatro pontos próximos — cais, praça, ruínas e fortaleza — substituem os sete setores anteriores. São três construções com acesso à rua, três escadas e uma única ponte sobre lava. A câmera centraliza a ilha em telas maiores que o mundo, sem ampliar sprites ou texturas; monstros continuam em 48×48.
 
-[Decisões, compatibilidade e validação](docs/RUINAS-BRASAS.md) · [Bíblia visual](docs/ART_BIBLE.md) · [Capturas locais atuais](http://127.0.0.1:8123/docs/evidence-ruinas-brasas/index.html).
+[Decisões e verificação](docs/RUINAS-BRASAS.md) · [Mapa completo atual](http://127.0.0.1:8123/docs/evidence-ruinas-brasas/full-map.png) · [Capturas de jogo](http://127.0.0.1:8123/docs/evidence-ruinas-brasas/index.html).
 
-O `AGENT.md`, seção 5.3, define **32×32 tiles de 64px como padrão para todos os mapas futuros**, com exceções só por autorização explícita. Lobby e Fenda da Névoa existentes mantêm seus tamanhos. O save conserva o ID `beach`; nenhum item ou progresso é migrado.
+O padrão de mapas futuros no `AGENT.md` foi ajustado para 16×16. Lobby e Fenda existentes permanecem como estão. Save `beach`, itens e progressão preservados; nenhuma geração paga adicional. Animações completas dos monstros continuam adiadas pelo orçamento anterior.
 
-Reorganização sem novas gerações pagas. O lote artístico anterior informou 39 gerações; caminhada/ataque dos monstros seguem adiados conforme o orçamento aprovado. Água/lava têm fluxo de textura e fogueiras usam quatro quadros reais. A publicação Pages mantém scripts e CSS versionados para evitar cache antigo.
-
-Validação: oito grupos Node específicos, demais regressões Node, oito grupos de navegador nas quatro resoluções e pacote Pages mobile com cache versionado. Vinte derrotas, retorno e persistência passaram; viewport ultrawide tratada com mar ao redor do mapa.
+Validação: todos os testes Node, oito grupos de navegador em desktop/mobile, doze regressões da ilha/HUD, vinte derrotas, retorno, persistência e pacote Pages mobile passaram.
 
 ## Histórico — Forja com seleção visual
 
