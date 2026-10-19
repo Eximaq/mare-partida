@@ -2205,3 +2205,31 @@ button {
 .character-tabs button[aria-disabled=true]{color:#b7ac9a;opacity:.75}.haki-chamber footer{border-top:1px solid #6d634d;margin-top:22px;padding-top:6px}
 #hakiKing{color:#e3cbff;font-size:12px;flex:none}
 @media(max-width:700px){.haki-disciplines{grid-template-columns:1fr}.haki-chamber>header{align-items:start;gap:14px;flex-direction:column}.haki-reserve{text-align:left;width:100%}.character-tabs{flex-wrap:wrap}.haki-disciplines article{padding:16px}}
+/* Temporary sandbox controls; independent from the six primary menu icons. */
+#devLauncher{position:absolute;left:0;top:-32px;min-height:27px;padding:3px 12px;border:1px solid #c49a53;background:#202e30;color:#f9d391;font:inherit;font-size:11px;font-weight:700;line-height:1.5;letter-spacing:1px;cursor:pointer}
+.dev-sandbox #devLauncher{background:#75451c;color:#fff0bc}
+.dev-badge{position:fixed;top:4px;left:50%;transform:translateX(-50%);z-index:12;background:#352a18ed;border:1px solid #b58a4c;padding:4px 12px;color:#ffe2a1;font-size:10px;letter-spacing:1px;pointer-events:none;white-space:nowrap}
+#dialogBody[data-view=dev]{background:#132b31}
+.dev-tools{color:#d8e6df;max-width:1120px;margin:auto;padding:6px}
+.dev-tools header{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.dev-tools h2{font-size:20px;color:#f4d49b;margin:0 0 8px}
+.dev-tools p,.dev-tools small{font-size:12px;line-height:1.65}
+.dev-notice{border-left:3px solid #d7ad65;background:#26352f;padding:10px 14px}
+.dev-result{color:#f8dba1;min-height:20px}
+.dev-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.dev-grid>section{padding:16px;border:1px solid #6f6850;background:linear-gradient(145deg,#203b3e,#142b30);min-width:0}
+.dev-grid h3{font-size:13px;color:#f1cb88;text-transform:uppercase;margin:0 0 16px}
+.dev-tools label{display:block;font-size:12px;margin:10px 0 5px}
+.dev-tools input,.dev-tools select{display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;padding:9px;background:#0d2228;border:1px solid #64756e;color:#f6edd9;border-radius:2px;font:inherit;margin-top:5px}
+.dev-tools button{display:block;width:100%;min-height:38px;margin:8px 0;padding:8px 10px;border:1px solid #9e895e;background:#334943;color:#f7e5bb;font:inherit;font-size:12px;text-align:left;cursor:pointer;white-space:normal;overflow-wrap:anywhere}
+.dev-tools button:hover{background:#495f50;border-color:#edc478}
+.dev-tools button:focus-visible,.dev-tools input:focus-visible,.dev-tools select:focus-visible{outline:2px solid #ffe09b;outline-offset:2px}
+.dev-tools header button{width:auto}
+.dev-tools small{display:block;color:#adbfbb}
+.dev-presets{display:flex;gap:5px;flex-wrap:wrap}
+.dev-presets button{width:auto;flex:1;white-space:nowrap;text-align:center;padding:6px}
+.dev-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.dev-tools .dev-switch{display:flex;gap:10px;align-items:center;min-height:30px}
+.dev-tools .dev-switch input{width:18px;height:18px;margin:0;accent-color:#d6af60}
+@media(max-width:1000px){.dev-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.dev-grid{grid-template-columns:1fr}.dev-grid>section{padding:12px}.dev-badge{top:auto;bottom:2px;font-size:9px}.dev-tools{padding:0}.dev-tools h2{font-size:18px}}

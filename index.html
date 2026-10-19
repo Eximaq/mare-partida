@@ -30,6 +30,7 @@
   <script defer src="talent-system.js"></script>
   <script defer src="talent-combat.js"></script>
   <script defer src="talent-ui.js"></script>
+  <script defer src="dev-tools.js"></script>
   <script defer src="game.js"></script>
 </head>
 <body>
@@ -85,6 +86,7 @@
         </div>
         <nav id="mainMenu" class="bottom-nav" aria-label="Menu principal"><button type="button" data-panel="inventory" aria-label="Inventário" aria-keyshortcuts="I"><img src="icones_menu_pirata/png/48/inventario.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Inventário (I)</span></button><button type="button" data-panel="forge" aria-label="Forja" aria-keyshortcuts="F"><img src="icones_menu_pirata/png/48/forja.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Forja (F)</span></button><button type="button" data-panel="character" aria-label="Personagem" aria-keyshortcuts="P"><img src="icones_menu_pirata/png/48/personagem.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Personagem (P)</span></button><button type="button" data-panel="modes" aria-label="Modos de jogo" aria-keyshortcuts="M"><img src="icones_menu_pirata/png/48/mapa.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Modos de jogo (M)</span></button><button type="button" data-panel="contracts" aria-label="Contratos" aria-keyshortcuts="C"><img src="icones_menu_pirata/png/48/contratos.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Contratos (C)</span></button><button type="button" data-panel="help" aria-label="Ajuda"><img src="icones_menu_pirata/png/48/ajuda.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Ajuda</span></button></nav>
       <div class="action-panel" role="toolbar" aria-label="Habilidades e consumíveis">
+        <button id="devLauncher" data-dev-open type="button" title="Laboratório temporário (F8)" aria-label="Abrir laboratório DEV (F8)">DEV</button>
           <div class="action-heading"><span>HABILIDADES E COMANDOS</span><span>TECLAS <b>1</b> · <b>2</b> · <b>Q</b></span></div>
           <div class="action-row">
             <button class="skill-button hidden" id="hakiKing" title="Haki do Rei · 50 Vontade · R"><img class="haki-icon" src="assets/haki/conqueror.png" alt="Haki do Rei" width="32" height="32"><span class="keycap">R</span></button>
