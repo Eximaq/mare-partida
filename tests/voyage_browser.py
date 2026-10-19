@@ -53,10 +53,10 @@ with sync_playwright() as p:
   panel(q,'map');assert not q.locator('.dungeon-details').count();assert q.locator('[data-island=dawn]').get_attribute('data-current')=='true'
   choose(q,'conchas');q.locator('[data-travel-island=conchas]').focus();q.keyboard.press('Space');assert diag(q)['map']['id']=='hunt';assert saved(q)['area']=='swamp'
   assert items(saved(q))==before
-  q.locator('#returnLobby').click();q.locator('#enterHunt').click();choose(q,'dawn');q.locator('[data-travel-island=dawn]').click();assert saved(q)['area']=='beach'
+  q.locator('#returnLobby').click();q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();choose(q,'dawn');q.locator('[data-travel-island=dawn]').click();assert saved(q)['area']=='beach'
   q.reload();q.wait_for_load_state('networkidle');assert items(saved(q))==before
   panel(q,'map');q.emulate_media(reduced_motion='reduce');assert q.locator('.voyage-sea').evaluate('(e)=>getComputedStyle(e,"::before").animationName')=='none'
-  q.keyboard.press('Escape');assert q.locator('#mainMenu [data-panel=map]').evaluate('(e)=>e===document.activeElement')
+  q.keyboard.press('Escape');assert q.locator('#mainMenu [data-panel=modes]').evaluate('(e)=>e===document.activeElement')
   record('regions_details_travel_'+suffix);c.close()
  # Entry requirements remain independent from the recommended level band.
  c,q=page_for(b,template,errors=errors);panel(q,'map');before=saved(q);choose(q,'conchas')

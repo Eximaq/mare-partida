@@ -8,13 +8,15 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Impel Down e origem exclusiva de Pérolas
+## Entrega atual — Menu de modos e seleção de fases
 
-Abra **Mapa → Impel Down** para inspecionar os 100 andares, escala e marcos. A entrada fica **Em breve** em todos eles. A base de regras exige vitória sequencial, com escala de 0,5× nos andares 1–10, 2× nos 11–20 e progressão por blocos até 10× nos 91–100.
+**M** e o botão da HUD agora abrem **Modos de jogo**, uma lista suspensa com ícones e texto. Escolha **Mapa do Arquipélago** para viajar ou **Impel Down** para abrir sua janela própria. A entrada da prisão foi removida de dentro do mapa geográfico.
 
-Pérolas deixam de cair nas caçadas normais, inclusive em chefes. As já possuídas continuam utilizáveis na forja. Os marcos 5, 10…50 concederão uma Caixa de Pérolas Nível 1 cada quando a prisão for liberada. As caixas são consumíveis reais: abertura confirmada, uma pérola do mesmo nível e 20% para cada atributo. Gemas têm origem reservada à prisão; suas regras ainda serão definidas.
+Impel Down apresenta setas limitadas aos andares já liberados, nível/ondas, monstros previstos com imagem e atributos, recompensa da primeira conquista, preferências de subida e Marcos. Os multiplicadores de dificuldade ficam somente nas regras internas; a HUD não exibe fórmula, fator ou tabela. A prisão permanece **Em breve**, sem partidas ou resgates.
 
-Sem novas gerações pagas. Save compatível, migração idempotente e caixas excluídas da forja/equipamento. [Regras, disponibilidade e testes](docs/IMPEL-DOWN.md).
+As caixas, marcos, exclusividade dos drops e estoque antigo de pérolas continuam preservados. Preferências de avanço automático e pausa antes de chefes são salvas para a liberação futura. Sem novas gerações pagas.
+
+[Regras, composição prevista, limitações e validação](docs/IMPEL-DOWN.md).
 
 ## Histórico — Regiões e detalhes do Arquipélago
 

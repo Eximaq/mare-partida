@@ -1,6 +1,20 @@
 # Impel Down — prévia e origem exclusiva de pérolas
 
-Atualização de 19/10/2026. Acesse **Mapa → Impel Down**. A nova aba mantém os seis ícones compactos da HUD. A prisão tem 100 andares numerados, detalhes inspecionáveis, escala de dificuldade e marcos de recompensa. Todos os andares estão **temporariamente indisponíveis para entrada**; selecionar um andar não viaja, não conclui fases e não concede itens.
+Atualização de UI/UX em 19/10/2026. **M** e o botão correspondente da HUD abrem **Modos de jogo**, uma lista suspensa de ícone + texto. Escolha **Mapa do Arquipélago** para as viagens ou **Impel Down** para a prisão. Impel Down não aparece mais dentro do mapa geográfico. NPC de expedição e comandos de viagem convergem para a lista. Os seis ícones da HUD são mantidos.
+
+## Seleção de fases
+
+A janela própria do Impel Down segue a estrutura das duas referências enviadas: cabeçalho de progresso; setas Anterior/Próximo, andar selecionado e botão **ENTRAR NO ANDAR X**; informações de nível e ondas; quadro **Monstros do Andar**; primeira conquista; opções de subida e **Marcos** no painel inferior direito. No celular, os painéis inferiores passam a uma coluna, com rolagem vertical.
+
+As setas percorrem somente andares concluídos e o próximo liberado: `1..min(100,cleared+1)`. Sem progresso, apenas Andar 1 pode ser inspecionado. O modo continua indisponível para partidas e resgates; o botão de entrada permanece desativado em qualquer andar. Selecionar, voltar ou alternar de modo não muda a cena, o inventário ou o progresso.
+
+A composição prevista reutiliza nomes, imagens e atributos-base reais de `monsterTypes`: Corsário de Brasa e Sentinela Cinzenta nos andares normais; Corsário e Guardião da Caldeira nos andares de chefe, a cada dez andares. A prévia usa três ondas, seis corsários e três sentinelas, ou seis corsários e um chefe; o nível exibido acompanha o andar. Vida e ataque apresentados vêm das regras internas de balanceamento. Não foram gerados sprites novos nem habilitado um motor de ondas/combate da prisão. O painel identifica os encontros como composição prevista em desenvolvimento.
+
+Os multiplicadores, fórmula e tabela de dificuldade foram **removidos da interface**. `floorDetails` retorna apenas os dados de apresentação dos encontros, sem campo de fator ou fórmula. O projeto é um jogo estático/offline e ainda não possui backend remoto; a matemática permanece no módulo lógico `prison-system.js`, sem exposição na HUD. A tabela abaixo é documentação técnica e não entra no pacote público Pages.
+
+**Recompensa da Primeira Conquista** mostra uma caixa nos andares 5,10…50. Nos demais, informa a progressão ou recompensa ainda indefinida, sem conceder itens inventados. A lista **Marcos** exibe os dez prêmios e seu status salvo. A opção de entrada e qualquer concessão seguem bloqueadas.
+
+**Configuração da Subida:** `impelDown.options.autoAdvance` (padrão falso) e `pauseBeforeBoss` (padrão verdadeiro) podem ser alteradas e persistidas. Falha ao salvar restaura o controle ao valor anterior. A base `completeFloor` retorna `next` com andar e decisão de avanço; pausa antes de chefes quando configurado. Com disponibilidade falsa, `nextAction` retorna nulo e não existe avanço automático ou início de partida. As preferências ficam prontas para a integração futura do loop real.
 
 ## Escala e progressão preparada
 
@@ -19,7 +33,7 @@ Atualização de 19/10/2026. Acesse **Mapa → Impel Down**. A nova aba mantém 
 
 Fórmula: `f <= 10 ? 0.5 : ceil(f / 10)`. É crescimento linear por blocos, sem capitalizar multiplicadores. `scaleMonster` aplica a escala a `hp`, `atk` e `def`, arredondando para inteiro e mantendo atributos positivos em pelo menos 1. Não acelera movimento/ataques nem multiplica recompensas. Espécies, atributos base, encontros e mapas da prisão ainda não foram configurados; o balanceamento de combate real depende dessa etapa futura.
 
-`MarePrison` mantém `available:false`, sem botão, atalho ou evento que inicie partidas. A base pura de regras possui uma fábrica para testes e integração futura: entrada somente no andar `cleared + 1`, avanço apenas por vitória e rejeição de andares inválidos, saltos, derrotas e conclusões repetidas. A HUD atual nunca chama essas transações. Liberar o modo exige uma atualização de código e a integração dos encontros reais; não basta habilitar um botão visual.
+`MarePrison` mantém `available:false`, sem botão, atalho ou evento que inicie partidas. A base pura de regras possui uma fábrica para testes e integração futura: entrada somente no andar `cleared + 1`, avanço apenas por vitória e rejeição de andares inválidos, saltos, derrotas e conclusões repetidas. A HUD atual nunca chama as transações de entrada, conclusão ou concessão de prêmio. Liberar o modo exige uma atualização de código e a integração dos encontros reais; não basta habilitar um botão visual.
 
 ## Loot e compatibilidade
 
@@ -51,13 +65,15 @@ Validação específica: `node tests/prison-system.test.cjs` e `python tests/pri
 
 Branch `feature/impel-down-drops`, base `5bf162e`. Publicação por commit/push e PR para `main`. Nenhuma partida de Impel Down está habilitada nesta entrega.
 
-## Execução validada
+## Validação do rework de navegação
 
-- Dez arquivos `tests/*.test.cjs`, incluindo os dez grupos novos de prisão/caixas, e sintaxe de todos os scripts JS: passaram.
-- `tests/prison_browser.py`: dez grupos; cinco resoluções (1920×1080, 1366×768, 1280×720, 393×852 e 320×568), entrada bloqueada, caixas com persistência/erro de armazenamento e loot forçado nos dois mapas: passaram.
-- `tests/voyage_browser.py`: nove grupos de navegação e viagens existentes: passaram.
-- `tests/fusion_slots_browser.py`: sete grupos de fusão/estoque, incluindo ausência de pérolas novas durante caçada: passaram.
-- `tests/polish_feedback_browser.py`: três resoluções de inventário/atributos: passaram.
-- Build Pages e `tests/pages_cache_browser.py`: 17 recursos versionados, mapa mobile e save preservado: passaram.
+Base `b760c14`, branch `feature/modos-impel-down-ui`. Todos os comandos abaixo passaram nesta atualização:
 
-As rolagens forçadas do teste específico se limitam ao loot, mantendo os spawns e a navegação aleatórios. Nenhum teste usa o save do usuário. Testes de mundo/câmera/combate Node permanecem verdes; os demais scripts de navegador não foram repetidos integralmente nesta sprint.
+- Dez arquivos `tests/*.test.cjs` e sintaxe dos JS. Treze grupos específicos de prisão: regras originais, inspeção restrita por progresso, dados de apresentação sem fator e decisão de avanço/pausa.
+- `tests/prison_browser.py`: onze grupos; cinco resoluções de 320×568 a 1920×1080, tecla M, lista de modos, separação do mapa, imagens/status/ondas, ausência de multiplicadores, setas nos limites, preferências após recarga, bloqueio de entrada, caixas e loot exclusivo.
+- `tests/voyage_browser.py`: nove grupos de viagens, detalhes e previews, foco/teclado, cache de imagens e água animada.
+- `tests/polish_feedback_browser.py`: inventário/atributos e acesso por teclado em três resoluções.
+- `tests/island_browser.py`: doze grupos de HUD, serviços de NPC, movimentação, viagens, recompensas e saves.
+- Build Pages e `tests/pages_cache_browser.py`: 17 recursos versionados, mapa mobile e save preservado.
+
+Capturas atuais em `docs/evidence-impel-down/`. Os outros scripts de personagem, combate, fusão e captura foram adaptados ao passo de escolha do modo, sem execução integral nesta atualização. Nenhum teste usa o save do usuário. Sem novas gerações pagas.

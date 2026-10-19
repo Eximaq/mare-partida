@@ -77,7 +77,7 @@ with sync_playwright() as p:
     page.locator('[data-panel="inventory"]').first.click();assert page.locator('.op-inventory-shell').is_visible()
     page.screenshot(path=str(OUT/'inventory.png'));page.get_by_role('button',name='Fechar inventário').click()
     record('inventory','Original inventory remains functional with equipment, bag and detail columns.')
-    stats=diag()['stats'];page.locator('#enterHunt').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click();run(400)
+    stats=diag()['stats'];page.locator('#enterHunt').click();page.locator('[data-mode=map]').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click();run(400)
     assert diag()['scene']=='hunt' and diag()['stats']==stats
     for _ in range(130):
         run(1000);physical()

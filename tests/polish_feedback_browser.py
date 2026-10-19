@@ -17,7 +17,7 @@ with sync_playwright() as p:
   panel(q,'character');q.locator('[data-attribute-add=strength]').click();q.locator('#confirmAttributes').click();assert q.locator('.character-layout').evaluate('(e)=>e.classList.contains("attributes-confirmed")');assert saved(q)['attributes']['strength']==old['strength']+5
   q.emulate_media(reduced_motion='reduce');assert q.locator('.character-allocation').evaluate('(e)=>getComputedStyle(e).animationName')=='none';close(q)
   for key in ['forge','map','contracts','help']:
-   q.locator('.bottom-nav [data-panel='+key+']').focus();q.keyboard.press('Enter');assert q.locator('#panelOverlay').is_visible();close(q)
+   q.locator('.bottom-nav [data-panel='+('modes' if key=='map' else key)+']').focus();q.keyboard.press('Enter');assert q.locator('#panelOverlay').is_visible();close(q)
   results.append({'test':'polish_feedback_'+suffix,'passed':True,'detail':'Icon-only menu, hover names and keyboard access, real positive/negative equip deltas, slot flash, filters/sort/best, 7x5 grid, cancel/confirm, reduced motion and keyboard routes.'});print('polish_feedback_'+suffix+': passed',flush=True);c.close()
  assert not errors,errors;b.close()
 (OUT/'results.json').write_text(json.dumps(results,ensure_ascii=False,indent=2),encoding='utf-8')

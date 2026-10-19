@@ -1,6 +1,6 @@
 # Regiões e detalhes do Arquipélago
 
-Atualização de 19/10/2026. A janela continua acessível pelo ícone Mapa, tecla M, botão de expedição e NPC. East Blue abre por padrão; Alabasta está desabilitada, com `data-status="locked"`, nome e aviso visível abaixo do título.
+Atualização de 19/10/2026. A janela fica em **Modos de jogo (M) → Mapa do Arquipélago**. Botão de viagem e NPC de expedição abrem a mesma lista de modos. East Blue abre por padrão; Alabasta está desabilitada, com `data-status="locked"`, nome e aviso visível abaixo do título.
 
 ## Catálogo
 
@@ -19,7 +19,7 @@ Ilha Dawn é o nome atual de Ruínas de Brasas; Cidade das Conchas substitui Fen
 
 As faixas são recomendações; não alteram os requisitos existentes nem impõem nível máximo. Combate, economia, equipamentos e IDs de persistência permanecem iguais. A viagem reutiliza `worldChange`, inclusive a recuperação de vida/energia já existente.
 
-A aba adicional **Impel Down** permite inspecionar os 100 andares, sem entrada enquanto o modo estiver em breve. Pérolas deixam de ser drop de caçadas; ver [regra atual de loot](IMPEL-DOWN.md).
+**Impel Down** foi retirado das abas do Arquipélago e possui janela própria na lista **Modos de jogo**, sem entrada enquanto estiver em breve. Pérolas deixam de ser drop de caçadas; ver [regra atual de loot](IMPEL-DOWN.md).
 
 ## Seleção e detalhes
 

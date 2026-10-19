@@ -20,10 +20,24 @@
     return result;
   }
   const rewardFor=floor=>milestones.includes(floor)?{kind:'pearl-box',level:1,quantity:1}:null;
+  const isBossFloor=floor=>validFloor(floor)&&floor%10===0;
+  const unlockedThrough=save=>Math.min(FLOOR_COUNT,migrate(save).impelDown.cleared+1);
+  const canInspect=(save,floor)=>validFloor(floor)&&floor<=unlockedThrough(save);
+  // Presentation receives final stats, never the balancing factor or formula.
+  function floorDetails(floor,catalog){
+    if(!validFloor(floor))throw Error('Andar inválido');
+    const waves=3,types=isBossFloor(floor)?[['bandit',6],['boss',1]]:[['bandit',6],['spirit',3]];
+    const monsters=types.map(([type,quantity])=>{
+      const base=catalog[type];if(!base)return null;
+      const stats=scaleMonster(base,floor);
+      return {id:type,name:base.name,src:`assets/monsters/${type}.png`,level:floor,quantity,hp:stats.hp,attack:stats.atk};
+    }).filter(Boolean);
+    return {floor,level:floor,waves,monsters,total:monsters.reduce((sum,m)=>sum+m.quantity,0),boss:isBossFloor(floor)};
+  }
   function migrate(original){
     const save=clone(original),old=save.impelDown||{};
     const cleared=Number.isInteger(old.cleared)?Math.min(100,Math.max(0,old.cleared)):0;
-    save.impelDown={...old,version:VERSION,cleared,claimed:[...new Set((Array.isArray(old.claimed)?old.claimed:[]).filter(f=>milestones.includes(f)&&f<=cleared))]};
+    save.impelDown={...old,version:VERSION,cleared,claimed:[...new Set((Array.isArray(old.claimed)?old.claimed:[]).filter(f=>milestones.includes(f)&&f<=cleared))],options:{autoAdvance:old.options?.autoAdvance===true,pauseBeforeBoss:old.options?.pauseBeforeBoss!==false}};
     return save;
   }
   // Existing pearls and fusion remain usable; only prison rewards create new supply.
@@ -50,6 +64,11 @@
   function createSystem({available=false}={}){
     available=available===true;
     const canEnter=(save,floor)=>available&&validFloor(floor)&&floor===migrate(save).impelDown.cleared+1;
+    function nextAction(save){
+      const p=migrate(save).impelDown,floor=p.cleared+1;
+      if(!canEnter(save,floor))return null;
+      return {floor,autoEnter:p.options.autoAdvance&&!(p.options.pauseBeforeBoss&&isBossFloor(floor))};
+    }
     function claimMilestone(original,floor,defs){
       if(!available)return {ok:false,message:'Impel Down está temporariamente indisponível.'};
       const save=migrate(original),p=save.impelDown,reward=rewardFor(floor);
@@ -64,12 +83,12 @@
       const save=migrate(original);save.impelDown.cleared=floor;
       if(rewardFor(floor)){
         const grant=claimMilestone(save,floor,defs);
-        return grant.ok?grant:{ok:true,state:save,rewardPending:true};
+        return grant.ok?{...grant,next:nextAction(grant.state)}:{ok:true,state:save,rewardPending:true,next:nextAction(save)};
       }
-      return {ok:true,state:save};
+      return {ok:true,state:save,next:nextAction(save)};
     }
-    return Object.freeze({available,canEnter,completeFloor,claimMilestone});
+    return Object.freeze({available,canEnter,completeFloor,claimMilestone,nextAction});
   }
-  const api={VERSION,FLOOR_COUNT,boxes,milestones,validFloor,multiplier,scaleMonster,rewardFor,migrate,canDrop,openBox,createSystem,...createSystem()};
+  const api={VERSION,FLOOR_COUNT,boxes,milestones,validFloor,multiplier,scaleMonster,rewardFor,isBossFloor,unlockedThrough,canInspect,floorDetails,migrate,canDrop,openBox,createSystem,...createSystem()};
   root.MarePrison=Object.freeze(api);if(typeof module!=='undefined')module.exports=root.MarePrison;
 })(globalThis);

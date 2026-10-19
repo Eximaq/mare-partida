@@ -1,5 +1,14 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Modos de jogo e rework da seleção de fases
+
+- M/HUD, NPC e comandos de viagem abrem lista de modos com ícone + texto. Arquipélago e Impel Down independentes; removida a aba da prisão do mapa.
+- UI da prisão com navegação por andares liberados, entrada bloqueada, nível/ondas, monstros previstos com imagem/nome/quantidade/vida/ataque, primeira conquista e Marcos no painel inferior direito.
+- Retirados os fatores, fórmula e tabela de escala da interface. Matemática preservada no módulo lógico, sem backend remoto novo.
+- Composição prevista reutiliza os monstros existentes, três ondas e nível por andar, com chefes a cada dez. Nenhuma partida/onda real habilitada.
+- Opções de avanço automático e pausa antes de chefes persistidas. A base de conclusão fornece a próxima ação quando disponível; em produção permanece indisponível.
+- Regras de caixas, drops e saves preservadas. SVG original da prisão, sem consumo pago. Detalhes e testes em docs/IMPEL-DOWN.md.
+
 ## 19/10/2026 — Impel Down e rework de drops
 
 - Aba em Mapa com 100 andares, detalhes de dificuldade e marcos, todos bloqueados para entrada. HUD continua com seis ícones.
