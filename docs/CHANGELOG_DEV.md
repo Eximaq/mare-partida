@@ -1,5 +1,14 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Atualização de cache no GitHub Pages
+
+- O build agora adiciona hash de conteúdo aos endereços dos 13 scripts e duas folhas de estilo. Um HTML novo não reutiliza o endereço dos scripts de uma publicação antiga.
+- Não limpa localStorage, não migra saves e não altera o jogo ou o mapa.
+- `tests/pages_cache_browser.py`: pacote estático validado em Chromium mobile 393×852, script antigo disponível no endereço sem versão, mapa embers 4096×4096, quatro monstros carregados, save preservado após recarga e nenhuma exceção.
+- Build Pages e seis grupos Node da área passaram. Captura local em docs/evidence-pages-cache/mobile-new-map.png.
+- Uma página que já estava aberta precisa ser reaberta; o link com query nova força a busca do documento atualizado no mesmo domínio, preservando o save.
+
+
 ## 19/10/2026 — Ruínas de Brasas 64×64
 
 - Reconstrução em mundo 4096×4096, sete setores, rotas navegáveis, ruínas e quatro monstros com frames 48×48.
