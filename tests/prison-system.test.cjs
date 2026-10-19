@@ -73,4 +73,23 @@ test('World monsters including bosses cannot create pearls, gems or boxes',()=>{
  for(const kind of ['pearl','gem','pearl-box'])assert.equal(P.canDrop(kind,'impel-down'),true);
  assert.equal(P.canDrop('equipment','world'),true);
 });
+test('Only completed floors and the next floor can be inspected, capped at 100',()=>{
+ const g=seed();assert.equal(P.unlockedThrough(g),1);assert(P.canInspect(g,1));assert(!P.canInspect(g,2));
+ g.impelDown={cleared:9,claimed:[]};assert(P.canInspect(g,9));assert(P.canInspect(g,10));assert(!P.canInspect(g,11));
+ g.impelDown.cleared=100;assert.equal(P.unlockedThrough(g),100);assert(!P.canInspect(g,101));
+});
+test('Phase presentation exposes final monster data without balancing factors',()=>{
+ const catalog={bandit:{name:'Corsário',hp:67,atk:10,def:5},spirit:{name:'Sentinela',hp:52,atk:12,def:3},boss:{name:'Guardião',hp:350,atk:17,def:10}};
+ const first=P.floorDetails(1,catalog);assert.equal(first.waves,3);assert.equal(first.total,9);assert.equal(first.monsters[0].hp,34);assert.equal(first.monsters[0].attack,5);
+ assert(first.monsters.every(m=>m.level===1&&m.quantity>0));assert.equal(P.floorDetails(10,catalog).boss,true);
+ assert.equal(P.floorDetails(10,catalog).monsters[1].id,'boss');assert(!/multiplier|factor|scale/.test(JSON.stringify(first)));assert.equal(catalog.bandit.hp,67);
+ assert.equal(P.floorDetails(1,{}).monsters.length,0);
+});
+test('Ascent preferences persist and determine the next action only when available',()=>{
+ const active=P.createSystem({available:true}),g=seed();g.impelDown={cleared:8,claimed:[],options:{autoAdvance:true,pauseBeforeBoss:true}};
+ let result=active.completeFloor(g,9,true,defs);assert(result.ok);assert.deepEqual(result.next,{floor:10,autoEnter:false});
+ g.impelDown.options.pauseBeforeBoss=false;result=active.completeFloor(g,9,true,defs);assert.deepEqual(result.next,{floor:10,autoEnter:true});
+ g.impelDown.options.autoAdvance=false;result=active.completeFloor(g,9,true,defs);assert.equal(result.next.autoEnter,false);
+ assert.equal(P.nextAction(g),null);assert.deepEqual(P.migrate(P.migrate(g)),P.migrate(g));
+});
 console.log(tests+' prison/drop/box groups passed.');

@@ -10,7 +10,7 @@ with sync_playwright() as p:
     page.goto('http://127.0.0.1:8123/');page.wait_for_load_state('networkidle')
     page.locator('#characterName').fill('Bento Teste');page.locator('[data-faction="pirate"]').click();page.locator('#nextToClass').click();page.locator('[data-class="sword"]').click();page.locator('#createCharacter').click();page.clock.run_for(200)
     save=json.loads(page.evaluate("localStorage.getItem('mare-partida-save-v1')"))
-    page.screenshot(path=str(OUT/'lobby.png'));page.locator('#enterHunt').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click()
+    page.screenshot(path=str(OUT/'lobby.png'));page.locator('#enterHunt').click();page.locator('[data-mode=map]').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click()
     seen=set();captures=set();impacts=0;last=page.evaluate('window.__mareDiagnostics()')
     for _ in range(2400):
         page.clock.run_for(50);d=page.evaluate('window.__mareDiagnostics()');state=d['combat']
@@ -30,7 +30,7 @@ with sync_playwright() as p:
     context.close();save['hp']=1;save['potions']=0
     c=browser.new_context(viewport={'width':1366,'height':768})
     c.add_init_script("if(!sessionStorage.getItem('seeded')){localStorage.setItem('mare-partida-save-v1',"+json.dumps(json.dumps(save))+");sessionStorage.setItem('seeded','1')}")
-    q=c.new_page();q.on('pageerror',lambda e:errors.append(str(e)));q.clock.install();q.goto('http://127.0.0.1:8123/');q.wait_for_load_state('networkidle');q.locator('#enterHunt').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click()
+    q=c.new_page();q.on('pageerror',lambda e:errors.append(str(e)));q.clock.install();q.goto('http://127.0.0.1:8123/');q.wait_for_load_state('networkidle');q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click()
     death=None
     paused=False
     for _ in range(1600):
@@ -49,7 +49,7 @@ with sync_playwright() as p:
     c.close()
     for faction,cls in [('marine','sword'),('pirate','brawler')]:
         c=browser.new_context();q=c.new_page();q.clock.install();q.goto('http://127.0.0.1:8123/');q.wait_for_load_state('networkidle')
-        q.locator('#characterName').fill('Outro Estilo');q.locator('[data-faction="'+faction+'"]').click();q.locator('#nextToClass').click();q.locator('[data-class="'+cls+'"]').click();q.locator('#createCharacter').click();q.locator('#enterHunt').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.clock.run_for(200)
+        q.locator('#characterName').fill('Outro Estilo');q.locator('[data-faction="'+faction+'"]').click();q.locator('#nextToClass').click();q.locator('[data-class="'+cls+'"]').click();q.locator('#createCharacter').click();q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.clock.run_for(200)
         assert q.evaluate('window.__mareDiagnostics().combat') is None
         c.close()
     results.append({'test':'faction_and_class_scope','passed':True,'other_factions_and_classes_use_original_sprites':True})

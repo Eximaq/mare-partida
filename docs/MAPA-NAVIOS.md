@@ -1,12 +1,12 @@
 # Mapa de viagens e menu por ícones
 
-A opção **Mapa** reúne a escolha de caçadas numa janela náutica com água animada. O fluxo atual, atualizado em 19/10/2026, está documentado em [Regiões e detalhes do Arquipélago](ARQUIPELAGO-REGIOES.md).
+A opção **Modos de jogo (M) → Mapa do Arquipélago** reúne a escolha de caçadas numa janela náutica com água animada. O fluxo atual, atualizado em 19/10/2026, está documentado em [Regiões e detalhes do Arquipélago](ARQUIPELAGO-REGIOES.md).
 
 **East Blue** abre por padrão e apresenta oito ilhas de Nv. 1–10 a Nv. 71–80. **Alabasta** permanece bloqueada. Clicar em uma ilha abre seus detalhes; a viagem exige o botão próprio. Ilha Dawn (`beach`, entrada Nv. 1) e Cidade das Conchas (`swamp`, entrada Nv. 8) usam os dois cenários existentes. As seis demais ilhas são inspecionáveis, com viagem bloqueada. Os nomes antigos eram Ruínas de Brasas e Fenda da Névoa; IDs e saves continuam compatíveis.
 
-O ícone, tecla M, botão de viagem e NPC de expedição convergem para a mesma janela. Referências internas antigas a `hunts` são normalizadas para `map`. A água é parte da interface, sem personagem caminhando nela. A lista substitui a disposição anterior de seis navios em círculo para acomodar regiões e detalhes.
+O botão M, tecla M, botão de viagem e NPC de expedição convergem para a lista **Modos de jogo**. O Arquipélago abre por seleção explícita; Impel Down possui entrada independente, sem aparecer dentro do mapa. Referências internas antigas a `hunts` são normalizadas para `modes`. A água é parte da interface, sem personagem caminhando nela. A lista substitui a disposição anterior de seis navios em círculo para acomodar regiões e detalhes.
 
-O menu mantém **seis botões por ícone**: Inventário, Forja, Personagem, Mapa, Contratos e Ajuda. Os nomes aparecem por hover/foco, com nomes acessíveis e atalhos. Não há hambúrguer ou botão de expansão nesta etapa. A preferência antiga `menuExpanded` pode permanecer no save, sem alterar a HUD atual.
+O menu mantém **seis botões por ícone**: Inventário, Forja, Personagem, Modos de jogo, Contratos e Ajuda. Os nomes aparecem por hover/foco, com nomes acessíveis e atalhos. Não há hambúrguer ou botão de expansão nesta etapa. A preferência antiga `menuExpanded` pode permanecer no save, sem alterar a HUD atual.
 
 ## Fontes
 

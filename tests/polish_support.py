@@ -21,5 +21,7 @@ def fixture(template):
     g['inventory']=[{'id':f'bag-{i}','def':i%33,'level':2 if i==1 else 1,'plus':0,'locked':i==7,'obtainedAt':i+10,'origin':'Expedição às Ruínas de Brasa'} for i in range(40)]
     g['stats']['crab']=6;g['claimed']=[]
     return g
-def panel(q,key):q.locator('.bottom-nav [data-panel="'+key+'"]').click()
+def panel(q,key):
+    q.locator('.bottom-nav [data-panel="'+('modes' if key in ['map','prison'] else key)+'"]').click()
+    if key in ['map','prison']:q.locator('[data-mode="'+key+'"]').click()
 def close(q):q.locator('[data-close-panel]' if q.locator('#panelOverlay.inventory-mode').count() else '#closePanel').click()

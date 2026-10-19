@@ -2042,54 +2042,63 @@ button {
  .voyage-region-tabs [role=tab] {padding:8px 12px;font-size:12px;}
  #dungeonName {font-size:23px;}
 }
-/* Prison preview: iron cells, brass signage, no active entrance. */
-.prison-window {background:#11242d;color:#bdd0cd;padding:22px;}
-.prison-masthead {display:flex;justify-content:space-between;align-items:center;gap:20px;padding:0 0 22px;border-bottom:1px solid #826e4f;}
-.prison-masthead h2 {margin:0 0 7px;font:700 28px var(--ui-title);color:#efdab0;}
-.prison-masthead p,.prison-floors>p,.prison-milestones>p {margin:0;font:12px/1.7 var(--ui-title);}
-.prison-seal {float:left;display:grid;place-items:center;width:56px;height:65px;margin-right:15px;border:2px solid #876c48;background:repeating-linear-gradient(90deg,#192d35 0 9px,#34464a 9px 12px);font:28px Georgia;color:#dcc18b;}
-.prison-unavailable {padding:9px 12px;border:1px solid #b47a51;background:#4d3529;color:#efd0a5;font:700 11px/1.5 var(--ui-title);white-space:nowrap;}
-.prison-layout {display:grid;grid-template-columns:minmax(0,1.6fr) minmax(270px,1fr);gap:22px;margin-top:22px;align-items:start;}
-.prison-window h3 {margin:0 0 8px;font:700 18px var(--ui-title);color:#e4c991;}
-.prison-floor-grid {display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;margin:17px 0;}
-.prison-floor-grid button {display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:46px;padding:3px;border:1px solid #56656a;background:linear-gradient(#283c44,#1a2c35);color:#b8c8c8;font:700 13px var(--ui-title);border-radius:2px;}
-.prison-floor-grid small {font:9px var(--ui-title);line-height:1.2;color:#778a8e;}
-.prison-floor-grid .is-milestone {border-color:#a18150;}.prison-floor-grid .is-milestone small {color:#daba78;}
-.prison-floor-grid button:hover,.prison-floor-grid button:focus-visible,.prison-floor-grid button[aria-pressed=true] {background:#614a30;border-color:#eac98b;color:#ffe6b4;}
-.prison-floors .prison-grid-key {font-size:10px;color:#cdb584;}
-.prison-details {padding:18px;border:1px solid #6c7166;background:#0c202a;}
-.prison-details>.dungeon-back {display:none;}.prison-details>small {display:block;color:#adc2c2;font-size:10px;margin-bottom:6px;}
-.prison-details>p {font:11px/1.7 var(--ui-title);}
-#prisonFloorTitle {font-size:26px;margin:0 0 15px;}
-.prison-scaling {display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px;padding:12px;border:1px solid #89714c;background:#3e362b;color:#d6c6a6;font:11px var(--ui-title);}
-.prison-scaling strong {grid-column:2;grid-row:1/3;color:#f6d298;font:700 30px var(--ui-title);}
-.prison-scaling small {grid-column:1;color:#bfb39e;font-size:10px;}
-.prison-reward {margin:16px 0 8px;padding:12px;border-left:2px solid #b39050;background:#20343b;min-height:90px;}
-.prison-reward img {width:48px;height:48px;float:left;margin:0 9px 5px 0;image-rendering:pixelated;}
-.prison-reward h4 {margin:0 0 6px;color:#e0c58d;font:700 12px var(--ui-title);}
-.prison-reward p {margin:0 0 5px;font:11px/1.6 var(--ui-title);}
-.prison-reward small {font:10px/1.5 var(--ui-title);color:#9db5b7;}
-.prison-enter {width:100%;font-size:11px;}
-.prison-exclusive {font-size:10px!important;color:#aabbb9;}
-.prison-scaling-table,.prison-milestones {border-top:1px solid #546158;margin-top:22px;padding-top:18px;}
-.prison-scaling-table>div,.prison-milestones>div {display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:7px;margin-top:12px;}
-.prison-scaling-table span {display:flex;flex-direction:column;gap:7px;text-align:center;padding:10px 4px;background:#23363e;font:12px var(--ui-title);}
-.prison-scaling-table small {color:#b4c3bd;font-size:10px;}.prison-scaling-table b {color:#efc58a;}
-.prison-milestones>div {grid-template-columns:repeat(5,minmax(0,1fr));}
-.prison-milestones span {display:flex;flex-direction:column;gap:7px;padding:10px;background:#22353b;border:1px solid #74674c;font:11px var(--ui-title);}
-.prison-milestones small {font-size:10px;}.prison-milestones em {font-size:9px;font-style:normal;color:#b99c6b;}
+/* Mode picker: compact icon-and-text rows anchored under the top HUD. */
+#panelOverlay.modes-mode {align-items:flex-start;justify-content:flex-end;padding:78px 20px 20px;background:#020b1370;backdrop-filter:none;}
+#panelOverlay.modes-mode .dialog {width:340px;max-width:calc(100vw - 24px);}
+#panelOverlay.modes-mode .dialog-header {padding:13px 14px!important;min-height:62px!important;flex-shrink:0;}
+#panelOverlay.modes-mode .dialog-header h2 {font-size:20px!important;}
+#panelOverlay.modes-mode .dialog-body {padding:7px!important;}
+.game-modes-list {display:flex;flex-direction:column;gap:4px;}
+.game-modes-list button {display:flex;align-items:center;gap:17px;width:100%;padding:17px 13px;border:1px solid transparent;background:#10232d;text-align:left;color:#ead8b5;font:700 17px var(--ui-title);}
+.game-modes-list button:hover,.game-modes-list button:focus-visible {border-color:#b3955e;background:#28414a;}
+.game-modes-list img {width:42px;height:42px;image-rendering:pixelated;object-fit:contain;}
+.game-modes-list span {display:flex;flex-direction:column;gap:7px;}.game-modes-list small {color:#b0c2c2;font:11px/1.4 var(--ui-title);}
+.navigation-back {margin:12px 16px;}
+/* Prison phase selection: navigation, roster, first clear and ascent/milestones. */
+.prison-window {padding:20px;background:#10232c;color:#b8c9c8;}
+.prison-window>.dungeon-back {margin:0 0 15px;}
+.prison-window h3 {margin:0 0 12px;font:700 16px var(--ui-title);color:#e5d1a6;}
+.prison-window p {font:12px/1.7 var(--ui-title);}
+.prison-masthead {display:flex;align-items:center;gap:16px;padding:17px;border:1px solid #8c7653;background:linear-gradient(110deg,#263c42,#142b35);}
+.prison-mode-art {width:60px;height:60px;image-rendering:pixelated;flex-shrink:0;}
+.prison-masthead>div:first-of-type {flex:1;min-width:0;}.prison-masthead h2 {margin:0 0 5px;font:700 25px var(--ui-title);color:#efdcaf;}
+.prison-masthead p {margin:0;max-width:600px;}.prison-summary {display:flex;flex-direction:column;gap:10px;text-align:right;font:11px/1.5 var(--ui-title);color:#b8c9c8;}
+.prison-summary strong {color:#edcf93;}.prison-summary>span:last-child {color:#d5af7b;font-size:10px;}
+.prison-stage-panel,.prison-monsters-panel,.prison-first-clear,.prison-rules,.prison-ascent,.prison-milestones {margin-top:17px;padding:19px;border:1px solid #647578;background:#10232bd9;}
+.prison-floor-navigation {display:flex;align-items:center;justify-content:space-between;gap:20px;}
+.prison-floor-selector {display:flex;align-items:center;gap:8px;}.prison-floor-selector>div {min-width:160px;text-align:center;}
+.prison-floor-selector small {font:10px var(--ui-title);color:#acbebe;}
+#prisonFloorTitle {margin:3px 0 0;font:700 25px var(--ui-title);color:#f0dfb8;}
+.prison-floor-selector button {width:36px;height:42px;border:1px solid #a08558;background:#203843;color:#e5c890;}
+.prison-floor-selector button:disabled {opacity:.35;cursor:default;}
+.prison-entry {text-align:right;}.prison-entry .prison-enter {width:auto;min-width:235px;margin:0;font-size:12px;}
+.prison-entry>small {display:block;margin-top:7px;font:10px var(--ui-title);color:#cba576;}
+.prison-phase-facts {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:20px;}
+.prison-phase-facts>div {padding:9px 12px;border:1px solid #4b6066;background:#0d1d26;}.prison-phase-facts span {display:block;font:10px var(--ui-title);color:#aebfc0;}
+.prison-phase-facts strong {display:block;margin-top:5px;font:700 18px var(--ui-title);color:#e6d6b4;}
+.prison-section-heading {display:flex;align-items:center;justify-content:space-between;gap:12px;}.prison-section-heading h3 {margin:0;}.prison-section-heading>span {font:11px var(--ui-title);}
+.prison-planned-note {font-size:10px!important;margin:8px 0 16px;color:#93aaa9;}
+.prison-monster-cards {display:flex;flex-wrap:wrap;gap:14px;}
+.prison-monster-card {position:relative;width:190px;padding:17px 12px;border:1px solid #6e7c75;background:#0a1d26;text-align:center;}
+.prison-monster-card>img {display:block;width:90px;height:100px;margin:0 auto 9px;object-fit:contain;image-rendering:pixelated;}
+.prison-monster-count {position:absolute;right:10px;top:9px;font:700 14px var(--ui-title);color:#e9d3a7;}
+.prison-monster-card h4 {margin:0 0 5px;font:700 14px var(--ui-title);color:#efdeba;}.prison-monster-card>span:not(.prison-monster-count) {font-size:11px;}
+.prison-monster-card dl {margin:15px 0 0;font:11px var(--ui-title);}.prison-monster-card dl>div {display:flex;justify-content:space-between;padding:4px 0;}.prison-monster-card dd {margin:0;color:#e7bf8b;font-weight:700;}
+.prison-bottom-panels {display:grid;grid-template-columns:1fr 1fr;gap:16px;align-items:start;}.prison-bottom-panels>div {min-width:0;}
+.prison-first-reward {display:flex;align-items:center;gap:12px;font:700 13px var(--ui-title);color:#e1cb9a;}.prison-first-reward img {width:35px;height:35px;image-rendering:pixelated;}.prison-first-reward small {display:block;margin-top:5px;font:10px var(--ui-title);color:#acbebe;}
+.prison-rules ul {padding-left:17px;margin:0;font:12px/1.9 var(--ui-title);}
+.prison-ascent label {display:flex;align-items:center;gap:10px;padding:10px 0;font:12px/1.5 var(--ui-title);cursor:pointer;}
+.prison-ascent input {appearance:none;position:relative;flex-shrink:0;width:34px;height:20px;border:1px solid #72827b;border-radius:2px;background:#091a23;cursor:pointer;}.prison-ascent input:before {content:'';position:absolute;left:3px;top:3px;width:12px;height:12px;background:#80928e;}.prison-ascent input:checked {background:#6a5635;border-color:#d4b576;}.prison-ascent input:checked:before {left:17px;background:#f1d99d;}
+.prison-ascent p {font-size:10px;color:#b39f7c;}
+.prison-milestones>div {display:flex;flex-direction:column;gap:0;}
+.prison-milestones article {padding:12px 0;border-top:1px solid #465c60;}.prison-milestones article>div {display:flex;justify-content:space-between;align-items:center;gap:12px;font:12px var(--ui-title);}.prison-milestones small {font-size:10px;color:#a7b8b6;}.prison-milestones article p {display:flex;align-items:center;gap:8px;margin:7px 0 0;font-size:11px;color:#d4c09b;}.prison-milestones img {width:25px;height:25px;image-rendering:pixelated;}
 @media(max-width:760px){
- .prison-window {padding:15px;}
- .prison-masthead {display:block;}.prison-masthead h2 {font-size:24px;}
- .prison-seal {width:43px;height:56px;margin-right:11px;}
- .prison-unavailable {display:inline-block;margin-top:15px;white-space:normal;}
- .prison-layout {grid-template-columns:1fr;gap:0;margin-top:18px;}
- .prison-floor-grid {grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;}
- .prison-floor-grid button {min-height:45px;}
- .prison-details {display:none;padding:14px;}
- .prison-details>.dungeon-back {display:block;margin-bottom:17px;}
- .prison-window.is-inspecting .prison-details {display:block;}
- .prison-window.is-inspecting .prison-floors {display:none;}
- .prison-scaling-table>div {grid-template-columns:repeat(5,minmax(0,1fr));}
- .prison-milestones>div {grid-template-columns:repeat(2,minmax(0,1fr));}
+ #panelOverlay.modes-mode {padding:82px 12px 12px;}
+ .prison-window {padding:12px;}.prison-masthead {flex-wrap:wrap;padding:12px;gap:10px;}.prison-mode-art {width:42px;height:48px;}.prison-masthead h2 {font-size:21px;}.prison-summary {width:100%;text-align:left;flex-direction:row;justify-content:space-between;gap:8px;}
+ .prison-stage-panel,.prison-monsters-panel,.prison-first-clear,.prison-rules,.prison-ascent,.prison-milestones {padding:12px;}
+ .prison-floor-navigation {flex-direction:column;gap:15px;}.prison-entry {width:100%;text-align:center;}.prison-entry .prison-enter {min-width:0;width:100%;}.prison-floor-selector>div {min-width:130px;}
+ .prison-phase-facts {gap:6px;}.prison-phase-facts>div {padding:8px;}.prison-phase-facts span {font-size:9px;}.prison-phase-facts strong {font-size:16px;}
+ .prison-section-heading {align-items:flex-start;flex-direction:column;gap:5px;}.prison-section-heading h3 {font-size:16px;}
+ .prison-monster-cards {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}.prison-monster-card {width:auto;padding:14px 7px;}.prison-monster-card>img {width:72px;height:88px;}.prison-monster-card h4 {font-size:12px;}
+ .prison-bottom-panels {grid-template-columns:1fr;gap:0;}
 }
