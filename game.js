@@ -46,6 +46,7 @@
     nav.follow(entity,route.path,speed,Math.min(dt,Math.max(1,dist-range)/speed));return true;
   }
   function moveManually(dt){
+    if(world.hero.talentControl?.remaining>0)return false;
     if(currentPanel||!$('startOverlay').classList.contains('hidden'))return false;
     if(bentoController()?.locked())return false;
     const dx=Number(keys.has('d')||keys.has('arrowright'))-Number(keys.has('a')||keys.has('arrowleft'));
@@ -185,6 +186,7 @@
   let selectedClass = 'sword', selectedFaction = 'pirate', editingCharacter = false, currentPanel = null, selectedItem = null, forgeSlot = 'weapon', lastTime = 0, renderUIClock = 0, saveClock = 0, tickClock = 0;
   let autoPlay = true, autoSkills = true, reducedFX = false;
   let attributeDraft=MareCharacters.empty(),attributeQuantity=1,allocationMessage="";
+  let characterTab=null,talentDraft=null,selectedTalent=null,talentMessage='',talentDraftSeq=0;
   const forgeUI={tab:'upgrade',itemId:null,pearlItemId:'',socket:0,fusionId:'pearl_for_1',fusionMode:'equipment',fusionIds:Array(5).fill(null),pearlFusionIds:Array(5).fill(null),pearlFilters:{},outputSlot:'weapon',reforgeMode:'line',filters:{},page:0,list:false};
   let forgeOutcome=null,forgeFusionStamp='';
   let inventoryFeedback=null,attributeSuccessUntil=0,forgeFeedback=null,rewardBuffer=null,rewardTimer=null;
@@ -211,7 +213,7 @@
   const seeded = (x,y,extra=0) => { let n = Math.sin(x*127.1+y*311.7+extra*39.81)*43758.5453; return n-Math.floor(n); };
   function newItem(def,level=1,rolled=false){
     const item={id:'it'+Date.now().toString(36)+(world.nextID++).toString(36),def:itemDefs.indexOf(def),level:Math.max(1,level),plus:0,locked:false,obtainedAt:Date.now()};
-    if(def.kind==='pearl')item.pearlId=def.pearlId;else item.rarity=rolled?MareForge.rollRarity(Math.random):def.rarity;
+    if(def.kind==='pearl')item.pearlId=def.pearlId;else item.rarity=rolled?MareTalentCombat.rarity(Math.random,game?getDerived().rareChance:0):def.rarity;
     return MareForge.normalizeItem(item,itemDefs,Math.random);
   }
   function itemBase(item){return itemDefs[item?.def]||itemDefs[0];}
@@ -224,12 +226,12 @@
     const g={version:VERSION,name,classId:cls,factionId:selectedFaction,level:1,xp:0,gold:120,hp:0,energy:0,inventory:[],equipment:Object.fromEntries([...inventorySlotsLeft,...inventorySlotsRight].map(key=>[key,null])),potions:4,materials:3,stats:{kills:0,crab:0,bandit:0,spirit:0,boss:0,damage:0,goldEarned:0,xpEarned:0},claimed:[],area:'beach',created:Date.now(),totalPlay:0,hasSeenBoss:false,preferences:{hideItems:false}};
     Object.assign(g,MareCharacters.migrate(g),{forgeVersion:MareForge.VERSION,forgeSeq:0,forgeHistory:[]});
     g.equipment.weapon = newItem(itemDefs[initialWeapon]); g.equipment.coat = newItem(itemDefs[6]); g.inventory.push(newItem(itemDefs[8])); g.hp=getDerived(g).maxHP;g.energy=getDerived(g).maxEnergy;
-    return MarePrison.migrate(g);
+    return MareTalents.migrate(MarePrison.migrate(g));
   }
-  function getDerived(g=game) {
+  function getDerived(g=game,runtime=g===game?session?.talents:null) {
     if(!g)return{maxHP:100,maxEnergy:80,attack:0,defense:0,crit:0,speed:1,range:50,power:0};
     const gear=MareForge.aggregate(g.equipment,itemDefs);
-    return MareCharacters.derive(g,classes[g.classId],factions[g.factionId]||factions.pirate,gear);
+    return MareTalents.applyStats(MareCharacters.derive(g,classes[g.classId],factions[g.factionId]||factions.pirate,gear),g,runtime);
   }
   function xpNeeded(level){return Math.round(80+25*Math.pow(level-1,1.55));}
   function saveGame(){if(!game)return; try {localStorage.setItem(STORAGE_KEY,JSON.stringify(game));$('saveDot').style.background='#65c9bc';} catch(e) {toast('Não foi possível salvar o progresso no navegador.','danger');} }
@@ -243,7 +245,8 @@
       if(clean.attributeVersion!==2)preserveSave(localStorage.getItem(STORAGE_KEY),STORAGE_KEY+'-before-attributes-v2');
       if(clean.forgeVersion!==MareForge.VERSION)preserveSave(localStorage.getItem(STORAGE_KEY),STORAGE_KEY+'-before-forge-v3');
       if(clean.impelDown?.version!==MarePrison.VERSION)preserveSave(localStorage.getItem(STORAGE_KEY),STORAGE_KEY+'-before-impel-v1');
-      return MarePrison.migrate(MareForge.migrate(MareCharacters.migrate(clean),itemDefs));}catch(e){return null;}}
+      if(clean.talentVersion!==MareTalents.VERSION)preserveSave(localStorage.getItem(STORAGE_KEY),STORAGE_KEY+'-before-talents-v1');
+      return MareTalents.migrate(MarePrison.migrate(MareForge.migrate(MareCharacters.migrate(clean),itemDefs)));}catch(e){return null;}}
   function elapsedString(sec){let s=Math.floor(sec),m=Math.floor(s/60);return String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
   function log(text,type='normal'){let box=$('gameLog');let el=document.createElement('div');el.className='log-line '+type;let t=new Date();el.innerHTML=`<time>${String(t.getHours()).padStart(2,'0')}:${String(t.getMinutes()).padStart(2,'0')}</time>${escapeHTML(text)}`;box.prepend(el);while(box.children.length>45)box.lastChild.remove();}
   function toast(text,type='normal'){let box=$('toastContainer'),el=document.createElement('div');el.className='toast '+type;el.textContent=text;box.appendChild(el);while(box.children.length>3)box.firstElementChild.remove();setTimeout(()=>el.remove(),3500);}
@@ -258,7 +261,7 @@
       toast(parts.join(' · '),'reward reward-'+reward.rarity);
     },650);
   }
-  function initializeSession(){travelPath=[];keys.clear();rejectedTargets.clear();pursuit=new WeakMap();session={start:performance.now()/1000,elapsed:0,xp:0,gold:0,recentLoot:[],cooldowns:[0,0],guard:0,blessing:0,skillUses:[0,0],healingDone:0,respawn:0,spent:0,attackClock:0,lastHit:0,heroKOs:0,bossNotice:0};world={mobs:[],fx:[],projectiles:[],decor:[],time:0,hero:{x:scene==='lobby'?540:580,y:scene==='lobby'?338:313,facing:1,attackAnim:0,walking:0},target:null,spawnClock:0,bossCooldown:0,nextID:Math.floor(Date.now()%1000000)};Object.assign(world.hero,activeMap().spawn,{direction:'front'});camera.update(world.hero,activeMap(),0,true);if(scene==='hunt')for(let i=0;i<7;i++)spawnMob();}
+  function initializeSession(){travelPath=[];keys.clear();rejectedTargets.clear();pursuit=new WeakMap();session={talents:MareTalentCombat.create(),start:performance.now()/1000,elapsed:0,xp:0,gold:0,recentLoot:[],cooldowns:[0,0],guard:0,blessing:0,skillUses:[0,0],healingDone:0,respawn:0,spent:0,attackClock:0,lastHit:0,heroKOs:0,bossNotice:0};world={mobs:[],fx:[],projectiles:[],decor:[],time:0,hero:{x:scene==='lobby'?540:580,y:scene==='lobby'?338:313,facing:1,attackAnim:0,walking:0},target:null,spawnClock:0,bossCooldown:0,nextID:Math.floor(Date.now()%1000000)};Object.assign(world.hero,activeMap().spawn,{direction:'front'});camera.update(world.hero,activeMap(),0,true);if(scene==='hunt')for(let i=0;i<7;i++)spawnMob();}
   function startGame(){scene='lobby';initializeSession();$('startOverlay').classList.add('hidden');autoPlay=true;autoSkills=true;setAreaLabels();configureFactionVisual();applySceneHudLayout();updateUI();renderPortrait();log('Bem-vindo ao Porto das Correntes.','good');log('Converse com os NPCs ou inicie sua expedição.');saveGame();}
   function enterHunt(){if(!game)return;factionShowcase=false;document.body.classList.remove('faction-showcase-open');$('factionInspection')?.classList.add('hidden');scene='hunt';autoPlay=true;autoSkills=true;lobbyDestination=null;lobbyAction=null;initializeSession();session.attackClock=0;world.target=null;setAreaLabels();applySceneHudLayout();closePanel();updateUI();toast('Expedição iniciada: '+zones[game.area].name,'good');log('Você partiu para '+zones[game.area].name+'.','gold');saveGame();}
   function returnLobby(){if(!game)return;scene='lobby';lobbyDestination=null;lobbyAction=null;initializeSession();setAreaLabels();applySceneHudLayout();closePanel();updateUI();toast('Você retornou ao Porto das Correntes.','good');log('De volta ao porto. Seus espólios foram preservados.','good');saveGame();}
@@ -309,10 +312,10 @@
     if(dx)world.hero.facing=dx<0?-1:1;
   }
   function chooseTarget(){let monsters=livingMobs().filter(m=>(rejectedTargets.get(m.id)||0)<=world.time);if(!monsters.length)return null;return monsters.reduce((best,cur)=>!best||distance(world.hero,cur)<distance(world.hero,best)?cur:best,null);}
-  function outputDamage(m, amount, crit=false){if(!m||!m.alive)return;const damage=Math.max(1,Math.floor(amount));m.hp=Math.max(0,m.hp-damage);m.hit=.25;game.stats.damage+=damage;spawnVisual(m.x+rand(-8,8),m.y-40,String(damage),crit?'#ffcd73':'#fff5e4',crit?22:15);if(m.hp<=0)killMob(m);}
+  function outputDamage(m,amount,crit=false){if(!m||!m.alive||amount<=0)return 0;const damage=Math.min(m.hp,Math.max(1,Math.floor(amount)));m.hp=Math.max(0,m.hp-damage);m.hit=.25;game.stats.damage+=damage;spawnVisual(m.x+rand(-8,8),m.y-40,String(damage),crit?'#ffcd73':'#fff5e4',crit?22:15);if(m.hp<=0)killMob(m);return damage;}
   function heroAttack(m,mult=1,skill=null,area=false,commit=false){
     const s=getDerived();
-    if(scene!=='hunt'||!m||!m.alive||session.respawn>0||distance(world.hero,m)>s.range+(area?125:1)||!navigator().clear(world.hero,m))return false;
+    if(scene!=='hunt'||!m||!m.alive||world.hero.talentControl?.remaining>0||session.respawn>0||distance(world.hero,m)>s.range+(area?125:1)||!navigator().clear(world.hero,m))return false;
     const controller=bentoController();
     if(controller&&!commit){
       if(controller.locked())return false;
@@ -320,39 +323,48 @@
       const action=skill?'skill':'attack';
       return controller.play(action,{direction:world.hero.direction,onImpact:()=>heroAttack(m,mult,skill,area,true)});
     }
+    if(session.talents.targetId!==m.id){session.talents.targetId=m.id;session.talents.combo=0;}
     const elemental=MareCharacters.roles[game.classId].magic;
     const type=skill?.damageType||(elemental?'elemental':'physical');
     if(type==='physical'&&Math.random()>s.accuracy){spawnVisual(m.x,m.y-40,'ERROU','#cec4a6',11);return true;}
-    const crit=Math.random()<s.crit,raw=MareCharacters.damage(s,m.defense,{type,multiplier:mult,variance:rand(.90,1.12),critical:crit});
+    const rt=session.talents,prepared=MareTalentCombat.beforeHit(game,rt,{target:m,hero:world.hero,stats:s,basic:!skill,magic:type==='elemental',area,critical:Math.random()<s.crit});
+    const crit=prepared.critical,raw=prepared.trueAmount??MareCharacters.damage(s,prepared.armor,{type,multiplier:mult*prepared.multiplier,variance:rand(.90,1.12),critical:crit});
     world.hero.attackAnim=.22;
     if(skill?.element==='lightning')m.slow=4.5;
     const color=skill?.element==='fire'?'#ff995b':skill?.element==='lightning'?'#dac2ff':elemental?'#70d9f1':classes[game.classId].color;
     if(['gunner','cyborg','strategist','healer'].includes(game.classId))addProjectile(world.hero.x+world.hero.facing*13,world.hero.y-27,m.x,m.y-24,color);
     else world.fx.push({x:m.x,y:m.y-9,slash:true,life:.22,max:.22,dy:0,color});
     if(elemental)world.fx.push({x:m.x,y:m.y-10,ring:1,life:.35,max:.35,color});
-    outputDamage(m,raw,crit);if(skill)spawnVisual(world.hero.x,world.hero.y-59,skill.element==='fire'?'FOGO':skill.element==='lightning'?'RAIO':'HABILIDADE!',color,11);
+    const actual=outputDamage(m,raw,crit);
+    const passive=MareTalentCombat.afterHit(game,rt,{target:m,stats:s,basic:!skill,magic:type==='elemental',projectile:['gunner','cyborg','strategist','healer'].includes(game.classId),critical:crit,damage:actual});
+    if(passive.heal>0)restoreHero(passive.heal);
+    if(passive.gold){game.gold+=passive.gold;game.stats.goldEarned+=passive.gold;session.gold+=passive.gold;spawnVisual(m.x,m.y-60,'+'+passive.gold+' dobrões','#edcf83',11);}
+    if(passive.notice&&m.alive)spawnVisual(m.x,m.y-65,passive.notice,'#a7d5a4',10);
+    if(passive.pierce)for(const other of MareTalentCombat.piercingTargets(world.hero,m,livingMobs(),s.range+125)){if(!navigator().clear(m,other))continue;addProjectile(m.x,m.y-24,other.x,other.y-24,color);outputDamage(other,actual*.5);}
+    if(skill)spawnVisual(world.hero.x,world.hero.y-59,skill.element==='fire'?'FOGO':skill.element==='lightning'?'RAIO':'HABILIDADE!',color,11);
     return true;
   }
   function restoreHero(amount){
-    const recipient={id:'hero',hp:game.hp,maxHP:getDerived().maxHP};
+    const recipient={id:'hero',x:world.hero.x,y:world.hero.y,hp:game.hp,maxHP:getDerived().maxHP};
     const healed=MareCharacters.healRecipients([recipient],amount)[0].amount;game.hp=recipient.hp;
     if(healed>0)spawnVisual(world.hero.x,world.hero.y-59,'+'+Math.round(healed),'#88e0b3',17);
     return healed;
   }
   function useSkill(i,manual=false){
-    if(scene!=='hunt'||!game||!session||session.respawn>0)return false;
+    if(scene!=='hunt'||!game||!session||world.hero.talentControl?.remaining>0||session.respawn>0)return false;
     const controller=bentoController();if(controller?.locked())return false;
     const skill=classes[game.classId].skills[i];if(!skill)return false;
     const m=world.target?.alive?world.target:chooseTarget(),d=getDerived();
     const self=['guard','heal','blessing'].includes(skill.type);
-    if(session.cooldowns[i]>0||game.energy<skill.cost){if(manual)toast('Habilidade indisponível: cooldown ou energia.');return false;}
+    const energyCost=skill.cost*(1-d.energyEfficiency);
+    if(session.cooldowns[i]>0||game.energy<energyCost){if(manual)toast('Habilidade indisponível: cooldown ou energia.');return false;}
     if((skill.type==='heal'&&game.hp>=d.maxHP)||(skill.type==='blessing'&&session.blessing>0)){if(manual)toast('Você já está com vida cheia ou proteção ativa.');return false;}
     if(!self&&(!m||distance(world.hero,m)>d.range||!navigator().clear(world.hero,m))){if(manual)toast('Não há alvo ao alcance.');return false;}
-    game.energy-=skill.cost;session.cooldowns[i]=skill.cd*(game.factionId==='government'?.92:1);
+    game.energy-=energyCost;session.cooldowns[i]=skill.cd*(game.factionId==='government'?.92:1);
     session.skillUses=session.skillUses||[0,0];session.skillUses[i]++;
     if(skill.type==='strike')heroAttack(m,skill.multiplier,skill);
     if(skill.type==='guard'){session.guard=7;restoreHero(Math.round(d.maxHP*(game.classId==='cyborg'?.12:.18)+d.healing*.25));}
-    if(skill.type==='heal'){session.healingDone=(session.healingDone||0)+restoreHero(d.healing);}
+    if(skill.type==='heal'){const healed=restoreHero(d.healing);session.healingDone=(session.healingDone||0)+healed;const self={id:'hero',x:world.hero.x,y:world.hero.y,hp:game.hp,maxHP:d.maxHP};MareTalentCombat.chainHeal(game,[self],self,healed);}
     if(skill.type==='blessing'){session.guard=8;session.blessing=8;world.fx.push({x:world.hero.x,y:world.hero.y,ring:1,life:.7,max:.7,color:'#8ce0b5'});}
     if(skill.type==='taunt'){
       session.guard=Math.max(session.guard,4);
@@ -380,8 +392,8 @@
       if(skill.type==='guard'&&game.hp<stats.maxHP*(game.classId==='cyborg'?.85:.75)&&session.guard<=0)useSkill(i);
     }
   }
-  function gainXP(amount){let g=game;g.xp+=amount;g.stats.xpEarned+=amount;session.xp+=amount;let loops=0;while(g.xp>=xpNeeded(g.level)&&loops++<20){g.xp-=xpNeeded(g.level);g.level++;g.attributePoints=MareCharacters.earned(g.level)-MareCharacters.spent(g.attributes);let st=getDerived();g.hp=st.maxHP;g.energy=st.maxEnergy;spawnVisual(world.hero.x,world.hero.y-69,'NÍVEL '+g.level,'#e8c680',25);toast('Nível '+g.level+' alcançado! +5 pontos de atributo.','good');if(currentPanel==='character'||currentPanel==='map')renderPanel();log('Você alcançou o nível '+g.level+'.','good');if(g.level===8)toast('Nova região desbloqueada: Cidade das Conchas!','good');renderPortrait();}}
-  function killMob(m){m.alive=false;world.target=world.target===m?null:world.target;let b=monsterTypes[m.type],areaScale=game.area==='swamp'?1.75:1;let gold=Math.round(rand(...b.gold)*areaScale*(factions[game.factionId]?.gold||1)),xp=Math.round(b.xp*areaScale);game.gold+=gold;game.stats.goldEarned+=gold;session.gold+=gold;game.stats.kills++;game.stats[m.type]++;gainXP(xp);rewardNotice({gold,xp});spawnVisual(m.x,m.y-70,'+'+gold+' ✦','#e7cb87',13);world.fx.push({x:m.x,y:m.y,ring:1,life:.7,max:.7,color:'#ffdb9b'});
+  function gainXP(amount){let g=game;g.xp+=amount;g.stats.xpEarned+=amount;session.xp+=amount;let loops=0;while(g.xp>=xpNeeded(g.level)&&loops++<20){g.xp-=xpNeeded(g.level);g.level++;g.attributePoints=MareCharacters.earned(g.level)-MareCharacters.spent(g.attributes);let st=getDerived();g.hp=st.maxHP;g.energy=st.maxEnergy;spawnVisual(world.hero.x,world.hero.y-69,'NÍVEL '+g.level,'#e8c680',25);toast('Nível '+g.level+' alcançado! +5 pontos de atributo e +1 PT.','good');if(currentPanel==='character'||currentPanel==='map')renderPanel();log('Você alcançou o nível '+g.level+'.','good');if(g.level===8)toast('Nova região desbloqueada: Cidade das Conchas!','good');renderPortrait();}}
+  function killMob(m){m.alive=false;const mana=MareTalentCombat.onKill(game,session.talents,getDerived());if(mana>0){game.energy=Math.min(getDerived().maxEnergy,game.energy+mana);spawnVisual(world.hero.x,world.hero.y-56,'+'+Math.round(mana)+' ENERGIA','#8ccfef',11);}world.target=world.target===m?null:world.target;let b=monsterTypes[m.type],areaScale=game.area==='swamp'?1.75:1;let gold=Math.round(rand(...b.gold)*areaScale*(factions[game.factionId]?.gold||1)),xp=Math.round(b.xp*areaScale);game.gold+=gold;game.stats.goldEarned+=gold;session.gold+=gold;game.stats.kills++;game.stats[m.type]++;gainXP(xp);rewardNotice({gold,xp});spawnVisual(m.x,m.y-70,'+'+gold+' ✦','#e7cb87',13);world.fx.push({x:m.x,y:m.y,ring:1,life:.7,max:.7,color:'#ffdb9b'});
     if(Math.random()<.36){let mats=m.type==='boss'?4:1;game.materials+=mats;addLoot('+'+mats+' Ferro Salgado','✦');}
     if(Math.random()<(m.type==='boss'?.95:.16)&&game.inventory.length<BAG_CAPACITY){let eligible=itemDefs.filter(d=>!d.kind&&MarePrison.canDrop(d.kind||'equipment','world')&&(d.slot!=='weapon'||d.type===game.classId));let def=pick(eligible);if(m.type==='boss')def=pick(eligible.filter(d=>d.rarity!=='common'));let item=newItem(def, Math.max(1,Math.floor(game.level/5)),true);item.origin=zones[game.area].name;game.inventory.unshift(item);addLoot(def.name,def.symbol);rewardNotice({name:def.name,rarity:itemRarity(item)});}
     if(Math.random()<.095){game.potions++;addLoot('Poção de vida','♥');}
@@ -393,18 +405,25 @@
   function lootIcon(name){const index=itemDefs.findIndex(item=>item.name===name);return index>=0?itemIcon(index,name):/ferro/i.test(name)?itemIcon('material',name):/poção/i.test(name)?itemIcon('potion',name):'';}
   function usePotion(manual=false){let d=getDerived();if(!game||!session||session.respawn>0)return false;if(game.potions<=0){if(manual)toast('Você não possui poções.','danger');return false;}if(game.hp>=d.maxHP){if(manual)toast('Sua vida já está cheia.');return false;}game.potions--;let heal=Math.round(d.maxHP*.44);game.hp=Math.min(d.maxHP,game.hp+heal);spawnVisual(world.hero.x,world.hero.y-48,'+'+heal,'#8cedb3',18);return true;}
   function buyPotion(){if(!game)return;if(game.gold<35){toast('Dobrões insuficientes.','danger');return;}game.gold-=35;game.potions++;toast('Poção adicionada à bolsa.','good');saveGame();updateUI();}
-  function takeDamage(amount){
+  function takeDamage(amount,source=null,physical=true){
+    if(session.respawn>0||game.hp<=0)return;
     const d=getDerived();if(Math.random()<d.evasion){spawnVisual(world.hero.x,world.hero.y-46,'ESQUIVA','#b8a8ef',13);return;}
-    const dmg=MareCharacters.incoming(d,amount,session.guard>0,rand(.85,1.1));
-    game.hp=Math.max(0,game.hp-dmg);session.lastHit=.25;spawnVisual(world.hero.x+10,world.hero.y-36,'-'+dmg,'#ff9b94',14);
+    const raw=MareCharacters.incoming(d,amount,session.guard>0,rand(.85,1.1)),reaction=MareTalentCombat.receive(game,session.talents,{stats:d,amount:raw,physical});
+    if(reaction.parry){spawnVisual(world.hero.x,world.hero.y-60,'APAROU','#e5d6a2',13);if(source?.alive&&distance(world.hero,source)<=d.range&&navigator().clear(world.hero,source))outputDamage(source,MareCharacters.damage(d,source.defense));return;}
+    const dmg=reaction.damage;game.hp=reaction.shieldTriggered?1:Math.max(0,game.hp-dmg);session.lastHit=.25;
+    if(reaction.shieldTriggered){game.talentCooldowns.energyShieldUntil=Date.now()+90000;saveGame();spawnVisual(world.hero.x,world.hero.y-62,'ESCUDO DE ENERGIA','#8bd6f0',12);}
+    spawnVisual(world.hero.x+10,world.hero.y-36,'-'+dmg,'#ff9b94',14);
+    if(reaction.explode&&game.hp>0)for(const m of livingMobs().filter(m=>distance(world.hero,m)<=120&&navigator().clear(world.hero,m)))outputDamage(m,MareCharacters.damage({...d,elemental:d.attack},m.defense,{type:'elemental',multiplier:.6}));
     const controller=bentoController();
     if(controller){world.hero.walking=0;controller.play(game.hp<=0?'death':'hurt',{direction:world.hero.direction});}
-    if(game.hp<=0){session.respawn=4.1;session.heroKOs++;toast('Você caiu em combate. Retornando em 4 segundos.','danger');log('Derrotado em batalha. Você renascerá em breve.','danger');world.target=null;}
+    if(game.hp<=0){session.respawn=4.1;session.heroKOs++;session.talents=MareTalentCombat.create();toast('Você caiu em combate. Retornando em 4 segundos.','danger');log('Derrotado em batalha. Você renascerá em breve.','danger');world.target=null;}
   }
   function tick(dt){if(!game||!session)return;world.time+=dt;session.elapsed+=dt;game.totalPlay+=dt;session.cooldowns=session.cooldowns.map(v=>Math.max(0,v-dt));session.guard=Math.max(0,session.guard-dt);session.blessing=Math.max(0,session.blessing-dt);session.lastHit=Math.max(0,session.lastHit-dt);session.bossNotice=Math.max(0,session.bossNotice-dt);if(session.bossNotice<=0)$('bossBanner').classList.add('hidden');world.hero.attackAnim=Math.max(0,world.hero.attackAnim-dt);world.hero.walking=Math.max(0,world.hero.walking-dt);
     const combat=bentoController();
     combat?.step(dt,{moving:world.hero.walking>0,inCombat:scene==='hunt',direction:world.hero.direction});
     world.fx=world.fx.filter(f=>(f.life-=dt)>0);for(let f of world.fx)if(!f.slash&&!f.ring)f.y+=f.dy*dt;world.projectiles=world.projectiles.filter(p=>(p.progress+=dt*3.7)<1);
+    if(world.hero.talentControl)world.hero.talentControl.remaining=Math.max(0,world.hero.talentControl.remaining-dt);
+    for(const action of MareTalentCombat.tick(session.talents,dt,scene==='hunt'?livingMobs():[])){if(scene==='hunt'&&session.respawn<=0&&action.target.alive)outputDamage(action.target,action.amount);}
     const stats=getDerived();game.energy=Math.min(stats.maxEnergy,game.energy+dt*stats.energyRegen);
     if(scene==='lobby'){
       game.hp=Math.min(stats.maxHP,game.hp+dt*(stats.healthRegen+1.9));
@@ -418,13 +437,15 @@
     for(let mob of world.mobs){
       if(!mob.alive)continue;
       mob.emberElapsed=(mob.emberElapsed||0)+dt;
-      if(activeMap().id==='embers'){const dx=world.hero.x-mob.x,dy=world.hero.y-mob.y;mob.emberFacing=Math.abs(dx)>Math.abs(dy)?(dx<0?'west':'east'):(dy<0?'north':'south');}
+      const beforeX=mob.x,beforeY=mob.y;
+      if(mob.talentControl?.remaining>0)continue;
       mob.hit=Math.max(0,mob.hit-dt);mob.slow=Math.max(0,(mob.slow||0)-dt);mob.attackClock-=dt;mob.bob+=dt*2;
       if(mob.taunt)mob.taunt.remaining=Math.max(0,mob.taunt.remaining-dt);
       const reach=monsterTypes[mob.type].reach,md=distance(mob,world.hero);
-      if(mob.attackClock<=0){if(md<=reach+10&&navigator().clear(mob,world.hero)){takeDamage(mob.attack);mob.attackClock=monsterTypes[mob.type].attackSec;}else mob.attackClock=.3;}
-      if(md>reach*.75&&(md<440||mob.taunt?.remaining>0))navigateEntity(mob,world.hero,mob.speed*(mob.slow>0?.55:1)*.65,dt,reach*.75);
+      if(mob.attackClock<=0){if(md<=reach+10&&navigator().clear(mob,world.hero)){mob.emberFacing=Math.abs(world.hero.x-mob.x)>Math.abs(world.hero.y-mob.y)?(world.hero.x<mob.x?'west':'east'):(world.hero.y<mob.y?'north':'south');takeDamage(mob.attack,mob,mob.type!=='spirit');mob.attackClock=monsterTypes[mob.type].attackSec;}else mob.attackClock=.3;}
+      if(md>reach*.75&&(md<440||mob.taunt?.remaining>0))navigateEntity(mob,world.hero,mob.speed*Math.min(mob.slow>0?.55:1,mob.talentSlow?.remaining>0?1-mob.talentSlow.percent:1)*.65,dt,reach*.75);
       else if(md>=440)navigator().move(mob,Math.sin(world.time*.65+mob.bob)*dt*2,0);
+      const dx=mob.x-beforeX,dy=mob.y-beforeY;if(Math.hypot(dx,dy)>.01)mob.emberFacing=Math.abs(dx)>Math.abs(dy)?(dx<0?'west':'east'):(dy<0?'north':'south');
     }
 
     // Descartar inimigos derrotados: eles não podem bloquear novos spawns.
@@ -432,7 +453,7 @@
     if(activeMap().id==='embers'){world.mobs=world.mobs.filter(m=>m.type==='boss'||distance(m,world.hero)<900||world.target===m);}
     world.spawnClock-=dt;world.bossCooldown=Math.max(0,world.bossCooldown-dt);
     if(world.spawnClock<=0){world.spawnClock=1.8;if(livingMobs().length<7)spawnMob();let hasBoss=livingMobs().some(m=>m.type==='boss');if(!hasBoss&&(activeMap().id!=='embers'||Math.hypot(world.hero.x-MareEmber.districts.find(d=>d.id==='caldeira').x,world.hero.y-MareEmber.districts.find(d=>d.id==='caldeira').y)<550)&&world.bossCooldown<=0&&game.stats.kills>=10&&game.stats.kills>=10+game.stats.boss*15)spawnMob(true);}
-    if(!autoPlay){session.attackClock=0;return;}
+    if(!autoPlay||world.hero.talentControl?.remaining>0){session.attackClock=0;return;}
     // A transição entre cenas não pode deixar um alvo morto ou timer antigo congelar o Auto-Hunt.
     if(!Number.isFinite(session.attackClock)||session.attackClock>3)session.attackClock=0;
     let target=world.target?.alive&&world.target.hp>0?world.target:chooseTarget();world.target=target;
@@ -689,7 +710,7 @@
     const available=MareCharacters.earned(game.level)-MareCharacters.spent(game.attributes);
     const pending=MareCharacters.spent(attributeDraft),remaining=available-pending;
     const projected={...game,attributes:Object.fromEntries(MareCharacters.keys.map(k=>[k,game.attributes[k]+attributeDraft[k]]))};
-    const next=getDerived(projected);
+    const next=getDerived(projected,session?.talents);
     const stats=[['maxHP','Vida máxima'],['maxEnergy','Energia máxima'],['physical','Dano físico'],['elemental','Dano elemental'],['defense','Defesa'],['speed','Ataques por segundo'],['accuracy','Precisão'],['crit','Crítico'],['evasion','Esquiva'],['energyRegen','Energia por segundo'],['healthRegen','Vida por segundo']];
     if(['healer','brawler','cyborg'].includes(game.classId))stats.push(['healing','Potência de cura'],['protection','Redução sob proteção']);
     if(game.classId==='healer')stats.push(['regenBuff','Regeneração da bênção']);
@@ -711,9 +732,29 @@
       </section>
       <section class="character-derived"><h3>Resultado em combate</h3><p class="attribute-guide">Atual <span class="preview-key">→ Após confirmar</span></p>
         <div class="derived-list">${stats.map(([key,label])=>`<div data-derived="${key}"><span>${label}</span><b>${value(key,d[key])}${Math.abs(next[key]-d[key])>.00001?` <em>→ ${value(key,next[key])}</em>`:''}</b></div>`).join('')}</div>
-        <p class="attribute-guide">${MareCharacters.roles[game.classId].magic?'Ataques básicos e habilidades ofensivas usam dano elemental.':'Ataques e habilidades ofensivas usam dano físico.'} Equipamentos e bônus de facção já estão incluídos.</p>
+        <p class="attribute-guide">${MareCharacters.roles[game.classId].magic?'Ataques básicos e habilidades ofensivas usam dano elemental.':'Ataques e habilidades ofensivas usam dano físico.'} Equipamentos, facção e talentos confirmados já estão incluídos.</p>
       </section></div>`;
     drawCurrentPreview($('characterSprite'),155);
+  }
+  function renderCharacterHub(body){
+    $('characterTabs')?.remove();
+    $('dialogTitle').insertAdjacentHTML('afterend',`<nav class="character-tabs" id="characterTabs" aria-label="Seções do personagem">${[['status','Personagem'],['talents','Talentos']].map(([id,name])=>`<button type="button" data-character-tab="${id}" aria-pressed="${characterTab===id}">${name}</button>`).join('')}</nav>`);
+    if(characterTab==='status'){renderCharacter(body);body.insertAdjacentHTML('afterbegin','<button type="button" class="dungeon-back" data-panel="inventory">Abrir inventário e equipamentos</button>');return;}
+    if(characterTab==='talents'){
+      talentDraft=talentDraft||JSON.parse(JSON.stringify(MareTalents.buildFor(game)));
+      body.innerHTML=MareTalentUI.render({game,draft:talentDraft,selected:selectedTalent,message:talentMessage,escapeHTML,canReset:scene==='lobby'});return;
+    }
+    body.innerHTML=`<section class="character-choice"><h2>Seu aventureiro</h2><p>Escolha o que deseja consultar ou desenvolver.</p><div><button type="button" data-character-tab="status"><img src="icones_menu_pirata/png/48/personagem.png" alt=""><strong>Personagem</strong><span>Status, atributos e equipamentos</span></button><button type="button" data-character-tab="talents"><span class="talent-choice-icon" aria-hidden="true">✦</span><strong>Talentos</strong><span>${MareTalents.available(game)} PT disponíveis · ${escapeHTML(MareTalents.getTree(game.classId).name)}</span></button></div></section>`;
+  }
+  function storeTalentChange(next){
+    const derived=getDerived(next);next.hp=Math.min(next.hp,derived.maxHP);next.energy=Math.min(next.energy,derived.maxEnergy);
+    try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));}catch{talentMessage='Não foi possível salvar. Nenhum ponto foi consumido.';renderPanel();return false;}
+    game=next;updateUI();return true;
+  }
+  function confirmTalents(){
+    const result=MareTalents.commit(game,{classId:game.classId,expectedSeq:talentDraftSeq,build:talentDraft});
+    if(!result.ok){talentMessage=result.message;renderPanel();return;}
+    if(storeTalentChange(result.state)){talentDraft=JSON.parse(JSON.stringify(MareTalents.buildFor(game)));talentDraftSeq=game.talentSeq;talentMessage='Talentos aplicados. Os bônus passivos já estão ativos.';renderPanel();}
   }
   function showConfirmation(title,message,accept,acceptLabel='RECOMEÇAR',danger=true){
     if(document.querySelector('.confirmation-overlay'))return;
@@ -760,12 +801,13 @@
       <div class="prison-bottom-panels"><div><section class="prison-first-clear"><h3>Recompensa da Primeira Conquista</h3>${reward?`<div class="prison-first-reward"><img src="assets/ui/items/pearl-box-1.svg" alt=""><span>1× Caixa de Pérolas Nível 1<small>${p.claimed.includes(floor)?'Recebida':'Na primeira vitória deste andar'}</small></span></div>`:`<p>${floor<=50?'Este andar abre o próximo portão. A próxima Caixa de Pérolas chega no marco do Andar '+Math.ceil(floor/5)*5+'.':'Recompensas deste andar ainda serão definidas.'}</p>`}</section><section class="prison-rules"><h3>Regras da prisão</h3><ul><li>Vença o andar atual para liberar o seguinte.</li><li>Marcos dos andares 5 a 50 entregam uma caixa, uma única vez.</li><li>Gemas e Pérolas são exclusivas deste modo.</li><li>O modo está em pré-visualização; partidas e resgates indisponíveis.</li></ul></section></div><div><section class="prison-ascent"><h3>Configuração da Subida</h3><label><input type="checkbox" role="switch" data-prison-option="autoAdvance" ${p.options.autoAdvance?'checked':''}>Avançar automaticamente após cada vitória</label><label><input type="checkbox" role="switch" data-prison-option="pauseBeforeBoss" ${p.options.pauseBeforeBoss?'checked':''}>Pausar antes de chefes</label><p>Preferências salvas para quando o modo for liberado.</p></section><section class="prison-milestones"><h3>Marcos</h3><div>${MarePrison.milestones.map(f=>`<article data-prison-milestone="${f}"><div><b>Andar ${f}</b><small>${p.claimed.includes(f)?'Recebido':p.cleared>=f?'Pendente':'A conquistar'}</small></div><p><img src="assets/ui/items/pearl-box-1.svg" alt="">1× Caixa de Pérolas Nível 1</p></article>`).join('')}</div></section></div></div>
     </section>`;
   }
-  function renderPanel(){if(!currentPanel||!game)return;const body=$('dialogBody');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');$('panelOverlay').classList.toggle('voyage-mode',['map','prison'].includes(currentPanel));$('panelOverlay').classList.toggle('modes-mode',currentPanel==='modes');if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={inventory:'Inventário',forge:'Forja das Correntes',character:'Seu aventureiro',modes:'Modos de jogo',prison:'Impel Down',map:'Mapa do Arquipélago',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;if(currentPanel!=='map')$('voyageRegionTabs')?.remove();body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel||(b.dataset.panel==='modes'&&['map','prison'].includes(currentPanel)))));
+  function renderPanel(){if(!currentPanel||!game)return;const body=$('dialogBody');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');$('panelOverlay').classList.toggle('voyage-mode',['map','prison'].includes(currentPanel));$('panelOverlay').classList.toggle('modes-mode',currentPanel==='modes');if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={inventory:'Inventário',forge:'Forja das Correntes',character:'Personagem',modes:'Modos de jogo',prison:'Impel Down',map:'Mapa do Arquipélago',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;if(currentPanel!=='map')$('voyageRegionTabs')?.remove();body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel||(b.dataset.panel==='modes'&&['map','prison'].includes(currentPanel)))));
     if(currentPanel==='shop'){body.innerHTML=`<div class="mini-heading">MERCADOR donquixote · SUPRIMENTOS</div><div class="item-detail">${itemIcon('potion','Poção de vida')}<h3>Poção de vida</h3><p>Restaura 44% da vida máxima.<br>Preço: <strong>35 dobrões</strong><br>Seu saldo: <strong>${fmt(game.gold)}</strong></p><button class="dialog-button" data-buy-potion="1" ${game.gold<35?'disabled':''}>COMPRAR 1 POÇÃO</button></div>`;}
     if(currentPanel==='contracts'){body.innerHTML='<div class="mini-heading">CONTRATOS DO PORTO</div><div class="contracts-modal">'+questDefs.map(q=>{let n=Math.min(q.target,game.stats[q.stat]||0),done=game.claimed.includes(q.id);return `<div class="contract-modal-entry"><h3>${escapeHTML(q.title)}</h3><p>${escapeHTML(q.desc)}</p><span>${done?'CONCLUÍDO':n+' / '+q.target}</span><p class="contract-reward">Recompensa: <b>${q.gold} dobrões · ${q.xp} XP</b></p><div class="progress-track"><i style="width:${n/q.target*100}%"></i></div>${n>=q.target&&!done?`<button class="dialog-button" data-claim="${q.id}">RESGATAR · ${q.gold} DOBRÕES + ${q.xp} XP</button>`:''}</div>`;}).join('')+'</div>';}
     if(currentPanel==='inventory'){renderInventory(body);}
     if(currentPanel==='forge')renderForge(body);
-    if(currentPanel==='character')renderCharacter(body);
+    if(currentPanel!=='character')$('characterTabs')?.remove();
+    if(currentPanel==='character')renderCharacterHub(body);
     if(currentPanel==='map')renderVoyages(body);
     if(currentPanel==='modes')renderModes(body);
     if(currentPanel==='prison')renderPrison(body);
@@ -787,14 +829,15 @@
     if(panel==='map'&&currentPanel!=='map')voyageUI={region:'east-blue',selected:null};
     if(panel==='prison'&&currentPanel!=='prison')prisonFloor=Math.min(100,game.impelDown.cleared+1);
     if(panel==='inventory')inventoryUI.page=0;
-    if(panel==='character'&&currentPanel!=='character')attributeDraft=MareCharacters.empty();
+    if(panel==='character'&&currentPanel!=='character'){attributeDraft=MareCharacters.empty();characterTab=null;talentDraft=null;selectedTalent=null;talentMessage='';talentDraftSeq=game.talentSeq;}
     currentPanel=panel;$('panelOverlay').classList.remove('hidden');renderPanel();
     if(panel==='map')$('voyageRegionTabs').querySelector('[aria-selected=true]')?.focus({preventScroll:true});
+    else if(panel==='character')$('characterTabs').querySelector('button')?.focus({preventScroll:true});
     else if(navigation.includes(panel))$('dialogBody').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
   }
-  function closePanel(){const wasNavigation=['modes','map','prison'].includes(currentPanel);$('voyageRegionTabs')?.remove();attributeDraft=MareCharacters.empty();allocationMessage="";currentPanel=null;document.querySelectorAll('.bottom-nav [aria-pressed]').forEach(b=>b.setAttribute('aria-pressed','false'));$('panelOverlay').classList.add('hidden');$('panelOverlay').classList.remove('inventory-mode','character-mode','voyage-mode','modes-mode');$('inventoryHeadMeta')?.classList.add('hidden');if(wasNavigation)(mapReturnFocus?.isConnected?mapReturnFocus:$('mainMenu').querySelector('[data-panel=modes]'))?.focus({preventScroll:true});}
+  function closePanel(){$('characterTabs')?.remove();talentDraft=null;const wasNavigation=['modes','map','prison'].includes(currentPanel);$('voyageRegionTabs')?.remove();attributeDraft=MareCharacters.empty();allocationMessage="";currentPanel=null;document.querySelectorAll('.bottom-nav [aria-pressed]').forEach(b=>b.setAttribute('aria-pressed','false'));$('panelOverlay').classList.add('hidden');$('panelOverlay').classList.remove('inventory-mode','character-mode','voyage-mode','modes-mode');$('inventoryHeadMeta')?.classList.add('hidden');if(wasNavigation)(mapReturnFocus?.isConnected?mapReturnFocus:$('mainMenu').querySelector('[data-panel=modes]'))?.focus({preventScroll:true});}
   function exportSave(){saveGame();const blob=new Blob([JSON.stringify(game,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mare-partida-save.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);}
-  function importSave(file){let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);if(!classes[d.classId]||!Number.isInteger(d.level)||!d.equipment||typeof d.name!=='string')throw Error('Save inválido');if(d.level<1)throw Error('Nível inválido');preserveSave(localStorage.getItem(STORAGE_KEY),STORAGE_KEY+'-before-import');preserveSave(JSON.stringify(d),STORAGE_KEY+'-import-source');localStorage.setItem(STORAGE_KEY,JSON.stringify(MarePrison.migrate(MareForge.migrate(MareCharacters.migrate(d),itemDefs))));location.reload();}catch(err){toast('Arquivo de salvamento inválido.','danger');}};reader.readAsText(file);}
+  function importSave(file){let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);if(!classes[d.classId]||!Number.isInteger(d.level)||!d.equipment||typeof d.name!=='string')throw Error('Save inválido');if(d.level<1)throw Error('Nível inválido');preserveSave(localStorage.getItem(STORAGE_KEY),STORAGE_KEY+'-before-import');preserveSave(JSON.stringify(d),STORAGE_KEY+'-import-source');localStorage.setItem(STORAGE_KEY,JSON.stringify(MareTalents.migrate(MarePrison.migrate(MareForge.migrate(MareCharacters.migrate(d),itemDefs)))));location.reload();}catch(err){toast('Arquivo de salvamento inválido.','danger');}};reader.readAsText(file);}
 
   // Cenas 0.3: cenários originais proceduralmente desenhados e armazenados em cache.
   const sceneAtlas = {};
@@ -1250,13 +1293,13 @@ function applySceneHudLayout(){
     if(name.length<3||name.length>18){$('creationError').textContent='Use um nome de 3 a 18 caracteres.';return;}
     if(editingCharacter&&game){
       if(game.classId!==selectedClass&&game.equipment.weapon&&game.inventory.length>=BAG_CAPACITY){$('creationError').textContent='Libere um espaço na mochila para guardar sua arma atual antes de trocar a classe.';return;}
-      const changed=game.classId!==selectedClass;game.name=name;game.factionId=selectedFaction;game.classId=selectedClass;
+      const changed=game.classId!==selectedClass;if(changed){talentDraft=null;characterTab=null;}game.name=name;game.factionId=selectedFaction;game.classId=selectedClass;
       if(changed){
         const old=game.equipment.weapon;if(old)game.inventory.push(old);
         game.equipment.weapon=newItem(itemDefs[starterWeapon(selectedClass)]);
       }
       const d=getDerived();game.hp=Math.min(d.maxHP,Math.max(1,game.hp));game.energy=Math.min(d.maxEnergy,Math.max(0,game.energy));
-      session.cooldowns=[0,0];session.guard=0;session.blessing=0;toast('Facção e classe atualizadas!','good');$('startOverlay').classList.add('hidden');configureFactionVisual();renderPortrait();updateUI();saveGame();editingCharacter=false;
+      session.talents=MareTalentCombat.create();session.cooldowns=[0,0];session.guard=0;session.blessing=0;toast('Facção e classe atualizadas!','good');$('startOverlay').classList.add('hidden');configureFactionVisual();renderPortrait();updateUI();saveGame();editingCharacter=false;
     }else{game=createGame(name,selectedClass);startGame();}
   });
   $('characterName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(!$('factionStep').classList.contains('hidden'))$('nextToClass').click();else $('createCharacter').click();}});
@@ -1285,7 +1328,13 @@ function applySceneHudLayout(){
     b=e.target.closest('[data-auto-equip]');if(b){equipBest();return;}
     b=e.target.closest('[data-inv-lock]');if(b){const it=getInventoryItem(b.dataset.invLock);if(it){it.locked=!it.locked;saveGame();renderPanel();}return;}
     b=e.target.closest('[data-inv-use-potion]');if(b){if(usePotion(true)){saveGame();updateUI();renderPanel();}return;}
-    b=e.target.closest('[data-panel]');if(b){openPanel(b.dataset.panel);return;}
+    b=e.target.closest('[data-character-tab]');if(b){characterTab=b.dataset.characterTab;attributeDraft=MareCharacters.empty();talentDraft=null;selectedTalent=null;talentMessage='';talentDraftSeq=game.talentSeq;renderPanel();$('characterTabs')?.querySelector('[data-character-tab="'+characterTab+'"]')?.focus({preventScroll:true});return;}
+    b=e.target.closest('[data-talent-select]');if(b){selectedTalent=b.dataset.talentSelect;talentMessage='';renderPanel();if(matchMedia('(max-width:760px)').matches)$('dialogBody').querySelector('.talent-inspector')?.scrollIntoView({block:'nearest'});else $('dialogBody').querySelector('[data-talent-select="'+selectedTalent+'"]')?.focus({preventScroll:true});return;}
+    b=e.target.closest('[data-talent-add]');if(b&&!b.disabled){const plan=MareTalents.invest(game,talentDraft,b.dataset.talentAdd);if(plan.ok){talentDraft=plan.build;talentMessage='Prévia atualizada. Confirme para aplicar.';}else talentMessage=plan.message;renderPanel();const add=$('dialogBody').querySelector('[data-talent-add="'+b.dataset.talentAdd+'"]:not(:disabled)');add?.focus({preventScroll:true});return;}
+    if(e.target.closest('[data-talent-cancel]')){talentDraft=null;talentMessage='Prévia descartada. Seus pontos foram preservados.';renderPanel();return;}
+    if(e.target.closest('[data-talent-confirm]')){if(MareTalents.spent(talentDraft)<=MareTalents.spent(MareTalents.buildFor(game)))return;showConfirmation('Confirmar talentos?','Aplique '+(MareTalents.spent(talentDraft)-MareTalents.spent(MareTalents.buildFor(game)))+' PT na árvore de '+MareTalents.getTree(game.classId).name+'.',confirmTalents,'APLICAR TALENTOS',false);return;}
+    if(e.target.closest('[data-talent-reset]')){if(scene!=='lobby')return;showConfirmation('Redefinir talentos desta classe?','Todos os PT desta árvore voltarão a ficar disponíveis. Seus equipamentos, atributos e outras classes serão preservados.',()=>{if(scene==='lobby'&&storeTalentChange(MareTalents.reset(game))){session.talents=MareTalentCombat.create();talentDraft=null;talentDraftSeq=game.talentSeq;talentMessage='Pontos devolvidos para esta classe.';renderPanel();}},'REDEFINIR',false);return;}
+    b=e.target.closest('[data-panel]');if(b){openPanel(b.dataset.panel);if(b.id==='attributePointsHud'){characterTab='status';renderPanel();}return;}
     b=e.target.closest('[data-close-panel]');if(b){closePanel();return;}
     b=e.target.closest('[data-buy-potion]');if(b){buyPotion();renderPanel();return;}
     b=e.target.closest('[data-claim]');if(b){claimQuest(b.dataset.claim);return;}
@@ -1400,8 +1449,8 @@ function applySceneHudLayout(){
       if(currentPanel){closePanel();return;}
       ['status','expedition','chat'].forEach(k=>toggleFloating(k,false));return;
     }
-    if(['modes','map','prison'].includes(currentPanel)&&e.key==='Tab'){const items=[...$('panelOverlay').querySelectorAll('button:not(:disabled),input:not(:disabled)')].filter(b=>b.getClientRects().length);const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
-    if(['modes','map','prison'].includes(currentPanel)&&['Enter',' '].includes(e.key)&&document.activeElement?.tagName==='BUTTON')return;
+    if(['modes','map','prison','character'].includes(currentPanel)&&e.key==='Tab'){const items=[...$('panelOverlay').querySelectorAll('button:not(:disabled),input:not(:disabled)')].filter(b=>b.getClientRects().length);const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
+    if(['modes','map','prison','character'].includes(currentPanel)&&['Enter',' '].includes(e.key)&&document.activeElement?.tagName==='BUTTON')return;
     if(isTyping||!game||!session||!$('startOverlay').classList.contains('hidden'))return;
     const k=e.key.toLowerCase();
     if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)&&!currentPanel){e.preventDefault();keys.add(k);if(scene==='hunt'&&autoPlay){autoPlay=false;updateUI();}return;}
@@ -1429,7 +1478,7 @@ function applySceneHudLayout(){
   window.addEventListener('beforeunload',()=>saveGame());
   const previous=loadGame();if(previous){game=previous;let d=getDerived();game.hp=clamp(Number(game.hp)||1,0,d.maxHP);game.energy=clamp(Number(game.energy)||0,0,d.maxEnergy);startGame();toast('Bem-vindo de volta, '+game.name+'!','good');}else{$('startOverlay').classList.remove('hidden');openCreation(false);$('characterName').focus();}
   // Diagnóstico somente leitura para testes de regressão da demo local.
-  window.__mareDiagnostics=()=>({scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H},map:{id:activeMap().id,width:activeMap().width,height:activeMap().height},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):activeMap().id==='embers'?MareEmber.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,classId:game?.classId,combat:world.hero.combat?.snapshot()??null,energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,type:m.type,name:monsterName(m),skin:m.skin,district:m.district,x:m.x,y:m.y,hp:m.hp,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});
+  window.__mareDiagnostics=()=>({scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H},map:{id:activeMap().id,width:activeMap().width,height:activeMap().height},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):activeMap().id==='embers'?MareEmber.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,talents:session?.talents?MareTalentCombat.snapshot(session.talents):null,talentPoints:game?MareTalents.available(game):0,classId:game?.classId,combat:world.hero.combat?.snapshot()??null,energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,type:m.type,name:monsterName(m),skin:m.skin,district:m.district,x:m.x,y:m.y,hp:m.hp,poison:m.talentPoison?{...m.talentPoison}:null,control:m.talentControl?{...m.talentControl}:null,wear:m.talentWear?{...m.talentWear}:null,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});
   requestAnimationFrame(frame);
 })();
 

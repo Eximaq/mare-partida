@@ -2102,3 +2102,52 @@ button {
  .prison-monster-cards {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}.prison-monster-card {width:auto;padding:14px 7px;}.prison-monster-card>img {width:72px;height:88px;}.prison-monster-card h4 {font-size:12px;}
  .prison-bottom-panels {grid-template-columns:1fr;gap:0;}
 }
+/* Character hub and passive talent constellations. */
+.character-tabs {display:flex;gap:8px;margin-top:12px;}
+.character-tabs button {border:1px solid #927a4e;background:#17313b;padding:8px 20px;color:#d6c29b;font:700 13px var(--ui-title);}
+.character-tabs button[aria-pressed=true] {background:#dfc181;color:#2c281f;}
+#panelOverlay.character-mode .dialog-header {flex-shrink:0;align-items:flex-start;}
+.character-choice {padding:35px 20px;text-align:center;}
+.character-choice h2 {font:700 25px var(--ui-title);color:#ead3a1;}.character-choice p {color:#adc5c5;}
+.character-choice>div {display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:700px;margin:30px auto;}
+.character-choice button {display:flex;flex-direction:column;align-items:center;gap:14px;padding:30px 15px;border:1px solid #a38653;background:#18363e;color:#dfe7d4;}
+.character-choice button:hover {background:#29494c;border-color:#eed19a;}.character-choice img {width:55px;height:55px;image-rendering:pixelated;}
+.character-choice strong {font:700 20px var(--ui-title);color:#e9d19b;}.character-choice button>span:last-child {font:12px/1.6 var(--ui-title);color:#b2c7c3;}
+.character-choice .talent-choice-icon {display:grid;place-items:center;width:55px;height:55px;font:45px Georgia;color:#d1b274;}
+.talent-window {color:#b5ccca;}
+.talent-heading {display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px;padding-bottom:15px;border-bottom:1px solid #7a7459;}
+.talent-heading small {font:11px var(--ui-title);color:#adbaad;}.talent-heading h2 {margin:6px 0;font:700 25px var(--ui-title);color:#edd7a7;}.talent-heading p {margin:0;font:12px/1.6 var(--ui-title);}
+.talent-budget {display:flex;flex-direction:column;gap:7px;text-align:right;}.talent-budget strong {font:700 26px var(--ui-title);color:#eed5a1;}.talent-budget span {font:11px/1.6 var(--ui-title);}
+.talent-workspace {display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:22px;align-items:start;}
+.talent-tree {min-width:0;padding:16px;background:radial-gradient(ellipse at 50% 40%,#33534d55,transparent 65%),#0d2630;border:1px solid #59716d;}
+.talent-branches {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;}
+.talent-branch {min-width:0;position:relative;}.talent-branch h3 {height:40px;display:grid;place-items:center;margin:0 0 5px;font:700 13px var(--ui-title);text-align:center;color:#bdbba1;}
+.talent-branch.is-invested h3 {color:#f2d292;}
+.talent-node {position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:100%;min-height:87px;padding:8px 5px;margin:17px 0;border:1px solid #667b75;background:#142d35;color:#a8b9b4;}
+.talent-node:before {content:'';position:absolute;left:50%;top:-18px;width:1px;height:17px;background:#6b7a6b;}
+.talent-node>span {font:23px Georgia;color:#a7c1b2;}.talent-node strong {font:700 11px/1.4 var(--ui-title);text-align:center;}.talent-node small {font:10px var(--ui-title);}
+.talent-node.is-trained {background:#2b4e4a;border-color:#c0ac6b;color:#ead7a9;}.talent-node.is-trained>span {color:#eed49b;}
+.talent-node.is-selected,.talent-node:hover {outline:2px solid #dabb78;outline-offset:2px;}
+.talent-keystone-core {margin:6px -3px 22px;padding:17px 8px 20px;border-top:1px solid #a58b56;border-bottom:1px solid #a58b56;text-align:center;background:#4b3b2525;}
+.talent-keystone-core h3 {margin:0 0 8px;font:700 15px var(--ui-title);color:#e5c991;}.talent-keystone-core p {font:10px/1.6 var(--ui-title);margin:0 0 13px;}
+.talent-keystone-core>div {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;}
+.talent-keystone {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;padding:12px 6px;min-height:126px;border:1px solid #97845e;background:#2e352f;color:#d7c6a3;}
+.talent-keystone>span {font:35px Georgia;color:#c4aa71;}.talent-keystone strong {font:700 11px/1.5 var(--ui-title);}.talent-keystone small {font:9px/1.4 var(--ui-title);}
+.talent-keystone.is-chosen {background:#65492b;border:2px solid #f0c974;color:#ffe7b1;}.talent-keystone.is-selected {outline:2px solid #c4d8c1;outline-offset:2px;}
+.talent-inspector {padding:18px;border:1px solid #a18b5d;background:#152e36;position:sticky;top:0;}
+.talent-inspector h3 {margin:0 0 15px;font:700 21px/1.3 var(--ui-title);color:#ead09b;}.talent-inspector p {font:12px/1.8 var(--ui-title);}.talent-inspector dl {font:11px var(--ui-title);}.talent-inspector dl>div {display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid #526761;}.talent-inspector dd {margin:0;color:#e3ce9f;text-align:right;}
+.talent-inspector .dialog-button {width:100%;font-size:11px;}.talent-message {color:#ddc58e;}.talent-reason {color:#e6ad8b;}.talent-solo-note {font-size:10px!important;color:#9fbab8;border-top:1px solid #60736a;padding-top:13px;}
+.talent-actions {display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;padding:15px 0;border-top:1px solid #807750;}
+.talent-actions>span {flex:1;font:11px/1.5 var(--ui-title);}.talent-actions .dialog-button {font-size:10px;margin:0;}.talent-reset {font-size:10px;background:transparent;border:0;text-decoration:underline;color:#beaa83;}
+@media(max-width:760px){
+ .character-choice {padding:15px 0;}.character-choice>div {grid-template-columns:1fr;gap:12px;margin:20px 0;}.character-choice button {padding:20px;}
+ .character-tabs button {padding:7px 15px;font-size:12px;}
+ .talent-heading {align-items:flex-start;gap:10px;}.talent-heading h2 {font-size:21px;}.talent-budget strong {font-size:23px;}.talent-budget span {font-size:9px;}
+ .talent-workspace {grid-template-columns:1fr;gap:15px;}.talent-tree {padding:10px;}.talent-branches {gap:9px;}.talent-branch h3 {font-size:10px;height:45px;}
+ .talent-node {min-height:90px;}.talent-node strong {font-size:9px;}.talent-node small {font-size:9px;}.talent-node>span {font-size:21px;}
+ .talent-keystone-core {padding:14px 0;}.talent-keystone-core>div {gap:7px;}.talent-keystone {padding:8px 3px;min-height:135px;}.talent-keystone strong {font-size:9px;}.talent-keystone small {font-size:8px;}
+ .talent-inspector {position:static;}.talent-actions {gap:9px;}.talent-actions>span {flex-basis:100%;}.talent-actions .dialog-button {font-size:9px;padding:10px;}
+}
+
+.talent-node.is-locked:not(.is-trained) {border-style:dashed;opacity:.7;}
+.talent-keystone.is-locked:not(.is-chosen) {opacity:.65;}

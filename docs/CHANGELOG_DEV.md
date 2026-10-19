@@ -1,5 +1,14 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Árvores de Talentos das sete classes
+
+- Personagem passa a apresentar seleção entre status e Talentos, com árvore responsiva e inspeção dos efeitos.
+- 1 PT por nível, builds independentes, dois ramos simultâneos, cinco tiers e escolha única entre três exclusivos por classe.
+- Integração passiva com dano, precisão, crítico, veneno, controle, quebra de defesa, abates, energia, escudo letal, contra-ataque e drops; efeitos secundários sem recursão.
+- Prévia e confirmação atômica, recarga persistida, migração idempotente com backup e reset no porto. Inventário, equipamentos, atributos e exclusividade dos drops preservados.
+- Suporte usa somente destinatários reais; a versão permanece solo, sem grupo fictício. Contratos de cura em corrente e controle preparados para a integração futura.
+- Arquitetura, parâmetros iniciais e limitações em docs/TALENTOS.md. Nenhuma geração paga.
+
 ## 19/10/2026 — Modos de jogo e rework da seleção de fases
 
 - M/HUD, NPC e comandos de viagem abrem lista de modos com ícone + texto. Arquipélago e Impel Down independentes; removida a aba da prisão do mapa.
