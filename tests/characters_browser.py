@@ -21,7 +21,7 @@ with sync_playwright() as p:
         if seed:
             context.add_init_script("if(!sessionStorage.getItem('seeded')){localStorage.setItem("+json.dumps(KEY)+","+json.dumps(json.dumps(seed))+");sessionStorage.setItem('seeded','1');}")
         page=context.new_page();page.route('**/__dev_version',lambda route:route.fulfill(body='stable-test'));page.on('pageerror',lambda e:errors.append(str(e)))
-        page.clock.install();page.goto('http://127.0.0.1:8123/');page.wait_for_load_state('networkidle')
+        page.clock.install();page.goto('http://127.0.0.1:8123/');page.wait_for_load_state('networkidle');page.wait_for_function('typeof __mareDiagnostics==="function"')
         return context,page
     def diag(page):return page.evaluate('window.__mareDiagnostics()')
     def saved(page):return json.loads(page.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
@@ -32,7 +32,7 @@ with sync_playwright() as p:
         page.locator('#characterName').fill('Navegante '+cls[:5])
         page.locator('#nextToClass').click();page.locator('[data-class="'+cls+'"]').click();page.locator('#createCharacter').click()
         page.clock.run_for(150)
-        first=diag(page);assert first['classId']==cls and first['attributePoints']==0
+        first=diag(page);assert first['classId']==cls and first['attributePoints']==0 and first['talentPoints']==1
         initial_save=saved(page)
         if cls=='sword':template=initial_save
         page.locator('#enterHunt').click();page.locator('[data-mode=map]').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click()
@@ -45,6 +45,7 @@ with sync_playwright() as p:
         assert d['kills']>=1 and d['damage']>0,(cls,d)
         assert d['level']>=2 and d['attributePoints']==5*(d['level']-1),(cls,d)
         assert d['attributes']=={k:0 for k in d['attributes']}
+        assert d['talentPoints']==d['level']
         if cls=='strategist':assert d['skillUses'][0]>0
         if cls=='cyborg':assert sum(d['skillUses'])>0
         page.screenshot(path=str(OUT/(cls+'-combat.png')))
@@ -82,7 +83,7 @@ with sync_playwright() as p:
     for field in ['level','xp','gold','inventory','equipment','materials','factionId','stats']:
         assert committed[field]==legacy[field],field
     for _ in range(3):
-        page.reload();page.wait_for_load_state('networkidle');page.clock.run_for(100)
+        page.reload();page.wait_for_load_state('networkidle');page.wait_for_function('typeof __mareDiagnostics==="function"');page.clock.run_for(100)
         assert diag(page)['attributePoints']==0 and diag(page)['attributes']==after['attributes']
     record('legacy_preview_confirm_reload','Original save backed up; all five stats preview, reset, remove and confirm; progress/items retained, no duplicate points across three reloads.')
     for width,height in [(1366,768),(1920,1080),(390,844)]:
@@ -109,7 +110,13 @@ with sync_playwright() as p:
     page.locator('#attributePointsHud').click();page.locator('#healThreshold').select_option('0.8')
     assert saved(page)['preferences']['healThreshold']==.8
     page.locator('#closePanel').click();page.locator('#enterHunt').click();page.locator('[data-mode=map]').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click();page.clock.run_for(100)
-    d=diag(page)
+    # Travel restores HP/energy. Pause attacks until real enemies injure the healer.
+    page.locator('#autoToggle').click()
+    for _ in range(120):
+        page.clock.run_for(1000);d=diag(page)
+        if 0<d['hp']<d['stats']['maxHP']*.6:break
+    assert 0<d['hp']<d['stats']['maxHP']*.6
+    page.locator('#autoToggle').click();page.clock.run_for(100);d=diag(page)
     assert d['healingDone']>0 and d['hp']>20 and d['cooldowns'][0]>0 and d['energy']<d['stats']['maxEnergy']
     assert d['guard']>0 and d['skillUses'][1]>0
     count=d['skillUses'][0];page.clock.run_for(100);assert diag(page)['skillUses'][0]==count

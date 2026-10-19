@@ -8,7 +8,15 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Menu de modos e seleção de fases
+## Entrega atual — Árvores de Talentos
+
+O menu **Personagem** agora abre a seleção **Personagem / Talentos**. Cada uma das sete classes tem três ramos com cinco tiers, limite de dois ramos investidos e três talentos exclusivos dos quais apenas um pode ser escolhido. O jogador recebe 1 PT por nível, incluindo o primeiro, separado dos pontos de atributos.
+
+Investimentos usam prévia e confirmação, persistem por classe e podem ser redefinidos gratuitamente no porto. Os bônus e exclusivos entram nos gatilhos de combate, sem botões de ativação. Saves antigos recebem o orçamento correspondente ao nível sem perder equipamentos ou progresso. O jogo permanece solo: efeitos sobre outros aliados dependem de uma futura integração de grupos reais; a aura já beneficia o próprio suporte.
+
+[Regras, valores dos 21 exclusivos, arquitetura e limites](docs/TALENTOS.md).
+
+## Histórico — Menu de modos e seleção de fases
 
 **M** e o botão da HUD agora abrem **Modos de jogo**, uma lista suspensa com ícones e texto. Escolha **Mapa do Arquipélago** para viajar ou **Impel Down** para abrir sua janela própria. A entrada da prisão foi removida de dentro do mapa geográfico.
 

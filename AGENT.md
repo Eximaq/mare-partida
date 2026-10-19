@@ -74,6 +74,16 @@ Facção define identidade visual, contexto, reputação e eventuais passivos le
 - Classe influencia escala/skills/IA, facção não deve substituir habilidades.
 - Compatibilidade com save antigo: migração idempotente (executar duas vezes não concede pontos extras).
 
+### 3.4 Talentos passivos implementados
+
+- Acesso por Personagem → Talentos; preservar a seleção inicial entre status e talentos.
+- 1 PT por nível, inclusive nível 1; separado dos cinco pontos de atributos por nível a partir do 2.
+- Sete árvores independentes, três ramos por classe, máximo dois investidos; cinco tiers com dez graduações por nó e requisito de cinco pontos no nó anterior.
+- Três exclusivos por classe, escolha única por build, custo de 1 PT e requisito de 10 PT comuns. Não transformar esses passivos em botões ativos.
+- Prévia, confirmação transacional, migração e reset gratuito somente no porto. Somente a classe ativa concede bônus. Não limpar recarga do escudo ao redefinir.
+- Catálogo e regras em `talent-system.js`; gatilhos em `talent-combat.js`; UI em `talent-ui.js`. Reutilizar os contratos para aliados reais quando houver party, sem simular jogadores nem anunciar multiplayer disponível.
+- Regras e parâmetros completos em `docs/TALENTOS.md`; executar os testes específicos antes de alterar talentos ou combate.
+
 ## 4. Arte e PixelLab
 
 ### 4.1 Bíblia visual obrigatória

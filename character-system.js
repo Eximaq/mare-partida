@@ -79,7 +79,7 @@
   }
   function damage(stats,armor,{type='physical',multiplier=1,variance=1,critical=false}={}){
     const raw=(type==='elemental'?stats.elemental:stats.physical)*multiplier*variance-armor*(type==='elemental'?.15:.30);
-    return Math.max(1,Math.floor(Math.max(1,raw)*(critical?1.65:1)));
+    return Math.max(1,Math.floor(Math.max(1,raw)*(critical?(stats.critMultiplier||1.65):1)));
   }
   function incoming(stats,amount,guard=false,variance=1){
     return Math.max(1,Math.floor(amount*100/(100+stats.defense*3)*(1-stats.mitigation)*(guard?1-stats.protection:1)*variance));
