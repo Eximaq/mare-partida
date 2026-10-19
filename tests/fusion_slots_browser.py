@@ -95,7 +95,7 @@ with sync_playwright() as p:
  # Actual hunt rewards update an already-open grid without changing tabs.
  g=fixture(template);g['level']=30;g['inventory']=[];g['hp']=10000
  for item in g['equipment'].values():item.update(rarity='legendary',level=30,plus=20)
- c,q=page_for(b,g,errors=errors);q.locator('#enterHunt').click();panel(q,'forge');tab(q,'pearls');assert not q.locator('[data-forge-fusion-pearl]').count();q.evaluate('Math.random=()=>0');q.clock.run_for(30000)
+ c,q=page_for(b,g,errors=errors);q.locator('#enterHunt').click();q.locator('[data-area][data-current=true]').click();panel(q,'forge');tab(q,'pearls');assert not q.locator('[data-forge-fusion-pearl]').count();q.evaluate('Math.random=()=>0');q.clock.run_for(30000)
  assert q.evaluate('__mareDiagnostics().kills')>0;assert q.locator('[data-forge-fusion-pearl=pearl_for_1]').count()==1
  assert q.locator('[data-forge-tab=fusion]').get_attribute('aria-selected')=='true';shot(q,'live-loot-update');c.close();record('live_hunt_rewards_update_open_grid')
  assert not errors,errors;record('no_javascript_errors');b.close()

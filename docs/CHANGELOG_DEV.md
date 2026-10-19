@@ -1,5 +1,16 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Mapa de viagens por navios e menu de ícones
+
+- Unificação Mapa/Caçadas em janela de água animada, seis navios em círculo e bússola central; sem novo mapa de jogo.
+- Navios 1 e 2 usam os mapas existentes, com os requisitos Nv. 1/Nv. 8 preservados. Navios 3–6 bloqueados como Em breve.
+- Seis ícones no menu, rótulos por hover/foco, nomes acessíveis; sem hambúrguer e sem expansão que voltava a exibir textos. Preferências antigas preservadas no save, sem aplicação ao novo menu.
+- NPC/atalho M/botão de expedição convergem para Mapa; escolha faz a viagem real. Removida a duplicação com a lista antiga e o mapa local no mesmo menu.
+- Testes de integração adaptados para escolher o navio, com navegação, requisitos, destinos futuros, foco/teclado/toque, animação real/reduzida e persistência. Artes/saves/mapas preservados; nenhum consumo pago.
+- Validação: todos os testes Node/sintaxe, oito grupos de viagens (cinco resoluções + bloqueios + água em relógio real + ausência de exceções), oito da área, doze de ilha/HUD, três de inventário/atributos e pacote Pages mobile passaram.
+- Base e4e405b, branch feature/mapa-navios-menu-icones; rollback por reversão, sem migração de save.
+
+
 ## 19/10/2026 — Ruínas compactas e padrão de mapas
 
 - Redução de 64×64 para 32×32 tiles de 64px: mundo 2048×2048, metade da largura/altura, um quarto da área anterior.

@@ -12,11 +12,11 @@ with sync_playwright() as p:
         q.screenshot(path=str(out/f'lobby-{suffix}.png'))
         if phase=='after' and q.locator('#menuSizeToggle').count():
             q.locator('#menuSizeToggle').click();q.screenshot(path=str(out/f'menu-expanded-{suffix}.png'));q.locator('#menuSizeToggle').click()
-        for key in ['inventory','character','forge','contracts','help','map','hunts']:
+        for key in ['inventory','character','forge','contracts','help','map']:
             panel(q,key);q.wait_for_function("[...document.querySelectorAll('#dialogBody img')].every(i=>i.complete&&i.naturalWidth>0)");q.screenshot(path=str(out/f'{key}-{suffix}.png'));close(q)
         panel(q,'inventory');q.locator('[data-inv-category=consumables]').click();q.locator('[data-item=virtual-potion]').click();q.locator('[data-panel=shop]').click();q.screenshot(path=str(out/f'shop-{suffix}.png'));close(q)
         panel(q,'help');q.locator('[data-reset]').click();q.screenshot(path=str(out/f'confirmation-{suffix}.png'));q.locator('[data-confirm-cancel]').click();close(q)
-        q.locator('#enterHunt').click();q.clock.run_for(1200);q.screenshot(path=str(out/f'hunt-{suffix}.png'));c.close()
+        q.locator('#enterHunt').click();q.locator('[data-area][data-current=true]').click();q.clock.run_for(1200);q.screenshot(path=str(out/f'hunt-{suffix}.png'));c.close()
         c,q=page_for(b,size=size,errors=errors);q.locator('#characterName').fill('Nauta Polimento');q.screenshot(path=str(out/f'factions-{suffix}.png'));q.locator('#nextToClass').click();q.screenshot(path=str(out/f'classes-{suffix}.png'));c.close()
     assert not errors,errors;b.close()
 (out/'capture-result.json').write_text(json.dumps({'phase':phase,'sizes':SIZES,'screenshots':len(list(out.glob('*.png'))),'javascript_errors':errors},indent=2))

@@ -8,7 +8,15 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Ruínas de Brasas compacta
+## Entrega atual — Mapa de viagens e menu por ícones
+
+Mapa e Caçadas foram unificados numa janela com água animada e seis navios em círculo. Navio 1 leva a Ruínas de Brasas; navio 2 leva à Fenda da Névoa (mantido o requisito de personagem Nv. 8). Navios 3–6 ficam bloqueados como Em breve. O clique em um navio disponível inicia a caçada no mapa existente, preservando itens e progresso.
+
+Menu com seis ícones e nomes por hover/foco, sem botão de expansão ou hambúrguer. Tecla M, NPC de expedição e botão de viagem abrem a mesma janela. Teclado, toque e movimento reduzido contemplados; artes existentes, sem gerações pagas.
+
+[Regras e validação](docs/MAPA-NAVIOS.md) · [Capturas locais](http://127.0.0.1:8123/docs/evidence-voyages/index.html).
+
+## Histórico — Ruínas de Brasas compacta
 
 Ilha reorganizada em **32×32 tiles de 64px** (2048×2048px): metade da largura/altura anteriores. Três níveis com paredões e cinco escadas, ruas ligadas às oito fachadas, uma ponte real sobre a fenda de lava e sete pontos de interesse próximos. Cais, bairro queimado, estaleiro e fortaleza têm composições próprias; monstros continuam com frames **48×48**.
 

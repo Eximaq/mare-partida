@@ -50,10 +50,10 @@ with sync_playwright() as p:
         gallery['equipment'][slot]={'id':'equipped-'+slot,'def':index,'level':1,'plus':index%3,'locked':False,'obtainedAt':1}
     for size in [(1920,1080),(1366,768),(1280,720)]:
         w,h=size;c,q=page_for(gallery,size);q.screenshot(path=str(OUT/f'menu-{w}x{h}.png'))
-        assert q.locator('.bottom-nav [data-panel]').count()==7
+        assert q.locator('.bottom-nav [data-panel]').count()==6
         assert q.locator('.bottom-nav img').evaluate_all('(els)=>els.every(i=>i.complete&&i.naturalWidth>0)')
         bounds=q.locator('.bottom-nav').bounding_box();assert bounds['x']>=0 and bounds['x']+bounds['width']<=w
-        for key in ['inventory','character','forge','map','hunts','contracts','help']:
+        for key in ['inventory','character','forge','map','contracts','help']:
             panel(q,key);box=q.locator('#panelOverlay .dialog').bounding_box();assert box['x']>=0 and box['y']>=0 and box['x']+box['width']<=w+1 and box['y']+box['height']<=h+1
             assert q.locator('#dialogBody').evaluate('(el)=>el.scrollWidth<=el.clientWidth+1'),(key,size,'horizontal overflow')
             if key=='inventory':

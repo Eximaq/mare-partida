@@ -143,7 +143,7 @@ Não renomear/mover assets referenciados sem atualizar todos os manifests/import
 
 ### 6.1 Entrada na caçada
 
-No porto, jogador interage com capitã/quadro/navio ou menu -> abre **Caçadas** com região, faixa de nível, mobs, recompensa, chefe, dificuldade e requisitos -> confirma -> transição breve -> spawn na região -> auto-caçada inicia (ou respeita preferência persistida). Sair por portal ou botão, com confirmação quando apropriado; preservar XP, loot, itens e dinheiro.
+No porto ou na caçada, jogador abre **Mapa** pelo menu, tecla M ou serviço de expedição -> janela de mar animado com navios em círculo -> clicar em navio disponível leva diretamente à região e inicia a caçada existente. Navio nível 1 leva a Ruínas de Brasas (personagem Nv. 1+); navio nível 2 leva a Fenda da Névoa (personagem Nv. 8+). Nível do navio identifica o destino e não substitui o requisito do personagem. Outros navios permanecem bloqueados como Em breve até seus mapas existirem. Não manter um menu Caçadas duplicando Mapa. Sair por portal ou botão, com confirmação quando apropriado; preservar XP, loot, itens e dinheiro.
 
 ### 6.2 Idle combat de ponta a ponta
 
@@ -166,7 +166,7 @@ No porto, jogador interage com capitã/quadro/navio ou menu -> abre **Caçadas**
 
 - **Topo esquerdo:** marca pequena + retrato, nível, barras de vida/energia/XP, moeda e poder compactos.
 - **Topo centro:** inimigo selecionado e barra HP somente em combate.
-- **Topo direito:** menu único inventário, forja, personagem, mapa, caçadas, contratos e ajuda.
+- **Topo direito:** seis ícones de inventário, forja, personagem, mapa, contratos e ajuda; nomes apenas em tooltip por hover/foco, com nome acessível e suporte a toque. Sem hambúrguer nesta etapa. Considerar agrupamentos/submenus apenas quando funcionalidades futuras justificarem, mediante nova tarefa.
 - **Inferior esquerdo:** chat recolhível com canal local; chat global só quando backend real.
 - **Inferior centro:** hotbar estável com habilidades, consumíveis, poções e cooldowns.
 - **Inferior direito:** missão, eficiência e expedição em widget minimizável.
