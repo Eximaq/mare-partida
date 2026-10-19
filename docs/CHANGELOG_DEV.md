@@ -1,5 +1,16 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Ruínas compactas e padrão de mapas
+
+- Redução de 64×64 para 32×32 tiles de 64px: mundo 2048×2048, metade da largura/altura, um quarto da área anterior.
+- Composição refeita: três níveis, dois paredões com colisão, cinco escadas, oito casas com acessos à rua e uma única ponte diagonal sobre lava, necessária para chegar à fortaleza.
+- Cais/estaleiro com carga e mastros, ruínas altas com colunas, fachadas orientadas às ruas e naufrágios na água; 37 elementos de cenário. Sem novas gerações pagas.
+- Renderizador e mapa de navegação usam dimensões do modelo, sem limites 64/4096 fixos. Spawn e proximidade do chefe ajustados à escala compacta; economia, combate, saves e artes preservados.
+- AGENT.md seção 5.3 fixa 32×32 tiles/64px para mapas futuros e critérios de pontes, elevações e fachadas. Mapas legados exigem tarefa explícita para redimensionar.
+- Oito grupos Node específicos e regressões existentes; aceitação desktop/mobile, ponte/escadas, vinte derrotas, retorno/persistência e pacote Pages versionado. Evidências locais fora do Git.
+- Checkpoint: branch feature/ruinas-compactas-32, base 86b85c1; rollback por reversão do commit, sem migração de save.
+
+
 ## 19/10/2026 — Atualização de cache no GitHub Pages
 
 - O build agora adiciona hash de conteúdo aos endereços dos 13 scripts e duas folhas de estilo. Um HTML novo não reutiliza o endereço dos scripts de uma publicação antiga.

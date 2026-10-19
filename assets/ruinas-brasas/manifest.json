@@ -3,8 +3,8 @@
   "texture_mode": "native64",
   "tile_size": 64,
   "grid": [
-    64,
-    64
+    32,
+    32
   ],
   "monsters": {
     "scorched-corsair": {

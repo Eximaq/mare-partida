@@ -19,3 +19,5 @@ O orçamento reduzido adiou as animações de caminhada/ataque dos monstros. Os 
 Os PNGs fonte permanecem intactos. Contraste/iluminação e rotações dos pisos são composição em tempo de execução. Estas texturas Pixen não são um conjunto de autotiles: os contornos da costa e dos caminhos são máscaras do renderizador.
 
 Fontes e IDs das gerações: `assets/ruinas-brasas/provenance.json`. Configuração de renderização: `assets/ruinas-brasas/manifest.json`.
+
+Revisão de composição de 19/10/2026: mapa 32×32 tiles de 64px, sem reduzir as artes. Edifícios renderizados em escala 1,5; uma ponte diagonal em escala 2 alinhada ao vão e às margens. Paredões e degraus reutilizam a textura de basalto/calçamento em composição geométrica no renderizador, com colisões e passagens correspondentes. Nenhuma geração adicional.

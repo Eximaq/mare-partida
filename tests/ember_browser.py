@@ -7,7 +7,7 @@ errors=[];results=[]
 def record(name,detail=''):results.append(dict(test=name,passed=True,detail=detail));print(name+': passed',flush=True)
 def diag(q):return q.evaluate('__mareDiagnostics()')
 def physical(q):
- d=diag(q);assert d['walkable'];assert d['map']==dict(id='embers',width=4096,height=4096);c=d['camera'];assert c['x']>=0 and c['y']>=0 and c['x']+c['width']<=4096+.01 and c['y']+c['height']<=4096+.01
+ d=diag(q);assert d['walkable'];assert d['map']==dict(id='embers',width=2048,height=2048);c=d['camera'];assert c['x']>=0 and c['y']>=0 and c['x']+c['width']<=2048+.01 and c['y']+c['height']<=2048+.01
  assert q.evaluate('MareEmberRenderer.stats().chunks')<=20
  for m in d['mobs']:assert q.evaluate('([x,y])=>new MareWorld.Navigation(MareEmber.map).walkable(x,y)',[m['x'],m['y']])
  return d
@@ -23,13 +23,13 @@ def route(q,id):
  physical(q);return point
 with sync_playwright() as p:
  b=p.chromium.launch(headless=True);c,q=page_for(b,errors=errors);q.evaluate('MareEmberRenderer.boot');template=create(q);c.close()
- for size in SIZES:
+ for size in SIZES+[(393,852)]:
   suffix=f'{size[0]}x{size[1]}';g=fixture(template);g.update(level=30,hp=10000,energy=1000,gold=10000,materials=1000);g['stats']['kills']=12
   for item in g['equipment'].values():item.update(rarity='legendary',level=30,plus=20)
   c,q=page_for(b,g,size,errors);q.evaluate('MareEmberRenderer.boot');before=saved(q);q.locator('#enterHunt').click();q.locator('#autoToggle').click();q.clock.run_for(100)
   assert q.evaluate('MareEmberRenderer.stats().monsters')==4
   physical(q);q.screenshot(path=str(OUT/f'arrival-{suffix}.png'))
-  for id in ['mercado','ancoras','caldeira']:
+  for id in ['corsarios','mercado','farol','ancoras','estaleiro','caldeira']:
    route(q,id);q.screenshot(path=str(OUT/f'{id}-{suffix}.png'))
   for _ in range(8):
    if any(m['type']=='boss' for m in diag(q)['mobs']):break
@@ -46,7 +46,7 @@ with sync_playwright() as p:
   for key in ['inventory','equipment','gold','materials','level','xp','attributes']:assert after[key]==before[key],key
   q.reload();q.wait_for_load_state('networkidle');again=saved(q)
   for key in ['inventory','equipment','gold','materials','level','xp','attributes']:assert again[key]==after[key]
-  record('exploration_camera_return_'+suffix,'Real route through market, courtyard, fortress and return quay; boss at fortress; no teleport; reload preserves resources/items.');c.close()
+  record('exploration_camera_return_'+suffix,'Real walking through all seven compact districts, five stair approaches and fortress bridge; return and reload preserve resources/items.');c.close()
  # Sustained local auto-hunt: new visuals retain old reward and contract keys.
  g=fixture(template);g.update(level=20,hp=10000,energy=1000)
  for item in g['equipment'].values():item.update(rarity='legendary',level=20,plus=15)

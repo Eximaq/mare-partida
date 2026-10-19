@@ -8,15 +8,17 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Ruínas de Brasas
+## Entrega atual — Ruínas de Brasas compacta
 
-Ilha reconstruída em **64×64 tiles de 64px**, sete setores conectados, ruas, naufrágios, ruínas, travessias de lava e cais de retorno. Quatro monstros novos com **frames de 48×48**, oito poses direcionais e chefe na Fortaleza da Caldeira. Fogo em quatro frames, fluxo de água/lava, brasas e mapa com rotas caminháveis.
+Ilha reorganizada em **32×32 tiles de 64px** (2048×2048px): metade da largura/altura anteriores. Três níveis com paredões e cinco escadas, ruas ligadas às oito fachadas, uma ponte real sobre a fenda de lava e sete pontos de interesse próximos. Cais, bairro queimado, estaleiro e fortaleza têm composições próprias; monstros continuam com frames **48×48**.
 
-[Decisões, compatibilidade e validação](docs/RUINAS-BRASAS.md) · [Bíblia visual](docs/ART_BIBLE.md) · [Capturas locais](http://127.0.0.1:8123/docs/evidence-ruinas-brasas/index.html).
+[Decisões, compatibilidade e validação](docs/RUINAS-BRASAS.md) · [Bíblia visual](docs/ART_BIBLE.md) · [Capturas locais atuais](http://127.0.0.1:8123/docs/evidence-ruinas-brasas/index.html).
 
-Validação: seis grupos específicos de geometria/assets, todos os testes Node existentes, sete grupos de aceitação em Chromium (incluindo três resoluções, vinte derrotas e persistência), doze grupos de regressão da ilha/HUD. Medição local headless em 1366×768: mediana 16,7ms e p95 16,8ms entre frames, 180 amostras; não representa garantia para outros dispositivos.
+O `AGENT.md`, seção 5.3, define **32×32 tiles de 64px como padrão para todos os mapas futuros**, com exceções só por autorização explícita. Lobby e Fenda da Névoa existentes mantêm seus tamanhos. O save conserva o ID `beach`; nenhum item ou progresso é migrado.
 
-O save mantém o ID de região `beach`. Total informado: 39 gerações, dentro do teto de 45. **Animações de caminhada e ataque dos monstros foram adiadas no orçamento reduzido**; as poses atuais não são clipes animados.
+Reorganização sem novas gerações pagas. O lote artístico anterior informou 39 gerações; caminhada/ataque dos monstros seguem adiados conforme o orçamento aprovado. Água/lava têm fluxo de textura e fogueiras usam quatro quadros reais. A publicação Pages mantém scripts e CSS versionados para evitar cache antigo.
+
+Validação: oito grupos Node específicos, demais regressões Node, oito grupos de navegador nas quatro resoluções e pacote Pages mobile com cache versionado. Vinte derrotas, retorno e persistência passaram; viewport ultrawide tratada com mar ao redor do mapa.
 
 ## Histórico — Forja com seleção visual
 
