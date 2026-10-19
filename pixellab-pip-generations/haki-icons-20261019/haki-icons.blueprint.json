@@ -1,0 +1,26 @@
+[
+  {
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/haki-icons-20261019",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment_prompt": "Ícones de UI (32x32px): Armamento: Punho com textura metálica negra polida. Observação: Olho com íris vermelha brilhante e anéis de percepção. Rei: Coroa fragmentada com raios negros e vermelhos.",
+    "_comment": "Approved call included a fourth book icon for the requested consumable. Actual result failed the requested 2x2 grid: 16 standalone 64x64 alternatives. Do not claim native 32x32 assets.",
+    "MCP create_image_pro": {
+      "description": "Four distinct readable RPG icons in a precise two by two sheet, each icon fills its own 32 by 32 cell. Top left: clenched fist coated in polished black metal with silver glints. Top right: eye with a glowing crimson iris and perception rings. Bottom left: fragmented crown with black and crimson lightning. Bottom right: closed indigo book bound in silver with a luminous violet clasp. Bold single-color black outlines, low detail, limited navy crimson silver violet palette, dark miniature backgrounds, crisp pixel art, no text, no grid lines or frames.",
+      "width": 64,
+      "height": 64,
+      "no_background": false
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Fetch the returned job with get_image, download all sixteen candidate PNGs, inspect the requested cell grid. The generated files are standalone 64x64 icons. Candidates 1,2,5,6 are proposed for the four roles. A 32x32 nearest-neighbor preview was assembled only for user review; final resizing and integration require separate approval.",
+      "outputs": [
+        "candidates-inspection.png",
+        "proposed-32-preview.png"
+      ]
+    }
+  }
+]

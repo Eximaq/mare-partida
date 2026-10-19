@@ -27,5 +27,5 @@
       ctx.drawImage(coating,Math.round(hero.x-64),Math.round(hero.y-112));
     }
   }
-  root.MareHakiArt={draw,frame,iconsReady:false,stats:()=>Object.fromEntries(Object.keys(images).map(id=>[id,{loaded:!!images[id].naturalWidth,width:images[id].naturalWidth,height:images[id].naturalHeight}]))};
+  root.MareHakiArt={draw,frame,iconsReady:true,stats:()=>Object.fromEntries(Object.keys(images).map(id=>[id,{loaded:!!images[id].naturalWidth,width:images[id].naturalWidth,height:images[id].naturalHeight}]))};
 })(globalThis);

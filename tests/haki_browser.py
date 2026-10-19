@@ -10,7 +10,7 @@ def haki(q):char(q);q.locator('#characterTabs [data-character-tab=haki]').click(
 def travel(q):
  q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area]').click()
 def book(q):
- q.locator('.bottom-nav [data-panel=inventory]').click();q.locator('[data-item=will-book-test]').click();q.locator('[data-use-haki-book]').click()
+ q.locator('.bottom-nav [data-panel=inventory]').click();q.locator('[data-item=will-book-test]').click();q.wait_for_function("(()=>{const i=document.querySelector('.op-detail-wrap .haki-icon');return i&&i.complete&&i.naturalWidth===32&&i.naturalHeight===32})()");q.locator('[data-use-haki-book]').click()
 with sync_playwright() as p:
  b=p.chromium.launch(headless=True);errors=[];c,q=page_for(b,errors=errors);template=create(q);bookdef=diag(q)['hakiBookDef']
  haki(q);assert q.locator('.confirmation-overlay').is_visible();assert 'nível 50' in q.locator('#confirmationMessage').inner_text();q.locator('[data-confirm-accept]').click();assert q.locator('#miniWillpower').is_hidden();assert not diag(q)['haki']['unlocked'];c.close()
@@ -23,6 +23,7 @@ with sync_playwright() as p:
  q.evaluate('()=>Storage.prototype.setItem=window.originalSet');q.locator('[data-use-haki-book]').click();q.locator('[data-confirm-accept]').click()
  assert diag(q)['haki']['unlocked'];assert q.locator('.haki-chamber').is_visible();assert not saved(q)['inventory'];assert saved(q)['achievements']['records']['haki']==['armament','observation','conqueror']
  assert q.locator('#characterTabs [data-character-tab]').count()==4
+ q.wait_for_function("(()=>{const icons=[...document.querySelectorAll('.haki-disciplines .haki-icon')];return icons.length===3&&icons.every(i=>i.complete&&i.naturalWidth===32&&i.naturalHeight===32&&!i.hidden)})()")
  assert q.locator('[data-haki-cast]').is_disabled();assert q.locator('#miniWillpower').is_visible()
  q.locator('[data-haki-auto=armament]').check();assert saved(q)['haki']['auto']=='armament'
  q.locator('[data-haki-auto=observation]').check();assert saved(q)['haki']['auto']=='observation';assert not q.locator('[data-haki-auto=armament]').is_checked()

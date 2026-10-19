@@ -48,6 +48,6 @@
       "sha256": "9ed893c11e51b0051324cd61d73bfb5b3d5f29292a8f1313f35c2d3230c414e8"
     }
   ],
-  "paid_icons": "Awaiting user approval. No paid calls sent.",
+  "paid_icons": "Completed in separate native32 flow; see ../haki-icons-native32-20261019/manifest.json. First64 grid failure charged10, approved native32 retry charged10; total20.",
   "postprocessing": "Lossless copy to runtime; JSON describes the exported sheets."
 }

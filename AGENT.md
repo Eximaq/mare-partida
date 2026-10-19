@@ -93,7 +93,7 @@ Facção define identidade visual, contexto, reputação e eventuais passivos le
 - HAKI bloqueado com aviso até nível 50 + consumir Livro da Vontade. Drop fixo de 5% em chefes mundo/diários Nv.30+; apenas mundo está implementado. Nunca renumerar o catálogo de itens existente.
 - 100 Vontade, 5/s drenagem e regeneração OOC sem Haki; um contínuo e uma opção automática. Primeiro golpe inicia, seis segundos sem golpes encerram. Respeitar seleção manual; não reativar esgotado no mesmo combate.
 - Armamento +15pp penetração física/+10% DEF; Observação +15pp esquiva/precisão; Rei manual/R custa 50, stun comum 3s, chefe −15% ATQ/DEF 8s, raio 360/LOS. Não mostrar buffs como BP permanente nem conceder maestria gratuitamente.
-- Save preserva desbloqueio/recurso/preferências, nunca ativa Haki após reload. Transações de livro e cast devem manter recurso/item se falhar a persistência. Três VFX Workbench gratuitos integrados; ícones pagos pendentes de autorização nesta branch.
+- Save preserva desbloqueio/recurso/preferências, nunca ativa Haki após reload. Transações de livro e cast devem manter recurso/item se falhar a persistência. Três VFX Workbench gratuitos e quatro ícones Pro nativos32 integrados; preservar os PNGs sem redimensionamento. Custo artístico confirmado: 20 gerações (inclui o primeiro lote fora do formato, não utilizado).
 - Executar suítes Haki, talentos, conquistas e Pages após alterações neste fluxo.
 
 ## 4. Arte e PixelLab

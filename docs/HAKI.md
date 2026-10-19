@@ -2,7 +2,7 @@
 
 ## Estado desta branch
 
-Regras, HUD, integração de combate, consumo do livro, conquistas e três VFX do PixelLab Workbench implementados. Os quatro ícones 32×32 (incluindo o livro) aguardam autorização do lote pago; a UI omite as imagens enquanto isso, sem imagens quebradas. Não considerar a sprint artística concluída. A prisão e Chefes Diários continuam indisponíveis: este trabalho não os libera.
+Regras, HUD, integração de combate, consumo do livro, conquistas, três VFX do PixelLab Workbench e quatro ícones Pro nativos de 32×32 (incluindo o livro) implementados e integrados. A prisão e Chefes Diários continuam indisponíveis: este trabalho não os libera.
 
 ## Acesso e desbloqueio
 
@@ -40,7 +40,7 @@ Rollback de código: reverter o commit e manter backup/save. Não apagar saves o
 
 PixelLab MCP `vfx_workbench`, gratuito para assinantes segundo a ferramenta: Armamento 24×24/8 frames/12fps, Observação 40×16/8/12fps, Rei 128×128/12/15fps. PNGs RGBA preservados; ordem, tamanho, pivô e duração vêm dos exports. Armamento é recortado em execução pela silhueta real do frame do personagem para não flutuar fora de braços/arma. Observação não desenha olhos nas costas. Rei é um one-shot; loops seguem a ordem original. Movimento reduzido congela os loops e simplifica o pulso.
 
-Fontes, GIFs, exports JSON, manifesto e blueprint estão em `pixellab-pip-generations/haki-despertar-20261019/`; runtime em `assets/haki/`. Nenhuma geração paga foi enviada nesta etapa. Ícones pendentes não têm fallback artístico inventado.
+Fontes, GIFs, exports JSON, manifesto e blueprint estão em `pixellab-pip-generations/haki-despertar-20261019/`; runtime em `assets/haki/`. Os ícones finais estão em `pixellab-pip-generations/haki-icons-native32-20261019/` e foram copiados byte a byte para o runtime. A primeira chamada Pro 64×64 (10 gerações) falhou na grade 2×2 e seus resultados não entram no jogo. O proprietário recusou redução e aprovou uma nova chamada Pro nativa32 (10 gerações), com escolha das variantes delegada. Foram escolhidas 33/16/23/61 para Armamento/Observação/Rei/Livro: arquivos 32×32 originais, sem redução, reparo ou recoloração. Custo total confirmado: 20 gerações. Metadados do lote descartado ficam em `pixellab-pip-generations/haki-icons-20261019/`; todos os originais locais são preservados.
 
 Verificações executadas em 19/10/2026:
 
@@ -50,6 +50,6 @@ Verificações executadas em 19/10/2026:
 - `python tests/talents_browser.py`: dez grupos, sete classes e cinco tamanhos de tela. Corrigido foco de talento após redimensionamento.
 - `MARE_CONSTELLATION_UI_ONLY=1 python tests/constellation_browser.py`: três grupos de UI, transações e conquistas.
 - `python tools/build_pages.py` e `python tests/pages_cache_browser.py`: 25 recursos versionados, mapa e saves preservados.
-- Capturas recentes em `%TEMP%/mare-haki-qa/`, fora do Git; inspeção dos três spritesheets e dos VFX em combate. Ícones finais ainda não verificados porque dependem da aprovação.
+- Capturas recentes em `%TEMP%/mare-haki-qa/`, fora do Git; inspeção dos três spritesheets e dos VFX em combate. Ícones finais verificados em 32×32 nativo na mochila e nos três painéis; Rei também usa a coroa na hotbar.
 
 Amostra de desempenho local, Chromium headless/1366×768, 3,006s com Armamento e cinco monstros: 59,87 FPS e 9,54 MiB de heap JS informado pelo navegador. É uma amostra curta; não mede estabilidade prolongada ou desempenho em celulares reais.
