@@ -1,0 +1,202 @@
+[
+  {
+    "key": "revolucionario",
+    "tool": "animate_character",
+    "args": {
+      "character_id": "ef501312-8e44-4a1d-adc7-be446bd44c22",
+      "mode": "template",
+      "template_animation_id": "breathing-idle",
+      "animation_name": "idle",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "character: ef501312-8e44-4a1d-adc7-be446bd44c22\nanimation: breathing-idle\nmode: template\ndirections: south, north, west, east (4 jobs)\njob_ids: south=3eee9c0d-32a2-4181-ba21-bb1ffd313216, north=5001194c-259e-4da9-8a71-db8ce03ebb63, west=d6167004-c87b-49e1-939f-5d10cebaf02b, east=2c510098-1951-476d-85b2-42db282e7473\ngroup: b297f01d-1bda-447c-96b3-5b2d90c7d29f\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min\nadd more directions to this group: animate_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\", template_animation_id=\"breathing-idle\", animation_group_id=\"b297f01d-1bda-447c-96b3-5b2d90c7d29f\", directions=[...])\n\nhint: get_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\")\nif poor: delete_animation(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\", animation_type=\"...\") then retry with mode=\"v3\""
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "key": "revolucionario",
+    "tool": "animate_character",
+    "args": {
+      "character_id": "ef501312-8e44-4a1d-adc7-be446bd44c22",
+      "mode": "template",
+      "template_animation_id": "walking-8-frames",
+      "animation_name": "walk",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+        }
+      ],
+      "isError": true
+    }
+  },
+  {
+    "key": "pirata",
+    "tool": "animate_character",
+    "args": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "template",
+      "template_animation_id": "breathing-idle",
+      "animation_name": "idle",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+        }
+      ],
+      "isError": true
+    }
+  },
+  {
+    "key": "pirata",
+    "tool": "animate_character",
+    "args": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "template",
+      "template_animation_id": "walking-8-frames",
+      "animation_name": "walk",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+        }
+      ],
+      "isError": true
+    }
+  },
+  {
+    "key": "marinheiro",
+    "tool": "animate_character",
+    "args": {
+      "character_id": "ea8e0ab9-c0e4-46c2-985c-21889212ce12",
+      "mode": "template",
+      "template_animation_id": "breathing-idle",
+      "animation_name": "idle",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+        }
+      ],
+      "isError": true
+    }
+  },
+  {
+    "key": "marinheiro",
+    "tool": "animate_character",
+    "args": {
+      "character_id": "ea8e0ab9-c0e4-46c2-985c-21889212ce12",
+      "mode": "template",
+      "template_animation_id": "walking-8-frames",
+      "animation_name": "walk",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+        }
+      ],
+      "isError": true
+    }
+  },
+  {
+    "key": "governo_mundial",
+    "tool": "animate_character",
+    "args": {
+      "character_id": "3a9ea5a7-cd16-4f20-99cd-7682bd215c4e",
+      "mode": "template",
+      "template_animation_id": "breathing-idle",
+      "animation_name": "idle",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+        }
+      ],
+      "isError": true
+    }
+  },
+  {
+    "key": "governo_mundial",
+    "tool": "animate_character",
+    "args": {
+      "character_id": "3a9ea5a7-cd16-4f20-99cd-7682bd215c4e",
+      "mode": "template",
+      "template_animation_id": "walking-8-frames",
+      "animation_name": "walk",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+        }
+      ],
+      "isError": true
+    }
+  }
+]

@@ -1,0 +1,54 @@
+[
+  {
+    "_comment_prompt": "mapa lobby tem que ser nessa pegada, mais se passando em uma ilha do mundo de one pience, a organização da hud tem que ser que nem a do video referencia, porem também com uma tematica mais navio, madeira, corda essas coisas, que nem a imagen anexada",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/ilha-porto-recreated",
+      "output_collision_policy": "create_unique",
+      "mcp_server": {
+        "name": "PixelLab",
+        "url": "https://api.pixellab.ai/mcp",
+        "transport": "http",
+        "docs_url": "https://api.pixellab.ai/mcp/docs"
+      }
+    },
+    "MCP create_topdown_tileset": {
+      "mode": "standard",
+      "tile_size": {
+        "width": 32,
+        "height": 32
+      },
+      "view": "high top-down",
+      "transition_size": 0,
+      "lower_description": "Clear turquoise tropical ocean, subtle small pixel ripples, colorful pirate adventure RPG.",
+      "upper_description": "Warm pale sand of a tropical pirate island, fine grain, scattered tiny shells."
+    }
+  },
+  {
+    "MCP create_image_pro": {
+      "width": 512,
+      "height": 512,
+      "no_background": true,
+      "description": "Four separate tropical pirate port buildings in a precise 2 by 2 sprite sheet, one complete building per 256 by 256 cell, transparent margins between cells: red tiled seaside tavern, blue roof nautical market, stone and timber forge, small harbor office with a navigation flag. Orthographic high top-down RPG view with visible front facades, colorful adventurous island architecture inspired by One Piece, weathered wood, white plaster, brass, ropes, barrels, lush small plants, crisp detailed pixel art, consistent scale and lighting, no characters, no text."
+    }
+  },
+  {
+    "MCP create_topdown_tileset": {
+      "mode": "standard",
+      "tile_size": {
+        "width": 32,
+        "height": 32
+      },
+      "view": "high top-down",
+      "transition_size": 0,
+      "lower_base_tile_id": "48501343-94dc-43aa-b03a-2ff4057baa75",
+      "lower_description": "Warm pale tropical island sand.",
+      "upper_description": "Lush emerald tropical island grass, tiny flowers and soft worn patches, colorful pirate adventure RPG."
+    }
+  },
+  {
+    "TASK": {
+      "description": "Download the successful original PNGs and metadata. Verify four 256x256 building cells and alpha. Create separate expected-grid inspection previews. Keep all generated PNG pixels unchanged. Build island-assets.js lookup from exact corners and bounding_box metadata, and compose the native tiles and buildings in the existing game map; align navigation and collision with island-world.js. Preserve original characters and equipment. Test the actual browser HUD at 1920x1080, 1366x768,1280x720, plus small screens."
+    }
+  }
+]

@@ -1,0 +1,90 @@
+{
+  "status": "complete",
+  "reviewed": [
+    "combat-idle/south",
+    "combat-idle/north",
+    "combat-idle/west",
+    "combat-idle/east",
+    "attack/south",
+    "attack/north",
+    "attack/west",
+    "attack/east",
+    "corte-de-mare/south",
+    "corte-de-mare/north",
+    "corte-de-mare/west",
+    "corte-de-mare/east",
+    "hurt/south",
+    "hurt/north",
+    "hurt/west",
+    "hurt/east",
+    "death/south",
+    "death/north",
+    "death/west",
+    "death/east"
+  ],
+  "rejected": {},
+  "caveats": {
+    "combat-idle": "Unmodified south/east/west guards still move the sword; north uses a corrected occluded-arm clip.",
+    "attack/east": "Torso rotates toward viewer during swing and recovery.",
+    "corte-de-mare/west": "Turquoise energy arc is absent from generated clip; existing game slash remains at impact.",
+    "corte-de-mare/south": "A detached small gray pixel appears in the final frame.",
+    "hurt": "Unmodified south/east/west reactions end crouched; corrected north recovers the guard.",
+    "death/west": "Ends seated/fallen rather than prone; continuous fall, sword visible, no disappearance.",
+    "attack/north": "Corrected back-facing clip occludes the blade strongly during the strike; shoulder movement remains visible, without forearms crossing the back.",
+    "corte-de-mare/north": "Corrected arms remain occluded; turquoise effect sweeps the side of the character."
+  },
+  "paid_retries_authorized": false,
+  "integration": "All 20 requested combinations have active animated clips; five inspected replacements applied.",
+  "accepted_for_runtime_with_recorded_caveats": [
+    "combat-idle/south",
+    "combat-idle/north",
+    "combat-idle/west",
+    "combat-idle/east",
+    "attack/south",
+    "attack/north",
+    "attack/west",
+    "attack/east",
+    "corte-de-mare/south",
+    "corte-de-mare/north",
+    "corte-de-mare/west",
+    "corte-de-mare/east",
+    "hurt/south",
+    "hurt/north",
+    "hurt/west",
+    "hurt/east",
+    "death/south",
+    "death/north",
+    "death/west",
+    "death/east"
+  ],
+  "corrections": {
+    "attack/west": {
+      "group_id": "b0733ec0-dd98-4f18-9177-637a98b7726a",
+      "source_directory": "../bento-direction-fixes-20261018",
+      "verified": "Full clip inspected; direction maintained and source pixels preserved."
+    },
+    "combat-idle/north": {
+      "group_id": "07f1efa2-a502-4c19-81d6-de91b2072f90",
+      "source_directory": "../bento-direction-fixes-20261018",
+      "verified": "Full clip inspected; direction maintained and source pixels preserved."
+    },
+    "hurt/north": {
+      "group_id": "aea0fe97-0cef-4ae3-b5bd-5946df72b645",
+      "source_directory": "../bento-direction-fixes-20261018",
+      "verified": "Full clip inspected; direction maintained and source pixels preserved."
+    },
+    "corte-de-mare/north": {
+      "group_id": "f1971938-e31e-4f7b-aac4-c5705f2279d7",
+      "source_directory": "../bento-direction-fixes-20261018",
+      "verified": "Full clip inspected; direction maintained and source pixels preserved."
+    },
+    "attack/north": {
+      "group_id": "036e0fcc-d9a8-45c0-9692-e0252226676d",
+      "source_directory": "../bento-direction-fixes-20261018",
+      "verified": "Full clip inspected; direction maintained and source pixels preserved."
+    }
+  },
+  "resolved_caveats": {
+    "attack/north": "One strong white body/impact flash."
+  }
+}

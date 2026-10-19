@@ -1,0 +1,131 @@
+{
+  "display_name": "Bento MarÃ©-Livre Â· Espadachim",
+  "class_id": "sword",
+  "faction": "pirate",
+  "frame_size": [
+    84,
+    84
+  ],
+  "directions": [
+    "south",
+    "north",
+    "west",
+    "east"
+  ],
+  "anchor": [
+    42,
+    65
+  ],
+  "reference_height": 46,
+  "render_height": 70,
+  "render_scale": 1.5217391304347827,
+  "animations": {
+    "combat-idle": {
+      "url": "assets/classes/pirate-sword/combat-idle.png",
+      "frames": 4,
+      "fps": 5,
+      "loop": true,
+      "impact_frame": 0,
+      "visible_height": {
+        "south": 46,
+        "north": 46,
+        "west": 46,
+        "east": 46
+      },
+      "valid_directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "attack": {
+      "url": "assets/classes/pirate-sword/attack.png",
+      "frames": 8,
+      "fps": 12,
+      "loop": false,
+      "impact_frame": 3,
+      "visible_height": {
+        "south": 46,
+        "north": 46,
+        "west": 46,
+        "east": 46
+      },
+      "valid_directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "skill": {
+      "url": "assets/classes/pirate-sword/corte-de-mare.png",
+      "frames": 12,
+      "fps": 14,
+      "loop": false,
+      "impact_frame": 5,
+      "visible_height": {
+        "south": 46,
+        "north": 46,
+        "west": 46,
+        "east": 46
+      },
+      "valid_directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "direction_impact_frames": {
+        "north": 3
+      }
+    },
+    "hurt": {
+      "url": "assets/classes/pirate-sword/hurt.png",
+      "frames": 4,
+      "fps": 14,
+      "loop": false,
+      "impact_frame": 0,
+      "visible_height": {
+        "south": 46,
+        "north": 46,
+        "west": 46,
+        "east": 46
+      },
+      "valid_directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "death": {
+      "url": "assets/classes/pirate-sword/death.png",
+      "frames": 8,
+      "fps": 8,
+      "loop": false,
+      "impact_frame": 0,
+      "visible_height": {
+        "south": 46,
+        "north": 46,
+        "west": 46,
+        "east": 46
+      }
+    },
+    "guard": {
+      "url": "assets/classes/pirate-sword/guard.png",
+      "frames": 1,
+      "fps": 1,
+      "loop": true,
+      "visible_height": {
+        "south": 46,
+        "north": 46,
+        "west": 46,
+        "east": 46
+      }
+    }
+  },
+  "source": "PixelLab MCP",
+  "production_approved": true,
+  "integration_status": "all_requested_directions_integrated"
+}

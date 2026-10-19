@@ -1,0 +1,89 @@
+{
+  "verified_runtime_frames": 188,
+  "results": [
+    {
+      "faction": "revolucionario",
+      "result": "passed",
+      "pixel_fidelity": true,
+      "feet_anchor": 52,
+      "display_height": 70,
+      "frames": {
+        "idle": {
+          "south": 4,
+          "north": 4,
+          "west": 4,
+          "east": 4
+        },
+        "walk": {
+          "south": 4,
+          "north": 8,
+          "west": 8,
+          "east": 8
+        }
+      }
+    },
+    {
+      "faction": "pirata",
+      "result": "passed",
+      "pixel_fidelity": true,
+      "feet_anchor": 52,
+      "display_height": 70,
+      "frames": {
+        "idle": {
+          "south": 4,
+          "north": 4,
+          "west": 4,
+          "east": 4
+        },
+        "walk": {
+          "south": 8,
+          "north": 8,
+          "west": 8,
+          "east": 8
+        }
+      }
+    },
+    {
+      "faction": "marinheiro",
+      "result": "passed",
+      "pixel_fidelity": true,
+      "feet_anchor": 52,
+      "display_height": 70,
+      "frames": {
+        "idle": {
+          "south": 4,
+          "north": 4,
+          "west": 4,
+          "east": 4
+        },
+        "walk": {
+          "south": 8,
+          "north": 8,
+          "west": 8,
+          "east": 8
+        }
+      }
+    },
+    {
+      "faction": "governo_mundial",
+      "result": "passed",
+      "pixel_fidelity": true,
+      "feet_anchor": 52,
+      "display_height": 70,
+      "frames": {
+        "idle": {
+          "south": 4,
+          "north": 4,
+          "west": 4,
+          "east": 4
+        },
+        "walk": {
+          "south": 8,
+          "north": 8,
+          "west": 8,
+          "east": 8
+        }
+      }
+    }
+  ]
+}

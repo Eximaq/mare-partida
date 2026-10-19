@@ -1,0 +1,13 @@
+{
+  "replacements": [
+    "north-attack",
+    "north-hurt",
+    "north-idle",
+    "north-skill",
+    "west"
+  ],
+  "frames_checked": 36,
+  "exact_original_pixels": true,
+  "fixed_anchor": true,
+  "death_unchanged": true
+}

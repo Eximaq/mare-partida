@@ -1,0 +1,55 @@
+[
+  {
+    "_comment_prompt": "O mapa lobby ficou interessante, mais eu quero ele um poouco menor e mais organizado a localidade dos NPCs e casas, o lobby tem que parecer também um cas de navios, melhore também a ambientação, textura do mapa e caminhos",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/porto-compacto-recreated",
+      "output_collision_policy": "create_unique"
+    },
+    "MCP create_topdown_tileset": {
+      "mode": "standard",
+      "tile_size": {
+        "width": 32,
+        "height": 32
+      },
+      "view": "high top-down",
+      "transition_size": 0,
+      "lower_description": "Calm deep turquoise tropical harbor water, broad subtle color variation, sparse soft ripples, restrained low contrast pixel art.",
+      "upper_description": "Warm smooth beige island sand, very sparse tiny pebbles, broad quiet readable ground texture, no dense shell pattern."
+    }
+  },
+  {
+    "MCP create_image_pro": {
+      "width": 512,
+      "height": 512,
+      "no_background": true,
+      "description": "Four separate pirate harbor assets in a precise 2 by 2 sprite sheet, one complete asset per 256 by 256 cell with transparent margins: a detailed wooden pirate sailing ship with ivory sails and red pennants, a smaller fishing sailing boat with blue furled sails, a compact harbor cargo cluster of barrels crates coiled ropes and anchor, a compact group of two lush tropical palm trees with small ground plants. Both ships viewed from above with bows pointing north. High top-down three-quarter RPG perspective, crisp detailed pixel art, consistent light from upper left, weathered timber and brass, colorful tropical pirate adventure, no text, no characters.",
+      "style_copy": [
+        "color_palette",
+        "outline",
+        "detail",
+        "shading"
+      ],
+      "style_image_base64": "style-buildings.png"
+    }
+  },
+  {
+    "MCP create_topdown_tileset": {
+      "mode": "standard",
+      "tile_size": {
+        "width": 32,
+        "height": 32
+      },
+      "view": "high top-down",
+      "transition_size": 0,
+      "lower_base_tile_id": "1ff29faa-1298-4275-b3f6-8750ee254cbe",
+      "lower_description": "Warm smooth beige island sand, very sparse tiny pebbles, broad quiet readable ground texture, no dense shell pattern.",
+      "upper_description": "Soft muted tropical green lawn, short fine grass, broad quiet color patches, sparse tiny plants, low contrast ground texture, not bushes or hedges."
+    }
+  },
+  {
+    "TASK": {
+      "description": "Download original outputs and tileset metadata, verify 16 Wang masks and four separate 256x256 cells with alpha. Preserve PNG pixels. Use tools/build_island_assets.py to build atlas region lookups. Place native harbor assets and existing buildings using island-world.js: map 2400x1700, six buildings, four original NPC services, main pier, vertical quay and finger piers. Keep collisions aligned to the coastline and deck union; run world-system, island-world and browser acceptance tests."
+    }
+  }
+]

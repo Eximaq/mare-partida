@@ -1,0 +1,50 @@
+{
+  "key": "north-idle",
+  "group_id": "07f1efa2-a502-4c19-81d6-de91b2072f90",
+  "direction": "north",
+  "frames": 4,
+  "size": [
+    68,
+    68
+  ],
+  "source_url": "https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/4ca9a004-0362-4dad-94ff-e6da14e502d7/north/{i}.png?t=1792353349187",
+  "files": [
+    "north-idle-00.png",
+    "north-idle-01.png",
+    "north-idle-02.png",
+    "north-idle-03.png"
+  ],
+  "bounds": [
+    [
+      22,
+      11,
+      58,
+      57
+    ],
+    [
+      23,
+      13,
+      50,
+      57
+    ],
+    [
+      19,
+      12,
+      47,
+      57
+    ],
+    [
+      16,
+      12,
+      44,
+      57
+    ]
+  ],
+  "gif": {
+    "created": true,
+    "exact_visible_pixels": true,
+    "frames": 4,
+    "disposal": 2,
+    "loop": 0
+  }
+}

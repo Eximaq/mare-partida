@@ -1,0 +1,196 @@
+{
+  "combat-idle": {
+    "south": [
+      "combat-idle-south-00.png",
+      "combat-idle-south-01.png",
+      "combat-idle-south-02.png",
+      "combat-idle-south-03.png"
+    ],
+    "north": [
+      "../bento-direction-fixes-20261018/north-idle-00.png",
+      "../bento-direction-fixes-20261018/north-idle-01.png",
+      "../bento-direction-fixes-20261018/north-idle-02.png",
+      "../bento-direction-fixes-20261018/north-idle-03.png"
+    ],
+    "west": [
+      "combat-idle-west-00.png",
+      "combat-idle-west-01.png",
+      "combat-idle-west-02.png",
+      "combat-idle-west-03.png"
+    ],
+    "east": [
+      "combat-idle-east-00.png",
+      "combat-idle-east-01.png",
+      "combat-idle-east-02.png",
+      "combat-idle-east-03.png"
+    ]
+  },
+  "attack": {
+    "south": [
+      "attack-south-00.png",
+      "attack-south-01.png",
+      "attack-south-02.png",
+      "attack-south-03.png",
+      "attack-south-04.png",
+      "attack-south-05.png",
+      "attack-south-06.png",
+      "attack-south-07.png"
+    ],
+    "north": [
+      "../bento-direction-fixes-20261018/north-attack-00.png",
+      "../bento-direction-fixes-20261018/north-attack-01.png",
+      "../bento-direction-fixes-20261018/north-attack-02.png",
+      "../bento-direction-fixes-20261018/north-attack-03.png",
+      "../bento-direction-fixes-20261018/north-attack-04.png",
+      "../bento-direction-fixes-20261018/north-attack-05.png",
+      "../bento-direction-fixes-20261018/north-attack-06.png",
+      "../bento-direction-fixes-20261018/north-attack-07.png"
+    ],
+    "west": [
+      "../bento-direction-fixes-20261018/west-00.png",
+      "../bento-direction-fixes-20261018/west-01.png",
+      "../bento-direction-fixes-20261018/west-02.png",
+      "../bento-direction-fixes-20261018/west-03.png",
+      "../bento-direction-fixes-20261018/west-04.png",
+      "../bento-direction-fixes-20261018/west-05.png",
+      "../bento-direction-fixes-20261018/west-06.png",
+      "../bento-direction-fixes-20261018/west-07.png"
+    ],
+    "east": [
+      "attack-east-00.png",
+      "attack-east-01.png",
+      "attack-east-02.png",
+      "attack-east-03.png",
+      "attack-east-04.png",
+      "attack-east-05.png",
+      "attack-east-06.png",
+      "attack-east-07.png"
+    ]
+  },
+  "corte-de-mare": {
+    "south": [
+      "corte-de-mare-south-00.png",
+      "corte-de-mare-south-01.png",
+      "corte-de-mare-south-02.png",
+      "corte-de-mare-south-03.png",
+      "corte-de-mare-south-04.png",
+      "corte-de-mare-south-05.png",
+      "corte-de-mare-south-06.png",
+      "corte-de-mare-south-07.png",
+      "corte-de-mare-south-08.png",
+      "corte-de-mare-south-09.png",
+      "corte-de-mare-south-10.png",
+      "corte-de-mare-south-11.png"
+    ],
+    "north": [
+      "../bento-direction-fixes-20261018/north-skill-00.png",
+      "../bento-direction-fixes-20261018/north-skill-01.png",
+      "../bento-direction-fixes-20261018/north-skill-02.png",
+      "../bento-direction-fixes-20261018/north-skill-03.png",
+      "../bento-direction-fixes-20261018/north-skill-04.png",
+      "../bento-direction-fixes-20261018/north-skill-05.png",
+      "../bento-direction-fixes-20261018/north-skill-06.png",
+      "../bento-direction-fixes-20261018/north-skill-07.png",
+      "../bento-direction-fixes-20261018/north-skill-08.png",
+      "../bento-direction-fixes-20261018/north-skill-09.png",
+      "../bento-direction-fixes-20261018/north-skill-10.png",
+      "../bento-direction-fixes-20261018/north-skill-11.png"
+    ],
+    "west": [
+      "corte-de-mare-west-00.png",
+      "corte-de-mare-west-01.png",
+      "corte-de-mare-west-02.png",
+      "corte-de-mare-west-03.png",
+      "corte-de-mare-west-04.png",
+      "corte-de-mare-west-05.png",
+      "corte-de-mare-west-06.png",
+      "corte-de-mare-west-07.png",
+      "corte-de-mare-west-08.png",
+      "corte-de-mare-west-09.png",
+      "corte-de-mare-west-10.png",
+      "corte-de-mare-west-11.png"
+    ],
+    "east": [
+      "corte-de-mare-east-00.png",
+      "corte-de-mare-east-01.png",
+      "corte-de-mare-east-02.png",
+      "corte-de-mare-east-03.png",
+      "corte-de-mare-east-04.png",
+      "corte-de-mare-east-05.png",
+      "corte-de-mare-east-06.png",
+      "corte-de-mare-east-07.png",
+      "corte-de-mare-east-08.png",
+      "corte-de-mare-east-09.png",
+      "corte-de-mare-east-10.png",
+      "corte-de-mare-east-11.png"
+    ]
+  },
+  "hurt": {
+    "south": [
+      "hurt-south-00.png",
+      "hurt-south-01.png",
+      "hurt-south-02.png",
+      "hurt-south-03.png"
+    ],
+    "north": [
+      "../bento-direction-fixes-20261018/north-hurt-00.png",
+      "../bento-direction-fixes-20261018/north-hurt-01.png",
+      "../bento-direction-fixes-20261018/north-hurt-02.png",
+      "../bento-direction-fixes-20261018/north-hurt-03.png"
+    ],
+    "west": [
+      "hurt-west-00.png",
+      "hurt-west-01.png",
+      "hurt-west-02.png",
+      "hurt-west-03.png"
+    ],
+    "east": [
+      "hurt-east-00.png",
+      "hurt-east-01.png",
+      "hurt-east-02.png",
+      "hurt-east-03.png"
+    ]
+  },
+  "death": {
+    "south": [
+      "death-south-00.png",
+      "death-south-01.png",
+      "death-south-02.png",
+      "death-south-03.png",
+      "death-south-04.png",
+      "death-south-05.png",
+      "death-south-06.png",
+      "death-south-07.png"
+    ],
+    "north": [
+      "death-north-00.png",
+      "death-north-01.png",
+      "death-north-02.png",
+      "death-north-03.png",
+      "death-north-04.png",
+      "death-north-05.png",
+      "death-north-06.png",
+      "death-north-07.png"
+    ],
+    "west": [
+      "death-west-00.png",
+      "death-west-01.png",
+      "death-west-02.png",
+      "death-west-03.png",
+      "death-west-04.png",
+      "death-west-05.png",
+      "death-west-06.png",
+      "death-west-07.png"
+    ],
+    "east": [
+      "death-east-00.png",
+      "death-east-01.png",
+      "death-east-02.png",
+      "death-east-03.png",
+      "death-east-04.png",
+      "death-east-05.png",
+      "death-east-06.png",
+      "death-east-07.png"
+    ]
+  }
+}

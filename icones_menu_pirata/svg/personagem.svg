@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="skin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#F7CFA3"/>
+      <stop offset="1" stop-color="#D79C69"/>
+    </linearGradient>
+    <linearGradient id="coat" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4A86A6"/>
+      <stop offset="1" stop-color="#23495C"/>
+    </linearGradient>
+    <linearGradient id="hat" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4A4C70"/>
+      <stop offset="1" stop-color="#1D1E31"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE9A8"/>
+      <stop offset="0.5" stop-color="#E7B64C"/>
+      <stop offset="1" stop-color="#A8701F"/>
+    </linearGradient>
+    <linearGradient id="plume" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#A32616"/>
+      <stop offset="1" stop-color="#F0614B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- pescoco -->
+  <path d="M110 150 H146 V184 Q128 196 110 184 Z" fill="#C98F5E" stroke="#24160B" stroke-width="6" stroke-linejoin="round"/>
+
+  <!-- casaco -->
+  <path d="M30 242 C30 198 66 178 128 178 C190 178 226 198 226 242 Z" fill="url(#coat)" stroke="#24160B" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M128 218 V242" stroke="#1B3544" stroke-width="5" stroke-linecap="round"/>
+  <!-- camisa -->
+  <path d="M98 180 L128 218 L158 180 Q128 190 98 180 Z" fill="#FFF4D2" stroke="#24160B" stroke-width="5" stroke-linejoin="round"/>
+  <!-- ombreiras e botoes -->
+  <rect x="46" y="200" width="36" height="13" rx="6.5" fill="url(#gold)" stroke="#24160B" stroke-width="4" transform="rotate(-18 64 206)"/>
+  <rect x="174" y="200" width="36" height="13" rx="6.5" fill="url(#gold)" stroke="#24160B" stroke-width="4" transform="rotate(18 192 206)"/>
+  <circle cx="114" cy="232" r="5" fill="url(#gold)" stroke="#24160B" stroke-width="3"/>
+  <circle cx="142" cy="232" r="5" fill="url(#gold)" stroke="#24160B" stroke-width="3"/>
+
+  <!-- orelhas e cabeca -->
+  <circle cx="90" cy="126" r="9" fill="#E5AE7C" stroke="#24160B" stroke-width="5"/>
+  <circle cx="166" cy="126" r="9" fill="#E5AE7C" stroke="#24160B" stroke-width="5"/>
+  <ellipse cx="128" cy="122" rx="38" ry="42" fill="url(#skin)" stroke="#24160B" stroke-width="6"/>
+
+  <!-- barba -->
+  <path d="M91 136 C93 168 108 186 128 188 C148 186 163 168 165 136 C156 154 142 160 128 158 C114 160 100 154 91 136 Z" fill="#5A3319" stroke="#24160B" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M104 154 C112 142 124 146 128 152 C132 146 144 142 152 154 C142 158 132 156 128 154 C124 156 114 158 104 154 Z" fill="#5A3319" stroke="#24160B" stroke-width="3.5" stroke-linejoin="round"/>
+  <path d="M115 166 Q128 177 141 166" fill="none" stroke="#FFF4D2" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- rosto -->
+  <path d="M130 126 Q123 141 132 144" fill="none" stroke="#B87A4C" stroke-width="4" stroke-linecap="round"/>
+  <ellipse cx="148" cy="124" rx="8" ry="7" fill="#FFFFFF" stroke="#24160B" stroke-width="3.5"/>
+  <circle cx="149.5" cy="125" r="3.6" fill="#24160B"/>
+  <path d="M135 112 Q147 104 160 109" fill="none" stroke="#3A2010" stroke-width="6" stroke-linecap="round"/>
+  <path d="M96 110 Q109 103 124 108" fill="none" stroke="#3A2010" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- tapa-olho -->
+  <path d="M92 114 L112 127 L156 100" fill="none" stroke="#1B1B24" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="112" cy="127" rx="14" ry="12" fill="#1B1B24" stroke="#24160B" stroke-width="3"/>
+  <path d="M104 122 Q109 118 116 120" fill="none" stroke="#6A6A84" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+
+  <!-- chapeu tricornio -->
+  <path d="M46 104 C60 70 92 50 128 40 C164 50 196 70 210 104 C180 92 156 90 128 90 C100 90 76 92 46 104 Z" fill="url(#hat)" stroke="#24160B" stroke-width="7" stroke-linejoin="round"/>
+  <path d="M54 98 C80 88 102 86 128 86 C154 86 176 88 202 98" fill="none" stroke="url(#gold)" stroke-width="6" stroke-linecap="round"/>
+  <!-- emblema -->
+  <circle cx="128" cy="62" r="9" fill="#FFF4D2" stroke="#24160B" stroke-width="3"/>
+  <rect x="122.5" y="66" width="11" height="8" rx="2" fill="#FFF4D2" stroke="#24160B" stroke-width="3"/>
+  <circle cx="124.8" cy="62" r="2.2" fill="#24160B"/>
+  <circle cx="131.2" cy="62" r="2.2" fill="#24160B"/>
+
+  <!-- pluma -->
+  <path d="M176 70 C194 46 218 42 238 50 C228 60 220 80 200 92 C188 98 176 90 176 70 Z" fill="url(#plume)" stroke="#24160B" stroke-width="5" stroke-linejoin="round"/>
+  <path d="M182 82 C204 70 220 58 234 51" fill="none" stroke="#24160B" stroke-width="3" stroke-linecap="round"/>
+</svg>

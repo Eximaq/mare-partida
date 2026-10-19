@@ -1,0 +1,10 @@
+{
+  "walk": {
+    "south": {
+      "files": ["walk-south-00.png", "walk-south-01.png", "walk-south-02.png", "walk-south-03.png"],
+      "fps": 6,
+      "authorization": "User explicitly chose: Usar os quatro frames válidos.",
+      "reason": "Original template turns north in frames 5–8; approved corrective v3 turns sideways later in its cycle. Use the valid first four original frontal frames without repainting, mirroring or synthesized frames. Both complete generated versions remain preserved."
+    }
+  }
+}

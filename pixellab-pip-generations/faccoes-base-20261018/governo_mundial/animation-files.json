@@ -1,0 +1,70 @@
+{
+  "idle": {
+    "south": [
+      "idle-south-00.png",
+      "idle-south-01.png",
+      "idle-south-02.png",
+      "idle-south-03.png"
+    ],
+    "west": [
+      "idle-west-00.png",
+      "idle-west-01.png",
+      "idle-west-02.png",
+      "idle-west-03.png"
+    ],
+    "east": [
+      "idle-east-00.png",
+      "idle-east-01.png",
+      "idle-east-02.png",
+      "idle-east-03.png"
+    ],
+    "north": [
+      "idle-north-00.png",
+      "idle-north-01.png",
+      "idle-north-02.png",
+      "idle-north-03.png"
+    ]
+  },
+  "walk": {
+    "south": [
+      "walk-south-00.png",
+      "walk-south-01.png",
+      "walk-south-02.png",
+      "walk-south-03.png",
+      "walk-south-04.png",
+      "walk-south-05.png",
+      "walk-south-06.png",
+      "walk-south-07.png"
+    ],
+    "north": [
+      "walk-north-00.png",
+      "walk-north-01.png",
+      "walk-north-02.png",
+      "walk-north-03.png",
+      "walk-north-04.png",
+      "walk-north-05.png",
+      "walk-north-06.png",
+      "walk-north-07.png"
+    ],
+    "west": [
+      "walk-west-00.png",
+      "walk-west-01.png",
+      "walk-west-02.png",
+      "walk-west-03.png",
+      "walk-west-04.png",
+      "walk-west-05.png",
+      "walk-west-06.png",
+      "walk-west-07.png"
+    ],
+    "east": [
+      "walk-east-00.png",
+      "walk-east-01.png",
+      "walk-east-02.png",
+      "walk-east-03.png",
+      "walk-east-04.png",
+      "walk-east-05.png",
+      "walk-east-06.png",
+      "walk-east-07.png"
+    ]
+  }
+}

@@ -1,0 +1,227 @@
+[
+  {
+    "id": "pearl_for_1",
+    "attribute": "for",
+    "level": 1,
+    "name": "Pérola de Força Nv.1",
+    "percent": 0.02,
+    "file": "pearl_for_1.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_for_2",
+    "attribute": "for",
+    "level": 2,
+    "name": "Pérola de Força Nv.2",
+    "percent": 0.04,
+    "file": "pearl_for_2.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_for_3",
+    "attribute": "for",
+    "level": 3,
+    "name": "Pérola de Força Nv.3",
+    "percent": 0.06,
+    "file": "pearl_for_3.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_for_4",
+    "attribute": "for",
+    "level": 4,
+    "name": "Pérola de Força Nv.4",
+    "percent": 0.08,
+    "file": "pearl_for_4.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_for_5",
+    "attribute": "for",
+    "level": 5,
+    "name": "Pérola de Força Nv.5",
+    "percent": 0.1,
+    "file": "pearl_for_5.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_des_1",
+    "attribute": "des",
+    "level": 1,
+    "name": "Pérola de Destreza Nv.1",
+    "percent": 0.02,
+    "file": "pearl_des_1.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_des_2",
+    "attribute": "des",
+    "level": 2,
+    "name": "Pérola de Destreza Nv.2",
+    "percent": 0.04,
+    "file": "pearl_des_2.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_des_3",
+    "attribute": "des",
+    "level": 3,
+    "name": "Pérola de Destreza Nv.3",
+    "percent": 0.06,
+    "file": "pearl_des_3.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_des_4",
+    "attribute": "des",
+    "level": 4,
+    "name": "Pérola de Destreza Nv.4",
+    "percent": 0.08,
+    "file": "pearl_des_4.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_des_5",
+    "attribute": "des",
+    "level": 5,
+    "name": "Pérola de Destreza Nv.5",
+    "percent": 0.1,
+    "file": "pearl_des_5.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_vit_1",
+    "attribute": "vit",
+    "level": 1,
+    "name": "Pérola de Vitalidade Nv.1",
+    "percent": 0.02,
+    "file": "pearl_vit_1.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_vit_2",
+    "attribute": "vit",
+    "level": 2,
+    "name": "Pérola de Vitalidade Nv.2",
+    "percent": 0.04,
+    "file": "pearl_vit_2.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_vit_3",
+    "attribute": "vit",
+    "level": 3,
+    "name": "Pérola de Vitalidade Nv.3",
+    "percent": 0.06,
+    "file": "pearl_vit_3.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_vit_4",
+    "attribute": "vit",
+    "level": 4,
+    "name": "Pérola de Vitalidade Nv.4",
+    "percent": 0.08,
+    "file": "pearl_vit_4.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_vit_5",
+    "attribute": "vit",
+    "level": 5,
+    "name": "Pérola de Vitalidade Nv.5",
+    "percent": 0.1,
+    "file": "pearl_vit_5.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_int_1",
+    "attribute": "int",
+    "level": 1,
+    "name": "Pérola de Inteligência Nv.1",
+    "percent": 0.02,
+    "file": "pearl_int_1.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_int_2",
+    "attribute": "int",
+    "level": 2,
+    "name": "Pérola de Inteligência Nv.2",
+    "percent": 0.04,
+    "file": "pearl_int_2.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_int_3",
+    "attribute": "int",
+    "level": 3,
+    "name": "Pérola de Inteligência Nv.3",
+    "percent": 0.06,
+    "file": "pearl_int_3.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_int_4",
+    "attribute": "int",
+    "level": 4,
+    "name": "Pérola de Inteligência Nv.4",
+    "percent": 0.08,
+    "file": "pearl_int_4.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_int_5",
+    "attribute": "int",
+    "level": 5,
+    "name": "Pérola de Inteligência Nv.5",
+    "percent": 0.1,
+    "file": "pearl_int_5.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_esp_1",
+    "attribute": "esp",
+    "level": 1,
+    "name": "Pérola de Espírito Nv.1",
+    "percent": 0.02,
+    "file": "pearl_esp_1.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_esp_2",
+    "attribute": "esp",
+    "level": 2,
+    "name": "Pérola de Espírito Nv.2",
+    "percent": 0.04,
+    "file": "pearl_esp_2.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_esp_3",
+    "attribute": "esp",
+    "level": 3,
+    "name": "Pérola de Espírito Nv.3",
+    "percent": 0.06,
+    "file": "pearl_esp_3.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_esp_4",
+    "attribute": "esp",
+    "level": 4,
+    "name": "Pérola de Espírito Nv.4",
+    "percent": 0.08,
+    "file": "pearl_esp_4.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  },
+  {
+    "id": "pearl_esp_5",
+    "attribute": "esp",
+    "level": 5,
+    "name": "Pérola de Espírito Nv.5",
+    "percent": 0.1,
+    "file": "pearl_esp_5.svg",
+    "origin": "SVG original em grade de pixels; nenhuma geração paga"
+  }
+]

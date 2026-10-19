@@ -1,0 +1,21 @@
+MARE PARTIDA V12 — HUD RECONSTRUIDA
+
+JOGO NOVO:
+  1. Extraia o pacote COMPLETO.
+  2. Abra a pasta mare-partida-v12.
+  3. Abra index.html no navegador.
+
+ATUALIZAR A V11:
+  1. Antes, exporte seu save no menu Ajuda da V11.
+  2. Extraia o pacote ATUALIZACAO.
+  3. Copie index.html, game.js, styles.css e a pasta assets sobre a pasta antiga.
+  4. Confirme substituicao e mesclagem.
+  5. Abra o jogo no mesmo navegador e no mesmo caminho.
+
+ATALHOS:
+ I Inventario | M Mapa | F Forja | C Contratos | P Perfil
+ J Canal | O Expedicao | 1 e 2 Habilidades | Q Pocao
+ Espaco Pausa Auto-cacada | Esc Fecha painel
+
+VERSAO: 1.2.0 / V12
+Jogo demonstrativo offline.

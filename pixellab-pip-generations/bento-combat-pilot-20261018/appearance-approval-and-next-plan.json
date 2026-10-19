@@ -1,0 +1,145 @@
+{
+  "status": "awaiting_paid_batch_approval",
+  "appearance_approval": "aprovo",
+  "already_spent_generations": 4,
+  "estimated_additional_generations": [
+    21,
+    41
+  ],
+  "no_retries": true,
+  "reason_for_two_extra_clips": "Rebuild frontal guard and basic strike recovery instead of treating prototype clips as finished.",
+  "common_animation_args": {
+    "mode": "v3",
+    "directions": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "keep_first_frame": false
+  },
+  "calls": [
+    {
+      "tool": "create_character",
+      "estimated_generations": [
+        1,
+        1
+      ],
+      "args": {
+        "name": "Bento Maré-Livre · Espadachim",
+        "description": "Bento Maré-Livre, the same pirate swordsman as the reference. Preserve his face, hair, teal headband, crimson vest, cream shirt, blue trousers, proportions, pixel shading and original steel sword with bronze guard and cloth grip.",
+        "mode": "v3",
+        "body_type": "humanoid",
+        "n_directions": 4,
+        "size": 64,
+        "view": "low top-down",
+        "reference_image_base64": "bento-guard-corrected.png"
+      }
+    },
+    {
+      "tool": "animate_character",
+      "estimated_generations": [
+        4,
+        8
+      ],
+      "args": {
+        "character_id": "NEW_ARMED_CHARACTER_ID",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "combat-idle",
+        "frame_count": 4,
+        "action_description": "Hold a steady sword combat guard with subtle breathing. Keep the sword in the same hand, feet planted, body in place and facing unchanged. Return smoothly to the starting guard."
+      }
+    },
+    {
+      "tool": "animate_character",
+      "estimated_generations": [
+        4,
+        8
+      ],
+      "args": {
+        "character_id": "NEW_ARMED_CHARACTER_ID",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "attack",
+        "frame_count": 8,
+        "action_description": "Prepare one sword strike, swing through a clear impact, then fully recover into the same starting guard. Keep the sword in the same hand, body in place and facing unchanged."
+      }
+    },
+    {
+      "tool": "animate_character",
+      "estimated_generations": [
+        4,
+        8
+      ],
+      "args": {
+        "character_id": "NEW_ARMED_CHARACTER_ID",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "corte-de-mare",
+        "frame_count": 12,
+        "action_description": "Wind up, perform one broad sword slash with a brief original turquoise sea-energy arc, then recover into the same starting guard. Keep the sword in the same hand, body in place and facing unchanged."
+      }
+    },
+    {
+      "tool": "animate_character",
+      "estimated_generations": [
+        4,
+        8
+      ],
+      "args": {
+        "character_id": "NEW_ARMED_CHARACTER_ID",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "hurt",
+        "frame_count": 4,
+        "action_description": "Recoil briefly from one hit, bend slightly, then return to the same sword guard. Keep the sword in the same hand, body in place and facing unchanged."
+      }
+    },
+    {
+      "tool": "animate_character",
+      "estimated_generations": [
+        4,
+        8
+      ],
+      "args": {
+        "character_id": "NEW_ARMED_CHARACTER_ID",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "death",
+        "frame_count": 8,
+        "action_description": "Lose balance gradually, buckle at the knees and fall to the ground, ending in a still fallen pose with the sword visible. Keep continuous movement without vanishing or teleporting."
+      }
+    }
+  ]
+}

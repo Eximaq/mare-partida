@@ -1,0 +1,50 @@
+{
+  "key": "north-hurt",
+  "group_id": "aea0fe97-0cef-4ae3-b5bd-5946df72b645",
+  "direction": "north",
+  "frames": 4,
+  "size": [
+    76,
+    68
+  ],
+  "source_url": "https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/c12b4eef-02da-4cf9-b4fd-0be63a2cd083/north/{i}.png?t=1792353519667",
+  "files": [
+    "north-hurt-00.png",
+    "north-hurt-01.png",
+    "north-hurt-02.png",
+    "north-hurt-03.png"
+  ],
+  "bounds": [
+    [
+      26,
+      11,
+      61,
+      57
+    ],
+    [
+      26,
+      12,
+      52,
+      57
+    ],
+    [
+      26,
+      11,
+      55,
+      57
+    ],
+    [
+      24,
+      10,
+      64,
+      57
+    ]
+  ],
+  "gif": {
+    "created": true,
+    "exact_visible_pixels": true,
+    "frames": 4,
+    "disposal": 2,
+    "loop": 0
+  }
+}

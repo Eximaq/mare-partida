@@ -1,0 +1,92 @@
+[
+  {
+    "_comment_prompt": "Aprovo, porem ja faça um ajuste nos ataque e animaçao north, as animação de ataque principalmente nao está voltada ao direcionamento do boneco, ele ataca com as mao pras costa como tivesse virado a south",
+    "_pixellab": {
+      "output_directory": "pixellab-pip-generations/bento-direction-fixes-20261018",
+      "output_collision_policy": "create_unique",
+      "paid_call_policy": "explicit_user_run_request_required"
+    },
+    "TASK": {
+      "instruction": "Verify west-correction and four-north-correction approvals. Preserve an existing-runtime checkpoint and copy the original west/north 64x64 guard PNGs unchanged. Confirm authenticated MCP."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+      "animation_name": "attack-west-corrected",
+      "mode": "v3",
+      "directions": [
+        "west"
+      ],
+      "frame_count": 8,
+      "keep_first_frame": false,
+      "custom_start_frame_base64": "guard-west.png",
+      "end_frame_base64": "guard-west.png",
+      "action_description": "Perform one sword strike toward the left. Keep facing west for the entire clip, including recovery. Finish in exactly the supplied west-facing guard, holding the sword in the same hand."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+      "mode": "v3",
+      "directions": [
+        "north"
+      ],
+      "frame_count": 4,
+      "keep_first_frame": false,
+      "animation_name": "combat-idle-north-corrected",
+      "action_description": "Keep the back of the head and vest facing the viewer. Breathe subtly in a north-facing sword guard, with forearms in front of the chest and occluded by the torso. Keep feet planted and return to the starting guard.",
+      "custom_start_frame_base64": "guard-north.png"
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+      "mode": "v3",
+      "directions": [
+        "north"
+      ],
+      "frame_count": 8,
+      "keep_first_frame": false,
+      "animation_name": "attack-north-corrected",
+      "action_description": "Strike forward toward north, away from the viewer, then recover the supplied north-facing guard. Keep the back of the head and vest visible throughout. Forearms move in front of the chest, occluded by the torso; the blade swings beyond the far shoulder.",
+      "custom_start_frame_base64": "guard-north.png",
+      "end_frame_base64": "guard-north.png"
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+      "mode": "v3",
+      "directions": [
+        "north"
+      ],
+      "frame_count": 12,
+      "keep_first_frame": false,
+      "animation_name": "corte-de-mare-north-corrected",
+      "action_description": "Wind up and slash forward toward north, away from the viewer, with a turquoise sea-energy arc beyond the far shoulder, then recover the supplied guard. Keep the back of the head and vest visible; forearms stay in front of the chest, occluded by the torso.",
+      "custom_start_frame_base64": "guard-north.png",
+      "end_frame_base64": "guard-north.png"
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+      "mode": "v3",
+      "directions": [
+        "north"
+      ],
+      "frame_count": 4,
+      "keep_first_frame": false,
+      "animation_name": "hurt-north-corrected",
+      "action_description": "Recoil briefly from a hit while facing north, then recover the supplied guard. Keep the back of the head and vest visible; hands and forearms remain in front of the torso and occluded from the viewer.",
+      "custom_start_frame_base64": "guard-north.png",
+      "end_frame_base64": "guard-north.png"
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll each returned group to completion, then download exactly 8 west, 4 north idle, 8 north attack, 12 north skill and 4 north hurt frames. Preserve order and every original pixel; assemble exact-palette GIF previews and inspection grids. Inspect facing, forearm occlusion and recovery before use. Replace only the corresponding 84x84 sheet rows with centered transparent padding. Preserve the old versions. Keep death unchanged. Set corrected north skill impact frame to 3 while other directions retain their previous timing. Verify all 36 replacement frames, one-shot behavior, death/respawn and faction/class scope."
+    }
+  }
+]

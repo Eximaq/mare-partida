@@ -1,0 +1,873 @@
+{
+  "status": "completed_with_approved_short_south_walk",
+  "approval": "Four faction bases and delegated selection: 80–108 estimated generations, no extra retries. One corrective Iara south v3 animation explicitly approved separately: 1–2 generations.",
+  "observed_usage": {
+    "generations": 77
+  },
+  "calls": [
+    {
+      "key": "revolucionario",
+      "tool": "create_image_pro",
+      "args": {
+        "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Rebel female island courier, short dark curly hair, determined friendly face, dark green cropped field jacket, burgundy neck scarf, beige practical trousers, brown boots, utility belt with small pouches and aged brass buckles. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+        "width": 48,
+        "height": 48,
+        "no_background": true,
+        "style_image_base64": "npc-style-reference.png",
+        "style_copy": [
+          "outline",
+          "detail",
+          "shading"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 290eac7e-4f8d-49e8-9f9e-1fd4b7a50433\njob_id: 290eac7e-4f8d-49e8-9f9e-1fd4b7a50433\nmodel: pro\ndescription: One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Rebel female island courier, short dark curly hair, determined friendly face, dark green cropped field jacket, burgundy neck scarf, beige practical trousers, brown boots, utility belt with small pouches and aged brass buckles. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.\nsize: 48x48px\ntransparent: True\ncandidates: 25\nstyle_image: yes (outline, detail, shading)\nasset_id: bfb7f7bf-e6ab-5235-928b-5176170acf89\nasset_status: pending (saved when generation completes)\ncost: 10 generations\nstatus: processing (~1-10 min)\n\nhint: get_image(job_id=\"290eac7e-4f8d-49e8-9f9e-1fd4b7a50433\")"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "key": "pirata",
+      "tool": "create_image_pro",
+      "args": {
+        "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Charismatic male sea adventurer, wavy dark hair and teal headband, cheerful bold expression, sleeveless crimson vest over a cream shirt, cobalt blue trousers, brown waist sash, sturdy sandals, small brass compass hanging from a nautical belt. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+        "width": 48,
+        "height": 48,
+        "no_background": true,
+        "style_image_base64": "npc-style-reference.png",
+        "style_copy": [
+          "outline",
+          "detail",
+          "shading"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 618c52a1-eb3a-41bd-a44d-d3b4f08d681b\njob_id: 618c52a1-eb3a-41bd-a44d-d3b4f08d681b\nmodel: pro\ndescription: One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Charismatic male sea adventurer, wavy dark hair and teal headband, cheerful bold expression, sleeveless crimson vest over a cream shirt, cobalt blue trousers, brown waist sash, sturdy sandals, small brass compass hanging from a nautical belt. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.\nsize: 48x48px\ntransparent: True\ncandidates: 25\nstyle_image: yes (outline, detail, shading)\nasset_id: bfbceb94-a6ff-541c-8c85-80aa313d8a74\nasset_status: pending (saved when generation completes)\ncost: 10 generations\nstatus: processing (~1-10 min)\n\nhint: get_image(job_id=\"618c52a1-eb3a-41bd-a44d-d3b4f08d681b\")"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "key": "marinheiro",
+      "tool": "create_image_pro",
+      "args": {
+        "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Disciplined female naval watch officer, tied-back dark hair, composed confident face, original structured white naval tunic with navy blue shoulder panels and light blue trim, gray trousers, polished dark boots, small gold fasteners, no hat, no insignia. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+        "width": 48,
+        "height": 48,
+        "no_background": true,
+        "style_image_base64": "npc-style-reference.png",
+        "style_copy": [
+          "outline",
+          "detail",
+          "shading"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 71b89b38-0479-4713-bfa1-66fb3150344a\njob_id: 71b89b38-0479-4713-bfa1-66fb3150344a\nmodel: pro\ndescription: One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Disciplined female naval watch officer, tied-back dark hair, composed confident face, original structured white naval tunic with navy blue shoulder panels and light blue trim, gray trousers, polished dark boots, small gold fasteners, no hat, no insignia. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.\nsize: 48x48px\ntransparent: True\ncandidates: 25\nstyle_image: yes (outline, detail, shading)\nasset_id: 15d540d2-9dff-5356-ba3b-9900cb3f8a89\nasset_status: pending (saved when generation completes)\ncost: 10 generations\nstatus: processing (~1-10 min)\n\nhint: get_image(job_id=\"71b89b38-0479-4713-bfa1-66fb3150344a\")"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "key": "governo_mundial",
+      "tool": "create_image_pro",
+      "args": {
+        "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Refined male institutional envoy, neatly combed silver hair, stern dignified face, tailored ivory long coat over a deep blue waistcoat, black trousers, cool gray gloves, formal black boots and restrained gold edging, imposing upright posture, no emblems. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+        "width": 48,
+        "height": 48,
+        "no_background": true,
+        "style_image_base64": "npc-style-reference.png",
+        "style_copy": [
+          "outline",
+          "detail",
+          "shading"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 625e7701-4b48-4ae7-8db7-ad56667e5a2f\njob_id: 625e7701-4b48-4ae7-8db7-ad56667e5a2f\nmodel: pro\ndescription: One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Refined male institutional envoy, neatly combed silver hair, stern dignified face, tailored ivory long coat over a deep blue waistcoat, black trousers, cool gray gloves, formal black boots and restrained gold edging, imposing upright posture, no emblems. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.\nsize: 48x48px\ntransparent: True\ncandidates: 25\nstyle_image: yes (outline, detail, shading)\nasset_id: 6fe39b46-835d-5c1f-8881-6ea9be03981c\nasset_status: pending (saved when generation completes)\ncost: 10 generations\nstatus: processing (~1-10 min)\n\nhint: get_image(job_id=\"625e7701-4b48-4ae7-8db7-ad56667e5a2f\")"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "key": "revolucionario",
+      "tool": "create_character",
+      "args": {
+        "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Rebel female island courier, short dark curly hair, determined friendly face, dark green cropped field jacket, burgundy neck scarf, beige practical trousers, brown boots, utility belt with small pouches and aged brass buckles. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+        "name": "Iara do Levante",
+        "mode": "v3",
+        "size": 48,
+        "body_type": "humanoid",
+        "n_directions": 4,
+        "view": "low top-down",
+        "reference_image_base64": "revolucionario/selected-base.png"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: ef501312-8e44-4a1d-adc7-be446bd44c22\nname: Iara do Levante\nmode: v3 reference (1 generations, 4 directions)\nbody: humanoid\nsize: 48x48px\nview: low top-down\nstyle: from reference image (outline/detail hints ignored)\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\")"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "key": "pirata",
+      "tool": "create_character",
+      "args": {
+        "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Charismatic male sea adventurer, wavy dark hair and teal headband, cheerful bold expression, sleeveless crimson vest over a cream shirt, cobalt blue trousers, brown waist sash, sturdy sandals, small brass compass hanging from a nautical belt. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+        "name": "Bento Maré-Livre",
+        "mode": "v3",
+        "size": 48,
+        "body_type": "humanoid",
+        "n_directions": 4,
+        "view": "low top-down",
+        "reference_image_base64": "pirata/selected-base.png"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 5d04e580-5ad5-4f89-82f3-47be52a99804\nname: Bento Maré-Livre\nmode: v3 reference (1 generations, 4 directions)\nbody: humanoid\nsize: 48x48px\nview: low top-down\nstyle: from reference image (outline/detail hints ignored)\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "key": "marinheiro",
+      "tool": "create_character",
+      "args": {
+        "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Disciplined female naval watch officer, tied-back dark hair, composed confident face, original structured white naval tunic with navy blue shoulder panels and light blue trim, gray trousers, polished dark boots, small gold fasteners, no hat, no insignia. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+        "name": "Cecília da Vigília",
+        "mode": "v3",
+        "size": 48,
+        "body_type": "humanoid",
+        "n_directions": 4,
+        "view": "low top-down",
+        "reference_image_base64": "marinheiro/selected-base.png"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: ea8e0ab9-c0e4-46c2-985c-21889212ce12\nname: Cecília da Vigília\nmode: v3 reference (1 generations, 4 directions)\nbody: humanoid\nsize: 48x48px\nview: low top-down\nstyle: from reference image (outline/detail hints ignored)\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"ea8e0ab9-c0e4-46c2-985c-21889212ce12\")"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "key": "governo_mundial",
+      "tool": "create_character",
+      "args": {
+        "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Refined male institutional envoy, neatly combed silver hair, stern dignified face, tailored ivory long coat over a deep blue waistcoat, black trousers, cool gray gloves, formal black boots and restrained gold edging, imposing upright posture, no emblems. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+        "name": "Dário do Conselho",
+        "mode": "v3",
+        "size": 48,
+        "body_type": "humanoid",
+        "n_directions": 4,
+        "view": "low top-down",
+        "reference_image_base64": "governo_mundial/selected-base.png"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\nname: Dário do Conselho\nmode: v3 reference (1 generations, 4 directions)\nbody: humanoid\nsize: 48x48px\nview: low top-down\nstyle: from reference image (outline/detail hints ignored)\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\")"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "key": "revolucionario",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "ef501312-8e44-4a1d-adc7-be446bd44c22",
+        "mode": "template",
+        "template_animation_id": "breathing-idle",
+        "animation_name": "idle",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: ef501312-8e44-4a1d-adc7-be446bd44c22\nanimation: breathing-idle\nmode: template\ndirections: south, north, west, east (4 jobs)\njob_ids: south=3eee9c0d-32a2-4181-ba21-bb1ffd313216, north=5001194c-259e-4da9-8a71-db8ce03ebb63, west=d6167004-c87b-49e1-939f-5d10cebaf02b, east=2c510098-1951-476d-85b2-42db282e7473\ngroup: b297f01d-1bda-447c-96b3-5b2d90c7d29f\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min\nadd more directions to this group: animate_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\", template_animation_id=\"breathing-idle\", animation_group_id=\"b297f01d-1bda-447c-96b3-5b2d90c7d29f\", directions=[...])\n\nhint: get_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\")\nif poor: delete_animation(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\", animation_type=\"...\") then retry with mode=\"v3\""
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "key": "revolucionario",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "ef501312-8e44-4a1d-adc7-be446bd44c22",
+        "mode": "template",
+        "template_animation_id": "walking-8-frames",
+        "animation_name": "walk",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+          }
+        ],
+        "isError": true
+      }
+    },
+    {
+      "key": "pirata",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "template",
+        "template_animation_id": "breathing-idle",
+        "animation_name": "idle",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+          }
+        ],
+        "isError": true
+      }
+    },
+    {
+      "key": "pirata",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "template",
+        "template_animation_id": "walking-8-frames",
+        "animation_name": "walk",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+          }
+        ],
+        "isError": true
+      }
+    },
+    {
+      "key": "marinheiro",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "ea8e0ab9-c0e4-46c2-985c-21889212ce12",
+        "mode": "template",
+        "template_animation_id": "breathing-idle",
+        "animation_name": "idle",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+          }
+        ],
+        "isError": true
+      }
+    },
+    {
+      "key": "marinheiro",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "ea8e0ab9-c0e4-46c2-985c-21889212ce12",
+        "mode": "template",
+        "template_animation_id": "walking-8-frames",
+        "animation_name": "walk",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+          }
+        ],
+        "isError": true
+      }
+    },
+    {
+      "key": "governo_mundial",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "3a9ea5a7-cd16-4f20-99cd-7682bd215c4e",
+        "mode": "template",
+        "template_animation_id": "breathing-idle",
+        "animation_name": "idle",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+          }
+        ],
+        "isError": true
+      }
+    },
+    {
+      "key": "governo_mundial",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "3a9ea5a7-cd16-4f20-99cd-7682bd215c4e",
+        "mode": "template",
+        "template_animation_id": "walking-8-frames",
+        "animation_name": "walk",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for 4 jobs to finish (~2-4 min each)"
+          }
+        ],
+        "isError": true
+      }
+    },
+    {
+      "key": "revolucionario",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "ef501312-8e44-4a1d-adc7-be446bd44c22",
+        "mode": "template",
+        "template_animation_id": "walking-8-frames",
+        "animation_name": "walk",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: ef501312-8e44-4a1d-adc7-be446bd44c22\nanimation: walking-8-frames\nmode: template\ndirections: south, north, west, east (4 jobs)\njob_ids: south=c560522b-9cfd-4085-baf2-2ac2b8765bd7, north=49343585-137f-4649-9a5e-4ef6945f1d82, west=0cc053f3-b705-4dad-b833-4c01261c145f, east=f325da20-a313-404f-89f3-1b3c8e4685f5\ngroup: cf704e83-35cd-4c8c-a37c-2e1f5383ea07\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min\nadd more directions to this group: animate_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\", template_animation_id=\"walking-8-frames\", animation_group_id=\"cf704e83-35cd-4c8c-a37c-2e1f5383ea07\", directions=[...])\n\nhint: get_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\")\nif poor: delete_animation(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\", animation_type=\"...\") then retry with mode=\"v3\""
+          }
+        ],
+        "isError": false
+      },
+      "previous_rejection": "No job created: concurrency full."
+    },
+    {
+      "key": "pirata",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "template",
+        "template_animation_id": "breathing-idle",
+        "animation_name": "idle",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: breathing-idle\nmode: template\ndirections: south, north, west, east (4 jobs)\njob_ids: south=e0bb94b6-8742-4554-bc34-6c2b8a52fd54, north=96379d64-1b94-4d53-80c4-e84a387dfd89, west=cb8d5b5e-e552-43d1-b0d7-ce27f8e91f87, east=9c591aed-8352-4ee7-90fa-9ff21fe4de93\ngroup: 5ecf7121-fdff-4e97-8cd2-4273f63e183b\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", template_animation_id=\"breathing-idle\", animation_group_id=\"5ecf7121-fdff-4e97-8cd2-4273f63e183b\", directions=[...])\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nif poor: delete_animation(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", animation_type=\"...\") then retry with mode=\"v3\""
+          }
+        ],
+        "isError": false
+      },
+      "previous_rejection": "No job created: concurrency full."
+    },
+    {
+      "key": "pirata",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "template",
+        "template_animation_id": "walking-8-frames",
+        "animation_name": "walk",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: walking-8-frames\nmode: template\ndirections: south, north, west, east (4 jobs)\njob_ids: south=9bb6dfa4-8286-421f-b5ad-eafa6d30ba62, north=490e35dd-5540-44ef-a004-e3dc02287aef, west=cbe5cd4a-05a7-45f1-b55c-426c5520ff33, east=7fdb4bc5-aa8c-4ea3-8d69-3b4aeeebd1e1\ngroup: 7c112a14-ac64-4b6f-a567-3ed3e06d05ed\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", template_animation_id=\"walking-8-frames\", animation_group_id=\"7c112a14-ac64-4b6f-a567-3ed3e06d05ed\", directions=[...])\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nif poor: delete_animation(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", animation_type=\"...\") then retry with mode=\"v3\""
+          }
+        ],
+        "isError": false
+      },
+      "previous_rejection": "No job created: concurrency full."
+    },
+    {
+      "key": "marinheiro",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "ea8e0ab9-c0e4-46c2-985c-21889212ce12",
+        "mode": "template",
+        "template_animation_id": "breathing-idle",
+        "animation_name": "idle",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: ea8e0ab9-c0e4-46c2-985c-21889212ce12\nanimation: breathing-idle\nmode: template\ndirections: south, north, west, east (4 jobs)\njob_ids: south=99b87b8e-9acf-4555-b967-2d547af8b8d7, north=789e78d5-2bbf-4229-9ab0-68bc0da4012e, west=3f5fdf0a-b5b1-4668-84be-18c9c86e07d0, east=ae81dfaf-4429-4f29-a883-dd1e948858cd\ngroup: d1980a76-ca88-440d-bf99-1bed03c892f2\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min\nadd more directions to this group: animate_character(character_id=\"ea8e0ab9-c0e4-46c2-985c-21889212ce12\", template_animation_id=\"breathing-idle\", animation_group_id=\"d1980a76-ca88-440d-bf99-1bed03c892f2\", directions=[...])\n\nhint: get_character(character_id=\"ea8e0ab9-c0e4-46c2-985c-21889212ce12\")\nif poor: delete_animation(character_id=\"ea8e0ab9-c0e4-46c2-985c-21889212ce12\", animation_type=\"...\") then retry with mode=\"v3\""
+          }
+        ],
+        "isError": false
+      },
+      "previous_rejection": "No job created: concurrency full."
+    },
+    {
+      "key": "marinheiro",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "ea8e0ab9-c0e4-46c2-985c-21889212ce12",
+        "mode": "template",
+        "template_animation_id": "walking-8-frames",
+        "animation_name": "walk",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: ea8e0ab9-c0e4-46c2-985c-21889212ce12\nanimation: walking-8-frames\nmode: template\ndirections: south, north, west, east (4 jobs)\njob_ids: south=d2cd85fc-aaee-4bb3-ab2f-6582864f1d68, north=e45dfe34-f4f8-4ef3-add6-9961b7ed3685, west=954675fd-5c8e-4e69-bfd4-14b2558daee4, east=e83dc860-1158-45f1-8de0-576d6a49ac72\ngroup: aa7f4898-7590-4968-967f-eb8e4cfeaac3\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min\nadd more directions to this group: animate_character(character_id=\"ea8e0ab9-c0e4-46c2-985c-21889212ce12\", template_animation_id=\"walking-8-frames\", animation_group_id=\"aa7f4898-7590-4968-967f-eb8e4cfeaac3\", directions=[...])\n\nhint: get_character(character_id=\"ea8e0ab9-c0e4-46c2-985c-21889212ce12\")\nif poor: delete_animation(character_id=\"ea8e0ab9-c0e4-46c2-985c-21889212ce12\", animation_type=\"...\") then retry with mode=\"v3\""
+          }
+        ],
+        "isError": false
+      },
+      "previous_rejection": "No job created: concurrency full."
+    },
+    {
+      "key": "governo_mundial",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "3a9ea5a7-cd16-4f20-99cd-7682bd215c4e",
+        "mode": "template",
+        "template_animation_id": "breathing-idle",
+        "animation_name": "idle",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: 3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\nanimation: breathing-idle\nmode: template\ndirections: south, north, west, east (4 jobs)\njob_ids: south=f9411c3c-2461-4f9d-b69f-a3ca55c06cce, north=b56e60d5-b19f-4f6f-b443-f67be4d1349f, west=3557cc02-0721-41cc-8bfc-f6d97cfd5468, east=0c73fb02-9cc9-4332-9ce7-4737158e7c2e\ngroup: 302af732-5527-4c84-a865-5faa63fee1ed\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min\nadd more directions to this group: animate_character(character_id=\"3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\", template_animation_id=\"breathing-idle\", animation_group_id=\"302af732-5527-4c84-a865-5faa63fee1ed\", directions=[...])\n\nhint: get_character(character_id=\"3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\")\nif poor: delete_animation(character_id=\"3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\", animation_type=\"...\") then retry with mode=\"v3\""
+          }
+        ],
+        "isError": false
+      },
+      "previous_rejection": "No job created: concurrency full."
+    },
+    {
+      "key": "revolucionario",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "ef501312-8e44-4a1d-adc7-be446bd44c22",
+        "mode": "v3",
+        "directions": [
+          "south"
+        ],
+        "frame_count": 8,
+        "keep_first_frame": true,
+        "animation_name": "walk-south-corrected",
+        "action_description": "Walk in place facing directly south toward the viewer throughout the entire loop. Natural alternating steps and arm swing, stable body size, feet on a consistent ground line, keep the same outfit and face. Do not turn around."
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: ef501312-8e44-4a1d-adc7-be446bd44c22\nanimation: v3 custom (Walk in place facing directly south toward the viewer throughout the entire loop. Natural alternating steps and arm swing, stable body size, feet on a consistent ground line, keep the same outfit and face. Do not turn around.)\ndirections: south (1 jobs)\njob_ids: south=402f8cf0-fe8b-4888-9297-242586d48923\ngroup: acb82fe0-d127-4550-a1aa-85e41b0746da\nframes: 9 (1 reference + 8 animated)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\")\nadd more directions to this group: animate_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\", action_description=\"Walk in place facing directly south toward the viewer throughout the entire loop. Natural alternating steps and arm swing, stable body size, feet on a consistent ground line, keep the same outfit and face. Do not turn around.\", animation_group_id=\"acb82fe0-d127-4550-a1aa-85e41b0746da\", directions=[...])"
+          }
+        ],
+        "isError": false
+      },
+      "authorization": "User explicitly approved one corrective v3 south animation, 1–2 extra generations."
+    },
+    {
+      "key": "governo_mundial",
+      "tool": "animate_character",
+      "args": {
+        "character_id": "3a9ea5a7-cd16-4f20-99cd-7682bd215c4e",
+        "mode": "template",
+        "template_animation_id": "walking-8-frames",
+        "animation_name": "walk",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: 3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\nanimation: walking-8-frames\nmode: template\ndirections: south, north, west, east (4 jobs)\njob_ids: south=272cbeba-279d-4fac-b7c6-c071ee0e538b, north=a6ec42f9-ff5b-4d1d-827e-44b9ff5592ff, west=c0cac2b4-db2a-44e7-8956-7b06dd109fa4, east=095d61cd-9020-4a92-8730-e4636e469dfe\ngroup: 46528e1b-5476-499b-82bd-094550e605a6\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min\nadd more directions to this group: animate_character(character_id=\"3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\", template_animation_id=\"walking-8-frames\", animation_group_id=\"46528e1b-5476-499b-82bd-094550e605a6\", directions=[...])\n\nhint: get_character(character_id=\"3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\")\nif poor: delete_animation(character_id=\"3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\", animation_type=\"...\") then retry with mode=\"v3\""
+          }
+        ],
+        "isError": false
+      },
+      "previous_rejection": "No job created: concurrency full."
+    }
+  ],
+  "issues": [
+    {
+      "faction": "revolucionario",
+      "animation": "walk south",
+      "original": "Template frames 5–8 face north.",
+      "correction": "V3 corrective generation turns to the side near the end.",
+      "resolution": "User explicitly approved original frontal frames 1–4. Applied at 6 FPS in playback-overrides.json without repainting or synthesis."
+    }
+  ],
+  "auth_note": "MCP connection succeeded. Optional REST environment credential returned 401; no REST generation was attempted.",
+  "download_note": "Official MCP character archives used; direct CDN downloads work with a normal browser User-Agent. No paid retry was made for download errors.",
+  "actual_usage": {
+    "generations": 77
+  },
+  "cost_breakdown": {
+    "base_images": 40,
+    "four_direction_characters": 4,
+    "template_idle_and_walk": 32,
+    "approved_iara_corrective_attempt": 1
+  },
+  "verification": "Six faction browser scenarios, 12 class regression scenarios, 12 island/HUD regression scenarios, and 188 runtime frames checked.",
+  "playback_resolution": {
+    "user_approval": "Usar os quatro frames válidos",
+    "runtime": "Iara original south frames 1–4 at 6 FPS; full rejected template and V3 animation retained in original archive and raw files.",
+    "other_walks": "8 frames per direction at 8 FPS",
+    "idle": "4 frames per direction at 4 FPS"
+  },
+  "output_files": [
+    "assets/factions/governo_mundial/idle.png",
+    "assets/factions/governo_mundial/metadata.json",
+    "assets/factions/governo_mundial/preview.png",
+    "assets/factions/governo_mundial/walk.png",
+    "assets/factions/marinheiro/idle.png",
+    "assets/factions/marinheiro/metadata.json",
+    "assets/factions/marinheiro/preview.png",
+    "assets/factions/marinheiro/walk.png",
+    "assets/factions/pirata/idle.png",
+    "assets/factions/pirata/metadata.json",
+    "assets/factions/pirata/preview.png",
+    "assets/factions/pirata/walk.png",
+    "assets/factions/revolucionario/idle.png",
+    "assets/factions/revolucionario/metadata.json",
+    "assets/factions/revolucionario/preview.png",
+    "assets/factions/revolucionario/walk.png"
+  ],
+  "preservation": {
+    "existing_assets": 52,
+    "world_camera_and_character_balance_files": 4,
+    "sha256_differences": []
+  },
+  "verification_results": {
+    "docs/evidence-factions/results.json": [
+      {
+        "test": "faction_revolutionary",
+        "result": "passed",
+        "detail": "Selection loads new art; real idle/walk in four directions; movement, no smoothing, sheet dimensions and NPC scale capture."
+      },
+      {
+        "test": "faction_pirate",
+        "result": "passed",
+        "detail": "Selection loads new art; real idle/walk in four directions; movement, no smoothing, sheet dimensions and NPC scale capture."
+      },
+      {
+        "test": "showcase",
+        "result": "passed",
+        "detail": "Four generated characters inspectable together inside the actual lobby, idle/walk and four directions, with close control."
+      },
+      {
+        "test": "faction_marine",
+        "result": "passed",
+        "detail": "Selection loads new art; real idle/walk in four directions; movement, no smoothing, sheet dimensions and NPC scale capture."
+      },
+      {
+        "test": "faction_government",
+        "result": "passed",
+        "detail": "Selection loads new art; real idle/walk in four directions; movement, no smoothing, sheet dimensions and NPC scale capture."
+      },
+      {
+        "test": "javascript_and_saves",
+        "result": "passed",
+        "detail": "No uncaught JS errors; faction/class/equipment and point investments survive reload in every isolated context."
+      }
+    ],
+    "docs/evidence-factions/character-regression/results.json": [
+      {
+        "test": "create_idle_level_sword",
+        "result": "passed",
+        "detail": {
+          "kills": 3,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_brawler",
+        "result": "passed",
+        "detail": {
+          "kills": 4,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            0
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_gunner",
+        "result": "passed",
+        "detail": {
+          "kills": 4,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_rogue",
+        "result": "passed",
+        "detail": {
+          "kills": 3,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_cyborg",
+        "result": "passed",
+        "detail": {
+          "kills": 4,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            0
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_strategist",
+        "result": "passed",
+        "detail": {
+          "kills": 4,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_healer",
+        "result": "passed",
+        "detail": {
+          "kills": 4,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "test": "legacy_preview_confirm_reload",
+        "result": "passed",
+        "detail": "Original save backed up; all five stats preview, reset, remove and confirm; progress/items retained, no duplicate points across three reloads."
+      },
+      {
+        "test": "character_resolutions_inventory_forge",
+        "result": "passed",
+        "detail": "Character panel fits desktop and mobile; existing inventory and guaranteed +1 forge still work."
+      },
+      {
+        "test": "healer_real_heal_buff_cooldown",
+        "result": "passed",
+        "detail": "Configured 80% threshold persists; injured solo healer restores HP, spends energy, activates real protection and respects cooldown."
+      },
+      {
+        "test": "healer_no_wasted_full_health_heal",
+        "result": "passed",
+        "detail": "Full-health heal does not consume energy or start cooldown."
+      },
+      {
+        "test": "javascript",
+        "result": "passed",
+        "detail": "No uncaught JS errors across all isolated contexts."
+      }
+    ],
+    "docs/evidence-factions/island-regression/results.json": [
+      {
+        "test": "real_hud_data",
+        "result": "passed",
+        "detail": "Profile XP, HP, energy and power plus the real contract are visible; local chat is open on desktop."
+      },
+      {
+        "test": "hud_three_sizes",
+        "result": "passed",
+        "detail": "No intersections/out-of-viewport HUD modules at 1920x1080, 1366x768, 1280x720."
+      },
+      {
+        "test": "movement_camera",
+        "result": "passed",
+        "detail": "Click reaches a destination gradually and moves the camera over 150 units at native pixel scale."
+      },
+      {
+        "test": "npc_service",
+        "result": "passed",
+        "detail": "After moving camera, clicking Ryuma approaches and opens the real forge."
+      },
+      {
+        "test": "hud_controls",
+        "result": "passed",
+        "detail": "Journey and chat collapse/expand correctly."
+      },
+      {
+        "test": "inventory",
+        "result": "passed",
+        "detail": "Original inventory remains functional with equipment, bag and detail columns."
+      },
+      {
+        "test": "hunt_regression",
+        "result": "passed",
+        "detail": "23 defeats with preserved class/equipment stats and common camera coordinates."
+      },
+      {
+        "test": "journey_reward",
+        "result": "passed",
+        "detail": "The visible journey button claims the actual completed contract and awards its currency."
+      },
+      {
+        "test": "save_regression",
+        "result": "passed",
+        "detail": "Rewards, equipment IDs, bag, XP and currency survive return and reload."
+      },
+      {
+        "test": "small_screens",
+        "result": "passed",
+        "detail": "Essential HUD modules fit 768x740 and 390x844 without intersecting."
+      },
+      {
+        "test": "harbor_coast",
+        "result": "passed",
+        "detail": "A click route crosses the actual island coastline onto the wooden dock without entering deep water."
+      },
+      {
+        "test": "javascript",
+        "result": "passed",
+        "detail": "No uncaught JS errors during the acceptance run."
+      }
+    ]
+  },
+  "render_calibration": "70px median visible height per animation/direction, preserving aspect ratio, integer destination coordinates and disabled smoothing. Native source pixels and source PNGs unchanged."
+}

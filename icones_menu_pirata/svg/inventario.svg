@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE9A8"/>
+      <stop offset="0.5" stop-color="#E7B64C"/>
+      <stop offset="1" stop-color="#A8701F"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#C98349"/>
+      <stop offset="1" stop-color="#6B3A1D"/>
+    </linearGradient>
+    <clipPath id="lidClip">
+      <path d="M34 122 V104 C34 62 76 40 128 40 C180 40 222 62 222 104 V122 Z"/>
+    </clipPath>
+    <clipPath id="bodyClip">
+      <rect x="34" y="122" width="188" height="96" rx="10"/>
+    </clipPath>
+  </defs>
+
+  <ellipse cx="128" cy="231" rx="88" ry="9" fill="#000000" opacity="0.28"/>
+
+  <!-- corpo do bau -->
+  <rect x="34" y="122" width="188" height="96" rx="10" fill="url(#wood)"/>
+  <g clip-path="url(#bodyClip)">
+    <path d="M34 154 H222 M34 186 H222" stroke="#3E2010" stroke-width="3" opacity="0.55"/>
+    <rect x="58" y="122" width="22" height="96" fill="url(#gold)" stroke="#24160B" stroke-width="5"/>
+    <rect x="176" y="122" width="22" height="96" fill="url(#gold)" stroke="#24160B" stroke-width="5"/>
+    <circle cx="69" cy="144" r="3.5" fill="#FFF1C2" stroke="#24160B" stroke-width="2"/>
+    <circle cx="69" cy="200" r="3.5" fill="#FFF1C2" stroke="#24160B" stroke-width="2"/>
+    <circle cx="187" cy="144" r="3.5" fill="#FFF1C2" stroke="#24160B" stroke-width="2"/>
+    <circle cx="187" cy="200" r="3.5" fill="#FFF1C2" stroke="#24160B" stroke-width="2"/>
+  </g>
+  <rect x="34" y="122" width="188" height="96" rx="10" fill="none" stroke="#24160B" stroke-width="8"/>
+
+  <!-- tampa -->
+  <path d="M34 122 V104 C34 62 76 40 128 40 C180 40 222 62 222 104 V122 Z" fill="url(#wood)"/>
+  <g clip-path="url(#lidClip)">
+    <rect x="58" y="30" width="22" height="100" fill="url(#gold)" stroke="#24160B" stroke-width="5"/>
+    <rect x="176" y="30" width="22" height="100" fill="url(#gold)" stroke="#24160B" stroke-width="5"/>
+    <path d="M48 96 C56 68 82 52 112 49" fill="none" stroke="#FFFFFF" stroke-width="6" stroke-linecap="round" opacity="0.22"/>
+    <circle cx="69" cy="104" r="3.5" fill="#FFF1C2" stroke="#24160B" stroke-width="2"/>
+    <circle cx="187" cy="104" r="3.5" fill="#FFF1C2" stroke="#24160B" stroke-width="2"/>
+  </g>
+  <path d="M34 122 V104 C34 62 76 40 128 40 C180 40 222 62 222 104 V122" fill="none" stroke="#24160B" stroke-width="8" stroke-linejoin="round"/>
+
+  <!-- faixa central -->
+  <rect x="30" y="114" width="196" height="18" rx="5" fill="url(#gold)" stroke="#24160B" stroke-width="6"/>
+
+  <!-- fechadura -->
+  <path d="M108 124 H148 V152 Q148 162 138 162 H118 Q108 162 108 152 Z" fill="url(#gold)" stroke="#24160B" stroke-width="6" stroke-linejoin="round"/>
+  <circle cx="128" cy="140" r="6" fill="#24160B"/>
+  <path d="M125 142 H131 L132 154 H124 Z" fill="#24160B"/>
+
+  <!-- brilhos -->
+  <path d="M222 20 L227 36 L243 41 L227 46 L222 62 L217 46 L201 41 L217 36 Z" fill="#FFF6CF" stroke="#E7B64C" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M30 50 L33 59 L42 62 L33 65 L30 74 L27 65 L18 62 L27 59 Z" fill="#FFF6CF" opacity="0.9"/>
+</svg>

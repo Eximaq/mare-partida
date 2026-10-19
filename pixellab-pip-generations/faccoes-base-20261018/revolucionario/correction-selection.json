@@ -1,0 +1,6 @@
+{
+  "animation": "walk-south-corrected",
+  "direction": "south",
+  "frames": 9,
+  "rejected": "Original walking-8-frames south turns backward in frames 5\u20138; retained unchanged in ZIP and original walk-south PNGs."
+}

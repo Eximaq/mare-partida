@@ -1,0 +1,585 @@
+{
+  "status": "superseded_by_five_verified_direction_corrections",
+  "approval": "aprovo o lote completo: 21–41 additional generations, no retries",
+  "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+  "calls": [
+    {
+      "approval": "aprovo o lote completo",
+      "args": {
+        "name": "Bento Maré-Livre · Espadachim",
+        "description": "Bento Maré-Livre, the same pirate swordsman as the reference. Preserve his face, hair, teal headband, crimson vest, cream shirt, blue trousers, proportions, pixel shading and original steel sword with bronze guard and cloth grip.",
+        "mode": "v3",
+        "body_type": "humanoid",
+        "n_directions": 4,
+        "size": 64,
+        "view": "low top-down",
+        "reference_image_base64": "bento-guard-corrected.png"
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 1c0b995e-67da-4baf-b6e7-f210bd709ef4\nname: Bento Maré-Livre · Espadachim\nmode: v3 reference (1 generations, 4 directions)\nbody: humanoid\nsize: 64x64px\nview: low top-down\nstyle: from reference image (outline/detail hints ignored)\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\")"
+          }
+        ],
+        "isError": false
+      },
+      "reported_usage": {
+        "generations": 1
+      },
+      "seed": "omitted"
+    },
+    {
+      "args": {
+        "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "combat-idle",
+        "frame_count": 4,
+        "action_description": "Hold a steady sword combat guard with subtle breathing. Keep the sword in the same hand, feet planted, body in place and facing unchanged. Return smoothly to the starting guard."
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: 1c0b995e-67da-4baf-b6e7-f210bd709ef4\nanimation: v3 custom (Hold a steady sword combat guard with subtle breathing. Keep the sword in the same hand, feet planted, body in place and facing unchanged. Return smoothly to the starting guard.)\ndirections: south, north, west, east (4 jobs)\njob_ids: south=d489b5a5-c699-47d6-acd0-689bcb2be262, north=07279e0e-adc9-49d0-bd64-b753de535835, west=a49d60d0-95bf-44b8-9425-b315761c3143, east=c62a31a7-4c10-43bf-baa7-31f89844a2a0\ngroup: a15d93dd-9ea5-413c-b26f-a95d0c01ce5f\nframes: 4 (reference stripped, keep_first_frame=false)\ncanvas: south 76x76, north 76x76, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\")\nadd more directions to this group: animate_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\", action_description=\"Hold a steady sword combat guard with subtle breathing. Keep the sword in the same hand, feet planted, body in place and facing unchanged. Return smoothly to the starting guard.\", animation_group_id=\"a15d93dd-9ea5-413c-b26f-a95d0c01ce5f\", directions=[...])"
+          }
+        ],
+        "isError": false
+      },
+      "reported_usage": {
+        "generations": 4
+      },
+      "seed": "omitted"
+    },
+    {
+      "args": {
+        "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "attack",
+        "frame_count": 8,
+        "action_description": "Prepare one sword strike, swing through a clear impact, then fully recover into the same starting guard. Keep the sword in the same hand, body in place and facing unchanged."
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: 1c0b995e-67da-4baf-b6e7-f210bd709ef4\nanimation: v3 custom (Prepare one sword strike, swing through a clear impact, then fully recover into the same starting guard. Keep the sword in the same hand, body in place and facing unchanged.)\ndirections: south, north, west, east (4 jobs)\njob_ids: south=f0fdf5dc-112b-4cd5-ba62-c8bce9b70d1f, north=5935b4fa-e324-4037-b6d2-63a33d9b9699, west=b472519c-97bf-4b23-9bca-502ac3940984, east=12fd0ba7-8014-425d-9595-894a90f923bc\ngroup: a366a247-be91-4cbc-8d7e-e0a69886799d\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: south 76x76, north 76x76, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\")\nadd more directions to this group: animate_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\", action_description=\"Prepare one sword strike, swing through a clear impact, then fully recover into the same starting guard. Keep the sword in the same hand, body in place and facing unchanged.\", animation_group_id=\"a366a247-be91-4cbc-8d7e-e0a69886799d\", directions=[...])"
+          }
+        ],
+        "isError": false
+      },
+      "reported_usage": {
+        "generations": 4
+      },
+      "seed": "omitted"
+    },
+    {
+      "args": {
+        "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "corte-de-mare",
+        "frame_count": 12,
+        "action_description": "Wind up, perform one broad sword slash with a brief original turquoise sea-energy arc, then recover into the same starting guard. Keep the sword in the same hand, body in place and facing unchanged."
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: 1c0b995e-67da-4baf-b6e7-f210bd709ef4\nanimation: v3 custom (Wind up, perform one broad sword slash with a brief original turquoise sea-energy arc, then recover into the same starting guard. Keep the sword in the same hand, body in place and facing unchanged.)\ndirections: south, north, west, east (4 jobs)\njob_ids: south=366dab0f-fa46-412a-8c8b-8358c937e9a7, north=f4df51ce-94ed-43e6-aff6-73fea16dc20a, west=5e4cc282-082e-4248-aab3-80e0c58ccdb2, east=519c34f8-7e55-459a-a44d-5d7b9b77fced\ngroup: d4477645-4ddb-4463-a1cc-fcef055ce911\nframes: 12 (reference stripped, keep_first_frame=false)\ncanvas: south 76x76, north 76x76, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 6 generations (south=2, north=2, west=1, east=1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\")\nadd more directions to this group: animate_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\", action_description=\"Wind up, perform one broad sword slash with a brief original turquoise sea-energy arc, then recover into the same starting guard. Keep the sword in the same hand, body in place and facing unchanged.\", animation_group_id=\"d4477645-4ddb-4463-a1cc-fcef055ce911\", directions=[...])"
+          }
+        ],
+        "isError": false
+      },
+      "reported_usage": {
+        "generations": 6
+      },
+      "seed": "omitted"
+    },
+    {
+      "args": {
+        "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "hurt",
+        "frame_count": 4,
+        "action_description": "Recoil briefly from one hit, bend slightly, then return to the same sword guard. Keep the sword in the same hand, body in place and facing unchanged."
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: 1c0b995e-67da-4baf-b6e7-f210bd709ef4\nanimation: v3 custom (Recoil briefly from one hit, bend slightly, then return to the same sword guard. Keep the sword in the same hand, body in place and facing unchanged.)\ndirections: south, north, west, east (4 jobs)\njob_ids: south=630cc82b-e9b0-4663-9adf-7250cf519351, north=7d333081-d8f3-4150-9fbc-3e8db0dccb62, west=6f30592b-fc90-4218-b9a6-d5d00ad1d182, east=278d84a1-3a93-453f-8cd1-e595729264e3\ngroup: cf6cd736-cf35-40d3-9f89-5f09822b660b\nframes: 4 (reference stripped, keep_first_frame=false)\ncanvas: south 76x76, north 76x76, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\")\nadd more directions to this group: animate_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\", action_description=\"Recoil briefly from one hit, bend slightly, then return to the same sword guard. Keep the sword in the same hand, body in place and facing unchanged.\", animation_group_id=\"cf6cd736-cf35-40d3-9f89-5f09822b660b\", directions=[...])"
+          }
+        ],
+        "isError": false
+      },
+      "reported_usage": {
+        "generations": 4
+      },
+      "seed": "omitted"
+    },
+    {
+      "args": {
+        "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "death",
+        "frame_count": 8,
+        "action_description": "Lose balance gradually, buckle at the knees and fall to the ground, ending in a still fallen pose with the sword visible. Keep continuous movement without vanishing or teleporting."
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "character: 1c0b995e-67da-4baf-b6e7-f210bd709ef4\nanimation: v3 custom (Lose balance gradually, buckle at the knees and fall to the ground, ending in a still fallen pose with the sword visible. Keep continuous movement without vanishing or teleporting.)\ndirections: south, north, west, east (4 jobs)\njob_ids: south=07bd9884-bc27-4f41-a953-3ec87d7cb8ec, north=fd02d1d3-331c-462e-a2fd-c13780c5be7d, west=e8ba6739-01b2-482f-b04f-4946b8f49c8c, east=d4f18074-c6b5-4ea1-a551-73c1d032d0c6\ngroup: 6f8e7950-59ae-456b-9738-34323ad58930\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: south 76x76, north 76x76, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\")\nadd more directions to this group: animate_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\", action_description=\"Lose balance gradually, buckle at the knees and fall to the ground, ending in a still fallen pose with the sword visible. Keep continuous movement without vanishing or teleporting.\", animation_group_id=\"6f8e7950-59ae-456b-9738-34323ad58930\", directions=[...])"
+          }
+        ],
+        "isError": false
+      },
+      "reported_usage": {
+        "generations": 4
+      },
+      "seed": "omitted"
+    }
+  ],
+  "reported_usage": {
+    "generations": 23
+  },
+  "completion": {
+    "content": [
+      {
+        "type": "text",
+        "text": "status: completed\nid: 1c0b995e-67da-4baf-b6e7-f210bd709ef4\nname: Bento Maré-Livre · Espadachim\nstate_name: Idle\ndirections: 4 (south, east, north, west)\nsize: 64x64px\nview: low top-down\nstyle: -, -, -\ngroup: ac0106c1-eea3-4aab-b1bc-ea9ccb0a0294 (1 state)\n\nrotations:\n  south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/rotations/south.png?t=1792350605\n  east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/rotations/east.png?t=1792350605\n  north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/rotations/north.png?t=1792350605\n  west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/rotations/west.png?t=1792350605\n\nanimations (5 groups, 20 total):\n  death — 4 dir (south, north, east, west), 8f 2026-10-18 [type=custom-Lose balance gradually, buckle] [group: 6f8e7950-59ae-456b-9738-34323ad58930]\n    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/2deaf850-9308-4dff-be06-7945f615513d/south/{i}.png?t=1792351474251 (i=0..7)\n    north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/b81a1e35-7acc-4611-865e-64811529d462/north/{i}.png?t=1792351456062 (i=0..7)\n    east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/16964fce-39b4-4571-9ed2-1ad5f77ea84b/east/{i}.png?t=1792351445432 (i=0..7)\n    west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/ca71dac7-7878-45d9-88ab-e1ed1c9520fe/west/{i}.png?t=1792351407105 (i=0..7)\n  hurt — 4 dir (east, west, north, south), 4f 2026-10-18 [type=custom-Recoil briefly from one hit, b] [group: cf6cd736-cf35-40d3-9f89-5f09822b660b]\n    east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/46869897-bd21-4e2c-a53f-da35aa6465db/east/{i}.png?t=1792351294088 (i=0..3)\n    west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/f36d57b8-8a1e-4b9d-a29b-226a28bc6b52/west/{i}.png?t=1792351280816 (i=0..3)\n    north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/4448377a-1d4a-4277-9158-98befcf9809f/north/{i}.png?t=1792351267370 (i=0..3)\n    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/a71054b2-95e2-4072-98c8-7c9a650b934a/south/{i}.png?t=1792351249177 (i=0..3)\n  corte-de-mare — 4 dir (north, south, east, west), 12f 2026-10-18 [type=custom-Wind up, perform one broad swo] [group: d4477645-4ddb-4463-a1cc-fcef055ce911]\n    north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/852803a5-7ea4-4798-8f4a-22fc62ec9424/north/{i}.png?t=1792351287827 (i=0..11)\n    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/ffa959be-fb21-4c6f-9d06-36038f0380bc/south/{i}.png?t=1792351227231 (i=0..11)\n    east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/ad9603dc-f756-45da-9f9d-a222a478093a/east/{i}.png?t=1792351206791 (i=0..11)\n    west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/bf4c1056-6240-4f9f-b16f-4983865a58ac/west/{i}.png?t=1792351141447 (i=0..11)\n  attack — 4 dir (west, north, south, east), 8f 2026-10-18 [type=custom-Prepare one sword strike, swin] [group: a366a247-be91-4cbc-8d7e-e0a69886799d]\n    west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/1a6362a4-9217-44b5-ac7e-def9dd04c609/west/{i}.png?t=1792350951740 (i=0..7)\n    north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/1c176cfe-703e-4d3e-81c7-92d97035ff5f/north/{i}.png?t=1792350923988 (i=0..7)\n    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/334df374-e265-4353-92ad-0a0820c6b6cb/south/{i}.png?t=1792350907308 (i=0..7)\n    east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/27b12bea-c1e6-4e4a-82a6-4c9261c18106/east/{i}.png?t=1792350899829 (i=0..7)\n  combat-idle — 4 dir (south, west, north, east), 4f 2026-10-18 [type=custom-Hold a steady sword combat gua] [group: a15d93dd-9ea5-413c-b26f-a95d0c01ce5f]\n    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/7dfea2d6-9142-49e7-a109-7dbf949566bf/south/{i}.png?t=1792350921348 (i=0..3)\n    west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/8433c057-a11d-44f0-a45f-74efec35727a/west/{i}.png?t=1792350918175 (i=0..3)\n    north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/f6eb9655-088b-4d91-a4ba-6a503563dde7/north/{i}.png?t=1792350918150 (i=0..3)\n    east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/14e7c0e7-0aed-4ce9-83d9-f7836cdb5406/east/{i}.png?t=1792350918149 (i=0..3)\n\ndownload: https://api.pixellab.ai/mcp/characters/1c0b995e-67da-4baf-b6e7-f210bd709ef4/download\nspritesheet: https://api.pixellab.ai/mcp/characters/1c0b995e-67da-4baf-b6e7-f210bd709ef4/spritesheet (this state only — one uniform-grid sheet PNG + layout JSON, zipped; cells pivot-centred)\n\navailable_animations: backflip, breathing-idle, cross-punch, crouched-walking, crouching, drinking, falling-back-death, fight-stance-idle-8-frames, fireball, flying-kick, front-flip, getting-up, high-kick, hurricane-kick, jumping-1, jumping-2, lead-jab, leg-sweep, picking-up, pull-heavy-object, pushing, roundhouse-kick, running-4-frames, running-6-frames, running-8-frames, running-jump, running-slide, sad-walk, scary-walk, surprise-uppercut, taking-punch, throw-object, two-footed-jump, walk, walk-1, walk-2, walking, walking-10, walking-2, walking-3, walking-4, walking-4-frames, walking-5, walking-6, walking-6-frames, walking-7, walking-8, walking-8-frames, walking-9\n\nactions: animate_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\", ...) | create_character_state(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\", ...) | delete_animation(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\", animation_group_id=\"<group>\") | delete_character(character_id=\"1c0b995e-67da-4baf-b6e7-f210bd709ef4\")"
+      }
+    ],
+    "isError": false
+  },
+  "visual_review": {
+    "status": "complete",
+    "reviewed": [
+      "combat-idle/south",
+      "combat-idle/north",
+      "combat-idle/west",
+      "combat-idle/east",
+      "attack/south",
+      "attack/north",
+      "attack/west",
+      "attack/east",
+      "corte-de-mare/south",
+      "corte-de-mare/north",
+      "corte-de-mare/west",
+      "corte-de-mare/east",
+      "hurt/south",
+      "hurt/north",
+      "hurt/west",
+      "hurt/east",
+      "death/south",
+      "death/north",
+      "death/west",
+      "death/east"
+    ],
+    "rejected": {
+      "attack/west": "The final recovery rotates into a frontal stance instead of recovering the west-facing guard. Entire clip retained, no trimming or mirroring."
+    },
+    "caveats": {
+      "combat-idle": "Sword moves substantially rather than a steady subtle guard; west blade becomes almost invisible. Needs artistic refinement.",
+      "attack/north": "One strong white body/impact flash.",
+      "attack/east": "Torso rotates toward viewer during swing and recovery.",
+      "corte-de-mare/west": "Turquoise energy arc is absent from generated clip; existing game slash remains at impact.",
+      "corte-de-mare/south": "A detached small gray pixel appears in the final frame.",
+      "hurt": "Four-frame reaction does not fully recover guard before switching back.",
+      "death/west": "Ends seated/fallen rather than prone; continuous fall, sword visible, no disappearance."
+    },
+    "paid_retries_authorized": false,
+    "integration": "19 animated action-direction combinations plus an explicitly recorded static armed guard for attack/west; correction requires separate approval.",
+    "accepted_for_runtime_with_recorded_caveats": [
+      "combat-idle/south",
+      "combat-idle/north",
+      "combat-idle/west",
+      "combat-idle/east",
+      "attack/south",
+      "attack/north",
+      "attack/east",
+      "corte-de-mare/south",
+      "corte-de-mare/north",
+      "corte-de-mare/west",
+      "corte-de-mare/east",
+      "hurt/south",
+      "hurt/north",
+      "hurt/west",
+      "hurt/east",
+      "death/south",
+      "death/north",
+      "death/west",
+      "death/east"
+    ]
+  },
+  "verification": {
+    "original_frames": 144,
+    "exact_pixel_packaging": true,
+    "fixed_pivot": true,
+    "animation_cells": [
+      84,
+      84
+    ]
+  },
+  "tests": {
+    "combat": [
+      {
+        "test": "actual_combat",
+        "passed": true,
+        "states": [
+          "attack",
+          "combat-idle",
+          "hurt",
+          "skill",
+          "walk"
+        ],
+        "impacts": 3,
+        "kills": 4
+      },
+      {
+        "test": "real_death_hold_respawn",
+        "passed": true,
+        "stationary_while_dead": true,
+        "last_frame_held": true,
+        "save_identity_preserved": true
+      },
+      {
+        "test": "faction_and_class_scope",
+        "passed": true,
+        "other_factions_and_classes_use_original_sprites": true
+      }
+    ],
+    "classes": [
+      {
+        "test": "create_idle_level_sword",
+        "result": "passed",
+        "detail": {
+          "kills": 6,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_brawler",
+        "result": "passed",
+        "detail": {
+          "kills": 4,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_gunner",
+        "result": "passed",
+        "detail": {
+          "kills": 3,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_rogue",
+        "result": "passed",
+        "detail": {
+          "kills": 3,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_cyborg",
+        "result": "passed",
+        "detail": {
+          "kills": 3,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            0
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_strategist",
+        "result": "passed",
+        "detail": {
+          "kills": 4,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            1,
+            1
+          ]
+        }
+      },
+      {
+        "test": "create_idle_level_healer",
+        "result": "passed",
+        "detail": {
+          "kills": 3,
+          "level": 2,
+          "unspent": 5,
+          "skills": [
+            0,
+            0
+          ]
+        }
+      },
+      {
+        "test": "legacy_preview_confirm_reload",
+        "result": "passed",
+        "detail": "Original save backed up; all five stats preview, reset, remove and confirm; progress/items retained, no duplicate points across three reloads."
+      },
+      {
+        "test": "character_resolutions_inventory_forge",
+        "result": "passed",
+        "detail": "Character panel fits desktop and mobile; existing inventory and guaranteed +1 forge still work."
+      },
+      {
+        "test": "healer_real_heal_buff_cooldown",
+        "result": "passed",
+        "detail": "Configured 80% threshold persists; injured solo healer restores HP, spends energy, activates real protection and respects cooldown."
+      },
+      {
+        "test": "healer_no_wasted_full_health_heal",
+        "result": "passed",
+        "detail": "Full-health heal does not consume energy or start cooldown."
+      },
+      {
+        "test": "javascript",
+        "result": "passed",
+        "detail": "No uncaught JS errors across all isolated contexts."
+      }
+    ],
+    "island": [
+      {
+        "test": "real_hud_data",
+        "result": "passed",
+        "detail": "Profile XP, HP, energy and power plus the real contract are visible; local chat is open on desktop."
+      },
+      {
+        "test": "hud_three_sizes",
+        "result": "passed",
+        "detail": "No intersections/out-of-viewport HUD modules at 1920x1080, 1366x768, 1280x720."
+      },
+      {
+        "test": "movement_camera",
+        "result": "passed",
+        "detail": "Click reaches a destination gradually and moves the camera over 150 units at native pixel scale."
+      },
+      {
+        "test": "npc_service",
+        "result": "passed",
+        "detail": "After moving camera, clicking Ryuma approaches and opens the real forge."
+      },
+      {
+        "test": "hud_controls",
+        "result": "passed",
+        "detail": "Journey and chat collapse/expand correctly."
+      },
+      {
+        "test": "inventory",
+        "result": "passed",
+        "detail": "Original inventory remains functional with equipment, bag and detail columns."
+      },
+      {
+        "test": "hunt_regression",
+        "result": "passed",
+        "detail": "20 defeats with preserved class/equipment stats and common camera coordinates."
+      },
+      {
+        "test": "journey_reward",
+        "result": "passed",
+        "detail": "The visible journey button claims the actual completed contract and awards its currency."
+      },
+      {
+        "test": "save_regression",
+        "result": "passed",
+        "detail": "Rewards, equipment IDs, bag, XP and currency survive return and reload."
+      },
+      {
+        "test": "small_screens",
+        "result": "passed",
+        "detail": "Essential HUD modules fit 768x740 and 390x844 without intersecting."
+      },
+      {
+        "test": "harbor_coast",
+        "result": "passed",
+        "detail": "A click route crosses the actual island coastline onto the wooden dock without entering deep water."
+      },
+      {
+        "test": "javascript",
+        "result": "passed",
+        "detail": "No uncaught JS errors during the acceptance run."
+      }
+    ],
+    "factions": [
+      {
+        "test": "faction_revolutionary",
+        "result": "passed",
+        "detail": "Selection loads new art; real idle/walk in four directions; movement, no smoothing, sheet dimensions and NPC scale capture."
+      },
+      {
+        "test": "faction_pirate",
+        "result": "passed",
+        "detail": "Selection loads new art; real idle/walk in four directions; movement, no smoothing, sheet dimensions and NPC scale capture."
+      },
+      {
+        "test": "showcase",
+        "result": "passed",
+        "detail": "Four generated characters inspectable together inside the actual lobby, idle/walk and four directions, with close control."
+      },
+      {
+        "test": "faction_marine",
+        "result": "passed",
+        "detail": "Selection loads new art; real idle/walk in four directions; movement, no smoothing, sheet dimensions and NPC scale capture."
+      },
+      {
+        "test": "faction_government",
+        "result": "passed",
+        "detail": "Selection loads new art; real idle/walk in four directions; movement, no smoothing, sheet dimensions and NPC scale capture."
+      },
+      {
+        "test": "javascript_and_saves",
+        "result": "passed",
+        "detail": "No uncaught JS errors; faction/class/equipment and point investments survive reload in every isolated context."
+      }
+    ]
+  },
+  "quarantine": {
+    "attack/west": "Original full eight-frame clip preserved, excluded from runtime; static armed directional guard used explicitly."
+  },
+  "rejected_admissions": [
+    {
+      "args": {
+        "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "corte-de-mare",
+        "frame_count": 12,
+        "action_description": "Wind up, perform one broad sword slash with a brief original turquoise sea-energy arc, then recover into the same starting guard. Keep the sword in the same hand, body in place and facing unchanged."
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for jobs to finish (~2-4 min each), then retry"
+          }
+        ],
+        "isError": true
+      }
+    },
+    {
+      "args": {
+        "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "hurt",
+        "frame_count": 4,
+        "action_description": "Recoil briefly from one hit, bend slightly, then return to the same sword guard. Keep the sword in the same hand, body in place and facing unchanged."
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for jobs to finish (~2-4 min each), then retry"
+          }
+        ],
+        "isError": true
+      }
+    },
+    {
+      "args": {
+        "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+        "mode": "v3",
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "keep_first_frame": false,
+        "animation_name": "death",
+        "frame_count": 8,
+        "action_description": "Lose balance gradually, buckle at the knees and fall to the ground, ending in a still fallen pose with the sword visible. Keep continuous movement without vanishing or teleporting."
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "error: need 4 job slots but only 0 available (8/8 used)\n\nhint: wait for jobs to finish (~2-4 min each), then retry"
+          }
+        ],
+        "isError": true
+      }
+    }
+  ],
+  "pending_jobs": false,
+  "paid_retry_authorized": false,
+  "input_image": "bento-guard-corrected.png",
+  "historical_status": "integrated_with_one_rejected_direction_pending_correction",
+  "latest_runtime_manifest": "../bento-direction-fixes-20261018/manifest.json"
+}

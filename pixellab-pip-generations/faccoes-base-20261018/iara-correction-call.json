@@ -1,0 +1,25 @@
+{
+  "key": "revolucionario",
+  "tool": "animate_character",
+  "args": {
+    "character_id": "ef501312-8e44-4a1d-adc7-be446bd44c22",
+    "mode": "v3",
+    "directions": [
+      "south"
+    ],
+    "frame_count": 8,
+    "keep_first_frame": true,
+    "animation_name": "walk-south-corrected",
+    "action_description": "Walk in place facing directly south toward the viewer throughout the entire loop. Natural alternating steps and arm swing, stable body size, feet on a consistent ground line, keep the same outfit and face. Do not turn around."
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "character: ef501312-8e44-4a1d-adc7-be446bd44c22\nanimation: v3 custom (Walk in place facing directly south toward the viewer throughout the entire loop. Natural alternating steps and arm swing, stable body size, feet on a consistent ground line, keep the same outfit and face. Do not turn around.)\ndirections: south (1 jobs)\njob_ids: south=402f8cf0-fe8b-4888-9297-242586d48923\ngroup: acb82fe0-d127-4550-a1aa-85e41b0746da\nframes: 9 (1 reference + 8 animated)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\")\nadd more directions to this group: animate_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\", action_description=\"Walk in place facing directly south toward the viewer throughout the entire loop. Natural alternating steps and arm swing, stable body size, feet on a consistent ground line, keep the same outfit and face. Do not turn around.\", animation_group_id=\"acb82fe0-d127-4550-a1aa-85e41b0746da\", directions=[...])"
+      }
+    ],
+    "isError": false
+  },
+  "authorization": "User explicitly approved one corrective v3 south animation, 1–2 extra generations."
+}

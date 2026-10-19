@@ -1,0 +1,45 @@
+# Local and sensitive configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.p12
+*.key
+*credentials*.json
+*secret*.json
+*token*.txt
+
+# Python / Node local artifacts
+__pycache__/
+*.py[cod]
+node_modules/
+.venv/
+venv/
+.pytest_cache/
+.playwright/
+
+# Local builds and temporary files
+/dist/
+/.cache/
+/tmp/
+*.log
+*.tmp
+*.bak
+*.rar
+*.zip
+*.7z
+*.mp4
+*.webm
+
+# Local archives, screenshots and test evidence
+docs/evidence-*/
+docs/reference-*/
+backups/
+saves/
+*save-export*.json
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/settings.json
+.idea/

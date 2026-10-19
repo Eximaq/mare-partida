@@ -1,0 +1,17 @@
+{
+  "dimensions": [
+    64,
+    64
+  ],
+  "alpha_bounds": [
+    15,
+    9,
+    49,
+    55
+  ],
+  "touches_right_edge": false,
+  "touches_bottom_edge": false,
+  "visual_review": "Rejected: facing east rather than south. Native PNG has transparent margins on every side; no clipping. Initial enlarged visual observation of clipping was incorrect.",
+  "original_copy_sha256": "106f779f6efa789cce8aee35e4d763bbd00a7f0c544b3861a1776d9a5b14b919",
+  "source_unchanged": true
+}

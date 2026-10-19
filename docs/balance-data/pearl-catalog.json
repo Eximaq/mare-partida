@@ -1,0 +1,227 @@
+[
+  {
+    "id": "pearl_for_1",
+    "name": "Pérola de Força Nv.1",
+    "attribute": "strength",
+    "level": 1,
+    "percent": 0.02,
+    "multiplier": 1.02,
+    "rarity": "common"
+  },
+  {
+    "id": "pearl_for_2",
+    "name": "Pérola de Força Nv.2",
+    "attribute": "strength",
+    "level": 2,
+    "percent": 0.04,
+    "multiplier": 1.04,
+    "rarity": "uncommon"
+  },
+  {
+    "id": "pearl_for_3",
+    "name": "Pérola de Força Nv.3",
+    "attribute": "strength",
+    "level": 3,
+    "percent": 0.06,
+    "multiplier": 1.06,
+    "rarity": "rare"
+  },
+  {
+    "id": "pearl_for_4",
+    "name": "Pérola de Força Nv.4",
+    "attribute": "strength",
+    "level": 4,
+    "percent": 0.08,
+    "multiplier": 1.08,
+    "rarity": "epic"
+  },
+  {
+    "id": "pearl_for_5",
+    "name": "Pérola de Força Nv.5",
+    "attribute": "strength",
+    "level": 5,
+    "percent": 0.1,
+    "multiplier": 1.1,
+    "rarity": "legendary"
+  },
+  {
+    "id": "pearl_des_1",
+    "name": "Pérola de Destreza Nv.1",
+    "attribute": "dexterity",
+    "level": 1,
+    "percent": 0.02,
+    "multiplier": 1.02,
+    "rarity": "common"
+  },
+  {
+    "id": "pearl_des_2",
+    "name": "Pérola de Destreza Nv.2",
+    "attribute": "dexterity",
+    "level": 2,
+    "percent": 0.04,
+    "multiplier": 1.04,
+    "rarity": "uncommon"
+  },
+  {
+    "id": "pearl_des_3",
+    "name": "Pérola de Destreza Nv.3",
+    "attribute": "dexterity",
+    "level": 3,
+    "percent": 0.06,
+    "multiplier": 1.06,
+    "rarity": "rare"
+  },
+  {
+    "id": "pearl_des_4",
+    "name": "Pérola de Destreza Nv.4",
+    "attribute": "dexterity",
+    "level": 4,
+    "percent": 0.08,
+    "multiplier": 1.08,
+    "rarity": "epic"
+  },
+  {
+    "id": "pearl_des_5",
+    "name": "Pérola de Destreza Nv.5",
+    "attribute": "dexterity",
+    "level": 5,
+    "percent": 0.1,
+    "multiplier": 1.1,
+    "rarity": "legendary"
+  },
+  {
+    "id": "pearl_vit_1",
+    "name": "Pérola de Vitalidade Nv.1",
+    "attribute": "vitality",
+    "level": 1,
+    "percent": 0.02,
+    "multiplier": 1.02,
+    "rarity": "common"
+  },
+  {
+    "id": "pearl_vit_2",
+    "name": "Pérola de Vitalidade Nv.2",
+    "attribute": "vitality",
+    "level": 2,
+    "percent": 0.04,
+    "multiplier": 1.04,
+    "rarity": "uncommon"
+  },
+  {
+    "id": "pearl_vit_3",
+    "name": "Pérola de Vitalidade Nv.3",
+    "attribute": "vitality",
+    "level": 3,
+    "percent": 0.06,
+    "multiplier": 1.06,
+    "rarity": "rare"
+  },
+  {
+    "id": "pearl_vit_4",
+    "name": "Pérola de Vitalidade Nv.4",
+    "attribute": "vitality",
+    "level": 4,
+    "percent": 0.08,
+    "multiplier": 1.08,
+    "rarity": "epic"
+  },
+  {
+    "id": "pearl_vit_5",
+    "name": "Pérola de Vitalidade Nv.5",
+    "attribute": "vitality",
+    "level": 5,
+    "percent": 0.1,
+    "multiplier": 1.1,
+    "rarity": "legendary"
+  },
+  {
+    "id": "pearl_int_1",
+    "name": "Pérola de Inteligência Nv.1",
+    "attribute": "intelligence",
+    "level": 1,
+    "percent": 0.02,
+    "multiplier": 1.02,
+    "rarity": "common"
+  },
+  {
+    "id": "pearl_int_2",
+    "name": "Pérola de Inteligência Nv.2",
+    "attribute": "intelligence",
+    "level": 2,
+    "percent": 0.04,
+    "multiplier": 1.04,
+    "rarity": "uncommon"
+  },
+  {
+    "id": "pearl_int_3",
+    "name": "Pérola de Inteligência Nv.3",
+    "attribute": "intelligence",
+    "level": 3,
+    "percent": 0.06,
+    "multiplier": 1.06,
+    "rarity": "rare"
+  },
+  {
+    "id": "pearl_int_4",
+    "name": "Pérola de Inteligência Nv.4",
+    "attribute": "intelligence",
+    "level": 4,
+    "percent": 0.08,
+    "multiplier": 1.08,
+    "rarity": "epic"
+  },
+  {
+    "id": "pearl_int_5",
+    "name": "Pérola de Inteligência Nv.5",
+    "attribute": "intelligence",
+    "level": 5,
+    "percent": 0.1,
+    "multiplier": 1.1,
+    "rarity": "legendary"
+  },
+  {
+    "id": "pearl_esp_1",
+    "name": "Pérola de Espírito Nv.1",
+    "attribute": "spirit",
+    "level": 1,
+    "percent": 0.02,
+    "multiplier": 1.02,
+    "rarity": "common"
+  },
+  {
+    "id": "pearl_esp_2",
+    "name": "Pérola de Espírito Nv.2",
+    "attribute": "spirit",
+    "level": 2,
+    "percent": 0.04,
+    "multiplier": 1.04,
+    "rarity": "uncommon"
+  },
+  {
+    "id": "pearl_esp_3",
+    "name": "Pérola de Espírito Nv.3",
+    "attribute": "spirit",
+    "level": 3,
+    "percent": 0.06,
+    "multiplier": 1.06,
+    "rarity": "rare"
+  },
+  {
+    "id": "pearl_esp_4",
+    "name": "Pérola de Espírito Nv.4",
+    "attribute": "spirit",
+    "level": 4,
+    "percent": 0.08,
+    "multiplier": 1.08,
+    "rarity": "epic"
+  },
+  {
+    "id": "pearl_esp_5",
+    "name": "Pérola de Espírito Nv.5",
+    "attribute": "spirit",
+    "level": 5,
+    "percent": 0.1,
+    "multiplier": 1.1,
+    "rarity": "legendary"
+  }
+]

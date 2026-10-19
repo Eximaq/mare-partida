@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="steel" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#E4EDF0"/>
+      <stop offset="0.5" stop-color="#A3B3BA"/>
+      <stop offset="1" stop-color="#67787F"/>
+    </linearGradient>
+    <linearGradient id="anvil" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#B7C6CC"/>
+      <stop offset="0.45" stop-color="#66777F"/>
+      <stop offset="1" stop-color="#37444B"/>
+    </linearGradient>
+    <linearGradient id="wood" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#C98349"/>
+      <stop offset="1" stop-color="#7A4423"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE9A8"/>
+      <stop offset="0.5" stop-color="#E7B64C"/>
+      <stop offset="1" stop-color="#A8701F"/>
+    </linearGradient>
+    <linearGradient id="hot" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFD36B"/>
+      <stop offset="0.6" stop-color="#FF8A2B"/>
+      <stop offset="1" stop-color="#E5421F"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFC857" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#FF8A2B" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+<g transform="translate(128 128) scale(1.08) translate(-128 -128)">
+  <ellipse cx="124" cy="233" rx="84" ry="8" fill="#000000" opacity="0.28"/>
+
+  <!-- bigorna -->
+  <g transform="translate(24 58) scale(0.86)">
+    <path d="M26 106 C50 104 68 96 86 92 L214 92 L214 114 L188 114 C186 128 176 134 162 138 L162 162 L188 162 L188 192 L68 192 L68 162 L94 162 L94 138 C90 128 88 122 86 116 C66 114 44 112 26 106 Z" fill="url(#anvil)"/>
+    <path d="M86 92 L214 92 L214 101 L86 101 Z" fill="#E4EDF0" opacity="0.85"/>
+    <path d="M30 105 C52 103 70 96 86 92 L86 100 C70 103 52 107 30 108 Z" fill="#E4EDF0" opacity="0.6"/>
+    <path d="M26 106 C50 104 68 96 86 92 L214 92 L214 114 L188 114 C186 128 176 134 162 138 L162 162 L188 162 L188 192 L68 192 L68 162 L94 162 L94 138 C90 128 88 122 86 116 C66 114 44 112 26 106 Z" fill="none" stroke="#24160B" stroke-width="9" stroke-linejoin="round"/>
+  </g>
+
+  <!-- brilho da peca quente -->
+  <circle cx="122" cy="132" r="36" fill="url(#glow)"/>
+  <rect x="96" y="126" width="46" height="12" rx="4" fill="url(#hot)" stroke="#7A2A10" stroke-width="3"/>
+
+  <!-- martelo -->
+  <g transform="translate(134 106) rotate(32)">
+    <rect x="-7" y="-92" width="14" height="108" rx="6" fill="url(#wood)" stroke="#24160B" stroke-width="6"/>
+    <rect x="-9" y="-98" width="18" height="12" rx="5" fill="url(#gold)" stroke="#24160B" stroke-width="5"/>
+    <rect x="-34" y="-20" width="68" height="40" rx="7" fill="url(#steel)" stroke="#24160B" stroke-width="7"/>
+    <path d="M-17 -20 V20 M17 -20 V20" stroke="#24160B" stroke-width="4" opacity="0.45"/>
+    <path d="M-28 -12 H-22" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity="0.8"/>
+  </g>
+
+  <!-- fagulhas -->
+  <g fill="#FFE08A" stroke="#E5731F" stroke-width="2" stroke-linejoin="round">
+    <path d="M186 112 L189 122 L199 125 L189 128 L186 138 L183 128 L173 125 L183 122 Z"/>
+    <path d="M208 98 L210 104 L216 106 L210 108 L208 114 L206 108 L200 106 L206 104 Z"/>
+    <path d="M86 112 L88 118 L94 120 L88 122 L86 128 L84 122 L78 120 L84 118 Z"/>
+  </g>
+  <g stroke="#FFC857" stroke-width="4" stroke-linecap="round">
+    <path d="M160 130 L168 120"/>
+    <path d="M204 128 L214 124"/>
+    <path d="M98 122 L90 112"/>
+  </g>
+  <circle cx="200" cy="136" r="3" fill="#FFD36B"/>
+  <circle cx="176" cy="104" r="2.5" fill="#FFD36B"/>
+</g>
+</svg>

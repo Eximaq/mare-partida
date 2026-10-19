@@ -1,0 +1,33 @@
+status: completed
+id: ef501312-8e44-4a1d-adc7-be446bd44c22
+name: Iara do Levante
+state_name: Idle
+directions: 4 (south, east, north, west)
+size: 48x48px
+view: low top-down
+style: -, -, -
+group: a32a4463-8c16-4ef0-b89f-f9b85672e27b (1 state)
+
+rotations:
+  south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/rotations/south.png?t=1792340117
+  east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/rotations/east.png?t=1792340117
+  north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/rotations/north.png?t=1792340117
+  west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/rotations/west.png?t=1792340117
+
+animations: none
+
+pending jobs (5):
+  idle(east): 100% ~60s
+  idle(west): 30% ~446s
+  idle(north): 46% ~224s
+  idle(south): 32% ~407s
+  4-directions: 95% ~60s
+
+download: https://api.pixellab.ai/mcp/characters/ef501312-8e44-4a1d-adc7-be446bd44c22/download
+spritesheet: https://api.pixellab.ai/mcp/characters/ef501312-8e44-4a1d-adc7-be446bd44c22/spritesheet (this state only — one uniform-grid sheet PNG + layout JSON, zipped; cells pivot-centred)
+  (returns HTTP 423 until jobs complete — use curl --fail)
+
+available_animations: backflip, breathing-idle, cross-punch, crouched-walking, crouching, drinking, falling-back-death, fight-stance-idle-8-frames, fireball, flying-kick, front-flip, getting-up, high-kick, hurricane-kick, jumping-1, jumping-2, lead-jab, leg-sweep, picking-up, pull-heavy-object, pushing, roundhouse-kick, running-4-frames, running-6-frames, running-8-frames, running-jump, running-slide, sad-walk, scary-walk, surprise-uppercut, taking-punch, throw-object, two-footed-jump, walk, walk-1, walk-2, walking, walking-10, walking-2, walking-3, walking-4, walking-4-frames, walking-5, walking-6, walking-6-frames, walking-7, walking-8, walking-8-frames, walking-9
+
+actions: animate_character(character_id="ef501312-8e44-4a1d-adc7-be446bd44c22", ...) | create_character_state(character_id="ef501312-8e44-4a1d-adc7-be446bd44c22", ...) | delete_character(character_id="ef501312-8e44-4a1d-adc7-be446bd44c22")
+hint: animate_character(character_id="ef501312-8e44-4a1d-adc7-be446bd44c22", template_animation_id="backflip")

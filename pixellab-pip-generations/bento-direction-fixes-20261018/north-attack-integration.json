@@ -1,0 +1,108 @@
+{
+  "action": "attack",
+  "direction": "north",
+  "frames": 8,
+  "other_rows_identical": true,
+  "original_pixels_preserved": true,
+  "fixed_canvas_anchor": [
+    42,
+    65
+  ],
+  "placements": [
+    {
+      "frame": 0,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    },
+    {
+      "frame": 1,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    },
+    {
+      "frame": 2,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    },
+    {
+      "frame": 3,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    },
+    {
+      "frame": 4,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    },
+    {
+      "frame": 5,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    },
+    {
+      "frame": 6,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    },
+    {
+      "frame": 7,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    }
+  ],
+  "gif": {
+    "created": true,
+    "exact_visible_pixels": true,
+    "frames": 8,
+    "disposal": 2,
+    "loop": 0
+  }
+}

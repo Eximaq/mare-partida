@@ -1,0 +1,28 @@
+{
+  "user_request": "ajuste nos ataques e animação north: mãos nas costas como se voltado south",
+  "confirmed_issue": "The back-facing head/vest remain visible but forearms and sword grip cross over the visible back instead of being occluded in front of the torso.",
+  "quarantined": [
+    "combat-idle/north",
+    "attack/north",
+    "corte-de-mare/north",
+    "hurt/north"
+  ],
+  "preserved": [
+    "death/north",
+    "all original full clips"
+  ],
+  "existing_versions_checked_without_generation": {
+    "corte-de-mare": [
+      "7873ffd1-f46d-41f3-b508-7b5c8e9a728b",
+      "22d93306-3661-4712-8df4-acaaabe69b95",
+      "5b448e71-e908-477d-915a-88ecab35ea76",
+      "dd3cd159-8bcd-4795-9bf7-619802bed79f"
+    ],
+    "hurt": [
+      "6e07adc3-962a-4cdc-b399-3f85e23dc8e8"
+    ]
+  },
+  "reuse_verdict": "The same back-arm occlusion defect persists; none selected for integration.",
+  "additional_north_cost_approval": "Approved: Aprovo as 5–8 gerações para corrigir o norte; four calls executed once.",
+  "final_status": "All four corrected north clips integrated after inspection."
+}

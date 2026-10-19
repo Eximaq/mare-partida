@@ -1,0 +1,108 @@
+{
+  "attack": {
+    "frames": 7,
+    "size": [
+      64,
+      64
+    ],
+    "original_order": true,
+    "first_frame_matches_visible_source": false,
+    "bounds": [
+      [
+        6,
+        9,
+        46,
+        55
+      ],
+      [
+        2,
+        9,
+        47,
+        55
+      ],
+      [
+        7,
+        10,
+        47,
+        55
+      ],
+      [
+        15,
+        11,
+        57,
+        55
+      ],
+      [
+        18,
+        11,
+        44,
+        55
+      ],
+      [
+        18,
+        10,
+        55,
+        55
+      ],
+      [
+        18,
+        9,
+        57,
+        55
+      ]
+    ],
+    "distinct_frames": 7,
+    "gif_exact_visible_pixels": true,
+    "gif_disposal": 2,
+    "gif_loop": 0,
+    "preview_frame_ms": 100,
+    "colors": 118
+  },
+  "combat-idle": {
+    "frames": 5,
+    "size": [
+      64,
+      64
+    ],
+    "original_order": true,
+    "first_frame_matches_visible_source": false,
+    "bounds": [
+      [
+        6,
+        9,
+        46,
+        55
+      ],
+      [
+        8,
+        10,
+        46,
+        55
+      ],
+      [
+        11,
+        11,
+        45,
+        55
+      ],
+      [
+        16,
+        11,
+        43,
+        57
+      ],
+      [
+        19,
+        10,
+        44,
+        56
+      ]
+    ],
+    "distinct_frames": 5,
+    "gif_exact_visible_pixels": true,
+    "gif_disposal": 2,
+    "gif_loop": 0,
+    "preview_frame_ms": 200,
+    "colors": 71
+  }
+}

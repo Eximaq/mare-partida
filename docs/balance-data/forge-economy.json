@@ -1,0 +1,244 @@
+{
+  "chances": [
+    {
+      "chance": 0.8,
+      "gold": 40
+    },
+    {
+      "chance": 0.5,
+      "gold": 160
+    },
+    {
+      "chance": 0.1,
+      "gold": 650
+    },
+    {
+      "chance": 0.05,
+      "gold": 2500
+    }
+  ],
+  "expected": [
+    {
+      "level": 1,
+      "gold": 0,
+      "level1Pearls": 1
+    },
+    {
+      "level": 2,
+      "gold": 50,
+      "level1Pearls": 6.25
+    },
+    {
+      "level": 3,
+      "gold": 820,
+      "level1Pearls": 62.5
+    },
+    {
+      "level": 4,
+      "gold": 47500,
+      "level1Pearls": 3125
+    },
+    {
+      "level": 5,
+      "gold": 4800000,
+      "level1Pearls": 312500
+    }
+  ],
+  "monteCarlo": {
+    "seed": 72910,
+    "trials": 2000,
+    "meanGold": 4884105.345,
+    "meanLevel1Pearls": 317997.025,
+    "medianGold": 3344200,
+    "p90Gold": 11389730,
+    "p95Gold": 14677490
+  },
+  "reforgeCosts": [
+    {
+      "level": 1,
+      "rarity": "common",
+      "gold": 57,
+      "materials": 3
+    },
+    {
+      "level": 1,
+      "rarity": "uncommon",
+      "gold": 93,
+      "materials": 4
+    },
+    {
+      "level": 1,
+      "rarity": "rare",
+      "gold": 147,
+      "materials": 5
+    },
+    {
+      "level": 1,
+      "rarity": "epic",
+      "gold": 242,
+      "materials": 6
+    },
+    {
+      "level": 1,
+      "rarity": "legendary",
+      "gold": 462,
+      "materials": 8
+    },
+    {
+      "level": 1,
+      "rarity": "supreme",
+      "gold": 782,
+      "materials": 9
+    },
+    {
+      "level": 5,
+      "rarity": "common",
+      "gold": 122,
+      "materials": 3
+    },
+    {
+      "level": 5,
+      "rarity": "uncommon",
+      "gold": 199,
+      "materials": 4
+    },
+    {
+      "level": 5,
+      "rarity": "rare",
+      "gold": 314,
+      "materials": 6
+    },
+    {
+      "level": 5,
+      "rarity": "epic",
+      "gold": 519,
+      "materials": 7
+    },
+    {
+      "level": 5,
+      "rarity": "legendary",
+      "gold": 990,
+      "materials": 9
+    },
+    {
+      "level": 5,
+      "rarity": "supreme",
+      "gold": 1674,
+      "materials": 10
+    },
+    {
+      "level": 10,
+      "rarity": "common",
+      "gold": 203,
+      "materials": 4
+    },
+    {
+      "level": 10,
+      "rarity": "uncommon",
+      "gold": 332,
+      "materials": 5
+    },
+    {
+      "level": 10,
+      "rarity": "rare",
+      "gold": 523,
+      "materials": 6
+    },
+    {
+      "level": 10,
+      "rarity": "epic",
+      "gold": 864,
+      "materials": 8
+    },
+    {
+      "level": 10,
+      "rarity": "legendary",
+      "gold": 1650,
+      "materials": 10
+    },
+    {
+      "level": 10,
+      "rarity": "supreme",
+      "gold": 2790,
+      "materials": 12
+    },
+    {
+      "level": 20,
+      "rarity": "common",
+      "gold": 365,
+      "materials": 5
+    },
+    {
+      "level": 20,
+      "rarity": "uncommon",
+      "gold": 597,
+      "materials": 6
+    },
+    {
+      "level": 20,
+      "rarity": "rare",
+      "gold": 941,
+      "materials": 8
+    },
+    {
+      "level": 20,
+      "rarity": "epic",
+      "gold": 1556,
+      "materials": 10
+    },
+    {
+      "level": 20,
+      "rarity": "legendary",
+      "gold": 2970,
+      "materials": 12
+    },
+    {
+      "level": 20,
+      "rarity": "supreme",
+      "gold": 5022,
+      "materials": 15
+    },
+    {
+      "level": 30,
+      "rarity": "common",
+      "gold": 527,
+      "materials": 6
+    },
+    {
+      "level": 30,
+      "rarity": "uncommon",
+      "gold": 862,
+      "materials": 8
+    },
+    {
+      "level": 30,
+      "rarity": "rare",
+      "gold": 1360,
+      "materials": 10
+    },
+    {
+      "level": 30,
+      "rarity": "epic",
+      "gold": 2247,
+      "materials": 12
+    },
+    {
+      "level": 30,
+      "rarity": "legendary",
+      "gold": 4290,
+      "materials": 15
+    },
+    {
+      "level": 30,
+      "rarity": "supreme",
+      "gold": 7254,
+      "materials": 18
+    }
+  ],
+  "acquisition": {
+    "level1Drop": 0.05,
+    "uniformTypes": 5,
+    "targetAttributeDrop": 0.01,
+    "expectedKillsForTargetLevel5": 31250000
+  }
+}

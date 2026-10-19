@@ -1,0 +1,78 @@
+{
+  "key": "north-attack",
+  "group_id": "036e0fcc-d9a8-45c0-9692-e0252226676d",
+  "direction": "north",
+  "frames": 8,
+  "size": [
+    76,
+    68
+  ],
+  "source_url": "https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/5d353636-d6d7-49bb-afa5-575b10cd90f2/north/{i}.png?t=1792353604024",
+  "files": [
+    "north-attack-00.png",
+    "north-attack-01.png",
+    "north-attack-02.png",
+    "north-attack-03.png",
+    "north-attack-04.png",
+    "north-attack-05.png",
+    "north-attack-06.png",
+    "north-attack-07.png"
+  ],
+  "bounds": [
+    [
+      25,
+      10,
+      59,
+      57
+    ],
+    [
+      24,
+      10,
+      49,
+      57
+    ],
+    [
+      24,
+      11,
+      49,
+      57
+    ],
+    [
+      23,
+      12,
+      49,
+      57
+    ],
+    [
+      23,
+      12,
+      49,
+      57
+    ],
+    [
+      24,
+      11,
+      49,
+      57
+    ],
+    [
+      25,
+      10,
+      59,
+      57
+    ],
+    [
+      24,
+      10,
+      64,
+      57
+    ]
+  ],
+  "gif": {
+    "created": true,
+    "exact_visible_pixels": true,
+    "frames": 8,
+    "disposal": 2,
+    "loop": 0
+  }
+}

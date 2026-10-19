@@ -1,0 +1,78 @@
+{
+  "key": "west",
+  "group_id": "b0733ec0-dd98-4f18-9177-637a98b7726a",
+  "direction": "west",
+  "frames": 8,
+  "size": [
+    68,
+    68
+  ],
+  "source_url": "https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/a1cd1114-4ce8-42b0-8915-c663e07ac6d4/west/{i}.png?t=1792353110593",
+  "files": [
+    "west-00.png",
+    "west-01.png",
+    "west-02.png",
+    "west-03.png",
+    "west-04.png",
+    "west-05.png",
+    "west-06.png",
+    "west-07.png"
+  ],
+  "bounds": [
+    [
+      11,
+      11,
+      45,
+      57
+    ],
+    [
+      18,
+      11,
+      44,
+      57
+    ],
+    [
+      22,
+      11,
+      50,
+      57
+    ],
+    [
+      21,
+      12,
+      52,
+      57
+    ],
+    [
+      22,
+      12,
+      50,
+      57
+    ],
+    [
+      20,
+      11,
+      41,
+      57
+    ],
+    [
+      12,
+      11,
+      43,
+      57
+    ],
+    [
+      19,
+      11,
+      45,
+      57
+    ]
+  ],
+  "gif": {
+    "created": true,
+    "exact_visible_pixels": true,
+    "frames": 8,
+    "disposal": 2,
+    "loop": 0
+  }
+}

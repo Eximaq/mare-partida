@@ -1,0 +1,22 @@
+MARE PARTIDA - SUBIR PARA O REPOSITORIO CRIADO
+
+Repositorio encontrado: https://github.com/Eximaq/mare-partida
+Conta: Eximaq
+Status consultado: repositorio publico, vazio, permissao de escrita.
+
+1) Extraia o arquivo ZIP do projeto em uma pasta no Windows.
+2) Abra essa pasta e execute PUBLICAR_NO_GITHUB.bat com dois cliques.
+3) Se o Git não estiver instalado, instale Git para Windows (git-scm.com/downloads/win).
+4) Se o Git pedir login, autentique-se na sua conta Eximaq pelo navegador.
+5) Aguarde a mensagem PUBLICADO no terminal. Somente então está enviado.
+6) No GitHub abra Settings > Pages e selecione Source: GitHub Actions.
+7) Convide seu amigo em Settings > Collaborators > Add people.
+8) Seu amigo poderá clonar https://github.com/Eximaq/mare-partida.git.
+
+IMPORTANTE:
+- O repositorio está PUBLICO: codigo e imagens ficam visiveis.
+- O Pages hospeda a demo estatica, nao um MMORPG multiplayer real.
+- Saves usam localStorage e NAO sao sincronizados entre jogadores.
+- A pasta dist/ é gerada no build; não precisa ser enviada ao GitHub.
+- Não coloque senhas, tokens, saves pessoais ou credenciais na pasta Git.
+- O Codex deve trabalhar em branches e criar PRs (veja AGENTS.md).

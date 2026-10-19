@@ -1,0 +1,252 @@
+[
+  {
+    "_comment_prompt": "# MARÉ PARTIDA — ETAPA 1: CRIAÇÃO DOS SPRITES-BASE DAS FACÇÕES\n\n## OBJETIVO\n\nAtue como Pixel Artist Sênior, Animation Designer 2D e Integrador de Assets para jogos RPG/MMORPG Idle em navegador.\n\nSua tarefa nesta etapa é criar os **4 sprites-base principais das facções jogáveis** do jogo **Maré Partida**, mantendo o mesmo padrão visual dos NPCs do lobby.\n\nNESTA ETAPA, NÃO quero criar todas as classes ainda.\n\nQuero apenas criar **1 personagem-base por facção**, para aprovar:\n- estilo visual\n- proporção\n- animação\n- qualidade\n- acabamento\n- integração com o jogo\n\n---\n\n# REGRAS PRINCIPAIS\n\n## 1. Antes de gerar qualquer sprite\nAnalise os sprites atuais dos NPCs do lobby.\n\nVocê deve identificar:\n- resolução visual\n- tamanho médio do personagem\n- estilo de outline\n- tipo de sombreamento\n- proporção cabeça/corpo\n- paleta predominante\n- nível de detalhamento\n- estilo das animações\n- escala em relação ao mapa\n\nDepois disso, use esse padrão como base obrigatória.\n\n## 2. Estilo visual obrigatório\nOs novos sprites devem:\n- parecer do mesmo jogo dos NPCs do lobby\n- manter a mesma linguagem visual\n- ter a mesma qualidade ou superior\n- combinar com o cenário do porto, cidade e caça\n- parecer pixel art 2D profissional\n- ser próprios/originais\n\n## 3. Inspiração visual\nQuero uma pegada inspirada no universo de aventura marítima e pirata no estilo shonen, com energia parecida com One Piece, porém:\n\n- NÃO copie personagens oficiais\n- NÃO replique roupas idênticas\n- NÃO use símbolos oficiais\n- NÃO faça clones visuais de personagens famosos\n\nOs personagens devem ser **originais**, mas transmitir:\n- aventura\n- mar\n- piratas\n- facções navais\n- exploração\n- carisma\n- expressividade\n\n---\n\n# FACÇÕES QUE DEVEM SER CRIADAS NESTA ETAPA\n\nCrie 1 personagem-base para cada facção:\n\n## 1. Exército Revolucionário\nVisual:\n- rebelde\n- aventureiro\n- roupas práticas\n- lenços / cintos / acessórios utilitários\n- aparência de resistência e luta popular\n\nPaleta sugerida:\n- verde escuro\n- vinho\n- marrom\n- bege\n- dourado envelhecido\n\n## 2. Pirata\nVisual:\n- carismático\n- ousado\n- livre\n- roupa leve de aventureiro marítimo\n- faixa, colete, cinto, sandálias, acessórios náuticos\n\nPaleta sugerida:\n- vermelho\n- azul\n- bege\n- marrom\n- dourado\n\n## 3. Marinheiro\nVisual:\n- disciplinado\n- limpo\n- uniforme naval estilizado\n- aparência de autoridade no mar\n- visual organizado e firme\n\nPaleta sugerida:\n- branco\n- azul marinho\n- dourado\n- cinza\n- azul claro\n\n## 4. Governo Mundial\nVisual:\n- elegante\n- rígido\n- refinado\n- imponente\n- aparência de elite institucional\n\nPaleta sugerida:\n- branco\n- preto\n- dourado\n- cinza frio\n- azul profundo\n\n---\n\n# O QUE CADA FACÇÃO DEVE RECEBER NESTA ETAPA\n\nPara cada uma das 4 facções, crie:\n\n## Animações obrigatórias\n1. Idle\n2. Walk\n\n## Direções obrigatórias\n- Frente\n- Costas\n- Esquerda\n- Direita\n\n## Observações\n- Nada de frames desalinhados\n- O personagem não pode “pular” de posição entre frames\n- Os pés devem permanecer consistentes\n- O tamanho do sprite deve ser compatível com os NPCs atuais\n- Caminhada deve parecer natural\n- Idle deve ter pequena sensação de vida/respiração\n\n---\n\n# ESTRUTURA DE PASTAS\n\nOrganize assim:\n\n/assets\n  /factions\n    /revolucionario\n      idle.png\n      walk.png\n      preview.png\n      metadata.json\n    /pirata\n      idle.png\n      walk.png\n      preview.png\n      metadata.json\n    /marinheiro\n      idle.png\n      walk.png\n      preview.png\n      metadata.json\n    /governo_mundial\n      idle.png\n      walk.png\n      preview.png\n      metadata.json\n\n---\n\n# METADATA\n\nCada `metadata.json` deve incluir:\n- nome interno\n- nome visual\n- facção\n- tamanho do frame\n- número de frames por animação\n- direções disponíveis\n- velocidade da animação\n- offset de renderização\n- observações de integração\n\n---\n\n# INTEGRAÇÃO NO JOGO\n\nDepois de gerar os 4 sprites-base, integre os personagens ao jogo para testes visuais.\n\nQuero que seja possível:\n- visualizar os 4 personagens no sistema de seleção\n- testar o sprite no lobby\n- verificar o personagem andando no mapa\n- confirmar que a escala está correta perto dos NPCs do lobby\n\nSe necessário, crie uma pequena tela de preview/seleção temporária para inspecionar os 4 personagens lado a lado.\n\n---\n\n# TESTES OBRIGATÓRIOS\n\nDepois de integrar:\n\n1. Teste os 4 personagens no lobby\n2. Teste idle e walk\n3. Verifique se a escala está correta\n4. Verifique se o sprite não borra\n5. Verifique se o personagem não fica deformado\n6. Verifique se os frames não cortam cabeça, braços ou pés\n7. Gere capturas reais do jogo mostrando:\n   - os 4 sprites\n   - comparação com NPCs\n   - animação no lobby\n\n---\n\n# REGRAS IMPORTANTES\n\n## O que NÃO fazer\n- não criar todas as classes ainda\n- não gerar personagens genéricos feios\n- não fazer sprites em estilo diferente do lobby\n- não trocar o estilo atual do jogo\n- não quebrar o sistema de seleção\n- não substituir sprites existentes sem backup\n- não usar placeholders como resultado final\n\n## O que eu QUERO\n- 4 personagens-base muito bem feitos\n- uma base visual sólida\n- coerência total com os NPCs do lobby\n- aparência original\n- estilo inspirado no clima de aventura marítima\n- integração funcional para teste\n\n---\n\n# USO DO PIXELLAB\n\nSe a integração com PixelLab estiver ativa e funcional, utilize-a.\n\nSe estiver disponível:\n- use o PixelLab para gerar os sprites com qualidade profissional\n- mantenha consistência entre os 4 personagens\n- respeite o estilo do jogo atual\n\nSe não estiver disponível:\n- use o melhor pipeline alternativo possível\n- MAS respeite o padrão visual dos NPCs do lobby\n\n---\n\n# ENTREGA FINAL\n\nAo concluir, entregue:\n\n1. Relatório curto sobre o estilo analisado dos NPCs do lobby\n2. Lista dos 4 personagens criados\n3. Estrutura de pastas gerada\n4. Arquivos alterados para integração\n5. Capturas reais do jogo mostrando os 4 sprites no lobby\n6. Relatório dos testes executados\n7. Observações sobre o que precisa ser refinado antes da próxima etapa\n\n## IMPORTANTE\nEssa etapa é apenas para aprovar o estilo das facções.\n\nSomente depois da aprovação dessa etapa iremos partir para:\n- sprites das 7 classes\n- animações de ataque\n- animações de skill\n- hurt\n- death\n\nComece analisando os NPCs do lobby, gere os 4 sprites-base e integre-os para teste visual dentro do jogo.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/faccoes-base-20261018",
+      "output_collision_policy": "create_unique"
+    },
+    "MCP create_image_pro": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Rebel female island courier, short dark curly hair, determined friendly face, dark green cropped field jacket, burgundy neck scarf, beige practical trousers, brown boots, utility belt with small pouches and aged brass buckles. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "width": 48,
+      "height": 48,
+      "no_background": true,
+      "style_image_base64": "npc-style-reference.png",
+      "style_copy": [
+        "outline",
+        "detail",
+        "shading"
+      ]
+    }
+  },
+  {
+    "TASK": "Download the returned original candidates for revolucionario. The user delegated selection; this recorded run selected label 1. Preserve that original as revolucionario/selected-base.png without repainting."
+  },
+  {
+    "MCP create_image_pro": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Charismatic male sea adventurer, wavy dark hair and teal headband, cheerful bold expression, sleeveless crimson vest over a cream shirt, cobalt blue trousers, brown waist sash, sturdy sandals, small brass compass hanging from a nautical belt. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "width": 48,
+      "height": 48,
+      "no_background": true,
+      "style_image_base64": "npc-style-reference.png",
+      "style_copy": [
+        "outline",
+        "detail",
+        "shading"
+      ]
+    }
+  },
+  {
+    "TASK": "Download the returned original candidates for pirata. The user delegated selection; this recorded run selected label 1. Preserve that original as pirata/selected-base.png without repainting."
+  },
+  {
+    "MCP create_image_pro": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Disciplined female naval watch officer, tied-back dark hair, composed confident face, original structured white naval tunic with navy blue shoulder panels and light blue trim, gray trousers, polished dark boots, small gold fasteners, no hat, no insignia. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "width": 48,
+      "height": 48,
+      "no_background": true,
+      "style_image_base64": "npc-style-reference.png",
+      "style_copy": [
+        "outline",
+        "detail",
+        "shading"
+      ]
+    }
+  },
+  {
+    "TASK": "Download the returned original candidates for marinheiro. The user delegated selection; this recorded run selected label 2. Preserve that original as marinheiro/selected-base.png without repainting."
+  },
+  {
+    "MCP create_image_pro": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Refined male institutional envoy, neatly combed silver hair, stern dignified face, tailored ivory long coat over a deep blue waistcoat, black trousers, cool gray gloves, formal black boots and restrained gold edging, imposing upright posture, no emblems. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "width": 48,
+      "height": 48,
+      "no_background": true,
+      "style_image_base64": "npc-style-reference.png",
+      "style_copy": [
+        "outline",
+        "detail",
+        "shading"
+      ]
+    }
+  },
+  {
+    "TASK": "Download the returned original candidates for governo_mundial. The user delegated selection; this recorded run selected label 1. Preserve that original as governo_mundial/selected-base.png without repainting."
+  },
+  {
+    "MCP create_character": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Rebel female island courier, short dark curly hair, determined friendly face, dark green cropped field jacket, burgundy neck scarf, beige practical trousers, brown boots, utility belt with small pouches and aged brass buckles. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "name": "Iara do Levante",
+      "mode": "v3",
+      "size": 48,
+      "body_type": "humanoid",
+      "n_directions": 4,
+      "view": "low top-down",
+      "reference_image_base64": "revolucionario/selected-base.png"
+    }
+  },
+  {
+    "MCP create_character": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Charismatic male sea adventurer, wavy dark hair and teal headband, cheerful bold expression, sleeveless crimson vest over a cream shirt, cobalt blue trousers, brown waist sash, sturdy sandals, small brass compass hanging from a nautical belt. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "name": "Bento Maré-Livre",
+      "mode": "v3",
+      "size": 48,
+      "body_type": "humanoid",
+      "n_directions": 4,
+      "view": "low top-down",
+      "reference_image_base64": "pirata/selected-base.png"
+    }
+  },
+  {
+    "MCP create_character": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Disciplined female naval watch officer, tied-back dark hair, composed confident face, original structured white naval tunic with navy blue shoulder panels and light blue trim, gray trousers, polished dark boots, small gold fasteners, no hat, no insignia. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "name": "Cecília da Vigília",
+      "mode": "v3",
+      "size": 48,
+      "body_type": "humanoid",
+      "n_directions": 4,
+      "view": "low top-down",
+      "reference_image_base64": "marinheiro/selected-base.png"
+    }
+  },
+  {
+    "MCP create_character": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Refined male institutional envoy, neatly combed silver hair, stern dignified face, tailored ivory long coat over a deep blue waistcoat, black trousers, cool gray gloves, formal black boots and restrained gold edging, imposing upright posture, no emblems. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "name": "Dário do Conselho",
+      "mode": "v3",
+      "size": 48,
+      "body_type": "humanoid",
+      "n_directions": 4,
+      "view": "low top-down",
+      "reference_image_base64": "governo_mundial/selected-base.png"
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "ef501312-8e44-4a1d-adc7-be446bd44c22",
+      "mode": "template",
+      "template_animation_id": "breathing-idle",
+      "animation_name": "idle",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "ef501312-8e44-4a1d-adc7-be446bd44c22",
+      "mode": "template",
+      "template_animation_id": "walking-8-frames",
+      "animation_name": "walk",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "template",
+      "template_animation_id": "breathing-idle",
+      "animation_name": "idle",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "template",
+      "template_animation_id": "walking-8-frames",
+      "animation_name": "walk",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "ea8e0ab9-c0e4-46c2-985c-21889212ce12",
+      "mode": "template",
+      "template_animation_id": "breathing-idle",
+      "animation_name": "idle",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "ea8e0ab9-c0e4-46c2-985c-21889212ce12",
+      "mode": "template",
+      "template_animation_id": "walking-8-frames",
+      "animation_name": "walk",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "3a9ea5a7-cd16-4f20-99cd-7682bd215c4e",
+      "mode": "template",
+      "template_animation_id": "breathing-idle",
+      "animation_name": "idle",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "ef501312-8e44-4a1d-adc7-be446bd44c22",
+      "mode": "v3",
+      "directions": [
+        "south"
+      ],
+      "frame_count": 8,
+      "keep_first_frame": true,
+      "animation_name": "walk-south-corrected",
+      "action_description": "Walk in place facing directly south toward the viewer throughout the entire loop. Natural alternating steps and arm swing, stable body size, feet on a consistent ground line, keep the same outfit and face. Do not turn around."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "3a9ea5a7-cd16-4f20-99cd-7682bd215c4e",
+      "mode": "template",
+      "template_animation_id": "walking-8-frames",
+      "animation_name": "walk",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    }
+  },
+  {
+    "TASK": "Download the complete managed character ZIPs after all jobs finish, preserving all source frames and metadata. For Iara, retain the original south walking frames 1–4 at 6 FPS per the user's explicit playback approval; keep both rejected complete versions for audit. Preserve all other returned frame orders. Assemble transparent padded sheets with feet anchors and per-direction frame counts/FPS. Integrate through faction-sprites.js and faction-assets.js. Run artwork and browser tests and save real lobby screenshots."
+  }
+]

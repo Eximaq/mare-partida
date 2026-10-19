@@ -1,0 +1,247 @@
+[
+  {
+    "id": "0",
+    "name": "Espada de Ferro Salgado",
+    "type": "sword",
+    "file": "0.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "1",
+    "name": "Sabre de Coral",
+    "type": "sabre",
+    "file": "1.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "2",
+    "name": "Punhos de Bronze",
+    "type": "brawler",
+    "file": "2.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "3",
+    "name": "Luvas de Marfim",
+    "type": "brawler",
+    "file": "3.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "4",
+    "name": "Mosquete de Convés",
+    "type": "gunner",
+    "file": "4.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "5",
+    "name": "Mosquete dos Faróis",
+    "type": "gunner",
+    "file": "5.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "6",
+    "name": "Casaco de Marinheiro",
+    "type": "coat",
+    "file": "6.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "7",
+    "name": "Casaco da Bruma",
+    "type": "coat",
+    "file": "7.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "8",
+    "name": "Botas de Navegante",
+    "type": "boots",
+    "file": "8.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "9",
+    "name": "Botas do Recifal",
+    "type": "boots",
+    "file": "9.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "10",
+    "name": "Amuleto das Correntes",
+    "type": "charm",
+    "file": "10.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "11",
+    "name": "Pingente de Madrepérola",
+    "type": "charm",
+    "file": "11.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "12",
+    "name": "Adagas da Bruma",
+    "type": "rogue",
+    "file": "12.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "13",
+    "name": "Lâminas Acrobáticas",
+    "type": "rogue",
+    "file": "13.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "14",
+    "name": "Manopla de Aço",
+    "type": "cyborg",
+    "file": "14.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "15",
+    "name": "Canhão de Pulso",
+    "type": "cannon",
+    "file": "15.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "16",
+    "name": "Compasso de Tempestade",
+    "type": "compass",
+    "file": "16.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "17",
+    "name": "Orbe das Correntes",
+    "type": "strategist",
+    "file": "17.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "18",
+    "name": "Bandana das Correntes",
+    "type": "bandana",
+    "file": "18.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "19",
+    "name": "Capacete do Corsário",
+    "type": "head",
+    "file": "19.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "20",
+    "name": "Colar das Marés",
+    "type": "necklace",
+    "file": "20.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "21",
+    "name": "Grevas de Navegante",
+    "type": "legs",
+    "file": "21.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "22",
+    "name": "Calças da Maré Alta",
+    "type": "legs",
+    "file": "22.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "23",
+    "name": "Manto do Faroleiro",
+    "type": "cloak",
+    "file": "23.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "24",
+    "name": "Capa do Horizonte",
+    "type": "cloak",
+    "file": "24.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "25",
+    "name": "Luvas de Cordame",
+    "type": "gloves",
+    "file": "25.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "26",
+    "name": "Luvas do Vigia",
+    "type": "gloves",
+    "file": "26.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "27",
+    "name": "Anel de Coral Cinzento",
+    "type": "ring",
+    "file": "27.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "28",
+    "name": "Anel da Caldeira",
+    "type": "ring",
+    "file": "28.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "29",
+    "name": "Cinto do Grumete",
+    "type": "belt",
+    "file": "29.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "30",
+    "name": "Cinto do Capitão",
+    "type": "belt",
+    "file": "30.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "31",
+    "name": "Cajado do Farol",
+    "type": "healer",
+    "file": "31.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "32",
+    "name": "Relicário da Maré Viva",
+    "type": "reliquary",
+    "file": "32.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "potion",
+    "name": "Poção de Vida",
+    "type": "potion",
+    "file": "potion.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  },
+  {
+    "id": "material",
+    "name": "Ferro Salgado",
+    "type": "material",
+    "file": "material.svg",
+    "origin": "Original code-native SVG, 32px grid"
+  }
+]

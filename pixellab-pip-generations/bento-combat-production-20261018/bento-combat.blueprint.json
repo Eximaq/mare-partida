@@ -1,0 +1,110 @@
+[
+  {
+    "_comment_prompt": "# MARÉ PARTIDA — ETAPA 2: ESPADACHIM PIRATA E ANIMAÇÕES DE COMBATE\n\n## OBJETIVO PRINCIPAL\n\nAtue como Pixel Artist Sênior, Animation Director, Gameplay Programmer e Engenheiro de Qualidade especializado em MMORPG 2D.\n\nSua missão é transformar **Bento Maré-Livre**, personagem-base da facção Pirata, em um Espadachim completamente animado e funcional durante o combate.\n\nEsta etapa é um projeto-piloto. Não gere ainda os personagens das outras seis classes nem das outras três facções.\n\nO objetivo é estabelecer um padrão profissional de produção de sprites e integração que possa ser reutilizado futuramente.\n\n---\n\n## FASE 0 — ANALISAR E PRESERVAR O PROJETO\n\nAntes de qualquer alteração:\n\n1. Leia `AGENTS.md`, `README.md` e `SPRITES-BASE-FACCOES.md`.\n2. Analise os assets de Bento Maré-Livre existentes em `assets/factions/pirata/`.\n3. Inspecione o manifesto de geração e os metadados do PixelLab.\n4. Analise `faction-sprites.js`, `faction-assets.js` e as funções de combate em `game.js`.\n5. Identifique como as animações idle e walk estão sendo reproduzidas.\n6. Verifique como funciona a seleção de classe Espadachim.\n7. Crie um checkpoint antes de modificar o projeto.\n\nPreserve as quatro sprites-base aprovadas e todas as alterações manuais.\n\nNão sobrescreva os assets originais.\n\n## FASE 1 — DIREÇÃO DE ARTE\n\nUtilize Bento Maré-Livre como personagem-base.\n\nMantenha obrigatoriamente:\n\n- Mesmo rosto e cabelo.\n- Mesmas proporções.\n- Mesma identidade visual.\n- Mesma paleta-base.\n- Mesmo contorno Pixel Art.\n- Mesmo sombreamento.\n- Mesmo tamanho aparente em relação aos NPCs do lobby.\n\nAdapte sua aparência para a classe Espadachim.\n\nA espada deve possuir design original, coerente com fantasia marítima. Pode apresentar guarda de bronze envelhecido, empunhadura revestida em tecido e lâmina de aço estilizada.\n\nNão copie armas ou técnicas específicas de personagens de One Piece.\n\n**Importante:** o personagem deve continuar reconhecível como Bento Maré-Livre após receber os equipamentos da classe.\n\nAntes de gerar imagens, prepare um pequeno documento com o padrão visual e as características que precisam permanecer consistentes.\n\n---\n\n## FASE 2 — GERAÇÃO DE SPRITES NO PIXELLAB\n\nVerifique a disponibilidade do PixelLab MCP.\n\nUtilize os arquivos existentes como referência visual, empregando os parâmetros adequados para manter a identidade do personagem.\n\n### Animações que precisam ser criadas\n\n**1. Idle de combate**\n- Espadachim em posição de guarda.\n- Respiração discreta.\n- Espada corretamente posicionada.\n- Movimento suave e contínuo.\n\n**2. Ataque básico**\n- Preparação.\n- Movimento da espada.\n- Momento de impacto.\n- Recuperação para a postura de combate.\n\n**3. Ataque especial — Corte de Maré**\n- Preparação do golpe.\n- Corte amplo.\n- Efeito de energia marítima original.\n- Recuperação.\n\n**4. Hurt**\n- Reação ao receber dano.\n- Pequeno recuo.\n- Retorno à postura de combate.\n\n**5. Death**\n- Perda gradual de equilíbrio.\n- Queda.\n- Pose final.\n- Sem teletransporte ou desaparecimento brusco.\n\n### Direções obrigatórias\n\n- Frente.\n- Costas.\n- Esquerda.\n- Direita.\n\nEvite utilizar espelhamento automático quando isso inverter detalhes da arma ou do figurino.\n\n### Frames\n\nUse como meta inicial, sujeita à aprovação da qualidade:\n\n| Animação | Frames por direção |\n|---|---:|\n| Idle de combate | 4 |\n| Ataque básico | 6–8 |\n| Corte de Maré | 8–12 |\n| Hurt | 3–4 |\n| Death | 6–8 |\n\nOs frames precisam seguir uma linha de tempo coerente. Não gere poses isoladas que não formem uma animação contínua.\n\nPreserve a resolução nativa dos sprites e utilize padding transparente apenas quando necessário para ancoragem.\n\n---\n\n## FASE 3 — CONTROLE DE CUSTOS E APROVAÇÃO\n\nA etapa anterior utilizou 77 gerações do PixelLab.\n\nPortanto, não inicie uma produção indiscriminada.\n\nExecute nesta ordem:\n\n1. Inspecione as imagens já existentes e verifique se alguma pode ser reutilizada.\n2. Produza uma prévia do Idle de combate e do Ataque básico em uma única direção.\n3. Apresente os resultados para aprovação visual.\n4. Informe o número estimado de gerações e eventuais créditos necessários para concluir as demais animações.\n5. Aguarde minha autorização antes de realizar novas gerações pagas.\n\nNão realize tentativas repetidas sem limite.\n\nNão gere as quatro direções e todas as habilidades antes da aprovação do primeiro teste visual.\n\nSe o PixelLab não estiver disponível, registre o impedimento. Não substitua silenciosamente a geração por sprites genéricos.\n\n---\n\n## FASE 4 — INTEGRAÇÃO AO SISTEMA DE COMBATE\n\nDepois da aprovação dos sprites, integre as animações ao jogo.\n\nO personagem deve alternar corretamente entre:\n\n- Idle.\n- Walk.\n- Combat Idle.\n- Attack.\n- Skill.\n- Hurt.\n- Death.\n\n### Máquina de estados\n\nImplemente ou adapte um sistema de estados de animação que impeça conflitos.\n\nExemplos:\n\n- Caminhar interrompe o Idle.\n- Atacar interrompe a caminhada quando o alvo está",
+    "_pixellab": {
+      "output_directory": "pixellab-pip-generations/bento-combat-production-20261018",
+      "output_collision_policy": "create_unique",
+      "paid_call_policy": "explicit_user_run_request_required"
+    },
+    "TASK": {
+      "instruction": "Verify explicit full-batch approval and authenticated MCP; create a unique output folder and preserve the approved reference PNG unchanged."
+    }
+  },
+  {
+    "MCP create_character": {
+      "name": "Bento Maré-Livre · Espadachim",
+      "description": "Bento Maré-Livre, the same pirate swordsman as the reference. Preserve his face, hair, teal headband, crimson vest, cream shirt, blue trousers, proportions, pixel shading and original steel sword with bronze guard and cloth grip.",
+      "mode": "v3",
+      "body_type": "humanoid",
+      "n_directions": 4,
+      "size": 64,
+      "view": "low top-down",
+      "reference_image_base64": "bento-guard-corrected.png"
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+      "mode": "v3",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "keep_first_frame": false,
+      "animation_name": "combat-idle",
+      "frame_count": 4,
+      "action_description": "Hold a steady sword combat guard with subtle breathing. Keep the sword in the same hand, feet planted, body in place and facing unchanged. Return smoothly to the starting guard."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+      "mode": "v3",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "keep_first_frame": false,
+      "animation_name": "attack",
+      "frame_count": 8,
+      "action_description": "Prepare one sword strike, swing through a clear impact, then fully recover into the same starting guard. Keep the sword in the same hand, body in place and facing unchanged."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+      "mode": "v3",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "keep_first_frame": false,
+      "animation_name": "corte-de-mare",
+      "frame_count": 12,
+      "action_description": "Wind up, perform one broad sword slash with a brief original turquoise sea-energy arc, then recover into the same starting guard. Keep the sword in the same hand, body in place and facing unchanged."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+      "mode": "v3",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "keep_first_frame": false,
+      "animation_name": "hurt",
+      "frame_count": 4,
+      "action_description": "Recoil briefly from one hit, bend slightly, then return to the same sword guard. Keep the sword in the same hand, body in place and facing unchanged."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "1c0b995e-67da-4baf-b6e7-f210bd709ef4",
+      "mode": "v3",
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "keep_first_frame": false,
+      "animation_name": "death",
+      "frame_count": 8,
+      "action_description": "Lose balance gradually, buckle at the knees and fall to the ground, ending in a still fallen pose with the sword visible. Keep continuous movement without vanishing or teleporting."
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Download original character ZIP and 144 generated frames. Preserve returned order and native sizes; assemble transparent 84x84 cells with a fixed canvas-center pivot, exact-palette GIFs and inspection grids. Inspect facing, sword continuity and death. Quarantine failed attack/west rather than trim or mirror it. Reuse its directional source rotation as an explicit static armed guard. Integrate only pirate+sword and verify impact timing, movement locks, death hold, respawn, class/faction isolation and saves. Further paid correction requires its own approval."
+    }
+  }
+]

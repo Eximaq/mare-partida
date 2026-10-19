@@ -1,0 +1,194 @@
+[
+  {
+    "key": "revolucionario",
+    "tool": "create_image_pro",
+    "args": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Rebel female island courier, short dark curly hair, determined friendly face, dark green cropped field jacket, burgundy neck scarf, beige practical trousers, brown boots, utility belt with small pouches and aged brass buckles. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "width": 48,
+      "height": 48,
+      "no_background": true,
+      "style_image_base64": "npc-style-reference.png",
+      "style_copy": [
+        "outline",
+        "detail",
+        "shading"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: 290eac7e-4f8d-49e8-9f9e-1fd4b7a50433\njob_id: 290eac7e-4f8d-49e8-9f9e-1fd4b7a50433\nmodel: pro\ndescription: One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Rebel female island courier, short dark curly hair, determined friendly face, dark green cropped field jacket, burgundy neck scarf, beige practical trousers, brown boots, utility belt with small pouches and aged brass buckles. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.\nsize: 48x48px\ntransparent: True\ncandidates: 25\nstyle_image: yes (outline, detail, shading)\nasset_id: bfb7f7bf-e6ab-5235-928b-5176170acf89\nasset_status: pending (saved when generation completes)\ncost: 10 generations\nstatus: processing (~1-10 min)\n\nhint: get_image(job_id=\"290eac7e-4f8d-49e8-9f9e-1fd4b7a50433\")"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "key": "pirata",
+    "tool": "create_image_pro",
+    "args": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Charismatic male sea adventurer, wavy dark hair and teal headband, cheerful bold expression, sleeveless crimson vest over a cream shirt, cobalt blue trousers, brown waist sash, sturdy sandals, small brass compass hanging from a nautical belt. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "width": 48,
+      "height": 48,
+      "no_background": true,
+      "style_image_base64": "npc-style-reference.png",
+      "style_copy": [
+        "outline",
+        "detail",
+        "shading"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: 618c52a1-eb3a-41bd-a44d-d3b4f08d681b\njob_id: 618c52a1-eb3a-41bd-a44d-d3b4f08d681b\nmodel: pro\ndescription: One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Charismatic male sea adventurer, wavy dark hair and teal headband, cheerful bold expression, sleeveless crimson vest over a cream shirt, cobalt blue trousers, brown waist sash, sturdy sandals, small brass compass hanging from a nautical belt. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.\nsize: 48x48px\ntransparent: True\ncandidates: 25\nstyle_image: yes (outline, detail, shading)\nasset_id: bfbceb94-a6ff-541c-8c85-80aa313d8a74\nasset_status: pending (saved when generation completes)\ncost: 10 generations\nstatus: processing (~1-10 min)\n\nhint: get_image(job_id=\"618c52a1-eb3a-41bd-a44d-d3b4f08d681b\")"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "key": "marinheiro",
+    "tool": "create_image_pro",
+    "args": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Disciplined female naval watch officer, tied-back dark hair, composed confident face, original structured white naval tunic with navy blue shoulder panels and light blue trim, gray trousers, polished dark boots, small gold fasteners, no hat, no insignia. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "width": 48,
+      "height": 48,
+      "no_background": true,
+      "style_image_base64": "npc-style-reference.png",
+      "style_copy": [
+        "outline",
+        "detail",
+        "shading"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: 71b89b38-0479-4713-bfa1-66fb3150344a\njob_id: 71b89b38-0479-4713-bfa1-66fb3150344a\nmodel: pro\ndescription: One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Disciplined female naval watch officer, tied-back dark hair, composed confident face, original structured white naval tunic with navy blue shoulder panels and light blue trim, gray trousers, polished dark boots, small gold fasteners, no hat, no insignia. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.\nsize: 48x48px\ntransparent: True\ncandidates: 25\nstyle_image: yes (outline, detail, shading)\nasset_id: 15d540d2-9dff-5356-ba3b-9900cb3f8a89\nasset_status: pending (saved when generation completes)\ncost: 10 generations\nstatus: processing (~1-10 min)\n\nhint: get_image(job_id=\"71b89b38-0479-4713-bfa1-66fb3150344a\")"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "key": "governo_mundial",
+    "tool": "create_image_pro",
+    "args": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Refined male institutional envoy, neatly combed silver hair, stern dignified face, tailored ivory long coat over a deep blue waistcoat, black trousers, cool gray gloves, formal black boots and restrained gold edging, imposing upright posture, no emblems. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "width": 48,
+      "height": 48,
+      "no_background": true,
+      "style_image_base64": "npc-style-reference.png",
+      "style_copy": [
+        "outline",
+        "detail",
+        "shading"
+      ]
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: 625e7701-4b48-4ae7-8db7-ad56667e5a2f\njob_id: 625e7701-4b48-4ae7-8db7-ad56667e5a2f\nmodel: pro\ndescription: One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Refined male institutional envoy, neatly combed silver hair, stern dignified face, tailored ivory long coat over a deep blue waistcoat, black trousers, cool gray gloves, formal black boots and restrained gold edging, imposing upright posture, no emblems. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.\nsize: 48x48px\ntransparent: True\ncandidates: 25\nstyle_image: yes (outline, detail, shading)\nasset_id: 6fe39b46-835d-5c1f-8881-6ea9be03981c\nasset_status: pending (saved when generation completes)\ncost: 10 generations\nstatus: processing (~1-10 min)\n\nhint: get_image(job_id=\"625e7701-4b48-4ae7-8db7-ad56667e5a2f\")"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "key": "revolucionario",
+    "tool": "create_character",
+    "args": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Rebel female island courier, short dark curly hair, determined friendly face, dark green cropped field jacket, burgundy neck scarf, beige practical trousers, brown boots, utility belt with small pouches and aged brass buckles. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "name": "Iara do Levante",
+      "mode": "v3",
+      "size": 48,
+      "body_type": "humanoid",
+      "n_directions": 4,
+      "view": "low top-down",
+      "reference_image_base64": "revolucionario/selected-base.png"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: ef501312-8e44-4a1d-adc7-be446bd44c22\nname: Iara do Levante\nmode: v3 reference (1 generations, 4 directions)\nbody: humanoid\nsize: 48x48px\nview: low top-down\nstyle: from reference image (outline/detail hints ignored)\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"ef501312-8e44-4a1d-adc7-be446bd44c22\")"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "key": "pirata",
+    "tool": "create_character",
+    "args": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Charismatic male sea adventurer, wavy dark hair and teal headband, cheerful bold expression, sleeveless crimson vest over a cream shirt, cobalt blue trousers, brown waist sash, sturdy sandals, small brass compass hanging from a nautical belt. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "name": "Bento Maré-Livre",
+      "mode": "v3",
+      "size": 48,
+      "body_type": "humanoid",
+      "n_directions": 4,
+      "view": "low top-down",
+      "reference_image_base64": "pirata/selected-base.png"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: 5d04e580-5ad5-4f89-82f3-47be52a99804\nname: Bento Maré-Livre\nmode: v3 reference (1 generations, 4 directions)\nbody: humanoid\nsize: 48x48px\nview: low top-down\nstyle: from reference image (outline/detail hints ignored)\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "key": "marinheiro",
+    "tool": "create_character",
+    "args": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Disciplined female naval watch officer, tied-back dark hair, composed confident face, original structured white naval tunic with navy blue shoulder panels and light blue trim, gray trousers, polished dark boots, small gold fasteners, no hat, no insignia. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "name": "Cecília da Vigília",
+      "mode": "v3",
+      "size": 48,
+      "body_type": "humanoid",
+      "n_directions": 4,
+      "view": "low top-down",
+      "reference_image_base64": "marinheiro/selected-base.png"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: ea8e0ab9-c0e4-46c2-985c-21889212ce12\nname: Cecília da Vigília\nmode: v3 reference (1 generations, 4 directions)\nbody: humanoid\nsize: 48x48px\nview: low top-down\nstyle: from reference image (outline/detail hints ignored)\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"ea8e0ab9-c0e4-46c2-985c-21889212ce12\")"
+        }
+      ],
+      "isError": false
+    }
+  },
+  {
+    "key": "governo_mundial",
+    "tool": "create_character",
+    "args": {
+      "description": "One original full-body humanoid maritime adventure RPG character, directly facing south toward the viewer, low top-down game view, neutral standing pose, arms relaxed and separated from the torso. Match the reference's one-pixel dark outlines, compact expressive head, readable anatomy and clustered three-tone material shading; do not copy its identity or outfit. Refined male institutional envoy, neatly combed silver hair, stern dignified face, tailored ivory long coat over a deep blue waistcoat, black trousers, cool gray gloves, formal black boots and restrained gold edging, imposing upright posture, no emblems. Entire body inside one 48 by 48 pixel canvas with transparent margins, feet aligned near the bottom, clear limb separation. Professional crisp pixel art, original shonen sea-adventure mood, no text, no logos, no official franchise symbols, no famous-character likeness, no weapon, no scenery, no cast shadow baked into the image.",
+      "name": "Dário do Conselho",
+      "mode": "v3",
+      "size": 48,
+      "body_type": "humanoid",
+      "n_directions": 4,
+      "view": "low top-down",
+      "reference_image_base64": "governo_mundial/selected-base.png"
+    },
+    "result": {
+      "content": [
+        {
+          "type": "text",
+          "text": "id: 3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\nname: Dário do Conselho\nmode: v3 reference (1 generations, 4 directions)\nbody: humanoid\nsize: 48x48px\nview: low top-down\nstyle: from reference image (outline/detail hints ignored)\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"3a9ea5a7-cd16-4f20-99cd-7682bd215c4e\")"
+        }
+      ],
+      "isError": false
+    }
+  }
+]

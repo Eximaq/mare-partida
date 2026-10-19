@@ -1,0 +1,386 @@
+{
+  "status": "pilot_completed_awaiting_visual_approval",
+  "approvals": [
+    "Aprovo o teste",
+    "autorizo: one extra 1-generation edit"
+  ],
+  "calls": [
+    {
+      "args": {
+        "description": "Preserve this character's face, hair, outfit, proportions, palette and pixel shading. Add one original steel sword with an aged bronze guard and cloth grip, held in a relaxed combat guard. Keep facing south, full body visible.",
+        "image_base64": "bento-padded.png",
+        "width": 64,
+        "height": 64,
+        "no_background": true
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: a77a6308-b8cb-480e-a198-1e4e5c1d9815\njob_id: a77a6308-b8cb-480e-a198-1e4e5c1d9815\nmodel: pixen\nedit: Preserve this character's face, hair, outfit, proportions, palette and pixel shading. Add one original steel sword with an aged bronze guard and cloth grip, held in a relaxed combat guard. Keep facing south, full body visible.\nsource: 64x64px\nsize: 64x64px\ntransparent: True\nasset_id: 45448ffc-c44c-5dbc-96ab-1eac2066aba5\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"a77a6308-b8cb-480e-a198-1e4e5c1d9815\")"
+          }
+        ],
+        "isError": false
+      },
+      "completion": {
+        "content": [
+          {
+            "type": "text",
+            "text": "status: completed\nid: a77a6308-b8cb-480e-a198-1e4e5c1d9815\njob_id: a77a6308-b8cb-480e-a198-1e4e5c1d9815\nframes: 1\ntransparent: yes\nasset_id: 45448ffc-c44c-5dbc-96ab-1eac2066aba5\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/a77a6308-b8cb-480e-a198-1e4e5c1d9815/download"
+          },
+          {
+            "type": "image",
+            "data": "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",
+            "mimeType": "image/png"
+          }
+        ],
+        "structuredContent": {
+          "job_id": "a77a6308-b8cb-480e-a198-1e4e5c1d9815",
+          "status": "completed",
+          "frames": 1,
+          "download_url": "https://api.pixellab.ai/mcp/images/a77a6308-b8cb-480e-a198-1e4e5c1d9815/download",
+          "download_urls": [
+            "https://api.pixellab.ai/mcp/images/a77a6308-b8cb-480e-a198-1e4e5c1d9815/download"
+          ],
+          "asset": {
+            "id": "45448ffc-c44c-5dbc-96ab-1eac2066aba5",
+            "type": "image",
+            "status": "saved"
+          },
+          "charged_generations": 1
+        },
+        "isError": false
+      }
+    },
+    {
+      "approval": "autorizo",
+      "scope": "One additional edit, 1 generation; resume previously approved animations only if south-facing anchor is acceptable.",
+      "args": {
+        "description": "Keep the original front-facing pose exactly: face and torso directly toward the viewer, both eyes visible, shoulders symmetrical. Preserve identity, outfit, proportions and pixel style. Add one steel sword with an aged bronze guard and cloth grip. Keep the entire character centered.",
+        "image_base64": "bento-padded.png",
+        "width": 64,
+        "height": 64,
+        "no_background": true
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 30e42bc1-1f39-467e-9a85-32e75c780d5f\njob_id: 30e42bc1-1f39-467e-9a85-32e75c780d5f\nmodel: pixen\nedit: Keep the original front-facing pose exactly: face and torso directly toward the viewer, both eyes visible, shoulders symmetrical. Preserve identity, outfit, proportions and pixel style. Add one steel sword with an aged bronze guard and cloth grip. Keep the entire character centered.\nsource: 64x64px\nsize: 64x64px\ntransparent: True\nasset_id: 1e7fad25-1c80-50e5-b2e3-f7c6366bddaa\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"30e42bc1-1f39-467e-9a85-32e75c780d5f\")"
+          }
+        ],
+        "isError": false
+      },
+      "completion": {
+        "content": [
+          {
+            "type": "text",
+            "text": "status: completed\nid: 30e42bc1-1f39-467e-9a85-32e75c780d5f\njob_id: 30e42bc1-1f39-467e-9a85-32e75c780d5f\nframes: 1\ntransparent: yes\nasset_id: 1e7fad25-1c80-50e5-b2e3-f7c6366bddaa\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/30e42bc1-1f39-467e-9a85-32e75c780d5f/download"
+          },
+          {
+            "type": "image",
+            "data": "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",
+            "mimeType": "image/png"
+          }
+        ],
+        "structuredContent": {
+          "job_id": "30e42bc1-1f39-467e-9a85-32e75c780d5f",
+          "status": "completed",
+          "frames": 1,
+          "download_url": "https://api.pixellab.ai/mcp/images/30e42bc1-1f39-467e-9a85-32e75c780d5f/download",
+          "download_urls": [
+            "https://api.pixellab.ai/mcp/images/30e42bc1-1f39-467e-9a85-32e75c780d5f/download"
+          ],
+          "asset": {
+            "id": "1e7fad25-1c80-50e5-b2e3-f7c6366bddaa",
+            "type": "image",
+            "status": "saved"
+          },
+          "charged_generations": 1
+        },
+        "isError": false
+      }
+    },
+    {
+      "key": "combat-idle",
+      "args": {
+        "action": "Breathe gently in combat guard, holding the sword steadily. Face south throughout, feet planted, body in place.",
+        "first_frame_url": "https://api.pixellab.ai/mcp/images/30e42bc1-1f39-467e-9a85-32e75c780d5f/download",
+        "frame_count": 4,
+        "no_background": true
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: d3e53bd6-0b12-493c-8a94-ac43a7e237c0\njob_id: d3e53bd6-0b12-493c-8a94-ac43a7e237c0\naction: Breathe gently in combat guard, holding the sword steadily. Face south throughout, feet planted, body in place.\nframes: 4\nsize: 64x64px\ntransparent: True\nasset_id: 07098de5-832e-5dd3-b388-9792de2534b5\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~30-180s)\n\nhint: get_image(job_id=\"d3e53bd6-0b12-493c-8a94-ac43a7e237c0\")"
+          }
+        ],
+        "isError": false
+      },
+      "completion": {
+        "content": [
+          {
+            "type": "text",
+            "text": "status: completed\nid: d3e53bd6-0b12-493c-8a94-ac43a7e237c0\njob_id: d3e53bd6-0b12-493c-8a94-ac43a7e237c0\nframes: 5\ntransparent: yes\nasset_id: 07098de5-832e-5dd3-b388-9792de2534b5\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/d3e53bd6-0b12-493c-8a94-ac43a7e237c0/download?index=0 ... ?index=4"
+          },
+          {
+            "type": "image",
+            "data": "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",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "image",
+            "data": "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",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "image",
+            "data": "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAGNElEQVR4nO2aW2wUVRjHfzvbqiFUSkMwlXJNcaCLmEgNlECQUlIU4wPQF5VLCDFAuBQDIkSiBoRAKiGADQkoIvCgTUlEuVTBUoItjUUicdtOKVsoXYhgtkuh5dLuHB+mO852dwssM4uB+SdNzv189+/rmQUbNmzYsGHDhg0bNp5KOB7TvSLKeNzpifeFYYxnumS9XeVWgs3HpRhLIYx/mS45rJ3pko3jTxwEIPKz5RBBYBCCUSjxIiqepiYyXTJVboWXFi4MmagrLAQ0d4i3G8RLALpG5aXLoy5KOvajUQAQB/riagHGjrIxL2RSXlnUdf0TFwjD/P/CpjxxYVNeyJhhTVwgxekeAbBg8gitIzT+xJQ36OhkNTj2fo4rZI/ViHsMWDFJZn7uSAACQkUEdaCqyKuK405fvCxAZ+SqekcfPOa+Sr23BYAEZxgpT0wM0P17bq90AYhDS3LFmjczRBCFs8aK6vXTBCDmJQ/tWiNYCqulLL4Y/Jreabx5k3a1g0JfPcrGPC7+fZu77e04HTB1awlL+wyjtSPA8N7JANQ0+9nlP28pnVYKQNSf+5qZoxYxI00LbKoQKP4bpI5N5NgvF0MWvz5pIG1VmsIHJCVR0+wH4KOTq0gfOdcyWhOsONSIvWe2M3PUIqb1y0By/MfDxwvGc8l/E4CByUmcqmsENOYB3K1e9p7ZbjV5lgVBcWhJLo6jRwCoaG9D8d8AQE7upWs/x5VKjisVj7+FE8cv6czXNPupaG8D0M+wCpZlgfTUnnQIOFKwM/TCTisYv3w+QoXdpdXMXvdhxDOOFOykI6BycHEuWBQQrUuDkgSqqndVEU7/zzVXwsYirZNf7GkubQZYEQPEjjnjtJbUvXyjaT4ohGv/3AApLUSQZsMSCxickgyA0tTC4m8rQuYiaTga1h6u1gslq9zAEgH07/MM+8rcvL2tBDrTl+Rw4PY162vKK89EbDe0+I3ZwjF1awlIEnLa81aQan0aNMKYBiGU8SDuqeHp/rjbS44r1RKazBaAqF4/Dafj/jXLZ+9sfuBDc0f00/9rNBumW4DT4SDBKbH2cHVwSACOXf7zYl7yUN0KZr/7asi+Pfv/0OND1/L3bkeABKc1Rav5LiBJHP6rCYD3Jg5kX+klfcrd6sXd6gXgp6r6sK0HvNVhY4AjY/UBoWyYbjqpYFEMcIaX7QK0ijArsQc5kweR2icZyZAma/tep/7aDV5O603F0ZrgHv2gwENkj4eBWQIIoS53RD/ys2W2/KqAxoRIGZIHqChIVBwOe//TsSD7FfLvqcG9+tnPJjiNfdP8wTQLyJ8+jLQBycgri1A25kVgHgaPnhhlt1bo+DzFePwtxgmhbMzD0TmvbJge6dXokWBaHbCluJamRj8Fy8ZEeuFl8OgJIW2tr3b2JzIwcwKZLplESdP0mjczAAgEAqz8rryTWvPLFrNOdADM3/AD57x9KFg2Jjge1XEbKsvweYrxeYpoqCxD6vIkNia9PwAZqw/w+YwsAkIlwYJEYHoQvCX1pamxnoJlY7jVcptPv/ozysrQ+l4TiMLsUSkA+lsBaEIwwFQxmHWYqK1TKNyxl/LyU1SdPqFPpAyZHub7DZWlgITPUxSkQQ+SPk8x+dkySc85jbWEZS9XpjrVrbbbnP39N9AI7pZoA/MhSBmiBdAjlwIEg6eVMMMFdO3fvXuHQKA9xmOCAVELkAKgsswE8rqHqRawf/eXEKbV0CsaKkvxeYq7rnNoY1KnewRh3TtAEI9qAaK2TmHP3u5zc9DnNdxP5hINlWXEg3kwMQts3bwOIvq9qgdBNaBy9vslUdbh8HmKRFpWPi8MSgfoYg3/P4jaOkWsWrO+uy84kX4Nct9zY9gTM2K1gAcyfYALm/KobWrhdP1lY1rrFttmZTFpmPYA0qUGMB2P7AKb1n8CkU1arJoynG9OuOnXN4UO9cEVeeWan91eH+1x+EAeSxbQtd/a2hYt7YkVk2T69+3N2UYftY3X6Wh/uKB26uRlsl2DLP0mEAtEbZ3yQL6/Y844kZXYQxxakhtTDCj54C2RldhDHFyca3kceBjozDudifcj6lGDWFwCYSw1tpGYJ+ZHDDZs2LBhw4YNG08d/gV8IqPTWCxhjQAAAABJRU5ErkJggg==",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "image",
+            "data": "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",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "(1 more frames not shown — fetch them from the download URLs above)"
+          }
+        ],
+        "structuredContent": {
+          "job_id": "d3e53bd6-0b12-493c-8a94-ac43a7e237c0",
+          "status": "completed",
+          "frames": 5,
+          "download_url": "https://api.pixellab.ai/mcp/images/d3e53bd6-0b12-493c-8a94-ac43a7e237c0/download?index=0",
+          "download_urls": [
+            "https://api.pixellab.ai/mcp/images/d3e53bd6-0b12-493c-8a94-ac43a7e237c0/download?index=0",
+            "https://api.pixellab.ai/mcp/images/d3e53bd6-0b12-493c-8a94-ac43a7e237c0/download?index=1",
+            "https://api.pixellab.ai/mcp/images/d3e53bd6-0b12-493c-8a94-ac43a7e237c0/download?index=2",
+            "https://api.pixellab.ai/mcp/images/d3e53bd6-0b12-493c-8a94-ac43a7e237c0/download?index=3",
+            "https://api.pixellab.ai/mcp/images/d3e53bd6-0b12-493c-8a94-ac43a7e237c0/download?index=4"
+          ],
+          "asset": {
+            "id": "07098de5-832e-5dd3-b388-9792de2534b5",
+            "type": "image",
+            "status": "saved"
+          },
+          "charged_generations": 1
+        },
+        "isError": false
+      }
+    },
+    {
+      "key": "attack",
+      "args": {
+        "action": "Prepare one sword strike, swing through a clear impact, then recover into the starting guard. Face south throughout and stay in place.",
+        "first_frame_url": "https://api.pixellab.ai/mcp/images/30e42bc1-1f39-467e-9a85-32e75c780d5f/download",
+        "frame_count": 6,
+        "no_background": true
+      },
+      "result": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: f2a70700-58c6-484e-922e-3a644beb4707\njob_id: f2a70700-58c6-484e-922e-3a644beb4707\naction: Prepare one sword strike, swing through a clear impact, then recover into the starting guard. Face south throughout and stay in place.\nframes: 6\nsize: 64x64px\ntransparent: True\nasset_id: 3497494f-17f3-539b-a6ac-20abd87cab44\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~30-180s)\n\nhint: get_image(job_id=\"f2a70700-58c6-484e-922e-3a644beb4707\")"
+          }
+        ],
+        "isError": false
+      },
+      "completion": {
+        "content": [
+          {
+            "type": "text",
+            "text": "status: completed\nid: f2a70700-58c6-484e-922e-3a644beb4707\njob_id: f2a70700-58c6-484e-922e-3a644beb4707\nframes: 7\ntransparent: yes\nasset_id: 3497494f-17f3-539b-a6ac-20abd87cab44\nasset_type: image\nasset_status: saved\ngallery: saved to your PixelLab gallery (pixellab.ai/create)\ncharged: 1 generation\ndownload: https://api.pixellab.ai/mcp/images/f2a70700-58c6-484e-922e-3a644beb4707/download?index=0 ... ?index=6"
+          },
+          {
+            "type": "image",
+            "data": "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",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "image",
+            "data": "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",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "image",
+            "data": "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",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "image",
+            "data": "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",
+            "mimeType": "image/png"
+          },
+          {
+            "type": "text",
+            "text": "(3 more frames not shown — fetch them from the download URLs above)"
+          }
+        ],
+        "structuredContent": {
+          "job_id": "f2a70700-58c6-484e-922e-3a644beb4707",
+          "status": "completed",
+          "frames": 7,
+          "download_url": "https://api.pixellab.ai/mcp/images/f2a70700-58c6-484e-922e-3a644beb4707/download?index=0",
+          "download_urls": [
+            "https://api.pixellab.ai/mcp/images/f2a70700-58c6-484e-922e-3a644beb4707/download?index=0",
+            "https://api.pixellab.ai/mcp/images/f2a70700-58c6-484e-922e-3a644beb4707/download?index=1",
+            "https://api.pixellab.ai/mcp/images/f2a70700-58c6-484e-922e-3a644beb4707/download?index=2",
+            "https://api.pixellab.ai/mcp/images/f2a70700-58c6-484e-922e-3a644beb4707/download?index=3",
+            "https://api.pixellab.ai/mcp/images/f2a70700-58c6-484e-922e-3a644beb4707/download?index=4",
+            "https://api.pixellab.ai/mcp/images/f2a70700-58c6-484e-922e-3a644beb4707/download?index=5",
+            "https://api.pixellab.ai/mcp/images/f2a70700-58c6-484e-922e-3a644beb4707/download?index=6"
+          ],
+          "asset": {
+            "id": "3497494f-17f3-539b-a6ac-20abd87cab44",
+            "type": "image",
+            "status": "saved"
+          },
+          "charged_generations": 1
+        },
+        "isError": false
+      }
+    }
+  ],
+  "usage": {
+    "generations": 4,
+    "credits_usd": 0,
+    "balance_before": 1667,
+    "balance_after": 1663,
+    "per_call_generations": [
+      1,
+      1,
+      1,
+      1
+    ]
+  },
+  "verification": {
+    "attack": {
+      "frames": 7,
+      "size": [
+        64,
+        64
+      ],
+      "original_order": true,
+      "first_frame_matches_visible_source": false,
+      "bounds": [
+        [
+          6,
+          9,
+          46,
+          55
+        ],
+        [
+          2,
+          9,
+          47,
+          55
+        ],
+        [
+          7,
+          10,
+          47,
+          55
+        ],
+        [
+          15,
+          11,
+          57,
+          55
+        ],
+        [
+          18,
+          11,
+          44,
+          55
+        ],
+        [
+          18,
+          10,
+          55,
+          55
+        ],
+        [
+          18,
+          9,
+          57,
+          55
+        ]
+      ],
+      "distinct_frames": 7,
+      "gif_exact_visible_pixels": true,
+      "gif_disposal": 2,
+      "gif_loop": 0,
+      "preview_frame_ms": 100,
+      "colors": 118
+    },
+    "combat-idle": {
+      "frames": 5,
+      "size": [
+        64,
+        64
+      ],
+      "original_order": true,
+      "first_frame_matches_visible_source": false,
+      "bounds": [
+        [
+          6,
+          9,
+          46,
+          55
+        ],
+        [
+          8,
+          10,
+          46,
+          55
+        ],
+        [
+          11,
+          11,
+          45,
+          55
+        ],
+        [
+          16,
+          11,
+          43,
+          57
+        ],
+        [
+          19,
+          10,
+          44,
+          56
+        ]
+      ],
+      "distinct_frames": 5,
+      "gif_exact_visible_pixels": true,
+      "gif_disposal": 2,
+      "gif_loop": 0,
+      "preview_frame_ms": 200,
+      "colors": 71
+    }
+  },
+  "art_review": {
+    "first_edit": "Rejected: east-facing. Alpha bounds verify no clipping.",
+    "corrected_edit": "South-facing; original identity readable; used for both animations.",
+    "idle": "South-facing, sword lowers rather than staying in stable combat guard. Loop needs user assessment.",
+    "attack": "Preparation, slash and impact readable; final sword position differs from initial guard. Visible jump on loop, recovery needs refinement.",
+    "echo": "Returned frame 0 changes 87 visible pixels in idle and 67 in attack relative to input. All returned PNGs kept unchanged.",
+    "verdict": "Reviewable pilot, not approved for production or gameplay integration."
+  },
+  "assembly": "Transparent exact-palette GIFs and sheets, original frame order, no trimming, synthesis or mirroring.",
+  "remaining_estimate": {
+    "generations": [
+      19,
+      37
+    ],
+    "authorized": false,
+    "scope": "One armed directional reference rotation and 18 clips: 3 idle + 3 attack + 4 special + 4 hurt + 4 death. Roughly 1–2 per clip, canvas growth can increase cost. Excludes pilot corrections, retries, armed walk generation and Pro escalation."
+  },
+  "game_integration": false,
+  "original_assets_unchanged": true
+}

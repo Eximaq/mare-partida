@@ -1,0 +1,78 @@
+{
+  "internal_name": "marinheiro",
+  "display_name": "Cecília da Vigília",
+  "faction": "marine",
+  "frame_size": [
+    56,
+    56
+  ],
+  "directions": [
+    "south",
+    "north",
+    "west",
+    "east"
+  ],
+  "anchor": [
+    28,
+    52
+  ],
+  "reference_height": 48,
+  "render_height": 70,
+  "render_scale": 1.5,
+  "render_offset": [
+    0,
+    0
+  ],
+  "animations": {
+    "idle": {
+      "url": "assets/factions/marinheiro/idle.png",
+      "frames": 4,
+      "direction_frames": {
+        "south": 4,
+        "north": 4,
+        "west": 4,
+        "east": 4
+      },
+      "fps": 4,
+      "direction_fps": {
+        "south": 4,
+        "north": 4,
+        "west": 4,
+        "east": 4
+      },
+      "visible_height": {
+        "south": 43.0,
+        "north": 43.0,
+        "west": 44.5,
+        "east": 44.0
+      },
+      "loop": true
+    },
+    "walk": {
+      "url": "assets/factions/marinheiro/walk.png",
+      "frames": 8,
+      "direction_frames": {
+        "south": 8,
+        "north": 8,
+        "west": 8,
+        "east": 8
+      },
+      "fps": 8,
+      "direction_fps": {
+        "south": 8,
+        "north": 8,
+        "west": 8,
+        "east": 8
+      },
+      "visible_height": {
+        "south": 45.0,
+        "north": 45.0,
+        "west": 44.0,
+        "east": 44.0
+      },
+      "loop": true
+    }
+  },
+  "source": "PixelLab MCP",
+  "integration_notes": "Original frames preserved separately. Transparent padding only; feet aligned by recorded frame offsets. No repainting, interpolation, mirroring or duplicated playback frames. Attack animation is outside this stage; idle pose is retained during attacks."
+}

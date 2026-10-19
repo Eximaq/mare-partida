@@ -1,0 +1,143 @@
+# Desenvolvimento compartilhado no GitHub
+
+O projeto foi preparado para versionamento por Git e publicação opcional de uma demonstração estática no GitHub Pages. **Para começar, leia [docs/COLABORACAO_GITHUB.md](docs/COLABORACAO_GITHUB.md).**
+
+**Importante:** o preview GitHub Pages utiliza `localStorage` individual; multiplayer, sincronização de saves e backend exigem um serviço adicional. Não envie chaves, tokens ou saves ao repositório.
+
+---
+
+# Maré Partida — Versão 1.2 (pacote V12)
+
+## Entrega atual — Forja com seleção visual
+
+Grids de equipamentos e pérolas substituem dropdowns, com pesquisa, filtros, paginação, tooltip e destaque do alvo. Aprimorar até +20 (garantido até +5), imbuir/remover, fundir cinco equipamentos ou cinco pérolas, reforjar uma linha ou todos os extras. Operações confirmadas, custos/riscos explícitos, resultados no painel, histórico e persistência transacional.
+
+**Fusão atualizada:** cinco slots interativos nas duas modalidades, com clique/arrastar, remoção individual e limpeza. Pérolas exibidas apenas quando possuídas; quantidades, bloqueios, busca e filtros refletem o inventário real. Custos e chances mantidos. [Regras e testes dos slots](docs/FUSAO-SLOTS.md) · [Capturas atuais](http://127.0.0.1:8123/docs/evidence-fusion-slots/index.html).
+
+Migração idempotente `forgeVersion:3`, com JSON original em `mare-partida-save-v1-before-forge-v3`; preserva IDs, refinos e progressão. Custos de aprimoramento agora escalam com o nível da peça; reforja fica 30% mais cara por tentativa. Chances das pérolas mantidas. Nenhuma geração paga ou alteração de mapa/câmera/sprites. Supremo por fusão, reparação, desmontagem e transferência aguardam as regras documentadas.
+
+[Jogar](http://127.0.0.1:8123/) · [Regras, fórmulas, migração, testes e pendências](docs/FORJA-REFATORACAO.md) · [Capturas reais](http://127.0.0.1:8123/docs/evidence-forge-refactor/index.html) · [Histórico Forja 2.0](docs/FORJA-2.0.md).
+
+Verificação: 15 grupos do modelo e aceitação em Chromium nas três resoluções (1920×1080, 1366×768, 1280×720), incluindo cancelamento, falhas, bloqueios, consumo exato e recarga sem duplicação. Evidências e resultados: `docs/evidence-forge-refactor/`.
+
+## Histórico — HUD, interface náutica e atributos por classe
+
+Sete botões com os arquivos originais de `icones_menu_pirata`, identidade compartilhada nas janelas, inventário com os onze slots alinhados e a prévia atual do personagem. Os 33 equipamentos, a poção e o ferro salgado agora têm artes próprias em `assets/ui/items/`, reutilizadas na mochila, equipamentos, forja, loja e loot. Sem novas gerações pagas.
+
+Todas as classes nascem com **50 pontos base**, conforme a tabela de classe, separados de equipamentos, facção e investimentos. A distribuição oferece **+1, +5, +10, +25 e MÁX**, prévia, confirmação, cancelamento e limpeza. Continuam sendo 5 pontos livres por nível a partir do nível 2. A migração v2 preserva investimentos antigos e guarda o JSON original em uma chave de backup do navegador.
+
+[Jogar com atualização ao vivo](http://127.0.0.1:8123/) · [Capturas reais de todas as janelas](http://127.0.0.1:8123/docs/evidence-ui-nautical/index.html) · [Tabela, distribuição, arquivos, assets e recuperação](docs/UI-HUD-ATRIBUTOS.md) · [Auditoria inicial](docs/UI-ATRIBUTOS-AUDITORIA.md).
+
+Validação: 7 grupos de aceitação da UI + 12 de personagens + 12 de ilha/HUD em Chromium isolado; testes de nascimento das sete classes, quantidades, migração, persistência, inventário/forja, navegação, 20 derrotas e resgate de contrato. Capturas em **1920×1080, 1366×768 e 1280×720**. Passaram também os testes Node de atributos (12), mundo/câmera (39), ilha (8), controle de animações e renderização dos sprites. Ver resultados em `docs/evidence-ui-nautical/results.json`, `docs/evidence-ui-character-regression/results.json` e `docs/evidence-ui-island-regression/results.json`. Foram comparados 132 arquivos protegidos ao checkpoint: nenhum mapa, câmera, sprite ou ícone fornecido foi alterado.
+
+Limites: equipamentos ainda não trocam as roupas do sprite; mercado/cofre continuam indisponíveis. O aumento da base anterior de 25 para os 50 pontos pedidos muda o ritmo inicial, sem alterações nos coeficientes de combate. Rolagem vertical permanece disponível para conteúdo extenso. Checkpoint: `C:/Users/Marcos/Desktop/MARE/backups/mare-partida-v12-before-ui-attributes-20261018`.
+
+## Histórico — combate do Espadachim Pirata
+
+Bento recebeu guarda, ataque, Corte de Maré, reação ao dano e queda, com controle de estados e dano no impacto. A integração é exclusiva de Pirata + Espadachim. O ataque para a esquerda e as quatro animações de costas com braços sobre o dorso foram substituídos por versões inspecionadas; as 20 combinações de ação/direção têm animação ativa. A queda e os sprites-base foram preservados. Os demais detalhes artísticos estão registrados nos relatórios.
+
+As chamadas informaram **23 gerações na produção + 4 no piloto + 5 nas correções = 32 nesta etapa**. Os 144 frames originais e as versões anteriores foram preservados; 36 frames de substituição foram verificados pixel a pixel. Combate, morte/renascimento e isolamento de facção/classe passaram novamente após os ajustes. [Correções e verificação atual](docs/BENTO-CORRECOES-DIRECIONAIS.md) · [Histórico da produção](docs/BENTO-ESPADACHIM-COMBATE.md) · [Galeria das quatro direções](http://127.0.0.1:8123/pixellab-pip-generations/bento-combat-production-20261018/preview.html) · [Jogar](http://127.0.0.1:8123/). Conserve também `combat-animation.js`, `combat-assets.js` e `assets/classes/pirate-sword/` ao transportar a versão.
+
+## Histórico — sprites-base das quatro facções
+
+Iara do Levante, Bento Maré-Livre, Cecília da Vigília e Dário do Conselho foram gerados no PixelLab e integrados à seleção, ao perfil e ao lobby. Cada um possui idle e caminhada em frente, costas, esquerda e direita. Em **Personagem → Inspecionar sprites das facções no lobby**, veja os quatro juntos e alterne os ciclos. As sete classes continuam independentes das facções.
+
+Arte nativa 48×48, folhas com células 56×56 por padding transparente e escala calibrada junto aos NPCs. Iara usa quatro frames frontais de caminhada, conforme aprovação expressa; os outros ciclos de caminhada têm oito. Custo desta etapa: **77 gerações**, incluindo a correção adicional autorizada. Os 52 assets anteriores e os sistemas de mapa, câmera e balanceamento foram preservados.
+
+[Relatório, arquivos, capturas, custos e refinamentos](docs/SPRITES-BASE-FACCOES.md) · [Preview ao vivo](http://127.0.0.1:8123/). Para transportar a versão, conserve também `faction-sprites.js`, `faction-assets.js` e `assets/factions/`. Nenhuma nova geração é consumida ao jogar.
+
+Verificações: seis cenários de facções em navegador, 188 frames de entrega, 12 cenários de regressão das classes e 12 de mundo/HUD. Execute `python tests/factions_browser.py` com Playwright e `python tests/faction_artwork.py` com Pillow para reproduzir os testes específicos.
+
+## Histórico — classes, atributos e progressão (1.3.0)
+
+Sete classes jogáveis: as seis anteriores e o novo Suporte/Curandeiro. Ciborgue agora prioriza tanque, e Estrategista Elemental usa dano mágico. FOR, DES, VIT, INT e ESP influenciam o combate, com cinco pontos livres por nível a partir do nível 2. Abra **Personagem**, clique no contador de pontos ou pressione **P** para distribuir com prévia e confirmação. O Curandeiro pode configurar o limite de vida para cura automática.
+
+Saves antigos recebem o saldo correspondente ao nível e são preservados em cópia local antes da migração. Equipamentos, facções, mapas, câmera e sprites foram conservados. Nenhuma geração PixelLab foi realizada nesta etapa.
+
+[Fórmulas, habilidades, migração e limites de balanceamento](docs/CLASSES-ATRIBUTOS-PROGRESSAO.md) · [Preview ao vivo](http://127.0.0.1:8123/).
+
+Verificações: `node tests/character-system.test.cjs`, `python tests/characters_browser.py`, `node tests/world-system.test.cjs`, `node tests/island-world.test.cjs` e `python tests/island_browser.py`. O preview carrega `character-system.js` antes de `game.js`; conserve esse arquivo junto aos demais ao transportar a versão.
+
+## Histórico — porto compacto
+
+Lobby reduzido de 3000 × 2000 para 2400 × 1700 (32% menos área), com seis casas, serviços agrupados, caminhos curtos e um cais conectado com dois navios. Areia, água e gramado receberam texturas PixelLab mais suaves; cargas e palmeiras completam a ambientação. A HUD náutica e o progresso continuam preservados.
+
+Atualização de preferência visual: água, areia e grama voltaram aos atlas mais detalhados de `ilha-porto-20261018`, preservando o layout compacto e os navios. Nenhuma nova geração foi necessária. Para reconstruir essa combinação: `python tools/build_island_assets.py pixellab-pip-generations/ilha-porto-20261018 pixellab-pip-generations/porto-compacto-20261018`.
+
+[Preview ao vivo](http://127.0.0.1:8123/) · [Relatório e capturas](docs/ENTREGA-PORTO-COMPACTO.md). Arte desta etapa: **30 gerações observadas**, dentro das 27–33 aprovadas. Testes: 39 verificações do mundo, oito rotas de navegação e 12 cenários de navegador.
+
+## Histórico — ilha portuária e HUD náutica
+
+O Porto das Correntes agora tem costa de ilha, praia, gramado, ruas, cais e oito colocações de quatro edifícios PixelLab. A HUD segue a disposição da gravação recebida em 18/10: perfil vertical no alto esquerdo, menu no alto direito, canal local no rodapé esquerdo, cinto central e diário de bordo com contratos reais no rodapé direito. O acabamento usa madeira, cordas e latão, seguindo a imagem de inventário enviada.
+
+[Abrir preview ao vivo](http://127.0.0.1:8123/). Se o servidor não estiver ativo, execute `python tools/dev_server.py` nesta pasta. Ao salvar os arquivos, o preview recarrega automaticamente. Continua sendo possível abrir `index.html` sem servidor; nesse modo não há atualização automática. A origem do preview e a do arquivo no Opera são independentes; use exportação/importação do próprio jogo para transportar o save.
+
+O inventário, as seis classes, os quatro NPCs e os 52 assets anteriores foram preservados. Custo observado de arte PixelLab: **30 gerações**, incluindo a tentativa adicional aprovada após um timeout. O jogo usa os PNGs locais e não gasta gerações ao iniciar ou jogar.
+
+- [Entrega atual: arquivos, capturas, testes e limitações](docs/ENTREGA-ILHA-HUD.md)
+- [Comparação com a gravação, timestamps e direção visual](docs/REFERENCIA-E-DIRECAO-ILHA.md)
+- [Manifesto de arte](pixellab-pip-generations/ilha-porto-20261018/manifest.json)
+- [Blueprint](pixellab-pip-generations/ilha-porto-20261018/ilha-porto.blueprint.json)
+
+Verificações atuais: `node tests/world-system.test.cjs` (35 verificações), `node tests/island-world.test.cjs` (rotas e costa/cais/edifícios) e `python tests/island_browser.py` (12 cenários). A entrada `tests/sprint1_browser.py` encaminha para a aceitação atual. Foram verificadas as três resoluções solicitadas, mais duas menores; combate com pelo menos 20 derrotas, resgate de contrato e preservação do save após retorno/recarga passaram em navegador isolado com relógio virtual.
+
+## Histórico — Sprint 1: mundo, câmera e navegação
+
+O workspace V12 foi preservado e recebeu mapas com dimensões independentes da tela: porto 3000 × 2000 e caçadas 3200 × 2200. A câmera acompanha caminhadas e combate com suavização e limites. Cliques são convertidos para coordenadas do mundo; WASD/setas e navegação A* respeitam água, edifícios, bancas e obstáculos cadastrados. O terreno existente foi estendido com seus próprios tiles, mantendo o núcleo original e todos os 52 assets sem alteração. A expansão visual dos distritos ainda pertence à Sprint 2.
+
+**Para acompanhar alterações ao vivo:** abra um terminal nesta pasta, execute `python tools/dev_server.py` e visite [http://127.0.0.1:8123/](http://127.0.0.1:8123/). HTML, JS e CSS recarregam automaticamente após cada gravação; o personagem é salvo e reaparece no porto. Não execute um segundo servidor se o preview já estiver aberto. Também é possível abrir `index.html` diretamente, como antes, sem Python; nesse caso não há recarga automática.
+
+O preview HTTP e o `index.html` aberto como arquivo no Opera usam origens diferentes e não compartilham saves. Para trazer seu personagem ao preview, exporte pelo menu Ajuda no jogo original e importe no preview. A chave e o formato de save foram preservados; o servidor de preview não lê o save do Opera.
+
+Testes atuais: `node --check game.js`, `node --check world-system.js`, `node tests/world-system.test.cjs` (41 verificações) e `python tests/sprint1_browser.py` (11 cenários). Os testes de navegador usam contexto isolado e relógio virtual; cobrem deslocamento gradual, câmera, água/edifícios, desvio de banca por clique, interação com Ryuma após mover a câmera, 21 derrotas consecutivas na última execução e preservação de recompensas após retorno/recarga. Capturas em 1920×1080, 1366×768 e 1280×720.
+
+- [Auditoria inicial](docs/AUDITORIA-SPRINT-1.md)
+- [Entrega, evidências, resultados e pendências da Sprint 1](docs/ENTREGA-SPRINT-1.md)
+
+**A comparação com o vídeo permanece pendente:** o MP4 citado nas instruções não foi recebido. A implementação funcional não equivale à homologação visual contra essa referência. Novas animações direcionais completas, distritos, seleção de caçadas e reorganização ampla da HUD seguem nas próximas sprints. Não foram consumidos créditos PixelLab.
+
+As seções abaixo descrevem o pacote V12 original, anterior a esta sprint.
+
+## O que mudou
+
+Esta entrega refatora a HUD sem substituir os sistemas de combate, progressão e inventário.
+
+- Mapa ocupa o navegador inteiro, com canvas central livre.
+- Topo esquerdo: logo, avatar da facção, nome/nível, vida, energia e dobrões.
+- Topo direito: menu único com Inventário, Forja, Personagem, Mapa, Contratos e Ajuda.
+- Barra de alvo central apenas quando existe alvo vivo.
+- Rodapé central: habilidades [1] e [2], poção [Q] e Auto-caçada; botão de compra de poção foi removido do cinto, permanece disponível no mercador.
+- Rodapé esquerdo: Canal [J], Expedição/voltar ao porto sem se sobrepor ao cinto.
+- Rodapé direito: status da expedição minimizado, expansível com clique ou [O].
+- Painéis adicionais fechados por padrão. Atalhos [P], [J], [O] os abrem.
+- NPCs do porto distribuídos em pares simétricos, com sprites normalizados e rótulos consistentes.
+- Inventário conserva as três colunas, com altura e rolagem corrigidas.
+
+## Como iniciar
+
+Extraia o ZIP e abra o `index.html` no Chrome, Edge ou Opera. Não há necessidade de instalar servidor para esta demonstração offline.
+
+## Como atualizar preservando o personagem
+
+1. Abra a sua V11, vá a **Ajuda → Exportar Save** e guarde o arquivo.
+2. Extraia `MARE_PARTIDA_V12_ATUALIZACAO.zip`.
+3. Copie `index.html`, `styles.css`, `game.js` e a pasta `assets/npcs` para dentro da pasta do seu jogo, ao lado do `index.html` atual.
+4. Permita a substituição e mesclagem dos arquivos.
+5. Abra pelo mesmo navegador e pela mesma localização do arquivo. Não limpe os dados do site.
+
+**O identificador de salvamento permanece `mare-partida-save-v1`.** Como o navegador pode associar o `localStorage` ao caminho ou origem do arquivo, mantenha o arquivo `index.html` no local anterior ou use o recurso de importação do save se necessário.
+
+## Testes nesta entrega
+
+- `node --check game.js`: passou.
+- Criação de personagem, entrada em caçada, dano, inventário e widget de expedição: executados em navegador automatizado sem erros JavaScript.
+- Capturas e geometria verificadas em 1920×1080, 1366×768, 1080×720, 768×740, 390×844.
+- Não ocorreram interseções entre os módulos principais visíveis nas resoluções testadas.
+- Inspeção visual também feita com as imagens reais incorporadas ao teste.
+
+## Limitações conhecidas
+
+- O jogo continua offline e ainda não tem servidor MMORPG real.
+- A maior parte dos cenários é procedural, e sua qualidade visual ainda está abaixo da referência enviada para o projeto.
+- O teste automatizado foi feito em ambiente de navegador isolado com os recursos gráficos incorporados. Por isso, a persistência do save após reiniciar o navegador não foi validada ponta a ponta; o formato foi preservado no código.
+- Em telas pequenas, os painéis de detalhes são janelas sobrepostas quando abertos. A disposição padrão é livre de sobreposições entre HUDs principais.

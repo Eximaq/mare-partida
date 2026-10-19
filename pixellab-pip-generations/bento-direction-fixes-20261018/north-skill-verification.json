@@ -1,0 +1,106 @@
+{
+  "key": "north-skill",
+  "group_id": "f1971938-e31e-4f7b-aac4-c5705f2279d7",
+  "direction": "north",
+  "frames": 12,
+  "size": [
+    80,
+    68
+  ],
+  "source_url": "https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/1c0b995e-67da-4baf-b6e7-f210bd709ef4/animations/2292777c-415b-4260-ac58-5236a74dd4c5/north/{i}.png?t=1792353532900",
+  "files": [
+    "north-skill-00.png",
+    "north-skill-01.png",
+    "north-skill-02.png",
+    "north-skill-03.png",
+    "north-skill-04.png",
+    "north-skill-05.png",
+    "north-skill-06.png",
+    "north-skill-07.png",
+    "north-skill-08.png",
+    "north-skill-09.png",
+    "north-skill-10.png",
+    "north-skill-11.png"
+  ],
+  "bounds": [
+    [
+      26,
+      10,
+      66,
+      57
+    ],
+    [
+      26,
+      10,
+      66,
+      57
+    ],
+    [
+      25,
+      11,
+      64,
+      57
+    ],
+    [
+      20,
+      12,
+      58,
+      57
+    ],
+    [
+      12,
+      12,
+      49,
+      57
+    ],
+    [
+      17,
+      12,
+      49,
+      57
+    ],
+    [
+      18,
+      12,
+      49,
+      57
+    ],
+    [
+      25,
+      11,
+      50,
+      57
+    ],
+    [
+      26,
+      10,
+      55,
+      57
+    ],
+    [
+      26,
+      10,
+      63,
+      57
+    ],
+    [
+      26,
+      10,
+      64,
+      57
+    ],
+    [
+      26,
+      10,
+      66,
+      57
+    ]
+  ],
+  "gif": {
+    "created": true,
+    "exact_visible_pixels": true,
+    "frames": 12,
+    "disposal": 2,
+    "loop": 0
+  }
+}

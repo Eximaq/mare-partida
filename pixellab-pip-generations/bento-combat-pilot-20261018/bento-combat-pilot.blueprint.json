@@ -1,0 +1,62 @@
+[
+  {
+    "_comment_prompt": "# MARÉ PARTIDA — ETAPA 2: ESPADACHIM PIRATA E ANIMAÇÕES DE COMBATE\r\n\r\n## OBJETIVO PRINCIPAL\r\n\r\nAtue como Pixel Artist Sênior, Animation Director, Gameplay Programmer e Engenheiro de Qualidade especializado em MMORPG 2D.\r\n\r\nSua missão é transformar **Bento Maré-Livre**, personagem-base da facção Pirata, em um Espadachim completamente animado e funcional durante o combate.\r\n\r\nEsta etapa é um projeto-piloto. Não gere ainda os personagens das outras seis classes nem das outras três facções.\r\n\r\nO objetivo é estabelecer um padrão profissional de produção de sprites e integração que possa ser reutilizado futuramente.\r\n\r\n---\r\n\r\n## FASE 0 — ANALISAR E PRESERVAR O PROJETO\r\n\r\nAntes de qualquer alteração:\r\n\r\n1. Leia `AGENTS.md`, `README.md` e `SPRITES-BASE-FACCOES.md`.\r\n2. Analise os assets de Bento Maré-Livre existentes em `assets/factions/pirata/`.\r\n3. Inspecione o manifesto de geração e os metadados do PixelLab.\r\n4. Analise `faction-sprites.js`, `faction-assets.js` e as funções de combate em `game.js`.\r\n5. Identifique como as animações idle e walk estão sendo reproduzidas.\r\n6. Verifique como funciona a seleção de classe Espadachim.\r\n7. Crie um checkpoint antes de modificar o projeto.\r\n\r\nPreserve as quatro sprites-base aprovadas e todas as alterações manuais.\r\n\r\nNão sobrescreva os assets originais.\r\n\r\n## FASE 1 — DIREÇÃO DE ARTE\r\n\r\nUtilize Bento Maré-Livre como personagem-base.\r\n\r\nMantenha obrigatoriamente:\r\n\r\n- Mesmo rosto e cabelo.\r\n- Mesmas proporções.\r\n- Mesma identidade visual.\r\n- Mesma paleta-base.\r\n- Mesmo contorno Pixel Art.\r\n- Mesmo sombreamento.\r\n- Mesmo tamanho aparente em relação aos NPCs do lobby.\r\n\r\nAdapte sua aparência para a classe Espadachim.\r\n\r\nA espada deve possuir design original, coerente com fantasia marítima. Pode apresentar guarda de bronze envelhecido, empunhadura revestida em tecido e lâmina de aço estilizada.\r\n\r\nNão copie armas ou técnicas específicas de personagens de One Piece.\r\n\r\n**Importante:** o personagem deve continuar reconhecível como Bento Maré-Livre após receber os equipamentos da classe.\r\n\r\nAntes de gerar imagens, prepare um pequeno documento com o padrão visual e as características que precisam permanecer consistentes.\r\n\r\n---\r\n\r\n## FASE 2 — GERAÇÃO DE SPRITES NO PIXELLAB\r\n\r\nVerifique a disponibilidade do PixelLab MCP.\r\n\r\nUtilize os arquivos existentes como referência visual, empregando os parâmetros adequados para manter a identidade do personagem.\r\n\r\n### Animações que precisam ser criadas\r\n\r\n**1. Idle de combate**\r\n- Espadachim em posição de guarda.\r\n- Respiração discreta.\r\n- Espada corretamente posicionada.\r\n- Movimento suave e contínuo.\r\n\r\n**2. Ataque básico**\r\n- Preparação.\r\n- Movimento da espada.\r\n- Momento de impacto.\r\n- Recuperação para a postura de combate.\r\n\r\n**3. Ataque especial — Corte de Maré**\r\n- Preparação do golpe.\r\n- Corte amplo.\r\n- Efeito de energia marítima original.\r\n- Recuperação.\r\n\r\n**4. Hurt**\r\n- Reação ao receber dano.\r\n- Pequeno recuo.\r\n- Retorno à postura de combate.\r\n\r\n**5. Death**\r\n- Perda gradual de equilíbrio.\r\n- Queda.\r\n- Pose final.\r\n- Sem teletransporte ou desaparecimento brusco.\r\n\r\n### Direções obrigatórias\r\n\r\n- Frente.\r\n- Costas.\r\n- Esquerda.\r\n- Direita.\r\n\r\nEvite utilizar espelhamento automático quando isso inverter detalhes da arma ou do figurino.\r\n\r\n### Frames\r\n\r\nUse como meta inicial, sujeita à aprovação da qualidade:\r\n\r\n| Animação | Frames por direção |\r\n|---|---:|\r\n| Idle de combate | 4 |\r\n| Ataque básico | 6–8 |\r\n| Corte de Maré | 8–12 |\r\n| Hurt | 3–4 |\r\n| Death | 6–8 |\r\n\r\nOs frames precisam seguir uma linha de tempo coerente. Não gere poses isoladas que não formem uma animação contínua.\r\n\r\nPreserve a resolução nativa dos sprites e utilize padding transparente apenas quando necessário para ancoragem.\r\n\r\n---\r\n\r\n## FASE 3 — CONTROLE DE CUSTOS E APROVAÇÃO\r\n\r\nA etapa anterior utilizou 77 gerações do PixelLab.\r\n\r\nPortanto, não inicie uma produção indiscriminada.\r\n\r\nExecute nesta ordem:\r\n\r\n1. Inspecione as imagens já existentes e verifique se alguma pode ser reutilizada.\r\n2. Produza uma prévia do Idle de combate e do Ataque básico em uma única direção.\r\n3. Apresente os resultados para aprovação visual.\r\n4. Informe o número estimado de gerações e eventuais créditos necessários para concluir as demais animações.\r\n5. Aguarde minha autorização antes de realizar novas gerações pagas.\r\n\r\nNão realize tentativas repetidas sem limite.\r\n\r\nNão gere as quatro direções e todas as habilidades antes da aprovação do primeiro teste visual.\r\n\r\nSe o PixelLab não estiver disponível, registre o impedimento. Não substitua silenciosamente a geração por sprites genéricos.\r\n\r\n---\r\n\r\n## FASE 4 — INTEGRAÇÃO AO SISTEMA DE COMBATE\r\n\r\nDepois da aprovação dos sprites, integre as animações ao jogo.\r\n\r\nO personagem deve alternar corretamente entre:\r\n\r\n- Idle.\r\n- Walk.\r\n- Combat Idle.\r\n- Attack.\r\n- Skill.\r\n- Hurt.\r\n- Death.\r\n\r\n### Máquina de estados\r\n\r\nImplemente ou adapte um sistema de estados de animação que impeça conflitos.\r\n\r\nExemplos:\r\n\r\n- Caminhar interrompe o Idle.\r\n- Atacar interrompe a caminhada quando o alvo está",
+    "_pixellab": {
+      "output_directory": "pixellab-pip-generations/bento-combat-pilot-20261018",
+      "output_collision_policy": "create_unique",
+      "paid_call_policy": "explicit_user_run_request_required"
+    },
+    "TASK": {
+      "instruction": "Check explicit authority for this paid pilot, authenticated MCP, and create a unique output directory. Copy original south rotation unchanged and add 8px transparent padding on all sides without scaling."
+    }
+  },
+  {
+    "MCP edit_image_pixen": {
+      "description": "Preserve this character's face, hair, outfit, proportions, palette and pixel shading. Add one original steel sword with an aged bronze guard and cloth grip, held in a relaxed combat guard. Keep facing south, full body visible.",
+      "image_base64": "bento-padded.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Preserve the first rejected edit. Explicit extra-retry approval is required to continue."
+    }
+  },
+  {
+    "MCP edit_image_pixen": {
+      "description": "Keep the original front-facing pose exactly: face and torso directly toward the viewer, both eyes visible, shoulders symmetrical. Preserve identity, outfit, proportions and pixel style. Add one steel sword with an aged bronze guard and cloth grip. Keep the entire character centered.",
+      "image_base64": "bento-padded.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Download the corrected edit unchanged as bento-guard-corrected.png and inspect facing and identity."
+    }
+  },
+  {
+    "MCP animate_image": {
+      "action": "Breathe gently in combat guard, holding the sword steadily. Face south throughout, feet planted, body in place.",
+      "first_frame_url": "bento-guard-corrected.png",
+      "frame_count": 4,
+      "no_background": true
+    }
+  },
+  {
+    "MCP animate_image": {
+      "action": "Prepare one sword strike, swing through a clear impact, then recover into the starting guard. Face south throughout and stay in place.",
+      "first_frame_url": "bento-guard-corrected.png",
+      "frame_count": 6,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Download all 5 idle and 7 attack PNGs unchanged. Preserve the returned first frame even if PixelLab changed visible pixels. Assemble same-order transparent sheets and exact-palette looping GIF previews; verify fidelity and disposal. Ask for visual approval before integration or further paid work."
+    }
+  }
+]

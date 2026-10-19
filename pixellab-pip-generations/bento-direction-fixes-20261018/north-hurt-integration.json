@@ -1,0 +1,64 @@
+{
+  "action": "hurt",
+  "direction": "north",
+  "frames": 4,
+  "other_rows_identical": true,
+  "original_pixels_preserved": true,
+  "fixed_canvas_anchor": [
+    42,
+    65
+  ],
+  "placements": [
+    {
+      "frame": 0,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    },
+    {
+      "frame": 1,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    },
+    {
+      "frame": 2,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    },
+    {
+      "frame": 3,
+      "offset": [
+        4,
+        8
+      ],
+      "source_size": [
+        76,
+        68
+      ]
+    }
+  ],
+  "gif": {
+    "created": true,
+    "exact_visible_pixels": true,
+    "frames": 4,
+    "disposal": 2,
+    "loop": 0
+  }
+}

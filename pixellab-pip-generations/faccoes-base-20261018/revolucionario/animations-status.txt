@@ -1,0 +1,37 @@
+status: completed
+id: ef501312-8e44-4a1d-adc7-be446bd44c22
+name: Iara do Levante
+state_name: Idle
+directions: 4 (south, east, north, west)
+size: 48x48px
+view: low top-down
+style: -, -, -
+group: a32a4463-8c16-4ef0-b89f-f9b85672e27b (1 state)
+
+rotations:
+  south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/rotations/south.png?t=1792340117
+  east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/rotations/east.png?t=1792340117
+  north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/rotations/north.png?t=1792340117
+  west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/rotations/west.png?t=1792340117
+
+animations (2 groups, 7 total):
+  walk — 3 dir (east, north, west), 8f 2026-10-18 [type=walking-8-frames] [group: cf704e83-35cd-4c8c-a37c-2e1f5383ea07]
+    east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/animations/d3f22440-793b-41de-9db7-15e57e68944a/east/{i}.png?t=1792340286409 (i=0..7)
+    north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/animations/8238c6e6-52be-49e0-8199-cc37e9d974c9/north/{i}.png?t=1792340273688 (i=0..7)
+    west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/animations/f48d4bb9-60f9-42cb-8343-1fee4e549357/west/{i}.png?t=1792340265780 (i=0..7)
+  idle — 4 dir (south, west, north, east), 4f 2026-10-18 [type=breathing-idle] [group: b297f01d-1bda-447c-96b3-5b2d90c7d29f]
+    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/animations/360edf07-03ed-494c-b02c-999acbfc78af/south/{i}.png?t=1792340190997 (i=0..3)
+    west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/animations/fc07d8ac-b855-4a22-a11b-79942f70b27c/west/{i}.png?t=1792340183018 (i=0..3)
+    north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/animations/40cc685f-61ab-4794-8f1c-038d19fb956e/north/{i}.png?t=1792340179622 (i=0..3)
+    east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/ef501312-8e44-4a1d-adc7-be446bd44c22/animations/007e3d67-5738-4a9c-964a-53af9522aa93/east/{i}.png?t=1792340147907 (i=0..3)
+
+pending jobs (1):
+  walk(south): 100% ~60s
+
+download: https://api.pixellab.ai/mcp/characters/ef501312-8e44-4a1d-adc7-be446bd44c22/download
+spritesheet: https://api.pixellab.ai/mcp/characters/ef501312-8e44-4a1d-adc7-be446bd44c22/spritesheet (this state only — one uniform-grid sheet PNG + layout JSON, zipped; cells pivot-centred)
+  (returns HTTP 423 until jobs complete — use curl --fail)
+
+available_animations: backflip, breathing-idle, cross-punch, crouched-walking, crouching, drinking, falling-back-death, fight-stance-idle-8-frames, fireball, flying-kick, front-flip, getting-up, high-kick, hurricane-kick, jumping-1, jumping-2, lead-jab, leg-sweep, picking-up, pull-heavy-object, pushing, roundhouse-kick, running-4-frames, running-6-frames, running-8-frames, running-jump, running-slide, sad-walk, scary-walk, surprise-uppercut, taking-punch, throw-object, two-footed-jump, walk, walk-1, walk-2, walking, walking-10, walking-2, walking-3, walking-4, walking-4-frames, walking-5, walking-6, walking-6-frames, walking-7, walking-8, walking-8-frames, walking-9
+
+actions: animate_character(character_id="ef501312-8e44-4a1d-adc7-be446bd44c22", ...) | create_character_state(character_id="ef501312-8e44-4a1d-adc7-be446bd44c22", ...) | delete_animation(character_id="ef501312-8e44-4a1d-adc7-be446bd44c22", animation_group_id="<group>") | delete_character(character_id="ef501312-8e44-4a1d-adc7-be446bd44c22")

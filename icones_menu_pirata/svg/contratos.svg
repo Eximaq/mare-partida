@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
+  <defs>
+    <linearGradient id="paper" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFF6D6"/>
+      <stop offset="1" stop-color="#EBCF90"/>
+    </linearGradient>
+    <linearGradient id="roll" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FBE9B4"/>
+      <stop offset="1" stop-color="#C99A4B"/>
+    </linearGradient>
+    <radialGradient id="wax" cx="0.38" cy="0.35" r="0.75">
+      <stop offset="0" stop-color="#F27A63"/>
+      <stop offset="1" stop-color="#B22A1A"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="128" cy="238" rx="78" ry="7" fill="#000000" opacity="0.25"/>
+
+  <!-- folha -->
+  <rect x="64" y="52" width="128" height="150" fill="url(#paper)" stroke="#24160B" stroke-width="7" stroke-linejoin="round"/>
+  <g stroke="#8A5E2B" stroke-width="6" stroke-linecap="round">
+    <path d="M84 86 H172"/>
+    <path d="M84 106 H172"/>
+    <path d="M84 126 H172"/>
+    <path d="M84 146 H146"/>
+  </g>
+  <path d="M84 172 C90 158 96 178 104 166 S116 160 122 170" fill="none" stroke="#3E2010" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- rolo superior -->
+  <rect x="44" y="34" width="168" height="32" rx="16" fill="url(#roll)" stroke="#24160B" stroke-width="7"/>
+  <circle cx="60" cy="50" r="6" fill="none" stroke="#8A5E2B" stroke-width="3.5"/>
+  <circle cx="196" cy="50" r="6" fill="none" stroke="#8A5E2B" stroke-width="3.5"/>
+
+  <!-- rolo inferior -->
+  <rect x="44" y="190" width="168" height="32" rx="16" fill="url(#roll)" stroke="#24160B" stroke-width="7"/>
+  <circle cx="60" cy="206" r="6" fill="none" stroke="#8A5E2B" stroke-width="3.5"/>
+  <circle cx="196" cy="206" r="6" fill="none" stroke="#8A5E2B" stroke-width="3.5"/>
+
+  <!-- fitas e selo de cera -->
+  <path d="M158 196 L150 228 L162 221 L168 232 L176 198 Z" fill="#A32616" stroke="#24160B" stroke-width="4" stroke-linejoin="round"/>
+  <circle cx="168" cy="178" r="22" fill="url(#wax)" stroke="#24160B" stroke-width="6"/>
+  <circle cx="168" cy="178" r="14" fill="none" stroke="#FFB4A4" stroke-width="3" opacity="0.6"/>
+  <polygon points="168,169 170.1,175.1 176.6,175.2 171.4,179.1 173.3,185.3 168,181.6 162.7,185.3 164.6,179.1 159.4,175.2 165.9,175.1" fill="#FFF4D2" stroke="#24160B" stroke-width="1.5" stroke-linejoin="round"/>
+</svg>
