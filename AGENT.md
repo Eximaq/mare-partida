@@ -93,6 +93,8 @@ Facção define identidade visual, contexto, reputação e eventuais passivos le
 
 ### 3.5 Despertar — Haki (19/10/2026)
 
+- Atalhos atuais de combate: H Armamento, J Observação, K Rei; chat L. Widget junto à Vontade, somente após despertar. Rei tem recarga persistente de 8s (`haki.kingReadyAt`), com rollback junto ao custo. Os overlays atuais são 48×48; onda do Rei 128×128. Revisão visual quickcast documentada em `docs/HAKI.md`, custo 30 gerações além do lote inicial. Preservar ambos os históricos e o isolamento do laboratório DEV.
+
 - Regras em `haki-system.js`, painel em `haki-ui.js`, frames PixelLab em `haki-art.js`; documentação em `docs/HAKI.md`.
 - HAKI bloqueado com aviso até nível 50 + consumir Livro da Vontade. Drop fixo de 5% em chefes mundo/diários Nv.30+; apenas mundo está implementado. Nunca renumerar o catálogo de itens existente.
 - 100 Vontade, 5/s drenagem e regeneração OOC sem Haki; um contínuo e uma opção automática. Primeiro golpe inicia, seis segundos sem golpes encerram. Respeitar seleção manual; não reativar esgotado no mesmo combate.

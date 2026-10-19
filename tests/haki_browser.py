@@ -32,8 +32,8 @@ with sync_playwright() as p:
  q.set_viewport_size(dict(width=1366,height=768));q.reload();q.wait_for_load_state('networkidle');assert diag(q)['haki']['unlocked'];assert diag(q)['haki']['active'] is None
  print('atomic book consumption, achievements, single auto preference, save/reload, five viewports: passed',flush=True)
  q.evaluate('()=>{let n=27183;Math.random=()=>((n=(1664525*n+1013904223)>>>0)/4294967296)}');travel(q);q.clock.run_for(1000);haki(q)
- q.locator('[data-haki-toggle=armament]').click();q.screenshot(path=str(OUT/'armament-live.png'));assert diag(q)['haki']['active']=='armament';assert diag(q)['stats']['penetration']>=.15
- q.locator('[data-haki-toggle=observation]').click();assert diag(q)['haki']['active']=='observation';assert diag(q)['stats']['accuracy']==1
+ q.locator('.haki-chamber [data-haki-toggle=armament]').click();q.screenshot(path=str(OUT/'armament-live.png'));assert diag(q)['haki']['active']=='armament';assert diag(q)['stats']['penetration']>=.15
+ q.locator('.haki-chamber [data-haki-toggle=observation]').click();assert diag(q)['haki']['active']=='observation';assert diag(q)['stats']['accuracy']==1
  q.screenshot(path=str(OUT/'observation-live.png'));before=diag(q)['haki']['current'];q.clock.run_for(1000);assert diag(q)['haki']['current']<before
  q.locator('#closePanel').click();q.locator('#autoToggle').click();q.clock.run_for(4000);haki(q)
  held=diag(q)['haki']['current'];q.evaluate("()=>{window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='mare-partida-save-v1')throw Error('quota');return originalSet.call(this,k,v)}}")

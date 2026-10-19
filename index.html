@@ -48,6 +48,12 @@
       <div class="profile-resource"><span>Vida</span><span class="mini-meter"><i id="miniHP"></i></span><b id="miniHPText">100 / 100</b></div>
       <div class="profile-resource energy"><span>Energia</span><span class="mini-meter energy"><i id="miniEnergy"></i></span><b id="miniEnergyText">70 / 70</b></div>
       <div id="miniWillpower" class="profile-resource haki-will hidden" role="meter" aria-label="Força de Vontade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span>Vontade</span><span class="mini-meter"><i id="willpowerFill"></i></span><b id="willpowerText">100 / 100</b></div>
+      <div id="hakiQuickCast" class="haki-quick hidden" role="group" aria-label="Atalhos de Haki">
+        <button type="button" data-haki-toggle="armament" aria-label="Haki do Armamento (H)" aria-keyshortcuts="H" aria-pressed="false"><img class="haki-icon" src="assets/haki/armament.png?v=quickcast-20261019" width="32" height="32" alt=""><kbd>H</kbd><span class="haki-quick-state" aria-hidden="true"></span></button>
+        <button type="button" data-haki-toggle="observation" aria-label="Haki da Observação (J)" aria-keyshortcuts="J" aria-pressed="false"><img class="haki-icon" src="assets/haki/observation.png?v=quickcast-20261019" width="32" height="32" alt=""><kbd>J</kbd><span class="haki-quick-state" aria-hidden="true"></span></button>
+        <button type="button" id="hakiKing" aria-label="Haki do Rei (K)" aria-keyshortcuts="K"><img class="haki-icon" src="assets/haki/conqueror.png?v=quickcast-20261019" width="32" height="32" alt=""><kbd>K</kbd><span class="haki-cooldown-sweep" aria-hidden="true"></span><span class="haki-quick-state" aria-hidden="true"></span></button>
+        <span id="hakiQuickStatus" class="haki-quick-caption">Haki pronto</span>
+      </div>
       <div class="profile-xp"><span>Experiência <b id="miniXPText">0 / 80</b></span><span class="mini-meter xp"><i id="miniXP"></i></span></div>
       <div class="profile-summary"><div class="profile-power"><span>Poder de combate</span><strong id="miniPower">0</strong></div><div class="profile-wallet"><strong id="miniGold" title="Dobrões">0 ✦</strong><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div></div>
       <div class="location-heading"><span id="locationName">Porto das Correntes</span><span id="worldClock">DIA 01 · 06:00</span></div>
@@ -56,7 +62,7 @@
     <main class="dashboard">
       <nav class="hud-launcher" aria-label="Janelas rápidas">
         <button type="button" data-hud="status" aria-expanded="false" title="Personagem (P)">◉ <span>Perfil <kbd>P</kbd></span></button>
-        <button type="button" data-hud="chat" aria-expanded="false" title="Canal (J)">▤ <span>Canal <kbd>J</kbd></span></button>
+        <button type="button" data-hud="chat" aria-expanded="false" title="Canal (L)">▤ <span>Canal <kbd>L</kbd></span></button>
         <button type="button" data-hud="expedition" aria-expanded="false" title="Expedição (O)">⌁ <span>Caçada <kbd>O</kbd></span></button>
       </nav>
       <aside class="left-panel side-panel" aria-label="Painel flutuante do personagem"><div class="floating-title"><span>◈ PERFIL & ATRIBUTOS</span><button type="button" data-close-window="status" aria-label="Fechar perfil">×</button></div>
@@ -89,7 +95,6 @@
         <button id="devLauncher" data-dev-open type="button" title="Laboratório temporário (F8)" aria-label="Abrir laboratório DEV (F8)">DEV</button>
           <div class="action-heading"><span>HABILIDADES E COMANDOS</span><span>TECLAS <b>1</b> · <b>2</b> · <b>Q</b></span></div>
           <div class="action-row">
-            <button class="skill-button hidden" id="hakiKing" title="Haki do Rei · 50 Vontade · R"><img class="haki-icon" src="assets/haki/conqueror.png" alt="Haki do Rei" width="32" height="32"><span class="keycap">R</span></button>
             <button class="skill-button" id="skill1" title="Habilidade 1"><span class="skill-icon skill-teal" id="skill1Icon">✦</span><span class="keycap">1</span><span class="skill-cooldown" id="cooldown1"></span></button>
             <button class="skill-button" id="skill2" title="Habilidade 2"><span class="skill-icon skill-gold" id="skill2Icon">✺</span><span class="keycap">2</span><span class="skill-cooldown" id="cooldown2"></span></button>
             <div class="hotbar-divider"></div>
@@ -110,7 +115,7 @@
         <div class="side-footer version-caption">VERSÃO 0.6 · DEMO LOCAL</div>
       </aside>
     </main>
-    <button id="chatCornerToggle" class="chat-corner-toggle" type="button" aria-label="Abrir canal local (J)" title="Canal local (J)">▤ <span>Canal</span> <kbd>J</kbd></button>
+    <button id="chatCornerToggle" class="chat-corner-toggle" type="button" aria-label="Abrir canal local (L)" title="Canal local (L)">▤ <span>Canal</span> <kbd>L</kbd></button>
     <div id="toastContainer" class="toast-container"></div>
     <div id="panelOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Janela de jogo"><div class="dialog"><div class="dialog-header"><div><small>MARÉ PARTIDA · MENU</small><h2 id="dialogTitle">Inventário</h2></div><div id="inventoryHeadMeta" class="inv-header-meta hidden"></div><button id="closePanel" class="close-button" aria-label="Fechar janela">×</button></div><div id="dialogBody" class="dialog-body"></div></div></div>
     <div id="startOverlay" class="overlay creation-overlay" role="dialog" aria-modal="true" aria-label="Criação de personagem">

@@ -23,7 +23,7 @@ assert(H.toggle(g,rt,'armament').ok);assert.equal(rt.active,'armament');H.touch(
 assert(!H.toggle(g,rt,'armament',{inHunt:false}).ok);
 const foes=[{id:1,type:'bandit',x:20,y:0,alive:true},{id:2,type:'boss',x:30,y:0,alive:true},{id:3,type:'bandit',x:400,y:0,alive:true},{id:4,type:'bandit',x:10,y:0,alive:true}];
 result=H.cast(g,rt,{x:0,y:0},foes,{clear:(a,b)=>b.id!==4});assert(result.ok);assert.equal(result.targets,2);assert.equal(g.haki.current,50);assert.equal(foes[0].talentControl.remaining,3);assert.equal(foes[1].talentControl,undefined);assert.equal(foes[1].hakiDebuff,8);assert.equal(foes[2].talentControl,undefined);assert.equal(foes[3].talentControl,undefined);
-assert(H.cast(g,rt,{x:0,y:0},[]).ok);assert.equal(g.haki.current,0);assert(!H.cast(g,rt,{x:0,y:0},[]).ok);
+assert(!H.cast(g,rt,{x:0,y:0},[]).ok);assert.equal(g.haki.current,50);assert(H.cooldown(g)>0);const resumed=H.migrate(g);assert.equal(resumed.haki.kingReadyAt,g.haki.kingReadyAt);assert(H.cast(g,rt,{x:0,y:0},[],{now:g.haki.kingReadyAt}).ok);assert.equal(g.haki.current,0);assert(!H.cast(g,rt,{x:0,y:0},[]).ok);
 g.haki.current=49;assert(!H.cast(g,rt,{x:0,y:0},[]).ok);assert.equal(g.haki.current,49);
 assert(H.drop({type:'boss',source:'world',level:30},()=>.049999));assert(!H.drop({type:'boss',source:'world',level:30},()=>.05));
 for(const m of [{type:'bandit',source:'world',level:50},{type:'boss',source:'world',level:29},{type:'boss',source:'prison',level:50},{type:'boss',source:'world'}])assert(!H.drop(m,()=>0));

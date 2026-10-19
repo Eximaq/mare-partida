@@ -8,13 +8,17 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Laboratório DEV temporário
+## Entrega atual — Haki na HUD de combate
+
+Após despertar, três ícones aparecem junto às barras do perfil: **H** alterna Armamento, **J** alterna Observação e **K** dispara o Rei. O chat passa para **L**. Os botões mostram estado ativo, falta de Vontade e recarga do Rei (8s, persistente após reload). Novos ícones PixelLab nativos32 e VFX transparentes estão integrados. [Regras, arte e validação](docs/HAKI.md).
+
+## Histórico — Laboratório DEV temporário
 
 Clique em **DEV**, acima das habilidades, ou pressione **F8** → **Abrir laboratório**. Teste níveis, sete classes, talentos finais, conquistas, Haki, itens/forja e inimigos em uma cópia separada do personagem. **Voltar ao jogo normal** recupera sua aventura original. [Controles, limites e remoção do recurso temporário](docs/DEV-TOOLS.md).
 
 ## Histórico — Despertar (Haki)
 
-**Personagem → HAKI** exige nível 50 e consumo do Livro da Vontade (5% em chefes de mundo aberto/diários Nv.30+). Armamento/Observação têm ativação manual ou automática exclusiva, reserva de 100 Vontade, drenagem/recuperação de 5/s. O Rei usa 50, atordoa comuns e enfraquece chefes; botão e atalho R. Saves, itens antigos, talentos e resgates de conquistas preservados.
+**Personagem → HAKI** exige nível 50 e consumo do Livro da Vontade (5% em chefes de mundo aberto/diários Nv.30+). Armamento/Observação têm ativação manual ou automática exclusiva, reserva de 100 Vontade, drenagem/recuperação de 5/s. O Rei usa 50, atordoa comuns e enfraquece chefes. O atalho original R foi substituído por K na atualização da HUD. Saves, itens antigos, talentos e resgates de conquistas preservados.
 
 Lógica, HUD, três spritesheets do PixelLab Workbench e quatro ícones Pro **nativos de 32×32** estão integrados e testados. Os PNGs dos ícones foram preservados sem redimensionamento. Chefes Diários e treinamento de Haki continuam futuros. [Regras, decisões, arquitetura, arte e testes](docs/HAKI.md).
 

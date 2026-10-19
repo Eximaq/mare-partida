@@ -4,7 +4,7 @@
   let clips={};const images={};
   const coating=document.createElement('canvas'),mask=document.createElement('canvas');coating.width=mask.width=128;coating.height=mask.height=128;
   const coat=coating.getContext('2d'),silhouette=mask.getContext('2d');
-  fetch('assets/haki/effects.json',{cache:'no-store'}).then(r=>r.ok?r.json():{}).then(data=>{clips=data;for(const [id,clip] of Object.entries(clips)){const img=new Image();img.src='assets/haki/'+clip.file;images[id]=img;}}).catch(()=>{});
+  fetch('assets/haki/effects.json',{cache:'no-store'}).then(r=>r.ok?r.json():{}).then(data=>{clips=data;for(const [id,clip] of Object.entries(clips)){const img=new Image();img.src='assets/haki/'+clip.file+'?v=quickcast-20261019';images[id]=img;}}).catch(()=>{});
   function frame(ctx,id,x,y,t,{scale=1,flip=false}={}){
     const clip=clips[id],img=images[id];if(!clip||!img?.naturalWidth)return;
     const n=Math.min(clip.frames-1,Math.floor(t*clip.fps)%clip.frames),col=n%clip.columns,row=Math.floor(n/clip.columns);

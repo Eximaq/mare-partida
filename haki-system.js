@@ -2,7 +2,7 @@
 /* Persistent unlock/resource, ephemeral combat state. No offline regeneration or auto re-arm at zero. */
 ((root)=>{
   const ids=['armament','observation','conqueror'];
-  const rules=Object.freeze({level:50,maxWillpower:100,drain:5,regen:5,kingCost:50,stun:3,bossDuration:8,radius:360,bookChance:.05,minBossLevel:30});
+  const rules=Object.freeze({level:50,maxWillpower:100,drain:5,regen:5,kingCost:50,kingCooldown:8,stun:3,bossDuration:8,radius:360,bookChance:.05,minBossLevel:30});
   const catalog=[
     {id:'armament',name:'Haki do Armamento',subtitle:'Busoshoku',description:'+15 pontos percentuais de penetração física e +10% de defesa.',cost:'5 Vontade/s'},
     {id:'observation',name:'Haki da Observação',subtitle:'Kenbunshoku',description:'+15 pontos percentuais de esquiva e precisão.',cost:'5 Vontade/s'},
@@ -12,7 +12,7 @@
   const clamp=n=>Math.min(100,Math.max(0,Number.isFinite(n)?n:100));
   function migrate(g){
     const h=g.haki||{},unlocked=g.has_haki_unlocked===true||h.unlocked===true;
-    return {...g,has_haki_unlocked:unlocked,haki:{version:1,unlocked,current:clamp(h.current),auto:['armament','observation'].includes(h.auto)?h.auto:null,equipped:['armament','observation'].includes(h.equipped)?h.equipped:'armament'}};
+    return {...g,has_haki_unlocked:unlocked,haki:{version:1,unlocked,current:clamp(h.current),kingReadyAt:Number.isFinite(h.kingReadyAt)&&h.kingReadyAt>0?h.kingReadyAt:0,auto:['armament','observation'].includes(h.auto)?h.auto:null,equipped:['armament','observation'].includes(h.equipped)?h.equipped:'armament'}};
   }
   const start=()=>({active:null,inCombat:false,remaining:0,exhausted:false,kingFX:0,eyeFX:0});
   function touch(g,rt){
@@ -58,14 +58,17 @@
   }
   function eligibleBoss(m){return !!m&&(m.boss===true||m.type==='boss')&&['world','daily'].includes(m.source)&&Number.isFinite(m.level)&&m.level>=rules.minBossLevel;}
   function drop(m,random=Math.random){return eligibleBoss(m)&&random()<rules.bookChance;}
-  function cast(g,rt,hero,enemies,{alive=true,inHunt=true,clear=()=>true}={}){
+  const cooldown=(g,now=Date.now())=>Math.max(0,Math.min(rules.kingCooldown,((g.haki?.kingReadyAt||0)-now)/1000));
+  function cast(g,rt,hero,enemies,{alive=true,inHunt=true,clear=()=>true,now=Date.now()}={}){
     if(!g.has_haki_unlocked||!alive||!inHunt)return {ok:false,message:'Use o Haki do Rei durante uma expedição, com o personagem vivo.'};
+    if(cooldown(g,now)>0)return {ok:false,message:'Haki do Rei recarregando: '+Math.ceil(cooldown(g,now))+'s.'};
     if(g.haki.current<rules.kingCost)return {ok:false,message:'O Haki do Rei exige 50 de Vontade.'};
+    g.haki.kingReadyAt=now+rules.kingCooldown*1000;
     g.haki.current-=rules.kingCost;if(g.haki.current===0){rt.active=null;rt.exhausted=true;}
     rt.kingFX=.8;touch(g,rt);
     const targets=enemies.filter(m=>m.alive&&Math.hypot(m.x-hero.x,m.y-hero.y)<=rules.radius&&clear(hero,m));
     for(const m of targets){if(m.type==='boss'||m.boss)m.hakiDebuff=rules.bossDuration;else m.talentControl={type:'stun',remaining:Math.max(rules.stun,m.talentControl?.remaining||0)};}
     return {ok:true,targets:targets.length};
   }
-  const api={available:true,rules,catalog,book,migrate,start,touch,stop,tick,toggle,configure,stats,unlock,eligibleBoss,drop,cast,ids};root.MareHaki=api;if(typeof module!=='undefined')module.exports=api;
+  const api={available:true,rules,catalog,book,migrate,start,touch,stop,tick,toggle,configure,stats,unlock,eligibleBoss,drop,cast,cooldown,ids};root.MareHaki=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

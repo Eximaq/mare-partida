@@ -2233,3 +2233,19 @@ button {
 .dev-tools .dev-switch input{width:18px;height:18px;margin:0;accent-color:#d6af60}
 @media(max-width:1000px){.dev-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.dev-grid{grid-template-columns:1fr}.dev-grid>section{padding:12px}.dev-badge{top:auto;bottom:2px;font-size:9px}.dev-tools{padding:0}.dev-tools h2{font-size:18px}}
+/* Compact combat shortcuts share the profile's resource block. */
+.haki-quick{display:flex;align-items:center;gap:5px;margin:6px 0 7px;padding:5px 0;border-bottom:1px solid #ab835b55}
+.haki-quick button{position:relative;flex:0 0 37px;width:37px;height:38px;padding:2px;border:1px solid #716177;background:#13131f;border-radius:3px;cursor:pointer;overflow:hidden;isolation:isolate}
+.haki-quick .haki-icon{display:block;width:30px;height:30px;image-rendering:pixelated}
+.haki-quick kbd{position:absolute;right:1px;bottom:0;z-index:3;background:#0b121e;color:#f3dfb4;font:700 9px/12px monospace;padding:0 3px;border:1px solid #8e7a66}
+.haki-quick-state{position:absolute;left:1px;top:0;z-index:3;font-size:9px;font-weight:bold;line-height:12px;color:#fff3da;text-shadow:0 1px 2px #000}
+.haki-quick button.is-active{border-color:#e1a5fa;box-shadow:0 0 8px #a45bd080,inset 0 0 9px #aa62c455;background:#39203e}
+.haki-quick button[data-haki-toggle=observation].is-active{border-color:#ff697e;box-shadow:0 0 8px #d3335580,inset 0 0 9px #dd335555;background:#3d1726}
+.haki-quick button:disabled{cursor:default;border-color:#565663;background:#202129}
+.haki-quick button:disabled img{filter:grayscale(1);opacity:.4}
+.haki-quick button.is-cooling img{filter:saturate(.5);opacity:.65}
+.haki-cooldown-sweep{position:absolute;inset:0;z-index:2;background:conic-gradient(#070715c9 var(--haki-cooldown,0deg),transparent 0);pointer-events:none}
+.haki-quick-caption{font-size:9px;line-height:1.4;color:#c5b6ce;min-width:0;flex:1}
+.haki-quick button:focus-visible{outline:2px solid #ffe2a1;outline-offset:2px}
+@media(max-width:700px){body.has-haki #mainMenu{top:max(210px,var(--profile-hud-bottom,284px))!important}}
+@media(prefers-reduced-motion:no-preference){.haki-quick button.is-active:not(:disabled){animation:haki-quick-pulse 1.8s ease-in-out infinite}@keyframes haki-quick-pulse{50%{filter:brightness(1.25)}}}

@@ -1,0 +1,108 @@
+[
+  {
+    "MCP create_image_pro": {
+      "description": "16-bit pixel art icon, 32x32, a metallic clenched fist completely coated in shiny obsidian black armor, glowing dark purple veins, dark fantasy game UI, sharp edges, high contrast, clean outlines, isolated on transparent background --no blur, anti-aliasing",
+      "width": 32,
+      "height": 32,
+      "no_background": true
+    },
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/haki-quickcast-20261019",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment_prompt": "Refazer a identidade visual dos 3 Hakis no estilo Pixel Art 16-bit limpo, com os prompts literais de ícones abaixo e VFX: 2D pixel art character overlay, 48x48 frame, dark obsidian coating over character limbs with subtle metallic highlights and faint purple energy aura, crisp pixel art, sprite sheet format, 100% transparent background\n2D pixel art VFX, 48x48, glowing crimson eye-trail effect and red aura particles surrounding a character head, 16-bit anime style, crisp pixels, transparent PNG\n2D pixel art explosion VFX, circular pulse expanding outwards, black and deep crimson energy wave with black lightning streaks, anime conqueror aura effect, crisp pixel edges, frame by frame animation sequence, transparent background"
+  },
+  {
+    "MCP create_image_pro": {
+      "description": "16-bit pixel art icon, 32x32, a glowing ominous red eye with pulsing concentric rings of perception, dark crimson aura, dark fantasy game UI, crisp pixel details, clean outlines, isolated on transparent background --no blur, gradient",
+      "width": 32,
+      "height": 32,
+      "no_background": true
+    }
+  },
+  {
+    "MCP create_image_pro": {
+      "description": "16-bit pixel art icon, 32x32, a cracked royal crown exploding with jagged dark red and black lightning arcs, intense power aura, dark fantasy game UI, vivid colors, clean outlines, isolated on transparent background --no blur",
+      "width": 32,
+      "height": 32,
+      "no_background": true
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "start"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "551e583d-8045-41bb-bf2f-fe04f4cdab14",
+        "render",
+        "{\"recipe\":{\"canvas\":{\"w\":48,\"h\":48},\"frames\":8,\"fps\":12,\"loop\":true,\"origin\":[24,24],\"ramps\":{\"main\":[\"#07070d\",\"#10101b\",\"#222032\",\"#514762\",\"#9589aa\"],\"purple\":[\"#160c28\",\"#3c1b61\",\"#7134a0\",\"#b45ee0\"]},\"outline\":{\"mode\":\"black\"},\"tones\":5,\"layers\":[{\"id\":\"obsidian\",\"type\":\"shape\",\"points\":[[-6,-11],[3,-11],[7,-5],[6,7],[2,11],[-5,8],[-7,-2]],\"fill\":\"linear\",\"fill_angle\":-125,\"bevel\":2},{\"id\":\"vein\",\"type\":\"bolt\",\"ramp\":\"purple\",\"start\":[21,15],\"end\":[26,31],\"segments\":5,\"jag\":0.12,\"branches\":1,\"branch_length\":0.2,\"width\":1,\"soft\":0,\"intensity\":{\"wave\":{\"mid\":0.7,\"amp\":0.2,\"cycles\":1}}},{\"id\":\"metal_glint\",\"type\":\"beam\",\"x\":23,\"y\":{\"wave\":{\"mid\":24,\"amp\":2,\"cycles\":1}},\"width\":1,\"height\":9,\"angle\":25,\"soft\":0,\"intensity\":0.9}]}}"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "551e583d-8045-41bb-bf2f-fe04f4cdab14",
+        "render",
+        "{\"recipe\":{\"canvas\":{\"w\":48,\"h\":48},\"frames\":8,\"fps\":12,\"loop\":true,\"origin\":[30,24],\"ramps\":{\"main\":[\"#200716\",\"#590c28\",\"#a91436\",\"#e52b4d\",\"#ff97a1\"]},\"outline\":{\"mode\":\"none\"},\"tones\":5,\"layers\":[{\"id\":\"trail\",\"type\":\"beam\",\"height\":{\"wave\":{\"mid\":22,\"amp\":4,\"cycles\":1}},\"width\":2,\"angle\":-90,\"soft\":0,\"intensity\":0.7,\"top_fade\":0.8},{\"id\":\"eye\",\"type\":\"glow\",\"radius\":2,\"squash\":0.6,\"shape\":\"hard\",\"outline\":false},{\"id\":\"perception\",\"type\":\"ring\",\"radius\":{\"wave\":{\"mid\":5,\"amp\":1,\"cycles\":1}},\"width\":1,\"soft\":0,\"squash\":0.7,\"intensity\":0.65},{\"id\":\"motes\",\"type\":\"particles\",\"mode\":\"orbit\",\"count\":4,\"radius\":9,\"speed\":4,\"size\":[1,1],\"shrink\":0,\"shape\":\"dot\",\"spacing\":\"even\",\"intensity\":0.7}]}}"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "551e583d-8045-41bb-bf2f-fe04f4cdab14",
+        "render",
+        "{\"recipe\":{\"canvas\":{\"w\":128,\"h\":128},\"frames\":12,\"fps\":15,\"loop\":false,\"origin\":[64,64],\"ramps\":{\"main\":[\"#08060c\",\"#200815\",\"#5d0e23\",\"#a01832\",\"#e5344d\"],\"black\":[\"#04040a\",\"#100815\",\"#2b0a1d\",\"#761229\",\"#bf1e38\"]},\"outline\":{\"mode\":\"black\"},\"tones\":5,\"layers\":[{\"id\":\"pressure\",\"type\":\"ring\",\"radius\":{\"from\":4,\"to\":58},\"width\":{\"from\":5,\"to\":2},\"soft\":0,\"intensity\":0.85,\"dissolve\":{\"keys\":[[0,0],[0.9,0],[1,1]]}},{\"id\":\"echo\",\"type\":\"ring\",\"radius\":{\"from\":2,\"to\":46},\"width\":2,\"soft\":0,\"intensity\":0.55,\"life\":[0.15,1],\"dissolve\":{\"from\":0,\"to\":1}},{\"id\":\"lightning_0\",\"type\":\"bolt\",\"ramp\":\"black\",\"start\":[64,64],\"end\":[22,32],\"segments\":8,\"jag\":0.2,\"branches\":2,\"branch_length\":0.25,\"width\":2,\"soft\":0,\"progress\":{\"from\":0.1,\"to\":1},\"flicker\":2,\"dissolve\":{\"keys\":[[0,0],[0.65,0],[1,1]]}},{\"id\":\"lightning_1\",\"type\":\"bolt\",\"ramp\":\"black\",\"start\":[64,64],\"end\":[107,37],\"segments\":8,\"jag\":0.2,\"branches\":2,\"branch_length\":0.25,\"width\":2,\"soft\":0,\"progress\":{\"from\":0.1,\"to\":1},\"flicker\":2,\"dissolve\":{\"keys\":[[0,0],[0.65,0],[1,1]]}},{\"id\":\"lightning_2\",\"type\":\"bolt\",\"ramp\":\"black\",\"start\":[64,64],\"end\":[33,107],\"segments\":8,\"jag\":0.2,\"branches\":2,\"branch_length\":0.25,\"width\":2,\"soft\":0,\"progress\":{\"from\":0.1,\"to\":1},\"flicker\":2,\"dissolve\":{\"keys\":[[0,0],[0.65,0],[1,1]]}},{\"id\":\"lightning_3\",\"type\":\"bolt\",\"ramp\":\"black\",\"start\":[64,64],\"end\":[103,99],\"segments\":8,\"jag\":0.2,\"branches\":2,\"branch_length\":0.25,\"width\":2,\"soft\":0,\"progress\":{\"from\":0.1,\"to\":1},\"flicker\":2,\"dissolve\":{\"keys\":[[0,0],[0.65,0],[1,1]]}}]}}"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "ac28b1a7-5718-426f-9dfb-a7e38e7fa866",
+        "export",
+        "--name",
+        "Mare Haki Quickcast armament 20261019"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "559abdf4-6a85-447b-841d-613c86816927",
+        "export",
+        "--name",
+        "Mare Haki Quickcast observation 20261019"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP vfx_workbench": {
+      "argv": [
+        "566ce8e5-7a59-462a-8e85-40b54e821c38",
+        "export",
+        "--name",
+        "Mare Haki Quickcast conqueror 20261019"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Replay creates new step IDs. Bind each render to start and each export to its corresponding returned render step, rather than historical IDs. Inspect all 64 candidates from each Pro call; selection delegated by user. Chosen displayed candidates: Armament 2, Observation 3, Conqueror 6 (selector = label - 1). Copy selected native 32×32 PNGs and exported spritesheets byte-for-byte. Decode every frame and use exported geometry/origin/FPS. Do not trim, recolor or resize final art. Archive originals; inspection contact sheets only may enlarge pixels."
+    }
+  }
+]
