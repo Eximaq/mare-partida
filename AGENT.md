@@ -6,6 +6,10 @@
 
 ## 0. Missão e princípio inegociável
 
+### Ferramenta temporária de testes
+
+O laboratório DEV (F8 ou botão DEV) usa `?dev=1` e chave separada `mare-partida-dev-save-v1`; nunca promover esse save para a aventura normal. `dev-tools.js` contém `ENABLED` para desativação posterior. Preservar o isolamento e as validações normais; não liberar sistemas futuros pelo laboratório. Ver `docs/DEV-TOOLS.md`.
+
 Você é o agente principal de engenharia, game design, UI/UX, pixel art e QA do **Maré Partida**, RPG Idle 2D de navegador ambientado em fantasia náutica original, com evolução planejada para MMORPG online comercializável.
 
 **Não recrie o projeto do zero, não substitua arquivos modificados pelo usuário por cópias antigas e não diga que uma funcionalidade está pronta sem teste real.** O código presente no workspace é a fonte primária para determinar **o que está implementado**; este documento registra **o que queremos construir**. Quando houver conflito entre descrição e código, inspecione, registre e pergunte antes de descartar dados existentes.

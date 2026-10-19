@@ -8,7 +8,11 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Despertar (Haki)
+## Entrega atual — Laboratório DEV temporário
+
+Clique em **DEV**, acima das habilidades, ou pressione **F8** → **Abrir laboratório**. Teste níveis, sete classes, talentos finais, conquistas, Haki, itens/forja e inimigos em uma cópia separada do personagem. **Voltar ao jogo normal** recupera sua aventura original. [Controles, limites e remoção do recurso temporário](docs/DEV-TOOLS.md).
+
+## Histórico — Despertar (Haki)
 
 **Personagem → HAKI** exige nível 50 e consumo do Livro da Vontade (5% em chefes de mundo aberto/diários Nv.30+). Armamento/Observação têm ativação manual ou automática exclusiva, reserva de 100 Vontade, drenagem/recuperação de 5/s. O Rei usa 50, atordoa comuns e enfraquece chefes; botão e atalho R. Saves, itens antigos, talentos e resgates de conquistas preservados.
 
