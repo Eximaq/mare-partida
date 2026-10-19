@@ -1,0 +1,38 @@
+{
+  "armament": {
+    "file": "armament-sheet.png",
+    "width": 24,
+    "height": 24,
+    "columns": 3,
+    "frames": 8,
+    "fps": 12,
+    "anchor": [
+      12,
+      12
+    ]
+  },
+  "observation": {
+    "file": "observation-sheet.png",
+    "width": 40,
+    "height": 16,
+    "columns": 3,
+    "frames": 8,
+    "fps": 12,
+    "anchor": [
+      30,
+      8
+    ]
+  },
+  "conqueror": {
+    "file": "conqueror-sheet.png",
+    "width": 128,
+    "height": 128,
+    "columns": 4,
+    "frames": 12,
+    "fps": 15,
+    "anchor": [
+      64,
+      64
+    ]
+  }
+}

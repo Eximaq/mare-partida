@@ -8,7 +8,13 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Constelações, Conquistas e Talentos Finais
+## Branch atual — Despertar (Haki)
+
+**Personagem → HAKI** exige nível 50 e consumo do Livro da Vontade (5% em chefes de mundo aberto/diários Nv.30+). Armamento/Observação têm ativação manual ou automática exclusiva, reserva de 100 Vontade, drenagem/recuperação de 5/s. O Rei usa 50, atordoa comuns e enfraquece chefes; botão e atalho R. Saves, itens antigos, talentos e resgates de conquistas preservados.
+
+Lógica, HUD e três spritesheets do PixelLab Workbench estão integrados e testados. **Os ícones pagos 32×32 aguardam autorização; esta branch ainda é uma prévia de desenvolvimento.** Chefes Diários e treinamento de Haki continuam futuros. [Regras, decisões, arquitetura, arte e testes](docs/HAKI.md).
+
+## Histórico — Constelações, Conquistas e Talentos Finais
 
 **Personagem → Talentos** agora abre uma constelação conectada, com zoom/arraste, tronco central, rotas que acendem, ponte intermediária e três opções finais por classe. Mantidos dois ramos simultâneos e um intermediário; o final também tem escolha única e exige 50 PT comuns, um intermediário e cinco pontos em um último tier, custando 3 PT.
 

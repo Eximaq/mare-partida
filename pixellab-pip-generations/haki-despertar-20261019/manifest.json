@@ -1,0 +1,53 @@
+{
+  "date": "2026-10-19",
+  "surface": "PixelLab MCP VFX Workbench",
+  "entries": [
+    {
+      "name": "armament",
+      "route": "MCP vfx_workbench",
+      "effect_id": "4a1b2680-2bf5-43bd-b39f-7b44c33a3703",
+      "step_id": "ac1a14e9-30ee-4e8e-a7ce-de19b6de1cb8",
+      "seed": "omitted",
+      "cost": "free for subscribers per live tool documentation",
+      "files": [
+        "armament.png",
+        "armament.json",
+        "armament.gif"
+      ],
+      "verification": "Every rendered frame inspected; original frame order, transparency and anchors preserved; no local painting",
+      "sha256": "f9ec353052a0f4fb7d2f23777e699663ceb0e21502c0491d87905c456b48ab2e"
+    },
+    {
+      "name": "observation",
+      "route": "MCP vfx_workbench",
+      "effect_id": "5ef446fe-f280-4687-8070-c86c6858e5f0",
+      "step_id": "4271ceba-6d69-4ce9-b3ea-52c32c33b57c",
+      "seed": "omitted",
+      "cost": "free for subscribers per live tool documentation",
+      "files": [
+        "observation.png",
+        "observation.json",
+        "observation.gif"
+      ],
+      "verification": "Every rendered frame inspected; original frame order, transparency and anchors preserved; no local painting",
+      "sha256": "9be12aa1cad5bece2f57fe2e6f46621732468a2774cf232642088105a718ac01"
+    },
+    {
+      "name": "conqueror",
+      "route": "MCP vfx_workbench",
+      "effect_id": "f8a7a8d6-5690-4dd3-8770-43a397118a2b",
+      "step_id": "0f663cd9-32cd-4618-8d87-5e252a23d686",
+      "seed": "omitted",
+      "cost": "free for subscribers per live tool documentation",
+      "files": [
+        "conqueror.png",
+        "conqueror.json",
+        "conqueror.gif"
+      ],
+      "verification": "Every rendered frame inspected; original frame order, transparency and anchors preserved; no local painting",
+      "sha256": "9ed893c11e51b0051324cd61d73bfb5b3d5f29292a8f1313f35c2d3230c414e8"
+    }
+  ],
+  "paid_icons": "Awaiting user approval. No paid calls sent.",
+  "postprocessing": "Lossless copy to runtime; JSON describes the exported sheets."
+}

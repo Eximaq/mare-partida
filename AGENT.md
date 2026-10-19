@@ -76,7 +76,7 @@ Facção define identidade visual, contexto, reputação e eventuais passivos le
 
 ### 3.4 Talentos passivos implementados
 
-- Acesso por Personagem → Talentos; preservar as três opções Personagem, Talentos e Conquistas. A árvore é uma constelação com zoom/arraste e linhas de dependência, sem retornar ao grid de cards.
+- Acesso por Personagem → Talentos; preservar Personagem, Talentos, Conquistas e HAKI. A árvore é uma constelação com zoom/arraste e linhas de dependência, sem retornar ao grid de cards.
 - 1 PT por nível, inclusive nível 1, mais recompensas únicas resgatadas no Diário de Conquistas; separado dos cinco pontos de atributos por nível a partir do 2.
 - Sete árvores independentes, três ramos por classe, máximo dois investidos; cinco tiers com dez graduações por nó e requisito de cinco pontos no nó anterior.
 - Três exclusivos por classe, escolha única por build, custo de 1 PT e requisito de 10 PT comuns. Não transformar esses passivos em botões ativos.
@@ -86,6 +86,15 @@ Facção define identidade visual, contexto, reputação e eventuais passivos le
 - Prévia, confirmação transacional, migração v2 e reset gratuito somente no porto. Somente a classe ativa concede bônus. Não limpar recargas de escudo, imortalidade, EMP ou reviver ao redefinir.
 - Catálogo e regras em `talent-system.js`; gatilhos em `talent-combat.js`; UI em `talent-ui.js`. Reutilizar os contratos para aliados reais quando houver party, sem simular jogadores nem anunciar multiplayer disponível.
 - Regras e parâmetros completos em `docs/TALENTOS.md`; executar os testes específicos antes de alterar talentos ou combate.
+
+### 3.5 Despertar — Haki (19/10/2026)
+
+- Regras em `haki-system.js`, painel em `haki-ui.js`, frames PixelLab em `haki-art.js`; documentação em `docs/HAKI.md`.
+- HAKI bloqueado com aviso até nível 50 + consumir Livro da Vontade. Drop fixo de 5% em chefes mundo/diários Nv.30+; apenas mundo está implementado. Nunca renumerar o catálogo de itens existente.
+- 100 Vontade, 5/s drenagem e regeneração OOC sem Haki; um contínuo e uma opção automática. Primeiro golpe inicia, seis segundos sem golpes encerram. Respeitar seleção manual; não reativar esgotado no mesmo combate.
+- Armamento +15pp penetração física/+10% DEF; Observação +15pp esquiva/precisão; Rei manual/R custa 50, stun comum 3s, chefe −15% ATQ/DEF 8s, raio 360/LOS. Não mostrar buffs como BP permanente nem conceder maestria gratuitamente.
+- Save preserva desbloqueio/recurso/preferências, nunca ativa Haki após reload. Transações de livro e cast devem manter recurso/item se falhar a persistência. Três VFX Workbench gratuitos integrados; ícones pagos pendentes de autorização nesta branch.
+- Executar suítes Haki, talentos, conquistas e Pages após alterações neste fluxo.
 
 ## 4. Arte e PixelLab
 

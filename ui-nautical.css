@@ -2184,3 +2184,24 @@ button {
 .constellation-viewport{overflow:clip;}
 
 @media(min-width:761px){.constellation-viewport{height:clamp(320px,calc(100dvh - 430px),740px);}}
+
+/* Haki: silver fittings, indigo reserve, compact original nautical HUD. */
+.profile-resource.haki-will .mini-meter i{background:linear-gradient(90deg,#6e4b9d,#c4abeb)}
+.haki-icon{width:32px;height:32px;image-rendering:pixelated;object-fit:contain;flex:none}
+.haki-chamber{color:#dce6e6;max-width:1120px;margin:auto}
+.haki-chamber>header{display:flex;justify-content:space-between;gap:24px;align-items:center;border-bottom:1px solid #95805c;padding:12px 0 22px}
+.haki-chamber h2{font:700 25px Georgia,serif;color:#e6d6ad;margin:0 0 8px}
+.haki-chamber p{line-height:1.6;color:#bacbce;max-width:72ch}
+.haki-reserve{min-width:200px;text-align:right}.haki-reserve b{display:block;font-size:25px;color:#dbccf7}.haki-reserve span{display:block;color:#c3afdf;font-size:12px}
+.haki-reserve i{display:block;height:8px;background:#111e28;border:1px solid #89729b;margin-top:9px}.haki-reserve em{display:block;height:100%;background:#b495da}
+.haki-state{min-height:26px;color:#c6ace4!important}
+.haki-disciplines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.haki-disciplines article{padding:20px;background:#102a31;border:1px solid #6a6254;border-top:3px solid #a295b4;display:flex;flex-direction:column;gap:16px;min-width:0}
+.haki-disciplines article.haki-active{border-color:#c5abed;box-shadow:inset 0 0 20px #a57cda18}
+.haki-disciplines article>header{display:flex;align-items:center;gap:12px}.haki-disciplines h3{color:#f0dbab;font-size:18px;margin:4px 0}.haki-disciplines small{color:#b7a4ce}
+.haki-disciplines article p{margin:0;flex:1}.haki-disciplines article>strong{color:#d3bbea;font-size:13px}
+.haki-disciplines button{padding:12px 8px;background:#3d3453;border:1px solid #af99c6;color:#f1e8fa;font-weight:bold;cursor:pointer}
+.haki-disciplines button:disabled{opacity:.45;cursor:default}.haki-disciplines label{display:flex;gap:10px;align-items:center;font-size:13px;cursor:pointer}.haki-disciplines input{accent-color:#bf9de6;width:18px;height:18px}
+.character-tabs button[aria-disabled=true]{color:#b7ac9a;opacity:.75}.haki-chamber footer{border-top:1px solid #6d634d;margin-top:22px;padding-top:6px}
+#hakiKing{color:#e3cbff;font-size:12px;flex:none}
+@media(max-width:700px){.haki-disciplines{grid-template-columns:1fr}.haki-chamber>header{align-items:start;gap:14px;flex-direction:column}.haki-reserve{text-align:left;width:100%}.character-tabs{flex-wrap:wrap}.haki-disciplines article{padding:16px}}

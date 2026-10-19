@@ -22,6 +22,9 @@
   <script defer src="forge-ui.js"></script>
   <script defer src="prison-system.js"></script>
   <script defer src="archipelago.js"></script>
+  <script defer src="haki-system.js"></script>
+  <script defer src="haki-ui.js"></script>
+  <script defer src="haki-art.js"></script>
   <script defer src="achievement-system.js"></script>
   <script defer src="ultimate-system.js"></script>
   <script defer src="talent-system.js"></script>
@@ -43,6 +46,7 @@
       <div id="miniTalentResource" class="profile-resource talent-resource hidden"><span id="miniTalentLabel">Vigor</span><span class="mini-meter"><i id="miniTalentFill"></i></span><b id="miniTalentText"></b></div>
       <div class="profile-resource"><span>Vida</span><span class="mini-meter"><i id="miniHP"></i></span><b id="miniHPText">100 / 100</b></div>
       <div class="profile-resource energy"><span>Energia</span><span class="mini-meter energy"><i id="miniEnergy"></i></span><b id="miniEnergyText">70 / 70</b></div>
+      <div id="miniWillpower" class="profile-resource haki-will hidden" role="meter" aria-label="Força de Vontade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span>Vontade</span><span class="mini-meter"><i id="willpowerFill"></i></span><b id="willpowerText">100 / 100</b></div>
       <div class="profile-xp"><span>Experiência <b id="miniXPText">0 / 80</b></span><span class="mini-meter xp"><i id="miniXP"></i></span></div>
       <div class="profile-summary"><div class="profile-power"><span>Poder de combate</span><strong id="miniPower">0</strong></div><div class="profile-wallet"><strong id="miniGold" title="Dobrões">0 ✦</strong><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div></div>
       <div class="location-heading"><span id="locationName">Porto das Correntes</span><span id="worldClock">DIA 01 · 06:00</span></div>
@@ -83,6 +87,7 @@
       <div class="action-panel" role="toolbar" aria-label="Habilidades e consumíveis">
           <div class="action-heading"><span>HABILIDADES E COMANDOS</span><span>TECLAS <b>1</b> · <b>2</b> · <b>Q</b></span></div>
           <div class="action-row">
+            <button class="skill-button hidden" id="hakiKing" title="Haki do Rei · 50 Vontade · R"><span>Rei</span><span class="keycap">R</span></button>
             <button class="skill-button" id="skill1" title="Habilidade 1"><span class="skill-icon skill-teal" id="skill1Icon">✦</span><span class="keycap">1</span><span class="skill-cooldown" id="cooldown1"></span></button>
             <button class="skill-button" id="skill2" title="Habilidade 2"><span class="skill-icon skill-gold" id="skill2Icon">✺</span><span class="keycap">2</span><span class="skill-cooldown" id="cooldown2"></span></button>
             <div class="hotbar-divider"></div>

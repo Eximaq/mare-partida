@@ -4,7 +4,7 @@
   const VERSION=1,integer=n=>Number.isSafeInteger(n)&&n>=0?n:0;
   const Arch=root.MareArchipelago||(typeof require==='function'?require('./archipelago.js'):null);
   const travelIds=Arch.islands.map(island=>island.id);
-  const features=Object.freeze({get prison(){return root.MarePrison?.available===true;},fruit:false,haki:false,fastTravel:false,bounty:false});
+  const features=Object.freeze({get prison(){return root.MarePrison?.available===true;},fruit:false,get haki(){return root.MareHaki?.available===true;},fastTravel:false,bounty:false});
   const categories=[['kills','Extermínio'],['prison','Desbravador'],['wealth','Riqueza'],['level','Jornada'],['power','Poder de Combate'],['fruit','Akuma no Mi'],['haki','Haki'],['exploration','Exploração']];
   const catalog=[];
   function add(category,metric,entries,feature=null){entries.forEach(([name,target,points],i)=>catalog.push({id:metric+'-'+i,category,metric,name,target,points,feature}));}
