@@ -15,6 +15,7 @@
   function rarityFromRoll(n){if(!Number.isInteger(n)||n<1||n>1000)throw Error('Roleta inválida');return n<=5?'legendary':n<=125?'epic':n<=275?'rare':n<=500?'uncommon':'common';}
   const rollRarity=(random=Math.random)=>rarityFromRoll(range(1,1000,random));
   function seeded(text){let n=2166136261;for(const c of String(text))n=Math.imul(n^c.charCodeAt(0),16777619);return ()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};}
+  const isGear=(item,defs)=>!!item&&!!defs[item.def]&&!defs[item.def].kind&&!item.pearlId;
   function isPearl(item,defs){return !!item&&(!!item.pearlId||defs[item.def]?.kind==='pearl');}
   function pearlOf(item,defs){return pearlById[item?.pearlId||defs[item?.def]?.pearlId]||null;}
   function extraRange(level,r){const f=Math.sqrt(rarity[r].mult);return {min:Math.ceil((.8+level*.14)*f),max:Math.ceil((2+level*.30)*f)};}
@@ -25,6 +26,7 @@
   }
   function normalizeItem(original,defs,random=null){
     const item=clone(original),def=defs[item.def];if(!def)return item;
+    if(def.kind==='pearl-box')return item;
     if(isPearl(item,defs)){const p=pearlOf(item,defs);if(p)item.pearlId=p.id;item.forgeVersion=VERSION;return item;}
     item.level=Math.max(1,int(item.level));item.plus=int(item.plus);item.rarity=rarity[item.rarity]?item.rarity:(rarity[def.rarity]?def.rarity:'common');
     item.baseStats=item.baseStats&&['attack','defense','hp'].every(k=>Number.isFinite(item.baseStats[k])&&item.baseStats[k]>=0)?item.baseStats:{attack:def.attack||0,defense:def.defense||0,hp:def.hp||0};
@@ -40,7 +42,7 @@
     g.forgeVersion=VERSION;g.forgeSeq=int(g.forgeSeq);g.forgeHistory=Array.isArray(g.forgeHistory)?g.forgeHistory.slice(-12):[];return g;
   }
   function itemStats(item,defs){
-    const zero={attack:0,defense:0,hp:0,energy:0,crit:0,attributes:Object.fromEntries(keys.map(k=>[k,0]))};if(!item||isPearl(item,defs))return zero;
+    const zero={attack:0,defense:0,hp:0,energy:0,crit:0,attributes:Object.fromEntries(keys.map(k=>[k,0]))};if(!isGear(item,defs))return zero;
     const d=defs[item.def]||{},r=rarity[item.rarity||d.rarity]||rarity.common,b=item.baseStats||d,m=1+Math.min(20,Math.max(0,(item.level||1)-1))*.09,plus=int(item.plus);
     const result={...zero,attack:Math.round(((b.attack||0)*r.mult+plus*3)*m),defense:Math.round(((b.defense||0)*r.mult+plus*2)*m),hp:Math.round(((b.hp||0)*r.mult+plus*10)*m)};
     for(const extra of item.extras||[]){if(!Number.isFinite(extra.value)||extra.value<0)continue;if(keys.includes(extra.stat))result.attributes[extra.stat]+=extra.value;else if(['hp','energy','crit'].includes(extra.stat))result[extra.stat]+=extra.value;}
@@ -48,7 +50,7 @@
   }
   function aggregate(equipment,defs){
     const gear={attack:0,defense:0,hp:0,energy:0,crit:0,attributes:Object.fromEntries(keys.map(k=>[k,0])),pearlPercent:Object.fromEntries(keys.map(k=>[k,0]))};
-    for(const item of Object.values(equipment||{})){if(!item||isPearl(item,defs))continue;const s=itemStats(item,defs);for(const k of ['attack','defense','hp','energy','crit'])gear[k]+=s[k];for(const k of keys)gear.attributes[k]+=s.attributes[k];for(const id of item.sockets||[]){const p=pearlById[id];if(p)gear.pearlPercent[p.attribute]+=p.percent;}}
+    for(const item of Object.values(equipment||{})){if(!isGear(item,defs))continue;const s=itemStats(item,defs);for(const k of ['attack','defense','hp','energy','crit'])gear[k]+=s[k];for(const k of keys)gear.attributes[k]+=s.attributes[k];for(const id of item.sockets||[]){const p=pearlById[id];if(p)gear.pearlPercent[p.attribute]+=p.percent;}}
     return gear;
   }
   function upgradeCost(item){const levelFactor=1+(Math.max(1,item.level||1)-1)*.04;return {gold:Math.ceil(50*(int(item.plus)+1)**2*levelFactor),materials:Math.ceil((2+int(item.plus)*2)*(1+(Math.max(1,item.level||1)-1)*.015))};}
@@ -58,11 +60,11 @@
   function equipmentFusion(g,ids,slot,defs){
     if(!Array.isArray(ids)||ids.length!==5||new Set(ids).size!==5)return {error:'Selecione cinco equipamentos diferentes.'};
     const items=ids.map(id=>g.inventory.find(i=>i.id===id));
-    if(items.some(i=>!i||isPearl(i,defs)||i.locked||i.sockets?.some(Boolean)))return {error:'Use somente equipamentos da mochila, desbloqueados e sem pérolas instaladas.'};
+    if(items.some(i=>!isGear(i,defs)||i.locked||i.sockets?.some(Boolean)))return {error:'Use somente equipamentos da mochila, desbloqueados e sem pérolas instaladas.'};
     const source=items[0].rarity,order=['common','uncommon','rare','epic','legendary'];
     if(items.some(i=>i.rarity!==source))return {error:'Os cinco equipamentos precisam ter a mesma raridade.'};
     const rank=order.indexOf(source);if(rank<0||rank>=4)return {error:'Lendário → Supremo exige receita especial e permanece desabilitado.'};
-    const def=defs.map((d,i)=>({...d,index:i})).filter(d=>d.slot===slot&&d.kind!=='pearl'&&(slot!=='weapon'||d.type===g.classId)).sort((a,b)=>((a.attack||0)+(a.defense||0)+(a.hp||0))-((b.attack||0)+(b.defense||0)+(b.hp||0))||a.index-b.index)[0];
+    const def=defs.map((d,i)=>({...d,index:i})).filter(d=>d.slot===slot&&!d.kind&&(slot!=='weapon'||d.type===g.classId)).sort((a,b)=>((a.attack||0)+(a.defense||0)+(a.hp||0))-((b.attack||0)+(b.defense||0)+(b.hp||0))||a.index-b.index)[0];
     if(!def)return {error:'Escolha um tipo de equipamento compatível com sua classe.'};
     const level=Math.min(...items.map(i=>i.level)),target=order[rank+1],mult=rarity[target].mult;
     return {items,source,target,level,def:def.index,cost:{gold:Math.ceil((100+level*25)*mult),materials:Math.ceil((3+level/5)*Math.sqrt(mult))}};
@@ -90,7 +92,7 @@
     if(!Number.isFinite(original.gold)||original.gold<0||!Number.isFinite(original.materials)||original.materials<0)return fail('Saldo inválido; nenhum recurso foi consumido.');
     if(command.expectedSeq!==int(original.forgeSeq))return fail('A operação está desatualizada. Confira os valores e tente novamente.');
     const g=migrate(original,defs),item=find(g,command.itemId),type=command.type;let result,cost;
-    const requireItem=()=>item&&!isPearl(item,defs)&&!item.locked;
+    const requireItem=()=>isGear(item,defs)&&!item.locked;
     function pay(price){if(!Object.values(price).every(n=>Number.isSafeInteger(n)&&n>=0))return false;if(!Number.isFinite(g.gold)||g.gold<price.gold||!Number.isFinite(g.materials)||g.materials<(price.materials||0))return false;g.gold-=price.gold;g.materials-=price.materials||0;return true;}
     function pearlItem(id){const def=defs.findIndex(d=>d.pearlId===id);if(def<0)throw Error('Pérola ausente do catálogo');let suffix=0,newId;do{newId=`forge-${g.forgeSeq+1}-${suffix++}`;}while(find(g,newId));return {id:newId,def,pearlId:id,level:1,plus:0,locked:false,obtainedAt:int(now),forgeVersion:VERSION};}
     try{
@@ -127,5 +129,5 @@
     }catch(error){return fail('A operação não foi concluída; nenhum recurso foi consumido.');}
   }
   function assertBudget(g){if(!Number.isFinite(g.gold)||!Number.isFinite(g.materials)||g.gold<0||g.materials<0||g.inventory.length>CAPACITY)throw Error('Saldo inválido');const ids=allGear(g).map(i=>i.id);if(new Set(ids).size!==ids.length)throw Error('IDs duplicados');}
-  const api={VERSION,CAPACITY,refinement,equipmentFusion,pearlFusion,rarity,names,keys,pearls,pearlById,fusion,isPearl,pearlOf,normalizeItem,migrate,itemStats,aggregate,rarityFromRoll,rollRarity,rollExtras,extraRange,upgradeCost,upgradeChance,removalCost,reforgeCost,execute};root.MareForge=api;if(typeof module!=='undefined')module.exports=api;
+  const api={VERSION,CAPACITY,refinement,equipmentFusion,pearlFusion,rarity,names,keys,pearls,pearlById,fusion,isGear,isPearl,pearlOf,normalizeItem,migrate,itemStats,aggregate,rarityFromRoll,rollRarity,rollExtras,extraRange,upgradeCost,upgradeChance,removalCost,reforgeCost,execute};root.MareForge=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

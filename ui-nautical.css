@@ -1928,7 +1928,7 @@ button {
 #mainMenu [data-panel]:first-child .menu-tooltip {left:0;transform:none;}
 #mainMenu [data-panel]:last-child .menu-tooltip {left:auto;right:0;transform:none;}
 #panelOverlay.voyage-mode .dialog {width:min(900px,calc(100vw - 28px));}
-#panelOverlay.voyage-mode .dialog-body {padding:0!important;overflow:auto;}
+#panelOverlay.voyage-mode .dialog-body {padding:0!important;overflow:auto;min-height:0;flex:1 1 auto;}
 .voyage-window {background:#112e39;}
 .voyage-intro {margin:0;padding:14px 22px 0;font:13px/1.5 var(--ui-title);color:#d0dfd9;}
 .voyage-sea {position:relative;isolation:isolate;overflow:hidden;height:clamp(400px,58dvh,510px);min-width:0;}
@@ -1980,11 +1980,12 @@ button {
 @media(prefers-reduced-motion:reduce){.voyage-sea::before{animation:none;}}
 /* Region navigation and on-click dungeon briefing. */
 #panelOverlay.voyage-mode .dialog {width:min(1120px,calc(100vw - 28px));}
-#panelOverlay.voyage-mode .dialog-header {align-items:flex-start!important;}
-.voyage-region-tabs {display:flex;gap:8px;margin-top:14px;}
+#panelOverlay.voyage-mode .dialog-header {align-items:flex-start!important;flex-shrink:0;position:relative;z-index:1;}
+.voyage-region-tabs {display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;}
 .voyage-region-tabs [role=tab] {display:flex;align-items:center;gap:9px;padding:8px 17px;border:1px solid #8e7950;border-radius:2px;background:#152e36;color:#d4c6a5;font:700 13px/1.2 var(--ui-title);}
 .voyage-region-tabs [role=tab][aria-selected=true] {background:#e1c486;color:#2a241b;border-color:#f2d7a0;box-shadow:inset 0 -3px #b18b4b;}
 .voyage-region-tabs [role=tab]:disabled {opacity:.62;}
+.voyage-region-tabs [aria-selected=true] small {color:#51462c;}
 .voyage-region-tabs small {font-size:9px;font-weight:400;color:#b5c2c4;}
 .archipelago-window {display:grid;grid-template-columns:minmax(0,1.65fr) minmax(280px,1fr);align-items:start;}
 .voyage-overview.voyage-sea {height:auto;min-height:540px;padding:0 16px 18px;}
@@ -2040,4 +2041,55 @@ button {
  .voyage-region-tabs {gap:6px;margin-top:12px;}
  .voyage-region-tabs [role=tab] {padding:8px 12px;font-size:12px;}
  #dungeonName {font-size:23px;}
+}
+/* Prison preview: iron cells, brass signage, no active entrance. */
+.prison-window {background:#11242d;color:#bdd0cd;padding:22px;}
+.prison-masthead {display:flex;justify-content:space-between;align-items:center;gap:20px;padding:0 0 22px;border-bottom:1px solid #826e4f;}
+.prison-masthead h2 {margin:0 0 7px;font:700 28px var(--ui-title);color:#efdab0;}
+.prison-masthead p,.prison-floors>p,.prison-milestones>p {margin:0;font:12px/1.7 var(--ui-title);}
+.prison-seal {float:left;display:grid;place-items:center;width:56px;height:65px;margin-right:15px;border:2px solid #876c48;background:repeating-linear-gradient(90deg,#192d35 0 9px,#34464a 9px 12px);font:28px Georgia;color:#dcc18b;}
+.prison-unavailable {padding:9px 12px;border:1px solid #b47a51;background:#4d3529;color:#efd0a5;font:700 11px/1.5 var(--ui-title);white-space:nowrap;}
+.prison-layout {display:grid;grid-template-columns:minmax(0,1.6fr) minmax(270px,1fr);gap:22px;margin-top:22px;align-items:start;}
+.prison-window h3 {margin:0 0 8px;font:700 18px var(--ui-title);color:#e4c991;}
+.prison-floor-grid {display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px;margin:17px 0;}
+.prison-floor-grid button {display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:46px;padding:3px;border:1px solid #56656a;background:linear-gradient(#283c44,#1a2c35);color:#b8c8c8;font:700 13px var(--ui-title);border-radius:2px;}
+.prison-floor-grid small {font:9px var(--ui-title);line-height:1.2;color:#778a8e;}
+.prison-floor-grid .is-milestone {border-color:#a18150;}.prison-floor-grid .is-milestone small {color:#daba78;}
+.prison-floor-grid button:hover,.prison-floor-grid button:focus-visible,.prison-floor-grid button[aria-pressed=true] {background:#614a30;border-color:#eac98b;color:#ffe6b4;}
+.prison-floors .prison-grid-key {font-size:10px;color:#cdb584;}
+.prison-details {padding:18px;border:1px solid #6c7166;background:#0c202a;}
+.prison-details>.dungeon-back {display:none;}.prison-details>small {display:block;color:#adc2c2;font-size:10px;margin-bottom:6px;}
+.prison-details>p {font:11px/1.7 var(--ui-title);}
+#prisonFloorTitle {font-size:26px;margin:0 0 15px;}
+.prison-scaling {display:grid;grid-template-columns:1fr auto;align-items:center;gap:4px;padding:12px;border:1px solid #89714c;background:#3e362b;color:#d6c6a6;font:11px var(--ui-title);}
+.prison-scaling strong {grid-column:2;grid-row:1/3;color:#f6d298;font:700 30px var(--ui-title);}
+.prison-scaling small {grid-column:1;color:#bfb39e;font-size:10px;}
+.prison-reward {margin:16px 0 8px;padding:12px;border-left:2px solid #b39050;background:#20343b;min-height:90px;}
+.prison-reward img {width:48px;height:48px;float:left;margin:0 9px 5px 0;image-rendering:pixelated;}
+.prison-reward h4 {margin:0 0 6px;color:#e0c58d;font:700 12px var(--ui-title);}
+.prison-reward p {margin:0 0 5px;font:11px/1.6 var(--ui-title);}
+.prison-reward small {font:10px/1.5 var(--ui-title);color:#9db5b7;}
+.prison-enter {width:100%;font-size:11px;}
+.prison-exclusive {font-size:10px!important;color:#aabbb9;}
+.prison-scaling-table,.prison-milestones {border-top:1px solid #546158;margin-top:22px;padding-top:18px;}
+.prison-scaling-table>div,.prison-milestones>div {display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:7px;margin-top:12px;}
+.prison-scaling-table span {display:flex;flex-direction:column;gap:7px;text-align:center;padding:10px 4px;background:#23363e;font:12px var(--ui-title);}
+.prison-scaling-table small {color:#b4c3bd;font-size:10px;}.prison-scaling-table b {color:#efc58a;}
+.prison-milestones>div {grid-template-columns:repeat(5,minmax(0,1fr));}
+.prison-milestones span {display:flex;flex-direction:column;gap:7px;padding:10px;background:#22353b;border:1px solid #74674c;font:11px var(--ui-title);}
+.prison-milestones small {font-size:10px;}.prison-milestones em {font-size:9px;font-style:normal;color:#b99c6b;}
+@media(max-width:760px){
+ .prison-window {padding:15px;}
+ .prison-masthead {display:block;}.prison-masthead h2 {font-size:24px;}
+ .prison-seal {width:43px;height:56px;margin-right:11px;}
+ .prison-unavailable {display:inline-block;margin-top:15px;white-space:normal;}
+ .prison-layout {grid-template-columns:1fr;gap:0;margin-top:18px;}
+ .prison-floor-grid {grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;}
+ .prison-floor-grid button {min-height:45px;}
+ .prison-details {display:none;padding:14px;}
+ .prison-details>.dungeon-back {display:block;margin-bottom:17px;}
+ .prison-window.is-inspecting .prison-details {display:block;}
+ .prison-window.is-inspecting .prison-floors {display:none;}
+ .prison-scaling-table>div {grid-template-columns:repeat(5,minmax(0,1fr));}
+ .prison-milestones>div {grid-template-columns:repeat(2,minmax(0,1fr));}
 }

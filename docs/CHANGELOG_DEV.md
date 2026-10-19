@@ -1,5 +1,15 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Impel Down e rework de drops
+
+- Aba em Mapa com 100 andares, detalhes de dificuldade e marcos, todos bloqueados para entrada. HUD continua com seis ícones.
+- Base pura de progressão por vitória sequencial e escala HP/ATQ/DEF de 0,5×, 2×, 3×…10× por blocos. Encontros e mapas da prisão não habilitados.
+- Removida a rolagem global de Pérolas de monstros, inclusive chefes. Gemas/Pérolas/Caixas reservadas à origem Impel Down; gemas ainda sem item ou regras.
+- Dez marcos, nos andares 5 a 50, de uma Caixa de Pérolas Nível 1. Livro de concessões e prêmio pendente com mochila cheia; APIs bloqueadas em produção.
+- Caixas Nível 1/2/3 preparadas como consumíveis; abertura confirmada, pérola do mesmo nível, cinco atributos equiprováveis e persistência transacional. Níveis superiores sem marcos habilitados.
+- Estoque de pérolas, itens, sockets e progresso preservados. Migração idempotente com backup local; caixas excluídas de equipamento/forja. Build Pages com módulo e hashes de cache.
+- Documentação: docs/IMPEL-DOWN.md. Sem consumo pago.
+
 ## 19/10/2026 — Regiões e detalhes do Arquipélago
 
 - Abas abaixo do título: East Blue padrão, Alabasta bloqueada. Oito ilhas com faixas sequenciais de dez níveis.

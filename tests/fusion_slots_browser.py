@@ -92,11 +92,11 @@ with sync_playwright() as p:
  for i in range(5):q.locator('[data-forge-fusion-pearl=pearl_for_1]').click()
  q.locator('[data-forge-action=fuse]').click();accept(q);assert q.locator('[data-forge-fusion-pearl=pearl_for_1]').count()==0;assert q.locator('[data-forge-fusion-pearl=pearl_for_2]').count()==1;c.close();record('depleted_stock_hidden_new_stock_visible')
  g['inventory']=[];c,q=page_for(b,g,errors=errors);panel(q,'forge');tab(q,'pearls');assert q.get_by_text('Você não possui pérolas disponíveis para fusão',exact=True).is_visible();assert q.locator('[data-forge-fusion-pearl]').count()==0;shot(q,'empty-stock');c.close();record('empty_inventory_message')
- # Actual hunt rewards update an already-open grid without changing tabs.
+ # Ordinary hunt rewards must not replenish the already-open pearl grid.
  g=fixture(template);g['level']=30;g['inventory']=[];g['hp']=10000
  for item in g['equipment'].values():item.update(rarity='legendary',level=30,plus=20)
  c,q=page_for(b,g,errors=errors);q.locator('#enterHunt').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();panel(q,'forge');tab(q,'pearls');assert not q.locator('[data-forge-fusion-pearl]').count();q.evaluate('Math.random=()=>0');q.clock.run_for(30000)
- assert q.evaluate('__mareDiagnostics().kills')>0;assert q.locator('[data-forge-fusion-pearl=pearl_for_1]').count()==1
- assert q.locator('[data-forge-tab=fusion]').get_attribute('aria-selected')=='true';shot(q,'live-loot-update');c.close();record('live_hunt_rewards_update_open_grid')
+ assert q.evaluate('__mareDiagnostics().kills')>0;assert q.locator('[data-forge-fusion-pearl]').count()==0
+ assert q.locator('[data-forge-tab=fusion]').get_attribute('aria-selected')=='true';shot(q,'live-loot-no-pearls');c.close();record('live_hunt_does_not_supply_pearls')
  assert not errors,errors;record('no_javascript_errors');b.close()
 (OUT/'results.json').write_text(json.dumps(results,indent=2,ensure_ascii=False),encoding='utf-8')
