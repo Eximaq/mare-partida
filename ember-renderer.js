@@ -67,7 +67,7 @@
       c.save();clipCell(c,tx,ty,x,y,'land');native(c,'basalt',x,y,variation(tx,ty)%8);
       if(t!==E.BASALT){c.save();clipCell(c,tx,ty,x,y,t);native(c,t===E.LAVA?'lava':t===E.STREET?'street':'basalt',x,y,variation(tx,ty)%8);
         if(t===E.WOOD)wood(c,x,y);c.restore();}
-      if(t!==E.LAVA&&t!==E.WOOD){c.fillStyle=E.elevation(tx*64+32,ty*64+32)===2?'#e6ca9617':E.elevation(tx*64+32,ty*64+32)===0?'#11151b18':'#00000000';c.fillRect(x,y,64,64);}c.restore();relief(c,tx,ty,x,y);return;
+      if(t!==E.LAVA&&t!==E.WOOD){c.fillStyle=ty<12?'#e6ca9617':ty>=22?'#11151b18':'#00000000';c.fillRect(x,y,64,64);}c.restore();relief(c,tx,ty,x,y);return;
     }
     tile(c,'ocean-basalt',t===E.WATER?0:15,x,y);
     if(t===E.LAVA)tile(c,'lava-basalt',0,x,y);

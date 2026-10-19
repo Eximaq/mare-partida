@@ -21,5 +21,3 @@ Os PNGs fonte permanecem intactos. Contraste/iluminação e rotações dos pisos
 Fontes e IDs das gerações: `assets/ruinas-brasas/provenance.json`. Configuração de renderização: `assets/ruinas-brasas/manifest.json`.
 
 Revisão de composição de 19/10/2026: mapa 32×32 tiles de 64px, sem reduzir as artes. Edifícios renderizados em escala 1,5; uma ponte diagonal em escala 2 alinhada ao vão e às margens. Paredões e degraus reutilizam a textura de basalto/calçamento em composição geométrica no renderizador, com colisões e passagens correspondentes. Nenhuma geração adicional.
-
-Revisão compacta final: mundo 16×16 tiles (1024px por lado), quatro setores, três construções e três escadas. Mantidas todas as escalas dos assets; câmera centralizada quando o mundo cabe na viewport.

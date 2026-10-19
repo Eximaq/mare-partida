@@ -45,11 +45,11 @@
   class Camera {
     constructor(){this.x=0;this.y=0;this.width=960;this.height=570;}
     update(hero,map,dt=0,snap=false){
-      const tx=map.width<this.width?(map.width-this.width)/2:clamp(hero.x-this.width/2,0,map.width-this.width);
-      const ty=map.height<this.height?(map.height-this.height)/2:clamp(hero.y-this.height/2,0,map.height-this.height);
+      const tx=clamp(hero.x-this.width/2,0,Math.max(0,map.width-this.width));
+      const ty=clamp(hero.y-this.height/2,0,Math.max(0,map.height-this.height));
       const a=snap?1:1-Math.exp(-9*dt);
-      this.x=map.width<this.width?tx:clamp(this.x+(tx-this.x)*a,0,map.width-this.width);
-      this.y=map.height<this.height?ty:clamp(this.y+(ty-this.y)*a,0,map.height-this.height);
+      this.x=clamp(this.x+(tx-this.x)*a,0,Math.max(0,map.width-this.width));
+      this.y=clamp(this.y+(ty-this.y)*a,0,Math.max(0,map.height-this.height));
     }
     screenToWorld(x,y){return {x:x+Math.round(this.x),y:y+Math.round(this.y)};}
     worldToScreen(x,y){return {x:x-Math.round(this.x),y:y-Math.round(this.y)};}

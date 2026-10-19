@@ -1,14 +1,5 @@
 # Histórico de desenvolvimento
 
-## 19/10/2026 — Redução adicional para 16×16
-
-- Feedback: a proposta 32×32 ainda estava grande. Mundo agora 1024×1024, quatro setores, três casas e 16 props, mantendo o tamanho de sprites/texturas.
-- Três escadas, uma ponte real, acessos curtos e retorno no cais fora da faixa do chat. População comum reduzida a cinco, reposição abaixo de quatro.
-- Câmera centraliza mundos menores que a viewport, preserva conversão de cliques e mantém clamp nos eixos maiores. Padrão futuro do AGENT.md ajustado a 16×16.
-- Proposta substitui a anterior no mesmo PR #4; sem novas gerações, migração ou alteração de economia.
-- Passaram todos os testes Node, oito grupos de navegador específicos (quatro resoluções), doze regressões de ilha/HUD e pacote Pages mobile. Medição local: mediana ~16,7ms/p95 ~16,8ms, quatro chunks. Criação no teste de ilha aguarda 300ms no relógio simulado para estabilizar a transição inicial.
-
-
 ## 19/10/2026 — Ruínas compactas e padrão de mapas
 
 - Redução de 64×64 para 32×32 tiles de 64px: mundo 2048×2048, metade da largura/altura, um quarto da área anterior.

@@ -14,15 +14,13 @@ with sync_playwright() as p:
     context=browser.new_context(viewport={'width':1366,'height':768})
     page=context.new_page();page.route('**/__dev_version',lambda route:route.fulfill(body='stable-test'));errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
-    page.clock.install();page.goto('http://127.0.0.1:8123');page.wait_for_load_state('networkidle');page.clock.run_for(300)
+    page.clock.install();page.goto('http://127.0.0.1:8123');page.wait_for_load_state('networkidle')
     page.locator('#characterName').fill('Navegante Teste');page.locator('#nextToClass').click();page.locator('#createCharacter').click()
     def run(ms):page.clock.run_for(ms)
     def diag():return page.evaluate('window.__mareDiagnostics()')
     def physical():
         d=diag();assert d['walkable'];c=d['camera'];m=d['map']
-        for axis,dim in [('x','width'),('y','height')]:
-            if c[dim]>m[dim]:assert c[axis]==(m[dim]-c[dim])/2
-            else:assert 0<=c[axis]<=m[dim]-c[dim]+.01
+        assert c['x']>=0 and c['y']>=0 and c['x']+c['width']<=m['width']+.01 and c['y']+c['height']<=m['height']+.01
         return d
     def click_world(x,y):
         d=diag();b=page.locator('#worldCanvas').bounding_box()

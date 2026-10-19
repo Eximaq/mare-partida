@@ -273,16 +273,16 @@
 
   function monsterName(m){return m?.name||monsterTypes[m?.type]?.name||'';}
   function spawnMob(forceBoss=false){
-    if(livingMobs().length>=(activeMap().id==='embers'?(forceBoss?7:5):11))return;
+    if(livingMobs().length>=11)return;
     const ember=activeMap().id==='embers',district=ember?(forceBoss?MareEmber.districts.find(d=>d.id==='caldeira'):MareEmber.nearestDistrict(world.hero)):null;
     const type=forceBoss?'boss':pick(district?.roles||zones[game.area].mobs),base=monsterTypes[type],areaScale=game.area==='swamp'?1.9:1,scale=areaScale*(1+Math.max(0,game.level-8)*.04);
     let x,y,valid=false;
     for(let k=0;k<70;k++){
       if(ember){
-        const angle=Math.random()*Math.PI*2,radius=forceBoss?220+Math.random()*220:140+Math.random()*200;
+        const angle=Math.random()*Math.PI*2,radius=forceBoss?220+Math.random()*220:170+Math.random()*330;
         x=forceBoss?MareEmber.districts.find(d=>d.id==='caldeira').x+rand(-110,110):world.hero.x+Math.cos(angle)*radius;y=forceBoss?MareEmber.districts.find(d=>d.id==='caldeira').y+rand(-110,110):world.hero.y+Math.sin(angle)*radius;
         // Every spawn is grounded and reachable; the return quay is a combat-free arrival pocket.
-        if(Math.hypot(x-MareEmber.map.spawn.x,y-MareEmber.map.spawn.y)<112)continue;
+        if(Math.hypot(x-MareEmber.map.spawn.x,y-MareEmber.map.spawn.y)<150)continue;
       }else{
         const zone=activeMap().spawnZones[k<40?0:Math.floor(Math.random()*activeMap().spawnZones.length)];x=rand(zone.x,zone.x+zone.w);y=rand(zone.y,zone.y+zone.h);
       }
@@ -434,9 +434,9 @@
 
     // Descartar inimigos derrotados: eles não podem bloquear novos spawns.
     if(world.mobs.some(m=>!m.alive||m.hp<=0))world.mobs=world.mobs.filter(m=>m.alive&&m.hp>0);
-    if(activeMap().id==='embers'){world.mobs=world.mobs.filter(m=>m.type==='boss'||distance(m,world.hero)<550||world.target===m);}
+    if(activeMap().id==='embers'){world.mobs=world.mobs.filter(m=>m.type==='boss'||distance(m,world.hero)<900||world.target===m);}
     world.spawnClock-=dt;world.bossCooldown=Math.max(0,world.bossCooldown-dt);
-    if(world.spawnClock<=0){world.spawnClock=1.8;if(livingMobs().length<(activeMap().id==='embers'?4:7))spawnMob();let hasBoss=livingMobs().some(m=>m.type==='boss');if(!hasBoss&&(activeMap().id!=='embers'||Math.hypot(world.hero.x-MareEmber.districts.find(d=>d.id==='caldeira').x,world.hero.y-MareEmber.districts.find(d=>d.id==='caldeira').y)<300)&&world.bossCooldown<=0&&game.stats.kills>=10&&game.stats.kills>=10+game.stats.boss*15)spawnMob(true);}
+    if(world.spawnClock<=0){world.spawnClock=1.8;if(livingMobs().length<7)spawnMob();let hasBoss=livingMobs().some(m=>m.type==='boss');if(!hasBoss&&(activeMap().id!=='embers'||Math.hypot(world.hero.x-MareEmber.districts.find(d=>d.id==='caldeira').x,world.hero.y-MareEmber.districts.find(d=>d.id==='caldeira').y)<550)&&world.bossCooldown<=0&&game.stats.kills>=10&&game.stats.kills>=10+game.stats.boss*15)spawnMob(true);}
     if(!autoPlay){session.attackClock=0;return;}
     // A transição entre cenas não pode deixar um alvo morto ou timer antigo congelar o Auto-Hunt.
     if(!Number.isFinite(session.attackClock)||session.attackClock>3)session.attackClock=0;
@@ -729,7 +729,7 @@
     if(currentPanel==='inventory'){renderInventory(body);}
     if(currentPanel==='forge')renderForge(body);
     if(currentPanel==='character')renderCharacter(body);
-    if(currentPanel==='map'||currentPanel==='hunts'){body.innerHTML=`<div class="mini-heading">AS CORRENTES LEVAM A NOVAS TERRAS</div><div class="map-options">${Object.entries(zones).map(([id,z])=>`<button class="island-card ${game.level<z.min?'locked':''}" data-area="${id}"><small>${game.level<z.min?'BLOQUEADA · NÍVEL '+z.min:game.area===id?'LOCAL ATUAL':'DESTINO DISPONÍVEL'}</small><h3>${escapeHTML(z.name)}</h3><p>${id==='beach'?'Ilha compacta de 16×16 tiles: cais, praça, ruínas e fortaleza conectados por caminhos curtos.':'Catacumbas de névoa tóxica escondem criaturas perigosas e recompensas superiores.'}</p><small>REQUISITO: NÍVEL ${z.min} ${game.area===id?' · VOCÊ ESTÁ AQUI':''}</small></button>`).join('')}</div><p class="warning-note">Ao viajar, a caçada atual é reiniciada. Seu nível, inventário, dobrões e equipamentos permanecem salvos.</p>`;}
+    if(currentPanel==='map'||currentPanel==='hunts'){body.innerHTML=`<div class="mini-heading">AS CORRENTES LEVAM A NOVAS TERRAS</div><div class="map-options">${Object.entries(zones).map(([id,z])=>`<button class="island-card ${game.level<z.min?'locked':''}" data-area="${id}"><small>${game.level<z.min?'BLOQUEADA · NÍVEL '+z.min:game.area===id?'LOCAL ATUAL':'DESTINO DISPONÍVEL'}</small><h3>${escapeHTML(z.name)}</h3><p>${id==='beach'?'Ilha pirata de 32×32 tiles: cais em cinzas, mercado queimado, naufrágios e a Fortaleza da Caldeira.':'Catacumbas de névoa tóxica escondem criaturas perigosas e recompensas superiores.'}</p><small>REQUISITO: NÍVEL ${z.min} ${game.area===id?' · VOCÊ ESTÁ AQUI':''}</small></button>`).join('')}</div><p class="warning-note">Ao viajar, a caçada atual é reiniciada. Seu nível, inventário, dobrões e equipamentos permanecem salvos.</p>`;}
     if(currentPanel==='map'&&activeMap().id==='embers')renderEmberOverview(body);
     if(currentPanel==='help'){body.innerHTML=`<div class="help-copy"><p><strong>Bem-vindo a Maré Partida.</strong> Esta é uma demonstração jogável offline de um futuro RPG Idle online, em um universo marítimo original.</p><ul><li><strong>Lobby:</strong> clique no chão para caminhar e nos NPCs para abrir seus serviços. Use a opção de expedição para caçar.</li><li><strong>Auto-caçada:</strong> seu personagem procura monstros, anda até eles e ataca sozinho. O botão AUTO-CAÇADA pausa ou retoma.</li><li><strong>Teclas 1 e 2:</strong> ativam habilidades; se a caçada estiver ligada, o personagem também usa habilidades automaticamente quando apropriado.</li><li><strong>Tecla Q:</strong> usa uma poção de vida. É possível comprar mais por 35 dobrões.</li><li><strong>Contratos:</strong> conclua as caçadas listadas à direita e resgate as recompensas.</li><li><strong>Inventário:</strong> equipe os itens encontrados. Equipamentos alteram atributos reais.</li><li><strong>Forja:</strong> consome materiais e dobrões para melhorar equipamentos até +5.</li><li><strong>Mapa:</strong> a Fenda da Névoa é desbloqueada no nível 8.</li><li><strong>Salvamento:</strong> seu progresso é salvo automaticamente neste navegador, com LocalStorage. Não existe conta online, chat real ou progresso com a página fechada nesta versão.</li></ul><p>Este é um protótipo gratuito de desenvolvimento. O MMORPG, o servidor multiplayer, o banco de dados e as relíquias estão planejados para fases posteriores.</p><button class="dialog-button secondary" data-export="1">EXPORTAR SAVE (JSON)</button><button class="dialog-button secondary" data-import="1">IMPORTAR SAVE</button><button class="dialog-button secondary" data-reset="1">RECOMEÇAR JOGO</button></div><input type="file" id="saveImport" accept=".json,application/json" style="display:none"/>`;}
     if(currentPanel==='help'){
