@@ -41,6 +41,7 @@
     maps.lobby.navigationGoals=MareIsland.paths;
     maps.lobby.interactions=[{id:'expeditions',...MareIsland.npcs.luffy,radius:58}];
   }
+  if(globalThis.MareEmber)maps.embers=MareEmber.map;
   class Camera {
     constructor(){this.x=0;this.y=0;this.width=960;this.height=570;}
     update(hero,map,dt=0,snap=false){

@@ -1,0 +1,122 @@
+{
+  "source": "PixelLab MCP",
+  "user_requested_frame_size": [
+    48,
+    48
+  ],
+  "original_frame_size": [
+    64,
+    64
+  ],
+  "terrain_size": [
+    64,
+    64
+  ],
+  "map_grid": [
+    64,
+    64
+  ],
+  "reported_combined_generations": 39,
+  "monsters_animated": false,
+  "calls": [
+    {
+      "key": "ruin-props",
+      "tool": "create_image_pro",
+      "id": "1da63cf7-a389-4753-b1d1-dea72fd5c266",
+      "used_in_runtime": true,
+      "reported_usage": {
+        "generations": 25
+      }
+    },
+    {
+      "key": "scorched-corsair",
+      "tool": "create_character",
+      "id": "68670c99-a178-44f1-a237-9f79ffd7d922",
+      "used_in_runtime": true,
+      "advertised_cost": {
+        "generations": 2
+      }
+    },
+    {
+      "key": "slag-warden",
+      "tool": "create_character",
+      "id": "1835c47e-f292-462c-86b5-5ffaf3c3f827",
+      "used_in_runtime": true,
+      "advertised_cost": {
+        "generations": 2
+      }
+    },
+    {
+      "key": "ash-lantern",
+      "tool": "create_character",
+      "id": "47020279-e280-45eb-90df-700f42188b18",
+      "used_in_runtime": true,
+      "advertised_cost": {
+        "generations": 2
+      }
+    },
+    {
+      "key": "caldera-captain",
+      "tool": "create_character",
+      "id": "24cf919a-4bd9-4bb1-b9de-70d0212640f1",
+      "used_in_runtime": true,
+      "advertised_cost": {
+        "generations": 2
+      }
+    },
+    {
+      "key": "water",
+      "tool": "create_image_pixen",
+      "id": "172ba9ec-96f3-4f67-a276-ff01f5f1d801",
+      "used_in_runtime": false,
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "key": "basalt",
+      "tool": "create_image_pixen",
+      "id": "0a2b499a-acde-4310-b2c7-32dbd7bcd4ad",
+      "used_in_runtime": false,
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "key": "street",
+      "tool": "create_image_pixen",
+      "id": "6ca3b183-d2aa-4318-8614-c28222972acc",
+      "used_in_runtime": true,
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "key": "lava",
+      "tool": "create_image_pixen",
+      "id": "7f3279a4-99d4-484d-a8fd-09772e159311",
+      "used_in_runtime": true,
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "key": "water-corrected",
+      "tool": "create_image_pixen",
+      "id": "f7c4f4b9-c513-4a6c-b363-5ed537182f17",
+      "used_in_runtime": true,
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "key": "basalt-corrected",
+      "tool": "create_image_pixen",
+      "id": "f4712596-e1ad-42a3-85ce-65b59abc5719",
+      "used_in_runtime": true,
+      "reported_usage": {
+        "generations": 1
+      }
+    }
+  ]
+}

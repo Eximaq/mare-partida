@@ -1,0 +1,130 @@
+[
+  {
+    "_comment": "ruin-props",
+    "MCP create_image_pro": {
+      "width": 512,
+      "height": 512,
+      "no_background": true,
+      "description": "Sixteen separate pixel art sprites in a precise four by four sheet, each complete sprite inside its own 128 by 128 cell with transparent margins. First three rows: burned pirate tavern, collapsed seaside house, broken stone arch, ancient iron gate, shipwreck hull, broken mast with torn red sail, improvised wooden bridge, barrels crates anchor and coiled rope, broken stone columns, charred wooden barricade, volcanic vent, pirate gravestones with chains. Last row: four consecutive animation frames of the same small orange bonfire, fixed base and camera, changing flame shapes. High top-down RPG perspective with visible front facades, crisp detailed pixels, warm gray stone, weathered timber, muted red cloth, brass, amber fire, light from upper left. Original maritime adventure world, no text, no labels."
+    },
+    "_comment_prompt": "Refazer completamente Ruínas de Brasas do Maré Partida: mapa de64x64 tiles, ruínas de uma ilha pirata abandonada e queimada, rotas e áreas de combate planejadas, casas destruídas, naufrágios, fogo, água e lava animados, quatro monstros novos. Atualização do usuário: monstros em48x48, como personagens/NPCs. Orçamento aprovado: até45 gerações; lote reduzido e correções de água/basalto aprovados."
+  },
+  {
+    "_comment": "scorched-corsair",
+    "MCP create_character": {
+      "mode": "v3",
+      "size": 64,
+      "n_directions": 8,
+      "view": "high top-down",
+      "name": "Corsário Calcinado",
+      "description": "Original burned pirate raider, lean humanoid, scorched red waistcoat, dark trousers, ivory bandana, curved cutlass, ember scars, clear compact silhouette, detailed RPG pixel art, high top-down view, warm maritime palette."
+    }
+  },
+  {
+    "_comment": "slag-warden",
+    "MCP create_character": {
+      "mode": "v3",
+      "size": 64,
+      "n_directions": 8,
+      "view": "high top-down",
+      "name": "Vigia de Escória",
+      "description": "Original squat bipedal basalt ruin guardian, broad broken stone shoulders, glowing amber cracks, old bronze anchor-shaped chest plate, heavy stone fists, clear compact silhouette, detailed RPG pixel art, high top-down view, warm maritime palette."
+    }
+  },
+  {
+    "_comment": "ash-lantern",
+    "MCP create_character": {
+      "mode": "v3",
+      "size": 64,
+      "n_directions": 8,
+      "view": "high top-down",
+      "name": "Faroleiro das Cinzas",
+      "description": "Original skeletal pirate lantern keeper, slender humanoid in a torn ochre long coat and old sailor hat, visible skull face, bronze lantern with orange ghost flame, charred boots, clear compact silhouette, detailed RPG pixel art, high top-down view."
+    }
+  },
+  {
+    "_comment": "caldera-captain",
+    "MCP create_character": {
+      "mode": "v3",
+      "size": 64,
+      "n_directions": 8,
+      "view": "high top-down",
+      "name": "Capitão da Caldeira",
+      "description": "Original imposing magma pirate captain, broad humanoid, scorched navy officer coat with brass trim, volcanic stone skin and glowing orange cracks, broken ship anchor held as a weapon, dark tricorn, clear powerful silhouette, detailed RPG pixel art, high top-down view."
+    }
+  },
+  {
+    "_comment": "water",
+    "MCP create_image_pixen": {
+      "description": "Seamless deep teal seawater texture around a burned pirate island, subtle readable ripples, detailed cohesive pixel art, evenly lit, top-down surface filling the whole square.",
+      "width": 64,
+      "height": 64,
+      "no_background": false,
+      "view": "high top-down"
+    }
+  },
+  {
+    "_comment": "basalt",
+    "MCP create_image_pixen": {
+      "description": "Seamless weathered warm gray basalt ground texture, scattered pale ash, readable cracked stone, restrained contrast, detailed cohesive pixel art, evenly lit, top-down surface filling the whole square.",
+      "width": 64,
+      "height": 64,
+      "no_background": false,
+      "view": "high top-down"
+    }
+  },
+  {
+    "_comment": "street",
+    "MCP create_image_pixen": {
+      "description": "Seamless worn ochre cobblestone street texture of an abandoned pirate port, broken large paving stones and sparse pale ash, clear readable walking surface, detailed cohesive pixel art, evenly lit, top-down surface filling the whole square.",
+      "width": 64,
+      "height": 64,
+      "no_background": false,
+      "view": "high top-down"
+    }
+  },
+  {
+    "_comment": "lava",
+    "MCP create_image_pixen": {
+      "description": "Seamless glowing molten orange lava texture, dark red cooling crust islands and golden hot channels, detailed cohesive pixel art, top-down surface filling the whole square.",
+      "width": 64,
+      "height": 64,
+      "no_background": false,
+      "view": "high top-down"
+    }
+  },
+  {
+    "_comment": "water-corrected",
+    "MCP create_image_pixen": {
+      "description": "Seamless open ocean water surface texture only, calm deep teal and muted turquoise small ripples, uniform overhead lighting, crisp detailed pixel art. Entire canvas is water. No land, islands, boats, rocks, buildings, objects or fire.",
+      "width": 64,
+      "height": 64,
+      "no_background": false,
+      "view": "high top-down"
+    }
+  },
+  {
+    "_comment": "basalt-corrected",
+    "MCP create_image_pixen": {
+      "description": "Seamless plain warm gray volcanic ground surface texture, broad quiet stone patches and sparse fine cracks, low contrast, uniform overhead lighting, crisp detailed pixel art. Entire canvas is flat ground. No skulls, bones, objects, symbols or large isolated rocks.",
+      "width": 64,
+      "height": 64,
+      "no_background": false,
+      "view": "high top-down"
+    }
+  },
+  {
+    "TASK": {
+      "instructions": [
+        "Download and preserve all original PixelLab outputs without repainting.",
+        "As requested by the user, resize every 64x64 monster facing to48x48 with nearest-neighbor and assemble one 48x384 sheet per monster in declared direction order.",
+        "Keep the generated512x512 props atlas and original four64x64 texture PNGs. Inspect the expected128x128 atlas grid without modifying the original.",
+        "Integrate the authored64x64 map and navigation geometry, runtime texture masks/lighting, fire frames12–15, and the existing project's wood material. Do not synthesize character walking/attack frames."
+      ],
+      "outputs": [
+        "assets/ruinas-brasas/manifest.json",
+        "assets/ruinas-brasas/*.png"
+      ]
+    }
+  }
+]

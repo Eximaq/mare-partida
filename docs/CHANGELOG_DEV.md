@@ -1,5 +1,16 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Ruínas de Brasas 64×64
+
+- Reconstrução em mundo 4096×4096, sete setores, rotas navegáveis, ruínas e quatro monstros com frames 48×48.
+- Terrenos Pixen nativos 64px, atlas Pro, fogueiras em quatro quadros e fluxo de água/lava; fontes preservadas.
+- Spawn alcançável por distrito, chegada protegida, chefe na fortaleza e retorno pelo cais. Corrigida continuação do tick de caça após retorno ao lobby.
+- Cache de terreno limitado a 20 chunks; painel Mapa traça trajetos reais. Save `beach`, economia e mapa da Fenda preservados.
+- Todos os testes Node, sete grupos de navegador específicos e doze de regressão da ilha/HUD passaram. Três resoluções, vinte derrotas, retorno e recarga. Build Pages validado.
+- Referências, custo informado de 39 gerações e limitações em RUINAS-BRASAS.md e ART_BIBLE.md. Caminhada/ataque dos monstros adiados por orçamento; oito poses estáticas por monstro.
+- Branch/checkpoint: feature/ruinas-brasas-64x64; rollback por reversão do commit, sem migração de save.
+
+
 ## 18/10/2026 — Slots de fusão e inventário de pérolas
 
 - Cinco slots reais em ambas as modalidades, com clique, drag, remoção individual e limpeza; seleção sem consumo.

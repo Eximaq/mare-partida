@@ -16,8 +16,9 @@
   const navigators = Object.fromEntries(Object.entries(worldMaps).map(([id,map])=>[id,new Navigation(map)]));
   let travelPath = [], pursuit = new WeakMap();
   const keys = new Set(), rejectedTargets = new Map();
-  const activeMap = () => worldMaps[scene === 'lobby' ? 'lobby' : 'hunt'];
-  const navigator = () => navigators[scene === 'lobby' ? 'lobby' : 'hunt'];
+  const mapKey=()=>scene==='lobby'?'lobby':game?.area==='beach'&&worldMaps.embers?'embers':'hunt';
+  const activeMap = () => worldMaps[mapKey()];
+  const navigator = () => navigators[mapKey()];
   function resizeViewport(){
     const rect=canvas.getBoundingClientRect(), zoom=1;
     W=Math.max(1,Math.round(rect.width/zoom));H=Math.max(1,Math.round(rect.height/zoom));
@@ -115,7 +116,7 @@
   }
 
   const zones = {
-    beach: { name:'Ruínas de Brasa', sub:'Coração das Cinzas', min:1, label:'MASMORRA · NV. 1–12', tint:'beach', mobs:['crab','bandit','spirit'] },
+    beach: { name:'Ruínas de Brasas', sub:'Ilha do Porto Calcinado', min:1, label:'MASMORRA · NV. 1–12', tint:'beach', mobs:['crab','bandit','spirit'] },
     swamp: { name:'Fenda da Névoa', sub:'Catacumbas Nebulosas', min:8, label:'MASMORRA · NV. 8–25', tint:'swamp', mobs:['spirit','bandit','crab'] }
   };
   const monsterTypes = {
@@ -265,14 +266,32 @@
   function startGame(){scene='lobby';initializeSession();$('startOverlay').classList.add('hidden');autoPlay=true;autoSkills=true;setAreaLabels();configureFactionVisual();applySceneHudLayout();setMenuExpanded(game.preferences.menuExpanded===true);updateUI();renderPortrait();log('Bem-vindo ao Porto das Correntes.','good');log('Converse com os NPCs ou inicie sua expedição.');saveGame();}
   function enterHunt(){if(!game)return;factionShowcase=false;document.body.classList.remove('faction-showcase-open');$('factionInspection')?.classList.add('hidden');scene='hunt';autoPlay=true;autoSkills=true;lobbyDestination=null;lobbyAction=null;initializeSession();session.attackClock=0;world.target=null;setAreaLabels();applySceneHudLayout();closePanel();updateUI();toast('Expedição iniciada: '+zones[game.area].name,'good');log('Você partiu para '+zones[game.area].name+'.','gold');saveGame();}
   function returnLobby(){if(!game)return;scene='lobby';lobbyDestination=null;lobbyAction=null;initializeSession();setAreaLabels();applySceneHudLayout();closePanel();updateUI();toast('Você retornou ao Porto das Correntes.','good');log('De volta ao porto. Seus espólios foram preservados.','good');saveGame();}
-  function activateNPC(npc){lobbyAction=null;if(npc.kind==='hunt')openPanel('hunts');else openPanel(npc.kind);}
+  function activateNPC(npc){lobbyAction=null;if(npc.kind==='return'){returnLobby();return;}if(npc.kind==='hunt')openPanel('hunts');else openPanel(npc.kind);}
   function setAreaLabels(){let inLobby=scene==='lobby';let z=inLobby?{name:'Porto das Correntes',sub:'Refúgio dos Navegantes',label:'ÁREA SEGURA · CIDADE'}:zones[game.area];$('locationName').textContent=z.name;$('mapTitle').textContent=z.name.toUpperCase();$('overlayArea').textContent=z.sub.toUpperCase();$('sceneEyebrow').textContent=inLobby?'PORTO PRINCIPAL':'REGIÃO DE CAÇA';$('dangerRating').textContent=z.label;
     $('enterHunt').classList.toggle('hidden',!inLobby);$('returnLobby').classList.toggle('hidden',inLobby);$('navLobby').classList.toggle('active',inLobby);$('navHunt').classList.toggle('active',!inLobby);
     $('sceneInfo').textContent=inLobby?'ÁREA SEGURA · CLIQUE PARA CAMINHAR':'COMBATE AUTOMÁTICO ATIVO';$('worldHint').textContent=inLobby?'Clique para caminhar · WASD / setas · Clique nos NPCs para interagir':'Clique no chão para caminhar · Monstro: retomar caçada · WASD / setas';document.body.classList.toggle('scene-lobby',inLobby);document.body.classList.toggle('scene-hunt',!inLobby);}
 
-  function spawnMob(forceBoss=false){if(livingMobs().length>=11)return;const type=forceBoss?'boss':pick(zones[game.area].mobs);let base=monsterTypes[type],areaScale=game.area==='swamp'?1.9:1, scale=areaScale*(1+Math.max(0,game.level-8)*.04),x,y,valid=false;
-    for(let k=0;k<60;k++){const zone=activeMap().spawnZones[k<40?0:Math.floor(Math.random()*activeMap().spawnZones.length)];x=rand(zone.x,zone.x+zone.w);y=rand(zone.y,zone.y+zone.h);if(navigator().walkable(x,y)&&Math.hypot(x-world.hero.x,y-world.hero.y)>120&&world.mobs.every(m=>!m.alive||Math.hypot(x-m.x,y-m.y)>55)){valid=true;break;}}if(!valid)return;
-    let maxHP=Math.round(base.hp*scale*(type==='boss'?1:1));world.mobs.push({id:world.nextID++,type,x,y,anchorX:x,anchorY:y,hp:maxHP,maxHP,attack:Math.round(base.atk*scale),defense:Math.round(base.def*scale),speed:base.speed,attackClock:rand(.4,2),bob:rand(0,6.28),alive:true,hit:0,slow:0,telegraph:0}); if(type==='boss'){session.bossNotice=3.3;$('bossBanner').classList.remove('hidden');log('O Guardião da Caldeira surgiu nas ruínas!','danger');}
+  function monsterName(m){return m?.name||monsterTypes[m?.type]?.name||'';}
+  function spawnMob(forceBoss=false){
+    if(livingMobs().length>=11)return;
+    const ember=activeMap().id==='embers',district=ember?MareEmber.nearestDistrict(world.hero):null;
+    const type=forceBoss?'boss':pick(district?.roles||zones[game.area].mobs),base=monsterTypes[type],areaScale=game.area==='swamp'?1.9:1,scale=areaScale*(1+Math.max(0,game.level-8)*.04);
+    let x,y,valid=false;
+    for(let k=0;k<70;k++){
+      if(ember){
+        const angle=Math.random()*Math.PI*2,radius=forceBoss?220+Math.random()*220:170+Math.random()*480;
+        x=forceBoss?MareEmber.districts.find(d=>d.id==='caldeira').x+rand(-110,110):world.hero.x+Math.cos(angle)*radius;y=forceBoss?MareEmber.districts.find(d=>d.id==='caldeira').y+rand(-110,110):world.hero.y+Math.sin(angle)*radius;
+        // Every spawn is grounded and reachable; the return quay is a combat-free arrival pocket.
+        if(Math.hypot(x-MareEmber.map.spawn.x,y-MareEmber.map.spawn.y)<150)continue;
+      }else{
+        const zone=activeMap().spawnZones[k<40?0:Math.floor(Math.random()*activeMap().spawnZones.length)];x=rand(zone.x,zone.x+zone.w);y=rand(zone.y,zone.y+zone.h);
+      }
+      if(navigator().walkable(x,y)&&Math.hypot(x-world.hero.x,y-world.hero.y)>120&&world.mobs.every(m=>!m.alive||Math.hypot(x-m.x,y-m.y)>55)&&(!ember||navigator().path(world.hero,{x,y}).length)){valid=true;break;}
+    }
+    if(!valid)return;
+    const skin=ember?MareEmber.skins[type]:null,maxHP=Math.round(base.hp*scale);
+    world.mobs.push({id:world.nextID++,type,name:skin?.name,skin:skin?.id,district:district?.id,x,y,anchorX:x,anchorY:y,hp:maxHP,maxHP,attack:Math.round(base.atk*scale),defense:Math.round(base.def*scale),speed:base.speed,attackClock:rand(.4,2),bob:rand(0,6.28),alive:true,hit:0,slow:0,telegraph:0,emberFacing:'south',emberElapsed:0});
+    if(type==='boss'){session.bossNotice=3.3;$('bossBanner').classList.remove('hidden');log((skin?.name||base.name)+' surgiu nas ruínas!','danger');}
   }
   function spawnVisual(x,y,text,color='#f9e9bc',size=15){world.fx.push({x,y,text,color,life:1.25,max:1.25,dy:-28,size});if(world.fx.length>70)world.fx.splice(0,10);}
   function addProjectile(x,y,tx,ty,color='#f4dfa1'){world.projectiles.push({x,y,tx,ty,progress:0,color});}
@@ -370,7 +389,7 @@
     if(Math.random()<.36){let mats=m.type==='boss'?4:1;game.materials+=mats;addLoot('+'+mats+' Ferro Salgado','✦');}
     if(Math.random()<(m.type==='boss'?.95:.16)&&game.inventory.length<BAG_CAPACITY){let eligible=itemDefs.filter(d=>d.kind!=='pearl'&&(d.slot!=='weapon'||d.type===game.classId));let def=pick(eligible);if(m.type==='boss')def=pick(eligible.filter(d=>d.rarity!=='common'));let item=newItem(def, Math.max(1,Math.floor(game.level/5)),true);item.origin=zones[game.area].name;game.inventory.unshift(item);addLoot(def.name,def.symbol);rewardNotice({name:def.name,rarity:itemRarity(item)});}
     if(Math.random()<.095){game.potions++;addLoot('Poção de vida','♥');}
-    if(m.type==='boss'){toast('Guardião da Caldeira derrotado! +'+gold+' dobrões','good');log('Você derrotou o Guardião da Caldeira!','gold');game.hasSeenBoss=true;world.bossCooldown=10;}
+    if(m.type==='boss'){toast(''+monsterName(m)+' derrotado! +'+gold+' dobrões','good');log('Você derrotou '+monsterName(m)+'!','gold');game.hasSeenBoss=true;world.bossCooldown=10;}
     else if(game.stats.kills===1){toast('Primeiro inimigo derrotado!','good');log('Primeira vitória! Continue sua caçada.','good');}
     if(game.inventory.length<BAG_CAPACITY&&Math.random()<.05){const p=pick(MareForge.pearls.filter(p=>p.level===1)),def=itemDefs.find(d=>d.pearlId===p.id),item=newItem(def);game.inventory.unshift(item);addLoot(p.name,'◉');rewardNotice({name:p.name,rarity:p.rarity});}
     if(game.stats.kills%6===0)saveGame();
@@ -400,8 +419,11 @@
     if(session.respawn>0){session.respawn-=dt;if(session.respawn<=0){session.respawn=0;combat?.reset('front');world.hero.direction='front';game.hp=stats.maxHP;game.energy=stats.maxEnergy;Object.assign(world.hero,activeMap().spawn);travelPath=[];lobbyDestination=null;pursuit=new WeakMap();camera.update(world.hero,activeMap(),0,true);toast('Você retornou ao porto.','good');}return;}
     game.hp=Math.min(stats.maxHP,game.hp+dt*(stats.healthRegen+(session.blessing>0?stats.regenBuff:0)));useAutoSupport(stats);if(autoPlay&&game.hp<stats.maxHP*.40&&game.potions>0)usePotion(false);
     moveManually(dt);
+    if(scene!=='hunt')return; // The quay interaction may have returned to the lobby this tick.
     for(let mob of world.mobs){
       if(!mob.alive)continue;
+      mob.emberElapsed=(mob.emberElapsed||0)+dt;
+      if(activeMap().id==='embers'){const dx=world.hero.x-mob.x,dy=world.hero.y-mob.y;mob.emberFacing=Math.abs(dx)>Math.abs(dy)?(dx<0?'west':'east'):(dy<0?'north':'south');}
       mob.hit=Math.max(0,mob.hit-dt);mob.slow=Math.max(0,(mob.slow||0)-dt);mob.attackClock-=dt;mob.bob+=dt*2;
       if(mob.taunt)mob.taunt.remaining=Math.max(0,mob.taunt.remaining-dt);
       const reach=monsterTypes[mob.type].reach,md=distance(mob,world.hero);
@@ -412,8 +434,9 @@
 
     // Descartar inimigos derrotados: eles não podem bloquear novos spawns.
     if(world.mobs.some(m=>!m.alive||m.hp<=0))world.mobs=world.mobs.filter(m=>m.alive&&m.hp>0);
+    if(activeMap().id==='embers'){world.mobs=world.mobs.filter(m=>m.type==='boss'||distance(m,world.hero)<1250||world.target===m);}
     world.spawnClock-=dt;world.bossCooldown=Math.max(0,world.bossCooldown-dt);
-    if(world.spawnClock<=0){world.spawnClock=1.8;if(livingMobs().length<7)spawnMob();let hasBoss=livingMobs().some(m=>m.type==='boss');if(!hasBoss&&world.bossCooldown<=0&&game.stats.kills>=10&&game.stats.kills>=10+game.stats.boss*15)spawnMob(true);}
+    if(world.spawnClock<=0){world.spawnClock=1.8;if(livingMobs().length<7)spawnMob();let hasBoss=livingMobs().some(m=>m.type==='boss');if(!hasBoss&&(activeMap().id!=='embers'||Math.hypot(world.hero.x-MareEmber.districts.find(d=>d.id==='caldeira').x,world.hero.y-MareEmber.districts.find(d=>d.id==='caldeira').y)<900)&&world.bossCooldown<=0&&game.stats.kills>=10&&game.stats.kills>=10+game.stats.boss*15)spawnMob(true);}
     if(!autoPlay){session.attackClock=0;return;}
     // A transição entre cenas não pode deixar um alvo morto ou timer antigo congelar o Auto-Hunt.
     if(!Number.isFinite(session.attackClock)||session.attackClock>3)session.attackClock=0;
@@ -443,14 +466,15 @@
     }
   }
   function bar(id,value,max){$(id).style.width=(clamp(value/max,0,1)*100).toFixed(1)+'%';}
-  function updateUI(){if(!game||!session)return;if(currentPanel==='forge'&&forgeUI.tab==='fusion'&&forgeFusionStamp!==fusionInventoryStamp())renderPanel();let derived=getDerived(),c=classes[game.classId];$('heroLevel').textContent=game.level;$('heroClass').textContent=c.name.toUpperCase();configureFactionVisual();$('heroName').textContent=game.name;$('heroPower').textContent=fmt(derived.power);$('hpText').textContent=fmt(game.hp)+' / '+fmt(derived.maxHP);$('energyText').textContent=fmt(game.energy)+' / '+fmt(derived.maxEnergy);$('xpText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));bar('hpFill',game.hp,derived.maxHP);bar('energyFill',game.energy,derived.maxEnergy);bar('xpFill',game.xp,xpNeeded(game.level));$('goldAmount').textContent=fmt(game.gold);$('statAttack').textContent=fmt(derived.attack);$('statDefense').textContent=fmt(derived.defense);$('statCrit').textContent=Math.round(derived.crit*100)+'%';$('statSpeed').textContent=derived.speed.toFixed(2)+'/s';$('sessionTimer').textContent=elapsedString(session.elapsed);$('killsCount').textContent=fmt(game.stats.kills);$('bossCount').textContent=fmt(game.stats.boss);$('goldEarned').textContent=fmt(session.gold);$('damageTotal').textContent=fmt(game.stats.damage);$('expeditionState').textContent=scene==='lobby'?'NO PORTO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇANDO':'EM PAUSA';$('potionCount').textContent=game.potions;$('autoLabel').textContent=autoPlay?'ATIVADA':'PAUSADA';$('autoToggle').classList.toggle('active',autoPlay);$('autoToggle').disabled=scene==='lobby';$('autoToggle').classList.toggle('hidden',scene==='lobby');$('combatState').innerHTML='<i class="pulse-dot '+(autoPlay?'':'paused')+'"></i>'+(scene==='lobby'?'PORTO SEGURO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇADA AUTOMÁTICA':'CAÇADA PAUSADA');$('targetHint').textContent=scene==='lobby'?'NPCS · MISSÕES · FORJA · EXPEDIÇÕES':world.target?.alive?'ALVO: '+monsterTypes[world.target.type].name.toUpperCase():'PROCURANDO ALVO...';
+  function updateUI(){if(!game||!session)return;if(currentPanel==='forge'&&forgeUI.tab==='fusion'&&forgeFusionStamp!==fusionInventoryStamp())renderPanel();let derived=getDerived(),c=classes[game.classId];$('heroLevel').textContent=game.level;$('heroClass').textContent=c.name.toUpperCase();configureFactionVisual();$('heroName').textContent=game.name;$('heroPower').textContent=fmt(derived.power);$('hpText').textContent=fmt(game.hp)+' / '+fmt(derived.maxHP);$('energyText').textContent=fmt(game.energy)+' / '+fmt(derived.maxEnergy);$('xpText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));bar('hpFill',game.hp,derived.maxHP);bar('energyFill',game.energy,derived.maxEnergy);bar('xpFill',game.xp,xpNeeded(game.level));$('goldAmount').textContent=fmt(game.gold);$('statAttack').textContent=fmt(derived.attack);$('statDefense').textContent=fmt(derived.defense);$('statCrit').textContent=Math.round(derived.crit*100)+'%';$('statSpeed').textContent=derived.speed.toFixed(2)+'/s';$('sessionTimer').textContent=elapsedString(session.elapsed);$('killsCount').textContent=fmt(game.stats.kills);$('bossCount').textContent=fmt(game.stats.boss);$('goldEarned').textContent=fmt(session.gold);$('damageTotal').textContent=fmt(game.stats.damage);$('expeditionState').textContent=scene==='lobby'?'NO PORTO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇANDO':'EM PAUSA';$('potionCount').textContent=game.potions;$('autoLabel').textContent=autoPlay?'ATIVADA':'PAUSADA';$('autoToggle').classList.toggle('active',autoPlay);$('autoToggle').disabled=scene==='lobby';$('autoToggle').classList.toggle('hidden',scene==='lobby');$('combatState').innerHTML='<i class="pulse-dot '+(autoPlay?'':'paused')+'"></i>'+(scene==='lobby'?'PORTO SEGURO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇADA AUTOMÁTICA':'CAÇADA PAUSADA');$('targetHint').textContent=scene==='lobby'?'NPCS · MISSÕES · FORJA · EXPEDIÇÕES':world.target?.alive?'ALVO: '+monsterName(world.target).toUpperCase():'PROCURANDO ALVO...';
     const hasTarget=scene==='hunt'&&world.target?.alive;
     $('targetHud').classList.toggle('hidden',scene!=='hunt'||!hasTarget);
     if(scene==='hunt'){
+      if(activeMap().id==='embers')$('overlayArea').textContent=MareEmber.nearestDistrict(world.hero).name.toUpperCase();
       const ratio=hasTarget?clamp(world.target.hp/world.target.maxHP,0,1):0;
       $('targetHudState').textContent=session.respawn>0?'RENASCENDO':autoPlay?'ALVO EM COMBATE':'CAÇADA PAUSADA';
       $('targetHudLevel').textContent=hasTarget?(world.target.type==='boss'?'CHEFE':'NV '+Math.max(1,Math.round(game.level*0.9+(world.target.type==='spirit'?1:0)))):'—';
-      $('targetHudName').textContent=hasTarget?monsterTypes[world.target.type].name.toUpperCase():'SEM ALVO';
+      $('targetHudName').textContent=hasTarget?monsterName(world.target).toUpperCase():'SEM ALVO';
       $('targetHudFill').style.width=(ratio*100).toFixed(1)+'%';
       $('targetHudHPText').textContent=hasTarget?fmt(world.target.hp)+' / '+fmt(world.target.maxHP):'PROCURANDO MONSTRO';
       $('targetHudHint').textContent=hasTarget?'ALVO BLOQUEADO · AUTO-ATAQUE':'SELECIONE OU AGUARDE O AUTO-ALVO';
@@ -695,13 +719,18 @@
     if(!MareCharacters.commit(game,attributeDraft)){toast('Pontos insuficientes ou distribuição inválida.','danger');return;}
     attributeDraft=MareCharacters.empty();allocationMessage="";attributeSuccessUntil=performance.now()+1600;saveGame();updateUI();renderPanel();toast('Atributos aplicados ao combate.','good');
   }
+  function renderEmberOverview(body){
+    body.innerHTML=`<div class="ember-map-panel"><div><canvas id="emberOverview" width="384" height="384" aria-label="Mapa de Ruínas de Brasas"></canvas><p>Água e lava não são navegáveis. As passagens de madeira conectam os setores.</p></div><div><h3>Ruínas de Brasas</h3><p>64 × 64 tiles · Sete setores interligados</p><p>Escolha um ponto para traçar uma rota a pé. A caçada automática será pausada durante o deslocamento.</p><div class="ember-map-destinations">${MareEmber.paths.map(p=>`<button type="button" data-ember-poi="${p.id}"><strong>${escapeHTML(p.name)}</strong><small>${Math.round(Math.hypot(p.x-world.hero.x,p.y-world.hero.y)/64)} tiles de distância</small></button>`).join('')}</div><button type="button" class="dialog-button secondary" data-ember-regions>Ver outras regiões</button></div></div>`;
+    MareEmberRenderer.overview($('emberOverview').getContext('2d'),384,384,world.hero);
+  }
   function renderPanel(){if(!currentPanel||!game)return;const body=$('dialogBody');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={inventory:'Inventário',forge:'Forja das Correntes',character:'Seu aventureiro',map:'Mapa do Arquipélago',hunts:'Caçadas',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel)));
     if(currentPanel==='shop'){body.innerHTML=`<div class="mini-heading">MERCADOR donquixote · SUPRIMENTOS</div><div class="item-detail">${itemIcon('potion','Poção de vida')}<h3>Poção de vida</h3><p>Restaura 44% da vida máxima.<br>Preço: <strong>35 dobrões</strong><br>Seu saldo: <strong>${fmt(game.gold)}</strong></p><button class="dialog-button" data-buy-potion="1" ${game.gold<35?'disabled':''}>COMPRAR 1 POÇÃO</button></div>`;}
     if(currentPanel==='contracts'){body.innerHTML='<div class="mini-heading">CONTRATOS DO PORTO</div><div class="contracts-modal">'+questDefs.map(q=>{let n=Math.min(q.target,game.stats[q.stat]||0),done=game.claimed.includes(q.id);return `<div class="contract-modal-entry"><h3>${escapeHTML(q.title)}</h3><p>${escapeHTML(q.desc)}</p><span>${done?'CONCLUÍDO':n+' / '+q.target}</span><p class="contract-reward">Recompensa: <b>${q.gold} dobrões · ${q.xp} XP</b></p><div class="progress-track"><i style="width:${n/q.target*100}%"></i></div>${n>=q.target&&!done?`<button class="dialog-button" data-claim="${q.id}">RESGATAR · ${q.gold} DOBRÕES + ${q.xp} XP</button>`:''}</div>`;}).join('')+'</div>';}
     if(currentPanel==='inventory'){renderInventory(body);}
     if(currentPanel==='forge')renderForge(body);
     if(currentPanel==='character')renderCharacter(body);
-    if(currentPanel==='map'||currentPanel==='hunts'){body.innerHTML=`<div class="mini-heading">AS CORRENTES LEVAM A NOVAS TERRAS</div><div class="map-options">${Object.entries(zones).map(([id,z])=>`<button class="island-card ${game.level<z.min?'locked':''}" data-area="${id}"><small>${game.level<z.min?'BLOQUEADA · NÍVEL '+z.min:game.area===id?'LOCAL ATUAL':'DESTINO DISPONÍVEL'}</small><h3>${escapeHTML(z.name)}</h3><p>${id==='beach'?'Galerias de pedra vulcânica, braseiros antigos e criaturas das cinzas.':'Catacumbas de névoa tóxica escondem criaturas perigosas e recompensas superiores.'}</p><small>REQUISITO: NÍVEL ${z.min} ${game.area===id?' · VOCÊ ESTÁ AQUI':''}</small></button>`).join('')}</div><p class="warning-note">Ao viajar, a caçada atual é reiniciada. Seu nível, inventário, dobrões e equipamentos permanecem salvos.</p>`;}
+    if(currentPanel==='map'||currentPanel==='hunts'){body.innerHTML=`<div class="mini-heading">AS CORRENTES LEVAM A NOVAS TERRAS</div><div class="map-options">${Object.entries(zones).map(([id,z])=>`<button class="island-card ${game.level<z.min?'locked':''}" data-area="${id}"><small>${game.level<z.min?'BLOQUEADA · NÍVEL '+z.min:game.area===id?'LOCAL ATUAL':'DESTINO DISPONÍVEL'}</small><h3>${escapeHTML(z.name)}</h3><p>${id==='beach'?'Ilha pirata de 64×64 tiles: cais em cinzas, mercado queimado, naufrágios e a Fortaleza da Caldeira.':'Catacumbas de névoa tóxica escondem criaturas perigosas e recompensas superiores.'}</p><small>REQUISITO: NÍVEL ${z.min} ${game.area===id?' · VOCÊ ESTÁ AQUI':''}</small></button>`).join('')}</div><p class="warning-note">Ao viajar, a caçada atual é reiniciada. Seu nível, inventário, dobrões e equipamentos permanecem salvos.</p>`;}
+    if(currentPanel==='map'&&activeMap().id==='embers')renderEmberOverview(body);
     if(currentPanel==='help'){body.innerHTML=`<div class="help-copy"><p><strong>Bem-vindo a Maré Partida.</strong> Esta é uma demonstração jogável offline de um futuro RPG Idle online, em um universo marítimo original.</p><ul><li><strong>Lobby:</strong> clique no chão para caminhar e nos NPCs para abrir seus serviços. Use a opção de expedição para caçar.</li><li><strong>Auto-caçada:</strong> seu personagem procura monstros, anda até eles e ataca sozinho. O botão AUTO-CAÇADA pausa ou retoma.</li><li><strong>Teclas 1 e 2:</strong> ativam habilidades; se a caçada estiver ligada, o personagem também usa habilidades automaticamente quando apropriado.</li><li><strong>Tecla Q:</strong> usa uma poção de vida. É possível comprar mais por 35 dobrões.</li><li><strong>Contratos:</strong> conclua as caçadas listadas à direita e resgate as recompensas.</li><li><strong>Inventário:</strong> equipe os itens encontrados. Equipamentos alteram atributos reais.</li><li><strong>Forja:</strong> consome materiais e dobrões para melhorar equipamentos até +5.</li><li><strong>Mapa:</strong> a Fenda da Névoa é desbloqueada no nível 8.</li><li><strong>Salvamento:</strong> seu progresso é salvo automaticamente neste navegador, com LocalStorage. Não existe conta online, chat real ou progresso com a página fechada nesta versão.</li></ul><p>Este é um protótipo gratuito de desenvolvimento. O MMORPG, o servidor multiplayer, o banco de dados e as relíquias estão planejados para fases posteriores.</p><button class="dialog-button secondary" data-export="1">EXPORTAR SAVE (JSON)</button><button class="dialog-button secondary" data-import="1">IMPORTAR SAVE</button><button class="dialog-button secondary" data-reset="1">RECOMEÇAR JOGO</button></div><input type="file" id="saveImport" accept=".json,application/json" style="display:none"/>`;}
     if(currentPanel==='help'){
       const list=body.querySelector('.help-copy ul'),items=[...list.children],sections=document.createElement('div');sections.className='help-sections';
@@ -933,6 +962,7 @@
     expandedAtlas[map.id]=terrain;return terrain;
   }
   function drawBackground(){
+    if(activeMap().id==='embers'){MareEmberRenderer.setFallback(sceneCanvas('hunt'),sceneCanvas('lobby'));MareEmberRenderer.ground(ctx,camera,W,H,world.time);for(const p of MareEmber.props.filter(p=>p.ground))MareEmberRenderer.prop(ctx,p);return;}
     ctx.drawImage(expandedTerrain(),0,0);
     if(scene==='lobby')drawCityWorld();else drawAshWorld();
   }
@@ -1025,6 +1055,7 @@
     const img=new Image();img.src='assets/monsters/'+id+'.png';mobSprites[id]=img;
   }
   function drawMobArt(m){
+    if(activeMap().id==='embers'&&MareEmberRenderer.monster(ctx,m,world.time))return true;
     const img=mobSprites[m.type];if(!img?.complete||!img.naturalWidth)return false;
     const t=world.time, size=m.type==='boss'?98:m.type==='crab'?56:m.type==='spirit'?64:66;
     const width=size*(img.naturalWidth/img.naturalHeight),bob=Math.sin(t*2.7+m.bob)*1.5;
@@ -1037,19 +1068,20 @@
     if(drawMobArt(m)){
       if(m.alive){
         const width=m.type==='boss'?88:65, ratio=Math.max(0,m.hp/m.maxHP),boss=m.type==='boss';
-        let barY=m.y-(boss?114:79);
+        let barY=m.y-(activeMap().id==='embers'?79:boss?114:79);
         px(ctx,m.x-width/2,barY,width,8,'#101322');
         px(ctx,m.x-width/2+1,barY+1,(width-2)*ratio,6,boss?'#e5a35d':'#e27283');
         ctx.font='bold 12px Inter,Segoe UI,sans-serif';ctx.textAlign='center';ctx.lineWidth=3;
-        ctx.strokeStyle='#0b0e1b';ctx.strokeText(monsterTypes[m.type].name,m.x,barY-7);
-        ctx.fillStyle=boss?'#ffe5ad':'#f7edf1';ctx.fillText(monsterTypes[m.type].name,m.x,barY-7);
+        ctx.strokeStyle='#0b0e1b';ctx.strokeText(monsterName(m),m.x,barY-7);
+        ctx.fillStyle=boss?'#ffe5ad':'#f7edf1';ctx.fillText(monsterName(m),m.x,barY-7);
         if(world.target===m){ctx.strokeStyle='#d9b777';ctx.lineWidth=2;ctx.strokeRect(m.x-width/2-3,barY-3,width+6,14);}
       }
       return;
     }
     let t=world.time,scale=m.type==='boss'?2.15:m.type==='crab'?1.65:1.8,bob=Math.round(Math.sin(t*3+m.bob)*2);ctx.save();ctx.translate(Math.round(m.x),Math.round(m.y+bob));ctx.scale(scale,scale);ctx.fillStyle='#071b20a0';ctx.beginPath();ctx.ellipse(0,2,13,4,0,0,Math.PI*2);ctx.fill();if(m.type==='crab'){px(ctx,-10,-12,20,12,'#7d3b36');px(ctx,-8,-17,16,10,'#d27b58');px(ctx,-11,-16,5,6,'#e6b477');px(ctx,6,-16,5,6,'#e6b477');px(ctx,-7,-14,3,3,'#182e32');px(ctx,5,-14,3,3,'#182e32');px(ctx,-17,-6,8,3,'#aa5444');px(ctx,9,-6,8,3,'#aa5444');px(ctx,-19,-16,8,7,'#d78563');px(ctx,11,-16,8,7,'#d78563');}else if(m.type==='bandit'){px(ctx,-5,-11,5,9,'#353a35');px(ctx,1,-11,5,9,'#353a35');px(ctx,-8,-26,17,15,'#8d5741');px(ctx,-6,-39,12,13,'#c08e6a');px(ctx,-12,-40,24,5,'#3e3a3a');px(ctx,-7,-46,16,8,'#55504b');px(ctx,10,-25,4,22,'#bdc7ba');px(ctx,9,-16,8,3,'#eac078');px(ctx,-5,-34,3,2,'#292e2c');px(ctx,2,-34,3,2,'#292e2c');}else if(m.type==='spirit'){ctx.globalAlpha=.85;px(ctx,-10,-28,21,22,'#2e7e75');px(ctx,-7,-39,15,13,'#a8e7c5');px(ctx,-13,-27,5,13,'#78c9b1');px(ctx,10,-27,5,13,'#78c9b1');px(ctx,-8,-5,7,5,'#77cabb');px(ctx,2,-5,7,5,'#80d5c4');px(ctx,-6,-33,4,3,'#295751');px(ctx,4,-33,4,3,'#295751');px(ctx,-13,-40,8,5,'#9ecbb1');ctx.globalAlpha=1;}else {px(ctx,-7,-13,7,11,'#24262d');px(ctx,2,-13,7,11,'#24262d');px(ctx,-11,-32,22,20,'#732f36');px(ctx,-7,-43,15,13,'#c09878');px(ctx,-16,-47,31,7,'#2c3434');px(ctx,-8,-54,17,9,'#423a36');px(ctx,-6,-36,12,4,'#e9c178');px(ctx,-14,-29,5,19,'#b1a18c');px(ctx,13,-39,5,30,'#cbd5cf');px(ctx,9,-19,14,4,'#e7b974');px(ctx,-3,-38,3,2,'#262a2a');px(ctx,4,-38,3,2,'#262a2a');}if(m.hit>0){ctx.globalCompositeOperation='screen';px(ctx,-11,-39,22,29,'#fff9d0aa');ctx.globalCompositeOperation='source-over';}ctx.restore();
-    if(m.alive){let width=m.type==='boss'?88:56,ratio=Math.max(0,m.hp/m.maxHP);px(ctx,m.x-width/2,m.y-(m.type==='boss'?117:76),width,8,'#0b1e24');px(ctx,m.x-width/2+1,m.y-(m.type==='boss'?116:75),(width-2)*ratio,6,m.type==='boss'?'#d9aa6c':'#c87369');ctx.textAlign='center';ctx.font=(m.type==='boss'?'bold 15px':'bold 12px')+' Trebuchet MS';ctx.fillStyle='#071b1f';ctx.fillText(monsterTypes[m.type].name,m.x+1,m.y-(m.type==='boss'?125:83)+1);ctx.fillStyle=m.type==='boss'?'#ffe6a6':'#fff4dd';ctx.fillText(monsterTypes[m.type].name,m.x,m.y-(m.type==='boss'?125:83));if(world.target===m){ctx.strokeStyle='#e9d18d';ctx.lineWidth=2;ctx.strokeRect(m.x-width/2-4,m.y-(m.type==='boss'?121:80),width+8,16);}}}
-  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}ctx.save();ctx.translate(-Math.round(camera.x),-Math.round(camera.y));drawBackground();if(scene==='lobby')drawTownActors();let toDraw=[...world.mobs.filter(m=>scene==='hunt'&&m.alive).map(m=>({kind:'mob',y:m.y,obj:m})),{kind:'hero',y:world.hero.y,obj:world.hero},...(scene==='lobby'?[...npcs.map(n=>({kind:'npc',y:n.y,obj:n})),...MareIsland.buildings.map(b=>({kind:'building',y:b.y-17,obj:b})),...MareIsland.decorations.concat(harborArt.complete&&harborArt.naturalWidth?MareIsland.harborProps:[]).map(d=>({kind:'decor',y:d.y,obj:d}))]:[]),...((scene==='lobby'&&factionShowcase&&globalThis.MareFactionSprites)?Object.keys(MareFactionSprites.assets).filter(id=>!MareFactionSprites.assets[id].meta.class_id).map((id,index)=>({kind:'faction',y:800,obj:{id,x:1240+index*80,y:800}})):[])].sort((a,b)=>a.y-b.y);for(let i of toDraw){if(i.kind==='hero'){if(session?.respawn>0&&!bentoController()){ctx.globalAlpha=.5+Math.sin(world.time*8)*.25;}if(!drawPlayerSprite(ctx,world.hero.x,world.hero.y))drawHero(ctx,world.hero.x,world.hero.y,game.classId,world.time,1.92);ctx.globalAlpha=1;let name=game.name;ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.fillStyle='#03171c';ctx.fillText(name,world.hero.x+1,world.hero.y-85);ctx.fillStyle='#e7fcf1';ctx.fillText(name,world.hero.x,world.hero.y-86);let d=getDerived();px(ctx,world.hero.x-30,world.hero.y-79,60,7,'#001819');px(ctx,world.hero.x-29,world.hero.y-78,58*(game.hp/d.maxHP),5,'#5ed09c');if(session?.guard>0){ctx.strokeStyle='#78e2d3aa';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(world.hero.x,world.hero.y-26,20,34,0,0,Math.PI*2);ctx.stroke();}}else if(i.kind==='faction')drawFactionShowcase(i.obj);else if(i.kind==='npc')drawNPC(i.obj);else if(i.kind==='building')drawIslandBuilding(i.obj);else if(i.kind==='decor')drawIslandDecoration(i.obj);else drawMonster(i.obj);}
+    if(m.alive){let width=m.type==='boss'?88:56,ratio=Math.max(0,m.hp/m.maxHP);px(ctx,m.x-width/2,m.y-(m.type==='boss'?117:76),width,8,'#0b1e24');px(ctx,m.x-width/2+1,m.y-(m.type==='boss'?116:75),(width-2)*ratio,6,m.type==='boss'?'#d9aa6c':'#c87369');ctx.textAlign='center';ctx.font=(m.type==='boss'?'bold 15px':'bold 12px')+' Trebuchet MS';ctx.fillStyle='#071b1f';ctx.fillText(monsterName(m),m.x+1,m.y-(m.type==='boss'?125:83)+1);ctx.fillStyle=m.type==='boss'?'#ffe6a6':'#fff4dd';ctx.fillText(monsterName(m),m.x,m.y-(m.type==='boss'?125:83));if(world.target===m){ctx.strokeStyle='#e9d18d';ctx.lineWidth=2;ctx.strokeRect(m.x-width/2-4,m.y-(m.type==='boss'?121:80),width+8,16);}}}
+  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}ctx.save();ctx.translate(-Math.round(camera.x),-Math.round(camera.y));drawBackground();if(scene==='lobby')drawTownActors();let toDraw=[...(activeMap().id==='embers'?MareEmber.props.filter(p=>!p.ground).map(p=>({kind:'ember-prop',y:p.y,obj:p})):[]),...world.mobs.filter(m=>scene==='hunt'&&m.alive).map(m=>({kind:'mob',y:m.y,obj:m})),{kind:'hero',y:world.hero.y,obj:world.hero},...(scene==='lobby'?[...npcs.map(n=>({kind:'npc',y:n.y,obj:n})),...MareIsland.buildings.map(b=>({kind:'building',y:b.y-17,obj:b})),...MareIsland.decorations.concat(harborArt.complete&&harborArt.naturalWidth?MareIsland.harborProps:[]).map(d=>({kind:'decor',y:d.y,obj:d}))]:[]),...((scene==='lobby'&&factionShowcase&&globalThis.MareFactionSprites)?Object.keys(MareFactionSprites.assets).filter(id=>!MareFactionSprites.assets[id].meta.class_id).map((id,index)=>({kind:'faction',y:800,obj:{id,x:1240+index*80,y:800}})):[])].sort((a,b)=>a.y-b.y);for(let i of toDraw){if(i.kind==='hero'){if(session?.respawn>0&&!bentoController()){ctx.globalAlpha=.5+Math.sin(world.time*8)*.25;}if(!drawPlayerSprite(ctx,world.hero.x,world.hero.y))drawHero(ctx,world.hero.x,world.hero.y,game.classId,world.time,1.92);ctx.globalAlpha=1;let name=game.name;ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.fillStyle='#03171c';ctx.fillText(name,world.hero.x+1,world.hero.y-85);ctx.fillStyle='#e7fcf1';ctx.fillText(name,world.hero.x,world.hero.y-86);let d=getDerived();px(ctx,world.hero.x-30,world.hero.y-79,60,7,'#001819');px(ctx,world.hero.x-29,world.hero.y-78,58*(game.hp/d.maxHP),5,'#5ed09c');if(session?.guard>0){ctx.strokeStyle='#78e2d3aa';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(world.hero.x,world.hero.y-26,20,34,0,0,Math.PI*2);ctx.stroke();}}else if(i.kind==='ember-prop')MareEmberRenderer.prop(ctx,i.obj);else if(i.kind==='faction')drawFactionShowcase(i.obj);else if(i.kind==='npc')drawNPC(i.obj);else if(i.kind==='building')drawIslandBuilding(i.obj);else if(i.kind==='decor')drawIslandDecoration(i.obj);else drawMonster(i.obj);}
+    if(activeMap().id==='embers')MareEmberRenderer.environment(ctx,camera,W,H,world.time,reducedFX);
     for(let p of world.projectiles){let x=p.x+(p.tx-p.x)*p.progress,y=p.y+(p.ty-p.y)*p.progress;ctx.fillStyle=p.color;ctx.fillRect(x-3,y-3,11,6);ctx.fillStyle='#fff7db';ctx.fillRect(x+1,y-2,4,3);}
     for(let f of world.fx){ctx.globalAlpha=clamp(f.life/f.max,0,1);if(f.slash){ctx.strokeStyle=f.color;ctx.lineWidth=5;ctx.beginPath();ctx.arc(f.x,f.y-17,29,-2.35,.2);ctx.stroke();}else if(f.ring){ctx.strokeStyle=f.color;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(f.x,f.y-4,(1-f.life/f.max)*61+6,(1-f.life/f.max)*26+5,0,0,Math.PI*2);ctx.stroke();}else {ctx.textAlign='center';ctx.font='bold '+f.size+'px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#0b2323';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);}}ctx.globalAlpha=1;
     ctx.restore();
@@ -1212,6 +1244,8 @@ function applySceneHudLayout(){
     b=e.target.closest('[data-equip]');if(b){equipItem(b.dataset.equip);return;}
     b=e.target.closest('[data-unequip]');if(b){unequip(b.dataset.unequip);return;}
     b=e.target.closest('[data-sell]');if(b){sellItem(b.dataset.sell);return;}
+    b=e.target.closest('[data-ember-poi]');if(b){const point=MareEmber.paths.find(p=>p.id===b.dataset.emberPoi);if(point){closePanel();if(!walkTo(point))toast('Não foi possível traçar essa rota.','danger');}return;}
+    b=e.target.closest('[data-ember-regions]');if(b){openPanel('hunts');return;}
     b=e.target.closest('[data-forge-tab]');if(b){forgeUI.tab=b.dataset.forgeTab;renderPanel();return;}
     b=e.target.closest('[data-forge-fusion-mode]');if(b){forgeUI.fusionMode=b.dataset.forgeFusionMode;forgeOutcome=null;renderPanel();return;}
     b=e.target.closest('[data-forge-reforge-mode]');if(b){forgeUI.reforgeMode=b.dataset.forgeReforgeMode;forgeOutcome=null;renderPanel();return;}
@@ -1297,6 +1331,7 @@ function applySceneHudLayout(){
       const npc=npcs.find(n=>Math.hypot(n.x-x,n.y-30-y)<48);
       walkTo(npc?{x:npc.x-34,y:npc.y+13}:point,npc||null);return;
     }
+    if(activeMap().id==='embers'&&Math.hypot(x-MareEmber.returnPoint.x,y-MareEmber.returnPoint.y)<42){walkTo({...MareEmber.returnPoint},{...MareEmber.returnPoint,kind:'return'});return;}
     const target=livingMobs().find(m=>Math.hypot(m.x-x,m.y-30-y)<48);
     if(target){world.target=target;autoPlay=true;travelPath=[];lobbyDestination=null;rejectedTargets.delete(target.id);updateUI();return;}
     walkTo(point);
@@ -1336,7 +1371,7 @@ function applySceneHudLayout(){
   window.addEventListener('beforeunload',()=>saveGame());
   const previous=loadGame();if(previous){game=previous;let d=getDerived();game.hp=clamp(Number(game.hp)||1,0,d.maxHP);game.energy=clamp(Number(game.energy)||0,0,d.maxEnergy);startGame();toast('Bem-vindo de volta, '+game.name+'!','good');}else{$('startOverlay').classList.remove('hidden');openCreation(false);$('characterName').focus();}
   // Diagnóstico somente leitura para testes de regressão da demo local.
-  window.__mareDiagnostics=()=>({scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H},map:{id:activeMap().id,width:activeMap().width,height:activeMap().height},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,classId:game?.classId,combat:world.hero.combat?.snapshot()??null,energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,x:m.x,y:m.y,hp:m.hp,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});
+  window.__mareDiagnostics=()=>({scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H},map:{id:activeMap().id,width:activeMap().width,height:activeMap().height},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):activeMap().id==='embers'?MareEmber.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,classId:game?.classId,combat:world.hero.combat?.snapshot()??null,energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,type:m.type,name:monsterName(m),skin:m.skin,district:m.district,x:m.x,y:m.y,hp:m.hp,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});
   requestAnimationFrame(frame);
 })();
 

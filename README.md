@@ -8,7 +8,17 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Forja com seleção visual
+## Entrega atual — Ruínas de Brasas
+
+Ilha reconstruída em **64×64 tiles de 64px**, sete setores conectados, ruas, naufrágios, ruínas, travessias de lava e cais de retorno. Quatro monstros novos com **frames de 48×48**, oito poses direcionais e chefe na Fortaleza da Caldeira. Fogo em quatro frames, fluxo de água/lava, brasas e mapa com rotas caminháveis.
+
+[Decisões, compatibilidade e validação](docs/RUINAS-BRASAS.md) · [Bíblia visual](docs/ART_BIBLE.md) · [Capturas locais](http://127.0.0.1:8123/docs/evidence-ruinas-brasas/index.html).
+
+Validação: seis grupos específicos de geometria/assets, todos os testes Node existentes, sete grupos de aceitação em Chromium (incluindo três resoluções, vinte derrotas e persistência), doze grupos de regressão da ilha/HUD. Medição local headless em 1366×768: mediana 16,7ms e p95 16,8ms entre frames, 180 amostras; não representa garantia para outros dispositivos.
+
+O save mantém o ID de região `beach`. Total informado: 39 gerações, dentro do teto de 45. **Animações de caminhada e ataque dos monstros foram adiadas no orçamento reduzido**; as poses atuais não são clipes animados.
+
+## Histórico — Forja com seleção visual
 
 Grids de equipamentos e pérolas substituem dropdowns, com pesquisa, filtros, paginação, tooltip e destaque do alvo. Aprimorar até +20 (garantido até +5), imbuir/remover, fundir cinco equipamentos ou cinco pérolas, reforjar uma linha ou todos os extras. Operações confirmadas, custos/riscos explícitos, resultados no painel, histórico e persistência transacional.
 
