@@ -12,11 +12,13 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from akuma import AkumaStore, public_catalog
+from monsters import MonsterStore
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = Path(os.environ.get("MARE_AKUMA_DB", Path.home() / ".mare-partida" / "akuma.sqlite3"))
 DATA.parent.mkdir(parents=True, exist_ok=True)
 STORE = AkumaStore(DATA)
+MONSTERS = MonsterStore(DATA)
 LOCK = threading.RLock()
 
 
@@ -35,6 +37,8 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_GET(self):
         route = urlparse(self.path)
+        if route.path == "/api/monsters/catalog":
+            return self.reply(200, MONSTERS.catalog())
         if route.path == "/api/akuma/catalog":
             return self.reply(200, public_catalog())
         if route.path == "/api/akuma/state":

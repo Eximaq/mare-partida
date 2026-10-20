@@ -45,6 +45,7 @@
   if(globalThis.MareOrange)maps.orange=MareOrange.map;
   if(globalThis.MareConchas)maps.conchas=MareConchas.map;
   if(globalThis.MareDawn)maps.dawn=MareDawn.map;
+  if(globalThis.MareRare)maps.rare=MareRare.map;
   class Camera {
     constructor(){this.x=0;this.y=0;this.width=960;this.height=570;}
     update(hero,map,dt=0,snap=false){
