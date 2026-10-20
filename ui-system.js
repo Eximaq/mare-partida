@@ -16,15 +16,56 @@
   const focusable=el=>[...el.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href],[tabindex="0"]')].filter(e=>visible(e)&&!e.closest('[inert]'));
   const topModal=()=>[...document.querySelectorAll('#startOverlay,#panelOverlay,.confirmation-overlay')].filter(visible).sort((a,b)=>Number(getComputedStyle(a).zIndex)-Number(getComputedStyle(b).zIndex)).at(-1);
   function rememberFocus(el){if(!visible(el)){let prior=document.activeElement;if(prior?.closest('#characterQuickMenu'))prior=document.getElementById('characterMenuTrigger');if(prior?.closest('#modesQuickMenu'))prior=document.getElementById('modesMenuTrigger');focusOrigins.set(el,prior);}}
-  function restoreFocus(el){const prior=focusOrigins.get(el);if(prior?.isConnected&&!prior.closest('.hidden'))prior.focus({preventScroll:true});focusOrigins.delete(el);}
+  function restoreFocus(el){syncModals();const prior=focusOrigins.get(el);if(prior?.isConnected&&!prior.closest('.hidden'))prior.focus({preventScroll:true});focusOrigins.delete(el);}
   function bindModal(el,onClose){modalBindings.set(el,onClose);el.setAttribute('aria-labelledby','dialogTitle');}
   function upgrade(el){
     for(const b of el.querySelectorAll('button'))if(!b.matches('.op-item,.op-equip-slot,.forge2-tile,.forge2-pearl,.forge2-material-slot,.talent-node,[data-talent-node],.voyage-ship,.island-card,.class-choice,.faction-choice,.close-button,.op-close'))b.classList.add('ui-button');
     for(const tab of el.querySelectorAll('.forge2-tabs,.op-tabs,.op-category-tabs,.voyage-region-tabs,.akuma-rank-tabs'))tab.classList.add('ui-tabs');
   }
-  let observedTop=null;
+  function mountHUD(){
+    const app=document.getElementById('app'),action=document.querySelector('.action-row'),journey=document.getElementById('journeyHud');
+    if(!app||!action||!journey||document.getElementById('hudUtilities'))return;
+    const utilities=document.createElement('div');utilities.id='hudUtilities';app.append(utilities);
+    // All fixed HUD surfaces share one stacking context, independent of canvas wrappers.
+    for(const el of [document.getElementById('mainMenu'),document.querySelector('.action-panel'),document.getElementById('floatingChat'),journey,document.querySelector('.world-command'),document.getElementById('targetHud'),document.getElementById('floatingExpedition'),document.getElementById('floatingStatus')])if(el)app.append(el);
+    const location=document.querySelector('.location-heading');if(location)utilities.append(location);
+    const powerLabel=document.querySelector('.profile-power>span');powerLabel.textContent='Poder';powerLabel.title='Poder de combate';
+    action.append(document.getElementById('hakiQuickCast'));
+    const controls=document.createElement('div');controls.className='journey-controls';
+    controls.append(document.getElementById('autoToggle'),document.getElementById('expeditionMini'));
+    journey.querySelector('.journey-heading').after(controls);
+    journey.querySelector('.journey-footer').append(document.getElementById('huntRoute'));
+    document.querySelector('#usePotion .skill-icon').innerHTML='<img src="assets/ui/items-pixellab/potion.png?v=20261020" alt="" draggable="false">';
+    document.getElementById('journeyToggle').querySelector('span:not(.journey-chevron)').textContent='Expedição';
+    const chat=document.getElementById('floatingChat'),log=document.getElementById('gameLog');
+    const tabBar=document.createElement('nav');tabBar.className='chat-tabs';tabBar.setAttribute('aria-label','Mensagens locais');
+    tabBar.innerHTML='<button type="button" data-chat-channel="all" aria-pressed="true">Sistema</button><button type="button" data-chat-channel="notes" aria-pressed="false">Anotações</button>';
+    chat.querySelector('.floating-title').after(tabBar);
+    let channel='all',unread=0,wasMobile=null;
+    function filter(){for(const line of log.children)line.hidden=channel==='notes'&&!line.textContent.includes('Anotação local:');}
+    tabBar.addEventListener('click',e=>{const b=e.target.closest('[data-chat-channel]');if(!b)return;channel=b.dataset.chatChannel;tabBar.querySelectorAll('button').forEach(t=>t.setAttribute('aria-pressed',String(t===b)));filter();});
+    function measure(){
+      const r=document.querySelector('.topbar').getBoundingClientRect(),a=document.querySelector('.action-panel').getBoundingClientRect(),m=document.getElementById('mainMenu').getBoundingClientRect();
+      const style=document.documentElement.style;style.setProperty('--profile-bottom',Math.ceil(r.bottom)+'px');style.setProperty('--rpg-action-height',Math.ceil(a.height)+'px');style.setProperty('--menu-bottom',Math.ceil(m.bottom)+'px');style.setProperty('--journey-height',Math.ceil(journey.getBoundingClientRect().height)+'px');
+      const mobile=innerWidth<=760;if(mobile!==wasMobile){journey.classList.toggle('collapsed',mobile);document.getElementById('journeyToggle').setAttribute('aria-expanded',String(!mobile));journey.querySelector('.journey-chevron').textContent=mobile?'+':'−';wasMobile=mobile;}
+    }
+    const resize=new ResizeObserver(measure);for(const el of [document.querySelector('.topbar'),document.querySelector('.action-panel'),document.getElementById('mainMenu'),journey])resize.observe(el);
+    addEventListener('resize',measure,{passive:true});
+    const observer=new MutationObserver(records=>{
+      const dock=document.getElementById('mareMusicDock');if(dock&&dock.parentElement!==utilities)utilities.append(dock);
+      let changed=false;for(const r of records){if(r.target===log&&r.addedNodes.length){changed=true;if(!chat.classList.contains('hud-open'))unread+=r.addedNodes.length;}}
+      if(changed)filter();if(chat.classList.contains('hud-open'))unread=0;
+      const chatButton=document.getElementById('chatCornerToggle');if(chatButton.dataset.unread!==String(Math.min(99,unread)))chatButton.dataset.unread=String(Math.min(99,unread));
+      const auto=document.getElementById('autoToggle'),pressed=String(auto.classList.contains('active'));if(auto.getAttribute('aria-pressed')!==pressed)auto.setAttribute('aria-pressed',pressed);
+    });
+    observer.observe(app,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});measure();
+  }
+  let observedTop=null,noticeRoot=null;
   function syncModals(){
     const top=topModal(),app=document.getElementById('app');if(!app)return;
+    const notices=document.getElementById('toastContainer')||noticeRoot,destination=top?.querySelector('.confirmation-card,.dialog')||app;
+    if(notices)noticeRoot=notices;
+    if(notices&&notices.parentElement!==destination)destination.append(notices);
     app.inert=!!top?.classList.contains('confirmation-overlay');
     for(const child of app.children)child.inert=!!top&&child!==top;
     if(top&&top!==observedTop&&!top.contains(document.activeElement)){const target=focusable(top)[0];target?.focus({preventScroll:true});}
@@ -39,7 +80,7 @@
       if(e.key==='Escape'&&modalBindings.has(top)){e.preventDefault();e.stopImmediatePropagation();modalBindings.get(top)();}
     },true);
   }
-  root.MareUI={escape,button,card,notice,empty,tabs,slot,window:windowHTML,confirmation,rememberFocus,restoreFocus,bindModal,upgrade};
+  root.MareUI={escape,button,card,notice,empty,tabs,slot,window:windowHTML,confirmation,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals};
   if(typeof document!=='undefined')document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot,{once:true}):boot();
   if(typeof module!=='undefined')module.exports=root.MareUI;
 })(globalThis);

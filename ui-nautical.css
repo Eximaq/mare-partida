@@ -77,7 +77,7 @@ button{transition-behavior:normal, normal;transition-duration:0.12s, 0.12s;trans
 .help-copy .help-attributes{padding-top:10px;border-top-width:1px;border-top-style:solid;border-top-color:rgba(172, 139, 74, 0.333);}
 .help-copy strong{color:rgb(234, 214, 159);}
 .help-sections li{padding-top:7px;padding-right:0px;padding-bottom:7px;padding-left:0px;}
-@keyframes ui-confirm { 
+@keyframes ui-confirm {
   0% { box-shadow: rgb(153, 209, 162) 0px 0px 0px 2px inset, rgba(153, 209, 162, 0.4) 0px 0px 0px 2px; }
   100% { box-shadow: transparent 0px 0px 0px 2px inset, transparent 0px 0px 0px 2px; }
 }
@@ -254,7 +254,7 @@ button{transition-behavior:normal, normal;transition-duration:0.12s, 0.12s;trans
 .voyage-sea::before, .voyage-sea::after{content:"";position:absolute;top:0px;right:0px;bottom:0px;left:0px;z-index:-2;pointer-events:none;}
 .voyage-sea::before{background-image:url("assets/ruinas-brasas/water.png");background-position-x:initial;background-position-y:initial;background-repeat:repeat;background-attachment:initial;background-origin:initial;background-clip:initial;background-color:initial;background-size:64px 64px;filter:brightness(0.52) saturate(0.78);animation-duration:22s;animation-timing-function:linear;animation-delay:0s;animation-iteration-count:infinite;animation-direction:normal;animation-fill-mode:none;animation-play-state:running;animation-name:voyage-water;animation-timeline:auto;animation-range-start:normal;animation-range-end:normal;}
 .voyage-sea::after{z-index:-1;background-image:radial-gradient(rgba(28, 86, 106, 0.208) 0px, rgba(28, 86, 106, 0.208) 42%, rgba(13, 37, 61, 0.6) 100%);background-position-x:initial;background-position-y:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;background-color:initial;box-shadow:rgba(6, 26, 47, 0.5) 0px 0px 70px inset;}
-@keyframes voyage-water { 
+@keyframes voyage-water {
   0% { background-position: 0px 0px; }
   100% { background-position: 128px 64px; }
 }
@@ -693,7 +693,7 @@ button{transition-behavior:normal, normal;transition-duration:0.12s, 0.12s;trans
 .haki-quick-caption{font-size:9px;line-height:1.4;color:rgb(197, 182, 206);min-width:0px;flex-grow:1;flex-shrink:1;flex-basis:0%;}
 .haki-quick button:focus-visible{outline-color:rgb(255, 226, 161);outline-style:solid;outline-width:2px;outline-offset:2px;}
 @media (prefers-reduced-motion: no-preference) {.haki-quick button.is-active:not(:disabled){animation-duration:1.8s;animation-timing-function:ease-in-out;animation-delay:0s;animation-iteration-count:infinite;animation-direction:normal;animation-fill-mode:none;animation-play-state:running;animation-name:haki-quick-pulse;animation-timeline:auto;animation-range-start:normal;animation-range-end:normal;}
-@keyframes haki-quick-pulse { 
+@keyframes haki-quick-pulse {
   50% { filter: brightness(1.25); }
 }}
 .hunt-route{color:rgb(203, 218, 212);max-width:960px;margin-top:auto;margin-right:auto;margin-bottom:auto;margin-left:auto;font-size:13px;line-height:1.6;}

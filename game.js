@@ -940,7 +940,7 @@
     if(document.querySelector('.confirmation-overlay'))return;
     const prior=document.activeElement,overlay=document.createElement('div');overlay.className='confirmation-overlay';
     overlay.innerHTML=MareUI.confirmation({title,message,acceptLabel,cancelLabel:acceptLabel==='RECOMEÇAR'?'VOLTAR':'CANCELAR',danger});
-    const close=()=>{overlay.remove();prior?.focus();};
+    const close=()=>{overlay.remove();MareUI.syncModals();prior?.focus();};
     overlay.querySelector('[data-confirm-cancel]').onclick=close;
     let accepted=false;overlay.querySelector('[data-confirm-accept]').onclick=()=>{if(accepted)return;accepted=true;close();accept();};
     overlay.addEventListener('keydown',event=>{event.stopPropagation();if(event.key==='Escape'){event.preventDefault();close();}if(event.key==='Tab'){event.preventDefault();const buttons=[...overlay.querySelectorAll('button')];buttons[document.activeElement===buttons[0]?1:0].focus();}});
@@ -1108,7 +1108,7 @@
     if(panel==='inventory')inventoryUI.page=0;
     if(panel==='character'&&currentPanel!=='character'){attributeDraft=MareCharacters.empty();characterTab='status';talentDraft=null;selectedTalent=null;talentMessage='';talentDraftSeq=game.talentSeq;}
     if(panel==='character'&&['status','talents','achievements','haki','akuma'].includes(characterSection)){if(characterTab!==characterSection){attributeDraft=MareCharacters.empty();talentDraft=null;selectedTalent=null;talentMessage='';talentDraftSeq=game.talentSeq;}characterTab=characterSection;}
-    currentPanel=panel;$('panelOverlay').classList.remove('hidden');renderPanel();
+    currentPanel=panel;$('panelOverlay').classList.remove('hidden');renderPanel();$('dialogBody').scrollTop=0;
     if(panel==='map')$('voyageRegionTabs').querySelector('[aria-selected=true]')?.focus({preventScroll:true});
     else if(panel==='character')$('dialogBody').querySelector('button:not(:disabled),input:not(:disabled)')?.focus({preventScroll:true});
     else if(navigation.includes(panel)||['dev','hunt'].includes(panel))$('dialogBody').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
@@ -1520,6 +1520,7 @@ $('gameFrame').appendChild(targetHud);
   const journey=document.createElement('section');journey.id='journeyHud';journey.className='journey-hud';
   journey.innerHTML='<button class="journey-heading" id="journeyToggle" aria-expanded="true">⌖ <span>Diário de bordo</span><span class="journey-chevron">−</span></button><div class="journey-content"><small id="journeyChapter">Contratos do porto</small><strong id="journeyTitle">Uma nova travessia</strong><div class="journey-track"><i id="journeyFill"></i></div><div class="journey-footer"><span id="journeyProgress">0 / 6</span><button id="journeyAction" data-panel="contracts">Ver contrato</button></div></div>';
   document.querySelector('.dashboard').appendChild(journey);
+  MareUI.mountHUD();
   $('journeyToggle').addEventListener('click',()=>{const collapsed=journey.classList.toggle('collapsed');$('journeyToggle').setAttribute('aria-expanded',String(!collapsed));journey.querySelector('.journey-chevron').textContent=collapsed?'+':'−';});
 
   function syncExpeditionMini(){
@@ -1531,6 +1532,7 @@ $('gameFrame').appendChild(targetHud);
   }
 
   function toggleFloating(kind,force){let el=floating[kind];if(!el)return;const open=force===undefined?!el.classList.contains('hud-open'):!!force;
+    if(open&&innerWidth<=760)for(const other of Object.keys(floating))if(other!==kind)toggleFloating(other,false);
     el.classList.toggle('hud-open',open);
     document.querySelectorAll('[data-hud]').forEach(btn=>{if(btn.dataset.hud===kind){btn.classList.toggle('selected',open);btn.setAttribute('aria-expanded',String(open));}});
     syncExpeditionMini();
@@ -1735,7 +1737,7 @@ function applySceneHudLayout(){
   $('dialogBody').addEventListener('change',e=>{if(e.target.matches('[data-forge-filter]')){forgeUI.filters[e.target.dataset.forgeFilter]=e.target.value;forgeUI.page=0;renderPanel();}if(e.target.matches('[data-forge-pearl-filter]')){forgeUI.pearlFilters[e.target.dataset.forgePearlFilter]=e.target.value;renderPanel();}if(e.target.id==='forgeOutputSlot'){forgeUI.outputSlot=e.target.value;renderPanel();}});
   $('dialogBody').addEventListener('input',e=>{if(['forgeSearch','forgePearlSearch'].includes(e.target.id)){const id=e.target.id,pos=e.target.selectionStart;(id==='forgeSearch'?forgeUI.filters:forgeUI.pearlFilters).search=e.target.value;forgeUI.page=0;renderPanel();const input=$(id);input.focus();input.setSelectionRange(pos,pos);}});
   $('changePath').addEventListener('click',()=>{if(game)openCreation(true);});
-  $('enterHunt').addEventListener('click',()=>openPanel('modes'));
+  $('enterHunt').addEventListener('click',e=>{e.stopPropagation();openPanel('modes');});
   $('returnLobby').addEventListener('click',returnLobby);
   $('navLobby').addEventListener('click',()=>{if(scene!=='lobby')returnLobby();});
   $('navHunt').addEventListener('click',()=>openPanel('modes'));

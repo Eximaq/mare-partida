@@ -49,6 +49,9 @@ select{color-scheme:dark}
 .toast-container{position:fixed;z-index:var(--rpg-z-toast);top:calc(var(--rpg-safe-top) + 80px);right:var(--rpg-edge);width:min(300px,calc(100vw - 32px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
 .toast{font:500 13px/1.5 var(--rpg-font);border:1px solid var(--rpg-line);border-radius:4px;background:#102127f5;box-shadow:var(--rpg-shadow);padding:10px 14px;color:var(--rpg-text);animation:ui-notice-in 140ms ease-out}
 .toast.good{border-left:3px solid var(--rpg-success)}.toast.danger{border-left:3px solid var(--rpg-error)}
+.dialog>.toast-container,.confirmation-card>.toast-container{position:static;inset:auto;width:auto;max-width:none;max-height:84px;overflow:hidden;flex:none;padding:6px 12px;gap:4px;background:var(--rpg-surface);border-top:1px solid #48605e}
+.dialog>.toast-container:empty,.confirmation-card>.toast-container:empty{display:none}
+.dialog>.toast-container .toast,.confirmation-card>.toast-container .toast{box-shadow:none;padding:6px 10px;font-size:12px}
 .ui-collapse[aria-expanded=false]+.ui-collapse-body{display:none}
 @keyframes ui-notice-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms;animation-iteration-count:1;transition-duration:0s;scroll-behavior:auto}}

@@ -205,7 +205,7 @@ button:focus-visible, input:focus-visible{outline-color:;outline-style:;outline-
 .toast{background-image:initial;background-position-x:initial;background-position-y:initial;background-size:initial;background-repeat:initial;background-attachment:initial;background-origin:initial;background-clip:initial;background-color:rgb(20, 45, 48);border-top-width:1px;border-right-width:1px;border-bottom-width:1px;border-left-width:1px;border-top-style:solid;border-right-style:solid;border-bottom-style:solid;border-left-style:solid;border-top-color:rgb(165, 141, 97);border-right-color:rgb(165, 141, 97);border-bottom-color:rgb(165, 141, 97);border-left-color:rgb(165, 141, 97);border-image-source:none;border-image-slice:100%;border-image-width:1;border-image-outset:0;border-image-repeat:stretch;padding-top:12px;padding-right:16px;padding-bottom:12px;padding-left:16px;color:rgb(244, 228, 200);font-size:12px;box-shadow:rgba(0, 0, 0, 0.733) 0px 10px 25px;animation-duration:0.3s;animation-timing-function:ease;animation-delay:0s;animation-iteration-count:1;animation-direction:normal;animation-fill-mode:none;animation-play-state:running;animation-name:toast-in;animation-timeline:auto;animation-range-start:normal;animation-range-end:normal;}
 .toast.good{border-top-color:rgb(118, 187, 166);border-right-color:rgb(118, 187, 166);border-bottom-color:rgb(118, 187, 166);border-left-color:rgb(118, 187, 166);}
 .toast.danger{border-top-color:rgb(183, 123, 111);border-right-color:rgb(183, 123, 111);border-bottom-color:rgb(183, 123, 111);border-left-color:rgb(183, 123, 111);}
-@keyframes toast-in { 
+@keyframes toast-in {
   0% { opacity: 0; transform: translateX(20px); }
   100% { opacity: 1; transform: translateX(0px); }
 }
