@@ -1,55 +1,34 @@
 'use strict';
-const assert=require('node:assert/strict');
-const fs=require('node:fs');
-const path=require('node:path');
-const O=require('../orange-world.js');
-const T=require('../orange-terrain.js');
-require('../world-system.js');
-const {Navigation,Camera}=globalThis.MareWorld;
-const before=Buffer.from(O.terrain);
-const allGrass=t=>t===O.GRASS||t===O.STREET;
-const n=(x,y)=>O.at(x,y);
-assert.equal(T.neighborMask((x,y)=>x===1&&y===1?1:0,1,1,t=>t===1),0);
-assert.equal(T.neighborMask(()=>1,5,5,t=>t===1),255);
-assert.equal(T.neighborMask((x,y)=>(x===1&&y===0)||(x===2&&y===1)?1:0,1,1,t=>t===1),3);
-for(let y=0;y<32;y++)for(let x=0;x<32;x++){
-  const m=T.neighborMask(n,x,y,allGrass);
-  assert.equal(!!(m&1),allGrass(n(x,y-1)),'north mask');
-  assert.equal(!!(m&2),allGrass(n(x+1,y)),'east mask');
-  assert.equal(!!(m&4),allGrass(n(x,y+1)),'south mask');
-  assert.equal(!!(m&8),allGrass(n(x-1,y)),'west mask');
-  assert.equal(!!(m&16),allGrass(n(x+1,y-1)),'NE corner');
-  assert.equal(!!(m&128),allGrass(n(x-1,y-1)),'NW corner');
-  assert.equal(T.hash(x,y,13),T.hash(x,y,13),'hash deterministic');
-  assert.deepEqual(T.decorationPlan(x,y,n(x,y)),T.decorationPlan(x,y,n(x,y)),'no random flicker');
-  for(const dir of ['top','right','bottom','left'])for(let i=0;i<=8;i++){
-    const value=T.edgeJitter(x,y,dir,i);
-    assert(Number.isInteger(value)&&value>=-12&&value<=12&&value%4===0,'pixel-stepped contour');
-  }
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const O=require('../orange-world.js'),A=require('../terrain-autotile.js'),T=require('../orange-terrain.js'),manifest=require('../assets/terrain/harbor-v2/manifest.json');
+const before=Buffer.from(O.terrain),plan=T.surface(O,manifest.layout);
+assert.equal(A.BLOB47.length,47);assert.equal(A.blobMask(255),255);assert.equal(A.blobMask(16),0);assert.equal(A.blobMask(19),19);
+for(let i=0;i<256;i++){const m=A.blobMask(i);assert.equal(A.blobMask(m),m);assert(A.BLOB47.includes(m));for(const [d,a,b] of [[16,1,2],[32,2,4],[64,4,8],[128,8,1]])if(m&d)assert((m&a)&&(m&b));}
+assert.throws(()=>A.blob({tiles:[]}),/47/);assert.throws(()=>A.wang({tiles:[]}),/Incomplete/);
+const synthetic=A.BLOB47.map(mask=>({mask,bounding_box:{x:mask,y:0,width:32,height:32}}));assert.equal(A.blob({tiles:synthetic}).size,47);
+const images={},pairs=Object.values(manifest.sets).map(s=>{images[s.url]={naturalWidth:128,complete:true};return{...s,image:images[s.url],rules:A.wang({tiles:s.tiles})};});
+for(const p of pairs)for(let m=0;m<16;m++){
+ const values=[8,4,2,1].map(bit=>m&bit?p.upper:p.lower),bases={[p.lower]:{image:p.image,rect:p.rules.get(0)},[p.upper]:{image:p.image,rect:p.rules.get(15)}};
+ const tile=A.choose(values,[p],bases);assert.deepEqual(tile.rect,p.rules.get(m));
 }
-let draws=0,clips=0,details=0;
-const c={imageSmoothingEnabled:true,fillStyle:null,
-  save(){},restore(){},beginPath(){},moveTo(){},lineTo(){},closePath(){},
-  clip(mode){clips++;assert.equal(mode,'evenodd');},
-  translate(){},scale(){},
-  fillRect(){details++;},
-  drawImage(){draws++;}};
-const fake={complete:true,naturalWidth:128,naturalHeight:128};
-for(const [cx,cy] of [[0,0],[1,1],[2,3],[3,3]])
-  T.drawChunk(c,cx,cy,O,{water:fake,sand:fake,grass:fake,street:fake},fake);
-assert(draws>600,'textures are rendered');
-assert(clips>80,'multiple layered masks rendered');
-assert(details>100,'decoration rendered');
-assert.deepEqual(Buffer.from(O.terrain),before,'terrain generation not modified');
-const nav=new Navigation(O.map);
-for(const dest of O.districts)assert(nav.path(O.spawn,dest).length,'district reachable: '+dest.id);
-for(const area of [[1920,1080],[393,852]]){
-  const cam=new Camera();cam.width=area[0];cam.height=area[1];cam.update({x:2040,y:2040},O.map,0,true);
-  assert(cam.x>=0&&cam.y>=0,'camera nonnegative');
+const banks={};for(const name of Object.keys(manifest.bases))banks[name]={};
+let transitions=new Set();for(let y=-1;y<32;y++)for(let x=-1;x<32;x++){
+ const values=A.corners(plan.at,x,y),key=[...new Set(values)].sort();assert(key.length<=2,'No unpainted three-material junctions');
+ if(key.length===2){transitions.add(key.join('/'));assert(pairs.some(p=>key.every(m=>m===p.lower||m===p.upper)));}
 }
-const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');
-const builder=fs.readFileSync(path.join(__dirname,'../tools/build_pages.py'),'utf8');
-assert(html.indexOf('src="orange-terrain.js"')>0);
-assert(html.indexOf('src="orange-terrain.js"')<html.indexOf('src="orange-renderer.js"'),'load terrain module before renderer');
-assert(builder.includes("'orange-terrain.js'"),'Pages includes terrain engine');
-console.log('Orange terrain: 8-neighbor masks, internal corners, deterministic decoration, cached raster composition, camera, saves and paths PASS');
+for(const pair of ['sand/water','dirt/sand','dirt/grass','grass/stone'])assert(transitions.has(pair));
+for(const urls of Object.values(manifest.variants))for(const url of urls)images[url]={naturalWidth:32,complete:true};
+const config=T.configure(O,manifest,images),again=T.configure(O,manifest,images);let draws=0,variantTiles=0;
+for(const [key,tile] of config.quads){
+ assert.deepEqual(tile,again.quads.get(key),'Variant selection must be deterministic');
+ if(Object.values(manifest.variants).flat().some(url=>images[url]===tile.image)){
+  variantTiles++;assert(tile.uniform,'Decorative variants must not overwrite transition edges');
+ }
+}
+if(Object.keys(manifest.variants).length)assert(variantTiles>0,'Approved variants are actually used');
+const c={imageSmoothingEnabled:true,drawImage(...args){draws++;assert.equal(args.length,9);assert(args.slice(1).every(Number.isInteger));assert.equal(args[7],64);assert.equal(args[8],64);},clip(){throw Error('Procedural clipping forbidden');},scale(){throw Error('Texture flipping forbidden');}};
+for(let y=0;y<4;y++)for(let x=0;x<4;x++)T.drawChunk(c,x,y,config);assert(draws>500);assert(!c.imageSmoothingEnabled);
+assert.deepEqual(Buffer.from(O.terrain),before);assert.throws(()=>A.choose(['water','sand','stone','grass'],pairs,banks),/Missing authored/);
+const src=fs.readFileSync(path.join(__dirname,'../orange-terrain.js'),'utf8');assert(!src.includes("clip('evenodd')"));assert(!src.includes('Math.random'));
+const html=fs.readFileSync(path.join(__dirname,'../index.html'),'utf8');assert(html.indexOf('src="terrain-autotile.js"')<html.indexOf('src="orange-terrain.js"'));
+console.log('Terrain V2: 47 canonical neighbor masks, complete authored Wang rules, coherent material graph, integer native-sprite draws and immutable world passed.');

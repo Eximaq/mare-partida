@@ -1,0 +1,221 @@
+{
+  "scope": "Orange Town terrain V2",
+  "approved_ceiling_generations": 19,
+  "observed_usage_generations": 10,
+  "usage_method": "Account usage delta for the completed approved lot; no account balances stored. Tile calls do not expose per-call actual usage. Image edits report one generation each.",
+  "seed": "omitted",
+  "status": "harmonized candidate; owner visual approval required before merge/publication",
+  "local_repair_authorization": "Owner explicitly authorized zero-cost palette harmonization and restoration of the original outer four-pixel borders.",
+  "calls": [
+    {
+      "name": "grass-stone",
+      "tool": "create_topdown_tileset",
+      "request": {
+        "lower_description": "Soft muted tropical green lawn, short fine grass, broad quiet color patches, sparse tiny plants, low contrast ground texture, not bushes or hedges.",
+        "upper_description": "Flat warm gray cobblestone paving of a tropical pirate town, broad irregular stones with connected narrow sandy joints, subtle wear, restrained contrast, crisp maritime RPG pixel art, no walls or objects.",
+        "lower_base_tile_id": "30642bb1-3ba2-4a0b-849f-398d86934e18",
+        "mode": "standard",
+        "tile_size": {
+          "width": 32,
+          "height": 32
+        },
+        "view": "high top-down",
+        "transition_size": 0
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 51936c22-038a-4c49-b98d-85365e091f0c\nterrain: Soft muted tropical green lawn, short fine grass, broad quiet color patches, sparse tiny plants, low contrast ground texture, not bushes or hedges. → Flat warm gray cobblestone paving of a tropical pirate town, broad irregular stones with connected narrow sandy joints, subtle wear, restrained contrast, crisp maritime RPG pixel art, no walls or objects.\ntiles: 16 (generating ~100s)\n\nbase_tile_ids:\n  lower (Soft muted tropical green lawn, short fine grass, broad quiet color patches, sparse tiny plants, low contrast ground texture, not bushes or hedges.): 30642bb1-3ba2-4a0b-849f-398d86934e18\n  upper (Flat warm gray cobblestone paving of a tropical pirate town, broad irregular stones with connected narrow sandy joints, subtle wear, restrained contrast, crisp maritime RPG pixel art, no walls or objects.): a5b760e7-aede-4df5-a156-f09a4e503816\n\nhint: get_topdown_tileset(\"51936c22-038a-4c49-b98d-85365e091f0c\")\nresource: pixellab://docs/godot/wang-tilesets"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "name": "dirt-grass",
+      "tool": "create_topdown_tileset",
+      "request": {
+        "lower_description": "Warm compacted sandy brown earth of a tropical pirate town, subtle worn patches, sparse fine grains, flat readable ground, restrained contrast, crisp maritime RPG pixel art.",
+        "upper_description": "Soft muted tropical green lawn, short fine grass, broad quiet color patches, sparse tiny plants, low contrast ground texture, not bushes or hedges.",
+        "upper_base_tile_id": "30642bb1-3ba2-4a0b-849f-398d86934e18",
+        "mode": "standard",
+        "tile_size": {
+          "width": 32,
+          "height": 32
+        },
+        "view": "high top-down",
+        "transition_size": 0
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 26d63ec5-6791-41e0-a21a-855b39e35b9b\nterrain: Warm compacted sandy brown earth of a tropical pirate town, subtle worn patches, sparse fine grains, flat readable ground, restrained contrast, crisp maritime RPG pixel art. → Soft muted tropical green lawn, short fine grass, broad quiet color patches, sparse tiny plants, low contrast ground texture, not bushes or hedges.\ntiles: 16 (generating ~100s)\n\nbase_tile_ids:\n  lower (Warm compacted sandy brown earth of a tropical pirate town, subtle worn patches, sparse fine grains, flat readable ground, restrained contrast, crisp maritime RPG pixel art.): b9381fd6-f978-4ed6-9d30-42cfcba501cf\n  upper (Soft muted tropical green lawn, short fine grass, broad quiet color patches, sparse tiny plants, low contrast ground texture, not bushes or hedges.): 30642bb1-3ba2-4a0b-849f-398d86934e18\n\nhint: get_topdown_tileset(\"26d63ec5-6791-41e0-a21a-855b39e35b9b\")\nresource: pixellab://docs/godot/wang-tilesets"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "name": "sand-wood",
+      "tool": "create_topdown_tileset",
+      "request": {
+        "lower_description": "Warm smooth beige island sand, very sparse tiny pebbles, broad quiet readable ground texture, no dense shell pattern.",
+        "upper_description": "Weathered honey brown harbor planks, short staggered joints, brass nail heads, flat walking surface, crisp maritime pixel art, restrained contrast.",
+        "lower_base_tile_id": "1ff29faa-1298-4275-b3f6-8750ee254cbe",
+        "mode": "standard",
+        "tile_size": {
+          "width": 32,
+          "height": 32
+        },
+        "view": "high top-down",
+        "transition_size": 0
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 3923d7a7-b3d1-4c81-9f3c-b3d55b5fe97d\nterrain: Warm smooth beige island sand, very sparse tiny pebbles, broad quiet readable ground texture, no dense shell pattern. → Weathered honey brown harbor planks, short staggered joints, brass nail heads, flat walking surface, crisp maritime pixel art, restrained contrast.\ntiles: 16 (generating ~100s)\n\nbase_tile_ids:\n  lower (Warm smooth beige island sand, very sparse tiny pebbles, broad quiet readable ground texture, no dense shell pattern.): 1ff29faa-1298-4275-b3f6-8750ee254cbe\n  upper (Weathered honey brown harbor planks, short staggered joints, brass nail heads, flat walking surface, crisp maritime pixel art, restrained contrast.): 9de1720b-00cc-4c0e-b405-ba4857224812\n\nhint: get_topdown_tileset(\"3923d7a7-b3d1-4c81-9f3c-b3d55b5fe97d\")\nresource: pixellab://docs/godot/wang-tilesets"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "name": "sand-dirt",
+      "tool": "create_topdown_tileset",
+      "request": {
+        "lower_description": "Warm smooth beige island sand, very sparse tiny pebbles, broad quiet readable ground texture, no dense shell pattern.",
+        "upper_description": "Warm compacted sandy brown earth of a tropical pirate town, subtle worn patches, sparse fine grains, flat readable ground, restrained contrast, crisp maritime RPG pixel art.",
+        "lower_base_tile_id": "1ff29faa-1298-4275-b3f6-8750ee254cbe",
+        "upper_base_tile_id": "b9381fd6-f978-4ed6-9d30-42cfcba501cf",
+        "mode": "standard",
+        "tile_size": {
+          "width": 32,
+          "height": 32
+        },
+        "view": "high top-down",
+        "transition_size": 0
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: e6dfa433-1429-455b-ad03-7ff916385783\nterrain: Warm smooth beige island sand, very sparse tiny pebbles, broad quiet readable ground texture, no dense shell pattern. → Warm compacted sandy brown earth of a tropical pirate town, subtle worn patches, sparse fine grains, flat readable ground, restrained contrast, crisp maritime RPG pixel art.\ntiles: 16 (generating ~100s)\n\nbase_tile_ids:\n  lower (Warm smooth beige island sand, very sparse tiny pebbles, broad quiet readable ground texture, no dense shell pattern.): 1ff29faa-1298-4275-b3f6-8750ee254cbe\n  upper (Warm compacted sandy brown earth of a tropical pirate town, subtle worn patches, sparse fine grains, flat readable ground, restrained contrast, crisp maritime RPG pixel art.): b9381fd6-f978-4ed6-9d30-42cfcba501cf\n\nhint: get_topdown_tileset(\"e6dfa433-1429-455b-ad03-7ff916385783\")\nresource: pixellab://docs/godot/wang-tilesets"
+          }
+        ],
+        "isError": false
+      }
+    },
+    {
+      "name": "grass-variation",
+      "tool": "edit_image_pixen",
+      "request": {
+        "description": "Keep every pixel of the outer four-pixel border unchanged. Inside that border only, add two small grass tufts, a tiny muted ivory flower and a few dry leaves. Preserve the original palette, flat ground, scale and crisp pixels.",
+        "image_base64": "grass-reference.png",
+        "width": 32,
+        "height": 32,
+        "no_background": false
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 44f60317-5307-4243-8732-b09706d34713\njob_id: 44f60317-5307-4243-8732-b09706d34713\nmodel: pixen\nedit: Keep every pixel of the outer four-pixel border unchanged. Inside that border only, add two small grass tufts, a tiny muted ivory flower and a few dry leaves. Preserve the original palette, flat ground, scale and crisp pixels.\nsource: 32x32px\nsize: 32x32px\ntransparent: False\nasset_id: 2c930fa1-b6bb-547d-bc19-cbb766b1eb02\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"44f60317-5307-4243-8732-b09706d34713\")"
+          }
+        ],
+        "isError": false
+      },
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "name": "sand-variation",
+      "tool": "edit_image_pixen",
+      "request": {
+        "description": "Preserve the outer four-pixel border exactly. Add only inside it a sparse cluster of three tiny warm gray pebbles and subtle wind-swept sand marks. Keep the same beige palette, lighting, flat surface and pixel scale.",
+        "image_base64": "sand-reference.png",
+        "width": 32,
+        "height": 32,
+        "no_background": false
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 31464173-0852-4e7f-b69b-1e16885e5bb6\njob_id: 31464173-0852-4e7f-b69b-1e16885e5bb6\nmodel: pixen\nedit: Preserve the outer four-pixel border exactly. Add only inside it a sparse cluster of three tiny warm gray pebbles and subtle wind-swept sand marks. Keep the same beige palette, lighting, flat surface and pixel scale.\nsource: 32x32px\nsize: 32x32px\ntransparent: False\nasset_id: dedcf7eb-a8b6-5d11-a4e2-1bcd7fa96616\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"31464173-0852-4e7f-b69b-1e16885e5bb6\")"
+          }
+        ],
+        "isError": false
+      },
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "name": "stone-variation",
+      "tool": "edit_image_pixen",
+      "request": {
+        "description": "Leave the outer four-pixel border pixel-for-pixel identical. Within the center only, add subtle worn stone chips and one small pale scuff. Preserve the connected paving joints, warm gray palette, overhead lighting and crisp pixel scale.",
+        "image_base64": "stone-reference.png",
+        "width": 32,
+        "height": 32,
+        "no_background": false
+      },
+      "response": {
+        "content": [
+          {
+            "type": "text",
+            "text": "id: 738c2426-8b68-4091-9888-df9f584242ab\njob_id: 738c2426-8b68-4091-9888-df9f584242ab\nmodel: pixen\nedit: Leave the outer four-pixel border pixel-for-pixel identical. Within the center only, add subtle worn stone chips and one small pale scuff. Preserve the connected paving joints, warm gray palette, overhead lighting and crisp pixel scale.\nsource: 32x32px\nsize: 32x32px\ntransparent: False\nasset_id: 8ce732de-240c-58fe-adb4-6ef86be66301\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"738c2426-8b68-4091-9888-df9f584242ab\")"
+          }
+        ],
+        "isError": false
+      },
+      "reported_usage": {
+        "generations": 1
+      }
+    }
+  ],
+  "assembly": {
+    "harmonization_approved": true,
+    "palettes": {
+      "water-sand": {
+        "replaced_pixels": 0
+      },
+      "sand-grass": {
+        "replaced_pixels": 0
+      },
+      "grass-stone": {
+        "replaced_pixels": 6300
+      },
+      "dirt-grass": {
+        "replaced_pixels": 6350
+      },
+      "sand-dirt": {
+        "replaced_pixels": 0
+      },
+      "sand-wood": {
+        "replaced_pixels": 0
+      }
+    },
+    "variants": {
+      "grass": {
+        "changed_border_pixels": 448,
+        "accepted": true
+      },
+      "sand": {
+        "changed_border_pixels": 448,
+        "accepted": true
+      },
+      "stone": {
+        "changed_border_pixels": 448,
+        "accepted": false,
+        "reason": "Rejected: interior changes the connected paving joints rather than adding subtle wear."
+      }
+    }
+  },
+  "originals": "Original PNG atlases and three native reference/variation PNGs preserved beside this file; downloaded metadata retained locally.",
+  "verification": "All six native Wang sets contain 16 authored sprites. Exact flat grass colors #3fc729 and #43c329 replaced with source #4aa93b in runtime copies only. Grass/sand outer four-pixel borders restored and verified identical to references; interiors inspected at integer zoom. Stone variation rejected because it changes connected joints. No retries or additional paid calls."
+}

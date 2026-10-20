@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'orange-terrain.js'
+      - 'terrain-autotile.js'
+      - 'assets/terrain/**'
       - 'orange-renderer.js'
       - 'orange-world.js'
       - 'tools/orange-terrain-qa.html'
@@ -17,6 +19,8 @@ jobs:
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -24,7 +28,9 @@ jobs:
         run: |
           npm install --no-save --package-lock=false playwright@1.56.1
           npx playwright install --with-deps chromium
-      - name: Capturar antes/depois nas três regiões
+      - name: Capturar antes/depois do commit-base
+        env:
+          ORANGE_BASE_SHA: ${{ github.event.pull_request.base.sha || '9529a4d' }}
         run: |
           python3 -m http.server 8765 --bind 127.0.0.1 > /tmp/orange-qa-server.log 2>&1 &
           sleep 2
@@ -34,6 +40,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: orange-town-before-after
-          path: orange-terrain-evidence/
+          path: docs/evidence-orange-terrain-v2/ci/
           if-no-files-found: warn
           retention-days: 14
