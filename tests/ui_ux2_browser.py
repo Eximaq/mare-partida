@@ -1,10 +1,10 @@
 """UI2 real-browser acceptance: all primary surfaces, seven viewports, safe saves."""
-import copy,json
+import copy,json,os
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 from polish_support import page_for,create,fixture,saved,ROOT
 
-OUT=ROOT/'docs/evidence-ui-ux-2/after';OUT.mkdir(parents=True,exist_ok=True)
+OUT=ROOT/os.environ.get('MARE_UI_EVIDENCE','docs/evidence-ui-ux-2/after');OUT.mkdir(parents=True,exist_ok=True)
 SIZES=[(1920,1080),(1366,768),(1280,720),(1024,768),(393,852),(360,800),(320,568)]
 SURFACES=['inventory','forge','status','talents','achievements','haki','akuma','contracts','map','prison','shop','help']
 errors=[];results=[]
@@ -43,6 +43,10 @@ def inspect_panel(q,name,w):
     assert q.evaluate('document.documentElement.scrollWidth<=innerWidth+1')
     assert q.locator('.dashboard').evaluate('e=>e.inert')
     q.screenshot(path=str(OUT/f'{name}-{w}.png'))
+    if name=='inventory' and w<=760:
+        q.locator('.op-grid-wrap').scroll_into_view_if_needed();bounds(q,'.op-close')
+        q.screenshot(path=str(OUT/f'inventory-grid-{w}.png'))
+        q.locator('#dialogBody').evaluate('e=>e.scrollTop=0')
     # Keyboard stays within the current modal, even for inventory and generic help.
     for _ in range(2):q.keyboard.press('Shift+Tab');assert q.evaluate('document.activeElement.closest("#panelOverlay")!==null')
     q.keyboard.press('Escape');assert not visible(q,'#panelOverlay')

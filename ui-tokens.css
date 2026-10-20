@@ -2,13 +2,13 @@
 @layer legacy, legacy-priority;
 :root {
   color-scheme:dark;
-  --rpg-bg:#101c22; --rpg-surface:#1a2a30; --rpg-raised:#24383f;
-  --rpg-wood:#38291f; --rpg-wood-light:#584332; --rpg-paper:#dec99e;
-  --rpg-ink:#30291f; --rpg-text:#f1e9d8; --rpg-muted:#adbfbe;
-  --rpg-brass:#b49b6c; --rpg-line:#536363; --rpg-focus:#f7d18b;
-  --rpg-accent:#78c7bc; --rpg-success:#8cd3aa; --rpg-error:#ef9c91; --rpg-warning:#ebc886;
+  --rpg-bg:#161c1b; --rpg-surface:#152d34; --rpg-raised:#233d44;
+  --rpg-wood:#49301f; --rpg-wood-light:#765132; --rpg-paper:#e1cd9f;
+  --rpg-ink:#322718; --rpg-text:#f6e6bf; --rpg-muted:#beaf91;
+  --rpg-brass:#b58b4b; --rpg-line:#8d7047; --rpg-focus:#f4d58b;
+  --rpg-accent:#d1ab63; --rpg-success:#8cd3aa; --rpg-error:#ef9c91; --rpg-warning:#ebc886;
   --rpg-hp:#bd665d; --rpg-energy:#659bb4; --rpg-xp:#c9ad71; --rpg-will:#ac8bcb;
-  --rpg-common:#aebcbd; --rpg-uncommon:#76b994; --rpg-rare:#83afd3;
+  --rpg-common:#b8a384; --rpg-uncommon:#76b994; --rpg-rare:#83afd3;
   --rpg-epic:#bf9ed7; --rpg-legendary:#e6bf76; --rpg-supreme:#ef9b92;
   --rpg-space-1:4px; --rpg-space-2:8px; --rpg-space-3:12px; --rpg-space-4:16px;
   --rpg-space-5:24px; --rpg-space-6:32px;
@@ -16,8 +16,13 @@
   --rpg-caption:11px; --rpg-body:13px; --rpg-subtitle:16px; --rpg-title:22px;
   --rpg-icon:24px; --rpg-button:36px; --rpg-slot:48px; --rpg-field:36px;
   --rpg-radius:5px; --rpg-radius-small:3px; --rpg-border:1px solid var(--rpg-line);
-  --rpg-shadow:0 12px 36px #0008; --rpg-inset:inset 0 1px #ffffff0d;
-  --rpg-overlay:#071116c9; --rpg-hud-bg:#102127ed;
+  --rpg-shadow:0 12px 36px #0008; --rpg-inset:inset 0 1px #f8dfaa2b,inset 0 -2px #160e0a66;
+  --rpg-frame:3px double var(--rpg-brass);
+  --rpg-planks:repeating-linear-gradient(0deg,#ffffff03 0 2px,transparent 2px 7px),repeating-linear-gradient(0deg,transparent 0 23px,#21160f88 24px,#93633c33 25px,transparent 26px 48px),linear-gradient(100deg,#49301f,#30251d);
+  --rpg-recess:#29251f; --rpg-recess-edge:#6e5638;
+  --rpg-paper-light:#f0e2bd; --rpg-paper-muted:#685337; --rpg-paper-line:#b69a68;
+  --rpg-gold-button:linear-gradient(#d5b779,#ab854a);
+  --rpg-overlay:#081318bd; --rpg-hud-bg:#152d34f2;
   --rpg-time:140ms; --rpg-ease:cubic-bezier(.2,.7,.3,1);
   --rpg-z-world:0; --rpg-z-hud:20; --rpg-z-popover:40; --rpg-z-modal:100;
   --rpg-z-confirm:120; --rpg-z-toast:140;
