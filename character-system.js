@@ -58,13 +58,14 @@
   }
   function derive(g,c,f,gear){
     const r=roles[g.classId],lvl=g.level-1;
-    const preAttributes=Object.fromEntries(keys.map(k=>[k,(birth[g.classId]||birth.sword)[k]+integer(g.attributes?.[k])+Math.max(0,Number(gear.attributes?.[k])||0)]));
+    const compendiumBonus=1+Math.max(0,Number(gear.akumaRegistered)||0)*.001;
+    const preAttributes=Object.fromEntries(keys.map(k=>[k,((birth[g.classId]||birth.sword)[k]+integer(g.attributes?.[k]))*(k==='strength'?compendiumBonus:1)+Math.max(0,Number(gear.attributes?.[k])||0)]));
     const a=Object.fromEntries(keys.map(k=>[k,Math.round(preAttributes[k]*(1+Math.max(0,Number(gear.pearlPercent?.[k])||0))*1e6)/1e6]));
     const {strength:S,dexterity:D,vitality:V,intelligence:I,spirit:E}=a;
     const physical=Math.round((c.attack+lvl*c.attackStep+gear.attack+S*r.physical[0]+D*r.physical[1]+V*r.physical[2])*f.attack);
     const elemental=Math.round((c.attack+lvl*c.attackStep+gear.attack*.8+I*(g.classId==='strategist'?2.1: .9)+E*(g.classId==='healer'?.65:.35))*f.attack);
     const defense=Math.round((c.defense+lvl*c.defenseStep+gear.defense+V*(g.classId==='cyborg'?1.05:.55)+S*.08)*f.defense);
-    const maxHP=Math.round((c.baseHP+lvl*c.hpStep+gear.hp+V*(g.classId==='cyborg'?12:8))*f.hp);
+    const maxHP=Math.round(((c.baseHP+lvl*c.hpStep+V*(g.classId==='cyborg'?12:8))*compendiumBonus+gear.hp)*f.hp);
     const maxEnergy=Math.round((c.energy+lvl*c.energyStep+E*4+I*.5+(gear.energy||0))*f.energy);
     const speed=Math.min(3,(c.speed+Math.min(.5,lvl*.009)+D*.006)*f.speed);
     const crit=cap(c.crit+f.crit+lvl*.001+D*.0015+(gear.crit||0),0,.5),evasion=cap((g.classId==='rogue'?.12:0)+D*.0015,0,.35);
