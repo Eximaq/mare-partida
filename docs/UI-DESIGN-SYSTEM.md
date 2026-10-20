@@ -88,3 +88,8 @@ O proprietário rejeitou a mudança de tema da primeira entrega UI 2.0. As cores
 Capturas da revisão: `docs/evidence-tema-nautico/after/` (ignoradas no Git). A suíte de navegador aceita `MARE_UI_EVIDENCE` para separar evidências de cada sprint.
 
 Revisão validada pelas 20 suítes Node, matriz completa de sete resoluções, Forja transacional e build/cache. No inventário móvel, o shell não cria um scroll-container intermediário: o cabeçalho sticky acompanha a rolagem de `dialogBody`, mantendo o fechamento acessível. Contraste adicional inspecionado em pergaminho, rótulos de equipamentos e cartões dos monstros.
+
+
+## Inventário — fundos e densidade
+
+Os slots equipados têm um único fundo `--rpg-recess`. `.op-slot-frame` e `.op-slot-icon` são transparentes, sem outra moldura pintada sobre o slot; a raridade/seleção continua na borda externa. A mochila apresenta 64 posições por página, sem mudar a capacidade de 120 itens. A grade desktop usa até oito colunas de 50px que se adaptam à largura disponível, sem esticar sprites; tablet/móvel mantêm seis/cinco colunas compactas. A bandeja aproveita a altura restante e rola internamente quando necessário, mantendo filtros e paginação acessíveis.

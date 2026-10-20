@@ -14,8 +14,8 @@ assert.ok(html.includes('<link rel="stylesheet" href="inventory-compact.css" />'
 assert.ok(builder.includes("'inventory-compact.css'"),'Pages must publish the new stylesheet');
 assert.match(css,/width:min\(1280px,calc\(100vw - 40px\)\)/,'desktop inventory width capped');
 assert.match(css,/height:min\(760px,calc\(100dvh - 40px\)\)/,'desktop inventory height capped');
-assert.match(compact,/grid-template-columns:repeat\(7,50px\)/,'desktop 7-column inventory');
-assert.match(compact,/grid-template-rows:repeat\(5,50px\)/,'desktop 5-row inventory');
+assert.match(compact,/grid-template-columns:repeat\(auto-fit,50px\)/,'desktop columns adapt without stretching slots');
+assert.match(game,/BAG_PER_PAGE=64/,'64 presentation slots per page; bag capacity unchanged');
 assert.match(compact,/grid-template-columns:repeat\(6,48px\)/,'tablet reduced grid');
 assert.match(compact,/grid-template-columns:repeat\(5,48px\)/,'mobile reduced grid');
 assert.match(css,/\.op-item-icon \.item-icon\s*\{/,'item sprite sizing preserves 32px PixelLab');
@@ -23,7 +23,7 @@ assert.match(css,/image-rendering:pixelated/,'pixel art remains crisp');
 assert.match(css,/\.op-detail-panel\s*\{/,'item details preserved');
 assert.match(css,/\.op-equip-slot\s*\{/,'equipment preserved');
 assert.match(css,/overflow-y:auto/,'long content scrolls');
-assert.match(game,/Array\.from\(\{length:BAG_PER_PAGE-shown\.length\}/,'existing inventory page size unchanged');
+assert.match(game,/Array\.from\(\{length:BAG_PER_PAGE-shown\.length\}/,'all 64 page slots are rendered');
 assert.match(game,/class="op-grid"/,'existing item grid is unchanged');
 let depth=0,comment=false,quote=null;
 for(let i=0;i<css.length;i++){
@@ -37,4 +37,4 @@ for(let i=0;i<css.length;i++){
   assert.ok(depth>=0,'unmatched CSS closing brace');
 }
 assert.equal(depth,0,'balanced CSS braces');
-console.log('Inventory compact: 1280x760 max desktop, 7x5 50px grid, responsive 6/5 columns, page size and build OK');
+console.log('Inventory compact: 1280x760 max desktop, up to 8 adaptive columns of 50px, 64 slots per page, responsive 6/5 columns, page size and build OK');

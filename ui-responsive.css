@@ -1,4 +1,5 @@
 @media(max-width:1180px){
+  .op-grid{width:max-content;grid-template-columns:repeat(6,48px);grid-auto-rows:48px}
   #panelOverlay.inventory-mode .op-body-grid{grid-template-columns:minmax(260px,.95fr) minmax(330px,1.2fr)}
   #panelOverlay.inventory-mode .op-info-panel{grid-column:1/-1;max-height:260px}
   #panelOverlay.inventory-mode .op-body-grid{overflow:auto;align-content:start;flex:1;min-height:0}
@@ -13,6 +14,7 @@
   .creation-dialog{padding:20px}.faction-choices{gap:8px}.class-choices{grid-template-columns:repeat(4,minmax(0,1fr))}.class-choice{padding:12px 8px}
 }
 @media(max-width:760px){
+  .op-grid{grid-template-columns:repeat(5,48px);grid-auto-rows:48px}
   :root{--rpg-edge:8px;--rpg-profile-width:calc(100vw - 140px);--rpg-button:36px;--rpg-field:36px;--rpg-title:19px}
   .topbar{padding:8px;width:var(--rpg-profile-width);min-width:172px;max-width:280px}.profile-heading{padding-bottom:5px;margin-bottom:4px;gap:6px;min-height:36px}.profile-heading canvas{width:26px;height:26px}.profile-heading button{width:24px;height:24px;min-height:24px;font-size:14px}.profile-name-row{gap:4px}#miniName{font-size:12px;max-width:135px}#miniLevel,#miniClass{font-size:10px}.profile-resource{height:14px;margin:3px 0}.profile-resource>b,.profile-resource>span:first-child{font-size:9px;line-height:14px}.profile-power strong{font-size:17px}.profile-power{font-size:9px}.profile-summary{gap:4px}.profile-wallet{flex:0 1 auto;flex-wrap:wrap;max-width:100px;gap:4px}#miniGold{font-size:11px}#attributePointsHud{font-size:9px;min-height:20px;padding:1px 4px}.profile-xp{margin:4px 0}.profile-xp>span:first-child{font-size:9px}
   #mainMenu{display:grid;grid-template-columns:repeat(3,32px);gap:4px;padding:5px;max-width:none;width:auto}
@@ -36,6 +38,7 @@
   .character-summary,.character-layout,.attribute-dashboard,.attributes-layout,.prison-bottom-panels,.haki-disciplines,.akuma-compendium header,.hunt-route header{display:flex;flex-direction:column;gap:12px}.attribute-card,.attribute-preview{width:100%;min-width:0}.attribute-grid{grid-template-columns:1fr}.prison-stage-panel{padding:12px}.prison-floor-navigation{flex-wrap:wrap;gap:6px}.prison-monster-card{min-width:0}.prison-monsters{flex-wrap:wrap}.prison-first-clear,.prison-ascent,.prison-milestones{padding:12px}.prison-masthead{padding:12px;gap:10px}.prison-masthead h2{font-size:20px}.prison-masthead p{font-size:12px}.voyage-detail-panel{min-width:0}.voyage-details{padding:12px}.akuma-slot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.akuma-rank-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.haki-chamber header{flex-wrap:wrap}.haki-chamber h2{font-size:21px}.confirmation-card{padding:20px}.confirmation-card footer{display:grid;grid-template-columns:1fr 1fr}
 }
 @media(max-width:360px){
+  .op-grid{grid-template-columns:repeat(5,45px);grid-auto-rows:45px;gap:4px}
   .topbar{padding:6px;min-width:0}#miniName{font-size:11px}#miniClass{font-size:9px}.profile-heading canvas{width:24px;height:24px}.profile-heading{gap:4px}.profile-heading button{width:20px;height:24px}.profile-wallet{max-width:86px}.profile-power strong{font-size:16px}.profile-summary{gap:2px}
   .action-panel{padding:5px}.action-row{gap:3px}.skill-button{width:35px;height:38px;min-height:38px}.shop-potion{width:32px}#hakiQuickCast{gap:3px;padding-left:3px}#hakiQuickCast button{width:32px}.skill-icon img{width:24px;height:24px}#journeyHud{width:148px}.world-command button{max-width:130px}
   .op-topbar .op-bag-capacity{order:3;width:100%;text-align:right;font-size:10px}.op-title-banner strong{font-size:17px}.op-detail-head{gap:8px}.op-detail-head h3{font-size:16px}
