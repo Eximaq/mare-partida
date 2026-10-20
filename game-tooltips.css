@@ -1,0 +1,17 @@
+.game-tooltip{position:fixed;z-index:calc(var(--rpg-z-modal) + 1);pointer-events:none;max-width:min(540px,calc(100vw - 16px));max-height:calc(100dvh - 16px);overflow:hidden;background:#10242bf9;border:1px solid var(--rpg-brass);border-radius:3px;box-shadow:var(--rpg-shadow),inset 0 1px #eac78a33;color:var(--rpg-text);font:12px/1.38 var(--rpg-font);letter-spacing:.01em}
+.game-tooltip.hidden{display:none}
+.game-tooltip-grid{display:grid;grid-template-columns:minmax(0,1fr);width:min(250px,calc(100vw - 18px))}
+.game-tooltip-grid.with-comparison{grid-template-columns:minmax(0,1fr) minmax(0,1fr);width:min(500px,calc(100vw - 18px))}
+.game-tip-column,.game-tip-skill{min-width:0;padding:12px 13px}
+.with-comparison>.game-tip-column+ .game-tip-column{border-left:1px dashed var(--rpg-line)}
+.game-tip-kicker{color:var(--rpg-muted);font-size:10px;font-weight:700;letter-spacing:.13em}
+.game-tip-name{margin:3px 0 0;font:700 14px/1.25 var(--rpg-heading);color:var(--rpg-accent);overflow-wrap:anywhere}
+.game-tip-name.rarity-common{color:var(--rpg-common)}.game-tip-name.rarity-uncommon{color:var(--rpg-uncommon)}.game-tip-name.rarity-rare{color:var(--rpg-rare)}.game-tip-name.rarity-epic{color:var(--rpg-epic)}.game-tip-name.rarity-legendary{color:var(--rpg-legendary)}.game-tip-name.rarity-supreme{color:var(--rpg-supreme)}
+.game-tip-meta{margin:4px 0 8px;color:var(--rpg-muted);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
+.game-tip-class{padding:3px 6px;border:1px solid;font-size:11px;font-weight:700}.game-tip-class.allowed{color:var(--rpg-success);border-color:#467e67;background:#17342b66}.game-tip-class.blocked{color:var(--rpg-error);border-color:#9e4657;background:#4b202d55}
+.game-tip-stats{display:grid;gap:3px;margin-top:9px}.game-tip-stats>div:not(.game-tip-muted),.game-tip-compare>div:not(.game-tip-muted){display:flex;gap:12px;justify-content:space-between}.game-tip-stats b{color:var(--rpg-text);font-variant-numeric:tabular-nums}
+.game-tip-power{margin:8px 0;color:var(--rpg-focus);font-weight:700}.game-tip-muted{color:var(--rpg-muted);font-size:10px}
+.game-tip-description{margin:8px 0;color:var(--rpg-text);font-size:11px}
+.game-tip-compare{margin-top:11px;padding-top:8px;border-top:1px dashed var(--rpg-line);display:grid;gap:4px}.game-tip-compare>strong{color:var(--rpg-accent);font-size:10px;margin-bottom:2px}.game-tip-compare b{font-variant-numeric:tabular-nums}.game-tip-compare .positive{color:var(--rpg-success)}.game-tip-compare .negative{color:var(--rpg-error)}.game-tip-compare .neutral{color:var(--rpg-muted)}.game-tip-score{border-top:1px solid var(--rpg-line);padding-top:4px;font-weight:700}
+.game-tip-skill{width:min(285px,calc(100vw - 18px))}.game-tip-skill-meta{display:flex;justify-content:space-between;gap:8px;margin-top:10px;color:var(--rpg-muted);font-size:11px}.game-tip-skill-meta b{color:var(--rpg-focus)}.game-tip-skill p{margin:9px 0 0;color:var(--rpg-text)}.game-tip-skill .game-tip-number{color:var(--rpg-accent)}.game-tip-skill.physical .game-tip-number{color:#efae75}.game-tip-skill.magic .game-tip-number{color:var(--rpg-energy)}
+@media(max-width:540px){.game-tooltip-grid.with-comparison{width:min(440px,calc(100vw - 16px))}.game-tip-column{padding:9px}.game-tooltip{font-size:11px}}

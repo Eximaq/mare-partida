@@ -208,7 +208,7 @@
   }
   async function initAkumaBackend(){
     if(!game)return;
-    try{const response=await fetch('/api/akuma/catalog',{cache:'no-store'});if(!response.ok)return;akumaBackend=true;game.akumaPlayerId ||= crypto.randomUUID();
+    try{const response=await fetch('/api/akuma/catalog',{cache:'no-store'});if(!response.ok)return;backendFruitCatalog=await response.json();akumaBackend=true;game.akumaPlayerId ||= crypto.randomUUID();
       const serverState=await akumaRequest('player',{});game.fruitCooldowns ||= {};for(const [id,readyAt] of Object.entries(serverState.cooldowns||{}))game.fruitCooldowns[id]=Math.max(game.fruitCooldowns[id]||0,readyAt*1000);session.fruitInvulnerable=Math.max(0,serverState.invulnerable_until-Date.now()/1000);game.zoanAltitudeUntil=Math.max(game.zoanAltitudeUntil||0,(serverState.high_altitude_until||0)*1000);for(const id of MareAkuma.registered(game))await akumaRequest('register',{fruit_id:id});
       const equipped=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs);if(equipped){await akumaRequest('equip',{fruit_id:equipped.id});if(MareAkuma.isZoan(equipped)&&game.zoanTransformed)await akumaRequest('transform',{enabled:true});}saveGame();
     }catch(error){akumaBackend=false;console.warn('API Akuma indisponível:',error);}
@@ -712,7 +712,7 @@
       b.disabled=unavailable||empty||(king&&cd>0);b.classList.toggle('is-active',active);b.classList.toggle('is-empty',empty);b.classList.toggle('is-cooling',king&&cd>0);
       if(!king)b.setAttribute('aria-pressed',String(active));
       const status=unavailable?'Disponível em expedição':king&&cd>0?'Recarga: '+Math.ceil(cd)+'s':empty?'Vontade insuficiente':active?'Ativo':'Pronto';
-      b.title=MareHaki.catalog.find(c=>c.id===id).name+' · '+(king?'K · 50 Vontade':'armament'===id?'H · 5 Vontade/s':'J · 5 Vontade/s')+' · '+status;
+       b.setAttribute('aria-label',MareHaki.catalog.find(c=>c.id===id).name+' · '+(king?'K · 50 Vontade':'armament'===id?'H · 5 Vontade/s':'J · 5 Vontade/s')+' · '+status);b.removeAttribute('title');
       b.querySelector('.haki-quick-state').textContent=king&&cd>0?Math.ceil(cd)+'s':!king&&active?'ON':'';
     }
     $('hakiKing').style.setProperty('--haki-cooldown',(cd/MareHaki.rules.kingCooldown*360)+'deg');
@@ -768,18 +768,18 @@
       $('targetHudHint').textContent=hasTarget?'ALVO BLOQUEADO · AUTO-ATAQUE':'SELECIONE OU AGUARDE O AUTO-ALVO';
     }
     const versionCaption=document.querySelector('.version-caption'); if(versionCaption)versionCaption.textContent='VERSÃO 1.3 · DEMO LOCAL';
-    $('skill1').title=c.skills[0].name+' — '+c.skills[0].desc;$('skill2').title=c.skills[1].name+' — '+c.skills[1].desc;
+    $('skill1').setAttribute('aria-label',c.skills[0].name);$('skill2').setAttribute('aria-label',c.skills[1].name);$('skill1').removeAttribute('title');$('skill2').removeAttribute('title');
     const fruitSkill=MareAkuma.activeSkill(MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id);
     [0,1].forEach((i)=>{const fruitSlot=fruitSkill?.key===String(i+1),fruitId=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id,remaining=fruitSlot?Math.max(0,((game.fruitCooldowns?.[fruitId]||0)-Date.now())/1000):session.cooldowns[i],el=$('cooldown'+(i+1)),button=$('skill'+(i+1)),icon=$('skill'+(i+1)+'Icon');
       const iconSrc=fruitSlot?MareAkuma.byId(fruitId)?.skill_icon_path||'':'';
       if(icon.dataset.fruitIcon!==iconSrc){icon.dataset.fruitIcon=iconSrc;icon.innerHTML=iconSrc?`<img src="${iconSrc}" alt="" draggable="false">`:'';}
       if(!iconSrc)icon.textContent=i===0?c.symbol:['guard','heal','blessing'].includes(c.skills[1].type)?'✚':c.skills[1].type==='area'?'✺':'✦';
       const cooling=remaining>.1;el.classList.toggle('cooling',cooling);el.textContent=cooling?remaining.toFixed(1)+'s':'';button.classList.toggle('is-cooling',cooling);button.style.setProperty('--cooldown-angle',`${Math.min(360,remaining/(fruitSlot?fruitSkill.cooldown:c.skills[i].cd||1)*360)}deg`);
-      if(fruitSlot)button.title=fruitSkill.name+' — '+fruitSkill.cooldown+'s';});
+      if(fruitSlot)button.setAttribute('aria-label',fruitSkill.name+' — '+fruitSkill.cooldown+'s');});
     const zoan=equippedZoan(),third=fruitSkill?.key==='3',thirdButton=$('skill3'),transformButton=$('zoanTransform');
     thirdButton.classList.toggle('hidden',!third);transformButton.classList.toggle('hidden',!zoan);transformButton.classList.toggle('active',!!game.zoanTransformed);transformButton.setAttribute('aria-pressed',String(!!game.zoanTransformed));
-    if(zoan){const icon=$('zoanTransformIcon'),src=zoan.icon_path;if(icon.dataset.src!==src){icon.dataset.src=src;icon.innerHTML=`<img src="${src}" alt="" draggable="false">`;}transformButton.title=(game.zoanTransformed?'Retornar à forma humana':'Transformar em '+zoan.name)+' (T)';}
-    if(third){const icon=$('skill3Icon'),src=zoan.skill_icon_path,remaining=Math.max(0,((game.fruitCooldowns?.[zoan.id]||0)-Date.now())/1000);if(icon.dataset.src!==src){icon.dataset.src=src;icon.innerHTML=`<img src="${src}" alt="" draggable="false">`;}thirdButton.title=fruitSkill.name+' — '+fruitSkill.cooldown+'s';thirdButton.classList.toggle('is-cooling',remaining>.1);thirdButton.style.setProperty('--cooldown-angle',`${Math.min(360,remaining/fruitSkill.cooldown*360)}deg`);$('cooldown3').textContent=remaining>.1?remaining.toFixed(1)+'s':'';}
+    if(zoan){const icon=$('zoanTransformIcon'),src=zoan.icon_path;if(icon.dataset.src!==src){icon.dataset.src=src;icon.innerHTML=`<img src="${src}" alt="" draggable="false">`;}transformButton.setAttribute('aria-label',(game.zoanTransformed?'Retornar à forma humana':'Transformar em '+zoan.name)+' (T)');transformButton.removeAttribute('title');}
+    if(third){const icon=$('skill3Icon'),src=zoan.skill_icon_path,remaining=Math.max(0,((game.fruitCooldowns?.[zoan.id]||0)-Date.now())/1000);if(icon.dataset.src!==src){icon.dataset.src=src;icon.innerHTML=`<img src="${src}" alt="" draggable="false">`;}thirdButton.setAttribute('aria-label',fruitSkill.name+' — '+fruitSkill.cooldown+'s');thirdButton.removeAttribute('title');thirdButton.classList.toggle('is-cooling',remaining>.1);thirdButton.style.setProperty('--cooldown-angle',`${Math.min(360,remaining/fruitSkill.cooldown*360)}deg`);$('cooldown3').textContent=remaining>.1?remaining.toFixed(1)+'s':'';}
     syncExpeditionMini();
     $('xpPerHour').textContent=scene==='hunt'&&session.elapsed>=20?fmt(session.xp/session.elapsed*3600):'—';$('goldPerHour').textContent=scene==='hunt'&&session.elapsed>=20?fmt(session.gold/session.elapsed*3600):'—';$('questList').innerHTML=questDefs.map(q=>{let count=clamp(questProgress(q),0,q.target),done=game.claimed.includes(q.id),ready=count>=q.target&&!done;return `<div class="quest"><div class="quest-title"><span>${escapeHTML(q.title)}</span><b>${done?'CONCLUÍDO':count+' / '+q.target}</b></div><div class="quest-desc">${escapeHTML(q.desc)}</div><div class="progress-track"><i style="width:${count/q.target*100}%"></i></div>${ready?`<button data-claim="${q.id}">RESGATAR ${q.gold} ✦ + ${q.xp} XP</button>`:''}</div>`;}).join('');
     $('lootList').innerHTML=session.recentLoot.length?session.recentLoot.map(x=>`<div class="loot-entry"><span>${lootIcon(x.name)}${escapeHTML(x.name)}</span><b>OBTIDO</b></div>`).join(''):'<div class="empty-note">Sua próxima descoberta aparecerá aqui.</div>';
@@ -855,6 +855,47 @@
   // INVENTÁRIO V0.6 — layout RPG em três colunas, filtros e ações reais.
   function itemCategory(item){const def=itemBase(item),slot=def.slot;if(MareAkuma.isFruit(item,itemDefs))return 'fruits';if(['pearl-box','haki-book'].includes(def.kind))return 'consumables';return slot==='pearl'?'pearls':slot==='weapon'?'weapons':'armor';}
   function itemPower(item){if(!MareForge.isGear(item,itemDefs)&&!MareAkuma.isFruit(item,itemDefs))return 0;const slot=MareAkuma.isFruit(item,itemDefs)?'akuma_no_mi':itemBase(item).slot,before={...game,equipment:{...game.equipment,[slot]:null}},after={...game,equipment:{...game.equipment,[slot]:item}};return getDerived(after).power-getDerived(before).power;}
+  function tooltipItem(item){
+    if(!item)return null;
+    const def=itemBase(item),fruit=MareAkuma.isFruit(item,itemDefs),gear=MareForge.isGear(item,itemDefs);
+    if(!fruit&&!gear&&(!def||def===itemDefs[0]))return null;
+    const fruitData=fruit?MareAkuma.itemData(item,itemDefs):null;
+    const stats=fruit?MareAkuma.bonusStats(item,itemDefs):gear?itemStats(item):{};
+    const slot=fruit?'akuma_no_mi':def.slot;
+    const className=slot==='weapon'?classes[def.type]?.name||def.type:null;
+    const pearl=def.kind==='pearl'?MareForge.pearlOf(item,itemDefs):null;
+    const description=pearl?`Concede +${Math.round(pearl.percent*100)}% de ${MareForge.names[pearl.attribute]} ao ser instalada.`:def.kind==='pearl-box'?'Contém uma pérola para usar na forja.':def.kind==='haki-book'?'Livro necessário para despertar a Vontade.':'';
+    return {name:def.name,typeName:slotNames[slot]?.toLocaleLowerCase('pt-BR')||'item',rarity:itemRarity(item),rarityName:rarityNames[itemRarity(item)],level:item.level||1,rank:fruitData?.rank,className,allowed:!className||def.type===game.classId,stats,power:fruit||gear?itemPower(item):null,description,origin:item.origin||'',slot};
+  }
+  const fruitTooltipFallback={
+    akuma_kuku_kuku:'Transforma o cadáver mais próximo em comida. Quem a recolher recupera 15% da Vida máxima.',
+    akuma_beri_beri:'Divide o corpo em seis esferas: 1,5s de invulnerabilidade e empurrão nos inimigos próximos.',
+    akuma_tori_albatroz:'Aumenta a velocidade de movimento em 30% por 5s e ignora armadilhas de chão.',
+    akuma_uma_uma:'Avança 4 tiles em linha reta, causando dano físico leve e empurrando o primeiro inimigo.',
+    akuma_inu_dachshund:'Salta até o alvo, causa dano físico e aplica 30% de lentidão e −5% de Defesa por 3s.'
+  };
+  let backendFruitCatalog=null;
+  function tooltipSkill(button){
+    const fruit=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs),active=MareAkuma.activeSkill(fruit?.id),key=button.id==='skill3'?'3':button.id==='skill2'?'2':'1';
+    if(button.id==='zoanTransform')return {key:'T',name:game.zoanTransformed?'Retornar à forma humana':'Transformação Zoan',cooldown:0,cost:0,description:`Alterna entre a forma humana e ${fruit?.name||'a forma animal'}.`};
+    if(active?.key===key){const backend=backendFruitCatalog?.[fruit.id]?.skill;return {key,name:backend?.name||active.name,cooldown:backend?.cooldown??active.cooldown,cost:backend?.cost||0,resource:backend?.resource||'Energia',description:backend?.description||fruitTooltipFallback[fruit.id],damageType:backend?.damage_type||(['akuma_uma_uma','akuma_inu_dachshund'].includes(fruit.id)?'physical':'')};}
+    if(key==='3')return null;
+    const skill=classes[game.classId].skills[Number(key)-1];
+    return {key,name:skill.name,cooldown:skill.cd,cost:skill.cost,resource:'Energia',description:skill.desc,damageType:game.classId==='strategist'?'magic':skill.type==='strike'||skill.type==='area'?'physical':''};
+  }
+  MareTooltips.attach(element=>{
+    if(!game)return null;
+    if(element.matches('#skill1,#skill2,#skill3,#zoanTransform')){if(element.classList.contains('hidden'))return null;const skill=tooltipSkill(element);return skill?{kind:'skill',skill}:null;}
+    if(element.matches('[data-haki-toggle],[data-haki-cast]')){const id=element.dataset.hakiToggle||'conqueror',haki=MareHaki.catalog.find(entry=>entry.id===id);return haki?{kind:'skill',skill:{key:id==='armament'?'H':id==='observation'?'J':'K',name:haki.name,cooldown:id==='conqueror'?MareHaki.rules.kingCooldown:0,costText:haki.cost,description:haki.description,damageType:id==='conqueror'?'magic':''}}:null;}
+    if(element.dataset.talentSelect){const tree=MareTalents.getTree(game.classId),id=element.dataset.talentSelect,node=MareTalents.nodes(game.classId).find(entry=>entry.id===id),special=[...(tree?.keystones||[]),...(tree?.ultimates||[])].find(entry=>entry.id===id);if(!node&&!special)return null;return {kind:'skill',skill:{passive:true,name:node?.name||special.name,description:node?MareTalents.describeNode(node):special.description}};}
+    if(currentPanel!=='inventory')return null;
+    if(element.dataset.item==='virtual-potion')return {kind:'item',item:{name:'Poção de Vida',rarity:'uncommon',rarityName:'Incomum',level:1,stats:{},description:'Recupera 44% da Vida máxima.'}};
+    if(element.dataset.item==='virtual-material')return {kind:'item',item:{name:'Ferro Salgado',rarity:'common',rarityName:'Comum',level:1,stats:{},description:'Material usado na forja.'}};
+    const item=element.dataset.item?game.inventory.find(entry=>entry.id===element.dataset.item):element.dataset.invSlot?game.equipment[element.dataset.invSlot]:null;
+    const data=tooltipItem(item);if(!data)return null;
+    const equipped=element.dataset.item?game.equipment[data.slot]:null;
+    return {kind:'item',item:data,equipped:equipped&&equipped.id!==item.id?tooltipItem(equipped):null};
+  });
   function statDeltaHtml(before,after){
     return [['power','Poder'],['attack','Ataque'],['defense','Defesa'],['maxHP','Vida']].map(([key,label])=>{const delta=after[key]-before[key];return `<span class="delta-stat ${delta>0?'positive':delta<0?'negative':'neutral'}"><small>${label}</small><b>${delta>0?'+':delta<0?'−':''}${fmt(Math.abs(delta))}</b></span>`;}).join('');
   }
@@ -899,7 +940,7 @@
   function invSymbol(entry){return itemIcon(entry.kind==='gear'?entry.item.def:entry.kind,entry.name);}
   function invSlotHtml(slot){
     const item=game.equipment[slot],selected=item&&selectedItem===item.id, rarity=item?itemRarity(item):'';
-    return `<button type="button" class="op-equip-slot ${activeEquipmentFeedback()?.slots.includes(slot)?'recent-equip':''} ${item?'filled rarity-'+rarity:''} ${selected?'selected':''}" data-inv-slot="${slot}" title="${slotNames[slot]}${item?' · '+escapeHTML(itemBase(item).name):' · Vazio'}"><span class="op-slot-label">${slot==='weapon'?'ARMA':slotNames[slot]}</span><span class="op-slot-frame"><span class="op-slot-icon">${item?itemIcon(item.def,itemBase(item).name):'<span class="empty-slot-mark">·</span>'}</span>${item?.locked?'<span class="op-item-lock" role="img" aria-label="Item bloqueado"></span>':''}${item?`<span class="op-slot-refine">+${item.plus||0}</span>${slot==='akuma_no_mi'?`<span class="op-slot-power">Rank ${escapeHTML(MareAkuma.itemData(item,itemDefs)?.rank||'?')}</span>`:`<span class="op-slot-power">${fmt(itemPower(item))}</span>`}`:''}</span></button>`;
+    return `<button type="button" class="op-equip-slot ${activeEquipmentFeedback()?.slots.includes(slot)?'recent-equip':''} ${item?'filled rarity-'+rarity:''} ${selected?'selected':''}" data-inv-slot="${slot}" aria-label="${slotNames[slot]}${item?' · '+escapeHTML(itemBase(item).name):' · Vazio'}"><span class="op-slot-label">${slot==='weapon'?'ARMA':slotNames[slot]}</span><span class="op-slot-frame"><span class="op-slot-icon">${item?itemIcon(item.def,itemBase(item).name):'<span class="empty-slot-mark">·</span>'}</span>${item?.locked?'<span class="op-item-lock" role="img" aria-label="Item bloqueado"></span>':''}${item?`<span class="op-slot-refine">+${item.plus||0}</span>${slot==='akuma_no_mi'?`<span class="op-slot-power">Rank ${escapeHTML(MareAkuma.itemData(item,itemDefs)?.rank||'?')}</span>`:`<span class="op-slot-power">${fmt(itemPower(item))}</span>`}`:''}</span></button>`;
   }
   function invSelected(){
     if(selectedItem==='virtual-potion'&&game.potions>0)return {kind:'potion',id:'virtual-potion'};
@@ -921,7 +962,7 @@
     const shown=all.slice(inventoryUI.page*BAG_PER_PAGE,(inventoryUI.page+1)*BAG_PER_PAGE);
     const slots=shown.map(entry=>{
       const selected=selectedItem===entry.id; const item=entry.item; const icon=invSymbol(entry);
-      return `<button class="op-item rarity-${entry.rarity} ${selected?'selected':''}" type="button" aria-pressed="${selected}" data-item="${entry.id}" ${item&&MareAkuma.isFruit(item,itemDefs)?'draggable="true" data-fruit-drag="'+escapeHTML(item.id)+'"':''} title="${escapeHTML(entry.name)}"><span class="op-item-icon">${icon}</span>${item&&item.plus?`<span class="op-item-refine">+${item.plus}</span>`:''}${item&&item.locked?'<span class="op-item-lock" role="img" aria-label="Item bloqueado"></span>':''}${entry.qty>1?`<span class="op-item-qty">x${entry.qty}</span>`:''}</button>`;
+      return `<button class="op-item rarity-${entry.rarity} ${selected?'selected':''}" type="button" aria-pressed="${selected}" aria-label="${escapeHTML(entry.name)}" data-item="${entry.id}" ${item&&MareAkuma.isFruit(item,itemDefs)?'draggable="true" data-fruit-drag="'+escapeHTML(item.id)+'"':''}><span class="op-item-icon">${icon}</span>${item&&item.plus?`<span class="op-item-refine">+${item.plus}</span>`:''}${item&&item.locked?'<span class="op-item-lock" role="img" aria-label="Item bloqueado"></span>':''}${entry.qty>1?`<span class="op-item-qty">x${entry.qty}</span>`:''}</button>`;
     }).join('') + Array.from({length:BAG_PER_PAGE-shown.length},()=>'<span class="op-item empty" aria-hidden="true"></span>').join('');
     const sel=invSelected(); const detail=inventoryDetail(sel);
     const left=inventorySlotsLeft.map(invSlotHtml).join('')+'<span class="op-equip-spacer" aria-hidden="true"></span>'; const right=inventorySlotsRight.map(invSlotHtml).join('');

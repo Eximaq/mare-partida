@@ -6,10 +6,18 @@ import unittest
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "server"))
-from akuma import AkumaStore
+from akuma import AkumaStore, FRUITS, public_catalog
 
 
 class AkumaBackendTest(unittest.TestCase):
+    def test_public_skill_tooltips_match_cooldowns(self):
+        catalog = public_catalog()
+        self.assertEqual(set(catalog), set(FRUITS))
+        for fruit_id, fruit in catalog.items():
+            self.assertEqual(fruit["skill"]["cooldown"], FRUITS[fruit_id]["cooldown"])
+            self.assertTrue(fruit["skill"]["description"])
+        self.assertEqual(catalog["akuma_kuku_kuku"]["skill"]["cost"], 0)
+
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory()
         self.now = 1000.0
