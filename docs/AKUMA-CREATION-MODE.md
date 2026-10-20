@@ -2,6 +2,8 @@
 
 Este fluxo reúne o Lote 1 Rank E e o rework visual de Kuku-Kuku e Beri-Beri. Use-o como padrão para novos lotes, preservando os IDs e saves existentes. As referências originais do proprietário servem à geração em PixelLab e não entram no Git.
 
+O [lote Zoan Rank E](ZOAN-RANK-E.md) usa a versão mais recente deste fluxo como referência de qualidade para itens, HUD e VFX, mas dá a cada fruta uma silhueta, paleta, movimento e habilidade originais. Antes de cada lote, confira o `main` mais recente no GitHub e o estado local; preserve alterações de colaboradores.
+
 ## Evolução do Lote 1
 
 1. **Referências e regras:** `Kuku_Kuku_no_Mi.webp` e `beri beri.jpeg` guiaram a forma das frutas. O primeiro lote definiu Rank E, Compêndio, slot exclusivo, bônus, teclas 1/2, servidor Python e aura contínua na UI.

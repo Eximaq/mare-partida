@@ -38,12 +38,20 @@ assert.equal(Akuma.register(game,entries[0].id,entries).state.akumaCompendium.le
 assert.deepEqual(Akuma.migrate({...game,akumaCompendium:['future-fruit','future-fruit',...game.akumaCompendium]}).akumaCompendium,['future-fruit',...game.akumaCompendium]);
 assert.equal(Akuma.register(game,'unknown',entries).ok,false);
 assert.throws(()=>new Akuma.AkumaNoMiData('bad','Bad','X','','',''));
-assert.deepEqual(Akuma.catalog.map(f=>f.id),['akuma_kuku_kuku','akuma_beri_beri']);
+assert.deepEqual(Akuma.catalog.map(f=>f.id),['akuma_kuku_kuku','akuma_beri_beri','akuma_tori_albatroz','akuma_uma_uma','akuma_inu_dachshund']);
 assert.ok(Akuma.catalog.every(f=>f.rank==='E'&&f.icon_path.startsWith('assets/akuma/')));
 for(const fruit of Akuma.catalog){
   const item={type:'akuma_no_mi',fruitId:fruit.id};
   const gear=Akuma.applyGear(Forge.aggregate({},defs),item,defs);
   if(fruit.id==='akuma_kuku_kuku'){assert.equal(gear.healingReceivedPercent,.05);assert.equal(gear.maxHpPercent,.03);assert.equal(Akuma.activeSkill(fruit.id).key,'1');}
-  else{assert.equal(gear.impactResistancePercent,.15);assert.equal(Akuma.activeSkill(fruit.id).key,'2');}
+  else if(fruit.id==='akuma_beri_beri'){assert.equal(gear.impactResistancePercent,.15);assert.equal(Akuma.activeSkill(fruit.id).key,'2');}
+  else if(fruit.id==='akuma_tori_albatroz'){assert.equal(Akuma.isZoan(fruit),true);assert.equal(gear.moveSpeedPercent,.12);assert.equal(gear.evasionPercent,.05);assert.equal(Akuma.activeSkill(fruit.id).cooldown,14);}
+  else if(fruit.id==='akuma_uma_uma'){assert.equal(gear.moveSpeedPercent,.15);assert.equal(gear.maxHpPercent,.03);assert.equal(Akuma.activeSkill(fruit.id).key,'2');}
+  else{assert.equal(gear.evasionPercent,.10);assert.equal(gear.physicalDefensePercent,.03);assert.equal(Akuma.activeSkill(fruit.id).key,'3');}
 }
+const zoanGame={...game,equipment:{akuma_no_mi:{fruitId:'akuma_tori_albatroz'}},zoanTransformed:true};
+assert.equal(Akuma.migrate(zoanGame).zoanTransformed,true);
+assert.equal(Akuma.migrate({...zoanGame,equipment:{akuma_no_mi:null}}).zoanTransformed,false);
+const zoanStats=derive(game,Akuma.applyGear(Forge.aggregate({},defs),{type:'akuma_no_mi',fruitId:'akuma_inu_dachshund'},defs));
+assert.ok(zoanStats.evasion>base.evasion&&zoanStats.defense>base.defense);
 console.log('Akuma no Mi: Rank E catalog, six ranks, equipment bonuses, permanent HP/STR, unique registration and migration passed');

@@ -9,6 +9,9 @@ from pathlib import Path
 FRUITS = {
     "akuma_kuku_kuku": {"type": "akuma_no_mi", "rank": "E", "name": "Kuku-Kuku no Mi", "cooldown": 15, "healing_received_percent": .05, "max_hp_percent": .03},
     "akuma_beri_beri": {"type": "akuma_no_mi", "rank": "E", "name": "Beri-Beri no Mi", "cooldown": 18, "impact_resistance_percent": .15},
+    "akuma_tori_albatroz": {"type": "akuma_no_mi", "family": "zoan", "rank": "E", "name": "Tori-Tori no Mi: Albatroz", "cooldown": 14, "move_speed_percent": .12, "evasion_percent": .05},
+    "akuma_uma_uma": {"type": "akuma_no_mi", "family": "zoan", "rank": "E", "name": "Uma-Uma no Mi", "cooldown": 12, "move_speed_percent": .15, "max_hp_percent": .03},
+    "akuma_inu_dachshund": {"type": "akuma_no_mi", "family": "zoan", "rank": "E", "name": "Inu-Inu no Mi: Dachshund", "cooldown": 10, "evasion_percent": .10, "physical_defense_percent": .03},
 }
 
 
@@ -26,6 +29,12 @@ class AkumaStore:
             CREATE TABLE IF NOT EXISTS corpses(id TEXT PRIMARY KEY, player_id TEXT NOT NULL, instance TEXT NOT NULL, x REAL NOT NULL, y REAL NOT NULL, expires REAL NOT NULL, FOREIGN KEY(player_id) REFERENCES players(id));
             CREATE TABLE IF NOT EXISTS food(id TEXT PRIMARY KEY, player_id TEXT NOT NULL, instance TEXT NOT NULL, x REAL NOT NULL, y REAL NOT NULL, expires REAL NOT NULL, FOREIGN KEY(player_id) REFERENCES players(id));
         """)
+        columns = {row[1] for row in self.db.execute("PRAGMA table_info(players)")}
+        with self.db:
+            if "transformed" not in columns:
+                self.db.execute("ALTER TABLE players ADD COLUMN transformed INTEGER NOT NULL DEFAULT 0")
+            if "high_altitude_until" not in columns:
+                self.db.execute("ALTER TABLE players ADD COLUMN high_altitude_until REAL NOT NULL DEFAULT 0")
         with self.db:
             self.db.executemany("INSERT OR IGNORE INTO fruits VALUES(?,?,?,?)", ((key, value["type"], value["rank"], value["name"]) for key, value in FRUITS.items()))
 
@@ -42,7 +51,7 @@ class AkumaStore:
             raise ValueError("Jogador desconhecido")
         unlocked = [r[0] for r in self.db.execute("SELECT fruit_id FROM unlocks WHERE player_id=? ORDER BY fruit_id", (player_id,))]
         cooldowns = {r[0]: r[1] for r in self.db.execute("SELECT fruit_id,ready_at FROM fruit_cooldowns WHERE player_id=?", (player_id,))}
-        return {"unlocked": unlocked, "equipped": row["equipped"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock(), "invulnerable_until": row["invulnerable_until"]}
+        return {"unlocked": unlocked, "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock(), "invulnerable_until": row["invulnerable_until"]}
 
     def register(self, player_id: str, fruit_id: str):
         self.player(player_id)
@@ -57,7 +66,15 @@ class AkumaStore:
         if fruit_id is not None and not self.db.execute("SELECT 1 FROM unlocks WHERE player_id=? AND fruit_id=?", (player_id, fruit_id)).fetchone():
             raise ValueError("Fruta não desbloqueada")
         with self.db:
-            self.db.execute("UPDATE players SET equipped=? WHERE id=?", (fruit_id, player_id))
+            self.db.execute("UPDATE players SET equipped=?, transformed=CASE WHEN equipped IS ? THEN transformed ELSE 0 END WHERE id=?", (fruit_id, fruit_id, player_id))
+        return self.state(player_id)
+
+    def transform(self, player_id: str, enabled: bool):
+        state = self.state(player_id)
+        if enabled and FRUITS.get(state["equipped"], {}).get("family") != "zoan":
+            raise ValueError("Equipe uma Zoan para transformar")
+        with self.db:
+            self.db.execute("UPDATE players SET transformed=? WHERE id=?", (int(bool(enabled)), player_id))
         return self.state(player_id)
 
     def stats(self, player_id: str, base_hp: float, base_strength: float):
@@ -66,7 +83,7 @@ class AkumaStore:
             raise ValueError("Atributos inválidos")
         count = len(state["unlocked"])
         fruit = FRUITS.get(state["equipped"], {})
-        return {"count": count, "max_hp": round(base_hp * (1 + .001 * count) * (1 + fruit.get("max_hp_percent", 0))), "strength": base_strength * (1 + .001 * count), "healing_received_percent": fruit.get("healing_received_percent", 0), "impact_resistance_percent": fruit.get("impact_resistance_percent", 0)}
+        return {"count": count, "max_hp": round(base_hp * (1 + .001 * count) * (1 + fruit.get("max_hp_percent", 0))), "strength": base_strength * (1 + .001 * count), "healing_received_percent": fruit.get("healing_received_percent", 0), "impact_resistance_percent": fruit.get("impact_resistance_percent", 0), "move_speed_percent": fruit.get("move_speed_percent", 0), "evasion_percent": fruit.get("evasion_percent", 0), "physical_defense_percent": fruit.get("physical_defense_percent", 0)}
 
     def record_corpse(self, player_id: str, corpse_id: str, instance: str, x: float, y: float):
         self.player(player_id)
@@ -75,7 +92,7 @@ class AkumaStore:
         with self.db:
             self.db.execute("INSERT OR REPLACE INTO corpses VALUES(?,?,?,?,?,?)", (corpse_id, player_id, instance, x, y, self.clock() + 12))
 
-    def cast(self, player_id: str, instance: str, x: float, y: float, enemies=()):
+    def cast(self, player_id: str, instance: str, x: float, y: float, enemies=(), direction=(0, 1)):
         state = self.state(player_id)
         fruit_id = state["equipped"]
         if not fruit_id:
@@ -86,6 +103,8 @@ class AkumaStore:
         if not instance or not all(math.isfinite(v) for v in (x, y)):
             raise ValueError("Posição inválida")
         fruit = FRUITS[fruit_id]
+        if fruit.get("family") == "zoan" and not state["transformed"]:
+            raise ValueError("Transforme-se antes de usar a habilidade Zoan")
         with self.db:
             if fruit_id == "akuma_kuku_kuku":
                 corpse = self.db.execute("SELECT * FROM corpses WHERE player_id=? AND instance=? AND expires>? ORDER BY ((x-?)*(x-?)+(y-?)*(y-?)) LIMIT 1", (player_id, instance, now, x, x, y, y)).fetchone()
@@ -94,7 +113,7 @@ class AkumaStore:
                 self.db.execute("DELETE FROM corpses WHERE id=?", (corpse["id"],))
                 self.db.execute("INSERT INTO food VALUES(?,?,?,?,?,?)", (corpse["id"], player_id, instance, corpse["x"], corpse["y"], float("inf")))
                 effect = {"type": "food", "id": corpse["id"], "x": corpse["x"], "y": corpse["y"], "heal_percent": .15}
-            else:
+            elif fruit_id == "akuma_beri_beri":
                 moved = []
                 for enemy in enemies:
                     ex, ey = float(enemy["x"]), float(enemy["y"])
@@ -104,6 +123,30 @@ class AkumaStore:
                         moved.append({"id": enemy["id"], "x": ex + (ex - x) / distance * 65, "y": ey + (ey - y) / distance * 65})
                 self.db.execute("UPDATE players SET invulnerable_until=? WHERE id=?", (now + 1.5, player_id))
                 effect = {"type": "division", "duration": 1.5, "enemies": moved}
+            elif fruit_id == "akuma_tori_albatroz":
+                self.db.execute("UPDATE players SET high_altitude_until=? WHERE id=?", (now + 5, player_id))
+                effect = {"type": "high_altitude", "duration": 5, "speed_percent": .30, "ignore_ground_traps": True}
+            elif fruit_id == "akuma_uma_uma":
+                dx, dy = map(float, direction)
+                length = math.hypot(dx, dy)
+                if not math.isfinite(length) or length < .5:
+                    raise ValueError("Direção de galope inválida")
+                dx, dy = dx / length, dy / length
+                candidates = []
+                for enemy in enemies:
+                    ex, ey = float(enemy["x"]), float(enemy["y"])
+                    forward = (ex - x) * dx + (ey - y) * dy
+                    lateral = abs((ex - x) * dy - (ey - y) * dx)
+                    if 0 <= forward <= 256 and lateral <= 32:
+                        candidates.append((forward, enemy))
+                hit = min(candidates, key=lambda entry: entry[0])[1] if candidates else None
+                effect = {"type": "gallop", "distance": 256, "direction": [dx, dy], "hit_id": hit["id"] if hit else None, "knockback": 45, "damage_multiplier": .55}
+            else:
+                targets = [enemy for enemy in enemies if math.isfinite(float(enemy["x"])) and math.isfinite(float(enemy["y"])) and math.hypot(float(enemy["x"]) - x, float(enemy["y"]) - y) <= 130]
+                if not targets:
+                    raise ValueError("Nenhum alvo ao alcance da mordida")
+                target = min(targets, key=lambda enemy: math.hypot(float(enemy["x"]) - x, float(enemy["y"]) - y))
+                effect = {"type": "bite", "target_id": target["id"], "slow_percent": .30, "defense_percent": .05, "duration": 3, "damage_multiplier": .85}
             self.db.execute("INSERT OR REPLACE INTO fruit_cooldowns VALUES(?,?,?)", (player_id, fruit_id, now + fruit["cooldown"]))
         return {"effect": effect, "state": self.state(player_id)}
 

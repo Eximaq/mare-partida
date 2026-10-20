@@ -87,6 +87,36 @@ class AkumaBackendTest(unittest.TestCase):
         self.now += 16.5
         self.assertEqual(self.store.cast("hero", "island", 0, 0)["effect"]["type"], "division")
 
+    def test_zoan_transform_stats_skills_and_cooldowns(self):
+        for fruit in ("akuma_tori_albatroz", "akuma_uma_uma", "akuma_inu_dachshund"):
+            self.store.register("hero", fruit)
+        self.assertEqual(self.store.stats("hero", 1000, 100)["count"], 3)
+        self.store.equip("hero", "akuma_tori_albatroz")
+        self.assertEqual(self.store.stats("hero", 1000, 100)["move_speed_percent"], .12)
+        with self.assertRaises(ValueError):
+            self.store.cast("hero", "island", 0, 0)
+        self.store.transform("hero", True)
+        self.assertTrue(self.store.state("hero")["transformed"])
+        self.assertEqual(self.store.cast("hero", "island", 0, 0)["effect"]["type"], "high_altitude")
+        self.assertEqual(self.store.state("hero")["high_altitude_until"], 1005)
+        self.store.equip("hero", "akuma_uma_uma")
+        self.assertFalse(self.store.state("hero")["transformed"])
+        self.store.transform("hero", True)
+        gallop = self.store.cast("hero", "island", 0, 0, [{"id": "first", "x": 70, "y": 5}, {"id": "second", "x": 120, "y": 0}], (1, 0))["effect"]
+        self.assertEqual(gallop["hit_id"], "first")
+        self.assertEqual(gallop["distance"], 256)
+        self.store.equip("hero", "akuma_inu_dachshund")
+        self.store.transform("hero", True)
+        with self.assertRaises(ValueError):
+            self.store.cast("hero", "island", 0, 0, [])
+        bite = self.store.cast("hero", "island", 0, 0, [{"id": "far", "x": 150, "y": 0}, {"id": "near", "x": 30, "y": 0}])["effect"]
+        self.assertEqual(bite["target_id"], "near")
+        self.assertEqual(bite["slow_percent"], .30)
+        self.assertEqual(self.store.state("hero")["cooldowns"], {"akuma_tori_albatroz": 1014, "akuma_uma_uma": 1012, "akuma_inu_dachshund": 1010})
+        reopened = AkumaStore(self.path, clock=lambda: self.now)
+        self.assertTrue(reopened.state("hero")["transformed"])
+        reopened.db.close()
+
 
 if __name__ == "__main__":
     unittest.main()
