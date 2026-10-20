@@ -1,0 +1,277 @@
+{
+  "scope": "Orange Town 21–30",
+  "approval": {
+    "ceiling_generations": 40,
+    "extra_paid_attempts": false
+  },
+  "reported_usage": {
+    "generations": 35
+  },
+  "balance_delta_confirmed": true,
+  "calls": [
+    {
+      "name": "awning-raider",
+      "route": "MCP create_character",
+      "request": {
+        "name": "Saqueador dos Toldos",
+        "description": "Original lean pirate raider with an orange sleeveless waistcoat, dark trousers, teal bandana and short curved cutlass, compact readable silhouette, detailed maritime RPG pixel art.",
+        "mode": "v3",
+        "size": 48,
+        "n_directions": 4,
+        "view": "high top-down"
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 2
+      },
+      "queued": true,
+      "receipt": "id: e90777ef-cecd-4bd0-bf5f-a742cfc0ed75\nname: Saqueador dos Toldos\nmode: v3 (2 generations, 8 directions)\nbody: humanoid\nsize: 48x48px\nview: high top-down\nstyle: single color black outline, medium detail\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"e90777ef-cecd-4bd0-bf5f-a742cfc0ed75\")"
+    },
+    {
+      "name": "buildings",
+      "route": "MCP create_image_pro",
+      "request": {
+        "description": "Four separate original pirate port buildings in a precise two by two sprite sheet, one complete building per 128 by 128 cell with transparent margins: orange tiled timber house, cream plaster seaside tavern with orange awning, red and ivory striped pirate fair tent, timber harbor warehouse with a green roof. High top-down RPG view with visible front facades, crisp detailed pixel art, warm weathered wood, brass and muted cloth, light from upper left, no characters, no text.",
+        "width": 256,
+        "height": 256,
+        "no_background": true
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 10
+      },
+      "queued": true,
+      "receipt": "id: bfa1880d-f2ee-4516-b9ea-7a17427ca7d8\njob_id: bfa1880d-f2ee-4516-b9ea-7a17427ca7d8\nmodel: pro\ndescription: Four separate original pirate port buildings in a precise two by two sprite sheet, one complete building per 128 by 128 cell with transparent margins: orange tiled timber house, cream plaster seaside tavern with orange awning, red and ivory striped pirate fair tent, timber harbor warehouse with a green roof. High top-down RPG view with visible front facades, crisp detailed pixel art, warm weathered wood, brass and muted cloth, light from upper left, no characters, no text.\nsize: 256x256px\ntransparent: True\ncandidates: 1\nasset_id: 85aa778d-bf2e-588b-b5df-b3afc5d9067a\nasset_status: pending (saved when generation completes)\ncost: 10 generations\nstatus: processing (~1-10 min)\n\nhint: get_image(job_id=\"bfa1880d-f2ee-4516-b9ea-7a17427ca7d8\")"
+    },
+    {
+      "name": "street",
+      "route": "MCP create_image_pixen",
+      "request": {
+        "description": "Seamless warm beige cobblestone street surface, broad worn paving stones with sparse sandy seams, low contrast readable ground, crisp detailed pixel art, uniform overhead lighting, no objects or symbols.",
+        "width": 64,
+        "height": 64,
+        "no_background": false,
+        "view": "high top-down"
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      },
+      "queued": true,
+      "receipt": "id: 3cd84d09-1fce-4a2b-b9f5-ed5ce272b8e7\njob_id: 3cd84d09-1fce-4a2b-b9f5-ed5ce272b8e7\nmodel: pixen\ndescription: Seamless warm beige cobblestone street surface, broad worn paving stones with sparse sandy seams, low contrast readable ground, crisp detailed pixel art, uniform overhead lighting, no objects or symbols.\nsize: 64x64px\ntransparent: False\nasset_id: af052218-56d4-5976-83a3-0e01d590bc77\nasset_status: pending (saved when generation completes)\ncost: 1 generation\nstatus: processing (~10-40s)\n\nhint: get_image(job_id=\"3cd84d09-1fce-4a2b-b9f5-ed5ce272b8e7\")"
+    },
+    {
+      "name": "dock-bruiser",
+      "route": "MCP create_character",
+      "request": {
+        "name": "Brutamontes do Cais",
+        "description": "Original broad dockside pirate bruiser, striped cream shirt, brown leather apron, heavy wooden mallet, compact powerful silhouette, detailed maritime RPG pixel art.",
+        "mode": "v3",
+        "size": 48,
+        "n_directions": 4,
+        "view": "high top-down"
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 2
+      },
+      "queued": true,
+      "receipt": "id: 6de90185-d387-4097-88e7-2b13adec684d\nname: Brutamontes do Cais\nmode: v3 (2 generations, 8 directions)\nbody: humanoid\nsize: 48x48px\nview: high top-down\nstyle: single color black outline, medium detail\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"6de90185-d387-4097-88e7-2b13adec684d\")"
+    },
+    {
+      "name": "square-gunner",
+      "route": "MCP create_character",
+      "request": {
+        "name": "Artilheiro da Praça",
+        "description": "Original slender pirate powder gunner, ochre coat, navy sailor cap, small handheld mortar and red powder satchel, compact readable silhouette, detailed maritime RPG pixel art.",
+        "mode": "v3",
+        "size": 48,
+        "n_directions": 4,
+        "view": "high top-down"
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 2
+      },
+      "queued": true,
+      "receipt": "id: fccb04ee-b658-436b-ac5e-39df68670f89\nname: Artilheiro da Praça\nmode: v3 (2 generations, 8 directions)\nbody: humanoid\nsize: 48x48px\nview: high top-down\nstyle: single color black outline, medium detail\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"fccb04ee-b658-436b-ac5e-39df68670f89\")"
+    },
+    {
+      "name": "captain-spark",
+      "route": "MCP create_character",
+      "request": {
+        "name": "Capitão Fagulha",
+        "description": "Original imposing pirate fair captain, burgundy long coat with brass trim, orange sash, dark tricorn and heavy iron hammer, confident broad silhouette, detailed maritime RPG pixel art.",
+        "mode": "v3",
+        "size": 48,
+        "n_directions": 4,
+        "view": "high top-down"
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 2
+      },
+      "queued": true,
+      "receipt": "id: f55bd397-981a-40ee-8c72-363baaab28b1\nname: Capitão Fagulha\nmode: v3 (2 generations, 8 directions)\nbody: humanoid\nsize: 48x48px\nview: high top-down\nstyle: single color black outline, medium detail\nstatus: processing (~3-5 min)\n\nhint: get_character(character_id=\"f55bd397-981a-40ee-8c72-363baaab28b1\")"
+    },
+    {
+      "name": "awning-raider-walk",
+      "route": "MCP animate_character",
+      "request": {
+        "character_id": "e90777ef-cecd-4bd0-bf5f-a742cfc0ed75",
+        "mode": "v3",
+        "frame_count": 8,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "animation_name": "walk",
+        "action_description": "Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop."
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 4
+      },
+      "queued": true,
+      "receipt": "character: e90777ef-cecd-4bd0-bf5f-a742cfc0ed75\nanimation: v3 custom (Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.)\ndirections: south, north, west, east (4 jobs)\njob_ids: south=8a409a3d-daee-4639-9b80-92fd740e6736, north=539a4de3-d71c-42f7-a7de-8609482382d7, west=533eb0ab-7d5a-45e6-bccd-6cc3198ba901, east=15a00f61-4305-4b6b-8fb4-367a1020ac26\ngroup: 1522b0da-39ee-4602-85af-d233dc5d6947\nframes: 9 (1 reference + 8 animated)\ncanvas: south 64x64, north 64x64, west 64x64, east 64x64 (frames are stored at this size: the character plus room to move)\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"e90777ef-cecd-4bd0-bf5f-a742cfc0ed75\")\nadd more directions to this group: animate_character(character_id=\"e90777ef-cecd-4bd0-bf5f-a742cfc0ed75\", action_description=\"Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.\", animation_group_id=\"1522b0da-39ee-4602-85af-d233dc5d6947\", directions=[...])"
+    },
+    {
+      "name": "dock-bruiser-walk",
+      "route": "MCP animate_character",
+      "request": {
+        "character_id": "6de90185-d387-4097-88e7-2b13adec684d",
+        "mode": "v3",
+        "frame_count": 8,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "animation_name": "walk",
+        "action_description": "Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop."
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 4
+      },
+      "queued": true,
+      "receipt": "character: 6de90185-d387-4097-88e7-2b13adec684d\nanimation: v3 custom (Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.)\ndirections: south, north, west, east (4 jobs)\njob_ids: south=0400a292-31a7-4025-ab16-59a29002fc73, north=d7f118a4-dbe2-45ac-8e80-110cae261c56, west=8bda3da0-3340-4fae-affd-e78fa2130878, east=64426c2e-0012-4bd6-9df6-0ae5fedd11aa\ngroup: 106f5e03-b623-4483-bf7f-c41520cf837a\nframes: 9 (1 reference + 8 animated)\ncanvas: south 68x68, north 68x68, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"6de90185-d387-4097-88e7-2b13adec684d\")\nadd more directions to this group: animate_character(character_id=\"6de90185-d387-4097-88e7-2b13adec684d\", action_description=\"Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.\", animation_group_id=\"106f5e03-b623-4483-bf7f-c41520cf837a\", directions=[...])"
+    },
+    {
+      "name": "square-gunner-walk",
+      "route": "MCP animate_character",
+      "request": {
+        "character_id": "fccb04ee-b658-436b-ac5e-39df68670f89",
+        "mode": "v3",
+        "frame_count": 8,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "animation_name": "walk",
+        "action_description": "Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop."
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 4
+      },
+      "queued": true,
+      "receipt": "character: fccb04ee-b658-436b-ac5e-39df68670f89\nanimation: v3 custom (Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.)\ndirections: south, north, west, east (4 jobs)\njob_ids: south=b6da96a2-032a-42f3-ba7c-69f45bec95b0, north=88c86e7a-7fca-4bec-85e0-2c652a31f6b1, west=b235dc6f-2640-4129-8ae4-53e1c5d3062b, east=f8d81f9b-8d41-4cc7-87e8-87a87947a322\ngroup: b2ff2db7-7bc9-4665-921b-8ce57dc51679\nframes: 9 (1 reference + 8 animated)\ncanvas: south 68x68, north 68x68, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"fccb04ee-b658-436b-ac5e-39df68670f89\")\nadd more directions to this group: animate_character(character_id=\"fccb04ee-b658-436b-ac5e-39df68670f89\", action_description=\"Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.\", animation_group_id=\"b2ff2db7-7bc9-4665-921b-8ce57dc51679\", directions=[...])"
+    },
+    {
+      "name": "captain-spark-walk",
+      "route": "MCP animate_character",
+      "request": {
+        "character_id": "f55bd397-981a-40ee-8c72-363baaab28b1",
+        "mode": "v3",
+        "frame_count": 8,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "animation_name": "walk",
+        "action_description": "Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop."
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 0
+      },
+      "queued": false,
+      "receipt": "error: need 4 job slots but only 2 available (6/8 used)\n\nhint: wait for jobs to finish (~2-4 min each), then retry, or start 2 now with directions=[...] and add the rest to the same group afterwards (animation_group_id)"
+    },
+    {
+      "name": "captain-spark-walk",
+      "route": "MCP animate_character",
+      "request": {
+        "character_id": "f55bd397-981a-40ee-8c72-363baaab28b1",
+        "mode": "v3",
+        "frame_count": 8,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ],
+        "animation_name": "walk",
+        "action_description": "Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop."
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 4
+      },
+      "queued": true,
+      "receipt": "character: f55bd397-981a-40ee-8c72-363baaab28b1\nanimation: v3 custom (Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.)\ndirections: south, north, west, east (4 jobs)\njob_ids: south=f0915303-a575-473a-8c40-7df312345e03, north=7c7aa877-557e-4d7e-8718-d04e0f865339, west=ef4ddbd1-58a2-469c-b478-a21d8f5100fb, east=41e9137b-c816-44ed-a760-ba6b6ed477ed\ngroup: 909d24bd-8610-40e4-9eb3-b7173b2749c9\nframes: 9 (1 reference + 8 animated)\ncanvas: south 68x68, north 68x68, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 4 generations (1/dir x 4)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"f55bd397-981a-40ee-8c72-363baaab28b1\")\nadd more directions to this group: animate_character(character_id=\"f55bd397-981a-40ee-8c72-363baaab28b1\", action_description=\"Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.\", animation_group_id=\"909d24bd-8610-40e4-9eb3-b7173b2749c9\", directions=[...])"
+    }
+  ],
+  "assembly": {
+    "pixels": "Source pixels preserved; transparent padding and uniform-grid assembly only. No resizing or temporal trimming.",
+    "directions": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walking_frames": 9,
+    "reference_frames": 1,
+    "generated_frames": 8,
+    "idle_subject": [
+      48,
+      48
+    ],
+    "walking_canvases": {
+      "awning-raider": [
+        64,
+        64
+      ],
+      "dock-bruiser": [
+        68,
+        68
+      ],
+      "square-gunner": [
+        68,
+        68
+      ],
+      "captain-spark": [
+        68,
+        68
+      ]
+    },
+    "runtime": "assets/orange-town/manifest.json",
+    "verification": "inspection.json; PNG sheet/source pixel equality; GIF loop/disposal and coalesced RGBA equality verified."
+  },
+  "prompt_translations_pt": {
+    "awning-raider": "Pirata magro de colete laranja, calças escuras, bandana verde-azulada e alfanje curto; silhueta compacta e pixel art marítima detalhada.",
+    "dock-bruiser": "Pirata portuário largo, camisa clara listrada, avental de couro e malho de madeira; silhueta forte e compacta.",
+    "square-gunner": "Artilheiro pirata esguio, casaco ocre, chapéu naval azul, pequeno morteiro e bolsa vermelha de pólvora.",
+    "captain-spark": "Capitão pirata imponente, casaco vinho com latão, faixa laranja, tricórnio escuro e martelo pesado de ferro.",
+    "buildings": "Quatro construções originais em grade 2×2: casa de telhado laranja, taverna clara com toldo laranja, tenda vermelha/marfim e armazém verde; células128, vista de RPG superior, madeira, latão e tecidos, luz superior esquerda, sem personagens/texto.",
+    "street": "Calçamento bege contínuo com pedras grandes gastas, juntas arenosas, baixo contraste, iluminação uniforme e pixel art nítida; sem objetos ou símbolos."
+  }
+}

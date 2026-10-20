@@ -1,0 +1,179 @@
+[
+  {
+    "_comment_prompt": "Implementar Orange Town, ilha de caçada Nv.21–30, com cenários e quatro monstros originais em pixel art marítima, caminhadas cardeais e orçamento máximo de 40 gerações, sem tentativas extras.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/orange-town",
+      "output_collision_policy": "create_unique"
+    },
+    "TASK": {
+      "instruction": "Confirm explicit run approval and authenticated MCP access, then create an empty unique output directory. Stop before paid calls if unavailable."
+    }
+  },
+  {
+    "_comment": "buildings",
+    "MCP create_image_pro": {
+      "description": "Four separate original pirate port buildings in a precise two by two sprite sheet, one complete building per 128 by 128 cell with transparent margins: orange tiled timber house, cream plaster seaside tavern with orange awning, red and ivory striped pirate fair tent, timber harbor warehouse with a green roof. High top-down RPG view with visible front facades, crisp detailed pixel art, warm weathered wood, brass and muted cloth, light from upper left, no characters, no text.",
+      "width": 256,
+      "height": 256,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_image with the immediately returned job ID, download the original image, inspect the requested geometry and transparency. Do not retry automatically.",
+      "outputs": [
+        "buildings.png"
+      ],
+      "verify": "Buildings are four distinct complete cells in a 2×2 transparent atlas; street is a readable native64 opaque ground surface, as applicable."
+    }
+  },
+  {
+    "_comment": "street",
+    "MCP create_image_pixen": {
+      "description": "Seamless warm beige cobblestone street surface, broad worn paving stones with sparse sandy seams, low contrast readable ground, crisp detailed pixel art, uniform overhead lighting, no objects or symbols.",
+      "width": 64,
+      "height": 64,
+      "no_background": false,
+      "view": "high top-down"
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_image with the immediately returned job ID, download the original image, inspect the requested geometry and transparency. Do not retry automatically.",
+      "outputs": [
+        "street.png"
+      ],
+      "verify": "Buildings are four distinct complete cells in a 2×2 transparent atlas; street is a readable native64 opaque ground surface, as applicable."
+    }
+  },
+  {
+    "_comment": "awning-raider",
+    "MCP create_character": {
+      "name": "Saqueador dos Toldos",
+      "description": "Original lean pirate raider with an orange sleeveless waistcoat, dark trousers, teal bandana and short curved cutlass, compact readable silhouette, detailed maritime RPG pixel art.",
+      "mode": "v3",
+      "size": 48,
+      "n_directions": 4,
+      "view": "high top-down"
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_character with the fresh returned ID until complete including pending preparation. Download all original rotations and inspect all directions. Inspect the first character before proceeding to the remaining characters.",
+      "outputs": [
+        "awning-raider/source.zip"
+      ],
+      "verify": "Readable coherent 48px subject, stable identity, no missing or reversed directions; no resizing."
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Call MCP animate_character on the fresh character just created, with character_id set to that returned ID and these exact remaining arguments: {\"mode\": \"v3\", \"frame_count\": 8, \"directions\": [\"south\", \"north\", \"west\", \"east\"], \"animation_name\": \"walk\", \"action_description\": \"Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.\"}. Poll get_character until every direction completes. If slots are unavailable, wait and submit the same authorized call when capacity exists; do not change directions or create an extra animation. Download the updated original export.",
+      "outputs": [
+        "awning-raider/animated-source.zip"
+      ],
+      "verify": "Four cardinal walking directions, original order, eight generated frames plus the reference if returned. Preserve actual padded canvas dimensions and all originals; inspect every frame."
+    }
+  },
+  {
+    "_comment": "dock-bruiser",
+    "MCP create_character": {
+      "name": "Brutamontes do Cais",
+      "description": "Original broad dockside pirate bruiser, striped cream shirt, brown leather apron, heavy wooden mallet, compact powerful silhouette, detailed maritime RPG pixel art.",
+      "mode": "v3",
+      "size": 48,
+      "n_directions": 4,
+      "view": "high top-down"
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_character with the fresh returned ID until complete including pending preparation. Download all original rotations and inspect all directions. Inspect the first character before proceeding to the remaining characters.",
+      "outputs": [
+        "dock-bruiser/source.zip"
+      ],
+      "verify": "Readable coherent 48px subject, stable identity, no missing or reversed directions; no resizing."
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Call MCP animate_character on the fresh character just created, with character_id set to that returned ID and these exact remaining arguments: {\"mode\": \"v3\", \"frame_count\": 8, \"directions\": [\"south\", \"north\", \"west\", \"east\"], \"animation_name\": \"walk\", \"action_description\": \"Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.\"}. Poll get_character until every direction completes. If slots are unavailable, wait and submit the same authorized call when capacity exists; do not change directions or create an extra animation. Download the updated original export.",
+      "outputs": [
+        "dock-bruiser/animated-source.zip"
+      ],
+      "verify": "Four cardinal walking directions, original order, eight generated frames plus the reference if returned. Preserve actual padded canvas dimensions and all originals; inspect every frame."
+    }
+  },
+  {
+    "_comment": "square-gunner",
+    "MCP create_character": {
+      "name": "Artilheiro da Praça",
+      "description": "Original slender pirate powder gunner, ochre coat, navy sailor cap, small handheld mortar and red powder satchel, compact readable silhouette, detailed maritime RPG pixel art.",
+      "mode": "v3",
+      "size": 48,
+      "n_directions": 4,
+      "view": "high top-down"
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_character with the fresh returned ID until complete including pending preparation. Download all original rotations and inspect all directions. Inspect the first character before proceeding to the remaining characters.",
+      "outputs": [
+        "square-gunner/source.zip"
+      ],
+      "verify": "Readable coherent 48px subject, stable identity, no missing or reversed directions; no resizing."
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Call MCP animate_character on the fresh character just created, with character_id set to that returned ID and these exact remaining arguments: {\"mode\": \"v3\", \"frame_count\": 8, \"directions\": [\"south\", \"north\", \"west\", \"east\"], \"animation_name\": \"walk\", \"action_description\": \"Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.\"}. Poll get_character until every direction completes. If slots are unavailable, wait and submit the same authorized call when capacity exists; do not change directions or create an extra animation. Download the updated original export.",
+      "outputs": [
+        "square-gunner/animated-source.zip"
+      ],
+      "verify": "Four cardinal walking directions, original order, eight generated frames plus the reference if returned. Preserve actual padded canvas dimensions and all originals; inspect every frame."
+    }
+  },
+  {
+    "_comment": "captain-spark",
+    "MCP create_character": {
+      "name": "Capitão Fagulha",
+      "description": "Original imposing pirate fair captain, burgundy long coat with brass trim, orange sash, dark tricorn and heavy iron hammer, confident broad silhouette, detailed maritime RPG pixel art.",
+      "mode": "v3",
+      "size": 48,
+      "n_directions": 4,
+      "view": "high top-down"
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_character with the fresh returned ID until complete including pending preparation. Download all original rotations and inspect all directions. Inspect the first character before proceeding to the remaining characters.",
+      "outputs": [
+        "captain-spark/source.zip"
+      ],
+      "verify": "Readable coherent 48px subject, stable identity, no missing or reversed directions; no resizing."
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Call MCP animate_character on the fresh character just created, with character_id set to that returned ID and these exact remaining arguments: {\"mode\": \"v3\", \"frame_count\": 8, \"directions\": [\"south\", \"north\", \"west\", \"east\"], \"animation_name\": \"walk\", \"action_description\": \"Walk in place in the current facing direction, alternating steps and arm swing. Keep body size, outfit and facing stable throughout the loop.\"}. Poll get_character until every direction completes. If slots are unavailable, wait and submit the same authorized call when capacity exists; do not change directions or create an extra animation. Download the updated original export.",
+      "outputs": [
+        "captain-spark/animated-source.zip"
+      ],
+      "verify": "Four cardinal walking directions, original order, eight generated frames plus the reference if returned. Preserve actual padded canvas dimensions and all originals; inspect every frame."
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Assemble native transparent sheets with directions south,north,west,east as rows and original animation frames as columns. Preserve pixels and frame order; derive canvas sizes from returned images, anchor to reference feet. Split atlas quadrants without resizing. Create separate grid inspection copies and transparent looping GIFs per direction; verify disposal and coalesced frames against PNG originals. Integrate the approved art via assets/orange-town/manifest.json.",
+      "inputs": [
+        "buildings.png",
+        "street.png"
+      ],
+      "outputs": [
+        "inspection.json"
+      ],
+      "verify": "All four monsters load in-game, idle/walk transitions do not jump, frames remain intact, buildings are contained, all paths remain traversable; native sizes and transparency validated."
+    }
+  }
+]

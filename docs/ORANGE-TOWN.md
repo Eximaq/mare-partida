@@ -1,10 +1,10 @@
-# Orange Town — implementação em andamento
+# Orange Town — caçada Nv.21–30
 
 Branch: `feature/orange-town-21-30`, base `1d8157a`.
 
-## Estado e próximo passo
+## Entrega
 
-Geometria, regras e integração implementadas como rascunho. **Não publicar/mesclar ainda:** novos cenários, sprites e caminhadas aguardam autorização do lote PixelLab de 35–40 gerações (teto 40, sem retries). Nenhuma geração consumida nesta etapa. O renderer usa arte existente provisoriamente, e o preview do chefe fica Indisponível até haver imagem válida. O manifesto registra `ready:false`.
+Terceira ilha implementada na branch, com cenário próprio, quatro monstros e caminhadas reais. Lote PixelLab aprovado com teto40, consumo confirmado de **35 gerações**, sem novas tentativas pagas. Uma requisição recusada por capacidade não iniciou geração; o mesmo pedido autorizado foi enviado quando havia vagas. O manifesto registra `ready:true`, e os quatro personagens carregaram no navegador e no build estático sem imagens ausentes. Revisão pelo PR28 antes de merge; esta entrega não publica automaticamente na main/Pages.
 
 ## Composição
 
@@ -21,18 +21,32 @@ Fórmulas de HP/ataque/defesa e XP existentes mantidas, usando nível do encontr
 ## Arquitetura
 
 - `orange-world.js`: terreno, rotas, colliders e fachadas, sem DOM.
-- `orange-renderer.js`: composição/caches de terreno, props e futuros sprites; animação de água e retorno com movimento reduzido.
+- `orange-renderer.js`: composição/caches de terreno, props e sprites direcionais; animação de água e retorno com movimento reduzido.
 - `hunt-system.js`: região/encontros/economia; migração inclui progresso novo zerado sem atribuir abates antigos.
 - `archipelago.js`, `world-system.js`, `game.js`: entrada, cenas, spawns, rota, nomes, contratos e retorno.
-- `assets/orange-town/manifest.json`: futura arte aprovada, ainda não final.
+- `assets/orange-town/manifest.json`: arte aprovada, âncoras e folhas de quatro direções. Carregamento dos overrides ocorre depois das fontes de fallback, evitando corrida; diagnóstico informa imagens ausentes.
 - Laboratório DEV recebeu viagem Nv.21+ sem alterar isolamento de save.
+
+O diário da HUD prioriza os contratos próprios enquanto o jogador está em Orange Town. Não mostra objetivos antigos de magma sob o nome da nova ilha. IDs e resgates anteriores continuam preservados.
+
+## Arte e origem
+
+MCP `create_image_pro`: atlas transparente256, quatro construções em células128, 10 gerações. MCP `create_image_pixen`: calçamento nativo64, 1 geração. Quatro `create_character` v3: poses nativas48, oito direções entregues pelo custo previsto de 8 gerações no total. Quatro `animate_character` v3: quatro direções cardeais, 8 quadros gerados + referência inicial por direção, 16 gerações. Total35, confirmado também pela diferença de saldo do lote; nenhum valor de saldo armazenado no repositório.
+
+Caminhadas do Saqueador têm canvas64; os outros três,68, com margem transparente ao redor do corpo48. Pixels originais e ordem dos nove quadros preservados; não houve redimensionamento, espelhamento, corte temporal ou retoque. Verificada a igualdade do quadro de referência com a pose48 centralizada e das folhas montadas com cada PNG fonte. GIFs transparentes locais usam loop infinito, descarte explícito e comparação dos quadros recompostos; grades coloridas são apenas auxiliares de inspeção. Ataques usam pose direcional/avisos de combate, sem afirmar que foram geradas animações de ataque.
+
+Solicitações e recibos exatos: `pixellab-pip-generations/orange-town-20261020/calls.json`. Manifesto de origem, traduções e consumo: `manifest.json` na mesma pasta; receita portátil: `orange-town.blueprint.json`. Originais completos e prévias ficam preservados localmente nessa pasta; o Git recebe o atlas, os pisos, folhas de poses e caminhadas, receita e registros necessários, sem centenas de PNGs/GIFs de inspeção. Todos os prompts foram elaborados a partir do pedido e aprovados antes do consumo; seed omitido, sem imagem de referência externa.
 
 ## Validação e limites
 
-21 suítes Node e sintaxe de todos os scripts raiz passaram, incluindo novos testes de dimensões, caminhos reais nas duas direções, fachadas, colisões e câmera. Catálogo/entrada Nv.21, perfis Nv.21–30, primeira vitória/rollback e migração seguem testes de caçada expandidos. A suíte `tests/orange_browser.py` verifica viagem, chegada, cinco rotas, HUD responsiva e persistência em contextos isolados. Viagem/rota/persistência passaram em 1920×1080, 1366×768, 1280×720, 393×852 e 320×568; sem erros JavaScript observados. Build e cache passaram com 41 recursos versionados e saves preservados. Capturas locais em `docs/evidence-orange-town/` (rascunho visual, fora do Git).
+22 suítes Node e sintaxe de todos os scripts raiz passaram, incluindo dimensões, caminhos reais nas duas direções, fachadas, colisões, câmera e as quatro folhas de animação completas. Catálogo/entrada Nv.21, perfis Nv.21–30, primeira vitória/rollback e migração seguem testes de caçada expandidos.
 
-Ainda faltam: aprovação/geração/inspeção de arte, integração dos quatro personagens/caminhadas e cenário, revisão visual final, combate real com o chefe e medição da progressão 21–30. Não chamar a ilha de finalizada antes desses passos.
+`python -X utf8 tests/orange_browser.py`: viagem/rota/diário/persistência em 1920×1080,1366×768,1280×720,393×852 e320×568; caminhada real até a arena, chefe Nv.30, aviso de ataque, vitória com invencibilidade DEV, resgate único, rollback após falha de storage, reload e isolamento do save normal. Sem erros JavaScript observados. A invencibilidade valida o fluxo, não a dificuldade do chefe.
+
+`python -X utf8 tests/orange_art_browser.py`: composição completa, quatro monstros carregados e nenhuma imagem ausente, inclusive servindo `dist/`. Inspeção visual dos quatro conjuntos de poses, todos os quadros/direções, fachadas e HUD desktop/móvel. Build e cache passaram com41 recursos versionados e saves preservados. Capturas/resultados locais em `docs/evidence-orange-town/`, fora do Git.
+
+`python -X utf8 tests/orange_classes_browser.py`: amostras reais de30s nas sete classes em Nv.21, arma épica tier4, 100 pontos70/30, armadura inicial, 30 poções, sem talentos atribuídos/Haki. Obtiveram4–15 abates e572–2253 XP, permanecendo com vida. Não mede duração da campanha21–30, nem afirma igualdade de desempenho entre funções. `node tools/measure_hunt_balance.cjs` incluiNv.21/25/30: TTK básico analítico1,31–10,65s, chefe5,86–73,01s, com atributos70/30 e equipamento inicial ATQ6/DEF7/HP24, sem skills/talentos/deslocamento/poções. Esses números têm fixtures distintas e não devem ser somados como tempo real de progressão.
 
 ## Resumo para o colaborador
 
-Nova área canônica `orange`, sem renomear `beach`/`swamp`. O mapa tem módulo próprio e mantém os contratos de navegação; game.js recebeu apenas os ganchos necessários. A branch inclui a main vigente com as frutas Rank E e os ajustes recentes do inventário. Evitar editar simultaneamente os blocos de regiões/renderer/contratos em game.js sem sincronizar as branches. Arte final e publicação ainda pendentes; não habilitar mapas 31+ ou Impel Down nesta sprint.
+Entregamos Orange Town Nv.21–30: mapa32×32, cinco setores, oito construções posicionadas, três inimigos e Capitão Fagulha, arte PixelLab e caminhada em quatro direções, drops tier5–6, dois contratos e prêmio único de primeira vitória. Nova área canônica `orange`, sem renomear `beach`/`swamp`; mapa e renderer em módulos próprios. Saves, frutas Rank E e inventário do colaborador preservados. Validado em22 suítes Node, cinco resoluções, combate/recompensas e buildPages. Revisão no PR28; evitar editar simultaneamente regiões/renderer/contratos de game.js sem sincronizar branches. Mapas31+ e Impel Down seguem bloqueados.

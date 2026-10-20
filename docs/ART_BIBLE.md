@@ -20,4 +20,10 @@ Os PNGs fonte permanecem intactos. Contraste/iluminação e rotações dos pisos
 
 Fontes e IDs das gerações: `assets/ruinas-brasas/provenance.json`. Configuração de renderização: `assets/ruinas-brasas/manifest.json`.
 
+## Orange Town — 20/10/2026
+
+Quatro monstros novos com poses nativas 48×48, usando Ryuma/Bento como referência de escala aparente, contornos escuros e paleta marítima quente. O MCP v3 entregou oito poses pelo custo previsto; as quatro cardeais são usadas no jogo, preservando as oito originais. Caminhadas possuem oito quadros gerados mais a referência inicial, na ordem original, sem recorte temporal, inversão ou ping-pong. Os canvases de caminhada são 64×64 ou 68×68 para acomodar o corpo de 48px e movimento; não foram redimensionados. Pivô calculado pelos pés do quadro de referência, escala de renderização 1,5 e interpolação desligada.
+
+Atlas de construções transparente 256×256, quatro células 128×128; divisão por quadrantes autorizada, sem redimensionar os arquivos. Piso de calçamento nativo64. Água, areia, grama, palmeiras e carga reutilizam arte existente; madeira do cais reutiliza o atlas procedural já existente do porto. Ataques usam a pose direcional e avisos reais de combate; o lote não incluiu animações de ataque. Manifesto de runtime em `assets/orange-town/manifest.json`; solicitações, recibos e receita em `pixellab-pip-generations/orange-town-20261020/`.
+
 Revisão de composição de 19/10/2026: mapa 32×32 tiles de 64px, sem reduzir as artes. Edifícios renderizados em escala 1,5; uma ponte diagonal em escala 2 alinhada ao vão e às margens. Paredões e degraus reutilizam a textura de basalto/calçamento em composição geométrica no renderizador, com colisões e passagens correspondentes. Nenhuma geração adicional.

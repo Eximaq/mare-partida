@@ -1674,7 +1674,7 @@ function applySceneHudLayout(){
     $('miniEnergyText').textContent=fmt(game.energy)+' / '+fmt(s.maxEnergy);
     $('miniXPText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));
     $('miniXP').style.width=(100*clamp(game.xp/xpNeeded(game.level),0,1)).toFixed(1)+'%';
-    const quest=questDefs.find(q=>!game.claimed.includes(q.id));
+    const quest=questDefs.find(q=>!game.claimed.includes(q.id)&&(scene!=='hunt'||game.area!=='orange'||q.area==='orange'));
     $('journeyTitle').textContent=quest?quest.title:'Contratos concluídos';
     const progress=quest?Math.min(quest.target,questProgress(quest)):1,total=quest?quest.target:1;
     $('journeyProgress').textContent=quest?progress+' / '+total:'Boa viagem, capitão';

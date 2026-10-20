@@ -1,17 +1,17 @@
 'use strict';
 /* Composition only: original terrain/prop pixels are loaded from project assets. */
 ((root)=>{
-  const O=root.MareOrange,images={},characters={},chunks=new Map();let manifest={ready:false},woodSource=null,revision=0;
+  const O=root.MareOrange,images={},characters={},chunks=new Map(),failed=new Set();let manifest={ready:false},woodSource=null,revision=0;
   const ready=i=>i?.complete&&i.naturalWidth>0;
-  function image(key,url){return new Promise(resolve=>{const i=new Image();i.onload=()=>{images[key]=i;revision++;chunks.clear();resolve(i);};i.onerror=()=>resolve(null);i.src=url;});}
+  function image(key,url){return new Promise(resolve=>{const i=new Image();i.onload=()=>{images[key]=i;failed.delete(key);revision++;chunks.clear();resolve(i);};i.onerror=()=>{failed.add(key);resolve(null);};i.src=url;});}
   const boot=Promise.all([
     image('water','assets/ruinas-brasas/water.png'),
     image('sand','pixellab-pip-generations/ilha-porto-20261018/ocean-sand.png'),
     image('grass','pixellab-pip-generations/ilha-porto-20261018/sand-grass.png'),
     image('street','assets/ruinas-brasas/street.png'),
     image('buildings','pixellab-pip-generations/ilha-porto-20261018/port-buildings.png'),
-    image('harbor','pixellab-pip-generations/porto-compacto-20261018/harbor-props.png'),
-    fetch('assets/orange-town/manifest.json').then(r=>r.ok?r.json():null).then(async data=>{
+    image('harbor','pixellab-pip-generations/porto-compacto-20261018/harbor-props.png')
+  ]).then(()=>fetch('assets/orange-town/manifest.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(async data=>{
       if(!data)return;manifest=data;
       if(data.street)await image('street',data.street.url);
       if(data.buildings)await image('buildings',data.buildings.url);
@@ -19,8 +19,7 @@
         const sheets={};for(const [name,a] of Object.entries(asset.animations||{}))sheets[name]=await image(id+'-'+name,a.url);
         characters[id]={...asset,sheets};
       }
-    }).catch(()=>null)
-  ]);
+    }).catch(()=>null));
   function tile(c,key,x,y){
     const img=images[key];if(!ready(img))return;
     if(key==='sand'||key==='grass')for(let dy=0;dy<64;dy+=32)for(let dx=0;dx<64;dx+=32)c.drawImage(img,0,96,32,32,x+dx,y+dy,32,32);
@@ -65,5 +64,5 @@
     const r=O.returnPoint;c.save();c.strokeStyle='#bce0d2';c.lineWidth=2;c.beginPath();c.ellipse(r.x,r.y,reduced?27:27+Math.sin(time*2),11,0,0,Math.PI*2);c.stroke();c.textAlign='center';c.font='bold 11px Trebuchet MS';c.fillStyle='#f4e3b7';c.fillText('Voltar ao porto',r.x,r.y+28);c.restore();
   }
   function setWoodSource(source){if(!woodSource){woodSource=source;revision++;chunks.clear();}}
-  root.MareOrangeRenderer={boot,ground,prop,monster,environment,setWoodSource,stats:()=>({chunks:chunks.size,artReady:manifest.ready,monsters:Object.keys(characters).length})};
+  root.MareOrangeRenderer={boot,ground,prop,monster,environment,setWoodSource,stats:()=>({chunks:chunks.size,artReady:manifest.ready&&failed.size===0,monsters:Object.keys(characters).length,missing:[...failed]})};
 })(globalThis);

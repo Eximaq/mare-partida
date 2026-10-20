@@ -1,10 +1,10 @@
 # Histórico de desenvolvimento
 
-## 20/10/2026 — Orange Town 21–30 (rascunho em andamento)
+## 20/10/2026 — Orange Town 21–30
 
 - Branch `feature/orange-town-21-30`, base `1d8157a`. Implementados mapa 32×32, cinco setores, oito fachadas conectadas, navegação/câmera, entrada Nv.21, região 21–30, contratos e primeira vitória. Preservadas as alterações do colaborador e mapas anteriores.
-- Arte existente reutilizada provisoriamente; manifesto `ready:false`, preview do chefe Indisponível. Lote PixelLab 35–40 gerações aguardando aprovação; consumo zero nesta etapa. Não publicar como final.
-- Regras e pendências em `docs/ORANGE-TOWN.md`. Novos testes geométricos e testes de caçada/catálogo passam. Revisão visual e boss fight finais dependem da arte.
+- Arte própria integrada: quatro construções, piso64, quatro monstros48 e caminhadas cardeais com nove quadros (referência +8), mantendo os pixels/canvases transparentes originais. Consumo35 de teto40. Retrato do Capitão Fagulha no Arquipélago; manifesto `ready:true`; diário mostra os contratos da ilha.
+- 22 suítes Node, sintaxe, build/cache41 recursos, cinco resoluções, carregamento da arte em dist, combate real do chefe em DEV, resgate/rollback/reload e amostras30s das sete classes passaram. Regras, fontes e limites em `docs/ORANGE-TOWN.md`. Capturas e originais completos preservados localmente; sem evidências em massa no Git. Revisão via PR28, sem merge automático.
 
 
 ## 20/10/2026 — Mochila limitada a sete fileiras

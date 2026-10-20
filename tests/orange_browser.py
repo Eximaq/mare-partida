@@ -24,6 +24,7 @@ with sync_playwright() as p:
     for w,h in [(1920,1080),(1366,768),(1280,720),(393,852),(320,568)]:
         c,q=page(b,high,(w,h));inspect(q);q.locator('[data-travel-area=orange]').click();q.clock.run_for(250)
         d=state(q);assert d['map']=={'id':'orange','width':2048,'height':2048};assert d['walkable'];assert d['alive']>0
+        assert q.locator('#journeyTitle').inner_text()=='Orange Town: recuperar o comércio'
         assert all(21<=m['level']<=22 and m['area']=='orange' and m['skin'] in ['awning-raider','dock-bruiser'] for m in d['mobs']),d['mobs']
         if d['autoPlay']:q.locator('#autoToggle').click()
         q.screenshot(path=str(OUT/f'arrival-{w}.png'))
@@ -32,5 +33,33 @@ with sync_playwright() as p:
         assert q.locator('#dialogBody').evaluate('e=>e.scrollWidth<=e.clientWidth+1')
         q.screenshot(path=str(OUT/f'route-{w}.png'));q.locator('[data-hunt-sector=rua]').click();assert state(q)['path'];q.clock.run_for(3000);assert state(q)['walkable']
         q.locator('#returnLobby').click();q.reload();q.wait_for_function('typeof __mareDiagnostics==="function"');g=saved(q);assert g['area']=='orange';assert 'orange' in g['hunts']['areas'];assert not errors,errors;c.close();print('Orange arrival/route/save',w,h,'passed',flush=True)
+    ready=copy.deepcopy(high);ready['hunts']['areas']['orange']['kills']=12
+    c,q=page(b,ready);q.locator('#devLauncher').click();q.locator('[data-dev-enter]').click();q.wait_for_url('**/?dev=1');q.wait_for_function('window.__mareDiagnostics?.().dev.active')
+    q.locator('#devLauncher').click();q.locator('[data-dev-option=godMode]').check();q.locator('[data-dev-travel=orange]').click()
+    if state(q)['autoPlay']:q.locator('#autoToggle').click()
+    q.locator('#huntRoute').click();q.locator('[data-hunt-sector=picadeiro]').click()
+    for _ in range(60):
+        q.clock.run_for(1000)
+        if not state(q)['path'] and any(m['type']=='boss' for m in state(q)['mobs']):break
+    assert any(m['type']=='boss' and m['level']==30 and m['name']=='Capitão Fagulha' for m in state(q)['mobs']),state(q)
+    warned=False
+    for _ in range(100):
+        q.clock.run_for(200)
+        if any(m['telegraph'] for m in state(q)['mobs']):warned=True;break
+    assert warned,'No live boss warning';q.screenshot(path=str(OUT/'boss-warning.png'));q.locator('#autoToggle').click()
+    for _ in range(240):
+        q.clock.run_for(1000)
+        if state(q)['hunt']['progress']['areas']['orange']['bosses']>0:break
+    assert state(q)['hunt']['progress']['areas']['orange']['bosses']>0,state(q)
+    q.locator('#huntRoute').click();button=q.locator('[data-hunt-first=orange]');assert button.is_enabled()
+    q.evaluate("()=>{window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw Error('quota')}}")
+    button.click();assert not state(q)['hunt']['progress']['areas']['orange']['firstRewardClaimed']
+    q.evaluate('()=>{Storage.prototype.setItem=window.originalSet}');button.click();assert state(q)['hunt']['progress']['areas']['orange']['firstRewardClaimed'];assert button.is_disabled()
+    q.locator('#closePanel').click();q.locator('#returnLobby').click();q.reload();q.wait_for_function('typeof __mareDiagnostics==="function"')
+    after=q.evaluate("JSON.parse(localStorage.getItem('mare-partida-dev-save-v1'))")
+    prizes=[i for i in after['inventory'] if i.get('origin')=='Primeira vitória · Orange Town']
+    assert len(prizes)==1 and prizes[0]['rarity']=='epic' and prizes[0]['level']==6,prizes
+    assert after['hunts']['areas']['orange']['firstRewardClaimed'];assert saved(q)['hunts']['areas']['orange']['bosses']==0
+    assert not errors,errors;c.close();print('Orange boss/warning/reward rollback/single claim/reload/DEV isolation passed',flush=True)
     b.close()
     (OUT/'results.json').write_text(json.dumps({'errors':errors,'entry_gate':21,'map':[32,32],'browser_cases':5},indent=2),encoding='utf-8')

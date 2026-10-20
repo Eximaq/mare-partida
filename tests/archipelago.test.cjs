@@ -31,7 +31,7 @@ for(const i of a.islands.slice(3)){
   assert.equal(i.area,null);assert.equal(i.monster,null);assert.equal(i.drops,null);
   assert.equal(a.canTravel(i.id,999),false);
 }
-for(const i of a.islands.slice(0,2)){
+for(const i of a.islands.slice(0,3)){
   assert(fs.existsSync(path.join(__dirname,'..',i.monster.src)));
   assert(i.drops.length>0);
 }

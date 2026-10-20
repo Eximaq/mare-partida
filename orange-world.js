@@ -38,8 +38,8 @@
   building('tenda-da-praca',2,18,12,[16,16]);
   building('armazem-oeste',3,20,19,[23,21]);
   building('armazem-leste',3,27,18,[24,20]);
-  building('casa-das-cartas',0,16,5,[16,8]);
-  building('tenda-do-capitao',2,24,5,[24,8]);
+  building('casa-das-cartas',0,16,6,[16,8]);
+  building('tenda-do-capitao',2,22,6,[24,8]);
   for(const [cell,x,y] of [[2,4,24],[2,26,24],[3,5,8],[3,20,26],[3,28,12]]){
     const p={id:'harbor-'+props.length,kind:'harbor',cell,...center(x,y),width:160,height:160};props.push(p);
     colliders.push({id:p.id,x:p.x-30,y:p.y-30,w:60,h:28});
