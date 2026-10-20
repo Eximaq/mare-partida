@@ -1,0 +1,39 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const root=path.resolve(__dirname,'..');
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const css=read('inventory-compact.css');
+const html=read('index.html');
+const builder=read('tools/build_pages.py');
+const game=read('game.js');
+
+assert.ok(html.includes('<link rel="stylesheet" href="inventory-compact.css" />'),'UI must load new stylesheet');
+assert.ok(builder.includes("'inventory-compact.css'"),'Pages must publish the new stylesheet');
+assert.match(css,/width:min\(1280px,calc\(100vw - 40px\)\)!important/,'desktop inventory width capped');
+assert.match(css,/height:min\(760px,calc\(100dvh - 40px\)\)!important/,'desktop inventory height capped');
+assert.match(css,/grid-template-columns:repeat\(7,50px\)!important/,'desktop 7-column inventory');
+assert.match(css,/grid-template-rows:repeat\(5,50px\)!important/,'desktop 5-row inventory');
+assert.match(css,/grid-template-columns:repeat\(6,48px\)!important/,'tablet reduced grid');
+assert.match(css,/grid-template-columns:repeat\(5,48px\)!important/,'mobile reduced grid');
+assert.match(css,/\.op-item-icon \.item-icon \{/,'item sprite sizing preserves 32px PixelLab');
+assert.match(css,/image-rendering:pixelated/,'pixel art remains crisp');
+assert.match(css,/\.op-detail-panel \{/,'item details preserved');
+assert.match(css,/\.op-equip-slot \{/,'equipment preserved');
+assert.match(css,/overflow-y:auto!important/,'long content scrolls');
+assert.match(game,/Array\.from\(\{length:BAG_PER_PAGE-shown\.length\}/,'existing inventory page size unchanged');
+assert.match(game,/class="op-grid"/,'existing item grid is unchanged');
+let depth=0,comment=false,quote=null;
+for(let i=0;i<css.length;i++){
+  const c=css[i],n=css[i+1];
+  if(comment){if(c==='*'&&n==='/'){comment=false;i++;}continue;}
+  if(quote){if(c==='\\'){i++;continue;}if(c===quote)quote=null;continue;}
+  if(c==='/'&&n==='*'){comment=true;i++;continue;}
+  if(c==='"'||c==="'"){quote=c;continue;}
+  if(c==='{')depth++;
+  if(c==='}')depth--;
+  assert.ok(depth>=0,'unmatched CSS closing brace');
+}
+assert.equal(depth,0,'balanced CSS braces');
+console.log('Inventory compact: 1280x760 max desktop, 7x5 50px grid, responsive 6/5 columns, page size and build OK');
