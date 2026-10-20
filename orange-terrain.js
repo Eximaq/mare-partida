@@ -41,6 +41,18 @@
     for(let i=7;i>=0;i--)c.lineTo(x+i*STEP,y+TILE+(south?0:edgeJitter(tx,ty,'bottom',i)));
     for(let i=7;i>=0;i--)c.lineTo(x+(west?0:edgeJitter(tx,ty,'left',i)),y+i*STEP);
     c.closePath();
+    // Diagonal bits produce the small, stepped *inside* corners of 8-way autotiling.
+    // Even-odd cutouts reveal the layer below rather than stretching a square tile.
+    function notch(px,py,sx,sy){
+      c.moveTo(px,py);
+      for(const [dx,dy] of [[12,0],[12,4],[8,4],[8,8],[4,8],[4,12],[0,12]])
+        c.lineTo(px+dx*sx,py+dy*sy);
+      c.closePath();
+    }
+    if(north&&west&&!(mask&128))notch(x,y,1,1);
+    if(north&&east&&!(mask&16))notch(x+TILE,y,-1,1);
+    if(south&&east&&!(mask&32))notch(x+TILE,y+TILE,-1,-1);
+    if(south&&west&&!(mask&64))notch(x,y+TILE,1,-1);
   }
   function ready(img){return !!(img&&img.complete&&img.naturalWidth>0)}
   function drawPatch(c,img,sx,sy,size,x,y,flip){
@@ -132,7 +144,7 @@
         if(!includes(model.at(tx,ty)))continue;
         const mask=neighborMask(model.at,tx,ty,includes);
         const x=lx*TILE,y=ly*TILE;
-        c.save();contour(c,x,y,tx,ty,mask);c.clip();
+        c.save();contour(c,x,y,tx,ty,mask);c.clip('evenodd');
         drawMaterial(c,name,images,x,y,tx,ty,woodSource);
         c.restore();
       }
