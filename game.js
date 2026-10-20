@@ -153,7 +153,7 @@
   const slotNames = {head:'CABEÇA',necklace:'COLAR',coat:'TORSO',legs:'PERNEIRAS',boots:'PÉS',weapon:'ARMA PRINCIPAL',cloak:'CAPA',gloves:'MÃOS',ring:'ANEL',belt:'CINTO',charm:'ACESSÓRIO',akuma_no_mi:'AKUMA NO MI'};
   const inventorySlotsLeft=['head','necklace','coat','legs','boots'];
   const inventorySlotsRight=['weapon','cloak','gloves','ring','belt','charm','akuma_no_mi'];
-  const BAG_CAPACITY=120, BAG_PER_PAGE=35;
+  const BAG_CAPACITY=120, BAG_PER_PAGE=64;
   const inventoryUI={query:'',category:'all',sort:'recent',rarity:'all',page:0,tab:'equipment'};
   // Novas categorias seguem o mesmo modelo de equipamento dos saves anteriores.
   itemDefs.push(

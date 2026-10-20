@@ -1,5 +1,13 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Inventário: fundo único e mochila mais densa
+
+- Branch `fix/inventario-slots-espacamento`, base `4b902b9`, preservando as alterações de Akuma do colaborador. Removido o fundo azul herdado de `.op-slot-frame`; moldura interna e ícone transparentes deixam um único fundo nos equipamentos.
+- Mochila de 35 para 64 posições por página; capacidade total de 120 preservada. Até oito colunas desktop sem esticar slots, altura da bandeja flexível, rolagem interna e paginação acessível. Tablet/móvel mantêm seis/cinco colunas.
+- Sem mudanças de itens, economia, equipamentos ou estrutura dos saves. Evidências locais em `docs/evidence-inventario-slots/`; rollback por reversão do commit.
+- Validação: Node de inventário compacto e Forja, sintaxe de game.js, build e cache aprovados. Chromium nas sete resoluções e 1181×768: 64 slots, páginas sem repetição/perda de 112 itens de teste, busca, fundos internos transparentes, fechamento móvel e ausência de overflow horizontal; sem erros JavaScript observados.
+
+
 ## 20/10/2026 — PNGs do menu Personagem
 
 - Branch `feature/icones-menu-personagem`, base `b6e392a`, incluindo a atualização de Akuma Rank E do colaborador. Talentos, Conquistas e Akuma no Mi receberam PNGs nativos transparentes 24×24; Personagem e Haki preservados.
