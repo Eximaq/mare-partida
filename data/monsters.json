@@ -1,0 +1,18 @@
+{
+  "cocox": {
+    "id": "cocox",
+    "name": "Cocox",
+    "level": 35,
+    "area": "rare",
+    "max_hp": 1180,
+    "physical_attack": 106,
+    "physical_defense": 39,
+    "magic_defense": 12,
+    "move_speed": 82,
+    "attack_seconds": 1.35,
+    "aggro_radius": 370,
+    "reach": 56,
+    "behavior": "aggressive_forest_patrol",
+    "sprite_id": "71a074a4-26d7-4f04-9be5-a1dd05fdf3c3"
+  }
+}

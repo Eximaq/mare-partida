@@ -27,11 +27,14 @@ assert.equal(a.canTravel('conchas',11),true);
 for(const level of [undefined,null,NaN,Infinity,'10',-1,0])assert.equal(a.canTravel('dawn',level),false);
 assert.equal(a.canTravel('missing',80),false);
 assert.equal(a.byArea('orange').id,'orange-town');assert(!a.canTravel('orange-town',20));assert(a.canTravel('orange-town',21));assert(a.canTravel('orange-town',100));
-for(const i of a.islands.slice(3)){
+assert.equal(a.byArea('rare').id,'animais-raros');
+assert(!a.canTravel('animais-raros',30));
+assert(a.canTravel('animais-raros',31));
+for(const i of a.islands.slice(4)){
   assert.equal(i.area,null);assert.equal(i.monster,null);assert.equal(i.drops,null);
   assert.equal(a.canTravel(i.id,999),false);
 }
-for(const i of a.islands.slice(0,3)){
+for(const i of a.islands.slice(0,4)){
   assert(fs.existsSync(path.join(__dirname,'..',i.monster.src)));
   assert(i.drops.length>0);
 }
