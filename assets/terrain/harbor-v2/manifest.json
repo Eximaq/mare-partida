@@ -1,5 +1,5 @@
 {
-  "status": "draft-palette-review",
+  "status": "review",
   "world_tile_size": 64,
   "chunk_size": 512,
   "sets": {
@@ -1416,7 +1416,14 @@
       "mask": 15
     }
   },
-  "variants": {},
+  "variants": {
+    "grass": [
+      "assets/terrain/harbor-v2/grass-variation.png"
+    ],
+    "sand": [
+      "assets/terrain/harbor-v2/sand-variation.png"
+    ]
+  },
   "layout": {
     "workyards": [
       {

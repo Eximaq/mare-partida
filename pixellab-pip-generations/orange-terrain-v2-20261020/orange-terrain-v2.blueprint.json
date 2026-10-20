@@ -170,7 +170,7 @@
   },
   {
     "TASK": {
-      "instruction": "Keep every original unchanged. Reuse existing water/sand and sand/grass atlases. Configure whole-sprite Wang dual-grid rendering in world64 cells, shared-vertex coordinates, deterministic variants and512px chunks. Only perform palette harmonization or restore variant borders after explicit approval; these were pending in this recorded run. Do not fabricate a47-sprite atlas from incompatible crops. Capture the actual baseline and candidate at identical camera positions and inspect at1x/2x before calling the result complete.",
+      "instruction": "Keep every original unchanged. Reuse existing water/sand and sand/grass atlases. Configure whole-sprite Wang dual-grid rendering in world64 cells, shared-vertex coordinates, deterministic variants and512px chunks. This recorded run received explicit approval to replace only flat #3fc729/#43c329 with source #4aa93b and restore original outer4px borders of grass/sand variations; stone variation stays rejected. Fresh runs must obtain their own repair approval. Do not fabricate a47-sprite atlas from incompatible crops. Capture the actual baseline and candidate at identical camera positions and inspect at1x/2x. Owner visual approval is required before merge/publication.",
       "outputs": [
         "assembly-inspection.json"
       ],

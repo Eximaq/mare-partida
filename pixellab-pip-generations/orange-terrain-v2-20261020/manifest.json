@@ -4,7 +4,8 @@
   "observed_usage_generations": 10,
   "usage_method": "Account usage delta for the completed approved lot; no account balances stored. Tile calls do not expose per-call actual usage. Image edits report one generation each.",
   "seed": "omitted",
-  "status": "palette and border harmonization approval pending",
+  "status": "harmonized candidate; owner visual approval required before merge/publication",
+  "local_repair_authorization": "Owner explicitly authorized zero-cost palette harmonization and restoration of the original outer four-pixel borders.",
   "calls": [
     {
       "name": "grass-stone",
@@ -178,16 +179,35 @@
     }
   ],
   "assembly": {
-    "harmonization_approved": false,
-    "palettes": {},
+    "harmonization_approved": true,
+    "palettes": {
+      "water-sand": {
+        "replaced_pixels": 0
+      },
+      "sand-grass": {
+        "replaced_pixels": 0
+      },
+      "grass-stone": {
+        "replaced_pixels": 6300
+      },
+      "dirt-grass": {
+        "replaced_pixels": 6350
+      },
+      "sand-dirt": {
+        "replaced_pixels": 0
+      },
+      "sand-wood": {
+        "replaced_pixels": 0
+      }
+    },
     "variants": {
       "grass": {
         "changed_border_pixels": 448,
-        "accepted": false
+        "accepted": true
       },
       "sand": {
         "changed_border_pixels": 448,
-        "accepted": false
+        "accepted": true
       },
       "stone": {
         "changed_border_pixels": 448,
@@ -196,6 +216,6 @@
       }
     }
   },
-  "originals": "PNG atlases, metadata and three native reference/variation PNGs preserved beside this file.",
-  "verification": "All six native Wang sets contain 16 authored sprites. The stone variation was rejected because it changes connected joints. No automatic retries. Two transition grass colors differ from the common base and remain uncorrected pending explicit approval."
+  "originals": "Original PNG atlases and three native reference/variation PNGs preserved beside this file; downloaded metadata retained locally.",
+  "verification": "All six native Wang sets contain 16 authored sprites. Exact flat grass colors #3fc729 and #43c329 replaced with source #4aa93b in runtime copies only. Grass/sand outer four-pixel borders restored and verified identical to references; interiors inspected at integer zoom. Stone variation rejected because it changes connected joints. No retries or additional paid calls."
 }

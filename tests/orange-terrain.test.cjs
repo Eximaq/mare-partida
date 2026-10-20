@@ -17,7 +17,15 @@ let transitions=new Set();for(let y=-1;y<32;y++)for(let x=-1;x<32;x++){
  if(key.length===2){transitions.add(key.join('/'));assert(pairs.some(p=>key.every(m=>m===p.lower||m===p.upper)));}
 }
 for(const pair of ['sand/water','dirt/sand','dirt/grass','grass/stone'])assert(transitions.has(pair));
-const config=T.configure(O,manifest,images);let draws=0;
+for(const urls of Object.values(manifest.variants))for(const url of urls)images[url]={naturalWidth:32,complete:true};
+const config=T.configure(O,manifest,images),again=T.configure(O,manifest,images);let draws=0,variantTiles=0;
+for(const [key,tile] of config.quads){
+ assert.deepEqual(tile,again.quads.get(key),'Variant selection must be deterministic');
+ if(Object.values(manifest.variants).flat().some(url=>images[url]===tile.image)){
+  variantTiles++;assert(tile.uniform,'Decorative variants must not overwrite transition edges');
+ }
+}
+if(Object.keys(manifest.variants).length)assert(variantTiles>0,'Approved variants are actually used');
 const c={imageSmoothingEnabled:true,drawImage(...args){draws++;assert.equal(args.length,9);assert(args.slice(1).every(Number.isInteger));assert.equal(args[7],64);assert.equal(args[8],64);},clip(){throw Error('Procedural clipping forbidden');},scale(){throw Error('Texture flipping forbidden');}};
 for(let y=0;y<4;y++)for(let x=0;x<4;x++)T.drawChunk(c,x,y,config);assert(draws>500);assert(!c.imageSmoothingEnabled);
 assert.deepEqual(Buffer.from(O.terrain),before);assert.throws(()=>A.choose(['water','sand','stone','grass'],pairs,banks),/Missing authored/);

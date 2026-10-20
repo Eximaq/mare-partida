@@ -1,10 +1,10 @@
 # Histórico de desenvolvimento
 
-## 20/10/2026 — Orange Town terreno V2 (revisão parcial)
+## 20/10/2026 — Orange Town terreno V2 (candidato para aprovação visual)
 
 - Branch `fix/orange-town-terrain-v2`, base main/PR29 `9529a4d`. Removidos contornos aleatórios, recortes evenodd e espelhamentos; sprites Wang completos, grade dual, núcleo reutilizável com suporte validado a47 estados blob quando houver47 sprites próprios.
 - Mundo/física/spawns/rotas/props/saves preservados por comparação exata. Cache512/20 mantido;23 suítes Node, build/cache43 recursos e capturas reais de antes/depois passaram tecnicamente, sem costuras entre chunks.
-- Lote autorizado até19, consumo observado10 gerações. Assets ainda em `draft-palette-review`: dois preenchimentos de grama divergentes e bordas das variantes aguardam autorização para harmonização local sem custo. Variante de pedra rejeitada. **Não publicar/mesclar**; faltam a correção artística e a aprovação das capturas finais. Diagnóstico detalhado em `docs/ORANGE-TERRAIN.md`.
+- Lote autorizado até19, consumo observado10 gerações. Harmonização local explicitamente autorizada e aplicada sem custo: dois verdes de transição compatibilizados com a base; bordas originais4px restauradas nas variantes grama/areia. Variante de pedra rejeitada por alterar juntas; originais preservados. Capturas recapturadas e inspecionadas,23 suítes Node e build/cache43 aprovados. **Não publicar/mesclar antes da aprovação visual do proprietário.** Limites artísticos e diagnóstico em `docs/ORANGE-TERRAIN.md`, revisão pelo PR30.
 
 ## 20/10/2026 — Orange Town 21–30
 

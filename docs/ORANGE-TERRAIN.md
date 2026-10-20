@@ -4,9 +4,9 @@ Base: main/PR29, `9529a4d`. Branch exclusiva `fix/orange-town-terrain-v2`, 20/10
 
 ## Estado
 
-Correção técnica implementada e testada. **Acabamento artístico ainda parcial: não fazer merge/publicar.** Aguarda autorização explícita para harmonizar dois verdes de transição ao tile-base e restaurar bordas de variantes alteradas pela IA. Os assets de desenvolvimento permanecem identificados como `draft-palette-review`; não chamar o resultado de aprovado ou profissional antes da revisão das capturas finais.
+Correção técnica implementada e testada; candidato visual disponível para revisão. **Não fazer merge/publicar antes da aprovação das capturas pelo proprietário.** A harmonização local foi explicitamente autorizada e aplicada, sem novas gerações. Os assets estão identificados como `review`; isto indica um candidato carregável, não aprovação artística do proprietário.
 
-O lote PixelLab autorizado tinha teto19, sem tentativas extras. Sete chamadas concluídas, consumo observado10 gerações. Nenhuma nova tentativa executada. A variante de pedra foi rejeitada por alterar as juntas em vez de acrescentar desgaste discreto. As três variantes falharam na preservação exata da moldura4px; nenhuma foi ativada enquanto a correção local está pendente. Originais intactos em `pixellab-pip-generations/orange-terrain-v2-20261020/`.
+O lote PixelLab autorizado tinha teto19, sem tentativas extras. Sete chamadas concluídas, consumo observado10 gerações. Nenhuma nova tentativa executada. Nas cópias de uso, somente os preenchimentos #3fc729 e #43c329 foram harmonizados com o verde-base #4aa93b (6.300 pixels grama/pedra e 6.350 terra/grama). As bordas externas de4px das variantes de grama e areia foram restauradas a partir das referências nativas e verificadas pixel a pixel; os interiores foram inspecionados antes de ativar essas duas variantes. A variante de pedra continua rejeitada por alterar as juntas. Originais intactos em `pixellab-pip-generations/orange-terrain-v2-20261020/`; manifesto e receita registram a intervenção autorizada.
 
 ## Causas encontradas no PR29
 
@@ -43,12 +43,14 @@ Nenhum objeto foi acrescentado ou reposicionado. O planejamento de materiais é 
 
 `python -X utf8 tests/orange_terrain_v2_browser.py --phase before` e `--phase after`: Chromium real, sete câmeras fixas de terreno, quatro ampliações2×, mapa completo e cenas reais de chegada/rua/praça/arena. A caminhada usa a UI existente e testa terreno navegável; as duas fases usam contextos isolados, relógio e RNG de teste fixos, sem tocar no save do usuário.
 
-Comparação técnica de raster contínuo2048 contra16 chunks: zero diferenças RGBA. Cinco recortes de câmera atravessando limites511/512 e1023/1024: zero diferenças e zero pixels sem cobertura. Cache16/20. Uma amostra local registrou133ms para a verificação com readback e0,067ms de submissão Canvas quente; isto não é medição de FPS, GPU nem garantia de desempenho em outros dispositivos.
+Após a harmonização: comparação técnica de raster contínuo2048 contra16 chunks com zero diferenças RGBA. Cinco recortes de câmera atravessando limites511/512 e1023/1024: zero diferenças e zero pixels sem cobertura. Cache16/20. Uma amostra local registrou97ms para a verificação com readback e0,033ms de submissão Canvas quente; isto não é medição de FPS, GPU nem garantia de desempenho em outros dispositivos. O teste Node também confirma que as variantes são realmente usadas, apenas em regiões homogêneas e de forma determinística.
 
 `tools/capture-orange.mjs`: usa `git show` para carregar os scripts reais do commit-base e produzir comparações nas mesmas posições. Sem gate de porcentagem de pixels alterados. Executado localmente com Chromium. Workflow do PR exporta as capturas para revisão; resultado verde não substitui aprovação visual.
 
-Evidências locais em `docs/evidence-orange-terrain-v2/index.html`, fora do Git. Os PNGs `before` registram a main/PR29; os PNGs `after` são **diagnóstico sem harmonização aprovada**, incluindo os remendos de verde conhecidos. Não usar estas imagens para anunciar conclusão artística.
+Evidências locais em `docs/evidence-orange-terrain-v2/index.html`, fora do Git. Os PNGs `before` registram a main/PR29 e foram preservados; os PNGs `after` foram recapturados após a harmonização, nas mesmas posições. Inspecionados ruas, curvas, praça, litoral, cantos, cais, fachadas, emendas e cenas reais de caminhada, em escala normal e ampliada. Não foram observados os remendos de verde, cortes triangulares, areia sobre os piers ou buracos do diagnóstico anterior.
+
+Limite artístico explícito: há duas variantes discretas de superfície (grama/areia); o calçamento continua usando seu sprite-base conectado, pois a edição de pedra falhou na preservação das juntas. Nenhum desgaste falso ou variação espelhada foi acrescentado para esconder essa limitação. A geometria ampla das ruas e as posições das construções permanecem as do mundo existente, conforme a proibição de alterar navegação/colisões/props. As capturas mostram essa composição para decisão do proprietário.
 
 ## Próxima ação desta mesma sprint
 
-Obter a autorização pendente para o pós-processamento sem custo, harmonizar somente os preenchimentos/bordas aprovados, reavaliar variantes adequadas e repetir as capturas nas mesmas posições. Corrigir outros defeitos visuais identificados, concluir regressões necessárias e entregar o PR para aprovação antes de qualquer merge ou deploy.
+Revisar as capturas do candidato no PR30. A reparação autorizada, a repetição das capturas, as regressões e o build foram executados. Merge/deploy continuam pendentes da aprovação visual do proprietário; esta branch não atualiza o GitHub Pages automaticamente.
