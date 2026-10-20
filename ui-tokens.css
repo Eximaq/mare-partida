@@ -1,0 +1,32 @@
+/* UI 2.0 — one vocabulary. Legacy priority remains contained below components. */
+@layer legacy, legacy-priority;
+:root {
+  color-scheme:dark;
+  --rpg-bg:#101c22; --rpg-surface:#1a2a30; --rpg-raised:#24383f;
+  --rpg-wood:#38291f; --rpg-wood-light:#584332; --rpg-paper:#dec99e;
+  --rpg-ink:#30291f; --rpg-text:#f1e9d8; --rpg-muted:#adbfbe;
+  --rpg-brass:#b49b6c; --rpg-line:#536363; --rpg-focus:#f7d18b;
+  --rpg-accent:#78c7bc; --rpg-success:#8cd3aa; --rpg-error:#ef9c91; --rpg-warning:#ebc886;
+  --rpg-hp:#bd665d; --rpg-energy:#659bb4; --rpg-xp:#c9ad71; --rpg-will:#ac8bcb;
+  --rpg-common:#aebcbd; --rpg-uncommon:#76b994; --rpg-rare:#83afd3;
+  --rpg-epic:#bf9ed7; --rpg-legendary:#e6bf76; --rpg-supreme:#ef9b92;
+  --rpg-space-1:4px; --rpg-space-2:8px; --rpg-space-3:12px; --rpg-space-4:16px;
+  --rpg-space-5:24px; --rpg-space-6:32px;
+  --rpg-font:'Segoe UI',Tahoma,sans-serif; --rpg-heading:Bahnschrift,'Trebuchet MS',sans-serif;
+  --rpg-caption:11px; --rpg-body:13px; --rpg-subtitle:16px; --rpg-title:22px;
+  --rpg-icon:24px; --rpg-button:36px; --rpg-slot:48px; --rpg-field:36px;
+  --rpg-radius:5px; --rpg-radius-small:3px; --rpg-border:1px solid var(--rpg-line);
+  --rpg-shadow:0 12px 36px #0008; --rpg-inset:inset 0 1px #ffffff0d;
+  --rpg-overlay:#071116c9; --rpg-hud-bg:#102127ed;
+  --rpg-time:140ms; --rpg-ease:cubic-bezier(.2,.7,.3,1);
+  --rpg-z-world:0; --rpg-z-hud:20; --rpg-z-popover:40; --rpg-z-modal:100;
+  --rpg-z-confirm:120; --rpg-z-toast:140;
+  --rpg-safe-top:env(safe-area-inset-top,0px); --rpg-safe-bottom:env(safe-area-inset-bottom,0px);
+  --rpg-edge:16px; --rpg-action-height:64px; --rpg-profile-width:256px;
+  /* Aliases let existing feature renderers inherit the central palette. */
+  --ui-wood:var(--rpg-wood); --ui-shadow:#1c1814; --ui-brass:var(--rpg-brass);
+  --ui-paper:var(--rpg-paper); --ui-sea:var(--rpg-surface); --ui-ivory:var(--rpg-text);
+  --ui-ink:var(--rpg-ink); --ui-muted:var(--rpg-muted); --ui-title:var(--rpg-heading);
+}
+/* CSS variables cannot be used in media conditions: canonical breakpoints are
+   1180 (inventory columns), 1024 (tablet), 760 (phone), 480 and 360 (compact). */
