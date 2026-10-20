@@ -37,6 +37,7 @@ select{color-scheme:dark}
 .dialog-header small{display:none}
 .close-button,.op-close,.ui-close{display:grid;place-items:center;flex:none;width:36px;height:36px;min-height:36px;padding:0;border:var(--rpg-border);border-radius:3px;background:#2a383a;color:var(--rpg-text);font-size:24px;line-height:1}
 .dialog-body,.ui-window-body{padding:20px;overflow:auto;overscroll-behavior:contain;min-height:0;scrollbar-width:thin;scrollbar-color:#718483 transparent;font-size:var(--rpg-body);line-height:1.5}
+.ui-window-body{flex:1}
 .dialog-body h2,.dialog-body h3,.dialog-body h4{font-family:var(--rpg-heading);letter-spacing:0}
 .dialog-body h3{font-size:var(--rpg-subtitle)}
 .dialog-body p,.dialog-body li{line-height:1.6}
@@ -46,12 +47,15 @@ select{color-scheme:dark}
 .confirmation-card p{margin:0;font-size:14px;line-height:1.65;color:var(--rpg-muted);white-space:pre-line}
 .confirmation-card footer{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap}
 .confirmation-card footer button{margin:0;flex:1}
-.toast-container{position:fixed;z-index:var(--rpg-z-toast);top:calc(var(--rpg-safe-top) + 80px);right:var(--rpg-edge);width:min(300px,calc(100vw - 32px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast-container{position:fixed;z-index:var(--rpg-z-toast);top:calc(var(--utilities-bottom,140px) + 8px);right:var(--rpg-edge);width:min(300px,calc(100vw - 32px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast-container>.toast:not(:last-child){display:none}
 .toast{font:500 13px/1.5 var(--rpg-font);border:1px solid var(--rpg-line);border-radius:4px;background:#102127f5;box-shadow:var(--rpg-shadow);padding:10px 14px;color:var(--rpg-text);animation:ui-notice-in 140ms ease-out}
 .toast.good{border-left:3px solid var(--rpg-success)}.toast.danger{border-left:3px solid var(--rpg-error)}
-.dialog>.toast-container,.confirmation-card>.toast-container{position:static;inset:auto;width:auto;max-width:none;max-height:84px;overflow:hidden;flex:none;padding:6px 12px;gap:4px;background:var(--rpg-surface);border-top:1px solid #48605e}
-.dialog>.toast-container:empty,.confirmation-card>.toast-container:empty{display:none}
+.dialog>.toast-container,.confirmation-card>.toast-container,.ui-window>.toast-container{position:static;inset:auto;width:auto;max-width:none;max-height:84px;overflow:hidden;flex:none;padding:6px 12px;gap:4px;background:var(--rpg-surface);border-top:1px solid #48605e}
+.dialog>.toast-container:empty,.confirmation-card>.toast-container:empty,.ui-window>.toast-container:empty{display:none}
 .dialog>.toast-container .toast,.confirmation-card>.toast-container .toast{box-shadow:none;padding:6px 10px;font-size:12px}
+.floating-chat>.toast-container{position:static;inset:auto;width:auto;max-width:none;max-height:64px;flex:none;overflow:hidden;padding:4px 8px;background:var(--rpg-surface)}
+.floating-chat>.toast-container:empty{display:none}
 .ui-collapse[aria-expanded=false]+.ui-collapse-body{display:none}
 @keyframes ui-notice-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms;animation-iteration-count:1;transition-duration:0s;scroll-behavior:auto}}

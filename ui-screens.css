@@ -1,4 +1,5 @@
 /* Feature composition; use shared primitives for new controls and feedback. */
+.op-detail-box blockquote{color:var(--rpg-muted);font-size:12px}
 #panelOverlay.inventory-mode{padding:20px;align-items:center;justify-content:center}
 #panelOverlay.inventory-mode .dialog{width:min(1280px,calc(100vw - 40px));height:min(760px,calc(100dvh - 40px));max-height:calc(100dvh - 40px);max-width:none;border:1px solid var(--rpg-brass);background:var(--rpg-surface)}
 #panelOverlay.inventory-mode .dialog-body{padding:0;overflow:hidden;flex:1;min-height:0;height:100%}

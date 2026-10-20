@@ -9,17 +9,28 @@
   const empty=({title,description=''})=>`<div class="ui-empty"><strong>${escape(title)}</strong><p>${escape(description)}</p></div>`;
   const tabs=({label,items,selected,attribute='data-ui-tab'})=>`<nav class="ui-tabs" aria-label="${escape(label)}">${items.map(i=>button({label:i.label,disabled:i.disabled,attributes:{[attribute]:i.id,'aria-pressed':String(i.id===selected)}})).join('')}</nav>`;
   const slot=({label,image,selected=false,attributes={}})=>`<button type="button" class="ui-slot" aria-label="${escape(label)}" aria-pressed="${selected}" ${attrs(attributes)}><img src="${escape(image)}" alt="" draggable="false"></button>`;
-  const windowHTML=({id,title,body=''})=>`<section id="${escape(id)}" class="ui-window" role="dialog" aria-modal="true" aria-labelledby="${escape(id)}-title"><header class="ui-window-header"><h2 id="${escape(id)}-title">${escape(title)}</h2><button type="button" class="ui-close" data-ui-close aria-label="Fechar janela">×</button></header><div class="ui-window-body">${body}</div></section>`;
+  const windowHTML=({id,title,body=''})=>`<div id="${escape(id)}" class="overlay ui-modal hidden" data-ui-modal role="dialog" aria-modal="true" aria-labelledby="${escape(id)}-title"><section class="ui-window"><header class="ui-window-header"><h2 id="${escape(id)}-title">${escape(title)}</h2><button type="button" class="ui-close" data-ui-close aria-label="Fechar janela">×</button></header><div class="ui-window-body">${body}</div></section></div>`;
   const confirmation=({title,message,acceptLabel,cancelLabel,danger})=>`<section class="confirmation-card" role="alertdialog" aria-modal="true" aria-labelledby="confirmationTitle" aria-describedby="confirmationMessage"><h2 id="confirmationTitle">${escape(title)}</h2><p id="confirmationMessage">${escape(message)}</p><footer>${button({label:cancelLabel,attributes:{'data-confirm-cancel':''}})}${button({label:acceptLabel,variant:danger?'danger':'primary',attributes:{'data-confirm-accept':''}})}</footer></section>`;
   const modalBindings=new Map(),focusOrigins=new WeakMap();
   const visible=el=>el&&!el.classList.contains('hidden')&&!el.hidden&&el.getClientRects().length>0;
   const focusable=el=>[...el.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href],[tabindex="0"]')].filter(e=>visible(e)&&!e.closest('[inert]'));
-  const topModal=()=>[...document.querySelectorAll('#startOverlay,#panelOverlay,.confirmation-overlay')].filter(visible).sort((a,b)=>Number(getComputedStyle(a).zIndex)-Number(getComputedStyle(b).zIndex)).at(-1);
+  const topModal=()=>[...document.querySelectorAll('#startOverlay,#panelOverlay,.confirmation-overlay,[data-ui-modal]')].filter(visible).sort((a,b)=>(Number(getComputedStyle(a).zIndex)||0)-(Number(getComputedStyle(b).zIndex)||0)).at(-1);
   function rememberFocus(el){if(!visible(el)){let prior=document.activeElement;if(prior?.closest('#characterQuickMenu'))prior=document.getElementById('characterMenuTrigger');if(prior?.closest('#modesQuickMenu'))prior=document.getElementById('modesMenuTrigger');focusOrigins.set(el,prior);}}
   function restoreFocus(el){syncModals();const prior=focusOrigins.get(el);if(prior?.isConnected&&!prior.closest('.hidden'))prior.focus({preventScroll:true});focusOrigins.delete(el);}
-  function bindModal(el,onClose){modalBindings.set(el,onClose);el.setAttribute('aria-labelledby','dialogTitle');}
+  function bindModal(el,onClose){
+    if(!modalBindings.has(el)&&el.classList.contains('ui-modal'))el.addEventListener('click',e=>{if(e.target===el||e.target.closest('[data-ui-close]'))modalBindings.get(el)?.();});
+    modalBindings.set(el,onClose);if(el.id==='panelOverlay')el.setAttribute('aria-labelledby','dialogTitle');
+  }
+  function open(el){rememberFocus(el);el.classList.remove('hidden');upgrade(el);syncModals();}
+  function close(el){el.classList.add('hidden');restoreFocus(el);}
+  function createWindow(options){
+    if(!/^[a-zA-Z][\w-]*$/.test(options.id)||document.getElementById(options.id))throw Error('Use um id de janela válido e único.');
+    const container=document.createElement('div');container.innerHTML=windowHTML(options);const el=container.firstElementChild;document.body.append(el);
+    bindModal(el,()=>{close(el);options.onClose?.();});return el;
+  }
+  function destroy(el){close(el);modalBindings.delete(el);el.remove();}
   function upgrade(el){
-    for(const b of el.querySelectorAll('button'))if(!b.matches('.op-item,.op-equip-slot,.forge2-tile,.forge2-pearl,.forge2-material-slot,.talent-node,[data-talent-node],.voyage-ship,.island-card,.class-choice,.faction-choice,.close-button,.op-close'))b.classList.add('ui-button');
+    for(const b of el.querySelectorAll('button'))if(!b.matches('.op-item,.op-equip-slot,.forge2-tile,.forge2-pearl,.forge2-material-slot,.talent-node,[data-talent-node],.voyage-ship,.island-card,.class-choice,.faction-choice,.close-button,.op-close,.ui-close'))b.classList.add('ui-button');
     for(const tab of el.querySelectorAll('.forge2-tabs,.op-tabs,.op-category-tabs,.voyage-region-tabs,.akuma-rank-tabs'))tab.classList.add('ui-tabs');
   }
   function mountHUD(){
@@ -46,10 +57,10 @@
     tabBar.addEventListener('click',e=>{const b=e.target.closest('[data-chat-channel]');if(!b)return;channel=b.dataset.chatChannel;tabBar.querySelectorAll('button').forEach(t=>t.setAttribute('aria-pressed',String(t===b)));filter();});
     function measure(){
       const r=document.querySelector('.topbar').getBoundingClientRect(),a=document.querySelector('.action-panel').getBoundingClientRect(),m=document.getElementById('mainMenu').getBoundingClientRect();
-      const style=document.documentElement.style;style.setProperty('--profile-bottom',Math.ceil(r.bottom)+'px');style.setProperty('--rpg-action-height',Math.ceil(a.height)+'px');style.setProperty('--menu-bottom',Math.ceil(m.bottom)+'px');style.setProperty('--journey-height',Math.ceil(journey.getBoundingClientRect().height)+'px');
+      const style=document.documentElement.style;style.setProperty('--profile-bottom',Math.ceil(r.bottom)+'px');style.setProperty('--rpg-action-height',Math.ceil(a.height)+'px');style.setProperty('--menu-bottom',Math.ceil(m.bottom)+'px');style.setProperty('--journey-height',Math.ceil(journey.getBoundingClientRect().height)+'px');style.setProperty('--utilities-bottom',Math.ceil(utilities.getBoundingClientRect().bottom)+'px');style.setProperty('--target-height',Math.ceil(document.getElementById('targetHud').getBoundingClientRect().height)+'px');
       const mobile=innerWidth<=760;if(mobile!==wasMobile){journey.classList.toggle('collapsed',mobile);document.getElementById('journeyToggle').setAttribute('aria-expanded',String(!mobile));journey.querySelector('.journey-chevron').textContent=mobile?'+':'−';wasMobile=mobile;}
     }
-    const resize=new ResizeObserver(measure);for(const el of [document.querySelector('.topbar'),document.querySelector('.action-panel'),document.getElementById('mainMenu'),journey])resize.observe(el);
+    const resize=new ResizeObserver(measure);for(const el of [document.querySelector('.topbar'),document.querySelector('.action-panel'),document.getElementById('mainMenu'),journey,utilities,document.getElementById('targetHud')])resize.observe(el);
     addEventListener('resize',measure,{passive:true});
     const observer=new MutationObserver(records=>{
       const dock=document.getElementById('mareMusicDock');if(dock&&dock.parentElement!==utilities)utilities.append(dock);
@@ -63,24 +74,26 @@
   let observedTop=null,noticeRoot=null;
   function syncModals(){
     const top=topModal(),app=document.getElementById('app');if(!app)return;
-    const notices=document.getElementById('toastContainer')||noticeRoot,destination=top?.querySelector('.confirmation-card,.dialog')||app;
+    const chat=document.getElementById('floatingChat'),fallback=innerWidth<=760&&chat?.classList.contains('hud-open')?chat:app;
+    const notices=document.getElementById('toastContainer')||noticeRoot,destination=top?.querySelector('.confirmation-card,.dialog,.ui-window')||fallback;
     if(notices)noticeRoot=notices;
     if(notices&&notices.parentElement!==destination)destination.append(notices);
-    app.inert=!!top?.classList.contains('confirmation-overlay');
+    app.inert=!!top&&(top.classList.contains('confirmation-overlay')||!app.contains(top));
     for(const child of app.children)child.inert=!!top&&child!==top;
+    for(const el of document.querySelectorAll('.ui-modal'))el.inert=!!top&&el!==top;
     if(top&&top!==observedTop&&!top.contains(document.activeElement)){const target=focusable(top)[0];target?.focus({preventScroll:true});}
     observedTop=top;
   }
   function boot(){
     const panel=document.getElementById('panelOverlay');panel?.setAttribute('aria-labelledby','dialogTitle');
-    const observer=new MutationObserver(records=>{for(const r of records)if(r.type==='childList')for(const n of r.addedNodes)if(n.nodeType===1&&n.closest('#panelOverlay,#startOverlay,.confirmation-overlay'))upgrade(n.parentElement||n);syncModals();});
+    const observer=new MutationObserver(records=>{for(const r of records)if(r.type==='childList')for(const n of r.addedNodes)if(n.nodeType===1&&n.closest('#panelOverlay,#startOverlay,.confirmation-overlay,.ui-modal'))upgrade(n.parentElement||n);syncModals();});
     observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['class','hidden']});
     upgrade(document.getElementById('startOverlay'));syncModals();
     document.addEventListener('keydown',e=>{const top=topModal();if(!top)return;if(e.key==='Tab'){const xs=focusable(top),first=xs[0],last=xs.at(-1);if(!xs.length){e.preventDefault();return;}if(e.shiftKey&&(document.activeElement===first||!top.contains(document.activeElement))){e.preventDefault();last.focus();}else if(!e.shiftKey&&(document.activeElement===last||!top.contains(document.activeElement))){e.preventDefault();first.focus();}e.stopPropagation();}
       if(e.key==='Escape'&&modalBindings.has(top)){e.preventDefault();e.stopImmediatePropagation();modalBindings.get(top)();}
     },true);
   }
-  root.MareUI={escape,button,card,notice,empty,tabs,slot,window:windowHTML,confirmation,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals};
+  root.MareUI={escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals};
   if(typeof document!=='undefined')document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot,{once:true}):boot();
   if(typeof module!=='undefined')module.exports=root.MareUI;
 })(globalThis);

@@ -199,6 +199,14 @@ No porto ou na caçada, jogador abre **Modos de jogo** pelo botão M, tecla M ou
 
 ## 7. HUD e inventário
 
+### Sistema de interface obrigatório — UI 2.0 (20/10/2026)
+
+- Antes de criar uma janela, ler `docs/UI-DESIGN-SYSTEM.md`. Reutilizar tokens `--rpg-*`, componentes de `ui-components.css` e factories de `ui-system.js`; não recriar manualmente modal, cabeçalho, botão, slot ou confirmação.
+- Novos estilos vão no componente compartilhado ou na composição específica em `ui-screens.css`; layout de HUD em `ui-hud.css`, adaptações em `ui-responsive.css`. Os seis estilos anteriores estão isolados nas camadas `legacy`/`legacy-priority`; não adicionar novas cadeias de overrides neles.
+- Prioridade explícita somente para o estado global `.hidden/[hidden]`. Usar os tokens de camadas e `MareUI` para foco, Escape, backdrop e retorno ao acionador. O corpo HTML das factories aceita apenas markup confiável do código.
+- Haki, habilidades e poção ficam na action bar. Personagem/Modos continuam abrindo seus menus diretos. Chat tem filtros locais Sistema/Anotações; não anunciar chat online. Widgets pequenos disputando espaço ficam exclusivos no móvel.
+- Validar as sete resoluções do guia, mais horizontal, toque e movimento reduzido; conferir contraste, foco, rolagem, centro do mapa e preservação do save. Nenhuma alteração de dados ou balanceamento faz parte de uma refatoração visual.
+
 **Organização visual de referência (não cópia de assets):**
 
 - **Topo esquerdo:** marca pequena + retrato, nível, barras de vida/energia/XP, moeda e poder compactos.

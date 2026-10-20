@@ -8,6 +8,10 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
+## Interface UI/UX 2.0
+
+Tokens e componentes compartilhados, HUD nas bordas com Haki na barra de ações, menus compactos, chat local com filtros e janelas padronizadas. Navegação mantém os sistemas existentes e adiciona controle uniforme de foco, Escape e confirmações. [Guia para novas funcionalidades e validação](docs/UI-DESIGN-SYSTEM.md).
+
 ## Ícones de itens — PixelLab
 
 Os 64 ícones existentes agora usam PNGs transparentes de 32×32, seguindo o estilo da espada 45 escolhida: equipamentos, pérolas, caixas, Livro da Vontade, poção e material. Integrados no inventário, forja, drops, criação e prisão, preservando os dados dos saves. [Origem, reduções aprovadas, consumo e testes](docs/ICONES-ITENS-PIXELLAB.md).
