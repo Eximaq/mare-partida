@@ -1,5 +1,12 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Integração de Akuma no Mi com trilhas sonoras
+
+- Branch `feature/akuma-no-mi-release` atualizada por merge de `origin/main` (`508733f`), preservando o compêndio, slot, bônus e VFX das frutas e o novo módulo de áudio com as duas trilhas.
+- Conflito em `tools/build_pages.py` resolvido incluindo `akuma-system.js`, `audio-system.js` e `audio-system.css`. `index.html` carrega ambos os módulos; o build copia as músicas em caminhos relativos.
+- Validação: 15 suítes Node passaram; sintaxe de `game.js`, `akuma-system.js` e `audio-system.js` passou; `python tools/build_pages.py` gerou os três módulos com hash de cache e copiou as duas músicas. No navegador local, controle de música, abas e slots de Akuma no Mi foram conferidos.
+- Saves permanecem isolados: Akuma no Mi usa o save do personagem existente; preferências de áudio usam `mare-partida-audio-v1`. Para desfazer, reverter o merge na branch, sem alterar `main`.
+
 ## 19/10/2026 — Constelações, conquistas e finais passivos
 
 - Árvore conectada com tronco, ponte, finais, arraste/zoom e foco; removido o grid independente.
