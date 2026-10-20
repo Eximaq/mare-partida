@@ -1,0 +1,23 @@
+/* Reusa o padrão visual do menu Personagem; somente ancoragem e estado diferem. */
+#mainMenu .modes-menu-anchor {position:relative;flex:none;min-width:0}
+#mainMenu .modes-quick-menu {
+  left:auto;
+  right:-28px;
+  transform:none;
+  width:240px;
+}
+#mainMenu .modes-quick-menu::before {
+  left:auto;
+  right:48px;
+}
+#mainMenu #modesMenuTrigger[aria-expanded="true"]{
+  background:#344d48!important;
+  border-color:#edc577!important;
+}
+#mainMenu .modes-quick-menu button[role="menuitem"] {
+  cursor:pointer!important;
+}
+@media(max-width:760px){
+  #mainMenu .modes-quick-menu{left:auto;right:-52px;transform:none}
+  #mainMenu .modes-quick-menu::before{left:auto;right:73px}
+}

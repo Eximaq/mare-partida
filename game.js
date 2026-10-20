@@ -1026,10 +1026,28 @@
     trigger.setAttribute('aria-expanded','false');
     if(restoreFocus)trigger.focus({preventScroll:true});
   }
+  function closeModesMenu(restoreFocus=false){
+    const menu=$('modesQuickMenu'),trigger=$('modesMenuTrigger');
+    if(!menu||!trigger)return;
+    menu.classList.add('hidden');
+    trigger.setAttribute('aria-expanded','false');
+    if(restoreFocus)trigger.focus({preventScroll:true});
+  }
+  function toggleModesMenu(){
+    const menu=$('modesQuickMenu'),trigger=$('modesMenuTrigger');
+    if(!game||!menu||!trigger||!$('panelOverlay').classList.contains('hidden')||document.querySelector('.confirmation-overlay'))return;
+    const opening=menu.classList.contains('hidden');
+    closeCharacterMenu();
+    menu.classList.toggle('hidden',!opening);
+    trigger.setAttribute('aria-expanded',String(opening));
+    if(opening)menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});
+    else trigger.focus({preventScroll:true});
+  }
   function toggleCharacterMenu(){
     const menu=$('characterQuickMenu'),trigger=$('characterMenuTrigger');
     if(!game||!menu||!trigger||!$('panelOverlay').classList.contains('hidden')||document.querySelector('.confirmation-overlay'))return;
     const opening=menu.classList.contains('hidden');
+    closeModesMenu();
     menu.classList.toggle('hidden',!opening);
     trigger.setAttribute('aria-expanded',String(opening));
     $('characterMenuHakiHint').textContent=game.has_haki_unlocked?'Despertado':'Nível 50 + Livro da Vontade';
@@ -1038,11 +1056,18 @@
     else trigger.focus({preventScroll:true});
   }
   function openPanel(panel,characterSection=null){
-    if(!game)return;closeCharacterMenu();if(panel==='hunts')panel='modes';
+    if(!game)return;
+    if(panel==='hunts')panel='modes';
+    if(panel==='modes'){
+      if(currentPanel)closePanel();
+      toggleModesMenu();
+      return;
+    }
+    closeCharacterMenu();
+    closeModesMenu();
     if(currentPanel==='character'&&panel==='dev'){MareTalentUI.unmount();$('characterTabs')?.remove();}
-    if(panel==='modes'&&currentPanel==='modes'){closePanel();return;}
     const navigation=['modes','map','prison'];
-    if(navigation.includes(panel)&&!navigation.includes(currentPanel)){const active=document.activeElement;mapReturnFocus=active?.matches('button,a[href],input,select,[tabindex]')?active:$('mainMenu').querySelector('[data-panel=modes]');}
+    if(navigation.includes(panel)&&!navigation.includes(currentPanel)){const active=document.activeElement;mapReturnFocus=active?.closest('#modesQuickMenu')?$('modesMenuTrigger'):(active?.matches('button,a[href],input,select,[tabindex]')?active:$('modesMenuTrigger'));}
     if(panel==='map'&&currentPanel!=='map')voyageUI={region:'east-blue',selected:null};
     if(panel==='prison'&&currentPanel!=='prison')prisonFloor=Math.min(100,game.impelDown.cleared+1);
     if(panel==='inventory')inventoryUI.page=0;
@@ -1053,7 +1078,7 @@
     else if(panel==='character')$('dialogBody').querySelector('button:not(:disabled),input:not(:disabled)')?.focus({preventScroll:true});
     else if(navigation.includes(panel)||panel==='dev')$('dialogBody').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
   }
-  function closePanel(){closeCharacterMenu();MareTalentUI.unmount();$('characterTabs')?.remove();talentDraft=null;const wasNavigation=['modes','map','prison'].includes(currentPanel);$('voyageRegionTabs')?.remove();attributeDraft=MareCharacters.empty();allocationMessage="";currentPanel=null;document.querySelectorAll('.bottom-nav [aria-pressed]').forEach(b=>b.setAttribute('aria-pressed','false'));$('panelOverlay').classList.add('hidden');$('panelOverlay').classList.remove('inventory-mode','character-mode','voyage-mode','modes-mode');$('inventoryHeadMeta')?.classList.add('hidden');if(wasNavigation)(mapReturnFocus?.isConnected?mapReturnFocus:$('mainMenu').querySelector('[data-panel=modes]'))?.focus({preventScroll:true});}
+  function closePanel(){closeCharacterMenu();closeModesMenu();MareTalentUI.unmount();$('characterTabs')?.remove();talentDraft=null;const wasNavigation=['modes','map','prison'].includes(currentPanel);$('voyageRegionTabs')?.remove();attributeDraft=MareCharacters.empty();allocationMessage="";currentPanel=null;document.querySelectorAll('.bottom-nav [aria-pressed]').forEach(b=>b.setAttribute('aria-pressed','false'));$('panelOverlay').classList.add('hidden');$('panelOverlay').classList.remove('inventory-mode','character-mode','voyage-mode','modes-mode');$('inventoryHeadMeta')?.classList.add('hidden');if(wasNavigation)(mapReturnFocus?.isConnected?mapReturnFocus:$('mainMenu').querySelector('[data-panel=modes]'))?.focus({preventScroll:true});}
   function exportSave(){saveGame();const blob=new Blob([JSON.stringify(game,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=DEV_ACTIVE?'mare-partida-DEV-save.json':'mare-partida-save.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);}
   function importSave(file){let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);if(!classes[d.classId]||!Number.isInteger(d.level)||!d.equipment||typeof d.name!=='string')throw Error('Save inválido');if(d.level<1)throw Error('Nível inválido');if(!MareDev.canImport(d,DEV_ACTIVE)){toast('Save de laboratório só pode ser importado no modo DEV.','danger');return;}if(DEV_ACTIVE)d.devSandbox=true;preserveSave(localStorage.getItem(STORAGE_KEY),STORAGE_KEY+'-before-import');preserveSave(JSON.stringify(d),STORAGE_KEY+'-import-source');localStorage.setItem(STORAGE_KEY,JSON.stringify(MareHaki.migrate(MareTalents.migrate(MarePrison.migrate(MareForge.migrate(MareCharacters.migrate(d),itemDefs))))));suppressSave=true;location.reload();}catch(err){toast('Arquivo de salvamento inválido.','danger');}};reader.readAsText(file);}
 
@@ -1540,6 +1565,11 @@ function applySceneHudLayout(){
   $('hakiKing').addEventListener('click',castHakiKing);
   $('skill1').addEventListener('click',()=>useSkill(0,true));$('skill2').addEventListener('click',()=>useSkill(1,true));$('usePotion').addEventListener('click',()=>usePotion(true));$('buyPotion').addEventListener('click',buyPotion);
   document.addEventListener('click',e=>{
+    const modesTrigger=e.target.closest('[data-modes-menu-trigger]');
+    if(modesTrigger){toggleModesMenu();return;}
+    const quickMode=e.target.closest('[data-quick-mode]');
+    if(quickMode){closeModesMenu();openPanel(quickMode.dataset.quickMode);return;}
+    if(!$('modesQuickMenu')?.contains(e.target))closeModesMenu();
     const menuTrigger=e.target.closest('[data-character-menu-trigger]');
     if(menuTrigger){toggleCharacterMenu();return;}
     const section=e.target.closest('[data-character-section]');
@@ -1581,7 +1611,7 @@ function applySceneHudLayout(){
     if(e.target.closest('[data-talent-cancel]')){talentDraft=null;talentMessage='Prévia descartada. Seus pontos foram preservados.';renderPanel();return;}
     if(e.target.closest('[data-talent-confirm]')){if(MareTalents.spent(talentDraft)<=MareTalents.spent(MareTalents.buildFor(game)))return;showConfirmation('Confirmar talentos?','Aplique '+(MareTalents.spent(talentDraft)-MareTalents.spent(MareTalents.buildFor(game)))+' PT na árvore de '+MareTalents.getTree(game.classId).name+'.',confirmTalents,'APLICAR TALENTOS',false);return;}
     if(e.target.closest('[data-talent-reset]')){if(scene!=='lobby')return;showConfirmation('Redefinir talentos desta classe?','Todos os PT desta árvore voltarão a ficar disponíveis. Seus equipamentos, atributos e outras classes serão preservados.',()=>{if(scene==='lobby'&&storeTalentChange(MareTalents.reset(game))){session.talents=MareTalentCombat.create();talentDraft=null;talentDraftSeq=game.talentSeq;talentMessage='Pontos devolvidos para esta classe.';renderPanel();}},'REDEFINIR',false);return;}
-    b=e.target.closest('[data-panel]');if(b){openPanel(b.dataset.panel);if(b.id==='attributePointsHud'){characterTab='status';renderPanel();}return;}
+    b=e.target.closest('[data-panel]');if(b){if(b.hasAttribute('data-modes-menu-trigger')||b.hasAttribute('data-character-menu-trigger'))return;openPanel(b.dataset.panel);if(b.id==='attributePointsHud'){characterTab='status';renderPanel();}return;}
     b=e.target.closest('[data-close-panel]');if(b){closePanel();return;}
     b=e.target.closest('[data-buy-potion]');if(b){buyPotion();renderPanel();return;}
     b=e.target.closest('[data-claim]');if(b){claimQuest(b.dataset.claim);return;}
@@ -1697,11 +1727,13 @@ function applySceneHudLayout(){
     if(e.key==='Escape'){
       if(!$('startOverlay').classList.contains('hidden'))return;
       if(!$('characterQuickMenu').classList.contains('hidden')){e.preventDefault();closeCharacterMenu(true);return;}
+      if(!$('modesQuickMenu').classList.contains('hidden')){e.preventDefault();closeModesMenu(true);return;}
       if(currentPanel){closePanel();return;}
       ['status','expedition','chat'].forEach(k=>toggleFloating(k,false));return;
     }
-    if(!$('characterQuickMenu').classList.contains('hidden')){
-      const menu=$('characterQuickMenu'),items=[...menu.querySelectorAll('[role="menuitem"]')];
+    const activeQuickMenu=!$('characterQuickMenu').classList.contains('hidden')?$('characterQuickMenu'):(!$('modesQuickMenu').classList.contains('hidden')?$('modesQuickMenu'):null);
+    if(activeQuickMenu){
+      const menu=activeQuickMenu,items=[...menu.querySelectorAll('[role="menuitem"]')];
       if(['ArrowUp','ArrowDown','Home','End'].includes(e.key)){
         e.preventDefault();
         const index=items.indexOf(document.activeElement);
@@ -1709,7 +1741,7 @@ function applySceneHudLayout(){
           (index+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;
         items[next]?.focus({preventScroll:true});return;
       }
-      if(e.key==='Tab'){closeCharacterMenu();return;}
+      if(e.key==='Tab'){closeCharacterMenu();closeModesMenu();return;}
       if(['Enter',' '].includes(e.key)&&menu.contains(document.activeElement))return;
     }
     if(['modes','map','prison','character','dev'].includes(currentPanel)&&e.key==='Tab'){const items=[...$('panelOverlay').querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')].filter(b=>b.getClientRects().length);const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
@@ -1717,7 +1749,7 @@ function applySceneHudLayout(){
     if(isTyping||!game||!session||!$('startOverlay').classList.contains('hidden'))return;
     if(e.key==='F8'&&MareDev.ENABLED){e.preventDefault();openPanel('dev');return;}
     const k=e.key.toLowerCase();
-    if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)&&!currentPanel){e.preventDefault();keys.add(k);if(scene==='hunt'&&autoPlay){autoPlay=false;updateUI();}return;}
+    if(['w','a','s','d','arrowup','arrowdown','arrowleft','arrowright'].includes(k)&&!currentPanel&&!activeQuickMenu){e.preventDefault();keys.add(k);if(scene==='hunt'&&autoPlay){autoPlay=false;updateUI();}return;}
     if(['i','m','p','o','f','c','1','2','q',' '].includes(k))e.preventDefault();
     if(['h','j','k'].includes(k)){if(e.ctrlKey||e.metaKey||e.altKey)return;e.preventDefault();if(e.repeat||currentPanel||document.querySelector('.confirmation-overlay'))return;if(k==='k')castHakiKing();else toggleHaki(k==='h'?'armament':'observation');return;}
     if(k==='i'){openPanel('inventory');return;}
