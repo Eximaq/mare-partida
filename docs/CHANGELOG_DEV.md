@@ -1,5 +1,12 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Orange Town 21–30 (rascunho em andamento)
+
+- Branch `feature/orange-town-21-30`, base `1d8157a`. Implementados mapa 32×32, cinco setores, oito fachadas conectadas, navegação/câmera, entrada Nv.21, região 21–30, contratos e primeira vitória. Preservadas as alterações do colaborador e mapas anteriores.
+- Arte existente reutilizada provisoriamente; manifesto `ready:false`, preview do chefe Indisponível. Lote PixelLab 35–40 gerações aguardando aprovação; consumo zero nesta etapa. Não publicar como final.
+- Regras e pendências em `docs/ORANGE-TOWN.md`. Novos testes geométricos e testes de caçada/catálogo passam. Revisão visual e boss fight finais dependem da arte.
+
+
 ## 20/10/2026 — Mochila limitada a sete fileiras
 
 - Branch `fix/inventario-grade-sete`, base `e674d6c`. Grade desktop 7×7 (49 por página), tablet 6×7 (42) e móvel 5×7 (35). Removida a rolagem interna da bandeja; demais itens ficam nas páginas. Capacidade de 120 e fundos anteriores preservados.

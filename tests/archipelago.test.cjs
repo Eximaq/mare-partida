@@ -26,7 +26,8 @@ assert.equal(a.canTravel('conchas',10),false);
 assert.equal(a.canTravel('conchas',11),true);
 for(const level of [undefined,null,NaN,Infinity,'10',-1,0])assert.equal(a.canTravel('dawn',level),false);
 assert.equal(a.canTravel('missing',80),false);
-for(const i of a.islands.slice(2)){
+assert.equal(a.byArea('orange').id,'orange-town');assert(!a.canTravel('orange-town',20));assert(a.canTravel('orange-town',21));assert(a.canTravel('orange-town',100));
+for(const i of a.islands.slice(3)){
   assert.equal(i.area,null);assert.equal(i.monster,null);assert.equal(i.drops,null);
   assert.equal(a.canTravel(i.id,999),false);
 }
