@@ -58,6 +58,8 @@ class AkumaBackendTest(unittest.TestCase):
             self.store.cast("hero", "island", 0, 0)
         self.store.record_corpse("hero", "fresh", "island", 5, 0)
         self.assertEqual(self.store.cast("hero", "island", 0, 0)["effect"]["id"], "fresh")
+        self.now += 60
+        self.assertEqual(self.store.pickup_food("hero", "fresh", "island", 5, 0)["heal_percent"], .15)
 
     def test_cooldowns_are_independent_per_fruit(self):
         self.store.register("hero", "akuma_kuku_kuku")

@@ -19,7 +19,7 @@ O cliente detecta a API e sincroniza registro, equipamento, abates e habilidades
 
 ## Arte e animação
 
-O lote original estabeleceu fruta 48×48, auras animadas e o mesmo relógio `requestAnimationFrame` para mapa, retrato e menus. O rework adiciona ícones temáticos de habilidade 32×32, folhas de VFX 48×48 a 12 FPS e a máscara circular de cooldown. Kuku anima corte, fumaça dourada e comida. Beri captura o sprite 48×48 atual, compõe seis esferas detalhadas com fragmentos do personagem, separa e reagrupa as esferas por 1,5 s, ocultando e restaurando o sprite base. As referências originais permanecem fora do Git. Prompts, negativos, ciclo de produção e critérios de revisão estão em [Modo de criação de Akuma no Mi](AKUMA-CREATION-MODE.md).
+O lote original estabeleceu fruta 48×48, auras animadas e o mesmo relógio `requestAnimationFrame` para mapa, retrato e menus. O rework adiciona ícones temáticos de habilidade 32×32, grades PixelLab de VFX 48×48 a 12 FPS e a máscara circular de cooldown. Kuku anima corte, fumaça dourada e comida. Beri reproduz diretamente os 17 quadros PixelLab das seis esferas por 1,5 s, ocultando e restaurando o sprite base. Kuku mantém o último quadro visível até a Comida ser coletada. As referências originais permanecem fora do Git. Prompts, negativos, ciclo de produção e critérios de revisão estão em [Modo de criação de Akuma no Mi](AKUMA-CREATION-MODE.md).
 
 ## Validação
 

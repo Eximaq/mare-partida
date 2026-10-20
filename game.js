@@ -231,12 +231,17 @@
   }};
   const fruitSkillSheets=Object.fromEntries(MareAkuma.catalog.map(fruit=>{const image=new Image();image.src=fruit.skill_sprite_sheet;return [fruit.id,image];}));
   const FRUIT_VFX_FPS=12;
-  function drawFruitBurst(c,x,y,fruitId,progress,scale=1){
-    const image=fruitSkillSheets[fruitId];if(!image?.complete||image.naturalWidth<48)return;
-    const frames=Math.floor(image.naturalWidth/48),frame=Math.min(frames-1,Math.floor(Math.min(.9999,progress)*frames));
-    c.save();c.imageSmoothingEnabled=false;if(fruitId==='akuma_beri_beri')c.globalAlpha*=.32;
-    c.drawImage(image,frame*48,0,48,48,Math.round(x-24*scale),Math.round(y-48*scale),Math.round(48*scale),Math.round(48*scale));
-    c.restore();
+  function drawFruitFrame(c,x,y,fruitId,frame,scale=1){
+    const fruit=MareAkuma.byId(fruitId),image=fruitSkillSheets[fruitId];
+    const columns=fruit?.skill_columns||1,frames=fruit?.skill_frames||1;
+    if(!image?.complete||image.naturalWidth<columns*48||image.naturalHeight<Math.ceil(frames/columns)*48)return false;
+    const index=Math.max(0,Math.min(frames-1,frame));
+    c.save();c.imageSmoothingEnabled=false;
+    c.drawImage(image,(index%columns)*48,Math.floor(index/columns)*48,48,48,Math.round(x-24*scale),Math.round(y-48*scale),Math.round(48*scale),Math.round(48*scale));
+    c.restore();return true;
+  }
+  function drawFruitBurst(c,x,y,fruitId,elapsed,scale=1){
+    return drawFruitFrame(c,x,y,fruitId,Math.floor(Math.max(0,elapsed)*FRUIT_VFX_FPS),scale);
   }
   function captureBeriSprite(){
     const canvas=document.createElement('canvas');canvas.width=48;canvas.height=48;
@@ -261,7 +266,7 @@
     });
   }
   function drawBeriSeparation(c,x,y,progress,scale=1){
-    drawFruitBurst(c,x,y,'akuma_beri_beri',progress,scale);
+    if(drawFruitBurst(c,x,y,'akuma_beri_beri',progress*1.5,scale))return;
     const spheres=session?.beriSpheres;if(!spheres)return;
     const spread=Math.sin(Math.PI*Math.min(1,progress)),radius=3+spread*29;
     c.save();c.imageSmoothingEnabled=false;
@@ -281,7 +286,7 @@
     if(fruit.id==='akuma_kuku_kuku'){
       const corpses=world.corpses.filter(c=>c.instance===game.area).sort((a,b)=>Math.hypot(a.x-world.hero.x,a.y-world.hero.y)-Math.hypot(b.x-world.hero.x,b.y-world.hero.y));
       const corpse=serverEffect?world.corpses.find(c=>String(c.id)===String(serverEffect.id))||serverEffect:corpses[0];if(!corpse){if(manual)toast('Nenhum monstro abatido nesta área.');return false;}
-      world.corpses=world.corpses.filter(c=>String(c.id)!==String(corpse.id));world.food.push({id:corpse.id,x:corpse.x,y:corpse.y,expires:world.time+20});world.fx.push({x:corpse.x,y:corpse.y,fruit:'akuma_kuku_kuku',life:.75,max:.75});
+      world.corpses=world.corpses.filter(c=>String(c.id)!==String(corpse.id));world.food.push({id:corpse.id,x:corpse.x,y:corpse.y,readyAt:world.time+.75,expires:Infinity});world.fx.push({x:corpse.x,y:corpse.y,fruit:'akuma_kuku_kuku',life:.75,max:.75});
     }else{
       session.beriSpheres=captureBeriSprite();session.fruitInvulnerable=1.5;session.fruitBurst=1.5;world.hero.visible=false;
       if(serverEffect){for(const moved of serverEffect.enemies){const mob=world.mobs.find(m=>m.id===moved.id&&m.alive);if(mob)navigator().move(mob,moved.x-mob.x,moved.y-mob.y);}}else for(const mob of livingMobs().filter(m=>distance(m,world.hero)<=130)){const dx=mob.x-world.hero.x,dy=mob.y-world.hero.y,d=Math.max(1,Math.hypot(dx,dy));navigator().move(mob,dx/d*65,dy/d*65);}
@@ -597,7 +602,7 @@
     for(const m of world.mobs)m.hakiDebuff=Math.max(0,(m.hakiDebuff||0)-dt);
     const combat=bentoController();
     combat?.step(dt,{moving:world.hero.walking>0,inCombat:scene==='hunt',direction:world.hero.direction});
-    world.fx=world.fx.filter(f=>(f.life-=dt)>0);for(let f of world.fx)if(!f.slash&&!f.ring)f.y+=f.dy*dt;world.projectiles=world.projectiles.filter(p=>(p.progress+=dt*3.7)<1);
+    world.fx=world.fx.filter(f=>(f.life-=dt)>0);for(let f of world.fx)if(Number.isFinite(f.dy))f.y+=f.dy*dt;world.projectiles=world.projectiles.filter(p=>(p.progress+=dt*3.7)<1);
     if(world.hero.talentControl)world.hero.talentControl.remaining=Math.max(0,world.hero.talentControl.remaining-dt);
     for(const action of MareTalentCombat.tick(session.talents,dt,scene==='hunt'?livingMobs():[])){if(scene==='hunt'&&session.respawn<=0&&action.target.alive)outputDamage(action.target,action.amount);}
     if(session.respawn<=0)applyUltimateActions(MareUltimates.tick(game,session.talents.ultimate,dt,{hero:world.hero,stats:getDerived(),inCombat:scene==='hunt'&&(session.talents.combatRemaining>0||!!world.target?.alive),inHunt:scene==='hunt',enemies:scene==='hunt'?livingMobs():[],clear:(a,b)=>navigator().clear(a,b),move:(m,dx,dy)=>navigator().move(m,dx,dy)}));
@@ -609,7 +614,7 @@
       return;
     }
     if(session.respawn>0){session.respawn-=dt;if(session.respawn<=0){session.respawn=0;combat?.reset('front');world.hero.direction='front';game.hp=stats.maxHP;game.energy=stats.maxEnergy;Object.assign(world.hero,activeMap().spawn);travelPath=[];lobbyDestination=null;pursuit=new WeakMap();camera.update(world.hero,activeMap(),0,true);toast('Você retornou ao cais da ilha.','good');}return;}
-    for(const food of [...world.food])if(!food.pending&&Math.hypot(food.x-world.hero.x,food.y-world.hero.y)<25){food.pending=true;const collect=async()=>{try{if(akumaBackend)await akumaRequest('pickup',{food_id:String(food.id),instance:game.area,x:world.hero.x,y:world.hero.y});restoreHero(stats.maxHP*.15,{ignoreEfficiency:true});world.food=world.food.filter(f=>f!==food);spawnVisual(food.x,food.y-45,'COMIDA','#ffd700',12);}catch(error){food.pending=false;}};void collect();}
+    for(const food of [...world.food])if(!food.pending&&world.time>=(food.readyAt||0)&&Math.hypot(food.x-world.hero.x,food.y-world.hero.y)<25){food.pending=true;const collect=async()=>{try{if(akumaBackend)await akumaRequest('pickup',{food_id:String(food.id),instance:game.area,x:world.hero.x,y:world.hero.y});restoreHero(stats.maxHP*.15,{ignoreEfficiency:true});world.food=world.food.filter(f=>f!==food);spawnVisual(food.x,food.y-45,'COMIDA','#ffd700',12);}catch(error){food.pending=false;}};void collect();}
     restoreHero(dt*(stats.healthRegen+(session.blessing>0?stats.regenBuff:0)),{quiet:true});useAutoSupport(stats);if(autoPlay&&game.hp<stats.maxHP*.40&&game.potions>0)usePotion(false);
     moveManually(dt);
     if(scene!=='hunt')return; // The quay interaction may have returned to the lobby this tick.
@@ -1561,10 +1566,10 @@
     if(u==='armamentSkin'&&rt.vigor>0){px(ctx,x-30,y-94,60,6,'#10222a');px(ctx,x-29,y-93,58*rt.vigor/rt.vigorMax,4,'#e4c77b');}
   }
   function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}ctx.save();ctx.translate(-Math.round(camera.x),-Math.round(camera.y));drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();let toDraw=[...(activeMap().id==='embers'?MareEmber.props.filter(p=>!p.ground).map(p=>({kind:'ember-prop',y:p.y,obj:p})):[]),...world.mobs.filter(m=>scene==='hunt'&&m.alive).map(m=>({kind:'mob',y:m.y,obj:m})),{kind:'hero',y:world.hero.y,obj:world.hero},...(scene==='lobby'?[...npcs.map(n=>({kind:'npc',y:n.y,obj:n})),...MareIsland.buildings.map(b=>({kind:'building',y:b.y-17,obj:b})),...MareIsland.decorations.concat(harborArt.complete&&harborArt.naturalWidth?MareIsland.harborProps:[]).map(d=>({kind:'decor',y:d.y,obj:d}))]:[]),...((scene==='lobby'&&factionShowcase&&globalThis.MareFactionSprites)?Object.keys(MareFactionSprites.assets).filter(id=>!MareFactionSprites.assets[id].meta.class_id).map((id,index)=>({kind:'faction',y:800,obj:{id,x:1240+index*80,y:800}})):[])].sort((a,b)=>a.y-b.y);for(let i of toDraw){if(i.kind==='hero'){if(session?.respawn>0&&!bentoController()){ctx.globalAlpha=.5+Math.sin(world.time*8)*.25;}drawTalentedHero(world.hero.x,world.hero.y);ctx.globalAlpha=1;let name=game.name,hudLift=MareUltimates.selected(game)==='titan'?28:0,nameLift=MareUltimates.selected(game)==='armamentSkin'?14:0;ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.fillStyle='#03171c';ctx.fillText(name,world.hero.x+1,world.hero.y-85-hudLift-nameLift);ctx.fillStyle='#e7fcf1';ctx.fillText(name,world.hero.x,world.hero.y-86-hudLift-nameLift);let d=getDerived();px(ctx,world.hero.x-30,world.hero.y-79-hudLift,60,7,'#001819');px(ctx,world.hero.x-29,world.hero.y-78-hudLift,58*(game.hp/d.maxHP),5,'#5ed09c');if(session?.guard>0){ctx.strokeStyle='#78e2d3aa';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(world.hero.x,world.hero.y-26,20,34,0,0,Math.PI*2);ctx.stroke();}}else if(i.kind==='ember-prop')MareEmberRenderer.prop(ctx,i.obj);else if(i.kind==='faction')drawFactionShowcase(i.obj);else if(i.kind==='npc')drawNPC(i.obj);else if(i.kind==='building')drawIslandBuilding(i.obj);else if(i.kind==='decor')drawIslandDecoration(i.obj);else drawMonster(i.obj);}
-    for(const food of world.food){ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#9c552c';ctx.fillRect(Math.round(food.x-8),Math.round(food.y-9),16,11);ctx.fillStyle='#ffd579';ctx.fillRect(Math.round(food.x-6),Math.round(food.y-11),12,5);ctx.restore();}
+    for(const food of world.food){if(world.time<(food.readyAt||0))continue;if(drawFruitFrame(ctx,food.x,food.y,'akuma_kuku_kuku',MareAkuma.byId('akuma_kuku_kuku').skill_frames-1))continue;ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#9c552c';ctx.fillRect(Math.round(food.x-8),Math.round(food.y-9),16,11);ctx.fillStyle='#ffd579';ctx.fillRect(Math.round(food.x-6),Math.round(food.y-11),12,5);ctx.restore();}
     if(activeMap().id==='embers')MareEmberRenderer.environment(ctx,camera,W,H,world.time,reducedFX);
     for(let p of world.projectiles){let x=p.x+(p.tx-p.x)*p.progress,y=p.y+(p.ty-p.y)*p.progress;ctx.fillStyle=p.color;ctx.fillRect(x-3,y-3,11,6);ctx.fillStyle='#fff7db';ctx.fillRect(x+1,y-2,4,3);}
-    for(let f of world.fx){ctx.globalAlpha=clamp(f.life/f.max,0,1);if(f.fruit){drawFruitBurst(ctx,f.x,f.y,f.fruit,Math.floor((f.max-f.life)*FRUIT_VFX_FPS)/Math.max(1,Math.floor(f.max*FRUIT_VFX_FPS)));}else if(f.slash){ctx.strokeStyle=f.color;ctx.lineWidth=5;ctx.beginPath();ctx.arc(f.x,f.y-17,29,-2.35,.2);ctx.stroke();}else if(f.ring){ctx.strokeStyle=f.color;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(f.x,f.y-4,(1-f.life/f.max)*61+6,(1-f.life/f.max)*26+5,0,0,Math.PI*2);ctx.stroke();}else {ctx.textAlign='center';ctx.font='bold '+f.size+'px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#0b2323';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);}}ctx.globalAlpha=1;
+    for(let f of world.fx){ctx.globalAlpha=f.fruit?1:clamp(f.life/f.max,0,1);if(f.fruit){drawFruitBurst(ctx,f.x,f.y,f.fruit,f.max-f.life);}else if(f.slash){ctx.strokeStyle=f.color;ctx.lineWidth=5;ctx.beginPath();ctx.arc(f.x,f.y-17,29,-2.35,.2);ctx.stroke();}else if(f.ring){ctx.strokeStyle=f.color;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(f.x,f.y-4,(1-f.life/f.max)*61+6,(1-f.life/f.max)*26+5,0,0,Math.PI*2);ctx.stroke();}else {ctx.textAlign='center';ctx.font='bold '+f.size+'px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#0b2323';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);}}ctx.globalAlpha=1;
     ctx.restore();
     if(scene==='hunt'&&session?.respawn>0){
       if(bentoController()){
