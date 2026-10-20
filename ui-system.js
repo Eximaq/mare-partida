@@ -15,7 +15,7 @@
   const visible=el=>el&&!el.classList.contains('hidden')&&!el.hidden&&el.getClientRects().length>0;
   const focusable=el=>[...el.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href],[tabindex="0"]')].filter(e=>visible(e)&&!e.closest('[inert]'));
   const topModal=()=>[...document.querySelectorAll('#startOverlay,#panelOverlay,.confirmation-overlay,[data-ui-modal]')].filter(visible).sort((a,b)=>(Number(getComputedStyle(a).zIndex)||0)-(Number(getComputedStyle(b).zIndex)||0)).at(-1);
-  function rememberFocus(el){if(!visible(el)){let prior=document.activeElement;if(prior?.closest('#characterQuickMenu'))prior=document.getElementById('characterMenuTrigger');if(prior?.closest('#modesQuickMenu'))prior=document.getElementById('modesMenuTrigger');focusOrigins.set(el,prior);}}
+  function rememberFocus(el){if(!visible(el)){let prior=document.activeElement;if(prior?.closest('#characterQuickMenu'))prior=document.getElementById('characterMenuTrigger');if(prior?.closest('#modesQuickMenu'))prior=document.getElementById('modesMenuTrigger');if(prior?.closest('#captainQuickMenu'))prior=document.getElementById('captainMenuTrigger');focusOrigins.set(el,prior);}}
   function restoreFocus(el){syncModals();const prior=focusOrigins.get(el);if(prior?.isConnected&&!prior.closest('.hidden'))prior.focus({preventScroll:true});focusOrigins.delete(el);}
   function bindModal(el,onClose){
     if(!modalBindings.has(el)&&el.classList.contains('ui-modal'))el.addEventListener('click',e=>{if(e.target===el||e.target.closest('[data-ui-close]'))modalBindings.get(el)?.();});
