@@ -92,7 +92,7 @@ class AkumaStore:
                 if corpse is None:
                     raise ValueError("Nenhum cadáver disponível na instância")
                 self.db.execute("DELETE FROM corpses WHERE id=?", (corpse["id"],))
-                self.db.execute("INSERT INTO food VALUES(?,?,?,?,?,?)", (corpse["id"], player_id, instance, corpse["x"], corpse["y"], now + 20))
+                self.db.execute("INSERT INTO food VALUES(?,?,?,?,?,?)", (corpse["id"], player_id, instance, corpse["x"], corpse["y"], float("inf")))
                 effect = {"type": "food", "id": corpse["id"], "x": corpse["x"], "y": corpse["y"], "heal_percent": .15}
             else:
                 moved = []
