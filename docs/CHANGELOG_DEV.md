@@ -1,5 +1,12 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Mochila limitada a sete fileiras
+
+- Branch `fix/inventario-grade-sete`, base `e674d6c`. Grade desktop 7×7 (49 por página), tablet 6×7 (42) e móvel 5×7 (35). Removida a rolagem interna da bandeja; demais itens ficam nas páginas. Capacidade de 120 e fundos anteriores preservados.
+- Mudança de breakpoint com inventário aberto recalcula a página pelo índice anterior, sem alterar itens, filtros, economia ou saves. Evidências em `docs/evidence-inventario-sete/`; rollback por reversão do commit.
+- Teste Node de inventário, sintaxe, build e cache aprovados. Chromium nas sete resoluções e 1181×768: sete fileiras, grade sem rolagem própria, paginação dos 112 itens sem perda/duplicação, busca e fechamento móvel. Redimensionamento com janela aberta confirmado; sem erros JavaScript observados.
+
+
 ## 20/10/2026 — Inventário: fundo único e mochila mais densa
 
 - Branch `fix/inventario-slots-espacamento`, base `4b902b9`, preservando as alterações de Akuma do colaborador. Removido o fundo azul herdado de `.op-slot-frame`; moldura interna e ícone transparentes deixam um único fundo nos equipamentos.

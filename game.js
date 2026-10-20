@@ -153,7 +153,7 @@
   const slotNames = {head:'CABEÇA',necklace:'COLAR',coat:'TORSO',legs:'PERNEIRAS',boots:'PÉS',weapon:'ARMA PRINCIPAL',cloak:'CAPA',gloves:'MÃOS',ring:'ANEL',belt:'CINTO',charm:'ACESSÓRIO',akuma_no_mi:'AKUMA NO MI'};
   const inventorySlotsLeft=['head','necklace','coat','legs','boots'];
   const inventorySlotsRight=['weapon','cloak','gloves','ring','belt','charm','akuma_no_mi'];
-  const BAG_CAPACITY=120, BAG_PER_PAGE=64;
+  const BAG_CAPACITY=120;
   const inventoryUI={query:'',category:'all',sort:'recent',rarity:'all',page:0,tab:'equipment'};
   // Novas categorias seguem o mesmo modelo de equipamento dos saves anteriores.
   itemDefs.push(
@@ -873,6 +873,10 @@
     return item?{kind:'gear',item,id:item.id}:null;
   }
   function renderInventory(body){
+    const columns=innerWidth>1180?7:innerWidth>760?6:5;
+    const BAG_PER_PAGE=columns*7;
+    if(inventoryUI.pageSize&&inventoryUI.pageSize!==BAG_PER_PAGE)inventoryUI.page=Math.floor(inventoryUI.page*inventoryUI.pageSize/BAG_PER_PAGE);
+    inventoryUI.pageSize=BAG_PER_PAGE;
     if(!invSelected())selectedItem=game.equipment.weapon?.id||game.inventory[0]?.id||(game.potions>0?'virtual-potion':game.materials>0?'virtual-material':null);
     const overlay=$('panelOverlay');overlay.classList.add('inventory-mode');
     const headMeta=$('inventoryHeadMeta');if(headMeta)headMeta.classList.add('hidden');
@@ -1205,6 +1209,7 @@
   function importSave(file){let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);if(!classes[d.classId]||!Number.isInteger(d.level)||!d.equipment||typeof d.name!=='string')throw Error('Save inválido');if(d.level<1)throw Error('Nível inválido');if(!MareDev.canImport(d,DEV_ACTIVE)){toast('Save de laboratório só pode ser importado no modo DEV.','danger');return;}if(DEV_ACTIVE)d.devSandbox=true;preserveSave(localStorage.getItem(STORAGE_KEY),STORAGE_KEY+'-before-import');preserveSave(JSON.stringify(d),STORAGE_KEY+'-import-source');localStorage.setItem(STORAGE_KEY,JSON.stringify(MareAkuma.migrate(MareHaki.migrate(MareTalents.migrate(MarePrison.migrate(MareForge.migrate(MareCharacters.migrate(MareHunt.migrate(d)),itemDefs)))))));suppressSave=true;location.reload();}catch(err){toast('Arquivo de salvamento inválido.','danger');}};reader.readAsText(file);}
 
   MareUI.bindModal($('panelOverlay'),closePanel);
+  for(const query of ['(max-width:1180px)','(max-width:760px)'])matchMedia(query).addEventListener('change',()=>{if(currentPanel==='inventory')renderPanel();});
 
   // Cenas 0.3: cenários originais proceduralmente desenhados e armazenados em cache.
   const sceneAtlas = {};
