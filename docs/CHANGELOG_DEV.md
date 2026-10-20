@@ -1,5 +1,12 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — PNGs do menu Personagem
+
+- Branch `feature/icones-menu-personagem`, base `b6e392a`, incluindo a atualização de Akuma Rank E do colaborador. Talentos, Conquistas e Akuma no Mi receberam PNGs nativos transparentes 24×24; Personagem e Haki preservados.
+- PixelLab Pixen: três chamadas aprovadas, 3 gerações cobradas, sem retries ou processamento dos originais. Proveniência e prompts em `docs/MENU-PERSONAGEM-ICONES.md`. Sem mudanças em gameplay/saves/layout.
+- Testes Node de menu/UI e build aprovados; PNGs idênticos no build. Menu e navegação conferidos nas sete resoluções em Chromium, sem erros JS observados ou mudança de progresso. API de catálogo de Akuma pendente no preview estático: disponibilidade do backend fora do escopo desta checagem.
+
+
 ## 20/10/2026 — Restaurar o tema de navio
 
 - Branch `fix/tema-nautico-madeira`, base `fe1fc66`. O proprietário rejeitou a troca visual da UI 2.0; restaurados madeira escura, bronze, cordas, verde-marinho e pergaminho, preservando layout, foco e responsividade.
