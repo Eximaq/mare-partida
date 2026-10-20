@@ -73,5 +73,9 @@ Novo campo: `hunts:{version:1,areas:{beach:{kills,bosses,firstRewardClaimed,boss
 - Todos os `tests/*.test.cjs`, sintaxe e `git diff --check`.
 - `python tests/hunt_browser.py`: rotas em cinco resoluções, gate11, inimigos fixos para Nv.80, caminhada/vitórias reais nos dois chefes, aviso visual, persistência e falha de storage no resgate.
 - `python tests/hunt_classes_browser.py`: amostras reais de 30s para cada uma das sete classes, com XP e sobrevivência. Não mede uma campanha completa 1–20.
-- Regressões de Haki, viagem e DEV; build/Pages com 27 recursos versionados. Capturas em `%TEMP%/mare-hunt-qa`, fora do Git.
+- Regressões de Haki, viagem e DEV; build/Pages com 31 recursos versionados. Capturas em `%TEMP%/mare-hunt-qa`, fora do Git.
 - `node tools/measure_hunt_balance.cjs`: baseline analítico com fórmulas reais, atributos 70/30 e ATQ6/DEF7/HP24. Sem skills, talentos, forja, deslocamento ou poções. No nível recomendado: TTK básico estimado Dawn 5,09–31,47s, Conchas 5,52–41,62s. Tanque/suporte são mais lentos; isso não prova equilíbrio perfeito entre classes nem duração real da campanha.
+
+## Integração com desenvolvimento paralelo
+
+Branch atualizada por merge de `origin/main` (`f9cc44b`), preservando Akuma no Mi, trilhas sonoras e navegação direta do menu Personagem. Migrações combinam os dois sistemas; frutas permanecem excluídas dos drops de equipamentos. Build e cache incluem os 31 recursos. Menu, teclado, talentos, conquistas, compêndio e controle de música conferidos no navegador integrado.

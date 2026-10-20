@@ -6,7 +6,7 @@ from polish_support import ROOT,KEY,page_for,create
 
 entry=(ROOT/'dist/index.html').read_text(encoding='utf-8')
 links=re.findall(r'(?:src|href)="([^\"]+\.(?:js|css))\?v=([a-f0-9]+)"',entry)
-assert len(links)==27,len(links)
+assert len(links)==31,len(links)
 for name,version in links:assert version==hashlib.sha256((ROOT/'dist'/name).read_bytes()).hexdigest()[:16]
 requests=[]
 class Release(http.server.SimpleHTTPRequestHandler):

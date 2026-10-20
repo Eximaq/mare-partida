@@ -9,10 +9,10 @@ OUT = ROOT / 'dist'
 if OUT.exists():
     shutil.rmtree(OUT)
 OUT.mkdir(parents=True)
-web_files = ['index.html', 'styles.css', 'ui-nautical.css',
-             'character-system.js', 'combat-animation.js', 'combat-assets.js',
+web_files = ['index.html', 'styles.css', 'ui-nautical.css', 'audio-system.css', 'character-menu.css',
+             'character-system.js', 'akuma-system.js', 'combat-animation.js', 'combat-assets.js',
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
-             'forge-ui.js', 'game.js', 'island-assets.js', 'island-world.js',
+             'forge-ui.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js',
              'world-system.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'dev-tools.js', 'hunt-system.js']
 for f in web_files:
     if not (ROOT / f).is_file():

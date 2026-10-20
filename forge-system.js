@@ -15,7 +15,7 @@
   function rarityFromRoll(n){if(!Number.isInteger(n)||n<1||n>1000)throw Error('Roleta inválida');return n<=5?'legendary':n<=125?'epic':n<=275?'rare':n<=500?'uncommon':'common';}
   const rollRarity=(random=Math.random)=>rarityFromRoll(range(1,1000,random));
   function seeded(text){let n=2166136261;for(const c of String(text))n=Math.imul(n^c.charCodeAt(0),16777619);return ()=>{n=(Math.imul(n,1664525)+1013904223)>>>0;return n/4294967296;};}
-  const isGear=(item,defs)=>!!item&&!!defs[item.def]&&!defs[item.def].kind&&!item.pearlId;
+  const isGear=(item,defs)=>!!item&&!!defs[item.def]&&!defs[item.def].kind&&defs[item.def].type!=='akuma_no_mi'&&item.type!=='akuma_no_mi'&&!item.pearlId;
   function isPearl(item,defs){return !!item&&(!!item.pearlId||defs[item.def]?.kind==='pearl');}
   function pearlOf(item,defs){return pearlById[item?.pearlId||defs[item?.def]?.pearlId]||null;}
   function extraRange(level,r){const f=Math.sqrt(rarity[r].mult);return {min:Math.ceil((.8+level*.14)*f),max:Math.ceil((2+level*.30)*f)};}
@@ -26,6 +26,7 @@
   }
   function normalizeItem(original,defs,random=null){
     const item=clone(original),def=defs[item.def];if(!def)return item;
+    if(def.type==='akuma_no_mi'||item.type==='akuma_no_mi')return item;
     if(['pearl-box','haki-book'].includes(def.kind))return item;
     if(isPearl(item,defs)){const p=pearlOf(item,defs);if(p)item.pearlId=p.id;item.forgeVersion=VERSION;return item;}
     item.level=Math.max(1,int(item.level));item.plus=int(item.plus);item.rarity=rarity[item.rarity]?item.rarity:(rarity[def.rarity]?def.rarity:'common');
@@ -64,7 +65,7 @@
     const source=items[0].rarity,order=['common','uncommon','rare','epic','legendary'];
     if(items.some(i=>i.rarity!==source))return {error:'Os cinco equipamentos precisam ter a mesma raridade.'};
     const rank=order.indexOf(source);if(rank<0||rank>=4)return {error:'Lendário → Supremo exige receita especial e permanece desabilitado.'};
-    const def=defs.map((d,i)=>({...d,index:i})).filter(d=>d.slot===slot&&!d.kind&&(slot!=='weapon'||d.type===g.classId)).sort((a,b)=>((a.attack||0)+(a.defense||0)+(a.hp||0))-((b.attack||0)+(b.defense||0)+(b.hp||0))||a.index-b.index)[0];
+    const def=defs.map((d,i)=>({...d,index:i})).filter(d=>d.slot===slot&&!d.kind&&d.type!=='akuma_no_mi'&&(slot!=='weapon'||d.type===g.classId)).sort((a,b)=>((a.attack||0)+(a.defense||0)+(a.hp||0))-((b.attack||0)+(b.defense||0)+(b.hp||0))||a.index-b.index)[0];
     if(!def)return {error:'Escolha um tipo de equipamento compatível com sua classe.'};
     const level=Math.min(...items.map(i=>i.level)),target=order[rank+1],mult=rarity[target].mult;
     return {items,source,target,level,def:def.index,cost:{gold:Math.ceil((100+level*25)*mult),materials:Math.ceil((3+level/5)*Math.sqrt(mult))}};

@@ -1,0 +1,37 @@
+/* Controle de trilha compacto, associado ao cartão de personagem. */
+.mare-music-dock {
+  position:absolute;
+  top:calc(100% + 7px);
+  left:0;
+  z-index:55;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  width:200px;
+  min-height:38px;
+  padding:5px 9px;
+  border:1px solid #b08d56;
+  border-radius:7px;
+  background:linear-gradient(135deg,#382817f7,#12272ef7);
+  box-shadow:0 5px 16px #0007;
+  color:#efdfc0;
+}
+.mare-music-toggle {
+  width:29px;
+  height:29px;
+  flex:none;
+  border:1px solid #a68550;
+  border-radius:5px;
+  background:#172e34;
+  color:#ead09c;
+  font-size:17px;
+  line-height:1;
+}
+.mare-music-toggle:focus-visible,.mare-music-volume:focus-visible {
+  outline:2px solid #e9c17c;
+  outline-offset:2px;
+}
+.mare-music-detail {display:flex;flex:1;min-width:0;flex-direction:column;gap:2px}
+.mare-music-location {overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:600 10px/1.3 'Segoe UI',sans-serif}
+.mare-music-volume {height:13px;width:100%;accent-color:#d2ae72;cursor:pointer}
+@media(max-width:600px){.mare-music-dock{width:160px;min-height:32px;padding:3px 6px;gap:6px}.mare-music-toggle{width:26px;height:26px}.mare-music-location{font-size:9px}}
