@@ -1,5 +1,9 @@
 # Referência visual — Maré Partida
 
+## Zoans Rank E — 20/10/2026
+
+Formas animais nativas 48×48, quatro direções cardeais, fundo transparente, contorno escuro, iluminação superior esquerda e pés ancorados na base do quadro. As caminhadas PixelLab possuem oito quadros de movimento mais a pose inicial; seus canvases ampliados são recortados para células 48×48 sem interpolação. Ícones de fruta 48×48 e de habilidade 32×32 seguem a legibilidade aprovada no rework Kuku/Beri. O albatroz é branco com asas azul celeste, o cavalo é castanho e terrestre, e o dachshund é caramelo com dorso preto. Ver [Lote Zoan Rank E](ZOAN-RANK-E.md).
+
 Registro da reconstrução de Ruínas de Brasas, outubro de 2026. As medidas abaixo vêm dos arquivos atuais, não de estimativas da imagem exibida no navegador.
 
 | Referência | Arquivo / frame | Apresentação |

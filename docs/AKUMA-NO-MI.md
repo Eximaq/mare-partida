@@ -1,5 +1,7 @@
 # Akuma no Mi — Lote 1 Rank E
 
+As três Zoans Rank E (Albatroz, Uma-Uma e Dachshund) estão descritas em [Lote Zoan Rank E](ZOAN-RANK-E.md).
+
 ## Uso
 
 Personagem → Akuma no Mi abre abas E–S com cinco espaços iniciais por rank. O Rank E mostra Kuku-Kuku e Beri-Beri como silhuetas com aura colorida até o registro. Registrar fruta adiciona uma unidade à bolsa e ao Compêndio. É uma concessão de demonstração, pois este lote não define uma fonte de drop. O slot exclusivo aceita ambas. Kuku usa 1 e Beri usa 2; equipar a fruta substitui temporariamente a habilidade da classe naquela tecla.
@@ -9,7 +11,7 @@ Personagem → Akuma no Mi abre abas E–S com cinco espaços iniciais por rank.
 | Kuku-Kuku no Mi | +5% cura recebida, +3% HP máximo | Banquete Relâmpago: cadáver mais próximo da área vira Comida, que cura 15% do HP máximo | 15 s |
 | Beri-Beri no Mi | +15% resistência a impacto físico | Divisão Esférica: 1,5 s invulnerável, seis esferas VFX e impulso nos inimigos até 130 px | 18 s |
 
-Cada ID registrado concede permanentemente +0,1% de HP máximo e +0,1% de Força base. Registros repetidos não acumulam. Comida e cadáveres expiram em 20 s e 12 s, respectivamente. A redução da Beri só afeta dano físico comum.
+Cada ID registrado concede permanentemente +0,1% de HP máximo e +0,1% de Força base. Registros repetidos não acumulam. A Comida permanece no chão até a coleta; cadáveres expiram em 12 s. A redução da Beri só afeta dano físico comum.
 
 ## Persistência e arquitetura
 

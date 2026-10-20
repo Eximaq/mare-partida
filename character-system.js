@@ -64,18 +64,18 @@
     const {strength:S,dexterity:D,vitality:V,intelligence:I,spirit:E}=a;
     const physical=Math.round((c.attack+lvl*c.attackStep+gear.attack+S*r.physical[0]+D*r.physical[1]+V*r.physical[2])*f.attack);
     const elemental=Math.round((c.attack+lvl*c.attackStep+gear.attack*.8+I*(g.classId==='strategist'?2.1: .9)+E*(g.classId==='healer'?.65:.35))*f.attack);
-    const defense=Math.round((c.defense+lvl*c.defenseStep+gear.defense+V*(g.classId==='cyborg'?1.05:.55)+S*.08)*f.defense);
+    const defense=Math.round((c.defense+lvl*c.defenseStep+gear.defense+V*(g.classId==='cyborg'?1.05:.55)+S*.08)*f.defense*(1+(gear.physicalDefensePercent||0)));
     const maxHP=Math.round(((c.baseHP+lvl*c.hpStep+V*(g.classId==='cyborg'?12:8))*compendiumBonus+gear.hp)*f.hp*(1+(gear.maxHpPercent||0)));
     const maxEnergy=Math.round((c.energy+lvl*c.energyStep+E*4+I*.5+(gear.energy||0))*f.energy);
     const speed=Math.min(3,(c.speed+Math.min(.5,lvl*.009)+D*.006)*f.speed);
-    const crit=cap(c.crit+f.crit+lvl*.001+D*.0015+(gear.crit||0),0,.5),evasion=cap((g.classId==='rogue'?.12:0)+D*.0015,0,.35);
+    const crit=cap(c.crit+f.crit+lvl*.001+D*.0015+(gear.crit||0),0,.5),evasion=cap((g.classId==='rogue'?.12:0)+D*.0015+(gear.evasionPercent||0),0,.35);
     const healing=Math.round(12+I*1.1+E*2.3+lvl*.8);
     const attack=r.magic?elemental:physical;
     return {attributes:a,preAttributes,pearlPercent:gear.pearlPercent||{},physical,elemental,attack,defense,maxHP,maxEnergy,speed,crit,evasion,range:c.range,
       accuracy:Math.min(.99,.90+D*.0015),healing,healingReceivedPercent:gear.healingReceivedPercent||0,impactResistancePercent:gear.impactResistancePercent||0,energyRegen:2.2+E*.04,
       healthRegen:.9+E*.015,protection:cap((g.classId==='cyborg'?.38:.30)+E*.001,0,.65),
       mitigation:g.classId==='cyborg'?.12:0,regenBuff:1.5+E*.06+I*.02,
-      moveSpeed:(g.classId==='rogue'?180:158)+Math.min(36,D*.3),huntSpeed:r.huntSpeed+Math.min(36,D*.3),
+      moveSpeed:((g.classId==='rogue'?180:158)+Math.min(36,D*.3))*(1+(gear.moveSpeedPercent||0)),huntSpeed:(r.huntSpeed+Math.min(36,D*.3))*(1+(gear.moveSpeedPercent||0)),
       power:Math.round(attack*8+defense*5+maxHP*.22+maxEnergy*.1+crit*100+evasion*100+(g.classId==='healer'?healing*2:0))};
   }
   function damage(stats,armor,{type='physical',multiplier=1,variance=1,critical=false}={}){

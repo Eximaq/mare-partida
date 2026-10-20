@@ -50,9 +50,10 @@ class Handler(SimpleHTTPRequestHandler):
             "/api/akuma/player": lambda d: STORE.player(d["player_id"]),
             "/api/akuma/register": lambda d: STORE.register(d["player_id"], d["fruit_id"]),
             "/api/akuma/equip": lambda d: STORE.equip(d["player_id"], d.get("fruit_id")),
+            "/api/akuma/transform": lambda d: STORE.transform(d["player_id"], d["enabled"]),
             "/api/akuma/stats": lambda d: STORE.stats(d["player_id"], float(d["base_hp"]), float(d["base_strength"])),
             "/api/akuma/corpse": lambda d: STORE.record_corpse(d["player_id"], d["corpse_id"], d["instance"], float(d["x"]), float(d["y"])),
-            "/api/akuma/cast": lambda d: STORE.cast(d["player_id"], d["instance"], float(d["x"]), float(d["y"]), d.get("enemies", [])),
+            "/api/akuma/cast": lambda d: STORE.cast(d["player_id"], d["instance"], float(d["x"]), float(d["y"]), d.get("enemies", []), d.get("direction", [0, 1])),
             "/api/akuma/pickup": lambda d: STORE.pickup_food(d["player_id"], d["food_id"], d["instance"], float(d["x"]), float(d["y"])),
         }
         action = routes.get(urlparse(self.path).path)
