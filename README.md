@@ -24,6 +24,8 @@ O terceiro destino do Arquipélago recebe um porto próprio de 32×32 tiles de 6
 
 ## Caçadas regionais 1–20
 
+Cidade das Conchas recebe uma ilha própria de32×32 tiles, com ruas conectadas, mercados, cais, navios e bairro antigo. Níveis11–20, chefe, recompensas e saves preservados. Reutiliza os tilesets de terreno existentes, sem novas gerações. [Reconstrução, testes e resumo para o colaborador](docs/CIDADE-DAS-CONCHAS.md).
+
 Dawn agora tem encontros fixos Nv.1–10, e Conchas Nv.11–20 (entrada no nível 11). **Rota & recompensas**, junto ao retorno ao porto, guia a caminhada pelos setores e permite resgatar uma arma da classe na primeira vitória contra cada chefe. Especiais têm avisos no chão; a auto-caçada tenta desviar quando há saída. XP e equipamentos vêm do nível do inimigo. Saves e itens existentes preservados. [Regras, limites, testes e resumo para o colaborador](docs/CACADAS-1-20.md).
 
 ## Prévia — Akuma no Mi

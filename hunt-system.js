@@ -20,10 +20,10 @@
       {id:'picadeiro',name:'Pátio do Capitão',min:29,max:30,x:1568,y:544,roles:['crab','bandit','spirit']}
     ]},
     swamp:{name:'Cidade das Conchas',min:11,max:20,boss:'Guardião das Conchas',bossLevel:20,firstGold:900,firstRarity:'epic',respawn:90,sectors:[
-      {id:'vigilia',name:'Pátio da Vigília',min:11,max:13,x:1510,y:1060,roles:['bandit','crab']},
-      {id:'docas',name:'Docas Veladas',min:14,max:16,x:2400,y:950,roles:['bandit','spirit']},
-      {id:'catacumbas',name:'Catacumbas da Névoa',min:17,max:19,x:2150,y:1660,roles:['spirit','crab']},
-      {id:'bastiao',name:'Bastião das Conchas',min:19,max:20,x:2640,y:1770,roles:['crab','spirit']}
+      {id:'vigilia',name:'Pátio da Vigília',min:11,max:13,x:736,y:1312,roles:['bandit','crab']},
+      {id:'docas',name:'Docas Veladas',min:14,max:16,x:1440,y:1504,roles:['bandit','spirit']},
+      {id:'catacumbas',name:'Catacumbas da Névoa',min:17,max:19,x:1504,y:928,roles:['spirit','crab']},
+      {id:'bastiao',name:'Bastião das Conchas',min:19,max:20,x:1120,y:544,roles:['crab','spirit']}
     ]}
   };
   const archetypes={crab:{hp:1.25,attack:.8,defense:1.3,speed:36,reach:43,attackSec:2.8,aggro:220},bandit:{hp:1,attack:1,defense:1,speed:50,reach:51,attackSec:2.1,aggro:300},spirit:{hp:.82,attack:1.1,defense:.7,speed:30,reach:165,attackSec:3.1,aggro:330},boss:{hp:4.2,attack:1.5,defense:1.45,speed:30,reach:70,attackSec:2.7,aggro:390}};

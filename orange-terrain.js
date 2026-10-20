@@ -55,6 +55,7 @@
     for(let y=top;y<bottom;y++)for(let x=left;x<right;x++){const tile=joints.get(x+','+y);if(tile)A.draw(c,tile,x*size+size/2-originX,y*size+size/2-originY,size);}
   }
   function drawChunk(c,cx,cy,config){const n=config.manifest.chunk_size;drawRegion(c,config,cx*n,cy*n,n,n);}
-  root.MareOrangeTerrain=Object.freeze({surface,configure,drawRegion,drawChunk});
+  root.MareHarborTerrain=Object.freeze({surface,configure,drawRegion,drawChunk});
+  root.MareOrangeTerrain=root.MareHarborTerrain; // Existing Orange API stays compatible.
   if(typeof module!=='undefined')module.exports=root.MareOrangeTerrain;
 })(globalThis);
