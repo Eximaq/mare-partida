@@ -2249,3 +2249,17 @@ button {
 .haki-quick button:focus-visible{outline:2px solid #ffe2a1;outline-offset:2px}
 @media(max-width:700px){body.has-haki #mainMenu{top:max(210px,var(--profile-hud-bottom,284px))!important}}
 @media(prefers-reduced-motion:no-preference){.haki-quick button.is-active:not(:disabled){animation:haki-quick-pulse 1.8s ease-in-out infinite}@keyframes haki-quick-pulse{50%{filter:brightness(1.25)}}}
+.hunt-route{color:#cbdad4;max-width:960px;margin:auto;font-size:13px;line-height:1.6}
+.scene-hunt .world-command{flex-direction:column;align-items:flex-start}
+#huntRoute{max-width:150px;white-space:normal;text-align:left}
+.hunt-route header{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
+.hunt-route h2,.hunt-route h3{color:#efd297;margin:0 0 8px}
+.hunt-route header>strong{color:#91d1c0;font-size:12px}
+.hunt-sectors{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:20px 0}
+.hunt-sectors button{display:flex;align-items:center;gap:12px;min-height:70px;padding:12px;border:1px solid #796b4d;background:#183239;color:#ede0c4;text-align:left;font:inherit;cursor:pointer}
+.hunt-sectors button>span{display:grid;place-items:center;flex-shrink:0;width:27px;height:27px;border:1px solid #bea165;color:#f9d28a;font-weight:bold;border-radius:50%}
+.hunt-sectors button div{min-width:0;flex:1}.hunt-sectors small{display:block;font-size:11px;color:#b6c5bb}
+.hunt-sectors button>b{font-size:10px;color:#b9d8cd;white-space:nowrap}.hunt-sectors button[aria-current=location]{border-color:#ebc67a;background:#2b4541}
+.hunt-sectors button:hover,.hunt-sectors button:focus-visible{border-color:#ffe3a3;background:#304c49;outline:1px solid #e7c17e}
+.hunt-boss-brief{padding:18px;border:1px solid #b18b55;background:#292e2e}.hunt-boss-brief p,.hunt-economy{font-size:12px;color:#c4cbbd}
+@media(max-width:680px){.hunt-sectors{grid-template-columns:1fr}.hunt-sectors button{padding:10px}.hunt-sectors button>b{font-size:9px}.hunt-route h2{font-size:20px}}

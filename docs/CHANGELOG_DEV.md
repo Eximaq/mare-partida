@@ -1,5 +1,13 @@
 # Histórico de desenvolvimento
 
+## 19/10/2026 — Caçadas regionais 1–20
+
+- Níveis fixos por setor: Dawn 1–10 e Conchas 11–20; entrada de Conchas passa para Nv.11.
+- Chefes Nv.10/Nv.20 com arena final, 12 abates locais e espera de 90s persistida após derrota.
+- Avisos no chão, mira travada, interrupção por controle e tentativa de desvio automático.
+- Rota por caminhada, quatro contratos locais e arma rara/épica de primeira vitória, com resgate transacional protegido contra mochila cheia.
+- Módulo `hunt-system.js`; sem mudanças de terreno/dimensões ou gerações pagas. Integração e resumo para o colaborador em `docs/CACADAS-1-20.md`.
+
 ## 19/10/2026 — Constelações, conquistas e finais passivos
 
 - Árvore conectada com tronco, ponte, finais, arraste/zoom e foco; removido o grid independente.

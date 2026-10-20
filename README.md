@@ -8,7 +8,11 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Entrega atual — Haki na HUD de combate
+## Entrega atual — Caçadas regionais 1–20
+
+Dawn agora tem encontros fixos Nv.1–10, e Conchas Nv.11–20 (entrada no nível 11). **Rota & recompensas**, junto ao retorno ao porto, guia a caminhada pelos setores e permite resgatar uma arma da classe na primeira vitória contra cada chefe. Especiais têm avisos no chão; a auto-caçada tenta desviar quando há saída. XP e equipamentos vêm do nível do inimigo. Saves e itens existentes preservados. [Regras, limites, testes e resumo para o colaborador](docs/CACADAS-1-20.md).
+
+## Histórico — Haki na HUD de combate
 
 Após despertar, três ícones aparecem junto às barras do perfil: **H** alterna Armamento, **J** alterna Observação e **K** dispara o Rei. O chat passa para **L**. Os botões mostram estado ativo, falta de Vontade e recarga do Rei (8s, persistente após reload). Novos ícones PixelLab nativos32 e VFX transparentes estão integrados. [Regras, arte e validação](docs/HAKI.md).
 

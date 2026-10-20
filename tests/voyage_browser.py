@@ -19,7 +19,7 @@ def bounds(q):
 with sync_playwright() as p:
  b=p.chromium.launch(headless=True);c,q=page_for(b,errors=errors);q.clock.run_for(300);template=create(q);c.close()
  for size in SIZES+[(393,852),(320,568)]:
-  suffix=f'{size[0]}x{size[1]}';g=fixture(template);g.update(level=10,hp=10000,energy=1000);g['preferences']['menuExpanded']=True
+  suffix=f'{size[0]}x{size[1]}';g=fixture(template);g.update(level=11,hp=10000,energy=1000);g['preferences']['menuExpanded']=True
   for item in g['equipment'].values():item.update(rarity='legendary',level=20,plus=15)
   c,q=page_for(b,g,size,errors);before=items(saved(q));d0=diag(q)
   assert q.locator('#mainMenu [data-panel]').count()==6
@@ -60,7 +60,7 @@ with sync_playwright() as p:
   record('regions_details_travel_'+suffix);c.close()
  # Entry requirements remain independent from the recommended level band.
  c,q=page_for(b,template,errors=errors);panel(q,'map');before=saved(q);choose(q,'conchas')
- assert q.locator('[data-travel-island]').is_disabled();assert 'Nv. 8' in q.locator('[data-travel-island]').inner_text()
+ assert q.locator('[data-travel-island]').is_disabled();assert 'Nv. 11' in q.locator('[data-travel-island]').inner_text()
  q.locator('[data-travel-island]').evaluate('(e)=>e.click()');assert diag(q)['scene']=='lobby' and saved(q)==before
  choose(q,'orange-town');assert q.locator('[data-travel-island]').is_disabled();assert saved(q)==before
  q.locator('[data-voyage-back]').click();q.locator('[data-island=dawn]').focus();q.keyboard.press('Enter');assert q.locator('#dungeonName').inner_text()=='Ilha Dawn'
