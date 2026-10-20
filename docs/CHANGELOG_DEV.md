@@ -1,5 +1,12 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Orange Town 21–30
+
+- Branch `feature/orange-town-21-30`, base `1d8157a`. Implementados mapa 32×32, cinco setores, oito fachadas conectadas, navegação/câmera, entrada Nv.21, região 21–30, contratos e primeira vitória. Preservadas as alterações do colaborador e mapas anteriores.
+- Arte própria integrada: quatro construções, piso64, quatro monstros48 e caminhadas cardeais com nove quadros (referência +8), mantendo os pixels/canvases transparentes originais. Consumo35 de teto40. Retrato do Capitão Fagulha no Arquipélago; manifesto `ready:true`; diário mostra os contratos da ilha.
+- 22 suítes Node, sintaxe, build/cache41 recursos, cinco resoluções, carregamento da arte em dist, combate real do chefe em DEV, resgate/rollback/reload e amostras30s das sete classes passaram. Regras, fontes e limites em `docs/ORANGE-TOWN.md`. Capturas e originais completos preservados localmente; sem evidências em massa no Git. Revisão via PR28, sem merge automático.
+
+
 ## 20/10/2026 — Mochila limitada a sete fileiras
 
 - Branch `fix/inventario-grade-sete`, base `e674d6c`. Grade desktop 7×7 (49 por página), tablet 6×7 (42) e móvel 5×7 (35). Removida a rolagem interna da bandeja; demais itens ficam nas páginas. Capacidade de 120 e fundos anteriores preservados.

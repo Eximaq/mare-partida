@@ -1,0 +1,144 @@
+{
+  "ready": true,
+  "street": {
+    "url": "assets/orange-town/street.png"
+  },
+  "buildings": {
+    "url": "assets/orange-town/buildings.png",
+    "cell_size": 128
+  },
+  "monsters": {
+    "awning-raider": {
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "render_scale": 1.5,
+      "animations": {
+        "idle": {
+          "url": "assets/orange-town/awning-raider-idle.png",
+          "frames": 1,
+          "fps": 8,
+          "frame_width": 48,
+          "frame_height": 48,
+          "anchor": [
+            24.0,
+            45
+          ]
+        },
+        "walk": {
+          "url": "assets/orange-town/awning-raider-walk.png",
+          "frames": 9,
+          "fps": 8,
+          "frame_width": 64,
+          "frame_height": 64,
+          "anchor": [
+            32.0,
+            53
+          ]
+        }
+      }
+    },
+    "captain-spark": {
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "render_scale": 1.5,
+      "animations": {
+        "idle": {
+          "url": "assets/orange-town/captain-spark-idle.png",
+          "frames": 1,
+          "fps": 8,
+          "frame_width": 48,
+          "frame_height": 48,
+          "anchor": [
+            24.0,
+            46
+          ]
+        },
+        "walk": {
+          "url": "assets/orange-town/captain-spark-walk.png",
+          "frames": 9,
+          "fps": 8,
+          "frame_width": 68,
+          "frame_height": 68,
+          "anchor": [
+            34.0,
+            56
+          ]
+        }
+      }
+    },
+    "dock-bruiser": {
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "render_scale": 1.5,
+      "animations": {
+        "idle": {
+          "url": "assets/orange-town/dock-bruiser-idle.png",
+          "frames": 1,
+          "fps": 8,
+          "frame_width": 48,
+          "frame_height": 48,
+          "anchor": [
+            24.0,
+            46
+          ]
+        },
+        "walk": {
+          "url": "assets/orange-town/dock-bruiser-walk.png",
+          "frames": 9,
+          "fps": 8,
+          "frame_width": 68,
+          "frame_height": 68,
+          "anchor": [
+            34.0,
+            56
+          ]
+        }
+      }
+    },
+    "square-gunner": {
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "render_scale": 1.5,
+      "animations": {
+        "idle": {
+          "url": "assets/orange-town/square-gunner-idle.png",
+          "frames": 1,
+          "fps": 8,
+          "frame_width": 48,
+          "frame_height": 48,
+          "anchor": [
+            24.0,
+            46
+          ]
+        },
+        "walk": {
+          "url": "assets/orange-town/square-gunner-walk.png",
+          "frames": 9,
+          "fps": 8,
+          "frame_width": 68,
+          "frame_height": 68,
+          "anchor": [
+            34.0,
+            56
+          ]
+        }
+      }
+    }
+  }
+}
