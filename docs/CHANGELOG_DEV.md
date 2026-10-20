@@ -1,5 +1,11 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Ícones de itens PixelLab
+
+- 64 PNGs transparentes32×32, espada45 selecionada pelo proprietário; 35 reduções nearest-neighbor aprovadas e29 fontes nativas32.
+- Caminhos atualizados no inventário, forja, drops, criação das classes, Livro da Vontade e recompensas da prisão. SVGs antigos preservados; catálogos, stats e saves sem mudança.
+- Consumo54 na produção e10,1 na amostra; duas correções Pixen adicionais aprovadas. Documentação e teste visual em `docs/ICONES-ITENS-PIXELLAB.md` e `tests/item_icons_browser.py`.
+
 ## 19/10/2026 — Caçadas regionais 1–20
 
 - Níveis fixos por setor: Dawn 1–10 e Conchas 11–20; entrada de Conchas passa para Nv.11.
