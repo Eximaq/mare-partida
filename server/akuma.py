@@ -14,6 +14,20 @@ FRUITS = {
     "akuma_inu_dachshund": {"type": "akuma_no_mi", "family": "zoan", "rank": "E", "name": "Inu-Inu no Mi: Dachshund", "cooldown": 10, "evasion_percent": .10, "physical_defense_percent": .03},
 }
 
+# Public catalog metadata for the HUD. Combat validation remains in cast().
+SKILL_TOOLTIPS = {
+    "akuma_kuku_kuku": {"name": "Banquete Relâmpago", "cooldown": 15, "cost": 0, "description": "Transforma o cadáver mais próximo da instância em comida. Quem a recolher recupera 15% da Vida máxima."},
+    "akuma_beri_beri": {"name": "Divisão Esférica", "cooldown": 18, "cost": 0, "description": "Divide o corpo em seis esferas, concede 1,5s de invulnerabilidade e empurra inimigos próximos."},
+    "akuma_tori_albatroz": {"name": "Plano de Alta Altitude", "cooldown": 14, "cost": 0, "description": "Aumenta a velocidade de movimento em 30% por 5s e ignora armadilhas de chão."},
+    "akuma_uma_uma": {"name": "Arrancada Galopante", "cooldown": 12, "cost": 0, "damage_type": "physical", "description": "Avança 4 tiles em linha reta, causando dano físico leve e empurrando o primeiro inimigo."},
+    "akuma_inu_dachshund": {"name": "Mordida de Calcanhar", "cooldown": 10, "cost": 0, "damage_type": "physical", "description": "Salta até o alvo, causa dano físico e aplica 30% de lentidão e −5% de Defesa por 3s."},
+}
+
+
+def public_catalog():
+    """Return tooltip data alongside the existing, stable fruit catalog."""
+    return {fruit_id: {**fruit, "skill": SKILL_TOOLTIPS[fruit_id].copy()} for fruit_id, fruit in FRUITS.items()}
+
 
 class AkumaStore:
     def __init__(self, database: str | Path = ":memory:", clock=time.time):

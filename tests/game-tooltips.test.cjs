@@ -1,0 +1,22 @@
+'use strict';
+const assert=require('node:assert/strict');
+const Tooltip=require('../game-tooltips.js');
+
+assert.deepEqual(Tooltip.filterCleanStats({attack:0,defense:36,hp:254,crit:0,attributes:{strength:2,dexterity:0}}),{defense:36,hp:254,strength:2});
+assert.deepEqual(Tooltip.filterCleanStats({healing_received_percent:.05,max_hp_percent:.03}),{healing_received_percent:5,max_hp_percent:3});
+const hovered={name:'Cinto do Assassino',typeName:'cinto',rarity:'uncommon',rarityName:'Incomum',level:55,className:'Gatunos',allowed:false,stats:{defense:36,hp:254,attack:0},power:102};
+const equipped={...hovered,name:'Cinto do Guerreiro',rarity:'rare',rarityName:'Raro',allowed:true,stats:{defense:57,hp:275},power:132};
+const html=Tooltip.itemHTML(hovered,equipped);
+assert.match(html,/with-comparison/);
+assert.match(html,/EQUIPADO AGORA/);
+assert.match(html,/−21/);
+assert.match(html,/−30/);
+assert.doesNotMatch(html,/Ataque/);
+assert.match(html,/blocked/);
+assert.match(html,/rarity-rare/);
+const skill=Tooltip.skillHTML({name:'Impacto',key:'1',cooldown:8,cost:17,description:'Causa 250% de dano físico.',damageType:'physical'});
+assert.match(skill,/Recarga/);
+assert.match(skill,/17 Energia/);
+assert.match(skill,/game-tip-number/);
+assert.equal(Tooltip.skillHTML({name:'<img>',description:'<script>'}).includes('<script>'),false);
+console.log('Game tooltips OK');

@@ -11,7 +11,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from akuma import AkumaStore, FRUITS
+from akuma import AkumaStore, public_catalog
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = Path(os.environ.get("MARE_AKUMA_DB", Path.home() / ".mare-partida" / "akuma.sqlite3"))
@@ -36,7 +36,7 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         route = urlparse(self.path)
         if route.path == "/api/akuma/catalog":
-            return self.reply(200, FRUITS)
+            return self.reply(200, public_catalog())
         if route.path == "/api/akuma/state":
             try:
                 with LOCK:

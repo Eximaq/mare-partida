@@ -1,5 +1,11 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Tooltips dinâmicos de itens e habilidades
+
+- Branch `feature/dynamic-tooltips`, base `93ca616`, atualizada para `4425a67` do `main` remoto. A mochila e os slots equipados mostram caixa escura ao passar o mouse ou focar pelo teclado; itens do mesmo slot são comparados em duas colunas com diferenças de atributos e Poder. Valores numéricos zero não geram linhas.
+- Atalhos de classe, Zoan, Akuma no Mi e Haki, transformação e nós de talento exibem nome, efeito e recarga/custo pertinentes. Metadados de habilidade das frutas são publicados pelo catálogo Python. As cores usam os tokens náuticos da HUD e as raridades existentes. Sem migração de save ou mudança de combate.
+- Validação: 25 suítes Node, 6 testes Python de Akuma no Mi, `python tools/build_pages.py`, inspeção no navegador local de item, comparativo e habilidade antes e depois da integração com `main`. Capturas recentes foram vistas na sessão, sem inclusão no Git. Para desfazer, reverta o commit desta branch.
+
 ## 20/10/2026 — Cidade das Conchas reconstruída
 
 - Branch `fix/cidade-conchas-rework`, base `93ca616`, preservando Zoans Rank E do colaborador. Ilha própria32×32/células64 no lugar do cenário legado: cais, mercados azuis, praça de vigília, bairro antigo e bastião. Sete fachadas com acesso, circuito de ruas, navios na água, carga nas docas e arco atravessável.
