@@ -137,6 +137,13 @@ Não renomear/mover assets referenciados sem atualizar todos os manifests/import
 
 ## 5. Mundo, movimentação e câmera
 
+### Caçadas regionais implementadas — 19/10/2026
+
+- Configuração de encontros/economia em `hunt-system.js`: Dawn Nv.1–10 e Conchas Nv.11–20, entrada de Conchas Nv.11. Não voltar a escalar monstros/drops pelo nível do jogador.
+- Chefes locais exigem 12 abates na ilha e proximidade da arena; espera de 90s após derrota persiste em `hunts`. Primeira vitória tem resgate único, preservado com mochila cheia e falha de storage.
+- Rota usa caminhada/pathfinding, nunca teleporte. Avisos de área têm mira fixa, LOS e podem ser evitados/interrompidos. Preservar o isolamento DEV e os contratos legados.
+- Geometria/artes não mudaram; `docs/CACADAS-1-20.md` contém fórmulas, limites de conteúdo, testes e orientações para trabalho em paralelo.
+
 ### 5.1 Requisitos
 
 - Lobby com porto, praça, comércio, forja, cais e serviços em composição compacta. Aplicar o padrão de dimensões abaixo aos mapas futuros; não aumentar o mundo apenas para superar a viewport.

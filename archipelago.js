@@ -8,7 +8,7 @@
   const loot=Object.freeze(['Dobrões e experiência','Equipamentos da classe','Ferro Salgado e poções']);
   const islands=Object.freeze([
     {id:'dawn',name:'Ilha Dawn',recommended:[1,10],area:'beach',minLevel:1,description:'Uma ilha inicial com cais, ruas em ruínas e uma fortaleza além da fenda. Percorra os setores e enfrente o guardião da região.',drops:loot,monster:{name:'Capitão da Caldeira',role:'Chefe',src:'assets/ruinas-brasas/caldera-captain.png',sheet:true}},
-    {id:'conchas',name:'Cidade das Conchas',recommended:[11,20],area:'swamp',minLevel:8,description:'Uma região costeira envolta em névoa, com ruínas e criaturas hostis. Prepare seus equipamentos antes de seguir adiante.',drops:loot,monster:{name:'Guardião da Caldeira',role:'Chefe',src:'assets/monsters/boss.png',sheet:false}},
+    {id:'conchas',name:'Cidade das Conchas',recommended:[11,20],area:'swamp',minLevel:11,description:'Uma região costeira envolta em névoa, com ruínas e criaturas hostis. Prepare seus equipamentos antes de seguir adiante.',drops:loot,monster:{name:'Guardião das Conchas',role:'Chefe',src:'assets/monsters/boss.png',sheet:false}},
     {id:'orange-town',name:'Orange Town',recommended:[21,30],area:null,description:'A próxima parada do East Blue. O cenário e seus encontros serão adicionados em uma atualização futura.'},
     {id:'animais-raros',name:'Ilha dos Animais Raros',recommended:[31,40],area:null,description:'Uma ilha de exploração e fauna incomum. A região ainda está em preparação.'},
     {id:'syrup',name:'Vilarejo Syrup',recommended:[41,50],area:null,description:'Uma nova rota do arquipélago, reservada para uma atualização futura.'},
