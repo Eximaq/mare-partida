@@ -12,7 +12,7 @@ class Preview(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         if self.path == '/__dev_version':
-            paths = [ROOT/'index.html', ROOT/'game.js', ROOT/'styles.css', ROOT/'world-system.js', ROOT/'island-world.js', ROOT/'island-assets.js', ROOT/'character-system.js', ROOT/'faction-sprites.js', ROOT/'faction-assets.js']
+            paths = [ROOT/'ui-hud.css', ROOT/'ui-screens.css', ROOT/'ui-responsive.css', ROOT/'ui-tokens.css', ROOT/'ui-components.css', ROOT/'ui-system.js', ROOT/'index.html', ROOT/'game.js', ROOT/'styles.css', ROOT/'world-system.js', ROOT/'island-world.js', ROOT/'island-assets.js', ROOT/'character-system.js', ROOT/'faction-sprites.js', ROOT/'faction-assets.js']
             paths += [ROOT/'combat-animation.js', ROOT/'combat-assets.js', ROOT/'ui-nautical.css', ROOT/'forge-system.js', ROOT/'forge-ui.js', ROOT/'ember-world.js', ROOT/'ember-renderer.js', ROOT/'archipelago.js', ROOT/'prison-system.js', ROOT/'haki-system.js', ROOT/'haki-ui.js', ROOT/'haki-art.js', ROOT/'achievement-system.js', ROOT/'ultimate-system.js', ROOT/'talent-system.js', ROOT/'talent-combat.js', ROOT/'talent-ui.js', ROOT/'dev-tools.js', ROOT/'hunt-system.js', ROOT/'assets/ruinas-brasas/manifest.json']
             data = json.dumps([p.stat().st_mtime_ns if p.exists() else 0 for p in paths]).encode()
             self.send_response(200); self.send_header('Cache-Control','no-store')

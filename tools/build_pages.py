@@ -9,7 +9,7 @@ OUT = ROOT / 'dist'
 if OUT.exists():
     shutil.rmtree(OUT)
 OUT.mkdir(parents=True)
-web_files = ['index.html', 'styles.css', 'ui-nautical.css', 'audio-system.css', 'character-menu.css', 'modes-menu.css', 'inventory-compact.css',
+web_files = ['index.html', 'ui-tokens.css', 'ui-components.css', 'ui-hud.css', 'ui-screens.css', 'ui-responsive.css', 'ui-system.js', 'styles.css', 'ui-nautical.css', 'audio-system.css', 'character-menu.css', 'modes-menu.css', 'inventory-compact.css',
              'character-system.js', 'akuma-system.js', 'combat-animation.js', 'combat-assets.js',
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
              'forge-ui.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js',

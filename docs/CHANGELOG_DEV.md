@@ -1,5 +1,12 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — UI/UX 2.0
+
+- Fundação com tokens, componentes e factories DOM, camadas isoladas para o legado e uma única prioridade global de visibilidade. Os 1112 usos textuais anteriores de `!important` foram migrados sem excluir as regras de funcionalidades.
+- HUD nas bordas: Haki junto às ações, perfil menor, menus diretos, áudio em área própria, filtros locais do chat, expedição recolhível e rota junto ao progresso. Superfícies fixas compartilham o mesmo contexto de empilhamento.
+- Janelas de inventário/forja/personagem/talentos/conquistas/Haki/frutas/viagem/prisão/contratos/mercador/ajuda e criação usam a base comum; contraste dos atributos e notificações em fluxo revisados. Foco, Escape, backdrop, confirmação e abertura no início do conteúdo padronizados.
+- `docs/UI-DESIGN-SYSTEM.md` e `AGENT.md` orientam futuras janelas. QA em Chromium nas sete resoluções, toque/horizontal/movimento reduzido, regressões de Forja/Haki/ícones, build e cache. Nenhuma geração de arte ou alteração de regras de gameplay/saves.
+
 ## 20/10/2026 — Ícones de itens PixelLab
 
 - 64 PNGs transparentes32×32, espada45 selecionada pelo proprietário; 35 reduções nearest-neighbor aprovadas e29 fontes nativas32.
