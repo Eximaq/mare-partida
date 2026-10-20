@@ -4,14 +4,14 @@
   const ranks=Object.freeze(['E','D','C','B','A','S']);
   const slotsPerRank=5;
   class AkumaNoMiData {
-    constructor(id,name,rank,icon_path,bonus_stats,vfx_sprite_sheet){
+    constructor(id,name,rank,icon_path,bonus_stats,vfx_sprite_sheet,skill_icon_path,skill_sprite_sheet){
       if(!id||!name||!ranks.includes(rank))throw Error('Akuma no Mi inválida');
-      Object.assign(this,{id,name,rank,icon_path,bonus_stats:{...bonus_stats},vfx_sprite_sheet});
+      Object.assign(this,{id,name,rank,icon_path,bonus_stats:{...bonus_stats},vfx_sprite_sheet,skill_icon_path,skill_sprite_sheet});
     }
   }
   const catalog=Object.freeze([
-    new AkumaNoMiData('akuma_kuku_kuku','Kuku-Kuku no Mi','E','assets/akuma/kuku-icon.png',{healing_received_percent:.05,max_hp_percent:.03},'assets/akuma/kuku-aura.png'),
-    new AkumaNoMiData('akuma_beri_beri','Beri-Beri no Mi','E','assets/akuma/beri-icon.png',{impact_resistance_percent:.15},'assets/akuma/beri-aura.png')
+    new AkumaNoMiData('akuma_kuku_kuku','Kuku-Kuku no Mi','E','assets/akuma/kuku-icon.png',{healing_received_percent:.05,max_hp_percent:.03},'assets/akuma/kuku-aura.png','assets/akuma/kuku-skill-icon.png','assets/akuma/kuku-skill-sheet.png'),
+    new AkumaNoMiData('akuma_beri_beri','Beri-Beri no Mi','E','assets/akuma/beri-icon.png',{impact_resistance_percent:.15},'assets/akuma/beri-aura.png','assets/akuma/beri-skill-icon.png','assets/akuma/beri-skill-sheet.png')
   ]);
   const byId=(id,entries=catalog)=>entries.find(fruit=>fruit.id===id)||null;
   const isFruit=(item,defs)=>!!item&&(item.type==='akuma_no_mi'||defs?.[item.def]?.type==='akuma_no_mi');
