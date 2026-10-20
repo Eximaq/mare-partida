@@ -1,0 +1,180 @@
+[
+  {
+    "_comment_prompt": "MARÉ PARTIDA — CORREÇÃO DEFINITIVA DO MAPA ORANGE TOWN V2. Substituir recortes procedurais por tilesets próprios, preservar células de mundo64, física/câmera/saves e verificar visualmente antes/depois. Lote autorizado de até19 gerações, sem tentativas extras.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/orange-terrain-v2",
+      "output_collision_policy": "create_unique"
+    },
+    "TASK": {
+      "instruction": "Check explicit run approval and working MCP access. Create a unique empty run directory. Existing shared32px sand/grass base IDs must be accessible; do not invent substitutes."
+    }
+  },
+  {
+    "_comment": "grass-stone",
+    "MCP create_topdown_tileset": {
+      "lower_description": "Soft muted tropical green lawn, short fine grass, broad quiet color patches, sparse tiny plants, low contrast ground texture, not bushes or hedges.",
+      "upper_description": "Flat warm gray cobblestone paving of a tropical pirate town, broad irregular stones with connected narrow sandy joints, subtle wear, restrained contrast, crisp maritime RPG pixel art, no walls or objects.",
+      "lower_base_tile_id": "30642bb1-3ba2-4a0b-849f-398d86934e18",
+      "mode": "standard",
+      "tile_size": {
+        "width": 32,
+        "height": 32
+      },
+      "view": "high top-down",
+      "transition_size": 0
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_topdown_tileset with the returned tileset ID until completed or failed. Download original sheet and metadata. Use bounding_box/corners as placement rules, never names or original_position. Inspect every tile and shared base colors. Stop before any retry. For the sand→dirt call when replaying a fresh chain, use the new dirt base returned by dirt→grass in upper_base_tile_id.",
+      "outputs": [
+        "grass-stone.png",
+        "grass-stone-metadata.json"
+      ],
+      "verify": "Native32 Wang16 flat set, full source sprites, consistent shared terrain palette and connected corners."
+    }
+  },
+  {
+    "_comment": "dirt-grass",
+    "MCP create_topdown_tileset": {
+      "lower_description": "Warm compacted sandy brown earth of a tropical pirate town, subtle worn patches, sparse fine grains, flat readable ground, restrained contrast, crisp maritime RPG pixel art.",
+      "upper_description": "Soft muted tropical green lawn, short fine grass, broad quiet color patches, sparse tiny plants, low contrast ground texture, not bushes or hedges.",
+      "upper_base_tile_id": "30642bb1-3ba2-4a0b-849f-398d86934e18",
+      "mode": "standard",
+      "tile_size": {
+        "width": 32,
+        "height": 32
+      },
+      "view": "high top-down",
+      "transition_size": 0
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_topdown_tileset with the returned tileset ID until completed or failed. Download original sheet and metadata. Use bounding_box/corners as placement rules, never names or original_position. Inspect every tile and shared base colors. Stop before any retry. For the sand→dirt call when replaying a fresh chain, use the new dirt base returned by dirt→grass in upper_base_tile_id.",
+      "outputs": [
+        "dirt-grass.png",
+        "dirt-grass-metadata.json"
+      ],
+      "verify": "Native32 Wang16 flat set, full source sprites, consistent shared terrain palette and connected corners."
+    }
+  },
+  {
+    "_comment": "sand-wood",
+    "MCP create_topdown_tileset": {
+      "lower_description": "Warm smooth beige island sand, very sparse tiny pebbles, broad quiet readable ground texture, no dense shell pattern.",
+      "upper_description": "Weathered honey brown harbor planks, short staggered joints, brass nail heads, flat walking surface, crisp maritime pixel art, restrained contrast.",
+      "lower_base_tile_id": "1ff29faa-1298-4275-b3f6-8750ee254cbe",
+      "mode": "standard",
+      "tile_size": {
+        "width": 32,
+        "height": 32
+      },
+      "view": "high top-down",
+      "transition_size": 0
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_topdown_tileset with the returned tileset ID until completed or failed. Download original sheet and metadata. Use bounding_box/corners as placement rules, never names or original_position. Inspect every tile and shared base colors. Stop before any retry. For the sand→dirt call when replaying a fresh chain, use the new dirt base returned by dirt→grass in upper_base_tile_id.",
+      "outputs": [
+        "sand-wood.png",
+        "sand-wood-metadata.json"
+      ],
+      "verify": "Native32 Wang16 flat set, full source sprites, consistent shared terrain palette and connected corners."
+    }
+  },
+  {
+    "_comment": "sand-dirt",
+    "MCP create_topdown_tileset": {
+      "lower_description": "Warm smooth beige island sand, very sparse tiny pebbles, broad quiet readable ground texture, no dense shell pattern.",
+      "upper_description": "Warm compacted sandy brown earth of a tropical pirate town, subtle worn patches, sparse fine grains, flat readable ground, restrained contrast, crisp maritime RPG pixel art.",
+      "lower_base_tile_id": "1ff29faa-1298-4275-b3f6-8750ee254cbe",
+      "upper_base_tile_id": "b9381fd6-f978-4ed6-9d30-42cfcba501cf",
+      "mode": "standard",
+      "tile_size": {
+        "width": 32,
+        "height": 32
+      },
+      "view": "high top-down",
+      "transition_size": 0
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_topdown_tileset with the returned tileset ID until completed or failed. Download original sheet and metadata. Use bounding_box/corners as placement rules, never names or original_position. Inspect every tile and shared base colors. Stop before any retry. For the sand→dirt call when replaying a fresh chain, use the new dirt base returned by dirt→grass in upper_base_tile_id.",
+      "outputs": [
+        "sand-dirt.png",
+        "sand-dirt-metadata.json"
+      ],
+      "verify": "Native32 Wang16 flat set, full source sprites, consistent shared terrain palette and connected corners."
+    }
+  },
+  {
+    "_comment": "grass-variation",
+    "MCP edit_image_pixen": {
+      "description": "Keep every pixel of the outer four-pixel border unchanged. Inside that border only, add two small grass tufts, a tiny muted ivory flower and a few dry leaves. Preserve the original palette, flat ground, scale and crisp pixels.",
+      "image_base64": "grass-reference.png",
+      "width": 32,
+      "height": 32,
+      "no_background": false
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_image using the returned job ID and download the original edited PNG. Compare every outer4px border pixel against the native input. Reject unsuitable structural edits; do not retry or repair without explicit approval.",
+      "outputs": [
+        "grass-variation.png"
+      ],
+      "verify": "Native32 opaque image, matching input border and appropriate subtle interior details."
+    }
+  },
+  {
+    "_comment": "sand-variation",
+    "MCP edit_image_pixen": {
+      "description": "Preserve the outer four-pixel border exactly. Add only inside it a sparse cluster of three tiny warm gray pebbles and subtle wind-swept sand marks. Keep the same beige palette, lighting, flat surface and pixel scale.",
+      "image_base64": "sand-reference.png",
+      "width": 32,
+      "height": 32,
+      "no_background": false
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_image using the returned job ID and download the original edited PNG. Compare every outer4px border pixel against the native input. Reject unsuitable structural edits; do not retry or repair without explicit approval.",
+      "outputs": [
+        "sand-variation.png"
+      ],
+      "verify": "Native32 opaque image, matching input border and appropriate subtle interior details."
+    }
+  },
+  {
+    "_comment": "stone-variation",
+    "MCP edit_image_pixen": {
+      "description": "Leave the outer four-pixel border pixel-for-pixel identical. Within the center only, add subtle worn stone chips and one small pale scuff. Preserve the connected paving joints, warm gray palette, overhead lighting and crisp pixel scale.",
+      "image_base64": "stone-reference.png",
+      "width": 32,
+      "height": 32,
+      "no_background": false
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Poll get_image using the returned job ID and download the original edited PNG. Compare every outer4px border pixel against the native input. Reject unsuitable structural edits; do not retry or repair without explicit approval.",
+      "outputs": [
+        "stone-variation.png"
+      ],
+      "verify": "Native32 opaque image, matching input border and appropriate subtle interior details."
+    }
+  },
+  {
+    "TASK": {
+      "instruction": "Keep every original unchanged. Reuse existing water/sand and sand/grass atlases. Configure whole-sprite Wang dual-grid rendering in world64 cells, shared-vertex coordinates, deterministic variants and512px chunks. This recorded run received explicit approval to replace only flat #3fc729/#43c329 with source #4aa93b and restore original outer4px borders of grass/sand variations; stone variation stays rejected. Fresh runs must obtain their own repair approval. Do not fabricate a47-sprite atlas from incompatible crops. Capture the actual baseline and candidate at identical camera positions and inspect at1x/2x. Owner visual approval is required before merge/publication.",
+      "outputs": [
+        "assembly-inspection.json"
+      ],
+      "verify": "No procedural polygon clips, mirrored textures, unsupported material junctions, chunk seams or gameplay changes. Artistic acceptance is manual."
+    }
+  }
+]
