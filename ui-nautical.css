@@ -2259,15 +2259,21 @@ button {
 .akuma-unavailable{white-space:nowrap;border:1px solid #a6814b;background:#33291e;color:#f4ce87;padding:9px 12px;font-size:12px}
 .akuma-passive{padding:12px 14px;border:1px solid #4e6d65;background:#122e30;color:#d9e7dd}
 .akuma-passive small{display:block;color:#91b8ae;margin-top:4px}
-.akuma-ranks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.akuma-rank{border:1px solid #3b5554;background:#0d242b;min-height:105px;padding:12px}
-.akuma-rank h3{color:#dfbb78;margin:0 0 10px;font-size:14px}
-.akuma-fruits p{color:#829e9e;margin:0;font-size:12px}
-.akuma-fruit{display:flex;align-items:center;gap:9px;margin:5px 0;color:#e5e6d6}
-.akuma-fruit>span{display:grid;place-items:center;width:32px;height:32px;background:#203c3d;border:1px solid #ad9360}
-.akuma-fruit img{max-width:30px;max-height:30px;image-rendering:pixelated}
-.akuma-fruit small{display:block;color:#91aaa5}
+.akuma-rank-tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px;margin:18px 0 0}
+.akuma-rank-tabs button{border:1px solid #516a68;background:#112a30;color:#bdd0c7;padding:11px 6px;font:700 13px Georgia,serif;cursor:pointer}
+.akuma-rank-tabs button[aria-selected="true"]{border-color:#d5aa67;background:#59452c;color:#ffe0a1}
+.akuma-rank-tabs button:focus-visible{outline:2px solid #ffe0a1;outline-offset:2px}
+.akuma-rank-panel{border:1px solid #536765;background:#0d242b;padding:16px;margin-top:8px}
+.akuma-rank-panel h3{color:#dfbb78;margin:0 0 14px;font-size:16px}
+.akuma-slot-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.akuma-slot{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:124px;padding:12px 6px;text-align:center;border:1px solid #536564;background:#173238;color:#e5e6d6}
+.akuma-slot.is-empty{border-style:dashed;color:#a4b9b5}
+.akuma-slot-icon{display:grid;place-items:center;width:46px;height:46px;border:1px solid #927c58;background:#243b3b;color:#c0a77e;font:700 23px Georgia,serif}
+.akuma-slot-icon img{max-width:44px;max-height:44px;image-rendering:pixelated}
+.akuma-slot strong{font-size:12px}
+.akuma-slot small{color:#91aaa5;font-size:11px}
+.akuma-slot-hint{color:#9db9b3;font-size:12px;margin:14px 0 0}
 .op-equip-slot[data-inv-slot="akuma_no_mi"]{border-color:#ae8e61}
 .op-equip-slot.fruit-drop-target{outline:2px solid #7edacb;outline-offset:2px}
-@media(max-width:800px){.akuma-ranks{grid-template-columns:repeat(2,minmax(0,1fr))}.akuma-compendium header{flex-direction:column}}
-@media(max-width:520px){.akuma-ranks{grid-template-columns:1fr}}
+@media(max-width:800px){.akuma-compendium header{flex-direction:column}.akuma-slot-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:520px){.akuma-rank-tabs{grid-template-columns:repeat(3,minmax(0,1fr))}.akuma-slot-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}

@@ -11,6 +11,12 @@ const klass={baseHP:136,hpStep:12,attack:14,attackStep:3,defense:7,defenseStep:1
 const faction={attack:1,defense:1,hp:1,energy:1,speed:1,crit:0};
 const derive=(g,gear)=>Characters.derive(g,klass,faction,{...gear,akumaRegistered:Akuma.passiveCount(g,entries)});
 const base=derive(game,Forge.aggregate({},defs));
+for(const rank of Akuma.ranks){
+  const slots=Akuma.slotsForRank(game,rank,entries);
+  assert.equal(slots.length,5,`five preview slots for rank ${rank}`);
+  assert.ok(slots.every(slot=>slot.fruit===null),'unregistered fruits remain hidden');
+}
+assert.equal(Akuma.slotsForRank(game,'X',entries).length,0);
 for(const [index,fruit] of entries.entries()){
   const item={id:`item-${index}`,def:index,type:'akuma_no_mi',fruitId:fruit.id};
   assert.equal(Akuma.isFruit(item,defs),true,`${fruit.rank} equips`);
@@ -21,7 +27,10 @@ for(const [index,fruit] of entries.entries()){
   assert.equal(gear.defense,2);
   assert.ok(derive(game,gear).attack>base.attack);
   game=Akuma.register(game,fruit.id,entries).state;
+  assert.equal(Akuma.slotsForRank(game,fruit.rank,entries)[0].fruit?.id,fruit.id);
 }
+const extra=Array.from({length:6},(_,i)=>new Akuma.AkumaNoMiData(`extra-${i}`,`Extra ${i}`,'E','','',null));
+assert.equal(Akuma.slotsForRank(game,'E',extra).length,6,'slots expand for future batches');
 assert.equal(Akuma.passiveCount(game,entries),6);
 assert.ok(derive(game,Forge.aggregate({},defs)).maxHP>base.maxHP);
 assert.ok(derive(game,Forge.aggregate({},defs)).attributes.strength>base.attributes.strength);
@@ -29,4 +38,4 @@ assert.equal(Akuma.register(game,entries[0].id,entries).state.akumaCompendium.le
 assert.deepEqual(Akuma.migrate({...game,akumaCompendium:['future-fruit','future-fruit',...game.akumaCompendium]}).akumaCompendium,['future-fruit',...game.akumaCompendium]);
 assert.equal(Akuma.register(game,'unknown',entries).ok,false);
 assert.throws(()=>new Akuma.AkumaNoMiData('bad','Bad','X','','',''));
-console.log('Akuma no Mi: six ranks, equipment bonuses, permanent HP/STR, unique registration and migration passed');
+console.log('Akuma no Mi: rank slots, equipment bonuses, permanent HP/STR, unique registration and migration passed');

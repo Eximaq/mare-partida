@@ -10,7 +10,7 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 ## Prévia — Akuma no Mi
 
-**Personagem → Akuma no Mi** mostra o compêndio por ranks E, D, C, B, A e S com o aviso **Indisponível / Em Breve**. O inventário já tem um slot exclusivo: futuras frutas de qualquer rank poderão ser equipadas e conceder seus bônus e aura. O catálogo inicial permanece vazio e não há desbloqueio pela interface nesta etapa. [Estrutura de dados, bônus e testes](docs/AKUMA-NO-MI.md).
+**Personagem → Akuma no Mi** mostra abas internas para os ranks E, D, C, B, A e S. Cada aba tem cinco espaços vazios, preenchidos ao registrar as frutas correspondentes, e o aviso **Indisponível / Em Breve**. O inventário já tem um slot exclusivo: futuras frutas de qualquer rank poderão ser equipadas e conceder seus bônus e aura. O catálogo inicial permanece vazio e não há desbloqueio pela interface nesta etapa. [Estrutura de dados, bônus e testes](docs/AKUMA-NO-MI.md).
 
 ## Entrega atual — Haki na HUD de combate
 

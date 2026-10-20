@@ -2,7 +2,7 @@
 
 ## Estado atual
 
-O menu Personagem preserva Personagem, Talentos, Conquistas e HAKI e acrescenta Akuma no Mi. O compêndio mostra os seis ranks E, D, C, B, A e S, sem botões de desbloqueio. O catálogo está vazio até a chegada dos lotes de 3 a 5 frutas. Nenhuma fruta entra no loot comum, no loot especial da prisão ou nas receitas da Forja por esta atualização.
+O menu Personagem preserva Personagem, Talentos, Conquistas e HAKI e acrescenta Akuma no Mi. Dentro do compêndio há abas para os ranks E, D, C, B, A e S. Cada aba começa com cinco espaços vazios, sem botões de desbloqueio. Quando uma fruta daquele rank for registrada, seu ícone e nome ocuparão o espaço correspondente; frutas ainda não registradas continuam ocultas. Se um rank receber mais de cinco frutas, a grade cresce. O catálogo está vazio até a chegada dos lotes de 3 a 5 frutas. Nenhuma fruta entra no loot comum, no loot especial da prisão ou nas receitas da Forja por esta atualização.
 
 ## Dados e save
 
@@ -18,7 +18,7 @@ Ao equipar, `current_fruit_vfx` passa a apontar para `vfx_sprite_sheet`. `vfx_au
 
 ## Validação
 
-- `node tests/akuma-system.test.cjs`: ranks, bônus, registro único, migração e exclusão da Forja.
+- `node tests/akuma-system.test.cjs`: abas por rank, espaços vazios e preenchidos, bônus, registro único, migração e exclusão da Forja.
 - `node tests/character-system.test.cjs`, `node tests/forge-system.test.cjs`, `node tests/haki-system.test.cjs`: regressões de atributos, equipamento e HAKI.
 - `python tools/build_pages.py`: inclui `akuma-system.js` no preview com caminho relativo e hash de cache.
-- Navegador real: criação de personagem, seis ranks e aviso visíveis, sem ação de desbloqueio; slot Akuma no Mi presente no inventário.
+- Navegador real: criação de personagem, seis abas internas com cinco espaços vazios e aviso visíveis, sem ação de desbloqueio; slot Akuma no Mi presente no inventário.
