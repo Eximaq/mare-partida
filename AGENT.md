@@ -144,6 +144,12 @@ Não renomear/mover assets referenciados sem atualizar todos os manifests/import
 - Rota usa caminhada/pathfinding, nunca teleporte. Avisos de área têm mira fixa, LOS e podem ser evitados/interrompidos. Preservar o isolamento DEV e os contratos legados.
 - Geometria/artes não mudaram; `docs/CACADAS-1-20.md` contém fórmulas, limites de conteúdo, testes e orientações para trabalho em paralelo.
 
+### Cidade das Conchas reconstruída — 20/10/2026
+
+- Ilha11–20 em `conchas-world.js`/`conchas-renderer.js`,32×32 células64. ID de save `swamp`, mapa de runtime `conchas`; preservar setores/contratos e níveis/recompensas existentes. Coordenadas acompanham os anchors `MareConchas`.
+- Reutiliza `MareHarborTerrain` (alias compatível de `MareOrangeTerrain`) e assets existentes, sem novas gerações. Não copiar o layout de solo específico de Orange. Casas com acesso, cais sobre água e passagem central real no arco.
+- `docs/CIDADE-DAS-CONCHAS.md` registra fontes, limites e testes. Executar Node de Conchas/caçadas, navegador real e build/cache antes de alterar. Preservar Zoans do colaborador, incluindo `zoan-art.js` no pacote público.
+
 ### 5.1 Requisitos
 
 - Lobby com porto, praça, comércio, forja, cais e serviços em composição compacta. Aplicar o padrão de dimensões abaixo aos mapas futuros; não aumentar o mundo apenas para superar a viewport.

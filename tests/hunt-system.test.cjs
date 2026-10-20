@@ -1,12 +1,12 @@
 'use strict';
 const assert=require('node:assert/strict'),H=require('../hunt-system.js');
-require('../orange-world.js');require('../ember-world.js');require('../world-system.js');
+require('../orange-world.js');require('../ember-world.js');require('../conchas-world.js');require('../world-system.js');
 const W=globalThis.MareWorld,E=globalThis.MareEmber;
 const base=()=>H.migrate({level:1,gold:120,stats:{kills:99},inventory:[],equipment:{keep:{id:'safe'}},claimed:['boss']});
 let g=base(),source=JSON.stringify(g);assert.deepEqual(H.migrate(g),g);assert.equal(g.hunts.areas.beach.kills,0);assert.equal(g.stats.kills,99);
 assert.deepEqual(Object.values(H.regions).map(r=>[r.min,r.max]),[[1,10],[21,30],[11,20]]);
 for(const [area,region] of Object.entries(H.regions)){
- const anchors=area==='orange'?globalThis.MareOrange.districts:area==='beach'?E.districts:[],map=area==='orange'?globalThis.MareOrange.map:area==='beach'?E.map:W.maps.hunt,nav=new W.Navigation(map);
+ const anchors=area==='orange'?globalThis.MareOrange.districts:area==='beach'?E.districts:globalThis.MareConchas.districts,map=area==='orange'?globalThis.MareOrange.map:area==='beach'?E.map:W.maps.conchas,nav=new W.Navigation(map);
  for(const s of H.sectors(area,anchors)){
   assert(nav.walkable(s.x,s.y),s.name);assert(nav.path(map.spawn,s).length,s.name);assert.equal(H.sectorAt(area,s,anchors).id,s.id);
   for(const type of ['crab','bandit','spirit','boss'])for(const roll of [0,.5,.99999]){

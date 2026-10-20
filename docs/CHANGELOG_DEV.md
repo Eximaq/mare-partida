@@ -1,5 +1,11 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Cidade das Conchas reconstruída
+
+- Branch `fix/cidade-conchas-rework`, base `93ca616`, preservando Zoans Rank E do colaborador. Ilha própria32×32/células64 no lugar do cenário legado: cais, mercados azuis, praça de vigília, bairro antigo e bastião. Sete fachadas com acesso, circuito de ruas, navios na água, carga nas docas e arco atravessável.
+- Reutilizados o compositor compartilhado e PNGs existentes, sem gerações pagas. Água animada, variantes determinísticas e cache512/20. IDs `swamp`/setores/contratos, níveis11–20, chefe, drops e saves preservados; diário prioriza os contratos da região. Corrigida a inclusão de `zoan-art.js` no build, sem alterar a mecânica do colaborador.
+- 24 suítes Node, sintaxe, build/cache46 recursos e navegador real em cinco resoluções; caminhada, chefe, recompensa/rollback/reload e isolamento DEV. Sem lacunas/costuras observadas nas capturas; revisão visual em `docs/evidence-conchas/`, fora do Git. Entrega por PR, publicação mediante aprovação. [Arquitetura e resumo](CIDADE-DAS-CONCHAS.md).
+
 ## 20/10/2026 — Orange Town terreno V2 (candidato para aprovação visual)
 
 - Branch `fix/orange-town-terrain-v2`, base main/PR29 `9529a4d`. Removidos contornos aleatórios, recortes evenodd e espelhamentos; sprites Wang completos, grade dual, núcleo reutilizável com suporte validado a47 estados blob quando houver47 sprites próprios.
