@@ -8,6 +8,10 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
+## Ícones de itens — PixelLab
+
+Os 64 ícones existentes agora usam PNGs transparentes de 32×32, seguindo o estilo da espada 45 escolhida: equipamentos, pérolas, caixas, Livro da Vontade, poção e material. Integrados no inventário, forja, drops, criação e prisão, preservando os dados dos saves. [Origem, reduções aprovadas, consumo e testes](docs/ICONES-ITENS-PIXELLAB.md).
+
 ## Entrega atual — Caçadas regionais 1–20
 
 Dawn agora tem encontros fixos Nv.1–10, e Conchas Nv.11–20 (entrada no nível 11). **Rota & recompensas**, junto ao retorno ao porto, guia a caminhada pelos setores e permite resgatar uma arma da classe na primeira vitória contra cada chefe. Especiais têm avisos no chão; a auto-caçada tenta desviar quando há saída. XP e equipamentos vêm do nível do inimigo. Saves e itens existentes preservados. [Regras, limites, testes e resumo para o colaborador](docs/CACADAS-1-20.md).
