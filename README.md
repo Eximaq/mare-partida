@@ -8,6 +8,12 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
+## Akuma no Mi — Lote 1 Rank E
+
+Personagem → Akuma no Mi apresenta Kuku-Kuku e Beri-Beri como silhuetas até o registro. Cada registro dá +0,1% de HP máximo e Força base; o slot exclusivo aplica os bônus da fruta. Kuku transforma o cadáver mais próximo em comida curativa (tecla 1); Beri divide o personagem em seis esferas, concede 1,5 s de invulnerabilidade e afasta inimigos (tecla 2). Ícones e VFX ativos 48×48 foram gerados no PixelLab a partir das referências fornecidas.
+
+Para usar o serviço Python local com SQLite: python server/app.py e abra http://127.0.0.1:8123/. O pacote estático do Pages continua disponível com python tools/build_pages.py. [Regras, arquitetura e testes](docs/AKUMA-NO-MI.md).
+
 ## Entrega atual — Haki na HUD de combate
 
 Após despertar, três ícones aparecem junto às barras do perfil: **H** alterna Armamento, **J** alterna Observação e **K** dispara o Rei. O chat passa para **L**. Os botões mostram estado ativo, falta de Vontade e recarga do Rei (8s, persistente após reload). Novos ícones PixelLab nativos32 e VFX transparentes estão integrados. [Regras, arte e validação](docs/HAKI.md).
