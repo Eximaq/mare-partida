@@ -68,7 +68,7 @@ with sync_playwright() as p:
  for area in ['beach','swamp']:
   g=fixture(template);g.update(area=area,level=30,hp=10000,energy=1000);g['inventory']=[]
   for item in g['equipment'].values():item.update(rarity='legendary',level=30,plus=20)
-  c,q=page_for(b,g,errors=errors);q.evaluate('MareEmberRenderer.boot');q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.evaluate('()=>{const original=Math.random;window.forcedLootRolls=0;Math.random=()=>{if(new Error().stack.includes("killMob")){window.forcedLootRolls++;return .01}return original()}}')
+  c,q=page_for(b,g,errors=errors);q.evaluate('Promise.all([MareEmberRenderer.boot,MareDawnRenderer.boot])');q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.evaluate('()=>{const original=Math.random;window.forcedLootRolls=0;Math.random=()=>{if(new Error().stack.includes("killMob")){window.forcedLootRolls++;return .01}return original()}}')
   start=diag(q)['kills']
   for _ in range(40):
    q.clock.run_for(3000)

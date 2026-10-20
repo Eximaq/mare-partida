@@ -1,5 +1,11 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Ilha Dawn manual do proprietário
+
+- Branch `feature/dawn-mapa-manual`, base `bb2c87d`, preservando os tooltips do colaborador. Importado o ZIP PixelLab:56×40 tiles64, PNG e42 objetos originais preservados. Cais, floresta, praias e vila substituem o visual vulcânico no destino inicial.
+- Máscara lógica de chão, footprints originais, chegada/retorno, sete setores e oclusão de atores integrados. Navegação16px com verificação exata opcional apenas para Dawn. IDs `beach`/setores, progressão1–10, chefe, economia e saves mantidos; zero gerações novas.
+- 26 suítes Node, build/cache51 recursos e navegador em cinco resoluções aprovados.81 rotas, combate/recompensa/rollback/reload, oclusão e pixels originais verificados; sem costuras/cobertura ausente. [Fonte, arquitetura e resumo para o colaborador](DAWN-MAPA-MANUAL.md). Revisão por PR, sem merge/publicação automática.
+
 ## 20/10/2026 — Tooltips dinâmicos de itens e habilidades
 
 - Branch `feature/dynamic-tooltips`, base `93ca616`, atualizada para `4425a67` do `main` remoto. A mochila e os slots equipados mostram caixa escura ao passar o mouse ou focar pelo teclado; itens do mesmo slot são comparados em duas colunas com diferenças de atributos e Poder. Valores numéricos zero não geram linhas.

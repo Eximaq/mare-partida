@@ -7,3 +7,5 @@
 *.mp4 binary
 *.ogg binary
 *.wav binary
+# Preserve the owner's export byte-for-byte, including its JSON line endings.
+pixellab-pip-generations/dawn-manual-20261020/** -text

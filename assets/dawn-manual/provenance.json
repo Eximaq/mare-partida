@@ -1,0 +1,33 @@
+{
+  "source": {
+    "map_id": "7d0ac76f-c10e-4077-82ae-c25c19bc2335",
+    "name": "Mapa - Ilha Dawn",
+    "export_date": "2026-10-20T22:45:14.534815Z",
+    "sha256": "dcbba85e060df564d39129cf30ba0a2aedba04a6347d53b35e6d03ab63852911"
+  },
+  "source_archive": {
+    "filename": "Mapa_-_Ilha_Dawn-export.zip",
+    "sha256": "021cd05496704126c6a666064dc6d7bdad74ea21a35da56bb8621f24f473b845"
+  },
+  "native_dimensions": [
+    3584,
+    2560
+  ],
+  "new_generations": 0,
+  "art_processing": "Original composite and five unique object PNGs copied byte-for-byte; navigation mask derived from exported pixels, bounded by source terrains. Exported ground bounds are used for obstacles, with full bounds for boats. Runtime fills only unpainted transparent space with the original water tile.",
+  "source_objects": 42,
+  "object_counts": {
+    "boat": 6,
+    "tree": 22,
+    "house": 2,
+    "lamp": 11,
+    "chest": 1
+  },
+  "unique_source_sprites": {
+    "7c0b9c3ee19009dab6264a3c17b454059b340ab073e9bf1cf6e2d8fe185c40d3": "object-0.png",
+    "4cb2f4c58eaf2da9e20ce093f7a946eba682ec0b80290e55375414397af52c4d": "object-1.png",
+    "4b81e8429a8d0ec95ef96b3b379b6c4fbc8573fff1437cdc331d2c88f4afda0e": "object-2.png",
+    "a82b6e2c4397eaa83b1c20df2087d8d46e8f05543df823504f7fb94875072b3f": "object-3.png",
+    "b4c9abee5782dceb476cafeb567a5a8babe522e60ed19fb6a3d752793782923f": "object-4.png"
+  }
+}

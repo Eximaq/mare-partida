@@ -1,5 +1,9 @@
 # Referência visual — Maré Partida
 
+## Ilha Dawn manual — 20/10/2026
+
+Usar o composto e os objetos originais do ZIP do proprietário, sem redesenhar, recolorir ou reduzir. Terrenos nativos64, composição56×40. Árvores95×105, barcos84×141, casas121×119, postes20×80 e baú18×18 preservados em escala1×. Monstros mantêm as artes48 existentes. Oclusão condicional usa pixels do composto e alpha dos objetos, evitando duplicação do cenário. [Fontes, footprints e limites](DAWN-MAPA-MANUAL.md).
+
 ## Cidade das Conchas — 20/10/2026
 
 Reconstrução com arte existente, sem novas gerações ou edição dos PNGs. Tiles Wang nativos32 do conjunto compartilhado `harbor-v2`, renderizados2× em células64; água, areia, grama e pedra com paleta e junções já aprovadas. Construções navais de células256 em escala1×, mercados azuis e escritórios com bandeira; arco/colunas de pedra do atlas de ruínas, sem elementos vulcânicos. Navios e carga usam o atlas portuário existente, nearest-neighbor. Monstros legados desta ilha preservados, sem anunciar frames novos. [Fontes, composição e limites](CIDADE-DAS-CONCHAS.md).

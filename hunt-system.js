@@ -4,13 +4,13 @@
   const VERSION=1,clone=x=>JSON.parse(JSON.stringify(x)),int=n=>Number.isSafeInteger(n)&&n>=0?n:0;
   const regions={
     beach:{name:'Ilha Dawn',min:1,max:10,boss:'Capitão da Caldeira',bossLevel:10,firstGold:300,firstRarity:'rare',respawn:90,sectors:[
-      {id:'cais',name:'Cais das Cinzas',min:1,max:2,x:480,y:1696,roles:['bandit','crab']},
-      {id:'corsarios',name:'Rua dos Corsários',min:3,max:4,x:544,y:1248,roles:['bandit','bandit','crab']},
-      {id:'estaleiro',name:'Estaleiro Partido',min:4,max:5,x:1056,y:1632,roles:['bandit','spirit']},
-      {id:'mercado',name:'Mercado Calcinado',min:5,max:6,x:992,y:1056,roles:['bandit','spirit','crab']},
-      {id:'ancoras',name:'Pátio das Âncoras',min:7,max:8,x:992,y:544,roles:['crab','spirit']},
-      {id:'farol',name:'Mirante do Farol Quebrado',min:8,max:9,x:416,y:544,roles:['spirit','crab']},
-      {id:'caldeira',name:'Fortaleza da Caldeira',min:9,max:10,x:1696,y:672,roles:['crab','spirit']}
+      {id:'cais',name:'Cais de Dawn',min:1,max:2,x:1128,y:1640,roles:['bandit','crab']},
+      {id:'corsarios',name:'Bosque dos Corsários',min:3,max:4,x:1352,y:1544,roles:['bandit','bandit','crab']},
+      {id:'estaleiro',name:'Praia dos Barqueiros',min:4,max:5,x:1656,y:1752,roles:['bandit','spirit']},
+      {id:'mercado',name:'Enseada das Conchas',min:5,max:6,x:2152,y:1736,roles:['bandit','spirit','crab']},
+      {id:'ancoras',name:'Passarela das Âncoras',min:7,max:8,x:1672,y:1352,roles:['crab','spirit']},
+      {id:'farol',name:'Clareira dos Vigias',min:8,max:9,x:1832,y:1160,roles:['spirit','crab']},
+      {id:'caldeira',name:'Vila do Capitão',min:9,max:10,x:2152,y:1064,roles:['crab','spirit']}
     ]},
     orange:{name:'Orange Town',min:21,max:30,boss:'Capitão Fagulha',bossLevel:30,firstGold:1800,firstRarity:'epic',respawn:90,sectors:[
       {id:'cais',name:'Cais das Laranjeiras',min:21,max:22,x:480,y:1632,roles:['bandit','crab']},

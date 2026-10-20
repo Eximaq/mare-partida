@@ -49,7 +49,7 @@ with sync_playwright() as p:
    if n in [0,2]:q.screenshot(path=str(OUT/f'details-{id}-{suffix}.png'))
   alabasta.evaluate('(e)=>e.click()');assert q.locator('#dungeonName').inner_text()=='Loguetown'
   east.click();assert not q.locator('.dungeon-details').count();assert q.locator('[data-island]').count()==8
-  choose(q,'dawn');q.locator('[data-travel-island=dawn]').click();assert diag(q)['map']['id']=='embers';assert saved(q)['area']=='beach'
+  choose(q,'dawn');q.locator('[data-travel-island=dawn]').click();assert diag(q)['map']['id']=='dawn';assert saved(q)['area']=='beach'
   panel(q,'map');assert not q.locator('.dungeon-details').count();assert q.locator('[data-island=dawn]').get_attribute('data-current')=='true'
   choose(q,'conchas');q.locator('[data-travel-island=conchas]').focus();q.keyboard.press('Space');assert diag(q)['map']['id']=='hunt';assert saved(q)['area']=='swamp'
   assert items(saved(q))==before

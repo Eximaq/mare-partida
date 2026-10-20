@@ -14,13 +14,13 @@ Branch `feature/ruinas-brasas`, base `5f4902e`. Integrar por PR. Após o merge, 
 
 | Dawn | Níveis |
 |---|---|
-| Cais das Cinzas | 1–2 |
-| Rua dos Corsários | 3–4 |
-| Estaleiro Partido | 4–5 |
-| Mercado Calcinado | 5–6 |
-| Pátio das Âncoras | 7–8 |
-| Mirante do Farol Quebrado | 8–9 |
-| Fortaleza da Caldeira | 9–10; Capitão Nv.10 |
+| Cais de Dawn | 1–2 |
+| Bosque dos Corsários | 3–4 |
+| Praia dos Barqueiros | 4–5 |
+| Enseada das Conchas | 5–6 |
+| Passarela das Âncoras | 7–8 |
+| Clareira dos Vigias | 8–9 |
+| Vila do Capitão | 9–10; Capitão Nv.10 |
 
 | Conchas | Níveis |
 |---|---|
@@ -29,7 +29,7 @@ Branch `feature/ruinas-brasas`, base `5f4902e`. Integrar por PR. Após o merge, 
 | Catacumbas da Névoa | 17–19 |
 | Bastião das Conchas | 19–20; Guardião Nv.20 |
 
-**Rota & recompensas**, junto ao retorno ao porto, calcula caminho real ao setor escolhido e pausa a auto-caçada. Ao chegar, o jogador a retoma. Não é teleporte. Os centros Dawn acompanham os anchors de `MareEmber`; Conchas acompanha `MareConchas` na ilha reconstruída32×32. Todos os centros têm caminho navegável. A geometria legada descrita no resumo original desta sprint foi substituída posteriormente; ver [Cidade das Conchas](CIDADE-DAS-CONCHAS.md).
+**Rota & recompensas**, junto ao retorno ao porto, calcula caminho real ao setor escolhido e pausa a auto-caçada. Ao chegar, o jogador a retoma. Não é teleporte. Os centros Dawn acompanham `MareDawn` no [mapa manual do proprietário](DAWN-MAPA-MANUAL.md); Conchas acompanha `MareConchas` na ilha reconstruída32×32. Todos os centros têm caminho navegável. As geometrias legadas descritas no resumo original desta sprint foram substituídas posteriormente; ver também [Cidade das Conchas](CIDADE-DAS-CONCHAS.md).
 
 Spawns pertencem ao setor atual, a 180–450px do jogador, com 150px de respiro na chegada, chão/path válidos e distância mínima de 75px entre atores. Evitam mais de dois vizinhos em 220px. Limite global de oito; reposição a cada 2,4s quando há menos de seis comuns. Inimigos distantes de outro setor são retirados sem recompensa para permitir encontros novos ao explorar. Chefes não participam dessa limpeza. Arquétipos têm alcance/aggro próprios e perseguição limitada em relação à origem.
 
