@@ -1,5 +1,13 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Restaurar o tema de navio
+
+- Branch `fix/tema-nautico-madeira`, base `fe1fc66`. O proprietário rejeitou a troca visual da UI 2.0; restaurados madeira escura, bronze, cordas, verde-marinho e pergaminho, preservando layout, foco e responsividade.
+- Tokens de materiais reutilizáveis e estilos existentes ajustados diretamente. Inventário com três colunas de pergaminho, bandeja/slots de madeira escura, pesquisa legível e destaque de raridades; menus, barra de ações, Forja, personagem e demais janelas harmonizados.
+- Sem mudanças em gameplay, assets, saves ou regras. Evidências locais separadas em `docs/evidence-tema-nautico/`; rollback por reversão do commit visual.
+- Validação: 20 suítes Node, matriz Chromium nas sete resoluções (13 janelas + criação/HUD, toque/horizontal/movimento reduzido), operações reais da Forja e build/cache aprovados. Verificação adicional de contraste em pergaminho e cartões de monstros; cabeçalho/fechar do inventário acessíveis após rolagem nas três larguras móveis. Sem erros JavaScript observados.
+
+
 ## 20/10/2026 — UI/UX 2.0
 
 - Fundação com tokens, componentes e factories DOM, camadas isoladas para o legado e uma única prioridade global de visibilidade. Os 1112 usos textuais anteriores de `!important` foram migrados sem excluir as regras de funcionalidades.

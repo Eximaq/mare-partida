@@ -9,34 +9,34 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .hidden,[hidden]{display:none!important}
 img.item-icon,.haki-icon,canvas{image-rendering:pixelated}
 input,select,textarea{max-width:100%;min-width:0;accent-color:var(--rpg-accent)}
-input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea,.ui-field{min-height:var(--rpg-field);padding:8px 10px;border:var(--rpg-border);border-radius:var(--rpg-radius-small);background:#102127;color:var(--rpg-text);font-size:var(--rpg-body);line-height:1.35}
-input::placeholder,textarea::placeholder{color:#a2b5b5;opacity:1}
+input:not([type=range]):not([type=checkbox]):not([type=radio]):not([type=file]),select,textarea,.ui-field{min-height:var(--rpg-field);padding:8px 10px;border:var(--rpg-border);border-radius:var(--rpg-radius-small);background:#1b282a;color:var(--rpg-text);font-size:var(--rpg-body);line-height:1.35}
+input::placeholder,textarea::placeholder{color:#beaf91;opacity:1}
 input[type=checkbox],input[type=radio]{width:18px;height:18px;vertical-align:middle;flex:none}
 select{color-scheme:dark}
-.ui-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--rpg-button);padding:7px 12px;border:var(--rpg-border);border-radius:var(--rpg-radius-small);background:var(--rpg-raised);box-shadow:var(--rpg-inset);font:600 var(--rpg-body)/1.3 var(--rpg-heading);color:var(--rpg-text);text-transform:none;letter-spacing:0;white-space:normal;transition:background var(--rpg-time) var(--rpg-ease),border-color var(--rpg-time) var(--rpg-ease)}
-.ui-button:hover:not(:disabled){background:#31494e;border-color:var(--rpg-brass)}
-.ui-button.primary,.ui-button[data-variant=primary]{background:#bd9e65;color:#201e18;border-color:#d9c08c}
+.ui-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:var(--rpg-button);padding:7px 12px;border:var(--rpg-border);border-radius:var(--rpg-radius-small);background:var(--rpg-planks);box-shadow:var(--rpg-inset);font:600 var(--rpg-body)/1.3 var(--rpg-heading);color:var(--rpg-text);text-transform:none;letter-spacing:0;white-space:normal;transition:background var(--rpg-time) var(--rpg-ease),border-color var(--rpg-time) var(--rpg-ease)}
+.ui-button:hover:not(:disabled){background:var(--rpg-wood-light);border-color:var(--rpg-brass)}
+.ui-button.primary,.ui-button[data-variant=primary]{background:var(--rpg-gold-button);color:#271d12;border-color:#ddc08a}
 .ui-button.danger,.ui-button[data-variant=danger]{background:#713c37;color:#ffe9df;border-color:#b5776a}
 .ui-button[aria-pressed=true],.ui-button.active,.ui-button.selected{border-color:var(--rpg-accent);box-shadow:inset 0 -2px var(--rpg-accent)}
 .ui-tabs{display:flex;gap:4px;padding-bottom:8px;border-bottom:var(--rpg-border);flex-wrap:wrap}
 .ui-tabs .ui-button[aria-selected=true],.ui-tabs .ui-button.active{background:var(--rpg-raised);color:var(--rpg-focus);border-color:var(--rpg-brass)}
 .ui-card{padding:var(--rpg-space-4);border:var(--rpg-border);border-radius:var(--rpg-radius);background:var(--rpg-surface)}
 .ui-card h3{margin:0 0 8px;font:600 var(--rpg-subtitle)/1.3 var(--rpg-heading)}
-.ui-notice,.ui-empty{padding:12px 16px;background:#11232b;border-left:3px solid var(--rpg-line);line-height:1.6;color:var(--rpg-muted)}
+.ui-notice,.ui-empty{padding:12px 16px;background:#182b2d;border-left:3px solid var(--rpg-line);line-height:1.6;color:var(--rpg-muted)}
 .ui-notice[data-tone=success]{color:var(--rpg-success);border-color:var(--rpg-success)}
 .ui-notice[data-tone=error]{color:var(--rpg-error);border-color:var(--rpg-error)}
 .ui-notice[data-tone=warning]{color:var(--rpg-warning);border-color:var(--rpg-warning)}
-.ui-slot{position:relative;width:var(--rpg-slot);height:var(--rpg-slot);display:grid;place-items:center;background:#102127;border:1px solid var(--rarity,var(--rpg-line));border-radius:3px;padding:4px}
+.ui-slot{position:relative;width:var(--rpg-slot);height:var(--rpg-slot);display:grid;place-items:center;background:var(--rpg-recess);border:1px solid var(--rarity,var(--rpg-recess-edge));border-radius:3px;padding:4px}
 .ui-slot img{width:32px;height:32px;object-fit:contain;image-rendering:pixelated}
 .ui-slot[aria-pressed=true]{outline:2px solid var(--rpg-focus);outline-offset:1px}
-.ui-tooltip{position:absolute;z-index:var(--rpg-z-popover);padding:6px 8px;border:var(--rpg-border);background:#101c22;color:var(--rpg-text);font-size:var(--rpg-caption);box-shadow:var(--rpg-shadow);max-width:240px}
+.ui-tooltip{position:absolute;z-index:var(--rpg-z-popover);padding:6px 8px;border:var(--rpg-border);background:#192b2e;color:var(--rpg-text);font-size:var(--rpg-caption);box-shadow:var(--rpg-shadow);max-width:240px}
 .overlay{position:fixed;inset:0;z-index:var(--rpg-z-modal);padding:24px;display:flex;align-items:center;justify-content:center;background:var(--rpg-overlay);backdrop-filter:none;overflow:hidden}
-.dialog,.creation-dialog,.confirmation-card,.ui-window{position:relative;display:flex;flex-direction:column;width:min(1100px,100%);max-width:100%;max-height:calc(100dvh - 48px);min-height:0;background:var(--rpg-surface);border:1px solid var(--rpg-brass);border-radius:var(--rpg-radius);box-shadow:var(--rpg-shadow),var(--rpg-inset);overflow:hidden;color:var(--rpg-text)}
-.dialog-header,.ui-window-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex:none;min-height:64px;padding:12px 20px;background:linear-gradient(100deg,var(--rpg-wood),#263333);border-bottom:1px solid #7a7058}
+.dialog,.creation-dialog,.confirmation-card,.ui-window{position:relative;display:flex;flex-direction:column;width:min(1100px,100%);max-width:100%;max-height:calc(100dvh - 48px);min-height:0;background:var(--rpg-surface);border:var(--rpg-frame);border-radius:var(--rpg-radius);box-shadow:0 0 0 2px #342416,var(--rpg-shadow),var(--rpg-inset);overflow:hidden;color:var(--rpg-text)}
+.dialog-header,.ui-window-header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex:none;min-height:64px;padding:12px 20px;background:var(--rpg-planks);border-bottom:var(--rpg-frame)}
 .dialog-header h2,.ui-window-header h2{margin:0;font:600 var(--rpg-title)/1.25 var(--rpg-heading);color:var(--rpg-text);letter-spacing:0}
 .dialog-header small{display:none}
-.close-button,.op-close,.ui-close{display:grid;place-items:center;flex:none;width:36px;height:36px;min-height:36px;padding:0;border:var(--rpg-border);border-radius:3px;background:#2a383a;color:var(--rpg-text);font-size:24px;line-height:1}
-.dialog-body,.ui-window-body{padding:20px;overflow:auto;overscroll-behavior:contain;min-height:0;scrollbar-width:thin;scrollbar-color:#718483 transparent;font-size:var(--rpg-body);line-height:1.5}
+.close-button,.op-close,.ui-close{display:grid;place-items:center;flex:none;width:36px;height:36px;min-height:36px;padding:0;border:var(--rpg-border);border-radius:3px;background:linear-gradient(#8c4938,#65352a);color:var(--rpg-text);font-size:24px;line-height:1}
+.dialog-body,.ui-window-body{padding:20px;overflow:auto;overscroll-behavior:contain;min-height:0;scrollbar-width:thin;scrollbar-color:#a48450 transparent;font-size:var(--rpg-body);line-height:1.5}
 .ui-window-body{flex:1}
 .dialog-body h2,.dialog-body h3,.dialog-body h4{font-family:var(--rpg-heading);letter-spacing:0}
 .dialog-body h3{font-size:var(--rpg-subtitle)}
@@ -49,9 +49,9 @@ select{color-scheme:dark}
 .confirmation-card footer button{margin:0;flex:1}
 .toast-container{position:fixed;z-index:var(--rpg-z-toast);top:calc(var(--utilities-bottom,140px) + 8px);right:var(--rpg-edge);width:min(300px,calc(100vw - 32px));display:flex;flex-direction:column;gap:8px;pointer-events:none}
 .toast-container>.toast:not(:last-child){display:none}
-.toast{font:500 13px/1.5 var(--rpg-font);border:1px solid var(--rpg-line);border-radius:4px;background:#102127f5;box-shadow:var(--rpg-shadow);padding:10px 14px;color:var(--rpg-text);animation:ui-notice-in 140ms ease-out}
+.toast{font:500 13px/1.5 var(--rpg-font);border:1px solid var(--rpg-line);border-radius:4px;background:#172a2cf5;box-shadow:var(--rpg-shadow);padding:10px 14px;color:var(--rpg-text);animation:ui-notice-in 140ms ease-out}
 .toast.good{border-left:3px solid var(--rpg-success)}.toast.danger{border-left:3px solid var(--rpg-error)}
-.dialog>.toast-container,.confirmation-card>.toast-container,.ui-window>.toast-container{position:static;inset:auto;width:auto;max-width:none;max-height:84px;overflow:hidden;flex:none;padding:6px 12px;gap:4px;background:var(--rpg-surface);border-top:1px solid #48605e}
+.dialog>.toast-container,.confirmation-card>.toast-container,.ui-window>.toast-container{position:static;inset:auto;width:auto;max-width:none;max-height:84px;overflow:hidden;flex:none;padding:6px 12px;gap:4px;background:var(--rpg-surface);border-top:1px solid #8d7047}
 .dialog>.toast-container:empty,.confirmation-card>.toast-container:empty,.ui-window>.toast-container:empty{display:none}
 .dialog>.toast-container .toast,.confirmation-card>.toast-container .toast{box-shadow:none;padding:6px 10px;font-size:12px}
 .floating-chat>.toast-container{position:static;inset:auto;width:auto;max-width:none;max-height:64px;flex:none;overflow:hidden;padding:4px 8px;background:var(--rpg-surface)}

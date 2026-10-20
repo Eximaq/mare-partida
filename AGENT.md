@@ -201,6 +201,8 @@ No porto ou na caçada, jogador abre **Modos de jogo** pelo botão M, tecla M ou
 
 ### Sistema de interface obrigatório — UI 2.0 (20/10/2026)
 
+- Correção expressa do proprietário: preservar a identidade anterior de navio (madeira escura, cordas, bronze, pergaminho e verde-marinho). Melhorias de UX/responsividade não autorizam trocar o tema. Inventário com três colunas de pergaminho, bandeja e slots harmonizados em madeira; evitar contraste de quadrados azul-acinzentados sobre fundo bege. Usar os materiais compartilhados documentados, sem alterar os assets.
+
 - Antes de criar uma janela, ler `docs/UI-DESIGN-SYSTEM.md`. Reutilizar tokens `--rpg-*`, componentes de `ui-components.css` e factories de `ui-system.js`; não recriar manualmente modal, cabeçalho, botão, slot ou confirmação.
 - Novos estilos vão no componente compartilhado ou na composição específica em `ui-screens.css`; layout de HUD em `ui-hud.css`, adaptações em `ui-responsive.css`. Os seis estilos anteriores estão isolados nas camadas `legacy`/`legacy-priority`; não adicionar novas cadeias de overrides neles.
 - Prioridade explícita somente para o estado global `.hidden/[hidden]`. Usar os tokens de camadas e `MareUI` para foco, Escape, backdrop e retorno ao acionador. O corpo HTML das factories aceita apenas markup confiável do código.

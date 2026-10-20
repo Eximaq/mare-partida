@@ -10,6 +10,8 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 ## Interface UI/UX 2.0
 
+A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.
+
 Tokens e componentes compartilhados, HUD nas bordas com Haki na barra de ações, menus compactos, chat local com filtros e janelas padronizadas. Navegação mantém os sistemas existentes e adiciona controle uniforme de foco, Escape e confirmações. [Guia para novas funcionalidades e validação](docs/UI-DESIGN-SYSTEM.md).
 
 ## Ícones de itens — PixelLab

@@ -2,7 +2,7 @@
 
 ## Identidade e auditoria
 
-Fantasia náutica: ardósia azul para leitura, madeira escura em cabeçalhos, latão envelhecido nas ações e pergaminho no perfil de equipamento. O mundo ocupa a viewport; o centro pertence à exploração. Bahnschrift/Trebuchet nos títulos, Segoe UI no texto, números tabulares; sem fontes externas.
+Identidade do navio preservada por orientação do proprietário em 20/10/2026: madeira escura com tábuas discretas, molduras de bronze, cordas na barra de ações, interiores verde-marinho da paleta anterior e pergaminho nas três colunas do inventário. A reestruturação melhora enquadramento, espaçamento e navegação; não autoriza substituir o tema por uma interface moderna genérica. O mundo ocupa a viewport; o centro pertence à exploração. Bahnschrift/Trebuchet nos títulos, Segoe UI no texto, números tabulares; sem fontes externas.
 
 A base cedffb9 tinha seis estilos acumulados e 1.112 ocorrências textuais de `!important` (incluindo shorthands). Foram confirmadas sobreposições do áudio com o menu móvel e um perfil alto com Haki duplicando a barra de ações. Capturas anteriores estão localmente em `docs/evidence-ui-ux-2/before/` (fora do Git).
 
@@ -51,7 +51,7 @@ MareUI.destroy(janela);
 
 ## Composição e breakpoints
 
-Desktop: perfil superior esquerdo, alvo superior central apenas em combate, menu superior direito, chat inferior esquerdo, ações inferiores centrais e expedição inferior direita. Madeira fica nas molduras/cabeçalhos; superfícies internas ficam tranquilas. Ícones existentes não são redimensionados nos arquivos; renderização pixelada.
+Desktop: perfil superior esquerdo, alvo superior central apenas em combate, menu superior direito, chat inferior esquerdo, ações inferiores centrais e expedição inferior direita. Madeira deve ser perceptível em cabeçalhos, menus, botões e barra de ações, com molduras de bronze. Interiores usam a paleta náutica anterior; o inventário usa pergaminho e uma bandeja de madeira com slots de madeira escura, inclusive os vazios. Não misturar slots azul-acinzentados com esse fundo. Preservar bordas de raridade e estados de interação legíveis. Ícones existentes não são redimensionados nos arquivos; renderização pixelada.
 
 Breakpoints canônicos: 1180 para colunas compactas do inventário; 1024 para tablet; 760 para smartphone; 480 e 360 para densidade reduzida. CSS custom properties não funcionam nas condições de media queries: usar esses mesmos números. Espaços seguros usam `env(safe-area-inset-*)`; alturas usam `dvh`. Campos e conteúdos devem permitir encolher (`min-width:0`), e os corpos de janelas têm rolagem vertical. Nunca expandir slots para ocupar vazios.
 
@@ -79,3 +79,12 @@ Validar 1920×1080, 1366×768, 1280×720, 1024×768, 393×852, 360×800 e 320×5
 As notificações mostram apenas a mensagem mais recente e entram no fluxo do modal ou do chat móvel aberto, evitando cobrir ações. A referência do contêiner é preservada ao desmontar confirmações.
 
 Limites: validação automatizada em Chromium, com viewport reduzida equivalente à área disponível sob zoom. Não substitui teste físico em todos os aparelhos, leitores de tela, Safari ou Firefox. Não houve migração de save. Rollback: reverter os commits da interface na branch, preservando dados locais. O build de Pages só será publicado após merge e workflow; este trabalho não faz merge automático.
+
+
+## Correção de direção visual — tema de navio
+
+O proprietário rejeitou a mudança de tema da primeira entrega UI 2.0. As cores anteriores (`#49301f` madeira, `#152d34` verde-marinho, `#e1cd9f` pergaminho, `#b58b4b` bronze) voltam a ser a referência. Os tokens `--rpg-planks`, `--rpg-frame`, `--rpg-recess`, `--rpg-paper-light` e `--rpg-gold-button` centralizam os materiais, sem novas imagens ou gastos. Novas funcionalidades devem manter essa identidade e reutilizar o layout responsivo, o foco e os contratos DOM existentes.
+
+Capturas da revisão: `docs/evidence-tema-nautico/after/` (ignoradas no Git). A suíte de navegador aceita `MARE_UI_EVIDENCE` para separar evidências de cada sprint.
+
+Revisão validada pelas 20 suítes Node, matriz completa de sete resoluções, Forja transacional e build/cache. No inventário móvel, o shell não cria um scroll-container intermediário: o cabeçalho sticky acompanha a rolagem de `dialogBody`, mantendo o fechamento acessível. Contraste adicional inspecionado em pergaminho, rótulos de equipamentos e cartões dos monstros.
