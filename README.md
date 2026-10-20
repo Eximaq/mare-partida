@@ -8,6 +8,10 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
+## Prévia — Akuma no Mi
+
+**Personagem → Akuma no Mi** mostra abas internas para os ranks E, D, C, B, A e S. Cada aba tem cinco espaços vazios, preenchidos ao registrar as frutas correspondentes, e o aviso **Indisponível / Em Breve**. O inventário já tem um slot exclusivo: futuras frutas de qualquer rank poderão ser equipadas e conceder seus bônus e aura. O catálogo inicial permanece vazio e não há desbloqueio pela interface nesta etapa. [Estrutura de dados, bônus e testes](docs/AKUMA-NO-MI.md).
+
 ## Entrega atual — Haki na HUD de combate
 
 Após despertar, três ícones aparecem junto às barras do perfil: **H** alterna Armamento, **J** alterna Observação e **K** dispara o Rei. O chat passa para **L**. Os botões mostram estado ativo, falta de Vontade e recarga do Rei (8s, persistente após reload). Novos ícones PixelLab nativos32 e VFX transparentes estão integrados. [Regras, arte e validação](docs/HAKI.md).
