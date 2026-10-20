@@ -1,5 +1,7 @@
 # Ruínas de Brasas — reconstrução
 
+Revisão de caçadas 1–20: geometria/artes desta página preservadas; encontros, XP, drops e chefes agora seguem `hunt-system.js` e `docs/CACADAS-1-20.md`, substituindo as regras de spawn/recompensa legadas descritas abaixo.
+
 Mapa atual de **32×32 tiles**, com células de **64px**: mundo de 2048×2048px. A revisão de 19/10/2026 reduziu pela metade a largura e a altura do mapa anterior (um quarto da área), preservando escala dos sprites e resolução das texturas. O ID de save continua `beach`; Fenda da Névoa mantém seu mapa anterior. Nenhum inventário, equipamento ou atributo é migrado por esta atualização.
 
 Sete setores conectados por rotas principais e alternativas: Cais das Cinzas, Rua dos Corsários, Mercado Calcinado, Estaleiro Partido, Pátio das Âncoras, Mirante do Farol Quebrado e Fortaleza da Caldeira. A circulação entre esses pontos continua pelo cenário. O menu Mapa agora abre a janela de viagens por navios (ver MAPA-NAVIOS.md), substituindo a antiga lista de rotas locais. O cais tem interação de retorno ao porto.

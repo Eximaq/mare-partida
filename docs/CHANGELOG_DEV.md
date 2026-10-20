@@ -1,5 +1,40 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Restaurar o tema de navio
+
+- Branch `fix/tema-nautico-madeira`, base `fe1fc66`. O proprietário rejeitou a troca visual da UI 2.0; restaurados madeira escura, bronze, cordas, verde-marinho e pergaminho, preservando layout, foco e responsividade.
+- Tokens de materiais reutilizáveis e estilos existentes ajustados diretamente. Inventário com três colunas de pergaminho, bandeja/slots de madeira escura, pesquisa legível e destaque de raridades; menus, barra de ações, Forja, personagem e demais janelas harmonizados.
+- Sem mudanças em gameplay, assets, saves ou regras. Evidências locais separadas em `docs/evidence-tema-nautico/`; rollback por reversão do commit visual.
+- Validação: 20 suítes Node, matriz Chromium nas sete resoluções (13 janelas + criação/HUD, toque/horizontal/movimento reduzido), operações reais da Forja e build/cache aprovados. Verificação adicional de contraste em pergaminho e cartões de monstros; cabeçalho/fechar do inventário acessíveis após rolagem nas três larguras móveis. Sem erros JavaScript observados.
+
+
+## 20/10/2026 — UI/UX 2.0
+
+- Fundação com tokens, componentes e factories DOM, camadas isoladas para o legado e uma única prioridade global de visibilidade. Os 1112 usos textuais anteriores de `!important` foram migrados sem excluir as regras de funcionalidades.
+- HUD nas bordas: Haki junto às ações, perfil menor, menus diretos, áudio em área própria, filtros locais do chat, expedição recolhível e rota junto ao progresso. Superfícies fixas compartilham o mesmo contexto de empilhamento.
+- Janelas de inventário/forja/personagem/talentos/conquistas/Haki/frutas/viagem/prisão/contratos/mercador/ajuda e criação usam a base comum; contraste dos atributos e notificações em fluxo revisados. Foco, Escape, backdrop, confirmação e abertura no início do conteúdo padronizados.
+- `docs/UI-DESIGN-SYSTEM.md` e `AGENT.md` orientam futuras janelas. QA em Chromium nas sete resoluções, toque/horizontal/movimento reduzido, regressões de Forja/Haki/ícones, build e cache. Nenhuma geração de arte ou alteração de regras de gameplay/saves.
+
+## 20/10/2026 — Ícones de itens PixelLab
+
+- 64 PNGs transparentes32×32, espada45 selecionada pelo proprietário; 35 reduções nearest-neighbor aprovadas e29 fontes nativas32.
+- Caminhos atualizados no inventário, forja, drops, criação das classes, Livro da Vontade e recompensas da prisão. SVGs antigos preservados; catálogos, stats e saves sem mudança.
+- Consumo54 na produção e10,1 na amostra; duas correções Pixen adicionais aprovadas. Documentação e teste visual em `docs/ICONES-ITENS-PIXELLAB.md` e `tests/item_icons_browser.py`.
+
+## 19/10/2026 — Caçadas regionais 1–20
+
+- Níveis fixos por setor: Dawn 1–10 e Conchas 11–20; entrada de Conchas passa para Nv.11.
+- Chefes Nv.10/Nv.20 com arena final, 12 abates locais e espera de 90s persistida após derrota.
+- Avisos no chão, mira travada, interrupção por controle e tentativa de desvio automático.
+- Rota por caminhada, quatro contratos locais e arma rara/épica de primeira vitória, com resgate transacional protegido contra mochila cheia.
+- Módulo `hunt-system.js`; sem mudanças de terreno/dimensões ou gerações pagas. Integração e resumo para o colaborador em `docs/CACADAS-1-20.md`.
+## 19/10/2026 — Integração de Akuma no Mi com trilhas sonoras
+
+- Branch `feature/akuma-no-mi-release` atualizada por merge de `origin/main` (`508733f`), preservando o compêndio, slot, bônus e VFX das frutas e o novo módulo de áudio com as duas trilhas.
+- Conflito em `tools/build_pages.py` resolvido incluindo `akuma-system.js`, `audio-system.js` e `audio-system.css`. `index.html` carrega ambos os módulos; o build copia as músicas em caminhos relativos.
+- Validação: 15 suítes Node passaram; sintaxe de `game.js`, `akuma-system.js` e `audio-system.js` passou; `python tools/build_pages.py` gerou os três módulos com hash de cache e copiou as duas músicas. No navegador local, controle de música, abas e slots de Akuma no Mi foram conferidos.
+- Saves permanecem isolados: Akuma no Mi usa o save do personagem existente; preferências de áudio usam `mare-partida-audio-v1`. Para desfazer, reverter o merge na branch, sem alterar `main`.
+
 ## 19/10/2026 — Constelações, conquistas e finais passivos
 
 - Árvore conectada com tronco, ponte, finais, arraste/zoom e foco; removido o grid independente.

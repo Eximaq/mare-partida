@@ -2,6 +2,7 @@
 /* Akuma no Mi catalog and permanent compendium rules. Entries are append-only. */
 ((root) => {
   const ranks=Object.freeze(['E','D','C','B','A','S']);
+  const slotsPerRank=5;
   class AkumaNoMiData {
     constructor(id,name,rank,icon_path,bonus_stats,vfx_sprite_sheet){
       if(!id||!name||!ranks.includes(rank))throw Error('Akuma no Mi inválida');
@@ -19,6 +20,15 @@
     return [...new Set(ids)].filter(id=>!!byId(id,entries));
   }
   const passiveCount=(game,entries=catalog)=>registered(game,entries).length;
+  function slotsForRank(game,rank,entries=catalog){
+    if(!ranks.includes(rank))return [];
+    const owned=new Set(registered(game,entries));
+    const fruits=entries.filter(fruit=>fruit.rank===rank);
+    return Array.from({length:Math.max(slotsPerRank,fruits.length)},(_,index)=>{
+      const fruit=fruits[index];
+      return {index:index+1,fruit:fruit&&owned.has(fruit.id)?fruit:null};
+    });
+  }
   function register(game,id,entries=catalog){
     if(!byId(id,entries))return {ok:false,state:game};
     return {ok:true,state:{...game,akumaCompendium:[...new Set([...registered(game,entries),id])]}};
@@ -42,6 +52,6 @@
     return out;
   }
   const activeSkill=(id)=>id==='akuma_kuku_kuku'?{key:'1',name:'Banquete Relâmpago',cooldown:15}:id==='akuma_beri_beri'?{key:'2',name:'Divisão Esférica',cooldown:18}:null;
-  root.MareAkuma={ranks,AkumaNoMiData,catalog,byId,isFruit,registered,passiveCount,register,migrate,itemData,bonusStats,applyGear,activeSkill};
+  root.MareAkuma={ranks,slotsPerRank,AkumaNoMiData,catalog,byId,isFruit,registered,slotsForRank,passiveCount,register,migrate,itemData,bonusStats,applyGear,activeSkill};
   if(typeof module!=='undefined')module.exports=root.MareAkuma;
 })(globalThis);

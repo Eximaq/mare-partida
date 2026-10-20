@@ -8,6 +8,25 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
+## Interface UI/UX 2.0
+
+A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.
+
+Tokens e componentes compartilhados, HUD nas bordas com Haki na barra de ações, menus compactos, chat local com filtros e janelas padronizadas. Navegação mantém os sistemas existentes e adiciona controle uniforme de foco, Escape e confirmações. [Guia para novas funcionalidades e validação](docs/UI-DESIGN-SYSTEM.md).
+
+## Ícones de itens — PixelLab
+
+Os 64 ícones existentes agora usam PNGs transparentes de 32×32, seguindo o estilo da espada 45 escolhida: equipamentos, pérolas, caixas, Livro da Vontade, poção e material. Integrados no inventário, forja, drops, criação e prisão, preservando os dados dos saves. [Origem, reduções aprovadas, consumo e testes](docs/ICONES-ITENS-PIXELLAB.md).
+
+## Entrega atual — Caçadas regionais 1–20
+
+Dawn agora tem encontros fixos Nv.1–10, e Conchas Nv.11–20 (entrada no nível 11). **Rota & recompensas**, junto ao retorno ao porto, guia a caminhada pelos setores e permite resgatar uma arma da classe na primeira vitória contra cada chefe. Especiais têm avisos no chão; a auto-caçada tenta desviar quando há saída. XP e equipamentos vêm do nível do inimigo. Saves e itens existentes preservados. [Regras, limites, testes e resumo para o colaborador](docs/CACADAS-1-20.md).
+
+## Prévia — Akuma no Mi
+
+**Personagem → Akuma no Mi** mostra abas internas para os ranks E, D, C, B, A e S. Cada aba tem cinco espaços vazios, preenchidos ao registrar as frutas correspondentes, e o aviso **Indisponível / Em Breve**. O inventário já tem um slot exclusivo: futuras frutas de qualquer rank poderão ser equipadas e conceder seus bônus e aura. O catálogo inicial permanece vazio e não há desbloqueio pela interface nesta etapa. [Estrutura de dados, bônus e testes](docs/AKUMA-NO-MI.md).
+
+## Histórico — Haki na HUD de combate
 ## Akuma no Mi — Lote 1 Rank E
 
 Personagem → Akuma no Mi apresenta Kuku-Kuku e Beri-Beri como silhuetas até o registro. Cada registro dá +0,1% de HP máximo e Força base; o slot exclusivo aplica os bônus da fruta. Kuku transforma o cadáver mais próximo em comida curativa (tecla 1); Beri divide o personagem em seis esferas, concede 1,5 s de invulnerabilidade e afasta inimigos (tecla 2). Ícones e VFX ativos 48×48 foram gerados no PixelLab a partir das referências fornecidas.
@@ -45,6 +64,8 @@ Investimentos usam prévia e confirmação, persistem por classe e podem ser red
 [Regras, valores dos 21 exclusivos, arquitetura e limites](docs/TALENTOS.md).
 
 ## Histórico — Menu de modos e seleção de fases
+
+**Atualização do acesso rápido:** a tecla **M**, o ícone da HUD e o botão de modos do porto abrem um menu suspenso junto à HUD, sem exibir a antiga janela intermediária. **Mapa do Arquipélago** e **Impel Down** abrem suas respectivas telas diretamente; voltar a Modos retorna ao menu suspenso. Escape e clique externo fecham a lista. O menu Personagem permanece independente.
 
 **M** e o botão da HUD agora abrem **Modos de jogo**, uma lista suspensa com ícones e texto. Escolha **Mapa do Arquipélago** para viajar ou **Impel Down** para abrir sua janela própria. A entrada da prisão foi removida de dentro do mapa geográfico.
 

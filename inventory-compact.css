@@ -1,0 +1,97 @@
+/* Legacy feature styles, isolated for UI 2.0. See docs/UI-DESIGN-SYSTEM.md. */
+@layer legacy, legacy-priority;
+@layer legacy {
+#panelOverlay.inventory-mode .op-panel{overscroll-behavior-x:contain;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:rgb(148, 118, 75) transparent;}
+#panelOverlay.inventory-mode .op-slot-icon .item-icon{image-rendering:pixelated;}
+#panelOverlay.inventory-mode .op-category-tabs{overscroll-behavior-x:contain;scrollbar-width:thin;}
+#panelOverlay.inventory-mode .op-category-tabs button{white-space-collapse:collapse;text-wrap-mode:nowrap;min-height:31px;}
+#panelOverlay.inventory-mode .op-item{transition-behavior:normal, normal;transition-duration:0.12s, 0.12s;transition-timing-function:ease, ease;transition-delay:0s, 0s;transition-property:border-color, box-shadow;}
+#panelOverlay.inventory-mode .op-item-icon .item-icon{object-fit:contain;image-rendering:pixelated;}
+#panelOverlay.inventory-mode .op-pagination{flex-grow:0;flex-shrink:0;flex-basis:auto;min-height:33px;overflow-x:auto;scrollbar-width:thin;justify-content:center;}
+@media (max-width: 1180px) {#panelOverlay.inventory-mode .op-detail-panel{grid-column-start:1;grid-column-end:-1;}}
+@media (max-width: 760px) {#panelOverlay.inventory-mode .op-pagination{justify-content:flex-start;}}
+}
+@layer legacy-priority {
+#panelOverlay.inventory-mode{padding-top:18px;padding-right:18px;padding-bottom:18px;padding-left:18px;align-items:center;justify-content:center;}
+#panelOverlay.inventory-mode .dialog{width:min(1280px, -40px + 100vw);height:min(760px, 100dvh - 40px);max-height:calc(100dvh - 40px);max-width:none;overflow-x:hidden;overflow-y:hidden;}
+#panelOverlay.inventory-mode .dialog-body{min-height:0px;overflow-x:hidden;overflow-y:hidden;}
+#panelOverlay.inventory-mode .op-inventory-shell{height:100%;min-height:0px;}
+#panelOverlay.inventory-mode .op-topbar{min-height:58px;padding-top:8px;padding-right:14px;padding-bottom:8px;padding-left:14px;}
+#panelOverlay.inventory-mode .op-title-banner{padding-top:6px;padding-right:12px;padding-bottom:6px;padding-left:12px;row-gap:8px;column-gap:8px;}
+#panelOverlay.inventory-mode .op-title-banner strong{font-size:21px;}
+#panelOverlay.inventory-mode .op-jolly{width:28px;height:28px;font-size:17px;}
+#panelOverlay.inventory-mode .op-close{width:35px;height:35px;font-size:22px;}
+#panelOverlay.inventory-mode .op-bag-capacity b{font-size:17px;}
+#panelOverlay.inventory-mode .op-body-grid{height:auto;flex-grow:1;flex-shrink:1;flex-basis:auto;min-height:0px;overflow-x:hidden;overflow-y:hidden;grid-template-columns:minmax(290px, 0.96fr) minmax(380px, 1.34fr) minmax(260px, 0.88fr);row-gap:9px;column-gap:9px;padding-top:10px;padding-right:10px;padding-bottom:10px;padding-left:10px;}
+#panelOverlay.inventory-mode .op-panel{min-width:0px;min-height:0px;max-height:100%;padding-top:9px;padding-right:9px;padding-bottom:9px;padding-left:9px;overflow-y:auto;}
+#panelOverlay.inventory-mode .op-bag-panel{overflow-x:hidden;}
+#panelOverlay.inventory-mode .op-tabs{margin-bottom:7px;}
+#panelOverlay.inventory-mode .op-tabs button{padding-top:7px;padding-right:3px;padding-bottom:7px;padding-left:3px;}
+#panelOverlay.inventory-mode .op-character-core{grid-template-columns:66px minmax(0px, 1fr) 66px;row-gap:7px;column-gap:7px;flex-grow:0;flex-shrink:0;flex-basis:auto;align-items:start;}
+#panelOverlay.inventory-mode .op-equip-side{grid-template-rows:repeat(6, 59px);row-gap:5px;column-gap:5px;}
+#panelOverlay.inventory-mode .op-equip-slot{height:59px;min-height:59px;max-height:59px;padding-top:3px;padding-right:3px;padding-bottom:3px;padding-left:3px;row-gap:2px;column-gap:2px;}
+#panelOverlay.inventory-mode .op-slot-label{font-size:8px;line-height:1.1;min-height:11px;}
+#panelOverlay.inventory-mode .op-slot-frame{height:37px;min-height:37px;}
+#panelOverlay.inventory-mode .op-slot-icon{padding-bottom:2px;}
+#panelOverlay.inventory-mode .op-slot-icon .item-icon{width:31px;height:31px;}
+#panelOverlay.inventory-mode .op-slot-refine, #panelOverlay.inventory-mode .op-slot-power{font-size:9px;padding-top:1px;padding-right:2px;padding-bottom:1px;padding-left:2px;}
+#panelOverlay.inventory-mode .op-avatar-stage{height:155px;width:100%;max-width:157px;padding-top:4px;padding-right:4px;padding-bottom:4px;padding-left:4px;}
+#panelOverlay.inventory-mode .op-avatar-meta{margin-top:3px;row-gap:2px;column-gap:2px;}
+#panelOverlay.inventory-mode .op-avatar-meta strong{font-size:15px;}
+#panelOverlay.inventory-mode .op-avatar-meta span{font-size:10px;}
+#panelOverlay.inventory-mode .op-avatar-column{padding-top:3px;padding-right:0px;padding-bottom:3px;padding-left:0px;row-gap:4px;column-gap:4px;}
+#panelOverlay.inventory-mode .op-power-banner{margin-top:6px;padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;}
+#panelOverlay.inventory-mode .op-power-banner b{font-size:18px;}
+#panelOverlay.inventory-mode .op-stats-list{margin-top:5px;}
+#panelOverlay.inventory-mode .op-stats-list div{padding-top:5px;padding-right:2px;padding-bottom:5px;padding-left:2px;font-size:10px;}
+#panelOverlay.inventory-mode .op-hide-check{margin-top:7px;padding-top:7px;}
+#panelOverlay.inventory-mode .op-panel-head{margin-bottom:7px;}
+#panelOverlay.inventory-mode .op-head-left h3{font-size:18px;}
+#panelOverlay.inventory-mode .op-best-btn{font-size:10px;padding-top:7px;padding-right:8px;padding-bottom:7px;padding-left:8px;}
+#panelOverlay.inventory-mode .op-tool-row{grid-template-columns:minmax(110px, 1fr) minmax(70px, 95px) minmax(70px, 88px);row-gap:5px;column-gap:5px;margin-bottom:7px;}
+#panelOverlay.inventory-mode .op-search, #panelOverlay.inventory-mode .op-tool-row select{height:32px;}
+#panelOverlay.inventory-mode .op-category-tabs{display:flex;flex-wrap:nowrap;overflow-x:auto;row-gap:4px;column-gap:4px;margin-bottom:8px;}
+#panelOverlay.inventory-mode .op-category-tabs button{flex-grow:0;flex-shrink:0;flex-basis:auto;font-size:9px;padding-top:6px;padding-right:7px;padding-bottom:6px;padding-left:7px;}
+#panelOverlay.inventory-mode .op-grid-wrap{flex-grow:0;flex-shrink:0;flex-basis:auto;min-height:0px;width:100%;max-width:100%;padding-top:9px;padding-right:9px;padding-bottom:9px;padding-left:9px;overflow-x:auto;overflow-y:hidden;}
+#panelOverlay.inventory-mode .op-grid{display:grid;width:max-content;max-width:100%;height:auto;min-height:0px;grid-template-columns:repeat(7, 50px);grid-template-rows:repeat(5, 50px);grid-auto-rows:50px;row-gap:5px;column-gap:5px;margin-inline-start:auto;margin-inline-end:auto;}
+#panelOverlay.inventory-mode .op-item{width:50px;height:50px;min-height:0px;padding-top:3px;padding-right:3px;padding-bottom:3px;padding-left:3px;aspect-ratio:1 / 1;border-top-width:2px;border-right-width:2px;border-bottom-width:2px;border-left-width:2px;}
+#panelOverlay.inventory-mode .op-item:hover:not(.empty), #panelOverlay.inventory-mode .op-item:focus-visible{border-top-color:rgb(236, 198, 107);border-right-color:rgb(236, 198, 107);border-bottom-color:rgb(236, 198, 107);border-left-color:rgb(236, 198, 107);box-shadow:rgb(205, 168, 98) 0px 0px 0px 1px, rgba(0, 0, 0, 0.267) 0px 0px 0px 1px inset;}
+#panelOverlay.inventory-mode .op-item-icon .item-icon{width:32px;height:32px;max-width:32px;max-height:32px;}
+#panelOverlay.inventory-mode .op-item-qty, #panelOverlay.inventory-mode .op-item-refine{font-size:9px;padding-top:1px;padding-right:2px;padding-bottom:1px;padding-left:2px;}
+#panelOverlay.inventory-mode .op-pagination{padding-top:7px;}
+#panelOverlay.inventory-mode .op-pagination button{min-width:27px;height:27px;}
+#panelOverlay.inventory-mode .op-detail-panel{overflow-y:auto;}
+#panelOverlay.inventory-mode .op-detail-wrap{height:auto;min-height:100%;row-gap:8px;column-gap:8px;}
+#panelOverlay.inventory-mode .op-detail-box{padding-top:8px;padding-right:8px;padding-bottom:8px;padding-left:8px;}
+#panelOverlay.inventory-mode .op-detail-head{grid-template-columns:54px minmax(0px, 1fr);row-gap:8px;column-gap:8px;}
+#panelOverlay.inventory-mode .op-detail-icon{width:52px;height:52px;}
+#panelOverlay.inventory-mode .op-detail-head h3{font-size:18px;}
+#panelOverlay.inventory-mode .op-action{min-height:38px;height:auto;padding-top:8px;padding-right:8px;padding-bottom:8px;padding-left:8px;font-size:13px;}
+#panelOverlay.inventory-mode .op-bottom-actions button{min-height:36px;padding-top:6px;padding-right:6px;padding-bottom:6px;padding-left:6px;font-size:11px;}
+@media (max-width: 1180px) {#panelOverlay.inventory-mode .dialog{width:calc(-22px + 100vw);height:calc(100dvh - 22px);max-height:calc(100dvh - 22px);}
+#panelOverlay.inventory-mode .op-body-grid{grid-template-columns:minmax(0px, 1fr) minmax(0px, 1fr);align-items:start;grid-auto-rows:max-content;overflow-y:auto;overflow-x:hidden;}
+#panelOverlay.inventory-mode .op-panel{max-height:none;min-height:0px;overflow-y:visible;}
+#panelOverlay.inventory-mode .op-character-panel, #panelOverlay.inventory-mode .op-bag-panel{min-height:0px;}
+#panelOverlay.inventory-mode .op-detail-panel{min-height:0px;}
+#panelOverlay.inventory-mode .op-grid{grid-template-columns:repeat(6, 48px);grid-template-rows:none;grid-auto-rows:48px;}
+#panelOverlay.inventory-mode .op-item{width:48px;height:48px;}}
+@media (max-width: 760px) {#panelOverlay.inventory-mode{padding-top:5px;padding-right:5px;padding-bottom:5px;padding-left:5px;}
+#panelOverlay.inventory-mode .dialog{width:calc(-10px + 100vw);height:calc(100dvh - 10px);max-height:calc(100dvh - 10px);}
+#panelOverlay.inventory-mode .op-body-grid{display:flex;flex-direction:column;align-items:stretch;row-gap:8px;column-gap:8px;padding-top:7px;padding-right:7px;padding-bottom:7px;padding-left:7px;}
+#panelOverlay.inventory-mode .op-panel{width:100%;flex-grow:0;flex-shrink:0;flex-basis:auto;}
+#panelOverlay.inventory-mode .op-topbar{min-height:50px;padding-top:6px;padding-right:9px;padding-bottom:6px;padding-left:9px;}
+#panelOverlay.inventory-mode .op-title-banner strong{font-size:17px;}
+#panelOverlay.inventory-mode .op-character-core{grid-template-columns:66px minmax(0px, 1fr) 66px;}
+#panelOverlay.inventory-mode .op-grid{grid-template-columns:repeat(5, 48px);grid-template-rows:none;grid-auto-rows:48px;}
+#panelOverlay.inventory-mode .op-item{width:48px;height:48px;}
+#panelOverlay.inventory-mode .op-grid-wrap{padding-top:7px;padding-right:7px;padding-bottom:7px;padding-left:7px;}
+#panelOverlay.inventory-mode .op-tool-row{grid-template-columns:minmax(0px, 1fr) 90px 80px;}
+#panelOverlay.inventory-mode .op-category-tabs button{font-size:9px;}
+#panelOverlay.inventory-mode .op-detail-panel{min-height:0px;}}
+@media (max-width: 360px) {#panelOverlay.inventory-mode .op-character-core{grid-template-columns:57px minmax(0px, 1fr) 57px;row-gap:5px;column-gap:5px;}
+#panelOverlay.inventory-mode .op-equip-slot{padding-top:2px;padding-right:2px;padding-bottom:2px;padding-left:2px;}
+#panelOverlay.inventory-mode .op-tool-row{grid-template-columns:minmax(0px, 1fr) 72px 68px;}
+#panelOverlay.inventory-mode .op-grid{grid-template-columns:repeat(5, 45px);grid-auto-rows:45px;row-gap:4px;column-gap:4px;}
+#panelOverlay.inventory-mode .op-item{width:45px;height:45px;}}
+@media (prefers-reduced-motion: reduce) {#panelOverlay.inventory-mode .op-item{transition-behavior:normal;transition-duration:0s;transition-timing-function:ease;transition-delay:0s;transition-property:none;}}
+}

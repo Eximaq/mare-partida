@@ -6,7 +6,7 @@ from polish_support import page_for,create,saved,KEY
 OUT=Path(tempfile.gettempdir())/'mare-haki-quickcast';OUT.mkdir(exist_ok=True)
 def d(q):return q.evaluate('__mareDiagnostics()')
 def travel(q):
-    q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area]').click()
+    q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area]').click()
     if d(q)['autoPlay']:q.locator('#autoToggle').click()
 with sync_playwright() as p:
     b=p.chromium.launch(headless=True);errors=[];c,q=page_for(b,errors=errors);template=create(q)
@@ -38,7 +38,7 @@ with sync_playwright() as p:
         button=q.locator('#hakiQuickCast [data-haki-toggle=armament]');button.click();assert d(q)['haki']['active']=='armament';q.screenshot(path=str(OUT/f'armament-{size[0]}.png'));button.click();assert d(q)['haki']['active'] is None
         assert q.evaluate('document.documentElement.scrollWidth<=innerWidth'),size
         assert q.locator('#hakiQuickCast').evaluate('(e)=>e.scrollWidth<=e.clientWidth+1'),size
-        if size[0]<=700:assert q.evaluate("document.querySelector('#mainMenu').getBoundingClientRect().top>=document.querySelector('.topbar').getBoundingClientRect().bottom"),size
+        assert q.locator('#hakiQuickCast').evaluate('(e)=>!!e.closest(".action-panel")'),size
         q.screenshot(path=str(OUT/f'hud-{size[0]}.png'))
     c.close()
     exhausted=copy.deepcopy(seed);exhausted['haki']['current']=0

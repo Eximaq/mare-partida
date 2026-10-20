@@ -137,6 +137,13 @@ Não renomear/mover assets referenciados sem atualizar todos os manifests/import
 
 ## 5. Mundo, movimentação e câmera
 
+### Caçadas regionais implementadas — 19/10/2026
+
+- Configuração de encontros/economia em `hunt-system.js`: Dawn Nv.1–10 e Conchas Nv.11–20, entrada de Conchas Nv.11. Não voltar a escalar monstros/drops pelo nível do jogador.
+- Chefes locais exigem 12 abates na ilha e proximidade da arena; espera de 90s após derrota persiste em `hunts`. Primeira vitória tem resgate único, preservado com mochila cheia e falha de storage.
+- Rota usa caminhada/pathfinding, nunca teleporte. Avisos de área têm mira fixa, LOS e podem ser evitados/interrompidos. Preservar o isolamento DEV e os contratos legados.
+- Geometria/artes não mudaram; `docs/CACADAS-1-20.md` contém fórmulas, limites de conteúdo, testes e orientações para trabalho em paralelo.
+
 ### 5.1 Requisitos
 
 - Lobby com porto, praça, comércio, forja, cais e serviços em composição compacta. Aplicar o padrão de dimensões abaixo aos mapas futuros; não aumentar o mundo apenas para superar a viewport.
@@ -191,6 +198,16 @@ No porto ou na caçada, jogador abre **Modos de jogo** pelo botão M, tecla M ou
 **Nunca** chamar de combate funcional uma cena apenas animada sem cálculos de estado. Desativação por tab em segundo plano deve ter política clara; progressão offline real deve ser validada pelo servidor em fase online, não simulada sem transparência.
 
 ## 7. HUD e inventário
+
+### Sistema de interface obrigatório — UI 2.0 (20/10/2026)
+
+- Correção expressa do proprietário: preservar a identidade anterior de navio (madeira escura, cordas, bronze, pergaminho e verde-marinho). Melhorias de UX/responsividade não autorizam trocar o tema. Inventário com três colunas de pergaminho, bandeja e slots harmonizados em madeira; evitar contraste de quadrados azul-acinzentados sobre fundo bege. Usar os materiais compartilhados documentados, sem alterar os assets.
+
+- Antes de criar uma janela, ler `docs/UI-DESIGN-SYSTEM.md`. Reutilizar tokens `--rpg-*`, componentes de `ui-components.css` e factories de `ui-system.js`; não recriar manualmente modal, cabeçalho, botão, slot ou confirmação.
+- Novos estilos vão no componente compartilhado ou na composição específica em `ui-screens.css`; layout de HUD em `ui-hud.css`, adaptações em `ui-responsive.css`. Os seis estilos anteriores estão isolados nas camadas `legacy`/`legacy-priority`; não adicionar novas cadeias de overrides neles.
+- Prioridade explícita somente para o estado global `.hidden/[hidden]`. Usar os tokens de camadas e `MareUI` para foco, Escape, backdrop e retorno ao acionador. O corpo HTML das factories aceita apenas markup confiável do código.
+- Haki, habilidades e poção ficam na action bar. Personagem/Modos continuam abrindo seus menus diretos. Chat tem filtros locais Sistema/Anotações; não anunciar chat online. Widgets pequenos disputando espaço ficam exclusivos no móvel.
+- Validar as sete resoluções do guia, mais horizontal, toque e movimento reduzido; conferir contraste, foco, rolagem, centro do mapa e preservação do save. Nenhuma alteração de dados ou balanceamento faz parte de uma refatoração visual.
 
 **Organização visual de referência (não cópia de assets):**
 

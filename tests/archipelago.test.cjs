@@ -22,7 +22,8 @@ assert.equal(a.byArea('swamp').id,'conchas');
 assert.equal(a.canTravel('dawn',1),true);
 assert.equal(a.canTravel('dawn',80),true);
 assert.equal(a.canTravel('conchas',7),false);
-assert.equal(a.canTravel('conchas',8),true);
+assert.equal(a.canTravel('conchas',10),false);
+assert.equal(a.canTravel('conchas',11),true);
 for(const level of [undefined,null,NaN,Infinity,'10',-1,0])assert.equal(a.canTravel('dawn',level),false);
 assert.equal(a.canTravel('missing',80),false);
 for(const i of a.islands.slice(2)){

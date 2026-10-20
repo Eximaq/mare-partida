@@ -1,5 +1,7 @@
 # Regiões e detalhes do Arquipélago
 
+Revisão de caçadas 1–20: Conchas agora exige nível 11 e usa o Guardião das Conchas Nv.20. A tabela/regra de entrada Nv.8 abaixo registra o comportamento anterior. Regras atuais em `CACADAS-1-20.md`.
+
 Atualização de 19/10/2026. A janela fica em **Modos de jogo (M) → Mapa do Arquipélago**. Botão de viagem e NPC de expedição abrem a mesma lista de modos. East Blue abre por padrão; Alabasta está desabilitada, com `data-status="locked"`, nome e aviso visível abaixo do título.
 
 ## Catálogo
