@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><base href="../">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>QA — Orange Town, antes e depois</title>
+<style>
+html,body{margin:0;background:#162630;color:#f0dfb4;font:14px Arial,sans-serif}
+header{padding:12px 20px;border-bottom:1px solid #b49252}
+h1{font-size:20px;margin:0 0 5px}p{margin:4px 0}
+main{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:10px}
+section{min-width:0;background:#17212a;border:2px solid #927345}
+h2{margin:0;padding:10px 12px;font-size:16px}
+canvas{display:block;width:100%;image-rendering:pixelated}
+footer{padding:10px 20px;color:#afc4c0}
+</style>
+<script src="orange-world.js"></script>
+<script src="orange-terrain.js"></script>
+<script src="orange-renderer.js"></script>
+</head><body>
+<header><h1>Orange Town — comparação do chão</h1>
+<p>Mesmo mapa, mesma câmera e mesmo tileset. À esquerda: renderização anterior. À direita: bordas orgânicas, detalhes e variações por coordenadas.</p></header>
+<main><section><h2>ANTES · Texturas quadradas</h2><canvas id="before" width="760" height="490"></canvas></section>
+<section><h2>DEPOIS · Autotiling pixelado</h2><canvas id="after" width="760" height="490"></canvas></section></main>
+<footer id="status">Carregando imagens e compositores...</footer>
+<script>
+(async function(){
+const O=globalThis.MareOrange,R=globalThis.MareOrangeRenderer;
+const settings={rua:{x:650,y:650},praca:{x:720,y:980},cais:{x:180,y:1380}};
+const requested=new URLSearchParams(location.search).get('view')||'praca';
+const view=settings[requested]||settings.praca;
+const images={};
+function load(key,src){return new Promise(resolve=>{const img=new Image();img.onload=()=>{images[key]=img;resolve()};img.onerror=()=>resolve();img.src=src;});}
+await Promise.all([
+R.boot,
+load('water','assets/ruinas-brasas/water.png'),
+load('sand','pixellab-pip-generations/ilha-porto-20261018/ocean-sand.png'),
+load('grass','pixellab-pip-generations/ilha-porto-20261018/sand-grass.png'),
+load('street','assets/orange-town/street.png')
+]);
+const origin={x:view.x,y:view.y},width=760,height=490;
+function prior(){
+const c=document.getElementById('before').getContext('2d');c.imageSmoothingEnabled=false;
+c.save();c.translate(-origin.x,-origin.y);
+c.fillStyle='#235a65';c.fillRect(origin.x,origin.y,width,height);
+function draw(key,x,y){const img=images[key];if(!img)return;
+if(key==='sand'||key==='grass')for(let dy=0;dy<64;dy+=32)for(let dx=0;dx<64;dx+=32)c.drawImage(img,0,96,32,32,x+dx,y+dy,32,32);
+else c.drawImage(img,0,0,64,64,x,y,64,64);}
+for(let ty=Math.floor(origin.y/64);ty<Math.ceil((origin.y+height)/64);ty++)
+ for(let tx=Math.floor(origin.x/64);tx<Math.ceil((origin.x+width)/64);tx++){
+ const x=tx*64,y=ty*64,t=O.at(tx,ty);draw('water',x,y);
+ if(t===O.WATER)continue;
+ c.save();const land=(dx,dy)=>O.at(tx+dx,ty+dy)!==O.WATER;
+ const r=12;c.beginPath();c.roundRect(x,y,64,64,[!land(-1,0)&&!land(0,-1)?r:0,!land(1,0)&&!land(0,-1)?r:0,!land(1,0)&&!land(0,1)?r:0,!land(-1,0)&&!land(0,1)?r:0]);c.clip();
+ draw(t===O.GRASS?'grass':t===O.STREET?'street':'sand',x,y);c.restore();
+ }
+c.restore();
+}
+prior();
+const c=document.getElementById('after').getContext('2d');c.imageSmoothingEnabled=false;c.save();c.translate(-origin.x,-origin.y);
+R.ground(c,origin,width,height,0,true);c.restore();
+document.getElementById('status').textContent='Vista '+requested+' · tiles 64px · colisão inalterada · 8 vizinhos e decoração determinística · '+JSON.stringify(R.stats());
+document.body.dataset.ready='true';
+})().catch(error=>{document.getElementById('status').textContent='ERRO: '+error.message;document.body.dataset.error=error.message;console.error(error);});
+</script></body></html>
