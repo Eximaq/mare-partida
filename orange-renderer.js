@@ -20,31 +20,37 @@
         characters[id]={...asset,sheets};
       }
     }).catch(()=>null));
-  function tile(c,key,x,y){
-    const img=images[key];if(!ready(img))return;
-    if(key==='sand'||key==='grass')for(let dy=0;dy<64;dy+=32)for(let dx=0;dx<64;dx+=32)c.drawImage(img,0,96,32,32,x+dx,y+dy,32,32);
-    else c.drawImage(img,0,0,64,64,x,y,64,64);
-  }
-  function wood(c,x,y){
-    if(!woodSource)return;c.save();c.beginPath();c.rect(x,y,64,64);c.clip();
-    for(let dy=0;dy<64;dy+=30)for(let dx=0;dx<64;dx+=22)c.drawImage(woodSource,80,399,22,30,x+dx,y+dy,22,30);c.restore();
-  }
-  function cell(c,tx,ty,x,y){
-    const t=O.at(tx,ty);tile(c,'water',x,y);if(t===O.WATER)return;
-    c.save();const land=(dx,dy)=>O.at(tx+dx,ty+dy)!==O.WATER,r=12;
-    c.beginPath();c.roundRect(x,y,64,64,[!land(-1,0)&&!land(0,-1)?r:0,!land(1,0)&&!land(0,-1)?r:0,!land(1,0)&&!land(0,1)?r:0,!land(-1,0)&&!land(0,1)?r:0]);c.clip();
-    if(t===O.WOOD)wood(c,x,y);else tile(c,t===O.GRASS?'grass':t===O.STREET?'street':'sand',x,y);c.restore();
-  }
+  // New ground compositor draws cached pixel-art layers and 8-way autotiles.
   function chunk(cx,cy){
     const key=cx+','+cy+':'+revision;if(chunks.has(key))return chunks.get(key);
-    const canvas=document.createElement('canvas');canvas.width=canvas.height=512;const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;
-    for(let y=0;y<8;y++)for(let x=0;x<8;x++)cell(c,cx*8+x,cy*8+y,x*64,y*64);
-    chunks.set(key,canvas);if(chunks.size>20)chunks.delete(chunks.keys().next().value);return canvas;
+    const canvas=document.createElement('canvas');canvas.width=canvas.height=512;
+    const c=canvas.getContext('2d',{alpha:false});c.imageSmoothingEnabled=false;
+    root.MareOrangeTerrain.drawChunk(c,cx,cy,O,images,woodSource);
+    chunks.set(key,canvas);
+    if(chunks.size>20)chunks.delete(chunks.keys().next().value);
+    return canvas;
   }
   function ground(c,camera,width,height,time,reduced){
     c.fillStyle=ready(images.water)?c.createPattern(images.water,'repeat'):'#235a65';c.fillRect(camera.x,camera.y,width,height);
     for(let y=Math.floor(camera.y/512);y<Math.min(4,Math.ceil((camera.y+height)/512));y++)for(let x=Math.floor(camera.x/512);x<Math.min(4,Math.ceil((camera.x+width)/512));x++)c.drawImage(chunk(x,y),x*512,y*512);
-    if(!reduced){c.fillStyle='#d7eee21c';for(let y=Math.floor(camera.y/64);y<Math.ceil((camera.y+height)/64);y++)for(let x=Math.floor(camera.x/64);x<Math.ceil((camera.x+width)/64);x++)if(O.at(x,y)===O.WATER){const shift=Math.floor(Math.sin(time*1.2+x+y)*5);c.fillRect(x*64+15+shift,y*64+29,14,1);}}
+    if(!reduced){
+      // Narrow animated highlights only at water; coast receives extra foam.
+      const phase=Math.floor(time*3);
+      for(let y=Math.floor(camera.y/64);y<Math.ceil((camera.y+height)/64);y++)
+        for(let x=Math.floor(camera.x/64);x<Math.ceil((camera.x+width)/64);x++){
+          if(O.at(x,y)!==O.WATER)continue;
+          const shift=Math.round(Math.sin(time*1.2+x+y)*4);
+          c.fillStyle='#acd5ce80';c.fillRect(x*64+15+shift,y*64+29,14,2);
+          const north=O.at(x,y-1)!==O.WATER,east=O.at(x+1,y)!==O.WATER;
+          const south=O.at(x,y+1)!==O.WATER,west=O.at(x-1,y)!==O.WATER;
+          if(!north&&!east&&!south&&!west)continue;
+          c.fillStyle='#e5efdc99';
+          if(north)c.fillRect(x*64+12+((phase+x)%3)*4,y*64+3,19,2);
+          if(south)c.fillRect(x*64+30,y*64+58+((phase+y)%2)*2,18,2);
+          if(east)c.fillRect(x*64+58,y*64+17+((phase+x)%4)*4,2,18);
+          if(west)c.fillRect(x*64+4,y*64+27+((phase+y)%3)*4,2,15);
+        }
+    }
   }
   function prop(c,p){
     const img=images[p.kind==='building'?'buildings':'harbor'];if(!ready(img))return;
