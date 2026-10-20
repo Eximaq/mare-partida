@@ -44,6 +44,8 @@ Investimentos usam prévia e confirmação, persistem por classe e podem ser red
 
 ## Histórico — Menu de modos e seleção de fases
 
+**Atualização do acesso rápido:** a tecla **M**, o ícone da HUD e o botão de modos do porto abrem um menu suspenso junto à HUD, sem exibir a antiga janela intermediária. **Mapa do Arquipélago** e **Impel Down** abrem suas respectivas telas diretamente; voltar a Modos retorna ao menu suspenso. Escape e clique externo fecham a lista. O menu Personagem permanece independente.
+
 **M** e o botão da HUD agora abrem **Modos de jogo**, uma lista suspensa com ícones e texto. Escolha **Mapa do Arquipélago** para viajar ou **Impel Down** para abrir sua janela própria. A entrada da prisão foi removida de dentro do mapa geográfico.
 
 Impel Down apresenta setas limitadas aos andares já liberados, nível/ondas, monstros previstos com imagem e atributos, recompensa da primeira conquista, preferências de subida e Marcos. Os multiplicadores de dificuldade ficam somente nas regras internas; a HUD não exibe fórmula, fator ou tabela. A prisão permanece **Em breve**, sem partidas ou resgates.
