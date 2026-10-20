@@ -1028,7 +1028,7 @@
   }
   function toggleCharacterMenu(){
     const menu=$('characterQuickMenu'),trigger=$('characterMenuTrigger');
-    if(!game||!menu||!trigger||!$('panelOverlay').classList.contains('hidden'))return;
+    if(!game||!menu||!trigger||!$('panelOverlay').classList.contains('hidden')||document.querySelector('.confirmation-overlay'))return;
     const opening=menu.classList.contains('hidden');
     menu.classList.toggle('hidden',!opening);
     trigger.setAttribute('aria-expanded',String(opening));
@@ -1699,6 +1699,18 @@ function applySceneHudLayout(){
       if(!$('characterQuickMenu').classList.contains('hidden')){e.preventDefault();closeCharacterMenu(true);return;}
       if(currentPanel){closePanel();return;}
       ['status','expedition','chat'].forEach(k=>toggleFloating(k,false));return;
+    }
+    if(!$('characterQuickMenu').classList.contains('hidden')){
+      const menu=$('characterQuickMenu'),items=[...menu.querySelectorAll('[role="menuitem"]')];
+      if(['ArrowUp','ArrowDown','Home','End'].includes(e.key)){
+        e.preventDefault();
+        const index=items.indexOf(document.activeElement);
+        const next=e.key==='Home'?0:e.key==='End'?items.length-1:
+          (index+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;
+        items[next]?.focus({preventScroll:true});return;
+      }
+      if(e.key==='Tab'){closeCharacterMenu();return;}
+      if(['Enter',' '].includes(e.key)&&menu.contains(document.activeElement))return;
     }
     if(['modes','map','prison','character','dev'].includes(currentPanel)&&e.key==='Tab'){const items=[...$('panelOverlay').querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')].filter(b=>b.getClientRects().length);const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
     if(['modes','map','prison','character','dev'].includes(currentPanel)&&['Enter',' '].includes(e.key)&&document.activeElement?.tagName==='BUTTON')return;
