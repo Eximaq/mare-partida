@@ -168,6 +168,12 @@ Não renomear/mover assets referenciados sem atualizar todos os manifests/import
 - **Fenda da Névoa:** ruínas úmidas, névoa e criaturas espectrais.
 - **Costa dos Náufragos:** praia e destroços, animais e saqueadores.
 
+### Ilha Dawn manual do proprietário — 20/10/2026
+
+- O destino `beach` usa `dawn-world.js`/`dawn-renderer.js` e `dawn-map-data.js`, importados do ZIP manual do proprietário. Preservar pixels, posições e footprints do export; não substituir sua composição por geração procedural.
+- Exceção específica de tamanho:56×40 tiles64 (3584×2560), conforme o arquivo fornecido. O padrão32×32 para novos mapas continua válido. IDs de save/setores, níveis1–10 e recompensas permanecem estáveis.
+- `docs/DAWN-MAPA-MANUAL.md` registra fontes, dados derivados e testes. Usar `tests/dawn_manual_browser.py` como aceite atual; Ember permanece legado. Alterações na fonte exigem reimportação, teste de fidelidade e de todas as rotas, não ajustes aleatórios no PNG.
+
 ### 5.3 Padrão de tamanho e composição — decisão do proprietário em 19/10/2026
 
 - **Todos os mapas futuros usam, por padrão, grade de 32×32 tiles com células de 64×64px: mundo de 2048×2048px.** Tamanho de tile não é tamanho de sprite: monstros continuam com frames 48×48 e cenário com escala proporcional.

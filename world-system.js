@@ -44,6 +44,7 @@
   if(globalThis.MareEmber)maps.embers=MareEmber.map;
   if(globalThis.MareOrange)maps.orange=MareOrange.map;
   if(globalThis.MareConchas)maps.conchas=MareConchas.map;
+  if(globalThis.MareDawn)maps.dawn=MareDawn.map;
   class Camera {
     constructor(){this.x=0;this.y=0;this.width=960;this.height=570;}
     update(hero,map,dt=0,snap=false){
@@ -74,7 +75,7 @@
       if(this.map.terrainWalkable&&!this.map.terrainWalkable(x,y,r))return false;
       return !this.map.colliders.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
     }
-    clear(a,b){const d=Math.hypot(b.x-a.x,b.y-a.y),steps=Math.max(1,Math.ceil(d/5));for(let i=0;i<=steps;i++){let t=i/steps;if(!this.walkable(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t))return false;}return true;}
+    clear(a,b){if(this.map.segmentBlocked?.(a,b,this.radius))return false;const d=Math.hypot(b.x-a.x,b.y-a.y),steps=Math.max(1,Math.ceil(d/5));for(let i=0;i<=steps;i++){let t=i/steps;if(!this.walkable(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t))return false;}return true;}
     nearest(p){
       const x=clamp(p.x,this.radius,this.map.width-this.radius),y=clamp(p.y,this.radius,this.map.height-this.radius);
       if(this.walkable(x,y))return {x,y};

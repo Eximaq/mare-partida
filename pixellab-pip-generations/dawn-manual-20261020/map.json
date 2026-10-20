@@ -1,0 +1,134 @@
+{
+  "version": "1.0.0",
+  "name": "Mapa - Ilha Dawn",
+  "exportDate": "2026-10-20T22:45:14.534815Z",
+  "engine": "pixellab-map-editor",
+  "mapConfig": {
+    "tileSize": 64,
+    "dimensions": {
+      "width": 56,
+      "height": 40,
+      "pixelWidth": 3584,
+      "pixelHeight": 2560
+    },
+    "boundingBox": {
+      "maxX": 34,
+      "maxY": 29,
+      "minX": -21,
+      "minY": -10
+    }
+  },
+  "terrains": [
+    {
+      "id": 2,
+      "name": "AREIA COR CAQUI, TIPICO DE ILHAS",
+      "color": "#9ca3af",
+      "baseTileId": "8d41c35f-2c7c-4dc6-aa1e-9e193638df79",
+      "walkable": null
+    },
+    {
+      "id": 4,
+      "name": "Grama alta de boa qualidade",
+      "color": "#9ca3af",
+      "baseTileId": "30a64e26-d389-41eb-9c0a-e966ee77315f",
+      "walkable": null
+    },
+    {
+      "id": 1,
+      "name": "\u00c1gua Oce\u00e2nica Rasa (Ciano/Azul-claro) ",
+      "color": "#9ca3af",
+      "baseTileId": "f9e3e095-af3d-4662-84c1-e308eccedf85",
+      "walkable": null
+    },
+    {
+      "id": 3,
+      "name": "Estrutura superior de madeira com vigas enfiadas na agua.",
+      "color": "#9ca3af",
+      "baseTileId": "090d18bd-a001-4ae8-86dd-b961829ef2b6",
+      "walkable": null
+    },
+    {
+      "id": 5,
+      "name": "Crie uma plataforma de madeira que junte no solo para confec\u00e7\u00e3o de um porto de navios. Tem que ser amadeirada",
+      "color": "#9ca3af",
+      "baseTileId": "56ba0b6e-530f-4def-a597-02bee4202680",
+      "walkable": null
+    }
+  ],
+  "tilesets": [
+    {
+      "id": "4ef6e6c2-327f-4739-9301-866141cda0c1",
+      "filename": "AREIA COR CAQUI, TIPICO DE ILHAS-Grama alta de boa qualidade.png",
+      "lowerTerrain": "AREIA COR CAQUI, TIPICO DE ILHAS",
+      "upperTerrain": "Grama alta de boa qualidade",
+      "lowerTerrainId": 2,
+      "upperTerrainId": 4,
+      "transitionSize": 0,
+      "transitionDescription": "",
+      "tileSize": 64,
+      "gridLayout": "4x4",
+      "wangIndexMapping": "standard",
+      "view": "high top-down"
+    },
+    {
+      "id": "7d045c6a-bf9b-4994-8365-8393be44bb67",
+      "filename": "\u00c1gua Oce\u00e2nica Rasa (Ciano-Azul-claro) -Estrutura superior de madeira com vigas enfiadas na agua..png",
+      "lowerTerrain": "\u00c1gua Oce\u00e2nica Rasa (Ciano/Azul-claro) ",
+      "upperTerrain": "Estrutura superior de madeira com vigas enfiadas na agua.",
+      "lowerTerrainId": 1,
+      "upperTerrainId": 3,
+      "transitionSize": 0.23,
+      "transitionDescription": "",
+      "tileSize": 64,
+      "gridLayout": "4x4",
+      "wangIndexMapping": "standard",
+      "view": "high top-down"
+    },
+    {
+      "id": "9c35493d-6355-4d01-85c9-e5b16a5d8025",
+      "filename": "Crie uma plataforma de madeira que junte no solo para confec\u00e7\u00e3o de um porto de navios. Te-0bcb4bd7.png",
+      "lowerTerrain": "Crie uma plataforma de madeira que junte no solo para confec\u00e7\u00e3o de um porto de navios. Tem que ser amadeirada",
+      "upperTerrain": "Grama alta de boa qualidade",
+      "lowerTerrainId": 5,
+      "upperTerrainId": 4,
+      "transitionSize": 0.12,
+      "transitionDescription": "",
+      "tileSize": 64,
+      "gridLayout": "4x4",
+      "wangIndexMapping": "standard",
+      "view": "high top-down"
+    },
+    {
+      "id": "4f7f3009-c043-4f68-b18b-b0f855e5322a",
+      "filename": "\u00c1gua Oce\u00e2nica Rasa (Ciano-Azul-claro) -AREIA COR CAQUI, TIPICO DE ILHAS.png",
+      "lowerTerrain": "\u00c1gua Oce\u00e2nica Rasa (Ciano/Azul-claro) ",
+      "upperTerrain": "AREIA COR CAQUI, TIPICO DE ILHAS",
+      "lowerTerrainId": 1,
+      "upperTerrainId": 2,
+      "transitionSize": 0,
+      "transitionDescription": "",
+      "tileSize": 64,
+      "gridLayout": "4x4",
+      "wangIndexMapping": "standard",
+      "view": "high top-down"
+    }
+  ],
+  "overlays": [
+    {
+      "id": 0,
+      "filename": "overlay-0.png",
+      "type": "inpainting",
+      "dimensions": {
+        "width": 896,
+        "height": 832
+      },
+      "worldCoordinates": {
+        "x": -384,
+        "y": 256
+      },
+      "layer": "custom"
+    }
+  ],
+  "background": null,
+  "mapId": "7d0ac76f-c10e-4077-82ae-c25c19bc2335"
+}

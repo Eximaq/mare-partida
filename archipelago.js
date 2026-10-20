@@ -7,7 +7,7 @@
   ]);
   const loot=Object.freeze(['Dobrões e experiência','Equipamentos da classe','Ferro Salgado e poções']);
   const islands=Object.freeze([
-    {id:'dawn',name:'Ilha Dawn',recommended:[1,10],area:'beach',minLevel:1,description:'Uma ilha inicial com cais, ruas em ruínas e uma fortaleza além da fenda. Percorra os setores e enfrente o guardião da região.',drops:loot,monster:{name:'Capitão da Caldeira',role:'Chefe',src:'assets/ruinas-brasas/caldera-captain.png',sheet:true}},
+    {id:'dawn',name:'Ilha Dawn',recommended:[1,10],area:'beach',minLevel:1,description:'A Ilha Dawn criada manualmente no PixelLab: cais de madeira, bosque, praias e uma vila costeira. Explore os caminhos da ilha e enfrente o capitão.',drops:loot,monster:{name:'Capitão da Caldeira',role:'Chefe',src:'assets/ruinas-brasas/caldera-captain.png',sheet:true}},
     {id:'conchas',name:'Cidade das Conchas',recommended:[11,20],area:'swamp',minLevel:11,description:'Um porto de vigília com mercados azuis, docas e um bairro antigo. Siga pelas ruas até o arco do bastião e enfrente o Guardião das Conchas.',drops:loot,monster:{name:'Guardião das Conchas',role:'Chefe',src:'assets/monsters/boss.png',sheet:false}},
     {id:'orange-town',name:'Orange Town',recommended:[21,30],area:'orange',minLevel:21,description:'Um porto de telhados alaranjados ocupado por saqueadores. Atravesse o cais, a rua comercial e a praça dos toldos até o pátio do Capitão Fagulha.',drops:loot,monster:{name:'Capitão Fagulha',role:'Chefe',src:'assets/orange-town/captain-spark-portrait.png',sheet:false}},
     {id:'animais-raros',name:'Ilha dos Animais Raros',recommended:[31,40],area:null,description:'Uma ilha de exploração e fauna incomum. A região ainda está em preparação.'},
