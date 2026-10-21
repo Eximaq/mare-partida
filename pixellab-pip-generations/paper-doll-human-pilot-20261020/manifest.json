@@ -1,5 +1,5 @@
 {
-  "status": "completed static pilot; no approved reusable layers",
+  "status": "completed pilot: four static inspection layers; artistic approval pending",
   "scope": "single south-facing pose; no animation",
   "approval": {
     "original_generation_ceiling": 4,
@@ -128,15 +128,30 @@
         10,
         11
       ],
-      "status": "inspection-only masked extraction; not final artwork",
-      "copied_changed_pixels": 75
+      "status": "unapproved inspection-only masked extraction",
+      "copied_generated_pixels": 75
     },
-    "hair": "not exported: failed audit",
-    "outfit": "not exported: failed audit",
-    "sword": "not exported: failed audit"
+    "hair": {
+      "file": "hair-masked-inspection-layer.png",
+      "status": "unapproved inspection-only masked extraction",
+      "copied_generated_pixels": 63,
+      "audit": "hair-extraction-review.json"
+    },
+    "outfit": {
+      "file": "outfit-masked-inspection-layer.png",
+      "status": "unapproved inspection-only masked extraction",
+      "copied_generated_pixels": 183,
+      "audit": "outfit-extraction-review.json"
+    },
+    "sword": {
+      "file": "sword-masked-inspection-layer.png",
+      "status": "unapproved inspection-only masked extraction",
+      "copied_generated_pixels": 118,
+      "audit": "sword-extraction-review.json"
+    }
   },
   "proposed_next_route": {
-    "status": "not authorized; no calls made",
+    "status": "Alternative only if needed; no approval or calls. First review the existing masked static inspection.",
     "tool": "MCP inpaint_image",
     "guides": [
       "hair-mask-proposed.png",
@@ -150,6 +165,15 @@
     "Native images untouched",
     "Separate nearest-neighbor8x inspection copies",
     "Face-region diff copied from PixelLab correction onto first base for inspection only",
-    "Transparent comparison sheet; no drawn sprite pixels"
-  ]
+    "Transparent comparison sheet; no drawn sprite pixels",
+    "Explicit review-only masked extraction of each approved addition from its raw composite: copy generated pixels only in the body-region guide and preserve the original body elsewhere; no alpha erasures copied; no repainting. Raw edits remain rejected and unchanged."
+  ],
+  "static_inspection": {
+    "configuration": "static-look.json",
+    "preview": "preview.html",
+    "composition": "combined-masked-inspection.png",
+    "frame_count": 1,
+    "direction": "south",
+    "artwork_approved": false
+  }
 }

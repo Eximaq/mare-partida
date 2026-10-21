@@ -1,0 +1,34 @@
+{
+  "status": "inspection-only; not final art",
+  "rigId": "human-v1",
+  "animationId": "idle",
+  "direction": "south",
+  "frameIndex": 0,
+  "frameWidth": 84,
+  "frameHeight": 84,
+  "pivotX": 42,
+  "pivotY": 65,
+  "animationCoverage": "one static frame only; no duplicated frames",
+  "layers": [
+    {
+      "id": "body",
+      "file": "body-face-fit-draft.png",
+      "zIndex": 0
+    },
+    {
+      "id": "outfit",
+      "file": "outfit-masked-inspection-layer.png",
+      "zIndex": 30
+    },
+    {
+      "id": "hair",
+      "file": "hair-masked-inspection-layer.png",
+      "zIndex": 40
+    },
+    {
+      "id": "weapon",
+      "file": "sword-masked-inspection-layer.png",
+      "zIndex": 60
+    }
+  ]
+}

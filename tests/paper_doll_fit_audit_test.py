@@ -43,5 +43,13 @@ class FitAuditTest(unittest.TestCase):
   for size,color in [((4,4),'white'),((8,8),'gray'),((8,8),'black')]:
    path=self.root/'bad-mask.png';Image.new('RGB',size,color).save(path)
    with self.assertRaises(ValueError):fit.audit(self.source,self.source,mask_path=path)
+ def test_explicit_draft_keeps_original_outside_mask(self):
+  mask=Image.new('RGB',(8,8));mask.putpixel((3,2),(255,255,255));path=self.root/'mask.png';mask.save(path)
+  edit=self.base.copy();edit.putpixel((3,2),(20,40,60,255));edit.putpixel((0,0),(99,88,77,255));target=self.root/'edit.png';edit.save(target)
+  result=fit.inspection_draft(self.source,target,self.root/'draft-layer.png',self.root/'draft.png',mask_path=path)
+  self.assertFalse(result['raw_audit']['passed']);self.assertTrue(result['draft_audit']['passed'])
+  self.assertEqual(Image.open(self.root/'draft.png').getpixel((0,0)),self.base.getpixel((0,0)))
+  self.assertEqual(Image.open(self.root/'draft-layer.png').getpixel((3,2)),edit.getpixel((3,2)))
+  self.assertIn('not final',result['status'])
 
 if __name__=='__main__':unittest.main()

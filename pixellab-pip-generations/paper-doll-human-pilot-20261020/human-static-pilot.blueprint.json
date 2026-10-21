@@ -60,6 +60,6 @@
     }
   },
   {
-    "TASK": "Save each raw composite unchanged. Run tools/paper_doll_fit_audit.py with the recorded regions. All3 additions failed, so do not export them as reusable layers or activate them. Save inspection-only nearest-neighbor previews, a transparent comparison sheet, and preview.html containing raw results and audit failures. Proposed black/white input masks are guides only; no masked generation is authorized by this recipe."
+    "TASK": "Save every raw composite unchanged. Raw rectangular audits failed. Using the approved local extraction/inspection scope, create black/white region guides: hair covers scalp/top/sides but excludes central face, outfit covers shoulders/torso but excludes shorts/hands, sword covers the object/guard contact but excludes the rest of the body. These guide images are controls, not drawn sprite art. Use tools/paper_doll_fit_audit.py --inspection-draft with the guide and native raw composite: copy only changed generated pixels inside the guide; preserve the source body elsewhere; record any skipped alpha erasures. Save masked-inspection layers/composites and strict audits of the derived drafts. Compose them in body/outfit/hair/weapon order and show in preview.html with independent toggles. Label all derived art unapproved static inspection only, one frame south; do not claim final reusable animation or integrate into production. Record raw failures separately; no additional generation calls are authorized."
   }
 ]
