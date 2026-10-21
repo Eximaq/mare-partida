@@ -1,5 +1,12 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Checkpoint de animações 2.0 e pausa para estudo Paper Doll
+
+- Branch `feature/class-combat-animations-v2`, base remota `5047eea`. Preservado o trabalho iniciado: registro de conjuntos por metadados, carregamento sob demanda, estados especializados e efeitos de habilidade agendados uma única vez. Nenhum conjunto novo ativado como produção; Bento Espadachim e artes anteriores preservados byte a byte.
+- O proprietário pausou novas gerações antes de autorizar as correções do piloto. As chamadas aceitas informaram13 gerações; seus recibos, frames originais e jobs pendentes foram preservados em `pixellab-pip-generations/class-combat-v2-20261020/pirate-brawler/`. Guarda/soco/combo sul não foram aprovados artisticamente. Sem retries novos, cancelamentos ou exclusões.
+- 30 suítes Node, sintaxe, build e amostras reais de combate das sete classes no Chromium passaram. Capturas locais em `docs/evidence-class-combat-v2/`, fora do Git; esses testes são regressão da infraestrutura, **não aceite das seis classes com arte completa**.
+- [Viabilidade, impactos técnicos, estimativas e proposta de migração](PAPER-DOLL-VIABILIDADE.md). Não houve implementação modular, alteração de saves, merge ou publicação. Aguarda nova especificação do proprietário.
+
 ## 20/10/2026 — Escala visual do Cocox
 
 - Branch `fix/cocox-sprite-scale`, integrada ao `main` remoto `8625aa6`. O Cocox parecia pequeno porque os frames PixelLab têm margens transparentes amplas. A renderização agora usa escala uniforme de 2,25×, nearest-neighbor e âncora dos pés por animação/direção; a barra de vida foi elevada para não cobrir a cabeça. Os PNGs, dados de combate e saves permanecem iguais.

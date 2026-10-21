@@ -1,0 +1,18 @@
+{
+  "generation_policy": "paused_by_owner_no_new_paid_calls",
+  "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+  "last_unconfirmed_job": {
+    "job_id": "5ead33c2-960b-4e42-8982-89d1a868d714",
+    "animation_group_id": "a7e0cc0f-fd26-44c6-b747-dac939b553e3",
+    "animation": "brawler-v2-hurt",
+    "direction": "east",
+    "last_observed": "processing at 94 percent",
+    "terminal_status": "unconfirmed; MCP read-only list/get calls stopped responding",
+    "paid_resubmission": "not authorized"
+  },
+  "resume_read_only": "get_character(character_id='5d04e580-5ad5-4f89-82f3-47be52a99804'); save text to status.txt, then run tools/class_animation_io.py with the bundled Pillow Python. Do not rerun animation calls or the blueprint.",
+  "downloaded_new_frames": 80,
+  "pending_new_frames": 4,
+  "reported_generations_from_accepted_calls": 13,
+  "new_modular_implementation": false
+}
