@@ -1,0 +1,30 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "6ba85b3c-6602-48aa-ae6d-093139e985cf",
+  "asset_id": "8c1da6b7-7ace-5837-9426-ea2591106ed9",
+  "status": "completed",
+  "estimated_generations": 9,
+  "parameters": {
+    "image_url": "body-west-compact.png",
+    "mask_image_url": "outfit-west-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 607822274,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 64
+    },
+    "context_image": {
+      "url": "look-west-context.png",
+      "usage_description": "The left256x64 contains eight original west-facing walking bodies in original order. The right64x64 guides only the existing cream short-sleeve shirt and navy waistcoat, their palette and native scale. Preserve each torso pose and protected arms."
+    },
+    "description": "Dress ALL EIGHT west-facing walking figures in this single row with the same fitted cream short-sleeve linen shirt and plain navy sailor waistcoat. Match the reference outfit, palette, outline and native pixel scale. Follow each torso and shoulder pose; every figure must have a cloth-covered torso. Keep hands and protected forearms bare and visible. Preserve protected head, neck, shorts, legs, feet, original pose order and transparency. No hair, weapon, emblem, loose garment, extra limb or background."
+  },
+  "reported_usage": {
+    "generations": 9
+  },
+  "raw_sha256": "980cbfed140f8e6416bdb606212b7370195cb8bd75efd71f7a35742d1f7d7e5f"
+}

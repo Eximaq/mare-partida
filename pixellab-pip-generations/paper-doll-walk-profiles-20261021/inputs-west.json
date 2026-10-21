@@ -1,0 +1,37 @@
+{
+  "cell_size": [
+    32,
+    64
+  ],
+  "atlas": [
+    256,
+    64
+  ],
+  "crop": [
+    16,
+    0,
+    48,
+    64
+  ],
+  "fixed_padding": [
+    26,
+    10
+  ],
+  "head_tops": [
+    11,
+    10,
+    10,
+    11,
+    12,
+    12,
+    12,
+    11
+  ],
+  "files": {
+    "body-west-compact.png": "c28039e6dd5efbd87fbd0f603268ee9f250f68ba64f449db38c792f8bac2ea44",
+    "look-west-reference.png": "4c5380a216edf881003faf668b5ea8cf8dd5fd609edcabe13d2c94c3cd8c8bca",
+    "look-west-context.png": "76680d46739c00af99b0d8586bcd06231b29756b586dc6d947431288b212571c",
+    "hair-west-mask.png": "46936e6ce9a922d1cdea0b358d208505183dd35585c75370234e0e165e1c4a2c",
+    "outfit-west-mask.png": "95ba8dfa3843aee9facde6afa6f3e98da43de628333c24701e4e714f3281021f"
+  }
+}

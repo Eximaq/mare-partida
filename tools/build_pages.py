@@ -224,5 +224,27 @@ def version_complete(match):
 complete_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_complete,
                                 complete_entry.read_text(encoding='utf-8')), encoding='utf-8')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-NORTE-COMPLETO.md', OUT/'docs/PAPER-DOLL-NORTE-COMPLETO.md')
+profiles_relative = Path('pixellab-pip-generations/paper-doll-walk-profiles-20261021')
+profiles_files = ['preview.html', 'preview.js', 'review-pack.json', 'manifest.json',
+                  'profiles.blueprint.json', 'body-walk.png', 'hair-walk.png', 'outfit-walk.png',
+                  'body-idle.png', 'hair-idle.png', 'outfit-idle.png', 'rigid-weapon.png', 'assembly-audit.json']
+profiles_files += [f'weapon-{d}.png' for d in ['south', 'north', 'west', 'east']]
+profiles_files += [name for name in ['walk-west.gif', 'walk-east.gif', 'walk-views.gif',
+                                    'walk-west-sheet.png', 'walk-east-sheet.png'] if (ROOT/profiles_relative/name).is_file()]
+for name in profiles_files:
+    destination = OUT/profiles_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/profiles_relative/name, destination)
+profiles_entry = OUT/profiles_relative/'preview.html'
+
+def version_profiles(match):
+    source = (profiles_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    version = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+    return f'{match.group(1)}{match.group(2)}?v={version}{match.group(3)}'
+profiles_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_profiles,
+                                profiles_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-CAMINHADAS-LATERAIS.md', OUT/'docs/PAPER-DOLL-CAMINHADAS-LATERAIS.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

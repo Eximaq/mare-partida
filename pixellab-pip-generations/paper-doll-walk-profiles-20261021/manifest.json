@@ -1,0 +1,371 @@
+{
+  "status": "Direction-gated review prototype, not production activation",
+  "authorization": "Owner delegated recommended PixelLab decisions and continued the existing work. Closed six-call chain ceiling38 announced before paid calls, no automatic retries or USD overage; global auto unchanged. Main543c92a preserved, including collaborator maps/Albatross changes.",
+  "jobs": [
+    {
+      "tool": "MCP animate_image_pixminimax",
+      "job_id": "f10ebd74-c4e5-4842-be89-b83affff2e7a",
+      "asset_id": "97fa9dbd-b5db-591f-ad24-5140e091d214",
+      "status": "completed",
+      "estimated_generations": 1,
+      "parameters": {
+        "first_frame_url": "body-west-input.png",
+        "description": "Start walking in place toward west on the first frame. Alternate natural steps and a small counter-swing of the arms through one complete walking cycle. Keep the right hand in a relaxed low sword-carry guard beside the hip. Maintain the left-facing profile and fixed camera. No turning or travelling across the canvas.",
+        "direction": "west",
+        "view": "high top-down",
+        "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+        "initial_pose": "standing in left-facing profile, feet planted and arms relaxed beside the hips",
+        "enhance_prompt": false,
+        "frame_count": 8,
+        "no_background": true
+      },
+      "reported_usage": {
+        "generations": 1
+      },
+      "usage_status": "getter confirmed charged1 generation",
+      "authorization": "Owner explicitly delegated recommended PixelLab decisions. New closed profile chain ceiling38 announced before call, no automatic retries or USD overage; cumulative conservative ceiling150.",
+      "sha256": {
+        "body-west-raw-00.png": "1036ca6392a64207f689381641e3b3b06bdbfe8033b2b094fd9e6c4e5c99498e",
+        "body-west-raw-01.png": "343d68882e1535fe92e539da6b278e61f788d7606a6835abf440f44d5b172eee",
+        "body-west-raw-02.png": "8396f993b887a7df206292b4aefb56a2a2afa56cfdf1c435e2301ccf8bf69007",
+        "body-west-raw-03.png": "b1472683543f695fadfcced3c6eec45e048ffa1e146da052af01b2bbd7255fb9",
+        "body-west-raw-04.png": "6ba30f940104812a9329f00fab0d29e9e7002d7cfb2f8bff2d2da41f7cf56805",
+        "body-west-raw-05.png": "a5a6b4281c800ac6c98cf9841c61cd9cefd58c5e10ea9dd28627992d8b1d07c2",
+        "body-west-raw-06.png": "99f4e41b5102c80f6be9ea752e01e2213109ed8def3feea1ee11c4a38f399088",
+        "body-west-raw-07.png": "c3203b7ab1419a4b75e2af7dfbd6c6de5aab5120e2aedd896cc41d89fb5a249a",
+        "body-west-raw-08.png": "310c9dde2b83b89bcbff0531e473ec14462dd8c482625046df65a5c745fc415a"
+      },
+      "input_echo_visible_match": true
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "7cc73a52-1319-4cc3-a91d-5df7ceda4cda",
+      "asset_id": "52385f82-0148-5ad8-80e2-9f9a56fc53ca",
+      "status": "completed",
+      "estimated_generations": 9,
+      "parameters": {
+        "image_url": "body-west-compact.png",
+        "mask_image_url": "hair-west-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 607822274,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "context_image": {
+          "url": "look-west-context.png",
+          "usage_description": "The left256x64 contains eight original west-facing walking bodies in their original order, one native32x64 cell each. The right64x64 guides only the existing short black hairstyle and native pixel scale; preserve each moving head pose."
+        },
+        "description": "Add short tousled black hair fitted to the scalp of ALL EIGHT west-facing walking figures in this single row. Match the reference hairstyle, outline, shading and native pixel scale. Follow every head pose and preserve the visible left-facing face and ear. Preserve every protected body, neck, arm, hand, shorts, leg and foot pixel, original frame order and transparency. No bald cells, duplicate head, bandana, clothing, weapon or detached hair."
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "e6eed580473fae670d8b3bb964f79165f42493f2cb31a7a716cc7082a744eedb"
+    },
+    {
+      "tool": "MCP animate_image_pixminimax",
+      "job_id": "f399876c-1027-47f6-ba14-d91adb604d75",
+      "asset_id": "a0d2416c-8d33-5780-903d-7d468d332722",
+      "status": "completed",
+      "estimated_generations": 1,
+      "reported_usage": {
+        "generations": 1
+      },
+      "usage_status": "getter confirmed charged1 generation",
+      "parameters": {
+        "first_frame_url": "body-east-input.png",
+        "description": "Start walking in place toward east on the first frame. Alternate natural steps and a small counter-swing of the arms through one complete walking cycle. Keep the right hand in a relaxed low sword-carry guard beside the hip. Maintain the right-facing profile and fixed camera. No turning or travelling across the canvas.",
+        "direction": "east",
+        "view": "high top-down",
+        "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+        "initial_pose": "standing in right-facing profile, feet planted and arms relaxed beside the hips",
+        "enhance_prompt": false,
+        "frame_count": 8,
+        "no_background": true
+      },
+      "sha256": {
+        "body-east-raw-00.png": "8cbd072cd196451503deefe3e334bdf4e85896f831fbafe3874baa20d5956c92",
+        "body-east-raw-01.png": "ba2193ff019614bb856dec035aae291fd9e6ca4c2673825bc3f01f70a68ac4dd",
+        "body-east-raw-02.png": "bfe62c45f2b744bdaf8bff0ee0e5aba878e2cf5dcdb9f36f6a527a87fbec020f",
+        "body-east-raw-03.png": "5b5f64df96df835febdb5a2f74980cc702b12e702fbb21c45830bc03c24e048d",
+        "body-east-raw-04.png": "d3d70c188706b3b9dac50a593809a40534d60de31b43b507b0f582302c5826b3",
+        "body-east-raw-05.png": "df125828da17e98fc4ae6067d9d3cfe727a8ccb050ac9888e2e645cc4a4ef24b",
+        "body-east-raw-06.png": "deb5de29c26e36072fb841283da74a0e41a44f5b213f5d6a88e51471116913c3",
+        "body-east-raw-07.png": "210c5cfeaec00e1c29fef8a0e1cf1b1a798d416cb5e1f4c1bcb537e4ee7b83a0",
+        "body-east-raw-08.png": "2adbc2db841960d123e17a335f79c6638f36f970b200b3ad8e2bdb85faaed687"
+      },
+      "input_echo_visible_match": true
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "6ba85b3c-6602-48aa-ae6d-093139e985cf",
+      "asset_id": "8c1da6b7-7ace-5837-9426-ea2591106ed9",
+      "status": "completed",
+      "estimated_generations": 9,
+      "parameters": {
+        "image_url": "body-west-compact.png",
+        "mask_image_url": "outfit-west-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 607822274,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "context_image": {
+          "url": "look-west-context.png",
+          "usage_description": "The left256x64 contains eight original west-facing walking bodies in original order. The right64x64 guides only the existing cream short-sleeve shirt and navy waistcoat, their palette and native scale. Preserve each torso pose and protected arms."
+        },
+        "description": "Dress ALL EIGHT west-facing walking figures in this single row with the same fitted cream short-sleeve linen shirt and plain navy sailor waistcoat. Match the reference outfit, palette, outline and native pixel scale. Follow each torso and shoulder pose; every figure must have a cloth-covered torso. Keep hands and protected forearms bare and visible. Preserve protected head, neck, shorts, legs, feet, original pose order and transparency. No hair, weapon, emblem, loose garment, extra limb or background."
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "980cbfed140f8e6416bdb606212b7370195cb8bd75efd71f7a35742d1f7d7e5f"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "ed002c97-dc9e-413c-8c74-ee2980c071a5",
+      "asset_id": "757e186b-30c5-5f61-a187-2a48c12def89",
+      "status": "completed",
+      "estimated_generations": 9,
+      "parameters": {
+        "image_url": "body-east-compact.png",
+        "mask_image_url": "hair-east-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 607822274,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "context_image": {
+          "url": "look-east-context.png",
+          "usage_description": "The left256x64 contains eight original east-facing walking bodies in their original order, one native32x64 cell each. The right64x64 guides only the existing short black hairstyle and native pixel scale; preserve each moving head pose."
+        },
+        "description": "Add short tousled black hair fitted to the scalp of ALL EIGHT east-facing walking figures in this single row. Match the reference hairstyle, outline, shading and native pixel scale. Follow every head pose and preserve the visible right-facing face and ear. Preserve every protected body, neck, arm, hand, shorts, leg and foot pixel, original frame order and transparency. No bald cells, duplicate head, bandana, clothing, weapon or detached hair."
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "2633d28168f2b2c24694b00d32163a90b4bda5f00e7ae2936d7078394b5ef876"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "ce278bf1-a1b6-44fc-b90b-4c5993f0d450",
+      "asset_id": "0c980bb4-6539-5549-bfa2-082af2a6910d",
+      "status": "completed",
+      "estimated_generations": 9,
+      "parameters": {
+        "image_url": "body-east-compact.png",
+        "mask_image_url": "outfit-east-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 607822274,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "context_image": {
+          "url": "look-east-context.png",
+          "usage_description": "The left256x64 contains eight original east-facing walking bodies in original order. The right64x64 guides only the existing cream short-sleeve shirt and navy waistcoat, their palette and native scale. Preserve each torso pose and protected arms."
+        },
+        "description": "Dress ALL EIGHT east-facing walking figures in this single row with the same fitted cream short-sleeve linen shirt and plain navy sailor waistcoat. Match the reference outfit, palette, outline and native pixel scale. Follow each torso and shoulder pose; every figure must have a cloth-covered torso. Keep hands and protected forearms bare and visible. Preserve protected head, neck, shorts, legs, feet, original pose order and transparency. No hair, weapon, emblem, loose garment, extra limb or background."
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "731a3c84c2f780ee52c1f74cb91004e9c89d9db1ebfe81a6c9dbabf996961f14"
+    }
+  ],
+  "generation_usage": {
+    "this_chain_confirmed": 38,
+    "chain_ceiling": 38,
+    "prior_confirmed": 109,
+    "prior_tool_reported": 2,
+    "prior_failed_job_unexposed_estimate": 1,
+    "cumulative_confirmed": 147,
+    "cumulative_conservative": 150
+  },
+  "exact_workbench_edit": {
+    "tool": "MCP pixelart_workbench",
+    "source_image_id": "30bee7e9-fcd7-46ef-9f03-5a374d24acfc",
+    "image_id": "5aaedd90-8e80-408f-91d8-1e7778cdf296",
+    "status": "completed",
+    "pricing": "Tool describes exact edits as free for subscribers; per-call usage is not exposed",
+    "source_file": "hair-west-raw.png",
+    "output_file": "hair-west-clean.png",
+    "source_sha256": "e6eed580473fae670d8b3bb964f79165f42493f2cb31a7a716cc7082a744eedb",
+    "output_sha256": "a5d919bdd105b32cdfef39647d944e9780aa6a6ee9490cf5d8d0c458c2f80657",
+    "changed_pixels": 2,
+    "changes": [
+      {
+        "operation": "patch_pixels",
+        "layer": "image",
+        "frames": [
+          1
+        ],
+        "pixels": [
+          [
+            118,
+            20,
+            "#000102ff",
+            "#00000000"
+          ],
+          [
+            214,
+            20,
+            "#050301ff",
+            "#00000000"
+          ]
+        ],
+        "reason": "Remove the two inspected detached stray pixels beside the neck in original poses4 and7. Preserve every other pixel and all eight poses."
+      }
+    ],
+    "verification": "Only the two guarded pixels became transparent. Every other decoded RGBA pixel is identical. Original raw output and gallery image untouched.",
+    "parameters": {
+      "argv": [
+        "edit",
+        "30bee7e9-fcd7-46ef-9f03-5a374d24acfc",
+        "--changes",
+        "[{\"operation\":\"patch_pixels\",\"layer\":\"image\",\"frames\":[1],\"pixels\":[[118,20,\"#000102ff\",\"#00000000\"],[214,20,\"#050301ff\",\"#00000000\"]],\"reason\":\"Remove the two inspected detached stray pixels beside the neck in original poses4 and7. Preserve every other pixel and all eight poses.\"}]"
+      ],
+      "mode": "low"
+    }
+  },
+  "scope": {
+    "source_frames": "Two independently generated eight-step profiles plus echoed references kept separate",
+    "existing_art": "Four-view Idle, front/back Walk and four original swords reused",
+    "rig": [
+      84,
+      84
+    ],
+    "pivot": [
+      42,
+      65
+    ],
+    "native_body": [
+      64,
+      64
+    ],
+    "crop": [
+      16,
+      0,
+      48,
+      64
+    ],
+    "native_layer_cell": [
+      32,
+      64
+    ],
+    "layer_atlas": [
+      256,
+      64
+    ],
+    "body_padding": [
+      10,
+      10
+    ],
+    "layer_padding": [
+      26,
+      10
+    ],
+    "seed_for_related_inpaint_calls": 607822274,
+    "production_enabled": false,
+    "original_raw_outputs_preserved": true,
+    "weapon_depth": "Per-action/per-direction: profile Walk uses near-hand foreground80; old Idle depths unchanged",
+    "rejected_composition_study": "body-west-grip.gif preserves the initial behind-body depth diagnostic; do not register it as final art"
+  },
+  "coverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-sword": []
+  },
+  "missing": [
+    "Attack/sword four directions and other class action categories",
+    "Full-character artistic approval, including cross-view proportions and hairstyle continuity"
+  ],
+  "sha256": {
+    "body-east-compact.png": "c4ecdfca66aca868119aa1a58a6135c599e67899519e1855fa21290f4f51831d",
+    "body-east-input.png": "8cbd072cd196451503deefe3e334bdf4e85896f831fbafe3874baa20d5956c92",
+    "body-east-native.png": "89c75e01ccbf60756878ed78e95b7352d96936c13027cae785cd144332d3078d",
+    "body-east-raw-00.png": "8cbd072cd196451503deefe3e334bdf4e85896f831fbafe3874baa20d5956c92",
+    "body-east-raw-01.png": "ba2193ff019614bb856dec035aae291fd9e6ca4c2673825bc3f01f70a68ac4dd",
+    "body-east-raw-02.png": "bfe62c45f2b744bdaf8bff0ee0e5aba878e2cf5dcdb9f36f6a527a87fbec020f",
+    "body-east-raw-03.png": "5b5f64df96df835febdb5a2f74980cc702b12e702fbb21c45830bc03c24e048d",
+    "body-east-raw-04.png": "d3d70c188706b3b9dac50a593809a40534d60de31b43b507b0f582302c5826b3",
+    "body-east-raw-05.png": "df125828da17e98fc4ae6067d9d3cfe727a8ccb050ac9888e2e645cc4a4ef24b",
+    "body-east-raw-06.png": "deb5de29c26e36072fb841283da74a0e41a44f5b213f5d6a88e51471116913c3",
+    "body-east-raw-07.png": "210c5cfeaec00e1c29fef8a0e1cf1b1a798d416cb5e1f4c1bcb537e4ee7b83a0",
+    "body-east-raw-08.png": "2adbc2db841960d123e17a335f79c6638f36f970b200b3ad8e2bdb85faaed687",
+    "body-idle.png": "b04361d22abe344f5fba079994b5625c6fe4822b308dc5ca7478300deab43348",
+    "body-walk.png": "a5c81f23d0172f7a7a87000cb1e2e64169959e5dd4b5740e34216944653c5ded",
+    "body-west-compact.png": "c28039e6dd5efbd87fbd0f603268ee9f250f68ba64f449db38c792f8bac2ea44",
+    "body-west-input.png": "1036ca6392a64207f689381641e3b3b06bdbfe8033b2b094fd9e6c4e5c99498e",
+    "body-west-native.png": "48a4c52e70a608a92b40243812ec455fe928a1de355fcae0430540fc4c851171",
+    "body-west-raw-00.png": "1036ca6392a64207f689381641e3b3b06bdbfe8033b2b094fd9e6c4e5c99498e",
+    "body-west-raw-01.png": "343d68882e1535fe92e539da6b278e61f788d7606a6835abf440f44d5b172eee",
+    "body-west-raw-02.png": "8396f993b887a7df206292b4aefb56a2a2afa56cfdf1c435e2301ccf8bf69007",
+    "body-west-raw-03.png": "b1472683543f695fadfcced3c6eec45e048ffa1e146da052af01b2bbd7255fb9",
+    "body-west-raw-04.png": "6ba30f940104812a9329f00fab0d29e9e7002d7cfb2f8bff2d2da41f7cf56805",
+    "body-west-raw-05.png": "a5a6b4281c800ac6c98cf9841c61cd9cefd58c5e10ea9dd28627992d8b1d07c2",
+    "body-west-raw-06.png": "99f4e41b5102c80f6be9ea752e01e2213109ed8def3feea1ee11c4a38f399088",
+    "body-west-raw-07.png": "c3203b7ab1419a4b75e2af7dfbd6c6de5aab5120e2aedd896cc41d89fb5a249a",
+    "body-west-raw-08.png": "310c9dde2b83b89bcbff0531e473ec14462dd8c482625046df65a5c745fc415a",
+    "hair-east-mask.png": "7a2f0f31c99476722c271aee7f919fb7dfd8ff3d996629476a947ba6193e39bb",
+    "hair-east-raw.png": "2633d28168f2b2c24694b00d32163a90b4bda5f00e7ae2936d7078394b5ef876",
+    "hair-idle.png": "e393e179b77e77d59f697b243a165d8369b8ad7b0594680e801e756f78bf15b5",
+    "hair-walk.png": "1f09e199bc211f190ea0bec3ea9d80d80e05d75cbf1f7887a2d69c3a64ad3be2",
+    "hair-west-clean.png": "a5d919bdd105b32cdfef39647d944e9780aa6a6ee9490cf5d8d0c458c2f80657",
+    "hair-west-mask.png": "46936e6ce9a922d1cdea0b358d208505183dd35585c75370234e0e165e1c4a2c",
+    "hair-west-raw.png": "e6eed580473fae670d8b3bb964f79165f42493f2cb31a7a716cc7082a744eedb",
+    "look-east-context.png": "15616cf66f5e5e3c165bfc41815b20a014e2fd5fa3f0ac53346fd39d66addfa9",
+    "look-east-reference.png": "14e3683f53e95205c5387070e2e632f24690beb29086ba8d4c7de36ed1025912",
+    "look-west-context.png": "76680d46739c00af99b0d8586bcd06231b29756b586dc6d947431288b212571c",
+    "look-west-reference.png": "4c5380a216edf881003faf668b5ea8cf8dd5fd609edcabe13d2c94c3cd8c8bca",
+    "outfit-east-mask.png": "1f2f13da0704d5f3da5fe2b15618b6d2a1835bdd8a0abf6a10f078ab3dabf2df",
+    "outfit-east-raw.png": "731a3c84c2f780ee52c1f74cb91004e9c89d9db1ebfe81a6c9dbabf996961f14",
+    "outfit-idle.png": "50600daf41c0a2cefb12e978f67c79ca73d4e63c43d80622095d6508e27e2b7f",
+    "outfit-walk.png": "83939e22cdc199349e0252213e4043c8a0716816b3852b70b9b0bc5f459746c5",
+    "outfit-west-mask.png": "95ba8dfa3843aee9facde6afa6f3e98da43de628333c24701e4e714f3281021f",
+    "outfit-west-raw.png": "980cbfed140f8e6416bdb606212b7370195cb8bd75efd71f7a35742d1f7d7e5f",
+    "rigid-weapon.png": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+    "walk-east-sheet.png": "a77dfbc7e9f93b7ff273c2f0e3bb85cadd5088d61f99f84c35e022633d1ce04d",
+    "walk-west-sheet.png": "e45a10cb0004e7606e138b54ac8018fc251dfd3c500cda7333dc8c03042179c8",
+    "weapon-east.png": "fe5ef2cb9fc0f495ef173c7091a335c53479cf52155fbbba30575ca6d3d6ea97",
+    "weapon-north.png": "0ba4aba97f06dc59272b9fe5e871d21c59ebedef6b0e0c03ee59ecd2662e7b41",
+    "weapon-south.png": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+    "weapon-west.png": "9b09bb64aec12978f127d96c4825f18e9c1ca6b5a688f3b746e9e2ae7b3ded60"
+  },
+  "gif_sha256": {
+    "body-west-grip.gif": "488ddbe1642f5b87180daa0e3171482767d2420425755d4a60bfdd6ad3c2805f",
+    "walk-3-views-study-f121ebc3.gif": "f121ebc3830494eba7c88cb43956f6244c959809de1492003bd836e38930fa55",
+    "walk-east.gif": "fa88aa465e4c0851a403fbf2e5bb1dee86ca4e7d69fa73958d8a7906068ccd06",
+    "walk-west.gif": "abbf88c5f2da9339c91ac2205c9831177e8d0c14e9d464615404279c3a47a09c"
+  },
+  "report": "../../docs/PAPER-DOLL-CAMINHADAS-LATERAIS.md"
+}

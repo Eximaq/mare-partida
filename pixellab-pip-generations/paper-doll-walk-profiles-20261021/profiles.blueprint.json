@@ -1,0 +1,159 @@
+[
+  {
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-walk-profiles-20261021",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment_prompt": "Prossiga",
+    "TASK": "Verify current explicit run authority, authenticated MCP access and the38-generation ceiling before paid calls. Create a unique empty folder. Copy the original native left/right Idle sources and references byte-for-byte. Preserve previous art, main and collaborator changes. Generation prompts were composed from the requested modular character contract."
+  },
+  {
+    "MCP animate_image_pixminimax": {
+      "first_frame_url": "body-west-input.png",
+      "description": "Start walking in place toward west on the first frame. Alternate natural steps and a small counter-swing of the arms through one complete walking cycle. Keep the right hand in a relaxed low sword-carry guard beside the hip. Maintain the left-facing profile and fixed camera. No turning or travelling across the canvas.",
+      "direction": "west",
+      "view": "high top-down",
+      "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+      "initial_pose": "standing in left-facing profile, feet planted and arms relaxed beside the hips",
+      "enhance_prompt": false,
+      "frame_count": 8,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": "Poll this exact job to terminal status without resubmission. Download and preserve every original. For a body, verify the echoed reference and retain the eight generated poses in order; inspect motion, facing, canvas, proportions and hand grips before dependent layers. Build native32x64 source cells only by reversible transparent-margin crop, original per-frame masks, and320x64 style context; no resizing or local repainting. For a layer, audit all eight cells and protected pixels, then inspect actual artwork before accepting a direction."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-west-compact.png",
+      "mask_image_url": "hair-west-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 607822274,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "context_image": {
+        "url": "look-west-context.png",
+        "usage_description": "The left256x64 contains eight original west-facing walking bodies in their original order, one native32x64 cell each. The right64x64 guides only the existing short black hairstyle and native pixel scale; preserve each moving head pose."
+      },
+      "description": "Add short tousled black hair fitted to the scalp of ALL EIGHT west-facing walking figures in this single row. Match the reference hairstyle, outline, shading and native pixel scale. Follow every head pose and preserve the visible left-facing face and ear. Preserve every protected body, neck, arm, hand, shorts, leg and foot pixel, original frame order and transparency. No bald cells, duplicate head, bandana, clothing, weapon or detached hair."
+    }
+  },
+  {
+    "TASK": "Poll this exact job to terminal status without resubmission. Download and preserve every original. For a body, verify the echoed reference and retain the eight generated poses in order; inspect motion, facing, canvas, proportions and hand grips before dependent layers. Build native32x64 source cells only by reversible transparent-margin crop, original per-frame masks, and320x64 style context; no resizing or local repainting. For a layer, audit all eight cells and protected pixels, then inspect actual artwork before accepting a direction."
+  },
+  {
+    "TASK": "Inspect the original hair atlas in PixelLab Workbench. Two isolated pixels in cells4/7 were found. Keep the original raw/gallery asset. On a NEW copy, apply the following exact guarded erasures; the initial wrong colour guard failed without changes, then the observed second colour was used."
+  },
+  {
+    "MCP pixelart_workbench": {
+      "argv": [
+        "edit",
+        "30bee7e9-fcd7-46ef-9f03-5a374d24acfc",
+        "--changes",
+        "[{\"operation\":\"patch_pixels\",\"layer\":\"image\",\"frames\":[1],\"pixels\":[[118,20,\"#000102ff\",\"#00000000\"],[214,20,\"#050301ff\",\"#00000000\"]],\"reason\":\"Remove the two inspected detached stray pixels beside the neck in original poses4 and7. Preserve every other pixel and all eight poses.\"}]"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "TASK": "Download the new native PNG. Verify that ONLY118/20 and214/20 became transparent and every other decoded RGBA value is identical. Preserve both originals and the exact edit record; no palette, body, pose or frame-order changes. Tool describes this operation as free for subscribers; per-call usage is not exposed."
+  },
+  {
+    "MCP animate_image_pixminimax": {
+      "first_frame_url": "body-east-input.png",
+      "description": "Start walking in place toward east on the first frame. Alternate natural steps and a small counter-swing of the arms through one complete walking cycle. Keep the right hand in a relaxed low sword-carry guard beside the hip. Maintain the right-facing profile and fixed camera. No turning or travelling across the canvas.",
+      "direction": "east",
+      "view": "high top-down",
+      "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+      "initial_pose": "standing in right-facing profile, feet planted and arms relaxed beside the hips",
+      "enhance_prompt": false,
+      "frame_count": 8,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": "Poll this exact job to terminal status without resubmission. Download and preserve every original. For a body, verify the echoed reference and retain the eight generated poses in order; inspect motion, facing, canvas, proportions and hand grips before dependent layers. Build native32x64 source cells only by reversible transparent-margin crop, original per-frame masks, and320x64 style context; no resizing or local repainting. For a layer, audit all eight cells and protected pixels, then inspect actual artwork before accepting a direction."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-west-compact.png",
+      "mask_image_url": "outfit-west-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 607822274,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "context_image": {
+        "url": "look-west-context.png",
+        "usage_description": "The left256x64 contains eight original west-facing walking bodies in original order. The right64x64 guides only the existing cream short-sleeve shirt and navy waistcoat, their palette and native scale. Preserve each torso pose and protected arms."
+      },
+      "description": "Dress ALL EIGHT west-facing walking figures in this single row with the same fitted cream short-sleeve linen shirt and plain navy sailor waistcoat. Match the reference outfit, palette, outline and native pixel scale. Follow each torso and shoulder pose; every figure must have a cloth-covered torso. Keep hands and protected forearms bare and visible. Preserve protected head, neck, shorts, legs, feet, original pose order and transparency. No hair, weapon, emblem, loose garment, extra limb or background."
+    }
+  },
+  {
+    "TASK": "Poll this exact job to terminal status without resubmission. Download and preserve every original. For a body, verify the echoed reference and retain the eight generated poses in order; inspect motion, facing, canvas, proportions and hand grips before dependent layers. Build native32x64 source cells only by reversible transparent-margin crop, original per-frame masks, and320x64 style context; no resizing or local repainting. For a layer, audit all eight cells and protected pixels, then inspect actual artwork before accepting a direction."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-east-compact.png",
+      "mask_image_url": "hair-east-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 607822274,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "context_image": {
+        "url": "look-east-context.png",
+        "usage_description": "The left256x64 contains eight original east-facing walking bodies in their original order, one native32x64 cell each. The right64x64 guides only the existing short black hairstyle and native pixel scale; preserve each moving head pose."
+      },
+      "description": "Add short tousled black hair fitted to the scalp of ALL EIGHT east-facing walking figures in this single row. Match the reference hairstyle, outline, shading and native pixel scale. Follow every head pose and preserve the visible right-facing face and ear. Preserve every protected body, neck, arm, hand, shorts, leg and foot pixel, original frame order and transparency. No bald cells, duplicate head, bandana, clothing, weapon or detached hair."
+    }
+  },
+  {
+    "TASK": "Poll this exact job to terminal status without resubmission. Download and preserve every original. For a body, verify the echoed reference and retain the eight generated poses in order; inspect motion, facing, canvas, proportions and hand grips before dependent layers. Build native32x64 source cells only by reversible transparent-margin crop, original per-frame masks, and320x64 style context; no resizing or local repainting. For a layer, audit all eight cells and protected pixels, then inspect actual artwork before accepting a direction."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-east-compact.png",
+      "mask_image_url": "outfit-east-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 607822274,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "context_image": {
+        "url": "look-east-context.png",
+        "usage_description": "The left256x64 contains eight original east-facing walking bodies in original order. The right64x64 guides only the existing cream short-sleeve shirt and navy waistcoat, their palette and native scale. Preserve each torso pose and protected arms."
+      },
+      "description": "Dress ALL EIGHT east-facing walking figures in this single row with the same fitted cream short-sleeve linen shirt and plain navy sailor waistcoat. Match the reference outfit, palette, outline and native pixel scale. Follow each torso and shoulder pose; every figure must have a cloth-covered torso. Keep hands and protected forearms bare and visible. Preserve protected head, neck, shorts, legs, feet, original pose order and transparency. No hair, weapon, emblem, loose garment, extra limb or background."
+    }
+  },
+  {
+    "TASK": "Poll this exact job to terminal status without resubmission. Download and preserve every original. For a body, verify the echoed reference and retain the eight generated poses in order; inspect motion, facing, canvas, proportions and hand grips before dependent layers. Build native32x64 source cells only by reversible transparent-margin crop, original per-frame masks, and320x64 style context; no resizing or local repainting. For a layer, audit all eight cells and protected pixels, then inspect actual artwork before accepting a direction."
+  },
+  {
+    "TASK": "Compose only complete direction-gated layers into rig84/pivot42/65 with measured integer hand sockets and original direction-specific swords. Keep all pieces approved:false and all missing actions atomic fallback. Produce native sheets and exact-palette transparent looping GIFs without quantization, mirror, duplicate poses or temporal trimming. If the combined palette exceeds255 colours omit its GIF, keeping native per-direction GIFs. Validate independent original-source RGBA, all poses/layer toggles, depth, sockets, world movement/combat, Haki, Zoan, caches and saves. Build Pages; push the exclusive branch and open a PR without merge."
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "tool": "MCP animate_image_pixminimax",
+  "job_id": "f10ebd74-c4e5-4842-be89-b83affff2e7a",
+  "asset_id": "97fa9dbd-b5db-591f-ad24-5140e091d214",
+  "status": "completed",
+  "estimated_generations": 1,
+  "parameters": {
+    "first_frame_url": "body-west-input.png",
+    "description": "Start walking in place toward west on the first frame. Alternate natural steps and a small counter-swing of the arms through one complete walking cycle. Keep the right hand in a relaxed low sword-carry guard beside the hip. Maintain the left-facing profile and fixed camera. No turning or travelling across the canvas.",
+    "direction": "west",
+    "view": "high top-down",
+    "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+    "initial_pose": "standing in left-facing profile, feet planted and arms relaxed beside the hips",
+    "enhance_prompt": false,
+    "frame_count": 8,
+    "no_background": true
+  },
+  "reported_usage": {
+    "generations": 1
+  },
+  "usage_status": "getter confirmed charged1 generation",
+  "authorization": "Owner explicitly delegated recommended PixelLab decisions. New closed profile chain ceiling38 announced before call, no automatic retries or USD overage; cumulative conservative ceiling150.",
+  "sha256": {
+    "body-west-raw-00.png": "1036ca6392a64207f689381641e3b3b06bdbfe8033b2b094fd9e6c4e5c99498e",
+    "body-west-raw-01.png": "343d68882e1535fe92e539da6b278e61f788d7606a6835abf440f44d5b172eee",
+    "body-west-raw-02.png": "8396f993b887a7df206292b4aefb56a2a2afa56cfdf1c435e2301ccf8bf69007",
+    "body-west-raw-03.png": "b1472683543f695fadfcced3c6eec45e048ffa1e146da052af01b2bbd7255fb9",
+    "body-west-raw-04.png": "6ba30f940104812a9329f00fab0d29e9e7002d7cfb2f8bff2d2da41f7cf56805",
+    "body-west-raw-05.png": "a5a6b4281c800ac6c98cf9841c61cd9cefd58c5e10ea9dd28627992d8b1d07c2",
+    "body-west-raw-06.png": "99f4e41b5102c80f6be9ea752e01e2213109ed8def3feea1ee11c4a38f399088",
+    "body-west-raw-07.png": "c3203b7ab1419a4b75e2af7dfbd6c6de5aab5120e2aedd896cc41d89fb5a249a",
+    "body-west-raw-08.png": "310c9dde2b83b89bcbff0531e473ec14462dd8c482625046df65a5c745fc415a"
+  },
+  "input_echo_visible_match": true
+}

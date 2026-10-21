@@ -1,0 +1,30 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "ce278bf1-a1b6-44fc-b90b-4c5993f0d450",
+  "asset_id": "0c980bb4-6539-5549-bfa2-082af2a6910d",
+  "status": "completed",
+  "estimated_generations": 9,
+  "parameters": {
+    "image_url": "body-east-compact.png",
+    "mask_image_url": "outfit-east-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 607822274,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 64
+    },
+    "context_image": {
+      "url": "look-east-context.png",
+      "usage_description": "The left256x64 contains eight original east-facing walking bodies in original order. The right64x64 guides only the existing cream short-sleeve shirt and navy waistcoat, their palette and native scale. Preserve each torso pose and protected arms."
+    },
+    "description": "Dress ALL EIGHT east-facing walking figures in this single row with the same fitted cream short-sleeve linen shirt and plain navy sailor waistcoat. Match the reference outfit, palette, outline and native pixel scale. Follow each torso and shoulder pose; every figure must have a cloth-covered torso. Keep hands and protected forearms bare and visible. Preserve protected head, neck, shorts, legs, feet, original pose order and transparency. No hair, weapon, emblem, loose garment, extra limb or background."
+  },
+  "reported_usage": {
+    "generations": 9
+  },
+  "raw_sha256": "731a3c84c2f780ee52c1f74cb91004e9c89d9db1ebfe81a6c9dbabf996961f14"
+}
