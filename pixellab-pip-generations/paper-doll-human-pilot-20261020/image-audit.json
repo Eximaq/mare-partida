@@ -1,0 +1,272 @@
+[
+  {
+    "file": "body-face-fit-draft.png",
+    "size": [
+      84,
+      84
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      31,
+      22,
+      53,
+      65
+    ],
+    "sha256": "0ea6a318f47a5179e11d17286151487cbdf1e7e74ea1f33b1c0b9e7f28fd309e"
+  },
+  {
+    "file": "body-face-south-00-inspection-8x.png",
+    "size": [
+      672,
+      672
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      248,
+      176,
+      424,
+      520
+    ],
+    "sha256": "d1e3ffc8086c98857c3181428c4de2420222a39632bfea22bfcdd1cce1cbbeec"
+  },
+  {
+    "file": "body-face-south-00.png",
+    "size": [
+      84,
+      84
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      31,
+      22,
+      53,
+      65
+    ],
+    "sha256": "40953a2eff15f2dfe3aa7d28aa74b6aeb87ed2d862b736d6578167d1e96c07af"
+  },
+  {
+    "file": "body-south-00-inspection-8x.png",
+    "size": [
+      672,
+      672
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      248,
+      176,
+      424,
+      520
+    ],
+    "sha256": "c02e65e23952ed9e58068b6f05d439efc50615ade47c436c28bd63a1dd89bfeb"
+  },
+  {
+    "file": "body-south-00.png",
+    "size": [
+      84,
+      84
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      31,
+      22,
+      53,
+      65
+    ],
+    "sha256": "2a8a04e3ac4f7d1a8e2e54051156c9df13d06cf305eb213c0941b7c7b47afc0e"
+  },
+  {
+    "file": "face-only-draft.png",
+    "size": [
+      84,
+      84
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      38,
+      22,
+      46,
+      33
+    ],
+    "sha256": "fdea5bb51179c1f3d1ab8036095bfafd8eb0b01043057e70e1d0277e9392ffd9"
+  },
+  {
+    "file": "hair-composite-south-00.png",
+    "size": [
+      84,
+      84
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      31,
+      20,
+      53,
+      65
+    ],
+    "sha256": "ed3c621e8abc85761292ff80b4a5eabbf5ee627ea753c9bcb822d5a23027db76"
+  },
+  {
+    "file": "hair-inspection-8x.png",
+    "size": [
+      672,
+      672
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      248,
+      160,
+      424,
+      520
+    ],
+    "sha256": "dd3d69b123670875acc00954a19fcbee1a1bfefdc27dee6f9be43a3256cd627f"
+  },
+  {
+    "file": "hair-mask-proposed.png",
+    "size": [
+      84,
+      84
+    ],
+    "mode": "RGB",
+    "alpha_bbox": [
+      0,
+      0,
+      84,
+      84
+    ],
+    "sha256": "68080139eedb8e355ed250a44a8cfe61ed92d4a6d7da6d65b9e3dd5e3297d7db"
+  },
+  {
+    "file": "inspection-sheet.png",
+    "size": [
+      420,
+      84
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      31,
+      20,
+      389,
+      65
+    ],
+    "sha256": "1d72b2817f8092d5674bc0101061fd99d88667ace26d3af4e408366446554d07"
+  },
+  {
+    "file": "outfit-composite-south-00.png",
+    "size": [
+      84,
+      84
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      31,
+      22,
+      53,
+      65
+    ],
+    "sha256": "fb13930a2c2344d59e2709a94454d57041017aeed42d6b169985ae15a2679b87"
+  },
+  {
+    "file": "outfit-inspection-8x.png",
+    "size": [
+      672,
+      672
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      248,
+      176,
+      424,
+      520
+    ],
+    "sha256": "4dbbc7986c20f8db4c6f26ca950429de8578f616126e1f394948acc34275b39d"
+  },
+  {
+    "file": "outfit-mask-proposed.png",
+    "size": [
+      84,
+      84
+    ],
+    "mode": "RGB",
+    "alpha_bbox": [
+      0,
+      0,
+      84,
+      84
+    ],
+    "sha256": "8038003f436a1a28ba6607b62149b11de94022b657a7d2ba0f7657c564ffcd2b"
+  },
+  {
+    "file": "reference-south-idle-00-inspection-8x.png",
+    "size": [
+      672,
+      672
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      248,
+      176,
+      424,
+      520
+    ],
+    "sha256": "86cef7e289287fc2c20b89c539845e2e410c379d56b0f5c54beb4e66907fc165"
+  },
+  {
+    "file": "reference-south-idle-00.png",
+    "size": [
+      84,
+      84
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      31,
+      22,
+      53,
+      65
+    ],
+    "sha256": "345561b76b8f100aa4d287e14611ef1c2487a9605d6d9512398857300dde273a"
+  },
+  {
+    "file": "sword-composite-south-00.png",
+    "size": [
+      84,
+      84
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      12,
+      22,
+      53,
+      65
+    ],
+    "sha256": "abee794e35e30603ac5e53ea042c5dcdeeb36e448151a74d01c3f7c197207599"
+  },
+  {
+    "file": "sword-inspection-8x.png",
+    "size": [
+      672,
+      672
+    ],
+    "mode": "RGBA",
+    "alpha_bbox": [
+      96,
+      176,
+      424,
+      520
+    ],
+    "sha256": "455ba6fd74305484e6f352766d7782a1a159fb1a547c15ae95f989db264f3950"
+  },
+  {
+    "file": "sword-mask-proposed.png",
+    "size": [
+      84,
+      84
+    ],
+    "mode": "RGB",
+    "alpha_bbox": [
+      0,
+      0,
+      84,
+      84
+    ],
+    "sha256": "4005c7ea51b85f4448dfd3541b5c9704ec147078afdec1558108ecb41ff53f48"
+  }
+]

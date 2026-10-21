@@ -33,5 +33,15 @@ class FitAuditTest(unittest.TestCase):
  def test_empty_edit_and_size_mismatch(self):
   self.assertFalse(self.check_edit(self.base,(0,0,8,8))['passed'])
   self.assertEqual(self.check_edit(Image.new('RGBA',(4,4)),(0,0,4,4))['reason'],'canvas-size-mismatch')
+ def test_nonrectangular_binary_mask(self):
+  mask=Image.new('RGB',(8,8));mask.putpixel((3,2),(255,255,255));path=self.root/'mask.png';mask.save(path)
+  edit=self.base.copy();edit.putpixel((3,2),(20,40,60,255));target=self.root/'edit.png';edit.save(target)
+  self.assertTrue(fit.audit(self.source,target,mask_path=path)['passed'])
+  edit.putpixel((3,3),(20,40,60,255));edit.save(target)
+  self.assertEqual(fit.audit(self.source,target,mask_path=path)['outside_region_pixels'],1)
+ def test_invalid_masks(self):
+  for size,color in [((4,4),'white'),((8,8),'gray'),((8,8),'black')]:
+   path=self.root/'bad-mask.png';Image.new('RGB',size,color).save(path)
+   with self.assertRaises(ValueError):fit.audit(self.source,self.source,mask_path=path)
 
 if __name__=='__main__':unittest.main()

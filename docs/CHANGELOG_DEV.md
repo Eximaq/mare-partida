@@ -1,8 +1,8 @@
-## 20/10/2026 — Checkpoint do primeiro piloto artístico Paper Doll
+## 20–21/10/2026 — Piloto estático Paper Doll e limites do Pixen
 
-Branch `feature/paper-doll-primeiras-pecas`, base `dc59e4d`. PR43 publicado e conferido no Pages. Executada1 chamada Pixen de84×84, cobrada1 geração pelo getter, dentro do lote aprovado de4. Corpo reprovado por perda do rosto; canvas e posição dos pés foram mantidos. As três adições dependentes não foram executadas e nenhum retry foi feito.
+Branch `feature/paper-doll-primeiras-pecas`, base `dc59e4d`. PR43 publicado e conferido no Pages. Executadas5 chamadas Pixen de84×84, cobradas5 gerações pelos getters, após aprovação adicional da correção de rosto. Todos os jobs terminaram. Nenhuma peça modular final foi aprovada: cabelo/roupa/espada mudaram pixels fora da peça, cabelo encobriu o rosto e roupa também alterou o shorts.
 
-Originais, referência, inspeções, manifesto e blueprint preservados em `pixellab-pip-generations/paper-doll-human-pilot-20261020/`. Utilitário de auditoria/extrator copia apenas pixels gerados e rejeita diffs fora da região/alpha incompatível. Quatro testes Python e build Pages passaram; o runtime e saves não mudaram. Nenhuma arte do piloto está ativa ou publicada. Ver `docs/PAPER-DOLL-PILOTO.md`. Continuação artística depende de autorização de uma nova tentativa; não há job pendente.
+Originais, fontes, inspeções, auditorias, manifesto/blueprint e página de revisão preservados em `pixellab-pip-generations/paper-doll-human-pilot-20261020/`. Prévia facial local copia75 pixels gerados e conserva o corpo original fora da cabeça; é rascunho, não arte final. Auditoria aceita retângulos ou máscaras binárias e rejeita diffs fora da região/alpha incompatível. Seis testes Python, build Pages e página de revisão em navegador passaram; runtime e saves intactos. Próxima rota proposta usa máscaras/inpaint, sem autorização nem consumo adicional. Ver `docs/PAPER-DOLL-PILOTO.md`.
 
 ## 20/10/2026 — Personagem único: base compartilhada
 

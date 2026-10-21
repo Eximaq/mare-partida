@@ -1,0 +1,24 @@
+{
+  "passed": false,
+  "scope": "static structural fit only; artwork approval required",
+  "size": [
+    84,
+    84
+  ],
+  "allowed_region": [
+    37,
+    22,
+    10,
+    11
+  ],
+  "changed_pixels": 462,
+  "changed_bbox": [
+    32,
+    22,
+    53,
+    64
+  ],
+  "outside_region_pixels": 387,
+  "alpha_erasure_pixels": 0,
+  "recomposition_mismatch_pixels": 0
+}

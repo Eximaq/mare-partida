@@ -1,16 +1,22 @@
 {
-  "status": "rejected-base; dependent calls not executed",
-  "scope": "one static south-facing pose; no animation",
+  "status": "completed static pilot; no approved reusable layers",
+  "scope": "single south-facing pose; no animation",
   "approval": {
-    "generation_ceiling": 4,
-    "no_retries": true,
-    "dependent_calls_require_accepted_base": true
+    "original_generation_ceiling": 4,
+    "revised_generation_ceiling": 5,
+    "extra_face_correction_explicitly_approved": true,
+    "no_further_retries": true
   },
   "calls": [
     {
-      "tool": "MCP edit_image_pixen",
+      "name": "body",
       "job_id": "bb887c4b-bc36-4bcb-ae74-6d81bf81a110",
       "asset_id": "6f41cbf7-8d65-52b6-88eb-1a1aabfd9f42",
+      "input": "reference-south-idle-00.png",
+      "output": "body-south-00.png",
+      "verification": "Geometry preserved; face erased. Rejected as raw body.",
+      "pt": "Base humana neutra frontal, preservando rosto e proporções; cabeça sem cabelo, torso e braços descobertos, shorts cinza e pés descalços.",
+      "tool": "MCP edit_image_pixen",
       "parameters": {
         "image_url": "reference-south-idle-00.png",
         "width": 84,
@@ -21,57 +27,129 @@
       "seed": "omitted",
       "reported_usage": {
         "generations": 1
+      }
+    },
+    {
+      "name": "face",
+      "job_id": "1180c876-0375-499c-99cc-bfe5711e0b31",
+      "asset_id": "e5e44155-3834-549d-90b6-e9f1c2acd106",
+      "input": "body-south-00.png",
+      "output": "body-face-south-00.png",
+      "verification": "Raw edit changed387 pixels outside the head. Region-only extraction produced body-face-fit-draft.png for inspection only, preserving every outside pixel.",
+      "pt": "Adicionar somente olhos escuros, nariz e boca discretos, preservando corpo e pixels fora do rosto.",
+      "tool": "MCP edit_image_pixen",
+      "parameters": {
+        "image_url": "body-south-00.png",
+        "width": 84,
+        "height": 84,
+        "no_background": true,
+        "description": "Add only a readable small face to this bald south-facing human: two dark eyes, a short nose shadow and a subtle neutral mouth within the head. Preserve the scalp shape, head position, skin palette, torso, limbs, shorts, foot position and every pixel outside the face. Keep the native pixel scale, 84x84 canvas and transparent background. No hair, clothing or weapons."
       },
-      "output": "body-south-00.png",
-      "verification": {
-        "size": [
-          84,
-          84
-        ],
-        "alpha_bbox": [
-          31,
-          22,
-          53,
-          65
-        ],
-        "reference_bbox": [
-          31,
-          22,
-          53,
-          65
-        ],
-        "geometry_passed": true,
-        "artwork_passed": false,
-        "reason": "Facial features erased despite preserve-face instruction; do not use as accepted body or execute dependent calls."
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "name": "hair",
+      "job_id": "346be3b2-9701-4e7b-bc97-0c9590f60ef5",
+      "asset_id": "cef95199-9472-55f4-b7fd-4c849e91a923",
+      "input": "body-face-fit-draft.png",
+      "output": "hair-composite-south-00.png",
+      "verification": "Rejected:378 outside-region pixels,1 alpha erasure; hair covers face and reads as back-facing.",
+      "pt": "Cabelo preto curto preso à cabeça frontal, mantendo rosto, corpo, pose e demais pixels.",
+      "tool": "MCP edit_image_pixen",
+      "parameters": {
+        "image_url": "body-face-fit-draft.png",
+        "width": 84,
+        "height": 84,
+        "no_background": true,
+        "description": "Add only short tousled black hair attached to the top and sides of this south-facing human head, following its perspective. Preserve every other body, face, limb, pose and canvas pixel except where the hair naturally covers the scalp. Same pixel scale, outline, shading and transparent background. No headband or detached hair."
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "name": "outfit",
+      "job_id": "5daf6808-4626-43bb-aee5-a4bfe7efb355",
+      "asset_id": "2e5bba0e-1007-544b-afa8-c74e249c81d1",
+      "input": "body-face-fit-draft.png",
+      "output": "outfit-composite-south-00.png",
+      "verification": "Rejected:122 outside-region pixels; shorts recoloured despite shirt/waistcoat-only request.",
+      "pt": "Camisa clara e colete azul ajustados ao torso, mantendo mãos e demais pixels, sem símbolos de facção.",
+      "tool": "MCP edit_image_pixen",
+      "parameters": {
+        "image_url": "body-face-fit-draft.png",
+        "width": 84,
+        "height": 84,
+        "no_background": true,
+        "description": "Add only a plain cream linen shirt with short sleeves and a navy sailor waistcoat fitted to this south-facing human torso and shoulders. Keep hands visible. Preserve all other body, face, limb, pose and canvas pixels except natural clothing occlusion. Match the existing pixel scale, outline and shading. Same transparent canvas, no emblems or loose garments."
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "name": "sword",
+      "job_id": "bedc1ab9-a57c-45ec-b0f1-628522c1eb55",
+      "asset_id": "2235f5ac-a874-5e5d-aa40-2c2e4c4e1332",
+      "input": "body-face-fit-draft.png",
+      "output": "sword-composite-south-00.png",
+      "verification": "Rejected:372 outside-region pixels; body redraw accompanying the sword.",
+      "pt": "Espada de aço e latão na mão direita, à esquerda do observador, lâmina para baixo; preservar corpo, mão e pose.",
+      "tool": "MCP edit_image_pixen",
+      "parameters": {
+        "image_url": "body-face-fit-draft.png",
+        "width": 84,
+        "height": 84,
+        "no_background": true,
+        "description": "Add only a simple steel sailor sword with a brass guard held naturally in this south-facing human's right hand, on the viewer's left, blade angled down and away from the leg. Preserve the hand position and every other body, face, limb, pose and canvas pixel except where the sword naturally occludes them. Match the existing pixel scale, outline and shading. Same transparent canvas."
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
       }
     }
   ],
-  "unexecuted": [
-    "hair",
-    "outfit",
-    "sword"
-  ],
-  "inputs": {
-    "reference": "reference-south-idle-00.png",
-    "source": "assets/factions/pirata/idle.png",
-    "extraction": [
-      0,
-      0,
-      56,
-      56
+  "reported_usage_total": {
+    "generations": 5
+  },
+  "pending_jobs": [],
+  "production_integrated": false,
+  "extracted_layers": {
+    "face": {
+      "file": "face-only-draft.png",
+      "region": [
+        37,
+        22,
+        10,
+        11
+      ],
+      "status": "inspection-only masked extraction; not final artwork",
+      "copied_changed_pixels": 75
+    },
+    "hair": "not exported: failed audit",
+    "outfit": "not exported: failed audit",
+    "sword": "not exported: failed audit"
+  },
+  "proposed_next_route": {
+    "status": "not authorized; no calls made",
+    "tool": "MCP inpaint_image",
+    "guides": [
+      "hair-mask-proposed.png",
+      "outfit-mask-proposed.png",
+      "sword-mask-proposed.png"
     ],
-    "transparent_padding_offset": [
-      14,
-      13
-    ],
-    "pivot": [
-      42,
-      65
-    ]
+    "expected_generations_per_call": 10
   },
   "postprocessing": [
-    "Lossless first-frame crop and transparent padding for source",
-    "Nearest-neighbor 8x inspection copies only; native output preserved"
-  ],
-  "production_integrated": false
+    "Source frame0 losslessly cropped56x56 and transparently padded at14,13 to84x84",
+    "Native images untouched",
+    "Separate nearest-neighbor8x inspection copies",
+    "Face-region diff copied from PixelLab correction onto first base for inspection only",
+    "Transparent comparison sheet; no drawn sprite pixels"
+  ]
 }
