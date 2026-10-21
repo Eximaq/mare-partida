@@ -30,11 +30,11 @@ assert.match(game,/const rect=canvas\.getBoundingClientRect\(\), zoom=worldZoom\
 assert.match(game,/\(event\.clientX-rect\.left\)\*W\/rect\.width/,'canvas click scales with logical zoom');
 assert.match(game,/\(event\.clientY-rect\.top\)\*H\/rect\.height/,'canvas click y scales with zoom');
 assert.match(game,/canvas\.addEventListener\('wheel',/);
-assert.match(game,/journey\.prepend\(tracker\)/,'XP/h sits above Expedição');
+assert.match(game,/document\.querySelector\('\.dashboard'\)\.appendChild\(tracker\)/,'XP/h is independent from the journal');
 assert.match(game,/session\.elapsed,xp:session\.xp/);
 assert.match(game,/tracker\.hidden=!telemetry\.active/,'XP/h hidden in lobby');
 assert.match(game,/if\(reward\.xp&&scene!=='hunt'\)/,'redundant XP popup removed only while hunting');
-assert.ok(css.includes('#journeyHud .hunt-xp-tracker'));
+assert.ok(css.includes('#huntXpTracker.hunt-xp-tracker'));
 assert.ok(css.includes('#worldCanvas {image-rendering:pixelated'));
 assert.ok(html.includes('src="hud-telemetry.js"')&&html.includes('href="hud-zoom-expedition.css"'));
 for(const f of ['hud-telemetry.js','hud-zoom-expedition.css'])assert.ok(build.includes("'"+f+"'"),'Pages should include '+f);
