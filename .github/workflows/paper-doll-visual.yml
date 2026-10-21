@@ -20,6 +20,7 @@ on:
       - 'tests/paper_doll_modular_idle_browser.py'
       - 'tests/paper_doll_socket_browser.py'
       - 'tests/paper_doll_expansion_browser.py'
+      - 'tests/paper_doll_world_review_browser.py'
       - 'pixellab-pip-generations/paper-doll-expansion-20261021/**'
       - 'tests/paper_doll_rigid_assembly_test.py'
       - 'tests/paper-doll-attachment.test.cjs'
@@ -75,6 +76,7 @@ jobs:
           python tests/paper_doll_modular_idle_browser.py
           python tests/paper_doll_socket_browser.py
           python tests/paper_doll_expansion_browser.py
+          python tests/paper_doll_world_review_browser.py
           python tests/universal_character_browser.py
           python tests/class_combat_v2_browser.py
       - name: Capturas e medições para revisão
