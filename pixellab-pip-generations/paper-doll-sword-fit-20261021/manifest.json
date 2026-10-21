@@ -1,0 +1,181 @@
+{
+  "status": "completed generation chain; four isolated weapon layers structurally valid, artistic consistency pending",
+  "scope": "weapon only, four existing Idle/south body frames",
+  "approval": {
+    "initial_ceiling": 24,
+    "initial_no_retries": true,
+    "retry_additional_ceiling": 6,
+    "revised_conservative_ceiling": 30,
+    "first_frame_visual_gate_passed": true,
+    "no_more_retries": true
+  },
+  "calls": [
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "9dc8ced3-ff01-4f17-b397-d9bdfd5c3695",
+      "source_image_id": "a1f4403e-7ddb-528f-9922-1839e48d2fef",
+      "status": "completed",
+      "estimated_generations": 5,
+      "parameters": {
+        "description": "Add only one simple steel sailor sword with a brass crossguard, held in this south-facing human's right hand on the viewer's left. Place the grip in direct contact with that existing hand; let the unchanged hand naturally occlude the grip. Angle the blade down-left, away from the leg. Match the source's crisp pixel scale, dark outline and nautical palette. Preserve the exact body pose, hand position, face, limbs, shorts and canvas. Generate only the masked sword region on transparency. No extra hand, arm, body, clothing, hair, detached weapon or background.",
+        "image_url": "body-source-01.png",
+        "mask_image_url": "weapon-mask-01.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 338809494
+      },
+      "approval": {
+        "ceiling": 24,
+        "no_retries": true,
+        "stop_if_first_fails": true
+      },
+      "reported_usage": {
+        "generations": 5
+      },
+      "verification": {
+        "structural_contact": true,
+        "visual_gate_passed_for_next_calls": true,
+        "production_approval": false
+      },
+      "seed": 338809494
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "876aa4be-b039-4804-8871-5ff1f3985901",
+      "source_image_id": "d201c7ce-feb4-5f37-b9f1-4573a575dc23",
+      "status": "completed",
+      "estimated_generations": 5,
+      "parameters": {
+        "description": "Add only one simple steel sailor sword with a brass crossguard, held in this south-facing human's right hand on the viewer's left. Place the grip in direct contact with that existing hand; let the unchanged hand naturally occlude the grip. Angle the blade down-left, away from the leg. Match the source's crisp pixel scale, dark outline and nautical palette. Preserve the exact body pose, hand position, face, limbs, shorts and canvas. Generate only the masked sword region on transparency. No extra hand, arm, body, clothing, hair, detached weapon or background.",
+        "image_url": "body-source-02.png",
+        "mask_image_url": "weapon-mask-02.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 338809494
+      },
+      "reported_usage": {
+        "generations": 5
+      },
+      "seed": 338809494
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "c6332221-aa95-42bd-8d01-1f442994d564",
+      "source_image_id": "a72b4802-e053-545c-a85f-cd8962ab0a47",
+      "status": "completed",
+      "estimated_generations": 5,
+      "parameters": {
+        "description": "Add only one simple steel sailor sword with a brass crossguard, held in this south-facing human's right hand on the viewer's left. Place the grip in direct contact with that existing hand; let the unchanged hand naturally occlude the grip. Angle the blade down-left, away from the leg. Match the source's crisp pixel scale, dark outline and nautical palette. Preserve the exact body pose, hand position, face, limbs, shorts and canvas. Generate only the masked sword region on transparency. No extra hand, arm, body, clothing, hair, detached weapon or background.",
+        "image_url": "body-source-03.png",
+        "mask_image_url": "weapon-mask-03.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 338809494
+      },
+      "reported_usage": {
+        "generations": 5
+      },
+      "seed": 338809494
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "63a9811b-9f89-418f-8da0-cabaa2dc3325",
+      "source_image_id": "1a15d83c-2b53-55fd-ba9e-0f6e8647cb55",
+      "status": "failed",
+      "estimated_generations": 5,
+      "parameters": {
+        "description": "Add only one simple steel sailor sword with a brass crossguard, held in this south-facing human's right hand on the viewer's left. Place the grip in direct contact with that existing hand; let the unchanged hand naturally occlude the grip. Angle the blade down-left, away from the leg. Match the source's crisp pixel scale, dark outline and nautical palette. Preserve the exact body pose, hand position, face, limbs, shorts and canvas. Generate only the masked sword region on transparency. No extra hand, arm, body, clothing, hair, detached weapon or background.",
+        "image_url": "body-source-04.png",
+        "mask_image_url": "weapon-mask-04.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 338809494
+      },
+      "error": "Generation failed due to heavy load. Please try again in a moment.",
+      "usage_status": "not exposed by getter; no refund assumed",
+      "seed": 338809494
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "f5ad63da-1328-47a3-9b5e-2fbfa46cfba7",
+      "source_image_id": "d28b5baa-8535-5309-9a9e-8faaf931fb87",
+      "status": "completed",
+      "frame": 4,
+      "retry_of": "63a9811b-9f89-418f-8da0-cabaa2dc3325",
+      "retry_explicitly_approved": true,
+      "approval": {
+        "additional_ceiling": 6,
+        "revised_conservative_ceiling": 30,
+        "no_further_retries": true
+      },
+      "estimated_generations": 5,
+      "parameters": {
+        "description": "Add only one simple steel sailor sword with a brass crossguard, held in this south-facing human's right hand on the viewer's left. Place the grip in direct contact with that existing hand; let the unchanged hand naturally occlude the grip. Angle the blade down-left, away from the leg. Match the source's crisp pixel scale, dark outline and nautical palette. Preserve the exact body pose, hand position, face, limbs, shorts and canvas. Generate only the masked sword region on transparency. No extra hand, arm, body, clothing, hair, detached weapon or background.",
+        "image_url": "body-source-04.png",
+        "mask_image_url": "weapon-mask-04.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 338809494
+      },
+      "reported_usage": {
+        "generations": 5
+      },
+      "seed": 338809494
+    }
+  ],
+  "confirmed_charged_generations": 20,
+  "usage_unknown_job_ids": [
+    "63a9811b-9f89-418f-8da0-cabaa2dc3325"
+  ],
+  "total_cost_status": "20 generations explicitly reported; failed job charge/refund not exposed, not assumed",
+  "pt_description": "Adicionar apenas espada de aço com guarda de latão em contato com a mão direita existente, lâmina para baixo/esquerda; preservar corpo, pose, rosto, shorts e transparência, sem outra anatomia ou roupa.",
+  "inputs": {
+    "native_size": [
+      64,
+      64
+    ],
+    "output_method": "New layer with changes",
+    "all_body_pixels_frozen": true,
+    "mask_role": "binary generation control, not art",
+    "resize": false
+  },
+  "assembly": {
+    "frame_order": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "output_frame": [
+      84,
+      84
+    ],
+    "padding": [
+      10,
+      13
+    ],
+    "pivot": [
+      42,
+      65
+    ],
+    "fps": 4,
+    "gif_disposal": 2,
+    "gif_loop": 0,
+    "body_repaint": false,
+    "offset_repair": false,
+    "mirror": false,
+    "duplicated_frames": false
+  },
+  "verification": {
+    "structural_contacts": 4,
+    "changed_body_pixels": 0,
+    "outside_mask_pixels": 0,
+    "artwork_approved": false,
+    "notes": "Blade tone, angle and width differ across frames; recorded without repair. Missing hair/outfit coverage blocks production activation."
+  }
+}

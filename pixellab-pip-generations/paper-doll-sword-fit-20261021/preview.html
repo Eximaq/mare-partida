@@ -1,0 +1,42 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Paper Doll · Encaixe da espada</title><style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#102428;color:#f3dfb5;font:16px/1.5 Georgia,serif}main{max-width:1150px;margin:auto;padding:24px}a{color:#ebbf6c}h1{font-size:30px}.notice{background:#35271d;padding:16px;border-left:4px solid #d3a85c}.boards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}figure{margin:0;border:1px solid #9c7a43;background:#35271d;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#142e30}figcaption{margin-top:10px}small{display:block;font:13px/1.5 system-ui;color:#d8c9ac}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:16px;padding:16px;border:1px solid #9c7a43}button{background:#6b4829;border:1px solid #d3a85c;color:#fff0ce;padding:9px 18px;font:inherit;cursor:pointer}input{accent-color:#d3a85c}input[type=range]{width:140px}button:focus-visible,input:focus-visible{outline:2px solid #f6d590;outline-offset:3px}p{max-width:86ch}table{border-collapse:collapse;width:100%;font:14px system-ui}td,th{padding:10px;text-align:left;border-bottom:1px solid #866d45}footer{margin-top:24px;border-top:1px solid #866d45;padding-top:16px}@media(max-width:700px){main{padding:16px}.boards{grid-template-columns:1fr}figure{max-width:360px;width:100%;margin:auto}h1{font-size:26px}td,th{padding:6px;font-size:12px}}
+</style></head><body><main>
+<a href="../paper-doll-human-idle-south-20261021/preview.html">← Piloto anterior e suas falhas</a>
+<h1>Espada ancorada na mão · Idle frontal</h1>
+<p>Quatro frames existentes do corpo, uma camada de arma gerada para cada pose.</p>
+<p class="notice"><strong>Inspeção de corpo + arma.</strong> Este ensaio verifica o encaixe da espada sem redesenhar a anatomia. Cabelo e roupa ainda precisam de peças aceitas; o personagem completo continua no renderizador anterior. A variação de tom e inclinação da lâmina permanece visível para revisão.</p>
+<div class="controls"><button id="play" type="button" aria-pressed="false">Reproduzir</button><label>Frame <input id="frame" type="range" min="0" max="3" value="0"><output id="frameValue">1</output>/4</label><label><input id="showWeapon" type="checkbox" checked> Mostrar espada</label><label><input id="guides" type="checkbox"> Pivô e contato</label></div>
+<div class="boards">
+<figure><canvas id="bodyCanvas" width="84" height="84" aria-label="Corpo original preservado"></canvas><figcaption>Corpo original<small>Nenhum pixel redesenhado, reposicionado ou escalado.</small></figcaption></figure>
+<figure><canvas id="oldCanvas" width="84" height="84" aria-label="Espada anterior com encaixe reprovado"></canvas><figcaption>Antes · extração reprovada<small>Camada anterior sobre o mesmo corpo, mostrando o defeito de contato.</small></figcaption></figure>
+<figure><canvas id="newCanvas" width="84" height="84" aria-label="Camada nova em contato com a mão"></canvas><figcaption>Agora · camada nativa isolada<small>Pro Flash com máscara por frame. Sem copiar ou reparar a mão.</small></figcaption></figure>
+</div><p id="status" role="status">Carregando auditoria…</p>
+<table><thead><tr><th>Frame</th><th>Alterações no corpo</th><th>Pixels fora da máscara</th><th>Contato com a mão</th></tr></thead><tbody id="auditRows"></tbody></table>
+<p>Os PNGs usam 64×64 nativos; apenas padding de 10/13 os coloca no canvas de 84×84 e pivô 42/65 do compositor. O ciclo mantém quatro frames a 4 FPS, na ordem existente. Não há duplicação, espelhamento, interpolação ou ajuste de offset para esconder erro.</p>
+<p><a href="sword-fit-preview.gif">GIF do novo encaixe</a> · <a href="weapon-idle-south.png">Folha da espada</a> · <a href="body-idle-south.png">Folha do corpo</a> · <a href="comparison-sheet.png">Comparativo nativo</a></p>
+<p><a href="manifest.json">Prompts, parâmetros e custos</a> · <a href="sword-fit.blueprint.json">Receita</a> · <a href="../../docs/PAPER-DOLL-ESPADA.md">Relatório técnico e próximos assets</a></p>
+<footer>Rascunho de revisão: prova de contato e preservação não equivale à aprovação artística do personagem inteiro. O jogo e os saves permanecem no fluxo anterior.</footer>
+</main><script src="../../paper-doll.js"></script><script>
+(async()=>{
+ const $=id=>document.getElementById(id),data=await(await fetch('review.json')).json(),images=new Map();
+ await Promise.all(['body-idle-south.png','weapon-idle-south.png','old-weapon-idle.png'].map(async file=>{const image=new Image();image.src=file;await image.decode();images.set(file,image)}));
+ const runtime=MarePaperDoll.create({getImage:url=>images.get(url)});runtime.registerRig(data.rig);data.pieces.forEach(piece=>runtime.registerPiece(piece));
+ $('auditRows').replaceChildren(...data.audits.map((row,i)=>{const tr=document.createElement('tr');for(const value of [i+1,row.changed_body_pixels,row.outside_mask_pixels,row.hand_contact_pixels+' pixels']){const td=document.createElement('td');td.textContent=value;tr.append(td)}return tr}));
+ let playing=false,last=0,elapsed=0,index=0;
+ function clear(id){const ctx=$(id).getContext('2d');ctx.clearRect(0,0,84,84);ctx.imageSmoothingEnabled=false;return ctx}
+ function render(){
+   index=Number($('frame').value);$('frameValue').value=String(index+1);
+   const body=clear('bodyCanvas'),old=clear('oldCanvas'),current=clear('newCanvas');
+   for(const ctx of [body,old])ctx.drawImage(images.get('body-idle-south.png'),index*84,0,84,84,0,0,84,84);
+   if($('showWeapon').checked)old.drawImage(images.get('old-weapon-idle.png'),index*84,0,84,84,0,0,84,84);
+   if(!runtime.draw(current,data.appearance,{animationId:'idle',direction:'south',frameIndex:index},42,65,{scale:1,allowDraft:true,hidden:$('showWeapon').checked?[]:['weapon']}))throw Error('Camadas incompatíveis');
+   if($('guides').checked){for(const ctx of [body,old,current]){ctx.fillStyle='#f7cc69';ctx.fillRect(39,65,7,1);ctx.fillRect(42,62,1,7)}const [x,y]=data.audits[index].contact_anchor;current.fillStyle='#e76e58';current.fillRect(x+10,y+13,1,1)}
+   $('status').textContent='Frame '+(index+1)+' · contato estrutural '+(data.audits[index].passed?'válido':'reprovado')+' · revisão artística pendente.';
+   window.__paperDollSwordInspection=()=>({ready:true,frameIndex:index,frameCount:4,artworkApproved:false,scope:'body and weapon only',weaponVisible:$('showWeapon').checked,audit:data.audits[index],stats:runtime.stats()});
+ }
+ $('frame').addEventListener('input',()=>{playing=false;$('play').textContent='Reproduzir';$('play').setAttribute('aria-pressed','false');render()});
+ for(const id of ['showWeapon','guides'])$(id).addEventListener('change',render);
+ $('play').addEventListener('click',()=>{playing=!playing;elapsed=index/4;$('play').textContent=playing?'Pausar':'Reproduzir';$('play').setAttribute('aria-pressed',String(playing))});
+ render();function tick(now){const dt=last?Math.min(.1,(now-last)/1000):0;last=now;if(playing&&!document.hidden){elapsed+=dt;const next=Math.floor(elapsed*4)%4;if(next!==index){$('frame').value=next;render()}}requestAnimationFrame(tick)}requestAnimationFrame(tick);
+})().catch(error=>{document.getElementById('status').textContent='Falha: '+error.message;console.error(error)});
+</script></body></html>

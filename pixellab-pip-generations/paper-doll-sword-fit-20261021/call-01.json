@@ -1,0 +1,29 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "9dc8ced3-ff01-4f17-b397-d9bdfd5c3695",
+  "source_image_id": "a1f4403e-7ddb-528f-9922-1839e48d2fef",
+  "status": "completed",
+  "estimated_generations": 5,
+  "parameters": {
+    "description": "Add only one simple steel sailor sword with a brass crossguard, held in this south-facing human's right hand on the viewer's left. Place the grip in direct contact with that existing hand; let the unchanged hand naturally occlude the grip. Angle the blade down-left, away from the leg. Match the source's crisp pixel scale, dark outline and nautical palette. Preserve the exact body pose, hand position, face, limbs, shorts and canvas. Generate only the masked sword region on transparency. No extra hand, arm, body, clothing, hair, detached weapon or background.",
+    "image_url": "body-source-01.png",
+    "mask_image_url": "weapon-mask-01.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 338809494
+  },
+  "approval": {
+    "ceiling": 24,
+    "no_retries": true,
+    "stop_if_first_fails": true
+  },
+  "reported_usage": {
+    "generations": 5
+  },
+  "verification": {
+    "structural_contact": true,
+    "visual_gate_passed_for_next_calls": true,
+    "production_approval": false
+  }
+}

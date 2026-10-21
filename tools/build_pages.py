@@ -96,5 +96,18 @@ for name in idle_files:
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, destination)
 shutil.copy2(ROOT/'docs/PAPER-DOLL-IDLE-SUL.md', OUT/'docs/PAPER-DOLL-IDLE-SUL.md')
+sword_relative = Path('pixellab-pip-generations/paper-doll-sword-fit-20261021')
+sword_files = ['preview.html', 'review.json', 'manifest.json', 'sword-fit.blueprint.json',
+               'body-idle-south.png', 'weapon-idle-south.png', 'old-weapon-idle.png',
+               'sword-fit-preview.gif', 'comparison-sheet.png']
+sword_files += [f'{kind}-{index:02}.png' for kind in ['body-source', 'weapon-raw', 'composite'] for index in range(1, 5)]
+for name in sword_files:
+    source = ROOT/sword_relative/name
+    if not source.is_file():
+        raise SystemExit(f'Arquivo do encaixe de espada ausente: {name}')
+    destination = OUT/sword_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-ESPADA.md', OUT/'docs/PAPER-DOLL-ESPADA.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

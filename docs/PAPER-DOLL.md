@@ -38,6 +38,8 @@ A bancada informa quais direções possuem composição completa (`readyDirectio
 
 O [piloto real Idle/sul](PAPER-DOLL-IDLE-SUL.md) consumiu11 gerações autorizadas e entregou quatro frames de inspeção, mas o contato mão/espada e os ombros não passaram. O pacote continua `approved:false`, fora do catálogo do jogo. Essa evolução não conclui o critério artístico da Fase1.
 
+A [continuação da espada](PAPER-DOLL-ESPADA.md) usa saídas nativas isoladas com máscaras que congelam a anatomia. Quatro contatos passaram com zero alteração no corpo. O teste usa um rig de inspeção corpo/arma; o `human-v1` continua exigindo corpo, cabelo, roupa e arma completos. A variação visual da lâmina e as peças de roupa/cabelo mantêm a validação artística pendente.
+
 Infraestrutura funcional com fallback, bancada interativa e contrato de assets. **Ainda não existe um conjunto modular real de Espadachim para validação artística.** Nenhum PNG foi gerado, pintado, separado por cores ou convertido em camada artificial. O jogo continua mostrando os personagens originais.
 
 Branch `feature/paper-doll-fase-1`, criada de `origin/main` em `5047eea`, incorpora o checkpoint de animações2.0 (`4ab2348`, preservado por cherry-pick). O PR de checkpoint39 permanece em rascunho; esta fase inclui esse trabalho e não depende de fazer merge nele. Não fazer merge/publicação automática de nenhum dos dois.

@@ -1,0 +1,210 @@
+{
+  "status": "four structural contact passes; artistic approval pending",
+  "rig": {
+    "id": "sword-contact-review-v1",
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1,
+    "requiredSlots": [
+      "body",
+      "weapon"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "review-body",
+      "slot": "body",
+      "rigId": "sword-contact-review-v1",
+      "approved": false,
+      "available": true,
+      "zIndex": 0,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "url": "body-idle-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84
+        }
+      }
+    },
+    {
+      "id": "review-weapon",
+      "slot": "weapon",
+      "rigId": "sword-contact-review-v1",
+      "approved": false,
+      "available": true,
+      "zIndex": 10,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "url": "weapon-idle-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "sword-contact-review-v1",
+    "pieces": {
+      "body": "review-body",
+      "weapon": "review-weapon"
+    }
+  },
+  "scope": "inspection of body and weapon only, not a complete human-v1 pack",
+  "audits": [
+    {
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        20,
+        36
+      ],
+      "visible_layer_pixels": 45,
+      "outside_mask_pixels": 0,
+      "unprotected_body_pixels": 0,
+      "body_overlap_pixels": 0,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 0,
+      "hand_contact_pixels": 7,
+      "layer_bbox": [
+        7,
+        34,
+        23,
+        49
+      ]
+    },
+    {
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        18,
+        35
+      ],
+      "visible_layer_pixels": 45,
+      "outside_mask_pixels": 0,
+      "unprotected_body_pixels": 0,
+      "body_overlap_pixels": 0,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 0,
+      "hand_contact_pixels": 8,
+      "layer_bbox": [
+        5,
+        33,
+        20,
+        48
+      ]
+    },
+    {
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        20,
+        36
+      ],
+      "visible_layer_pixels": 45,
+      "outside_mask_pixels": 0,
+      "unprotected_body_pixels": 0,
+      "body_overlap_pixels": 0,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 0,
+      "hand_contact_pixels": 10,
+      "layer_bbox": [
+        10,
+        33,
+        23,
+        47
+      ]
+    },
+    {
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        19,
+        35
+      ],
+      "visible_layer_pixels": 67,
+      "outside_mask_pixels": 0,
+      "unprotected_body_pixels": 0,
+      "body_overlap_pixels": 0,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 0,
+      "hand_contact_pixels": 10,
+      "layer_bbox": [
+        4,
+        33,
+        22,
+        49
+      ]
+    }
+  ],
+  "hashes": [
+    {
+      "source": "body-source-01.png",
+      "source_sha256": "6d000ef9c769332f95b0c87c239f24753435cb067e3d419dfd027aecfe30ba81",
+      "generated": "weapon-raw-01.png",
+      "generated_sha256": "a91d6cf805f2614cdec39b12456498f0030776f669db7f6fe68747ff58bc27d9"
+    },
+    {
+      "source": "body-source-02.png",
+      "source_sha256": "ab34833564c7a80f982228c9f8eaeae4e798b5ddbdb8761abf999eb750e71923",
+      "generated": "weapon-raw-02.png",
+      "generated_sha256": "4a6734fe0c35308bf1883c8fdc14b7c42390566bba5fa8024f8e4fb7a2322df2"
+    },
+    {
+      "source": "body-source-03.png",
+      "source_sha256": "88d15ffa8e6433120e96ba4e1920ecbbd2fab109b7c11fcf102e769867fe5b26",
+      "generated": "weapon-raw-03.png",
+      "generated_sha256": "dcef2f2f7e6ab10d13d301352ccc134957e8e68c176249afbc89b6cdb9d415cb"
+    },
+    {
+      "source": "body-source-04.png",
+      "source_sha256": "cad9315111f37be1bec2cdf377aa74c14a01bc74471be9699095fd9aa62695aa",
+      "generated": "weapon-raw-04.png",
+      "generated_sha256": "16447f2254540e7cc7d73307ca7cfada77bd5efb46381f345ea24cef146531da"
+    }
+  ],
+  "artwork_approved": false
+}

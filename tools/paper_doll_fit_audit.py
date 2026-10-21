@@ -55,6 +55,40 @@ def audit(base_path,edit_path,region=None,layer_path=None,mask_path=None):
     return result
 
 
+def audit_changes_layer(base_path,layer_path,mask_path,contact):
+    """Validate native changes-only output; never erase a leaked body or move a grip."""
+    base=Image.open(base_path).convert('RGBA');layer=Image.open(layer_path).convert('RGBA')
+    if base.size!=layer.size:
+        return {'passed':False,'reason':'canvas-size-mismatch','base_size':base.size,'layer_size':layer.size}
+    allowed=allowed_pixels(base,mask_path=mask_path)
+    a=list(pixels(base));b=list(pixels(layer));w,h=base.size
+    x,y=contact
+    if not isinstance(x,int) or not isinstance(y,int) or not(0<=x<w and 0<=y<h):
+        raise ValueError('Contact must be an integer coordinate inside the native canvas.')
+    visible={i for i,c in enumerate(b) if c[3]}
+    body={i for i,c in enumerate(a) if c[3]}
+    hand={i for i in body if max(abs(i%w-x),abs(i//w-y))<=2}
+    contacts=set()
+    for i in visible:
+        for dy in [-1,0,1]:
+            for dx in [-1,0,1]:
+                px,py=i%w+dx,i//w+dy
+                if 0<=px<w and 0<=py<h and py*w+px in hand:contacts.add(i)
+    outside=visible-allowed;overlap=visible&body
+    fractional=sum(0<c[3]<255 for c in b)
+    composite=Image.alpha_composite(base,layer)
+    cp=list(pixels(composite));body_changes=sum(cp[i]!=a[i] for i in body)
+    unprotected_body=allowed&body
+    passed=bool(visible) and bool(hand) and bool(contacts) and not outside and not overlap and not fractional and not body_changes and not unprotected_body
+    return {'passed':passed,'scope':'structural contact only; artistic approval required',
+            'artwork_approved':False,'size':base.size,'contact_anchor':[x,y],
+            'visible_layer_pixels':len(visible),'outside_mask_pixels':len(outside),
+            'unprotected_body_pixels':len(unprotected_body),
+            'body_overlap_pixels':len(overlap),'partial_alpha_pixels':fractional,
+            'changed_body_pixels':body_changes,'hand_contact_pixels':len(contacts),
+            'layer_bbox':layer.getbbox()}
+
+
 def inspection_draft(base_path,edit_path,layer_path,composite_path,region=None,mask_path=None):
     """Explicit review-only composition; never silently accept the raw edit as fitted."""
     raw=audit(base_path,edit_path,region,mask_path=mask_path)
@@ -81,9 +115,14 @@ if __name__=='__main__':
     bounds.add_argument('--mask',help='Same-size binary mask: white=allowed, black=frozen.')
     p.add_argument('--layer');p.add_argument('--report')
     p.add_argument('--inspection-draft',action='store_true',help='Explicit review-only masked extraction, preserving the original body outside the mask.')
+    p.add_argument('--changes-layer',action='store_true',help='Audit an already isolated generated layer without extraction or repair.')
+    p.add_argument('--contact',nargs=2,type=int,metavar=('X','Y'),help='Native hand contact for --changes-layer.')
     p.add_argument('--composite',help='Required with --inspection-draft; output must remain labelled as draft.')
     args=p.parse_args()
-    if args.inspection_draft:
+    if args.changes_layer:
+        if args.inspection_draft or not args.mask or not args.contact:p.error('Changes-only audit requires --mask and --contact, without --inspection-draft.')
+        result=audit_changes_layer(args.base,args.edit,args.mask,args.contact)
+    elif args.inspection_draft:
         if not args.layer or not args.composite:p.error('Draft extraction requires --layer and --composite.')
         result=inspection_draft(args.base,args.edit,args.layer,args.composite,args.region,args.mask)
     else:result=audit(args.base,args.edit,args.region,args.layer,args.mask)

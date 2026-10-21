@@ -16,6 +16,8 @@ O conjunto animado modular ainda está ausente: o jogo mantém os personagens co
 
 O [piloto Idle frontal](pixellab-pip-generations/paper-doll-human-idle-south-20261021/preview.html) adiciona inspeção de quatro frames e cobertura parcial por direção. O encaixe das peças foi **reprovado**, permanece como diagnóstico e não está ativo no jogo. [Relatório e custos](docs/PAPER-DOLL-IDLE-SUL.md).
 
+O [teste seguinte da espada](pixellab-pip-generations/paper-doll-sword-fit-20261021/preview.html) apresenta quatro camadas nativas com contato na mão e corpo preservado. A identidade visual da lâmina ainda varia; cabelo/roupa continuam pendentes e o conjunto não foi ativado. [Relatório, custo conhecido e limites](docs/PAPER-DOLL-ESPADA.md).
+
 ## Interface UI/UX 2.0
 
 A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.
