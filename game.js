@@ -16,6 +16,7 @@
   let W = canvas.width, H = canvas.height;
   const {maps:worldMaps, Camera, Navigation} = MareWorld;
   const camera = new Camera();
+  const worldZoom=MareHudTelemetry.createZoom(()=>resizeViewport());
   const navigators = Object.fromEntries(Object.entries(worldMaps).map(([id,map])=>[id,new Navigation(map,map.navigationCell||24)]));
   let travelPath = [], pursuit = new WeakMap();
   const keys = new Set(), rejectedTargets = new Map();
@@ -23,11 +24,15 @@
   const activeMap = () => worldMaps[mapKey()];
   const navigator = () => navigators[mapKey()];
   function resizeViewport(){
-    const rect=canvas.getBoundingClientRect(), zoom=1;
+    const rect=canvas.getBoundingClientRect(), zoom=worldZoom.value;
     W=Math.max(1,Math.round(rect.width/zoom));H=Math.max(1,Math.round(rect.height/zoom));
     canvas.width=W;canvas.height=H;ctx.imageSmoothingEnabled=false;
     camera.width=W;camera.height=H;
     if(game)camera.update(world.hero,activeMap(),0,true);
+    const value=$('worldZoomValue');
+    if(value)value.textContent=Math.round(worldZoom.value*100)+'%';
+    document.querySelector('[data-world-zoom="in"]')?.toggleAttribute('disabled',worldZoom.value>=MareHudTelemetry.maxZoom);
+    document.querySelector('[data-world-zoom="out"]')?.toggleAttribute('disabled',worldZoom.value<=MareHudTelemetry.minZoom);
   }
   new ResizeObserver(resizeViewport).observe(canvas);
   function walkTo(point,action=null){
@@ -395,9 +400,9 @@
     const order=['common','uncommon','rare','epic','legendary','supreme'];if(order.indexOf(rarity)>order.indexOf(rewardBuffer.rarity))rewardBuffer.rarity=rarity;
     if(rewardTimer)return;
     rewardTimer=setTimeout(()=>{const reward=rewardBuffer;rewardBuffer=null;rewardTimer=null;
-      const parts=[];if(reward.gold)parts.push('+'+fmt(reward.gold)+' dobrões');if(reward.xp)parts.push('+'+fmt(reward.xp)+' XP');
+      const parts=[];if(reward.gold)parts.push('+'+fmt(reward.gold)+' dobrões');if(reward.xp&&scene!=='hunt')parts.push('+'+fmt(reward.xp)+' XP');
       if(reward.names.length)parts.push(reward.names[0]+(reward.names.length>1?' +'+(reward.names.length-1)+' item(ns)':''));
-      toast(parts.join(' · '),'reward reward-'+reward.rarity);
+      if(parts.length)toast(parts.join(' · '),'reward reward-'+reward.rarity);
     },650);
   }
   document.addEventListener('visibilitychange',()=>{if(document.hidden&&game)saveGame();});
@@ -762,7 +767,21 @@
     else if(session.talents.shield>0){label='Escudo de Energia';value=session.talents.shield;max=Math.round(d.maxHP*.3);}
     el.classList.toggle('hidden',!label);$('miniTalentResource').classList.toggle('hidden',!label);if(label){$('miniTalentLabel').textContent={Vigor:'Vigor','Escudo de Mana':'Mana','Invulnerável':'Imune','Escudo de Energia':'Escudo'}[label];$('miniTalentResource').title=label;$('miniTalentText').textContent=fmt(value)+' / '+fmt(max);$('miniTalentFill').style.width=(Math.max(0,Math.min(1,value/max))*100)+'%';$('talentResourceLabel').textContent=label;$('talentResourceValue').textContent=fmt(value)+' / '+fmt(max);bar('talentResourceFill',value,max);}
   }
-  function updateUI(){if(!game||!session)return;updateHuntHUD();updateHakiHUD();if(characterTab==='haki'&&currentPanel==='character')MareHakiUI.refresh($('dialogBody'),game,session.haki,{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0});game=observeAchievements();if(characterTab==='achievements'&&currentPanel==='character')MareTalentUI.refreshAchievements($('dialogBody'),game);updateTalentResource();if(currentPanel==='forge'&&forgeUI.tab==='fusion'&&forgeFusionStamp!==fusionInventoryStamp())renderPanel();let derived=getDerived(),c=classes[game.classId];$('heroLevel').textContent=game.level;$('heroClass').textContent=c.name.toUpperCase();configureFactionVisual();$('heroName').textContent=game.name;$('heroPower').textContent=fmt(derived.power);$('hpText').textContent=fmt(game.hp)+' / '+fmt(derived.maxHP);$('energyText').textContent=fmt(game.energy)+' / '+fmt(derived.maxEnergy);$('xpText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));bar('hpFill',game.hp,derived.maxHP);bar('energyFill',game.energy,derived.maxEnergy);bar('xpFill',game.xp,xpNeeded(game.level));$('goldAmount').textContent=fmt(game.gold);$('statAttack').textContent=fmt(derived.attack);$('statDefense').textContent=fmt(derived.defense);$('statCrit').textContent=Math.round(derived.crit*100)+'%';$('statSpeed').textContent=derived.speed.toFixed(2)+'/s';$('sessionTimer').textContent=elapsedString(session.elapsed);$('killsCount').textContent=fmt(game.stats.kills);$('bossCount').textContent=fmt(game.stats.boss);$('goldEarned').textContent=fmt(session.gold);$('damageTotal').textContent=fmt(game.stats.damage);$('expeditionState').textContent=scene==='lobby'?'NO PORTO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇANDO':'EM PAUSA';$('potionCount').textContent=game.potions;$('autoLabel').textContent=autoPlay?'ATIVADA':'PAUSADA';$('autoToggle').classList.toggle('active',autoPlay);$('autoToggle').disabled=scene==='lobby';$('autoToggle').classList.toggle('hidden',scene==='lobby');$('combatState').innerHTML='<i class="pulse-dot '+(autoPlay?'':'paused')+'"></i>'+(scene==='lobby'?'PORTO SEGURO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇADA AUTOMÁTICA':'CAÇADA PAUSADA');$('targetHint').textContent=scene==='lobby'?'NPCS · MISSÕES · FORJA · EXPEDIÇÕES':world.target?.alive?'ALVO: '+monsterName(world.target).toUpperCase():'PROCURANDO ALVO...';
+  function updateUI(){if(!game||!session)return;
+    const telemetry=MareHudTelemetry.stats({scene,elapsed:session.elapsed,xp:session.xp,levelXP:game.xp,neededXP:xpNeeded(game.level)});
+    const tracker=$('huntXpTracker');
+    if(tracker){
+      tracker.hidden=!telemetry.active;
+      if(telemetry.active){
+        $('huntXpTime').textContent=telemetry.duration;
+        $('huntXpRate').textContent=telemetry.rate===null?'Calculando…':fmt(telemetry.rate)+' XP/h';
+        $('huntXpEarned').textContent=fmt(telemetry.earned)+' XP';
+        $('huntXpProgress').style.width=(telemetry.progress*100).toFixed(1)+'%';
+        $('huntXpLevel').textContent='Próximo nível: '+fmt(game.xp)+' / '+fmt(xpNeeded(game.level))+' XP';
+        tracker.setAttribute('aria-label','XP por hora '+(telemetry.rate===null?'calculando':fmt(telemetry.rate))+'; tempo de caçada '+telemetry.duration+'; XP obtido '+fmt(telemetry.earned));
+      }
+    }
+    updateHuntHUD();updateHakiHUD();if(characterTab==='haki'&&currentPanel==='character')MareHakiUI.refresh($('dialogBody'),game,session.haki,{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0});game=observeAchievements();if(characterTab==='achievements'&&currentPanel==='character')MareTalentUI.refreshAchievements($('dialogBody'),game);updateTalentResource();if(currentPanel==='forge'&&forgeUI.tab==='fusion'&&forgeFusionStamp!==fusionInventoryStamp())renderPanel();let derived=getDerived(),c=classes[game.classId];$('heroLevel').textContent=game.level;$('heroClass').textContent=c.name.toUpperCase();configureFactionVisual();$('heroName').textContent=game.name;$('heroPower').textContent=fmt(derived.power);$('hpText').textContent=fmt(game.hp)+' / '+fmt(derived.maxHP);$('energyText').textContent=fmt(game.energy)+' / '+fmt(derived.maxEnergy);$('xpText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));bar('hpFill',game.hp,derived.maxHP);bar('energyFill',game.energy,derived.maxEnergy);bar('xpFill',game.xp,xpNeeded(game.level));$('goldAmount').textContent=fmt(game.gold);$('statAttack').textContent=fmt(derived.attack);$('statDefense').textContent=fmt(derived.defense);$('statCrit').textContent=Math.round(derived.crit*100)+'%';$('statSpeed').textContent=derived.speed.toFixed(2)+'/s';$('sessionTimer').textContent=elapsedString(session.elapsed);$('killsCount').textContent=fmt(game.stats.kills);$('bossCount').textContent=fmt(game.stats.boss);$('goldEarned').textContent=fmt(session.gold);$('damageTotal').textContent=fmt(game.stats.damage);$('expeditionState').textContent=scene==='lobby'?'NO PORTO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇANDO':'EM PAUSA';$('potionCount').textContent=game.potions;$('autoLabel').textContent=autoPlay?'ATIVADA':'PAUSADA';$('autoToggle').classList.toggle('active',autoPlay);$('autoToggle').disabled=scene==='lobby';$('autoToggle').classList.toggle('hidden',scene==='lobby');$('combatState').innerHTML='<i class="pulse-dot '+(autoPlay?'':'paused')+'"></i>'+(scene==='lobby'?'PORTO SEGURO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇADA AUTOMÁTICA':'CAÇADA PAUSADA');$('targetHint').textContent=scene==='lobby'?'NPCS · MISSÕES · FORJA · EXPEDIÇÕES':world.target?.alive?'ALVO: '+monsterName(world.target).toUpperCase():'PROCURANDO ALVO...';
     const hasTarget=scene==='hunt'&&world.target?.alive;
     $('targetHud').classList.toggle('hidden',scene!=='hunt'||!hasTarget);
     if(scene==='hunt'){
@@ -1743,6 +1762,36 @@ $('gameFrame').appendChild(targetHud);
   const journey=document.createElement('section');journey.id='journeyHud';journey.className='journey-hud';
   journey.innerHTML='<button class="journey-heading" id="journeyToggle" aria-expanded="true">⌖ <span>Diário de bordo</span><span class="journey-chevron">−</span></button><div class="journey-content"><small id="journeyChapter">Contratos do porto</small><strong id="journeyTitle">Uma nova travessia</strong><div class="journey-track"><i id="journeyFill"></i></div><div class="journey-footer"><span id="journeyProgress">0 / 6</span><button id="journeyAction" data-panel="contracts">Ver contrato</button></div></div>';
   document.querySelector('.dashboard').appendChild(journey);
+  // XP/h stays visually anchored immediately above the expedition widget.
+  const tracker=document.createElement('section');
+  tracker.id='huntXpTracker';tracker.className='hunt-xp-tracker';tracker.hidden=true;
+  tracker.setAttribute('role','status');tracker.setAttribute('aria-live','off');
+  tracker.innerHTML='<div class="hunt-xp-top"><span>✦ XP POR HORA</span><strong id="huntXpRate">Calculando…</strong></div><div class="hunt-xp-metrics"><span>Tempo <b id="huntXpTime">00:00</b></span><span id="huntXpEarned">0 XP</span></div><div class="hunt-xp-track" role="presentation"><i id="huntXpProgress"></i></div><span class="hunt-xp-level" id="huntXpLevel">Próximo nível</span>';
+  journey.prepend(tracker);
+  const zoomControls=document.createElement('div');
+  zoomControls.id='worldZoomControls';zoomControls.setAttribute('role','group');
+  zoomControls.setAttribute('aria-label','Zoom do mapa');
+  zoomControls.innerHTML='<button type="button" data-world-zoom="in" aria-label="Aproximar mapa">+</button><span class="world-zoom-label" id="worldZoomValue">100%</span><button type="button" data-world-zoom="out" aria-label="Afastar mapa">−</button><button type="button" data-world-zoom="reset" aria-label="Restaurar zoom do mapa a 100%">100</button>';
+  document.querySelector('.dashboard').appendChild(zoomControls);
+  zoomControls.addEventListener('click',event=>{
+    const key=event.target.closest('button[data-world-zoom]')?.dataset.worldZoom;
+    if(key==='in')worldZoom.step(1);
+    else if(key==='out')worldZoom.step(-1);
+    else if(key==='reset')worldZoom.reset();
+  });
+  let wheelDelta=0;
+  canvas.addEventListener('wheel',event=>{
+    // Ctrl/Meta+scroll must remain available for native browser page zoom.
+    if(event.ctrlKey||event.metaKey)return;
+    event.preventDefault();
+    const pixels=event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?innerHeight:1);
+    wheelDelta=Math.max(-135,Math.min(135,wheelDelta+pixels));
+    if(Math.abs(wheelDelta)>=55){
+      const direction=wheelDelta<0?1:-1;
+      wheelDelta-=Math.sign(wheelDelta)*55;
+      worldZoom.step(direction);
+    }
+  },{passive:false});
   MareUI.mountHUD();
   $('journeyToggle').addEventListener('click',()=>{const collapsed=journey.classList.toggle('collapsed');$('journeyToggle').setAttribute('aria-expanded',String(!collapsed));journey.querySelector('.journey-chevron').textContent=collapsed?'+':'−';});
 
@@ -2060,7 +2109,7 @@ function applySceneHudLayout(){
   $('devLauncher').hidden=!MareDev.ENABLED;$('devLauncher').textContent=DEV_ACTIVE?'DEV ATIVO':'DEV';document.body.classList.toggle('dev-sandbox',DEV_ACTIVE);if(DEV_ACTIVE){document.title='[DEV] '+document.title;const badge=document.createElement('div');badge.className='dev-badge';badge.textContent='LABORATÓRIO · SAVE DE TESTE';document.body.append(badge);}
   const previous=loadGame();if(previous){game=previous;let d=getDerived();game.hp=clamp(Number(game.hp)||1,0,d.maxHP);game.energy=clamp(Number(game.energy)||0,0,d.maxEnergy);startGame();toast('Bem-vindo de volta, '+game.name+'!','good');}else{$('startOverlay').classList.remove('hidden');openCreation(false);$('characterName').focus();}
   // Diagnóstico somente leitura para testes de regressão da demo local.
-  window.__mareDiagnostics=()=>({dev:{active:DEV_ACTIVE,key:STORAGE_KEY,options:game?.devOptions},akuma:{registered:MareAkuma.registered(game),equipped:game?.equipment?.akuma_no_mi?.id||null,current_fruit_vfx},hakiBookDef:itemDefs.indexOf(MareHaki.book),haki:game?{...game.haki,...session?.haki,unlocked:game.has_haki_unlocked}:null,hunt:game?{progress:game.hunts,sector:MareHunt.sectorAt(game.area,world.hero,huntAnchors()),bossReady:MareHunt.bossReady(game,game.area,world.hero,Date.now(),huntAnchors())}:null,scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H},map:{id:activeMap().id,width:activeMap().width,height:activeMap().height},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):activeMap().id==='rare'?MareRare.paths.map(p=>({...p})):activeMap().id==='dawn'?MareDawn.paths.map(p=>({...p})):activeMap().id==='conchas'?MareConchas.paths.map(p=>({...p})):activeMap().id==='orange'?MareOrange.paths.map(p=>({...p})):activeMap().id==='embers'?MareEmber.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,talents:session?.talents?MareTalentCombat.snapshot(session.talents):null,talentPoints:game?MareTalents.available(game):0,classId:game?.classId,combat:world.hero.combat?.snapshot()??null,energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,skillEnergySpent:session?.skillEnergySpent,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,type:m.type,name:monsterName(m),skin:m.skin,district:m.district,area:m.area,maxHP:m.maxHP,attack:m.attack,defense:m.defense,telegraph:m.telegraph?{...m.telegraph}:null,x:m.x,y:m.y,hp:m.hp,poison:m.talentPoison?{...m.talentPoison}:null,level:m.level,hakiDebuff:m.hakiDebuff||0,control:m.talentControl?{...m.talentControl}:null,emp:m.empRemaining||0,marks:m.assassinMarks||0,burn:m.ultimateBurn?{...m.ultimateBurn}:null,clonePoison:m.clonePoison?{...m.clonePoison}:null,wear:m.talentWear?{...m.talentWear}:null,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});
+  window.__mareDiagnostics=()=>({dev:{active:DEV_ACTIVE,key:STORAGE_KEY,options:game?.devOptions},akuma:{registered:MareAkuma.registered(game),equipped:game?.equipment?.akuma_no_mi?.id||null,current_fruit_vfx},hakiBookDef:itemDefs.indexOf(MareHaki.book),haki:game?{...game.haki,...session?.haki,unlocked:game.has_haki_unlocked}:null,hunt:game?{progress:game.hunts,sector:MareHunt.sectorAt(game.area,world.hero,huntAnchors()),bossReady:MareHunt.bossReady(game,game.area,world.hero,Date.now(),huntAnchors())}:null,scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H,zoom:worldZoom.value},telemetry:session?MareHudTelemetry.stats({scene,elapsed:session.elapsed,xp:session.xp,levelXP:game?.xp,neededXP:game?xpNeeded(game.level):1}):null,map:{id:activeMap().id,width:activeMap().width,height:activeMap().height},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):activeMap().id==='rare'?MareRare.paths.map(p=>({...p})):activeMap().id==='dawn'?MareDawn.paths.map(p=>({...p})):activeMap().id==='conchas'?MareConchas.paths.map(p=>({...p})):activeMap().id==='orange'?MareOrange.paths.map(p=>({...p})):activeMap().id==='embers'?MareEmber.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,talents:session?.talents?MareTalentCombat.snapshot(session.talents):null,talentPoints:game?MareTalents.available(game):0,classId:game?.classId,combat:world.hero.combat?.snapshot()??null,energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,skillEnergySpent:session?.skillEnergySpent,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,type:m.type,name:monsterName(m),skin:m.skin,district:m.district,area:m.area,maxHP:m.maxHP,attack:m.attack,defense:m.defense,telegraph:m.telegraph?{...m.telegraph}:null,x:m.x,y:m.y,hp:m.hp,poison:m.talentPoison?{...m.talentPoison}:null,level:m.level,hakiDebuff:m.hakiDebuff||0,control:m.talentControl?{...m.talentControl}:null,emp:m.empRemaining||0,marks:m.assassinMarks||0,burn:m.ultimateBurn?{...m.ultimateBurn}:null,clonePoison:m.clonePoison?{...m.clonePoison}:null,wear:m.talentWear?{...m.talentWear}:null,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});
   requestAnimationFrame(frame);
 })();
 
