@@ -1,0 +1,30 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "88a1d09f-47c1-4eb1-80e9-30aa2104b0b6",
+  "asset_id": "d70391cc-5c94-5c32-ba9e-b00883f2e9bc",
+  "status": "completed",
+  "estimated_generations": 6,
+  "parameters": {
+    "image_url": "outfit-first-input.png",
+    "mask_image_url": "outfit-first-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 1612130099,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 128,
+      "height": 128
+    },
+    "context_image": {
+      "url": "outfit-first-context.png",
+      "usage_description": "The left128x128 is the unchanged north-facing walking body frames1-4. The right64x64 guides only the rear cream short-sleeve shirt and plain navy waistcoat, their palette and outline, never its static body pose."
+    },
+    "description": "Add only a fitted cream short-sleeve linen shirt and plain navy sailor waistcoat to ALL FOUR north-facing walking cells. Match the rear-view reference's outfit, palette, outline and pixel scale. Follow each torso and shoulder pose. Keep hands and protected forearms bare and visible. Preserve the head, neck, shorts, legs, feet, transparency and frame order. No hair, weapon, emblem, loose garment, extra limb or background."
+  },
+  "reported_usage": {
+    "generations": 6
+  },
+  "raw_sha256": "e616cd66f951b93f81b30af577c75ed0bf3e7f3769429719e51ce84914298bb7"
+}

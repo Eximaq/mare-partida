@@ -1,0 +1,89 @@
+{
+  "native_frame": [
+    64,
+    64
+  ],
+  "batch_atlas": [
+    128,
+    128
+  ],
+  "cell_order": {
+    "hair-repair": [
+      5,
+      6,
+      7,
+      8
+    ],
+    "outfit-first": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "outfit-last": [
+      5,
+      6,
+      7,
+      8
+    ],
+    "outfit-remaining": [
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ]
+  },
+  "fixed_padding": [
+    10,
+    13
+  ],
+  "pivot": [
+    42,
+    65
+  ],
+  "preserved_hair_origin": [
+    16,
+    4
+  ],
+  "files": {
+    "body-raw-01.png": "e3448bb46e35a844ea72a302f477ef114650200d1bf327c404ea86788534086f",
+    "body-raw-02.png": "74b8c67bbd4f1fb4f21b95e591d20a00e6836f5ef5c55b2dcfbe1dcd442c2ab0",
+    "body-raw-03.png": "6381ca5e86974f82dd992a51e31fbdc3f7273baacb8d5c623d385b416dba0592",
+    "body-raw-04.png": "70aa9ad71ba0f51366b7e796a8ca88a66ad62d8ee007c4e9dcfa022053bb8107",
+    "body-raw-05.png": "6a2e444ef0d9f6f0df921d2299aa96e50b2a16c1fdd148acba6f63c50fb2459f",
+    "body-raw-06.png": "b937f5d3ac1f647ff10c0ecf7ef89ced40a219b5b85ce9457c988941d82c5111",
+    "body-raw-07.png": "f2e43a639dfed5215286e3935bbca59ebe3242ac498f5cd5678e7eae2bf6afa4",
+    "body-raw-08.png": "bd1fe128eef14661616d9afe0f4030c810bdfa21f915c4a2fce8766532eb5013",
+    "hair-preserved-01.png": "1a49dd1304a230f8149c97cac363c1ec568a68ad74a0222c2e059eb304f8851f",
+    "hair-preserved-02.png": "bc8e28674d38312d666a8d5c71199364d8fe6577ae54245eb2a0d6749b4c9037",
+    "hair-preserved-03.png": "cac32647f096543ddabb8deb5252eed9364b99442bb0e93c73e43c4a4c9d2d8f",
+    "hair-preserved-04.png": "a347c6fcdf8edc80f936547f50d7a26f8a9216807beca0fd22d71b32c058b533",
+    "hair-reference.png": "69b98652d6f7511d30f3cd03e95f8f46f3e96583f9c1465bffd7ad28cd8bf46a",
+    "hair-repair-context.png": "d00068852b5e04e6c9c4711c7a9c109d195ac157aeed7a9d248776eb54ab79e1",
+    "hair-repair-input.png": "ad90fd6d1e089adcdccbaae83c7906402a345e68f646144f6cb81534063c3044",
+    "hair-repair-mask.png": "8f1c53daab6560ead4a9d31b0db8a9893a76a566b85ac54950fe195530b38c8c",
+    "outfit-first-context.png": "70d8ea20de6e18c92ec7432e4f2d537657bdc05902f0f3aa2b7a32330e104ae8",
+    "outfit-first-input.png": "8e9190f2cdf6a7d04ee13766d209c1a006b9272501c818b70751005abfa54780",
+    "outfit-first-mask.png": "d4e81d4df57d8c060baecbf5f7c1266892a284a27019b3e0d4248b0ac46be1c4",
+    "outfit-last-context.png": "0a82c518ec4af2527a44a6b178404a77308e0ae091def18714e1ac5c92e32bb8",
+    "outfit-last-input.png": "ad90fd6d1e089adcdccbaae83c7906402a345e68f646144f6cb81534063c3044",
+    "outfit-last-mask.png": "d4e81d4df57d8c060baecbf5f7c1266892a284a27019b3e0d4248b0ac46be1c4",
+    "outfit-reference.png": "1f803ed620ff18b6fcdf3408515f51fe084e9b3e5ef3bb437a83eb62903d062b",
+    "outfit-remaining-input.png": "ae018edeeb107da704fdedbcc9ac71aa9b9813ae590e27fff1507f100044b1a2",
+    "outfit-remaining-mask.png": "0cc576c7153eef865d6b9bb3cef034e8f64a157ae7e4f71fbd1dd8147c537db9",
+    "outfit-remaining-reference.png": "9b95fd0420abdc75a6b3421d610bc44a6294f34ea94ec972e6ec0766d6886cfe",
+    "outfit-remaining-context.png": "93e8f9ce6d6033a14db91baf782912c147bbc310f1204bf74d38243f15d0713c"
+  },
+  "remaining_cell": [
+    32,
+    64
+  ],
+  "remaining_source_crop": [
+    16,
+    0,
+    48,
+    64
+  ]
+}

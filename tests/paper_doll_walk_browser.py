@@ -6,6 +6,7 @@ ROOT=Path(__file__).resolve().parents[1]
 BASE=os.environ.get('MARE_TEST_URL','http://127.0.0.1:8123/')
 REL=os.environ.get('MARE_WALK_REVIEW_PACK','pixellab-pip-generations/paper-doll-walk-fit-20261021/')
 WALK_DIRS=json.loads((ROOT/REL/'review-pack.json').read_text())['coverage']['walk']
+PACK_KEY={'paper-doll-north-finish-20261021':'walk-north-complete','paper-doll-walk-north-20261021':'walk-north'}.get(Path(REL).name,'walk-south')
 OUT=ROOT/'docs/evidence-paper-doll';OUT.mkdir(exist_ok=True)
 EXPECTED='''async ({action,direction,frame,hidden=[]})=>{
  const data=await(await fetch('review-pack.json')).json(),row=data.coverage[action].indexOf(direction),c=document.createElement('canvas');c.width=c.height=84;const ctx=c.getContext('2d');
@@ -35,14 +36,14 @@ with sync_playwright() as p,tempfile.TemporaryDirectory() as temporary:
   for slot,checked in zip(['body','hair','outfit','weapon'],visible):
    q.locator(f'[data-layer={slot}]').set_checked(checked)
    if not checked:hidden.append(slot)
-  assert q.evaluate(EXPECTED,{'action':'walk','direction':'south','frame':7,'hidden':hidden})
+  for d in WALK_DIRS:assert q.evaluate(EXPECTED,{'action':'walk','direction':d,'frame':7,'hidden':hidden})
  for slot in ['body','hair','outfit','weapon']:q.locator(f'[data-layer={slot}]').check()
  q.locator('#frame').fill('0');q.locator('#play').click();q.clock.run_for(25)
  for n in range(1,9):q.clock.run_for(125);assert q.evaluate('__paperDollWalk().frameIndex')==n%8
  q.locator('#play').click();q.screenshot(path=str(OUT/'walk-south-1366.png'),full_page=True)
  q.set_viewport_size({'width':393,'height':852});assert q.evaluate('document.documentElement.scrollWidth<=innerWidth')
  q.screenshot(path=str(OUT/'walk-south-393.png'),full_page=True)
- q.goto(BASE+'tools/paper-doll-inspector/index.html?pack='+('walk-north' if 'walk-north' in REL else 'walk-south'),wait_until='networkidle')
+ q.goto(BASE+'tools/paper-doll-inspector/index.html?pack='+PACK_KEY,wait_until='networkidle')
  q.wait_for_function('window.__paperDollInspector?.state().readyDirections?.length===4')
  q.locator('#animation').select_option('walk');q.locator('#direction').select_option('south')
  for direction in WALK_DIRS:

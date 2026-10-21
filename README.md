@@ -28,6 +28,8 @@ A [expansão de Idle](pixellab-pip-generations/paper-doll-expansion-20261021/pre
 
 Continuação Paper Doll: a [caminhada frontal modular](pixellab-pip-generations/paper-doll-walk-fit-20261021/preview.html) reúne oito passos reais das quatro peças. O [estudo de costas](pixellab-pip-generations/paper-doll-walk-north-20261021/preview.html) valida corpo/espada, mas mantém o cabelo reprovado apenas como diagnóstico e não gerou roupa. A [bancada do pacote parcial](tools/paper-doll-inspector/index.html?pack=walk-north) demonstra o fallback norte sem alterar o personagem publicado. [Custos, reversibilidade das margens e assets pendentes](docs/PAPER-DOLL-CAMINHADA-NORTE.md).
 
+A [continuação da caminhada norte](pixellab-pip-generations/paper-doll-north-finish-20261021/preview.html) reúne as oito poses de costas com as quatro camadas; o [GIF transparente](pixellab-pip-generations/paper-doll-north-finish-20261021/walk-north.gif) abre no celular. Idle cobre quatro direções e Walk frente/costas; perfis e ataques seguem no fallback. Arte ainda em inspeção, sem ativação em produção. [Fontes, limitações, custo18 e validação](docs/PAPER-DOLL-NORTE-COMPLETO.md).
+
 ## Interface UI/UX 2.0
 
 A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.

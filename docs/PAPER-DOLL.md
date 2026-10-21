@@ -4,9 +4,9 @@
 
 O [pacote de revisão multidirecional](PAPER-DOLL-EXPANSAO.md) já contém corpo, cabelo, roupa e espada para as16 poses de Idle nas quatro direções. A arma tem fonte e âncora próprias por vista; a bancada abre o pacote diretamente pelo link `?pack=expansion-idle` e permite editar/exportar sockets por frame. A arte permanece em inspeção (`approved:false`), fora do catálogo de produção. O jogo mantém seus sprites atuais.
 
-Walk/south possui oito poses com as quatro peças para inspeção. O [estudo norte](PAPER-DOLL-CAMINHADA-NORTE.md) acrescenta oito poses válidas de corpo/encaixe da espada, mas o cabelo foi reprovado e a roupa não foi gerada. O compositor mantém fallback norte; não há conjunto Attack aprovado. Os estudos rejeitados foram preservados, sem completar roupas sobre arte reprovada.
+Walk/south e north possuem oito poses reais com as quatro peças para inspeção. O [estudo norte inicial](PAPER-DOLL-CAMINHADA-NORTE.md) preserva a falha de cabelo e o fallback como histórico. A [continuação norte](PAPER-DOLL-NORTE-COMPLETO.md) reutiliza os quatro cabelos válidos, corrige os quatro restantes e acrescenta roupa por pose. O pacote `walk-north-complete` abre na bancada; peças continuam `approved:false`. Há pequenas diferenças na silhueta do cabelo e nenhuma aprovação artística do personagem completo.
 
-Para o mínimo do Espadachim, faltam48 frames de corpo (16 de Walk nos perfis e32 de Attack) e56 frames por camada de cabelo/roupa (24 de Walk incluindo norte e32 de Attack):160 frames anatômicos/vestuário, mais validação das trajetórias/vistas da arma e32 frames de lâmina para ataque quando necessário. A contagem considera os componentes norte existentes, sem tratá-los como personagem completo. As estimativas de320 frames abaixo registram o levantamento inicial, anterior aos pilotos e à exceção de arma rígida, não o inventário corrente. A Fase1 completa continua pendente.
+Para o mínimo do Espadachim faltam48 frames por camada de corpo/cabelo/roupa (16 de Walk nos perfis e32 de Attack):144 frames anatômicos/vestuário, mais48 encaixes da arma e imagens específicas de lâmina quando necessárias. As estimativas de320 frames abaixo registram o levantamento inicial, anterior aos pilotos e à exceção de arma rígida. A Fase1 completa continua pendente.
 
 ## Evolução: personagem único (20/10/2026)
 

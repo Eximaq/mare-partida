@@ -1,0 +1,26 @@
+{
+  "hair-repair": {
+    "prototype_gate_passed": true,
+    "review": "All four formerly bald cells now have fitted short black rear hair, proper scalp/neck contact and preserved native bodies. No bald cells, duplicate heads or unrelated additions. Minor tuft silhouette variation remains part of full-character artistic review."
+  },
+  "outfit-first": {
+    "prototype_gate_passed": false,
+    "valid_pose_indices": [
+      1,
+      2
+    ],
+    "rejected_pose_indices": [
+      3,
+      4
+    ],
+    "review": "First two cells have fitted cream sleeves and navy back. Last two cells remain bare-backed; preserve all four raw outputs, register only per-pose valid outputs after six missing poses are independently generated."
+  },
+  "outfit-last": {
+    "prototype_gate_passed": false
+  },
+  "full_character_artwork_approved": false,
+  "outfit-remaining": {
+    "prototype_gate_passed": true,
+    "review": "All six poses3-8 have matching navy cloth-covered backs and cream sleeves. Protected head, hands, legs and original body pixels remain unchanged. Reviewed against first two accepted poses; no bare backs or detached garments."
+  }
+}

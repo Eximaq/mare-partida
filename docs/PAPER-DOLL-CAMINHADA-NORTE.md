@@ -2,6 +2,8 @@
 
 [Prévia técnica](../pixellab-pip-generations/paper-doll-walk-north-20261021/preview.html) · [Bancada com o pacote parcial](../tools/paper-doll-inspector/index.html?pack=walk-north) · [Corpo e espada em movimento](../pixellab-pip-generations/paper-doll-walk-north-20261021/walk-north-body.png) · [Cabelo bruto reprovado](../pixellab-pip-generations/paper-doll-walk-north-20261021/walk-north-hair-draft.png).
 
+> Histórico preservado. A [continuação norte](PAPER-DOLL-NORTE-COMPLETO.md) entrega cabelo e roupa por pose em outro pacote de revisão, sem sobrescrever este estudo ou ativar o personagem em produção.
+
 ## Resultado real
 
 O corpo humano de costas possui oito passos reais, mantém a orientação norte e tem contato validado com a espada original em todos os frames. O corpo não foi redesenhado ou corrigido localmente. As mãos têm sockets próprios, com a lâmina atrás do corpo e cabo ocluído pela mão.

@@ -1,0 +1,92 @@
+[
+  {
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-north-finish-20261021",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment_prompt": "Pode prosseguir",
+    "TASK": "Check current user authority, authenticated MCP access and the announced closed18-generation chain ceiling. Create a unique empty output folder. Reuse the eight native north body frames and original sword; copy the first four valid hair layer files. Preserve all prior successful and rejected originals. No new body generation."
+  },
+  {
+    "_comment": "78bd12ba-28db-4e1d-a69a-1c4b62cb77f6; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "hair-repair-input.png",
+      "mask_image_url": "hair-repair-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 128,
+        "height": 128
+      },
+      "context_image": {
+        "url": "hair-repair-context.png",
+        "usage_description": "The left128x128 is the four original north-facing body frames5-8 in row-major order. The right64x64 guides only the already accepted black hairstyle from frame1, never its different body pose."
+      },
+      "description": "Add complete short tousled black hair to the back of the scalp in ALL FOUR north-facing walking cells. Match the reference's black hairstyle, outline and highlights. Follow each existing head position. Preserve every protected body, neck, arm, hand, shorts, leg and foot pixel. Keep the original four-cell order, native pixel scale and transparent canvas. No bald scalp, face, bandana, clothing, weapon or detached hair."
+    }
+  },
+  {
+    "TASK": "Retrieve and preserve the completed raw PNG. Audit each native cell against its binary mask, exact dimensions, original order, transparency and body-region contact. Inspect all four 64x64 cells. Record accepted/rejected pose indices individually; never register bare or invalid layers. Preserve rejects without painting, duplicates or temporal trimming. Any change to the remaining planned call must stay within the announced three-call ceiling."
+  },
+  {
+    "_comment": "88a1d09f-47c1-4eb1-80e9-30aa2104b0b6; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "outfit-first-input.png",
+      "mask_image_url": "outfit-first-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 128,
+        "height": 128
+      },
+      "context_image": {
+        "url": "outfit-first-context.png",
+        "usage_description": "The left128x128 is the unchanged north-facing walking body frames1-4. The right64x64 guides only the rear cream short-sleeve shirt and plain navy waistcoat, their palette and outline, never its static body pose."
+      },
+      "description": "Add only a fitted cream short-sleeve linen shirt and plain navy sailor waistcoat to ALL FOUR north-facing walking cells. Match the rear-view reference's outfit, palette, outline and pixel scale. Follow each torso and shoulder pose. Keep hands and protected forearms bare and visible. Preserve the head, neck, shorts, legs, feet, transparency and frame order. No hair, weapon, emblem, loose garment, extra limb or background."
+    }
+  },
+  {
+    "TASK": "Retrieve and preserve the completed raw PNG. Audit each native cell against its binary mask, exact dimensions, original order, transparency and body-region contact. Inspect all four 64x64 cells. Record accepted/rejected pose indices individually; never register bare or invalid layers. Preserve rejects without painting, duplicates or temporal trimming. Any change to the remaining planned call must stay within the announced three-call ceiling."
+  },
+  {
+    "TASK": "The first clothing output dressed only poses1-2. Preserve all four originals, accept only1-2 and replace missing3-4 without duplicating time frames. Repack original body poses3-8 into one192x64 row of native32x64 cells by removing transparent left/right margins16/0 only. Verify full-body pixel reversibility. Use the accepted outfit pose1 as style reference. This replaces the third planned call within the same18-generation ceiling; it is not a fourth call."
+  },
+  {
+    "_comment": "71120c54-dc19-4255-9461-db7ee60d3ae5; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "outfit-remaining-input.png",
+      "mask_image_url": "outfit-remaining-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 192,
+        "height": 64
+      },
+      "context_image": {
+        "url": "outfit-remaining-context.png",
+        "usage_description": "The left192x64 is the six unchanged original north walking poses3-8, cropped only through transparent horizontal margins to32x64 per pose. The right64x64 guides only the accepted cream sleeves and plain navy waistcoat from pose1, never its static body pose."
+      },
+      "description": "Add the same cream short-sleeve linen shirt and plain navy sailor waistcoat to ALL SIX north-facing walking figures in this single row. EVERY figure must have a navy cloth-covered back and cream sleeves, no bare backs. Match the right-side reference's outfit, palette, outline and pixel scale. Follow each existing torso and shoulder pose. Keep hands and protected forearms bare and visible. Preserve all protected head, neck, shorts, legs, feet, original pose order and transparent canvas. No hair, weapon, emblem, loose garment, extra limb or background."
+    }
+  },
+  {
+    "TASK": "Retrieve and preserve the completed raw PNG. Audit each native cell against its binary mask, exact dimensions, original order, transparency and body-region contact. Inspect all six 32x64 cells. Record accepted/rejected pose indices individually; never register bare or invalid layers. Preserve rejects without painting, duplicates or temporal trimming. Any change to the remaining planned call must stay within the announced three-call ceiling."
+  },
+  {
+    "TASK": "Assemble eight north poses from four preserved plus four corrected hair layers and eight real clothing layers. Apply fixed padding and original measured weapon sockets behind the body. Keep Idle and Walk/south unchanged, all pieces approved:false. Produce the native sheet, interactive preview and exact-palette looping GIF with decoded-frame verification. Test all poses, layer toggles, sockets, real-world movement, incomplete-action fallback, Haki, Zoan and save preservation. Commit/push only this scope; no automatic merge."
+  }
+]
