@@ -1,3 +1,7 @@
+## 21/10/2026 — Publicação da prévia estática Paper Doll
+
+Publicação autorizada pelo proprietário. `tools/build_pages.py` inclui por allowlist a prévia de uma pose frontal e os recursos que ela usa; README e relatório apontam para a página. Não ativa peças no runtime, não altera saves e não publica a pasta de gerações inteira. Validação: build Pages, teste Node Paper Doll, teste Playwright da prévia no pacote estático e cache/saves.
+
 ## 20–21/10/2026 — Piloto estático Paper Doll e limites do Pixen
 
 Branch `feature/paper-doll-primeiras-pecas`, base `dc59e4d`. PR43 publicado e conferido no Pages. Executadas5 chamadas Pixen de84×84, cobradas5 gerações pelos getters, após aprovação adicional da correção de rosto. Todos os jobs terminaram. Nenhuma peça modular final foi aprovada: cabelo/roupa/espada mudaram pixels fora da peça, cabelo encobriu o rosto e roupa também alterou o shorts.

@@ -20,13 +20,13 @@ O proprietário aprovou quatro chamadas `edit_image_pixen`,84×84 transparente: 
 
 Originais, referência, inspeções8× separadas, relatório dos PNGs/hashes, manifesto com os cinco prompts exatos, traduções e custos, e blueprint estão em `pixellab-pip-generations/paper-doll-human-pilot-20261020/`. A referência é o primeiro frame sul nativo56×56 do pirata, colocado em canvas84×84 com offset14/13, sem resampling.
 
-Abra `preview.html` nessa pasta pelo servidor local para comparar resultados/falhas e ligar/desligar cabelo, roupa e espada na montagem estática. Os PNGs nativos estão ligados individualmente; CSS apenas amplia em nearest-neighbor. O pacote Pages não distribui esse piloto, seus resultados reprovados ou os scripts Python.
+Abra `preview.html` nessa pasta pelo servidor local para comparar resultados/falhas e ligar/desligar cabelo, roupa e espada na montagem estática. Os PNGs nativos estão ligados individualmente; CSS apenas amplia em nearest-neighbor. Após autorização de publicação em21/10, o pacote Pages inclui por allowlist somente os recursos usados pela página de inspeção, referências nativas e manifesto/blueprint. As inspeções ampliadas, auditorias em massa e scripts Python continuam fora do pacote; nenhuma dessas imagens é ativada no jogo.
 
 ## Ferramenta de verificação
 
 `tools/paper_doll_fit_audit.py` verifica uma adição ancorada usando região retangular ou máscara binária do mesmo canvas. Rejeita alterações fora da região/máscara, apagamento de pixels do corpo, edição vazia, incompatibilidade de canvas e recomposição inexata. No modo estrito só exporta uma camada quando passa; o modo explicitamente nomeado `--inspection-draft` permite uma extração de inspeção limitada à máscara, preservando o corpo externo e registrando separadamente o fracasso bruto. Não concede aprovação de arte; copia pixels gerados sem reparar, recolorir ou completar arte. Esse teste estrutural não substitui a inspeção artística nem prova animação.
 
-Validação: sete testes Python passaram (fixtures sintéticas, sem entrega de arte), build Pages e inspeção da página de revisão em Chromium desktop/mobile. Jogo, saves, equipamentos e sprites anteriores não foram alterados nesta branch. Rollback por revert do checkpoint; não há migração de save.
+Validação: sete testes Python passaram (fixtures sintéticas, sem entrega de arte), build Pages (incluindo a prévia publicada) e inspeção da página de revisão em Chromium desktop/mobile. Jogo, saves, equipamentos e sprites anteriores não foram alterados nesta branch. Rollback por revert do checkpoint; não há migração de save.
 
 ## Proposta seguinte — sem consumo autorizado
 
