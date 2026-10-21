@@ -1,8 +1,8 @@
 # Ilha dos Animais Raros e Cocox
 
 - Entrada: nível 31; Cocox é o primeiro encontro da ilha, fixo no nível 35. Não há chefe nesta entrega.
-- Mapa: 32 × 32 células de 64 × 64 pixels (2048 × 2048). As trilhas ligam o cais a três clareiras, com árvores em grupos irregulares, arbustos e rochas. As rotas e o retorno ao porto passam pela navegação existente.
-- Terreno: água e árvore do acervo Dawn. Grama e areia são recortes **nativos de 64 × 64** do mapa Dawn já aprovado; coordenadas e origem estão em `assets/rare-animals/provenance.json`. Nenhum tile de 32 × 32 é utilizado.
+- Mapa atual: exportação PixelLab de 58 × 33 células jogáveis de 64 × 64 pixels (3712 × 2112), com água, píer de madeira e floresta. A área não pintada ao sul do mapa original foi omitida. O respawn e a navegação partem da grade exportada em `new-islands-data.js`. O antigo cenário procedural permanece no repositório apenas como legado.
+- Terreno: mapa e objetos existentes no PixelLab, montados a partir de recortes nativos de 64 × 64 em `assets/new-islands/rare-map.png`. Nenhum tile de 32 × 32 é utilizado nesta versão.
 - Cocox: as animações idle, corrida e mordida/investida foram extraídas do personagem PixelLab `71a074a4-26d7-4f04-9be5-a1dd05fdf3c3` já existente. As folhas preservam os frames originais sem redimensioná-los; cada direção é uma linha (sul, oeste, leste, norte). Não houve geração nova do monstro.
 - Escala em jogo: o Cocox é desenhado com fator 2,25× nos frames originais, sem suavização. A ancoragem considera os pixels transparentes diferentes de idle, corrida e ataque, mantendo os pés no chão. A barra de vida fica acima da arte ampliada.
 - Balanceamento: 1180 HP, 106 ataque físico, 39 defesa física, 12 defesa mágica, velocidade 82, ataque a cada 1,35 s, alcance 56 e agressão a 370 px. O HP equivale a aproximadamente 4–5 ataques básicos de uma build física de nível 35 com cerca de 250–300 de dano após defesa. Builds sem distribuição dos pontos ou armas apropriadas levam mais tempo.

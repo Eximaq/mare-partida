@@ -1,16 +1,17 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
-const R=require('../rare-world.js'),H=require('../hunt-system.js');
+const R=require('../rare-world.js');
+require('../new-islands-data.js');
+const I=require('../new-islands.js'),H=require('../hunt-system.js');
 require('../world-system.js');
-const {Navigation}=MareWorld,nav=new Navigation(R.map,R.map.navigationCell||24);
-assert.deepEqual([R.COLS,R.ROWS,R.TILE,R.map.width,R.map.height],[32,32,64,2048,2048]);
-assert.equal(MareWorld.maps.rare,R.map);
+const {Navigation}=MareWorld,nav=new Navigation(I.rare.map,32);
+assert.deepEqual([I.rare.data.width,I.rare.data.height,I.rare.map.width,I.rare.map.height],[58,33,3712,2112]);
+assert.equal(MareWorld.maps.rare,I.rare.map);
+assert('ei'.includes(I.rare.at(Math.floor(I.rare.spawn.x/64),Math.floor(I.rare.spawn.y/64))));
 assert(R.props.filter(p=>p.kind==='tree').length>=100);
-assert(nav.walkable(R.spawn.x,R.spawn.y));
-assert(nav.walkable(R.returnPoint.x,R.returnPoint.y));
-for(const a of [R.spawn,...R.paths,R.returnPoint])for(const b of [R.spawn,...R.paths,R.returnPoint])assert(nav.path(a,b).length,`${a.id||'spawn'} to ${b.id||'spawn'}`);
-for(const d of R.districts){assert.equal(H.profile('rare',d.id,'cocox').level,35);assert.equal(H.sectorAt('rare',d,R.districts).id,d.id);}
-assert.equal(H.bossReady(H.migrate({}), 'rare',R.districts.at(-1)),false);
+assert(nav.walkable(I.rare.spawn.x,I.rare.spawn.y));
+for(const d of I.rare.districts){assert(nav.path(I.rare.spawn,d).length);assert.equal(H.profile('rare',d.id,'cocox').level,18);assert.equal(H.sectorAt('rare',d,I.rare.districts).id,d.id);}
+assert.equal(H.bossReady(H.migrate({}), 'rare',I.rare.districts.at(-1)),false);
 const db=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/monsters.json'),'utf8')).cocox;
 const c=H.profile('rare','mata-fechada','cocox');
 assert.equal(c.maxHP,db.max_hp);assert.equal(c.attack,db.physical_attack);assert.equal(c.defense,db.physical_defense);assert.equal(c.magicDefense,db.magic_defense);

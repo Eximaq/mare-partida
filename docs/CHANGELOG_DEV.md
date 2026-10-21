@@ -34,6 +34,11 @@ Verificação: suites Node, build Pages, bancada desktop/mobile,28 perfis×3 aç
 
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Pés do Dachshund na forma Zoan
+
+- Branch `fix/inu-zoan-grounding`, sobre o `main` remoto `8625aa6`. Corrigida a altura de cada quadro e direção do Cão Salsicha de Âmbar em `zoan-art.js`: margens transparentes diferentes entre idle, caminhada e ataque faziam a forma flutuar. Os PNGs, as outras Zoans, os atributos e os saves não mudam.
+- Cobertura em `tests/zoan-grounding.test.cjs`; 29 suítes Node e `python tools/build_pages.py` aprovados. Inspeção visual na transformação e caminhada lateral do laboratório DEV. Detalhes em [ZOAN-RANK-E.md](ZOAN-RANK-E.md).
+
 ## 20/10/2026 — Paper Doll 1.0, Fase1: infraestrutura com fallback
 
 - Branch `feature/paper-doll-fase-1`, base `5047eea`; checkpoint anterior de animações incorporado sem modificar main. Novo `paper-doll.js` sincroniza pose/frame e compõe camadas RGBA, valida rig/folhas/células, resolve profundidade por direção/pose e mantém LRU de4MiB/96 composições. Falhas não desenham camadas parciais.

@@ -2,17 +2,133 @@
   "cocox": {
     "id": "cocox",
     "name": "Cocox",
-    "level": 35,
+    "level": 18,
     "area": "rare",
-    "max_hp": 1180,
-    "physical_attack": 106,
-    "physical_defense": 39,
-    "magic_defense": 12,
+    "max_hp": 620,
+    "physical_attack": 48,
+    "physical_defense": 22,
+    "magic_defense": 8,
     "move_speed": 82,
     "attack_seconds": 1.35,
     "aggro_radius": 370,
     "reach": 56,
     "behavior": "aggressive_forest_patrol",
     "sprite_id": "71a074a4-26d7-4f04-9be5-a1dd05fdf3c3"
+  },
+  "sham": {
+    "id": "sham",
+    "name": "Sham",
+    "level": 23,
+    "area": "syrup",
+    "base_id": "cocox",
+    "multipliers": {
+      "max_hp": 0.92,
+      "physical_attack": 1.12,
+      "physical_defense": 0.9,
+      "magic_defense": 0.95
+    },
+    "move_speed": 88,
+    "attack_seconds": 1.25,
+    "aggro_radius": 370,
+    "reach": 55,
+    "behavior": "aggressive_patrol",
+    "sprite_id": "0003fa85-1d60-4fa7-91c0-f2951d430a58"
+  },
+  "buchi": {
+    "id": "buchi",
+    "name": "Buchi",
+    "level": 23,
+    "area": "syrup",
+    "base_id": "cocox",
+    "multipliers": {
+      "max_hp": 1.17,
+      "physical_attack": 1.02,
+      "physical_defense": 1.12,
+      "magic_defense": 0.9
+    },
+    "move_speed": 72,
+    "attack_seconds": 1.5,
+    "aggro_radius": 370,
+    "reach": 62,
+    "behavior": "aggressive_patrol",
+    "sprite_id": "191ea516-7425-4886-99ec-96c11b6ea64e"
+  },
+  "pearl": {
+    "id": "pearl",
+    "name": "Pearl",
+    "level": 28,
+    "area": "baratie",
+    "base_id": "cocox",
+    "multipliers": {
+      "max_hp": 1.3,
+      "physical_attack": 0.98,
+      "physical_defense": 1.28,
+      "magic_defense": 1.15
+    },
+    "move_speed": 64,
+    "attack_seconds": 1.65,
+    "aggro_radius": 370,
+    "reach": 60,
+    "behavior": "aggressive_patrol",
+    "sprite_id": "0912194d-7d3c-4fdd-8678-cac0713105ce"
+  },
+  "gin": {
+    "id": "gin",
+    "name": "Gin",
+    "level": 28,
+    "area": "baratie",
+    "base_id": "cocox",
+    "multipliers": {
+      "max_hp": 0.96,
+      "physical_attack": 1.25,
+      "physical_defense": 0.96,
+      "magic_defense": 1.05
+    },
+    "move_speed": 86,
+    "attack_seconds": 1.2,
+    "aggro_radius": 370,
+    "reach": 72,
+    "behavior": "aggressive_patrol",
+    "sprite_id": "71e7ad11-b263-4d45-bba4-e1337a521ebc"
+  },
+  "kuroobi": {
+    "id": "kuroobi",
+    "name": "Kuroobi",
+    "level": 33,
+    "area": "arlong",
+    "base_id": "cocox",
+    "multipliers": {
+      "max_hp": 1.2,
+      "physical_attack": 1.12,
+      "physical_defense": 1.18,
+      "magic_defense": 0.95
+    },
+    "move_speed": 76,
+    "attack_seconds": 1.45,
+    "aggro_radius": 390,
+    "reach": 66,
+    "behavior": "aggressive_karate_patrol",
+    "sprite_id": "4e72340c-7beb-45ad-8c5d-613149a30281",
+    "boss": true
+  },
+  "chew": {
+    "id": "chew",
+    "name": "Chew",
+    "level": 33,
+    "area": "arlong",
+    "base_id": "cocox",
+    "multipliers": {
+      "max_hp": 0.96,
+      "physical_attack": 1.2,
+      "physical_defense": 0.9,
+      "magic_defense": 1.02
+    },
+    "move_speed": 94,
+    "attack_seconds": 1.2,
+    "aggro_radius": 390,
+    "reach": 70,
+    "behavior": "aggressive_shooter_patrol",
+    "sprite_id": "3139378f-61a7-4f6f-bd97-419be0db5b07",
+    "boss": true
   }
 }

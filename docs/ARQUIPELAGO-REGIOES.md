@@ -1,6 +1,6 @@
 # Regiões e detalhes do Arquipélago
 
-Revisão de 20/10/2026: Conchas exige nível 11 e usa o Guardião das Conchas Nv.20; Orange Town é o terceiro destino, com entrada Nv.21. Regras atuais em `CACADAS-1-20.md` e `ORANGE-TOWN.md`.
+Revisão de 21/10/2026: o East Blue usa faixas de cinco níveis. Conchas abre no Nv.6, Orange Town no Nv.11 e o Parque Arlong no Nv.31. As notas antigas de caçadas documentam a escala anterior.
 
 Atualização de 19/10/2026. A janela fica em **Modos de jogo (M) → Mapa do Arquipélago**. Botão de viagem e NPC de expedição abrem a mesma lista de modos. East Blue abre por padrão; Alabasta está desabilitada, com `data-status="locked"`, nome e aviso visível abaixo do título.
 
@@ -8,14 +8,14 @@ Atualização de 19/10/2026. A janela fica em **Modos de jogo (M) → Mapa do Ar
 
 | Ilha | Nível recomendado | Área do save | Entrada | Disponibilidade |
 |---|---|---|---|---|
-| Ilha Dawn | 1–10 | `beach` | Nv. 1 | Jogável |
-| Cidade das Conchas | 11–20 | `swamp` | Nv. 11 | Jogável |
-| Orange Town | 21–30 | `orange` | Nv. 21 | Jogável |
-| Ilha dos Animais Raros | 31–40 | `rare` | Nv. 31 | Jogável · Cocox Nv. 35 |
-| Vilarejo Syrup | 41–50 | — | A definir | Em desenvolvimento |
-| Baratie | 51–60 | — | A definir | Em desenvolvimento |
-| Parque Arlong | 61–70 | — | A definir | Em desenvolvimento |
-| Loguetown | 71–80 | — | A definir | Em desenvolvimento |
+| Ilha Dawn | 1–5 | `beach` | Nv. 1 | Jogável · chefe Nv. 5 |
+| Cidade das Conchas | 6–10 | `swamp` | Nv. 6 | Jogável · chefe Nv. 10 |
+| Orange Town | 11–15 | `orange` | Nv. 11 | Jogável · chefe Nv. 15 |
+| Ilha dos Animais Raros | 16–20 | `rare` | Nv. 16 | Jogável · Cocox Nv. 18 |
+| Vila Syrup | 21–25 | `syrup` | Nv. 21 | Jogável · Sham e Buchi Nv. 23 |
+| Baratie | 26–30 | `baratie` | Nv. 26 | Jogável · Pearl e Gin Nv. 28 |
+| Parque Arlong | 31–35 | `arlong` | Nv. 31 | Jogável · Kuroobi e Chew Nv. 33 |
+| Loguetown | 36–40 | — | A definir | Em desenvolvimento |
 
 Ilha Dawn é o nome atual de Ruínas de Brasas; Cidade das Conchas substitui Fenda da Névoa. As renomeações se aplicam à HUD, origem de novos drops e notificações atuais. Textos históricos no inventário, saves exportados e documentação anterior não são reescritos. O cenário das duas áreas não foi modificado nesta tarefa.
 
@@ -25,13 +25,13 @@ As faixas são recomendações; não alteram os requisitos existentes nem impõe
 
 ## Seleção e detalhes
 
-O clique em qualquer ilha abre nome, faixa recomendada, descrição, moldura do chefe, entrada, taxa de sucesso e drops. Não muda a cena nem o save. Apenas o botão **Viajar para esta ilha** realiza o teleporte, quando a área existe e o personagem cumpre seu requisito. As quatro ilhas futuras têm detalhes acessíveis e viagem bloqueada, sem redirecionar para outro cenário. Orange Town mostra o retrato próprio do Capitão Fagulha.
+O clique em qualquer ilha abre nome, faixa recomendada, descrição, moldura do chefe, entrada, taxa de sucesso e drops. Não muda a cena nem o save. Apenas o botão **Viajar para esta ilha** realiza o teleporte, quando a área existe e o personagem cumpre seu requisito. Loguetown tem detalhes acessíveis e viagem bloqueada, sem redirecionar para outro cenário. Orange Town mostra o retrato próprio do Capitão Fagulha.
 
 Os previews usam os sprites existentes: Capitão da Caldeira na Ilha Dawn e Guardião da Caldeira na Cidade das Conchas. A folha de oito direções do Capitão é recortada para uma única célula, sem editar o PNG. Não havendo monstro configurado, a moldura mostra uma silhueta com interrogação e **Indisponível**. O mesmo fallback cobre falhas ao carregar a imagem.
 
-A Ilha dos Animais Raros exibe o Cocox já existente no PixelLab; a rota atual não possui chefe. O mapa e o balanceamento estão em [ILHA-ANIMAIS-RAROS.md](ILHA-ANIMAIS-RAROS.md).
+A Ilha dos Animais Raros, Vila Syrup, Baratie e Parque Arlong usam os mapas já existentes no PixelLab. Kuroobi e Chew usam suas animações originais e retornam após 60 segundos. Ver [TRÊS-ILHAS.md](TRES-ILHAS.md) e [ARLONG-PARK.md](ARLONG-PARK.md).
 
-Os drops das áreas atuais refletem `killMob`: dobrões/XP, equipamentos compatíveis, Ferro Salgado e poções. As futuras mostram **A definir**. Não existe cálculo de sucesso de dungeon no jogo; o painel informa **Não estimada**.
+Os drops das áreas atuais refletem `killMob`: dobrões/XP, equipamentos compatíveis, Ferro Salgado e poções. Loguetown mostra **A definir**. Não existe cálculo de sucesso de dungeon no jogo; o painel informa **Não estimada**.
 
 Trocar uma região habilitada limpa a seleção e reconstrói sua lista. Alabasta não recebe cliques nem libera conteúdo. Clicar novamente em East Blue ou reabrir a janela limpa os detalhes anteriores. No desktop a lista e os detalhes ficam lado a lado; no celular os detalhes substituem a lista, com **Voltar às ilhas**. Foco, teclado, Escape, água animada e preferência de movimento reduzido são mantidos.
 
