@@ -5,7 +5,7 @@ require('../new-islands-data.js');
 const I=require('../new-islands.js'),H=require('../hunt-system.js');
 require('../world-system.js');
 const {Navigation}=MareWorld,nav=new Navigation(I.rare.map,32);
-assert.deepEqual([I.rare.data.width,I.rare.data.height,I.rare.map.width,I.rare.map.height],[58,33,3712,2112]);
+assert.deepEqual([I.rare.data.width,I.rare.data.height,I.rare.map.width,I.rare.map.height],[58,50,3712,3200]);
 assert.equal(MareWorld.maps.rare,I.rare.map);
 assert('ei'.includes(I.rare.at(Math.floor(I.rare.spawn.x/64),Math.floor(I.rare.spawn.y/64))));
 assert(R.props.filter(p=>p.kind==='tree').length>=100);

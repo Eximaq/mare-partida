@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 
 global.Image=class {
   constructor(){this.complete=true;this.naturalWidth=48;}
-  set src(url){this.url=url;this.naturalWidth=url.includes('-idle-')?48:432;}
+  set src(url){this.url=url;this.naturalWidth=url.includes('tori-')?(url.includes('-idle-')?64:url.includes('-walk-')?512:576):url.includes('-idle-')?48:432;}
 };
 const art=require('../zoan-art.js');
 const calls=[];
@@ -19,6 +19,9 @@ for(const [action,direction,time,foot] of [
   assert.equal(call[6],Math.round(y-foot*scale),`${action}/${direction} keeps visible paws on the ground`);
   assert.equal(call[8],Math.round(48*scale));
 }
-art.draw(ctx,'akuma_tori_albatroz',100,y,{action:'idle',direction:'left',scale});
-assert.equal(calls.pop()[6],Math.round(y-48*scale),'other Zoans retain their existing anchor');
+const toriScale=74/64;
+art.draw(ctx,'akuma_tori_albatroz',100,y,{action:'idle',direction:'left',scale:toriScale});
+const bird=calls.pop();
+assert.equal(bird[6],Math.round(y-55*toriScale),'Albatross feet stay grounded');
+assert.equal(bird[8],74,'Albatross uses its 64px source frame');
 console.log('Dachshund idle, walk and attack frames remain grounded in four directions.');
