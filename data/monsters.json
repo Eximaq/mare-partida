@@ -109,7 +109,7 @@
     "reach": 66,
     "behavior": "aggressive_karate_patrol",
     "sprite_id": "4e72340c-7beb-45ad-8c5d-613149a30281",
-    "boss": true
+    "boss": false
   },
   "chew": {
     "id": "chew",
@@ -129,6 +129,6 @@
     "reach": 70,
     "behavior": "aggressive_shooter_patrol",
     "sprite_id": "3139378f-61a7-4f6f-bd97-419be0db5b07",
-    "boss": true
+    "boss": false
   }
 }

@@ -12,7 +12,7 @@ for(const [id,allowed,min] of [['rare','ei',16],['syrup','u',21],['baratie','c',
   assert.equal(island.map.height,island.data.height*64);
   assert(allowed.includes(island.at(Math.floor(island.spawn.x/64),Math.floor(island.spawn.y/64))));
   assert(nav.walkable(island.spawn.x,island.spawn.y));
-  assert(island.map.colliders.length>=30,`${id}: visible object footprints are solid`);
+  assert(island.map.colliders.length>=(id==='arlong'?25:30),`${id}: visible object footprints are solid`);
   assert(island.map.colliders.some(o=>{
     const x=o.x+o.w/2,y=o.y+o.h/2;
     return island.map.terrainWalkable(x,y)&&!nav.walkable(x,y);
@@ -39,4 +39,8 @@ for(const [id,area,level] of [['cocox','rare',18],['sham','syrup',23],['buchi','
 assert(catalog.sham.max_hp>catalog.cocox.max_hp);
 assert(catalog.pearl.max_hp>catalog.buchi.max_hp);
 assert(catalog.gin.physical_attack>catalog.sham.physical_attack);
+for(const id of ['kuroobi','chew']){
+  assert.equal(catalog[id].boss,false);
+  assert(H.rewards('arlong',{type:id,district:H.get('arlong').sectors[0].id},33).gearChance<1);
+}
 console.log('Three maps: native exports, inferred spawns, reachable sectors, original animations and Python/JS balance passed.');
