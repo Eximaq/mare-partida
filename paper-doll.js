@@ -1,0 +1,129 @@
+'use strict';
+/* Rendering only: this module owns no combat clocks, equipment or persistence. */
+((root)=>{
+  const slots=['body','pants','boots','outfit','hair','accessory','weapon'];
+  const directions=['south','north','west','east'];
+  const aliases={front:'south',back:'north',left:'west',right:'east'};
+  const clone=value=>JSON.parse(JSON.stringify(value));
+  const integer=n=>Number.isInteger(n);
+  function create({getImage,createCanvas=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c;},maxCacheBytes=4*1024*1024,maxCacheEntries=96,validatePixels=null}={}){
+    if(typeof getImage!=='function')throw new TypeError('Paper Doll requires an image loader.');
+    const rigs=new Map(),pieces=new Map(),cache=new Map(),audits=new WeakMap();
+    let bytes=0,hits=0,misses=0,fallbacks=0,compositions=0;
+    const clear=()=>{cache.clear();bytes=0;};
+    function registerRig(input){
+      const r=clone(input);
+      if(!r.id||!integer(r.frameWidth)||!integer(r.frameHeight)||r.frameWidth<1||r.frameHeight<1||!integer(r.pivotX)||!integer(r.pivotY)||!Number.isFinite(r.scale)||r.scale<=0)throw new TypeError('Invalid rig geometry.');
+      if(r.frameWidth>512||r.frameHeight>512||r.pivotX<0||r.pivotX>r.frameWidth||r.pivotY<0||r.pivotY>r.frameHeight)throw new TypeError('Rig exceeds supported bounds.');
+      for(const a of Object.values(r.animations||{}))if(!integer(a.frames)||a.frames<1||a.frames>64||!Number.isFinite(a.fps)||a.fps<=0||typeof a.loop!=='boolean'||!Array.isArray(a.directions)||!a.directions.length||new Set(a.directions).size!==a.directions.length||a.directions.some(d=>!directions.includes(d)))throw new TypeError('Invalid rig animation.');
+      if(!Object.keys(r.animations||{}).length)throw new TypeError('Rig has no animations.');
+      r.requiredSlots=r.requiredSlots||['body','hair','outfit','weapon'];
+      if(r.requiredSlots.some(s=>!slots.includes(s)))throw new TypeError('Invalid required slot.');
+      rigs.set(r.id,r);clear();return r.id;
+    }
+    function registerPiece(input){
+      const p=clone(input);if(!p.id||!p.rigId||!slots.includes(p.slot))throw new TypeError('Invalid piece identity.');
+      pieces.set(p.id,p);clear();return p.id;
+    }
+    function sample(rigId,animationId,direction,time=0){
+      const r=rigs.get(rigId),a=r?.animations[animationId],d=aliases[direction]||direction;
+      if(!a||!a.directions.includes(d))return null;
+      const n=Math.floor(Math.max(0,Number.isFinite(time)?time:0)*a.fps);
+      return {animationId,direction:d,frameIndex:a.loop===false?Math.min(n,a.frames-1):n%a.frames,pivotX:r.pivotX,pivotY:r.pivotY};
+    }
+    function imageAudit(image,clip,r){
+      let checks=audits.get(image);if(!checks){checks=new Map();audits.set(image,checks);}
+      const key=[clip.url,clip.frames,clip.directions.join(','),r.frameWidth,r.frameHeight].join('|');
+      if(checks.has(key))return checks.get(key);
+      let result=null;
+      try{
+        if(validatePixels)result=validatePixels(image,clip,r);
+        else{
+          const c=createCanvas(image.naturalWidth,image.naturalHeight),ctx=c.getContext('2d',{willReadFrequently:true});
+          ctx.drawImage(image,0,0);const rgba=ctx.getImageData(0,0,c.width,c.height).data;
+          for(let row=0;row<clip.directions.length&&!result;row++){
+            let animated=clip.frames===1;
+            for(let col=0;col<clip.frames;col++){
+            let visible=false;
+            for(let y=0;y<r.frameHeight&&!visible;y++)for(let x=0;x<r.frameWidth;x++)if(rgba[((row*r.frameHeight+y)*c.width+col*r.frameWidth+x)*4+3]){visible=true;break;}
+            if(!visible){result='empty-frame';break;}
+            if(col&&!animated)for(let y=0;y<r.frameHeight&&!animated;y++)for(let x=0;x<r.frameWidth;x++){
+              const first=((row*r.frameHeight+y)*c.width+x)*4,current=first+col*r.frameWidth*4;
+              if(rgba[first+3]!==rgba[current+3]||(rgba[first+3]&&(rgba[first]!==rgba[current]||rgba[first+1]!==rgba[current+1]||rgba[first+2]!==rgba[current+2]))){animated=true;break;}
+            }
+            }
+            if(!result&&!animated)result='static-animation';
+          }
+        }
+      }catch{result='unreadable-image';}
+      checks.set(key,result);return result;
+    }
+    function resolve(appearance,pose,{allowDraft=false}={}){
+      const r=rigs.get(appearance?.rigId),missing=[],layers=[];
+      if(!r)return {valid:false,missing:[{code:'missing-rig',slot:'body',pieceId:appearance?.rigId||''}],layers};
+      const direction=aliases[pose?.direction]||pose?.direction,a=r.animations[pose?.animationId];
+      const frameIndex=pose?.frameIndex;
+      if(!a||!a.directions.includes(direction)||!integer(frameIndex)||frameIndex<0||frameIndex>=a.frames)return {valid:false,rig:r,missing:[{code:'unsupported-pose',slot:'body',pieceId:''}],layers};
+      if(appearance.blocked?.length)return {valid:false,rig:r,missing:appearance.blocked.map(x=>({...x,code:x.code||'unmapped-equipment'})),layers};
+      for(const slot of slots){
+        const id=appearance.pieces?.[slot],p=pieces.get(id);
+        const problem=code=>missing.push({slot,pieceId:id||'',code});
+        if(!id){if(r.requiredSlots.includes(slot))problem('missing-piece');continue;}
+        if(!p){problem('missing-piece');continue;}
+        if(p.available===false){problem('missing-source');continue;}
+        if(p.slot!==slot||p.rigId!==r.id){problem('incompatible-rig');continue;}
+        if(!allowDraft&&p.approved!==true){problem('unapproved-piece');continue;}
+        const clip=p.animations?.[pose.animationId];
+        if(typeof clip?.url!=='string'||!clip.url){problem('missing-animation');continue;}
+        if(clip.frames!==a.frames||clip.frameWidth!==r.frameWidth||clip.frameHeight!==r.frameHeight||clip.fps!==a.fps||clip.loop!==a.loop||!Array.isArray(clip.directions)||!a.directions.every(d=>clip.directions.includes(d))||new Set(clip.directions).size!==clip.directions.length){problem('incompatible-animation');continue;}
+        const row=clip.directions.indexOf(direction),overrides=clip.poseOverrides?.[direction]?.[frameIndex]||{},byDirection=clip.directionOverrides?.[direction]||{};
+        const pivotX=clip.pivotX??r.pivotX,pivotY=clip.pivotY??r.pivotY;
+        const offsetX=overrides.offsetX??byDirection.offsetX??clip.offsetX??0,offsetY=overrides.offsetY??byDirection.offsetY??clip.offsetY??0;
+        const zIndex=overrides.zIndex??byDirection.zIndex??clip.zIndex??p.zIndex??slots.indexOf(slot)*10;
+        if(![pivotX,pivotY,offsetX,offsetY,zIndex].every(integer)||pivotX<0||pivotX>r.frameWidth||pivotY<0||pivotY>r.frameHeight||Math.abs(offsetX)>512||Math.abs(offsetY)>512){problem('invalid-transform');continue;}
+        let image;try{image=getImage(clip.url);}catch{problem('failed-image');continue;}
+        if(!image?.complete){problem('loading-image');continue;}
+        if(!image.naturalWidth||!image.naturalHeight){problem('failed-image');continue;}
+        if(image.naturalWidth!==r.frameWidth*clip.frames||image.naturalHeight!==r.frameHeight*clip.directions.length){problem('invalid-sheet-size');continue;}
+        const invalid=imageAudit(image,clip,r);if(invalid){problem(invalid);continue;}
+        layers.push({slot,pieceId:id,revision:p.revision||1,image,url:clip.url,animationId:pose.animationId,direction,frameIndex,
+          pivotX,pivotY,offsetX,offsetY,zIndex,sx:frameIndex*r.frameWidth,sy:row*r.frameHeight,width:r.frameWidth,height:r.frameHeight});
+      }
+      layers.sort((x,y)=>x.zIndex-y.zIndex||slots.indexOf(x.slot)-slots.indexOf(y.slot));
+      return {valid:missing.length===0,rig:r,pose:{animationId:pose.animationId,direction,frameIndex},layers,missing};
+    }
+    function draw(context,appearance,pose,x,y,{scale=null,hidden=[],allowDraft=false}={}){
+      const plan=resolve(appearance,pose,{allowDraft});
+      if(!plan.valid){fallbacks++;return false;}
+      const r=plan.rig,factor=scale??r.scale;if(!Number.isFinite(factor)||factor<=0)return false;
+      const visible=plan.layers.filter(l=>!hidden.includes(l.slot));
+      const key=JSON.stringify([r.id,r.revision||1,plan.pose,visible.map(l=>[l.pieceId,l.revision,l.url,l.pivotX,l.pivotY,l.offsetX,l.offsetY,l.zIndex])]);
+      let c=cache.get(key);
+      if(c){hits++;cache.delete(key);cache.set(key,c);}
+      else{
+        misses++;compositions++;
+        // Expand around the rig pivot so legitimate offsets/pivots never clip a layer.
+        const left=Math.min(0,...visible.map(l=>r.pivotX-l.pivotX+l.offsetX));
+        const top=Math.min(0,...visible.map(l=>r.pivotY-l.pivotY+l.offsetY));
+        const right=Math.max(r.frameWidth,...visible.map(l=>r.pivotX-l.pivotX+l.offsetX+l.width));
+        const bottom=Math.max(r.frameHeight,...visible.map(l=>r.pivotY-l.pivotY+l.offsetY+l.height));
+        if(right-left>2048||bottom-top>2048)return false;
+        try{
+          const image=createCanvas(right-left,bottom-top),ctx=image.getContext('2d');ctx.imageSmoothingEnabled=false;
+          for(const l of visible)ctx.drawImage(l.image,l.sx,l.sy,l.width,l.height,r.pivotX-l.pivotX+l.offsetX-left,r.pivotY-l.pivotY+l.offsetY-top,l.width,l.height);
+          c={image,pivotX:r.pivotX-left,pivotY:r.pivotY-top,bytes:image.width*image.height*4};
+        }catch{fallbacks++;return false;}
+        if(c.bytes<=maxCacheBytes&&maxCacheEntries>0){
+          while(cache.size&&(bytes+c.bytes>maxCacheBytes||cache.size>=maxCacheEntries)){const first=cache.keys().next().value;bytes-=cache.get(first).bytes;cache.delete(first);}
+          cache.set(key,c);bytes+=c.bytes;
+        }
+      }
+      context.save();context.imageSmoothingEnabled=false;
+      context.drawImage(c.image,Math.round(x-c.pivotX*factor),Math.round(y-c.pivotY*factor),Math.round(c.image.width*factor),Math.round(c.image.height*factor));context.restore();return true;
+    }
+    const stats=()=>({hits,misses,fallbacks,compositions,cacheEntries:cache.size,cacheBytes:bytes,maxCacheBytes,maxCacheEntries});
+    return {registerRig,registerPiece,sample,resolve,draw,clear,stats,rig:id=>rigs.has(id)?clone(rigs.get(id)):null,piece:id=>pieces.has(id)?clone(pieces.get(id)):null};
+  }
+  const api={create,slots,directions};root.MarePaperDoll=api;
+  if(typeof module!=='undefined'&&module.exports)module.exports=api;
+})(typeof globalThis!=='undefined'?globalThis:window);

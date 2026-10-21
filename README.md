@@ -8,9 +8,11 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
-## Estudo de personagem modular — trabalho em pausa
+## Paper Doll 1.0 — infraestrutura e bancada
 
-A branch de animações2.0 preserva a infraestrutura e o piloto iniciados, mas as seis classes não estão concluídas. Novas gerações foram pausadas pelo proprietário para especificar um sistema Paper Doll independente de classe/facção. [Viabilidade, reaproveitamento, custos e migração proposta](docs/PAPER-DOLL-VIABILIDADE.md). Nenhum sistema modular ou mudança de save foi implementado.
+Compositor por camadas sincronizadas, pivôs, profundidade por direção/pose, cache limitado e associação visual de equipamentos. A [bancada técnica](tools/paper-doll-inspector/index.html) compara as quatro direções de Idle/Walk/Attack com os sprites originais e recebe pacotes locais para inspeção.
+
+O conjunto artístico modular ainda está ausente: o jogo mantém os personagens completos por fallback, incluindo o Bento aprovado. Não houve geração nova ou mudança de save. [Contrato, auditoria, assets faltantes e testes](docs/PAPER-DOLL.md) · [Análise anterior preservada](docs/PAPER-DOLL-VIABILIDADE.md). O lote das seis classes continua pausado.
 
 ## Interface UI/UX 2.0
 

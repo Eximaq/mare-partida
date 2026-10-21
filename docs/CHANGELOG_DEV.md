@@ -1,5 +1,14 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Paper Doll 1.0, Fase1: infraestrutura com fallback
+
+- Branch `feature/paper-doll-fase-1`, base `5047eea`; checkpoint anterior de animações incorporado sem modificar main. Novo `paper-doll.js` sincroniza pose/frame e compõe camadas RGBA, valida rig/folhas/células, resolve profundidade por direção/pose e mantém LRU de4MiB/96 composições. Falhas não desenham camadas parciais.
+- `paper-doll-assets.js` prepara bindings puros de equipamento e o rig de Espadachim; placeholders ausentes não carregam URLs fictícias. Mundo, retrato e prévias consultam a mesma configuração. Zoan tem prioridade; físicas, saves e eventos de impacto mantidos. Carregador de imagens compartilhado usa a raiz do script para funcionar também na bancada em subpasta/Pages.
+- Bancada estática em `tools/paper-doll-inspector/`: quatro direções, ações, frames, zoom, pivôs, visibilidade, comparação e importação local de manifestos/PNGs em rascunho, sem upload ou alteração de save. Contrato e manifesto-template em `docs/PAPER-DOLL.md`/`assets/paper-doll/`.
+- Auditados80 frames anteriores. O job hurt/leste antes incerto foi confirmado como falho por travamento; não reenviado. Zero gerações novas. Faltam320 frames/12 folhas de quatro peças reais; a entrega é infraestrutura/prévia com fallback, **não validação artística de Espadachim modular**.
+- Validação:31 suítes Node, sintaxe/build; Chromium no projeto e no dist,80 poses por viewport desktop/mobile idênticas ao fallback; conformance geométrica em80 poses, pacote local, LRU, troca/retirada de itens, reload, Haki e Zoan passaram. Medição local do fallback:10.000 resoluções em7–11ms nas execuções locais; amostra de combate1,8s com109 frames, intervalo mediano de16,7ms e p95 de16,7–16,8ms, zero composições modulares. Esses números não avaliam arte modular real ou multidão de personagens.
+- Capturas e JSON em `docs/evidence-paper-doll/`, fora do Git. Sem merge ou publicação automática. [Contrato e relatório detalhado](PAPER-DOLL.md).
+
 ## 20/10/2026 — Checkpoint de animações 2.0 e pausa para estudo Paper Doll
 
 - Branch `feature/class-combat-animations-v2`, base remota `5047eea`. Preservado o trabalho iniciado: registro de conjuntos por metadados, carregamento sob demanda, estados especializados e efeitos de habilidade agendados uma única vez. Nenhum conjunto novo ativado como produção; Bento Espadachim e artes anteriores preservados byte a byte.

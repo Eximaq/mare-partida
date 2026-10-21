@@ -2,12 +2,20 @@
 /* Playback uses metadata and native generated pixels; no frame synthesis or mirroring. */
 (() => {
   const assets={};
+  const images=new Map();
+  const assetBase=typeof document!=='undefined'&&document.currentScript?.src?new URL('.',document.currentScript.src).href:null;
   const directionMap={front:'south',back:'north',left:'west',right:'east'};
+  function image(url){
+    if(!images.has(url)){
+      const im=new Image(),notify=()=>window.dispatchEvent(new Event('mare-faction-sprite-ready'));im.addEventListener('load',notify);im.addEventListener('error',notify);im.src=assetBase?new URL(url,assetBase).href:url;images.set(url,im);
+    }
+    return images.get(url);
+  }
   function ensure(id){
     const asset=assets[id];if(!asset||asset.requested)return;
     asset.requested=true;
     for(const [action,animation]of Object.entries(asset.meta.animations)){
-      const image=new Image();image.addEventListener('load',()=>window.dispatchEvent(new Event('mare-faction-sprite-ready')));image.src=animation.url;asset.sheets[action]=image;
+      asset.sheets[action]=image(animation.url);
     }
   }
   function register(config,{lazy=false}={}){
@@ -42,5 +50,6 @@
       Math.round(x-ax*factor),Math.round(y-ay*factor),width,h);
     context.restore();return true;
   }
-  globalThis.MareFactionSprites={register,ensure,frame,draw,assets};
+  const forgetImage=url=>{if(url.startsWith('blob:'))images.delete(url);};
+  globalThis.MareFactionSprites={register,ensure,frame,draw,assets,image,forgetImage};
 })();

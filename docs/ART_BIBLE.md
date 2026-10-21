@@ -1,5 +1,11 @@
 # Referência visual — Maré Partida
 
+## Paper Doll 1.0 — contrato sem arte modular entregue
+
+Protótipo técnico de Espadachim com rig84×84/pivô42,65; Idle4/4FPS, Walk8/8FPS e Attack8/12FPS, quatro direções. A célula inclui padding e não redefine a escala dos NPCs ou tiles64. Frames de corpo, cabelo, roupa e arma precisam compartilhar a mesma pose; os sprites completos existentes não foram separados artificialmente.
+
+Faltam320 frames modulares reais/12 folhas. A bancada exibe referência e fallback, sem alegar aprovação artística; ensaios de composição com blocos de cor são exclusivamente fixtures de teste fora do jogo. [Contrato, fontes e limites](PAPER-DOLL.md). Nenhuma geração ou repintura foi feita nesta fase.
+
 ## Ilha Dawn manual — 20/10/2026
 
 Usar o composto e os objetos originais do ZIP do proprietário, sem redesenhar, recolorir ou reduzir. Terrenos nativos64, composição56×40. Árvores95×105, barcos84×141, casas121×119, postes20×80 e baú18×18 preservados em escala1×. Monstros mantêm as artes48 existentes. Oclusão condicional usa pixels do composto e alpha dos objetos, evitando duplicação do cenário. [Fontes, footprints e limites](DAWN-MAPA-MANUAL.md).
