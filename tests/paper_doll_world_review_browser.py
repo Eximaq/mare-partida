@@ -40,7 +40,9 @@ with sync_playwright() as p:
  q.evaluate('urls=>Promise.all(urls.map(url=>MareFactionSprites.image(url).decode()))',list(files))
  expected_walk=next(piece for piece in pack['pieces'] if piece['slot']=='body')['animations'].get('walk',{}).get('directions',[])
  for key,direction in [('w','north'),('a','west'),('s','south'),('d','east')]:
-  q.keyboard.down(key);q.clock.run_for(1100 if direction in expected_walk else 200);q.keyboard.up(key);q.clock.run_for(1100)
+  q.keyboard.down(key);q.clock.run_for(1100 if direction in expected_walk else 200)
+  if direction in expected_walk:q.screenshot(path=str(OUT/('world-modular-review-walk-'+direction+'.png')))
+  q.keyboard.up(key);q.clock.run_for(1100)
   q.wait_for_function('key=>key in __paperDollWorldReview.draws',arg='idle/'+direction)
  state=q.evaluate('__paperDollWorldReview');assert all('idle/'+d in state['draws'] for d in ['south','north','west','east']),state
  assert all('walk/'+d in state['draws'] for d in expected_walk),state
@@ -75,5 +77,5 @@ with sync_playwright() as p:
  assert q.evaluate('__mareDiagnostics().paperDoll.compositions')==0
  assert q.evaluate('JSON.parse(localStorage.getItem("mare-partida-save-v1")).zoanTransformed')
  c.close();assert not errors,errors;browser.close()
- (OUT/'world-review-results.json').write_text(json.dumps(summary,indent=2)+'\n')
+ (OUT/('world-review-walk-results.json' if expected_walk else 'world-review-results.json')).write_text(json.dumps(summary,indent=2)+'\n')
 print('Real-world review passed: four-view Idle; all8 Walk frames for',expected_walk,'via test-only opt-in; incomplete actions fallback; actual damage, bounded cache, Haki drain, disable/revert, unchanged save schema and Zoan bypass.')
