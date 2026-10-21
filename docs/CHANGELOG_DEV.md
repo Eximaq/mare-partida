@@ -1,3 +1,11 @@
+## 20/10/2026 — Personagem único: base compartilhada
+
+Branch `feature/personagem-unico-base`, base `origin/main a1d68d4`. Evolui a infraestrutura Paper Doll para um corpo/cabelo comum às sete classes e quatro facções. Classe seleciona uma das seis categorias de ataque e arma; facção seleciona roupa padrão. Equipamentos conhecidos têm bindings próprios, sem renumerar itens ou escrever campos no save. Armas incompatíveis, poses ausentes e Zoan preservam o legado.
+
+A bancada recebeu seleção de classe/facção, armas por categoria e aviso explícito quando só existe referência original em repouso. Pacotes locais `swordsman-v1` continuam aceitos; novo manifesto `human-v1` contém apenas definições ausentes, sem PNG. Não houve geração PixelLab nem editor de aparência; o conjunto modular real continua pendente.
+
+Verificação: suites Node, build Pages, bancada desktop/mobile,28 perfis×3 ações e28 carregamentos de save isolados, regressão de composição/equipamentos/Haki/Zoan e combate das sete classes. Capturas novas em `docs/evidence-paper-doll/`, fora do Git. Rollback por revert do commit desta branch; não há migração de saves a desfazer. Publicação/merge somente após aprovação.
+
 # Histórico de desenvolvimento
 
 ## 20/10/2026 — Paper Doll 1.0, Fase1: infraestrutura com fallback

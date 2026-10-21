@@ -1,5 +1,33 @@
 # Paper Doll 1.0 — Fase 1
 
+## Evolução: personagem único (20/10/2026)
+
+A base técnica agora usa `human-v1`, independente de classe/facção. A implementação histórica `swordsman-v1` e seus pacotes continuam aceitos na bancada. Esta evolução não entrega sprites modulares nem o editor de aparência: todos os placeholders continuam `available:false`, sem URLs ou aprovação artificial. O jogo preserva os personagens completos por fallback.
+
+- `profile(player)` separa corpo/cabelo comuns, categoria de ação, roupa de facção e arma padrão. Todas as 28 combinações apontam para `human-body` e `human-hair`.
+- `appearance(player)` aplica os equipamentos ao perfil, sem escrever em `player` ou em saves. IDs de itens existentes não foram alterados. Classes/facções inválidas e Zoan não são elegíveis.
+- `animationId(player, action)` e `sample(runtime, player, action, direction, time)` resolvem a pose visual usando o tempo fornecido pelo jogo. Nenhum evento de impacto é criado pelo compositor.
+- Idle e Walk são comuns. Attack se divide em `attack-unarmed` (Lutador), `attack-sword` (Espadachim), `attack-firearm` (Atirador), `attack-daggers` (Gatuno), `attack-tech` (Ciborgue) e `attack-focus` (Estrategista/Suporte). Compartilhar canalização não afirma que as habilidades das duas classes são iguais.
+- Skills, combo, hurt, death e transformações mantêm os renderizadores anteriores. Ataques de classes sem controlador validado continuam inteiramente no caminho legado, mesmo quando o futuro conjunto Idle/Walk estiver disponível. A migração de cada ataque exige seu contrato real de tempo/impacto; não se transplantou o golpe de Bento para outros estilos.
+- Facção escolhe `human-outfit-<factionId>`, sem mudar anatomia. Equipar um casaco substitui essa roupa. Remover restaura o padrão da facção. Arma removida restaura o padrão da categoria, preservando o contrato anterior; não altera as regras de combate desarmado.
+- Foram associados os 14 itens de arma iniciais (0–5,12–17,31–32), casacos6/7 e bandana18. Uma arma de categoria incompatível ou um item não mapeado nesses slots força fallback completo. Equipamentos de outros slots continuam fora do protótipo visual; a expansão desses slots requer peças reais antes da ativação artística do personagem completo.
+
+A bancada agora oferece Classe e Facção, com os mesmos perfis usados no jogo. O lado original sempre usa a própria facção. Apenas o Espadachim Pirata tem referência original de ataque aprovada; nos outros perfis, a ferramenta informa explicitamente que está mostrando repouso como referência, sem simular uma animação de ataque. A importação local continua isolada do jogo/save e bloqueia a mudança de perfil enquanto um pacote está em inspeção.
+
+### Contrato comum e produção futura
+
+O contrato84×84, pivô42/65, quatro direções, transparência e regras de profundidade da Fase1 continuam válidos. `assets/paper-doll/human/manifest.json` contém o rig e catálogo vazios, sem PNG. Idle tem4 frames/4FPS; Walk8/8FPS; cada categoria Attack tem8/12FPS como contrato inicial de arte. Esses números não modificam cooldowns ou velocidade do combate. Qualquer variação necessária exige revisão explícita do contrato antes da integração.
+
+Cada peça pode entregar cobertura parcial: uma pose ausente volta atomicamente ao legado. Um corpo/cabelo cobrindo Idle, Walk e todas as seis categorias precisa de240 frames (48 de locomoção +192 de ataques). Uma arma cobrindo locomoção e seu próprio ataque precisa de80. Roupa/acessório que acompanhar todas as categorias também precisa de240; o mesmo arquivo da peça é reutilizado nas classes compatíveis, sem gerar quatro corpos por facção ou sete por classe.
+
+Todas essas imagens ainda faltam. O primeiro lote artístico recomendado permanece pequeno: corpo, cabelo, roupa neutra e espada em Idle/sul, validando o encaixe antes de ampliar movimentos e variações. Esta etapa técnica consumiu **zero créditos** e não autoriza essa produção. Prompts, método de animação alinhada e orçamento precisam de aprovação própria; a quantidade de frames não deve ser confundida com o custo de gerações.
+
+Não há customizador de aparência, recoloração, escolha persistente de cabelo/pele/olhos nem alteração de save nesta entrega. O vídeo do usuário orienta uma fase futura, mantendo o tema náutico do projeto.
+
+### Verificação desta evolução
+
+`tests/paper-doll.test.cjs` confere os28 perfis, corpo/cabelo comuns, categorias, trocas de classe/facção/equipamento, rejeição de armas incompatíveis e ausência de mutação. `tests/universal_character_browser.py` percorre os28 perfis ×3 ações na bancada e carrega os28 perfis no jogo em contextos isolados, conferindo fallback, equipamentos e saves. A regressão anterior de composição, importação, Haki, Zoan e combate das sete classes continua obrigatória. As capturas locais ficam em `docs/evidence-paper-doll/shared-*.png`, ignoradas pelo Git.
+
 ## Estado e limite artístico
 
 Infraestrutura funcional com fallback, bancada interativa e contrato de assets. **Ainda não existe um conjunto modular real de Espadachim para validação artística.** Nenhum PNG foi gerado, pintado, separado por cores ou convertido em camada artificial. O jogo continua mostrando os personagens originais.

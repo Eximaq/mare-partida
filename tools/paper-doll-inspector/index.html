@@ -12,8 +12,9 @@
   <script defer src="inspector.js"></script>
 </head>
 <body>
-  <header><a class="back" href="../../index.html">← Voltar ao jogo</a><div class="heading"><div><h1>Bancada de personagens</h1><p>Paper Doll 1.0 · Referência: Espadachim Bento Maré-Livre</p></div><span class="seal">Fase 1 · Inspeção</span></div></header>
+  <header><a class="back" href="../../index.html">← Voltar ao jogo</a><div class="heading"><div><h1>Bancada de personagens</h1><p>Personagem único · Corpo compartilhado entre classes e facções</p></div><span class="seal">Base comum · Inspeção</span></div></header>
   <main>
+    <section class="controls" aria-label="Identidade do personagem"><label>Classe<select id="classId"></select></label><label>Facção<select id="factionId"></select></label><p class="muted">O corpo é compartilhado. Classe seleciona movimentos e arma; facção seleciona a roupa padrão. As fontes completas atuais continuam como fallback.</p></section>
     <section class="controls" aria-label="Reprodução">
       <label>Ação<select id="animation"><option value="idle">Idle · Repouso</option><option value="walk">Walk · Caminhada</option><option value="attack">Attack · Espada</option></select></label>
       <label>Direção<select id="direction"><option value="all">Quatro direções</option><option value="south">Sul · Frente</option><option value="north">Norte · Costas</option><option value="west">Oeste · Esquerda</option><option value="east">Leste · Direita</option></select></label>

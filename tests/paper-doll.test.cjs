@@ -55,15 +55,43 @@ assert.equal(slots.length,7);
 const failedCanvas=create({getImage:image,createCanvas:()=>({getContext:()=>null}),validatePixels:()=>null});failedCanvas.registerRig(rig);for(const p of definitions)failedCanvas.registerPiece(p);assert(!failedCanvas.draw(output,appearance,pose,0,0),'canvas allocation failure uses legacy fallback');
 const failedLoader=create({getImage:()=>{throw Error('invalid image URL')},createCanvas:canvas});failedLoader.registerRig(rig);for(const p of definitions)failedLoader.registerPiece(p);assert(failedLoader.resolve(appearance,pose).missing.every(m=>m.code==='failed-image'));
 const player={classId:'sword',factionId:'pirate',equipment:{weapon:{def:0},coat:{def:6}}},untouched=JSON.stringify(player);
-let a=catalog.appearance(player);assert.equal(a.pieces.weapon,'prototype-sword');assert.equal(JSON.stringify(player),untouched,'appearance does not mutate save data');
-player.equipment.weapon={def:1};a=catalog.appearance(player);assert.equal(a.pieces.weapon,'prototype-sabre');
-player.equipment.weapon=null;assert.equal(catalog.appearance(player).pieces.weapon,'prototype-sword');
-player.equipment.coat={def:7};assert.equal(catalog.appearance(player).pieces.outfit,'prototype-mist-coat');player.equipment.coat=null;assert.equal(catalog.appearance(player).pieces.outfit,'prototype-outfit');
+let a=catalog.appearance(player);assert.equal(a.pieces.weapon,'human-weapon-0');assert.equal(JSON.stringify(player),untouched,'appearance does not mutate save data');
+player.equipment.weapon={def:1};a=catalog.appearance(player);assert.equal(a.pieces.weapon,'human-weapon-1');
+player.equipment.weapon=null;assert.equal(catalog.appearance(player).pieces.weapon,'human-weapon-0');
+player.equipment.coat={def:7};assert.equal(catalog.appearance(player).pieces.outfit,'human-coat-7');player.equipment.coat=null;assert.equal(catalog.appearance(player).pieces.outfit,'human-outfit-pirate');
 player.equipment.head={def:19};assert(catalog.appearance(player).blocked.some(x=>x.code==='unmapped-equipment'));
-for(const classId of ['brawler','gunner','rogue','cyborg','strategist','healer'])assert(!catalog.eligible({...player,classId}));
-for(const factionId of ['marine','revolutionary','government'])assert(!catalog.eligible({...player,factionId}));
+// All 28 profiles share body/hair/movement. Class and faction never own anatomy.
+const bodies=new Set(),hairs=new Set();
+for(const classId of Object.keys(catalog.classes))for(const factionId of Object.keys(catalog.factions)){
+ const candidate={classId,factionId,equipment:{}},before=JSON.stringify(candidate),profile=catalog.profile(candidate),look=catalog.appearance(candidate);
+ assert(catalog.eligible(candidate));assert.equal(look.rigId,'human-v1');assert.equal(look.blocked.length,0);bodies.add(look.pieces.body);hairs.add(look.pieces.hair);
+ assert.equal(catalog.animationId(candidate,'idle'),'idle');assert.equal(catalog.animationId(candidate,'walk'),'walk');
+ assert.equal(catalog.animationId(candidate,'attack'),'attack-'+profile.category);assert.equal(catalog.animationId(candidate,'skill-1'),null);
+ assert.equal(look.pieces.outfit,'human-outfit-'+factionId);assert.equal(JSON.stringify(candidate),before);
+ candidate.equipment.weapon={def:catalog.classes[classId].weapon};assert.equal(catalog.appearance(candidate).blocked.length,0);
+ const ref=catalog.referenceFor(candidate,'attack');assert.equal(ref.animated,classId==='sword'&&factionId==='pirate');
+}
+assert.equal(bodies.size,1);assert.equal(hairs.size,1);
+assert.equal(catalog.profile({classId:'healer',factionId:'pirate'}).category,catalog.profile({classId:'strategist',factionId:'marine'}).category);
+for(const candidate of [{classId:'unknown',factionId:'pirate'},{classId:'sword',factionId:'unknown'},{classId:'toString',factionId:'pirate'}])assert(!catalog.eligible(candidate));
+const switching={classId:'sword',factionId:'pirate',equipment:{}};const identity=catalog.appearance(switching).pieces.body;
+switching.classId='gunner';assert.equal(catalog.appearance(switching).pieces.body,identity);assert.equal(catalog.appearance(switching).pieces.weapon,'human-weapon-4');
+switching.equipment.weapon={def:0};assert.equal(catalog.appearance(switching).blocked[0].code,'incompatible-weapon');
+switching.equipment.weapon={def:4};assert.equal(catalog.appearance(switching).blocked.length,0);switching.factionId='marine';assert.equal(catalog.appearance(switching).pieces.body,identity);
 assert(!catalog.eligible({...player,zoanTransformed:true}));
 global.MarePaperDoll=require('../paper-doll.js');const before=loads,empty=catalog.createRuntime({getImage:image});
-const config=catalog.appearance({classId:'sword',factionId:'pirate',equipment:{}}),frame=empty.sample(config.rigId,'attack','south',0);
+const config=catalog.appearance({classId:'sword',factionId:'pirate',equipment:{}}),frame=catalog.sample(empty,{classId:'sword',factionId:'pirate'},'attack','south',0);
+let sharedPoses=0;
+for(const classId of Object.keys(catalog.classes))for(const factionId of Object.keys(catalog.factions)){
+ const player={classId,factionId,equipment:{}},config=catalog.appearance(player);
+ for(const action of ['idle','walk','attack'])for(const direction of directions){
+  const clip=catalog.sharedRig.animations[catalog.animationId(player,action)];
+  for(let i=0;i<clip.frames;i++){
+   const pose=catalog.sample(empty,player,action,direction,(i+.01)/clip.fps);
+   assert.equal(pose.frameIndex,i);assert.equal(pose.direction,direction);assert.equal(empty.resolve(config,pose).missing.length,4);sharedPoses++;
+  }
+ }
+}
+assert.equal(sharedPoses,2240);assert.equal(loads,before,'all 28 profiles keep missing art explicit with no image requests');
 assert.equal(empty.resolve(config,frame).missing.length,4);assert(!empty.draw(output,config,frame,0,0));assert.equal(loads,before,'missing placeholders never request invented URLs');
 console.log('Paper Doll: 80 poses x4 layers, pivots, depth/offsets, cache bounds, atomic fallback, invalid art, equipment updates, save purity and class/faction/Zoan scope passed.');

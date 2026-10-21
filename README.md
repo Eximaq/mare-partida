@@ -10,7 +10,7 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 ## Paper Doll 1.0 — infraestrutura e bancada
 
-Compositor por camadas sincronizadas, pivôs, profundidade por direção/pose, cache limitado e associação visual de equipamentos. A [bancada técnica](tools/paper-doll-inspector/index.html) compara as quatro direções de Idle/Walk/Attack com os sprites originais e recebe pacotes locais para inspeção.
+Base humana comum para as sete classes e quatro facções, com categorias de ataque independentes da aparência. Compositor por camadas sincronizadas, pivôs, profundidade por direção/pose, cache limitado e associação visual de equipamentos. A bancada permite selecionar as28 combinações, identificando os assets ausentes. A [bancada técnica](tools/paper-doll-inspector/index.html) compara as quatro direções de Idle/Walk/Attack com os sprites originais e recebe pacotes locais para inspeção.
 
 O conjunto artístico modular ainda está ausente: o jogo mantém os personagens completos por fallback, incluindo o Bento aprovado. Não houve geração nova ou mudança de save. [Contrato, auditoria, assets faltantes e testes](docs/PAPER-DOLL.md) · [Análise anterior preservada](docs/PAPER-DOLL-VIABILIDADE.md). O lote das seis classes continua pausado.
 
