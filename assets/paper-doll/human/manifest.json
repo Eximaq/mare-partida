@@ -1,0 +1,414 @@
+{
+  "schemaVersion": 1,
+  "status": "missing-art",
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "hair",
+      "outfit",
+      "weapon"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "walk": {
+        "frames": 8,
+        "fps": 8,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-sword": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-unarmed": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-firearm": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-daggers": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-tech": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-focus": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "human-body",
+      "slot": "body",
+      "name": "Corpo humano comum",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-hair",
+      "slot": "hair",
+      "name": "Cabelo comum",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-outfit-pirate",
+      "slot": "outfit",
+      "name": "Roupa · Pirata",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-outfit-marine",
+      "slot": "outfit",
+      "name": "Roupa · Marinheiro",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-outfit-revolutionary",
+      "slot": "outfit",
+      "name": "Roupa · Revolucionário",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-outfit-government",
+      "slot": "outfit",
+      "name": "Roupa · Governo Mundial",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-coat-6",
+      "slot": "outfit",
+      "name": "Casaco de Marinheiro",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-coat-7",
+      "slot": "outfit",
+      "name": "Casaco da Bruma",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-head-18",
+      "slot": "accessory",
+      "name": "Bandana das Correntes",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-0",
+      "slot": "weapon",
+      "name": "Espada de Ferro Salgado",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-1",
+      "slot": "weapon",
+      "name": "Sabre de Coral",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-2",
+      "slot": "weapon",
+      "name": "Punhos de Bronze",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-3",
+      "slot": "weapon",
+      "name": "Luvas de Marfim",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-4",
+      "slot": "weapon",
+      "name": "Mosquete de Convés",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-5",
+      "slot": "weapon",
+      "name": "Mosquete dos Faróis",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-12",
+      "slot": "weapon",
+      "name": "Adagas da Bruma",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-13",
+      "slot": "weapon",
+      "name": "Lâminas Acrobáticas",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-14",
+      "slot": "weapon",
+      "name": "Manopla de Aço",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-15",
+      "slot": "weapon",
+      "name": "Canhão de Pulso",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-16",
+      "slot": "weapon",
+      "name": "Compasso de Tempestade",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-17",
+      "slot": "weapon",
+      "name": "Orbe das Correntes",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-31",
+      "slot": "weapon",
+      "name": "Cajado do Farol",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "human-weapon-32",
+      "slot": "weapon",
+      "name": "Relicário da Maré Viva",
+      "rigId": "human-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {},
+      "source": "missing; no modular source supplied"
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "human-body",
+      "hair": "human-hair",
+      "outfit": "human-outfit-pirate",
+      "weapon": "human-weapon-0"
+    },
+    "blocked": [],
+    "category": "sword"
+  },
+  "bindings": {
+    "weapon": {
+      "slot": "weapon",
+      "items": {
+        "0": "human-weapon-0",
+        "1": "human-weapon-1",
+        "2": "human-weapon-2",
+        "3": "human-weapon-3",
+        "4": "human-weapon-4",
+        "5": "human-weapon-5",
+        "12": "human-weapon-12",
+        "13": "human-weapon-13",
+        "14": "human-weapon-14",
+        "15": "human-weapon-15",
+        "16": "human-weapon-16",
+        "17": "human-weapon-17",
+        "33": "human-weapon-33",
+        "34": "human-weapon-34"
+      }
+    },
+    "coat": {
+      "slot": "outfit",
+      "items": {
+        "6": "human-coat-6",
+        "7": "human-coat-7"
+      }
+    },
+    "head": {
+      "slot": "accessory",
+      "items": {
+        "18": "human-head-18"
+      }
+    }
+  },
+  "notes": [
+    "No PNGs or approved art. One common body/hair across 28 profiles.",
+    "Partial piece coverage is allowed for inspection; missing poses use legacy fallback.",
+    "Never reuse a sword swing for a firearm or spell. Timings below are art contract only, not balance changes."
+  ]
+}

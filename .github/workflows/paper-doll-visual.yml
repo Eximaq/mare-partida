@@ -1,0 +1,51 @@
+name: Paper Doll — infraestrutura e fallback
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'paper-doll*.js'
+      - 'faction-sprites.js'
+      - 'game.js'
+      - 'index.html'
+      - 'assets/paper-doll/**'
+      - 'tools/paper-doll-inspector/**'
+      - 'tools/build_pages.py'
+      - 'docs/PAPER-DOLL.md'
+      - 'tests/paper_doll_browser.py'
+      - 'tests/universal_character_browser.py'
+      - 'tests/class_combat_v2_browser.py'
+      - '.github/workflows/paper-doll-visual.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  paper-doll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar navegador e pacote
+        run: |
+          python -m pip install playwright==1.63.0
+          python -m playwright install --with-deps chromium
+          python tools/build_pages.py
+      - name: Conferir bancada, fallback e jogo
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8123/dist/
+        run: |
+          python -m http.server 8123 --bind 127.0.0.1 > /tmp/paper-doll-server.log 2>&1 &
+          sleep 2
+          python tests/paper_doll_browser.py
+          python tests/universal_character_browser.py
+          python tests/class_combat_v2_browser.py
+      - name: Capturas e medições para revisão
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: paper-doll-infraestrutura-capturas
+          path: docs/evidence-paper-doll/
+          if-no-files-found: warn
+          retention-days: 14

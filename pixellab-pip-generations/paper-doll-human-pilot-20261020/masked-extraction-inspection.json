@@ -1,0 +1,20 @@
+{
+  "outfit": {
+    "status": "unapproved local inspection extraction",
+    "copied_generated_pixels": 183,
+    "skipped_alpha_erasures": [],
+    "mask": "outfit-mask-proposed.png"
+  },
+  "hair": {
+    "status": "unapproved local inspection extraction",
+    "copied_generated_pixels": 63,
+    "skipped_alpha_erasures": [],
+    "mask": "hair-mask-proposed.png"
+  },
+  "sword": {
+    "status": "unapproved local inspection extraction",
+    "copied_generated_pixels": 118,
+    "skipped_alpha_erasures": [],
+    "mask": "sword-mask-proposed.png"
+  }
+}

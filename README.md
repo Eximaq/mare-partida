@@ -8,6 +8,12 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
+## Paper Doll 1.0 — infraestrutura e bancada
+
+Base humana comum para as sete classes e quatro facções, com categorias de ataque independentes da aparência. Compositor por camadas sincronizadas, pivôs, profundidade por direção/pose, cache limitado e associação visual de equipamentos. A bancada permite selecionar as28 combinações, identificando os assets ausentes. A [bancada técnica](tools/paper-doll-inspector/index.html) compara as quatro direções de Idle/Walk/Attack com os sprites originais e recebe pacotes locais para inspeção.
+
+O conjunto animado modular ainda está ausente: o jogo mantém os personagens completos por fallback, incluindo o Bento aprovado. A [primeira prévia estática](pixellab-pip-generations/paper-doll-human-pilot-20261020/preview.html) permite alternar cabelo, roupa e espada em uma pose frontal, sem alteração de save. Foram cobradas5 gerações nesse piloto; resultados brutos e extrações de inspeção estão documentados no [relatório](docs/PAPER-DOLL-PILOTO.md). [Contrato, auditoria, assets faltantes e testes](docs/PAPER-DOLL.md) · [Análise anterior preservada](docs/PAPER-DOLL-VIABILIDADE.md). O lote das seis classes continua pausado.
+
 ## Interface UI/UX 2.0
 
 A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.

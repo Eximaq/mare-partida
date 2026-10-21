@@ -1,0 +1,47 @@
+{
+  "status": "unapproved inspection derivation; not final artwork",
+  "raw_audit": {
+    "passed": false,
+    "scope": "static structural fit only; artwork approval required",
+    "size": [
+      84,
+      84
+    ],
+    "allowed_region": null,
+    "allowed_mask": "outfit-mask-proposed.png",
+    "changed_pixels": 492,
+    "changed_bbox": [
+      31,
+      22,
+      53,
+      64
+    ],
+    "outside_region_pixels": 309,
+    "alpha_erasure_pixels": 0,
+    "recomposition_mismatch_pixels": 0
+  },
+  "draft_audit": {
+    "passed": true,
+    "scope": "static structural fit only; artwork approval required",
+    "size": [
+      84,
+      84
+    ],
+    "allowed_region": null,
+    "allowed_mask": "outfit-mask-proposed.png",
+    "changed_pixels": 183,
+    "changed_bbox": [
+      33,
+      32,
+      51,
+      47
+    ],
+    "outside_region_pixels": 0,
+    "alpha_erasure_pixels": 0,
+    "recomposition_mismatch_pixels": 0
+  },
+  "copied_generated_pixels": 183,
+  "skipped_alpha_erasures": [],
+  "layer_file": "outfit-masked-inspection-layer.png",
+  "composite_file": "outfit-masked-inspection-composite.png"
+}

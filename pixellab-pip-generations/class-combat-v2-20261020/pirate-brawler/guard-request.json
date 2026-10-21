@@ -1,0 +1,22 @@
+{
+  "req": {
+    "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+    "mode": "v3",
+    "directions": [
+      "south"
+    ],
+    "frame_count": 4,
+    "keep_first_frame": false,
+    "animation_name": "brawler-v2-combat-idle",
+    "action_description": "Breathe subtly in a grounded bare-knuckle guard, fists raised, feet planted. Keep the current facing, outfit and body size. Recover the starting guard."
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Breathe subtly in a grounded bare-knuckle guard, fists raised, feet planted. Keep the current facing, outfit and body size. Recover the starting guard.)\ndirections: south (1 jobs)\njob_ids: south=62797233-de1e-499a-9017-a6e101dd4d6e\ngroup: de767df3-7cf0-4001-88a5-65149a8427c2\nframes: 4 (reference stripped, keep_first_frame=false)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Breathe subtly in a grounded bare-knuckle guard, fists raised, feet planted. Keep the current facing, outfit and body size. Recover the starting guard.\", animation_group_id=\"de767df3-7cf0-4001-88a5-65149a8427c2\", directions=[...])"
+      }
+    ],
+    "isError": false
+  }
+}

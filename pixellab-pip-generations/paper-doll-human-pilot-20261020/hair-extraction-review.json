@@ -1,0 +1,47 @@
+{
+  "status": "unapproved inspection derivation; not final artwork",
+  "raw_audit": {
+    "passed": false,
+    "scope": "static structural fit only; artwork approval required",
+    "size": [
+      84,
+      84
+    ],
+    "allowed_region": null,
+    "allowed_mask": "hair-mask-proposed.png",
+    "changed_pixels": 498,
+    "changed_bbox": [
+      31,
+      20,
+      53,
+      64
+    ],
+    "outside_region_pixels": 435,
+    "alpha_erasure_pixels": 1,
+    "recomposition_mismatch_pixels": 1
+  },
+  "draft_audit": {
+    "passed": true,
+    "scope": "static structural fit only; artwork approval required",
+    "size": [
+      84,
+      84
+    ],
+    "allowed_region": null,
+    "allowed_mask": "hair-mask-proposed.png",
+    "changed_pixels": 63,
+    "changed_bbox": [
+      36,
+      20,
+      48,
+      27
+    ],
+    "outside_region_pixels": 0,
+    "alpha_erasure_pixels": 0,
+    "recomposition_mismatch_pixels": 0
+  },
+  "copied_generated_pixels": 63,
+  "skipped_alpha_erasures": [],
+  "layer_file": "hair-masked-inspection-layer.png",
+  "composite_file": "hair-masked-inspection-composite.png"
+}

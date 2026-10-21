@@ -1,5 +1,11 @@
 # Referência visual — Maré Partida
 
+## Paper Doll 1.0 — contrato sem arte modular entregue
+
+Protótipo técnico de Espadachim com rig84×84/pivô42,65; Idle4/4FPS, Walk8/8FPS e Attack8/12FPS, quatro direções. A célula inclui padding e não redefine a escala dos NPCs ou tiles64. Frames de corpo, cabelo, roupa e arma precisam compartilhar a mesma pose; os sprites completos existentes não foram separados artificialmente.
+
+Faltam320 frames modulares reais/12 folhas. A bancada exibe referência e fallback, sem alegar aprovação artística; ensaios de composição com blocos de cor são exclusivamente fixtures de teste fora do jogo. [Contrato, fontes e limites](PAPER-DOLL.md). Nenhuma geração ou repintura foi feita nesta fase.
+
 ## Ilha Dawn manual — 20/10/2026
 
 Usar o composto e os objetos originais do ZIP do proprietário, sem redesenhar, recolorir ou reduzir. Terrenos nativos64, composição56×40. Árvores95×105, barcos84×141, casas121×119, postes20×80 e baú18×18 preservados em escala1×. Monstros mantêm as artes48 existentes. Oclusão condicional usa pixels do composto e alpha dos objetos, evitando duplicação do cenário. [Fontes, footprints e limites](DAWN-MAPA-MANUAL.md).
@@ -39,3 +45,7 @@ Quatro monstros novos com poses nativas 48×48, usando Ryuma/Bento como referên
 Atlas de construções transparente 256×256, quatro células 128×128; divisão por quadrantes autorizada, sem redimensionar os arquivos. Piso de calçamento nativo64. Água, areia, grama, palmeiras e carga reutilizam arte existente; madeira do cais reutiliza o atlas procedural já existente do porto. Ataques usam a pose direcional e avisos reais de combate; o lote não incluiu animações de ataque. Manifesto de runtime em `assets/orange-town/manifest.json`; solicitações, recibos e receita em `pixellab-pip-generations/orange-town-20261020/`.
 
 Revisão de composição de 19/10/2026: mapa 32×32 tiles de 64px, sem reduzir as artes. Edifícios renderizados em escala 1,5; uma ponte diagonal em escala 2 alinhada ao vão e às margens. Paredões e degraus reutilizam a textura de basalto/calçamento em composição geométrica no renderizador, com colisões e passagens correspondentes. Nenhuma geração adicional.
+
+## Personagem único — 20/10/2026
+
+O contrato `human-v1` compartilha corpo/cabelo entre as sete classes e quatro facções. Roupa é uma camada independente; ataques são categorias de ação/arma, sem reutilizar uma espada como tiro ou magia. O manifesto vazio em `assets/paper-doll/human/manifest.json` e `docs/PAPER-DOLL.md` definem as peças futuras. Esta etapa não produziu imagens nem autoriza recoloração/recortes dos personagens fundidos. O visual atual continua como fallback até a validação artística de peças reais; o editor de aparência será uma fase posterior.

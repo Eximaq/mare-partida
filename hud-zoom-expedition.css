@@ -1,0 +1,40 @@
+/* Caçada: informações XP/h em tempo real, ancoradas sobre o painel Expedição. */
+#huntXpTracker.hunt-xp-tracker {
+  position:fixed;
+  bottom:calc(var(--rpg-safe-bottom,0px) + var(--rpg-edge,12px) + 102px);
+  right:var(--rpg-edge,12px);
+  z-index:var(--rpg-z-hud,10);
+  display:grid;
+  width:min(260px,calc(100vw - 24px));
+  gap:5px;
+  padding:9px 10px 8px;
+  border:1px solid var(--rpg-brass, #b58b4b);
+  border-radius:4px;
+  background:linear-gradient(145deg,#1d3435f5,#10242bf7);
+  box-shadow:inset 0 0 0 1px #ffd68d19,0 7px 17px #050d13a6;
+  color:var(--rpg-text,#f3e5c5);
+  font-family:var(--rpg-font,Arial,sans-serif);
+  font-variant-numeric:tabular-nums;
+  pointer-events:none;
+  z-index:1;
+}
+#huntXpTracker.hunt-xp-tracker[hidden] {display:none!important}
+.hunt-xp-tracker .hunt-xp-top,.hunt-xp-tracker .hunt-xp-metrics {
+  display:flex;justify-content:space-between;align-items:center;gap:8px;
+}
+.hunt-xp-tracker .hunt-xp-top span {font-size:10px;letter-spacing:.09em;font-weight:800;color:#d7c395}
+.hunt-xp-tracker .hunt-xp-top strong {font-size:17px;line-height:1.2;color:#a4e9c5;font-weight:800}
+.hunt-xp-tracker .hunt-xp-metrics {font-size:10px;color:#b7cfc8}
+.hunt-xp-tracker .hunt-xp-metrics b{font-weight:700;color:#e9dab8}
+.hunt-xp-tracker .hunt-xp-track{height:5px;background:#07181e;border:1px solid #5f786d66;border-radius:5px;overflow:hidden}
+.hunt-xp-tracker .hunt-xp-track i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3c9b84,#a5db91);transition:width .25s ease}
+.hunt-xp-tracker .hunt-xp-level {color:#9fafac;font-size:9px;line-height:1.2;text-align:right}
+
+#worldCanvas {image-rendering:pixelated;image-rendering:crisp-edges;image-rendering:pixelated}
+@media(max-width:760px) {
+  #huntXpTracker.hunt-xp-tracker{padding:6px 7px;gap:4px}
+  .hunt-xp-tracker .hunt-xp-top{align-items:flex-start;flex-wrap:wrap;gap:2px}
+  .hunt-xp-tracker .hunt-xp-top strong{font-size:14px}
+  .hunt-xp-tracker .hunt-xp-metrics{font-size:9px;flex-wrap:wrap;gap:3px}
+}
+@media(prefers-reduced-motion:reduce){.hunt-xp-tracker .hunt-xp-track i{transition:none}}

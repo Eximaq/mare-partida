@@ -1,0 +1,25 @@
+{
+  "req": {
+    "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+    "mode": "v3",
+    "directions": [
+      "north",
+      "west",
+      "east"
+    ],
+    "frame_count": 8,
+    "keep_first_frame": false,
+    "animation_name": "brawler-v2-skill-1",
+    "action_description": "Wind up a heavy fist, drive it forward and downward into a powerful ground impact with a brief small amber shock ring, then recover to guard. Keep feet anchored and the current facing, outfit and body size.",
+    "animation_group_id": "5462f700-7f69-4b2d-850d-ba6b9e66e13c"
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Wind up a heavy fist, drive it forward and downward into a powerful ground impact with a brief small amber shock ring, then recover to guard. Keep feet anchored and the current facing, outfit and body size.)\ndirections: north, west, east (3 jobs)\njob_ids: north=9db6eccc-e35f-4058-8168-85129af7bcbc, west=3a30002d-4796-4753-b70d-7a4a378b1bcc, east=da1d22e0-3f2d-43c3-85fe-cb6dcbb770c3\ngroup: 5462f700-7f69-4b2d-850d-ba6b9e66e13c\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: north 68x68, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 3 generations (1/dir x 3)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Wind up a heavy fist, drive it forward and downward into a powerful ground impact with a brief small amber shock ring, then recover to guard. Keep feet anchored and the current facing, outfit and body size.\", animation_group_id=\"5462f700-7f69-4b2d-850d-ba6b9e66e13c\", directions=[...])"
+      }
+    ],
+    "isError": false
+  }
+}

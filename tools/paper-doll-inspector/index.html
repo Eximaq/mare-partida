@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bancada Paper Doll · Maré Partida</title>
+  <link rel="stylesheet" href="inspector.css">
+  <script defer src="../../faction-sprites.js"></script>
+  <script defer src="../../faction-assets.js"></script>
+  <script defer src="../../combat-assets.js"></script>
+  <script defer src="../../paper-doll.js"></script>
+  <script defer src="../../paper-doll-assets.js"></script>
+  <script defer src="inspector.js"></script>
+</head>
+<body>
+  <header><a class="back" href="../../index.html">← Voltar ao jogo</a><div class="heading"><div><h1>Bancada de personagens</h1><p>Personagem único · Corpo compartilhado entre classes e facções</p></div><span class="seal">Base comum · Inspeção</span></div></header>
+  <main>
+    <section class="controls" aria-label="Identidade do personagem"><label>Classe<select id="classId"></select></label><label>Facção<select id="factionId"></select></label><p class="muted">O corpo é compartilhado. Classe seleciona movimentos e arma; facção seleciona a roupa padrão. As fontes completas atuais continuam como fallback.</p></section>
+    <section class="controls" aria-label="Reprodução">
+      <label>Ação<select id="animation"><option value="idle">Idle · Repouso</option><option value="walk">Walk · Caminhada</option><option value="attack">Attack · Espada</option></select></label>
+      <label>Direção<select id="direction"><option value="all">Quatro direções</option><option value="south">Sul · Frente</option><option value="north">Norte · Costas</option><option value="west">Oeste · Esquerda</option><option value="east">Leste · Direita</option></select></label>
+      <label>Zoom<select id="zoom"><option value="2">2×</option><option value="3" selected>3×</option><option value="4">4×</option></select></label>
+      <button id="play" type="button" aria-pressed="false">Reproduzir</button>
+      <label class="frame-control">Frame <output id="frameLabel">1 / 4</output><input id="frame" type="range" min="0" max="3" value="0" step="1"></label>
+      <label class="check"><input type="checkbox" id="pivots" checked>Pivôs e linha dos pés</label>
+    </section>
+    <p id="status" role="status" aria-live="polite">Conferindo fontes…</p>
+    <div class="workbench">
+      <section aria-label="Comparação por direção"><div id="boards" class="boards"></div></section>
+      <aside>
+        <section class="panel"><h2>Camadas</h2><p class="muted">Visibilidade afeta apenas a composição em inspeção. O fallback mantém o personagem completo.</p><div id="layers"></div><button id="resetLayers" type="button">Mostrar todas as camadas</button></section>
+        <section class="panel"><h2>Equipamento de ensaio</h2><label>Arma<select id="weapon"><option value="0">Espada de Ferro Salgado</option><option value="1">Sabre de Coral · Fonte ausente</option><option value="none">Removida · Visual padrão</option></select></label><label>Torso<select id="outfit"><option value="none">Padrão do personagem</option><option value="6">Roupa do protótipo</option><option value="7">Casaco da Bruma · Fonte ausente</option></select></label><p class="muted">Ensaio local. Não lê nem grava seu save.</p></section>
+        <details class="panel" id="technicalPanel"><summary>Conferência técnica e assets ausentes</summary><dl id="readout"></dl><h3>Assets ausentes ou incompatíveis</h3><ul id="missing"></ul><details><summary>Transformações das camadas</summary><pre id="transforms"></pre></details></details>
+        <details class="panel" id="importPanel"><summary>Receber novas peças</summary><p>Selecione um manifesto JSON e suas folhas PNG. Os arquivos ficam neste navegador, sem upload ou integração automática.</p><label class="file-button" for="importPack">Carregar pacote local</label><input id="importPack" type="file" accept=".json,image/png" multiple><button id="resetPack" type="button">Voltar ao catálogo original</button><p id="importStatus" role="status"></p><a href="../../docs/PAPER-DOLL.md">Contrato técnico de assets</a></details>
+      </aside>
+    </div>
+    <footer>O personagem exibido por fallback é um sprite completo existente. Camadas vazias não representam um conjunto modular validado. Use as direções e o controle de frame para comparar os mesmos instantes. O xadrez é apenas um auxiliar de transparência e não faz parte dos PNGs.</footer>
+  </main>
+</body>
+</html>

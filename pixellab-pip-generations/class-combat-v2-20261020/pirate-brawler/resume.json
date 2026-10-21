@@ -1,0 +1,19 @@
+{
+  "generation_policy": "paused_by_owner_no_new_paid_calls",
+  "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+  "last_unconfirmed_job": {
+    "job_id": "5ead33c2-960b-4e42-8982-89d1a868d714",
+    "animation_group_id": "a7e0cc0f-fd26-44c6-b747-dac939b553e3",
+    "animation": "brawler-v2-hurt",
+    "direction": "east",
+    "last_observed": "failed",
+    "terminal_status": "failed: generation stalled and was automatically failed; confirmed read-only during Paper Doll Phase 1",
+    "paid_resubmission": "not authorized"
+  },
+  "resume_read_only": "No pending generation. Original failed job ID is preserved. Any retry requires new explicit authorization; no retry was made.",
+  "downloaded_new_frames": 80,
+  "pending_new_frames": 0,
+  "reported_generations_from_accepted_calls": 13,
+  "new_modular_implementation": false,
+  "missing_frames_due_to_failure": 4
+}

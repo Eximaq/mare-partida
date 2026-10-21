@@ -1,9 +1,48 @@
+## 21/10/2026 — Publicação da prévia estática Paper Doll
+
+Publicação autorizada pelo proprietário. `tools/build_pages.py` inclui por allowlist a prévia de uma pose frontal e os recursos que ela usa; README e relatório apontam para a página. Não ativa peças no runtime, não altera saves e não publica a pasta de gerações inteira. Validação: build Pages, teste Node Paper Doll, teste Playwright da prévia no pacote estático e cache/saves.
+
+## 20–21/10/2026 — Piloto estático Paper Doll e limites do Pixen
+
+Branch `feature/paper-doll-primeiras-pecas`, base `dc59e4d`. PR43 publicado e conferido no Pages. Executadas5 chamadas Pixen de84×84, cobradas5 gerações pelos getters, após aprovação adicional da correção de rosto. Todos os jobs terminaram. Nenhuma peça modular final foi aprovada: cabelo/roupa/espada mudaram pixels fora da peça, cabelo encobriu o rosto e roupa também alterou o shorts.
+
+Originais, fontes, inspeções, auditorias, manifesto/blueprint e página de revisão preservados em `pixellab-pip-generations/paper-doll-human-pilot-20261020/`. Prévia facial local copia75 pixels gerados e conserva o corpo original fora da cabeça; é rascunho, não arte final. Extrações locais autorizadas produziram rascunhos separados de cabelo/roupa/espada, com zero alterações fora de cada máscara; a montagem estática permite alternar peças, sem simular animação. Auditoria tem modo estrito e modo explicitamente rotulado de inspeção. Sete testes Python, build Pages e página de revisão em navegador passaram; runtime e saves intactos. Revisão artística pendente antes de planejar animações reais; inpaint mascarado é alternativa não autorizada, sem consumo adicional. Ver `docs/PAPER-DOLL-PILOTO.md`.
+
+## 20/10/2026 — Personagem único: base compartilhada
+
+Branch `feature/personagem-unico-base`, base `origin/main a1d68d4`. Evolui a infraestrutura Paper Doll para um corpo/cabelo comum às sete classes e quatro facções. Classe seleciona uma das seis categorias de ataque e arma; facção seleciona roupa padrão. Equipamentos conhecidos têm bindings próprios, sem renumerar itens ou escrever campos no save. Armas incompatíveis, poses ausentes e Zoan preservam o legado.
+
+A bancada recebeu seleção de classe/facção, armas por categoria e aviso explícito quando só existe referência original em repouso. Pacotes locais `swordsman-v1` continuam aceitos; novo manifesto `human-v1` contém apenas definições ausentes, sem PNG. Não houve geração PixelLab nem editor de aparência; o conjunto modular real continua pendente.
+
+Verificação: suites Node, build Pages, bancada desktop/mobile,28 perfis×3 ações e28 carregamentos de save isolados, regressão de composição/equipamentos/Haki/Zoan e combate das sete classes. Capturas novas em `docs/evidence-paper-doll/`, fora do Git. Rollback por revert do commit desta branch; não há migração de saves a desfazer. Publicação/merge somente após aprovação.
+
 # Histórico de desenvolvimento
 
 ## 20/10/2026 — Pés do Dachshund na forma Zoan
 
 - Branch `fix/inu-zoan-grounding`, sobre o `main` remoto `8625aa6`. Corrigida a altura de cada quadro e direção do Cão Salsicha de Âmbar em `zoan-art.js`: margens transparentes diferentes entre idle, caminhada e ataque faziam a forma flutuar. Os PNGs, as outras Zoans, os atributos e os saves não mudam.
 - Cobertura em `tests/zoan-grounding.test.cjs`; 29 suítes Node e `python tools/build_pages.py` aprovados. Inspeção visual na transformação e caminhada lateral do laboratório DEV. Detalhes em [ZOAN-RANK-E.md](ZOAN-RANK-E.md).
+
+## 20/10/2026 — Paper Doll 1.0, Fase1: infraestrutura com fallback
+
+- Branch `feature/paper-doll-fase-1`, base `5047eea`; checkpoint anterior de animações incorporado sem modificar main. Novo `paper-doll.js` sincroniza pose/frame e compõe camadas RGBA, valida rig/folhas/células, resolve profundidade por direção/pose e mantém LRU de4MiB/96 composições. Falhas não desenham camadas parciais.
+- `paper-doll-assets.js` prepara bindings puros de equipamento e o rig de Espadachim; placeholders ausentes não carregam URLs fictícias. Mundo, retrato e prévias consultam a mesma configuração. Zoan tem prioridade; físicas, saves e eventos de impacto mantidos. Carregador de imagens compartilhado usa a raiz do script para funcionar também na bancada em subpasta/Pages.
+- Bancada estática em `tools/paper-doll-inspector/`: quatro direções, ações, frames, zoom, pivôs, visibilidade, comparação e importação local de manifestos/PNGs em rascunho, sem upload ou alteração de save. Contrato e manifesto-template em `docs/PAPER-DOLL.md`/`assets/paper-doll/`.
+- Auditados80 frames anteriores. O job hurt/leste antes incerto foi confirmado como falho por travamento; não reenviado. Zero gerações novas. Faltam320 frames/12 folhas de quatro peças reais; a entrega é infraestrutura/prévia com fallback, **não validação artística de Espadachim modular**.
+- Validação:31 suítes Node, sintaxe/build; Chromium no projeto e no dist,80 poses por viewport desktop/mobile idênticas ao fallback; conformance geométrica em80 poses, pacote local, LRU, troca/retirada de itens, reload, Haki e Zoan passaram. Medição local do fallback:10.000 resoluções em7–11ms nas execuções locais; amostra de combate1,8s com109 frames, intervalo mediano de16,7ms e p95 de16,7–16,8ms, zero composições modulares. Esses números não avaliam arte modular real ou multidão de personagens.
+- Capturas e JSON em `docs/evidence-paper-doll/`, fora do Git. Sem merge ou publicação automática. [Contrato e relatório detalhado](PAPER-DOLL.md).
+
+## 20/10/2026 — Checkpoint de animações 2.0 e pausa para estudo Paper Doll
+
+- Branch `feature/class-combat-animations-v2`, base remota `5047eea`. Preservado o trabalho iniciado: registro de conjuntos por metadados, carregamento sob demanda, estados especializados e efeitos de habilidade agendados uma única vez. Nenhum conjunto novo ativado como produção; Bento Espadachim e artes anteriores preservados byte a byte.
+- O proprietário pausou novas gerações antes de autorizar as correções do piloto. As chamadas aceitas informaram13 gerações; seus recibos, frames originais e jobs pendentes foram preservados em `pixellab-pip-generations/class-combat-v2-20261020/pirate-brawler/`. Guarda/soco/combo sul não foram aprovados artisticamente. Sem retries novos, cancelamentos ou exclusões.
+- 30 suítes Node, sintaxe, build e amostras reais de combate das sete classes no Chromium passaram. Capturas locais em `docs/evidence-class-combat-v2/`, fora do Git; esses testes são regressão da infraestrutura, **não aceite das seis classes com arte completa**.
+- [Viabilidade, impactos técnicos, estimativas e proposta de migração](PAPER-DOLL-VIABILIDADE.md). Não houve implementação modular, alteração de saves, merge ou publicação. Aguarda nova especificação do proprietário.
+
+## 20/10/2026 — Escala visual do Cocox
+
+- Branch `fix/cocox-sprite-scale`, integrada ao `main` remoto `8625aa6`. O Cocox parecia pequeno porque os frames PixelLab têm margens transparentes amplas. A renderização agora usa escala uniforme de 2,25×, nearest-neighbor e âncora dos pés por animação/direção; a barra de vida foi elevada para não cobrir a cabeça. Os PNGs, dados de combate e saves permanecem iguais.
+- Validação: `node --check` nos dois scripts, 28 suítes Node após integração com o `main`, `python tools/build_pages.py` e inspeção visual no navegador local durante a caçada na ilha.
 
 ## 20/10/2026 — Ilha dos Animais Raros e Cocox
 

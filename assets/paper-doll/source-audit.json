@@ -1,0 +1,166 @@
+{
+  "status": "infrastructure-with-fallback; no modular character art validated",
+  "new_generations": 0,
+  "reused": [
+    {
+      "path": "assets/factions/pirata/idle.png",
+      "size": [
+        224,
+        224
+      ],
+      "mode": "RGBA",
+      "sha256": "dbc2899283d7140a94a83947ff38e19b11d73339dba8649cdfd0a8dd4dd2e40f",
+      "role": "whole-character reference/fallback only; not a modular body or clothing layer"
+    },
+    {
+      "path": "assets/factions/pirata/walk.png",
+      "size": [
+        448,
+        224
+      ],
+      "mode": "RGBA",
+      "sha256": "838eae55a471d7267cb1d8b0529ed352663b5b5f2cf263c1f58a9959fa0e3c45",
+      "role": "whole-character reference/fallback only; not a modular body or clothing layer"
+    },
+    {
+      "path": "assets/classes/pirate-sword/attack.png",
+      "size": [
+        672,
+        336
+      ],
+      "mode": "RGBA",
+      "sha256": "726b9e0dddfd5eb571cb00e399f4df9c3c337e0d517819b2ab4013c68e3475c9",
+      "role": "whole-character reference/fallback only; not a modular body or clothing layer"
+    },
+    {
+      "path": "assets/classes/pirate-sword/combat-idle.png",
+      "size": [
+        336,
+        336
+      ],
+      "mode": "RGBA",
+      "sha256": "44e41d75d47dd2f0fe1a7dd874e880d3454dc2cb714afc626287c35dd7530806",
+      "role": "whole-character reference/fallback only; not a modular body or clothing layer"
+    }
+  ],
+  "prior_frames": {
+    "count": 80,
+    "all_native_rgba": true,
+    "hashes": {
+      "source/hurt/north/00.png": "e5d18075dc67c97c39819194229ba90c5c57ad2610b665987834806795c87bba",
+      "source/hurt/north/01.png": "20ad1c55841a0dda3dbfae8f2328691270ce994ff392aa25e525e8dcb7d801b7",
+      "source/hurt/north/02.png": "3cba4af74cbaf87491103b6355f7856e7301cf9bc3df85c4f019f937155e00d5",
+      "source/hurt/north/03.png": "d8ebcc4ad673eb66b06fd3a1f8a25ded1c217e3c202e945f21adc6ca36bc35fe",
+      "source/hurt/west/00.png": "70b0de6b59f30b8ade57246f043cab62c16b4dd07f977cf53bc38ada844bd070",
+      "source/hurt/west/01.png": "aecec54656670abb979c147787f1bc7196d590f3fdd067aeab8bf7daa71d6ed5",
+      "source/hurt/west/02.png": "b353cef3fd8ac14e5c5d147e856616535abb95c7856d55d438b9c01b952af8be",
+      "source/hurt/west/03.png": "10c427920204f8e702171f87cf62a7996932e2844766fcf5569041c6c51adb42",
+      "source/hurt/south/00.png": "cc0eeddbd28a472aa8cc7dc9b12cbebad4266d50cd91945c434605b08724aa74",
+      "source/hurt/south/01.png": "c5d8fa9125a581c8a4efaf0d7e981f2c0a8d3d7e99823fc4448187a271f1b6c1",
+      "source/hurt/south/02.png": "fa8c13d550a66b2d03494b1fa0d5a16faf869e1d8bce0691fdc63909b269339d",
+      "source/hurt/south/03.png": "e8757918a0787068ee2c033419c06626149f5256c94fe010ebf52c0099e84ea9",
+      "source/skill-1/north/00.png": "f4cf476a0bf4e292039196631a117655e47b9c4f99e11cdd1e7fe6b9eae47708",
+      "source/skill-1/north/01.png": "fa44f305d98c17796b8c8c8b95b0137df4e37287d71ded0473dffe91a4d99d44",
+      "source/skill-1/north/02.png": "3220fa741d95d1d796cce57b663186b7f08e53d6022134c3f2b873af522ea730",
+      "source/skill-1/north/03.png": "d3c7c355f862d192f94571e36338ea777ccb6477848b11cba2268d4a17cd0509",
+      "source/skill-1/north/04.png": "052ac2a7595296cb0c7e8b86ac58f33e2ee298bbbaf779403b7f0619f9310b43",
+      "source/skill-1/north/05.png": "10e401a5d95d330ff971752957f10a5393a8cb779afe11dab054b164387435c5",
+      "source/skill-1/north/06.png": "bfcb37a770ffbbd81a5754c733ac1f9396675ee8f5ef7537009dd1e7e2ee05e5",
+      "source/skill-1/north/07.png": "77d30a3ffd29be54d51b467adf99fc8bfa9d48eee0c3d54976e7b489492a8511",
+      "source/skill-1/west/00.png": "0b49eecd40b036d7fe4c635b27bd8b10aaa8bd4236e143358b78681d2eff52cd",
+      "source/skill-1/west/01.png": "6123eb9d4d023ca45e9ab0a436d046f12e2a5197857bf552d60359e3576771b4",
+      "source/skill-1/west/02.png": "4584b2e7c68ba8f0035e4e9fad8efb3f193b4a69cc96da6dedd5f0e3f8e2c46e",
+      "source/skill-1/west/03.png": "e6ae1545f2c8293e2b8b8675d92ec452f4265e498abc29c078c28ddb71677ab6",
+      "source/skill-1/west/04.png": "ccacef734a2ecdfbe1fd7193ad1ff0ac84a39fb35119403fee4746aa76153061",
+      "source/skill-1/west/05.png": "688b4b132c1e9cef07ac978cae0813a5bf7e187501ef449846a9bc1bd32a0458",
+      "source/skill-1/west/06.png": "378a6dfae90d2a924ab4b6df96f1d791afe515eff29b125a40752315cfbe0fcb",
+      "source/skill-1/west/07.png": "3d1d087ca957a1438b59139a5928b586374033e302996ae9bd1ed9c05969c4b3",
+      "source/skill-1/east/00.png": "c1b145ae07f9315c4605db11fa714805936d33af23b5cc2b7e6fdda54570dadd",
+      "source/skill-1/east/01.png": "bbc857441b67a38de4565f07ebd5184d2c2864750ceff3012a3c1431f2434486",
+      "source/skill-1/east/02.png": "ab0d0bfe1265de7b18984e6416f37d2fcebc65caf96d892b9a6737f7cc548b1a",
+      "source/skill-1/east/03.png": "2bd2c7dced8a346cb35acef3e444ef9275534fcef3d91d237fe35add626ebb9d",
+      "source/skill-1/east/04.png": "6a715b8ce1cdb95e989636a2031da5396232054c547e223980025609e849bb82",
+      "source/skill-1/east/05.png": "46324d5bed54f9e6b70068ecddc9f56c1914e05bb2168417da35bf0264b4eaad",
+      "source/skill-1/east/06.png": "4530742b3b0f08cf572d220b6c551a2a320a73a58a473ad02fe31c2e89e0ad0a",
+      "source/skill-1/east/07.png": "72cf2e86f1b887c2fe63736567e058841099db8eed7397d1054b8e63f3f4415d",
+      "source/skill-1/south/00.png": "8f3629b6c749b41a5513dbfbaf09f21580a107d51e5da49e5facd47efab5fe9e",
+      "source/skill-1/south/01.png": "719dda0e13897693a5fb411d6466200d694049827ed6ceb5722cb564906a1f22",
+      "source/skill-1/south/02.png": "80940569cfbf692fab93fc4e81995aefc5a974325ce615b921a04c4005b72874",
+      "source/skill-1/south/03.png": "7f715042edd14d2d0846a9ed4352b8e91ce8afb013007c0420283c24eec888a5",
+      "source/skill-1/south/04.png": "8d23bad4c74844fc23903502242977ce42d7943c2d045848a06d1a25ec2529b8",
+      "source/skill-1/south/05.png": "2fdcafed88d04514a500448917f65d4c7ea1a2d3eae47e84aaf3c39bd3b0e000",
+      "source/skill-1/south/06.png": "1c17df9a1ccc41fa7e0ab3ccef08e7944e3e9e6c7fefc329834d79cec2ddfea3",
+      "source/skill-1/south/07.png": "bb6b28e63ac15e0e914758cd1df88cb26d5dafe804df61708120a36eb6db1373",
+      "source/death/south/00.png": "0021660a984fe98fe4adae5730421587dd1f8a0e009785749df6898d25e1484a",
+      "source/death/south/01.png": "ecd2ae85ae39b1e7dcc578b9621e05d06b83666de14959c31901f20468cc7a06",
+      "source/death/south/02.png": "ee7818b0e838e8120835f475faee580c88a72e36b3014a35bb2053043f96d467",
+      "source/death/south/03.png": "78bb9404596bfcb87d5f1ad22ac01a4e27229cad88602721be17ee2a89dd228b",
+      "source/death/south/04.png": "e385cd3a4a1217f683cfeb20b629f62064ef30374b1662ec4949d99ad43d9a9a",
+      "source/death/south/05.png": "f0a5e63e1f6500d1d2200f6a1cb5d0cd55fd7cd628d542ae1c3192eab70e0cf3",
+      "source/death/south/06.png": "644b572746c5f6fe9d911a0d755f2ee188340d2ea0262d3e84b1d1161e610a3c",
+      "source/death/south/07.png": "a3e42e220029a4a30267912f54f39bf62ae0e942729abbfe03c200917f674261",
+      "source/skill-2/south/00.png": "d677582f3318f9800daf66bb6df419186350deac2c7fd6e00a9fc36d5f333069",
+      "source/skill-2/south/01.png": "2f16ed430786e2c76295506837126a026358c7eabe14df70edd5f46b24984501",
+      "source/skill-2/south/02.png": "dd872852a7fac8944e8ca67393591280116bc0a6ae166ea89a5898c4635353f8",
+      "source/skill-2/south/03.png": "f28d3dc50d051f33c8f5c337ab38f9ad03e0e69e96da1864188058c03e20a770",
+      "source/skill-2/south/04.png": "1a66c20d25e42f5d0071371b82f839e9906155c1721dab8bf78c65873e027ec1",
+      "source/skill-2/south/05.png": "1589ffbb6d6209063e52618623b59ee6893011eb108ac3e3468061dfbbbd6564",
+      "source/skill-2/south/06.png": "05dbc4c9499636256c8b45c08ddd9a7980501f5011364f27333a36525bbae7ef",
+      "source/skill-2/south/07.png": "2fb9d3aafa099f1f78932e187919652c10fb7bdf18e9ce93c142f4e0f8c67b93",
+      "source/combo/south/00.png": "14a761da1698b8957f8e8b85274bc7ce5572191d5f824a43b8df7d23614e2d9f",
+      "source/combo/south/01.png": "82ea45e67f28f7bfdd14a7a0d3dedab012477259decc253e485f92473a39c968",
+      "source/combo/south/02.png": "5441d3f1a04718eb63f7ac39c85d4685e6e40f31752549f2ad5edf2ac2d1747e",
+      "source/combo/south/03.png": "4da5cecf1c49e79efa6c7ebdcf3598481b185b434eef535938898ab8fc7e2183",
+      "source/combo/south/04.png": "6eba3b418a7eebdb58c3fe7f19179fde8e1acdd5c76164ba8ed650de99836957",
+      "source/combo/south/05.png": "acdbf790dbc8bc0b2011708e1a9142a2c41a499e1cc91e8a0b95940a14b31c1a",
+      "source/combo/south/06.png": "c34ea712ebdf2733e643219bf46841664713e12a6422253c5a3500f0a1a8a2f4",
+      "source/combo/south/07.png": "e99ffbee8dd4346f36caffd199011a940b1bdbb37177b9f75a5468d7e6c65f80",
+      "source/attack/south/00.png": "b4e4011e8ad4de0dd951bbdfe8273e02193d15583fe3f740fe5c372bb4ce506f",
+      "source/attack/south/01.png": "d8dd73387523517d9543b656250570dee246aff1de1c4e01262331e28cf9f695",
+      "source/attack/south/02.png": "cbccdad0560067e2cd288ec2ab29fa1d178fb0f449b0a594f902811c849d264c",
+      "source/attack/south/03.png": "59eb1b424b3afb7db998b01597c8b165c527b1375d7423a4a93e136e212177af",
+      "source/attack/south/04.png": "290f144acb55c566d4e61434be6554bd5f3b78ba75063e21b04e2d2acb171c91",
+      "source/attack/south/05.png": "6bdb30dda8d87a4c1df37153a2777bbe56f87cc4c8b5e0bdd4105e8bd82d1231",
+      "source/attack/south/06.png": "734302d2ac76eb891a3cd5638954c69c65906fb27f961e5515cf511890637023",
+      "source/attack/south/07.png": "37c870bb17ecf889234de3d2833031577a1ac00a11d5f3f690ec256fcfeb3b36",
+      "source/combat-idle/south/00.png": "d7bc509a1cb3e0fe9cb2c22fa3379724572a971b68ba3d46321ef00577292636",
+      "source/combat-idle/south/01.png": "5f511e3fec5d7d0fe6139e8915c76816cd5b7ce069330df4a914b04a39e2a3b1",
+      "source/combat-idle/south/02.png": "1cf81c54610f64209823cc6c2315005f46ea5bf7a10958913b02ec4ab8c12985",
+      "source/combat-idle/south/03.png": "bd7d780601545347bc42076c1d482fd80ac4bb1e062e0391e0fc5046caa77205"
+    }
+  },
+  "prior_job": {
+    "job_id": "5ead33c2-960b-4e42-8982-89d1a868d714",
+    "status": "failed",
+    "reason": "Generation stalled and was automatically failed. Please try again.",
+    "source": "PixelLab list_jobs(include_recent=true)",
+    "retry_requested": false
+  },
+  "minimum_missing": {
+    "pieces": [
+      "body",
+      "hair",
+      "outfit",
+      "weapon"
+    ],
+    "directions": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "per_piece": {
+      "idle": 16,
+      "walk": 32,
+      "attack": 32
+    },
+    "frames_per_piece": 80,
+    "total_frames": 320,
+    "sheets": 12
+  },
+  "optional_missing": {
+    "prototype-sabre": 80,
+    "prototype-mist-coat": 80,
+    "prototype-bandana": 80
+  }
+}

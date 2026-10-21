@@ -39,18 +39,34 @@
     }ctx.restore();
   }
   const rows={south:0,west:1,east:2,north:3};
-  function monster(ctx,m,time){
-    if(m.type!=='cocox')return false;
-    const dir=m.emberFacing||'south',row=rows[dir]??0;
+  const feet={idle:[45,44,44,47],run:[62,60,60,63],attack:[55,55,55,57]};
+  // A single sprite layout drives drawing, pointer hitbox and HP-label placement.
+  function cocoxLayout(m){
+    if(m.type!=='cocox')return null;
+    const row=rows[m.emberFacing||'south']??0;
     const attack=(m.attackAnim||0)>0,moving=(m.moving||0)>0;
-    const key=attack?'attack':moving?'run':'idle',frames=attack?9:moving?4:1,sourceSize=attack?68:moving?80:48;
-    if(!ready(key))return false;
-    const frame=attack?Math.min(8,Math.floor((.58-m.attackAnim)*15)):moving?Math.floor(time*8+m.bob)%4:0;
-    const dest=key==='idle'?58:key==='run'?76:72;
+    const key=attack?'attack':moving?'run':'idle';
+    const sourceSize=attack?68:moving?80:48,frames=attack?9:moving?4:1;
+    const dest=Math.round(sourceSize*2.25),top=Math.round(m.y+4-feet[key][row]*2.25);
+    return {row,key,sourceSize,frames,dest,top,halfWidth:Math.max(55,Math.min(75,Math.round(dest*.44)))};
+  }
+  function cocoxHitTest(m,x,y){
+    const box=cocoxLayout(m);
+    return !!box&&Math.abs(x-m.x)<=box.halfWidth&&y>=box.top&&y<=m.y+12;
+  }
+  function cocoxHealthBarY(m){
+    const box=cocoxLayout(m);
+    return box?box.top-22:null;
+  }
+  function monster(ctx,m,time){
+    const box=cocoxLayout(m);
+    if(!box||!ready(box.key))return false;
+    const {key,frames,sourceSize,row,dest,top}=box;
+    const frame=key==='attack'?Math.min(8,Math.max(0,Math.floor((.58-m.attackAnim)*15))):key==='run'?Math.floor(time*8+m.bob)%4:0;
     ctx.save();ctx.imageSmoothingEnabled=false;if(m.hit>0)ctx.filter='brightness(1.5)';
-    ctx.drawImage(images[key],Math.max(0,Math.min(frames-1,frame))*sourceSize,row*sourceSize,sourceSize,sourceSize,Math.round(m.x-dest/2),Math.round(m.y-dest+9),dest,dest);
+    ctx.drawImage(images[key],Math.max(0,Math.min(frames-1,frame))*sourceSize,row*sourceSize,sourceSize,sourceSize,Math.round(m.x-dest/2),top,dest,dest);
     ctx.restore();return true;
   }
   function environment(ctx,time){const p=R.returnPoint;ctx.save();ctx.strokeStyle='#d9ead2';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(p.x,p.y,27+Math.sin(time*2),11,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#fff2cf';ctx.font='bold 11px Trebuchet MS';ctx.textAlign='center';ctx.fillText('Voltar ao porto',p.x,p.y+30);ctx.restore();}
-  root.MareRareRenderer={ground,prop,monster,environment,images};
+  root.MareRareRenderer={ground,prop,monster,cocoxLayout,cocoxHitTest,cocoxHealthBarY,environment,images};
 })(globalThis);

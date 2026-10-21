@@ -1,7 +1,7 @@
 'use strict';
 /* A one-shot action owns its clock and commits its impact at most once. */
 ((root)=>{
-  const shots=new Set(['attack','skill','hurt','death']);
+  const shots=new Set(['attack','skill','skill-1','skill-2','combo','dodge','reload','cast','heal','hurt','death']);
   function create(animations={}){
     let state={action:'idle',elapsed:0,direction:'front',impactDone:false};
     let impact=null,queuedHurt=false;
@@ -9,12 +9,14 @@
       const a=animations[action]||{};
       const direction=({front:'south',back:'north',left:'west',right:'east'})[state.direction]||state.direction;
       const impactFrame=a.direction_impact_frames?.[direction]??a.impact_frame??Math.floor((a.frames||1)*.45);
-      return {duration:(a.frames||1)/(a.fps||8),impact:impactFrame/(a.fps||8)};
+      const frames=a.direction_frames?.[direction]??a.frames??1,fps=a.direction_fps?.[direction]??a.fps??8;
+      return {duration:frames/fps,impact:impactFrame/fps};
     };
-    function locked(){return shots.has(state.action);}
+    function oneShot(action){return shots.has(action)||animations[action]?.loop===false;}
+    function locked(){return oneShot(state.action);}
     function reset(direction='front'){state={action:'idle',elapsed:0,direction,impactDone:false};impact=null;queuedHurt=false;}
     function play(action,{direction=state.direction,onImpact=null}={}){
-      if(!shots.has(action)||!animations[action])return false;
+      if(!oneShot(action)||!animations[action])return false;
       if(locked()&&(action!=='death'||state.action==='death')){
         if(action==='hurt'&&state.action!=='hurt'&&state.action!=='death')queuedHurt=true;
         return false;

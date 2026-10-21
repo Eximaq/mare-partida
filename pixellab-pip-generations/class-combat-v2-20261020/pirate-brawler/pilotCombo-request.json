@@ -1,0 +1,22 @@
+{
+  "req": {
+    "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+    "mode": "v3",
+    "directions": [
+      "south"
+    ],
+    "frame_count": 8,
+    "keep_first_frame": false,
+    "animation_name": "brawler-v2-combo",
+    "action_description": "Perform a compact left-right punching combination, with natural shoulder rotation and full recovery to guard. Keep feet planted, current facing, outfit and body size."
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Perform a compact left-right punching combination, with natural shoulder rotation and full recovery to guard. Keep feet planted, current facing, outfit and body size.)\ndirections: south (1 jobs)\njob_ids: south=72e9c3dc-42fe-4c0c-8577-378fbe9ca07e\ngroup: 37df3fa3-43cc-48a9-9588-5ebeefdd0f61\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Perform a compact left-right punching combination, with natural shoulder rotation and full recovery to guard. Keep feet planted, current facing, outfit and body size.\", animation_group_id=\"37df3fa3-43cc-48a9-9588-5ebeefdd0f61\", directions=[...])"
+      }
+    ],
+    "isError": false
+  }
+}

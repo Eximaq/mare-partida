@@ -1,0 +1,65 @@
+[
+  {
+    "_comment_prompt": "suba e prossiga — teste de encaixe Paper Doll de corpo, cabelo, roupa e espada; aprovado até4 gerações e extração de camadas, depois aprovada correção do rosto elevando o teto para5.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-human-pilot-20261020",
+      "output_collision_policy": "create_unique"
+    },
+    "TASK": "Verify explicit authorization and authenticated MCP. Create a unique output folder, copy the supplied native reference PNG unchanged. No replay or further retry is authorized just by possessing this recipe."
+  },
+  {
+    "MCP edit_image_pixen": {
+      "image_url": "reference-south-idle-00.png",
+      "width": 84,
+      "height": 84,
+      "no_background": true,
+      "description": "Edit this south-facing pirate into a neutral human paper-doll base. Preserve the face, body proportions, stance, foot position, pixel scale and shading. Give him a bald scalp, bare torso and arms, plain charcoal shorts and bare feet. Remove the headband, vest, shirt and boots. Keep the same canvas and transparent background. One complete character, no weapons."
+    }
+  },
+  {
+    "TASK": "Save as body-south-00.png. Inspect face/feet/canvas. This raw result lost its face; only the separately approved one-generation face correction may continue."
+  },
+  {
+    "MCP edit_image_pixen": {
+      "image_url": "body-south-00.png",
+      "width": 84,
+      "height": 84,
+      "no_background": true,
+      "description": "Add only a readable small face to this bald south-facing human: two dark eyes, a short nose shadow and a subtle neutral mouth within the head. Preserve the scalp shape, head position, skin palette, torso, limbs, shorts, foot position and every pixel outside the face. Keep the native pixel scale, 84x84 canvas and transparent background. No hair, clothing or weapons."
+    }
+  },
+  {
+    "TASK": "Save raw body-face-south-00.png unchanged. Its raw edit altered387 outside-head pixels. For a labelled inspection draft only, copy changed generated pixels in rectangle x37,y22,width10,height11 into a transparent face-only-draft.png and composite that on original body-south-00.png as body-face-fit-draft.png. Preserve all original raw outputs. Verify exact outside-region equality and label the result draft, not final art."
+  },
+  {
+    "MCP edit_image_pixen": {
+      "image_url": "body-face-fit-draft.png",
+      "width": 84,
+      "height": 84,
+      "no_background": true,
+      "description": "Add only short tousled black hair attached to the top and sides of this south-facing human head, following its perspective. Preserve every other body, face, limb, pose and canvas pixel except where the hair naturally covers the scalp. Same pixel scale, outline, shading and transparent background. No headband or detached hair."
+    }
+  },
+  {
+    "MCP edit_image_pixen": {
+      "image_url": "body-face-fit-draft.png",
+      "width": 84,
+      "height": 84,
+      "no_background": true,
+      "description": "Add only a plain cream linen shirt with short sleeves and a navy sailor waistcoat fitted to this south-facing human torso and shoulders. Keep hands visible. Preserve all other body, face, limb, pose and canvas pixels except natural clothing occlusion. Match the existing pixel scale, outline and shading. Same transparent canvas, no emblems or loose garments."
+    }
+  },
+  {
+    "MCP edit_image_pixen": {
+      "image_url": "body-face-fit-draft.png",
+      "width": 84,
+      "height": 84,
+      "no_background": true,
+      "description": "Add only a simple steel sailor sword with a brass guard held naturally in this south-facing human's right hand, on the viewer's left, blade angled down and away from the leg. Preserve the hand position and every other body, face, limb, pose and canvas pixel except where the sword naturally occludes them. Match the existing pixel scale, outline and shading. Same transparent canvas."
+    }
+  },
+  {
+    "TASK": "Save every raw composite unchanged. Raw rectangular audits failed. Using the approved local extraction/inspection scope, create black/white region guides: hair covers scalp/top/sides but excludes central face, outfit covers shoulders/torso but excludes shorts/hands, sword covers the object/guard contact but excludes the rest of the body. These guide images are controls, not drawn sprite art. Use tools/paper_doll_fit_audit.py --inspection-draft with the guide and native raw composite: copy only changed generated pixels inside the guide; preserve the source body elsewhere; record any skipped alpha erasures. Save masked-inspection layers/composites and strict audits of the derived drafts. Compose them in body/outfit/hair/weapon order and show in preview.html with independent toggles. Label all derived art unapproved static inspection only, one frame south; do not claim final reusable animation or integrate into production. Record raw failures separately; no additional generation calls are authorized."
+  }
+]

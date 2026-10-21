@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "scope": "static structural fit only; artwork approval required",
+  "size": [
+    84,
+    84
+  ],
+  "allowed_region": null,
+  "allowed_mask": "outfit-mask-proposed.png",
+  "changed_pixels": 183,
+  "changed_bbox": [
+    33,
+    32,
+    51,
+    47
+  ],
+  "outside_region_pixels": 0,
+  "alpha_erasure_pixels": 0,
+  "recomposition_mismatch_pixels": 0,
+  "layer_file": "outfit-masked-inspection-layer.png"
+}
