@@ -1,0 +1,14 @@
+{
+  "status": "inspection_in_progress_not_production_approved",
+  "south": {
+    "combat-idle": {"accepted": false, "issue": "Fists remain low; the requested raised-fist fighting guard was not produced."},
+    "attack": {"accepted": false, "issue": "Turns sideways in the last frames instead of recovering a south-facing guard."},
+    "combo": {"accepted": false, "issue": "Turns sideways near the end, no consistent frontal recovery."},
+    "skill-1": {"accepted": true, "notes": "Visible forward/downward action with amber impact; torso stays generally frontal, all original frames retained. Other directions and in-game timing still pending."},
+    "skill-2": {"accepted": true, "notes": "Crossed forearms, warm protective glow and frontal recovery. No image-edge clipping. Other directions/in-game timing pending."},
+    "hurt": {"accepted": true, "notes": "Brief recoil with stable feet and frontal recovery; four original frames. Other directions pending."},
+    "death": {"accepted": true, "notes": "Continuous kneeling and collapse to a complete prone pose; no disappearance or canvas-edge clipping. Other directions pending."}
+  },
+  "existing_sword_set": "unchanged",
+  "repairs_or_trimming": "none"
+}

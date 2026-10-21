@@ -1,0 +1,216 @@
+{
+  "status": "paused_by_owner_no_new_generations",
+  "approved_generation_cap": 56,
+  "calls": [
+    {
+      "tool": "animate_character",
+      "request": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "v3",
+        "directions": [
+          "south"
+        ],
+        "frame_count": 8,
+        "keep_first_frame": false,
+        "animation_name": "brawler-v2-attack",
+        "action_description": "Deliver one strong forward punch with a small torso rotation, clear contact and full recovery to guard. Stay in place and preserve the current facing, outfit and body size."
+      },
+      "result_text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Deliver one strong forward punch with a small torso rotation, clear contact and full recovery to guard. Stay in place and preserve the current facing, outfit and body size.)\ndirections: south (1 jobs)\njob_ids: south=cfe99d1f-fa15-47a3-994d-299f7af3258c\ngroup: b3da9b39-8945-405b-b813-cd93456fe16f\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Deliver one strong forward punch with a small torso rotation, clear contact and full recovery to guard. Stay in place and preserve the current facing, outfit and body size.\", animation_group_id=\"b3da9b39-8945-405b-b813-cd93456fe16f\", directions=[...])",
+      "reported_usage": {
+        "generations": 1
+      },
+      "accepted": true,
+      "seed": "omitted"
+    },
+    {
+      "tool": "animate_character",
+      "request": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "v3",
+        "directions": [
+          "south"
+        ],
+        "frame_count": 4,
+        "keep_first_frame": false,
+        "animation_name": "brawler-v2-combat-idle",
+        "action_description": "Breathe subtly in a grounded bare-knuckle guard, fists raised, feet planted. Keep the current facing, outfit and body size. Recover the starting guard."
+      },
+      "result_text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Breathe subtly in a grounded bare-knuckle guard, fists raised, feet planted. Keep the current facing, outfit and body size. Recover the starting guard.)\ndirections: south (1 jobs)\njob_ids: south=62797233-de1e-499a-9017-a6e101dd4d6e\ngroup: de767df3-7cf0-4001-88a5-65149a8427c2\nframes: 4 (reference stripped, keep_first_frame=false)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Breathe subtly in a grounded bare-knuckle guard, fists raised, feet planted. Keep the current facing, outfit and body size. Recover the starting guard.\", animation_group_id=\"de767df3-7cf0-4001-88a5-65149a8427c2\", directions=[...])",
+      "accepted": true,
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "tool": "animate_character",
+      "request": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "v3",
+        "directions": [
+          "south"
+        ],
+        "frame_count": 8,
+        "keep_first_frame": false,
+        "animation_name": "brawler-v2-combo",
+        "action_description": "Perform a compact left-right punching combination, with natural shoulder rotation and full recovery to guard. Keep feet planted, current facing, outfit and body size."
+      },
+      "result_text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Perform a compact left-right punching combination, with natural shoulder rotation and full recovery to guard. Keep feet planted, current facing, outfit and body size.)\ndirections: south (1 jobs)\njob_ids: south=72e9c3dc-42fe-4c0c-8577-378fbe9ca07e\ngroup: 37df3fa3-43cc-48a9-9588-5ebeefdd0f61\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Perform a compact left-right punching combination, with natural shoulder rotation and full recovery to guard. Keep feet planted, current facing, outfit and body size.\", animation_group_id=\"37df3fa3-43cc-48a9-9588-5ebeefdd0f61\", directions=[...])",
+      "accepted": true,
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "tool": "animate_character",
+      "request": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "v3",
+        "directions": [
+          "south"
+        ],
+        "frame_count": 8,
+        "keep_first_frame": false,
+        "animation_name": "brawler-v2-death",
+        "action_description": "Lose balance, buckle at the knees and fall naturally to the ground, ending in a still fallen pose. Preserve the outfit, body size and initial facing. Continuous movement, no vanishing or teleporting."
+      },
+      "result_text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Lose balance, buckle at the knees and fall naturally to the ground, ending in a still fallen pose. Preserve the outfit, body size and initial facing. Continuous movement, no vanishing or teleporting.)\ndirections: south (1 jobs)\njob_ids: south=0254b627-bd57-409b-8f46-0505f3d15df9\ngroup: 7ca38368-c2b7-4537-bc57-897854416a79\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Lose balance, buckle at the knees and fall naturally to the ground, ending in a still fallen pose. Preserve the outfit, body size and initial facing. Continuous movement, no vanishing or teleporting.\", animation_group_id=\"7ca38368-c2b7-4537-bc57-897854416a79\", directions=[...])",
+      "accepted": true,
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "tool": "animate_character",
+      "request": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "v3",
+        "directions": [
+          "north",
+          "west",
+          "east"
+        ],
+        "frame_count": 8,
+        "keep_first_frame": false,
+        "animation_name": "brawler-v2-death",
+        "action_description": "Lose balance, buckle at the knees and fall naturally to the ground, ending in a still fallen pose. Preserve the outfit, body size and initial facing. Continuous movement, no vanishing or teleporting.",
+        "animation_group_id": "7ca38368-c2b7-4537-bc57-897854416a79"
+      },
+      "result_text": "error: need 3 job slots but only 2 available (6/8 used)\n\nhint: wait for jobs to finish (~2-4 min each), then retry, or start 2 now with directions=[...] and add the rest to the same group afterwards (animation_group_id)",
+      "accepted": false,
+      "seed": "omitted"
+    },
+    {
+      "tool": "animate_character",
+      "request": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "v3",
+        "directions": [
+          "south"
+        ],
+        "frame_count": 4,
+        "keep_first_frame": false,
+        "animation_name": "brawler-v2-hurt",
+        "action_description": "Recoil briefly from a hit and recover the raised-fist guard. Keep feet planted, current facing, outfit and body size."
+      },
+      "result_text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Recoil briefly from a hit and recover the raised-fist guard. Keep feet planted, current facing, outfit and body size.)\ndirections: south (1 jobs)\njob_ids: south=f1854a85-de50-4bf1-9d14-e72e322d7fe2\ngroup: a7e0cc0f-fd26-44c6-b747-dac939b553e3\nframes: 4 (reference stripped, keep_first_frame=false)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Recoil briefly from a hit and recover the raised-fist guard. Keep feet planted, current facing, outfit and body size.\", animation_group_id=\"a7e0cc0f-fd26-44c6-b747-dac939b553e3\", directions=[...])",
+      "accepted": true,
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "tool": "animate_character",
+      "request": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "v3",
+        "directions": [
+          "north",
+          "west",
+          "east"
+        ],
+        "frame_count": 4,
+        "keep_first_frame": false,
+        "animation_name": "brawler-v2-hurt",
+        "action_description": "Recoil briefly from a hit and recover the raised-fist guard. Keep feet planted, current facing, outfit and body size.",
+        "animation_group_id": "a7e0cc0f-fd26-44c6-b747-dac939b553e3"
+      },
+      "result_text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Recoil briefly from a hit and recover the raised-fist guard. Keep feet planted, current facing, outfit and body size.)\ndirections: north, west, east (3 jobs)\njob_ids: north=4cff9283-4650-4f93-8d0b-974b19216da0, west=f3f7569e-f11e-45a9-b178-c4c4f6aa8dde, east=5ead33c2-960b-4e42-8982-89d1a868d714\ngroup: a7e0cc0f-fd26-44c6-b747-dac939b553e3\nframes: 4 (reference stripped, keep_first_frame=false)\ncanvas: north 68x68, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 3 generations (1/dir x 3)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Recoil briefly from a hit and recover the raised-fist guard. Keep feet planted, current facing, outfit and body size.\", animation_group_id=\"a7e0cc0f-fd26-44c6-b747-dac939b553e3\", directions=[...])",
+      "accepted": true,
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 3
+      }
+    },
+    {
+      "tool": "animate_character",
+      "request": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "v3",
+        "directions": [
+          "south"
+        ],
+        "frame_count": 8,
+        "keep_first_frame": false,
+        "animation_name": "brawler-v2-skill-1",
+        "action_description": "Wind up a heavy fist, drive it forward and downward into a powerful ground impact with a brief small amber shock ring, then recover to guard. Keep feet anchored and the current facing, outfit and body size."
+      },
+      "result_text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Wind up a heavy fist, drive it forward and downward into a powerful ground impact with a brief small amber shock ring, then recover to guard. Keep feet anchored and the current facing, outfit and body size.)\ndirections: south (1 jobs)\njob_ids: south=1ec55047-06aa-4ff5-bcf1-5169d28f9332\ngroup: 5462f700-7f69-4b2d-850d-ba6b9e66e13c\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Wind up a heavy fist, drive it forward and downward into a powerful ground impact with a brief small amber shock ring, then recover to guard. Keep feet anchored and the current facing, outfit and body size.\", animation_group_id=\"5462f700-7f69-4b2d-850d-ba6b9e66e13c\", directions=[...])",
+      "accepted": true,
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      }
+    },
+    {
+      "tool": "animate_character",
+      "request": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "v3",
+        "directions": [
+          "north",
+          "west",
+          "east"
+        ],
+        "frame_count": 8,
+        "keep_first_frame": false,
+        "animation_name": "brawler-v2-skill-1",
+        "action_description": "Wind up a heavy fist, drive it forward and downward into a powerful ground impact with a brief small amber shock ring, then recover to guard. Keep feet anchored and the current facing, outfit and body size.",
+        "animation_group_id": "5462f700-7f69-4b2d-850d-ba6b9e66e13c"
+      },
+      "result_text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Wind up a heavy fist, drive it forward and downward into a powerful ground impact with a brief small amber shock ring, then recover to guard. Keep feet anchored and the current facing, outfit and body size.)\ndirections: north, west, east (3 jobs)\njob_ids: north=9db6eccc-e35f-4058-8168-85129af7bcbc, west=3a30002d-4796-4753-b70d-7a4a378b1bcc, east=da1d22e0-3f2d-43c3-85fe-cb6dcbb770c3\ngroup: 5462f700-7f69-4b2d-850d-ba6b9e66e13c\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: north 68x68, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 3 generations (1/dir x 3)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Wind up a heavy fist, drive it forward and downward into a powerful ground impact with a brief small amber shock ring, then recover to guard. Keep feet anchored and the current facing, outfit and body size.\", animation_group_id=\"5462f700-7f69-4b2d-850d-ba6b9e66e13c\", directions=[...])",
+      "accepted": true,
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 3
+      }
+    },
+    {
+      "tool": "animate_character",
+      "request": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "v3",
+        "directions": [
+          "south"
+        ],
+        "frame_count": 8,
+        "keep_first_frame": false,
+        "animation_name": "brawler-v2-skill-2",
+        "action_description": "Brace defensively, cross the forearms in front of the chest with a brief warm bronze protective glow, then recover the raised-fist guard. Keep feet planted, current facing, outfit and body size."
+      },
+      "result_text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Brace defensively, cross the forearms in front of the chest with a brief warm bronze protective glow, then recover the raised-fist guard. Keep feet planted, current facing, outfit and body size.)\ndirections: south (1 jobs)\njob_ids: south=a170742f-5fb1-4358-8f87-22f5cb4fa20a\ngroup: 43f4a21f-b39c-4560-b63d-ecb1e67821ad\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Brace defensively, cross the forearms in front of the chest with a brief warm bronze protective glow, then recover the raised-fist guard. Keep feet planted, current facing, outfit and body size.\", animation_group_id=\"43f4a21f-b39c-4560-b63d-ecb1e67821ad\", directions=[...])",
+      "accepted": true,
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      }
+    }
+  ],
+  "reported_generation_total": 13,
+  "production_integration": false,
+  "retry_proposal": "not executed; owner requested pause",
+  "preservation": "Downloaded original frames and inspection-only sheets retained; pending job IDs are in result_text."
+}

@@ -1,0 +1,137 @@
+[
+  {
+    "MCP animate_character": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "v3",
+      "directions": [
+        "south"
+      ],
+      "frame_count": 8,
+      "keep_first_frame": false,
+      "animation_name": "brawler-v2-attack",
+      "action_description": "Deliver one strong forward punch with a small torso rotation, clear contact and full recovery to guard. Stay in place and preserve the current facing, outfit and body size."
+    },
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/class-combat-v2-replay",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment": "Archived recipe, generation paused by owner; this file is not authorization to execute.",
+    "_comment_prompt": "# MARÉ PARTIDA — SUPER ATUALIZAÇÃO DE ANIMAÇÕES 2.0\n## Sistema completo de animações para as 7 classes\n\n**MISSÃO:** Concluir as animações de combate de todas as classes jogáveis do Maré Partida, utilizando a implementação de Bento Maré-Livre (Espadachim) como referência de qualidade, organização dos sprites e integração com o combate.\n\nEsta é uma atualização de **animações, sprites, efeitos visuais e infraestrutura de reprodução**. Não alterar HUD, mapas, balanceamento, economia ou progressão.\n\nA entrega deve ser funcional dentro do jogo, não apenas arquivos PNG gerados.\n\n## 1. AUDITORIA E PREPARAÇÃO\n\nAntes de implementar:\n\n1. Atualize o repositório a partir de `origin/main`, preservando alterações locais.\n2. Leia `AGENT.md`, `AGENTS.md`, `README.md` e a documentação de classes e sprites.\n3. Crie a branch `feature/class-combat-animations-v2`.\n4. Inspecione `combat-animation.js`, `combat-assets.js`, `faction-sprites.js`, `game.js`, `character-system.js` e `assets/classes/`.\n5. Analise os sprites e metadados de `assets/classes/pirate-sword/`.\n6. Identifique quais ações de cada classe já possuem animação real e quais utilizam sprites estáticos ou efeitos genéricos.\n7. Verifique a disponibilidade do PixelLab, o pipeline de geração e o consumo estimado de créditos.\n\n**Referência obrigatória:** o Espadachim Bento Maré-Livre já possui um conjunto integrado de animações nas quatro direções. Não recrie nem substitua esse conjunto sem necessidade.\n\n## 2. CLASSES QUE DEVEM SER CONCLUÍDAS\n\nCriar animações próprias para as seis classes restantes.\n\n### LUTADOR — `brawler`\n\nEstilo: combate corpo a corpo, movimentos fortes e pesados.\n\nAnimações:\n\n- Idle de combate: guarda com punhos levantados.\n- Ataque básico: soco com rotação do tronco.\n- Combo: sequência de golpes com recuperação natural.\n- Impacto de Âncora: golpe extremamente forte, com impacto no chão.\n- Fôlego de Ferro: postura defensiva com efeito de proteção.\n- Hurt: reação a um golpe recebido.\n- Death: queda natural, sem desaparecimento repentino.\n\n**Identidade:** força bruta, resistência e peso. Os golpes devem transmitir impacto sem movimentação exagerada do personagem.\n\n### ATIRADOR — `gunner`\n\nEstilo: combate à distância, disparos e movimentação precisa.\n\nAnimações:\n\n- Idle de combate: postura de mira.\n- Ataque básico: sacar/mirar/disparar com recuo.\n- Rajada: disparos consecutivos.\n- Disparo especial: preparação e tiro mais poderoso.\n- Recarga visual, se compatível com a mecânica existente.\n- Hurt e Death.\n\n**Obrigatório:** sincronizar o aparecimento do projétil com o frame do disparo. Não utilizar animações de espadachim.\n\n### GATUNO — `rogue`\n\nEstilo: velocidade, agilidade, evasão e adagas.\n\nAnimações:\n\n- Idle de combate: postura baixa e ágil.\n- Ataque básico: golpe rápido de adaga.\n- Ponto Fraco: ataque preciso e concentrado.\n- Dança das Adagas: sequência veloz de cortes.\n- Esquiva: deslocamento curto com movimento corporal.\n- Hurt e Death.\n\n**Identidade:** golpes rápidos, pouca antecipação e recuperação fluida. A velocidade visual não deve alterar a velocidade real do combate.\n\n### CIBORGUE — `cyborg`\n\nEstilo: combate tecnológico, blindagem e força mecânica.\n\nAnimações:\n\n- Idle de combate: postura pesada, com mecanismos ativos.\n- Ataque básico: golpe mecânico ou disparo compatível com o sistema.\n- Protocolo de Provocação: pulso visual irradiando do personagem.\n- Blindagem Ativa: ativação de placas ou energia defensiva.\n- Reação a dano: impacto metálico.\n- Death: colapso mecânico com animação coerente.\n\n**Identidade:** movimentos robóticos, pesados e deliberados, com efeitos tecnológicos originais.\n\n### ESTRATEGISTA ELEMENTAL — `strategist`\n\nEstilo: magia elemental e controle de área.\n\nAnimações:\n\n- Idle de combate: postura de concentração.\n- Ataque básico: conjuração elemental.\n- Chama Concentrada: preparação e liberação de fogo.\n- Tempestade das Correntes: canalização e descarga elétrica em área.\n- Hurt e Death.\n\n**Obrigatório:** fogo e eletricidade precisam ter efeitos diferentes. Sincronizar conjuração, projétil e impacto com o estado real da habilidade.\n\n### SUPORTE / CURANDEIRO — `healer`\n\nEstilo: magia marítima, cura e proteção.\n\nAnimações:\n\n- Idle de combate: postura de suporte.\n- Ataque básico: projétil elemental de água.\n- Maré Restauradora: conjuração com efeito de água ou energia restauradora.\n- Bênção do Farol: aura de proteção com efeito luminoso.\n- Hurt e Death.\n\n**Obrigatório:** a cura deve ser representada por uma animação positiva e distinta de um ataque. O efeito deve acompanhar a aplicação real da cura.\n\n## 3. PADRÃO DE SPRITES PIXELLAB\n\nUtilizar PixelLab para criar os sprites necessários, com a mesma qualidade do conjunto aprovado do Espadachim.\n\nRequisitos:\n\n- Pixel art nítida, sem suavização.\n- Transparência RGBA.\n- Quatro direções: sul, norte, oeste e leste.\n- Anatomia, rosto e equipamento consistentes entre frames.\n- Contornos, sombreamento e proporções compatíveis com os personagens existentes.\n- Armas e acessórios que não mudem de mão arbitrariamente.\n- Pés alinhados ao mesmo ponto de ancoragem.\n- Movimentos contínuos, sem teletransporte, deformação ou frames repetidos artificialmente.\n- Escala visual compatível com NPCs e personagens atuais.\n\nNão assumir que o canvas precisa ser 64×64: verificar a resolução e o padding efetivamente utilizados pelo PixelLab e pelo sistema atual. Os mapas continuam usando tiles de 64×64, mas sprites e spritesheets possuem especificações próprias.\n\n**Direção artística:** fantasia náutica shonen original, inspirada na atmosfera de aventuras piratas, sem reproduzir personagens, roupas ou símbolos protegidos de One Piece.\n\n### Controle de custos\n\nAntes de executar geração paga em massa:\n\n- Consulte as gerações e assets existentes para evitar trabalhos duplicados.\n- Calcule a quantidade prevista de gerações por classe e direção.\n- Informe o orçamento total e confirme que está dentro dos créditos disponíveis e autorizados.\n- Não repita gerações sem justificativa.\n- Não substitua resultados reais por sprites esticados, espelhados ou simulados apenas para afirmar que a classe está concluída.\n\nApós a autorização do lote necessário, prossiga com a implementação de todas as seis classes.\n\n## 4. ANIMAÇÕES E ESTADOS\n\nCada classe deverá suportar os seguintes estados, conforme aplicáveis:\n\n| Estado | Comportamento |\n|---|---|\n| `idle` | Repouso fora de combate |\n| `walk` | Caminhada nas quatro direções |\n| `combat-idle` | Guarda ou preparação durante combate |\n| `attack` | Ataque básico |\n| `skill-1` | Primeira habilidade da classe |\n| `skill-2` | Segunda habilidade da classe |\n| `hurt` | Reação ao dano |\n| `death` | Animação de morte |\n| `guard/cast/heal` | Estados especializados quando necessários |\n\nOs nomes usados no código devem ser compatíveis com a estrutura atual de `MareCombatAnimation` ou mapeados de maneira centralizada.\n\nA transição entre estados precisa ser natural:\n\n- Idle → Caminhada → Idle.\n- Idle → Combate → Ataque → Recuperação.\n- Combate → Habilidade → Recuperação.\n- Receber dano → Hurt → Retorno ao estado correto.\n- Vida zerada → Death → Estado final.\n\nNão cancelar golpes arbitrariamente nem interromper animações críticas.\n\n## 5. REFATORAÇÃO DO SISTEMA DE ANIMAÇÃO\n\nO jogo atualmente possui lógica específica para o Espadachim Pirata, incluindo `bentoAsset()` e `bentoController()`.\n\n**Generalizar essa infraestrutura.**\n\nCriar um registro de animações por classe e, quando necessário, por facção:\n\n- Não utilizar condições especiais espalhadas por `game.js`.\n- Centralizar a seleção do conjunto de sprites.\n- Reutilizar a máquina de estados de `combat-animation.js`.\n- Associar animações às habilidades reais de cada classe.\n- Manter FPS, duração, frames de impacto e pivôs nos metadados.\n- Implementar fallback seguro quando um asset não carregar.\n- Evitar carregar todos os sprites simultaneamente sem necessidade.\n- Manter nearest-neighbor e escala consistente.\n\n### Compatibilidade com as facções\n\nO jogo possui quatro facções: Pirata, Marinheiro, Revolucionário e Governo Mundial.\n\nA classe continua independente da facção.\n\nAs animações devem funcionar para jogadores das quatro facções sem substituir silenciosamente a identidade visual escolhida por outro personagem.\n\nPriorizar um sistema reutilizável com animações, efeitos e equipamentos próprios de classe, preservando os elementos visuais da facção.\n\nCaso o pipeline não consiga preservar essa identidade com a reutilização de assets, documentar quais variantes adicionais seriam necessárias e seus custos antes de gerar 24 conjuntos completos.\n\n**Não repetir o mesmo personagem visual em todas as classes ou facções.**\n\n## 6. SINCRONIZAÇÃO COM O COMBATE\n\nA animação deve acompanhar as mecânicas já implementadas.\n\nRegras:\n\n1. O dano ocorre no frame de impacto correspondente.\n2. Cada ataque gera dano apenas uma vez.\n3. Projéteis devem surgir no momento correto.\n4. Habilidades respeitam energia e cooldown.\n5. Animações não concedem dano ou cura adicionais.\n6. A morte interrompe ações incompatíveis.\n7. Ataques automáticos e manuais utilizam as mesmas animações.\n8. Proteção e cura devem aparecer no estado adequado.\n9. O personagem não deve deslizar durante ataques estacionários.\n10. Alterações de direção devem respeitar os estados que permitem rotação.\n\n**Atenção especial:** o Espadachim possui lógica de impacto diferido. Adaptar essa lógica cuidadosamente para outras classes, evitando consumo de energia duplicado, repetição de dano, cooldown indevido ou ações perdidas.\n\nRespeitar transformações Zoan, efeitos de Haki e demais estados especiais existentes.\n\n## 7. QUALIDADE VISUAL E PERFORMANCE\n\nTodas as seis classes devem receber acabamento equivalente ao do Espadachim.\n\nRevisar:\n\n- Pivô dos pés.\n- Proporções.\n- Frames e FPS.\n- Consistência de paleta.\n- Sombreamento.\n- Continuidade entre animações.\n- Timing de impacto.\n- Efeitos visuais próprios da classe.\n- Transições.\n- Escala durante câmera e movimentação.\n- Compatibilidade com combate automático.\n\nNão adicionar partículas desnecessárias. Os efeitos precisam comunicar a ação, sem esconder inimigos ou poluir o cenário.\n\nManter desempenho adequado durante caçadas com múltiplos monstros.\n\n## 8. ORGANIZAÇÃO DOS ASSETS\n\nSeguir a estrutura existente de `assets/classes/`, criando diretórios próprios para cada classe.\n\nCada classe deve possuir `metadata.json` com:\n\n- Identificador da classe.\n- Nome do conjunto.\n- Referência visual.\n- Origem dos assets.\n- Direções suportadas.\n- Dimensões reais.\n- Contagem de frames.\n- FPS.\n- Âncora/pivô.\n- Escala de renderização.\n- Frames de impacto.\n- Estados disponíveis.\n- Status de aprovação e integração.\n\nRegistrar spritesheets e URLs no sistema de assets existente.\n\nNão incluir arquivos temporários, candidatos descartados ou GIFs pesados no pacote de produção, salvo se indispensáveis.\n\n## 9. TESTES OBRIGATÓRIOS\n\nTestar todas as sete classes, incluindo o Espadachim já implementado.\n\nPara cada classe:\n\n1. Criar ou carregar personagem em save isolado.\n2. Testar as quatro direções.\n3. Testar idle e caminhada.\n4. Testar ataque básico.\n5. Testar as duas habilidades.\n6. Testar reação a dano.\n7. Testar morte e retorno ao jogo.\n8. Verificar consumo de energia e cooldown.\n9. Verificar que cada impacto produz o resultado correto uma única vez.\n10. Verificar escala e transparência dos sprites.\n\nTestar também combate automático, transições de mapa, troca de classe, compatibilidade com facções e carregamento de saves antigos.\n\nUtilizar o laboratório DEV e saves de teste isolados. Não alterar o progresso real do jogador.\n\nGerar capturas e prévias de animação para inspeção visual, incluindo pelo menos uma cena real de combate por classe.\n\n## 10. ENTREGA E PUBLICAÇÃO\n\nAo concluir:\n\n1. Atualizar os seis conjuntos de animações.\n2. Integrar todas as classes à máquina de estados.\n3. Preservar o Espadachim já aprovado.\n4. Documentar os conjuntos novos e seus metadados.\n5. Apresentar tabela por classe com estados efetivamente implementados.\n6. Informar gerações PixelLab consumidas.\n7. Executar testes Node, testes de navegador e `python tools/build_pages.py`.\n8. Corrigir problemas encontrados.\n9. Fazer commit e push em `feature/class-combat-animations-v2`.\n10. Abrir Pull Request para a `main`.\n\n**Não realizar merge automaticamente. Não interferir no trabalho paralelo do outro desenvolvedor.**\n\n### Critério final de aceitação\n\nA atualização não estará concluída enquanto alguma das seis classes restantes continuar utilizando apenas animação de repouso durante os ataques ou habilidades.\n\nCada classe precisa apresentar identidade própria no combate, animações completas nas quatro direções, efeitos sincronizados e funcionamento comprovado dentro do jogo.\n\n**RESULTADO ESPERADO:** as sete classes do Maré Partida devem alcançar um padrão uniforme de animação profissional, com personagens visualmente distintos, ações fluidas, combate satisfatório e uma infraestrutura preparada para futuras classes, habilidades e expansões.\n"
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "v3",
+      "directions": [
+        "south"
+      ],
+      "frame_count": 4,
+      "keep_first_frame": false,
+      "animation_name": "brawler-v2-combat-idle",
+      "action_description": "Breathe subtly in a grounded bare-knuckle guard, fists raised, feet planted. Keep the current facing, outfit and body size. Recover the starting guard."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "v3",
+      "directions": [
+        "south"
+      ],
+      "frame_count": 8,
+      "keep_first_frame": false,
+      "animation_name": "brawler-v2-combo",
+      "action_description": "Perform a compact left-right punching combination, with natural shoulder rotation and full recovery to guard. Keep feet planted, current facing, outfit and body size."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "v3",
+      "directions": [
+        "south"
+      ],
+      "frame_count": 8,
+      "keep_first_frame": false,
+      "animation_name": "brawler-v2-death",
+      "action_description": "Lose balance, buckle at the knees and fall naturally to the ground, ending in a still fallen pose. Preserve the outfit, body size and initial facing. Continuous movement, no vanishing or teleporting."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "v3",
+      "directions": [
+        "south"
+      ],
+      "frame_count": 4,
+      "keep_first_frame": false,
+      "animation_name": "brawler-v2-hurt",
+      "action_description": "Recoil briefly from a hit and recover the raised-fist guard. Keep feet planted, current facing, outfit and body size."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "v3",
+      "directions": [
+        "north",
+        "west",
+        "east"
+      ],
+      "frame_count": 4,
+      "keep_first_frame": false,
+      "animation_name": "brawler-v2-hurt",
+      "action_description": "Recoil briefly from a hit and recover the raised-fist guard. Keep feet planted, current facing, outfit and body size.",
+      "animation_group_id": "a7e0cc0f-fd26-44c6-b747-dac939b553e3"
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "v3",
+      "directions": [
+        "south"
+      ],
+      "frame_count": 8,
+      "keep_first_frame": false,
+      "animation_name": "brawler-v2-skill-1",
+      "action_description": "Wind up a heavy fist, drive it forward and downward into a powerful ground impact with a brief small amber shock ring, then recover to guard. Keep feet anchored and the current facing, outfit and body size."
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "v3",
+      "directions": [
+        "north",
+        "west",
+        "east"
+      ],
+      "frame_count": 8,
+      "keep_first_frame": false,
+      "animation_name": "brawler-v2-skill-1",
+      "action_description": "Wind up a heavy fist, drive it forward and downward into a powerful ground impact with a brief small amber shock ring, then recover to guard. Keep feet anchored and the current facing, outfit and body size.",
+      "animation_group_id": "5462f700-7f69-4b2d-850d-ba6b9e66e13c"
+    }
+  },
+  {
+    "MCP animate_character": {
+      "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+      "mode": "v3",
+      "directions": [
+        "south"
+      ],
+      "frame_count": 8,
+      "keep_first_frame": false,
+      "animation_name": "brawler-v2-skill-2",
+      "action_description": "Brace defensively, cross the forearms in front of the chest with a brief warm bronze protective glow, then recover the raised-fist guard. Keep feet planted, current facing, outfit and body size."
+    }
+  },
+  {
+    "TASK": {
+      "action": "Download returned frames, preserve order and native pixels, make separate grid/GIF inspections, reject direction/posture failures; do not activate incomplete artwork in production. No new generation or modular implementation while paused."
+    }
+  }
+]

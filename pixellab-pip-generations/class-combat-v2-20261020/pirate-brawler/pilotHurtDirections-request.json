@@ -1,0 +1,25 @@
+{
+  "req": {
+    "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+    "mode": "v3",
+    "directions": [
+      "north",
+      "west",
+      "east"
+    ],
+    "frame_count": 4,
+    "keep_first_frame": false,
+    "animation_name": "brawler-v2-hurt",
+    "action_description": "Recoil briefly from a hit and recover the raised-fist guard. Keep feet planted, current facing, outfit and body size.",
+    "animation_group_id": "a7e0cc0f-fd26-44c6-b747-dac939b553e3"
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Recoil briefly from a hit and recover the raised-fist guard. Keep feet planted, current facing, outfit and body size.)\ndirections: north, west, east (3 jobs)\njob_ids: north=4cff9283-4650-4f93-8d0b-974b19216da0, west=f3f7569e-f11e-45a9-b178-c4c4f6aa8dde, east=5ead33c2-960b-4e42-8982-89d1a868d714\ngroup: a7e0cc0f-fd26-44c6-b747-dac939b553e3\nframes: 4 (reference stripped, keep_first_frame=false)\ncanvas: north 68x68, west 68x68, east 68x68 (frames are stored at this size: the character plus room to move)\ncost: 3 generations (1/dir x 3)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Recoil briefly from a hit and recover the raised-fist guard. Keep feet planted, current facing, outfit and body size.\", animation_group_id=\"a7e0cc0f-fd26-44c6-b747-dac939b553e3\", directions=[...])"
+      }
+    ],
+    "isError": false
+  }
+}

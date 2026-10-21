@@ -1,0 +1,139 @@
+# Paper Doll 1.0 — Fase 1
+
+## Estado e limite artístico
+
+Infraestrutura funcional com fallback, bancada interativa e contrato de assets. **Ainda não existe um conjunto modular real de Espadachim para validação artística.** Nenhum PNG foi gerado, pintado, separado por cores ou convertido em camada artificial. O jogo continua mostrando os personagens originais.
+
+Branch `feature/paper-doll-fase-1`, criada de `origin/main` em `5047eea`, incorpora o checkpoint de animações2.0 (`4ab2348`, preservado por cherry-pick). O PR de checkpoint39 permanece em rascunho; esta fase inclui esse trabalho e não depende de fazer merge nele. Não fazer merge/publicação automática de nenhum dos dois.
+
+## Auditoria dos assets existentes
+
+- Bases de facção: folhas de personagem completo, células56×56 com padding, quatro direções e idle/walk reais. Úteis como referência, escala e fallback; pele/cabelo/roupas já estão fundidos.
+- Bento Espadachim: células84×84, pivô42/65, corpo de referência46px, escala70/46; ataque de8 frames a12FPS, impacto no frame3. Seus arquivos e metadados são preservados. O módulo de desenho não modifica o relógio nem os eventos do ataque.
+- A referência de Idle é4 frames/4FPS; Walk é8/8FPS; ambos vêm da base pirata, com seu pivô56/28/52 próprio. Na bancada, esse pivô é colocado no mesmo ponto visual do pivô do rig84; não se redimensionam os PNGs nem se promete identidade de proporções entre fontes diferentes.
+- Os80 frames recentes do Lutador foram conferidos como RGBA e registrados por SHA256. São personagens completos, não roupas/partes reutilizáveis como Paper Doll. Resultados reprovados continuam preservados.
+- O job `5ead33c2-960b-4e42-8982-89d1a868d714`, antes sem conclusão confirmada, foi consultado por `list_jobs(include_recent=true)`: **failed — Generation stalled and was automatically failed**. Os quatro frames hurt/leste não foram entregues. Não houve retry.
+- Ícones de itens32×32 não são sprites de equipamento animado. Não são sobrepostos ao personagem para simular a entrega.
+
+Auditoria legível por ferramenta e hashes: `assets/paper-doll/source-audit.json`. Nesta fase: **zero novas gerações PixelLab**. As13 gerações informadas pelo lote anterior permanecem no recibo histórico; um job falhou e eventual ajuste de cobrança não foi exposto pelo getter consultado.
+
+## Arquitetura e integração
+
+`paper-doll.js` é um compositor Canvas2D independente de classe, facção, combate e save. Recebe uma aparência e uma pose `{animationId,direction,frameIndex}`; não avança relógios nem emite dano, cura, projéteis ou eventos. Todas as camadas recebem exatamente esse mesmo frame.
+
+`paper-doll-assets.js` fornece o catálogo do protótipo, a resolução pura de equipamento para peça visual e a referência do sprite completo. Seus placeholders declaram `available:false`, sem URLs inventadas. Apenas o protótipo Pirata+Espadachim é elegível; outras classes/facções e todas as transformações Zoan seguem diretamente o caminho existente.
+
+O mundo e o retrato passam por `drawPlayerSprite`; inventário/prévia do personagem consultam o mesmo resolvedor. A cada mudança de definição equipada, ou remoção de item, a assinatura visual é recalculada no próximo desenho. Não se grava um novo campo em `game` e não se altera a chave/formato de save. Melhorias numéricas do mesmo item não mudam sua skin.
+
+O estado de combate fornece ação, direção travada e tempo. A amostragem só converte esse tempo para um frame visual. Somente Idle, Walk e Attack são cobertos pelo contrato inicial. Skills, hurt, death e outras poses continuam no renderizador legado quando não há sequência modular compatível. Zoan tem prioridade antes de qualquer tentativa Paper Doll; Haki/VFX e ordenação do mundo continuam fora do compositor.
+
+### Fallback atômico
+
+Antes de desenhar, o compositor verifica todas as camadas selecionadas. Peça obrigatória ausente, rig/ação/direção incompatível, frame inválido, PNG pendente/falho, folha com dimensões erradas, frame vazio, repetição estática da sequência ou transformação inválida causam retorno `false`, **sem desenhar camadas parciais**. O chamador mantém o sprite antigo. Ocultar uma camada na inspeção não remove sua exigência de cobertura.
+
+Assets de produção exigem `approved:true`; os placeholders nunca recebem essa aprovação. A bancada pode inspecionar um pacote local como rascunho (`allowDraft:true`), mas isso não o ativa no jogo nem concede aprovação artística. Falta de peça é diagnosticada, não preenchida com desenho improvisado.
+
+## Contrato técnico de sprites
+
+| Campo | Regra do protótipo |
+|---|---|
+| `rigId` | `swordsman-v1`, revisão explícita |
+| Resolução / célula |84×84 RGBA, incluindo padding; não é tile64 nem obrigação de desenhar um corpo de84px |
+| Corpo de referência |46px; renderização de referência70px, escala uniforme70/46 |
+| `pivotX`, `pivotY` |42,65 na célula comum; pés no mesmo referencial de mundo |
+| Direções / linhas | `south`, `north`, `west`, `east`, nessa ordem no template; ordem declarada nos metadados, sem espelhar |
+| Idle |4 frames,4FPS, loop; folha336×336 |
+| Walk |8 frames,8FPS, loop; folha672×336 |
+| Attack |8 frames,12FPS, one-shot; folha672×336; dano permanece no evento de impacto do controlador existente |
+| Colunas |Frames em ordem original da esquerda para a direita; índices0–3 ou0–7 |
+| Transparência |RGBA transparente, sem matte, fundo xadrez, suavização ou pixels cortados |
+| `offsetX/Y` |Inteiros nativos, padrão0/0. Somados depois de alinhar o pivô; não usar offsets oscilantes para esconder erro de ancoragem |
+| `zIndex` |Inteiro por peça/clip; pode mudar por direção e frame, sem alterar o relógio |
+| Compatibilidade |Mesmo rig, célula, contagem, FPS, loop, direções e cobertura real da pose; cada frame visível precisa existir |
+| Integridade |Preservar originais, proveniência e aprovação. Sem inventar quadros por duplicação, ping-pong ou inversão |
+
+Nomenclatura: `<slot>-<animationId>.png`, por exemplo `hair-walk.png`, com manifestos e revisões por peça. O template não contém PNGs: `assets/paper-doll/swordsman/manifest.json`.
+
+Slots suportados: `body`, `pants`, `boots`, `outfit`, `hair`, `accessory`, `weapon`. Quatro são obrigatórios no protótipo: body/hair/outfit/weapon. Camadas opcionais só são desenhadas se explicitamente selecionadas e compatíveis.
+
+Ordem padrão: corpo, calças, botas, roupa, cabelo, acessório e arma. Uma espada norte pode usar `directionOverrides.north.zIndex:10` e ficar atrás do corpo; numa pose específica, `poseOverrides.south[3]` pode alterar z/offset. O template usa a ordem20/50/60/80 nas quatro peças obrigatórias. Valores empatados usam a ordem estável dos slots.
+
+Exemplo de clip, somente metadados:
+
+```json
+{
+  "url": "weapon-attack.png",
+  "frames": 8, "fps": 12, "loop": false,
+  "directions": ["south", "north", "west", "east"],
+  "frameWidth": 84, "frameHeight": 84,
+  "pivotX": 42, "pivotY": 65,
+  "offsetX": 0, "offsetY": 0, "zIndex": 80,
+  "directionOverrides": {"north": {"zIndex": 10}},
+  "poseOverrides": {"south": [{}, {}, {}, {"zIndex": 85}]}
+}
+```
+
+A Fase1 rejeita folhas cujas células de uma sequência multidirecional são todas vazias ou reproduzem exatamente a mesma imagem em todas as colunas de uma direção. Isso detecta simulação de animação estática; não substitui a inspeção de anatomia, armas e alinhamento. Peças rígidas com reutilização formal por anchors exigem extensão futura explícita do contrato; não foram simuladas nesta fase.
+
+### Equipamento e aparência
+
+Bindings preparados: arma0→espada do protótipo; arma1→Sabre de Coral; torso6→roupa do protótipo; torso7→Casaco da Bruma; cabeça18→bandana. Peças alternativas também estão ausentes. Remover arma/torso retorna à peça padrão; remover cabeça retorna à ausência do acessório opcional. Definição não mapeada nesses slots usa fallback do personagem completo.
+
+Calças, botas e outros acessórios têm slots técnicos preparados, mas não recebem skins de itens nesta fase. Seus itens, números e visuais legados continuam como antes. Esta preparação não representa cobertura modular desses equipamentos e não modifica regras de compatibilidade de classe.
+
+### Adicionar uma peça posteriormente
+
+1. Produzir os frames sobre o mesmo rig/poses; manter pixels originais e a proveniência. Qualquer geração nova exige aprovação própria.
+2. Preencher as três folhas e o manifesto, com nomes únicos e dimensões exatas. Não distribuir imagens artificiais como camada final.
+3. Na bancada, carregar o JSON com seus PNGs, conferir todas as quatro direções/quatro ou oito frames e a ordem das camadas, usando controles de frame/pivô/visibilidade.
+4. Corrigir na fonte quaisquer lacunas ou ancoragens inconsistentes; registrar offsets legítimos. A presença de imagem e igualdade de contagem não provam qualidade artística.
+5. Só após revisão artística, registrar a peça real em `paper-doll-assets.js`, com URLs relativos, `available:true`, `approved:true`, revisão e bindings. A resolução pura alimenta mundo/retrato/inventário sem novo save.
+6. Rodar Node, navegador, build/cache e regressão Haki/Zoan antes de propor merge. Uma peça sem todas as poses não pode ser anunciada como cobertura completa do personagem.
+
+## Bancada de inspeção
+
+Abra `tools/paper-doll-inspector/index.html` no servidor local ou pacote Pages. A ferramenta tem quatro direções, Idle/Walk/Attack, pausa/reprodução, slider de frame, zoom2×/3×/4×, pivôs/linha dos pés, visibilidade das sete camadas, associação de equipamento e comparação lado a lado. A diferença RGBA é contada antes dos auxiliares visuais e não deve ser confundida com aprovação artística: roupas diferentes podem legitimamente mudar pixels.
+
+Sem peças, os dois lados mostram o sprite completo e a ferramenta informa fallback; não finge mostrar um corpo modular. O xadrez é auxiliar de transparência da interface. Esconder camada não afeta o fallback completo.
+
+Para um pacote local: selecione um JSON e todas as folhas PNG na mesma seleção de arquivos, com nomes únicos. O importador exige o contrato84 e4/8/8, usa URLs locais temporárias, valida antes de aplicar e não faz upload. O catálogo original é restaurável. Bindings opcionais do pacote habilitam o ensaio de troca de itens; sem bindings esses seletores ficam desativados. Nenhum arquivo importado entra automaticamente no repositório ou no save.
+
+## Cache e desempenho
+
+O carregador de imagens é compartilhado com `MareFactionSprites.image`: uma URL produz um objeto Image. O compositor audita as células uma vez por imagem/clip e usa cache LRU por rig/revisão, aparência, frame, direção, offsets, profundidade e visibilidade. Célula composta é nativa; escala é aplicada apenas no desenho final, com `imageSmoothingEnabled=false` e coordenadas arredondadas.
+
+Limites padrão:4MiB e96 frames compostos. As dimensões da composição se expandem quando há offsets legítimos, evitando cortar arma/cabelo; offsets inválidos ou composição maior que2048px falham com segurança. Registrar novamente uma peça/rig invalida as composições. PNGs originais ficam no carregador; bytes do cache são apenas os canvases RGBA compostos, não toda a memória do navegador/GPU.
+
+No estado atual de fallback nenhum canvas modular é composto no jogo. O custo medido dos testes precisa ser lido com essa limitação: não é benchmark de um elenco com arte modular real.
+
+## Assets ausentes e estimativas de produção
+
+| Peça mínima | Idle | Walk | Attack | Total |
+|---|---:|---:|---:|---:|
+| Corpo-base |16|32|32|80|
+| Cabelo |16|32|32|80|
+| Roupa |16|32|32|80|
+| Espada |16|32|32|80|
+| **Mínimo** |64|128|128|**320 frames /12 folhas**|
+
+Variantes opcionais previstas (não exigidas para validar o conjunto mínimo): Sabre de Coral, Casaco da Bruma e bandana, cada uma com mais80 frames/3 folhas se cobrir as três ações. Não há parte pronta que permita descontar esses frames com segurança.
+
+Estimativas de dimensionamento, **não orçamento aprovado**:
+
+- Arte manual fornecida sobre o rig:0 gerações PixelLab, com trabalho artístico a estimar separadamente.
+- Imagens individuais pequenas por Pixen: custo publicado de1 geração/imagem. O mínimo bruto320 frames daria aproximadamente320 gerações, sem retries. A rota não garante alinhamento entre imagens e **não é recomendada para disparar em massa**.
+- Como referência de custo de movimento, um corpo-base e12 clipes v3 pequenos podem custar14–26 gerações; isso produz frames do corpo e **não** cria as outras três camadas compatíveis. Não usar esse número como orçamento do conjunto Paper Doll completo.
+- Lote inicial proposto para futura aprovação: somente Idle/sul das quatro peças (16 frames), com envelope de até16 gerações se produzido por imagens individuais, ou arte manual. Validar encaixe antes de planejar Walk/sul (32 frames), Attack/sul (32) e as três outras direções. Rota, prompts, referências, frames e preço devem ser apresentados antes de qualquer geração; o orçamento pode mudar conforme a estratégia escolhida.
+
+Gerar o personagem inteiro e tentar apagar suas roupas depois deixa anatomia oculta faltando. Recortes por cor, redimensionamento de ícones ou uma espada estática não atendem ao contrato. Reutilização segura nesta fase é manter sprites completos como referência/fallback e reaproveitar a infraestrutura de animação, não fabricar camadas ocultas.
+
+## Validação e evidências
+
+- `tests/paper-doll.test.cjs`: sincronização das80 poses com quatro camadas, z por direção/pose, pivôs/offsets, expansão de limites, LRU, ausência de desenho parcial, falhas de imagem, troca de peças, pureza do resolvedor e escopo classe/facção/Zoan. As imagens mockadas desses testes são dados de teste, não arte de personagem.
+- `tests/paper_doll_browser.py`: bancada real, controles, quatro direções, frames, fallback pixel a pixel, importação inválida, responsividade, conformance de composição em canvas fora da tela, jogo/equipamentos/saves/Haki/Zoan e medições. Ensaios geométricos usam blocos de cor somente como fixtures técnicas; não aparecem como personagem nem contam como validação artística.
+- `tests/class_combat_v2_browser.py`: regressão real das sete classes, com o Espadachim existente.
+- Capturas/resultados ficam em `docs/evidence-paper-doll/`, fora do Git. O pacote estático contém a bancada, scripts, contrato e o manifesto vazio, sem ferramentas Python, saves ou evidências em massa.
+- A execução local passou com31 suítes Node e sintaxe/build, além da regressão real das sete classes. O teste Pages de cache conferiu58 recursos versionados e save preservado. No ensaio do pacote estático,10.000 resoluções de fallback levaram7–11ms nas execuções locais; a amostra de combate de1,8s registrou109 frames, mediana de16,7ms e p95 de16,7–16,8ms e zero composições modulares. São medições desta máquina e deste cenário, sem arte modular real, não uma promessa de FPS geral.
+- O workflow `Paper Doll — infraestrutura e fallback` repete a verificação em Chromium no pacote estático e entrega o artefato `paper-doll-infraestrutura-capturas` para revisão, sem incluir evidências em massa no repositório.
+
+A fase entrega a infraestrutura e a prévia com fallback pela exceção expressa do pedido. **O aceite artístico do Espadachim modular em quatro direções continua pendente dos320 frames reais.** Nada foi publicado nem integrado à main automaticamente. Saves antigos, mapas, física, hitboxes e tempos/eventos do combate permanecem no caminho existente.

@@ -2,18 +2,31 @@
 /* Playback uses metadata and native generated pixels; no frame synthesis or mirroring. */
 (() => {
   const assets={};
+  const images=new Map();
+  const assetBase=typeof document!=='undefined'&&document.currentScript?.src?new URL('.',document.currentScript.src).href:null;
   const directionMap={front:'south',back:'north',left:'west',right:'east'};
-  function register(config){
+  function image(url){
+    if(!images.has(url)){
+      const im=new Image(),notify=()=>window.dispatchEvent(new Event('mare-faction-sprite-ready'));im.addEventListener('load',notify);im.addEventListener('error',notify);im.src=assetBase?new URL(url,assetBase).href:url;images.set(url,im);
+    }
+    return images.get(url);
+  }
+  function ensure(id){
+    const asset=assets[id];if(!asset||asset.requested)return;
+    asset.requested=true;
+    for(const [action,animation]of Object.entries(asset.meta.animations)){
+      asset.sheets[action]=image(animation.url);
+    }
+  }
+  function register(config,{lazy=false}={}){
     for(const [id,meta] of Object.entries(config)){
-      const sheets={};
-      for(const [action,animation] of Object.entries(meta.animations)){
-        const image=new Image();image.addEventListener('load',()=>window.dispatchEvent(new Event('mare-faction-sprite-ready')));image.src=animation.url;sheets[action]=image;
-      }
-      assets[id]={meta,sheets};
+      assets[id]={meta,sheets:{},requested:false};
+      if(!lazy)ensure(id);
     }
   }
   function frame(id,action='idle',direction='south',time=0){
     const asset=assets[id];if(!asset)return null;
+    ensure(id);
     const animation=asset.meta.animations[action];if(!animation)return null;
     const image=asset.sheets[action];if(!image.complete||!image.naturalWidth)return null;
     const row=asset.meta.directions.indexOf(directionMap[direction]||direction);
@@ -37,5 +50,6 @@
       Math.round(x-ax*factor),Math.round(y-ay*factor),width,h);
     context.restore();return true;
   }
-  globalThis.MareFactionSprites={register,frame,draw,assets};
+  const forgetImage=url=>{if(url.startsWith('blob:'))images.delete(url);};
+  globalThis.MareFactionSprites={register,ensure,frame,draw,assets,image,forgetImage};
 })();

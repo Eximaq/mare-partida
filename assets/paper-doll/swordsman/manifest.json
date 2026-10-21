@@ -1,0 +1,386 @@
+{
+  "status": "template-only-missing-art",
+  "rig": {
+    "id": "swordsman-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "hair",
+      "outfit",
+      "weapon"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "walk": {
+        "frames": 8,
+        "fps": 8,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "prototype-body",
+      "name": "Corpo-base",
+      "slot": "body",
+      "rigId": "swordsman-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "body-idle.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 20,
+          "directionOverrides": {}
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "body-walk.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 20,
+          "directionOverrides": {}
+        },
+        "attack": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "body-attack.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 20,
+          "directionOverrides": {}
+        }
+      },
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "prototype-hair",
+      "name": "Cabelo",
+      "slot": "hair",
+      "rigId": "swordsman-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "hair-idle.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 60,
+          "directionOverrides": {}
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "hair-walk.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 60,
+          "directionOverrides": {}
+        },
+        "attack": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "hair-attack.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 60,
+          "directionOverrides": {}
+        }
+      },
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "prototype-outfit",
+      "name": "Roupa padrão",
+      "slot": "outfit",
+      "rigId": "swordsman-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "outfit-idle.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 50,
+          "directionOverrides": {}
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "outfit-walk.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 50,
+          "directionOverrides": {}
+        },
+        "attack": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "outfit-attack.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 50,
+          "directionOverrides": {}
+        }
+      },
+      "source": "missing; no modular source supplied"
+    },
+    {
+      "id": "prototype-sword",
+      "name": "Espada de Ferro Salgado",
+      "slot": "weapon",
+      "rigId": "swordsman-v1",
+      "revision": 1,
+      "approved": false,
+      "available": false,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "weapon-idle.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 80,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "weapon-walk.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 80,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        },
+        "attack": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "url": "weapon-attack.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65,
+          "offsetX": 0,
+          "offsetY": 0,
+          "zIndex": 80,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        }
+      },
+      "source": "missing; no modular source supplied"
+    }
+  ],
+  "appearance": {
+    "rigId": "swordsman-v1",
+    "pieces": {
+      "body": "prototype-body",
+      "hair": "prototype-hair",
+      "outfit": "prototype-outfit",
+      "weapon": "prototype-sword"
+    }
+  },
+  "bindings": {
+    "weapon": {
+      "slot": "weapon",
+      "items": {
+        "0": "prototype-sword",
+        "1": "prototype-sabre"
+      }
+    },
+    "coat": {
+      "slot": "outfit",
+      "items": {
+        "6": "prototype-outfit",
+        "7": "prototype-mist-coat"
+      }
+    },
+    "head": {
+      "slot": "accessory",
+      "items": {
+        "18": "prototype-bandana"
+      }
+    }
+  }
+}

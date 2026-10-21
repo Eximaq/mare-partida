@@ -10,7 +10,7 @@ if OUT.exists():
     shutil.rmtree(OUT)
 OUT.mkdir(parents=True)
 web_files = ['index.html', 'journal-feed.json', 'ui-tokens.css', 'ui-components.css', 'ui-hud.css', 'hud-zoom-expedition.css', 'ui-screens.css', 'ui-responsive.css', 'ui-system.js', 'game-tooltips.css', 'player-hub.css', 'styles.css', 'ui-nautical.css', 'audio-system.css', 'character-menu.css', 'modes-menu.css', 'inventory-compact.css',
-             'character-system.js', 'akuma-system.js', 'zoan-art.js', 'combat-animation.js', 'combat-assets.js',
+             'character-system.js', 'akuma-system.js', 'zoan-art.js', 'combat-animation.js', 'combat-registry.js', 'combat-assets.js', 'paper-doll.js', 'paper-doll-assets.js',
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
              'forge-ui.js', 'game-tooltips.js', 'player-hub.js', 'hud-telemetry.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js',
              'dawn-map-data.js', 'dawn-world.js', 'dawn-renderer.js', 'rare-world.js', 'rare-renderer.js', 'world-system.js', 'orange-world.js', 'conchas-world.js', 'conchas-renderer.js', 'terrain-autotile.js', 'orange-terrain.js', 'orange-renderer.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'dev-tools.js', 'hunt-system.js']
@@ -50,5 +50,20 @@ for relative in art_paths:
     dest = OUT/relative
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, dest)
+# The inspection workbench is static and deliberately contains no local Python tools.
+inspector = OUT/'tools/paper-doll-inspector'
+inspector.mkdir(parents=True, exist_ok=True)
+for name in ['index.html', 'inspector.css', 'inspector.js']:
+    shutil.copy2(ROOT/'tools/paper-doll-inspector'/name, inspector/name)
+def version_inspector(match):
+    source = (inspector/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+    return f'{match.group(1)}{match.group(2)}?v={digest}{match.group(3)}'
+inspector_html = (inspector/'index.html').read_text(encoding='utf-8')
+(inspector/'index.html').write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_inspector, inspector_html), encoding='utf-8')
+(OUT/'docs').mkdir(exist_ok=True)
+shutil.copy2(ROOT/'docs/PAPER-DOLL.md', OUT/'docs/PAPER-DOLL.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')
