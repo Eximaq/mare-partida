@@ -53,4 +53,6 @@ Resultados locais desta implementação:
 
 O workflow Paper Doll recompõe a prévia a partir dos arquivos originais e repete as verificações em Chromium. Push e PR não fazem merge nem ativam o protótipo no jogo.
 
+Correção de portabilidade após o CI de48f4e7e: o hash do PNG derivado de uma célula variou na reexportação Linux/Pillow, apesar de os pixels permanecerem iguais. O arquivo bruto original continua protegido por SHA256; a célula derivada é comparada em RGBA visível com o recorte nativo desse original. Três testes verificam recompactação válida, alteração de pixel recusada e alteração do arquivo bruto recusada. A comparação não recolore nem corrige a arte.
+
 Próximo passo artístico: obter cabelo e roupa compatíveis com as poses do corpo. Não há consumo futuro autorizado por este modo gratuito; qualquer produção paga terá plano e orçamento próprios.

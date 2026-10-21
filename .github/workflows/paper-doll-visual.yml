@@ -17,6 +17,7 @@ on:
       - 'tests/paper_doll_sword_browser.py'
       - 'tests/paper_doll_layer_batch_browser.py'
       - 'tests/paper_doll_rigid_browser.py'
+      - 'tests/paper_doll_rigid_assembly_test.py'
       - 'tests/paper-doll-attachment.test.cjs'
       - 'tests/paper_doll_fit_audit_test.py'
       - 'tests/paper_doll_batch_audit_test.py'
@@ -47,6 +48,7 @@ jobs:
           python -m playwright install --with-deps chromium
           python tests/paper_doll_fit_audit_test.py
           python tests/paper_doll_batch_audit_test.py
+          python tests/paper_doll_rigid_assembly_test.py
           python pixellab-pip-generations/paper-doll-sword-fit-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-layer-batch-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-rigid-weapon-20261021/assemble_review.py

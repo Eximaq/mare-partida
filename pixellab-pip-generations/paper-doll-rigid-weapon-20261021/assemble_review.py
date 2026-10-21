@@ -12,7 +12,13 @@ def visible(image):return [(r,g,b,a) if a else (0,0,0,0) for r,g,b,a in image.ge
 def main():
     audit=json.loads((PREVIOUS/'attachment-plan-audit.json').read_text())
     source=PREVIOUS/audit['candidate_weapon_source']
-    if digest(source)!=audit['candidate_weapon_sha256']:raise ValueError('Candidate changed')
+    # PNG compression can differ across Pillow/zlib platforms after atlas splitting.
+    # Anchor to the immutable generated atlas, then compare decoded visible RGBA.
+    receipt=json.loads((PREVIOUS/'weapon-job.json').read_text())
+    if digest(PREVIOUS/'weapon-raw.png')!=receipt['raw_sha256']:raise ValueError('Original generated atlas changed')
+    original=Image.open(PREVIOUS/'weapon-raw.png').convert('RGBA').crop((0,0,64,64))
+    candidate=Image.open(source).convert('RGBA')
+    if candidate.size!=(64,64) or visible(candidate)!=visible(original):raise ValueError('Candidate pixels changed')
     shutil.copy2(source,HERE/'rigid-weapon.png')
     shutil.copy2(PREVIOUS/'body-idle-south.png',HERE/'body-idle-south.png')
     shutil.copy2(PREVIOUS/'weapon-idle-south.png',HERE/'previous-weapon-idle.png')
@@ -46,11 +52,11 @@ def main():
         item.putdata([indices[(r,g,b)] if a else 0 for r,g,b,a in frame.get_flattened_data()]);indexed.append(item)
     indexed[0].save(HERE/'rigid-weapon-review.gif',save_all=True,append_images=indexed[1:],
                     duration=250,loop=0,disposal=2,transparency=0,optimize=False)
-    decoded=Image.open(HERE/'rigid-weapon-review.gif')
-    assert decoded.n_frames==4 and decoded.info['loop']==0
-    for i,frame in enumerate(frames):
-        decoded.seek(i)
-        assert decoded.disposal_method==2 and decoded.info['duration']==250 and visible(decoded.convert('RGBA'))==visible(frame)
+    with Image.open(HERE/'rigid-weapon-review.gif') as decoded:
+        assert decoded.n_frames==4 and decoded.info['loop']==0
+        for i,frame in enumerate(frames):
+            decoded.seek(i)
+            assert decoded.disposal_method==2 and decoded.info['duration']==250 and visible(decoded.convert('RGBA'))==visible(frame)
     anim={'frames':4,'fps':4,'loop':True,'directions':['south']}
     rig={'id':'rigid-weapon-review-v1','frameWidth':84,'frameHeight':84,'pivotX':42,'pivotY':65,
          'scale':1,'requiredSlots':['body','weapon'],'animations':{'idle':anim}}
