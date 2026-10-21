@@ -29,10 +29,6 @@
     canvas.width=W;canvas.height=H;ctx.imageSmoothingEnabled=false;
     camera.width=W;camera.height=H;
     if(game)camera.update(world.hero,activeMap(),0,true);
-    const value=$('worldZoomValue');
-    if(value)value.textContent=Math.round(worldZoom.value*100)+'%';
-    document.querySelector('[data-world-zoom="in"]')?.toggleAttribute('disabled',worldZoom.value>=MareHudTelemetry.maxZoom);
-    document.querySelector('[data-world-zoom="out"]')?.toggleAttribute('disabled',worldZoom.value<=MareHudTelemetry.minZoom);
   }
   new ResizeObserver(resizeViewport).observe(canvas);
   function walkTo(point,action=null){
@@ -1767,23 +1763,12 @@ $('gameFrame').appendChild(targetHud);
   tracker.id='huntXpTracker';tracker.className='hunt-xp-tracker';tracker.hidden=true;
   tracker.setAttribute('role','status');tracker.setAttribute('aria-live','off');
   tracker.innerHTML='<div class="hunt-xp-top"><span>✦ XP POR HORA</span><strong id="huntXpRate">Calculando…</strong></div><div class="hunt-xp-metrics"><span>Tempo <b id="huntXpTime">00:00</b></span><span id="huntXpEarned">0 XP</span></div><div class="hunt-xp-track" role="presentation"><i id="huntXpProgress"></i></div><span class="hunt-xp-level" id="huntXpLevel">Próximo nível</span>';
-  journey.prepend(tracker);
-  const zoomControls=document.createElement('div');
-  zoomControls.id='worldZoomControls';zoomControls.setAttribute('role','group');
-  zoomControls.setAttribute('aria-label','Zoom do mapa');
-  zoomControls.innerHTML='<button type="button" data-world-zoom="in" aria-label="Aproximar mapa">+</button><span class="world-zoom-label" id="worldZoomValue">100%</span><button type="button" data-world-zoom="out" aria-label="Afastar mapa">−</button><button type="button" data-world-zoom="reset" aria-label="Restaurar zoom do mapa a 100%">100</button>';
-  document.querySelector('.dashboard').appendChild(zoomControls);
-  zoomControls.addEventListener('click',event=>{
-    const key=event.target.closest('button[data-world-zoom]')?.dataset.worldZoom;
-    if(key==='in')worldZoom.step(1);
-    else if(key==='out')worldZoom.step(-1);
-    else if(key==='reset')worldZoom.reset();
-  });
+  document.querySelector('.dashboard').appendChild(tracker);
   let wheelDelta=0;
   canvas.addEventListener('wheel',event=>{
-    // Ctrl/Meta+scroll must remain available for native browser page zoom.
-    if(event.ctrlKey||event.metaKey)return;
+    // Never let Ctrl/Meta+wheel zoom the browser while playing.
     event.preventDefault();
+    if(event.ctrlKey||event.metaKey)return;
     const pixels=event.deltaY*(event.deltaMode===1?16:event.deltaMode===2?innerHeight:1);
     wheelDelta=Math.max(-135,Math.min(135,wheelDelta+pixels));
     if(Math.abs(wheelDelta)>=55){
@@ -1792,6 +1777,10 @@ $('gameFrame').appendChild(targetHud);
       worldZoom.step(direction);
     }
   },{passive:false});
+  // Block native page zoom from Ctrl/Meta + scroll anywhere in the game.
+  document.addEventListener('wheel',event=>{
+    if(event.ctrlKey||event.metaKey)event.preventDefault();
+  },{passive:false,capture:true});
   MareUI.mountHUD();
   $('journeyToggle').addEventListener('click',()=>{const collapsed=journey.classList.toggle('collapsed');$('journeyToggle').setAttribute('aria-expanded',String(!collapsed));journey.querySelector('.journey-chevron').textContent=collapsed?'+':'−';});
 
