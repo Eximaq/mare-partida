@@ -22,3 +22,9 @@ let northHits=0;const north=create({skill:{frames:12,fps:14,impact_frame:5,direc
 north.play('skill',{direction:'back',onImpact:()=>northHits++});north.step(2/14);assert.equal(northHits,0);north.step(1/14+.001);assert.equal(northHits,1);
 north.reset();north.play('skill',{direction:'front',onImpact:()=>northHits++});north.step(3/14+.001);assert.equal(northHits,1);north.step(2/14);assert.equal(northHits,2);
 console.log('Direction-specific impact: corrected north uses frame 3; south retains frame 5.');
+let heals=0;const support=create({'skill-1':{frames:8,fps:10,impact_frame:4,loop:false},death:{frames:8,fps:8,loop:false}});
+assert(support.play('skill-1',{onImpact:()=>heals++}));support.step(.39);assert.equal(heals,0);support.step(.01);assert.equal(heals,1);support.step(2);assert.equal(heals,1);
+support.play('skill-1',{onImpact:()=>heals++});support.play('death');support.step(2);assert.equal(heals,1,'death cancels a pending heal');
+const directional=create({attack:{frames:8,fps:8,direction_frames:{north:4},direction_fps:{north:16},direction_impact_frames:{north:2}}});
+directional.play('attack',{direction:'back'});assert.equal(directional.snapshot().duration,.25);directional.step(.26);assert(!directional.locked());
+console.log('Class actions: delayed heal once, death cancellation and per-direction duration passed.');

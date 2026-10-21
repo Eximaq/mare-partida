@@ -1,0 +1,57 @@
+status: completed
+id: 5d04e580-5ad5-4f89-82f3-47be52a99804
+name: Bento Maré-Livre
+state_name: Idle
+directions: 4 (south, east, north, west)
+size: 48x48px
+view: low top-down
+style: -, -, -
+group: 22bfc962-4dcd-4578-bb35-1089fda1efb4 (1 state)
+
+rotations:
+  south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/rotations/south.png?t=1792340128
+  east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/rotations/east.png?t=1792340128
+  north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/rotations/north.png?t=1792340128
+  west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/rotations/west.png?t=1792340128
+
+animations (9 groups, 20 total):
+  brawler-v2-hurt — 3 dir (north, west, south), 4f 2026-10-21 [type=custom-Recoil briefly from a hit and ] [group: a7e0cc0f-fd26-44c6-b747-dac939b553e3]
+    north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/d909fd50-1232-4dca-9cdb-8ba030588ee2/north/{i}.png?t=1792543975409 (i=0..3)
+    west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/c3103098-aa55-4390-8753-3d6ad57da83e/west/{i}.png?t=1792543974645 (i=0..3)
+    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/e5799237-3e20-4473-8589-0ca99cbed3e8/south/{i}.png?t=1792543631384 (i=0..3)
+  brawler-v2-skill-1 — 4 dir (north, west, east, south), 8f 2026-10-21 [type=custom-Wind up a heavy fist, drive it] [group: 5462f700-7f69-4b2d-850d-ba6b9e66e13c]
+    north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/9c0b1978-68c4-4ef1-bf23-dfc404e9a1fd/north/{i}.png?t=1792543967634 (i=0..7)
+    west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/ef7c1fa7-4eb9-457e-b024-55ed0803cbea/west/{i}.png?t=1792543960273 (i=0..7)
+    east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/d848cd36-7067-44dc-8bec-de6a287d4702/east/{i}.png?t=1792543958813 (i=0..7)
+    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/623096e6-e9d9-4119-be85-a7c25c20ea47/south/{i}.png?t=1792543438582 (i=0..7)
+  brawler-v2-death — 1 dir (south), 8f 2026-10-21 [type=custom-Lose balance, buckle at the kn] [group: 7ca38368-c2b7-4537-bc57-897854416a79]
+    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/18029579-b5c8-4ccc-a020-ba6aad6f2dc1/south/{i}.png?t=1792543649469 (i=0..7)
+  brawler-v2-skill-2 — 1 dir (south), 8f 2026-10-21 [type=custom-Brace defensively, cross the f] [group: 43f4a21f-b39c-4560-b63d-ecb1e67821ad]
+    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/d78ef3eb-518e-46e9-a4ee-df93cf6385ad/south/{i}.png?t=1792543623417 (i=0..7)
+  brawler-v2-combo — 1 dir (south), 8f 2026-10-21 [type=custom-Perform a compact left-right p] [group: 37df3fa3-43cc-48a9-9588-5ebeefdd0f61]
+    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/9508b4b2-e2fd-4ddd-b023-f5b89d4dfdab/south/{i}.png?t=1792543458628 (i=0..7)
+  brawler-v2-attack — 1 dir (south), 8f 2026-10-21 [type=custom-Deliver one strong forward pun] [group: b3da9b39-8945-405b-b813-cd93456fe16f]
+    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/e9e8ca1f-f2bf-4f73-81bc-03a32b91009b/south/{i}.png?t=1792543436709 (i=0..7)
+  brawler-v2-combat-idle — 1 dir (south), 4f 2026-10-21 [type=custom-Breathe subtly in a grounded b] [group: de767df3-7cf0-4001-88a5-65149a8427c2]
+    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/6d12d7ba-4c1e-4e09-ba37-e104750b518d/south/{i}.png?t=1792543388295 (i=0..3)
+  walk — 4 dir (north, south, west, east), 8f 2026-10-18 [type=walking-8-frames] [group: 7c112a14-ac64-4b6f-a567-3ed3e06d05ed]
+    north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/069d8a9a-7fdc-462d-bc4a-4d24b99ae301/north/{i}.png?t=1792340488296 (i=0..7)
+    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/eca227b2-e00b-4157-8363-bc582ec1b701/south/{i}.png?t=1792340485421 (i=0..7)
+    west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/ddf743bf-30ee-457f-a3a3-f89e5780f3f2/west/{i}.png?t=1792340475251 (i=0..7)
+    east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/1fe2b0b6-9996-496f-b604-0deba23c9a20/east/{i}.png?t=1792340475073 (i=0..7)
+  idle — 4 dir (west, north, south, east), 4f 2026-10-18 [type=breathing-idle] [group: 5ecf7121-fdff-4e97-8cd2-4273f63e183b]
+    west: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/74bfbe45-4961-4635-a93f-a459b1d6f944/west/{i}.png?t=1792340336535 (i=0..3)
+    north: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/21a2eb45-54f8-45ab-b40e-547a34236cc0/north/{i}.png?t=1792340334703 (i=0..3)
+    south: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/f8354883-56ee-4403-8f02-1a2f2a2c1137/south/{i}.png?t=1792340305754 (i=0..3)
+    east: https://backblaze.pixellab.ai/file/pixellab-characters/2243aeb6-45de-41ea-acfd-5773df340721/5d04e580-5ad5-4f89-82f3-47be52a99804/animations/025e085d-d11b-4b2c-82ab-854c2a9bcfae/east/{i}.png?t=1792340304746 (i=0..3)
+
+pending jobs (1):
+  custom-Recoil briefly from a hit and (east): 94% ~60s
+
+download: https://api.pixellab.ai/mcp/characters/5d04e580-5ad5-4f89-82f3-47be52a99804/download
+spritesheet: https://api.pixellab.ai/mcp/characters/5d04e580-5ad5-4f89-82f3-47be52a99804/spritesheet (this state only — one uniform-grid sheet PNG + layout JSON, zipped; cells pivot-centred)
+  (returns HTTP 423 until jobs complete — use curl --fail)
+
+available_animations: backflip, breathing-idle, cross-punch, crouched-walking, crouching, drinking, falling-back-death, fight-stance-idle-8-frames, fireball, flying-kick, front-flip, getting-up, high-kick, hurricane-kick, jumping-1, jumping-2, lead-jab, leg-sweep, picking-up, pull-heavy-object, pushing, roundhouse-kick, running-4-frames, running-6-frames, running-8-frames, running-jump, running-slide, sad-walk, scary-walk, surprise-uppercut, taking-punch, throw-object, two-footed-jump, walk, walk-1, walk-2, walking, walking-10, walking-2, walking-3, walking-4, walking-4-frames, walking-5, walking-6, walking-6-frames, walking-7, walking-8, walking-8-frames, walking-9
+
+actions: animate_character(character_id="5d04e580-5ad5-4f89-82f3-47be52a99804", ...) | create_character_state(character_id="5d04e580-5ad5-4f89-82f3-47be52a99804", ...) | delete_animation(character_id="5d04e580-5ad5-4f89-82f3-47be52a99804", animation_group_id="<group>") | delete_character(character_id="5d04e580-5ad5-4f89-82f3-47be52a99804")

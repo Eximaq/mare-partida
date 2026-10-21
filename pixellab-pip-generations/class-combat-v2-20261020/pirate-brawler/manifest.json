@@ -1,0 +1,28 @@
+{
+  "stage": "pilot-in-progress",
+  "class_id": "brawler",
+  "faction": "pirate",
+  "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+  "approved_generation_cap": 56,
+  "seed": "omitted",
+  "calls": [
+    {
+      "tool": "animate_character",
+      "request": {
+        "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+        "mode": "v3",
+        "directions": [
+          "south"
+        ],
+        "frame_count": 8,
+        "keep_first_frame": false,
+        "animation_name": "brawler-v2-attack",
+        "action_description": "Deliver one strong forward punch with a small torso rotation, clear contact and full recovery to guard. Stay in place and preserve the current facing, outfit and body size."
+      },
+      "result_text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Deliver one strong forward punch with a small torso rotation, clear contact and full recovery to guard. Stay in place and preserve the current facing, outfit and body size.)\ndirections: south (1 jobs)\njob_ids: south=cfe99d1f-fa15-47a3-994d-299f7af3258c\ngroup: b3da9b39-8945-405b-b813-cd93456fe16f\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Deliver one strong forward punch with a small torso rotation, clear contact and full recovery to guard. Stay in place and preserve the current facing, outfit and body size.\", animation_group_id=\"b3da9b39-8945-405b-b813-cd93456fe16f\", directions=[...])",
+      "reported_usage": {
+        "generations": 1
+      }
+    }
+  ]
+}
