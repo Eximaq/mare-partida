@@ -12,7 +12,7 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 Base humana comum para as sete classes e quatro facções, com categorias de ataque independentes da aparência. Compositor por camadas sincronizadas, pivôs, profundidade por direção/pose, cache limitado e associação visual de equipamentos. A bancada permite selecionar as28 combinações, identificando os assets ausentes. A [bancada técnica](tools/paper-doll-inspector/index.html) compara as quatro direções de Idle/Walk/Attack com os sprites originais e recebe pacotes locais para inspeção.
 
-O conjunto animado modular ainda está ausente: o jogo mantém os personagens completos por fallback, incluindo o Bento aprovado. A [primeira prévia estática](pixellab-pip-generations/paper-doll-human-pilot-20261020/preview.html) permite alternar cabelo, roupa e espada em uma pose frontal, sem alteração de save. Foram cobradas5 gerações nesse piloto; resultados brutos e extrações de inspeção estão documentados no [relatório](docs/PAPER-DOLL-PILOTO.md). [Contrato, auditoria, assets faltantes e testes](docs/PAPER-DOLL.md) · [Análise anterior preservada](docs/PAPER-DOLL-VIABILIDADE.md). O lote das seis classes continua pausado.
+O conjunto modular com todas as ações e direções ainda está incompleto: o jogo mantém os personagens completos por fallback, incluindo o Bento aprovado. A [primeira prévia estática](pixellab-pip-generations/paper-doll-human-pilot-20261020/preview.html) permite alternar cabelo, roupa e espada em uma pose frontal, sem alteração de save. Foram cobradas5 gerações nesse piloto; resultados brutos e extrações de inspeção estão documentados no [relatório](docs/PAPER-DOLL-PILOTO.md). [Contrato, auditoria, assets faltantes e testes](docs/PAPER-DOLL.md) · [Análise anterior preservada](docs/PAPER-DOLL-VIABILIDADE.md). O lote das seis classes continua pausado.
 
 O [piloto Idle frontal](pixellab-pip-generations/paper-doll-human-idle-south-20261021/preview.html) adiciona inspeção de quatro frames e cobertura parcial por direção. O encaixe das peças foi **reprovado**, permanece como diagnóstico e não está ativo no jogo. [Relatório e custos](docs/PAPER-DOLL-IDLE-SUL.md).
 
@@ -21,6 +21,8 @@ O [teste seguinte da espada](pixellab-pip-generations/paper-doll-sword-fit-20261
 O [lote por atlas](pixellab-pip-generations/paper-doll-layer-batch-20261021/preview.html) tentou uniformizar a espada em uma única chamada. O contato passou, mas a arte foi reprovada pela variação da lâmina. Foram cobradas6 gerações; cabelo e roupa não foram gerados. [Diagnóstico e validação](docs/PAPER-DOLL-LOTE-CAMADAS.md).
 
 A [prévia de arma rígida](pixellab-pip-generations/paper-doll-rigid-weapon-20261021/preview.html) usa uma única espada presa à mão dos quatro frames de Idle/sul, preservando seu modelo sem consumir créditos. A reutilização foi autorizada especificamente para armas; cabelo/roupa e demais ações continuam pendentes. [Contrato e validação](docs/PAPER-DOLL-ARMA-RIGIDA.md).
+
+O [conjunto modular frontal](pixellab-pip-generations/paper-doll-hair-outfit-20261021/preview.html) já reúne corpo, cabelo, roupa e espada nos quatro frames Idle/sul, com controle individual das camadas e importação na bancada. Foram cobradas12 gerações no novo lote. Demais direções e ações continuam no fallback, sem ativação do protótipo no jogo. [Relatório e assets faltantes](docs/PAPER-DOLL-CABELO-ROUPA.md).
 
 ## Interface UI/UX 2.0
 

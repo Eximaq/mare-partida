@@ -66,7 +66,11 @@
   }
   function pivot(c,scale,plan=null){
     c.save();c.strokeStyle='#e5b85b';c.lineWidth=1;c.beginPath();c.moveTo(0,240.5);c.lineTo(300,240.5);c.moveTo(150.5,0);c.lineTo(150.5,300);c.stroke();c.strokeStyle='#bfe9dc';c.strokeRect(147.5,237.5,6,6);c.fillStyle='#f4d595';c.font='11px system-ui';c.fillText('Pivô dos pés · '+scale+'×',8,292);
-    if(plan?.valid)for(const layer of plan.layers)if(layer.offsetX||layer.offsetY){const x=150+layer.offsetX*scale,y=240+layer.offsetY*scale;c.strokeStyle='#f08d7d';c.strokeRect(x-3.5,y-3.5,7,7);c.fillStyle='#f4d595';c.fillText(labels[layer.slot],x+5,y-5);}
+    if(plan?.valid)for(const layer of plan.layers)if(layer.offsetX||layer.offsetY||layer.kind==='rigid-attachment'){
+      const source=layer.kind==='rigid-attachment'?runtime.piece(layer.pieceId).animations[layer.animationId].source:null;
+      const x=150+(layer.offsetX+(source?source.anchorX-layer.pivotX:0))*scale,y=240+(layer.offsetY+(source?source.anchorY-layer.pivotY:0))*scale;
+      c.strokeStyle='#f08d7d';c.strokeRect(x-3.5,y-3.5,7,7);c.fillStyle='#f4d595';c.fillText(labels[layer.slot]+(source?' · Encaixe':''),x+5,y-5);
+    }
     c.restore();
   }
   function detail(term,value){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=term;dd.textContent=String(value);$('readout').append(dt,dd);}
@@ -101,7 +105,7 @@
     for(const m of unique.values()){const li=document.createElement('li');li.textContent=(labels[m.slot]||m.slot)+': '+(codes[m.code]||m.code)+(m.pieceId?' · '+m.pieceId:'');$('missing').append(li);}
     if(!unique.size){const li=document.createElement('li');li.textContent='Nenhuma falha estrutural nesta pose. Ainda requer inspeção artística de todos os frames.';$('missing').append(li);}
     $('readout').replaceChildren();detail('Rig / Célula',rig.id+' · '+rig.frameWidth+'×'+rig.frameHeight);detail('Pivô nativo',rig.pivotX+', '+rig.pivotY);const originalMeta=MareFactionSprites.assets[catalog.referenceFor(player,animationId).assetId].meta;detail('Fonte original',originalMeta.frame_size.join('×')+' · Pivô '+originalMeta.anchor.join(', '));detail('Corpo comum',config.pieces.body);detail('Categoria',catalog.categories[catalog.profile(player).category]);detail('Sequência',clip.frames+' frames · '+clip.fps+' FPS');detail('Peça de arma',config.pieces.weapon);detail('Peça de roupa',config.pieces.outfit);detail('Cache',runtime.stats().cacheEntries+' frames · '+runtime.stats().cacheBytes+' bytes');
-    const transforms=first?.layers.map(({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex})=>({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex}));$('transforms').textContent=JSON.stringify(transforms||[],null,2);
+    const transforms=first?.layers.map(({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex,kind,socket})=>({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex,kind,socket}));$('transforms').textContent=JSON.stringify(transforms||[],null,2);
     lastState={mode:valid?'draft':'fallback',artworkValidated:false,referenceReady,appearance:config,profile:catalog.profile(player),reference:catalog.referenceFor(player,animationId),pose:{animationId:poseAnimationId(animationId),frameIndex:index},differences,missing:[...unique.values()],stats:runtime.stats(),hidden:[...hidden]};
     lastState.readyDirections=readyDirections;
     if(!valid&&readyDirections.length)lastState.mode='partial-draft';

@@ -132,5 +132,16 @@ for name in rigid_files:
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(ROOT/rigid_relative/name, destination)
 shutil.copy2(ROOT/'docs/PAPER-DOLL-ARMA-RIGIDA.md', OUT/'docs/PAPER-DOLL-ARMA-RIGIDA.md')
+modular_relative = Path('pixellab-pip-generations/paper-doll-hair-outfit-20261021')
+modular_files = ['preview.html', 'review-pack.json', 'manifest.json', 'hair-outfit.blueprint.json',
+                 'body-idle-south.png', 'hair-idle-south.png', 'outfit-idle-south.png', 'rigid-weapon.png',
+                 'hair-raw.png', 'outfit-raw.png', 'hair-audit.json', 'outfit-audit.json',
+                 'comparison-sheet.png', 'human-idle-review.gif']
+modular_files += [f'composite-{index:02}.png' for index in range(1,5)]
+for name in modular_files:
+    destination = OUT/modular_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/modular_relative/name, destination)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-CABELO-ROUPA.md', OUT/'docs/PAPER-DOLL-CABELO-ROUPA.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

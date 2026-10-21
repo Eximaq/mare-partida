@@ -1,0 +1,25 @@
+{
+  "scope": "Prototype gate for Idle/south only; full-character approval remains pending",
+  "hair": {
+    "prototype_gate_passed": true,
+    "inspected_frames": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "notes": "Hair attaches to each scalp, remains one connected component in each cell; eyes and face outside the scalp mask are unchanged. Small generated highlights and shape changes are retained without paint."
+  },
+  "outfit": {
+    "prototype_gate_passed": true,
+    "inspected_frames": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "notes": "Cream short sleeves and navy waistcoat follow all four torsos. Hands, forearms, shorts and feet outside the mask remain unchanged. No detached body or clothing, no repairs."
+  },
+  "user_final_art_approval": false,
+  "local_repairs": false
+}

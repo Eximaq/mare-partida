@@ -8,6 +8,9 @@ SOURCE=HERE.parent/'paper-doll-layer-batch-20261021'
 RIGID=HERE.parent/'paper-doll-rigid-weapon-20261021'
 
 def main():
+    existing=HERE/'generation-plan.json'
+    if existing.exists() and json.loads(existing.read_text())['status']!='awaiting explicit approval; no paid calls':
+        raise ValueError('This folder has an approved or executed plan; do not overwrite its records')
     records=[]
     names=['body-atlas-input.png','hair-mask-input.png','outfit-mask-input.png','look-context-input.png','look-reference-source.png']
     names += [f'body-source-{i:02}.png' for i in range(1,5)]

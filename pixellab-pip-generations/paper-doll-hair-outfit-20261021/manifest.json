@@ -1,0 +1,209 @@
+{
+  "status": "prototype Idle/south assembled; full-character art approval pending",
+  "route": "MCP inpaint_image_pro_flash",
+  "output_structure": "Two original transparent128x128 atlases, four native64x64 cells each, row-major existing pose order.",
+  "prompt_preparation": "Agent-authored exact English prompts and Portuguese translations were presented and approved by user reply prossiga.",
+  "approval": {
+    "user_reply": "prossiga",
+    "ceiling_generations": 12,
+    "no_retries": true,
+    "hair_gate_before_outfit": true
+  },
+  "calls": [
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "slot": "hair",
+      "job_id": "25d32b2c-03fe-4982-8a40-4280f36f9376",
+      "asset_id": "619f2dc1-9dbe-5190-97c0-6070a2ae8dca",
+      "status": "completed",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-atlas-input.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "mask_image_url": "hair-mask-input.png",
+        "context_image": {
+          "url": "look-context-input.png",
+          "usage_description": "The left 128x128 area is the unchanged source sheet. The 64x64 sprite on the right guides only the appearance of the requested addition, never the body pose."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair matching the right-side reference, fitted to the existing south-facing scalp. Follow each head position. Preserve the face, eyes, ears, body pose, proportions, hands, shorts, cell positions and transparency. Change only the masked hair region. No bandana, duplicate head, clothing or loose objects."
+      },
+      "approval": {
+        "ceiling_generations": 12,
+        "no_retries": true,
+        "user_reply": "prossiga"
+      },
+      "asset_status": "saved",
+      "reported_usage": {
+        "generations": 6
+      },
+      "raw_file": "hair-raw.png",
+      "raw_sha256": "a6efe8ee1d88a625a7fbc953449a0ab204ad7ec11bf9577b3ec838c523746714"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "slot": "outfit",
+      "job_id": "1d265e5c-5eff-4d86-8362-20df025bd312",
+      "asset_id": "07b0778f-ff8d-5b90-86d7-7822698b5556",
+      "status": "completed",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-atlas-input.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "mask_image_url": "outfit-mask-input.png",
+        "context_image": {
+          "url": "look-context-input.png",
+          "usage_description": "The left 128x128 area is the unchanged source sheet. The 64x64 sprite on the right guides only the appearance of the requested addition, never the body pose."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only a cream short-sleeved linen shirt and navy sailor waistcoat matching the right-side reference, fitted to the existing chest and shoulders. Follow each breathing pose. Preserve the face, head, hands, forearms, shorts, feet, cell positions, proportions and transparency. Change only the masked garment region. No body redraw, hair, weapons or emblems."
+      },
+      "approval": {
+        "ceiling_generations": 12,
+        "no_retries": true,
+        "user_reply": "prossiga"
+      },
+      "asset_status": "saved",
+      "reported_usage": {
+        "generations": 6
+      },
+      "raw_file": "outfit-raw.png",
+      "raw_sha256": "6f32ae28610622031e7a0fe4506e7961aaaf0fed22819aae042738f288eee206"
+    }
+  ],
+  "charged_generations": 12,
+  "visual_prompt_translations_pt": {
+    "hair": "Em cada c\u00e9lula64x64 da grade2x2 adicionar somente cabelo preto curto da refer\u00eancia, ajustado \u00e0 cabe\u00e7a frontal existente, seguindo sua posi\u00e7\u00e3o. Preservar rosto, olhos, orelhas, pose, propor\u00e7\u00f5es, m\u00e3os, shorts, posi\u00e7\u00f5es e transpar\u00eancia. Alterar somente a m\u00e1scara do cabelo, sem bandana, cabe\u00e7a duplicada, roupa ou objetos soltos.",
+    "outfit": "Em cada c\u00e9lula64x64 adicionar somente camisa de linho clara de manga curta e colete azul da refer\u00eancia, ajustados ao peito e ombros de cada pose de respira\u00e7\u00e3o. Preservar rosto, cabe\u00e7a, m\u00e3os, antebra\u00e7os, shorts, p\u00e9s, propor\u00e7\u00f5es, posi\u00e7\u00f5es e transpar\u00eancia. Alterar somente a regi\u00e3o mascarada da roupa, sem redesenhar corpo, cabelo, armas ou emblemas.",
+    "context_image.usage_description": "A \u00e1rea128x128 \u00e0 esquerda \u00e9 a fonte inalterada; a imagem64x64 \u00e0 direita orienta somente a apar\u00eancia da pe\u00e7a, nunca a pose do corpo."
+  },
+  "inputs": [
+    {
+      "file": "body-atlas-input.png",
+      "origin": "paper-doll-layer-batch-20261021/body-atlas-input.png",
+      "sha256": "84a6a14f744ddf69a0dee5bb9ba8e697bd729e995c2e368ebd6f452bea487293",
+      "native_size": [
+        128,
+        128
+      ]
+    },
+    {
+      "file": "hair-mask-input.png",
+      "origin": "paper-doll-layer-batch-20261021/hair-mask-input.png",
+      "sha256": "68bab10e3129508e745952677ecaeadceabf4d2bed6c27d1a623967d0790a530",
+      "native_size": [
+        128,
+        128
+      ]
+    },
+    {
+      "file": "outfit-mask-input.png",
+      "origin": "paper-doll-layer-batch-20261021/outfit-mask-input.png",
+      "sha256": "c471633917c7ffbc8f6195849d44ce1d3bd0a36ddcd86e9de4f0b339a79f2064",
+      "native_size": [
+        128,
+        128
+      ]
+    },
+    {
+      "file": "look-context-input.png",
+      "origin": "paper-doll-layer-batch-20261021/look-context-input.png",
+      "sha256": "c94928ad45e1843f574f50a077f9f8108050c16d71c7d1cf545ab946d5e87571",
+      "native_size": [
+        192,
+        128
+      ]
+    },
+    {
+      "file": "look-reference-source.png",
+      "origin": "paper-doll-layer-batch-20261021/look-reference-source.png",
+      "sha256": "8c5f4b2fff2aa87da3f36575309ffde08c85b4b2b15966999cd079bcd1a594d2",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "body-source-01.png",
+      "origin": "paper-doll-layer-batch-20261021/body-source-01.png",
+      "sha256": "6d000ef9c769332f95b0c87c239f24753435cb067e3d419dfd027aecfe30ba81",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "body-source-02.png",
+      "origin": "paper-doll-layer-batch-20261021/body-source-02.png",
+      "sha256": "ab34833564c7a80f982228c9f8eaeae4e798b5ddbdb8761abf999eb750e71923",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "body-source-03.png",
+      "origin": "paper-doll-layer-batch-20261021/body-source-03.png",
+      "sha256": "88d15ffa8e6433120e96ba4e1920ecbbd2fab109b7c11fcf102e769867fe5b26",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "body-source-04.png",
+      "origin": "paper-doll-layer-batch-20261021/body-source-04.png",
+      "sha256": "cad9315111f37be1bec2cdf377aa74c14a01bc74471be9699095fd9aa62695aa",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "rigid-weapon.png",
+      "origin": "paper-doll-rigid-weapon-20261021/rigid-weapon.png",
+      "sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "body-idle-south.png",
+      "origin": "paper-doll-rigid-weapon-20261021/body-idle-south.png",
+      "sha256": "c84cfca601096fc7696ceecb8ebaad857ef28dbbc08ac9d8e5d115bd7e1eb551",
+      "native_size": [
+        336,
+        84
+      ]
+    }
+  ],
+  "omitted_controls": "All other generation controls omitted; PixelLab defaults. No additional generations or retries.",
+  "verification": {
+    "hair_structural_pass": true,
+    "outfit_structural_pass": true,
+    "prototype_visual_gates": "All four cells inspected and accepted for this front-facing prototype. Final user approval remains pending.",
+    "outside_mask_pixels": 0,
+    "unmasked_body_changes": 0,
+    "raws_preserved": true,
+    "artwork_repainted": false
+  },
+  "assembly": "Native split into separate PNG layers, transparent padding10/13 into84x84, pivot42/65, original four frames4FPS. One unchanged rigid sword reused at existing integer sockets. GIF loop0/disposal2 decoded visible RGBA matches original composites.",
+  "runtime": "Review-pack human-v1, all four required slots, south Idle only, approved:false. Other directions and actions fall back atomically; production catalog, saves and combat unchanged."
+}

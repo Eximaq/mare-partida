@@ -1,0 +1,38 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "slot": "hair",
+  "job_id": "25d32b2c-03fe-4982-8a40-4280f36f9376",
+  "asset_id": "619f2dc1-9dbe-5190-97c0-6070a2ae8dca",
+  "status": "completed",
+  "estimated_generations": 6,
+  "parameters": {
+    "image_url": "body-atlas-input.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 1612130099,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 128,
+      "height": 128
+    },
+    "mask_image_url": "hair-mask-input.png",
+    "context_image": {
+      "url": "look-context-input.png",
+      "usage_description": "The left 128x128 area is the unchanged source sheet. The 64x64 sprite on the right guides only the appearance of the requested addition, never the body pose."
+    },
+    "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair matching the right-side reference, fitted to the existing south-facing scalp. Follow each head position. Preserve the face, eyes, ears, body pose, proportions, hands, shorts, cell positions and transparency. Change only the masked hair region. No bandana, duplicate head, clothing or loose objects."
+  },
+  "approval": {
+    "ceiling_generations": 12,
+    "no_retries": true,
+    "user_reply": "prossiga"
+  },
+  "asset_status": "saved",
+  "reported_usage": {
+    "generations": 6
+  },
+  "raw_file": "hair-raw.png",
+  "raw_sha256": "a6efe8ee1d88a625a7fbc953449a0ab204ad7ec11bf9577b3ec838c523746714"
+}

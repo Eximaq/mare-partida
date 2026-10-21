@@ -1,0 +1,45 @@
+<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Paper Doll · Conjunto frontal modular</title><style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#102428;color:#f3dfb5;font:16px/1.5 Georgia,serif}main{max-width:1150px;margin:auto;padding:24px}a{color:#ebbf6c}h1{font-size:30px}.notice{background:#35271d;padding:16px;border-left:4px solid #d3a85c}.boards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}figure{margin:0;border:1px solid #9c7a43;background:#35271d;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#142e30}figcaption{margin-top:10px}small{display:block;font:13px/1.5 system-ui;color:#d8c9ac}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:16px;padding:16px;border:1px solid #9c7a43}button{background:#6b4829;border:1px solid #d3a85c;color:#fff0ce;padding:9px 18px;font:inherit;cursor:pointer}input{accent-color:#d3a85c}input[type=range]{width:140px}button:focus-visible,input:focus-visible{outline:2px solid #f6d590;outline-offset:3px}p{max-width:86ch}table{border-collapse:collapse;width:100%;font:14px system-ui}td,th{padding:10px;text-align:left;border-bottom:1px solid #866d45}footer{margin-top:24px;border-top:1px solid #866d45;padding-top:16px}@media(max-width:700px){main{padding:16px}.boards{grid-template-columns:1fr}figure{max-width:360px;width:100%;margin:auto}h1{font-size:26px}td,th{padding:6px;font-size:12px}}
+</style></head><body><main>
+<a href="../paper-doll-rigid-weapon-20261021/preview.html">← Ensaio da espada</a>
+<h1>Corpo, cabelo, roupa e espada</h1>
+<p>Quatro camadas sincronizadas em Idle frontal. Cabelo e roupa gerados pelo PixelLab; corpo e arma reaproveitados. Consumo deste lote: 12 gerações.</p>
+<p class="notice"><strong>Protótipo frontal funcional.</strong> As quatro poses têm camadas próprias de corpo, cabelo e roupa, mais a espada rígida autorizada. Outras direções, caminhada e ataque ainda usam o fallback. Este conjunto de revisão não substitui os personagens do jogo.</p>
+<div class="controls"><button id="play" type="button" aria-pressed="false">Reproduzir</button><label>Frame <input id="frame" type="range" min="0" max="3" value="0"><output id="frameValue">1</output>/4</label><label><input id="guides" type="checkbox"> Pivô e encaixe</label></div>
+<div class="controls" aria-label="Camadas visíveis"><label><input type="checkbox" data-layer="body" checked> Corpo</label><label><input type="checkbox" data-layer="hair" checked> Cabelo</label><label><input type="checkbox" data-layer="outfit" checked> Roupa</label><label><input type="checkbox" data-layer="weapon" checked> Espada</label></div>
+<div class="boards">
+<figure><canvas id="bodyCanvas" width="84" height="84" aria-label="Corpo original"></canvas><figcaption>Corpo original<small>Quatro poses existentes, sem novos movimentos.</small></figcaption></figure>
+<figure><canvas id="previousCanvas" width="84" height="84" aria-label="Corpo com espada do ensaio anterior"></canvas><figcaption>Antes · corpo e espada<small>Peça rígida seguindo a mão, sem cabelo e roupa.</small></figcaption></figure>
+<figure><canvas id="newCanvas" width="84" height="84" aria-label="Conjunto modular com quatro camadas"></canvas><figcaption>Agora · conjunto frontal<small>Alterne as camadas e confira o encaixe em cada frame.</small></figcaption></figure>
+</div><p id="status" role="status">Carregando conjunto…</p>
+<table><thead><tr><th>Frame</th><th>Cabelo fora da máscara</th><th>Roupa fora da máscara</th><th>Anatomia fora das regiões</th></tr></thead><tbody id="auditRows"></tbody></table>
+<p>As novas peças vieram em atlas nativos128×128 com quatro células64×64. A montagem divide as células sem escala e adiciona padding transparente10/13 para o canvas84×84, pivô42/65. Os quatro frames mantêm a ordem original a4FPS. A espada usa uma única imagem, sem deformação.</p>
+<p><a href="human-idle-review.gif">GIF transparente</a> · <a href="comparison-sheet.png">Comparativo nativo</a> · <a href="review-pack.json">Manifesto para importar</a> · <a href="body-idle-south.png">Corpo PNG</a> · <a href="hair-idle-south.png">Cabelo PNG</a> · <a href="outfit-idle-south.png">Roupa PNG</a> · <a href="rigid-weapon.png">Espada PNG</a></p>
+<p>Na <a href="../../tools/paper-doll-inspector/index.html">bancada completa</a>, importe o manifesto acima junto dos quatro PNGs. Sul/Idle fica disponível; as poses ainda sem peças continuam mostrando o sprite original.</p>
+<p><a href="manifest.json">Prompts, parâmetros e consumo</a> · <a href="hair-outfit.blueprint.json">Receita PixelLab</a> · <a href="../../docs/PAPER-DOLL-CABELO-ROUPA.md">Relatório técnico</a></p>
+<footer>Prévia para revisão artística. Não há mudança de saves, atributos, equipamento ou combate. A fase completa depende das demais direções e ações.</footer>
+</main><script src="../../paper-doll.js"></script><script>
+(async()=>{
+ const $=id=>document.getElementById(id),data=await(await fetch('review-pack.json')).json(),images=new Map(),hidden=new Set();
+ await Promise.all(['body-idle-south.png','hair-idle-south.png','outfit-idle-south.png','rigid-weapon.png'].map(async file=>{const image=new Image();image.src=file;await image.decode();images.set(file,image)}));
+ const runtime=MarePaperDoll.create({getImage:url=>images.get(url)});runtime.registerRig(data.rig);data.pieces.forEach(piece=>runtime.registerPiece(piece));
+ $('auditRows').replaceChildren(...data.audits.map((row,i)=>{const tr=document.createElement('tr');for(const value of [i+1,row.hair.outside_mask_pixels,row.outfit.outside_mask_pixels,row.unmasked_body_changes]){const td=document.createElement('td');td.textContent=value;tr.append(td)}return tr}));
+ let playing=false,last=0,elapsed=0,index=0;
+ function clear(id){const ctx=$(id).getContext('2d');ctx.clearRect(0,0,84,84);ctx.imageSmoothingEnabled=false;return ctx}
+ function render(){
+   index=Number($('frame').value);$('frameValue').value=String(index+1);
+   const body=clear('bodyCanvas'),previous=clear('previousCanvas'),current=clear('newCanvas'),pose={animationId:'idle',direction:'south',frameIndex:index};
+   body.drawImage(images.get('body-idle-south.png'),index*84,0,84,84,0,0,84,84);
+   if(!runtime.draw(previous,data.appearance,pose,42,65,{scale:1,allowDraft:true,hidden:['hair','outfit']}))throw Error('Conjunto anterior incompatível');
+   if(!runtime.draw(current,data.appearance,pose,42,65,{scale:1,allowDraft:true,hidden:[...hidden]}))throw Error('Conjunto incompatível');
+   if($('guides').checked){for(const ctx of [body,previous,current]){ctx.fillStyle='#f7cc69';ctx.fillRect(39,65,7,1);ctx.fillRect(42,62,1,7)}const {x,y}=data.audits[index].socket;current.fillStyle='#e76e58';current.fillRect(x,y,1,1)}
+   $('status').textContent='Frame '+(index+1)+' · quatro camadas disponíveis · zero alteração na anatomia fora das regiões permitidas · revisão Idle/sul.';
+   window.__paperDollHumanIdleInspection=()=>({ready:true,frameIndex:index,frameCount:4,hidden:[...hidden],fullCharacterArtApproved:false,generations:12,scope:data.scope,audit:data.audits[index],readyDirections:MarePaperDoll.directions.filter(direction=>runtime.resolve(data.appearance,{...pose,direction},{allowDraft:true}).valid),stats:runtime.stats()});
+ }
+ $('frame').addEventListener('input',()=>{playing=false;$('play').textContent='Reproduzir';$('play').setAttribute('aria-pressed','false');render()});
+ $('guides').addEventListener('change',render);
+ for(const input of document.querySelectorAll('[data-layer]'))input.addEventListener('change',()=>{if(input.checked)hidden.delete(input.dataset.layer);else hidden.add(input.dataset.layer);render()});
+ $('play').addEventListener('click',()=>{playing=!playing;elapsed=index/4;$('play').textContent=playing?'Pausar':'Reproduzir';$('play').setAttribute('aria-pressed',String(playing))});
+ render();function tick(now){const dt=last?Math.min(.1,(now-last)/1000):0;last=now;if(playing&&!document.hidden){elapsed+=dt;const next=Math.floor(elapsed*4)%4;if(next!==index){$('frame').value=next;render()}}requestAnimationFrame(tick)}requestAnimationFrame(tick);
+})().catch(error=>{document.getElementById('status').textContent='Falha: '+error.message;console.error(error)});
+</script></body></html>

@@ -1,0 +1,105 @@
+{
+  "id": "human-v1",
+  "revision": 1,
+  "frameWidth": 84,
+  "frameHeight": 84,
+  "pivotX": 42,
+  "pivotY": 65,
+  "scale": 1.5217391304347827,
+  "requiredSlots": [
+    "body",
+    "hair",
+    "outfit",
+    "weapon"
+  ],
+  "animations": {
+    "idle": {
+      "frames": 4,
+      "fps": 4,
+      "loop": true,
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "walk": {
+      "frames": 8,
+      "fps": 8,
+      "loop": true,
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "attack-sword": {
+      "frames": 8,
+      "fps": 12,
+      "loop": false,
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "attack-unarmed": {
+      "frames": 8,
+      "fps": 12,
+      "loop": false,
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "attack-firearm": {
+      "frames": 8,
+      "fps": 12,
+      "loop": false,
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "attack-daggers": {
+      "frames": 8,
+      "fps": 12,
+      "loop": false,
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "attack-tech": {
+      "frames": 8,
+      "fps": 12,
+      "loop": false,
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    },
+    "attack-focus": {
+      "frames": 8,
+      "fps": 12,
+      "loop": false,
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ]
+    }
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "status": "awaiting explicit approval; no paid calls",
+  "status": "both jobs completed; prototype gates passed; full-character approval pending",
   "estimated_generations": 12,
   "ceiling_generations": 12,
   "no_retries": true,
@@ -55,5 +55,11 @@
     }
   ],
   "assembly": "Separate native layers, split cells without resampling, transparent padding10/13 to84x84, four real frames4FPS; existing rigid weapon reused unchanged.",
-  "production": "Review only until art approved; existing gameplay fallback preserved."
+  "production": "Review only until art approved; existing gameplay fallback preserved.",
+  "explicit_user_reply": "prossiga",
+  "charged_generations": 12,
+  "executed_slots": [
+    "hair",
+    "outfit"
+  ]
 }
