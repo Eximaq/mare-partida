@@ -107,7 +107,7 @@
     for(const m of unique.values()){const li=document.createElement('li');li.textContent=(labels[m.slot]||m.slot)+': '+(codes[m.code]||m.code)+(m.pieceId?' · '+m.pieceId:'');$('missing').append(li);}
     if(!unique.size){const li=document.createElement('li');li.textContent='Nenhuma falha estrutural nesta pose. Ainda requer inspeção artística de todos os frames.';$('missing').append(li);}
     $('readout').replaceChildren();detail('Rig / Célula',rig.id+' · '+rig.frameWidth+'×'+rig.frameHeight);detail('Pivô nativo',rig.pivotX+', '+rig.pivotY);const originalMeta=MareFactionSprites.assets[catalog.referenceFor(player,animationId).assetId].meta;detail('Fonte original',originalMeta.frame_size.join('×')+' · Pivô '+originalMeta.anchor.join(', '));detail('Corpo comum',config.pieces.body);detail('Categoria',catalog.categories[catalog.profile(player).category]);detail('Sequência',clip.frames+' frames · '+clip.fps+' FPS');detail('Peça de arma',config.pieces.weapon);detail('Peça de roupa',config.pieces.outfit);detail('Cache',runtime.stats().cacheEntries+' frames · '+runtime.stats().cacheBytes+' bytes');
-    const transforms=first?.layers.map(({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex,kind,socket})=>({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex,kind,socket}));$('transforms').textContent=JSON.stringify(transforms||[],null,2);
+    const transforms=first?.layers.map(({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex,kind,socket,quarterTurns})=>({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex,kind,socket,quarterTurns}));$('transforms').textContent=JSON.stringify(transforms||[],null,2);
     lastState={mode:valid?'draft':'fallback',artworkValidated:false,referenceReady,appearance:config,profile:catalog.profile(player),reference:catalog.referenceFor(player,animationId),pose:{animationId:poseAnimationId(animationId),frameIndex:index},differences,missing:[...unique.values()],stats:runtime.stats(),hidden:[...hidden]};
     lastState.readyDirections=readyDirections;
     if(!valid&&readyDirections.length)lastState.mode='partial-draft';
@@ -128,23 +128,25 @@
   }
   function attachmentControls(){
     const entry=attachment();
-    for(const id of ['socketX','socketY','socketZ','applySocket'])$(id).disabled=!entry;
+    for(const id of ['socketX','socketY','socketZ','socketTurn','applySocket'])$(id).disabled=!entry;
     $('restoreSockets').disabled=!imported;$('exportPack').disabled=!imported;
     if(!entry){$('socketStatus').textContent=imported?'Esta pose não tem encaixe de arma rígida.':'Nenhum pacote importado.';return;}
-    if(['socketX','socketY','socketZ'].includes(document.activeElement?.id))return;
+    if(['socketX','socketY','socketZ','socketTurn'].includes(document.activeElement?.id))return;
     $('socketX').max=runtime.rig(rigId).frameWidth;$('socketY').max=runtime.rig(rigId).frameHeight;
-    $('socketX').value=entry.socket.x;$('socketY').value=entry.socket.y;
+    $('socketX').value=entry.socket.x;$('socketY').value=entry.socket.y;$('socketTurn').value=entry.socket.quarterTurns??0;
     const plan=runtime.resolve(appearance(),{animationId:entry.animationId,direction:entry.direction,frameIndex:entry.frameIndex},{allowDraft:true});
     $('socketZ').value=plan.layers.find(l=>l.slot==='weapon')?.zIndex??entry.piece.zIndex??80;
     $('socketStatus').textContent='Frame '+(entry.frameIndex+1)+' · '+names[entry.direction]+' · alterações somente na prévia.';
   }
   $('socketDirection').addEventListener('change',()=>{pause();render();});
-  for(const id of ['socketX','socketY','socketZ'])$(id).addEventListener('focus',pause);
+  for(const id of ['socketX','socketY','socketZ','socketTurn'])$(id).addEventListener('focus',pause);
   $('applySocket').addEventListener('click',()=>{
     const entry=attachment();if(!entry)return;
     const raw=['socketX','socketY','socketZ'].map(id=>$(id).value),[x,y,z]=raw.map(Number),rig=runtime.rig(rigId);
     if(raw.some(v=>!v.trim())||![x,y,z].every(Number.isInteger)||x<0||x>rig.frameWidth||y<0||y>rig.frameHeight||Math.abs(z)>512){$('socketStatus').textContent='Use coordenadas inteiras dentro do canvas e profundidade entre −512 e512.';return;}
-    entry.clip.sockets[entry.direction][entry.frameIndex]={x,y};
+    const turns=Number($('socketTurn').value);if(!Number.isInteger(turns)||turns<0||turns>3)return;
+    entry.clip.sockets[entry.direction][entry.frameIndex]={...entry.socket,x,y};
+    if(turns||Object.hasOwn(entry.socket,'quarterTurns'))entry.clip.sockets[entry.direction][entry.frameIndex].quarterTurns=turns;
     entry.clip.poseOverrides=entry.clip.poseOverrides||{};const poses=entry.clip.poseOverrides[entry.direction]||Array.from({length:entry.clip.frames},()=>({}));
     poses[entry.frameIndex]={...poses[entry.frameIndex],zIndex:z};entry.clip.poseOverrides[entry.direction]=poses;
     entry.piece.approved=false;entry.piece.revision=(entry.piece.revision||1)+1;runtime.registerPiece(entry.piece);render();
@@ -190,7 +192,7 @@
   $('importPack').addEventListener('change',()=>importFiles([...$('importPack').files]));
   async function bundledReview(){
     const key=new URLSearchParams(location.search).get('pack');
-    const packs={'walk-profiles':'../../pixellab-pip-generations/paper-doll-walk-profiles-20261021/','walk-north-complete':'../../pixellab-pip-generations/paper-doll-north-finish-20261021/','walk-north':'../../pixellab-pip-generations/paper-doll-walk-north-20261021/','walk-south':'../../pixellab-pip-generations/paper-doll-walk-fit-20261021/','expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
+    const packs={'basic-sword':'../../pixellab-pip-generations/paper-doll-basic-sword-20261021/','walk-profiles':'../../pixellab-pip-generations/paper-doll-walk-profiles-20261021/','walk-north-complete':'../../pixellab-pip-generations/paper-doll-north-finish-20261021/','walk-north':'../../pixellab-pip-generations/paper-doll-walk-north-20261021/','walk-south':'../../pixellab-pip-generations/paper-doll-walk-fit-20261021/','expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
     if(!key||!packs[key])return;
     try{
       $('importStatus').textContent='Carregando prévia incluída no projeto…';

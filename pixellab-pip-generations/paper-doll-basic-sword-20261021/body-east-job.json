@@ -1,0 +1,33 @@
+{
+  "tool": "MCP animate_image_pixminimax",
+  "job_id": "1c716f03-56a3-4c9a-8797-bc5250757995",
+  "asset_id": "25f597ca-36be-5f7f-8d8b-dc40244ea271",
+  "status": "completed",
+  "estimated_generations": 1,
+  "parameters": {
+    "first_frame_url": "body-east-input.png",
+    "description": "Raise the empty right hand briefly beside the shoulder, extend the forearm down and forward once, then return the empty hand beside the hip. Keep a relaxed open hand with visible fingertips and bare forearms. Feet stay planted and the torso keeps its current facing.",
+    "direction": "east",
+    "view": "high top-down",
+    "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+    "initial_pose": "standing in right-facing profile, feet planted and arms relaxed beside the hips",
+    "enhance_prompt": false,
+    "frame_count": 8,
+    "no_background": true
+  },
+  "authorization": "Owner delegated recommended PixelLab decisions. Corrected south and real combat passed. Adjusted whole-run ceiling77 announced before these calls; no further paid retries.",
+  "reported_usage": {
+    "generations": 1
+  },
+  "sha256": {
+    "body-east-raw-00.png": "8cbd072cd196451503deefe3e334bdf4e85896f831fbafe3874baa20d5956c92",
+    "body-east-raw-01.png": "618aca5bb2dbb544782790e446c92cddbf281f9072dbd7516cca401b7b82d982",
+    "body-east-raw-02.png": "51921173d8241b12a342420762dc207cc72c842a2581e87bd07f0d49127ca9f7",
+    "body-east-raw-03.png": "1bdb8406023599d8e90a1ce8948d1347adb2fff1b162a30ee5056c60ccdee95d",
+    "body-east-raw-04.png": "1e2f380b32b1d60062072f6151f84e3449757742860145931136fa92cd16ff35",
+    "body-east-raw-05.png": "751b09dc24f0e9ebbbd40c64a69e10e0082ac758ac2473f0c8dc24212e253f9e",
+    "body-east-raw-06.png": "b48ae6f545f289fbd9bb443035761f9999be3a4cd8e23525be6e55a43ff2e093",
+    "body-east-raw-07.png": "f4c7f8ab203861cde12431572011ad4ace7c44e4e130e4e19f3a471e3aa642e1",
+    "body-east-raw-08.png": "1c82c6beef1d75f631c81cee71427fc710ff18a9516556e6938f811e07ded27c"
+  }
+}

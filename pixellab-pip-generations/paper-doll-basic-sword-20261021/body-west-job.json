@@ -1,0 +1,33 @@
+{
+  "tool": "MCP animate_image_pixminimax",
+  "job_id": "ba6f61db-f17a-4e38-a6d0-6c773f4abaaf",
+  "asset_id": "f87efab1-5dbb-591e-850f-fadf61e0ec28",
+  "status": "completed",
+  "estimated_generations": 1,
+  "parameters": {
+    "first_frame_url": "body-west-input.png",
+    "description": "Raise the empty right hand briefly beside the shoulder, extend the forearm down and forward once, then return the empty hand beside the hip. Keep a relaxed open hand with visible fingertips and bare forearms. Feet stay planted and the torso keeps its current facing.",
+    "direction": "west",
+    "view": "high top-down",
+    "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+    "initial_pose": "standing in left-facing profile, feet planted and arms relaxed beside the hips",
+    "enhance_prompt": false,
+    "frame_count": 8,
+    "no_background": true
+  },
+  "authorization": "Owner delegated recommended PixelLab decisions. Corrected south and real combat passed. Adjusted whole-run ceiling77 announced before these calls; no further paid retries.",
+  "reported_usage": {
+    "generations": 1
+  },
+  "sha256": {
+    "body-west-raw-00.png": "1036ca6392a64207f689381641e3b3b06bdbfe8033b2b094fd9e6c4e5c99498e",
+    "body-west-raw-01.png": "d878f70c9ee17f2cbf432a8e17765fd7242a0531aedfb1df2c4d7e998c245637",
+    "body-west-raw-02.png": "b4dc996c94ab911abf274682a0668974f75c846d2bba1c0c39a1f44f3279269d",
+    "body-west-raw-03.png": "71a377b8a680a65070c811baa6501a24af2bb1fffaa102eee694c71439694d68",
+    "body-west-raw-04.png": "3e1bf40ed787595df8a781a7ee12e8d1b50abef5da8f14458b09ab9da0f1c20b",
+    "body-west-raw-05.png": "7c8f0e9f2191aaddb448f6a1268459c265cb8d333cac9be01ec2c2d407f83088",
+    "body-west-raw-06.png": "c95e0ffb64f007d3eb475e367975263f396252fc2bae5a11e8a4de9be0fa9c3c",
+    "body-west-raw-07.png": "693e5a3211a24e3bae3369921fe4793cddf5a236a8d017792dbe7b9fd5aa3e04",
+    "body-west-raw-08.png": "a3254416ee40be898459492ed4d2ea59cf5b95ea54ff61d725e4390e1bf8f194"
+  }
+}

@@ -1,0 +1,303 @@
+[
+  {
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-basic-sword-20261021",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment_prompt": "Pode continuar o trabalho",
+    "TASK": "Verify current run authority and adjusted77-generation ceiling; create a unique empty output folder. Reuse existing human-v1 sources and fixed native rig. Reject the embedded-blade attempt, then inspect the corrected south body/layers and real combat before widening directions. Never alter main, gameplay clocks, saves or collaborators work."
+  },
+  {
+    "MCP animate_image_pixminimax": {
+      "first_frame_url": "body-south-input.png",
+      "description": "Raise the right forearm, make one short downward sword-cut gesture with the empty right hand, then lower it back beside the hip. Keep the feet planted and the current facing throughout. Move in place with a small shoulder motion and a readable hand.",
+      "direction": "south",
+      "view": "high top-down",
+      "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+      "initial_pose": "standing facing the viewer, feet planted and arms relaxed beside the hips",
+      "enhance_prompt": false,
+      "frame_count": 8,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "MCP animate_image_pixminimax": {
+      "first_frame_url": "body-south-input.png",
+      "description": "Raise the empty right hand briefly beside the shoulder, extend the forearm down and forward once, then return the empty hand beside the hip. Keep a relaxed open hand with visible fingertips and bare forearms. Feet stay planted and the torso keeps its current facing.",
+      "direction": "south",
+      "view": "high top-down",
+      "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+      "initial_pose": "standing facing the viewer, feet planted and arms relaxed beside the hips",
+      "enhance_prompt": false,
+      "frame_count": 8,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-south-compact.png",
+      "mask_image_url": "hair-south-mask.png",
+      "description": "Add only short tousled black hair attached to each bald head, matching the reference hairstyle. Follow each original head pose. Keep the face, ears, body, motion and all protected pixels unchanged.",
+      "context_image": {
+        "url": "look-south-context.png",
+        "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "crop_to_mask": true,
+      "no_background": true,
+      "output_method": "New layer with changes",
+      "seed": 607822274
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-south-compact.png",
+      "mask_image_url": "outfit-south-mask.png",
+      "description": "Add only a cream short-sleeved linen shirt and fitted navy sailor waistcoat to each torso, matching the reference. Follow each shoulder and upper-arm pose. Preserve faces, hands, forearms, shorts, legs and all protected pixels.",
+      "context_image": {
+        "url": "look-south-context.png",
+        "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "crop_to_mask": true,
+      "no_background": true,
+      "output_method": "New layer with changes",
+      "seed": 607822274
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "MCP animate_image_pixminimax": {
+      "first_frame_url": "body-north-input.png",
+      "description": "Raise the empty right hand beside the right shoulder, reach the forearm away from the viewer once, then return the hand beside the hip. Keep the back of the head and back visible, with the far forearm naturally occluded by the torso. Feet stay planted.",
+      "direction": "north",
+      "view": "high top-down",
+      "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+      "initial_pose": "standing with the back facing the viewer, feet planted and arms relaxed beside the hips",
+      "enhance_prompt": false,
+      "frame_count": 8,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "MCP animate_image_pixminimax": {
+      "first_frame_url": "body-west-input.png",
+      "description": "Raise the empty right hand briefly beside the shoulder, extend the forearm down and forward once, then return the empty hand beside the hip. Keep a relaxed open hand with visible fingertips and bare forearms. Feet stay planted and the torso keeps its current facing.",
+      "direction": "west",
+      "view": "high top-down",
+      "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+      "initial_pose": "standing in left-facing profile, feet planted and arms relaxed beside the hips",
+      "enhance_prompt": false,
+      "frame_count": 8,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "MCP animate_image_pixminimax": {
+      "first_frame_url": "body-east-input.png",
+      "description": "Raise the empty right hand briefly beside the shoulder, extend the forearm down and forward once, then return the empty hand beside the hip. Keep a relaxed open hand with visible fingertips and bare forearms. Feet stay planted and the torso keeps its current facing.",
+      "direction": "east",
+      "view": "high top-down",
+      "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+      "initial_pose": "standing in right-facing profile, feet planted and arms relaxed beside the hips",
+      "enhance_prompt": false,
+      "frame_count": 8,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-north-compact.png",
+      "mask_image_url": "hair-north-mask.png",
+      "description": "Add only short tousled black hair attached to each bald head, matching the reference hairstyle. Follow each original head pose. Keep the face, ears, body, motion and all protected pixels unchanged.",
+      "context_image": {
+        "url": "look-north-context.png",
+        "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "crop_to_mask": true,
+      "no_background": true,
+      "output_method": "New layer with changes",
+      "seed": 607822274
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-north-compact.png",
+      "mask_image_url": "outfit-north-mask.png",
+      "description": "Add only a cream short-sleeved linen shirt and fitted navy sailor waistcoat to each torso, matching the reference. Follow each shoulder and upper-arm pose. Preserve faces, hands, forearms, shorts, legs and all protected pixels.",
+      "context_image": {
+        "url": "look-north-context.png",
+        "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "crop_to_mask": true,
+      "no_background": true,
+      "output_method": "New layer with changes",
+      "seed": 607822274
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "TASK": "Inspect the raw north outfit in Workbench and obtain a still-image ID before repair. The recorded original had a front-facing collar and button seam on the back. Apply only the exact observed central vest recolors below on a new copy; rebind the inspected image ID when replaying against a new generation. Never overwrite the raw or gallery original. The whole body and sleeve pixels stay unchanged."
+  },
+  {
+    "MCP pixelart_workbench": {
+      "argv": [
+        "edit",
+        "f66e5f7f-7e64-4a6e-93fc-a0e04bead2db",
+        "--changes",
+        "[{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[12,24,20,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[15,25,17,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[44,24,52,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[47,25,49,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[76,24,84,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[79,25,81,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[108,24,116,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[111,25,113,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[140,24,148,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[143,25,145,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[172,24,180,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[175,25,177,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[204,24,212,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[207,25,209,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[236,24,244,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[239,25,241,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"}]"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "TASK": "Download the new native layer. Verify the exact119 recolors and unchanged alpha/body/masks before using it. Preserve raw and corrected images, hashes and request. Per-call usage is not exposed; the tool describes exact edits as free for subscribers."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-west-compact.png",
+      "mask_image_url": "hair-west-mask.png",
+      "description": "Add only short tousled black hair attached to each bald head, matching the reference hairstyle. Follow each original head pose. Keep the face, ears, body, motion and all protected pixels unchanged.",
+      "context_image": {
+        "url": "look-west-context.png",
+        "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "crop_to_mask": true,
+      "no_background": true,
+      "output_method": "New layer with changes",
+      "seed": 607822274
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-west-compact.png",
+      "mask_image_url": "outfit-west-mask.png",
+      "description": "Add only a cream short-sleeved linen shirt and fitted navy sailor waistcoat to each torso, matching the reference. Follow each shoulder and upper-arm pose. Preserve faces, hands, forearms, shorts, legs and all protected pixels.",
+      "context_image": {
+        "url": "look-west-context.png",
+        "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "crop_to_mask": true,
+      "no_background": true,
+      "output_method": "New layer with changes",
+      "seed": 607822274
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-east-compact.png",
+      "mask_image_url": "hair-east-mask.png",
+      "description": "Add only short tousled black hair attached to each bald head, matching the reference hairstyle. Follow each original head pose. Keep the face, ears, body, motion and all protected pixels unchanged.",
+      "context_image": {
+        "url": "look-east-context.png",
+        "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "crop_to_mask": true,
+      "no_background": true,
+      "output_method": "New layer with changes",
+      "seed": 607822274
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-east-compact.png",
+      "mask_image_url": "outfit-east-mask.png",
+      "description": "Add only a cream short-sleeved linen shirt and fitted navy sailor waistcoat to each torso, matching the reference. Follow each shoulder and upper-arm pose. Preserve faces, hands, forearms, shorts, legs and all protected pixels.",
+      "context_image": {
+        "url": "look-east-context.png",
+        "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 64
+      },
+      "crop_to_mask": true,
+      "no_background": true,
+      "output_method": "New layer with changes",
+      "seed": 607822274
+    }
+  },
+  {
+    "TASK": "Poll this exact job to a terminal result without resubmission for a slow getter. Preserve raw originals and returned usage. For body sequences, keep the input echo separate and all eight real generated poses in order. Reject any embedded weapon, turn, changed anatomy or unreadable grip before generating dependent layers. Compact only reversible transparent margins and make pose-specific binary masks protecting anatomy. For layers, validate every cell, transparency and protected pixels before splitting and artistic inspection."
+  },
+  {
+    "TASK": "Compose only complete inspected directions with the original rigid blade, measured hand sockets and optional exact90-degree orientations. Preserve old Idle/Walk bytes. Keep approved:false; unimplemented actions or directions use atomic legacy fallback. Produce native sheets and lossless-palette GIFs at approximately12FPS with loop metadata, no quantization or synthetic body frames. Validate original-source RGBA in Chromium, depth, controls/export, one-shot playback, real combat, old class/Haki/Zoan/save paths and Pages build. Push exclusive branch and open PR without merge."
+  }
+]

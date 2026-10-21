@@ -1,0 +1,31 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "cc6bf7c1-4f45-4659-8be3-9840163fbb3c",
+  "asset_id": "8787c3de-e2c6-526a-a625-ecf59fdfabd4",
+  "status": "completed",
+  "estimated_generations": 9,
+  "seed": 607822274,
+  "parameters": {
+    "image_url": "body-north-compact.png",
+    "mask_image_url": "outfit-north-mask.png",
+    "description": "Add only a cream short-sleeved linen shirt and fitted navy sailor waistcoat to each torso, matching the reference. Follow each shoulder and upper-arm pose. Preserve faces, hands, forearms, shorts, legs and all protected pixels.",
+    "context_image": {
+      "url": "look-north-context.png",
+      "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+    },
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 64
+    },
+    "crop_to_mask": true,
+    "no_background": true,
+    "output_method": "New layer with changes",
+    "seed": 607822274
+  },
+  "reported_usage": {
+    "generations": 9
+  },
+  "raw_sha256": "3260e0d16f2553c62d42a11cd190f3195cb3fe22d0593cddfd2a58869d9e2967"
+}

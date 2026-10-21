@@ -1,0 +1,20 @@
+{
+  "source_commit": "ad20381577582bfad886d4b671e7f4f5e428b700",
+  "main_preserved": "543c92a",
+  "branch": "feature/paper-doll-basic-sword",
+  "authorization": "Owner delegated recommended PixelLab decisions and asked to continue simple shared attacks after confirming animation belongs to action/weapon, not faction.",
+  "ceiling_generations": 77,
+  "plan_adjustment": "Announced before remaining directions: initial76 plus1 spent correcting rejected body =77. Owner delegated recommended decisions; no further paid retries in this run.",
+  "prior_conservative_generations": 150,
+  "directions": ["south", "north", "west", "east"],
+  "calls_per_direction": {"body": 1, "hair": 9, "outfit": 9},
+  "retry_policy": "No paid retries in this closed chain. Inspect south first; do not generate dependent pieces on rejected anatomy.",
+  "native_body": [64, 64],
+  "frames": 8,
+  "body_crop": [16, 0, 48, 64],
+  "reversible_crop_required": true,
+  "native_layer_atlas": [256, 64],
+  "layer_seed": 607822274,
+  "global_auto_changed": false,
+  "production_enabled": false
+}

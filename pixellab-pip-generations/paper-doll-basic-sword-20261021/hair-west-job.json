@@ -1,0 +1,31 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "d9a55777-5257-4b3d-83cd-d538d442027b",
+  "asset_id": "1e62b733-6ebd-52d5-8422-3d2e1fc2bf2a",
+  "status": "completed",
+  "estimated_generations": 9,
+  "seed": 607822274,
+  "parameters": {
+    "image_url": "body-west-compact.png",
+    "mask_image_url": "hair-west-mask.png",
+    "description": "Add only short tousled black hair attached to each bald head, matching the reference hairstyle. Follow each original head pose. Keep the face, ears, body, motion and all protected pixels unchanged.",
+    "context_image": {
+      "url": "look-west-context.png",
+      "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+    },
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 64
+    },
+    "crop_to_mask": true,
+    "no_background": true,
+    "output_method": "New layer with changes",
+    "seed": 607822274
+  },
+  "reported_usage": {
+    "generations": 9
+  },
+  "raw_sha256": "6990e739a5668001fb05d45a588e1f07fddb6fbcee09580f775df62bdffb7641"
+}

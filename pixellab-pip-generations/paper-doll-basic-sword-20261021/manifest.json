@@ -1,0 +1,607 @@
+{
+  "status": "Direction-gated review; production catalog unchanged",
+  "authorization": "Owner delegated recommended PixelLab decisions and explicitly requested basic shared attacks. Initial76 ceiling adjusted publicly to77 before remaining directions, including one rejected-body correction. Global auto unchanged; no further paid retries or USD overage.",
+  "jobs": [
+    {
+      "tool": "MCP animate_image_pixminimax",
+      "job_id": "f9d6a2fd-17f1-4fba-b7e0-424cf16596fd",
+      "asset_id": "535b9bde-621d-5415-a440-93804c7337db",
+      "status": "completed",
+      "estimated_generations": 1,
+      "parameters": {
+        "first_frame_url": "body-south-input.png",
+        "description": "Raise the right forearm, make one short downward sword-cut gesture with the empty right hand, then lower it back beside the hip. Keep the feet planted and the current facing throughout. Move in place with a small shoulder motion and a readable hand.",
+        "direction": "south",
+        "view": "high top-down",
+        "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+        "initial_pose": "standing facing the viewer, feet planted and arms relaxed beside the hips",
+        "enhance_prompt": false,
+        "frame_count": 8,
+        "no_background": true
+      },
+      "authorization": "Owner delegated recommended PixelLab decisions and explicitly requested simple shared attacks. Four-direction chain ceiling76 announced; inspect south first; no paid retries or USD overage.",
+      "reported_usage": {
+        "generations": 1
+      },
+      "sha256": {
+        "body-south-raw-00.png": "c23d5e30788bc030cde3704b1d649bb99d45d2a3d506481c59d897b14c1a0733",
+        "body-south-raw-01.png": "7c681db5aa02c4e12cc16c39f59085b5ead5295bc28a76643aa87fd37742e1e2",
+        "body-south-raw-02.png": "be2870ac481589b73340614853a006499cbc821446376b6ca518d5eff629d257",
+        "body-south-raw-03.png": "793ab21c597f4e11e81338f442df024ee195f921fb2cec5bd28ada60d7c598f1",
+        "body-south-raw-04.png": "456c861ca2997438c5f94c1f8af476470ca0637f7cc4f82adc46b83f23e1d482",
+        "body-south-raw-05.png": "ace22ddb1aeef30bb7aa28060a7ea834b28ec2ac285bb1cc969b57d80e3508c8",
+        "body-south-raw-06.png": "a9795e3949423623ae580da04c28499d2b6f0e216e9d69856eb65ba17fd6f8a3",
+        "body-south-raw-07.png": "7652ec0214e91ee0bcb1180183309f6b9ab9a139682b79b8dc218bdf681e7f9d",
+        "body-south-raw-08.png": "4fe21c27c1beaa29b6906b051143b306e9b7a90588d4ab99d74cedb0dfa5969a"
+      },
+      "seed": "omitted"
+    },
+    {
+      "tool": "MCP animate_image_pixminimax",
+      "job_id": "579a5d8c-9bbb-4211-822d-002fced1984d",
+      "asset_id": "b36015e9-80b0-57ed-879a-f3466acf1314",
+      "status": "completed",
+      "frame_prefix": "body-south-corrected-raw",
+      "estimated_generations": 1,
+      "parameters": {
+        "first_frame_url": "body-south-input.png",
+        "description": "Raise the empty right hand briefly beside the shoulder, extend the forearm down and forward once, then return the empty hand beside the hip. Keep a relaxed open hand with visible fingertips and bare forearms. Feet stay planted and the torso keeps its current facing.",
+        "direction": "south",
+        "view": "high top-down",
+        "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+        "initial_pose": "standing facing the viewer, feet planted and arms relaxed beside the hips",
+        "enhance_prompt": false,
+        "frame_count": 8,
+        "no_background": true
+      },
+      "authorization": "Owner delegated recommended PixelLab decisions. Plan adjustment announced: one1-generation body correction, same76 ceiling. Original rejected output preserved.",
+      "reported_usage": {
+        "generations": 1
+      },
+      "sha256": {
+        "body-south-corrected-raw-00.png": "c23d5e30788bc030cde3704b1d649bb99d45d2a3d506481c59d897b14c1a0733",
+        "body-south-corrected-raw-01.png": "21666c7fd6938b963e0baeee1ab7ab40e5659c376049c3bfb439bf8fd047ca7e",
+        "body-south-corrected-raw-02.png": "223d525daa7fd15eaf901a4e4cd5ede8dd90082b09e5fd2a09db366ad4a1d8a6",
+        "body-south-corrected-raw-03.png": "6264791c6a7c9e77e105e8ac4014e50714cc4ff37b73825546f555d1aee1ac45",
+        "body-south-corrected-raw-04.png": "2be73f0c381248712929ac8e4960f2e8dbfcffdec9432e966790513f3c366809",
+        "body-south-corrected-raw-05.png": "47515b081c8cd2dfc5234cfa2e71afb4ae0ea26a34572a02f6afa702e7bb92bf",
+        "body-south-corrected-raw-06.png": "ce0aa0c34ba0d5e06f745f1f0d8841226f9fb0f8b0db3d0e4f8dbd1a2463b5c2",
+        "body-south-corrected-raw-07.png": "075db93cdf0033451a5c18752472e3deeed13302be2e7b0ad345b5b7f78e8427",
+        "body-south-corrected-raw-08.png": "b9cedf06fb53c258e304f0f3656cca5237012f86839508c77f28f34ebebd6bce"
+      },
+      "seed": "omitted"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "f55b47b7-d2e7-4c00-81b5-1d11dad244c5",
+      "asset_id": "24b65b59-35fa-5cd6-b0a9-34db059766b5",
+      "status": "completed",
+      "estimated_generations": 9,
+      "seed": 607822274,
+      "parameters": {
+        "image_url": "body-south-compact.png",
+        "mask_image_url": "hair-south-mask.png",
+        "description": "Add only short tousled black hair attached to each bald head, matching the reference hairstyle. Follow each original head pose. Keep the face, ears, body, motion and all protected pixels unchanged.",
+        "context_image": {
+          "url": "look-south-context.png",
+          "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+        },
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "crop_to_mask": true,
+        "no_background": true,
+        "output_method": "New layer with changes",
+        "seed": 607822274
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "0f23ff959f09576722f787483eba94db25d19820d4b9e9f32078179029be2759"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "dd3515a4-52c3-4aee-ac36-6af202e73e5e",
+      "asset_id": "c249c01e-b182-5f2a-bb3d-e6060e082134",
+      "status": "completed",
+      "estimated_generations": 9,
+      "seed": 607822274,
+      "parameters": {
+        "image_url": "body-south-compact.png",
+        "mask_image_url": "outfit-south-mask.png",
+        "description": "Add only a cream short-sleeved linen shirt and fitted navy sailor waistcoat to each torso, matching the reference. Follow each shoulder and upper-arm pose. Preserve faces, hands, forearms, shorts, legs and all protected pixels.",
+        "context_image": {
+          "url": "look-south-context.png",
+          "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+        },
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "crop_to_mask": true,
+        "no_background": true,
+        "output_method": "New layer with changes",
+        "seed": 607822274
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "9c65cdbab060166dc7b3fcbba0e6342f58cf36c2365fb8069f054f1e2d9af91d"
+    },
+    {
+      "tool": "MCP animate_image_pixminimax",
+      "job_id": "db886e28-8567-4916-bc8e-34aca6f2894d",
+      "asset_id": "c9cb8ff0-a767-5bb5-91a7-d91c9a1e6051",
+      "status": "completed",
+      "estimated_generations": 1,
+      "parameters": {
+        "first_frame_url": "body-north-input.png",
+        "description": "Raise the empty right hand beside the right shoulder, reach the forearm away from the viewer once, then return the hand beside the hip. Keep the back of the head and back visible, with the far forearm naturally occluded by the torso. Feet stay planted.",
+        "direction": "north",
+        "view": "high top-down",
+        "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+        "initial_pose": "standing with the back facing the viewer, feet planted and arms relaxed beside the hips",
+        "enhance_prompt": false,
+        "frame_count": 8,
+        "no_background": true
+      },
+      "authorization": "Owner delegated recommended PixelLab decisions. Corrected south and real combat passed. Adjusted whole-run ceiling77 announced before these calls; no further paid retries.",
+      "reported_usage": {
+        "generations": 1
+      },
+      "sha256": {
+        "body-north-raw-00.png": "28f39ae16721fdbd36793b0356857dffe68cb58a46bec14fea1e31c30d7f1572",
+        "body-north-raw-01.png": "4b4dfc924bf932f90279f5b12fbc4a62b79763bcf17d1b1779c2ca47d99f8508",
+        "body-north-raw-02.png": "3073828204f13c287f3f2b199b9b1baf5230b5a353f50861b71c8ecfa7101071",
+        "body-north-raw-03.png": "daae3de43f7cae2663d6d7961dde2df2b43d99e70d750542fa7f7ed60471d694",
+        "body-north-raw-04.png": "f4e97129aaf9e861ce9cf03c85ba469f455f2cc7bb3d1a23fcc6162f3d3d4ca6",
+        "body-north-raw-05.png": "179108bce54d16baa948fa8b4f768d742a2353a247713777cd093831b4a23a37",
+        "body-north-raw-06.png": "6cf9725732b075f254ff769e930f2d0fa88594c9575a588df549e3eded7fa470",
+        "body-north-raw-07.png": "9b2920b842e39aad5770955ba9a3aab7b0da021f307c22c19f309b2a1d6672db",
+        "body-north-raw-08.png": "eb5d62a5024e0bf49fe93c29ba860449ce5c89dfb4a8a16effe496b2fd5893d4"
+      },
+      "seed": "omitted"
+    },
+    {
+      "tool": "MCP animate_image_pixminimax",
+      "job_id": "ba6f61db-f17a-4e38-a6d0-6c773f4abaaf",
+      "asset_id": "f87efab1-5dbb-591e-850f-fadf61e0ec28",
+      "status": "completed",
+      "estimated_generations": 1,
+      "parameters": {
+        "first_frame_url": "body-west-input.png",
+        "description": "Raise the empty right hand briefly beside the shoulder, extend the forearm down and forward once, then return the empty hand beside the hip. Keep a relaxed open hand with visible fingertips and bare forearms. Feet stay planted and the torso keeps its current facing.",
+        "direction": "west",
+        "view": "high top-down",
+        "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+        "initial_pose": "standing in left-facing profile, feet planted and arms relaxed beside the hips",
+        "enhance_prompt": false,
+        "frame_count": 8,
+        "no_background": true
+      },
+      "authorization": "Owner delegated recommended PixelLab decisions. Corrected south and real combat passed. Adjusted whole-run ceiling77 announced before these calls; no further paid retries.",
+      "reported_usage": {
+        "generations": 1
+      },
+      "sha256": {
+        "body-west-raw-00.png": "1036ca6392a64207f689381641e3b3b06bdbfe8033b2b094fd9e6c4e5c99498e",
+        "body-west-raw-01.png": "d878f70c9ee17f2cbf432a8e17765fd7242a0531aedfb1df2c4d7e998c245637",
+        "body-west-raw-02.png": "b4dc996c94ab911abf274682a0668974f75c846d2bba1c0c39a1f44f3279269d",
+        "body-west-raw-03.png": "71a377b8a680a65070c811baa6501a24af2bb1fffaa102eee694c71439694d68",
+        "body-west-raw-04.png": "3e1bf40ed787595df8a781a7ee12e8d1b50abef5da8f14458b09ab9da0f1c20b",
+        "body-west-raw-05.png": "7c8f0e9f2191aaddb448f6a1268459c265cb8d333cac9be01ec2c2d407f83088",
+        "body-west-raw-06.png": "c95e0ffb64f007d3eb475e367975263f396252fc2bae5a11e8a4de9be0fa9c3c",
+        "body-west-raw-07.png": "693e5a3211a24e3bae3369921fe4793cddf5a236a8d017792dbe7b9fd5aa3e04",
+        "body-west-raw-08.png": "a3254416ee40be898459492ed4d2ea59cf5b95ea54ff61d725e4390e1bf8f194"
+      },
+      "seed": "omitted"
+    },
+    {
+      "tool": "MCP animate_image_pixminimax",
+      "job_id": "1c716f03-56a3-4c9a-8797-bc5250757995",
+      "asset_id": "25f597ca-36be-5f7f-8d8b-dc40244ea271",
+      "status": "completed",
+      "estimated_generations": 1,
+      "parameters": {
+        "first_frame_url": "body-east-input.png",
+        "description": "Raise the empty right hand briefly beside the shoulder, extend the forearm down and forward once, then return the empty hand beside the hip. Keep a relaxed open hand with visible fingertips and bare forearms. Feet stay planted and the torso keeps its current facing.",
+        "direction": "east",
+        "view": "high top-down",
+        "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+        "initial_pose": "standing in right-facing profile, feet planted and arms relaxed beside the hips",
+        "enhance_prompt": false,
+        "frame_count": 8,
+        "no_background": true
+      },
+      "authorization": "Owner delegated recommended PixelLab decisions. Corrected south and real combat passed. Adjusted whole-run ceiling77 announced before these calls; no further paid retries.",
+      "reported_usage": {
+        "generations": 1
+      },
+      "sha256": {
+        "body-east-raw-00.png": "8cbd072cd196451503deefe3e334bdf4e85896f831fbafe3874baa20d5956c92",
+        "body-east-raw-01.png": "618aca5bb2dbb544782790e446c92cddbf281f9072dbd7516cca401b7b82d982",
+        "body-east-raw-02.png": "51921173d8241b12a342420762dc207cc72c842a2581e87bd07f0d49127ca9f7",
+        "body-east-raw-03.png": "1bdb8406023599d8e90a1ce8948d1347adb2fff1b162a30ee5056c60ccdee95d",
+        "body-east-raw-04.png": "1e2f380b32b1d60062072f6151f84e3449757742860145931136fa92cd16ff35",
+        "body-east-raw-05.png": "751b09dc24f0e9ebbbd40c64a69e10e0082ac758ac2473f0c8dc24212e253f9e",
+        "body-east-raw-06.png": "b48ae6f545f289fbd9bb443035761f9999be3a4cd8e23525be6e55a43ff2e093",
+        "body-east-raw-07.png": "f4c7f8ab203861cde12431572011ad4ace7c44e4e130e4e19f3a471e3aa642e1",
+        "body-east-raw-08.png": "1c82c6beef1d75f631c81cee71427fc710ff18a9516556e6938f811e07ded27c"
+      },
+      "seed": "omitted"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "3bc23d44-7aad-4594-b069-fe39896749a4",
+      "asset_id": "5cd6c20b-5116-5ef5-a63c-66757ee286d4",
+      "status": "completed",
+      "estimated_generations": 9,
+      "seed": 607822274,
+      "parameters": {
+        "image_url": "body-north-compact.png",
+        "mask_image_url": "hair-north-mask.png",
+        "description": "Add only short tousled black hair attached to each bald head, matching the reference hairstyle. Follow each original head pose. Keep the face, ears, body, motion and all protected pixels unchanged.",
+        "context_image": {
+          "url": "look-north-context.png",
+          "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+        },
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "crop_to_mask": true,
+        "no_background": true,
+        "output_method": "New layer with changes",
+        "seed": 607822274
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "0bea4a82902e3bf8287aa5229e86d1b745883c0a610e30b3004eb649e7656bbd"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "cc6bf7c1-4f45-4659-8be3-9840163fbb3c",
+      "asset_id": "8787c3de-e2c6-526a-a625-ecf59fdfabd4",
+      "status": "completed",
+      "estimated_generations": 9,
+      "seed": 607822274,
+      "parameters": {
+        "image_url": "body-north-compact.png",
+        "mask_image_url": "outfit-north-mask.png",
+        "description": "Add only a cream short-sleeved linen shirt and fitted navy sailor waistcoat to each torso, matching the reference. Follow each shoulder and upper-arm pose. Preserve faces, hands, forearms, shorts, legs and all protected pixels.",
+        "context_image": {
+          "url": "look-north-context.png",
+          "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+        },
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "crop_to_mask": true,
+        "no_background": true,
+        "output_method": "New layer with changes",
+        "seed": 607822274
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "3260e0d16f2553c62d42a11cd190f3195cb3fe22d0593cddfd2a58869d9e2967"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "d9a55777-5257-4b3d-83cd-d538d442027b",
+      "asset_id": "1e62b733-6ebd-52d5-8422-3d2e1fc2bf2a",
+      "status": "completed",
+      "estimated_generations": 9,
+      "seed": 607822274,
+      "parameters": {
+        "image_url": "body-west-compact.png",
+        "mask_image_url": "hair-west-mask.png",
+        "description": "Add only short tousled black hair attached to each bald head, matching the reference hairstyle. Follow each original head pose. Keep the face, ears, body, motion and all protected pixels unchanged.",
+        "context_image": {
+          "url": "look-west-context.png",
+          "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+        },
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "crop_to_mask": true,
+        "no_background": true,
+        "output_method": "New layer with changes",
+        "seed": 607822274
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "6990e739a5668001fb05d45a588e1f07fddb6fbcee09580f775df62bdffb7641"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "9317a79a-9caf-4114-8605-28d259d99f30",
+      "asset_id": "ae3e9158-ab0b-5f04-a57e-69240c5add98",
+      "status": "completed",
+      "estimated_generations": 9,
+      "seed": 607822274,
+      "parameters": {
+        "image_url": "body-west-compact.png",
+        "mask_image_url": "outfit-west-mask.png",
+        "description": "Add only a cream short-sleeved linen shirt and fitted navy sailor waistcoat to each torso, matching the reference. Follow each shoulder and upper-arm pose. Preserve faces, hands, forearms, shorts, legs and all protected pixels.",
+        "context_image": {
+          "url": "look-west-context.png",
+          "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+        },
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "crop_to_mask": true,
+        "no_background": true,
+        "output_method": "New layer with changes",
+        "seed": 607822274
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "53f5744b73cfc418abdf849880318d560c2b7d0ce0c9cbd63205b7d4ef664b76"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "7b6b32c1-24a8-4066-95a2-01733bb989d0",
+      "asset_id": "cb003811-381b-5422-8abf-ff003c48571a",
+      "status": "completed",
+      "estimated_generations": 9,
+      "seed": 607822274,
+      "parameters": {
+        "image_url": "body-east-compact.png",
+        "mask_image_url": "hair-east-mask.png",
+        "description": "Add only short tousled black hair attached to each bald head, matching the reference hairstyle. Follow each original head pose. Keep the face, ears, body, motion and all protected pixels unchanged.",
+        "context_image": {
+          "url": "look-east-context.png",
+          "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+        },
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "crop_to_mask": true,
+        "no_background": true,
+        "output_method": "New layer with changes",
+        "seed": 607822274
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "86a7a2bdf97992442bfa5d95a0aa277a2e69536a5942ad11a3d35a96f4145877"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "18f9c46c-75df-41ff-8f22-baa7c8392dbd",
+      "asset_id": "0bba1a70-c671-5aff-b98b-350eeab975c4",
+      "status": "completed",
+      "estimated_generations": 9,
+      "seed": 607822274,
+      "parameters": {
+        "image_url": "body-east-compact.png",
+        "mask_image_url": "outfit-east-mask.png",
+        "description": "Add only a cream short-sleeved linen shirt and fitted navy sailor waistcoat to each torso, matching the reference. Follow each shoulder and upper-arm pose. Preserve faces, hands, forearms, shorts, legs and all protected pixels.",
+        "context_image": {
+          "url": "look-east-context.png",
+          "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+        },
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 64
+        },
+        "crop_to_mask": true,
+        "no_background": true,
+        "output_method": "New layer with changes",
+        "seed": 607822274
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "0fda1128fdd6e23318dcbb6f5e0e2a3afc1f88110e794bef50ed030f027ac9d3"
+    }
+  ],
+  "generation_usage": {
+    "this_run_confirmed": 77,
+    "run_ceiling": 77,
+    "prior_conservative": 150,
+    "cumulative_conservative": 227
+  },
+  "coverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-sword": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ]
+  },
+  "shared_action": {
+    "id": "attack-sword",
+    "factionIndependent": true,
+    "style": "short basic cut",
+    "weaponMotion": "existing rigid source with measured grips and exact quarter-turns",
+    "productionEnabled": false
+  },
+  "artwork_approved": false,
+  "production_enabled": false,
+  "rejected_originals_preserved": true,
+  "rig": [
+    84,
+    84
+  ],
+  "pivot": [
+    42,
+    65
+  ],
+  "native_body": [
+    64,
+    64
+  ],
+  "layer_cell": [
+    32,
+    64
+  ],
+  "layer_atlas": [
+    256,
+    64
+  ],
+  "layer_seed": 607822274,
+  "weapon": "Original directional PNG, measured integer sockets, exact Canvas90-degree rotations. No generated duplicate weapon frames.",
+  "sha256": {
+    "attack-east-sheet.png": "a733de0ebfa5df1d015b3fd1848f458c5429b6981b76ffde2740b7562921739c",
+    "attack-north-sheet.png": "7eef59c57d5e4985ba4fbb0e3266b4aff1a326caf429c53004d8dcb8a15debd7",
+    "attack-south-sheet.png": "0fed26080b62a58e78a33925e281dd46aec63b81dd20180dfd4861ab5f9423e1",
+    "attack-west-sheet.png": "3b699bf94996e170b6c1566203342b2da465e84dd32fdfd35bdf30ce7bb22202",
+    "body-attack-sword.png": "d24f1caf1e12252ff3347058f84c17ed4b5dae2a7543a8ae723fae32608665d9",
+    "body-east-compact.png": "ae0b7512a8f477db7cf7710d7fae3567395b5b5f8a01c121f46782f24a97567b",
+    "body-east-input.png": "8cbd072cd196451503deefe3e334bdf4e85896f831fbafe3874baa20d5956c92",
+    "body-east-native.png": "47cbaae30055930c12b3500ccf1207f0431b68b70f66a0ce057e5c7280ffa837",
+    "body-east-raw-00.png": "8cbd072cd196451503deefe3e334bdf4e85896f831fbafe3874baa20d5956c92",
+    "body-east-raw-01.png": "618aca5bb2dbb544782790e446c92cddbf281f9072dbd7516cca401b7b82d982",
+    "body-east-raw-02.png": "51921173d8241b12a342420762dc207cc72c842a2581e87bd07f0d49127ca9f7",
+    "body-east-raw-03.png": "1bdb8406023599d8e90a1ce8948d1347adb2fff1b162a30ee5056c60ccdee95d",
+    "body-east-raw-04.png": "1e2f380b32b1d60062072f6151f84e3449757742860145931136fa92cd16ff35",
+    "body-east-raw-05.png": "751b09dc24f0e9ebbbd40c64a69e10e0082ac758ac2473f0c8dc24212e253f9e",
+    "body-east-raw-06.png": "b48ae6f545f289fbd9bb443035761f9999be3a4cd8e23525be6e55a43ff2e093",
+    "body-east-raw-07.png": "f4c7f8ab203861cde12431572011ad4ace7c44e4e130e4e19f3a471e3aa642e1",
+    "body-east-raw-08.png": "1c82c6beef1d75f631c81cee71427fc710ff18a9516556e6938f811e07ded27c",
+    "body-idle.png": "b04361d22abe344f5fba079994b5625c6fe4822b308dc5ca7478300deab43348",
+    "body-north-compact.png": "8b4bc21a2ee6baa9a543f9a74e0c8f8c680cab8acf568b34a5616f831346d82f",
+    "body-north-input.png": "28f39ae16721fdbd36793b0356857dffe68cb58a46bec14fea1e31c30d7f1572",
+    "body-north-native.png": "f2b80abf4c23045c9b3adb8d34c8971bc7cc9438954e81fd65efec7bd714d743",
+    "body-north-raw-00.png": "28f39ae16721fdbd36793b0356857dffe68cb58a46bec14fea1e31c30d7f1572",
+    "body-north-raw-01.png": "4b4dfc924bf932f90279f5b12fbc4a62b79763bcf17d1b1779c2ca47d99f8508",
+    "body-north-raw-02.png": "3073828204f13c287f3f2b199b9b1baf5230b5a353f50861b71c8ecfa7101071",
+    "body-north-raw-03.png": "daae3de43f7cae2663d6d7961dde2df2b43d99e70d750542fa7f7ed60471d694",
+    "body-north-raw-04.png": "f4e97129aaf9e861ce9cf03c85ba469f455f2cc7bb3d1a23fcc6162f3d3d4ca6",
+    "body-north-raw-05.png": "179108bce54d16baa948fa8b4f768d742a2353a247713777cd093831b4a23a37",
+    "body-north-raw-06.png": "6cf9725732b075f254ff769e930f2d0fa88594c9575a588df549e3eded7fa470",
+    "body-north-raw-07.png": "9b2920b842e39aad5770955ba9a3aab7b0da021f307c22c19f309b2a1d6672db",
+    "body-north-raw-08.png": "eb5d62a5024e0bf49fe93c29ba860449ce5c89dfb4a8a16effe496b2fd5893d4",
+    "body-south-compact.png": "8c6601696da88e1fb28be51facb669e234906d4b08ccc4a41a6fe009990481bf",
+    "body-south-corrected-raw-00.png": "c23d5e30788bc030cde3704b1d649bb99d45d2a3d506481c59d897b14c1a0733",
+    "body-south-corrected-raw-01.png": "21666c7fd6938b963e0baeee1ab7ab40e5659c376049c3bfb439bf8fd047ca7e",
+    "body-south-corrected-raw-02.png": "223d525daa7fd15eaf901a4e4cd5ede8dd90082b09e5fd2a09db366ad4a1d8a6",
+    "body-south-corrected-raw-03.png": "6264791c6a7c9e77e105e8ac4014e50714cc4ff37b73825546f555d1aee1ac45",
+    "body-south-corrected-raw-04.png": "2be73f0c381248712929ac8e4960f2e8dbfcffdec9432e966790513f3c366809",
+    "body-south-corrected-raw-05.png": "47515b081c8cd2dfc5234cfa2e71afb4ae0ea26a34572a02f6afa702e7bb92bf",
+    "body-south-corrected-raw-06.png": "ce0aa0c34ba0d5e06f745f1f0d8841226f9fb0f8b0db3d0e4f8dbd1a2463b5c2",
+    "body-south-corrected-raw-07.png": "075db93cdf0033451a5c18752472e3deeed13302be2e7b0ad345b5b7f78e8427",
+    "body-south-corrected-raw-08.png": "b9cedf06fb53c258e304f0f3656cca5237012f86839508c77f28f34ebebd6bce",
+    "body-south-input.png": "133ef9bf733471fb0e71f87ce4c3e53916f26a4a55d8c4cb762bc0cbd2234e18",
+    "body-south-native.png": "b58e46b8cf5f488224b5f4c0610605022034d0eec083771d90b10ff2c14699bb",
+    "body-south-raw-00.png": "c23d5e30788bc030cde3704b1d649bb99d45d2a3d506481c59d897b14c1a0733",
+    "body-south-raw-01.png": "7c681db5aa02c4e12cc16c39f59085b5ead5295bc28a76643aa87fd37742e1e2",
+    "body-south-raw-02.png": "be2870ac481589b73340614853a006499cbc821446376b6ca518d5eff629d257",
+    "body-south-raw-03.png": "793ab21c597f4e11e81338f442df024ee195f921fb2cec5bd28ada60d7c598f1",
+    "body-south-raw-04.png": "456c861ca2997438c5f94c1f8af476470ca0637f7cc4f82adc46b83f23e1d482",
+    "body-south-raw-05.png": "ace22ddb1aeef30bb7aa28060a7ea834b28ec2ac285bb1cc969b57d80e3508c8",
+    "body-south-raw-06.png": "a9795e3949423623ae580da04c28499d2b6f0e216e9d69856eb65ba17fd6f8a3",
+    "body-south-raw-07.png": "7652ec0214e91ee0bcb1180183309f6b9ab9a139682b79b8dc218bdf681e7f9d",
+    "body-south-raw-08.png": "4fe21c27c1beaa29b6906b051143b306e9b7a90588d4ab99d74cedb0dfa5969a",
+    "body-walk.png": "a5c81f23d0172f7a7a87000cb1e2e64169959e5dd4b5740e34216944653c5ded",
+    "body-west-compact.png": "080a67196dd94b9a26e53fd2b5078be68206d18f96f208bc5153b66c29c2f0bb",
+    "body-west-input.png": "1036ca6392a64207f689381641e3b3b06bdbfe8033b2b094fd9e6c4e5c99498e",
+    "body-west-native.png": "71a351abfa435a937eb239bbf08a80b402b2fdc16417889805b0a364603f97b9",
+    "body-west-raw-00.png": "1036ca6392a64207f689381641e3b3b06bdbfe8033b2b094fd9e6c4e5c99498e",
+    "body-west-raw-01.png": "d878f70c9ee17f2cbf432a8e17765fd7242a0531aedfb1df2c4d7e998c245637",
+    "body-west-raw-02.png": "b4dc996c94ab911abf274682a0668974f75c846d2bba1c0c39a1f44f3279269d",
+    "body-west-raw-03.png": "71a377b8a680a65070c811baa6501a24af2bb1fffaa102eee694c71439694d68",
+    "body-west-raw-04.png": "3e1bf40ed787595df8a781a7ee12e8d1b50abef5da8f14458b09ab9da0f1c20b",
+    "body-west-raw-05.png": "7c8f0e9f2191aaddb448f6a1268459c265cb8d333cac9be01ec2c2d407f83088",
+    "body-west-raw-06.png": "c95e0ffb64f007d3eb475e367975263f396252fc2bae5a11e8a4de9be0fa9c3c",
+    "body-west-raw-07.png": "693e5a3211a24e3bae3369921fe4793cddf5a236a8d017792dbe7b9fd5aa3e04",
+    "body-west-raw-08.png": "a3254416ee40be898459492ed4d2ea59cf5b95ea54ff61d725e4390e1bf8f194",
+    "hair-attack-sword.png": "75d0cda7b60af12a25466ff5a455aeefcbc7a8ca6b5fd46f95ac8067f2b8c76a",
+    "hair-east-mask.png": "ed204c0abc1a0ba7c3bce13000b581a6387d52f75daee6eec1c5f9de16f4c5dd",
+    "hair-east-raw.png": "86a7a2bdf97992442bfa5d95a0aa277a2e69536a5942ad11a3d35a96f4145877",
+    "hair-idle.png": "e393e179b77e77d59f697b243a165d8369b8ad7b0594680e801e756f78bf15b5",
+    "hair-north-mask.png": "d569e4a599a6837f85732b1ad7c1757f92f4e3c54024787f9c15a64fc1146cd6",
+    "hair-north-raw.png": "0bea4a82902e3bf8287aa5229e86d1b745883c0a610e30b3004eb649e7656bbd",
+    "hair-south-mask.png": "73139f7f3ed6e581bfe7411d429d4dba8d54d8126744e14d24ceaf29c66a85e1",
+    "hair-south-raw.png": "0f23ff959f09576722f787483eba94db25d19820d4b9e9f32078179029be2759",
+    "hair-walk.png": "1f09e199bc211f190ea0bec3ea9d80d80e05d75cbf1f7887a2d69c3a64ad3be2",
+    "hair-west-mask.png": "e2776f70a77e0782a9bbeaac4874e63f2b2643c1eb29d72e76dc334dc1369e44",
+    "hair-west-raw.png": "6990e739a5668001fb05d45a588e1f07fddb6fbcee09580f775df62bdffb7641",
+    "look-east-context.png": "6cd1ebdc252c736ecd710b02c3b2c49ab1c2840d6cefe9a6f07d40d1aa0fca2e",
+    "look-east-reference.png": "14e3683f53e95205c5387070e2e632f24690beb29086ba8d4c7de36ed1025912",
+    "look-north-context.png": "a834b35e726c5dee3f1e866e20b2960a573a297e168ff84ac76ea5e5d6454f4b",
+    "look-north-reference.png": "1f803ed620ff18b6fcdf3408515f51fe084e9b3e5ef3bb437a83eb62903d062b",
+    "look-south-context.png": "32bf93524d0f1b400d6c836fda552954da9af541b0eb81a9d67e6d59b0d3009d",
+    "look-south-reference.png": "45f2d389cb40218ba2d91acf7366925a6ccd70bd1b8270f6781afa54e25b283f",
+    "look-west-context.png": "63e83e62143b7bdbec8ba03ea95dc8c93bbbe6aad280c57e4d8ff4aacce17523",
+    "look-west-reference.png": "4c5380a216edf881003faf668b5ea8cf8dd5fd609edcabe13d2c94c3cd8c8bca",
+    "outfit-attack-sword.png": "5763dda7b570d0282a141ca8916af7e12f63e0f7c908449e1ab271869b339cdb",
+    "outfit-east-mask.png": "ccf7dc61a8f36848e4e0cca63554407478e719b3436593b7fe295b120a2a2c43",
+    "outfit-east-raw.png": "0fda1128fdd6e23318dcbb6f5e0e2a3afc1f88110e794bef50ed030f027ac9d3",
+    "outfit-idle.png": "50600daf41c0a2cefb12e978f67c79ca73d4e63c43d80622095d6508e27e2b7f",
+    "outfit-north-clean.png": "42ef98cbc427e72d1282b2ce37161ee2288ddab4242a10058dc96def14b20068",
+    "outfit-north-mask.png": "8e3e14cc7d2389252b7de6d3b4b47fb2c3a40be39df29a519eab85c9a4f203dd",
+    "outfit-north-raw.png": "3260e0d16f2553c62d42a11cd190f3195cb3fe22d0593cddfd2a58869d9e2967",
+    "outfit-south-mask.png": "16c07aaba436ac7715567deeaef447f526a3fa66e32fe24bd05aa8fc5df2849a",
+    "outfit-south-raw.png": "9c65cdbab060166dc7b3fcbba0e6342f58cf36c2365fb8069f054f1e2d9af91d",
+    "outfit-walk.png": "83939e22cdc199349e0252213e4043c8a0716816b3852b70b9b0bc5f459746c5",
+    "outfit-west-mask.png": "e2d9e86a8b81c5fe9da5c4919f86d2b19029558b4fa1f187a4a3345bd43cd3cc",
+    "outfit-west-raw.png": "53f5744b73cfc418abdf849880318d560c2b7d0ce0c9cbd63205b7d4ef664b76",
+    "rigid-weapon.png": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+    "weapon-east.png": "fe5ef2cb9fc0f495ef173c7091a335c53479cf52155fbbba30575ca6d3d6ea97",
+    "weapon-north.png": "0ba4aba97f06dc59272b9fe5e871d21c59ebedef6b0e0c03ee59ecd2662e7b41",
+    "weapon-south.png": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+    "weapon-west.png": "9b09bb64aec12978f127d96c4825f18e9c1ca6b5a688f3b746e9e2ae7b3ded60"
+  },
+  "report": "../../docs/PAPER-DOLL-ATAQUE-BASICO.md",
+  "exact_workbench_edit": {
+    "source_file": "outfit-north-raw.png",
+    "source_job_id": "cc6bf7c1-4f45-4659-8be3-9840163fbb3c",
+    "source_image_id": "f66e5f7f-7e64-4a6e-93fc-a0e04bead2db",
+    "output_file": "outfit-north-clean.png",
+    "output_image_id": "54c94ccd-c87e-44ae-bd8d-900ba2e54568",
+    "source_sha256": "3260e0d16f2553c62d42a11cd190f3195cb3fe22d0593cddfd2a58869d9e2967",
+    "output_sha256": "42ef98cbc427e72d1282b2ce37161ee2288ddab4242a10058dc96def14b20068",
+    "changed_pixels": 119,
+    "parameters": {
+      "argv": [
+        "edit",
+        "f66e5f7f-7e64-4a6e-93fc-a0e04bead2db",
+        "--changes",
+        "[{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[12,24,20,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[15,25,17,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[44,24,52,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[47,25,49,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[76,24,84,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[79,25,81,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[108,24,116,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[111,25,113,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[140,24,148,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[143,25,145,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[172,24,180,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[175,25,177,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[204,24,212,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[207,25,209,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[236,24,244,33],\"colors\":{\"#f0e7cdff\":\"#1d2145ff\",\"#c8bba0ff\":\"#1d2145ff\",\"#9c8e83ff\":\"#1d2145ff\"},\"reason\":\"Back view has front-facing collar and shirt opening.\"},{\"operation\":\"map_colors\",\"layer\":\"image\",\"frames\":[1],\"region\":[239,25,241,33],\"colors\":{\"#07070aff\":\"#1d2145ff\",\"#141529ff\":\"#1d2145ff\",\"#333146ff\":\"#1d2145ff\",\"#363449ff\":\"#1d2145ff\",\"#4a4b61ff\":\"#1d2145ff\",\"#56586fff\":\"#1d2145ff\",\"#000000ff\":\"#1d2145ff\"},\"reason\":\"Remove front button seam from the back panel only.\"}]"
+      ],
+      "mode": "low"
+    },
+    "pricing": "Tool describes exact editing as free for subscribers; per-call usage not exposed. No generation rerun.",
+    "reason": "Remove front-facing collar opening and button seam from native back-view vest center. Same body, sleeves, outline, alpha and frame order; new copy, no remote overwrite."
+  }
+}

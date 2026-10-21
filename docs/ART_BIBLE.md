@@ -1,5 +1,9 @@
 # Referência visual — Maré Partida
 
+## Paper Doll — corte básico compartilhado (21/10/2026)
+
+[Prévia](../pixellab-pip-generations/paper-doll-basic-sword-20261021/preview.html) · [Relatório](PAPER-DOLL-ATAQUE-BASICO.md). Oito poses reais de espada por direção,12FPS, rig84/pivô42,65. Corpo, cabelo e roupa são separados; armas rígidas reutilizam pixels e grips medidos, com giros exatos de90°. O norte mantém costas visíveis e lâmina além do ombro distante. Uma correção Workbench na camada de colete removeu gola/botões frontais nas costas, sem tocar na anatomia. Não há espelhamento de corpos, cortes temporais, duplicação fabricada ou troca de relógio de dano. O personagem comum cobre Idle/Walk/Attack-sword nas quatro vistas em inspeção; aprovação artística entre movimentos e demais categorias continuam pendentes. Não gerar novamente o mesmo gesto por facção.
+
 ## Paper Doll — locomoção modular em inspeção (21/10/2026)
 
 Rig84×84/pivô42,65; Idle4/4FPS e Walk8/8FPS nas quatro direções. As48 poses reais de corpo/cabelo/roupa por camada são alinhadas por padding fixo, sem redimensionar a densidade de pixels. Espadas rígidas usam fontes e sockets próprios por vista e fase. Referência visual: cabelo preto, camisa clara e colete azul neutros, sem símbolos de facção. O conjunto ainda não tem aprovação artística completa nem ativação em produção.

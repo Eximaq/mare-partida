@@ -1,0 +1,4 @@
+{
+  "prototype_gate_passed": false,
+  "review": "Rejected: model drew a white blade/trail in poses2/3 despite empty-hand request; do not generate layers or register as a modular body."
+}

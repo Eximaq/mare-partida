@@ -1,0 +1,31 @@
+{
+  "cell_size": [
+    32,
+    64
+  ],
+  "atlas": [
+    256,
+    64
+  ],
+  "crop": [
+    16,
+    0,
+    48,
+    64
+  ],
+  "body_padding": [
+    10,
+    13
+  ],
+  "layer_padding": [
+    26,
+    13
+  ],
+  "files": {
+    "body-south-compact.png": "8c6601696da88e1fb28be51facb669e234906d4b08ccc4a41a6fe009990481bf",
+    "look-south-reference.png": "45f2d389cb40218ba2d91acf7366925a6ccd70bd1b8270f6781afa54e25b283f",
+    "look-south-context.png": "32bf93524d0f1b400d6c836fda552954da9af541b0eb81a9d67e6d59b0d3009d",
+    "hair-south-mask.png": "73139f7f3ed6e581bfe7411d429d4dba8d54d8126744e14d24ceaf29c66a85e1",
+    "outfit-south-mask.png": "16c07aaba436ac7715567deeaef447f526a3fa66e32fe24bd05aa8fc5df2849a"
+  }
+}
