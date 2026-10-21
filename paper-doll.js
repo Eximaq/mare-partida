@@ -89,13 +89,16 @@
             source=clip.sources[direction];url=source.url;
           }else source=clip.source;
           if(slot!=='weapon'||!validSource(source)){problem('invalid-attachment-source');continue;}
-          const complete=clip.directions.every(d=>Array.isArray(clip.sockets?.[d])&&clip.sockets[d].length===a.frames&&clip.sockets[d].every(s=>s&&integer(s.x)&&integer(s.y)&&s.x>=0&&s.x<=r.frameWidth&&s.y>=0&&s.y<=r.frameHeight));
+          const complete=clip.directions.every(d=>Array.isArray(clip.sockets?.[d])&&clip.sockets[d].length===a.frames&&clip.sockets[d].every(s=>s&&integer(s.x)&&integer(s.y)&&s.x>=0&&s.x<=r.frameWidth&&s.y>=0&&s.y<=r.frameHeight&&(s.quarterTurns===undefined||(integer(s.quarterTurns)&&s.quarterTurns>=0&&s.quarterTurns<=3))));
           if(!complete){problem('missing-socket');continue;}
           sourceWidth=source.width;sourceHeight=source.height;socket=clip.sockets[direction][frameIndex];
         }
         const row=clip.directions.indexOf(direction),overrides=clip.poseOverrides?.[direction]?.[frameIndex]||{},byDirection=clip.directionOverrides?.[direction]||{};
         const pivotX=clip.pivotX??r.pivotX,pivotY=clip.pivotY??r.pivotY;
-        const offsetX=(overrides.offsetX??byDirection.offsetX??clip.offsetX??0)+(rigid?socket.x-source.anchorX:0),offsetY=(overrides.offsetY??byDirection.offsetY??clip.offsetY??0)+(rigid?socket.y-source.anchorY:0);
+        // Exact quarter-turns rotate a rigid weapon around its grip. Anatomy never rotates.
+        const quarterTurns=rigid?(socket.quarterTurns??0):0;
+        const anchors=rigid?[[source.anchorX,source.anchorY],[source.height-1-source.anchorY,source.anchorX],[source.width-1-source.anchorX,source.height-1-source.anchorY],[source.anchorY,source.width-1-source.anchorX]]:null;
+        const offsetX=(overrides.offsetX??byDirection.offsetX??clip.offsetX??0)+(rigid?socket.x-anchors[quarterTurns][0]:0),offsetY=(overrides.offsetY??byDirection.offsetY??clip.offsetY??0)+(rigid?socket.y-anchors[quarterTurns][1]:0);
         const zIndex=overrides.zIndex??byDirection.zIndex??clip.zIndex??p.zIndex??slots.indexOf(slot)*10;
         if(![pivotX,pivotY,offsetX,offsetY,zIndex].every(integer)||pivotX<0||pivotX>r.frameWidth||pivotY<0||pivotY>r.frameHeight||Math.abs(offsetX)>512||Math.abs(offsetY)>512){problem('invalid-transform');continue;}
         let image;try{image=getImage(url);}catch{problem('failed-image');continue;}
@@ -104,7 +107,7 @@
         if(image.naturalWidth!==(rigid?sourceWidth:r.frameWidth*clip.frames)||image.naturalHeight!==(rigid?sourceHeight:r.frameHeight*clip.directions.length)){problem('invalid-sheet-size');continue;}
         const invalid=rigid?imageAudit(image,{url,frames:1,directions:['south']},{frameWidth:sourceWidth,frameHeight:sourceHeight}):imageAudit(image,clip,r);if(invalid){problem(invalid);continue;}
         layers.push({slot,pieceId:id,revision:p.revision||1,image,url,animationId:pose.animationId,direction,frameIndex,
-          kind:rigid?'rigid-attachment':'sheet',socket:rigid?{...socket}:null,
+          kind:rigid?'rigid-attachment':'sheet',socket:rigid?{...socket}:null,quarterTurns,
           pivotX,pivotY,offsetX,offsetY,zIndex,sx:rigid?0:frameIndex*r.frameWidth,sy:rigid?0:row*r.frameHeight,width:sourceWidth,height:sourceHeight});
       }
       layers.sort((x,y)=>x.zIndex-y.zIndex||slots.indexOf(x.slot)-slots.indexOf(y.slot));
@@ -115,7 +118,7 @@
       if(!plan.valid){fallbacks++;return false;}
       const r=plan.rig,factor=scale??r.scale;if(!Number.isFinite(factor)||factor<=0)return false;
       const visible=plan.layers.filter(l=>!hidden.includes(l.slot));
-      const key=JSON.stringify([r.id,r.revision||1,plan.pose,visible.map(l=>[l.pieceId,l.revision,l.url,l.pivotX,l.pivotY,l.offsetX,l.offsetY,l.zIndex])]);
+      const key=JSON.stringify([r.id,r.revision||1,plan.pose,visible.map(l=>[l.pieceId,l.revision,l.url,l.pivotX,l.pivotY,l.offsetX,l.offsetY,l.zIndex,l.quarterTurns])]);
       let c=cache.get(key);
       if(c){hits++;cache.delete(key);cache.set(key,c);}
       else{
@@ -123,12 +126,21 @@
         // Expand around the rig pivot so legitimate offsets/pivots never clip a layer.
         const left=Math.min(0,...visible.map(l=>r.pivotX-l.pivotX+l.offsetX));
         const top=Math.min(0,...visible.map(l=>r.pivotY-l.pivotY+l.offsetY));
-        const right=Math.max(r.frameWidth,...visible.map(l=>r.pivotX-l.pivotX+l.offsetX+l.width));
-        const bottom=Math.max(r.frameHeight,...visible.map(l=>r.pivotY-l.pivotY+l.offsetY+l.height));
+        const right=Math.max(r.frameWidth,...visible.map(l=>r.pivotX-l.pivotX+l.offsetX+(l.quarterTurns%2?l.height:l.width)));
+        const bottom=Math.max(r.frameHeight,...visible.map(l=>r.pivotY-l.pivotY+l.offsetY+(l.quarterTurns%2?l.width:l.height)));
         if(right-left>2048||bottom-top>2048)return false;
         try{
           const image=createCanvas(right-left,bottom-top),ctx=image.getContext('2d');ctx.imageSmoothingEnabled=false;
-          for(const l of visible)ctx.drawImage(l.image,l.sx,l.sy,l.width,l.height,r.pivotX-l.pivotX+l.offsetX-left,r.pivotY-l.pivotY+l.offsetY-top,l.width,l.height);
+          for(const l of visible){
+            const x=r.pivotX-l.pivotX+l.offsetX-left,y=r.pivotY-l.pivotY+l.offsetY-top;
+            if(!l.quarterTurns)ctx.drawImage(l.image,l.sx,l.sy,l.width,l.height,x,y,l.width,l.height);
+            else{
+              ctx.save();
+              const origins=[[0,0],[l.height,0],[l.width,l.height],[0,l.width]];
+              ctx.translate(x+origins[l.quarterTurns][0],y+origins[l.quarterTurns][1]);ctx.rotate(l.quarterTurns*Math.PI/2);
+              ctx.drawImage(l.image,l.sx,l.sy,l.width,l.height,0,0,l.width,l.height);ctx.restore();
+            }
+          }
           c={image,pivotX:r.pivotX-left,pivotY:r.pivotY-top,bytes:image.width*image.height*4};
         }catch{fallbacks++;return false;}
         if(c.bytes<=maxCacheBytes&&maxCacheEntries>0){

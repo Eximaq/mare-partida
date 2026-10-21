@@ -1,0 +1,31 @@
+{
+  "cell_size": [
+    32,
+    64
+  ],
+  "atlas": [
+    256,
+    64
+  ],
+  "crop": [
+    16,
+    0,
+    48,
+    64
+  ],
+  "body_padding": [
+    10,
+    13
+  ],
+  "layer_padding": [
+    26,
+    13
+  ],
+  "files": {
+    "body-north-compact.png": "8b4bc21a2ee6baa9a543f9a74e0c8f8c680cab8acf568b34a5616f831346d82f",
+    "look-north-reference.png": "1f803ed620ff18b6fcdf3408515f51fe084e9b3e5ef3bb437a83eb62903d062b",
+    "look-north-context.png": "a834b35e726c5dee3f1e866e20b2960a573a297e168ff84ac76ea5e5d6454f4b",
+    "hair-north-mask.png": "d569e4a599a6837f85732b1ad7c1757f92f4e3c54024787f9c15a64fc1146cd6",
+    "outfit-north-mask.png": "8e3e14cc7d2389252b7de6d3b4b47fb2c3a40be39df29a519eab85c9a4f203dd"
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "tool": "MCP animate_image_pixminimax",
+  "job_id": "579a5d8c-9bbb-4211-822d-002fced1984d",
+  "asset_id": "b36015e9-80b0-57ed-879a-f3466acf1314",
+  "status": "completed",
+  "frame_prefix": "body-south-corrected-raw",
+  "estimated_generations": 1,
+  "parameters": {
+    "first_frame_url": "body-south-input.png",
+    "description": "Raise the empty right hand briefly beside the shoulder, extend the forearm down and forward once, then return the empty hand beside the hip. Keep a relaxed open hand with visible fingertips and bare forearms. Feet stay planted and the torso keeps its current facing.",
+    "direction": "south",
+    "view": "high top-down",
+    "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+    "initial_pose": "standing facing the viewer, feet planted and arms relaxed beside the hips",
+    "enhance_prompt": false,
+    "frame_count": 8,
+    "no_background": true
+  },
+  "authorization": "Owner delegated recommended PixelLab decisions. Plan adjustment announced: one1-generation body correction, same76 ceiling. Original rejected output preserved.",
+  "reported_usage": {
+    "generations": 1
+  },
+  "sha256": {
+    "body-south-corrected-raw-00.png": "c23d5e30788bc030cde3704b1d649bb99d45d2a3d506481c59d897b14c1a0733",
+    "body-south-corrected-raw-01.png": "21666c7fd6938b963e0baeee1ab7ab40e5659c376049c3bfb439bf8fd047ca7e",
+    "body-south-corrected-raw-02.png": "223d525daa7fd15eaf901a4e4cd5ede8dd90082b09e5fd2a09db366ad4a1d8a6",
+    "body-south-corrected-raw-03.png": "6264791c6a7c9e77e105e8ac4014e50714cc4ff37b73825546f555d1aee1ac45",
+    "body-south-corrected-raw-04.png": "2be73f0c381248712929ac8e4960f2e8dbfcffdec9432e966790513f3c366809",
+    "body-south-corrected-raw-05.png": "47515b081c8cd2dfc5234cfa2e71afb4ae0ea26a34572a02f6afa702e7bb92bf",
+    "body-south-corrected-raw-06.png": "ce0aa0c34ba0d5e06f745f1f0d8841226f9fb0f8b0db3d0e4f8dbd1a2463b5c2",
+    "body-south-corrected-raw-07.png": "075db93cdf0033451a5c18752472e3deeed13302be2e7b0ad345b5b7f78e8427",
+    "body-south-corrected-raw-08.png": "b9cedf06fb53c258e304f0f3656cca5237012f86839508c77f28f34ebebd6bce"
+  }
+}

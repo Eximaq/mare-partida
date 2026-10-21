@@ -1,0 +1,31 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "f55b47b7-d2e7-4c00-81b5-1d11dad244c5",
+  "asset_id": "24b65b59-35fa-5cd6-b0a9-34db059766b5",
+  "status": "completed",
+  "estimated_generations": 9,
+  "seed": 607822274,
+  "parameters": {
+    "image_url": "body-south-compact.png",
+    "mask_image_url": "hair-south-mask.png",
+    "description": "Add only short tousled black hair attached to each bald head, matching the reference hairstyle. Follow each original head pose. Keep the face, ears, body, motion and all protected pixels unchanged.",
+    "context_image": {
+      "url": "look-south-context.png",
+      "usage_description": "Use the rightmost dressed reference only for hairstyle, clothing and palette. Preserve all eight registered source poses on the left."
+    },
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 64
+    },
+    "crop_to_mask": true,
+    "no_background": true,
+    "output_method": "New layer with changes",
+    "seed": 607822274
+  },
+  "reported_usage": {
+    "generations": 9
+  },
+  "raw_sha256": "0f23ff959f09576722f787483eba94db25d19820d4b9e9f32078179029be2759"
+}

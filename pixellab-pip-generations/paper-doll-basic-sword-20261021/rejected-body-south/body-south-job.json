@@ -1,0 +1,33 @@
+{
+  "tool": "MCP animate_image_pixminimax",
+  "job_id": "f9d6a2fd-17f1-4fba-b7e0-424cf16596fd",
+  "asset_id": "535b9bde-621d-5415-a440-93804c7337db",
+  "status": "completed",
+  "estimated_generations": 1,
+  "parameters": {
+    "first_frame_url": "body-south-input.png",
+    "description": "Raise the right forearm, make one short downward sword-cut gesture with the empty right hand, then lower it back beside the hip. Keep the feet planted and the current facing throughout. Move in place with a small shoulder motion and a readable hand.",
+    "direction": "south",
+    "view": "high top-down",
+    "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+    "initial_pose": "standing facing the viewer, feet planted and arms relaxed beside the hips",
+    "enhance_prompt": false,
+    "frame_count": 8,
+    "no_background": true
+  },
+  "authorization": "Owner delegated recommended PixelLab decisions and explicitly requested simple shared attacks. Four-direction chain ceiling76 announced; inspect south first; no paid retries or USD overage.",
+  "reported_usage": {
+    "generations": 1
+  },
+  "sha256": {
+    "body-south-raw-00.png": "c23d5e30788bc030cde3704b1d649bb99d45d2a3d506481c59d897b14c1a0733",
+    "body-south-raw-01.png": "7c681db5aa02c4e12cc16c39f59085b5ead5295bc28a76643aa87fd37742e1e2",
+    "body-south-raw-02.png": "be2870ac481589b73340614853a006499cbc821446376b6ca518d5eff629d257",
+    "body-south-raw-03.png": "793ab21c597f4e11e81338f442df024ee195f921fb2cec5bd28ada60d7c598f1",
+    "body-south-raw-04.png": "456c861ca2997438c5f94c1f8af476470ca0637f7cc4f82adc46b83f23e1d482",
+    "body-south-raw-05.png": "ace22ddb1aeef30bb7aa28060a7ea834b28ec2ac285bb1cc969b57d80e3508c8",
+    "body-south-raw-06.png": "a9795e3949423623ae580da04c28499d2b6f0e216e9d69856eb65ba17fd6f8a3",
+    "body-south-raw-07.png": "7652ec0214e91ee0bcb1180183309f6b9ab9a139682b79b8dc218bdf681e7f9d",
+    "body-south-raw-08.png": "4fe21c27c1beaa29b6906b051143b306e9b7a90588d4ab99d74cedb0dfa5969a"
+  }
+}

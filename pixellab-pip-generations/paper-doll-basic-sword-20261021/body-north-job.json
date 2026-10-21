@@ -1,0 +1,33 @@
+{
+  "tool": "MCP animate_image_pixminimax",
+  "job_id": "db886e28-8567-4916-bc8e-34aca6f2894d",
+  "asset_id": "c9cb8ff0-a767-5bb5-91a7-d91c9a1e6051",
+  "status": "completed",
+  "estimated_generations": 1,
+  "parameters": {
+    "first_frame_url": "body-north-input.png",
+    "description": "Raise the empty right hand beside the right shoulder, reach the forearm away from the viewer once, then return the hand beside the hip. Keep the back of the head and back visible, with the far forearm naturally occluded by the torso. Feet stay planted.",
+    "direction": "north",
+    "view": "high top-down",
+    "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+    "initial_pose": "standing with the back facing the viewer, feet planted and arms relaxed beside the hips",
+    "enhance_prompt": false,
+    "frame_count": 8,
+    "no_background": true
+  },
+  "authorization": "Owner delegated recommended PixelLab decisions. Corrected south and real combat passed. Adjusted whole-run ceiling77 announced before these calls; no further paid retries.",
+  "reported_usage": {
+    "generations": 1
+  },
+  "sha256": {
+    "body-north-raw-00.png": "28f39ae16721fdbd36793b0356857dffe68cb58a46bec14fea1e31c30d7f1572",
+    "body-north-raw-01.png": "4b4dfc924bf932f90279f5b12fbc4a62b79763bcf17d1b1779c2ca47d99f8508",
+    "body-north-raw-02.png": "3073828204f13c287f3f2b199b9b1baf5230b5a353f50861b71c8ecfa7101071",
+    "body-north-raw-03.png": "daae3de43f7cae2663d6d7961dde2df2b43d99e70d750542fa7f7ed60471d694",
+    "body-north-raw-04.png": "f4e97129aaf9e861ce9cf03c85ba469f455f2cc7bb3d1a23fcc6162f3d3d4ca6",
+    "body-north-raw-05.png": "179108bce54d16baa948fa8b4f768d742a2353a247713777cd093831b4a23a37",
+    "body-north-raw-06.png": "6cf9725732b075f254ff769e930f2d0fa88594c9575a588df549e3eded7fa470",
+    "body-north-raw-07.png": "9b2920b842e39aad5770955ba9a3aab7b0da021f307c22c19f309b2a1d6672db",
+    "body-north-raw-08.png": "eb5d62a5024e0bf49fe93c29ba860449ce5c89dfb4a8a16effe496b2fd5893d4"
+  }
+}

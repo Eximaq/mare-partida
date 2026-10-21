@@ -14,11 +14,31 @@ for piece in pack['pieces']:
 INJECT='''
 // TEST FIXTURE ONLY: no production file, save or approved flag is changed.
 (()=>{const pack=PACK,cat=MarePaperDollCatalog,create=cat.createRuntime,appearance=cat.appearance;
-window.__paperDollWorldReview={enabled:true,draws:{},fallbacks:{}};
+window.__paperDollWorldReview={enabled:true,draws:{},fallbacks:{},attackSnapshots:{}};
 cat.appearance=player=>__paperDollWorldReview.enabled&&cat.eligible(player)?structuredClone(pack.appearance):appearance(player);
 cat.createRuntime=options=>{const r=create(options);pack.pieces.forEach(p=>r.registerPiece(p));const draw=r.draw;
-r.draw=(ctx,config,pose,x,y,options={})=>{const result=draw(ctx,config,pose,x,y,{...options,allowDraft:true});const group=result?__paperDollWorldReview.draws:__paperDollWorldReview.fallbacks,key=pose.animationId+'/'+pose.direction;group[key]=group[key]||[];if(!group[key].includes(pose.frameIndex))group[key].push(pose.frameIndex);return result;};return r;};})();
+r.draw=(ctx,config,pose,x,y,options={})=>{const result=draw(ctx,config,pose,x,y,{...options,allowDraft:true});const group=result?__paperDollWorldReview.draws:__paperDollWorldReview.fallbacks,key=pose.animationId+'/'+pose.direction;group[key]=group[key]||[];if(!group[key].includes(pose.frameIndex))group[key].push(pose.frameIndex);if(result&&pose.animationId==='attack-sword'&&pose.frameIndex===3&&!__paperDollWorldReview.attackSnapshots[pose.direction])__paperDollWorldReview.attackSnapshots[pose.direction]=ctx.canvas.toDataURL('image/png');return result;};return r;};})();
 '''.replace('PACK',json.dumps(pack))
+
+# Test-only placement harness; never written into game.js or the Pages build.
+# It calls the real heroAttack/controller/impact path; it does not manufacture damage.
+COMBAT_FIXTURE='''
+  window.__paperDollCombatFixture={attack(direction){
+    if(scene!=='hunt')throw Error('Hunt required');
+    const nav=navigator(),offsets={south:[0,40],north:[0,-40],west:[-40,0],east:[40,0]};let center=null;
+    for(let y=128;y<activeMap().height-128&&!center;y+=64)for(let x=128;x<activeMap().width-128&&!center;x+=64){
+      const c={x,y};if(nav.walkable(x,y)&&Object.values(offsets).every(([dx,dy])=>nav.walkable(x+dx,y+dy)&&nav.clear(c,{x:x+dx,y:y+dy})))center=c;
+    }
+    if(!center)throw Error('No clear four-direction combat area');
+    const template=world.mobs[0];if(!template)throw Error('Existing monster template required');
+    autoPlay=false;autoSkills=false;session.respawn=0;game.hp=getDerived().maxHP;world.spawnClock=-1000;world.bossCooldown=1000;
+    Object.assign(world.hero,center,{walking:0,attackAnim:0,talentControl:null});world.hero.combat?.reset('front');
+    const [dx,dy]=offsets[direction],enemy={...template,id:world.nextID++,x:center.x+dx,y:center.y+dy,anchorX:center.x+dx,anchorY:center.y+dy,hp:1000000,maxHP:1000000,attack:0,attackClock:1000,alive:true,telegraph:null,hit:0,moving:0,talentControl:null};
+    world.mobs=[enemy];world.target=enemy;camera.update(world.hero,activeMap(),0,true);
+    const random=Math.random;Math.random=()=>.5;this.restoreRandom=()=>{Math.random=random;};
+    const damage=game.stats.damage,accepted=heroAttack(enemy);return {accepted,damage};
+  }};
+'''
 
 def context(browser,seed=None):
  c=browser.new_context(viewport={'width':1366,'height':900})
@@ -27,6 +47,12 @@ def context(browser,seed=None):
  def patch(route):
   response=route.fetch();route.fulfill(response=response,body=response.text()+INJECT)
  c.route('**/paper-doll-assets.js*',patch)
+ if pack.get('coverage',{}).get('attack-sword'):
+  def combat_fixture(route):
+   response=route.fetch();source=response.text();marker='  window.__mareDiagnostics='
+   assert source.count(marker)==1,'Test hook marker changed; do not patch production blindly'
+   route.fulfill(response=response,body=source.replace(marker,COMBAT_FIXTURE+marker,1))
+  c.route('**/game.js*',combat_fixture)
  if seed:c.add_init_script('localStorage.setItem('+json.dumps(KEY)+','+json.dumps(json.dumps(seed))+')')
  q=c.new_page();q.clock.install();return c,q
 
@@ -55,14 +81,31 @@ with sync_playwright() as p:
  assert not any('paper' in key.lower() or 'appearance' in key.lower() for key in baseline)
  q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
  q.clock.run_for(12000);state=q.evaluate('__paperDollWorldReview');diag=q.evaluate('__mareDiagnostics()')
- assert any(k.startswith('attack-sword/') for k in state['fallbacks']),state
+ attack_dirs=pack.get('coverage',{}).get('attack-sword',[])
+ if attack_dirs:
+  for _ in range(4):
+   if any('attack-sword/'+d in state['draws'] for d in attack_dirs):break
+   q.clock.run_for(12000);state=q.evaluate('__paperDollWorldReview');diag=q.evaluate('__mareDiagnostics()')
+  assert any('attack-sword/'+d in state['draws'] for d in attack_dirs),state
+  assert not any('attack-sword/'+d in state['fallbacks'] for d in attack_dirs),'A complete attack direction must not borrow legacy frames'
+  for d in attack_dirs:
+   result=q.evaluate('d=>__paperDollCombatFixture.attack(d)',d);assert result['accepted'],d
+   q.clock.run_for(180);assert q.evaluate('__mareDiagnostics().damage')==result['damage'],'Damage committed before legacy impact frame'
+   q.clock.run_for(150);impact=q.evaluate('__mareDiagnostics().damage');assert impact>result['damage'],'Real queued attack did not hit'
+   q.clock.run_for(450);assert q.evaluate('__mareDiagnostics().damage')==impact,'Visual weapon layers must not add impacts';q.evaluate('__paperDollCombatFixture.restoreRandom()')
+   state=q.evaluate('__paperDollWorldReview');assert sorted(state['draws']['attack-sword/'+d])==list(range(8)),[d,state['draws']]
+   q.screenshot(path=str(OUT/('world-basic-attack-'+d+'-hud.png')))
+  diag=q.evaluate('__mareDiagnostics()')
+ else:assert any(k.startswith('attack-sword/') for k in state['fallbacks']),state
  assert diag['damage']>0 and diag['paperDoll']['hits']>0 and diag['paperDoll']['compositions']>0,diag
  assert diag['paperDoll']['cacheEntries']<=96 and diag['paperDoll']['cacheBytes']<=4*1024*1024
  q.screenshot(path=str(OUT/'world-modular-review-combat-fallback.png'))
- before=diag['paperDoll']['compositions'];q.evaluate('__paperDollWorldReview.enabled=false');q.clock.run_for(1500)
+ before=q.evaluate('()=>{__paperDollWorldReview.enabled=false;return __mareDiagnostics().paperDoll.compositions}');q.clock.run_for(1500)
  assert q.evaluate('__mareDiagnostics().paperDoll.compositions')==before
  saved=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));assert not any('paper' in key.lower() or 'appearance' in key.lower() for key in saved)
- summary={'scope':'isolated browser fixture only; not production enablement','idle_directions':sorted(k for k in state['draws'] if k.startswith('idle/')),'modular_frames':state['draws'],'legacy_actions':sorted(state['fallbacks']),'damage':diag['damage'],'cache':diag['paperDoll']}
+ import base64
+ for d,url in state.get('attackSnapshots',{}).items():(OUT/('world-basic-attack-'+d+'.png')).write_bytes(base64.b64decode(url.split(',',1)[1]))
+ summary={'scope':'isolated browser fixture only; not production enablement','idle_directions':sorted(k for k in state['draws'] if k.startswith('idle/')),'modular_frames':state['draws'],'legacy_actions':sorted(state['fallbacks']),'attack_snapshots':list(state.get('attackSnapshots',{})),'damage':diag['damage'],'cache':diag['paperDoll']}
  book=diag['hakiBookDef'];c.close()
  # Haki must still activate/drain while real modular Idle is being drawn.
  haki=copy.deepcopy(baseline);haki.update(level=50,hp=99999,has_haki_unlocked=True,haki={'current':100,'unlocked':True})

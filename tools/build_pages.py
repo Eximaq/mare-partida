@@ -3,6 +3,7 @@ from pathlib import Path
 import shutil
 import hashlib
 import re
+import json
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'dist'
@@ -246,5 +247,32 @@ def version_profiles(match):
 profiles_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_profiles,
                                 profiles_entry.read_text(encoding='utf-8')), encoding='utf-8')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-CAMINHADAS-LATERAIS.md', OUT/'docs/PAPER-DOLL-CAMINHADAS-LATERAIS.md')
+basic_relative = Path('pixellab-pip-generations/paper-doll-basic-sword-20261021')
+basic_pack = json.loads((ROOT/basic_relative/'review-pack.json').read_text(encoding='utf-8'))
+basic_files = {'preview.html', 'preview.js', 'review-pack.json', 'manifest.json',
+               'basic-sword.blueprint.json', 'assembly-audit.json'}
+for piece in basic_pack['pieces']:
+    for clip in piece['animations'].values():
+        basic_files.add(clip['url'])
+        basic_files.update(source['url'] for source in clip.get('sources', {}).values())
+for direction in basic_pack['coverage']['attack-sword']:
+    basic_files.update([f'attack-{direction}.gif', f'attack-{direction}-sheet.png'])
+for name in basic_files:
+    if not re.fullmatch(r'[a-z0-9.-]+\.(?:png|gif|html|js|json)', name):
+        raise ValueError('Unsafe Paper Doll public path: '+str(name))
+    destination = OUT/basic_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/basic_relative/name, destination)
+basic_entry = OUT/basic_relative/'preview.html'
+
+def version_basic(match):
+    source = (basic_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    version = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+    return f'{match.group(1)}{match.group(2)}?v={version}{match.group(3)}'
+basic_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_basic,
+                             basic_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-ATAQUE-BASICO.md', OUT/'docs/PAPER-DOLL-ATAQUE-BASICO.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

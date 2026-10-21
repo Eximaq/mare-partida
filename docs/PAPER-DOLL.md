@@ -2,11 +2,19 @@
 
 ## Estado atual (21/10/2026)
 
+### Direção de ataques básicos compartilhados
+
+O proprietário confirmou movimentos curtos por ação/arma: apontar/disparar, soco, corte e canalização. Uma facção diferente não produz outra animação do mesmo gesto. Corpo/cabelo/roupa continuam com poses reais; a arma rígida usa sua imagem existente e encaixes da mão. Habilidades especiais permanecem nos conjuntos atuais durante a migração.
+
+O compositor aceita `socket.quarterTurns` opcional em armas rígidas:0,1,2,3 representam giros horários exatos de0°,90°,180°,270°. A rotação acontece em coordenadas inteiras no Canvas, ao redor da âncora do cabo, sem escala/antialiasing. Não se aplica a anatomia, cabelo ou roupa. Fontes retangulares trocam seus limites ao girar; a orientação entra na chave do cache. Um valor inválido em qualquer frame força fallback de toda a sequência. O editor da bancada mostra/exporta a orientação junto ao encaixe, sem alterar o save. O valor omitido conserva o comportamento anterior.
+
 O [pacote de revisão multidirecional](PAPER-DOLL-EXPANSAO.md) já contém corpo, cabelo, roupa e espada para as16 poses de Idle nas quatro direções. A arma tem fonte e âncora próprias por vista; a bancada abre o pacote diretamente pelo link `?pack=expansion-idle` e permite editar/exportar sockets por frame. A arte permanece em inspeção (`approved:false`), fora do catálogo de produção. O jogo mantém seus sprites atuais.
 
 A [expansão lateral](PAPER-DOLL-CAMINHADAS-LATERAIS.md) completa a locomoção para inspeção:16 poses Idle e32 Walk, nas quatro direções, com corpo/cabelo/roupa e espadas já existentes. Cada lateral teve animação própria e camadas por pose, sem espelhamento. O pacote `walk-profiles` abre diretamente na bancada; peças continuam `approved:false` e a produção mantém seus personagens atuais. Proporções, cabelo e manejo de arma entre as vistas ainda fazem parte da aprovação artística completa.
 
-Os estudos [norte inicial](PAPER-DOLL-CAMINHADA-NORTE.md) e [norte concluído](PAPER-DOLL-NORTE-COMPLETO.md) permanecem preservados como histórico. Para o mínimo do Espadachim faltam32 frames por camada de corpo/cabelo/roupa para Attack nas quatro direções:96 frames anatômicos/vestuário, mais32 encaixes de arma e imagens específicas de lâmina quando necessárias. As estimativas de320 abaixo registram o levantamento inicial, anterior aos pilotos e à exceção de arma rígida. A Fase1 completa continua pendente.
+O [ataque básico compartilhado](PAPER-DOLL-ATAQUE-BASICO.md) acrescenta32 poses reais de Attack/sword nas quatro direções, com corpo/cabelo/roupa e32 encaixes da espada. A cobertura em inspeção chega a80 poses por camada (16 Idle +32 Walk +32 Attack), sem gerar corpos por facção. Os quatro golpes passaram no caminho real de impacto em cenários controlados de navegador, com um impacto por ação e fallback preservado. Todas as peças continuam `approved:false`; a arte completa entre ações e a ativação de produção ainda precisam de revisão. As cinco outras categorias de ataque permanecem ausentes:160 frames por camada anatômica/vestuário,480 no total, mais os respectivos encaixes/armas. Habilidades continuam legadas.
+
+Os estudos [norte inicial](PAPER-DOLL-CAMINHADA-NORTE.md) e [norte concluído](PAPER-DOLL-NORTE-COMPLETO.md) permanecem preservados como histórico. As estimativas de320 abaixo registram o levantamento inicial, anterior aos pilotos e à exceção de arma rígida.
 
 ## Evolução: personagem único (20/10/2026)
 
@@ -28,7 +36,7 @@ O contrato84×84, pivô42/65, quatro direções, transparência e regras de prof
 
 Cada peça pode entregar cobertura parcial: uma pose ausente volta atomicamente ao legado. Um corpo/cabelo cobrindo Idle, Walk e todas as seis categorias precisa de240 frames (48 de locomoção +192 de ataques). Uma arma cobrindo locomoção e seu próprio ataque precisa de80. Roupa/acessório que acompanhar todas as categorias também precisa de240; o mesmo arquivo da peça é reutilizado nas classes compatíveis, sem gerar quatro corpos por facção ou sete por classe.
 
-Todas essas imagens ainda faltam. O primeiro lote artístico recomendado permanece pequeno: corpo, cabelo, roupa neutra e espada em Idle/sul, validando o encaixe antes de ampliar movimentos e variações. Esta etapa técnica consumiu **zero créditos** e não autoriza essa produção. Prompts, método de animação alinhada e orçamento precisam de aprovação própria; a quantidade de frames não deve ser confundida com o custo de gerações.
+Esse era o levantamento inicial, anterior aos pilotos; a cobertura atual está registrada no início deste documento. A etapa técnica de20/10 consumiu **zero créditos** e não autorizava produção artística. Os lotes posteriores têm seus próprios registros de autorização, prompts e custos; a quantidade de frames não deve ser confundida com o custo de gerações.
 
 Não há customizador de aparência, recoloração, escolha persistente de cabelo/pele/olhos nem alteração de save nesta entrega. O vídeo do usuário orienta uma fase futura, mantendo o tema náutico do projeto.
 
