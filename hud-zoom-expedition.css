@@ -1,10 +1,11 @@
 /* Caçada: informações XP/h em tempo real, ancoradas sobre o painel Expedição. */
-#journeyHud .hunt-xp-tracker {
-  position:absolute;
-  bottom:calc(100% + 9px);
-  right:0;
+#huntXpTracker.hunt-xp-tracker {
+  position:fixed;
+  bottom:calc(var(--rpg-safe-bottom,0px) + var(--rpg-edge,12px) + 102px);
+  right:var(--rpg-edge,12px);
+  z-index:var(--rpg-z-hud,10);
   display:grid;
-  width:100%;
+  width:min(260px,calc(100vw - 24px));
   gap:5px;
   padding:9px 10px 8px;
   border:1px solid var(--rpg-brass, #b58b4b);
@@ -17,7 +18,7 @@
   pointer-events:none;
   z-index:1;
 }
-#journeyHud .hunt-xp-tracker[hidden] {display:none!important}
+#huntXpTracker.hunt-xp-tracker[hidden] {display:none!important}
 .hunt-xp-tracker .hunt-xp-top,.hunt-xp-tracker .hunt-xp-metrics {
   display:flex;justify-content:space-between;align-items:center;gap:8px;
 }
@@ -29,51 +30,11 @@
 .hunt-xp-tracker .hunt-xp-track i{display:block;height:100%;width:0;background:linear-gradient(90deg,#3c9b84,#a5db91);transition:width .25s ease}
 .hunt-xp-tracker .hunt-xp-level {color:#9fafac;font-size:9px;line-height:1.2;text-align:right}
 
-/* The camera controls are inside the world view, never in modal/UI hit areas. */
-#worldZoomControls {
-  position:fixed;
-  top:48%;
-  left:var(--rpg-edge,12px);
-  transform:translateY(-50%);
-  z-index:var(--rpg-z-hud,10);
-  display:grid;
-  justify-items:center;
-  gap:3px;
-  padding:5px;
-  background:var(--rpg-hud-bg,#172d31ed);
-  border:1px solid var(--rpg-brass,#a8864c);
-  border-radius:4px;
-  box-shadow:0 4px 14px #0009;
-  pointer-events:auto;
-}
-#worldZoomControls[hidden]{display:none!important}
-#worldZoomControls button {
-  width:29px;height:29px;min-height:29px;
-  padding:0;
-  display:grid;place-items:center;
-  background:#253c3b;
-  color:#f1dfa9;
-  border:1px solid #9d7a4b;
-  border-radius:3px;
-  font:800 19px/1 var(--rpg-font,Arial,sans-serif);
-  cursor:pointer;
-}
-#worldZoomControls button:hover:not(:disabled),#worldZoomControls button:focus-visible{
-  outline:2px solid #d9b56c;outline-offset:1px;background:#40544a;
-}
-#worldZoomControls button:disabled{opacity:.42;cursor:default}
-#worldZoomControls .world-zoom-label{
-  font:700 10px/1.1 var(--rpg-font,Arial,sans-serif);
-  color:#e7d8b2;min-width:33px;text-align:center;
-}
-#worldZoomControls button[data-world-zoom="reset"]{height:22px;min-height:22px;font-size:10px}
 #worldCanvas {image-rendering:pixelated;image-rendering:crisp-edges;image-rendering:pixelated}
 @media(max-width:760px) {
-  #journeyHud .hunt-xp-tracker{padding:6px 7px;gap:4px}
+  #huntXpTracker.hunt-xp-tracker{padding:6px 7px;gap:4px}
   .hunt-xp-tracker .hunt-xp-top{align-items:flex-start;flex-wrap:wrap;gap:2px}
   .hunt-xp-tracker .hunt-xp-top strong{font-size:14px}
   .hunt-xp-tracker .hunt-xp-metrics{font-size:9px;flex-wrap:wrap;gap:3px}
-  #worldZoomControls {top:48%;left:6px;padding:3px}
-  #worldZoomControls button{width:27px;height:27px;min-height:27px}
 }
 @media(prefers-reduced-motion:reduce){.hunt-xp-tracker .hunt-xp-track i{transition:none}}
