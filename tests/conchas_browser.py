@@ -28,11 +28,12 @@ def route(q,sector):
 
 with sync_playwright() as p:
     b=p.chromium.launch();c,q=page(b);q.locator('#characterName').fill('Nauta Conchas');q.locator('#nextToClass').click();q.locator('#createCharacter').click();q.clock.run_for(100);template=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));c.close()
-    low=copy.deepcopy(template);low['level']=10;c,q=page(b,low);q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=conchas]').click();assert q.locator('[data-travel-area=swamp]').is_disabled();c.close()
+    # Main's East Blue rebalance: Conchas6-10, so level5 remains locked.
+    low=copy.deepcopy(template);low['level']=5;c,q=page(b,low);q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=conchas]').click();assert q.locator('[data-travel-area=swamp]').is_disabled();c.close()
     high=copy.deepcopy(template);high['level']=20
     for size in [(1920,1080),(1366,768),(1280,720),(393,852),(320,568)]:
         c,q=page(b,high,size);travel(q);d=state(q);assert d['map']=={'id':'conchas','width':2048,'height':2048};assert d['walkable'] and d['alive']>0
-        assert all(11<=m['level']<=13 for m in d['mobs']),d['mobs'];q.screenshot(path=str(OUT/f'chegada-{size[0]}.png'))
+        assert all(6<=m['level']<=7 for m in d['mobs']),d['mobs'];q.screenshot(path=str(OUT/f'chegada-{size[0]}.png'))
         if q.locator('#journeyToggle').get_attribute('aria-expanded')=='false':q.locator('#journeyToggle').click()
         q.locator('#huntRoute').click();assert q.locator('[data-hunt-sector]').count()==4;assert q.locator('#dialogBody').evaluate('e=>e.scrollWidth<=e.clientWidth+1');q.locator('#closePanel').click()
         q.locator('#returnLobby').click();q.reload();q.wait_for_function('typeof __mareDiagnostics==="function"');saved=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
@@ -49,7 +50,7 @@ with sync_playwright() as p:
     q.clock.run_for(100);q.screenshot(path=str(OUT/'chegada.png'))
     for sector in ['vigilia','docas','catacumbas','bastiao']:
         route(q,sector);q.screenshot(path=str(OUT/(sector+'.png')))
-    assert any(m['type']=='boss' and m['level']==20 for m in state(q)['mobs']),state(q)
+    assert any(m['type']=='boss' and m['level']==10 for m in state(q)['mobs']),state(q)
     warned=False
     for _ in range(100):
         q.clock.run_for(200)
@@ -62,7 +63,7 @@ with sync_playwright() as p:
     q.locator('#huntRoute').click();button=q.locator('[data-hunt-first=swamp]');assert button.is_enabled()
     q.evaluate('()=>{window.realSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw Error("quota")}}');button.click();assert not state(q)['hunt']['progress']['areas']['swamp']['firstRewardClaimed']
     q.evaluate('()=>{Storage.prototype.setItem=window.realSet}');button.click();assert button.is_disabled();q.locator('#closePanel').click();q.locator('#returnLobby').click();q.reload();q.wait_for_function('typeof __mareDiagnostics==="function"')
-    dev=json.loads(q.evaluate("localStorage.getItem('mare-partida-dev-save-v1')"));prizes=[i for i in dev['inventory'] if i.get('origin')=='Primeira vitória · Cidade das Conchas'];assert len(prizes)==1 and prizes[0]['rarity']=='epic' and prizes[0]['level']==4
+    dev=json.loads(q.evaluate("localStorage.getItem('mare-partida-dev-save-v1')"));prizes=[i for i in dev['inventory'] if i.get('origin')=='Primeira vitória · Cidade das Conchas'];assert len(prizes)==1 and prizes[0]['rarity']=='epic' and prizes[0]['level']==2
     assert dev['hunts']['areas']['swamp']['firstRewardClaimed'];normal=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));assert normal['hunts']['areas']['swamp']['bosses']==0
     print('Real sector walking, boss warning/victory, reward rollback/single claim/reload and DEV isolation passed',flush=True)
     # Compare the published compositor at chunk boundaries, independently of camera position.
@@ -76,4 +77,4 @@ with sync_playwright() as p:
     for name,x,y in [('litoral',128,1376),('ruas',512,1056),('bastiao-terreno',864,480)]:
         q.locator('#map-review').evaluate('''(e,p)=>{e.width=768;e.height=512;const c=e.getContext('2d');c.imageSmoothingEnabled=false;c.scale(2,2);c.translate(-p[0],-p[1]);MareConchasRenderer.ground(c,{x:p[0],y:p[1]},384,256,0,true);MareConchas.props.slice().sort((a,b)=>a.y-b.y).forEach(p=>MareConchasRenderer.prop(c,p))}''',[x,y])
         q.locator('#map-review').screenshot(path=str(OUT/(name+'-2x.png')))
-    (OUT/'results.json').write_text(json.dumps({'errors':errors,'entry_level':11,'map':[32,32],'browser_cases':5,'technical':technical},indent=2),encoding='utf-8');c.close();b.close();print('Terrain, camera seams, animated water and reduced motion:',technical,flush=True)
+    (OUT/'results.json').write_text(json.dumps({'errors':errors,'entry_level':6,'map':[32,32],'browser_cases':5,'technical':technical},indent=2),encoding='utf-8');c.close();b.close();print('Terrain, camera seams, animated water and reduced motion:',technical,flush=True)

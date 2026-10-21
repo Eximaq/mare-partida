@@ -42,6 +42,10 @@ Os oito frames frontais foram efetivamente desenhados durante movimentação no 
 
 Duas execuções concorrentes tiveram timeout no servidor de desenvolvimento; foram repetidas e passaram em servidor estático isolado. O teste de cache também detectou um `dist` anterior à sincronização de `main`; reconstruir o pacote resolveu a divergência de recursos. Nenhum teste foi afrouxado nem houve alteração de gameplay para contornar essas falhas de ambiente.
 
+O primeiro CI do PR passou em Node e Paper Doll, mas revelou expectativas antigas nos testes de mapas, anteriores ao rebalanceamento `aaec010`. Foram atualizados somente os valores de entrada, nível de chefe e tier de recompensa nos testes: Dawn 1–5/chefe5, Conchas 6–10/chefe10. Isso corresponde ao contrato já publicado em `docs/ARQUIPELAGO-REGIOES.md` e aos testes Node da `main`; não muda progressão nem recompensas do jogo. Os ensaios continuam exigindo bloqueio abaixo do nível mínimo, vitória real, recompensa única, rollback, navegação, terreno e saves preservados.
+
+`conchas_browser.py` e `dawn_manual_browser.py` foram repetidos localmente e passaram: cinco resoluções cada, rotas reais, avisos/vitória dos chefes, recompensa única com rollback e reload, isolamento DEV e validação do terreno. Conchas teve zero erros de emendas/câmera/cobertura; Dawn preservou 8.380.416 pixels nativos comparados, com zero erros de origem/câmera/cobertura e oclusão frontal correta.
+
 ## Próximos lotes e assets ausentes
 
 Para completar Idle/Walk/Attack do conjunto mínimo, ainda faltam **24 poses de caminhada** (oito em cada uma das três direções restantes) e **32 poses de ataque com espada** (oito em cada direção). Isso corresponde a 56 frames por camada de corpo/cabelo/roupa, ou 168 frames anatômicos/vestuário. As quatro fontes de espada Idle existentes poderão ser reaproveitadas onde o gesto permitir, mas os 56 encaixes ainda precisam ser medidos sobre movimentos reais; golpes podem exigir novas vistas ou poses da lâmina.
