@@ -47,7 +47,9 @@ with sync_playwright() as p:
  state=q.evaluate('__paperDollWorldReview');assert all('idle/'+d in state['draws'] for d in ['south','north','west','east']),state
  assert all('walk/'+d in state['draws'] for d in expected_walk),state
  for d in expected_walk:assert sorted(state['draws']['walk/'+d])==list(range(8)),state
- assert any(k.startswith('walk/') for k in state['fallbacks']),state
+ missing_walk=set(['south','north','west','east'])-set(expected_walk)
+ actual_walk_fallbacks={k.split('/')[1] for k in state['fallbacks'] if k.startswith('walk/')}
+ assert actual_walk_fallbacks==missing_walk,state
  q.screenshot(path=str(OUT/'world-modular-review-idle.png'))
  baseline=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
  assert not any('paper' in key.lower() or 'appearance' in key.lower() for key in baseline)

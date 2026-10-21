@@ -1,0 +1,46 @@
+{
+  "tool": "MCP pixelart_workbench",
+  "source_image_id": "30bee7e9-fcd7-46ef-9f03-5a374d24acfc",
+  "image_id": "5aaedd90-8e80-408f-91d8-1e7778cdf296",
+  "status": "completed",
+  "pricing": "Tool describes exact edits as free for subscribers; per-call usage is not exposed",
+  "source_file": "hair-west-raw.png",
+  "output_file": "hair-west-clean.png",
+  "source_sha256": "e6eed580473fae670d8b3bb964f79165f42493f2cb31a7a716cc7082a744eedb",
+  "output_sha256": "a5d919bdd105b32cdfef39647d944e9780aa6a6ee9490cf5d8d0c458c2f80657",
+  "changed_pixels": 2,
+  "changes": [
+    {
+      "operation": "patch_pixels",
+      "layer": "image",
+      "frames": [
+        1
+      ],
+      "pixels": [
+        [
+          118,
+          20,
+          "#000102ff",
+          "#00000000"
+        ],
+        [
+          214,
+          20,
+          "#050301ff",
+          "#00000000"
+        ]
+      ],
+      "reason": "Remove the two inspected detached stray pixels beside the neck in original poses4 and7. Preserve every other pixel and all eight poses."
+    }
+  ],
+  "verification": "Only the two guarded pixels became transparent. Every other decoded RGBA pixel is identical. Original raw output and gallery image untouched.",
+  "parameters": {
+    "argv": [
+      "edit",
+      "30bee7e9-fcd7-46ef-9f03-5a374d24acfc",
+      "--changes",
+      "[{\"operation\":\"patch_pixels\",\"layer\":\"image\",\"frames\":[1],\"pixels\":[[118,20,\"#000102ff\",\"#00000000\"],[214,20,\"#050301ff\",\"#00000000\"]],\"reason\":\"Remove the two inspected detached stray pixels beside the neck in original poses4 and7. Preserve every other pixel and all eight poses.\"}]"
+    ],
+    "mode": "low"
+  }
+}

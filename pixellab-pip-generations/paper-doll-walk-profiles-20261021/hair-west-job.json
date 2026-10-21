@@ -1,0 +1,30 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "7cc73a52-1319-4cc3-a91d-5df7ceda4cda",
+  "asset_id": "52385f82-0148-5ad8-80e2-9f9a56fc53ca",
+  "status": "completed",
+  "estimated_generations": 9,
+  "parameters": {
+    "image_url": "body-west-compact.png",
+    "mask_image_url": "hair-west-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 607822274,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 64
+    },
+    "context_image": {
+      "url": "look-west-context.png",
+      "usage_description": "The left256x64 contains eight original west-facing walking bodies in their original order, one native32x64 cell each. The right64x64 guides only the existing short black hairstyle and native pixel scale; preserve each moving head pose."
+    },
+    "description": "Add short tousled black hair fitted to the scalp of ALL EIGHT west-facing walking figures in this single row. Match the reference hairstyle, outline, shading and native pixel scale. Follow every head pose and preserve the visible left-facing face and ear. Preserve every protected body, neck, arm, hand, shorts, leg and foot pixel, original frame order and transparency. No bald cells, duplicate head, bandana, clothing, weapon or detached hair."
+  },
+  "reported_usage": {
+    "generations": 9
+  },
+  "raw_sha256": "e6eed580473fae670d8b3bb964f79165f42493f2cb31a7a716cc7082a744eedb"
+}

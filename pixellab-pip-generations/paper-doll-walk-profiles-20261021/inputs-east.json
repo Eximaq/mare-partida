@@ -1,0 +1,37 @@
+{
+  "cell_size": [
+    32,
+    64
+  ],
+  "atlas": [
+    256,
+    64
+  ],
+  "crop": [
+    16,
+    0,
+    48,
+    64
+  ],
+  "fixed_padding": [
+    26,
+    10
+  ],
+  "head_tops": [
+    10,
+    10,
+    11,
+    11,
+    10,
+    10,
+    10,
+    11
+  ],
+  "files": {
+    "body-east-compact.png": "c4ecdfca66aca868119aa1a58a6135c599e67899519e1855fa21290f4f51831d",
+    "look-east-reference.png": "14e3683f53e95205c5387070e2e632f24690beb29086ba8d4c7de36ed1025912",
+    "look-east-context.png": "15616cf66f5e5e3c165bfc41815b20a014e2fd5fa3f0ac53346fd39d66addfa9",
+    "hair-east-mask.png": "7a2f0f31c99476722c271aee7f919fb7dfd8ff3d996629476a947ba6193e39bb",
+    "outfit-east-mask.png": "1f2f13da0704d5f3da5fe2b15618b6d2a1835bdd8a0abf6a10f078ab3dabf2df"
+  }
+}

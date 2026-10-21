@@ -1,0 +1,24 @@
+{
+  "base_commit": "543c92a",
+  "prior_conservative_generations": 112,
+  "chain_ceiling": 38,
+  "no_automatic_retries": true,
+  "source_sha256": {
+    "body-west-input.png": "1036ca6392a64207f689381641e3b3b06bdbfe8033b2b094fd9e6c4e5c99498e",
+    "body-east-input.png": "8cbd072cd196451503deefe3e334bdf4e85896f831fbafe3874baa20d5956c92"
+  },
+  "inpaint_seed": 607822274,
+  "planned_calls": [
+    "body-west",
+    "hair-west",
+    "outfit-west",
+    "body-east",
+    "hair-east",
+    "outfit-east"
+  ],
+  "paid_routes": [
+    "MCP animate_image_pixminimax",
+    "MCP inpaint_image_pro_flash"
+  ],
+  "production_enabled": false
+}

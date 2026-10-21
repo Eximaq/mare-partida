@@ -6,7 +6,7 @@ ROOT=Path(__file__).resolve().parents[1]
 BASE=os.environ.get('MARE_TEST_URL','http://127.0.0.1:8123/')
 REL=os.environ.get('MARE_WALK_REVIEW_PACK','pixellab-pip-generations/paper-doll-walk-fit-20261021/')
 WALK_DIRS=json.loads((ROOT/REL/'review-pack.json').read_text())['coverage']['walk']
-PACK_KEY={'paper-doll-north-finish-20261021':'walk-north-complete','paper-doll-walk-north-20261021':'walk-north'}.get(Path(REL).name,'walk-south')
+PACK_KEY={'paper-doll-walk-profiles-20261021':'walk-profiles','paper-doll-north-finish-20261021':'walk-north-complete','paper-doll-walk-north-20261021':'walk-north'}.get(Path(REL).name,'walk-south')
 OUT=ROOT/'docs/evidence-paper-doll';OUT.mkdir(exist_ok=True)
 EXPECTED='''async ({action,direction,frame,hidden=[]})=>{
  const data=await(await fetch('review-pack.json')).json(),row=data.coverage[action].indexOf(direction),c=document.createElement('canvas');c.width=c.height=84;const ctx=c.getContext('2d');
@@ -51,7 +51,7 @@ with sync_playwright() as p,tempfile.TemporaryDirectory() as temporary:
   for frame in range(8):
    q.locator('#frame').fill(str(frame));s=q.evaluate('__paperDollInspector.state()')
    assert s['mode']=='draft' and s['readyDirections']==[direction] and not s['missing'],s
-   transforms=json.loads(q.locator('#transforms').text_content());w=next(x for x in transforms if x['slot']=='weapon');assert w['zIndex']==10
+   transforms=json.loads(q.locator('#transforms').text_content());w=next(x for x in transforms if x['slot']=='weapon');assert w['zIndex']==(80 if direction=='east' or (PACK_KEY=='walk-profiles' and direction=='west') else 10)
  q.locator('#direction').select_option('south')
  # Per-animation eight-frame socket editor/export must not mutate four-frame Idle.
  q.locator('#attachmentPanel > summary').click();q.locator('#frame').fill('7')

@@ -1,0 +1,34 @@
+{
+  "tool": "MCP animate_image_pixminimax",
+  "job_id": "f399876c-1027-47f6-ba14-d91adb604d75",
+  "asset_id": "a0d2416c-8d33-5780-903d-7d468d332722",
+  "status": "completed",
+  "estimated_generations": 1,
+  "reported_usage": {
+    "generations": 1
+  },
+  "usage_status": "getter confirmed charged1 generation",
+  "parameters": {
+    "first_frame_url": "body-east-input.png",
+    "description": "Start walking in place toward east on the first frame. Alternate natural steps and a small counter-swing of the arms through one complete walking cycle. Keep the right hand in a relaxed low sword-carry guard beside the hip. Maintain the right-facing profile and fixed camera. No turning or travelling across the canvas.",
+    "direction": "east",
+    "view": "high top-down",
+    "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+    "initial_pose": "standing in right-facing profile, feet planted and arms relaxed beside the hips",
+    "enhance_prompt": false,
+    "frame_count": 8,
+    "no_background": true
+  },
+  "sha256": {
+    "body-east-raw-00.png": "8cbd072cd196451503deefe3e334bdf4e85896f831fbafe3874baa20d5956c92",
+    "body-east-raw-01.png": "ba2193ff019614bb856dec035aae291fd9e6ca4c2673825bc3f01f70a68ac4dd",
+    "body-east-raw-02.png": "bfe62c45f2b744bdaf8bff0ee0e5aba878e2cf5dcdb9f36f6a527a87fbec020f",
+    "body-east-raw-03.png": "5b5f64df96df835febdb5a2f74980cc702b12e702fbb21c45830bc03c24e048d",
+    "body-east-raw-04.png": "d3d70c188706b3b9dac50a593809a40534d60de31b43b507b0f582302c5826b3",
+    "body-east-raw-05.png": "df125828da17e98fc4ae6067d9d3cfe727a8ccb050ac9888e2e645cc4a4ef24b",
+    "body-east-raw-06.png": "deb5de29c26e36072fb841283da74a0e41a44f5b213f5d6a88e51471116913c3",
+    "body-east-raw-07.png": "210c5cfeaec00e1c29fef8a0e1cf1b1a798d416cb5e1f4c1bcb537e4ee7b83a0",
+    "body-east-raw-08.png": "2adbc2db841960d123e17a335f79c6638f36f970b200b3ad8e2bdb85faaed687"
+  },
+  "input_echo_visible_match": true
+}

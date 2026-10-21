@@ -1,0 +1,337 @@
+{
+  "passed": true,
+  "coverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-sword": []
+  },
+  "frames_per_walk": 8,
+  "native_rig": [
+    84,
+    84
+  ],
+  "pivot": [
+    42,
+    65
+  ],
+  "recorded_sockets": [
+    {
+      "direction": "west",
+      "frame": 0,
+      "socket": {
+        "x": 38,
+        "y": 47
+      },
+      "contact_pixels": 4,
+      "body_sha256": "343d68882e1535fe92e539da6b278e61f788d7606a6835abf440f44d5b172eee",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 1,
+      "socket": {
+        "x": 37,
+        "y": 45
+      },
+      "contact_pixels": 4,
+      "body_sha256": "8396f993b887a7df206292b4aefb56a2a2afa56cfdf1c435e2301ccf8bf69007",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 2,
+      "socket": {
+        "x": 38,
+        "y": 47
+      },
+      "contact_pixels": 4,
+      "body_sha256": "b1472683543f695fadfcced3c6eec45e048ffa1e146da052af01b2bbd7255fb9",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 3,
+      "socket": {
+        "x": 42,
+        "y": 49
+      },
+      "contact_pixels": 4,
+      "body_sha256": "6ba30f940104812a9329f00fab0d29e9e7002d7cfb2f8bff2d2da41f7cf56805",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 4,
+      "socket": {
+        "x": 45,
+        "y": 50
+      },
+      "contact_pixels": 4,
+      "body_sha256": "a5a6b4281c800ac6c98cf9841c61cd9cefd58c5e10ea9dd28627992d8b1d07c2",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 5,
+      "socket": {
+        "x": 47,
+        "y": 50
+      },
+      "contact_pixels": 4,
+      "body_sha256": "99f4e41b5102c80f6be9ea752e01e2213109ed8def3feea1ee11c4a38f399088",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 6,
+      "socket": {
+        "x": 47,
+        "y": 50
+      },
+      "contact_pixels": 1,
+      "body_sha256": "c3203b7ab1419a4b75e2af7dfbd6c6de5aab5120e2aedd896cc41d89fb5a249a",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 7,
+      "socket": {
+        "x": 44,
+        "y": 48
+      },
+      "contact_pixels": 4,
+      "body_sha256": "310c9dde2b83b89bcbff0531e473ec14462dd8c482625046df65a5c745fc415a",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 0,
+      "socket": {
+        "x": 42,
+        "y": 47
+      },
+      "contact_pixels": 6,
+      "body_sha256": "ba2193ff019614bb856dec035aae291fd9e6ca4c2673825bc3f01f70a68ac4dd",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 1,
+      "socket": {
+        "x": 47,
+        "y": 47
+      },
+      "contact_pixels": 6,
+      "body_sha256": "bfe62c45f2b744bdaf8bff0ee0e5aba878e2cf5dcdb9f36f6a527a87fbec020f",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 2,
+      "socket": {
+        "x": 51,
+        "y": 46
+      },
+      "contact_pixels": 6,
+      "body_sha256": "5b5f64df96df835febdb5a2f74980cc702b12e702fbb21c45830bc03c24e048d",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 3,
+      "socket": {
+        "x": 50,
+        "y": 47
+      },
+      "contact_pixels": 6,
+      "body_sha256": "d3d70c188706b3b9dac50a593809a40534d60de31b43b507b0f582302c5826b3",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 4,
+      "socket": {
+        "x": 45,
+        "y": 47
+      },
+      "contact_pixels": 6,
+      "body_sha256": "df125828da17e98fc4ae6067d9d3cfe727a8ccb050ac9888e2e645cc4a4ef24b",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 5,
+      "socket": {
+        "x": 39,
+        "y": 49
+      },
+      "contact_pixels": 2,
+      "body_sha256": "deb5de29c26e36072fb841283da74a0e41a44f5b213f5d6a88e51471116913c3",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 6,
+      "socket": {
+        "x": 36,
+        "y": 49
+      },
+      "contact_pixels": 4,
+      "body_sha256": "210c5cfeaec00e1c29fef8a0e1cf1b1a798d416cb5e1f4c1bcb537e4ee7b83a0",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 7,
+      "socket": {
+        "x": 33,
+        "y": 49
+      },
+      "contact_pixels": 3,
+      "body_sha256": "2adbc2db841960d123e17a335f79c6638f36f970b200b3ad8e2bdb85faaed687",
+      "body_padding": [
+        10,
+        10
+      ],
+      "layer_padding": [
+        26,
+        10
+      ]
+    }
+  ],
+  "gif_palette_colors": {
+    "west": 73,
+    "east": 76,
+    "combined": {
+      "omitted": "Exact palette exceeds255; separate direction GIFs preserve original colours",
+      "colours": 266
+    }
+  },
+  "gif_durations_ms": [
+    120,
+    130,
+    120,
+    130,
+    120,
+    130,
+    120,
+    130
+  ],
+  "full_character_artwork_approved": false,
+  "production_enabled": false
+}

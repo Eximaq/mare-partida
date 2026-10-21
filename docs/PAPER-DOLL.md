@@ -4,9 +4,9 @@
 
 O [pacote de revisão multidirecional](PAPER-DOLL-EXPANSAO.md) já contém corpo, cabelo, roupa e espada para as16 poses de Idle nas quatro direções. A arma tem fonte e âncora próprias por vista; a bancada abre o pacote diretamente pelo link `?pack=expansion-idle` e permite editar/exportar sockets por frame. A arte permanece em inspeção (`approved:false`), fora do catálogo de produção. O jogo mantém seus sprites atuais.
 
-Walk/south e north possuem oito poses reais com as quatro peças para inspeção. O [estudo norte inicial](PAPER-DOLL-CAMINHADA-NORTE.md) preserva a falha de cabelo e o fallback como histórico. A [continuação norte](PAPER-DOLL-NORTE-COMPLETO.md) reutiliza os quatro cabelos válidos, corrige os quatro restantes e acrescenta roupa por pose. O pacote `walk-north-complete` abre na bancada; peças continuam `approved:false`. Há pequenas diferenças na silhueta do cabelo e nenhuma aprovação artística do personagem completo.
+A [expansão lateral](PAPER-DOLL-CAMINHADAS-LATERAIS.md) completa a locomoção para inspeção:16 poses Idle e32 Walk, nas quatro direções, com corpo/cabelo/roupa e espadas já existentes. Cada lateral teve animação própria e camadas por pose, sem espelhamento. O pacote `walk-profiles` abre diretamente na bancada; peças continuam `approved:false` e a produção mantém seus personagens atuais. Proporções, cabelo e manejo de arma entre as vistas ainda fazem parte da aprovação artística completa.
 
-Para o mínimo do Espadachim faltam48 frames por camada de corpo/cabelo/roupa (16 de Walk nos perfis e32 de Attack):144 frames anatômicos/vestuário, mais48 encaixes da arma e imagens específicas de lâmina quando necessárias. As estimativas de320 frames abaixo registram o levantamento inicial, anterior aos pilotos e à exceção de arma rígida. A Fase1 completa continua pendente.
+Os estudos [norte inicial](PAPER-DOLL-CAMINHADA-NORTE.md) e [norte concluído](PAPER-DOLL-NORTE-COMPLETO.md) permanecem preservados como histórico. Para o mínimo do Espadachim faltam32 frames por camada de corpo/cabelo/roupa para Attack nas quatro direções:96 frames anatômicos/vestuário, mais32 encaixes de arma e imagens específicas de lâmina quando necessárias. As estimativas de320 abaixo registram o levantamento inicial, anterior aos pilotos e à exceção de arma rígida. A Fase1 completa continua pendente.
 
 ## Evolução: personagem único (20/10/2026)
 

@@ -1,0 +1,30 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "ed002c97-dc9e-413c-8c74-ee2980c071a5",
+  "asset_id": "757e186b-30c5-5f61-a187-2a48c12def89",
+  "status": "completed",
+  "estimated_generations": 9,
+  "parameters": {
+    "image_url": "body-east-compact.png",
+    "mask_image_url": "hair-east-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 607822274,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 64
+    },
+    "context_image": {
+      "url": "look-east-context.png",
+      "usage_description": "The left256x64 contains eight original east-facing walking bodies in their original order, one native32x64 cell each. The right64x64 guides only the existing short black hairstyle and native pixel scale; preserve each moving head pose."
+    },
+    "description": "Add short tousled black hair fitted to the scalp of ALL EIGHT east-facing walking figures in this single row. Match the reference hairstyle, outline, shading and native pixel scale. Follow every head pose and preserve the visible right-facing face and ear. Preserve every protected body, neck, arm, hand, shorts, leg and foot pixel, original frame order and transparency. No bald cells, duplicate head, bandana, clothing, weapon or detached hair."
+  },
+  "reported_usage": {
+    "generations": 9
+  },
+  "raw_sha256": "2633d28168f2b2c24694b00d32163a90b4bda5f00e7ae2936d7078394b5ef876"
+}

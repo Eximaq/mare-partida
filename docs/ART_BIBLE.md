@@ -1,10 +1,10 @@
 # Referência visual — Maré Partida
 
-## Paper Doll 1.0 — contrato sem arte modular entregue
+## Paper Doll — locomoção modular em inspeção (21/10/2026)
 
-Protótipo técnico de Espadachim com rig84×84/pivô42,65; Idle4/4FPS, Walk8/8FPS e Attack8/12FPS, quatro direções. A célula inclui padding e não redefine a escala dos NPCs ou tiles64. Frames de corpo, cabelo, roupa e arma precisam compartilhar a mesma pose; os sprites completos existentes não foram separados artificialmente.
+Rig84×84/pivô42,65; Idle4/4FPS e Walk8/8FPS nas quatro direções. As48 poses reais de corpo/cabelo/roupa por camada são alinhadas por padding fixo, sem redimensionar a densidade de pixels. Espadas rígidas usam fontes e sockets próprios por vista e fase. Referência visual: cabelo preto, camisa clara e colete azul neutros, sem símbolos de facção. O conjunto ainda não tem aprovação artística completa nem ativação em produção.
 
-Faltam320 frames modulares reais/12 folhas. A bancada exibe referência e fallback, sem alegar aprovação artística; ensaios de composição com blocos de cor são exclusivamente fixtures de teste fora do jogo. [Contrato, fontes e limites](PAPER-DOLL.md). Nenhuma geração ou repintura foi feita nesta fase.
+Faltam96 frames de corpo/cabelo/roupa do ataque do Espadachim, mais encaixes/poses de arma. Os sprites originais não foram separados artificialmente. Há dois pixels soltos de cabelo apagados numa nova cópia pelo PixelLab Workbench, com guardas exatas, hashes e preservação de todos os demais pixels; nenhuma pose foi pintada localmente. [Contrato](PAPER-DOLL.md) · [Procedência e limites](PAPER-DOLL-CAMINHADAS-LATERAIS.md).
 
 ## Ilha Dawn manual — 20/10/2026
 

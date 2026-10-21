@@ -30,6 +30,8 @@ Continuação Paper Doll: a [caminhada frontal modular](pixellab-pip-generations
 
 A [continuação da caminhada norte](pixellab-pip-generations/paper-doll-north-finish-20261021/preview.html) reúne as oito poses de costas com as quatro camadas; o [GIF transparente](pixellab-pip-generations/paper-doll-north-finish-20261021/walk-north.gif) abre no celular. Idle cobre quatro direções e Walk frente/costas; perfis e ataques seguem no fallback. Arte ainda em inspeção, sem ativação em produção. [Fontes, limitações, custo18 e validação](docs/PAPER-DOLL-NORTE-COMPLETO.md).
 
+A [expansão lateral](pixellab-pip-generations/paper-doll-walk-profiles-20261021/preview.html) acrescenta oito passos próprios para cada perfil: Idle e Walk agora cobrem as quatro direções com corpo, cabelo, roupa e espada separados. A [bancada](tools/paper-doll-inspector/index.html?pack=walk-profiles) abre o pacote completo de locomoção; ataques modulares e aprovação artística final seguem pendentes. [Fontes, custo38, correção de dois pixels no PixelLab e validação](docs/PAPER-DOLL-CAMINHADAS-LATERAIS.md).
+
 ## Interface UI/UX 2.0
 
 A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.
