@@ -12,6 +12,9 @@ on:
       - 'tools/build_pages.py'
       - 'docs/PAPER-DOLL.md'
       - 'tests/paper_doll_browser.py'
+      - 'tests/paper_doll_partial_browser.py'
+      - 'tests/paper_doll_idle_browser.py'
+      - 'pixellab-pip-generations/paper-doll-human-idle-south-20261021/**'
       - 'tests/universal_character_browser.py'
       - 'tests/class_combat_v2_browser.py'
       - '.github/workflows/paper-doll-visual.yml'
@@ -39,6 +42,8 @@ jobs:
           python -m http.server 8123 --bind 127.0.0.1 > /tmp/paper-doll-server.log 2>&1 &
           sleep 2
           python tests/paper_doll_browser.py
+          python tests/paper_doll_partial_browser.py
+          python tests/paper_doll_idle_browser.py
           python tests/universal_character_browser.py
           python tests/class_combat_v2_browser.py
       - name: Capturas e medições para revisão

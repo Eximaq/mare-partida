@@ -1,0 +1,17 @@
+{
+  "job_id": "de56a8ef-6089-4ec8-ba69-5aa83079fee1",
+  "tool": "mcp__pixellab__animate_image",
+  "status": "completed",
+  "request": {
+    "action": "Breathe gently in place while facing directly south toward the viewer. Use a subtle chest rise and small shoulder relaxation, with feet planted on the same ground line. Keep the face visible and the arms relaxed at the sides. Maintain the same facing and body proportions throughout. No turning, walking or gestures.",
+    "first_frame_url": "body-input-64.png",
+    "frame_count": 4,
+    "no_background": true
+  },
+  "reported_cost": 1,
+  "approved_budget": 27,
+  "retries": false,
+  "reported_usage": {
+    "generations": 1
+  }
+}

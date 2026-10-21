@@ -14,6 +14,8 @@ Base humana comum para as sete classes e quatro facções, com categorias de ata
 
 O conjunto animado modular ainda está ausente: o jogo mantém os personagens completos por fallback, incluindo o Bento aprovado. A [primeira prévia estática](pixellab-pip-generations/paper-doll-human-pilot-20261020/preview.html) permite alternar cabelo, roupa e espada em uma pose frontal, sem alteração de save. Foram cobradas5 gerações nesse piloto; resultados brutos e extrações de inspeção estão documentados no [relatório](docs/PAPER-DOLL-PILOTO.md). [Contrato, auditoria, assets faltantes e testes](docs/PAPER-DOLL.md) · [Análise anterior preservada](docs/PAPER-DOLL-VIABILIDADE.md). O lote das seis classes continua pausado.
 
+O [piloto Idle frontal](pixellab-pip-generations/paper-doll-human-idle-south-20261021/preview.html) adiciona inspeção de quatro frames e cobertura parcial por direção. O encaixe das peças foi **reprovado**, permanece como diagnóstico e não está ativo no jogo. [Relatório e custos](docs/PAPER-DOLL-IDLE-SUL.md).
+
 ## Interface UI/UX 2.0
 
 A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.

@@ -81,5 +81,20 @@ for name in pilot_files:
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, destination)
 shutil.copy2(ROOT/'docs/PAPER-DOLL-PILOTO.md', OUT/'docs/PAPER-DOLL-PILOTO.md')
+idle_relative = Path('pixellab-pip-generations/paper-doll-human-idle-south-20261021')
+idle_files = ['preview.html', 'review-pack.json', 'manifest.json', 'human-idle-south.blueprint.json',
+              'body-input-64.png', 'look-reference-64.png', 'review-sheet.png',
+              'body-idle-preview.gif', 'outfit-idle-preview.gif', 'draft-idle-preview.gif']
+idle_files += [f'{slot}-idle-draft.png' for slot in ['body', 'hair', 'outfit', 'weapon']]
+idle_files += [f'{kind}-raw-{index:02}.png' for kind in ['body', 'outfit'] for index in range(5)]
+idle_files += [f'draft-composite-{index:02}.png' for index in range(1, 5)]
+for name in idle_files:
+    source = ROOT/idle_relative/name
+    if not source.is_file():
+        raise SystemExit(f'Arquivo do piloto Idle ausente: {name}')
+    destination = OUT/idle_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-IDLE-SUL.md', OUT/'docs/PAPER-DOLL-IDLE-SUL.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

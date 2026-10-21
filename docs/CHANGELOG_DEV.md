@@ -1,3 +1,9 @@
+## 21/10/2026 — Idle frontal Paper Doll: cobertura parcial e inspeção reprovada
+
+Branch `feature/paper-doll-idle-sul`, base `05e935e`. Publicação anterior PR44 concluída e conferida no Pages. Com aprovação de até27 gerações adicionais, foram cobradas11 em duas chamadas MCP: corpo Idle/sul e transferência de peças;5+5 PNGs originais preservados. Encaixe reprovado: braços/roupa e contato mão/espada não acompanham a base. Nenhuma arte nova ativada, retry ou pintura corretiva. Prévia comparativa animada e pacote local de quatro camadas, todos explicitamente não aprovados.
+
+Compositor aceita linhas de direções parciais e mantém fallback atômico nas ausentes; bancada informa cobertura parcial. Testes Node, build, Chromium desktop/mobile, pacotes reais/geométricos,28 perfis, sete classes/Haki/Zoan e saves. O lote não conclui a validação artística modular. [Relatório, custos e pendências](PAPER-DOLL-IDLE-SUL.md). Sem merge automático.
+
 ## 21/10/2026 — Publicação da prévia estática Paper Doll
 
 Publicação autorizada pelo proprietário. `tools/build_pages.py` inclui por allowlist a prévia de uma pose frontal e os recursos que ela usa; README e relatório apontam para a página. Não ativa peças no runtime, não altera saves e não publica a pasta de gerações inteira. Validação: build Pages, teste Node Paper Doll, teste Playwright da prévia no pacote estático e cache/saves.

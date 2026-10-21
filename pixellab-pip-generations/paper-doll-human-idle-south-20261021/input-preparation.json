@@ -1,0 +1,47 @@
+{
+  "status": "inputs only; no animation calls made",
+  "records": [
+    {
+      "source": "pixellab-pip-generations/paper-doll-human-pilot-20261020/body-face-fit-draft.png",
+      "source_sha256": "0ea6a318f47a5179e11d17286151487cbdf1e7e74ea1f33b1c0b9e7f28fd309e",
+      "output": "body-input-64.png",
+      "crop": [
+        10,
+        13,
+        74,
+        77
+      ],
+      "native_size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        52
+      ],
+      "visible_pixels_preserved": true,
+      "resize": false
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-human-pilot-20261020/combined-masked-inspection.png",
+      "source_sha256": "a116684c459739e91fafc478db9ca3ec9de53d3bec6780085e6249e58f8d8939",
+      "output": "look-reference-64.png",
+      "crop": [
+        10,
+        13,
+        74,
+        77
+      ],
+      "native_size": [
+        64,
+        64
+      ],
+      "pivot": [
+        32,
+        52
+      ],
+      "visible_pixels_preserved": true,
+      "resize": false
+    }
+  ]
+}

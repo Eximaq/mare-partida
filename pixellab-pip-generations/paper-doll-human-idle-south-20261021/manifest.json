@@ -1,0 +1,108 @@
+{
+  "status": "completed generation; rejected modular fit; no production activation",
+  "scope": "Idle south only; four generated playback frames at 4FPS",
+  "approval": {
+    "additional_generation_ceiling": 27,
+    "no_retries": true,
+    "exclude_echo_from_playback": true,
+    "per_frame_masks_and_transparent_padding": true
+  },
+  "calls": [
+    {
+      "tool": "MCP animate_image",
+      "job_id": "de56a8ef-6089-4ec8-ba69-5aa83079fee1",
+      "asset_id": "bcc165b3-30a4-53b9-8877-54fe13b878bb",
+      "status": "completed",
+      "parameters": {
+        "action": "Breathe gently in place while facing directly south toward the viewer. Use a subtle chest rise and small shoulder relaxation, with feet planted on the same ground line. Keep the face visible and the arms relaxed at the sides. Maintain the same facing and body proportions throughout. No turning, walking or gestures.",
+        "first_frame_url": "body-input-64.png",
+        "frame_count": 4,
+        "no_background": true
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      },
+      "pt": "Respirar discretamente de frente, leve peito e ombros, pés no mesmo chão, braços relaxados e rosto visível; sem virar, caminhar ou gesticular.",
+      "outputs": [
+        "body-raw-00.png",
+        "body-raw-01.png",
+        "body-raw-02.png",
+        "body-raw-03.png",
+        "body-raw-04.png"
+      ],
+      "verification": "South-facing sequence and fixed ground line accepted for dependent transfer inspection only; final art approval not granted."
+    },
+    {
+      "tool": "MCP transfer_outfit",
+      "job_id": "516270b5-c0fd-4a55-9608-a1b18a7a3dda",
+      "asset_id": "c6a8b6d6-ce9b-55b7-b7b0-fece1c20cc32",
+      "status": "completed",
+      "parameters": {
+        "frame_urls": [
+          "body-raw-00.png",
+          "body-raw-01.png",
+          "body-raw-02.png",
+          "body-raw-03.png",
+          "body-raw-04.png"
+        ],
+        "reference_image_url": "look-reference-64.png",
+        "width": 64,
+        "height": 64,
+        "no_background": true,
+        "additional_instructions": "Keep this south-facing human's body proportions and feet fixed to each input frame. Transfer the reference's short black hair, cream shirt, navy waistcoat and steel sword in the right hand. Keep the face visible, charcoal shorts unchanged and transparent background. Preserve the input frame order and motion."
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 10
+      },
+      "pt": "Transferir cabelo preto, camisa clara, colete azul-marinho e espada mantendo proporções, pés e movimento; preservar rosto, shorts, transparência e ordem.",
+      "outputs": [
+        "outfit-raw-00.png",
+        "outfit-raw-01.png",
+        "outfit-raw-02.png",
+        "outfit-raw-03.png",
+        "outfit-raw-04.png"
+      ],
+      "verification": "Rejected for modular use: replaced body/arm pose and legs; sword fails hand contact in extraction. Drafts preserve original body outside masks, but do not repair fit."
+    }
+  ],
+  "reported_total_charged_generations": 11,
+  "prior_static_pilot_charged_generations": 5,
+  "cumulative_charged_generations": 16,
+  "outputs": "PNG originals, inspection-only atlases, transparent GIFs, review pack and page",
+  "assembly": {
+    "source_order": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "playback": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "native_size": [
+      64,
+      64
+    ],
+    "padding": [
+      10,
+      13
+    ],
+    "frame_size": [
+      84,
+      84
+    ],
+    "pivot": [
+      42,
+      65
+    ],
+    "scale": false,
+    "artwork_approved": false,
+    "notes": "All source pixels preserved in raw files. Masks are inspection guides. No painted repair, offsets, mirror, duplication or ping-pong."
+  }
+}

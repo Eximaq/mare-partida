@@ -30,6 +30,14 @@ Não há customizador de aparência, recoloração, escolha persistente de cabel
 
 ## Estado e limite artístico
 
+### Cobertura parcial por direção (21/10/2026)
+
+O rig continua declarando as quatro direções. Uma peça pode fornecer um subconjunto não vazio delas em `clip.directions`, com uma linha real de PNG por direção declarada. A ordem das linhas segue esse array; direções desconhecidas, duplicadas, folhas com linhas extras e sequências incompatíveis são rejeitadas. Uma pose sem linha retorna `missing-direction` antes de qualquer desenho, preservando o fallback atômico. Não há empréstimo, espelhamento ou duplicação de linhas.
+
+A bancada informa quais direções possuem composição completa (`readyDirections`, modo `partial-draft`), mantendo o sprite original nas demais e em ações ausentes. Isso permite inspecionar lotes pequenos sem aprovar arte nem ativar conjuntos incompletos no jogo. Os testes Node e `tests/paper_doll_partial_browser.py` verificam quatro frames sul, três direções legadas, ação ausente e save intacto com fixtures geométricas explicitamente separadas de arte de personagem.
+
+O [piloto real Idle/sul](PAPER-DOLL-IDLE-SUL.md) consumiu11 gerações autorizadas e entregou quatro frames de inspeção, mas o contato mão/espada e os ombros não passaram. O pacote continua `approved:false`, fora do catálogo do jogo. Essa evolução não conclui o critério artístico da Fase1.
+
 Infraestrutura funcional com fallback, bancada interativa e contrato de assets. **Ainda não existe um conjunto modular real de Espadachim para validação artística.** Nenhum PNG foi gerado, pintado, separado por cores ou convertido em camada artificial. O jogo continua mostrando os personagens originais.
 
 Branch `feature/paper-doll-fase-1`, criada de `origin/main` em `5047eea`, incorpora o checkpoint de animações2.0 (`4ab2348`, preservado por cherry-pick). O PR de checkpoint39 permanece em rascunho; esta fase inclui esse trabalho e não depende de fazer merge nele. Não fazer merge/publicação automática de nenhum dos dois.

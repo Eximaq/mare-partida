@@ -1,0 +1,26 @@
+{
+  "tool": "MCP transfer_outfit",
+  "job_id": "516270b5-c0fd-4a55-9608-a1b18a7a3dda",
+  "asset_id": "c6a8b6d6-ce9b-55b7-b7b0-fece1c20cc32",
+  "status": "completed",
+  "parameters": {
+    "frame_urls": [
+      "body-raw-00.png",
+      "body-raw-01.png",
+      "body-raw-02.png",
+      "body-raw-03.png",
+      "body-raw-04.png"
+    ],
+    "reference_image_url": "look-reference-64.png",
+    "width": 64,
+    "height": 64,
+    "no_background": true,
+    "additional_instructions": "Keep this south-facing human's body proportions and feet fixed to each input frame. Transfer the reference's short black hair, cream shirt, navy waistcoat and steel sword in the right hand. Keep the face visible, charcoal shorts unchanged and transparent background. Preserve the input frame order and motion."
+  },
+  "estimated_generations": 10,
+  "seed": "omitted",
+  "retry": false,
+  "reported_usage": {
+    "generations": 10
+  }
+}

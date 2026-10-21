@@ -75,7 +75,9 @@
         if(!allowDraft&&p.approved!==true){problem('unapproved-piece');continue;}
         const clip=p.animations?.[pose.animationId];
         if(typeof clip?.url!=='string'||!clip.url){problem('missing-animation');continue;}
-        if(clip.frames!==a.frames||clip.frameWidth!==r.frameWidth||clip.frameHeight!==r.frameHeight||clip.fps!==a.fps||clip.loop!==a.loop||!Array.isArray(clip.directions)||!a.directions.every(d=>clip.directions.includes(d))||new Set(clip.directions).size!==clip.directions.length){problem('incompatible-animation');continue;}
+        if(clip.frames!==a.frames||clip.frameWidth!==r.frameWidth||clip.frameHeight!==r.frameHeight||clip.fps!==a.fps||clip.loop!==a.loop||!Array.isArray(clip.directions)||!clip.directions.length||clip.directions.some(d=>!a.directions.includes(d))||new Set(clip.directions).size!==clip.directions.length){problem('incompatible-animation');continue;}
+        // A production lot may cover only some directions; never borrow another row.
+        if(!clip.directions.includes(direction)){problem('missing-direction');continue;}
         const row=clip.directions.indexOf(direction),overrides=clip.poseOverrides?.[direction]?.[frameIndex]||{},byDirection=clip.directionOverrides?.[direction]||{};
         const pivotX=clip.pivotX??r.pivotX,pivotY=clip.pivotY??r.pivotY;
         const offsetX=overrides.offsetX??byDirection.offsetX??clip.offsetX??0,offsetY=overrides.offsetY??byDirection.offsetY??clip.offsetY??0;

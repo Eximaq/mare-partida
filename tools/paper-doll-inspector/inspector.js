@@ -4,6 +4,7 @@
   const labels={body:'Corpo-base',pants:'Calças',boots:'Botas',outfit:'Roupa / armadura',hair:'Cabelo',accessory:'Acessório',weapon:'Arma'};
   const names={south:'Sul · Frente',north:'Norte · Costas',west:'Oeste · Esquerda',east:'Leste · Direita'};
   const codes={'missing-source':'Fonte modular ausente','missing-piece':'Peça ausente','missing-animation':'Animação ausente','unsupported-pose':'Pose incompatível','incompatible-animation':'Sequência incompatível','incompatible-rig':'Rig incompatível','loading-image':'Carregando PNG','failed-image':'Falha ao carregar PNG','invalid-sheet-size':'Dimensões da folha incorretas','empty-frame':'Frame vazio','unreadable-image':'PNG ilegível','invalid-transform':'Pivô ou offset inválido','unmapped-equipment':'Equipamento sem representação modular','unsupported-character':'Perfil humano não suportado','incompatible-weapon':'Arma incompatível com a categoria de ação','unapproved-piece':'Peça sem aprovação'};
+  codes['missing-direction']='Direção ainda sem frames';
   let runtime=catalog.createRuntime({getImage:MareFactionSprites.image}),rigId=catalog.sharedRig.id,imported=null,objectUrls=[];
   const player={classId:'sword',factionId:'pirate',equipment:{weapon:{def:0}}};
   function poseAnimationId(action=$('animation').value){return runtime.rig(rigId).animations[action]?action:catalog.animationId(player,action);}
@@ -86,9 +87,10 @@
       const reference=catalog.referenceFor(player,animationId);
       board.note.textContent=reference?.animated===false?reference.note+(drawn?' Pacote modular local em inspeção.':' O pacote modular continua pendente.'):!loaded?'Referência ainda não carregada ou indisponível.':drawn?'Frame '+index+' compartilhado · '+plan.layers.length+' camadas. Diferença: '+changed+' pixels; pode incluir mudanças de aparência.':'Fallback do sprite original · '+plan.missing.length+' pendências · '+changed+' pixels de diferença.';
     }
-    const first=plans[0],valid=plans.length>0&&plans.every(p=>p.valid);
+    const first=plans[0],valid=plans.length>0&&plans.every(p=>p.valid),readyDirections=plans.filter(p=>p.valid).map(p=>p.pose.direction);
     $('status').textContent=valid?'Pacote local sincronizado para inspeção. Aprovação artística e integração não concedidas por esta ferramenta.':'Fallback ativo: faltam camadas modulares compatíveis. O personagem original está preservado.';
     $('status').classList.toggle('valid',valid);
+    if(!valid&&readyDirections.length)$('status').textContent='Pacote parcial em inspeção: '+readyDirections.map(d=>names[d]).join(', ')+'. As outras direções usam fallback. Sem aprovação artística.';
     for(const slot of MarePaperDoll.slots){
       const p=runtime.piece(config.pieces[slot]);$('layer-'+slot).textContent=!config.pieces[slot]?'Sem peça opcional':p?.available===false?'Fonte modular ausente':p?.name||config.pieces[slot];
     }
@@ -98,6 +100,8 @@
     $('readout').replaceChildren();detail('Rig / Célula',rig.id+' · '+rig.frameWidth+'×'+rig.frameHeight);detail('Pivô nativo',rig.pivotX+', '+rig.pivotY);const originalMeta=MareFactionSprites.assets[catalog.referenceFor(player,animationId).assetId].meta;detail('Fonte original',originalMeta.frame_size.join('×')+' · Pivô '+originalMeta.anchor.join(', '));detail('Corpo comum',config.pieces.body);detail('Categoria',catalog.categories[catalog.profile(player).category]);detail('Sequência',clip.frames+' frames · '+clip.fps+' FPS');detail('Peça de arma',config.pieces.weapon);detail('Peça de roupa',config.pieces.outfit);detail('Cache',runtime.stats().cacheEntries+' frames · '+runtime.stats().cacheBytes+' bytes');
     const transforms=first?.layers.map(({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex})=>({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex}));$('transforms').textContent=JSON.stringify(transforms||[],null,2);
     lastState={mode:valid?'draft':'fallback',artworkValidated:false,referenceReady,appearance:config,profile:catalog.profile(player),reference:catalog.referenceFor(player,animationId),pose:{animationId:poseAnimationId(animationId),frameIndex:index},differences,missing:[...unique.values()],stats:runtime.stats(),hidden:[...hidden]};
+    lastState.readyDirections=readyDirections;
+    if(!valid&&readyDirections.length)lastState.mode='partial-draft';
   }
   function pause(){playing=false;$('play').textContent='Reproduzir';$('play').setAttribute('aria-pressed','false');}
   for(const id of ['animation','direction','zoom','pivots'])$(id).addEventListener('change',()=>{if(id==='animation'){$('frame').value=0;elapsed=0;pause();}render();});

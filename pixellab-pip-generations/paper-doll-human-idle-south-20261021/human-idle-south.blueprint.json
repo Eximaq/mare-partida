@@ -1,0 +1,47 @@
+[
+  {
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-human-idle-south-20261021",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment_prompt": "pode subir e prosseguir\nAprovo até 27 gerações adicionais",
+    "TASK": {
+      "action": "Verify explicit fresh generation approval; copy source-body-face-fit-draft.png and source-combined-masked-inspection.png without rewriting pixels. Crop transparent margins [10,13,74,77] into body-input-64.png and look-reference-64.png, no resampling; pivot 32,52."
+    }
+  },
+  {
+    "MCP animate_image": {
+      "action": "Breathe gently in place while facing directly south toward the viewer. Use a subtle chest rise and small shoulder relaxation, with feet planted on the same ground line. Keep the face visible and the arms relaxed at the sides. Maintain the same facing and body proportions throughout. No turning, walking or gestures.",
+      "first_frame_url": "body-input-64.png",
+      "frame_count": 4,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": {
+      "action": "Retrieve five original PNGs as body-raw-00.png through body-raw-04.png; inspect facing, feet, face and loop before proceeding. Preserve echo0 separately; user authorized playback only generated1â€“4 at4FPS. If verification fails stop without paid retry."
+    }
+  },
+  {
+    "MCP transfer_outfit": {
+      "frame_urls": [
+        "body-raw-00.png",
+        "body-raw-01.png",
+        "body-raw-02.png",
+        "body-raw-03.png",
+        "body-raw-04.png"
+      ],
+      "reference_image_url": "look-reference-64.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "additional_instructions": "Keep this south-facing human's body proportions and feet fixed to each input frame. Transfer the reference's short black hair, cream shirt, navy waistcoat and steel sword in the right hand. Keep the face visible, charcoal shorts unchanged and transparent background. Preserve the input frame order and motion."
+    }
+  },
+  {
+    "TASK": {
+      "action": "Retrieve five originals as outfit-raw-00.png through outfit-raw-04.png in original order; inspect motion and hand/weapon contacts. Run assemble_review.py to create only authorized mask-extraction drafts and transparent padding10,13 into84px frames, pivot42,65. Record failed fit honestly, no painting/offset repair. Compile transparent GIFs of generated1â€“4, infinite loop, 250ms, disposal2 and verify decoded pixels. Keep artwork unapproved and production fallback."
+    }
+  }
+]
