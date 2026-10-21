@@ -194,11 +194,11 @@
     if(!key||!packs[key])return;
     try{
       $('importStatus').textContent='Carregando prévia incluída no projeto…';
-      const response=await fetch(packs[key]+'review-pack.json');if(!response.ok)throw Error('Manifesto indisponível.');
+      const response=await fetch(packs[key]+'review-pack.json',{cache:'no-store'});if(!response.ok)throw Error('Manifesto indisponível.');
       const raw=await response.text(),data=JSON.parse(raw),names=new Set();
       for(const piece of data.pieces||[])for(const clip of Object.values(piece.animations||{})){names.add(clip.url);for(const source of Object.values(clip.sources||{}))names.add(source.url);}
       if(names.size>64||[...names].some(n=>typeof n!=='string'||!/^[a-z0-9-]+\.png$/.test(n)))throw Error('Caminhos de imagens inválidos.');
-      const files=await Promise.all([...names].map(async name=>{const r=await fetch(packs[key]+name);if(!r.ok)throw Error('PNG indisponível: '+name);return new File([await r.blob()],name,{type:'image/png'});}));
+      const files=await Promise.all([...names].map(async name=>{const r=await fetch(packs[key]+name,{cache:'no-store'});if(!r.ok)throw Error('PNG indisponível: '+name);return new File([await r.blob()],name,{type:'image/png'});}));
       await importFiles([new File([raw],'review-pack.json',{type:'application/json'}),...files]);
     }catch(e){$('importStatus').textContent='Prévia não carregada: '+e.message;}
   }

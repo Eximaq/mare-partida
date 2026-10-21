@@ -153,6 +153,15 @@ for name in expansion_files:
     destination = OUT/expansion_relative/name
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(ROOT/expansion_relative/name, destination)
+expansion_entry = OUT/expansion_relative/'preview.html'
+def version_expansion(match):
+    source = (expansion_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    version = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+    return f'{match.group(1)}{match.group(2)}?v={version}{match.group(3)}'
+expansion_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_expansion,
+                                  expansion_entry.read_text(encoding='utf-8')), encoding='utf-8')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-EXPANSAO.md', OUT/'docs/PAPER-DOLL-EXPANSAO.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

@@ -1,8 +1,10 @@
 'use strict';
 (async()=>{
- const $=id=>document.getElementById(id),data=await(await fetch('review-pack.json')).json(),images=new Map(),hidden=new Set();
+ const $=id=>document.getElementById(id),data=await(await fetch('review-pack.json',{cache:'no-store'})).json(),images=new Map(),hidden=new Set();
  const names=new Set();for(const p of data.pieces)for(const clip of Object.values(p.animations)){names.add(clip.url);for(const source of Object.values(clip.sources||{}))names.add(source.url);}
- await Promise.all([...names].map(async name=>{const im=new Image();im.src=name;await im.decode();images.set(name,im)}));
+ const urls=[];
+ await Promise.all([...names].map(async name=>{const response=await fetch(name,{cache:'no-store'});if(!response.ok)throw Error('PNG indisponível: '+name);const im=new Image(),url=URL.createObjectURL(await response.blob());urls.push(url);im.src=url;await im.decode();images.set(name,im)}));
+ addEventListener('pagehide',()=>urls.forEach(url=>URL.revokeObjectURL(url)),{once:true});
  const runtime=MarePaperDoll.create({getImage:name=>images.get(name)});runtime.registerRig(data.rig);data.pieces.forEach(p=>runtime.registerPiece(p));
  const directions=['south','north','west','east'],labels=['Frente','Costas','Esquerda','Direita'],boards=[];
  directions.forEach((d,i)=>{const section=document.createElement('article');section.className='board';const h=document.createElement('h2');h.textContent=labels[i];section.append(h);const pair=document.createElement('div');pair.className='pair';const canvases=[];for(const label of ['Corpo-base','Paper Doll']){const figure=document.createElement('figure'),canvas=document.createElement('canvas'),caption=document.createElement('figcaption');canvas.width=canvas.height=84;canvas.id=d+'-'+(canvases.length?'full':'body');caption.textContent=label;figure.append(canvas,caption);pair.append(figure);canvases.push(canvas);}section.append(pair);$('boards').append(section);boards.push({d,i,canvases});});

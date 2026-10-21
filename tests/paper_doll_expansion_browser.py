@@ -19,6 +19,9 @@ with sync_playwright() as p:
  q=context.new_page();errors=[];q.on('pageerror',lambda e:errors.append(str(e)))
  q.clock.install();q.goto(BASE+'pixellab-pip-generations/paper-doll-expansion-20261021/preview.html',wait_until='networkidle')
  q.wait_for_function('window.__paperDollExpansion?.().ready')
+ if '/dist/' in BASE:
+  for name in ['paper-doll.js','preview.js']:
+   assert '?v=' in q.locator(f'script[src*="{name}"]').get_attribute('src')
  for frame in range(4):
   q.locator('#frame').fill(str(frame));s=q.evaluate('__paperDollExpansion()')
   assert s['readyDirections']==['south','north','west','east'] and not s['artworkApproved'] and not s['productionEnabled']

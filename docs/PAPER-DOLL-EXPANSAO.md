@@ -30,6 +30,8 @@ O link com `?pack=expansion-idle` carrega somente um pacote local previamente pe
 
 O editor de encaixes da bancada permite alterar posição e profundidade por frame, restaurar o pacote original e exportar JSON portátil. Todas as mudanças ficam na sessão, com aprovação artística desabilitada. O importador deduplica PNGs e preserva as fontes/âncoras de cada direção.
 
+O build versiona por hash os scripts e estilos desta prévia, incluindo o compositor. Manifesto e PNGs do pacote são requisitados sem reutilizar o cache do navegador, evitando combinar peças novas com dados antigos. Isso não limpa nem modifica o armazenamento do personagem.
+
 ## Movimento: resultados que não foram promovidos
 
 A caminhada livre frontal foi preservada (referência +8 frames), mas reprovada pelo movimento dos braços e fechamento fraco do ciclo. A caminhada guiada tem passos regulares, mas altera rosto/olhos e estreita o corpo; também foi reprovada. Não foram geradas roupas sobre esses movimentos. Os frames não foram encurtados, duplicados ou espelhados para aparentar aprovação.
