@@ -12,7 +12,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from akuma import AkumaStore, public_catalog
-from monsters import MonsterStore
+from monsters import MonsterStore, WORLD_LEVEL_BANDS
 from hierarchy import HierarchyStore
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -41,6 +41,8 @@ class Handler(SimpleHTTPRequestHandler):
         route = urlparse(self.path)
         if route.path == "/api/monsters/catalog":
             return self.reply(200, MONSTERS.catalog())
+        if route.path == "/api/world/levels":
+            return self.reply(200, WORLD_LEVEL_BANDS)
         if route.path == "/api/akuma/catalog":
             return self.reply(200, public_catalog())
         if route.path == "/api/akuma/state":

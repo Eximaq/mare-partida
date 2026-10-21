@@ -16,10 +16,10 @@
     {id:'travessa-do-mercado',points:[[11,20],[17,20],[17,14]]}
   ];routes.forEach(r=>road(r.points));
   const districts=[
-    {id:'vigilia',name:'Pátio da Vigília',tx:11,ty:20,min:11,max:13,plaza:[9,18,5,4]},
-    {id:'docas',name:'Docas Veladas',tx:22,ty:23,min:14,max:16,plaza:[20,21,5,4]},
-    {id:'catacumbas',name:'Catacumbas da Névoa',tx:23,ty:14,min:17,max:19,plaza:[21,12,5,5]},
-    {id:'bastiao',name:'Bastião das Conchas',tx:17,ty:8,min:19,max:20,plaza:[14,7,7,4]}
+    {id:'vigilia',name:'Pátio da Vigília',tx:11,ty:20,min:6,max:7,plaza:[9,18,5,4]},
+    {id:'docas',name:'Docas Veladas',tx:22,ty:23,min:7,max:8,plaza:[20,21,5,4]},
+    {id:'catacumbas',name:'Catacumbas da Névoa',tx:23,ty:14,min:8,max:9,plaza:[21,12,5,5]},
+    {id:'bastiao',name:'Bastião das Conchas',tx:17,ty:8,min:9,max:10,plaza:[14,7,7,4]}
   ].map(d=>({...d,...center(d.tx,d.ty)}));
   for(const d of districts)paint(...d.plaza,STREET);
   const docks=[{x:128,y:23*TILE,w:6*TILE,h:TILE},{x:3*TILE,y:21*TILE,w:TILE,h:5*TILE},{x:26*TILE,y:23*TILE,w:4*TILE,h:TILE}];

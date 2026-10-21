@@ -9,14 +9,19 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 RAW_CATALOG = json.loads((ROOT / "data" / "monsters.json").read_text(encoding="utf-8"))
 GROWTH = {"max_hp": 1.065, "physical_attack": 1.055, "physical_defense": 1.05, "magic_defense": 1.04}
+WORLD_LEVEL_BANDS = {
+    "beach": (1, 5), "swamp": (6, 10), "orange": (11, 15),
+    "rare": (16, 20), "syrup": (21, 25), "baratie": (26, 30),
+    "arlong": (31, 35), "loguetown": (36, 40),
+}
 
 
 def scale_monster(monster, base):
-    """Use the level-35 Cocox as the common baseline for higher encounters."""
+    """Use Cocox at the beginning of the second world band as the baseline."""
     result = dict(monster)
     delta = result["level"] - base["level"]
     if delta < 0:
-        raise ValueError("Scaled monster level must not precede Cocox")
+        raise ValueError("Scaled monster level must not precede the baseline")
     for stat, growth in GROWTH.items():
         multiplier = float(result.get("multipliers", {}).get(stat, 1))
         result[stat] = round(base[stat] * growth ** delta * multiplier)

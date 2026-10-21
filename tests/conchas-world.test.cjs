@@ -21,7 +21,7 @@ const stone=[];for(let y=0;y<32;y++)for(let x=0;x<32;x++)if(cfg.plan.at(x,y)==='
 const visited=new Set(),queue=[stone[0]];for(let n=0;n<queue.length;n++){const [x,y]=queue[n],key=x+','+y;if(visited.has(key)||cfg.plan.at(x,y)!=='stone')continue;visited.add(key);for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]])queue.push([x+dx,y+dy]);}
 assert.equal(visited.size,stone.length,'Rendered paving must form one connected street network');
 for(const s of H.sectors('swamp',O.districts)){const fallback=H.get('swamp').sectors.find(d=>d.id===s.id);assert.equal(s.x,fallback.x);assert.equal(s.y,fallback.y);assert(nav.path(O.spawn,s).length);}
-assert.deepEqual(H.get('swamp').sectors.map(s=>[s.min,s.max]),[[11,13],[14,16],[17,19],[19,20]]);assert.equal(H.get('swamp').bossLevel,20);
+assert.deepEqual(H.get('swamp').sectors.map(s=>[s.min,s.max]),[[6,7],[7,8],[8,9],[9,10]]);assert.equal(H.get('swamp').bossLevel,10);
 const cam=new Camera();for(const [w,h]of [[1920,1080],[1366,768],[393,852],[2560,1440]]){cam.width=w;cam.height=h;for(const pt of [O.spawn,...O.paths]){cam.update(pt,O.map,0,true);assert(cam.x>=0&&cam.y>=0);assert(cam.x<=Math.max(0,2048-w)&&cam.y<=Math.max(0,2048-h));}}
 const html=fs.readFileSync('index.html','utf8');assert(html.indexOf('src="conchas-world.js"')<html.indexOf('src="world-system.js"'));assert(html.indexOf('src="orange-terrain.js"')<html.indexOf('src="conchas-renderer.js"'));
 console.log('Conchas: compact grid, connected streets/frontages, real dock shores, open arch, all return routes, unchanged levels, shared autotiles and camera bounds passed.');
