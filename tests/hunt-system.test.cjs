@@ -4,8 +4,8 @@ require('../orange-world.js');require('../ember-world.js');require('../dawn-worl
 const W=globalThis.MareWorld,E=globalThis.MareDawn;
 const base=()=>H.migrate({level:1,gold:120,stats:{kills:99},inventory:[],equipment:{keep:{id:'safe'}},claimed:['boss']});
 let g=base(),source=JSON.stringify(g);assert.deepEqual(H.migrate(g),g);assert.equal(g.hunts.areas.beach.kills,0);assert.equal(g.stats.kills,99);
-assert.deepEqual(Object.values(H.regions).map(r=>[r.min,r.max]),[[31,40],[1,10],[21,30],[11,20]]);
-for(const [area,region] of Object.entries(H.regions).filter(([area])=>area!=='rare')){
+assert.deepEqual(Object.values(H.regions).map(r=>[r.min,r.max]),[[31,40],[41,50],[51,60],[1,10],[21,30],[11,20]]);
+for(const [area,region] of Object.entries(H.regions).filter(([,region])=>!!region.boss)){
  const anchors=area==='orange'?globalThis.MareOrange.districts:area==='beach'?E.districts:globalThis.MareConchas.districts,map=area==='orange'?globalThis.MareOrange.map:area==='beach'?E.map:W.maps.conchas,nav=new W.Navigation(map,map.navigationCell||24);
  for(const s of H.sectors(area,anchors)){
   assert(nav.walkable(s.x,s.y),s.name);assert(nav.path(map.spawn,s).length,s.name);assert.equal(H.sectorAt(area,s,anchors).id,s.id);

@@ -1,0 +1,17 @@
+{
+  "source": "PixelLab Map Workshop and existing character downloads",
+  "generated": false,
+  "tile_size": 64,
+  "map_ids": {
+    "rare": "dd46361c-3bc3-47d5-b9b0-3f0a7f54ec82",
+    "syrup": "7642bf8c-8876-40c2-97a2-7c59c310c3ee",
+    "baratie": "8b917413-6107-481e-ae4b-947f37b83de2"
+  },
+  "character_ids": {
+    "sham": "0003fa85-1d60-4fa7-91c0-f2951d430a58",
+    "buchi": "191ea516-7425-4886-99ec-96c11b6ea64e",
+    "pearl": "0912194d-7d3c-4fdd-8678-cac0713105ce",
+    "gin": "71e7ad11-b263-4d45-bba4-e1337a521ebc"
+  },
+  "processing": "Read-only 64x64 map crops stitched at native resolution; existing character frames packed into directional idle/walk/attack sheets. Rare map cropped to 33 rows to exclude empty southern canvas and detached stray cells. Visible object placements were read-only exports for collision footprints; missing-image placements excluded."
+}

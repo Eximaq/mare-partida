@@ -7,7 +7,25 @@ from contextlib import closing
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-CATALOG = json.loads((ROOT / "data" / "monsters.json").read_text(encoding="utf-8"))
+RAW_CATALOG = json.loads((ROOT / "data" / "monsters.json").read_text(encoding="utf-8"))
+GROWTH = {"max_hp": 1.065, "physical_attack": 1.055, "physical_defense": 1.05, "magic_defense": 1.04}
+
+
+def scale_monster(monster, base):
+    """Use the level-35 Cocox as the common baseline for higher encounters."""
+    result = dict(monster)
+    delta = result["level"] - base["level"]
+    if delta < 0:
+        raise ValueError("Scaled monster level must not precede Cocox")
+    for stat, growth in GROWTH.items():
+        multiplier = float(result.get("multipliers", {}).get(stat, 1))
+        result[stat] = round(base[stat] * growth ** delta * multiplier)
+    result.pop("multipliers", None)
+    return result
+
+
+CATALOG = {key: scale_monster(value, RAW_CATALOG["cocox"]) if key != "cocox" else value
+           for key, value in RAW_CATALOG.items()}
 
 
 class MonsterStore:

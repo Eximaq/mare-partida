@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const a=require('../archipelago.js');
-const names=['Ilha Dawn','Cidade das Conchas','Orange Town','Ilha dos Animais Raros','Vilarejo Syrup','Baratie','Parque Arlong','Loguetown'];
+const names=['Ilha Dawn','Cidade das Conchas','Orange Town','Ilha dos Animais Raros','Vila Syrup','Baratie','Parque Arlong','Loguetown'];
 assert.deepEqual(a.list('east-blue').map(i=>i.name),names);
 assert.equal(new Set(a.islands.map(i=>i.id)).size,8);
 a.islands.forEach((i,n)=>{
@@ -30,11 +30,13 @@ assert.equal(a.byArea('orange').id,'orange-town');assert(!a.canTravel('orange-to
 assert.equal(a.byArea('rare').id,'animais-raros');
 assert(!a.canTravel('animais-raros',30));
 assert(a.canTravel('animais-raros',31));
-for(const i of a.islands.slice(4)){
+assert(!a.canTravel('syrup',40));assert(a.canTravel('syrup',41));
+assert(!a.canTravel('baratie',50));assert(a.canTravel('baratie',51));
+for(const i of a.islands.slice(6)){
   assert.equal(i.area,null);assert.equal(i.monster,null);assert.equal(i.drops,null);
   assert.equal(a.canTravel(i.id,999),false);
 }
-for(const i of a.islands.slice(0,4)){
+for(const i of a.islands.slice(0,6)){
   assert(fs.existsSync(path.join(__dirname,'..',i.monster.src)));
   assert(i.drops.length>0);
 }
