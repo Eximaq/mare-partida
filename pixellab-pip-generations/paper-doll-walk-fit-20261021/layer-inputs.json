@@ -1,0 +1,25 @@
+{
+  "files": {
+    "body-corrected-raw.png": "3ff432ccd4dfa8f10044f3d7f4af3f738d6e2bcc55d75d14c9a1c1c1c486dfc6",
+    "hair-mask.png": "e544d7494be07cca61fa10860c1c85e99703ca704e3ff033ba9eb2f56df95ba7",
+    "outfit-mask.png": "392e97a04402a0aa2d1cd71091937e5769e05b427e022500530bf6f90228f459",
+    "look-context.png": "ad7529c7c5fac6f92e8579c1795061d3a5cf4e348a658d8c5a400d8493d6bd65",
+    "look-reference.png": "8c5f4b2fff2aa87da3f36575309ffde08c85b4b2b15966999cd079bcd1a594d2"
+  },
+  "frame_count": 8,
+  "columns": 4,
+  "rows": 2,
+  "cell": 64,
+  "source_box": [
+    0,
+    0,
+    256,
+    128
+  ],
+  "style_reference_box": [
+    256,
+    32,
+    64,
+    64
+  ]
+}

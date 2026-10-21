@@ -148,6 +148,8 @@ Calças, botas e outros acessórios têm slots técnicos preparados, mas não re
 
 ## Bancada de inspeção
 
+Atualização da caminhada: o pacote `?pack=walk-south` reúne Idle nas quatro vistas e oito frames reais de Walk/south. A cobertura de produção continua desativada; as outras caminhadas e todos os ataques usam fallback. Ver [contrato, máscaras, custos e validação desta etapa](PAPER-DOLL-CAMINHADA.md). O pivô é fixo; a passada preserva a variação natural dos pés, sem alinhamento artificial por frame.
+
 Abra `tools/paper-doll-inspector/index.html` no servidor local ou pacote Pages. A ferramenta tem quatro direções, Idle/Walk/Attack, pausa/reprodução, slider de frame, zoom2×/3×/4×, pivôs/linha dos pés, visibilidade das sete camadas, associação de equipamento e comparação lado a lado. A diferença RGBA é contada antes dos auxiliares visuais e não deve ser confundida com aprovação artística: roupas diferentes podem legitimamente mudar pixels.
 
 Sem peças, os dois lados mostram o sprite completo e a ferramenta informa fallback; não finge mostrar um corpo modular. O xadrez é auxiliar de transparência da interface. Esconder camada não afeta o fallback completo.

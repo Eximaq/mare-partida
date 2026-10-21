@@ -190,7 +190,7 @@
   $('importPack').addEventListener('change',()=>importFiles([...$('importPack').files]));
   async function bundledReview(){
     const key=new URLSearchParams(location.search).get('pack');
-    const packs={'expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
+    const packs={'walk-south':'../../pixellab-pip-generations/paper-doll-walk-fit-20261021/','expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
     if(!key||!packs[key])return;
     try{
       $('importStatus').textContent='Carregando prévia incluída no projeto…';

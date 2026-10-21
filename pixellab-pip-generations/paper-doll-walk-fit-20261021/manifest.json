@@ -1,0 +1,181 @@
+{
+  "status": "review-only partial character; eight real Walk/south frames added; no production enablement",
+  "authorization": "Owner authorized autonomous continuation and recommended PixelLab decisions; within existing conservative cumulative ceiling100; global auto unchanged; no USD overage",
+  "scope": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south"
+    ],
+    "attack": []
+  },
+  "jobs": [
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "8f20e8da-0277-44c0-8e5e-ecd9d67ee0fb",
+      "status": "completed",
+      "estimated_generations": 9,
+      "parameters": {
+        "image_url": "body-input.png",
+        "mask_image_url": "arm-mask.png",
+        "output_method": "Modify current layer",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 338809494,
+        "description": "Edit only the masked right arm, on the viewer's left, in each 64x64 cell of this 4x2 walking sheet. Keep this south-facing bald human's existing shoulder attachment. Form a natural bare forearm and a small closed hand in a relaxed sword-carry guard near pixel22,35 of each cell, visible outside the torso throughout the gait. Follow each shoulder pose with restrained movement. Preserve every unmasked pixel, face, torso, opposite arm, shorts, legs, foot motion, proportions, native palette, transparent canvas and original eight-frame order. No weapon, glove, clothing, effects, extra limb or background."
+      },
+      "authorization": "Owner's autonomous continuation; within cumulative100-generation ceiling. Prior conservative total60; planned batch27; no USD overage.",
+      "reported_usage": {
+        "generations": 9
+      },
+      "asset_id": "a55c54f0-9c77-5268-b628-9567302ba96c",
+      "raw_sha256": "3ff432ccd4dfa8f10044f3d7f4af3f738d6e2bcc55d75d14c9a1c1c1c486dfc6"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "ae845b9a-24a5-456f-a7b9-728f5162d0c4",
+      "status": "completed",
+      "estimated_generations": 9,
+      "parameters": {
+        "image_url": "body-corrected-raw.png",
+        "mask_image_url": "hair-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 128
+        },
+        "context_image": {
+          "url": "look-context.png",
+          "usage_description": "The left 256x128 is the unchanged walking source. The right dressed sprite guides only short black hair style and palette, never its static body pose."
+        },
+        "description": "In each native 64x64 cell of this 4x2 south-facing walking sheet add only short tousled black hair fitted to the existing scalp, matching the right-side reference's shape, palette, outline and pixel scale. Follow each head's position. Preserve all protected face pixels, eyes, ears, bald head shape beneath the hair, body pose, carrying hand, shorts, legs and transparency. Eight consistent hair frames in original row-major order. No bandana, duplicate head, clothes, weapon or loose hair object."
+      },
+      "reported_usage": {
+        "generations": 9
+      },
+      "raw_sha256": "be492779a0077dc71a04c2392232d5ad50a8fd8f6fb84a7ef55aca6f0cedd32b"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "71a3cf46-148a-4092-b8b8-0fe1e209fb11",
+      "asset_id": "6230cca8-951d-5bae-bd85-e2a550bf80c9",
+      "status": "completed",
+      "estimated_generations": 9,
+      "reported_usage": {
+        "generations": 9
+      },
+      "parameters": {
+        "image_url": "body-corrected-raw.png",
+        "mask_image_url": "outfit-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 256,
+          "height": 128
+        },
+        "context_image": {
+          "url": "look-context.png",
+          "usage_description": "The left 256x128 is the unchanged walking source. The right dressed sprite guides only the cream short-sleeve shirt and plain navy waistcoat, never its static body pose."
+        },
+        "description": "In each native 64x64 cell of this 4x2 south-facing walking sheet add only a fitted cream short-sleeve linen shirt and plain navy sailor waistcoat matching the right-side reference's palette, outline and pixel scale. Follow each torso and shoulder pose. Keep the carrying hand and protected forearms bare and visible. Preserve all protected head, face, scalp, hand, shorts, legs, feet, body proportions and transparency. Eight consistent clothing frames in original row-major order. No hair, weapon, emblem, loose garment, extra limb or background."
+      },
+      "raw_sha256": "f39f53864922b2def5125fd4c8e3d8cbaf05088d6ead0c08b4d228954ce31e19"
+    }
+  ],
+  "generation_usage": {
+    "this_stage_confirmed": 27,
+    "prior_confirmed": 57,
+    "prior_tool_reported": 2,
+    "prior_unexposed_failed_job_estimate": 1,
+    "cumulative_confirmed": 84,
+    "cumulative_conservative": 87,
+    "ceiling": 100
+  },
+  "sources": {
+    "walk": "../paper-doll-expansion-20261021/body-walk-minimax-raw-01.png through08; original order, reference echo excluded",
+    "idle": "../paper-doll-expansion-20261021/review-pack.json",
+    "weapon": "../paper-doll-expansion-20261021/weapon-south.png"
+  },
+  "integrity": {
+    "same_native_pixel_scale": true,
+    "padding": [
+      10,
+      13
+    ],
+    "pivot": [
+      42,
+      65
+    ],
+    "body_edit": "Only explicit carry-arm mask; original face, gait and feet preserved",
+    "hair_outfit": "Independent changes-only edits on the same corrected base; protected-face/forearm masks",
+    "weapon": "Authorized rigid attachment, no new art or scaling",
+    "approval": "prototype visual gate only; approved:false"
+  },
+  "sha256": {
+    "arm-mask.png": "acf62b398eb9cbe6bcfd0672854d2b7e34388685aabc40928e8ca945f47ddee3",
+    "body-corrected-01.png": "5eb9b920063a6fec4662a25f392c87c6baef188a78f91b14e673f50ae77181f9",
+    "body-corrected-02.png": "4d65e714612fa6dc1949ed21c043a7671e34b03e5e33f81764758e0bdd271432",
+    "body-corrected-03.png": "395bb310a8946cc641651ea076814369afa14b51fabba8722ff2b21e46a86dcb",
+    "body-corrected-04.png": "3b139d494b5b34e1fb2a33c939de0561d610f81513d81011c7a6cc4ede1e3332",
+    "body-corrected-05.png": "e9793cba290c990393aac91697c4451b3e52a1e41090e4433740a964e5d2c70a",
+    "body-corrected-06.png": "905eec856c3c2e259d9445e39b3f53a9706f6f2b0d10a99876a5fd5094e039e5",
+    "body-corrected-07.png": "0174e2a15156a9e2318190c74f5b505b734daf8486118a17ab76fd910ccbf976",
+    "body-corrected-08.png": "b59df971e96a8b8db5145e5cc8332703882ab0de2fb914863edb6f32512c6c74",
+    "body-corrected-raw.png": "3ff432ccd4dfa8f10044f3d7f4af3f738d6e2bcc55d75d14c9a1c1c1c486dfc6",
+    "body-idle.png": "b04361d22abe344f5fba079994b5625c6fe4822b308dc5ca7478300deab43348",
+    "body-input.png": "d121808535ed841377355821c5527db3b47ee9f15b602b67ab88081852dd1d58",
+    "body-source-01.png": "d7cd590d54ad8f7faabe7362709d6468859d83a3ec41fdc902624d86a83d8539",
+    "body-source-02.png": "68fea6dc82387fd30d5e3a22c47788a87f00c4968e27e2cd99e2bd0aaf3d42d7",
+    "body-source-03.png": "e3fbdb8d3649ec55d3308e4c301b3f09ca38733b524552c9295ffcc211cd8538",
+    "body-source-04.png": "2a2e31594b0581b3b9f228363860ed7d539ed135516f812690ac19b6baa4e230",
+    "body-source-05.png": "5d6f5a52f717ec953bbd10c77c2cb0622149a656a7ffdf258ef11a5a708a4a5b",
+    "body-source-06.png": "435e6c17159320f5a873b98aacf81daa9a0548351efb22ac82397b0b8d458491",
+    "body-source-07.png": "c7b8082971c9035803e781bbf42a4ff6940b1e8266f4b2e6bd1535045c6aef51",
+    "body-source-08.png": "435e9296ec3c3c2e5c1b77453378a1d7aeec213e0dcf0e4f744c60f01923b6c2",
+    "body-walk.png": "27a8f1b3ddf81e6a1e0d3101e70cddf8bdce529ba32bdff6741020d529ce3af4",
+    "body-weapon-01.png": "337a46320f53a2e5de982151931977a18eb08a8fca85e15c450578ec4df81711",
+    "body-weapon-02.png": "08ed52937e6e3b62161f773be7c26cbb52e7274123f957cadb11374896d4d72c",
+    "body-weapon-03.png": "81d51ed93c7c28449a41f6c6d8db4cc7248465942e288048de660aa4fd038a51",
+    "body-weapon-04.png": "2fbc1c6acc15ddf21c9cf244619a818bb67fa5c9df666353e09f3a8044c560fe",
+    "body-weapon-05.png": "6713c8d5f4b45804abf9ec2dea41b98a2f19ded4ca91433b2eb41957cdbdbb8f",
+    "body-weapon-06.png": "9e6bb1ef04b4805d8a5bd71fb7be80ae438e251d735bb7778968ea90687f7405",
+    "body-weapon-07.png": "3ea19c0734306cd5123571e67c80fc7e424b31497f4eb2c03067680b53fd28ca",
+    "body-weapon-08.png": "29dfee23807521baa72d8d9921129bf5d5f9daca39f4905444420096b8aba56d",
+    "body-weapon-atlas.png": "d5953ceec0c052f1bb815d69ef1f735bc023e9137b904e85ae79c1bba8b83051",
+    "comparison-native.png": "ad4ae6a87e8774bbb3426fcdb58179a3f6dc6028870542c7c404389a6a5c861f",
+    "hair-idle.png": "e393e179b77e77d59f697b243a165d8369b8ad7b0594680e801e756f78bf15b5",
+    "hair-mask.png": "e544d7494be07cca61fa10860c1c85e99703ca704e3ff033ba9eb2f56df95ba7",
+    "hair-raw.png": "be492779a0077dc71a04c2392232d5ad50a8fd8f6fb84a7ef55aca6f0cedd32b",
+    "hair-walk.png": "ebab2d91d2020d51f9c5be0da0d99a7ab1b0c21cfc42a534ee9fe83909483d1f",
+    "look-context.png": "ad7529c7c5fac6f92e8579c1795061d3a5cf4e348a658d8c5a400d8493d6bd65",
+    "look-reference.png": "8c5f4b2fff2aa87da3f36575309ffde08c85b4b2b15966999cd079bcd1a594d2",
+    "outfit-idle.png": "50600daf41c0a2cefb12e978f67c79ca73d4e63c43d80622095d6508e27e2b7f",
+    "outfit-mask.png": "392e97a04402a0aa2d1cd71091937e5769e05b427e022500530bf6f90228f459",
+    "outfit-raw.png": "f39f53864922b2def5125fd4c8e3d8cbaf05088d6ead0c08b4d228954ce31e19",
+    "outfit-walk.png": "48f96582dde8d42bca9c207d0ffcea217191183e1949e8fd47f05b698e2c9334",
+    "rigid-weapon.png": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+    "walk-south.png": "08618ab609ff2dccf647558ecec00a12630190aa22161c7608fbd0e22bc113ac",
+    "weapon-east.png": "fe5ef2cb9fc0f495ef173c7091a335c53479cf52155fbbba30575ca6d3d6ea97",
+    "weapon-north.png": "0ba4aba97f06dc59272b9fe5e871d21c59ebedef6b0e0c03ee59ecd2662e7b41",
+    "weapon-south.png": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+    "weapon-west.png": "9b09bb64aec12978f127d96c4825f18e9c1ca6b5a688f3b746e9e2ae7b3ded60"
+  },
+  "missing": [
+    "Walk/north,west,east body and fitted hair/outfit plus directional sword grips",
+    "Attack/sword four directions, all body/hair/outfit frames and weapon poses"
+  ],
+  "validation_report": "../../docs/PAPER-DOLL-CAMINHADA.md"
+}

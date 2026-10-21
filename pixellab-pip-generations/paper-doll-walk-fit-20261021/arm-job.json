@@ -1,0 +1,21 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "8f20e8da-0277-44c0-8e5e-ecd9d67ee0fb",
+  "status": "completed",
+  "estimated_generations": 9,
+  "parameters": {
+    "image_url": "body-input.png",
+    "mask_image_url": "arm-mask.png",
+    "output_method": "Modify current layer",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 338809494,
+    "description": "Edit only the masked right arm, on the viewer's left, in each 64x64 cell of this 4x2 walking sheet. Keep this south-facing bald human's existing shoulder attachment. Form a natural bare forearm and a small closed hand in a relaxed sword-carry guard near pixel22,35 of each cell, visible outside the torso throughout the gait. Follow each shoulder pose with restrained movement. Preserve every unmasked pixel, face, torso, opposite arm, shorts, legs, foot motion, proportions, native palette, transparent canvas and original eight-frame order. No weapon, glove, clothing, effects, extra limb or background."
+  },
+  "authorization": "Owner's autonomous continuation; within cumulative100-generation ceiling. Prior conservative total60; planned batch27; no USD overage.",
+  "reported_usage": {
+    "generations": 9
+  },
+  "asset_id": "a55c54f0-9c77-5268-b628-9567302ba96c",
+  "raw_sha256": "3ff432ccd4dfa8f10044f3d7f4af3f738d6e2bcc55d75d14c9a1c1c1c486dfc6"
+}

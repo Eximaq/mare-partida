@@ -1,0 +1,107 @@
+{
+  "passed": true,
+  "scope": "native masked base edit only; artistic review required",
+  "outside_mask_changes": 0,
+  "partial_alpha_pixels": 0,
+  "unique_frames": 8,
+  "frames": [
+    {
+      "frame": 0,
+      "changed_pixels": 83,
+      "bbox": [
+        21,
+        9,
+        43,
+        52
+      ],
+      "source_foot_bottom": 52,
+      "edited_foot_bottom": 52
+    },
+    {
+      "frame": 1,
+      "changed_pixels": 91,
+      "bbox": [
+        20,
+        9,
+        43,
+        53
+      ],
+      "source_foot_bottom": 53,
+      "edited_foot_bottom": 53
+    },
+    {
+      "frame": 2,
+      "changed_pixels": 80,
+      "bbox": [
+        21,
+        10,
+        42,
+        55
+      ],
+      "source_foot_bottom": 55,
+      "edited_foot_bottom": 55
+    },
+    {
+      "frame": 3,
+      "changed_pixels": 61,
+      "bbox": [
+        22,
+        10,
+        42,
+        55
+      ],
+      "source_foot_bottom": 55,
+      "edited_foot_bottom": 55
+    },
+    {
+      "frame": 4,
+      "changed_pixels": 82,
+      "bbox": [
+        21,
+        9,
+        43,
+        54
+      ],
+      "source_foot_bottom": 54,
+      "edited_foot_bottom": 54
+    },
+    {
+      "frame": 5,
+      "changed_pixels": 87,
+      "bbox": [
+        20,
+        9,
+        43,
+        53
+      ],
+      "source_foot_bottom": 53,
+      "edited_foot_bottom": 53
+    },
+    {
+      "frame": 6,
+      "changed_pixels": 79,
+      "bbox": [
+        21,
+        10,
+        42,
+        55
+      ],
+      "source_foot_bottom": 55,
+      "edited_foot_bottom": 55
+    },
+    {
+      "frame": 7,
+      "changed_pixels": 76,
+      "bbox": [
+        21,
+        10,
+        42,
+        55
+      ],
+      "source_foot_bottom": 55,
+      "edited_foot_bottom": 55
+    }
+  ],
+  "unmasked_face_torso_legs_preserved": true,
+  "artwork_approved": false
+}

@@ -1,0 +1,8 @@
+{
+  "scope": "Visual prototype gate from native originals and nearest-neighbor inspection; full character approval remains pending",
+  "body": {"prototype_gate_passed": true, "review": "Eight distinct south-facing steps; face and legs preserved, masked carry arm visible throughout. Original stride and varying foot bottoms retained, fixed pivot and padding."},
+  "weapon": {"prototype_gate_passed": true, "review": "Same original south sword; measured contact in all eight poses, behind body so hand occludes grip. No detached blade, rotation or painted repair."},
+  "hair": {"prototype_gate_passed": true, "review": "Eight fitted short black hair layers, scalp contact and coherent front silhouette. Protected eyes remain readable, no duplicated head or loose hair."},
+  "outfit": {"prototype_gate_passed": true, "review": "Eight fitted cream-sleeve/navy waistcoat layers follow shoulders and torso, hands and shorts remain readable. No full-body duplicate or disconnected garment."},
+  "limitations": ["Only Walk/south is newly covered", "Attack and other Walk directions remain incomplete", "Minor natural silhouette variation is visible at enlarged zoom; full multi-direction identity review is pending", "No production approval or activation"]
+}

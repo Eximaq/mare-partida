@@ -163,5 +163,25 @@ def version_expansion(match):
 expansion_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_expansion,
                                   expansion_entry.read_text(encoding='utf-8')), encoding='utf-8')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-EXPANSAO.md', OUT/'docs/PAPER-DOLL-EXPANSAO.md')
+walk_relative = Path('pixellab-pip-generations/paper-doll-walk-fit-20261021')
+walk_files = ['preview.html', 'preview.js', 'review-pack.json', 'manifest.json',
+              'walk-fit.blueprint.json', 'body-walk.png', 'hair-walk.png', 'outfit-walk.png',
+              'body-idle.png', 'hair-idle.png', 'outfit-idle.png', 'rigid-weapon.png',
+              'walk-south.png', 'comparison-native.png', 'assembly-audit.json']
+walk_files += [f'weapon-{d}.png' for d in ['south', 'north', 'west', 'east']]
+for name in walk_files:
+    destination = OUT/walk_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/walk_relative/name, destination)
+walk_entry = OUT/walk_relative/'preview.html'
+def version_walk(match):
+    source = (walk_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    version = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+    return f'{match.group(1)}{match.group(2)}?v={version}{match.group(3)}'
+walk_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_walk,
+                            walk_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-CAMINHADA.md', OUT/'docs/PAPER-DOLL-CAMINHADA.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')
