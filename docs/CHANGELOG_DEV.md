@@ -1,5 +1,10 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Escala visual do Cocox
+
+- Branch `fix/cocox-sprite-scale`, baseada no `main` remoto `6a7a0e2`. O Cocox parecia pequeno porque os frames PixelLab têm margens transparentes amplas. A renderização agora usa escala uniforme de 2,25×, nearest-neighbor e âncora dos pés por animação/direção; a barra de vida foi elevada para não cobrir a cabeça. Os PNGs, dados de combate e saves permanecem iguais.
+- Validação: `node --check` nos dois scripts, 28 suítes Node após integração com o `main`, `python tools/build_pages.py` e inspeção visual no navegador local durante a caçada na ilha.
+
 ## 20/10/2026 — Ilha dos Animais Raros e Cocox
 
 - Branch `feature/rare-animals-cocox`, baseada no `main` remoto `ffe6f05`. Mapa 32×32 com células nativas 64×64, quatro clareiras conectadas, floresta densa, retorno ao porto e caçada Cocox Nv.35.

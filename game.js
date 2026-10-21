@@ -1652,7 +1652,7 @@
     if(drawMobArt(m)){
       if(m.alive){
         const width=m.type==='boss'?88:65, ratio=Math.max(0,m.hp/m.maxHP),boss=m.type==='boss';
-        let barY=m.y-(['embers','dawn'].includes(activeMap().id)?79:boss?114:79);
+        let barY=m.y-(activeMap().id==='rare'&&m.type==='cocox'?118:['embers','dawn'].includes(activeMap().id)?79:boss?114:79);
         px(ctx,m.x-width/2,barY,width,8,'#101322');
         px(ctx,m.x-width/2+1,barY+1,(width-2)*ratio,6,boss?'#e5a35d':'#e27283');
         ctx.font='bold 12px Inter,Segoe UI,sans-serif';ctx.textAlign='center';ctx.lineWidth=3;

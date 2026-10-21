@@ -39,6 +39,7 @@
     }ctx.restore();
   }
   const rows={south:0,west:1,east:2,north:3};
+  const feet={idle:[45,44,44,47],run:[62,60,60,63],attack:[55,55,55,57]};
   function monster(ctx,m,time){
     if(m.type!=='cocox')return false;
     const dir=m.emberFacing||'south',row=rows[dir]??0;
@@ -46,9 +47,11 @@
     const key=attack?'attack':moving?'run':'idle',frames=attack?9:moving?4:1,sourceSize=attack?68:moving?80:48;
     if(!ready(key))return false;
     const frame=attack?Math.min(8,Math.floor((.58-m.attackAnim)*15)):moving?Math.floor(time*8+m.bob)%4:0;
-    const dest=key==='idle'?58:key==='run'?76:72;
+    // The original PixelLab frames have generous transparent margins. Keep the
+    // same pixel scale in every animation and anchor the visible feet to m.y.
+    const scale=2.25,dest=Math.round(sourceSize*scale);
     ctx.save();ctx.imageSmoothingEnabled=false;if(m.hit>0)ctx.filter='brightness(1.5)';
-    ctx.drawImage(images[key],Math.max(0,Math.min(frames-1,frame))*sourceSize,row*sourceSize,sourceSize,sourceSize,Math.round(m.x-dest/2),Math.round(m.y-dest+9),dest,dest);
+    ctx.drawImage(images[key],Math.max(0,Math.min(frames-1,frame))*sourceSize,row*sourceSize,sourceSize,sourceSize,Math.round(m.x-dest/2),Math.round(m.y+4-feet[key][row]*scale),dest,dest);
     ctx.restore();return true;
   }
   function environment(ctx,time){const p=R.returnPoint;ctx.save();ctx.strokeStyle='#d9ead2';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(p.x,p.y,27+Math.sin(time*2),11,0,0,Math.PI*2);ctx.stroke();ctx.fillStyle='#fff2cf';ctx.font='bold 11px Trebuchet MS';ctx.textAlign='center';ctx.fillText('Voltar ao porto',p.x,p.y+30);ctx.restore();}
