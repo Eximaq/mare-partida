@@ -1,0 +1,251 @@
+{
+  "status": "rigid weapon technical prototype; full-character art incomplete",
+  "rig": {
+    "id": "rigid-weapon-review-v1",
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1,
+    "requiredSlots": [
+      "body",
+      "weapon"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "review-body",
+      "slot": "body",
+      "rigId": "rigid-weapon-review-v1",
+      "approved": false,
+      "zIndex": 0,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "body-idle-south.png"
+        }
+      }
+    },
+    {
+      "id": "review-weapon",
+      "slot": "weapon",
+      "rigId": "rigid-weapon-review-v1",
+      "approved": false,
+      "zIndex": 50,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "kind": "rigid-attachment",
+          "url": "rigid-weapon.png",
+          "source": {
+            "width": 64,
+            "height": 64,
+            "anchorX": 20,
+            "anchorY": 36
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 28,
+                "y": 48
+              },
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 29,
+                "y": 48
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "rigid-weapon-review-v1",
+    "pieces": {
+      "body": "review-body",
+      "weapon": "review-weapon"
+    }
+  },
+  "audits": [
+    {
+      "frame": 1,
+      "body_source": "body-source-01.png",
+      "body_sha256": "6d000ef9c769332f95b0c87c239f24753435cb067e3d419dfd027aecfe30ba81",
+      "hand_anchor": [
+        20,
+        36
+      ],
+      "translation_from_reference": [
+        0,
+        0
+      ],
+      "clipped_pixels": 0,
+      "body_overlap_pixels": 0,
+      "hand_contact_pixels": 7,
+      "geometry_fits": true,
+      "socket": {
+        "x": 30,
+        "y": 49
+      },
+      "source_rect": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "native_translation": [
+        10,
+        13
+      ],
+      "body_pixel_changes": 0,
+      "visible_weapon_pixels": 79,
+      "same_source_sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d"
+    },
+    {
+      "frame": 2,
+      "body_source": "body-source-02.png",
+      "body_sha256": "ab34833564c7a80f982228c9f8eaeae4e798b5ddbdb8761abf999eb750e71923",
+      "hand_anchor": [
+        18,
+        35
+      ],
+      "translation_from_reference": [
+        -2,
+        -1
+      ],
+      "clipped_pixels": 0,
+      "body_overlap_pixels": 0,
+      "hand_contact_pixels": 7,
+      "geometry_fits": true,
+      "socket": {
+        "x": 28,
+        "y": 48
+      },
+      "source_rect": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "native_translation": [
+        8,
+        12
+      ],
+      "body_pixel_changes": 0,
+      "visible_weapon_pixels": 79,
+      "same_source_sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d"
+    },
+    {
+      "frame": 3,
+      "body_source": "body-source-03.png",
+      "body_sha256": "88d15ffa8e6433120e96ba4e1920ecbbd2fab109b7c11fcf102e769867fe5b26",
+      "hand_anchor": [
+        20,
+        36
+      ],
+      "translation_from_reference": [
+        0,
+        0
+      ],
+      "clipped_pixels": 0,
+      "body_overlap_pixels": 0,
+      "hand_contact_pixels": 7,
+      "geometry_fits": true,
+      "socket": {
+        "x": 30,
+        "y": 49
+      },
+      "source_rect": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "native_translation": [
+        10,
+        13
+      ],
+      "body_pixel_changes": 0,
+      "visible_weapon_pixels": 79,
+      "same_source_sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d"
+    },
+    {
+      "frame": 4,
+      "body_source": "body-source-04.png",
+      "body_sha256": "cad9315111f37be1bec2cdf377aa74c14a01bc74471be9699095fd9aa62695aa",
+      "hand_anchor": [
+        19,
+        35
+      ],
+      "translation_from_reference": [
+        -1,
+        -1
+      ],
+      "clipped_pixels": 0,
+      "body_overlap_pixels": 0,
+      "hand_contact_pixels": 7,
+      "geometry_fits": true,
+      "socket": {
+        "x": 29,
+        "y": 48
+      },
+      "source_rect": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "native_translation": [
+        9,
+        12
+      ],
+      "body_pixel_changes": 0,
+      "visible_weapon_pixels": 79,
+      "same_source_sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d"
+    }
+  ],
+  "scope": "one rigid weapon and four real body frames, Idle/south only",
+  "artwork_approved": false,
+  "new_generations": 0,
+  "missing": [
+    "hair",
+    "outfit",
+    "north",
+    "west",
+    "east",
+    "walk",
+    "attack"
+  ]
+}

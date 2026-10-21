@@ -5,6 +5,9 @@
   const names={south:'Sul · Frente',north:'Norte · Costas',west:'Oeste · Esquerda',east:'Leste · Direita'};
   const codes={'missing-source':'Fonte modular ausente','missing-piece':'Peça ausente','missing-animation':'Animação ausente','unsupported-pose':'Pose incompatível','incompatible-animation':'Sequência incompatível','incompatible-rig':'Rig incompatível','loading-image':'Carregando PNG','failed-image':'Falha ao carregar PNG','invalid-sheet-size':'Dimensões da folha incorretas','empty-frame':'Frame vazio','unreadable-image':'PNG ilegível','invalid-transform':'Pivô ou offset inválido','unmapped-equipment':'Equipamento sem representação modular','unsupported-character':'Perfil humano não suportado','incompatible-weapon':'Arma incompatível com a categoria de ação','unapproved-piece':'Peça sem aprovação'};
   codes['missing-direction']='Direção ainda sem frames';
+  codes['missing-socket']='Encaixe da arma ausente ou inválido';
+  codes['invalid-attachment-source']='Fonte da peça rígida inválida';
+  codes['unsupported-layer-kind']='Tipo de camada não suportado';
   let runtime=catalog.createRuntime({getImage:MareFactionSprites.image}),rigId=catalog.sharedRig.id,imported=null,objectUrls=[];
   const player={classId:'sword',factionId:'pirate',equipment:{weapon:{def:0}}};
   function poseAnimationId(action=$('animation').value){return runtime.rig(rigId).animations[action]?action:catalog.animationId(player,action);}

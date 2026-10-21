@@ -20,6 +20,8 @@ O [teste seguinte da espada](pixellab-pip-generations/paper-doll-sword-fit-20261
 
 O [lote por atlas](pixellab-pip-generations/paper-doll-layer-batch-20261021/preview.html) tentou uniformizar a espada em uma única chamada. O contato passou, mas a arte foi reprovada pela variação da lâmina. Foram cobradas6 gerações; cabelo e roupa não foram gerados. [Diagnóstico e validação](docs/PAPER-DOLL-LOTE-CAMADAS.md).
 
+A [prévia de arma rígida](pixellab-pip-generations/paper-doll-rigid-weapon-20261021/preview.html) usa uma única espada presa à mão dos quatro frames de Idle/sul, preservando seu modelo sem consumir créditos. A reutilização foi autorizada especificamente para armas; cabelo/roupa e demais ações continuam pendentes. [Contrato e validação](docs/PAPER-DOLL-ARMA-RIGIDA.md).
+
 ## Interface UI/UX 2.0
 
 A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.

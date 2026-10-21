@@ -123,5 +123,14 @@ for name in batch_files:
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, destination)
 shutil.copy2(ROOT/'docs/PAPER-DOLL-LOTE-CAMADAS.md', OUT/'docs/PAPER-DOLL-LOTE-CAMADAS.md')
+rigid_relative = Path('pixellab-pip-generations/paper-doll-rigid-weapon-20261021')
+rigid_files = ['preview.html', 'review.json', 'manifest.json', 'rigid-weapon.png',
+               'body-idle-south.png', 'previous-weapon-idle.png', 'comparison-sheet.png', 'rigid-weapon-review.gif']
+rigid_files += [f'composite-{index:02}.png' for index in range(1, 5)]
+for name in rigid_files:
+    destination = OUT/rigid_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/rigid_relative/name, destination)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-ARMA-RIGIDA.md', OUT/'docs/PAPER-DOLL-ARMA-RIGIDA.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

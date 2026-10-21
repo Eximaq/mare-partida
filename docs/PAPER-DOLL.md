@@ -48,7 +48,11 @@ O auditor de camadas isoladas mantém por padrão todos os pixels do corpo prote
 
 `pixellab-pip-generations/paper-doll-layer-batch-20261021/` preserva as fontes, a folha de entrada128×128 com quatro frames64×64 existentes, máscaras binárias e guias de contexto192×128. Após aprovação do teto18, foi executada somente a chamada da espada, com cobrança confirmada de6 gerações. O contato estrutural passou nas quatro células sem alterar o corpo, mas a lâmina varia de comprimento, espessura e guarda. **O gate artístico foi reprovado e as chamadas dependentes de cabelo/roupa não foram executadas.** A [prévia diagnóstica](../pixellab-pip-generations/paper-doll-layer-batch-20261021/preview.html) mantém os quatro frames na ordem original, sem reparo local ou ativação no jogo. [Relatório do lote](PAPER-DOLL-LOTE-CAMADAS.md). As guias são entradas, não sprites novos; o atlas edita poses existentes e não cria movimento por duplicação.
 
-Infraestrutura funcional com fallback, bancada interativa e contrato de assets. **Ainda não existe um conjunto modular real de Espadachim para validação artística.** Nenhum PNG foi gerado, pintado, separado por cores ou convertido em camada artificial. O jogo continua mostrando os personagens originais.
+Infraestrutura funcional com fallback, bancada interativa e contrato de assets. **Ainda não existe um conjunto modular completo de Espadachim para validação artística nas quatro direções e ações.** Os pilotos e sua proveniência estão descritos acima; o jogo continua mostrando os personagens originais.
+
+### Exceção autorizada — armas rígidas por encaixe
+
+Após autorização específica do proprietário, `kind:rigid-attachment` permite que uma arma reutilize uma única imagem com sockets inteiros por animação/direção/frame. A [prévia Idle/sul](../pixellab-pip-generations/paper-doll-rigid-weapon-20261021/preview.html) mantém o modelo da espada constante sobre quatro poses reais do corpo, sem novas gerações. Este é um modo declarado de peça rígida, não uma folha de frames gerados. Corpo, cabelo e roupa continuam exigindo frames próprios; outras ações e direções só ficam válidas com fontes/encaixes correspondentes. O catálogo do jogo mantém o fallback. [Contrato, origem e testes](PAPER-DOLL-ARMA-RIGIDA.md).
 
 Branch `feature/paper-doll-fase-1`, criada de `origin/main` em `5047eea`, incorpora o checkpoint de animações2.0 (`4ab2348`, preservado por cherry-pick). O PR de checkpoint39 permanece em rascunho; esta fase inclui esse trabalho e não depende de fazer merge nele. Não fazer merge/publicação automática de nenhum dos dois.
 
@@ -119,7 +123,7 @@ Exemplo de clip, somente metadados:
 }
 ```
 
-A Fase1 rejeita folhas cujas células de uma sequência multidirecional são todas vazias ou reproduzem exatamente a mesma imagem em todas as colunas de uma direção. Isso detecta simulação de animação estática; não substitui a inspeção de anatomia, armas e alinhamento. Peças rígidas com reutilização formal por anchors exigem extensão futura explícita do contrato; não foram simuladas nesta fase.
+A Fase1 rejeita folhas cujas células de uma sequência multidirecional são todas vazias ou reproduzem exatamente a mesma imagem em todas as colunas de uma direção. Isso detecta simulação de animação estática; não substitui a inspeção de anatomia, armas e alinhamento. A exceção autorizada para armas exige o tipo explícito `rigid-attachment`, uma única imagem e sockets por pose; não se duplicam células para contornar a auditoria. Ver contrato acima.
 
 ### Equipamento e aparência
 
@@ -171,7 +175,7 @@ Estimativas de dimensionamento, **não orçamento aprovado**:
 - Como referência de custo de movimento, um corpo-base e12 clipes v3 pequenos podem custar14–26 gerações; isso produz frames do corpo e **não** cria as outras três camadas compatíveis. Não usar esse número como orçamento do conjunto Paper Doll completo.
 - Lote inicial proposto para futura aprovação: somente Idle/sul das quatro peças (16 frames), com envelope de até16 gerações se produzido por imagens individuais, ou arte manual. Validar encaixe antes de planejar Walk/sul (32 frames), Attack/sul (32) e as três outras direções. Rota, prompts, referências, frames e preço devem ser apresentados antes de qualquer geração; o orçamento pode mudar conforme a estratégia escolhida.
 
-Gerar o personagem inteiro e tentar apagar suas roupas depois deixa anatomia oculta faltando. Recortes por cor, redimensionamento de ícones ou uma espada estática não atendem ao contrato. Reutilização segura nesta fase é manter sprites completos como referência/fallback e reaproveitar a infraestrutura de animação, não fabricar camadas ocultas.
+Gerar o personagem inteiro e tentar apagar suas roupas depois deixa anatomia oculta faltando. Recortes por cor e redimensionamento de ícones não atendem ao contrato. Uma arma rígida só pode reutilizar imagem pelo modo explícito autorizado, com encaixes reais; isso não permite fabricar anatomia oculta ou declarar o personagem inteiro concluído. Sprites completos continuam como referência/fallback.
 
 ## Validação e evidências
 

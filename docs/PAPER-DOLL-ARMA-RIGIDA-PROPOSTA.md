@@ -1,6 +1,6 @@
 # Proposta — arma rígida presa à mão animada
 
-Estado: **aguardando autorização específica**. Nenhum sprite novo, composição com arma reutilizada ou alteração no renderizador de produção foi executado nesta proposta. O lote anterior de gerações continua encerrado após a reprovação artística.
+Estado histórico desta proposta: aguardava autorização específica. Em21/10/2026, o proprietário respondeu “Prossiga” à pergunta explícita sobre arma rígida. A [implementação e seu contrato](PAPER-DOLL-ARMA-RIGIDA.md) usam uma imagem existente e sockets inteiros, sem novas gerações. O plano abaixo fica preservado como registro; o lote de gerações anterior continua encerrado após a reprovação artística.
 
 ## Motivo
 
