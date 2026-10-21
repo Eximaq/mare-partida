@@ -144,10 +144,10 @@ for name in modular_files:
     shutil.copy2(ROOT/modular_relative/name, destination)
 shutil.copy2(ROOT/'docs/PAPER-DOLL-CABELO-ROUPA.md', OUT/'docs/PAPER-DOLL-CABELO-ROUPA.md')
 expansion_relative = Path('pixellab-pip-generations/paper-doll-expansion-20261021')
-expansion_files = ['preview.html', 'preview.js', 'review-pack.json', 'manifest.json',
+expansion_files = ['preview.html', 'preview.js', 'motion-review.js', 'studies.json', 'walk-free-eight.png', 'body-south-input.png', 'review-pack.json', 'manifest.json',
                    'expansion.blueprint.json', 'body-idle.png', 'hair-idle.png', 'outfit-idle.png',
                    'idle-four-directions.png', 'comparison-native.png', 'assembly-audit.json',
-                   'walk-south-all-nine.png', 'walk-template-eight.png', 'attack-south-eight.png']
+                   'walk-south-all-nine.png', 'walk-template-eight.png', 'walk-minimax-eight.png', 'attack-south-eight.png']
 expansion_files += [f'weapon-{d}.png' for d in ['south', 'north', 'west', 'east']]
 for name in expansion_files:
     destination = OUT/expansion_relative/name

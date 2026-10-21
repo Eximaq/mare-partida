@@ -30,11 +30,15 @@ O link com `?pack=expansion-idle` carrega somente um pacote local previamente pe
 
 O editor de encaixes da bancada permite alterar posição e profundidade por frame, restaurar o pacote original e exportar JSON portátil. Todas as mudanças ficam na sessão, com aprovação artística desabilitada. O importador deduplica PNGs e preserva as fontes/âncoras de cada direção.
 
+A seção de estudos agora tem reprodução própria, slider e comparação com o corpo-base. Mostra os8 frames reais de cada caminhada e do ataque; o ataque é one-shot e permanece no último frame, sem inverter nem repetir a sequência. Os estudos não habilitam peças no mundo.
+
 O build versiona por hash os scripts e estilos desta prévia, incluindo o compositor. Manifesto e PNGs do pacote são requisitados sem reutilizar o cache do navegador, evitando combinar peças novas com dados antigos. Isso não limpa nem modifica o armazenamento do personagem.
 
 ## Movimento: resultados que não foram promovidos
 
 A caminhada livre frontal foi preservada (referência +8 frames), mas reprovada pelo movimento dos braços e fechamento fraco do ciclo. A caminhada guiada tem passos regulares, mas altera rosto/olhos e estreita o corpo; também foi reprovada. Não foram geradas roupas sobre esses movimentos. Os frames não foram encurtados, duplicados ou espelhados para aparentar aprovação.
+
+Uma última comparação de baixo custo com `animate_image_pixminimax` consumiu1 geração e entregou referência +8 frames. Preservou melhor a identidade e as proporções, mas a oclusão das mãos/antebraços não permitiu validar o encaixe de uma espada em todas as poses. Fica como **candidato de movimento do corpo**, não uma caminhada modular aprovada para o Espadachim. Nenhuma camada paga foi gerada sobre esse candidato. A comparação usa o mesmo teto de execução, sem retries adicionais nessa rota.
 
 O estudo frontal de ataque é um teste apenas do corpo, ainda sem peças compatíveis. A primeira chamada terminou sem imagem bruta e sem cobrança final exposta. A única tentativa sem âncora final idêntica entregou8 frames e confirmou1 geração cobrada. O gesto existe, mas os frames centrais mudam as proporções e perdem clareza dos braços/mãos. Foi reprovado; não foram geradas peças sobre esse movimento, nem habilitado Attack no pacote. Todos os nove PNGs retornados (referência +8 frames) estão preservados.
 
@@ -42,7 +46,7 @@ O estudo frontal de ataque é um teste apenas do corpo, ainda sem peças compat�
 
 O usuário autorizou a continuação autônoma e as decisões recomendadas de PixelLab. Adotou-se teto conservador de100 gerações adicionais nesta execução, sem overage em dólares, mantendo auto global inalterado. O teto não é uma meta de consumo.
 
-Acumulado desta execução: **56 gerações com cobrança final explicitamente confirmada** (caminhada livre1 +repousos3 +camadas36 +espadas15 +ataque1), mais **2 reportadas nas ferramentas** para criar as rotações e a caminhada guiada. O ataque inicial tem estimativa1 sem cobrança exposta. O acumulado conservador é59. Não foi presumido reembolso de job sem imagem. O lote anterior do Idle/sul não é contado novamente. Nenhum job desta execução permanece pendente.
+Acumulado desta execução: **57 gerações com cobrança final explicitamente confirmada** (caminhada livre1 +repousos3 +camadas36 +espadas15 +ataque1 +comparação MiniMax1), mais **2 reportadas nas ferramentas** para criar as rotações e a caminhada guiada. O ataque inicial tem estimativa1 sem cobrança exposta. O acumulado conservador é60. Não foi presumido reembolso de job sem imagem. O lote anterior do Idle/sul não é contado novamente. Nenhum job desta execução permanece pendente.
 
 ## Validação
 

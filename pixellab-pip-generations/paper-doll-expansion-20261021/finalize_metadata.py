@@ -5,7 +5,7 @@ HERE=Path(__file__).resolve().parent
 NAMES=['character-job.json','walk-south-job.json','walk-template-job.json',
        *[f'idle-{d}-job.json' for d in ['north','west','east']],
        *[f'{s}-{d}-job.json' for s in ['hair','outfit','weapon'] for d in ['north','west','east']],
-       'attack-south-job.json','attack-south-retry-job.json']
+       'attack-south-job.json','attack-south-retry-job.json','walk-minimax-job.json']
 
 def main():
     calls=[json.loads((HERE/name).read_text()) for name in NAMES]
@@ -21,7 +21,7 @@ def main():
                 (HERE/name).write_text(json.dumps(receipt,indent=2)+'\n')
     confirmed=sum(c.get('reported_usage',{}).get('generations',0) for c in calls)
     reported=sum(c.get('tool_reported_generations',0) or (c.get('estimated_generations',0) if c.get('tool')=='MCP create_character' else 0) for c in calls if 'reported_usage' not in c)
-    unknown=sum(c.get('estimated_generations',0) for c in calls if 'reported_usage' not in c and c.get('tool')=='MCP animate_image')
+    unknown=sum(c.get('estimated_generations',0) for c in calls if 'reported_usage' not in c and c.get('tool') in ['MCP animate_image','MCP animate_image_pixminimax'])
     manifest={'status':'four-direction Idle prototype; production not enabled',
               'authorization':'Owner authorized autonomous recommended PixelLab continuation in this execution; self-imposed ceiling100 additional generations, no USD overage or global auto change.',
               'ceiling_generations':100,'confirmed_charged_generations':confirmed,

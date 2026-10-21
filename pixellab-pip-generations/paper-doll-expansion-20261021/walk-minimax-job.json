@@ -1,0 +1,66 @@
+{
+  "tool": "MCP animate_image_pixminimax",
+  "job_id": "03eb1b7e-4512-46f5-ae59-6828df42c624",
+  "status": "completed",
+  "estimated_generations": 1,
+  "route_note": "Final low-cost comparison using a different movement model, explicitly announced within existing autonomous100-generation ceiling. No further retries on this route.",
+  "parameters": {
+    "first_frame_url": "body-south-input.png",
+    "description": "Walk in place facing directly south toward the viewer for one complete smooth walking cycle. Alternate left and right steps with opposite relaxed arm swings. Stay centered on a fixed ground line. Keep the face and chest toward the viewer throughout, the same body proportions and pixel scale. End with a step that connects naturally back to the first generated step. No turning, added clothing, weapons or camera movement.",
+    "direction": "south",
+    "view": "high top-down",
+    "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+    "initial_pose": "standing facing the viewer with feet planted and arms relaxed at the sides",
+    "enhance_prompt": false,
+    "frame_count": 8,
+    "no_background": true
+  },
+  "reported_usage": {
+    "generations": 1
+  },
+  "asset_id": "be7006de-a70a-58a6-a5b3-222de6919adf",
+  "outputs": [
+    "body-walk-minimax-raw-00.png",
+    "body-walk-minimax-raw-01.png",
+    "body-walk-minimax-raw-02.png",
+    "body-walk-minimax-raw-03.png",
+    "body-walk-minimax-raw-04.png",
+    "body-walk-minimax-raw-05.png",
+    "body-walk-minimax-raw-06.png",
+    "body-walk-minimax-raw-07.png",
+    "body-walk-minimax-raw-08.png"
+  ],
+  "sha256": {
+    "body-walk-minimax-raw-00.png": "6d000ef9c769332f95b0c87c239f24753435cb067e3d419dfd027aecfe30ba81",
+    "body-walk-minimax-raw-01.png": "d7cd590d54ad8f7faabe7362709d6468859d83a3ec41fdc902624d86a83d8539",
+    "body-walk-minimax-raw-02.png": "68fea6dc82387fd30d5e3a22c47788a87f00c4968e27e2cd99e2bd0aaf3d42d7",
+    "body-walk-minimax-raw-03.png": "e3fbdb8d3649ec55d3308e4c301b3f09ca38733b524552c9295ffcc211cd8538",
+    "body-walk-minimax-raw-04.png": "2a2e31594b0581b3b9f228363860ed7d539ed135516f812690ac19b6baa4e230",
+    "body-walk-minimax-raw-05.png": "5d6f5a52f717ec953bbd10c77c2cb0622149a656a7ffdf258ef11a5a708a4a5b",
+    "body-walk-minimax-raw-06.png": "435e6c17159320f5a873b98aacf81daa9a0548351efb22ac82397b0b8d458491",
+    "body-walk-minimax-raw-07.png": "c7b8082971c9035803e781bbf42a4ff6940b1e8266f4b2e6bd1535045c6aef51",
+    "body-walk-minimax-raw-08.png": "435e9296ec3c3c2e5c1b77453378a1d7aeec213e0dcf0e4f744c60f01923b6c2"
+  },
+  "playback": {
+    "input_echo": 0,
+    "generated_frames": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "fps": 8,
+    "loop": true
+  },
+  "review": {
+    "accepted_as_complete_sword_walk": false,
+    "identity_gate_improved": true,
+    "body_motion_candidate": true,
+    "weapon_attachment_gate_passed": false,
+    "reason": "Face/proportions improved. Hand/forearm occlusion prevents reliable validation of a sword socket throughout all eight frames. Preserve as a body-motion candidate; no garment or sword generation on uncertain grip."
+  }
+}

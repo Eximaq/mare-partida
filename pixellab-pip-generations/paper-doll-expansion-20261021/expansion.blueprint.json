@@ -300,6 +300,20 @@
     }
   },
   {
+    "_comment": "03eb1b7e-4512-46f5-ae59-6828df42c624; completed",
+    "MCP animate_image_pixminimax": {
+      "first_frame_url": "body-south-input.png",
+      "description": "Walk in place facing directly south toward the viewer for one complete smooth walking cycle. Alternate left and right steps with opposite relaxed arm swings. Stay centered on a fixed ground line. Keep the face and chest toward the viewer throughout, the same body proportions and pixel scale. End with a step that connects naturally back to the first generated step. No turning, added clothing, weapons or camera movement.",
+      "direction": "south",
+      "view": "high top-down",
+      "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+      "initial_pose": "standing facing the viewer with feet planted and arms relaxed at the sides",
+      "enhance_prompt": false,
+      "frame_count": 8,
+      "no_background": true
+    }
+  },
+  {
     "TASK": "Preserve outputs in order. Inspect body identity/loop before layer work. Split only successful masked atlases without repainting; use assemble_review.py for transparent padding and real hand sockets. Keep all pieces unapproved and fall back for missing actions. Validate in real browser before proposing merge."
   }
 ]

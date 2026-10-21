@@ -20,7 +20,7 @@ with sync_playwright() as p:
  q.clock.install();q.goto(BASE+'pixellab-pip-generations/paper-doll-expansion-20261021/preview.html',wait_until='networkidle')
  q.wait_for_function('window.__paperDollExpansion?.().ready')
  if '/dist/' in BASE:
-  for name in ['paper-doll.js','preview.js']:
+  for name in ['paper-doll.js','preview.js','motion-review.js']:
    assert '?v=' in q.locator(f'script[src*="{name}"]').get_attribute('src')
  for frame in range(4):
   q.locator('#frame').fill(str(frame));s=q.evaluate('__paperDollExpansion()')
@@ -37,6 +37,18 @@ with sync_playwright() as p:
  q.locator('#frame').fill('0');q.locator('#play').click()
  for n in [1,2,3,0]:q.clock.run_for(260);assert q.evaluate('__paperDollExpansion().frameIndex')==n
  q.locator('#play').click();q.screenshot(path=str(OUT/'four-view-idle-1366.png'),full_page=True)
+ q.locator('#motionPanel > summary').click();q.wait_for_function('window.__paperDollMotionReview?.().ready')
+ studies=q.evaluate('fetch("studies.json").then(r=>r.json())')
+ for study in studies:
+  q.locator('#studyType').select_option(study['id'])
+  for frame in range(8):
+   q.locator('#studyFrame').fill(str(frame));state=q.evaluate('__paperDollMotionReview()')
+   assert state['frameIndex']==frame and not state['productionEnabled']
+   assert q.evaluate('''async({file,frame})=>{const im=new Image();im.src=file;await im.decode();const c=document.createElement('canvas');c.width=c.height=64;const ctx=c.getContext('2d');ctx.drawImage(im,(frame%4)*64,Math.floor(frame/4)*64,64,64,0,0,64,64);const a=ctx.getImageData(0,0,64,64).data,b=document.getElementById('studyCanvas').getContext('2d').getImageData(0,0,64,64).data;return a.every((v,i)=>v===b[i]);}''',{'file':study['file'],'frame':frame})
+ q.locator('#studyType').select_option('attack');q.locator('#playStudy').click();q.clock.run_for(800)
+ state=q.evaluate('__paperDollMotionReview()');assert state['frameIndex']==7 and not state['playing'] and not state['loop']
+ q.clock.run_for(800);assert q.evaluate('__paperDollMotionReview().frameIndex')==7
+ q.locator('#motionPanel > summary').click()
  q.set_viewport_size({'width':393,'height':852});assert q.evaluate('document.documentElement.scrollWidth<=innerWidth')
  q.screenshot(path=str(OUT/'four-view-idle-393.png'),full_page=True)
  # Bundled loader exercises directional source filenames without desktop uploads.

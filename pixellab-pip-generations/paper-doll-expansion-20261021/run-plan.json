@@ -1,7 +1,7 @@
 {
   "status": "authorized by owner to advance recommended PixelLab stages autonomously in this execution",
   "ceiling_additional_generations": 100,
-  "known_charged_generations": 56,
+  "known_charged_generations": 57,
   "policy": "inspect each candidate; at most one justified retry for a failed gate; no USD credit overage; keep original files; no automatic merge",
   "priorities": [
     "four-direction idle",
@@ -20,5 +20,6 @@
   "character_id": "490799ff-e510-4685-b390-212ec6869bf1",
   "other_reported_generations": 2,
   "unconfirmed_estimate_generations": 1,
-  "conservative_total": 59
+  "conservative_total": 60,
+  "route_comparison_note": "After preserving failed v3/template movement studies, one final explicitly announced MiniMax walking comparison was authorized under the same autonomous run and ceiling100. No further retries on that route."
 }
