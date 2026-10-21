@@ -1,0 +1,86 @@
+{
+  "status": "proposal only; explicit authorization required before rendering rigid reuse",
+  "scope": "Idle/south four existing body frames; does not validate other actions or directions",
+  "artwork_rendered": false,
+  "runtime_changed": false,
+  "new_generations": 0,
+  "candidate_weapon_source": "weapon/frame-01.png",
+  "candidate_weapon_sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+  "candidate_visible_pixels": 79,
+  "weapon_reference_anchor": [
+    20,
+    36
+  ],
+  "candidate_is_not_art_approved": true,
+  "all_four_geometries_fit": true,
+  "frames": [
+    {
+      "frame": 1,
+      "body_source": "body-source-01.png",
+      "body_sha256": "6d000ef9c769332f95b0c87c239f24753435cb067e3d419dfd027aecfe30ba81",
+      "hand_anchor": [
+        20,
+        36
+      ],
+      "translation_from_reference": [
+        0,
+        0
+      ],
+      "clipped_pixels": 0,
+      "body_overlap_pixels": 0,
+      "hand_contact_pixels": 7,
+      "geometry_fits": true
+    },
+    {
+      "frame": 2,
+      "body_source": "body-source-02.png",
+      "body_sha256": "ab34833564c7a80f982228c9f8eaeae4e798b5ddbdb8761abf999eb750e71923",
+      "hand_anchor": [
+        18,
+        35
+      ],
+      "translation_from_reference": [
+        -2,
+        -1
+      ],
+      "clipped_pixels": 0,
+      "body_overlap_pixels": 0,
+      "hand_contact_pixels": 7,
+      "geometry_fits": true
+    },
+    {
+      "frame": 3,
+      "body_source": "body-source-03.png",
+      "body_sha256": "88d15ffa8e6433120e96ba4e1920ecbbd2fab109b7c11fcf102e769867fe5b26",
+      "hand_anchor": [
+        20,
+        36
+      ],
+      "translation_from_reference": [
+        0,
+        0
+      ],
+      "clipped_pixels": 0,
+      "body_overlap_pixels": 0,
+      "hand_contact_pixels": 7,
+      "geometry_fits": true
+    },
+    {
+      "frame": 4,
+      "body_source": "body-source-04.png",
+      "body_sha256": "cad9315111f37be1bec2cdf377aa74c14a01bc74471be9699095fd9aa62695aa",
+      "hand_anchor": [
+        19,
+        35
+      ],
+      "translation_from_reference": [
+        -1,
+        -1
+      ],
+      "clipped_pixels": 0,
+      "body_overlap_pixels": 0,
+      "hand_contact_pixels": 7,
+      "geometry_fits": true
+    }
+  ]
+}
