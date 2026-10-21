@@ -55,8 +55,8 @@ def audit(base_path,edit_path,region=None,layer_path=None,mask_path=None):
     return result
 
 
-def audit_changes_layer(base_path,layer_path,mask_path,contact):
-    """Validate native changes-only output; never erase a leaked body or move a grip."""
+def audit_changes_layer(base_path,layer_path,mask_path,contact,allow_body_occlusion=False):
+    """Validate isolated output. Clothing may cover only explicitly allowed body pixels."""
     base=Image.open(base_path).convert('RGBA');layer=Image.open(layer_path).convert('RGBA')
     if base.size!=layer.size:
         return {'passed':False,'reason':'canvas-size-mismatch','base_size':base.size,'layer_size':layer.size}
@@ -79,13 +79,19 @@ def audit_changes_layer(base_path,layer_path,mask_path,contact):
     composite=Image.alpha_composite(base,layer)
     cp=list(pixels(composite));body_changes=sum(cp[i]!=a[i] for i in body)
     unprotected_body=allowed&body
-    passed=bool(visible) and bool(hand) and bool(contacts) and not outside and not overlap and not fractional and not body_changes and not unprotected_body
+    unmasked_changes=sum(cp[i]!=a[i] for i in body-allowed)
+    body_valid=not unmasked_changes if allow_body_occlusion else not overlap and not body_changes and not unprotected_body
+    passed=bool(visible) and bool(hand) and bool(contacts) and not outside and not fractional and body_valid
     return {'passed':passed,'scope':'structural contact only; artistic approval required',
             'artwork_approved':False,'size':base.size,'contact_anchor':[x,y],
             'visible_layer_pixels':len(visible),'outside_mask_pixels':len(outside),
-            'unprotected_body_pixels':len(unprotected_body),
+            'body_occlusion_allowed':allow_body_occlusion,
+            'unprotected_body_pixels':0 if allow_body_occlusion else len(unprotected_body),
+            'permitted_body_occlusion_pixels':len(unprotected_body) if allow_body_occlusion else 0,
+            'changed_unmasked_body_pixels':unmasked_changes,
             'body_overlap_pixels':len(overlap),'partial_alpha_pixels':fractional,
             'changed_body_pixels':body_changes,'hand_contact_pixels':len(contacts),
+            'anchor_contact_pixels':len(contacts),
             'layer_bbox':layer.getbbox()}
 
 
@@ -116,12 +122,13 @@ if __name__=='__main__':
     p.add_argument('--layer');p.add_argument('--report')
     p.add_argument('--inspection-draft',action='store_true',help='Explicit review-only masked extraction, preserving the original body outside the mask.')
     p.add_argument('--changes-layer',action='store_true',help='Audit an already isolated generated layer without extraction or repair.')
-    p.add_argument('--contact',nargs=2,type=int,metavar=('X','Y'),help='Native hand contact for --changes-layer.')
+    p.add_argument('--contact',nargs=2,type=int,metavar=('X','Y'),help='Native attachment point for --changes-layer.')
+    p.add_argument('--allow-body-occlusion',action='store_true',help='For hair/clothing only: allow coverage of body pixels inside the explicit mask.')
     p.add_argument('--composite',help='Required with --inspection-draft; output must remain labelled as draft.')
     args=p.parse_args()
     if args.changes_layer:
         if args.inspection_draft or not args.mask or not args.contact:p.error('Changes-only audit requires --mask and --contact, without --inspection-draft.')
-        result=audit_changes_layer(args.base,args.edit,args.mask,args.contact)
+        result=audit_changes_layer(args.base,args.edit,args.mask,args.contact,allow_body_occlusion=args.allow_body_occlusion)
     elif args.inspection_draft:
         if not args.layer or not args.composite:p.error('Draft extraction requires --layer and --composite.')
         result=inspection_draft(args.base,args.edit,args.layer,args.composite,args.region,args.mask)

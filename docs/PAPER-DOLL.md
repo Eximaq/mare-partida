@@ -40,6 +40,14 @@ O [piloto real Idle/sul](PAPER-DOLL-IDLE-SUL.md) consumiu11 gerações autorizad
 
 A [continuação da espada](PAPER-DOLL-ESPADA.md) usa saídas nativas isoladas com máscaras que congelam a anatomia. Quatro contatos passaram com zero alteração no corpo. O teste usa um rig de inspeção corpo/arma; o `human-v1` continua exigindo corpo, cabelo, roupa e arma completos. A variação visual da lâmina e as peças de roupa/cabelo mantêm a validação artística pendente.
 
+### Preparação de edição agrupada — sem novas gerações
+
+`tools/paper_doll_batch_audit.py` verifica uma folha nativa por célula, na ordem declarada, sem redimensionar ou completar imagens. Uma célula inválida impede a exportação de todo o conjunto; quatro camadas visivelmente idênticas são rejeitadas como sequência estática. O teste estrutural continua separado da avaliação artística. Cinco testes de fixtures geométricas cobrem ordem/exportação, vazamento de uma célula, duplicação estática, canvas e oclusão autorizada.
+
+O auditor de camadas isoladas mantém por padrão todos os pixels do corpo protegidos para armas. Cabelo/roupa podem usar explicitamente `allow_body_occlusion:true` (CLI `--allow-body-occlusion`) para cobrir somente a anatomia dentro da máscara correspondente. Alpha parcial, pixels fora da máscara, perda de contato ou mudança na anatomia fora da região continuam bloqueando a aprovação estrutural. Onze testes Python verificam esses contratos; isso não concede aprovação artística.
+
+`pixellab-pip-generations/paper-doll-layer-batch-20261021/` contém apenas fontes copiadas, uma folha de entrada128×128 com quatro frames64×64 já existentes, máscaras binárias e guias de contexto192×128 com referências existentes. As guias são entradas, não sprites novos. `generation-plan.json` registra três chamadas propostas de aproximadamente6 gerações cada, teto18, sem retries e com interrupção na primeira reprovação. **Nenhuma chamada paga desse plano foi feita; a aprovação do novo consumo permanece pendente.** A folha é uma edição de poses existentes; não se anima a folha como um personagem único nem se simula movimento por duplicação.
+
 Infraestrutura funcional com fallback, bancada interativa e contrato de assets. **Ainda não existe um conjunto modular real de Espadachim para validação artística.** Nenhum PNG foi gerado, pintado, separado por cores ou convertido em camada artificial. O jogo continua mostrando os personagens originais.
 
 Branch `feature/paper-doll-fase-1`, criada de `origin/main` em `5047eea`, incorpora o checkpoint de animações2.0 (`4ab2348`, preservado por cherry-pick). O PR de checkpoint39 permanece em rascunho; esta fase inclui esse trabalho e não depende de fazer merge nele. Não fazer merge/publicação automática de nenhum dos dois.

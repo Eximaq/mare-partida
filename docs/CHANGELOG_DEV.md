@@ -1,3 +1,7 @@
+## 21/10/2026 — Paper Doll: preparação de camadas agrupadas, zero novas gerações
+
+Continuação do PR45. Auditor de atlas por célula, exportação atômica, detecção de sequência estática e oclusão corporal apenas quando explicitamente permitida por máscara para cabelo/roupa.11 testes de camada e5 de lote passaram, além do build e da revisão da espada no Chromium. Entradas nativas, máscaras e contexto preparados a partir de assets existentes, sem novos pixels de personagem. Três chamadas de geração propostas com teto18 continuam aguardando aprovação; nenhuma foi executada. Runtime, catálogo e saves intactos.
+
 ## 21/10/2026 — Paper Doll: camadas nativas de espada e contato preservado
 
 Continuação do PR45. Quatro camadas de arma64×64 isoladas pelo MCP Pro Flash, com máscara própria por frame e corpo totalmente congelado. Todos os contatos passaram e houve zero mudança na anatomia; a lâmina ainda varia visualmente e continua sem aprovação final. Um job falhou por sobrecarga; apenas o retry especificamente autorizado foi executado.20 gerações com cobrança confirmada, cobrança do job falho não exposta, sem presumir reembolso.

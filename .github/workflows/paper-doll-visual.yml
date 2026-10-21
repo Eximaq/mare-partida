@@ -16,9 +16,12 @@ on:
       - 'tests/paper_doll_idle_browser.py'
       - 'tests/paper_doll_sword_browser.py'
       - 'tests/paper_doll_fit_audit_test.py'
+      - 'tests/paper_doll_batch_audit_test.py'
       - 'tools/paper_doll_fit_audit.py'
+      - 'tools/paper_doll_batch_audit.py'
       - 'pixellab-pip-generations/paper-doll-human-idle-south-20261021/**'
       - 'pixellab-pip-generations/paper-doll-sword-fit-20261021/**'
+      - 'pixellab-pip-generations/paper-doll-layer-batch-20261021/**'
       - 'tests/universal_character_browser.py'
       - 'tests/class_combat_v2_browser.py'
       - '.github/workflows/paper-doll-visual.yml'
@@ -39,6 +42,7 @@ jobs:
           python -m pip install playwright==1.63.0 Pillow==13.0.0
           python -m playwright install --with-deps chromium
           python tests/paper_doll_fit_audit_test.py
+          python tests/paper_doll_batch_audit_test.py
           python pixellab-pip-generations/paper-doll-sword-fit-20261021/assemble_review.py
           python tools/build_pages.py
       - name: Conferir bancada, fallback e jogo

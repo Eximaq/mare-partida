@@ -1,0 +1,86 @@
+{
+  "status": "awaiting explicit cost approval; no paid calls made",
+  "estimated_generation_total": 18,
+  "proposed_ceiling": 18,
+  "retries": false,
+  "stop_on_failed_gate": true,
+  "native_frames": 4,
+  "native_cell": [
+    64,
+    64
+  ],
+  "calls": [
+    {
+      "slot": "weapon",
+      "tool": "MCP inpaint_image_pro_flash",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-atlas-input.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "mask_image_url": "weapon-mask-input.png",
+        "context_image": {
+          "url": "weapon-context-input.png",
+          "usage_description": "The left 128x128 area is the unchanged source sheet. The 64x64 sprite on the right guides only the appearance of the requested addition, never the body pose."
+        },
+        "description": "Edit the four existing south-facing poses in this 2x2 sheet. In each 64x64 cell add only the same steel sailor sword shown by the right-side reference, attached to the existing right hand, blade angled down-left. Keep identical blade length, width, brass guard, palette and pixel scale across cells. Preserve every body pixel, pose, cell position and transparency. No other objects or anatomy."
+      }
+    },
+    {
+      "slot": "hair",
+      "tool": "MCP inpaint_image_pro_flash",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-atlas-input.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "mask_image_url": "hair-mask-input.png",
+        "context_image": {
+          "url": "look-context-input.png",
+          "usage_description": "The left 128x128 area is the unchanged source sheet. The 64x64 sprite on the right guides only the appearance of the requested addition, never the body pose."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair matching the right-side reference, fitted to the existing south-facing scalp. Follow each head position. Preserve the face, eyes, ears, body pose, proportions, hands, shorts, cell positions and transparency. Change only the masked hair region. No bandana, duplicate head, clothing or loose objects."
+      }
+    },
+    {
+      "slot": "outfit",
+      "tool": "MCP inpaint_image_pro_flash",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-atlas-input.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "mask_image_url": "outfit-mask-input.png",
+        "context_image": {
+          "url": "look-context-input.png",
+          "usage_description": "The left 128x128 area is the unchanged source sheet. The 64x64 sprite on the right guides only the appearance of the requested addition, never the body pose."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only a cream short-sleeved linen shirt and navy sailor waistcoat matching the right-side reference, fitted to the existing chest and shoulders. Follow each breathing pose. Preserve the face, head, hands, forearms, shorts, feet, cell positions, proportions and transparency. Change only the masked garment region. No body redraw, hair, weapons or emblems."
+      }
+    }
+  ]
+}
