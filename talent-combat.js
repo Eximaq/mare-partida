@@ -19,7 +19,7 @@
     if(k==='backstab'&&!rt.backstabbed.has(target.id)&&behind(hero,target)){rt.backstabbed.add(target.id);trueAmount=Math.floor(stats.physical*1.5);proc(rt,k);}
     const final=U.before(g,rt.ultimate,{basic,magic,critical});critical=final.critical;multiplier*=final.multiplier;
     const wear=!magic&&target.talentWear?.remaining>0?target.talentWear.stacks*.04:0;
-    const armor=(target.empRemaining>0?0:target.defense*(target.hakiDebuff>0?.85:1))*(1-(magic?stats.magicPen:stats.penetration))*(1-wear)*(basic&&U.selected(g)==='titan'?.8:1);
+    const armor=(target.empRemaining>0?0:(magic?(target.magicDefense??target.defense):target.defense)*(target.hakiDebuff>0?.85:1))*(1-(magic?stats.magicPen:stats.penetration))*(1-wear)*(basic&&U.selected(g)==='titan'?.8:1);
     return {multiplier,critical,armor,trueAmount,critMultiplier:final.critMultiplier};
   }
   function afterHit(g,rt,{target,stats,basic,magic,projectile,critical,damage,contactScale=1,fromClone=false,random=Math.random}){

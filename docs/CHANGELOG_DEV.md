@@ -1,5 +1,11 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Ilha dos Animais Raros e Cocox
+
+- Branch `feature/rare-animals-cocox`, baseada no `main` remoto `ffe6f05`. Mapa 32×32 com células nativas 64×64, quatro clareiras conectadas, floresta densa, retorno ao porto e caçada Cocox Nv.35.
+- Reutilizados água, árvores e recortes 64×64 da Ilha Dawn; sprites idle/corrida/ataque recuperados do personagem Cocox já salvo no PixelLab, sem nova geração. Definição persistida em SQLite pelo backend Python e exposta em `/api/monsters/catalog`; perfil do cliente confere com o catálogo.
+- 27 suítes Node, teste Python, endpoint HTTP e build Pages validados. Consulta técnica, balanceamento e origem dos assets em [ILHA-ANIMAIS-RAROS.md](ILHA-ANIMAIS-RAROS.md).
+
 ## 20/10/2026 — Ilha Dawn manual do proprietário
 
 - Branch `feature/dawn-mapa-manual`, base `bb2c87d`, preservando os tooltips do colaborador. Importado o ZIP PixelLab:56×40 tiles64, PNG e42 objetos originais preservados. Cais, floresta, praias e vila substituem o visual vulcânico no destino inicial.
