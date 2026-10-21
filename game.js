@@ -1652,7 +1652,7 @@
     if(drawMobArt(m)){
       if(m.alive){
         const width=m.type==='boss'?88:65, ratio=Math.max(0,m.hp/m.maxHP),boss=m.type==='boss';
-        let barY=m.y-(activeMap().id==='rare'&&m.type==='cocox'?118:['embers','dawn'].includes(activeMap().id)?79:boss?114:79);
+        let barY=activeMap().id==='rare'&&m.type==='cocox'?MareRareRenderer.cocoxHealthBarY(m):m.y-(['embers','dawn'].includes(activeMap().id)?79:boss?114:79);
         px(ctx,m.x-width/2,barY,width,8,'#101322');
         px(ctx,m.x-width/2+1,barY+1,(width-2)*ratio,6,boss?'#e5a35d':'#e27283');
         ctx.font='bold 12px Inter,Segoe UI,sans-serif';ctx.textAlign='center';ctx.lineWidth=3;
@@ -1999,7 +1999,7 @@ function applySceneHudLayout(){
     if(activeMap().id==='conchas'&&Math.hypot(x-MareConchas.returnPoint.x,y-MareConchas.returnPoint.y)<42){walkTo({...MareConchas.returnPoint},{...MareConchas.returnPoint,kind:'return'});return;}
     if(activeMap().id==='orange'&&Math.hypot(x-MareOrange.returnPoint.x,y-MareOrange.returnPoint.y)<42){walkTo({...MareOrange.returnPoint},{...MareOrange.returnPoint,kind:'return'});return;}
     if(activeMap().id==='embers'&&Math.hypot(x-MareEmber.returnPoint.x,y-MareEmber.returnPoint.y)<42){walkTo({...MareEmber.returnPoint},{...MareEmber.returnPoint,kind:'return'});return;}
-    const target=livingMobs().find(m=>Math.hypot(m.x-x,m.y-30-y)<48);
+    const target=livingMobs().find(m=>activeMap().id==='rare'&&m.type==='cocox'?MareRareRenderer.cocoxHitTest(m,x,y):Math.hypot(m.x-x,m.y-30-y)<48);
     if(target){world.target=target;autoPlay=true;travelPath=[];lobbyDestination=null;rejectedTargets.delete(target.id);updateUI();return;}
     walkTo(point);
   });
