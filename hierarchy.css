@@ -1,0 +1,38 @@
+.hierarchy-panel{color:var(--rpg-text,#ebdfc8);font-family:Segoe UI,sans-serif;min-width:0}
+.hierarchy-panel h2,.hierarchy-panel h3{font-family:Bahnschrift,Trebuchet MS,sans-serif;margin:0}
+.hierarchy-heading,.hierarchy-player,.hierarchy-board{border:1px solid var(--rpg-border,#9a7545);border-radius:10px;background:linear-gradient(150deg,#193b38,#102729);box-shadow:inset 0 0 0 1px #d2ae7440}
+.hierarchy-heading{display:grid;grid-template-columns:66px minmax(0,1fr) 150px;gap:16px;align-items:center;padding:15px 20px;margin-bottom:16px;background:linear-gradient(120deg,#38291e,#173633)}
+.hierarchy-heading .hierarchy-flag{width:66px;height:64px;object-fit:contain}
+.hierarchy-heading .hierarchy-current-art{width:150px;height:88px;object-fit:contain;background:linear-gradient(#efe3c7,#d4bea0);border:2px solid #a77743;border-radius:7px;padding:9px;justify-self:end}
+#characterQuickMenu [data-character-section="hierarchy"] img{background:#e9d9b9;border-radius:4px;padding:3px}
+.hierarchy-heading small{color:var(--hierarchy-accent);font-weight:800;letter-spacing:.08em}
+.hierarchy-heading h2{margin:5px 0;font-size:clamp(23px,3vw,30px);color:#f2dfb6}
+.hierarchy-heading span{color:#c6c9b8}
+.hierarchy-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,.85fr);gap:16px;align-items:start}
+.hierarchy-player,.hierarchy-board{padding:18px;min-width:0}
+.hierarchy-panel h3{color:#e5c991;margin-bottom:14px}
+.hierarchy-next{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center}
+.hierarchy-next>div{background:linear-gradient(#efe3c7,#d4bea0);border:2px solid #a77743;border-radius:8px;color:#272017;min-height:100px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:12px}
+.hierarchy-next small{font-size:10px;letter-spacing:.07em;color:#665039;font-weight:800}
+.hierarchy-next strong{font-family:Bahnschrift,Trebuchet MS,sans-serif;font-size:clamp(17px,2vw,23px);line-height:1.1;margin-top:7px}
+.hierarchy-next>span{font-size:23px;color:#dfbd7a}
+.hierarchy-requirement{margin:18px 0 8px;color:#e8d4aa;font-weight:700}
+.hierarchy-progress{height:14px;border:1px solid #a98656;border-radius:20px;background:#0b2120;overflow:hidden}
+.hierarchy-progress span{display:block;height:100%;background:linear-gradient(90deg,#619e8b,var(--hierarchy-accent));transition:width .35s ease}
+.hierarchy-player .dialog-button{margin-top:16px;width:100%}
+.hierarchy-locked{color:#e2b28d}.hierarchy-feedback{color:#a8e0bd}
+.hierarchy-ranking{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.hierarchy-ranking li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:9px;align-items:center;border:1px solid #b99d6540;border-radius:6px;padding:9px;background:#14302d}
+.hierarchy-ranking li.is-self{border-color:#dcbd7d;background:#d0af5b33}
+.hierarchy-place{font-family:Bahnschrift,Trebuchet MS,sans-serif;font-size:18px;color:#e5c991;font-weight:800}
+.hierarchy-ranking li strong,.hierarchy-ranking li small{display:block;overflow-wrap:anywhere}
+.hierarchy-ranking li strong{font-size:13px}.hierarchy-ranking li small{font-size:11px;color:#c9c1ac;margin-top:3px}
+.hierarchy-scores{text-align:right;font-size:12px;white-space:nowrap}
+.hierarchy-board>small{display:block;margin-top:10px;color:#c9c1ac}
+.hierarchy-transition{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center;margin:15px 0}
+.hierarchy-transition figure{margin:0;padding:10px;height:125px;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;background:linear-gradient(#efe3c7,#d4bea0);border:3px solid #a77743;border-radius:8px;color:#2b231b}
+.hierarchy-transition img{max-width:100%;max-height:75px;object-fit:contain}
+.hierarchy-transition figcaption{font-weight:700;font-size:12px;text-align:center;margin-top:6px}
+.hierarchy-transition>span{font-size:26px;color:#dfbd7a}
+@media(max-width:760px){.hierarchy-layout{grid-template-columns:1fr}.hierarchy-heading{grid-template-columns:52px minmax(0,1fr) 110px;padding:12px;gap:10px}.hierarchy-heading .hierarchy-flag{width:52px;height:52px}.hierarchy-heading .hierarchy-current-art{width:110px;height:72px}}
+@media(max-width:480px){.hierarchy-heading{grid-template-columns:42px minmax(0,1fr) 80px}.hierarchy-heading .hierarchy-flag{width:42px;height:42px}.hierarchy-heading .hierarchy-current-art{width:80px;height:62px;padding:4px}.hierarchy-heading h2{font-size:20px}.hierarchy-next{gap:5px}.hierarchy-next>div{min-height:105px;padding:5px}.hierarchy-next strong{font-size:16px}.hierarchy-transition{gap:4px}.hierarchy-transition figure{height:105px}}
