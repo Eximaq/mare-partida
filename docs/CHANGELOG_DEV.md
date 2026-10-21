@@ -1,5 +1,10 @@
 # Histórico de desenvolvimento
 
+## 20/10/2026 — Pés do Dachshund na forma Zoan
+
+- Branch `fix/inu-zoan-grounding`, sobre o `main` remoto `8625aa6`. Corrigida a altura de cada quadro e direção do Cão Salsicha de Âmbar em `zoan-art.js`: margens transparentes diferentes entre idle, caminhada e ataque faziam a forma flutuar. Os PNGs, as outras Zoans, os atributos e os saves não mudam.
+- Cobertura em `tests/zoan-grounding.test.cjs`; 29 suítes Node e `python tools/build_pages.py` aprovados. Inspeção visual na transformação e caminhada lateral do laboratório DEV. Detalhes em [ZOAN-RANK-E.md](ZOAN-RANK-E.md).
+
 ## 20/10/2026 — Ilha dos Animais Raros e Cocox
 
 - Branch `feature/rare-animals-cocox`, baseada no `main` remoto `ffe6f05`. Mapa 32×32 com células nativas 64×64, quatro clareiras conectadas, floresta densa, retorno ao porto e caçada Cocox Nv.35.

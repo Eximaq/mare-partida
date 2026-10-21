@@ -22,6 +22,8 @@ PixelLab: Tori fruta `18c57239-f27d-4995-a3a7-d5044a1b6746`, personagem `60ed537
 
 Os PNGs de caminhada e ataque são recortes sem interpolação dos quadros gerados pelo PixelLab em canvas ampliado, centralizados pela união da silhueta em cada direção. Os VFX do PixelLab Workbench foram reorganizados em tiras horizontais, sem interpolação. Cada célula final mede exatamente 48×48.
 
+O Dachshund possui margens transparentes diferentes entre idle, caminhada e ataque: nas poses laterais paradas, o último pixel visível fica na linha 38, enquanto a caminhada alcança as linhas 44–46. `zoan-art.js` ajusta a posição vertical por quadro e direção para que as patas permaneçam no ponto do chão usado pelo personagem e sua sombra, inclusive nas prévias. Os arquivos originais e as demais Zoans permanecem inalterados.
+
 ## Validação
 
 Executar `node tests/akuma-system.test.cjs`, `python tests/akuma_backend_test.py`, regressões Node pertinentes e `python tools/build_pages.py`. No navegador, conferir registro, silhueta bloqueada, equipamento, T, três atalhos, recarga, ataque básico, caminhada, colisão da Arrancada, lentidão da Mordida, retrato e prévias.
