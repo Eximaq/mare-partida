@@ -5,7 +5,7 @@
   const placedObjects=root.MareNewIslandObjects||(typeof module!=='undefined'?require('./new-islands-objects.js'):null);
   const definitions={
     rare:{wood:'ei',walkable:'eicrag',preferred:{x:12,y:4},sectors:[['entrada','Cais de Madeira',16,5],['subbosque','Bosque dos Cocox',23,10],['mata-fechada','Mata Fechada',31,17],['copa-antiga','Copa Antiga',43,9]]},
-    syrup:{walkable:'ugrm',south:'u',sectors:[['entrada','Estrada do Sul',11,4],['vila-baixa','Vila Baixa',9,-9],['praça','Praça dos Gatos',2,-17],['bosque','Bosque de Syrup',19,-20]]},
+    syrup:{walkable:'ugm',south:'u',sectors:[['entrada','Estrada do Sul',11,4],['vila-baixa','Vila Baixa',9,-9],['praça','Praça dos Gatos',2,-17],['bosque','Bosque de Syrup',19,-20]]},
     baratie:{walkable:'cht',south:'c',sectors:[['entrada','Salão Sul',1,-1],['salão','Salão de Jantar',1,-6],['convés','Convés Principal',5,-11],['cozinha','Cozinha',1,-17]]},
     arlong:{wood:'c',walkable:'ch',preferred:{x:12,y:8},sectors:[['entrada','Passarela do Porto',12,5],['ala-oeste','Ala Oeste',7,1],['ala-leste','Ala Leste',17,1],['palacio','Praça do Palácio',12,-3]]}
   };
