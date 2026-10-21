@@ -109,5 +109,19 @@ for name in sword_files:
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, destination)
 shutil.copy2(ROOT/'docs/PAPER-DOLL-ESPADA.md', OUT/'docs/PAPER-DOLL-ESPADA.md')
+# Diagnostic atlas: explicit allowlist keeps generation inputs and local scripts private.
+batch_relative = Path('pixellab-pip-generations/paper-doll-layer-batch-20261021')
+batch_files = ['preview.html', 'review.json', 'manifest.json', 'layer-batch.blueprint.json',
+               'body-idle-south.png', 'weapon-idle-south.png', 'previous-weapon-idle.png',
+               'weapon-raw.png', 'weapon-audit.json', 'weapon-batch-review.gif', 'comparison-sheet.png']
+batch_files += [f'{kind}-{index:02}.png' for kind in ['body-source', 'composite'] for index in range(1, 5)]
+for name in batch_files:
+    source = ROOT/batch_relative/name
+    if not source.is_file():
+        raise SystemExit(f'Arquivo do diagnóstico de camadas ausente: {name}')
+    destination = OUT/batch_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-LOTE-CAMADAS.md', OUT/'docs/PAPER-DOLL-LOTE-CAMADAS.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

@@ -1,5 +1,5 @@
 {
-  "status": "awaiting explicit cost approval; no paid calls made",
+  "status": "stopped after weapon artistic gate failed; hair and outfit not submitted",
   "estimated_generation_total": 18,
   "proposed_ceiling": 18,
   "retries": false,
@@ -82,5 +82,14 @@
         "description": "In each 64x64 cell of this 2x2 sheet add only a cream short-sleeved linen shirt and navy sailor waistcoat matching the right-side reference, fitted to the existing chest and shoulders. Follow each breathing pose. Preserve the face, head, hands, forearms, shorts, feet, cell positions, proportions and transparency. Change only the masked garment region. No body redraw, hair, weapons or emblems."
       }
     }
+  ],
+  "explicit_user_approval": "Autorizo",
+  "charged_generations": 6,
+  "executed_slots": [
+    "weapon"
+  ],
+  "not_submitted_slots": [
+    "hair",
+    "outfit"
   ]
 }

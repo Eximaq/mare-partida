@@ -15,6 +15,7 @@ on:
       - 'tests/paper_doll_partial_browser.py'
       - 'tests/paper_doll_idle_browser.py'
       - 'tests/paper_doll_sword_browser.py'
+      - 'tests/paper_doll_layer_batch_browser.py'
       - 'tests/paper_doll_fit_audit_test.py'
       - 'tests/paper_doll_batch_audit_test.py'
       - 'tools/paper_doll_fit_audit.py'
@@ -44,6 +45,7 @@ jobs:
           python tests/paper_doll_fit_audit_test.py
           python tests/paper_doll_batch_audit_test.py
           python pixellab-pip-generations/paper-doll-sword-fit-20261021/assemble_review.py
+          python pixellab-pip-generations/paper-doll-layer-batch-20261021/assemble_review.py
           python tools/build_pages.py
       - name: Conferir bancada, fallback e jogo
         env:
@@ -55,6 +57,7 @@ jobs:
           python tests/paper_doll_partial_browser.py
           python tests/paper_doll_idle_browser.py
           python tests/paper_doll_sword_browser.py
+          python tests/paper_doll_layer_batch_browser.py
           python tests/universal_character_browser.py
           python tests/class_combat_v2_browser.py
       - name: Capturas e medições para revisão

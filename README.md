@@ -18,6 +18,8 @@ O [piloto Idle frontal](pixellab-pip-generations/paper-doll-human-idle-south-202
 
 O [teste seguinte da espada](pixellab-pip-generations/paper-doll-sword-fit-20261021/preview.html) apresenta quatro camadas nativas com contato na mão e corpo preservado. A identidade visual da lâmina ainda varia; cabelo/roupa continuam pendentes e o conjunto não foi ativado. [Relatório, custo conhecido e limites](docs/PAPER-DOLL-ESPADA.md).
 
+O [lote por atlas](pixellab-pip-generations/paper-doll-layer-batch-20261021/preview.html) tentou uniformizar a espada em uma única chamada. O contato passou, mas a arte foi reprovada pela variação da lâmina. Foram cobradas6 gerações; cabelo e roupa não foram gerados. [Diagnóstico e validação](docs/PAPER-DOLL-LOTE-CAMADAS.md).
+
 ## Interface UI/UX 2.0
 
 A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.

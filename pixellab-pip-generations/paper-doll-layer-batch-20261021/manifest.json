@@ -1,0 +1,99 @@
+{
+  "status": "stopped-on-artistic-failure",
+  "approval": {
+    "ceiling_generations": 18,
+    "user_reply": "Autorizo",
+    "no_retries": true,
+    "inspection_order": [
+      "weapon",
+      "hair",
+      "outfit"
+    ]
+  },
+  "route": "MCP inpaint_image_pro_flash",
+  "prompt_preparation": "agent-authored, English wording explicitly approved with Portuguese translation",
+  "output_structure": "one native 128x128 transparent atlas, four row-major 64x64 cells, existing animation poses",
+  "calls": [
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "slot": "weapon",
+      "job_id": "c41dbbaa-b5bf-482c-bd5c-a3e6a8278763",
+      "source_image_id": "cd0a0ad6-2c28-50a2-9966-44ade1987036",
+      "status": "completed",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-atlas-input.png",
+        "mask_image_url": "weapon-mask-input.png",
+        "context_image": {
+          "url": "weapon-context-input.png",
+          "usage_description": "The left 128x128 area is the unchanged source sheet. The 64x64 sprite on the right guides only the appearance of the requested addition, never the body pose."
+        },
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "description": "Edit the four existing south-facing poses in this 2x2 sheet. In each 64x64 cell add only the same steel sailor sword shown by the right-side reference, attached to the existing right hand, blade angled down-left. Keep identical blade length, width, brass guard, palette and pixel scale across cells. Preserve every body pixel, pose, cell position and transparency. No other objects or anatomy."
+      },
+      "approval": {
+        "ceiling": 18,
+        "no_retries": true,
+        "stop_on_failure": true
+      },
+      "asset_status": "saved",
+      "reported_usage": {
+        "generations": 6
+      },
+      "artistic_gate": "failed",
+      "raw_file": "weapon-raw.png",
+      "raw_sha256": "be71f77f2bdb81c50952a48966507bf23837c29cb85f7d99fc611ad38ec94608",
+      "asset_id": "cd0a0ad6-2c28-50a2-9966-44ade1987036"
+    }
+  ],
+  "charged_generations": 6,
+  "not_submitted_slots": [
+    "hair",
+    "outfit"
+  ],
+  "prompt_translation_pt": "Editar as quatro poses frontais existentes em grade 2x2. Adicionar somente a mesma espada de a\u00e7o com guarda de lat\u00e3o da refer\u00eancia, em contato com a m\u00e3o direita, l\u00e2mina para baixo/esquerda, mantendo comprimento, espessura, paleta e escala entre as c\u00e9lulas. Preservar corpo, pose, posi\u00e7\u00e3o e transpar\u00eancia; sem objetos ou anatomia adicionais.",
+  "context_usage_translation_pt": "A \u00e1rea esquerda de128x128 \u00e9 a fonte preservada; o sprite de64x64 \u00e0 direita orienta apenas a apar\u00eancia da adi\u00e7\u00e3o, nunca a pose do corpo.",
+  "omitted_controls": "Other generation controls omitted; PixelLab defaults. No additional retries submitted.",
+  "verification": {
+    "structural_pass": true,
+    "artwork_approved": false,
+    "reason": "Visible blade length, thickness and guard differ across the four Idle poses. Structural contact is not artistic approval.",
+    "body_pixel_changes": 0,
+    "outside_mask_pixels": 0,
+    "visible_weapon_pixels": [
+      79,
+      51,
+      74,
+      53
+    ],
+    "weapon_bbox_sizes": [
+      [
+        17,
+        17
+      ],
+      [
+        14,
+        15
+      ],
+      [
+        15,
+        16
+      ],
+      [
+        16,
+        15
+      ]
+    ]
+  },
+  "local_assembly": "Exact native split, original frame order, transparent padding10/13 into84x84; pivot42/65. Four-frame4FPS looping transparent GIF with decoded visible RGBA equality. No scaling, repainting, replacement of frames or altered offsets.",
+  "runtime": "Inspection rig body/weapon only, approved:false. No production asset registration, save, physics or combat changes."
+}

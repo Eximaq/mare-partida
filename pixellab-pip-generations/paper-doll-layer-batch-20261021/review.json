@@ -1,0 +1,235 @@
+{
+  "status": "artistic-gate-failed",
+  "structural_pass": true,
+  "artwork_approved": false,
+  "rig": {
+    "id": "weapon-batch-review-v1",
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1,
+    "requiredSlots": [
+      "body",
+      "weapon"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "batch-body",
+      "slot": "body",
+      "rigId": "weapon-batch-review-v1",
+      "approved": false,
+      "available": true,
+      "zIndex": 0,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "url": "body-idle-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84
+        }
+      }
+    },
+    {
+      "id": "batch-weapon",
+      "slot": "weapon",
+      "rigId": "weapon-batch-review-v1",
+      "approved": false,
+      "available": true,
+      "zIndex": 10,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "url": "weapon-idle-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "weapon-batch-review-v1",
+    "pieces": {
+      "body": "batch-body",
+      "weapon": "batch-weapon"
+    }
+  },
+  "audits": [
+    {
+      "frame": 1,
+      "cell": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        20,
+        36
+      ],
+      "visible_layer_pixels": 79,
+      "outside_mask_pixels": 0,
+      "body_occlusion_allowed": false,
+      "unprotected_body_pixels": 0,
+      "permitted_body_occlusion_pixels": 0,
+      "changed_unmasked_body_pixels": 0,
+      "body_overlap_pixels": 0,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 0,
+      "hand_contact_pixels": 7,
+      "anchor_contact_pixels": 7,
+      "layer_bbox": [
+        5,
+        33,
+        22,
+        50
+      ]
+    },
+    {
+      "frame": 2,
+      "cell": [
+        64,
+        0,
+        64,
+        64
+      ],
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        18,
+        35
+      ],
+      "visible_layer_pixels": 51,
+      "outside_mask_pixels": 0,
+      "body_occlusion_allowed": false,
+      "unprotected_body_pixels": 0,
+      "permitted_body_occlusion_pixels": 0,
+      "changed_unmasked_body_pixels": 0,
+      "body_overlap_pixels": 0,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 0,
+      "hand_contact_pixels": 10,
+      "anchor_contact_pixels": 10,
+      "layer_bbox": [
+        6,
+        32,
+        20,
+        47
+      ]
+    },
+    {
+      "frame": 3,
+      "cell": [
+        0,
+        64,
+        64,
+        64
+      ],
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        20,
+        36
+      ],
+      "visible_layer_pixels": 74,
+      "outside_mask_pixels": 0,
+      "body_occlusion_allowed": false,
+      "unprotected_body_pixels": 0,
+      "permitted_body_occlusion_pixels": 0,
+      "changed_unmasked_body_pixels": 0,
+      "body_overlap_pixels": 0,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 0,
+      "hand_contact_pixels": 7,
+      "anchor_contact_pixels": 7,
+      "layer_bbox": [
+        6,
+        33,
+        21,
+        49
+      ]
+    },
+    {
+      "frame": 4,
+      "cell": [
+        64,
+        64,
+        64,
+        64
+      ],
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        19,
+        35
+      ],
+      "visible_layer_pixels": 53,
+      "outside_mask_pixels": 0,
+      "body_occlusion_allowed": false,
+      "unprotected_body_pixels": 0,
+      "permitted_body_occlusion_pixels": 0,
+      "changed_unmasked_body_pixels": 0,
+      "body_overlap_pixels": 0,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 0,
+      "hand_contact_pixels": 10,
+      "anchor_contact_pixels": 10,
+      "layer_bbox": [
+        6,
+        33,
+        22,
+        48
+      ]
+    }
+  ],
+  "not_generated": [
+    "hair",
+    "outfit"
+  ],
+  "charged_generations": 6,
+  "reason": "Blade length, thickness and brass guard vary between the four breathing poses.",
+  "scope": "diagnostic body and weapon only; not a complete human-v1 pack"
+}
