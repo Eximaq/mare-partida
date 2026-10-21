@@ -1,0 +1,52 @@
+[
+  {
+    "file": "outfit-raw-00.png",
+    "bounds": [
+      3,
+      7,
+      43,
+      52
+    ],
+    "sha256": "80c223e329512311fee10e93fc0ba0f8645c4444c0119271f368abd28b65f77f"
+  },
+  {
+    "file": "outfit-raw-01.png",
+    "bounds": [
+      3,
+      7,
+      43,
+      52
+    ],
+    "sha256": "8c5f4b2fff2aa87da3f36575309ffde08c85b4b2b15966999cd079bcd1a594d2"
+  },
+  {
+    "file": "outfit-raw-02.png",
+    "bounds": [
+      3,
+      7,
+      44,
+      52
+    ],
+    "sha256": "799b653dc70c382c5911dc696b07024eabe08bb832888d1c1a8925332c8f5447"
+  },
+  {
+    "file": "outfit-raw-03.png",
+    "bounds": [
+      3,
+      7,
+      44,
+      52
+    ],
+    "sha256": "8165418d066754dae4ef75ba78a1682df34918623165b452b02f1dadd9d1cd0b"
+  },
+  {
+    "file": "outfit-raw-04.png",
+    "bounds": [
+      3,
+      7,
+      44,
+      52
+    ],
+    "sha256": "b3dc13e4748dee2dc5da96715292901b349140f4f09b264f2889102a1aa041b5"
+  }
+]

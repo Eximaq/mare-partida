@@ -1,0 +1,211 @@
+{
+  "status": "rejected fit; inspection only",
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "hair",
+      "outfit",
+      "weapon"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "walk": {
+        "frames": 8,
+        "fps": 8,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-sword": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-unarmed": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-firearm": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-daggers": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-tech": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-focus": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "idle-review-body",
+      "rigId": "human-v1",
+      "slot": "body",
+      "available": true,
+      "approved": false,
+      "zIndex": 0,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "url": "body-idle-draft.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65
+        }
+      }
+    },
+    {
+      "id": "idle-review-outfit",
+      "rigId": "human-v1",
+      "slot": "outfit",
+      "available": true,
+      "approved": false,
+      "zIndex": 20,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "url": "outfit-idle-draft.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65
+        }
+      }
+    },
+    {
+      "id": "idle-review-hair",
+      "rigId": "human-v1",
+      "slot": "hair",
+      "available": true,
+      "approved": false,
+      "zIndex": 40,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "url": "hair-idle-draft.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65
+        }
+      }
+    },
+    {
+      "id": "idle-review-weapon",
+      "rigId": "human-v1",
+      "slot": "weapon",
+      "available": true,
+      "approved": false,
+      "zIndex": 60,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "url": "weapon-idle-draft.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "pivotX": 42,
+          "pivotY": 65
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "idle-review-body",
+      "outfit": "idle-review-outfit",
+      "hair": "idle-review-hair",
+      "weapon": "idle-review-weapon"
+    }
+  }
+}

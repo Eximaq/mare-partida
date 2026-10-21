@@ -1,0 +1,69 @@
+{
+  "status": "generation controls, not art",
+  "frames": [
+    {
+      "source": "body-source-01.png",
+      "source_sha256": "6d000ef9c769332f95b0c87c239f24753435cb067e3d419dfd027aecfe30ba81",
+      "mask": "weapon-mask-01.png",
+      "hand_contact_anchor": [
+        20,
+        36
+      ],
+      "native_size": [
+        64,
+        64
+      ],
+      "white_pixels": 131,
+      "all_body_pixels_frozen": true,
+      "resize": false
+    },
+    {
+      "source": "body-source-02.png",
+      "source_sha256": "ab34833564c7a80f982228c9f8eaeae4e798b5ddbdb8761abf999eb750e71923",
+      "mask": "weapon-mask-02.png",
+      "hand_contact_anchor": [
+        18,
+        35
+      ],
+      "native_size": [
+        64,
+        64
+      ],
+      "white_pixels": 123,
+      "all_body_pixels_frozen": true,
+      "resize": false
+    },
+    {
+      "source": "body-source-03.png",
+      "source_sha256": "88d15ffa8e6433120e96ba4e1920ecbbd2fab109b7c11fcf102e769867fe5b26",
+      "mask": "weapon-mask-03.png",
+      "hand_contact_anchor": [
+        20,
+        36
+      ],
+      "native_size": [
+        64,
+        64
+      ],
+      "white_pixels": 131,
+      "all_body_pixels_frozen": true,
+      "resize": false
+    },
+    {
+      "source": "body-source-04.png",
+      "source_sha256": "cad9315111f37be1bec2cdf377aa74c14a01bc74471be9699095fd9aa62695aa",
+      "mask": "weapon-mask-04.png",
+      "hand_contact_anchor": [
+        19,
+        35
+      ],
+      "native_size": [
+        64,
+        64
+      ],
+      "white_pixels": 131,
+      "all_body_pixels_frozen": true,
+      "resize": false
+    }
+  ]
+}

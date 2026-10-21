@@ -37,10 +37,24 @@ assert.equal(engine.resolve(missing,pose).missing[0].code,'missing-piece');
 for(const [mutation,code]of [
  [p=>p.rigId='other','incompatible-rig'],[p=>p.available=false,'missing-source'],[p=>p.approved=false,'unapproved-piece'],
  [p=>delete p.animations.attack,'missing-animation'],[p=>p.animations.attack.frames=1,'incompatible-animation'],
- [p=>p.animations.attack.directions=['south'],'incompatible-animation'],[p=>p.animations.attack.offsetX=.5,'invalid-transform']
+ [p=>p.animations.attack.directions=['diagonal'],'incompatible-animation'],[p=>p.animations.attack.directions=[],'incompatible-animation'],
+ [p=>p.animations.attack.directions=['south','south'],'incompatible-animation'],[p=>p.animations.attack.offsetX=.5,'invalid-transform']
 ]){
  const p=piece('hair');mutation(p);engine.registerPiece(p);assert.equal(engine.resolve(appearance,pose).missing[0].code,code);
 }
+// A one-direction sheet is valid only in that direction. Missing poses draw nothing.
+const southHair=piece('hair');southHair.animations.attack.directions=['south'];
+images.set('hair-attack',{complete:true,naturalWidth:24,naturalHeight:3});engine.registerPiece(southHair);
+assert(engine.resolve(appearance,pose).valid);
+assert.equal(engine.resolve(appearance,pose).layers.find(l=>l.slot==='hair').sy,0);
+const partialCalls=outputCalls.length;
+for(const direction of ['north','west','east']){
+ assert.equal(engine.resolve(appearance,{...pose,direction}).missing[0].code,'missing-direction');
+ assert(!engine.draw(output,appearance,{...pose,direction},0,0));
+}
+assert.equal(outputCalls.length,partialCalls,'missing directions never render partial layers');
+images.set('hair-attack',{complete:true,naturalWidth:24,naturalHeight:12});
+assert.equal(engine.resolve(appearance,pose).missing[0].code,'invalid-sheet-size','extra rows cannot masquerade as a partial sheet');
 engine.registerPiece(piece('hair'));const original=images.get('hair-attack');
 images.set('hair-attack',{complete:false});assert.equal(engine.resolve(appearance,pose).missing[0].code,'loading-image');
 images.set('hair-attack',{complete:true,naturalWidth:0,naturalHeight:0});assert.equal(engine.resolve(appearance,pose).missing[0].code,'failed-image');

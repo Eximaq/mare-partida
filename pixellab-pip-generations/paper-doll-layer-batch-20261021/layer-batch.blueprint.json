@@ -1,0 +1,29 @@
+[
+  {
+    "TASK": "Check explicit authority before spending credits; preserve the included inputs and create a separate output folder. Do not automatically retry or run dependent hair/outfit calls if this weapon fails visual inspection."
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-atlas-input.png",
+      "mask_image_url": "weapon-mask-input.png",
+      "context_image": {
+        "url": "weapon-context-input.png",
+        "usage_description": "The left 128x128 area is the unchanged source sheet. The 64x64 sprite on the right guides only the appearance of the requested addition, never the body pose."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 128,
+        "height": 128
+      },
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "description": "Edit the four existing south-facing poses in this 2x2 sheet. In each 64x64 cell add only the same steel sailor sword shown by the right-side reference, attached to the existing right hand, blade angled down-left. Keep identical blade length, width, brass guard, palette and pixel scale across cells. Preserve every body pixel, pose, cell position and transparency. No other objects or anatomy."
+    }
+  },
+  {
+    "TASK": "Save the original128x128 result unchanged. Audit source preservation and hand contact for all four64x64 cells. Inspect blade identity in a real looping preview. If inconsistent, record the failure and stop the chain. Split and pad only for labeled diagnostic review; do not activate this failed artwork in production."
+  }
+]

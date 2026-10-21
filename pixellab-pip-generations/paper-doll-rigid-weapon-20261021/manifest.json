@@ -1,0 +1,31 @@
+{
+  "status": "rigid weapon technical prototype; full-character art incomplete",
+  "approval": "User replied Prossiga after the explicit rigid-weapon proposal; no paid calls authorized or submitted.",
+  "new_generations": 0,
+  "weapon_origin": {
+    "job_id": "c41dbbaa-b5bf-482c-bd5c-a3e6a8278763",
+    "native_cell": 1,
+    "file": "rigid-weapon.png",
+    "sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+    "historic_job_charge_generations": 6,
+    "note": "Historical charge from the previous atlas, not a new charge."
+  },
+  "body_origin": "Four existing generated Idle/south frames; originals preserved in prior pilot.",
+  "inputs": [
+    {
+      "file": "rigid-weapon.png",
+      "sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d"
+    },
+    {
+      "file": "body-idle-south.png",
+      "sha256": "c84cfca601096fc7696ceecb8ebaad857ef28dbbc08ac9d8e5d115bd7e1eb551"
+    },
+    {
+      "file": "previous-weapon-idle.png",
+      "sha256": "d2ab6408f93a4888848a72bdc479c5602d749c5df025e249ad9c546c1d98e125"
+    }
+  ],
+  "assembly": "One native64x64 weapon image reused at four integer hand sockets in84x84 body frames. No rotation, scaling, repainting, mirrored art, independent generated weapon frames or new motion.",
+  "output": "Single weapon PNG, four composite inspection PNGs, comparison sheet and exact transparent GIF4FPS/loop0/disposal2.",
+  "production": "No production art activated; human-v1 still requires body, hair, outfit and weapon. Saves and combat unchanged."
+}

@@ -75,19 +75,37 @@
         if(!allowDraft&&p.approved!==true){problem('unapproved-piece');continue;}
         const clip=p.animations?.[pose.animationId];
         if(typeof clip?.url!=='string'||!clip.url){problem('missing-animation');continue;}
-        if(clip.frames!==a.frames||clip.frameWidth!==r.frameWidth||clip.frameHeight!==r.frameHeight||clip.fps!==a.fps||clip.loop!==a.loop||!Array.isArray(clip.directions)||!a.directions.every(d=>clip.directions.includes(d))||new Set(clip.directions).size!==clip.directions.length){problem('incompatible-animation');continue;}
+        if(clip.frames!==a.frames||clip.frameWidth!==r.frameWidth||clip.frameHeight!==r.frameHeight||clip.fps!==a.fps||clip.loop!==a.loop||!Array.isArray(clip.directions)||!clip.directions.length||clip.directions.some(d=>!a.directions.includes(d))||new Set(clip.directions).size!==clip.directions.length){problem('incompatible-animation');continue;}
+        // A production lot may cover only some directions; never borrow another row.
+        if(!clip.directions.includes(direction)){problem('missing-direction');continue;}
+        const rigid=clip.kind==='rigid-attachment';
+        if(clip.kind!==undefined&&clip.kind!=='sheet'&&!rigid){problem('unsupported-layer-kind');continue;}
+        let sourceWidth=r.frameWidth,sourceHeight=r.frameHeight,socket=null,source=null,url=clip.url;
+        if(rigid){
+          // Explicit exception for rigid weapons, never a bypass for animated anatomy.
+          const validSource=s=>s&&[s.width,s.height,s.anchorX,s.anchorY].every(integer)&&s.width>0&&s.height>0&&s.width<=512&&s.height<=512&&s.anchorX>=0&&s.anchorX<=s.width&&s.anchorY>=0&&s.anchorY<=s.height;
+          if(clip.sources!==undefined){
+            if(!clip.sources||Array.isArray(clip.sources)||!clip.directions.every(d=>validSource(clip.sources[d])&&typeof clip.sources[d].url==='string'&&clip.sources[d].url)){problem('invalid-attachment-source');continue;}
+            source=clip.sources[direction];url=source.url;
+          }else source=clip.source;
+          if(slot!=='weapon'||!validSource(source)){problem('invalid-attachment-source');continue;}
+          const complete=clip.directions.every(d=>Array.isArray(clip.sockets?.[d])&&clip.sockets[d].length===a.frames&&clip.sockets[d].every(s=>s&&integer(s.x)&&integer(s.y)&&s.x>=0&&s.x<=r.frameWidth&&s.y>=0&&s.y<=r.frameHeight));
+          if(!complete){problem('missing-socket');continue;}
+          sourceWidth=source.width;sourceHeight=source.height;socket=clip.sockets[direction][frameIndex];
+        }
         const row=clip.directions.indexOf(direction),overrides=clip.poseOverrides?.[direction]?.[frameIndex]||{},byDirection=clip.directionOverrides?.[direction]||{};
         const pivotX=clip.pivotX??r.pivotX,pivotY=clip.pivotY??r.pivotY;
-        const offsetX=overrides.offsetX??byDirection.offsetX??clip.offsetX??0,offsetY=overrides.offsetY??byDirection.offsetY??clip.offsetY??0;
+        const offsetX=(overrides.offsetX??byDirection.offsetX??clip.offsetX??0)+(rigid?socket.x-source.anchorX:0),offsetY=(overrides.offsetY??byDirection.offsetY??clip.offsetY??0)+(rigid?socket.y-source.anchorY:0);
         const zIndex=overrides.zIndex??byDirection.zIndex??clip.zIndex??p.zIndex??slots.indexOf(slot)*10;
         if(![pivotX,pivotY,offsetX,offsetY,zIndex].every(integer)||pivotX<0||pivotX>r.frameWidth||pivotY<0||pivotY>r.frameHeight||Math.abs(offsetX)>512||Math.abs(offsetY)>512){problem('invalid-transform');continue;}
-        let image;try{image=getImage(clip.url);}catch{problem('failed-image');continue;}
+        let image;try{image=getImage(url);}catch{problem('failed-image');continue;}
         if(!image?.complete){problem('loading-image');continue;}
         if(!image.naturalWidth||!image.naturalHeight){problem('failed-image');continue;}
-        if(image.naturalWidth!==r.frameWidth*clip.frames||image.naturalHeight!==r.frameHeight*clip.directions.length){problem('invalid-sheet-size');continue;}
-        const invalid=imageAudit(image,clip,r);if(invalid){problem(invalid);continue;}
-        layers.push({slot,pieceId:id,revision:p.revision||1,image,url:clip.url,animationId:pose.animationId,direction,frameIndex,
-          pivotX,pivotY,offsetX,offsetY,zIndex,sx:frameIndex*r.frameWidth,sy:row*r.frameHeight,width:r.frameWidth,height:r.frameHeight});
+        if(image.naturalWidth!==(rigid?sourceWidth:r.frameWidth*clip.frames)||image.naturalHeight!==(rigid?sourceHeight:r.frameHeight*clip.directions.length)){problem('invalid-sheet-size');continue;}
+        const invalid=rigid?imageAudit(image,{url,frames:1,directions:['south']},{frameWidth:sourceWidth,frameHeight:sourceHeight}):imageAudit(image,clip,r);if(invalid){problem(invalid);continue;}
+        layers.push({slot,pieceId:id,revision:p.revision||1,image,url,animationId:pose.animationId,direction,frameIndex,
+          kind:rigid?'rigid-attachment':'sheet',socket:rigid?{...socket}:null,
+          pivotX,pivotY,offsetX,offsetY,zIndex,sx:rigid?0:frameIndex*r.frameWidth,sy:rigid?0:row*r.frameHeight,width:sourceWidth,height:sourceHeight});
       }
       layers.sort((x,y)=>x.zIndex-y.zIndex||slots.indexOf(x.slot)-slots.indexOf(y.slot));
       return {valid:missing.length===0,rig:r,pose:{animationId:pose.animationId,direction,frameIndex},layers,missing};

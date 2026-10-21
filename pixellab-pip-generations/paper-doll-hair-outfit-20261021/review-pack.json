@@ -1,0 +1,563 @@
+{
+  "status": "south Idle prototype; other directions and actions missing",
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "hair",
+      "outfit",
+      "weapon"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "walk": {
+        "frames": 8,
+        "fps": 8,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-sword": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-unarmed": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-firearm": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-daggers": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-tech": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-focus": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "review-body",
+      "slot": "body",
+      "rigId": "human-v1",
+      "approved": false,
+      "available": true,
+      "zIndex": 20,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "body-idle-south.png"
+        }
+      }
+    },
+    {
+      "id": "review-outfit",
+      "slot": "outfit",
+      "rigId": "human-v1",
+      "approved": false,
+      "available": true,
+      "zIndex": 50,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "outfit-idle-south.png"
+        }
+      }
+    },
+    {
+      "id": "review-hair",
+      "slot": "hair",
+      "rigId": "human-v1",
+      "approved": false,
+      "available": true,
+      "zIndex": 60,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "hair-idle-south.png"
+        }
+      }
+    },
+    {
+      "id": "review-weapon",
+      "slot": "weapon",
+      "rigId": "human-v1",
+      "approved": false,
+      "available": true,
+      "zIndex": 80,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "kind": "rigid-attachment",
+          "url": "rigid-weapon.png",
+          "source": {
+            "width": 64,
+            "height": 64,
+            "anchorX": 20,
+            "anchorY": 36
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 28,
+                "y": 48
+              },
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 29,
+                "y": 48
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "review-body",
+      "hair": "review-hair",
+      "outfit": "review-outfit",
+      "weapon": "review-weapon"
+    }
+  },
+  "audits": [
+    {
+      "frame": 1,
+      "unmasked_body_changes": 0,
+      "socket": {
+        "x": 30,
+        "y": 49
+      },
+      "hair": {
+        "frame": 1,
+        "cell": [
+          0,
+          0,
+          64,
+          64
+        ],
+        "passed": true,
+        "scope": "structural contact only; artistic approval required",
+        "artwork_approved": false,
+        "size": [
+          64,
+          64
+        ],
+        "contact_anchor": [
+          32,
+          10
+        ],
+        "visible_layer_pixels": 69,
+        "outside_mask_pixels": 0,
+        "body_occlusion_allowed": true,
+        "unprotected_body_pixels": 0,
+        "permitted_body_occlusion_pixels": 39,
+        "changed_unmasked_body_pixels": 0,
+        "body_overlap_pixels": 39,
+        "partial_alpha_pixels": 0,
+        "changed_body_pixels": 39,
+        "hand_contact_pixels": 28,
+        "anchor_contact_pixels": 28,
+        "layer_bbox": [
+          26,
+          6,
+          38,
+          17
+        ]
+      },
+      "outfit": {
+        "frame": 1,
+        "cell": [
+          0,
+          0,
+          64,
+          64
+        ],
+        "passed": true,
+        "scope": "structural contact only; artistic approval required",
+        "artwork_approved": false,
+        "size": [
+          64,
+          64
+        ],
+        "contact_anchor": [
+          32,
+          27
+        ],
+        "visible_layer_pixels": 219,
+        "outside_mask_pixels": 0,
+        "body_occlusion_allowed": true,
+        "unprotected_body_pixels": 0,
+        "permitted_body_occlusion_pixels": 196,
+        "changed_unmasked_body_pixels": 0,
+        "body_overlap_pixels": 196,
+        "partial_alpha_pixels": 0,
+        "changed_body_pixels": 196,
+        "hand_contact_pixels": 49,
+        "anchor_contact_pixels": 49,
+        "layer_bbox": [
+          21,
+          20,
+          43,
+          35
+        ]
+      }
+    },
+    {
+      "frame": 2,
+      "unmasked_body_changes": 0,
+      "socket": {
+        "x": 28,
+        "y": 48
+      },
+      "hair": {
+        "frame": 2,
+        "cell": [
+          64,
+          0,
+          64,
+          64
+        ],
+        "passed": true,
+        "scope": "structural contact only; artistic approval required",
+        "artwork_approved": false,
+        "size": [
+          64,
+          64
+        ],
+        "contact_anchor": [
+          32,
+          11
+        ],
+        "visible_layer_pixels": 78,
+        "outside_mask_pixels": 0,
+        "body_occlusion_allowed": true,
+        "unprotected_body_pixels": 0,
+        "permitted_body_occlusion_pixels": 39,
+        "changed_unmasked_body_pixels": 0,
+        "body_overlap_pixels": 37,
+        "partial_alpha_pixels": 0,
+        "changed_body_pixels": 36,
+        "hand_contact_pixels": 28,
+        "anchor_contact_pixels": 28,
+        "layer_bbox": [
+          26,
+          6,
+          38,
+          18
+        ]
+      },
+      "outfit": {
+        "frame": 2,
+        "cell": [
+          64,
+          0,
+          64,
+          64
+        ],
+        "passed": true,
+        "scope": "structural contact only; artistic approval required",
+        "artwork_approved": false,
+        "size": [
+          64,
+          64
+        ],
+        "contact_anchor": [
+          32,
+          27
+        ],
+        "visible_layer_pixels": 215,
+        "outside_mask_pixels": 0,
+        "body_occlusion_allowed": true,
+        "unprotected_body_pixels": 0,
+        "permitted_body_occlusion_pixels": 194,
+        "changed_unmasked_body_pixels": 0,
+        "body_overlap_pixels": 194,
+        "partial_alpha_pixels": 0,
+        "changed_body_pixels": 194,
+        "hand_contact_pixels": 49,
+        "anchor_contact_pixels": 49,
+        "layer_bbox": [
+          21,
+          20,
+          43,
+          35
+        ]
+      }
+    },
+    {
+      "frame": 3,
+      "unmasked_body_changes": 0,
+      "socket": {
+        "x": 30,
+        "y": 49
+      },
+      "hair": {
+        "frame": 3,
+        "cell": [
+          0,
+          64,
+          64,
+          64
+        ],
+        "passed": true,
+        "scope": "structural contact only; artistic approval required",
+        "artwork_approved": false,
+        "size": [
+          64,
+          64
+        ],
+        "contact_anchor": [
+          32,
+          12
+        ],
+        "visible_layer_pixels": 78,
+        "outside_mask_pixels": 0,
+        "body_occlusion_allowed": true,
+        "unprotected_body_pixels": 0,
+        "permitted_body_occlusion_pixels": 37,
+        "changed_unmasked_body_pixels": 0,
+        "body_overlap_pixels": 37,
+        "partial_alpha_pixels": 0,
+        "changed_body_pixels": 37,
+        "hand_contact_pixels": 28,
+        "anchor_contact_pixels": 28,
+        "layer_bbox": [
+          26,
+          7,
+          38,
+          19
+        ]
+      },
+      "outfit": {
+        "frame": 3,
+        "cell": [
+          0,
+          64,
+          64,
+          64
+        ],
+        "passed": true,
+        "scope": "structural contact only; artistic approval required",
+        "artwork_approved": false,
+        "size": [
+          64,
+          64
+        ],
+        "contact_anchor": [
+          32,
+          27
+        ],
+        "visible_layer_pixels": 217,
+        "outside_mask_pixels": 0,
+        "body_occlusion_allowed": true,
+        "unprotected_body_pixels": 0,
+        "permitted_body_occlusion_pixels": 199,
+        "changed_unmasked_body_pixels": 0,
+        "body_overlap_pixels": 198,
+        "partial_alpha_pixels": 0,
+        "changed_body_pixels": 198,
+        "hand_contact_pixels": 49,
+        "anchor_contact_pixels": 49,
+        "layer_bbox": [
+          21,
+          20,
+          43,
+          35
+        ]
+      }
+    },
+    {
+      "frame": 4,
+      "unmasked_body_changes": 0,
+      "socket": {
+        "x": 29,
+        "y": 48
+      },
+      "hair": {
+        "frame": 4,
+        "cell": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "passed": true,
+        "scope": "structural contact only; artistic approval required",
+        "artwork_approved": false,
+        "size": [
+          64,
+          64
+        ],
+        "contact_anchor": [
+          32,
+          11
+        ],
+        "visible_layer_pixels": 71,
+        "outside_mask_pixels": 0,
+        "body_occlusion_allowed": true,
+        "unprotected_body_pixels": 0,
+        "permitted_body_occlusion_pixels": 39,
+        "changed_unmasked_body_pixels": 0,
+        "body_overlap_pixels": 39,
+        "partial_alpha_pixels": 0,
+        "changed_body_pixels": 38,
+        "hand_contact_pixels": 28,
+        "anchor_contact_pixels": 28,
+        "layer_bbox": [
+          26,
+          7,
+          38,
+          18
+        ]
+      },
+      "outfit": {
+        "frame": 4,
+        "cell": [
+          64,
+          64,
+          64,
+          64
+        ],
+        "passed": true,
+        "scope": "structural contact only; artistic approval required",
+        "artwork_approved": false,
+        "size": [
+          64,
+          64
+        ],
+        "contact_anchor": [
+          32,
+          27
+        ],
+        "visible_layer_pixels": 217,
+        "outside_mask_pixels": 0,
+        "body_occlusion_allowed": true,
+        "unprotected_body_pixels": 0,
+        "permitted_body_occlusion_pixels": 196,
+        "changed_unmasked_body_pixels": 0,
+        "body_overlap_pixels": 196,
+        "partial_alpha_pixels": 0,
+        "changed_body_pixels": 196,
+        "hand_contact_pixels": 49,
+        "anchor_contact_pixels": 49,
+        "layer_bbox": [
+          21,
+          20,
+          43,
+          35
+        ]
+      }
+    }
+  ],
+  "scope": "four required real layers in Idle/south only; rigid weapon authorized",
+  "full_character_artwork_approved": false,
+  "new_generations": 12
+}

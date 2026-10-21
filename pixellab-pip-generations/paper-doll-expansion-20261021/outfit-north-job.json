@@ -1,0 +1,29 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "1b047518-bc99-4430-992c-ddf4201f855e",
+  "status": "completed",
+  "estimated_generations": 6,
+  "parameters": {
+    "image_url": "body-north-atlas.png",
+    "mask_image_url": "outfit-north-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 1612130099,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 128,
+      "height": 128
+    },
+    "context_image": {
+      "url": "context-north.png",
+      "usage_description": "The left sheet is unchanged source. The right frontal sprite guides only clothing: cream short-sleeve shirt and plain navy waistcoat. Render their back view on north-facing bodies."
+    },
+    "description": "In each 64x64 cell of this 2x2 sheet add only a cream linen short-sleeve shirt and plain navy sailor waistcoat fitted to the existing north-facing torso and shoulders, seen from behind. Keep the hands and forearms bare and charcoal shorts unchanged. Follow each source pose and preserve bald head, anatomy, feet, pixel scale, cell positions and transparency. Only masked clothing, no hair, sword, emblems, face on the back or detached garments. Same clothing model in all four frames."
+  },
+  "reported_usage": {
+    "generations": 6
+  },
+  "raw_sha256": "5240a89a47e15d60513e2a50ddf1683448f5a999927066982102a7596d0cb074"
+}

@@ -1,0 +1,41 @@
+{
+  "tool": "MCP animate_image",
+  "job_id": "9e716ea7-e19a-4308-9731-652c24d8f02d",
+  "status": "completed",
+  "estimated_generations": 1,
+  "parameters": {
+    "first_frame_url": "body-north-rotation.png",
+    "frame_count": 4,
+    "no_background": true,
+    "action": "Breathe gently in place while facing directly north away from the viewer. Keep the bald back of the head and bare back visible throughout, with relaxed arms and subtle chest and shoulder breathing. Feet stay planted, no turning, walking or gestures. Preserve anatomy, proportions, charcoal shorts and native pixel scale."
+  },
+  "reported_usage": {
+    "generations": 1
+  },
+  "asset_id": "311b624f-4d5a-5cac-8d6a-0049a78dfcf9",
+  "outputs": [
+    "body-idle-north-raw-00.png",
+    "body-idle-north-raw-01.png",
+    "body-idle-north-raw-02.png",
+    "body-idle-north-raw-03.png",
+    "body-idle-north-raw-04.png"
+  ],
+  "playback": {
+    "input_echo": 0,
+    "generated_frames": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "fps": 4,
+    "no_reorder": true
+  },
+  "sha256": {
+    "body-idle-north-raw-00.png": "256515f816ff133b0bc559da2c9b286be608e6080db0f0191f4dd19fb43bd149",
+    "body-idle-north-raw-01.png": "28f39ae16721fdbd36793b0356857dffe68cb58a46bec14fea1e31c30d7f1572",
+    "body-idle-north-raw-02.png": "a8c6a2522b681a6c6a6c7bdc7ae655ce6245fca9a5bcd16545256e59287b9a9b",
+    "body-idle-north-raw-03.png": "60c418491809245a7c26c93ee8cad3f1b99dd1c2f8235ef67b15c424eb919c12",
+    "body-idle-north-raw-04.png": "1e3b60c602e8a0c4595e48b87b65b67dec6020c89c11d82141e70c8ebf7df92f"
+  }
+}

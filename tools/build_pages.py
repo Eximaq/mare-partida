@@ -81,5 +81,87 @@ for name in pilot_files:
     destination.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(source, destination)
 shutil.copy2(ROOT/'docs/PAPER-DOLL-PILOTO.md', OUT/'docs/PAPER-DOLL-PILOTO.md')
+idle_relative = Path('pixellab-pip-generations/paper-doll-human-idle-south-20261021')
+idle_files = ['preview.html', 'review-pack.json', 'manifest.json', 'human-idle-south.blueprint.json',
+              'body-input-64.png', 'look-reference-64.png', 'review-sheet.png',
+              'body-idle-preview.gif', 'outfit-idle-preview.gif', 'draft-idle-preview.gif']
+idle_files += [f'{slot}-idle-draft.png' for slot in ['body', 'hair', 'outfit', 'weapon']]
+idle_files += [f'{kind}-raw-{index:02}.png' for kind in ['body', 'outfit'] for index in range(5)]
+idle_files += [f'draft-composite-{index:02}.png' for index in range(1, 5)]
+for name in idle_files:
+    source = ROOT/idle_relative/name
+    if not source.is_file():
+        raise SystemExit(f'Arquivo do piloto Idle ausente: {name}')
+    destination = OUT/idle_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-IDLE-SUL.md', OUT/'docs/PAPER-DOLL-IDLE-SUL.md')
+sword_relative = Path('pixellab-pip-generations/paper-doll-sword-fit-20261021')
+sword_files = ['preview.html', 'review.json', 'manifest.json', 'sword-fit.blueprint.json',
+               'body-idle-south.png', 'weapon-idle-south.png', 'old-weapon-idle.png',
+               'sword-fit-preview.gif', 'comparison-sheet.png']
+sword_files += [f'{kind}-{index:02}.png' for kind in ['body-source', 'weapon-raw', 'composite'] for index in range(1, 5)]
+for name in sword_files:
+    source = ROOT/sword_relative/name
+    if not source.is_file():
+        raise SystemExit(f'Arquivo do encaixe de espada ausente: {name}')
+    destination = OUT/sword_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-ESPADA.md', OUT/'docs/PAPER-DOLL-ESPADA.md')
+# Diagnostic atlas: explicit allowlist keeps generation inputs and local scripts private.
+batch_relative = Path('pixellab-pip-generations/paper-doll-layer-batch-20261021')
+batch_files = ['preview.html', 'review.json', 'manifest.json', 'layer-batch.blueprint.json',
+               'body-idle-south.png', 'weapon-idle-south.png', 'previous-weapon-idle.png',
+               'weapon-raw.png', 'weapon-audit.json', 'weapon-batch-review.gif', 'comparison-sheet.png']
+batch_files += [f'{kind}-{index:02}.png' for kind in ['body-source', 'composite'] for index in range(1, 5)]
+for name in batch_files:
+    source = ROOT/batch_relative/name
+    if not source.is_file():
+        raise SystemExit(f'Arquivo do diagnóstico de camadas ausente: {name}')
+    destination = OUT/batch_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-LOTE-CAMADAS.md', OUT/'docs/PAPER-DOLL-LOTE-CAMADAS.md')
+rigid_relative = Path('pixellab-pip-generations/paper-doll-rigid-weapon-20261021')
+rigid_files = ['preview.html', 'review.json', 'manifest.json', 'rigid-weapon.png',
+               'body-idle-south.png', 'previous-weapon-idle.png', 'comparison-sheet.png', 'rigid-weapon-review.gif']
+rigid_files += [f'composite-{index:02}.png' for index in range(1, 5)]
+for name in rigid_files:
+    destination = OUT/rigid_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/rigid_relative/name, destination)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-ARMA-RIGIDA.md', OUT/'docs/PAPER-DOLL-ARMA-RIGIDA.md')
+modular_relative = Path('pixellab-pip-generations/paper-doll-hair-outfit-20261021')
+modular_files = ['preview.html', 'review-pack.json', 'manifest.json', 'hair-outfit.blueprint.json',
+                 'body-idle-south.png', 'hair-idle-south.png', 'outfit-idle-south.png', 'rigid-weapon.png',
+                 'hair-raw.png', 'outfit-raw.png', 'hair-audit.json', 'outfit-audit.json',
+                 'comparison-sheet.png', 'human-idle-review.gif']
+modular_files += [f'composite-{index:02}.png' for index in range(1,5)]
+for name in modular_files:
+    destination = OUT/modular_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/modular_relative/name, destination)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-CABELO-ROUPA.md', OUT/'docs/PAPER-DOLL-CABELO-ROUPA.md')
+expansion_relative = Path('pixellab-pip-generations/paper-doll-expansion-20261021')
+expansion_files = ['preview.html', 'preview.js', 'motion-review.js', 'studies.json', 'walk-free-eight.png', 'body-south-input.png', 'review-pack.json', 'manifest.json',
+                   'expansion.blueprint.json', 'body-idle.png', 'hair-idle.png', 'outfit-idle.png',
+                   'idle-four-directions.png', 'comparison-native.png', 'assembly-audit.json',
+                   'walk-south-all-nine.png', 'walk-template-eight.png', 'walk-minimax-eight.png', 'attack-south-eight.png']
+expansion_files += [f'weapon-{d}.png' for d in ['south', 'north', 'west', 'east']]
+for name in expansion_files:
+    destination = OUT/expansion_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/expansion_relative/name, destination)
+expansion_entry = OUT/expansion_relative/'preview.html'
+def version_expansion(match):
+    source = (expansion_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    version = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+    return f'{match.group(1)}{match.group(2)}?v={version}{match.group(3)}'
+expansion_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_expansion,
+                                  expansion_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-EXPANSAO.md', OUT/'docs/PAPER-DOLL-EXPANSAO.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

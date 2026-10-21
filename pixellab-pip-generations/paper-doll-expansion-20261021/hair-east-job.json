@@ -1,0 +1,29 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "05e8c905-263c-4e62-82ff-3d57c8bb5307",
+  "status": "completed",
+  "estimated_generations": 6,
+  "parameters": {
+    "image_url": "body-east-atlas.png",
+    "mask_image_url": "hair-east-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 1612130099,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 128,
+      "height": 128
+    },
+    "context_image": {
+      "url": "context-east.png",
+      "usage_description": "The left 128x128 is the unchanged source. The right sprite guides only short black hair style and palette, never its frontal direction."
+    },
+    "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair fitted to the existing east-facing head in strict side profile. Match the right reference hair palette, pixel scale and outline. Keep the face, eye, nose and ears visible. Preserve all other pixels, anatomy, pose, shorts and transparency. No face on the back, bandana, duplicate head, clothing or loose objects. Preserve original row-major frame order."
+  },
+  "reported_usage": {
+    "generations": 6
+  },
+  "raw_sha256": "47292b2ef61dcfea0a6c79340bfafe89824c4d7dafc57fb8aa9ddb0a722158fc"
+}

@@ -51,5 +51,30 @@ class FitAuditTest(unittest.TestCase):
   self.assertEqual(Image.open(self.root/'draft.png').getpixel((0,0)),self.base.getpixel((0,0)))
   self.assertEqual(Image.open(self.root/'draft-layer.png').getpixel((3,2)),edit.getpixel((3,2)))
   self.assertIn('not final',result['status'])
+ def test_native_changes_layer_keeps_body_and_requires_contact(self):
+  mask=Image.new('RGB',(8,8));mask.putpixel((2,3),(255,255,255));mask.putpixel((0,7),(255,255,255));mp=self.root/'mask.png';mask.save(mp)
+  layer=Image.new('RGBA',(8,8));layer.putpixel((2,3),(170,180,190,255));lp=self.root/'native-layer.png';layer.save(lp)
+  result=fit.audit_changes_layer(self.source,lp,mp,(3,3));self.assertTrue(result['passed']);self.assertFalse(result['artwork_approved']);self.assertEqual(result['changed_body_pixels'],0)
+  layer.putpixel((3,3),(20,30,40,255));layer.save(lp);result=fit.audit_changes_layer(self.source,lp,mp,(3,3));self.assertFalse(result['passed']);self.assertEqual(result['outside_mask_pixels'],1);self.assertEqual(result['body_overlap_pixels'],1)
+  detached=Image.new('RGBA',(8,8));detached.putpixel((0,7),(170,180,190,255));detached.save(lp)
+  result=fit.audit_changes_layer(self.source,lp,mp,(3,3));self.assertFalse(result['passed']);self.assertEqual(result['hand_contact_pixels'],0)
+ def test_changes_layer_rejects_empty_translucency_and_wrong_canvas(self):
+  mask=Image.new('RGB',(8,8));mask.putpixel((2,3),(255,255,255));mp=self.root/'mask.png';mask.save(mp);lp=self.root/'native-layer.png'
+  for size,alpha in [((8,8),0),((8,8),128),((4,4),255)]:
+   layer=Image.new('RGBA',size);layer.putpixel((2,3),(170,180,190,alpha));layer.save(lp)
+   self.assertFalse(fit.audit_changes_layer(self.source,lp,mp,(3,3))['passed'])
+  with self.assertRaises(ValueError):fit.audit_changes_layer(self.source,self.source,mp,(20,20))
+ def test_changes_layer_mask_must_freeze_every_body_pixel(self):
+  mask=Image.new('RGB',(8,8));mask.putpixel((2,3),(255,255,255));mask.putpixel((3,3),(255,255,255));mp=self.root/'mask.png';mask.save(mp)
+  layer=Image.new('RGBA',(8,8));layer.putpixel((2,3),(170,180,190,255));lp=self.root/'native-layer.png';layer.save(lp)
+  result=fit.audit_changes_layer(self.source,lp,mp,(3,3));self.assertFalse(result['passed']);self.assertEqual(result['unprotected_body_pixels'],1)
+ def test_clothing_occlusion_requires_explicit_mode_and_mask(self):
+  mask=Image.new('RGB',(8,8));mask.putpixel((3,3),(255,255,255));mp=self.root/'mask.png';mask.save(mp)
+  layer=Image.new('RGBA',(8,8));layer.putpixel((3,3),(20,40,90,255));lp=self.root/'garment-layer.png';layer.save(lp)
+  self.assertFalse(fit.audit_changes_layer(self.source,lp,mp,(3,3))['passed'])
+  result=fit.audit_changes_layer(self.source,lp,mp,(3,3),allow_body_occlusion=True)
+  self.assertTrue(result['passed']);self.assertEqual(result['changed_body_pixels'],1);self.assertEqual(result['changed_unmasked_body_pixels'],0);self.assertEqual(result['permitted_body_occlusion_pixels'],1)
+  layer.putpixel((0,0),(20,40,90,255));layer.save(lp)
+  self.assertFalse(fit.audit_changes_layer(self.source,lp,mp,(3,3),allow_body_occlusion=True)['passed'])
 
 if __name__=='__main__':unittest.main()

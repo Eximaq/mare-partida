@@ -1,3 +1,19 @@
+## 21/10/2026 — Paper Doll: preparação de camadas agrupadas, zero novas gerações
+
+Continuação do PR45. Auditor de atlas por célula, exportação atômica, detecção de sequência estática e oclusão corporal apenas quando explicitamente permitida por máscara para cabelo/roupa.11 testes de camada e5 de lote passaram, além do build e da revisão da espada no Chromium. Entradas nativas, máscaras e contexto preparados a partir de assets existentes, sem novos pixels de personagem. Três chamadas de geração propostas com teto18 continuam aguardando aprovação; nenhuma foi executada. Runtime, catálogo e saves intactos.
+
+## 21/10/2026 — Paper Doll: camadas nativas de espada e contato preservado
+
+Continuação do PR45. Quatro camadas de arma64×64 isoladas pelo MCP Pro Flash, com máscara própria por frame e corpo totalmente congelado. Todos os contatos passaram e houve zero mudança na anatomia; a lâmina ainda varia visualmente e continua sem aprovação final. Um job falhou por sobrecarga; apenas o retry especificamente autorizado foi executado.20 gerações com cobrança confirmada, cobrança do job falho não exposta, sem presumir reembolso.
+
+Auditor reutilizável de saída nativa isolada,10 testes Python, montagem que recusa frames faltantes, comparativo antigo/novo em Canvas2D e GIF com RGBA verificado. Rig de inspeção corpo/arma separado do `human-v1`, sem mudança no catálogo do jogo/save. [Relatório e limites](PAPER-DOLL-ESPADA.md). Sem merge automático.
+
+## 21/10/2026 — Idle frontal Paper Doll: cobertura parcial e inspeção reprovada
+
+Branch `feature/paper-doll-idle-sul`, base `05e935e`. Publicação anterior PR44 concluída e conferida no Pages. Com aprovação de até27 gerações adicionais, foram cobradas11 em duas chamadas MCP: corpo Idle/sul e transferência de peças;5+5 PNGs originais preservados. Encaixe reprovado: braços/roupa e contato mão/espada não acompanham a base. Nenhuma arte nova ativada, retry ou pintura corretiva. Prévia comparativa animada e pacote local de quatro camadas, todos explicitamente não aprovados.
+
+Compositor aceita linhas de direções parciais e mantém fallback atômico nas ausentes; bancada informa cobertura parcial. Testes Node, build, Chromium desktop/mobile, pacotes reais/geométricos,28 perfis, sete classes/Haki/Zoan e saves. O lote não conclui a validação artística modular. [Relatório, custos e pendências](PAPER-DOLL-IDLE-SUL.md). Sem merge automático.
+
 ## 21/10/2026 — Publicação da prévia estática Paper Doll
 
 Publicação autorizada pelo proprietário. `tools/build_pages.py` inclui por allowlist a prévia de uma pose frontal e os recursos que ela usa; README e relatório apontam para a página. Não ativa peças no runtime, não altera saves e não publica a pasta de gerações inteira. Validação: build Pages, teste Node Paper Doll, teste Playwright da prévia no pacote estático e cache/saves.

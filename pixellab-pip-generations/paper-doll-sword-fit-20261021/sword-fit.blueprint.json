@@ -1,0 +1,86 @@
+[
+  {
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-sword-fit-20261021",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment_prompt": "pode continuar com o processo\nAprovo até 24 gerações; testar primeiro e seguir se passar\nAprovo uma tentativa adicional, até 6 gerações",
+    "TASK": {
+      "action": "Require fresh explicit cost approval and authenticated MCP. Copy the shipped body-source-01.png through body-source-04.png and weapon-mask-01.png through weapon-mask-04.png byte-for-byte into the resolved output directory. Validate native64x64, source hashes and black mask for every body pixel. The masks are binary generation controls around hand contacts [20,36],[18,35],[20,36],[19,35], not character art. No resampling."
+    }
+  },
+  {
+    "_comment": "Successful delivered frame1. Frame4 used the one expressly approved retry; the failed duplicate is recorded only in manifest.json. This recipe is not permission to repeat paid calls.",
+    "MCP inpaint_image_pro_flash": {
+      "description": "Add only one simple steel sailor sword with a brass crossguard, held in this south-facing human's right hand on the viewer's left. Place the grip in direct contact with that existing hand; let the unchanged hand naturally occlude the grip. Angle the blade down-left, away from the leg. Match the source's crisp pixel scale, dark outline and nautical palette. Preserve the exact body pose, hand position, face, limbs, shorts and canvas. Generate only the masked sword region on transparency. No extra hand, arm, body, clothing, hair, detached weapon or background.",
+      "image_url": "body-source-01.png",
+      "mask_image_url": "weapon-mask-01.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 338809494
+    }
+  },
+  {
+    "TASK": {
+      "action": "Retrieve the native64x64 changes-only output; preserve it without pixel repair. Audit black-mask transparency, untouched body, hard alpha and adjacency to the intended hand. Inspect visually. For the first frame, stop the dependent calls if fit fails; never retry automatically."
+    }
+  },
+  {
+    "_comment": "Successful delivered frame2. Frame4 used the one expressly approved retry; the failed duplicate is recorded only in manifest.json. This recipe is not permission to repeat paid calls.",
+    "MCP inpaint_image_pro_flash": {
+      "description": "Add only one simple steel sailor sword with a brass crossguard, held in this south-facing human's right hand on the viewer's left. Place the grip in direct contact with that existing hand; let the unchanged hand naturally occlude the grip. Angle the blade down-left, away from the leg. Match the source's crisp pixel scale, dark outline and nautical palette. Preserve the exact body pose, hand position, face, limbs, shorts and canvas. Generate only the masked sword region on transparency. No extra hand, arm, body, clothing, hair, detached weapon or background.",
+      "image_url": "body-source-02.png",
+      "mask_image_url": "weapon-mask-02.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 338809494
+    }
+  },
+  {
+    "TASK": {
+      "action": "Retrieve the native64x64 changes-only output; preserve it without pixel repair. Audit black-mask transparency, untouched body, hard alpha and adjacency to the intended hand. Inspect visually. For the first frame, stop the dependent calls if fit fails; never retry automatically."
+    }
+  },
+  {
+    "_comment": "Successful delivered frame3. Frame4 used the one expressly approved retry; the failed duplicate is recorded only in manifest.json. This recipe is not permission to repeat paid calls.",
+    "MCP inpaint_image_pro_flash": {
+      "description": "Add only one simple steel sailor sword with a brass crossguard, held in this south-facing human's right hand on the viewer's left. Place the grip in direct contact with that existing hand; let the unchanged hand naturally occlude the grip. Angle the blade down-left, away from the leg. Match the source's crisp pixel scale, dark outline and nautical palette. Preserve the exact body pose, hand position, face, limbs, shorts and canvas. Generate only the masked sword region on transparency. No extra hand, arm, body, clothing, hair, detached weapon or background.",
+      "image_url": "body-source-03.png",
+      "mask_image_url": "weapon-mask-03.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 338809494
+    }
+  },
+  {
+    "TASK": {
+      "action": "Retrieve the native64x64 changes-only output; preserve it without pixel repair. Audit black-mask transparency, untouched body, hard alpha and adjacency to the intended hand. Inspect visually. For the first frame, stop the dependent calls if fit fails; never retry automatically."
+    }
+  },
+  {
+    "_comment": "Successful delivered frame4. Frame4 used the one expressly approved retry; the failed duplicate is recorded only in manifest.json. This recipe is not permission to repeat paid calls.",
+    "MCP inpaint_image_pro_flash": {
+      "description": "Add only one simple steel sailor sword with a brass crossguard, held in this south-facing human's right hand on the viewer's left. Place the grip in direct contact with that existing hand; let the unchanged hand naturally occlude the grip. Angle the blade down-left, away from the leg. Match the source's crisp pixel scale, dark outline and nautical palette. Preserve the exact body pose, hand position, face, limbs, shorts and canvas. Generate only the masked sword region on transparency. No extra hand, arm, body, clothing, hair, detached weapon or background.",
+      "image_url": "body-source-04.png",
+      "mask_image_url": "weapon-mask-04.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 338809494
+    }
+  },
+  {
+    "TASK": {
+      "action": "Retrieve the native64x64 changes-only output; preserve it without pixel repair. Audit black-mask transparency, untouched body, hard alpha and adjacency to the intended hand. Inspect visually. For the first frame, stop the dependent calls if fit fails; never retry automatically."
+    }
+  },
+  {
+    "TASK": {
+      "action": "Run assemble_review.py only when all four original weapon outputs exist and pass contact checks. Produce84px padded frames at10,13 and pivot42,65, without scaling or per-frame offsets. Preserve all originals; create sheets, a transparent4FPS GIF and separate inspection grid. Verify decoded GIF RGBA. Keep color/width variation visible, artistic approval false and production fallback unchanged."
+    }
+  }
+]

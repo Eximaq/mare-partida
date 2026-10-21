@@ -1,0 +1,19 @@
+{
+  "tool": "MCP animate_character",
+  "job_id": "9570a853-56f5-4600-8a0f-0b6824c88cfc",
+  "status": "completed",
+  "tool_reported_generations": 1,
+  "parameters": {
+    "character_id": "490799ff-e510-4685-b390-212ec6869bf1",
+    "mode": "template",
+    "template_animation_id": "walking-8-frames",
+    "directions": [
+      "south"
+    ],
+    "animation_name": "modular-walk-south-template"
+  },
+  "review": {
+    "accepted": false,
+    "reason": "Front template changes the face into large blue eyes and narrows torso substantially relative to source. Preserved as rejected study."
+  }
+}

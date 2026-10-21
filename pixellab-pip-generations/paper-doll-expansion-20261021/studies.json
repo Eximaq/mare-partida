@@ -1,0 +1,38 @@
+[
+  {
+    "id": "walk-free",
+    "label": "Caminhada livre",
+    "file": "walk-free-eight.png",
+    "fps": 8,
+    "loop": true,
+    "status": "Reprovado",
+    "note": "Bra\u00e7os e fechamento do ciclo precisam de corre\u00e7\u00e3o."
+  },
+  {
+    "id": "walk-template",
+    "label": "Caminhada guiada",
+    "file": "walk-template-eight.png",
+    "fps": 8,
+    "loop": true,
+    "status": "Reprovado",
+    "note": "Rosto e largura do corpo mudam em rela\u00e7\u00e3o \u00e0 refer\u00eancia."
+  },
+  {
+    "id": "attack",
+    "label": "Ataque do corpo",
+    "file": "attack-south-eight.png",
+    "fps": 12,
+    "loop": false,
+    "status": "Reprovado",
+    "note": "Propor\u00e7\u00f5es e leitura dos bra\u00e7os mudam nos frames centrais."
+  },
+  {
+    "id": "walk-minimax",
+    "label": "Caminhada alternativa \u00b7 corpo candidato",
+    "file": "walk-minimax-eight.png",
+    "fps": 8,
+    "loop": true,
+    "status": "Corpo candidato, espada pendente",
+    "note": "Identidade melhor preservada; encaixe da arma ainda n\u00e3o validado em todos os frames."
+  }
+]

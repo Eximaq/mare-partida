@@ -1,0 +1,65 @@
+{
+  "status": "both jobs completed; prototype gates passed; full-character approval pending",
+  "estimated_generations": 12,
+  "ceiling_generations": 12,
+  "no_retries": true,
+  "stop_after_failed_gate": true,
+  "calls": [
+    {
+      "slot": "hair",
+      "tool": "MCP inpaint_image_pro_flash",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-atlas-input.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "mask_image_url": "hair-mask-input.png",
+        "context_image": {
+          "url": "look-context-input.png",
+          "usage_description": "The left 128x128 area is the unchanged source sheet. The 64x64 sprite on the right guides only the appearance of the requested addition, never the body pose."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair matching the right-side reference, fitted to the existing south-facing scalp. Follow each head position. Preserve the face, eyes, ears, body pose, proportions, hands, shorts, cell positions and transparency. Change only the masked hair region. No bandana, duplicate head, clothing or loose objects."
+      }
+    },
+    {
+      "slot": "outfit",
+      "tool": "MCP inpaint_image_pro_flash",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-atlas-input.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "mask_image_url": "outfit-mask-input.png",
+        "context_image": {
+          "url": "look-context-input.png",
+          "usage_description": "The left 128x128 area is the unchanged source sheet. The 64x64 sprite on the right guides only the appearance of the requested addition, never the body pose."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only a cream short-sleeved linen shirt and navy sailor waistcoat matching the right-side reference, fitted to the existing chest and shoulders. Follow each breathing pose. Preserve the face, head, hands, forearms, shorts, feet, cell positions, proportions and transparency. Change only the masked garment region. No body redraw, hair, weapons or emblems."
+      }
+    }
+  ],
+  "assembly": "Separate native layers, split cells without resampling, transparent padding10/13 to84x84, four real frames4FPS; existing rigid weapon reused unchanged.",
+  "production": "Review only until art approved; existing gameplay fallback preserved.",
+  "explicit_user_reply": "prossiga",
+  "charged_generations": 12,
+  "executed_slots": [
+    "hair",
+    "outfit"
+  ]
+}

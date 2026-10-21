@@ -1,0 +1,89 @@
+{
+  "status": "inputs only; no paid calls",
+  "native_cell": [
+    64,
+    64
+  ],
+  "native_atlas": [
+    128,
+    128
+  ],
+  "order": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "mapping": "row-major: top-left, top-right, bottom-left, bottom-right",
+  "contexts": {
+    "size": [
+      192,
+      128
+    ],
+    "source_bbox": [
+      0,
+      0,
+      128,
+      128
+    ],
+    "reference_position": [
+      128,
+      32
+    ]
+  },
+  "masks": "generation controls, not character artwork",
+  "frames": [
+    {
+      "frame": 1,
+      "source": "body-source-01.png",
+      "sha256": "6d000ef9c769332f95b0c87c239f24753435cb067e3d419dfd027aecfe30ba81",
+      "cell": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "head_top": 9,
+      "scale": false
+    },
+    {
+      "frame": 2,
+      "source": "body-source-02.png",
+      "sha256": "ab34833564c7a80f982228c9f8eaeae4e798b5ddbdb8761abf999eb750e71923",
+      "cell": [
+        64,
+        0,
+        64,
+        64
+      ],
+      "head_top": 10,
+      "scale": false
+    },
+    {
+      "frame": 3,
+      "source": "body-source-03.png",
+      "sha256": "88d15ffa8e6433120e96ba4e1920ecbbd2fab109b7c11fcf102e769867fe5b26",
+      "cell": [
+        0,
+        64,
+        64,
+        64
+      ],
+      "head_top": 11,
+      "scale": false
+    },
+    {
+      "frame": 4,
+      "source": "body-source-04.png",
+      "sha256": "cad9315111f37be1bec2cdf377aa74c14a01bc74471be9699095fd9aa62695aa",
+      "cell": [
+        64,
+        64,
+        64,
+        64
+      ],
+      "head_top": 10,
+      "scale": false
+    }
+  ]
+}

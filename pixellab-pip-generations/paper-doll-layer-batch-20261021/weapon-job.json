@@ -1,0 +1,40 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "slot": "weapon",
+  "job_id": "c41dbbaa-b5bf-482c-bd5c-a3e6a8278763",
+  "source_image_id": "cd0a0ad6-2c28-50a2-9966-44ade1987036",
+  "status": "completed",
+  "estimated_generations": 6,
+  "parameters": {
+    "image_url": "body-atlas-input.png",
+    "mask_image_url": "weapon-mask-input.png",
+    "context_image": {
+      "url": "weapon-context-input.png",
+      "usage_description": "The left 128x128 area is the unchanged source sheet. The 64x64 sprite on the right guides only the appearance of the requested addition, never the body pose."
+    },
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 128,
+      "height": 128
+    },
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 1612130099,
+    "description": "Edit the four existing south-facing poses in this 2x2 sheet. In each 64x64 cell add only the same steel sailor sword shown by the right-side reference, attached to the existing right hand, blade angled down-left. Keep identical blade length, width, brass guard, palette and pixel scale across cells. Preserve every body pixel, pose, cell position and transparency. No other objects or anatomy."
+  },
+  "approval": {
+    "ceiling": 18,
+    "no_retries": true,
+    "stop_on_failure": true
+  },
+  "asset_status": "saved",
+  "reported_usage": {
+    "generations": 6
+  },
+  "artistic_gate": "failed",
+  "raw_file": "weapon-raw.png",
+  "raw_sha256": "be71f77f2bdb81c50952a48966507bf23837c29cb85f7d99fc611ad38ec94608",
+  "asset_id": "cd0a0ad6-2c28-50a2-9966-44ade1987036"
+}

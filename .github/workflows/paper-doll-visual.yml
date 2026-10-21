@@ -12,6 +12,27 @@ on:
       - 'tools/build_pages.py'
       - 'docs/PAPER-DOLL.md'
       - 'tests/paper_doll_browser.py'
+      - 'tests/paper_doll_partial_browser.py'
+      - 'tests/paper_doll_idle_browser.py'
+      - 'tests/paper_doll_sword_browser.py'
+      - 'tests/paper_doll_layer_batch_browser.py'
+      - 'tests/paper_doll_rigid_browser.py'
+      - 'tests/paper_doll_modular_idle_browser.py'
+      - 'tests/paper_doll_socket_browser.py'
+      - 'tests/paper_doll_expansion_browser.py'
+      - 'tests/paper_doll_world_review_browser.py'
+      - 'pixellab-pip-generations/paper-doll-expansion-20261021/**'
+      - 'tests/paper_doll_rigid_assembly_test.py'
+      - 'tests/paper-doll-attachment.test.cjs'
+      - 'tests/paper_doll_fit_audit_test.py'
+      - 'tests/paper_doll_batch_audit_test.py'
+      - 'tools/paper_doll_fit_audit.py'
+      - 'tools/paper_doll_batch_audit.py'
+      - 'pixellab-pip-generations/paper-doll-human-idle-south-20261021/**'
+      - 'pixellab-pip-generations/paper-doll-sword-fit-20261021/**'
+      - 'pixellab-pip-generations/paper-doll-layer-batch-20261021/**'
+      - 'pixellab-pip-generations/paper-doll-rigid-weapon-20261021/**'
+      - 'pixellab-pip-generations/paper-doll-hair-outfit-20261021/**'
       - 'tests/universal_character_browser.py'
       - 'tests/class_combat_v2_browser.py'
       - '.github/workflows/paper-doll-visual.yml'
@@ -29,8 +50,16 @@ jobs:
           python-version: '3.13'
       - name: Preparar navegador e pacote
         run: |
-          python -m pip install playwright==1.63.0
+          python -m pip install playwright==1.63.0 Pillow==13.0.0
           python -m playwright install --with-deps chromium
+          python tests/paper_doll_fit_audit_test.py
+          python tests/paper_doll_batch_audit_test.py
+          python tests/paper_doll_rigid_assembly_test.py
+          python pixellab-pip-generations/paper-doll-sword-fit-20261021/assemble_review.py
+          python pixellab-pip-generations/paper-doll-layer-batch-20261021/assemble_review.py
+          python pixellab-pip-generations/paper-doll-rigid-weapon-20261021/assemble_review.py
+          python pixellab-pip-generations/paper-doll-hair-outfit-20261021/assemble_review.py
+          python pixellab-pip-generations/paper-doll-expansion-20261021/assemble_review.py
           python tools/build_pages.py
       - name: Conferir bancada, fallback e jogo
         env:
@@ -39,6 +68,15 @@ jobs:
           python -m http.server 8123 --bind 127.0.0.1 > /tmp/paper-doll-server.log 2>&1 &
           sleep 2
           python tests/paper_doll_browser.py
+          python tests/paper_doll_partial_browser.py
+          python tests/paper_doll_idle_browser.py
+          python tests/paper_doll_sword_browser.py
+          python tests/paper_doll_layer_batch_browser.py
+          python tests/paper_doll_rigid_browser.py
+          python tests/paper_doll_modular_idle_browser.py
+          python tests/paper_doll_socket_browser.py
+          python tests/paper_doll_expansion_browser.py
+          python tests/paper_doll_world_review_browser.py
           python tests/universal_character_browser.py
           python tests/class_combat_v2_browser.py
       - name: Capturas e medições para revisão

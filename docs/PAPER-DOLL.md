@@ -1,5 +1,11 @@
 # Paper Doll 1.0 — Fase 1
 
+## Estado atual (21/10/2026)
+
+O [pacote de revisão multidirecional](PAPER-DOLL-EXPANSAO.md) já contém corpo, cabelo, roupa e espada para as16 poses de Idle nas quatro direções. A arma tem fonte e âncora próprias por vista; a bancada abre o pacote diretamente pelo link `?pack=expansion-idle` e permite editar/exportar sockets por frame. A arte permanece em inspeção (`approved:false`), fora do catálogo de produção. O jogo mantém seus sprites atuais.
+
+Walk e Attack ainda não têm conjuntos aprovados. Os estudos rejeitados foram preservados, sem gerar roupas sobre bases defeituosas. Para o mínimo do Espadachim, restam192 frames de corpo/cabelo/roupa (96 de Walk e96 de Attack), mais validação das trajetórias/vistas da arma e32 frames de lâmina para ataque quando necessário. As estimativas de320 frames abaixo registram o levantamento inicial, anterior aos pilotos e à exceção de arma rígida, não o inventário corrente. A Fase1 completa continua pendente.
+
 ## Evolução: personagem único (20/10/2026)
 
 A base técnica agora usa `human-v1`, independente de classe/facção. A implementação histórica `swordsman-v1` e seus pacotes continuam aceitos na bancada. Esta evolução não entrega sprites modulares nem o editor de aparência: todos os placeholders continuam `available:false`, sem URLs ou aprovação artificial. O jogo preserva os personagens completos por fallback.
@@ -30,7 +36,29 @@ Não há customizador de aparência, recoloração, escolha persistente de cabel
 
 ## Estado e limite artístico
 
-Infraestrutura funcional com fallback, bancada interativa e contrato de assets. **Ainda não existe um conjunto modular real de Espadachim para validação artística.** Nenhum PNG foi gerado, pintado, separado por cores ou convertido em camada artificial. O jogo continua mostrando os personagens originais.
+### Cobertura parcial por direção (21/10/2026)
+
+O rig continua declarando as quatro direções. Uma peça pode fornecer um subconjunto não vazio delas em `clip.directions`, com uma linha real de PNG por direção declarada. A ordem das linhas segue esse array; direções desconhecidas, duplicadas, folhas com linhas extras e sequências incompatíveis são rejeitadas. Uma pose sem linha retorna `missing-direction` antes de qualquer desenho, preservando o fallback atômico. Não há empréstimo, espelhamento ou duplicação de linhas.
+
+A bancada informa quais direções possuem composição completa (`readyDirections`, modo `partial-draft`), mantendo o sprite original nas demais e em ações ausentes. Isso permite inspecionar lotes pequenos sem aprovar arte nem ativar conjuntos incompletos no jogo. Os testes Node e `tests/paper_doll_partial_browser.py` verificam quatro frames sul, três direções legadas, ação ausente e save intacto com fixtures geométricas explicitamente separadas de arte de personagem.
+
+O [piloto real Idle/sul](PAPER-DOLL-IDLE-SUL.md) consumiu11 gerações autorizadas e entregou quatro frames de inspeção, mas o contato mão/espada e os ombros não passaram. O pacote continua `approved:false`, fora do catálogo do jogo. Essa evolução não conclui o critério artístico da Fase1.
+
+A [continuação da espada](PAPER-DOLL-ESPADA.md) usa saídas nativas isoladas com máscaras que congelam a anatomia. Quatro contatos passaram com zero alteração no corpo. O teste usa um rig de inspeção corpo/arma; o `human-v1` continua exigindo corpo, cabelo, roupa e arma completos. A variação visual da lâmina e as peças de roupa/cabelo mantêm a validação artística pendente.
+
+### Preparação de edição agrupada — sem novas gerações
+
+`tools/paper_doll_batch_audit.py` verifica uma folha nativa por célula, na ordem declarada, sem redimensionar ou completar imagens. Uma célula inválida impede a exportação de todo o conjunto; quatro camadas visivelmente idênticas são rejeitadas como sequência estática. O teste estrutural continua separado da avaliação artística. Cinco testes de fixtures geométricas cobrem ordem/exportação, vazamento de uma célula, duplicação estática, canvas e oclusão autorizada.
+
+O auditor de camadas isoladas mantém por padrão todos os pixels do corpo protegidos para armas. Cabelo/roupa podem usar explicitamente `allow_body_occlusion:true` (CLI `--allow-body-occlusion`) para cobrir somente a anatomia dentro da máscara correspondente. Alpha parcial, pixels fora da máscara, perda de contato ou mudança na anatomia fora da região continuam bloqueando a aprovação estrutural. Onze testes Python verificam esses contratos; isso não concede aprovação artística.
+
+`pixellab-pip-generations/paper-doll-layer-batch-20261021/` preserva as fontes, a folha de entrada128×128 com quatro frames64×64 existentes, máscaras binárias e guias de contexto192×128. Após aprovação do teto18, foi executada somente a chamada da espada, com cobrança confirmada de6 gerações. O contato estrutural passou nas quatro células sem alterar o corpo, mas a lâmina varia de comprimento, espessura e guarda. **O gate artístico foi reprovado e as chamadas dependentes de cabelo/roupa não foram executadas.** A [prévia diagnóstica](../pixellab-pip-generations/paper-doll-layer-batch-20261021/preview.html) mantém os quatro frames na ordem original, sem reparo local ou ativação no jogo. [Relatório do lote](PAPER-DOLL-LOTE-CAMADAS.md). As guias são entradas, não sprites novos; o atlas edita poses existentes e não cria movimento por duplicação.
+
+O [conjunto Idle/sul](../pixellab-pip-generations/paper-doll-hair-outfit-20261021/preview.html) reúne agora as quatro peças reais: corpo, cabelo, roupa e arma rígida. Cabelo e roupa foram produzidos em duas edições mascaradas,12 gerações cobradas, sem retries, com zero alteração fora das regiões permitidas. O pacote pode ser importado na bancada; outras poses permanecem no fallback e o jogo mantém os personagens originais. **Ainda falta validar o Espadachim nas quatro direções e ações.** [Relatório, consumo e228 frames de camadas ainda ausentes](PAPER-DOLL-CABELO-ROUPA.md).
+
+### Exceção autorizada — armas rígidas por encaixe
+
+Após autorização específica do proprietário, `kind:rigid-attachment` permite que uma arma reutilize uma única imagem com sockets inteiros por animação/direção/frame. A [prévia Idle/sul](../pixellab-pip-generations/paper-doll-rigid-weapon-20261021/preview.html) mantém o modelo da espada constante sobre quatro poses reais do corpo, sem novas gerações. Este é um modo declarado de peça rígida, não uma folha de frames gerados. Corpo, cabelo e roupa continuam exigindo frames próprios; outras ações e direções só ficam válidas com fontes/encaixes correspondentes. O catálogo do jogo mantém o fallback. [Contrato, origem e testes](PAPER-DOLL-ARMA-RIGIDA.md).
 
 Branch `feature/paper-doll-fase-1`, criada de `origin/main` em `5047eea`, incorpora o checkpoint de animações2.0 (`4ab2348`, preservado por cherry-pick). O PR de checkpoint39 permanece em rascunho; esta fase inclui esse trabalho e não depende de fazer merge nele. Não fazer merge/publicação automática de nenhum dos dois.
 
@@ -101,7 +129,7 @@ Exemplo de clip, somente metadados:
 }
 ```
 
-A Fase1 rejeita folhas cujas células de uma sequência multidirecional são todas vazias ou reproduzem exatamente a mesma imagem em todas as colunas de uma direção. Isso detecta simulação de animação estática; não substitui a inspeção de anatomia, armas e alinhamento. Peças rígidas com reutilização formal por anchors exigem extensão futura explícita do contrato; não foram simuladas nesta fase.
+A Fase1 rejeita folhas cujas células de uma sequência multidirecional são todas vazias ou reproduzem exatamente a mesma imagem em todas as colunas de uma direção. Isso detecta simulação de animação estática; não substitui a inspeção de anatomia, armas e alinhamento. A exceção autorizada para armas exige o tipo explícito `rigid-attachment`, uma única imagem e sockets por pose; não se duplicam células para contornar a auditoria. Ver contrato acima.
 
 ### Equipamento e aparência
 
@@ -128,6 +156,14 @@ Para um pacote local: selecione um JSON e todas as folhas PNG na mesma seleção
 
 ## Cache e desempenho
 
+### Encaixes editáveis e vistas de arma
+
+Na bancada, **Encaixe da arma** permite escolher direção e frame, editar coordenadas inteiras do socket e a profundidade daquela pose, restaurar o pacote e exportar um JSON portátil. O PNG permanece intacto. A edição pausa a reprodução, invalida o cache e mantém `approved:false`; não grava no save nem registra arte no catálogo de produção. Reimporte o JSON exportado junto dos mesmos PNGs. Poses sem encaixe ficam desabilitadas.
+
+Uma arma rígida pode declarar `clip.sources`, um objeto por direção com `url`, `width`, `height`, `anchorX` e `anchorY`. Ao usar esse formato, **todas** as direções declaradas no clip precisam ter uma fonte válida. A vista norte não herda a espada frontal. `clip.url` continua obrigatório para compatibilidade com o contrato e o importador; cada vista resolve sua própria imagem e âncora. O formato antigo `clip.source` permanece válido para armas de uma única fonte. Sockets e `directionOverrides`/`poseOverrides` continuam controlando posição e profundidade; corpo, roupa e cabelo não aceitam essa exceção de imagem rígida.
+
+`tests/paper_doll_socket_browser.py` verifica edição por frame, rejeição de coordenadas inválidas, restauração, exportação/reimportação sem URLs temporárias, mobile e isolamento do save. Os testes Node verificam fontes e âncoras distintas por direção e fallback quando falta uma vista.
+
 O carregador de imagens é compartilhado com `MareFactionSprites.image`: uma URL produz um objeto Image. O compositor audita as células uma vez por imagem/clip e usa cache LRU por rig/revisão, aparência, frame, direção, offsets, profundidade e visibilidade. Célula composta é nativa; escala é aplicada apenas no desenho final, com `imageSmoothingEnabled=false` e coordenadas arredondadas.
 
 Limites padrão:4MiB e96 frames compostos. As dimensões da composição se expandem quando há offsets legítimos, evitando cortar arma/cabelo; offsets inválidos ou composição maior que2048px falham com segurança. Registrar novamente uma peça/rig invalida as composições. PNGs originais ficam no carregador; bytes do cache são apenas os canvases RGBA compostos, não toda a memória do navegador/GPU.
@@ -153,7 +189,7 @@ Estimativas de dimensionamento, **não orçamento aprovado**:
 - Como referência de custo de movimento, um corpo-base e12 clipes v3 pequenos podem custar14–26 gerações; isso produz frames do corpo e **não** cria as outras três camadas compatíveis. Não usar esse número como orçamento do conjunto Paper Doll completo.
 - Lote inicial proposto para futura aprovação: somente Idle/sul das quatro peças (16 frames), com envelope de até16 gerações se produzido por imagens individuais, ou arte manual. Validar encaixe antes de planejar Walk/sul (32 frames), Attack/sul (32) e as três outras direções. Rota, prompts, referências, frames e preço devem ser apresentados antes de qualquer geração; o orçamento pode mudar conforme a estratégia escolhida.
 
-Gerar o personagem inteiro e tentar apagar suas roupas depois deixa anatomia oculta faltando. Recortes por cor, redimensionamento de ícones ou uma espada estática não atendem ao contrato. Reutilização segura nesta fase é manter sprites completos como referência/fallback e reaproveitar a infraestrutura de animação, não fabricar camadas ocultas.
+Gerar o personagem inteiro e tentar apagar suas roupas depois deixa anatomia oculta faltando. Recortes por cor e redimensionamento de ícones não atendem ao contrato. Uma arma rígida só pode reutilizar imagem pelo modo explícito autorizado, com encaixes reais; isso não permite fabricar anatomia oculta ou declarar o personagem inteiro concluído. Sprites completos continuam como referência/fallback.
 
 ## Validação e evidências
 
@@ -164,4 +200,4 @@ Gerar o personagem inteiro e tentar apagar suas roupas depois deixa anatomia ocu
 - A execução local passou com31 suítes Node e sintaxe/build, além da regressão real das sete classes. O teste Pages de cache conferiu58 recursos versionados e save preservado. No ensaio do pacote estático,10.000 resoluções de fallback levaram7–11ms nas execuções locais; a amostra de combate de1,8s registrou109 frames, mediana de16,7ms e p95 de16,7–16,8ms e zero composições modulares. São medições desta máquina e deste cenário, sem arte modular real, não uma promessa de FPS geral.
 - O workflow `Paper Doll — infraestrutura e fallback` repete a verificação em Chromium no pacote estático e entrega o artefato `paper-doll-infraestrutura-capturas` para revisão, sem incluir evidências em massa no repositório.
 
-A fase entrega a infraestrutura e a prévia com fallback pela exceção expressa do pedido. **O aceite artístico do Espadachim modular em quatro direções continua pendente dos320 frames reais.** Nada foi publicado nem integrado à main automaticamente. Saves antigos, mapas, física, hitboxes e tempos/eventos do combate permanecem no caminho existente.
+A fase entrega a infraestrutura e a prévia com fallback pela exceção expressa do pedido. **O aceite artístico do Espadachim modular em quatro direções continua pendente.** O mínimo atualizado de camadas e encaixes ausentes está no relatório Idle/sul; a arma rígida é a exceção autorizada à antiga estimativa de320 frames. Nada foi integrado à main automaticamente. Saves antigos, mapas, física, hitboxes e tempos/eventos do combate permanecem no caminho existente.

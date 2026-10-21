@@ -1,0 +1,29 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "5011ca7f-56b8-43a6-8154-73e57d5ae569",
+  "status": "completed",
+  "estimated_generations": 5,
+  "parameters": {
+    "image_url": "body-idle-east-raw-01.png",
+    "mask_image_url": "weapon-east-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 338809494,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 64,
+      "height": 64
+    },
+    "context_image": {
+      "url": "context-east.png",
+      "usage_description": "Top-left 64x64 is this source pose. The dressed frontal sprite on the right guides only simple steel sword and brass guard style; do not copy its pose or clothing."
+    },
+    "description": "Add only one simple steel sailor sword with a small brass crossguard held at this east-facing human's visible near hand near pixel29,37. Let the unchanged hand naturally occlude the grip. The blade rests diagonally down-left behind and away from the legs. Match the reference sword material, dark outline and crisp native pixel scale. Output only the masked sword on transparency. No hand, arm, body, clothes, hair, detached object or background."
+  },
+  "reported_usage": {
+    "generations": 5
+  },
+  "raw_sha256": "fe5ef2cb9fc0f495ef173c7091a335c53479cf52155fbbba30575ca6d3d6ea97"
+}

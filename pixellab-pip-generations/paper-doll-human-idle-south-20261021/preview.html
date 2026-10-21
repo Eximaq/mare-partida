@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Paper Doll · Idle frontal em revisão</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#102428;color:#f3dfb5;font:16px/1.5 Georgia,serif}main{max-width:1150px;margin:auto;padding:24px}a{color:#ebbf6c}h1{font-size:30px}.warning{background:#4b3729;padding:16px;border-left:4px solid #d3a85c}.boards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:24px 0}figure{margin:0;border:1px solid #9c7a43;background:#35271d;padding:12px}canvas{display:block;width:100%;height:auto;image-rendering:pixelated;background:#142e30}figcaption{margin-top:10px}small{display:block;font:13px/1.5 system-ui;color:#d8c9ac}.controls{display:flex;align-items:center;flex-wrap:wrap;gap:16px;padding:16px;border:1px solid #9c7a43}button{background:#6b4829;border:1px solid #d3a85c;color:#fff0ce;padding:9px 18px;font:inherit;cursor:pointer}input{accent-color:#d3a85c}input[type=range]{width:140px}button:focus-visible,input:focus-visible{outline:2px solid #f6d590;outline-offset:3px}code{overflow-wrap:anywhere}footer{margin-top:24px;border-top:1px solid #866d45;padding-top:16px}p{max-width:86ch}@media(max-width:700px){main{padding:16px}.boards{grid-template-columns:1fr}figure{max-width:360px;width:100%;margin:auto}h1{font-size:26px}}
+</style></head><body><main>
+<a href="../../tools/paper-doll-inspector/index.html">← Bancada técnica</a>
+<h1>Idle frontal · teste de movimento e peças</h1>
+<p>4 frames gerados · Sul · 4 FPS · 11 gerações cobradas neste lote.</p>
+<p class="warning"><strong>Encaixe reprovado para o jogo.</strong> A transferência redesenhou braços e pernas. Nas extrações, a espada deixa de acompanhar a mão em alguns frames e a roupa não acompanha perfeitamente os ombros. Os rascunhos abaixo servem para diagnosticar isso; os personagens atuais continuam ativos.</p>
+<div class="controls"><button id="play" type="button" aria-pressed="false">Reproduzir</button><label>Frame <input id="frame" type="range" min="0" max="3" value="0"><output id="frameValue">1</output>/4</label><label><input id="pivots" type="checkbox"> Mostrar pivô</label></div>
+<div class="boards">
+<figure><canvas id="bodyCanvas" width="84" height="84" aria-label="Corpo gerado sem peças"></canvas><figcaption>Corpo animado<small>Pixels do PixelLab, apenas padding transparente. Pivô42/65.</small></figcaption></figure>
+<figure><canvas id="outfitCanvas" width="84" height="84" aria-label="Transferência completa original"></canvas><figcaption>Transferência bruta<small>Personagem composto pelo gerador. Não é um conjunto modular.</small></figcaption></figure>
+<figure><canvas id="draftCanvas" width="84" height="84" aria-label="Extração modular reprovada, para diagnóstico"></canvas><figcaption>Extrações · inspeção reprovada<small>Corpo original preservado fora das máscaras. Nenhuma correção pintada.</small></figcaption></figure>
+</div>
+<div class="controls"><label><input type="checkbox" data-slot="hair" checked> Cabelo</label><label><input type="checkbox" data-slot="outfit" checked> Roupa</label><label><input type="checkbox" data-slot="weapon" checked> Espada</label></div>
+<p id="status" role="status">Carregando…</p>
+<h2>O que este lote confirmou</h2>
+<p>O compositor e a bancada podem inspecionar somente a direção sul e usar fallback nas outras três. O corpo, as peças e os pivôs usam o mesmo frame. Isso valida a infraestrutura; não corrige os defeitos da arte.</p>
+<p>O frame de referência0 foi preservado separadamente. A reprodução utiliza somente os quatro frames gerados1–4, conforme autorizado, sem espelhamento, duplicação ou ping-pong.</p>
+<p><a href="body-idle-preview.gif">GIF do corpo</a> · <a href="outfit-idle-preview.gif">GIF da transferência</a> · <a href="draft-idle-preview.gif">GIF do encaixe reprovado</a> · <a href="review-sheet.png">Comparativo nativo</a></p>
+<details><summary>Abrir as peças na bancada existente</summary><p>Na bancada, importe <a href="review-pack.json">review-pack.json</a> junto das quatro folhas PNG: <a href="body-idle-draft.png">corpo</a>, <a href="hair-idle-draft.png">cabelo</a>, <a href="outfit-idle-draft.png">roupa</a> e <a href="weapon-idle-draft.png">espada</a>. São arquivos de inspeção, todos com <code>approved:false</code>. Idle/sul será desenhado para diagnóstico; outras direções, Walk e Attack continuam com fallback.</p></details>
+<p><a href="manifest.json">Manifesto, prompts e custos</a> · <a href="human-idle-south.blueprint.json">Receita</a> · <a href="../../docs/PAPER-DOLL-IDLE-SUL.md">Relatório e pendências</a></p>
+<footer>Dois jobs concluídos, sem retries. Nenhuma migração de save ou ativação de animação incompleta.</footer>
+</main><script src="../../paper-doll.js"></script><script>
+(async()=>{
+ const $=id=>document.getElementById(id),pack=await(await fetch('review-pack.json')).json(),images=new Map();
+ const files=[...pack.pieces.map(p=>p.animations.idle.url),...Array.from({length:4},(_,i)=>'outfit-raw-'+String(i+1).padStart(2,'0')+'.png')];
+ await Promise.all(files.map(async file=>{const image=new Image();image.src=file;await image.decode();images.set(file,image)}));
+ const engine=MarePaperDoll.create({getImage:url=>images.get(url)});engine.registerRig(pack.rig);pack.pieces.forEach(piece=>engine.registerPiece(piece));
+ let playing=false,last=0,elapsed=0,index=0;
+ function clear(id){const ctx=$(id).getContext('2d');ctx.clearRect(0,0,84,84);ctx.imageSmoothingEnabled=false;return ctx;}
+ function render(){
+   index=Number($('frame').value);$('frameValue').value=String(index+1);
+   const body=clear('bodyCanvas'),raw=clear('outfitCanvas'),draft=clear('draftCanvas');
+   body.drawImage(images.get('body-idle-draft.png'),index*84,0,84,84,0,0,84,84);
+   raw.drawImage(images.get('outfit-raw-'+String(index+1).padStart(2,'0')+'.png'),10,13);
+   const hidden=[...document.querySelectorAll('[data-slot]')].filter(x=>!x.checked).map(x=>x.dataset.slot);
+   const pose={animationId:'idle',direction:'south',frameIndex:index};
+   if(!engine.draw(draft,pack.appearance,pose,42,65,{allowDraft:true,hidden,scale:1}))throw Error('Pacote de inspeção inválido');
+   if($('pivots').checked)for(const ctx of [body,raw,draft]){ctx.fillStyle='#f7cc69';ctx.fillRect(39,65,7,1);ctx.fillRect(42,62,1,7)}
+   $('status').textContent='Frame '+(index+1)+' · Encaixe reprovado · camadas sincronizadas para diagnóstico, sem aprovação artística.';
+   window.__paperDollIdleInspection=()=>({ready:true,frameIndex:index,frameCount:4,direction:'south',artworkApproved:false,fitAccepted:false,hidden,stats:engine.stats()});
+ }
+ $('frame').addEventListener('input',()=>{playing=false;$('play').textContent='Reproduzir';$('play').setAttribute('aria-pressed','false');render()});
+ $('pivots').addEventListener('change',render);document.querySelectorAll('[data-slot]').forEach(x=>x.addEventListener('change',render));
+ $('play').addEventListener('click',()=>{playing=!playing;elapsed=index/4;$('play').textContent=playing?'Pausar':'Reproduzir';$('play').setAttribute('aria-pressed',String(playing))});
+ render();function tick(now){const dt=last?Math.min(.1,(now-last)/1000):0;last=now;if(playing&&!document.hidden){elapsed+=dt;const next=Math.floor(elapsed*4)%4;if(next!==index){$('frame').value=next;render()}}requestAnimationFrame(tick)}requestAnimationFrame(tick);
+})().catch(error=>{document.getElementById('status').textContent='Falha na inspeção: '+error.message;console.error(error)});
+</script></body></html>
