@@ -1,0 +1,77 @@
+{
+  "status": "rejected-base; dependent calls not executed",
+  "scope": "one static south-facing pose; no animation",
+  "approval": {
+    "generation_ceiling": 4,
+    "no_retries": true,
+    "dependent_calls_require_accepted_base": true
+  },
+  "calls": [
+    {
+      "tool": "MCP edit_image_pixen",
+      "job_id": "bb887c4b-bc36-4bcb-ae74-6d81bf81a110",
+      "asset_id": "6f41cbf7-8d65-52b6-88eb-1a1aabfd9f42",
+      "parameters": {
+        "image_url": "reference-south-idle-00.png",
+        "width": 84,
+        "height": 84,
+        "no_background": true,
+        "description": "Edit this south-facing pirate into a neutral human paper-doll base. Preserve the face, body proportions, stance, foot position, pixel scale and shading. Give him a bald scalp, bare torso and arms, plain charcoal shorts and bare feet. Remove the headband, vest, shirt and boots. Keep the same canvas and transparent background. One complete character, no weapons."
+      },
+      "seed": "omitted",
+      "reported_usage": {
+        "generations": 1
+      },
+      "output": "body-south-00.png",
+      "verification": {
+        "size": [
+          84,
+          84
+        ],
+        "alpha_bbox": [
+          31,
+          22,
+          53,
+          65
+        ],
+        "reference_bbox": [
+          31,
+          22,
+          53,
+          65
+        ],
+        "geometry_passed": true,
+        "artwork_passed": false,
+        "reason": "Facial features erased despite preserve-face instruction; do not use as accepted body or execute dependent calls."
+      }
+    }
+  ],
+  "unexecuted": [
+    "hair",
+    "outfit",
+    "sword"
+  ],
+  "inputs": {
+    "reference": "reference-south-idle-00.png",
+    "source": "assets/factions/pirata/idle.png",
+    "extraction": [
+      0,
+      0,
+      56,
+      56
+    ],
+    "transparent_padding_offset": [
+      14,
+      13
+    ],
+    "pivot": [
+      42,
+      65
+    ]
+  },
+  "postprocessing": [
+    "Lossless first-frame crop and transparent padding for source",
+    "Nearest-neighbor 8x inspection copies only; native output preserved"
+  ],
+  "production_integrated": false
+}

@@ -1,0 +1,23 @@
+[
+  {
+    "_comment_prompt": "suba e prossiga — primeiro teste de encaixe Paper Doll com corpo, cabelo, roupa e espada; aprovado até 4 gerações e extração das camadas, sem retries.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-human-pilot-20261020",
+      "output_collision_policy": "create_unique"
+    },
+    "TASK": "Confirm explicit paid-call approval for a new run. Create a unique output directory; copy the supplied reference-south-idle-00.png unchanged. It is source frame0, south, from the native 56x56 pirate idle sheet, padded to84x84 at14,13 with no resampling."
+  },
+  {
+    "MCP edit_image_pixen": {
+      "image_url": "reference-south-idle-00.png",
+      "width": 84,
+      "height": 84,
+      "no_background": true,
+      "description": "Edit this south-facing pirate into a neutral human paper-doll base. Preserve the face, body proportions, stance, foot position, pixel scale and shading. Give him a bald scalp, bare torso and arms, plain charcoal shorts and bare feet. Remove the headband, vest, shirt and boots. Keep the same canvas and transparent background. One complete character, no weapons."
+    }
+  },
+  {
+    "TASK": "Save the returned native PNG as body-south-00.png. Inspect canvas, feet, face, proportions, transparency and identity against the reference. This recorded result failed the face constraint. Stop before dependent hair/outfit/sword edits; no retry or repair is authorized. Save separate 8x nearest-neighbor inspection copies only; never label those final assets."
+  }
+]

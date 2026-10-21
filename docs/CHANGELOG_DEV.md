@@ -1,3 +1,9 @@
+## 20/10/2026 — Checkpoint do primeiro piloto artístico Paper Doll
+
+Branch `feature/paper-doll-primeiras-pecas`, base `dc59e4d`. PR43 publicado e conferido no Pages. Executada1 chamada Pixen de84×84, cobrada1 geração pelo getter, dentro do lote aprovado de4. Corpo reprovado por perda do rosto; canvas e posição dos pés foram mantidos. As três adições dependentes não foram executadas e nenhum retry foi feito.
+
+Originais, referência, inspeções, manifesto e blueprint preservados em `pixellab-pip-generations/paper-doll-human-pilot-20261020/`. Utilitário de auditoria/extrator copia apenas pixels gerados e rejeita diffs fora da região/alpha incompatível. Quatro testes Python e build Pages passaram; o runtime e saves não mudaram. Nenhuma arte do piloto está ativa ou publicada. Ver `docs/PAPER-DOLL-PILOTO.md`. Continuação artística depende de autorização de uma nova tentativa; não há job pendente.
+
 ## 20/10/2026 — Personagem único: base compartilhada
 
 Branch `feature/personagem-unico-base`, base `origin/main a1d68d4`. Evolui a infraestrutura Paper Doll para um corpo/cabelo comum às sete classes e quatro facções. Classe seleciona uma das seis categorias de ataque e arma; facção seleciona roupa padrão. Equipamentos conhecidos têm bindings próprios, sem renumerar itens ou escrever campos no save. Armas incompatíveis, poses ausentes e Zoan preservam o legado.
