@@ -1,0 +1,29 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "d20343c8-5c1f-4bae-a277-66f51a7f9f78",
+  "status": "completed",
+  "estimated_generations": 6,
+  "parameters": {
+    "image_url": "body-north-atlas.png",
+    "mask_image_url": "hair-north-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 1612130099,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 128,
+      "height": 128
+    },
+    "context_image": {
+      "url": "context-north.png",
+      "usage_description": "The left 128x128 is the source sheet. The right sprite guides only the short black hair style and palette; do not copy its south-facing pose."
+    },
+    "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair fitted to each north-facing scalp, seen from behind. Match the right-side reference hair style, scale, outline and palette. Preserve every other pixel, the back-facing head and anatomy, ears, body poses, shorts, feet and transparency. No face on the back of the head, bandana, duplicate head, clothing or loose objects. Keep original row-major frame order."
+  },
+  "reported_usage": {
+    "generations": 6
+  },
+  "raw_sha256": "0280bec4a5e8130f5cfea624ecdf28d988957e99f7e41bd60a0e1337699c4b74"
+}

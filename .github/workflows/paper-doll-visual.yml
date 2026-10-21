@@ -18,6 +18,9 @@ on:
       - 'tests/paper_doll_layer_batch_browser.py'
       - 'tests/paper_doll_rigid_browser.py'
       - 'tests/paper_doll_modular_idle_browser.py'
+      - 'tests/paper_doll_socket_browser.py'
+      - 'tests/paper_doll_expansion_browser.py'
+      - 'pixellab-pip-generations/paper-doll-expansion-20261021/**'
       - 'tests/paper_doll_rigid_assembly_test.py'
       - 'tests/paper-doll-attachment.test.cjs'
       - 'tests/paper_doll_fit_audit_test.py'
@@ -55,6 +58,7 @@ jobs:
           python pixellab-pip-generations/paper-doll-layer-batch-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-rigid-weapon-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-hair-outfit-20261021/assemble_review.py
+          python pixellab-pip-generations/paper-doll-expansion-20261021/assemble_review.py
           python tools/build_pages.py
       - name: Conferir bancada, fallback e jogo
         env:
@@ -69,6 +73,8 @@ jobs:
           python tests/paper_doll_layer_batch_browser.py
           python tests/paper_doll_rigid_browser.py
           python tests/paper_doll_modular_idle_browser.py
+          python tests/paper_doll_socket_browser.py
+          python tests/paper_doll_expansion_browser.py
           python tests/universal_character_browser.py
           python tests/class_combat_v2_browser.py
       - name: Capturas e medições para revisão

@@ -1,0 +1,21 @@
+{
+  "tool": "MCP create_character",
+  "character_id": "490799ff-e510-4685-b390-212ec6869bf1",
+  "status": "completed",
+  "parameters": {
+    "mode": "v3",
+    "n_directions": 4,
+    "size": 64,
+    "view": "high top-down",
+    "name": "Human modular base 20261021",
+    "description": "The same neutral bald human paper-doll base, bare torso and arms, plain charcoal shorts and bare feet. Preserve the supplied south-facing face, skin palette, body proportions and native pixel scale. No hair, shirt, coat, boots, accessories or weapons.",
+    "reference_image_url": "body-south-input.png"
+  },
+  "estimated_generations": 1,
+  "outputs": [
+    "body-south-rotation.png",
+    "body-north-rotation.png",
+    "body-west-rotation.png",
+    "body-east-rotation.png"
+  ]
+}

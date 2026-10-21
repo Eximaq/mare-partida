@@ -1,0 +1,164 @@
+{
+  "passed": true,
+  "scope": "native batch structure; no artistic approval",
+  "artwork_approved": false,
+  "size": [
+    128,
+    128
+  ],
+  "cell_size": 64,
+  "frame_order": "row-major",
+  "frames": [
+    {
+      "frame": 1,
+      "cell": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        32,
+        27
+      ],
+      "visible_layer_pixels": 133,
+      "outside_mask_pixels": 0,
+      "body_occlusion_allowed": true,
+      "unprotected_body_pixels": 0,
+      "permitted_body_occlusion_pixels": 127,
+      "changed_unmasked_body_pixels": 0,
+      "body_overlap_pixels": 127,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 124,
+      "hand_contact_pixels": 49,
+      "anchor_contact_pixels": 49,
+      "layer_bbox": [
+        26,
+        22,
+        39,
+        35
+      ]
+    },
+    {
+      "frame": 2,
+      "cell": [
+        64,
+        0,
+        64,
+        64
+      ],
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        32,
+        27
+      ],
+      "visible_layer_pixels": 137,
+      "outside_mask_pixels": 0,
+      "body_occlusion_allowed": true,
+      "unprotected_body_pixels": 0,
+      "permitted_body_occlusion_pixels": 135,
+      "changed_unmasked_body_pixels": 0,
+      "body_overlap_pixels": 135,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 134,
+      "hand_contact_pixels": 49,
+      "anchor_contact_pixels": 49,
+      "layer_bbox": [
+        24,
+        22,
+        39,
+        35
+      ]
+    },
+    {
+      "frame": 3,
+      "cell": [
+        0,
+        64,
+        64,
+        64
+      ],
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        32,
+        27
+      ],
+      "visible_layer_pixels": 142,
+      "outside_mask_pixels": 0,
+      "body_occlusion_allowed": true,
+      "unprotected_body_pixels": 0,
+      "permitted_body_occlusion_pixels": 135,
+      "changed_unmasked_body_pixels": 0,
+      "body_overlap_pixels": 135,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 131,
+      "hand_contact_pixels": 49,
+      "anchor_contact_pixels": 49,
+      "layer_bbox": [
+        26,
+        21,
+        39,
+        35
+      ]
+    },
+    {
+      "frame": 4,
+      "cell": [
+        64,
+        64,
+        64,
+        64
+      ],
+      "passed": true,
+      "scope": "structural contact only; artistic approval required",
+      "artwork_approved": false,
+      "size": [
+        64,
+        64
+      ],
+      "contact_anchor": [
+        32,
+        27
+      ],
+      "visible_layer_pixels": 143,
+      "outside_mask_pixels": 0,
+      "body_occlusion_allowed": true,
+      "unprotected_body_pixels": 0,
+      "permitted_body_occlusion_pixels": 139,
+      "changed_unmasked_body_pixels": 0,
+      "body_overlap_pixels": 139,
+      "partial_alpha_pixels": 0,
+      "changed_body_pixels": 138,
+      "hand_contact_pixels": 49,
+      "anchor_contact_pixels": 49,
+      "layer_bbox": [
+        27,
+        20,
+        38,
+        35
+      ]
+    }
+  ],
+  "unique_visible_frames": 4,
+  "static_layer_rejected": false,
+  "exported_frames": 4
+}

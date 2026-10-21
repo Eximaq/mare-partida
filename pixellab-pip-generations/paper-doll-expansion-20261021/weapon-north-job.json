@@ -1,0 +1,19 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "27a0fcbc-2ae3-4a29-aa46-57fd32d5ff6d",
+  "status": "completed",
+  "estimated_generations": 5,
+  "parameters": {
+    "image_url": "body-idle-north-raw-01.png",
+    "mask_image_url": "weapon-north-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 338809494,
+    "description": "Add only one simple steel sailor sword with a small brass crossguard held in this north-facing human's right hand, on the viewer's right. The grip touches the existing hand near pixel42,35, naturally occluded by the unchanged hand. The blade points diagonally down-right away from the leg. Match crisp native pixels, dark outline, silver steel and brass. Output only the masked sword on transparency. Preserve all anatomy. No hand, arm, body, clothing, hair, detached weapon or background."
+  },
+  "reported_usage": {
+    "generations": 5
+  },
+  "raw_sha256": "0ba4aba97f06dc59272b9fe5e871d21c59ebedef6b0e0c03ee59ecd2662e7b41"
+}

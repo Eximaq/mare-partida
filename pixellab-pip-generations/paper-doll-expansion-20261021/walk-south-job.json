@@ -1,0 +1,32 @@
+{
+  "tool": "MCP animate_image",
+  "job_id": "d5d8cfae-d3fc-4bac-b79f-9a24db87b7a1",
+  "asset_id": "1b9ed8d8-c657-5373-8abc-85b9ace05fa7",
+  "status": "completed",
+  "parameters": {
+    "first_frame_url": "body-south-input.png",
+    "frame_count": 8,
+    "no_background": true,
+    "action": "Walk in place directly south toward the viewer. Alternate natural steps and relaxed arm swings, keeping the same facing, bald head, anatomy, charcoal shorts and pixel scale. Stay centered, feet near the same ground line. No turning, clothing, weapons or camera motion."
+  },
+  "estimated_generations": 1,
+  "playback": "Preserve all nine returned originals. Use the eight generated frames in original order, with input reference stored separately; audit echo and report mismatch.",
+  "reported_usage": {
+    "generations": 1
+  },
+  "outputs": [
+    "body-walk-south-raw-00.png",
+    "body-walk-south-raw-01.png",
+    "body-walk-south-raw-02.png",
+    "body-walk-south-raw-03.png",
+    "body-walk-south-raw-04.png",
+    "body-walk-south-raw-05.png",
+    "body-walk-south-raw-06.png",
+    "body-walk-south-raw-07.png",
+    "body-walk-south-raw-08.png"
+  ],
+  "review": {
+    "accepted": false,
+    "reason": "Facing preserved; arm recovery and loop closure remain weak. No trimming, duplicates or garment generations over this candidate."
+  }
+}

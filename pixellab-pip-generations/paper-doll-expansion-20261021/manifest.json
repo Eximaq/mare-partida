@@ -1,0 +1,539 @@
+{
+  "status": "four-direction Idle prototype; production not enabled",
+  "authorization": "Owner authorized autonomous recommended PixelLab continuation in this execution; self-imposed ceiling100 additional generations, no USD overage or global auto change.",
+  "ceiling_generations": 100,
+  "confirmed_charged_generations": 56,
+  "other_tool_reported_generations": 2,
+  "unconfirmed_estimate_generations": 1,
+  "conservative_total": 59,
+  "calls": [
+    {
+      "tool": "MCP create_character",
+      "character_id": "490799ff-e510-4685-b390-212ec6869bf1",
+      "status": "completed",
+      "parameters": {
+        "mode": "v3",
+        "n_directions": 4,
+        "size": 64,
+        "view": "high top-down",
+        "name": "Human modular base 20261021",
+        "description": "The same neutral bald human paper-doll base, bare torso and arms, plain charcoal shorts and bare feet. Preserve the supplied south-facing face, skin palette, body proportions and native pixel scale. No hair, shirt, coat, boots, accessories or weapons.",
+        "reference_image_url": "body-south-input.png"
+      },
+      "estimated_generations": 1,
+      "outputs": [
+        "body-south-rotation.png",
+        "body-north-rotation.png",
+        "body-west-rotation.png",
+        "body-east-rotation.png"
+      ]
+    },
+    {
+      "tool": "MCP animate_image",
+      "job_id": "d5d8cfae-d3fc-4bac-b79f-9a24db87b7a1",
+      "asset_id": "1b9ed8d8-c657-5373-8abc-85b9ace05fa7",
+      "status": "completed",
+      "parameters": {
+        "first_frame_url": "body-south-input.png",
+        "frame_count": 8,
+        "no_background": true,
+        "action": "Walk in place directly south toward the viewer. Alternate natural steps and relaxed arm swings, keeping the same facing, bald head, anatomy, charcoal shorts and pixel scale. Stay centered, feet near the same ground line. No turning, clothing, weapons or camera motion."
+      },
+      "estimated_generations": 1,
+      "playback": "Preserve all nine returned originals. Use the eight generated frames in original order, with input reference stored separately; audit echo and report mismatch.",
+      "reported_usage": {
+        "generations": 1
+      },
+      "outputs": [
+        "body-walk-south-raw-00.png",
+        "body-walk-south-raw-01.png",
+        "body-walk-south-raw-02.png",
+        "body-walk-south-raw-03.png",
+        "body-walk-south-raw-04.png",
+        "body-walk-south-raw-05.png",
+        "body-walk-south-raw-06.png",
+        "body-walk-south-raw-07.png",
+        "body-walk-south-raw-08.png"
+      ],
+      "review": {
+        "accepted": false,
+        "reason": "Facing preserved; arm recovery and loop closure remain weak. No trimming, duplicates or garment generations over this candidate."
+      }
+    },
+    {
+      "tool": "MCP animate_character",
+      "job_id": "9570a853-56f5-4600-8a0f-0b6824c88cfc",
+      "status": "completed",
+      "tool_reported_generations": 1,
+      "parameters": {
+        "character_id": "490799ff-e510-4685-b390-212ec6869bf1",
+        "mode": "template",
+        "template_animation_id": "walking-8-frames",
+        "directions": [
+          "south"
+        ],
+        "animation_name": "modular-walk-south-template"
+      },
+      "review": {
+        "accepted": false,
+        "reason": "Front template changes the face into large blue eyes and narrows torso substantially relative to source. Preserved as rejected study."
+      }
+    },
+    {
+      "tool": "MCP animate_image",
+      "job_id": "9e716ea7-e19a-4308-9731-652c24d8f02d",
+      "status": "completed",
+      "estimated_generations": 1,
+      "parameters": {
+        "first_frame_url": "body-north-rotation.png",
+        "frame_count": 4,
+        "no_background": true,
+        "action": "Breathe gently in place while facing directly north away from the viewer. Keep the bald back of the head and bare back visible throughout, with relaxed arms and subtle chest and shoulder breathing. Feet stay planted, no turning, walking or gestures. Preserve anatomy, proportions, charcoal shorts and native pixel scale."
+      },
+      "reported_usage": {
+        "generations": 1
+      },
+      "asset_id": "311b624f-4d5a-5cac-8d6a-0049a78dfcf9",
+      "outputs": [
+        "body-idle-north-raw-00.png",
+        "body-idle-north-raw-01.png",
+        "body-idle-north-raw-02.png",
+        "body-idle-north-raw-03.png",
+        "body-idle-north-raw-04.png"
+      ],
+      "playback": {
+        "input_echo": 0,
+        "generated_frames": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "fps": 4,
+        "no_reorder": true
+      },
+      "sha256": {
+        "body-idle-north-raw-00.png": "256515f816ff133b0bc559da2c9b286be608e6080db0f0191f4dd19fb43bd149",
+        "body-idle-north-raw-01.png": "28f39ae16721fdbd36793b0356857dffe68cb58a46bec14fea1e31c30d7f1572",
+        "body-idle-north-raw-02.png": "a8c6a2522b681a6c6a6c7bdc7ae655ce6245fca9a5bcd16545256e59287b9a9b",
+        "body-idle-north-raw-03.png": "60c418491809245a7c26c93ee8cad3f1b99dd1c2f8235ef67b15c424eb919c12",
+        "body-idle-north-raw-04.png": "1e3b60c602e8a0c4595e48b87b65b67dec6020c89c11d82141e70c8ebf7df92f"
+      }
+    },
+    {
+      "tool": "MCP animate_image",
+      "job_id": "23c08b40-2073-4266-accd-73e91f4dff78",
+      "status": "completed",
+      "estimated_generations": 1,
+      "parameters": {
+        "first_frame_url": "body-west-rotation.png",
+        "frame_count": 4,
+        "no_background": true,
+        "action": "Breathe gently in place while facing directly west, to the viewer's left, in strict side profile. Keep the face pointing left throughout, arms relaxed and feet planted. Only subtle chest and shoulder breathing. Preserve the bald head, anatomy, proportions, charcoal shorts and native pixel scale. No turning, walking or gestures."
+      },
+      "reported_usage": {
+        "generations": 1
+      },
+      "outputs": [
+        "body-idle-west-raw-00.png",
+        "body-idle-west-raw-01.png",
+        "body-idle-west-raw-02.png",
+        "body-idle-west-raw-03.png",
+        "body-idle-west-raw-04.png"
+      ],
+      "playback": {
+        "input_echo": 0,
+        "generated_frames": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "fps": 4,
+        "no_reorder": true
+      },
+      "sha256": {
+        "body-idle-west-raw-00.png": "3f245a5e7da431ebdc3c925da3fcb206de04793868fe7155a5362b93c9c8d45e",
+        "body-idle-west-raw-01.png": "1036ca6392a64207f689381641e3b3b06bdbfe8033b2b094fd9e6c4e5c99498e",
+        "body-idle-west-raw-02.png": "06e37a7146a066c7ebd0a9e5cd634f651852caf09be0e938173a3e2928a5bad4",
+        "body-idle-west-raw-03.png": "d275155b8e512c522c076cabafcb0c8191fb5bfb73500f8eccbc4975a2337d70",
+        "body-idle-west-raw-04.png": "d82261f4416566dc0626bf1dab0d1608508dfcb9e48ae4bd94f842701710c8b2"
+      }
+    },
+    {
+      "tool": "MCP animate_image",
+      "job_id": "58b541cb-d5b8-4279-a614-93f1ba211cdb",
+      "status": "completed",
+      "estimated_generations": 1,
+      "parameters": {
+        "first_frame_url": "body-east-rotation.png",
+        "frame_count": 4,
+        "no_background": true,
+        "action": "Breathe gently in place while facing directly east, to the viewer's right, in strict side profile. Keep the face pointing right throughout, arms relaxed and feet planted. Only subtle chest and shoulder breathing. Preserve the bald head, anatomy, proportions, charcoal shorts and native pixel scale. No turning, walking or gestures."
+      },
+      "reported_usage": {
+        "generations": 1
+      },
+      "outputs": [
+        "body-idle-east-raw-00.png",
+        "body-idle-east-raw-01.png",
+        "body-idle-east-raw-02.png",
+        "body-idle-east-raw-03.png",
+        "body-idle-east-raw-04.png"
+      ],
+      "playback": {
+        "input_echo": 0,
+        "generated_frames": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "fps": 4,
+        "no_reorder": true
+      },
+      "sha256": {
+        "body-idle-east-raw-00.png": "1ab0dea5dd39bb4f1c1e69ee2461ebe99bb04b18f19e360ab69c406baf90711a",
+        "body-idle-east-raw-01.png": "8cbd072cd196451503deefe3e334bdf4e85896f831fbafe3874baa20d5956c92",
+        "body-idle-east-raw-02.png": "272fbfe41c22424e8fa56c93be2c28c593d249209ba1495c7eb5378158d98c0b",
+        "body-idle-east-raw-03.png": "adfa41af4e9f500c4f0a89eeb4c22a15bc0b1705ec408101d2024083181e4290",
+        "body-idle-east-raw-04.png": "04d164228f1f6513cac62246d55845d397e5eb077acabc9a2e8df9591afd77d7"
+      }
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "d20343c8-5c1f-4bae-a277-66f51a7f9f78",
+      "status": "completed",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-north-atlas.png",
+        "mask_image_url": "hair-north-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "context_image": {
+          "url": "context-north.png",
+          "usage_description": "The left 128x128 is the source sheet. The right sprite guides only the short black hair style and palette; do not copy its south-facing pose."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair fitted to each north-facing scalp, seen from behind. Match the right-side reference hair style, scale, outline and palette. Preserve every other pixel, the back-facing head and anatomy, ears, body poses, shorts, feet and transparency. No face on the back of the head, bandana, duplicate head, clothing or loose objects. Keep original row-major frame order."
+      },
+      "reported_usage": {
+        "generations": 6
+      },
+      "raw_sha256": "0280bec4a5e8130f5cfea624ecdf28d988957e99f7e41bd60a0e1337699c4b74"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "63251086-6580-46f3-adb7-df483d9ab832",
+      "status": "completed",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-west-atlas.png",
+        "mask_image_url": "hair-west-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "context_image": {
+          "url": "context-west.png",
+          "usage_description": "The left 128x128 is the unchanged source. The right sprite guides only short black hair style and palette, never its frontal direction."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair fitted to the existing west-facing head in strict side profile. Match the right reference hair palette, pixel scale and outline. Keep the face, eye, nose and ears visible. Preserve all other pixels, anatomy, pose, shorts and transparency. No face on the back, bandana, duplicate head, clothing or loose objects. Preserve original row-major frame order."
+      },
+      "reported_usage": {
+        "generations": 6
+      },
+      "raw_sha256": "6f459687af8e3b34ceeac9f26a057b8deffa96708efd88d3c1eeeca93dd4136d"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "05e8c905-263c-4e62-82ff-3d57c8bb5307",
+      "status": "completed",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-east-atlas.png",
+        "mask_image_url": "hair-east-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "context_image": {
+          "url": "context-east.png",
+          "usage_description": "The left 128x128 is the unchanged source. The right sprite guides only short black hair style and palette, never its frontal direction."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair fitted to the existing east-facing head in strict side profile. Match the right reference hair palette, pixel scale and outline. Keep the face, eye, nose and ears visible. Preserve all other pixels, anatomy, pose, shorts and transparency. No face on the back, bandana, duplicate head, clothing or loose objects. Preserve original row-major frame order."
+      },
+      "reported_usage": {
+        "generations": 6
+      },
+      "raw_sha256": "47292b2ef61dcfea0a6c79340bfafe89824c4d7dafc57fb8aa9ddb0a722158fc"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "1b047518-bc99-4430-992c-ddf4201f855e",
+      "status": "completed",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-north-atlas.png",
+        "mask_image_url": "outfit-north-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "context_image": {
+          "url": "context-north.png",
+          "usage_description": "The left sheet is unchanged source. The right frontal sprite guides only clothing: cream short-sleeve shirt and plain navy waistcoat. Render their back view on north-facing bodies."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only a cream linen short-sleeve shirt and plain navy sailor waistcoat fitted to the existing north-facing torso and shoulders, seen from behind. Keep the hands and forearms bare and charcoal shorts unchanged. Follow each source pose and preserve bald head, anatomy, feet, pixel scale, cell positions and transparency. Only masked clothing, no hair, sword, emblems, face on the back or detached garments. Same clothing model in all four frames."
+      },
+      "reported_usage": {
+        "generations": 6
+      },
+      "raw_sha256": "5240a89a47e15d60513e2a50ddf1683448f5a999927066982102a7596d0cb074"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "badddd4a-cece-4c18-a833-0cbfdd3fd9b6",
+      "status": "completed",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-west-atlas.png",
+        "mask_image_url": "outfit-west-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "context_image": {
+          "url": "context-west.png",
+          "usage_description": "The left sheet is unchanged source. The right frontal reference guides only cream short-sleeve shirt and navy waistcoat style; render this clothing in side profile."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only a cream linen short-sleeve shirt and plain navy sailor waistcoat fitted to the existing west-facing torso and shoulders in strict side profile. Keep hands and forearms bare, shorts unchanged. Follow each source pose. Preserve head, anatomy, feet, scale, cell positions and transparency. Only masked clothing, no hair, weapons, emblems, frontal torso or detached garments. Same clothing model in all four frames."
+      },
+      "reported_usage": {
+        "generations": 6
+      },
+      "raw_sha256": "d4f80bf979d98a901f86a2ec8774a05189bef622fd05796deba9dec8e7e907a5"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "1d6a3b9b-c638-4820-965a-1ef04bbe8605",
+      "status": "completed",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-east-atlas.png",
+        "mask_image_url": "outfit-east-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 128
+        },
+        "context_image": {
+          "url": "context-east.png",
+          "usage_description": "The left sheet is unchanged source. The right frontal reference guides only cream short-sleeve shirt and navy waistcoat style; render this clothing in side profile."
+        },
+        "description": "In each 64x64 cell of this 2x2 sheet add only a cream linen short-sleeve shirt and plain navy sailor waistcoat fitted to the existing east-facing torso and shoulders in strict side profile. Keep hands and forearms bare, shorts unchanged. Follow each source pose. Preserve head, anatomy, feet, scale, cell positions and transparency. Only masked clothing, no hair, weapons, emblems, frontal torso or detached garments. Same clothing model in all four frames."
+      },
+      "reported_usage": {
+        "generations": 6
+      },
+      "raw_sha256": "94aea957f878df09c5f3301ad908bdf3c4f93a2f358e26a03cd8cc221f447b28"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "27a0fcbc-2ae3-4a29-aa46-57fd32d5ff6d",
+      "status": "completed",
+      "estimated_generations": 5,
+      "parameters": {
+        "image_url": "body-idle-north-raw-01.png",
+        "mask_image_url": "weapon-north-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 338809494,
+        "description": "Add only one simple steel sailor sword with a small brass crossguard held in this north-facing human's right hand, on the viewer's right. The grip touches the existing hand near pixel42,35, naturally occluded by the unchanged hand. The blade points diagonally down-right away from the leg. Match crisp native pixels, dark outline, silver steel and brass. Output only the masked sword on transparency. Preserve all anatomy. No hand, arm, body, clothing, hair, detached weapon or background."
+      },
+      "reported_usage": {
+        "generations": 5
+      },
+      "raw_sha256": "0ba4aba97f06dc59272b9fe5e871d21c59ebedef6b0e0c03ee59ecd2662e7b41"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "b6bc853c-1142-4509-a7bf-6b56391b0779",
+      "status": "completed",
+      "estimated_generations": 5,
+      "parameters": {
+        "image_url": "body-idle-west-raw-01.png",
+        "mask_image_url": "weapon-west-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 338809494,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        },
+        "context_image": {
+          "url": "context-west.png",
+          "usage_description": "Top-left 64x64 is this source pose. The dressed frontal sprite on the right guides only the simple steel sword and brass guard style; do not copy its pose or clothing."
+        },
+        "description": "Add only one simple steel sailor sword with a small brass crossguard held at this west-facing human's far hand near pixel26,36. Let the unchanged hand naturally occlude the grip. The blade rests diagonally down-left away from the legs. Match the reference sword material, dark outline and crisp native pixel scale. Output only the masked sword on transparency. No hand, arm, body, clothes, hair, detached object or background."
+      },
+      "reported_usage": {
+        "generations": 5
+      },
+      "raw_sha256": "9b09bb64aec12978f127d96c4825f18e9c1ca6b5a688f3b746e9e2ae7b3ded60"
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "5011ca7f-56b8-43a6-8154-73e57d5ae569",
+      "status": "completed",
+      "estimated_generations": 5,
+      "parameters": {
+        "image_url": "body-idle-east-raw-01.png",
+        "mask_image_url": "weapon-east-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 338809494,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        },
+        "context_image": {
+          "url": "context-east.png",
+          "usage_description": "Top-left 64x64 is this source pose. The dressed frontal sprite on the right guides only simple steel sword and brass guard style; do not copy its pose or clothing."
+        },
+        "description": "Add only one simple steel sailor sword with a small brass crossguard held at this east-facing human's visible near hand near pixel29,37. Let the unchanged hand naturally occlude the grip. The blade rests diagonally down-left behind and away from the legs. Match the reference sword material, dark outline and crisp native pixel scale. Output only the masked sword on transparency. No hand, arm, body, clothes, hair, detached object or background."
+      },
+      "reported_usage": {
+        "generations": 5
+      },
+      "raw_sha256": "fe5ef2cb9fc0f495ef173c7091a335c53479cf52155fbbba30575ca6d3d6ea97"
+    },
+    {
+      "tool": "MCP animate_image",
+      "job_id": "7d9fa838-9728-4862-8c3c-856e5d89690e",
+      "status": "completed-without-raw-image",
+      "estimated_generations": 1,
+      "parameters": {
+        "first_frame_url": "body-south-input.png",
+        "last_frame_url": "body-south-input.png",
+        "frame_count": 8,
+        "no_background": true,
+        "action": "Perform one compact right-handed diagonal sword-strike motion with the empty right hand, directly forward toward the viewer, then return to the supplied starting pose. This is a bare human animation base for later separate weapon artwork: show no weapon or effects. Keep the face and chest facing south throughout, feet anchored, same anatomy, charcoal shorts and native pixel scale. Clear wind-up, forward strike and recovery; no turning or camera movement."
+      },
+      "result_note": "get_image returned completed but no raw image; no charged usage was exposed. Owned job is no longer active. Preserve receipt; do not infer refund."
+    },
+    {
+      "tool": "MCP animate_image",
+      "job_id": "ecab90ef-2cda-4db4-afbe-dc66c06c36af",
+      "status": "completed",
+      "estimated_generations": 1,
+      "retry_of": "7d9fa838-9728-4862-8c3c-856e5d89690e",
+      "parameters": {
+        "first_frame_url": "body-south-input.png",
+        "frame_count": 8,
+        "no_background": true,
+        "action": "Perform one compact right-handed diagonal sword-strike motion with the empty right hand, directly forward toward the viewer, then return to the supplied starting pose. This is a bare human animation base for later separate weapon artwork: show no weapon or effects. Keep the face and chest facing south throughout, feet anchored, same anatomy, charcoal shorts and native pixel scale. Clear wind-up, forward strike and recovery; no turning or camera movement."
+      },
+      "reported_usage": {
+        "generations": 1
+      },
+      "outputs": [
+        "body-attack-south-raw-00.png",
+        "body-attack-south-raw-01.png",
+        "body-attack-south-raw-02.png",
+        "body-attack-south-raw-03.png",
+        "body-attack-south-raw-04.png",
+        "body-attack-south-raw-05.png",
+        "body-attack-south-raw-06.png",
+        "body-attack-south-raw-07.png",
+        "body-attack-south-raw-08.png"
+      ],
+      "sha256": {
+        "body-attack-south-raw-00.png": "a88b26fc1f425961f8017295570d1a5edb1d370ce9282ce7655f12b34108b3bc",
+        "body-attack-south-raw-01.png": "2827394c96512b0a3d1a1db1be59e19cc03aa4a8c1631987ef5856011a0d22a9",
+        "body-attack-south-raw-02.png": "c36df5bd0e912cb384311cce9b764a289c56d325d4450781150e49c8d2db640f",
+        "body-attack-south-raw-03.png": "698b33abf237c69026b5cded0303309bf95085231483f5877be5dd81ccf50a7d",
+        "body-attack-south-raw-04.png": "1fa1a0ca81ad8b0bcb8f4abb2a9c566b5bfe5b467cd636506e30df01821620c6",
+        "body-attack-south-raw-05.png": "3509f1e3ef47de80623aebafd7b20fe8c6a2afbecafe4f222c83dc8b2adba010",
+        "body-attack-south-raw-06.png": "53842b1dda24d9a97bd9b7166dbc8aaed6c99e8729c13114d820e4e2f26052ff",
+        "body-attack-south-raw-07.png": "afa71314566fa33f2fd89a38124430b9af0eae857b8e6fd0cb889e57e81e0dde",
+        "body-attack-south-raw-08.png": "71d86a58a57b56b19763c0856059c3e214dea19bf6cc524018876fa8895fd085"
+      },
+      "playback": {
+        "input_echo": 0,
+        "generated_frames": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8
+        ],
+        "fps": 12,
+        "loop": false
+      },
+      "review": {
+        "accepted": false,
+        "reason": "Strike motion exists, but central frames change head/body proportions and lose clear arm/hand anatomy. Preserve all eight generated frames; do not generate layers on this rejected base."
+      }
+    }
+  ],
+  "ready": [
+    "idle/south",
+    "idle/north",
+    "idle/west",
+    "idle/east"
+  ],
+  "missing": [
+    "approved four-direction Walk body/hair/outfit/weapon",
+    "approved four-direction sword Attack body/hair/outfit/weapon",
+    "skills/hurt/death coverage before production migration"
+  ],
+  "artwork_approved": false,
+  "jobs_owned_still_processing": []
+}

@@ -46,6 +46,8 @@ Resultados locais:33 suítes Node,11 testes Python de camada,5 de lote e3 de por
 
 ## Assets ainda ausentes
 
+**Levantamento histórico deste lote frontal.** Idle norte/oeste/leste foi produzido posteriormente; consulte o [estado multidirecional atualizado](PAPER-DOLL-EXPANSAO.md). Os resultados e custos deste relatório permanecem preservados.
+
 Para o escopo mínimo do Espadachim (Idle4/Walk8/Attack8 em quatro direções), faltam camadas próprias de corpo/cabelo/roupa:
 
 - Idle norte/oeste/leste:36 frames, sendo4 frames ×3 direções ×3 camadas.

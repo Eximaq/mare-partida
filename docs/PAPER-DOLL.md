@@ -1,5 +1,11 @@
 # Paper Doll 1.0 — Fase 1
 
+## Estado atual (21/10/2026)
+
+O [pacote de revisão multidirecional](PAPER-DOLL-EXPANSAO.md) já contém corpo, cabelo, roupa e espada para as16 poses de Idle nas quatro direções. A arma tem fonte e âncora próprias por vista; a bancada abre o pacote diretamente pelo link `?pack=expansion-idle` e permite editar/exportar sockets por frame. A arte permanece em inspeção (`approved:false`), fora do catálogo de produção. O jogo mantém seus sprites atuais.
+
+Walk e Attack ainda não têm conjuntos aprovados. Os estudos rejeitados foram preservados, sem gerar roupas sobre bases defeituosas. Para o mínimo do Espadachim, restam192 frames de corpo/cabelo/roupa (96 de Walk e96 de Attack), mais validação das trajetórias/vistas da arma e32 frames de lâmina para ataque quando necessário. As estimativas de320 frames abaixo registram o levantamento inicial, anterior aos pilotos e à exceção de arma rígida, não o inventário corrente. A Fase1 completa continua pendente.
+
 ## Evolução: personagem único (20/10/2026)
 
 A base técnica agora usa `human-v1`, independente de classe/facção. A implementação histórica `swordsman-v1` e seus pacotes continuam aceitos na bancada. Esta evolução não entrega sprites modulares nem o editor de aparência: todos os placeholders continuam `available:false`, sem URLs ou aprovação artificial. O jogo preserva os personagens completos por fallback.
@@ -149,6 +155,14 @@ Sem peças, os dois lados mostram o sprite completo e a ferramenta informa fallb
 Para um pacote local: selecione um JSON e todas as folhas PNG na mesma seleção de arquivos, com nomes únicos. O importador exige o contrato84 e4/8/8, usa URLs locais temporárias, valida antes de aplicar e não faz upload. O catálogo original é restaurável. Bindings opcionais do pacote habilitam o ensaio de troca de itens; sem bindings esses seletores ficam desativados. Nenhum arquivo importado entra automaticamente no repositório ou no save.
 
 ## Cache e desempenho
+
+### Encaixes editáveis e vistas de arma
+
+Na bancada, **Encaixe da arma** permite escolher direção e frame, editar coordenadas inteiras do socket e a profundidade daquela pose, restaurar o pacote e exportar um JSON portátil. O PNG permanece intacto. A edição pausa a reprodução, invalida o cache e mantém `approved:false`; não grava no save nem registra arte no catálogo de produção. Reimporte o JSON exportado junto dos mesmos PNGs. Poses sem encaixe ficam desabilitadas.
+
+Uma arma rígida pode declarar `clip.sources`, um objeto por direção com `url`, `width`, `height`, `anchorX` e `anchorY`. Ao usar esse formato, **todas** as direções declaradas no clip precisam ter uma fonte válida. A vista norte não herda a espada frontal. `clip.url` continua obrigatório para compatibilidade com o contrato e o importador; cada vista resolve sua própria imagem e âncora. O formato antigo `clip.source` permanece válido para armas de uma única fonte. Sockets e `directionOverrides`/`poseOverrides` continuam controlando posição e profundidade; corpo, roupa e cabelo não aceitam essa exceção de imagem rígida.
+
+`tests/paper_doll_socket_browser.py` verifica edição por frame, rejeição de coordenadas inválidas, restauração, exportação/reimportação sem URLs temporárias, mobile e isolamento do save. Os testes Node verificam fontes e âncoras distintas por direção e fallback quando falta uma vista.
 
 O carregador de imagens é compartilhado com `MareFactionSprites.image`: uma URL produz um objeto Image. O compositor audita as células uma vez por imagem/clip e usa cache LRU por rig/revisão, aparência, frame, direção, offsets, profundidade e visibilidade. Célula composta é nativa; escala é aplicada apenas no desenho final, com `imageSmoothingEnabled=false` e coordenadas arredondadas.
 

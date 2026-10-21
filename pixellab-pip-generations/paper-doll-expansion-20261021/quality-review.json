@@ -1,0 +1,60 @@
+{
+  "scope": "per-direction prototype quality gates; not production approval",
+  "full_character_artwork_approved": false,
+  "body": {
+    "north": {
+      "prototype_gate_passed": true,
+      "note": "Four distinct generated frames, correct facing and feet ground line, subtle pose movement; input echo preserved separately."
+    },
+    "west": {
+      "prototype_gate_passed": true,
+      "note": "Four distinct generated frames, correct facing and feet ground line, subtle pose movement; input echo preserved separately."
+    },
+    "east": {
+      "prototype_gate_passed": true,
+      "note": "Four distinct generated frames, correct facing and feet ground line, subtle pose movement; input echo preserved separately."
+    }
+  },
+  "hair": {
+    "north": {
+      "prototype_gate_passed": true,
+      "note": "Correct head direction; scalp attachment; face protected in side views; raw mask audit passed. Minor silhouette changes remain for final art review."
+    },
+    "west": {
+      "prototype_gate_passed": true,
+      "note": "Correct head direction; scalp attachment; face protected in side views; raw mask audit passed. Minor silhouette changes remain for final art review."
+    },
+    "east": {
+      "prototype_gate_passed": true,
+      "note": "Correct head direction; scalp attachment; face protected in side views; raw mask audit passed. Minor silhouette changes remain for final art review."
+    }
+  },
+  "outfit": {
+    "north": {
+      "prototype_gate_passed": true,
+      "note": "Back of navy waistcoat and cream short sleeves; arms and shorts retained; raw mask audit passed."
+    },
+    "west": {
+      "prototype_gate_passed": true,
+      "note": "Cream short sleeves/navy waistcoat follows actual side profile, hands remain visible; all four mask audits passed."
+    },
+    "east": {
+      "prototype_gate_passed": true,
+      "note": "Cream short sleeves/navy waistcoat follows actual side profile, hands remain visible; all four mask audits passed."
+    }
+  },
+  "weapon": {
+    "north": {
+      "prototype_gate_passed": true,
+      "note": "Back-view simple steel blade at visible right hand; native source preserved. Full multi-frame contact/depth validation still required."
+    },
+    "west": {
+      "prototype_gate_passed": true,
+      "note": "Separate generated side view with hand contact and no changed anatomy; final cross-view guard/palette polish remains under art review."
+    },
+    "east": {
+      "prototype_gate_passed": true,
+      "note": "Separate generated side view with hand contact and no changed anatomy; final cross-view guard/palette polish remains under art review."
+    }
+  }
+}

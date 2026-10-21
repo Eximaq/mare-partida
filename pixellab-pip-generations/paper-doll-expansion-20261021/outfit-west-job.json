@@ -1,0 +1,29 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "badddd4a-cece-4c18-a833-0cbfdd3fd9b6",
+  "status": "completed",
+  "estimated_generations": 6,
+  "parameters": {
+    "image_url": "body-west-atlas.png",
+    "mask_image_url": "outfit-west-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 1612130099,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 128,
+      "height": 128
+    },
+    "context_image": {
+      "url": "context-west.png",
+      "usage_description": "The left sheet is unchanged source. The right frontal reference guides only cream short-sleeve shirt and navy waistcoat style; render this clothing in side profile."
+    },
+    "description": "In each 64x64 cell of this 2x2 sheet add only a cream linen short-sleeve shirt and plain navy sailor waistcoat fitted to the existing west-facing torso and shoulders in strict side profile. Keep hands and forearms bare, shorts unchanged. Follow each source pose. Preserve head, anatomy, feet, scale, cell positions and transparency. Only masked clothing, no hair, weapons, emblems, frontal torso or detached garments. Same clothing model in all four frames."
+  },
+  "reported_usage": {
+    "generations": 6
+  },
+  "raw_sha256": "d4f80bf979d98a901f86a2ec8774a05189bef622fd05796deba9dec8e7e907a5"
+}

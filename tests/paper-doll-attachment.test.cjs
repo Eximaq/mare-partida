@@ -74,6 +74,16 @@ northSword.animations.idle.directionOverrides={north:{zIndex:-10}};
 engine.registerPiece(northBody);engine.registerPiece(northSword);
 const north=engine.resolve(appearance,{...pose,direction:'north'});assert(north.valid);
 assert.equal(north.layers[0].slot,'weapon');assert.equal(north.layers[0].zIndex,-10);
+// Distinct real directional views must never borrow the south image or anchor.
+northSword.animations.idle.sources={south:{...sword.animations.idle.source,url:'sword.png'},north:{...sword.animations.idle.source,url:'other.png',anchorX:19,anchorY:35}};
+engine.registerPiece(northSword);
+const selectedNorth=engine.resolve(appearance,{...pose,direction:'north'}).layers[0];
+assert.equal(selectedNorth.url,'other.png');assert.equal(selectedNorth.image,images.get('other.png'));
+assert.equal(selectedNorth.offsetX,9);assert.equal(selectedNorth.offsetY,13);
+assert.equal(engine.resolve(appearance,pose).layers.at(-1).url,'sword.png');
+delete northSword.animations.idle.sources.north;engine.registerPiece(northSword);
+assert.equal(engine.resolve(appearance,pose).missing[0].code,'invalid-attachment-source');
+assert(!engine.draw(ctx,appearance,pose,0,0),'an incomplete view map must fall back atomically');
 engine.registerPiece(body);engine.registerPiece(sword);
 images.set('sword.png',{complete:true,naturalWidth:256,naturalHeight:64});
 assert.equal(engine.resolve(appearance,pose).missing.at(-1).code,'invalid-sheet-size');

@@ -1,0 +1,40 @@
+{
+  "tool": "MCP animate_image",
+  "job_id": "23c08b40-2073-4266-accd-73e91f4dff78",
+  "status": "completed",
+  "estimated_generations": 1,
+  "parameters": {
+    "first_frame_url": "body-west-rotation.png",
+    "frame_count": 4,
+    "no_background": true,
+    "action": "Breathe gently in place while facing directly west, to the viewer's left, in strict side profile. Keep the face pointing left throughout, arms relaxed and feet planted. Only subtle chest and shoulder breathing. Preserve the bald head, anatomy, proportions, charcoal shorts and native pixel scale. No turning, walking or gestures."
+  },
+  "reported_usage": {
+    "generations": 1
+  },
+  "outputs": [
+    "body-idle-west-raw-00.png",
+    "body-idle-west-raw-01.png",
+    "body-idle-west-raw-02.png",
+    "body-idle-west-raw-03.png",
+    "body-idle-west-raw-04.png"
+  ],
+  "playback": {
+    "input_echo": 0,
+    "generated_frames": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "fps": 4,
+    "no_reorder": true
+  },
+  "sha256": {
+    "body-idle-west-raw-00.png": "3f245a5e7da431ebdc3c925da3fcb206de04793868fe7155a5362b93c9c8d45e",
+    "body-idle-west-raw-01.png": "1036ca6392a64207f689381641e3b3b06bdbfe8033b2b094fd9e6c4e5c99498e",
+    "body-idle-west-raw-02.png": "06e37a7146a066c7ebd0a9e5cd634f651852caf09be0e938173a3e2928a5bad4",
+    "body-idle-west-raw-03.png": "d275155b8e512c522c076cabafcb0c8191fb5bfb73500f8eccbc4975a2337d70",
+    "body-idle-west-raw-04.png": "d82261f4416566dc0626bf1dab0d1608508dfcb9e48ae4bd94f842701710c8b2"
+  }
+}

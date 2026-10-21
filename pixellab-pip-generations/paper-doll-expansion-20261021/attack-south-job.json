@@ -1,0 +1,14 @@
+{
+  "tool": "MCP animate_image",
+  "job_id": "7d9fa838-9728-4862-8c3c-856e5d89690e",
+  "status": "completed-without-raw-image",
+  "estimated_generations": 1,
+  "parameters": {
+    "first_frame_url": "body-south-input.png",
+    "last_frame_url": "body-south-input.png",
+    "frame_count": 8,
+    "no_background": true,
+    "action": "Perform one compact right-handed diagonal sword-strike motion with the empty right hand, directly forward toward the viewer, then return to the supplied starting pose. This is a bare human animation base for later separate weapon artwork: show no weapon or effects. Keep the face and chest facing south throughout, feet anchored, same anatomy, charcoal shorts and native pixel scale. Clear wind-up, forward strike and recovery; no turning or camera movement."
+  },
+  "result_note": "get_image returned completed but no raw image; no charged usage was exposed. Owned job is no longer active. Preserve receipt; do not infer refund."
+}

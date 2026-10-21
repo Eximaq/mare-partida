@@ -24,6 +24,8 @@ A [prévia de arma rígida](pixellab-pip-generations/paper-doll-rigid-weapon-202
 
 O [conjunto modular frontal](pixellab-pip-generations/paper-doll-hair-outfit-20261021/preview.html) já reúne corpo, cabelo, roupa e espada nos quatro frames Idle/sul, com controle individual das camadas e importação na bancada. Foram cobradas12 gerações no novo lote. Demais direções e ações continuam no fallback, sem ativação do protótipo no jogo. [Relatório e assets faltantes](docs/PAPER-DOLL-CABELO-ROUPA.md).
 
+A [expansão de Idle](pixellab-pip-generations/paper-doll-expansion-20261021/preview.html) reúne corpo, cabelo, roupa e espada em16 poses de repouso nas quatro direções. O [link direto da bancada](tools/paper-doll-inspector/index.html?pack=expansion-idle) abre o pacote sem importação manual, inclusive no celular. Há edição e exportação de encaixes por frame. Walk/Attack continuam no fallback; nada foi ativado no personagem de produção. [Arte, custos e limites](docs/PAPER-DOLL-EXPANSAO.md).
+
 ## Interface UI/UX 2.0
 
 A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.

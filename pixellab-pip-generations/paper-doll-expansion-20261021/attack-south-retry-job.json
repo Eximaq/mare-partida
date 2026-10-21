@@ -1,0 +1,57 @@
+{
+  "tool": "MCP animate_image",
+  "job_id": "ecab90ef-2cda-4db4-afbe-dc66c06c36af",
+  "status": "completed",
+  "estimated_generations": 1,
+  "retry_of": "7d9fa838-9728-4862-8c3c-856e5d89690e",
+  "parameters": {
+    "first_frame_url": "body-south-input.png",
+    "frame_count": 8,
+    "no_background": true,
+    "action": "Perform one compact right-handed diagonal sword-strike motion with the empty right hand, directly forward toward the viewer, then return to the supplied starting pose. This is a bare human animation base for later separate weapon artwork: show no weapon or effects. Keep the face and chest facing south throughout, feet anchored, same anatomy, charcoal shorts and native pixel scale. Clear wind-up, forward strike and recovery; no turning or camera movement."
+  },
+  "reported_usage": {
+    "generations": 1
+  },
+  "outputs": [
+    "body-attack-south-raw-00.png",
+    "body-attack-south-raw-01.png",
+    "body-attack-south-raw-02.png",
+    "body-attack-south-raw-03.png",
+    "body-attack-south-raw-04.png",
+    "body-attack-south-raw-05.png",
+    "body-attack-south-raw-06.png",
+    "body-attack-south-raw-07.png",
+    "body-attack-south-raw-08.png"
+  ],
+  "sha256": {
+    "body-attack-south-raw-00.png": "a88b26fc1f425961f8017295570d1a5edb1d370ce9282ce7655f12b34108b3bc",
+    "body-attack-south-raw-01.png": "2827394c96512b0a3d1a1db1be59e19cc03aa4a8c1631987ef5856011a0d22a9",
+    "body-attack-south-raw-02.png": "c36df5bd0e912cb384311cce9b764a289c56d325d4450781150e49c8d2db640f",
+    "body-attack-south-raw-03.png": "698b33abf237c69026b5cded0303309bf95085231483f5877be5dd81ccf50a7d",
+    "body-attack-south-raw-04.png": "1fa1a0ca81ad8b0bcb8f4abb2a9c566b5bfe5b467cd636506e30df01821620c6",
+    "body-attack-south-raw-05.png": "3509f1e3ef47de80623aebafd7b20fe8c6a2afbecafe4f222c83dc8b2adba010",
+    "body-attack-south-raw-06.png": "53842b1dda24d9a97bd9b7166dbc8aaed6c99e8729c13114d820e4e2f26052ff",
+    "body-attack-south-raw-07.png": "afa71314566fa33f2fd89a38124430b9af0eae857b8e6fd0cb889e57e81e0dde",
+    "body-attack-south-raw-08.png": "71d86a58a57b56b19763c0856059c3e214dea19bf6cc524018876fa8895fd085"
+  },
+  "playback": {
+    "input_echo": 0,
+    "generated_frames": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "fps": 12,
+    "loop": false
+  },
+  "review": {
+    "accepted": false,
+    "reason": "Strike motion exists, but central frames change head/body proportions and lose clear arm/hand anatomy. Preserve all eight generated frames; do not generate layers on this rejected base."
+  }
+}

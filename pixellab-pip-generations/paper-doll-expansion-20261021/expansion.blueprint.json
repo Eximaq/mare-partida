@@ -1,0 +1,305 @@
+[
+  {
+    "TASK": "Review current run authority, ceiling and all recorded quality failures before paying. This recipe is an audit, not permission to repeat the run. Preserve originals; do not reproduce rejected work automatically."
+  },
+  {
+    "_comment": "490799ff-e510-4685-b390-212ec6869bf1; completed",
+    "MCP create_character": {
+      "mode": "v3",
+      "n_directions": 4,
+      "size": 64,
+      "view": "high top-down",
+      "name": "Human modular base 20261021",
+      "description": "The same neutral bald human paper-doll base, bare torso and arms, plain charcoal shorts and bare feet. Preserve the supplied south-facing face, skin palette, body proportions and native pixel scale. No hair, shirt, coat, boots, accessories or weapons.",
+      "reference_image_url": "body-south-input.png"
+    }
+  },
+  {
+    "_comment": "d5d8cfae-d3fc-4bac-b79f-9a24db87b7a1; completed",
+    "MCP animate_image": {
+      "first_frame_url": "body-south-input.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Walk in place directly south toward the viewer. Alternate natural steps and relaxed arm swings, keeping the same facing, bald head, anatomy, charcoal shorts and pixel scale. Stay centered, feet near the same ground line. No turning, clothing, weapons or camera motion."
+    }
+  },
+  {
+    "TASK": "The original managed character id is recorded below. When recreating from a new create_character result, substitute only its returned id, retaining the same tool parameters."
+  },
+  {
+    "_comment": "9570a853-56f5-4600-8a0f-0b6824c88cfc; completed",
+    "MCP animate_character": {
+      "character_id": "490799ff-e510-4685-b390-212ec6869bf1",
+      "mode": "template",
+      "template_animation_id": "walking-8-frames",
+      "directions": [
+        "south"
+      ],
+      "animation_name": "modular-walk-south-template"
+    }
+  },
+  {
+    "_comment": "9e716ea7-e19a-4308-9731-652c24d8f02d; completed",
+    "MCP animate_image": {
+      "first_frame_url": "body-north-rotation.png",
+      "frame_count": 4,
+      "no_background": true,
+      "action": "Breathe gently in place while facing directly north away from the viewer. Keep the bald back of the head and bare back visible throughout, with relaxed arms and subtle chest and shoulder breathing. Feet stay planted, no turning, walking or gestures. Preserve anatomy, proportions, charcoal shorts and native pixel scale."
+    }
+  },
+  {
+    "_comment": "23c08b40-2073-4266-accd-73e91f4dff78; completed",
+    "MCP animate_image": {
+      "first_frame_url": "body-west-rotation.png",
+      "frame_count": 4,
+      "no_background": true,
+      "action": "Breathe gently in place while facing directly west, to the viewer's left, in strict side profile. Keep the face pointing left throughout, arms relaxed and feet planted. Only subtle chest and shoulder breathing. Preserve the bald head, anatomy, proportions, charcoal shorts and native pixel scale. No turning, walking or gestures."
+    }
+  },
+  {
+    "_comment": "58b541cb-d5b8-4279-a614-93f1ba211cdb; completed",
+    "MCP animate_image": {
+      "first_frame_url": "body-east-rotation.png",
+      "frame_count": 4,
+      "no_background": true,
+      "action": "Breathe gently in place while facing directly east, to the viewer's right, in strict side profile. Keep the face pointing right throughout, arms relaxed and feet planted. Only subtle chest and shoulder breathing. Preserve the bald head, anatomy, proportions, charcoal shorts and native pixel scale. No turning, walking or gestures."
+    }
+  },
+  {
+    "TASK": "Load the exact supplied native body atlas/frame, binary mask and optional context. Verify registration and frozen input pixels. No rescaling or painting source art."
+  },
+  {
+    "_comment": "d20343c8-5c1f-4bae-a277-66f51a7f9f78; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-north-atlas.png",
+      "mask_image_url": "hair-north-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 128,
+        "height": 128
+      },
+      "context_image": {
+        "url": "context-north.png",
+        "usage_description": "The left 128x128 is the source sheet. The right sprite guides only the short black hair style and palette; do not copy its south-facing pose."
+      },
+      "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair fitted to each north-facing scalp, seen from behind. Match the right-side reference hair style, scale, outline and palette. Preserve every other pixel, the back-facing head and anatomy, ears, body poses, shorts, feet and transparency. No face on the back of the head, bandana, duplicate head, clothing or loose objects. Keep original row-major frame order."
+    }
+  },
+  {
+    "TASK": "Load the exact supplied native body atlas/frame, binary mask and optional context. Verify registration and frozen input pixels. No rescaling or painting source art."
+  },
+  {
+    "_comment": "63251086-6580-46f3-adb7-df483d9ab832; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-west-atlas.png",
+      "mask_image_url": "hair-west-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 128,
+        "height": 128
+      },
+      "context_image": {
+        "url": "context-west.png",
+        "usage_description": "The left 128x128 is the unchanged source. The right sprite guides only short black hair style and palette, never its frontal direction."
+      },
+      "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair fitted to the existing west-facing head in strict side profile. Match the right reference hair palette, pixel scale and outline. Keep the face, eye, nose and ears visible. Preserve all other pixels, anatomy, pose, shorts and transparency. No face on the back, bandana, duplicate head, clothing or loose objects. Preserve original row-major frame order."
+    }
+  },
+  {
+    "TASK": "Load the exact supplied native body atlas/frame, binary mask and optional context. Verify registration and frozen input pixels. No rescaling or painting source art."
+  },
+  {
+    "_comment": "05e8c905-263c-4e62-82ff-3d57c8bb5307; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-east-atlas.png",
+      "mask_image_url": "hair-east-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 128,
+        "height": 128
+      },
+      "context_image": {
+        "url": "context-east.png",
+        "usage_description": "The left 128x128 is the unchanged source. The right sprite guides only short black hair style and palette, never its frontal direction."
+      },
+      "description": "In each 64x64 cell of this 2x2 sheet add only short tousled black hair fitted to the existing east-facing head in strict side profile. Match the right reference hair palette, pixel scale and outline. Keep the face, eye, nose and ears visible. Preserve all other pixels, anatomy, pose, shorts and transparency. No face on the back, bandana, duplicate head, clothing or loose objects. Preserve original row-major frame order."
+    }
+  },
+  {
+    "TASK": "Load the exact supplied native body atlas/frame, binary mask and optional context. Verify registration and frozen input pixels. No rescaling or painting source art."
+  },
+  {
+    "_comment": "1b047518-bc99-4430-992c-ddf4201f855e; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-north-atlas.png",
+      "mask_image_url": "outfit-north-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 128,
+        "height": 128
+      },
+      "context_image": {
+        "url": "context-north.png",
+        "usage_description": "The left sheet is unchanged source. The right frontal sprite guides only clothing: cream short-sleeve shirt and plain navy waistcoat. Render their back view on north-facing bodies."
+      },
+      "description": "In each 64x64 cell of this 2x2 sheet add only a cream linen short-sleeve shirt and plain navy sailor waistcoat fitted to the existing north-facing torso and shoulders, seen from behind. Keep the hands and forearms bare and charcoal shorts unchanged. Follow each source pose and preserve bald head, anatomy, feet, pixel scale, cell positions and transparency. Only masked clothing, no hair, sword, emblems, face on the back or detached garments. Same clothing model in all four frames."
+    }
+  },
+  {
+    "TASK": "Load the exact supplied native body atlas/frame, binary mask and optional context. Verify registration and frozen input pixels. No rescaling or painting source art."
+  },
+  {
+    "_comment": "badddd4a-cece-4c18-a833-0cbfdd3fd9b6; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-west-atlas.png",
+      "mask_image_url": "outfit-west-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 128,
+        "height": 128
+      },
+      "context_image": {
+        "url": "context-west.png",
+        "usage_description": "The left sheet is unchanged source. The right frontal reference guides only cream short-sleeve shirt and navy waistcoat style; render this clothing in side profile."
+      },
+      "description": "In each 64x64 cell of this 2x2 sheet add only a cream linen short-sleeve shirt and plain navy sailor waistcoat fitted to the existing west-facing torso and shoulders in strict side profile. Keep hands and forearms bare, shorts unchanged. Follow each source pose. Preserve head, anatomy, feet, scale, cell positions and transparency. Only masked clothing, no hair, weapons, emblems, frontal torso or detached garments. Same clothing model in all four frames."
+    }
+  },
+  {
+    "TASK": "Load the exact supplied native body atlas/frame, binary mask and optional context. Verify registration and frozen input pixels. No rescaling or painting source art."
+  },
+  {
+    "_comment": "1d6a3b9b-c638-4820-965a-1ef04bbe8605; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-east-atlas.png",
+      "mask_image_url": "outfit-east-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 128,
+        "height": 128
+      },
+      "context_image": {
+        "url": "context-east.png",
+        "usage_description": "The left sheet is unchanged source. The right frontal reference guides only cream short-sleeve shirt and navy waistcoat style; render this clothing in side profile."
+      },
+      "description": "In each 64x64 cell of this 2x2 sheet add only a cream linen short-sleeve shirt and plain navy sailor waistcoat fitted to the existing east-facing torso and shoulders in strict side profile. Keep hands and forearms bare, shorts unchanged. Follow each source pose. Preserve head, anatomy, feet, scale, cell positions and transparency. Only masked clothing, no hair, weapons, emblems, frontal torso or detached garments. Same clothing model in all four frames."
+    }
+  },
+  {
+    "TASK": "Load the exact supplied native body atlas/frame, binary mask and optional context. Verify registration and frozen input pixels. No rescaling or painting source art."
+  },
+  {
+    "_comment": "27a0fcbc-2ae3-4a29-aa46-57fd32d5ff6d; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-idle-north-raw-01.png",
+      "mask_image_url": "weapon-north-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 338809494,
+      "description": "Add only one simple steel sailor sword with a small brass crossguard held in this north-facing human's right hand, on the viewer's right. The grip touches the existing hand near pixel42,35, naturally occluded by the unchanged hand. The blade points diagonally down-right away from the leg. Match crisp native pixels, dark outline, silver steel and brass. Output only the masked sword on transparency. Preserve all anatomy. No hand, arm, body, clothing, hair, detached weapon or background."
+    }
+  },
+  {
+    "TASK": "Load the exact supplied native body atlas/frame, binary mask and optional context. Verify registration and frozen input pixels. No rescaling or painting source art."
+  },
+  {
+    "_comment": "b6bc853c-1142-4509-a7bf-6b56391b0779; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-idle-west-raw-01.png",
+      "mask_image_url": "weapon-west-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 338809494,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "context_image": {
+        "url": "context-west.png",
+        "usage_description": "Top-left 64x64 is this source pose. The dressed frontal sprite on the right guides only the simple steel sword and brass guard style; do not copy its pose or clothing."
+      },
+      "description": "Add only one simple steel sailor sword with a small brass crossguard held at this west-facing human's far hand near pixel26,36. Let the unchanged hand naturally occlude the grip. The blade rests diagonally down-left away from the legs. Match the reference sword material, dark outline and crisp native pixel scale. Output only the masked sword on transparency. No hand, arm, body, clothes, hair, detached object or background."
+    }
+  },
+  {
+    "TASK": "Load the exact supplied native body atlas/frame, binary mask and optional context. Verify registration and frozen input pixels. No rescaling or painting source art."
+  },
+  {
+    "_comment": "5011ca7f-56b8-43a6-8154-73e57d5ae569; completed",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-idle-east-raw-01.png",
+      "mask_image_url": "weapon-east-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 338809494,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "context_image": {
+        "url": "context-east.png",
+        "usage_description": "Top-left 64x64 is this source pose. The dressed frontal sprite on the right guides only simple steel sword and brass guard style; do not copy its pose or clothing."
+      },
+      "description": "Add only one simple steel sailor sword with a small brass crossguard held at this east-facing human's visible near hand near pixel29,37. Let the unchanged hand naturally occlude the grip. The blade rests diagonally down-left behind and away from the legs. Match the reference sword material, dark outline and crisp native pixel scale. Output only the masked sword on transparency. No hand, arm, body, clothes, hair, detached object or background."
+    }
+  },
+  {
+    "_comment": "7d9fa838-9728-4862-8c3c-856e5d89690e; completed-without-raw-image",
+    "MCP animate_image": {
+      "first_frame_url": "body-south-input.png",
+      "last_frame_url": "body-south-input.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Perform one compact right-handed diagonal sword-strike motion with the empty right hand, directly forward toward the viewer, then return to the supplied starting pose. This is a bare human animation base for later separate weapon artwork: show no weapon or effects. Keep the face and chest facing south throughout, feet anchored, same anatomy, charcoal shorts and native pixel scale. Clear wind-up, forward strike and recovery; no turning or camera movement."
+    }
+  },
+  {
+    "_comment": "ecab90ef-2cda-4db4-afbe-dc66c06c36af; completed",
+    "MCP animate_image": {
+      "first_frame_url": "body-south-input.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Perform one compact right-handed diagonal sword-strike motion with the empty right hand, directly forward toward the viewer, then return to the supplied starting pose. This is a bare human animation base for later separate weapon artwork: show no weapon or effects. Keep the face and chest facing south throughout, feet anchored, same anatomy, charcoal shorts and native pixel scale. Clear wind-up, forward strike and recovery; no turning or camera movement."
+    }
+  },
+  {
+    "TASK": "Preserve outputs in order. Inspect body identity/loop before layer work. Split only successful masked atlases without repainting; use assemble_review.py for transparent padding and real hand sockets. Keep all pieces unapproved and fall back for missing actions. Validate in real browser before proposing merge."
+  }
+]
