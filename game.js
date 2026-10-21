@@ -1158,7 +1158,13 @@
       <div class="prison-bottom-panels"><div><section class="prison-first-clear"><h3>Recompensa da Primeira Conquista</h3>${reward?`<div class="prison-first-reward"><img src="assets/ui/items-pixellab/pearl-box-1.png?v=20261020" alt=""><span>1× Caixa de Pérolas Nível 1<small>${p.claimed.includes(floor)?'Recebida':'Na primeira vitória deste andar'}</small></span></div>`:`<p>${floor<=50?'Este andar abre o próximo portão. A próxima Caixa de Pérolas chega no marco do Andar '+Math.ceil(floor/5)*5+'.':'Recompensas deste andar ainda serão definidas.'}</p>`}</section><section class="prison-rules"><h3>Regras da prisão</h3><ul><li>Vença o andar atual para liberar o seguinte.</li><li>Marcos dos andares 5 a 50 entregam uma caixa, uma única vez.</li><li>Gemas e Pérolas vêm deste modo; Senhor do Submundo permite Caixas Nv.1 nas caçadas.</li><li>O modo está em pré-visualização; partidas e resgates indisponíveis.</li></ul></section></div><div><section class="prison-ascent"><h3>Configuração da Subida</h3><label><input type="checkbox" role="switch" data-prison-option="autoAdvance" ${p.options.autoAdvance?'checked':''}>Avançar automaticamente após cada vitória</label><label><input type="checkbox" role="switch" data-prison-option="pauseBeforeBoss" ${p.options.pauseBeforeBoss?'checked':''}>Pausar antes de chefes</label><p>Preferências salvas para quando o modo for liberado.</p></section><section class="prison-milestones"><h3>Marcos</h3><div>${MarePrison.milestones.map(f=>`<article data-prison-milestone="${f}"><div><b>Andar ${f}</b><small>${p.claimed.includes(f)?'Recebido':p.cleared>=f?'Pendente':'A conquistar'}</small></div><p><img src="assets/ui/items-pixellab/pearl-box-1.png?v=20261020" alt="">1× Caixa de Pérolas Nível 1</p></article>`).join('')}</div></section></div></div>
     </section>`;
   }
-  function renderPanel(){if(!currentPanel||!game)return;$('panelOverlay').dataset.uiPanel=currentPanel;const body=$('dialogBody');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');$('panelOverlay').classList.toggle('voyage-mode',['map','prison'].includes(currentPanel));$('panelOverlay').classList.toggle('modes-mode',currentPanel==='modes');if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={hunt:'Rota da caçada',dev:'Laboratório DEV',inventory:'Inventário',forge:'Forja das Correntes',character:'Personagem',modes:'Modos de jogo',prison:'Impel Down',map:'Mapa do Arquipélago',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;if(currentPanel!=='map')$('voyageRegionTabs')?.remove();body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel||(b.dataset.panel==='modes'&&['map','prison'].includes(currentPanel)))));
+  function renderPanel(){if(!currentPanel||!game)return;$('panelOverlay').dataset.uiPanel=currentPanel;const body=$('dialogBody');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');$('panelOverlay').classList.toggle('voyage-mode',['map','prison'].includes(currentPanel));$('panelOverlay').classList.toggle('modes-mode',currentPanel==='modes');if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={journal:'Jornal do Porto',myprofile:'Meu Perfil',settings:'Configurações',hunt:'Rota da caçada',dev:'Laboratório DEV',inventory:'Inventário',forge:'Forja das Correntes',character:'Personagem',modes:'Modos de jogo',prison:'Impel Down',map:'Mapa do Arquipélago',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;if(currentPanel!=='map')$('voyageRegionTabs')?.remove();body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel||(b.dataset.panel==='modes'&&['map','prison'].includes(currentPanel)))));
+    if(['journal','myprofile','settings'].includes(currentPanel)){
+      const g=game,s=getDerived(),className=classes[game.classId]?.name||game.classId;
+      const equipment=Object.entries(game.equipment||{}).filter(([,item])=>item).map(([slot,item])=>({slot:slotNames[slot]||slot,name:itemBase(item).name}));
+      body.innerHTML=MarePlayerHub.render(currentPanel,{game:g,stats:s,className,factionName:factions[g.factionId]?.name,equipment});
+      MarePlayerHub.hydrate(currentPanel);
+    }
     if(currentPanel==='shop'){body.innerHTML=`<div class="mini-heading">MERCADOR donquixote · SUPRIMENTOS</div><div class="item-detail">${itemIcon('potion','Poção de vida')}<h3>Poção de vida</h3><p>Restaura 44% da vida máxima.<br>Preço: <strong>35 dobrões</strong><br>Seu saldo: <strong>${fmt(game.gold)}</strong></p><button class="dialog-button" data-buy-potion="1" ${game.gold<35?'disabled':''}>COMPRAR 1 POÇÃO</button></div>`;}
     if(currentPanel==='contracts'){body.innerHTML='<div class="mini-heading">CONTRATOS DO PORTO</div><div class="contracts-modal">'+questDefs.map(q=>{let n=Math.min(q.target,questProgress(q)),done=game.claimed.includes(q.id);return `<div class="contract-modal-entry"><h3>${escapeHTML(q.title)}</h3><p>${escapeHTML(q.desc)}</p><span>${done?'CONCLUÍDO':n+' / '+q.target}</span><p class="contract-reward">Recompensa: <b>${q.gold} dobrões · ${q.xp} XP</b></p><div class="progress-track"><i style="width:${n/q.target*100}%"></i></div>${n>=q.target&&!done?`<button class="dialog-button" data-claim="${q.id}">RESGATAR · ${q.gold} DOBRÕES + ${q.xp} XP</button>`:''}</div>`;}).join('')+'</div>';}
     if(currentPanel==='inventory'){renderInventory(body);}
@@ -1239,6 +1245,22 @@
     trigger.setAttribute('aria-expanded','false');
     if(restoreFocus)trigger.focus({preventScroll:true});
   }
+  function closeCaptainMenu(restoreFocus=false){
+    const menu=$('captainQuickMenu'),trigger=$('captainMenuTrigger');
+    if(!menu||!trigger)return;
+    menu.classList.add('hidden');trigger.setAttribute('aria-expanded','false');
+    if(restoreFocus)trigger.focus({preventScroll:true});
+  }
+  function toggleCaptainMenu(){
+    const menu=$('captainQuickMenu'),trigger=$('captainMenuTrigger');
+    if(!game||!menu||!trigger||!$('panelOverlay').classList.contains('hidden')||document.querySelector('.confirmation-overlay'))return;
+    const opening=menu.classList.contains('hidden');
+    closeModesMenu();closeCharacterMenu();
+    menu.classList.toggle('hidden',!opening);
+    trigger.setAttribute('aria-expanded',String(opening));
+    if(opening)menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});
+    else trigger.focus({preventScroll:true});
+  }
   function closeModesMenu(restoreFocus=false){
     const menu=$('modesQuickMenu'),trigger=$('modesMenuTrigger');
     if(!menu||!trigger)return;
@@ -1250,7 +1272,7 @@
     const menu=$('modesQuickMenu'),trigger=$('modesMenuTrigger');
     if(!game||!menu||!trigger||!$('panelOverlay').classList.contains('hidden')||document.querySelector('.confirmation-overlay'))return;
     const opening=menu.classList.contains('hidden');
-    closeCharacterMenu();
+    closeCharacterMenu();closeCaptainMenu();
     menu.classList.toggle('hidden',!opening);
     trigger.setAttribute('aria-expanded',String(opening));
     if(opening)menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});
@@ -1260,7 +1282,7 @@
     const menu=$('characterQuickMenu'),trigger=$('characterMenuTrigger');
     if(!game||!menu||!trigger||!$('panelOverlay').classList.contains('hidden')||document.querySelector('.confirmation-overlay'))return;
     const opening=menu.classList.contains('hidden');
-    closeModesMenu();
+    closeModesMenu();closeCaptainMenu();
     menu.classList.toggle('hidden',!opening);
     trigger.setAttribute('aria-expanded',String(opening));
     $('characterMenuHakiHint').textContent=game.has_haki_unlocked?'Despertado':'Nível 50 + Livro da Vontade';
@@ -1279,6 +1301,7 @@
     MareUI.rememberFocus($('panelOverlay'));
     closeCharacterMenu();
     closeModesMenu();
+    closeCaptainMenu();
     if(currentPanel==='character'&&panel==='dev'){MareTalentUI.unmount();$('characterTabs')?.remove();}
     const navigation=['modes','map','prison'];
     if(navigation.includes(panel)&&!navigation.includes(currentPanel)){const active=document.activeElement;mapReturnFocus=active?.closest('#modesQuickMenu')?$('modesMenuTrigger'):(active?.matches('button,a[href],input,select,[tabindex]')?active:$('modesMenuTrigger'));}
@@ -1292,11 +1315,12 @@
     else if(panel==='character')$('dialogBody').querySelector('button:not(:disabled),input:not(:disabled)')?.focus({preventScroll:true});
     else if(navigation.includes(panel)||['dev','hunt'].includes(panel))$('dialogBody').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
   }
-  function closePanel(){closeCharacterMenu();closeModesMenu();MareTalentUI.unmount();$('characterTabs')?.remove();talentDraft=null;const wasNavigation=['modes','map','prison'].includes(currentPanel);$('voyageRegionTabs')?.remove();attributeDraft=MareCharacters.empty();allocationMessage="";currentPanel=null;document.querySelectorAll('.bottom-nav [aria-pressed]').forEach(b=>b.setAttribute('aria-pressed','false'));$('panelOverlay').classList.add('hidden');$('panelOverlay').classList.remove('inventory-mode','character-mode','voyage-mode','modes-mode');$('inventoryHeadMeta')?.classList.add('hidden');if(wasNavigation)(mapReturnFocus?.isConnected?mapReturnFocus:$('mainMenu').querySelector('[data-panel=modes]'))?.focus({preventScroll:true});MareUI.restoreFocus($('panelOverlay'));}
+  function closePanel(){closeCharacterMenu();closeModesMenu();closeCaptainMenu();MareTalentUI.unmount();$('characterTabs')?.remove();talentDraft=null;const wasNavigation=['modes','map','prison'].includes(currentPanel);$('voyageRegionTabs')?.remove();attributeDraft=MareCharacters.empty();allocationMessage="";currentPanel=null;document.querySelectorAll('.bottom-nav [aria-pressed]').forEach(b=>b.setAttribute('aria-pressed','false'));$('panelOverlay').classList.add('hidden');$('panelOverlay').classList.remove('inventory-mode','character-mode','voyage-mode','modes-mode');$('inventoryHeadMeta')?.classList.add('hidden');if(wasNavigation)(mapReturnFocus?.isConnected?mapReturnFocus:$('mainMenu').querySelector('[data-panel=modes]'))?.focus({preventScroll:true});MareUI.restoreFocus($('panelOverlay'));}
   function exportSave(){saveGame();const blob=new Blob([JSON.stringify(game,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=DEV_ACTIVE?'mare-partida-DEV-save.json':'mare-partida-save.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);}
   function importSave(file){let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);if(!classes[d.classId]||!Number.isInteger(d.level)||!d.equipment||typeof d.name!=='string')throw Error('Save inválido');if(d.level<1)throw Error('Nível inválido');if(!MareDev.canImport(d,DEV_ACTIVE)){toast('Save de laboratório só pode ser importado no modo DEV.','danger');return;}if(DEV_ACTIVE)d.devSandbox=true;preserveSave(localStorage.getItem(STORAGE_KEY),STORAGE_KEY+'-before-import');preserveSave(JSON.stringify(d),STORAGE_KEY+'-import-source');localStorage.setItem(STORAGE_KEY,JSON.stringify(MareAkuma.migrate(MareHaki.migrate(MareTalents.migrate(MarePrison.migrate(MareForge.migrate(MareCharacters.migrate(MareHunt.migrate(d)),itemDefs)))))));suppressSave=true;location.reload();}catch(err){toast('Arquivo de salvamento inválido.','danger');}};reader.readAsText(file);}
 
   MareUI.bindModal($('panelOverlay'),closePanel);
+  MarePlayerHub.configure({redraw:()=>{if(['journal','myprofile','settings'].includes(currentPanel))renderPanel();},setReducedFX:on=>{reducedFX=!!on;}});
   for(const query of ['(max-width:1180px)','(max-width:760px)'])matchMedia(query).addEventListener('change',()=>{if(currentPanel==='inventory')renderPanel();});
 
   // Cenas 0.3: cenários originais proceduralmente desenhados e armazenados em cache.
@@ -1813,6 +1837,11 @@ function applySceneHudLayout(){
   $('hakiKing').addEventListener('click',castHakiKing);
   $('skill1').addEventListener('click',()=>{const skill=MareAkuma.activeSkill(MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id);if(skill?.key==='1')void useFruitSkill(true);else useSkill(0,true);});$('skill2').addEventListener('click',()=>{const skill=MareAkuma.activeSkill(MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id);if(skill?.key==='2')void useFruitSkill(true);else useSkill(1,true);});$('skill3').addEventListener('click',()=>void useFruitSkill(true));$('zoanTransform').addEventListener('click',()=>void toggleZoanTransform());$('usePotion').addEventListener('click',()=>usePotion(true));$('buyPotion').addEventListener('click',buyPotion);
   document.addEventListener('click',e=>{
+    const captainTrigger=e.target.closest('[data-captain-menu-trigger]');
+    if(captainTrigger){toggleCaptainMenu();return;}
+    const captainSection=e.target.closest('[data-captain-section]');
+    if(captainSection){closeCaptainMenu();openPanel(captainSection.dataset.captainSection);return;}
+    if(!$('captainQuickMenu')?.contains(e.target))closeCaptainMenu();
     const modesTrigger=e.target.closest('[data-modes-menu-trigger]');
     if(modesTrigger){toggleModesMenu();return;}
     const quickMode=e.target.closest('[data-quick-mode]');
@@ -1981,10 +2010,11 @@ function applySceneHudLayout(){
       if(!$('startOverlay').classList.contains('hidden'))return;
       if(!$('characterQuickMenu').classList.contains('hidden')){e.preventDefault();closeCharacterMenu(true);return;}
       if(!$('modesQuickMenu').classList.contains('hidden')){e.preventDefault();closeModesMenu(true);return;}
+      if(!$('captainQuickMenu').classList.contains('hidden')){e.preventDefault();closeCaptainMenu(true);return;}
       if(currentPanel){closePanel();return;}
       ['status','expedition','chat'].forEach(k=>toggleFloating(k,false));return;
     }
-    const activeQuickMenu=!$('characterQuickMenu').classList.contains('hidden')?$('characterQuickMenu'):(!$('modesQuickMenu').classList.contains('hidden')?$('modesQuickMenu'):null);
+    const activeQuickMenu=!$('captainQuickMenu').classList.contains('hidden')?$('captainQuickMenu'):(!$('characterQuickMenu').classList.contains('hidden')?$('characterQuickMenu'):(!$('modesQuickMenu').classList.contains('hidden')?$('modesQuickMenu'):null));
     if(activeQuickMenu){
       const menu=activeQuickMenu,items=[...menu.querySelectorAll('[role="menuitem"]')];
       if(['ArrowUp','ArrowDown','Home','End'].includes(e.key)){
@@ -1994,7 +2024,7 @@ function applySceneHudLayout(){
           (index+(e.key==='ArrowDown'?1:-1)+items.length)%items.length;
         items[next]?.focus({preventScroll:true});return;
       }
-      if(e.key==='Tab'){closeCharacterMenu();closeModesMenu();return;}
+      if(e.key==='Tab'){closeCharacterMenu();closeModesMenu();closeCaptainMenu();return;}
       if(['Enter',' '].includes(e.key)&&menu.contains(document.activeElement))return;
     }
     if(['modes','map','prison','character','dev','hunt'].includes(currentPanel)&&e.key==='Tab'){const items=[...$('panelOverlay').querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')].filter(b=>b.getClientRects().length);const first=items[0],last=items.at(-1);if(e.shiftKey&&document.activeElement===first){e.preventDefault();last?.focus();}else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first?.focus();}return;}
