@@ -1,0 +1,167 @@
+{
+  "passed": true,
+  "scope": "partial body/grip structure only; not complete north artwork",
+  "coverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south"
+    ],
+    "attack-sword": []
+  },
+  "new_body_frames": 8,
+  "new_registered_north_layers": [
+    "body",
+    "weapon"
+  ],
+  "rejected_north_layers": [
+    "hair"
+  ],
+  "missing_north_layers": [
+    "outfit"
+  ],
+  "native_body": [
+    64,
+    64
+  ],
+  "compact_layer_cell": [
+    32,
+    52
+  ],
+  "crop_offset": [
+    16,
+    4
+  ],
+  "padding": [
+    10,
+    13
+  ],
+  "layer_padding": [
+    26,
+    17
+  ],
+  "pivot": [
+    42,
+    65
+  ],
+  "rescaled_pixels": 0,
+  "sockets": [
+    {
+      "frame": 0,
+      "socket": {
+        "x": 51,
+        "y": 50
+      },
+      "contact_pixels": 4,
+      "source_anchor": [
+        42,
+        35
+      ],
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 1,
+      "socket": {
+        "x": 51,
+        "y": 50
+      },
+      "contact_pixels": 5,
+      "source_anchor": [
+        42,
+        35
+      ],
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 2,
+      "socket": {
+        "x": 51,
+        "y": 50
+      },
+      "contact_pixels": 5,
+      "source_anchor": [
+        42,
+        35
+      ],
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 3,
+      "socket": {
+        "x": 52,
+        "y": 49
+      },
+      "contact_pixels": 3,
+      "source_anchor": [
+        42,
+        35
+      ],
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 4,
+      "socket": {
+        "x": 51,
+        "y": 46
+      },
+      "contact_pixels": 4,
+      "source_anchor": [
+        42,
+        35
+      ],
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 5,
+      "socket": {
+        "x": 50,
+        "y": 45
+      },
+      "contact_pixels": 4,
+      "source_anchor": [
+        42,
+        35
+      ],
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 6,
+      "socket": {
+        "x": 50,
+        "y": 46
+      },
+      "contact_pixels": 4,
+      "source_anchor": [
+        42,
+        35
+      ],
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 7,
+      "socket": {
+        "x": 52,
+        "y": 48
+      },
+      "contact_pixels": 3,
+      "source_anchor": [
+        42,
+        35
+      ],
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    }
+  ],
+  "artwork_approved": false
+}

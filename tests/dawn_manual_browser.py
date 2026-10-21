@@ -39,7 +39,8 @@ with sync_playwright() as p:
  if state(q)['autoPlay']:q.locator('#autoToggle').click()
  q.clock.run_for(100);q.screenshot(path=str(OUT/'chegada.png'))
  for id in ['cais','corsarios','estaleiro','mercado','ancoras','farol','caldeira']:route(q,id);q.screenshot(path=str(OUT/(id+'.png')))
- assert any(m['type']=='boss' and m['level']==10 for m in state(q)['mobs']);warned=False
+ # Main's East Blue rebalance keeps Dawn's boss at the end of levels1-5.
+ assert any(m['type']=='boss' and m['level']==5 for m in state(q)['mobs']);warned=False
  for _ in range(100):
   q.clock.run_for(200)
   if any(m['telegraph'] for m in state(q)['mobs']):warned=True;break
@@ -48,7 +49,7 @@ with sync_playwright() as p:
   q.clock.run_for(1000)
   if state(q)['hunt']['progress']['areas']['beach']['bosses']>0:break
  assert state(q)['hunt']['progress']['areas']['beach']['bosses']>0
- q.locator('#huntRoute').click();claim=q.locator('[data-hunt-first=beach]');assert claim.is_enabled();q.evaluate('()=>{window.realSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw Error("quota")}}');claim.click();assert not state(q)['hunt']['progress']['areas']['beach']['firstRewardClaimed'];q.evaluate('()=>{Storage.prototype.setItem=window.realSet}');claim.click();assert claim.is_disabled();q.locator('#closePanel').click();q.locator('#returnLobby').click();q.reload();q.wait_for_function('typeof __mareDiagnostics==="function"');dev=saved(q,'mare-partida-dev-save-v1');items=[i for i in dev['inventory'] if i.get('origin')=='Primeira vitória · Ilha Dawn'];assert len(items)==1 and items[0]['rarity']=='rare' and items[0]['level']==2;assert not saved(q)['hunts']['areas']['beach']['bosses'];print('Seven real routes, boss/warning/victory and reward rollback/single claim/reload passed',flush=True)
+ q.locator('#huntRoute').click();claim=q.locator('[data-hunt-first=beach]');assert claim.is_enabled();q.evaluate('()=>{window.realSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw Error("quota")}}');claim.click();assert not state(q)['hunt']['progress']['areas']['beach']['firstRewardClaimed'];q.evaluate('()=>{Storage.prototype.setItem=window.realSet}');claim.click();assert claim.is_disabled();q.locator('#closePanel').click();q.locator('#returnLobby').click();q.reload();q.wait_for_function('typeof __mareDiagnostics==="function"');dev=saved(q,'mare-partida-dev-save-v1');items=[i for i in dev['inventory'] if i.get('origin')=='Primeira vitória · Ilha Dawn'];assert len(items)==1 and items[0]['rarity']=='rare' and items[0]['level']==1;assert not saved(q)['hunts']['areas']['beach']['bosses'];print('Seven real routes, boss/warning/victory and reward rollback/single claim/reload passed',flush=True)
  q.evaluate('MareDawnRenderer.boot')
  technical=q.evaluate('''async()=>{const make=(w,h)=>{const e=document.createElement('canvas');e.width=w;e.height=h;return e},w=MareDawn.map.width,h=MareDawn.map.height,source=new Image();source.src='assets/dawn-manual/map.png';await source.decode();const a=make(w,h),raw=make(w,h);raw.getContext('2d').drawImage(source,0,0);MareDawnRenderer.ground(a.getContext('2d'),{x:0,y:0},w,h);const ad=a.getContext('2d').getImageData(0,0,w,h).data,rd=raw.getContext('2d').getImageData(0,0,w,h).data;let changed=0,compared=0;for(let i=0;i<ad.length;i+=4)if(rd[i+3]===255){compared++;for(let j=0;j<4;j++)if(ad[i+j]!==rd[i+j])changed++;}
  let camera=0,holes=0;for(const [x,y]of [[511,511],[512,512],[1535,1535],[2047,1023],[2559,1663]]){const e=make(384,256),c=e.getContext('2d');c.translate(-x,-y);MareDawnRenderer.ground(c,{x,y},384,256);const got=c.getImageData(0,0,384,256).data,want=a.getContext('2d').getImageData(x,y,384,256).data;for(let i=0;i<got.length;i++){if(got[i]!==want[i])camera++;if(i%4===3&&got[i]!==255)holes++;}}

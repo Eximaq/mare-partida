@@ -1,0 +1,133 @@
+{
+  "passed": true,
+  "weapon_source": "../paper-doll-expansion-20261021/weapon-south.png",
+  "weapon_sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+  "source_anchor": [
+    20,
+    36
+  ],
+  "rig_pivot": [
+    42,
+    65
+  ],
+  "padding": [
+    10,
+    13
+  ],
+  "frame_count": 8,
+  "frames": [
+    {
+      "frame": 0,
+      "hand_anchor": [
+        22,
+        35
+      ],
+      "socket": {
+        "x": 32,
+        "y": 48
+      },
+      "contact_pixels": 8,
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 1,
+      "hand_anchor": [
+        21,
+        35
+      ],
+      "socket": {
+        "x": 31,
+        "y": 48
+      },
+      "contact_pixels": 8,
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 2,
+      "hand_anchor": [
+        22,
+        36
+      ],
+      "socket": {
+        "x": 32,
+        "y": 49
+      },
+      "contact_pixels": 8,
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 3,
+      "hand_anchor": [
+        23,
+        36
+      ],
+      "socket": {
+        "x": 33,
+        "y": 49
+      },
+      "contact_pixels": 8,
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 4,
+      "hand_anchor": [
+        22,
+        35
+      ],
+      "socket": {
+        "x": 32,
+        "y": 48
+      },
+      "contact_pixels": 7,
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 5,
+      "hand_anchor": [
+        21,
+        35
+      ],
+      "socket": {
+        "x": 31,
+        "y": 48
+      },
+      "contact_pixels": 8,
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 6,
+      "hand_anchor": [
+        22,
+        36
+      ],
+      "socket": {
+        "x": 32,
+        "y": 49
+      },
+      "contact_pixels": 9,
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 7,
+      "hand_anchor": [
+        22,
+        36
+      ],
+      "socket": {
+        "x": 32,
+        "y": 49
+      },
+      "contact_pixels": 9,
+      "zIndex": 10,
+      "body_pixel_changes": 0
+    }
+  ],
+  "artwork_approved": false
+}

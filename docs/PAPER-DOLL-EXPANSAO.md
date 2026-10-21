@@ -1,5 +1,7 @@
 # Paper Doll — repouso em quatro direções
 
+Continuação: o candidato MiniMax abaixo foi posteriormente corrigido somente na região do braço e recebeu camadas reais de cabelo/roupa para Walk/south. O histórico e os custos desta etapa permanecem preservados; a cobertura e o acumulado atuais estão em [Primeira caminhada modular](PAPER-DOLL-CAMINHADA.md).
+
 ## Entrega desta etapa
 
 O pacote de revisão reúne16 poses reais de Idle (4 frames ×4 direções), com corpo, cabelo e roupa em folhas separadas e uma espada rígida própria por vista. É um **protótipo em inspeção**, não uma migração completa do jogo. Todos os itens permanecem `approved:false`. Walk e Attack ainda usam o personagem original, assim como habilidades, dano e morte. Não há alteração de saves, hitboxes, relógios de combate, classes, facções, equipamentos, Haki ou Zoan.

@@ -1,0 +1,30 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "b2b6622c-c2c8-4e1b-8a34-5a17c41f076e",
+  "asset_id": "badbe6b7-91c6-56e2-9b9f-f333b012ddb8",
+  "status": "completed",
+  "estimated_generations": 6,
+  "parameters": {
+    "image_url": "body-compact.png",
+    "mask_image_url": "hair-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 1612130099,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 128,
+      "height": 104
+    },
+    "context_image": {
+      "url": "look-context.png",
+      "usage_description": "The left128x104 holds eight native walking bodies. The right64x64 reference guides only rear-view short black hair, its palette and outline, never its static body pose."
+    },
+    "description": "Add only short tousled black hair fitted to the existing scalp in each of the eight north-facing walking cells. Match the supplied rear-view hair reference. Follow each head position, preserving every protected body, hand, shorts, leg and foot pixel. Keep the exact canvas, native pixel scale, transparency and row-major frame order. No face, bandana, clothing, weapon or detached hair."
+  },
+  "reported_usage": {
+    "generations": 6
+  },
+  "raw_sha256": "90279a8a32bf5028f595cb00544914cdcbeeb729476c250f29c31a9b41343a38"
+}

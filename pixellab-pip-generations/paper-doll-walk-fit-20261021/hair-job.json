@@ -1,0 +1,27 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "ae845b9a-24a5-456f-a7b9-728f5162d0c4",
+  "status": "completed",
+  "estimated_generations": 9,
+  "parameters": {
+    "image_url": "body-corrected-raw.png",
+    "mask_image_url": "hair-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 1612130099,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 256,
+      "height": 128
+    },
+    "context_image": {
+      "url": "look-context.png",
+      "usage_description": "The left 256x128 is the unchanged walking source. The right dressed sprite guides only short black hair style and palette, never its static body pose."
+    },
+    "description": "In each native 64x64 cell of this 4x2 south-facing walking sheet add only short tousled black hair fitted to the existing scalp, matching the right-side reference's shape, palette, outline and pixel scale. Follow each head's position. Preserve all protected face pixels, eyes, ears, bald head shape beneath the hair, body pose, carrying hand, shorts, legs and transparency. Eight consistent hair frames in original row-major order. No bandana, duplicate head, clothes, weapon or loose hair object."
+  },
+  "reported_usage": 9,
+  "raw_sha256": "be492779a0077dc71a04c2392232d5ad50a8fd8f6fb84a7ef55aca6f0cedd32b"
+}

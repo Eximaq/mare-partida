@@ -1,0 +1,152 @@
+{
+  "passed": true,
+  "review_only": true,
+  "frames": 8,
+  "slots": 4,
+  "no_rescaling": true,
+  "body_outside_mask_changes": 0,
+  "frame_order": "original row-major; reference echo excluded and preserved elsewhere",
+  "foot_motion": "Original stride preserved; fixed padding, no per-frame stabilization",
+  "records": [
+    {
+      "frame": 0,
+      "padding": [
+        10,
+        13
+      ],
+      "pivot": [
+        42,
+        65
+      ],
+      "body_sha256": "0e8c4a52e3be291ec4262f0860ebe3fa4c89388ca17834ebe0bdd78ed9903960",
+      "socket": {
+        "x": 32,
+        "y": 48
+      }
+    },
+    {
+      "frame": 1,
+      "padding": [
+        10,
+        13
+      ],
+      "pivot": [
+        42,
+        65
+      ],
+      "body_sha256": "4c5e909c19db79021d8970806ae4131a22bcbcee16eaa28e6c132a499b616152",
+      "socket": {
+        "x": 31,
+        "y": 48
+      }
+    },
+    {
+      "frame": 2,
+      "padding": [
+        10,
+        13
+      ],
+      "pivot": [
+        42,
+        65
+      ],
+      "body_sha256": "3bb62982b77074ec91936085b7b4dde24b2c49e27a2375fb825ef8e1b3ba407a",
+      "socket": {
+        "x": 32,
+        "y": 49
+      }
+    },
+    {
+      "frame": 3,
+      "padding": [
+        10,
+        13
+      ],
+      "pivot": [
+        42,
+        65
+      ],
+      "body_sha256": "e92c693ebb602f7697d7d74d5fa02d55820404dc161961ba291458bf6812e13e",
+      "socket": {
+        "x": 33,
+        "y": 49
+      }
+    },
+    {
+      "frame": 4,
+      "padding": [
+        10,
+        13
+      ],
+      "pivot": [
+        42,
+        65
+      ],
+      "body_sha256": "8df864323e595853c3392d9e1d9ae14c6b127370c0327c29e402db46a3394574",
+      "socket": {
+        "x": 32,
+        "y": 48
+      }
+    },
+    {
+      "frame": 5,
+      "padding": [
+        10,
+        13
+      ],
+      "pivot": [
+        42,
+        65
+      ],
+      "body_sha256": "517ba0364a754658a763f732b54c93e6f3a41c549618cc510cdd85c4e21bf816",
+      "socket": {
+        "x": 31,
+        "y": 48
+      }
+    },
+    {
+      "frame": 6,
+      "padding": [
+        10,
+        13
+      ],
+      "pivot": [
+        42,
+        65
+      ],
+      "body_sha256": "719ff76dfa0a804f0a0e82421bc83de45cb8c17e6ff19814a3ad4953b83a766d",
+      "socket": {
+        "x": 32,
+        "y": 49
+      }
+    },
+    {
+      "frame": 7,
+      "padding": [
+        10,
+        13
+      ],
+      "pivot": [
+        42,
+        65
+      ],
+      "body_sha256": "227cca47c53e148429f52e197e158a9d3eb2fb057792dfea3f96ef9414577a00",
+      "socket": {
+        "x": 32,
+        "y": 49
+      }
+    }
+  ],
+  "coverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south"
+    ],
+    "attack-sword": []
+  }
+}

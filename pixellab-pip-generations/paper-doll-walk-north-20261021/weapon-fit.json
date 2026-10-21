@@ -1,0 +1,110 @@
+{
+  "passed": true,
+  "frames": [
+    {
+      "frame": 0,
+      "hand": [
+        41,
+        37
+      ],
+      "socket": {
+        "x": 51,
+        "y": 50
+      },
+      "contact_pixels": 4,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 1,
+      "hand": [
+        41,
+        37
+      ],
+      "socket": {
+        "x": 51,
+        "y": 50
+      },
+      "contact_pixels": 5,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 2,
+      "hand": [
+        41,
+        37
+      ],
+      "socket": {
+        "x": 51,
+        "y": 50
+      },
+      "contact_pixels": 5,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 3,
+      "hand": [
+        42,
+        36
+      ],
+      "socket": {
+        "x": 52,
+        "y": 49
+      },
+      "contact_pixels": 3,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 4,
+      "hand": [
+        41,
+        33
+      ],
+      "socket": {
+        "x": 51,
+        "y": 46
+      },
+      "contact_pixels": 4,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 5,
+      "hand": [
+        40,
+        32
+      ],
+      "socket": {
+        "x": 50,
+        "y": 45
+      },
+      "contact_pixels": 4,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 6,
+      "hand": [
+        40,
+        33
+      ],
+      "socket": {
+        "x": 50,
+        "y": 46
+      },
+      "contact_pixels": 4,
+      "body_pixel_changes": 0
+    },
+    {
+      "frame": 7,
+      "hand": [
+        42,
+        35
+      ],
+      "socket": {
+        "x": 52,
+        "y": 48
+      },
+      "contact_pixels": 3,
+      "body_pixel_changes": 0
+    }
+  ],
+  "artwork_approved": false
+}

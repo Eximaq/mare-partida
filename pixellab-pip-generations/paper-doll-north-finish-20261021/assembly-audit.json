@@ -1,0 +1,201 @@
+{
+  "passed": true,
+  "scope": "complete north walk prototype, not full character approval",
+  "coverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south",
+      "north"
+    ],
+    "attack-sword": []
+  },
+  "frames": 8,
+  "original_body_reused": true,
+  "preserved_hair_frames": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "corrected_hair_frames": [
+    5,
+    6,
+    7,
+    8
+  ],
+  "frame_order": "original eight poses; no temporal trimming or duplication",
+  "pivot": [
+    42,
+    65
+  ],
+  "rig": [
+    84,
+    84
+  ],
+  "source_scale_changes": 0,
+  "gif_palette_colors": 95,
+  "gif_durations_ms": [
+    120,
+    130,
+    120,
+    130,
+    120,
+    130,
+    120,
+    130
+  ],
+  "gif_loop_ms": 1000,
+  "native_playback_fps": 8,
+  "records": [
+    {
+      "frame": 0,
+      "hair_source": "hair-preserved-01.png",
+      "hair_padding": [
+        26,
+        17
+      ],
+      "outfit_source": "outfit-first/frame-01.png",
+      "outfit_padding": [
+        10,
+        13
+      ],
+      "body_sha256": "e3448bb46e35a844ea72a302f477ef114650200d1bf327c404ea86788534086f",
+      "socket": {
+        "x": 51,
+        "y": 50
+      }
+    },
+    {
+      "frame": 1,
+      "hair_source": "hair-preserved-02.png",
+      "hair_padding": [
+        26,
+        17
+      ],
+      "outfit_source": "outfit-first/frame-02.png",
+      "outfit_padding": [
+        10,
+        13
+      ],
+      "body_sha256": "74b8c67bbd4f1fb4f21b95e591d20a00e6836f5ef5c55b2dcfbe1dcd442c2ab0",
+      "socket": {
+        "x": 51,
+        "y": 50
+      }
+    },
+    {
+      "frame": 2,
+      "hair_source": "hair-preserved-03.png",
+      "hair_padding": [
+        26,
+        17
+      ],
+      "outfit_source": "outfit-remaining/frame-01.png",
+      "outfit_padding": [
+        26,
+        13
+      ],
+      "body_sha256": "6381ca5e86974f82dd992a51e31fbdc3f7273baacb8d5c623d385b416dba0592",
+      "socket": {
+        "x": 51,
+        "y": 50
+      }
+    },
+    {
+      "frame": 3,
+      "hair_source": "hair-preserved-04.png",
+      "hair_padding": [
+        26,
+        17
+      ],
+      "outfit_source": "outfit-remaining/frame-02.png",
+      "outfit_padding": [
+        26,
+        13
+      ],
+      "body_sha256": "70aa9ad71ba0f51366b7e796a8ca88a66ad62d8ee007c4e9dcfa022053bb8107",
+      "socket": {
+        "x": 52,
+        "y": 49
+      }
+    },
+    {
+      "frame": 4,
+      "hair_source": "hair-repair/frame-01.png",
+      "hair_padding": [
+        10,
+        13
+      ],
+      "outfit_source": "outfit-remaining/frame-03.png",
+      "outfit_padding": [
+        26,
+        13
+      ],
+      "body_sha256": "6a2e444ef0d9f6f0df921d2299aa96e50b2a16c1fdd148acba6f63c50fb2459f",
+      "socket": {
+        "x": 51,
+        "y": 46
+      }
+    },
+    {
+      "frame": 5,
+      "hair_source": "hair-repair/frame-02.png",
+      "hair_padding": [
+        10,
+        13
+      ],
+      "outfit_source": "outfit-remaining/frame-04.png",
+      "outfit_padding": [
+        26,
+        13
+      ],
+      "body_sha256": "b937f5d3ac1f647ff10c0ecf7ef89ced40a219b5b85ce9457c988941d82c5111",
+      "socket": {
+        "x": 50,
+        "y": 45
+      }
+    },
+    {
+      "frame": 6,
+      "hair_source": "hair-repair/frame-03.png",
+      "hair_padding": [
+        10,
+        13
+      ],
+      "outfit_source": "outfit-remaining/frame-05.png",
+      "outfit_padding": [
+        26,
+        13
+      ],
+      "body_sha256": "f2e43a639dfed5215286e3935bbca59ebe3242ac498f5cd5678e7eae2bf6afa4",
+      "socket": {
+        "x": 50,
+        "y": 46
+      }
+    },
+    {
+      "frame": 7,
+      "hair_source": "hair-repair/frame-04.png",
+      "hair_padding": [
+        10,
+        13
+      ],
+      "outfit_source": "outfit-remaining/frame-06.png",
+      "outfit_padding": [
+        26,
+        13
+      ],
+      "body_sha256": "bd1fe128eef14661616d9afe0f4030c810bdfa21f915c4a2fce8766532eb5013",
+      "socket": {
+        "x": 52,
+        "y": 48
+      }
+    }
+  ],
+  "artwork_approved": false
+}

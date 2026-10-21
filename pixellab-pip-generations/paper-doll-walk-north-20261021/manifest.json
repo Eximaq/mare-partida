@@ -1,0 +1,175 @@
+{
+  "status": "Partial north study: body and sword grips valid; hair rejected; outfit not generated; north uses fallback",
+  "authorization": "Owner delegated recommended PixelLab decisions; cumulative ceiling100, no USD overage, global auto unchanged",
+  "jobs": [
+    {
+      "tool": "MCP animate_image_pixminimax",
+      "job_id": "65309778-2e8a-4ee6-810c-c7d8bd56ef58",
+      "asset_id": "08bec916-df6f-508d-a314-44aba665c4af",
+      "status": "completed",
+      "estimated_generations": 1,
+      "parameters": {
+        "first_frame_url": "body-input.png",
+        "description": "Walk in place directly north away from the viewer for one complete smooth walking cycle. Alternate natural steps while keeping the right hand in a relaxed low sword-carry guard beside the right hip. Keep the bald back of the head and bare back visible, the same body proportions, charcoal shorts and pixel scale. Stay centered. No turning, added clothing, weapons or camera motion.",
+        "direction": "north",
+        "view": "high top-down",
+        "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+        "initial_pose": "standing with his back toward the viewer, feet planted and arms relaxed beside the hips",
+        "enhance_prompt": false,
+        "frame_count": 8,
+        "no_background": true
+      },
+      "authorization": "Owner authorized autonomous continuation. Prior conservative total87; chain planned13, cumulative ceiling100; no USD overage.",
+      "reported_usage": {
+        "generations": 1
+      },
+      "outputs": [
+        "body-raw-00.png",
+        "body-raw-01.png",
+        "body-raw-02.png",
+        "body-raw-03.png",
+        "body-raw-04.png",
+        "body-raw-05.png",
+        "body-raw-06.png",
+        "body-raw-07.png",
+        "body-raw-08.png"
+      ],
+      "sha256": {
+        "body-raw-00.png": "28f39ae16721fdbd36793b0356857dffe68cb58a46bec14fea1e31c30d7f1572",
+        "body-raw-01.png": "e3448bb46e35a844ea72a302f477ef114650200d1bf327c404ea86788534086f",
+        "body-raw-02.png": "74b8c67bbd4f1fb4f21b95e591d20a00e6836f5ef5c55b2dcfbe1dcd442c2ab0",
+        "body-raw-03.png": "6381ca5e86974f82dd992a51e31fbdc3f7273baacb8d5c623d385b416dba0592",
+        "body-raw-04.png": "70aa9ad71ba0f51366b7e796a8ca88a66ad62d8ee007c4e9dcfa022053bb8107",
+        "body-raw-05.png": "6a2e444ef0d9f6f0df921d2299aa96e50b2a16c1fdd148acba6f63c50fb2459f",
+        "body-raw-06.png": "b937f5d3ac1f647ff10c0ecf7ef89ced40a219b5b85ce9457c988941d82c5111",
+        "body-raw-07.png": "f2e43a639dfed5215286e3935bbca59ebe3242ac498f5cd5678e7eae2bf6afa4",
+        "body-raw-08.png": "bd1fe128eef14661616d9afe0f4030c810bdfa21f915c4a2fce8766532eb5013"
+      },
+      "input_echo_visible_match": true
+    },
+    {
+      "tool": "MCP inpaint_image_pro_flash",
+      "job_id": "b2b6622c-c2c8-4e1b-8a34-5a17c41f076e",
+      "asset_id": "badbe6b7-91c6-56e2-9b9f-f333b012ddb8",
+      "status": "completed",
+      "estimated_generations": 6,
+      "parameters": {
+        "image_url": "body-compact.png",
+        "mask_image_url": "hair-mask.png",
+        "output_method": "New layer with changes",
+        "crop_to_mask": true,
+        "no_background": true,
+        "seed": 1612130099,
+        "bounding_box": {
+          "x": 0,
+          "y": 0,
+          "width": 128,
+          "height": 104
+        },
+        "context_image": {
+          "url": "look-context.png",
+          "usage_description": "The left128x104 holds eight native walking bodies. The right64x64 reference guides only rear-view short black hair, its palette and outline, never its static body pose."
+        },
+        "description": "Add only short tousled black hair fitted to the existing scalp in each of the eight north-facing walking cells. Match the supplied rear-view hair reference. Follow each head position, preserving every protected body, hand, shorts, leg and foot pixel. Keep the exact canvas, native pixel scale, transparency and row-major frame order. No face, bandana, clothing, weapon or detached hair."
+      },
+      "reported_usage": {
+        "generations": 6
+      },
+      "raw_sha256": "90279a8a32bf5028f595cb00544914cdcbeeb729476c250f29c31a9b41343a38"
+    }
+  ],
+  "generation_usage": {
+    "stage_confirmed": 7,
+    "prior_confirmed": 84,
+    "prior_tool_reported": 2,
+    "prior_failed_job_estimate_unexposed": 1,
+    "cumulative_confirmed": 91,
+    "cumulative_conservative": 94,
+    "ceiling": 100
+  },
+  "planned_but_not_called": {
+    "outfit": "Stopped after visual failure of hair; no outfit job or charge"
+  },
+  "seeds": {
+    "body": "omitted; no resolved seed exposed",
+    "hair": 1612130099
+  },
+  "coverage": {
+    "complete_walk": [
+      "south"
+    ],
+    "partial_north": [
+      "body eight generated poses",
+      "eight measured original sword grips"
+    ],
+    "rejected": "All eight hair originals preserved; frames5-8 lack black hair; no trimming/recolour/duplicates",
+    "missing": "Outfit/north and valid full hair/north; both profiles and all attacks"
+  },
+  "native_dimensions": {
+    "body": [
+      64,
+      64
+    ],
+    "compact_cell": [
+      32,
+      52
+    ],
+    "atlas": [
+      128,
+      104
+    ],
+    "rig": [
+      84,
+      84
+    ],
+    "fixed_crop_origin": [
+      16,
+      4
+    ],
+    "restored_layer_origin": [
+      26,
+      17
+    ],
+    "pivot": [
+      42,
+      65
+    ]
+  },
+  "artwork_approved": false,
+  "sha256": {
+    "body-compact.png": "aeea46e6e18bea26ccd85ce7fce12e549c5570bc00e4a6bb74bc437a16ca254a",
+    "body-idle.png": "b04361d22abe344f5fba079994b5625c6fe4822b308dc5ca7478300deab43348",
+    "body-input.png": "28f39ae16721fdbd36793b0356857dffe68cb58a46bec14fea1e31c30d7f1572",
+    "body-native.png": "9175f4103340f1ea513bd35dbfb4bc11a7f889758f8b9a091618ebae0f7c1b2d",
+    "body-raw-00.png": "28f39ae16721fdbd36793b0356857dffe68cb58a46bec14fea1e31c30d7f1572",
+    "body-raw-01.png": "e3448bb46e35a844ea72a302f477ef114650200d1bf327c404ea86788534086f",
+    "body-raw-02.png": "74b8c67bbd4f1fb4f21b95e591d20a00e6836f5ef5c55b2dcfbe1dcd442c2ab0",
+    "body-raw-03.png": "6381ca5e86974f82dd992a51e31fbdc3f7273baacb8d5c623d385b416dba0592",
+    "body-raw-04.png": "70aa9ad71ba0f51366b7e796a8ca88a66ad62d8ee007c4e9dcfa022053bb8107",
+    "body-raw-05.png": "6a2e444ef0d9f6f0df921d2299aa96e50b2a16c1fdd148acba6f63c50fb2459f",
+    "body-raw-06.png": "b937f5d3ac1f647ff10c0ecf7ef89ced40a219b5b85ce9457c988941d82c5111",
+    "body-raw-07.png": "f2e43a639dfed5215286e3935bbca59ebe3242ac498f5cd5678e7eae2bf6afa4",
+    "body-raw-08.png": "bd1fe128eef14661616d9afe0f4030c810bdfa21f915c4a2fce8766532eb5013",
+    "body-walk.png": "4443a71d367ad1230096884ce267d92e496ab786340ef03c3ac4b7b45231859c",
+    "body-weapon.png": "5d2afd4e449eead3472a1b6ef7895a20fc7ed484ec0500c35237f517c3ca5252",
+    "comparison-native.png": "93db80b1f283676bf78d7d91ff7bc2e4c515e9ffef786976449950a2d7dcea7c",
+    "hair-idle.png": "e393e179b77e77d59f697b243a165d8369b8ad7b0594680e801e756f78bf15b5",
+    "hair-mask.png": "abc4f87924e96258100e6b21ec385c0eaa3926b86868f0a3261d847dff50a77c",
+    "hair-north-draft.png": "3dee6b92679118fee01004a372800f8c4a3227ff762f269909ca3986e6ec3d00",
+    "hair-raw.png": "90279a8a32bf5028f595cb00544914cdcbeeb729476c250f29c31a9b41343a38",
+    "hair-walk.png": "ebab2d91d2020d51f9c5be0da0d99a7ab1b0c21cfc42a534ee9fe83909483d1f",
+    "look-context.png": "f01ac775966f000969deb3be454b28b787aabe86693d9efd3f15562a5a913daf",
+    "look-reference.png": "1f803ed620ff18b6fcdf3408515f51fe084e9b3e5ef3bb437a83eb62903d062b",
+    "outfit-idle.png": "50600daf41c0a2cefb12e978f67c79ca73d4e63c43d80622095d6508e27e2b7f",
+    "outfit-mask.png": "55b68f5d748105702891c36dc0b7a6a8ba716eec07ac571255d5e19d70e5d74e",
+    "outfit-walk.png": "48f96582dde8d42bca9c207d0ffcea217191183e1949e8fd47f05b698e2c9334",
+    "rigid-weapon.png": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+    "walk-north-body.png": "8bf51cf86ad9a951c518ebfe6cc6b754774b9c252e13d566ac168fd6e57265bc",
+    "walk-north-hair-draft.png": "0661211ce7f4ed97c629032ee13587335e0fd15456a333a51214de7514486229",
+    "weapon-east.png": "fe5ef2cb9fc0f495ef173c7091a335c53479cf52155fbbba30575ca6d3d6ea97",
+    "weapon-north.png": "0ba4aba97f06dc59272b9fe5e871d21c59ebedef6b0e0c03ee59ecd2662e7b41",
+    "weapon-south.png": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+    "weapon-west.png": "9b09bb64aec12978f127d96c4825f18e9c1ca6b5a688f3b746e9e2ae7b3ded60"
+  },
+  "report": "../../docs/PAPER-DOLL-CAMINHADA-NORTE.md"
+}

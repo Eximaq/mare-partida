@@ -4,7 +4,9 @@
 
 O [pacote de revisão multidirecional](PAPER-DOLL-EXPANSAO.md) já contém corpo, cabelo, roupa e espada para as16 poses de Idle nas quatro direções. A arma tem fonte e âncora próprias por vista; a bancada abre o pacote diretamente pelo link `?pack=expansion-idle` e permite editar/exportar sockets por frame. A arte permanece em inspeção (`approved:false`), fora do catálogo de produção. O jogo mantém seus sprites atuais.
 
-Walk e Attack ainda não têm conjuntos aprovados. Os estudos rejeitados foram preservados, sem gerar roupas sobre bases defeituosas. Para o mínimo do Espadachim, restam192 frames de corpo/cabelo/roupa (96 de Walk e96 de Attack), mais validação das trajetórias/vistas da arma e32 frames de lâmina para ataque quando necessário. As estimativas de320 frames abaixo registram o levantamento inicial, anterior aos pilotos e à exceção de arma rígida, não o inventário corrente. A Fase1 completa continua pendente.
+Walk/south e north possuem oito poses reais com as quatro peças para inspeção. O [estudo norte inicial](PAPER-DOLL-CAMINHADA-NORTE.md) preserva a falha de cabelo e o fallback como histórico. A [continuação norte](PAPER-DOLL-NORTE-COMPLETO.md) reutiliza os quatro cabelos válidos, corrige os quatro restantes e acrescenta roupa por pose. O pacote `walk-north-complete` abre na bancada; peças continuam `approved:false`. Há pequenas diferenças na silhueta do cabelo e nenhuma aprovação artística do personagem completo.
+
+Para o mínimo do Espadachim faltam48 frames por camada de corpo/cabelo/roupa (16 de Walk nos perfis e32 de Attack):144 frames anatômicos/vestuário, mais48 encaixes da arma e imagens específicas de lâmina quando necessárias. As estimativas de320 frames abaixo registram o levantamento inicial, anterior aos pilotos e à exceção de arma rígida. A Fase1 completa continua pendente.
 
 ## Evolução: personagem único (20/10/2026)
 
@@ -147,6 +149,16 @@ Calças, botas e outros acessórios têm slots técnicos preparados, mas não re
 6. Rodar Node, navegador, build/cache e regressão Haki/Zoan antes de propor merge. Uma peça sem todas as poses não pode ser anunciada como cobertura completa do personagem.
 
 ## Bancada de inspeção
+
+Atualização da caminhada: o pacote `?pack=walk-south` reúne Idle nas quatro vistas e oito frames reais de Walk/south. A cobertura de produção continua desativada; as outras caminhadas e todos os ataques usam fallback. Ver [contrato, máscaras, custos e validação desta etapa](PAPER-DOLL-CAMINHADA.md). O pivô é fixo; a passada preserva a variação natural dos pés, sem alinhamento artificial por frame.
+
+### Compactação de margens para produção de camadas
+
+A auditoria offline aceita células quadradas ou retangulares, declaradas como inteiro ou par `[largura, altura]`. Ambas as dimensões devem dividir exatamente o atlas; máscaras, contato e ordem row-major são verificados por célula. Isso não altera o contrato84 do renderizador nem aceita folhas finais com frames incompatíveis.
+
+É permitido remover somente margens transparentes usando o mesmo retângulo fixo em toda a sequência. A transformação precisa ser reversível pixel a pixel: recolocar o recorte na posição original deve recuperar todos os pixels visíveis, incluindo alfa parcial. Se um único pixel visível ficar de fora, a preparação falha antes de uma chamada paga. RGB sob alfa0 não representa perda visual. Nenhuma imagem é redimensionada ou recentralizada por frame.
+
+No estudo norte, células nativas64×64 são compactadas para32×52 retirando margens em16/4, depois restauradas no rig84 com padding total26/17. A referência de aparência continua ancorada no personagem; cabelo e roupa são edições independentes do mesmo corpo. `tests/paper_doll_compact_test.py` verifica reversibilidade, limites, transparência e rejeição de perda visível; a auditoria de lote verifica também células retangulares e exportação sem alteração de pixels.
 
 Abra `tools/paper-doll-inspector/index.html` no servidor local ou pacote Pages. A ferramenta tem quatro direções, Idle/Walk/Attack, pausa/reprodução, slider de frame, zoom2×/3×/4×, pivôs/linha dos pés, visibilidade das sete camadas, associação de equipamento e comparação lado a lado. A diferença RGBA é contada antes dos auxiliares visuais e não deve ser confundida com aprovação artística: roupas diferentes podem legitimamente mudar pixels.
 

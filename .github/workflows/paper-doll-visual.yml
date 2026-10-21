@@ -21,6 +21,18 @@ on:
       - 'tests/paper_doll_socket_browser.py'
       - 'tests/paper_doll_expansion_browser.py'
       - 'tests/paper_doll_world_review_browser.py'
+      - 'tests/paper_doll_walk_browser.py'
+      - 'tests/paper_doll_body_edit_test.py'
+      - 'tests/paper_doll_compact_test.py'
+      - 'tests/paper_doll_north_study_browser.py'
+      - 'tests/paper_doll_north_complete_browser.py'
+      - 'tests/paper_doll_gif_test.py'
+      - 'pixellab-pip-generations/paper-doll-north-finish-20261021/**'
+      - 'docs/PAPER-DOLL-NORTE-COMPLETO.md'
+      - 'pixellab-pip-generations/paper-doll-walk-north-20261021/**'
+      - 'docs/PAPER-DOLL-CAMINHADA-NORTE.md'
+      - 'pixellab-pip-generations/paper-doll-walk-fit-20261021/**'
+      - 'docs/PAPER-DOLL-CAMINHADA.md'
       - 'pixellab-pip-generations/paper-doll-expansion-20261021/**'
       - 'tests/paper_doll_rigid_assembly_test.py'
       - 'tests/paper-doll-attachment.test.cjs'
@@ -54,12 +66,18 @@ jobs:
           python -m playwright install --with-deps chromium
           python tests/paper_doll_fit_audit_test.py
           python tests/paper_doll_batch_audit_test.py
+          python tests/paper_doll_body_edit_test.py
+          python tests/paper_doll_compact_test.py
           python tests/paper_doll_rigid_assembly_test.py
+          python tests/paper_doll_gif_test.py
           python pixellab-pip-generations/paper-doll-sword-fit-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-layer-batch-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-rigid-weapon-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-hair-outfit-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-expansion-20261021/assemble_review.py
+          python pixellab-pip-generations/paper-doll-walk-fit-20261021/assemble_review.py
+          python pixellab-pip-generations/paper-doll-walk-north-20261021/assemble_review.py
+          python pixellab-pip-generations/paper-doll-north-finish-20261021/assemble_review.py
           python tools/build_pages.py
       - name: Conferir bancada, fallback e jogo
         env:
@@ -77,6 +95,14 @@ jobs:
           python tests/paper_doll_socket_browser.py
           python tests/paper_doll_expansion_browser.py
           python tests/paper_doll_world_review_browser.py
+          python tests/paper_doll_walk_browser.py
+          MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-walk-fit-20261021/ python tests/paper_doll_world_review_browser.py
+          MARE_WALK_REVIEW_PACK=pixellab-pip-generations/paper-doll-walk-north-20261021/ python tests/paper_doll_walk_browser.py
+          python tests/paper_doll_north_study_browser.py
+          MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-walk-north-20261021/ python tests/paper_doll_world_review_browser.py
+          MARE_WALK_REVIEW_PACK=pixellab-pip-generations/paper-doll-north-finish-20261021/ python tests/paper_doll_walk_browser.py
+          python tests/paper_doll_north_complete_browser.py
+          MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-north-finish-20261021/ python tests/paper_doll_world_review_browser.py
           python tests/universal_character_browser.py
           python tests/class_combat_v2_browser.py
       - name: Capturas e medições para revisão

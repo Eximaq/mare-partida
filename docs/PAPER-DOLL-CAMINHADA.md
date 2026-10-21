@@ -1,0 +1,55 @@
+# Paper Doll — primeira caminhada modular
+
+[Prévia interativa](../pixellab-pip-generations/paper-doll-walk-fit-20261021/preview.html) · [Bancada com o pacote](../tools/paper-doll-inspector/index.html?pack=walk-south) · [PNG animado sem perda](../pixellab-pip-generations/paper-doll-walk-fit-20261021/walk-south.png).
+
+## Cobertura e limites
+
+O conjunto reúne Idle nas quatro direções, preservado da etapa anterior, e **Walk/south com oito frames reais a 8 FPS**. Corpo, cabelo e roupa são camadas próprias de cada pose. A espada usa a imagem original e sockets medidos na mão, conforme a exceção autorizada para peças rígidas.
+
+É um pacote de revisão, com `approved:false` em todas as peças. O catálogo de produção permanece indisponível; não houve ativação de personagem incompleto na aventura. Faltam Walk norte/oeste/leste e ataques nas quatro direções. Não há alteração de saves, classes, facções, física, inventário, equipamento, câmera, dano, impactos, Haki ou Zoan.
+
+## Causa e correção do bloqueio anterior
+
+O candidato MiniMax preservava melhor a identidade, mas escondia a mão usada para carregar a espada. Os oito frames originais foram reaproveitados, sem repetir a geração da caminhada. Uma edição PixelLab por máscara corrigiu exclusivamente o braço direito para uma guarda de transporte. Auditoria independente confirma zero mudanças fora da máscara, oito frames distintos e preservação dos pés. Apagar pixels do braço antigo **dentro** da máscara é permitido nesta edição do corpo; isso não é extração de roupa.
+
+O corpo corrigido foi usado como fonte independente para cabelo e roupa. Cada saída contém apenas pixels da peça em sua região autorizada. As máscaras protegem olhos, mão de transporte e antebraços; o contexto lateral guia a paleta e o figurino, não copia a pose estática da referência. Não houve retoque manual, espelhamento, criação de frames por repetição ou correção artificial do movimento.
+
+## Contrato e montagem
+
+- Originais: atlas nativos 256×128, quatro colunas e duas linhas de células 64×64, ordem original dos oito passos. A referência retornada no índice zero do job anterior continua preservada separadamente, sem entrar no ciclo.
+- Rig: `human-v1`, frame 84×84, pivô 42/65. Padding fixo 10/13 em todos os passos; os pés variam naturalmente durante a passada. Nenhum deslocamento por frame foi usado para estabilizar a anatomia.
+- Folhas finais: corpo/cabelo/roupa 672×84, sem escala. Idle continua 336×336, sul/norte/oeste/leste.
+- Espada: fonte 64×64, âncora 20/36. A mão original oclui o cabo; `walk.zIndex:10` coloca a arma atrás do corpo. Os sockets são próprios dos oito passos e independentes dos quatro sockets Idle.
+- Composição: arma → corpo → roupa → cabelo. Cache e relógio existentes são reutilizados. Outras poses resolvem fallback atômico, sem composição parcial.
+
+`prepare_inputs.py`, `audit_body.py`, `inspect_layer.py`, `plan_attachment.py` e `assemble_review.py` apenas preparam, verificam e montam arquivos locais. Não iniciam gerações. A montagem verifica hashes congelados, regiões protegidas, contato e APNG lossless com exatamente oito frames.
+
+## Custos e procedência
+
+Três chamadas `inpaint_image_pro_flash`, cada uma com cobrança final de 9 gerações: braço, cabelo e roupa. **27 confirmadas nesta etapa**. Acumulado conservador da execução: **87 de 100**, sendo 84 com cobrança final confirmada, 2 previamente reportadas pelas ferramentas e 1 estimada de job anterior sem cobrança final exposta. Não se presume reembolso. O teto não obriga consumir o restante; nenhuma nova geração é necessária para montar ou revisar este pacote.
+
+IDs, parâmetros exatos, máscaras, fontes e hashes estão no diretório do lote. `walk-fit.blueprint.json` é a receita reproduzível, sem credenciais, dados de conta ou links temporários de upload. Executar a receita paga novamente exige verificar a autorização vigente; executar o assembler é gratuito.
+
+## Inspeção e testes
+
+A prévia permite alternar Walk/Idle, controlar cada frame, reproduzir, ocultar cada camada e mostrar o pivô. A comparação nativa apresenta corpo original, braço corrigido e composição. O pacote pode ser aberto pelo celular na bancada sem upload de arquivos; somente pacotes locais explicitamente permitidos são carregados.
+
+O ensaio de mundo usa opt-in isolado no navegador, sem promover flags de aprovação: caminhada frontal modular, outras caminhadas e ataque legados, dano real, Haki, bypass Zoan, cache limitado e formato de save preservado. Isso valida integração parcial; **não representa combate modular completo nem conclusão da Fase 1**.
+
+Validação local executada após sincronizar a branch com `origin/main` (`ce28e16`): 38 arquivos de testes Node, 24 testes Python de auditoria/montagem e build Pages passaram. Em Chromium passaram `paper_doll_walk_browser.py`, as duas variantes de `paper_doll_world_review_browser.py`, `paper_doll_expansion_browser.py`, `paper_doll_socket_browser.py`, `paper_doll_browser.py`, a regressão de combate das sete classes e `pages_cache_browser.py`. A última conferiu 68 recursos versionados e save preservado.
+
+Os oito frames frontais foram efetivamente desenhados durante movimentação no porto, por opt-in de teste. Foram compostas 24 poses na amostra (16 Idle +8 Walk), usando 24 entradas/677.376 bytes do cache, abaixo dos limites de 96 entradas/4 MiB. Haki drenou vontade normalmente, Zoan ignorou o compositor humano e os ataques legados causaram dano. Isso não é benchmark de um elenco modular completo. As capturas dos frames, do movimento real e das telas 1366/393px foram inspecionadas visualmente. Capturas ficam no diretório ignorado `docs/evidence-paper-doll/` e no artefato do CI, sem evidências em massa no repositório.
+
+Duas execuções concorrentes tiveram timeout no servidor de desenvolvimento; foram repetidas e passaram em servidor estático isolado. O teste de cache também detectou um `dist` anterior à sincronização de `main`; reconstruir o pacote resolveu a divergência de recursos. Nenhum teste foi afrouxado nem houve alteração de gameplay para contornar essas falhas de ambiente.
+
+O primeiro CI do PR passou em Node e Paper Doll, mas revelou expectativas antigas nos testes de mapas, anteriores ao rebalanceamento `aaec010`. Foram atualizados somente os valores de entrada, nível de chefe e tier de recompensa nos testes: Dawn 1–5/chefe5, Conchas 6–10/chefe10. Isso corresponde ao contrato já publicado em `docs/ARQUIPELAGO-REGIOES.md` e aos testes Node da `main`; não muda progressão nem recompensas do jogo. Os ensaios continuam exigindo bloqueio abaixo do nível mínimo, vitória real, recompensa única, rollback, navegação, terreno e saves preservados.
+
+`conchas_browser.py` e `dawn_manual_browser.py` foram repetidos localmente e passaram: cinco resoluções cada, rotas reais, avisos/vitória dos chefes, recompensa única com rollback e reload, isolamento DEV e validação do terreno. Conchas teve zero erros de emendas/câmera/cobertura; Dawn preservou 8.380.416 pixels nativos comparados, com zero erros de origem/câmera/cobertura e oclusão frontal correta.
+
+## Próximos lotes e assets ausentes
+
+Para completar Idle/Walk/Attack do conjunto mínimo, ainda faltam **24 poses de caminhada** (oito em cada uma das três direções restantes) e **32 poses de ataque com espada** (oito em cada direção). Isso corresponde a 56 frames por camada de corpo/cabelo/roupa, ou 168 frames anatômicos/vestuário. As quatro fontes de espada Idle existentes poderão ser reaproveitadas onde o gesto permitir, mas os 56 encaixes ainda precisam ser medidos sobre movimentos reais; golpes podem exigir novas vistas ou poses da lâmina.
+
+A proposta seguinte é produzir primeiro Walk/north, inspecionar corpo e mão, depois cabelo/roupa independentes e contato da espada. Somente após esse gate seguir para os perfis. Na rota usada aqui, um movimento pequeno custa aproximadamente 1–2 gerações e duas camadas de oito frames custam 18; uma correção mascarada extra pode acrescentar 9, totalizando aproximadamente 19–29 por direção sem retries. São estimativas, não novos gastos iniciados. A reserva de 13 dentro do teto atual não cobre uma direção completa por essa rota, portanto não foram iniciados novos jobs.
+
+Ataque deve ser validado antes de produzir as três camadas: o estudo anterior mudou proporções. Riscos principais: oclusão da mão, continuidade do gesto, correspondência entre lados e folga da lâmina. Alternativa sem créditos: arte manual fornecida sobre o mesmo rig e importada pela bancada; não extrair anatomia escondida do sprite vestido nem fingir animação com imagem estática.

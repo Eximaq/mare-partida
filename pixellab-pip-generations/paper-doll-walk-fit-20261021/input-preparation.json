@@ -1,0 +1,54 @@
+{
+  "frames": 8,
+  "frame_size": [
+    64,
+    64
+  ],
+  "atlas": [
+    256,
+    128
+  ],
+  "frame_order": "row-major; generated frames1-8, source reference excluded",
+  "files": [
+    {
+      "file": "body-source-01.png",
+      "source": "body-walk-minimax-raw-01.png",
+      "sha256": "d7cd590d54ad8f7faabe7362709d6468859d83a3ec41fdc902624d86a83d8539"
+    },
+    {
+      "file": "body-source-02.png",
+      "source": "body-walk-minimax-raw-02.png",
+      "sha256": "68fea6dc82387fd30d5e3a22c47788a87f00c4968e27e2cd99e2bd0aaf3d42d7"
+    },
+    {
+      "file": "body-source-03.png",
+      "source": "body-walk-minimax-raw-03.png",
+      "sha256": "e3fbdb8d3649ec55d3308e4c301b3f09ca38733b524552c9295ffcc211cd8538"
+    },
+    {
+      "file": "body-source-04.png",
+      "source": "body-walk-minimax-raw-04.png",
+      "sha256": "2a2e31594b0581b3b9f228363860ed7d539ed135516f812690ac19b6baa4e230"
+    },
+    {
+      "file": "body-source-05.png",
+      "source": "body-walk-minimax-raw-05.png",
+      "sha256": "5d6f5a52f717ec953bbd10c77c2cb0622149a656a7ffdf258ef11a5a708a4a5b"
+    },
+    {
+      "file": "body-source-06.png",
+      "source": "body-walk-minimax-raw-06.png",
+      "sha256": "435e6c17159320f5a873b98aacf81daa9a0548351efb22ac82397b0b8d458491"
+    },
+    {
+      "file": "body-source-07.png",
+      "source": "body-walk-minimax-raw-07.png",
+      "sha256": "c7b8082971c9035803e781bbf42a4ff6940b1e8266f4b2e6bd1535045c6aef51"
+    },
+    {
+      "file": "body-source-08.png",
+      "source": "body-walk-minimax-raw-08.png",
+      "sha256": "435e9296ec3c3c2e5c1b77453378a1d7aeec213e0dcf0e4f744c60f01923b6c2"
+    }
+  ]
+}

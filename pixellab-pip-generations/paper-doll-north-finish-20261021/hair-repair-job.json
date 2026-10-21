@@ -1,0 +1,31 @@
+{
+  "tool": "MCP inpaint_image_pro_flash",
+  "job_id": "78bd12ba-28db-4e1d-a69a-1c4b62cb77f6",
+  "asset_id": "58b6ae10-5d22-5cef-9721-dc4431fec3c3",
+  "status": "completed",
+  "estimated_generations": 6,
+  "parameters": {
+    "image_url": "hair-repair-input.png",
+    "mask_image_url": "hair-repair-mask.png",
+    "output_method": "New layer with changes",
+    "crop_to_mask": true,
+    "no_background": true,
+    "seed": 1612130099,
+    "bounding_box": {
+      "x": 0,
+      "y": 0,
+      "width": 128,
+      "height": 128
+    },
+    "context_image": {
+      "url": "hair-repair-context.png",
+      "usage_description": "The left128x128 is the four original north-facing body frames5-8 in row-major order. The right64x64 guides only the already accepted black hairstyle from frame1, never its different body pose."
+    },
+    "description": "Add complete short tousled black hair to the back of the scalp in ALL FOUR north-facing walking cells. Match the reference's black hairstyle, outline and highlights. Follow each existing head position. Preserve every protected body, neck, arm, hand, shorts, leg and foot pixel. Keep the original four-cell order, native pixel scale and transparent canvas. No bald scalp, face, bandana, clothing, weapon or detached hair."
+  },
+  "authorization": "Owner authorized autonomous recommended PixelLab decisions and continued after the failed north hair study. New closed chain ceiling18, prior conservative94, cumulative ceiling112, no extra retries or USD overage. Announced before first paid call.",
+  "reported_usage": {
+    "generations": 6
+  },
+  "raw_sha256": "a27161862f664caa83734738843ad8997663287d3f09d86d77e782be1756dc23"
+}

@@ -1,0 +1,76 @@
+[
+  {
+    "TASK": "Reuse original MiniMax generated frames1-8 without its reference echo. Preserve original order and 64x64 pixels. Assemble4x2 atlas; use binary carry-arm mask. Verify current cost authorization before any paid replay."
+  },
+  {
+    "_comment": "8f20e8da-0277-44c0-8e5e-ecd9d67ee0fb; completed; charged9 generations",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-input.png",
+      "mask_image_url": "arm-mask.png",
+      "output_method": "Modify current layer",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 338809494,
+      "description": "Edit only the masked right arm, on the viewer's left, in each 64x64 cell of this 4x2 walking sheet. Keep this south-facing bald human's existing shoulder attachment. Form a natural bare forearm and a small closed hand in a relaxed sword-carry guard near pixel22,35 of each cell, visible outside the torso throughout the gait. Follow each shoulder pose with restrained movement. Preserve every unmasked pixel, face, torso, opposite arm, shorts, legs, foot motion, proportions, native palette, transparent canvas and original eight-frame order. No weapon, glove, clothing, effects, extra limb or background."
+    }
+  },
+  {
+    "TASK": "Audit native output and inspect actual art. Preserve original PNG and receipt; stop on mask, face, hand, silhouette or transparency failure. Never paint repairs or duplicate frames."
+  },
+  {
+    "TASK": "Verify corrected arm: eight distinct south poses, original face and feet, zero changes outside mask and actual hand contact. Stop on failure. Freeze corrected body and both addition masks. Both subsequent edits use this same corrected body independently."
+  },
+  {
+    "_comment": "ae845b9a-24a5-456f-a7b9-728f5162d0c4; completed; charged9 generations",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-corrected-raw.png",
+      "mask_image_url": "hair-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 128
+      },
+      "context_image": {
+        "url": "look-context.png",
+        "usage_description": "The left 256x128 is the unchanged walking source. The right dressed sprite guides only short black hair style and palette, never its static body pose."
+      },
+      "description": "In each native 64x64 cell of this 4x2 south-facing walking sheet add only short tousled black hair fitted to the existing scalp, matching the right-side reference's shape, palette, outline and pixel scale. Follow each head's position. Preserve all protected face pixels, eyes, ears, bald head shape beneath the hair, body pose, carrying hand, shorts, legs and transparency. Eight consistent hair frames in original row-major order. No bandana, duplicate head, clothes, weapon or loose hair object."
+    }
+  },
+  {
+    "TASK": "Audit native output and inspect actual art. Preserve original PNG and receipt; stop on mask, face, hand, silhouette or transparency failure. Never paint repairs or duplicate frames."
+  },
+  {
+    "_comment": "71a3cf46-148a-4092-b8b8-0fe1e209fb11; completed; charged9 generations",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-corrected-raw.png",
+      "mask_image_url": "outfit-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 256,
+        "height": 128
+      },
+      "context_image": {
+        "url": "look-context.png",
+        "usage_description": "The left 256x128 is the unchanged walking source. The right dressed sprite guides only the cream short-sleeve shirt and plain navy waistcoat, never its static body pose."
+      },
+      "description": "In each native 64x64 cell of this 4x2 south-facing walking sheet add only a fitted cream short-sleeve linen shirt and plain navy sailor waistcoat matching the right-side reference's palette, outline and pixel scale. Follow each torso and shoulder pose. Keep the carrying hand and protected forearms bare and visible. Preserve all protected head, face, scalp, hand, shorts, legs, feet, body proportions and transparency. Eight consistent clothing frames in original row-major order. No hair, weapon, emblem, loose garment, extra limb or background."
+    }
+  },
+  {
+    "TASK": "Audit native output and inspect actual art. Preserve original PNG and receipt; stop on mask, face, hand, silhouette or transparency failure. Never paint repairs or duplicate frames."
+  },
+  {
+    "TASK": "Run assemble_review.py locally after actual visual gates. Reuse original rigid sword, measure each grip, fixed10/13 padding and42/65 pivot. Preserve four-view Idle, keep all pieces approved:false. Test all eight frames, toggles, mobile workbench, real-world fixture, fallback, saves, Haki and Zoan. No automatic production activation."
+  }
+]
