@@ -1577,15 +1577,15 @@
   function drawRuin(x,y){px(ctx,x-10,y-18,23,24,'#52635c');px(ctx,x-12,y-25,27,9,'#859385');px(ctx,x-8,y-19,5,25,'#98a18a');px(ctx,x+8,y-19,5,25,'#3e594d');px(ctx,x-18,y+6,39,9,'#53695e');}
   function drawPaperDoll(c,x,y,action,direction,time,scale=null){
     if(!MarePaperDollCatalog.eligible(game))return false;
-    const appearance=MarePaperDollCatalog.appearance(game),pose=paperDoll.sample(appearance.rigId,action,direction,time);
+    const appearance=MarePaperDollCatalog.appearance(game),pose=MarePaperDollCatalog.sample(paperDoll,game,action,direction,time);
     return pose?paperDoll.draw(c,appearance,pose,x,y,{scale}):false;
   }
   function drawPlayerSprite(c,x,y){
     const hero=world.hero, attack=hero.attackAnim>0&&scene==='hunt',moving=hero.walking>0;
     const zoan=equippedZoan();if(game.zoanTransformed&&zoan){c.fillStyle='#08131f8c';c.beginPath();c.ellipse(x,y,19,5,0,0,Math.PI*2);c.fill();const skillActive=world.time<(session.zoanActionUntil||0),action=skillActive||attack?'attack':moving?'walk':'idle',time=skillActive?world.time-(session.zoanActionUntil-.75):(attack ? .75-hero.attackAnim : world.time);return MareZoanArt.draw(c,zoan.id,x,y,{action,direction:hero.direction,time,scale:74/48});}
     const combat=classCombatController();
-    const pose=combat?.snapshot(),paperAction=pose?.locked?pose.action:moving?'walk':'idle';
-    if(drawPaperDoll(c,x,y,paperAction,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time))return true;
+    const pose=combat?.snapshot(),paperAction=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
+    if((!attack||combat)&&drawPaperDoll(c,x,y,paperAction,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time))return true;
     if(combat){
       const state=combat.snapshot();
       if(state.action!=='idle'&&state.action!=='walk'){

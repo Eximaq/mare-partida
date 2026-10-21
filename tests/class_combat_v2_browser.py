@@ -5,7 +5,7 @@ from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'docs/evidence-class-combat-v2';OUT.mkdir(parents=True,exist_ok=True)
 KEY='mare-partida-save-v1';URL=os.environ.get('MARE_TEST_URL','http://127.0.0.1:8123/')
-WEAPONS=dict(sword=0,brawler=2,gunner=4,rogue=12,cyborg=14,strategist=16,healer=33)
+WEAPONS=dict(sword=0,brawler=2,gunner=4,rogue=12,cyborg=14,strategist=16,healer=31)
 errors=[]
 def page(browser,seed=None):
  c=browser.new_context(viewport={'width':1366,'height':768})
