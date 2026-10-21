@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "scope": "static structural fit only; artwork approval required",
+  "size": [
+    84,
+    84
+  ],
+  "allowed_region": null,
+  "allowed_mask": "sword-mask-proposed.png",
+  "changed_pixels": 118,
+  "changed_bbox": [
+    13,
+    47,
+    36,
+    63
+  ],
+  "outside_region_pixels": 0,
+  "alpha_erasure_pixels": 0,
+  "recomposition_mismatch_pixels": 0,
+  "layer_file": "sword-masked-inspection-layer.png"
+}

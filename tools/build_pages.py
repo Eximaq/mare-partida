@@ -65,5 +65,21 @@ inspector_html = (inspector/'index.html').read_text(encoding='utf-8')
 (inspector/'index.html').write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_inspector, inspector_html), encoding='utf-8')
 (OUT/'docs').mkdir(exist_ok=True)
 shutil.copy2(ROOT/'docs/PAPER-DOLL.md', OUT/'docs/PAPER-DOLL.md')
+# Explicit review-page allowlist; do not distribute the generation archive or Python tools.
+pilot_relative = Path('pixellab-pip-generations/paper-doll-human-pilot-20261020')
+pilot_files = ['preview.html', 'static-look.json', 'manifest.json', 'human-static-pilot.blueprint.json',
+               'reference-south-idle-00.png', 'body-south-00.png', 'body-face-south-00.png',
+               'body-face-fit-draft.png', 'combined-masked-inspection.png']
+for piece in ['hair', 'outfit', 'sword']:
+    pilot_files.extend([f'{piece}-composite-south-00.png', f'{piece}-masked-inspection-layer.png',
+                        f'{piece}-mask-proposed.png'])
+for name in pilot_files:
+    source = ROOT/pilot_relative/name
+    if not source.is_file():
+        raise SystemExit(f'Arquivo da prévia Paper Doll ausente: {name}')
+    destination = OUT/pilot_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(source, destination)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-PILOTO.md', OUT/'docs/PAPER-DOLL-PILOTO.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

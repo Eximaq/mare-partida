@@ -1,3 +1,13 @@
+## 21/10/2026 — Publicação da prévia estática Paper Doll
+
+Publicação autorizada pelo proprietário. `tools/build_pages.py` inclui por allowlist a prévia de uma pose frontal e os recursos que ela usa; README e relatório apontam para a página. Não ativa peças no runtime, não altera saves e não publica a pasta de gerações inteira. Validação: build Pages, teste Node Paper Doll, teste Playwright da prévia no pacote estático e cache/saves.
+
+## 20–21/10/2026 — Piloto estático Paper Doll e limites do Pixen
+
+Branch `feature/paper-doll-primeiras-pecas`, base `dc59e4d`. PR43 publicado e conferido no Pages. Executadas5 chamadas Pixen de84×84, cobradas5 gerações pelos getters, após aprovação adicional da correção de rosto. Todos os jobs terminaram. Nenhuma peça modular final foi aprovada: cabelo/roupa/espada mudaram pixels fora da peça, cabelo encobriu o rosto e roupa também alterou o shorts.
+
+Originais, fontes, inspeções, auditorias, manifesto/blueprint e página de revisão preservados em `pixellab-pip-generations/paper-doll-human-pilot-20261020/`. Prévia facial local copia75 pixels gerados e conserva o corpo original fora da cabeça; é rascunho, não arte final. Extrações locais autorizadas produziram rascunhos separados de cabelo/roupa/espada, com zero alterações fora de cada máscara; a montagem estática permite alternar peças, sem simular animação. Auditoria tem modo estrito e modo explicitamente rotulado de inspeção. Sete testes Python, build Pages e página de revisão em navegador passaram; runtime e saves intactos. Revisão artística pendente antes de planejar animações reais; inpaint mascarado é alternativa não autorizada, sem consumo adicional. Ver `docs/PAPER-DOLL-PILOTO.md`.
+
 ## 20/10/2026 — Personagem único: base compartilhada
 
 Branch `feature/personagem-unico-base`, base `origin/main a1d68d4`. Evolui a infraestrutura Paper Doll para um corpo/cabelo comum às sete classes e quatro facções. Classe seleciona uma das seis categorias de ataque e arma; facção seleciona roupa padrão. Equipamentos conhecidos têm bindings próprios, sem renumerar itens ou escrever campos no save. Armas incompatíveis, poses ausentes e Zoan preservam o legado.
