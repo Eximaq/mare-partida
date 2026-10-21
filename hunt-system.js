@@ -2,13 +2,12 @@
 /* World encounter/economy data. Enemy strength never reads the character level. */
 ((root)=>{
   const VERSION=1,clone=x=>JSON.parse(JSON.stringify(x)),int=n=>Number.isSafeInteger(n)&&n>=0?n:0;
+  const newIslands=root.MareNewIslands||(typeof module!=='undefined'?(require('./new-islands-data.js'),require('./new-islands.js')):null);
+  const monsterCatalog=root.MareMonsterCatalog||(typeof module!=='undefined'?require('./monster-catalog.js'):null);
   const regions={
-    rare:{name:'Ilha dos Animais Raros',min:31,max:40,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:[
-      {id:'entrada',name:'Clareira da Entrada',min:35,max:35,x:480,y:1568,roles:['cocox']},
-      {id:'subbosque',name:'Sub-bosque dos Cocox',min:35,max:35,x:800,y:1120,roles:['cocox']},
-      {id:'mata-fechada',name:'Mata Fechada',min:35,max:35,x:1376,y:800,roles:['cocox']},
-      {id:'copa-antiga',name:'Copa Antiga',min:35,max:35,x:1120,y:416,roles:['cocox']}
-    ]},
+    rare:{name:'Ilha dos Animais Raros',min:31,max:40,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.rare.districts.map(d=>({...d,min:35,max:35,roles:['cocox']}))},
+    syrup:{name:'Vila Syrup',min:41,max:50,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.syrup.districts.map((d,i)=>({...d,min:45,max:45,roles:i%2?['buchi','sham']:['sham','buchi']}))},
+    baratie:{name:'Baratie',min:51,max:60,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.baratie.districts.map((d,i)=>({...d,min:55,max:55,roles:i%2?['gin','pearl']:['pearl','gin']}))},
     beach:{name:'Ilha Dawn',min:1,max:10,boss:'Capitão da Caldeira',bossLevel:10,firstGold:300,firstRarity:'rare',respawn:90,sectors:[
       {id:'cais',name:'Cais de Dawn',min:1,max:2,x:1128,y:1640,roles:['bandit','crab']},
       {id:'corsarios',name:'Bosque dos Corsários',min:3,max:4,x:1352,y:1544,roles:['bandit','bandit','crab']},
@@ -32,14 +31,14 @@
       {id:'bastiao',name:'Bastião das Conchas',min:19,max:20,x:1120,y:544,roles:['crab','spirit']}
     ]}
   };
-  const archetypes={crab:{hp:1.25,attack:.8,defense:1.3,speed:36,reach:43,attackSec:2.8,aggro:220},bandit:{hp:1,attack:1,defense:1,speed:50,reach:51,attackSec:2.1,aggro:300},spirit:{hp:.82,attack:1.1,defense:.7,speed:30,reach:165,attackSec:3.1,aggro:330},boss:{hp:4.2,attack:1.5,defense:1.45,speed:30,reach:70,attackSec:2.7,aggro:390},cocox:{hp:1,attack:1,defense:1,speed:82,reach:56,attackSec:1.35,aggro:370}};
+  const archetypes={crab:{hp:1.25,attack:.8,defense:1.3,speed:36,reach:43,attackSec:2.8,aggro:220},bandit:{hp:1,attack:1,defense:1,speed:50,reach:51,attackSec:2.1,aggro:300},spirit:{hp:.82,attack:1.1,defense:.7,speed:30,reach:165,attackSec:3.1,aggro:330},boss:{hp:4.2,attack:1.5,defense:1.45,speed:30,reach:70,attackSec:2.7,aggro:390},...Object.fromEntries(['cocox','sham','buchi','pearl','gin'].map(id=>[id,{hp:1,attack:1,defense:1,speed:monsterCatalog[id].move_speed,reach:monsterCatalog[id].reach,attackSec:monsterCatalog[id].attack_seconds,aggro:monsterCatalog[id].aggro_radius}]))};
   const get=area=>regions[area]||null;
   function sectors(area,anchors=[]){return get(area)?.sectors.map(s=>({...s,...(anchors.find(a=>a.id===s.id)?{x:anchors.find(a=>a.id===s.id).x,y:anchors.find(a=>a.id===s.id).y}:{})}))||[];}
   function sectorAt(area,point,anchors=[]){return sectors(area,anchors).reduce((best,s)=>!best||Math.hypot(s.x-point.x,s.y-point.y)<Math.hypot(best.x-point.x,best.y-point.y)?s:best,null);}
   function profile(area,sectorId,type,roll=.5){
     const region=get(area),a=archetypes[type],s=region?.sectors.find(s=>s.id===sectorId);if(!s||!a)throw Error('Encontro desconhecido');
     const level=type==='boss'?region.bossLevel:s.min+Math.min(s.max-s.min,Math.floor(Math.max(0,Math.min(.999999,roll))*(s.max-s.min+1)));
-    if(type==='cocox')return {level:35,maxHP:1180,attack:106,defense:39,magicDefense:12,speed:82,reach:56,attackSec:1.35,aggro:370,xp:260,gold:[90,135]};
+    if(monsterCatalog[type]){const m=monsterCatalog[type];if(m.area!==area)throw Error('Monstro fora da ilha');return {level:m.level,maxHP:m.max_hp,attack:m.physical_attack,defense:m.physical_defense,magicDefense:m.magic_defense,speed:m.move_speed,reach:m.reach,attackSec:m.attack_seconds,aggro:m.aggro_radius,xp:Math.round(260*1.06**(m.level-35)),gold:[Math.round(90*1.06**(m.level-35)),Math.round(135*1.06**(m.level-35))]};}
     return {level,maxHP:Math.round((70+level*22)*(1+level*.035)*a.hp),attack:Math.round((6+level*2.2)*a.attack),defense:Math.round((2+level*1.15)*a.defense),speed:a.speed,reach:a.reach,attackSec:a.attackSec,aggro:a.aggro,xp:type==='boss'?level*35:Math.round((14+level*6)*(type==='crab'?1.1:type==='spirit'?1.12:1)),gold:type==='boss'?[level*12,level*17]:[4+level*2,8+level*3]};
   }
   function migrate(g){const old=g.hunts?.areas||{};return {...g,hunts:{version:VERSION,areas:Object.fromEntries(Object.keys(regions).map(id=>{const a=old[id]||{};return [id,{kills:int(a.kills),bosses:int(a.bosses),firstRewardClaimed:a.firstRewardClaimed===true,bossReadyAt:int(a.bossReadyAt)}];}))}};}

@@ -4,7 +4,7 @@ from playwright.sync_api import sync_playwright
 from polish_support import *
 OUT=ROOT/'docs/evidence-arquipelago';OUT.mkdir(exist_ok=True)
 results=[];errors=[]
-NAMES=['Ilha Dawn','Cidade das Conchas','Orange Town','Ilha dos Animais Raros','Vilarejo Syrup','Baratie','Parque Arlong','Loguetown']
+NAMES=['Ilha Dawn','Cidade das Conchas','Orange Town','Ilha dos Animais Raros','Vila Syrup','Baratie','Parque Arlong','Loguetown']
 IDS=['dawn','conchas','orange-town','animais-raros','syrup','baratie','arlong','loguetown']
 def record(name):
  results.append(dict(test=name,passed=True));print(name+': passed',flush=True)
@@ -38,10 +38,10 @@ with sync_playwright() as p:
    assert q.locator('.dungeon-range strong').inner_text()==f'{n*10+1}–{n*10+10}'
    assert diag(q)['scene']=='lobby' and diag(q)['hero']['x']==d0['hero']['x']
    assert items(saved(q))==before;assert 'Não estimada' in q.locator('.dungeon-facts').inner_text();bounds(q)
-   if n<2:
+   if n<6:
     q.wait_for_function('document.querySelector("[data-monster-preview]")?.naturalWidth>0')
     assert q.locator('.dungeon-monster').get_attribute('data-state')=='available'
-    assert q.locator('[data-travel-island]').is_enabled()
+    assert q.locator('[data-travel-island]').is_enabled()==(n<2)
    else:
     assert q.locator('.dungeon-monster').inner_text().endswith('Indisponível')
     assert not q.locator('[data-monster-preview]').count();assert q.locator('[data-travel-island]').is_disabled()

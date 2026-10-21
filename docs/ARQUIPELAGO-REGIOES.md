@@ -12,8 +12,8 @@ Atualização de 19/10/2026. A janela fica em **Modos de jogo (M) → Mapa do Ar
 | Cidade das Conchas | 11–20 | `swamp` | Nv. 11 | Jogável |
 | Orange Town | 21–30 | `orange` | Nv. 21 | Jogável |
 | Ilha dos Animais Raros | 31–40 | `rare` | Nv. 31 | Jogável · Cocox Nv. 35 |
-| Vilarejo Syrup | 41–50 | — | A definir | Em desenvolvimento |
-| Baratie | 51–60 | — | A definir | Em desenvolvimento |
+| Vila Syrup | 41–50 | `syrup` | Nv. 41 | Jogável · Sham e Buchi Nv. 45 |
+| Baratie | 51–60 | `baratie` | Nv. 51 | Jogável · Pearl e Gin Nv. 55 |
 | Parque Arlong | 61–70 | — | A definir | Em desenvolvimento |
 | Loguetown | 71–80 | — | A definir | Em desenvolvimento |
 
@@ -25,11 +25,11 @@ As faixas são recomendações; não alteram os requisitos existentes nem impõe
 
 ## Seleção e detalhes
 
-O clique em qualquer ilha abre nome, faixa recomendada, descrição, moldura do chefe, entrada, taxa de sucesso e drops. Não muda a cena nem o save. Apenas o botão **Viajar para esta ilha** realiza o teleporte, quando a área existe e o personagem cumpre seu requisito. As quatro ilhas futuras têm detalhes acessíveis e viagem bloqueada, sem redirecionar para outro cenário. Orange Town mostra o retrato próprio do Capitão Fagulha.
+O clique em qualquer ilha abre nome, faixa recomendada, descrição, moldura do chefe, entrada, taxa de sucesso e drops. Não muda a cena nem o save. Apenas o botão **Viajar para esta ilha** realiza o teleporte, quando a área existe e o personagem cumpre seu requisito. As duas ilhas futuras têm detalhes acessíveis e viagem bloqueada, sem redirecionar para outro cenário. Orange Town mostra o retrato próprio do Capitão Fagulha.
 
 Os previews usam os sprites existentes: Capitão da Caldeira na Ilha Dawn e Guardião da Caldeira na Cidade das Conchas. A folha de oito direções do Capitão é recortada para uma única célula, sem editar o PNG. Não havendo monstro configurado, a moldura mostra uma silhueta com interrogação e **Indisponível**. O mesmo fallback cobre falhas ao carregar a imagem.
 
-A Ilha dos Animais Raros exibe o Cocox já existente no PixelLab; a rota atual não possui chefe. O mapa e o balanceamento estão em [ILHA-ANIMAIS-RAROS.md](ILHA-ANIMAIS-RAROS.md).
+A Ilha dos Animais Raros usa o mapa atualizado do PixelLab; Vila Syrup e Baratie também estão liberadas com as animações de Sham, Buchi, Pearl e Gin já armazenadas. As três rotas não possuem chefe nesta entrega. Ver [TRÊS-ILHAS.md](TRES-ILHAS.md).
 
 Os drops das áreas atuais refletem `killMob`: dobrões/XP, equipamentos compatíveis, Ferro Salgado e poções. As futuras mostram **A definir**. Não existe cálculo de sucesso de dungeon no jogo; o painel informa **Não estimada**.
 
