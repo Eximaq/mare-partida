@@ -17,11 +17,11 @@
   function road(points,width=1){for(let n=1;n<points.length;n++){const [ax,ay]=points[n-1],[bx,by]=points[n],steps=Math.max(Math.abs(bx-ax),Math.abs(by-ay));for(let k=0;k<=steps;k++){const t=steps?k/steps:0,x=Math.round(ax+(bx-ax)*t),y=Math.round(ay+(by-ay)*t);for(let dy=-width;dy<=width;dy++)for(let dx=-width;dx<=width;dx++)if(at(x+dx,y+dy)!==WATER)terrain[(y+dy)*COLS+x+dx]=STREET;}}}
   routes.forEach(r=>road(r.points));
   const districts=[
-    {id:'cais',name:'Cais das Laranjeiras',tx:7,ty:25,min:21,max:22},
-    {id:'rua',name:'Rua dos Navegantes',tx:8,ty:16,min:23,max:24},
-    {id:'praca',name:'Praça dos Toldos',tx:16,ty:16,min:25,max:26},
-    {id:'armazens',name:'Armazéns da Enseada',tx:24,ty:21,min:27,max:28},
-    {id:'picadeiro',name:'Pátio do Capitão',tx:24,ty:8,min:29,max:30}
+    {id:'cais',name:'Cais das Laranjeiras',tx:7,ty:25,min:11,max:12},
+    {id:'rua',name:'Rua dos Navegantes',tx:8,ty:16,min:12,max:13},
+    {id:'praca',name:'Praça dos Toldos',tx:16,ty:16,min:13,max:14},
+    {id:'armazens',name:'Armazéns da Enseada',tx:24,ty:21,min:14,max:15},
+    {id:'picadeiro',name:'Pátio do Capitão',tx:24,ty:8,min:15,max:15}
   ].map(d=>({...d,...center(d.tx,d.ty)}));
   for(const d of districts)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)if(at(d.tx+dx,d.ty+dy)!==WATER)terrain[(d.ty+dy)*COLS+d.tx+dx]=STREET;
   const docks=[{x:64,y:25*TILE,w:6*TILE,h:TILE},{x:2*TILE,y:23*TILE,w:TILE,h:4*TILE}];

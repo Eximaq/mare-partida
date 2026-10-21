@@ -5,8 +5,9 @@
   const placedObjects=root.MareNewIslandObjects||(typeof module!=='undefined'?require('./new-islands-objects.js'):null);
   const definitions={
     rare:{wood:'ei',walkable:'eicrag',preferred:{x:12,y:4},sectors:[['entrada','Cais de Madeira',16,5],['subbosque','Bosque dos Cocox',23,10],['mata-fechada','Mata Fechada',31,17],['copa-antiga','Copa Antiga',43,9]]},
-    syrup:{walkable:'ugrm',south:'u',sectors:[['entrada','Estrada do Sul',11,4],['vila-baixa','Vila Baixa',9,-9],['praça','Praça dos Gatos',2,-17],['bosque','Bosque de Syrup',19,-20]]},
-    baratie:{walkable:'cht',south:'c',sectors:[['entrada','Salão Sul',1,-1],['salão','Salão de Jantar',1,-6],['convés','Convés Principal',5,-11],['cozinha','Cozinha',1,-17]]}
+    syrup:{walkable:'ugm',south:'u',sectors:[['entrada','Estrada do Sul',11,4],['vila-baixa','Vila Baixa',9,-9],['praça','Praça dos Gatos',2,-17],['bosque','Bosque de Syrup',19,-20]]},
+    baratie:{walkable:'cht',south:'c',sectors:[['entrada','Salão Sul',1,-1],['salão','Salão de Jantar',1,-6],['convés','Convés Principal',5,-11],['cozinha','Cozinha',1,-17]]},
+    arlong:{wood:'c',walkable:'ch',preferred:{x:12,y:8},sectors:[['entrada','Passarela do Porto',12,5],['ala-oeste','Ala Oeste',7,1],['ala-leste','Ala Leste',17,1],['palacio','Praça do Palácio',12,-3]]}
   };
   function create(id){
     const data=sources[id],def=definitions[id],{rows,width,height,sourceOrigin}=data;
@@ -21,7 +22,7 @@
       const h=tree?24:Math.max(14,Math.round(sh*TILE*(counter ? .32 : .42)));
       const center=sourceCell(sx,sy);
       return {id:id+'-object-'+index,x:Math.round(center.x-w/2),y:Math.round(center.y+11-h),w,h};
-    }).filter(o=>o.x+o.w>0&&o.y+o.h>0&&o.x<width*TILE&&o.y<height*TILE);
+    }).filter((o,index)=>o.x+o.w>0&&o.y+o.h>0&&o.x<width*TILE&&o.y<height*TILE&&(id!=='arlong'||def.walkable.includes(at(placedObjects[id].placements[index][1]-sourceOrigin.x,placedObjects[id].placements[index][2]-sourceOrigin.y))));
     const blocked=(x,y,r=10)=>colliders.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
     const valid=(x,y,allowed=def.walkable)=>allowed.includes(at(x,y));
     const clear=(x,y,allowed)=>valid(x,y,allowed)&&!blocked(cell(x,y).x,cell(x,y).y)&&valid(x-1,y,allowed)&&valid(x+1,y,allowed)&&valid(x,y-1,allowed)&&valid(x,y+1,allowed);
@@ -63,7 +64,7 @@
     const image=images[id],map=islands[id]?.map;if(!map)return;
     ctx.save();ctx.imageSmoothingEnabled=false;
     if(image?.complete&&image.naturalWidth){const x=Math.max(0,Math.floor(camera.x)),y=Math.max(0,Math.floor(camera.y)),w=Math.min(width+2,map.width-x),h=Math.min(height+2,map.height-y);if(w>0&&h>0)ctx.drawImage(image,x,y,w,h,x,y,w,h);}
-    else{ctx.fillStyle=id==='rare'?'#116f85':id==='syrup'?'#4d823c':'#69442d';ctx.fillRect(camera.x,camera.y,width,height);}
+    else{ctx.fillStyle=id==='rare'||id==='arlong'?'#116f85':id==='syrup'?'#4d823c':'#69442d';ctx.fillRect(camera.x,camera.y,width,height);}
     ctx.restore();
   }
   function environment(ctx,id,time){const p=islands[id]?.returnPoint;if(!p)return;ctx.save();ctx.strokeStyle='#ead8a4';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(p.x,p.y,28+Math.sin(time*2),12,0,0,Math.PI*2);ctx.stroke();ctx.font='bold 11px Trebuchet MS';ctx.textAlign='center';ctx.fillStyle='#fff2cf';ctx.fillText('Voltar ao porto',p.x,p.y+30);ctx.restore();}

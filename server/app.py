@@ -12,13 +12,15 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from akuma import AkumaStore, public_catalog
-from monsters import MonsterStore
+from monsters import MonsterStore, WORLD_LEVEL_BANDS
+from hierarchy import HierarchyStore
 
 ROOT = Path(__file__).resolve().parents[1]
 DATA = Path(os.environ.get("MARE_AKUMA_DB", Path.home() / ".mare-partida" / "akuma.sqlite3"))
 DATA.parent.mkdir(parents=True, exist_ok=True)
 STORE = AkumaStore(DATA)
 MONSTERS = MonsterStore(DATA)
+HIERARCHY = HierarchyStore(DATA)
 LOCK = threading.RLock()
 
 
@@ -39,6 +41,8 @@ class Handler(SimpleHTTPRequestHandler):
         route = urlparse(self.path)
         if route.path == "/api/monsters/catalog":
             return self.reply(200, MONSTERS.catalog())
+        if route.path == "/api/world/levels":
+            return self.reply(200, WORLD_LEVEL_BANDS)
         if route.path == "/api/akuma/catalog":
             return self.reply(200, public_catalog())
         if route.path == "/api/akuma/state":
@@ -47,10 +51,18 @@ class Handler(SimpleHTTPRequestHandler):
                     return self.reply(200, STORE.state(parse_qs(route.query).get("player_id", [""])[0]))
             except ValueError as exc:
                 return self.reply(400, {"error": str(exc)})
+        if route.path == "/api/hierarchy/state":
+            try:
+                with LOCK:
+                    return self.reply(200, HIERARCHY.state(parse_qs(route.query).get("player_id", [""])[0]))
+            except ValueError as exc:
+                return self.reply(400, {"error": str(exc)})
         return super().do_GET()
 
     def do_POST(self):
         routes = {
+            "/api/hierarchy/sync": lambda d: HIERARCHY.sync(d["player_id"], d["name"], d["faction"], d["level"], d["power"]),
+            "/api/hierarchy/promote": lambda d: HIERARCHY.promote(d["player_id"]),
             "/api/akuma/player": lambda d: STORE.player(d["player_id"]),
             "/api/akuma/register": lambda d: STORE.register(d["player_id"], d["fruit_id"]),
             "/api/akuma/equip": lambda d: STORE.equip(d["player_id"], d.get("fruit_id")),

@@ -1121,3 +1121,7 @@ button{transition-behavior:normal, normal;transition-duration:0.12s, 0.12s;trans
 
 .akuma-fruit .akuma-icon-aura{position:absolute;inset:1px;width:48px;height:48px;image-rendering:pixelated;z-index:0;pointer-events:none}
 .akuma-fruit .akuma-icon img{z-index:1}
+
+/* PixelLab ocean water and the existing Navio Luffy asset replace the legacy route art. */
+.voyage-sea::before{background-image:url("assets/dawn-manual/water.png");filter:brightness(.68) saturate(1.12)}
+.voyage-ship-art{width:72px;height:72px;flex:none;background-image:url("assets/ui/navio-luffy.png");background-size:contain;background-position:center;background-repeat:no-repeat}

@@ -2,12 +2,12 @@
   "cocox": {
     "id": "cocox",
     "name": "Cocox",
-    "level": 35,
+    "level": 18,
     "area": "rare",
-    "max_hp": 1180,
-    "physical_attack": 106,
-    "physical_defense": 39,
-    "magic_defense": 12,
+    "max_hp": 620,
+    "physical_attack": 48,
+    "physical_defense": 22,
+    "magic_defense": 8,
     "move_speed": 82,
     "attack_seconds": 1.35,
     "aggro_radius": 370,
@@ -18,7 +18,7 @@
   "sham": {
     "id": "sham",
     "name": "Sham",
-    "level": 45,
+    "level": 23,
     "area": "syrup",
     "base_id": "cocox",
     "multipliers": {
@@ -37,7 +37,7 @@
   "buchi": {
     "id": "buchi",
     "name": "Buchi",
-    "level": 45,
+    "level": 23,
     "area": "syrup",
     "base_id": "cocox",
     "multipliers": {
@@ -56,7 +56,7 @@
   "pearl": {
     "id": "pearl",
     "name": "Pearl",
-    "level": 55,
+    "level": 28,
     "area": "baratie",
     "base_id": "cocox",
     "multipliers": {
@@ -75,7 +75,7 @@
   "gin": {
     "id": "gin",
     "name": "Gin",
-    "level": 55,
+    "level": 28,
     "area": "baratie",
     "base_id": "cocox",
     "multipliers": {
@@ -90,5 +90,45 @@
     "reach": 72,
     "behavior": "aggressive_patrol",
     "sprite_id": "71e7ad11-b263-4d45-bba4-e1337a521ebc"
+  },
+  "kuroobi": {
+    "id": "kuroobi",
+    "name": "Kuroobi",
+    "level": 33,
+    "area": "arlong",
+    "base_id": "cocox",
+    "multipliers": {
+      "max_hp": 1.2,
+      "physical_attack": 1.12,
+      "physical_defense": 1.18,
+      "magic_defense": 0.95
+    },
+    "move_speed": 76,
+    "attack_seconds": 1.45,
+    "aggro_radius": 390,
+    "reach": 66,
+    "behavior": "aggressive_karate_patrol",
+    "sprite_id": "4e72340c-7beb-45ad-8c5d-613149a30281",
+    "boss": true
+  },
+  "chew": {
+    "id": "chew",
+    "name": "Chew",
+    "level": 33,
+    "area": "arlong",
+    "base_id": "cocox",
+    "multipliers": {
+      "max_hp": 0.96,
+      "physical_attack": 1.2,
+      "physical_defense": 0.9,
+      "magic_defense": 1.02
+    },
+    "move_speed": 94,
+    "attack_seconds": 1.2,
+    "aggro_radius": 390,
+    "reach": 70,
+    "behavior": "aggressive_shooter_patrol",
+    "sprite_id": "3139378f-61a7-4f6f-bd97-419be0db5b07",
+    "boss": true
   }
 }
