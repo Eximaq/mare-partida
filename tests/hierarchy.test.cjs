@@ -19,7 +19,7 @@ test('migração preserva cargo e reinicia ao mudar facção',()=>{
   game.factionId='marine';H.migrate(game);assert.equal(game.hierarchyTier,1);
 });
 
-test('ranking filtra facção e desempata por patamar, nível e poder',()=>{
+test('ranking global desempata por patamar, nível e poder',()=>{
   const players=[
     {player_id:'a',faction:'pirate',tier:2,level:20,power:100},
     {player_id:'b',faction:'pirate',tier:1,level:200,power:999},
@@ -27,5 +27,5 @@ test('ranking filtra facção e desempata por patamar, nível e poder',()=>{
     {player_id:'d',faction:'pirate',tier:2,level:21,power:1},
     {player_id:'x',faction:'marine',tier:8,level:200,power:999}
   ];
-  assert.deepEqual(H.ranking(players,'pirate').map(p=>p.player_id),['d','c','a','b']);
+  assert.deepEqual(H.ranking(players).map(p=>p.player_id),['x','d','c','a','b']);
 });

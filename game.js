@@ -340,7 +340,7 @@
     {name:'nami · Navegadora',short:'Nami',x:660,y:206,color:'#c8a8eb',kind:'contracts',art:'nami'},
     {name:'Mercador ',short:'Donquixote',x:340,y:404,color:'#a5d7bf',kind:'shop',art:'donquixote'}
   ];
-  for(const npc of npcs)Object.assign(npc,MareIsland.npcs[npc.art]);
+  for(const npc of npcs)Object.assign(npc,(globalThis.MareLobby?.npcs||MareIsland.npcs)[npc.art]);
   const islandImages={};
   for(const [key,data] of Object.entries(MareIslandAssets)){
     const image=new Image();image.src=data.url;image.addEventListener('load',()=>{delete expandedAtlas.lobby;});islandImages[key]=image;
@@ -1108,7 +1108,7 @@
       </section></div>`;
     drawCurrentPreview($('characterSprite'),155);
   }
-  function hierarchySelf(){return {player_id:game.hierarchyPlayerId,name:game.name,faction:game.factionId,level:game.level,power:getDerived().power,tier:game.hierarchyTier};}
+  function hierarchySelf(){return {player_id:game.hierarchyPlayerId,name:game.name,faction:game.factionId,class_id:game.classId,portrait:portrait.canvas.toDataURL('image/png'),level:game.level,power:getDerived().power,tier:game.hierarchyTier};}
   async function hierarchyPost(route,payload){
     const response=await fetch('/api/hierarchy/'+route,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     if(!response.headers.get('content-type')?.includes('application/json'))throw Error('API indisponível');
@@ -1117,8 +1117,9 @@
   async function syncHierarchy(){
     if(!game)return;
     MareHierarchy.migrate(game);
+    renderPortrait();
     try{
-      const result=await hierarchyPost('sync',{player_id:game.hierarchyPlayerId,name:game.name,faction:game.factionId,level:game.level,power:getDerived().power});
+      const result=await hierarchyPost('sync',hierarchySelf());
       hierarchyBackend=true;game.hierarchyTier=result.player.tier;hierarchyBoard=result.leaderboard;saveGame();
     }catch(error){hierarchyBackend=false;hierarchyBoard=[hierarchySelf()];}
     if(currentPanel==='character'&&characterTab==='hierarchy')renderPanel();
@@ -1510,7 +1511,7 @@
     }
   }
   function drawNPC(n){
-      drawNPCProps(n);
+      if(!globalThis.MareLobby)drawNPCProps(n);
       const img=npcArt[n.art],ready=img&&img.complete&&img.naturalWidth;
       const h=n.art==='ryuma'?72:76,w=Math.min(76,h*(ready?img.naturalWidth/img.naturalHeight:.68));
       const spriteTop=Math.round(n.y-h);
@@ -1528,6 +1529,7 @@
   }
   function drawTownActors(){
     if(lobbyDestination){ctx.strokeStyle='#e5c47bbb';ctx.lineWidth=2;ctx.beginPath();ctx.arc(lobbyDestination.x,lobbyDestination.y,9+Math.sin(world.time*7)*2,0,Math.PI*2);ctx.stroke();}
+    if(globalThis.MareLobby)for(const portal of MareLobby.portals){ctx.save();ctx.strokeStyle='#f0d089';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(portal.x,portal.y,26+Math.sin(world.time*2)*2,12,0,0,Math.PI*2);ctx.stroke();ctx.textAlign='center';ctx.font='800 10px Trebuchet MS';ctx.fillStyle='#fff1ca';ctx.fillText('MAPA DO MUNDO',portal.x,portal.y+27);ctx.restore();}
   }
 
   // Construção procedural do mundo: todas as formas são desenhadas, sem assets externos.
@@ -1598,6 +1600,7 @@
     expandedAtlas[map.id]=terrain;return terrain;
   }
   function drawBackground(){
+    if(activeMap().id==='lobby'&&globalThis.MareLobby){MareLobby.ground(ctx,camera,W,H);return;}
     if(MareNewIslands[activeMap().id]){MareNewIslands.ground(ctx,activeMap().id,camera,W,H);return;}
     if(activeMap().id==='dawn'){MareDawnRenderer.ground(ctx,camera,W,H);return;}
     if(activeMap().id==='conchas'){MareConchasRenderer.ground(ctx,camera,W,H,world.time,reducedFX);return;}
@@ -1757,7 +1760,7 @@
     globalThis.MareHakiArt?.draw(ctx,session.haki,world.hero,world.time,reducedFX,(c,x,y)=>{c.save();c.translate(x,y);if(u==='titan')c.scale(1.35,1.35);if(!drawPlayerSprite(c,0,0))drawHero(c,0,0,game.classId,world.time,1.92);c.restore();},u==='titan'?1.35:1);
     if(u==='armamentSkin'&&rt.vigor>0){px(ctx,x-30,y-94,60,6,'#10222a');px(ctx,x-29,y-93,58*rt.vigor/rt.vigorMax,4,'#e4c77b');}
   }
-  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}ctx.save();ctx.translate(-Math.round(camera.x),-Math.round(camera.y));drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();let toDraw=[...(activeMap().id==='dawn'?MareDawn.props.map(p=>({kind:'dawn-prop',y:p.y,obj:p})):[]),...(activeMap().id==='conchas'?MareConchas.props.map(p=>({kind:'conchas-prop',y:p.y,obj:p})):[]),...(activeMap().id==='orange'?MareOrange.props.map(p=>({kind:'orange-prop',y:p.y,obj:p})):[]),...(activeMap().id==='embers'?MareEmber.props.filter(p=>!p.ground).map(p=>({kind:'ember-prop',y:p.y,obj:p})):[]),...world.mobs.filter(m=>scene==='hunt'&&m.alive).map(m=>({kind:'mob',y:m.y,obj:m})),{kind:'hero',y:world.hero.y,obj:world.hero},...(scene==='lobby'?[...npcs.map(n=>({kind:'npc',y:n.y,obj:n})),...MareIsland.buildings.map(b=>({kind:'building',y:b.y-17,obj:b})),...MareIsland.decorations.concat(harborArt.complete&&harborArt.naturalWidth?MareIsland.harborProps:[]).map(d=>({kind:'decor',y:d.y,obj:d}))]:[]),...((scene==='lobby'&&factionShowcase&&globalThis.MareFactionSprites)?Object.keys(MareFactionSprites.assets).filter(id=>!MareFactionSprites.assets[id].meta.class_id).map((id,index)=>({kind:'faction',y:800,obj:{id,x:1240+index*80,y:800}})):[])].sort((a,b)=>a.y-b.y);for(let i of toDraw){if(i.kind==='hero'){if(session?.respawn>0&&!classCombatController()){ctx.globalAlpha=.5+Math.sin(world.time*8)*.25;}drawTalentedHero(world.hero.x,world.hero.y);ctx.globalAlpha=1;let name=game.name,hudLift=MareUltimates.selected(game)==='titan'?28:0,nameLift=MareUltimates.selected(game)==='armamentSkin'?14:0;ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.fillStyle='#03171c';ctx.fillText(name,world.hero.x+1,world.hero.y-85-hudLift-nameLift);ctx.fillStyle='#e7fcf1';ctx.fillText(name,world.hero.x,world.hero.y-86-hudLift-nameLift);let d=getDerived();px(ctx,world.hero.x-30,world.hero.y-79-hudLift,60,7,'#001819');px(ctx,world.hero.x-29,world.hero.y-78-hudLift,58*(game.hp/d.maxHP),5,'#5ed09c');if(session?.guard>0){ctx.strokeStyle='#78e2d3aa';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(world.hero.x,world.hero.y-26,20,34,0,0,Math.PI*2);ctx.stroke();}}else if(i.kind==='rare-prop')MareRareRenderer.prop(ctx,i.obj);else if(i.kind==='dawn-prop')MareDawnRenderer.prop(ctx,i.obj,[world.hero,...world.mobs.filter(m=>m.alive)]);else if(i.kind==='conchas-prop')MareConchasRenderer.prop(ctx,i.obj);else if(i.kind==='orange-prop')MareOrangeRenderer.prop(ctx,i.obj);else if(i.kind==='ember-prop')MareEmberRenderer.prop(ctx,i.obj);else if(i.kind==='faction')drawFactionShowcase(i.obj);else if(i.kind==='npc')drawNPC(i.obj);else if(i.kind==='building')drawIslandBuilding(i.obj);else if(i.kind==='decor')drawIslandDecoration(i.obj);else drawMonster(i.obj);}
+  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}ctx.save();ctx.translate(-Math.round(camera.x),-Math.round(camera.y));drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();let toDraw=[...(activeMap().id==='dawn'?MareDawn.props.map(p=>({kind:'dawn-prop',y:p.y,obj:p})):[]),...(activeMap().id==='conchas'?MareConchas.props.map(p=>({kind:'conchas-prop',y:p.y,obj:p})):[]),...(activeMap().id==='orange'?MareOrange.props.map(p=>({kind:'orange-prop',y:p.y,obj:p})):[]),...(activeMap().id==='embers'?MareEmber.props.filter(p=>!p.ground).map(p=>({kind:'ember-prop',y:p.y,obj:p})):[]),...world.mobs.filter(m=>scene==='hunt'&&m.alive).map(m=>({kind:'mob',y:m.y,obj:m})),{kind:'hero',y:world.hero.y,obj:world.hero},...(scene==='lobby'?[...npcs.map(n=>({kind:'npc',y:n.y,obj:n})),...(!globalThis.MareLobby?MareIsland.buildings:[]).map(b=>({kind:'building',y:b.y-17,obj:b})),...(!globalThis.MareLobby?MareIsland.decorations.concat(harborArt.complete&&harborArt.naturalWidth?MareIsland.harborProps:[]):[]).map(d=>({kind:'decor',y:d.y,obj:d}))]:[]),...((scene==='lobby'&&factionShowcase&&globalThis.MareFactionSprites)?Object.keys(MareFactionSprites.assets).filter(id=>!MareFactionSprites.assets[id].meta.class_id).map((id,index)=>({kind:'faction',y:800,obj:{id,x:1240+index*80,y:800}})):[])].sort((a,b)=>a.y-b.y);for(let i of toDraw){if(i.kind==='hero'){if(session?.respawn>0&&!classCombatController()){ctx.globalAlpha=.5+Math.sin(world.time*8)*.25;}drawTalentedHero(world.hero.x,world.hero.y);ctx.globalAlpha=1;let name=game.name,hudLift=MareUltimates.selected(game)==='titan'?28:0,nameLift=MareUltimates.selected(game)==='armamentSkin'?14:0;ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.fillStyle='#03171c';ctx.fillText(name,world.hero.x+1,world.hero.y-85-hudLift-nameLift);ctx.fillStyle='#e7fcf1';ctx.fillText(name,world.hero.x,world.hero.y-86-hudLift-nameLift);let d=getDerived();px(ctx,world.hero.x-30,world.hero.y-79-hudLift,60,7,'#001819');px(ctx,world.hero.x-29,world.hero.y-78-hudLift,58*(game.hp/d.maxHP),5,'#5ed09c');if(session?.guard>0){ctx.strokeStyle='#78e2d3aa';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(world.hero.x,world.hero.y-26,20,34,0,0,Math.PI*2);ctx.stroke();}}else if(i.kind==='rare-prop')MareRareRenderer.prop(ctx,i.obj);else if(i.kind==='dawn-prop')MareDawnRenderer.prop(ctx,i.obj,[world.hero,...world.mobs.filter(m=>m.alive)]);else if(i.kind==='conchas-prop')MareConchasRenderer.prop(ctx,i.obj);else if(i.kind==='orange-prop')MareOrangeRenderer.prop(ctx,i.obj);else if(i.kind==='ember-prop')MareEmberRenderer.prop(ctx,i.obj);else if(i.kind==='faction')drawFactionShowcase(i.obj);else if(i.kind==='npc')drawNPC(i.obj);else if(i.kind==='building')drawIslandBuilding(i.obj);else if(i.kind==='decor')drawIslandDecoration(i.obj);else drawMonster(i.obj);}
     for(const food of world.food){if(world.time<(food.readyAt||0))continue;if(drawFruitFrame(ctx,food.x,food.y,'akuma_kuku_kuku',MareAkuma.byId('akuma_kuku_kuku').skill_frames-1))continue;ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#9c552c';ctx.fillRect(Math.round(food.x-8),Math.round(food.y-9),16,11);ctx.fillStyle='#ffd579';ctx.fillRect(Math.round(food.x-6),Math.round(food.y-11),12,5);ctx.restore();}
     if(MareNewIslands[activeMap().id])MareNewIslands.environment(ctx,activeMap().id,world.time);
     if(activeMap().id==='dawn')MareDawnRenderer.environment(ctx,world.time,reducedFX);
@@ -2083,6 +2086,8 @@ function applySceneHudLayout(){
     const point=camera.screenToWorld((event.clientX-rect.left)*W/rect.width,(event.clientY-rect.top)*H/rect.height);
     const {x,y}=point;
     if(scene==='lobby'){
+      const portal=globalThis.MareLobby?.portals.find(p=>Math.hypot(p.x-x,p.y-y)<p.radius);
+      if(portal){walkTo(portal,portal);return;}
       const npc=npcs.find(n=>Math.hypot(n.x-x,n.y-30-y)<48);
       walkTo(npc?{x:npc.x-34,y:npc.y+13}:point,npc||null);return;
     }
