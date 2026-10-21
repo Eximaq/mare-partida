@@ -8,7 +8,7 @@
 .hierarchy-heading small{color:var(--hierarchy-accent);font-weight:800;letter-spacing:.08em}
 .hierarchy-heading h2{margin:5px 0;font-size:clamp(23px,3vw,30px);color:#f2dfb6}
 .hierarchy-heading span{color:#c6c9b8}
-.hierarchy-layout{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(250px,.85fr);gap:16px;align-items:start}
+.hierarchy-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(350px,1.12fr);gap:16px;align-items:start}
 .hierarchy-player,.hierarchy-board{padding:18px;min-width:0}
 .hierarchy-panel h3{color:#e5c991;margin-bottom:14px}
 .hierarchy-next{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center}
@@ -22,10 +22,25 @@
 .hierarchy-player .dialog-button{margin-top:16px;width:100%}
 .hierarchy-locked{color:#e2b28d}.hierarchy-feedback{color:#a8e0bd}
 .hierarchy-ranking{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.hierarchy-podium{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:9px}
+.hierarchy-podium-card{position:relative;display:grid;grid-template-columns:64px minmax(0,1fr) auto;align-items:center;gap:12px;min-height:86px;padding:10px 13px;border:1px solid #9873b0;border-radius:6px;background:linear-gradient(115deg,#272038,#272744 55%,#12343d);box-shadow:inset 0 1px #ffffff18}
+.hierarchy-podium-card.rank-2{border-color:#8b9aa5}.hierarchy-podium-card.rank-3{border-color:#ad8064}
+.hierarchy-podium-card.is-self{box-shadow:inset 0 0 0 1px #d8b76e,0 0 12px #d8b76e40}
+.hierarchy-podium-place{position:absolute;top:4px;left:4px;z-index:1;padding:2px 4px;background:#16182be6;border:1px solid #b593cd;border-radius:3px;color:#f3dfaa;font:800 10px Bahnschrift,Trebuchet MS,sans-serif}
+.hierarchy-podium-portrait{width:64px;height:64px;display:grid;place-items:center;border:2px solid #ac80c4;border-radius:9px;background:#192638;overflow:hidden}
+.hierarchy-podium-portrait img{display:block;width:60px;height:60px;object-fit:contain;image-rendering:pixelated}
+.hierarchy-podium-info{min-width:0;display:flex;flex-direction:column;gap:4px}
+.hierarchy-podium-info small{color:#d8e5f2;font-size:10px;line-height:1.2}
+.hierarchy-podium-info strong{color:#f1d278;font-size:18px;line-height:1.1;overflow-wrap:anywhere}
+.hierarchy-podium-info span{color:#f2eee1;font-size:12px}
+.hierarchy-podium-power{text-align:right;align-self:center;min-width:72px}
+.hierarchy-podium-power small{display:block;color:#d6e4ee;font-size:10px;font-weight:800;letter-spacing:.08em}
+.hierarchy-podium-power strong{display:block;margin-top:5px;color:#ffca50;font:800 23px Bahnschrift,Trebuchet MS,sans-serif}
 .hierarchy-ranking li{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:9px;align-items:center;border:1px solid #b99d6540;border-radius:6px;padding:9px;background:#14302d}
 .hierarchy-ranking li.is-self{border-color:#dcbd7d;background:#d0af5b33}
 .hierarchy-place{font-family:Bahnschrift,Trebuchet MS,sans-serif;font-size:18px;color:#e5c991;font-weight:800}
 .hierarchy-ranking li strong,.hierarchy-ranking li small{display:block;overflow-wrap:anywhere}
+.hierarchy-ranking li small img{width:14px;height:14px;object-fit:contain;vertical-align:middle;margin-right:3px}
 .hierarchy-ranking li strong{font-size:13px}.hierarchy-ranking li small{font-size:11px;color:#c9c1ac;margin-top:3px}
 .hierarchy-scores{text-align:right;font-size:12px;white-space:nowrap}
 .hierarchy-board>small{display:block;margin-top:10px;color:#c9c1ac}
@@ -35,3 +50,4 @@
 .hierarchy-transition>span{font-size:26px;color:#dfbd7a}
 @media(max-width:760px){.hierarchy-layout{grid-template-columns:1fr}.hierarchy-heading{grid-template-columns:52px minmax(0,1fr) 110px;padding:12px;gap:10px}.hierarchy-heading .hierarchy-flag{width:52px;height:52px}.hierarchy-heading .hierarchy-current-art{width:110px;height:72px}}
 @media(max-width:480px){.hierarchy-heading{grid-template-columns:42px minmax(0,1fr) 80px}.hierarchy-heading .hierarchy-flag{width:42px;height:42px}.hierarchy-heading .hierarchy-current-art{width:80px;height:62px;padding:4px}.hierarchy-heading h2{font-size:20px}.hierarchy-next{gap:5px}.hierarchy-next>div{min-height:105px;padding:5px}.hierarchy-next img{height:57px}.hierarchy-transition{gap:4px}.hierarchy-transition figure{height:105px}}
+@media(max-width:480px){.hierarchy-podium-card{grid-template-columns:50px minmax(0,1fr) auto;gap:7px;padding:8px 7px}.hierarchy-podium-portrait{width:50px;height:50px}.hierarchy-podium-portrait img{width:46px;height:46px}.hierarchy-podium-info strong{font-size:15px}.hierarchy-podium-power{min-width:56px}.hierarchy-podium-power strong{font-size:17px}}

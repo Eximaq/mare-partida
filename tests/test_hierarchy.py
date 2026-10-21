@@ -33,16 +33,26 @@ class HierarchyTests(unittest.TestCase):
         state = self.store.sync('p', 'Marinheiro', 'marine', 20, 10)
         self.assertEqual((state['player']['tier'], state['player']['rank_title']), (1, 'Recruta'))
 
-    def test_top_ten_order_and_faction_filter(self):
+    def test_top_ten_global_order(self):
         for index in range(12):
             self.store.sync(f'p{index}', f'P{index}', 'pirate', 20, index)
         self.store.sync('marine', 'Marine', 'marine', 200, 999)
         board = self.store.state('p0')['leaderboard']
         self.assertEqual(len(board), 10)
-        self.assertEqual(board[0]['player_id'], 'p11')
-        self.assertTrue(all(entry['faction'] == 'pirate' for entry in board))
+        self.assertEqual(board[0]['player_id'], 'marine')
+        self.assertEqual(board[1]['player_id'], 'p11')
+        self.assertEqual({entry['faction'] for entry in board}, {'pirate', 'marine'})
         self.store.promote('p0')
         self.assertEqual(self.store.state('p0')['leaderboard'][0]['player_id'], 'p0')
+
+    def test_class_and_portrait_persist(self):
+        import base64
+        raw = b'\x89PNG\r\n\x1a\n' + b'\x00\x00\x00\x0dIHDR' + (72).to_bytes(4, 'big') * 2
+        portrait = 'data:image/png;base64,' + base64.b64encode(raw).decode()
+        row = self.store.sync('p', 'Pirata', 'pirate', 1, 50, 'sword', portrait)['player']
+        self.assertEqual((row['class_id'], row['portrait']), ('sword', portrait))
+        with self.assertRaisesRegex(ValueError, 'Retrato inválido'):
+            self.store.sync('q', 'Marine', 'marine', 1, 50, 'sword', 'javascript:alert(1)')
 
 
 if __name__ == '__main__':

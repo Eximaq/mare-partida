@@ -22,7 +22,7 @@ const MareHierarchy=(()=>{
   function title(faction,tier){return (titles[faction]||titles.pirate)[Math.max(0,Math.min(7,tier-1))];}
   function next(tier,level){const target=tier+1;if(target>8)return {state:'max',target};if(target>=6)return {state:'locked',target,message:lockedMessage};return {state:level>=levels[target-1]?'ready':'level',target,required:levels[target-1]};}
   function progress(tier,level){if(tier>=8)return 1;const base=levels[tier-1],goal=levels[tier];return Math.max(0,Math.min(1,(level-base)/(goal-base)));}
-  function ranking(players,faction){return players.filter(p=>p.faction===faction).sort((a,b)=>b.tier-a.tier||b.level-a.level||b.power-a.power||String(a.player_id).localeCompare(String(b.player_id))).slice(0,10);}
+  function ranking(players){return players.slice().sort((a,b)=>b.tier-a.tier||b.level-a.level||b.power-a.power||String(a.player_id).localeCompare(String(b.player_id))).slice(0,10);}
   return {levels,titles,lockedMessage,asset,flag,migrate,title,next,progress,ranking};
 })();
 if(typeof module!=='undefined')module.exports=MareHierarchy;

@@ -61,7 +61,7 @@ class Handler(SimpleHTTPRequestHandler):
 
     def do_POST(self):
         routes = {
-            "/api/hierarchy/sync": lambda d: HIERARCHY.sync(d["player_id"], d["name"], d["faction"], d["level"], d["power"]),
+            "/api/hierarchy/sync": lambda d: HIERARCHY.sync(d["player_id"], d["name"], d["faction"], d["level"], d["power"], d.get("class_id", ""), d.get("portrait", "")),
             "/api/hierarchy/promote": lambda d: HIERARCHY.promote(d["player_id"]),
             "/api/akuma/player": lambda d: STORE.player(d["player_id"]),
             "/api/akuma/register": lambda d: STORE.register(d["player_id"], d["fruit_id"]),
