@@ -13,8 +13,18 @@ def expected(index):
     layer=Image.new('RGBA',(84,84));source=FOLDER/f'hair-preserved-{index+1:02}.png' if index<4 else FOLDER/'hair-repair'/f'frame-{index-3:02}.png';layer.paste(Image.open(source).convert('RGBA'),(26,17) if index<4 else (10,13));return normalized(Image.alpha_composite(frame,layer))
 assert pack['coverage']['walk']==['south','north'] and all(not p['approved'] for p in pack['pieces'])
 for i in range(1,9):assert (FOLDER/f'body-raw-{i:02}.png').read_bytes()==(OLD/f'body-raw-{i:02}.png').read_bytes()
-for i in range(1,5):assert (FOLDER/f'hair-preserved-{i:02}.png').read_bytes()==(OLD/'hair'/f'frame-{i:02}.png').read_bytes()
 receipt=json.loads((OLD/'hair-job.json').read_text());assert hashlib.sha256((OLD/'hair-raw.png').read_bytes()).hexdigest()==receipt['raw_sha256']
+frozen=json.loads((FOLDER/'inputs.json').read_text())['files']
+with Image.open(OLD/'hair-raw.png') as original:
+ for i in range(4):
+  source=FOLDER/f'hair-preserved-{i+1:02}.png'
+  # Pin the preserved file bytes, then compare pixels directly to the original
+  # atlas. A prior assembler may re-encode its extracted PNGs on Linux.
+  assert hashlib.sha256(source.read_bytes()).hexdigest()==frozen[source.name]
+  x=(i%4)*32;y=(i//4)*52
+  with Image.open(source) as layer:
+   assert layer.size==(32,52)
+   assert normalized(layer)==normalized(original.crop((x,y,x+32,y+52)))
 with Image.open(FOLDER/'walk-north.gif') as preview:
  assert preview.n_frames==8 and preview.info['loop']==0
  for i in range(8):preview.seek(i);assert normalized(preview.convert('RGBA'))==expected(i)
