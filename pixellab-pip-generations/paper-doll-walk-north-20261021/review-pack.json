@@ -1,0 +1,846 @@
+{
+  "status": "Review only: complete Walk/south; north body/grip candidate, failed hair and missing outfit use atomic fallback",
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "hair",
+      "outfit",
+      "weapon"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "walk": {
+        "frames": 8,
+        "fps": 8,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-sword": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-unarmed": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-firearm": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-daggers": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-tech": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-focus": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "expansion-body",
+      "slot": "body",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 20,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "body-idle.png"
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "body-walk.png"
+        }
+      }
+    },
+    {
+      "id": "expansion-outfit",
+      "slot": "outfit",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 50,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "outfit-idle.png"
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "outfit-walk.png"
+        }
+      }
+    },
+    {
+      "id": "expansion-hair",
+      "slot": "hair",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 60,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "hair-idle.png"
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "hair-walk.png"
+        }
+      }
+    },
+    {
+      "id": "expansion-weapon",
+      "slot": "weapon",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 80,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "weapon-south.png",
+          "kind": "rigid-attachment",
+          "sources": {
+            "south": {
+              "url": "weapon-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 20,
+              "anchorY": 36
+            },
+            "north": {
+              "url": "weapon-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 42,
+              "anchorY": 35
+            },
+            "west": {
+              "url": "weapon-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 26,
+              "anchorY": 36
+            },
+            "east": {
+              "url": "weapon-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 29,
+              "anchorY": 37
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 28,
+                "y": 48
+              },
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 29,
+                "y": 48
+              }
+            ],
+            "north": [
+              {
+                "x": 52,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 35,
+                "y": 44
+              },
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 37,
+                "y": 48
+              }
+            ],
+            "east": [
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              }
+            ]
+          },
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            },
+            "west": {
+              "zIndex": 10
+            }
+          }
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "rigid-weapon.png",
+          "kind": "rigid-attachment",
+          "sockets": {
+            "south": [
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 33,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 49
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 52,
+                "y": 49
+              },
+              {
+                "x": 51,
+                "y": 46
+              },
+              {
+                "x": 50,
+                "y": 45
+              },
+              {
+                "x": 50,
+                "y": 46
+              },
+              {
+                "x": 52,
+                "y": 48
+              }
+            ]
+          },
+          "zIndex": 10,
+          "sources": {
+            "south": {
+              "url": "rigid-weapon.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 20,
+              "anchorY": 36
+            },
+            "north": {
+              "url": "weapon-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 42,
+              "anchorY": 35
+            }
+          }
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "expansion-body",
+      "hair": "expansion-hair",
+      "outfit": "expansion-outfit",
+      "weapon": "expansion-weapon"
+    }
+  },
+  "reviewOnly": true,
+  "full_character_artwork_approved": false,
+  "readyDirections": [
+    "south",
+    "north",
+    "west",
+    "east"
+  ],
+  "audits": [
+    {
+      "direction": "south",
+      "frame": 0,
+      "socket": {
+        "x": 30,
+        "y": 49
+      },
+      "contact_pixels": 7,
+      "source_anchor": [
+        20,
+        36
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 1,
+      "socket": {
+        "x": 28,
+        "y": 48
+      },
+      "contact_pixels": 7,
+      "source_anchor": [
+        20,
+        36
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 2,
+      "socket": {
+        "x": 30,
+        "y": 49
+      },
+      "contact_pixels": 7,
+      "source_anchor": [
+        20,
+        36
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 3,
+      "socket": {
+        "x": 29,
+        "y": 48
+      },
+      "contact_pixels": 7,
+      "source_anchor": [
+        20,
+        36
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 0,
+      "socket": {
+        "x": 52,
+        "y": 48
+      },
+      "contact_pixels": 5,
+      "source_anchor": [
+        42,
+        35
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 1,
+      "socket": {
+        "x": 51,
+        "y": 48
+      },
+      "contact_pixels": 5,
+      "source_anchor": [
+        42,
+        35
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 2,
+      "socket": {
+        "x": 51,
+        "y": 48
+      },
+      "contact_pixels": 2,
+      "source_anchor": [
+        42,
+        35
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 3,
+      "socket": {
+        "x": 51,
+        "y": 48
+      },
+      "contact_pixels": 2,
+      "source_anchor": [
+        42,
+        35
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 0,
+      "socket": {
+        "x": 36,
+        "y": 46
+      },
+      "contact_pixels": 3,
+      "source_anchor": [
+        26,
+        36
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 1,
+      "socket": {
+        "x": 35,
+        "y": 44
+      },
+      "contact_pixels": 3,
+      "source_anchor": [
+        26,
+        36
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 2,
+      "socket": {
+        "x": 36,
+        "y": 46
+      },
+      "contact_pixels": 3,
+      "source_anchor": [
+        26,
+        36
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 3,
+      "socket": {
+        "x": 37,
+        "y": 48
+      },
+      "contact_pixels": 1,
+      "source_anchor": [
+        26,
+        36
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 0,
+      "socket": {
+        "x": 39,
+        "y": 47
+      },
+      "contact_pixels": 5,
+      "source_anchor": [
+        29,
+        37
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 1,
+      "socket": {
+        "x": 39,
+        "y": 47
+      },
+      "contact_pixels": 6,
+      "source_anchor": [
+        29,
+        37
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 2,
+      "socket": {
+        "x": 39,
+        "y": 47
+      },
+      "contact_pixels": 6,
+      "source_anchor": [
+        29,
+        37
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 3,
+      "socket": {
+        "x": 39,
+        "y": 47
+      },
+      "contact_pixels": 6,
+      "source_anchor": [
+        29,
+        37
+      ]
+    }
+  ],
+  "sources": [
+    {
+      "direction": "south",
+      "frame": 0,
+      "body_rgba_sha256": "5310f53676718800de39b069fc6d3b189743919576718bc443cd22e7be6c5771",
+      "padding": [
+        10,
+        13
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 1,
+      "body_rgba_sha256": "a35d1db06572868b59f0d41b0ceb7db536256f0c9c00e790651a847b2d0a1901",
+      "padding": [
+        10,
+        13
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 2,
+      "body_rgba_sha256": "f714d160d3f6253f3206bd35ceced12c277d609add6264465378a94f9253f991",
+      "padding": [
+        10,
+        13
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 3,
+      "body_rgba_sha256": "e8d50947fc05924abcb4fcff32a00816f0fd3db0fd4d1fdfbf9b7df43674538f",
+      "padding": [
+        10,
+        13
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 0,
+      "body_rgba_sha256": "a29ca26c9ffb9190227e5cb29808360aaf78203f0cb98aaa1c6d1f5ff52aad37",
+      "padding": [
+        10,
+        13
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 1,
+      "body_rgba_sha256": "e76d3c9ea414e5ea5f8060dbfb563eb540ff20fb5b9eed71bc7e9813ff1a1d3e",
+      "padding": [
+        10,
+        13
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 2,
+      "body_rgba_sha256": "6e97e19b8d28f9355351728d54da713ffd4542eb350cb39f3cf716da4ad361d3",
+      "padding": [
+        10,
+        13
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 3,
+      "body_rgba_sha256": "ce3762b81f0c3f6bbab580b550a58f27dba96f16c1457f7a4de205d1d61a6cdc",
+      "padding": [
+        10,
+        13
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 0,
+      "body_rgba_sha256": "c516a813207f52d7456b38a3ab99084de837060f6b136fb0b744b14d5bc89e35",
+      "padding": [
+        10,
+        10
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 1,
+      "body_rgba_sha256": "25b555f24b45973a7756dbe94c26e03cede85803c498bcc800b99219099a94c6",
+      "padding": [
+        10,
+        10
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 2,
+      "body_rgba_sha256": "64039f6b068d7a3d01b063e3bd98c338d1a85aaf9024bedb006de5d2187ef97c",
+      "padding": [
+        10,
+        10
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 3,
+      "body_rgba_sha256": "4846b80ceea4ba863efa0e86888b92f8d158e59775bf5f1bd0ef7bc028ad6388",
+      "padding": [
+        10,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 0,
+      "body_rgba_sha256": "12d90151e069e987f995218c73e4fabdc30e74e1496c7a438cb653b6f1c782c1",
+      "padding": [
+        10,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 1,
+      "body_rgba_sha256": "10a23c3057e12c82bd32d3757dc66dd325dabaf4fda5de853fd4705e6288c655",
+      "padding": [
+        10,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 2,
+      "body_rgba_sha256": "ba8e078c589d3a88dc5d5c7e1681483d8df01267cfddcaa6e7a955e4a69c2e82",
+      "padding": [
+        10,
+        10
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 3,
+      "body_rgba_sha256": "b4ad605a2a032127899c52865526e92a9103dfea5ed7420c4f2d24275c01c835",
+      "padding": [
+        10,
+        10
+      ]
+    }
+  ],
+  "coverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south"
+    ],
+    "attack-sword": []
+  },
+  "partialCoverage": {
+    "north": {
+      "body": 8,
+      "weapon_sockets": 8,
+      "hair_registered": 0,
+      "outfit_registered": 0
+    }
+  }
+}

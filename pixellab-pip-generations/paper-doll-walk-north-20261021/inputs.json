@@ -1,0 +1,38 @@
+{
+  "native_frame": [
+    64,
+    64
+  ],
+  "compact_cell": [
+    32,
+    52
+  ],
+  "crop": [
+    16,
+    4,
+    48,
+    56
+  ],
+  "atlas": [
+    128,
+    104
+  ],
+  "order": "original generated1-8 row-major; preserved reference echo excluded",
+  "head_tops": [
+    9,
+    10,
+    10,
+    9,
+    9,
+    10,
+    10,
+    9
+  ],
+  "files": {
+    "body-compact.png": "aeea46e6e18bea26ccd85ce7fce12e549c5570bc00e4a6bb74bc437a16ca254a",
+    "hair-mask.png": "abc4f87924e96258100e6b21ec385c0eaa3926b86868f0a3261d847dff50a77c",
+    "outfit-mask.png": "55b68f5d748105702891c36dc0b7a6a8ba716eec07ac571255d5e19d70e5d74e",
+    "look-reference.png": "1f803ed620ff18b6fcdf3408515f51fe084e9b3e5ef3bb437a83eb62903d062b",
+    "look-context.png": "f01ac775966f000969deb3be454b28b787aabe86693d9efd3f15562a5a913daf"
+  }
+}

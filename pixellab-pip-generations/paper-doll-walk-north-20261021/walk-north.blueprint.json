@@ -1,0 +1,47 @@
+[
+  {
+    "TASK": "Check explicit current run authority, authenticated MCP access and ceiling before replay. Use a unique empty output folder. Reuse body-input.png as the native north-facing starting image; preserve all original files. This diagnostic recipe is not permission to repeat rejected work."
+  },
+  {
+    "_comment": "65309778-2e8a-4ee6-810c-c7d8bd56ef58; completed; charged1 generation",
+    "MCP animate_image_pixminimax": {
+      "first_frame_url": "body-input.png",
+      "description": "Walk in place directly north away from the viewer for one complete smooth walking cycle. Alternate natural steps while keeping the right hand in a relaxed low sword-carry guard beside the right hip. Keep the bald back of the head and bare back visible, the same body proportions, charcoal shorts and pixel scale. Stay centered. No turning, added clothing, weapons or camera motion.",
+      "direction": "north",
+      "view": "high top-down",
+      "subject_description": "a bald human male with a bare torso, charcoal shorts and bare feet",
+      "initial_pose": "standing with his back toward the viewer, feet planted and arms relaxed beside the hips",
+      "enhance_prompt": false,
+      "frame_count": 8,
+      "no_background": true
+    }
+  },
+  {
+    "TASK": "Retrieve all nine PNGs. Verify exact visible input echo, preserve it separately and use only generated frames1-8 in their original order. Inspect north-facing gait and eight sword contacts before paying for additions. Compact only transparent margins16/4 into32x52 native cells, with reversible pixel check. Prepare a fixed binary hair mask and native body/style context."
+  },
+  {
+    "_comment": "b2b6622c-c2c8-4e1b-8a34-5a17c41f076e; completed; charged6 generations; artwork rejected",
+    "MCP inpaint_image_pro_flash": {
+      "image_url": "body-compact.png",
+      "mask_image_url": "hair-mask.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1612130099,
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 128,
+        "height": 104
+      },
+      "context_image": {
+        "url": "look-context.png",
+        "usage_description": "The left128x104 holds eight native walking bodies. The right64x64 reference guides only rear-view short black hair, its palette and outline, never its static body pose."
+      },
+      "description": "Add only short tousled black hair fitted to the existing scalp in each of the eight north-facing walking cells. Match the supplied rear-view hair reference. Follow each head position, preserving every protected body, hand, shorts, leg and foot pixel. Keep the exact canvas, native pixel scale, transparency and row-major frame order. No face, bandana, clothing, weapon or detached hair."
+    }
+  },
+  {
+    "TASK": "Audit original masked output, then inspect actual appearance. This recorded result passed geometry but was bald in frames5-8; reject the entire hair clip. Do not trim, recolour, duplicate or silently repair frames. Preserve originals and stop before the planned outfit call. Assemble a clearly labelled diagnostic preview and partial package; missing required layers must use atomic fallback. Run tests/build/browser verification; do not enable production artwork."
+  }
+]

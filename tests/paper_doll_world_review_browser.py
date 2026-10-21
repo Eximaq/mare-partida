@@ -38,7 +38,7 @@ with sync_playwright() as p:
  files={clip['url'] for piece in pack['pieces'] for clip in piece['animations'].values()}
  files.update(source['url'] for piece in pack['pieces'] for clip in piece['animations'].values() for source in clip.get('sources',{}).values())
  q.evaluate('urls=>Promise.all(urls.map(url=>MareFactionSprites.image(url).decode()))',list(files))
- expected_walk=next(piece for piece in pack['pieces'] if piece['slot']=='body')['animations'].get('walk',{}).get('directions',[])
+ expected_walk=pack.get('coverage',{}).get('walk',next(piece for piece in pack['pieces'] if piece['slot']=='body')['animations'].get('walk',{}).get('directions',[]))
  for key,direction in [('w','north'),('a','west'),('s','south'),('d','east')]:
   q.keyboard.down(key);q.clock.run_for(1100 if direction in expected_walk else 200)
   if direction in expected_walk:q.screenshot(path=str(OUT/('world-modular-review-walk-'+direction+'.png')))

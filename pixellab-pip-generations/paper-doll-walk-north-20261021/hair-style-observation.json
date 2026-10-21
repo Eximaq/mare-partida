@@ -1,0 +1,56 @@
+{
+  "scope": "Black-hair palette observation supports visual rejection, not a generic art approval metric",
+  "reference": "look-reference.png",
+  "dark_definition": "max(R,G,B)<=80 with nonzero alpha",
+  "frames": [
+    {
+      "frame": 1,
+      "visible_pixels": 131,
+      "dark_pixels": 119,
+      "dark_ratio": 0.908
+    },
+    {
+      "frame": 2,
+      "visible_pixels": 144,
+      "dark_pixels": 131,
+      "dark_ratio": 0.91
+    },
+    {
+      "frame": 3,
+      "visible_pixels": 145,
+      "dark_pixels": 132,
+      "dark_ratio": 0.91
+    },
+    {
+      "frame": 4,
+      "visible_pixels": 129,
+      "dark_pixels": 119,
+      "dark_ratio": 0.922
+    },
+    {
+      "frame": 5,
+      "visible_pixels": 98,
+      "dark_pixels": 29,
+      "dark_ratio": 0.296
+    },
+    {
+      "frame": 6,
+      "visible_pixels": 98,
+      "dark_pixels": 29,
+      "dark_ratio": 0.296
+    },
+    {
+      "frame": 7,
+      "visible_pixels": 98,
+      "dark_pixels": 29,
+      "dark_ratio": 0.296
+    },
+    {
+      "frame": 8,
+      "visible_pixels": 94,
+      "dark_pixels": 26,
+      "dark_ratio": 0.277
+    }
+  ],
+  "artwork_approved": false
+}

@@ -26,6 +26,8 @@ O [conjunto modular frontal](pixellab-pip-generations/paper-doll-hair-outfit-202
 
 A [expansão de Idle](pixellab-pip-generations/paper-doll-expansion-20261021/preview.html) reúne corpo, cabelo, roupa e espada em16 poses de repouso nas quatro direções. O [link direto da bancada](tools/paper-doll-inspector/index.html?pack=expansion-idle) abre o pacote sem importação manual, inclusive no celular. Há edição e exportação de encaixes por frame. Walk/Attack continuam no fallback; nada foi ativado no personagem de produção. [Arte, custos e limites](docs/PAPER-DOLL-EXPANSAO.md).
 
+Continuação Paper Doll: a [caminhada frontal modular](pixellab-pip-generations/paper-doll-walk-fit-20261021/preview.html) reúne oito passos reais das quatro peças. O [estudo de costas](pixellab-pip-generations/paper-doll-walk-north-20261021/preview.html) valida corpo/espada, mas mantém o cabelo reprovado apenas como diagnóstico e não gerou roupa. A [bancada do pacote parcial](tools/paper-doll-inspector/index.html?pack=walk-north) demonstra o fallback norte sem alterar o personagem publicado. [Custos, reversibilidade das margens e assets pendentes](docs/PAPER-DOLL-CAMINHADA-NORTE.md).
+
 ## Interface UI/UX 2.0
 
 A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.

@@ -183,5 +183,25 @@ def version_walk(match):
 walk_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_walk,
                             walk_entry.read_text(encoding='utf-8')), encoding='utf-8')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-CAMINHADA.md', OUT/'docs/PAPER-DOLL-CAMINHADA.md')
+north_relative = Path('pixellab-pip-generations/paper-doll-walk-north-20261021')
+north_files = ['preview.html', 'preview.js', 'review-pack.json', 'manifest.json',
+               'walk-north.blueprint.json', 'body-walk.png', 'hair-walk.png', 'outfit-walk.png',
+               'body-idle.png', 'hair-idle.png', 'outfit-idle.png', 'rigid-weapon.png',
+               'walk-north-body.png', 'walk-north-hair-draft.png', 'hair-north-draft.png', 'study-review.js', 'comparison-native.png', 'assembly-audit.json']
+north_files += [f'weapon-{d}.png' for d in ['south', 'north', 'west', 'east']]
+for name in north_files:
+    destination = OUT/north_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/north_relative/name, destination)
+north_entry = OUT/north_relative/'preview.html'
+def version_north(match):
+    source = (north_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    version = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+    return f'{match.group(1)}{match.group(2)}?v={version}{match.group(3)}'
+north_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_north,
+                             north_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-CAMINHADA-NORTE.md', OUT/'docs/PAPER-DOLL-CAMINHADA-NORTE.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

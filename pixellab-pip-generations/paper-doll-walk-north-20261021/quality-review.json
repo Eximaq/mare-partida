@@ -1,0 +1,53 @@
+{
+  "body": {
+    "prototype_gate_passed": true,
+    "review": "Eight distinct coherent north-facing steps, bare back/head throughout; same anatomy, charcoal shorts, no turn or detached limb. Native gait retained. Reference echo matches."
+  },
+  "weapon": {
+    "prototype_gate_passed": true,
+    "review": "Original rear-view sword, eight measured contacts. Hand naturally occludes grip, blade stays outside the body; no weapon/body repaint. Inspected on a separate opaque nautical guide.",
+    "sockets": [
+      {
+        "x": 51,
+        "y": 50
+      },
+      {
+        "x": 51,
+        "y": 50
+      },
+      {
+        "x": 51,
+        "y": 50
+      },
+      {
+        "x": 52,
+        "y": 49
+      },
+      {
+        "x": 51,
+        "y": 46
+      },
+      {
+        "x": 50,
+        "y": 45
+      },
+      {
+        "x": 50,
+        "y": 46
+      },
+      {
+        "x": 52,
+        "y": 48
+      }
+    ]
+  },
+  "hair": {
+    "prototype_gate_passed": false,
+    "review": "Rejected: frames1-4 have black hair; frames5-8 redraw a bald skin-colored scalp. Geometry/contact passed but the required appearance is missing in half the gait. Preserve all originals; no temporal trimming, replacement, recolor or duplicated frames."
+  },
+  "outfit": {
+    "prototype_gate_passed": false,
+    "review": "Not generated after failed hair gate; no charge."
+  },
+  "artwork_approved": false
+}
