@@ -1,0 +1,117 @@
+{
+  "status": "inputs only; no paid calls",
+  "frames": 4,
+  "direction": "south",
+  "animation": "idle",
+  "cell": [
+    64,
+    64
+  ],
+  "atlas": [
+    128,
+    128
+  ],
+  "order": "row-major, original frame order",
+  "scale": false,
+  "files": [
+    {
+      "file": "body-atlas-input.png",
+      "origin": "paper-doll-layer-batch-20261021/body-atlas-input.png",
+      "sha256": "84a6a14f744ddf69a0dee5bb9ba8e697bd729e995c2e368ebd6f452bea487293",
+      "native_size": [
+        128,
+        128
+      ]
+    },
+    {
+      "file": "hair-mask-input.png",
+      "origin": "paper-doll-layer-batch-20261021/hair-mask-input.png",
+      "sha256": "68bab10e3129508e745952677ecaeadceabf4d2bed6c27d1a623967d0790a530",
+      "native_size": [
+        128,
+        128
+      ]
+    },
+    {
+      "file": "outfit-mask-input.png",
+      "origin": "paper-doll-layer-batch-20261021/outfit-mask-input.png",
+      "sha256": "c471633917c7ffbc8f6195849d44ce1d3bd0a36ddcd86e9de4f0b339a79f2064",
+      "native_size": [
+        128,
+        128
+      ]
+    },
+    {
+      "file": "look-context-input.png",
+      "origin": "paper-doll-layer-batch-20261021/look-context-input.png",
+      "sha256": "c94928ad45e1843f574f50a077f9f8108050c16d71c7d1cf545ab946d5e87571",
+      "native_size": [
+        192,
+        128
+      ]
+    },
+    {
+      "file": "look-reference-source.png",
+      "origin": "paper-doll-layer-batch-20261021/look-reference-source.png",
+      "sha256": "8c5f4b2fff2aa87da3f36575309ffde08c85b4b2b15966999cd079bcd1a594d2",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "body-source-01.png",
+      "origin": "paper-doll-layer-batch-20261021/body-source-01.png",
+      "sha256": "6d000ef9c769332f95b0c87c239f24753435cb067e3d419dfd027aecfe30ba81",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "body-source-02.png",
+      "origin": "paper-doll-layer-batch-20261021/body-source-02.png",
+      "sha256": "ab34833564c7a80f982228c9f8eaeae4e798b5ddbdb8761abf999eb750e71923",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "body-source-03.png",
+      "origin": "paper-doll-layer-batch-20261021/body-source-03.png",
+      "sha256": "88d15ffa8e6433120e96ba4e1920ecbbd2fab109b7c11fcf102e769867fe5b26",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "body-source-04.png",
+      "origin": "paper-doll-layer-batch-20261021/body-source-04.png",
+      "sha256": "cad9315111f37be1bec2cdf377aa74c14a01bc74471be9699095fd9aa62695aa",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "rigid-weapon.png",
+      "origin": "paper-doll-rigid-weapon-20261021/rigid-weapon.png",
+      "sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d",
+      "native_size": [
+        64,
+        64
+      ]
+    },
+    {
+      "file": "body-idle-south.png",
+      "origin": "paper-doll-rigid-weapon-20261021/body-idle-south.png",
+      "sha256": "c84cfca601096fc7696ceecb8ebaad857ef28dbbc08ac9d8e5d115bd7e1eb551",
+      "native_size": [
+        336,
+        84
+      ]
+    }
+  ]
+}
