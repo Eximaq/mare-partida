@@ -1,0 +1,25 @@
+{
+  "req": {
+    "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+    "mode": "v3",
+    "directions": [
+      "north",
+      "west",
+      "east"
+    ],
+    "frame_count": 8,
+    "keep_first_frame": false,
+    "animation_name": "brawler-v2-death",
+    "action_description": "Lose balance, buckle at the knees and fall naturally to the ground, ending in a still fallen pose. Preserve the outfit, body size and initial facing. Continuous movement, no vanishing or teleporting.",
+    "animation_group_id": "7ca38368-c2b7-4537-bc57-897854416a79"
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "error: need 3 job slots but only 2 available (6/8 used)\n\nhint: wait for jobs to finish (~2-4 min each), then retry, or start 2 now with directions=[...] and add the rest to the same group afterwards (animation_group_id)"
+      }
+    ],
+    "isError": true
+  }
+}

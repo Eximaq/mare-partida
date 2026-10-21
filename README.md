@@ -8,6 +8,10 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 # Maré Partida — Versão 1.2 (pacote V12)
 
+## Estudo de personagem modular — trabalho em pausa
+
+A branch de animações2.0 preserva a infraestrutura e o piloto iniciados, mas as seis classes não estão concluídas. Novas gerações foram pausadas pelo proprietário para especificar um sistema Paper Doll independente de classe/facção. [Viabilidade, reaproveitamento, custos e migração proposta](docs/PAPER-DOLL-VIABILIDADE.md). Nenhum sistema modular ou mudança de save foi implementado.
+
 ## Interface UI/UX 2.0
 
 A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.

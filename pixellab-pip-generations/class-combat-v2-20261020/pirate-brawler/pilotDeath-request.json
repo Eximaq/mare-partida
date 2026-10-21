@@ -1,0 +1,22 @@
+{
+  "req": {
+    "character_id": "5d04e580-5ad5-4f89-82f3-47be52a99804",
+    "mode": "v3",
+    "directions": [
+      "south"
+    ],
+    "frame_count": 8,
+    "keep_first_frame": false,
+    "animation_name": "brawler-v2-death",
+    "action_description": "Lose balance, buckle at the knees and fall naturally to the ground, ending in a still fallen pose. Preserve the outfit, body size and initial facing. Continuous movement, no vanishing or teleporting."
+  },
+  "result": {
+    "content": [
+      {
+        "type": "text",
+        "text": "character: 5d04e580-5ad5-4f89-82f3-47be52a99804\nanimation: v3 custom (Lose balance, buckle at the knees and fall naturally to the ground, ending in a still fallen pose. Preserve the outfit, body size and initial facing. Continuous movement, no vanishing or teleporting.)\ndirections: south (1 jobs)\njob_ids: south=0254b627-bd57-409b-8f46-0505f3d15df9\ngroup: 7ca38368-c2b7-4537-bc57-897854416a79\nframes: 8 (reference stripped, keep_first_frame=false)\ncanvas: south 68x68 (frames are stored at this size: the character plus room to move)\ncost: 1 generation (1/dir x 1)\neta: ~2-4 min/direction\n\nhint: get_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\")\nadd more directions to this group: animate_character(character_id=\"5d04e580-5ad5-4f89-82f3-47be52a99804\", action_description=\"Lose balance, buckle at the knees and fall naturally to the ground, ending in a still fallen pose. Preserve the outfit, body size and initial facing. Continuous movement, no vanishing or teleporting.\", animation_group_id=\"7ca38368-c2b7-4537-bc57-897854416a79\", directions=[...])"
+      }
+    ],
+    "isError": false
+  }
+}

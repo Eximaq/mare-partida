@@ -1,0 +1,188 @@
+{
+  "hurt": {
+    "north": [
+      "source/hurt/north/00.png",
+      "source/hurt/north/01.png",
+      "source/hurt/north/02.png",
+      "source/hurt/north/03.png"
+    ],
+    "west": [
+      "source/hurt/west/00.png",
+      "source/hurt/west/01.png",
+      "source/hurt/west/02.png",
+      "source/hurt/west/03.png"
+    ],
+    "south": [
+      "source/hurt/south/00.png",
+      "source/hurt/south/01.png",
+      "source/hurt/south/02.png",
+      "source/hurt/south/03.png"
+    ]
+  },
+  "skill-1": {
+    "north": [
+      "source/skill-1/north/00.png",
+      "source/skill-1/north/01.png",
+      "source/skill-1/north/02.png",
+      "source/skill-1/north/03.png",
+      "source/skill-1/north/04.png",
+      "source/skill-1/north/05.png",
+      "source/skill-1/north/06.png",
+      "source/skill-1/north/07.png"
+    ],
+    "west": [
+      "source/skill-1/west/00.png",
+      "source/skill-1/west/01.png",
+      "source/skill-1/west/02.png",
+      "source/skill-1/west/03.png",
+      "source/skill-1/west/04.png",
+      "source/skill-1/west/05.png",
+      "source/skill-1/west/06.png",
+      "source/skill-1/west/07.png"
+    ],
+    "east": [
+      "source/skill-1/east/00.png",
+      "source/skill-1/east/01.png",
+      "source/skill-1/east/02.png",
+      "source/skill-1/east/03.png",
+      "source/skill-1/east/04.png",
+      "source/skill-1/east/05.png",
+      "source/skill-1/east/06.png",
+      "source/skill-1/east/07.png"
+    ],
+    "south": [
+      "source/skill-1/south/00.png",
+      "source/skill-1/south/01.png",
+      "source/skill-1/south/02.png",
+      "source/skill-1/south/03.png",
+      "source/skill-1/south/04.png",
+      "source/skill-1/south/05.png",
+      "source/skill-1/south/06.png",
+      "source/skill-1/south/07.png"
+    ]
+  },
+  "death": {
+    "south": [
+      "source/death/south/00.png",
+      "source/death/south/01.png",
+      "source/death/south/02.png",
+      "source/death/south/03.png",
+      "source/death/south/04.png",
+      "source/death/south/05.png",
+      "source/death/south/06.png",
+      "source/death/south/07.png"
+    ]
+  },
+  "skill-2": {
+    "south": [
+      "source/skill-2/south/00.png",
+      "source/skill-2/south/01.png",
+      "source/skill-2/south/02.png",
+      "source/skill-2/south/03.png",
+      "source/skill-2/south/04.png",
+      "source/skill-2/south/05.png",
+      "source/skill-2/south/06.png",
+      "source/skill-2/south/07.png"
+    ]
+  },
+  "combo": {
+    "south": [
+      "source/combo/south/00.png",
+      "source/combo/south/01.png",
+      "source/combo/south/02.png",
+      "source/combo/south/03.png",
+      "source/combo/south/04.png",
+      "source/combo/south/05.png",
+      "source/combo/south/06.png",
+      "source/combo/south/07.png"
+    ]
+  },
+  "attack": {
+    "south": [
+      "source/attack/south/00.png",
+      "source/attack/south/01.png",
+      "source/attack/south/02.png",
+      "source/attack/south/03.png",
+      "source/attack/south/04.png",
+      "source/attack/south/05.png",
+      "source/attack/south/06.png",
+      "source/attack/south/07.png"
+    ]
+  },
+  "combat-idle": {
+    "south": [
+      "source/combat-idle/south/00.png",
+      "source/combat-idle/south/01.png",
+      "source/combat-idle/south/02.png",
+      "source/combat-idle/south/03.png"
+    ]
+  },
+  "walk": {
+    "north": [
+      "source/walk/north/00.png",
+      "source/walk/north/01.png",
+      "source/walk/north/02.png",
+      "source/walk/north/03.png",
+      "source/walk/north/04.png",
+      "source/walk/north/05.png",
+      "source/walk/north/06.png",
+      "source/walk/north/07.png"
+    ],
+    "south": [
+      "source/walk/south/00.png",
+      "source/walk/south/01.png",
+      "source/walk/south/02.png",
+      "source/walk/south/03.png",
+      "source/walk/south/04.png",
+      "source/walk/south/05.png",
+      "source/walk/south/06.png",
+      "source/walk/south/07.png"
+    ],
+    "west": [
+      "source/walk/west/00.png",
+      "source/walk/west/01.png",
+      "source/walk/west/02.png",
+      "source/walk/west/03.png",
+      "source/walk/west/04.png",
+      "source/walk/west/05.png",
+      "source/walk/west/06.png",
+      "source/walk/west/07.png"
+    ],
+    "east": [
+      "source/walk/east/00.png",
+      "source/walk/east/01.png",
+      "source/walk/east/02.png",
+      "source/walk/east/03.png",
+      "source/walk/east/04.png",
+      "source/walk/east/05.png",
+      "source/walk/east/06.png",
+      "source/walk/east/07.png"
+    ]
+  },
+  "idle": {
+    "west": [
+      "source/idle/west/00.png",
+      "source/idle/west/01.png",
+      "source/idle/west/02.png",
+      "source/idle/west/03.png"
+    ],
+    "north": [
+      "source/idle/north/00.png",
+      "source/idle/north/01.png",
+      "source/idle/north/02.png",
+      "source/idle/north/03.png"
+    ],
+    "south": [
+      "source/idle/south/00.png",
+      "source/idle/south/01.png",
+      "source/idle/south/02.png",
+      "source/idle/south/03.png"
+    ],
+    "east": [
+      "source/idle/east/00.png",
+      "source/idle/east/01.png",
+      "source/idle/east/02.png",
+      "source/idle/east/03.png"
+    ]
+  }
+}
