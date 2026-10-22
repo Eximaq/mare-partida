@@ -99,7 +99,10 @@
   MareCharacters.configure(classes);
   // Somente artes fornecidas pelo usuário: quatro visualizações de facção.
   function drawMissingSprite(c,x,y){
-    c.save();c.imageSmoothingEnabled=false;c.globalAlpha=.7;c.fillStyle='#152630';c.fillRect(Math.round(x-7),Math.round(y-28),14,25);c.fillStyle='#d7c38d';c.fillRect(Math.round(x-4),Math.round(y-24),8,8);c.fillStyle='#668b92';c.fillRect(Math.round(x-5),Math.round(y-14),10,10);c.restore();
+    c.save();c.imageSmoothingEnabled=false;c.strokeStyle='#f07b7b';c.lineWidth=2;
+    c.strokeRect(Math.round(x-7),Math.round(y-18),14,14);
+    c.beginPath();c.moveTo(Math.round(x),Math.round(y-15));c.lineTo(Math.round(x),Math.round(y-10));c.stroke();
+    c.fillStyle='#f07b7b';c.fillRect(Math.round(x-1),Math.round(y-7),2,2);c.restore();
   }
   function drawFactionSprite(c,x,y,fac,action='idle',size=70,flip=false,direction='south',time=world.time){
     if(globalThis.MareFactionSprites?.draw(c,fac,x,y,{action,direction,time,height:size}))return true;
@@ -815,7 +818,7 @@
     $('lootList').innerHTML=session.recentLoot.length?session.recentLoot.map(x=>`<div class="loot-entry"><span>${lootIcon(x.name)}${escapeHTML(x.name)}</span><b>OBTIDO</b></div>`).join(''):'<div class="empty-note">Sua próxima descoberta aparecerá aqui.</div>';
     updateMiniHud();const time=(6+Math.floor(world.time/90))%24; $('worldClock').textContent='DIA '+String(1+Math.floor(world.time/(90*24))).padStart(2,'0')+' · '+String(time).padStart(2,'0')+':00';
   }
-  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{time:world.time,scale:equippedZoan().id==='akuma_tori_albatroz'?90/64:64/48});else drawFactionSprite(portrait,36,70,game.factionId,'idle',64,false,'south',world.time);const mini=$('miniPortrait');if(mini){const mc=mini.getContext('2d');mc.imageSmoothingEnabled=false;mc.clearRect(0,0,64,64);mc.drawImage($('portrait'),0,0,64,64);}}
+  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{time:world.time,scale:equippedZoan().id==='akuma_tori_albatroz'?90/64:64/48});else drawConfiguredHuman(portrait,36,70,classCombat.entry(game)?'combat-idle':'idle','south',world.time,64);const mini=$('miniPortrait');if(mini){const mc=mini.getContext('2d');mc.imageSmoothingEnabled=false;mc.clearRect(0,0,64,64);mc.drawImage($('portrait'),0,0,64,64);}}
   function worldChange(area){if(!zones[area])return;if(game.level<zones[area].min){toast('Você precisa alcançar o nível '+zones[area].min+'.','danger');return;}game.area=area;const island=MareArchipelago.byArea(area);if(island)game=MareAchievements.record(game,'islandVisited',island.id);game.hp=getDerived().maxHP;game.energy=getDerived().maxEnergy;enterHunt();toast('Você navegou até '+zones[area].name+'.','good');log('Nova região: '+zones[area].name,'good');saveGame();}
   function claimQuest(id){let q=questDefs.find(q=>q.id===id);if(!q||game.claimed.includes(id)||questProgress(q)<q.target)return;game.claimed.push(id);game.gold+=q.gold;gainXP(q.xp);session.gold+=q.gold;game.stats.goldEarned+=q.gold;toast('Contrato concluído! +'+q.gold+' dobrões','good');log('Recompensa do contrato: '+q.title,'gold');saveGame();updateUI();if(currentPanel==='contracts')renderPanel();}
   function getInventoryItem(id){return game.inventory.find(i=>i.id===id)||Object.values(game.equipment).find(i=>i?.id===id)||null;}
@@ -966,7 +969,7 @@
     if(world.hero.visible===false)drawBeriSeparation(c,canvas.width/2,canvas.height-10,1-session.fruitBurst/1.5,height/48);
     else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(c,equippedZoan().id,canvas.width/2,canvas.height-10,{time:world.time,scale:equippedZoan().id==='akuma_tori_albatroz'?height*1.25/64:height/48});
     else if(drawPaperDoll(c,canvas.width/2,canvas.height-10,'idle','south',world.time,height/46)){}
-    else if(!(armed&&classCombat.draw(c,game,canvas.width/2,canvas.height-10,{action:'idle',direction:'south',time:world.time,height})))drawFactionSprite(c,canvas.width/2,canvas.height-10,game.factionId,'idle',height,false,'south',world.time);
+    else drawConfiguredHuman(c,canvas.width/2,canvas.height-10,armed?'combat-idle':'idle','south',world.time,height);
   }
   function invSymbol(entry){return itemIcon(entry.kind==='gear'?entry.item.def:entry.kind,entry.name);}
   function invSlotHtml(slot){
@@ -1619,6 +1622,20 @@
     const appearance=MarePaperDollCatalog.appearance(game),pose=MarePaperDollCatalog.sample(paperDoll,game,action,direction,time);
     return pose?paperDoll.draw(c,appearance,pose,x,y,{scale}):false;
   }
+  const reportedSpriteFailures=new Set();
+  function drawConfiguredHuman(c,x,y,action,direction,time,height=74){
+    const entry=classCombat.entry(game);
+    if(!entry)return drawFactionSprite(c,x,y,game.factionId,action==='walk'?'walk':'idle',height,false,direction,time);
+    const clip=classCombat.action(game,action);
+    if(classCombat.draw(c,game,x,y,{action,direction,time,height}))return true;
+    const state=MareFactionSprites.status(entry.assetId,clip);
+    if(state==='failed'||state==='missing'||state==='unsupported'){
+      const key=entry.assetId+':'+clip+':'+direction;
+      if(!reportedSpriteFailures.has(key)){reportedSpriteFailures.add(key);console.error('[sprite] Asset atual indisponível:',key,state);}
+      drawMissingSprite(c,x,y);return true;
+    }
+    return false;
+  }
   function drawPlayerSprite(c,x,y){
     const hero=world.hero,attack=hero.attackAnim>0&&scene==='hunt',moving=hero.walking>0;
     const zoan=equippedZoan();
@@ -1631,13 +1648,12 @@
     }
     const combat=classCombatController(),pose=combat?.snapshot(),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
     if((!attack||combat)&&drawPaperDoll(c,x,y,requested,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time))return true;
-    if(combat&&pose&&pose.action!=='idle'&&pose.action!=='walk'){
-      if(classCombat.draw(c,game,x,y,{action:pose.action,direction:pose.direction,time:pose.elapsed}))return true;
-      if(classCombat.draw(c,game,x,y,{action:'guard',direction:pose.direction,time:0}))return true;
+    if(classCombat.entry(game)){
+      const action=pose?.locked?pose.action:attack?'attack':'combat-idle';
+      return drawConfiguredHuman(c,x,y,action,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time);
     }
-    if(combat&&classCombat.draw(c,game,x,y,{action:moving?'walk':'idle',direction:hero.direction,time:world.time}))return true;
     if(['attack','skill','skill-1','skill-2','hurt','death','guard'].includes(requested))return true;
-    return drawFactionSprite(c,x,y,game.factionId,moving?'walk':'idle',74,false,hero.direction,world.time);
+    return drawConfiguredHuman(c,x,y,moving?'walk':'idle',hero.direction,world.time);
   }
   function drawFactionShowcase(actor){
     const a=MareFactionSprites.assets[actor.id];
@@ -1709,8 +1725,9 @@
   function drawForegroundLayer(actors){
     const mapId=activeMap().id;
     if(mapId==='dawn')for(const prop of MareDawn.props)MareDawnRenderer.prop(ctx,prop,actors);
+    if(mapId==='lobby')MareLobby.foreground(ctx,actors);
     const overlay=(p,bounds,draw)=>{
-      if(!actors.some(a=>a.x+35>bounds.x&&a.x-35<bounds.x+bounds.w&&a.y>bounds.y&&a.y-120<bounds.y+bounds.h))return;
+      if(!actors.some(a=>a.y<p.y&&a.x+35>bounds.x&&a.x-35<bounds.x+bounds.w&&a.y>bounds.y&&a.y-120<bounds.y+bounds.h))return;
       ctx.save();ctx.beginPath();ctx.rect(bounds.x,bounds.y,bounds.w,bounds.h);ctx.clip();draw(ctx,p);ctx.restore();
     };
     if(mapId==='conchas')for(const p of MareConchas.props){

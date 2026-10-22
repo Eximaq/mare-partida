@@ -15,7 +15,7 @@ r.draw({},p,0,0,{action:'skill-2'});assert.equal(drawn[0][4].action,'skill');
 assert.equal(r.controller(p,actor,{inHunt:true,transformed:true}),null,'Zoan takes priority and cancels pending action');
 assert.equal(actor.combat,null);const next=r.controller(p,actor,{inHunt:true});assert.notStrictEqual(next,c);
 next.play('attack');r.controller({classId:'gunner',factionId:'pirate'},actor,{inHunt:true});assert.equal(actor.combat,null,'class change cancels previous identity/action');
-sprites.assets.sword.sheets.skill={complete:true,naturalWidth:0};assert.equal(r.asset(p),null,'failed sheet uses safe fallback');
+  sprites.assets.sword.sheets.skill={complete:true,naturalWidth:0};assert(r.asset(p),'configured identity remains selected while a sheet fails');
 sprites.assets.sword.sheets.skill=ready();assert(r.asset(p));assert(requested.includes('sword'));
 assert.throws(()=>r.register({classId:'sword'}),TypeError);
 sprites.assets.sword.meta.class_id='sword';sprites.assets.sword.meta.faction='pirate';sprites.assets.sword.meta.basic_sequence=['attack','combo'];

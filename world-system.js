@@ -77,7 +77,11 @@
     walkable(x,y,r=this.radius){
       if(!Number.isFinite(x)||!Number.isFinite(y)||x<r||y<r||x>this.map.width-r||y>this.map.height-r)return false;
       if(this.map.terrainWalkable&&!this.map.terrainWalkable(x,y,r))return false;
-      return !this.map.colliders.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
+      // A small circular footprint at the feet, independent of visual height.
+      return !this.map.colliders.some(o=>{
+        const px=clamp(x,o.x,o.x+o.w),py=clamp(y,o.y,o.y+o.h);
+        return (x-px)**2+(y-py)**2<r*r;
+      });
     }
     clear(a,b){if(this.map.segmentBlocked?.(a,b,this.radius))return false;const d=Math.hypot(b.x-a.x,b.y-a.y),steps=Math.max(1,Math.ceil(d/5));for(let i=0;i<=steps;i++){let t=i/steps;if(!this.walkable(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t))return false;}return true;}
     nearest(p){

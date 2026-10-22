@@ -1,10 +1,11 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
-const scope={Image:class{constructor(){this.complete=true;this.naturalWidth=800;}addEventListener(){}},window:{dispatchEvent(){}},Event:class{}};
+const scope={Image:class{constructor(){this.complete=true;this.naturalWidth=800;this.naturalHeight=100;}addEventListener(){}},window:{dispatchEvent(){}},Event:class{}};
 vm.createContext(scope);vm.runInContext(fs.readFileSync(require.resolve('../faction-sprites.js'),'utf8'),scope);
 scope.MareFactionSprites.register({test:{directions:['south'],frame_size:[100,100],anchor:[50,73],reference_height:46,render_height:70,
 animations:{death:{url:'death.png',frames:8,fps:8,loop:false,visible_height:{south:46}},idle:{url:'idle.png',frames:4,fps:4,loop:true}}}});
 const api=scope.MareFactionSprites;
 const idleSheet=api.assets.test.sheets.idle;
+idleSheet.naturalWidth=400;
 api.assets.test.sheets.idle={complete:false,naturalWidth:0};
 assert.equal(api.status('test','idle'),'loading');assert.equal(api.frame('test','idle','south',0),null);
 api.ensure('test');assert.equal(api.assets.test.sheets.idle.complete,false,'loading does not re-request or replace the cached image');

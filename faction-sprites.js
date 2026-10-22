@@ -3,11 +3,17 @@
 (() => {
   const assets={};
   const images=new Map();
+  const reportedFailures=new Set();
   const assetBase=typeof document!=='undefined'&&document.currentScript?.src?new URL('.',document.currentScript.src).href:null;
+  const assetVersion=typeof document!=='undefined'&&document.currentScript?.src?new URL(document.currentScript.src).searchParams.get('v'):null;
   const directionMap={front:'south',back:'north',left:'west',right:'east'};
   function image(url){
     if(!images.has(url)){
-      const im=new Image(),notify=()=>window.dispatchEvent(new Event('mare-faction-sprite-ready'));im.addEventListener('load',notify);im.addEventListener('error',notify);im.src=assetBase?new URL(url,assetBase).href:url;images.set(url,im);
+      const im=new Image(),notify=()=>window.dispatchEvent(new Event('mare-faction-sprite-ready'));
+      im.addEventListener('load',notify);im.addEventListener('error',()=>{if(!reportedFailures.has(url)){reportedFailures.add(url);console.error('[sprite] Falha ao carregar',url);}notify();});
+      const target=assetBase?new URL(url,assetBase):null;
+      if(target&&assetVersion)target.searchParams.set('v',assetVersion);
+      im.src=target?target.href:url;images.set(url,im);
     }
     return images.get(url);
   }
@@ -28,7 +34,11 @@
     const asset=assets[id];if(!asset)return 'missing';
     ensure(id);const animation=asset.meta.animations[action];if(!animation)return 'unsupported';
     const image=asset.sheets[action];if(!image||!image.complete)return 'loading';
-    return image.naturalWidth>0?'ready':'failed';
+    if(!image.naturalWidth)return 'failed';
+    const [width,height]=asset.meta.frame_size;
+    const valid=image.naturalWidth===width*animation.frames&&image.naturalHeight===height*asset.meta.directions.length;
+    if(!valid&&!reportedFailures.has(animation.url)){reportedFailures.add(animation.url);console.error('[sprite] Dimensões incorretas',animation.url);}
+    return valid?'ready':'failed';
   }
   function frame(id,action='idle',direction='south',time=0){
     const asset=assets[id];if(!asset)return null;
