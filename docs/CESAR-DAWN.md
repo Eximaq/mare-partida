@@ -5,3 +5,5 @@ Os encontros comuns de todos os setores de Dawn agora usam somente **César, ní
 A arte vem do personagem existente no PixelLab (`da9c0817-8ea5-425f-a164-7e2362bd46bc`). As animações existentes de corrida e golpe foram apenas alinhadas em folhas transparentes, sem gerar novos pixels.
 
 Os quadros de ataque foram alinhados pelo contato dos pés com o solo da pose idle em cada direção, evitando que César flutue durante o soco.
+
+O Canvas agora desenha chão, entidades ordenadas pelo eixo Y (com o herói primeiro em empates) e, por último, os topos de objetos. Mapas com arte já achatada reutilizam recortes da própria imagem para cobrir personagens atrás de copas e telhados; Dawn reutiliza suas máscaras originais de oclusão.
