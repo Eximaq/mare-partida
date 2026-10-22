@@ -12,6 +12,7 @@ for(const a of [O.spawn,...O.paths,O.returnPoint])for(const b of [O.spawn,...O.p
 for(const f of O.frontages){assert(nav.walkable(f.entrance.x,f.entrance.y),f.id);assert(nav.path(f.entrance,f.street).length,f.id);}
 for(const p of O.props.filter(p=>p.kind==='building'))assert.notEqual(O.at(Math.floor(p.x/64),Math.floor(p.y/64)),O.WATER,p.id);
 for(const c of O.map.colliders)assert(!nav.walkable(c.x+c.w/2,c.y+c.h/2),c.id);
+for(const boat of O.props.filter(p=>p.id.startsWith('barco-')))assert(O.map.colliders.some(c=>c.id===boat.id&&c.isSolid),boat.id+' solid base');
 const arch=O.props.find(p=>p.id==='arco-do-bastiao');assert(nav.clear({x:arch.x,y:arch.y-64},{x:arch.x,y:arch.y+40}),'Arch center stays open');
 for(const d of O.docks){let sea=false,land=false;for(let y=d.y/64;y<(d.y+d.h)/64;y++)for(let x=d.x/64;x<(d.x+d.w)/64;x++)for(const [dx,dy]of [[1,0],[-1,0],[0,1],[0,-1]]){const t=O.at(x+dx,y+dy);sea ||= t===O.WATER;land ||= t!==O.WATER&&t!==O.WOOD;}assert(sea&&land,'Each dock reaches both shore and sea');}
 const manifest=require('../assets/terrain/harbor-v2/manifest.json'),images={};for(const s of Object.values(manifest.sets))images[s.url]={naturalWidth:128};for(const v of Object.values(manifest.variants).flat())images[v]={naturalWidth:32};

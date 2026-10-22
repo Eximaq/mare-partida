@@ -40,6 +40,7 @@
   }
   const rows={south:0,west:1,east:2,north:3};
   const feet={idle:[45,44,44,47],run:[62,60,60,63],attack:[55,55,55,57]};
+  const monsterRenderSize=()=>root.MareNewIslandArt?.DEFAULT_MONSTER_RENDER_SIZE||80;
   // A single sprite layout drives drawing, pointer hitbox and HP-label placement.
   function cocoxLayout(m){
     if(m.type!=='cocox')return null;
@@ -47,8 +48,8 @@
     const attack=(m.attackAnim||0)>0,moving=(m.moving||0)>0;
     const key=attack?'attack':moving?'run':'idle';
     const sourceSize=attack?68:moving?80:48,frames=attack?9:moving?4:1;
-    const dest=Math.round(sourceSize*2.25),top=Math.round(m.y+4-feet[key][row]*2.25);
-    return {row,key,sourceSize,frames,dest,top,halfWidth:Math.max(55,Math.min(75,Math.round(dest*.44)))};
+    const dest=monsterRenderSize(),scale=dest/sourceSize,top=Math.round(m.y+3-feet[key][row]*scale);
+    return {row,key,sourceSize,frames,dest,top,scale,halfWidth:dest/2};
   }
   function cocoxHitTest(m,x,y){
     const box=cocoxLayout(m);

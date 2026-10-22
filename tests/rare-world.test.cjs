@@ -9,6 +9,7 @@ assert.deepEqual([I.rare.data.width,I.rare.data.height,I.rare.map.width,I.rare.m
 assert.equal(MareWorld.maps.rare,I.rare.map);
 assert('ei'.includes(I.rare.at(Math.floor(I.rare.spawn.x/64),Math.floor(I.rare.spawn.y/64))));
 assert(R.props.filter(p=>p.kind==='tree').length>=100);
+for(const bush of R.props.filter(p=>p.kind==='bush'))assert(R.map.colliders.some(c=>c.id===bush.id&&c.isSolid),bush.id+' solid base');
 assert(nav.walkable(I.rare.spawn.x,I.rare.spawn.y));
 for(const d of I.rare.districts){assert(nav.path(I.rare.spawn,d).length);assert.equal(H.profile('rare',d.id,'cocox').level,18);assert.equal(H.sectorAt('rare',d,I.rare.districts).id,d.id);}
 assert.equal(H.bossReady(H.migrate({}), 'rare',I.rare.districts.at(-1)),false);

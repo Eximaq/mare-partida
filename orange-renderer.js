@@ -3,6 +3,7 @@
 ((root)=>{
   const O=root.MareOrange,images={},characters={},chunks=new Map(),failed=new Set();let manifest={ready:false},terrain=null,ocean=null,revision=0;
   const ready=i=>i?.complete&&i.naturalWidth>0;
+  const monsterRenderSize=()=>root.MareNewIslandArt?.DEFAULT_MONSTER_RENDER_SIZE||80;
   function image(key,url){return new Promise(resolve=>{const i=new Image();i.onload=()=>{images[key]=i;failed.delete(key);revision++;chunks.clear();resolve(i);};i.onerror=()=>{failed.add(key);resolve(null);};i.src=url;});}
   const boot=Promise.all([
     fetch('assets/terrain/harbor-v2/manifest.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Terrain manifest unavailable');return r.json();}).then(async data=>{
@@ -50,7 +51,7 @@
     const previous=motion.get(m),moving=previous&&Math.hypot(m.x-previous.x,m.y-previous.y)>.01;motion.set(m,{x:m.x,y:m.y});
     const action=moving&&!m.telegraph?'walk':'idle',anim=a.animations[action]||a.animations.idle,img=a.sheets[action]||a.sheets.idle;if(!anim||!ready(img))return false;
     const row=Math.max(0,a.directions.indexOf(m.emberFacing||'south')),frame=action==='walk'?Math.floor(time*(anim.fps||8))%(anim.frames||1):0;
-    const fw=anim.frame_width||a.frame_width,fh=anim.frame_height||a.frame_height,anchor=anim.anchor||a.anchor||[fw/2,fh*.9],scale=a.render_scale||1.5;
+    const fw=anim.frame_width||a.frame_width,fh=anim.frame_height||a.frame_height,anchor=anim.anchor||a.anchor||[fw/2,fh*.9],scale=monsterRenderSize()/Math.max(fw,fh);
     c.save();c.imageSmoothingEnabled=false;if(m.hit>0)c.filter='brightness(1.45)';c.drawImage(img,frame*fw,row*fh,fw,fh,Math.round(m.x-anchor[0]*scale),Math.round(m.y-anchor[1]*scale),Math.round(fw*scale),Math.round(fh*scale));c.restore();return true;
   }
   function environment(c,time,reduced){

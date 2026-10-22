@@ -21,8 +21,8 @@
       const w=tree?28:Math.max(16,Math.round(sw*TILE*(counter ? .75 : .72)));
       const h=tree?24:Math.max(14,Math.round(sh*TILE*(counter ? .32 : .42)));
       const center=sourceCell(sx,sy);
-      return {id:id+'-object-'+index,x:Math.round(center.x-w/2),y:Math.round(center.y+11-h),w,h};
-    }).filter((o,index)=>o.x+o.w>0&&o.y+o.h>0&&o.x<width*TILE&&o.y<height*TILE&&(id!=='arlong'||def.walkable.includes(at(placedObjects[id].placements[index][1]-sourceOrigin.x,placedObjects[id].placements[index][2]-sourceOrigin.y))));
+      return {id:id+'-object-'+index,x:Math.round(center.x-w/2),y:Math.round(center.y+11-h),w,h,isSolid:true};
+    }).filter(o=>o.x+o.w>0&&o.y+o.h>0&&o.x<width*TILE&&o.y<height*TILE);
     const blocked=(x,y,r=10)=>colliders.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
     const valid=(x,y,allowed=def.walkable)=>allowed.includes(at(x,y));
     const clear=(x,y,allowed)=>valid(x,y,allowed)&&!blocked(cell(x,y).x,cell(x,y).y)&&valid(x-1,y,allowed)&&valid(x+1,y,allowed)&&valid(x,y-1,allowed)&&valid(x,y+1,allowed);
@@ -54,8 +54,9 @@
     });
     const returnPoint={id:'return',x:spawn.x,y:spawn.y,radius:40};
     const ground=(x,y,r=0)=>[[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].every(([dx,dy])=>valid(Math.floor((x+dx)/TILE),Math.floor((y+dy)/TILE)));
-    const map={id,width:width*TILE,height:height*TILE,origin:{x:0,y:0},spawn:cell(spawn.tx,spawn.ty),colliders,terrainWalkable:ground,navigationGoals:districts,spawnZones:districts.map(d=>({id:d.id,x:d.x-160,y:d.y-160,w:320,h:320})),safeZones:[{x:spawn.x,y:spawn.y,radius:140}],interactions:[returnPoint],navigationCell:32};
-    return {id,data,at,valid,cell,sourceCell,closest,spawn:map.spawn,districts,returnPoint,map};
+    const depthObjects=placedObjects[id].placements.map(([assetIndex,sx,sy,sw,sh],index)=>{const center=sourceCell(sx,sy),w=Math.max(1,sw*TILE),h=Math.max(1,sh*TILE),x=Math.round(center.x-w/2),y=Math.round(center.y+11-h);return {id:id+'-depth-'+index,x,y,w,h,pivotY:center.y+11};}).filter(o=>o.x+o.w>0&&o.y+o.h>0&&o.x<width*TILE&&o.y<height*TILE);
+    const map={id,width:width*TILE,height:height*TILE,origin:{x:0,y:0},spawn:cell(spawn.tx,spawn.ty),colliders,playerFootprint:{w:32,h:20},terrainWalkable:ground,navigationGoals:districts,spawnZones:districts.map(d=>({id:d.id,x:d.x-160,y:d.y-160,w:320,h:320})),safeZones:[{x:spawn.x,y:spawn.y,radius:140}],interactions:[returnPoint],navigationCell:32};
+    return {id,data,at,valid,cell,sourceCell,closest,spawn:map.spawn,districts,returnPoint,depthObjects,map};
   }
   const islands=Object.fromEntries(Object.keys(definitions).map(id=>[id,create(id)]));
   const images={};
@@ -67,7 +68,8 @@
     else{ctx.fillStyle=id==='rare'||id==='arlong'?'#116f85':id==='syrup'?'#4d823c':'#69442d';ctx.fillRect(camera.x,camera.y,width,height);}
     ctx.restore();
   }
+  function depthProp(ctx,id,o){const image=images[id];if(!image?.complete||!image.naturalWidth)return;ctx.save();ctx.imageSmoothingEnabled=false;ctx.beginPath();ctx.rect(o.x,o.y,o.w,o.h);ctx.clip();ctx.drawImage(image,o.x,o.y,o.w,o.h,o.x,o.y,o.w,o.h);ctx.restore();}
   function environment(ctx,id,time){const p=islands[id]?.returnPoint;if(!p)return;ctx.save();ctx.strokeStyle='#ead8a4';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(p.x,p.y,28+Math.sin(time*2),12,0,0,Math.PI*2);ctx.stroke();ctx.font='bold 11px Trebuchet MS';ctx.textAlign='center';ctx.fillStyle='#fff2cf';ctx.fillText('Voltar ao porto',p.x,p.y+30);ctx.restore();}
-  root.MareNewIslands={...islands,ground,environment,images};
+  root.MareNewIslands={...islands,ground,depthProp,environment,images};
   if(typeof module!=='undefined')module.exports=root.MareNewIslands;
 })(globalThis);

@@ -1,10 +1,12 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process');
 require('../new-islands-data.js');
+const placedObjects=require('../new-islands-objects.js');
 const islands=require('../new-islands.js'),H=require('../hunt-system.js'),catalog=require('../monster-catalog.js');
 require('../new-islands-art.js');
 require('../world-system.js');
 const root=path.join(__dirname,'..');
+assert.equal(MareNewIslandArt.DEFAULT_MONSTER_RENDER_SIZE,80);
 for(const [id,allowed,min] of [['rare','ei',16],['syrup','u',21],['baratie','c',26],['arlong','c',31]]){
   const island=islands[id],nav=new MareWorld.Navigation(island.map,32);
   assert.equal(MareWorld.maps[id],island.map);
@@ -12,8 +14,8 @@ for(const [id,allowed,min] of [['rare','ei',16],['syrup','u',21],['baratie','c',
   assert.equal(island.map.height,island.data.height*64);
   assert(allowed.includes(island.at(Math.floor(island.spawn.x/64),Math.floor(island.spawn.y/64))));
   assert(nav.walkable(island.spawn.x,island.spawn.y));
-  assert(island.map.colliders.length>=(id==='arlong'?25:30),`${id}: visible object footprints are solid`);
-  assert(island.map.colliders.some(o=>{
+  assert.equal(island.map.colliders.length,placedObjects[id].placements.length);
+  assert(island.map.colliders.every(o=>o.isSolid===true));  assert(island.map.colliders.some(o=>{
     const x=o.x+o.w/2,y=o.y+o.h/2;
     return island.map.terrainWalkable(x,y)&&!nav.walkable(x,y);
   }),`${id}: objects stop movement on otherwise walkable terrain`);
@@ -32,7 +34,8 @@ for(const [id,area,level] of [['cocox','rare',18],['sham','syrup',23],['buchi','
     const img=path.join(root,`assets/new-islands/${id}/${action}.png`);assert(fs.existsSync(img));
     const bytes=fs.readFileSync(img);assert(bytes.readUInt32BE(16)>=48);assert(bytes.readUInt32BE(20)>=192);
     const art=MareNewIslandArt.layout({type:id,y:500,emberFacing:'south',attackAnim:action==='attack'?.3:0,moving:action==='walk'?1:0});
-    assert.equal(art.scale,2.25);
+    assert.equal(art.width,MareNewIslandArt.DEFAULT_MONSTER_RENDER_SIZE);assert.equal(art.height,MareNewIslandArt.DEFAULT_MONSTER_RENDER_SIZE);
+    assert.equal(art.scale,MareNewIslandArt.DEFAULT_MONSTER_RENDER_SIZE/art.a.size);
     assert(Math.abs(art.top+Math.round(art.a.feet[art.row]*art.scale)-503)<=1);
   }
 }

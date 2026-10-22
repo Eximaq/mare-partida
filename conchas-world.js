@@ -41,8 +41,8 @@
   // Cargo belongs to docks, palms to verges, and ancient masonry to the old quarter.
   decor('carga-do-cais-oeste','harbor',2,8,25,144,144,[-35,-35,70,28]);
   decor('carga-das-docas','harbor',2,25,22,144,144,[-35,-35,70,28]);
-  decor('barco-da-vigilia','harbor',1,2,20,224,224);
-  decor('barco-do-mercado','harbor',0,29,21,224,224);
+  decor('barco-da-vigilia','harbor',1,2,20,224,224,[-70,-45,140,54]);
+  decor('barco-do-mercado','harbor',0,29,21,224,224,[-70,-45,140,54]);
   for(const [id,x,y] of [['jardim-oeste',6,14],['jardim-sul',15,26],['jardim-leste',26,18],['jardim-norte',23,7]])decor(id,'harbor',3,x,y,160,160,[-36,-25,72,20]);
   for(const [id,x,y] of [['colunas-da-cripta',25,17],['colunas-da-vigilia',19,12]])decor(id,'ruin',8,x,y,128,128,[-40,-22,80,18]);
   const arch=decor('arco-do-bastiao','ruin',2,17,11,192,192);
@@ -53,7 +53,7 @@
   const spawn=center(6,23),returnPoint={id:'return',...center(3,23),radius:38};
   function ground(x,y,r=0){return [[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].every(([dx,dy])=>at(Math.floor((x+dx)/TILE),Math.floor((y+dy)/TILE))!==WATER);}
   const paths=districts.map(({id,name,x,y})=>({id,name,x,y}));
-  const map={id:'conchas',width:COLS*TILE,height:ROWS*TILE,origin:{x:0,y:0},spawn,colliders,terrainWalkable:ground,navigationGoals:paths,spawnZones:districts.map(d=>({id:d.id,x:d.x-160,y:d.y-160,w:320,h:320})),safeZones:[{...spawn,radius:160},{x:returnPoint.x,y:returnPoint.y,radius:135}],interactions:[returnPoint]};
+  const map={id:'conchas',width:COLS*TILE,height:ROWS*TILE,origin:{x:0,y:0},spawn,colliders,playerFootprint:{w:20,h:16},terrainWalkable:ground,navigationGoals:paths,spawnZones:districts.map(d=>({id:d.id,x:d.x-160,y:d.y-160,w:320,h:320})),safeZones:[{...spawn,radius:160},{x:returnPoint.x,y:returnPoint.y,radius:135}],interactions:[returnPoint]};
   root.MareConchas={TILE,COLS,ROWS,WATER,SAND,GRASS,STREET,WOOD,terrain,at,center,ground,map,routes,districts,paths,props,frontages,docks,spawn,returnPoint};
   if(typeof module!=='undefined')module.exports=root.MareConchas;
 })(globalThis);

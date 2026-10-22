@@ -8,13 +8,13 @@ const lobby=require('../lobby-world.js');
 require('../world-system.js');
 const {Navigation}=globalThis.MareWorld;
 
-test('Lobby foreground occludes only when feet are behind a roof',()=>{
+test('Lobby overhead redraws whenever an actor overlaps the roof footprint',()=>{
   let draws=0;
   const ctx={save(){},restore(){},beginPath(){},moveTo(){},lineTo(){},closePath(){},clip(){},drawImage(){draws++;}};
   lobby.foreground(ctx,[{x:1400,y:1070}]);
   assert.equal(draws,1);
-  draws=0;lobby.foreground(ctx,[{x:1400,y:1120}]);
-  assert.equal(draws,0,'roof cannot hide a character standing south of its base');
+  draws=0;lobby.foreground(ctx,[{x:1400,y:1200}]);
+  assert.equal(draws,0,'roof mask does not redraw outside its visual bounds');
 });
 
 test('feet collide with houses, stall, chests, barrels, trees, water, and boundaries',()=>{

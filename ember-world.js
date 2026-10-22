@@ -53,10 +53,10 @@
     cliffs.push({tx:x,ty:row-1,stair:!!stair,level:row===12?2:1});
     if(!stair)colliders.push({id:'cliff-'+x+'-'+row,x:x*TILE,y:row*TILE-38,w:TILE,h:46});
   }
-  const definitions={tavern:{cell:0,scale:1.5,w:118,h:48},house:{cell:1,scale:1.5,w:112,h:46},arch:{cell:2,scale:1.5,w:0,h:0},gate:{cell:3,scale:1.5,w:112,h:20},wreck:{cell:4,scale:1.5,w:0,h:0},mast:{cell:5,scale:1.25,w:28,h:24},bridge:{cell:6,scale:2,w:0,h:0},cargo:{cell:7,scale:1,w:64,h:36},column:{cell:8,scale:1,w:42,h:28},barricade:{cell:9,scale:1,w:62,h:26},vent:{cell:10,scale:1,w:44,h:30},grave:{cell:11,scale:1,w:44,h:26}};
+  const definitions={tavern:{cell:0,scale:1.5,w:118,h:48},house:{cell:1,scale:1.5,w:112,h:46},arch:{cell:2,scale:1.5,w:0,h:0},gate:{cell:3,scale:1.5,w:112,h:20},wreck:{cell:4,scale:1.5,w:96,h:42},mast:{cell:5,scale:1.25,w:28,h:24},bridge:{cell:6,scale:2,w:0,h:0},cargo:{cell:7,scale:1,w:64,h:36},column:{cell:8,scale:1,w:42,h:28},barricade:{cell:9,scale:1,w:62,h:26},vent:{cell:10,scale:1,w:44,h:30},grave:{cell:11,scale:1,w:44,h:26}};
   function place(kind,tx,ty,options={}){
     const p={id:kind+'-'+props.length,kind,tx,ty,...center(tx,ty),...definitions[kind],...options};
-    if(p.w&&options.solid!==false)colliders.push({id:p.id,x:p.x-p.w/2,y:p.y-p.h*.7,w:p.w,h:p.h});
+    if(p.w&&p.h&&p.ground!==true)colliders.push({id:p.id,x:p.x-p.w/2,y:p.y-p.h*.7,w:p.w,h:p.h,isSolid:true});
     props.push(p);return p;
   }
   // Each facade has an explicit, unobstructed forecourt connected to its street.
@@ -79,7 +79,7 @@
   ])for(const [x,y] of positions)place(kind,x,y);
   place('arch',15,10);for(const side of [-1,1]){const p=props.find(p=>p.kind==='arch');colliders.push({id:p.id+'-pillar-'+side,x:p.x+side*54-10,y:p.y-28,w:20,h:36});}
   place('gate',26,8);
-  for(const [x,y] of [[2,27],[14,30],[30,19]])place('wreck',x,y,{solid:false});
+  for(const [x,y] of [[2,27],[14,30],[30,19]])place('wreck',x,y);
   // The generated bridge is aligned to its actual diagonal deck, with both ends on land.
   const bridge=bridges[0];place('bridge',21,16,{ground:true,bridgeId:bridge.id,drawX:bridge.a.x-25*2,drawY:bridge.a.y-98*2});
   const fires=[[6,25],[12,25],[17,24],[6,19],[12,16],[18,15],[14,9],[6,9],[24,16],[27,11]].map(([x,y],i)=>({id:'fire-'+i,...center(x,y),phase:i*.73}));
@@ -87,7 +87,7 @@
   function ground(x,y,r=0){for(const [dx,dy] of [[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]]){const t=at(Math.floor((x+dx)/TILE),Math.floor((y+dy)/TILE));if((t===WATER||t===LAVA)&&!onBridge(x+dx,y+dy))return false;}return true;}
   const elevation=(x,y)=>{const t=at(Math.floor(x/TILE),Math.floor(y/TILE));return t===WATER||t===LAVA?-1:y<12*TILE?2:y<22*TILE?1:0;};
   const paths=districts.map(d=>({id:d.id,name:d.name,x:d.x,y:d.y}));
-  const map={id:'embers',width:COLS*TILE,height:ROWS*TILE,origin:{x:0,y:0},spawn,colliders,terrainWalkable:ground,navigationGoals:paths,spawnZones:districts.map(d=>({id:d.id,x:(d.tx-d.rx)*TILE,y:(d.ty-d.ry)*TILE,w:d.rx*2*TILE,h:d.ry*2*TILE})),interactions:[returnPoint]};
+  const map={id:'embers',width:COLS*TILE,height:ROWS*TILE,origin:{x:0,y:0},spawn,colliders,playerFootprint:{w:20,h:16},terrainWalkable:ground,navigationGoals:paths,spawnZones:districts.map(d=>({id:d.id,x:(d.tx-d.rx)*TILE,y:(d.ty-d.ry)*TILE,w:d.rx*2*TILE,h:d.ry*2*TILE})),interactions:[returnPoint]};
   const nearestDistrict=p=>districts.reduce((best,d)=>Math.hypot(p.x-d.x,p.y-d.y)<Math.hypot(p.x-best.x,p.y-best.y)?d:best,districts[0]);
   const skins={cesar:{id:'cesar',name:'César',height:96},crab:{id:'slag-warden',name:'Vigia de Escória',height:72},bandit:{id:'scorched-corsair',name:'Corsário Calcinado',height:72},spirit:{id:'ash-lantern',name:'Faroleiro das Cinzas',height:72},boss:{id:'caldera-captain',name:'Capitão da Caldeira',height:72}};
   const api={TILE,COLS,ROWS,WATER,BASALT,STREET,LAVA,WOOD,terrain,original,at,center,map,routes,districts,props,fires,paths,returnPoint,ground,nearestDistrict,skins,bridges,stairs,cliffs,frontages,elevation,quay};

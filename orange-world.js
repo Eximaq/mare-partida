@@ -47,7 +47,7 @@
   const spawn=center(5,25),returnPoint={id:'return',...center(3,25),radius:38};
   function ground(x,y,r=0){return [[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].every(([dx,dy])=>at(Math.floor((x+dx)/TILE),Math.floor((y+dy)/TILE))!==WATER);}
   const paths=districts.map(({id,name,x,y})=>({id,name,x,y}));
-  const map={id:'orange',width:COLS*TILE,height:ROWS*TILE,origin:{x:0,y:0},spawn,colliders,terrainWalkable:ground,navigationGoals:paths,spawnZones:districts.map(d=>({id:d.id,x:d.x-160,y:d.y-160,w:320,h:320})),safeZones:[{...spawn,radius:170},{x:returnPoint.x,y:returnPoint.y,radius:150}],interactions:[returnPoint]};
+  const map={id:'orange',width:COLS*TILE,height:ROWS*TILE,origin:{x:0,y:0},spawn,colliders,playerFootprint:{w:16,h:12},terrainWalkable:ground,navigationGoals:paths,spawnZones:districts.map(d=>({id:d.id,x:d.x-160,y:d.y-160,w:320,h:320})),safeZones:[{...spawn,radius:170},{x:returnPoint.x,y:returnPoint.y,radius:150}],interactions:[returnPoint]};
   const skins={bandit:{id:'awning-raider',name:'Saqueador dos Toldos',height:72},crab:{id:'dock-bruiser',name:'Brutamontes do Cais',height:72},spirit:{id:'square-gunner',name:'Artilheiro da Praça',height:72},boss:{id:'captain-spark',name:'Capitão Fagulha',height:72}};
   root.MareOrange={TILE,COLS,ROWS,WATER,SAND,GRASS,STREET,WOOD,terrain,at,center,ground,map,routes,districts,paths,props,frontages,docks,spawn,returnPoint,skins};
   if(typeof module!=='undefined')module.exports=root.MareOrange;

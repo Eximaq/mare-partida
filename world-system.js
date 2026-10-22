@@ -53,6 +53,12 @@
     maps.orange=MarePixelWorldMaps.orange.map;
     maps.loguetown=MarePixelWorldMaps.loguetown.map;
   }
+  // Every map shares the same feet collider, and every registered map obstacle is solid.
+  for(const map of Object.values(maps)){
+    map.playerFootprint ||= {w:20,h:16};
+    map.colliders ||= [];
+    for(const collider of map.colliders)if(collider.isSolid===undefined)collider.isSolid=true;
+  }
   class Camera {
     constructor(){this.x=0;this.y=0;this.width=960;this.height=570;}
     update(hero,map,dt=0,snap=false){

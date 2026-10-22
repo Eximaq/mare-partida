@@ -3,6 +3,7 @@
 ((root)=>{
   const E=root.MareEmber,images={},characters={},chunks=new Map(),textures={},variants={};let manifest={ready:false},fallback=null,woodSource=null,revision=0;
   const ready=i=>i?.complete&&i.naturalWidth>0;
+  const monsterRenderSize=()=>root.MareNewIslandArt?.DEFAULT_MONSTER_RENDER_SIZE||80;
   const loadImage=url=>new Promise(resolve=>{const i=new Image();i.onload=()=>resolve(i);i.onerror=()=>resolve(null);i.src=url;});
   const boot=fetch('assets/ruinas-brasas/manifest.json').then(r=>r.json()).then(async data=>{
     manifest=data;if(!data.ready)return;
@@ -118,7 +119,7 @@
     const skin=E.skins[m.type],asset=characters[m.skin]||characters[skin?.id];if(!asset)return false;
     const action=m.attackAnim>0&&asset.animations?.attack?'attack':m.moving>0&&asset.animations?.run?'run':m.emberAction||'idle',anim=asset.animations?.[action]||asset.animations?.idle,img=asset.sheets[action]||asset.sheets.idle;if(!anim||!ready(img))return false;
     const facing=m.emberFacing||'south',row=(asset.directions||['south','north','west','east']).indexOf(facing),frames=anim.frames||1,index=action==='idle'?0:Math.min(frames-1,Math.floor((action==='attack'?Math.max(0,.58-m.attackAnim):m.emberElapsed||0)*(anim.fps||8))%frames),fw=anim.frame_width||asset.frame_width,fh=anim.frame_height||asset.frame_height;
-    const scale=asset.render_scale||skin.height/fh,anchor=anim.anchor||asset.anchor||[fw/2,fh*.9];
+    const scale=monsterRenderSize()/Math.max(fw,fh),anchor=anim.anchor||asset.anchor||[fw/2,fh*.9];
     c.save();c.imageSmoothingEnabled=false;if(m.hit>0)c.filter='brightness(1.45)';c.drawImage(img,index*fw,Math.max(0,row)*fh,fw,fh,Math.round(m.x-anchor[0]*scale),Math.round(m.y-anchor[1]*scale),Math.round(fw*scale),Math.round(fh*scale));c.restore();return true;
   }
   function overview(c,width,height,hero){

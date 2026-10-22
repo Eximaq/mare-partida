@@ -36,14 +36,14 @@
     const jx=(hash(x,y,21)-.5)*23,jy=(hash(x,y,22)-.5)*17;
     const p={id:'arvore-'+x+'-'+y,kind:'tree',x:(x+.5)*TILE+jx,y:(y+.5)*TILE+jy};
     props.push(p);
-    colliders.push({id:p.id,x:p.x-13,y:p.y-17,w:26,h:21});
+    colliders.push({id:p.id,x:p.x-13,y:p.y-17,w:26,h:21,isSolid:true});
   }
   for(let y=4;y<28;y++)for(let x=4;x<28;x++){
     if((at(x,y)!==GRASS&&at(x,y)!==GRASS_ALT)||trailDistance(x+.5,y+.5)<1.4)continue;
     if(props.some(p=>Math.hypot(p.x-(x+.5)*TILE,p.y-(y+.5)*TILE)<40))continue;
     const v=hash(x,y,49);
-    if(v<.10)props.push({id:'arbusto-'+x+'-'+y,kind:'bush',...center(x,y)});
-    else if(v>.955){const p={id:'rocha-'+x+'-'+y,kind:'rock',...center(x,y)};props.push(p);colliders.push({id:p.id,x:p.x-15,y:p.y-11,w:30,h:18});}
+    if(v<.10){const p={id:'arbusto-'+x+'-'+y,kind:'bush',...center(x,y)};props.push(p);colliders.push({id:p.id,x:p.x-19,y:p.y-9,w:38,h:16,isSolid:true});}
+    else if(v>.955){const p={id:'rocha-'+x+'-'+y,kind:'rock',...center(x,y)};props.push(p);colliders.push({id:p.id,x:p.x-15,y:p.y-11,w:30,h:18,isSolid:true});}
   }
   const spawn=center(7,24),returnPoint={id:'return',...center(6,24),radius:38};
   // A short pier gives the return interaction a visible, reachable landing.

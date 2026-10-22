@@ -21,10 +21,11 @@ for(const state of [
 ]){
   Object.assign(mob,state);
   const box=r.cocoxLayout(mob);
-  assert.ok(box.top<mob.y-80,'sprite extends above monster feet');
+  assert.ok(box.top<mob.y-50,'80px sprite extends above monster feet');
+  assert.equal(box.dest,80);assert.equal(box.halfWidth,40);
   assert.equal(r.cocoxHealthBarY(mob),box.top-22,'HP stays above sprite for every animation');
-  assert.ok(r.cocoxHitTest(mob,mob.x,mob.y-55),'clicking sprite body selects Cocox');
-  assert.ok(r.cocoxHitTest(mob,mob.x+box.halfWidth-2,mob.y-30),'sprite edge clickable');
+  assert.ok(r.cocoxHitTest(mob,mob.x,box.top+16),'clicking sprite body selects Cocox');
+  assert.ok(r.cocoxHitTest(mob,mob.x+box.halfWidth-2,box.top+24),'sprite edge clickable');
   assert.ok(!r.cocoxHitTest(mob,mob.x+box.halfWidth+5,mob.y-30),'outside sprite not clickable');
   assert.ok(!r.cocoxHitTest(mob,mob.x,mob.y+25),'far below feet not clickable');
   let placement;
@@ -35,7 +36,7 @@ for(const state of [
 Object.assign(mob,{moving:0,attackAnim:0});
 const idleBar=r.cocoxHealthBarY(mob);
 mob.moving=1;
-assert.ok(r.cocoxHealthBarY(mob)<idleBar,'running sprite has taller HP offset');
+assert.ok(Math.abs(r.cocoxHealthBarY(mob)-idleBar)<20,'80px animation frames keep the HP bar aligned');
 assert.match(game,/MareRareRenderer\.cocoxHitTest\(m,x,y\)/);
 assert.match(game,/MareRareRenderer\.cocoxHealthBarY\(m\)/);
 assert.ok(!game.includes("m.type==='cocox'?118"),'no fixed HP offset remains');

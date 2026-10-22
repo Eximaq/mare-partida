@@ -24,14 +24,14 @@
     {id:'south-tree',x:1270,y:1460,w:55,h:43},
     {id:'market-tree',x:1850,y:1235,w:75,h:55},
     {id:'central-palms',x:1310,y:1250,w:75,h:62},
-    ...[[1632,684],[1696,684],[1568,884],[1632,884],[2208,1012],[2208,1076],[2080,1308]].map(([x,y],i)=>({id:'fruit-tree-'+i,x:x-32,y:y-64,w:64,h:64})),
+    ...[[1632,684],[1696,684],[1568,884],[1632,884],[2208,1012],[2208,1076],[2080,1308]].map(([x,y],i)=>({id:'fruit-tree-'+i,x:x-24,y:y-16,w:48,h:32,footprintOnly:true,pivotY:y,visualX:x-32,visualY:y-64,visualW:64,visualH:64})),
     ...[[1378,840],[1976,748],[2052,928],[1240,998],[1240,1600],[1660,1514],[2004,1600],[2134,1260]].map(([x,y],i)=>({id:'lamp-'+i,x:x-12,y:y-14,w:24,h:28})),
     {id:'north-palms',x:1440,y:560,w:82,h:48},
     {id:'west-palms',x:820,y:1150,w:90,h:45},
     {id:'south-palms',x:990,y:1700,w:90,h:48},
     {id:'east-palms',x:2200,y:1690,w:90,h:48}
   ].map(o=>{
-    const w=Math.max(TILE,o.w),h=Math.max(TILE,o.h);
+    const w=o.footprintOnly?o.w:Math.max(TILE,o.w),h=o.footprintOnly?o.h:Math.max(TILE,o.h);
     return {...o,x:Math.round(o.x+(o.w-w)/2),y:Math.round(o.y+(o.h-h)/2),w,h,isSolid:true};
   });
   const terrainWalkable=(x,y,r=10)=>[[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].every(([dx,dy])=>passable(x+dx,y+dy));
@@ -62,21 +62,25 @@
     {base:1550,polygon:[[1655,1450],[1720,1340],[1795,1355],[1900,1450],[1870,1490],[1685,1490]]},
     {base:1324,polygon:[[2180,1210],[2240,1090],[2305,1100],[2380,1215],[2350,1250],[2200,1250]]}
   ].map(o=>({...o,x0:Math.min(...o.polygon.map(p=>p[0])),x1:Math.max(...o.polygon.map(p=>p[0])),y0:Math.min(...o.polygon.map(p=>p[1])),y1:Math.max(...o.polygon.map(p=>p[1]))}));
-  // The PixelLab export is flattened. Reuse its exact pixels for the portions
-  // of each object that may cover a character, ordered by the ground footprint.
-  const depthObjects=colliders.filter(o=>o.id.includes('tree')||o.id.includes('palms')).map(o=>{
+  // The Lobby export is flattened, so redraw its object pixels over actors.
+  // Building roofs have dedicated masks below; every other solid prop gets a footprint overlay.
+  const depthObjects=colliders.filter(o=>!o.id.endsWith('-house')).map(o=>{
+    const visualX=o.visualX??o.x,visualY=o.visualY??o.y,visualW=o.visualW??o.w,visualH=o.visualH??o.h;
     const tree=o.id.includes('tree')||o.id.includes('palms');
     const chest=o.id.includes('chest')||o.id.includes('barrels');
-    const spread=tree?54:chest?10:30, rise=tree?125:chest?52:105;
-    return {...o,pivotY:o.y+o.h,x0:o.x-spread,x1:o.x+o.w+spread,y0:o.y-rise,y1:o.y+o.h};
+    const lamp=o.id.includes('lamp');
+    const monument=o.id.includes('monument');
+    const spread=tree?54:chest?10:lamp?8:monument?20:16;
+    const rise=tree?125:chest?52:lamp?70:monument?160:135;
+    return {...o,visualX,visualY,visualW,visualH,pivotY:o.pivotY??visualY+visualH,x0:visualX-spread,x1:visualX+visualW+spread,y0:visualY-rise,y1:visualY+visualH};
   });
   function depthProp(ctx,o){
     if(!image?.complete||!image.naturalWidth)return;
     ctx.save();ctx.imageSmoothingEnabled=false;
     ctx.beginPath();
     if(o.id.includes('tree')||o.id.includes('palms')){
-      ctx.ellipse((o.x0+o.x1)/2,o.y-42,(o.x1-o.x0)/2,Math.max(25,(o.y-o.y0)*.67),0,0,Math.PI*2);
-      ctx.rect(o.x,o.y-35,o.w,o.h+35);
+      ctx.ellipse((o.x0+o.x1)/2,o.visualY-42,(o.x1-o.x0)/2,Math.max(25,(o.visualY-o.y0)*.67),0,0,Math.PI*2);
+      ctx.rect(o.visualX,o.visualY-35,o.visualW,o.visualH+35);
     }else ctx.rect(o.x0,o.y0,o.x1-o.x0,o.y1-o.y0);
     ctx.clip();ctx.drawImage(image,o.x0,o.y0,o.x1-o.x0,o.y1-o.y0,o.x0,o.y0,o.x1-o.x0,o.y1-o.y0);
     ctx.restore();
@@ -93,7 +97,7 @@
   function foreground(ctx,actors){
     if(!image?.complete||!image.naturalWidth)return;
     for(const o of upper){
-      if(!actors.some(a=>pivotY(a)<o.base&&pivotY(a)>o.y0&&pivotY(a)-115<o.y1&&a.x+38>o.x0&&a.x-38<o.x1))continue;
+      if(!actors.some(a=>a.x+40>o.x0&&a.x-40<o.x1&&a.y+4>o.y0&&a.y-112<o.y1))continue;
       ctx.save();ctx.imageSmoothingEnabled=false;ctx.globalAlpha=.72;ctx.beginPath();
       o.polygon.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.clip();
       ctx.drawImage(image,o.x0,o.y0,o.x1-o.x0,o.y1-o.y0,o.x0,o.y0,o.x1-o.x0,o.y1-o.y0);

@@ -33,6 +33,7 @@ test('Eight building entrances have streets; scenery stands on coherent terrain'
  assert.equal(new Set(E.props.map(p=>p.id)).size,E.props.length);
  for(const p of E.props)if(p.kind==='wreck')assert.equal(E.at(p.tx,p.ty),E.WATER);else if(p.kind!=='bridge')assert(![E.WATER,E.LAVA].includes(E.at(p.tx,p.ty)),p.id);
  for(const rect of E.map.colliders)assert(!nav.walkable(rect.x+rect.w/2,rect.y+rect.h/2),rect.id);
+ for(const wreck of E.props.filter(p=>p.kind==='wreck'))assert(E.map.colliders.some(c=>c.id===wreck.id&&c.isSolid),wreck.id+' solid wreck');
 });
 test('Camera clamps desktop/mobile, including a viewport wider than map',()=>{
  for(const [width,height] of [[1920,1080],[1366,768],[1280,720],[393,852],[2560,1440]]){const camera=new Camera();Object.assign(camera,{width,height});for(const goal of E.paths){camera.update(goal,E.map,1,true);assert(camera.x>=0&&camera.y>=0);assert(camera.x<=Math.max(0,2048-width));assert(camera.y<=Math.max(0,2048-height));assert.deepEqual(camera.screenToWorld(...Object.values(camera.worldToScreen(goal.x,goal.y))),{x:goal.x,y:goal.y});}}
