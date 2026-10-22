@@ -12,7 +12,8 @@
       const e=entry(player);if(!e)return null;
       sprites.ensure?.(e.assetId);
       const a=sprites.assets[e.assetId];
-      if(!a?.meta.production_approved||!Object.values(a.sheets).every(i=>i.complete&&i.naturalWidth))return null;
+      // The configured identity must not switch to a generic sprite while its sheets load.
+      if(!a?.meta.production_approved)return null;
       return {...a,id:e.assetId};
     }
     function action(player,name){return entry(player)?.actions[name]||name;}
