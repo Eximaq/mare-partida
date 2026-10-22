@@ -5,6 +5,12 @@ vm.createContext(scope);vm.runInContext(fs.readFileSync(path.join(root,'faction-
 vm.runInContext(fs.readFileSync(path.join(root,'combat-assets.js'),'utf8'),scope);
 const review=JSON.parse(fs.readFileSync(path.join(root,'pixellab-pip-generations/bento-combat-production-20261018/visual-review.json'),'utf8'));
 const api=scope.MareFactionSprites;
+api.ensure('pirate-sword');
+for(const [action,clip] of Object.entries(api.assets['pirate-sword'].meta.animations)){
+  const image=api.assets['pirate-sword'].sheets[action];
+  image.naturalWidth=api.assets['pirate-sword'].meta.frame_size[0]*clip.frames;
+  image.naturalHeight=api.assets['pirate-sword'].meta.frame_size[1]*4;
+}
 for(const key of Object.keys(review.rejected)){
     const [name,direction]=key.split('/'),action=name==='corte-de-mare'?'skill':name;
     assert.equal(api.frame('pirate-sword',action,direction,.3),null,key+' must not play a rejected clip');

@@ -23,12 +23,6 @@
       const center=sourceCell(sx,sy);
       return {id:id+'-object-'+index,x:Math.round(center.x-w/2),y:Math.round(center.y+11-h),w,h};
     }).filter((o,index)=>o.x+o.w>0&&o.y+o.h>0&&o.x<width*TILE&&o.y<height*TILE&&(id!=='arlong'||def.walkable.includes(at(placedObjects[id].placements[index][1]-sourceOrigin.x,placedObjects[id].placements[index][2]-sourceOrigin.y))));
-    const overheads=placedObjects[id].placements.flatMap(([assetIndex,sx,sy,sw,sh])=>{
-      if(sw<.75||sh<.75)return [];
-      const center=sourceCell(sx,sy),foliage=placedObjects[id].assets[assetIndex]==='21d6c94c-29cb-440d-87d7-f2e6e54fb923';
-      const w=Math.max(48,Math.round(sw*TILE+(foliage?36:12))),h=Math.max(42,Math.round(sh*TILE*.78));
-      return [{x:Math.max(0,Math.round(center.x-w/2)),y:Math.max(0,Math.round(center.y-sh*TILE)),w,h,foliage}];
-    });
     const blocked=(x,y,r=10)=>colliders.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
     const valid=(x,y,allowed=def.walkable)=>allowed.includes(at(x,y));
     const clear=(x,y,allowed)=>valid(x,y,allowed)&&!blocked(cell(x,y).x,cell(x,y).y)&&valid(x-1,y,allowed)&&valid(x+1,y,allowed)&&valid(x,y-1,allowed)&&valid(x,y+1,allowed);
@@ -61,7 +55,7 @@
     const returnPoint={id:'return',x:spawn.x,y:spawn.y,radius:40};
     const ground=(x,y,r=0)=>[[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].every(([dx,dy])=>valid(Math.floor((x+dx)/TILE),Math.floor((y+dy)/TILE)));
     const map={id,width:width*TILE,height:height*TILE,origin:{x:0,y:0},spawn:cell(spawn.tx,spawn.ty),colliders,terrainWalkable:ground,navigationGoals:districts,spawnZones:districts.map(d=>({id:d.id,x:d.x-160,y:d.y-160,w:320,h:320})),safeZones:[{x:spawn.x,y:spawn.y,radius:140}],interactions:[returnPoint],navigationCell:32};
-    return {id,data,at,valid,cell,sourceCell,closest,spawn:map.spawn,districts,returnPoint,overheads,map};
+    return {id,data,at,valid,cell,sourceCell,closest,spawn:map.spawn,districts,returnPoint,map};
   }
   const islands=Object.fromEntries(Object.keys(definitions).map(id=>[id,create(id)]));
   const images={};
@@ -73,19 +67,7 @@
     else{ctx.fillStyle=id==='rare'||id==='arlong'?'#116f85':id==='syrup'?'#4d823c':'#69442d';ctx.fillRect(camera.x,camera.y,width,height);}
     ctx.restore();
   }
-  function foreground(ctx,id,actors){
-    const image=images[id],overheads=islands[id]?.overheads;if(!image?.complete||!image.naturalWidth||!overheads)return;
-    ctx.save();ctx.imageSmoothingEnabled=false;
-    for(const o of overheads){
-      if(!actors.some(a=>a.x+35>o.x&&a.x-35<o.x+o.w&&a.y>o.y&&a.y-120<o.y+o.h))continue;
-      ctx.save();ctx.beginPath();
-      if(o.foliage)ctx.ellipse(o.x+o.w/2,o.y+o.h/2,o.w/2,o.h/2,0,0,Math.PI*2);
-      else ctx.rect(o.x,o.y,o.w,o.h);
-      ctx.clip();ctx.drawImage(image,o.x,o.y,o.w,o.h,o.x,o.y,o.w,o.h);ctx.restore();
-    }
-    ctx.restore();
-  }
   function environment(ctx,id,time){const p=islands[id]?.returnPoint;if(!p)return;ctx.save();ctx.strokeStyle='#ead8a4';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(p.x,p.y,28+Math.sin(time*2),12,0,0,Math.PI*2);ctx.stroke();ctx.font='bold 11px Trebuchet MS';ctx.textAlign='center';ctx.fillStyle='#fff2cf';ctx.fillText('Voltar ao porto',p.x,p.y+30);ctx.restore();}
-  root.MareNewIslands={...islands,ground,foreground,environment,images};
+  root.MareNewIslands={...islands,ground,environment,images};
   if(typeof module!=='undefined')module.exports=root.MareNewIslands;
 })(globalThis);
