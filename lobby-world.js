@@ -54,21 +54,46 @@
     {base:1122,polygon:[[1720,1000],[1805,902],[1870,905],[1945,1025],[1915,1060],[1740,1060]]},
     {base:1322,polygon:[[1465,1200],[1530,1075],[1590,1070],[1685,1195],[1660,1230],[1480,1230]]},
     {base:1550,polygon:[[1655,1450],[1720,1340],[1795,1355],[1900,1450],[1870,1490],[1685,1490]]},
-    {base:1324,polygon:[[2180,1210],[2240,1090],[2305,1100],[2380,1215],[2350,1250],[2200,1250]]},
-    {base:1220,polygon:[[1190,1110],[1210,1060],[1250,1045],[1290,1070],[1300,1110],[1265,1140],[1210,1135]]},
-    {base:1470,polygon:[[1260,1430],[1280,1390],[1330,1380],[1370,1410],[1370,1450],[1330,1470],[1280,1460]]},
-    {base:1370,polygon:[[1810,1280],[1830,1220],[1880,1200],[1930,1240],[1930,1300],[1890,1320],[1830,1310]]}
+    {base:1324,polygon:[[2180,1210],[2240,1090],[2305,1100],[2380,1215],[2350,1250],[2200,1250]]}
   ].map(o=>({...o,x0:Math.min(...o.polygon.map(p=>p[0])),x1:Math.max(...o.polygon.map(p=>p[0])),y0:Math.min(...o.polygon.map(p=>p[1])),y1:Math.max(...o.polygon.map(p=>p[1]))}));
+  // The PixelLab export is flattened. Reuse its exact pixels for the portions
+  // of each object that may cover a character, ordered by the ground footprint.
+  const depthObjects=colliders.filter(o=>!o.id.includes('house')&&!o.id.includes('cargo')&&o.id!=='square-monument').map(o=>{
+    const tree=o.id.includes('tree')||o.id.includes('palms');
+    const chest=o.id.includes('chest')||o.id.includes('barrels');
+    const spread=tree?54:chest?10:30, rise=tree?125:chest?52:105;
+    return {...o,pivotY:o.y+o.h,x0:o.x-spread,x1:o.x+o.w+spread,y0:o.y-rise,y1:o.y+o.h};
+  });
+  function depthProp(ctx,o){
+    if(!image?.complete||!image.naturalWidth)return;
+    ctx.save();ctx.imageSmoothingEnabled=false;
+    ctx.beginPath();
+    if(o.id.includes('tree')||o.id.includes('palms')){
+      ctx.ellipse((o.x0+o.x1)/2,o.y-42,(o.x1-o.x0)/2,Math.max(25,(o.y-o.y0)*.67),0,0,Math.PI*2);
+      ctx.rect(o.x,o.y-35,o.w,o.h+35);
+    }else ctx.rect(o.x0,o.y0,o.x1-o.x0,o.y1-o.y0);
+    ctx.clip();ctx.drawImage(image,o.x0,o.y0,o.x1-o.x0,o.y1-o.y0,o.x0,o.y0,o.x1-o.x0,o.y1-o.y0);
+    ctx.restore();
+  }
+  // Depth uses the contact point at the ground, independently from each
+  // sprite's visual height or collider dimensions (including multi-tile art).
+  function pivotY(entity){
+    if(Number.isFinite(entity.pivotY))return entity.pivotY;
+    if(Number.isFinite(entity.pivotOffsetY))return entity.y+entity.pivotOffsetY;
+    if(entity.isCharacter)return entity.y+(entity.height||0);
+    return entity.y+(entity.collider?.h??entity.height??0);
+  }
+  function sortDepth(items){return [...items].sort((a,b)=>pivotY(a)-pivotY(b));}
   function foreground(ctx,actors){
     if(!image?.complete||!image.naturalWidth)return;
     for(const o of upper){
-      if(!actors.some(a=>a.y<o.base&&a.y>o.y0&&a.y-115<o.y1&&a.x+38>o.x0&&a.x-38<o.x1))continue;
+      if(!actors.some(a=>pivotY(a)<o.base&&pivotY(a)>o.y0&&pivotY(a)-115<o.y1&&a.x+38>o.x0&&a.x-38<o.x1))continue;
       ctx.save();ctx.imageSmoothingEnabled=false;ctx.beginPath();
       o.polygon.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.clip();
       ctx.drawImage(image,o.x0,o.y0,o.x1-o.x0,o.y1-o.y0,o.x0,o.y0,o.x1-o.x0,o.y1-o.y0);
       ctx.restore();
     }
   }
-  root.MareLobby={data,point,terrain,terrainWalkable,colliders,spawn,npcs,portals,paths,map,ground,foreground,image};
+  root.MareLobby={data,point,terrain,terrainWalkable,colliders,depthObjects,depthProp,spawn,npcs,portals,paths,map,ground,foreground,pivotY,sortDepth,image};
   if(typeof module!=='undefined')module.exports=root.MareLobby;
 })(globalThis);
