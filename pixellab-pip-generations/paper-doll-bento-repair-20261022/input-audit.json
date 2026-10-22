@@ -1,0 +1,20 @@
+{
+  "north": {
+    "passed": true,
+    "violations": [],
+    "frames": 8,
+    "grounded_policy": true,
+    "north_forward_policy": true,
+    "artistic_approval": false,
+    "note": "Numerical input checks cannot certify occlusion, anatomy, generated foot position or fitted pieces."
+  },
+  "east": {
+    "passed": true,
+    "violations": [],
+    "frames": 8,
+    "grounded_policy": true,
+    "north_forward_policy": false,
+    "artistic_approval": false,
+    "note": "Numerical input checks cannot certify occlusion, anatomy, generated foot position or fitted pieces."
+  }
+}

@@ -10,6 +10,8 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 ## Paper Doll 1.0 — infraestrutura e bancada
 
+A [revisão das guias de ataque](pixellab-pip-generations/paper-doll-bento-repair-20261022/preview.html) corrige as entradas de profundidade e altura dos pés, mas os novos corpos norte/leste ainda foram reprovados e mantêm fallback. O compositor agora reconhece frames de arma totalmente encoberta por declaração explícita e validação real de transparência. O lote encerrou em6 gerações; a edição dependente do clarão não foi executada. [Resultados e limites](docs/PAPER-DOLL-CORRECAO-GUIAS.md).
+
 A [revisão por direção](pixellab-pip-generations/paper-doll-bento-directions-20261021/preview.html) acrescenta o ataque oeste com seis camadas, mantendo a frente. Norte e leste têm pendências explícitas e usam o sprite original completo como fallback. O novo lote consumiu9 gerações; nenhuma arte foi ativada na aventura. [Fontes, alinhamento, testes e assets faltantes](docs/PAPER-DOLL-DIRECOES-BENTO.md).
 
 A [continuação guiada pelo movimento do Bento](pixellab-pip-generations/paper-doll-bento-skeleton-20261021/preview.html) oferece um novo ataque **somente frontal**, com corpo por esqueleto e cinco peças visíveis originais separadas. Inclui comparação sincronizada e controles de camadas. Foram cobradas13 gerações nos dois estudos; a primeira transferência foi reprovada e bloqueada. O novo candidato segue em avaliação, fora do jogo. [Método, fontes e limites](docs/PAPER-DOLL-MOVIMENTO-BENTO.md).

@@ -1,5 +1,7 @@
 # Paper Doll 1.0 — Fase 1
 
+Continuação de22/10: [correção das guias, dois corpos reprovados e nova declaração de arma encoberta](PAPER-DOLL-CORRECAO-GUIAS.md). A infraestrutura passou nas verificações, mas norte/leste continuam pendentes artisticamente. Não confundir um pedido de geração numericamente válido com uma imagem alinhada.
+
 Revisão direcional (22/10/2026): [frente e oeste em inspeção, norte e leste com fallback](PAPER-DOLL-DIRECOES-BENTO.md). O oeste tem oito poses de seis camadas, encaixes da espada por pose e calibração fixa de origem. As duas vistas pendentes não usam peças parciais. O lote consumiu9 gerações confirmadas e preserva produção/saves.
 
 Continuação em inspeção: [novo corte frontal guiado pelas articulações do Bento](PAPER-DOLL-MOVIMENTO-BENTO.md). Corpo neutro pelo Skeleton v3 e peças visíveis originais separadas;13 gerações confirmadas nos dois estudos. Não usar o primeiro corpo da transferência (espada interpretada como braço). O novo pacote continua `approved:false`, somente frente, sem continuidade Idle/Walk nem demais vistas certificadas.
@@ -181,6 +183,12 @@ Sem peças, os dois lados mostram o sprite completo e a ferramenta informa fallb
 Para um pacote local: selecione um JSON e todas as folhas PNG na mesma seleção de arquivos, com nomes únicos. O importador exige o contrato84 e4/8/8, usa URLs locais temporárias, valida antes de aplicar e não faz upload. O catálogo original é restaurável. Bindings opcionais do pacote habilitam o ensaio de troca de itens; sem bindings esses seletores ficam desativados. Nenhum arquivo importado entra automaticamente no repositório ou no save.
 
 ## Cache e desempenho
+
+### Arma totalmente encoberta em um frame
+
+Uma folha animada de arma pode declarar `clip.occludedFrames`, por exemplo `{"north":[1,2,3]}`, quando a fonte mostra a arma inteiramente atrás do corpo. Os índices começam em zero. Cada célula declarada precisa ser totalmente transparente; pixels visíveis nessa célula provocam `occluded-frame-has-pixels`. Uma célula vazia sem declaração continua provocando `empty-frame` e fallback completo.
+
+A declaração é aceita somente para o slot `weapon` em folhas animadas, nunca para corpo, cabelo, roupa ou armas rígidas. Direções precisam existir no clip, índices precisam ser únicos e válidos, e cada direção deve ter pelo menos um frame não encoberto. `available:false`, peças não aprovadas e demais validações continuam sendo respeitadas. A auditoria usa a declaração na chave do cache para não reaproveitar um resultado de outra política. Isso registra visibilidade real da fonte; não autoriza apagar pixels ou omitir frames faltantes.
 
 ### Encaixes editáveis e vistas de arma
 

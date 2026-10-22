@@ -1,0 +1,9 @@
+{
+  "body_motion_gate_passed": false,
+  "modular_fit_gate_passed": false,
+  "artwork_approved": false,
+  "reason": "Forearm remains drawn across the visible back in poses1–5 despite corrected bilateral depth/order. Do not cover with clothing.",
+  "summary_pt": "Norte: o gerador ainda desenha o antebraço sobre as costas. Resultado reprovado; fallback original completo.",
+  "ground_line_native": 52,
+  "retry": false
+}

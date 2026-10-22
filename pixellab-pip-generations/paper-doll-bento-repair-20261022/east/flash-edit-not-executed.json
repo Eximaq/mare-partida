@@ -1,0 +1,10 @@
+{
+  "status": "not_executed",
+  "reason": "Dependent east body did not pass the visual and alignment gate.",
+  "charged_generations": 0,
+  "inputs_prepared_only": [
+    "flash-source.png",
+    "flash-mask.png",
+    "flash-context.png"
+  ]
+}

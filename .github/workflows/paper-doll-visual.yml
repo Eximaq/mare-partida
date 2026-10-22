@@ -48,6 +48,11 @@ on:
       - 'docs/PAPER-DOLL-DIRECOES-BENTO.md'
       - 'tools/paper_doll_motion_controls.py'
       - 'tests/paper_doll_motion_controls_test.py'
+      - 'tests/paper-doll-occlusion.test.cjs'
+      - 'tests/paper-doll-motion-repair.test.cjs'
+      - 'tests/paper_doll_repair_browser.py'
+      - 'pixellab-pip-generations/paper-doll-bento-repair-20261022/**'
+      - 'docs/PAPER-DOLL-CORRECAO-GUIAS.md'
       - 'pixellab-pip-generations/paper-doll-walk-north-20261021/**'
       - 'docs/PAPER-DOLL-CAMINHADA-NORTE.md'
       - 'pixellab-pip-generations/paper-doll-walk-fit-20261021/**'
@@ -105,6 +110,7 @@ jobs:
           python pixellab-pip-generations/paper-doll-bento-skeleton-20261021/assemble.py
           python pixellab-pip-generations/paper-doll-bento-skeleton-20261021/extract_visible_pieces.py
           python pixellab-pip-generations/paper-doll-bento-directions-20261021/compose.py
+          python pixellab-pip-generations/paper-doll-bento-repair-20261022/assemble_review.py
           python tools/build_pages.py
       - name: Conferir bancada, fallback e jogo
         env:
@@ -137,6 +143,7 @@ jobs:
           python tests/paper_doll_bento_motion_browser.py
           MARE_MOTION_STUDY=pixellab-pip-generations/paper-doll-bento-skeleton-20261021/ python tests/paper_doll_bento_motion_browser.py
           python tests/paper_doll_directions_browser.py
+          python tests/paper_doll_repair_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-basic-sword-20261021/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-walk-profiles-20261021/ python tests/paper_doll_world_review_browser.py
           python tests/universal_character_browser.py

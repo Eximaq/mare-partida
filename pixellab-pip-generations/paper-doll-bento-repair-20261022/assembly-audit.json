@@ -1,0 +1,257 @@
+{
+  "body_records": {
+    "north": [
+      {
+        "frame": 0,
+        "padding": [
+          10,
+          13
+        ],
+        "native_bounds": [
+          20,
+          7,
+          44,
+          52
+        ],
+        "ground_line": 65,
+        "sha256": "3bff5db7f6d7e8ac5cce0af478e648840346a1a833d3c61decfc17628befa1f0"
+      },
+      {
+        "frame": 1,
+        "padding": [
+          10,
+          13
+        ],
+        "native_bounds": [
+          19,
+          7,
+          43,
+          52
+        ],
+        "ground_line": 65,
+        "sha256": "743b811a1d311dd14be9ea12994b56f5460de6c2852c688c26fdae268c037480"
+      },
+      {
+        "frame": 2,
+        "padding": [
+          10,
+          13
+        ],
+        "native_bounds": [
+          18,
+          8,
+          43,
+          52
+        ],
+        "ground_line": 65,
+        "sha256": "cb74bdb0168302dd50321f7b0eb613540f8d493774c9fa241c3603b78a00fb95"
+      },
+      {
+        "frame": 3,
+        "padding": [
+          10,
+          13
+        ],
+        "native_bounds": [
+          18,
+          9,
+          43,
+          52
+        ],
+        "ground_line": 65,
+        "sha256": "88dbebc578c2efdc4c8bbbc7718550e4cd42c0f4ecb349d1538d240564f5c2e3"
+      },
+      {
+        "frame": 4,
+        "padding": [
+          10,
+          13
+        ],
+        "native_bounds": [
+          18,
+          9,
+          43,
+          52
+        ],
+        "ground_line": 65,
+        "sha256": "a5e56d3038ddc9377cbbf1e7132cf1246eb3eb596fcd34aa20b3e83eb030c8ad"
+      },
+      {
+        "frame": 5,
+        "padding": [
+          10,
+          13
+        ],
+        "native_bounds": [
+          19,
+          8,
+          43,
+          52
+        ],
+        "ground_line": 65,
+        "sha256": "122b3194f6e5c0885f9b6c4c52f88b8d758853146217413b99a5d15c7bd72ca6"
+      },
+      {
+        "frame": 6,
+        "padding": [
+          10,
+          13
+        ],
+        "native_bounds": [
+          20,
+          7,
+          46,
+          52
+        ],
+        "ground_line": 65,
+        "sha256": "bc62258744463337374ff24bb3ccecb31b3a2a5932c6915d00593879b3a402ee"
+      },
+      {
+        "frame": 7,
+        "padding": [
+          10,
+          13
+        ],
+        "native_bounds": [
+          19,
+          7,
+          46,
+          52
+        ],
+        "ground_line": 65,
+        "sha256": "16224cef31b7df5918ac6b6e77964821ef856dba1c9375f514d7b2d40f17895a"
+      }
+    ],
+    "east": [
+      {
+        "frame": 0,
+        "padding": [
+          10,
+          10
+        ],
+        "native_bounds": [
+          22,
+          11,
+          44,
+          56
+        ],
+        "ground_line": 66,
+        "sha256": "66b72d0dd1bb407f667257c9b63deeb7d8fce6ac1f0578c73a83d4ad820e36b4"
+      },
+      {
+        "frame": 1,
+        "padding": [
+          10,
+          10
+        ],
+        "native_bounds": [
+          22,
+          11,
+          44,
+          56
+        ],
+        "ground_line": 66,
+        "sha256": "ddd3c1b97bee395ac20017373a4d028dc7299e8e1c60de78193782d88982af53"
+      },
+      {
+        "frame": 2,
+        "padding": [
+          10,
+          10
+        ],
+        "native_bounds": [
+          19,
+          13,
+          45,
+          56
+        ],
+        "ground_line": 66,
+        "sha256": "c5643516a0426cc5fa74fc1eda659e89bbd0e10f63c0b4fe4ba30ca5b80c49d6"
+      },
+      {
+        "frame": 3,
+        "padding": [
+          10,
+          10
+        ],
+        "native_bounds": [
+          19,
+          14,
+          45,
+          55
+        ],
+        "ground_line": 65,
+        "sha256": "5a9fcfa5cfe40fa3823032b68b5325921a4c48f6703f17ad424f8f7acc745e77"
+      },
+      {
+        "frame": 4,
+        "padding": [
+          10,
+          10
+        ],
+        "native_bounds": [
+          18,
+          14,
+          44,
+          55
+        ],
+        "ground_line": 65,
+        "sha256": "6229011f3431a627f7d373f14c262de1a62c282a86e05d5e09eb2144aedf8bc6"
+      },
+      {
+        "frame": 5,
+        "padding": [
+          10,
+          10
+        ],
+        "native_bounds": [
+          19,
+          14,
+          44,
+          55
+        ],
+        "ground_line": 65,
+        "sha256": "7474b6be9667bbe295ecf6bb56c8054a845d03d9a553e125eeebced7fc7fce74"
+      },
+      {
+        "frame": 6,
+        "padding": [
+          10,
+          10
+        ],
+        "native_bounds": [
+          19,
+          14,
+          46,
+          55
+        ],
+        "ground_line": 65,
+        "sha256": "799d9366c591a3fb082f58f2364ef6a5035f6dcc117713f00f15c116c3accacf"
+      },
+      {
+        "frame": 7,
+        "padding": [
+          10,
+          10
+        ],
+        "native_bounds": [
+          21,
+          12,
+          44,
+          56
+        ],
+        "ground_line": 66,
+        "sha256": "41f57829e9e372e549c1e08dfcbb6c5211d3cb1d6d8365cc0d48feb2c50770ae"
+      }
+    ]
+  },
+  "inherited_sha256": {
+    "body": "acc376e2ff6163ee2abad9e3f94b583dc6404899356448e9fe61137e4a3fee92",
+    "pants": "578827f121ea8ff438422128aeecc04616e7d270286828533e57e488837eb4e3",
+    "boots": "297664004ae152a8a10255e5089898652995a0a00005904015f88b44f218d07b",
+    "outfit": "4e083a4d10635e1bc9d5ac31f2871f69e25baa3310495af99c6e8c113d605624",
+    "hair": "5f4baf7d1faf1a380308bad028df8c0736110c9e22fa8ccf240e42827c29cdb1",
+    "weapon": "6b4bc659377d6b3172533cbdd2c94d3baed22f5489d1141a9ef6fb899d2a5120"
+  },
+  "production_enabled": false
+}
