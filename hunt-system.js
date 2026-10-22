@@ -9,14 +9,14 @@
     syrup:{name:'Vila Syrup',min:21,max:25,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.syrup.districts.map((d,i)=>({...d,min:23,max:23,roles:i%2?['buchi','sham']:['sham','buchi']}))},
     baratie:{name:'Baratie',min:26,max:30,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.baratie.districts.map((d,i)=>({...d,min:28,max:28,roles:i%2?['gin','pearl']:['pearl','gin']}))},
     arlong:{name:'Parque Arlong',min:31,max:35,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:60,sectors:newIslands.arlong.districts.map((d,i)=>({...d,min:33,max:33,roles:i%2?['chew','kuroobi']:['kuroobi','chew']}))},
-    beach:{name:'Ilha Dawn',min:1,max:5,boss:'Capitão da Caldeira',bossLevel:5,firstGold:300,firstRarity:'rare',respawn:90,sectors:[
-      {id:'cais',name:'Cais de Dawn',min:1,max:2,x:1128,y:1640,roles:['bandit','crab']},
-      {id:'corsarios',name:'Bosque dos Corsários',min:3,max:4,x:1352,y:1544,roles:['bandit','bandit','crab']},
-      {id:'estaleiro',name:'Praia dos Barqueiros',min:3,max:4,x:1656,y:1752,roles:['bandit','spirit']},
-      {id:'mercado',name:'Enseada das Conchas',min:4,max:4,x:2152,y:1736,roles:['bandit','spirit','crab']},
-      {id:'ancoras',name:'Passarela das Âncoras',min:4,max:5,x:1672,y:1352,roles:['crab','spirit']},
-      {id:'farol',name:'Clareira dos Vigias',min:5,max:5,x:1832,y:1160,roles:['spirit','crab']},
-      {id:'caldeira',name:'Vila do Capitão',min:5,max:5,x:2152,y:1064,roles:['crab','spirit']}
+    beach:{name:'Ilha Dawn',min:1,max:5,boss:'César',bossLevel:5,firstGold:300,firstRarity:'rare',respawn:90,sectors:[
+      {id:'cais',name:'Cais de Dawn',min:5,max:5,x:1128,y:1640,roles:['cesar']},
+      {id:'corsarios',name:'Bosque dos Corsários',min:5,max:5,x:1352,y:1544,roles:['cesar']},
+      {id:'estaleiro',name:'Praia dos Barqueiros',min:5,max:5,x:1656,y:1752,roles:['cesar']},
+      {id:'mercado',name:'Enseada das Conchas',min:5,max:5,x:2152,y:1736,roles:['cesar']},
+      {id:'ancoras',name:'Passarela das Âncoras',min:5,max:5,x:1672,y:1352,roles:['cesar']},
+      {id:'farol',name:'Clareira dos Vigias',min:5,max:5,x:1832,y:1160,roles:['cesar']},
+      {id:'caldeira',name:'Vila do Capitão',min:5,max:5,x:2152,y:1064,roles:['cesar']}
     ]},
     orange:{name:'Orange Town',min:11,max:15,boss:'Capitão Fagulha',bossLevel:15,firstGold:1800,firstRarity:'epic',respawn:90,sectors:[
       {id:'cais',name:'Cais das Laranjeiras',min:11,max:12,x:480,y:1632,roles:['bandit','crab']},

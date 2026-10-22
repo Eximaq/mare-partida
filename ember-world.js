@@ -89,7 +89,7 @@
   const paths=districts.map(d=>({id:d.id,name:d.name,x:d.x,y:d.y}));
   const map={id:'embers',width:COLS*TILE,height:ROWS*TILE,origin:{x:0,y:0},spawn,colliders,terrainWalkable:ground,navigationGoals:paths,spawnZones:districts.map(d=>({id:d.id,x:(d.tx-d.rx)*TILE,y:(d.ty-d.ry)*TILE,w:d.rx*2*TILE,h:d.ry*2*TILE})),interactions:[returnPoint]};
   const nearestDistrict=p=>districts.reduce((best,d)=>Math.hypot(p.x-d.x,p.y-d.y)<Math.hypot(p.x-best.x,p.y-best.y)?d:best,districts[0]);
-  const skins={crab:{id:'slag-warden',name:'Vigia de Escória',height:72},bandit:{id:'scorched-corsair',name:'Corsário Calcinado',height:72},spirit:{id:'ash-lantern',name:'Faroleiro das Cinzas',height:72},boss:{id:'caldera-captain',name:'Capitão da Caldeira',height:72}};
+  const skins={cesar:{id:'cesar',name:'César',height:96},crab:{id:'slag-warden',name:'Vigia de Escória',height:72},bandit:{id:'scorched-corsair',name:'Corsário Calcinado',height:72},spirit:{id:'ash-lantern',name:'Faroleiro das Cinzas',height:72},boss:{id:'caldera-captain',name:'Capitão da Caldeira',height:72}};
   const api={TILE,COLS,ROWS,WATER,BASALT,STREET,LAVA,WOOD,terrain,original,at,center,map,routes,districts,props,fires,paths,returnPoint,ground,nearestDistrict,skins,bridges,stairs,cliffs,frontages,elevation,quay};
   root.MareEmber=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

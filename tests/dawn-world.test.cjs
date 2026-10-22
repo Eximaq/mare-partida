@@ -16,7 +16,7 @@ for(const a of [O.spawn,...O.paths,O.returnPoint])for(const b of [O.spawn,...O.p
  while(path.length&&steps++<4000){nav.follow(actor,path,158,1/30);assert(nav.walkable(actor.x,actor.y));}
  assert(!path.length&&Math.hypot(actor.x-b.x,actor.y-b.y)<1,`${a.id} -> ${b.id} stopped at ${actor.x},${actor.y}`);
 }
-for(const d of O.districts){const r=H.get('beach').sectors.find(s=>s.id===d.id);assert.equal(r.x,d.x);assert.equal(r.y,d.y);assert.deepEqual([r.min,r.max],[d.min,d.max]);}
+for(const d of O.districts){const r=H.get('beach').sectors.find(s=>s.id===d.id);assert.equal(r.x,d.x);assert.equal(r.y,d.y);assert.deepEqual([r.min,r.max,r.roles],[5,5,['cesar']]);}
 assert.equal(H.get('beach').bossLevel,5);assert.equal(H.get('beach').firstGold,300);
 const camera=new Camera();for(const [w,h]of [[1920,1080],[1366,768],[393,852],[4096,2800]]){Object.assign(camera,{width:w,height:h});for(const p of O.paths){camera.update(p,O.map,0,true);assert(camera.x>=0&&camera.y>=0);assert(camera.x<=Math.max(0,O.map.width-w)&&camera.y<=Math.max(0,O.map.height-h));}}
 console.log('Dawn manual: byte-identical export, 42 original placements, precise footprints, 81 walking routes, source dimensions, fixed levels/reward and camera passed.');

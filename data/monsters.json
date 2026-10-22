@@ -130,5 +130,22 @@
     "behavior": "aggressive_shooter_patrol",
     "sprite_id": "3139378f-61a7-4f6f-bd97-419be0db5b07",
     "boss": false
+  },
+  "cesar": {
+    "id": "cesar",
+    "name": "César",
+    "level": 5,
+    "area": "beach",
+    "max_hp": 211,
+    "physical_attack": 17,
+    "physical_defense": 8,
+    "magic_defense": 5,
+    "move_speed": 55,
+    "attack_seconds": 1.8,
+    "aggro_radius": 300,
+    "reach": 52,
+    "behavior": "aggressive_patrol",
+    "sprite_id": "da9c0817-8ea5-425f-a164-7e2362bd46bc",
+    "boss": false
   }
 }

@@ -29,7 +29,7 @@ def scale_monster(monster, base):
     return result
 
 
-CATALOG = {key: scale_monster(value, RAW_CATALOG["cocox"]) if key != "cocox" else value
+CATALOG = {key: scale_monster(value, RAW_CATALOG["cocox"]) if value.get("base_id") else value
            for key, value in RAW_CATALOG.items()}
 
 
