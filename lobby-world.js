@@ -10,7 +10,7 @@
     {id:'west-house',x:1310,y:1000,w:190,h:95},
     {id:'east-house',x:1730,y:1030,w:190,h:92},
     {id:'forge-house',x:1460,y:1210,w:210,h:112},
-    {id:'market-house',x:1690,y:1460,w:195,h:90},
+    {id:'market-house',x:1690,y:1430,w:195,h:96},
     {id:'dock-house',x:2190,y:1230,w:150,h:94},
     {id:'dock-cargo',x:2380,y:1010,w:190,h:130},
     {id:'market-stall',x:1115,y:975,w:92,h:48},
@@ -24,6 +24,7 @@
     {id:'south-tree',x:1270,y:1460,w:55,h:43},
     {id:'market-tree',x:1850,y:1235,w:75,h:55},
     {id:'central-palms',x:1310,y:1250,w:75,h:62},
+    ...[[1632,684],[1696,684],[1568,884],[1632,884],[2208,1012],[2208,1076],[2080,1308]].map(([x,y],i)=>({id:'fruit-tree-'+i,x:x-32,y:y-64,w:64,h:64})),
     ...[[1378,840],[1976,748],[2052,928],[1240,998],[1240,1600],[1660,1514],[2004,1600],[2134,1260]].map(([x,y],i)=>({id:'lamp-'+i,x:x-12,y:y-14,w:24,h:28})),
     {id:'north-palms',x:1440,y:560,w:82,h:48},
     {id:'west-palms',x:820,y:1150,w:90,h:45},
@@ -39,7 +40,7 @@
   const portals=[{id:'world-map',kind:'hunt',...point(21,8),radius:46}];
   const paths=[spawn,point(3,2),point(12,8),point(20,7)];
   const map={id:'lobby',width:data.width*TILE,height:data.height*TILE,origin:{x:0,y:0},spawn,
-    colliders,terrainWalkable,navigationGoals:paths,spawnZones:[],safeZones:[{...spawn,radius:140}],
+    colliders,playerFootprint:{w:32,h:20},terrainWalkable,navigationGoals:paths,spawnZones:[],safeZones:[{...spawn,radius:140}],
     interactions:portals,navigationCell:32};
   const image=typeof Image!=='undefined'?new Image():null;
   if(image)image.src='assets/lobby-map.png';

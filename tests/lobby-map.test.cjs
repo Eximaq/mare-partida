@@ -25,3 +25,11 @@ assert(lobby.depthObjects.every(o=>o.id.includes('tree')||o.id.includes('palms')
 
 for(const c of lobby.colliders){assert.equal(c.isSolid,true,c.id);assert(c.w>=64&&c.h>=64,c.id);}
 const render=require('node:fs').readFileSync(require('node:path').join(__dirname,'../game.js'),'utf8');assert.match(render,/drawEntityLayer\(\);drawHeroLayer\(\);[\s\S]{0,200}drawForegroundLayer\(/);
+
+test('fruit tree trunks block a 32x20 foot box without sealing nearby grass',()=>{
+ const nav=new globalThis.MareWorld.Navigation(lobby.map,32);
+ for(const c of lobby.colliders.filter(c=>c.id.startsWith('fruit-tree-'))){
+  assert.equal(nav.walkable(c.x+c.w/2,c.y+c.h/2),false,c.id);
+ }
+ assert.equal(nav.walkable(1760,680),true);
+});
