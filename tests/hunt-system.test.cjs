@@ -3,7 +3,10 @@ const assert=require('node:assert/strict'),H=require('../hunt-system.js');
 require('../orange-world.js');require('../ember-world.js');require('../dawn-world.js');require('../conchas-world.js');require('../world-system.js');
 const W=globalThis.MareWorld,E=globalThis.MareDawn;
 const base=()=>H.migrate({level:1,gold:120,stats:{kills:99},inventory:[],equipment:{keep:{id:'safe'}},claimed:['boss']});
-let g=base(),source=JSON.stringify(g);assert.deepEqual(H.migrate(g),g);assert.equal(g.hunts.areas.beach.kills,0);assert.equal(g.stats.kills,99);
+let g=base(),source=JSON.stringify(g);assert.deepEqual(H.migrate(g),g);assert.equal(g.hunts.areas.beach.kills,0);
+assert.equal(H.regions.beach.boss,'César');
+assert(H.regions.beach.sectors.every(s=>s.min===5&&s.max===5&&s.roles.length===1&&s.roles[0]==='cesar'));
+assert.equal(H.profile('beach','cais','cesar').level,5);assert.equal(g.stats.kills,99);
 assert.deepEqual(Object.values(H.regions).map(r=>[r.min,r.max]),[[16,20],[21,25],[26,30],[31,35],[1,5],[11,15],[6,10]]);
 for(const [area,region] of Object.entries(H.regions).filter(([,region])=>!!region.boss)){
  const anchors=area==='orange'?globalThis.MareOrange.districts:area==='beach'?E.districts:globalThis.MareConchas.districts,map=area==='orange'?globalThis.MareOrange.map:area==='beach'?E.map:W.maps.conchas,nav=new W.Navigation(map,map.navigationCell||24);

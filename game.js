@@ -135,6 +135,7 @@
     crab: { name:'Carapaça Ígnea', hp:45, atk:7, def:3, xp:22, gold:[6,13], reach:43, speed:42, attackSec:2.15, color:'#dd846c', icon:'◇' },
     bandit: { name:'Corsário de Brasa', hp:67, atk:10, def:5, xp:29, gold:[10,18], reach:51, speed:55, attackSec:1.95, color:'#e6b27d', icon:'⚔' },
     spirit: { name:'Sentinela Cinzenta', hp:52, atk:12, def:3, xp:34, gold:[10,19], reach:135, speed:34, attackSec:2.6, color:'#85d8c8', icon:'✧' },
+    cesar: { name:'César', hp:211, atk:17, def:8, xp:70, gold:[22,35], reach:52, speed:55, attackSec:1.8, color:'#726770', icon:'◆' },
     boss: { name:'Guardião da Caldeira', hp:350, atk:17, def:10, xp:145, gold:[100,140], reach:56, speed:33, attackSec:2.45, color:'#e9c27b', icon:'♛' },
     cocox: { name:'Cocox', hp:620, atk:48, def:22, xp:140, gold:[45,70], reach:56, speed:82, attackSec:1.35, color:'#aaa797', icon:'◆' }
   };
@@ -196,7 +197,7 @@
     {id:'bandit',title:'Chamas à espreita',desc:'Derrote 5 corsários de brasa.',target:5,stat:'bandit',gold:125,xp:100},
     {id:'boss',title:'Coração vulcânico',desc:'Derrote um chefe de ilha.',target:1,stat:'boss',gold:280,xp:190},
     {id:'dawn-patrol',title:'Dawn: liberar as ruas',desc:'Derrote 20 inimigos na Ilha Dawn.',target:20,area:'beach',metric:'kills',gold:150,xp:200},
-    {id:'dawn-clear',title:'Dawn: tomar a fortaleza',desc:'Derrote o Capitão da Caldeira na Ilha Dawn.',target:1,area:'beach',metric:'bosses',gold:300,xp:450},
+    {id:'dawn-clear',title:'Dawn: enfrentar César',desc:'Derrote César na Ilha Dawn.',target:1,area:'beach',metric:'bosses',gold:300,xp:450},
     {id:'conchas-patrol',title:'Conchas: dissipar a névoa',desc:'Derrote 30 inimigos na Cidade das Conchas.',target:30,area:'swamp',metric:'kills',gold:450,xp:800},
     {id:'conchas-clear',title:'Conchas: vencer o bastião',desc:'Derrote o Guardião das Conchas.',target:1,area:'swamp',metric:'bosses',gold:900,xp:1400},
     {id:'orange-patrol',title:'Orange Town: recuperar o comércio',desc:'Derrote 40 inimigos em Orange Town.',target:40,area:'orange',metric:'kills',gold:900,xp:1600},
@@ -459,7 +460,7 @@
       if(navigator().walkable(p.x,p.y)&&navigator().path(world.hero,p).length){point=p;sector=candidateSector;break;}
     }
     if(!point)return;
-    const type=forceBoss?'boss':pick(sector.roles),profile=MareHunt.profile(game.area,sector.id,type,Math.random()),skin=activeMap().id==='orange'?MareOrange.skins[type]:['embers','dawn'].includes(activeMap().id)?MareEmber.skins[type]:null;
+    const type=forceBoss?'boss':pick(sector.roles),profile=MareHunt.profile(game.area,sector.id,type,Math.random()),skin=activeMap().id==='orange'?MareOrange.skins[type]:activeMap().id==='dawn'?MareEmber.skins.cesar:activeMap().id==='embers'?MareEmber.skins[type]:null;
     world.mobs.push({id:world.nextID++,area:game.area,source:'world',type,name:forceBoss?region.boss:skin?.name||monsterTypes[type]?.name,skin:skin?.id,district:sector.id,...point,anchorX:point.x,anchorY:point.y,...profile,hp:profile.maxHP,attackClock:rand(.8,2),attackCount:0,bob:rand(0,6.28),alive:true,hit:0,slow:0,telegraph:null,emberFacing:'south',emberElapsed:0,attackAnim:0,moving:0,patrolClock:0});
     if(forceBoss){session.bossNotice=3.3;$('bossBanner').classList.remove('hidden');log(region.boss+' aguarda no setor final.','danger');}
   }
@@ -670,7 +671,7 @@
       mob.slow=Math.max(0,(mob.slow||0)-dt);if(mob.zoanSlow)mob.zoanSlow.remaining=Math.max(0,mob.zoanSlow.remaining-dt);if(mob.zoanDefense)mob.zoanDefense.remaining=Math.max(0,mob.zoanDefense.remaining-dt);mob.attackClock-=dt;mob.bob+=dt*2;
       if(mob.taunt)mob.taunt.remaining=Math.max(0,mob.taunt.remaining-dt);
       const reach=mob.reach||monsterTypes[mob.type].reach,md=distance(mob,world.hero);
-      if(mob.attackClock<=0){if(md<=reach+10&&navigator().clear(mob,world.hero)&&!session.talents.ultimate.hidden&&!(mob.empRemaining>0)){mob.emberFacing=Math.abs(world.hero.x-mob.x)>Math.abs(world.hero.y-mob.y)?(world.hero.x<mob.x?'west':'east'):(world.hero.y<mob.y?'north':'south');mob.attackAnim=['cocox','sham','buchi','pearl','gin','kuroobi','chew'].includes(mob.type)?.58:0;const warning=MareHunt.beginWarning(mob,world.hero);mob.attackCount=(mob.attackCount||0)+1;if(warning){mob.telegraph=warning;spawnVisual(mob.x,mob.y-95,warning.name,'#ffcb82',12);}else takeDamage(mob.attack,mob,mob.type!=='spirit');mob.attackClock=mob.attackSec||monsterTypes[mob.type].attackSec;}else mob.attackClock=.3;}
+      if(mob.attackClock<=0){if(md<=reach+10&&navigator().clear(mob,world.hero)&&!session.talents.ultimate.hidden&&!(mob.empRemaining>0)){mob.emberFacing=Math.abs(world.hero.x-mob.x)>Math.abs(world.hero.y-mob.y)?(world.hero.x<mob.x?'west':'east'):(world.hero.y<mob.y?'north':'south');mob.attackAnim=(['cocox','sham','buchi','pearl','gin','kuroobi','chew','cesar'].includes(mob.type)||mob.type==='boss'&&mob.area==='beach')?.58:0;const warning=MareHunt.beginWarning(mob,world.hero);mob.attackCount=(mob.attackCount||0)+1;if(warning){mob.telegraph=warning;spawnVisual(mob.x,mob.y-95,warning.name,'#ffcb82',12);}else takeDamage(mob.attack,mob,mob.type!=='spirit');mob.attackClock=mob.attackSec||monsterTypes[mob.type].attackSec;}else mob.attackClock=.3;}
       if(mob.telegraph)continue;
       const fromAnchor=Math.hypot(world.hero.x-mob.anchorX,world.hero.y-mob.anchorY),aggro=mob.aggro||300;
       if(fromAnchor>500&&md>reach){navigateEntity(mob,{x:mob.anchorX,y:mob.anchorY},mob.speed*.65,dt,20);continue;}
@@ -1269,7 +1270,7 @@
     const nav=navigator();let point=null;
     for(const r of [100,150,200]){for(let a=0;a<Math.PI*2;a+=Math.PI/8){const p={x:world.hero.x+Math.cos(a)*r,y:world.hero.y+Math.sin(a)*r};if(nav.walkable(p.x,p.y)&&nav.clear(world.hero,p)&&!livingMobs().some(m=>distance(m,p)<55)){point=p;break;}}if(point)break;}
     if(!point){toast('Não há espaço livre próximo. Mova o personagem.');return;}
-    const sector=MareHunt.sectorAt(game.area,point,huntAnchors()),profile=MareHunt.profile(game.area,sector.id,type,Math.random()),skin=activeMap().id==='orange'?MareOrange.skins[type]:['embers','dawn'].includes(activeMap().id)?MareEmber.skins[type]:null;
+    const sector=MareHunt.sectorAt(game.area,point,huntAnchors()),profile=MareHunt.profile(game.area,sector.id,type,Math.random()),skin=activeMap().id==='orange'?MareOrange.skins[type]:activeMap().id==='dawn'?MareEmber.skins.cesar:activeMap().id==='embers'?MareEmber.skins[type]:null;
     world.mobs.push({id:world.nextID++,level:profile.level,area:game.area,source:'world',type,name:type==='boss'?MareHunt.get(game.area).boss:skin?.name,skin:skin?.id,district:sector.id,...point,anchorX:point.x,anchorY:point.y,...profile,hp:profile.maxHP,attackClock:2,attackCount:2,bob:0,alive:true,hit:0,slow:0,telegraph:null,emberFacing:'south',emberElapsed:0,attackAnim:0,moving:0,patrolClock:0});
     toast('Inimigo de teste criado. Feche o laboratório para combater.');
   }

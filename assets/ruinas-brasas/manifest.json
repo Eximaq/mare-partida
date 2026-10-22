@@ -34,7 +34,7 @@
           46
         ],
         "east": [
-          27.0,
+          27,
           46
         ],
         "north-east": [
@@ -46,7 +46,7 @@
           44
         ],
         "north-west": [
-          25.0,
+          25,
           45
         ],
         "west": [
@@ -96,11 +96,11 @@
           44
         ],
         "south-east": [
-          24.0,
+          24,
           45
         ],
         "east": [
-          24.0,
+          24,
           45
         ],
         "north-east": [
@@ -112,15 +112,15 @@
           44
         ],
         "north-west": [
-          25.0,
+          25,
           45
         ],
         "west": [
-          23.0,
+          23,
           45
         ],
         "south-west": [
-          24.0,
+          24,
           45
         ]
       },
@@ -174,15 +174,15 @@
           45
         ],
         "north": [
-          23.0,
+          23,
           44
         ],
         "north-west": [
-          21.0,
+          21,
           45
         ],
         "west": [
-          23.0,
+          23,
           45
         ],
         "south-west": [
@@ -228,7 +228,7 @@
           47
         ],
         "south-east": [
-          22.0,
+          22,
           47
         ],
         "east": [
@@ -244,15 +244,15 @@
           45
         ],
         "north-west": [
-          22.0,
+          22,
           45
         ],
         "west": [
-          18.0,
+          18,
           46
         ],
         "south-west": [
-          23.0,
+          23,
           45
         ]
       },
@@ -268,6 +268,44 @@
           "frames": 1,
           "frame_width": 48,
           "frame_height": 48
+        }
+      }
+    },
+    "cesar": {
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "frame_width": 96,
+      "frame_height": 96,
+      "anchor": [
+        48,
+        92
+      ],
+      "render_scale": 1.25,
+      "source": "PixelLab César da9c0817-8ea5-425f-a164-7e2362bd46bc",
+      "animations": {
+        "idle": {
+          "url": "assets/monsters/cesar-idle.png",
+          "frames": 1,
+          "frame_width": 96,
+          "frame_height": 96
+        },
+        "run": {
+          "url": "assets/monsters/cesar-run.png",
+          "frames": 11,
+          "frame_width": 96,
+          "frame_height": 96,
+          "fps": 10
+        },
+        "attack": {
+          "url": "assets/monsters/cesar-attack.png",
+          "frames": 6,
+          "frame_width": 96,
+          "frame_height": 96,
+          "fps": 10
         }
       }
     }

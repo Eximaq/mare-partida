@@ -1,0 +1,7 @@
+{
+  "source": "PixelLab",
+  "characterId": "da9c0817-8ea5-425f-a164-7e2362bd46bc",
+  "name": "César",
+  "original": "Idle state, four directions, existing run and cross-punch animations",
+  "processing": "Frames aligned into 96x96 transparent sprite-sheet cells; no generation requested."
+}

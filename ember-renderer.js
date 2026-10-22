@@ -115,9 +115,9 @@
     const r=E.returnPoint;c.save();c.strokeStyle='#85c8cf';c.lineWidth=2;c.beginPath();c.ellipse(r.x,r.y,28,12,0,0,Math.PI*2);c.stroke();c.font='bold 11px Trebuchet MS';c.textAlign='center';c.fillStyle='#f3deae';c.fillText('Cais de retorno',r.x,r.y+30);c.restore();
   }
   function monster(c,m,time){
-    const skin=E.skins[m.type],asset=characters[skin.id];if(!asset)return false;
-    const action=m.emberAction||'idle',anim=asset.animations?.[action]||asset.animations?.idle,img=asset.sheets[action]||asset.sheets.idle;if(!anim||!ready(img))return false;
-    const facing=m.emberFacing||'south',row=(asset.directions||['south','north','west','east']).indexOf(facing),frames=anim.frames||1,index=action==='idle'?0:Math.min(frames-1,Math.floor((m.emberElapsed||0)*(anim.fps||8))%frames),fw=anim.frame_width||asset.frame_width,fh=anim.frame_height||asset.frame_height;
+    const skin=E.skins[m.type],asset=characters[m.skin]||characters[skin?.id];if(!asset)return false;
+    const action=m.attackAnim>0&&asset.animations?.attack?'attack':m.moving>0&&asset.animations?.run?'run':m.emberAction||'idle',anim=asset.animations?.[action]||asset.animations?.idle,img=asset.sheets[action]||asset.sheets.idle;if(!anim||!ready(img))return false;
+    const facing=m.emberFacing||'south',row=(asset.directions||['south','north','west','east']).indexOf(facing),frames=anim.frames||1,index=action==='idle'?0:Math.min(frames-1,Math.floor((action==='attack'?Math.max(0,.58-m.attackAnim):m.emberElapsed||0)*(anim.fps||8))%frames),fw=anim.frame_width||asset.frame_width,fh=anim.frame_height||asset.frame_height;
     const scale=asset.render_scale||skin.height/fh,anchor=anim.anchor||asset.anchor||[fw/2,fh*.9];
     c.save();c.imageSmoothingEnabled=false;if(m.hit>0)c.filter='brightness(1.45)';c.drawImage(img,index*fw,Math.max(0,row)*fh,fw,fh,Math.round(m.x-anchor[0]*scale),Math.round(m.y-anchor[1]*scale),Math.round(fw*scale),Math.round(fh*scale));c.restore();return true;
   }
