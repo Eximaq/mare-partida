@@ -18,8 +18,13 @@
   const cache=new Map();
   function asset(name,action,direction){
     const url=`assets/akuma/zoan/${name}-${action}-${direction}.png`;
-    if(!cache.has(url)){const image=new Image();image.src=url;cache.set(url,image);}
+    if(!cache.has(url)){const image=new Image(),notify=()=>{if(typeof window!=='undefined')window.dispatchEvent(new Event('mare-zoan-sprite-ready'));};image.addEventListener?.('load',notify);image.addEventListener?.('error',notify);image.src=url;cache.set(url,image);}
     return cache.get(url);
+  }
+  function status(fruitId,action='idle',direction='front'){
+    const name=names[fruitId];if(!name)return 'missing';
+    const image=asset(name,action,directions[direction]||'south');
+    if(!image.complete)return 'loading';return image.naturalWidth>=(name==='tori'?64:48)?'ready':'failed';
   }
   function draw(c,fruitId,x,y,{action='idle',direction='front',time=0,scale=1}={}){
     const name=names[fruitId];if(!name)return false;
@@ -47,6 +52,6 @@
     c.drawImage(image,index*48,0,48,48,Math.round(x-24*scale),Math.round(y-yOffset*scale),Math.round(48*scale),Math.round(48*scale));
     c.restore();return true;
   }
-  root.MareZoanArt={draw,drawVfx,names};
+  root.MareZoanArt={draw,drawVfx,status,names};
   if(typeof module!=='undefined')module.exports=root.MareZoanArt;
 })(globalThis);

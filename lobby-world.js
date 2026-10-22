@@ -22,11 +22,6 @@
     {id:'south-palms',x:990,y:1700,w:90,h:48},
     {id:'east-palms',x:2200,y:1690,w:90,h:48}
   ];
-  // The authored map is a flattened image; redraw only object tops above actors.
-  const overheads=colliders.map(c=>{
-    const foliage=/tree|palms/.test(c.id),height=foliage?116:/house/.test(c.id)?188:118,pad=foliage?48:22;
-    return {x:Math.max(0,c.x-pad),y:Math.max(0,c.y-height),w:c.w+pad*2,h:height,foliage};
-  });
   const terrainWalkable=(x,y,r=10)=>[[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].every(([dx,dy])=>passable(x+dx,y+dy));
   const spawn=point(5,9);
   const npcs={luffy:point(20,6),nami:point(10,3),ryuma:point(6,7),donquixote:point(10,9)};
@@ -46,18 +41,6 @@
     }else{ctx.fillStyle='#087bd0';ctx.fillRect(camera.x,camera.y,width,height);}
     ctx.restore();
   }
-  function foreground(ctx,actors){
-    if(!image?.complete||!image.naturalWidth)return;
-    ctx.save();ctx.imageSmoothingEnabled=false;
-    for(const o of overheads){
-      if(!actors.some(a=>a.x+35>o.x&&a.x-35<o.x+o.w&&a.y>o.y&&a.y-120<o.y+o.h))continue;
-      ctx.save();ctx.beginPath();
-      if(o.foliage)ctx.ellipse(o.x+o.w/2,o.y+o.h/2,o.w/2,o.h/2,0,0,Math.PI*2);
-      else ctx.rect(o.x,o.y,o.w,o.h);
-      ctx.clip();ctx.drawImage(image,o.x,o.y,o.w,o.h,o.x,o.y,o.w,o.h);ctx.restore();
-    }
-    ctx.restore();
-  }
-  root.MareLobby={data,point,terrain,terrainWalkable,colliders,overheads,spawn,npcs,portals,paths,map,ground,foreground,image};
+  root.MareLobby={data,point,terrain,terrainWalkable,colliders,spawn,npcs,portals,paths,map,ground,image};
   if(typeof module!=='undefined')module.exports=root.MareLobby;
 })(globalThis);
