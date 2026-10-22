@@ -14,15 +14,16 @@
     {id:'dock-house',x:2190,y:1230,w:150,h:94},
     {id:'dock-cargo',x:2380,y:1010,w:190,h:130},
     {id:'market-stall',x:1115,y:975,w:92,h:48},
-    {id:'forge-chest-west',x:1655,y:1275,w:51,h:38},
-    {id:'forge-chest-east',x:1722,y:1275,w:52,h:38},
-    {id:'market-chest',x:1970,y:1470,w:38,h:39},
+    {id:'forge-chest-west',x:1740,y:928,w:52,h:38},
+    {id:'forge-chest-east',x:1810,y:900,w:52,h:38},
+    {id:'market-chest',x:2380,y:1250,w:64,h:42},
     {id:'dock-barrels-west',x:2268,y:1528,w:46,h:51},
     {id:'dock-barrels-east',x:2322,y:1528,w:44,h:51},
-    {id:'square-monument',x:1550,y:1020,w:86,h:75},
-    {id:'west-tree',x:1210,y:1200,w:52,h:40},
+    {id:'square-monument',x:1550,y:1068,w:98,h:96},
+    {id:'west-tree',x:1215,y:1080,w:72,h:48},
     {id:'south-tree',x:1270,y:1460,w:55,h:43},
-    {id:'market-tree',x:1940,y:1490,w:54,h:48},
+    {id:'market-tree',x:1850,y:1235,w:75,h:55},
+    {id:'central-palms',x:1310,y:1250,w:75,h:62},
     {id:'north-palms',x:1440,y:560,w:82,h:48},
     {id:'west-palms',x:820,y:1150,w:90,h:45},
     {id:'south-palms',x:990,y:1700,w:90,h:48},
@@ -58,7 +59,7 @@
   ].map(o=>({...o,x0:Math.min(...o.polygon.map(p=>p[0])),x1:Math.max(...o.polygon.map(p=>p[0])),y0:Math.min(...o.polygon.map(p=>p[1])),y1:Math.max(...o.polygon.map(p=>p[1]))}));
   // The PixelLab export is flattened. Reuse its exact pixels for the portions
   // of each object that may cover a character, ordered by the ground footprint.
-  const depthObjects=colliders.filter(o=>!o.id.includes('house')&&!o.id.includes('cargo')&&o.id!=='square-monument').map(o=>{
+  const depthObjects=colliders.filter(o=>o.id.includes('tree')||o.id.includes('palms')).map(o=>{
     const tree=o.id.includes('tree')||o.id.includes('palms');
     const chest=o.id.includes('chest')||o.id.includes('barrels');
     const spread=tree?54:chest?10:30, rise=tree?125:chest?52:105;

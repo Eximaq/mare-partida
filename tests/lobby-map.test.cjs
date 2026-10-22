@@ -20,3 +20,5 @@ test('existing 64px Lobby map has a walkable spawn and reachable services',()=>{
   assert.equal(nav.walkable(1350,1050),false);
 });
 const actor={x:0,y:10,height:24,isCharacter:true};const multi={x:0,y:0,height:192,pivotOffsetY:160};assert.equal(lobby.pivotY(actor),34);assert.equal(lobby.pivotY(multi),160);assert.deepEqual(lobby.sortDepth([multi,actor]).map(lobby.pivotY),[34,160]);
+
+assert(lobby.depthObjects.every(o=>o.id.includes('tree')||o.id.includes('palms')));
