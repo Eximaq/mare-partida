@@ -29,7 +29,10 @@
     {id:'west-palms',x:820,y:1150,w:90,h:45},
     {id:'south-palms',x:990,y:1700,w:90,h:48},
     {id:'east-palms',x:2200,y:1690,w:90,h:48}
-  ];
+  ].map(o=>{
+    const w=Math.max(TILE,o.w),h=Math.max(TILE,o.h);
+    return {...o,x:Math.round(o.x+(o.w-w)/2),y:Math.round(o.y+(o.h-h)/2),w,h,isSolid:true};
+  });
   const terrainWalkable=(x,y,r=10)=>[[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].every(([dx,dy])=>passable(x+dx,y+dy));
   const spawn=point(5,9);
   const npcs={luffy:point(20,6),nami:point(10,3),ryuma:point(6,7),donquixote:point(10,9)};
@@ -90,7 +93,7 @@
     if(!image?.complete||!image.naturalWidth)return;
     for(const o of upper){
       if(!actors.some(a=>pivotY(a)<o.base&&pivotY(a)>o.y0&&pivotY(a)-115<o.y1&&a.x+38>o.x0&&a.x-38<o.x1))continue;
-      ctx.save();ctx.imageSmoothingEnabled=false;ctx.beginPath();
+      ctx.save();ctx.imageSmoothingEnabled=false;ctx.globalAlpha=.72;ctx.beginPath();
       o.polygon.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();ctx.clip();
       ctx.drawImage(image,o.x0,o.y0,o.x1-o.x0,o.y1-o.y0,o.x0,o.y0,o.x1-o.x0,o.y1-o.y0);
       ctx.restore();
