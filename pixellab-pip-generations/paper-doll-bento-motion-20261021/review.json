@@ -1,0 +1,15 @@
+{
+  "status": "rejected",
+  "scope": "transfer_outfit body south",
+  "artwork_approved": false,
+  "production_enabled": false,
+  "summary_pt": "Corpo da transferência reprovado: o tronco acompanha melhor o Bento, mas a pose3 (índice2) transforma parte da espada em braço. As mãos também não preservam todos os encaixes. Peças visíveis extraídas são apenas diagnóstico; não habilitar este conjunto no jogo.",
+  "findings": [
+    "Frame2, zero-based: raised arm follows the removed blade silhouette rather than the original forearm and hand.",
+    "Hand positions drift from source; original weapon pixels cannot certify grip fit.",
+    "Visible source piece selections can conceal the anatomical defect; clothed composition is not an acceptance gate."
+  ],
+  "structural_checks_passed": true,
+  "semantic_layers_approved": false,
+  "next_route": "One separate Skeleton v3 candidate with authored control joints measured from source, not weapon tips."
+}

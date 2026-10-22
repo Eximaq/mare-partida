@@ -37,6 +37,17 @@ on:
       - 'tests/paper-doll-rotation.test.cjs'
       - 'tests/paper_doll_rotation_browser.py'
       - 'tests/paper_doll_basic_sword_browser.py'
+      - 'tests/paper_doll_bento_motion_browser.py'
+      - 'tests/paper-doll-motion-study.test.cjs'
+      - 'pixellab-pip-generations/paper-doll-bento-motion-20261021/**'
+      - 'pixellab-pip-generations/paper-doll-bento-skeleton-20261021/**'
+      - 'docs/PAPER-DOLL-MOVIMENTO-BENTO.md'
+      - 'tests/paper-doll-directions.test.cjs'
+      - 'tests/paper_doll_directions_browser.py'
+      - 'pixellab-pip-generations/paper-doll-bento-directions-20261021/**'
+      - 'docs/PAPER-DOLL-DIRECOES-BENTO.md'
+      - 'tools/paper_doll_motion_controls.py'
+      - 'tests/paper_doll_motion_controls_test.py'
       - 'pixellab-pip-generations/paper-doll-walk-north-20261021/**'
       - 'docs/PAPER-DOLL-CAMINHADA-NORTE.md'
       - 'pixellab-pip-generations/paper-doll-walk-fit-20261021/**'
@@ -78,6 +89,7 @@ jobs:
           python tests/paper_doll_compact_test.py
           python tests/paper_doll_rigid_assembly_test.py
           python tests/paper_doll_gif_test.py
+          python tests/paper_doll_motion_controls_test.py
           python pixellab-pip-generations/paper-doll-sword-fit-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-layer-batch-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-rigid-weapon-20261021/assemble_review.py
@@ -88,6 +100,11 @@ jobs:
           python pixellab-pip-generations/paper-doll-north-finish-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-walk-profiles-20261021/assemble_review.py
           python pixellab-pip-generations/paper-doll-basic-sword-20261021/assemble_review.py
+          python pixellab-pip-generations/paper-doll-bento-motion-20261021/assemble.py
+          python pixellab-pip-generations/paper-doll-bento-motion-20261021/extract_visible_pieces.py
+          python pixellab-pip-generations/paper-doll-bento-skeleton-20261021/assemble.py
+          python pixellab-pip-generations/paper-doll-bento-skeleton-20261021/extract_visible_pieces.py
+          python pixellab-pip-generations/paper-doll-bento-directions-20261021/compose.py
           python tools/build_pages.py
       - name: Conferir bancada, fallback e jogo
         env:
@@ -117,6 +134,9 @@ jobs:
           python tests/paper_doll_profiles_browser.py
           python tests/paper_doll_rotation_browser.py
           python tests/paper_doll_basic_sword_browser.py
+          python tests/paper_doll_bento_motion_browser.py
+          MARE_MOTION_STUDY=pixellab-pip-generations/paper-doll-bento-skeleton-20261021/ python tests/paper_doll_bento_motion_browser.py
+          python tests/paper_doll_directions_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-basic-sword-20261021/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-walk-profiles-20261021/ python tests/paper_doll_world_review_browser.py
           python tests/universal_character_browser.py

@@ -1,0 +1,263 @@
+{
+  "status": "Directional review only; unsupported/rejected clips use complete original fallback",
+  "reviewOnly": true,
+  "productionEnabled": false,
+  "full_character_artwork_approved": false,
+  "coverage": {
+    "attack-sword": [
+      "south",
+      "west"
+    ]
+  },
+  "bodyCoverage": [
+    "south",
+    "west"
+  ],
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "pants",
+      "boots",
+      "outfit",
+      "hair",
+      "weapon"
+    ],
+    "animations": {
+      "attack-sword": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "bento-directional-body",
+      "rigId": "human-v1",
+      "slot": "body",
+      "available": true,
+      "approved": false,
+      "zIndex": 0,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "body-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "directions": [
+            "south",
+            "west"
+          ]
+        }
+      }
+    },
+    {
+      "id": "bento-directional-pants",
+      "rigId": "human-v1",
+      "slot": "pants",
+      "available": true,
+      "approved": false,
+      "zIndex": 10,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "pants-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "directions": [
+            "south",
+            "west"
+          ]
+        }
+      }
+    },
+    {
+      "id": "bento-directional-boots",
+      "rigId": "human-v1",
+      "slot": "boots",
+      "available": true,
+      "approved": false,
+      "zIndex": 20,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "boots-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "directions": [
+            "south",
+            "west"
+          ]
+        }
+      }
+    },
+    {
+      "id": "bento-directional-outfit",
+      "rigId": "human-v1",
+      "slot": "outfit",
+      "available": true,
+      "approved": false,
+      "zIndex": 30,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "outfit-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "directions": [
+            "south",
+            "west"
+          ]
+        }
+      }
+    },
+    {
+      "id": "bento-directional-hair",
+      "rigId": "human-v1",
+      "slot": "hair",
+      "available": true,
+      "approved": false,
+      "zIndex": 40,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "hair-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "directions": [
+            "south",
+            "west"
+          ]
+        }
+      }
+    },
+    {
+      "id": "bento-directional-weapon",
+      "rigId": "human-v1",
+      "slot": "weapon",
+      "available": true,
+      "approved": false,
+      "zIndex": 50,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "weapon-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "directions": [
+            "south",
+            "west"
+          ],
+          "poseOverrides": {
+            "west": [
+              {
+                "offsetX": 0,
+                "offsetY": -1
+              },
+              {
+                "offsetX": 0,
+                "offsetY": 1
+              },
+              {
+                "offsetX": 0,
+                "offsetY": -1,
+                "zIndex": -10
+              },
+              {
+                "offsetX": 0,
+                "offsetY": -1,
+                "zIndex": -10
+              },
+              {
+                "offsetX": 0,
+                "offsetY": -1,
+                "zIndex": -10
+              },
+              {
+                "offsetX": 1,
+                "offsetY": 3
+              },
+              {
+                "offsetX": 4,
+                "offsetY": 5
+              },
+              {
+                "offsetX": -1,
+                "offsetY": -1
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "bento-directional-body",
+      "pants": "bento-directional-pants",
+      "boots": "bento-directional-boots",
+      "outfit": "bento-directional-outfit",
+      "hair": "bento-directional-hair",
+      "weapon": "bento-directional-weapon"
+    }
+  },
+  "reviews": {
+    "south": {
+      "body_motion_gate_passed": true,
+      "modular_fit_gate_passed": true,
+      "status": "Inherited frontal prototype, final artwork unapproved",
+      "summary_pt": "Frente reaproveitada do protótipo anterior, sem nova geração. Arte final em avaliação."
+    },
+    "north": {
+      "body_motion_gate_passed": false,
+      "modular_fit_gate_passed": false,
+      "status": "Rejected: forearm over back",
+      "summary_pt": "Norte reprovado: antebraço sobre o dorso. A comparação mantém o sprite original como fallback."
+    },
+    "west": {
+      "body_motion_gate_passed": true,
+      "modular_fit_gate_passed": true,
+      "status": "West six-layer prototype reviewed, final artwork unapproved",
+      "summary_pt": "Oeste: oito poses com corpo e cinco peças visíveis originais separados. Encaixes da arma ajustados por pose, sem giro ou redesenho. Empunhadura oculta nas poses3–5; arte final em avaliação.",
+      "calibration": "Native body ground line is56 on all8 frames. One fixed output padding10/9 maps it to rig ground65; source pieces remain10/10. Weapon offsets compensate the same fixed1px body origin. No per-frame body stabilization."
+    },
+    "east": {
+      "body_motion_gate_passed": false,
+      "modular_fit_gate_passed": false,
+      "status": "Body study pending correction: fixed-origin ground line varies67–68; required source pieces obscured",
+      "summary_pt": "Leste pendente: a linha dos pés varia um pixel e fica abaixo do pivô previsto; o clarão original também oculta peças no frame6. O conjunto completo mantém o sprite original como fallback."
+    }
+  }
+}

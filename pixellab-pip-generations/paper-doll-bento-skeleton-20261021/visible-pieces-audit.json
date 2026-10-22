@@ -1,0 +1,540 @@
+{
+  "status": "unapproved extraction study",
+  "source": "original Bento south frames",
+  "source_pixels_only": true,
+  "hidden_pixels_reconstructed": false,
+  "anatomy_from": "PixelLab Skeleton v3 output",
+  "weapon_includes_original_contact_effects": true,
+  "known_limitation": "This isolates visible source colours only, not full garments, grip under the hand, or an interchangeable sword asset. Must inspect anatomical alignment before use.",
+  "weapon_selection_polygons": [
+    [
+      [
+        5,
+        50
+      ],
+      [
+        5,
+        42
+      ],
+      [
+        14,
+        32
+      ],
+      [
+        16,
+        29
+      ],
+      [
+        21,
+        29
+      ],
+      [
+        21,
+        35
+      ],
+      [
+        11,
+        50
+      ]
+    ],
+    [
+      [
+        0,
+        5
+      ],
+      [
+        7,
+        7
+      ],
+      [
+        23,
+        22
+      ],
+      [
+        28,
+        21
+      ],
+      [
+        29,
+        29
+      ],
+      [
+        19,
+        30
+      ],
+      [
+        14,
+        25
+      ],
+      [
+        0,
+        12
+      ]
+    ],
+    [
+      [
+        18,
+        1
+      ],
+      [
+        25,
+        1
+      ],
+      [
+        29,
+        17
+      ],
+      [
+        32,
+        24
+      ],
+      [
+        28,
+        27
+      ],
+      [
+        24,
+        25
+      ],
+      [
+        22,
+        19
+      ]
+    ],
+    [
+      [
+        34,
+        26
+      ],
+      [
+        54,
+        26
+      ],
+      [
+        56,
+        37
+      ],
+      [
+        35,
+        37
+      ]
+    ],
+    [
+      [
+        33,
+        22
+      ],
+      [
+        47,
+        9
+      ],
+      [
+        44,
+        1
+      ],
+      [
+        63,
+        1
+      ],
+      [
+        63,
+        21
+      ],
+      [
+        45,
+        30
+      ],
+      [
+        38,
+        33
+      ]
+    ],
+    [
+      [
+        33,
+        24
+      ],
+      [
+        49,
+        12
+      ],
+      [
+        63,
+        6
+      ],
+      [
+        63,
+        26
+      ],
+      [
+        41,
+        33
+      ]
+    ],
+    [
+      [
+        26,
+        29
+      ],
+      [
+        54,
+        28
+      ],
+      [
+        54,
+        36
+      ],
+      [
+        26,
+        37
+      ]
+    ],
+    [
+      [
+        5,
+        51
+      ],
+      [
+        5,
+        42
+      ],
+      [
+        14,
+        32
+      ],
+      [
+        16,
+        29
+      ],
+      [
+        21,
+        29
+      ],
+      [
+        21,
+        35
+      ],
+      [
+        11,
+        51
+      ]
+    ]
+  ],
+  "grip_checks": [
+    {
+      "frame": 0,
+      "hand_region_center": [
+        17,
+        32
+      ],
+      "distance": 1,
+      "note": "Auxiliary geometric evidence; not artistic approval."
+    },
+    {
+      "frame": 1,
+      "hand_region_center": [
+        19,
+        24
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric evidence; not artistic approval."
+    },
+    {
+      "frame": 2,
+      "hand_region_center": [
+        27,
+        23
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric evidence; not artistic approval."
+    },
+    {
+      "frame": 3,
+      "hand_region_center": [
+        38,
+        32
+      ],
+      "distance": 1,
+      "note": "Auxiliary geometric evidence; not artistic approval."
+    },
+    {
+      "frame": 4,
+      "hand_region_center": [
+        39,
+        26
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric evidence; not artistic approval."
+    },
+    {
+      "frame": 5,
+      "hand_region_center": [
+        39,
+        26
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric evidence; not artistic approval."
+    },
+    {
+      "frame": 6,
+      "hand_region_center": [
+        28,
+        32
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric evidence; not artistic approval."
+    },
+    {
+      "frame": 7,
+      "hand_region_center": [
+        17,
+        32
+      ],
+      "distance": 1,
+      "note": "Auxiliary geometric evidence; not artistic approval."
+    }
+  ],
+  "records": [
+    {
+      "frame": 0,
+      "slot": "pants",
+      "visible_pixels": 172,
+      "sha256_rgba": "27d6c957ec27d438dcb7eeb7a78f7afc1b4a8234ea5b524fac08dd486ed2ba5d"
+    },
+    {
+      "frame": 0,
+      "slot": "boots",
+      "visible_pixels": 61,
+      "sha256_rgba": "927985c3fd85d54756f86c1c94f8992a4011766cced8f724a3242a0285d66cce"
+    },
+    {
+      "frame": 0,
+      "slot": "outfit",
+      "visible_pixels": 184,
+      "sha256_rgba": "ca8c22a6f2e803927b3a893f69cfdf2973ad8a27ea31c7e5dfac4185fee6c69d"
+    },
+    {
+      "frame": 0,
+      "slot": "hair",
+      "visible_pixels": 68,
+      "sha256_rgba": "2b728abf91659bd818646fc89863a93f94f849083b6c57b80199e30aa80d79df"
+    },
+    {
+      "frame": 0,
+      "slot": "weapon",
+      "visible_pixels": 81,
+      "sha256_rgba": "bfb87670c4f59c382c95166d558e45117fb8e496c3ef3207824786f0e954e4cc"
+    },
+    {
+      "frame": 1,
+      "slot": "pants",
+      "visible_pixels": 168,
+      "sha256_rgba": "9abec00333c17e41a673c782b84a0b6902c6115602f93abd91454c1d2acf6dcb"
+    },
+    {
+      "frame": 1,
+      "slot": "boots",
+      "visible_pixels": 60,
+      "sha256_rgba": "3225c970256461540e13a1e59b68b51543945b717a5f30b9b507daa7552ee7ff"
+    },
+    {
+      "frame": 1,
+      "slot": "outfit",
+      "visible_pixels": 178,
+      "sha256_rgba": "ac9b339a5bdd8c4a76c877e3debf3e090384e99c17f2cd203054815629cb0c34"
+    },
+    {
+      "frame": 1,
+      "slot": "hair",
+      "visible_pixels": 68,
+      "sha256_rgba": "2b728abf91659bd818646fc89863a93f94f849083b6c57b80199e30aa80d79df"
+    },
+    {
+      "frame": 1,
+      "slot": "weapon",
+      "visible_pixels": 76,
+      "sha256_rgba": "64146a95de609934176747841a5af55ed004d31bb134a3a29ab460e79afd4c56"
+    },
+    {
+      "frame": 2,
+      "slot": "pants",
+      "visible_pixels": 172,
+      "sha256_rgba": "2ad837033918ff7b14e51f66b8bb6aba4068135710a5b4148634b7270ac4a440"
+    },
+    {
+      "frame": 2,
+      "slot": "boots",
+      "visible_pixels": 60,
+      "sha256_rgba": "07e201599968c0893a8232f2c12f7a51fd52dc64100d86f15ba6d15eca903192"
+    },
+    {
+      "frame": 2,
+      "slot": "outfit",
+      "visible_pixels": 102,
+      "sha256_rgba": "5e936590f4843b2cf01f9c3fc5aea18198e8cbf50d7428b264acd30bbb35267c"
+    },
+    {
+      "frame": 2,
+      "slot": "hair",
+      "visible_pixels": 60,
+      "sha256_rgba": "77b743a66b763ce4af110c555b65537ab3b85c23b471b486c8efc126b5415288"
+    },
+    {
+      "frame": 2,
+      "slot": "weapon",
+      "visible_pixels": 81,
+      "sha256_rgba": "f187697542f5e543eab77555cea177b0d70caf101fd78f9619d028a8fca71bf0"
+    },
+    {
+      "frame": 3,
+      "slot": "pants",
+      "visible_pixels": 166,
+      "sha256_rgba": "6a1239d0ee8964e13b4c44e4a9d4153966573b5f05e0520523e3abb1e517c7dd"
+    },
+    {
+      "frame": 3,
+      "slot": "boots",
+      "visible_pixels": 61,
+      "sha256_rgba": "26c9baa5291bb41dbba46f3c138077b428ed4139f004eb0fa1f81aed4a0ddbcc"
+    },
+    {
+      "frame": 3,
+      "slot": "outfit",
+      "visible_pixels": 139,
+      "sha256_rgba": "6857a1127777ae2de20ab28d4ebbd9c25f5ef17c67efd4cbee5df14d749405da"
+    },
+    {
+      "frame": 3,
+      "slot": "hair",
+      "visible_pixels": 47,
+      "sha256_rgba": "96a17d77457b0739056a05be106e97410912599e1641c4692364b72b09aa2371"
+    },
+    {
+      "frame": 3,
+      "slot": "weapon",
+      "visible_pixels": 61,
+      "sha256_rgba": "c9dfe48c2268a851cfb976f5f331ca204c00914214f6829696046ab5258f19f7"
+    },
+    {
+      "frame": 4,
+      "slot": "pants",
+      "visible_pixels": 164,
+      "sha256_rgba": "891048c6507d8c95f3ea091778577a300f02f43a8d16282c10019537e54718da"
+    },
+    {
+      "frame": 4,
+      "slot": "boots",
+      "visible_pixels": 61,
+      "sha256_rgba": "8bf1e47ef7cc77bedfb4fb9506bf425a2958cdcf9f01a200eebf519c7117af35"
+    },
+    {
+      "frame": 4,
+      "slot": "outfit",
+      "visible_pixels": 119,
+      "sha256_rgba": "fae30508f2847f42a161b8651a4062b9d80aeba4424509b6554ebbd6f0e6ab3a"
+    },
+    {
+      "frame": 4,
+      "slot": "hair",
+      "visible_pixels": 54,
+      "sha256_rgba": "b5533a9240eca95fd52273f96b32ef59a5639dd21219bebc505473ccaa8c2815"
+    },
+    {
+      "frame": 4,
+      "slot": "weapon",
+      "visible_pixels": 140,
+      "sha256_rgba": "0f445265432349c88ad504e930ef8fdd11eb0fb4d1fcc3ebaee5521e0ff20437"
+    },
+    {
+      "frame": 5,
+      "slot": "pants",
+      "visible_pixels": 175,
+      "sha256_rgba": "186474543769180d14dab2c4ebe5220cec81c5794ed63b694201da6728202ef8"
+    },
+    {
+      "frame": 5,
+      "slot": "boots",
+      "visible_pixels": 61,
+      "sha256_rgba": "09853086f5fb6a4fe970099240491cfdc26526e11fd0eaa544f2ded132141676"
+    },
+    {
+      "frame": 5,
+      "slot": "outfit",
+      "visible_pixels": 105,
+      "sha256_rgba": "c54fe6cab6e01bf88152689751ed1b23d37d1fae1d5b07800a82a6fa3fb763f9"
+    },
+    {
+      "frame": 5,
+      "slot": "hair",
+      "visible_pixels": 53,
+      "sha256_rgba": "30782fe95d517c607bb978273e8dcf90660b6a15c3b60a618706f642893664e1"
+    },
+    {
+      "frame": 5,
+      "slot": "weapon",
+      "visible_pixels": 76,
+      "sha256_rgba": "7fe42397d51307ff361e63d987ffebd19c19ab4bf9534931ff4ac2c412d632a4"
+    },
+    {
+      "frame": 6,
+      "slot": "pants",
+      "visible_pixels": 160,
+      "sha256_rgba": "bd6705c370b1998411037cdad2fafe4ed939d51f495794678f96ef59d14e55f6"
+    },
+    {
+      "frame": 6,
+      "slot": "boots",
+      "visible_pixels": 58,
+      "sha256_rgba": "e60ba69d440d01da1e75c9756ba6dad8370132287d34cf339a7026cf6e65d336"
+    },
+    {
+      "frame": 6,
+      "slot": "outfit",
+      "visible_pixels": 156,
+      "sha256_rgba": "6562b2fc922cc638540edb768dab6ebac0e472668c24d72e29323c14c44e5da1"
+    },
+    {
+      "frame": 6,
+      "slot": "hair",
+      "visible_pixels": 66,
+      "sha256_rgba": "9dbbba8efb86e72fbc30c4a91075f8a02dcf792108ded57522b6a00150518d98"
+    },
+    {
+      "frame": 6,
+      "slot": "weapon",
+      "visible_pixels": 95,
+      "sha256_rgba": "f9db4cb01f8ee83d3c8c4a8366c481eaa8d0f417a53d2428df2cba9d2df8eb5e"
+    },
+    {
+      "frame": 7,
+      "slot": "pants",
+      "visible_pixels": 169,
+      "sha256_rgba": "1cdfb8a87ca1ea3044a21203ba46d19fba20ef52e909950c05eddd95b0fe5648"
+    },
+    {
+      "frame": 7,
+      "slot": "boots",
+      "visible_pixels": 61,
+      "sha256_rgba": "61114be732ae313600a75eec47330cf9a62c091e3f11827e08a663a10d29f8f9"
+    },
+    {
+      "frame": 7,
+      "slot": "outfit",
+      "visible_pixels": 177,
+      "sha256_rgba": "ed617c4bee0ac635f50a4dbe99c2dfba582df6db94dc606e0475ef2f1a90e16a"
+    },
+    {
+      "frame": 7,
+      "slot": "hair",
+      "visible_pixels": 68,
+      "sha256_rgba": "c66098e1599a2f756d0698d99a280b246aaa0a1cdb2604ae5e9fc27a938332a5"
+    },
+    {
+      "frame": 7,
+      "slot": "weapon",
+      "visible_pixels": 64,
+      "sha256_rgba": "cc76b98157a8d5b63e44385bcd7908707a8ccf1bd4480888ca612a5ffe1fd687"
+    }
+  ],
+  "production_enabled": false
+}
