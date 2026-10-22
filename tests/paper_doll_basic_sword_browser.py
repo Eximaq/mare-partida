@@ -1,4 +1,4 @@
-"""Independent source-pixel and real-browser acceptance of a basic shared attack."""
+"""Technical regression of rejected artwork; these checks never approve choreography."""
 import base64,itertools,json,os,sys
 from pathlib import Path
 from PIL import Image
@@ -8,6 +8,8 @@ BASE=os.environ.get('MARE_TEST_URL','http://127.0.0.1:8123/');OUT=ROOT/'docs/evi
 pack=json.loads((FOLDER/'review-pack.json').read_text());dirs=pack['coverage']['attack-sword']
 assert dirs,'No complete real modular attack: do not report visual completion'
 assert pack['sharedAction']['factionIndependent'] and all(not p['approved'] for p in pack['pieces'])
+assert pack['ownerReview']['status']=='rejected' and not pack['ownerReview']['productionEnabled']
+reference=Image.open(ROOT/'assets/classes/pirate-sword/attack.png').convert('RGBA')
 weapon=next(p for p in pack['pieces'] if p['slot']=='weapon')['animations']['attack-sword']
 def normalized(im):return bytes(v for c in im.convert('RGBA').get_flattened_data() for v in (c if c[3] else (0,0,0,0)))
 def expected(direction,index,hidden=()):
@@ -32,10 +34,16 @@ for d in dirs:
 with sync_playwright() as p:
  browser=p.chromium.launch();context=browser.new_context(viewport={'width':1366,'height':1000});context.add_init_script('localStorage.setItem("mare-partida-save-v1","basic-sword-sentinel")');q=context.new_page();q.clock.install();errors=[];q.on('pageerror',lambda e:errors.append(str(e)))
  q.goto(BASE+REL+'preview.html',wait_until='networkidle');q.wait_for_function('__paperDollBasic?.().ready')
+ assert q.locator('#reviewWarning').is_visible() and 'reprovado' in q.locator('#reviewWarning').inner_text()
+ assert q.evaluate('__paperDollBasic().reviewStatus')=='rejected'
  for i in range(8):
   q.locator('#frame').fill(str(i));state=q.evaluate('__paperDollBasic()');assert state['readyDirections']==dirs and not state['productionEnabled']
   for d in dirs:
    raw=q.evaluate('d=>btoa(String.fromCharCode(...document.getElementById(d+"-full").getContext("2d").getImageData(0,0,84,84).data))',d);assert base64.b64decode(raw)==expected(d,i)
+   row=['south','north','west','east'].index(d)
+   raw=q.evaluate('d=>btoa(String.fromCharCode(...document.getElementById(d+"-reference").getContext("2d").getImageData(0,0,84,84).data))',d)
+   assert base64.b64decode(raw)==normalized(reference.crop((i*84,row*84,(i+1)*84,(row+1)*84)))
+   assert q.evaluate('__paperDollBasic().referenceFrameIndex')==i
   q.locator('#boards').screenshot(path=str(OUT/f'basic-sword-frame-{i+1}.png'))
  for visible in itertools.product([False,True],repeat=4):
   hidden=[]
@@ -48,6 +56,8 @@ with sync_playwright() as p:
  q.locator('#play').click();q.clock.run_for(800);assert q.evaluate('__paperDollBasic().frameIndex')==7 and not q.evaluate('__paperDollBasic().playing')
  q.locator('#play').click();assert q.evaluate('__paperDollBasic().frameIndex')==0;q.clock.run_for(110);assert q.evaluate('__paperDollBasic().frameIndex')==1;q.clock.run_for(700)
  q.screenshot(path=str(OUT/'basic-sword-1366.png'),full_page=True);q.set_viewport_size({'width':393,'height':852});assert q.evaluate('document.documentElement.scrollWidth<=innerWidth');q.screenshot(path=str(OUT/'basic-sword-393.png'),full_page=True)
+ q.locator('#animation').select_option('walk');assert q.evaluate('__paperDollBasic().referenceFrameIndex') is None
+ assert q.locator('#south-reference').is_hidden()
  q.goto(BASE+'tools/paper-doll-inspector/index.html?pack=basic-sword',wait_until='networkidle');q.wait_for_function('__paperDollInspector.state().readyDirections?.length===4');q.locator('#animation').select_option('attack')
  for d in dirs:
   q.locator('#direction').select_option(d)

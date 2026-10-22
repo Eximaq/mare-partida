@@ -1,5 +1,7 @@
 # Paper Doll 1.0 — Fase 1
 
+**Atualização de avaliação (21/10/2026): o Attack/sword modular foi reprovado pelo proprietário por qualidade de movimento inferior ao Bento atual.** A infraestrutura e todos os fontes foram preservados; produção continua com os sprites existentes. A prévia do ataque agora permite comparação sincronizada com o Bento, sem novas gerações. Os registros de testes abaixo representam validação técnica, não aprovação artística.
+
 ## Estado atual (21/10/2026)
 
 ### Direção de ataques básicos compartilhados
