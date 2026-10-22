@@ -1,0 +1,62 @@
+{
+  "mr3": {
+    "pixelLabCharacterId": "115d5400-e87f-4990-96d5-39605ee0311c",
+    "frameSize": 64,
+    "directions": [
+      "south",
+      "west",
+      "east",
+      "north"
+    ],
+    "sourceAnimationNames": {
+      "idle": "Idle rotations",
+      "walk": "Walking",
+      "attack": "Attack_using_a_white_projectile_candle_wax"
+    },
+    "frames": {
+      "idle": 1,
+      "walk": 6,
+      "attack": 9
+    }
+  },
+  "cabaji": {
+    "pixelLabCharacterId": "30284edc-eb47-475b-9019-c84ef902e164",
+    "frameSize": 64,
+    "directions": [
+      "south",
+      "west",
+      "east",
+      "north"
+    ],
+    "sourceAnimationNames": {
+      "idle": "Idle rotations",
+      "walk": "Walking",
+      "attack": "Attack_using_sword"
+    },
+    "frames": {
+      "idle": 1,
+      "walk": 6,
+      "attack": 9
+    }
+  },
+  "marinheiro": {
+    "pixelLabCharacterId": "c9675963-81b3-4ec2-9a52-ea3c106edffe",
+    "frameSize": 64,
+    "directions": [
+      "south",
+      "west",
+      "east",
+      "north"
+    ],
+    "sourceAnimationNames": {
+      "idle": "Idle rotations",
+      "walk": "Walking",
+      "attack": "Surprise_Uppercut"
+    },
+    "frames": {
+      "idle": 1,
+      "walk": 8,
+      "attack": 7
+    }
+  }
+}

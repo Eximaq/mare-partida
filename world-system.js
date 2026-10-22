@@ -49,6 +49,10 @@
   if(globalThis.MareNewIslands){
     for(const id of ['rare','syrup','baratie','arlong'])maps[id]=MareNewIslands[id].map;
   }else if(globalThis.MareRare)maps.rare=MareRare.map;
+  if(globalThis.MarePixelWorldMaps){
+    maps.orange=MarePixelWorldMaps.orange.map;
+    maps.loguetown=MarePixelWorldMaps.loguetown.map;
+  }
   class Camera {
     constructor(){this.x=0;this.y=0;this.width=960;this.height=570;}
     update(hero,map,dt=0,snap=false){

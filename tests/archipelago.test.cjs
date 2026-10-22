@@ -32,11 +32,11 @@ assert(!a.canTravel('animais-raros',15));
 assert(a.canTravel('animais-raros',16));
 assert(!a.canTravel('syrup',20));assert(a.canTravel('syrup',21));
 assert(!a.canTravel('baratie',25));assert(a.canTravel('baratie',26));assert(!a.canTravel('arlong',30));assert(a.canTravel('arlong',31));
-for(const i of a.islands.slice(7)){
-  assert.equal(i.area,null);assert.equal(i.monster,null);assert.equal(i.drops,null);
-  assert.equal(a.canTravel(i.id,999),false);
-}
-for(const i of a.islands.slice(0,7)){
+const loguetown=a.islands[7];
+assert.equal(loguetown.id,'loguetown');assert.equal(loguetown.area,'loguetown');
+assert.equal(loguetown.monster.name,'Marinheiro');assert.equal(loguetown.recommended[0],36);
+assert(a.canTravel(loguetown.id,36));assert(!a.canTravel(loguetown.id,35));
+for(const i of a.islands){
   assert(fs.existsSync(path.join(__dirname,'..',i.monster.src)));
   assert(i.drops.length>0);
 }
