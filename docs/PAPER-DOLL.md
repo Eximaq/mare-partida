@@ -1,5 +1,7 @@
 # Paper Doll 1.0 — Fase 1
 
+Continuação em inspeção: [novo corte frontal guiado pelas articulações do Bento](PAPER-DOLL-MOVIMENTO-BENTO.md). Corpo neutro pelo Skeleton v3 e peças visíveis originais separadas;13 gerações confirmadas nos dois estudos. Não usar o primeiro corpo da transferência (espada interpretada como braço). O novo pacote continua `approved:false`, somente frente, sem continuidade Idle/Walk nem demais vistas certificadas.
+
 **Atualização de avaliação (21/10/2026): o Attack/sword modular foi reprovado pelo proprietário por qualidade de movimento inferior ao Bento atual.** A infraestrutura e todos os fontes foram preservados; produção continua com os sprites existentes. A prévia do ataque agora permite comparação sincronizada com o Bento, sem novas gerações. Os registros de testes abaixo representam validação técnica, não aprovação artística.
 
 ## Estado atual (21/10/2026)

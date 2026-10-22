@@ -1,0 +1,9 @@
+{
+  "calls": 1,
+  "estimated_generations": 3,
+  "generation_ceiling": 4,
+  "retries": 0,
+  "scope": "south neutral body only; no dependent paid layers",
+  "authorization": "Owner delegated PixelLab production decisions; corrective route and cost announced before call. Transfer candidate rejected first.",
+  "production_enabled": false
+}

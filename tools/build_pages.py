@@ -274,5 +274,28 @@ def version_basic(match):
 basic_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_basic,
                              basic_entry.read_text(encoding='utf-8')), encoding='utf-8')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-ATAQUE-BASICO.md', OUT/'docs/PAPER-DOLL-ATAQUE-BASICO.md')
+for study, recipe in [('paper-doll-bento-motion-20261021', 'bento-motion.blueprint.json'),
+                      ('paper-doll-bento-skeleton-20261021', 'bento-skeleton.blueprint.json')]:
+    motion_relative = Path('pixellab-pip-generations')/study
+    motion_files = ['preview.html', 'preview.js', 'review.json', 'comparison.json', 'manifest.json',
+                    recipe, 'assembly-audit.json', 'reference-bento-attack.png',
+                    'neutral-body-reference.png', 'candidate-south.gif', 'candidate-south-sheet.png']
+    motion_files += [f'{prefix}-south-{i:02}.png' for prefix in ('bento', 'body') for i in range(8)]
+    if 'skeleton' in study:
+        motion_files += ['review-pack.json', 'modular-south.gif', 'visible-pieces-south-sheet.png', 'visible-pieces-audit.json']
+        motion_files += [f'visible-{slot}-south.png' for slot in ['hair', 'outfit', 'pants', 'boots', 'weapon']]
+    for name in motion_files:
+        destination = OUT/motion_relative/name
+        destination.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(ROOT/motion_relative/name, destination)
+    motion_entry = OUT/motion_relative/'preview.html'
+    def version_motion(match):
+        source = (motion_entry.parent/match.group(2)).resolve()
+        if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+            return match.group(0)
+        return f'{match.group(1)}{match.group(2)}?v={hashlib.sha256(source.read_bytes()).hexdigest()[:16]}{match.group(3)}'
+    motion_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_motion,
+                                 motion_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-MOVIMENTO-BENTO.md', OUT/'docs/PAPER-DOLL-MOVIMENTO-BENTO.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

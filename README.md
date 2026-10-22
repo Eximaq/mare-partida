@@ -10,6 +10,8 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 ## Paper Doll 1.0 — infraestrutura e bancada
 
+A [continuação guiada pelo movimento do Bento](pixellab-pip-generations/paper-doll-bento-skeleton-20261021/preview.html) oferece um novo ataque **somente frontal**, com corpo por esqueleto e cinco peças visíveis originais separadas. Inclui comparação sincronizada e controles de camadas. Foram cobradas13 gerações nos dois estudos; a primeira transferência foi reprovada e bloqueada. O novo candidato segue em avaliação, fora do jogo. [Método, fontes e limites](docs/PAPER-DOLL-MOVIMENTO-BENTO.md).
+
 **Atualização de avaliação (21/10/2026): o Attack/sword modular foi reprovado pelo proprietário por qualidade de movimento inferior ao Bento atual.** A infraestrutura e todos os fontes foram preservados; produção continua com os sprites existentes. A prévia do ataque agora permite comparação sincronizada com o Bento, sem novas gerações. Os registros de testes abaixo representam validação técnica, não aprovação artística.
 
 O [ataque básico de espada](pixellab-pip-generations/paper-doll-basic-sword-20261021/preview.html) tem oito poses reais nas quatro direções, com corpo/cabelo/roupa separados e uma lâmina existente presa à mão. O gesto é compartilhado por categoria, sem cópias por facção. A [bancada](tools/paper-doll-inspector/index.html?pack=basic-sword) permite ajustar também a orientação da arma em passos de90°. Conjunto em revisão, com ensaio de combate isolado; não habilita arte incompleta na aventura. [Resultados,77 gerações cobradas e limites](docs/PAPER-DOLL-ATAQUE-BASICO.md).

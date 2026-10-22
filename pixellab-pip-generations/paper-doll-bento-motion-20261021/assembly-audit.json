@@ -1,0 +1,124 @@
+{
+  "structural_checks_passed": true,
+  "artwork_approved": false,
+  "production_enabled": false,
+  "frames": [
+    {
+      "file": "body-south-00.png",
+      "sha256": "7777fe7e34f31c08f225b24acac4298aad7cc6d80244768be445517e615b9c69",
+      "bounds": [
+        15,
+        7,
+        48,
+        52
+      ],
+      "visible_pixels": 714
+    },
+    {
+      "file": "body-south-01.png",
+      "sha256": "ad1c1ef86134698e5eeb8b3a0e940cf28628337974a03e7d9f031441c2efafb8",
+      "bounds": [
+        15,
+        7,
+        48,
+        52
+      ],
+      "visible_pixels": 681
+    },
+    {
+      "file": "body-south-02.png",
+      "sha256": "4ba7875f6587c183a2e240aa2598103c0bbb2cf04a5475397fab17b7bad126db",
+      "bounds": [
+        17,
+        5,
+        46,
+        52
+      ],
+      "visible_pixels": 719
+    },
+    {
+      "file": "body-south-03.png",
+      "sha256": "4ecb9e8739ad24a2eaaa20093794a62cbbd737f1f4bf9fe9aa322382f739ff8f",
+      "bounds": [
+        19,
+        8,
+        44,
+        52
+      ],
+      "visible_pixels": 608
+    },
+    {
+      "file": "body-south-04.png",
+      "sha256": "b561436fe12640dd1e2bf2ffb2c033ba08a77b2dcc25d13837730b732c2c93e3",
+      "bounds": [
+        19,
+        8,
+        44,
+        52
+      ],
+      "visible_pixels": 584
+    },
+    {
+      "file": "body-south-05.png",
+      "sha256": "928e80c2d8c92162439cc57f60f254e0b3e61e175575161d21317143eb0b6fcd",
+      "bounds": [
+        19,
+        8,
+        44,
+        52
+      ],
+      "visible_pixels": 588
+    },
+    {
+      "file": "body-south-06.png",
+      "sha256": "1729fb6b9ceaa8a4240b5618bfdfeefc7f8ba623d628ff991c351c148b92ed10",
+      "bounds": [
+        20,
+        7,
+        44,
+        52
+      ],
+      "visible_pixels": 659
+    },
+    {
+      "file": "body-south-07.png",
+      "sha256": "7c54d27865900d7d43a8bb8de9524e230c8f607fc85151363d018f111dfc76ee",
+      "bounds": [
+        16,
+        6,
+        47,
+        52
+      ],
+      "visible_pixels": 749
+    }
+  ],
+  "unique_frames": 8,
+  "padding": [
+    10,
+    13
+  ],
+  "canvas": [
+    84,
+    84
+  ],
+  "pivot": [
+    42,
+    65
+  ],
+  "fps": 12,
+  "frame_order": "unchanged 0..7",
+  "gif_exact_rgba": true,
+  "gif_durations_ms": [
+    80,
+    90,
+    80,
+    80,
+    90,
+    80,
+    80,
+    90
+  ],
+  "gif_loop": 0,
+  "gif_disposal": 2,
+  "note": "Geometry, palette and PNG/GIF fidelity do not approve choreography or anatomical quality."
+}

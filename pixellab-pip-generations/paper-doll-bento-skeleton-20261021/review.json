@@ -1,0 +1,67 @@
+{
+  "status": "frontal-prototype-review",
+  "artwork_approved": false,
+  "production_enabled": false,
+  "prototype_layers_accepted": false,
+  "summary_pt": "Novo protótipo frontal em avaliação: corpo guiado pelas articulações do Bento e peças originais separadas. Oito poses com preparação, golpe e recuperação. A arte final e as outras direções ainda não estão aprovadas; personagem publicado preservado.",
+  "motion_review": "Arm on frame2 no longer follows removed blade. Source stance changes and torso rotation are visible. Hand grips must be fitted independently before any weapon layer is accepted.",
+  "directions": [
+    "south"
+  ],
+  "technical_motion_gate_passed": true,
+  "full_character_artwork_approved": false,
+  "visible_piece_fit_gate_passed": true,
+  "visible_piece_limits": [
+    "Visible original source pixels only, not reconstruction of hidden garment surfaces.",
+    "Weapon includes original contact effects; not a new interchangeable sword model.",
+    "South attack only. Idle/Walk and all other directions are not certified for this outfit."
+  ],
+  "grip_contact_proxy": {
+    "coordinate_space": "native64",
+    "method": "warm skin pixels and source weapon pixels within a manually selected7x7 hand region; Chebyshev distance. Auxiliary geometric evidence, not artistic approval.",
+    "points": [
+      [
+        17,
+        32
+      ],
+      [
+        19,
+        24
+      ],
+      [
+        27,
+        23
+      ],
+      [
+        38,
+        32
+      ],
+      [
+        39,
+        26
+      ],
+      [
+        39,
+        26
+      ],
+      [
+        28,
+        32
+      ],
+      [
+        17,
+        32
+      ]
+    ],
+    "distances": [
+      1,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      1
+    ]
+  }
+}

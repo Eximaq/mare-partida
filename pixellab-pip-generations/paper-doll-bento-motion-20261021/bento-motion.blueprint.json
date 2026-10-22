@@ -1,0 +1,36 @@
+[
+  {
+    "_comment_prompt": "pode continuar — continuar a correção do ataque modular que ficou abaixo do Bento existente",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-bento-motion-20261021",
+      "output_collision_policy": "create_unique"
+    },
+    "TASK": "Copy the original Bento attack and metadata. Split its eight south frames in order, crop only transparent margins [10,13,74,77], preserving every visible pixel. Copy the existing same-character neutral body reference; do not redraw or scale."
+  },
+  {
+    "MCP transfer_outfit": {
+      "frames_base64": [
+        "bento-south-00.png",
+        "bento-south-01.png",
+        "bento-south-02.png",
+        "bento-south-03.png",
+        "bento-south-04.png",
+        "bento-south-05.png",
+        "bento-south-06.png",
+        "bento-south-07.png"
+      ],
+      "reference_image_base64": "neutral-body-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "additional_instructions": "Transfer only the neutral appearance of this same human pirate from the reference: bald head, bare torso and arms, plain charcoal shorts and bare feet. Remove the hair, shirt, waistcoat, boots, sword and slash effects from every frame. Preserve each source frame's exact skeletal pose, shoulder rotation, torso lean, elbow bends, hand positions, facial facing, foot positions, perspective, pixel scale and frame order. Keep the original attack's anticipation, contact and recovery. Do not replace the movement with a generic standing gesture. Transparent background."
+    }
+  },
+  {
+    "TASK": "Poll the saved job with get_image until terminal; download original PNGs. Verify frame order/count/alpha/dimensions, inspect poses against Bento, assemble exact-pixel sheet/GIF and review-only comparator. Do not activate this body candidate as a complete modular character or generate dependent layers automatically."
+  },
+  {
+    "TASK": "Optionally inspect original visible pieces using extract_visible_pieces.py: copy exact original pixels by documented regions/palette, preserve all raw files, and compose source clothes over the generated body. This cannot certify anatomy; rejected body must keep all pieces unavailable. For the Skeleton candidate only, the review gate permits a review-only six-layer south attack. No production activation, no new paid layers, no full-garment claims."
+  }
+]

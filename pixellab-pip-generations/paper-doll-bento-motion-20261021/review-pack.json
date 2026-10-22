@@ -1,0 +1,183 @@
+{
+  "status": "Rejected body: diagnostic pieces unavailable",
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "pants",
+      "boots",
+      "outfit",
+      "hair",
+      "weapon"
+    ],
+    "animations": {
+      "attack-sword": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "bento-motion-body",
+      "rigId": "human-v1",
+      "slot": "body",
+      "available": false,
+      "approved": false,
+      "zIndex": 0,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "candidate-south-sheet.png"
+        }
+      }
+    },
+    {
+      "id": "bento-motion-pants",
+      "rigId": "human-v1",
+      "slot": "pants",
+      "available": false,
+      "approved": false,
+      "zIndex": 10,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "visible-pants-south.png"
+        }
+      }
+    },
+    {
+      "id": "bento-motion-boots",
+      "rigId": "human-v1",
+      "slot": "boots",
+      "available": false,
+      "approved": false,
+      "zIndex": 20,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "visible-boots-south.png"
+        }
+      }
+    },
+    {
+      "id": "bento-motion-outfit",
+      "rigId": "human-v1",
+      "slot": "outfit",
+      "available": false,
+      "approved": false,
+      "zIndex": 30,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "visible-outfit-south.png"
+        }
+      }
+    },
+    {
+      "id": "bento-motion-hair",
+      "rigId": "human-v1",
+      "slot": "hair",
+      "available": false,
+      "approved": false,
+      "zIndex": 40,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "visible-hair-south.png"
+        }
+      }
+    },
+    {
+      "id": "bento-motion-weapon",
+      "rigId": "human-v1",
+      "slot": "weapon",
+      "available": false,
+      "approved": false,
+      "zIndex": 50,
+      "animations": {
+        "attack-sword": {
+          "kind": "sheet",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "visible-weapon-south.png"
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "bento-motion-body",
+      "pants": "bento-motion-pants",
+      "boots": "bento-motion-boots",
+      "outfit": "bento-motion-outfit",
+      "hair": "bento-motion-hair",
+      "weapon": "bento-motion-weapon"
+    }
+  },
+  "coverage": {
+    "attack-sword": [
+      "south"
+    ]
+  },
+  "reviewOnly": true,
+  "productionEnabled": false,
+  "full_character_artwork_approved": false
+}

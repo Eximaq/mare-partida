@@ -1,0 +1,49 @@
+{
+  "source_sheet": "assets/classes/pirate-sword/attack.png",
+  "direction": "south",
+  "frame_count": 8,
+  "fps": 12,
+  "impact_frame": 3,
+  "source_canvas": [
+    84,
+    84
+  ],
+  "source_pivot": [
+    42,
+    65
+  ],
+  "crop": [
+    10,
+    13,
+    74,
+    77
+  ],
+  "working_canvas": [
+    64,
+    64
+  ],
+  "working_pivot": [
+    32,
+    52
+  ],
+  "padding_back": [
+    10,
+    13
+  ],
+  "source_visible_pixels_preserved": true,
+  "reference": "neutral-body-reference.png",
+  "approved": false,
+  "production_enabled": false,
+  "source_sha256": {
+    "bento-south-00.png": "f6b0f1f6edab29ef34012bf386a506d776191241b7b0464dc7b5114f13861144",
+    "bento-south-01.png": "0d68a78ae7ee115f53fdf0c2da048041e3aca959dabc0f4d9b04623806747fe3",
+    "bento-south-02.png": "222ec776787073274f3d40afb2253b74dd9f7eefcbaebfcc504497c428514dfd",
+    "bento-south-03.png": "bf066bcb4bda97d9114ae5ac08ae05130a1e73d0ca4bbacb58a4d13bfad18ac8",
+    "bento-south-04.png": "315f2f4fc5557437c960f7ee35a163d52d189effe8c1acbeb5086730e530c3f0",
+    "bento-south-05.png": "e21dfacc9c8e2b6c2c23a7e7715bd21bb6c10f69f4f7ee45fc7089aaf721f0da",
+    "bento-south-06.png": "2cabd9fd82c11ccd2a60a6259f1fd4a6f183bd42e8e6b9fd6244a04a9764c182",
+    "bento-south-07.png": "4fd9bc6ea2f1a8152a592d510701555e7b2fbf0559f658f44bdc6dac508ee797",
+    "neutral-body-reference.png": "133ef9bf733471fb0e71f87ce4c3e53916f26a4a55d8c4cb762bc0cbd2234e18",
+    "reference-bento-attack.png": "726b9e0dddfd5eb571cb00e399f4df9c3c337e0d517819b2ab4013c68e3475c9"
+  }
+}

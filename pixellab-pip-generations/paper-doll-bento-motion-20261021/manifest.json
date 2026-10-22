@@ -1,0 +1,71 @@
+{
+  "status": "completed; body anatomy rejected; no production activation",
+  "tool": "MCP transfer_outfit",
+  "job_id": "9222accd-8548-44b8-8f3c-59c81e28884b",
+  "asset_id": "1ae8b084-f4fd-5401-8993-5e1d63026fe3",
+  "parameters": {
+    "frames_base64": [
+      "bento-south-00.png",
+      "bento-south-01.png",
+      "bento-south-02.png",
+      "bento-south-03.png",
+      "bento-south-04.png",
+      "bento-south-05.png",
+      "bento-south-06.png",
+      "bento-south-07.png"
+    ],
+    "reference_image_base64": "neutral-body-reference.png",
+    "width": 64,
+    "height": 64,
+    "no_background": true,
+    "additional_instructions": "Transfer only the neutral appearance of this same human pirate from the reference: bald head, bare torso and arms, plain charcoal shorts and bare feet. Remove the hair, shirt, waistcoat, boots, sword and slash effects from every frame. Preserve each source frame's exact skeletal pose, shoulder rotation, torso lean, elbow bends, hand positions, facial facing, foot positions, perspective, pixel scale and frame order. Keep the original attack's anticipation, contact and recovery. Do not replace the movement with a generic standing gesture. Transparent background."
+  },
+  "image_field_representation": "Local PNG paths; encode files as base64 when replaying. Original order preserved.",
+  "seed": "omitted",
+  "estimated_generations": 10,
+  "generation_ceiling": 25,
+  "production_enabled": false,
+  "full_character_artwork_approved": false,
+  "reported_usage": {
+    "generations": 10
+  },
+  "asset_status": "saved",
+  "outputs": [
+    "body-south-00.png",
+    "body-south-01.png",
+    "body-south-02.png",
+    "body-south-03.png",
+    "body-south-04.png",
+    "body-south-05.png",
+    "body-south-06.png",
+    "body-south-07.png"
+  ],
+  "verification": "See review.json. Original8 outputs preserved.",
+  "local_assembly": {
+    "padding": [
+      10,
+      13
+    ],
+    "canvas": [
+      84,
+      84
+    ],
+    "pivot": [
+      42,
+      65
+    ],
+    "source_frames_preserved": true,
+    "png_palette_unchanged": true,
+    "gif_exact_rgba": true,
+    "sprite_content_painted_locally": false,
+    "visible_piece_extraction": "Original Bento pixels selected by per-pose regions and colour families, with adjacent existing contour pixels. Original RGBA copied, no inpainting or hidden-pixel reconstruction. See extract_visible_pieces.py and visible-pieces-audit.json."
+  },
+  "local_outputs": [
+    "candidate-south-sheet.png",
+    "candidate-south.gif",
+    "review.json",
+    "assembly-audit.json",
+    "review-pack.json",
+    "visible-pieces-audit.json"
+  ]
+}
