@@ -77,6 +77,9 @@
     walkable(x,y,r=this.radius){
       if(!Number.isFinite(x)||!Number.isFinite(y)||x<r||y<r||x>this.map.width-r||y>this.map.height-r)return false;
       if(this.map.terrainWalkable&&!this.map.terrainWalkable(x,y,r))return false;
+      const foot=this.map.playerFootprint;
+      if(foot)return !this.map.colliders.some(o=>o.isSolid!==false&&
+        x-foot.w/2<o.x+o.w&&x+foot.w/2>o.x&&y-foot.h<o.y+o.h&&y>o.y);
       // A small circular footprint at the feet, independent of visual height.
       return !this.map.colliders.some(o=>{
         const px=clamp(x,o.x,o.x+o.w),py=clamp(y,o.y,o.y+o.h);
