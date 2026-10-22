@@ -4,6 +4,7 @@
   const VERSION=1,clone=x=>JSON.parse(JSON.stringify(x)),int=n=>Number.isSafeInteger(n)&&n>=0?n:0;
   const newIslands=root.MareNewIslands||(typeof module!=='undefined'?(require('./new-islands-data.js'),require('./new-islands.js')):null);
   const monsterCatalog=root.MareMonsterCatalog||(typeof module!=='undefined'?require('./monster-catalog.js'):null);
+  const pixelMaps=root.MarePixelWorldMaps||(typeof module!=='undefined'?(require('./pixellab-world-maps-data.js'),require('./pixellab-world-maps.js')):null);
   const regions={
     rare:{name:'Ilha dos Animais Raros',min:16,max:20,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.rare.districts.map(d=>({...d,min:18,max:18,roles:['cocox']}))},
     syrup:{name:'Vila Syrup',min:21,max:25,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.syrup.districts.map((d,i)=>({...d,min:23,max:23,roles:i%2?['buchi','sham']:['sham','buchi']}))},
@@ -18,13 +19,8 @@
       {id:'farol',name:'Clareira dos Vigias',min:5,max:5,x:1832,y:1160,roles:['cesar']},
       {id:'caldeira',name:'Vila do Capitão',min:5,max:5,x:2152,y:1064,roles:['cesar']}
     ]},
-    orange:{name:'Orange Town',min:11,max:15,boss:'Capitão Fagulha',bossLevel:15,firstGold:1800,firstRarity:'epic',respawn:90,sectors:[
-      {id:'cais',name:'Cais das Laranjeiras',min:11,max:12,x:480,y:1632,roles:['bandit','crab']},
-      {id:'rua',name:'Rua dos Navegantes',min:12,max:13,x:544,y:1056,roles:['bandit','bandit','spirit']},
-      {id:'praca',name:'Praça dos Toldos',min:13,max:14,x:1056,y:1056,roles:['bandit','spirit']},
-      {id:'armazens',name:'Armazéns da Enseada',min:14,max:15,x:1568,y:1376,roles:['crab','spirit']},
-      {id:'picadeiro',name:'Pátio do Capitão',min:15,max:15,x:1568,y:544,roles:['crab','bandit','spirit']}
-    ]},
+    orange:{name:'Orange Town',min:11,max:15,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:pixelMaps.orange.districts.map(d=>({...d}))},
+    loguetown:{name:'Loguetown',min:36,max:40,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:pixelMaps.loguetown.districts.map(d=>({...d}))},
     swamp:{name:'Cidade das Conchas',min:6,max:10,boss:'Guardião das Conchas',bossLevel:10,firstGold:900,firstRarity:'epic',respawn:90,sectors:[
       {id:'vigilia',name:'Pátio da Vigília',min:6,max:7,x:736,y:1312,roles:['bandit','crab']},
       {id:'docas',name:'Docas Veladas',min:7,max:8,x:1440,y:1504,roles:['bandit','spirit']},
