@@ -98,22 +98,14 @@
   });
   MareCharacters.configure(classes);
   // Somente artes fornecidas pelo usuário: quatro visualizações de facção.
-  const spriteBank = {};
-  const spriteActions=['idle','idle2','back','side','walk1','walk2','walk3','attack1','attack2','attack3','attack4'];
-  for(const fac of Object.keys(factions)){
-    spriteBank[fac]={};
-    for(const action of spriteActions){
-      const img=new Image(); img.src='assets/sprites/'+fac+'/'+action+'.png';
-      spriteBank[fac][action]=img; if(action==='idle')img.addEventListener('load',()=>{if(game&&game.factionId===fac)renderPortrait();});
-    }
+  function drawMissingSprite(c,x,y){
+    c.save();c.imageSmoothingEnabled=false;c.globalAlpha=.7;c.fillStyle='#152630';c.fillRect(Math.round(x-7),Math.round(y-28),14,25);c.fillStyle='#d7c38d';c.fillRect(Math.round(x-4),Math.round(y-24),8,8);c.fillStyle='#668b92';c.fillRect(Math.round(x-5),Math.round(y-14),10,10);c.restore();
   }
-  function readySprite(fac,act){let img=spriteBank[fac]?.[act];return img?.complete&&img.naturalWidth>0?img:null;}
-  function drawFactionSprite(c,x,y,fac,action='idle',size=70,flip=false){
-    if(globalThis.MareFactionSprites?.draw(c,fac,x,y,{action:'idle',direction:'south',time:0,height:size}))return true;
-    let img=readySprite(fac,action)||readySprite(fac,'idle');if(!img)return false;
-    let w=size*img.width/Math.max(1,img.height),h=size;
-    c.save();c.translate(Math.round(x),Math.round(y));if(flip)c.scale(-1,1);
-    c.imageSmoothingEnabled=false;c.drawImage(img,-Math.round(w/2),-Math.round(h),Math.round(w),Math.round(h));c.restore();return true;
+  function drawFactionSprite(c,x,y,fac,action='idle',size=70,flip=false,direction='south',time=world.time){
+    if(globalThis.MareFactionSprites?.draw(c,fac,x,y,{action,direction,time,height:size}))return true;
+    const state=globalThis.MareFactionSprites?.status(fac,action);
+    if(state==='failed'||state==='missing'||state==='unsupported'){drawMissingSprite(c,x,y);return true;}
+    return false;
   }
   function configureFactionVisual(){
     const f=factions[game?.factionId]||factions.pirate;
@@ -261,7 +253,7 @@
   function captureBeriSprite(){
     const canvas=document.createElement('canvas');canvas.width=48;canvas.height=48;
     const c=canvas.getContext('2d',{willReadFrequently:true});c.imageSmoothingEnabled=false;
-    if(!drawPlayerSprite(c,24,48))drawFactionSprite(c,24,48,game.factionId,'idle',48);
+    if(!drawPlayerSprite(c,24,48))return null;
     const source=c.getImageData(0,0,48,48).data;
     const regions=[[11,6],[25,6],[8,18],[27,18],[11,31],[25,31]];
     return regions.map(([sx,sy],part)=>{
@@ -309,13 +301,15 @@
     if(Date.now()<(game.fruitCooldowns?.[fruit.id]||0)){if(manual)toast('Habilidade em recarga.');return false;}
     const target=fruit.id==='akuma_inu_dachshund'?livingMobs().filter(m=>distance(m,world.hero)<=130&&navigator().clear(world.hero,m)).sort((a,b)=>distance(a,world.hero)-distance(b,world.hero))[0]:null;
     if(fruit.id==='akuma_inu_dachshund'&&!target){if(manual)toast('Nenhum alvo próximo para morder.');return false;}
+    const beriSpheres=fruit.id==='akuma_beri_beri'?captureBeriSprite():null;
+    if(fruit.id==='akuma_beri_beri'&&!beriSpheres){if(manual)toast('Aguarde o carregamento da sprite para usar esta habilidade.');return false;}
     let serverEffect=null;if(akumaBackend){try{await akumaCorpseQueue;const response=await akumaRequest('cast',{instance:game.area,x:world.hero.x,y:world.hero.y,enemies:livingMobs().map(m=>({id:m.id,x:m.x,y:m.y})),direction:zoanDirection()});serverEffect=response.effect;}catch(error){if(manual)toast(error.message,'danger');return false;}}
     if(fruit.id==='akuma_kuku_kuku'){
       const corpses=world.corpses.filter(c=>c.instance===game.area).sort((a,b)=>Math.hypot(a.x-world.hero.x,a.y-world.hero.y)-Math.hypot(b.x-world.hero.x,b.y-world.hero.y));
       const corpse=serverEffect?world.corpses.find(c=>String(c.id)===String(serverEffect.id))||serverEffect:corpses[0];if(!corpse){if(manual)toast('Nenhum monstro abatido nesta área.');return false;}
       world.corpses=world.corpses.filter(c=>String(c.id)!==String(corpse.id));world.food.push({id:corpse.id,x:corpse.x,y:corpse.y,readyAt:world.time+.75,expires:Infinity});world.fx.push({x:corpse.x,y:corpse.y,fruit:'akuma_kuku_kuku',life:.75,max:.75});
     }else if(fruit.id==='akuma_beri_beri'){
-      session.beriSpheres=captureBeriSprite();session.fruitInvulnerable=1.5;session.fruitBurst=1.5;world.hero.visible=false;
+      session.beriSpheres=beriSpheres;session.fruitInvulnerable=1.5;session.fruitBurst=1.5;world.hero.visible=false;
       if(serverEffect){for(const moved of serverEffect.enemies){const mob=world.mobs.find(m=>m.id===moved.id&&m.alive);if(mob)navigator().move(mob,moved.x-mob.x,moved.y-mob.y);}}else for(const mob of livingMobs().filter(m=>distance(m,world.hero)<=130)){const dx=mob.x-world.hero.x,dy=mob.y-world.hero.y,d=Math.max(1,Math.hypot(dx,dy));navigator().move(mob,dx/d*65,dy/d*65);}
     }else if(fruit.id==='akuma_tori_albatroz'){
       game.zoanAltitudeUntil=Date.now()+5000;session.zoanActionUntil=world.time+.75;
@@ -334,6 +328,7 @@
   let inventoryFeedback=null,attributeSuccessUntil=0,forgeFeedback=null,rewardBuffer=null,rewardTimer=null;
   let factionShowcase=false,showcaseAction='idle',showcaseDirection='south';
   window.addEventListener('mare-faction-sprite-ready',()=>{if(game){renderPortrait();if($('inventorySprite'))drawCurrentPreview($('inventorySprite'),185);if($('characterSprite'))drawCurrentPreview($('characterSprite'),155);}});
+  window.addEventListener('mare-zoan-sprite-ready',()=>{if(game){renderPortrait();if($('inventorySprite'))drawCurrentPreview($('inventorySprite'),185);if($('characterSprite'))drawCurrentPreview($('characterSprite'),155);}});
   let scene = 'lobby', lobbyDestination = null, lobbyAction = null;
   const npcs = [
     {name:'Capitã luffy',short:'Luffy',x:340,y:206,color:'#e5b87b',kind:'hunt',art:'luffy'},
@@ -820,7 +815,7 @@
     $('lootList').innerHTML=session.recentLoot.length?session.recentLoot.map(x=>`<div class="loot-entry"><span>${lootIcon(x.name)}${escapeHTML(x.name)}</span><b>OBTIDO</b></div>`).join(''):'<div class="empty-note">Sua próxima descoberta aparecerá aqui.</div>';
     updateMiniHud();const time=(6+Math.floor(world.time/90))%24; $('worldClock').textContent='DIA '+String(1+Math.floor(world.time/(90*24))).padStart(2,'0')+' · '+String(time).padStart(2,'0')+':00';
   }
-  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{time:world.time,scale:equippedZoan().id==='akuma_tori_albatroz'?90/64:64/48});else if(!MareFactionSprites.draw(portrait,game.factionId,36,70,{action:'idle',direction:'south',time:world.time,height:64})&&!drawFactionSprite(portrait,36,70,game.factionId,'idle',64))drawHero(portrait,36,66,game.classId,world.time,1.18,true);const mini=$('miniPortrait');if(mini){const mc=mini.getContext('2d');mc.imageSmoothingEnabled=false;mc.clearRect(0,0,64,64);mc.drawImage($('portrait'),0,0,64,64);}}
+  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{time:world.time,scale:equippedZoan().id==='akuma_tori_albatroz'?90/64:64/48});else drawFactionSprite(portrait,36,70,game.factionId,'idle',64,false,'south',world.time);const mini=$('miniPortrait');if(mini){const mc=mini.getContext('2d');mc.imageSmoothingEnabled=false;mc.clearRect(0,0,64,64);mc.drawImage($('portrait'),0,0,64,64);}}
   function worldChange(area){if(!zones[area])return;if(game.level<zones[area].min){toast('Você precisa alcançar o nível '+zones[area].min+'.','danger');return;}game.area=area;const island=MareArchipelago.byArea(area);if(island)game=MareAchievements.record(game,'islandVisited',island.id);game.hp=getDerived().maxHP;game.energy=getDerived().maxEnergy;enterHunt();toast('Você navegou até '+zones[area].name+'.','good');log('Nova região: '+zones[area].name,'good');saveGame();}
   function claimQuest(id){let q=questDefs.find(q=>q.id===id);if(!q||game.claimed.includes(id)||questProgress(q)<q.target)return;game.claimed.push(id);game.gold+=q.gold;gainXP(q.xp);session.gold+=q.gold;game.stats.goldEarned+=q.gold;toast('Contrato concluído! +'+q.gold+' dobrões','good');log('Recompensa do contrato: '+q.title,'gold');saveGame();updateUI();if(currentPanel==='contracts')renderPanel();}
   function getInventoryItem(id){return game.inventory.find(i=>i.id===id)||Object.values(game.equipment).find(i=>i?.id===id)||null;}
@@ -971,7 +966,7 @@
     if(world.hero.visible===false)drawBeriSeparation(c,canvas.width/2,canvas.height-10,1-session.fruitBurst/1.5,height/48);
     else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(c,equippedZoan().id,canvas.width/2,canvas.height-10,{time:world.time,scale:equippedZoan().id==='akuma_tori_albatroz'?height*1.25/64:height/48});
     else if(drawPaperDoll(c,canvas.width/2,canvas.height-10,'idle','south',world.time,height/46)){}
-    else if(!(armed&&classCombat.draw(c,game,canvas.width/2,canvas.height-10,{action:'idle',direction:'south',time:world.time,height})))drawFactionSprite(c,canvas.width/2,canvas.height-10,game.factionId,'idle',height);
+    else if(!(armed&&classCombat.draw(c,game,canvas.width/2,canvas.height-10,{action:'idle',direction:'south',time:world.time,height})))drawFactionSprite(c,canvas.width/2,canvas.height-10,game.factionId,'idle',height,false,'south',world.time);
   }
   function invSymbol(entry){return itemIcon(entry.kind==='gear'?entry.item.def:entry.kind,entry.name);}
   function invSlotHtml(slot){
@@ -1625,82 +1620,32 @@
     return pose?paperDoll.draw(c,appearance,pose,x,y,{scale}):false;
   }
   function drawPlayerSprite(c,x,y){
-    const hero=world.hero, attack=hero.attackAnim>0&&scene==='hunt',moving=hero.walking>0;
-    const zoan=equippedZoan();if(game.zoanTransformed&&zoan){c.fillStyle='#08131f8c';c.beginPath();c.ellipse(x,y,19,5,0,0,Math.PI*2);c.fill();const skillActive=world.time<(session.zoanActionUntil||0),action=skillActive||attack?'attack':moving?'walk':'idle',time=skillActive?world.time-(session.zoanActionUntil-.75):(attack ? .75-hero.attackAnim : world.time);return MareZoanArt.draw(c,zoan.id,x,y,{action,direction:hero.direction,time,scale:zoan.id==='akuma_tori_albatroz'?104/64:74/48});}
-    const combat=classCombatController();
-    const pose=combat?.snapshot(),paperAction=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
-    if((!attack||combat)&&drawPaperDoll(c,x,y,paperAction,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time))return true;
-    if(combat){
-      const state=combat.snapshot();
-      if(state.action!=='idle'&&state.action!=='walk'){
-        c.fillStyle='#08131f8c';c.beginPath();c.ellipse(x,y,19,5,0,0,Math.PI*2);c.fill();
-        if(classCombat.draw(c,game,x,y,{action:state.action,direction:state.direction,time:state.elapsed}))return true;
-        if(classCombat.draw(c,game,x,y,{action:'guard',direction:state.direction,time:0}))return true;
-      }
+    const hero=world.hero,attack=hero.attackAnim>0&&scene==='hunt',moving=hero.walking>0;
+    const zoan=equippedZoan();
+    if(game.zoanTransformed&&zoan){
+      const skillActive=world.time<(session.zoanActionUntil||0),action=skillActive||attack?'attack':moving?'walk':'idle';
+      const time=skillActive?world.time-(session.zoanActionUntil-.75):(attack?.75-hero.attackAnim:world.time);
+      const drawn=MareZoanArt.draw(c,zoan.id,x,y,{action,direction:hero.direction,time,scale:zoan.id==='akuma_tori_albatroz'?104/64:74/48});
+      if(!drawn&&MareZoanArt.status?.(zoan.id,action,hero.direction)==='failed')drawMissingSprite(c,x,y);
+      return drawn;
     }
-    if(classCombat.draw(c,game,x,y,{action:moving?'walk':'idle',direction:hero.direction,time:world.time}))return true;
-    if(globalThis.MareFactionSprites?.assets[game.factionId]){
-      c.fillStyle='#08131f8c';c.beginPath();c.ellipse(x,y,19,5,0,0,Math.PI*2);c.fill();
-      if(MareFactionSprites.draw(c,game.factionId,x,y,{action:moving?'walk':'idle',direction:hero.direction,time:world.time}))return true;
+    const combat=classCombatController(),pose=combat?.snapshot(),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
+    if((!attack||combat)&&drawPaperDoll(c,x,y,requested,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time))return true;
+    if(combat&&pose&&pose.action!=='idle'&&pose.action!=='walk'){
+      if(classCombat.draw(c,game,x,y,{action:pose.action,direction:pose.direction,time:pose.elapsed}))return true;
+      if(classCombat.draw(c,game,x,y,{action:'guard',direction:pose.direction,time:0}))return true;
     }
-    let action=attack?(game.classId==='sword'?'attack'+(1+Math.floor(world.time*12)%3):'attack1'):moving?(['walk1','walk2','walk3'][Math.floor(world.time*9)%3]):'idle';
-    if(!attack&&hero.direction==='back')action='back';
-    else if(!attack&&(hero.direction==='left'||hero.direction==='right'))action='side';
-    else if(!moving&&!attack)action=Math.floor(world.time*2)%2?'idle2':'idle';
-    if(!readySprite(game.factionId,action))action='idle';
-    c.fillStyle='#08131f8c';c.beginPath();c.ellipse(x,y,19,5,0,0,Math.PI*2);c.fill();
-    return drawFactionSprite(c,x,y,game.factionId,action,74,hero.direction==='left'&&(action==='side'||attack));
+    if(combat&&classCombat.draw(c,game,x,y,{action:moving?'walk':'idle',direction:hero.direction,time:world.time}))return true;
+    if(['attack','skill','skill-1','skill-2','hurt','death','guard'].includes(requested))return true;
+    return drawFactionSprite(c,x,y,game.factionId,moving?'walk':'idle',74,false,hero.direction,world.time);
   }
   function drawFactionShowcase(actor){
     const a=MareFactionSprites.assets[actor.id];
     ctx.fillStyle='#08131f8c';ctx.beginPath();ctx.ellipse(actor.x,actor.y,18,5,0,0,Math.PI*2);ctx.fill();
-    MareFactionSprites.draw(ctx,actor.id,actor.x,actor.y,{action:showcaseAction,direction:showcaseDirection,time:world.time});
+    if(!MareFactionSprites.draw(ctx,actor.id,actor.x,actor.y,{action:showcaseAction,direction:showcaseDirection,time:world.time})){const state=MareFactionSprites.status(actor.id,showcaseAction);if(state==='failed'||state==='missing'||state==='unsupported')drawMissingSprite(ctx,actor.x,actor.y);}
     ctx.font='bold 10px Trebuchet MS';ctx.textAlign='center';ctx.fillStyle='#10242c';ctx.fillRect(actor.x-38,actor.y+12,76,26);
     ctx.fillStyle='#ffe4a2';ctx.fillText(a.meta.display_name.split(' ')[0],actor.x,actor.y+23);
     ctx.font='8px Trebuchet MS';ctx.fillText(({revolutionary:'Revolucionária',pirate:'Pirata',marine:'Marinheira',government:'Governo'})[actor.id],actor.x,actor.y+33);
-  }
-  function drawHero(c,x,y,classId,t,scale=1.95,portraitMode=false){
-    const moving=world.hero.walking>0&&!portraitMode;
-    const step=moving?Math.round(Math.sin(t*16)*1):0;
-    const attack=world.hero.attackAnim>0&&!portraitMode;
-    const pal={
-      sword:{body:'#6f7d45',trim:'#e2cb81',cape:'#496f43',capeDark:'#35553a',hair:'#e5e7df',band:'#8c9ab3',skin:'#d4b08b',boots:'#3b332d',pants:'#433d37',metal:'#dce3dc',gold:'#ddc174'},
-      brawler:{body:'#72503c',trim:'#e0b56f',cape:'#6b4431',capeDark:'#4f2f24',hair:'#f0efe8',band:'#9a5c4c',skin:'#cfa27f',boots:'#40322d',pants:'#46372f',metal:'#c4b8aa',gold:'#d7ae66'},
-      gunner:{body:'#4f5966',trim:'#e5c684',cape:'#464d5f',capeDark:'#313748',hair:'#e7e6dc',band:'#6d7d93',skin:'#d0ac89',boots:'#312c2a',pants:'#403936',metal:'#d9ddcf',gold:'#e2bc73'}
-    }[classId]||{body:'#5d6c52',trim:'#e2cb81',cape:'#496f43',capeDark:'#35553a',hair:'#ece9dd',band:'#8490a6',skin:'#d4b08b',boots:'#3b332d',pants:'#433d37',metal:'#dce3dc',gold:'#ddc174'};
-    c.save();
-    c.translate(Math.round(x),Math.round(y));
-    c.scale(scale,scale);
-    if(!portraitMode){c.fillStyle='#0a161880';c.beginPath();c.ellipse(0,1,10,3,0,0,Math.PI*2);c.fill();}
-    // capa atrás do corpo
-    px(c,-7,-25,14,4,pal.capeDark);px(c,-6,-21,12,11,pal.cape);px(c,-5,-9,10,3,pal.capeDark);
-    // pernas
-    px(c,-4,-11+step,3,8,pal.pants);px(c,1,-11-step,3,8,pal.pants);px(c,-4,-4+step,3,3,pal.boots);px(c,1,-4-step,3,3,pal.boots);
-    // tronco
-    px(c,-6,-23,12,13,pal.body);px(c,-4,-24,8,2,pal.trim);px(c,-2,-17,4,3,pal.gold);px(c,-6,-10,12,2,'#2d2a24');
-    // braços
-    px(c,-8,-22,2,10,pal.skin);px(c,6,-22,2,10,pal.skin);px(c,-8,-17,2,5,pal.body);px(c,6,-17,2,5,pal.body);
-    // pescoço e cabeça
-    px(c,-1,-28,2,3,pal.skin);px(c,-5,-37,10,10,pal.skin);
-    // cabelo / faixa
-    px(c,-7,-39,14,4,pal.hair);px(c,-6,-36,12,3,pal.hair);px(c,-5,-34,10,2,pal.hair);px(c,-6,-33,12,2,pal.band);
-    px(c,-6,-32,2,3,pal.hair);px(c,4,-32,2,3,pal.hair);
-    // rosto
-    px(c,-3,-34,2,2,'#1e262a');px(c,1,-34,2,2,'#1e262a');px(c,-1,-31,2,1,'#8c5d51');
-    // ombros/luvas
-    px(c,-8,-23,2,2,pal.trim);px(c,6,-23,2,2,pal.trim);
-    // arma por classe
-    if(classId==='sword'){
-      if(attack){px(c,7,-35,2,18,pal.metal);px(c,6,-20,6,2,pal.gold);px(c,9,-38,1,4,'#f7f8f4');}
-      else {px(c,7,-31,2,15,pal.metal);px(c,6,-18,6,2,pal.gold);}
-    } else if(classId==='brawler'){
-      px(c,-10,-18,4,4,pal.metal);px(c,6,-18,4,4,pal.metal);px(c,-10,-14,4,2,pal.gold);px(c,6,-14,4,2,pal.gold);
-    } else if(classId==='gunner'){
-      px(c,7,attack?-26:-20,12,3,'#69493a');px(c,18,attack?-26:-20,4,2,pal.metal);px(c,5,attack?-28:-22,2,7,pal.gold);
-    }
-    // bordas da capa na frente
-    px(c,-7,-23,2,13,pal.capeDark);px(c,5,-23,2,13,pal.capeDark);
-    c.restore();
   }
   // PNG com transparência: os monstros deixam de ser blocos procedurais.
   const mobSprites={};
@@ -1757,14 +1702,12 @@
     const u=MareUltimates.selected(game),rt=session.talents.ultimate;
     if(u==='shadowClone'){ctx.save();ctx.globalAlpha=.3;drawPlayerSprite(ctx,x-38,y+16);ctx.restore();}
     if(world.hero.visible!==false)vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1);
-    ctx.save();if(rt.hidden)ctx.globalAlpha=.2;if(world.hero.visible===false){drawBeriSeparation(ctx,x,y,1-session.fruitBurst/1.5);}else if(u==='titan'){ctx.translate(x,y);ctx.scale(1.35,1.35);if(!drawPlayerSprite(ctx,0,0))drawHero(ctx,0,0,game.classId,world.time,1.92);}else if(!drawPlayerSprite(ctx,x,y))drawHero(ctx,x,y,game.classId,world.time,1.92);ctx.restore();
-    globalThis.MareHakiArt?.draw(ctx,session.haki,world.hero,world.time,reducedFX,(c,x,y)=>{c.save();c.translate(x,y);if(u==='titan')c.scale(1.35,1.35);if(!drawPlayerSprite(c,0,0))drawHero(c,0,0,game.classId,world.time,1.92);c.restore();},u==='titan'?1.35:1);
+    ctx.save();if(rt.hidden)ctx.globalAlpha=.2;if(world.hero.visible===false){drawBeriSeparation(ctx,x,y,1-session.fruitBurst/1.5);}else if(u==='titan'){ctx.translate(x,y);ctx.scale(1.35,1.35);drawPlayerSprite(ctx,0,0);}else drawPlayerSprite(ctx,x,y);ctx.restore();
+    globalThis.MareHakiArt?.draw(ctx,session.haki,world.hero,world.time,reducedFX,(c,x,y)=>{c.save();c.translate(x,y);if(u==='titan')c.scale(1.35,1.35);drawPlayerSprite(c,0,0);c.restore();},u==='titan'?1.35:1);
     if(u==='armamentSkin'&&rt.vigor>0){px(ctx,x-30,y-94,60,6,'#10222a');px(ctx,x-29,y-93,58*rt.vigor/rt.vigorMax,4,'#e4c77b');}
   }
   function drawForegroundLayer(actors){
     const mapId=activeMap().id;
-    if(mapId==='lobby'&&globalThis.MareLobby)MareLobby.foreground(ctx,actors);
-    if(MareNewIslands[mapId])MareNewIslands.foreground(ctx,mapId,actors);
     if(mapId==='dawn')for(const prop of MareDawn.props)MareDawnRenderer.prop(ctx,prop,actors);
     const overlay=(p,bounds,draw)=>{
       if(!actors.some(a=>a.x+35>bounds.x&&a.x-35<bounds.x+bounds.w&&a.y>bounds.y&&a.y-120<bounds.y+bounds.h))return;

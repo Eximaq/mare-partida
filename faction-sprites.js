@@ -24,11 +24,17 @@
       if(!lazy)ensure(id);
     }
   }
+  function status(id,action='idle'){
+    const asset=assets[id];if(!asset)return 'missing';
+    ensure(id);const animation=asset.meta.animations[action];if(!animation)return 'unsupported';
+    const image=asset.sheets[action];if(!image||!image.complete)return 'loading';
+    return image.naturalWidth>0?'ready':'failed';
+  }
   function frame(id,action='idle',direction='south',time=0){
     const asset=assets[id];if(!asset)return null;
     ensure(id);
-    const animation=asset.meta.animations[action];if(!animation)return null;
-    const image=asset.sheets[action];if(!image.complete||!image.naturalWidth)return null;
+    const animation=asset.meta.animations[action];if(!animation||status(id,action)!=='ready')return null;
+    const image=asset.sheets[action];
     const row=asset.meta.directions.indexOf(directionMap[direction]||direction);
     if(row<0)return null;
     const count=animation.direction_frames?.[asset.meta.directions[row]]??animation.frames;
@@ -51,5 +57,5 @@
     context.restore();return true;
   }
   const forgetImage=url=>{if(url.startsWith('blob:'))images.delete(url);};
-  globalThis.MareFactionSprites={register,ensure,frame,draw,assets,image,forgetImage};
+  globalThis.MareFactionSprites={register,ensure,status,frame,draw,assets,image,forgetImage};
 })();
