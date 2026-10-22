@@ -57,6 +57,11 @@ on:
       - 'docs/PAPER-DOLL-RETOQUE-EXATO.md'
       - 'tests/paper-doll-exact-retouch.test.cjs'
       - 'tests/paper_doll_exact_retouch_browser.py'
+      - 'pixellab-pip-generations/paper-doll-east-fit-20261022/**'
+      - 'docs/PAPER-DOLL-ENCAIXE-LESTE.md'
+      - 'tests/paper-doll-east-fit.test.cjs'
+      - 'tests/paper_doll_east_fit_browser.py'
+      - 'tests/paper_doll_east_fit_combat_browser.py'
       - 'pixellab-pip-generations/paper-doll-walk-north-20261021/**'
       - 'docs/PAPER-DOLL-CAMINHADA-NORTE.md'
       - 'pixellab-pip-generations/paper-doll-walk-fit-20261021/**'
@@ -117,6 +122,7 @@ jobs:
           python pixellab-pip-generations/paper-doll-bento-directions-20261021/compose.py
           python pixellab-pip-generations/paper-doll-bento-repair-20261022/assemble_review.py
           python pixellab-pip-generations/paper-doll-exact-retouch-20261022/assemble_review.py
+          python pixellab-pip-generations/paper-doll-east-fit-20261022/assemble_review.py
           python tools/build_pages.py
       - name: Conferir bancada, fallback e jogo
         env:
@@ -151,6 +157,8 @@ jobs:
           python tests/paper_doll_directions_browser.py
           python tests/paper_doll_repair_browser.py
           python tests/paper_doll_exact_retouch_browser.py
+          python tests/paper_doll_east_fit_browser.py
+          python tests/paper_doll_east_fit_combat_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-basic-sword-20261021/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-walk-profiles-20261021/ python tests/paper_doll_world_review_browser.py
           python tests/universal_character_browser.py

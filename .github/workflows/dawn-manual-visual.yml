@@ -16,7 +16,8 @@ permissions:
 jobs:
   dawn:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # A cold Chromium/system-dependency install exceeded ten minutes in PR57.
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5

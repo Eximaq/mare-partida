@@ -1,0 +1,514 @@
+{
+  "frames": [
+    {
+      "frame": 0,
+      "changed_pixels": {
+        "outfit": 58,
+        "pants": 64,
+        "boots": 60
+      },
+      "alpha_unchanged": true,
+      "protected_arm_unchanged": true,
+      "body_sha256_rgba": "97801d69bebdf654cbba7abd29983d6bb1dad67ca8eebf69cb61f80a7f4513d6",
+      "fitted_sha256_rgba": "b122b4e889632174f7685ac85b0bebd87ff8a6f9f9b4085f530b16a6d32d9beb"
+    },
+    {
+      "frame": 1,
+      "changed_pixels": {
+        "outfit": 43,
+        "pants": 72,
+        "boots": 60
+      },
+      "alpha_unchanged": true,
+      "protected_arm_unchanged": true,
+      "body_sha256_rgba": "224df77d41d123a716a9e725a0ef5b92e70959449575af1bbe7fbb1b3bd38ffd",
+      "fitted_sha256_rgba": "6be8275ad4d45b0498eae847eb600ed249b0f66c8069317d91d8c8aac124cc13"
+    },
+    {
+      "frame": 2,
+      "changed_pixels": {
+        "outfit": 54,
+        "pants": 81,
+        "boots": 62
+      },
+      "alpha_unchanged": true,
+      "protected_arm_unchanged": true,
+      "body_sha256_rgba": "b7465e270776e6747be5d4af7423fe8cbec3bd78ae96a117ea3758bf6c6b920b",
+      "fitted_sha256_rgba": "5388a112d6ee40bf198e9ce4475bb70b67ce427b1b63ff46180923919f8b4d76"
+    },
+    {
+      "frame": 3,
+      "changed_pixels": {
+        "outfit": 74,
+        "pants": 73,
+        "boots": 69
+      },
+      "alpha_unchanged": true,
+      "protected_arm_unchanged": true,
+      "body_sha256_rgba": "dbccf5b2ee49ebc331406399d0630a8aa88fbdbaba01ca2238a22911e5b42f0a",
+      "fitted_sha256_rgba": "f494fd31315c9fc0f9fd50e4db4d1fff51836292a6be7a78fa5c941bc8554975"
+    },
+    {
+      "frame": 4,
+      "changed_pixels": {
+        "outfit": 87,
+        "pants": 73,
+        "boots": 67
+      },
+      "alpha_unchanged": true,
+      "protected_arm_unchanged": true,
+      "body_sha256_rgba": "1d3d851cf66e74dc5eb1d2057172a7726e1a0dae479ebae43a8187e92aa94c50",
+      "fitted_sha256_rgba": "b30c2b34fe69bc402e43b04e354e81735d45d6a15d83cfd92d1b3fddaad51a27"
+    },
+    {
+      "frame": 5,
+      "changed_pixels": {
+        "outfit": 54,
+        "pants": 73,
+        "boots": 66
+      },
+      "alpha_unchanged": true,
+      "protected_arm_unchanged": true,
+      "body_sha256_rgba": "023fbd18fb1c09555129435a35d6dcada1c9edc4d6c0a745932e2c0049df040e",
+      "fitted_sha256_rgba": "246af67c98e0a5027dd940af1e8b6853f1223e1c6c7f7b841f5ebca570e2ebe1"
+    },
+    {
+      "frame": 6,
+      "changed_pixels": {
+        "outfit": 79,
+        "pants": 75,
+        "boots": 63
+      },
+      "alpha_unchanged": true,
+      "protected_arm_unchanged": true,
+      "body_sha256_rgba": "e2979396737514c701f86985c2f40d083a4c51935327914d232471d05e02a906",
+      "fitted_sha256_rgba": "104c2ff7189c239a63971627f2ff23c6c0c21735a8c0f696f3644b844d7c18d7"
+    },
+    {
+      "frame": 7,
+      "changed_pixels": {
+        "outfit": 45,
+        "pants": 65,
+        "boots": 58
+      },
+      "alpha_unchanged": true,
+      "protected_arm_unchanged": true,
+      "body_sha256_rgba": "2d92394ccac3561dc5f6c66e308bed44cfda24a8147eb794af87e004430f1e9c",
+      "fitted_sha256_rgba": "6a8ee466c090c078d34602a0e40b97a1f783bf876108aaa5af69f2ebd2e3d24d"
+    }
+  ],
+  "layers": [
+    {
+      "frame": 0,
+      "slot": "body",
+      "pixels": 494,
+      "source": "retouched body",
+      "sha256_rgba": "97801d69bebdf654cbba7abd29983d6bb1dad67ca8eebf69cb61f80a7f4513d6"
+    },
+    {
+      "frame": 0,
+      "slot": "pants",
+      "pixels": 64,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "7b71e55f5ee515c87950d7015cb3701dad3020a350be49713226dbc0915a80a3"
+    },
+    {
+      "frame": 0,
+      "slot": "boots",
+      "pixels": 60,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "1e03bcf75a869f3630f026b0673fffe529461a89a62c2ecea376f3ff67bd0c94"
+    },
+    {
+      "frame": 0,
+      "slot": "outfit",
+      "pixels": 58,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "3c53c0644488572c22ac4311257b430f50d6d29cb952d14fc1dd2d30af7df833"
+    },
+    {
+      "frame": 0,
+      "slot": "hair",
+      "pixels": 136,
+      "source": "original Bento pose 0",
+      "sha256_rgba": "5f94eb2cff2d3eed01fddabcfb1baeb3c1b511ea94a2cf44d3920131f403ba38"
+    },
+    {
+      "frame": 0,
+      "slot": "weapon",
+      "pixels": 75,
+      "source": "original Bento pose 0",
+      "sha256_rgba": "35c6f9215b5ad56c8d065c7c828ab19c4d957ce5b80ffaa1ddfe3d3ef64d2f55"
+    },
+    {
+      "frame": 1,
+      "slot": "body",
+      "pixels": 500,
+      "source": "retouched body",
+      "sha256_rgba": "224df77d41d123a716a9e725a0ef5b92e70959449575af1bbe7fbb1b3bd38ffd"
+    },
+    {
+      "frame": 1,
+      "slot": "pants",
+      "pixels": 72,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "0b36421ed8edc4fea58f8e0af067c2e5b984e0bd718e46528d2ff84f70e19c36"
+    },
+    {
+      "frame": 1,
+      "slot": "boots",
+      "pixels": 60,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "704cab4be200536b709b8ce94b6836b6e622afce1a06aee24fb300e19370c287"
+    },
+    {
+      "frame": 1,
+      "slot": "outfit",
+      "pixels": 43,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "c08890f8f666ba0531aaf006a2cb29b8f34f522e7f5c92844fe2216afc6d816b"
+    },
+    {
+      "frame": 1,
+      "slot": "hair",
+      "pixels": 133,
+      "source": "original Bento pose 1",
+      "sha256_rgba": "eadd4f939988cc4dcb49cad5b3a7e79c8cbc208581e849b851d31ff4b70017d6"
+    },
+    {
+      "frame": 1,
+      "slot": "weapon",
+      "pixels": 81,
+      "source": "original Bento pose 1",
+      "sha256_rgba": "01fff80e104225db61fab9ed1a0a73064d12c5c2ccffb2316dd6ca7d260ddd89"
+    },
+    {
+      "frame": 2,
+      "slot": "body",
+      "pixels": 505,
+      "source": "retouched body",
+      "sha256_rgba": "b7465e270776e6747be5d4af7423fe8cbec3bd78ae96a117ea3758bf6c6b920b"
+    },
+    {
+      "frame": 2,
+      "slot": "pants",
+      "pixels": 81,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "e61d7708d6f7e93008b34c69aef4b7c9563ad41a3724de249022c6e7be25bb1b"
+    },
+    {
+      "frame": 2,
+      "slot": "boots",
+      "pixels": 62,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "d38368889bbfdb401071b1e838db09eefaf2ad349f22b005ebc9f9abb0a69348"
+    },
+    {
+      "frame": 2,
+      "slot": "outfit",
+      "pixels": 54,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "6960b2002b8d8515b8946f2314b1e45bb7f302e1465362df11255726d2d6cddc"
+    },
+    {
+      "frame": 2,
+      "slot": "hair",
+      "pixels": 116,
+      "source": "original Bento pose 2",
+      "sha256_rgba": "5cba2deb56cd4bb6fd4267d2862c33696089974520f53e109ce30f33fdf8d6fa"
+    },
+    {
+      "frame": 2,
+      "slot": "weapon",
+      "pixels": 71,
+      "source": "original Bento pose 2",
+      "sha256_rgba": "d5b46d813e2a0c98dc2aad42ce6cfe3c40eb4a2c5e235e6777b7d3da3888e5e5"
+    },
+    {
+      "frame": 3,
+      "slot": "body",
+      "pixels": 500,
+      "source": "retouched body",
+      "sha256_rgba": "dbccf5b2ee49ebc331406399d0630a8aa88fbdbaba01ca2238a22911e5b42f0a"
+    },
+    {
+      "frame": 3,
+      "slot": "pants",
+      "pixels": 73,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "9ab55234bb47c24cec6d45f3e1e5e54f6a1a2ed3aef949adbb79d2608e692fb9"
+    },
+    {
+      "frame": 3,
+      "slot": "boots",
+      "pixels": 69,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "1d301af093fc43ab11b472373aadad188ec7f90d809e33c9e44348dadcb9530f"
+    },
+    {
+      "frame": 3,
+      "slot": "outfit",
+      "pixels": 74,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "1cd0e251eb9babfc00275d97f9f7bc97897879524600aa4788da24ee797e1c74"
+    },
+    {
+      "frame": 3,
+      "slot": "hair",
+      "pixels": 121,
+      "source": "original Bento pose 3",
+      "sha256_rgba": "a23b871046b0d0a29148e85587388b797de6e2e326ea46d40c4dfc657fc3053f"
+    },
+    {
+      "frame": 3,
+      "slot": "weapon",
+      "pixels": 83,
+      "source": "original Bento pose 3",
+      "sha256_rgba": "63aa18a7e935f1a0e2272f7fc7742b0a9b7a9a99c32ea81f9056b278a584a105"
+    },
+    {
+      "frame": 4,
+      "slot": "body",
+      "pixels": 516,
+      "source": "retouched body",
+      "sha256_rgba": "1d3d851cf66e74dc5eb1d2057172a7726e1a0dae479ebae43a8187e92aa94c50"
+    },
+    {
+      "frame": 4,
+      "slot": "pants",
+      "pixels": 73,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "e315c2dbdcd7e79dee517095c6cdd9beb781cf01bd341b234f1a6e575ef03e0e"
+    },
+    {
+      "frame": 4,
+      "slot": "boots",
+      "pixels": 67,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "1945a4419b9e68fac7e522ba094e200d94ba9b9fdca6447d8928651336dc8079"
+    },
+    {
+      "frame": 4,
+      "slot": "outfit",
+      "pixels": 87,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "31e3908f184d40c024f0c597345b878ca024e525039646dd953c42955edb7168"
+    },
+    {
+      "frame": 4,
+      "slot": "hair",
+      "pixels": 113,
+      "source": "original Bento pose 4",
+      "sha256_rgba": "8d8f1b7625e249735076256176267ab3437e35af522026ca84d020cc2780e8b9"
+    },
+    {
+      "frame": 4,
+      "slot": "weapon",
+      "pixels": 45,
+      "source": "original Bento pose 4",
+      "sha256_rgba": "efe3ed6b14b66e3ec422398ff6c0bcdf417210a5928cee5da2f83a328132882a"
+    },
+    {
+      "frame": 5,
+      "slot": "body",
+      "pixels": 484,
+      "source": "retouched body",
+      "sha256_rgba": "023fbd18fb1c09555129435a35d6dcada1c9edc4d6c0a745932e2c0049df040e"
+    },
+    {
+      "frame": 5,
+      "slot": "pants",
+      "pixels": 73,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "e315c2dbdcd7e79dee517095c6cdd9beb781cf01bd341b234f1a6e575ef03e0e"
+    },
+    {
+      "frame": 5,
+      "slot": "boots",
+      "pixels": 66,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "88d9f2c17175a4c1a37a31bae0fdff4652a0e616a4ac23aee41dcfca3427609a"
+    },
+    {
+      "frame": 5,
+      "slot": "outfit",
+      "pixels": 54,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "2aad37ce7c4b6697a4c6b685094605225c4c858777b7e760dc32677208bd35b6"
+    },
+    {
+      "frame": 5,
+      "slot": "hair",
+      "pixels": 113,
+      "source": "original Bento pose 4",
+      "sha256_rgba": "8d8f1b7625e249735076256176267ab3437e35af522026ca84d020cc2780e8b9"
+    },
+    {
+      "frame": 5,
+      "slot": "weapon",
+      "pixels": 56,
+      "source": "original Bento pose 6",
+      "sha256_rgba": "937fc4e422ec445a4c05228fe86445602789ebd9d79a1d87b857252485ce2c4e"
+    },
+    {
+      "frame": 6,
+      "slot": "body",
+      "pixels": 544,
+      "source": "retouched body",
+      "sha256_rgba": "e2979396737514c701f86985c2f40d083a4c51935327914d232471d05e02a906"
+    },
+    {
+      "frame": 6,
+      "slot": "pants",
+      "pixels": 75,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "ca0cf7045c56945a64b705cc4be5b1b23b43845330588e90d088590b0577370a"
+    },
+    {
+      "frame": 6,
+      "slot": "boots",
+      "pixels": 63,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "b1cbd5c0ff04b932fb2ecf7c19130afed64cac27f8677d3e87d17b35402f80dd"
+    },
+    {
+      "frame": 6,
+      "slot": "outfit",
+      "pixels": 79,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "942b66e2a8ffb128f2ed4a8710a43fa0244dc7a41450b132d8bda3b3c6c22bee"
+    },
+    {
+      "frame": 6,
+      "slot": "hair",
+      "pixels": 118,
+      "source": "original Bento pose 6",
+      "sha256_rgba": "a546574fd6e01bee03e139dd294c72d1470e2d45e72318db30898d2741a2c5eb"
+    },
+    {
+      "frame": 6,
+      "slot": "weapon",
+      "pixels": 56,
+      "source": "original Bento pose 6",
+      "sha256_rgba": "937fc4e422ec445a4c05228fe86445602789ebd9d79a1d87b857252485ce2c4e"
+    },
+    {
+      "frame": 7,
+      "slot": "body",
+      "pixels": 516,
+      "source": "retouched body",
+      "sha256_rgba": "2d92394ccac3561dc5f6c66e308bed44cfda24a8147eb794af87e004430f1e9c"
+    },
+    {
+      "frame": 7,
+      "slot": "pants",
+      "pixels": 65,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "a6fafcaf11f3da75c061a7d0e3ddee63c35283333dc4f302a49473709c433ea9"
+    },
+    {
+      "frame": 7,
+      "slot": "boots",
+      "pixels": 58,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "7e7165e9542371f1a104bf4a811d1ad13e9fc40964c8796a124ab1bd1f83f6cd"
+    },
+    {
+      "frame": 7,
+      "slot": "outfit",
+      "pixels": 45,
+      "source": "PixelLab fitted edit",
+      "sha256_rgba": "629c37c567d829b1142cf6b13c58c0dc95ed21a5dc93c73e1dd7aea7642b24a7"
+    },
+    {
+      "frame": 7,
+      "slot": "hair",
+      "pixels": 132,
+      "source": "original Bento pose 7",
+      "sha256_rgba": "e61498918a0c96387d9ef5ba4ba5efa4ef0bb892f36e52ef650ab8e3216085c9"
+    },
+    {
+      "frame": 7,
+      "slot": "weapon",
+      "pixels": 72,
+      "source": "original Bento pose 7",
+      "sha256_rgba": "9a53fa5e32b147b7bff5e438be7da5f8a5fcbef91f14bfa11aa7d97e37234a3e"
+    }
+  ],
+  "hand_contact": [
+    {
+      "frame": 0,
+      "hand_center": [
+        33,
+        39
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric check, not artistic approval."
+    },
+    {
+      "frame": 1,
+      "hand_center": [
+        34,
+        37
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric check, not artistic approval."
+    },
+    {
+      "frame": 2,
+      "hand_center": [
+        41,
+        34
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric check, not artistic approval."
+    },
+    {
+      "frame": 3,
+      "hand_center": [
+        38,
+        31
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric check, not artistic approval."
+    },
+    {
+      "frame": 4,
+      "hand_center": [
+        23,
+        32
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric check, not artistic approval."
+    },
+    {
+      "frame": 5,
+      "hand_center": [
+        42,
+        31
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric check, not artistic approval."
+    },
+    {
+      "frame": 6,
+      "hand_center": [
+        25,
+        41
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric check, not artistic approval."
+    },
+    {
+      "frame": 7,
+      "hand_center": [
+        29,
+        40
+      ],
+      "distance": 0,
+      "note": "Auxiliary geometric check, not artistic approval."
+    }
+  ],
+  "production_enabled": false,
+  "artwork_approved": false
+}

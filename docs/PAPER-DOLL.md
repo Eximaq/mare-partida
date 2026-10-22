@@ -1,5 +1,8 @@
 # Paper Doll 1.0 — Fase 1
 
+Continuação de22/10: [candidato de encaixe leste no Workbench](PAPER-DOLL-ENCAIXE-LESTE.md). O ataque pode ser inspecionado em quatro direções; o novo vestuário leste ainda precisa de harmonização artística. Sem geração paga nesta etapa e sem ativação em produção.
+
+
 Retoque exato posterior (22/10): [ataque norte modular e corpo leste corrigido no Workbench](PAPER-DOLL-RETOQUE-EXATO.md). O ataque agora cobre três direções; o leste ainda depende de peças que encaixem no corpo. Os comandos de edição, originais e resultados reprovados estão preservados. Os dados de disponibilidade são distintos da aprovação artística, que continua pendente.
 
 Continuação de22/10: [correção das guias, dois corpos reprovados e nova declaração de arma encoberta](PAPER-DOLL-CORRECAO-GUIAS.md). A infraestrutura passou nas verificações, mas norte/leste continuam pendentes artisticamente. Não confundir um pedido de geração numericamente válido com uma imagem alinhada.

@@ -1,0 +1,41 @@
+{
+  "status": "completed fitting study; final artwork unapproved",
+  "route": "MCP pixelart_workbench",
+  "paid_generation_calls": [],
+  "pending_jobs": [],
+  "pricing": "Live tool describes PixelArt Workbench as free for subscribers. No per-call generation usage exposed; no paid image/animation call made in this stage.",
+  "calls": [
+    {
+      "operation": "split original east strip",
+      "image_id": "f1f9d3f9-5529-4513-ad3f-099863fb9cb3"
+    },
+    {
+      "operation": "donor surface copy",
+      "image_id": "7b65d1c3-aa4e-426b-8f59-de990cc4c057",
+      "status": "archived alternative, not used as body or outfit"
+    },
+    {
+      "operation": "split corrected east body",
+      "image_id": "9a4d4dc2-352d-4fa7-8467-70df593816b9"
+    },
+    {
+      "operation": "fitted vest, trousers and boots",
+      "image_id": "ca16f024-5580-4a51-bc72-97a5ced244a4",
+      "operation_count": 50
+    }
+  ],
+  "body_frames": 8,
+  "directions": [
+    "south",
+    "north",
+    "west",
+    "east"
+  ],
+  "production_enabled": false,
+  "artwork_approved": false,
+  "limitations": [
+    "East clothing is a simpler fitted variation, not an artistic replacement approved by the owner.",
+    "Five other attack categories and continuity with Idle/Walk remain pending.",
+    "Only visible hair from pose5 and sword from pose7 are reused during the covered impact pose; no complete body frame is duplicated."
+  ]
+}

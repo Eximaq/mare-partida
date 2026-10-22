@@ -376,5 +376,32 @@ def version_retouch(match):
 retouch_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_retouch,
                               retouch_entry.read_text(encoding='utf-8')), encoding='utf-8')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-RETOQUE-EXATO.md', OUT/'docs/PAPER-DOLL-RETOQUE-EXATO.md')
+east_fit_relative = Path('pixellab-pip-generations/paper-doll-east-fit-20261022')
+east_fit_files = ['preview.html', 'preview.js', 'review-pack.json', 'reviews.json', 'manifest.json',
+                 'fit-audit.json', 'fit.blueprint.json', 'fitted-changes.json', 'fitted-masks.json',
+                 'reference-bento-attack.png', 'east-composite.png', 'source-strip.png', 'body-source-strip.png']
+east_fit_files += [f'{slot}-attack.png' for slot in ['body', 'pants', 'boots', 'outfit', 'hair', 'weapon']]
+east_fit_files += [f'east-{slot}.png' for slot in ['body', 'pants', 'boots', 'outfit', 'hair', 'weapon']]
+east_fit_files += [f'body-candidate-{d}.png' for d in ['south', 'north', 'west', 'east']]
+east_fit_files += [f'modular-{d}.gif' for d in ['south', 'north', 'west', 'east']]
+east_fit_files += [f'body-{d}.gif' for d in ['north', 'east']]
+east_fit_files += [f'body-before-{d}.png' for d in ['north', 'east']]
+east_fit_files += [f'{stage}-{name}' for stage in ['source', 'donor', 'body-source', 'fitted']
+                   for name in ['frames.png', 'animation.gif']]
+for name in east_fit_files:
+    destination = OUT/east_fit_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/east_fit_relative/name, destination)
+east_fit_entry = OUT/east_fit_relative/'preview.html'
+
+def version_east_fit(match):
+    source = (east_fit_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    return f'{match.group(1)}{match.group(2)}?v={hashlib.sha256(source.read_bytes()).hexdigest()[:16]}{match.group(3)}'
+
+east_fit_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_east_fit,
+                               east_fit_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-ENCAIXE-LESTE.md', OUT/'docs/PAPER-DOLL-ENCAIXE-LESTE.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

@@ -1,5 +1,8 @@
 # Desenvolvimento compartilhado no GitHub
 
+Continuação de22/10: [candidato de encaixe leste no Workbench](docs/PAPER-DOLL-ENCAIXE-LESTE.md). O ataque pode ser inspecionado em quatro direções; o novo vestuário leste ainda precisa de harmonização artística. Sem geração paga nesta etapa e sem ativação em produção.
+
+
 O projeto foi preparado para versionamento por Git e publicação opcional de uma demonstração estática no GitHub Pages. **Para começar, leia [docs/COLABORACAO_GITHUB.md](docs/COLABORACAO_GITHUB.md).**
 
 **Importante:** o preview GitHub Pages utiliza `localStorage` individual; multiplayer, sincronização de saves e backend exigem um serviço adicional. Não envie chaves, tokens ou saves ao repositório.
