@@ -1,5 +1,15 @@
 # Paper Doll — ataques básicos compartilhados
 
+## Avaliação do proprietário — ataque reprovado (21/10/2026)
+
+O proprietário rejeitou o ataque modular por ficar visualmente abaixo do Bento existente. A inspeção comparativa confirma pouca participação de ombros/torso, preparação e recuperação fracas e mudanças abruptas de orientação da lâmina em passos de90°. O ataque original de Bento apresenta poses de preparação, contato e recuperação mais expressivas. Ambos usam8 frames a12FPS; aumentar apenas a contagem não resolve a coreografia.
+
+A prévia agora mostra Bento e o protótipo sincronizados nas quatro direções, com os mesmos canvas84×84, pivô42/65 e frame. A referência é a folha original, sem extração ou alteração. O corpo-base continua disponível como diagnóstico. `ownerReview.status=rejected` permanece no pacote e na fonte de montagem para não perder a reprovação ao remontar.
+
+Os gates anteriores registram encaixe e compatibilidade técnica, não aprovação artística. Os resultados técnicos abaixo continuam válidos, mas **este Attack/sword não é um asset final nem está autorizado para promoção**. Idle/Walk não foram reprovados por esta avaliação específica. Originais, jobs, custos, compositor, sockets e editor ficam preservados. Produção e saves não mudam. Nenhuma geração foi consumida nesta revisão.
+
+Próxima direção: manter a reutilização por categoria e facção, com a qualidade de movimento do Bento como referência. Planejar preparação, golpe e recuperação do corpo junto com a trajetória da arma antes de produzir novas camadas. A rotação rígida de90° serve como ferramenta de encaixe; não basta para finalizar um corte expressivo. O Bento composto permanece no fallback: ele não oferece, por si só, corpo/cabelo/roupa separados ou pixels ocultos reaproveitáveis. Não expandir este gesto reprovado para soco/disparo.
+
 ## Escopo
 
 Continuação de `ad20381` na branch `feature/paper-doll-basic-sword`. `origin/main`543c92a e as mudanças de colaboradores foram preservadas. Esta branch depende da locomoção no PR50; não há merge automático.
@@ -34,6 +44,8 @@ Os quatro GIFs transparentes preservam paleta e ordem exatas, com disposal2/loop
 
 ## Testes técnicos
 
+Revisão após reprovação: as três suítes Node do Paper Doll passaram; montagem repetida manteve `ownerReview.status=rejected`, sem alterar sprites. Build Pages e Chromium passaram com os32 recortes da referência original conferidos pixel a pixel e sincronizados com o protótipo. Aviso de reprovação, ocultação da referência fora de Attack, reprodução única, camadas, bancada, viewport393px e isolamento de save foram verificados. Capturas desktop/celular foram inspecionadas. Isso valida a ferramenta de comparação; o ataque continua reprovado artisticamente.
+
 Os testes Node verificam âncora do cabo, giros, fonte retangular, chave do cache e rejeição atômica. O teste Chromium compara todos os pixels de cada uma das quatro orientações com uma composição Pillow independente, usando uma espada existente. Também confere edição de posição sem perder orientação, exportação portátil com aprovação desabilitada e restauração. Esses testes geométricos não aprovam arte de personagem.
 
 Validação local:37 arquivos Node e33 testes Python de auditoria/montagem passaram; build Pages passou. Chromium conferiu32 poses Attack,64 combinações de camadas, os4 GIFs decodificados contra composição independente dos PNGs originais, reprodução única/retorno, pivôs, bancada, fallback e celular393px. Idle/Walk foram preservados byte a byte nas folhas anatômicas/vestuário.
@@ -44,7 +56,7 @@ Foram observados todos os8 frames dos4 ataques e todos os8 passos das4 caminhada
 
 ## Limites
 
-O protótipo do Espadachim tem cobertura funcional Idle/Walk/Attack nas quatro direções e passou no ensaio de combate. **A arte continua em revisão (`approved:false`) e não foi ativada no catálogo de produção.** Coerência fina de cabelo/roupa e transições entre os lotes ainda fazem parte da aprovação do personagem completo. Não se declara o sistema inteiro concluído nem os28 perfis equipados com novas animações de combate.
+O protótipo do Espadachim tem cobertura funcional Idle/Walk/Attack nas quatro direções e passou no ensaio de combate. **O ataque foi reprovado visualmente pelo proprietário (`ownerReview.status=rejected`, `approved:false`) e não foi ativado no catálogo de produção.** Coerência fina de cabelo/roupa e transições entre os lotes ainda fazem parte da aprovação do personagem completo. Não se declara o sistema inteiro concluído nem os28 perfis equipados com novas animações de combate.
 
 Faltam as cinco outras categorias de ataque (160 frames por camada,480 anatômicos/vestuário, mais armas/encaixes), habilidades específicas, variantes de peças e o customizador persistente. Novos gestos compatíveis devem ser compartilhados; o número de frames é um levantamento de cobertura, não um orçamento nem uma obrigação de gerar cópias por classe/facção. Equipamentos não contemplados e ações sem peças seguem no fallback. Nenhuma regra de combate, mapa, save ou progressão foi alterada.
 

@@ -1,5 +1,7 @@
 # Referência visual — Maré Partida
 
+**Atualização de avaliação (21/10/2026): o Attack/sword modular foi reprovado pelo proprietário por qualidade de movimento inferior ao Bento atual.** A infraestrutura e todos os fontes foram preservados; produção continua com os sprites existentes. A prévia do ataque agora permite comparação sincronizada com o Bento, sem novas gerações. Os registros de testes abaixo representam validação técnica, não aprovação artística.
+
 ## Paper Doll — corte básico compartilhado (21/10/2026)
 
 [Prévia](../pixellab-pip-generations/paper-doll-basic-sword-20261021/preview.html) · [Relatório](PAPER-DOLL-ATAQUE-BASICO.md). Oito poses reais de espada por direção,12FPS, rig84/pivô42,65. Corpo, cabelo e roupa são separados; armas rígidas reutilizam pixels e grips medidos, com giros exatos de90°. O norte mantém costas visíveis e lâmina além do ombro distante. Uma correção Workbench na camada de colete removeu gola/botões frontais nas costas, sem tocar na anatomia. Não há espelhamento de corpos, cortes temporais, duplicação fabricada ou troca de relógio de dano. O personagem comum cobre Idle/Walk/Attack-sword nas quatro vistas em inspeção; aprovação artística entre movimentos e demais categorias continuam pendentes. Não gerar novamente o mesmo gesto por facção.

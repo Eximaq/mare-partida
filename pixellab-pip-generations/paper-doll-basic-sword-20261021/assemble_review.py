@@ -76,6 +76,9 @@ def main():
             p['approved']=False
     pack.update(status='Review: shared basic sword attack plus existing four-view locomotion',reviewOnly=True,full_character_artwork_approved=False)
     pack['coverage']['attack-sword']=dirs
+    if quality.get('ownerReview'):
+        pack['ownerReview']=quality['ownerReview']
+        if pack['ownerReview']['status']=='rejected':pack['status']='Rejected artwork: shared sword attack retained for technical inspection only'
     pack['sharedAction']={'id':'attack-sword','factionIndependent':True,'style':'short basic cut','weaponMotion':'existing rigid source with measured grips and exact quarter-turns','productionEnabled':False}
     write('review-pack.json',pack)
     write('assembly-audit.json',{'passed':True,'coverage':pack['coverage'],'source_pack':'../'+OLD.name+'/review-pack.json','rig':[84,84],'pivot':[42,65],'records':records,'gif_colors':gif_records,'production_enabled':False,'full_character_artwork_approved':False})

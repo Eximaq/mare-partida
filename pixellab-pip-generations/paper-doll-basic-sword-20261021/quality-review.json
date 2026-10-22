@@ -3491,5 +3491,15 @@
         ]
       ]
     }
+  },
+  "ownerReview": {
+    "status": "rejected",
+    "scope": "attack-sword",
+    "date": "2026-10-21",
+    "reviewer": "project-owner",
+    "reason": "Animation is visually inferior to the existing Bento sword attack. Rigid weapon quarter-turns and insufficient body follow-through do not meet the quality target.",
+    "reference": "assets/classes/pirate-sword/attack.png",
+    "productionEnabled": false,
+    "nextStep": "Use the existing Bento choreography as the quality reference. Preserve all sources and technical infrastructure; do not propagate this rejected attack to other categories."
   }
 }
