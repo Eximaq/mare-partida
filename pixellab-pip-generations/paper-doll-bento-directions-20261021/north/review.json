@@ -1,0 +1,9 @@
+{
+  "status": "rejected",
+  "body_motion_gate_passed": false,
+  "visible_piece_fit_gate_passed": false,
+  "production_enabled": false,
+  "reason": "Forearm still rendered over the back on poses1\u20135 despite rear-facing controls and hidden forearm depth. Garment overlay must not conceal this defect.",
+  "charged_generations": 3,
+  "fallback": "Original production north animation preserved. No paid retry."
+}

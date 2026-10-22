@@ -297,5 +297,27 @@ for study, recipe in [('paper-doll-bento-motion-20261021', 'bento-motion.bluepri
     motion_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_motion,
                                  motion_entry.read_text(encoding='utf-8')), encoding='utf-8')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-MOVIMENTO-BENTO.md', OUT/'docs/PAPER-DOLL-MOVIMENTO-BENTO.md')
+directional_relative = Path('pixellab-pip-generations/paper-doll-bento-directions-20261021')
+directional_files = ['preview.html', 'preview.js', 'review-pack.json', 'manifest.json', 'reviews.json',
+                     'assembly-audit.json', 'directions.blueprint.json', 'reference-bento-attack.png',
+                     'modular-south.gif', 'modular-west.gif']
+directional_files += [f'{slot}-attack.png' for slot in ['body', 'pants', 'boots', 'outfit', 'hair', 'weapon']]
+directional_files += [f'body-candidate-{d}.png' for d in ['south', 'north', 'west', 'east']]
+for d in ['north', 'west', 'east']:
+    directional_files += [f'body-{d}.gif', f'{d}/request.json', f'{d}/controls.json', f'{d}/manifest.json', f'{d}/neutral-reference.png']
+    directional_files += [f'{d}/{prefix}-{i:02}.png' for prefix in ['body', 'bento'] for i in range(8)]
+for name in directional_files:
+    destination = OUT/directional_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/directional_relative/name, destination)
+directional_entry = OUT/directional_relative/'preview.html'
+def version_directional(match):
+    source = (directional_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    return f'{match.group(1)}{match.group(2)}?v={hashlib.sha256(source.read_bytes()).hexdigest()[:16]}{match.group(3)}'
+directional_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_directional,
+                                  directional_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-DIRECOES-BENTO.md', OUT/'docs/PAPER-DOLL-DIRECOES-BENTO.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

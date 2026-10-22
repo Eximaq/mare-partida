@@ -1,0 +1,17 @@
+{
+  "directions": [
+    "north",
+    "west",
+    "east"
+  ],
+  "estimated_generations_per_call": 3,
+  "total_generation_ceiling": 12,
+  "paid_calls_maximum": 3,
+  "retries": 0,
+  "first_gate": "inspect north body without garments before west/east paid calls",
+  "authorization": "Owner delegated recommended PixelLab decisions and requested continuation; scope and exact description announced before spend.",
+  "production_enabled": false,
+  "native_reference": 64,
+  "frames_per_call": 8,
+  "preserve_south": true
+}

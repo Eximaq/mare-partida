@@ -1,0 +1,919 @@
+{
+  "coverage": [
+    "south",
+    "west"
+  ],
+  "body_records": {
+    "north": [
+      {
+        "frame": 0,
+        "sha256": "72c9861f7d008544b828c048c31d0b51ce97a9235417b2ffc7779b55731deaba",
+        "native_bounds": [
+          20,
+          6,
+          45,
+          53
+        ],
+        "body_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "source_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "ground_line": 66
+      },
+      {
+        "frame": 1,
+        "sha256": "b9933f6cbe43e8e17bdc968e84409bc38ebaa408ecd982ad9d5550fe6d7b7f18",
+        "native_bounds": [
+          18,
+          6,
+          44,
+          53
+        ],
+        "body_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "source_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "ground_line": 66
+      },
+      {
+        "frame": 2,
+        "sha256": "597652634061986966b2f8c2cf9ea3f98d981682d74c1c2e3d7ccee350607005",
+        "native_bounds": [
+          17,
+          7,
+          43,
+          53
+        ],
+        "body_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "source_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "ground_line": 66
+      },
+      {
+        "frame": 3,
+        "sha256": "04ad562e826a5a2f075e0ef826015b449115bad98c8e3c0c446e3164a52bac0c",
+        "native_bounds": [
+          17,
+          8,
+          43,
+          53
+        ],
+        "body_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "source_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "ground_line": 66
+      },
+      {
+        "frame": 4,
+        "sha256": "8f0e621c04c06eba391dd9a084967362d69ade7950bbd8b2e916cbdc91ce5817",
+        "native_bounds": [
+          17,
+          8,
+          43,
+          53
+        ],
+        "body_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "source_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "ground_line": 66
+      },
+      {
+        "frame": 5,
+        "sha256": "db9fd49a900f2591ce610861f40f985d398668dd4a436af3f4a33e5b1b6c9757",
+        "native_bounds": [
+          18,
+          7,
+          43,
+          53
+        ],
+        "body_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "source_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "ground_line": 66
+      },
+      {
+        "frame": 6,
+        "sha256": "8f13cd3c81344afa6c03fa2d6692a0e9d5fa723c4659d01dfd85c033303626be",
+        "native_bounds": [
+          20,
+          6,
+          46,
+          53
+        ],
+        "body_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "source_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "ground_line": 66
+      },
+      {
+        "frame": 7,
+        "sha256": "e8dfe5285cdc0d2574447e878015dba39d18c0c7e10910c7efc8f19d3e12f59d",
+        "native_bounds": [
+          19,
+          6,
+          47,
+          53
+        ],
+        "body_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "source_padding": [
+          10,
+          13,
+          74,
+          77
+        ],
+        "ground_line": 66
+      }
+    ],
+    "west": [
+      {
+        "frame": 0,
+        "sha256": "c29983837846e3e672b77a0992262ee388599ec2fa3e88d51116a0c1c1e11e6f",
+        "native_bounds": [
+          21,
+          12,
+          41,
+          56
+        ],
+        "body_padding": [
+          10,
+          9,
+          74,
+          73
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 65
+      },
+      {
+        "frame": 1,
+        "sha256": "8c0e4f0b73f62cf8ff93c8416dd3329c6434996cffcf39805b6fffbfb02e2769",
+        "native_bounds": [
+          16,
+          12,
+          41,
+          56
+        ],
+        "body_padding": [
+          10,
+          9,
+          74,
+          73
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 65
+      },
+      {
+        "frame": 2,
+        "sha256": "7f9e1806199ebf8f9cd2a0ecb206f3d62e2f725d39a198f0ce906870a2c93795",
+        "native_bounds": [
+          25,
+          13,
+          41,
+          56
+        ],
+        "body_padding": [
+          10,
+          9,
+          74,
+          73
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 65
+      },
+      {
+        "frame": 3,
+        "sha256": "ae5ea43e914ac1b8aa6dac4ea173441dd64f0758d7c6a5abe49f8cada93867ed",
+        "native_bounds": [
+          24,
+          14,
+          41,
+          56
+        ],
+        "body_padding": [
+          10,
+          9,
+          74,
+          73
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 65
+      },
+      {
+        "frame": 4,
+        "sha256": "3079af9a8b006008a42ac133394dfbbab790a05a1dcfeea96f91f7e940208539",
+        "native_bounds": [
+          24,
+          13,
+          41,
+          56
+        ],
+        "body_padding": [
+          10,
+          9,
+          74,
+          73
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 65
+      },
+      {
+        "frame": 5,
+        "sha256": "294a3e3a4217179551ccd98fec7bdea98ab339fe6e7fcd57876407e052dfad2e",
+        "native_bounds": [
+          19,
+          12,
+          41,
+          56
+        ],
+        "body_padding": [
+          10,
+          9,
+          74,
+          73
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 65
+      },
+      {
+        "frame": 6,
+        "sha256": "4a449322e32dcf3f0b75e0734563d93e628ce41035f617cf217e5f1432647cb8",
+        "native_bounds": [
+          23,
+          12,
+          41,
+          56
+        ],
+        "body_padding": [
+          10,
+          9,
+          74,
+          73
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 65
+      },
+      {
+        "frame": 7,
+        "sha256": "77b7616bfdbd8b3066f61037ea7f0e95f166d76d3f26de6342dd4716428ad184",
+        "native_bounds": [
+          25,
+          12,
+          41,
+          56
+        ],
+        "body_padding": [
+          10,
+          9,
+          74,
+          73
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 65
+      }
+    ],
+    "east": [
+      {
+        "frame": 0,
+        "sha256": "44f2f0cd5b3451a1f528c2b501a2fddcdfaf5fb91f6557b0cb4f5d293ebc7653",
+        "native_bounds": [
+          23,
+          11,
+          43,
+          57
+        ],
+        "body_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 67
+      },
+      {
+        "frame": 1,
+        "sha256": "a05029d724e342398a7e94fed7d38649e6851feeb141be49d181e66551067186",
+        "native_bounds": [
+          22,
+          11,
+          43,
+          58
+        ],
+        "body_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 68
+      },
+      {
+        "frame": 2,
+        "sha256": "b0aa5c017cf4cf288f22c7af6b8f5cce92b21687100663a2706cc1bb10849541",
+        "native_bounds": [
+          19,
+          13,
+          46,
+          58
+        ],
+        "body_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 68
+      },
+      {
+        "frame": 3,
+        "sha256": "f817d369f5029c9a6a4a640df02c226336a599a34bb015177f0b09d1da00f02f",
+        "native_bounds": [
+          19,
+          14,
+          45,
+          58
+        ],
+        "body_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 68
+      },
+      {
+        "frame": 4,
+        "sha256": "efeabb3d5ece3a04dc276d1722992f30ac98274709040bb932d24bb33afe6742",
+        "native_bounds": [
+          18,
+          14,
+          44,
+          58
+        ],
+        "body_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 68
+      },
+      {
+        "frame": 5,
+        "sha256": "a7f9dba4ded3aad5f8a567ecfec182dea2d98d4f497bfe7b42c1ae4b5299a3f6",
+        "native_bounds": [
+          19,
+          14,
+          44,
+          58
+        ],
+        "body_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 68
+      },
+      {
+        "frame": 6,
+        "sha256": "56f874c13e36919b08a294d76f9416d14baa9f751a5677235dbbaa669bafaa10",
+        "native_bounds": [
+          19,
+          14,
+          46,
+          58
+        ],
+        "body_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 68
+      },
+      {
+        "frame": 7,
+        "sha256": "72b071d33532a077db695e94fe4c50517ccdeb6ea4017390c6378994b4996897",
+        "native_bounds": [
+          21,
+          12,
+          44,
+          57
+        ],
+        "body_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "source_padding": [
+          10,
+          10,
+          74,
+          74
+        ],
+        "ground_line": 67
+      }
+    ]
+  },
+  "source_rgba_preserved": true,
+  "source_crop_reversible": true,
+  "source_piece_records": [
+    {
+      "direction": "west",
+      "slot": "pants",
+      "frame": 0,
+      "visible_pixels": 131
+    },
+    {
+      "direction": "west",
+      "slot": "boots",
+      "frame": 0,
+      "visible_pixels": 35
+    },
+    {
+      "direction": "west",
+      "slot": "outfit",
+      "frame": 0,
+      "visible_pixels": 107
+    },
+    {
+      "direction": "west",
+      "slot": "hair",
+      "frame": 0,
+      "visible_pixels": 114
+    },
+    {
+      "direction": "west",
+      "slot": "weapon",
+      "frame": 0,
+      "visible_pixels": 34
+    },
+    {
+      "direction": "west",
+      "slot": "pants",
+      "frame": 1,
+      "visible_pixels": 131
+    },
+    {
+      "direction": "west",
+      "slot": "boots",
+      "frame": 1,
+      "visible_pixels": 35
+    },
+    {
+      "direction": "west",
+      "slot": "outfit",
+      "frame": 1,
+      "visible_pixels": 119
+    },
+    {
+      "direction": "west",
+      "slot": "hair",
+      "frame": 1,
+      "visible_pixels": 107
+    },
+    {
+      "direction": "west",
+      "slot": "weapon",
+      "frame": 1,
+      "visible_pixels": 23
+    },
+    {
+      "direction": "west",
+      "slot": "pants",
+      "frame": 2,
+      "visible_pixels": 144
+    },
+    {
+      "direction": "west",
+      "slot": "boots",
+      "frame": 2,
+      "visible_pixels": 28
+    },
+    {
+      "direction": "west",
+      "slot": "outfit",
+      "frame": 2,
+      "visible_pixels": 146
+    },
+    {
+      "direction": "west",
+      "slot": "hair",
+      "frame": 2,
+      "visible_pixels": 91
+    },
+    {
+      "direction": "west",
+      "slot": "weapon",
+      "frame": 2,
+      "visible_pixels": 38
+    },
+    {
+      "direction": "west",
+      "slot": "pants",
+      "frame": 3,
+      "visible_pixels": 154
+    },
+    {
+      "direction": "west",
+      "slot": "boots",
+      "frame": 3,
+      "visible_pixels": 30
+    },
+    {
+      "direction": "west",
+      "slot": "outfit",
+      "frame": 3,
+      "visible_pixels": 144
+    },
+    {
+      "direction": "west",
+      "slot": "hair",
+      "frame": 3,
+      "visible_pixels": 68
+    },
+    {
+      "direction": "west",
+      "slot": "weapon",
+      "frame": 3,
+      "visible_pixels": 31
+    },
+    {
+      "direction": "west",
+      "slot": "pants",
+      "frame": 4,
+      "visible_pixels": 148
+    },
+    {
+      "direction": "west",
+      "slot": "boots",
+      "frame": 4,
+      "visible_pixels": 28
+    },
+    {
+      "direction": "west",
+      "slot": "outfit",
+      "frame": 4,
+      "visible_pixels": 137
+    },
+    {
+      "direction": "west",
+      "slot": "hair",
+      "frame": 4,
+      "visible_pixels": 72
+    },
+    {
+      "direction": "west",
+      "slot": "weapon",
+      "frame": 4,
+      "visible_pixels": 36
+    },
+    {
+      "direction": "west",
+      "slot": "pants",
+      "frame": 5,
+      "visible_pixels": 131
+    },
+    {
+      "direction": "west",
+      "slot": "boots",
+      "frame": 5,
+      "visible_pixels": 35
+    },
+    {
+      "direction": "west",
+      "slot": "outfit",
+      "frame": 5,
+      "visible_pixels": 110
+    },
+    {
+      "direction": "west",
+      "slot": "hair",
+      "frame": 5,
+      "visible_pixels": 91
+    },
+    {
+      "direction": "west",
+      "slot": "weapon",
+      "frame": 5,
+      "visible_pixels": 28
+    },
+    {
+      "direction": "west",
+      "slot": "pants",
+      "frame": 6,
+      "visible_pixels": 122
+    },
+    {
+      "direction": "west",
+      "slot": "boots",
+      "frame": 6,
+      "visible_pixels": 35
+    },
+    {
+      "direction": "west",
+      "slot": "outfit",
+      "frame": 6,
+      "visible_pixels": 110
+    },
+    {
+      "direction": "west",
+      "slot": "hair",
+      "frame": 6,
+      "visible_pixels": 115
+    },
+    {
+      "direction": "west",
+      "slot": "weapon",
+      "frame": 6,
+      "visible_pixels": 44
+    },
+    {
+      "direction": "west",
+      "slot": "pants",
+      "frame": 7,
+      "visible_pixels": 101
+    },
+    {
+      "direction": "west",
+      "slot": "boots",
+      "frame": 7,
+      "visible_pixels": 35
+    },
+    {
+      "direction": "west",
+      "slot": "outfit",
+      "frame": 7,
+      "visible_pixels": 111
+    },
+    {
+      "direction": "west",
+      "slot": "hair",
+      "frame": 7,
+      "visible_pixels": 114
+    },
+    {
+      "direction": "west",
+      "slot": "weapon",
+      "frame": 7,
+      "visible_pixels": 36
+    }
+  ],
+  "west_grip_proxy": [
+    {
+      "frame": 0,
+      "distance": 2,
+      "grip_occluded": false,
+      "reference_hand": [
+        21,
+        35
+      ],
+      "weapon_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 1,
+      "distance": 0,
+      "grip_occluded": false,
+      "reference_hand": [
+        19,
+        25
+      ],
+      "weapon_offset": [
+        0,
+        2
+      ]
+    },
+    {
+      "frame": 2,
+      "distance": null,
+      "grip_occluded": true,
+      "reference_hand": [
+        29,
+        25
+      ],
+      "weapon_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 3,
+      "distance": null,
+      "grip_occluded": true,
+      "reference_hand": [
+        29,
+        26
+      ],
+      "weapon_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 4,
+      "distance": null,
+      "grip_occluded": true,
+      "reference_hand": [
+        29,
+        25
+      ],
+      "weapon_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "frame": 5,
+      "distance": 1,
+      "grip_occluded": false,
+      "reference_hand": [
+        21,
+        29
+      ],
+      "weapon_offset": [
+        1,
+        4
+      ]
+    },
+    {
+      "frame": 6,
+      "distance": 0,
+      "grip_occluded": false,
+      "reference_hand": [
+        26,
+        42
+      ],
+      "weapon_offset": [
+        4,
+        6
+      ]
+    },
+    {
+      "frame": 7,
+      "distance": 0,
+      "grip_occluded": false,
+      "reference_hand": [
+        29,
+        42
+      ],
+      "weapon_offset": [
+        -1,
+        0
+      ]
+    }
+  ],
+  "gif_exact_rgba": true,
+  "production_enabled": false,
+  "note": "Geometric checks do not approve artwork or reconstruct hidden pieces."
+}
