@@ -10,6 +10,8 @@ O projeto foi preparado para versionamento por Git e publicação opcional de um
 
 ## Paper Doll 1.0 — infraestrutura e bancada
 
+A [prévia de retoque exato](pixellab-pip-generations/paper-doll-exact-retouch-20261022/preview.html) acrescenta o **norte modular**: o ataque cobre frente/norte/oeste com seis camadas, e os corpos cobrem as quatro direções. Os retoques foram feitos no PixelLab Workbench com cópias localizadas de pixels, preservando os oito movimentos reais. A reconstrução de roupa/mão sob o clarão leste foi reprovada; essa direção mantém fallback completo. [Antes/depois, fontes e cinco gerações pagas](docs/PAPER-DOLL-RETOQUE-EXATO.md). Arte ainda em avaliação, fora do personagem publicado.
+
 A [revisão das guias de ataque](pixellab-pip-generations/paper-doll-bento-repair-20261022/preview.html) corrige as entradas de profundidade e altura dos pés, mas os novos corpos norte/leste ainda foram reprovados e mantêm fallback. O compositor agora reconhece frames de arma totalmente encoberta por declaração explícita e validação real de transparência. O lote encerrou em6 gerações; a edição dependente do clarão não foi executada. [Resultados e limites](docs/PAPER-DOLL-CORRECAO-GUIAS.md).
 
 A [revisão por direção](pixellab-pip-generations/paper-doll-bento-directions-20261021/preview.html) acrescenta o ataque oeste com seis camadas, mantendo a frente. Norte e leste têm pendências explícitas e usam o sprite original completo como fallback. O novo lote consumiu9 gerações; nenhuma arte foi ativada na aventura. [Fontes, alinhamento, testes e assets faltantes](docs/PAPER-DOLL-DIRECOES-BENTO.md).

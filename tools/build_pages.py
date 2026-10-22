@@ -345,5 +345,36 @@ def version_repair(match):
 repair_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_repair,
                              repair_entry.read_text(encoding='utf-8')), encoding='utf-8')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-CORRECAO-GUIAS.md', OUT/'docs/PAPER-DOLL-CORRECAO-GUIAS.md')
+
+retouch_relative = Path('pixellab-pip-generations/paper-doll-exact-retouch-20261022')
+retouch_files = ['preview.html', 'preview.js', 'review-pack.json', 'manifest.json', 'reviews.json',
+                 'assembly-audit.json', 'retouch-audit.json', 'north-layer-audit.json',
+                 'retouch.blueprint.json', 'reference-bento-attack.png']
+retouch_files += [f'{slot}-attack.png' for slot in ['body', 'pants', 'boots', 'outfit', 'hair', 'weapon']]
+retouch_files += [f'body-candidate-{d}.png' for d in ['south', 'north', 'west', 'east']]
+retouch_files += [f'modular-{d}.gif' for d in ['south', 'north', 'west']]
+for d in ['north', 'east']:
+    retouch_files += [f'body-{d}.gif', f'body-before-{d}.png', f'{d}/changes.json']
+    retouch_files += [f'{d}/{name}-{i:02}.png' for name in ['original', 'body'] for i in range(8)]
+for stage in ['north-trial', 'north-first-pass', 'north-final', 'east-final']:
+    retouch_files += [f'{stage}-frames.png', f'{stage}-animation.gif']
+retouch_files += [f'east/flash-{name}' for name in ['source.png', 'mask.png', 'context.png', 'cleaned.png',
+                                                 'request.json', 'manifest.json', 'audit.json']]
+retouch_files += ['east-composite.png']
+for name in retouch_files:
+    destination = OUT/retouch_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/retouch_relative/name, destination)
+retouch_entry = OUT/retouch_relative/'preview.html'
+
+def version_retouch(match):
+    source = (retouch_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    return f'{match.group(1)}{match.group(2)}?v={hashlib.sha256(source.read_bytes()).hexdigest()[:16]}{match.group(3)}'
+
+retouch_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_retouch,
+                              retouch_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-RETOQUE-EXATO.md', OUT/'docs/PAPER-DOLL-RETOQUE-EXATO.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')

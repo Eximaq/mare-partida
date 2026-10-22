@@ -1,5 +1,7 @@
 # Paper Doll 1.0 — Fase 1
 
+Retoque exato posterior (22/10): [ataque norte modular e corpo leste corrigido no Workbench](PAPER-DOLL-RETOQUE-EXATO.md). O ataque agora cobre três direções; o leste ainda depende de peças que encaixem no corpo. Os comandos de edição, originais e resultados reprovados estão preservados. Os dados de disponibilidade são distintos da aprovação artística, que continua pendente.
+
 Continuação de22/10: [correção das guias, dois corpos reprovados e nova declaração de arma encoberta](PAPER-DOLL-CORRECAO-GUIAS.md). A infraestrutura passou nas verificações, mas norte/leste continuam pendentes artisticamente. Não confundir um pedido de geração numericamente válido com uma imagem alinhada.
 
 Revisão direcional (22/10/2026): [frente e oeste em inspeção, norte e leste com fallback](PAPER-DOLL-DIRECOES-BENTO.md). O oeste tem oito poses de seis camadas, encaixes da espada por pose e calibração fixa de origem. As duas vistas pendentes não usam peças parciais. O lote consumiu9 gerações confirmadas e preserva produção/saves.

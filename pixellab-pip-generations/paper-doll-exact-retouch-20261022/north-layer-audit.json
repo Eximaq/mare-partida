@@ -1,0 +1,290 @@
+[
+  {
+    "slot": "body",
+    "frame": 0,
+    "visible_pixels": 656,
+    "source_pixels_only": false
+  },
+  {
+    "slot": "hair",
+    "frame": 0,
+    "visible_pixels": 147,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "outfit",
+    "frame": 0,
+    "visible_pixels": 186,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "pants",
+    "frame": 0,
+    "visible_pixels": 200,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "boots",
+    "frame": 0,
+    "visible_pixels": 50,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "weapon",
+    "frame": 0,
+    "visible_pixels": 72,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "body",
+    "frame": 1,
+    "visible_pixels": 624,
+    "source_pixels_only": false
+  },
+  {
+    "slot": "hair",
+    "frame": 1,
+    "visible_pixels": 150,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "outfit",
+    "frame": 1,
+    "visible_pixels": 187,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "pants",
+    "frame": 1,
+    "visible_pixels": 199,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "boots",
+    "frame": 1,
+    "visible_pixels": 50,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "weapon",
+    "frame": 1,
+    "visible_pixels": 0,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "body",
+    "frame": 2,
+    "visible_pixels": 609,
+    "source_pixels_only": false
+  },
+  {
+    "slot": "hair",
+    "frame": 2,
+    "visible_pixels": 137,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "outfit",
+    "frame": 2,
+    "visible_pixels": 171,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "pants",
+    "frame": 2,
+    "visible_pixels": 178,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "boots",
+    "frame": 2,
+    "visible_pixels": 48,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "weapon",
+    "frame": 2,
+    "visible_pixels": 0,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "body",
+    "frame": 3,
+    "visible_pixels": 595,
+    "source_pixels_only": false
+  },
+  {
+    "slot": "hair",
+    "frame": 3,
+    "visible_pixels": 130,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "outfit",
+    "frame": 3,
+    "visible_pixels": 172,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "pants",
+    "frame": 3,
+    "visible_pixels": 176,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "boots",
+    "frame": 3,
+    "visible_pixels": 55,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "weapon",
+    "frame": 3,
+    "visible_pixels": 0,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "body",
+    "frame": 4,
+    "visible_pixels": 595,
+    "source_pixels_only": false
+  },
+  {
+    "slot": "hair",
+    "frame": 4,
+    "visible_pixels": 129,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "outfit",
+    "frame": 4,
+    "visible_pixels": 172,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "pants",
+    "frame": 4,
+    "visible_pixels": 172,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "boots",
+    "frame": 4,
+    "visible_pixels": 54,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "weapon",
+    "frame": 4,
+    "visible_pixels": 0,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "body",
+    "frame": 5,
+    "visible_pixels": 579,
+    "source_pixels_only": false
+  },
+  {
+    "slot": "hair",
+    "frame": 5,
+    "visible_pixels": 138,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "outfit",
+    "frame": 5,
+    "visible_pixels": 176,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "pants",
+    "frame": 5,
+    "visible_pixels": 197,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "boots",
+    "frame": 5,
+    "visible_pixels": 50,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "weapon",
+    "frame": 5,
+    "visible_pixels": 0,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "body",
+    "frame": 6,
+    "visible_pixels": 662,
+    "source_pixels_only": false
+  },
+  {
+    "slot": "hair",
+    "frame": 6,
+    "visible_pixels": 150,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "outfit",
+    "frame": 6,
+    "visible_pixels": 187,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "pants",
+    "frame": 6,
+    "visible_pixels": 206,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "boots",
+    "frame": 6,
+    "visible_pixels": 50,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "weapon",
+    "frame": 6,
+    "visible_pixels": 41,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "body",
+    "frame": 7,
+    "visible_pixels": 669,
+    "source_pixels_only": false
+  },
+  {
+    "slot": "hair",
+    "frame": 7,
+    "visible_pixels": 147,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "outfit",
+    "frame": 7,
+    "visible_pixels": 186,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "pants",
+    "frame": 7,
+    "visible_pixels": 197,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "boots",
+    "frame": 7,
+    "visible_pixels": 50,
+    "source_pixels_only": true
+  },
+  {
+    "slot": "weapon",
+    "frame": 7,
+    "visible_pixels": 77,
+    "source_pixels_only": true
+  }
+]
