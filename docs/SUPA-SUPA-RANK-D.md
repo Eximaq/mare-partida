@@ -13,14 +13,14 @@ Custos e recargas escolhidos com base nas habilidades atuais das classes: a Espi
 
 - O alcance é circular e inclusivo na borda de 128 px, equivalente a dois tiles de 64 px. A caixa envolvente ocupa cinco tiles em cada eixo; os cantos fora do raio não recebem dano.
 - O dano da Espiral usa o atributo físico derivado e a fórmula física existente: `max(1, floor(físico × 1,3 − defesa efetiva × 0,30))`. Não acrescenta sorteio de crítico. O VFX fica no centro visual do jogador na ativação e não acompanha movimentos posteriores.
-- O escudo segue o personagem e repete todos os nove frames até o prazo real de 5000 ms. Morte, retorno ao porto, troca de mapa e retirada da fruta cancelam a proteção.
+- O escudo segue o personagem e repete todos os doze frames até o prazo real de 5000 ms. Morte, retorno ao porto, troca de mapa e retirada da fruta cancelam a proteção.
 - A redução se soma às defesas existentes de forma multiplicativa, antes das reações dos talentos. O combate conserva seus arredondamentos normais.
 - A reflexão parte do dano original do golpe, antes de defesa, guarda e redução do escudo. Só atinge o atacante vivo de um golpe físico recebido. Esquiva, aparo, invulnerabilidade, dano mágico e dano direto não geram reflexão. A reflexão usa dano direto ao monstro e não cria ciclos de retaliação.
 - Energia insuficiente, recarga ou ativação duplicada pendente impedem a execução sem consumir energia. A tecla e o botão da HUD seguem as mesmas regras.
 
 ## Arte e persistência
 
-As sete artes/metadados foram fornecidas pelo proprietário e copiadas sem reencodificação para `assets/akuma/supa/`. O manifesto registra os nomes e hashes. O corte usa seis frames de 77 ms e origem (36,40); o escudo usa nove frames de 111 ms e origem (48,48). `supa-art.js` contém a transcrição validada dos retângulos, durações e origens dos JSONs, sem depender de uma requisição adicional durante a ativação.
+As sete artes/metadados foram fornecidas pelo proprietário e copiadas sem reencodificação para `assets/akuma/supa/`. O manifesto registra os nomes e hashes. O corte usa o novo `slash-arc`: oito frames de 96×96 px, 59 ms por frame, duração de 472 ms e origem (48,48). O escudo usa `spiral-ward`: doze frames de 102×102 px, 63 ms por frame, ciclo de 756 ms e origem (51,51), repetido durante os 5 segundos de proteção. A dimensão visual anterior é preservada: corte de 256 px e proteção de 120 px. Os PNGs têm versão por hash no endereço para evitar reutilizar a arte antiga no cache. `supa-art.js` contém a transcrição validada dos retângulos, durações e origens dos JSONs, sem depender de uma requisição adicional durante a ativação.
 
 `assets/akuma/supa/rules.json` centraliza o contrato Python; a cópia incorporada no catálogo JavaScript é conferida pelo teste de paridade para o preview estático. Os índices antigos dos itens continuam iguais: frutas Rank E 62–66, espadas 67–70 e armas Gatuno 71–74. Supa ocupa o índice 75.
 

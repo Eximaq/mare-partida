@@ -342,7 +342,8 @@
         const ids=serverEffect?new Set(serverEffect.target_ids.map(String)):null;
         const targets=ids?livingMobs().filter(m=>ids.has(String(m.id))):MareAkuma.supaTargets(castPosition,livingMobs());
         for(const mob of targets)outputDamage(mob,serverEffect?serverEffect.hits.find(hit=>String(hit.id)===String(mob.id)).damage:MareCharacters.damage(getDerived(),enemyArmor(mob),{type:'physical',multiplier:skill.damage_multiplier}));
-        world.fx.push({x:castPosition.x,y:castPosition.y-32,supaVfx:'slash',startedAt:Date.now(),life:.462,max:.462});
+        const duration=MareSupaArt.animations.slash.duration/1000;
+        world.fx.push({x:castPosition.x,y:castPosition.y-32,supaVfx:'slash',startedAt:Date.now(),life:duration,max:duration});
       }else{session.supaShieldStartedAt=Date.now();session.supaShieldUntil=serverEffect?.expires_at?serverEffect.expires_at*1000:session.supaShieldStartedAt+MareAkuma.supaRules.duration;}
     }else if(fruit.id==='akuma_kuku_kuku'){
       const corpses=world.corpses.filter(c=>c.instance===game.area).sort((a,b)=>Math.hypot(a.x-world.hero.x,a.y-world.hero.y)-Math.hypot(b.x-world.hero.x,b.y-world.hero.y));
@@ -1799,8 +1800,8 @@
     if(['orange','loguetown'].includes(activeMap().id))MarePixelMapRenderer.environment(ctx,activeMap().id,world.time,reducedFX);
     if(activeMap().id==='embers')MareEmberRenderer.environment(ctx,camera,W,H,world.time,reducedFX);
     for(let p of world.projectiles){let x=p.x+(p.tx-p.x)*p.progress,y=p.y+(p.ty-p.y)*p.progress;ctx.fillStyle=p.color;ctx.fillRect(x-3,y-3,11,6);ctx.fillStyle='#fff7db';ctx.fillRect(x+1,y-2,4,3);}
-    if(supaShieldActive())MareSupaArt.draw(ctx,supaImages.shield,'shield',world.hero.x,world.hero.y-32,Date.now()-session.supaShieldStartedAt,{loop:true,scale:1.25});
-    for(let f of world.fx){ctx.globalAlpha=f.fruit||f.zoanVfx||f.supaVfx?1:clamp(f.life/f.max,0,1);if(f.supaVfx){MareSupaArt.draw(ctx,supaImages[f.supaVfx],f.supaVfx,f.x,f.y,Date.now()-f.startedAt,{scale:256/77});}else if(f.zoanVfx){MareZoanArt.drawVfx(ctx,f.zoanVfx,f.followHero?world.hero.x:f.x,f.followHero?world.hero.y:f.y,{time:f.max-f.life,scale:74/48,loop:!!f.loop});}else if(f.fruit){drawFruitBurst(ctx,f.x,f.y,f.fruit,f.max-f.life);}else if(f.slash){ctx.strokeStyle=f.color;ctx.lineWidth=5;ctx.beginPath();ctx.arc(f.x,f.y-17,29,-2.35,.2);ctx.stroke();}else if(f.ring){ctx.strokeStyle=f.color;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(f.x,f.y-4,(1-f.life/f.max)*61+6,(1-f.life/f.max)*26+5,0,0,Math.PI*2);ctx.stroke();}else {ctx.textAlign='center';ctx.font='bold '+f.size+'px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#0b2323';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);}}ctx.globalAlpha=1;
+    if(supaShieldActive())MareSupaArt.draw(ctx,supaImages.shield,'shield',world.hero.x,world.hero.y-32,Date.now()-session.supaShieldStartedAt,{loop:true,scale:120/MareSupaArt.animations.shield.frames[0].w});
+    for(let f of world.fx){ctx.globalAlpha=f.fruit||f.zoanVfx||f.supaVfx?1:clamp(f.life/f.max,0,1);if(f.supaVfx){MareSupaArt.draw(ctx,supaImages[f.supaVfx],f.supaVfx,f.x,f.y,Date.now()-f.startedAt,{scale:MareAkuma.supaRules.radius*2/MareSupaArt.animations.slash.frames[0].w});}else if(f.zoanVfx){MareZoanArt.drawVfx(ctx,f.zoanVfx,f.followHero?world.hero.x:f.x,f.followHero?world.hero.y:f.y,{time:f.max-f.life,scale:74/48,loop:!!f.loop});}else if(f.fruit){drawFruitBurst(ctx,f.x,f.y,f.fruit,f.max-f.life);}else if(f.slash){ctx.strokeStyle=f.color;ctx.lineWidth=5;ctx.beginPath();ctx.arc(f.x,f.y-17,29,-2.35,.2);ctx.stroke();}else if(f.ring){ctx.strokeStyle=f.color;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(f.x,f.y-4,(1-f.life/f.max)*61+6,(1-f.life/f.max)*26+5,0,0,Math.PI*2);ctx.stroke();}else {ctx.textAlign='center';ctx.font='bold '+f.size+'px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#0b2323';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);}}ctx.globalAlpha=1;
     ctx.restore();
     if(scene==='hunt'&&session?.respawn>0){
       if(classCombatController()){

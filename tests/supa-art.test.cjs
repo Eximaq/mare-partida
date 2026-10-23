@@ -6,14 +6,19 @@ const crypto=require('node:crypto');
 const Art=require('../supa-art.js');
 const Akuma=require('../akuma-system.js');
 const manifest=require('../assets/akuma/supa/manifest.json');
+assert.equal(Art.animations.slash.frames.length,8);
+assert.equal(Art.animations.slash.duration,472);
+assert.equal(Art.animations.shield.frames.length,12);
+assert.equal(Art.animations.shield.duration,756);
 for(const asset of manifest.assets){
   const bytes=fs.readFileSync(path.join(__dirname,'../assets/akuma/supa',asset.asset));
   assert.equal(crypto.createHash('sha256').update(bytes).digest('hex'),asset.sha256);
 }
-for(const [kind,file] of [['slash','slash-arc'],['shield','shield-bubble']]){
+for(const [kind,file] of [['slash','slash-arc'],['shield','spiral-ward']]){
   const source=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/akuma/supa',file+'.json'),'utf8'));
   const animation=Art.animations[kind];
   const png=fs.readFileSync(path.join(__dirname,'../assets/akuma/supa',file+'.png'));
+  assert.ok(animation.image.endsWith('?v='+crypto.createHash('sha256').update(png).digest('hex').slice(0,12)));
   assert.equal(png.readUInt32BE(16),source.meta.size.w);
   assert.equal(png.readUInt32BE(20),source.meta.size.h);
   assert.deepEqual(animation.anchor,source.meta.anchor);

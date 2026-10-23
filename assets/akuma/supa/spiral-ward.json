@@ -1,0 +1,339 @@
+{
+ "frames": [
+  {
+   "filename": "spiral-ward 0.png",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  },
+  {
+   "filename": "spiral-ward 1.png",
+   "frame": {
+    "x": 102,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  },
+  {
+   "filename": "spiral-ward 2.png",
+   "frame": {
+    "x": 204,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  },
+  {
+   "filename": "spiral-ward 3.png",
+   "frame": {
+    "x": 306,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  },
+  {
+   "filename": "spiral-ward 4.png",
+   "frame": {
+    "x": 0,
+    "y": 102,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  },
+  {
+   "filename": "spiral-ward 5.png",
+   "frame": {
+    "x": 102,
+    "y": 102,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  },
+  {
+   "filename": "spiral-ward 6.png",
+   "frame": {
+    "x": 204,
+    "y": 102,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  },
+  {
+   "filename": "spiral-ward 7.png",
+   "frame": {
+    "x": 306,
+    "y": 102,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  },
+  {
+   "filename": "spiral-ward 8.png",
+   "frame": {
+    "x": 0,
+    "y": 204,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  },
+  {
+   "filename": "spiral-ward 9.png",
+   "frame": {
+    "x": 102,
+    "y": 204,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  },
+  {
+   "filename": "spiral-ward 10.png",
+   "frame": {
+    "x": 204,
+    "y": 204,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  },
+  {
+   "filename": "spiral-ward 11.png",
+   "frame": {
+    "x": 306,
+    "y": 204,
+    "w": 102,
+    "h": 102
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 102,
+    "h": 102
+   },
+   "sourceSize": {
+    "w": 102,
+    "h": 102
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 63
+  }
+ ],
+ "meta": {
+  "app": "PixelLab VFX Creator",
+  "image": "spiral-ward.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 408,
+   "h": 306
+  },
+  "scale": "1",
+  "anchor": {
+   "kind": "origin",
+   "x": 51,
+   "y": 51
+  },
+  "frameTags": [
+   {
+    "name": "spiral-ward",
+    "from": 0,
+    "to": 11,
+    "direction": "forward"
+   }
+  ]
+ }
+}

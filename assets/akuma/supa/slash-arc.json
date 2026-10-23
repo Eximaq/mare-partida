@@ -5,156 +5,208 @@
    "frame": {
     "x": 0,
     "y": 0,
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "sourceSize": {
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "pivot": {
-    "x": 0.4675324675324675,
-    "y": 0.4878048780487805
+    "x": 0.5,
+    "y": 0.5
    },
-   "duration": 77
+   "duration": 59
   },
   {
    "filename": "slash-arc 1.png",
    "frame": {
-    "x": 77,
+    "x": 96,
     "y": 0,
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "sourceSize": {
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "pivot": {
-    "x": 0.4675324675324675,
-    "y": 0.4878048780487805
+    "x": 0.5,
+    "y": 0.5
    },
-   "duration": 77
+   "duration": 59
   },
   {
    "filename": "slash-arc 2.png",
    "frame": {
-    "x": 154,
+    "x": 192,
     "y": 0,
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "sourceSize": {
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "pivot": {
-    "x": 0.4675324675324675,
-    "y": 0.4878048780487805
+    "x": 0.5,
+    "y": 0.5
    },
-   "duration": 77
+   "duration": 59
   },
   {
    "filename": "slash-arc 3.png",
    "frame": {
     "x": 0,
-    "y": 82,
-    "w": 77,
-    "h": 82
+    "y": 96,
+    "w": 96,
+    "h": 96
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "sourceSize": {
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "pivot": {
-    "x": 0.4675324675324675,
-    "y": 0.4878048780487805
+    "x": 0.5,
+    "y": 0.5
    },
-   "duration": 77
+   "duration": 59
   },
   {
    "filename": "slash-arc 4.png",
    "frame": {
-    "x": 77,
-    "y": 82,
-    "w": 77,
-    "h": 82
+    "x": 96,
+    "y": 96,
+    "w": 96,
+    "h": 96
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "sourceSize": {
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "pivot": {
-    "x": 0.4675324675324675,
-    "y": 0.4878048780487805
+    "x": 0.5,
+    "y": 0.5
    },
-   "duration": 77
+   "duration": 59
   },
   {
    "filename": "slash-arc 5.png",
    "frame": {
-    "x": 154,
-    "y": 82,
-    "w": 77,
-    "h": 82
+    "x": 192,
+    "y": 96,
+    "w": 96,
+    "h": 96
    },
    "rotated": false,
    "trimmed": false,
    "spriteSourceSize": {
     "x": 0,
     "y": 0,
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "sourceSize": {
-    "w": 77,
-    "h": 82
+    "w": 96,
+    "h": 96
    },
    "pivot": {
-    "x": 0.4675324675324675,
-    "y": 0.4878048780487805
+    "x": 0.5,
+    "y": 0.5
    },
-   "duration": 77
+   "duration": 59
+  },
+  {
+   "filename": "slash-arc 6.png",
+   "frame": {
+    "x": 0,
+    "y": 192,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 59
+  },
+  {
+   "filename": "slash-arc 7.png",
+   "frame": {
+    "x": 96,
+    "y": 192,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 59
   }
  ],
  "meta": {
@@ -162,20 +214,20 @@
   "image": "slash-arc.png",
   "format": "RGBA8888",
   "size": {
-   "w": 231,
-   "h": 164
+   "w": 288,
+   "h": 288
   },
   "scale": "1",
   "anchor": {
    "kind": "origin",
-   "x": 36,
-   "y": 40
+   "x": 48,
+   "y": 48
   },
   "frameTags": [
    {
     "name": "slash-arc",
     "from": 0,
-    "to": 5,
+    "to": 7,
     "direction": "forward"
    }
   ]

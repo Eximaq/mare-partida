@@ -50,7 +50,7 @@ const bridge=`  window.__supaQA={enterHunt,useFruitSkill,takeDamage,get game(){r
       __supaQA.world.mobs=[];window.supaDraws=[];
       const original=CanvasRenderingContext2D.prototype.drawImage;
       CanvasRenderingContext2D.prototype.drawImage=function(...args){
-        if(args[0]?.src?.endsWith('/shield-bubble.png')){supaDraws.push({x:args[5],y:args[6],sx:args[1],sy:args[2]});if(supaDraws.length>100)supaDraws.shift();}
+        if(args[0]?.src?.split('?')[0].endsWith('/spiral-ward.png')){supaDraws.push({x:args[5],y:args[6],sx:args[1],sy:args[2]});if(supaDraws.length>100)supaDraws.shift();}
         return original.apply(this,args);
       };
     });
