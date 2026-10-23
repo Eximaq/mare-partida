@@ -1,7 +1,7 @@
 'use strict';
 /* Pure, versioned forge transitions. RNG and expected revision are explicit inputs. */
 ((root)=>{
-  const VERSION=3,CAPACITY=120,keys=['strength','dexterity','vitality','intelligence','spirit'];
+  const VERSION=4,CAPACITY=120,keys=['strength','dexterity','vitality','intelligence','spirit'];
   const rarity=Object.freeze({common:{name:'Comum',color:'#9b968b',extras:1,sockets:0,mult:1},uncommon:{name:'Incomum',color:'#62ac7c',extras:2,sockets:1,mult:1.3},rare:{name:'Raro',color:'#65a7d6',extras:3,sockets:2,mult:1.7},epic:{name:'Épico',color:'#b182db',extras:4,sockets:3,mult:2.4},legendary:{name:'Lendário',color:'#e7c64c',extras:5,sockets:4,mult:4},supreme:{name:'Supremo',color:'#e66c62',extras:6,sockets:5,mult:6}});
   const names={strength:'Força',dexterity:'Destreza',vitality:'Vitalidade',intelligence:'Inteligência',spirit:'Espírito',hp:'Vida',energy:'Energia',crit:'Crítico'};
   const short={strength:'for',dexterity:'des',vitality:'vit',intelligence:'int',spirit:'esp'};
@@ -29,10 +29,12 @@
     if(def.type==='akuma_no_mi'||item.type==='akuma_no_mi')return item;
     if(['pearl-box','haki-book'].includes(def.kind))return item;
     if(isPearl(item,defs)){const p=pearlOf(item,defs);if(p)item.pearlId=p.id;item.forgeVersion=VERSION;return item;}
-    item.level=Math.max(1,int(item.level));item.plus=int(item.plus);item.rarity=rarity[item.rarity]?item.rarity:(rarity[def.rarity]?def.rarity:'common');
+    const fixedRarityUpgrade=def.fixedRarity&&rarity[def.rarity]&&item.rarity!==def.rarity;
+    item.level=Math.max(1,int(item.level));item.plus=int(item.plus);item.rarity=def.fixedRarity&&rarity[def.rarity]?def.rarity:(rarity[item.rarity]?item.rarity:(rarity[def.rarity]?def.rarity:'common'));
     item.baseStats=item.baseStats&&['attack','defense','hp'].every(k=>Number.isFinite(item.baseStats[k])&&item.baseStats[k]>=0)?item.baseStats:{attack:def.attack||0,defense:def.defense||0,hp:def.hp||0};
     // Legacy extras are rolled once from a stable item identity, never from global RNG.
     if(!Array.isArray(item.extras))item.extras=rollExtras(item,def,random||seeded(`${item.id}|${item.def}|${item.level}|${item.rarity}`));
+    else if(fixedRarityUpgrade){while(item.extras.length<rarity[item.rarity].extras){const used=new Set(item.extras.map(extra=>extra?.stat)),generated=rollExtras(item,def,seeded(`${item.id}|${item.def}|${item.level}|${item.rarity}|rank-up|${item.extras.length}`)),extra=generated.find(candidate=>!used.has(candidate.stat));if(!extra)break;item.extras.push(extra);}}
     if(!Array.isArray(item.sockets))item.sockets=Array(rarity[item.rarity].sockets).fill(null);
     // Never truncate saved sockets or reroll existing extras on load.
     while(item.sockets.length<rarity[item.rarity].sockets)item.sockets.push(null);

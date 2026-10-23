@@ -10,7 +10,7 @@ const styles=fs.readFileSync(path.join(root,'ui-nautical.css'),'utf8')+fs.readFi
 const weapons=[
   ['Katana da Maelstrom','legendary','katana-de-maelstrom.png','Uma katana lendária que carrega a fúria dos redemoinhos. Sua lâmina canaliza correntes de vento em movimentos circulares, transformando cada golpe em uma tempestade cortante.',[97,104]],
   ['Nodachi de Kairouseki','epic','nodachi-de-kairouseki.png','Uma nodachi forjada com Kairouseki, o lendário mineral dos mares. Sua lâmina enfraquece usuários de Akuma no Mi ao contato, anulando sua resistência sobrenatural e tornando-os vulneráveis ao aço.',[112,116]],
-  ['Nodachi de Fogo','epic','nodachi-de-fogo.png','Uma imponente nodachi envolta pelo calor das chamas. Seus golpes liberam energia flamejante, capazes de incendiar inimigos e deixar um rastro ardente pelo campo de batalha.',[111,116]],
+  ['Nodachi de Fogo','legendary','nodachi-de-fogo.png','Uma imponente nodachi envolta pelo calor das chamas. Seus golpes liberam energia flamejante, capazes de incendiar inimigos e deixar um rastro ardente pelo campo de batalha.',[111,116]],
   ['Meito: Ame no Habakiri','supreme','ame-no-habakiri.png','Uma espada lendária empunhada por Kozuki Oden, reconhecida entre as grandes Meito de Wano. Diz-se que sua lâmina é capaz de cortar os próprios céus, carregando o legado de um dos maiores samurais da história.',[112,117]]
 ];
 
