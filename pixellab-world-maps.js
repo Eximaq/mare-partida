@@ -4,6 +4,7 @@
   if(typeof module!=='undefined'){
     if(!root.MarePixelWorldMapsData)require('./pixellab-world-maps-data.js');
     if(!root.MarePixelConchasData)require('./conchas-pixellab-data.js');
+    if(!root.MareConchasStructures)require('./conchas-structures.js');
   }
   const data={...(root.MarePixelWorldMapsData||{}),...(root.MarePixelConchasData?{conchas:root.MarePixelConchasData}:{})};
   if(!data.orange||!data.loguetown||!data.conchas)return;
@@ -52,6 +53,7 @@
   }
   function createMap(source,options){
     const colliders=source.objects.map(object=>objectCollider(source,object));
+    if(source.id==='conchas')for(const [index,rect] of (root.MareConchasStructures?.colliders||[]).entries())colliders.push({...rect,id:'conchas-fort-'+index,isSolid:true,footprint:true,structure:true});
     const map={
       id:source.id,width:source.columns*CELL,height:source.rows*CELL,origin:{x:0,y:0},cellSize:CELL,navigationCell:24,
       pixelLabId:source.pixelLabId,playerFootprint:{w:32,h:20},

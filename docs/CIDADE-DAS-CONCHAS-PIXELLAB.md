@@ -1,5 +1,15 @@
 # Cidade das Conchas — mapa PixelLab e Helmeppo
 
+## Bloqueio do forte e portão (23/10/2026)
+
+Os seis prints marcados mostram muros, quinas e o portão Marine fechado; não são as seis junções de terreno sem tileset (estas ficam nas transições entre areia, madeira e água). Os antigos colisores de placements não acompanhavam a silhueta da projeção aprovada.
+
+`conchas-structures.js` acrescenta 56 retângulos sólidos contínuos sobre os muros e o portão, extraídos da paleta das estruturas na projeção existente por `tools/build_conchas_structures.py`. Portas pintadas na fachada são sólidas. A entrada aberta ao sul permanece acessível. O script fecha lacunas pequenas de argamassa/portas na máscara física e filtra componentes pequenos/embarcações; não altera nenhum PNG. O hash da projeção fica associado aos dados de colisão para detectar geometria desatualizada.
+
+O bloqueio usa a navegação compartilhada por personagens e monstros, incluindo validação por eixo e subpassos contra transposição em deslocamentos grandes. Testes cobrem travessias nas seis estruturas, três tipos de entidade, colisão de segmentos e ida/volta pela entrada aberta. Saves e arte não são modificados.
+
+Validação executada: testes do forte, Conchas, navegação e caça; build Pages. No Chrome isolado 1366×768, personagem de QA caminhou da areia até o interior pela entrada aberta. Ao manter a seta para baixo contra a fachada, parou em `(2144, 2149.4275)`, antes da faixa sólida que começa em `y=2152`, em posição walkable e sem exceções. Captura local: `C:/Users/Cristian/AppData/Local/Temp/conchas-solid-wall-input-20261023.png`. A resistência elevada do personagem de QA serviu apenas para impedir mortes durante a validação; nenhum atributo de produção foi alterado.
+
 ## Projeção integral do PixelLab (23/10/2026)
 
 A renderização anterior recompunha objetos isolados e alterava encaixes, margens e sobreposições. Foi substituída por `assets/world-maps/conchas/projection.png`: exportação nativa de `view_map` em 20 trechos, reunidos sem redimensionamento nem pintura. A projeção contém todos os 105 placements e a ordem de camadas resolvida pelo próprio PixelLab. `projection.json` registra origem, dimensões e hashes. `tools/import_conchas_projection.py` permite reunir novamente os trechos exportados.
