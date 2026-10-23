@@ -45,6 +45,38 @@ with sync_playwright() as p:
  # DEV class changes must fall back, not show a swordsman for every action category.
  q.locator('#devLauncher').click();q.locator('#devClass').select_option('gunner');q.locator('[data-dev-command=class]').click();q.locator('#closePanel').click();q.clock.run_for(200)
  before=state()['draws'];q.clock.run_for(300);assert state()['draws']==before
+ # Shared locomotion is real in-game rendering, for every class when unequipped.
+ q.locator('#returnLobby').click()
+ for cls in ['gunner','brawler','rogue','cyborg','healer','strategist','sword']:
+  q.locator('#devLauncher').click();q.locator('#devClass').select_option(cls);q.locator('[data-dev-command=class]').click();q.locator('#closePanel').click()
+  q.locator('.bottom-nav [data-panel=inventory]').click();q.locator('[data-inv-slot=weapon]').click();q.locator('[data-unequip=weapon]').click();q.locator('[data-close-panel]').click()
+  before=state()['draws'];q.clock.run_for(300)
+  assert state()['draws']>before and state()['lastReason'] is None, (cls,state())
+  for key in ['w','a','s','d']:
+   before=state()['draws'];q.keyboard.down(key);q.clock.run_for(300);q.keyboard.up(key)
+   assert state()['draws']>before and state()['lastReason'] is None,(cls,key,state())
+  assert saved()['equipment']['weapon'] is None
+ assert q.evaluate('localStorage.getItem("'+NORMAL+'")')==normal
+ # The shared renderer produces identical pixels for all 28 identities, and
+ # never borrows the sword attack for an unequipped character.
+ q.evaluate("""async () => {
+  const review=MarePaperDollReview.create({search:'?paperDollReview=navy-starter',devActive:true,getImage:MareFactionSprites.image});
+  await review.ready;
+  const canvas=document.createElement('canvas');canvas.width=160;canvas.height=160;
+  const ctx=canvas.getContext('2d',{willReadFrequently:true}),baseline=new Map();
+  for(const classId of Object.keys(MarePaperDollCatalog.classes))for(const factionId of Object.keys(MarePaperDollCatalog.factions)){
+   const player={classId,factionId,devSandbox:true,equipment:{}};
+   for(const action of ['idle','walk'])for(const direction of ['south','north','west','east']){
+    ctx.clearRect(0,0,160,160);
+    if(!review.draw(ctx,player,action,direction,.3,80,110,1))throw Error('Missing shared pose '+classId+action+direction);
+    const rgba=ctx.getImageData(0,0,160,160).data,key=action+direction;
+    if(baseline.has(key)&&rgba.some((v,i)=>v!==baseline.get(key)[i]))throw Error('Class/faction changed shared body pixels');
+    if(!baseline.has(key))baseline.set(key,rgba.slice());
+   }
+   if(review.draw(ctx,player,'attack','south',.3,80,110,1))throw Error('Unequipped character borrowed weapon attack');
+  }
+ }""")
+ q.screenshot(path=str(OUT/'shared-unarmed-1366.png'))
  q.set_viewport_size({'width':393,'height':852});q.locator('#devLauncher').click();assert q.evaluate('document.documentElement.scrollWidth<=innerWidth');q.screenshot(path=str(OUT/'laboratory-393.png'),full_page=True)
  q.get_by_role('link',name='Desativar prévia visual').click();q.wait_for_function('window.__mareDiagnostics?.().paperDollReview.state==="off"')
  q.locator('#devLauncher').click();q.locator('[data-dev-exit]').click();q.wait_for_function('window.__mareDiagnostics?.().dev.active===false')

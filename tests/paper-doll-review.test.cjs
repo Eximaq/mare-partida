@@ -20,7 +20,15 @@ const review=require('../paper-doll-review.js'),pack=require('../pixellab-pip-ge
   p.equipment.coat=null;assert.deepEqual(review.appearance(pack,p).blocked,[]);
   p.equipment.head={def:18};assert.equal(review.appearance(pack,p).blocked.length,1);delete p.equipment.head;
   p.zoanTransformed=true;assert.equal(review.appearance(pack,p),null);p.zoanTransformed=false;
-  for(const cls of ['gunner','brawler','rogue','cyborg','healer','strategist']){p.classId=cls;assert.equal(review.appearance(pack,p),null);}
+  for(const cls of Object.keys(MarePaperDollCatalog.classes))for(const faction of Object.keys(MarePaperDollCatalog.factions)){
+    p.classId=cls;p.factionId=faction;p.equipment.weapon=null;
+    const common=review.appearance(pack,p);
+    assert.equal(common.pieces.body,'navy-starter-body');
+    assert.deepEqual(common.hidden,['weapon']);assert.deepEqual(common.blocked,[]);
+    p.equipment.weapon={def:MarePaperDollCatalog.classes[cls].weapon};
+    if(cls!=='sword')assert.equal(review.appearance(pack,p),null);
+    else assert.deepEqual(review.appearance(pack,p).hidden,[]);
+  }
   for(const data of [null,{...pack,productionEnabled:true},{...pack,pieces:[]},{...pack,pieces:pack.pieces.map(p=>({...p,approved:true}))}]){
     const r=review.create({search:'?dev=1&paperDollReview=navy-starter',devActive:true,baseURL:'http://localhost/game/',getImage:()=>{throw Error('Invalid pack must not load images');},fetch:async()=>({ok:true,json:async()=>data})});
     assert.equal((await r.ready).state,'failed');assert.equal(r.draw(null,{devSandbox:true},'idle','south',0,0,0),false);

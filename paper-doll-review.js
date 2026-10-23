@@ -6,9 +6,11 @@
   function appearance(pack,player){
     const catalog=root.MarePaperDollCatalog;
     if(!catalog.eligible(player))return null;
-    const result={rigId:pack.rig.id,pieces:{...pack.appearance.pieces},blocked:[]};
-    // Locomotion may reuse the same human, but another class must not carry a sword.
-    if(catalog.profile(player).category!=='sword')return null;
+    const unarmed=!player.equipment?.weapon;
+    const result={rigId:pack.rig.id,pieces:{...pack.appearance.pieces},blocked:[],hidden:unarmed?['weapon']:[]};
+    // Body identity is independent of class/faction. Missing weapon artwork
+    // still falls back; only genuinely unequipped hands omit the sword layer.
+    if(!unarmed&&catalog.profile(player).category!=='sword')return null;
     for(const [equipmentSlot,binding]of Object.entries(pack.bindings||{})){
       const item=player.equipment?.[equipmentSlot];if(!item)continue;
       const piece=Object.hasOwn(binding.items,item.def)?binding.items[item.def]:null;
@@ -43,7 +45,7 @@
         for(const [action,clip]of Object.entries(data.rig.animations))for(const direction of clip.directions)for(let frameIndex=0;frameIndex<clip.frames;frameIndex++){
           if(!runtime.resolve(data.appearance,{animationId:action,direction,frameIndex},{allowDraft:true}).valid)throw Error('Há frames incompatíveis ou ausentes.');
         }
-        pack=data;state='ready';message='Conjunto azul em revisão. Equipamentos sem peça compatível usam o personagem original.';
+        pack=data;state='ready';message='Corpo comum: sete classes e quatro facções, sem arma, em repouso e caminhada. Espada inicial compatível; outros equipamentos e ataques sem arte usam o personagem original.';
       }catch(e){pack=null;state='failed';message='Prévia indisponível: '+e.message+' Sprite original preservado.';}
       notify();return snapshot();
     })():Promise.resolve(snapshot());
@@ -51,7 +53,8 @@
       if(!pack||state!=='ready'||player?.devSandbox!==true)return false;
       const config=appearance(pack,player),pose=root.MarePaperDollCatalog.sample(runtime,player,action,direction,time);
       if(!config||!pose){fallbacks++;lastReason='unsupported-character-or-action';return false;}
-      const ok=runtime.draw(ctx,config,pose,x,y,{scale,allowDraft:true});
+      if(config.hidden.includes('weapon')&&action!=='idle'&&action!=='walk'){fallbacks++;lastReason='missing-unarmed-animation';return false;}
+      const ok=runtime.draw(ctx,config,pose,x,y,{scale,hidden:config.hidden,allowDraft:true});
       if(ok){draws++;lastReason=null;}else{fallbacks++;lastReason=config.blocked[0]?.code||'missing-animation';}
       return ok;
     }
