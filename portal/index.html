@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#07141b">
+  <meta name="description" content="Maré Partida — sua jornada pelos mares começa aqui.">
+  <title>Maré Partida — Seu destino começa no mar</title>
+  <style>
+    :root{font-family:Georgia,"Times New Roman",serif;color:#f2e6c9;background:#08131b;font-synthesis:none}
+    *{box-sizing:border-box}html{min-height:100%}body{margin:0;min-height:100vh;overflow-x:hidden}
+    button,input{font:inherit}button{cursor:pointer}a{color:inherit}
+    .backdrop{position:fixed;inset:0;z-index:-2;overflow:hidden;background:radial-gradient(ellipse 80% 60% at 50% 78%,#123c4b 0%,transparent 68%),linear-gradient(180deg,#08111b 0%,#162935 50%,#0b2835 76%,#07131a 100%)}
+    .backdrop:before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 71% 20%,#c9a76825 0 1px,transparent 2px),radial-gradient(circle at 24% 17%,#f5e7d633 0 1px,transparent 2px);background-size:77px 91px,129px 141px;opacity:.5}
+    .moon{position:absolute;right:13%;top:13%;width:125px;aspect-ratio:1;border-radius:50%;background:#d7c99b;box-shadow:0 0 65px 22px #d6b97742,0 0 160px #c9b0752b;opacity:.77}
+    .horizon{position:absolute;top:58%;left:0;width:100%;height:2px;background:#b79c6c54;box-shadow:0 0 55px 18px #c9b88418}
+    .island{position:absolute;bottom:34%;width:34%;height:14%;background:#06121b;clip-path:polygon(0% 100%,8% 75%,20% 74%,32% 38%,37% 50%,47% 30%,52% 58%,64% 45%,80% 78%,100% 100%);filter:drop-shadow(0 -3px 4px #dbc68b18)}
+    .island.left{left:-8%}.island.right{right:-14%;transform:scaleX(-1);height:19%}
+    .sea{position:absolute;bottom:-25%;left:-10%;width:120%;height:65%;background:repeating-radial-gradient(ellipse at 50% 0%,transparent 0 24px,#6395a420 25px 27px,transparent 28px 49px),linear-gradient(180deg,#123d4a66,#06151c);transform:perspective(650px) rotateX(56deg);animation:tide 13s ease-in-out infinite alternate}
+    .mist{position:absolute;bottom:19%;inset-inline:-5%;height:18%;background:linear-gradient(0deg,transparent,#7d9ba016,transparent);filter:blur(17px)}
+    @keyframes tide{to{transform:perspective(650px) rotateX(56deg) translateX(-25px)}}
+    header{padding:24px clamp(22px,5vw,90px);display:flex;align-items:center;justify-content:space-between;gap:15px;max-width:1600px;margin:auto}
+    .brand{display:flex;align-items:center;gap:11px;text-decoration:none;letter-spacing:.14em;text-transform:uppercase;font-weight:bold;font-size:14px}.brand-mark{width:39px;height:39px;display:grid;place-items:center;border:1px solid #bba477;border-radius:50%;color:#d6ba80;font-size:26px}
+    .status{display:flex;align-items:center;gap:9px;font:11px system-ui,sans-serif;letter-spacing:.1em;color:#b7c5c1;text-transform:uppercase}.status i{width:7px;height:7px;background:#6ca991;border-radius:50%;box-shadow:0 0 10px #6ca991}
+    main{max-width:1340px;min-height:calc(100vh - 140px);padding:clamp(30px,5vw,80px) clamp(22px,6vw,90px) 50px;margin:auto;display:grid;grid-template-columns:minmax(0,1.2fr) minmax(340px,.8fr);align-items:center;gap:clamp(38px,7vw,100px)}
+    .eyebrow{text-transform:uppercase;letter-spacing:.35em;color:#ddbf8a;font:700 11px system-ui,sans-serif}.line{height:1px;width:78px;background:#b99661;display:inline-block;vertical-align:middle;margin-right:12px}
+    h1{font-weight:normal;letter-spacing:-.055em;font-size:clamp(64px,8vw,125px);line-height:.86;margin:24px 0 30px;text-shadow:0 6px 40px #000b}h1 em{display:block;font-weight:normal;font-style:italic;color:#e6c789;font-size:.91em}
+    .intro{color:#d0d7d0;font:15px/1.9 system-ui,sans-serif;max-width:490px}.features{display:flex;gap:24px;flex-wrap:wrap;margin-top:36px;font:11px system-ui,sans-serif;color:#bcc7c3;letter-spacing:.08em;text-transform:uppercase}.features span:before{content:"✧";color:#d8b77f;margin-right:8px}
+    .panel{background:linear-gradient(140deg,#142a34ed,#07141beF);border:1px solid #9e815557;box-shadow:0 20px 70px #01080ca8, inset 0 0 0 5px #a88d4011;position:relative;padding:clamp(26px,3vw,42px);border-radius:5px}
+    .panel:before,.panel:after{content:"✦";position:absolute;color:#d1ae78;font-size:14px;top:7px;left:9px}.panel:after{left:auto;right:9px}
+    .panel h2{font-weight:normal;font-size:33px;margin:0 0 5px}.panel-sub{font:12px/1.7 system-ui,sans-serif;color:#aeb9b8;margin:0 0 24px}
+    .tabs{display:flex;border-bottom:1px solid #9a875a63;margin-bottom:24px}.tabs button{flex:1;padding:12px 6px;background:none;border:0;border-bottom:2px solid transparent;color:#a5aeab;font:700 11px system-ui,sans-serif;letter-spacing:.15em;text-transform:uppercase}.tabs button[aria-selected=true]{border-bottom-color:#e2c488;color:#f3e3bd}
+    label{display:block;color:#c6c5b8;font:700 11px system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}.field{margin-bottom:17px}.field input{outline:0;width:100%;height:45px;border:1px solid #64808a55;background:#07121bda;color:#f2ecdf;border-radius:3px;padding:0 14px;font:14px system-ui,sans-serif}.field input:focus{border-color:#ddbc80;box-shadow:0 0 0 2px #d5b87c22}
+    .submit{width:100%;border:1px solid #efca86;background:linear-gradient(180deg,#eacb93,#b88c4e);color:#202015;padding:14px 20px;font:800 12px system-ui,sans-serif;letter-spacing:.18em;text-transform:uppercase;transition:filter .2s}.submit:hover{filter:brightness(1.1)}.submit:focus-visible,a:focus-visible,.tabs button:focus-visible{outline:2px solid #f2dcab;outline-offset:3px}
+    .note{color:#b0b8b4;font:12px/1.7 system-ui,sans-serif;text-align:center;margin:15px 0 0}.note a{color:#efcf95;text-underline-offset:3px}.demo{display:block;margin-top:18px;padding:14px;border:1px solid #718c9755;text-align:center;text-decoration:none;font:700 11px system-ui,sans-serif;letter-spacing:.15em;color:#d0d8d4;text-transform:uppercase}.demo:hover{background:#c9c1a314}
+    .message{padding:12px;background:#a88b3422;border:1px solid #dbb67077;margin:0 0 18px;font:12px/1.65 system-ui,sans-serif;color:#f0d6a5}
+    .hidden{display:none!important}footer{padding:15px clamp(22px,5vw,90px) 25px;display:flex;justify-content:space-between;gap:16px;max-width:1600px;margin:auto;color:#9daca9;font:10px system-ui,sans-serif;letter-spacing:.1em;text-transform:uppercase}
+    @media(max-width:900px){main{grid-template-columns:1fr;gap:35px;padding-top:34px;max-width:630px}.hero{text-align:center}.intro{margin-inline:auto}.line{width:35px}.features{justify-content:center}h1{font-size:clamp(58px,12vw,94px)}.moon{right:6%;top:16%;width:90px}}
+    @media(max-width:480px){main{padding:25px 17px 45px}.panel{padding:28px 21px}.status{font-size:9px}header{padding:18px}.brand{font-size:11px}footer{flex-direction:column;text-align:center}}
+    @media(prefers-reduced-motion:reduce){.sea{animation:none}}
+  </style>
+</head>
+<body>
+  <div class="backdrop" aria-hidden="true"><div class="moon"></div><div class="horizon"></div><div class="island left"></div><div class="island right"></div><div class="sea"></div><div class="mist"></div></div>
+  <header><a class="brand" href="./"><span class="brand-mark">✥</span> Maré Partida</a><div class="status"><i></i> Um novo mundo está surgindo</div></header>
+  <main>
+    <section class="hero" aria-label="Apresentação">
+      <div class="eyebrow"><span class="line"></span> Um mundo além do horizonte</div>
+      <h1>Maré <em>Partida.</em></h1>
+      <p class="intro">Os mares não pertencem a ninguém. Escolha sua bandeira, trilhe seu destino e escreva sua própria lenda em um mundo de ilhas, desafios e descobertas.</p>
+      <div class="features"><span>Explore os mares</span><span>Escolha sua facção</span><span>Construa sua lenda</span></div>
+    </section>
+    <section class="panel" aria-label="Acesso ao jogo">
+      <h2>Bem-vindo, aventureiro.</h2>
+      <p class="panel-sub">Sua próxima jornada começa por aqui.</p>
+      <div class="tabs" role="tablist" aria-label="Acessar conta">
+        <button id="login-tab" type="button" role="tab" aria-selected="true" aria-controls="login-panel">Entrar</button>
+        <button id="signup-tab" type="button" role="tab" aria-selected="false" aria-controls="signup-panel">Criar conta</button>
+      </div>
+      <div id="notice" class="message" role="status">A página de acesso está em desenvolvimento. O cadastro na nuvem será ativado após a configuração do Supabase. Nenhuma senha é enviada ou armazenada nesta demonstração.</div>
+      <form id="login-panel" role="tabpanel" aria-labelledby="login-tab">
+        <div class="field"><label for="login-email">E-mail</label><input id="login-email" name="email" type="email" autocomplete="email" placeholder="seu@email.com" required></div>
+        <div class="field"><label for="login-password">Senha</label><input id="login-password" name="password" type="password" autocomplete="current-password" placeholder="Sua senha" minlength="8" required></div>
+        <button class="submit" type="submit">Entrar no mundo →</button>
+      </form>
+      <form id="signup-panel" class="hidden" role="tabpanel" aria-labelledby="signup-tab">
+        <div class="field"><label for="signup-name">Nome de aventureiro</label><input id="signup-name" name="username" type="text" autocomplete="username" placeholder="Como devemos chamar você?" minlength="3" maxlength="24" pattern="[A-Za-zÀ-ÿ0-9_ ]{3,24}" required></div>
+        <div class="field"><label for="signup-email">E-mail</label><input id="signup-email" name="email" type="email" autocomplete="email" placeholder="seu@email.com" required></div>
+        <div class="field"><label for="signup-password">Senha</label><input id="signup-password" name="password" type="password" autocomplete="new-password" placeholder="Mínimo de 8 caracteres" minlength="8" required></div>
+        <button class="submit" type="submit">Criar minha conta →</button>
+      </form>
+      <p class="note">Já quer explorar? A versão atual continua disponível.</p>
+      <a class="demo" href="../index.html">Jogar demonstração sem conta ↗</a>
+    </section>
+  </main>
+  <footer><span>© Maré Partida · Jornada em desenvolvimento</span><span>East Blue aguarda por você</span></footer>
+  <script>
+    "use strict";
+    const tabs=[document.getElementById("login-tab"),document.getElementById("signup-tab")];
+    const panels=[document.getElementById("login-panel"),document.getElementById("signup-panel")];
+    function selectTab(index){tabs.forEach((tab,i)=>{tab.setAttribute("aria-selected",String(i===index));tab.tabIndex=i===index?0:-1;panels[i].classList.toggle("hidden",i!==index)});}
+    tabs.forEach((tab,i)=>{tab.addEventListener("click",()=>selectTab(i));tab.addEventListener("keydown",event=>{if(event.key==="ArrowLeft"||event.key==="ArrowRight"){event.preventDefault();const next=(i+(event.key==="ArrowRight"?1:tabs.length-1))%tabs.length;selectTab(next);tabs[next].focus();}});});
+    panels.forEach(form=>form.addEventListener("submit",event=>{event.preventDefault();const notice=document.getElementById("notice");notice.textContent="A autenticação ainda não está conectada. Esta demonstração não cria contas nem valida senhas. Use o botão abaixo para acessar o jogo atual.";notice.scrollIntoView({block:"nearest",behavior:"smooth"});}));
+  </script>
+</body></html>
