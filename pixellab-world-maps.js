@@ -1,13 +1,23 @@
 'use strict';
 /* Static integration of already-published PixelLab maps. No runtime generation. */
 ((root)=>{
-  const data=root.MarePixelWorldMapsData;
-  if(!data)return;
-  const CELL=64,walkable={orange:new Set(['c','g','e','m','u']),loguetown:new Set(['v','c','u','i'])};
+  if(typeof module!=='undefined'){
+    if(!root.MarePixelWorldMapsData)require('./pixellab-world-maps-data.js');
+    if(!root.MarePixelConchasData)require('./conchas-pixellab-data.js');
+  }
+  const data={...(root.MarePixelWorldMapsData||{}),...(root.MarePixelConchasData?{conchas:root.MarePixelConchasData}:{})};
+  if(!data.orange||!data.loguetown||!data.conchas)return;
+  const CELL=64,walkable={orange:new Set(['c','g','e','m','u']),loguetown:new Set(['v','c','u','i']),conchas:new Set(['c','g','m','u','e'])};
   const imageCache={};
   const clamp=(value,min,max)=>Math.max(min,Math.min(max,value));
   const worldPoint=(source,cell)=>({x:(cell[0]-source.minX+.5)*CELL,y:(cell[1]-source.minY+.5)*CELL});
   function objectCollider(source,object){
+    if(source.id==='conchas'){
+      const left=(object.cellX-source.minX)*CELL,top=(object.cellY-source.minY)*CELL;
+      const footprintWidth=Math.max(CELL,object.widthCells*CELL),footprintHeight=Math.max(CELL,object.heightCells*CELL);
+      const width=Math.max(28,Math.round(footprintWidth*.78)),height=Math.max(20,Math.min(40,Math.round(footprintHeight*.2)));
+      return {id:'pixellab-object-'+object.placementId,x:Math.round(left+(footprintWidth-width)/2),y:Math.round(top+footprintHeight-height),w:width,h:height,isSolid:true,footprint:true,sourceId:object.placementId};
+    }
     const width=Math.max(18,Math.min(96,object.widthCells*CELL*.58));
     const height=Math.max(16,Math.min(52,object.heightCells*CELL*.28));
     const center=worldPoint(source,[object.cellX,object.cellY]);
@@ -56,7 +66,11 @@
       }
     };
     const districts=options.districts.map(d=>({...d,...nearestOpen(source,colliders,d.cell),min:options.level,max:options.level,roles:[...options.roles]}));
-    return {map,source,spawnCell:options.spawnCell,returnPoint:map.returnPoint,districts};
+    const props=source.objects.map(object=>{
+      const x=(object.cellX-source.minX)*CELL,y=(object.cellY-source.minY)*CELL;
+      return {...object,x,y,width:object.widthCells*CELL,height:object.heightCells*CELL,bottomY:y+object.heightCells*CELL};
+    }).sort((a,b)=>a.bottomY-b.bottomY||a.layer-b.layer);
+    return {map,source,spawnCell:options.spawnCell,returnPoint:map.returnPoint,districts,props};
   }
   const orange=createMap(data.orange,{spawnCell:[3,11],returnCell:[2,11],level:13,roles:['mr3','cabaji'],districts:[
     {id:'cais',name:'Cais das Laranjeiras',cell:[3,11]},
@@ -71,16 +85,24 @@
     {id:'praca',name:'Praça da Torre',cell:[2,-5]},
     {id:'jardins',name:'Jardins do Quartel',cell:[0,-18]}
   ]});
+  const conchas=createMap(data.conchas,{spawnCell:[11,24],returnCell:[11,26],level:8,roles:['helmeppo'],districts:[
+    {id:'areia-sul',name:'Areia Sul',cell:[11,24]},
+    {id:'caminho-central',name:'Caminho Central',cell:[12,20]},
+    {id:'ruas-do-porto',name:'Ruas do Porto',cell:[12,16]},
+    {id:'praca-das-conchas',name:'Praça das Conchas',cell:[12,10]}
+  ]});
   if(typeof Image==='function'){
-    for(const [id,url] of Object.entries({orange:'assets/world-maps/orange.png',loguetown:'assets/world-maps/loguetown.png'})){
+    for(const [id,url] of Object.entries({orange:'assets/world-maps/orange.png',loguetown:'assets/world-maps/loguetown.png',conchas:'assets/world-maps/conchas/conchas.png'})){
       const image=new Image();image.src=url;imageCache[id]=image;
     }
+    for(const object of conchas.props){const image=new Image();image.src='assets/world-maps/conchas/objects/'+object.assetId+'.png';object.image=image;}
     const water=new Image();water.src='assets/dawn-manual/water.png';imageCache.water=water;
   }
   function ground(ctx,id,camera,width,height){
-    const image=imageCache[id],map=(id==='orange'?orange:loguetown).map;
+    const world=id==='conchas'?conchas:id==='orange'?orange:loguetown;
+    const image=imageCache[id],map=world.map;
     ctx.save();ctx.imageSmoothingEnabled=false;
-    if(id==='orange'&&imageCache.water?.complete&&imageCache.water.naturalWidth){
+    if((id==='orange'||id==='conchas')&&imageCache.water?.complete&&imageCache.water.naturalWidth){
       ctx.fillStyle=ctx.createPattern(imageCache.water,'repeat');
     }else ctx.fillStyle=id==='orange'?'#167fa8':'#30383d';
     ctx.fillRect(camera.x,camera.y,width,height);
@@ -92,14 +114,16 @@
     ctx.restore();
   }
   function environment(ctx,id,time,reduced=false){
-    const destination=(id==='orange'?orange:loguetown).returnPoint;
+    const destination=(id==='conchas'?conchas:id==='orange'?orange:loguetown).returnPoint;
     ctx.save();ctx.strokeStyle='#d7e8c4';ctx.lineWidth=2;
     ctx.beginPath();ctx.ellipse(destination.x,destination.y,reduced?24:24+Math.sin(time*2),10,0,0,Math.PI*2);ctx.stroke();
     ctx.fillStyle='#f3e3bd';ctx.font='bold 11px Trebuchet MS';ctx.textAlign='center';ctx.fillText('Voltar ao Lobby',destination.x,destination.y+28);ctx.restore();
   }
-  const api={orange,loguetown,ground,environment,worldPoint,objectCollider,imageCache,
-    stats:()=>Object.fromEntries(['orange','loguetown'].map(id=>{const image=imageCache[id];return [id,{loaded:!!(image?.complete&&image.naturalWidth),colliders:(id==='orange'?orange:loguetown).map.colliders.length}];}))};
+  function prop(ctx,object){const image=object.image||imageCache['object-'+object.assetId];if(!image?.complete||!image.naturalWidth)return false;ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(image,Math.round(object.x),Math.round(object.y),object.width,object.height);ctx.restore();return true;}
+  function actorOverlapsProp(actor,bounds){const bottom=bounds.y+bounds.h;return actor.y<bottom&&actor.y>bounds.y&&actor.x+35>bounds.x&&actor.x-35<bounds.x+bounds.w&&actor.y-120<bottom;}
+  const api={orange,loguetown,conchas,ground,environment,prop,actorOverlapsProp,worldPoint,objectCollider,imageCache,
+    stats:()=>Object.fromEntries(['orange','loguetown','conchas'].map(id=>{const image=imageCache[id],world=id==='conchas'?conchas:id==='orange'?orange:loguetown;return [id,{loaded:!!(image?.complete&&image.naturalWidth),colliders:world.map.colliders.length,objects:world.props.length||0,loadedObjects:world.props.filter(o=>o.image?.complete&&o.image.naturalWidth).length}];}))};
   root.MarePixelWorldMaps=api;
-  root.MarePixelMapRenderer=Object.freeze({ground,environment,stats:api.stats});
+  root.MarePixelMapRenderer=Object.freeze({ground,environment,prop,stats:api.stats});
   if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

@@ -7,7 +7,8 @@ let g=base(),source=JSON.stringify(g);assert.deepEqual(H.migrate(g),g);assert.eq
 assert.equal(H.regions.beach.boss,'César');
 assert(H.regions.beach.sectors.every(s=>s.min===5&&s.max===5&&s.roles.length===1&&s.roles[0]==='cesar'));
 assert.equal(H.profile('beach','cais','cesar').level,5);assert.equal(g.stats.kills,99);
-assert.deepEqual(Object.values(H.regions).map(r=>[r.min,r.max]),[[16,20],[21,25],[26,30],[31,35],[1,5],[11,15],[36,40],[6,10]]);
+assert.deepEqual(Object.values(H.regions).map(r=>[r.min,r.max]),[[16,20],[21,25],[26,30],[31,35],[1,5],[11,15],[36,40],[8,8]]);
+assert.equal(H.regions.swamp.boss,null);assert(H.regions.swamp.sectors.every(s=>s.min===8&&s.max===8&&s.roles.length===1&&s.roles[0]==='helmeppo'));
 for(const [area,region] of Object.entries(H.regions).filter(([,region])=>!!region.boss)){
  const anchors=area==='orange'?globalThis.MareOrange.districts:area==='beach'?E.districts:globalThis.MareConchas.districts,map=area==='orange'?globalThis.MareOrange.map:area==='beach'?E.map:W.maps.conchas,nav=new W.Navigation(map,map.navigationCell||24);
  for(const s of H.sectors(area,anchors)){

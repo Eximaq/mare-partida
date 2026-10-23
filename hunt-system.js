@@ -21,12 +21,7 @@
     ]},
     orange:{name:'Orange Town',min:11,max:15,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:pixelMaps.orange.districts.map(d=>({...d}))},
     loguetown:{name:'Loguetown',min:36,max:40,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:pixelMaps.loguetown.districts.map(d=>({...d}))},
-    swamp:{name:'Cidade das Conchas',min:6,max:10,boss:'Guardião das Conchas',bossLevel:10,firstGold:900,firstRarity:'epic',respawn:90,sectors:[
-      {id:'vigilia',name:'Pátio da Vigília',min:6,max:7,x:736,y:1312,roles:['bandit','crab']},
-      {id:'docas',name:'Docas Veladas',min:7,max:8,x:1440,y:1504,roles:['bandit','spirit']},
-      {id:'catacumbas',name:'Catacumbas da Névoa',min:8,max:9,x:1504,y:928,roles:['spirit','crab']},
-      {id:'bastiao',name:'Bastião das Conchas',min:9,max:10,x:1120,y:544,roles:['crab','spirit']}
-    ]}
+    swamp:{name:'Cidade das Conchas',min:8,max:8,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:pixelMaps.conchas.districts.map(d=>({...d}))}
   };
   const archetypes={crab:{hp:1.25,attack:.8,defense:1.3,speed:36,reach:43,attackSec:2.8,aggro:220},bandit:{hp:1,attack:1,defense:1,speed:50,reach:51,attackSec:2.1,aggro:300},spirit:{hp:.82,attack:1.1,defense:.7,speed:30,reach:165,attackSec:3.1,aggro:330},boss:{hp:4.2,attack:1.5,defense:1.45,speed:30,reach:70,attackSec:2.7,aggro:390},...Object.fromEntries(Object.keys(monsterCatalog).map(id=>[id,{hp:1,attack:1,defense:1,speed:monsterCatalog[id].move_speed,reach:monsterCatalog[id].reach,attackSec:monsterCatalog[id].attack_seconds,aggro:monsterCatalog[id].aggro_radius}]))};
   const get=area=>regions[area]||null;

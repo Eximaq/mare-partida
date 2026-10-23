@@ -44,7 +44,8 @@
   if(globalThis.MareLobby)maps.lobby=MareLobby.map;
   if(globalThis.MareEmber)maps.embers=MareEmber.map;
   if(globalThis.MareOrange)maps.orange=MareOrange.map;
-  if(globalThis.MareConchas)maps.conchas=MareConchas.map;
+  if(globalThis.MarePixelWorldMaps?.conchas)maps.conchas=MarePixelWorldMaps.conchas.map;
+  else if(globalThis.MareConchas)maps.conchas=MareConchas.map;
   if(globalThis.MareDawn)maps.dawn=MareDawn.map;
   if(globalThis.MareNewIslands){
     for(const id of ['rare','syrup','baratie','arlong'])maps[id]=MareNewIslands[id].map;
