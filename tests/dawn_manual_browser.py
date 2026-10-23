@@ -41,10 +41,23 @@ with sync_playwright() as p:
  for id in ['cais','corsarios','estaleiro','mercado','ancoras','farol','caldeira']:route(q,id);q.screenshot(path=str(OUT/(id+'.png')))
  # Main's East Blue rebalance keeps Dawn's boss at the end of levels1-5.
  assert any(m['type']=='boss' and m['level']==5 for m in state(q)['mobs']);warned=False
- for _ in range(100):
+ # Reaching the sector anchor does not guarantee line of sight to the random boss spawn.
+ # Walk through the real UI to a reachable point beside it; never move/spawn the boss in code.
+ approach=q.evaluate('''()=>{const d=__mareDiagnostics(),boss=d.mobs.find(m=>m.type==='boss'),nav=new MareWorld.Navigation({...MareDawn.map,colliders:d.colliders});
+ for(const radius of [32,48,64])for(let k=0;k<16;k++){const angle=Math.PI/2+k*Math.PI/8,p={x:boss.x+Math.cos(angle)*radius,y:boss.y+Math.sin(angle)*radius};
+ if(nav.walkable(p.x,p.y)&&nav.clear(boss,p)&&nav.path(d.hero,p).length&&d.mobs.every(m=>Math.hypot(m.x-p.x,m.y-30-p.y)>=50))return p;}
+ throw Error('No reachable boss approach point');}''')
+ d=state(q);box=q.locator('#worldCanvas').bounding_box();zoom=d['camera']['zoom']
+ q.mouse.click(box['x']+(approach['x']-d['camera']['x'])*zoom,box['y']+(approach['y']-d['camera']['y'])*zoom)
+ for _ in range(200):
+  q.clock.run_for(250);d=state(q);warned=warned or any(m['telegraph'] for m in d['mobs'])
+  if not d['path']:break
+ assert not state(q)['path'],'Boss approach path did not finish'
+ assert not state(q)['autoPlay'],'Approach point must not click a monster or enable attacks'
+ for _ in range(150):
   q.clock.run_for(200)
   if any(m['telegraph'] for m in state(q)['mobs']):warned=True;break
- assert warned;q.screenshot(path=str(OUT/'chefe-aviso.png'));q.locator('#autoToggle').click()
+ assert warned,{'hero':state(q)['hero'],'bosses':[m for m in state(q)['mobs'] if m['type']=='boss']};q.screenshot(path=str(OUT/'chefe-aviso.png'));q.locator('#autoToggle').click()
  for _ in range(240):
   q.clock.run_for(1000)
   if state(q)['hunt']['progress']['areas']['beach']['bosses']>0:break
