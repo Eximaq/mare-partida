@@ -65,6 +65,14 @@ O rig continua declarando as quatro direções. Uma peça pode fornecer um subco
 
 A bancada informa quais direções possuem composição completa (`readyDirections`, modo `partial-draft`), mantendo o sprite original nas demais e em ações ausentes. Isso permite inspecionar lotes pequenos sem aprovar arte nem ativar conjuntos incompletos no jogo. Os testes Node e `tests/paper_doll_partial_browser.py` verificam quatro frames sul, três direções legadas, ação ausente e save intacto com fixtures geométricas explicitamente separadas de arte de personagem.
 
+### Pacotes com uma única ação e ajuste das folhas
+
+A [bancada do ataque Bento](../tools/paper-doll-inspector/index.html?pack=bento-east-fit) abre o candidato de quatro direções sem importação manual. Um manifesto pode declarar apenas uma ação conhecida, mantendo sua contagem, FPS, loop e quatro direções do contrato canônico. Nomes desconhecidos ou parâmetros incompatíveis são rejeitados antes de trocar o pacote atual. A bancada completa somente as linhas de tempo para conseguir mostrar o fallback de ações ausentes: não cria clips, não inventa sprites nem acrescenta cobertura ao manifesto exportado.
+
+Em **Ajustar camada por frame**, selecione peça e direção, escolha o frame e informe offsetX/offsetY inteiros de−84 a84 e profundidade de−512 a512. Os valores são os transforms efetivos daquela pose; gravam `poseOverrides` sem modificar outras poses/direções. Armas rígidas continuam usando seu painel de sockets. Restaurar devolve as peças originais importadas. Exportar produz JSON portátil com nomes relativos dos mesmos PNGs e `approved:false`; reimporte os mesmos PNGs junto do novo manifesto. Não há pintura, edição de imagem, alteração de save ou aprovação de produção.
+
+`tests/paper_doll_sheet_fit_browser.py` usa os PNGs reais para verificar importação somente de ataque, quatro vistas, rejeição atômica de contratos inválidos, offsets por pose, restauração, roundtrip do JSON, fallback Idle/Walk, hashes dos PNGs, mobile e save intacto.
+
 O [piloto real Idle/sul](PAPER-DOLL-IDLE-SUL.md) consumiu11 gerações autorizadas e entregou quatro frames de inspeção, mas o contato mão/espada e os ombros não passaram. O pacote continua `approved:false`, fora do catálogo do jogo. Essa evolução não conclui o critério artístico da Fase1.
 
 A [continuação da espada](PAPER-DOLL-ESPADA.md) usa saídas nativas isoladas com máscaras que congelam a anatomia. Quatro contatos passaram com zero alteração no corpo. O teste usa um rig de inspeção corpo/arma; o `human-v1` continua exigindo corpo, cabelo, roupa e arma completos. A variação visual da lâmina e as peças de roupa/cabelo mantêm a validação artística pendente.

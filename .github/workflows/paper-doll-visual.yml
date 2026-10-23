@@ -62,6 +62,7 @@ on:
       - 'tests/paper-doll-east-fit.test.cjs'
       - 'tests/paper_doll_east_fit_browser.py'
       - 'tests/paper_doll_east_fit_combat_browser.py'
+      - 'tests/paper_doll_sheet_fit_browser.py'
       - 'pixellab-pip-generations/paper-doll-walk-north-20261021/**'
       - 'docs/PAPER-DOLL-CAMINHADA-NORTE.md'
       - 'pixellab-pip-generations/paper-doll-walk-fit-20261021/**'
@@ -159,6 +160,7 @@ jobs:
           python tests/paper_doll_exact_retouch_browser.py
           python tests/paper_doll_east_fit_browser.py
           python tests/paper_doll_east_fit_combat_browser.py
+          python tests/paper_doll_sheet_fit_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-basic-sword-20261021/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-walk-profiles-20261021/ python tests/paper_doll_world_review_browser.py
           python tests/universal_character_browser.py

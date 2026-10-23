@@ -26,6 +26,12 @@ Uma seleção baseada apenas no dourado havia descartado o trecho preto do cabo 
 - O pacote é exclusivo de inspeção. Não modifica catálogo de produção, saves, sete classes, facções, física, câmera, equipamentos, Haki, Zoan ou eventos de combate.
 - Idle/Walk e as cinco outras categorias de ataque não foram regenerados. Continuidade entre ações e acabamento das quatro vistas continuam pendentes antes de qualquer ativação.
 
+## Bancada de calibração
+
+[Abrir o pacote diretamente na bancada](../tools/paper-doll-inspector/index.html?pack=bento-east-fit). A ferramenta aceita agora um rig com somente a ação de ataque declarada, validando-a contra o contrato existente. As ações ausentes usam linhas de tempo canônicas para exibir o fallback; nenhuma cobertura fictícia é exportada.
+
+O painel **Ajustar camada por frame** edita somente offsetX, offsetY e profundidade da peça/direção/pose selecionada. O PNG permanece intacto. Os ajustes podem ser restaurados ou exportados como manifesto de revisão, sem URLs blob e sem aprovação automática. A edição de sockets das armas rígidas continua disponível no painel anterior. Isso permite calibrar o novo vestuário e espada sem consumir créditos a cada ajuste.
+
 ## PixelLab e custo
 
 Foram feitas quatro chamadas de assets no MCP PixelArt Workbench: dois `split` e dois `edit`. O primeiro edit de superfícies doadoras está arquivado como alternativa, sem substituir corpo/roupa. O segundo produziu o vestuário ajustado. A descrição atual da ferramenta informa que essas operações são gratuitas para assinantes; ela não expõe uma medição de gerações por chamada. **Nenhuma chamada de geração paga foi feita nesta etapa.** Não há jobs pendentes, seeds novas ou tentativa automática de regenerar animações.
@@ -45,4 +51,5 @@ Capturas de revisão ficam localmente em `docs/evidence-paper-doll/east-fit-*.pn
 - 46 suítes Node e nove testes Python de guias passaram.
 - Build Pages, nova prévia Chromium e combate real com opt-in isolado passaram.
 - Regressões da bancada/importação/fallback, estudo norte anterior e combate das sete classes passaram.
-- Dawn passou localmente em cinco resoluções, com rotas, chefe, resgate e pixels do mapa. No CI, a primeira execução falhou ao esperar o aviso do chefe; a repetição foi cancelada durante a instalação do Chromium, antes do jogo. O limite do job subiu de10 para20min, preservando todos os testes. O resultado remoto do novo commit deve ser consultado no PR.
+- A nova edição de folhas passou no Chromium: offsets por pose, valores inválidos, exportação/reimportação, reset, contratos parciais, hashes dos PNGs, responsividade e save. A regressão antiga dos sockets também passou.
+- Dawn passou localmente em cinco resoluções, com rotas, chefe, resgate e pixels do mapa. O teste agora se aproxima do chefe por um ponto navegável com linha de visão, usando clique e movimentação reais: chegar à âncora do setor não garante alcance contra um spawn aleatório próximo da casa. Nenhum mapa, colisão ou comportamento de monstro foi modificado. O timeout do CI subiu de10 para20min para comportar a instalação fria do Chromium; todos os testes foram mantidos. O resultado remoto do novo commit deve ser consultado no PR.

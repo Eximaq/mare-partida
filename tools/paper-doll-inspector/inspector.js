@@ -111,7 +111,7 @@
     lastState={mode:valid?'draft':'fallback',artworkValidated:false,referenceReady,appearance:config,profile:catalog.profile(player),reference:catalog.referenceFor(player,animationId),pose:{animationId:poseAnimationId(animationId),frameIndex:index},differences,missing:[...unique.values()],stats:runtime.stats(),hidden:[...hidden]};
     lastState.readyDirections=readyDirections;
     if(!valid&&readyDirections.length)lastState.mode='partial-draft';
-    attachmentControls();
+    attachmentControls();sheetFitControls();
   }
   function pause(){playing=false;$('play').textContent='Reproduzir';$('play').setAttribute('aria-pressed','false');}
   for(const id of ['animation','direction','zoom','pivots'])$(id).addEventListener('change',()=>{if(id==='animation'){$('frame').value=0;elapsed=0;pause();}render();});
@@ -151,7 +151,37 @@
     poses[entry.frameIndex]={...poses[entry.frameIndex],zIndex:z};entry.clip.poseOverrides[entry.direction]=poses;
     entry.piece.approved=false;entry.piece.revision=(entry.piece.revision||1)+1;runtime.registerPiece(entry.piece);render();
   });
-  $('restoreSockets').addEventListener('click',()=>{if(!importedSource)return;pause();for(const p of importedSource.pieces){const original=structuredClone(p);original.approved=false;for(const clip of Object.values(original.animations||{})){clip.url=importedFileNames.get(clip.url);for(const source of Object.values(clip.sources||{}))source.url=importedFileNames.get(source.url);}runtime.registerPiece(original);}render();});
+  function restoreImported(){if(!importedSource)return;pause();for(const p of importedSource.pieces){const original=structuredClone(p);original.approved=false;for(const clip of Object.values(original.animations||{})){clip.url=importedFileNames.get(clip.url);for(const source of Object.values(clip.sources||{}))source.url=importedFileNames.get(source.url);}runtime.registerPiece(original);}render();}
+  $('restoreSockets').addEventListener('click',restoreImported);
+  $('restoreLayerFits').addEventListener('click',restoreImported);
+  $('exportLayerFits').addEventListener('click',()=>$('exportPack').click());
+  function sheetFit(){
+    if(!imported)return null;
+    const slot=$('fitSlot').value,piece=runtime.piece(appearance().pieces[slot]),animationId=poseAnimationId(),
+      clip=piece?.animations?.[animationId],direction=$('fitDirection').value,frameIndex=Number($('frame').value);
+    if(!clip||clip.kind==='rigid-attachment'||!clip.directions?.includes(direction)||frameIndex>=clip.frames)return null;
+    const plan=runtime.resolve(appearance(),{animationId,direction,frameIndex},{allowDraft:true}),layer=plan.layers.find(l=>l.slot===slot);
+    return layer?{piece,clip,animationId,direction,frameIndex,layer}:null;
+  }
+  function sheetFitControls(){
+    const entry=sheetFit();for(const id of ['fitX','fitY','fitZ','applyLayerFit'])$(id).disabled=!entry;
+    $('restoreLayerFits').disabled=!imported;
+    $('exportLayerFits').disabled=!imported;
+    if(!entry){$('fitStatus').textContent=imported?'Esta peça não tem uma folha compatível nesta ação/direção. Armas rígidas usam o painel de encaixe.':'Importe um pacote para ajustar suas camadas.';return;}
+    if(['fitX','fitY','fitZ'].includes(document.activeElement?.id))return;
+    $('fitX').value=entry.layer.offsetX;$('fitY').value=entry.layer.offsetY;$('fitZ').value=entry.layer.zIndex;
+    $('fitStatus').textContent=labels[entry.piece.slot]+' · '+names[entry.direction]+' · frame '+(entry.frameIndex+1)+'. Somente metadados da prévia.';
+  }
+  for(const id of ['fitSlot','fitDirection'])$(id).addEventListener('change',()=>{pause();render();});
+  for(const id of ['fitX','fitY','fitZ'])$(id).addEventListener('focus',pause);
+  $('applyLayerFit').addEventListener('click',()=>{
+    const entry=sheetFit();if(!entry)return;
+    const raw=['fitX','fitY','fitZ'].map(id=>$(id).value),[x,y,z]=raw.map(Number);
+    if(raw.some(v=>!v.trim())||![x,y,z].every(Number.isInteger)||Math.abs(x)>84||Math.abs(y)>84||Math.abs(z)>512){$('fitStatus').textContent='Use offsets inteiros entre −84 e84 e profundidade entre −512 e512.';return;}
+    entry.clip.poseOverrides=entry.clip.poseOverrides||{};const poses=entry.clip.poseOverrides[entry.direction]||Array.from({length:entry.clip.frames},()=>({}));
+    poses[entry.frameIndex]={...poses[entry.frameIndex],offsetX:x,offsetY:y,zIndex:z};entry.clip.poseOverrides[entry.direction]=poses;
+    entry.piece.approved=false;entry.piece.revision=(entry.piece.revision||1)+1;runtime.registerPiece(entry.piece);render();
+  });
   $('exportPack').addEventListener('click',()=>{
     if(!importedSource)return;pause();const data=structuredClone(importedSource);
     const namesByUrl=new Map([...importedFileNames].map(([name,url])=>[url,name]));
@@ -166,10 +196,13 @@
       const manifests=files.filter(f=>f.name.endsWith('.json'));
       if(manifests.length!==1)throw Error('Selecione exatamente um manifesto JSON junto das folhas PNG.');
       const data=JSON.parse(await manifests[0].text()),candidate=MarePaperDoll.create({getImage:MareFactionSprites.image});
-      const expected=data.rig?.animations?.['attack-sword']?catalog.sharedRig:catalog.rig;
+      const expected=data.rig?.id===catalog.sharedRig.id||data.rig?.animations?.['attack-sword']?catalog.sharedRig:catalog.rig;
       if(data.rig?.frameWidth!==84||data.rig?.frameHeight!==84||expected.requiredSlots.some(s=>!data.rig?.requiredSlots?.includes(s)))throw Error('O protótipo exige rig84 e corpo, cabelo, roupa e arma.');
-      for(const [id,a]of Object.entries(expected.animations))if(data.rig.animations?.[id]?.frames!==a.frames||data.rig.animations[id].fps!==a.fps||data.rig.animations[id].loop!==a.loop||!expected.animations[id].directions.every(d=>data.rig.animations[id].directions?.includes(d)))throw Error('As sequências devem seguir o contrato4/8/8 e quatro direções.');
-      candidate.registerRig(data.rig);
+      const declared=Object.entries(data.rig.animations||{});
+      if(!declared.length||declared.some(([id,a])=>!a||!Object.hasOwn(expected.animations,id)||a.frames!==expected.animations[id].frames||a.fps!==expected.animations[id].fps||a.loop!==expected.animations[id].loop||!expected.animations[id].directions.every(d=>a.directions?.includes(d))))throw Error('As sequências declaradas devem seguir o contrato4/8/8 e quatro direções.');
+      // Canonical timelines keep missing actions inspectable through the legacy fallback.
+      // No missing sprite clip is created or added to the exported manifest.
+      candidate.registerRig({...expected,...data.rig,animations:{...expected.animations,...data.rig.animations}});
       if(!Array.isArray(data.pieces)||data.pieces.length>32)throw Error('Use até32 peças por pacote de inspeção.');
       const fileUrls=new Map();
       function localImage(name){
@@ -186,13 +219,16 @@
         candidate.registerPiece(piece);
       }
       if(!data.appearance?.pieces)throw Error('Falta appearance.pieces no manifesto.');
-      pause();releaseUrls();objectUrls=urls;runtime=candidate;rigId=data.rig.id;imported={...data.appearance,bindings:data.bindings};importedSource=structuredClone(data);importedFileNames=fileUrls;$('classId').disabled=true;$('factionId').disabled=true;$('weapon').disabled=!data.bindings?.weapon;$('outfit').disabled=!data.bindings?.coat;$('importStatus').textContent='Pacote local recebido. Confira todas as poses e pendências.';render();
+      pause();releaseUrls();objectUrls=urls;runtime=candidate;rigId=data.rig.id;imported={...data.appearance,bindings:data.bindings};importedSource=structuredClone(data);importedFileNames=fileUrls;$('classId').disabled=true;$('factionId').disabled=true;$('weapon').disabled=!data.bindings?.weapon;$('outfit').disabled=!data.bindings?.coat;
+      const actions=[...$('animation').options].map(o=>o.value),current=$('animation').value;
+      if(!data.rig.animations[poseAnimationId(current)])$('animation').value=actions.find(a=>data.rig.animations[poseAnimationId(a)])||current;
+      $('frame').value=0;elapsed=0;$('importStatus').textContent='Pacote local recebido. Confira todas as poses e pendências.';render();
     }catch(e){for(const url of urls){MareFactionSprites.forgetImage?.(url);URL.revokeObjectURL(url);}$('importStatus').textContent='Pacote não aplicado: '+e.message;}
   }
   $('importPack').addEventListener('change',()=>importFiles([...$('importPack').files]));
   async function bundledReview(){
     const key=new URLSearchParams(location.search).get('pack');
-    const packs={'basic-sword':'../../pixellab-pip-generations/paper-doll-basic-sword-20261021/','walk-profiles':'../../pixellab-pip-generations/paper-doll-walk-profiles-20261021/','walk-north-complete':'../../pixellab-pip-generations/paper-doll-north-finish-20261021/','walk-north':'../../pixellab-pip-generations/paper-doll-walk-north-20261021/','walk-south':'../../pixellab-pip-generations/paper-doll-walk-fit-20261021/','expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
+    const packs={'bento-east-fit':'../../pixellab-pip-generations/paper-doll-east-fit-20261022/','basic-sword':'../../pixellab-pip-generations/paper-doll-basic-sword-20261021/','walk-profiles':'../../pixellab-pip-generations/paper-doll-walk-profiles-20261021/','walk-north-complete':'../../pixellab-pip-generations/paper-doll-north-finish-20261021/','walk-north':'../../pixellab-pip-generations/paper-doll-walk-north-20261021/','walk-south':'../../pixellab-pip-generations/paper-doll-walk-fit-20261021/','expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
     if(!key||!packs[key])return;
     try{
       $('importStatus').textContent='Carregando prévia incluída no projeto…';
