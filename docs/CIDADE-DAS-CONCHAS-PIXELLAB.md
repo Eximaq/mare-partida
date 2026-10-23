@@ -2,6 +2,14 @@
 
 Atualização de 23/10/2026. O jogo carrega os recursos já existentes no PixelLab; nenhum pedido de geração foi enviado.
 
+## Correção da integração (23/10/2026)
+
+Consulta renovada a `list_maps`, `get_map`, `list_map_objects` e `view_map`: a fonte atual continua sendo o UUID abaixo, com 105 colocações. A correção usa essa fonte existente. A célula `stands_on` agora ancora a base inferior do objeto, em vez de posicionar o topo da imagem. Margens transparentes são medidas uma vez por asset e o desenho preserva a proporção da arte. Muros recebem colisores contínuos; decorações pequenas não bloqueiam um tile inteiro. As 105 colocações compartilham apenas 11 imagens.
+
+O travamento vinha da chamada a `MarePixelMapRenderer.actorOverlapsProp`, que não havia sido exportada. A função agora está disponível no renderer público e tem cobertura de regressão junto ao alinhamento entre base visual e física.
+
+Validação: testes Conchas, mapas PixelLab, navegação e caça; build estático; Chrome isolado 1366×768, sem erros JavaScript. Sessão observada com 78 eliminações e amostra de 90 frames com média/máximo arredondados de 17 ms. Captura local: `C:/Users/Cristian/AppData/Local/Temp/conchas-map-fixed-20261023.png`. Esses números descrevem a sessão local, não uma garantia para todo dispositivo.
+
 ## Mapa
 
 - PixelLab map ID: `a12956e6-c961-499a-8242-ca264fcfc39a`.

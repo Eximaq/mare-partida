@@ -14,9 +14,10 @@
   function objectCollider(source,object){
     if(source.id==='conchas'){
       const left=(object.cellX-source.minX)*CELL,top=(object.cellY-source.minY)*CELL;
-      const footprintWidth=Math.max(CELL,object.widthCells*CELL),footprintHeight=Math.max(CELL,object.heightCells*CELL);
-      const width=Math.max(28,Math.round(footprintWidth*.78)),height=Math.max(20,Math.min(40,Math.round(footprintHeight*.2)));
-      return {id:'pixellab-object-'+object.placementId,x:Math.round(left+(footprintWidth-width)/2),y:Math.round(top+footprintHeight-height),w:width,h:height,isSolid:true,footprint:true,sourceId:object.placementId};
+      const footprintWidth=object.widthCells*CELL,footprintHeight=object.heightCells*CELL;
+      const wall=['36a93476-fbe2-49db-83f6-2aa8d96f65a4','76a7682f-2c3d-433d-ba02-72e77e0f1911'].includes(object.assetId);
+      const width=Math.max(8,Math.round(footprintWidth*(wall?1:.65))),height=wall?(object.widthCells===1?CELL:24):Math.max(8,Math.min(32,Math.round(footprintHeight*.2)));
+      return {id:'pixellab-object-'+object.placementId,x:Math.round(left+(footprintWidth-width)/2),y:Math.round(top+CELL-height),w:width,h:height,isSolid:true,footprint:true,sourceId:object.placementId};
     }
     const width=Math.max(18,Math.min(96,object.widthCells*CELL*.58));
     const height=Math.max(16,Math.min(52,object.heightCells*CELL*.28));
@@ -27,7 +28,7 @@
   function terrainCell(source,x,y){
     const col=Math.floor(x/CELL),row=Math.floor(y/CELL);
     if(col<0||row<0||col>=source.columns||row>=source.rows)return '';
-    return [...source.terrain[row]][col]||'';
+    return source.terrain[row][col]||'';
   }
   function openAt(source,colliders,x,y){
     const foot={w:32,h:20},points=[
@@ -67,7 +68,8 @@
     };
     const districts=options.districts.map(d=>({...d,...nearestOpen(source,colliders,d.cell),min:options.level,max:options.level,roles:[...options.roles]}));
     const props=source.objects.map(object=>{
-      const x=(object.cellX-source.minX)*CELL,y=(object.cellY-source.minY)*CELL;
+      // PixelLab stands_on is the bottom cell, not the top of the sprite.
+      const x=(object.cellX-source.minX)*CELL,y=(object.cellY-source.minY+1-object.heightCells)*CELL;
       return {...object,x,y,width:object.widthCells*CELL,height:object.heightCells*CELL,bottomY:y+object.heightCells*CELL};
     }).sort((a,b)=>a.bottomY-b.bottomY||a.layer-b.layer);
     return {map,source,spawnCell:options.spawnCell,returnPoint:map.returnPoint,districts,props};
@@ -95,7 +97,7 @@
     for(const [id,url] of Object.entries({orange:'assets/world-maps/orange.png',loguetown:'assets/world-maps/loguetown.png',conchas:'assets/world-maps/conchas/conchas.png'})){
       const image=new Image();image.src=url;imageCache[id]=image;
     }
-    for(const object of conchas.props){const image=new Image();image.src='assets/world-maps/conchas/objects/'+object.assetId+'.png';object.image=image;}
+    for(const object of conchas.props){const key='object-'+object.assetId;if(!imageCache[key]){const image=new Image();image.onload=()=>{const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const context=canvas.getContext('2d');context.drawImage(image,0,0);const pixels=context.getImageData(0,0,canvas.width,canvas.height).data;let left=canvas.width,top=canvas.height,right=-1,bottom=-1;for(let y=0;y<canvas.height;y++)for(let x=0;x<canvas.width;x++)if(pixels[(y*canvas.width+x)*4+3]>0){left=Math.min(left,x);top=Math.min(top,y);right=Math.max(right,x);bottom=Math.max(bottom,y);}if(right>=left)image.contentBounds={x:left,y:top,w:right-left+1,h:bottom-top+1};};image.src='assets/world-maps/conchas/objects/'+object.assetId+'.png';imageCache[key]=image;}object.image=imageCache[key];}
     const water=new Image();water.src='assets/dawn-manual/water.png';imageCache.water=water;
   }
   function ground(ctx,id,camera,width,height){
@@ -119,11 +121,11 @@
     ctx.beginPath();ctx.ellipse(destination.x,destination.y,reduced?24:24+Math.sin(time*2),10,0,0,Math.PI*2);ctx.stroke();
     ctx.fillStyle='#f3e3bd';ctx.font='bold 11px Trebuchet MS';ctx.textAlign='center';ctx.fillText('Voltar ao Lobby',destination.x,destination.y+28);ctx.restore();
   }
-  function prop(ctx,object){const image=object.image||imageCache['object-'+object.assetId];if(!image?.complete||!image.naturalWidth)return false;ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(image,Math.round(object.x),Math.round(object.y),object.width,object.height);ctx.restore();return true;}
+  function prop(ctx,object){const image=object.image||imageCache['object-'+object.assetId];if(!image?.complete||!image.naturalWidth)return false;const crop=image.contentBounds||{x:0,y:0,w:image.naturalWidth,h:image.naturalHeight},scale=Math.min(object.width/crop.w,object.height/crop.h),w=crop.w*scale,h=crop.h*scale;ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(image,crop.x,crop.y,crop.w,crop.h,Math.round(object.x+(object.width-w)/2),Math.round(object.bottomY-h),w,h);ctx.restore();return true;}
   function actorOverlapsProp(actor,bounds){const bottom=bounds.y+bounds.h;return actor.y<bottom&&actor.y>bounds.y&&actor.x+35>bounds.x&&actor.x-35<bounds.x+bounds.w&&actor.y-120<bottom;}
   const api={orange,loguetown,conchas,ground,environment,prop,actorOverlapsProp,worldPoint,objectCollider,imageCache,
     stats:()=>Object.fromEntries(['orange','loguetown','conchas'].map(id=>{const image=imageCache[id],world=id==='conchas'?conchas:id==='orange'?orange:loguetown;return [id,{loaded:!!(image?.complete&&image.naturalWidth),colliders:world.map.colliders.length,objects:world.props.length||0,loadedObjects:world.props.filter(o=>o.image?.complete&&o.image.naturalWidth).length}];}))};
   root.MarePixelWorldMaps=api;
-  root.MarePixelMapRenderer=Object.freeze({ground,environment,prop,stats:api.stats});
+  root.MarePixelMapRenderer=Object.freeze({ground,environment,prop,actorOverlapsProp,stats:api.stats});
   if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
