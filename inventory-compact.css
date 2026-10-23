@@ -95,3 +95,27 @@
 #panelOverlay.inventory-mode .op-item{width:45px;height:45px;}}
 @media (prefers-reduced-motion: reduce) {#panelOverlay.inventory-mode .op-item{transition-behavior:normal;transition-duration:0s;transition-timing-function:ease;transition-delay:0s;transition-property:none;}}
 }
+
+/* Animated equipped item icon, using the supplied 4×4 Nodachi sprite sheet. */
+#panelOverlay.inventory-mode .item-icon.slot-item-animation{display:inline-block;background-image:var(--slot-sprite-sheet);background-repeat:no-repeat;background-size:var(--slot-sprite-size);background-position:0% 0%;image-rendering:pixelated}
+#panelOverlay.inventory-mode .nodachi-fire-slot-animation{animation:nodachi-fire-slot-frames var(--slot-sprite-duration) infinite linear}
+@keyframes nodachi-fire-slot-frames{
+  0%{background-position:0% 0%;animation-timing-function:steps(1,end)}
+  6.25%{background-position:33.3333% 0%;animation-timing-function:steps(1,end)}
+  12.5%{background-position:66.6667% 0%;animation-timing-function:steps(1,end)}
+  18.75%{background-position:100% 0%;animation-timing-function:steps(1,end)}
+  25%{background-position:0% 33.3333%;animation-timing-function:steps(1,end)}
+  31.25%{background-position:33.3333% 33.3333%;animation-timing-function:steps(1,end)}
+  37.5%{background-position:66.6667% 33.3333%;animation-timing-function:steps(1,end)}
+  43.75%{background-position:100% 33.3333%;animation-timing-function:steps(1,end)}
+  50%{background-position:0% 66.6667%;animation-timing-function:steps(1,end)}
+  56.25%{background-position:33.3333% 66.6667%;animation-timing-function:steps(1,end)}
+  62.5%{background-position:66.6667% 66.6667%;animation-timing-function:steps(1,end)}
+  68.75%{background-position:100% 66.6667%;animation-timing-function:steps(1,end)}
+  75%{background-position:0% 100%;animation-timing-function:steps(1,end)}
+  81.25%{background-position:33.3333% 100%;animation-timing-function:steps(1,end)}
+  87.5%{background-position:66.6667% 100%;animation-timing-function:steps(1,end)}
+  93.75%{background-position:100% 100%;animation-timing-function:steps(1,end)}
+  100%{background-position:0% 0%}
+}
+@media (prefers-reduced-motion:reduce){#panelOverlay.inventory-mode .nodachi-fire-slot-animation{animation:none;background-position:0% 0%}}
