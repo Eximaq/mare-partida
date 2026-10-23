@@ -11,6 +11,12 @@ const hunt=require('../hunt-system.js');
 require('../new-islands-art.js');
 const map=maps.conchas.map;
 const source=maps.conchas.source;
+const projection=require('../assets/world-maps/conchas/projection.json');
+assert.equal(maps.conchas.projectionBaked,true,'authoritative scenery must not be composed a second time');
+assert.equal(projection.mapId,source.pixelLabId);
+assert.equal(projection.objects,source.objects.length);
+assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,'assets/world-maps/conchas/projection.png'))).digest('hex'),projection.sha256,'projection asset must match the imported source');
+assert.equal(require('node:crypto').createHash('sha256').update(fs.readFileSync(path.join(root,'assets/world-maps/conchas/foreground.png'))).digest('hex'),projection.foregroundSha256,'foreground must match the imported source mask');
 
 function pngSize(relative){
   const bytes=fs.readFileSync(path.join(root,relative));
@@ -61,11 +67,11 @@ for(const sector of hunt.get('swamp').sectors){
   assert.equal(profile.defense,9);
   assert.equal(profile.magicDefense,6);
 }
-assert.deepEqual(pngSize('assets/world-maps/conchas/conchas.png'),{width:4480,height:3456});
+assert.deepEqual(pngSize('assets/world-maps/conchas/projection.png'),{width:4480,height:3456});
 const art=globalThis.MareNewIslandArt;
 assert.deepEqual([art.meta.helmeppo.idle.size,art.meta.helmeppo.walk.frames,art.meta.helmeppo.attack.frames],[80,8,7]);
 const helmeppoLayout=art.layout({type:'helmeppo',emberFacing:'south',attackAnim:0,moving:0,bob:0,x:0,y:200});
-assert.deepEqual([helmeppoLayout.width,helmeppoLayout.scale],[80,1]);
+assert.deepEqual([helmeppoLayout.width,helmeppoLayout.scale],[128,1.6]);
 for(const [file,expected] of [['idle.png',{width:80,height:320}],['walk.png',{width:640,height:320}],['attack.png',{width:560,height:320}]]){
   assert.deepEqual(pngSize(`assets/new-islands/helmeppo/${file}`),expected);
 }

@@ -93,12 +93,15 @@
     {id:'ruas-do-porto',name:'Ruas do Porto',cell:[12,16]},
     {id:'praca-das-conchas',name:'Praça das Conchas',cell:[12,10]}
   ]});
+  // The authoritative PixelLab projection already includes all scenery layers.
+  conchas.projectionBaked=true;
   if(typeof Image==='function'){
-    for(const [id,url] of Object.entries({orange:'assets/world-maps/orange.png',loguetown:'assets/world-maps/loguetown.png',conchas:'assets/world-maps/conchas/conchas.png'})){
+    for(const [id,url] of Object.entries({orange:'assets/world-maps/orange.png',loguetown:'assets/world-maps/loguetown.png',conchas:'assets/world-maps/conchas/projection.png'})){
       const image=new Image();image.src=url;imageCache[id]=image;
     }
     for(const object of conchas.props){const key='object-'+object.assetId;if(!imageCache[key]){const image=new Image();image.onload=()=>{const canvas=document.createElement('canvas');canvas.width=image.naturalWidth;canvas.height=image.naturalHeight;const context=canvas.getContext('2d');context.drawImage(image,0,0);const pixels=context.getImageData(0,0,canvas.width,canvas.height).data;let left=canvas.width,top=canvas.height,right=-1,bottom=-1;for(let y=0;y<canvas.height;y++)for(let x=0;x<canvas.width;x++)if(pixels[(y*canvas.width+x)*4+3]>0){left=Math.min(left,x);top=Math.min(top,y);right=Math.max(right,x);bottom=Math.max(bottom,y);}if(right>=left)image.contentBounds={x:left,y:top,w:right-left+1,h:bottom-top+1};};image.src='assets/world-maps/conchas/objects/'+object.assetId+'.png';imageCache[key]=image;}object.image=imageCache[key];}
     const water=new Image();water.src='assets/dawn-manual/water.png';imageCache.water=water;
+    const foregroundImage=new Image();foregroundImage.src='assets/world-maps/conchas/foreground.png';imageCache.conchasForeground=foregroundImage;
   }
   function ground(ctx,id,camera,width,height){
     const world=id==='conchas'?conchas:id==='orange'?orange:loguetown;
@@ -121,11 +124,16 @@
     ctx.beginPath();ctx.ellipse(destination.x,destination.y,reduced?24:24+Math.sin(time*2),10,0,0,Math.PI*2);ctx.stroke();
     ctx.fillStyle='#f3e3bd';ctx.font='bold 11px Trebuchet MS';ctx.textAlign='center';ctx.fillText('Voltar ao Lobby',destination.x,destination.y+28);ctx.restore();
   }
+  function foreground(ctx,camera,width,height){
+    const image=imageCache.conchasForeground;if(!image?.complete||!image.naturalWidth)return;
+    const sx=clamp(camera.x,0,conchas.map.width),sy=clamp(camera.y,0,conchas.map.height),sw=Math.min(width,conchas.map.width-sx),sh=Math.min(height,conchas.map.height-sy);
+    if(sw<=0||sh<=0)return;ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(image,sx,sy,sw,sh,sx,sy,sw,sh);ctx.restore();
+  }
   function prop(ctx,object){const image=object.image||imageCache['object-'+object.assetId];if(!image?.complete||!image.naturalWidth)return false;const crop=image.contentBounds||{x:0,y:0,w:image.naturalWidth,h:image.naturalHeight},scale=Math.min(object.width/crop.w,object.height/crop.h),w=crop.w*scale,h=crop.h*scale;ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(image,crop.x,crop.y,crop.w,crop.h,Math.round(object.x+(object.width-w)/2),Math.round(object.bottomY-h),w,h);ctx.restore();return true;}
   function actorOverlapsProp(actor,bounds){const bottom=bounds.y+bounds.h;return actor.y<bottom&&actor.y>bounds.y&&actor.x+35>bounds.x&&actor.x-35<bounds.x+bounds.w&&actor.y-120<bottom;}
   const api={orange,loguetown,conchas,ground,environment,prop,actorOverlapsProp,worldPoint,objectCollider,imageCache,
     stats:()=>Object.fromEntries(['orange','loguetown','conchas'].map(id=>{const image=imageCache[id],world=id==='conchas'?conchas:id==='orange'?orange:loguetown;return [id,{loaded:!!(image?.complete&&image.naturalWidth),colliders:world.map.colliders.length,objects:world.props.length||0,loadedObjects:world.props.filter(o=>o.image?.complete&&o.image.naturalWidth).length}];}))};
   root.MarePixelWorldMaps=api;
-  root.MarePixelMapRenderer=Object.freeze({ground,environment,prop,actorOverlapsProp,stats:api.stats});
+  root.MarePixelMapRenderer=Object.freeze({ground,environment,foreground,prop,actorOverlapsProp,stats:api.stats});
   if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

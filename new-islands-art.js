@@ -6,7 +6,7 @@
   if(typeof Image!=='undefined')for(const [id,actions] of Object.entries(meta))for(const action of Object.keys(actions)){const img=new Image();img.src='assets/new-islands/'+id+'/'+action+'.png';(sheets[id]??={})[action]=img;}
   const rows={south:0,west:1,east:2,north:3};
   const DEFAULT_MONSTER_RENDER_SIZE=80;
-  const MONSTER_RENDER_SIZE={helmeppo:80};
+  const MONSTER_RENDER_SIZE={helmeppo:128};
   const DEFAULT_MONSTER_SCALE=DEFAULT_MONSTER_RENDER_SIZE/64;
   const LEGACY_MONSTER_SCALE=2.25;
   const legacyMonsterTypes=new Set(['sham','buchi','pearl','gin','chew','kuroobi']);
