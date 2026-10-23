@@ -1,3 +1,9 @@
+## 23/10/2026 — Animação de slot da Ame no Habakiri
+
+Branch `feature/ame-no-habakiri-slot-animation`, baseada na `main` atual `05e714a`. A folha 256×256 RGBA enviada pelo proprietário foi preservada como PNG original e vinculada ao item Ame: 16 quadros 64×64, loop de 0,5 s na mochila e no equipamento. A imagem estática continua nos detalhes fora dos slots; sem alteração de raridade, atributos, combate ou saves.
+
+Validação: teste novo da Ame, regressões de Nodachi, inventário compacto, raridades e quatro espadas (5/5); `python tools/build_pages.py` copiou a folha sem alterar bytes. A prévia local carregou, mas a inspeção visual dos dois slots foi interrompida pelo Escape físico durante o controle do navegador.
+
 ## 23/10/2026 — Compactação dos slots de equipamento
 
 Branch `fix/inventory-equipment-slot-size`, base `001dde8`. O layout atual mantém sua composição: slots passam de 59 para 50 px, colunas laterais de 66 para 58 px, molduras de 37 para 31 px e ícones de 31 para 26 px; em telas até 360 px, slots de 46 px e conteúdo proporcional. Mochila, cores, raridades, dados e saves não mudam.

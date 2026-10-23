@@ -192,8 +192,8 @@
   itemDefs.push(
     {name:'Katana da Maelstrom',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,symbol:'⚔',rarity:'legendary',fixedRarity:true,description:'Uma katana lendária que carrega a fúria dos redemoinhos. Sua lâmina canaliza correntes de vento em movimentos circulares, transformando cada golpe em uma tempestade cortante.',icon_path:'assets/ui/items-pixellab/katana-de-maelstrom.png?v=20261022'},
     {name:'Nodachi de Kairouseki',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,symbol:'⚔',rarity:'epic',fixedRarity:true,description:'Uma nodachi forjada com Kairouseki, o lendário mineral dos mares. Sua lâmina enfraquece usuários de Akuma no Mi ao contato, anulando sua resistência sobrenatural e tornando-os vulneráveis ao aço.',icon_path:'assets/ui/items-pixellab/nodachi-de-kairouseki.png?v=20261022'},
-    {name:'Nodachi de Fogo',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,symbol:'⚔',rarity:'epic',fixedRarity:true,description:'Uma imponente nodachi envolta pelo calor das chamas. Seus golpes liberam energia flamejante, capazes de incendiar inimigos e deixar um rastro ardente pelo campo de batalha.',icon_path:'assets/ui/items-pixellab/nodachi-de-fogo.png?v=20261022'},
-    {name:'Meito: Ame no Habakiri',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,symbol:'⚔',rarity:'supreme',fixedRarity:true,description:'Uma espada lendária empunhada por Kozuki Oden, reconhecida entre as grandes Meito de Wano. Diz-se que sua lâmina é capaz de cortar os próprios céus, carregando o legado de um dos maiores samurais da história.',icon_path:'assets/ui/items-pixellab/ame-no-habakiri.png?v=20261022'}
+    {name:'Nodachi de Fogo',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,symbol:'⚔',rarity:'epic',fixedRarity:true,description:'Uma imponente nodachi envolta pelo calor das chamas. Seus golpes liberam energia flamejante, capazes de incendiar inimigos e deixar um rastro ardente pelo campo de batalha.',icon_path:'assets/ui/items-pixellab/nodachi-de-fogo.png?v=20261022',slotAnimation:{spriteSheet:'assets/ui/items-pixellab/nodachi-de-fogo-animation.png?v=20261022-slot',frameWidth:64,frameHeight:64,columns:4,rows:4,frames:16,duration:.5,className:'nodachi-fire-slot-animation'}},
+    {name:'Meito: Ame no Habakiri',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,symbol:'⚔',rarity:'supreme',fixedRarity:true,description:'Uma espada lendária empunhada por Kozuki Oden, reconhecida entre as grandes Meito de Wano. Diz-se que sua lâmina é capaz de cortar os próprios céus, carregando o legado de um dos maiores samurais da história.',icon_path:'assets/ui/items-pixellab/ame-no-habakiri.png?v=20261022',slotAnimation:{spriteSheet:'assets/ui/items-pixellab/ame-no-habakiri-animation.png?v=20261023-slot',frameWidth:64,frameHeight:64,columns:4,rows:4,frames:16,duration:.5,className:'ame-habakiri-slot-animation'}}
   );
   const questDefs = [
     {id:'crab',title:'Cascos de magma',desc:'Derrote 6 carapaças ígneas.',target:6,stat:'crab',gold:85,xp:65},
@@ -966,8 +966,9 @@
     return found;
   }
 
-  function itemIcon(key,name=''){
+  function itemIcon(key,name='',animatedSlot=false){
     const def=itemDefs[key];
+    if(animatedSlot&&def?.slotAnimation){const animation=def.slotAnimation,className=/^[a-z0-9-]+$/.test(animation.className)?animation.className:'slot-item-animation',style="--slot-sprite-sheet:url('"+escapeHTML(animation.spriteSheet)+"');--slot-sprite-size:"+(animation.columns*100)+"% "+(animation.rows*100)+"%;--slot-sprite-duration:"+animation.duration+"s";return '<span class="item-icon slot-item-animation '+className+'" style="'+style+'" role="img" aria-label="'+escapeHTML(name||def.name)+'"></span>';}
     if(def?.icon_path)return `<img class="item-icon ${def.slot==='weapon'&&def.type==='sword'?'sword-weapon-art':''}" src="${escapeHTML(def.icon_path)}" alt="${escapeHTML(name||def.name)}" draggable="false">`;
     if(def?.type==='akuma_no_mi')return '<span aria-hidden="true">✦</span>';
     const pearl=MareForge.pearlById[key]||MareForge.pearlById[def?.pearlId];
@@ -984,10 +985,10 @@
     else if(drawPaperDoll(c,canvas.width/2,canvas.height-10,'idle','south',world.time,height/46)){}
     else drawConfiguredHuman(c,canvas.width/2,canvas.height-10,armed?'combat-idle':'idle','south',world.time,height);
   }
-  function invSymbol(entry){return itemIcon(entry.kind==='gear'?entry.item.def:entry.kind,entry.name);}
+  function invSymbol(entry){return itemIcon(entry.kind==='gear'?entry.item.def:entry.kind,entry.name,true);}
   function invSlotHtml(slot){
     const item=game.equipment[slot],selected=item&&selectedItem===item.id, rarity=item?itemRarity(item):'';
-    return `<button type="button" class="op-equip-slot ${activeEquipmentFeedback()?.slots.includes(slot)?'recent-equip':''} ${item?'filled rarity-'+rarity:''} ${selected?'selected':''}" data-inv-slot="${slot}" aria-label="${slotNames[slot]}${item?' · '+escapeHTML(itemBase(item).name):' · Vazio'}"><span class="op-slot-label">${slot==='weapon'?'ARMA':slotNames[slot]}</span><span class="op-slot-frame"><span class="op-slot-icon">${item?itemIcon(item.def,itemBase(item).name):'<span class="empty-slot-mark">·</span>'}</span>${item?.locked?'<span class="op-item-lock" role="img" aria-label="Item bloqueado"></span>':''}${item?`<span class="op-slot-refine">+${item.plus||0}</span>${slot==='akuma_no_mi'?`<span class="op-slot-power">Rank ${escapeHTML(MareAkuma.itemData(item,itemDefs)?.rank||'?')}</span>`:`<span class="op-slot-power">${fmt(itemPower(item))}</span>`}`:''}</span></button>`;
+    return `<button type="button" class="op-equip-slot ${activeEquipmentFeedback()?.slots.includes(slot)?'recent-equip':''} ${item?'filled rarity-'+rarity:''} ${selected?'selected':''}" data-inv-slot="${slot}" aria-label="${slotNames[slot]}${item?' · '+escapeHTML(itemBase(item).name):' · Vazio'}"><span class="op-slot-label">${slot==='weapon'?'ARMA':slotNames[slot]}</span><span class="op-slot-frame"><span class="op-slot-icon">${item?itemIcon(item.def,itemBase(item).name,true):'<span class="empty-slot-mark">·</span>'}</span>${item?.locked?'<span class="op-item-lock" role="img" aria-label="Item bloqueado"></span>':''}${item?`<span class="op-slot-refine">+${item.plus||0}</span>${slot==='akuma_no_mi'?`<span class="op-slot-power">Rank ${escapeHTML(MareAkuma.itemData(item,itemDefs)?.rank||'?')}</span>`:`<span class="op-slot-power">${fmt(itemPower(item))}</span>`}`:''}</span></button>`;
   }
   function invSelected(){
     if(selectedItem==='virtual-potion'&&game.potions>0)return {kind:'potion',id:'virtual-potion'};
