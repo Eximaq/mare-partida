@@ -29,6 +29,12 @@ const review=require('../paper-doll-review.js'),pack=require('../pixellab-pip-ge
     if(cls!=='sword')assert.equal(review.appearance(pack,p),null);
     else assert.deepEqual(review.appearance(pack,p).hidden,[]);
   }
+  const future=structuredClone(pack);
+  future.categoryWeapons={firearm:'future-firearm'};
+  future.bindings.weapon.items[4]='future-firearm';
+  const shooter={classId:'gunner',factionId:'marine',equipment:{weapon:{def:4}}};
+  assert.equal(review.appearance(future,shooter).pieces.weapon,'future-firearm');
+  assert.equal(review.appearance(future,{...shooter,equipment:{weapon:{def:0}}}),null,'another class weapon is never borrowed');
   for(const data of [null,{...pack,productionEnabled:true},{...pack,pieces:[]},{...pack,pieces:pack.pieces.map(p=>({...p,approved:true}))}]){
     const r=review.create({search:'?dev=1&paperDollReview=navy-starter',devActive:true,baseURL:'http://localhost/game/',getImage:()=>{throw Error('Invalid pack must not load images');},fetch:async()=>({ok:true,json:async()=>data})});
     assert.equal((await r.ready).state,'failed');assert.equal(r.draw(null,{devSandbox:true},'idle','south',0,0,0),false);
