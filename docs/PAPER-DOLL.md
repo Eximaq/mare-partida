@@ -1,5 +1,7 @@
 # Paper Doll 1.0 — Fase 1
 
+Estado consolidado de 23/10: [personagem único, seleção de aparência e pendências de conclusão](PAPER-DOLL-CONCLUSAO.md). A personalização usa peças reais existentes e save DEV isolado; cinco categorias de ataque ainda precisam de arte. Os registros abaixo são históricos, não uma afirmação de conclusão integral.
+
 Continuação de23/10: [conjunto azul de quatro camadas](PAPER-DOLL-CONJUNTO-AZUL.md), com corpo, cabelo, roupa e espada em80 poses Idle/Walk/Attack nas quatro vistas. Inclui harmonização de paleta e encaixe leste no Workbench, comparação de pixels em navegador e teste de combate. Candidato em revisão, sem ativação global.
 
 Continuação de22/10: [candidato de encaixe leste no Workbench](PAPER-DOLL-ENCAIXE-LESTE.md). O ataque pode ser inspecionado em quatro direções; o novo vestuário leste ainda precisa de harmonização artística. Sem geração paga nesta etapa e sem ativação em produção.
