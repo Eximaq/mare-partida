@@ -101,6 +101,9 @@
 @media (prefers-reduced-motion: reduce) {#panelOverlay.inventory-mode .op-item{transition-behavior:normal;transition-duration:0s;transition-timing-function:ease;transition-delay:0s;transition-property:none;}}
 }
 
+/* Gatuno sheet shares the existing sixteen-frame slot timeline. */
+#panelOverlay.inventory-mode .lamina-trevas-slot-animation{animation:ame-habakiri-slot-frames var(--slot-sprite-duration) infinite linear}
+@media (prefers-reduced-motion:reduce){#panelOverlay.inventory-mode .lamina-trevas-slot-animation{animation:none;background-position:0% 0%}}
 /* Animated equipped item icon, using the supplied 4×4 Nodachi sprite sheet. */
 #panelOverlay.inventory-mode .item-icon.slot-item-animation{display:inline-block;background-image:var(--slot-sprite-sheet);background-repeat:no-repeat;background-size:var(--slot-sprite-size);background-position:0% 0%;image-rendering:pixelated}
 #panelOverlay.inventory-mode .nodachi-fire-slot-animation{animation:nodachi-fire-slot-frames var(--slot-sprite-duration) infinite linear}

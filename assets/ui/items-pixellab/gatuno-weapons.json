@@ -1,0 +1,32 @@
+{
+  "source": "Owner-provided PNG attachments",
+  "assets": [
+    {
+      "source": "Adaga de Cristal.png",
+      "asset": "adaga-de-cristal.png",
+      "sha256": "1d50cf7e630c45941dad85d98cdfb31fef7df8ba34f1779abebf318c41e7838b"
+    },
+    {
+      "source": "Punhal de Netuno.png",
+      "asset": "punhal-de-netuno.png",
+      "sha256": "9019231747567573ccc11231c09a78f83d7af70d8443fd9cd900a24017c63c95"
+    },
+    {
+      "source": "Punhal Flamejante.png",
+      "asset": "punhal-flamejante.png",
+      "sha256": "6ebb0120d2d6e144a346b3e8ddf39a1ac918b2765d88032d4f1592ceba29cee5"
+    },
+    {
+      "source": "Lamina das Trevas.png",
+      "asset": "lamina-das-trevas-animation.png",
+      "sha256": "0d6b51c0632fc1b22e6a0d2acc8688217cb1f8458e8e0e8d9884d6c2d7d33268"
+    }
+  ],
+  "animation": {
+    "columns": 4,
+    "rows": 4,
+    "frameSize": 64,
+    "order": "row-major",
+    "frames": 16
+  }
+}
