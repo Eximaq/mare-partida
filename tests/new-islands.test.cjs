@@ -25,17 +25,24 @@ assert(islands.syrup.spawn.y>islands.syrup.map.height*.7);
 assert(islands.baratie.spawn.y>islands.baratie.districts.at(-1).y);
 const python=cp.execFileSync('python',['-X','utf8','-c','import json; from server.monsters import CATALOG; print(json.dumps(CATALOG))'],{cwd:root,encoding:'utf8'});
 assert.deepEqual(catalog,JSON.parse(python));
-for(const [id,area,level] of [['cocox','rare',18],['sham','syrup',23],['buchi','syrup',23],['pearl','baratie',28],['gin','baratie',28],['kuroobi','arlong',33],['chew','arlong',33]]){
+for(const [id,area,level] of [['cocox','rare',18],['sham','syrup',23],['buchi','syrup',23],['pearl','baratie',28],['gin','baratie',28],['kuroobi','arlong',33],['chew','arlong',33],['mr3','orange',13],['cabaji','orange',13],['marinheiro','loguetown',40]]){
   const m=catalog[id],sector=H.get(area).sectors[0],p=H.profile(area,sector.id,id);
   assert.equal(p.level,level);assert.equal(p.maxHP,m.max_hp);assert.equal(p.attack,m.physical_attack);
   if(id!=='cocox')for(const action of ['idle','walk','attack']){
     const img=path.join(root,`assets/new-islands/${id}/${action}.png`);assert(fs.existsSync(img));
     const bytes=fs.readFileSync(img);assert(bytes.readUInt32BE(16)>=48);assert(bytes.readUInt32BE(20)>=192);
     const art=MareNewIslandArt.layout({type:id,y:500,emberFacing:'south',attackAnim:action==='attack'?.3:0,moving:action==='walk'?1:0});
-    assert.equal(art.scale,2.25);
+    const normalized=['mr3','cabaji','marinheiro'].includes(id);
+    assert.equal(art.width,normalized?80:Math.round(art.a.size*2.25));
+    assert.equal(art.scale,normalized?80/art.a.size:2.25);
     assert(Math.abs(art.top+Math.round(art.a.feet[art.row]*art.scale)-503)<=1);
   }
 }
+
+assert.equal(MareNewIslandArt.DEFAULT_MONSTER_RENDER_SIZE,80);
+MareNewIslandArt.meta.futureProbe={idle:{size:48,frames:1,feet:[48,48,48,48],fps:7}};
+assert.equal(MareNewIslandArt.layout({type:'futureProbe',y:500}).width,80);
+delete MareNewIslandArt.meta.futureProbe;
 assert(catalog.sham.max_hp>catalog.cocox.max_hp);
 assert(catalog.pearl.max_hp>catalog.buchi.max_hp);
 assert(catalog.gin.physical_attack>catalog.sham.physical_attack);
