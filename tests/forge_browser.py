@@ -33,8 +33,8 @@ with sync_playwright() as p:
     browser=p.chromium.launch(headless=True);c,q=page_for(browser,errors=errors);template=create(q);c.close()
     for size in SIZES:
         suffix=f'{size[0]}x{size[1]}';seed=seeded(template);c,q=page_for(browser,seed,size,errors);original=saved(q)
-        assert original['forgeVersion']==3
-        backup=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY+'-before-forge-v3')+')'));assert backup==seed
+        assert original['forgeVersion']==4
+        backup=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY+'-before-forge-v4')+')'));assert backup==seed
         panel(q,'forge');assert q.get_by_role('tab').count()==4;assert not q.locator('#forgeEquipment,#forgePearlSelect,#forgeFusionSelect').count()
         assert q.locator('.forge2-tile').count()==16
         q.locator('[data-forge-page="1"]').click();assert '2 /' in q.locator('.forge2-pagination').inner_text()

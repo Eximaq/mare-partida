@@ -1,0 +1,114 @@
+{
+  "source": "Molduras de inventário neon em seis cores.png",
+  "processing": "Crops at native sheet scale; four-connected exterior flood fill below RGB max 72; remove black matte only from exterior-connected pixels, preserving enclosed slot interiors.",
+  "rarities": [
+    {
+      "id": "common",
+      "label": "Comum",
+      "referenceHex": "#8A8A8A",
+      "asset": "assets/ui/inventory-slots/common.png",
+      "sourcePosition": "top-left",
+      "sourceCrop": [
+        159,
+        24,
+        400,
+        382
+      ],
+      "dimensions": [
+        400,
+        382
+      ],
+      "backgroundRemovedPixels": 31859
+    },
+    {
+      "id": "uncommon",
+      "label": "Incomum",
+      "referenceHex": "#00DD55",
+      "asset": "assets/ui/inventory-slots/uncommon.png",
+      "sourcePosition": "top-center",
+      "sourceCrop": [
+        687,
+        24,
+        400,
+        382
+      ],
+      "dimensions": [
+        400,
+        382
+      ],
+      "backgroundRemovedPixels": 29994
+    },
+    {
+      "id": "rare",
+      "label": "Raro",
+      "referenceHex": "#008CFF",
+      "asset": "assets/ui/inventory-slots/rare.png",
+      "sourcePosition": "top-right",
+      "sourceCrop": [
+        1214,
+        24,
+        400,
+        382
+      ],
+      "dimensions": [
+        400,
+        382
+      ],
+      "backgroundRemovedPixels": 27318
+    },
+    {
+      "id": "epic",
+      "label": "Épico",
+      "referenceHex": "#A020F0",
+      "asset": "assets/ui/inventory-slots/epic.png",
+      "sourcePosition": "bottom-left",
+      "sourceCrop": [
+        159,
+        439,
+        400,
+        382
+      ],
+      "dimensions": [
+        400,
+        382
+      ],
+      "backgroundRemovedPixels": 28803
+    },
+    {
+      "id": "legendary",
+      "label": "Lendário",
+      "referenceHex": "#FFB900",
+      "asset": "assets/ui/inventory-slots/legendary.png",
+      "sourcePosition": "bottom-center",
+      "sourceCrop": [
+        687,
+        439,
+        400,
+        382
+      ],
+      "dimensions": [
+        400,
+        382
+      ],
+      "backgroundRemovedPixels": 29865
+    },
+    {
+      "id": "supreme",
+      "label": "Supremo",
+      "referenceHex": "#FF2020",
+      "asset": "assets/ui/inventory-slots/supreme.png",
+      "sourcePosition": "bottom-right",
+      "sourceCrop": [
+        1214,
+        439,
+        400,
+        382
+      ],
+      "dimensions": [
+        400,
+        382
+      ],
+      "backgroundRemovedPixels": 26358
+    }
+  ]
+}

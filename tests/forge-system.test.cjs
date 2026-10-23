@@ -27,6 +27,12 @@ test('Legacy migration deterministic, idempotent, preserves identity, custom fie
  const old=structuredClone(original),a=F.migrate(old,defs),b=F.migrate(old,defs);assert.deepEqual(a,b);for(let i=0;i<10;i++)assert.deepEqual(F.migrate(a,defs),a);
  assert.deepEqual(old,original);for(const k of ['id','def','level','plus','locked','custom'])assert.equal(a.equipment.weapon[k],old.equipment.weapon[k]);assert.deepEqual(a.stats,old.stats);assert.equal(a.gold,old.gold);assert.equal(a.materials,old.materials);
 });
+test('Fixed-rarity upgrade migrates existing Nodachi copies to Legendary and preserves prior attributes',()=>{
+ const nodachiDefs=[{name:'Nodachi de Fogo',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,rarity:'legendary',fixedRarity:true}],oldExtras=[{stat:'strength',value:1},{stat:'dexterity',value:2},{stat:'vitality',value:3},{stat:'intelligence',value:4}];
+ const old={name:'Saved item',level:5,gold:100,materials:50,equipment:{weapon:{id:'old-nodachi',def:0,level:5,plus:2,locked:false,rarity:'epic',baseStats:{attack:11,defense:0,hp:0},extras:structuredClone(oldExtras),sockets:[null,null,null]}},inventory:[],stats:{kills:3}};
+ const upgraded=F.migrate(old,nodachiDefs),item=upgraded.equipment.weapon;
+ assert.equal(F.VERSION,4);assert.equal(item.rarity,'legendary');assert.equal(item.extras.length,F.rarity.legendary.extras);assert.deepEqual(item.extras.slice(0,4),oldExtras);assert.equal(item.sockets.length,F.rarity.legendary.sockets);assert.deepEqual(F.migrate(upgraded,nodachiDefs),upgraded);assert.deepEqual(old.equipment.weapon.extras,oldExtras);
+});
 test('Upgrade guarantees +1 through +5, supports +20, scales costs and rejects stale commands',()=>{
  for(const plus of Array.from({length:20},(_,i)=>i)){
   let g=seed();g.equipment.weapon.plus=plus;const cost=F.upgradeCost(g.equipment.weapon),snapshot=JSON.stringify(g),win=run(g,{type:'upgrade',itemId:'weapon'},()=>0);assert(win.ok&&win.result.success);assert.equal(win.state.equipment.weapon.plus,plus+1);assert.equal(win.state.gold,g.gold-cost.gold);assert.equal(win.state.materials,g.materials-cost.materials);assert.equal(JSON.stringify(g),snapshot);

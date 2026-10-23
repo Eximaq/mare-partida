@@ -27,10 +27,12 @@ class MonsterCatalogTest(unittest.TestCase):
     def test_new_map_encounters_use_scaled_stats_and_existing_pixel_lab_ids(self):
         self.assertEqual(WORLD_LEVEL_BANDS["orange"], (11, 15))
         self.assertEqual(WORLD_LEVEL_BANDS["loguetown"], (36, 40))
+        self.assertEqual(WORLD_LEVEL_BANDS["swamp"], (6, 10))
         expected = {
             "mr3": (13, "orange", 454, 21, 12, 8, "115d5400-e87f-4990-96d5-39605ee0311c"),
             "cabaji": (13, "orange", 314, 34, 11, 6, "30284edc-eb47-475b-9019-c84ef902e164"),
             "marinheiro": (40, "loguetown", 2478, 156, 64, 19, "c9675963-81b3-4ec2-9a52-ea3c106edffe"),
+            "helmeppo": (8, "swamp", 255, 20, 9, 6, "411318d7-6ee7-43ea-ba8a-11b0fc0ce182"),
         }
         for monster_id, (level, area, hp, attack, defense, magic, sprite_id) in expected.items():
             monster = CATALOG[monster_id]

@@ -150,7 +150,7 @@ Grids de equipamentos e pérolas substituem dropdowns, com pesquisa, filtros, pa
 
 **Fusão atualizada:** cinco slots interativos nas duas modalidades, com clique/arrastar, remoção individual e limpeza. Pérolas exibidas apenas quando possuídas; quantidades, bloqueios, busca e filtros refletem o inventário real. Custos e chances mantidos. [Regras e testes dos slots](docs/FUSAO-SLOTS.md) · [Capturas atuais](http://127.0.0.1:8123/docs/evidence-fusion-slots/index.html).
 
-Migração idempotente `forgeVersion:3`, com JSON original em `mare-partida-save-v1-before-forge-v3`; preserva IDs, refinos e progressão. Custos de aprimoramento agora escalam com o nível da peça; reforja fica 30% mais cara por tentativa. Chances das pérolas mantidas. Nenhuma geração paga ou alteração de mapa/câmera/sprites. Supremo por fusão, reparação, desmontagem e transferência aguardam as regras documentadas.
+Migração idempotente `forgeVersion:4`, com cópia do save anterior em `mare-partida-save-v1-before-forge-v4`; preserva IDs, refinos e progressão. A versão 4 também atualiza a Nodachi de Fogo para Lendária, preservando os valores base. Custos de aprimoramento escalam com o nível da peça; reforja fica 30% mais cara por tentativa. Chances das pérolas mantidas. Nenhuma geração paga ou alteração de mapa/câmera/sprites. Supremo por fusão, reparação, desmontagem e transferência aguardam as regras documentadas.
 
 [Jogar](http://127.0.0.1:8123/) · [Regras, fórmulas, migração, testes e pendências](docs/FORJA-REFATORACAO.md) · [Capturas reais](http://127.0.0.1:8123/docs/evidence-forge-refactor/index.html) · [Histórico Forja 2.0](docs/FORJA-2.0.md).
 

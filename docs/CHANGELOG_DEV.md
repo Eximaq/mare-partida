@@ -1,3 +1,21 @@
+## 23/10/2026 — Animação da Katana da Maelstrom e upgrade da Nodachi de Fogo
+
+Branch `feature/katana-maelstrom-slot-animation`, baseada na `main` `ffc9ca2`. A folha RGBA 256×256 fornecida pelo proprietário foi preservada como está; seus 16 quadros 64×64 animam o item na mochila e no equipamento em loop de 0,5 s. A imagem estática continua nos detalhes fora dos slots. A Nodachi de Fogo passa a Lendária pela escala existente; a Forja v4 migra cópias antigas de Épica, conserva os extras anteriores e completa os espaços da nova raridade com valores determinísticos. Sem mudança manual nos atributos base ou no combate.
+
+Validação: 7 arquivos de teste Node passaram (incluindo 16 grupos do modelo da Forja), `node --check` passou em `game.js` e `forge-system.js`, e `python tools/build_pages.py` gerou o pacote estático. A folha no pacote é idêntica byte a byte à enviada. A inspeção automatizada do navegador não iniciou porque o ambiente não tem o módulo Playwright.
+
+## 23/10/2026 — Animação de slot da Ame no Habakiri
+
+Branch `feature/ame-no-habakiri-slot-animation`, baseada na `main` atual `05e714a`. A folha 256×256 RGBA enviada pelo proprietário foi preservada como PNG original e vinculada ao item Ame: 16 quadros 64×64, loop de 0,5 s na mochila e no equipamento. A imagem estática continua nos detalhes fora dos slots; sem alteração de raridade, atributos, combate ou saves.
+
+Validação: teste novo da Ame, regressões de Nodachi, inventário compacto, raridades e quatro espadas (5/5); `python tools/build_pages.py` copiou a folha sem alterar bytes. A prévia local carregou, mas a inspeção visual dos dois slots foi interrompida pelo Escape físico durante o controle do navegador.
+
+## 23/10/2026 — Compactação dos slots de equipamento
+
+Branch `fix/inventory-equipment-slot-size`, base `001dde8`. O layout atual mantém sua composição: slots passam de 59 para 50 px, colunas laterais de 66 para 58 px, molduras de 37 para 31 px e ícones de 31 para 26 px; em telas até 360 px, slots de 46 px e conteúdo proporcional. Mochila, cores, raridades, dados e saves não mudam.
+
+Validação: `node --test tests/inventory-compact.test.cjs` passou (1/1); preview local `http://127.0.0.1:8799/?dev=1` aberto e inspecionado visualmente em 23/10/2026. A captura não foi arquivada. Playwright indisponível no ambiente. Reversão: reverter o commit desta branch.
+
 ## 21/10/2026 — Paper Doll: preparação de camadas agrupadas, zero novas gerações
 
 Continuação do PR45. Auditor de atlas por célula, exportação atômica, detecção de sequência estática e oclusão corporal apenas quando explicitamente permitida por máscara para cabelo/roupa.11 testes de camada e5 de lote passaram, além do build e da revisão da espada no Chromium. Entradas nativas, máscaras e contexto preparados a partir de assets existentes, sem novos pixels de personagem. Três chamadas de geração propostas com teto18 continuam aguardando aprovação; nenhuma foi executada. Runtime, catálogo e saves intactos.

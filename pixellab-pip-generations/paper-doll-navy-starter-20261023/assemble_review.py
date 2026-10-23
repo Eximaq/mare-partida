@@ -17,7 +17,7 @@ def transfer(folder, name):
 
 # Validate the actual downloaded edit; never manufacture the expected output.
 original = Image.open(HERE/'outfit-attack-original.png').convert('RGBA')
-assert (HERE/'outfit-attack-original.png').read_bytes() == (ATTACK/'outfit-attack.png').read_bytes()
+assert original.tobytes() == Image.open(ATTACK/'outfit-attack.png').convert('RGBA').tobytes(), 'Source pixels changed'  # PNG compression differs across platforms.
 edited = Image.open(HERE/'outfit-attack-palette.png').convert('RGBA')
 assert original.size == edited.size == (672, 336)
 mapping = json.loads((HERE/'changes.json').read_text())[0]['colors']

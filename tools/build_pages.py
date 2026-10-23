@@ -14,11 +14,13 @@ web_files = ['index.html', 'journal-feed.json', 'ui-tokens.css', 'ui-components.
              'character-system.js', 'akuma-system.js', 'zoan-art.js', 'combat-animation.js', 'combat-registry.js', 'combat-assets.js', 'paper-doll.js', 'paper-doll-assets.js', 'paper-doll-review.js',
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
              'forge-ui.js', 'game-tooltips.js', 'player-hub.js', 'hud-telemetry.js', 'hierarchy-system.js', 'hierarchy-ui.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js', 'lobby-map-data.js', 'lobby-world.js',
-             'dawn-map-data.js', 'dawn-world.js', 'dawn-renderer.js', 'rare-world.js', 'rare-renderer.js', 'new-islands-data.js', 'new-islands-objects.js', 'new-islands.js', 'monster-catalog.js', 'new-islands-art.js', 'pixellab-world-maps-data.js', 'pixellab-world-maps.js', 'world-system.js', 'orange-world.js', 'conchas-world.js', 'conchas-renderer.js', 'terrain-autotile.js', 'orange-terrain.js', 'orange-renderer.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'dev-tools.js', 'hunt-system.js']
+              'dawn-map-data.js', 'dawn-world.js', 'dawn-renderer.js', 'rare-world.js', 'rare-renderer.js', 'new-islands-data.js', 'new-islands-objects.js', 'new-islands.js', 'monster-catalog.js', 'new-islands-art.js', 'pixellab-world-maps-data.js', 'conchas-pixellab-data.js', 'pixellab-world-maps.js', 'world-system.js', 'orange-world.js', 'conchas-world.js', 'conchas-renderer.js', 'terrain-autotile.js', 'orange-terrain.js', 'orange-renderer.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'dev-tools.js', 'hunt-system.js']
 for f in web_files:
     if not (ROOT / f).is_file():
         raise SystemExit(f'Arquivo necessário ausente: {f}')
     shutil.copy2(ROOT/f, OUT/f)
+# Standalone account portal preview; the existing game entry remains unchanged.
+shutil.copytree(ROOT/'portal', OUT/'portal')
 # A new HTML document must never combine this release with cached older scripts.
 # Content hashes change only when the referenced public file changes; saves are untouched.
 def version_asset(match):

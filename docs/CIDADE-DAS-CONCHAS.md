@@ -1,5 +1,7 @@
 # Cidade das Conchas — reconstrução do mapa 11–20
 
+> **Estado atual (23/10/2026):** esta nota abaixo registra a versão anterior e permanece como histórico. O runtime agora usa o mapa publicado **Cidade das Conchas** do PixelLab (70×54 células), chega na areia walkable ao sul e tem Helmeppo como único spawn comum, no nível 8. Não há chefe nesta versão. Veja `CIDADE-DAS-CONCHAS-PIXELLAB.md`.
+
 Branch `fix/cidade-conchas-rework`, base `93ca616` (main com o PR31 do colaborador). Revisão de 20/10/2026. Entrega por PR; publicação depende de aprovação.
 
 ## Resumo para o colaborador

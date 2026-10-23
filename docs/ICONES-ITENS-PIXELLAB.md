@@ -24,3 +24,27 @@ Originais, requisições exatas, resultados rejeitados, manifest de auditoria e 
 - Todas as suítes `tests/*.test.cjs`, sintaxe dos módulos alterados, `python tools/build_pages.py` e `git diff --check`.
 
 Para o colaborador: a mudança está concentrada nos caminhos de arte em `game.js`, `index.html` e `haki-ui.js`; os catálogos e contratos de gameplay permanecem iguais. Para adicionar um novo item, inclua sua arte e metadados no diretório público sem renumerar o catálogo existente.
+
+## Novas espadas
+
+Quatro PNGs RGBA 128×128 fornecidos pelo proprietário foram recortados sem perdas até os limites da arte opaca e salvos em `assets/ui/items-pixellab/`. Nenhum pixel da arte foi recolorido ou reamostrado. O catálogo aponta cada arma para seu arquivo; os ícones usam 40×40 no quadrado do inventário e 36×36 no slot equipado para ocupar melhor a área disponível.
+
+As definições são acrescentadas ao final do catálogo para preservar índices dos saves. Todas usam o tipo `sword` e a base de 11 ATQ do Sabre de Coral; raridades usam os multiplicadores existentes do sistema Forja. As descrições são exibidas nos tooltips. Não foram criados efeitos de fogo, vento ou Kairouseki sem suporte a efeitos por item.
+
+As armas Épicas e Lendária entram nos drops existentes somente quando a raridade sorteada coincide; isso mantém sua classificação fixa. A Ame no Habakiri é registrada como Suprema, mas continua fora dos drops comuns porque o sistema atual não sorteia essa raridade. Nenhuma fonte ou taxa de obtenção nova foi inventada.
+
+### Animação do item Nodachi de Fogo
+
+A folha enviada contém 16 quadros de 64×64 em uma grade 4×4. Ela é preservada sem recorte ou redimensionamento em assets/ui/items-pixellab/nodachi-de-fogo-animation.png. Mochila e slot de arma equipada percorrem os quadros em ordem, começando pelo primeiro quadro (espada sem chama), em loop de 0,5 s. A arte estática continua sendo usada em detalhes fora dos slots.
+
+### Animação do item Ame no Habakiri
+
+A folha fornecida pelo proprietário foi copiada sem recorte ou redimensionamento para `assets/ui/items-pixellab/ame-no-habakiri-animation.png`: 256×256 RGBA, grade 4×4 de quadros 64×64. O catálogo associa essa folha somente à animação visual do slot da Ame no Habakiri; o mesmo renderizador percorre os 16 quadros em loop de 0,5 s na mochila e no slot equipado. A imagem estática permanece disponível para detalhes fora dos slots. Não foi criada animação de golpe ou mecânica de combate.
+
+### Animação do item Katana da Maelstrom
+
+A folha 256×256 RGBA enviada pelo proprietário foi copiada sem recorte ou redimensionamento para `assets/ui/items-pixellab/katana-de-maelstrom-animation.png`. Seus 16 quadros de 64×64 são exibidos em ordem num loop de 0,5 s na mochila e no slot equipado, usando o mesmo renderer das outras espadas. A imagem estática continua nos detalhes fora dos slots; não foi criada animação de golpe ou mecânica de vento.
+
+### Upgrade de raridade — Nodachi de Fogo
+
+A Nodachi de Fogo passa de Épica para Lendária usando a escala atual da Forja, sem alteração dos valores base do item. A migração da Forja v4 atualiza cópias existentes nos saves: preserva os atributos adicionais já obtidos, completa apenas os extras e sockets previstos para a nova raridade e guarda a cópia anterior do save no backup `mare-partida-save-v1-before-forge-v4`. A migração é determinística e idempotente.
