@@ -968,7 +968,7 @@
 
   function itemIcon(key,name=''){
     const def=itemDefs[key];
-    if(def?.icon_path)return `<img class="item-icon" src="${escapeHTML(def.icon_path)}" alt="${escapeHTML(name||def.name)}" draggable="false">`;
+    if(def?.icon_path)return `<img class="item-icon ${def.slot==='weapon'&&def.type==='sword'?'sword-weapon-art':''}" src="${escapeHTML(def.icon_path)}" alt="${escapeHTML(name||def.name)}" draggable="false">`;
     if(def?.type==='akuma_no_mi')return '<span aria-hidden="true">✦</span>';
     const pearl=MareForge.pearlById[key]||MareForge.pearlById[def?.pearlId];
     const artKey=def?.kind==='haki-book'?'book':def?.kind==='pearl-box'?'pearl-box-'+def.boxLevel:pearl?pearl.id:key;

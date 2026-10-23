@@ -27,7 +27,7 @@ Para o colaborador: a mudança está concentrada nos caminhos de arte em `game.j
 
 ## Novas espadas
 
-Quatro PNGs RGBA 128×128 fornecidos pelo proprietário foram copiados sem recoloração ou recorte para `assets/ui/items-pixellab/`. O catálogo aponta cada arma diretamente para seu arquivo; o CSS existente as exibe em `object-fit: contain` com renderização pixelada nos tamanhos do inventário/equipamento.
+Quatro PNGs RGBA 128×128 fornecidos pelo proprietário foram recortados sem perdas até os limites da arte opaca e salvos em `assets/ui/items-pixellab/`. Nenhum pixel da arte foi recolorido ou reamostrado. O catálogo aponta cada arma para seu arquivo; os ícones usam 40×40 no quadrado do inventário e 36×36 no slot equipado para ocupar melhor a área disponível.
 
 As definições são acrescentadas ao final do catálogo para preservar índices dos saves. Todas usam o tipo `sword` e a base de 11 ATQ do Sabre de Coral; raridades usam os multiplicadores existentes do sistema Forja. As descrições são exibidas nos tooltips. Não foram criados efeitos de fogo, vento ou Kairouseki sem suporte a efeitos por item.
 
