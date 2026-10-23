@@ -1,3 +1,9 @@
+## 23/10/2026 — Compactação dos slots de equipamento
+
+Branch `fix/inventory-equipment-slot-size`, base `001dde8`. O layout atual mantém sua composição: slots passam de 59 para 50 px, colunas laterais de 66 para 58 px, molduras de 37 para 31 px e ícones de 31 para 26 px; em telas até 360 px, slots de 46 px e conteúdo proporcional. Mochila, cores, raridades, dados e saves não mudam.
+
+Validação: `node --test tests/inventory-compact.test.cjs` passou (1/1); preview local `http://127.0.0.1:8799/?dev=1` aberto e inspecionado visualmente em 23/10/2026. A captura não foi arquivada. Playwright indisponível no ambiente. Reversão: reverter o commit desta branch.
+
 ## 21/10/2026 — Paper Doll: preparação de camadas agrupadas, zero novas gerações
 
 Continuação do PR45. Auditor de atlas por célula, exportação atômica, detecção de sequência estática e oclusão corporal apenas quando explicitamente permitida por máscara para cabelo/roupa.11 testes de camada e5 de lote passaram, além do build e da revisão da espada no Chromium. Entradas nativas, máscaras e contexto preparados a partir de assets existentes, sem novos pixels de personagem. Três chamadas de geração propostas com teto18 continuam aguardando aprovação; nenhuma foi executada. Runtime, catálogo e saves intactos.
