@@ -19,6 +19,8 @@ for f in web_files:
     if not (ROOT / f).is_file():
         raise SystemExit(f'Arquivo necessário ausente: {f}')
     shutil.copy2(ROOT/f, OUT/f)
+# Standalone account portal preview; the existing game entry remains unchanged.
+shutil.copytree(ROOT/'portal', OUT/'portal')
 # A new HTML document must never combine this release with cached older scripts.
 # Content hashes change only when the referenced public file changes; saves are untouched.
 def version_asset(match):
