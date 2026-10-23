@@ -1,3 +1,9 @@
+## 23/10/2026 — Animação da Katana da Maelstrom e upgrade da Nodachi de Fogo
+
+Branch `feature/katana-maelstrom-slot-animation`, baseada na `main` `ffc9ca2`. A folha RGBA 256×256 fornecida pelo proprietário foi preservada como está; seus 16 quadros 64×64 animam o item na mochila e no equipamento em loop de 0,5 s. A imagem estática continua nos detalhes fora dos slots. A Nodachi de Fogo passa a Lendária pela escala existente; a Forja v4 migra cópias antigas de Épica, conserva os extras anteriores e completa os espaços da nova raridade com valores determinísticos. Sem mudança manual nos atributos base ou no combate.
+
+Validação: 7 arquivos de teste Node passaram (incluindo 16 grupos do modelo da Forja), `node --check` passou em `game.js` e `forge-system.js`, e `python tools/build_pages.py` gerou o pacote estático. A folha no pacote é idêntica byte a byte à enviada. A inspeção automatizada do navegador não iniciou porque o ambiente não tem o módulo Playwright.
+
 ## 23/10/2026 — Animação de slot da Ame no Habakiri
 
 Branch `feature/ame-no-habakiri-slot-animation`, baseada na `main` atual `05e714a`. A folha 256×256 RGBA enviada pelo proprietário foi preservada como PNG original e vinculada ao item Ame: 16 quadros 64×64, loop de 0,5 s na mochila e no equipamento. A imagem estática continua nos detalhes fora dos slots; sem alteração de raridade, atributos, combate ou saves.

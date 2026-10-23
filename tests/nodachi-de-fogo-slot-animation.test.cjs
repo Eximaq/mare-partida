@@ -8,6 +8,7 @@ const root=path.resolve(__dirname,'..');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
 const def=game.split(/\r?\n/).find(line=>line.includes("name:'Nodachi de Fogo'"));
 assert.ok(def,'Nodachi de Fogo is registered');
+assert.ok(def.includes("rarity:'legendary',fixedRarity:true"),'Nodachi de Fogo uses its upgraded Legendary rank');
 assert.ok(def.includes("icon_path:'assets/ui/items-pixellab/nodachi-de-fogo.png?v=20261022'"),'the existing item art remains available as a static fallback');
 assert.ok(def.includes("spriteSheet:'assets/ui/items-pixellab/nodachi-de-fogo-animation.png?v=20261022-slot'"),'animation uses the supplied frame sheet');
 assert.ok(def.includes('frameWidth:64,frameHeight:64,columns:4,rows:4,frames:16,duration:.5'),'all 16 64px frames use the expected timeline');
