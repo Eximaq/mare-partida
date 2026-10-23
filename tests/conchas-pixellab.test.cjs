@@ -30,6 +30,15 @@ assert.equal(world.maps.conchas,map,'world navigation selects the PixelLab map')
 assert.equal(maps.conchas.props.length,source.objects.length);
 assert.equal(source.objects.length,105,'fresh PixelLab map keeps all 105 placements');
 assert.equal(map.colliders.length,source.objects.length);
+assert.equal(typeof globalThis.MarePixelMapRenderer.actorOverlapsProp,'function','game foreground pass must have its public renderer hook');
+for(const prop of maps.conchas.props){
+  const base=(prop.cellY-source.minY+1)*64;
+  assert.equal(prop.bottomY,base,'sprite must end at its PixelLab stands_on base');
+  const collider=map.colliders.find(c=>c.sourceId===prop.placementId);
+  assert(Math.abs(collider.y+collider.h-base)<=1,'physics and visual base must agree');
+}
+const small=source.objects.find(o=>o.widthCells===.2);
+assert(map.colliders.find(c=>c.sourceId===small.placementId).w<16,'small decoration must not block an entire tile');
 assert(map.colliders.every(c=>c.isSolid&&c.footprint));
 assert.equal(maps.actorOverlapsProp({x:140,y:150},{x:100,y:100,w:80,h:100}),true,'actor behind a prop is covered by its foreground pass');
 assert.equal(maps.actorOverlapsProp({x:140,y:220},{x:100,y:100,w:80,h:100}),false,'actor in front stays visible');
