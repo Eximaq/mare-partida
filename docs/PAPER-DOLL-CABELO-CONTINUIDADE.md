@@ -33,3 +33,12 @@ O teste Chromium compara80 poses com e sem cabelo (160 comparações RGBA indepe
 O próximo trabalho visual é ajustar o vestuário ao corpo comum, preservando as mãos e a articulação dos braços. Os coletes azul/carmesim dos pilotos anteriores não são promovidos automaticamente como um visual contínuo.
 
 Validação executada: nove suítes Node Paper Doll, build Pages e testes Chromium de cabelo, corpo e edição/exportação passaram. O atlas de ataque e a captura desktop foram inspecionados; o teste também gerou a captura393px e confirmou ausência de overflow horizontal.
+
+
+## Ensaio isolado no combate real
+
+O harness de navegador agora aceita o rig restrito de estudos corporais sem mudar o catálogo ou o compositor publicado. Para decidir quais ataques testar, calcula a interseção das direções presentes em todas as camadas exigidas; a presença apenas do corpo não basta se outra camada requerida estiver ausente. Pacotes antigos com cobertura explícita conservam essa declaração.
+
+No pacote corpo/cabelo, Chromium observou os16 frames Idle,32 Walk e32 Attack pelas rotinas reais de movimento e combate. O ensaio verificou que nenhum dano ocorre antes do frame legado de impacto e que cada ataque em cada direção causa um único impacto. Também verificou limites de cache, desligamento do opt-in, Haki ativo com drenagem de vontade, ausência de novos campos visuais no save e bypass da composição humana durante a transformação Zoan.
+
+A injeção só existe no contexto Playwright e não grava flags de aprovação, fontes ou mudanças no jogo. Portanto o teste não libera o personagem incompleto na aventura. Capturas e medições ficam na pasta local ignorada `docs/evidence-paper-doll/body-hair-review/`. A captura do ataque leste foi inspecionada no cenário real. O mesmo teste é executado pela CI para este pacote.

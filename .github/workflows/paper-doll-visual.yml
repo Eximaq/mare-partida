@@ -173,6 +173,7 @@ jobs:
           python tests/paper_doll_continuity_browser.py
           python tests/paper_doll_body_continuity_browser.py
           python tests/paper_doll_hair_continuity_browser.py
+          MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-hair-continuity-20261022/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-basic-sword-20261021/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-walk-profiles-20261021/ python tests/paper_doll_world_review_browser.py
           python tests/universal_character_browser.py

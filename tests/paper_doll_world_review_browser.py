@@ -7,6 +7,17 @@ BASE=os.environ.get('MARE_TEST_URL','http://127.0.0.1:8123/')
 REL=os.environ.get('MARE_REVIEW_PACK','pixellab-pip-generations/paper-doll-expansion-20261021/')
 KEY='mare-partida-save-v1';OUT=ROOT/'docs/evidence-paper-doll';OUT.mkdir(exist_ok=True)
 pack=json.loads((ROOT/REL/'review-pack.json').read_text())
+scoped=pack.get('scope') in ['body-motion-review','body-hair-review']
+if scoped:
+ OUT=OUT/pack['scope'];OUT.mkdir(exist_ok=True)
+def coverage(action):
+ if action in pack.get('coverage',{}):return pack['coverage'][action]
+ pieces={p['id']:p for p in pack['pieces']};directions=set(['south','north','west','east'])
+ for slot in pack['rig']['requiredSlots']:
+  clip=pieces.get(pack['appearance']['pieces'].get(slot),{}).get('animations',{}).get(action,{})
+  directions.intersection_update(clip.get('directions',[]))
+ return sorted(directions)
+
 for piece in pack['pieces']:
  for clip in piece['animations'].values():
   clip['url']=BASE+REL+clip['url']
@@ -16,7 +27,7 @@ INJECT='''
 (()=>{const pack=PACK,cat=MarePaperDollCatalog,create=cat.createRuntime,appearance=cat.appearance;
 window.__paperDollWorldReview={enabled:true,draws:{},fallbacks:{},attackSnapshots:{}};
 cat.appearance=player=>__paperDollWorldReview.enabled&&cat.eligible(player)?structuredClone(pack.appearance):appearance(player);
-cat.createRuntime=options=>{const r=create(options);pack.pieces.forEach(p=>r.registerPiece(p));const draw=r.draw;
+cat.createRuntime=options=>{const r=create(options);if(['body-motion-review','body-hair-review'].includes(pack.scope))r.registerRig({...cat.sharedRig,...pack.rig,animations:{...cat.sharedRig.animations,...pack.rig.animations}});pack.pieces.forEach(p=>r.registerPiece(p));const draw=r.draw;
 r.draw=(ctx,config,pose,x,y,options={})=>{const result=draw(ctx,config,pose,x,y,{...options,allowDraft:true});const group=result?__paperDollWorldReview.draws:__paperDollWorldReview.fallbacks,key=pose.animationId+'/'+pose.direction;group[key]=group[key]||[];if(!group[key].includes(pose.frameIndex))group[key].push(pose.frameIndex);if(result&&pose.animationId==='attack-sword'&&pose.frameIndex===3&&!__paperDollWorldReview.attackSnapshots[pose.direction])__paperDollWorldReview.attackSnapshots[pose.direction]=ctx.canvas.toDataURL('image/png');return result;};return r;};})();
 '''.replace('PACK',json.dumps(pack))
 
@@ -47,7 +58,7 @@ def context(browser,seed=None):
  def patch(route):
   response=route.fetch();route.fulfill(response=response,body=response.text()+INJECT)
  c.route('**/paper-doll-assets.js*',patch)
- if pack.get('coverage',{}).get('attack-sword'):
+ if coverage('attack-sword'):
   def combat_fixture(route):
    response=route.fetch();source=response.text();marker='  window.__mareDiagnostics='
    assert source.count(marker)==1,'Test hook marker changed; do not patch production blindly'
@@ -71,6 +82,8 @@ with sync_playwright() as p:
   q.keyboard.up(key);q.clock.run_for(1100)
   q.wait_for_function('key=>key in __paperDollWorldReview.draws',arg='idle/'+direction)
  state=q.evaluate('__paperDollWorldReview');assert all('idle/'+d in state['draws'] for d in ['south','north','west','east']),state
+ if scoped:
+  for d in ['south','north','west','east']:assert sorted(state['draws']['idle/'+d])==list(range(4)),state
  assert all('walk/'+d in state['draws'] for d in expected_walk),state
  for d in expected_walk:assert sorted(state['draws']['walk/'+d])==list(range(8)),state
  missing_walk=set(['south','north','west','east'])-set(expected_walk)
@@ -81,7 +94,7 @@ with sync_playwright() as p:
  assert not any('paper' in key.lower() or 'appearance' in key.lower() for key in baseline)
  q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
  q.clock.run_for(12000);state=q.evaluate('__paperDollWorldReview');diag=q.evaluate('__mareDiagnostics()')
- attack_dirs=pack.get('coverage',{}).get('attack-sword',[])
+ attack_dirs=coverage('attack-sword')
  if attack_dirs:
   for _ in range(4):
    if any('attack-sword/'+d in state['draws'] for d in attack_dirs):break
