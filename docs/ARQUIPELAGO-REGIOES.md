@@ -1,6 +1,6 @@
 # Regiões e detalhes do Arquipélago
 
-Revisão de 21/10/2026: o East Blue usa faixas de cinco níveis. Conchas abre no Nv.6, Orange Town no Nv.11 e o Parque Arlong no Nv.31. As notas antigas de caçadas documentam a escala anterior.
+Revisão de 22/10/2026: Orange Town usa o mapa PixelLab atualizado e as patrulhas de Mr. 3/Cabaji no Nv.13. Loguetown está liberada para Nv.36–40, com Marinheiros Nv.40. O Lobby continua como ponto de entrada padrão.
 
 Atualização de 19/10/2026. A janela fica em **Modos de jogo (M) → Mapa do Arquipélago**. Botão de viagem e NPC de expedição abrem a mesma lista de modos. East Blue abre por padrão; Alabasta está desabilitada, com `data-status="locked"`, nome e aviso visível abaixo do título.
 
@@ -10,14 +10,14 @@ Atualização de 19/10/2026. A janela fica em **Modos de jogo (M) → Mapa do Ar
 |---|---|---|---|---|
 | Ilha Dawn | 1–5 | `beach` | Nv. 1 | Jogável · chefe Nv. 5 |
 | Cidade das Conchas | 6–10 | `swamp` | Nv. 6 | Jogável · chefe Nv. 10 |
-| Orange Town | 11–15 | `orange` | Nv. 11 | Jogável · chefe Nv. 15 |
+| Orange Town | 11–15 | `orange` | Nv. 11 | Jogável · Mr. 3 e Cabaji Nv. 13 |
 | Ilha dos Animais Raros | 16–20 | `rare` | Nv. 16 | Jogável · Cocox Nv. 18 |
 | Vila Syrup | 21–25 | `syrup` | Nv. 21 | Jogável · Sham e Buchi Nv. 23 |
 | Baratie | 26–30 | `baratie` | Nv. 26 | Jogável · Pearl e Gin Nv. 28 |
 | Parque Arlong | 31–35 | `arlong` | Nv. 31 | Jogável · Kuroobi e Chew Nv. 33 |
-| Loguetown | 36–40 | — | A definir | Em desenvolvimento |
+| Loguetown | 36–40 | `loguetown` | Nv. 36 | Jogável · Marinheiro Nv. 40 |
 
-Ilha Dawn é o nome atual de Ruínas de Brasas; Cidade das Conchas substitui Fenda da Névoa. As renomeações se aplicam à HUD, origem de novos drops e notificações atuais. Textos históricos no inventário, saves exportados e documentação anterior não são reescritos. O cenário das duas áreas não foi modificado nesta tarefa.
+Ilha Dawn é o nome atual de Ruínas de Brasas; Cidade das Conchas substitui Fenda da Névoa. As renomeações se aplicam à HUD, origem de novos drops e notificações atuais. Textos históricos no inventário e saves exportados não são reescritos. A documentação anterior de Orange Town descreve o mapa antigo e está supersedida por [ORANGE-TOWN.md](ORANGE-TOWN.md).
 
 As faixas são recomendações; não alteram os requisitos existentes nem impõem nível máximo. Combate, economia, equipamentos e IDs de persistência permanecem iguais. A viagem reutiliza `worldChange`, inclusive a recuperação de vida/energia já existente.
 

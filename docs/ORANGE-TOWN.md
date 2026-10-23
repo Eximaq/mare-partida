@@ -1,4 +1,8 @@
-# Orange Town — caçada Nv.21–30
+# Orange Town — mapa PixelLab Nv.11–15
+
+## Estado atual · 22/10/2026
+
+O mapa anterior foi substituído pelo mapa `Orange Town` do PixelLab (`1e54e217-5ae7-48ed-aa9e-43bbb58b88b6`), 61×44 células de 64 px. Mr. 3 (`115d5400-e87f-4990-96d5-39605ee0311c`) e Cabaji (`30284edc-eb47-475b-9019-c84ef902e164`) são patrulhas comuns de Nv.13; não há chefe nem respawn de chefe. A área usa navegação por tiles transitáveis, colliders AABB nas bases dos objetos do mapa e saída para o Lobby no cais. Os detalhes abaixo registram a versão antiga e não representam o conteúdo ativo.
 
 Branch: `feature/orange-town-21-30`, base `1d8157a`.
 

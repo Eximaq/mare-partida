@@ -49,6 +49,10 @@
   if(globalThis.MareNewIslands){
     for(const id of ['rare','syrup','baratie','arlong'])maps[id]=MareNewIslands[id].map;
   }else if(globalThis.MareRare)maps.rare=MareRare.map;
+  if(globalThis.MarePixelWorldMaps){
+    maps.orange=MarePixelWorldMaps.orange.map;
+    maps.loguetown=MarePixelWorldMaps.loguetown.map;
+  }
   class Camera {
     constructor(){this.x=0;this.y=0;this.width=960;this.height=570;}
     update(hero,map,dt=0,snap=false){
@@ -77,6 +81,9 @@
     walkable(x,y,r=this.radius){
       if(!Number.isFinite(x)||!Number.isFinite(y)||x<r||y<r||x>this.map.width-r||y>this.map.height-r)return false;
       if(this.map.terrainWalkable&&!this.map.terrainWalkable(x,y,r))return false;
+      const foot=this.map.playerFootprint;
+      if(foot)return !this.map.colliders.some(o=>o.isSolid!==false&&
+        x-foot.w/2<o.x+o.w&&x+foot.w/2>o.x&&y-foot.h<o.y+o.h&&y>o.y);
       // A small circular footprint at the feet, independent of visual height.
       return !this.map.colliders.some(o=>{
         const px=clamp(x,o.x,o.x+o.w),py=clamp(y,o.y,o.y+o.h);
