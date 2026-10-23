@@ -253,3 +253,8 @@ A fase entrega a infraestrutura e a prévia com fallback pela exceção expressa
 ## Estudo corporal contínuo
 
 [Corpo-base em80 poses reais](PAPER-DOLL-CORPO-CONTINUIDADE.md): Idle/Walk/Attack reunidos na bancada sem alterar pixels. O escopo restrito `body-motion-review` permite conferir a anatomia sem apresentar um conjunto sem roupas como personagem final. Nenhuma mudança no catálogo de produção.
+
+
+## Cabelo nas três ações
+
+[Estudo de corpo e cabelo curto](PAPER-DOLL-CABELO-CONTINUIDADE.md):80 poses com cabelo existente; ataque reutiliza superfícies direcionais com encaixes próprios, sem alterar os movimentos ou gastar gerações. Escopo parcial, sem roupa/arma e fora de produção.

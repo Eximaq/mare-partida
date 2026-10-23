@@ -413,3 +413,11 @@ for name in ['review-pack.json', 'source-audit.json', 'body-idle.png', 'body-wal
     shutil.copy2(ROOT/body_review/name, OUT/body_review/name)
 
 shutil.copy2(ROOT/"docs/PAPER-DOLL-CORPO-CONTINUIDADE.md", OUT/"docs/PAPER-DOLL-CORPO-CONTINUIDADE.md")
+
+# Hair continuity contains native reused pixels and a review-only manifest.
+hair_review = Path('pixellab-pip-generations/paper-doll-hair-continuity-20261022')
+(OUT/hair_review).mkdir(parents=True, exist_ok=True)
+for name in ['review-pack.json', 'source-audit.json'] + [f'{slot}-{action}.png' for slot in ['body', 'hair'] for action in ['idle', 'walk', 'attack']]:
+    shutil.copy2(ROOT/hair_review/name, OUT/hair_review/name)
+
+shutil.copy2(ROOT/"docs/PAPER-DOLL-CABELO-CONTINUIDADE.md", OUT/"docs/PAPER-DOLL-CABELO-CONTINUIDADE.md")

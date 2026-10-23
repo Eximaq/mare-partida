@@ -67,6 +67,9 @@ on:
       - 'tests/paper_doll_body_continuity_browser.py'
       - 'pixellab-pip-generations/paper-doll-body-continuity-20261022/**'
       - 'docs/PAPER-DOLL-CORPO-CONTINUIDADE.md'
+      - 'docs/PAPER-DOLL-CABELO-CONTINUIDADE.md'
+      - 'pixellab-pip-generations/paper-doll-hair-continuity-20261022/**'
+      - 'tests/paper_doll_hair_continuity_browser.py'
       - 'pixellab-pip-generations/paper-doll-walk-north-20261021/**'
       - 'docs/PAPER-DOLL-CAMINHADA-NORTE.md'
       - 'pixellab-pip-generations/paper-doll-walk-fit-20261021/**'
@@ -129,6 +132,7 @@ jobs:
           python pixellab-pip-generations/paper-doll-exact-retouch-20261022/assemble_review.py
           python pixellab-pip-generations/paper-doll-east-fit-20261022/assemble_review.py
           python pixellab-pip-generations/paper-doll-body-continuity-20261022/assemble_review.py
+          python pixellab-pip-generations/paper-doll-hair-continuity-20261022/assemble_review.py
           python tools/build_pages.py
       - name: Conferir bancada, fallback e jogo
         env:
@@ -168,6 +172,7 @@ jobs:
           python tests/paper_doll_sheet_fit_browser.py
           python tests/paper_doll_continuity_browser.py
           python tests/paper_doll_body_continuity_browser.py
+          python tests/paper_doll_hair_continuity_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-basic-sword-20261021/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-walk-profiles-20261021/ python tests/paper_doll_world_review_browser.py
           python tests/universal_character_browser.py
