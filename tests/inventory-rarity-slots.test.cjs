@@ -38,4 +38,12 @@ for(const [id] of expected){
   assert.ok(css.includes(`.op-item.rarity-${id}:not(.empty){background-image:url("${relative}")}`),`${id} metadata maps to its frame`);
 }
 
-console.log('Inventory rarity slots: six metadata mappings and transparent frames verified; empty slots and item icons remain unchanged.');
+assert.ok(game.includes("item?'filled rarity-'+rarity:''"),'equipped slots receive their item metadata rarity class');
+assert.ok(css.includes('.op-equip-slot.filled.rarity-common,.op-equip-slot.filled.rarity-uncommon'),'occupied equipment slots use rarity frames while empty equipment stays neutral');
+for(const [id] of expected){
+  const relative='assets/ui/inventory-slots/'+id+'.png';
+  const equipmentRule='.op-equip-slot.filled.rarity-'+id+'{background-image:url("'+relative+'")';
+  assert.ok(css.includes(equipmentRule),'equipped '+id+' items use their rarity frame');
+}
+
+console.log('Inventory rarity slots: six metadata mappings and transparent frames verified for bag and equipment slots.');
