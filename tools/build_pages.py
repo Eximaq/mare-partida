@@ -421,3 +421,10 @@ for name in ['review-pack.json', 'source-audit.json'] + [f'{slot}-{action}.png' 
     shutil.copy2(ROOT/hair_review/name, OUT/hair_review/name)
 
 shutil.copy2(ROOT/"docs/PAPER-DOLL-CABELO-CONTINUIDADE.md", OUT/"docs/PAPER-DOLL-CABELO-CONTINUIDADE.md")
+
+# Fully layered navy candidate; explicit review-only public assets.
+navy_review = Path('pixellab-pip-generations/paper-doll-navy-starter-20261023')
+(OUT/navy_review).mkdir(parents=True, exist_ok=True)
+for name in ['review-pack.json', 'source-audit.json', 'changes.json', 'navy-starter.blueprint.json', 'weapon-attack.png', 'rigid-weapon.png'] + [f'weapon-{d}.png' for d in ['south', 'north', 'west', 'east']] + [f'{slot}-{action}.png' for slot in ['body', 'hair', 'outfit'] for action in ['idle', 'walk', 'attack']]:
+    shutil.copy2(ROOT/navy_review/name, OUT/navy_review/name)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-CONJUNTO-AZUL.md', OUT/'docs/PAPER-DOLL-CONJUNTO-AZUL.md')
