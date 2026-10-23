@@ -27,3 +27,6 @@
 /* Detailed pixel-plank harbor pier, layered in front of the supplied ocean art. */
 body::before{content:"";position:fixed;z-index:-5;left:0;right:0;bottom:0;height:74px;pointer-events:none;border-top:8px solid #46301f;box-shadow:0 -4px 0 #b28043,0 -9px 0 #1b2526;background:repeating-linear-gradient(90deg,#392619 0 5px,#875635 6px 9px,#603e25 10px 72px,#a06e40 73px 75px,#261b17 76px 83px),linear-gradient(#37271c,#160f0d)}
 @media(max-width:760px){body::before{height:38px;opacity:.65}}
+
+/* Keep the ornate external corners inside very narrow 320px displays. */
+@media(max-width:359px){.auth-panel{width:calc(100% - 28px);padding:16px 10px}.game-logo{font-size:49px}.tabs button{font-size:12px}.panel-top{font-size:12px}.status strong{font-size:11px}}
