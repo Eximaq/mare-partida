@@ -188,6 +188,13 @@
   itemDefs.push(...MarePrison.boxes);
   itemDefs.push(MareHaki.book); // Append only: existing save indices must remain stable.
   itemDefs.push(...MareAkuma.catalog.map(fruit=>({name:fruit.name,type:'akuma_no_mi',slot:'akuma_no_mi',fruitId:fruit.id,rank:fruit.rank,icon_path:fruit.icon_path,bonus_stats:fruit.bonus_stats,vfx_sprite_sheet:fruit.vfx_sprite_sheet,symbol:'✦',rarity:'epic'})));
+  // Append only: preserve saved numeric item indices. All four reuse the existing 11 ATK Espadachim baseline; rarity multipliers remain centralized in MareForge.
+  itemDefs.push(
+    {name:'Katana da Maelstrom',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,symbol:'⚔',rarity:'legendary',fixedRarity:true,description:'Uma katana lendária que carrega a fúria dos redemoinhos. Sua lâmina canaliza correntes de vento em movimentos circulares, transformando cada golpe em uma tempestade cortante.',icon_path:'assets/ui/items-pixellab/katana-de-maelstrom.png?v=20261022'},
+    {name:'Nodachi de Kairouseki',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,symbol:'⚔',rarity:'epic',fixedRarity:true,description:'Uma nodachi forjada com Kairouseki, o lendário mineral dos mares. Sua lâmina enfraquece usuários de Akuma no Mi ao contato, anulando sua resistência sobrenatural e tornando-os vulneráveis ao aço.',icon_path:'assets/ui/items-pixellab/nodachi-de-kairouseki.png?v=20261022'},
+    {name:'Nodachi de Fogo',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,symbol:'⚔',rarity:'epic',fixedRarity:true,description:'Uma imponente nodachi envolta pelo calor das chamas. Seus golpes liberam energia flamejante, capazes de incendiar inimigos e deixar um rastro ardente pelo campo de batalha.',icon_path:'assets/ui/items-pixellab/nodachi-de-fogo.png?v=20261022'},
+    {name:'Meito: Ame no Habakiri',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,symbol:'⚔',rarity:'supreme',fixedRarity:true,description:'Uma espada lendária empunhada por Kozuki Oden, reconhecida entre as grandes Meito de Wano. Diz-se que sua lâmina é capaz de cortar os próprios céus, carregando o legado de um dos maiores samurais da história.',icon_path:'assets/ui/items-pixellab/ame-no-habakiri.png?v=20261022'}
+  );
   const questDefs = [
     {id:'crab',title:'Cascos de magma',desc:'Derrote 6 carapaças ígneas.',target:6,stat:'crab',gold:85,xp:65},
     {id:'bandit',title:'Chamas à espreita',desc:'Derrote 5 corsários de brasa.',target:5,stat:'bandit',gold:125,xp:100},
@@ -355,8 +362,12 @@
   function newItem(def,level=1,rolled=false,forcedRarity=null){
     const item={id:'it'+Date.now().toString(36)+(world.nextID++).toString(36),def:itemDefs.indexOf(def),level:Math.max(1,level),plus:0,locked:false,obtainedAt:Date.now()};
     if(def.type==='akuma_no_mi'){Object.assign(item,{type:'akuma_no_mi',fruitId:def.fruitId,rank:def.rank,rarity:def.rarity});return item;}
-    if(def.kind==='pearl')item.pearlId=def.pearlId;else item.rarity=forcedRarity||(rolled?MareTalentCombat.rarity(Math.random,game?getDerived().rareChance*(MareUltimates.selected(game)==='underworld'?2:1):0):def.rarity);
+    if(def.kind==='pearl')item.pearlId=def.pearlId;else item.rarity=def.fixedRarity?def.rarity:(forcedRarity||(rolled?MareTalentCombat.rarity(Math.random,game?getDerived().rareChance*(MareUltimates.selected(game)==='underworld'?2:1):0):def.rarity));
     return MareForge.normalizeItem(item,itemDefs,Math.random);
+  }
+  function eligibleGearForDrop(rarity,world=false){
+    const worldAllowed=!world||MarePrison.canDrop('equipment','world');
+    return itemDefs.filter(d=>worldAllowed&&!d.kind&&d.type!=='akuma_no_mi'&&(d.slot!=='weapon'||d.type===game.classId)&&(!d.fixedRarity||(d.rarity===rarity&&d.rarity!=='supreme')));
   }
   function itemBase(item){return itemDefs[item?.def]||itemDefs[0];}
   function itemRarity(item){return item?.rarity||itemBase(item).rarity;}
@@ -592,14 +603,14 @@
     const lootMultiplier=MareUltimates.selected(game)==='underworld'?2:1;
     if(Math.random()<Math.min(1,reward.materialChance*lootMultiplier)){game.materials+=reward.materials;addLoot('+'+reward.materials+' Ferro Salgado','✦');}
     if(Math.random()<Math.min(1,reward.gearChance*lootMultiplier)){
-      if(game.inventory.length<BAG_CAPACITY){const eligible=itemDefs.filter(d=>!d.kind&&d.type!=='akuma_no_mi'&&MarePrison.canDrop('equipment','world')&&(d.slot!=='weapon'||d.type===game.classId)),def=pick(eligible),rarity=MareHunt.rarity(area,m.type==='boss'||MareMonsterCatalog[m.type]?.boss===true,Math.random(),getDerived().rareChance);const item=newItem(def,reward.gearLevel,false,rarity);item.origin=zones[area].name;game.inventory.unshift(item);addLoot(def.name,def.symbol);rewardNotice({name:def.name,rarity:itemRarity(item)});}
+      if(game.inventory.length<BAG_CAPACITY){const rarity=MareHunt.rarity(area,m.type==='boss'||MareMonsterCatalog[m.type]?.boss===true,Math.random(),getDerived().rareChance),def=pick(eligibleGearForDrop(rarity,true));const item=newItem(def,reward.gearLevel,false,rarity);item.origin=zones[area].name;game.inventory.unshift(item);addLoot(def.name,def.symbol);rewardNotice({name:def.name,rarity:itemRarity(item)});}
       else if(m.type==='boss'||MareMonsterCatalog[m.type]?.boss===true)toast('Mochila cheia: o equipamento do chefe não pôde ser recolhido.','danger');
     }
     if(Math.random()<Math.min(1,reward.potionChance*lootMultiplier)){game.potions+=reward.potions;addLoot('Poção de vida','♥');}
     if(lootMultiplier===2&&m.type!=='boss'&&game.inventory.length<BAG_CAPACITY){
       const special=MareUltimates.loot(game);
       if(special.box&&MarePrison.canDrop('pearl-box','underworld')){const box=newItem(itemDefs.find(d=>d.kind==='pearl-box'&&d.boxLevel===1));box.origin='Senhor do Submundo';game.inventory.unshift(box);addLoot('Caixa de Pérolas Nível 1','▣');}
-      if(special.legendary&&game.inventory.length<BAG_CAPACITY){const def=pick(itemDefs.filter(d=>!d.kind&&d.type!=='akuma_no_mi'&&(d.slot!=='weapon'||d.type===game.classId)));const it=newItem(def,reward.gearLevel,false,'legendary');it.origin='Senhor do Submundo';game.inventory.unshift(it);addLoot(def.name,'✦');}
+      if(special.legendary&&game.inventory.length<BAG_CAPACITY){const def=pick(eligibleGearForDrop('legendary'));const it=newItem(def,reward.gearLevel,false,'legendary');it.origin='Senhor do Submundo';game.inventory.unshift(it);addLoot(def.name,'✦');}
     }
     if(MareHaki.drop(m)){if(game.inventory.length<BAG_CAPACITY){const it=newItem(MareHaki.book);it.origin=zones[game.area].name;game.inventory.unshift(it);addLoot(MareHaki.book.name,'▤');rewardNotice({name:MareHaki.book.name,rarity:'epic'});saveGame();}else toast('Um Livro da Vontade caiu, mas a mochila está cheia.','danger');}
     if(m.type==='boss'){toast(''+monsterName(m)+' derrotado! +'+gold+' dobrões','good');log('Você derrotou '+monsterName(m)+'!','gold');game.hasSeenBoss=true;world.bossCooldown=90;if(record.first)toast('Primeira vitória! Abra Rota & recompensas para resgatar sua arma.','good');saveGame();}
@@ -898,7 +909,7 @@
     const slot=fruit?'akuma_no_mi':def.slot;
     const className=slot==='weapon'?classes[def.type]?.name||def.type:null;
     const pearl=def.kind==='pearl'?MareForge.pearlOf(item,itemDefs):null;
-    const description=pearl?`Concede +${Math.round(pearl.percent*100)}% de ${MareForge.names[pearl.attribute]} ao ser instalada.`:def.kind==='pearl-box'?'Contém uma pérola para usar na forja.':def.kind==='haki-book'?'Livro necessário para despertar a Vontade.':'';
+    const description=def.description||(pearl?`Concede +${Math.round(pearl.percent*100)}% de ${MareForge.names[pearl.attribute]} ao ser instalada.`:def.kind==='pearl-box'?'Contém uma pérola para usar na forja.':def.kind==='haki-book'?'Livro necessário para despertar a Vontade.':'');
     return {name:def.name,typeName:slotNames[slot]?.toLocaleLowerCase('pt-BR')||'item',rarity:itemRarity(item),rarityName:rarityNames[itemRarity(item)],level:item.level||1,rank:fruitData?.rank,className,allowed:!className||def.type===game.classId,stats,power:fruit||gear?itemPower(item):null,description,origin:item.origin||'',slot};
   }
   const fruitTooltipFallback={
@@ -957,7 +968,8 @@
 
   function itemIcon(key,name=''){
     const def=itemDefs[key];
-    if(def?.type==='akuma_no_mi')return def.icon_path?`<img class="item-icon" src="${escapeHTML(def.icon_path)}" alt="${escapeHTML(name||def.name)}" draggable="false">`:'<span aria-hidden="true">✦</span>';
+    if(def?.icon_path)return `<img class="item-icon" src="${escapeHTML(def.icon_path)}" alt="${escapeHTML(name||def.name)}" draggable="false">`;
+    if(def?.type==='akuma_no_mi')return '<span aria-hidden="true">✦</span>';
     const pearl=MareForge.pearlById[key]||MareForge.pearlById[def?.pearlId];
     const artKey=def?.kind==='haki-book'?'book':def?.kind==='pearl-box'?'pearl-box-'+def.boxLevel:pearl?pearl.id:key;
     const src=`assets/ui/items-pixellab/${artKey}.png?v=20261020`;
