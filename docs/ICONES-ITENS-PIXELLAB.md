@@ -24,3 +24,11 @@ Originais, requisições exatas, resultados rejeitados, manifest de auditoria e 
 - Todas as suítes `tests/*.test.cjs`, sintaxe dos módulos alterados, `python tools/build_pages.py` e `git diff --check`.
 
 Para o colaborador: a mudança está concentrada nos caminhos de arte em `game.js`, `index.html` e `haki-ui.js`; os catálogos e contratos de gameplay permanecem iguais. Para adicionar um novo item, inclua sua arte e metadados no diretório público sem renumerar o catálogo existente.
+
+## Novas espadas
+
+Quatro PNGs RGBA 128×128 fornecidos pelo proprietário foram copiados sem recoloração ou recorte para `assets/ui/items-pixellab/`. O catálogo aponta cada arma diretamente para seu arquivo; o CSS existente as exibe em `object-fit: contain` com renderização pixelada nos tamanhos do inventário/equipamento.
+
+As definições são acrescentadas ao final do catálogo para preservar índices dos saves. Todas usam o tipo `sword` e a base de 11 ATQ do Sabre de Coral; raridades usam os multiplicadores existentes do sistema Forja. As descrições são exibidas nos tooltips. Não foram criados efeitos de fogo, vento ou Kairouseki sem suporte a efeitos por item.
+
+As armas Épicas e Lendária entram nos drops existentes somente quando a raridade sorteada coincide; isso mantém sua classificação fixa. A Ame no Habakiri é registrada como Suprema, mas continua fora dos drops comuns porque o sistema atual não sorteia essa raridade. Nenhuma fonte ou taxa de obtenção nova foi inventada.
