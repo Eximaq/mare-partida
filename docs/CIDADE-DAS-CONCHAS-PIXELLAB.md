@@ -18,6 +18,14 @@ Validação: testes Conchas, mapas PixelLab, navegação e caça; build estátic
 - Ponto de entrada: célula `[11, 24]`, na faixa walkable de areia ao sul.
 - O ID de save `swamp` e o ID de mapa `conchas` foram preservados para compatibilidade com progresso existente.
 
+## Regressão de navegador (23/10/2026)
+
+O teste de chegada agora pausa o relógio durante a viagem e desliga a caça pelo botão antes de avançar a simulação. A falha anterior vinha do deslocamento automático durante a espera do clique, não de um spawn incorreto. A entrada continua na célula `[11, 24]`, coincidente com o setor Areia Sul. O teste confere essa configuração e a posição real do personagem sem alterar o runtime.
+
+Ao já estar em um setor, o teste fecha a janela de rotas antes de tentar abrir a próxima. A data simulada utiliza ISO explícito para evitar confusão entre segundos e milissegundos. O workflow passa a acompanhar os assets/mapa integrados e coleta as capturas na pasta temporária utilizada pelo teste.
+
+Validado no Chromium em 1920×1080, 1366×768, 1280×720, 393×852 e 320×568: entrada, Helmeppo Nv. 8, preservação do save, retorno ao porto e circulação pelos quatro setores sem erros JavaScript. Build Pages e cinco testes Node pertinentes passaram. Capturas continuam locais/artefatos de CI, sem inclusão de saves no Git.
+
 ## Helmeppo
 
 - PixelLab character ID: `411318d7-6ee7-43ea-ba8a-11b0fc0ce182`.

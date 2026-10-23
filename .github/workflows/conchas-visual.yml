@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'conchas-*.js'
+      - 'pixellab-world-maps.js'
+      - 'assets/world-maps/conchas/**'
+      - 'assets/new-islands/helmeppo/**'
       - 'game.js'
       - 'world-system.js'
       - 'orange-terrain.js'
@@ -41,6 +44,6 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: conchas-capturas
-          path: docs/evidence-conchas/after/
+          path: /tmp/mare-conchas-pixellab-review/
           if-no-files-found: warn
           retention-days: 14
