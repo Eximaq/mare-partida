@@ -48,8 +48,12 @@ Capturas de revisão ficam localmente em `docs/evidence-paper-doll/east-fit-*.pn
 
 ### Executado nesta continuação
 
-- 46 suítes Node e nove testes Python de guias passaram.
+- 47 suítes Node e nove testes Python de guias passaram.
 - Build Pages, nova prévia Chromium e combate real com opt-in isolado passaram.
 - Regressões da bancada/importação/fallback, estudo norte anterior e combate das sete classes passaram.
 - A nova edição de folhas passou no Chromium: offsets por pose, valores inválidos, exportação/reimportação, reset, contratos parciais, hashes dos PNGs, responsividade e save. A regressão antiga dos sockets também passou.
 - Dawn passou localmente em cinco resoluções, com rotas, chefe, resgate e pixels do mapa. O teste agora se aproxima do chefe por um ponto navegável com linha de visão, usando clique e movimentação reais: chegar à âncora do setor não garante alcance contra um spawn aleatório próximo da casa. Nenhum mapa, colisão ou comportamento de monstro foi modificado. O timeout do CI subiu de10 para20min para comportar a instalação fria do Chromium; todos os testes foram mantidos. O resultado remoto do novo commit deve ser consultado no PR.
+
+### Integração com o colaborador
+
+A branch incorpora `origin/main` em2e7fe74, incluindo os PRs58/59 de lobby e mapas/monstros. O merge foi feito somente na branch de trabalho, preservando esses arquivos e a correção de versionamento das imagens locais. Build,47 suítes Node,9 testes de guias e a validação de ataque/bancada/Dawn foram repetidos sobre essa base integrada. Nenhum merge deste PR foi feito na main.
