@@ -48,4 +48,3 @@ with sync_playwright() as p:
  assert not errors,errors
  browser.close()
 print('Continuity: one-shot attack, explicit replay, four-stage playback in four views, missing-art fallback, pause, cancel, looping walk, mobile and save passed.')
-
