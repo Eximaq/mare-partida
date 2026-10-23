@@ -16,7 +16,7 @@
   function buildIdentity(){
     for(const [id,values]of [['classId',catalog.classes],['factionId',catalog.factions]]){
       $(id).replaceChildren(...Object.entries(values).map(([value,item])=>{const option=document.createElement('option');option.value=value;option.textContent=item.name;return option;}));$(id).value=player[id];
-      $(id).addEventListener('change',()=>{pause();player[id]=$(id).value;if(id==='classId'){player.equipment.weapon={def:catalog.classes[player.classId].weapon};buildWeapons();}$('frame').value=0;elapsed=0;render();});
+      $(id).addEventListener('change',()=>{pause();sequenceIndex=-1;finished=false;player[id]=$(id).value;if(id==='classId'){player.equipment.weapon={def:catalog.classes[player.classId].weapon};buildWeapons();}$('frame').value=0;elapsed=0;render();});
     }
   }
   function buildWeapons(){
@@ -26,6 +26,9 @@
     $('animation').querySelector('[value=attack]').textContent='Attack · '+catalog.categories[category];
   }
   const hidden=new Set();let playing=false,elapsed=0,last=0,lastState={};
+  const sequence=['idle','walk','attack','idle'];
+  const actionNames={idle:'Repouso',walk:'Caminhada',attack:'Ataque'};
+  let sequenceIndex=-1,finished=false;
   const boards=new Map();
   function buildBoards(){
     $('boards').replaceChildren();boards.clear();
@@ -112,11 +115,21 @@
     lastState.readyDirections=readyDirections;
     if(!valid&&readyDirections.length)lastState.mode='partial-draft';
     attachmentControls();sheetFitControls();
+    const progress=sequenceIndex>=0?'Etapa '+(sequenceIndex+1)+'/4 · '+actionNames[animationId]+' · ':'';
+    $('playbackStatus').textContent=progress+(finished?'Ensaio concluído. ':playing?'Reproduzindo. ':'Pausado. ')+(valid?'Camadas modulares em inspeção.':'Sprite original por fallback; esta ação ainda não tem conjunto modular completo.');
   }
   function pause(){playing=false;$('play').textContent='Reproduzir';$('play').setAttribute('aria-pressed','false');}
-  for(const id of ['animation','direction','zoom','pivots'])$(id).addEventListener('change',()=>{if(id==='animation'){$('frame').value=0;elapsed=0;pause();}render();});
-  $('frame').addEventListener('input',()=>{pause();render();});
-  $('play').addEventListener('click',()=>{playing=!playing;$('play').textContent=playing?'Pausar':'Reproduzir';$('play').setAttribute('aria-pressed',String(playing));elapsed=Number($('frame').value)/selectedClip().fps;});
+  for(const id of ['animation','direction','zoom','pivots'])$(id).addEventListener('change',()=>{if(id==='animation'){$('frame').value=0;elapsed=0;sequenceIndex=-1;finished=false;pause();}render();});
+  $('frame').addEventListener('input',()=>{pause();sequenceIndex=-1;finished=false;render();});
+  $('playbackMode').addEventListener('change',()=>{pause();sequenceIndex=-1;finished=false;elapsed=0;$('frame').value=0;render();});
+  function setSequenceStage(index){sequenceIndex=index;$('animation').value=sequence[index];$('frame').max=selectedClip().frames-1;$('frame').value=0;elapsed=0;}
+  $('play').addEventListener('click',()=>{
+    if(playing){pause();render();return;}
+    if($('playbackMode').value==='sequence'){
+      if(sequenceIndex<0||finished)setSequenceStage(0);
+    }else if(finished){$('frame').value=0;}
+    finished=false;playing=true;$('play').textContent='Pausar';$('play').setAttribute('aria-pressed','true');elapsed=Number($('frame').value)/selectedClip().fps;render();
+  });
   $('resetLayers').addEventListener('click',()=>{hidden.clear();buildLayers();render();});
   for(const [id,slot]of [['weapon','weapon'],['outfit','coat']])$(id).addEventListener('change',()=>{player.equipment[slot]=$(id).value==='none'?null:{def:Number($(id).value)};render();});
   function releaseUrls(){for(const url of objectUrls){MareFactionSprites.forgetImage?.(url);URL.revokeObjectURL(url);}objectUrls=[];}
@@ -189,7 +202,7 @@
     data.appearance={...data.appearance,pieces:{...appearance().pieces}};data.reviewOnly=true;
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json'})),link=document.createElement('a');link.href=url;link.download='paper-doll-review.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   });
-  $('resetPack').addEventListener('click',()=>{pause();releaseUrls();runtime=catalog.createRuntime({getImage:MareFactionSprites.image});rigId=catalog.sharedRig.id;imported=null;importedSource=null;importedFileNames=new Map();$('weapon').disabled=false;$('outfit').disabled=false;$('classId').disabled=false;$('factionId').disabled=false;buildWeapons();$('importPack').value='';$('importStatus').textContent='Catálogo original restaurado.';render();});
+  $('resetPack').addEventListener('click',()=>{pause();sequenceIndex=-1;finished=false;releaseUrls();runtime=catalog.createRuntime({getImage:MareFactionSprites.image});rigId=catalog.sharedRig.id;imported=null;importedSource=null;importedFileNames=new Map();$('weapon').disabled=false;$('outfit').disabled=false;$('classId').disabled=false;$('factionId').disabled=false;buildWeapons();$('importPack').value='';$('importStatus').textContent='Catálogo original restaurado.';render();});
   async function importFiles(files){
     const urls=[];
     try{
@@ -219,7 +232,7 @@
         candidate.registerPiece(piece);
       }
       if(!data.appearance?.pieces)throw Error('Falta appearance.pieces no manifesto.');
-      pause();releaseUrls();objectUrls=urls;runtime=candidate;rigId=data.rig.id;imported={...data.appearance,bindings:data.bindings};importedSource=structuredClone(data);importedFileNames=fileUrls;$('classId').disabled=true;$('factionId').disabled=true;$('weapon').disabled=!data.bindings?.weapon;$('outfit').disabled=!data.bindings?.coat;
+      pause();sequenceIndex=-1;finished=false;releaseUrls();objectUrls=urls;runtime=candidate;rigId=data.rig.id;imported={...data.appearance,bindings:data.bindings};importedSource=structuredClone(data);importedFileNames=fileUrls;$('classId').disabled=true;$('factionId').disabled=true;$('weapon').disabled=!data.bindings?.weapon;$('outfit').disabled=!data.bindings?.coat;
       const actions=[...$('animation').options].map(o=>o.value),current=$('animation').value;
       if(!data.rig.animations[poseAnimationId(current)])$('animation').value=actions.find(a=>data.rig.animations[poseAnimationId(a)])||current;
       $('frame').value=0;elapsed=0;$('importStatus').textContent='Pacote local recebido. Confira todas as poses e pendências.';render();
@@ -241,11 +254,21 @@
     }catch(e){$('importStatus').textContent='Prévia não carregada: '+e.message;}
   }
   window.addEventListener('mare-faction-sprite-ready',render);
-  window.__paperDollInspector={state:()=>structuredClone(lastState)};
+  window.__paperDollInspector={state:()=>structuredClone({...lastState,playback:{playing,finished,sequenceIndex,mode:$('playbackMode').value}})};
   buildIdentity();buildWeapons();buildBoards();buildLayers();render();bundledReview();
   function tick(now){
     const dt=last?Math.min(.1,(now-last)/1000):0;last=now;
-    if(playing&&!document.hidden){const a=selectedClip();elapsed+=dt;const index=Math.min(a.frames-1,Math.floor(elapsed*a.fps));if(index!==Number($('frame').value)){$('frame').value=index;render();}if(elapsed>=a.frames/a.fps){elapsed=0;$('frame').value=0;render();}}
+    if(playing&&!document.hidden){
+      const a=selectedClip();elapsed+=dt;
+      const index=Math.min(a.frames-1,Math.floor(elapsed*a.fps));
+      if(index!==Number($('frame').value)){$('frame').value=index;render();}
+      if(elapsed>=a.frames/a.fps){
+        if(sequenceIndex>=0&&sequenceIndex<sequence.length-1){setSequenceStage(sequenceIndex+1);}
+        else if(sequenceIndex<0&&a.loop){elapsed%=a.frames/a.fps;$('frame').value=0;}
+        else{pause();finished=true;}
+        render();
+      }
+    }
     requestAnimationFrame(tick);
   }
   requestAnimationFrame(tick);

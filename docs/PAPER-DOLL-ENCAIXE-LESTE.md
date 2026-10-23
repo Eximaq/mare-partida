@@ -57,3 +57,14 @@ Capturas de revisão ficam localmente em `docs/evidence-paper-doll/east-fit-*.pn
 ### Integração com o colaborador
 
 A branch incorpora `origin/main` em2e7fe74, incluindo os PRs58/59 de lobby e mapas/monstros. O merge foi feito somente na branch de trabalho, preservando esses arquivos e a correção de versionamento das imagens locais. Build,47 suítes Node,9 testes de guias e a validação de ataque/bancada/Dawn foram repetidos sobre essa base integrada. Nenhum merge deste PR foi feito na main.
+
+
+## Ensaio de continuidade na bancada
+
+O seletor **Ensaio → Repouso → Caminhada → Ataque → Repouso** percorre um ciclo completo de cada ação usando seus frames/FPS reais e o mesmo pivô. O último repouso encerra o ensaio; Reproduzir inicia uma nova sequência. Pausar conserva a pose, e selecionar uma ação ou arrastar o frame cancela a sequência corrente. Alterações continuam restritas à bancada.
+
+Na reprodução de uma ação isolada, o campo `loop` do contrato é respeitado: repouso e caminhada repetem; ataque para no último frame. Antes, a bancada repetia todas as ações indiscriminadamente. O controlador de combate não foi alterado.
+
+O pacote `bento-east-fit` ainda contém apenas ataque. Por isso o ensaio mostra o fallback completo em Idle/Walk e as camadas em revisão durante Attack, com aviso visível a cada etapa. Essa troca de aparência é uma **pendência de arte**, não continuidade modular aprovada. Não foram combinados automaticamente os pilotos antigos com anatomia diferente, nem criados novos PNGs ou consumidos créditos.
+
+Validação desta continuação: nove suítes Node Paper Doll, build Pages, teste Chromium de continuidade e regressão da edição/exportação de camadas passaram. O novo teste percorre as quatro vistas, verifica ataque único/reinício explícito, pausa, cancelamento, loop de caminhada, fallback das ações ausentes, viewport de393px e save intacto. Capturas locais `continuity-1366.png` e `continuity-393.png` foram inspecionadas. Os quatro checks remotos do commit anterior6843c89 passaram; o novo commit exige sua própria execução do CI.

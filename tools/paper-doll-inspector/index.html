@@ -19,10 +19,12 @@
       <label>Ação<select id="animation"><option value="idle">Idle · Repouso</option><option value="walk">Walk · Caminhada</option><option value="attack">Attack · Espada</option></select></label>
       <label>Direção<select id="direction"><option value="all">Quatro direções</option><option value="south">Sul · Frente</option><option value="north">Norte · Costas</option><option value="west">Oeste · Esquerda</option><option value="east">Leste · Direita</option></select></label>
       <label>Zoom<select id="zoom"><option value="2">2×</option><option value="3" selected>3×</option><option value="4">4×</option></select></label>
+      <label>Ensaio<select id="playbackMode"><option value="single">Ação selecionada</option><option value="sequence">Repouso → Caminhada → Ataque → Repouso</option></select></label>
       <button id="play" type="button" aria-pressed="false">Reproduzir</button>
       <label class="frame-control">Frame <output id="frameLabel">1 / 4</output><input id="frame" type="range" min="0" max="3" value="0" step="1"></label>
       <label class="check"><input type="checkbox" id="pivots" checked>Pivôs e linha dos pés</label>
     </section>
+    <p id="playbackStatus" class="muted" role="status">Ataques são reproduzidos uma vez; repouso e caminhada seguem o ciclo original.</p>
     <p id="status" role="status" aria-live="polite">Conferindo fontes…</p>
     <div class="workbench">
       <section aria-label="Comparação por direção"><div id="boards" class="boards"></div></section>
