@@ -5,8 +5,16 @@
   const sheets={};
   if(typeof Image!=='undefined')for(const [id,actions] of Object.entries(meta))for(const action of Object.keys(actions)){const img=new Image();img.src='assets/new-islands/'+id+'/'+action+'.png';(sheets[id]??={})[action]=img;}
   const rows={south:0,west:1,east:2,north:3};
-  const DEFAULT_MONSTER_SCALE=2.25;
-  function layout(monster){const states=meta[monster.type];if(!states)return null;const direction=monster.emberFacing||'south',row=rows[direction]??0,action=monster.attackAnim>0?'attack':monster.moving>0?'walk':'idle',a=states[action],scale=DEFAULT_MONSTER_SCALE;return {row,action,a,scale,top:Math.round(monster.y+3-a.feet[row]*scale),width:Math.round(a.size*scale)};}
+  const DEFAULT_MONSTER_RENDER_SIZE=80;
+  const DEFAULT_MONSTER_SCALE=DEFAULT_MONSTER_RENDER_SIZE/64;
+  const LEGACY_MONSTER_SCALE=2.25;
+  const legacyMonsterTypes=new Set(['sham','buchi','pearl','gin','chew','kuroobi']);
+  function layout(monster){
+    const states=meta[monster.type];if(!states)return null;
+    const direction=monster.emberFacing||'south',row=rows[direction]??0,action=monster.attackAnim>0?'attack':monster.moving>0?'walk':'idle',a=states[action];
+    const scale=legacyMonsterTypes.has(monster.type)?LEGACY_MONSTER_SCALE:DEFAULT_MONSTER_RENDER_SIZE/a.size;
+    return {row,action,a,scale,top:Math.round(monster.y+3-a.feet[row]*scale),width:Math.round(a.size*scale)};
+  }
   function monster(ctx,m,time){const box=layout(m);if(!box)return false;const {row,action,a,scale,top,width}=box,img=sheets[m.type]?.[action];if(!img?.complete||!img.naturalWidth)return false;const frame=action==='attack'?Math.min(a.frames-1,Math.max(0,Math.floor((.58-m.attackAnim)*a.frames/.58))):action==='walk'?Math.floor(time*a.fps+m.bob)%a.frames:0;ctx.save();ctx.imageSmoothingEnabled=false;if(m.hit>0)ctx.filter='brightness(1.5)';ctx.drawImage(img,frame*a.size,row*a.size,a.size,a.size,Math.round(m.x-width/2),top,width,width);ctx.restore();return true;}
-  root.MareNewIslandArt={monster,layout,meta,sheets,DEFAULT_MONSTER_SCALE};
+  root.MareNewIslandArt={monster,layout,meta,sheets,DEFAULT_MONSTER_RENDER_SIZE,DEFAULT_MONSTER_SCALE,LEGACY_MONSTER_SCALE};
 })(globalThis);

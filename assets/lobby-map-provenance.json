@@ -1,1 +1,13 @@
-{"source":"PixelLab Map Workshop","mapId":"5cf16074-4d27-437e-acd5-869fe9339f26","name":"Lobby","tileSize":64,"cells":{"width":60,"height":41},"export":"Existing map rendered in 15x10-cell crops, assembled at original resolution. Empty exterior reused a water tile from the same map. No art generation."}
+{
+  "source": "PixelLab Map Workshop",
+  "mapId": "5cf16074-4d27-437e-acd5-869fe9339f26",
+  "name": "Lobby",
+  "tileSize": 64,
+  "cells": {
+    "width": 60,
+    "height": 41
+  },
+  "objects": 97,
+  "refreshedAt": "2026-10-22",
+  "export": "Current PixelLab map rendered in 15x10-cell native-resolution crops and reassembled at 64 pixels per tile. Unpainted exterior cells reuse the existing ocean texture. No art generation."
+}

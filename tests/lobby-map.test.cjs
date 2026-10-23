@@ -5,6 +5,17 @@ const lobby=require('../lobby-world.js');
 require('../island-world.js');
 require('../world-system.js');
 
+test('Lobby uses the refreshed native-resolution PixelLab map',()=>{
+  const fs=require('node:fs'),path=require('node:path');
+  const png=fs.readFileSync(path.join(__dirname,'../assets/lobby-map.png'));
+  const provenance=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/lobby-map-provenance.json'),'utf8'));
+  assert.equal(globalThis.MareLobbyMapData.pixelLabMapId,'5cf16074-4d27-437e-acd5-869fe9339f26');
+  assert.deepEqual([png.readUInt32BE(16),png.readUInt32BE(20)],[60*64,41*64]);
+  assert.equal(provenance.refreshedAt,'2026-10-22');
+  assert.equal(provenance.objects,97);
+  assert.match(fs.readFileSync(path.join(__dirname,'../lobby-world.js'),'utf8'),/lobby-map\.png\?v=20261022/);
+});
+
 test('existing 64px Lobby map has a walkable spawn and reachable services',()=>{
   const map=globalThis.MareWorld.maps.lobby;
   const nav=new globalThis.MareWorld.Navigation(map,32);
