@@ -1,3 +1,9 @@
+## 23/10/2026 — Animação de slot da Ame no Habakiri
+
+Branch `feature/ame-no-habakiri-slot-animation`, baseada na `main` atual `05e714a`. A folha 256×256 RGBA enviada pelo proprietário foi preservada como PNG original e vinculada ao item Ame: 16 quadros 64×64, loop de 0,5 s na mochila e no equipamento. A imagem estática continua nos detalhes fora dos slots; sem alteração de raridade, atributos, combate ou saves.
+
+Validação: teste novo da Ame, regressões de Nodachi, inventário compacto, raridades e quatro espadas (5/5); `python tools/build_pages.py` copiou a folha sem alterar bytes. A prévia local carregou, mas a inspeção visual dos dois slots foi interrompida pelo Escape físico durante o controle do navegador.
+
 ## 21/10/2026 — Paper Doll: preparação de camadas agrupadas, zero novas gerações
 
 Continuação do PR45. Auditor de atlas por célula, exportação atômica, detecção de sequência estática e oclusão corporal apenas quando explicitamente permitida por máscara para cabelo/roupa.11 testes de camada e5 de lote passaram, além do build e da revisão da espada no Chromium. Entradas nativas, máscaras e contexto preparados a partir de assets existentes, sem novos pixels de personagem. Três chamadas de geração propostas com teto18 continuam aguardando aprovação; nenhuma foi executada. Runtime, catálogo e saves intactos.

@@ -36,3 +36,7 @@ As armas Épicas e Lendária entram nos drops existentes somente quando a rarida
 ### Animação do item Nodachi de Fogo
 
 A folha enviada contém 16 quadros de 64×64 em uma grade 4×4. Ela é preservada sem recorte ou redimensionamento em assets/ui/items-pixellab/nodachi-de-fogo-animation.png. Mochila e slot de arma equipada percorrem os quadros em ordem, começando pelo primeiro quadro (espada sem chama), em loop de 0,5 s. A arte estática continua sendo usada em detalhes fora dos slots.
+
+### Animação do item Ame no Habakiri
+
+A folha fornecida pelo proprietário foi copiada sem recorte ou redimensionamento para `assets/ui/items-pixellab/ame-no-habakiri-animation.png`: 256×256 RGBA, grade 4×4 de quadros 64×64. O catálogo associa essa folha somente à animação visual do slot da Ame no Habakiri; o mesmo renderizador percorre os 16 quadros em loop de 0,5 s na mochila e no slot equipado. A imagem estática permanece disponível para detalhes fora dos slots. Não foi criada animação de golpe ou mecânica de combate.
