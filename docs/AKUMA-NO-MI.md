@@ -1,5 +1,7 @@
 # Akuma no Mi — Lote 1 Rank E
 
+A Supa Supa no Mi, primeira Paramecia Rank D com duas habilidades ativas, está descrita em [Supa Supa Rank D](SUPA-SUPA-RANK-D.md).
+
 As três Zoans Rank E (Albatroz, Uma-Uma e Dachshund) estão descritas em [Lote Zoan Rank E](ZOAN-RANK-E.md).
 
 ## Uso

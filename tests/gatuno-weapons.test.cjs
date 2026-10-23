@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
 const F=require('../forge-system.js');
 const game=fs.readFileSync('game.js','utf8');
 const start=game.indexOf('// Append only: preserve save indices and reuse the 13 ATK');
-const defs=vm.runInNewContext('const itemDefs=[];'+game.slice(start,game.indexOf('  const questDefs',start))+';itemDefs;');
+const defs=vm.runInNewContext('const itemDefs=[];'+game.slice(start,game.indexOf('\n  );',start)+6)+';itemDefs;');
 assert.deepEqual(Array.from(defs,d=>[d.name,d.rarity]),[['Adaga de Cristal','epic'],['Punhal de Netuno','legendary'],['Punhal Flamejante','legendary'],['Lâmina das Trevas','supreme']]);
 assert(start>game.indexOf("name:'Meito: Ame no Habakiri'"),'new definitions append after saved catalog indices');
 for(const def of defs){

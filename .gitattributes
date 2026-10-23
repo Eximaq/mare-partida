@@ -9,3 +9,5 @@
 *.wav binary
 # Preserve the owner's export byte-for-byte, including its JSON line endings.
 pixellab-pip-generations/dawn-manual-20261020/** -text
+# Preserve supplied animation metadata and its asset hashes across Windows checkouts.
+assets/akuma/supa/*.json -text

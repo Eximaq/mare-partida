@@ -69,7 +69,9 @@ class Handler(SimpleHTTPRequestHandler):
             "/api/akuma/transform": lambda d: STORE.transform(d["player_id"], d["enabled"]),
             "/api/akuma/stats": lambda d: STORE.stats(d["player_id"], float(d["base_hp"]), float(d["base_strength"])),
             "/api/akuma/corpse": lambda d: STORE.record_corpse(d["player_id"], d["corpse_id"], d["instance"], float(d["x"]), float(d["y"])),
-            "/api/akuma/cast": lambda d: STORE.cast(d["player_id"], d["instance"], float(d["x"]), float(d["y"]), d.get("enemies", []), d.get("direction", [0, 1])),
+            "/api/akuma/cast": lambda d: STORE.cast(d["player_id"], d["instance"], float(d["x"]), float(d["y"]), d.get("enemies", []), d.get("direction", [0, 1]), d.get("skill_key"), d.get("energy"), d.get("physical_attack")),
+            "/api/akuma/damage": lambda d: STORE.receive_damage(d["player_id"], d["original"], d.get("received"), d.get("physical", True), d.get("direct", False), d.get("reflected", False)),
+            "/api/akuma/end-protection": lambda d: STORE.end_protection(d["player_id"]),
             "/api/akuma/pickup": lambda d: STORE.pickup_food(d["player_id"], d["food_id"], d["instance"], float(d["x"]), float(d["y"])),
         }
         action = routes.get(urlparse(self.path).path)

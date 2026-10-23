@@ -14,7 +14,7 @@ const weapons=[
   ['Meito: Ame no Habakiri','supreme','ame-no-habakiri.png','Uma espada lendária empunhada por Kozuki Oden, reconhecida entre as grandes Meito de Wano. Diz-se que sua lâmina é capaz de cortar os próprios céus, carregando o legado de um dos maiores samurais da história.',[112,117]]
 ];
 
-const priorCatalog=game.indexOf('itemDefs.push(...MareAkuma.catalog.map');
+const priorCatalog=game.indexOf('itemDefs.push(...MareAkuma.catalog.slice(0,5).map');
 const firstNewWeapon=game.indexOf("name:'Katana da Maelstrom'");
 assert.ok(priorCatalog>=0&&firstNewWeapon>priorCatalog,'weapons are appended after existing save-indexed catalog entries');
 assert.ok(game.includes("type:'sword',attack:11,defense:0,hp:0"),'weapons reuse the existing 11-attack Espadachim baseline');
