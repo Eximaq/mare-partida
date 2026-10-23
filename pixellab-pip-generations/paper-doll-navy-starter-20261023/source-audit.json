@@ -1,0 +1,105 @@
+{
+  "paid_generation_calls": 0,
+  "workbench_edit_id": "01c2c37e-9891-455f-94a5-7ce450f6080e",
+  "copied": [
+    {
+      "source": "pixellab-pip-generations/paper-doll-hair-continuity-20261022/body-idle.png",
+      "file": "body-idle.png",
+      "sha256": "b04361d22abe344f5fba079994b5625c6fe4822b308dc5ca7478300deab43348"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-hair-continuity-20261022/body-walk.png",
+      "file": "body-walk.png",
+      "sha256": "a5c81f23d0172f7a7a87000cb1e2e64169959e5dd4b5740e34216944653c5ded"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-hair-continuity-20261022/body-attack.png",
+      "file": "body-attack.png",
+      "sha256": "b59089c2c0232960c826a3922e36158a9141e92186b5d0d65267ac00670b793b"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-hair-continuity-20261022/hair-idle.png",
+      "file": "hair-idle.png",
+      "sha256": "e393e179b77e77d59f697b243a165d8369b8ad7b0594680e801e756f78bf15b5"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-hair-continuity-20261022/hair-walk.png",
+      "file": "hair-walk.png",
+      "sha256": "1f09e199bc211f190ea0bec3ea9d80d80e05d75cbf1f7887a2d69c3a64ad3be2"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-hair-continuity-20261022/hair-attack.png",
+      "file": "hair-attack.png",
+      "sha256": "a7e09d6fbd348a09b72d6aeb8a3a3b608fefa479f8adc6513bd75314ea49aabe"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/outfit-idle.png",
+      "file": "outfit-idle.png",
+      "sha256": "50600daf41c0a2cefb12e978f67c79ca73d4e63c43d80622095d6508e27e2b7f"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/outfit-walk.png",
+      "file": "outfit-walk.png",
+      "sha256": "83939e22cdc199349e0252213e4043c8a0716816b3852b70b9b0bc5f459746c5"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/weapon-east.png",
+      "file": "weapon-east.png",
+      "sha256": "fe5ef2cb9fc0f495ef173c7091a335c53479cf52155fbbba30575ca6d3d6ea97"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/weapon-north.png",
+      "file": "weapon-north.png",
+      "sha256": "0ba4aba97f06dc59272b9fe5e871d21c59ebedef6b0e0c03ee59ecd2662e7b41"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/weapon-south.png",
+      "file": "weapon-south.png",
+      "sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/weapon-west.png",
+      "file": "weapon-west.png",
+      "sha256": "9b09bb64aec12978f127d96c4825f18e9c1ca6b5a688f3b746e9e2ae7b3ded60"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/rigid-weapon.png",
+      "file": "rigid-weapon.png",
+      "sha256": "ad65da1e6fa2ddbe1a5c98a60122f94dd604a19f61919774dee7d27c470b401d"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/weapon-east.png",
+      "file": "weapon-east.png",
+      "sha256": "fe5ef2cb9fc0f495ef173c7091a335c53479cf52155fbbba30575ca6d3d6ea97"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/weapon-north.png",
+      "file": "weapon-north.png",
+      "sha256": "0ba4aba97f06dc59272b9fe5e871d21c59ebedef6b0e0c03ee59ecd2662e7b41"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/weapon-west.png",
+      "file": "weapon-west.png",
+      "sha256": "9b09bb64aec12978f127d96c4825f18e9c1ca6b5a688f3b746e9e2ae7b3ded60"
+    },
+    {
+      "source": "pixellab-pip-generations/paper-doll-east-fit-20261022/weapon-attack.png",
+      "file": "weapon-attack.png",
+      "sha256": "ec547075595260478b695944fd2b462d2137f3d616d0c6e2217d16891eea8a8b"
+    }
+  ],
+  "palette_edit": {
+    "changed_pixels": 2745,
+    "alpha_unchanged": true,
+    "shape_unchanged": true,
+    "source_sha256": "a943025bcc3293dd2e6de538690d278344ffe0fa73c0de84bbd95c6e053bbdab",
+    "output_sha256": "288976bec61f6193b227df1180c6311407f8dcec28d9b5511e99227efd573e00"
+  },
+  "east_fit": {
+    "workbench_edit_id": "525c2254-997f-4e3f-9fb5-519cd453b894",
+    "extracted_changed_pixels": 621,
+    "source_body_unchanged": true,
+    "outside_east_torso_unchanged": true,
+    "output_sha256": "22c7cf7146c43ee9e0bf4f1570932b9ca9c3e49ea119c859a27199cf567f488e"
+  }
+}

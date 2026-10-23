@@ -1,0 +1,162 @@
+[
+  {
+    "operation": "copy_region",
+    "layer": "image",
+    "frames": [
+      4
+    ],
+    "source_layer": "image",
+    "source_frame": 4,
+    "region": [
+      19,
+      53,
+      24,
+      53
+    ],
+    "at": [
+      19,
+      54
+    ],
+    "reason": "Finish the near foot with the same pose's existing heel/toe contour, one pixel down; body and ankle origin stay fixed."
+  },
+  {
+    "operation": "copy_region",
+    "layer": "image",
+    "frames": [
+      4
+    ],
+    "source_layer": "image",
+    "source_frame": 4,
+    "region": [
+      20,
+      54,
+      23,
+      54
+    ],
+    "at": [
+      20,
+      55
+    ],
+    "reason": "Restore the black sole at the common ground row using the same pose's original sole pixels; do not move the frame."
+  },
+  {
+    "operation": "copy_region",
+    "layer": "image",
+    "frames": [
+      5
+    ],
+    "source_layer": "image",
+    "source_frame": 5,
+    "region": [
+      19,
+      53,
+      24,
+      53
+    ],
+    "at": [
+      19,
+      54
+    ],
+    "reason": "Finish the near foot with the same pose's existing heel/toe contour, one pixel down; body and ankle origin stay fixed."
+  },
+  {
+    "operation": "copy_region",
+    "layer": "image",
+    "frames": [
+      5
+    ],
+    "source_layer": "image",
+    "source_frame": 5,
+    "region": [
+      20,
+      54,
+      23,
+      54
+    ],
+    "at": [
+      20,
+      55
+    ],
+    "reason": "Restore the black sole at the common ground row using the same pose's original sole pixels; do not move the frame."
+  },
+  {
+    "operation": "copy_region",
+    "layer": "image",
+    "frames": [
+      6
+    ],
+    "source_layer": "image",
+    "source_frame": 6,
+    "region": [
+      19,
+      53,
+      24,
+      53
+    ],
+    "at": [
+      19,
+      54
+    ],
+    "reason": "Finish the near foot with the same pose's existing heel/toe contour, one pixel down; body and ankle origin stay fixed."
+  },
+  {
+    "operation": "copy_region",
+    "layer": "image",
+    "frames": [
+      6
+    ],
+    "source_layer": "image",
+    "source_frame": 6,
+    "region": [
+      20,
+      54,
+      23,
+      54
+    ],
+    "at": [
+      20,
+      55
+    ],
+    "reason": "Restore the black sole at the common ground row using the same pose's original sole pixels; do not move the frame."
+  },
+  {
+    "operation": "copy_region",
+    "layer": "image",
+    "frames": [
+      7
+    ],
+    "source_layer": "image",
+    "source_frame": 7,
+    "region": [
+      19,
+      53,
+      24,
+      53
+    ],
+    "at": [
+      19,
+      54
+    ],
+    "reason": "Finish the near foot with the same pose's existing heel/toe contour, one pixel down; body and ankle origin stay fixed."
+  },
+  {
+    "operation": "copy_region",
+    "layer": "image",
+    "frames": [
+      7
+    ],
+    "source_layer": "image",
+    "source_frame": 7,
+    "region": [
+      20,
+      54,
+      23,
+      54
+    ],
+    "at": [
+      20,
+      55
+    ],
+    "reason": "Restore the black sole at the common ground row using the same pose's original sole pixels; do not move the frame."
+  }
+]

@@ -1,0 +1,25 @@
+{
+  "generation_ceiling": 12,
+  "automatic_retries": false,
+  "authorization": "Owner delegated recommended PixelLab decisions in this conversation; continue requested 22 October.",
+  "calls": [
+    {
+      "tool": "animate_with_skeleton_v3",
+      "direction": "north",
+      "estimate": 3
+    },
+    {
+      "tool": "animate_with_skeleton_v3",
+      "direction": "east",
+      "estimate": 3
+    },
+    {
+      "tool": "inpaint_image_pro_flash",
+      "estimate_range": [
+        5,
+        6
+      ],
+      "condition": "Only if east body passes visual review; remove opaque flash from source pose5."
+    }
+  ]
+}

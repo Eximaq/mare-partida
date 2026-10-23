@@ -1,0 +1,126 @@
+[
+  {
+    "_comment_prompt": "Continue",
+    "MCP pixelart_workbench": {
+      "argv": [
+        "inspect",
+        "job:4db7247e-72b3-40eb-995f-318c0a2e8f33",
+        "--region",
+        "25,19,41,31",
+        "--scale",
+        "10"
+      ],
+      "mode": "low"
+    },
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-exact-retouch-20261022",
+      "output_collision_policy": "create_unique"
+    }
+  },
+  {
+    "MCP pixelart_workbench": {
+      "argv": [
+        "edit",
+        "7ef80062-e55b-49d1-92d7-2aeeadc56335",
+        "--changes",
+        "[{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[4],\"source_layer\":\"image\",\"source_frame\":1,\"region\":[29,20,39,30],\"at\":[29,20],\"reason\":\"Restore the same stationary back surface over the incorrectly front-drawn forearm; retain the generated outer arm motion, head, pelvis and feet.\"}]"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP pixelart_workbench": {
+      "argv": [
+        "edit",
+        "7ef80062-e55b-49d1-92d7-2aeeadc56335",
+        "--changes",
+        "[{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[2,3,4,5,6],\"source_layer\":\"image\",\"source_frame\":1,\"region\":[29,20,39,30],\"at\":[29,20],\"reason\":\"Replace only the falsely front-drawn forearm over the stationary back with the inspected clean back surface. Keep eight genuine generated poses and all outer arm/head/leg motion.\"}]"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP pixelart_workbench": {
+      "argv": [
+        "edit",
+        "7ef80062-e55b-49d1-92d7-2aeeadc56335",
+        "--changes",
+        "[{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[2,3,4,5,6],\"source_layer\":\"image\",\"source_frame\":1,\"region\":[29,20,39,30],\"at\":[29,20],\"reason\":\"Replace only the falsely front-drawn forearm over the stationary back with the inspected clean back surface. Keep eight genuine generated poses and all outer arm/head/leg motion.\"},{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[2,3,4,5,6],\"source_layer\":\"image\",\"source_frame\":1,\"region\":[50,28,54,31],\"at\":[38,28],\"reason\":\"Remove dangling lower-arm fragments outside the back silhouette where the forward forearm must be fully occluded; retain the visible shoulder cap.\"}]"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP pixelart_workbench": {
+      "argv": [
+        "inspect",
+        "job:bc1dd8f4-9520-4624-9e93-ec0ea1687744",
+        "--region",
+        "22,47,44,56",
+        "--scale",
+        "10"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP pixelart_workbench": {
+      "argv": [
+        "edit",
+        "85edce2d-f176-462f-86ed-95e7dfa28f19",
+        "--changes",
+        "[{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[4],\"source_layer\":\"image\",\"source_frame\":4,\"region\":[19,53,24,53],\"at\":[19,54],\"reason\":\"Finish the near foot with the same pose's existing heel/toe contour, one pixel down; body and ankle origin stay fixed.\"},{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[4],\"source_layer\":\"image\",\"source_frame\":4,\"region\":[20,54,23,54],\"at\":[20,55],\"reason\":\"Restore the black sole at the common ground row using the same pose's original sole pixels; do not move the frame.\"},{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[5],\"source_layer\":\"image\",\"source_frame\":5,\"region\":[19,53,24,53],\"at\":[19,54],\"reason\":\"Finish the near foot with the same pose's existing heel/toe contour, one pixel down; body and ankle origin stay fixed.\"},{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[5],\"source_layer\":\"image\",\"source_frame\":5,\"region\":[20,54,23,54],\"at\":[20,55],\"reason\":\"Restore the black sole at the common ground row using the same pose's original sole pixels; do not move the frame.\"},{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[6],\"source_layer\":\"image\",\"source_frame\":6,\"region\":[19,53,24,53],\"at\":[19,54],\"reason\":\"Finish the near foot with the same pose's existing heel/toe contour, one pixel down; body and ankle origin stay fixed.\"},{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[6],\"source_layer\":\"image\",\"source_frame\":6,\"region\":[20,54,23,54],\"at\":[20,55],\"reason\":\"Restore the black sole at the common ground row using the same pose's original sole pixels; do not move the frame.\"},{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[7],\"source_layer\":\"image\",\"source_frame\":7,\"region\":[19,53,24,53],\"at\":[19,54],\"reason\":\"Finish the near foot with the same pose's existing heel/toe contour, one pixel down; body and ankle origin stay fixed.\"},{\"operation\":\"copy_region\",\"layer\":\"image\",\"frames\":[7],\"source_layer\":\"image\",\"source_frame\":7,\"region\":[20,54,23,54],\"at\":[20,55],\"reason\":\"Restore the black sole at the common ground row using the same pose's original sole pixels; do not move the frame.\"}]"
+      ],
+      "mode": "low"
+    }
+  },
+  {
+    "MCP inpaint_image_pro_flash": {
+      "description": "Remove the impact flash inside the mask and redraw the pirate surfaces it covers: short black hair with a teal headband, crimson waistcoat over a cream shirt, blue trousers and a steel sailor sword. The top middle context cell is the target; the cells beside it show the outfit and sword style. The lower middle cell shows the same target pose without clothing and must guide the anatomy and hand placement. Keep the current attack pose and every unmasked pixel, native pixel scale and transparent background. No glow, sparks, impact effects, extra limbs or detached gear.",
+      "image_url": "east/flash-source.png",
+      "mask_image_url": "east/flash-mask.png",
+      "context_image": {
+        "url": "east/flash-context.png",
+        "usage_description": "Top middle target, top neighbours outfit style, lower middle same-pose bare-body anatomy and hand-placement reference."
+      },
+      "bounding_box": {
+        "x": 64,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "crop_to_mask": true,
+      "no_background": true,
+      "output_method": "Modify current layer"
+    }
+  },
+  {
+    "TASK": {
+      "goal": "Verify actual returned pixels and package the three-direction draft; keep the failed east outfit unavailable.",
+      "inputs": [
+        "north-final-frames.png",
+        "east-final-frames.png",
+        "north/changes.json",
+        "east/changes.json",
+        "../paper-doll-bento-directions-20261021/review-pack.json",
+        "east/flash-cleaned.png"
+      ],
+      "actions": [
+        "Run verify_retouch.py against recorded source snapshots, never export a locally repaired reference as artwork.",
+        "Run extract_north.py to select only visible original clothing/weapon pixels.",
+        "Run assemble_review.py with fixed transparent padding and original eight-frame order.",
+        "Mark genuinely empty north weapon frames1–5 as occludedFrames, zero-based.",
+        "Preserve the failed east reconstruction and all intermediate Workbench results.",
+        "Do not approve any final artwork or enable a production catalog."
+      ],
+      "outputs": [
+        "review-pack.json",
+        "retouch-audit.json",
+        "assembly-audit.json",
+        "modular-north.gif",
+        "preview.html"
+      ]
+    }
+  }
+]

@@ -11,6 +11,10 @@ on:
       - 'tools/paper-doll-inspector/**'
       - 'tools/build_pages.py'
       - 'docs/PAPER-DOLL.md'
+      - 'docs/PAPER-DOLL-CONJUNTO-AZUL.md'
+      - 'pixellab-pip-generations/paper-doll-navy-starter-20261023/**'
+      - 'tests/paper_doll_navy_starter_browser.py'
+      - 'tests/paper_doll_dev_browser.py'
       - 'tests/paper_doll_browser.py'
       - 'tests/paper_doll_partial_browser.py'
       - 'tests/paper_doll_idle_browser.py'
@@ -48,6 +52,28 @@ on:
       - 'docs/PAPER-DOLL-DIRECOES-BENTO.md'
       - 'tools/paper_doll_motion_controls.py'
       - 'tests/paper_doll_motion_controls_test.py'
+      - 'tests/paper-doll-occlusion.test.cjs'
+      - 'tests/paper-doll-motion-repair.test.cjs'
+      - 'tests/paper_doll_repair_browser.py'
+      - 'pixellab-pip-generations/paper-doll-bento-repair-20261022/**'
+      - 'docs/PAPER-DOLL-CORRECAO-GUIAS.md'
+      - 'pixellab-pip-generations/paper-doll-exact-retouch-20261022/**'
+      - 'docs/PAPER-DOLL-RETOQUE-EXATO.md'
+      - 'tests/paper-doll-exact-retouch.test.cjs'
+      - 'tests/paper_doll_exact_retouch_browser.py'
+      - 'pixellab-pip-generations/paper-doll-east-fit-20261022/**'
+      - 'docs/PAPER-DOLL-ENCAIXE-LESTE.md'
+      - 'tests/paper-doll-east-fit.test.cjs'
+      - 'tests/paper_doll_east_fit_browser.py'
+      - 'tests/paper_doll_east_fit_combat_browser.py'
+      - 'tests/paper_doll_sheet_fit_browser.py'
+      - 'tests/paper_doll_continuity_browser.py'
+      - 'tests/paper_doll_body_continuity_browser.py'
+      - 'pixellab-pip-generations/paper-doll-body-continuity-20261022/**'
+      - 'docs/PAPER-DOLL-CORPO-CONTINUIDADE.md'
+      - 'docs/PAPER-DOLL-CABELO-CONTINUIDADE.md'
+      - 'pixellab-pip-generations/paper-doll-hair-continuity-20261022/**'
+      - 'tests/paper_doll_hair_continuity_browser.py'
       - 'pixellab-pip-generations/paper-doll-walk-north-20261021/**'
       - 'docs/PAPER-DOLL-CAMINHADA-NORTE.md'
       - 'pixellab-pip-generations/paper-doll-walk-fit-20261021/**'
@@ -73,7 +99,9 @@ permissions:
 jobs:
   paper-doll:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Cold preparation used 9m44s of the former 10m total job budget.
+    # Includes the dressed candidate's full locomotion/combat browser regression.
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -105,6 +133,12 @@ jobs:
           python pixellab-pip-generations/paper-doll-bento-skeleton-20261021/assemble.py
           python pixellab-pip-generations/paper-doll-bento-skeleton-20261021/extract_visible_pieces.py
           python pixellab-pip-generations/paper-doll-bento-directions-20261021/compose.py
+          python pixellab-pip-generations/paper-doll-bento-repair-20261022/assemble_review.py
+          python pixellab-pip-generations/paper-doll-exact-retouch-20261022/assemble_review.py
+          python pixellab-pip-generations/paper-doll-east-fit-20261022/assemble_review.py
+          python pixellab-pip-generations/paper-doll-body-continuity-20261022/assemble_review.py
+          python pixellab-pip-generations/paper-doll-hair-continuity-20261022/assemble_review.py
+          python pixellab-pip-generations/paper-doll-navy-starter-20261023/assemble_review.py
           python tools/build_pages.py
       - name: Conferir bancada, fallback e jogo
         env:
@@ -137,6 +171,18 @@ jobs:
           python tests/paper_doll_bento_motion_browser.py
           MARE_MOTION_STUDY=pixellab-pip-generations/paper-doll-bento-skeleton-20261021/ python tests/paper_doll_bento_motion_browser.py
           python tests/paper_doll_directions_browser.py
+          python tests/paper_doll_repair_browser.py
+          python tests/paper_doll_exact_retouch_browser.py
+          python tests/paper_doll_east_fit_browser.py
+          python tests/paper_doll_east_fit_combat_browser.py
+          python tests/paper_doll_sheet_fit_browser.py
+          python tests/paper_doll_continuity_browser.py
+          python tests/paper_doll_body_continuity_browser.py
+          python tests/paper_doll_hair_continuity_browser.py
+          python tests/paper_doll_navy_starter_browser.py
+          python tests/paper_doll_dev_browser.py
+          MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-navy-starter-20261023/ python tests/paper_doll_world_review_browser.py
+          MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-hair-continuity-20261022/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-basic-sword-20261021/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-walk-profiles-20261021/ python tests/paper_doll_world_review_browser.py
           python tests/universal_character_browser.py

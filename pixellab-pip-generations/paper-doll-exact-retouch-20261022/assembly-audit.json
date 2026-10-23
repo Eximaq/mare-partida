@@ -1,0 +1,237 @@
+{
+  "north": {
+    "frames": [
+      {
+        "frame": 0,
+        "changed_pixels": 0,
+        "source_ground_line": 52,
+        "ground_line": 52,
+        "body_sha256_rgba": "39f334f96e88f0069212e604930f0fac249e379c840cf87438bcf838f0d17f55",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 1,
+        "changed_pixels": 55,
+        "source_ground_line": 52,
+        "ground_line": 52,
+        "body_sha256_rgba": "092b9cc29ca82c957494948a9b5d47a17289bac735500fb13a6d6c8806e178a4",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 2,
+        "changed_pixels": 80,
+        "source_ground_line": 52,
+        "ground_line": 52,
+        "body_sha256_rgba": "f954339a6c2cfc98a5a986dce82a1d551df6902438c2306681e3630772feeaef",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 3,
+        "changed_pixels": 88,
+        "source_ground_line": 52,
+        "ground_line": 52,
+        "body_sha256_rgba": "71166ee93b598ef91977cd4a02d980eb884a280feaa49e4b3455e4f9ccb88f56",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 4,
+        "changed_pixels": 90,
+        "source_ground_line": 52,
+        "ground_line": 52,
+        "body_sha256_rgba": "58cdaeb5c448869f10dd943c3b6b9749dfdb2bea20490445aaeb79953bff7680",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 5,
+        "changed_pixels": 81,
+        "source_ground_line": 52,
+        "ground_line": 52,
+        "body_sha256_rgba": "07636f29d08e82c1249366caaecb5414717c6caad1c80b4d96be48fe50fe9e63",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 6,
+        "changed_pixels": 0,
+        "source_ground_line": 52,
+        "ground_line": 52,
+        "body_sha256_rgba": "16e9e70d90cad5722eacbe1cc7a450d0e87808b17f6bd5818138e43834482cd6",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 7,
+        "changed_pixels": 0,
+        "source_ground_line": 52,
+        "ground_line": 52,
+        "body_sha256_rgba": "6a271891212b2cec5927edf1b4bec9d3e95d98c7b6010c8e903ba92244ca6da5",
+        "outside_declared_regions_unchanged": true
+      }
+    ],
+    "ground_line": 52,
+    "pixel_origin": "PixelLab Workbench exact copy operations on existing PixelLab frames; not locally painted",
+    "unchanged_motion_outside_regions": true,
+    "padding": [
+      10,
+      13
+    ]
+  },
+  "east": {
+    "frames": [
+      {
+        "frame": 0,
+        "changed_pixels": 0,
+        "source_ground_line": 56,
+        "ground_line": 56,
+        "body_sha256_rgba": "97801d69bebdf654cbba7abd29983d6bb1dad67ca8eebf69cb61f80a7f4513d6",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 1,
+        "changed_pixels": 0,
+        "source_ground_line": 56,
+        "ground_line": 56,
+        "body_sha256_rgba": "224df77d41d123a716a9e725a0ef5b92e70959449575af1bbe7fbb1b3bd38ffd",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 2,
+        "changed_pixels": 0,
+        "source_ground_line": 56,
+        "ground_line": 56,
+        "body_sha256_rgba": "b7465e270776e6747be5d4af7423fe8cbec3bd78ae96a117ea3758bf6c6b920b",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 3,
+        "changed_pixels": 10,
+        "source_ground_line": 55,
+        "ground_line": 56,
+        "body_sha256_rgba": "dbccf5b2ee49ebc331406399d0630a8aa88fbdbaba01ca2238a22911e5b42f0a",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 4,
+        "changed_pixels": 10,
+        "source_ground_line": 55,
+        "ground_line": 56,
+        "body_sha256_rgba": "1d3d851cf66e74dc5eb1d2057172a7726e1a0dae479ebae43a8187e92aa94c50",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 5,
+        "changed_pixels": 10,
+        "source_ground_line": 55,
+        "ground_line": 56,
+        "body_sha256_rgba": "023fbd18fb1c09555129435a35d6dcada1c9edc4d6c0a745932e2c0049df040e",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 6,
+        "changed_pixels": 10,
+        "source_ground_line": 55,
+        "ground_line": 56,
+        "body_sha256_rgba": "e2979396737514c701f86985c2f40d083a4c51935327914d232471d05e02a906",
+        "outside_declared_regions_unchanged": true
+      },
+      {
+        "frame": 7,
+        "changed_pixels": 0,
+        "source_ground_line": 56,
+        "ground_line": 56,
+        "body_sha256_rgba": "2d92394ccac3561dc5f6c66e308bed44cfda24a8147eb794af87e004430f1e9c",
+        "outside_declared_regions_unchanged": true
+      }
+    ],
+    "ground_line": 56,
+    "pixel_origin": "PixelLab Workbench exact copy operations on existing PixelLab frames; not locally painted",
+    "unchanged_motion_outside_regions": true,
+    "padding": [
+      10,
+      9
+    ]
+  },
+  "north_grip_proxy": [
+    {
+      "frame": 0,
+      "skin_weapon_distance": 0,
+      "note": "Auxiliary contact check in the inspected hand region, not artistic approval."
+    },
+    {
+      "frame": 6,
+      "skin_weapon_distance": 0,
+      "note": "Auxiliary contact check in the inspected hand region, not artistic approval."
+    },
+    {
+      "frame": 7,
+      "skin_weapon_distance": 0,
+      "note": "Auxiliary contact check in the inspected hand region, not artistic approval."
+    }
+  ],
+  "inherited_layers": [
+    {
+      "slot": "body",
+      "direction": "south",
+      "sha256_rgba": "eb066450007d1c9c960993379b86e25109f81c7dd269d863550731add5e4660b"
+    },
+    {
+      "slot": "body",
+      "direction": "west",
+      "sha256_rgba": "8fb9b6d8acb0de85d8778310d0b3b6bebf2fc00caa291d1b4d8d528ad44265f0"
+    },
+    {
+      "slot": "pants",
+      "direction": "south",
+      "sha256_rgba": "db3141bb22a73b66db816d79770c333f3cb72ecc6a925744c3e9e46ff384a8cd"
+    },
+    {
+      "slot": "pants",
+      "direction": "west",
+      "sha256_rgba": "7711d60d3e70fa5457257d16a6bcc52be58b86300184a3bd6ef82969a79eea27"
+    },
+    {
+      "slot": "boots",
+      "direction": "south",
+      "sha256_rgba": "bbb77b8fb13c86e6945a9a4da22ec884c6e75d9fb255a5e5e3327833aaba1d81"
+    },
+    {
+      "slot": "boots",
+      "direction": "west",
+      "sha256_rgba": "67726d19eb3ac8e8ce27526c4a738156a9e67a8c89504664689bf7c663b5f94f"
+    },
+    {
+      "slot": "outfit",
+      "direction": "south",
+      "sha256_rgba": "75f841d683c00fee26d29b9ecd6c636ab5f78fcfd8d3fb8e09610122c9811cbd"
+    },
+    {
+      "slot": "outfit",
+      "direction": "west",
+      "sha256_rgba": "d74be3f86c20ca5ec86be6b341703356a5d6463025e90fe3a05df7706d2aa4a5"
+    },
+    {
+      "slot": "hair",
+      "direction": "south",
+      "sha256_rgba": "e4e0c17ead2f621ce280a5b3d17bedf3d98297498f21a0ddfa183099b6aa0771"
+    },
+    {
+      "slot": "hair",
+      "direction": "west",
+      "sha256_rgba": "548d454d7dc08ceb5c89a0a65b0ab35b7027be1fc5ab137bba0d8d7e35007bbc"
+    },
+    {
+      "slot": "weapon",
+      "direction": "south",
+      "sha256_rgba": "c6b6fd4c708feaf8ed21afb87e76465b9f2799b276cca7d4615cc4854e6d75c6"
+    },
+    {
+      "slot": "weapon",
+      "direction": "west",
+      "sha256_rgba": "36f8883c55f4da45509681ab5e47457fe9549e8fd1547536bb5a1188a9ed5eaa"
+    }
+  ],
+  "coverage": [
+    "south",
+    "north",
+    "west"
+  ],
+  "production_enabled": false
+}

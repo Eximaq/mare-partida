@@ -1,0 +1,34 @@
+[
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      1
+    ],
+    "region": [
+      0,
+      0,
+      671,
+      335
+    ],
+    "colors": {
+      "#1e0304ff": "#080c21ff",
+      "#230206ff": "#080c21ff",
+      "#39050aff": "#10142cff",
+      "#570e1bff": "#1a2752ff",
+      "#601022ff": "#1a2752ff",
+      "#620f24ff": "#1a2752ff",
+      "#641025ff": "#1a2752ff",
+      "#6a1224ff": "#1a2752ff",
+      "#6f1428ff": "#1a2752ff",
+      "#74001cff": "#1a2752ff",
+      "#763941ff": "#1a2752ff",
+      "#800923ff": "#35375aff",
+      "#85122aff": "#35375aff",
+      "#8b2034ff": "#35375aff",
+      "#8d2135ff": "#35375aff",
+      "#912438ff": "#35375aff"
+    },
+    "reason": "Match existing navy vest ramp; retain linen and exact silhouette."
+  }
+]

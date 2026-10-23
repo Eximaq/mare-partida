@@ -12,7 +12,8 @@
       const im=new Image(),notify=()=>window.dispatchEvent(new Event('mare-faction-sprite-ready'));
       im.addEventListener('load',notify);im.addEventListener('error',()=>{if(!reportedFailures.has(url)){reportedFailures.add(url);console.error('[sprite] Falha ao carregar',url);}notify();});
       const target=assetBase?new URL(url,assetBase):null;
-      if(target&&assetVersion)target.searchParams.set('v',assetVersion);
+      // Opaque local-image URLs must remain byte-for-byte intact for imported packs.
+      if(target&&assetVersion&&(target.protocol==='http:'||target.protocol==='https:'))target.searchParams.set('v',assetVersion);
       im.src=target?target.href:url;images.set(url,im);
     }
     return images.get(url);

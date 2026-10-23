@@ -1,0 +1,1527 @@
+[
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      1
+    ],
+    "name": "shirt",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          28,
+          24
+        ],
+        [
+          34,
+          24
+        ],
+        [
+          36,
+          28
+        ],
+        [
+          35,
+          36
+        ],
+        [
+          34,
+          38
+        ],
+        [
+          28,
+          38
+        ]
+      ]
+    },
+    "reason": "Fitted torso boundary for this real pose."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      1
+    ],
+    "name": "shirt",
+    "combine": "subtract",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          30,
+          26
+        ],
+        [
+          34,
+          27
+        ],
+        [
+          35,
+          38
+        ],
+        [
+          32,
+          39
+        ],
+        [
+          30,
+          33
+        ]
+      ]
+    },
+    "reason": "Protect the foreground arm and hand."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      1
+    ],
+    "mask": "shirt",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#5c504aff": "#806247ff",
+      "#5f3322ff": "#806247ff",
+      "#61402eff": "#806247ff",
+      "#723928ff": "#806247ff",
+      "#773f26ff": "#806247ff",
+      "#80482fff": "#baa373ff",
+      "#8a6047ff": "#baa373ff",
+      "#915238ff": "#baa373ff",
+      "#91553aff": "#baa373ff",
+      "#91715aff": "#baa373ff",
+      "#9e5e41ff": "#baa373ff",
+      "#a26240ff": "#baa373ff",
+      "#a86745ff": "#baa373ff",
+      "#b17753ff": "#ded09aff",
+      "#b47146ff": "#ded09aff",
+      "#bb794fff": "#ded09aff",
+      "#c28157ff": "#ded09aff",
+      "#c98559ff": "#ded09aff",
+      "#cb8a5cff": "#ded09aff",
+      "#d09164ff": "#ded09aff",
+      "#d28b5dff": "#f2e2afff",
+      "#d39767ff": "#f2e2afff",
+      "#d58c5eff": "#f2e2afff",
+      "#db9d6dff": "#f2e2afff",
+      "#dea574ff": "#f2e2afff",
+      "#e0aa78ff": "#f2e2afff",
+      "#e1a676ff": "#f2e2afff",
+      "#e6b884ff": "#f2e2afff",
+      "#f0d095ff": "#f2e2afff"
+    },
+    "reason": "Linen follows the original torso shading without moving it."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      1
+    ],
+    "name": "vest",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        28,
+        24,
+        30,
+        40
+      ]
+    },
+    "reason": "Near edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      1
+    ],
+    "name": "vest",
+    "combine": "add",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        35,
+        24,
+        36,
+        40
+      ]
+    },
+    "reason": "Far edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      1
+    ],
+    "mask": "vest",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#806247ff": "#39050aff",
+      "#baa373ff": "#601022ff",
+      "#ded09aff": "#85122aff",
+      "#f2e2afff": "#8b2034ff"
+    },
+    "reason": "Maritime crimson vest; only previously mapped fabric."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      2
+    ],
+    "name": "shirt",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          28,
+          24
+        ],
+        [
+          34,
+          24
+        ],
+        [
+          36,
+          28
+        ],
+        [
+          35,
+          36
+        ],
+        [
+          34,
+          38
+        ],
+        [
+          28,
+          38
+        ]
+      ]
+    },
+    "reason": "Fitted torso boundary for this real pose."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      2
+    ],
+    "name": "shirt",
+    "combine": "subtract",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          30,
+          26
+        ],
+        [
+          34,
+          27
+        ],
+        [
+          35,
+          38
+        ],
+        [
+          32,
+          39
+        ],
+        [
+          30,
+          33
+        ]
+      ]
+    },
+    "reason": "Protect the foreground arm and hand."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      2
+    ],
+    "mask": "shirt",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#5c504aff": "#806247ff",
+      "#5f3322ff": "#806247ff",
+      "#61402eff": "#806247ff",
+      "#723928ff": "#806247ff",
+      "#773f26ff": "#806247ff",
+      "#80482fff": "#baa373ff",
+      "#8a6047ff": "#baa373ff",
+      "#915238ff": "#baa373ff",
+      "#91553aff": "#baa373ff",
+      "#91715aff": "#baa373ff",
+      "#9e5e41ff": "#baa373ff",
+      "#a26240ff": "#baa373ff",
+      "#a86745ff": "#baa373ff",
+      "#b17753ff": "#ded09aff",
+      "#b47146ff": "#ded09aff",
+      "#bb794fff": "#ded09aff",
+      "#c28157ff": "#ded09aff",
+      "#c98559ff": "#ded09aff",
+      "#cb8a5cff": "#ded09aff",
+      "#d09164ff": "#ded09aff",
+      "#d28b5dff": "#f2e2afff",
+      "#d39767ff": "#f2e2afff",
+      "#d58c5eff": "#f2e2afff",
+      "#db9d6dff": "#f2e2afff",
+      "#dea574ff": "#f2e2afff",
+      "#e0aa78ff": "#f2e2afff",
+      "#e1a676ff": "#f2e2afff",
+      "#e6b884ff": "#f2e2afff",
+      "#f0d095ff": "#f2e2afff"
+    },
+    "reason": "Linen follows the original torso shading without moving it."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      2
+    ],
+    "name": "vest",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        28,
+        24,
+        30,
+        40
+      ]
+    },
+    "reason": "Near edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      2
+    ],
+    "name": "vest",
+    "combine": "add",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        35,
+        24,
+        36,
+        40
+      ]
+    },
+    "reason": "Far edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      2
+    ],
+    "mask": "vest",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#806247ff": "#39050aff",
+      "#baa373ff": "#601022ff",
+      "#ded09aff": "#85122aff",
+      "#f2e2afff": "#8b2034ff"
+    },
+    "reason": "Maritime crimson vest; only previously mapped fabric."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      3
+    ],
+    "name": "shirt",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          27,
+          24
+        ],
+        [
+          33,
+          24
+        ],
+        [
+          36,
+          28
+        ],
+        [
+          35,
+          38
+        ],
+        [
+          26,
+          38
+        ]
+      ]
+    },
+    "reason": "Fitted torso boundary for this real pose."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      3
+    ],
+    "name": "shirt",
+    "combine": "subtract",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          26,
+          26
+        ],
+        [
+          28,
+          26
+        ],
+        [
+          32,
+          29
+        ],
+        [
+          44,
+          29
+        ],
+        [
+          44,
+          33
+        ],
+        [
+          32,
+          33
+        ],
+        [
+          28,
+          31
+        ]
+      ]
+    },
+    "reason": "Protect the foreground arm and hand."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      3
+    ],
+    "mask": "shirt",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#5c504aff": "#806247ff",
+      "#5f3322ff": "#806247ff",
+      "#61402eff": "#806247ff",
+      "#723928ff": "#806247ff",
+      "#773f26ff": "#806247ff",
+      "#80482fff": "#baa373ff",
+      "#8a6047ff": "#baa373ff",
+      "#915238ff": "#baa373ff",
+      "#91553aff": "#baa373ff",
+      "#91715aff": "#baa373ff",
+      "#9e5e41ff": "#baa373ff",
+      "#a26240ff": "#baa373ff",
+      "#a86745ff": "#baa373ff",
+      "#b17753ff": "#ded09aff",
+      "#b47146ff": "#ded09aff",
+      "#bb794fff": "#ded09aff",
+      "#c28157ff": "#ded09aff",
+      "#c98559ff": "#ded09aff",
+      "#cb8a5cff": "#ded09aff",
+      "#d09164ff": "#ded09aff",
+      "#d28b5dff": "#f2e2afff",
+      "#d39767ff": "#f2e2afff",
+      "#d58c5eff": "#f2e2afff",
+      "#db9d6dff": "#f2e2afff",
+      "#dea574ff": "#f2e2afff",
+      "#e0aa78ff": "#f2e2afff",
+      "#e1a676ff": "#f2e2afff",
+      "#e6b884ff": "#f2e2afff",
+      "#f0d095ff": "#f2e2afff"
+    },
+    "reason": "Linen follows the original torso shading without moving it."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      3
+    ],
+    "name": "vest",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        26,
+        24,
+        28,
+        40
+      ]
+    },
+    "reason": "Near edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      3
+    ],
+    "name": "vest",
+    "combine": "add",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        35,
+        24,
+        36,
+        40
+      ]
+    },
+    "reason": "Far edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      3
+    ],
+    "mask": "vest",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#806247ff": "#39050aff",
+      "#baa373ff": "#601022ff",
+      "#ded09aff": "#85122aff",
+      "#f2e2afff": "#8b2034ff"
+    },
+    "reason": "Maritime crimson vest; only previously mapped fabric."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      4
+    ],
+    "name": "shirt",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          26,
+          25
+        ],
+        [
+          34,
+          24
+        ],
+        [
+          38,
+          28
+        ],
+        [
+          38,
+          38
+        ],
+        [
+          27,
+          38
+        ]
+      ]
+    },
+    "reason": "Fitted torso boundary for this real pose."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      4
+    ],
+    "name": "shirt",
+    "combine": "subtract",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          29,
+          27
+        ],
+        [
+          33,
+          28
+        ],
+        [
+          36,
+          29
+        ],
+        [
+          39,
+          28
+        ],
+        [
+          40,
+          31
+        ],
+        [
+          35,
+          34
+        ],
+        [
+          30,
+          32
+        ],
+        [
+          27,
+          31
+        ]
+      ]
+    },
+    "reason": "Protect the foreground arm and hand."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      4
+    ],
+    "mask": "shirt",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#5c504aff": "#806247ff",
+      "#5f3322ff": "#806247ff",
+      "#61402eff": "#806247ff",
+      "#723928ff": "#806247ff",
+      "#773f26ff": "#806247ff",
+      "#80482fff": "#baa373ff",
+      "#8a6047ff": "#baa373ff",
+      "#915238ff": "#baa373ff",
+      "#91553aff": "#baa373ff",
+      "#91715aff": "#baa373ff",
+      "#9e5e41ff": "#baa373ff",
+      "#a26240ff": "#baa373ff",
+      "#a86745ff": "#baa373ff",
+      "#b17753ff": "#ded09aff",
+      "#b47146ff": "#ded09aff",
+      "#bb794fff": "#ded09aff",
+      "#c28157ff": "#ded09aff",
+      "#c98559ff": "#ded09aff",
+      "#cb8a5cff": "#ded09aff",
+      "#d09164ff": "#ded09aff",
+      "#d28b5dff": "#f2e2afff",
+      "#d39767ff": "#f2e2afff",
+      "#d58c5eff": "#f2e2afff",
+      "#db9d6dff": "#f2e2afff",
+      "#dea574ff": "#f2e2afff",
+      "#e0aa78ff": "#f2e2afff",
+      "#e1a676ff": "#f2e2afff",
+      "#e6b884ff": "#f2e2afff",
+      "#f0d095ff": "#f2e2afff"
+    },
+    "reason": "Linen follows the original torso shading without moving it."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      4
+    ],
+    "name": "vest",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        26,
+        24,
+        28,
+        40
+      ]
+    },
+    "reason": "Near edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      4
+    ],
+    "name": "vest",
+    "combine": "add",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        37,
+        24,
+        38,
+        40
+      ]
+    },
+    "reason": "Far edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      4
+    ],
+    "mask": "vest",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#806247ff": "#39050aff",
+      "#baa373ff": "#601022ff",
+      "#ded09aff": "#85122aff",
+      "#f2e2afff": "#8b2034ff"
+    },
+    "reason": "Maritime crimson vest; only previously mapped fabric."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      5
+    ],
+    "name": "shirt",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          28,
+          26
+        ],
+        [
+          36,
+          26
+        ],
+        [
+          38,
+          30
+        ],
+        [
+          37,
+          38
+        ],
+        [
+          28,
+          38
+        ]
+      ]
+    },
+    "reason": "Fitted torso boundary for this real pose."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      5
+    ],
+    "name": "shirt",
+    "combine": "subtract",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          24,
+          28
+        ],
+        [
+          28,
+          28
+        ],
+        [
+          29,
+          31
+        ],
+        [
+          27,
+          34
+        ],
+        [
+          23,
+          34
+        ]
+      ]
+    },
+    "reason": "Protect the foreground arm and hand."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      5
+    ],
+    "mask": "shirt",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#5c504aff": "#806247ff",
+      "#5f3322ff": "#806247ff",
+      "#61402eff": "#806247ff",
+      "#723928ff": "#806247ff",
+      "#773f26ff": "#806247ff",
+      "#80482fff": "#baa373ff",
+      "#8a6047ff": "#baa373ff",
+      "#915238ff": "#baa373ff",
+      "#91553aff": "#baa373ff",
+      "#91715aff": "#baa373ff",
+      "#9e5e41ff": "#baa373ff",
+      "#a26240ff": "#baa373ff",
+      "#a86745ff": "#baa373ff",
+      "#b17753ff": "#ded09aff",
+      "#b47146ff": "#ded09aff",
+      "#bb794fff": "#ded09aff",
+      "#c28157ff": "#ded09aff",
+      "#c98559ff": "#ded09aff",
+      "#cb8a5cff": "#ded09aff",
+      "#d09164ff": "#ded09aff",
+      "#d28b5dff": "#f2e2afff",
+      "#d39767ff": "#f2e2afff",
+      "#d58c5eff": "#f2e2afff",
+      "#db9d6dff": "#f2e2afff",
+      "#dea574ff": "#f2e2afff",
+      "#e0aa78ff": "#f2e2afff",
+      "#e1a676ff": "#f2e2afff",
+      "#e6b884ff": "#f2e2afff",
+      "#f0d095ff": "#f2e2afff"
+    },
+    "reason": "Linen follows the original torso shading without moving it."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      5
+    ],
+    "name": "vest",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        28,
+        24,
+        30,
+        40
+      ]
+    },
+    "reason": "Near edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      5
+    ],
+    "name": "vest",
+    "combine": "add",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        37,
+        24,
+        38,
+        40
+      ]
+    },
+    "reason": "Far edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      5
+    ],
+    "mask": "vest",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#806247ff": "#39050aff",
+      "#baa373ff": "#601022ff",
+      "#ded09aff": "#85122aff",
+      "#f2e2afff": "#8b2034ff"
+    },
+    "reason": "Maritime crimson vest; only previously mapped fabric."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      6
+    ],
+    "name": "shirt",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          27,
+          26
+        ],
+        [
+          34,
+          25
+        ],
+        [
+          37,
+          29
+        ],
+        [
+          37,
+          38
+        ],
+        [
+          28,
+          38
+        ]
+      ]
+    },
+    "reason": "Fitted torso boundary for this real pose."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      6
+    ],
+    "name": "shirt",
+    "combine": "subtract",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          26,
+          27
+        ],
+        [
+          28,
+          27
+        ],
+        [
+          30,
+          30
+        ],
+        [
+          34,
+          31
+        ],
+        [
+          43,
+          29
+        ],
+        [
+          44,
+          32
+        ],
+        [
+          36,
+          35
+        ],
+        [
+          31,
+          35
+        ],
+        [
+          28,
+          33
+        ],
+        [
+          26,
+          30
+        ]
+      ]
+    },
+    "reason": "Protect the foreground arm and hand."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      6
+    ],
+    "mask": "shirt",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#5c504aff": "#806247ff",
+      "#5f3322ff": "#806247ff",
+      "#61402eff": "#806247ff",
+      "#723928ff": "#806247ff",
+      "#773f26ff": "#806247ff",
+      "#80482fff": "#baa373ff",
+      "#8a6047ff": "#baa373ff",
+      "#915238ff": "#baa373ff",
+      "#91553aff": "#baa373ff",
+      "#91715aff": "#baa373ff",
+      "#9e5e41ff": "#baa373ff",
+      "#a26240ff": "#baa373ff",
+      "#a86745ff": "#baa373ff",
+      "#b17753ff": "#ded09aff",
+      "#b47146ff": "#ded09aff",
+      "#bb794fff": "#ded09aff",
+      "#c28157ff": "#ded09aff",
+      "#c98559ff": "#ded09aff",
+      "#cb8a5cff": "#ded09aff",
+      "#d09164ff": "#ded09aff",
+      "#d28b5dff": "#f2e2afff",
+      "#d39767ff": "#f2e2afff",
+      "#d58c5eff": "#f2e2afff",
+      "#db9d6dff": "#f2e2afff",
+      "#dea574ff": "#f2e2afff",
+      "#e0aa78ff": "#f2e2afff",
+      "#e1a676ff": "#f2e2afff",
+      "#e6b884ff": "#f2e2afff",
+      "#f0d095ff": "#f2e2afff"
+    },
+    "reason": "Linen follows the original torso shading without moving it."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      6
+    ],
+    "name": "vest",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        27,
+        24,
+        29,
+        40
+      ]
+    },
+    "reason": "Near edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      6
+    ],
+    "name": "vest",
+    "combine": "add",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        36,
+        24,
+        37,
+        40
+      ]
+    },
+    "reason": "Far edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      6
+    ],
+    "mask": "vest",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#806247ff": "#39050aff",
+      "#baa373ff": "#601022ff",
+      "#ded09aff": "#85122aff",
+      "#f2e2afff": "#8b2034ff"
+    },
+    "reason": "Maritime crimson vest; only previously mapped fabric."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      7
+    ],
+    "name": "shirt",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          28,
+          26
+        ],
+        [
+          35,
+          26
+        ],
+        [
+          37,
+          29
+        ],
+        [
+          37,
+          39
+        ],
+        [
+          29,
+          39
+        ]
+      ]
+    },
+    "reason": "Fitted torso boundary for this real pose."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      7
+    ],
+    "name": "shirt",
+    "combine": "subtract",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          25,
+          27
+        ],
+        [
+          28,
+          27
+        ],
+        [
+          30,
+          34
+        ],
+        [
+          30,
+          44
+        ],
+        [
+          27,
+          44
+        ],
+        [
+          26,
+          34
+        ]
+      ]
+    },
+    "reason": "Protect the foreground arm and hand."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      7
+    ],
+    "mask": "shirt",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#5c504aff": "#806247ff",
+      "#5f3322ff": "#806247ff",
+      "#61402eff": "#806247ff",
+      "#723928ff": "#806247ff",
+      "#773f26ff": "#806247ff",
+      "#80482fff": "#baa373ff",
+      "#8a6047ff": "#baa373ff",
+      "#915238ff": "#baa373ff",
+      "#91553aff": "#baa373ff",
+      "#91715aff": "#baa373ff",
+      "#9e5e41ff": "#baa373ff",
+      "#a26240ff": "#baa373ff",
+      "#a86745ff": "#baa373ff",
+      "#b17753ff": "#ded09aff",
+      "#b47146ff": "#ded09aff",
+      "#bb794fff": "#ded09aff",
+      "#c28157ff": "#ded09aff",
+      "#c98559ff": "#ded09aff",
+      "#cb8a5cff": "#ded09aff",
+      "#d09164ff": "#ded09aff",
+      "#d28b5dff": "#f2e2afff",
+      "#d39767ff": "#f2e2afff",
+      "#d58c5eff": "#f2e2afff",
+      "#db9d6dff": "#f2e2afff",
+      "#dea574ff": "#f2e2afff",
+      "#e0aa78ff": "#f2e2afff",
+      "#e1a676ff": "#f2e2afff",
+      "#e6b884ff": "#f2e2afff",
+      "#f0d095ff": "#f2e2afff"
+    },
+    "reason": "Linen follows the original torso shading without moving it."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      7
+    ],
+    "name": "vest",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        28,
+        24,
+        30,
+        40
+      ]
+    },
+    "reason": "Near edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      7
+    ],
+    "name": "vest",
+    "combine": "add",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        36,
+        24,
+        37,
+        40
+      ]
+    },
+    "reason": "Far edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      7
+    ],
+    "mask": "vest",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#806247ff": "#39050aff",
+      "#baa373ff": "#601022ff",
+      "#ded09aff": "#85122aff",
+      "#f2e2afff": "#8b2034ff"
+    },
+    "reason": "Maritime crimson vest; only previously mapped fabric."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      8
+    ],
+    "name": "shirt",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          27,
+          25
+        ],
+        [
+          33,
+          24
+        ],
+        [
+          36,
+          27
+        ],
+        [
+          36,
+          38
+        ],
+        [
+          28,
+          38
+        ]
+      ]
+    },
+    "reason": "Fitted torso boundary for this real pose."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      8
+    ],
+    "name": "shirt",
+    "combine": "subtract",
+    "selector": {
+      "kind": "polygon",
+      "points": [
+        [
+          30,
+          26
+        ],
+        [
+          33,
+          26
+        ],
+        [
+          34,
+          30
+        ],
+        [
+          35,
+          38
+        ],
+        [
+          32,
+          39
+        ],
+        [
+          30,
+          33
+        ]
+      ]
+    },
+    "reason": "Protect the foreground arm and hand."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      8
+    ],
+    "mask": "shirt",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#5c504aff": "#806247ff",
+      "#5f3322ff": "#806247ff",
+      "#61402eff": "#806247ff",
+      "#723928ff": "#806247ff",
+      "#773f26ff": "#806247ff",
+      "#80482fff": "#baa373ff",
+      "#8a6047ff": "#baa373ff",
+      "#915238ff": "#baa373ff",
+      "#91553aff": "#baa373ff",
+      "#91715aff": "#baa373ff",
+      "#9e5e41ff": "#baa373ff",
+      "#a26240ff": "#baa373ff",
+      "#a86745ff": "#baa373ff",
+      "#b17753ff": "#ded09aff",
+      "#b47146ff": "#ded09aff",
+      "#bb794fff": "#ded09aff",
+      "#c28157ff": "#ded09aff",
+      "#c98559ff": "#ded09aff",
+      "#cb8a5cff": "#ded09aff",
+      "#d09164ff": "#ded09aff",
+      "#d28b5dff": "#f2e2afff",
+      "#d39767ff": "#f2e2afff",
+      "#d58c5eff": "#f2e2afff",
+      "#db9d6dff": "#f2e2afff",
+      "#dea574ff": "#f2e2afff",
+      "#e0aa78ff": "#f2e2afff",
+      "#e1a676ff": "#f2e2afff",
+      "#e6b884ff": "#f2e2afff",
+      "#f0d095ff": "#f2e2afff"
+    },
+    "reason": "Linen follows the original torso shading without moving it."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      8
+    ],
+    "name": "vest",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        27,
+        24,
+        29,
+        40
+      ]
+    },
+    "reason": "Near edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "select_mask",
+    "layer": "image",
+    "frames": [
+      8
+    ],
+    "name": "vest",
+    "combine": "add",
+    "selector": {
+      "kind": "rectangle",
+      "region": [
+        35,
+        24,
+        36,
+        40
+      ]
+    },
+    "reason": "Far edge of fitted sleeveless vest."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      8
+    ],
+    "mask": "vest",
+    "region": [
+      0,
+      0,
+      63,
+      63
+    ],
+    "colors": {
+      "#806247ff": "#39050aff",
+      "#baa373ff": "#601022ff",
+      "#ded09aff": "#85122aff",
+      "#f2e2afff": "#8b2034ff"
+    },
+    "reason": "Maritime crimson vest; only previously mapped fabric."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "region": [
+      0,
+      36,
+      63,
+      48
+    ],
+    "colors": {
+      "#16131aff": "#07132bff",
+      "#1c1923ff": "#07132bff",
+      "#262532ff": "#122253ff",
+      "#302e42ff": "#122253ff",
+      "#363449ff": "#122253ff",
+      "#3e3c53ff": "#335994ff",
+      "#46434fff": "#335994ff",
+      "#4d4e62ff": "#335994ff",
+      "#56586fff": "#4675b2ff",
+      "#737374ff": "#4675b2ff"
+    },
+    "reason": "Existing shorts become a fitted blue trousers layer."
+  },
+  {
+    "operation": "map_colors",
+    "layer": "image",
+    "frames": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "region": [
+      0,
+      46,
+      63,
+      56
+    ],
+    "colors": {
+      "#5c504aff": "#342b27ff",
+      "#5f3322ff": "#342b27ff",
+      "#61402eff": "#342b27ff",
+      "#723928ff": "#342b27ff",
+      "#773f26ff": "#342b27ff",
+      "#80482fff": "#603e29ff",
+      "#8a6047ff": "#603e29ff",
+      "#915238ff": "#603e29ff",
+      "#91553aff": "#603e29ff",
+      "#91715aff": "#603e29ff",
+      "#9e5e41ff": "#603e29ff",
+      "#a26240ff": "#603e29ff",
+      "#a86745ff": "#603e29ff",
+      "#b17753ff": "#935e39ff",
+      "#b47146ff": "#935e39ff",
+      "#bb794fff": "#935e39ff",
+      "#c28157ff": "#935e39ff",
+      "#c98559ff": "#935e39ff",
+      "#cb8a5cff": "#935e39ff",
+      "#d09164ff": "#935e39ff",
+      "#d28b5dff": "#ce7d3fff",
+      "#d39767ff": "#ce7d3fff",
+      "#d58c5eff": "#ce7d3fff",
+      "#db9d6dff": "#ce7d3fff",
+      "#dea574ff": "#ce7d3fff",
+      "#e0aa78ff": "#ce7d3fff",
+      "#e1a676ff": "#ce7d3fff",
+      "#e6b884ff": "#ce7d3fff",
+      "#f0d095ff": "#ce7d3fff"
+    },
+    "reason": "Fitted boot surfaces preserve every existing foot and ground pixel."
+  }
+]

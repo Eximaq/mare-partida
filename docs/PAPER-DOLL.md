@@ -1,5 +1,14 @@
 # Paper Doll 1.0 — Fase 1
 
+Continuação de23/10: [conjunto azul de quatro camadas](PAPER-DOLL-CONJUNTO-AZUL.md), com corpo, cabelo, roupa e espada em80 poses Idle/Walk/Attack nas quatro vistas. Inclui harmonização de paleta e encaixe leste no Workbench, comparação de pixels em navegador e teste de combate. Candidato em revisão, sem ativação global.
+
+Continuação de22/10: [candidato de encaixe leste no Workbench](PAPER-DOLL-ENCAIXE-LESTE.md). O ataque pode ser inspecionado em quatro direções; o novo vestuário leste ainda precisa de harmonização artística. Sem geração paga nesta etapa e sem ativação em produção.
+
+
+Retoque exato posterior (22/10): [ataque norte modular e corpo leste corrigido no Workbench](PAPER-DOLL-RETOQUE-EXATO.md). O ataque agora cobre três direções; o leste ainda depende de peças que encaixem no corpo. Os comandos de edição, originais e resultados reprovados estão preservados. Os dados de disponibilidade são distintos da aprovação artística, que continua pendente.
+
+Continuação de22/10: [correção das guias, dois corpos reprovados e nova declaração de arma encoberta](PAPER-DOLL-CORRECAO-GUIAS.md). A infraestrutura passou nas verificações, mas norte/leste continuam pendentes artisticamente. Não confundir um pedido de geração numericamente válido com uma imagem alinhada.
+
 Revisão direcional (22/10/2026): [frente e oeste em inspeção, norte e leste com fallback](PAPER-DOLL-DIRECOES-BENTO.md). O oeste tem oito poses de seis camadas, encaixes da espada por pose e calibração fixa de origem. As duas vistas pendentes não usam peças parciais. O lote consumiu9 gerações confirmadas e preserva produção/saves.
 
 Continuação em inspeção: [novo corte frontal guiado pelas articulações do Bento](PAPER-DOLL-MOVIMENTO-BENTO.md). Corpo neutro pelo Skeleton v3 e peças visíveis originais separadas;13 gerações confirmadas nos dois estudos. Não usar o primeiro corpo da transferência (espada interpretada como braço). O novo pacote continua `approved:false`, somente frente, sem continuidade Idle/Walk nem demais vistas certificadas.
@@ -57,6 +66,14 @@ Não há customizador de aparência, recoloração, escolha persistente de cabel
 O rig continua declarando as quatro direções. Uma peça pode fornecer um subconjunto não vazio delas em `clip.directions`, com uma linha real de PNG por direção declarada. A ordem das linhas segue esse array; direções desconhecidas, duplicadas, folhas com linhas extras e sequências incompatíveis são rejeitadas. Uma pose sem linha retorna `missing-direction` antes de qualquer desenho, preservando o fallback atômico. Não há empréstimo, espelhamento ou duplicação de linhas.
 
 A bancada informa quais direções possuem composição completa (`readyDirections`, modo `partial-draft`), mantendo o sprite original nas demais e em ações ausentes. Isso permite inspecionar lotes pequenos sem aprovar arte nem ativar conjuntos incompletos no jogo. Os testes Node e `tests/paper_doll_partial_browser.py` verificam quatro frames sul, três direções legadas, ação ausente e save intacto com fixtures geométricas explicitamente separadas de arte de personagem.
+
+### Pacotes com uma única ação e ajuste das folhas
+
+A [bancada do ataque Bento](../tools/paper-doll-inspector/index.html?pack=bento-east-fit) abre o candidato de quatro direções sem importação manual. Um manifesto pode declarar apenas uma ação conhecida, mantendo sua contagem, FPS, loop e quatro direções do contrato canônico. Nomes desconhecidos ou parâmetros incompatíveis são rejeitados antes de trocar o pacote atual. A bancada completa somente as linhas de tempo para conseguir mostrar o fallback de ações ausentes: não cria clips, não inventa sprites nem acrescenta cobertura ao manifesto exportado.
+
+Em **Ajustar camada por frame**, selecione peça e direção, escolha o frame e informe offsetX/offsetY inteiros de−84 a84 e profundidade de−512 a512. Os valores são os transforms efetivos daquela pose; gravam `poseOverrides` sem modificar outras poses/direções. Armas rígidas continuam usando seu painel de sockets. Restaurar devolve as peças originais importadas. Exportar produz JSON portátil com nomes relativos dos mesmos PNGs e `approved:false`; reimporte os mesmos PNGs junto do novo manifesto. Não há pintura, edição de imagem, alteração de save ou aprovação de produção.
+
+`tests/paper_doll_sheet_fit_browser.py` usa os PNGs reais para verificar importação somente de ataque, quatro vistas, rejeição atômica de contratos inválidos, offsets por pose, restauração, roundtrip do JSON, fallback Idle/Walk, hashes dos PNGs, mobile e save intacto.
 
 O [piloto real Idle/sul](PAPER-DOLL-IDLE-SUL.md) consumiu11 gerações autorizadas e entregou quatro frames de inspeção, mas o contato mão/espada e os ombros não passaram. O pacote continua `approved:false`, fora do catálogo do jogo. Essa evolução não conclui o critério artístico da Fase1.
 
@@ -182,6 +199,12 @@ Para um pacote local: selecione um JSON e todas as folhas PNG na mesma seleção
 
 ## Cache e desempenho
 
+### Arma totalmente encoberta em um frame
+
+Uma folha animada de arma pode declarar `clip.occludedFrames`, por exemplo `{"north":[1,2,3]}`, quando a fonte mostra a arma inteiramente atrás do corpo. Os índices começam em zero. Cada célula declarada precisa ser totalmente transparente; pixels visíveis nessa célula provocam `occluded-frame-has-pixels`. Uma célula vazia sem declaração continua provocando `empty-frame` e fallback completo.
+
+A declaração é aceita somente para o slot `weapon` em folhas animadas, nunca para corpo, cabelo, roupa ou armas rígidas. Direções precisam existir no clip, índices precisam ser únicos e válidos, e cada direção deve ter pelo menos um frame não encoberto. `available:false`, peças não aprovadas e demais validações continuam sendo respeitadas. A auditoria usa a declaração na chave do cache para não reaproveitar um resultado de outra política. Isso registra visibilidade real da fonte; não autoriza apagar pixels ou omitir frames faltantes.
+
 ### Encaixes editáveis e vistas de arma
 
 Na bancada, **Encaixe da arma** permite escolher direção e frame, editar coordenadas inteiras do socket e a profundidade daquela pose, restaurar o pacote e exportar um JSON portátil. O PNG permanece intacto. A edição pausa a reprodução, invalida o cache e mantém `approved:false`; não grava no save nem registra arte no catálogo de produção. Reimporte o JSON exportado junto dos mesmos PNGs. Poses sem encaixe ficam desabilitadas.
@@ -227,3 +250,13 @@ Gerar o personagem inteiro e tentar apagar suas roupas depois deixa anatomia ocu
 - O workflow `Paper Doll — infraestrutura e fallback` repete a verificação em Chromium no pacote estático e entrega o artefato `paper-doll-infraestrutura-capturas` para revisão, sem incluir evidências em massa no repositório.
 
 A fase entrega a infraestrutura e a prévia com fallback pela exceção expressa do pedido. **O aceite artístico do Espadachim modular em quatro direções continua pendente.** O mínimo atualizado de camadas e encaixes ausentes está no relatório Idle/sul; a arma rígida é a exceção autorizada à antiga estimativa de320 frames. Nada foi integrado à main automaticamente. Saves antigos, mapas, física, hitboxes e tempos/eventos do combate permanecem no caminho existente.
+
+
+## Estudo corporal contínuo
+
+[Corpo-base em80 poses reais](PAPER-DOLL-CORPO-CONTINUIDADE.md): Idle/Walk/Attack reunidos na bancada sem alterar pixels. O escopo restrito `body-motion-review` permite conferir a anatomia sem apresentar um conjunto sem roupas como personagem final. Nenhuma mudança no catálogo de produção.
+
+
+## Cabelo nas três ações
+
+[Estudo de corpo e cabelo curto](PAPER-DOLL-CABELO-CONTINUIDADE.md):80 poses com cabelo existente; ataque reutiliza superfícies direcionais com encaixes próprios, sem alterar os movimentos ou gastar gerações. Escopo parcial, sem roupa/arma e fora de produção.

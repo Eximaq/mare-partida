@@ -1,0 +1,913 @@
+{
+  "passed": true,
+  "body_pose_count": 80,
+  "pixel_changes": 0,
+  "paid_calls": 0,
+  "artistic_continuity_approved": false,
+  "records": [
+    {
+      "action": "idle",
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/body-idle.png",
+      "file": "body-idle.png",
+      "sha256": "b04361d22abe344f5fba079994b5625c6fe4822b308dc5ca7478300deab43348",
+      "poses": [
+        {
+          "direction": "south",
+          "frame": 0,
+          "bounds": [
+            30,
+            22,
+            54,
+            65
+          ],
+          "rgba_sha256": "5310f53676718800de39b069fc6d3b189743919576718bc443cd22e7be6c5771"
+        },
+        {
+          "direction": "south",
+          "frame": 1,
+          "bounds": [
+            28,
+            23,
+            56,
+            65
+          ],
+          "rgba_sha256": "a35d1db06572868b59f0d41b0ceb7db536256f0c9c00e790651a847b2d0a1901"
+        },
+        {
+          "direction": "south",
+          "frame": 2,
+          "bounds": [
+            30,
+            24,
+            54,
+            65
+          ],
+          "rgba_sha256": "f714d160d3f6253f3206bd35ceced12c277d609add6264465378a94f9253f991"
+        },
+        {
+          "direction": "south",
+          "frame": 3,
+          "bounds": [
+            29,
+            23,
+            55,
+            65
+          ],
+          "rgba_sha256": "e8d50947fc05924abcb4fcff32a00816f0fd3db0fd4d1fdfbf9b7df43674538f"
+        },
+        {
+          "direction": "north",
+          "frame": 0,
+          "bounds": [
+            30,
+            22,
+            54,
+            65
+          ],
+          "rgba_sha256": "a29ca26c9ffb9190227e5cb29808360aaf78203f0cb98aaa1c6d1f5ff52aad37"
+        },
+        {
+          "direction": "north",
+          "frame": 1,
+          "bounds": [
+            31,
+            23,
+            53,
+            65
+          ],
+          "rgba_sha256": "e76d3c9ea414e5ea5f8060dbfb563eb540ff20fb5b9eed71bc7e9813ff1a1d3e"
+        },
+        {
+          "direction": "north",
+          "frame": 2,
+          "bounds": [
+            31,
+            24,
+            53,
+            65
+          ],
+          "rgba_sha256": "6e97e19b8d28f9355351728d54da713ffd4542eb350cb39f3cf716da4ad361d3"
+        },
+        {
+          "direction": "north",
+          "frame": 3,
+          "bounds": [
+            31,
+            24,
+            53,
+            65
+          ],
+          "rgba_sha256": "ce3762b81f0c3f6bbab580b550a58f27dba96f16c1457f7a4de205d1d61a6cdc"
+        },
+        {
+          "direction": "west",
+          "frame": 0,
+          "bounds": [
+            35,
+            22,
+            49,
+            65
+          ],
+          "rgba_sha256": "c516a813207f52d7456b38a3ab99084de837060f6b136fb0b744b14d5bc89e35"
+        },
+        {
+          "direction": "west",
+          "frame": 1,
+          "bounds": [
+            34,
+            22,
+            49,
+            65
+          ],
+          "rgba_sha256": "25b555f24b45973a7756dbe94c26e03cede85803c498bcc800b99219099a94c6"
+        },
+        {
+          "direction": "west",
+          "frame": 2,
+          "bounds": [
+            35,
+            21,
+            49,
+            65
+          ],
+          "rgba_sha256": "64039f6b068d7a3d01b063e3bd98c338d1a85aaf9024bedb006de5d2187ef97c"
+        },
+        {
+          "direction": "west",
+          "frame": 3,
+          "bounds": [
+            36,
+            20,
+            48,
+            65
+          ],
+          "rgba_sha256": "4846b80ceea4ba863efa0e86888b92f8d158e59775bf5f1bd0ef7bc028ad6388"
+        },
+        {
+          "direction": "east",
+          "frame": 0,
+          "bounds": [
+            34,
+            20,
+            48,
+            65
+          ],
+          "rgba_sha256": "12d90151e069e987f995218c73e4fabdc30e74e1496c7a438cb653b6f1c782c1"
+        },
+        {
+          "direction": "east",
+          "frame": 1,
+          "bounds": [
+            34,
+            20,
+            49,
+            65
+          ],
+          "rgba_sha256": "10a23c3057e12c82bd32d3757dc66dd325dabaf4fda5de853fd4705e6288c655"
+        },
+        {
+          "direction": "east",
+          "frame": 2,
+          "bounds": [
+            34,
+            21,
+            48,
+            65
+          ],
+          "rgba_sha256": "ba8e078c589d3a88dc5d5c7e1681483d8df01267cfddcaa6e7a955e4a69c2e82"
+        },
+        {
+          "direction": "east",
+          "frame": 3,
+          "bounds": [
+            34,
+            21,
+            48,
+            65
+          ],
+          "rgba_sha256": "b4ad605a2a032127899c52865526e92a9103dfea5ed7420c4f2d24275c01c835"
+        }
+      ]
+    },
+    {
+      "action": "walk",
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/body-walk.png",
+      "file": "body-walk.png",
+      "sha256": "a5c81f23d0172f7a7a87000cb1e2e64169959e5dd4b5740e34216944653c5ded",
+      "poses": [
+        {
+          "direction": "south",
+          "frame": 0,
+          "bounds": [
+            31,
+            22,
+            53,
+            65
+          ],
+          "rgba_sha256": "0e8c4a52e3be291ec4262f0860ebe3fa4c89388ca17834ebe0bdd78ed9903960"
+        },
+        {
+          "direction": "south",
+          "frame": 1,
+          "bounds": [
+            30,
+            22,
+            53,
+            66
+          ],
+          "rgba_sha256": "4c5e909c19db79021d8970806ae4131a22bcbcee16eaa28e6c132a499b616152"
+        },
+        {
+          "direction": "south",
+          "frame": 2,
+          "bounds": [
+            31,
+            23,
+            52,
+            68
+          ],
+          "rgba_sha256": "3bb62982b77074ec91936085b7b4dde24b2c49e27a2375fb825ef8e1b3ba407a"
+        },
+        {
+          "direction": "south",
+          "frame": 3,
+          "bounds": [
+            32,
+            23,
+            52,
+            68
+          ],
+          "rgba_sha256": "e92c693ebb602f7697d7d74d5fa02d55820404dc161961ba291458bf6812e13e"
+        },
+        {
+          "direction": "south",
+          "frame": 4,
+          "bounds": [
+            31,
+            22,
+            53,
+            67
+          ],
+          "rgba_sha256": "8df864323e595853c3392d9e1d9ae14c6b127370c0327c29e402db46a3394574"
+        },
+        {
+          "direction": "south",
+          "frame": 5,
+          "bounds": [
+            30,
+            22,
+            53,
+            66
+          ],
+          "rgba_sha256": "517ba0364a754658a763f732b54c93e6f3a41c549618cc510cdd85c4e21bf816"
+        },
+        {
+          "direction": "south",
+          "frame": 6,
+          "bounds": [
+            31,
+            23,
+            52,
+            68
+          ],
+          "rgba_sha256": "719ff76dfa0a804f0a0e82421bc83de45cb8c17e6ff19814a3ad4953b83a766d"
+        },
+        {
+          "direction": "south",
+          "frame": 7,
+          "bounds": [
+            31,
+            23,
+            52,
+            68
+          ],
+          "rgba_sha256": "227cca47c53e148429f52e197e158a9d3eb2fb057792dfea3f96ef9414577a00"
+        },
+        {
+          "direction": "north",
+          "frame": 0,
+          "bounds": [
+            30,
+            22,
+            54,
+            66
+          ],
+          "rgba_sha256": "0f24b841ffb571704ba93537673f4352b80c24f2bd53499ad0f6dade47df1d76"
+        },
+        {
+          "direction": "north",
+          "frame": 1,
+          "bounds": [
+            30,
+            23,
+            53,
+            67
+          ],
+          "rgba_sha256": "d4118a61034cd6b4762f25bbb3fa3187fc42d79bb478231a2a4d2c02d48f81f6"
+        },
+        {
+          "direction": "north",
+          "frame": 2,
+          "bounds": [
+            30,
+            23,
+            53,
+            68
+          ],
+          "rgba_sha256": "92df2d34db65d9d6d559aaa6b429a93b4d0d658cb48729aa8ab63e76a6b1d2a2"
+        },
+        {
+          "direction": "north",
+          "frame": 3,
+          "bounds": [
+            30,
+            22,
+            54,
+            67
+          ],
+          "rgba_sha256": "82e6341e5f3ce4a3ac840cf02a6cf2c730c6ea1877c3e4eabac6bcd1bfb97f0e"
+        },
+        {
+          "direction": "north",
+          "frame": 4,
+          "bounds": [
+            30,
+            22,
+            54,
+            66
+          ],
+          "rgba_sha256": "dc4b9f1d35dd17a20994ca150c19f64abece5c590df21a9987208ceaf0e7d7f6"
+        },
+        {
+          "direction": "north",
+          "frame": 5,
+          "bounds": [
+            31,
+            23,
+            54,
+            67
+          ],
+          "rgba_sha256": "f8ebc6920672eaeec712dd42c6dc07f20f6d55df932cb62a7e594b3f8b416022"
+        },
+        {
+          "direction": "north",
+          "frame": 6,
+          "bounds": [
+            31,
+            23,
+            54,
+            68
+          ],
+          "rgba_sha256": "5af6fab780fd89f9dfab6ca4b83b315accba07f953ad91a85930839df628a3c5"
+        },
+        {
+          "direction": "north",
+          "frame": 7,
+          "bounds": [
+            30,
+            22,
+            54,
+            67
+          ],
+          "rgba_sha256": "b03f90f04d0e7f71319ddf20a8a9d31eef076ccb7f7471db453a4b2aaaa95fbb"
+        },
+        {
+          "direction": "west",
+          "frame": 0,
+          "bounds": [
+            35,
+            21,
+            51,
+            65
+          ],
+          "rgba_sha256": "a9241e8b1183b6fc4062c8f4ed8883d5dbfded146081651a89a2f471699498ac"
+        },
+        {
+          "direction": "west",
+          "frame": 1,
+          "bounds": [
+            32,
+            20,
+            53,
+            65
+          ],
+          "rgba_sha256": "8633d536b2cf0f9031b5fdc491adbc9bae84c326e7f70fd2b2117384cc88d32d"
+        },
+        {
+          "direction": "west",
+          "frame": 2,
+          "bounds": [
+            30,
+            20,
+            55,
+            65
+          ],
+          "rgba_sha256": "a44aa5c3c3ea2da410d297e4a03ed2772056fc6696400b788eb90e784bf6054d"
+        },
+        {
+          "direction": "west",
+          "frame": 3,
+          "bounds": [
+            29,
+            21,
+            54,
+            65
+          ],
+          "rgba_sha256": "447dc0ce2f7fee2c7317a233e4912020cbd20bada7675f616f6aeb4101f13e9d"
+        },
+        {
+          "direction": "west",
+          "frame": 4,
+          "bounds": [
+            31,
+            22,
+            53,
+            64
+          ],
+          "rgba_sha256": "1df3b1351ce2e5df502770e617533871b3fd8f9d654037b4e8860351dd9ca435"
+        },
+        {
+          "direction": "west",
+          "frame": 5,
+          "bounds": [
+            33,
+            22,
+            50,
+            64
+          ],
+          "rgba_sha256": "101208ab79746272bc8789256e5db99d8a6f4d51e84d5604432cea253a37f32c"
+        },
+        {
+          "direction": "west",
+          "frame": 6,
+          "bounds": [
+            33,
+            22,
+            49,
+            64
+          ],
+          "rgba_sha256": "4184887fbd616130547c7863f4ec2817c065719629e2d2c31ba3b012827fb52e"
+        },
+        {
+          "direction": "west",
+          "frame": 7,
+          "bounds": [
+            34,
+            21,
+            49,
+            64
+          ],
+          "rgba_sha256": "882ccf82590f3d39621c234199c0a5395c1929a7ad287411666c5ddce5466257"
+        },
+        {
+          "direction": "east",
+          "frame": 0,
+          "bounds": [
+            34,
+            20,
+            48,
+            65
+          ],
+          "rgba_sha256": "968120b677581e3bb4899de09be2cdbe2d47f79a3aa8453febf332768bdc7ae3"
+        },
+        {
+          "direction": "east",
+          "frame": 1,
+          "bounds": [
+            31,
+            20,
+            50,
+            65
+          ],
+          "rgba_sha256": "0d334db57609c3dc2827ad3d810ef7346fc87ea9905db99e39df3ac9473abcf9"
+        },
+        {
+          "direction": "east",
+          "frame": 2,
+          "bounds": [
+            29,
+            21,
+            55,
+            65
+          ],
+          "rgba_sha256": "7739d4f11d18104ed083198cf49597e3a45c2e8d941c0ddacce787aab7294c86"
+        },
+        {
+          "direction": "east",
+          "frame": 3,
+          "bounds": [
+            28,
+            21,
+            54,
+            65
+          ],
+          "rgba_sha256": "e5005ebb035b066f2feef60a5f7da47c17ce2c2193965b58d0005c631688475d"
+        },
+        {
+          "direction": "east",
+          "frame": 4,
+          "bounds": [
+            31,
+            20,
+            50,
+            63
+          ],
+          "rgba_sha256": "7611e11c7df51636fbfd463253d6a5aafa0a088e7fcd177077b63ccdd7b55639"
+        },
+        {
+          "direction": "east",
+          "frame": 5,
+          "bounds": [
+            35,
+            20,
+            48,
+            64
+          ],
+          "rgba_sha256": "716e25446d55ad56e128b09d6a1c094ec87b266a97fa8e852812432128eb4fc0"
+        },
+        {
+          "direction": "east",
+          "frame": 6,
+          "bounds": [
+            33,
+            20,
+            51,
+            64
+          ],
+          "rgba_sha256": "962047ff2ecf0718b2fc58ad05bfdc762a99854c4a833df6a4f8695a7ccda242"
+        },
+        {
+          "direction": "east",
+          "frame": 7,
+          "bounds": [
+            30,
+            21,
+            55,
+            65
+          ],
+          "rgba_sha256": "88d923177e328e5d01890ab915d2dc1125d633905f3ad54dd6e984cc19bd6a44"
+        }
+      ]
+    },
+    {
+      "action": "attack-sword",
+      "source": "pixellab-pip-generations/paper-doll-east-fit-20261022/body-attack.png",
+      "file": "body-attack.png",
+      "sha256": "b59089c2c0232960c826a3922e36158a9141e92186b5d0d65267ac00670b793b",
+      "poses": [
+        {
+          "direction": "south",
+          "frame": 0,
+          "bounds": [
+            26,
+            20,
+            57,
+            65
+          ],
+          "rgba_sha256": "745eb2c118295883dd84629b2642a27a5ea46784498c813f83f9e708e55a05ef"
+        },
+        {
+          "direction": "south",
+          "frame": 1,
+          "bounds": [
+            27,
+            20,
+            57,
+            65
+          ],
+          "rgba_sha256": "b8edbda87b8e05e9f0baf38aa7e2be2ff41b0b95081f628f9fb1f807b5c5db16"
+        },
+        {
+          "direction": "south",
+          "frame": 2,
+          "bounds": [
+            27,
+            20,
+            57,
+            65
+          ],
+          "rgba_sha256": "7512995f0df20f9f4eb18ef1f8c088674e332017aa760b9ec1f1d55f8cd1a750"
+        },
+        {
+          "direction": "south",
+          "frame": 3,
+          "bounds": [
+            26,
+            22,
+            55,
+            65
+          ],
+          "rgba_sha256": "c28977704fd1cd7e497b033c11bd34cc24d5261f75496eb3ecf89faa42a1c8f6"
+        },
+        {
+          "direction": "south",
+          "frame": 4,
+          "bounds": [
+            26,
+            21,
+            55,
+            65
+          ],
+          "rgba_sha256": "e3783c0413e50603bfa142fc93a27758756782b97e3032294340079ea7cf99db"
+        },
+        {
+          "direction": "south",
+          "frame": 5,
+          "bounds": [
+            26,
+            21,
+            55,
+            65
+          ],
+          "rgba_sha256": "5ed9ee9ca276c8ef05fd59875b4f2a1f2ceb53fd012995d5a1848e4e837bba99"
+        },
+        {
+          "direction": "south",
+          "frame": 6,
+          "bounds": [
+            28,
+            20,
+            56,
+            65
+          ],
+          "rgba_sha256": "a1dfd1aac05a8292a81118f5effa2c73a91d11f4cd74c16aefed552c9d824c2b"
+        },
+        {
+          "direction": "south",
+          "frame": 7,
+          "bounds": [
+            26,
+            20,
+            57,
+            65
+          ],
+          "rgba_sha256": "dc6ed04f378da4868e4f15abfcda985492b004597852ad4459668975e9d56c64"
+        },
+        {
+          "direction": "north",
+          "frame": 0,
+          "bounds": [
+            30,
+            20,
+            54,
+            65
+          ],
+          "rgba_sha256": "62b66ab518135593511b758bfa7992c9d2126cfb793d5627a1b7fbb0a815e4a3"
+        },
+        {
+          "direction": "north",
+          "frame": 1,
+          "bounds": [
+            29,
+            20,
+            53,
+            65
+          ],
+          "rgba_sha256": "b4830867302890b540f45130a2dc6b79a838ea9c405e9cfa9187b924c61eb757"
+        },
+        {
+          "direction": "north",
+          "frame": 2,
+          "bounds": [
+            28,
+            21,
+            53,
+            65
+          ],
+          "rgba_sha256": "bd3867207b0a8c1587efcc05b50e2f15de3b429f84ec36d467d4147bda5061f7"
+        },
+        {
+          "direction": "north",
+          "frame": 3,
+          "bounds": [
+            28,
+            22,
+            53,
+            65
+          ],
+          "rgba_sha256": "c3dabcfcc073eaeafbeabd633f45358d3a92c9c0c50fe358b68d21b15656583f"
+        },
+        {
+          "direction": "north",
+          "frame": 4,
+          "bounds": [
+            28,
+            22,
+            53,
+            65
+          ],
+          "rgba_sha256": "f8c2890fc8eeb8bc5ecf6f4fc7c75762dc7b71fc34437ebaaf1e9116a6c0fdde"
+        },
+        {
+          "direction": "north",
+          "frame": 5,
+          "bounds": [
+            29,
+            21,
+            53,
+            65
+          ],
+          "rgba_sha256": "16500e13203900ccd4676c45aeace34efc1496ca00752badcaa081218d5ecab4"
+        },
+        {
+          "direction": "north",
+          "frame": 6,
+          "bounds": [
+            30,
+            20,
+            56,
+            65
+          ],
+          "rgba_sha256": "6c1edbc823e8db327c45f643b82dd1ade8db647688dcd299aa7ee4c680a2f31d"
+        },
+        {
+          "direction": "north",
+          "frame": 7,
+          "bounds": [
+            29,
+            20,
+            56,
+            65
+          ],
+          "rgba_sha256": "c9b429f1e41f4fe5d850fd4ec5e826c9d82ea4e2b9859b0cc859f4f3900b238f"
+        },
+        {
+          "direction": "west",
+          "frame": 0,
+          "bounds": [
+            31,
+            21,
+            51,
+            65
+          ],
+          "rgba_sha256": "da1f923d2b11785c0cc8640e5bb3be61fce018234dd06210339b4adeeca16bc1"
+        },
+        {
+          "direction": "west",
+          "frame": 1,
+          "bounds": [
+            26,
+            21,
+            51,
+            65
+          ],
+          "rgba_sha256": "aafe94af316a9205006a108c0618ffb7baa6f1bce57cffd072f7f02902338211"
+        },
+        {
+          "direction": "west",
+          "frame": 2,
+          "bounds": [
+            35,
+            22,
+            51,
+            65
+          ],
+          "rgba_sha256": "59bc40fbd124ccc511eb62aa33957bddb0ff48ed0692c8408c80a948c2bd0e58"
+        },
+        {
+          "direction": "west",
+          "frame": 3,
+          "bounds": [
+            34,
+            23,
+            51,
+            65
+          ],
+          "rgba_sha256": "fce900811282d64607f7b3cd1ce35a8110cea1e449bad7869454e8f9a54c5c62"
+        },
+        {
+          "direction": "west",
+          "frame": 4,
+          "bounds": [
+            34,
+            22,
+            51,
+            65
+          ],
+          "rgba_sha256": "ad320afb586abab1fe633a00488a559b59b223bd5cf614ffb1828eebae165f5e"
+        },
+        {
+          "direction": "west",
+          "frame": 5,
+          "bounds": [
+            29,
+            21,
+            51,
+            65
+          ],
+          "rgba_sha256": "6ad0d1a85c7bee11577d921bd2a17b5c4bc738b2a7e297105a1b1b31356656aa"
+        },
+        {
+          "direction": "west",
+          "frame": 6,
+          "bounds": [
+            33,
+            21,
+            51,
+            65
+          ],
+          "rgba_sha256": "ab3778c2e4788aaa5bb9ea375d55f58df5ae7643577282ee5eecd84381612c0c"
+        },
+        {
+          "direction": "west",
+          "frame": 7,
+          "bounds": [
+            35,
+            21,
+            51,
+            65
+          ],
+          "rgba_sha256": "f9e50d9b1c2e20726a8b297495cca6b759e7243cbd1100ffab701d1b83465215"
+        },
+        {
+          "direction": "east",
+          "frame": 0,
+          "bounds": [
+            32,
+            20,
+            54,
+            65
+          ],
+          "rgba_sha256": "8ad5f6f55479fd616369c82f591c8041ff27391264ad9b51b1097cd05d53290a"
+        },
+        {
+          "direction": "east",
+          "frame": 1,
+          "bounds": [
+            32,
+            20,
+            54,
+            65
+          ],
+          "rgba_sha256": "7808cab21bbf6916e2ae322f9355a0c6a6a38a2a8b21a7c3219c1b0c9347a78c"
+        },
+        {
+          "direction": "east",
+          "frame": 2,
+          "bounds": [
+            29,
+            22,
+            55,
+            65
+          ],
+          "rgba_sha256": "27401ca453f07a693956dfb431dd3c4d1f8ee1833270803551d305df38b6b97b"
+        },
+        {
+          "direction": "east",
+          "frame": 3,
+          "bounds": [
+            29,
+            23,
+            55,
+            65
+          ],
+          "rgba_sha256": "28690524fbb7a3042ff7f8544c0116ae4de56fc74bc5f26fe87fee2279eaf5c6"
+        },
+        {
+          "direction": "east",
+          "frame": 4,
+          "bounds": [
+            28,
+            23,
+            54,
+            65
+          ],
+          "rgba_sha256": "0e8a82cb91711e42d15ee84629fdb58072958cbdac25e327f445989a3e0526f7"
+        },
+        {
+          "direction": "east",
+          "frame": 5,
+          "bounds": [
+            29,
+            23,
+            54,
+            65
+          ],
+          "rgba_sha256": "2a90857a77b54a03d1c0455d545fec43cdbafd40cf8493a37b5a7720f7e443e1"
+        },
+        {
+          "direction": "east",
+          "frame": 6,
+          "bounds": [
+            29,
+            23,
+            56,
+            65
+          ],
+          "rgba_sha256": "b38e3c7be0ee64d49ca0bf42e581101d51890d37432aca1d88d618c9264077c0"
+        },
+        {
+          "direction": "east",
+          "frame": 7,
+          "bounds": [
+            31,
+            21,
+            54,
+            65
+          ],
+          "rgba_sha256": "ec344b270d5b0b882855274ffa4f7aebd28d1473219bcce72b6987dbc7c30abb"
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,10 @@
 # Referência visual — Maré Partida
 
+Continuação de22/10: [candidato de encaixe leste no Workbench](PAPER-DOLL-ENCAIXE-LESTE.md). O ataque pode ser inspecionado em quatro direções; o novo vestuário leste ainda precisa de harmonização artística. Sem geração paga nesta etapa e sem ativação em produção.
+
+
+Retoque exato de22/10: [norte modular e corpo leste com apoio estável](PAPER-DOLL-RETOQUE-EXATO.md). PixelLab Workbench fez cópias localizadas da superfície estacionária do dorso e do contorno dos pés, preservando os oito frames reais. Os pixels fora dessas regiões não foram modificados. A reconstrução generativa de roupa/mão leste foi reprovada; norte/frente/oeste continuam como rascunhos para avaliação, sem ativação no personagem publicado.
+
 Revisão direcional (22/10/2026): [frente e oeste em inspeção, norte e leste com fallback](PAPER-DOLL-DIRECOES-BENTO.md). O oeste tem oito poses de seis camadas, encaixes da espada por pose e calibração fixa de origem. As duas vistas pendentes não usam peças parciais. O lote consumiu9 gerações confirmadas e preserva produção/saves.
 
 Continuação em inspeção: [novo corte frontal guiado pelas articulações do Bento](PAPER-DOLL-MOVIMENTO-BENTO.md). Corpo neutro pelo Skeleton v3 e peças visíveis originais separadas;13 gerações confirmadas nos dois estudos. Não usar o primeiro corpo da transferência (espada interpretada como braço). O novo pacote continua `approved:false`, somente frente, sem continuidade Idle/Walk nem demais vistas certificadas.

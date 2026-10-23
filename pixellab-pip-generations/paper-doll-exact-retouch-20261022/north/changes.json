@@ -1,0 +1,50 @@
+[
+  {
+    "operation": "copy_region",
+    "layer": "image",
+    "frames": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "source_layer": "image",
+    "source_frame": 1,
+    "region": [
+      29,
+      20,
+      39,
+      30
+    ],
+    "at": [
+      29,
+      20
+    ],
+    "reason": "Replace only the falsely front-drawn forearm over the stationary back with the inspected clean back surface. Keep eight genuine generated poses and all outer arm/head/leg motion."
+  },
+  {
+    "operation": "copy_region",
+    "layer": "image",
+    "frames": [
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "source_layer": "image",
+    "source_frame": 1,
+    "region": [
+      50,
+      28,
+      54,
+      31
+    ],
+    "at": [
+      38,
+      28
+    ],
+    "reason": "Remove dangling lower-arm fragments outside the back silhouette where the forward forearm must be fully occluded; retain the visible shoulder cap."
+  }
+]

@@ -1,0 +1,743 @@
+{
+  "paid_calls": 0,
+  "new_pixels": 0,
+  "body_poses": 80,
+  "hair_poses": 80,
+  "artistic_continuity_approved": false,
+  "copied": [
+    {
+      "file": "body-idle.png",
+      "source": "pixellab-pip-generations/paper-doll-body-continuity-20261022/body-idle.png",
+      "sha256": "b04361d22abe344f5fba079994b5625c6fe4822b308dc5ca7478300deab43348"
+    },
+    {
+      "file": "body-walk.png",
+      "source": "pixellab-pip-generations/paper-doll-body-continuity-20261022/body-walk.png",
+      "sha256": "a5c81f23d0172f7a7a87000cb1e2e64169959e5dd4b5740e34216944653c5ded"
+    },
+    {
+      "file": "body-attack.png",
+      "source": "pixellab-pip-generations/paper-doll-body-continuity-20261022/body-attack.png",
+      "sha256": "b59089c2c0232960c826a3922e36158a9141e92186b5d0d65267ac00670b793b"
+    },
+    {
+      "file": "hair-idle.png",
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/hair-idle.png",
+      "sha256": "e393e179b77e77d59f697b243a165d8369b8ad7b0594680e801e756f78bf15b5"
+    },
+    {
+      "file": "hair-walk.png",
+      "source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/hair-walk.png",
+      "sha256": "1f09e199bc211f190ea0bec3ea9d80d80e05d75cbf1f7887a2d69c3a64ad3be2"
+    }
+  ],
+  "attack_hair_source": "pixellab-pip-generations/paper-doll-walk-profiles-20261021/hair-idle.png",
+  "attack_hair_source_sha256": "e393e179b77e77d59f697b243a165d8369b8ad7b0594680e801e756f78bf15b5",
+  "attack_hair_poses": [
+    {
+      "direction": "south",
+      "frame": 0,
+      "source_frame": 0,
+      "source_direction": "south",
+      "translation": [
+        0,
+        -2
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        37,
+        20,
+        46
+      ],
+      "body_overlap_pixels": 31,
+      "rgba_sha256": "0bc77d9b4dbb22dda182303d04d1f9320e096c083dab52222e10ab6f368594a7"
+    },
+    {
+      "direction": "south",
+      "frame": 1,
+      "source_frame": 0,
+      "source_direction": "south",
+      "translation": [
+        0,
+        -2
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        37,
+        20,
+        46
+      ],
+      "body_overlap_pixels": 39,
+      "rgba_sha256": "0bc77d9b4dbb22dda182303d04d1f9320e096c083dab52222e10ab6f368594a7"
+    },
+    {
+      "direction": "south",
+      "frame": 2,
+      "source_frame": 0,
+      "source_direction": "south",
+      "translation": [
+        2,
+        -2
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        39,
+        20,
+        48
+      ],
+      "body_overlap_pixels": 39,
+      "rgba_sha256": "c6db60c2f2eba48c46ed90ede3859b438b64267fc835c99be4b8b9ae28d8292c"
+    },
+    {
+      "direction": "south",
+      "frame": 3,
+      "source_frame": 0,
+      "source_direction": "south",
+      "translation": [
+        2,
+        0
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        39,
+        22,
+        48
+      ],
+      "body_overlap_pixels": 39,
+      "rgba_sha256": "1a63abce222f457577884cfbf362de3456217e2376b22c66b9870cca47ba12b9"
+    },
+    {
+      "direction": "south",
+      "frame": 4,
+      "source_frame": 0,
+      "source_direction": "south",
+      "translation": [
+        1,
+        -1
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        38,
+        21,
+        47
+      ],
+      "body_overlap_pixels": 39,
+      "rgba_sha256": "9276bc173fba1f144b6cc15b556c16dcd47fee32dba8518734ff15b9e5568152"
+    },
+    {
+      "direction": "south",
+      "frame": 5,
+      "source_frame": 0,
+      "source_direction": "south",
+      "translation": [
+        1,
+        -1
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        38,
+        21,
+        47
+      ],
+      "body_overlap_pixels": 39,
+      "rgba_sha256": "9276bc173fba1f144b6cc15b556c16dcd47fee32dba8518734ff15b9e5568152"
+    },
+    {
+      "direction": "south",
+      "frame": 6,
+      "source_frame": 0,
+      "source_direction": "south",
+      "translation": [
+        2,
+        -2
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        39,
+        20,
+        48
+      ],
+      "body_overlap_pixels": 39,
+      "rgba_sha256": "c6db60c2f2eba48c46ed90ede3859b438b64267fc835c99be4b8b9ae28d8292c"
+    },
+    {
+      "direction": "south",
+      "frame": 7,
+      "source_frame": 0,
+      "source_direction": "south",
+      "translation": [
+        0,
+        -2
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        37,
+        20,
+        46
+      ],
+      "body_overlap_pixels": 39,
+      "rgba_sha256": "0bc77d9b4dbb22dda182303d04d1f9320e096c083dab52222e10ab6f368594a7"
+    },
+    {
+      "direction": "north",
+      "frame": 0,
+      "source_frame": 0,
+      "source_direction": "north",
+      "translation": [
+        0,
+        -2
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        37,
+        20,
+        46
+      ],
+      "body_overlap_pixels": 126,
+      "rgba_sha256": "c957cd4b22c0c9d19086ea9d24b04dea11acbcb1fc42e136d355df9172a478f1"
+    },
+    {
+      "direction": "north",
+      "frame": 1,
+      "source_frame": 0,
+      "source_direction": "north",
+      "translation": [
+        0,
+        -2
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        37,
+        20,
+        46
+      ],
+      "body_overlap_pixels": 126,
+      "rgba_sha256": "c957cd4b22c0c9d19086ea9d24b04dea11acbcb1fc42e136d355df9172a478f1"
+    },
+    {
+      "direction": "north",
+      "frame": 2,
+      "source_frame": 0,
+      "source_direction": "north",
+      "translation": [
+        0,
+        -1
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        37,
+        21,
+        46
+      ],
+      "body_overlap_pixels": 127,
+      "rgba_sha256": "7d96064354f035151fc2ce9cfb9b84946c4277046ec7c41464a768cc45541c3c"
+    },
+    {
+      "direction": "north",
+      "frame": 3,
+      "source_frame": 0,
+      "source_direction": "north",
+      "translation": [
+        0,
+        0
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        37,
+        22,
+        46
+      ],
+      "body_overlap_pixels": 125,
+      "rgba_sha256": "fa536e73c1c5a4be493a43c948b2c13e7e460c9d31735732436a02cdbb8f5422"
+    },
+    {
+      "direction": "north",
+      "frame": 4,
+      "source_frame": 0,
+      "source_direction": "north",
+      "translation": [
+        0,
+        0
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        37,
+        22,
+        46
+      ],
+      "body_overlap_pixels": 125,
+      "rgba_sha256": "fa536e73c1c5a4be493a43c948b2c13e7e460c9d31735732436a02cdbb8f5422"
+    },
+    {
+      "direction": "north",
+      "frame": 5,
+      "source_frame": 0,
+      "source_direction": "north",
+      "translation": [
+        0,
+        -1
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        37,
+        21,
+        46
+      ],
+      "body_overlap_pixels": 127,
+      "rgba_sha256": "7d96064354f035151fc2ce9cfb9b84946c4277046ec7c41464a768cc45541c3c"
+    },
+    {
+      "direction": "north",
+      "frame": 6,
+      "source_frame": 0,
+      "source_direction": "north",
+      "translation": [
+        0,
+        -2
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        37,
+        20,
+        46
+      ],
+      "body_overlap_pixels": 126,
+      "rgba_sha256": "c957cd4b22c0c9d19086ea9d24b04dea11acbcb1fc42e136d355df9172a478f1"
+    },
+    {
+      "direction": "north",
+      "frame": 7,
+      "source_frame": 0,
+      "source_direction": "north",
+      "translation": [
+        0,
+        -2
+      ],
+      "source_head": [
+        37,
+        22,
+        46
+      ],
+      "target_head": [
+        37,
+        20,
+        46
+      ],
+      "body_overlap_pixels": 127,
+      "rgba_sha256": "c957cd4b22c0c9d19086ea9d24b04dea11acbcb1fc42e136d355df9172a478f1"
+    },
+    {
+      "direction": "west",
+      "frame": 0,
+      "source_frame": 0,
+      "source_direction": "west",
+      "translation": [
+        0,
+        -1
+      ],
+      "source_head": [
+        36,
+        22,
+        45
+      ],
+      "target_head": [
+        36,
+        21,
+        45
+      ],
+      "body_overlap_pixels": 68,
+      "rgba_sha256": "4ee6eb7cdfcaf10d13db91e53bee343c5ebd2e4e9d793242c01c45312267b778"
+    },
+    {
+      "direction": "west",
+      "frame": 1,
+      "source_frame": 0,
+      "source_direction": "west",
+      "translation": [
+        0,
+        -1
+      ],
+      "source_head": [
+        36,
+        22,
+        45
+      ],
+      "target_head": [
+        36,
+        21,
+        45
+      ],
+      "body_overlap_pixels": 68,
+      "rgba_sha256": "4ee6eb7cdfcaf10d13db91e53bee343c5ebd2e4e9d793242c01c45312267b778"
+    },
+    {
+      "direction": "west",
+      "frame": 2,
+      "source_frame": 0,
+      "source_direction": "west",
+      "translation": [
+        1,
+        0
+      ],
+      "source_head": [
+        36,
+        22,
+        45
+      ],
+      "target_head": [
+        37,
+        22,
+        46
+      ],
+      "body_overlap_pixels": 68,
+      "rgba_sha256": "e9cacb36864e22f27593409aee9b33854ef286a69fa37b381f5458c3b007e8c9"
+    },
+    {
+      "direction": "west",
+      "frame": 3,
+      "source_frame": 0,
+      "source_direction": "west",
+      "translation": [
+        0,
+        1
+      ],
+      "source_head": [
+        36,
+        22,
+        45
+      ],
+      "target_head": [
+        36,
+        23,
+        45
+      ],
+      "body_overlap_pixels": 68,
+      "rgba_sha256": "e2c51020283845207263618b68e3942fd806e36b0630515d51079c33c6958295"
+    },
+    {
+      "direction": "west",
+      "frame": 4,
+      "source_frame": 0,
+      "source_direction": "west",
+      "translation": [
+        1,
+        0
+      ],
+      "source_head": [
+        36,
+        22,
+        45
+      ],
+      "target_head": [
+        37,
+        22,
+        46
+      ],
+      "body_overlap_pixels": 68,
+      "rgba_sha256": "e9cacb36864e22f27593409aee9b33854ef286a69fa37b381f5458c3b007e8c9"
+    },
+    {
+      "direction": "west",
+      "frame": 5,
+      "source_frame": 0,
+      "source_direction": "west",
+      "translation": [
+        0,
+        -1
+      ],
+      "source_head": [
+        36,
+        22,
+        45
+      ],
+      "target_head": [
+        36,
+        21,
+        45
+      ],
+      "body_overlap_pixels": 68,
+      "rgba_sha256": "4ee6eb7cdfcaf10d13db91e53bee343c5ebd2e4e9d793242c01c45312267b778"
+    },
+    {
+      "direction": "west",
+      "frame": 6,
+      "source_frame": 0,
+      "source_direction": "west",
+      "translation": [
+        0,
+        -1
+      ],
+      "source_head": [
+        36,
+        22,
+        45
+      ],
+      "target_head": [
+        36,
+        21,
+        45
+      ],
+      "body_overlap_pixels": 68,
+      "rgba_sha256": "4ee6eb7cdfcaf10d13db91e53bee343c5ebd2e4e9d793242c01c45312267b778"
+    },
+    {
+      "direction": "west",
+      "frame": 7,
+      "source_frame": 0,
+      "source_direction": "west",
+      "translation": [
+        0,
+        -1
+      ],
+      "source_head": [
+        36,
+        22,
+        45
+      ],
+      "target_head": [
+        36,
+        21,
+        45
+      ],
+      "body_overlap_pixels": 68,
+      "rgba_sha256": "4ee6eb7cdfcaf10d13db91e53bee343c5ebd2e4e9d793242c01c45312267b778"
+    },
+    {
+      "direction": "east",
+      "frame": 0,
+      "source_frame": 0,
+      "source_direction": "east",
+      "translation": [
+        0,
+        0
+      ],
+      "source_head": [
+        37,
+        20,
+        46
+      ],
+      "target_head": [
+        37,
+        20,
+        46
+      ],
+      "body_overlap_pixels": 57,
+      "rgba_sha256": "ee16853528e60551e384a83242d0eb204b3c121a96c86ec6b6c2490c081288ba"
+    },
+    {
+      "direction": "east",
+      "frame": 1,
+      "source_frame": 0,
+      "source_direction": "east",
+      "translation": [
+        0,
+        0
+      ],
+      "source_head": [
+        37,
+        20,
+        46
+      ],
+      "target_head": [
+        37,
+        20,
+        46
+      ],
+      "body_overlap_pixels": 56,
+      "rgba_sha256": "ee16853528e60551e384a83242d0eb204b3c121a96c86ec6b6c2490c081288ba"
+    },
+    {
+      "direction": "east",
+      "frame": 2,
+      "source_frame": 0,
+      "source_direction": "east",
+      "translation": [
+        1,
+        2
+      ],
+      "source_head": [
+        37,
+        20,
+        46
+      ],
+      "target_head": [
+        38,
+        22,
+        47
+      ],
+      "body_overlap_pixels": 59,
+      "rgba_sha256": "418458aa082e95c502f3f101b2f72b61273251809a24236ea1035aa40e3f5074"
+    },
+    {
+      "direction": "east",
+      "frame": 3,
+      "source_frame": 0,
+      "source_direction": "east",
+      "translation": [
+        0,
+        3
+      ],
+      "source_head": [
+        37,
+        20,
+        46
+      ],
+      "target_head": [
+        37,
+        23,
+        46
+      ],
+      "body_overlap_pixels": 59,
+      "rgba_sha256": "006603882a7714dc2c228cc71032e4b93d30c1f7730c2f56e54c299fc2dba305"
+    },
+    {
+      "direction": "east",
+      "frame": 4,
+      "source_frame": 0,
+      "source_direction": "east",
+      "translation": [
+        -1,
+        3
+      ],
+      "source_head": [
+        37,
+        20,
+        46
+      ],
+      "target_head": [
+        36,
+        23,
+        45
+      ],
+      "body_overlap_pixels": 59,
+      "rgba_sha256": "ebecc6c3e4dc450dc46fdd027a11d35322716f3ee1ab39c0bbc9d9f6c3c1b78d"
+    },
+    {
+      "direction": "east",
+      "frame": 5,
+      "source_frame": 0,
+      "source_direction": "east",
+      "translation": [
+        -1,
+        3
+      ],
+      "source_head": [
+        37,
+        20,
+        46
+      ],
+      "target_head": [
+        36,
+        23,
+        45
+      ],
+      "body_overlap_pixels": 59,
+      "rgba_sha256": "ebecc6c3e4dc450dc46fdd027a11d35322716f3ee1ab39c0bbc9d9f6c3c1b78d"
+    },
+    {
+      "direction": "east",
+      "frame": 6,
+      "source_frame": 0,
+      "source_direction": "east",
+      "translation": [
+        -2,
+        3
+      ],
+      "source_head": [
+        37,
+        20,
+        46
+      ],
+      "target_head": [
+        35,
+        23,
+        44
+      ],
+      "body_overlap_pixels": 59,
+      "rgba_sha256": "4d2e19df5ee6a46816c63c3c3aaf3ae0a9bbba78040ebbd01e4d1e08138f6bf9"
+    },
+    {
+      "direction": "east",
+      "frame": 7,
+      "source_frame": 0,
+      "source_direction": "east",
+      "translation": [
+        -1,
+        1
+      ],
+      "source_head": [
+        37,
+        20,
+        46
+      ],
+      "target_head": [
+        36,
+        21,
+        45
+      ],
+      "body_overlap_pixels": 59,
+      "rgba_sha256": "41ec7faf0c8b4b1bf631e845cebf08e8808117125e3766423b78d40f3ad8cf53"
+    }
+  ],
+  "method": "Directional static hair surface translated to each real animated head; bodies never duplicated or altered."
+}

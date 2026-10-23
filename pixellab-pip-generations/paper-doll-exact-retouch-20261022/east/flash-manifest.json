@@ -1,0 +1,34 @@
+{
+  "job_id": "5a29e08f-7257-43d2-9717-b496cbbbdf77",
+  "asset_id": "d345ef96-b9d0-5458-b754-d376452f44fa",
+  "status": "completed",
+  "route": "MCP inpaint_image_pro_flash",
+  "seed": {
+    "sent": "omitted",
+    "returned": 0
+  },
+  "estimated_generations": 5,
+  "generation_ceiling": 6,
+  "automatic_retries": false,
+  "params": {
+    "description": "Remove the impact flash inside the mask and redraw the pirate surfaces it covers: short black hair with a teal headband, crimson waistcoat over a cream shirt, blue trousers and a steel sailor sword. The top middle context cell is the target; the cells beside it show the outfit and sword style. The lower middle cell shows the same target pose without clothing and must guide the anatomy and hand placement. Keep the current attack pose and every unmasked pixel, native pixel scale and transparent background. No glow, sparks, impact effects, extra limbs or detached gear.",
+    "image_url": "flash-source.png",
+    "mask_image_url": "flash-mask.png",
+    "context_image": {
+      "url": "flash-context.png",
+      "usage_description": "Top middle target, top neighbours outfit style, lower middle same-pose bare-body anatomy and hand-placement reference."
+    },
+    "bounding_box": {
+      "x": 64,
+      "y": 0,
+      "width": 64,
+      "height": 64
+    },
+    "crop_to_mask": true,
+    "no_background": true,
+    "output_method": "Modify current layer"
+  },
+  "reported_usage": {
+    "generations": 5
+  }
+}

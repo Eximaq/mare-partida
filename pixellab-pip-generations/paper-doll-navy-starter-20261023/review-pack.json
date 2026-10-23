@@ -1,0 +1,704 @@
+{
+  "reviewOnly": true,
+  "productionEnabled": false,
+  "full_character_artwork_approved": false,
+  "status": "Four-layer navy starter, 80 poses; review only, visual transitions not production approved.",
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "hair",
+      "outfit",
+      "weapon"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "walk": {
+        "frames": 8,
+        "fps": 8,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-sword": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "navy-starter-body",
+      "rigId": "human-v1",
+      "slot": "body",
+      "available": true,
+      "approved": false,
+      "zIndex": 0,
+      "animations": {
+        "idle": {
+          "kind": "sheet",
+          "url": "body-idle.png",
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        },
+        "walk": {
+          "kind": "sheet",
+          "url": "body-walk.png",
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        },
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "body-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 0
+        }
+      }
+    },
+    {
+      "id": "navy-starter-hair",
+      "rigId": "human-v1",
+      "slot": "hair",
+      "available": true,
+      "approved": false,
+      "zIndex": 60,
+      "animations": {
+        "idle": {
+          "kind": "sheet",
+          "url": "hair-idle.png",
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 60
+        },
+        "walk": {
+          "kind": "sheet",
+          "url": "hair-walk.png",
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 60
+        },
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "hair-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 40
+        }
+      }
+    },
+    {
+      "id": "navy-starter-outfit",
+      "slot": "outfit",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 50,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "outfit-idle.png"
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "outfit-walk.png"
+        },
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "outfit-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "zIndex": 30
+        }
+      }
+    },
+    {
+      "id": "navy-starter-weapon",
+      "slot": "weapon",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 80,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "weapon-south.png",
+          "kind": "rigid-attachment",
+          "sources": {
+            "south": {
+              "url": "weapon-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 20,
+              "anchorY": 36
+            },
+            "north": {
+              "url": "weapon-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 42,
+              "anchorY": 35
+            },
+            "west": {
+              "url": "weapon-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 26,
+              "anchorY": 36
+            },
+            "east": {
+              "url": "weapon-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 29,
+              "anchorY": 37
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 28,
+                "y": 48
+              },
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 29,
+                "y": 48
+              }
+            ],
+            "north": [
+              {
+                "x": 52,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 35,
+                "y": 44
+              },
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 37,
+                "y": 48
+              }
+            ],
+            "east": [
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              }
+            ]
+          },
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            },
+            "west": {
+              "zIndex": 10
+            }
+          }
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "rigid-weapon.png",
+          "kind": "rigid-attachment",
+          "sockets": {
+            "south": [
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 33,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 49
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 52,
+                "y": 49
+              },
+              {
+                "x": 51,
+                "y": 46
+              },
+              {
+                "x": 50,
+                "y": 45
+              },
+              {
+                "x": 50,
+                "y": 46
+              },
+              {
+                "x": 52,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 38,
+                "y": 47
+              },
+              {
+                "x": 37,
+                "y": 45
+              },
+              {
+                "x": 38,
+                "y": 47
+              },
+              {
+                "x": 42,
+                "y": 49
+              },
+              {
+                "x": 45,
+                "y": 50
+              },
+              {
+                "x": 47,
+                "y": 50
+              },
+              {
+                "x": 47,
+                "y": 50
+              },
+              {
+                "x": 44,
+                "y": 48
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 47
+              },
+              {
+                "x": 47,
+                "y": 47
+              },
+              {
+                "x": 51,
+                "y": 46
+              },
+              {
+                "x": 50,
+                "y": 47
+              },
+              {
+                "x": 45,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 49
+              },
+              {
+                "x": 36,
+                "y": 49
+              },
+              {
+                "x": 33,
+                "y": 49
+              }
+            ]
+          },
+          "zIndex": 10,
+          "sources": {
+            "south": {
+              "url": "rigid-weapon.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 20,
+              "anchorY": 36
+            },
+            "north": {
+              "url": "weapon-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 42,
+              "anchorY": 35
+            },
+            "west": {
+              "url": "weapon-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 26,
+              "anchorY": 36
+            },
+            "east": {
+              "url": "weapon-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 29,
+              "anchorY": 37
+            }
+          },
+          "directionOverrides": {
+            "west": {
+              "zIndex": 80
+            },
+            "east": {
+              "zIndex": 80
+            }
+          }
+        },
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "weapon-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "poseOverrides": {
+            "west": [
+              {
+                "offsetX": 0,
+                "offsetY": -1
+              },
+              {
+                "offsetX": 0,
+                "offsetY": 1
+              },
+              {
+                "offsetX": 0,
+                "offsetY": -1,
+                "zIndex": -10
+              },
+              {
+                "offsetX": 0,
+                "offsetY": -1,
+                "zIndex": -10
+              },
+              {
+                "offsetX": 0,
+                "offsetY": -1,
+                "zIndex": -10
+              },
+              {
+                "offsetX": 1,
+                "offsetY": 3
+              },
+              {
+                "offsetX": 4,
+                "offsetY": 5
+              },
+              {
+                "offsetX": -1,
+                "offsetY": -1
+              }
+            ],
+            "east": [
+              {
+                "offsetX": 1,
+                "offsetY": -3
+              },
+              {
+                "offsetX": -2,
+                "offsetY": -1
+              },
+              {
+                "offsetX": 1,
+                "offsetY": 0
+              },
+              {
+                "offsetX": 6,
+                "offsetY": -1
+              },
+              {
+                "offsetX": 3,
+                "offsetY": -1
+              },
+              {
+                "offsetX": 19,
+                "offsetY": -6
+              },
+              {
+                "offsetX": 3,
+                "offsetY": 4
+              },
+              {
+                "offsetX": 3,
+                "offsetY": -2
+              }
+            ]
+          },
+          "occludedFrames": {
+            "north": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "directionOverrides": {
+            "north": {
+              "zIndex": -10,
+              "offsetY": -1
+            }
+          },
+          "zIndex": 50
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "navy-starter-body",
+      "hair": "navy-starter-hair",
+      "outfit": "navy-starter-outfit",
+      "weapon": "navy-starter-weapon"
+    }
+  },
+  "coverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-sword": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ]
+  },
+  "bindings": {
+    "weapon": {
+      "slot": "weapon",
+      "items": {
+        "0": "navy-starter-weapon"
+      }
+    },
+    "coat": {
+      "slot": "outfit",
+      "items": {
+        "6": "navy-starter-outfit"
+      }
+    }
+  }
+}

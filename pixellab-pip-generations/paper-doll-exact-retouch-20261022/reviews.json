@@ -1,0 +1,27 @@
+{
+  "south": {
+    "body_motion_gate_passed": true,
+    "modular_fit_gate_passed": true,
+    "status": "Inherited frontal prototype, final artwork unapproved",
+    "summary_pt": "Frente reaproveitada do protótipo anterior, sem nova geração. Arte final em avaliação."
+  },
+  "north": {
+    "body_motion_gate_passed": true,
+    "modular_fit_gate_passed": true,
+    "artwork_approved": false,
+    "summary_pt": "Norte: corpo retocado no PixelLab, seis camadas sincronizadas. Cinco frames de espada realmente encoberta; sem antebraço sobre as costas. Protótipo em revisão artística."
+  },
+  "west": {
+    "body_motion_gate_passed": true,
+    "modular_fit_gate_passed": true,
+    "status": "West six-layer prototype reviewed, final artwork unapproved",
+    "summary_pt": "Oeste: oito poses com corpo e cinco peças visíveis originais separados. Encaixes da arma ajustados por pose, sem giro ou redesenho. Empunhadura oculta nas poses3–5; arte final em avaliação.",
+    "calibration": "Native body ground line is56 on all8 frames. One fixed output padding10/9 maps it to rig ground65; source pieces remain10/10. Weapon offsets compensate the same fixed1px body origin. No per-frame body stabilization."
+  },
+  "east": {
+    "body_motion_gate_passed": true,
+    "modular_fit_gate_passed": false,
+    "artwork_approved": false,
+    "summary_pt": "Leste: corpo retocado com apoio estável nos oito frames. A reconstrução da roupa/mão no frame6 não encaixou e continua reprovada; fallback completo."
+  }
+}

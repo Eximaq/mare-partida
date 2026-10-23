@@ -11,7 +11,7 @@ if OUT.exists():
     shutil.rmtree(OUT)
 OUT.mkdir(parents=True)
 web_files = ['index.html', 'journal-feed.json', 'ui-tokens.css', 'ui-components.css', 'ui-hud.css', 'hud-zoom-expedition.css', 'ui-screens.css', 'ui-responsive.css', 'ui-system.js', 'game-tooltips.css', 'player-hub.css', 'hierarchy.css', 'styles.css', 'ui-nautical.css', 'audio-system.css', 'character-menu.css', 'modes-menu.css', 'inventory-compact.css',
-             'character-system.js', 'akuma-system.js', 'zoan-art.js', 'combat-animation.js', 'combat-registry.js', 'combat-assets.js', 'paper-doll.js', 'paper-doll-assets.js',
+             'character-system.js', 'akuma-system.js', 'zoan-art.js', 'combat-animation.js', 'combat-registry.js', 'combat-assets.js', 'paper-doll.js', 'paper-doll-assets.js', 'paper-doll-review.js',
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
              'forge-ui.js', 'game-tooltips.js', 'player-hub.js', 'hud-telemetry.js', 'hierarchy-system.js', 'hierarchy-ui.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js', 'lobby-map-data.js', 'lobby-world.js',
               'dawn-map-data.js', 'dawn-world.js', 'dawn-renderer.js', 'rare-world.js', 'rare-renderer.js', 'new-islands-data.js', 'new-islands-objects.js', 'new-islands.js', 'monster-catalog.js', 'new-islands-art.js', 'pixellab-world-maps-data.js', 'conchas-pixellab-data.js', 'pixellab-world-maps.js', 'world-system.js', 'orange-world.js', 'conchas-world.js', 'conchas-renderer.js', 'terrain-autotile.js', 'orange-terrain.js', 'orange-renderer.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'dev-tools.js', 'hunt-system.js']
@@ -321,5 +321,112 @@ def version_directional(match):
 directional_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_directional,
                                   directional_entry.read_text(encoding='utf-8')), encoding='utf-8')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-DIRECOES-BENTO.md', OUT/'docs/PAPER-DOLL-DIRECOES-BENTO.md')
+
+repair_relative = Path('pixellab-pip-generations/paper-doll-bento-repair-20261022')
+repair_files = ['preview.html', 'preview.js', 'review-pack.json', 'manifest.json', 'reviews.json',
+                'assembly-audit.json', 'repairs.blueprint.json', 'input-audit.json',
+                'reference-bento-attack.png', 'modular-south.gif', 'modular-west.gif']
+repair_files += [f'{slot}-attack.png' for slot in ['body', 'pants', 'boots', 'outfit', 'hair', 'weapon']]
+repair_files += [f'body-candidate-{d}.png' for d in ['south', 'north', 'west', 'east']]
+for d in ['north', 'east']:
+    repair_files += [f'body-{d}.gif', f'{d}/request.json', f'{d}/review.json', f'{d}/manifest.json', f'{d}/neutral-reference.png']
+    repair_files += [f'{d}/body-{i:02}.png' for i in range(8)]
+repair_files += ['east/flash-edit-not-executed.json', 'east/flash-source.png', 'east/flash-mask.png', 'east/flash-context.png']
+for name in repair_files:
+    destination = OUT/repair_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/repair_relative/name, destination)
+repair_entry = OUT/repair_relative/'preview.html'
+
+def version_repair(match):
+    source = (repair_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    return f'{match.group(1)}{match.group(2)}?v={hashlib.sha256(source.read_bytes()).hexdigest()[:16]}{match.group(3)}'
+
+repair_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_repair,
+                             repair_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-CORRECAO-GUIAS.md', OUT/'docs/PAPER-DOLL-CORRECAO-GUIAS.md')
+
+retouch_relative = Path('pixellab-pip-generations/paper-doll-exact-retouch-20261022')
+retouch_files = ['preview.html', 'preview.js', 'review-pack.json', 'manifest.json', 'reviews.json',
+                 'assembly-audit.json', 'retouch-audit.json', 'north-layer-audit.json',
+                 'retouch.blueprint.json', 'reference-bento-attack.png']
+retouch_files += [f'{slot}-attack.png' for slot in ['body', 'pants', 'boots', 'outfit', 'hair', 'weapon']]
+retouch_files += [f'body-candidate-{d}.png' for d in ['south', 'north', 'west', 'east']]
+retouch_files += [f'modular-{d}.gif' for d in ['south', 'north', 'west']]
+for d in ['north', 'east']:
+    retouch_files += [f'body-{d}.gif', f'body-before-{d}.png', f'{d}/changes.json']
+    retouch_files += [f'{d}/{name}-{i:02}.png' for name in ['original', 'body'] for i in range(8)]
+for stage in ['north-trial', 'north-first-pass', 'north-final', 'east-final']:
+    retouch_files += [f'{stage}-frames.png', f'{stage}-animation.gif']
+retouch_files += [f'east/flash-{name}' for name in ['source.png', 'mask.png', 'context.png', 'cleaned.png',
+                                                 'request.json', 'manifest.json', 'audit.json']]
+retouch_files += ['east-composite.png']
+for name in retouch_files:
+    destination = OUT/retouch_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/retouch_relative/name, destination)
+retouch_entry = OUT/retouch_relative/'preview.html'
+
+def version_retouch(match):
+    source = (retouch_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    return f'{match.group(1)}{match.group(2)}?v={hashlib.sha256(source.read_bytes()).hexdigest()[:16]}{match.group(3)}'
+
+retouch_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_retouch,
+                              retouch_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-RETOQUE-EXATO.md', OUT/'docs/PAPER-DOLL-RETOQUE-EXATO.md')
+east_fit_relative = Path('pixellab-pip-generations/paper-doll-east-fit-20261022')
+east_fit_files = ['preview.html', 'preview.js', 'review-pack.json', 'reviews.json', 'manifest.json',
+                 'fit-audit.json', 'fit.blueprint.json', 'fitted-changes.json', 'fitted-masks.json',
+                 'reference-bento-attack.png', 'east-composite.png', 'source-strip.png', 'body-source-strip.png']
+east_fit_files += [f'{slot}-attack.png' for slot in ['body', 'pants', 'boots', 'outfit', 'hair', 'weapon']]
+east_fit_files += [f'east-{slot}.png' for slot in ['body', 'pants', 'boots', 'outfit', 'hair', 'weapon']]
+east_fit_files += [f'body-candidate-{d}.png' for d in ['south', 'north', 'west', 'east']]
+east_fit_files += [f'modular-{d}.gif' for d in ['south', 'north', 'west', 'east']]
+east_fit_files += [f'body-{d}.gif' for d in ['north', 'east']]
+east_fit_files += [f'body-before-{d}.png' for d in ['north', 'east']]
+east_fit_files += [f'{stage}-{name}' for stage in ['source', 'donor', 'body-source', 'fitted']
+                   for name in ['frames.png', 'animation.gif']]
+for name in east_fit_files:
+    destination = OUT/east_fit_relative/name
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/east_fit_relative/name, destination)
+east_fit_entry = OUT/east_fit_relative/'preview.html'
+
+def version_east_fit(match):
+    source = (east_fit_entry.parent/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    return f'{match.group(1)}{match.group(2)}?v={hashlib.sha256(source.read_bytes()).hexdigest()[:16]}{match.group(3)}'
+
+east_fit_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_east_fit,
+                               east_fit_entry.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-ENCAIXE-LESTE.md', OUT/'docs/PAPER-DOLL-ENCAIXE-LESTE.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')
+
+# Body continuity review: explicit public files only; no local scripts/evidence.
+body_review = Path('pixellab-pip-generations/paper-doll-body-continuity-20261022')
+(OUT/body_review).mkdir(parents=True, exist_ok=True)
+for name in ['review-pack.json', 'source-audit.json', 'body-idle.png', 'body-walk.png', 'body-attack.png']:
+    shutil.copy2(ROOT/body_review/name, OUT/body_review/name)
+
+shutil.copy2(ROOT/"docs/PAPER-DOLL-CORPO-CONTINUIDADE.md", OUT/"docs/PAPER-DOLL-CORPO-CONTINUIDADE.md")
+
+# Hair continuity contains native reused pixels and a review-only manifest.
+hair_review = Path('pixellab-pip-generations/paper-doll-hair-continuity-20261022')
+(OUT/hair_review).mkdir(parents=True, exist_ok=True)
+for name in ['review-pack.json', 'source-audit.json'] + [f'{slot}-{action}.png' for slot in ['body', 'hair'] for action in ['idle', 'walk', 'attack']]:
+    shutil.copy2(ROOT/hair_review/name, OUT/hair_review/name)
+
+shutil.copy2(ROOT/"docs/PAPER-DOLL-CABELO-CONTINUIDADE.md", OUT/"docs/PAPER-DOLL-CABELO-CONTINUIDADE.md")
+
+# Fully layered navy candidate; explicit review-only public assets.
+navy_review = Path('pixellab-pip-generations/paper-doll-navy-starter-20261023')
+(OUT/navy_review).mkdir(parents=True, exist_ok=True)
+for name in ['review-pack.json', 'source-audit.json', 'changes.json', 'navy-starter.blueprint.json', 'weapon-attack.png', 'rigid-weapon.png'] + [f'weapon-{d}.png' for d in ['south', 'north', 'west', 'east']] + [f'{slot}-{action}.png' for slot in ['body', 'hair', 'outfit'] for action in ['idle', 'walk', 'attack']]:
+    shutil.copy2(ROOT/navy_review/name, OUT/navy_review/name)
+shutil.copy2(ROOT/'docs/PAPER-DOLL-CONJUNTO-AZUL.md', OUT/'docs/PAPER-DOLL-CONJUNTO-AZUL.md')

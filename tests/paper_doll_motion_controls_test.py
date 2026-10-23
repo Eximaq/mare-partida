@@ -16,4 +16,22 @@ class Controls(unittest.TestCase):
             data=copy.deepcopy(request('west'));data['keypoints'][0][0]['x']=bad;self.assertFalse(audit(data)['passed'])
     def test_missing_and_duplicate_joints_rejected(self):
         data=request('west');data['keypoints'][0][1]=dict(data['keypoints'][0][0]);self.assertFalse(audit(data)['passed'])
+    def test_north_old_near_arm_is_detected(self):
+        result=audit(request('north'),True,True)
+        self.assertFalse(result['passed'])
+        self.assertTrue(any('LEFT ARM' in error for error in result['violations']))
+    def test_corrected_guides_pass_both_policies(self):
+        folder=FOLDER.parent/'paper-doll-bento-repair-20261022'
+        for direction in ('north','east'):
+            data=json.loads((folder/direction/'request.json').read_text())
+            self.assertTrue(audit(data,True,direction=='north')['passed'])
+    def test_invalid_structures_fail_without_crashing(self):
+        for value in [None,[],17]:self.assertFalse(audit(value)['passed'])
+        for value in [[],{},None]:
+            data=request('west');data['keypoints'][0][0]['label']=value
+            self.assertFalse(audit(data)['passed'])
+    def test_depth_and_order_validate(self):
+        for field,value in [('depth',float('nan')),('depth',256),('z_index',True),('z_index',1.5)]:
+            data=request('north');data['keypoints'][0][0][field]=value
+            self.assertFalse(audit(data)['passed'])
 if __name__=='__main__':unittest.main()

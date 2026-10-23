@@ -1,0 +1,99 @@
+{
+  "status": "completed; draft north modular attack and corrected east body",
+  "workbench_calls": [
+    {
+      "route": "MCP pixelart_workbench edit",
+      "source_id": "7ef80062-e55b-49d1-92d7-2aeeadc56335",
+      "image_id": "82d9041c-2370-459a-b404-510ea32f9395",
+      "output": "north-trial",
+      "reported_changed_pixels": 90,
+      "status": "completed",
+      "pricing": "Tool states free for subscribers; no per-call generation usage exposed."
+    },
+    {
+      "route": "MCP pixelart_workbench edit",
+      "source_id": "7ef80062-e55b-49d1-92d7-2aeeadc56335",
+      "image_id": "0095603e-a0e7-4fcf-ab44-a49ecb3a032e",
+      "output": "north-first-pass",
+      "reported_changed_pixels": 408,
+      "status": "completed",
+      "pricing": "Tool states free for subscribers; no per-call generation usage exposed."
+    },
+    {
+      "route": "MCP pixelart_workbench edit",
+      "source_id": "7ef80062-e55b-49d1-92d7-2aeeadc56335",
+      "image_id": "0cdb523a-61e2-4344-bdad-3da1f63a2613",
+      "output": "north-final",
+      "status": "completed",
+      "pricing": "Tool states free for subscribers; no per-call generation usage exposed.",
+      "reported_operation_changed_pixels": [
+        408,
+        20
+      ],
+      "net_changed_pixels": 394
+    },
+    {
+      "route": "MCP pixelart_workbench edit",
+      "source_id": "85edce2d-f176-462f-86ed-95e7dfa28f19",
+      "image_id": "78b0c212-c76d-45db-a3c1-b75f3c53033d",
+      "output": "east-final",
+      "reported_changed_pixels": 40,
+      "status": "completed",
+      "pricing": "Tool states free for subscribers; no per-call generation usage exposed."
+    }
+  ],
+  "generation_calls": [
+    {
+      "job_id": "5a29e08f-7257-43d2-9717-b496cbbbdf77",
+      "asset_id": "d345ef96-b9d0-5458-b754-d376452f44fa",
+      "status": "completed",
+      "route": "MCP inpaint_image_pro_flash",
+      "seed": {
+        "sent": "omitted",
+        "returned": 0
+      },
+      "estimated_generations": 5,
+      "generation_ceiling": 6,
+      "automatic_retries": false,
+      "params": {
+        "description": "Remove the impact flash inside the mask and redraw the pirate surfaces it covers: short black hair with a teal headband, crimson waistcoat over a cream shirt, blue trousers and a steel sailor sword. The top middle context cell is the target; the cells beside it show the outfit and sword style. The lower middle cell shows the same target pose without clothing and must guide the anatomy and hand placement. Keep the current attack pose and every unmasked pixel, native pixel scale and transparent background. No glow, sparks, impact effects, extra limbs or detached gear.",
+        "image_url": "flash-source.png",
+        "mask_image_url": "flash-mask.png",
+        "context_image": {
+          "url": "flash-context.png",
+          "usage_description": "Top middle target, top neighbours outfit style, lower middle same-pose bare-body anatomy and hand-placement reference."
+        },
+        "bounding_box": {
+          "x": 64,
+          "y": 0,
+          "width": 64,
+          "height": 64
+        },
+        "crop_to_mask": true,
+        "no_background": true,
+        "output_method": "Modify current layer"
+      },
+      "reported_usage": {
+        "generations": 5
+      }
+    }
+  ],
+  "reported_paid_generations": 5,
+  "paid_generation_ceiling": 6,
+  "pending_jobs": [],
+  "production_enabled": false,
+  "artwork_approved": false,
+  "modular_coverage": [
+    "south",
+    "north",
+    "west"
+  ],
+  "body_coverage": [
+    "south",
+    "north",
+    "west",
+    "east"
+  ],
+  "east_layer_status": "rejected: reconstructed sleeve/hand and sword placement do not fit the target body; whole original fallback retained",
+  "local_assembly": "Native source-pixel selection/crop/padding and lossless GIF packaging only; anatomy retouch executed remotely in PixelLab Workbench, with commands preserved."
+}

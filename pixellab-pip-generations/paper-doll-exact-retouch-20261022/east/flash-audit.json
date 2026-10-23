@@ -1,0 +1,11 @@
+{
+  "outside_mask_rgba_unchanged": true,
+  "outside_mask_difference_count": 0,
+  "size": [
+    64,
+    64
+  ],
+  "artwork_approved": false,
+  "modular_fit_gate_passed": false,
+  "reason": "Strict mask preservation passed, but reconstructed sleeve/hand and blade disagree with target anatomy and the surrounding animation."
+}

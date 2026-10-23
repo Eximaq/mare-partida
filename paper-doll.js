@@ -33,7 +33,7 @@
     }
     function imageAudit(image,clip,r){
       let checks=audits.get(image);if(!checks){checks=new Map();audits.set(image,checks);}
-      const key=[clip.url,clip.frames,clip.directions.join(','),r.frameWidth,r.frameHeight].join('|');
+      const key=[clip.url,clip.frames,clip.directions.join(','),r.frameWidth,r.frameHeight,JSON.stringify(clip.occludedFrames||{})].join('|');
       if(checks.has(key))return checks.get(key);
       let result=null;
       try{
@@ -46,7 +46,9 @@
             for(let col=0;col<clip.frames;col++){
             let visible=false;
             for(let y=0;y<r.frameHeight&&!visible;y++)for(let x=0;x<r.frameWidth;x++)if(rgba[((row*r.frameHeight+y)*c.width+col*r.frameWidth+x)*4+3]){visible=true;break;}
-            if(!visible){result='empty-frame';break;}
+            const occluded=clip.occludedFrames?.[clip.directions[row]]?.includes(col)===true;
+            if(occluded&&visible){result='occluded-frame-has-pixels';break;}
+            if(!occluded&&!visible){result='empty-frame';break;}
             if(col&&!animated)for(let y=0;y<r.frameHeight&&!animated;y++)for(let x=0;x<r.frameWidth;x++){
               const first=((row*r.frameHeight+y)*c.width+x)*4,current=first+col*r.frameWidth*4;
               if(rgba[first+3]!==rgba[current+3]||(rgba[first+3]&&(rgba[first]!==rgba[current]||rgba[first+1]!==rgba[current+1]||rgba[first+2]!==rgba[current+2]))){animated=true;break;}
@@ -80,6 +82,13 @@
         if(!clip.directions.includes(direction)){problem('missing-direction');continue;}
         const rigid=clip.kind==='rigid-attachment';
         if(clip.kind!==undefined&&clip.kind!=='sheet'&&!rigid){problem('unsupported-layer-kind');continue;}
+        // Genuine full weapon occlusion is explicit; empty anatomy never passes as a pose.
+        if(clip.occludedFrames!==undefined){
+          const occluded=clip.occludedFrames;
+          if(slot!=='weapon'||rigid||!occluded||typeof occluded!=='object'||Array.isArray(occluded)||
+            Object.entries(occluded).some(([d,frames])=>!clip.directions.includes(d)||!Array.isArray(frames)||frames.length>=clip.frames||
+              new Set(frames).size!==frames.length||frames.some(i=>!integer(i)||i<0||i>=clip.frames))){problem('invalid-occlusion');continue;}
+        }
         let sourceWidth=r.frameWidth,sourceHeight=r.frameHeight,socket=null,source=null,url=clip.url;
         if(rigid){
           // Explicit exception for rigid weapons, never a bypass for animated anatomy.
