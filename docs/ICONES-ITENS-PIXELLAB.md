@@ -32,3 +32,7 @@ Quatro PNGs RGBA 128×128 fornecidos pelo proprietário foram recortados sem per
 As definições são acrescentadas ao final do catálogo para preservar índices dos saves. Todas usam o tipo `sword` e a base de 11 ATQ do Sabre de Coral; raridades usam os multiplicadores existentes do sistema Forja. As descrições são exibidas nos tooltips. Não foram criados efeitos de fogo, vento ou Kairouseki sem suporte a efeitos por item.
 
 As armas Épicas e Lendária entram nos drops existentes somente quando a raridade sorteada coincide; isso mantém sua classificação fixa. A Ame no Habakiri é registrada como Suprema, mas continua fora dos drops comuns porque o sistema atual não sorteia essa raridade. Nenhuma fonte ou taxa de obtenção nova foi inventada.
+
+### Animação da Ame no Habakiri
+
+O atlas `assets/effects/ame-no-habakiri-attack.png` usa os 16 quadros da faixa completa enviada (32×32), na ordem original, ampliados em 2× com vizinho mais próximo para manter os pixels nítidos. A animação dura 0,5 s (aprox. 32 quadros/s) e desaparece nos 0,1 s seguintes. Ela toca ao acertar golpes com a Meito equipada; nenhum quadro foi sintetizado e nenhuma arte nova foi gerada.
