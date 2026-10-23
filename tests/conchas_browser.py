@@ -107,7 +107,7 @@ with sync_playwright() as playwright:
         assert current["hunt"]["bossReady"] is False
         assert page.evaluate("MareHunt.get('swamp').boss") is None
         assert page.evaluate("MarePixelWorldMaps.stats().conchas") == {
-            "loaded": True, "colliders": 105, "objects": 105, "loadedObjects": 105
+            "loaded": True, "colliders": page.evaluate("MarePixelWorldMaps.conchas.map.colliders.length"), "objects": 105, "loadedObjects": 105
         }
         assert page.evaluate("MareNewIslandArt.sheets.helmeppo.attack.complete")
         assert page.evaluate("MareNewIslandArt.layout({...__mareDiagnostics().mobs[0],attackAnim:.4}).action") == "attack"

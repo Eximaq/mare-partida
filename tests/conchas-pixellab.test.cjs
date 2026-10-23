@@ -35,7 +35,7 @@ assert.equal(world.maps.conchas,map,'world navigation selects the PixelLab map')
 
 assert.equal(maps.conchas.props.length,source.objects.length);
 assert.equal(source.objects.length,105,'fresh PixelLab map keeps all 105 placements');
-assert.equal(map.colliders.length,source.objects.length);
+assert.equal(map.colliders.length,source.objects.length+require('../conchas-structures.js').colliders.length);
 assert.equal(typeof globalThis.MarePixelMapRenderer.actorOverlapsProp,'function','game foreground pass must have its public renderer hook');
 for(const prop of maps.conchas.props){
   const base=(prop.cellY-source.minY+1)*64;
