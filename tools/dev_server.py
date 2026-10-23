@@ -1,6 +1,7 @@
 """Local-only preview with automatic reload; no dependencies or save access."""
 import http.server
 import json
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -14,7 +15,8 @@ class Preview(http.server.SimpleHTTPRequestHandler):
         if self.path == '/__dev_version':
             paths = [ROOT/'ui-hud.css', ROOT/'ui-screens.css', ROOT/'ui-responsive.css', ROOT/'ui-tokens.css', ROOT/'ui-components.css', ROOT/'ui-system.js', ROOT/'index.html', ROOT/'game.js', ROOT/'styles.css', ROOT/'world-system.js', ROOT/'island-world.js', ROOT/'island-assets.js', ROOT/'character-system.js', ROOT/'faction-sprites.js', ROOT/'faction-assets.js']
             paths += [ROOT/'combat-animation.js', ROOT/'combat-registry.js', ROOT/'combat-assets.js', ROOT/'paper-doll.js', ROOT/'paper-doll-assets.js', ROOT/'ui-nautical.css', ROOT/'forge-system.js', ROOT/'forge-ui.js', ROOT/'orange-world.js', ROOT/'orange-renderer.js', ROOT/'assets/orange-town/manifest.json', ROOT/'ember-world.js', ROOT/'ember-renderer.js', ROOT/'archipelago.js', ROOT/'prison-system.js', ROOT/'haki-system.js', ROOT/'haki-ui.js', ROOT/'haki-art.js', ROOT/'achievement-system.js', ROOT/'ultimate-system.js', ROOT/'talent-system.js', ROOT/'talent-combat.js', ROOT/'talent-ui.js', ROOT/'dev-tools.js', ROOT/'hunt-system.js', ROOT/'assets/ruinas-brasas/manifest.json']
-            paths += [ROOT/'dawn-map-data.js', ROOT/'dawn-world.js', ROOT/'dawn-renderer.js', ROOT/'conchas-world.js', ROOT/'conchas-renderer.js', ROOT/'terrain-autotile.js', ROOT/'orange-terrain.js', ROOT/'assets/terrain/harbor-v2/manifest.json']
+            paths += [ROOT/'dawn-map-data.js', ROOT/'dawn-world.js', ROOT/'dawn-renderer.js', ROOT/'conchas-world.js', ROOT/'conchas-renderer.js', ROOT/'conchas-pixellab-data.js', ROOT/'pixellab-world-maps.js', ROOT/'monster-catalog.js', ROOT/'new-islands-art.js', ROOT/'terrain-autotile.js', ROOT/'orange-terrain.js', ROOT/'assets/terrain/harbor-v2/manifest.json', ROOT/'assets/world-maps/conchas/conchas.png', ROOT/'assets/new-islands/helmeppo/idle.png', ROOT/'assets/new-islands/helmeppo/walk.png', ROOT/'assets/new-islands/helmeppo/attack.png']
+            paths += list((ROOT/'assets/world-maps/conchas/objects').glob('*.png'))
             data = json.dumps([p.stat().st_mtime_ns if p.exists() else 0 for p in paths]).encode()
             self.send_response(200); self.send_header('Cache-Control','no-store')
             self.send_header('Content-Length',str(len(data))); self.end_headers(); self.wfile.write(data)
@@ -35,5 +37,6 @@ class PreviewServer(http.server.ThreadingHTTPServer):
     request_queue_size = 128
 
 if __name__ == '__main__':
-    print('Mare Partida live preview: http://127.0.0.1:8123',flush=True)
-    PreviewServer(('127.0.0.1',8123),Preview).serve_forever()
+    port = int(os.environ.get('MARE_DEV_PORT', '8123'))
+    print(f'Mare Partida live preview: http://127.0.0.1:{port}',flush=True)
+    PreviewServer(('127.0.0.1',port),Preview).serve_forever()

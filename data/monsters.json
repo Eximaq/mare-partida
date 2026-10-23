@@ -207,5 +207,25 @@
     "behavior": "aggressive_city_patrol",
     "sprite_id": "c9675963-81b3-4ec2-9a52-ea3c106edffe",
     "boss": false
+  },
+  "helmeppo": {
+    "id": "helmeppo",
+    "name": "Helmeppo",
+    "level": 8,
+    "area": "swamp",
+    "base_id": "cesar",
+    "multipliers": {
+      "max_hp": 1.0,
+      "physical_attack": 1.0,
+      "physical_defense": 1.0,
+      "magic_defense": 1.0
+    },
+    "move_speed": 64,
+    "attack_seconds": 1.6,
+    "aggro_radius": 320,
+    "reach": 52,
+    "behavior": "aggressive_patrol",
+    "sprite_id": "411318d7-6ee7-43ea-ba8a-11b0fc0ce182",
+    "boss": false
   }
 }
