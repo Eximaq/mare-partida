@@ -28,3 +28,13 @@ Não houve chamada de geração paga nesta etapa. O Workbench se declara gratuit
 Este é um **candidato completo de quatro camadas para revisão**, não a ativação global do novo personagem. `reviewOnly:true`, `productionEnabled:false`, `approved:false` e a aprovação artística completa continuam separados da cobertura técnica. A troca entre a postura relaxada da locomoção e a base mais aberta do golpe ainda precisa da avaliação do proprietário; não foram inventados frames de transição.
 
 As demais categorias de ataque e roupas alternativas continuam pendentes. Habilidades e personagens de produção mantêm o fallback existente. Não houve mudança de combate, saves, facções, classes, inventário ou equipamentos reais.
+
+## Ensaio jogável no laboratório DEV
+
+A bancada agora oferece **Testar no laboratório DEV**, que abre `?dev=1&paperDollReview=navy-starter`. O mesmo acesso aparece no menu DEV. A prévia carrega somente com ambos os parâmetros, mantém a aprovação artística desativada e usa exclusivamente o save separado do laboratório.
+
+`paper-doll-review.js` carrega e valida o pacote e todas as poses antes de desenhar. O módulo não escreve em armazenamento. O Espadachim pode usar o conjunto nas quatro facções; outras classes, habilidades não cobertas, Zoan, peças desconhecidas ou falhas de carregamento mantêm o renderizador original. Arma inicial (item0) e torso inicial (item6) possuem associação visual; remover retorna ao visual padrão. Botas, perneiras, capas, luvas e capacetes sem camadas também provocam fallback, evitando ocultar equipamento silenciosamente.
+
+O controle de equipamento da bancada foi habilitado com essas mesmas associações. Nenhum PNG foi alterado ou gerado nesta etapa. O botão **Desativar prévia visual** mantém o laboratório com os sprites existentes; **Voltar ao jogo normal** remove os parâmetros DEV e Paper Doll.
+
+Validação desta continuação: dez suítes Node Paper Doll, suíte DEV e build estático. O teste `tests/paper_doll_dev_browser.py` verifica o caminho jogável sem injeção de renderer: equipamento/remoção pelo inventário real, combate, fallback de classe, falha de manifesto, celular e preservação do save normal.

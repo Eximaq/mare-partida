@@ -73,6 +73,7 @@ for slot in ['outfit', 'weapon']:
     pack['pieces'].append(piece)
 pack['appearance']['pieces'] = {p['slot']: p['id'] for p in pack['pieces']}
 pack['coverage'] = {a: c['directions'] for a,c in pack['rig']['animations'].items()}
+pack['bindings'] = {'weapon': {'slot': 'weapon', 'items': {'0': 'navy-starter-weapon'}}, 'coat': {'slot': 'outfit', 'items': {'6': 'navy-starter-outfit'}}}
 write('review-pack.json', pack)
 write('source-audit.json', audit)
 write('navy-starter.blueprint.json', [{'_pixellab': {'paid_call_policy': 'explicit_user_run_request_required', 'output_directory': HERE.relative_to(ROOT).as_posix(), 'output_collision_policy': 'create_unique'}, 'MCP pixelart_workbench': {'argv': ['edit', '6199dd98-bc27-46de-9700-80a88d7d71ab', '--changes', json.dumps(json.loads((HERE/'changes.json').read_text()))], 'mode': 'low'}}, {'MCP pixelart_workbench': {'argv':['edit','dfe29b6e-70a0-4bef-b8b6-0ea040173263','--changes',json.dumps(json.loads((HERE/'east-clothing-changes.json').read_text()))],'mode':'low'}}, {'TASK': 'Preserve both downloaded frames.png outputs as outfit-attack-palette.png and east-clothing-workbench.png, and the original outfit. Run assemble_review.py to verify cloud edits and extract changed clothing pixels. Keep reviewOnly true and productionEnabled false.'}])

@@ -686,5 +686,19 @@
       "west",
       "east"
     ]
+  },
+  "bindings": {
+    "weapon": {
+      "slot": "weapon",
+      "items": {
+        "0": "navy-starter-weapon"
+      }
+    },
+    "coat": {
+      "slot": "outfit",
+      "items": {
+        "6": "navy-starter-outfit"
+      }
+    }
   }
 }
