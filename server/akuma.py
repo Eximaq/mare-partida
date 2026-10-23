@@ -1,12 +1,17 @@
-"""Persistent Rank E Akuma no Mi rules for the optional Python game service."""
+"""Persistent Akuma no Mi rules for the optional Python game service."""
 from __future__ import annotations
 
+import json
 import math
 import sqlite3
 import time
 from pathlib import Path
 
+SUPA_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/supa/rules.json").read_text(encoding="utf-8"))
+SUPA_ID = "akuma_supa_supa"
+
 FRUITS = {
+    SUPA_ID: {"type": "akuma_no_mi", "family": "paramecia", "rank": "D", "name": "Supa Supa no Mi", "cooldown": 10, "icon_path": "assets/akuma/supa/fruit.png"},
     "akuma_kuku_kuku": {"type": "akuma_no_mi", "rank": "E", "name": "Kuku-Kuku no Mi", "cooldown": 15, "healing_received_percent": .05, "max_hp_percent": .03},
     "akuma_beri_beri": {"type": "akuma_no_mi", "rank": "E", "name": "Beri-Beri no Mi", "cooldown": 18, "impact_resistance_percent": .15},
     "akuma_tori_albatroz": {"type": "akuma_no_mi", "family": "zoan", "rank": "E", "name": "Tori-Tori no Mi: Albatroz", "cooldown": 14, "move_speed_percent": .12, "evasion_percent": .05},
@@ -16,6 +21,7 @@ FRUITS = {
 
 # Public catalog metadata for the HUD. Combat validation remains in cast().
 SKILL_TOOLTIPS = {
+    SUPA_ID: SUPA_RULES["skills"][0],
     "akuma_kuku_kuku": {"name": "Banquete Relâmpago", "cooldown": 15, "cost": 0, "description": "Transforma o cadáver mais próximo da instância em comida. Quem a recolher recupera 15% da Vida máxima."},
     "akuma_beri_beri": {"name": "Divisão Esférica", "cooldown": 18, "cost": 0, "description": "Divide o corpo em seis esferas, concede 1,5s de invulnerabilidade e empurra inimigos próximos."},
     "akuma_tori_albatroz": {"name": "Plano de Alta Altitude", "cooldown": 14, "cost": 0, "description": "Aumenta a velocidade de movimento em 30% por 5s e ignora armadilhas de chão."},
@@ -26,7 +32,7 @@ SKILL_TOOLTIPS = {
 
 def public_catalog():
     """Return tooltip data alongside the existing, stable fruit catalog."""
-    return {fruit_id: {**fruit, "skill": SKILL_TOOLTIPS[fruit_id].copy()} for fruit_id, fruit in FRUITS.items()}
+    return {fruit_id: {**fruit, "skill": SKILL_TOOLTIPS[fruit_id].copy(), **({"skills": SUPA_RULES["skills"]} if fruit_id == SUPA_ID else {})} for fruit_id, fruit in FRUITS.items()}
 
 
 class AkumaStore:
@@ -39,6 +45,7 @@ class AkumaStore:
             CREATE TABLE IF NOT EXISTS fruits(id TEXT PRIMARY KEY, type TEXT NOT NULL, rank TEXT NOT NULL, name TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS players(id TEXT PRIMARY KEY, equipped TEXT, cooldown_until REAL NOT NULL DEFAULT 0, invulnerable_until REAL NOT NULL DEFAULT 0, FOREIGN KEY(equipped) REFERENCES fruits(id));
             CREATE TABLE IF NOT EXISTS fruit_cooldowns(player_id TEXT NOT NULL, fruit_id TEXT NOT NULL, ready_at REAL NOT NULL, PRIMARY KEY(player_id,fruit_id), FOREIGN KEY(player_id) REFERENCES players(id), FOREIGN KEY(fruit_id) REFERENCES fruits(id));
+            CREATE TABLE IF NOT EXISTS skill_cooldowns(player_id TEXT NOT NULL, fruit_id TEXT NOT NULL, skill_key TEXT NOT NULL, ready_at REAL NOT NULL, PRIMARY KEY(player_id,fruit_id,skill_key), FOREIGN KEY(player_id) REFERENCES players(id), FOREIGN KEY(fruit_id) REFERENCES fruits(id));
             CREATE TABLE IF NOT EXISTS unlocks(player_id TEXT NOT NULL, fruit_id TEXT NOT NULL, PRIMARY KEY(player_id,fruit_id), FOREIGN KEY(player_id) REFERENCES players(id), FOREIGN KEY(fruit_id) REFERENCES fruits(id));
             CREATE TABLE IF NOT EXISTS corpses(id TEXT PRIMARY KEY, player_id TEXT NOT NULL, instance TEXT NOT NULL, x REAL NOT NULL, y REAL NOT NULL, expires REAL NOT NULL, FOREIGN KEY(player_id) REFERENCES players(id));
             CREATE TABLE IF NOT EXISTS food(id TEXT PRIMARY KEY, player_id TEXT NOT NULL, instance TEXT NOT NULL, x REAL NOT NULL, y REAL NOT NULL, expires REAL NOT NULL, FOREIGN KEY(player_id) REFERENCES players(id));
@@ -50,6 +57,8 @@ class AkumaStore:
             if "high_altitude_until" not in columns:
                 self.db.execute("ALTER TABLE players ADD COLUMN high_altitude_until REAL NOT NULL DEFAULT 0")
         with self.db:
+            if "metallic_until" not in columns:
+                self.db.execute("ALTER TABLE players ADD COLUMN metallic_until REAL NOT NULL DEFAULT 0")
             self.db.executemany("INSERT OR IGNORE INTO fruits VALUES(?,?,?,?)", ((key, value["type"], value["rank"], value["name"]) for key, value in FRUITS.items()))
 
     def player(self, player_id: str):
@@ -65,7 +74,8 @@ class AkumaStore:
             raise ValueError("Jogador desconhecido")
         unlocked = [r[0] for r in self.db.execute("SELECT fruit_id FROM unlocks WHERE player_id=? ORDER BY fruit_id", (player_id,))]
         cooldowns = {r[0]: r[1] for r in self.db.execute("SELECT fruit_id,ready_at FROM fruit_cooldowns WHERE player_id=?", (player_id,))}
-        return {"unlocked": unlocked, "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock(), "invulnerable_until": row["invulnerable_until"]}
+        cooldowns.update({r[0]+":"+r[1]: r[2] for r in self.db.execute("SELECT fruit_id,skill_key,ready_at FROM skill_cooldowns WHERE player_id=?", (player_id,))})
+        return {"metallic_until": row["metallic_until"], "unlocked": unlocked, "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock(), "invulnerable_until": row["invulnerable_until"]}
 
     def register(self, player_id: str, fruit_id: str):
         self.player(player_id)
@@ -80,7 +90,7 @@ class AkumaStore:
         if fruit_id is not None and not self.db.execute("SELECT 1 FROM unlocks WHERE player_id=? AND fruit_id=?", (player_id, fruit_id)).fetchone():
             raise ValueError("Fruta não desbloqueada")
         with self.db:
-            self.db.execute("UPDATE players SET equipped=?, transformed=CASE WHEN equipped IS ? THEN transformed ELSE 0 END WHERE id=?", (fruit_id, fruit_id, player_id))
+            self.db.execute("UPDATE players SET equipped=?, transformed=CASE WHEN equipped IS ? THEN transformed ELSE 0 END, metallic_until=CASE WHEN equipped IS ? THEN metallic_until ELSE 0 END WHERE id=?", (fruit_id, fruit_id, fruit_id, player_id))
         return self.state(player_id)
 
     def transform(self, player_id: str, enabled: bool):
@@ -106,11 +116,13 @@ class AkumaStore:
         with self.db:
             self.db.execute("INSERT OR REPLACE INTO corpses VALUES(?,?,?,?,?,?)", (corpse_id, player_id, instance, x, y, self.clock() + 12))
 
-    def cast(self, player_id: str, instance: str, x: float, y: float, enemies=(), direction=(0, 1)):
+    def cast(self, player_id: str, instance: str, x: float, y: float, enemies=(), direction=(0, 1), skill_key=None, energy=None, physical_attack=None):
         state = self.state(player_id)
         fruit_id = state["equipped"]
         if not fruit_id:
             raise ValueError("Nenhuma fruta equipada")
+        if fruit_id == SUPA_ID:
+            return self.cast_supa(player_id, instance, x, y, enemies, skill_key, energy, physical_attack)
         now = self.clock()
         if state["cooldowns"].get(fruit_id, 0) > now:
             raise ValueError("Habilidade em recarga")
@@ -163,6 +175,62 @@ class AkumaStore:
                 effect = {"type": "bite", "target_id": target["id"], "slow_percent": .30, "defense_percent": .05, "duration": 3, "damage_multiplier": .85}
             self.db.execute("INSERT OR REPLACE INTO fruit_cooldowns VALUES(?,?,?)", (player_id, fruit_id, now + fruit["cooldown"]))
         return {"effect": effect, "state": self.state(player_id)}
+
+    def cast_supa(self, player_id, instance, x, y, enemies, skill_key, energy, physical_attack):
+        state = self.state(player_id)
+        skill = next((s for s in SUPA_RULES["skills"] if s["key"] == str(skill_key)), None)
+        if state["equipped"] != SUPA_ID or skill is None:
+            raise ValueError("Habilidade Supa inválida")
+        if not instance or not all(math.isfinite(v) for v in (x, y)):
+            raise ValueError("Posição inválida")
+        if energy is None or isinstance(energy, bool) or not math.isfinite(float(energy)) or float(energy) < skill["cost"]:
+            raise ValueError("Energia insuficiente")
+        now = self.clock()
+        if state["cooldowns"].get(SUPA_ID + ":" + skill["key"], 0) > now:
+            raise ValueError("Habilidade em recarga")
+        if skill["key"] == "1":
+            if physical_attack is None or isinstance(physical_attack, bool) or not math.isfinite(float(physical_attack)) or float(physical_attack) < 0:
+                raise ValueError("Ataque físico inválido")
+            target_ids, hits = [], []
+            for enemy in enemies:
+                ex, ey = float(enemy["x"]), float(enemy["y"])
+                if not all(math.isfinite(v) for v in (ex, ey)):
+                    raise ValueError("Posição de inimigo inválida")
+                if enemy.get("alive", True) and math.hypot(ex-x, ey-y) <= SUPA_RULES["radius"]:
+                    if enemy["id"] not in target_ids:
+                        armor = float(enemy.get("defense", 0))
+                        if not math.isfinite(armor) or armor < 0:
+                            raise ValueError("Defesa de inimigo inválida")
+                        target_ids.append(enemy["id"])
+                        hits.append({"id": enemy["id"], "damage": max(1, math.floor(float(physical_attack)*skill["damage_multiplier"]-armor*.30))})
+            effect = {"type": "cutting_spiral", "damage_type": "physical", "damage_multiplier": skill["damage_multiplier"], "radius": SUPA_RULES["radius"], "target_ids": target_ids, "hits": hits, "x": x, "y": y}
+        else:
+            effect = {"type": "metallic_retaliation", "duration": SUPA_RULES["duration"]/1000, "expires_at": now+SUPA_RULES["duration"]/1000, "mitigation": SUPA_RULES["mitigation"], "reflect": SUPA_RULES["reflect"]}
+        with self.db:
+            if skill["key"] == "2":
+                self.db.execute("UPDATE players SET metallic_until=? WHERE id=?", (effect["expires_at"], player_id))
+            self.db.execute("INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)", (player_id, SUPA_ID, skill["key"], now+skill["cooldown"]))
+        return {"effect": effect, "energy_spent": skill["cost"], "energy_remaining": float(energy)-skill["cost"], "state": self.state(player_id)}
+
+    def receive_damage(self, player_id, original, received=None, physical=True, direct=False, reflected=False):
+        """Resolve Supa after ordinary defense; reflected damage cannot reflect again.
+
+        The optional prototype service receives combat inputs from the local client.
+        It does not own monster HP or the complete player combat state yet.
+        """
+        state = self.state(player_id)
+        received = original if received is None else received
+        if not all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) and v >= 0 for v in (original, received)):
+            raise ValueError("Dano inválido")
+        active = state["equipped"] == SUPA_ID and state["metallic_until"] > self.clock()
+        enabled = active and physical and not direct and not reflected and original > 0 and received > 0
+        return {"damage": received*(1-SUPA_RULES["mitigation"]) if enabled else received, "reflected": original*SUPA_RULES["reflect"] if enabled else 0}
+
+    def end_protection(self, player_id):
+        self.state(player_id)
+        with self.db:
+            self.db.execute("UPDATE players SET metallic_until=0 WHERE id=?", (player_id,))
+        return self.state(player_id)
 
     def pickup_food(self, player_id: str, food_id: str, instance: str, x: float, y: float):
         row = self.db.execute("SELECT * FROM food WHERE id=? AND player_id=? AND instance=? AND expires>?", (food_id, player_id, instance, self.clock())).fetchone()

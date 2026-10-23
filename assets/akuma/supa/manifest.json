@@ -1,0 +1,40 @@
+{
+  "origin": "Arquivos fornecidos pelo proprietário para esta implementação, copiados sem reencodificação.",
+  "assets": [
+    {
+      "original": "Supa Supa no Mi.png",
+      "asset": "fruit.png",
+      "sha256": "fdb4c562070fffe3b0088a48bf36bbcf6b49e860d611e10a6cc8dfb44e903510"
+    },
+    {
+      "original": "Skill 1.png",
+      "asset": "skill-1.png",
+      "sha256": "1fb147b7633bdf21f9fef4170d4cab2a820c9c14abb3452f81778ce1c78f99c2"
+    },
+    {
+      "original": "Skill 2.png",
+      "asset": "skill-2.png",
+      "sha256": "058d0610d023be1aeff95e586eb2cfa1e70add920dd11dcc98139910862055f6"
+    },
+    {
+      "original": "slash-arc.png",
+      "asset": "slash-arc.png",
+      "sha256": "919ca4aa2b6422e7be4afd3d103778799a888dc0260a825d18dc07a402d2e19a"
+    },
+    {
+      "original": "slash-arc.json",
+      "asset": "slash-arc.json",
+      "sha256": "6879791b1e56a00593fc6a609ed86aa844cd747e65b9352ea71f5d4b617c3f8c"
+    },
+    {
+      "original": "shield-bubble.png",
+      "asset": "shield-bubble.png",
+      "sha256": "bd843492fa4a706809bb2f826c86941ecc798bb9f77f8b1bc041e9f1c305e983"
+    },
+    {
+      "original": "shield-bubble.json",
+      "asset": "shield-bubble.json",
+      "sha256": "4f3a46698d114a70ec5f433b4d877520ff679f69057117bc5116fd457f2d8726"
+    }
+  ]
+}

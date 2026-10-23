@@ -1,0 +1,261 @@
+{
+ "frames": [
+  {
+   "filename": "shield-bubble 0.png",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 111
+  },
+  {
+   "filename": "shield-bubble 1.png",
+   "frame": {
+    "x": 96,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 111
+  },
+  {
+   "filename": "shield-bubble 2.png",
+   "frame": {
+    "x": 192,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 111
+  },
+  {
+   "filename": "shield-bubble 3.png",
+   "frame": {
+    "x": 0,
+    "y": 96,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 111
+  },
+  {
+   "filename": "shield-bubble 4.png",
+   "frame": {
+    "x": 96,
+    "y": 96,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 111
+  },
+  {
+   "filename": "shield-bubble 5.png",
+   "frame": {
+    "x": 192,
+    "y": 96,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 111
+  },
+  {
+   "filename": "shield-bubble 6.png",
+   "frame": {
+    "x": 0,
+    "y": 192,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 111
+  },
+  {
+   "filename": "shield-bubble 7.png",
+   "frame": {
+    "x": 96,
+    "y": 192,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 111
+  },
+  {
+   "filename": "shield-bubble 8.png",
+   "frame": {
+    "x": 192,
+    "y": 192,
+    "w": 96,
+    "h": 96
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 96,
+    "h": 96
+   },
+   "sourceSize": {
+    "w": 96,
+    "h": 96
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5
+   },
+   "duration": 111
+  }
+ ],
+ "meta": {
+  "app": "PixelLab VFX Creator",
+  "image": "shield-bubble.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 288,
+   "h": 288
+  },
+  "scale": "1",
+  "anchor": {
+   "kind": "origin",
+   "x": 48,
+   "y": 48
+  },
+  "frameTags": [
+   {
+    "name": "shield-bubble",
+    "from": 0,
+    "to": 8,
+    "direction": "forward"
+   }
+  ]
+ }
+}

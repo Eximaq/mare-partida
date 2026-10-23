@@ -1,0 +1,27 @@
+{
+  "radius": 128,
+  "duration": 5000,
+  "mitigation": 0.4,
+  "reflect": 0.3,
+  "skills": [
+    {
+      "key": "1",
+      "name": "Espiral Cortante",
+      "cooldown": 10,
+      "cost": 20,
+      "damage_multiplier": 1.3,
+      "damage_type": "physical",
+      "icon_path": "assets/akuma/supa/skill-1.png",
+      "description": "Corte físico instantâneo de 130% do ataque físico em todos os inimigos num raio de 2 tiles (128 px)."
+    },
+    {
+      "key": "2",
+      "name": "Retaliação Metálica",
+      "cooldown": 20,
+      "cost": 25,
+      "damage_type": "physical",
+      "icon_path": "assets/akuma/supa/skill-2.png",
+      "description": "Durante 5s, reduz em 40% o dano físico recebido e devolve ao atacante 30% do dano original. O escudo acompanha o personagem."
+    }
+  ]
+}
