@@ -405,3 +405,11 @@ east_fit_entry.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_east_fi
 shutil.copy2(ROOT/'docs/PAPER-DOLL-ENCAIXE-LESTE.md', OUT/'docs/PAPER-DOLL-ENCAIXE-LESTE.md')
 (OUT/'.nojekyll').touch()
 print(f'Site criado em: {OUT} (GitHub Pages, somente arquivos públicos)')
+
+# Body continuity review: explicit public files only; no local scripts/evidence.
+body_review = Path('pixellab-pip-generations/paper-doll-body-continuity-20261022')
+(OUT/body_review).mkdir(parents=True, exist_ok=True)
+for name in ['review-pack.json', 'source-audit.json', 'body-idle.png', 'body-walk.png', 'body-attack.png']:
+    shutil.copy2(ROOT/body_review/name, OUT/body_review/name)
+
+shutil.copy2(ROOT/"docs/PAPER-DOLL-CORPO-CONTINUIDADE.md", OUT/"docs/PAPER-DOLL-CORPO-CONTINUIDADE.md")

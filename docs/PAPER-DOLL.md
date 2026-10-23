@@ -248,3 +248,8 @@ Gerar o personagem inteiro e tentar apagar suas roupas depois deixa anatomia ocu
 - O workflow `Paper Doll — infraestrutura e fallback` repete a verificação em Chromium no pacote estático e entrega o artefato `paper-doll-infraestrutura-capturas` para revisão, sem incluir evidências em massa no repositório.
 
 A fase entrega a infraestrutura e a prévia com fallback pela exceção expressa do pedido. **O aceite artístico do Espadachim modular em quatro direções continua pendente.** O mínimo atualizado de camadas e encaixes ausentes está no relatório Idle/sul; a arma rígida é a exceção autorizada à antiga estimativa de320 frames. Nada foi integrado à main automaticamente. Saves antigos, mapas, física, hitboxes e tempos/eventos do combate permanecem no caminho existente.
+
+
+## Estudo corporal contínuo
+
+[Corpo-base em80 poses reais](PAPER-DOLL-CORPO-CONTINUIDADE.md): Idle/Walk/Attack reunidos na bancada sem alterar pixels. O escopo restrito `body-motion-review` permite conferir a anatomia sem apresentar um conjunto sem roupas como personagem final. Nenhuma mudança no catálogo de produção.

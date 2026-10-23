@@ -1,0 +1,137 @@
+{
+  "scope": "body-motion-review",
+  "reviewOnly": true,
+  "productionEnabled": false,
+  "full_character_artwork_approved": false,
+  "status": "Body-only continuity study. Clothing, hair, footwear and weapons are not included or approved.",
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "walk": {
+        "frames": 8,
+        "fps": 8,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-sword": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "shared-body-continuity",
+      "rigId": "human-v1",
+      "slot": "body",
+      "available": true,
+      "approved": false,
+      "zIndex": 0,
+      "animations": {
+        "idle": {
+          "kind": "sheet",
+          "url": "body-idle.png",
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84
+        },
+        "walk": {
+          "kind": "sheet",
+          "url": "body-walk.png",
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84
+        },
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "body-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "shared-body-continuity"
+    }
+  },
+  "bodyCoverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-sword": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ]
+  }
+}
