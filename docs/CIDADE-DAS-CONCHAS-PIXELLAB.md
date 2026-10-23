@@ -1,5 +1,19 @@
 # Cidade das Conchas — mapa PixelLab e Helmeppo
 
+## Projeção integral do PixelLab (23/10/2026)
+
+A renderização anterior recompunha objetos isolados e alterava encaixes, margens e sobreposições. Foi substituída por `assets/world-maps/conchas/projection.png`: exportação nativa de `view_map` em 20 trechos, reunidos sem redimensionamento nem pintura. A projeção contém todos os 105 placements e a ordem de camadas resolvida pelo próprio PixelLab. `projection.json` registra origem, dimensões e hashes. `tools/import_conchas_projection.py` permite reunir novamente os trechos exportados.
+
+O runtime desenha essa projeção e uma máscara de primeiro plano derivada dos mesmos pixels, excluindo a paleta dos terrenos existentes. A máscara usa fechamento de 3 px para reduzir furos de cores compartilhadas, mantendo os pixels RGB da fonte e sem mover objetos. Personagens ficam atrás do cenário opaco; não há recomposição de sprites individuais. A navegação mantém os dados físicos de objetos/terreno. A arte da fonte não foi editada. O próprio PixelLab sinaliza seis junções sem tileset; essas limitações da fonte foram preservadas, sem inventar preenchimentos.
+
+Um novo recorte do PixelLab em `(-3,13)`, 5×4 células, foi comparado ao mesmo retângulo da projeção: nenhum pixel diferente, incluindo a emenda entre trechos. A projeção mede 4480×3456.
+
+Helmeppo agora usa quadro de renderização 128×128 para idle/walk/attack (sprites originais 80×80). Na pose parada, o conteúdo de 52 px passa a ocupar aproximadamente 83 px visíveis, comparável ao personagem. Demais monstros e atributos não foram alterados.
+
+Validação desta revisão: testes Conchas, navegação, caça, mapas PixelLab, ilhas e profundidade; build Pages. No Chrome isolado 1366×768, chegada e caminhada real até Ruas do Porto concluídas em terreno walkable, sem exceções. Amostras da máscara mantiveram a areia transparente e cobriram o personagem na fachada. Captura: `C:/Users/Cristian/AppData/Local/Temp/conchas-authoritative-city-foreground-20261023.png`.
+
+As seções abaixo registram a implementação anterior; a projeção integral acima substitui sua composição visual de objetos.
+
 Atualização de 23/10/2026. O jogo carrega os recursos já existentes no PixelLab; nenhum pedido de geração foi enviado.
 
 ## Correção da integração (23/10/2026)
