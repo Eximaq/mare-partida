@@ -59,3 +59,9 @@ select{color-scheme:dark}
 .ui-collapse[aria-expanded=false]+.ui-collapse-body{display:none}
 @keyframes ui-notice-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms;animation-iteration-count:1;transition-duration:0s;scroll-behavior:auto}}
+
+/* UI foundation 2.1: accessible links and robust window copy, no game-state changes. */
+a:focus-visible,[role=button]:focus-visible,[role=tab]:focus-visible,summary:focus-visible{outline:2px solid var(--rpg-focus);outline-offset:3px}
+.dialog-header h2,.ui-window-header h2,.confirmation-card h2{min-width:0;overflow-wrap:anywhere}
+.dialog-body,.ui-window-body{min-width:0}
+.ui-button:active:not(:disabled),.close-button:active:not(:disabled),.ui-close:active:not(:disabled){filter:brightness(.92)}
