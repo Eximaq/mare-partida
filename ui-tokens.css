@@ -15,6 +15,7 @@
   --rpg-font:'Segoe UI',Tahoma,sans-serif; --rpg-heading:Bahnschrift,'Trebuchet MS',sans-serif;
   --rpg-caption:11px; --rpg-body:13px; --rpg-subtitle:16px; --rpg-title:22px;
   --rpg-icon:24px; --rpg-button:36px; --rpg-slot:48px; --rpg-field:36px;
+  --rpg-touch-target:44px; /* Use for touch controls within modal content, never resize pixel-art slots. */
   --rpg-radius:5px; --rpg-radius-small:3px; --rpg-border:1px solid var(--rpg-line);
   --rpg-shadow:0 12px 36px #0008; --rpg-inset:inset 0 1px #f8dfaa2b,inset 0 -2px #160e0a66;
   --rpg-frame:3px double var(--rpg-brass);
