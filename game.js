@@ -1906,7 +1906,7 @@
     }
     return false;
   }
-  function drawPlayerSprite(c,x,y){if(c===ctx&&horuBuffActive()){c.save();c.translate(x,y);c.scale(2,2);const ok=drawPlayerSpriteBase(c,0,0);c.restore();return ok;}return drawPlayerSpriteBase(c,x,y);}
+  function drawPlayerSprite(c,x,y){if(c===ctx&&horuBuffActive()){c.save();c.translate(x,y);c.scale(MareRankC.rules.horu.scale,MareRankC.rules.horu.scale);const ok=drawPlayerSpriteBase(c,0,0);c.restore();return ok;}return drawPlayerSpriteBase(c,x,y);}
   function drawPlayerSpriteBase(c,x,y){
     const hero=world.hero,attack=hero.attackAnim>0&&scene==='hunt',moving=hero.walking>0;
     const zoan=equippedZoan();
@@ -1992,7 +1992,7 @@
   }
   function drawHoruHealFx(foreground){
     for(const f of session.horuHealFx||[]){
-      const member=f.member||world.hero,scale=member===world.hero&&horuBuffActive()?2:1;
+      const member=f.member||world.hero,scale=member===world.hero&&horuBuffActive()?MareRankC.rules.horu.scale:1;
       ctx.save();
       // Keep the head above the ring; the lower arc still wraps around the body.
       if(foreground){ctx.beginPath();ctx.rect(member.x-120*scale,member.y-52*scale,240*scale,160*scale);ctx.clip();}
@@ -2006,7 +2006,7 @@
     const u=MareUltimates.selected(game),rt=session.talents.ultimate;
     if(u==='shadowClone'){ctx.save();ctx.globalAlpha=.3;drawPlayerSprite(ctx,x-38,y+16);ctx.restore();}
     if(world.hero.visible!==false)vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1);
-    if(horuBuffActive())MareRankC.draw(ctx,'mutation',x,y+6,Date.now()-session.horuBuffStarted,{width:96,height:24});
+    if(horuBuffActive()){const aura=MareRankC.rules.horu.mutationVfx;MareRankC.draw(ctx,'mutation',x,y+aura.offsetY,Date.now()-session.horuBuffStarted,{width:aura.width,height:aura.height});}
     drawHoruHealFx(false);
     ctx.save();if(rt.hidden)ctx.globalAlpha=.2;if(world.hero.visible===false){drawBeriSeparation(ctx,x,y,1-session.fruitBurst/1.5);}else if(u==='titan'){ctx.translate(x,y);ctx.scale(1.35,1.35);drawPlayerSprite(ctx,0,0);}else drawPlayerSprite(ctx,x,y);ctx.restore();
     drawHoruHealFx(true);
@@ -2034,7 +2034,7 @@
   function drawEntityLayer(){
     let toDraw=[...(activeMap().id==='lobby'?MareLobby.depthObjects.map(o=>({kind:'lobby-prop',y:o.pivotY,obj:o})):[]),...(activeMap().id==='conchas'&&!MarePixelWorldMaps.conchas.projectionBaked?MarePixelWorldMaps.conchas.props.map(p=>({kind:'conchas-prop',y:p.bottomY+p.layer*.001,obj:p})):[]),...(activeMap().id==='embers'?MareEmber.props.filter(p=>!p.ground).map(p=>({kind:'ember-prop',y:p.y,obj:p})):[]),...world.mobs.filter(m=>scene==='hunt'&&m.alive).map(m=>({kind:'mob',y:m.y,obj:m})),...(scene==='lobby'?[...npcs.map(n=>({kind:'npc',y:n.y,obj:n})),...(!globalThis.MareLobby?MareIsland.buildings:[]).map(b=>({kind:'building',y:b.y-17,obj:b})),...(!globalThis.MareLobby?MareIsland.decorations.concat(harborArt.complete&&harborArt.naturalWidth?MareIsland.harborProps:[]):[]).map(d=>({kind:'decor',y:d.y,obj:d}))]:[]),...((scene==='lobby'&&factionShowcase&&globalThis.MareFactionSprites)?Object.keys(MareFactionSprites.assets).filter(id=>!MareFactionSprites.assets[id].meta.class_id).map((id,index)=>({kind:'faction',y:800,obj:{id,x:1240+index*80,y:800}})):[])].sort((a,b)=>a.y-b.y||(a.kind==='hero'?-1:b.kind==='hero'?1:0));for(let i of toDraw){if(i.kind==='lobby-prop')MareLobby.depthProp(ctx,i.obj);else if(i.kind==='rare-prop')MareRareRenderer.prop(ctx,i.obj);else if(i.kind==='conchas-prop')MarePixelMapRenderer.prop(ctx,i.obj);else if(i.kind==='ember-prop')MareEmberRenderer.prop(ctx,i.obj);else if(i.kind==='faction')drawFactionShowcase(i.obj);else if(i.kind==='npc')drawNPC(i.obj);else if(i.kind==='building')drawIslandBuilding(i.obj);else if(i.kind==='decor')drawIslandDecoration(i.obj);else{drawMonster(i.obj);if(i.obj.alive&&i.obj.wolfBleed)MareWolf.drawEffect(ctx,'bleed',i.obj.x,i.obj.y,(world.time-i.obj.wolfBleed.started)*1000);}}
   }
-  function drawHeroLayer(){if(session?.respawn>0&&!classCombatController()){ctx.globalAlpha=.5+Math.sin(world.time*8)*.25;}drawTalentedHero(world.hero.x,world.hero.y);ctx.globalAlpha=1;let name=game.name,hudLift=(MareUltimates.selected(game)==='titan'?28:0)+(horuBuffActive()?74:0)+(isNekoForm()?MareNeko.visuals.labelLift:isUshiForm()?MareUshi.visuals.labelLift:isWolfForm()?MareWolf.visuals.labelLift:0),nameLift=MareUltimates.selected(game)==='armamentSkin'?14:0;ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.fillStyle='#03171c';ctx.fillText(name,world.hero.x+1,world.hero.y-85-hudLift-nameLift);ctx.fillStyle='#e7fcf1';ctx.fillText(name,world.hero.x,world.hero.y-86-hudLift-nameLift);let d=getDerived();px(ctx,world.hero.x-30,world.hero.y-79-hudLift,60,7,'#001819');px(ctx,world.hero.x-29,world.hero.y-78-hudLift,58*(game.hp/d.maxHP),5,'#5ed09c');if(session?.guard>0){ctx.strokeStyle='#78e2d3aa';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(world.hero.x,world.hero.y-26,20,34,0,0,Math.PI*2);ctx.stroke();}}
+  function drawHeroLayer(){if(session?.respawn>0&&!classCombatController()){ctx.globalAlpha=.5+Math.sin(world.time*8)*.25;}drawTalentedHero(world.hero.x,world.hero.y);ctx.globalAlpha=1;let name=game.name,hudLift=(MareUltimates.selected(game)==='titan'?28:0)+(horuBuffActive()?74*(MareRankC.rules.horu.scale-1):0)+(isNekoForm()?MareNeko.visuals.labelLift:isUshiForm()?MareUshi.visuals.labelLift:isWolfForm()?MareWolf.visuals.labelLift:0),nameLift=MareUltimates.selected(game)==='armamentSkin'?14:0;ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.fillStyle='#03171c';ctx.fillText(name,world.hero.x+1,world.hero.y-85-hudLift-nameLift);ctx.fillStyle='#e7fcf1';ctx.fillText(name,world.hero.x,world.hero.y-86-hudLift-nameLift);let d=getDerived();px(ctx,world.hero.x-30,world.hero.y-79-hudLift,60,7,'#001819');px(ctx,world.hero.x-29,world.hero.y-78-hudLift,58*(game.hp/d.maxHP),5,'#5ed09c');if(session?.guard>0){ctx.strokeStyle='#78e2d3aa';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(world.hero.x,world.hero.y-26,20,34,0,0,Math.PI*2);ctx.stroke();}}
   function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}ctx.save();ctx.translate(-Math.round(camera.x),-Math.round(camera.y));drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();drawEntityLayer();drawHeroLayer();
     for(const shot of session.doruProjectiles||[])MareDoru.draw(ctx,shot);
     for(const shot of session.rankCProjectiles||[])MareRankC.draw(ctx,'axe',shot.x,shot.y-32,shot.elapsed*1000,{width:56});
