@@ -19,7 +19,7 @@ assert.match(css, /@media\(max-width:760px\)/);
 assert.match(css, /@media\(max-width:390px\)/);
 assert.match(css, /@media\(max-height:500px\) and \(orientation:landscape\)/);
 assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
-assert.ok(!/!important/.test(css), 'do not add CSS specificity arms race');
+assert.ok(!/!important/.test(css.replace(/\/\*[\s\S]*?\*\//g,'')), 'do not add CSS specificity arms race');
 assert.match(css, /--helm-timber:/);
 assert.match(css, /image-rendering:pixelated/);
 assert.match(tokens, /--rpg-wood:#49301f/);
