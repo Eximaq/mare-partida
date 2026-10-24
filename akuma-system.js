@@ -5,6 +5,7 @@
   if(!root.MareUshi&&typeof module!=='undefined')require('./ushi-system.js');
   if(!root.MareDoru&&typeof module!=='undefined')require('./doru-system.js');
   if(!root.MareWolf&&typeof module!=='undefined')require('./wolf-system.js');
+  if(!root.MareAkumaPassives&&typeof module!=='undefined')require('./akuma-passives.js');
   const ranks=Object.freeze(['E','D','C','B','A','S']);
   const slotsPerRank=5;
   // Keep in sync with assets/akuma/supa/rules.json (validated by regression tests).
@@ -27,6 +28,7 @@
     new AkumaNoMiData('akuma_doru_doru','Doru Doru no Mi','D','assets/akuma/doru/fruit.png',{},'','assets/akuma/doru/skill-1.png','',1,1,{family:'paramecia',skills:root.MareDoru.rules.skills,description:root.MareDoru.rules.description}),
     new AkumaNoMiData('akuma_inu_wolf','Inu Inu no Mi: Modelo Lobo','D','assets/akuma/wolf/fruit.png',{},'','assets/akuma/wolf/skill-1.png','',1,1,{family:'zoan',subtype:'Zoan Carnívora',zoan_sprite_sheet:'assets/akuma/wolf/preview-south.png',skills:root.MareWolf.rules.skills,description:root.MareWolf.rules.description})
   ]);
+  for(const fruit of catalog)if(root.MareAkumaPassives.stats[fruit.id])fruit.passiveStats={...root.MareAkumaPassives.stats[fruit.id]};
   const byId=(id,entries=catalog)=>entries.find(fruit=>fruit.id===id)||null;
   const isZoan=(fruit)=>fruit?.family==='zoan';
   const isFruit=(item,defs)=>!!item&&(item.type==='akuma_no_mi'||defs?.[item.def]?.type==='akuma_no_mi');
@@ -53,6 +55,7 @@
   function bonusStats(item,defs,entries=catalog){
     if(!isFruit(item,defs))return {};
     const data=itemData(item,defs,entries);
+    if(data?.passiveStats)return {...data.passiveStats};
     const raw=data?.bonus_stats||item.bonus_stats||defs?.[item.def]?.bonus_stats||{};
     return Object.fromEntries(Object.entries(raw).filter(([key,value])=>/^(bonus_[a-z_]+|healing_received_percent|max_hp_percent|impact_resistance_percent|move_speed_percent|evasion_percent|physical_defense_percent)$/.test(key)&&Number.isFinite(value)).map(([key,value])=>[key,value]));
   }

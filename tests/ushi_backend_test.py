@@ -24,7 +24,7 @@ class UshiTest(unittest.TestCase):
     def test_catalog_transform_damage_and_independent_cooldowns(self):
         self.equip();self.assertTrue(self.store.state('hero')['transformed'])
         self.assertEqual(public_catalog()[ID]['rank'],'D')
-        r=self.cast();self.assertEqual(r['effect']['damage'],159)
+        r=self.cast();self.assertEqual(r['effect']['damage'],160)
         self.assertEqual(r['effect']['knockback'],64);self.assertEqual(r['energy_remaining'],74)
         with self.assertRaises(ValueError):self.cast()
         r=self.cast('2');self.assertEqual(r['effect']['duration'],5)

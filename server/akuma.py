@@ -6,6 +6,7 @@ import math
 import sqlite3
 import time
 import uuid
+from fruit_stats import DEVIL_FRUIT_STATS, passive_stats, apply_stats
 from pathlib import Path
 
 SUPA_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/supa/rules.json").read_text(encoding="utf-8"))
@@ -31,6 +32,10 @@ FRUITS = {
     "akuma_uma_uma": {"type": "akuma_no_mi", "family": "zoan", "rank": "E", "name": "Uma-Uma no Mi", "cooldown": 12, "move_speed_percent": .15, "max_hp_percent": .03},
     "akuma_inu_dachshund": {"type": "akuma_no_mi", "family": "zoan", "rank": "E", "name": "Inu-Inu no Mi: Dachshund", "cooldown": 10, "evasion_percent": .10, "physical_defense_percent": .03},
 }
+
+for fruit_id, modifiers in DEVIL_FRUIT_STATS.items():
+    FRUITS[fruit_id]['passive_stats']=dict(modifiers)
+    FRUITS[fruit_id]['passiveStats']=dict(modifiers)
 
 # Public catalog metadata for the HUD. Combat validation remains in cast().
 SKILL_TOOLTIPS = {
@@ -99,7 +104,7 @@ class AkumaStore:
         unlocked = [r[0] for r in self.db.execute("SELECT fruit_id FROM unlocks WHERE player_id=? ORDER BY fruit_id", (player_id,))]
         cooldowns = {r[0]: r[1] for r in self.db.execute("SELECT fruit_id,ready_at FROM fruit_cooldowns WHERE player_id=?", (player_id,))}
         cooldowns.update({r[0]+":"+r[1]: r[2] for r in self.db.execute("SELECT fruit_id,skill_key,ready_at FROM skill_cooldowns WHERE player_id=?", (player_id,))})
-        return {"wild_fury_until": row["wild_fury_until"], "metallic_until": row["metallic_until"], "unlocked": unlocked, "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock(), "invulnerable_until": row["invulnerable_until"]}
+        return {"wild_fury_until": row["wild_fury_until"], "metallic_until": row["metallic_until"], "unlocked": unlocked, "passive_stats": passive_stats(row["equipped"]), "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock(), "invulnerable_until": row["invulnerable_until"]}
 
     def register(self, player_id: str, fruit_id: str):
         self.player(player_id)
@@ -136,13 +141,17 @@ class AkumaStore:
                 self.db.execute("UPDATE players SET wolf_aura_until=0 WHERE id=?", (player_id,))
         return self.state(player_id)
 
-    def stats(self, player_id: str, base_hp: float, base_strength: float):
+    def stats(self, player_id: str, base_hp: float, base_strength: float, base_stats=None):
         state = self.state(player_id)
         if not all(math.isfinite(v) and v >= 0 for v in (base_hp, base_strength)):
             raise ValueError("Atributos inválidos")
         count = len(state["unlocked"])
         fruit = FRUITS.get(state["equipped"], {})
-        return {"count": count, "max_hp": round(base_hp * (1 + .001 * count) * (1 + fruit.get("max_hp_percent", 0))), "strength": base_strength * (1 + .001 * count), "healing_received_percent": fruit.get("healing_received_percent", 0), "impact_resistance_percent": fruit.get("impact_resistance_percent", 0), "move_speed_percent": fruit.get("move_speed_percent", 0), "evasion_percent": fruit.get("evasion_percent", 0), "physical_defense_percent": fruit.get("physical_defense_percent", 0)}
+        result = {"count": count, "max_hp": round(base_hp * (1 + .001 * count) * (1 + fruit.get("max_hp_percent", 0))), "strength": base_strength * (1 + .001 * count), "healing_received_percent": fruit.get("healing_received_percent", 0), "impact_resistance_percent": fruit.get("impact_resistance_percent", 0), "move_speed_percent": fruit.get("move_speed_percent", 0), "evasion_percent": fruit.get("evasion_percent", 0), "physical_defense_percent": fruit.get("physical_defense_percent", 0)}
+
+        if base_stats is not None and not isinstance(base_stats,dict):raise ValueError('Atributos base inválidos')
+        derived=apply_stats({**(base_stats or {}),'max_hp':result['max_hp']},state['equipped'])
+        return {**result,**derived,'passive_stats':passive_stats(state['equipped'])}
 
     def record_corpse(self, player_id: str, corpse_id: str, instance: str, x: float, y: float):
         self.player(player_id)
@@ -151,7 +160,7 @@ class AkumaStore:
         with self.db:
             self.db.execute("INSERT OR REPLACE INTO corpses VALUES(?,?,?,?,?,?)", (corpse_id, player_id, instance, x, y, self.clock() + 12))
 
-    def cast(self, player_id: str, instance: str, x: float, y: float, enemies=(), direction=(0, 1), skill_key=None, energy=None, physical_attack=None, target_id=None, crit_multiplier=1.65):
+    def cast(self, player_id: str, instance: str, x: float, y: float, enemies=(), direction=(0, 1), skill_key=None, energy=None, physical_attack=None, target_id=None, crit_multiplier=None):
         state = self.state(player_id)
         fruit_id = state["equipped"]
         if not fruit_id:
@@ -270,7 +279,8 @@ class AkumaStore:
         damage = received*(1-SUPA_RULES["mitigation"]) if enabled else received
         if self.ushi_active(player_id):
             damage *= 1-USHI_RULES["mitigation"]
-        return {"damage": damage, "reflected": original*SUPA_RULES["reflect"] if enabled else 0}
+        thorns=damage*passive_stats(state['equipped']).get('damage_reflection',0) if physical and not direct and not reflected and damage>0 else 0
+        return {"damage": damage, "reflected": (original*SUPA_RULES["reflect"] if enabled else 0)+thorns}
 
     def end_protection(self, player_id):
         self.state(player_id)
@@ -284,7 +294,8 @@ class AkumaStore:
         row=self.db.execute('SELECT equipped,transformed,wolf_aura_until FROM players WHERE id=?',(player_id,)).fetchone()
         if row is None:raise ValueError('Jogador desconhecido')
         active=row['equipped']==WOLF_ID and row['transformed'] and row['wolf_aura_until']>self.clock()
-        return {'attack_speed_percent':WOLF_RULES['attackSpeed'] if active else 0,'lifesteal_percent':WOLF_RULES['lifesteal'] if active else 0}
+        p=passive_stats(row['equipped'])
+        return {'attack_speed_percent':(1+p.get('attack_speed',0))*(1+(WOLF_RULES['attackSpeed'] if active else 0))-1,'lifesteal_percent':p.get('lifesteal',0)+(WOLF_RULES['lifesteal'] if active else 0)}
 
     def wolf_heal(self, player_id, actual_damage):
         if isinstance(actual_damage,bool) or not isinstance(actual_damage,(int,float)) or not math.isfinite(actual_damage) or actual_damage<0:raise ValueError('Dano efetivo inválido')
@@ -333,7 +344,7 @@ class AkumaStore:
         self.doru_roots={k:v for k,v in self.doru_roots.items() if v>now}
         pid=uuid.uuid4().hex
         self.doru_projectiles[pid]={'player':player_id,'instance':instance,'key':skill['key'],'x':x,'y':y,'dx':dx/length,'dy':dy/length,'attack':float(attack),'expires':now+10}
-        with self.db:self.db.execute('INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)',(player_id,DORU_ID,skill['key'],now+skill['cooldown']))
+        with self.db:self.db.execute('INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)',(player_id,DORU_ID,skill['key'],now+skill['cooldown']*(1-passive_stats(DORU_ID).get('cooldown_reduction',0))))
         return {'effect':{'type':'wax_projectile','projectile_id':pid,'key':skill['key'],'direction':[dx/length,dy/length],'range':DORU_RULES['range'],'speed':DORU_RULES['speed']},'energy_spent':skill['cost'],'energy_remaining':float(energy)-skill['cost'],'state':self.state(player_id)}
 
     def impact_doru(self, player_id, projectile_id, x, y, enemies, hit_id=None):
@@ -390,8 +401,9 @@ class AkumaStore:
             ex,ey,armor=float(target['x']),float(target['y']),float(target.get('defense',0))
             if not all(math.isfinite(v) for v in (ex,ey,armor)) or armor<0:raise ValueError('Alvo inválido')
             if math.hypot(ex-x,ey-y)>USHI_RULES['range']:raise ValueError('Alvo fora do alcance')
-            damage=max(1,math.floor(float(attack)*skill['damage_multiplier']-armor*(1-USHI_RULES['penetration'])*.30))
-            effect={'type':'ivory_whip','target_id':target['id'],'damage':damage,'knockback':USHI_RULES['knockback'],'penetration':USHI_RULES['penetration'],'impact_at':USHI_RULES['impactAt']}
+            penetration=min(.6,USHI_RULES['penetration']+passive_stats(USHI_ID).get('armor_penetration',0))
+            damage=max(1,math.floor(float(attack)*skill['damage_multiplier']-armor*(1-penetration)*.30))
+            effect={'type':'ivory_whip','target_id':target['id'],'damage':damage,'knockback':USHI_RULES['knockback'],'penetration':penetration,'impact_at':USHI_RULES['impactAt']}
         else:
             effect={'type':'wild_fury','duration':5,'expires_at':now+5,'mitigation':USHI_RULES['mitigation'],'basic_bonus':USHI_RULES['basicBonus']}
         with self.db:
@@ -437,6 +449,7 @@ class AkumaStore:
         now = self.clock()
         if state["cooldowns"].get(NEKO_ID+":"+skill["key"], 0) > now:
             raise ValueError("Habilidade em recarga")
+        if crit_multiplier is None:crit_multiplier=1.65+passive_stats(NEKO_ID).get('crit_damage',0)
         if skill["key"] == "1":
             critical = self.neko_backstab(dx, dy, target.get("facing", "south"))
             effect = {"type": "ferocious_pounce", "target_id": target["id"], "direction": [dx/distance, dy/distance], "distance": min(reach+NEKO_RULES["dashBeyond"], distance+NEKO_RULES["dashBeyond"]), "damage_multiplier": skill["damage_multiplier"], "critical": critical, "damage": self.neko_damage(float(attack), armor, skill["damage_multiplier"], critical, float(crit_multiplier))}

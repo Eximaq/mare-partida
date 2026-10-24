@@ -16,7 +16,7 @@
   function buffActive({equipped,transformed,hp,until},now=Date.now()){return equipped===rules.id&&transformed&&hp>0&&until>now;}
   const basicMultiplier=active=>active?1+rules.basicBonus:1;
   const receive=(amount,active)=>active?amount*(1-rules.mitigation):amount;
-  const damage=(attack,armor)=>Math.max(1,Math.floor(attack*rules.skills[0].damage_multiplier-armor*(1-rules.penetration)*.30));
+  const damage=(attack,armor,penetration=0)=>Math.max(1,Math.floor(attack*rules.skills[0].damage_multiplier-armor*(1-Math.min(.6,rules.penetration+penetration))*.30));
   const frontal=(hero,target,direction)=>((target.x-hero.x)*direction[0]+(target.y-hero.y)*direction[1])>=-1e-9;
   function knockback(hero,mob,clear){
     const dx=mob.x-hero.x,dy=mob.y-hero.y,length=Math.hypot(dx,dy),start={x:mob.x,y:mob.y};if(length<.001)return start;

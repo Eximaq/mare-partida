@@ -31,7 +31,7 @@ const bridge=`  window.__doruQA={paused:false,enterHunt,returnLobby,useFruitSkil
    Object.assign(q.world.hero,origin);q.center();window.doruVector=v;window.doruOrigin=origin;
    const mob=(id,d,side=0)=>({id,type:'helmeppo',alive:true,hp:10000,maxHP:10000,defense:20,level:8,area:q.game.area,x:origin.x+v.dx*d-v.dy*side,y:origin.y+v.dy*d+v.dx*side,anchorX:origin.x,anchorY:origin.y,attack:0,attackClock:999,patrolClock:999,bob:0,speed:100,aggro:300,reach:30,emberFacing:'south'});
    q.world.mobs=[mob('selected',200),mob('interceptor',96),mob('splash',112,32),mob('outside',180,70)];q.world.target=q.world.mobs[0];
-   return {attack:__mareDiagnostics().stats.attack,def:q.game.equipment.akuma_no_mi.def,form:q.game.zoanTransformed};
+   return {attack:__mareDiagnostics().stats.attack+__mareDiagnostics().stats.fruitSpecialAttack,def:q.game.equipment.akuma_no_mi.def,form:q.game.zoanTransformed};
   });assert.equal(setup.def,78);assert.equal(setup.form,false);
   const flight=await page.evaluate(async()=>{const q=__doruQA,ok=await q.useFruitSkill(true,'1');q.step(.1);return {ok,phase:q.session.doruProjectiles[0].phase,distance:q.session.doruProjectiles[0].travel,hp:q.world.mobs.map(m=>m.hp),energy:q.game.energy};});
   assert.equal(flight.ok,true);assert.equal(flight.phase,'flight');assert.equal(flight.distance,48);assert.deepEqual(flight.hp,[10000,10000,10000,10000]);assert.equal(flight.energy,176);
