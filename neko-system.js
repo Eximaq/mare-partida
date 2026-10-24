@@ -40,6 +40,7 @@
   ],
   "description": "Fruta do Diabo do tipo Zoan que concede ao usuário a agilidade, os reflexos e a ferocidade de um leopardo predador. Ao ser ativada, transforma a forma física do usuário, aumentando drasticamente sua capacidade de caça, avanço rápido e execução de ataques críticos letais."
 };
+  const visuals=Object.freeze({worldScale:2,furyScale:1,labelLift:48});
   const clips={
   "idle": {
     "south": {
@@ -490,7 +491,7 @@
     c.save();c.imageSmoothingEnabled=false;c.drawImage(im,frame*clip.size,0,clip.size,clip.size,Math.round(x-clip.size*scale/2),Math.round(y-clip.feet[frame]*scale),Math.round(clip.size*scale),Math.round(clip.size*scale));c.restore();return true;
   }
   function vfxFrame(elapsed){if(elapsed<0||elapsed>=rules.comboDuration)return null;let t=Math.min(elapsed,vfx.duration-1);for(const frame of vfx.frames){if(t<frame.duration)return frame;t-=frame.duration;}return null;}
-  function drawSlash(c,x,y,elapsed,scale=2){const frame=vfxFrame(elapsed),im=image(vfx.image);if(!frame||!im.complete||!im.naturalWidth)return false;c.save();c.imageSmoothingEnabled=false;if(elapsed>vfx.duration)c.globalAlpha*=Math.max(0,1-(elapsed-vfx.duration)/rules.comboFade);c.drawImage(im,frame.x,frame.y,frame.w,frame.h,Math.round(x-vfx.anchor.x*scale),Math.round(y-vfx.anchor.y*scale),frame.w*scale,frame.h*scale);c.restore();return true;}
-  root.MareNeko={rules,clips,vfx,backstab,segmentHit,dueHits,preload,status,drawActor,vfxFrame,drawSlash};
+  function drawSlash(c,x,y,elapsed,scale=visuals.furyScale){const frame=vfxFrame(elapsed),im=image(vfx.image);if(!frame||!im.complete||!im.naturalWidth)return false;c.save();c.imageSmoothingEnabled=false;if(elapsed>vfx.duration)c.globalAlpha*=Math.max(0,1-(elapsed-vfx.duration)/rules.comboFade);c.drawImage(im,frame.x,frame.y,frame.w,frame.h,Math.round(x-vfx.anchor.x*scale),Math.round(y-vfx.anchor.y*scale),frame.w*scale,frame.h*scale);c.restore();return true;}
+  root.MareNeko={rules,visuals,clips,vfx,backstab,segmentHit,dueHits,preload,status,drawActor,vfxFrame,drawSlash};
   if(typeof module!=='undefined')module.exports=root.MareNeko;
 })(globalThis);

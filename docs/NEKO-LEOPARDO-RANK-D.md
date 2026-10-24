@@ -42,6 +42,12 @@ Foram importados 96 frames existentes do PixelLab nas quatro direções do jogo:
 
 A Retaliação Metálica da Supa agora é desenhada em `drawTalentedHero`, antes do sprite do personagem. O desenho posterior do escudo foi removido, mantendo a Spiral Ward atrás do jogador e respeitando a camada de objetos do mapa.
 
+### Escalas de exibição
+
+O tamanho aprovado do leopardo no mapa usa escala 2, antes 74/64: referência nominal de 128 px em vez de 74 px, aproximadamente 73% maior. Todas as ações e direções mantêm a ancoragem nos pés. Nome e barra de vida sobem 48 px para acompanhar a altura; retratos e prévias continuam ajustados aos seus espaços.
+
+As garras da Fúria Felina usam escala 1 em vez de 2: largura e altura reduzidas em 50%, de 128 para 64 px por frame. A configuração visual fica em `MareNeko.visuals`. Dano, alcance, colisões, custos e duração permanecem iguais.
+
 ## Backend e validação
 
 O catálogo Python registra a Zoan e suas duas habilidades. O serviço valida transformação, alvo, energia, alcance e recargas; calcula o dano físico, o crítico traseiro e o plano de quatro acertos. Reutiliza a tabela de recargas por habilidade e a persistência Zoan existentes. O impacto real e os quatro acertos são executados no cliente, que possui a simulação do mapa e dos monstros. O backend opcional continua recebendo atributos e posições do cliente, conforme a arquitetura do protótipo; não é combate multiplayer autoritativo.
