@@ -1,0 +1,41 @@
+'use strict';
+const assert=require('node:assert/strict');
+const A=require('../akuma-system.js');
+const fruit=A.byId('akuma_ushi_giraffe');
+assert.ok(fruit,'Giraffe must be registered in the playable catalog');
+const U=require('../ushi-system.js');
+assert.equal(fruit.rank,'D');assert.equal(A.isZoan(fruit),true);
+assert.equal(A.slotsForRank({akumaCompendium:[fruit.id]},'D')[2].fruit.id,fruit.id);
+assert.deepEqual(A.activeSkills(fruit.id).map(s=>[s.key,s.cost,s.cooldown]),[['1',26,12],['2',30,22]]);
+assert.equal(U.damage(100,100),159,'180 attack minus 30% of the remaining 70 armor');
+assert.equal(U.basicMultiplier(true),1.25);assert.equal(U.basicMultiplier(false),1);
+assert.equal(U.receive(100,true),60);assert.equal(U.receive(100,false),100);
+assert.equal(U.buffActive({transformed:true,equipped:fruit.id,hp:1,until:5000},4999),true);
+assert.equal(U.buffActive({transformed:true,equipped:fruit.id,hp:1,until:5000},5000),false);
+for(const state of [{until:0},{hp:0},{transformed:false},{equipped:'other'}])
+ assert.equal(U.buffActive({transformed:true,equipped:fruit.id,hp:1,until:5000,...state},1000),false);
+assert.deepEqual(U.rules,require('../assets/akuma/ushi/rules.json'));
+const hero={x:0,y:0},mob={x:64,y:0};
+assert.equal(U.frontal(hero,mob,[1,0]),true);
+assert.equal(U.frontal(hero,mob,[-1,0]),false,'a target moving behind the headbutt cannot be hit');
+assert.deepEqual(U.knockback(hero,mob,()=>true),{x:128,y:0});
+assert.deepEqual(U.knockback(hero,mob,(from,to)=>to.x<100),mob,'no partial displacement into obstacles');
+assert.deepEqual(U.knockback(hero,mob,(from,to)=>!(to.x>=88&&to.x<=96)),mob,'check entire segment, not only destination');
+assert.deepEqual(U.knockback(hero,hero,()=>true),hero,'overlapping centers do not produce NaN');
+assert.equal(U.vfxFrame(0),U.vfx.frames[0]);assert.equal(U.vfxFrame(83),U.vfx.frames[1]);
+assert.equal(U.vfxFrame(664),U.vfx.frames[0]);
+const source=require('../assets/akuma/ushi/effect.json');
+assert.deepEqual(U.vfx.frames,source.frames.map(f=>({...f.frame,duration:f.duration})));
+const calls=[],previousImage=global.Image;
+global.Image=class {complete=true;naturalWidth=1024;addEventListener(){}};
+const canvas={save(){},restore(){},drawImage(...args){calls.push(args);}};
+for(const [action,dirs] of Object.entries(U.clips))for(const [direction,clip] of Object.entries(dirs))for(let frame=0;frame<clip.frames;frame++){
+ calls.length=0;assert.equal(U.drawActor(canvas,100,300,{action,direction,time:frame/clip.fps+.00001,scale:U.visuals.worldScale}),true);
+ assert.equal(calls[0][1],frame*96,'every original frame is selected at its native cadence');
+ assert.equal(calls[0][7],168,'112px nominal scale on 96px padded frames');
+ assert.ok(Math.abs(calls[0][6]+clip.feet[frame]*1.75-300)<=.5,'feet stay anchored');
+}
+calls.length=0;U.drawBuff(canvas,100,300,83);
+assert.deepEqual(calls[0].slice(1,5),[35,0,35,61]);assert.deepEqual(calls[0].slice(5),[64,186,70,122]);
+if(previousImage===undefined)delete global.Image;else global.Image=previousImage;
+console.log('Ushi: Rank D, skill costs/cooldowns, penetration, buff expiry, basic-only bonus, complete knockback segment and JSON loop passed');

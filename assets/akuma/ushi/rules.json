@@ -1,0 +1,17 @@
+{
+  "id":"akuma_ushi_giraffe",
+  "range":128,
+  "knockback":64,
+  "penetration":0.3,
+  "duration":5000,
+  "mitigation":0.4,
+  "basicBonus":0.25,
+  "attackDuration":0.5833333333333334,
+  "headbuttDuration":0.4166666666666667,
+  "impactAt":0.25,
+  "description":"Fruta do Diabo do tipo Zoan que concede ao usuário a capacidade de se transformar em uma girafa de combate. O formato peculiar de seu corpo concede grande alcance, uma força física brutal capaz de desferir cabeçadas avassaladoras e uma resistência natural extrema para esmagar seus oponentes.",
+  "skills":[
+    {"key":"1","name":"Chicote de Marfim","cost":26,"cooldown":12,"damage_multiplier":1.8,"damage_type":"physical","icon_path":"assets/akuma/ushi/skill-1.png","description":"Cabeçada frontal de 180% do ataque físico, ignorando 30% da defesa do alvo. Empurra 1 tile se o caminho estiver livre."},
+    {"key":"2","name":"Fúria Selvagem","cost":30,"cooldown":22,"icon_path":"assets/akuma/ushi/skill-2.png","description":"Durante 5s, reduz em 40% todo dano recebido e aumenta em 25% o dano dos ataques básicos. O efeito acompanha o corpo."}
+  ]
+}
