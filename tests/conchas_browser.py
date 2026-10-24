@@ -34,7 +34,7 @@ def open_page(browser, seed=None, size=(1366, 768)):
         )
     page = context.new_page()
     page.on("pageerror", lambda error: errors.append(str(error)))
-    page.clock.install(time=1792500000000)
+    page.clock.install(time="2026-10-20T12:00:00Z")
     page.goto(URL)
     page.wait_for_function('typeof __mareDiagnostics==="function"')
     page.wait_for_function(
@@ -48,10 +48,13 @@ def travel(page):
     page.locator("#enterHunt").click()
     page.locator("[data-quick-mode=map]").click()
     page.locator("[data-island=conchas]").click()
-    page.locator("[data-travel-area=swamp]").click()
-    page.clock.run_for(100)
+    # Travel starts auto-hunt. Freeze animation time until the UI has disabled
+    # it, otherwise locator actionability waits move the hero before inspection.
+    page.clock.pause_at(page.evaluate("new Date(Date.now() + 1000).toISOString()"))
+    page.locator("[data-travel-area=swamp]").dispatch_event("click")
     if state(page)["autoPlay"]:
-        page.locator("#autoToggle").click()
+        page.locator("#autoToggle").dispatch_event("click")
+    page.clock.run_for(100)
 
 
 def walk_sector(page, sector_id):
@@ -63,6 +66,7 @@ def walk_sector(page, sector_id):
     distance = ((current["hero"]["x"] - target["x"]) ** 2 + (current["hero"]["y"] - target["y"]) ** 2) ** 0.5
     if distance < 120:
         assert current["walkable"]
+        page.locator("#closePanel").click()
         return
     page.locator(f"[data-hunt-sector={sector_id}]").click()
     for _ in range(320):
@@ -101,7 +105,17 @@ with sync_playwright() as playwright:
         travel(page)
         current = state(page)
         assert current["map"] == {"id": "conchas", "width": 4480, "height": 3456}
-        assert ((current["hero"]["x"] - 2144) ** 2 + (current["hero"]["y"] - 2720) ** 2) ** 0.5 < 24
+        # Source cells include the PixelLab origin offset. Check the declared
+        # entry and its southern sector, then the actual hero position.
+        entry = page.evaluate("""() => ({
+            cell: MarePixelWorldMaps.conchas.spawnCell,
+            spawn: MareWorld.maps.conchas.spawn,
+            south: MarePixelWorldMaps.conchas.districts.find(d => d.id === 'areia-sul')
+        })""")
+        assert entry["cell"] == [11, 24], entry
+        spawn = entry["spawn"]
+        assert (spawn["x"], spawn["y"]) == (entry["south"]["x"], entry["south"]["y"]), entry
+        assert ((current["hero"]["x"] - spawn["x"]) ** 2 + (current["hero"]["y"] - spawn["y"]) ** 2) ** 0.5 < 24, (current["hero"], entry)
         assert current["walkable"] and current["alive"] > 0
         assert all(mob["type"] == "helmeppo" and mob["level"] == 8 for mob in current["mobs"]), current["mobs"]
         assert current["hunt"]["bossReady"] is False

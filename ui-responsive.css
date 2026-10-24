@@ -51,3 +51,27 @@
   .chat-open .chat-corner-toggle{bottom:calc(var(--rpg-safe-bottom) + var(--rpg-action-height) + 208px)}
 }
 @media(prefers-reduced-motion:reduce){.haki-quick button.is-active{animation:none}.voyage-ocean,.voyage-water,.voyage-ship{animation:none}.profile-resource .mini-meter i{transition:none}}
+
+/* UI foundation 2.1: touch ergonomics while preserving action bar and sprite slots. */
+@media(pointer:coarse){
+  #panelOverlay .dialog-body button.ui-button,
+  .creation-dialog button.ui-button,
+  .ui-window-body button.ui-button,
+  .confirmation-card button,
+  .dialog-header .close-button,
+  .ui-window-header .ui-close{
+    min-height:var(--rpg-touch-target);
+  }
+  .dialog-header .close-button,.ui-window-header .ui-close{min-width:var(--rpg-touch-target)}
+}
+@media(max-width:760px){
+  /* Landscape phone cutouts: modal content must stay inside all four safe edges. */
+  .overlay,.confirmation-overlay{
+    padding-left:max(8px,env(safe-area-inset-left,0px));
+    padding-right:max(8px,env(safe-area-inset-right,0px));
+    padding-top:max(8px,var(--rpg-safe-top));
+    padding-bottom:max(8px,var(--rpg-safe-bottom));
+  }
+  .overlay>.dialog,.overlay>.creation-dialog{max-height:100%}
+  #panelOverlay.inventory-mode .dialog{height:100%;max-height:100%}
+}
