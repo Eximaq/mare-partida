@@ -1,0 +1,39 @@
+{
+  "id": "akuma_neko_leopard",
+  "dashRange": 256,
+  "dashSpeed": 900,
+  "dashBeyond": 48,
+  "hitRadius": 24,
+  "comboRange": 96,
+  "comboTimes": [
+    0,
+    166,
+    332,
+    498
+  ],
+  "comboDuration": 897,
+  "comboFade": 150,
+  "skills": [
+    {
+      "key": "1",
+      "name": "Bote Feroz",
+      "cooldown": 12,
+      "cost": 25,
+      "damage_multiplier": 1.45,
+      "damage_type": "physical",
+      "icon_path": "assets/akuma/neko/skill-1.png",
+      "description": "Avança até 4 tiles através do alvo, causando 145% de dano físico. Acertar pelas costas garante crítico com o multiplicador ativo."
+    },
+    {
+      "key": "2",
+      "name": "Fúria Felina",
+      "cooldown": 16,
+      "cost": 32,
+      "damage_multiplier": 0.8,
+      "damage_type": "physical",
+      "icon_path": "assets/akuma/neko/skill-2.png",
+      "description": "Executa quatro golpes de 80% de dano físico somente no alvo selecionado. Trava o movimento durante o combo e o desaparecimento do efeito."
+    }
+  ],
+  "description": "Fruta do Diabo do tipo Zoan que concede ao usuário a agilidade, os reflexos e a ferocidade de um leopardo predador. Ao ser ativada, transforma a forma física do usuário, aumentando drasticamente sua capacidade de caça, avanço rápido e execução de ataques críticos letais."
+}

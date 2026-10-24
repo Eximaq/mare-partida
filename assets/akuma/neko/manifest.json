@@ -1,0 +1,41 @@
+{
+  "origin": "Artes e JSON de item/habilidades fornecidos pelo proprietário; modelo e animações existentes importados do PixelLab, sem geração nova.",
+  "character": {
+    "id": "ebcfd966-8908-4162-a15a-2ff02c13a85b",
+    "name": "Neko Neko no Mi: Leopard",
+    "archive_sha256": "af65fe976c1373987cc2ae9ff656dd9f47d5b19e3113fa9e9a5e1ce1d0386644",
+    "animations": {
+      "attack": "Cross Punch",
+      "dash": "Dash toward the target with a",
+      "walk": "Walking"
+    },
+    "assembly": "Frames centralizados em células de 96×96, sem interpolação, com todos os pixels preservados e pés medidos por frame."
+  },
+  "assets": [
+    {
+      "original": "Neko Neko no Mi.png",
+      "asset": "fruit.png",
+      "sha256": "5e4cd5099223993f9f2834e4464aaa708ad60c554f1be80bc50ce5c34d68a575"
+    },
+    {
+      "original": "Skill 1.png",
+      "asset": "skill-1.png",
+      "sha256": "95485c688e5499d33f273da5d116be14c9f56faadf2539fbf75e68d0eccdbd66"
+    },
+    {
+      "original": "Skill 2.png",
+      "asset": "skill-2.png",
+      "sha256": "46571037e986e059d75bbc6f1f5b8a92baf5e9424b9c748c2bf77a9933c11c55"
+    },
+    {
+      "original": "Slash Tiger.png",
+      "asset": "slash-tiger.png",
+      "sha256": "625372f539620950b2a418a1249578db5479d33c01097dc86b23ad95fbd80c2d"
+    },
+    {
+      "original": "Slash Tiger.json",
+      "asset": "slash-tiger.json",
+      "sha256": "50860e2abbce084f1e5dcae7227fcee5b7dc1cec15a49e308704a4d50997835e"
+    }
+  ]
+}

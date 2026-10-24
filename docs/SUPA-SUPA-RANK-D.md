@@ -14,6 +14,7 @@ Custos e recargas escolhidos com base nas habilidades atuais das classes: a Espi
 - O alcance é circular e inclusivo na borda de 128 px, equivalente a dois tiles de 64 px. A caixa envolvente ocupa cinco tiles em cada eixo; os cantos fora do raio não recebem dano.
 - O dano da Espiral usa o atributo físico derivado e a fórmula física existente: `max(1, floor(físico × 1,3 − defesa efetiva × 0,30))`. Não acrescenta sorteio de crítico. O VFX fica no centro visual do jogador na ativação e não acompanha movimentos posteriores.
 - O escudo segue o personagem e repete todos os doze frames até o prazo real de 5000 ms. Morte, retorno ao porto, troca de mapa e retirada da fruta cancelam a proteção.
+- A Spiral Ward é desenhada atrás do sprite do jogador, que permanece visível à frente da habilidade.
 - A redução se soma às defesas existentes de forma multiplicativa, antes das reações dos talentos. O combate conserva seus arredondamentos normais.
 - A reflexão parte do dano original do golpe, antes de defesa, guarda e redução do escudo. Só atinge o atacante vivo de um golpe físico recebido. Esquiva, aparo, invulnerabilidade, dano mágico e dano direto não geram reflexão. A reflexão usa dano direto ao monstro e não cria ciclos de retaliação.
 - Energia insuficiente, recarga ou ativação duplicada pendente impedem a execução sem consumir energia. A tecla e o botão da HUD seguem as mesmas regras.

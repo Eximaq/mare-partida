@@ -40,7 +40,7 @@ const bridge=`  window.__supaQA={enterHunt,useFruitSkill,takeDamage,get game(){r
       const mob=(id,dx)=>({id,type:'helmeppo',alive:true,hp:1000,maxHP:1000,defense:0,level:8,area:q.game.area,x:p.x+dx,y:p.y,anchorX:p.x+dx,anchorY:p.y,bob:0,attackClock:999,speed:0,patrolClock:999});
       q.world.mobs=[mob('center',0),mob('edge',128),mob('outside',129)];
       const ok=await q.useFruitSkill(true,'1'),spent=q.session.skillEnergySpent,replay=await q.useFruitSkill(true,'1');
-      return {ok,replay,spent,physical:__mareDiagnostics().stats.physical,mobs:q.world.mobs.map(m=>({id:m.id,hp:m.hp})),indices:q.defs.slice(67).map(d=>d.name)};
+      return {ok,replay,spent,physical:__mareDiagnostics().stats.physical,mobs:q.world.mobs.map(m=>({id:m.id,hp:m.hp})),indices:q.defs.slice(67,76).map(d=>d.name)};
     });
     assert.equal(cut.ok,true);assert.equal(cut.replay,false);assert.equal(cut.spent,20);
     assert.equal(cut.mobs[0].hp,1000-Math.floor(cut.physical*1.3));

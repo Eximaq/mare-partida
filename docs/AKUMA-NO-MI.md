@@ -2,6 +2,8 @@
 
 A Supa Supa no Mi, primeira Paramecia Rank D com duas habilidades ativas, está descrita em [Supa Supa Rank D](SUPA-SUPA-RANK-D.md).
 
+A Neko Neko no Mi: Modelo Leopardo, Zoan Carnívora Rank D com transformação, bote traseiro e combo de alvo único, está descrita em [Neko Leopardo Rank D](NEKO-LEOPARDO-RANK-D.md).
+
 As três Zoans Rank E (Albatroz, Uma-Uma e Dachshund) estão descritas em [Lote Zoan Rank E](ZOAN-RANK-E.md).
 
 ## Uso
