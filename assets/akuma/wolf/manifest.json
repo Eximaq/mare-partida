@@ -1,0 +1,35 @@
+{
+  "character_id": "992eb999-b9fa-41d4-9bd4-ec32a142efbf",
+  "source": "Existing PixelLab Wolf export and owner-supplied art; no generation",
+  "zip_sha256": "f9eed55973ba1ec34a3ad7b46569e7a65768986450cba13f4d69c141d74cdf4b",
+  "assets": [
+    {
+      "asset": "fruit.png",
+      "sha256": "f6a57a0c29c424af70b8cf0c5027b37cd7af7cefa91c4c913e7cf838f9d8771d"
+    },
+    {
+      "asset": "skill-1.png",
+      "sha256": "a49099e1c133fb7c4895697050765f857a13be4262579cd8bdf9a671fa06aae8"
+    },
+    {
+      "asset": "skill-2.png",
+      "sha256": "43fcb810be72fdd430a7940a92b6542bca535d748858428d072b4b9061e95591"
+    },
+    {
+      "asset": "firelight-take-2.png",
+      "sha256": "5130cdc9421569b59e279e6ffdfca686d1f3bba5299e34c05f213b1081361c20"
+    },
+    {
+      "asset": "firelight-take-2.json",
+      "sha256": "fb29560c5fd20631e93cee494593577d3c81a1e0c1f3a43887307e8857207516"
+    },
+    {
+      "asset": "firelight-take-4.png",
+      "sha256": "e20876e7d15fa25ba7b3fc2617118c74bb461d6dac36cb95041a6caa408548d3"
+    },
+    {
+      "asset": "firelight-take-4.json",
+      "sha256": "69a3e5563db191ceedbf2e2d6873d1937a83968eb4382f1f80015f5c13a26da9"
+    }
+  ]
+}
