@@ -19,6 +19,15 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 | Akuma no Mi/Zoan | `akuma-system.js`, `zoan-art.js` | `docs/AKUMA-NO-MI.md`, testes de Akuma/Zoan | Persistência, fallback, bônus |
 | Deploy/Pages | `tools/build_pages.py`, `.github/workflows/*.yml` | `docs/COLABORACAO_GITHUB.md` | Commit ≠ deploy bem-sucedido |
 
+## Processo de engenharia para duas IAs (consulta opcional)
+
+- **Depuração, PR complexo, tarefas paralelas ou gastos com arte:** abrir `docs/CODEX-QUALITY-LOOP.md` e aplicar reprodução -> hipótese -> patch mínimo -> regressão.
+- **Se o erro lembra um incidente anterior:** consultar a linha relevante de `docs/CODEX-LESSONS.md` sem ler tudo novamente.
+- **Auditoria periódica de qualidade/custo:** usar os cenários em `docs/CODEX-EVALS.md`, medindo apenas créditos observáveis.
+- **Antes de ler código:** `python3 tools/codex_snapshot.py --area termo --compare origin/main` produz visão curta de branch/arquivos, sem dumps.
+- **Antes do PR:** preencher somente as seções aplicáveis de `.github/pull_request_template.md` e indicar conflitos de branch, testes e custo.
+- Não carregar estes documentos em correções textuais simples; mantê-los pequenos e atualizados a partir de falhas comprovadas.
+
 ## Procedimento rápido de leitura
 ```bash
 git status --short && git log -1 --oneline
