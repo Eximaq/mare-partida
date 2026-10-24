@@ -37,7 +37,7 @@ class RankCService:
   if not free and state['cooldowns'].get(cdkey,0)>now:raise ValueError('Habilidade em recarga')
   cost=0 if free else skill['cost']
   if energy<cost:raise ValueError('Energia insuficiente')
-  if fruit==HORU and key=='1':effect={'type':'hormone_mutation','expires_at':now+30,'duration':30,'scale':2,'bonus':.3}
+  if fruit==HORU and key=='1':effect={'type':'hormone_mutation','expires_at':now+30,'duration':30,'scale':rules['scale'],'bonus':.3}
   elif fruit==HORU:
    actor=ctx.get('self',{});hp=actor.get('hp');maximum=actor.get('maxHP')
    if not all(finite(v) for v in [hp,maximum]) or hp<=0 or maximum<=0 or hp>maximum:raise ValueError('Vida inválida')

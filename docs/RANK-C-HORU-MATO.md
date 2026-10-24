@@ -13,7 +13,7 @@ Horu favorece suporte híbrido e sobrevivência; Mato favorece dano físico e pe
 
 ## Horu-Horu
 
-- Hormônio Masculino: 45 energia, 45s de recarga, duração 30s. +30% ataques físico/especial e defesas física/especial. Sprite 2× ancorado nos pés; colisão permanece igual. Aura de solo 96×24 junto aos pés, atrás do personagem.
+- Hormônio Masculino: 45 energia, 45s de recarga, duração 30s. +30% ataques físico/especial e defesas física/especial. Sprite 1,5× (crescimento reduzido à metade) ancorado nos pés; colisão permanece igual. Aura de solo 110×82, centro 24px acima dos pés e chamas na região dos joelhos, na frente do personagem.
 - Hormônio de Cura: 35 energia, 22s de recarga. Pode ser usada sob controle. Remove controles e debuffs, cura exatamente 20% do HP máximo, concede +25% movimento por 6s. A cura percentual desta habilidade não é ampliada pelo passivo de cura recebida. VFX centralizado no corpo: camada traseira completa e arco frontal limitado abaixo da cabeça, deixando-a na frente para o personagem parecer dentro do efeito; reprodução 3,5× a sequência original.
 - O jogo publicado continua solo. A integração de party usa membros reais fornecidos por MareRankC.setPartyProvider no cliente e RankCService.party_provider no servidor. Filtra PT, instância, vida e área visível; não cria aliados nem implementa sincronização multiplayer. Dados de party enviados pelo cliente não definem membros no servidor.
 

@@ -5,7 +5,7 @@
     "description": "Fruta do Diabo do tipo Paramecia que concede ao usuário a capacidade de injetar e manipular hormônios através das unhas. Permite alterar aspectos físicos do corpo, dobrar a força muscular e a resistência corporal temporariamente, além de purificar toxinas e acelerar a regeneração biológica instantaneamente.",
     "duration": 30000,
     "bonus": 0.3,
-    "scale": 2,
+    "scale": 1.5,
     "heal": 0.2,
     "speedBonus": 0.25,
     "speedDuration": 6000,
@@ -16,7 +16,7 @@
         "name": "Hormônio Masculino",
         "cost": 45,
         "cooldown": 45,
-        "description": "Por 30s, +30% de ataque e defesa físicos/especiais; tamanho visual 2×, sem alterar colisões.",
+        "description": "Por 30s, +30% de ataque e defesa físicos/especiais; tamanho visual 1,5×, sem alterar colisões.",
         "icon_path": "assets/akuma/horu/skill-1.png"
       },
       {
@@ -35,6 +35,11 @@
       "physical_attack": 12,
       "special_attack": 14,
       "healing_received_percent": 0.08
+    },
+    "mutationVfx": {
+      "width": 110,
+      "height": 82,
+      "offsetY": -24
     }
   },
   "mato": {
