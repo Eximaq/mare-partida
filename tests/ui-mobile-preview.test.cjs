@@ -1,0 +1,18 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const path=require('node:path');
+const read=p=>fs.readFileSync(path.join(__dirname,'..',p),'utf8');
+const production=read('index.html');
+const preview=read('ui-preview.html');
+const skin=read('ui-art-direction.css');
+const build=read('tools/build_pages.py');
+const scripts=doc=>[...doc.matchAll(/<script\b[^>]+src="([^"]+)"/g)].map(m=>m[1]);
+assert.deepEqual(scripts(preview),scripts(production),'preview must execute the same scripts as production');
+assert.doesNotMatch(production,/ui-art-direction\.css/,'production must keep the original theme');
+assert.match(preview,/<link rel="stylesheet" href="ui-art-direction\.css"/);
+assert.match(preview,/helm-portrait-ribbon/);
+assert.match(skin,/\.topbar/);
+assert.match(build,/web_files = \['index\.html', 'ui-preview\.html', 'ui-art-direction\.css'/);
+assert.match(build,/for page in \['index\.html', 'ui-preview\.html'\]:/);
+console.log('Mobile live preview: production entry preserved and static release configured');
