@@ -15,6 +15,7 @@ web_files = ['index.html', 'journal-feed.json', 'ui-tokens.css', 'ui-components.
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
              'forge-ui.js', 'game-tooltips.js', 'player-hub.js', 'hud-telemetry.js', 'hierarchy-system.js', 'hierarchy-ui.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js', 'lobby-map-data.js', 'lobby-world.js',
               'dawn-map-data.js', 'dawn-world.js', 'dawn-renderer.js', 'rare-world.js', 'rare-renderer.js', 'new-islands-data.js', 'new-islands-objects.js', 'new-islands.js', 'monster-catalog.js', 'new-islands-art.js', 'pixellab-world-maps-data.js', 'conchas-pixellab-data.js', 'conchas-structures.js', 'pixellab-world-maps.js', 'world-system.js', 'orange-world.js', 'conchas-world.js', 'conchas-renderer.js', 'terrain-autotile.js', 'orange-terrain.js', 'orange-renderer.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'dev-tools.js', 'hunt-system.js']
+web_files += ['paper-doll-look.js', 'paper-doll-coverage.js', 'paper-doll-look.css']
 for f in web_files:
     if not (ROOT / f).is_file():
         raise SystemExit(f'Arquivo necessário ausente: {f}')
@@ -68,6 +69,7 @@ inspector_html = (inspector/'index.html').read_text(encoding='utf-8')
 (inspector/'index.html').write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_inspector, inspector_html), encoding='utf-8')
 (OUT/'docs').mkdir(exist_ok=True)
 shutil.copy2(ROOT/'docs/PAPER-DOLL.md', OUT/'docs/PAPER-DOLL.md')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-CONCLUSAO.md', OUT/'docs/PAPER-DOLL-CONCLUSAO.md')
 # Explicit review-page allowlist; do not distribute the generation archive or Python tools.
 pilot_relative = Path('pixellab-pip-generations/paper-doll-human-pilot-20261020')
 pilot_files = ['preview.html', 'static-look.json', 'manifest.json', 'human-static-pilot.blueprint.json',

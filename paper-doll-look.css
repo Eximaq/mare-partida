@@ -1,0 +1,13 @@
+.doll-dressing {color:#edddbd;max-width:900px;margin:auto;}
+.doll-dressing h2 {font-family:Georgia,serif;color:#f4d590;}
+.doll-dressing-grid {display:grid;grid-template-columns:minmax(220px,1fr) minmax(240px,1fr);gap:20px;}
+.doll-dressing figure {margin:0;padding:16px;border:2px solid #8b6438;background:#30241c;box-shadow:inset 0 0 0 3px #493423;}
+.doll-dressing canvas {display:block;width:252px;max-width:100%;height:auto;margin:auto;image-rendering:pixelated;}
+.doll-dressing figcaption {min-height:3em;margin:8px 0;font-size:13px;}
+.doll-dressing label {display:grid;gap:6px;margin:12px 0;}
+.doll-dressing select {width:100%;min-height:44px;background:#35271b;color:#f4e5c4;border:1px solid #ad8550;padding:8px;}
+.doll-dressing-controls {padding:16px;border:1px solid #987044;background:#3d2c20;}
+.doll-dressing p {line-height:1.5;}
+.doll-dressing-actions {display:flex;gap:10px;flex-wrap:wrap;}
+.doll-dressing-actions button {min-height:44px;}
+@media(max-width:600px){.doll-dressing-grid {grid-template-columns:1fr;}.doll-dressing figure {padding:10px;}}

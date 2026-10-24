@@ -38,3 +38,13 @@ A bancada agora oferece **Testar no laboratório DEV**, que abre `?dev=1&paperDo
 O controle de equipamento da bancada foi habilitado com essas mesmas associações. Nenhum PNG foi alterado ou gerado nesta etapa. O botão **Desativar prévia visual** mantém o laboratório com os sprites existentes; **Voltar ao jogo normal** remove os parâmetros DEV e Paper Doll.
 
 Validação desta continuação: dez suítes Node Paper Doll, suíte DEV e build estático. O teste `tests/paper_doll_dev_browser.py` verifica o caminho jogável sem injeção de renderer: equipamento/remoção pelo inventário real, combate, fallback de classe, falha de manifesto, celular e preservação do save normal.
+
+## Corpo compartilhado em locomoção (continuação de 23/10)
+
+No laboratório, as sete classes e quatro facções agora reutilizam as mesmas camadas de corpo, cabelo e roupa em Idle/Walk **quando a arma está removida**. O compositor omite a camada da espada; não cria frames nem modifica imagens. A remoção da arma passa a mostrar mãos vazias, inclusive no Espadachim. Essa regra substitui o retorno à espada padrão descrito no ensaio anterior.
+
+Para testar: abrir o laboratório com `?dev=1&paperDollReview=navy-starter`, trocar a classe no DEV, abrir Inventário e remover a arma. Andar em quatro direções. A troca de classe equipa sua arma inicial automaticamente, portanto é necessário removê-la novamente para avaliar o corpo comum.
+
+Equipar a espada inicial no Espadachim mantém o ataque modular já disponível. Armas de outras categorias e roupas sem camadas compatíveis continuam com fallback integral. Ataques sem arma também usam fallback: não mostramos um golpe de espada com mãos vazias. Zoan, habilidades, saves normais e regras de combate permanecem intocados.
+
+Validação: dez suítes Node Paper Doll; comparação de pixels de Idle/Walk nas quatro direções para 28 combinações; troca/remoção real de equipamento e movimentação das sete classes em Chromium, combate, celular, cache e isolamento de save. Sem chamadas PixelLab, sem consumo de gerações e sem aprovação global da arte. Próxima pendência artística: ataques modulares compartilhados por categoria além da espada e suas armas compatíveis.
