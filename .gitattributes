@@ -14,3 +14,5 @@ assets/akuma/supa/*.json -text
 
 assets/akuma/neko/*.json -text
 assets/akuma/ushi/*.json -text
+
+assets/akuma/doru/*.json -text
