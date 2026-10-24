@@ -17,6 +17,10 @@ jobs:
       - name: Validar sintaxe
         run: |
           for file in *.js; do node --check "$file"; done
+      - name: Validar utilitario de contexto Codex
+        run: |
+          python3 -m py_compile tools/codex_snapshot.py
+          python3 tools/codex_snapshot.py --area game --compare HEAD > /dev/null
       - name: Regressao de jogo
         run: |
           for file in tests/*.test.cjs; do
