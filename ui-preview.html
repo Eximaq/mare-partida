@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#071b25" />
+  <meta name="description" content="Maré Partida: um RPG Idle 2D de fantasia náutica, feito para o navegador." />
+  <title>PRÉVIA — Cabine do Navegante | Maré Partida</title>
+  <link rel="stylesheet" href="ui-tokens.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="ui-nautical.css" />
+  <link rel="stylesheet" href="audio-system.css" />
+  <link rel="stylesheet" href="character-menu.css" />
+  <link rel="stylesheet" href="modes-menu.css" />
+  <link rel="stylesheet" href="inventory-compact.css" />
+  <link rel="stylesheet" href="ui-components.css" />
+  <link rel="stylesheet" href="ui-hud.css" />
+  <link rel="stylesheet" href="hud-zoom-expedition.css" />
+  <link rel="stylesheet" href="ui-screens.css" />
+  <link rel="stylesheet" href="ui-responsive.css" />
+  <link rel="stylesheet" href="game-tooltips.css" />
+  <link rel="stylesheet" href="player-hub.css" />
+  <link rel="stylesheet" href="hierarchy.css" />
+  <link rel="stylesheet" href="ui-art-direction.css" />
+  <script defer src="ui-system.js"></script>
+  <script defer src="island-world.js"></script>
+  <script defer src="lobby-map-data.js"></script>
+  <script defer src="lobby-world.js"></script>
+  <script defer src="island-assets.js"></script>
+  <script defer src="ember-world.js"></script>
+  <script defer src="ember-renderer.js"></script>
+  <script defer src="orange-world.js"></script>
+  <script defer src="terrain-autotile.js"></script>
+  <script defer src="orange-terrain.js"></script>
+  <script defer src="orange-renderer.js"></script>
+  <script defer src="conchas-world.js"></script>
+  <script defer src="conchas-renderer.js"></script>
+  <script defer src="dawn-map-data.js"></script>
+  <script defer src="dawn-world.js"></script>
+  <script defer src="dawn-renderer.js"></script>
+  <script defer src="rare-world.js"></script>
+  <script defer src="rare-renderer.js"></script>
+  <script defer src="new-islands-data.js"></script>
+  <script defer src="new-islands-objects.js"></script>
+  <script defer src="new-islands.js"></script>
+  <script defer src="monster-catalog.js"></script>
+  <script defer src="new-islands-art.js"></script>
+  <script defer src="pixellab-world-maps-data.js"></script>
+  <script defer src="conchas-pixellab-data.js"></script>
+  <script defer src="conchas-structures.js"></script>
+  <script defer src="pixellab-world-maps.js"></script>
+  <script defer src="world-system.js"></script>
+  <script defer src="character-system.js"></script>
+  <script defer src="neko-system.js"></script>
+  <script defer src="ushi-rules.js"></script>
+  <script defer src="ushi-art-data.js"></script>
+  <script defer src="ushi-system.js"></script>
+  <script defer src="akuma-system.js"></script>
+  <script defer src="supa-art.js"></script>
+  <script defer src="zoan-art.js"></script>
+  <script defer src="faction-sprites.js"></script>
+  <script defer src="faction-assets.js"></script>
+  <script defer src="combat-animation.js"></script>
+  <script defer src="combat-registry.js"></script>
+  <script defer src="combat-assets.js"></script>
+  <script defer src="paper-doll.js"></script>
+  <script defer src="paper-doll-assets.js"></script>
+  <script defer src="paper-doll-review.js"></script>
+  <script defer src="forge-system.js"></script>
+  <script defer src="forge-ui.js"></script>
+  <script defer src="prison-system.js"></script>
+  <script defer src="archipelago.js"></script>
+  <script defer src="haki-system.js"></script>
+  <script defer src="haki-ui.js"></script>
+  <script defer src="haki-art.js"></script>
+  <script defer src="achievement-system.js"></script>
+  <script defer src="ultimate-system.js"></script>
+  <script defer src="talent-system.js"></script>
+  <script defer src="talent-combat.js"></script>
+  <script defer src="talent-ui.js"></script>
+  <script defer src="dev-tools.js"></script>
+  <script defer src="hunt-system.js"></script>
+  <script defer src="game-tooltips.js"></script>
+  <script defer src="player-hub.js"></script>
+  <script defer src="hud-telemetry.js"></script>
+  <script defer src="hierarchy-system.js"></script>
+  <script defer src="hierarchy-ui.js"></script>
+  <script defer src="game.js"></script>
+  <script defer src="audio-system.js"></script>
+</head>
+<body>
+  <div class="ambient-noise" aria-hidden="true"></div>
+  <div id="app" class="app-shell">
+    <section id="factionInspection" class="faction-inspection hidden" aria-label="Mostruário dos sprites de facção">
+      <strong>Mostruário das facções</strong><span>Prévia visual · sem aliados de combate</span>
+      <div><button type="button" data-faction-action="idle">Idle</button><button type="button" data-faction-action="walk">Caminhada</button>
+      <select id="factionInspectionDirection" aria-label="Direção dos sprites"><option value="south">Frente</option><option value="north">Costas</option><option value="west">Esquerda</option><option value="east">Direita</option></select>
+      <button type="button" id="closeFactionPreview" aria-label="Fechar mostruário">×</button></div>
+    </section>
+    <header class="topbar" aria-label="Perfil do aventureiro">
+      <div class="helm-portrait-ribbon" aria-hidden="true"><span>✦</span> Diário de bordo <span>✦</span></div>
+      <div class="profile-heading"><canvas id="miniPortrait" width="64" height="64" aria-label="Avatar do personagem"></canvas><div><div class="profile-name-row"><strong id="miniName">Aventureiro</strong><span id="miniLevel">Nv.1</span></div><span id="miniClass">Espadachim</span></div><button type="button" data-hud="status" title="Personagem e atributos (P)" aria-label="Abrir atributos">⌘</button></div>
+      <div id="miniTalentResource" class="profile-resource talent-resource hidden"><span id="miniTalentLabel">Vigor</span><span class="mini-meter"><i id="miniTalentFill"></i></span><b id="miniTalentText"></b></div>
+      <div class="profile-resource"><span>Vida</span><span class="mini-meter"><i id="miniHP"></i></span><b id="miniHPText">100 / 100</b></div>
+      <div class="profile-resource energy"><span>Energia</span><span class="mini-meter energy"><i id="miniEnergy"></i></span><b id="miniEnergyText">70 / 70</b></div>
+      <div id="miniWillpower" class="profile-resource haki-will hidden" role="meter" aria-label="Força de Vontade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span>Vontade</span><span class="mini-meter"><i id="willpowerFill"></i></span><b id="willpowerText">100 / 100</b></div>
+      <div id="hakiQuickCast" class="haki-quick hidden" role="group" aria-label="Atalhos de Haki">
+        <button type="button" data-haki-toggle="armament" aria-label="Haki do Armamento (H)" aria-keyshortcuts="H" aria-pressed="false"><img class="haki-icon" src="assets/haki/armament.png?v=quickcast-20261019" width="32" height="32" alt=""><kbd>H</kbd><span class="haki-quick-state" aria-hidden="true"></span></button>
+        <button type="button" data-haki-toggle="observation" aria-label="Haki da Observação (J)" aria-keyshortcuts="J" aria-pressed="false"><img class="haki-icon" src="assets/haki/observation.png?v=quickcast-20261019" width="32" height="32" alt=""><kbd>J</kbd><span class="haki-quick-state" aria-hidden="true"></span></button>
+        <button type="button" id="hakiKing" aria-label="Haki do Rei (K)" aria-keyshortcuts="K"><img class="haki-icon" src="assets/haki/conqueror.png?v=quickcast-20261019" width="32" height="32" alt=""><kbd>K</kbd><span class="haki-cooldown-sweep" aria-hidden="true"></span><span class="haki-quick-state" aria-hidden="true"></span></button>
+        <span id="hakiQuickStatus" class="haki-quick-caption">Haki pronto</span>
+      </div>
+      <div class="profile-xp"><span>Experiência <b id="miniXPText">0 / 80</b></span><span class="mini-meter xp"><i id="miniXP"></i></span></div>
+      <div class="profile-summary"><div class="profile-power"><span>Poder de combate</span><strong id="miniPower">0</strong></div><div class="profile-wallet"><strong id="miniGold" title="Dobrões">0 ✦</strong><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div></div>
+      <div class="location-heading"><span id="locationName">Porto das Correntes</span><span id="worldClock">DIA 01 · 06:00</span></div>
+    </header>
+
+    <main class="dashboard">
+      <nav class="hud-launcher" aria-label="Janelas rápidas">
+        <button type="button" data-hud="status" aria-expanded="false" title="Personagem (P)">◉ <span>Perfil <kbd>P</kbd></span></button>
+        <button type="button" data-hud="chat" aria-expanded="false" title="Canal (L)">▤ <span>Canal <kbd>L</kbd></span></button>
+        <button type="button" data-hud="expedition" aria-expanded="false" title="Expedição (O)">⌁ <span>Caçada <kbd>O</kbd></span></button>
+      </nav>
+      <aside class="left-panel side-panel" aria-label="Painel flutuante do personagem"><div class="floating-title"><span>◈ PERFIL & ATRIBUTOS</span><button type="button" data-close-window="status" aria-label="Fechar perfil">×</button></div>
+        <section class="hero-card panel-block">
+          <div class="section-heading"><span>SEU AVENTUREIRO</span><span class="ornament">✣</span></div>
+          <div class="hero-overview">
+            <div class="avatar-frame"><canvas id="portrait" width="72" height="72" aria-label="Retrato do personagem"></canvas><div class="avatar-corner"></div></div>
+            <div class="hero-title"><div id="heroFaction" class="faction-label">PIRATA</div><span class="subtitle">NÍVEL <b id="heroLevel">1</b> <span class="class-tag" id="heroClass">ESPADACHIM</span></span><h2 id="heroName">Aventureiro</h2><div class="hero-power">PODER <strong id="heroPower">000</strong></div></div>
+          </div>
+          <button id="changePath" class="identity-quick" type="button" title="Escolher facção e classe">◆ FACÇÃO E CLASSE <span>↗</span></button><div class="meters"><div id="talentResourceHUD" class="talent-resource-meter hidden"><div class="meter-label"><span id="talentResourceLabel">Vigor</span><span id="talentResourceValue"></span></div><div class="meter"><span id="talentResourceFill"></span></div></div><div class="meter-label"><span>VIDA</span><span id="hpText">100 / 100</span></div><div class="meter hp"><span id="hpFill"></span></div><div class="meter-label"><span>ENERGIA</span><span id="energyText">70 / 70</span></div><div class="meter energy"><span id="energyFill"></span></div><div class="meter-label"><span>EXPERIÊNCIA</span><span id="xpText">0 / 80</span></div><div class="meter xp"><span id="xpFill"></span></div></div>
+          <div class="currency-line"><span><span class="small-symbol gold-symbol">✦</span> DOBRÕES</span><strong id="goldAmount">0</strong></div>
+        </section>
+        <section class="panel-block character-stats"><div class="section-heading"><span>ATRIBUTOS</span><button class="text-button" data-panel="character">DETALHES ↗</button></div><div class="stat-grid"><div><span>ATAQUE</span><b id="statAttack">0</b></div><div><span>DEFESA</span><b id="statDefense">0</b></div><div><span>CRÍTICO</span><b id="statCrit">0%</b></div><div><span>VELOCIDADE</span><b id="statSpeed">0.0/s</b></div></div></section>
+        <section class="panel-block journal-block"><div class="section-heading"><span>CANAL DO PORTO</span><span class="micro-light">● SISTEMA LOCAL</span></div><div class="log-scroller" id="gameLog" aria-live="polite"></div><form id="chatForm" class="chat-compose"><input id="chatInput" maxlength="140" placeholder="Escreva uma anotação local..." autocomplete="off" aria-label="Anotação local"/><button type="submit" aria-label="Enviar anotação">➤</button></form></section>
+        <div class="side-footer"><span>✦ PROGRESSO SALVO NESTE NAVEGADOR</span><i id="saveDot"></i></div>
+      </aside>
+
+      <section class="center-panel">
+        <div class="scene-switcher"><span id="factionChip" class="scene-faction-chip">◆ PIRATA</span><button id="navLobby" class="scene-tab active" type="button">⌂ <span>PORTO / LOBBY</span></button><button id="navHunt" class="scene-tab" type="button">◈ <span>MAPA</span></button><span class="scene-info" id="sceneInfo">ÁREA SEGURA · CLIQUE PARA CAMINHAR</span></div><div class="map-top-strip"><div><span class="diamond">◆</span><span id="mapTitle">ENSEADA DAS CONCHAS QUEBRADAS</span></div><div class="danger-rating" id="dangerRating">ZONA INICIAL · NV. 1–12</div></div>
+        <div class="game-frame" id="gameFrame">
+          <canvas id="worldCanvas" width="960" height="570" aria-label="Mundo de Maré Partida"></canvas>
+          <div class="world-vignette"></div>
+          <div class="map-label"><span id="sceneEyebrow">REGIÃO DE CAÇA</span><strong id="overlayArea">COSTA DOS DESTROÇOS</strong></div>
+          <div class="world-side-stats"><span id="combatState"><i class="pulse-dot"></i> CAÇADA AUTOMÁTICA</span><span id="targetHint">PROCURANDO ALVO...</span></div>
+          <div class="boss-banner hidden" id="bossBanner">⚔ UM CHEFE SE APROXIMA</div>
+          <div class="world-hint" id="worldHint">Clique para caminhar · Clique nos NPCs para interagir</div><div class="world-command"><button id="enterHunt" type="button">◈ MODOS DE JOGO</button><button id="returnLobby" type="button" class="hidden">↩ VOLTAR AO PORTO</button><button id="huntRoute" type="button" class="hidden" data-panel="hunt">ROTA & RECOMPENSAS</button></div><div class="npc-tooltip hidden" id="npcTooltip"></div>
+        </div>
+        <nav id="mainMenu" class="bottom-nav" aria-label="Menu principal"><button type="button" data-panel="inventory" aria-label="Inventário" aria-keyshortcuts="I"><img src="icones_menu_pirata/png/48/inventario.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Inventário (I)</span></button><button type="button" data-panel="forge" aria-label="Forja" aria-keyshortcuts="F"><img src="icones_menu_pirata/png/48/forja.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Forja (F)</span></button><div class="character-menu-anchor"><button type="button" id="characterMenuTrigger" data-panel="character" data-character-menu-trigger aria-label="Abrir menu Personagem" aria-keyshortcuts="P" aria-haspopup="menu" aria-expanded="false" aria-controls="characterQuickMenu"><img src="icones_menu_pirata/png/48/personagem.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Personagem (P)</span></button><div id="characterQuickMenu" class="character-quick-menu hidden" role="menu" aria-label="Seções do personagem"><button type="button" role="menuitem" data-character-section="status"><img src="icones_menu_pirata/png/48/personagem.png" alt=""><span>Personagem<small>Status e atributos</small></span></button><button type="button" role="menuitem" data-character-section="talents"><img src="assets/ui/character-menu/talents.png" alt="" draggable="false"><span>Talentos<small>Árvore de habilidades</small></span></button><button type="button" role="menuitem" data-character-section="achievements"><img src="assets/ui/character-menu/achievements.png" alt="" draggable="false"><span>Conquistas<small>Feitos e recompensas</small></span></button><button type="button" role="menuitem" data-character-section="haki"><img src="assets/haki/armament.png" alt=""><span>Haki<small id="characterMenuHakiHint">Requisitos de despertar</small></span></button><button type="button" role="menuitem" data-character-section="akuma"><img src="assets/ui/character-menu/akuma.png" alt="" draggable="false"><span>Akuma no Mi<small>Compêndio de frutas</small></span></button><button type="button" role="menuitem" data-character-section="hierarchy"><img src="assets/ui/hierarchy/pirate-flag.png" alt="" draggable="false"><span>Hierarquia dos Mares<small>Cargos e ranking global</small></span></button></div></div><div class="character-menu-anchor modes-menu-anchor"><button type="button" id="modesMenuTrigger" data-panel="modes" data-modes-menu-trigger aria-label="Abrir menu Modos de Jogo" aria-keyshortcuts="M" aria-haspopup="menu" aria-expanded="false" aria-controls="modesQuickMenu"><img src="icones_menu_pirata/png/48/mapa.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Modos de jogo (M)</span></button><div id="modesQuickMenu" class="character-quick-menu modes-quick-menu hidden" role="menu" aria-label="Modos de Jogo"><button type="button" role="menuitem" data-quick-mode="map"><img src="icones_menu_pirata/png/48/mapa.png" alt=""><span>Mapa do Arquipélago<small>Ilhas e expedições</small></span></button><button type="button" role="menuitem" data-quick-mode="prison"><img src="assets/ui/modes/impel-down.svg" alt=""><span>Impel Down<small>Em breve · 100 andares</small></span></button></div></div><button type="button" data-panel="contracts" aria-label="Contratos" aria-keyshortcuts="C"><img src="icones_menu_pirata/png/48/contratos.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Contratos (C)</span></button><button type="button" data-panel="help" aria-label="Ajuda"><img src="icones_menu_pirata/png/48/ajuda.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Ajuda</span></button><div class="character-menu-anchor captain-menu-anchor"><button type="button" id="captainMenuTrigger" data-panel="captain" data-captain-menu-trigger aria-label="Abrir Central do Navegante" aria-haspopup="menu" aria-expanded="false" aria-controls="captainQuickMenu"><img src="icones_menu_pirata/png/48/configuracoes.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Configurações</span></button><div id="captainQuickMenu" class="character-quick-menu captain-quick-menu hidden" role="menu" aria-label="Central do Navegante"><button type="button" role="menuitem" data-captain-section="journal"><span class="character-section-glyph" aria-hidden="true">▤</span><span>Jornal<small>Eventos e anúncios</small></span></button><button type="button" role="menuitem" data-captain-section="myprofile"><img src="icones_menu_pirata/png/48/personagem.png" alt="" draggable="false"><span>Meu Perfil<small>Estatísticas e progresso</small></span></button><button type="button" role="menuitem" data-captain-section="settings"><img src="icones_menu_pirata/png/48/configuracoes.png" alt="" draggable="false"><span>Configurações<small>Áudio, gráficos e interface</small></span></button></div></div></nav>
+      <div class="action-panel" role="toolbar" aria-label="Habilidades e consumíveis">
+        <button id="devLauncher" data-dev-open type="button" title="Laboratório temporário (F8)" aria-label="Abrir laboratório DEV (F8)">DEV</button>
+          <div class="action-heading"><span>HABILIDADES E COMANDOS</span><span>TECLAS <b>1</b> · <b>2</b> · <b>3</b> · <b>T</b> · <b>Q</b></span></div>
+          <div class="action-row">
+            <button class="skill-button" id="skill1" title="Habilidade 1"><span class="skill-icon skill-teal" id="skill1Icon">✦</span><span class="keycap">1</span><span class="skill-cooldown" id="cooldown1"></span></button>
+            <button class="skill-button" id="skill2" title="Habilidade 2"><span class="skill-icon skill-gold" id="skill2Icon">✺</span><span class="keycap">2</span><span class="skill-cooldown" id="cooldown2"></span></button>
+             <button class="skill-button hidden" id="skill3" title="Habilidade Zoan" aria-keyshortcuts="3"><span class="skill-icon" id="skill3Icon"></span><span class="keycap">3</span><span class="skill-cooldown" id="cooldown3"></span></button>
+             <button class="skill-button zoan-toggle hidden" id="zoanTransform" title="Transformar (T)" aria-keyshortcuts="T" aria-pressed="false"><span class="skill-icon" id="zoanTransformIcon"></span><span class="keycap">T</span></button>
+            <div class="hotbar-divider"></div>
+            <button class="skill-button potion-button" id="usePotion" title="Usar poção (Q)"><span class="skill-icon">♥</span><span class="keycap">Q</span><span class="potion-count" id="potionCount">3</span></button>
+            <button class="shop-potion" id="buyPotion" title="Comprar poção por 35 dobrões">+ POÇÃO <small>35 ✦</small></button>
+            <div class="hotbar-divider"></div>
+            <button id="autoToggle" class="auto-button active"><span class="auto-orb">●</span><span><strong>AUTO-CAÇADA</strong><small id="autoLabel">ATIVADA</small></span><span class="toggle-pill"><i></i></span></button>
+          </div>
+
+        </div>
+      </section>
+
+      <aside class="right-panel side-panel" aria-label="Painel flutuante da expedição"><div class="floating-title"><span>◈ EXPEDIÇÃO & CONTRATOS</span><button type="button" data-close-window="expedition" aria-label="Fechar expedição">×</button></div>
+        <section class="panel-block expedition-card"><div class="section-heading"><span>EXPEDIÇÃO</span><span class="ornament">✣</span></div><div class="expedition-badge"><span class="crossed-blades">⚔</span><div><small>STATUS DA EXPEDIÇÃO</small><strong id="expeditionState">CAÇANDO</strong></div><div class="expedition-since" id="sessionTimer">00:00</div></div><div class="expedition-grid"><div><small>INIMIGOS</small><b id="killsCount">0</b></div><div><small>CHEFES</small><b id="bossCount">0</b></div><div><small>OURO GANHO</small><b id="goldEarned">0</b></div><div><small>DANO TOTAL</small><b id="damageTotal">0</b></div></div></section>
+        <section class="panel-block rates-card"><div class="section-heading"><span>EFICIÊNCIA DE CAÇA</span><span class="micro-light">● AO VIVO</span></div><div class="rate-line"><div><span>EXPERIÊNCIA / H</span><b id="xpPerHour">—</b></div><div class="rate-glyph">↗</div></div><div class="rate-line"><div><span>DOBRÕES / H</span><b id="goldPerHour">—</b></div><div class="rate-glyph">↗</div></div><div class="rate-footnote">Projeção após 20 segundos de atividade.</div></section>
+        <section class="panel-block quest-card"><div class="section-heading"><span>JORNADA E CONTRATOS</span><span class="contract-mark">◈</span></div><div id="questList" class="quest-list"></div></section>
+        <section class="panel-block loot-card"><div class="section-heading"><span>ÚLTIMOS ESPÓLIOS</span><button class="text-button" data-panel="inventory">ABRIR BOLSA ↗</button></div><div id="lootList" class="loot-list"><div class="empty-note">Sua próxima descoberta aparecerá aqui.</div></div></section>
+        <div class="side-footer version-caption">VERSÃO 0.6 · DEMO LOCAL</div>
+      </aside>
+    </main>
+    <button id="chatCornerToggle" class="chat-corner-toggle" type="button" aria-label="Abrir canal local (L)" title="Canal local (L)">▤ <span>Canal</span> <kbd>L</kbd></button>
+    <div id="toastContainer" class="toast-container"></div>
+    <div id="panelOverlay" class="overlay hidden" role="dialog" aria-modal="true" aria-label="Janela de jogo"><div class="dialog"><div class="dialog-header"><div><small>MARÉ PARTIDA · MENU</small><h2 id="dialogTitle">Inventário</h2></div><div id="inventoryHeadMeta" class="inv-header-meta hidden"></div><button id="closePanel" class="close-button" aria-label="Fechar janela">×</button></div><div id="dialogBody" class="dialog-body"></div></div></div>
+    <div id="startOverlay" class="overlay creation-overlay" role="dialog" aria-modal="true" aria-label="Criação de personagem">
+      <div class="creation-dialog">
+        <div class="creation-top">
+          <span class="creation-emblem">✦</span>
+          <div><div class="creation-eyebrow">MARÉ PARTIDA • CRÔNICAS DAS CORRENTES</div><h1>ESCOLHA SEU <em>DESTINO</em></h1><p>Uma origem. Sete caminhos de batalha. Sua história começa aqui.</p></div>
+        </div>
+        <div class="creation-progress"><span id="stepFaction" class="step active"><b>01</b> SUA FACÇÃO</span><span class="progress-rule"></span><span id="stepClass" class="step"><b>02</b> SUA CLASSE</span></div>
+        <div id="factionStep">
+          <div class="creation-section-heading"><div><span>PRIMEIRO PASSO</span><h2>De qual lado dos mares você está?</h2></div><small>A facção muda aparência e bônus iniciais.</small></div>
+          <label class="name-label" for="characterName">NOME DO AVENTUREIRO</label>
+          <input id="characterName" maxlength="18" placeholder="Nome do seu personagem" autocomplete="off" spellcheck="false" />
+          <div class="faction-choices">
+            <button class="faction-choice" data-faction="revolutionary" type="button"><span class="faction-art"><img src="assets/factions/revolucionario/preview.png" alt="Personagem revolucionário em Pixel Art" /></span><span class="faction-details"><strong>EXÉRCITO REVOLUCIONÁRIO</strong><small>Liberdade • mobilidade • precisão</small><em>Velocidade +8% · Crítico +5%</em></span></button>
+            <button class="faction-choice chosen" data-faction="pirate" type="button"><span class="faction-art"><img src="assets/factions/pirata/preview.png" alt="Personagem pirata em Pixel Art" /></span><span class="faction-details"><strong>PIRATA</strong><small>Aventura • ofensiva • espólios</small><em>Ataque +10% · Dobrões +8%</em></span></button>
+            <button class="faction-choice" data-faction="marine" type="button"><span class="faction-art"><img src="assets/factions/marinheiro/preview.png" alt="Personagem marinheiro em Pixel Art" /></span><span class="faction-details"><strong>MARINHEIRO</strong><small>Disciplina • defesa • constância</small><em>HP +8% · Defesa +10%</em></span></button>
+            <button class="faction-choice" data-faction="government" type="button"><span class="faction-art"><img src="assets/factions/governo_mundial/preview.png" alt="Agente do governo em Pixel Art" /></span><span class="faction-details"><strong>GOVERNO MUNDIAL</strong><small>Precisão • técnicas • controle</small><em>Energia +10% · Recarga -8%</em></span></button>
+          </div>
+          <button id="nextToClass" class="primary-button" type="button">CONTINUAR PARA AS CLASSES <span>→</span></button>
+        </div>
+        <div id="classStep" class="hidden">
+          <div class="creation-section-heading"><div><span>SEGUNDO PASSO</span><h2>Como você vai lutar?</h2></div><small>Sua classe define habilidades, alcance e atributos.</small></div>
+          <div class="class-choices">
+            <button class="class-choice chosen" data-class="sword" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/0.png?v=20261020" alt=""></span><strong>ESPADACHIM</strong><small>Cortes rápidos e golpes letais.</small><em>Corpo a corpo · dano</em><span class="birth-stats">FOR 15 · DES 14 · VIT 9 · INT 6 · ESP 6<small>50 pontos de nascimento</small></span></button>
+            <button class="class-choice" data-class="brawler" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/2.png?v=20261020" alt=""></span><strong>LUTADOR / PUGILISTA</strong><small>Combos, defesa e força bruta.</small><em>Corpo a corpo · resistência</em><span class="birth-stats">FOR 14 · DES 9 · VIT 13 · INT 5 · ESP 9<small>50 pontos de nascimento</small></span></button>
+            <button class="class-choice" data-class="gunner" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/4.png?v=20261020" alt=""></span><strong>ATIRADOR / FRANCO-ATIRADOR</strong><small>Precisão e munições especiais.</small><em>Longa distância · crítico</em><span class="birth-stats">FOR 9 · DES 15 · VIT 8 · INT 10 · ESP 8<small>50 pontos de nascimento</small></span></button>
+            <button class="class-choice" data-class="rogue" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/12.png?v=20261020" alt=""></span><strong>GATUNO / ACROBATA</strong><small>Esquiva, furtividade e agilidade.</small><em>Velocidade · crítico</em><span class="birth-stats">FOR 10 · DES 16 · VIT 9 · INT 7 · ESP 8<small>50 pontos de nascimento</small></span></button>
+            <button class="class-choice" data-class="cyborg" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/14.png?v=20261020" alt=""></span><strong>CIBORGUE / ENGENHEIRO</strong><small>Vitalidade, blindagem e provocação.</small><em>Tanque · VIT / FOR</em><span class="birth-stats">FOR 11 · DES 6 · VIT 17 · INT 8 · ESP 8<small>50 pontos de nascimento</small></span></button>
+            <button class="class-choice" data-class="strategist" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/16.png?v=20261020" alt=""></span><strong>ESTRATEGISTA ELEMENTAL / MAGO</strong><small>Fogo e tempestades de eletricidade.</small><em>Dano elemental · INT / ESP</em><span class="birth-stats">FOR 5 · DES 8 · VIT 8 · INT 17 · ESP 12<small>50 pontos de nascimento</small></span></button>
+            <button class="class-choice" data-class="healer" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/31.png?v=20261020" alt=""></span><strong>SUPORTE / CURANDEIRO</strong><small>Cura, proteção e ataques de água.</small><em>Suporte · ESP / INT</em><span class="birth-stats">FOR 5 · DES 8 · VIT 10 · INT 12 · ESP 15<small>50 pontos de nascimento</small></span></button>
+          </div>
+          <div class="creation-actions"><button id="backToFaction" type="button" class="secondary-button">← VOLTAR</button><button id="createCharacter" type="button" class="primary-button">COMEÇAR AVENTURA <span>→</span></button></div>
+        </div>
+        <div id="creationError" class="creation-error"></div>
+        <small class="local-only">DEMO OFFLINE · O PROGRESSO É SALVO NO NAVEGADOR</small>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
