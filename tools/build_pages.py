@@ -10,7 +10,7 @@ OUT = ROOT / 'dist'
 if OUT.exists():
     shutil.rmtree(OUT)
 OUT.mkdir(parents=True)
-web_files = ['index.html', 'journal-feed.json', 'ui-tokens.css', 'ui-components.css', 'ui-hud.css', 'hud-zoom-expedition.css', 'ui-screens.css', 'ui-responsive.css', 'ui-system.js', 'game-tooltips.css', 'player-hub.css', 'hierarchy.css', 'styles.css', 'ui-nautical.css', 'audio-system.css', 'character-menu.css', 'modes-menu.css', 'inventory-compact.css',
+web_files = ['index.html', 'ui-preview.html', 'ui-art-direction.css', 'journal-feed.json', 'ui-tokens.css', 'ui-components.css', 'ui-hud.css', 'hud-zoom-expedition.css', 'ui-screens.css', 'ui-responsive.css', 'ui-system.js', 'game-tooltips.css', 'player-hub.css', 'hierarchy.css', 'styles.css', 'ui-nautical.css', 'audio-system.css', 'character-menu.css', 'modes-menu.css', 'inventory-compact.css',
              'character-system.js', 'akuma-system.js', 'neko-system.js', 'supa-art.js', 'zoan-art.js', 'combat-animation.js', 'combat-registry.js', 'combat-assets.js', 'paper-doll.js', 'paper-doll-assets.js', 'paper-doll-review.js',
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
              'forge-ui.js', 'game-tooltips.js', 'player-hub.js', 'hud-telemetry.js', 'hierarchy-system.js', 'hierarchy-ui.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js', 'lobby-map-data.js', 'lobby-world.js',
@@ -31,10 +31,11 @@ def version_asset(match):
     version = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
     return f'{match.group(1)}{relative}?v={version}{match.group(3)}'
 
-entry = OUT / 'index.html'
-html = entry.read_text(encoding='utf-8')
-html = re.sub(r'((?:src|href)=")([^"?]+)(")', version_asset, html)
-entry.write_text(html, encoding='utf-8')
+for page in ['index.html', 'ui-preview.html']:
+    entry = OUT / page
+    html = entry.read_text(encoding='utf-8')
+    html = re.sub(r'((?:src|href)=")([^"?]+)(")', version_asset, html)
+    entry.write_text(html, encoding='utf-8')
 for folder in ['assets', 'icones_menu_pirata']:
     if not (ROOT/folder).is_dir():
         raise SystemExit(f'Pasta necessária ausente: {folder}')
