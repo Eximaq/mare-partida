@@ -71,6 +71,7 @@ class Handler(SimpleHTTPRequestHandler):
             "/api/akuma/corpse": lambda d: STORE.record_corpse(d["player_id"], d["corpse_id"], d["instance"], float(d["x"]), float(d["y"])),
             "/api/akuma/cast": lambda d: STORE.cast(d["player_id"], d["instance"], float(d["x"]), float(d["y"]), d.get("enemies", []), d.get("direction", [0, 1]), d.get("skill_key"), d.get("energy"), d.get("physical_attack"), d.get("target_id"), d.get("crit_multiplier", 1.65)),
             "/api/akuma/damage": lambda d: STORE.receive_damage(d["player_id"], d["original"], d.get("received"), d.get("physical", True), d.get("direct", False), d.get("reflected", False)),
+            "/api/akuma/basic": lambda d: {"damage": STORE.basic_attack(d["player_id"], d["damage"])},
             "/api/akuma/end-protection": lambda d: STORE.end_protection(d["player_id"]),
             "/api/akuma/pickup": lambda d: STORE.pickup_food(d["player_id"], d["food_id"], d["instance"], float(d["x"]), float(d["y"])),
         }

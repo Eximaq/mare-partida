@@ -26,7 +26,7 @@ const bridge=`  window.__nekoQA={paused:false,enterHunt,returnLobby,useFruitSkil
    if(!vector)throw Error('No open test segment near spawn');
    const mob=(id,offset)=>({id,type:'helmeppo',alive:true,hp:10000,maxHP:10000,defense:0,level:8,area:q.game.area,x:hero.x+vector.dx*offset,y:hero.y+vector.dy*offset,anchorX:hero.x,anchorY:hero.y,bob:0,attackClock:999,patrolClock:999,speed:0,emberFacing:vector.facing});
    q.world.mobs=[mob('selected',64),mob('nearby',68)];q.world.target=q.world.mobs[0];window.nekoTestVector=vector;
-   return {physical:__mareDiagnostics().stats.physical,critical:__mareDiagnostics().stats.critMultiplier,hero:{x:hero.x,y:hero.y},indices:q.defs.slice(75).map(d=>d.name)};
+   return {physical:__mareDiagnostics().stats.physical,critical:__mareDiagnostics().stats.critMultiplier,hero:{x:hero.x,y:hero.y},indices:q.defs.slice(75,77).map(d=>d.name)};
   });
   assert.deepEqual(setup.indices,['Supa Supa no Mi','Neko Neko no Mi: Modelo Leopardo']);
   const basic=await page.evaluate(()=>{const q=__nekoQA,ok=q.heroAttack(q.world.target);const anim=q.world.hero.attackAnim;q.world.target.hp=10000;q.step(.501);q.world.hero.attackAnim=0;return {ok,anim};});

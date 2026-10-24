@@ -16,7 +16,7 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 | Haki | `haki-system.js`, `haki-ui.js`, `haki-art.js` | `docs/HAKI.md`, testes de Haki/talentos | Consumo transacional e saves |
 | Talentos/conquistas | `talent-*.js`, `achievement-system.js`, `ultimate-system.js` | `docs/TALENTOS.md`, testes de talentos | Conquistas únicas, respec e resets |
 | Forja/itens | `forge-system.js`, `forge-ui.js`, `game.js` definição de itens | testes de forja/inventário | Índices append-only, pérolas, refinamento |
-| Akuma no Mi/Zoan | `akuma-system.js`, `zoan-art.js`, `neko-system.js`, `server/akuma.py` | `docs/AKUMA-NO-MI.md`, `docs/NEKO-LEOPARDO-RANK-D.md`, testes de Akuma/Zoan e `tests/neko_browser.cjs` | Persistência, fallback, bônus |
+| Akuma no Mi/Zoan | `akuma-system.js`, `zoan-art.js`, `neko-system.js`, `ushi-system.js`, `server/akuma.py` | `docs/AKUMA-NO-MI.md`, `docs/NEKO-LEOPARDO-RANK-D.md`, `docs/USHI-GIRAFA-RANK-D.md`, testes de Akuma/Zoan e `tests/neko_browser.cjs`/`tests/ushi_browser.cjs` | Persistência, fallback, bônus |
 | Deploy/Pages | `tools/build_pages.py`, `.github/workflows/*.yml` | `docs/COLABORACAO_GITHUB.md` | Commit ≠ deploy bem-sucedido |
 
 ## Procedimento rápido de leitura
