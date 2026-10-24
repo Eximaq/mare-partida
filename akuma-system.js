@@ -2,6 +2,9 @@
 /* Akuma no Mi catalog and permanent compendium rules. Entries are append-only. */
 ((root) => {
   if(!root.MareNeko&&typeof module!=='undefined')require('./neko-system.js');
+  if(!root.MareUshi&&typeof module!=='undefined')require('./ushi-system.js');
+  if(!root.MareDoru&&typeof module!=='undefined')require('./doru-system.js');
+  if(!root.MareWolf&&typeof module!=='undefined')require('./wolf-system.js');
   const ranks=Object.freeze(['E','D','C','B','A','S']);
   const slotsPerRank=5;
   // Keep in sync with assets/akuma/supa/rules.json (validated by regression tests).
@@ -19,7 +22,10 @@
     new AkumaNoMiData('akuma_uma_uma','Uma-Uma no Mi','E','assets/akuma/zoan/uma-fruit.png',{move_speed_percent:.15,max_hp_percent:.03},'', 'assets/akuma/zoan/uma-skill-icon.png','',1,1,{family:'zoan',zoan_sprite_sheet:'assets/akuma/zoan/uma-idle-south.png'}),
     new AkumaNoMiData('akuma_inu_dachshund','Inu-Inu no Mi: Dachshund','E','assets/akuma/zoan/inu-fruit.png',{evasion_percent:.10,physical_defense_percent:.03},'', 'assets/akuma/zoan/inu-skill-icon.png','',1,1,{family:'zoan',zoan_sprite_sheet:'assets/akuma/zoan/inu-idle-south.png'}),
     new AkumaNoMiData('akuma_supa_supa','Supa Supa no Mi','D','assets/akuma/supa/fruit.png',{},'','assets/akuma/supa/skill-1.png','',1,1,{family:'paramecia',skills:supaRules.skills}),
-    new AkumaNoMiData('akuma_neko_leopard','Neko Neko no Mi: Modelo Leopardo','D','assets/akuma/neko/fruit.png',{},'','assets/akuma/neko/skill-1.png','',1,1,{family:'zoan',subtype:'Zoan Carnívora',zoan_sprite_sheet:'assets/akuma/neko/preview-south.png',skills:root.MareNeko.rules.skills,description:root.MareNeko.rules.description})
+    new AkumaNoMiData('akuma_neko_leopard','Neko Neko no Mi: Modelo Leopardo','D','assets/akuma/neko/fruit.png',{},'','assets/akuma/neko/skill-1.png','',1,1,{family:'zoan',subtype:'Zoan Carnívora',zoan_sprite_sheet:'assets/akuma/neko/preview-south.png',skills:root.MareNeko.rules.skills,description:root.MareNeko.rules.description}),
+    new AkumaNoMiData('akuma_ushi_giraffe','Ushi-Ushi no Mi: Modelo Girafa','D','assets/akuma/ushi/fruit.png',{},'','assets/akuma/ushi/skill-1.png','',1,1,{family:'zoan',zoan_sprite_sheet:'assets/akuma/ushi/preview-south.png',skills:root.MareUshi.rules.skills,description:root.MareUshi.rules.description}),
+    new AkumaNoMiData('akuma_doru_doru','Doru Doru no Mi','D','assets/akuma/doru/fruit.png',{},'','assets/akuma/doru/skill-1.png','',1,1,{family:'paramecia',skills:root.MareDoru.rules.skills,description:root.MareDoru.rules.description}),
+    new AkumaNoMiData('akuma_inu_wolf','Inu Inu no Mi: Modelo Lobo','D','assets/akuma/wolf/fruit.png',{},'','assets/akuma/wolf/skill-1.png','',1,1,{family:'zoan',subtype:'Zoan Carnívora',zoan_sprite_sheet:'assets/akuma/wolf/preview-south.png',skills:root.MareWolf.rules.skills,description:root.MareWolf.rules.description})
   ]);
   const byId=(id,entries=catalog)=>entries.find(fruit=>fruit.id===id)||null;
   const isZoan=(fruit)=>fruit?.family==='zoan';

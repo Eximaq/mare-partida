@@ -1,0 +1,33 @@
+{
+  "source": "Owner-supplied Doru Doru item, icons and PixelLab VFX exports; no new generation",
+  "assets": [
+    {
+      "asset": "fruit.png",
+      "sha256": "a949f0931ff16d8759437a825be6bed3725d6148ff8b140ccccd9fa12f53ecbe"
+    },
+    {
+      "asset": "skill-1.png",
+      "sha256": "a96673f6aa5d2030b189b668628a502595ff28a99bfc172d67da38c435309230"
+    },
+    {
+      "asset": "skill-2.png",
+      "sha256": "9bd14f5118a36be52181c8db7d2ecd47b28fb9c8915d74ef981e88f38c9ea047"
+    },
+    {
+      "asset": "effect-take-1.png",
+      "sha256": "7be7597a01ab4672c6b02cc28f351ee974de4c230abefe88ffa1d93bace58a0d"
+    },
+    {
+      "asset": "effect-take-1.json",
+      "sha256": "97ea20670e20bfd8634ae0b60376e2fe572e275b5f0e2d75684f19d1d6cbc564"
+    },
+    {
+      "asset": "firelight-take-1.png",
+      "sha256": "97ce75f6d87d9a5e5700ac5ed595da76e4bdc097c90d08872578b1f6f865d171"
+    },
+    {
+      "asset": "firelight-take-1.json",
+      "sha256": "08b3f02eda4692d8a295a8acda488de14a680d534e93e2a0bde41fbf080b33ae"
+    }
+  ]
+}

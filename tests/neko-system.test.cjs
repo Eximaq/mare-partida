@@ -44,8 +44,8 @@ for(const [action,dirs] of Object.entries(N.clips))for(const [direction,clip] of
  assert.ok(clip.feet.every(y=>y>0&&y<=96),action+direction);
 }
 const game=fs.readFileSync(require.resolve('../game.js'),'utf8');
-assert.ok(game.includes("zoan.id==='akuma_neko_leopard'?MareNeko.visuals.worldScale:74/48"));
-assert.ok(game.includes('isNekoForm()?MareNeko.visuals.labelLift:0'));
+assert.ok(game.includes("zoan.id==='akuma_neko_leopard'?MareNeko.visuals.worldScale:isUshiForm()?MareUshi.visuals.worldScale:74/48"));
+assert.ok(game.includes('isNekoForm()?MareNeko.visuals.labelLift:isUshiForm()?MareUshi.visuals.labelLift:isWolfForm()?MareWolf.visuals.labelLift:0'));
 const hero=game.slice(game.indexOf('  function drawTalentedHero('),game.indexOf('  function drawForegroundLayer('));
 assert.ok(hero.indexOf("supaImages.shield")<hero.indexOf('drawPlayerSprite'),'retaliation draws behind the hero');
 assert.ok(!game.slice(game.indexOf('  function drawWorld(')).split('    for(let f of world.fx)')[0].includes('supaImages.shield'),'shield is not redrawn above the hero');

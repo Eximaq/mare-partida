@@ -1,0 +1,16 @@
+{
+  "id":"akuma_inu_wolf",
+  "range":256,
+  "chargeSpeed":320,
+  "chargeTimeout":1.5,
+  "hitRadius":28,
+  "bleedDuration":5,
+  "auraDuration":6000,
+  "attackSpeed":0.3,
+  "lifesteal":0.1,
+  "description":"Fruta do Diabo do tipo Zoan que confere ao usuário os instintos predatórios, a agilidade e a ferocidade de um lobo selvagem. Permite investir em quatro patas contra presas para causar ferimentos profundos de sangramento e liberar uma aura sanguinária que aumenta o ritmo de combate e o roubo de vida.",
+  "skills":[
+    {"key":"1","name":"Fome Incessante","cost":26,"cooldown":14,"damage_multiplier":1,"bleed_multiplier":0.2,"damage_type":"physical","icon_path":"assets/akuma/wolf/skill-1.png","description":"Investe até 4 tiles com direção ajustável por WASD/setas. Causa 100% de dano físico no alvo e mais cinco ticks de sangramento de 20%, um por segundo."},
+    {"key":"2","name":"Aura Sanguinária","cost":30,"cooldown":24,"icon_path":"assets/akuma/wolf/skill-2.png","description":"Durante 6s, aumenta em 30% a velocidade dos ataques básicos e cura 10% de todo dano efetivamente causado. A aura acompanha o personagem por trás do sprite."}
+  ]
+}

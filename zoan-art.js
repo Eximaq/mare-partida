@@ -1,7 +1,7 @@
 'use strict';
 /* PixelLab sheets. Tori uses 64×64 frames; the other Zoans use 48×48. */
 ((root)=>{
-  const names={akuma_tori_albatroz:'tori',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko'};
+  const names={akuma_tori_albatroz:'tori',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko',akuma_ushi_giraffe:'ushi',akuma_inu_wolf:'wolf'};
   const directions={front:'south',back:'north',left:'west',right:'east'};
   // Bottommost opaque pixel in each original Inu frame, measured per direction.
   // The source strips have different transparent margins between idle and walk.
@@ -23,12 +23,16 @@
   }
   function status(fruitId,action='idle',direction='front'){
     if(fruitId==='akuma_neko_leopard')return root.MareNeko.status(action,direction);
+    if(fruitId==='akuma_inu_wolf')return root.MareWolf.status(action,direction);
+    if(fruitId==='akuma_ushi_giraffe')return root.MareUshi.status(action,direction);
     const name=names[fruitId];if(!name)return 'missing';
     const image=asset(name,action,directions[direction]||'south');
     if(!image.complete)return 'loading';return image.naturalWidth>=(name==='tori'?64:48)?'ready':'failed';
   }
-  function draw(c,fruitId,x,y,{action='idle',direction='front',time=0,scale=1}={}){
+  function draw(c,fruitId,x,y,{action='idle',direction='front',time=0,scale=1,duration=.75}={}){
     if(fruitId==='akuma_neko_leopard')return root.MareNeko.drawActor(c,x,y,{action,direction,time,scale});
+    if(fruitId==='akuma_inu_wolf')return root.MareWolf.drawActor(c,x,y,{action,direction,time,scale,duration});
+    if(fruitId==='akuma_ushi_giraffe')return root.MareUshi.drawActor(c,x,y,{action,direction,time,scale});
     const name=names[fruitId];if(!name)return false;
     const frameSize=name==='tori'?64:48;
     const facing=directions[direction]||'south';
