@@ -1,0 +1,244 @@
+{
+  "scope": "layered-gesture-review",
+  "reviewOnly": true,
+  "productionEnabled": false,
+  "full_character_artwork_approved": false,
+  "classId": "brawler",
+  "status": "Three-direction punch study; north rejected, no gloves, not production approved",
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "hair",
+      "outfit"
+    ],
+    "animations": {
+      "attack-unarmed": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "punch-body",
+      "rigId": "human-v1",
+      "slot": "body",
+      "available": true,
+      "approved": false,
+      "animations": {
+        "attack-unarmed": {
+          "kind": "sheet",
+          "url": "body-punch.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 0
+        }
+      }
+    },
+    {
+      "id": "punch-outfit",
+      "rigId": "human-v1",
+      "slot": "outfit",
+      "available": true,
+      "approved": false,
+      "animations": {
+        "attack-unarmed": {
+          "kind": "sheet",
+          "url": "outfit-punch.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 30
+        }
+      }
+    },
+    {
+      "id": "punch-hair",
+      "rigId": "human-v1",
+      "slot": "hair",
+      "available": true,
+      "approved": false,
+      "animations": {
+        "attack-unarmed": {
+          "kind": "rigid-attachment",
+          "url": "hair-south.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 40,
+          "sources": {
+            "south": {
+              "url": "hair-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "west": {
+              "url": "hair-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "east": {
+              "url": "hair-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "west": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "punch-body",
+      "outfit": "punch-outfit",
+      "hair": "punch-hair"
+    }
+  }
+}

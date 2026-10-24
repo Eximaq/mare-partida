@@ -1,0 +1,17 @@
+{
+  "source": "body-west-02.png",
+  "result": "body-west-02-corrected.png",
+  "workbench_image_id": "28ad5461-a2f7-478c-9ec3-f09670a26840",
+  "operation": "patch_pixels",
+  "pixels": 21,
+  "region": [
+    13,
+    20,
+    20,
+    28
+  ],
+  "from": "#818080ff",
+  "to": "#00000000",
+  "body_unchanged": true,
+  "numeric_usage": "not exposed; exact Workbench free for subscribers"
+}

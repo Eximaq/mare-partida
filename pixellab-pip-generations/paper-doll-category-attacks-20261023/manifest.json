@@ -1,0 +1,16 @@
+{
+  "status": "completed; partial layered candidate, not production",
+  "job_id": "bc5da77d-0497-4fe5-8015-00b71abb7119",
+  "asset_id": "586af63c-851f-5ee3-b110-ca87d9011a60",
+  "tool": "MCP animate_with_skeleton_v3",
+  "parameters_file": "punch-east-request.json",
+  "reported_usage": {
+    "generations": 3
+  },
+  "seed": "omitted",
+  "source": "body-east-reference.png",
+  "controls": "Agent-authored 18-joint poses measured on existing east base; controls are not artwork",
+  "approval": "User approved up to 300 generations including corrections",
+  "production_enabled": false,
+  "visual_review": "East stray mark removed in PixelLab Workbench; 24 layered punch poses (south/west/east) ready for inspection, north body rejected. No production approval."
+}

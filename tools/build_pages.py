@@ -15,6 +15,7 @@ web_files = ['index.html', 'ui-preview.html', 'ui-art-direction.css', 'journal-f
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
              'forge-ui.js', 'game-tooltips.js', 'player-hub.js', 'hud-telemetry.js', 'hierarchy-system.js', 'hierarchy-ui.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js', 'lobby-map-data.js', 'lobby-world.js',
               'dawn-map-data.js', 'dawn-world.js', 'dawn-renderer.js', 'rare-world.js', 'rare-renderer.js', 'new-islands-data.js', 'new-islands-objects.js', 'new-islands.js', 'monster-catalog.js', 'new-islands-art.js', 'pixellab-world-maps-data.js', 'conchas-pixellab-data.js', 'conchas-structures.js', 'pixellab-world-maps.js', 'world-system.js', 'orange-world.js', 'conchas-world.js', 'conchas-renderer.js', 'terrain-autotile.js', 'orange-terrain.js', 'orange-renderer.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'dev-tools.js', 'hunt-system.js']
+web_files += ['paper-doll-look.js', 'paper-doll-coverage.js', 'paper-doll-look.css']
 for f in web_files:
     if not (ROOT / f).is_file():
         raise SystemExit(f'Arquivo necessário ausente: {f}')
@@ -69,6 +70,8 @@ inspector_html = (inspector/'index.html').read_text(encoding='utf-8')
 (inspector/'index.html').write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_inspector, inspector_html), encoding='utf-8')
 (OUT/'docs').mkdir(exist_ok=True)
 shutil.copy2(ROOT/'docs/PAPER-DOLL.md', OUT/'docs/PAPER-DOLL.md')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-CONCLUSAO.md', OUT/'docs/PAPER-DOLL-CONCLUSAO.md')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-PUNHOS.md', OUT/'docs/PAPER-DOLL-PUNHOS.md')
 # Explicit review-page allowlist; do not distribute the generation archive or Python tools.
 pilot_relative = Path('pixellab-pip-generations/paper-doll-human-pilot-20261020')
 pilot_files = ['preview.html', 'static-look.json', 'manifest.json', 'human-static-pilot.blueprint.json',
@@ -431,3 +434,9 @@ navy_review = Path('pixellab-pip-generations/paper-doll-navy-starter-20261023')
 for name in ['review-pack.json', 'source-audit.json', 'changes.json', 'navy-starter.blueprint.json', 'weapon-attack.png', 'rigid-weapon.png'] + [f'weapon-{d}.png' for d in ['south', 'north', 'west', 'east']] + [f'{slot}-{action}.png' for slot in ['body', 'hair', 'outfit'] for action in ['idle', 'walk', 'attack']]:
     shutil.copy2(ROOT/navy_review/name, OUT/navy_review/name)
 shutil.copy2(ROOT/'docs/PAPER-DOLL-CONJUNTO-AZUL.md', OUT/'docs/PAPER-DOLL-CONJUNTO-AZUL.md')
+
+# Reviewed punch study only: never expose raw requests, budgets or diagnostic mass.
+punch_review = Path('pixellab-pip-generations/paper-doll-category-attacks-20261023')
+(OUT/punch_review).mkdir(parents=True, exist_ok=True)
+for name in ['review-pack.json', 'body-punch.png', 'outfit-punch.png'] + [f'hair-{d}.png' for d in ['south', 'west', 'east']]:
+    shutil.copy2(ROOT/punch_review/name, OUT/punch_review/name)

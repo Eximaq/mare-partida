@@ -1,0 +1,21 @@
+const assert=require('node:assert/strict');
+const {inspect}=require('../paper-doll-coverage.js');
+const source=require('../pixellab-pip-generations/paper-doll-navy-starter-20261023/review-pack.json');
+const report=inspect(source);
+assert.equal(report.status,'missing-art');assert.equal(report.productionReady,false);
+assert.equal(report.declaredFrames,320);assert.equal(report.missingAnatomyAndClothingFrames,480);
+assert.equal(report.missingFrames,640);
+assert.equal(report.missingWeaponLocomotionFrames,240);
+assert.deepEqual(report.readyByCategory,{sword:true,unarmed:false,firearm:false,daggers:false,tech:false,focus:false});
+const candidate=structuredClone(source);
+candidate.categoryWeapons=Object.fromEntries(['unarmed','firearm','daggers','tech','focus'].map(c=>[c,source.appearance.pieces.weapon]));
+for(const piece of candidate.pieces)for(const action of ['unarmed','firearm','daggers','tech','focus'])piece.animations['attack-'+action]=structuredClone(piece.animations['attack-sword']);
+// Synthetic metadata tests only; never save these aliases as real animation art.
+assert.equal(inspect(candidate).status,'awaiting-art-review');assert.equal(inspect(candidate).productionReady,false);
+candidate.full_character_artwork_approved=true;candidate.pieces.forEach(p=>p.approved=true);
+assert.equal(inspect(candidate).productionReady,false,'production must still be explicit');
+candidate.productionEnabled=true;assert.equal(inspect(candidate).productionReady,true);
+candidate.pieces[0].animations['attack-firearm'].directions=['south'];
+assert.equal(inspect(candidate).productionReady,false,'partial directions must fail closed');
+assert.equal(inspect(null).productionReady,false);
+console.log('Paper Doll coverage: five missing attack categories, 480 body/hair/outfit frames, directional completeness and separate approval/production gates passed.');

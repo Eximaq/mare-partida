@@ -15,6 +15,10 @@ on:
       - 'pixellab-pip-generations/paper-doll-navy-starter-20261023/**'
       - 'tests/paper_doll_navy_starter_browser.py'
       - 'tests/paper_doll_dev_browser.py'
+      - 'tests/paper_doll_look_browser.py'
+      - 'tests/paper_doll_punch_browser.py'
+      - 'pixellab-pip-generations/paper-doll-category-attacks-20261023/**'
+      - 'paper-doll-look.css'
       - 'tests/paper_doll_browser.py'
       - 'tests/paper_doll_partial_browser.py'
       - 'tests/paper_doll_idle_browser.py'
@@ -181,6 +185,8 @@ jobs:
           python tests/paper_doll_hair_continuity_browser.py
           python tests/paper_doll_navy_starter_browser.py
           python tests/paper_doll_dev_browser.py
+          python tests/paper_doll_look_browser.py
+          python tests/paper_doll_punch_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-navy-starter-20261023/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-hair-continuity-20261022/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-basic-sword-20261021/ python tests/paper_doll_world_review_browser.py

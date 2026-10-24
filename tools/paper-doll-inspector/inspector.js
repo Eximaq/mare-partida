@@ -12,7 +12,7 @@
   let importedSource=null,importedFileNames=new Map();
   const player={classId:'sword',factionId:'pirate',equipment:{weapon:{def:0}}};
   function poseAnimationId(action=$('animation').value){return runtime.rig(rigId).animations[action]?action:catalog.animationId(player,action);}
-  const studyScopes={'body-motion-review':['body'],'body-hair-review':['body','hair']};
+  const studyScopes={'body-motion-review':['body'],'body-hair-review':['body','hair'],'layered-gesture-review':['body','hair','outfit']};
   function bodyStudy(){return Object.hasOwn(studyScopes,imported?.scope||'');}
   function hairStudy(){return imported?.scope==='body-hair-review';}
   function selectedClip(){return runtime.rig(rigId).animations[poseAnimationId()];}
@@ -98,13 +98,14 @@
       for(let n=0;n<a.length;n+=4)if(a[n]!==b[n]||a[n+1]!==b[n+1]||a[n+2]!==b[n+2]||a[n+3]!==b[n+3])changed++;
       differences.push({direction,pixels:changed});
       if($('pivots').checked){pivot(original,scale);pivot(result,scale,plan);}
-      board.canvases[1].previousElementSibling.textContent=drawn?(bodyStudy()?(hairStudy()?'Corpo e cabelo · Sem vestuário':'Corpo-base · Sem vestuário'):'Paper Doll · Pacote em inspeção'):'Paper Doll · Fallback';
+      board.canvases[1].previousElementSibling.textContent=drawn?(imported?.scope==='layered-gesture-review'?'Soco · Três camadas':bodyStudy()?(hairStudy()?'Corpo e cabelo · Sem vestuário':'Corpo-base · Sem vestuário'):'Paper Doll · Pacote em inspeção'):'Paper Doll · Fallback';
       const reference=catalog.referenceFor(player,animationId);
       board.note.textContent=reference?.animated===false?reference.note+(drawn?' Pacote modular local em inspeção.':' O pacote modular continua pendente.'):!loaded?'Referência ainda não carregada ou indisponível.':drawn?'Frame '+index+' compartilhado · '+plan.layers.length+' camadas. Diferença: '+changed+' pixels; pode incluir mudanças de aparência.':'Fallback do sprite original · '+plan.missing.length+' pendências · '+changed+' pixels de diferença.';
     }
     const first=plans[0],valid=plans.length>0&&plans.every(p=>p.valid),readyDirections=plans.filter(p=>p.valid).map(p=>p.pose.direction);
     $('status').textContent=valid?'Pacote local sincronizado para inspeção. Aprovação artística e integração não concedidas por esta ferramenta.':'Fallback ativo: faltam camadas modulares compatíveis. O personagem original está preservado.';
     if(valid&&bodyStudy())$('status').textContent=hairStudy()?'Estudo de corpo e cabelo: mesma peça curta nas três ações. Roupa, calçados e arma ainda não incluídos; personagem completo em revisão.':'Estudo só do corpo: movimentos existentes reunidos para conferir anatomia e continuidade. Não inclui roupas, cabelo ou arma; personagem completo ainda não validado.';
+    if(imported?.scope==='layered-gesture-review')$('status').textContent='Soco modular em avaliação: corpo, cabelo e roupa. Direções sem conjunto válido mantêm fallback. Sem luvas ou aprovação de produção.';
     $('status').classList.toggle('valid',valid&&!bodyStudy());
     if(!valid&&readyDirections.length)$('status').textContent='Pacote parcial em inspeção: '+readyDirections.map(d=>names[d]).join(', ')+'. As outras direções usam fallback. Sem aprovação artística.';
     for(const slot of MarePaperDoll.slots){
@@ -116,12 +117,13 @@
     if(!unique.size){const li=document.createElement('li');li.textContent='Nenhuma falha estrutural nesta pose. Ainda requer inspeção artística de todos os frames.';$('missing').append(li);}
     $('readout').replaceChildren();detail('Rig / Célula',rig.id+' · '+rig.frameWidth+'×'+rig.frameHeight);detail('Pivô nativo',rig.pivotX+', '+rig.pivotY);const originalMeta=MareFactionSprites.assets[catalog.referenceFor(player,animationId).assetId].meta;detail('Fonte original',originalMeta.frame_size.join('×')+' · Pivô '+originalMeta.anchor.join(', '));detail('Corpo comum',config.pieces.body);detail('Categoria',catalog.categories[catalog.profile(player).category]);detail('Sequência',clip.frames+' frames · '+clip.fps+' FPS');detail('Peça de arma',config.pieces.weapon);detail('Peça de roupa',config.pieces.outfit);detail('Cache',runtime.stats().cacheEntries+' frames · '+runtime.stats().cacheBytes+' bytes');
     const transforms=first?.layers.map(({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex,kind,socket,quarterTurns})=>({slot,pieceId,animationId,direction,frameIndex,pivotX,pivotY,offsetX,offsetY,zIndex,kind,socket,quarterTurns}));$('transforms').textContent=JSON.stringify(transforms||[],null,2);
+    if(imported?.scope==='layered-gesture-review')$('playbackStatus').textContent='Soco em avaliação com corpo, cabelo e roupa independentes.';
     lastState={mode:valid?(bodyStudy()?(hairStudy()?'hair-study':'body-study'):'draft'):'fallback',artworkValidated:false,referenceReady,appearance:config,profile:catalog.profile(player),reference:catalog.referenceFor(player,animationId),pose:{animationId:poseAnimationId(animationId),frameIndex:index},differences,missing:[...unique.values()],stats:runtime.stats(),hidden:[...hidden]};
     lastState.readyDirections=readyDirections;
     if(!valid&&readyDirections.length)lastState.mode='partial-draft';
     attachmentControls();sheetFitControls();
     const progress=sequenceIndex>=0?'Etapa '+(sequenceIndex+1)+'/4 · '+actionNames[animationId]+' · ':'';
-    $('playbackStatus').textContent=progress+(finished?'Ensaio concluído. ':playing?'Reproduzindo. ':'Pausado. ')+(valid?(bodyStudy()?(hairStudy()?'Corpo e cabelo em avaliação; demais peças pendentes.':'Corpo-base somente; acabamento entre ações ainda em avaliação.'):'Camadas modulares em inspeção.'):'Sprite original por fallback; esta ação ainda não tem conjunto modular completo.');
+    $('playbackStatus').textContent=progress+(finished?'Ensaio concluído. ':playing?'Reproduzindo. ':'Pausado. ')+(valid?(imported?.scope==='layered-gesture-review'?'Soco em avaliação; três camadas independentes.':bodyStudy()?(hairStudy()?'Corpo e cabelo em avaliação; demais peças pendentes.':'Corpo-base somente; acabamento entre ações ainda em avaliação.'):'Camadas modulares em inspeção.'):'Sprite original por fallback; esta ação ainda não tem conjunto modular completo.');
   }
   function pause(){playing=false;$('play').textContent='Reproduzir';$('play').setAttribute('aria-pressed','false');}
   for(const id of ['animation','direction','zoom','pivots'])$(id).addEventListener('change',()=>{if(id==='animation'){$('frame').value=0;elapsed=0;sequenceIndex=-1;finished=false;pause();}render();});
@@ -242,6 +244,8 @@
         candidate.registerPiece(piece);
       }
       if(!data.appearance?.pieces)throw Error('Falta appearance.pieces no manifesto.');
+      if(data.classId!==undefined&&!Object.hasOwn(catalog.classes,data.classId))throw Error('Classe do estudo inválida.');
+      if(data.classId){player.classId=data.classId;player.equipment.weapon=null;$('classId').value=data.classId;buildWeapons();}
       pause();sequenceIndex=-1;finished=false;releaseUrls();objectUrls=urls;runtime=candidate;rigId=data.rig.id;imported={...data.appearance,bindings:data.bindings,scope:data.scope};importedSource=structuredClone(data);importedFileNames=fileUrls;$('classId').disabled=true;$('factionId').disabled=true;$('weapon').disabled=!data.bindings?.weapon;$('outfit').disabled=!data.bindings?.coat;
       const actions=[...$('animation').options].map(o=>o.value),current=$('animation').value;
       if(!data.rig.animations[poseAnimationId(current)])$('animation').value=actions.find(a=>data.rig.animations[poseAnimationId(a)])||current;
@@ -251,7 +255,7 @@
   $('importPack').addEventListener('change',()=>importFiles([...$('importPack').files]));
   async function bundledReview(){
     const key=new URLSearchParams(location.search).get('pack');
-    const packs={'navy-starter':'../../pixellab-pip-generations/paper-doll-navy-starter-20261023/','hair-continuity':'../../pixellab-pip-generations/paper-doll-hair-continuity-20261022/','body-continuity':'../../pixellab-pip-generations/paper-doll-body-continuity-20261022/','bento-east-fit':'../../pixellab-pip-generations/paper-doll-east-fit-20261022/','basic-sword':'../../pixellab-pip-generations/paper-doll-basic-sword-20261021/','walk-profiles':'../../pixellab-pip-generations/paper-doll-walk-profiles-20261021/','walk-north-complete':'../../pixellab-pip-generations/paper-doll-north-finish-20261021/','walk-north':'../../pixellab-pip-generations/paper-doll-walk-north-20261021/','walk-south':'../../pixellab-pip-generations/paper-doll-walk-fit-20261021/','expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
+    const packs={'punch':'../../pixellab-pip-generations/paper-doll-category-attacks-20261023/','punch-east':'../../pixellab-pip-generations/paper-doll-category-attacks-20261023/','navy-starter':'../../pixellab-pip-generations/paper-doll-navy-starter-20261023/','hair-continuity':'../../pixellab-pip-generations/paper-doll-hair-continuity-20261022/','body-continuity':'../../pixellab-pip-generations/paper-doll-body-continuity-20261022/','bento-east-fit':'../../pixellab-pip-generations/paper-doll-east-fit-20261022/','basic-sword':'../../pixellab-pip-generations/paper-doll-basic-sword-20261021/','walk-profiles':'../../pixellab-pip-generations/paper-doll-walk-profiles-20261021/','walk-north-complete':'../../pixellab-pip-generations/paper-doll-north-finish-20261021/','walk-north':'../../pixellab-pip-generations/paper-doll-walk-north-20261021/','walk-south':'../../pixellab-pip-generations/paper-doll-walk-fit-20261021/','expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
     if(!key||!packs[key])return;
     try{
       $('importStatus').textContent='Carregando prévia incluída no projeto…';

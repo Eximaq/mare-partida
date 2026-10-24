@@ -1,0 +1,15 @@
+{
+  "job_id": "a612a56a-3cda-4d5d-9fcb-ac9be6fe61e8",
+  "asset_id": "1ee631df-976a-5d1f-ae1c-894e87534119",
+  "charged_generations": 3,
+  "status": "completed",
+  "direction": "north",
+  "frames": 8,
+  "canvas": [
+    64,
+    64
+  ],
+  "request": "punch-north-request.json",
+  "production_enabled": false,
+  "inspection": "rejected: arm projects over back instead of away from viewer"
+}
