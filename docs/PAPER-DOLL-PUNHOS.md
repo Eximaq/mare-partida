@@ -7,7 +7,7 @@ Atualização de 24/10/2026. Este pacote amplia a bancada; não habilita arte pr
 - 24 poses reais: oito de frente, oito para a esquerda e oito para a direita. Corpo e roupa em folhas separadas; cabelo curto nativo da mesma direção acompanha a cabeça estacionária por encaixes medidos.
 - A bancada aceita a categoria do pacote, selecionando Lutador/`attack-unarmed` automaticamente. A classe não altera a identidade do corpo.
 - Controle individual das camadas, reprodução única, comparação com a referência existente, pivôs e fallback de ações/direções ausentes.
-- Build publica somente manifesto e seis PNGs necessários. Requisições, orçamento e imagens de diagnóstico ficam fora do site.
+- Build publica somente manifesto e cinco PNGs necessários. Requisições, orçamento e imagens de diagnóstico ficam fora do site.
 
 [Abrir bancada de punhos](../tools/paper-doll-inspector/index.html?pack=punch). O conjunto azul e o editor de aparência continuam disponíveis para ensaios DEV isolados.
 

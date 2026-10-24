@@ -71,6 +71,7 @@ inspector_html = (inspector/'index.html').read_text(encoding='utf-8')
 (OUT/'docs').mkdir(exist_ok=True)
 shutil.copy2(ROOT/'docs/PAPER-DOLL.md', OUT/'docs/PAPER-DOLL.md')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-CONCLUSAO.md', OUT/'docs/PAPER-DOLL-CONCLUSAO.md')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-PUNHOS.md', OUT/'docs/PAPER-DOLL-PUNHOS.md')
 # Explicit review-page allowlist; do not distribute the generation archive or Python tools.
 pilot_relative = Path('pixellab-pip-generations/paper-doll-human-pilot-20261020')
 pilot_files = ['preview.html', 'static-look.json', 'manifest.json', 'human-static-pilot.blueprint.json',
