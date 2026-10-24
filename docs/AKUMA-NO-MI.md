@@ -1,5 +1,7 @@
 # Akuma no Mi — Lote 1 Rank E
 
+[Horu-Horu e Mato Mato Rank C: habilidades e passivos](RANK-C-HORU-MATO.md).
+
 [Passivos de equipamento das cinco frutas Rank D](RANK-D-PASSIVES.md).
 
 A Inu Inu no Mi: Modelo Lobo, Zoan Carnívora Rank D com investida, sangramento e aura de roubo de vida, está descrita em [Lobo Rank D](WOLF-RANK-D.md).

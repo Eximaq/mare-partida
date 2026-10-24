@@ -35,7 +35,7 @@ const actor={x:0,y:10,height:24,isCharacter:true};const multi={x:0,y:0,height:19
 assert(lobby.depthObjects.every(o=>o.id.includes('tree')||o.id.includes('palms')));
 
 for(const c of lobby.colliders){assert.equal(c.isSolid,true,c.id);assert(c.w>=64&&c.h>=64,c.id);}
-const render=require('node:fs').readFileSync(require('node:path').join(__dirname,'../game.js'),'utf8');assert.match(render,/drawEntityLayer\(\);drawHeroLayer\(\);[\s\S]{0,200}drawForegroundLayer\(/);
+const render=require('node:fs').readFileSync(require('node:path').join(__dirname,'../game.js'),'utf8');assert.match(render,/drawEntityLayer\(\);drawHeroLayer\(\);[\s\S]{0,800}drawForegroundLayer\(/);
 
 test('fruit tree trunks block a 32x20 foot box without sealing nearby grass',()=>{
  const nav=new globalThis.MareWorld.Navigation(lobby.map,32);

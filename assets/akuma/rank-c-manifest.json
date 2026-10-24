@@ -1,0 +1,58 @@
+[
+  {
+    "asset": "assets/akuma/horu/fruit.png",
+    "sha256": "8f848a4fb643618efbc2ec6cca5411ab8a107c2fbcb4ed47e0fa6514c7174427"
+  },
+  {
+    "asset": "assets/akuma/horu/skill-1.png",
+    "sha256": "45276bf866521c73c795890cf41ba2810a041df14b78209aae82a020211ee058"
+  },
+  {
+    "asset": "assets/akuma/horu/skill-2.png",
+    "sha256": "fd0c7709dfb6b5cbf2dd2f96404e66fa040d2a79f2cd7d17a6feb355a0f3f165"
+  },
+  {
+    "asset": "assets/akuma/horu/firelight-take-6.png",
+    "sha256": "42bfb30a05af716953f648c635d2679cec1188bc53e76a164e1520a8dda73797"
+  },
+  {
+    "asset": "assets/akuma/horu/firelight-take-6.json",
+    "sha256": "6198b6ea2128e36e861080e7650600dfcf48b33da94efbf6812d3e263e298d2e"
+  },
+  {
+    "asset": "assets/akuma/horu/firelight-take-7.png",
+    "sha256": "a3c15204f484010d8b30fbd07c3fcedafafee79ff803f37a7eb4e7ba771158a1"
+  },
+  {
+    "asset": "assets/akuma/horu/firelight-take-7.json",
+    "sha256": "326faa87f4682f03eed7efdfa66f146a8775d88dc4501434f62db88ffd4a277d"
+  },
+  {
+    "asset": "assets/akuma/mato/fruit.png",
+    "sha256": "5c4e7321683883e63b67a9f9aa1dad01df2e8e4ff780d71744c55dc4462fc1d3"
+  },
+  {
+    "asset": "assets/akuma/mato/skill-1.png",
+    "sha256": "d6a07a9ae015b22430bc75b8da3355f583e06a96d91f8170b4464502295de72d"
+  },
+  {
+    "asset": "assets/akuma/mato/skill-2.png",
+    "sha256": "7a9a43ce73051e9508801db58061f913f072d985bc775dcc8360313934d052d8"
+  },
+  {
+    "asset": "assets/akuma/mato/firelight-take-8.png",
+    "sha256": "549516d73557687841207ef112bed9092fb88df7c5158715b4554420100287d8"
+  },
+  {
+    "asset": "assets/akuma/mato/firelight-take-8.json",
+    "sha256": "334e6ab28004c8fb9260a888bd39ad23f60be452b35b27f866c18b4653f0f3e3"
+  },
+  {
+    "asset": "assets/akuma/mato/firelight-take-9.png",
+    "sha256": "0ca0b4600fe20d41d63506ddf360846589238a84aa3b2afc35637791f1c3231b"
+  },
+  {
+    "asset": "assets/akuma/mato/firelight-take-9.json",
+    "sha256": "f38e8d55b78bf9433a9586204693ab0a938ed297cd01f6b9e2263fea040b39d7"
+  }
+]
