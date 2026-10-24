@@ -816,5 +816,287 @@
         "738ff3455a6429cef9a7065fbdd7bf9ce1ca713bfbab83a83eb6826c7018ecb8"
       ]
     }
+  },
+  "walk": {
+    "south": {
+      "image": "assets/akuma/wolf/walk-south.png",
+      "frames": 8,
+      "size": 96,
+      "feet": [
+        68,
+        74,
+        73,
+        68,
+        75,
+        74,
+        71,
+        70
+      ],
+      "fps": 12,
+      "source": [
+        "Idle/animations/Running_Jump/south/frame_000.png",
+        "Idle/animations/Running_Jump/south/frame_001.png",
+        "Idle/animations/Running_Jump/south/frame_002.png",
+        "Idle/animations/Running_Jump/south/frame_003.png",
+        "Idle/animations/Running_Jump/south/frame_004.png",
+        "Idle/animations/Running_Jump/south/frame_005.png",
+        "Idle/animations/Running_Jump/south/frame_006.png",
+        "Idle/animations/Running_Jump/south/frame_007.png"
+      ],
+      "source_sizes": [
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ]
+      ],
+      "rgba_sha256": [
+        "4dde0eb273277012dc08babeedb06b7712654d1aa4f20e047d6db3ba575bce0a",
+        "4eac2d8493c031c36e435af772945fc3b7591bece36ac37ce6e9d4cbc1f1a2ea",
+        "9df6a1757b9fe3bad8e6baa131d3e534e3a15f7d6e93cb3ba5b14783f5a1150d",
+        "7cf28205e3604f0f44c180b0dffa2ed45a47f860c364cfe170a8213c684387f0",
+        "773d7d31b6142051187d3b1d230f5dea9a420e003e7d37a18359292bf01282f8",
+        "89034da4ae651e8da924e64557c3375af34476dcda04f0383372f6c548fe736b",
+        "aa5159677f0f0d87c19562ce1a7aa0cd126fff73de22f7d1a7458f6ba689a0d8",
+        "780334836d508f5e699262c44b4ee582a212c39887dac2868149c538af277beb"
+      ]
+    },
+    "north": {
+      "image": "assets/akuma/wolf/walk-north.png",
+      "frames": 8,
+      "size": 96,
+      "feet": [
+        72,
+        74,
+        73,
+        67,
+        67,
+        74,
+        73,
+        71
+      ],
+      "fps": 12,
+      "source": [
+        "Idle/animations/Running_Jump/north/frame_000.png",
+        "Idle/animations/Running_Jump/north/frame_001.png",
+        "Idle/animations/Running_Jump/north/frame_002.png",
+        "Idle/animations/Running_Jump/north/frame_003.png",
+        "Idle/animations/Running_Jump/north/frame_004.png",
+        "Idle/animations/Running_Jump/north/frame_005.png",
+        "Idle/animations/Running_Jump/north/frame_006.png",
+        "Idle/animations/Running_Jump/north/frame_007.png"
+      ],
+      "source_sizes": [
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ]
+      ],
+      "rgba_sha256": [
+        "2d6d8c784b90787a88625a7cf70ddeb69b06aeaf276dc2230f5f09214c715724",
+        "97b85764c6853afe4dd736ef5094328c9b45091cb1f87517a025ac4bc817fa59",
+        "a8f1b730f1ce2c8cd7862b202149ac9d0944b9d0eba5aea25febbc38ec734a63",
+        "d75b185b3812ae0fbd1eb85fdb0ca8aecda2fc31df6bfeaa8d1a0e43489bcbf2",
+        "2e4521f0c62946346cb9ec1f9135fda5cb4cdaf32c166bae63984fa50996223a",
+        "3e879a6de9133f8c7e9cec983ce9c115a9ddadef3d2ab4c48900f68ebe33b23e",
+        "ce369ac8d8fe9198e82ff3fb1d5d4227280f1a88ed93112863415dd3ed2cbee9",
+        "ae2452b69838b987e51691720de52606bd6b1b19869debb63e877966a49ece71"
+      ]
+    },
+    "east": {
+      "image": "assets/akuma/wolf/walk-east.png",
+      "frames": 8,
+      "size": 96,
+      "feet": [
+        69,
+        71,
+        67,
+        66,
+        73,
+        76,
+        73,
+        69
+      ],
+      "fps": 12,
+      "source": [
+        "Idle/animations/Running_Jump/east/frame_000.png",
+        "Idle/animations/Running_Jump/east/frame_001.png",
+        "Idle/animations/Running_Jump/east/frame_002.png",
+        "Idle/animations/Running_Jump/east/frame_003.png",
+        "Idle/animations/Running_Jump/east/frame_004.png",
+        "Idle/animations/Running_Jump/east/frame_005.png",
+        "Idle/animations/Running_Jump/east/frame_006.png",
+        "Idle/animations/Running_Jump/east/frame_007.png"
+      ],
+      "source_sizes": [
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ]
+      ],
+      "rgba_sha256": [
+        "edec3f6b026356ef179050fe4a4d3ef0bcec23f6be5192ddf3d102e5a54d89f3",
+        "91450a6a8f45f62408ac5831ce92077e7f64e3d56818220b33fb6c1989d62587",
+        "19e2118a209c6602a891e617beef795640d9749718f2730764a1f3357cd91861",
+        "57be601531c71273f811fafec4a20344d647992c31e36b0b276f74c372d3f9f3",
+        "a1ec723a90fc49844f9f1dd8779254fe71e7dd2171ff8cd2d2cf44082090323d",
+        "01dce632f44240bc79d5f84b9ace7884519c5b2b89bbb676b4e59431d2b0e5eb",
+        "305c579cae773ee0544815a699b2e44420f8d3bcaff827abd066dc4865c2e3b1",
+        "6d4f3e400b684af4746caa67c64ba59f209a9fa7fff50ae9cdec8b4766e8d1e5"
+      ]
+    },
+    "west": {
+      "image": "assets/akuma/wolf/walk-west.png",
+      "frames": 8,
+      "size": 96,
+      "feet": [
+        69,
+        71,
+        67,
+        66,
+        73,
+        76,
+        73,
+        69
+      ],
+      "fps": 12,
+      "source": [
+        "Idle/animations/Running_Jump/west/frame_000.png",
+        "Idle/animations/Running_Jump/west/frame_001.png",
+        "Idle/animations/Running_Jump/west/frame_002.png",
+        "Idle/animations/Running_Jump/west/frame_003.png",
+        "Idle/animations/Running_Jump/west/frame_004.png",
+        "Idle/animations/Running_Jump/west/frame_005.png",
+        "Idle/animations/Running_Jump/west/frame_006.png",
+        "Idle/animations/Running_Jump/west/frame_007.png"
+      ],
+      "source_sizes": [
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ],
+        [
+          80,
+          80
+        ]
+      ],
+      "rgba_sha256": [
+        "c76745ca1c9017dbe4e045687c5f7f9f49b90a4316cdbb77d6a7528cc7c79236",
+        "76984b96a9307887d7ebdfac4fa7aad264e0c6c3fa3a9ff774536f414e292846",
+        "e40b00c1db7b83c566093b831b376c98ebb23946fb67ed695409a9fcb7745d46",
+        "952a161b1518e718567b1d0e97a850c72afb84948c65724ac5a5928c84160f5c",
+        "71192dcd528a011ee6b77e79d46e39538c3320f19889587c765f7ba56ac294f1",
+        "37cc5a8e48026ac914ef9a149215ee600158edcefda730ebf2d3d283915a3419",
+        "e0544e808e20e81ac4da3a647af93fc26e721b1a0ecada9e1c27d2a3717a09e8",
+        "de5bba5894f5187ff102e5bac17d71f7dc3dc4a3643ed2be71263dbb15bf0234"
+      ]
+    }
   }
 }

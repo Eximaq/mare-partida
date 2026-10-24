@@ -17,8 +17,8 @@ for action,dirs in json.loads((folder/'clips.json').read_text()).items():
             original=image.crop((frame*96+x,y,frame*96+x+w,y+h))
             assert hashlib.sha256(original.tobytes()).hexdigest()==digest,(action,direction,frame)
             count+=1
-assert count==92
-print('Wolf art: supplied PNG/JSON bytes and all 92 original frame pixels preserved')
+assert count==124
+print('Wolf art: supplied PNG/JSON bytes and all 124 original frame pixels preserved')
 
 for name in ['firelight-take-2','firelight-take-4']:
     data=json.loads((folder/(name+'.json')).read_text())

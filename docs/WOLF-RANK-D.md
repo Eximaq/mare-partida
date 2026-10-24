@@ -17,14 +17,14 @@ A aura divide o intervalo e a duração da animação básica por 1,3. Não aume
 
 ## Arte e encaixe
 
-Modelo PixelLab existente: 992eb999-b9fa-41d4-9bd4-ec32a142efbf. Nenhuma geração paga foi solicitada. O importador preserva todos os pixels de 92 frames originais nas quatro direções e registra hashes em clips.json/manifest.json. Os sete arquivos fornecidos também são preservados byte a byte.
+Modelo PixelLab existente: 992eb999-b9fa-41d4-9bd4-ec32a142efbf. Nenhuma geração paga foi solicitada. O importador preserva todos os pixels de 124 frames originais nas quatro direções e registra hashes em clips.json/manifest.json. Os sete arquivos fornecidos também são preservados byte a byte.
 
 - Idle: uma pose por direção.
 - Básico: “Attack using claws and forward”, nove frames.
-- Investida: “Running on all fours, it advan”, entrada 1–3, loop 4–9, finalização 10–13. A caminhada usa os frames 4–9 existentes.
+- Investida: “Running on all fours, it advan”, entrada 1–3, loop 4–9, finalização 10–13. A caminhada normal usa “Running Jump”, oito frames próprios por direção; não compartilha mais os frames da investida.
 - Escala nominal de 112 px, igual à Girafa; atlas de 96 px com margens transparentes e pivôs nos pés.
 - firelight-take-4: impacto/sangramento no alvo durante 5 s.
-- firelight-take-2: aura com 13 frames de 100 ms, camada principal antes do sprite do jogador. Após revisão do proprietário, a aura foi elevada e estendida verticalmente: largura 1,8× e altura 2,3×, base a aproximadamente 2 px dos pés. Três fragmentos de 16×16 da mesma folha são desenhados depois do personagem em 19×19, com fases distintas e leve oscilação, conforme pedido posterior do proprietário. O rosto fica livre. O PNG original não foi alterado.
+- firelight-take-2: aura com 13 frames de 100 ms, camada principal antes do sprite do jogador. Após revisão do proprietário, a aura foi elevada e estendida verticalmente: largura 1,8× e altura 2,3×, base a aproximadamente 2 px dos pés. As partículas dianteiras experimentadas foram removidas a pedido do proprietário; a aura volta a ser desenhada somente atrás do personagem. O PNG original não foi alterado.
 
 ## Backend e distribuição
 
@@ -36,6 +36,6 @@ server/akuma.py valida transformação, energia, alcance, alvo, recargas indepen
 
 - node tests/wolf-system.test.cjs: catálogo, regras, frames, ticks, velocidade, duração, cura, posicionamento da aura e desenho nas quatro direções.
 - python tests/wolf_backend_test.py: três casos de validação, recargas, dano, aura e cancelamento.
-- python tests/wolf_artwork_test.py: sete hashes, 92 frames e limites das folhas de VFX.
+- python tests/wolf_artwork_test.py: sete hashes, 124 frames e limites das folhas de VFX.
 - node tests/wolf_browser.cjs: registro/equipamento/HUD, controle da investida, impacto único, cinco ticks, profundidade da aura, intervalo de ataque, cura/caps, transformação/morte e reload. Fixture privada injetada apenas na resposta do navegador de teste.
 - Build com python tools/build_pages.py e regressões de Akuma, Neko, Girafa e Doru. Capturas de revisão ficam fora do repositório.
