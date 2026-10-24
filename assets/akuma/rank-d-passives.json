@@ -1,0 +1,32 @@
+{
+  "akuma_inu_wolf": {
+    "physical_attack": 12,
+    "attack_speed": 0.08,
+    "lifesteal": 0.05,
+    "movement_speed": 0.05
+  },
+  "akuma_doru_doru": {
+    "special_attack": 14,
+    "physical_defense": 10,
+    "max_hp": 100,
+    "cooldown_reduction": 0.05
+  },
+  "akuma_ushi_giraffe": {
+    "max_hp": 180,
+    "physical_defense": 15,
+    "physical_attack": 10,
+    "armor_penetration": 0.05
+  },
+  "akuma_neko_leopard": {
+    "crit_chance": 0.1,
+    "crit_damage": 0.15,
+    "physical_attack": 10,
+    "movement_speed": 0.08
+  },
+  "akuma_supa_supa": {
+    "physical_defense": 18,
+    "physical_attack": 10,
+    "damage_reflection": 0.05,
+    "max_hp": 80
+  }
+}

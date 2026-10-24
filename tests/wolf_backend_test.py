@@ -16,17 +16,17 @@ class WolfTest(unittest.TestCase):
         r=self.cast();self.assertEqual(r['effect']['damage'],100);self.assertEqual(r['energy_remaining'],74)
         self.assertEqual(r['effect']['ticks'],[{'at':i,'damage':20} for i in [1,2,3,4,5]])
         with self.assertRaises(ValueError):self.cast()
-        self.cast('2');self.assertEqual(self.s.wolf_bonuses('hero'),{'attack_speed_percent':.3,'lifesteal_percent':.1})
-        self.assertEqual(self.s.wolf_heal('hero',57),5.7)
-        self.now+=6;self.assertEqual(self.s.wolf_heal('hero',100),0)
+        self.cast('2');self.assertAlmostEqual(self.s.wolf_bonuses('hero')['attack_speed_percent'],1.08*1.3-1);self.assertAlmostEqual(self.s.wolf_bonuses('hero')['lifesteal_percent'],.15)
+        self.assertAlmostEqual(self.s.wolf_heal('hero',57),8.55)
+        self.now+=6;self.assertEqual(self.s.wolf_heal('hero',100),5)
     def test_invalid_inputs_do_not_start_cooldowns(self):
         self.equip()
         for kwargs in [dict(energy=25),dict(energy=math.nan),dict(physical_attack=-1),dict(target_id='missing'),dict(enemies=[{'id':'victim','x':257,'y':0}])]:
             with self.assertRaises(ValueError):self.cast(**kwargs)
         self.assertEqual(self.s.state('hero')['cooldowns'],{})
     def test_buff_cancel_on_human_unequip_and_session(self):
-        self.equip();self.cast('2');self.s.transform('hero',False);self.assertEqual(self.s.wolf_heal('hero',100),0)
-        self.s.transform('hero',True);self.assertEqual(self.s.wolf_heal('hero',100),0)
-        self.now+=30;self.cast('2');self.s.end_protection('hero');self.assertEqual(self.s.wolf_heal('hero',100),0)
+        self.equip();self.cast('2');self.s.transform('hero',False);self.assertEqual(self.s.wolf_heal('hero',100),5)
+        self.s.transform('hero',True);self.assertEqual(self.s.wolf_heal('hero',100),5)
+        self.now+=30;self.cast('2');self.s.end_protection('hero');self.assertEqual(self.s.wolf_heal('hero',100),5)
         self.now+=30;self.cast('2');self.s.equip('hero',None);self.assertEqual(self.s.wolf_heal('hero',100),0)
 if __name__=='__main__':unittest.main()

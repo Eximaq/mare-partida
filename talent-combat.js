@@ -23,7 +23,7 @@
     return {multiplier,critical,armor,trueAmount,critMultiplier:final.critMultiplier};
   }
   function afterHit(g,rt,{target,stats,basic,magic,projectile,critical,damage,contactScale=1,fromClone=false,random=Math.random}){
-    const k=key(g),result={heal:damage*stats.lifesteal,gold:0,pierce:false,notice:''};
+    const k=key(g),result={heal:damage*Math.max(0,(stats.lifesteal||0)-(stats.fruitLifesteal||0)),gold:0,pierce:false,notice:''};
     if(k==='fury'&&g.hp<stats.maxHP*.3)result.heal+=damage*.12;if(U.selected(g)==='immortal'&&rt.ultimate.immortal>0)result.heal+=damage*.6;
     if(basic&&k==='concussion'&&random()<.15){target.talentControl={type:'stun',remaining:1};result.notice='ATORDOADO';proc(rt,k);}
     if(basic&&k==='wear'){target.talentWear={stacks:Math.min(5,(target.talentWear?.remaining>0?target.talentWear.stacks:0)+1),remaining:5};proc(rt,k);}

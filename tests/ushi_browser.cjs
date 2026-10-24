@@ -35,7 +35,7 @@ const bridge=`  window.__ushiQA={paused:false,enterHunt,returnLobby,useFruitSkil
    q.manual('d',.1);const blocked=q.world.hero.x===ushiHero.x&&q.world.hero.y===ushiHero.y;
    q.step(.249);const early=m.hp;q.step(.002);const damage=10000-m.hp;q.step(.2);
    return {ok,before,early,damage,blocked,push:Math.hypot(m.x-from.x,m.y-from.y),other:q.world.mobs[1].hp,active:!!q.session.ushiAction,energy:q.game.energy};
-  });assert.equal(hit.ok,true);assert.equal(hit.before,10000);assert.equal(hit.early,10000);assert.equal(hit.damage,Math.floor(setup.physical*1.8-21));assert.equal(hit.push,64);assert.equal(hit.other,10000);assert.equal(hit.blocked,true);assert.equal(hit.active,false);assert.equal(hit.energy,174);
+  });assert.equal(hit.ok,true);assert.equal(hit.before,10000);assert.equal(hit.early,10000);assert.equal(hit.damage,Math.floor(setup.physical*1.8-19.5));assert.equal(hit.push,64);assert.equal(hit.other,10000);assert.equal(hit.blocked,true);assert.equal(hit.active,false);assert.equal(hit.energy,174);
   const buff=await page.evaluate(async()=>{
    const q=__ushiQA;const ok=await q.useFruitSkill(true,'2');q.game.hp=500;q.takeDamage(100,null,false,true);const hp=q.game.hp;
    const basic=(active)=>{q.session.ushiBuffUntil=active?Date.now()+5000:0; q.session.ushiBasicUntil=0;q.world.target=q.world.mobs[1];q.world.target.defense=0;const before=q.world.target.hp,old=Math.random;Math.random=()=>.5;try{q.heroAttack(q.world.target);q.step(MareCombatAnimation.attackDuration(__mareDiagnostics().stats.speed)+.0001);}finally{Math.random=old;}return before-q.world.target.hp;};
@@ -51,7 +51,7 @@ const bridge=`  window.__ushiQA={paused:false,enterHunt,returnLobby,useFruitSkil
    // the genuine persistent cooldown already exercised by the first cast.
    q.session.ushiAction={targetId:m.id,started:q.world.time,hit:false};q.step(.3);const skillDamage=10000-m.hp;q.step(.2);
    return {free,skillDamage};
-  });assert.equal(buffRules.free,true);assert.equal(buffRules.skillDamage,Math.floor(setup.physical*1.8-21),'buff must not amplify skill damage');
+  });assert.equal(buffRules.free,true);assert.equal(buffRules.skillDamage,Math.floor(setup.physical*1.8-19.5),'buff must not amplify skill damage');
   if(process.env.MARE_QA_DIR){fs.mkdirSync(process.env.MARE_QA_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.MARE_QA_DIR,'girafa-buff.png')});}
   // Exercise the actual map navigator at a solid boundary, not a fabricated collider.
   const solid=await page.evaluate(()=>{

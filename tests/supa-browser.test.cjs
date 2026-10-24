@@ -73,17 +73,17 @@ const bridge=`  window.__supaQA={enterHunt,useFruitSkill,takeDamage,get game(){r
       return {physical,magical,direct,evaded,first,spent:q.session.skillEnergySpent,expected:MareCharacters.incoming(stats,100,false,1.1)*.6,until:q.session.supaShieldUntil};
     });
     assert.ok(Math.abs(protection.physical.received-Math.floor(protection.expected))<1e-6,JSON.stringify(protection));
-    assert.equal(protection.physical.reflected,30);assert.equal(protection.magical.reflected,0);
+    assert.equal(protection.physical.reflected,Math.floor(30+protection.physical.received*.05));assert.equal(protection.magical.reflected,0);
     assert.equal(protection.direct,100);assert.deepEqual(protection.evaded,{received:0,reflected:0});assert.equal(protection.spent,45);
     await page.waitForFunction(first=>supaDraws.at(-1).x===first.x+20&&supaDraws.at(-1).y===first.y+10,protection.first);
     await page.waitForFunction(()=>new Set(supaDraws.map(f=>f.sx+':'+f.sy)).size>=4);
     if(process.env.MARE_QA_DIR){fs.mkdirSync(process.env.MARE_QA_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.MARE_QA_DIR,'supa-shield.png')});}
     await page.waitForFunction(()=>!__mareDiagnostics().akuma.shieldActive,null,{timeout:6000});
     const expired=await page.evaluate(()=>{
-      const q=__supaQA,random=Math.random;Math.random=()=>1;const attacker={id:'expired',type:'helmeppo',alive:true,hp:10000,maxHP:10000};q.takeDamage(100,attacker,true);Math.random=random;
-      return {reflected:10000-attacker.hp,remaining:q.game.fruitCooldowns['akuma_supa_supa:2']-Date.now()};
+      const q=__supaQA,random=Math.random;Math.random=()=>1;const hp=q.game.hp,attacker={id:'expired',type:'helmeppo',alive:true,hp:10000,maxHP:10000};q.takeDamage(100,attacker,true);Math.random=random;
+      return {received:hp-q.game.hp,reflected:10000-attacker.hp,remaining:q.game.fruitCooldowns['akuma_supa_supa:2']-Date.now()};
     });
-    assert.equal(expired.reflected,0);assert.ok(expired.remaining>10000);assert.deepEqual(errors,[]);
+    assert.equal(expired.reflected,Math.max(1,Math.floor(expired.received*.05)));assert.ok(expired.remaining>10000);assert.deepEqual(errors,[]);
     console.log('Supa browser: Rank D registration, bag/equipment, both HUD icons, save indices, AoE boundary, 130% damage, costs, cooldowns, physical/magic/direct/evaded hits, following animated shield and 5s expiration passed.');
     await context.close();
   }finally{await browser.close();}

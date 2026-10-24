@@ -53,14 +53,14 @@ class SupaTest(unittest.TestCase):
 
     def test_physical_only_original_damage_reflection_and_expiry(self):
         self.cast('2')
-        self.assertEqual(self.store.receive_damage('hero', 100, 50), {'damage': 30, 'reflected': 30})
+        self.assertEqual(self.store.receive_damage('hero', 100, 50), {'damage': 30, 'reflected': 31.5})
         for opts in [{'physical': False}, {'direct': True}, {'reflected': True}]:
             self.assertEqual(self.store.receive_damage('hero', 100, 50, **opts), {'damage': 50, 'reflected': 0})
         self.assertEqual(self.store.receive_damage('hero', 100, 0), {'damage': 0, 'reflected': 0})
         self.now += 4.999
         self.assertEqual(self.store.receive_damage('hero', 100)['damage'], 60)
         self.now += .001
-        self.assertEqual(self.store.receive_damage('hero', 100), {'damage': 100, 'reflected': 0})
+        self.assertEqual(self.store.receive_damage('hero', 100), {'damage': 100, 'reflected': 5})
         for value in [-1, math.nan, math.inf, True]:
             with self.assertRaises(ValueError):
                 self.store.receive_damage('hero', value)
@@ -79,7 +79,7 @@ class SupaTest(unittest.TestCase):
         self.cast('2')
         self.store.equip('hero', None)
         self.store.equip('hero', SUPA_ID)
-        self.assertEqual(self.store.receive_damage('hero', 100)['reflected'], 0)
+        self.assertEqual(self.store.receive_damage('hero', 100)['reflected'], 5)
         with self.assertRaises(ValueError):
             self.cast('2')
         self.now += 20
@@ -101,7 +101,7 @@ class SupaTest(unittest.TestCase):
             store.db.close()
             store = AkumaStore(path, clock=lambda: self.now)
             self.assertEqual(store.state('legacy')['cooldowns'][SUPA_ID+':2'], 1020)
-            self.assertEqual(store.receive_damage('legacy', 100)['reflected'], 30)
+            self.assertEqual(store.receive_damage('legacy', 100)['reflected'], 33)
             store.db.close()
 
 
