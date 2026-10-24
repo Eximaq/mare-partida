@@ -19,6 +19,13 @@ jobs:
           for file in *.js; do node --check "$file"; done
       - name: Regressao de jogo
         run: |
-          for file in tests/*.test.cjs; do node "$file"; done
+          for file in tests/*.test.cjs; do
+            # Browser E2E requires Playwright + running server; it is not a standalone Node test.
+            if [ "$file" = "tests/supa-browser.test.cjs" ]; then
+              echo "SKIP $file (browser E2E; requires Playwright + test server)"
+              continue
+            fi
+            node "$file"
+          done
       - name: Verificar site estatico
         run: python3 tools/build_pages.py
