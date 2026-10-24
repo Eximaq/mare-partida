@@ -69,8 +69,8 @@
     }
     if(player)memo.set(player,{signature,value});return value;
   }
-  function sample(runtime,player,action,direction,time){
-    const id=animationId(player,action);return id?runtime.sample(sharedRig.id,id,direction,time):null;
+  function sample(runtime,player,action,direction,time,options={}){
+    const id=animationId(player,action);return id?runtime.sample(sharedRig.id,id,direction,time,options):null;
   }
   function createRuntime(options){const runtime=root.MarePaperDoll.create(options);for(const r of [rig,sharedRig])runtime.registerRig(r);for(const p of [...pieces,...sharedPieces])runtime.registerPiece(p);return runtime;}
   const api={rig,pieces,defaults,bindings,reference,sharedRig,sharedPieces,sharedBindings,classes,factions,categories,weaponItems,profile,animationId,referenceFor,sample,appearance,eligible,createRuntime};root.MarePaperDollCatalog=api;

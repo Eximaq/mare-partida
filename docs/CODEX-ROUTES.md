@@ -7,7 +7,7 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 | Login/portal | `portal/index.html`, `portal/portal.js`, `portal/portal.css`, `tools/build_pages.py` | `docs/COLABORACAO_GITHUB.md`; testes web/build relevantes | Não afirmar Supabase conectado sem confirmar; preservar fundo/arte aprovada |
 | HUD/UI/inventário | `ui-system.js`, `ui-*.css`, `game.js` (somente funções de UI), `forge-ui.js` | `docs/UI-DESIGN.md` (se existir), testes de inventário | Índices `itemDefs`, equipamentos e saves |
 | Personagens/classes | `character-system.js`, `game.js` funções de criação | testes de personagem; sec. 3 de `AGENT.md` somente se necessário | Facção ≠ classe; dados migrados |
-| Combate/caçadas | `hunt-system.js`, `world-system.js`, `combat-*.js` | `docs/CACADAS-1-20.md`, testes de combate/caça | Dano real/hit-frame, LOS, cooldown e anti-duplicação |
+| Combate/caçadas | `hunt-system.js`, `world-system.js`, `combat-*.js` | `docs/CACADAS-1-20.md`, `docs/ATTACK-SPEED-ANIMATION.md`, testes de combate/caça | Dano real/hit-frame, LOS, cooldown e anti-duplicação |
 | Mapas/Dawn | `dawn-world.js`, `dawn-map-data.js`, `dawn-renderer.js` | `docs/DAWN-MAPA-MANUAL.md`, `tests/dawn_manual_browser.py` | Mapa fornecido pelo proprietário e fidelidade |
 | Mapas/Conchas | `conchas-world.js`, `conchas-renderer.js`, `conchas-*.js` | `docs/CIDADE-DAS-CONCHAS.md`, testes de Conchas | Rotas, casas, colisões; PRs recentes podem mudar geometria |
 | Arquipélago/ilhas | `archipelago.js`, `new-islands*.js` | `docs/ARQUIPELAGO-REGIOES.md`, testes das ilhas | IDs persistidos e permissões de entrada |

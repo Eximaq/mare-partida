@@ -41,7 +41,7 @@
     if(!valid&&!reportedFailures.has(animation.url)){reportedFailures.add(animation.url);console.error('[sprite] Dimensões incorretas',animation.url);}
     return valid?'ready':'failed';
   }
-  function frame(id,action='idle',direction='south',time=0){
+  function frame(id,action='idle',direction='south',time=0,progress=null){
     const asset=assets[id];if(!asset)return null;
     ensure(id);
     const animation=asset.meta.animations[action];if(!animation||status(id,action)!=='ready')return null;
@@ -51,13 +51,13 @@
     const count=animation.direction_frames?.[asset.meta.directions[row]]??animation.frames;
     const fps=animation.direction_fps?.[asset.meta.directions[row]]??animation.fps;
     if(animation.valid_directions&&!animation.valid_directions.includes(asset.meta.directions[row]))return null;
-    const raw=Math.floor(Math.max(0,time)*fps);
+    const raw=Number.isFinite(progress)?Math.min(count-1,Math.floor(Math.max(0,Math.min(1,progress))*count+1e-9)):Math.floor(Math.max(0,time)*fps);
     const index=animation.loop===false?Math.min(count-1,raw):raw%count;
     const [width,height]=asset.meta.frame_size;
     return {image,index,row,width,height,meta:asset.meta,animation};
   }
-  function draw(context,id,x,y,{action='idle',direction='south',time=0,height=null,scale=null}={}){
-    const f=frame(id,action,direction,time);if(!f)return false;
+  function draw(context,id,x,y,{action='idle',direction='south',time=0,height=null,scale=null,progress=null}={}){
+    const f=frame(id,action,direction,time,progress);if(!f)return false;
     const nativeHeight=f.animation.visible_height?.[f.meta.directions[f.row]]??f.meta.reference_height;
     const factor=scale??((height??f.meta.render_height??f.meta.reference_height*f.meta.render_scale)/nativeHeight);
     const width=Math.round(f.width*factor),h=Math.round(f.height*factor);

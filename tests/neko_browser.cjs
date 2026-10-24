@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
-const bridge=`  window.__nekoQA={paused:false,enterHunt,returnLobby,useFruitSkill,heroAttack,toggleZoanTransform,unequip,takeDamage,get game(){return game},get world(){return world},get session(){return session},get defs(){return itemDefs},nav:navigator,stopAuto(){autoPlay=false;autoSkills=false},step(dt){world.time+=dt;stepNekoAction(dt)},manual(key,dt){keys.add(key);const result=moveManually(dt);keys.clear();return result;}};\n  window.__mareDiagnostics=`;
+const bridge=`  window.__nekoQA={paused:false,enterHunt,returnLobby,useFruitSkill,heroAttack,toggleZoanTransform,unequip,takeDamage,get game(){return game},get world(){return world},get session(){return session},get defs(){return itemDefs},nav:navigator,stopAuto(){autoPlay=false;autoSkills=false},step(dt){world.time+=dt;stepBasicAttack(dt);stepNekoAction(dt)},manual(key,dt){keys.add(key);const result=moveManually(dt);keys.clear();return result;}};\n  window.__mareDiagnostics=`;
 (async()=>{
  const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
  try{
@@ -29,8 +29,8 @@ const bridge=`  window.__nekoQA={paused:false,enterHunt,returnLobby,useFruitSkil
    return {physical:__mareDiagnostics().stats.physical,critical:__mareDiagnostics().stats.critMultiplier,hero:{x:hero.x,y:hero.y},indices:q.defs.slice(75,77).map(d=>d.name)};
   });
   assert.deepEqual(setup.indices,['Supa Supa no Mi','Neko Neko no Mi: Modelo Leopardo']);
-  const basic=await page.evaluate(()=>{const q=__nekoQA,ok=q.heroAttack(q.world.target);const anim=q.world.hero.attackAnim;q.world.target.hp=10000;q.step(.501);q.world.hero.attackAnim=0;return {ok,anim};});
-  assert.equal(basic.ok,true);assert.equal(basic.anim,.5);
+  const basic=await page.evaluate(()=>{const q=__nekoQA,ok=q.heroAttack(q.world.target);const anim=q.world.hero.attackAnim,expected=MareCombatAnimation.attackDuration(__mareDiagnostics().stats.speed),immediate=q.world.target.hp;q.step(anim+.0001);q.world.target.hp=10000;q.world.hero.attackAnim=0;return {ok,anim,expected,immediate};});
+  assert.equal(basic.ok,true);assert.equal(basic.anim,basic.expected);assert.equal(basic.immediate,10000);
   const combo=await page.evaluate(async()=>{
    const q=__nekoQA,selected=q.world.target,ok=await q.useFruitSkill(true,'2'),damage=[10000-selected.hp],p={x:q.world.hero.x,y:q.world.hero.y};
    q.world.target=q.world.mobs[1];q.manual('d',.1);const blocked=q.world.hero.x===p.x&&q.world.hero.y===p.y;

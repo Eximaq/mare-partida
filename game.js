@@ -44,7 +44,7 @@
     return true;
   }
   function navigateEntity(entity,goal,speed,dt,range=0){
-    if(entity===world.hero&&classCombatController()?.locked())return true;
+    if(entity===world.hero&&(classCombatController()?.locked()||basicAttackPose()))return true;
     const nav=navigator(),dist=Math.hypot(goal.x-entity.x,goal.y-entity.y);
     if(dist<=range&&nav.clear(entity,goal))return true;
     let route=pursuit.get(entity);
@@ -58,7 +58,7 @@
     if(wolfSkillActive())return true;
     if(world.hero.talentControl?.remaining>0||nekoSkillActive()||ushiSkillActive())return false;
     if(currentPanel||!$('startOverlay').classList.contains('hidden'))return false;
-    if(classCombatController()?.locked())return false;
+    if(classCombatController()?.locked()||basicAttackPose())return false;
     const dx=Number(keys.has('d')||keys.has('arrowright'))-Number(keys.has('a')||keys.has('arrowleft'));
     const dy=Number(keys.has('s')||keys.has('arrowdown'))-Number(keys.has('w')||keys.has('arrowup'));
     if(dx||dy){
@@ -414,7 +414,7 @@
     const fruit=equippedZoan();if(!fruit||!game)return false;
     const enabled=!game.zoanTransformed;
     if(akumaBackend){try{await akumaRequest('transform',{enabled});}catch(error){toast(error.message,'danger');return false;}}
-    cancelNekoAction();clearUshiState();clearWolfState();game.zoanTransformed=enabled;world.hero.attackAnim=0;session.zoanDash=null;saveGame();updateUI();renderPortrait();
+    cancelBasicAttack();cancelNekoAction();clearUshiState();clearWolfState();game.zoanTransformed=enabled;world.hero.attackAnim=0;session.zoanDash=null;saveGame();updateUI();renderPortrait();
     if(currentPanel)renderPanel();toast(enabled?'Forma Zoan ativada.':'Forma humana restaurada.','good');return true;
   }
   async function useFruitSkill(manual=false,key=null){
@@ -443,10 +443,11 @@
     if(fruit.id==='akuma_beri_beri'&&!beriSpheres){if(manual)toast('Aguarde o carregamento da sprite para usar esta habilidade.');return false;}
     let serverEffect=null;if(akumaBackend){try{await akumaCorpseQueue;const response=await akumaRequest('cast',{instance:castArea,x:castPosition.x,y:castPosition.y,enemies:livingMobs().map(m=>({id:m.id,x:m.x,y:m.y,alive:m.alive,defense:enemyArmor(m),facing:m.emberFacing||'south'})),direction:doruDirection||zoanDirection(),skill_key:skill.key,energy:game.energy,physical_attack:doruPower??getDerived().physical,target_id:wolfTarget?.id??ushiTarget?.id??nekoTarget?.id,crit_multiplier:getDerived().critMultiplier||1.65});serverEffect=response.effect;}catch(error){if(manual)toast(error.message,'danger');return false;}}
     if(session!==castingSession||scene!=='hunt'||game.area!==castArea||game.hp<=0||MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id!==fruit.id)return false;
+    if(game.zoanTransformed&&!(skill.key==='2'&&[MareWolf.rules.id,MareUshi.rules.id].includes(fruit.id)))cancelBasicAttack();
     if(fruit.id===MareWolf.rules.id){
       if(!isWolfForm()||world.hero.talentControl?.remaining>0)return false;
       if(skill.key==='1'){faceCombatTarget(wolfTarget);travelPath=[];world.hero.walking=0;world.hero.attackAnim=0;session.wolfAction={phase:'charge',targetId:wolfTarget.id,started:world.time,travel:0,attack:getDerived().physical,dx:zoanDirection()[0],dy:zoanDirection()[1]};}
-      else{session.wolfAuraStartedAt=Date.now();session.wolfAuraUntil=serverEffect?.expires_at?serverEffect.expires_at*1000:Date.now()+MareWolf.rules.auraDuration;session.attackClock/=1.3;if(world.time<(session.wolfBasicUntil||0)){session.wolfBasicDuration/=1.3;world.hero.attackAnim/=1.3;session.wolfBasicUntil=world.time+world.hero.attackAnim;}}
+      else{session.wolfAuraStartedAt=Date.now();session.wolfAuraUntil=serverEffect?.expires_at?serverEffect.expires_at*1000:Date.now()+MareWolf.rules.auraDuration;retimeAttack(session.basicAttack?.clock,getDerived().speed);syncBasicAttackVisual();}
     }else if(fruit.id===MareDoru.rules.id){
       faceCombatTarget(doruTarget);session.doruProjectiles ||= [];session.doruProjectiles.push(MareDoru.create(skill.key,castPosition,doruDirection,doruPower,serverEffect?.projectile_id));
     }else if(fruit.id===MareUshi.rules.id){
@@ -646,8 +647,37 @@
   }
   function chooseTarget(){let monsters=livingMobs().filter(m=>(rejectedTargets.get(m.id)||0)<=world.time);if(!monsters.length)return null;return monsters.reduce((best,cur)=>!best||distance(world.hero,cur)<distance(world.hero,best)?cur:best,null);}
   function outputDamage(m,amount,crit=false){if(!m||!m.alive||amount<=0)return 0;MareHaki.touch(game,session.haki);const damage=Math.min(m.hp,Math.max(1,Math.floor(amount)));m.hp=Math.max(0,m.hp-damage);m.hit=.25;game.stats.damage+=damage;spawnVisual(m.x+rand(-8,8),m.y-40,String(damage),crit?'#ffcd73':'#fff5e4',crit?22:15);if(wolfAuraActive()&&!session.wolfLeechResolving){session.wolfLeechResolving=true;try{session.healingDone+=restoreHero(MareWolf.leech(damage,true),{ignoreEfficiency:true});}finally{session.wolfLeechResolving=false;}}if(m.hp<=0)killMob(m);return damage;}
+  function basicAttackIdentity(){return game?.zoanTransformed&&equippedZoan()?equippedZoan().id:game?.classId+':'+game?.factionId;}
+  function basicAttackPose(){const a=session?.basicAttack;return a?.clock.locked()?a.clock.snapshot():null;}
+  function cancelBasicAttack(){if(session?.basicAttack)session.basicAttack.clock.reset();if(session)session.basicAttack=null;if(world?.hero)world.hero.attackAnim=0;}
+  function retimeAttack(clock,speed){
+    const before=clock?.snapshot();if(!before?.scaled||!clock.setAttackSpeed(speed))return;
+    const after=clock.snapshot();if(session.attackClock>0)session.attackClock*=after.duration/before.duration;
+  }
+  function syncBasicAttackVisual(){
+    const pose=basicAttackPose();if(!pose)return;world.hero.attackAnim=Math.max(0,pose.duration-pose.elapsed);
+    if(isWolfForm()){session.wolfBasicDuration=pose.duration;session.wolfBasicUntil=world.time+world.hero.attackAnim;}
+    if(isNekoForm())session.nekoBasicUntil=world.time+world.hero.attackAnim;
+    if(isUshiForm())session.ushiBasicUntil=world.time+world.hero.attackAnim;
+  }
+  function stepBasicAttack(dt){
+    const a=session.basicAttack;if(!a)return;
+    if(scene!=='hunt'||game.area!==a.area||basicAttackIdentity()!==a.identity||game.hp<=0||session.respawn>0||world.hero.talentControl?.remaining>0){cancelBasicAttack();return;}
+    retimeAttack(a.clock,getDerived().speed);a.clock.step(dt,{inCombat:true,direction:world.hero.direction});
+    if(!a.clock.locked()){session.basicAttack=null;world.hero.attackAnim=0;}else syncBasicAttackVisual();
+  }
+  function beginBasicAttack(m,mult,area,speed){
+    if(basicAttackPose())return false;
+    const fruit=game.zoanTransformed?equippedZoan():null;faceCombatTarget(m);
+    const clip=fruit?MareZoanArt.attackTiming(fruit.id,world.hero.direction):{frames:4,fps:8,impact_frame:2,loop:false};if(!clip)return false;
+    const clock=MareCombatAnimation.create({attack:clip}),identity=basicAttackIdentity(),zone=game.area;
+    clock.play('attack',{direction:world.hero.direction,attackSpeed:speed,onImpact:()=>{
+      if(basicAttackIdentity()===identity&&game.area===zone&&world.mobs.includes(m))heroAttack(m,mult,null,area,true);
+    }});
+    session.basicAttack={clock,identity,area:zone};world.hero.walking=0;syncBasicAttackVisual();return true;
+  }
   function heroAttack(m,mult=1,skill=null,area=false,commit=false){
-    if(wolfSkillActive()||isWolfForm()&&world.time<(session.wolfBasicUntil||0)||ushiSkillActive()||isUshiForm()&&world.time<(session.ushiBasicUntil||0)||nekoSkillActive()||isNekoForm()&&world.time<(session.nekoBasicUntil||0))return false;
+    if(wolfSkillActive()||ushiSkillActive()||nekoSkillActive()||!commit&&basicAttackPose())return false;
     if(isNekoForm()||isUshiForm()||isWolfForm())faceCombatTarget(m||world.hero);
     let s=getDerived();
     if(scene!=='hunt'||!m||!m.alive||world.hero.talentControl?.remaining>0||session.respawn>0||distance(world.hero,m)>s.range+(area?125:1)||!navigator().clear(world.hero,m))return false;
@@ -656,24 +686,20 @@
       if(controller.locked())return false;
       faceCombatTarget(m);world.hero.walking=0;
       const action=skill?'skill':classCombat.basicAction(game,world.hero);
-      const accepted=controller.play(action,{direction:world.hero.direction,onImpact:()=>heroAttack(m,mult,skill,area,true)});
+      const accepted=controller.play(action,{direction:world.hero.direction,...(!skill?{attackSpeed:s.speed}:{}),onImpact:()=>heroAttack(m,mult,skill,area,true)});
       if(accepted&&!skill)world.hero.combatSequence++;
       return accepted;
     }
+    if(!controller&&!commit&&!skill)return beginBasicAttack(m,mult,area,s.speed);
     MareHaki.touch(game,session.haki);s=getDerived();if(session.haki.active==='observation')session.haki.eyeFX=.25;
     if(session.talents.targetId!==m.id){session.talents.targetId=m.id;session.talents.combo=0;}
     const zoan=!!(game.zoanTransformed&&equippedZoan()),elemental=!zoan&&MareCharacters.roles[game.classId].magic;
     const type=skill?.damageType||(elemental?'elemental':'physical');
-    if(isNekoForm()&&!skill){world.hero.attackAnim=.5;session.nekoBasicUntil=world.time+.5;}
-    if(isUshiForm()&&!skill){world.hero.attackAnim=MareUshi.rules.attackDuration;session.ushiBasicUntil=world.time+MareUshi.rules.attackDuration;}
-    if(isWolfForm()&&!skill){session.wolfBasicDuration=MareWolf.cycle(s.speed);world.hero.attackAnim=session.wolfBasicDuration;session.wolfBasicUntil=world.time+session.wolfBasicDuration;}
     if(type==='physical'&&Math.random()>s.accuracy){spawnVisual(m.x,m.y-40,'ERROU','#cec4a6',11);return true;}
     const rt=session.talents,ultimate=MareUltimates.selected(game),passiveArea=area||(!skill&&ultimate==='titan'),prepared=MareTalentCombat.beforeHit(game,rt,{target:m,hero:world.hero,stats:s,basic:!skill,magic:type==='elemental',area:passiveArea,critical:Math.random()<s.crit});
     const crit=prepared.critical,baseRaw=prepared.trueAmount??MareCharacters.damage(prepared.critMultiplier?{...s,critMultiplier:prepared.critMultiplier}:s,prepared.armor,{type,multiplier:mult*prepared.multiplier,variance:rand(.90,1.12),critical:crit});
     const raw=isUshiForm()&&!skill?baseRaw*MareUshi.basicMultiplier(ushiBuffActive()):baseRaw;
-    if(isUshiForm()&&!skill)session.ushiBasicUntil=world.time+MareUshi.rules.attackDuration;
-    world.hero.attackAnim=zoan?(isWolfForm()?session.wolfBasicDuration:isUshiForm()?MareUshi.rules.attackDuration:isNekoForm()?.5:.75):.22;
-    if(isNekoForm()&&!skill)session.nekoBasicUntil=world.time+.5;
+    if(!commit)world.hero.attackAnim=zoan?.75:.22;
     if(skill?.element==='lightning')m.slow=4.5;
     const color=skill?.element==='fire'?'#ff995b':skill?.element==='lightning'?'#dac2ff':elemental?'#70d9f1':classes[game.classId].color;
     if(!zoan&&['gunner','cyborg','strategist','healer'].includes(game.classId))addProjectile(world.hero.x+world.hero.facing*13,world.hero.y-27,m.x,m.y-24,color);
@@ -812,17 +838,18 @@
     if(reaction.explode&&game.hp>0)for(const m of livingMobs().filter(m=>distance(world.hero,m)<=120&&navigator().clear(world.hero,m)))outputDamage(m,MareCharacters.damage({...d,elemental:d.attack},enemyArmor(m,true)*(1-d.magicPen),{type:'elemental',multiplier:.6}));
     const controller=classCombatController();
     if(controller&&(!direct||game.hp<=0)){world.hero.walking=0;controller.play(game.hp<=0?'death':'hurt',{direction:world.hero.direction});}
-    if(game.hp<=0){cancelNekoAction();clearUshiState();clearWolfState();clearSupaProtection();session.respawn=4.1;session.heroKOs++;MareHaki.stop(session.haki);session.talents=MareTalentCombat.create();toast('Você caiu em combate. Retornando em 4 segundos.','danger');log('Derrotado em batalha. Você renascerá em breve.','danger');world.target=null;}
+    if(game.hp<=0){cancelBasicAttack();cancelNekoAction();clearUshiState();clearWolfState();clearSupaProtection();session.respawn=4.1;session.heroKOs++;MareHaki.stop(session.haki);session.talents=MareTalentCombat.create();toast('Você caiu em combate. Retornando em 4 segundos.','danger');log('Derrotado em batalha. Você renascerá em breve.','danger');world.target=null;}
   }
   function enemyArmor(m,magic=false){return m.empRemaining>0?0:(magic?(m.magicDefense??m.defense):m.defense)*(m.hakiDebuff>0?.85:1)*(m.zoanDefense?.remaining>0?.95:1);}
   function onScreenMobs(){return livingMobs().filter(m=>m.x>=camera.x&&m.x<=camera.x+W&&m.y>=camera.y&&m.y<=camera.y+H);}
   function tick(dt){if(!game||!session)return;world.time+=dt;session.elapsed+=dt;game.totalPlay+=dt;session.cooldowns=session.cooldowns.map(v=>Math.max(0,v-dt));session.fruitCooldown=Math.max(0,session.fruitCooldown-dt);session.fruitInvulnerable=Math.max(0,session.fruitInvulnerable-dt);session.fruitBurst=Math.max(0,session.fruitBurst-dt);if(session.fruitBurst<=0&&world.hero.visible===false){world.hero.visible=true;session.beriSpheres=null;}world.corpses=world.corpses.filter(c=>c.expires>world.time);world.food=world.food.filter(f=>f.expires>world.time);session.guard=Math.max(0,session.guard-dt);session.blessing=Math.max(0,session.blessing-dt);session.lastHit=Math.max(0,session.lastHit-dt);session.bossNotice=Math.max(0,session.bossNotice-dt);if(session.bossNotice<=0)$('bossBanner').classList.add('hidden');world.hero.attackAnim=Math.max(0,world.hero.attackAnim-dt);world.hero.walking=Math.max(0,world.hero.walking-dt);
     if(session.zoanDash){const dash=session.zoanDash,step=Math.min(dash.remaining,800*dt),beforeX=world.hero.x,beforeY=world.hero.y;navigator().move(world.hero,dash.dx*step,dash.dy*step);const moved=Math.hypot(world.hero.x-beforeX,world.hero.y-beforeY);dash.remaining-=step;world.hero.walking=.2;for(const mob of livingMobs())if(!dash.hit&&(dash.hitId==null||String(dash.hitId)===String(mob.id))&&Math.hypot(mob.x-world.hero.x,mob.y-world.hero.y)<45){dash.hit=true;outputDamage(mob,MareCharacters.damage(getDerived(),enemyArmor(mob),{type:'physical',multiplier:.55}));navigator().move(mob,dash.dx*45,dash.dy*45);world.fx.push({x:mob.x,y:mob.y,ring:1,life:.3,max:.3,color:'#e7a65a'});}if(dash.remaining<=0||moved<.1)session.zoanDash=null;}
-    stepNekoAction(dt);stepUshiAction();stepDoruProjectiles(dt);stepWolfAction(dt);stepWolfBleeds();
+    stepBasicAttack(dt);stepNekoAction(dt);stepUshiAction();stepDoruProjectiles(dt);stepWolfAction(dt);stepWolfBleeds();
     MareHaki.tick(game,session.haki,dt,{alive:game.hp>0&&session.respawn<=0,inHunt:scene==='hunt'});
     if(DEV_ACTIVE){if(game.devOptions?.infiniteWill&&game.has_haki_unlocked)game.haki.current=100;if(game.devOptions?.noCooldown){session.cooldowns=[0,0];game.talentCooldowns={};game.haki.kingReadyAt=0;}}
     for(const m of world.mobs)m.hakiDebuff=Math.max(0,(m.hakiDebuff||0)-dt);
     const combat=classCombatController();
+    retimeAttack(combat,getDerived().speed);
     combat?.step(dt,{moving:world.hero.walking>0,inCombat:scene==='hunt',direction:world.hero.direction});
     world.fx=world.fx.filter(f=>(f.life-=dt)>0);for(let f of world.fx)if(Number.isFinite(f.dy))f.y+=f.dy*dt;world.projectiles=world.projectiles.filter(p=>(p.progress+=dt*3.7)<1);
     if(world.hero.talentControl)world.hero.talentControl.remaining=Math.max(0,world.hero.talentControl.remaining-dt);
@@ -892,7 +919,7 @@
             if(skill.type==='strike'||(skill.type==='area'&&livingMobs().filter(m=>distance(m,target)<125).length>=2))useSkill(i);
           }
         }
-        session.attackClock-=dt;if(session.attackClock<=0&&heroAttack(target))session.attackClock=1/Math.max(.35,stats.speed);
+        session.attackClock-=dt;if(session.attackClock<=0&&heroAttack(target))session.attackClock=MareCombatAnimation.attackDuration(stats.speed);
         if(autoSkills)for(const [i,skill] of classes[game.classId].skills.entries()){
           if(skill.type==='strike'||skill.type==='taunt'||(skill.type==='area'&&livingMobs().filter(m=>distance(m,target)<125).length>=2))useSkill(i);
         }
@@ -1813,18 +1840,18 @@
   function drawCoral(x,y){px(ctx,x-4,y-18,8,28,'#c78375');px(ctx,x-15,y-19,7,12,'#de9b82');px(ctx,x+12,y-28,7,31,'#d3857c');px(ctx,x-20,y-20,17,6,'#e4a190');px(ctx,x+4,y-23,20,7,'#e7aa93');px(ctx,x-11,y+2,28,8,'#92735f');}
   function drawCrate(x,y){px(ctx,x-13,y-17,30,26,'#634e38');px(ctx,x-10,y-13,24,20,'#9f8158');px(ctx,x-10,y-12,24,3,'#c29b66');px(ctx,x-2,y-13,3,20,'#5f4938');px(ctx,x-10,y+3,24,3,'#614b36');}
   function drawRuin(x,y){px(ctx,x-10,y-18,23,24,'#52635c');px(ctx,x-12,y-25,27,9,'#859385');px(ctx,x-8,y-19,5,25,'#98a18a');px(ctx,x+8,y-19,5,25,'#3e594d');px(ctx,x-18,y+6,39,9,'#53695e');}
-  function drawPaperDoll(c,x,y,action,direction,time,scale=null){
+  function drawPaperDoll(c,x,y,action,direction,time,scale=null,progress=null){
     if(!MarePaperDollCatalog.eligible(game))return false;
-    if(DEV_ACTIVE&&paperDollReview.draw(c,game,action,direction,time,x,y,scale))return true;
-    const appearance=MarePaperDollCatalog.appearance(game),pose=MarePaperDollCatalog.sample(paperDoll,game,action,direction,time);
+    if(DEV_ACTIVE&&paperDollReview.draw(c,game,action,direction,time,x,y,scale,progress))return true;
+    const appearance=MarePaperDollCatalog.appearance(game),pose=MarePaperDollCatalog.sample(paperDoll,game,action,direction,time,{progress});
     return pose?paperDoll.draw(c,appearance,pose,x,y,{scale}):false;
   }
   const reportedSpriteFailures=new Set();
-  function drawConfiguredHuman(c,x,y,action,direction,time,height=74){
+  function drawConfiguredHuman(c,x,y,action,direction,time,height=74,progress=null){
     const entry=classCombat.entry(game);
     if(!entry)return drawFactionSprite(c,x,y,game.factionId,action==='walk'?'walk':'idle',height,false,direction,time);
     const clip=classCombat.action(game,action);
-    if(classCombat.draw(c,game,x,y,{action,direction,time,height}))return true;
+    if(classCombat.draw(c,game,x,y,{action,direction,time,height,progress}))return true;
     const state=MareFactionSprites.status(entry.assetId,clip);
     if(state==='failed'||state==='missing'||state==='unsupported'){
       const key=entry.assetId+':'+clip+':'+direction;
@@ -1837,6 +1864,8 @@
     const hero=world.hero,attack=hero.attackAnim>0&&scene==='hunt',moving=hero.walking>0;
     const zoan=equippedZoan();
     if(game.zoanTransformed&&zoan){
+      const basic=basicAttackPose();
+      if(basic)return MareZoanArt.draw(c,zoan.id,x,y,{action:'attack',direction:basic.direction,time:basic.elapsed,progress:basic.progress,duration:basic.duration,scale:isWolfForm()?MareWolf.visuals.worldScale:isUshiForm()?MareUshi.visuals.worldScale:isNekoForm()?MareNeko.visuals.worldScale:zoan.id==='akuma_tori_albatroz'?104/64:74/48});
       const nekoAction=zoan.id==='akuma_neko_leopard'?session.nekoAction:null;
       if(isWolfForm()){const a=session.wolfAction,action=a?(a.phase==='finish'?'finish':'charge'):attack?'attack':moving?'walk':'idle',time=a?world.time-(a.phase==='finish'?a.finished:a.started):attack?(session.wolfBasicDuration||.75)-hero.attackAnim:world.time;return MareZoanArt.draw(c,zoan.id,x,y,{action,direction:hero.direction,time,scale:MareWolf.visuals.worldScale,duration:session.wolfBasicDuration||.75});}
       const ushiAction=isUshiForm()?session.ushiAction:null;
@@ -1846,11 +1875,12 @@
       if(!drawn&&MareZoanArt.status?.(zoan.id,action,hero.direction)==='failed')drawMissingSprite(c,x,y);
       return drawn;
     }
-    const combat=classCombatController(),pose=combat?.snapshot(),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
-    if((!attack||combat)&&drawPaperDoll(c,x,y,requested,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time))return true;
+    const combat=classCombatController(),pose=combat?.snapshot()||basicAttackPose(),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
+    if((!attack||combat)&&drawPaperDoll(c,x,y,requested,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time,null,pose?.locked?pose.progress:null))return true;
+    if(basicAttackPose()&&!classCombat.asset(game))return drawFactionSprite(c,x,y,game.factionId,'idle',74,false,pose.direction,world.time);
     if(classCombat.entry(game)){
       const action=pose?.locked?pose.action:attack?'attack':'combat-idle';
-      return drawConfiguredHuman(c,x,y,action,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time);
+      return drawConfiguredHuman(c,x,y,action,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time,74,pose?.locked?pose.progress:null);
     }
     if(['attack','skill','skill-1','skill-2','hurt','death','guard'].includes(requested))return true;
     return drawConfiguredHuman(c,x,y,moving?'walk':'idle',hero.direction,world.time);
@@ -2360,7 +2390,7 @@ function applySceneHudLayout(){
   $('devLauncher').hidden=!MareDev.ENABLED;$('devLauncher').textContent=DEV_ACTIVE?'DEV ATIVO':'DEV';document.body.classList.toggle('dev-sandbox',DEV_ACTIVE);if(DEV_ACTIVE){document.title='[DEV] '+document.title;const badge=document.createElement('div');badge.className='dev-badge';badge.textContent=paperDollReview.snapshot().enabled?'LABORATÓRIO · PAPER DOLL EM REVISÃO':'LABORATÓRIO · SAVE DE TESTE';document.body.append(badge);}
   const previous=loadGame();if(previous){game=previous;let d=getDerived();game.hp=clamp(Number(game.hp)||1,0,d.maxHP);game.energy=clamp(Number(game.energy)||0,0,d.maxEnergy);startGame();toast('Bem-vindo de volta, '+game.name+'!','good');}else{$('startOverlay').classList.remove('hidden');openCreation(false);$('characterName').focus();}
   // Diagnóstico somente leitura para testes de regressão da demo local.
-  window.__mareDiagnostics=()=>({dev:{active:DEV_ACTIVE,key:STORAGE_KEY,options:game?.devOptions},akuma:{registered:MareAkuma.registered(game),equipped:game?.equipment?.akuma_no_mi?.id||null,current_fruit_vfx,cooldowns:{...game?.fruitCooldowns},shieldActive:supaShieldActive(),shieldUntil:session?.supaShieldUntil||0,nekoAction:session?.nekoAction?{...session.nekoAction}:null,nekoTransformed:isNekoForm(),wolfTransformed:isWolfForm(),wolfAuraActive:wolfAuraActive(),wolfAction:session?.wolfAction?{...session.wolfAction}:null,doruProjectiles:(session?.doruProjectiles||[]).map(p=>({...p})),doruImpactPending:session?.doruImpactPending||0,doruSyncError:session?.doruSyncError||null,ushiTransformed:isUshiForm(),ushiBuffActive:ushiBuffActive(),ushiAction:session?.ushiAction?{...session.ushiAction}:null,fx:world.fx.filter(f=>f.supaVfx).map(f=>({...f}))},hakiBookDef:itemDefs.indexOf(MareHaki.book),haki:game?{...game.haki,...session?.haki,unlocked:game.has_haki_unlocked}:null,hunt:game?{progress:game.hunts,sector:MareHunt.sectorAt(game.area,world.hero,huntAnchors()),bossReady:MareHunt.bossReady(game,game.area,world.hero,Date.now(),huntAnchors())}:null,scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H,zoom:worldZoom.value},telemetry:session?MareHudTelemetry.stats({scene,elapsed:session.elapsed,xp:session.xp,levelXP:game?.xp,neededXP:game?xpNeeded(game.level):1}):null,map:{id:activeMap().id,width:activeMap().width,height:activeMap().height},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):activeMap().id==='rare'?MareRare.paths.map(p=>({...p})):activeMap().id==='dawn'?MareDawn.paths.map(p=>({...p})):activeMap().id==='conchas'?MarePixelWorldMaps.conchas.districts.map(p=>({...p})):['orange','loguetown'].includes(activeMap().id)?huntAnchors():activeMap().id==='embers'?MareEmber.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,talents:session?.talents?MareTalentCombat.snapshot(session.talents):null,talentPoints:game?MareTalents.available(game):0,classId:game?.classId,combat:world.hero.combat?.snapshot()??null,combatAssetId:world.hero.combatAssetId??null,paperDollReview:paperDollReview.snapshot(),paperDoll:{...paperDoll.stats(),appearance:game?MarePaperDollCatalog.appearance(game):null},energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,skillEnergySpent:session?.skillEnergySpent,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,type:m.type,name:monsterName(m),skin:m.skin,district:m.district,area:m.area,maxHP:m.maxHP,attack:m.attack,defense:m.defense,telegraph:m.telegraph?{...m.telegraph}:null,x:m.x,y:m.y,hp:m.hp,wolfBleed:m.wolfBleed?{...m.wolfBleed}:null,isRooted:MareDoru.isRooted(m,world.time),doruRootUntil:m.doruRootUntil||0,poison:m.talentPoison?{...m.talentPoison}:null,level:m.level,hakiDebuff:m.hakiDebuff||0,control:m.talentControl?{...m.talentControl}:null,emp:m.empRemaining||0,marks:m.assassinMarks||0,burn:m.ultimateBurn?{...m.ultimateBurn}:null,clonePoison:m.clonePoison?{...m.clonePoison}:null,wear:m.talentWear?{...m.talentWear}:null,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});
+  window.__mareDiagnostics=()=>({dev:{active:DEV_ACTIVE,key:STORAGE_KEY,options:game?.devOptions},akuma:{registered:MareAkuma.registered(game),equipped:game?.equipment?.akuma_no_mi?.id||null,current_fruit_vfx,cooldowns:{...game?.fruitCooldowns},shieldActive:supaShieldActive(),shieldUntil:session?.supaShieldUntil||0,nekoAction:session?.nekoAction?{...session.nekoAction}:null,nekoTransformed:isNekoForm(),wolfTransformed:isWolfForm(),wolfAuraActive:wolfAuraActive(),wolfAction:session?.wolfAction?{...session.wolfAction}:null,doruProjectiles:(session?.doruProjectiles||[]).map(p=>({...p})),doruImpactPending:session?.doruImpactPending||0,doruSyncError:session?.doruSyncError||null,ushiTransformed:isUshiForm(),ushiBuffActive:ushiBuffActive(),ushiAction:session?.ushiAction?{...session.ushiAction}:null,fx:world.fx.filter(f=>f.supaVfx).map(f=>({...f}))},hakiBookDef:itemDefs.indexOf(MareHaki.book),haki:game?{...game.haki,...session?.haki,unlocked:game.has_haki_unlocked}:null,hunt:game?{progress:game.hunts,sector:MareHunt.sectorAt(game.area,world.hero,huntAnchors()),bossReady:MareHunt.bossReady(game,game.area,world.hero,Date.now(),huntAnchors())}:null,scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H,zoom:worldZoom.value},telemetry:session?MareHudTelemetry.stats({scene,elapsed:session.elapsed,xp:session.xp,levelXP:game?.xp,neededXP:game?xpNeeded(game.level):1}):null,map:{id:activeMap().id,width:activeMap().width,height:activeMap().height},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):activeMap().id==='rare'?MareRare.paths.map(p=>({...p})):activeMap().id==='dawn'?MareDawn.paths.map(p=>({...p})):activeMap().id==='conchas'?MarePixelWorldMaps.conchas.districts.map(p=>({...p})):['orange','loguetown'].includes(activeMap().id)?huntAnchors():activeMap().id==='embers'?MareEmber.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,talents:session?.talents?MareTalentCombat.snapshot(session.talents):null,talentPoints:game?MareTalents.available(game):0,classId:game?.classId,combat:world.hero.combat?.snapshot()??basicAttackPose(),combatAssetId:world.hero.combatAssetId??null,paperDollReview:paperDollReview.snapshot(),paperDoll:{...paperDoll.stats(),appearance:game?MarePaperDollCatalog.appearance(game):null},energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,skillEnergySpent:session?.skillEnergySpent,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,type:m.type,name:monsterName(m),skin:m.skin,district:m.district,area:m.area,maxHP:m.maxHP,attack:m.attack,defense:m.defense,telegraph:m.telegraph?{...m.telegraph}:null,x:m.x,y:m.y,hp:m.hp,wolfBleed:m.wolfBleed?{...m.wolfBleed}:null,isRooted:MareDoru.isRooted(m,world.time),doruRootUntil:m.doruRootUntil||0,poison:m.talentPoison?{...m.talentPoison}:null,level:m.level,hakiDebuff:m.hakiDebuff||0,control:m.talentControl?{...m.talentControl}:null,emp:m.empRemaining||0,marks:m.assassinMarks||0,burn:m.ultimateBurn?{...m.ultimateBurn}:null,clonePoison:m.clonePoison?{...m.clonePoison}:null,wear:m.talentWear?{...m.talentWear}:null,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});
   requestAnimationFrame(frame);
 })();
 
