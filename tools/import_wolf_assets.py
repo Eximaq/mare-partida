@@ -15,7 +15,8 @@ clips={}
 with zipfile.ZipFile(archive) as z:
     folders=sorted(set(n.split('/')[2] for n in z.namelist() if n.startswith('Idle/animations/')))
     attack=next(f for f in folders if f.startswith('Wind_back_'));charge=next(f for f in folders if f.startswith('Drop_down_'))
-    for action,folder in [('idle',None),('attack',attack),('charge',charge)]:
+    walk=next(f for f in folders if f=='Running_Jump')
+    for action,folder in [('idle',None),('attack',attack),('charge',charge),('walk',walk)]:
         clips[action]={}
         for direction in ['south','north','east','west']:
             names=[f'Idle/rotations/{direction}.png'] if folder is None else sorted(n for n in z.namelist() if n.startswith(f'Idle/animations/{folder}/{direction}/') and n.endswith('.png'))

@@ -5,6 +5,9 @@ const W=require('../wolf-system.js');
 assert.deepEqual(W.rules,require('../assets/akuma/wolf/rules.json'));
 assert.equal(A.slotsForRank({akumaCompendium:['akuma_inu_wolf']},'D')[4].fruit.id,'akuma_inu_wolf');
 for(const [time,want]of [[0,0],[.25,3],[.75,3],[1,6]])assert.equal(W.frameIndex('charge',time),want);
+for(const [time,want]of [[0,0],[1/12,1],[7/12,7],[8/12,0]])assert.equal(W.frameIndex('walk',time),want);
+for(const clip of Object.values(W.clips.walk))assert.equal(clip.frames,8);
+assert.equal(W.drawAuraParticles,undefined);
 for(const [time,want]of [[0,9],[1/12,10],[2/12,11],[3/12,12],[1,12]])assert.equal(W.frameIndex('finish',time),want);
 const bleed={nextTick:1,started:10};assert.deepEqual(W.dueTicks(bleed,10.999),[]);assert.deepEqual(W.dueTicks(bleed,11),[1]);assert.deepEqual(W.dueTicks(bleed,15),[2,3,4,5]);assert.deepEqual(W.dueTicks(bleed,16),[]);
 assert.equal(W.damage(100,0,1)+5*W.damage(100,0,.2),200);
@@ -29,13 +32,6 @@ for(const kind of ['aura','bleed']){
 }
 for(const action of ['idle','attack','charge','finish','walk'])for(const direction of ['front','back','left','right']){
  for(let i=0;i<30;i++)assert.equal(W.drawActor(ctx,100,200,{action,direction,time:i/12,scale:W.visuals.worldScale}),true);
-}
-const particleStart=calls.length;
-assert.equal(W.drawAuraParticles(ctx,100,200,800),true);
-assert.equal(calls.length-particleStart,3);
-for(const call of calls.slice(particleStart)){
- assert.ok(call[7]<=24&&call[8]<=24,'Front particles stay small');
- assert.ok(call[6]>=110,'Keep the face unobscured');
 }
 delete global.Image;
 const WN=require('../neko-system.js');assert.equal(WN.segmentHit({x:0,y:0},{x:100,y:0},{x:60,y:0},24),true);
