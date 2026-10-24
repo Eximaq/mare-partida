@@ -1,0 +1,25 @@
+[
+  {
+    "_comment_prompt": "Shared human punch clothing; preserve anatomy and native pixels.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required"
+    },
+    "MCP transfer_outfit": {
+      "frame_urls": [
+        "body-west-00.png",
+        "body-west-01.png",
+        "body-west-02-corrected.png",
+        "body-west-03.png",
+        "body-west-04.png",
+        "body-west-05.png",
+        "body-west-06.png",
+        "body-west-07.png"
+      ],
+      "reference_image_url": "outfit-west-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "additional_instructions": "Dress this same west-facing human in the reference's cream short-sleeved shirt and navy waistcoat. Preserve each input pose, bald head, face, hands, shorts, feet, pixel scale and transparency. Clothing covers only the torso and upper arms. Keep all eight frames in their original order."
+    }
+  }
+]

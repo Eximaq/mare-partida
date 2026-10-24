@@ -1,5 +1,7 @@
 # Desenvolvimento compartilhado no GitHub
 
+Personagem único em desenvolvimento: [estado consolidado e pendências](docs/PAPER-DOLL-CONCLUSAO.md). Personagem → Personalizar aparência oferece acesso ao editor do laboratório, com opções reais de cabelo/roupa, prévia direcional e save DEV isolado. A cobertura de ataques das outras categorias ainda está incompleta; não representa liberação global do Paper Doll.
+
 Continuação de22/10: [candidato de encaixe leste no Workbench](docs/PAPER-DOLL-ENCAIXE-LESTE.md). O ataque pode ser inspecionado em quatro direções; o novo vestuário leste ainda precisa de harmonização artística. Sem geração paga nesta etapa e sem ativação em produção.
 
 

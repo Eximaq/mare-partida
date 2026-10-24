@@ -1,0 +1,12 @@
+{
+  "status": "completed, inspecting",
+  "job_id": "84e324b4-3055-47a7-b058-2d1c879915dd",
+  "asset_id": "f350d80a-194b-5b37-9ff8-dc45252269ba",
+  "parameters_file": "outfit-request.json",
+  "estimated_generations": 10,
+  "reserved_generations": 25,
+  "production_enabled": false,
+  "reported_usage": {
+    "generations": 10
+  }
+}

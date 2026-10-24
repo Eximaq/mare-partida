@@ -87,4 +87,12 @@ assert(!engine.draw(ctx,appearance,pose,0,0),'an incomplete view map must fall b
 engine.registerPiece(body);engine.registerPiece(sword);
 images.set('sword.png',{complete:true,naturalWidth:256,naturalHeight:64});
 assert.equal(engine.resolve(appearance,pose).missing.at(-1).code,'invalid-sheet-size');
+images.set('sword.png',{complete:true,naturalWidth:64,naturalHeight:64});
+for(const slot of ['hair','accessory']){
+ const piece={...structuredClone(sword),id:slot,slot};engine.registerPiece(piece);
+ const withHair={...appearance,pieces:{...appearance.pieces,[slot]:slot}};
+ assert(engine.resolve(withHair,pose).valid,'measured hair/accessory sockets are supported');
+ piece.animations.idle.sockets.south[2].quarterTurns=1;engine.registerPiece(piece);
+ assert(engine.resolve(withHair,pose).missing.some(m=>m.code==='invalid-transform'),'hair cannot rotate through weapon-only controls');
+}
 console.log('Rigid attachment passed: one image, four real sockets, no interpolation, cache/toggles, replacement, atomic fallback, invalid transforms and no rigid anatomy bypass.');
