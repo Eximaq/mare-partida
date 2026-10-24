@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
 // Private fixture is injected only in this isolated browser response.
-const bridge=`  window.__ushiQA={paused:false,enterHunt,returnLobby,useFruitSkill,heroAttack,toggleZoanTransform,unequip,equipItem,takeDamage,saveGame,get game(){return game},get world(){return world},get session(){return session},get defs(){return itemDefs},nav:navigator,active:ushiBuffActive,stopAuto(){autoPlay=false;autoSkills=false},step(dt){world.time+=dt;stepUshiAction()},manual(key,dt){keys.add(key);const result=moveManually(dt);keys.clear();return result;}};\n  window.__mareDiagnostics=`;
+const bridge=`  window.__ushiQA={paused:false,enterHunt,returnLobby,useFruitSkill,heroAttack,toggleZoanTransform,unequip,equipItem,takeDamage,saveGame,get game(){return game},get world(){return world},get session(){return session},get defs(){return itemDefs},nav:navigator,active:ushiBuffActive,stopAuto(){autoPlay=false;autoSkills=false},step(dt){world.time+=dt;stepBasicAttack(dt);stepUshiAction()},manual(key,dt){keys.add(key);const result=moveManually(dt);keys.clear();return result;}};\n  window.__mareDiagnostics=`;
 (async()=>{
  const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
  try{
@@ -38,7 +38,7 @@ const bridge=`  window.__ushiQA={paused:false,enterHunt,returnLobby,useFruitSkil
   });assert.equal(hit.ok,true);assert.equal(hit.before,10000);assert.equal(hit.early,10000);assert.equal(hit.damage,Math.floor(setup.physical*1.8-21));assert.equal(hit.push,64);assert.equal(hit.other,10000);assert.equal(hit.blocked,true);assert.equal(hit.active,false);assert.equal(hit.energy,174);
   const buff=await page.evaluate(async()=>{
    const q=__ushiQA;const ok=await q.useFruitSkill(true,'2');q.game.hp=500;q.takeDamage(100,null,false,true);const hp=q.game.hp;
-   const basic=(active)=>{q.session.ushiBuffUntil=active?Date.now()+5000:0; q.session.ushiBasicUntil=0;q.world.target=q.world.mobs[1];q.world.target.defense=0;const before=q.world.target.hp,old=Math.random;Math.random=()=>.5;try{q.heroAttack(q.world.target);}finally{Math.random=old;}return before-q.world.target.hp;};
+   const basic=(active)=>{q.session.ushiBuffUntil=active?Date.now()+5000:0; q.session.ushiBasicUntil=0;q.world.target=q.world.mobs[1];q.world.target.defense=0;const before=q.world.target.hp,old=Math.random;Math.random=()=>.5;try{q.heroAttack(q.world.target);q.step(MareCombatAnimation.attackDuration(__mareDiagnostics().stats.speed)+.0001);}finally{Math.random=old;}return before-q.world.target.hp;};
    const normal=basic(false),boosted=basic(true);q.session.ushiBuffStartedAt=Date.now();
    return {ok,hp,active:q.active(),normal,boosted,energy:q.game.energy};
   });assert.equal(buff.ok,true);assert.equal(buff.hp,440);assert.equal(buff.active,true);assert.equal(buff.energy,144);assert.equal(buff.boosted,Math.floor(buff.normal*1.25));

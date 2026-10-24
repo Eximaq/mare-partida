@@ -59,9 +59,9 @@
       }catch(e){pack=null;state='failed';message='Prévia indisponível: '+e.message+' Sprite original preservado.';}
       notify();return snapshot();
     })():Promise.resolve(snapshot());
-    function draw(ctx,player,action,direction,time,x,y,scale){
+    function draw(ctx,player,action,direction,time,x,y,scale,progress=null){
       if(!pack||state!=='ready'||player?.devSandbox!==true)return false;
-      const config=appearance(pack,player),pose=root.MarePaperDollCatalog.sample(runtime,player,action,direction,time);
+      const config=appearance(pack,player),pose=root.MarePaperDollCatalog.sample(runtime,player,action,direction,time,{progress});
       if(!config||!pose){fallbacks++;lastReason='unsupported-character-or-action';return false;}
       if(config.hidden.includes('weapon')&&action!=='idle'&&action!=='walk'){fallbacks++;lastReason='missing-unarmed-animation';return false;}
       const ok=runtime.draw(ctx,config,pose,x,y,{scale,hidden:config.hidden,allowDraft:true});

@@ -485,9 +485,9 @@
   function image(url){if(!images.has(url)){const im=new Image();im.addEventListener?.('load',()=>{if(typeof window!=='undefined')window.dispatchEvent(new Event('mare-zoan-sprite-ready'));});im.src=url;images.set(url,im);}return images.get(url);}
   function preload(){for(const dirs of Object.values(clips))for(const clip of Object.values(dirs))image(clip.image);image(vfx.image);}
   function status(action='idle',direction='front'){const clip=clips[action]?.[directionNames[direction]||direction]||clips.idle.south,im=image(clip.image);return !im.complete?'loading':im.naturalWidth?'ready':'failed';}
-  function drawActor(c,x,y,{action='idle',direction='front',time=0,scale=1}={}){
+  function drawActor(c,x,y,{action='idle',direction='front',time=0,scale=1,progress=null}={}){
     const clip=clips[action]?.[directionNames[direction]||direction]||clips.idle.south,im=image(clip.image);if(!im.complete||!im.naturalWidth)return false;
-    const step=Math.max(0,Math.floor(time*clip.fps)),frame=['attack','dash'].includes(action)?Math.min(clip.frames-1,step):step%clip.frames;
+    const step=Number.isFinite(progress)?Math.min(clip.frames-1,Math.floor(Math.max(0,Math.min(1,progress))*clip.frames+1e-9)):Math.max(0,Math.floor(time*clip.fps)),frame=['attack','dash'].includes(action)?Math.min(clip.frames-1,step):step%clip.frames;
     c.save();c.imageSmoothingEnabled=false;c.drawImage(im,frame*clip.size,0,clip.size,clip.size,Math.round(x-clip.size*scale/2),Math.round(y-clip.feet[frame]*scale),Math.round(clip.size*scale),Math.round(clip.size*scale));c.restore();return true;
   }
   function vfxFrame(elapsed){if(elapsed<0||elapsed>=rules.comboDuration)return null;let t=Math.min(elapsed,vfx.duration-1);for(const frame of vfx.frames){if(t<frame.duration)return frame;t-=frame.duration;}return null;}

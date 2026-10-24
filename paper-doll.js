@@ -25,10 +25,10 @@
       const p=clone(input);if(!p.id||!p.rigId||!slots.includes(p.slot))throw new TypeError('Invalid piece identity.');
       pieces.set(p.id,p);clear();return p.id;
     }
-    function sample(rigId,animationId,direction,time=0){
+    function sample(rigId,animationId,direction,time=0,{progress=null}={}){
       const r=rigs.get(rigId),a=r?.animations[animationId],d=aliases[direction]||direction;
       if(!a||!a.directions.includes(d))return null;
-      const n=Math.floor(Math.max(0,Number.isFinite(time)?time:0)*a.fps);
+      const n=Number.isFinite(progress)?Math.min(a.frames-1,Math.floor(Math.max(0,Math.min(1,progress))*a.frames+1e-9)):Math.floor(Math.max(0,Number.isFinite(time)?time:0)*a.fps);
       return {animationId,direction:d,frameIndex:a.loop===false?Math.min(n,a.frames-1):n%a.frames,pivotX:r.pivotX,pivotY:r.pivotY};
     }
     function imageAudit(image,clip,r){

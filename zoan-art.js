@@ -29,10 +29,10 @@
     const image=asset(name,action,directions[direction]||'south');
     if(!image.complete)return 'loading';return image.naturalWidth>=(name==='tori'?64:48)?'ready':'failed';
   }
-  function draw(c,fruitId,x,y,{action='idle',direction='front',time=0,scale=1,duration=.75}={}){
-    if(fruitId==='akuma_neko_leopard')return root.MareNeko.drawActor(c,x,y,{action,direction,time,scale});
-    if(fruitId==='akuma_inu_wolf')return root.MareWolf.drawActor(c,x,y,{action,direction,time,scale,duration});
-    if(fruitId==='akuma_ushi_giraffe')return root.MareUshi.drawActor(c,x,y,{action,direction,time,scale});
+  function draw(c,fruitId,x,y,{action='idle',direction='front',time=0,scale=1,duration=.75,progress=null}={}){
+    if(fruitId==='akuma_neko_leopard')return root.MareNeko.drawActor(c,x,y,{action,direction,time,scale,progress});
+    if(fruitId==='akuma_inu_wolf')return root.MareWolf.drawActor(c,x,y,{action,direction,time,scale,duration,progress});
+    if(fruitId==='akuma_ushi_giraffe')return root.MareUshi.drawActor(c,x,y,{action,direction,time,scale,progress});
     const name=names[fruitId];if(!name)return false;
     const frameSize=name==='tori'?64:48;
     const facing=directions[direction]||'south';
@@ -41,7 +41,7 @@
     if(!image.complete||image.naturalWidth<frameSize)return false;
     const frames=Math.max(1,Math.floor(image.naturalWidth/frameSize));
     const fps=resolvedAction==='attack'?12:resolvedAction==='walk'?10:2;
-    const frame=Math.floor(time*fps)%frames;
+    const frame=Number.isFinite(progress)?Math.min(frames-1,Math.floor(Math.max(0,Math.min(1,progress))*frames+1e-9)):Math.floor(time*fps)%frames;
     const foot=name==='inu'?inuFeet[resolvedAction]?.[facing]?.[frame]??48:name==='tori'?toriFeet[resolvedAction]?.[facing]?.[frame]??64:48;
     c.save();c.imageSmoothingEnabled=false;
     c.drawImage(image,frame*frameSize,0,frameSize,frameSize,Math.round(x-frameSize*scale/2),Math.round(y-foot*scale),Math.round(frameSize*scale),Math.round(frameSize*scale));
@@ -58,6 +58,13 @@
     c.drawImage(image,index*48,0,48,48,Math.round(x-24*scale),Math.round(y-yOffset*scale),Math.round(48*scale),Math.round(48*scale));
     c.restore();return true;
   }
-  root.MareZoanArt={draw,drawVfx,status,names};
+  function attackTiming(fruitId,direction='front'){
+    const facing=directions[direction]||direction,system=fruitId==='akuma_neko_leopard'?root.MareNeko:fruitId==='akuma_ushi_giraffe'?root.MareUshi:fruitId==='akuma_inu_wolf'?root.MareWolf:null;
+    if(system){const clip=system.clips.attack[facing];return {frames:clip.frames,fps:clip.fps,impact_frame:clip.impact_frame??Math.floor(clip.frames*.45),hitFrameRatio:clip.hitFrameRatio,loop:false};}
+    const name=names[fruitId];if(!name)return null;
+    const size=name==='tori'?64:48,image=asset(name,'attack',facing);if(!image.complete||image.naturalWidth<size)return null;
+    const frames=Math.floor(image.naturalWidth/size);return {frames,fps:12,impact_frame:Math.floor(frames*.45),loop:false};
+  }
+  root.MareZoanArt={draw,drawVfx,status,names,attackTiming};
   if(typeof module!=='undefined')module.exports=root.MareZoanArt;
 })(globalThis);

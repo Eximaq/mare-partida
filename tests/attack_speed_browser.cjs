@@ -1,0 +1,48 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+let source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
+const bridge=`  window.__attackQA={speed:1,paused:false,enterHunt,heroAttack,draw:drawWorld,stepBasicAttack,cancelBasicAttack,controller:classCombatController,retime:retimeAttack,form:basicAttackIdentity,pose:basicAttackPose,syncFruitVfx,toggleZoanTransform,takeDamage,auto(enable){autoPlay=enable;autoSkills=false},runTick(dt){window.__attackQA.paused=false;try{tick(dt)}finally{window.__attackQA.paused=true}},nav:navigator,get game(){return game},get world(){return world},get session(){return session},get defs(){return itemDefs},stats:getDerived,center(){camera.update(world.hero,activeMap(),0,true)},stop(){autoPlay=false;autoSkills=false},step(dt){world.time+=dt;stepBasicAttack(dt);const c=classCombatController();retimeAttack(c,getDerived().speed);c?.step(dt,{inCombat:true,direction:world.hero.direction});}};\n  window.__mareDiagnostics=`;
+source=source.replace('  window.__mareDiagnostics=',bridge).replace('function tick(dt){','function tick(dt){if(window.__attackQA?.paused)return;').replace('function getDerived(', 'function originalDerived(');
+source=source.replace('function originalDerived(', 'function getDerived(...args){const s=originalDerived(...args);if(window.__attackQA){s.speed=__attackQA.speed;s.accuracy=1;s.crit=0;}return s;}\n  function originalDerived(');
+(async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});try{
+ const context=await browser.newContext({viewport:{width:Number(process.env.MARE_TEST_WIDTH)||1440,height:900}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8140/',{waitUntil:'domcontentloaded'});
+ await page.locator('#characterName').fill('Attack QA');await page.locator('#nextToClass').click();await page.locator('#createCharacter').click();
+ await page.evaluate(()=>{const q=__attackQA;q.game.level=30;q.enterHunt();q.paused=true;q.stop();q.world.spawnClock=1e9;Math.random=()=>.5;
+  const n=q.nav();let origin,target;for(let y=128;y<n.map.height-128&&!origin;y+=64)for(let x=128;x<n.map.width-128&&!origin;x+=64){if(n.walkable(x,y)&&n.clear({x,y},{x:x+45,y})){origin={x,y};target={x:x+45,y};}}
+  if(!origin)throw Error('No open attack fixture');Object.assign(q.world.hero,origin);q.center();q.world.mobs=[{id:'victim',type:'bandit',district:__mareDiagnostics().hunt.sector.id,alive:true,hp:100000,maxHP:100000,defense:0,level:8,area:q.game.area,...target,anchorX:target.x,anchorY:target.y,attack:0,attackClock:999,bob:0,speed:0}];q.world.target=q.world.mobs[0];
+ });
+ const identities=['human','akuma_tori_albatroz','akuma_uma_uma','akuma_inu_dachshund','akuma_neko_leopard','akuma_ushi_giraffe','akuma_inu_wolf'];let scenarios=0;
+ for(const identity of identities){
+  await page.evaluate(id=>{const q=__attackQA;q.cancelBasicAttack();q.world.hero.combat=null;q.game.equipment.akuma_no_mi=id==='human'?null:{id:'qa-fruit',def:q.defs.findIndex(d=>d.fruitId===id),fruitId:id,plus:0,level:1};q.game.zoanTransformed=id!=='human';q.game.classId='sword';q.game.factionId='pirate';q.syncFruitVfx();q.draw();q.controller();},identity);
+  assert.equal(await page.evaluate(()=>__attackQA.form()),identity==='human'?'sword:pirate':identity);
+  await page.waitForFunction(id=>id==='human'?!!__attackQA.controller()&&MareFactionSprites.status(__attackQA.world.hero.combatAssetId,'attack')==='ready':MareZoanArt.status(id,'attack','right')==='ready',identity);
+  for(const speed of [.5,1,2,100]){
+   const r=await page.evaluate(speed=>{const q=__attackQA,m=q.world.mobs[0];q.cancelBasicAttack();q.controller()?.reset();q.speed=speed;m.hp=100000;m.alive=true;q.world.fx=[];q.world.hero.attackAnim=0;
+    const ok=q.heroAttack(m),pose=q.controller()?.snapshot()||q.pose(),duration=pose.duration,hit=duration*pose.hitFrameRatio;
+    const immediate=m.hp;q.step(Math.max(0,hit-1e-6));const before=m.hp;q.step(1e-6);const impact=m.hp,at=q.controller()?.snapshot()||q.pose();q.draw();q.step(duration*2);const after=m.hp,end=q.controller()?.snapshot()||q.pose();return {ok,duration,immediate,before,impact,after,progress:at.progress,frame:at.currentFrame,expected:Math.floor(pose.hitFrameRatio*pose.frames+1e-9),ended:!end?.locked};
+   },speed);assert.equal(r.ok,true,identity);assert.equal(r.duration,Math.max(.15,1/speed));assert.equal(r.immediate,100000);assert.equal(r.before,100000);assert.ok(r.impact<100000,identity+' damage at hit');assert.equal(r.after,r.impact);assert.equal(r.frame,r.expected);assert.equal(r.ended,true);scenarios++;
+   if(process.env.MARE_QA_DIR&&speed===1&&['human','akuma_inu_wolf'].includes(identity)){
+    await page.evaluate(()=>{const q=__attackQA;q.cancelBasicAttack();q.controller()?.reset();q.heroAttack(q.world.mobs[0]);const p=q.controller()?.snapshot()||q.pose();q.step(p.duration*p.hitFrameRatio);q.draw();});
+    fs.mkdirSync(process.env.MARE_QA_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.MARE_QA_DIR,'attack-impact-'+identity+'.png')});await page.evaluate(()=>__attackQA.step(2));
+   }
+  }
+ }
+ // Exercise all human class/faction clips with their own directional metadata.
+ for(const faction of ['pirate','marine','revolutionary','government'])for(const role of ['sword','brawler','gunner','rogue','cyborg','strategist','healer']){
+  await page.evaluate(({faction,role})=>{const q=__attackQA;q.cancelBasicAttack();q.game.zoanTransformed=false;q.game.equipment.akuma_no_mi=null;q.game.classId=role;q.game.factionId=faction;q.world.hero.combat=null;q.controller();}, {faction,role});
+  await page.waitForFunction(()=>{const q=__attackQA,c=q.controller();return !c||Object.keys(MareFactionSprites.assets[q.world.hero.combatAssetId].meta.animations).every(a=>MareFactionSprites.status(q.world.hero.combatAssetId,a)==='ready');});
+  const r=await page.evaluate(()=>{const q=__attackQA,m=q.world.mobs[0];q.speed=2;m.hp=100000;const ok=q.heroAttack(m),p=(q.controller()?.snapshot()||q.pose());q.step(p.duration*p.hitFrameRatio-1e-6);const before=m.hp;q.step(1e-6);const after=m.hp;q.step(1);return {ok,before,after};});assert.equal(r.ok,true);assert.equal(r.before,100000);assert.ok(r.after<100000);scenarios++;
+ }
+ const safety=await page.evaluate(()=>{const q=__attackQA,m=q.world.mobs[0];q.controller()?.reset();q.speed=1;m.hp=100000;q.heroAttack(m);q.step(.1);const before=(q.controller()?.snapshot()||q.pose()).progress;q.speed=2;q.retime(q.controller(),q.speed);const after=(q.controller()?.snapshot()||q.pose()).progress;q.step(2);const one=m.hp;q.step(2);const once=m.hp===one;
+  q.controller()?.reset();m.hp=100000;q.heroAttack(m);const original=m.x;m.x+=1000;q.step(2);const movedMiss=m.hp===100000;m.x=original;
+  q.controller()?.reset();q.game.hp=1;q.heroAttack(m);q.takeDamage(1e6,null,false,true);q.step(2);return {before,after,once,movedMiss,deathCancelled:m.hp===100000};});assert.ok(Math.abs(safety.before-safety.after)<1e-8);assert.equal(safety.once,true);assert.equal(safety.movedMiss,true);assert.equal(safety.deathCancelled,true);
+ const zoanCancel=await page.evaluate(async()=>{const q=__attackQA,m=q.world.mobs[0];q.game.hp=q.stats().maxHP;q.session.respawn=0;q.game.zoanTransformed=true;q.game.equipment.akuma_no_mi={id:'qa-wolf',def:q.defs.findIndex(d=>d.fruitId==='akuma_inu_wolf'),fruitId:'akuma_inu_wolf',plus:0,level:1};q.syncFruitVfx();q.speed=1;m.hp=100000;q.heroAttack(m);q.step(.1);await q.toggleZoanTransform();q.step(2);const transform=m.hp===100000&&!q.pose();q.game.zoanTransformed=true;q.game.hp=1;q.heroAttack(m);q.takeDamage(1e6,null,false,true);q.step(2);return {transform,death:m.hp===100000&&!q.pose()};});assert.deepEqual(zoanCancel,{transform:true,death:true});
+ const cadence=await page.evaluate(()=>{const q=__attackQA,m=q.world.mobs[0],rows=[];q.game.hp=q.stats().maxHP;q.session.respawn=0;m.attackClock=1e9;m.speed=0;m.hp=100000;m.alive=true;
+  for(const [id,speed,duration]of [['human',2,.5],['akuma_inu_wolf',100,.15]]){q.cancelBasicAttack();q.world.hero.combat=null;q.game.classId='sword';q.game.factionId='pirate';q.game.equipment.akuma_no_mi=id==='human'?null:{id:'qa-cadence',def:q.defs.findIndex(d=>d.fruitId===id),fruitId:id,plus:0,level:1};q.game.zoanTransformed=id!=='human';q.speed=speed;q.session.attackClock=0;q.world.target=m;q.auto(true);const starts=[];
+   for(let i=0;i<400;i++){q.runTick(.005);const p=q.controller()?.snapshot()||q.pose();if(p?.action==='attack'&&p.elapsed<1e-8)starts.push(q.world.time);}
+   rows.push({id,duration,starts});q.auto(false);
+  }return rows;});for(const row of cadence){assert.ok(row.starts.length>=3);for(let i=1;i<row.starts.length;i++)assert.ok(Math.abs(row.starts[i]-row.starts[i-1]-row.duration)<.011,JSON.stringify(row));}
+ assert.deepEqual(errors,[]);console.log('Attack scaling browser: '+scenarios+' scenarios; humans/Zoans, exact hit boundary, single damage, 150ms cap, buff retiming, range and death cancellation passed');await context.close();
+ }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1});
