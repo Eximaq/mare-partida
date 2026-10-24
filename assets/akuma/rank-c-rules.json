@@ -37,9 +37,9 @@
       "healing_received_percent": 0.08
     },
     "mutationVfx": {
-      "width": 96,
-      "height": 72,
-      "offsetY": -20
+      "width": 110,
+      "height": 82,
+      "offsetY": -24
     }
   },
   "mato": {

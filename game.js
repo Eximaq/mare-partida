@@ -2006,9 +2006,9 @@
     const u=MareUltimates.selected(game),rt=session.talents.ultimate;
     if(u==='shadowClone'){ctx.save();ctx.globalAlpha=.3;drawPlayerSprite(ctx,x-38,y+16);ctx.restore();}
     if(world.hero.visible!==false)vfx_aura.draw(ctx,x,y,world.time,u==='titan'?1.35:1);
-    if(horuBuffActive()){const aura=MareRankC.rules.horu.mutationVfx;MareRankC.draw(ctx,'mutation',x,y+aura.offsetY,Date.now()-session.horuBuffStarted,{width:aura.width,height:aura.height});}
     drawHoruHealFx(false);
     ctx.save();if(rt.hidden)ctx.globalAlpha=.2;if(world.hero.visible===false){drawBeriSeparation(ctx,x,y,1-session.fruitBurst/1.5);}else if(u==='titan'){ctx.translate(x,y);ctx.scale(1.35,1.35);drawPlayerSprite(ctx,0,0);}else drawPlayerSprite(ctx,x,y);ctx.restore();
+    if(horuBuffActive()){const aura=MareRankC.rules.horu.mutationVfx;MareRankC.draw(ctx,'mutation',x,y+aura.offsetY,Date.now()-session.horuBuffStarted,{width:aura.width,height:aura.height});}
     drawHoruHealFx(true);
     if(ushiBuffActive())MareUshi.drawBuff(ctx,x,y,Date.now()-session.ushiBuffStartedAt);
     globalThis.MareHakiArt?.draw(ctx,session.haki,world.hero,world.time,reducedFX,(c,x,y)=>{c.save();c.translate(x,y);if(u==='titan')c.scale(1.35,1.35);drawPlayerSprite(c,0,0);c.restore();},u==='titan'?1.35:1);
