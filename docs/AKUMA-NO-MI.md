@@ -1,5 +1,7 @@
 # Akuma no Mi — Lote 1 Rank E
 
+A Inu Inu no Mi: Modelo Lobo, Zoan Carnívora Rank D com investida, sangramento e aura de roubo de vida, está descrita em [Lobo Rank D](WOLF-RANK-D.md).
+
 A Doru Doru no Mi, Paramecia Rank D com projétil explosivo e enraizamento, está descrita em [Doru Rank D](DORU-RANK-D.md).
 
 A Ushi-Ushi no Mi: Modelo Girafa, Zoan Rank D com cabeçada e buff pessoal, está descrita em [Ushi Girafa Rank D](USHI-GIRAFA-RANK-D.md).

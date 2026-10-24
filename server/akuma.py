@@ -16,8 +16,11 @@ USHI_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/ush
 USHI_ID = USHI_RULES["id"]
 DORU_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/doru/rules.json").read_text(encoding="utf-8"))
 DORU_ID = DORU_RULES["id"]
+WOLF_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/wolf/rules.json").read_text(encoding="utf-8"))
+WOLF_ID = WOLF_RULES['id']
 
 FRUITS = {
+    WOLF_ID: {"type":"akuma_no_mi", "family":"zoan", "subtype":"Zoan Carnívora", "rank":"D", "name":"Inu Inu no Mi: Modelo Lobo", "description":WOLF_RULES['description'], "cooldown":14, "icon_path":"assets/akuma/wolf/fruit.png"},
     DORU_ID: {"type":"akuma_no_mi", "family":"paramecia", "rank":"D", "name":"Doru Doru no Mi", "description":DORU_RULES['description'], "cooldown":12, "icon_path":"assets/akuma/doru/fruit.png"},
     USHI_ID: {"type":"akuma_no_mi", "family":"zoan", "rank":"D", "name":"Ushi-Ushi no Mi: Modelo Girafa", "description":USHI_RULES["description"], "cooldown":12, "icon_path":"assets/akuma/ushi/fruit.png"},
     NEKO_ID: {"type": "akuma_no_mi", "family": "zoan", "subtype": "Zoan Carnívora", "rank": "D", "name": "Neko Neko no Mi: Modelo Leopardo", "description": NEKO_RULES["description"], "cooldown": 12, "icon_path": "assets/akuma/neko/fruit.png"},
@@ -31,6 +34,7 @@ FRUITS = {
 
 # Public catalog metadata for the HUD. Combat validation remains in cast().
 SKILL_TOOLTIPS = {
+    WOLF_ID: WOLF_RULES['skills'][0],
     DORU_ID: DORU_RULES['skills'][0],
     USHI_ID: USHI_RULES["skills"][0],
     NEKO_ID: NEKO_RULES["skills"][0],
@@ -45,7 +49,7 @@ SKILL_TOOLTIPS = {
 
 def public_catalog():
     """Return tooltip data alongside the existing, stable fruit catalog."""
-    return {fruit_id: {**fruit, "skill": SKILL_TOOLTIPS[fruit_id].copy(), **({"skills": DORU_RULES['skills']} if fruit_id == DORU_ID else {"skills": USHI_RULES["skills"]} if fruit_id == USHI_ID else {"skills": SUPA_RULES["skills"]} if fruit_id == SUPA_ID else {"skills": NEKO_RULES["skills"]} if fruit_id == NEKO_ID else {})} for fruit_id, fruit in FRUITS.items()}
+    return {fruit_id: {**fruit, "skill": SKILL_TOOLTIPS[fruit_id].copy(), **({"skills": WOLF_RULES['skills']} if fruit_id == WOLF_ID else {"skills": DORU_RULES['skills']} if fruit_id == DORU_ID else {"skills": USHI_RULES["skills"]} if fruit_id == USHI_ID else {"skills": SUPA_RULES["skills"]} if fruit_id == SUPA_ID else {"skills": NEKO_RULES["skills"]} if fruit_id == NEKO_ID else {})} for fruit_id, fruit in FRUITS.items()}
 
 
 class AkumaStore:
@@ -73,6 +77,8 @@ class AkumaStore:
             if "high_altitude_until" not in columns:
                 self.db.execute("ALTER TABLE players ADD COLUMN high_altitude_until REAL NOT NULL DEFAULT 0")
         with self.db:
+            if "wolf_aura_until" not in columns:
+                self.db.execute("ALTER TABLE players ADD COLUMN wolf_aura_until REAL NOT NULL DEFAULT 0")
             if "wild_fury_until" not in columns:
                 self.db.execute("ALTER TABLE players ADD COLUMN wild_fury_until REAL NOT NULL DEFAULT 0")
             if "metallic_until" not in columns:
@@ -113,7 +119,8 @@ class AkumaStore:
         if previous_fruit != fruit_id:
             with self.db:
                 self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
-        if fruit_id in (NEKO_ID, USHI_ID) and previous_fruit != fruit_id:
+                self.db.execute("UPDATE players SET wolf_aura_until=0 WHERE id=?", (player_id,))
+        if fruit_id in (NEKO_ID, USHI_ID, WOLF_ID) and previous_fruit != fruit_id:
             with self.db:
                 self.db.execute("UPDATE players SET transformed=1 WHERE id=?", (player_id,))
         return self.state(player_id)
@@ -126,6 +133,7 @@ class AkumaStore:
             self.db.execute("UPDATE players SET transformed=? WHERE id=?", (int(bool(enabled)), player_id))
             if not enabled:
                 self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
+                self.db.execute("UPDATE players SET wolf_aura_until=0 WHERE id=?", (player_id,))
         return self.state(player_id)
 
     def stats(self, player_id: str, base_hp: float, base_strength: float):
@@ -148,6 +156,8 @@ class AkumaStore:
         fruit_id = state["equipped"]
         if not fruit_id:
             raise ValueError("Nenhuma fruta equipada")
+        if fruit_id == WOLF_ID:
+            return self.cast_wolf(player_id, instance, x, y, enemies, skill_key, energy, physical_attack, target_id)
         if fruit_id == DORU_ID:
             return self.cast_doru(player_id, instance, x, y, direction, skill_key, energy, physical_attack)
         if fruit_id == USHI_ID:
@@ -267,7 +277,41 @@ class AkumaStore:
         with self.db:
             self.db.execute("UPDATE players SET metallic_until=0 WHERE id=?", (player_id,))
             self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
+            self.db.execute("UPDATE players SET wolf_aura_until=0 WHERE id=?", (player_id,))
         return self.state(player_id)
+
+    def wolf_bonuses(self, player_id):
+        row=self.db.execute('SELECT equipped,transformed,wolf_aura_until FROM players WHERE id=?',(player_id,)).fetchone()
+        if row is None:raise ValueError('Jogador desconhecido')
+        active=row['equipped']==WOLF_ID and row['transformed'] and row['wolf_aura_until']>self.clock()
+        return {'attack_speed_percent':WOLF_RULES['attackSpeed'] if active else 0,'lifesteal_percent':WOLF_RULES['lifesteal'] if active else 0}
+
+    def wolf_heal(self, player_id, actual_damage):
+        if isinstance(actual_damage,bool) or not isinstance(actual_damage,(int,float)) or not math.isfinite(actual_damage) or actual_damage<0:raise ValueError('Dano efetivo inválido')
+        return actual_damage*self.wolf_bonuses(player_id)['lifesteal_percent']
+
+    def cast_wolf(self, player_id, instance, x, y, enemies, skill_key, energy, attack, target_id):
+        state=self.state(player_id);skill=next((s for s in WOLF_RULES['skills'] if s['key']==str(skill_key)),None)
+        if state['equipped']!=WOLF_ID or not state['transformed'] or skill is None:raise ValueError('Transforme-se em Lobo para usar esta habilidade')
+        if not instance or not all(math.isfinite(v) for v in (x,y)):raise ValueError('Posição inválida')
+        if energy is None or isinstance(energy,bool) or not math.isfinite(float(energy)) or float(energy)<skill['cost']:raise ValueError('Energia insuficiente')
+        now=self.clock()
+        if state['cooldowns'].get(WOLF_ID+':'+skill['key'],0)>now:raise ValueError('Habilidade em recarga')
+        if skill['key']=='1':
+            if attack is None or isinstance(attack,bool) or not math.isfinite(float(attack)) or float(attack)<0:raise ValueError('Ataque inválido')
+            target=next((e for e in enemies if str(e['id'])==str(target_id) and e.get('alive',True)),None)
+            if target is None:raise ValueError('Selecione um alvo vivo')
+            ex,ey,armor=float(target['x']),float(target['y']),float(target.get('defense',0))
+            if not all(math.isfinite(v) for v in (ex,ey,armor)) or armor<0:raise ValueError('Alvo inválido')
+            length=math.hypot(ex-x,ey-y)
+            if length<1 or length>WOLF_RULES['range']:raise ValueError('Alvo fora de alcance')
+            damage=lambda mult:max(1,math.floor(float(attack)*mult-armor*.30))
+            effect={'type':'incessant_hunger','target_id':target['id'],'direction':[(ex-x)/length,(ey-y)/length],'damage':damage(1),'ticks':[{'at':i,'damage':damage(.2)} for i in range(1,6)],'range':WOLF_RULES['range'],'controllable':True}
+        else:effect={'type':'bloodthirsty_aura','duration':WOLF_RULES['auraDuration']/1000,'expires_at':now+WOLF_RULES['auraDuration']/1000,'attack_speed_percent':WOLF_RULES['attackSpeed'],'lifesteal_percent':WOLF_RULES['lifesteal']}
+        with self.db:
+            if skill['key']=='2':self.db.execute('UPDATE players SET wolf_aura_until=? WHERE id=?',(effect['expires_at'],player_id))
+            self.db.execute('INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)',(player_id,WOLF_ID,skill['key'],now+skill['cooldown']))
+        return {'effect':effect,'energy_spent':skill['cost'],'energy_remaining':float(energy)-skill['cost'],'state':self.state(player_id)}
 
     def ushi_active(self, player_id):
         row = self.db.execute("SELECT equipped,transformed,wild_fury_until FROM players WHERE id=?", (player_id,)).fetchone()
