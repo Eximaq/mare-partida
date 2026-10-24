@@ -11,7 +11,7 @@ const scripts=doc=>[...doc.matchAll(/<script\b[^>]+src="([^"]+)"/g)].map(m=>m[1]
 assert.deepEqual(scripts(preview),scripts(production),'preview must execute the same scripts as production');
 // The preview was originally a separate visual proposal. Once approved, the
 // shared skin may also be enabled in production without invalidating QA.
-const themeLink=/<link rel="stylesheet" href="ui-art-direction\\.css"/;
+const themeLink=/<link rel="stylesheet" href="ui-art-direction\.css"/;
 if(themeLink.test(production)){
   assert.match(production,/helm-portrait-ribbon/,'public theme must include the captain-log HUD');
 } else {
