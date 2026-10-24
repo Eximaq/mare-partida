@@ -6,6 +6,7 @@
   if(!root.MareDoru&&typeof module!=='undefined')require('./doru-system.js');
   if(!root.MareWolf&&typeof module!=='undefined')require('./wolf-system.js');
   if(!root.MareAkumaPassives&&typeof module!=='undefined')require('./akuma-passives.js');
+  if(!root.MareRankC&&typeof module!=='undefined')require('./rank-c-system.js');
   const ranks=Object.freeze(['E','D','C','B','A','S']);
   const slotsPerRank=5;
   // Keep in sync with assets/akuma/supa/rules.json (validated by regression tests).
@@ -26,7 +27,8 @@
     new AkumaNoMiData('akuma_neko_leopard','Neko Neko no Mi: Modelo Leopardo','D','assets/akuma/neko/fruit.png',{},'','assets/akuma/neko/skill-1.png','',1,1,{family:'zoan',subtype:'Zoan Carnívora',zoan_sprite_sheet:'assets/akuma/neko/preview-south.png',skills:root.MareNeko.rules.skills,description:root.MareNeko.rules.description}),
     new AkumaNoMiData('akuma_ushi_giraffe','Ushi-Ushi no Mi: Modelo Girafa','D','assets/akuma/ushi/fruit.png',{},'','assets/akuma/ushi/skill-1.png','',1,1,{family:'zoan',zoan_sprite_sheet:'assets/akuma/ushi/preview-south.png',skills:root.MareUshi.rules.skills,description:root.MareUshi.rules.description}),
     new AkumaNoMiData('akuma_doru_doru','Doru Doru no Mi','D','assets/akuma/doru/fruit.png',{},'','assets/akuma/doru/skill-1.png','',1,1,{family:'paramecia',skills:root.MareDoru.rules.skills,description:root.MareDoru.rules.description}),
-    new AkumaNoMiData('akuma_inu_wolf','Inu Inu no Mi: Modelo Lobo','D','assets/akuma/wolf/fruit.png',{},'','assets/akuma/wolf/skill-1.png','',1,1,{family:'zoan',subtype:'Zoan Carnívora',zoan_sprite_sheet:'assets/akuma/wolf/preview-south.png',skills:root.MareWolf.rules.skills,description:root.MareWolf.rules.description})
+    new AkumaNoMiData('akuma_inu_wolf','Inu Inu no Mi: Modelo Lobo','D','assets/akuma/wolf/fruit.png',{},'','assets/akuma/wolf/skill-1.png','',1,1,{family:'zoan',subtype:'Zoan Carnívora',zoan_sprite_sheet:'assets/akuma/wolf/preview-south.png',skills:root.MareWolf.rules.skills,description:root.MareWolf.rules.description}),
+    ...Object.entries(root.MareRankC.rules).map(([key,rule])=>new AkumaNoMiData(rule.id,rule.name,'C','assets/akuma/'+key+'/fruit.png',{},'','assets/akuma/'+key+'/skill-1.png','',1,1,{family:'paramecia',skills:rule.skills,description:rule.description}))
   ]);
   for(const fruit of catalog)if(root.MareAkumaPassives.stats[fruit.id])fruit.passiveStats={...root.MareAkumaPassives.stats[fruit.id]};
   const byId=(id,entries=catalog)=>entries.find(fruit=>fruit.id===id)||null;
@@ -61,6 +63,7 @@
   }
   function applyGear(gear,item,defs,entries=catalog){
     if(!isFruit(item,defs))return gear;
+    if(itemData(item,defs,entries)?.passiveStats)return gear;
     const stats=bonusStats(item,defs,entries),out={...gear,attributes:{...gear.attributes}};
     for(const [key,target] of Object.entries({bonus_attack:'attack',bonus_defense:'defense',bonus_hp:'hp',bonus_max_hp:'hp',bonus_energy:'energy',bonus_crit:'crit'}))out[target]=(out[target]||0)+(stats[key]||0);
     for(const key of ['strength','dexterity','vitality','intelligence','spirit'])out.attributes[key]=(out.attributes[key]||0)+(stats['bonus_'+key]||0);

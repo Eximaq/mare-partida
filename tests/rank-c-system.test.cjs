@@ -1,0 +1,11 @@
+'use strict';
+const assert=require('node:assert/strict'),C=require('../rank-c-system.js');
+assert.deepEqual(C.rules,require('../assets/akuma/rank-c-rules.json'));
+const hero={id:'a',partyId:'pt',instance:'beach',x:10,y:10,hp:40,maxHP:100,status:{talentControl:{remaining:5},slow:2,wolfBleed:{remaining:3},debuffs:['poison']}};
+const near={id:'b',partyId:'pt',instance:'beach',x:20,y:20,hp:50,maxHP:200},far={...near,id:'c',x:999},outsider={...near,id:'d',partyId:'other'},otherMap={...near,id:'e',instance:'other'};
+const got=C.healParty(hero,[near,far,outsider,otherMap],{x:0,y:0,width:100,height:100},1000);assert.equal(got.length,2);assert.equal(hero.hp,60);assert.equal(near.hp,90);assert.equal(hero.status.talentControl,undefined);assert.equal(hero.status.slow,0);assert.equal(hero.status.horuSpeedUntil,7000);assert.equal(far.hp,50);
+let hits=0;const target={id:'m',alive:true,hp:100,x:500,y:0};C.mark(target,1000);assert(C.marked(target,10999));assert(!C.marked(target,11000));
+const p=C.projectile({x:0,y:0},[1,0],target,100,true,{width:2048,height:2048});target.y=100;C.stepProjectile(p,.2,[target],()=>false,()=>hits++);assert(p.y>0,'homing updates toward moving target and crosses walls');for(let i=0;i<40;i++)C.stepProjectile(p,.1,[target],()=>false,()=>hits++);assert.equal(hits,1);assert(p.done);C.stepProjectile(p,10,[target],()=>true,()=>hits++);assert.equal(hits,1);
+const straight=C.projectile({x:0,y:0},[1,0],null,100,false,{width:2048,height:2048});C.stepProjectile(straight,1,[],()=>true,()=>hits++);assert.equal(straight.travel,384);assert(straight.done);
+const blocked=C.projectile({x:0,y:0},[1,0],null,100,false,{width:2048,height:2048});C.stepProjectile(blocked,1,[{id:'walltarget',x:100,y:0,alive:true}],()=>false,()=>hits++);assert(blocked.done);assert.equal(hits,1);
+console.log('Rank C: shared rules, cleanse/party filters, bounded healing, mark expiry, moving homing, range/collision and single impact passed');
