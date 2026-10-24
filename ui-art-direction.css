@@ -1,0 +1,323 @@
+/* Helm / Cartografia: visual skin on top of the existing UI 2.0 design system.
+   Approved nautical palette, original sprites, DOM contracts and combat untouched.
+   This file is loaded after legacy and feature styles. Avoid !important. */
+:root{
+  --helm-deep:#0c2025;
+  --helm-abyss:#101f24;
+  --helm-cabin:#172e32;
+  --helm-wood:#412c20;
+  --helm-wood-edge:#241a16;
+  --helm-oak:#6f4d32;
+  --helm-brass:#b58b4b;
+  --helm-brass-light:#e2c58e;
+  --helm-parchment:#e1cd9f;
+  --helm-rope:#b69b6c;
+  --helm-rule:rgba(219,179,103,.38);
+  --helm-engraving:Georgia,'Palatino Linotype','Times New Roman',serif;
+  --helm-timber:
+    repeating-linear-gradient(0deg,transparent 0 17px,#0000001c 18px 19px,transparent 20px 36px),
+    linear-gradient(115deg,#4b3324 0%,#32231c 48%,#523923 100%);
+  --helm-lacquer:
+    linear-gradient(170deg,rgba(49,76,75,.96),rgba(15,35,40,.98) 50%,rgba(12,27,32,.98));
+}
+
+/* One visual grammar: clear letters on recessed sea-green, carved wood on the edges. */
+.topbar,#mainMenu,.action-panel,#journeyHud,.floating-chat,
+#huntXpTracker.hunt-xp-tracker,.chat-corner-toggle{
+  border:1px solid var(--helm-brass);
+  border-radius:4px;
+  box-shadow:0 2px 0 var(--helm-wood-edge),
+    inset 0 0 0 2px #160f0d,inset 0 0 0 3px #caa56d47,
+    0 12px 30px #0009;
+}
+.topbar{
+  background:
+    linear-gradient(90deg,#d7b47555 0 3px,transparent 3px),
+    var(--helm-lacquer);
+  padding:12px 13px 11px;
+}
+.topbar::after{
+  content:"";display:block;height:1px;margin-top:7px;
+  background:linear-gradient(90deg,transparent,var(--helm-brass) 35%,#7b6b4b 65%,transparent);
+  opacity:.55;pointer-events:none;
+}
+.profile-heading{gap:10px;padding-bottom:10px;margin-bottom:7px;border-color:var(--helm-rule)}
+.profile-heading canvas{
+  border:2px solid #a8824b;
+  outline:1px solid #1a130e;
+  border-radius:3px;
+  background:radial-gradient(circle at 55% 25%,#2f4e51,#13282c 74%);
+  box-shadow:inset 0 0 7px #0b1419,0 0 0 2px #65432d;
+  image-rendering:pixelated;
+}
+#miniName{font-family:var(--helm-engraving);font-weight:700;letter-spacing:.01em;color:#f4dfb3;text-shadow:0 1px 2px #140d0c}
+#miniLevel{background:#5a432d;border:1px solid #b89256;color:#ffe5ab;border-radius:2px;padding:1px 4px}
+#miniClass{color:#b9c9bd;letter-spacing:.025em}
+.profile-heading button{
+  background:linear-gradient(#745239,#3b281f);
+  color:#edd29c;border:1px solid #b48f58;
+  border-radius:3px;box-shadow:inset 0 1px #f7da9240;
+}
+.profile-resource{
+  border:1px solid #071820;
+  background:#0b1b20;
+  box-shadow:0 1px #90754b36,inset 0 1px 3px #000b;
+}
+.profile-resource .mini-meter i{
+  box-shadow:inset 0 2px #ffffff4d,inset 0 -2px #090f1833;
+}
+.profile-resource>b,.profile-resource>span:first-child{
+  text-shadow:0 1px 2px #000,0 0 4px #000;
+  font-weight:700;
+}
+.profile-xp .mini-meter{
+  background:#09171d;
+  border:1px solid #785e3b;
+  box-shadow:inset 0 1px 4px #000a;
+}
+.profile-xp .mini-meter i{
+  background:linear-gradient(180deg,#e6c986,#977643);
+  box-shadow:inset 0 1px #fff2bf7a;
+}
+.profile-summary{
+  padding-top:7px;
+  border-top:1px solid var(--helm-rule);
+}
+.profile-power strong{font-family:var(--helm-engraving);color:var(--helm-brass-light);font-weight:700;letter-spacing:.02em}
+#miniGold{color:#f4d891;text-shadow:0 1px #2b1911}
+#attributePointsHud{border:1px solid #98754a;background:#433223;color:#f6daa2;border-radius:2px}
+
+/* Ship-deck navigation: discrete carved sockets, original pixel-art menu icons. */
+#mainMenu{
+  gap:5px;padding:7px 9px;
+  border-color:#c29a5d;
+  background:var(--helm-timber);
+  box-shadow:inset 0 0 0 2px #24180f,inset 0 0 0 3px #b18d524d,0 3px 0 #160d0b,0 12px 30px #0009;
+}
+#mainMenu::before{
+  content:"";position:absolute;pointer-events:none;inset:2px 7px auto;height:1px;
+  background:linear-gradient(90deg,transparent,#e6c08380,transparent);
+}
+#mainMenu [data-panel]{
+  border:1px solid #8e6c45;border-bottom-color:#d6ac66;
+  border-radius:3px;
+  background:linear-gradient(160deg,#28464a 0%,#182f34 52%,#10242a 100%);
+  box-shadow:inset 0 1px #66858649,inset 0 -2px #081419a8,0 1px #21150f;
+  transition:border-color var(--rpg-time) var(--rpg-ease),
+    background var(--rpg-time) var(--rpg-ease),
+    box-shadow var(--rpg-time) var(--rpg-ease);
+}
+#mainMenu [data-panel] img{image-rendering:pixelated;filter:drop-shadow(0 2px 1px #0007)}
+#mainMenu [data-panel]:is(:hover,:focus-visible,[aria-expanded="true"]){
+  background:linear-gradient(165deg,#3c615e,#213c3d);
+  border-color:#e3be7b;
+  box-shadow:inset 0 0 0 1px #e3be7b70,inset 0 -2px #0c1d1d,0 0 10px #d1ad3c35;
+}
+#mainMenu .menu-tooltip{
+  border:1px solid var(--helm-brass);
+  background:#283123;color:#f5e2b7;
+  box-shadow:0 8px 18px #0009;
+  font-family:var(--rpg-font);
+}
+
+/* The action rail is the physical control console of the ship. */
+.action-panel{
+  border:2px solid #b69156;
+  padding:9px 12px;
+  background:
+    linear-gradient(180deg,#bca16b55 0 2px,transparent 2px),
+    var(--helm-timber);
+  box-shadow:inset 0 0 0 2px #1e1512,inset 0 0 0 3px #cdb17c44,0 3px 0 #1a110d,0 12px 30px #000b;
+}
+.action-row{gap:7px}
+.skill-button{
+  background:linear-gradient(160deg,#203940,#102329);
+  border:1px solid #bb9251;
+  border-radius:3px;
+  box-shadow:inset 0 1px #8bc0ac35,inset 0 -3px #0b171b,0 1px 2px #0007;
+}
+.skill-button:where(:hover,:focus-visible):not(:disabled){
+  border-color:#f1cf8d;
+  box-shadow:inset 0 0 0 1px #f1cf8d5a,0 0 9px #e2ac4950;
+}
+.skill-button:active:not(:disabled){transform:translateY(1px);box-shadow:inset 0 2px 4px #0009}
+.keycap{
+  background:#251d16;color:#f1d7a2;border:1px solid #9c7c4d;
+  border-radius:2px;box-shadow:0 1px 2px #0009;
+}
+.hotbar-divider{background:linear-gradient(180deg,transparent,#c2a36e,transparent)}
+.action-row>.auto-button,.action-row>.shop-potion{
+  border:1px solid #b58b4b;
+  border-radius:3px;
+  background:linear-gradient(160deg,#2c4842,#182d2b);
+  box-shadow:inset 0 1px #8ea58e30,0 1px #140e0c;
+}
+.action-row>.auto-button[aria-pressed="true"],.action-row>.auto-button.active{
+  border-color:#b9c185;
+  background:linear-gradient(170deg,#38553c,#19352f);
+}
+
+/* Captain's expedition ledger: purpose-specific typography and hierarchy. */
+#journeyHud,.floating-chat,#huntXpTracker.hunt-xp-tracker{
+  background:var(--helm-lacquer);
+}
+.journey-heading{
+  min-height:35px;
+  height:auto;
+  padding:7px 11px;
+  background:var(--helm-timber);
+  border-bottom:1px solid #ca9c5a;
+  color:#f1d9a7;
+  font-family:var(--helm-engraving);
+  font-size:14px;font-weight:700;
+  letter-spacing:.015em;
+}
+.journey-content{padding:10px 11px 11px}
+.journey-content>small{color:#c9bda4}
+.journey-content>strong{color:#f1dfbe}
+.journey-track{border:1px solid #7b633e;background:#07161b;border-radius:2px;overflow:hidden}
+.journey-track i{background:linear-gradient(180deg,#e4c681,#9b7444)}
+.journey-footer{border-top:1px solid #ffffff1c;padding-top:7px}
+.journey-footer button{border:1px solid #a98758;background:linear-gradient(#64482c,#392a20);border-radius:2px}
+#huntXpTracker.hunt-xp-tracker{
+  border-color:#a98852;
+  background:linear-gradient(140deg,#1e3638,#0e2226);
+}
+.chat-corner-toggle{
+  padding:6px 11px;
+  background:var(--helm-timber);
+  color:#f0d5a2;
+  font-family:var(--helm-engraving);
+}
+.floating-chat .section-heading{background:var(--helm-timber);color:#f1d6a4}
+.floating-chat .log-scroller{background:#0b1c23}
+.floating-chat .chat-compose{border-top:1px solid var(--helm-rule)}
+
+/* Main windows: warm frames, parchment titles, functional density. */
+#panelOverlay>.dialog,.ui-window,.confirmation-card{
+  border:3px double #c6a069;
+  background:#12292e;
+  box-shadow:0 0 0 2px #28190e,0 0 0 3px #66452b,0 20px 60px #000d;
+}
+#panelOverlay:not(.inventory-mode) .dialog-header,.ui-window-header{
+  background:var(--helm-timber);
+  border-bottom:2px solid #b48a50;
+  min-height:62px;
+}
+#panelOverlay:not(.inventory-mode) .dialog-header small{
+  display:block;color:#dec594;font:600 10px/1.2 var(--rpg-font);
+  letter-spacing:.06em;margin-bottom:3px;
+}
+#panelOverlay:not(.inventory-mode) .dialog-header h2,.ui-window-header h2,.confirmation-card h2{
+  color:#f1dfb9;
+  font-family:var(--helm-engraving);
+  font-size:clamp(19px,2vw,25px);
+  font-weight:700;
+  letter-spacing:.015em;
+  text-shadow:0 1px #1c110c;
+}
+#panelOverlay .dialog-body{scrollbar-color:#b08b52 #0e2027}
+#panelOverlay .dialog-body:focus-visible{outline-offset:-3px}
+.ui-card{
+  background:linear-gradient(165deg,#20383b,#132b30);
+  border:1px solid #866944;
+  box-shadow:inset 0 1px #e9d29d19;
+}
+.ui-card h3{color:#f1dbaf;font-family:var(--helm-engraving)}
+.ui-button{
+  border-color:#9b7949;
+  background:linear-gradient(180deg,#61452e,#392b22);
+  box-shadow:inset 0 1px #f5d79a2e,inset 0 -2px #19130f66;
+}
+.ui-button:hover:not(:disabled){background:linear-gradient(180deg,#806039,#4a3425);border-color:#e0b97a}
+.ui-button:active:not(:disabled){transform:translateY(1px)}
+.ui-button.primary,.ui-button[data-variant="primary"]{
+  background:linear-gradient(180deg,#e0c188,#a17a42);color:#261b12;
+  border-color:#e6c88f;box-shadow:inset 0 1px #fff6ce;
+}
+.close-button,.ui-close{
+  color:#f7dfbb;border-color:#c18a66;
+  background:linear-gradient(160deg,#894b38,#512c27);
+  box-shadow:inset 0 1px #ffd6b33b;
+}
+.close-button:hover,.ui-close:hover{border-color:#f2b98d;background:#98513c}
+
+/* Four different workspaces share materials, not identical layout templates. */
+#panelOverlay.inventory-mode .op-topbar{
+  background:var(--helm-timber);
+  border-bottom:2px solid #bc955a;
+}
+#panelOverlay.inventory-mode .op-title-banner strong{
+  font-family:var(--helm-engraving);color:#f6e0b6;letter-spacing:.015em;
+}
+#panelOverlay.inventory-mode .op-character-panel,
+#panelOverlay.inventory-mode .op-bag-panel,
+#panelOverlay.inventory-mode .op-info-panel{
+  border-color:#a98a5c;
+  box-shadow:inset 0 0 0 1px #5a3f2533;
+}
+#panelOverlay.inventory-mode .op-panel-head{
+  border-bottom-color:#b29767;
+}
+#panelOverlay.inventory-mode .op-equip-slot,
+#panelOverlay.inventory-mode .op-item{
+  transition:border-color var(--rpg-time) var(--rpg-ease),filter var(--rpg-time) var(--rpg-ease);
+}
+#panelOverlay.inventory-mode .op-equip-slot:where(:hover,:focus-visible),
+#panelOverlay.inventory-mode .op-item:where(:hover,:focus-visible){
+  border-color:#e4c27f;filter:brightness(1.08);
+}
+.forge2-shell .forge2-tabs .ui-button[aria-selected="true"],
+.forge2-shell .forge2-tabs .ui-button.active{
+  background:linear-gradient(#ddbd80,#967342);color:#261d16;
+  border-color:#e9c88b;
+}
+.forge2-shell .forge2-selection,.forge2-shell .forge2-operation{
+  border-color:#997b51;
+}
+.forge2-shell .forge2-tile:focus-visible{outline:2px solid #f2d28e;outline-offset:2px}
+.captain-journal .captain-lead,
+.captain-profile .captain-profile-banner,
+.captain-settings .captain-lead{
+  border-color:#ae8d59;
+}
+.captain-tabs button[aria-selected="true"],.captain-tabs button.active{
+  border-bottom-color:#e7c184;color:#f1dbb2;
+}
+
+/* Touch changes must reflow controls without touching world canvas or saves. */
+@media(max-width:1024px){
+  .action-panel{padding:7px 9px}
+  #mainMenu{gap:4px;padding:6px}
+}
+@media(max-width:760px){
+  .topbar{padding:8px 9px 7px}
+  .topbar::after{margin-top:5px}
+  .profile-heading{gap:6px;padding-bottom:6px;margin-bottom:5px}
+  #mainMenu{gap:4px;padding:5px}
+  .action-panel{padding:6px 7px}
+  .action-row{gap:4px}
+  #journeyHud{box-shadow:inset 0 0 0 2px #120e0c,0 6px 20px #000b}
+  .journey-heading{min-height:30px;padding:5px 7px;font-size:12px}
+  #panelOverlay:not(.inventory-mode) .dialog-header{min-height:52px}
+  #panelOverlay:not(.inventory-mode) .dialog-header h2{font-size:19px}
+}
+@media(max-width:390px){
+  #mainMenu{gap:3px;padding:4px}
+  .action-panel{padding:5px}
+  .action-row{gap:3px}
+  .topbar{padding:6px}
+  .profile-heading{gap:4px}
+  .journey-content{padding:7px}
+}
+@media(max-height:500px) and (orientation:landscape){
+  .topbar{padding:6px}
+  .topbar::after{display:none}
+  .profile-heading{padding-bottom:4px}
+  .journey-heading{font-size:11px;min-height:28px}
+  #panelOverlay:not(.inventory-mode) .dialog-header{min-height:46px;padding:6px 10px}
+}
+@media(prefers-reduced-motion:reduce){
+  #mainMenu [data-panel],#panelOverlay.inventory-mode .op-item,
+  #panelOverlay.inventory-mode .op-equip-slot{transition:none}
+}
