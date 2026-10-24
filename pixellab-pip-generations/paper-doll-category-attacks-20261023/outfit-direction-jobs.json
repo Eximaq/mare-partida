@@ -1,0 +1,16 @@
+{
+  "south": {
+    "job_id": "70c5d685-4c67-488c-ae1e-14a57b719cfa",
+    "asset_id": "da2f8baa-63c8-5672-92c2-2fa361a2a0ef",
+    "status": "completed",
+    "request": "outfit-south-request.json",
+    "charged_generations": 10
+  },
+  "west": {
+    "job_id": "d0e5c8ed-e08c-4b41-8348-48fe85b0dbd3",
+    "asset_id": "a8c09f1e-0f47-5dc0-abb9-e1eddd14eaa6",
+    "status": "completed",
+    "request": "outfit-west-request.json",
+    "charged_generations": 10
+  }
+}

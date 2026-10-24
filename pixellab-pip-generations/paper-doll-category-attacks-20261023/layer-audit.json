@@ -1,0 +1,451 @@
+{
+  "status": "inspection candidate, not production",
+  "body_unchanged": true,
+  "garment_source": "PixelLab transfer_outfit; palette/region extraction, not a whole-image diff",
+  "hair_source": "native navy-starter directional hair; stationary head bounds checked in each pose",
+  "frames": [
+    {
+      "direction": "south",
+      "frame": 0,
+      "body_sha256": "00589a4e39ea7e7717a74d3e2c9b92344bd47413ed9d73e8b10e6270d11a84e1",
+      "garment_pixels": 174,
+      "garment_bounds": [
+        22,
+        18,
+        42,
+        34
+      ],
+      "head_bounds": [
+        27,
+        9,
+        37,
+        18
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 1,
+      "body_sha256": "87f73c8e9359eb9f714cee1b0daee6bb6b981779745c2963006ab0839361cc2c",
+      "garment_pixels": 171,
+      "garment_bounds": [
+        22,
+        18,
+        42,
+        34
+      ],
+      "head_bounds": [
+        27,
+        9,
+        37,
+        18
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 2,
+      "body_sha256": "073b91756e891da17cd6f2089b4e53d7cad2fd4b35c91eb97c170fb3251241ea",
+      "garment_pixels": 178,
+      "garment_bounds": [
+        21,
+        19,
+        43,
+        34
+      ],
+      "head_bounds": [
+        27,
+        9,
+        37,
+        18
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 3,
+      "body_sha256": "88a2b13b8b76a43f65856a7e7ef25729094725fbd9f3bd788fc381611811991a",
+      "garment_pixels": 162,
+      "garment_bounds": [
+        23,
+        18,
+        42,
+        34
+      ],
+      "head_bounds": [
+        27,
+        9,
+        37,
+        18
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 4,
+      "body_sha256": "240208d2e952ddc132c65cbf889e6f6aed16a376ee0d4368d9d349a8810f853a",
+      "garment_pixels": 165,
+      "garment_bounds": [
+        22,
+        18,
+        42,
+        34
+      ],
+      "head_bounds": [
+        27,
+        9,
+        37,
+        18
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 5,
+      "body_sha256": "70b77c2ad82e09b60fea44172658bfa5cb0c31dfe1a7d1feda4a6e99d762a8b1",
+      "garment_pixels": 180,
+      "garment_bounds": [
+        22,
+        18,
+        42,
+        34
+      ],
+      "head_bounds": [
+        27,
+        9,
+        37,
+        18
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 6,
+      "body_sha256": "91fe2b1c189e7a0f4473c081237a79d8525bf5e9baddae437548e2ebffaa3b8c",
+      "garment_pixels": 200,
+      "garment_bounds": [
+        21,
+        18,
+        42,
+        34
+      ],
+      "head_bounds": [
+        27,
+        9,
+        37,
+        18
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 7,
+      "body_sha256": "2f7dc0285c86d2ba9833c3ba45b426fa09a063e17853a6795732afa05468f516",
+      "garment_pixels": 197,
+      "garment_bounds": [
+        21,
+        20,
+        42,
+        34
+      ],
+      "head_bounds": [
+        27,
+        9,
+        37,
+        18
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 0,
+      "body_sha256": "f583d8d3400d5eb2c8c12e6ac15628dca9731182f66a035d07d5ba39cc3e9945",
+      "garment_pixels": 85,
+      "garment_bounds": [
+        28,
+        19,
+        38,
+        34
+      ],
+      "head_bounds": [
+        25,
+        9,
+        36,
+        18
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 1,
+      "body_sha256": "c5b749d26c250f42e3a09b6644b55d6af07a90dce74508bc00d20ce4d0c00767",
+      "garment_pixels": 94,
+      "garment_bounds": [
+        27,
+        19,
+        38,
+        34
+      ],
+      "head_bounds": [
+        25,
+        9,
+        36,
+        18
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 2,
+      "body_sha256": "7816f10fbe3bb22beaa0229e36750f997907fc68523f6616c89ae4fe7d780c91",
+      "garment_pixels": 107,
+      "garment_bounds": [
+        28,
+        19,
+        37,
+        34
+      ],
+      "head_bounds": [
+        25,
+        9,
+        36,
+        18
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 3,
+      "body_sha256": "5ddba93ac2e26ca2c52b4df9e66945244bbecc1fa3e12685cf2d32c06d06a171",
+      "garment_pixels": 132,
+      "garment_bounds": [
+        27,
+        19,
+        37,
+        34
+      ],
+      "head_bounds": [
+        25,
+        9,
+        36,
+        18
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 4,
+      "body_sha256": "1c7d08f2a95839aad8beb82ce390952f2e05a17083364d1beeb122aafdfc457a",
+      "garment_pixels": 120,
+      "garment_bounds": [
+        27,
+        19,
+        37,
+        34
+      ],
+      "head_bounds": [
+        25,
+        9,
+        36,
+        18
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 5,
+      "body_sha256": "2befdbcdfba1e35e1384e3e47c113c723415987eb2b72ba3466af297356c50ff",
+      "garment_pixels": 114,
+      "garment_bounds": [
+        26,
+        19,
+        37,
+        34
+      ],
+      "head_bounds": [
+        25,
+        9,
+        36,
+        18
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 6,
+      "body_sha256": "7f082be503ce1162a2643751209a58f0cc21535c214a91c7daa91886ba68f726",
+      "garment_pixels": 92,
+      "garment_bounds": [
+        27,
+        19,
+        38,
+        34
+      ],
+      "head_bounds": [
+        25,
+        9,
+        36,
+        18
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 7,
+      "body_sha256": "410ac1aa9d73ad5d9f90513c10e942a633959972c5b1cb87bae34cca137fcb0c",
+      "garment_pixels": 109,
+      "garment_bounds": [
+        28,
+        19,
+        39,
+        34
+      ],
+      "head_bounds": [
+        25,
+        9,
+        36,
+        18
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 0,
+      "body_sha256": "65bb19b01d4932b48d62e390e6dd1e4e064f7c165abbcbcec2603e71bc8d7749",
+      "garment_pixels": 109,
+      "garment_bounds": [
+        25,
+        18,
+        38,
+        34
+      ],
+      "head_bounds": [
+        27,
+        7,
+        38,
+        18
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 1,
+      "body_sha256": "32587a20a15ae0685688839876a543a4e4443b2d790f6f7314a1373fcfa8d6fa",
+      "garment_pixels": 97,
+      "garment_bounds": [
+        25,
+        18,
+        36,
+        34
+      ],
+      "head_bounds": [
+        27,
+        7,
+        38,
+        18
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 2,
+      "body_sha256": "6bd0961b5b3765c1d3d1b28743a9ebfee63362c5392f430030ca8289cc52bcb8",
+      "garment_pixels": 132,
+      "garment_bounds": [
+        26,
+        18,
+        38,
+        34
+      ],
+      "head_bounds": [
+        27,
+        7,
+        38,
+        18
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 3,
+      "body_sha256": "564c90b296429a4501cb4f0a4867ca41ad695bf4b3065bd351706b8838a559f4",
+      "garment_pixels": 141,
+      "garment_bounds": [
+        26,
+        18,
+        39,
+        34
+      ],
+      "head_bounds": [
+        27,
+        7,
+        38,
+        18
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 4,
+      "body_sha256": "d46a19d96e8d45c3e353f2ae09848923a29fe4f896fc59806e697c79e8a53ba0",
+      "garment_pixels": 133,
+      "garment_bounds": [
+        26,
+        18,
+        38,
+        34
+      ],
+      "head_bounds": [
+        27,
+        7,
+        38,
+        18
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 5,
+      "body_sha256": "1234976f0c1103f28e5820014e9997b186a066a3f50e5a314f4dda421c1ad866",
+      "garment_pixels": 118,
+      "garment_bounds": [
+        26,
+        18,
+        40,
+        34
+      ],
+      "head_bounds": [
+        27,
+        7,
+        38,
+        18
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 6,
+      "body_sha256": "eb4a362ff06cea40c63fc76fc916f58b3e06abb5c80624651588798275a9b838",
+      "garment_pixels": 97,
+      "garment_bounds": [
+        26,
+        18,
+        37,
+        34
+      ],
+      "head_bounds": [
+        27,
+        7,
+        38,
+        18
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 7,
+      "body_sha256": "d0cbf39e79495334d6238e8ac165b2959cc932137b28a3e9b4e84fe1bd581510",
+      "garment_pixels": 118,
+      "garment_bounds": [
+        25,
+        18,
+        38,
+        34
+      ],
+      "head_bounds": [
+        27,
+        7,
+        38,
+        18
+      ]
+    }
+  ],
+  "padding": [
+    10,
+    13
+  ],
+  "pivot": [
+    42,
+    65
+  ],
+  "excluded": {
+    "north": "Body arm direction is ambiguous; no clothing generated and no replacement pose synthesized."
+  }
+}

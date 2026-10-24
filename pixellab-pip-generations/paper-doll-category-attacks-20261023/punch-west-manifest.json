@@ -1,0 +1,15 @@
+{
+  "job_id": "e95289ec-42f4-4675-873b-85a974064873",
+  "asset_id": "fcd2f225-4d1e-5c5d-a3b2-aba183669167",
+  "charged_generations": 3,
+  "status": "completed",
+  "direction": "west",
+  "frames": 8,
+  "canvas": [
+    64,
+    64
+  ],
+  "request": "punch-west-request.json",
+  "production_enabled": false,
+  "inspection": "body delivered; native pixels retained"
+}

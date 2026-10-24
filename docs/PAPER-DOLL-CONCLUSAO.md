@@ -1,6 +1,8 @@
 # Personagem único — estado de conclusão
 
-Atualizado em 23/10/2026. Este documento descreve o código e os assets presentes; não representa aprovação artística ou liberação global.
+Atualizado em 24/10/2026. Este documento descreve o código e os assets presentes; não representa aprovação artística ou liberação global.
+
+Continuação: [punhos em três direções](PAPER-DOLL-PUNHOS.md), com 24 poses de corpo/roupa e cabelo por encaixes. Norte reprovado mantém fallback. O lote chegou a 42 gerações confirmadas de um teto de 300, sem jobs pendentes. A tabela de cobertura abaixo se refere ao conjunto integrado no jogo; o estudo de punhos ainda não amplia esse conjunto.
 
 ## Integração executada
 
@@ -29,7 +31,7 @@ Total ausente de anatomia/vestuário: **480 frames** (5 categorias × 4 direçõ
 
 Os demais equipamentos, novos cabelos, corpos e vestuários não têm arte modular validada. Habilidades, reações e morte ainda recorrem ao legado quando não cobertos. Não declarar que a presença de fallback conclui esses assets.
 
-## Produção proposta, ainda não iniciada nesta continuação
+## Histórico de início da produção
 
 Teto aprovado: **300 gerações, incluindo correções**. Primeira chamada: soco leste, oito poses guiadas por esqueleto, **3 gerações cobradas**. Arquivos preservados em `pixellab-pip-generations/paper-doll-category-attacks-20261023/`. O gesto é legível, mas o frame de índice 1 tem uma marca cinza solta diante das mãos; candidato não aceito em produção e roupa ainda não gerada. Corrigir antes de ampliar o lote. Jobs de outras atividades da conta não entram neste orçamento.
 

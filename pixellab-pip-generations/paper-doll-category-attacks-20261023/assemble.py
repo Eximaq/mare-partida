@@ -11,7 +11,7 @@ def normalized(im):
 def main():
     frames=[];records=[]
     for i in range(8):
-        path=HERE/f'body-east-{i:02}.png'
+        path=HERE/('body-east-01-corrected.png' if i==1 else f'body-east-{i:02}.png')
         im=Image.open(path).convert('RGBA')
         if im.size!=(64,64):raise ValueError('Unexpected canvas; do not rescale the generation')
         alpha=set(im.getchannel('A').get_flattened_data())

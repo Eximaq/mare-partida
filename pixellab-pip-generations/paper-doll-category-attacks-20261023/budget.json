@@ -1,8 +1,9 @@
 {
   "authorized_generations": 300,
   "includes_retries": true,
-  "confirmed_spend": 3,
-  "status": "first candidate completed; correction required before clothing",
+  "confirmed_spend": 42,
+  "status": "no pending jobs; 24 layered punch poses in inspection, north rejected",
   "scope": "shared category attacks, not faction-specific copies",
-  "other_account_jobs_excluded": true
+  "other_account_jobs_excluded": true,
+  "reserved_generations": 0
 }

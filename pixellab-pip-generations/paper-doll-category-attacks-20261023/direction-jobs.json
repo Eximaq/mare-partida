@@ -1,0 +1,47 @@
+{
+  "south": {
+    "job_id": "39f4c3e3-8ea8-4983-b6da-016705159b2f",
+    "asset_id": "e5e215f9-62ae-5586-8fc4-20bd2156a25f",
+    "charged_generations": 3,
+    "status": "completed",
+    "direction": "south",
+    "frames": 8,
+    "canvas": [
+      64,
+      64
+    ],
+    "request": "punch-south-request.json",
+    "production_enabled": false,
+    "inspection": "body delivered; native pixels retained"
+  },
+  "north": {
+    "job_id": "a612a56a-3cda-4d5d-9fcb-ac9be6fe61e8",
+    "asset_id": "1ee631df-976a-5d1f-ae1c-894e87534119",
+    "charged_generations": 3,
+    "status": "completed",
+    "direction": "north",
+    "frames": 8,
+    "canvas": [
+      64,
+      64
+    ],
+    "request": "punch-north-request.json",
+    "production_enabled": false,
+    "inspection": "rejected: arm projects over back instead of away from viewer"
+  },
+  "west": {
+    "job_id": "e95289ec-42f4-4675-873b-85a974064873",
+    "asset_id": "fcd2f225-4d1e-5c5d-a3b2-aba183669167",
+    "charged_generations": 3,
+    "status": "completed",
+    "direction": "west",
+    "frames": 8,
+    "canvas": [
+      64,
+      64
+    ],
+    "request": "punch-west-request.json",
+    "production_enabled": false,
+    "inspection": "body delivered; native pixels retained"
+  }
+}

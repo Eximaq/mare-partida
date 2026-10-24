@@ -91,15 +91,16 @@
         }
         let sourceWidth=r.frameWidth,sourceHeight=r.frameHeight,socket=null,source=null,url=clip.url;
         if(rigid){
-          // Explicit exception for rigid weapons, never a bypass for animated anatomy.
+          // Rigid gear and short hair follow measured sockets; anatomy still needs real frames.
           const validSource=s=>s&&[s.width,s.height,s.anchorX,s.anchorY].every(integer)&&s.width>0&&s.height>0&&s.width<=512&&s.height<=512&&s.anchorX>=0&&s.anchorX<=s.width&&s.anchorY>=0&&s.anchorY<=s.height;
           if(clip.sources!==undefined){
             if(!clip.sources||Array.isArray(clip.sources)||!clip.directions.every(d=>validSource(clip.sources[d])&&typeof clip.sources[d].url==='string'&&clip.sources[d].url)){problem('invalid-attachment-source');continue;}
             source=clip.sources[direction];url=source.url;
           }else source=clip.source;
-          if(slot!=='weapon'||!validSource(source)){problem('invalid-attachment-source');continue;}
+          if(!['weapon','hair','accessory'].includes(slot)||!validSource(source)){problem('invalid-attachment-source');continue;}
           const complete=clip.directions.every(d=>Array.isArray(clip.sockets?.[d])&&clip.sockets[d].length===a.frames&&clip.sockets[d].every(s=>s&&integer(s.x)&&integer(s.y)&&s.x>=0&&s.x<=r.frameWidth&&s.y>=0&&s.y<=r.frameHeight&&(s.quarterTurns===undefined||(integer(s.quarterTurns)&&s.quarterTurns>=0&&s.quarterTurns<=3))));
           if(!complete){problem('missing-socket');continue;}
+          if(slot!=='weapon'&&clip.directions.some(d=>clip.sockets[d].some(s=>(s.quarterTurns??0)!==0))){problem('invalid-transform');continue;}
           sourceWidth=source.width;sourceHeight=source.height;socket=clip.sockets[direction][frameIndex];
         }
         const row=clip.directions.indexOf(direction),overrides=clip.poseOverrides?.[direction]?.[frameIndex]||{},byDirection=clip.directionOverrides?.[direction]||{};

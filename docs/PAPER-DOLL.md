@@ -1,5 +1,11 @@
 # Paper Doll 1.0 — Fase 1
 
+## Contrato adicional de encaixes — 24/10/2026
+
+`rigid-attachment` aceita arma, cabelo curto e acessórios quando a peça conserva sua forma e possui encaixe inteiro para cada frame/direção. Corpo, calças, botas e roupa continuam exigindo frames reais. Para cabelo/acessórios, `quarterTurns` deve ser zero; rotações em quartos de volta são exclusivas de armas. Cada vista deve fornecer sua fonte nativa em `sources[direction]`, sem espelhar outra direção. Cabeça móvel exige sockets medidos; cabelo longo/deformável exige animação própria.
+
+O pacote `layered-gesture-review` é exclusivo da bancada: corpo/cabelo/roupa, `classId` canônico e as três flags de produção/aprovação desligadas. Uma direção ou ação ausente retorna integralmente ao sprite original. [Contrato aplicado e limites do estudo de punhos](PAPER-DOLL-PUNHOS.md).
+
 Estado consolidado de 23/10: [personagem único, seleção de aparência e pendências de conclusão](PAPER-DOLL-CONCLUSAO.md). A personalização usa peças reais existentes e save DEV isolado; cinco categorias de ataque ainda precisam de arte. Os registros abaixo são históricos, não uma afirmação de conclusão integral.
 
 Continuação de23/10: [conjunto azul de quatro camadas](PAPER-DOLL-CONJUNTO-AZUL.md), com corpo, cabelo, roupa e espada em80 poses Idle/Walk/Attack nas quatro vistas. Inclui harmonização de paleta e encaixe leste no Workbench, comparação de pixels em navegador e teste de combate. Candidato em revisão, sem ativação global.

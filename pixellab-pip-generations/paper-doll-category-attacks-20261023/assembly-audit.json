@@ -15,15 +15,15 @@
       "visible_pixels": 416
     },
     {
-      "file": "body-east-01.png",
-      "sha256": "ca70fc55dde45d43fc537bc50e01d99759cdf2c54dcd476894230d7dc9077008",
+      "file": "body-east-01-corrected.png",
+      "sha256": "32587a20a15ae0685688839876a543a4e4443b2d790f6f7314a1373fcfa8d6fa",
       "bounds": [
         24,
         7,
-        46,
+        40,
         52
       ],
-      "visible_pixels": 440
+      "visible_pixels": 424
     },
     {
       "file": "body-east-02.png",
