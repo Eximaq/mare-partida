@@ -9,8 +9,11 @@ from pathlib import Path
 
 SUPA_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/supa/rules.json").read_text(encoding="utf-8"))
 SUPA_ID = "akuma_supa_supa"
+NEKO_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/neko/rules.json").read_text(encoding="utf-8"))
+NEKO_ID = NEKO_RULES["id"]
 
 FRUITS = {
+    NEKO_ID: {"type": "akuma_no_mi", "family": "zoan", "subtype": "Zoan Carnívora", "rank": "D", "name": "Neko Neko no Mi: Modelo Leopardo", "description": NEKO_RULES["description"], "cooldown": 12, "icon_path": "assets/akuma/neko/fruit.png"},
     SUPA_ID: {"type": "akuma_no_mi", "family": "paramecia", "rank": "D", "name": "Supa Supa no Mi", "cooldown": 10, "icon_path": "assets/akuma/supa/fruit.png"},
     "akuma_kuku_kuku": {"type": "akuma_no_mi", "rank": "E", "name": "Kuku-Kuku no Mi", "cooldown": 15, "healing_received_percent": .05, "max_hp_percent": .03},
     "akuma_beri_beri": {"type": "akuma_no_mi", "rank": "E", "name": "Beri-Beri no Mi", "cooldown": 18, "impact_resistance_percent": .15},
@@ -21,6 +24,7 @@ FRUITS = {
 
 # Public catalog metadata for the HUD. Combat validation remains in cast().
 SKILL_TOOLTIPS = {
+    NEKO_ID: NEKO_RULES["skills"][0],
     SUPA_ID: SUPA_RULES["skills"][0],
     "akuma_kuku_kuku": {"name": "Banquete Relâmpago", "cooldown": 15, "cost": 0, "description": "Transforma o cadáver mais próximo da instância em comida. Quem a recolher recupera 15% da Vida máxima."},
     "akuma_beri_beri": {"name": "Divisão Esférica", "cooldown": 18, "cost": 0, "description": "Divide o corpo em seis esferas, concede 1,5s de invulnerabilidade e empurra inimigos próximos."},
@@ -32,7 +36,7 @@ SKILL_TOOLTIPS = {
 
 def public_catalog():
     """Return tooltip data alongside the existing, stable fruit catalog."""
-    return {fruit_id: {**fruit, "skill": SKILL_TOOLTIPS[fruit_id].copy(), **({"skills": SUPA_RULES["skills"]} if fruit_id == SUPA_ID else {})} for fruit_id, fruit in FRUITS.items()}
+    return {fruit_id: {**fruit, "skill": SKILL_TOOLTIPS[fruit_id].copy(), **({"skills": SUPA_RULES["skills"]} if fruit_id == SUPA_ID else {"skills": NEKO_RULES["skills"]} if fruit_id == NEKO_ID else {})} for fruit_id, fruit in FRUITS.items()}
 
 
 class AkumaStore:
@@ -87,10 +91,14 @@ class AkumaStore:
 
     def equip(self, player_id: str, fruit_id: str | None):
         self.player(player_id)
+        previous_fruit = self.state(player_id)["equipped"]
         if fruit_id is not None and not self.db.execute("SELECT 1 FROM unlocks WHERE player_id=? AND fruit_id=?", (player_id, fruit_id)).fetchone():
             raise ValueError("Fruta não desbloqueada")
         with self.db:
             self.db.execute("UPDATE players SET equipped=?, transformed=CASE WHEN equipped IS ? THEN transformed ELSE 0 END, metallic_until=CASE WHEN equipped IS ? THEN metallic_until ELSE 0 END WHERE id=?", (fruit_id, fruit_id, fruit_id, player_id))
+        if fruit_id == NEKO_ID and previous_fruit != fruit_id:
+            with self.db:
+                self.db.execute("UPDATE players SET transformed=1 WHERE id=?", (player_id,))
         return self.state(player_id)
 
     def transform(self, player_id: str, enabled: bool):
@@ -116,11 +124,13 @@ class AkumaStore:
         with self.db:
             self.db.execute("INSERT OR REPLACE INTO corpses VALUES(?,?,?,?,?,?)", (corpse_id, player_id, instance, x, y, self.clock() + 12))
 
-    def cast(self, player_id: str, instance: str, x: float, y: float, enemies=(), direction=(0, 1), skill_key=None, energy=None, physical_attack=None):
+    def cast(self, player_id: str, instance: str, x: float, y: float, enemies=(), direction=(0, 1), skill_key=None, energy=None, physical_attack=None, target_id=None, crit_multiplier=1.65):
         state = self.state(player_id)
         fruit_id = state["equipped"]
         if not fruit_id:
             raise ValueError("Nenhuma fruta equipada")
+        if fruit_id == NEKO_ID:
+            return self.cast_neko(player_id, instance, x, y, enemies, skill_key, energy, physical_attack, target_id, crit_multiplier)
         if fruit_id == SUPA_ID:
             return self.cast_supa(player_id, instance, x, y, enemies, skill_key, energy, physical_attack)
         now = self.clock()
@@ -231,6 +241,54 @@ class AkumaStore:
         with self.db:
             self.db.execute("UPDATE players SET metallic_until=0 WHERE id=?", (player_id,))
         return self.state(player_id)
+
+    @staticmethod
+    def neko_backstab(dx, dy, facing):
+        vectors = {"north": (0,-1), "south": (0,1), "east": (1,0), "west": (-1,0)}
+        vector = vectors.get(facing)
+        length = math.hypot(dx, dy)
+        return bool(vector and length > 0 and (dx*vector[0]+dy*vector[1])/length >= math.sqrt(.5)-1e-9)
+
+    @staticmethod
+    def neko_damage(attack, armor, multiplier, critical=False, crit_multiplier=1.65):
+        if not all(math.isfinite(v) and v >= 0 for v in (attack, armor, multiplier, crit_multiplier)):
+            raise ValueError("Atributos de golpe inválidos")
+        return max(1, math.floor(max(1, attack*multiplier-armor*.30)*(crit_multiplier if critical else 1)))
+
+    def cast_neko(self, player_id, instance, x, y, enemies, skill_key, energy, attack, target_id, crit_multiplier):
+        state = self.state(player_id)
+        skill = next((s for s in NEKO_RULES["skills"] if s["key"] == str(skill_key)), None)
+        if state["equipped"] != NEKO_ID or not state["transformed"] or skill is None:
+            raise ValueError("Transforme-se em Leopardo para usar esta habilidade")
+        if not instance or not all(math.isfinite(v) for v in (x, y)):
+            raise ValueError("Posição inválida")
+        if energy is None or isinstance(energy, bool) or not math.isfinite(float(energy)) or float(energy) < skill["cost"]:
+            raise ValueError("Energia insuficiente")
+        if attack is None or isinstance(attack, bool) or not math.isfinite(float(attack)) or float(attack) < 0:
+            raise ValueError("Ataque físico inválido")
+        target = next((enemy for enemy in enemies if str(enemy["id"]) == str(target_id) and enemy.get("alive", True)), None)
+        if target is None:
+            raise ValueError("Selecione um alvo vivo")
+        ex, ey, armor = float(target["x"]), float(target["y"]), float(target.get("defense", 0))
+        if not all(math.isfinite(v) for v in (ex, ey, armor)) or armor < 0:
+            raise ValueError("Alvo inválido")
+        dx, dy = ex-x, ey-y
+        distance = math.hypot(dx, dy)
+        reach = NEKO_RULES["dashRange"] if skill["key"] == "1" else NEKO_RULES["comboRange"]
+        if distance > reach or skill["key"] == "1" and distance < 1:
+            raise ValueError("Alvo fora do alcance")
+        now = self.clock()
+        if state["cooldowns"].get(NEKO_ID+":"+skill["key"], 0) > now:
+            raise ValueError("Habilidade em recarga")
+        if skill["key"] == "1":
+            critical = self.neko_backstab(dx, dy, target.get("facing", "south"))
+            effect = {"type": "ferocious_pounce", "target_id": target["id"], "direction": [dx/distance, dy/distance], "distance": min(reach+NEKO_RULES["dashBeyond"], distance+NEKO_RULES["dashBeyond"]), "damage_multiplier": skill["damage_multiplier"], "critical": critical, "damage": self.neko_damage(float(attack), armor, skill["damage_multiplier"], critical, float(crit_multiplier))}
+        else:
+            damage = self.neko_damage(float(attack), armor, skill["damage_multiplier"])
+            effect = {"type": "feline_fury", "target_id": target["id"], "duration": NEKO_RULES["comboDuration"]/1000, "ticks": [{"at": t, "damage": damage} for t in NEKO_RULES["comboTimes"]], "damage_multiplier": skill["damage_multiplier"]}
+        with self.db:
+            self.db.execute("INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)", (player_id, NEKO_ID, skill["key"], now+skill["cooldown"]))
+        return {"effect": effect, "energy_spent": skill["cost"], "energy_remaining": float(energy)-skill["cost"], "state": self.state(player_id)}
 
     def pickup_food(self, player_id: str, food_id: str, instance: str, x: float, y: float):
         row = self.db.execute("SELECT * FROM food WHERE id=? AND player_id=? AND instance=? AND expires>?", (food_id, player_id, instance, self.clock())).fetchone()
