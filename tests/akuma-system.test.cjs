@@ -38,8 +38,8 @@ assert.equal(Akuma.register(game,entries[0].id,entries).state.akumaCompendium.le
 assert.deepEqual(Akuma.migrate({...game,akumaCompendium:['future-fruit','future-fruit',...game.akumaCompendium]}).akumaCompendium,['future-fruit',...game.akumaCompendium]);
 assert.equal(Akuma.register(game,'unknown',entries).ok,false);
 assert.throws(()=>new Akuma.AkumaNoMiData('bad','Bad','X','','',''));
-assert.deepEqual(Akuma.catalog.map(f=>f.id),['akuma_kuku_kuku','akuma_beri_beri','akuma_tori_albatroz','akuma_uma_uma','akuma_inu_dachshund','akuma_supa_supa','akuma_neko_leopard','akuma_ushi_giraffe']);
-assert.ok(Akuma.catalog.every(f=>(f.rank==='E'||['akuma_supa_supa','akuma_neko_leopard','akuma_ushi_giraffe'].includes(f.id)&&f.rank==='D')&&f.icon_path.startsWith('assets/akuma/')));
+assert.deepEqual(Akuma.catalog.map(f=>f.id),['akuma_kuku_kuku','akuma_beri_beri','akuma_tori_albatroz','akuma_uma_uma','akuma_inu_dachshund','akuma_supa_supa','akuma_neko_leopard','akuma_ushi_giraffe','akuma_doru_doru']);
+assert.ok(Akuma.catalog.every(f=>(f.rank==='E'||['akuma_supa_supa','akuma_neko_leopard','akuma_ushi_giraffe','akuma_doru_doru'].includes(f.id)&&f.rank==='D')&&f.icon_path.startsWith('assets/akuma/')));
 for(const fruit of Akuma.catalog){
   const item={type:'akuma_no_mi',fruitId:fruit.id};
   const gear=Akuma.applyGear(Forge.aggregate({},defs),item,defs);

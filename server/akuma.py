@@ -5,6 +5,7 @@ import json
 import math
 import sqlite3
 import time
+import uuid
 from pathlib import Path
 
 SUPA_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/supa/rules.json").read_text(encoding="utf-8"))
@@ -13,8 +14,11 @@ NEKO_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/nek
 NEKO_ID = NEKO_RULES["id"]
 USHI_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/ushi/rules.json").read_text(encoding="utf-8"))
 USHI_ID = USHI_RULES["id"]
+DORU_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/doru/rules.json").read_text(encoding="utf-8"))
+DORU_ID = DORU_RULES["id"]
 
 FRUITS = {
+    DORU_ID: {"type":"akuma_no_mi", "family":"paramecia", "rank":"D", "name":"Doru Doru no Mi", "description":DORU_RULES['description'], "cooldown":12, "icon_path":"assets/akuma/doru/fruit.png"},
     USHI_ID: {"type":"akuma_no_mi", "family":"zoan", "rank":"D", "name":"Ushi-Ushi no Mi: Modelo Girafa", "description":USHI_RULES["description"], "cooldown":12, "icon_path":"assets/akuma/ushi/fruit.png"},
     NEKO_ID: {"type": "akuma_no_mi", "family": "zoan", "subtype": "Zoan Carnívora", "rank": "D", "name": "Neko Neko no Mi: Modelo Leopardo", "description": NEKO_RULES["description"], "cooldown": 12, "icon_path": "assets/akuma/neko/fruit.png"},
     SUPA_ID: {"type": "akuma_no_mi", "family": "paramecia", "rank": "D", "name": "Supa Supa no Mi", "cooldown": 10, "icon_path": "assets/akuma/supa/fruit.png"},
@@ -27,6 +31,7 @@ FRUITS = {
 
 # Public catalog metadata for the HUD. Combat validation remains in cast().
 SKILL_TOOLTIPS = {
+    DORU_ID: DORU_RULES['skills'][0],
     USHI_ID: USHI_RULES["skills"][0],
     NEKO_ID: NEKO_RULES["skills"][0],
     SUPA_ID: SUPA_RULES["skills"][0],
@@ -40,7 +45,7 @@ SKILL_TOOLTIPS = {
 
 def public_catalog():
     """Return tooltip data alongside the existing, stable fruit catalog."""
-    return {fruit_id: {**fruit, "skill": SKILL_TOOLTIPS[fruit_id].copy(), **({"skills": USHI_RULES["skills"]} if fruit_id == USHI_ID else {"skills": SUPA_RULES["skills"]} if fruit_id == SUPA_ID else {"skills": NEKO_RULES["skills"]} if fruit_id == NEKO_ID else {})} for fruit_id, fruit in FRUITS.items()}
+    return {fruit_id: {**fruit, "skill": SKILL_TOOLTIPS[fruit_id].copy(), **({"skills": DORU_RULES['skills']} if fruit_id == DORU_ID else {"skills": USHI_RULES["skills"]} if fruit_id == USHI_ID else {"skills": SUPA_RULES["skills"]} if fruit_id == SUPA_ID else {"skills": NEKO_RULES["skills"]} if fruit_id == NEKO_ID else {})} for fruit_id, fruit in FRUITS.items()}
 
 
 class AkumaStore:
@@ -48,6 +53,9 @@ class AkumaStore:
         self.db = sqlite3.connect(str(database), check_same_thread=False)
         self.db.row_factory = sqlite3.Row
         self.clock = clock
+        # World enemies and projectiles are transient, scoped by player/instance.
+        self.doru_projectiles = {}
+        self.doru_roots = {}
         self.db.executescript("""
             PRAGMA foreign_keys=ON;
             CREATE TABLE IF NOT EXISTS fruits(id TEXT PRIMARY KEY, type TEXT NOT NULL, rank TEXT NOT NULL, name TEXT NOT NULL);
@@ -140,6 +148,8 @@ class AkumaStore:
         fruit_id = state["equipped"]
         if not fruit_id:
             raise ValueError("Nenhuma fruta equipada")
+        if fruit_id == DORU_ID:
+            return self.cast_doru(player_id, instance, x, y, direction, skill_key, energy, physical_attack)
         if fruit_id == USHI_ID:
             return self.cast_ushi(player_id, instance, x, y, enemies, skill_key, energy, physical_attack, target_id)
         if fruit_id == NEKO_ID:
@@ -262,6 +272,54 @@ class AkumaStore:
     def ushi_active(self, player_id):
         row = self.db.execute("SELECT equipped,transformed,wild_fury_until FROM players WHERE id=?", (player_id,)).fetchone()
         return bool(row and row['equipped']==USHI_ID and row['transformed'] and row['wild_fury_until']>self.clock())
+
+    def cast_doru(self, player_id, instance, x, y, direction, skill_key, energy, attack):
+        state=self.state(player_id)
+        skill=next((s for s in DORU_RULES['skills'] if s['key']==str(skill_key)),None)
+        if state['equipped']!=DORU_ID or skill is None:raise ValueError('Habilidade Doru inválida')
+        if not instance or not all(math.isfinite(v) for v in (x,y)):raise ValueError('Posição inválida')
+        if energy is None or isinstance(energy,bool) or not math.isfinite(float(energy)) or float(energy)<skill['cost']:raise ValueError('Energia insuficiente')
+        if attack is None or isinstance(attack,bool) or not math.isfinite(float(attack)) or float(attack)<0:raise ValueError('Poder de Ataque inválido')
+        if len(direction)!=2:raise ValueError('Direção inválida')
+        dx,dy=map(float,direction);length=math.hypot(dx,dy)
+        if not math.isfinite(length) or length<.001:raise ValueError('Direção inválida')
+        now=self.clock()
+        if state['cooldowns'].get(DORU_ID+':'+skill['key'],0)>now:raise ValueError('Habilidade em recarga')
+        self.doru_projectiles={k:v for k,v in self.doru_projectiles.items() if v['expires']>now}
+        self.doru_roots={k:v for k,v in self.doru_roots.items() if v>now}
+        pid=uuid.uuid4().hex
+        self.doru_projectiles[pid]={'player':player_id,'instance':instance,'key':skill['key'],'x':x,'y':y,'dx':dx/length,'dy':dy/length,'attack':float(attack),'expires':now+10}
+        with self.db:self.db.execute('INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)',(player_id,DORU_ID,skill['key'],now+skill['cooldown']))
+        return {'effect':{'type':'wax_projectile','projectile_id':pid,'key':skill['key'],'direction':[dx/length,dy/length],'range':DORU_RULES['range'],'speed':DORU_RULES['speed']},'energy_spent':skill['cost'],'energy_remaining':float(energy)-skill['cost'],'state':self.state(player_id)}
+
+    def impact_doru(self, player_id, projectile_id, x, y, enemies, hit_id=None):
+        self.state(player_id)
+        shot=self.doru_projectiles.get(projectile_id)
+        if not shot or shot['player']!=player_id or shot['expires']<=self.clock():raise ValueError('Projétil inválido ou já concluído')
+        if not all(isinstance(v,(int,float)) and not isinstance(v,bool) and math.isfinite(v) for v in (x,y)):raise ValueError('Impacto inválido')
+        dx,dy=x-shot['x'],y-shot['y'];forward=dx*shot['dx']+dy*shot['dy'];side=abs(dx*shot['dy']-dy*shot['dx'])
+        if forward<-.0001 or forward>DORU_RULES['range']+.0001 or side>.001:raise ValueError('Impacto fora da trajetória')
+        targets=[];seen=set()
+        for e in enemies:
+            if not e.get('alive',True) or str(e['id']) in seen:continue
+            ex,ey,armor=float(e['x']),float(e['y']),float(e.get('defense',0))
+            if not all(math.isfinite(v) for v in (ex,ey,armor)) or armor<0:raise ValueError('Alvo inválido')
+            targets.append((e,math.hypot(ex-x,ey-y),armor));seen.add(str(e['id']))
+        hits=[];root=None
+        if shot['key']=='1':
+            hits=[{'id':e['id'],'damage':max(1,math.floor(shot['attack']*DORU_RULES['skills'][0]['damage_multiplier']-armor*.30))} for e,d,armor in targets if d<=DORU_RULES['explosionRadius']]
+        elif hit_id is not None:
+            target=next((e for e,d,a in targets if str(e['id'])==str(hit_id) and d<=DORU_RULES['hitRadius']+.001),None)
+            if target is None:raise ValueError('Alvo fora do impacto')
+            until=self.clock()+DORU_RULES['rootDuration']
+            self.doru_roots[(player_id,shot['instance'],str(target['id']))]=until
+            root={'id':target['id'],'duration':DORU_RULES['rootDuration'],'until':until}
+        del self.doru_projectiles[projectile_id]
+        return {'hits':hits,'root':root}
+
+    def doru_can_move(self, player_id, instance, enemy_id):
+        self.state(player_id)
+        return self.doru_roots.get((player_id,instance,str(enemy_id)),0)<=self.clock()
 
     def basic_attack(self, player_id, damage):
         if isinstance(damage,bool) or not isinstance(damage,(int,float)) or not math.isfinite(damage) or damage<0:
