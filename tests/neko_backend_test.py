@@ -24,6 +24,7 @@ class NekoTest(unittest.TestCase):
     def test_rank_transform_backstab_and_cooldown(self):
         catalog = public_catalog()[NEKO_ID]
         self.assertEqual((catalog['rank'], catalog['family']), ('D', 'zoan'))
+        self.assertIn('reflexos e a ferocidade de um leopardo', catalog['description'])
         self.assertTrue(self.store.state('hero')['transformed'])
         result = self.cast()['effect']
         self.assertTrue(result['critical']); self.assertEqual(result['damage'], 290)
@@ -31,6 +32,8 @@ class NekoTest(unittest.TestCase):
         self.assertEqual(result['distance'], 112)
         with self.assertRaises(ValueError): self.cast()
         self.store.transform('hero', False)
+        self.store.equip('hero', NEKO_ID)
+        self.assertFalse(self.store.state('hero')['transformed'], 'syncing the same fruit preserves the chosen human form')
         with self.assertRaises(ValueError): self.cast('2')
         self.store.transform('hero', True)
         effect = self.cast('2')['effect']
