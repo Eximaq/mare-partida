@@ -11,8 +11,11 @@ SUPA_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/sup
 SUPA_ID = "akuma_supa_supa"
 NEKO_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/neko/rules.json").read_text(encoding="utf-8"))
 NEKO_ID = NEKO_RULES["id"]
+USHI_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/ushi/rules.json").read_text(encoding="utf-8"))
+USHI_ID = USHI_RULES["id"]
 
 FRUITS = {
+    USHI_ID: {"type":"akuma_no_mi", "family":"zoan", "rank":"D", "name":"Ushi-Ushi no Mi: Modelo Girafa", "description":USHI_RULES["description"], "cooldown":12, "icon_path":"assets/akuma/ushi/fruit.png"},
     NEKO_ID: {"type": "akuma_no_mi", "family": "zoan", "subtype": "Zoan Carnívora", "rank": "D", "name": "Neko Neko no Mi: Modelo Leopardo", "description": NEKO_RULES["description"], "cooldown": 12, "icon_path": "assets/akuma/neko/fruit.png"},
     SUPA_ID: {"type": "akuma_no_mi", "family": "paramecia", "rank": "D", "name": "Supa Supa no Mi", "cooldown": 10, "icon_path": "assets/akuma/supa/fruit.png"},
     "akuma_kuku_kuku": {"type": "akuma_no_mi", "rank": "E", "name": "Kuku-Kuku no Mi", "cooldown": 15, "healing_received_percent": .05, "max_hp_percent": .03},
@@ -24,6 +27,7 @@ FRUITS = {
 
 # Public catalog metadata for the HUD. Combat validation remains in cast().
 SKILL_TOOLTIPS = {
+    USHI_ID: USHI_RULES["skills"][0],
     NEKO_ID: NEKO_RULES["skills"][0],
     SUPA_ID: SUPA_RULES["skills"][0],
     "akuma_kuku_kuku": {"name": "Banquete Relâmpago", "cooldown": 15, "cost": 0, "description": "Transforma o cadáver mais próximo da instância em comida. Quem a recolher recupera 15% da Vida máxima."},
@@ -36,7 +40,7 @@ SKILL_TOOLTIPS = {
 
 def public_catalog():
     """Return tooltip data alongside the existing, stable fruit catalog."""
-    return {fruit_id: {**fruit, "skill": SKILL_TOOLTIPS[fruit_id].copy(), **({"skills": SUPA_RULES["skills"]} if fruit_id == SUPA_ID else {"skills": NEKO_RULES["skills"]} if fruit_id == NEKO_ID else {})} for fruit_id, fruit in FRUITS.items()}
+    return {fruit_id: {**fruit, "skill": SKILL_TOOLTIPS[fruit_id].copy(), **({"skills": USHI_RULES["skills"]} if fruit_id == USHI_ID else {"skills": SUPA_RULES["skills"]} if fruit_id == SUPA_ID else {"skills": NEKO_RULES["skills"]} if fruit_id == NEKO_ID else {})} for fruit_id, fruit in FRUITS.items()}
 
 
 class AkumaStore:
@@ -61,6 +65,8 @@ class AkumaStore:
             if "high_altitude_until" not in columns:
                 self.db.execute("ALTER TABLE players ADD COLUMN high_altitude_until REAL NOT NULL DEFAULT 0")
         with self.db:
+            if "wild_fury_until" not in columns:
+                self.db.execute("ALTER TABLE players ADD COLUMN wild_fury_until REAL NOT NULL DEFAULT 0")
             if "metallic_until" not in columns:
                 self.db.execute("ALTER TABLE players ADD COLUMN metallic_until REAL NOT NULL DEFAULT 0")
             self.db.executemany("INSERT OR IGNORE INTO fruits VALUES(?,?,?,?)", ((key, value["type"], value["rank"], value["name"]) for key, value in FRUITS.items()))
@@ -79,7 +85,7 @@ class AkumaStore:
         unlocked = [r[0] for r in self.db.execute("SELECT fruit_id FROM unlocks WHERE player_id=? ORDER BY fruit_id", (player_id,))]
         cooldowns = {r[0]: r[1] for r in self.db.execute("SELECT fruit_id,ready_at FROM fruit_cooldowns WHERE player_id=?", (player_id,))}
         cooldowns.update({r[0]+":"+r[1]: r[2] for r in self.db.execute("SELECT fruit_id,skill_key,ready_at FROM skill_cooldowns WHERE player_id=?", (player_id,))})
-        return {"metallic_until": row["metallic_until"], "unlocked": unlocked, "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock(), "invulnerable_until": row["invulnerable_until"]}
+        return {"wild_fury_until": row["wild_fury_until"], "metallic_until": row["metallic_until"], "unlocked": unlocked, "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock(), "invulnerable_until": row["invulnerable_until"]}
 
     def register(self, player_id: str, fruit_id: str):
         self.player(player_id)
@@ -96,7 +102,10 @@ class AkumaStore:
             raise ValueError("Fruta não desbloqueada")
         with self.db:
             self.db.execute("UPDATE players SET equipped=?, transformed=CASE WHEN equipped IS ? THEN transformed ELSE 0 END, metallic_until=CASE WHEN equipped IS ? THEN metallic_until ELSE 0 END WHERE id=?", (fruit_id, fruit_id, fruit_id, player_id))
-        if fruit_id == NEKO_ID and previous_fruit != fruit_id:
+        if previous_fruit != fruit_id:
+            with self.db:
+                self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
+        if fruit_id in (NEKO_ID, USHI_ID) and previous_fruit != fruit_id:
             with self.db:
                 self.db.execute("UPDATE players SET transformed=1 WHERE id=?", (player_id,))
         return self.state(player_id)
@@ -107,6 +116,8 @@ class AkumaStore:
             raise ValueError("Equipe uma Zoan para transformar")
         with self.db:
             self.db.execute("UPDATE players SET transformed=? WHERE id=?", (int(bool(enabled)), player_id))
+            if not enabled:
+                self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
         return self.state(player_id)
 
     def stats(self, player_id: str, base_hp: float, base_strength: float):
@@ -129,6 +140,8 @@ class AkumaStore:
         fruit_id = state["equipped"]
         if not fruit_id:
             raise ValueError("Nenhuma fruta equipada")
+        if fruit_id == USHI_ID:
+            return self.cast_ushi(player_id, instance, x, y, enemies, skill_key, energy, physical_attack, target_id)
         if fruit_id == NEKO_ID:
             return self.cast_neko(player_id, instance, x, y, enemies, skill_key, energy, physical_attack, target_id, crit_multiplier)
         if fruit_id == SUPA_ID:
@@ -234,13 +247,55 @@ class AkumaStore:
             raise ValueError("Dano inválido")
         active = state["equipped"] == SUPA_ID and state["metallic_until"] > self.clock()
         enabled = active and physical and not direct and not reflected and original > 0 and received > 0
-        return {"damage": received*(1-SUPA_RULES["mitigation"]) if enabled else received, "reflected": original*SUPA_RULES["reflect"] if enabled else 0}
+        damage = received*(1-SUPA_RULES["mitigation"]) if enabled else received
+        if self.ushi_active(player_id):
+            damage *= 1-USHI_RULES["mitigation"]
+        return {"damage": damage, "reflected": original*SUPA_RULES["reflect"] if enabled else 0}
 
     def end_protection(self, player_id):
         self.state(player_id)
         with self.db:
             self.db.execute("UPDATE players SET metallic_until=0 WHERE id=?", (player_id,))
+            self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
         return self.state(player_id)
+
+    def ushi_active(self, player_id):
+        row = self.db.execute("SELECT equipped,transformed,wild_fury_until FROM players WHERE id=?", (player_id,)).fetchone()
+        return bool(row and row['equipped']==USHI_ID and row['transformed'] and row['wild_fury_until']>self.clock())
+
+    def basic_attack(self, player_id, damage):
+        if isinstance(damage,bool) or not isinstance(damage,(int,float)) or not math.isfinite(damage) or damage<0:
+            raise ValueError('Dano inválido')
+        return damage*(1+USHI_RULES['basicBonus']) if self.ushi_active(player_id) else damage
+
+    def cast_ushi(self, player_id, instance, x, y, enemies, skill_key, energy, attack, target_id):
+        state=self.state(player_id)
+        skill=next((s for s in USHI_RULES['skills'] if s['key']==str(skill_key)),None)
+        if state['equipped']!=USHI_ID or not state['transformed'] or skill is None:
+            raise ValueError('Transforme-se em Girafa para usar esta habilidade')
+        if not instance or not all(math.isfinite(v) for v in (x,y)):
+            raise ValueError('Posição inválida')
+        if energy is None or isinstance(energy,bool) or not math.isfinite(float(energy)) or float(energy)<skill['cost']:
+            raise ValueError('Energia insuficiente')
+        now=self.clock()
+        if state['cooldowns'].get(USHI_ID+':'+skill['key'],0)>now:
+            raise ValueError('Habilidade em recarga')
+        if skill['key']=='1':
+            if attack is None or isinstance(attack,bool) or not math.isfinite(float(attack)) or float(attack)<0:
+                raise ValueError('Ataque físico inválido')
+            target=next((e for e in enemies if str(e['id'])==str(target_id) and e.get('alive',True)),None)
+            if target is None:raise ValueError('Selecione um alvo vivo')
+            ex,ey,armor=float(target['x']),float(target['y']),float(target.get('defense',0))
+            if not all(math.isfinite(v) for v in (ex,ey,armor)) or armor<0:raise ValueError('Alvo inválido')
+            if math.hypot(ex-x,ey-y)>USHI_RULES['range']:raise ValueError('Alvo fora do alcance')
+            damage=max(1,math.floor(float(attack)*skill['damage_multiplier']-armor*(1-USHI_RULES['penetration'])*.30))
+            effect={'type':'ivory_whip','target_id':target['id'],'damage':damage,'knockback':USHI_RULES['knockback'],'penetration':USHI_RULES['penetration'],'impact_at':USHI_RULES['impactAt']}
+        else:
+            effect={'type':'wild_fury','duration':5,'expires_at':now+5,'mitigation':USHI_RULES['mitigation'],'basic_bonus':USHI_RULES['basicBonus']}
+        with self.db:
+            if skill['key']=='2':self.db.execute('UPDATE players SET wild_fury_until=? WHERE id=?',(now+5,player_id))
+            self.db.execute('INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)',(player_id,USHI_ID,skill['key'],now+skill['cooldown']))
+        return {'effect':effect,'energy_spent':skill['cost'],'energy_remaining':float(energy)-skill['cost'],'state':self.state(player_id)}
 
     @staticmethod
     def neko_backstab(dx, dy, facing):

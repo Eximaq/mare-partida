@@ -1,5 +1,7 @@
 # Akuma no Mi — Lote 1 Rank E
 
+A Ushi-Ushi no Mi: Modelo Girafa, Zoan Rank D com cabeçada e buff pessoal, está descrita em [Ushi Girafa Rank D](USHI-GIRAFA-RANK-D.md).
+
 A Supa Supa no Mi, primeira Paramecia Rank D com duas habilidades ativas, está descrita em [Supa Supa Rank D](SUPA-SUPA-RANK-D.md).
 
 A Neko Neko no Mi: Modelo Leopardo, Zoan Carnívora Rank D com transformação, bote traseiro e combo de alvo único, está descrita em [Neko Leopardo Rank D](NEKO-LEOPARDO-RANK-D.md).

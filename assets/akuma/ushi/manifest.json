@@ -1,0 +1,27 @@
+{
+  "character_id": "f7a9fca3-6336-42f6-91cb-9fb31e46bb64",
+  "source": "PixelLab existing character export; item/icons/effect supplied by owner",
+  "zip_sha256": "99e960e46a7fbb19cf83b3530c1fbe720f486c3a8e6957fb67648750d5f174ef",
+  "assets": [
+    {
+      "asset": "fruit.png",
+      "sha256": "549fdcf571f813f3c9a7de673e46e070d3760d1694c2d8b7094aea28d9178470"
+    },
+    {
+      "asset": "skill-1.png",
+      "sha256": "542b10657dff2e925d952fbe2c77fc76dc4e20d567e587e81d3d2f0a8c0a370b"
+    },
+    {
+      "asset": "skill-2.png",
+      "sha256": "57ffbb115e06ae327e7f8931a2ad41dc9c15ca738b657e942f5f9cb9f2cabf01"
+    },
+    {
+      "asset": "effect.png",
+      "sha256": "305c5d99addf13886bdcc1155c17fd1a72bdaae97c751b25246c802c6f854017"
+    },
+    {
+      "asset": "effect.json",
+      "sha256": "f480d0dd70687da9730887c10f55621c9fb1ef0b6ffc339b7f80e08aa15ac8ca"
+    }
+  ]
+}
