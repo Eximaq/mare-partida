@@ -19,22 +19,22 @@
     {
       "original": "slash-arc.png",
       "asset": "slash-arc.png",
-      "sha256": "919ca4aa2b6422e7be4afd3d103778799a888dc0260a825d18dc07a402d2e19a"
+      "sha256": "d511e2150a27c02ebccf9fb43731b689dbca1c36c44c865a4abadc7045998572"
     },
     {
       "original": "slash-arc.json",
       "asset": "slash-arc.json",
-      "sha256": "6879791b1e56a00593fc6a609ed86aa844cd747e65b9352ea71f5d4b617c3f8c"
+      "sha256": "cd0c923acfb3db55914f6fa7fe087f420d8eadef6f6a9842c5214cdb92dc769f"
     },
     {
-      "original": "shield-bubble.png",
-      "asset": "shield-bubble.png",
-      "sha256": "bd843492fa4a706809bb2f826c86941ecc798bb9f77f8b1bc041e9f1c305e983"
+      "original": "spiral-ward.png",
+      "asset": "spiral-ward.png",
+      "sha256": "b778a2884c506ef5aa88750bac67e303958b86b242f5ff613232338e10bb63fd"
     },
     {
-      "original": "shield-bubble.json",
-      "asset": "shield-bubble.json",
-      "sha256": "4f3a46698d114a70ec5f433b4d877520ff679f69057117bc5116fd457f2d8726"
+      "original": "spiral-ward.json",
+      "asset": "spiral-ward.json",
+      "sha256": "821c2ca543be30cffaee086c1804c4d6629bc8dbb3b61b7cf88da5de56917361"
     }
   ]
 }

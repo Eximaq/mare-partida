@@ -3,60 +3,7 @@
 ((root)=>{
   const animations={
   "slash": {
-    "image": "assets/akuma/supa/slash-arc.png",
-    "anchor": {
-      "kind": "origin",
-      "x": 36,
-      "y": 40
-    },
-    "frames": [
-      {
-        "x": 0,
-        "y": 0,
-        "w": 77,
-        "h": 82,
-        "duration": 77
-      },
-      {
-        "x": 77,
-        "y": 0,
-        "w": 77,
-        "h": 82,
-        "duration": 77
-      },
-      {
-        "x": 154,
-        "y": 0,
-        "w": 77,
-        "h": 82,
-        "duration": 77
-      },
-      {
-        "x": 0,
-        "y": 82,
-        "w": 77,
-        "h": 82,
-        "duration": 77
-      },
-      {
-        "x": 77,
-        "y": 82,
-        "w": 77,
-        "h": 82,
-        "duration": 77
-      },
-      {
-        "x": 154,
-        "y": 82,
-        "w": 77,
-        "h": 82,
-        "duration": 77
-      }
-    ],
-    "duration": 462
-  },
-  "shield": {
-    "image": "assets/akuma/supa/shield-bubble.png",
+    "image": "assets/akuma/supa/slash-arc.png?v=d511e2150a27",
     "anchor": {
       "kind": "origin",
       "x": 48,
@@ -68,66 +15,154 @@
         "y": 0,
         "w": 96,
         "h": 96,
-        "duration": 111
+        "duration": 59
       },
       {
         "x": 96,
         "y": 0,
         "w": 96,
         "h": 96,
-        "duration": 111
+        "duration": 59
       },
       {
         "x": 192,
         "y": 0,
         "w": 96,
         "h": 96,
-        "duration": 111
+        "duration": 59
       },
       {
         "x": 0,
         "y": 96,
         "w": 96,
         "h": 96,
-        "duration": 111
+        "duration": 59
       },
       {
         "x": 96,
         "y": 96,
         "w": 96,
         "h": 96,
-        "duration": 111
+        "duration": 59
       },
       {
         "x": 192,
         "y": 96,
         "w": 96,
         "h": 96,
-        "duration": 111
+        "duration": 59
       },
       {
         "x": 0,
         "y": 192,
         "w": 96,
         "h": 96,
-        "duration": 111
+        "duration": 59
       },
       {
         "x": 96,
         "y": 192,
         "w": 96,
         "h": 96,
-        "duration": 111
-      },
-      {
-        "x": 192,
-        "y": 192,
-        "w": 96,
-        "h": 96,
-        "duration": 111
+        "duration": 59
       }
     ],
-    "duration": 999
+    "duration": 472
+  },
+  "shield": {
+    "image": "assets/akuma/supa/spiral-ward.png?v=b778a2884c50",
+    "anchor": {
+      "kind": "origin",
+      "x": 51,
+      "y": 51
+    },
+    "frames": [
+      {
+        "x": 0,
+        "y": 0,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      },
+      {
+        "x": 102,
+        "y": 0,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      },
+      {
+        "x": 204,
+        "y": 0,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      },
+      {
+        "x": 306,
+        "y": 0,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      },
+      {
+        "x": 0,
+        "y": 102,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      },
+      {
+        "x": 102,
+        "y": 102,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      },
+      {
+        "x": 204,
+        "y": 102,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      },
+      {
+        "x": 306,
+        "y": 102,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      },
+      {
+        "x": 0,
+        "y": 204,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      },
+      {
+        "x": 102,
+        "y": 204,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      },
+      {
+        "x": 204,
+        "y": 204,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      },
+      {
+        "x": 306,
+        "y": 204,
+        "w": 102,
+        "h": 102,
+        "duration": 63
+      }
+    ],
+    "duration": 756
   }
 };
   function frameAt(kind,elapsedMs,loop=false){
