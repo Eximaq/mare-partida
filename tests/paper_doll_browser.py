@@ -80,7 +80,7 @@ with sync_playwright() as p:
  if diag(q)['autoPlay']:q.locator('#autoToggle').click()
  q.keyboard.press('h');assert diag(q)['haki']['active']=='armament';q.clock.run_for(1000);assert diag(q)['haki']['current']<100;assert diag(q)['paperDoll']['compositions']==0;q.screenshot(path=str(OUT/'haki-fallback.png'));c.close()
  zoan=copy.deepcopy(template);zoan['equipment']['akuma_no_mi']={'id':'test-zoan','type':'akuma_no_mi','fruitId':'akuma_tori_albatroz','def':book_def+3,'level':1,'plus':0,'locked':False,'obtainedAt':1};zoan['zoanTransformed']=True;zoan['akumaCompendium']=['akuma_tori_albatroz']
- c,q=new_page(b,zoan);game(q);travel(q);q.clock.run_for(1000);assert diag(q)['paperDoll']['fallbacks']==0 and diag(q)['combat'] is None;assert saved(q)['zoanTransformed'];q.screenshot(path=str(OUT/'zoan-bypasses-paper-doll.png'));q.keyboard.press('t');q.clock.run_for(100);assert not saved(q)['zoanTransformed'];assert diag(q)['paperDoll']['fallbacks']>0;c.close()
+ c,q=new_page(b,zoan);game(q);travel(q);q.clock.run_for(1000);assert diag(q)['paperDoll']['fallbacks']==0 and diag(q)['combatAssetId'] is None;assert saved(q)['zoanTransformed'];q.screenshot(path=str(OUT/'zoan-bypasses-paper-doll.png'));q.keyboard.press('t');q.clock.run_for(100);assert not saved(q)['zoanTransformed'];assert diag(q)['paperDoll']['fallbacks']>0;c.close()
  # Actual combat RAF intervals; this measures the fallback path, not a modular-art crowd.
  perf_seed=copy.deepcopy(template);perf_seed.update(level=10,hp=99999,potions=20)
  c,q=new_page(b,perf_seed,clock=False);game(q);travel(q)
