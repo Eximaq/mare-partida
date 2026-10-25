@@ -1,0 +1,26 @@
+[
+  {
+    "_comment_prompt": "Continue o personagem único com economia de créditos.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required"
+    },
+    "MCP transfer_outfit": {
+      "frame_urls": [
+        "north-native-01.png",
+        "north-native-02.png",
+        "north-native-03.png",
+        "north-native-04.png",
+        "north-native-05.png",
+        "north-native-06.png",
+        "north-native-07.png",
+        "north-native-08.png"
+      ],
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "additional_instructions": "Keep each original north-facing punch pose and anatomy exactly. Add only the reference cream short sleeve shirt and navy waistcoat fitted to the back and shoulders. Keep the punching forearm in front of the chest, occluded by the back. Preserve the bald head, hands, shorts, bare feet, pixel scale and transparency. No hair, gloves, weapons or added limbs. Preserve all eight frames in order.",
+      "reference_image_url": "north-outfit-reference.png"
+    },
+    "TASK extract": "assemble_north.py copies garment pixels by palette/region, preserves body, adds native hair with measured socket. Draft only."
+  }
+]

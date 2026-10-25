@@ -2028,7 +2028,7 @@
       return drawn;
     }
     const combat=classCombatController(),pose=combat?.snapshot()||basicAttackPose(),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
-    if((!attack||combat)&&drawPaperDoll(c,x,y,requested,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time,null,pose?.locked?pose.progress:null))return true;
+    if((!attack||combat||basicAttackPose())&&drawPaperDoll(c,x,y,requested,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time,null,pose?.locked?pose.progress:null))return true;
     if(basicAttackPose()&&!classCombat.asset(game))return drawFactionSprite(c,x,y,game.factionId,'idle',74,false,pose.direction,world.time);
     if(classCombat.entry(game)){
       const action=pose?.locked?pose.action:attack?'attack':'combat-idle';

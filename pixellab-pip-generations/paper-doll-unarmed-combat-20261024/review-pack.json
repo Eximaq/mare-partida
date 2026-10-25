@@ -1,0 +1,433 @@
+{
+  "reviewOnly": true,
+  "productionEnabled": false,
+  "full_character_artwork_approved": false,
+  "unarmedOnly": true,
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "hair",
+      "outfit"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "walk": {
+        "frames": 8,
+        "fps": 8,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-unarmed": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "unarmed-body",
+      "rigId": "human-v1",
+      "slot": "body",
+      "available": true,
+      "approved": false,
+      "zIndex": 0,
+      "animations": {
+        "idle": {
+          "kind": "sheet",
+          "url": "body-idle.png",
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        },
+        "walk": {
+          "kind": "sheet",
+          "url": "body-walk.png",
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        },
+        "attack-unarmed": {
+          "kind": "sheet",
+          "url": "body-punch.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "west",
+            "east",
+            "north"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 0
+        }
+      }
+    },
+    {
+      "id": "unarmed-hair",
+      "rigId": "human-v1",
+      "slot": "hair",
+      "available": true,
+      "approved": false,
+      "zIndex": 60,
+      "animations": {
+        "idle": {
+          "kind": "sheet",
+          "url": "hair-idle.png",
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 60
+        },
+        "walk": {
+          "kind": "sheet",
+          "url": "hair-walk.png",
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 60
+        },
+        "attack-unarmed": {
+          "kind": "rigid-attachment",
+          "url": "hair-south.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "west",
+            "east",
+            "north"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 40,
+          "sources": {
+            "south": {
+              "url": "hair-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "west": {
+              "url": "hair-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "east": {
+              "url": "hair-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "north": {
+              "url": "hair-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "west": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "north": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "unarmed-outfit",
+      "slot": "outfit",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 50,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "outfit-idle.png"
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "outfit-walk.png"
+        },
+        "attack-unarmed": {
+          "kind": "sheet",
+          "url": "outfit-punch.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "west",
+            "east",
+            "north"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 30
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "unarmed-body",
+      "hair": "unarmed-hair",
+      "outfit": "unarmed-outfit"
+    }
+  },
+  "coverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-unarmed": [
+      "south",
+      "west",
+      "east",
+      "north"
+    ]
+  },
+  "bindings": {
+    "coat": {
+      "slot": "outfit",
+      "items": {
+        "6": "unarmed-outfit"
+      }
+    }
+  },
+  "scope": "layered-gesture-review",
+  "classId": "brawler"
+}
