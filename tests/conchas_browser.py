@@ -69,14 +69,18 @@ def walk_sector(page, sector_id):
         page.locator("#closePanel").click()
         return
     page.locator(f"[data-hunt-sector={sector_id}]").click()
-    for _ in range(320):
+    route_start = state(page)
+    samples = []
+    for tick in range(320):
         page.clock.run_for(250)
         current = state(page)
+        if tick % 8 == 0 or not current["path"]:
+            samples.append({'tick':tick,'hero':(round(current['hero']['x'],2),round(current['hero']['y'],2)),'path':current['path'][:3],'destination':current['destination']})
         if not current["path"]:
             break
     assert not current["path"] and current["walkable"], current
     distance = ((current["hero"]["x"] - target["x"]) ** 2 + (current["hero"]["y"] - target["y"]) ** 2) ** 0.5
-    assert distance < 120, (sector_id, current["hero"], target)
+    assert distance < 120, (sector_id, current["hero"], target, {'route_start':route_start['path'][:8], 'samples':samples[-12:]})
 
 
 with sync_playwright() as playwright:
