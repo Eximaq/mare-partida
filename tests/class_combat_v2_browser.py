@@ -27,17 +27,20 @@ with sync_playwright() as p:
    if d['combat']:seen.add(d['combat']['action'])
    if d['damage']>last['damage']:
     hits+=1
-    if d['combat']:
-     assert d['combat']['impactDone'] or last['combat']['impactDone'],(cls,last['combat'],d['combat'])
+    # A skill may apply immediate damage while the basic-attack controller
+    # is only starting up. Validate the impact latch for basic-attack damage,
+    # not unrelated skill hits; keep the assertion strict for both snapshots.
+    if d['combat'] and d['skillUses']==last['skillUses']:
+     assert d['combat']['impactDone'] or (last['combat'] and last['combat']['impactDone']),(cls,last['combat'],d['combat'])
     if not captured:q.screenshot(path=str(OUT/(cls+'-combat.png')));captured=True
    last=d
    if hits>=4 and d['kills']>=2:break
   assert d['walkable'] and hits>0 and d['kills']>0,(cls,d)
-  row={'classId':cls,'observed_states':sorted(seen),'impacts':hits,'kills':d['kills'],'production_combat_set':bool(seen),'skill_uses':d['skillUses']}
+  row={'classId':cls,'observed_states':sorted(seen),'impacts':hits,'kills':d['kills'],'production_combat_set':bool(d['combatAssetId']),'skill_uses':d['skillUses']}
   rows.append(row);print(json.dumps(row),flush=True);q.locator('#returnLobby').click();q.reload();q.wait_for_function('typeof __mareDiagnostics==="function"');assert state(q)['classId']==cls;c.close()
  # A marine never receives pirate combat art, including a class change after loading.
  for faction in ['marine','revolutionary','government']:
   seed=copy.deepcopy(template);seed.update(factionId=faction,classId='sword')
-  c,q=page(b,seed);travel(q);q.clock.run_for(200);assert state(q)['combat'] is None;c.close()
+  c,q=page(b,seed);travel(q);q.clock.run_for(200);assert state(q)['combatAssetId'] is None;c.close()
  assert not errors,errors
  (OUT/'regression.json').write_text(json.dumps({'scope':'combat regression; missing sets remain pending','rows':rows,'errors':errors},indent=2),encoding='utf-8');b.close()
