@@ -1,0 +1,508 @@
+{
+  "character_id": "85edd3a5-c083-4fe2-9062-819e765f4314",
+  "zip_sha256": "176a265f7a3d27dc956f9884e523b92ddba534b800b60a758523598a2c624ba5",
+  "assets": [
+    {
+      "asset": "assets/akuma/bison/fruit.png",
+      "sha256": "7099059d3d50a6dc51c3169a3762a8707d4ad4546d06be81cdbba599df5cf69d"
+    },
+    {
+      "asset": "assets/akuma/bison/skill-1.png",
+      "sha256": "461d68cc7a8ad1eb480d1eee96e7a1b520518441106d0e248a95a834d2990828"
+    },
+    {
+      "asset": "assets/akuma/bison/skill-2.png",
+      "sha256": "5a9befacf6aa26ad4d3a21684d6c94396070958cbf0275846394a2562c632c18"
+    },
+    {
+      "asset": "assets/akuma/bison/heal-pillar-take-1.png",
+      "sha256": "2ce719a96179618527252d402b449b9fb426d20632e0c88937ee8b58f41cf4fc"
+    },
+    {
+      "asset": "assets/akuma/bison/heal-pillar-take-1.json",
+      "sha256": "a8530a40df4c2f587472896b7d213c7a0305534140f93dcad03ba6b157c86a8f"
+    },
+    {
+      "asset": "assets/akuma/bomu/fruit.png",
+      "sha256": "5ca3e1dae94c859aff060a9b0db17695348d9c00f0585fc9e05c5a691c81374b"
+    },
+    {
+      "asset": "assets/akuma/bomu/skill-1.png",
+      "sha256": "31c21518e424e950a203e3060350870f167fc1145336d0ff4de0fe99fc8584b4"
+    },
+    {
+      "asset": "assets/akuma/bomu/skill-2.png",
+      "sha256": "6ba0b92ad23beaffd0f4f4f23c3d1bb24a27f11e8f8107c9b966a4aebf87de4e"
+    },
+    {
+      "asset": "assets/akuma/bomu/explosion-take-1.png",
+      "sha256": "4a715961be3deb44024c5f678d2b0d7eda00f0eb370594d5c0079baa474a62b8"
+    },
+    {
+      "asset": "assets/akuma/bomu/explosion-take-1.json",
+      "sha256": "c12899eb8035fc1f16db052c2e5da02d167885796823ab386fdd7c8d25fb21a6"
+    },
+    {
+      "asset": "assets/akuma/bomu/explosion-take-2.png",
+      "sha256": "a9526fa0a74c88a5ee65853c44cdea168456100c827f19fbcdc7d63b40495f71"
+    },
+    {
+      "asset": "assets/akuma/bomu/explosion-take-2.json",
+      "sha256": "104994133af4033ddc217619990474f65710b919c5ef282c3bb6bc8ab46fadda"
+    },
+    {
+      "asset": "assets/akuma/kobu/fruit.png",
+      "sha256": "724b4178beafbdd149276694521bb64be00a53604b64c0f06f38c1e6fe179f6f"
+    },
+    {
+      "asset": "assets/akuma/kobu/skill-1.png",
+      "sha256": "019e5be5865d192f416dec29cbf49920c857e9abb2f003f5ff9fe5e20923806e"
+    },
+    {
+      "asset": "assets/akuma/kobu/skill-2.png",
+      "sha256": "52c6fd588e94b399b0757f05865507a4a9b18709fbb5f00d6e74c28a52fb78d3"
+    },
+    {
+      "asset": "assets/akuma/kobu/firelight-take-10.png",
+      "sha256": "6605d80e8085e5d3a3bb0bef8a3be7b701c55480660c550694e882dd564fe55e"
+    },
+    {
+      "asset": "assets/akuma/kobu/firelight-take-10.json",
+      "sha256": "9e5725fe14c56720b35637ab15544acb0f5839b9de9720b7225b68af63ff615f"
+    },
+    {
+      "asset": "assets/akuma/kobu/firelight-take-12.png",
+      "sha256": "9f6992979595ff0b7e19c4ceac3447baf7d4c087ec9ef5c8b1e5a17ef8216bcc"
+    },
+    {
+      "asset": "assets/akuma/kobu/firelight-take-12.json",
+      "sha256": "c5be89c400b18f42d7913ecf5e18c3bd9284d111900ae5864a6cb6698b99000f"
+    }
+  ],
+  "clips": {
+    "idle": {
+      "south": {
+        "image": "assets/akuma/bison/idle-south.png",
+        "size": 64,
+        "frames": 1,
+        "feet": [
+          60
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/rotations/south.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "north": {
+        "image": "assets/akuma/bison/idle-north.png",
+        "size": 64,
+        "frames": 1,
+        "feet": [
+          62
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/rotations/north.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "east": {
+        "image": "assets/akuma/bison/idle-east.png",
+        "size": 64,
+        "frames": 1,
+        "feet": [
+          58
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/rotations/east.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "west": {
+        "image": "assets/akuma/bison/idle-west.png",
+        "size": 64,
+        "frames": 1,
+        "feet": [
+          58
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/rotations/west.png"
+        ],
+        "hitFrameRatio": 0.5
+      }
+    },
+    "walk": {
+      "south": {
+        "image": "assets/akuma/bison/walk-south.png",
+        "size": 84,
+        "frames": 8,
+        "feet": [
+          65,
+          66,
+          71,
+          69,
+          65,
+          66,
+          71,
+          69
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Running/south/frame_000.png",
+          "Idle/animations/Running/south/frame_001.png",
+          "Idle/animations/Running/south/frame_002.png",
+          "Idle/animations/Running/south/frame_003.png",
+          "Idle/animations/Running/south/frame_004.png",
+          "Idle/animations/Running/south/frame_005.png",
+          "Idle/animations/Running/south/frame_006.png",
+          "Idle/animations/Running/south/frame_007.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "north": {
+        "image": "assets/akuma/bison/walk-north.png",
+        "size": 84,
+        "frames": 8,
+        "feet": [
+          68,
+          65,
+          71,
+          70,
+          68,
+          65,
+          71,
+          70
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Running/north/frame_000.png",
+          "Idle/animations/Running/north/frame_001.png",
+          "Idle/animations/Running/north/frame_002.png",
+          "Idle/animations/Running/north/frame_003.png",
+          "Idle/animations/Running/north/frame_004.png",
+          "Idle/animations/Running/north/frame_005.png",
+          "Idle/animations/Running/north/frame_006.png",
+          "Idle/animations/Running/north/frame_007.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "east": {
+        "image": "assets/akuma/bison/walk-east.png",
+        "size": 80,
+        "frames": 8,
+        "feet": [
+          63,
+          63,
+          64,
+          65,
+          65,
+          66,
+          66,
+          65
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Running/east/frame_000.png",
+          "Idle/animations/Running/east/frame_001.png",
+          "Idle/animations/Running/east/frame_002.png",
+          "Idle/animations/Running/east/frame_003.png",
+          "Idle/animations/Running/east/frame_004.png",
+          "Idle/animations/Running/east/frame_005.png",
+          "Idle/animations/Running/east/frame_006.png",
+          "Idle/animations/Running/east/frame_007.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "west": {
+        "image": "assets/akuma/bison/walk-west.png",
+        "size": 80,
+        "frames": 8,
+        "feet": [
+          63,
+          63,
+          64,
+          65,
+          65,
+          66,
+          66,
+          65
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Running/west/frame_000.png",
+          "Idle/animations/Running/west/frame_001.png",
+          "Idle/animations/Running/west/frame_002.png",
+          "Idle/animations/Running/west/frame_003.png",
+          "Idle/animations/Running/west/frame_004.png",
+          "Idle/animations/Running/west/frame_005.png",
+          "Idle/animations/Running/west/frame_006.png",
+          "Idle/animations/Running/west/frame_007.png"
+        ],
+        "hitFrameRatio": 0.5
+      }
+    },
+    "attack": {
+      "south": {
+        "image": "assets/akuma/bison/attack-south.png",
+        "size": 84,
+        "frames": 13,
+        "feet": [
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70,
+          70
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_000.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_001.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_002.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_003.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_004.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_005.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_006.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_007.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_008.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_009.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_010.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_011.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/south/frame_012.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "north": {
+        "image": "assets/akuma/bison/attack-north.png",
+        "size": 84,
+        "frames": 13,
+        "feet": [
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72,
+          72
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_000.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_001.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_002.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_003.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_004.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_005.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_006.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_007.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_008.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_009.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_010.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_011.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/north/frame_012.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "east": {
+        "image": "assets/akuma/bison/attack-east.png",
+        "size": 80,
+        "frames": 13,
+        "feet": [
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_000.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_001.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_002.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_003.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_004.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_005.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_006.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_007.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_008.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_009.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_010.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_011.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/east/frame_012.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "west": {
+        "image": "assets/akuma/bison/attack-west.png",
+        "size": 80,
+        "frames": 13,
+        "feet": [
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66,
+          66
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_000.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_001.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_002.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_003.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_004.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_005.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_006.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_007.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_008.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_009.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_010.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_011.png",
+          "Idle/animations/Lower_the_head_further_while_thrusting_the_horns_s/west/frame_012.png"
+        ],
+        "hitFrameRatio": 0.5
+      }
+    },
+    "dash": {
+      "south": {
+        "image": "assets/akuma/bison/dash-south.png",
+        "size": 84,
+        "frames": 8,
+        "feet": [
+          72,
+          73,
+          64,
+          57,
+          51,
+          57,
+          60,
+          73
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Jump_Attack/south/frame_000.png",
+          "Idle/animations/Jump_Attack/south/frame_001.png",
+          "Idle/animations/Jump_Attack/south/frame_002.png",
+          "Idle/animations/Jump_Attack/south/frame_003.png",
+          "Idle/animations/Jump_Attack/south/frame_004.png",
+          "Idle/animations/Jump_Attack/south/frame_005.png",
+          "Idle/animations/Jump_Attack/south/frame_006.png",
+          "Idle/animations/Jump_Attack/south/frame_007.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "north": {
+        "image": "assets/akuma/bison/dash-north.png",
+        "size": 64,
+        "frames": 8,
+        "feet": [
+          58,
+          64,
+          64,
+          61,
+          56,
+          54,
+          51,
+          52
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Jump_Attack/north/frame_000.png",
+          "Idle/animations/Jump_Attack/north/frame_001.png",
+          "Idle/animations/Jump_Attack/north/frame_002.png",
+          "Idle/animations/Jump_Attack/north/frame_003.png",
+          "Idle/animations/Jump_Attack/north/frame_004.png",
+          "Idle/animations/Jump_Attack/north/frame_005.png",
+          "Idle/animations/Jump_Attack/north/frame_006.png",
+          "Idle/animations/Jump_Attack/north/frame_007.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "east": {
+        "image": "assets/akuma/bison/dash-east.png",
+        "size": 64,
+        "frames": 8,
+        "feet": [
+          58,
+          59,
+          60,
+          55,
+          46,
+          43,
+          48,
+          55
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Jump_Attack/east/frame_000.png",
+          "Idle/animations/Jump_Attack/east/frame_001.png",
+          "Idle/animations/Jump_Attack/east/frame_002.png",
+          "Idle/animations/Jump_Attack/east/frame_003.png",
+          "Idle/animations/Jump_Attack/east/frame_004.png",
+          "Idle/animations/Jump_Attack/east/frame_005.png",
+          "Idle/animations/Jump_Attack/east/frame_006.png",
+          "Idle/animations/Jump_Attack/east/frame_007.png"
+        ],
+        "hitFrameRatio": 0.5
+      },
+      "west": {
+        "image": "assets/akuma/bison/dash-west.png",
+        "size": 64,
+        "frames": 8,
+        "feet": [
+          58,
+          59,
+          60,
+          55,
+          46,
+          43,
+          48,
+          55
+        ],
+        "fps": 12,
+        "source": [
+          "Idle/animations/Jump_Attack/west/frame_000.png",
+          "Idle/animations/Jump_Attack/west/frame_001.png",
+          "Idle/animations/Jump_Attack/west/frame_002.png",
+          "Idle/animations/Jump_Attack/west/frame_003.png",
+          "Idle/animations/Jump_Attack/west/frame_004.png",
+          "Idle/animations/Jump_Attack/west/frame_005.png",
+          "Idle/animations/Jump_Attack/west/frame_006.png",
+          "Idle/animations/Jump_Attack/west/frame_007.png"
+        ],
+        "hitFrameRatio": 0.5
+      }
+    }
+  }
+}
