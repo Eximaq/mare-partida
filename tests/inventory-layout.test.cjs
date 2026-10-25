@@ -30,7 +30,7 @@ for(const [max,columns] of [[1180,8],[1024,7],[760,6],[389,5]]){
 }
 assert.match(responsive, /\.op-equip-slot\.filled\s*\{[\s\S]*?background-image:none/,
   'equipped items must not reuse rarity artwork as full slot background');
-assert.match(responsive, /border-image-source:var\\(--slot-rarity-frame\\)/,
+assert.match(responsive, /border-image-source:var\(--slot-rarity-frame\)/,
   'both filled slot types must use the same illustrated frame without an opaque center');
 assert.match(responsive, /border-image-slice:46/, 'rarity frame uses edge slices without fill');
 for(const rarity of ['common','uncommon','rare','epic','legendary','supreme']){
