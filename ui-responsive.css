@@ -110,37 +110,78 @@
   min-height:0;
   padding:3px;
 }
+/* Empty slots are neutral and translucent; do not dim their siblings or icons. */
 #panelOverlay.inventory-mode .op-grid>.op-item.empty{
-  background:#1b2526;
-  border:1px solid #5e5444;
-  box-shadow:inset 0 1px 4px #050a0c80;
+  background-color:rgba(5,13,18,.16);
+  background-image:none;
+  border:1px solid rgba(125,113,91,.5);
+  box-shadow:inset 0 1px 4px rgba(3,8,11,.24);
 }
-#panelOverlay.inventory-mode .op-grid>.op-item:not(.empty){
-  background-size:100% 100%;
+
+/* Both filled bag and equipment slots share their original illustrated rarity
+   frame, but omit the PNG's opaque center. border-image without "fill" paints
+   only the frame slices; the dark socket underneath stays translucent. */
+#panelOverlay.inventory-mode .op-grid>.op-item:not(.empty),
+#panelOverlay.inventory-mode .op-equip-slot.filled{
+  --slot-rarity-frame:url("assets/ui/inventory-slots/common.png");
+  --slot-rarity-glow:rgba(165,154,133,.42);
+  box-sizing:border-box;
+  background-color:rgba(5,13,18,.18);
+  background-image:none;
+  border:3px solid transparent;
+  border-image-source:var(--slot-rarity-frame);
+  border-image-slice:46;
+  border-image-width:1.6;
+  border-image-repeat:stretch;
+  box-shadow:inset 0 0 7px rgba(1,6,10,.26),0 0 7px var(--slot-rarity-glow);
   image-rendering:pixelated;
 }
 
-/* Equipment uses the same dark socket as the bag. Item rarity now colors the
-   *rim* instead of painting a full green/blue/purple background behind sprites. */
+/* Neutral equipment sockets until an actual item is equipped. */
 #panelOverlay.inventory-mode .op-equip-slot{
-  --equip-rarity:#8d775b;
-  background-color:#1c282b;
+  background-color:rgba(5,13,18,.16);
   background-image:none;
-  border:2px solid var(--equip-rarity);
-  box-shadow:inset 0 1px 3px #040b0d,0 1px #f1daae33;
+  border:2px solid rgba(125,113,91,.5);
+  box-shadow:inset 0 1px 4px rgba(3,8,11,.24);
 }
 #panelOverlay.inventory-mode .op-equip-slot.filled{
-  background-color:#1c282b;
+  background-color:rgba(5,13,18,.18);
   background-image:none;
-  border-color:var(--equip-rarity);
-  box-shadow:inset 0 1px 3px #040b0d,0 1px #f1daae33;
 }
-#panelOverlay.inventory-mode .op-equip-slot.rarity-common{--equip-rarity:#968467}
-#panelOverlay.inventory-mode .op-equip-slot.rarity-uncommon{--equip-rarity:#60b98b}
-#panelOverlay.inventory-mode .op-equip-slot.rarity-rare{--equip-rarity:#7eb3de}
-#panelOverlay.inventory-mode .op-equip-slot.rarity-epic{--equip-rarity:#c193df}
-#panelOverlay.inventory-mode .op-equip-slot.rarity-legendary{--equip-rarity:#e5ba65}
-#panelOverlay.inventory-mode .op-equip-slot.rarity-supreme{--equip-rarity:#e99082}
+
+/* Reuse each of the approved rarity illustrations for both slot families.
+   The color glow is outside the frame; item art and text remain fully opaque. */
+#panelOverlay.inventory-mode .op-grid>.op-item.rarity-common:not(.empty),
+#panelOverlay.inventory-mode .op-equip-slot.filled.rarity-common{
+  --slot-rarity-frame:url("assets/ui/inventory-slots/common.png");
+  --slot-rarity-glow:rgba(165,154,133,.42);
+}
+#panelOverlay.inventory-mode .op-grid>.op-item.rarity-uncommon:not(.empty),
+#panelOverlay.inventory-mode .op-equip-slot.filled.rarity-uncommon{
+  --slot-rarity-frame:url("assets/ui/inventory-slots/uncommon.png");
+  --slot-rarity-glow:rgba(60,247,107,.60);
+}
+#panelOverlay.inventory-mode .op-grid>.op-item.rarity-rare:not(.empty),
+#panelOverlay.inventory-mode .op-equip-slot.filled.rarity-rare{
+  --slot-rarity-frame:url("assets/ui/inventory-slots/rare.png");
+  --slot-rarity-glow:rgba(66,154,247,.58);
+}
+#panelOverlay.inventory-mode .op-grid>.op-item.rarity-epic:not(.empty),
+#panelOverlay.inventory-mode .op-equip-slot.filled.rarity-epic{
+  --slot-rarity-frame:url("assets/ui/inventory-slots/epic.png");
+  --slot-rarity-glow:rgba(168,107,244,.60);
+}
+#panelOverlay.inventory-mode .op-grid>.op-item.rarity-legendary:not(.empty),
+#panelOverlay.inventory-mode .op-equip-slot.filled.rarity-legendary{
+  --slot-rarity-frame:url("assets/ui/inventory-slots/legendary.png");
+  --slot-rarity-glow:rgba(251,177,66,.58);
+}
+#panelOverlay.inventory-mode .op-grid>.op-item.rarity-supreme:not(.empty),
+#panelOverlay.inventory-mode .op-equip-slot.filled.rarity-supreme{
+  --slot-rarity-frame:url("assets/ui/inventory-slots/supreme.png");
+  --slot-rarity-glow:rgba(252,114,99,.60);
+}
+
 #panelOverlay.inventory-mode .op-equip-slot .op-slot-frame,
 #panelOverlay.inventory-mode .op-equip-slot .op-slot-icon{
   background:transparent;
