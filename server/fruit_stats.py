@@ -4,6 +4,7 @@ from pathlib import Path
 DEVIL_FRUIT_STATS=json.loads((Path(__file__).resolve().parents[1]/'assets/akuma/rank-d-passives.json').read_text(encoding='utf8'))
 DEVIL_FRUIT_STATS.update({rule['id']:rule.get('passiveStats',{}) for rule in json.loads((Path(__file__).resolve().parents[1]/'assets/akuma/rank-c-rules.json').read_text(encoding='utf8')).values()})
 DEVIL_FRUIT_STATS.update({rule['id']:rule.get('passiveStats',{}) for rule in json.loads((Path(__file__).resolve().parents[1]/'assets/akuma/rank-c-expansion-rules.json').read_text(encoding='utf8')).values()})
+DEVIL_FRUIT_STATS.update({r['id']:r['passiveStats'] for r in json.loads((Path(__file__).resolve().parents[1]/'assets/akuma/rank-b-rules.json').read_text(encoding='utf8')).values()})
 def passive_stats(fruit_id):return dict(DEVIL_FRUIT_STATS.get(fruit_id,{}))
 def apply_stats(base,fruit_id):
     out=dict(base);p=passive_stats(fruit_id)
