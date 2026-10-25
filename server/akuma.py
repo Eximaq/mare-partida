@@ -6,6 +6,8 @@ import math
 import sqlite3
 import time
 import uuid
+from hoya import HoyaService, RULES as HOYA_RULES, HOYA
+from rank_b import RankBService, RULES as RANK_B_RULES, BETA, HANA, mitigate
 from rank_c_expansion import RankCExpansionService, RULES as EXPANSION_RULES, BISON, BOMU, KOBU
 from rank_c import RankCService, RULES as RANK_C_RULES, HORU, MATO
 from fruit_stats import DEVIL_FRUIT_STATS, passive_stats, apply_stats
@@ -41,6 +43,11 @@ for rule in RANK_C_RULES.values():
 for rule in EXPANSION_RULES.values():
     FRUITS[rule['id']]={'type':'akuma_no_mi','family':rule['family'],'rank':'C','name':rule['name'],'description':rule['description'],'cooldown':rule['skills'][0]['cooldown'],'skills':rule['skills'],'isImmuneToExplosions':rule.get('isImmuneToExplosions',False)}
 
+for rule in RANK_B_RULES.values():
+    FRUITS[rule['id']]={'type':'akuma_no_mi','family':rule['family'],'rank':'B','name':rule['name'],'description':rule['description'],'cooldown':rule['skills'][0]['cooldown'],'skills':rule['skills'],'physicalDamageReduction':rule.get('physicalDamageReduction',0)}
+
+FRUITS[HOYA]={'type':'akuma_no_mi','family':'paramecia','rank':'B','name':HOYA_RULES['name'],'description':HOYA_RULES['description'],'cooldown':90,'skills':HOYA_RULES['skills']}
+
 for fruit_id, modifiers in DEVIL_FRUIT_STATS.items():
     FRUITS[fruit_id]['passive_stats']=dict(modifiers)
     FRUITS[fruit_id]['passiveStats']=dict(modifiers)
@@ -48,6 +55,8 @@ for fruit_id, modifiers in DEVIL_FRUIT_STATS.items():
 
 # Public catalog metadata for the HUD. Combat validation remains in cast().
 SKILL_TOOLTIPS = {
+    HOYA:HOYA_RULES['skills'][0],
+    **{r['id']:r['skills'][0] for r in RANK_B_RULES.values()},
     **{rule['id']:rule['skills'][0] for rule in EXPANSION_RULES.values()},
     HORU:RANK_C_RULES['horu']['skills'][0],MATO:RANK_C_RULES['mato']['skills'][0],
     WOLF_ID: WOLF_RULES['skills'][0],
@@ -74,6 +83,8 @@ class AkumaStore:
         self.db.row_factory = sqlite3.Row
         self.clock = clock
         self.rank_c=RankCService(clock)
+        self.rank_b=RankBService(clock)
+        self.hoya=HoyaService(clock)
         self.rank_c_expansion=RankCExpansionService(clock)
         # World enemies and projectiles are transient, scoped by player/instance.
         self.doru_projectiles = {}
@@ -117,7 +128,7 @@ class AkumaStore:
         unlocked = [r[0] for r in self.db.execute("SELECT fruit_id FROM unlocks WHERE player_id=? ORDER BY fruit_id", (player_id,))]
         cooldowns = {r[0]: r[1] for r in self.db.execute("SELECT fruit_id,ready_at FROM fruit_cooldowns WHERE player_id=?", (player_id,))}
         cooldowns.update({r[0]+":"+r[1]: r[2] for r in self.db.execute("SELECT fruit_id,skill_key,ready_at FROM skill_cooldowns WHERE player_id=?", (player_id,))})
-        return {"wild_fury_until": row["wild_fury_until"], "metallic_until": row["metallic_until"], "rank_c":self.rank_c.state(player_id), "unlocked": unlocked, "passive_stats": passive_stats(row["equipped"]), "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock(), "invulnerable_until": row["invulnerable_until"]}
+        return {"wild_fury_until": row["wild_fury_until"], "metallic_until": row["metallic_until"], "rank_c":self.rank_c.state(player_id), "rank_b":self.rank_b.state(player_id), "hoya":self.hoya.state(player_id), "unlocked": unlocked, "passive_stats": passive_stats(row["equipped"]), "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock() or self.hoya.active(player_id),"is_untargetable":self.hoya.active(player_id), "invulnerable_until": row["invulnerable_until"]}
 
     def register(self, player_id: str, fruit_id: str):
         self.player(player_id)
@@ -136,6 +147,8 @@ class AkumaStore:
             self.db.execute("UPDATE players SET equipped=?, transformed=CASE WHEN equipped IS ? THEN transformed ELSE 0 END, metallic_until=CASE WHEN equipped IS ? THEN metallic_until ELSE 0 END WHERE id=?", (fruit_id, fruit_id, fruit_id, player_id))
         if previous_fruit != fruit_id:
             self.rank_c.clear(player_id)
+            self.rank_b.clear(player_id)
+            self.hoya.clear(player_id)
             self.rank_c_expansion.clear(player_id)
             with self.db:
                 self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
@@ -167,7 +180,7 @@ class AkumaStore:
 
         if base_stats is not None and not isinstance(base_stats,dict):raise ValueError('Atributos base inválidos')
         derived=apply_stats({**(base_stats or {}),'max_hp':result['max_hp'],'healing_received_percent':(base_stats or {}).get('healing_received_percent',0)+(result['healing_received_percent'] if not passive_stats(state['equipped']) else 0)},state['equipped'])
-        return {**result,**self.rank_c_expansion.apply_stats(player_id,self.rank_c.apply_stats(player_id,derived)),'passive_stats':passive_stats(state['equipped'])}
+        return {**result,**self.rank_c_expansion.apply_stats(player_id,self.rank_c.apply_stats(player_id,derived)),'passive_stats':passive_stats(state['equipped']),'physicalDamageReduction':FRUITS.get(state['equipped'],{}).get('physicalDamageReduction',0)}
 
     def record_corpse(self, player_id: str, corpse_id: str, instance: str, x: float, y: float):
         self.player(player_id)
@@ -181,6 +194,8 @@ class AkumaStore:
         fruit_id = state["equipped"]
         if not fruit_id:
             raise ValueError("Nenhuma fruta equipada")
+        if fruit_id==HOYA:return self.hoya.cast(self,player_id,instance,x,y,str(skill_key),energy,rank_c_context or {})
+        if fruit_id in (BETA,HANA):return self.rank_b.cast(self,player_id,fruit_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id in (BISON,BOMU,KOBU):return self.rank_c_expansion.cast(self,player_id,fruit_id,instance,x,y,enemies,direction,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id in (HORU,MATO):return self.rank_c.cast(self,player_id,fruit_id,instance,x,y,enemies,direction,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id == WOLF_ID:
@@ -282,7 +297,7 @@ class AkumaStore:
             self.db.execute("INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)", (player_id, SUPA_ID, skill["key"], now+skill["cooldown"]))
         return {"effect": effect, "energy_spent": skill["cost"], "energy_remaining": float(energy)-skill["cost"], "state": self.state(player_id)}
 
-    def receive_damage(self, player_id, original, received=None, physical=True, direct=False, reflected=False, damage_type=None):
+    def receive_damage(self, player_id, original, received=None, physical=True, direct=False, reflected=False, damage_type=None, has_haki=False):
         """Resolve Supa after ordinary defense; reflected damage cannot reflect again.
 
         The optional prototype service receives combat inputs from the local client.
@@ -293,6 +308,8 @@ class AkumaStore:
         if not all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) and v >= 0 for v in (original, received)):
             raise ValueError("Dano inválido")
         if state['equipped']==BOMU and damage_type=='explosion':return {'damage':0,'reflected':0,'immune':True}
+        if self.hoya.active(player_id):return {'damage':0,'reflected':0,'isUntargetable':True,'isInvulnerable':True}
+        received=mitigate(received,state['equipped'],physical,has_haki is True)
         active = state["equipped"] == SUPA_ID and state["metallic_until"] > self.clock()
         enabled = active and physical and not direct and not reflected and original > 0 and received > 0
         damage = received*(1-SUPA_RULES["mitigation"]) if enabled else received
@@ -304,6 +321,8 @@ class AkumaStore:
     def end_protection(self, player_id):
         self.state(player_id)
         self.rank_c.clear(player_id)
+        self.rank_b.clear(player_id)
+        self.hoya.clear(player_id)
         self.rank_c_expansion.clear(player_id)
         with self.db:
             self.db.execute("UPDATE players SET metallic_until=0 WHERE id=?", (player_id,))

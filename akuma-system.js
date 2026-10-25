@@ -8,6 +8,8 @@
   if(!root.MareAkumaPassives&&typeof module!=='undefined')require('./akuma-passives.js');
   if(!root.MareRankC&&typeof module!=='undefined')require('./rank-c-system.js');
   if(!root.MareRankCExpansion&&typeof module!=='undefined')require('./rank-c-expansion.js');
+  if(!root.MareRankB&&typeof module!=='undefined')require('./rank-b-system.js');
+  if(!root.MareHoya&&typeof module!=='undefined')require('./hoya-system.js');
   const ranks=Object.freeze(['E','D','C','B','A','S']);
   const slotsPerRank=5;
   // Keep in sync with assets/akuma/supa/rules.json (validated by regression tests).
@@ -30,7 +32,9 @@
     new AkumaNoMiData('akuma_doru_doru','Doru Doru no Mi','D','assets/akuma/doru/fruit.png',{},'','assets/akuma/doru/skill-1.png','',1,1,{family:'paramecia',skills:root.MareDoru.rules.skills,description:root.MareDoru.rules.description}),
     new AkumaNoMiData('akuma_inu_wolf','Inu Inu no Mi: Modelo Lobo','D','assets/akuma/wolf/fruit.png',{},'','assets/akuma/wolf/skill-1.png','',1,1,{family:'zoan',subtype:'Zoan Carnívora',zoan_sprite_sheet:'assets/akuma/wolf/preview-south.png',skills:root.MareWolf.rules.skills,description:root.MareWolf.rules.description}),
     ...Object.entries(root.MareRankC.rules).map(([key,rule])=>new AkumaNoMiData(rule.id,rule.name,'C','assets/akuma/'+key+'/fruit.png',{},'','assets/akuma/'+key+'/skill-1.png','',1,1,{family:'paramecia',skills:rule.skills,description:rule.description})),
-    ...Object.entries(root.MareRankCExpansion.rules).map(([key,rule])=>new AkumaNoMiData(rule.id,rule.name,'C','assets/akuma/'+key+'/fruit.png',{},'','assets/akuma/'+key+'/skill-1.png','',1,1,{family:rule.family,zoan_sprite_sheet:rule.family==='zoan'?'assets/akuma/bison/preview-south.png':null,skills:rule.skills,description:rule.description,isImmuneToExplosions:!!rule.isImmuneToExplosions}))
+    ...Object.entries(root.MareRankCExpansion.rules).map(([key,rule])=>new AkumaNoMiData(rule.id,rule.name,'C','assets/akuma/'+key+'/fruit.png',{},'','assets/akuma/'+key+'/skill-1.png','',1,1,{family:rule.family,zoan_sprite_sheet:rule.family==='zoan'?'assets/akuma/bison/preview-south.png':null,skills:rule.skills,description:rule.description,isImmuneToExplosions:!!rule.isImmuneToExplosions})),
+    ...Object.entries(root.MareRankB.rules).map(([key,r])=>new AkumaNoMiData(r.id,r.name,'B','assets/akuma/'+key+'/fruit.png',{},'','assets/akuma/'+key+'/skill-1.png','',1,1,{family:r.family,subtype:r.family==='logia'?'Logia':'Paramecia',skills:r.skills,description:r.description,physicalDamageReduction:r.physicalDamageReduction||0})),
+    new AkumaNoMiData(root.MareHoya.rules.id,root.MareHoya.rules.name,'B','assets/akuma/hoya/fruit.png',{},'','assets/akuma/hoya/skill-1.png','',1,1,{family:'paramecia',subtype:'Paramecia',skills:root.MareHoya.rules.skills,description:root.MareHoya.rules.description})
   ]);
   for(const fruit of catalog)if(root.MareAkumaPassives.stats[fruit.id])fruit.passiveStats={...root.MareAkumaPassives.stats[fruit.id]};
   const byId=(id,entries=catalog)=>entries.find(fruit=>fruit.id===id)||null;

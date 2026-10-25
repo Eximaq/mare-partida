@@ -4,9 +4,9 @@
  const {rules,effects}=root.MareRankCData,images=new Map();let partyProvider=null;
  const visible=(entity,view)=>!!view&&entity.x>=view.x&&entity.y>=view.y&&entity.x<=view.x+view.width&&entity.y<=view.y+view.height;
  function cleanse(entity){
-  for(const key of ['talentControl','talentPoison','talentSlow','wolfBleed','poison','bleed','bleeding','stun','freeze','frozen','root'])delete entity[key];
-  for(const key of ['slow','stunUntil','frozenUntil','rootUntil','doruRootUntil'])entity[key]=0;
-  entity.isRooted=false;entity.isStunned=false;entity.isFrozen=false;
+  for(const key of ['talentControl','talentPoison','talentSlow','wolfBleed','poison','bleed','bleeding','stun','freeze','frozen','root','hanaStunFrom','hanaStunUntil'])delete entity[key];
+  for(const key of ['slow','stunUntil','frozenUntil','rootUntil','doruRootUntil','betaRootUntil'])entity[key]=0;
+  entity.isRooted=false;entity.isStunned=false;entity.isFrozen=false;entity.isImmobilized=false;
   if(entity.debuffs instanceof Map||entity.debuffs instanceof Set)entity.debuffs.clear();else if(entity.debuffs)entity.debuffs=Array.isArray(entity.debuffs)?[]:{};
  }
  function healParty(self,members,view,now=Date.now()){

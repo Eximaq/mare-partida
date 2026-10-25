@@ -1,5 +1,7 @@
 # Akuma no Mi — Lote 1 Rank E
 
+[Beta-Beta e Hana-Hana Rank B: Logia, vínculo viscoso e combos de braços](RANK-B-BETA-HANA.md).
+
 [Bisão, Bomu e Kobu Rank C: transformação, explosões e bandeiras](RANK-C-BISON-BOMU-KOBU.md).
 
 [Horu-Horu e Mato Mato Rank C: habilidades e passivos](RANK-C-HORU-MATO.md).
@@ -45,3 +47,5 @@ O lote original estabeleceu fruta 48×48, auras animadas e o mesmo relógio `req
 - python tests/akuma_backend_test.py: persistência, contagem única, bônus, recarga, cadáver, coleta e invulnerabilidade.
 - python tools/build_pages.py: assets e caminhos relativos.
 - Navegador: silhuetas, registro, bolsa, slot, HP, HUD e Canvas.
+
+[Hoya-Hoya Rank B: Gênio controlável e Majin Saidan](HOYA-RANK-B.md).

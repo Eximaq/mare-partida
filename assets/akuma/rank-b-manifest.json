@@ -1,0 +1,66 @@
+[
+  {
+    "asset": "assets/akuma/beta/fruit.png",
+    "sha256": "86f0ef8bf590c6e8c1e511a50e9ae72c72e8c5365163c820ed3abf1c1997d591"
+  },
+  {
+    "asset": "assets/akuma/beta/skill-1.png",
+    "sha256": "d9cf7852a577be21715e6a8d7556281a800e46f520b3284a4b2c5ddf0f34bfd3"
+  },
+  {
+    "asset": "assets/akuma/beta/skill-2.png",
+    "sha256": "5bd4b9a5f236b2be04c4c48d07fa01afcd14f320beac2d137d7f188b283f9e67"
+  },
+  {
+    "asset": "assets/akuma/beta/power-aura-take-3.png",
+    "sha256": "1b1a23b515e9a1768c47fea051358f9f32197e7d9f73d49dd3cabadda0ec9ba2"
+  },
+  {
+    "asset": "assets/akuma/beta/power-aura-take-3.json",
+    "sha256": "afeb792f12f56894cb79ec064588411fd184ab014c159fc6a2a1f4078c69e03d"
+  },
+  {
+    "asset": "assets/akuma/beta/power-aura-take-5.png",
+    "sha256": "b50bcb6710d955d78a6c85350c3d5d1a57dd5750282a9d2b06d7be7428db1b8a"
+  },
+  {
+    "asset": "assets/akuma/beta/power-aura-take-5.json",
+    "sha256": "9494ec23f627243edf28ed806638762cd36a5e66b7bb0ffc923feb1b06da91a4"
+  },
+  {
+    "asset": "assets/akuma/beta/power-aura-take-6.png",
+    "sha256": "c81b29aef27bf4542c34c56ae44a373ac2d17c65f0826a39f176cce5eabde62b"
+  },
+  {
+    "asset": "assets/akuma/beta/power-aura-take-6.json",
+    "sha256": "c92a8535e0b8c6a8c4658814a3e76672dbbd34797c551a9e6667a567a87dc380"
+  },
+  {
+    "asset": "assets/akuma/hana/fruit.png",
+    "sha256": "0fc7b07aec38fbf79e6f2ba89f4bf24dfcfabef30ee40de056fde18cb83689fa"
+  },
+  {
+    "asset": "assets/akuma/hana/skill-1.png",
+    "sha256": "892e3cc1678346796868bce3e671e2bc8d5ae8b65cb70b279af3fd0893260aa3"
+  },
+  {
+    "asset": "assets/akuma/hana/skill-2.png",
+    "sha256": "e80266168a151a02b70489192fd75dab8b495eb89d6b9caab9f48846543e6e70"
+  },
+  {
+    "asset": "assets/akuma/hana/power-aura-take-7.png",
+    "sha256": "4a6e5b8330f0dd1be0fa1816acae8e73d3f803b4a5d4f8045628277635f1f257"
+  },
+  {
+    "asset": "assets/akuma/hana/power-aura-take-7.json",
+    "sha256": "7af67846f80a795f1daa7895f47bc7139465ff2720ae69cf081b39190e78daac"
+  },
+  {
+    "asset": "assets/akuma/hana/power-aura-take-8.png",
+    "sha256": "a37cb9c3752d203e1846116c30a3f27843df135a20a1bab248ed73997420c49b"
+  },
+  {
+    "asset": "assets/akuma/hana/power-aura-take-8.json",
+    "sha256": "b22dda78fe69553988e2d2185c801ceeba66d8c8d41471d124d0ef771704bcc7"
+  }
+]

@@ -1,0 +1,989 @@
+{
+ "frames": [
+  {
+   "filename": "power-aura-take-5 0.png",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 1.png",
+   "frame": {
+    "x": 104,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 2.png",
+   "frame": {
+    "x": 208,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 3.png",
+   "frame": {
+    "x": 312,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 4.png",
+   "frame": {
+    "x": 416,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 5.png",
+   "frame": {
+    "x": 520,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 6.png",
+   "frame": {
+    "x": 624,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 7.png",
+   "frame": {
+    "x": 0,
+    "y": 61,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 8.png",
+   "frame": {
+    "x": 104,
+    "y": 61,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 9.png",
+   "frame": {
+    "x": 208,
+    "y": 61,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 10.png",
+   "frame": {
+    "x": 312,
+    "y": 61,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 11.png",
+   "frame": {
+    "x": 416,
+    "y": 61,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 12.png",
+   "frame": {
+    "x": 520,
+    "y": 61,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 13.png",
+   "frame": {
+    "x": 624,
+    "y": 61,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 14.png",
+   "frame": {
+    "x": 0,
+    "y": 122,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 15.png",
+   "frame": {
+    "x": 104,
+    "y": 122,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 16.png",
+   "frame": {
+    "x": 208,
+    "y": 122,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 17.png",
+   "frame": {
+    "x": 312,
+    "y": 122,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 18.png",
+   "frame": {
+    "x": 416,
+    "y": 122,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 19.png",
+   "frame": {
+    "x": 520,
+    "y": 122,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 20.png",
+   "frame": {
+    "x": 624,
+    "y": 122,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 21.png",
+   "frame": {
+    "x": 0,
+    "y": 183,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 22.png",
+   "frame": {
+    "x": 104,
+    "y": 183,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 23.png",
+   "frame": {
+    "x": 208,
+    "y": 183,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 24.png",
+   "frame": {
+    "x": 312,
+    "y": 183,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 25.png",
+   "frame": {
+    "x": 416,
+    "y": 183,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 26.png",
+   "frame": {
+    "x": 520,
+    "y": 183,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 27.png",
+   "frame": {
+    "x": 624,
+    "y": 183,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 28.png",
+   "frame": {
+    "x": 0,
+    "y": 244,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 29.png",
+   "frame": {
+    "x": 104,
+    "y": 244,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 30.png",
+   "frame": {
+    "x": 208,
+    "y": 244,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 31.png",
+   "frame": {
+    "x": 312,
+    "y": 244,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 32.png",
+   "frame": {
+    "x": 416,
+    "y": 244,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 33.png",
+   "frame": {
+    "x": 520,
+    "y": 244,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 34.png",
+   "frame": {
+    "x": 624,
+    "y": 244,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 35.png",
+   "frame": {
+    "x": 0,
+    "y": 305,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  },
+  {
+   "filename": "power-aura-take-5 36.png",
+   "frame": {
+    "x": 104,
+    "y": 305,
+    "w": 104,
+    "h": 61
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 104,
+    "h": 61
+   },
+   "sourceSize": {
+    "w": 104,
+    "h": 61
+   },
+   "pivot": {
+    "x": 0.46153846153846156,
+    "y": 1.6065573770491803
+   },
+   "duration": 33
+  }
+ ],
+ "meta": {
+  "app": "PixelLab VFX Creator",
+  "image": "power-aura-take-5.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 728,
+   "h": 366
+  },
+  "scale": "1",
+  "anchor": {
+   "kind": "origin",
+   "x": 48,
+   "y": 98
+  },
+  "frameTags": [
+   {
+    "name": "power-aura-take-5",
+    "from": 0,
+    "to": 36,
+    "direction": "forward"
+   }
+  ]
+ }
+}

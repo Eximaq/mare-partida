@@ -1,0 +1,76 @@
+{
+  "beta": {
+    "id": "akuma_beta_beta",
+    "name": "Beta-Beta no Mi",
+    "family": "logia",
+    "description": "Fruta do Diabo do tipo Logia que permite ao usuário criar, controlar e se transformar em uma substância extremamente pegajosa, altamente inflamável e viscosa. Concede a intangibilidade corpórea da classe Logia que reduz o dano de ataques físicos comuns, além de imobilizar oponentes com amarras de secreção conectadas.",
+    "passiveStats": {
+      "max_hp": 240,
+      "special_attack": 26,
+      "physical_defense": 14,
+      "cooldown_reduction": 0.06
+    },
+    "physicalDamageReduction": 0.3,
+    "radius": 128,
+    "rootDuration": 4000,
+    "legVfx": {
+      "width": 104,
+      "height": 61,
+      "lift": 18
+    },
+    "skills": [
+      {
+        "key": "1",
+        "name": "Lançador Pegajoso",
+        "cost": 35,
+        "cooldown": 12,
+        "description": "Explosão viscosa 360°: 150% do ataque especial em um raio de 2 tiles.",
+        "icon_path": "assets/akuma/beta/skill-1.png",
+        "damage_type": "magic"
+      },
+      {
+        "key": "2",
+        "name": "Vareta Pegajosa",
+        "cost": 35,
+        "cooldown": 20,
+        "description": "Enraíza um alvo visível por 4s. A conexão acompanha o jogador sem romper ao mover-se.",
+        "icon_path": "assets/akuma/beta/skill-2.png"
+      }
+    ]
+  },
+  "hana": {
+    "id": "akuma_hana_hana",
+    "name": "Hana-Hana no Mi",
+    "family": "paramecia",
+    "description": "Fruta do Diabo do tipo Paramecia que concede ao usuário a capacidade de brotar partes do seu próprio corpo, como flores, em qualquer superfície ou ser vivo dentro do seu raio de visão. Permite manifestar múltiplos braços para desferir rajadas rápidas de socos à distância e submeter oponentes a estrangulamentos articulares devastadores que imobilizam completamente o alvo.",
+    "passiveStats": {
+      "max_hp": 100,
+      "physical_attack": 28,
+      "crit_chance": 0.08,
+      "armor_penetration": 0.08
+    },
+    "punchRange": 128,
+    "holdFrame": 13,
+    "holdDuration": 5000,
+    "skills": [
+      {
+        "key": "1",
+        "name": "Dos Fleur: Socos",
+        "cost": 35,
+        "cooldown": 14,
+        "description": "Até 2 tiles: quatro socos de 80% físico, distribuídos ao longo da animação.",
+        "icon_path": "assets/akuma/hana/skill-1.png",
+        "damage_type": "physical"
+      },
+      {
+        "key": "2",
+        "name": "Treinta Fleur: Estrangulamento",
+        "cost": 55,
+        "cooldown": 30,
+        "description": "100% físico inicial; trava no frame 13 por 5s com cinco ticks de 90%. Libera o alvo ao concluir a animação.",
+        "icon_path": "assets/akuma/hana/skill-2.png",
+        "damage_type": "physical"
+      }
+    ]
+  }
+}

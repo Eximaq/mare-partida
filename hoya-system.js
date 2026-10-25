@@ -1,0 +1,16 @@
+'use strict';
+((root)=>{
+ if(typeof module!=='undefined'){require('./hoya-data.js');require('./combat-animation.js');}
+ const {rules,clips,effects}=root.MareHoyaData,images=new Map(),directions={front:'south',back:'north',left:'west',right:'east'};
+ function scaled(stats,factor){const out={...stats};for(const [k,v]of Object.entries(out))if(typeof v==='number'&&Number.isFinite(v))out[k]=v*factor;for(const [k,cap]of Object.entries({crit:.65,evasion:.65,accuracy:1,penetration:.6,magicPen:.6,lifesteal:.3,mitigation:.8}))if(Number.isFinite(out[k]))out[k]=Math.min(cap,out[k]);return out;}
+ const active=(g,now)=>!!g&&g.hp>0&&g.until>now&&(!g.realUntil||Date.now()<g.realUntil),empowered=(g,now)=>active(g,now)&&g.buffUntil>now&&(!g.buffRealUntil||Date.now()<g.buffRealUntil);
+ const stats=(g,now)=>empowered(g,now)?scaled(g.baseStats,rules.buffMultiplier):{...g.baseStats};
+ function create(total,x,y,now){const baseStats=scaled(total,rules.statMultiplier);return {id:'hoya-genie',x,y,direction:'front',baseStats,hp:baseStats.maxHP,until:now+rules.duration/1000,realUntil:Date.now()+rules.duration,buffUntil:0,buffRealUntil:0,factor:1,scale:1,walking:0,targetId:null,path:[],commandSeq:0,clock:root.MareCombatAnimation.create({attack:{frames:17,fps:12,loop:false,hitFrameRatio:rules.hitFrameRatio}})};}
+ function sync(g,now,dt=0){const factor=empowered(g,now)?2:1;if(factor!==g.factor){g.hp=Math.max(0,g.hp*factor/g.factor);g.factor=factor;}const goal=factor===2?rules.buffScale:1,step=(rules.buffScale-1)*Math.max(0,dt)/(rules.growthDuration/1000);g.scale+=Math.sign(goal-g.scale)*Math.min(Math.abs(goal-g.scale),step);g.clock.setAttackSpeed(stats(g,now).speed);return g;}
+ function empower(g,now){if(!active(g,now))return false;g.buffUntil=now+rules.buffDuration/1000;g.buffRealUntil=Date.now()+rules.buffDuration;sync(g,now);return true;}
+ function image(url){if(!images.has(url)){const im=new Image();im.src=url;images.set(url,im);}return images.get(url);}
+ function preload(){for(const ds of Object.values(clips))for(const c of Object.values(ds))image(c.image);for(const fx of Object.values(effects))image(fx.image);}
+ function drawActor(c,g,now){const pose=g.clock.snapshot(),action=pose.locked?'attack':g.walking>0?'walk':'idle',cl=clips[action][directions[g.direction]||g.direction]||clips.idle.south,im=image(cl.image);if(!im.complete||!im.naturalWidth)return false;const frame=pose.locked?Math.min(cl.frames-1,Math.floor(pose.progress*cl.frames)):Math.floor(now*cl.fps)%cl.frames,scale=rules.worldSize/64*g.scale,size=cl.size*scale;c.save();c.imageSmoothingEnabled=false;c.drawImage(im,frame*cl.size,0,cl.size,cl.size,Math.round(g.x-size/2),Math.round(g.y-cl.foot*scale),size,size);c.restore();return true;}
+ function drawEffect(c,kind,x,y,elapsed,{width=128,height=width}={}){const fx=effects[kind],im=image(fx.image);if(!im.complete||!im.naturalWidth)return false;let t=Math.max(0,elapsed)%fx.duration,f=fx.frames[0];for(const p of fx.frames){f=p;if(t<p.duration)break;t-=p.duration;}c.save();c.imageSmoothingEnabled=false;c.drawImage(im,f.x,f.y,f.w,f.h,Math.round(x-width/2),Math.round(y-height/2),width,height);c.restore();return true;}
+ root.MareHoya={rules,clips,effects,scaled,active,empowered,stats,create,sync,empower,preload,drawActor,drawEffect};if(typeof module!=='undefined')module.exports=root.MareHoya;
+})(globalThis);
