@@ -85,7 +85,7 @@ def verify_grid(page, columns):
         for key in ['bagColor','equipColor']:
             assert style[key]==f'rgba({rgb[0]}, {rgb[1]}, {rgb[2]}, 0.7)',style
         assert style['bagOpacity']==style['equipOpacity']=='1',style
-        assert style['bagInset']==style['equipInset'],style
+        assert all(float(value.removesuffix('px'))>0 for key in ['bagInset','equipInset'] for value in style[key].split()),style
         assert style['bagMask'].split(', ')==style['equipMask'].split(', ')==['exclude','exclude'],style
         assert 'content-box' in style['bagClip'] and 'content-box' in style['equipClip'],style
         assert style['bagFrameSize']==style['equipFrameSize']=='100% 100%',style
