@@ -14,10 +14,10 @@ assert.ok(html.includes('<link rel="stylesheet" href="inventory-compact.css" />'
 assert.ok(builder.includes("'inventory-compact.css'"),'Pages must publish the new stylesheet');
 assert.match(css,/width:min\(1280px,calc\(100vw - 40px\)\)/,'desktop inventory width capped');
 assert.match(css,/height:min\(760px,calc\(100dvh - 40px\)\)/,'desktop inventory height capped');
-assert.match(compact,/grid-template-columns:repeat\(7,50px\)/,'desktop limited to seven columns');
-assert.match(game,/BAG_PER_PAGE=columns\*7/,'seven rows per page at each breakpoint');
-assert.match(compact,/grid-template-columns:repeat\(6,48px\)/,'tablet reduced grid');
-assert.match(compact,/grid-template-columns:repeat\(5,48px\)/,'mobile reduced grid');
+assert.match(css,/--bag-columns:9/,'desktop inventory uses nine columns');
+assert.match(game,/pageSize:BAG_PER_PAGE\}=MareUI\.inventoryGrid\(innerWidth\)/,'seven-row pages derive from responsive helper');
+assert.match(css,/--bag-columns:7/,'tablet inventory uses seven columns');
+assert.match(css,/--bag-columns:5/,'narrow mobile inventory uses five columns');
 assert.match(css,/\.op-item-icon \.item-icon\s*\{/,'item sprite sizing preserves 32px PixelLab');
 assert.match(css,/image-rendering:pixelated/,'pixel art remains crisp');
 assert.match(css,/\.op-detail-panel\s*\{/,'item details preserved');
@@ -37,4 +37,4 @@ for(let i=0;i<css.length;i++){
   assert.ok(depth>=0,'unmatched CSS closing brace');
 }
 assert.equal(depth,0,'balanced CSS braces');
-console.log('Inventory compact: 1280x760 max desktop, 7 columns of 50px, max 7 rows per page, responsive 6/5 columns, page size and build OK');
+console.log('Inventory responsive: capped 1280x760, 9/8/7/6/5 columns, seven-row pagination, sprites and static release OK');

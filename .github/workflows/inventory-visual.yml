@@ -1,0 +1,41 @@
+name: Inventory — responsive visual QA
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'game.js'
+      - 'ui-system.js'
+      - 'ui-responsive.css'
+      - 'ui-screens.css'
+      - 'inventory-compact.css'
+      - 'tests/inventory-layout-browser.py'
+      - '.github/workflows/inventory-visual.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  inventory:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar Chromium
+        run: |
+          python -m pip install playwright==1.63.0
+          python -m playwright install --with-deps chromium
+      - name: Inventário desktop, tablet e mobile
+        run: |
+          python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-inventory-http.log 2>&1 &
+          sleep 2
+          python -X utf8 tests/inventory-layout-browser.py
+      - name: Capturas e métricas de revisão
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inventario-layout-capturas
+          path: /tmp/mare-inventory-visual/
+          if-no-files-found: warn
+          retention-days: 14

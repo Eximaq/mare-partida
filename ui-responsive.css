@@ -75,3 +75,100 @@
   .overlay>.dialog,.overlay>.creation-dialog{max-height:100%}
   #panelOverlay.inventory-mode .dialog{height:100%;max-height:100%}
 }
+
+/* Inventory v3: use the entire parchment workbench, with real square slots.
+   Rows and responsive column counts match MareUI.inventoryGrid in ui-system.js.
+   The inventory remains capped at 120 saved items; placeholders are visual only. */
+#panelOverlay.inventory-mode .op-bag-panel{min-width:0}
+#panelOverlay.inventory-mode .op-grid-wrap{
+  width:100%;
+  min-width:0;
+  padding:6px;
+  overflow-x:hidden;
+  overflow-y:visible;
+  background:linear-gradient(145deg,#735131,#4c3526);
+  box-shadow:inset 0 1px 4px #1d130b88;
+}
+#panelOverlay.inventory-mode .op-grid{
+  --bag-columns:9;
+  display:grid;
+  grid-template-columns:repeat(var(--bag-columns),minmax(0,1fr));
+  grid-template-rows:none;
+  grid-auto-rows:auto;
+  width:100%;
+  max-width:100%;
+  gap:4px;
+  margin:0;
+  min-width:0;
+}
+#panelOverlay.inventory-mode .op-grid>.op-item{
+  box-sizing:border-box;
+  width:100%;
+  height:auto;
+  aspect-ratio:1/1;
+  min-width:0;
+  min-height:0;
+  padding:3px;
+}
+#panelOverlay.inventory-mode .op-grid>.op-item.empty{
+  background:#1b2526;
+  border:1px solid #5e5444;
+  box-shadow:inset 0 1px 4px #050a0c80;
+}
+#panelOverlay.inventory-mode .op-grid>.op-item:not(.empty){
+  background-size:100% 100%;
+  image-rendering:pixelated;
+}
+
+/* Equipment uses the same dark socket as the bag. Item rarity now colors the
+   *rim* instead of painting a full green/blue/purple background behind sprites. */
+#panelOverlay.inventory-mode .op-equip-slot{
+  --equip-rarity:#8d775b;
+  background-color:#1c282b;
+  background-image:none;
+  border:2px solid var(--equip-rarity);
+  box-shadow:inset 0 1px 3px #040b0d,0 1px #f1daae33;
+}
+#panelOverlay.inventory-mode .op-equip-slot.filled{
+  background-color:#1c282b;
+  background-image:none;
+  border-color:var(--equip-rarity);
+  box-shadow:inset 0 1px 3px #040b0d,0 1px #f1daae33;
+}
+#panelOverlay.inventory-mode .op-equip-slot.rarity-common{--equip-rarity:#968467}
+#panelOverlay.inventory-mode .op-equip-slot.rarity-uncommon{--equip-rarity:#60b98b}
+#panelOverlay.inventory-mode .op-equip-slot.rarity-rare{--equip-rarity:#7eb3de}
+#panelOverlay.inventory-mode .op-equip-slot.rarity-epic{--equip-rarity:#c193df}
+#panelOverlay.inventory-mode .op-equip-slot.rarity-legendary{--equip-rarity:#e5ba65}
+#panelOverlay.inventory-mode .op-equip-slot.rarity-supreme{--equip-rarity:#e99082}
+#panelOverlay.inventory-mode .op-equip-slot .op-slot-frame,
+#panelOverlay.inventory-mode .op-equip-slot .op-slot-icon{
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+#panelOverlay.inventory-mode .op-equip-slot .op-slot-label,
+#panelOverlay.inventory-mode .op-equip-slot .op-slot-refine,
+#panelOverlay.inventory-mode .op-equip-slot .op-slot-power{
+  color:#f7e9cc;
+  text-shadow:0 1px 2px #000,0 0 3px #000;
+}
+#panelOverlay.inventory-mode .op-equip-slot.selected{
+  outline:2px solid #f0cf87;
+  outline-offset:1px;
+}
+
+/* Keep the same breakpoint contract in JS and CSS. */
+@media(max-width:1180px){
+  #panelOverlay.inventory-mode .op-grid{--bag-columns:8}
+}
+@media(max-width:1024px){
+  #panelOverlay.inventory-mode .op-grid{--bag-columns:7}
+}
+@media(max-width:760px){
+  #panelOverlay.inventory-mode .op-grid{--bag-columns:6;gap:4px}
+  #panelOverlay.inventory-mode .op-grid-wrap{padding:5px}
+}
+@media(max-width:389px){
+  #panelOverlay.inventory-mode .op-grid{--bag-columns:5}
+}
