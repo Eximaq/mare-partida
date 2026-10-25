@@ -45,11 +45,15 @@ def verify_grid(page, columns):
             element.classList.add('rarity-'+rarity);
           }
           const backpack=getComputedStyle(bag),equipment=getComputedStyle(equipped);
-          return {rarity,bagFrame:backpack.borderImageSource,equipFrame:equipment.borderImageSource,
+          const bagArtwork=getComputedStyle(bag,'::before');
+          const equipArtwork=getComputedStyle(equipped,'::before');
+          return {rarity,bagFrame:bagArtwork.backgroundImage,equipFrame:equipArtwork.backgroundImage,
             bagImage:backpack.backgroundImage,equipImage:equipment.backgroundImage,
             bagAlpha:alpha(backpack.backgroundColor),equipAlpha:alpha(equipment.backgroundColor),
             bagOpacity:backpack.opacity,equipOpacity:equipment.opacity,
-            bagSlice:backpack.borderImageSlice,equipSlice:equipment.borderImageSlice};
+            bagMask:bagArtwork.maskComposite,equipMask:equipArtwork.maskComposite,
+            bagClip:bagArtwork.maskClip,equipClip:equipArtwork.maskClip,
+            bagFrameSize:bagArtwork.backgroundSize,equipFrameSize:equipArtwork.backgroundSize};
         });
       }finally{
         bag.className=initial[0];equipped.className=initial[1];
@@ -61,7 +65,9 @@ def verify_grid(page, columns):
         assert style['bagImage']==style['equipImage']=='none',style
         assert 0<float(style['bagAlpha'])<=.3 and 0<float(style['equipAlpha'])<=.3,style
         assert style['bagOpacity']==style['equipOpacity']=='1',style
-        assert style['bagSlice']==style['equipSlice']=='46',style
+        assert style['bagMask']==style['equipMask']=='exclude',style
+        assert 'content-box' in style['bagClip'] and 'content-box' in style['equipClip'],style
+        assert style['bagFrameSize']==style['equipFrameSize']=='100% 100%',style
     return result
 
 with sync_playwright() as p:
