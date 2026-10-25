@@ -47,3 +47,5 @@ O lote original estabeleceu fruta 48×48, auras animadas e o mesmo relógio `req
 - python tests/akuma_backend_test.py: persistência, contagem única, bônus, recarga, cadáver, coleta e invulnerabilidade.
 - python tools/build_pages.py: assets e caminhos relativos.
 - Navegador: silhuetas, registro, bolsa, slot, HP, HUD e Canvas.
+
+[Hoya-Hoya Rank B: Gênio controlável e Majin Saidan](HOYA-RANK-B.md).

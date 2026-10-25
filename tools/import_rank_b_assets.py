@@ -5,7 +5,9 @@ root=Path(__file__).resolve().parents[1];source=Path(sys.argv[1]);manifest=[];ef
 for key,folder,fruit,icons,vfx in [('beta','Beta Beta no Mi','Beta-Beta no Mi.png',['Skill 1.png','Skill 2.png'],[('burst','power-aura-take-3'),('slime','power-aura-take-5'),('tether','power-aura-take-6')]),('hana','Hana Hana no Mi','Hana Hana no Mi.png',['Skill 3.png','Skill 4.png'],[('punch','power-aura-take-7'),('choke','power-aura-take-8')])]:
  out=root/'assets/akuma'/key;out.mkdir(parents=True,exist_ok=True)
  for original,target in [(fruit,'fruit.png'),(icons[0],'skill-1.png'),(icons[1],'skill-2.png')]+[(n+ext,n+ext) for k,n in vfx for ext in ['.png','.json']]:
-  shutil.copyfile(source/folder/original,out/target);manifest.append({'asset':(out/target).relative_to(root).as_posix(),'sha256':hashlib.sha256((out/target).read_bytes()).hexdigest()})
+  supplied=source/folder/original
+  if key=='beta' and original in ['power-aura-take-5.png','power-aura-take-5.json'] and (source/folder/'a'/original).is_file():supplied=source/folder/'a'/original
+  shutil.copyfile(supplied,out/target);manifest.append({'asset':(out/target).relative_to(root).as_posix(),'sha256':hashlib.sha256((out/target).read_bytes()).hexdigest()})
  for kind,n in vfx:
   j=json.loads((out/(n+'.json')).read_text());effects[kind]={'image':f'assets/akuma/{key}/{n}.png','frames':[{**f['frame'],'duration':f['duration']} for f in j['frames']]};effects[kind]['duration']=sum(f['duration'] for f in effects[kind]['frames'])
 rules=json.loads((root/'assets/akuma/rank-b-rules.json').read_text(encoding='utf8'))
