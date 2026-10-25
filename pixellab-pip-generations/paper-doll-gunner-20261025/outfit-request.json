@@ -1,0 +1,17 @@
+{
+  "frame_urls": [
+    "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=1",
+    "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=2",
+    "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=3",
+    "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=4",
+    "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=5",
+    "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=6",
+    "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=7",
+    "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=8"
+  ],
+  "width": 64,
+  "height": 64,
+  "no_background": true,
+  "additional_instructions": "Add only the reference's cream short-sleeved linen shirt and navy waistcoat to the torso and upper arms of each right-facing frame. Preserve the exact head, face, hands, forearms, shorts, legs, feet, canvas and pose of every input frame. No hair, hats, new weapons or effects. Keep each frame's arm motion and order. Same small pixel scale and nautical palette.",
+  "reference_image_url": "outfit-east-reference.png"
+}

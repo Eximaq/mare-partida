@@ -1,0 +1,23 @@
+{
+  "width": 64,
+  "height": 64,
+  "no_background": true,
+  "seed": 1795527854,
+  "additional_instructions": "Add only the reference's cream short-sleeved linen shirt and navy waistcoat to each human torso and upper arm. Frames include front, back and left profile views; keep each original facing, pose, body size, head, face, forearms, hands, shorts and feet exactly as input. Adapt the shirt to each pose without changing motion. No hair, hats, weapons, particles or new limbs. Same native pixel scale and transparent canvas. Preserve all twelve input frames in order.",
+  "frame_urls": [
+    "body-north-raw/05.png",
+    "body-north-raw/06.png",
+    "body-north-raw/07.png",
+    "body-north-raw/08.png",
+    "body-west-raw/01.png",
+    "body-west-raw/02.png",
+    "body-west-raw/03.png",
+    "body-west-raw/04.png",
+    "body-west-raw/05.png",
+    "body-west-raw/06.png",
+    "body-west-raw/07.png",
+    "body-west-raw/08.png"
+  ],
+  "reference_image_url": "outfit-front-reference.png",
+  "job_id": "4d832766-0457-4162-b041-99e899d6a4fb"
+}

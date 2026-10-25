@@ -1,0 +1,950 @@
+{
+  "reviewOnly": true,
+  "productionEnabled": false,
+  "full_character_artwork_approved": false,
+  "status": "Four-layer navy starter, 80 poses; review only, visual transitions not production approved.",
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "hair",
+      "outfit",
+      "weapon"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "walk": {
+        "frames": 8,
+        "fps": 8,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-firearm": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "gunner-body",
+      "rigId": "human-v1",
+      "slot": "body",
+      "available": true,
+      "approved": false,
+      "zIndex": 0,
+      "animations": {
+        "idle": {
+          "kind": "sheet",
+          "url": "body-idle.png",
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        },
+        "walk": {
+          "kind": "sheet",
+          "url": "body-walk.png",
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        },
+        "attack-firearm": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "sheet",
+          "url": "body-firearm.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        }
+      }
+    },
+    {
+      "id": "gunner-hair",
+      "rigId": "human-v1",
+      "slot": "hair",
+      "available": true,
+      "approved": false,
+      "zIndex": 60,
+      "animations": {
+        "idle": {
+          "kind": "sheet",
+          "url": "hair-idle.png",
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 60
+        },
+        "walk": {
+          "kind": "sheet",
+          "url": "hair-walk.png",
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 60
+        },
+        "attack-firearm": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "hair-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 40,
+          "sources": {
+            "south": {
+              "url": "hair-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "north": {
+              "url": "hair-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "west": {
+              "url": "hair-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "east": {
+              "url": "hair-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "north": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "west": [
+              {
+                "x": 41,
+                "y": 65
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 40,
+                "y": 67
+              },
+              {
+                "x": 38,
+                "y": 67
+              },
+              {
+                "x": 40,
+                "y": 67
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 41,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 43,
+                "y": 66
+              },
+              {
+                "x": 44,
+                "y": 67
+              },
+              {
+                "x": 44,
+                "y": 67
+              },
+              {
+                "x": 44,
+                "y": 67
+              },
+              {
+                "x": 43,
+                "y": 66
+              },
+              {
+                "x": 43,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "gunner-outfit",
+      "slot": "outfit",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 50,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "outfit-idle.png"
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "outfit-walk.png"
+        },
+        "attack-firearm": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "sheet",
+          "url": "outfit-firearm.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 30
+        }
+      }
+    },
+    {
+      "id": "gunner-weapon",
+      "slot": "weapon",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 80,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "kind": "rigid-attachment",
+          "url": "musket-east-layer.png",
+          "zIndex": 10,
+          "source": {
+            "width": 64,
+            "height": 64,
+            "anchorX": 43,
+            "anchorY": 24
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 30,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 28,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 30,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 29,
+                "y": 48,
+                "quarterTurns": 1
+              }
+            ],
+            "north": [
+              {
+                "x": 52,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 48,
+                "quarterTurns": 1
+              }
+            ],
+            "west": [
+              {
+                "x": 36,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 35,
+                "y": 44,
+                "quarterTurns": 1
+              },
+              {
+                "x": 36,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 37,
+                "y": 48,
+                "quarterTurns": 1
+              }
+            ],
+            "east": [
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              }
+            ]
+          }
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "kind": "rigid-attachment",
+          "url": "musket-east-layer.png",
+          "zIndex": 10,
+          "source": {
+            "width": 64,
+            "height": 64,
+            "anchorX": 43,
+            "anchorY": 24
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 32,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 31,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 33,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 32,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 31,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 1
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 52,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 50,
+                "y": 45,
+                "quarterTurns": 1
+              },
+              {
+                "x": 50,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 52,
+                "y": 48,
+                "quarterTurns": 1
+              }
+            ],
+            "west": [
+              {
+                "x": 38,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 37,
+                "y": 45,
+                "quarterTurns": 1
+              },
+              {
+                "x": 38,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 42,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 45,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 47,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 47,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 44,
+                "y": 48,
+                "quarterTurns": 1
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 47,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 50,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 45,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 36,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 33,
+                "y": 49,
+                "quarterTurns": 1
+              }
+            ]
+          }
+        },
+        "attack-firearm": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "kind": "rigid-attachment",
+          "url": "musket-east-layer.png",
+          "zIndex": 10,
+          "directionOverrides": {
+            "south": {
+              "zIndex": 50
+            }
+          },
+          "sources": {
+            "south": {
+              "url": "musket-south-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 31,
+              "anchorY": 23
+            },
+            "north": {
+              "url": "musket-north-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 24
+            },
+            "west": {
+              "url": "musket-west-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 22,
+              "anchorY": 23
+            },
+            "east": {
+              "url": "musket-east-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 43,
+              "anchorY": 24
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 31,
+                "y": 47
+              },
+              {
+                "x": 40,
+                "y": 39
+              },
+              {
+                "x": 41,
+                "y": 38
+              },
+              {
+                "x": 41,
+                "y": 38
+              },
+              {
+                "x": 41,
+                "y": 38
+              },
+              {
+                "x": 41,
+                "y": 40
+              },
+              {
+                "x": 32,
+                "y": 47
+              },
+              {
+                "x": 31,
+                "y": 48
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 47
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 51,
+                "y": 47
+              },
+              {
+                "x": 51,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 37,
+                "y": 44
+              },
+              {
+                "x": 32,
+                "y": 41
+              },
+              {
+                "x": 27,
+                "y": 39
+              },
+              {
+                "x": 26,
+                "y": 41
+              },
+              {
+                "x": 27,
+                "y": 40
+              },
+              {
+                "x": 32,
+                "y": 41
+              },
+              {
+                "x": 37,
+                "y": 46
+              },
+              {
+                "x": 39,
+                "y": 47
+              }
+            ],
+            "east": [
+              {
+                "x": 49,
+                "y": 42
+              },
+              {
+                "x": 51,
+                "y": 38
+              },
+              {
+                "x": 53,
+                "y": 36
+              },
+              {
+                "x": 53,
+                "y": 38
+              },
+              {
+                "x": 53,
+                "y": 37
+              },
+              {
+                "x": 51,
+                "y": 38
+              },
+              {
+                "x": 49,
+                "y": 42
+              },
+              {
+                "x": 41,
+                "y": 46,
+                "quarterTurns": 1
+              }
+            ]
+          }
+        }
+      }
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "gunner-body",
+      "hair": "gunner-hair",
+      "outfit": "gunner-outfit",
+      "weapon": "gunner-weapon"
+    }
+  },
+  "coverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-firearm": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ]
+  },
+  "bindings": {
+    "weapon": {
+      "slot": "weapon",
+      "items": {
+        "4": "gunner-weapon"
+      }
+    },
+    "coat": {
+      "slot": "outfit",
+      "items": {
+        "6": "gunner-outfit"
+      }
+    }
+  },
+  "classId": "gunner",
+  "previewEquipment": {
+    "weapon": 4
+  },
+  "categoryWeapons": {
+    "firearm": "gunner-weapon"
+  }
+}

@@ -1,0 +1,282 @@
+{
+  "frames": [
+    {
+      "direction": "south",
+      "frame": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 1,
+      "hair_offset": [
+        0,
+        1
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 2,
+      "hair_offset": [
+        0,
+        1
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 3,
+      "hair_offset": [
+        0,
+        2
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 4,
+      "hair_offset": [
+        0,
+        2
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 5,
+      "hair_offset": [
+        0,
+        1
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 6,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 7,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 1,
+      "hair_offset": [
+        0,
+        1
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 2,
+      "hair_offset": [
+        0,
+        2
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 3,
+      "hair_offset": [
+        0,
+        2
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 4,
+      "hair_offset": [
+        0,
+        2
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 5,
+      "hair_offset": [
+        0,
+        2
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 6,
+      "hair_offset": [
+        0,
+        1
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 7,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 0,
+      "hair_offset": [
+        -1,
+        0
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 1,
+      "hair_offset": [
+        -2,
+        1
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 2,
+      "hair_offset": [
+        -2,
+        2
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 3,
+      "hair_offset": [
+        -4,
+        2
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 4,
+      "hair_offset": [
+        -2,
+        2
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 5,
+      "hair_offset": [
+        -2,
+        1
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 6,
+      "hair_offset": [
+        -1,
+        0
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 7,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 1,
+      "hair_offset": [
+        1,
+        1
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 2,
+      "hair_offset": [
+        2,
+        2
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 3,
+      "hair_offset": [
+        2,
+        2
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 4,
+      "hair_offset": [
+        2,
+        2
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 5,
+      "hair_offset": [
+        1,
+        1
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 6,
+      "hair_offset": [
+        1,
+        1
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 7,
+      "hair_offset": [
+        0,
+        0
+      ]
+    }
+  ],
+  "mask_regions": {
+    "south": [
+      27,
+      16,
+      36,
+      25
+    ],
+    "north": [
+      30,
+      6,
+      34,
+      35
+    ],
+    "west": [
+      2,
+      18,
+      29,
+      26
+    ]
+  },
+  "productionEnabled": false,
+  "source_pixels_only": true
+}
