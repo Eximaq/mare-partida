@@ -54,9 +54,10 @@ def verify_grid(page, columns):
           const equipArtwork=getComputedStyle(equipped,'::before');
           return {rarity,bagFrame:bagArtwork.backgroundImage,equipFrame:equipArtwork.backgroundImage,
             bagImage:backpack.backgroundImage,equipImage:equipment.backgroundImage,
-            bagColor:backpack.backgroundColor,equipColor:equipment.backgroundColor,
-            bagAlpha:alpha(backpack.backgroundColor),equipAlpha:alpha(equipment.backgroundColor),
+            bagColor:getComputedStyle(bag,'::after').backgroundColor,equipColor:getComputedStyle(equipped,'::after').backgroundColor,
+            bagAlpha:alpha(getComputedStyle(bag,'::after').backgroundColor),equipAlpha:alpha(getComputedStyle(equipped,'::after').backgroundColor),
             bagOpacity:backpack.opacity,equipOpacity:equipment.opacity,
+            bagInset:getComputedStyle(bag,'::after').inset,equipInset:getComputedStyle(equipped,'::after').inset,
             bagMask:bagArtwork.maskComposite,equipMask:equipArtwork.maskComposite,
             bagClip:bagArtwork.maskClip,equipClip:equipArtwork.maskClip,
             bagFrameSize:bagArtwork.backgroundSize,equipFrameSize:equipArtwork.backgroundSize};
@@ -84,6 +85,7 @@ def verify_grid(page, columns):
         for key in ['bagColor','equipColor']:
             assert style[key]==f'rgba({rgb[0]}, {rgb[1]}, {rgb[2]}, 0.7)',style
         assert style['bagOpacity']==style['equipOpacity']=='1',style
+        assert style['bagInset']==style['equipInset'],style
         assert style['bagMask'].split(', ')==style['equipMask'].split(', ')==['exclude','exclude'],style
         assert 'content-box' in style['bagClip'] and 'content-box' in style['equipClip'],style
         assert style['bagFrameSize']==style['equipFrameSize']=='100% 100%',style
