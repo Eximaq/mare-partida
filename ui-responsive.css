@@ -118,26 +118,51 @@
   box-shadow:inset 0 1px 4px rgba(3,8,11,.24);
 }
 
-/* Both filled bag and equipment slots share their original illustrated rarity
-   frame, but omit the PNG's opaque center. border-image without "fill" paints
-   only the frame slices; the dark socket underneath stays translucent. */
+/* The rarity rim is the ORIGINAL full-resolution PNG used by backpack slots.
+   Keep the PNG uncut and at its original full-slot proportions on BOTH UI slots.
+   A mask removes only the image's opaque central panel, preserving the supplied
+   ornamental corners, highlighted edges and glow pixel-for-pixel. */
 #panelOverlay.inventory-mode .op-grid>.op-item:not(.empty),
 #panelOverlay.inventory-mode .op-equip-slot.filled{
   --slot-rarity-frame:url("assets/ui/inventory-slots/common.png");
-  --slot-rarity-glow:rgba(165,154,133,.42);
+  --slot-rarity-glow:rgba(165,154,133,.32);
+  position:relative;
+  isolation:isolate;
   box-sizing:border-box;
   background-color:rgba(5,13,18,.18);
   background-image:none;
-  border:3px solid transparent;
-  border-image-source:var(--slot-rarity-frame);
-  border-image-slice:46;
-  border-image-width:1.6;
-  border-image-repeat:stretch;
-  box-shadow:inset 0 0 7px rgba(1,6,10,.26),0 0 7px var(--slot-rarity-glow);
-  image-rendering:pixelated;
+  border:2px solid transparent;
+  border-image:none;
+  box-shadow:inset 0 0 5px rgba(1,6,10,.18);
 }
-
-/* Neutral equipment sockets until an actual item is equipped. */
+#panelOverlay.inventory-mode .op-grid>.op-item:not(.empty)::before,
+#panelOverlay.inventory-mode .op-equip-slot.filled::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  padding:12%;
+  z-index:0;
+  pointer-events:none;
+  background:var(--slot-rarity-frame) center/100% 100% no-repeat;
+  image-rendering:pixelated;
+  -webkit-mask:linear-gradient(#000 0 0) border-box,linear-gradient(#000 0 0) content-box;
+  -webkit-mask-composite:xor;
+  mask:linear-gradient(#000 0 0) border-box,linear-gradient(#000 0 0) content-box;
+  mask-composite:exclude;
+}
+/* Keep icon rendering and item metadata above the decorative original artwork. */
+#panelOverlay.inventory-mode .op-grid>.op-item:not(.empty)>.op-item-icon,
+#panelOverlay.inventory-mode .op-equip-slot.filled>.op-slot-label,
+#panelOverlay.inventory-mode .op-equip-slot.filled>.op-slot-frame{
+  position:relative;
+  z-index:1;
+}
+#panelOverlay.inventory-mode .op-grid>.op-item:not(.empty)>.op-item-refine,
+#panelOverlay.inventory-mode .op-grid>.op-item:not(.empty)>.op-item-lock,
+#panelOverlay.inventory-mode .op-grid>.op-item:not(.empty)>.op-item-qty{
+  z-index:2;
+}
+/* Empty equipment sockets stay neutral, without a rarity illustration. */
 #panelOverlay.inventory-mode .op-equip-slot{
   background-color:rgba(5,13,18,.16);
   background-image:none;
