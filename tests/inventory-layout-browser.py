@@ -49,6 +49,7 @@ def verify_grid(page, columns):
           const equipArtwork=getComputedStyle(equipped,'::before');
           return {rarity,bagFrame:bagArtwork.backgroundImage,equipFrame:equipArtwork.backgroundImage,
             bagImage:backpack.backgroundImage,equipImage:equipment.backgroundImage,
+            bagColor:backpack.backgroundColor,equipColor:equipment.backgroundColor,
             bagAlpha:alpha(backpack.backgroundColor),equipAlpha:alpha(equipment.backgroundColor),
             bagOpacity:backpack.opacity,equipOpacity:equipment.opacity,
             bagMask:bagArtwork.maskComposite,equipMask:equipArtwork.maskComposite,
@@ -59,11 +60,23 @@ def verify_grid(page, columns):
         bag.className=initial[0];equipped.className=initial[1];
       }
     }""")
+    rarity_colors={
+        'common':(40,40,45),
+        'uncommon':(20,55,35),
+        'rare':(20,45,75),
+        'epic':(50,28,70),
+        'legendary':(85,60,18),
+        'supreme':(85,28,28),
+    }
     for style in rarity_styles:
         expected='/'+style['rarity']+'.png'
         assert expected in style['bagFrame'] and expected in style['equipFrame'],style
+        assert style['bagFrame']==style['equipFrame'],style
         assert style['bagImage']==style['equipImage']=='none',style
-        assert 0<float(style['bagAlpha'])<=.3 and 0<float(style['equipAlpha'])<=.3,style
+        assert abs(float(style['bagAlpha'])-.70)<.001 and abs(float(style['equipAlpha'])-.70)<.001,style
+        rgb=rarity_colors[style['rarity']]
+        for key in ['bagColor','equipColor']:
+            assert style[key]==f'rgba({rgb[0]}, {rgb[1]}, {rgb[2]}, 0.7)',style
         assert style['bagOpacity']==style['equipOpacity']=='1',style
         assert style['bagMask'].split(', ')==style['equipMask'].split(', ')==['exclude','exclude'],style
         assert 'content-box' in style['bagClip'] and 'content-box' in style['equipClip'],style
