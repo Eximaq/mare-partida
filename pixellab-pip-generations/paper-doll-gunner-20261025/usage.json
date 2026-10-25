@@ -1,0 +1,10 @@
+{
+  "authorized_batch_cap": 300,
+  "prior_conservative_committed": 68,
+  "current_confirmed": 37,
+  "current_unexposed_animation_reservations": 3,
+  "current_conservative_committed": 40,
+  "batch_conservative_committed": 108,
+  "remaining_conservative_budget": 192,
+  "gallery_recoveries_repeated": false
+}

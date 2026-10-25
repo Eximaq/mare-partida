@@ -1,8 +1,8 @@
 # Personagem único — estado de conclusão
 
-Atualizado em 24/10/2026. Este documento descreve o código e os assets presentes; não representa aprovação artística ou liberação global.
+Atualizado em 25/10/2026. Este documento descreve o código e os assets presentes; não representa aprovação artística ou liberação global.
 
-Continuação: [punhos em três direções](PAPER-DOLL-PUNHOS.md), com 24 poses de corpo/roupa e cabelo por encaixes. Norte reprovado mantém fallback. O lote chegou a 42 gerações confirmadas de um teto de 300, sem jobs pendentes. A tabela de cobertura abaixo se refere ao conjunto integrado no jogo; o estudo de punhos ainda não amplia esse conjunto.
+Continuação: [Lutador em quatro direções](PAPER-DOLL-SOCOS-COMBATE.md) e [Atirador em quatro direções](PAPER-DOLL-ATIRADOR.md), disponíveis em pacotes opt-in do laboratório DEV. Cada pacote cobre 32 poses de ataque, além de Idle e Walk compartilhados. O lote acumula 108 gerações contabilizadas conservadoramente de um teto de 300, sem jobs pendentes desta etapa. Os pacotes continuam sem aprovação artística global.
 
 ## Integração executada
 
@@ -21,13 +21,13 @@ Continuação: [punhos em três direções](PAPER-DOLL-PUNHOS.md), com 24 poses 
 | Categoria de ataque | Classes atendidas | Corpo/cabelo/roupa | Arma/encaixes |
 |---|---|---:|---|
 | Espada | Espadachim | 32 poses por camada disponíveis | disponíveis no conjunto azul |
-| Punhos | Lutador | 32 poses por camada ausentes | pendentes |
-| Arma de fogo | Atirador | 32 poses por camada ausentes | pendentes |
+| Punhos | Lutador | 32 poses disponíveis no pacote DEV | mãos livres; equipamento incompatível usa fallback |
+| Arma de fogo | Atirador | 32 poses disponíveis no pacote DEV | Mosquete de Convés com encaixes nas quatro direções |
 | Adagas | Gatuno | 32 poses por camada ausentes | pendentes |
 | Tecnologia | Ciborgue | 32 poses por camada ausentes | pendentes |
 | Canalização | Estrategista e Suporte | 32 poses por camada ausentes | pendentes |
 
-Total ausente de anatomia/vestuário: **480 frames** (5 categorias × 4 direções × 8 poses × 3 camadas). Não são 480 gerações: cada chamada pode entregar vários frames. Armas exigem cobertura de 160 poses de ataque e 240 poses de locomoção nas cinco categorias restantes; peças rígidas podem compartilhar pixels, mas precisam de encaixes reais por pose.
+Cobertura ainda ausente: **288 posições de camada** (3 categorias × 4 direções × 8 poses × 3 camadas). Isso não significa 288 gerações ou imagens únicas: cabelo rígido pode reutilizar pixels com encaixes validados. As armas dessas três categorias ainda exigem encaixes em 96 poses de ataque e 144 poses de locomoção. Não confundir a cobertura técnica dos pacotes DEV com sua aprovação para produção.
 
 Os demais equipamentos, novos cabelos, corpos e vestuários não têm arte modular validada. Habilidades, reações e morte ainda recorrem ao legado quando não cobertos. Não declarar que a presença de fallback conclui esses assets.
 

@@ -1,0 +1,174 @@
+{
+  "jobs": [
+    {
+      "job_id": "3ef2900b-0a8c-45f1-8f2d-5501f65e8eb3",
+      "status": "completed",
+      "tool": "animate_image",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-25T11:15:58.057866+00:00",
+      "outcome": "rejected",
+      "outcome_note": "arm moves backward; no recovery"
+    },
+    {
+      "job_id": "2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79",
+      "status": "completed",
+      "tool": "animate_image",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-25T11:15:58.195517+00:00",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "outcome": "draft integrated for inspection",
+      "outcome_note": "Original retained. Review-only; not global artistic approval."
+    },
+    {
+      "job_id": "21d796dc-2fd5-4fa2-8977-8469fa838e5a",
+      "status": "completed",
+      "tool": "transfer_outfit",
+      "estimated_usage": {
+        "generations": 25.0
+      },
+      "created_at": "2026-10-25T11:19:50.936789+00:00",
+      "reported_usage": {
+        "generations": 10.0
+      },
+      "outcome": "draft integrated for inspection",
+      "outcome_note": "Original retained. Review-only; not global artistic approval."
+    },
+    {
+      "job_id": "e8b6ecb3-81e8-4940-8b65-a98f6bb3c156",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-25T11:20:08.785558+00:00",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "outcome": "draft integrated for inspection",
+      "outcome_note": "Original retained. Review-only; not global artistic approval."
+    },
+    {
+      "job_id": "8f0c3fde-a5a2-48d7-8bd4-b7346f18dac9",
+      "status": "completed",
+      "tool": "animate_image",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-25T11:25:52.267646+00:00",
+      "outcome": "draft integrated for inspection",
+      "outcome_note": "Original retained. Review-only; not global artistic approval."
+    },
+    {
+      "job_id": "d0d61865-f54c-47a4-acb7-a66f3b574501",
+      "status": "completed",
+      "tool": "animate_image",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-25T11:25:53.112470+00:00",
+      "outcome": "draft integrated for inspection",
+      "outcome_note": "Original retained. Review-only; not global artistic approval."
+    },
+    {
+      "job_id": "fb100f8e-b79a-4e77-a5a0-c670fc236342",
+      "status": "completed",
+      "tool": "animate_image",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-25T11:25:54.012901+00:00",
+      "outcome": "draft integrated for inspection",
+      "outcome_note": "Original retained. Review-only; not global artistic approval."
+    },
+    {
+      "job_id": "ea5b65e6-776b-4a91-86e5-ede6d75ee312",
+      "status": "completed",
+      "tool": "transfer_outfit",
+      "estimated_usage": {
+        "generations": 25.0
+      },
+      "created_at": "2026-10-25T15:07:24.545378+00:00",
+      "reported_usage": {
+        "generations": 10.0
+      },
+      "outcome": "draft integrated for inspection",
+      "outcome_note": "Original retained. Review-only; not global artistic approval."
+    },
+    {
+      "job_id": "4d832766-0457-4162-b041-99e899d6a4fb",
+      "status": "completed",
+      "tool": "transfer_outfit",
+      "estimated_usage": {
+        "generations": 25.0
+      },
+      "created_at": "2026-10-25T15:07:31.323759+00:00",
+      "reported_usage": {
+        "generations": 10.0
+      },
+      "outcome": "draft integrated for inspection",
+      "outcome_note": "Original retained. Review-only; not global artistic approval."
+    },
+    {
+      "job_id": "36578f05-ce1a-4b0d-96b9-b85422e91d43",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-25T15:08:20.263377+00:00",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "outcome": "draft integrated for inspection",
+      "outcome_note": "Original retained. Review-only; not global artistic approval."
+    },
+    {
+      "job_id": "c34d9143-a3c2-4ce3-8a95-76f2476165d6",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-25T15:08:23.216625+00:00",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "outcome": "rejected",
+      "outcome_note": "north firearm points sideways"
+    },
+    {
+      "job_id": "40db531f-dc2d-4b61-be22-2b4abb6fea49",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-25T15:08:41.597549+00:00",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "outcome": "draft integrated for inspection",
+      "outcome_note": "Original retained. Review-only; not global artistic approval."
+    },
+    {
+      "job_id": "16157b70-9060-4e48-9b22-29d679c0840f",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-25T15:11:36.419408+00:00",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "outcome": "draft integrated for inspection",
+      "outcome_note": "Original retained. Review-only; not global artistic approval."
+    }
+  ]
+}

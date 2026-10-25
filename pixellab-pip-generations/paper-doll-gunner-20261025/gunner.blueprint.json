@@ -1,0 +1,179 @@
+[
+  {
+    "_comment_prompt": "Completar Atirador modular: levantar bra\u00c3\u00a7o, mirar, disparar e baixar, validando primeiro uma dire\u00c3\u00a7\u00c3\u00a3o.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required"
+    },
+    "MCP animate_image": {
+      "action": "Stay facing east to the right in profile. Raise both empty hands into a compact musket aiming pose: rear hand near the chest, front hand extended right at shoulder height. Briefly hold aim, make one small recoil halfway through the sequence, then lower both arms back to the starting relaxed pose. Keep feet planted, head steady, the same body proportions and shorts. No turning, steps, gun, weapon, flash or particles. Only the arms and shoulders move.",
+      "first_frame_url": "body-east-reference.png",
+      "frame_count": 8,
+      "no_background": true
+    }
+  },
+  {
+    "_comment": "retry-request",
+    "MCP animate_image": {
+      "first_frame_url": "https://api.pixellab.ai/mcp/images/3ef2900b-0a8c-45f1-8f2d-5501f65e8eb3/download?index=0",
+      "last_frame_url": "https://api.pixellab.ai/mcp/images/3ef2900b-0a8c-45f1-8f2d-5501f65e8eb3/download?index=0",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Facing right throughout, lift both forearms together forward to the right into a two-handed rifle aiming posture. Both elbows remain bent in front of the chest, both hands point right, front hand farther right than rear hand. Hold the aim briefly, recoil slightly, then lower both hands back to the supplied resting pose. Feet stay planted, head stays in profile. Empty hands, no weapon or effects. Never swing either arm backward."
+    }
+  },
+  {
+    "_comment": "outfit-request",
+    "MCP transfer_outfit": {
+      "frame_urls": [
+        "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=1",
+        "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=2",
+        "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=3",
+        "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=4",
+        "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=5",
+        "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=6",
+        "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=7",
+        "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=8"
+      ],
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "additional_instructions": "Add only the reference's cream short-sleeved linen shirt and navy waistcoat to the torso and upper arms of each right-facing frame. Preserve the exact head, face, hands, forearms, shorts, legs, feet, canvas and pose of every input frame. No hair, hats, new weapons or effects. Keep each frame's arm motion and order. Same small pixel scale and nautical palette.",
+      "reference_image_base64": "outfit-east-reference.png"
+    }
+  },
+  {
+    "_comment": "weapon-request",
+    "MCP edit_image_pixen": {
+      "image_url": "https://api.pixellab.ai/mcp/images/2b2ba4b1-b0f0-4e09-9b07-ace665ac7e79/download?index=3",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Replace only the small object in this right-facing human's raised hands with a compact naval musket: dark steel barrel pointing horizontally right, walnut stock against the shoulder, small brass trigger guard at the existing rear hand. The front hand supports the barrel. Keep the gun within the canvas. Preserve every body, face, arm, hand, shorts and foot pixel outside natural gun occlusion. Same crisp pixel scale, outline, shading and transparency. No flash, particles or extra limbs."
+    }
+  },
+  {
+    "_comment": "south-request",
+    "MCP animate_image": {
+      "action": "Facing directly toward the viewer throughout, raise both hands in front of the chest to aim a compact firearm toward the viewer. Briefly aim, recoil slightly, then lower both hands to the supplied resting pose. Feet remain planted, face visible, torso facing the viewer. Preserve body proportions and shorts. No turning, stepping, flash or particles.",
+      "frame_count": 8,
+      "no_background": true,
+      "first_frame_base64": "body-south-reference.png",
+      "last_frame_base64": "body-south-reference.png"
+    }
+  },
+  {
+    "_comment": "north-request",
+    "MCP animate_image": {
+      "action": "Facing directly away from the viewer throughout, raise both forearms forward beyond the chest to aim a compact firearm away from the viewer. Hands stay in front of the torso and mostly occluded. Briefly aim, recoil slightly, then lower arms to the supplied resting pose. Keep the back of the head visible and feet planted. No turning, stepping, flash or particles.",
+      "frame_count": 8,
+      "no_background": true,
+      "first_frame_base64": "body-north-reference.png",
+      "last_frame_base64": "body-north-reference.png"
+    }
+  },
+  {
+    "_comment": "west-request",
+    "MCP animate_image": {
+      "action": "Facing left throughout, raise both forearms forward toward the left of the image into a compact firearm aiming posture. Both elbows stay bent, hands point left, front hand farther left than rear hand. Briefly aim, recoil slightly, then lower both hands to the supplied resting pose. Feet planted, head in profile, same proportions and shorts. No turning, stepping, flash or particles.",
+      "frame_count": 8,
+      "no_background": true,
+      "first_frame_base64": "body-west-reference.png",
+      "last_frame_base64": "body-west-reference.png"
+    }
+  },
+  {
+    "_comment": "outfit-batch-0-request",
+    "MCP transfer_outfit": {
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1795527854,
+      "additional_instructions": "Add only the reference's cream short-sleeved linen shirt and navy waistcoat to each human torso and upper arm. Frames include front, back and left profile views; keep each original facing, pose, body size, head, face, forearms, hands, shorts and feet exactly as input. Adapt the shirt to each pose without changing motion. No hair, hats, weapons, particles or new limbs. Same native pixel scale and transparent canvas. Preserve all twelve input frames in order.",
+      "frames_base64": [
+        "body-south-raw/01.png",
+        "body-south-raw/02.png",
+        "body-south-raw/03.png",
+        "body-south-raw/04.png",
+        "body-south-raw/05.png",
+        "body-south-raw/06.png",
+        "body-south-raw/07.png",
+        "body-south-raw/08.png",
+        "body-north-raw/01.png",
+        "body-north-raw/02.png",
+        "body-north-raw/03.png",
+        "body-north-raw/04.png"
+      ],
+      "reference_image_base64": "outfit-front-reference.png"
+    }
+  },
+  {
+    "_comment": "outfit-batch-1-request",
+    "MCP transfer_outfit": {
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1795527854,
+      "additional_instructions": "Add only the reference's cream short-sleeved linen shirt and navy waistcoat to each human torso and upper arm. Frames include front, back and left profile views; keep each original facing, pose, body size, head, face, forearms, hands, shorts and feet exactly as input. Adapt the shirt to each pose without changing motion. No hair, hats, weapons, particles or new limbs. Same native pixel scale and transparent canvas. Preserve all twelve input frames in order.",
+      "frames_base64": [
+        "body-north-raw/05.png",
+        "body-north-raw/06.png",
+        "body-north-raw/07.png",
+        "body-north-raw/08.png",
+        "body-west-raw/01.png",
+        "body-west-raw/02.png",
+        "body-west-raw/03.png",
+        "body-west-raw/04.png",
+        "body-west-raw/05.png",
+        "body-west-raw/06.png",
+        "body-west-raw/07.png",
+        "body-west-raw/08.png"
+      ],
+      "reference_image_base64": "outfit-front-reference.png"
+    }
+  },
+  {
+    "_comment": "weapon-south-request",
+    "MCP edit_image_pixen": {
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a compact naval musket held between this front-facing human's existing raised hands, aiming directly toward the viewer. Foreshortened dark steel barrel with circular muzzle, walnut stock and small brass guard. The grip touches the existing hands. Keep the face visible, same body, arm and hand positions, shorts, feet and pixel scale. Preserve all anatomy outside natural weapon occlusion. Same canvas and transparency. No flash, particles or extra limbs.",
+      "image_base64": "body-south-raw/03.png"
+    }
+  },
+  {
+    "_comment": "weapon-north-request",
+    "MCP edit_image_pixen": {
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a compact naval musket held in front of this back-facing human's torso, aiming north away from the viewer. Dark steel barrel visible beyond the far right shoulder, walnut stock and small brass guard. The existing torso naturally hides the grip and hands. Preserve the back of the head, arms, body, shorts, feet and every pixel outside weapon occlusion. Same canvas, pixel scale and transparency. No turning, extra hands, flash or particles.",
+      "image_base64": "body-north-raw/03.png"
+    }
+  },
+  {
+    "_comment": "weapon-west-request",
+    "MCP edit_image_pixen": {
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a compact naval musket to this left-facing human's raised hands: dark steel barrel pointing horizontally left, walnut stock against the shoulder and small brass trigger guard at the existing rear hand. Front hand supports the barrel. Keep gun within canvas. Preserve every body, face, arm, hand, shorts and foot pixel outside natural weapon occlusion. Same crisp pixel scale, shading and transparency. No flash, particles or extra limbs.",
+      "image_base64": "body-west-raw/03.png"
+    }
+  },
+  {
+    "_comment": "weapon-north-corrected-request",
+    "MCP edit_image_pixen": {
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a short vertical dark steel musket barrel extending UPWARD from behind this north-facing human's right shoulder. It points toward the TOP edge, away from the viewer; never left or right. Body and hands hide the stock and grip. Only a narrow barrel and small brass sight are visible beyond the shoulder. Preserve every original body, head, arm, shorts and foot pixel. Same transparent canvas and pixel scale. No horizontal gun, second weapon or extra arm.",
+      "image_base64": "body-north-raw/03.png"
+    }
+  },
+  {
+    "TASK": {
+      "description": "Recover originals; inspect frames; run assemble_pilot.py then assemble_review.py. Masks extract only generated pixels. Keep originals and review-only flags. Validate browser combat before publishing."
+    }
+  }
+]

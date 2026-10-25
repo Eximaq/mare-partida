@@ -1,0 +1,8 @@
+{
+  "width": 64,
+  "height": 64,
+  "no_background": true,
+  "description": "Add only a compact naval musket held in front of this back-facing human's torso, aiming north away from the viewer. Dark steel barrel visible beyond the far right shoulder, walnut stock and small brass guard. The existing torso naturally hides the grip and hands. Preserve the back of the head, arms, body, shorts, feet and every pixel outside weapon occlusion. Same canvas, pixel scale and transparency. No turning, extra hands, flash or particles.",
+  "image_url": "body-north-raw/03.png",
+  "job_id": "c34d9143-a3c2-4ce3-8a95-76f2476165d6"
+}

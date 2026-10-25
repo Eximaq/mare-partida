@@ -454,3 +454,17 @@ for name in sorted(files):
     if Path(name).name != name or Path(name).suffix not in {'.png', '.json'}:
         raise ValueError('Unsafe unarmed-review asset path')
     shutil.copy2(ROOT/unarmed_review/name, OUT/unarmed_review/name)
+
+# Opt-in gunner artwork: publish only the manifest and referenced render PNGs.
+gunner_review = Path('pixellab-pip-generations/paper-doll-gunner-20261025')
+(OUT/gunner_review).mkdir(parents=True, exist_ok=True)
+gunner_manifest = json.loads((ROOT/gunner_review/'review-pack.json').read_text(encoding='utf-8'))
+gunner_files = {'review-pack.json'}
+for piece in gunner_manifest['pieces']:
+    for clip in piece['animations'].values():
+        gunner_files.add(clip['url'])
+        gunner_files.update(source['url'] for source in clip.get('sources', {}).values())
+for name in sorted(gunner_files):
+    if Path(name).name != name or Path(name).suffix not in {'.png', '.json'}:
+        raise ValueError('Unsafe gunner-review asset path')
+    shutil.copy2(ROOT/gunner_review/name, OUT/gunner_review/name)

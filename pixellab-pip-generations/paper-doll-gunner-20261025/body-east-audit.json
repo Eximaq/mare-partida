@@ -1,0 +1,111 @@
+{
+  "job_id": "3ef2900b-0a8c-45f1-8f2d-5501f65e8eb3",
+  "native_size": [
+    64,
+    64
+  ],
+  "generated_frames": 8,
+  "frame_order_preserved": true,
+  "artwork_approved": false,
+  "frames": [
+    {
+      "index": 0,
+      "role": "reference",
+      "sha256": "d7d6a84a2ef92b64ac9c57944e5ae1fc8696de52f2858811c5c688b15d0984f6",
+      "bounds": [
+        24,
+        7,
+        38,
+        52
+      ]
+    },
+    {
+      "index": 1,
+      "role": "generated",
+      "sha256": "ae8d8f78f92d857249d0bea6916e75e79a681e99843c67aacc294f516c4c6c1b",
+      "bounds": [
+        25,
+        7,
+        39,
+        52
+      ]
+    },
+    {
+      "index": 2,
+      "role": "generated",
+      "sha256": "cbd343bc7883db524309719d3156b80c13d61e5bd56bd95ca858da04adc45fb3",
+      "bounds": [
+        24,
+        7,
+        39,
+        52
+      ]
+    },
+    {
+      "index": 3,
+      "role": "generated",
+      "sha256": "408426f1e73c81c8cadab8599ea3815edf3b35472366babaa8520477c8a8b06a",
+      "bounds": [
+        23,
+        7,
+        44,
+        52
+      ]
+    },
+    {
+      "index": 4,
+      "role": "generated",
+      "sha256": "96ffd183eb952e231741184b69f90b505bb406b1c0ae2d4c5e1659feb0f33703",
+      "bounds": [
+        16,
+        8,
+        50,
+        52
+      ]
+    },
+    {
+      "index": 5,
+      "role": "generated",
+      "sha256": "99ee39b4ad963331b7de05ed13ad4cbb13640ac79d9efa7eb3b543947b269b7f",
+      "bounds": [
+        13,
+        8,
+        50,
+        52
+      ]
+    },
+    {
+      "index": 6,
+      "role": "generated",
+      "sha256": "cdfc9b8822ca249fccb34cd2672970d12dc4c21412fefd6c7866e7c884ee1233",
+      "bounds": [
+        12,
+        8,
+        50,
+        52
+      ]
+    },
+    {
+      "index": 7,
+      "role": "generated",
+      "sha256": "cfb961fe5b3b08f493452eca7537a48c952b40c83ac7ad5b78f5b5b904e6d098",
+      "bounds": [
+        16,
+        8,
+        50,
+        52
+      ]
+    },
+    {
+      "index": 8,
+      "role": "generated",
+      "sha256": "a8506599816898c3010866db07707dcc53e9c2b062b154291a27fda31773663b",
+      "bounds": [
+        22,
+        7,
+        46,
+        52
+      ]
+    }
+  ]
+}
