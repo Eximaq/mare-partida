@@ -1239,9 +1239,8 @@
     return item?{kind:'gear',item,id:item.id}:null;
   }
   function renderInventory(body){
-    const columns=innerWidth>1180?7:innerWidth>760?6:5;
-    const BAG_PER_PAGE=columns*7;
-    if(inventoryUI.pageSize&&inventoryUI.pageSize!==BAG_PER_PAGE)inventoryUI.page=Math.floor(inventoryUI.page*inventoryUI.pageSize/BAG_PER_PAGE);
+    const {pageSize:BAG_PER_PAGE}=MareUI.inventoryGrid(innerWidth);
+    if(inventoryUI.pageSize&&inventoryUI.pageSize!==BAG_PER_PAGE)inventoryUI.page=MareUI.inventoryPageAtResize(inventoryUI.page,inventoryUI.pageSize,BAG_PER_PAGE);
     inventoryUI.pageSize=BAG_PER_PAGE;
     if(!invSelected())selectedItem=game.equipment.weapon?.id||game.inventory[0]?.id||(game.potions>0?'virtual-potion':game.materials>0?'virtual-material':null);
     const overlay=$('panelOverlay');overlay.classList.add('inventory-mode');
@@ -1292,6 +1291,11 @@
     </div>`;
     drawCurrentPreview($('inventorySprite'),185);
   }
+  // Recalculate the visible page only when the responsive column tier changes.
+  // Keep search, selected item, save data, and all inventory actions intact.
+  window.addEventListener('resize',()=>{
+    if(currentPanel==='inventory'&&inventoryUI.pageSize!==MareUI.inventoryGrid(innerWidth).pageSize)renderPanel();
+  },{passive:true});
   function inventoryDetail(sel){
     if(!sel)return `<div class="op-detail-wrap op-detail-empty"><div class="op-detail-icon empty">?</div><div><h3>Nenhum item selecionado</h3><small>Escolha um item da mochila ou um slot equipado.</small></div><p>Use os filtros centrais para localizar armas, armaduras, consumíveis e materiais.</p></div>`;
     if(sel.kind==='potion'||sel.kind==='material'){
