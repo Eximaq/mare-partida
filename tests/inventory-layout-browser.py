@@ -33,6 +33,11 @@ def verify_grid(page, columns):
       const equipped=document.querySelector('#panelOverlay.inventory-mode .op-equip-slot.filled');
       const rarities=['common','uncommon','rare','epic','legendary','supreme'];
       const initial=[bag.className,equipped.className];
+      // The equipment button inherits a global background-color transition.
+      // Disable it only during synthetic rarity switches so computed colors
+      // reflect the final CSS token rather than a mid-transition frame.
+      const savedTransitions=[bag.style.transition,equipped.style.transition];
+      bag.style.transition='none';equipped.style.transition='none';
       const alpha=color=>{
         const match=color.match(/^rgba?\\(([^)]+)\\)$/);
         const values=match?match[1].split(',').map(Number):[];
@@ -58,6 +63,7 @@ def verify_grid(page, columns):
         });
       }finally{
         bag.className=initial[0];equipped.className=initial[1];
+        bag.style.transition=savedTransitions[0];equipped.style.transition=savedTransitions[1];
       }
     }""")
     rarity_colors={
