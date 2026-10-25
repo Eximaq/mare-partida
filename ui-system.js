@@ -93,7 +93,18 @@
       if(e.key==='Escape'&&modalBindings.has(top)){e.preventDefault();e.stopImmediatePropagation();modalBindings.get(top)();}
     },true);
   }
-  root.MareUI={escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals};
+  // Inventory is a visual layout only: never modify the 120-item save capacity.
+  const inventoryGrid=(viewportWidth)=>{
+    const width=Number(viewportWidth)||0;
+    const columns=width>1180?9:width>1024?8:width>760?7:width>=390?6:5;
+    const rows=7;
+    return {columns,rows,pageSize:columns*rows};
+  };
+  const inventoryPageAtResize=(page,oldPageSize,newPageSize)=>{
+    const current=Math.max(0,Math.floor(Number(page)||0));
+    return oldPageSize>0&&newPageSize>0?Math.floor(current*oldPageSize/newPageSize):current;
+  };
+  root.MareUI={escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals,inventoryGrid,inventoryPageAtResize};
   if(typeof document!=='undefined')document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot,{once:true}):boot();
   if(typeof module!=='undefined')module.exports=root.MareUI;
 })(globalThis);
