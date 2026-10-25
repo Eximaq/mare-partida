@@ -16,6 +16,8 @@ A integração usa o `basicAttackPose()` e seu progresso normalizado, introduzid
 - Build Pages inclui somente manifesto e PNGs usados; prompts, originais de geração e auditorias não entram no site.
 - Testes/capturas ficam em `docs/evidence-paper-doll/unarmed/`, fora do Git.
 
+Resultado local: 80 testes Node, build Pages, 80 composições reais, editor/DEV/fallback e combate das sete classes aprovados. Também passaram os 56 cenários de `tests/attack_speed_browser.cjs` (humanos/Zoan, impacto único, limites, retiming e cancelamentos). Dois testes antigos foram adequados ao relógio compartilhado da main: presença de relógio não comprova arte específica; dano de habilidade instantânea não deve ser confundido com impacto básico.
+
 ## Custo e pendências
 
 O corpo norte consumiu 1 geração confirmada. A roupa foi cotada em 10, entregue pela galeria sem repetir a chamada; o getter do job não expôs cobrança final. Ledger em `usage.json`: 43 confirmadas no lote compartilhado, mais roupa com teto conservador de 25; até 68 de 300 reservadas/confirmadas. Não afirmar que o custo final desconhecido foi reembolsado.
