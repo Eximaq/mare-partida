@@ -1,5 +1,7 @@
 # Akuma no Mi — Lote 1 Rank E
 
+[Bisão, Bomu e Kobu Rank C: transformação, explosões e bandeiras](RANK-C-BISON-BOMU-KOBU.md).
+
 [Horu-Horu e Mato Mato Rank C: habilidades e passivos](RANK-C-HORU-MATO.md).
 
 [Passivos de equipamento das cinco frutas Rank D](RANK-D-PASSIVES.md).

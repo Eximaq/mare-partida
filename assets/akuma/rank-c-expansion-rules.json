@@ -1,0 +1,108 @@
+{
+  "bison": {
+    "id": "akuma_ushi_bison",
+    "name": "Ushi Ushi no Mi: Modelo Bisão",
+    "family": "zoan",
+    "description": "Fruta do Diabo do tipo Zoan que concede ao usuário a capacidade de se transformar em um bisão colossal e implacável. Confere uma estrutura corporal extremamente densa, permitindo desferir investidas pesadas capazes de atordoar inimigos e ativar uma postura defensiva inabalável que eleva a vida máxima e a blindagem do usuário.",
+    "passiveStats": {
+      "max_hp": 240,
+      "physical_defense": 18,
+      "physical_attack": 12
+    },
+    "range": 256,
+    "dashSpeed": 640,
+    "stun": 2,
+    "duration": 30000,
+    "defenseBonus": 0.35,
+    "hpBonus": 0.2,
+    "skills": [
+      {
+        "key": "1",
+        "name": "Investida Furiosa",
+        "cost": 30,
+        "cooldown": 14,
+        "description": "Investida de até 4 tiles: 180% físico e atordoamento por 2s no primeiro inimigo atingido.",
+        "icon_path": "assets/akuma/bison/skill-1.png"
+      },
+      {
+        "key": "2",
+        "name": "Casco Firme",
+        "cost": 45,
+        "cooldown": 45,
+        "description": "Por 30s: +35% de defesas e +20% HP máximo; mantém a proporção de vida.",
+        "icon_path": "assets/akuma/bison/skill-2.png"
+      }
+    ],
+    "visuals": {
+      "worldSize": 96,
+      "buffSize": 112,
+      "buffCenterY": -44,
+      "foregroundTop": -56
+    }
+  },
+  "bomu": {
+    "id": "akuma_bomu_bomu",
+    "name": "Bomu Bomu no Mi",
+    "family": "paramecia",
+    "description": "Fruta do Diabo do tipo Paramecia que transforma qualquer parte do corpo do usuário em um explosivo de alto poder destrutivo. O usuário torna-se completamente imune a explosões, sendo capaz de disparar sopros detonantes sequenciais e lançar bombas duplas que varrem áreas inteiras no impacto.",
+    "passiveStats": {
+      "physical_attack": 20,
+      "crit_chance": 0.06,
+      "max_hp": 80
+    },
+    "isImmuneToExplosions": true,
+    "range": 384,
+    "speed": 480,
+    "splash": 64,
+    "skills": [
+      {
+        "key": "1",
+        "name": "Sopro Explosivo",
+        "cost": 40,
+        "cooldown": 20,
+        "description": "Seis projéteis simultâneos de 75% físico cada. Imunidade nativa a dano classificado como explosão.",
+        "icon_path": "assets/akuma/bomu/skill-1.png"
+      },
+      {
+        "key": "2",
+        "name": "Duplo Bombeamento",
+        "cost": 35,
+        "cooldown": 16,
+        "description": "Duas bombas sequenciais de 150% físico, cada uma atingindo 3×3 tiles no impacto.",
+        "icon_path": "assets/akuma/bomu/skill-2.png"
+      }
+    ]
+  },
+  "kobu": {
+    "id": "akuma_kobu_kobu",
+    "name": "Kobu Kobu no Mi",
+    "family": "paramecia",
+    "description": "Fruta do Diabo do tipo Paramecia que confere ao usuário a capacidade de encorajar e despertar a força de combate oculta nas pessoas. Através do hasteamento de estandartes revolucionários no campo de batalha, o usuário é capaz de inflamar o espírito de seus aliados para elevar seus atributos ou desmoralizar exércitos inimigos, reduzindo drasticamente suas defesas e poder ofensivo.",
+    "passiveStats": {
+      "max_hp": 140,
+      "special_attack": 12,
+      "physical_defense": 10,
+      "cooldown_reduction": 0.05
+    },
+    "skills": [
+      {
+        "key": "1",
+        "name": "Revolução",
+        "cost": 40,
+        "cooldown": 35,
+        "duration": 20000,
+        "description": "Bandeira por 20s: aliados que a veem recebem +20% ataques/defesas e +10% crítico. Verificação a cada segundo.",
+        "icon_path": "assets/akuma/kobu/skill-1.png"
+      },
+      {
+        "key": "2",
+        "name": "Destituição Governamental",
+        "cost": 35,
+        "cooldown": 30,
+        "duration": 15000,
+        "description": "Bandeira no chão selecionado por 15s: inimigos na área visível sofrem −20% ataques/defesas.",
+        "icon_path": "assets/akuma/kobu/skill-2.png"
+      }
+    ]
+  }
+}

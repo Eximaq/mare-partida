@@ -19,3 +19,7 @@ assets/akuma/doru/*.json -text
 assets/akuma/wolf/*.json -text
 assets/akuma/horu/*.json -text
 assets/akuma/mato/*.json -text
+
+assets/akuma/bison/*.json -text
+assets/akuma/bomu/*.json -text
+assets/akuma/kobu/*.json -text

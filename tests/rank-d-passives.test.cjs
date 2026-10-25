@@ -1,6 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict'),A=require('../akuma-system.js'),P=require('../akuma-passives.js');
-assert.deepEqual(P.stats,{...require('../assets/akuma/rank-d-passives.json'),...Object.fromEntries(Object.values(require('../assets/akuma/rank-c-rules.json')).map(r=>[r.id,r.passiveStats]))});
+assert.deepEqual(P.stats,{...require('../assets/akuma/rank-d-passives.json'),...Object.fromEntries(Object.values(require('../assets/akuma/rank-c-expansion-rules.json')).map(r=>[r.id,r.passiveStats])),...Object.fromEntries(Object.values(require('../assets/akuma/rank-c-rules.json')).map(r=>[r.id,r.passiveStats]))});
 const base={physical:100,elemental:80,attack:100,defense:50,maxHP:500,maxEnergy:100,speed:2,moveSpeed:100,huntSpeed:80,crit:.2,critMultiplier:1.65,penetration:.1,lifesteal:0,power:1000,evasion:.1,healing:10};
 for(const fruit of A.catalog.filter(f=>f.rank==='D')){assert.deepEqual(fruit.passiveStats,P.stats[fruit.id]);const out=P.apply(base,fruit.id);assert.notStrictEqual(out,base);assert.deepEqual(base,{...base});assert.deepEqual(P.apply(base,fruit.id),out,'recalculation is idempotent from base');}
 const wolf=P.apply(base,'akuma_inu_wolf');assert.equal(wolf.physical,112);assert.equal(wolf.speed,2.16);assert.equal(wolf.moveSpeed,105);assert.equal(wolf.fruitLifesteal,.05);assert.equal(P.cooldown(20,'akuma_doru_doru'),19);
