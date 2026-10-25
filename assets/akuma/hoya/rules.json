@@ -1,0 +1,40 @@
+{
+  "id": "akuma_hoya_hoya",
+  "name": "Hoya-Hoya no Mi",
+  "family": "paramecia",
+  "description": "Fruta do Diabo do tipo Paramecia que transforma o corpo do usuário em uma lâmpada humana, permitindo invocar um poderoso Gênio (Majin) para lutar em seu lugar. Enquanto a entidade de fumaça domina o campo de batalha sob comando direto do usuário, o invocador permanece completamente inalvejável e protegido contra qualquer tipo de dano.",
+  "passiveStats": {
+    "max_hp": 180,
+    "physical_attack": 20,
+    "special_attack": 20,
+    "movement_speed": 0.05
+  },
+  "duration": 60000,
+  "statMultiplier": 1.5,
+  "buffDuration": 10000,
+  "buffMultiplier": 2,
+  "worldSize": 96,
+  "buffScale": 1.5,
+  "growthDuration": 300,
+  "range": 96,
+  "hitFrameRatio": 0.55,
+  "skills": [
+    {
+      "key": "1",
+      "name": "Invocação Majin",
+      "cost": 60,
+      "cooldown": 90,
+      "description": "Invoca o Gênio por até 60s, com 150% dos atributos totais. Você fica protegido e controla o Gênio por cliques. A derrota dele encerra a invocação.",
+      "icon_path": "assets/akuma/hoya/skill-1.png"
+    },
+    {
+      "key": "2",
+      "name": "Majin Saidan",
+      "cost": 35,
+      "cooldown": 24,
+      "description": "Somente com o Gênio ativo: dobra seus atributos por 10s e aumenta seu tamanho em 1,5×.",
+      "icon_path": "assets/akuma/hoya/skill-2.png",
+      "requiresGenie": true
+    }
+  ]
+}

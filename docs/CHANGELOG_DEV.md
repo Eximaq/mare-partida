@@ -337,3 +337,9 @@ Validação: 13 suítes Node, Haki end-to-end em cinco resoluções e 20+ abates
 ### 19/10/2026 — Conclusão dos ícones Haki nativos32
 
 Primeira chamada Pro aprovada: 10 gerações; retornou 16 ícones individuais64 em vez da grade solicitada. O proprietário recusou a redução e aprovou uma nova chamada32 (10 gerações). As 64 alternativas nativas32 foram inspecionadas; seleção delegada 33/16/23/61, copiada sem alteração para Armamento, Observação, Rei e Livro. Ícones no painel, mochila e botão Rei/R; `iconsReady:true`. Originais preservados, nenhum asset64 reduzido entrou no jogo. Custo total confirmado desta etapa: 20 gerações. Manifestos/blueprints registram ambos os resultados. Suíte de navegador Haki verifica imagens realmente carregadas e dimensões nativas32, cinco resoluções, transações e combate; build/cache mantêm 25 recursos versionados. PR #11 deixa de depender de arte pendente e fica pronto para revisão/merge após validação.
+
+## 25/10/2026 — Hoya e aura Beta
+
+Branch feature/hoya-genie-beta-aura sobre f6d1232. Gênio existente de 96px, buff 144px, controle por clique, proteção do invocador, atributos e duas habilidades Rank B. Nova aura Beta de 37 frames na passiva e prisão. Implementação, origem e testes em [HOYA-RANK-B.md](HOYA-RANK-B.md). Saves e índices anteriores preservados; sem novas gerações PixelLab.
+
+Validação: 77 arquivos Node, 91 testes Python; Hoya em três resoluções com 20 abates, Beta/Hana e Supa no navegador, build Pages e diff check aprovados. Capturas fora do repositório; nenhuma geração paga.
