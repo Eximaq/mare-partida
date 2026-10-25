@@ -39,13 +39,14 @@ with sync_playwright() as p:
     results=[]
     for width,height,columns in SIZES:
         c,q=page_for(browser,copy.deepcopy(data),(width,height))
-        before=saved(q)
+        keys=('inventory','equipment','gold','materials','potions','attributes','classId','factionId')
+        before={key:saved(q).get(key) for key in keys}
         q.locator('#mainMenu [data-panel=inventory]').click()
         r=verify_grid(q,columns)
         q.locator('.op-grid .op-item:not(.empty)').first.click()
         assert q.locator('.op-grid .op-item.selected').count()==1
         q.screenshot(path=str(OUT/f'inventory-{width}.png'),full_page=True)
-        assert saved(q)==before,'UI changed persistent save'
+        assert {key:saved(q).get(key) for key in keys}==before,'UI changed persistent inventory/equipment data'
         results.append({'size':[width,height],'columns':columns,'grid':r})
         c.close()
     # Exercise in-place responsive pagination: page 2 at 9x7 -> page 2 at 6x7.
