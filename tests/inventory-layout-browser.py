@@ -65,7 +65,7 @@ def verify_grid(page, columns):
         assert style['bagImage']==style['equipImage']=='none',style
         assert 0<float(style['bagAlpha'])<=.3 and 0<float(style['equipAlpha'])<=.3,style
         assert style['bagOpacity']==style['equipOpacity']=='1',style
-        assert style['bagMask']==style['equipMask']=='exclude',style
+        assert style['bagMask'].split(', ')==style['equipMask'].split(', ')==['exclude','exclude'],style
         assert 'content-box' in style['bagClip'] and 'content-box' in style['equipClip'],style
         assert style['bagFrameSize']==style['equipFrameSize']=='100% 100%',style
     return result
