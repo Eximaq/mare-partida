@@ -27,12 +27,14 @@ A primeira animação leste foi reprovada pelo braço que ia para trás e falta 
 
 ## Verificação
 
-- 83 testes Node passaram (suite de lógica, excluindo o teste Supa que exige browser).
+- 85 testes Node passaram após sincronização com a main de 25/10 (suite de lógica, excluindo o teste Supa que exige browser).
 - `tests/paper_doll_gunner_browser.py`: 80 poses sem lacunas, ataque real nas quatro direções, dano igual por direção e um único impacto, habilidades em fallback, remoção/reequipamento pelo inventário, mobile e save normal intacto.
 - `tests/attack_speed_browser.cjs`: 56 cenários de impacto, velocidade, cancelamento e Zoan aprovados.
 - `tests/paper_doll_unarmed_browser.py`: regressão do Lutador aprovada.
 - Inspeção visual dos 32 frames de ataque no navegador; capturas locais em `docs/evidence-paper-doll/gunner/` (fora do Git).
 - `python tools/build_pages.py`: build estático aprovado.
+
+O smoke geral de classes expôs dependência do tempo real durante carregamento/capturas: no CI, o Curandeiro causou dano, mas não completou um abate no período observado. O relógio do teste agora começa fixo e pausado antes do carregamento; apenas os avanços explícitos simulam combate. As exigências de impacto, abate e persistência continuam presentes, sem alteração no gameplay.
 
 ## Custo
 

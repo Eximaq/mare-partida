@@ -13,7 +13,8 @@ def page(browser,seed=None):
  c.route('**/__dev_version',lambda r:r.fulfill(body='stable'))
  c.add_init_script('Math.random=(()=>{let x=781;return()=>{x=(Math.imul(x,1664525)+1013904223)>>>0;return x/4294967296}})()')
  if seed:c.add_init_script('if(!sessionStorage.seeded){localStorage.setItem('+json.dumps(KEY)+','+json.dumps(json.dumps(seed))+');sessionStorage.seeded="1"}')
- q=c.new_page();q.on('pageerror',lambda e:errors.append(str(e)));q.clock.install();q.goto(URL,wait_until='domcontentloaded');q.wait_for_function('typeof __mareDiagnostics==="function"');q.evaluate('Promise.all([MareDawnRenderer.boot,MareEmberRenderer.boot])');return c,q
+ # Freeze before loading: screenshots and CI speed must not advance combat or RNG.
+ q=c.new_page();q.on('pageerror',lambda e:errors.append(str(e)));q.clock.install(time=1792500000000);q.clock.pause_at(1792500000000);q.goto(URL,wait_until='networkidle');assert q.evaluate('typeof __mareDiagnostics==="function"');q.evaluate('Promise.all([MareDawnRenderer.boot,MareEmberRenderer.boot])');return c,q
 def travel(q):
  q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
 def state(q):return q.evaluate('__mareDiagnostics()')
@@ -37,7 +38,7 @@ with sync_playwright() as p:
    if hits>=4 and d['kills']>=2:break
   assert d['walkable'] and hits>0 and d['kills']>0,(cls,d)
   row={'classId':cls,'observed_states':sorted(seen),'impacts':hits,'kills':d['kills'],'production_combat_set':bool(d['combatAssetId']),'skill_uses':d['skillUses']}
-  rows.append(row);print(json.dumps(row),flush=True);q.locator('#returnLobby').click();q.reload();q.wait_for_function('typeof __mareDiagnostics==="function"');assert state(q)['classId']==cls;c.close()
+  rows.append(row);print(json.dumps(row),flush=True);q.locator('#returnLobby').click();q.reload(wait_until='networkidle');assert state(q)['classId']==cls;c.close()
  # A marine never receives pirate combat art, including a class change after loading.
  for faction in ['marine','revolutionary','government']:
   seed=copy.deepcopy(template);seed.update(factionId=faction,classId='sword')
