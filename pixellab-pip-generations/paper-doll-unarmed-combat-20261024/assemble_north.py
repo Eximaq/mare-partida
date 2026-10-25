@@ -27,4 +27,3 @@ for piece in m['pieces']:
  if piece['slot']=='hair':clip['sources']['north']={'url':'hair-north.png','width':64,'height':64,'anchorX':32,'anchorY':52};clip['sockets']['north']=[{'x':42,'y':65} for _ in range(8)]
 (p/'review-pack.json').write_text(json.dumps(m,indent=2)+'\n')
 (p/'north-layer-audit.json').write_text(json.dumps({'frames':audit,'body_unchanged':True,'hair':'native north idle; rigid head attachment','padding':[10,13],'status':'draft requiring artistic approval'},indent=2))
-

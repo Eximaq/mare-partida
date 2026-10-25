@@ -427,5 +427,7 @@
         "6": "unarmed-outfit"
       }
     }
-  }
+  },
+  "scope": "layered-gesture-review",
+  "classId": "brawler"
 }
