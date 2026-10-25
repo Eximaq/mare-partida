@@ -37,7 +37,8 @@
       "worldSize": 96,
       "buffSize": 112,
       "buffCenterY": -44,
-      "foregroundTop": -56
+      "foregroundTop": -8,
+      "foregroundHeight": 24
     }
   },
   "bomu": {

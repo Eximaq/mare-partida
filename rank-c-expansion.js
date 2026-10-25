@@ -7,7 +7,8 @@
  function preload(){for(const ds of Object.values(clips))for(const c of Object.values(ds))image(c.image);for(const fx of Object.values(effects))image(fx.image);}
  function clip(action,direction){return clips[action]?.[directions[direction]||direction]||clips.idle.south;}
  function status(action='idle',direction='front'){const im=image(clip(action,direction).image);return !im.complete?'loading':im.naturalWidth?'ready':'failed';}
- function drawActor(c,x,y,{action='idle',direction='front',time=0,progress=null,height=64}={}){const cl=clip(action,direction),im=image(cl.image),i=Number.isFinite(progress)?Math.min(cl.frames-1,Math.floor(Math.max(0,progress)*cl.frames)):Math.floor(Math.max(0,time)*cl.fps)%cl.frames;if(!im.complete||!im.naturalWidth)return false;const scale=height/cl.size;c.save();c.imageSmoothingEnabled=false;c.drawImage(im,i*cl.size,0,cl.size,cl.size,Math.round(x-height/2),Math.round(y-cl.feet[i]*scale),height,height);c.restore();return true;}
+ // Exported animation cells include transparent padding; preserve the native 64px pixel scale.
+ function drawActor(c,x,y,{action='idle',direction='front',time=0,progress=null,height=64}={}){const cl=clip(action,direction),im=image(cl.image),i=Number.isFinite(progress)?Math.min(cl.frames-1,Math.floor(Math.max(0,progress)*cl.frames)):Math.floor(Math.max(0,time)*cl.fps)%cl.frames;if(!im.complete||!im.naturalWidth)return false;const scale=height/64,size=cl.size*scale;c.save();c.imageSmoothingEnabled=false;c.drawImage(im,i*cl.size,0,cl.size,cl.size,Math.round(x-size/2),Math.round(y-cl.feet[i]*scale),size,size);c.restore();return true;}
  function effectFrame(kind,elapsed,mode='loop'){
   const fx=effects[kind];let list=fx.frames,t=Math.max(0,elapsed);
   if(mode==='flight')list=list.slice(0,kind==='breath'?7:15);
