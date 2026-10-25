@@ -6,6 +6,7 @@ import math
 import sqlite3
 import time
 import uuid
+from rank_c_expansion import RankCExpansionService, RULES as EXPANSION_RULES, BISON, BOMU, KOBU
 from rank_c import RankCService, RULES as RANK_C_RULES, HORU, MATO
 from fruit_stats import DEVIL_FRUIT_STATS, passive_stats, apply_stats
 from pathlib import Path
@@ -37,6 +38,9 @@ FRUITS = {
 for rule in RANK_C_RULES.values():
     FRUITS[rule['id']]={'type':'akuma_no_mi','family':'paramecia','rank':'C','name':rule['name'],'description':rule['description'],'icon_path':'assets/akuma/'+('horu' if rule['id']==HORU else 'mato')+'/fruit.png','cooldown':rule['skills'][0]['cooldown']}
 
+for rule in EXPANSION_RULES.values():
+    FRUITS[rule['id']]={'type':'akuma_no_mi','family':rule['family'],'rank':'C','name':rule['name'],'description':rule['description'],'cooldown':rule['skills'][0]['cooldown'],'skills':rule['skills'],'isImmuneToExplosions':rule.get('isImmuneToExplosions',False)}
+
 for fruit_id, modifiers in DEVIL_FRUIT_STATS.items():
     FRUITS[fruit_id]['passive_stats']=dict(modifiers)
     FRUITS[fruit_id]['passiveStats']=dict(modifiers)
@@ -44,6 +48,7 @@ for fruit_id, modifiers in DEVIL_FRUIT_STATS.items():
 
 # Public catalog metadata for the HUD. Combat validation remains in cast().
 SKILL_TOOLTIPS = {
+    **{rule['id']:rule['skills'][0] for rule in EXPANSION_RULES.values()},
     HORU:RANK_C_RULES['horu']['skills'][0],MATO:RANK_C_RULES['mato']['skills'][0],
     WOLF_ID: WOLF_RULES['skills'][0],
     DORU_ID: DORU_RULES['skills'][0],
@@ -69,6 +74,7 @@ class AkumaStore:
         self.db.row_factory = sqlite3.Row
         self.clock = clock
         self.rank_c=RankCService(clock)
+        self.rank_c_expansion=RankCExpansionService(clock)
         # World enemies and projectiles are transient, scoped by player/instance.
         self.doru_projectiles = {}
         self.doru_roots = {}
@@ -130,10 +136,11 @@ class AkumaStore:
             self.db.execute("UPDATE players SET equipped=?, transformed=CASE WHEN equipped IS ? THEN transformed ELSE 0 END, metallic_until=CASE WHEN equipped IS ? THEN metallic_until ELSE 0 END WHERE id=?", (fruit_id, fruit_id, fruit_id, player_id))
         if previous_fruit != fruit_id:
             self.rank_c.clear(player_id)
+            self.rank_c_expansion.clear(player_id)
             with self.db:
                 self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
                 self.db.execute("UPDATE players SET wolf_aura_until=0 WHERE id=?", (player_id,))
-        if fruit_id in (NEKO_ID, USHI_ID, WOLF_ID) and previous_fruit != fruit_id:
+        if fruit_id in (NEKO_ID, USHI_ID, WOLF_ID, BISON) and previous_fruit != fruit_id:
             with self.db:
                 self.db.execute("UPDATE players SET transformed=1 WHERE id=?", (player_id,))
         return self.state(player_id)
@@ -145,6 +152,7 @@ class AkumaStore:
         with self.db:
             self.db.execute("UPDATE players SET transformed=? WHERE id=?", (int(bool(enabled)), player_id))
             if not enabled:
+                self.rank_c_expansion.clear(player_id)
                 self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
                 self.db.execute("UPDATE players SET wolf_aura_until=0 WHERE id=?", (player_id,))
         return self.state(player_id)
@@ -159,7 +167,7 @@ class AkumaStore:
 
         if base_stats is not None and not isinstance(base_stats,dict):raise ValueError('Atributos base inválidos')
         derived=apply_stats({**(base_stats or {}),'max_hp':result['max_hp'],'healing_received_percent':(base_stats or {}).get('healing_received_percent',0)+(result['healing_received_percent'] if not passive_stats(state['equipped']) else 0)},state['equipped'])
-        return {**result,**self.rank_c.apply_stats(player_id,derived),'passive_stats':passive_stats(state['equipped'])}
+        return {**result,**self.rank_c_expansion.apply_stats(player_id,self.rank_c.apply_stats(player_id,derived)),'passive_stats':passive_stats(state['equipped'])}
 
     def record_corpse(self, player_id: str, corpse_id: str, instance: str, x: float, y: float):
         self.player(player_id)
@@ -173,6 +181,7 @@ class AkumaStore:
         fruit_id = state["equipped"]
         if not fruit_id:
             raise ValueError("Nenhuma fruta equipada")
+        if fruit_id in (BISON,BOMU,KOBU):return self.rank_c_expansion.cast(self,player_id,fruit_id,instance,x,y,enemies,direction,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id in (HORU,MATO):return self.rank_c.cast(self,player_id,fruit_id,instance,x,y,enemies,direction,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id == WOLF_ID:
             return self.cast_wolf(player_id, instance, x, y, enemies, skill_key, energy, physical_attack, target_id)
@@ -273,7 +282,7 @@ class AkumaStore:
             self.db.execute("INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)", (player_id, SUPA_ID, skill["key"], now+skill["cooldown"]))
         return {"effect": effect, "energy_spent": skill["cost"], "energy_remaining": float(energy)-skill["cost"], "state": self.state(player_id)}
 
-    def receive_damage(self, player_id, original, received=None, physical=True, direct=False, reflected=False):
+    def receive_damage(self, player_id, original, received=None, physical=True, direct=False, reflected=False, damage_type=None):
         """Resolve Supa after ordinary defense; reflected damage cannot reflect again.
 
         The optional prototype service receives combat inputs from the local client.
@@ -283,6 +292,7 @@ class AkumaStore:
         received = original if received is None else received
         if not all(isinstance(v, (int, float)) and not isinstance(v, bool) and math.isfinite(v) and v >= 0 for v in (original, received)):
             raise ValueError("Dano inválido")
+        if state['equipped']==BOMU and damage_type=='explosion':return {'damage':0,'reflected':0,'immune':True}
         active = state["equipped"] == SUPA_ID and state["metallic_until"] > self.clock()
         enabled = active and physical and not direct and not reflected and original > 0 and received > 0
         damage = received*(1-SUPA_RULES["mitigation"]) if enabled else received
@@ -294,6 +304,7 @@ class AkumaStore:
     def end_protection(self, player_id):
         self.state(player_id)
         self.rank_c.clear(player_id)
+        self.rank_c_expansion.clear(player_id)
         with self.db:
             self.db.execute("UPDATE players SET metallic_until=0 WHERE id=?", (player_id,))
             self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
