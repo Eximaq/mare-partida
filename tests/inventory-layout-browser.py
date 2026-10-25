@@ -26,6 +26,42 @@ def verify_grid(page, columns):
     for i in range(frames.count()):
         background=frames.nth(i).evaluate('e=>getComputedStyle(e).backgroundImage')
         assert background=='none',(i,background)
+    # Check every rarity on both kinds of slot with browser-computed styles.
+    # Only temporary DOM classes change; the actual save and game logic do not.
+    rarity_styles=page.evaluate("""() => {
+      const bag=document.querySelector('#panelOverlay.inventory-mode .op-grid>.op-item:not(.empty)');
+      const equipped=document.querySelector('#panelOverlay.inventory-mode .op-equip-slot.filled');
+      const rarities=['common','uncommon','rare','epic','legendary','supreme'];
+      const initial=[bag.className,equipped.className];
+      const alpha=color=>{
+        const match=color.match(/^rgba?\\(([^)]+)\\)$/);
+        const values=match?match[1].split(',').map(Number):[];
+        return values.length===4?values[3]:1;
+      };
+      try{
+        return rarities.map(rarity=>{
+          for(const element of [bag,equipped]){
+            element.classList.remove(...rarities.map(r=>'rarity-'+r));
+            element.classList.add('rarity-'+rarity);
+          }
+          const backpack=getComputedStyle(bag),equipment=getComputedStyle(equipped);
+          return {rarity,bagFrame:backpack.borderImageSource,equipFrame:equipment.borderImageSource,
+            bagImage:backpack.backgroundImage,equipImage:equipment.backgroundImage,
+            bagAlpha:alpha(backpack.backgroundColor),equipAlpha:alpha(equipment.backgroundColor),
+            bagOpacity:backpack.opacity,equipOpacity:equipment.opacity,
+            bagSlice:backpack.borderImageSlice,equipSlice:equipment.borderImageSlice};
+        });
+      }finally{
+        bag.className=initial[0];equipped.className=initial[1];
+      }
+    }""")
+    for style in rarity_styles:
+        expected='/'+style['rarity']+'.png'
+        assert expected in style['bagFrame'] and expected in style['equipFrame'],style
+        assert style['bagImage']==style['equipImage']=='none',style
+        assert 0<float(style['bagAlpha'])<=.3 and 0<float(style['equipAlpha'])<=.3,style
+        assert style['bagOpacity']==style['equipOpacity']=='1',style
+        assert style['bagSlice']==style['equipSlice']=='46',style
     return result
 
 with sync_playwright() as p:
