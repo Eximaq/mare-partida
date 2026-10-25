@@ -23,3 +23,6 @@ assets/akuma/mato/*.json -text
 assets/akuma/bison/*.json -text
 assets/akuma/bomu/*.json -text
 assets/akuma/kobu/*.json -text
+
+assets/akuma/beta/*.json -text
+assets/akuma/hana/*.json -text

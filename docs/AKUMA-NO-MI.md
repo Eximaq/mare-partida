@@ -1,5 +1,7 @@
 # Akuma no Mi — Lote 1 Rank E
 
+[Beta-Beta e Hana-Hana Rank B: Logia, vínculo viscoso e combos de braços](RANK-B-BETA-HANA.md).
+
 [Bisão, Bomu e Kobu Rank C: transformação, explosões e bandeiras](RANK-C-BISON-BOMU-KOBU.md).
 
 [Horu-Horu e Mato Mato Rank C: habilidades e passivos](RANK-C-HORU-MATO.md).
