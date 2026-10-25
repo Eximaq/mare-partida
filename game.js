@@ -23,7 +23,7 @@
   const worldZoom=MareHudTelemetry.createZoom(()=>resizeViewport());
   const navigators = Object.fromEntries(Object.entries(worldMaps).map(([id,map])=>[id,new Navigation(map,map.navigationCell||24)]));
   for(const nav of Object.values(navigators))MareDoru.guardNavigation(nav,()=>world?.time||0);
-  let travelPath = [], pursuit = new WeakMap();
+  let travelPath = [], pursuit = new WeakMap(), conchasRouteReplans = 0;
   const keys = new Set(), rejectedTargets = new Map();
   const mapKey=()=>scene==='lobby'?'lobby':game?.area==='rare'&&worldMaps.rare?'rare':game?.area==='syrup'&&worldMaps.syrup?'syrup':game?.area==='baratie'&&worldMaps.baratie?'baratie':game?.area==='arlong'&&worldMaps.arlong?'arlong':game?.area==='swamp'&&worldMaps.conchas?'conchas':game?.area==='orange'&&worldMaps.orange?'orange':game?.area==='loguetown'&&worldMaps.loguetown?'loguetown':game?.area==='beach'&&worldMaps.dawn?'dawn':game?.area==='beach'&&worldMaps.embers?'embers':'hunt';
   const activeMap = () => worldMaps[mapKey()];
@@ -39,7 +39,7 @@
   function walkTo(point,action=null){
     const path=navigator().path(world.hero,point);
     if(!path.length){toast('Nao ha caminho livre ate esse ponto.');return false;}
-    travelPath=path;lobbyDestination={...path[path.length-1]};lobbyAction=action;
+    travelPath=path;lobbyDestination={...path[path.length-1]};lobbyAction=action;conchasRouteReplans=0;
     if(scene==='hunt'){autoPlay=false;world.target=null;updateUI();}
     return true;
   }
@@ -69,6 +69,15 @@
     }
     if(travelPath.length){
       navigator().follow(world.hero,travelPath,getDerived().moveSpeed,dt);
+      // Conchas has tight PixelLab collision margins: a partially blocked segment
+      // can cancel the current route even though a different A* path exists.
+      // Replan from the actual feet position without bypassing solid scenery.
+      if(!travelPath.length&&activeMap().id==='conchas'&&lobbyDestination&&
+        Math.hypot(world.hero.x-lobbyDestination.x,world.hero.y-lobbyDestination.y)>8&&conchasRouteReplans<3){
+        conchasRouteReplans++;
+        const recovery=navigator().path(world.hero,lobbyDestination);
+        if(recovery.length){travelPath=recovery;return true;}
+      }
       if(!travelPath.length){
         const action=lobbyAction,destination=lobbyDestination;lobbyAction=null;lobbyDestination=null;
         if(action&&destination&&Math.hypot(world.hero.x-destination.x,world.hero.y-destination.y)<5&&Math.hypot(world.hero.x-action.x,world.hero.y-action.y)<80)activateNPC(action);
