@@ -6,3 +6,11 @@ const red=X.effects.revolution,initial=red.frames.slice(0,10).reduce((n,f)=>n+f.
 assert.equal(X.effectFrame('deposition',15000,'hold'),X.effects.deposition.frames.at(-1));assert(X.inSplash({x:0,y:0},{x:64,y:64}));assert(!X.inSplash({x:0,y:0},{x:65,y:0}));assert(X.explosionImmune(X.rules.bomu.id,'explosion'));assert(!X.explosionImmune(X.rules.bomu.id,'physical'));
 const flag={x:50,y:50,until:2000,view:{width:100,height:100}},actor={x:50,y:50};assert(X.affected(flag,actor,{x:0,y:0,width:100,height:100},1000));assert(!X.affected(flag,actor,{x:100,y:100,width:100,height:100},1000));assert(!X.affected(flag,actor,{x:0,y:0,width:100,height:100},2000));
 console.log('Rank C expansion: exact original assets, catalog/passives, Bison clips, frame 11–17 loop, held final frame, 3×3 splash, visibility/expiry and typed explosion immunity passed');
+
+// Padded 80/84px animation exports must retain the same pixel scale as the 64px idle.
+const OriginalImage=global.Image;global.Image=class{constructor(){this.complete=true;this.naturalWidth=10000;}};
+try{for(const height of [64,96])for(const [action,dirs]of Object.entries(X.clips))for(const [direction,cl]of Object.entries(dirs))for(let i=0;i<cl.frames;i++){
+ let args;const c={save(){},restore(){},drawImage(...a){args=a;}};assert(X.drawActor(c,200,300,{action,direction,height,progress:(i+.1)/cl.frames}));
+ assert.equal(args[7]/args[3],height/64,action+' '+direction+' keeps pixel scale');assert.equal(args[8]/args[4],height/64);assert.equal(args[5]+args[7]/2,200);assert.ok(Math.abs(args[6]+cl.feet[i]*height/64-300)<=.5,'feet stay on the ground');
+}}finally{global.Image=OriginalImage;}
+console.log('Bison: all 120 frames preserve identical pixel scale and foot anchor in world/preview sizes');

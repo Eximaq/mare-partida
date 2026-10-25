@@ -2097,7 +2097,7 @@
   }
   function drawBisonShell(foreground,x,y){
     if(!bisonShellActive())return;const v=MareRankCExpansion.rules.bison.visuals;
-    ctx.save();if(foreground){ctx.beginPath();ctx.rect(x-v.buffSize,y+v.foregroundTop,v.buffSize*2,v.buffSize*2);ctx.clip();}
+    ctx.save();if(foreground){ctx.beginPath();ctx.rect(x-v.buffSize/2,y+v.foregroundTop,v.buffSize,v.foregroundHeight);ctx.clip();}
     MareRankCExpansion.drawEffect(ctx,'shell',x,y+v.buffCenterY,Date.now()-session.bisonShellStarted,{width:v.buffSize,height:v.buffSize});ctx.restore();
   }
   function drawHoruHealFx(foreground){

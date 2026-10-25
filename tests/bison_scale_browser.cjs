@@ -1,0 +1,13 @@
+'use strict';
+const assert=require('node:assert/strict'),os=require('node:os'),{chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+(async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});try{
+ const page=await browser.newPage({viewport:{width:1000,height:800}}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8148/',{waitUntil:'domcontentloaded'});await page.evaluate(()=>MareRankCExpansion.preload());await page.waitForFunction(()=>Object.entries(MareRankCExpansion.clips).every(([a,ds])=>Object.keys(ds).every(d=>MareRankCExpansion.status(a,d)==='ready')));
+ const result=await page.evaluate(()=>{
+  const X=MareRankCExpansion,canvas=document.createElement('canvas');canvas.width=1000;canvas.height=740;Object.assign(canvas.style,{position:'fixed',left:'0',top:'0',zIndex:999999});document.body.append(canvas);const c=canvas.getContext('2d');c.fillStyle='#182c31';c.fillRect(0,0,1000,740);c.fillStyle='#fff';c.font='18px sans-serif';c.fillText('Bisão — mesma proporção de pixels em todas as animações (base: 96 px)',18,28);
+  const scales=[],feet=[];let calls=0;const native=c.drawImage.bind(c);c.drawImage=function(...args){scales.push(args[7]/args[3]);feet.push(args[6]);calls++;return native(...args);};
+  for(const [action,ds]of Object.entries(X.clips))for(const [direction,cl]of Object.entries(ds))for(let i=0;i<cl.frames;i++)X.drawActor(c,-1000,-1000,{action,direction,height:96,progress:(i+.1)/cl.frames});
+  const actions=['idle','walk','attack','dash'],dirs=['south','east','north','west'];
+  actions.forEach((action,row)=>dirs.forEach((direction,col)=>{const x=125+col*250,y=185+row*170;c.fillStyle='#283f43';c.fillRect(col*250+8,row*170+48,234,158);c.strokeStyle='#70918b';c.beginPath();c.moveTo(x-80,y);c.lineTo(x+80,y);c.stroke();c.fillStyle='#fff';c.fillText(action+' / '+direction,x-100,y-118);X.drawActor(c,x,y,{action,direction,height:96,progress:action==='attack'?.5:action==='dash'?.3:.15});}));
+  return {scales:scales.slice(0,120),calls,worldSize:X.rules.bison.visuals.worldSize,front:X.rules.bison.visuals};
+ });assert.equal(result.worldSize,96);assert.equal(result.scales.length,120);assert(result.scales.every(s=>s===1.5));assert.equal(result.front.foregroundTop,-8);assert.equal(result.front.foregroundHeight,24);await page.screenshot({path:os.tmpdir()+'/bison-animation-proportions.png'});assert.deepEqual(errors,[]);console.log('Bison browser: 120 real frames at 1.5× pixel scale, 16 action/direction previews and narrow foreground buff mask passed');
+ }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1});

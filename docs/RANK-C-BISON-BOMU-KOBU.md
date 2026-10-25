@@ -18,7 +18,7 @@ Bônus de Kobu reduzem as recargas para 33,25s e 28,5s. Valores de balanceamento
 - O pedido posterior aumenta a sprite de 64 para **96×96 no mundo**, mantendo a colisão dos pés. Prévias respeitam o tamanho solicitado por seu renderizador.
 - Investida Furiosa: até quatro tiles, linha reta e colisão sólida; atinge o primeiro inimigo no caminho por 180% físico e aplica stun de 2s, cancelando o aviso de ataque dele. Consome o impacto uma vez.
 - Casco Firme: 30s, +35% defesas física/especial, +20% HP máximo. HP atual mantém a mesma fração ao ativar, expirar, sair da forma, trocar fruta ou recarregar. O marcador de escala é normalizado antes do clamp do save, evitando perda de vida em saves com HP elevado.
-- VFX verde 112×112 centrado 44px acima dos pés; desenhado atrás do Bisão e à frente abaixo da cabeça, envolvendo o corpo conforme ajuste pedido. Loop mantém os frames fornecidos intactos.
+- VFX verde 112×112 centrado 44px acima dos pés; desenhado principalmente atrás do Bisão, com uma faixa frontal de 24px junto aos pés (início 8px acima do chão), envolvendo o corpo sem o encobrir. Loop mantém os frames fornecidos intactos.
 
 ## Bomu Bomu
 
@@ -44,3 +44,9 @@ Regras: assets/akuma/rank-c-expansion-rules.json. Dados/arte: rank-c-expansion-d
 - Navegador real: transformação, sprite de 96px, buff em duas camadas de 112px, ataque básico, investida/stun, HP proporcional inclusive reload, seis hits, espelhamento, duas explosões 3×3, imunidade tipada, bandeiras/atributos/visibilidade/expiração e persistência de recargas.
 - Integração API: nove impactos aceitos; regressões de Horu/Mato, passivos Rank D e 56 cenários de velocidade/animação de ataque.
 - Capturas visuais inspecionadas ficam fora do Git. Preview produzido por python tools/build_pages.py.
+
+## Correção de proporção das animações
+
+O tamanho parado de referência continua em 96px. As animações exportadas possuem células de 64, 80 ou 84px por causa das margens transparentes. O renderizador agora aplica a mesma escala de pixels (96/64 = 1,5× no mundo) a todas as ações e direções, em vez de encolher cada célula inteira para 96px. O tamanho visível e a ancoragem dos pés permanecem coerentes entre Idle, Running, ataque e Jump Attack. Prévias mantêm sua própria escala de referência. Nenhum pixel dos assets foi alterado.
+
+Validação adicional: todos os 120 frames e as quatro direções no teste Node e no navegador real; painel com 16 combinações de ação/direção inspecionado, junto ao buff em combate. Teste: tests/bison_scale_browser.cjs.
