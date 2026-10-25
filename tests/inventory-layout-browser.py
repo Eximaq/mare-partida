@@ -52,7 +52,7 @@ with sync_playwright() as p:
     # Exercise in-place responsive pagination: page 2 at 9x7 -> page 2 at 6x7.
     c,q=page_for(browser,copy.deepcopy(data),(1440,900))
     q.locator('#mainMenu [data-panel=inventory]').click()
-    q.locator('.op-pagination [data-inv-page="1"]').click()
+    q.locator('.op-pagination [data-inv-page="1"]').first.click()
     assert verify_grid(q,9)['count']==63
     q.set_viewport_size({'width':390,'height':844})
     q.wait_for_function("document.querySelectorAll('#panelOverlay .op-grid > .op-item').length===42")
