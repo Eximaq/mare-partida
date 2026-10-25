@@ -1,0 +1,99 @@
+{
+  "frames": [
+    {
+      "frame": 0,
+      "garment_pixels": 244,
+      "bounds": [
+        21,
+        19,
+        43,
+        34
+      ],
+      "body_sha256": "84f19c860922be2013a5b997d9afbe746e9bd67e24bb03ed09f70b659c6e12d9"
+    },
+    {
+      "frame": 1,
+      "garment_pixels": 236,
+      "bounds": [
+        21,
+        19,
+        43,
+        34
+      ],
+      "body_sha256": "b190ddcc13abce03bb3705d5fc9d3e293743dc9a1f31dcf24413214d9eb138e6"
+    },
+    {
+      "frame": 2,
+      "garment_pixels": 224,
+      "bounds": [
+        21,
+        19,
+        42,
+        34
+      ],
+      "body_sha256": "383f11f7737ee0ae2161c00b8c24fba4a11e216cddc2f1fe3a3ac6f97ba31837"
+    },
+    {
+      "frame": 3,
+      "garment_pixels": 202,
+      "bounds": [
+        22,
+        18,
+        39,
+        34
+      ],
+      "body_sha256": "d3293754466389e586de01544db4773f1cbba1daf9c4bc5957c4862a00687885"
+    },
+    {
+      "frame": 4,
+      "garment_pixels": 210,
+      "bounds": [
+        22,
+        18,
+        41,
+        34
+      ],
+      "body_sha256": "57c525090992a9d890b2d6257eb2f158bc5f0bf7162c37f8c603e51fe5e74fb8"
+    },
+    {
+      "frame": 5,
+      "garment_pixels": 221,
+      "bounds": [
+        21,
+        19,
+        41,
+        34
+      ],
+      "body_sha256": "5850bdf7d478d72deed6a1e3de7a9f4a39c19d3467547b30f58fc2c0720c635b"
+    },
+    {
+      "frame": 6,
+      "garment_pixels": 237,
+      "bounds": [
+        21,
+        19,
+        43,
+        34
+      ],
+      "body_sha256": "98114d7b01858f8c37d7863454898e721fda4b5aeae7356b40ba477746f42bac"
+    },
+    {
+      "frame": 7,
+      "garment_pixels": 234,
+      "bounds": [
+        21,
+        19,
+        43,
+        34
+      ],
+      "body_sha256": "797e648059ebf5b5292f04f640ee68e401bb35dbb26536b8ae60f4f61fb148be"
+    }
+  ],
+  "body_unchanged": true,
+  "hair": "native north idle; rigid head attachment",
+  "padding": [
+    10,
+    13
+  ],
+  "status": "draft requiring artistic approval"
+}

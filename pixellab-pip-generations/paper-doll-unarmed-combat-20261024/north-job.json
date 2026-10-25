@@ -1,0 +1,12 @@
+{
+  "job_id": "63ca2b18-75b5-4f2e-bfaa-3d7a2bc78014",
+  "asset_id": "875007c5-b471-577c-97a5-ed2a70164ca4",
+  "status": "completed",
+  "quoted_generations": 1,
+  "route": "animate_image",
+  "prior_batch_confirmed": 42,
+  "shared_cap": 300,
+  "source_reference_separate": true,
+  "charged_generations": 1,
+  "confirmed_batch_total": 43
+}

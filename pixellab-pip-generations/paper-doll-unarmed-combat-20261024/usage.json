@@ -1,0 +1,18 @@
+{
+  "authorized_batch_cap": 300,
+  "prior_confirmed": 42,
+  "north_body": {
+    "job": "63ca2b18-75b5-4f2e-bfaa-3d7a2bc78014",
+    "confirmed_charge": 1
+  },
+  "north_outfit": {
+    "job": "7433d407-1c3e-4f90-ae5e-23c4329e3fdc",
+    "gallery": "4bfcaaf1-e0de-5f1e-850d-e94a54288aac",
+    "quoted_charge": 10,
+    "confirmed_charge": null,
+    "status": "completed; recovered through gallery, job getter failed to expose result or final charge"
+  },
+  "confirmed_total": 43,
+  "conservative_total_with_outfit_upper_bound": 68,
+  "calls_repeated": false
+}

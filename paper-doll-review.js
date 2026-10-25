@@ -1,12 +1,13 @@
 'use strict';
 /* Explicit DEV preview, transient only. Never approve art or persist appearance. */
 ((root)=>{
-  const id='navy-starter',folder='pixellab-pip-generations/paper-doll-navy-starter-20261023/';
-  function requested(search,devActive){return devActive===true&&new URLSearchParams(search).get('paperDollReview')===id;}
+  const id='navy-starter',folders={'navy-starter':'pixellab-pip-generations/paper-doll-navy-starter-20261023/',unarmed:'pixellab-pip-generations/paper-doll-unarmed-combat-20261024/'};
+  function requested(search,devActive){return devActive===true&&Object.hasOwn(folders,new URLSearchParams(search).get('paperDollReview'));}
   function appearance(pack,player){
     const catalog=root.MarePaperDollCatalog;
     if(!catalog.eligible(player))return null;
     const unarmed=!player.equipment?.weapon;
+    if(pack.unarmedOnly===true&&!unarmed)return null;
     const result={rigId:pack.rig.id,pieces:{...pack.appearance.pieces},blocked:[],hidden:[...(unarmed?['weapon']:[]),...(root.MarePaperDollLook?.hidden(player)||[])]};
     // Body identity is independent of class/faction. Missing weapon artwork
     // still falls back; only genuinely unequipped hands omit the sword layer.
@@ -27,18 +28,29 @@
     return result;
   }
   function create({search='',devActive=false,getImage,fetch:fetcher=root.fetch?.bind(root),baseURL=root.location?.href,onChange=()=>{}}={}){
+    const selected=new URLSearchParams(search).get('paperDollReview'),unarmedPack=selected==='unarmed';
     const enabled=requested(search,devActive),runtime=root.MarePaperDollCatalog.createRuntime({getImage});
     let pack=null,coverage=null,state=enabled?'loading':'off',message='',draws=0,fallbacks=0,lastReason=null;
     const notify=()=>onChange(snapshot());
-    function snapshot(){return {enabled,state,message,draws,fallbacks,lastReason,artworkApproved:false,coverage,...runtime.stats()};}
+    function snapshot(){return {enabled,state,message,draws,fallbacks,lastReason,packId:selected,artworkApproved:false,coverage,...runtime.stats()};}
     const ready=enabled?(async()=>{
       try{
-        const base=new URL(folder,baseURL),response=await fetcher(new URL('review-pack.json',base),{cache:'no-store'});
+        const base=new URL(folders[selected],baseURL),response=await fetcher(new URL('review-pack.json',base),{cache:'no-store'});
         if(!response.ok)throw Error('Manifesto indisponível.');
         const data=await response.json();
-        if(data.reviewOnly!==true||data.productionEnabled!==false||data.full_character_artwork_approved!==false||data.rig?.id!=='human-v1'||data.rig.frameWidth!==84||data.rig.frameHeight!==84||!Array.isArray(data.pieces)||data.pieces.length<4||data.pieces.length>64||new Set(data.pieces.map(p=>p.id)).size!==data.pieces.length)throw Error('Pacote de revisão incompatível.');
-        const required=['body','hair','outfit','weapon'];
+        if(data.reviewOnly!==true||data.productionEnabled!==false||data.full_character_artwork_approved!==false||data.rig?.id!=='human-v1'||data.rig.frameWidth!==84||data.rig.frameHeight!==84||!Array.isArray(data.pieces)||data.pieces.length<(unarmedPack?3:4)||data.pieces.length>64||new Set(data.pieces.map(p=>p.id)).size!==data.pieces.length)throw Error('Pacote de revisão incompatível.');
+        const required=unarmedPack?['body','hair','outfit']:['body','hair','outfit','weapon'];
         if(required.some(s=>!data.rig.requiredSlots?.includes(s)||data.pieces.filter(p=>p.slot===s&&p.id===data.appearance?.pieces?.[s]).length!==1))throw Error('Conjunto incompleto.');
+        if(unarmedPack){
+          if(data.unarmedOnly!==true||data.rig.requiredSlots.length!==3||data.pieces.some(p=>p.slot==='weapon')||data.categoryWeapons)throw Error('Ensaio desarmado incompatível.');
+          const canonical=root.MarePaperDollCatalog.sharedRig;
+          for(const action of ['idle','walk','attack-unarmed']){
+            const a=data.rig.animations?.[action],expected=canonical.animations[action],directions=data.coverage?.[action];
+            if(!a||a.frames!==expected.frames||a.fps!==expected.fps||a.loop!==expected.loop||!Array.isArray(directions)||!directions.length||new Set(directions).size!==directions.length||directions.some(d=>!expected.directions.includes(d)))throw Error('Cobertura desarmada inválida.');
+            if(action!=='attack-unarmed'&&directions.length!==4)throw Error('Locomoção incompleta.');
+          }
+          runtime.registerRig({...canonical,requiredSlots:required});
+        }
         for(const [category,pieceId]of Object.entries(data.categoryWeapons||{})){
           if(!Object.hasOwn(root.MarePaperDollCatalog.categories,category)||!data.pieces.some(p=>p.id===pieceId&&p.slot==='weapon'))throw Error('Arma de categoria inválida.');
         }
@@ -50,12 +62,12 @@
           runtime.registerPiece(p);
         }
         await Promise.all([...urls].map(url=>getImage(url).decode()));
-        for(const [action,clip]of Object.entries(data.rig.animations))for(const direction of clip.directions)for(let frameIndex=0;frameIndex<clip.frames;frameIndex++){
+        for(const [action,clip]of Object.entries(data.rig.animations))for(const direction of (unarmedPack?data.coverage[action]:clip.directions))for(let frameIndex=0;frameIndex<clip.frames;frameIndex++){
           const category=action.startsWith('attack-')?action.slice(7):'sword',config={...data.appearance,pieces:{...data.appearance.pieces}};
           if(data.categoryWeapons?.[category])config.pieces.weapon=data.categoryWeapons[category];
           if(!runtime.resolve(config,{animationId:action,direction,frameIndex},{allowDraft:true}).valid)throw Error('Há frames incompatíveis ou ausentes.');
         }
-        pack=data;coverage=root.MarePaperDollCoverage?.inspect(pack)||null;state='ready';message='Corpo comum: sete classes e quatro facções, sem arma, em repouso e caminhada. Espada inicial compatível; outros equipamentos e ataques sem arte usam o personagem original.';
+        pack=data;coverage=root.MarePaperDollCoverage?.inspect(pack)||null;state='ready';message=unarmedPack?'Ensaio desarmado: remova arma e equipamentos sem peças. Corpo comum em repouso e caminhada; Lutador usa os socos disponíveis. Direções ausentes mantêm o visual original.':'Corpo comum: sete classes e quatro facções, sem arma, em repouso e caminhada. Espada inicial compatível; outros equipamentos e ataques sem arte usam o personagem original.';
       }catch(e){pack=null;state='failed';message='Prévia indisponível: '+e.message+' Sprite original preservado.';}
       notify();return snapshot();
     })():Promise.resolve(snapshot());
@@ -63,7 +75,7 @@
       if(!pack||state!=='ready'||player?.devSandbox!==true)return false;
       const config=appearance(pack,player),pose=root.MarePaperDollCatalog.sample(runtime,player,action,direction,time,{progress});
       if(!config||!pose){fallbacks++;lastReason='unsupported-character-or-action';return false;}
-      if(config.hidden.includes('weapon')&&action!=='idle'&&action!=='walk'){fallbacks++;lastReason='missing-unarmed-animation';return false;}
+      if(config.hidden.includes('weapon')&&action!=='idle'&&action!=='walk'&&!(unarmedPack&&player.classId==='brawler'&&action==='attack')){fallbacks++;lastReason='missing-unarmed-animation';return false;}
       const ok=runtime.draw(ctx,config,pose,x,y,{scale,hidden:config.hidden,allowDraft:true});
       if(ok){draws++;lastReason=null;}else{fallbacks++;lastReason=config.blocked[0]?.code||'missing-animation';}
       return ok;

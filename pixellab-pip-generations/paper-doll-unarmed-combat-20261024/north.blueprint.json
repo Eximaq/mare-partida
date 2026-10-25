@@ -1,0 +1,14 @@
+[
+  {
+    "_comment_prompt": "Repair north punch direction while preserving source body.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required"
+    },
+    "MCP animate_image": {
+      "first_frame_url": "body-north-reference.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Facing north away from the viewer, throw one short straight punch forward away from the viewer, then lower the arm back to the supplied relaxed starting pose. Keep the back of the head and shoulder blades visible throughout. The punching forearm is in front of the chest and hidden by the torso, with only the fist briefly visible beyond the far shoulder above the torso. Feet stay planted, body size stays fixed. No turning, no arm crossing over the visible back, no weapons, trails or particles."
+    }
+  }
+]

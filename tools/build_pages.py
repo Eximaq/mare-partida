@@ -440,3 +440,17 @@ punch_review = Path('pixellab-pip-generations/paper-doll-category-attacks-202610
 (OUT/punch_review).mkdir(parents=True, exist_ok=True)
 for name in ['review-pack.json', 'body-punch.png', 'outfit-punch.png'] + [f'hair-{d}.png' for d in ['south', 'west', 'east']]:
     shutil.copy2(ROOT/punch_review/name, OUT/punch_review/name)
+
+# Explicit combat-review package: only the manifest and its native render assets.
+unarmed_review = Path('pixellab-pip-generations/paper-doll-unarmed-combat-20261024')
+(OUT/unarmed_review).mkdir(parents=True, exist_ok=True)
+manifest = json.loads((ROOT/unarmed_review/'review-pack.json').read_text(encoding='utf-8'))
+files = {'review-pack.json'}
+for piece in manifest['pieces']:
+    for clip in piece['animations'].values():
+        files.add(clip['url'])
+        files.update(source['url'] for source in clip.get('sources', {}).values())
+for name in sorted(files):
+    if Path(name).name != name or Path(name).suffix not in {'.png', '.json'}:
+        raise ValueError('Unsafe unarmed-review asset path')
+    shutil.copy2(ROOT/unarmed_review/name, OUT/unarmed_review/name)
