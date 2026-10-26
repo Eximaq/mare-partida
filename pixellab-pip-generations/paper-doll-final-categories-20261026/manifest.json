@@ -1,0 +1,350 @@
+{
+  "jobs": [
+    {
+      "job_id": "8f2137b1-4328-4d50-b996-a691dc096973",
+      "status": "completed",
+      "tool": "animate_image",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:00:04.190066+00:00",
+      "outputs": [
+        "body-south-raw/00.png",
+        "body-south-raw/01.png",
+        "body-south-raw/02.png",
+        "body-south-raw/03.png",
+        "body-south-raw/04.png",
+        "body-south-raw/05.png",
+        "body-south-raw/06.png",
+        "body-south-raw/07.png",
+        "body-south-raw/08.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "d6172c99-cf9b-45ec-b4f5-0338437628f4",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:01:01.915305+00:00",
+      "outputs": [
+        "tech-south-raw/00.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "e00de0a0-c55b-48f1-9efd-d32f454fe5d3",
+      "status": "completed",
+      "tool": "animate_image",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:03:09.524317+00:00",
+      "reported_usage": {
+        "generations": 1
+      },
+      "outputs": [
+        "body-north-raw/00.png",
+        "body-north-raw/01.png",
+        "body-north-raw/02.png",
+        "body-north-raw/03.png",
+        "body-north-raw/04.png",
+        "body-north-raw/05.png",
+        "body-north-raw/06.png",
+        "body-north-raw/07.png",
+        "body-north-raw/08.png"
+      ]
+    },
+    {
+      "job_id": "03d8bfdc-a7e1-49b9-9ddc-11956a6c68b0",
+      "status": "completed",
+      "tool": "animate_image",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:03:12.226774+00:00",
+      "reported_usage": {
+        "generations": 1
+      },
+      "outputs": [
+        "body-west-raw/00.png",
+        "body-west-raw/01.png",
+        "body-west-raw/02.png",
+        "body-west-raw/03.png",
+        "body-west-raw/04.png",
+        "body-west-raw/05.png",
+        "body-west-raw/06.png",
+        "body-west-raw/07.png",
+        "body-west-raw/08.png"
+      ]
+    },
+    {
+      "job_id": "82cb55bc-6911-4f78-9513-8b136c0d63ae",
+      "status": "completed",
+      "tool": "animate_image",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:03:14.883617+00:00",
+      "outputs": [
+        "body-east-raw/00.png",
+        "body-east-raw/01.png",
+        "body-east-raw/02.png",
+        "body-east-raw/03.png",
+        "body-east-raw/04.png",
+        "body-east-raw/05.png",
+        "body-east-raw/06.png",
+        "body-east-raw/07.png",
+        "body-east-raw/08.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "9d30ca04-0003-4026-a9ce-34765d2470bd",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:03:16.921653+00:00",
+      "outputs": [
+        "tech-north-raw/00.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "e807c7f0-c56a-4212-a2ea-0eb9c509371d",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:03:19.131570+00:00",
+      "outputs": [
+        "tech-west-raw/00.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "a14bc954-e32f-46f3-be57-340c92932528",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:03:21.878290+00:00",
+      "outputs": [
+        "tech-east-raw/00.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "8c7b0617-e5c5-492a-b6bb-eb40319f591b",
+      "status": "completed",
+      "tool": "transfer_outfit",
+      "estimated_usage": {
+        "generations": 25.0
+      },
+      "created_at": "2026-10-26T10:03:51.472981+00:00",
+      "reported_usage": {
+        "generations": 10
+      },
+      "outputs": [
+        "outfit-south-raw/00.png",
+        "outfit-south-raw/01.png",
+        "outfit-south-raw/02.png",
+        "outfit-south-raw/03.png",
+        "outfit-south-raw/04.png",
+        "outfit-south-raw/05.png",
+        "outfit-south-raw/06.png",
+        "outfit-south-raw/07.png"
+      ]
+    },
+    {
+      "job_id": "502258de-a051-43fe-956c-23518cd3cf76",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:03:54.347898+00:00",
+      "outputs": [
+        "compass-south-raw/00.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "49275a2b-32cb-4626-9059-039b9d716704",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:03:56.286648+00:00",
+      "outputs": [
+        "staff-south-raw/00.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "f3d26098-3b50-4b89-8eee-1892fc9cc526",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:06:43.143010+00:00",
+      "outputs": [
+        "compass-north-raw/00.png"
+      ],
+      "outcome": "recovered_from_gallery",
+      "note": "Expired raw job getter; original gallery images recovered without regeneration. Final charge not exposed; retain conservative reservation."
+    },
+    {
+      "job_id": "d5e22241-2b84-431c-980f-d12a53ec6c51",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:06:46.208165+00:00",
+      "outputs": [
+        "compass-west-raw/00.png"
+      ],
+      "outcome": "recovered_from_gallery",
+      "note": "Expired raw job getter; original gallery images recovered without regeneration. Final charge not exposed; retain conservative reservation."
+    },
+    {
+      "job_id": "c1c148d5-f44c-4977-82ec-7adbc2e1d766",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:06:48.118626+00:00",
+      "outputs": [
+        "staff-north-raw/00.png"
+      ],
+      "outcome": "recovered_from_gallery",
+      "note": "Expired raw job getter; original gallery images recovered without regeneration. Final charge not exposed; retain conservative reservation."
+    },
+    {
+      "job_id": "43281ea4-ae10-49a5-8e62-f2babfd3b5a8",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:06:50.122067+00:00",
+      "outputs": [
+        "staff-west-raw/00.png"
+      ],
+      "outcome": "recovered_from_gallery",
+      "note": "Expired raw job getter; original gallery images recovered without regeneration. Final charge not exposed; retain conservative reservation."
+    },
+    {
+      "job_id": "3e0a00d1-5b33-4fd8-853f-7d627d64e4b4",
+      "status": "completed",
+      "tool": "transfer_outfit",
+      "estimated_usage": {
+        "generations": 25.0
+      },
+      "created_at": "2026-10-26T10:06:53.011731+00:00",
+      "outputs": [
+        "outfit-batch-0-raw/00.png",
+        "outfit-batch-0-raw/01.png",
+        "outfit-batch-0-raw/02.png",
+        "outfit-batch-0-raw/03.png",
+        "outfit-batch-0-raw/04.png",
+        "outfit-batch-0-raw/05.png",
+        "outfit-batch-0-raw/06.png",
+        "outfit-batch-0-raw/07.png",
+        "outfit-batch-0-raw/08.png",
+        "outfit-batch-0-raw/09.png",
+        "outfit-batch-0-raw/10.png",
+        "outfit-batch-0-raw/11.png"
+      ],
+      "outcome": "recovered_from_gallery",
+      "note": "Expired raw job getter; original gallery images recovered without regeneration. Final charge not exposed; retain conservative reservation."
+    },
+    {
+      "job_id": "45309734-88b4-4aec-84a3-f848e790a91c",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:07:11.811690+00:00",
+      "outputs": [
+        "compass-east-raw/00.png"
+      ],
+      "outcome": "recovered_from_gallery",
+      "note": "Expired raw job getter; original gallery images recovered without regeneration. Final charge not exposed; retain conservative reservation."
+    },
+    {
+      "job_id": "0a316a30-e0b3-4c6f-9663-159bbe2ca8b1",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T10:07:13.668824+00:00",
+      "outputs": [
+        "staff-east-raw/00.png"
+      ],
+      "outcome": "recovered_from_gallery",
+      "note": "Expired raw job getter; original gallery images recovered without regeneration. Final charge not exposed; retain conservative reservation."
+    },
+    {
+      "job_id": "9ec1bb5c-5476-4a81-a0bd-22578a7508db",
+      "status": "completed",
+      "tool": "transfer_outfit",
+      "estimated_usage": {
+        "generations": 25.0
+      },
+      "created_at": "2026-10-26T10:07:15.591761+00:00",
+      "outputs": [
+        "outfit-batch-1-raw/00.png",
+        "outfit-batch-1-raw/01.png",
+        "outfit-batch-1-raw/02.png",
+        "outfit-batch-1-raw/03.png",
+        "outfit-batch-1-raw/04.png",
+        "outfit-batch-1-raw/05.png",
+        "outfit-batch-1-raw/06.png",
+        "outfit-batch-1-raw/07.png",
+        "outfit-batch-1-raw/08.png",
+        "outfit-batch-1-raw/09.png",
+        "outfit-batch-1-raw/10.png",
+        "outfit-batch-1-raw/11.png"
+      ],
+      "outcome": "recovered_from_gallery",
+      "note": "Expired raw job getter; original gallery images recovered without regeneration. Final charge not exposed; retain conservative reservation."
+    }
+  ],
+  "plan": {
+    "scope": "Finish tech (Cyborg) and focus (Strategist/Healer) shared modular attacks; four directions, reusable body, equipment layers, browser validation and Pages",
+    "generation_cap": 130,
+    "retry_limit": 8,
+    "retries_used": 0,
+    "remaining_work": [],
+    "approval_context": "User delegated PixelLab choices under 300 total generations including corrections; 146 committed before this run, 154 remaining. Latest request: Termine oque falta. Reserve 130, keep 24 uncommitted."
+  }
+}

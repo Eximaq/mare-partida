@@ -469,3 +469,17 @@ for category in ('gunner', 'rogue'):
         if Path(name).name != name or Path(name).suffix not in {'.png', '.json'}:
             raise ValueError('Unsafe weapon-review asset path')
         shutil.copy2(ROOT/review/name, OUT/review/name)
+
+# Combined seven-class opt-in review. Original paid source files stay out of Pages.
+review = Path('pixellab-pip-generations/paper-doll-complete-20261026')
+(OUT/review).mkdir(parents=True, exist_ok=True)
+manifest = json.loads((ROOT/review/'review-pack.json').read_text(encoding='utf-8'))
+files = {'review-pack.json'}
+for piece in manifest['pieces']:
+    for clip in piece['animations'].values():
+        files.add(clip['url'])
+        files.update(source['url'] for source in clip.get('sources', {}).values())
+for name in sorted(files):
+    if Path(name).name != name or Path(name).suffix not in {'.png', '.json'}:
+        raise ValueError('Unsafe combined-review asset path')
+    shutil.copy2(ROOT/review/name, OUT/review/name)

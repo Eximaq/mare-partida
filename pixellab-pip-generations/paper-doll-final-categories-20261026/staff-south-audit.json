@@ -1,0 +1,18 @@
+{
+  "job_id": "49275a2b-32cb-4626-9059-039b9d716704",
+  "frames": [
+    {
+      "path": "staff-south-raw/00.png",
+      "sha256": "28a2fd711656b896ea547bfa9ab5bf0c2dccd894d5341cf5ec3766eeb6206254",
+      "bounds": [
+        16,
+        11,
+        42,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}

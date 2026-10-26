@@ -1,0 +1,106 @@
+{
+  "job_id": "8f2137b1-4328-4d50-b996-a691dc096973",
+  "frames": [
+    {
+      "path": "body-south-raw/00.png",
+      "sha256": "6d000ef9c769332f95b0c87c239f24753435cb067e3d419dfd027aecfe30ba81",
+      "bounds": [
+        20,
+        9,
+        44,
+        52
+      ],
+      "role": "input-echo"
+    },
+    {
+      "path": "body-south-raw/01.png",
+      "sha256": "b612e084b9af91ab7c9670fb6e7e9858b81f5762424cd508dfee144b8516b469",
+      "bounds": [
+        21,
+        9,
+        43,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-south-raw/02.png",
+      "sha256": "3fd7fd39b7c71530e443d90051db1dbdfda67122f09010a86fe4b29de1ee4555",
+      "bounds": [
+        22,
+        10,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-south-raw/03.png",
+      "sha256": "7debcfbe896ecf34204d7ed2baeb292a0c61b140e5ce8085154099201e456082",
+      "bounds": [
+        22,
+        11,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-south-raw/04.png",
+      "sha256": "6fa26a307f7f7fa1664c903a9579cbe483c87cc70a9a511978295dbd89efbe09",
+      "bounds": [
+        22,
+        11,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-south-raw/05.png",
+      "sha256": "69851f56a050c99161ca5d09082d8a8dd700aa1debfdbfeb975a37a1a06b33b8",
+      "bounds": [
+        22,
+        11,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-south-raw/06.png",
+      "sha256": "990cb96bf9321769dc6b5c0ee826ba60432431686527c6f1e9a10962f714c5f2",
+      "bounds": [
+        22,
+        10,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-south-raw/07.png",
+      "sha256": "30ebba1f02debb23697f5e27562ef6b690a07e55f61081d2cb456e9a13ef040a",
+      "bounds": [
+        22,
+        10,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-south-raw/08.png",
+      "sha256": "27257e1c029f3759d9df0c4e311bb03349f286115433896725bc3da8a046fc48",
+      "bounds": [
+        20,
+        9,
+        44,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}

@@ -1,0 +1,106 @@
+{
+  "job_id": "e00de0a0-c55b-48f1-9efd-d32f454fe5d3",
+  "frames": [
+    {
+      "path": "body-north-raw/00.png",
+      "sha256": "28f39ae16721fdbd36793b0356857dffe68cb58a46bec14fea1e31c30d7f1572",
+      "bounds": [
+        20,
+        9,
+        44,
+        52
+      ],
+      "role": "input-echo"
+    },
+    {
+      "path": "body-north-raw/01.png",
+      "sha256": "02a624b5a3d347f484387b5c905eb59af659964de582384a772d8408bd39d5d5",
+      "bounds": [
+        20,
+        9,
+        44,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-north-raw/02.png",
+      "sha256": "4de3d2d8c510d56e9208ce9fe4ebb5643a116a39c76cf2108d7e855a56c8b4bc",
+      "bounds": [
+        19,
+        9,
+        43,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-north-raw/03.png",
+      "sha256": "bd77bbaf9474b9718d84623c3b19c699f72a706b7785a9304b31189329132057",
+      "bounds": [
+        19,
+        8,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-north-raw/04.png",
+      "sha256": "b4195ab9c99cc56680834b15656cf70a1ea26dfe2dcb226f426fb3910ed7353d",
+      "bounds": [
+        20,
+        8,
+        41,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-north-raw/05.png",
+      "sha256": "e9956e04eadc15b7e4b0c05ac4f2061a7ff8fa5d05a523322c425d7fbcccfdb9",
+      "bounds": [
+        19,
+        8,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-north-raw/06.png",
+      "sha256": "e03b04029742ac0048e035f1632d43caa0e1f31e8e16e3c7437be93ab134e143",
+      "bounds": [
+        19,
+        8,
+        43,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-north-raw/07.png",
+      "sha256": "c434deb48c419ba5ed9ed02c4245032e26a3e8842b14fc60e1686eb5a9333d25",
+      "bounds": [
+        19,
+        8,
+        44,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-north-raw/08.png",
+      "sha256": "176b0cc71263ba8dd6b93a8b017481beb86cc9432369f18e110c9a756c81c794",
+      "bounds": [
+        20,
+        9,
+        44,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}

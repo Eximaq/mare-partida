@@ -1,5 +1,7 @@
 # Desenvolvimento compartilhado no GitHub
 
+**Personagem único: sete classes na mesma bancada.** [Guia do pacote unificado](docs/PAPER-DOLL-SETE-CLASSES.md), [bancada com seleção de classe/facção](tools/paper-doll-inspector/index.html?pack=complete) e [combate DEV](?dev=1&paperDollReview=complete). As seis categorias de ataque básico estão cobertas; equipamentos adicionais e habilidades sem arte preservam o legado. Ainda em avaliação artística.
+
 Gatuno modular em avaliação: [guia e limites](docs/PAPER-DOLL-GATUNO.md), [bancada](tools/paper-doll-inspector/index.html?pack=rogue) e [combate DEV](?dev=1&paperDollReview=rogue). Adagas separadas por mão, movimento compartilhado entre facções e save normal preservado.
 
 Atirador modular em avaliação: [guia e limites](docs/PAPER-DOLL-ATIRADOR.md), [bancada](tools/paper-doll-inspector/index.html?pack=gunner-east) e [combate DEV](?dev=1&paperDollReview=gunner). Idle, caminhada e disparo em quatro direções; Mosquete de Convés separado, save normal preservado.
@@ -7,7 +9,7 @@ Atirador modular em avaliação: [guia e limites](docs/PAPER-DOLL-ATIRADOR.md), 
 [Ensaio do Lutador modular no combate](docs/PAPER-DOLL-SOCOS-COMBATE.md): quatro direções, corpo/cabelo/roupa independentes e sincronização com a velocidade de ataque atual. Disponível somente no laboratório DEV.
 
 
-Personagem único em desenvolvimento: [estado consolidado e pendências](docs/PAPER-DOLL-CONCLUSAO.md). Personagem → Personalizar aparência oferece acesso ao editor do laboratório, com opções reais de cabelo/roupa, prévia direcional e save DEV isolado. A cobertura de ataques das outras categorias ainda está incompleta; não representa liberação global do Paper Doll.
+Personagem único em desenvolvimento: [estado consolidado e pendências](docs/PAPER-DOLL-CONCLUSAO.md). Personagem → Personalizar aparência oferece acesso ao editor do laboratório, com opções reais de cabelo/roupa, prévia direcional e save DEV isolado. A cobertura de ataques básicos das seis categorias está disponível no pacote unificado para avaliação; não representa liberação global do Paper Doll.
 
 Continuação de22/10: [candidato de encaixe leste no Workbench](docs/PAPER-DOLL-ENCAIXE-LESTE.md). O ataque pode ser inspecionado em quatro direções; o novo vestuário leste ainda precisa de harmonização artística. Sem geração paga nesta etapa e sem ativação em produção.
 

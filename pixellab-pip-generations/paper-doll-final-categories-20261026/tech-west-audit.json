@@ -1,0 +1,18 @@
+{
+  "job_id": "e807c7f0-c56a-4212-a2ea-0eb9c509371d",
+  "frames": [
+    {
+      "path": "tech-west-raw/00.png",
+      "sha256": "5404c7fb0f9d3cc3da3d20dd7a17263eff4e29da51b81d3f0482b2a7235426e3",
+      "bounds": [
+        7,
+        11,
+        38,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}

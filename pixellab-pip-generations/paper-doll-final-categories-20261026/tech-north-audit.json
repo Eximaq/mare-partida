@@ -1,0 +1,18 @@
+{
+  "job_id": "9d30ca04-0003-4026-a9ce-34765d2470bd",
+  "frames": [
+    {
+      "path": "tech-north-raw/00.png",
+      "sha256": "3f72f95bc6949687348fb4f17c54d9c0c4aa0a8edac26c33ff5e8490dd62cb10",
+      "bounds": [
+        20,
+        11,
+        49,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}
