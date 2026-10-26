@@ -1,4 +1,4 @@
-"""Exercise the real heroAttack path with an opt-in layered rogue renderer."""
+"""Exercise all seven real heroAttack paths with the shared layered renderer."""
 import json,os,base64,io,subprocess,sys
 from PIL import Image,ImageChops
 from pathlib import Path
@@ -42,7 +42,9 @@ with sync_playwright() as p:
   for d in ['south','north','west','east']:
    inspector.locator('#direction').select_option(d)
    for i in range(count):
-    inspector.locator('#frame').fill(str(i));state=inspector.evaluate('__paperDollInspector.state()')
+    inspector.locator('#frame').fill(str(i))
+    inspector.wait_for_function("!__paperDollInspector.state().missing.some(x=>x.code==='loading-image')")
+    state=inspector.evaluate('__paperDollInspector.state()')
     assert not state['missing'],(action,d,i,state)
  inspector.locator('#direction').select_option('east');inspector.locator('#frame').fill('3');inspector.screenshot(path=str(OUT/'east-preview.png'),full_page=True);inspector.close()
  c=b.new_context(viewport={'width':1366,'height':900});q=c.new_page();q.clock.install();errors=[]
