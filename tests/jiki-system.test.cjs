@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),crypto=require('node:crypto'),J=require('../jiki-system.js'),A=require('../akuma-system.js'),P=require('../akuma-passives.js');
+assert.equal(A.byId(J.rules.id).rank,'B');assert.deepEqual(P.stats[J.rules.id],J.rules.passiveStats);for(const f of require('../assets/akuma/jiki/manifest.json'))assert.equal(crypto.createHash('sha256').update(fs.readFileSync('assets/akuma/jiki/'+f.asset)).digest('hex'),f.sha256);
+assert.equal(J.effects.charge.frames.length,25);assert.equal(J.effects.blast.frames.length,13);assert.equal(J.effects.rocket.frames.length,17);
+for(let n=1;n<=6;n++){const v=J.chargeValues(n*1000);assert.equal(v.multiplier,2+.5*(n-1));assert.equal(v.scale,Math.min(1.5,1+.3*(n-1)));}assert.equal(J.chargeValues(1).multiplier,2);assert.equal(J.chargeValues(9999).multiplier,4.5);assert.equal(J.chargeValues(1999).multiplier,2);
+assert.equal(J.frame('charge',1),J.effects.charge.frames[24]);assert.equal(J.frame('charge',99999),J.effects.charge.frames[24]);for(let i=0;i<36;i++)assert.equal(J.frame('rocket',i*71,'flight'),J.effects.rocket.frames[i%12]);for(let i=0;i<5;i++)assert.equal(J.frame('rocket',i*71,'impact'),J.effects.rocket.frames[12+i]);assert.equal(J.frame('rocket',355,'impact'),null);assert.equal(J.frame('blast',923),null);
+let p=J.projectile('mass',{x:0,y:0},{x:200,y:0}),result;for(let i=0;i<50&&!p.done;i++)result=J.step(p,.02,[],()=>true)||result;assert(result.hit);assert.equal(p.x,200);
+let m={id:'m',x:200,y:0,hp:100,alive:true};p=J.projectile('rocket',{x:0,y:0},m,m.id);J.step(p,.2,[m],()=>true);m.y=80;for(let i=0;i<100&&!p.done;i++)result=J.step(p,.01,[m],()=>true)||result;assert(p.done);assert(result.hit);assert.equal(result.target,m);assert(p.y>0);
+p=J.projectile('rocket',{x:0,y:0},m,m.id);assert.equal(J.step(p,.1,[m],()=>false).hit,false);assert.equal(p.done,true);p=J.projectile('rocket',{x:0,y:0},m,m.id);m.alive=false;assert.equal(J.step(p,.1,[m],()=>true).hit,false);
+console.log('Jiki: 9 hashes, 1–6 second damage/scale, held final charge frame, strict 1–12 flight loop, frames 13–17, homing/collision and range passed');
+
+p=J.projectile('rocket',{x:0,y:0},{x:500,y:0},'far');result=J.step(p,2,[{id:'far',x:500,y:0,alive:true,hp:10}],()=>true);assert.equal(result.hit,false);assert.equal(p.travel,256);p=J.projectile('mass',{x:0,y:0},{x:200,y:0});assert.equal(J.step(p,.1,[],()=>false).blocked,true);

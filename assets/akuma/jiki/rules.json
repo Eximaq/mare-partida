@@ -1,0 +1,37 @@
+{
+  "id": "akuma_jiki_jiki",
+  "name": "Jiki Jiki no Mi",
+  "family": "paramecia",
+  "description": "Fruta do Diabo do tipo Paramecia que concede ao usuário a capacidade de manipular forças magnéticas para atrair, repelir e moldar metais. Permite acumular toneladas de sucata flutuante sobre a cabeça para desferir arremessos devastadores em área e disparar braços metálicos propelidos que se despedaçam ao impactar o inimigo.",
+  "passiveStats": {
+    "max_hp": 180,
+    "physical_attack": 24,
+    "physical_defense": 10,
+    "armor_penetration": 0.06
+  },
+  "chargeDuration": 6000,
+  "range": 256,
+  "radius": 128,
+  "massSpeed": 320,
+  "rocketSpeed": 240,
+  "hitRadius": 12,
+  "flightFrames": 12,
+  "skills": [
+    {
+      "key": "1",
+      "name": "Grande Devorador",
+      "cost": 45,
+      "cooldown": 22,
+      "icon_path": "assets/akuma/jiki/skill-1.png",
+      "description": "Acumula sucata por até 6s. Pressione 1 novamente para arremessar: 200% do ataque físico no primeiro segundo, +50% por segundo adicional, até 450%. Explode em raio de 2 tiles. Alcance de lançamento: 4 tiles."
+    },
+    {
+      "key": "2",
+      "name": "Punho Foguete",
+      "cost": 35,
+      "cooldown": 14,
+      "icon_path": "assets/akuma/jiki/skill-2.png",
+      "description": "Punho metálico perseguidor a até 4 tiles: 250% do ataque físico ao atingir o alvo. Os 12 quadros iniciais se repetem durante o voo; o restante despedaça no impacto."
+    }
+  ]
+}

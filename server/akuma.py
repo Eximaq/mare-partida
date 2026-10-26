@@ -6,6 +6,7 @@ import math
 import sqlite3
 import time
 import uuid
+from jiki import JikiService, RULES as JIKI_RULES, JIKI
 from hoya import HoyaService, RULES as HOYA_RULES, HOYA
 from rank_b import RankBService, RULES as RANK_B_RULES, BETA, HANA, mitigate
 from rank_c_expansion import RankCExpansionService, RULES as EXPANSION_RULES, BISON, BOMU, KOBU
@@ -48,6 +49,8 @@ for rule in RANK_B_RULES.values():
 
 FRUITS[HOYA]={'type':'akuma_no_mi','family':'paramecia','rank':'B','name':HOYA_RULES['name'],'description':HOYA_RULES['description'],'cooldown':90,'skills':HOYA_RULES['skills']}
 
+FRUITS[JIKI]={'type':'akuma_no_mi','family':'paramecia','rank':'B','name':JIKI_RULES['name'],'description':JIKI_RULES['description'],'cooldown':22,'skills':JIKI_RULES['skills']}
+
 for fruit_id, modifiers in DEVIL_FRUIT_STATS.items():
     FRUITS[fruit_id]['passive_stats']=dict(modifiers)
     FRUITS[fruit_id]['passiveStats']=dict(modifiers)
@@ -55,6 +58,7 @@ for fruit_id, modifiers in DEVIL_FRUIT_STATS.items():
 
 # Public catalog metadata for the HUD. Combat validation remains in cast().
 SKILL_TOOLTIPS = {
+    JIKI:JIKI_RULES['skills'][0],
     HOYA:HOYA_RULES['skills'][0],
     **{r['id']:r['skills'][0] for r in RANK_B_RULES.values()},
     **{rule['id']:rule['skills'][0] for rule in EXPANSION_RULES.values()},
@@ -85,6 +89,7 @@ class AkumaStore:
         self.rank_c=RankCService(clock)
         self.rank_b=RankBService(clock)
         self.hoya=HoyaService(clock)
+        self.jiki=JikiService(clock)
         self.rank_c_expansion=RankCExpansionService(clock)
         # World enemies and projectiles are transient, scoped by player/instance.
         self.doru_projectiles = {}
@@ -128,7 +133,7 @@ class AkumaStore:
         unlocked = [r[0] for r in self.db.execute("SELECT fruit_id FROM unlocks WHERE player_id=? ORDER BY fruit_id", (player_id,))]
         cooldowns = {r[0]: r[1] for r in self.db.execute("SELECT fruit_id,ready_at FROM fruit_cooldowns WHERE player_id=?", (player_id,))}
         cooldowns.update({r[0]+":"+r[1]: r[2] for r in self.db.execute("SELECT fruit_id,skill_key,ready_at FROM skill_cooldowns WHERE player_id=?", (player_id,))})
-        return {"wild_fury_until": row["wild_fury_until"], "metallic_until": row["metallic_until"], "rank_c":self.rank_c.state(player_id), "rank_b":self.rank_b.state(player_id), "hoya":self.hoya.state(player_id), "unlocked": unlocked, "passive_stats": passive_stats(row["equipped"]), "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock() or self.hoya.active(player_id),"is_untargetable":self.hoya.active(player_id), "invulnerable_until": row["invulnerable_until"]}
+        return {"wild_fury_until": row["wild_fury_until"], "metallic_until": row["metallic_until"], "rank_c":self.rank_c.state(player_id), "rank_b":self.rank_b.state(player_id), "hoya":self.hoya.state(player_id),"jiki":self.jiki.state(player_id), "unlocked": unlocked, "passive_stats": passive_stats(row["equipped"]), "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock() or self.hoya.active(player_id),"is_untargetable":self.hoya.active(player_id), "invulnerable_until": row["invulnerable_until"]}
 
     def register(self, player_id: str, fruit_id: str):
         self.player(player_id)
@@ -149,6 +154,7 @@ class AkumaStore:
             self.rank_c.clear(player_id)
             self.rank_b.clear(player_id)
             self.hoya.clear(player_id)
+            self.jiki.clear(player_id)
             self.rank_c_expansion.clear(player_id)
             with self.db:
                 self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
@@ -194,6 +200,7 @@ class AkumaStore:
         fruit_id = state["equipped"]
         if not fruit_id:
             raise ValueError("Nenhuma fruta equipada")
+        if fruit_id==JIKI:return self.jiki.cast(self,player_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id==HOYA:return self.hoya.cast(self,player_id,instance,x,y,str(skill_key),energy,rank_c_context or {})
         if fruit_id in (BETA,HANA):return self.rank_b.cast(self,player_id,fruit_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id in (BISON,BOMU,KOBU):return self.rank_c_expansion.cast(self,player_id,fruit_id,instance,x,y,enemies,direction,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
@@ -323,6 +330,7 @@ class AkumaStore:
         self.rank_c.clear(player_id)
         self.rank_b.clear(player_id)
         self.hoya.clear(player_id)
+        self.jiki.clear(player_id)
         self.rank_c_expansion.clear(player_id)
         with self.db:
             self.db.execute("UPDATE players SET metallic_until=0 WHERE id=?", (player_id,))
