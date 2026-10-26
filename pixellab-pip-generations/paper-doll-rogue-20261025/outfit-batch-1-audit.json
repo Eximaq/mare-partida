@@ -1,0 +1,139 @@
+{
+  "job_id": "ffc15222-7407-4108-9614-fcf7e8a0fcab",
+  "frames": [
+    {
+      "path": "outfit-batch-1-raw/00.png",
+      "sha256": "aeb1ac6ecc59baa8eb254031ec328b75b795e1805cc11a7ce9cea03b5f0b7687",
+      "bounds": [
+        19,
+        10,
+        37,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-batch-1-raw/01.png",
+      "sha256": "7cabdf7fcdce512f8eaaed12ad81a424e08b81f3ea8f278f91b9815ccae545b9",
+      "bounds": [
+        23,
+        10,
+        38,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-batch-1-raw/02.png",
+      "sha256": "cbb3e860f648adcc963b41eefacbd0a3cf63206dbc63c7c0648cc25ac153cbc3",
+      "bounds": [
+        24,
+        9,
+        38,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-batch-1-raw/03.png",
+      "sha256": "6818a7a435e110c3e194688a7a81e806451abd1837a7e64c44edf99ef7d65c41",
+      "bounds": [
+        25,
+        9,
+        39,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-batch-1-raw/04.png",
+      "sha256": "82be9cac92620766ca380d783d0c1de3f1a253543700a1fe336439b8eae327a1",
+      "bounds": [
+        25,
+        7,
+        38,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-batch-1-raw/05.png",
+      "sha256": "c264bab8c877e0044e1c0dae1428272844bd2f7653560b3e65076808e93c7f59",
+      "bounds": [
+        26,
+        7,
+        41,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-batch-1-raw/06.png",
+      "sha256": "cf4bc771af8415560fab6fb93bd8dc22cdc573be271d0a3625d9a0c2f21cf981",
+      "bounds": [
+        25,
+        7,
+        45,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-batch-1-raw/07.png",
+      "sha256": "e84ed1bc5ff0f984fd9e1a1f6bc5f8c8563bd1e7baa076d46a9d040689d33699",
+      "bounds": [
+        22,
+        8,
+        46,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-batch-1-raw/08.png",
+      "sha256": "57321e395c98237c09083058d64ba6bc2aaee28aedce034d413e7eba8e9dbf9f",
+      "bounds": [
+        25,
+        7,
+        45,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-batch-1-raw/09.png",
+      "sha256": "e0b165d7ff9108f5743e17c4c60ebf594e3b4088a0e503273ebbfdf6a0495a5c",
+      "bounds": [
+        26,
+        7,
+        43,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-batch-1-raw/10.png",
+      "sha256": "e6681e6ce362c6c6087c0269c0a3e72fcfa963a6f1c963d8f7b9a6228c1d667b",
+      "bounds": [
+        25,
+        7,
+        38,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-batch-1-raw/11.png",
+      "sha256": "5d64b47ac2e25640e7c6a956c6c9c13e8441b7d209b4bb0398bdea931e45b735",
+      "bounds": [
+        24,
+        7,
+        38,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}

@@ -1,5 +1,7 @@
 # Desenvolvimento compartilhado no GitHub
 
+Gatuno modular em avaliação: [guia e limites](docs/PAPER-DOLL-GATUNO.md), [bancada](tools/paper-doll-inspector/index.html?pack=rogue) e [combate DEV](?dev=1&paperDollReview=rogue). Adagas separadas por mão, movimento compartilhado entre facções e save normal preservado.
+
 Atirador modular em avaliação: [guia e limites](docs/PAPER-DOLL-ATIRADOR.md), [bancada](tools/paper-doll-inspector/index.html?pack=gunner-east) e [combate DEV](?dev=1&paperDollReview=gunner). Idle, caminhada e disparo em quatro direções; Mosquete de Convés separado, save normal preservado.
 
 [Ensaio do Lutador modular no combate](docs/PAPER-DOLL-SOCOS-COMBATE.md): quatro direções, corpo/cabelo/roupa independentes e sincronização com a velocidade de ataque atual. Disponível somente no laboratório DEV.

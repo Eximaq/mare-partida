@@ -1,0 +1,95 @@
+{
+  "job_id": "597aed56-b4ae-4ebe-83a0-4ad8fe5d1adc",
+  "frames": [
+    {
+      "path": "outfit-south-raw/00.png",
+      "sha256": "a7c17947a27f176a9ba17b7acf9dbd33ae4d45ab2c13727fb4a9b40fba2119a0",
+      "bounds": [
+        20,
+        9,
+        44,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-south-raw/01.png",
+      "sha256": "060173cea85d4bc9d6d5e232e03b18d92f3e538dab0355564ed3b9e4d13138c4",
+      "bounds": [
+        20,
+        9,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-south-raw/02.png",
+      "sha256": "1b5b04bc1b3779d89d2c101ca19a697c3b93c87de1cfe104a9ed6da32be66e3a",
+      "bounds": [
+        19,
+        10,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-south-raw/03.png",
+      "sha256": "6ac74ca0df15f791c5b86762e282fff3abcad2c2b677801207d752160013c660",
+      "bounds": [
+        19,
+        10,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-south-raw/04.png",
+      "sha256": "ce096b36a2b1df6ec1cf399d6901f5b714c650ca5669b057cc66e1461d3bb028",
+      "bounds": [
+        19,
+        10,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-south-raw/05.png",
+      "sha256": "0afd56148adab8b689a31208fd56ab65a26c743c09aeb53c0c5ed4f244663121",
+      "bounds": [
+        20,
+        10,
+        42,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-south-raw/06.png",
+      "sha256": "2569310df810e812c1f07006d8a045ec12e8e79df1248a2e6eade2c38eb26310",
+      "bounds": [
+        20,
+        10,
+        43,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "outfit-south-raw/07.png",
+      "sha256": "6f4a423f99b10f10012e2217e02acd94e825c88af09cf2980bcc789ccce86b3b",
+      "bounds": [
+        20,
+        9,
+        44,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}

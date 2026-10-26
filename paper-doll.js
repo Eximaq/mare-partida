@@ -82,6 +82,12 @@
         if(!clip.directions.includes(direction)){problem('missing-direction');continue;}
         const rigid=clip.kind==='rigid-attachment';
         if(clip.kind!==undefined&&clip.kind!=='sheet'&&!rigid){problem('unsupported-layer-kind');continue;}
+        // Paired weapons share the same pixels but follow independent hands.
+        // null explicitly means the far hand is occluded in this pose.
+        if(clip.secondarySockets!==undefined){
+          const valid=s=>s===null||(s&&integer(s.x)&&integer(s.y)&&s.x>=0&&s.x<=r.frameWidth&&s.y>=0&&s.y<=r.frameHeight&&(s.quarterTurns===undefined||(integer(s.quarterTurns)&&s.quarterTurns>=0&&s.quarterTurns<=3)));
+          if(!rigid||slot!=='weapon'||!clip.secondarySockets||Array.isArray(clip.secondarySockets)||Object.keys(clip.secondarySockets).some(d=>!clip.directions.includes(d))||!clip.directions.every(d=>Array.isArray(clip.secondarySockets[d])&&clip.secondarySockets[d].length===a.frames&&clip.secondarySockets[d].every(valid))){problem('invalid-secondary-socket');continue;}
+        }
         // Genuine full weapon occlusion is explicit; empty anatomy never passes as a pose.
         if(clip.occludedFrames!==undefined){
           const occluded=clip.occludedFrames;
@@ -119,6 +125,12 @@
         layers.push({slot,pieceId:id,revision:p.revision||1,image,url,animationId:pose.animationId,direction,frameIndex,
           kind:rigid?'rigid-attachment':'sheet',socket:rigid?{...socket}:null,quarterTurns,
           pivotX,pivotY,offsetX,offsetY,zIndex,sx:rigid?0:frameIndex*r.frameWidth,sy:rigid?0:row*r.frameHeight,width:sourceWidth,height:sourceHeight});
+        const second=clip.secondarySockets?.[direction]?.[frameIndex];
+        if(second){
+          const q=second.quarterTurns??0,dx=offsetX-(socket.x-anchors[quarterTurns][0])+second.x-anchors[q][0],dy=offsetY-(socket.y-anchors[quarterTurns][1])+second.y-anchors[q][1];
+          if(Math.abs(dx)>512||Math.abs(dy)>512){problem('invalid-transform');continue;}
+          layers.push({...layers[layers.length-1],socket:{...second},quarterTurns:q,offsetX:dx,offsetY:dy});
+        }
       }
       layers.sort((x,y)=>x.zIndex-y.zIndex||slots.indexOf(x.slot)-slots.indexOf(y.slot));
       return {valid:missing.length===0,rig:r,pose:{animationId:pose.animationId,direction,frameIndex},layers,missing};

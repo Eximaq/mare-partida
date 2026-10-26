@@ -1,0 +1,227 @@
+{
+  "jobs": [
+    {
+      "job_id": "9c767973-a9de-4939-9f9b-8132763af9f1",
+      "status": "ok",
+      "tool": "animate_image",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T02:57:35.293115+00:00"
+    },
+    {
+      "job_id": "9f7c1903-bedb-4285-b79d-35b758d14f6f",
+      "status": "completed",
+      "tool": "animate_image",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T03:01:04.564040+00:00",
+      "outputs": [
+        "body-north-raw/00.png",
+        "body-north-raw/01.png",
+        "body-north-raw/02.png",
+        "body-north-raw/03.png",
+        "body-north-raw/04.png",
+        "body-north-raw/05.png",
+        "body-north-raw/06.png",
+        "body-north-raw/07.png",
+        "body-north-raw/08.png"
+      ]
+    },
+    {
+      "job_id": "1916d8ca-94e5-4b77-b974-9b4b01704005",
+      "status": "completed",
+      "tool": "animate_image",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T03:01:07.795785+00:00",
+      "outputs": [
+        "body-west-raw/00.png",
+        "body-west-raw/01.png",
+        "body-west-raw/02.png",
+        "body-west-raw/03.png",
+        "body-west-raw/04.png",
+        "body-west-raw/05.png",
+        "body-west-raw/06.png",
+        "body-west-raw/07.png",
+        "body-west-raw/08.png"
+      ]
+    },
+    {
+      "job_id": "a6cf9d9a-33e5-4c76-85c5-4b66290610f5",
+      "status": "completed",
+      "tool": "animate_image",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T03:01:11.048979+00:00",
+      "outputs": [
+        "body-east-raw/00.png",
+        "body-east-raw/01.png",
+        "body-east-raw/02.png",
+        "body-east-raw/03.png",
+        "body-east-raw/04.png",
+        "body-east-raw/05.png",
+        "body-east-raw/06.png",
+        "body-east-raw/07.png",
+        "body-east-raw/08.png"
+      ]
+    },
+    {
+      "job_id": "597aed56-b4ae-4ebe-83a0-4ad8fe5d1adc",
+      "status": "completed",
+      "tool": "transfer_outfit",
+      "estimated_usage": {
+        "generations": 25.0
+      },
+      "created_at": "2026-10-26T03:01:43.395791+00:00",
+      "outputs": [
+        "outfit-south-raw/00.png",
+        "outfit-south-raw/01.png",
+        "outfit-south-raw/02.png",
+        "outfit-south-raw/03.png",
+        "outfit-south-raw/04.png",
+        "outfit-south-raw/05.png",
+        "outfit-south-raw/06.png",
+        "outfit-south-raw/07.png"
+      ],
+      "reported_usage": {
+        "generations": 10.0
+      }
+    },
+    {
+      "job_id": "c6d2852d-c4f8-42fc-87d1-43b6c46f76c7",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T03:01:46.168894+00:00",
+      "outputs": [
+        "dagger-south-raw/00.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "c0a13586-57d3-4fb5-91c5-1905be8a6d78",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T03:03:48.917342+00:00",
+      "outputs": [
+        "dagger-north-raw/00.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "d13f1a96-aa70-48f3-a026-9404f51d79b3",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T03:03:51.357914+00:00",
+      "outputs": [
+        "dagger-west-raw/00.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "41cf3b11-8124-4dd2-8433-47d5fcd3a8b2",
+      "status": "completed",
+      "tool": "edit_image_pixen",
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-26T03:03:53.934321+00:00",
+      "outputs": [
+        "dagger-east-raw/00.png"
+      ],
+      "reported_usage": {
+        "generations": 1.0
+      }
+    },
+    {
+      "job_id": "64081ee7-6adb-4605-a321-d0d9c0ea9e60",
+      "status": "completed",
+      "tool": "transfer_outfit",
+      "estimated_usage": {
+        "generations": 25.0
+      },
+      "created_at": "2026-10-26T03:05:25.260019+00:00",
+      "outputs": [
+        "outfit-batch-0-raw/00.png",
+        "outfit-batch-0-raw/01.png",
+        "outfit-batch-0-raw/02.png",
+        "outfit-batch-0-raw/03.png",
+        "outfit-batch-0-raw/04.png",
+        "outfit-batch-0-raw/05.png",
+        "outfit-batch-0-raw/06.png",
+        "outfit-batch-0-raw/07.png",
+        "outfit-batch-0-raw/08.png",
+        "outfit-batch-0-raw/09.png",
+        "outfit-batch-0-raw/10.png",
+        "outfit-batch-0-raw/11.png"
+      ],
+      "reported_usage": {
+        "generations": 10.0
+      }
+    },
+    {
+      "job_id": "ffc15222-7407-4108-9614-fcf7e8a0fcab",
+      "status": "completed",
+      "tool": "transfer_outfit",
+      "estimated_usage": {
+        "generations": 25.0
+      },
+      "created_at": "2026-10-26T03:05:28.829037+00:00",
+      "outputs": [
+        "outfit-batch-1-raw/00.png",
+        "outfit-batch-1-raw/01.png",
+        "outfit-batch-1-raw/02.png",
+        "outfit-batch-1-raw/03.png",
+        "outfit-batch-1-raw/04.png",
+        "outfit-batch-1-raw/05.png",
+        "outfit-batch-1-raw/06.png",
+        "outfit-batch-1-raw/07.png",
+        "outfit-batch-1-raw/08.png",
+        "outfit-batch-1-raw/09.png",
+        "outfit-batch-1-raw/10.png",
+        "outfit-batch-1-raw/11.png"
+      ],
+      "reported_usage": {
+        "generations": 10.0
+      }
+    }
+  ],
+  "plan": {
+    "scope": "Gatuno modular: 4 directions, 8 generated attack frames each, outfit and rigid daggers, DEV integration and Pages",
+    "generation_cap": 90,
+    "retry_limit": 7,
+    "retries_used": 0,
+    "remaining_work": [],
+    "approval_context": "User approved shared character work with 300 generations including corrections and delegated PixelLab decisions; latest request Pronto, faca approves Gatuno. Prior conservative commitment 108; this stage reserves at most 90, leaving 102 globally."
+  }
+}

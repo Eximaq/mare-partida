@@ -1,0 +1,18 @@
+{
+  "job_id": "c6d2852d-c4f8-42fc-87d1-43b6c46f76c7",
+  "frames": [
+    {
+      "path": "dagger-south-raw/00.png",
+      "sha256": "53446fbcb1fb46a9d84705cdb6a4235f03f5192fe997ddbf79eb7c77850ef874",
+      "bounds": [
+        14,
+        9,
+        44,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}

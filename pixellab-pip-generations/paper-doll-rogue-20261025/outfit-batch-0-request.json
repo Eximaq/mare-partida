@@ -1,0 +1,22 @@
+{
+  "frame_urls": [
+    "body-north-raw/01.png",
+    "body-north-raw/02.png",
+    "body-north-raw/03.png",
+    "body-north-raw/04.png",
+    "body-north-raw/05.png",
+    "body-north-raw/06.png",
+    "body-north-raw/07.png",
+    "body-north-raw/08.png",
+    "body-west-raw/01.png",
+    "body-west-raw/02.png",
+    "body-west-raw/03.png",
+    "body-west-raw/04.png"
+  ],
+  "reference_image_url": "outfit-reference.png",
+  "width": 64,
+  "height": 64,
+  "no_background": true,
+  "seed": 2766681,
+  "additional_instructions": "Add only the reference cream short-sleeved linen shirt and navy waistcoat to each torso and upper arms. Follow the EXACT facing and arm pose of each input, including back and profile views. Preserve the bald head, face, hands, forearms, shorts, legs, feet and canvas. Keep frame order, pixel scale, movement and transparency. Clothing only; no hair, weapons or effects."
+}

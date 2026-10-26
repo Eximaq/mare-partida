@@ -1,0 +1,106 @@
+{
+  "job_id": "1916d8ca-94e5-4b77-b974-9b4b01704005",
+  "frames": [
+    {
+      "path": "body-west-raw/00.png",
+      "sha256": "89dbaecca046ac2562e25e354518ce3e83a41491d79fdbc6d3a5d81c5e1c206e",
+      "bounds": [
+        25,
+        9,
+        39,
+        52
+      ],
+      "role": "input-echo"
+    },
+    {
+      "path": "body-west-raw/01.png",
+      "sha256": "99163d0a90a505dc08b239f702767799c7f8c454917638e7c2faae63f3e95fb9",
+      "bounds": [
+        25,
+        9,
+        38,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-west-raw/02.png",
+      "sha256": "bf319c192464298f9d09dfed0d8a822aef730f9636dcb04b9f4ad86780a18228",
+      "bounds": [
+        22,
+        9,
+        38,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-west-raw/03.png",
+      "sha256": "c977aecc85a995757b598835b34225ff2e22cc0d6eef5facb48c75a8874f36f8",
+      "bounds": [
+        19,
+        10,
+        37,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-west-raw/04.png",
+      "sha256": "02ee8dc866d63b311da2c2079fca04a94b0a4f2d73b2d75ad849749d2c1c3893",
+      "bounds": [
+        17,
+        10,
+        39,
+        51
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-west-raw/05.png",
+      "sha256": "55825322260f9c443760ce984b0d1293b865cf04648971741a80e2b33a390e63",
+      "bounds": [
+        19,
+        10,
+        37,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-west-raw/06.png",
+      "sha256": "8e151d09c7d3e9dd1ad5817f4f5344976182938f527cd717bf9506b5e19d0b17",
+      "bounds": [
+        23,
+        10,
+        38,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-west-raw/07.png",
+      "sha256": "fc16d43aeed878e0441eb83c1c9a87e6e23f00b10b722097bac0f0dad080151f",
+      "bounds": [
+        24,
+        9,
+        38,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-west-raw/08.png",
+      "sha256": "839a10a479ebb81da6a56d201081f79dffd1a9167690c85e803c41ec1a9d353b",
+      "bounds": [
+        25,
+        9,
+        39,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}

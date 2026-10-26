@@ -1,0 +1,156 @@
+[
+  {
+    "_comment": "body-south",
+    "MCP animate_image": {
+      "first_frame_url": "body-south-reference.png",
+      "last_frame_url": "body-south-reference.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Stay facing south toward the viewer; keep face and front of chest visible throughout. Lift the right forearm into a low knife guard, make one compact quick forward stabbing motion at waist height, then withdraw the hand and return to the supplied resting pose. The other hand stays close to the chest. Keep feet planted and body size stable. Hands are empty; only arms and shoulders move. No turning, spins, jumps, weapons or effects."
+    }
+  },
+  {
+    "_comment": "body-north",
+    "MCP animate_image": {
+      "first_frame_url": "body-north-reference.png",
+      "last_frame_url": "body-north-reference.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Stay facing north away from the viewer; keep back of head and back visible throughout. Lift the right forearm into a low knife guard, make one compact quick forward stabbing motion at waist height, then withdraw the hand and return to the supplied resting pose. The other hand stays close to the chest. Keep feet planted and body size stable. Hands are empty; only arms and shoulders move. No turning, spins, jumps, weapons or effects."
+    }
+  },
+  {
+    "_comment": "body-west",
+    "MCP animate_image": {
+      "first_frame_url": "body-west-reference.png",
+      "last_frame_url": "body-west-reference.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Stay facing west to the left in profile throughout. Lift the right forearm into a low knife guard, make one compact quick forward stabbing motion at waist height, then withdraw the hand and return to the supplied resting pose. The other hand stays close to the chest. Keep feet planted and body size stable. Hands are empty; only arms and shoulders move. No turning, spins, jumps, weapons or effects."
+    }
+  },
+  {
+    "_comment": "body-east",
+    "MCP animate_image": {
+      "first_frame_url": "body-east-reference.png",
+      "last_frame_url": "body-east-reference.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Stay facing east to the right in profile throughout. Lift the right forearm into a low knife guard, make one compact quick forward stabbing motion at waist height, then withdraw the hand and return to the supplied resting pose. The other hand stays close to the chest. Keep feet planted and body size stable. Hands are empty; only arms and shoulders move. No turning, spins, jumps, weapons or effects."
+    }
+  },
+  {
+    "_comment": "outfit-south",
+    "MCP transfer_outfit": {
+      "frame_urls": [
+        "body-south-raw/01.png",
+        "body-south-raw/02.png",
+        "body-south-raw/03.png",
+        "body-south-raw/04.png",
+        "body-south-raw/05.png",
+        "body-south-raw/06.png",
+        "body-south-raw/07.png",
+        "body-south-raw/08.png"
+      ],
+      "reference_image_url": "outfit-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 2766681,
+      "additional_instructions": "Add only the reference cream short-sleeved linen shirt and navy waistcoat to each front-facing torso and upper arms. Preserve the exact bald head, face, hands, forearms, shorts, legs, feet and pose of every input. Keep the arm movement and input order, native pixel scale and transparency. Clothing only; no hair, weapons or effects."
+    }
+  },
+  {
+    "_comment": "dagger-south",
+    "MCP edit_image_pixen": {
+      "image_url": "body-south-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add one small steel dagger with a navy leather grip and brass guard held in this south-facing human right hand on the viewer left. Blade points down and slightly outward, clear of the leg. Keep the existing hand in contact with the grip. Preserve the face, bald head, torso, shorts, limbs, stance, exact canvas and all other pixels. Same crisp pixel scale and transparent background."
+    }
+  },
+  {
+    "_comment": "dagger-north",
+    "MCP edit_image_pixen": {
+      "image_url": "body-north-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add one small steel dagger with a navy leather grip and brass guard held in this north away from viewer human right hand. The blade points upward, away from viewer, on the right side of the body. Keep the unchanged hand in direct contact with the grip. Preserve the bald head, face, torso, shorts, limbs, pose, canvas and all other pixels. Same crisp pixel scale and transparent background."
+    }
+  },
+  {
+    "_comment": "dagger-west",
+    "MCP edit_image_pixen": {
+      "image_url": "body-west-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add one small steel dagger with a navy leather grip and brass guard held in this west to the left in profile human right hand. The blade points horizontally left, away from the body. Keep the unchanged hand in direct contact with the grip. Preserve the bald head, face, torso, shorts, limbs, pose, canvas and all other pixels. Same crisp pixel scale and transparent background."
+    }
+  },
+  {
+    "_comment": "dagger-east",
+    "MCP edit_image_pixen": {
+      "image_url": "body-east-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add one small steel dagger with a navy leather grip and brass guard held in this east to the right in profile human right hand. The blade points horizontally right, away from the body. Keep the unchanged hand in direct contact with the grip. Preserve the bald head, face, torso, shorts, limbs, pose, canvas and all other pixels. Same crisp pixel scale and transparent background."
+    }
+  },
+  {
+    "_comment": "outfit-batch-0",
+    "MCP transfer_outfit": {
+      "frame_urls": [
+        "body-north-raw/01.png",
+        "body-north-raw/02.png",
+        "body-north-raw/03.png",
+        "body-north-raw/04.png",
+        "body-north-raw/05.png",
+        "body-north-raw/06.png",
+        "body-north-raw/07.png",
+        "body-north-raw/08.png",
+        "body-west-raw/01.png",
+        "body-west-raw/02.png",
+        "body-west-raw/03.png",
+        "body-west-raw/04.png"
+      ],
+      "reference_image_url": "outfit-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 2766681,
+      "additional_instructions": "Add only the reference cream short-sleeved linen shirt and navy waistcoat to each torso and upper arms. Follow the EXACT facing and arm pose of each input, including back and profile views. Preserve the bald head, face, hands, forearms, shorts, legs, feet and canvas. Keep frame order, pixel scale, movement and transparency. Clothing only; no hair, weapons or effects."
+    }
+  },
+  {
+    "_comment": "outfit-batch-1",
+    "MCP transfer_outfit": {
+      "frame_urls": [
+        "body-west-raw/05.png",
+        "body-west-raw/06.png",
+        "body-west-raw/07.png",
+        "body-west-raw/08.png",
+        "body-east-raw/01.png",
+        "body-east-raw/02.png",
+        "body-east-raw/03.png",
+        "body-east-raw/04.png",
+        "body-east-raw/05.png",
+        "body-east-raw/06.png",
+        "body-east-raw/07.png",
+        "body-east-raw/08.png"
+      ],
+      "reference_image_url": "outfit-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 2766681,
+      "additional_instructions": "Add only the reference cream short-sleeved linen shirt and navy waistcoat to each torso and upper arms. Follow the EXACT facing and arm pose of each input, including back and profile views. Preserve the bald head, face, hands, forearms, shorts, legs, feet and canvas. Keep frame order, pixel scale, movement and transparency. Clothing only; no hair, weapons or effects."
+    }
+  },
+  {
+    "TASK": "Inspect the original generated frames. Preserve them and run assemble_review.py for isolated clothing, shared hair and measured paired dagger sockets. Accept only coherent frames; no automatic paid retries. Keep reviewOnly true and productionEnabled false."
+  }
+]
