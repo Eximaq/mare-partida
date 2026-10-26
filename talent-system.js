@@ -41,7 +41,7 @@
     strategist:{name:'Estrategista Elemental',branches:[['Poder Elemental',[['elemental',2],['magicPen',.01],['crit',.003],['elemental',2],['critDamage',.01]]],['Fluxo de Mana',[['energyRegen',.06],['maxEnergy',3],['energyEfficiency',.003],['energyPct',.005],['energyRegen',.08]]],['Concentração',[['defense',1],['evasion',.002],['maxHP',5],['moveSpeed',1],['aoe',.01]]]],keystones:['echo','freeze','siphon']},
     healer:{name:'Suporte',branches:[['Devoção',[['healing',2],['shieldBonus',.01],['energyEfficiency',.003],['healingPct',.01],['maxEnergy',2]]],['Presença',[['maxHP',8],['healthRegen',.08],['mitigation',.003],['hpPct',.005],['energyRegen',.06]]],['Peregrinação',utility]],keystones:['chain','rejuvenation','intervention']}
   };
-  const trees=Object.fromEntries(Object.entries(themes).map(([classId,t])=>[classId,{classId,name:t.name,branches:t.branches.map(([name,stats],b)=>({id:classId+'-branch-'+b,name,nodes:stats.map(([stat,value],tier)=>({id:classId+'-'+b+'-'+tier,branch:b,tier,stat,value,maxRank:MAX_RANK,name:statNames[stat]+' '+['I','II','III','IV','V'][tier]}))})),ultimates:U.trees[classId],keystones:t.keystones.map(id=>({id,...effects[id]}))}]));
+  const trees=Object.fromEntries(Object.entries(themes).map(([classId,t])=>[classId,{classId,name:t.name,branches:t.branches.map(([name,stats],b)=>({id:classId+'-branch-'+b,name,nodes:stats.map(([stat,value],tier)=>({id:classId+'-'+b+'-'+tier,branch:b,tier,stat,value,maxRank:MAX_RANK,requires:tier?[{id:classId+'-'+b+'-'+(tier-1),level:5}]:[],name:statNames[stat]+' '+['I','II','III','IV','V'][tier]}))})),ultimates:U.trees[classId],keystones:t.keystones.map(id=>({id,...effects[id]}))}]));
   const getTree=id=>trees[id]||null;
   const nodes=classId=>getTree(classId)?.branches.flatMap(b=>b.nodes)||[];
   const commonSpent=build=>Object.values(build?.nodes||{}).reduce((sum,n)=>sum+integer(n),0);
@@ -52,7 +52,7 @@
     const all=nodes(classId);
     if(Object.entries(build.nodes).some(([id,n])=>!all.some(node=>node.id===id)||!Number.isInteger(n)||n<0||n>MAX_RANK))return 'Investimento inválido.';
     if(branchCount(classId,build)>2)return 'Você pode investir em apenas duas ramificações.';
-    for(const branch of tree.branches)for(const node of branch.nodes)if(build.nodes[node.id]>0&&node.tier>0&&(build.nodes[branch.nodes[node.tier-1].id]||0)<5)return 'Invista 5 pontos no talento anterior deste ramo.';
+    for(const branch of tree.branches)for(const node of branch.nodes)if(build.nodes[node.id]>0&&node.requires.some(req=>(build.nodes[req.id]||0)<req.level))return 'Invista 5 pontos no talento anterior deste ramo.';
     if(!build.keystone&&all.some(n=>n.tier>=2&&(build.nodes[n.id]||0)>(prior.nodes?.[n.id]||0)))return 'Escolha um exclusivo intermediário para atravessar a ponte aos tiers avançados.';
     if(build.ultimate&&!tree.ultimates.some(u=>u.id===build.ultimate))return 'Talento final inválido.';
     if(build.ultimate&&(!build.keystone||commonSpent(build)<ULTIMATE_GATE||!all.some(n=>n.tier===4&&(build.nodes[n.id]||0)>=5)))return 'O final requer 50 PT comuns, um intermediário e 5 pontos em uma ponta avançada.';
@@ -62,7 +62,7 @@
   }
   function normalize(classId,build,budget){
     const result=empty(),tree=getTree(classId);let remaining=budget;
-    for(const b of tree.branches)for(const n of b.nodes){const rank=Math.min(MAX_RANK,integer(build?.nodes?.[n.id]),remaining);if(rank&&branchCount(classId,result)>=2&&!b.nodes.some(node=>result.nodes[node.id]>0))break;if(n.tier&&(result.nodes[b.nodes[n.tier-1].id]||0)<5)break;if(rank){result.nodes[n.id]=rank;remaining-=rank;}}
+    for(const b of tree.branches)for(const n of b.nodes){const rank=Math.min(MAX_RANK,integer(build?.nodes?.[n.id]),remaining);if(rank&&branchCount(classId,result)>=2&&!b.nodes.some(node=>result.nodes[node.id]>0))break;if(n.requires.some(req=>(result.nodes[req.id]||0)<req.level))break;if(rank){result.nodes[n.id]=rank;remaining-=rank;}}
     if(remaining&&tree.keystones.some(k=>k.id===build?.keystone)&&spent(result)>=KEYSTONE_GATE)result.keystone=build.keystone;
     if(remaining>=ULTIMATE_COST+Number(!!result.keystone)&&tree.ultimates.some(u=>u.id===build?.ultimate)&&!validate(classId,{...result,ultimate:build.ultimate},budget,result))result.ultimate=build.ultimate;
     return result;
@@ -75,14 +75,16 @@
   }
   const buildFor=(g,classId=g.classId)=>g.talentBuilds?.[classId]||empty();
   const available=g=>Math.max(0,totalEarned(g)-spent(buildFor(g)));
-  function invest(g,build,id){
+  function propose(g,build,id,budget){
     const next=clone(build),tree=getTree(g.classId),node=nodes(g.classId).find(n=>n.id===id);
-    if(node)next.nodes[id]=(next.nodes[id]||0)+1;
+    if(node){if((next.nodes[id]||0)>=node.maxRank)return {ok:false,message:'Talento no nível máximo.'};next.nodes[id]=(next.nodes[id]||0)+1;}
     else if(tree.keystones.some(k=>k.id===id)){if(next.keystone&&next.keystone!==id)return {ok:false,message:'Escolha apenas um talento exclusivo. Redefina a árvore para trocar.'};if(next.keystone===id)return {ok:false,message:'Talento exclusivo já escolhido.'};next.keystone=id;}
     else if(tree.ultimates.some(u=>u.id===id)){if(next.ultimate)return {ok:false,message:'Escolha apenas um talento final. Redefina a árvore para trocar.'};next.ultimate=id;}
     else return {ok:false,message:'Talento desconhecido.'};
-    const message=validate(g.classId,next,totalEarned(g),buildFor(g));return message?{ok:false,message}:{ok:true,build:next};
+    const message=validate(g.classId,next,budget,buildFor(g));return message?{ok:false,message}:{ok:true,build:next};
   }
+  const invest=(g,build,id)=>propose(g,build,id,totalEarned(g));
+  const eligibility=(g,build,id)=>propose(g,build,id,Infinity);
   function commit(g,{classId,expectedSeq,build}){
     if(classId!==g.classId||expectedSeq!==integer(g.talentSeq))return {ok:false,message:'A árvore mudou. Reabra a prévia antes de confirmar.'};
     const message=validate(classId,build,totalEarned(g),buildFor(g));if(message)return {ok:false,message};
@@ -107,6 +109,6 @@
     d.power=Math.round(d.attack*8+d.defense*5+d.maxHP*.22+d.maxEnergy*.1+d.crit*100+d.evasion*100+(g.classId==='healer'?d.healing*2:0));return d;
   }
   const describeNode=n=>'+'+(percent.has(n.stat)?Number((n.value*100).toFixed(2))+'%':n.value)+' '+statNames[n.stat]+' por ponto';
-  const api={VERSION,MAX_RANK,KEYSTONE_GATE,ULTIMATE_COST,ULTIMATE_GATE,totalEarned,commonSpent,trees,effects,getTree,nodes,empty,earned,spent,branchCount,validate,migrate,buildFor,available,invest,commit,reset,bonuses,keystone,applyStats,describeNode};
+  const api={VERSION,MAX_RANK,KEYSTONE_GATE,ULTIMATE_COST,ULTIMATE_GATE,totalEarned,commonSpent,trees,effects,getTree,nodes,empty,earned,spent,branchCount,validate,migrate,buildFor,available,invest,eligibility,commit,reset,bonuses,keystone,applyStats,describeNode};
   root.MareTalents=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

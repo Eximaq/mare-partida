@@ -60,3 +60,17 @@
 /* Supplied Gatuno art fits inside the decorative rarity frame. */
 #panelOverlay.inventory-mode .op-item-icon .item-icon.rogue-weapon-art,#panelOverlay.inventory-mode .op-item-icon .lamina-trevas-slot-animation{width:40px;height:40px;max-width:40px;max-height:40px;object-fit:contain;image-rendering:pixelated}
 #panelOverlay.inventory-mode .op-slot-icon .item-icon.rogue-weapon-art,#panelOverlay.inventory-mode .op-slot-icon .lamina-trevas-slot-animation{width:36px;height:36px;max-width:36px;max-height:36px;object-fit:contain;image-rendering:pixelated}
+
+/* Talent canvas: preserve the window shell and accessible DOM hit targets. */
+.talent-tree-surface{image-rendering:auto;position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.constellation-viewport .constellation-node .node-disc{background:none;border:0;box-shadow:none;transform:none;outline:none}
+.constellation-viewport .constellation-node{width:64px;height:64px;background:none;border:0;box-shadow:none;padding:0;border-radius:50%}
+.constellation-viewport .constellation-node .node-disc{width:64px;height:64px}
+.constellation-viewport .constellation-node .node-label{top:70px;font-size:16px}
+.constellation-viewport .constellation-node.is-locked:not(.is-trained){opacity:1}
+.constellation-viewport .constellation-node.is-locked .node-label{color:#87959e}
+.constellation-viewport .constellation-node.is-max .node-label{color:#f3ca40}
+.constellation-viewport .constellation-node:hover{outline:2px solid #f3ca40;outline-offset:2px}
+.constellation-canvas .constellation-root{width:64px;height:64px;background:none;border:0;box-shadow:none;pointer-events:none}
+.constellation-canvas .constellation-root strong{top:50px}
+.constellation-canvas .constellation-root small{top:79px}

@@ -4,37 +4,96 @@
   const views=new Map(),WIDTH=1000,HEIGHT=1380;
   const iconPaths={blade:'M8 32 30 8l4 4L12 36m-5-8 9 9M6 37l5-5',heart:'M21 36S5 25 5 15C5 4 18 3 21 12 25 3 37 4 37 15c0 10-16 21-16 21Z',shield:'M21 4 36 10v12c0 9-15 16-15 16S6 31 6 22V10Z M21 12v17m-7-9h14',star:'m21 3 5 12 13 1-10 9 3 14-11-7-11 7 3-14L3 16l13-1Z',flame:'M24 3c5 13-10 12-5 22 3-1 5-5 5-8 13 11 10 22-3 22C4 39 2 22 13 13c-1 9 2 10 2 10S12 9 24 3Z',anchor:'M21 12v25M10 18h22M5 26c0 15 32 15 32 0M5 26l-2 7m2-7 7 3m25-3 2 7m-2-7-7 3M21 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z',eye:'M3 21s8-13 18-13 18 13 18 13-8 13-18 13S3 21 3 21Zm18-6a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z'};
   const glyph=(id)=>`<svg viewBox="0 0 42 42" aria-hidden="true"><path d="${iconPaths[id]||iconPaths.star}"/></svg>`;
-  const statIcon=stat=>/HP|healing|health/.test(stat)?'heart':/def|mitig|shield/.test(stat)?'shield':/crit|accuracy|range/.test(stat)?'eye':/element|energy/.test(stat)?'flame':'blade';
   function layout(tree){
     const positions={root:{x:500,y:1240},bridgeStart:{x:500,y:825},bridgeEnd:{x:500,y:640}};
     tree.branches.forEach((b,i)=>b.nodes.forEach((n,t)=>positions[n.id]={x:[170,500,830][i]+(t%2?(i-1)*35:0),y:[1080,910,570,395,225][t]}));
     tree.keystones.forEach((n,i)=>positions[n.id]={x:[290,500,710][i],y:735});
     tree.ultimates.forEach((n,i)=>positions[n.id]={x:[250,500,750][i],y:65});return positions;
   }
+
+  // Class-specific templates preserve canonical talent IDs and saved investments.
+  const iconFor=stat=>/HP|hpPct|healing|health|lifesteal/.test(stat)?'heart':/def|mitig|shield/.test(stat)?'shield':/moveSpeed|evasion|speed/.test(stat)?'boots':/crit|accuracy|range/.test(stat)?'eye':/element|magic|energy|Energy|aoe/.test(stat)?'flame':/rare/.test(stat)?'fruit':'sword';
+  const iconPath=id=>'assets/ui/talents/talent_'+id+'.png';
+  const TALENT_TREE_CONFIG=Object.fromEntries(Object.entries(root.MareTalents.trees).map(([id,tree])=>{
+    const p=layout(tree);
+    return [id,{classId:id,nodes:[
+      ...tree.branches.flatMap(b=>b.nodes.map(n=>({...n,type:n.stat,kind:'common',icon:iconPath(iconFor(n.stat)),maxLevel:n.maxRank,currentLevel:0,...p[n.id],requires:n.requires.map(r=>({...r})),gates:{keystone:n.tier>=2,branchLimit:2}}))),
+      ...tree.keystones.map(n=>({...n,type:'special',kind:'mid',icon:iconPath('fruit'),maxLevel:1,currentLevel:0,...p[n.id],requires:[],gates:{commonPoints:10,exclusive:'keystone'}})),
+      ...tree.ultimates.map(n=>({...n,type:'ultimate',kind:'final',icon:iconPath('star'),maxLevel:1,currentLevel:0,...p[n.id],requires:[],requiresAny:tree.branches.map(b=>({id:b.nodes[4].id,level:5})),gates:{commonPoints:50,keystone:true,exclusive:'ultimate'}}))
+    ]}];
+  }));
+  function configFor(game,draft){
+    const T=root.MareTalents,tree=T.getTree(game.classId),config=TALENT_TREE_CONFIG[game.classId],p=layout(tree);
+    const nodes=config.nodes.map(n=>{
+      const currentLevel=n.kind==='common'?(draft.nodes[n.id]||0):Number(draft[n.kind==='mid'?'keystone':'ultimate']===n.id);
+      const dependency=T.eligibility(game,draft,n.id),plan=T.invest(game,draft,n.id),max=currentLevel>=n.maxLevel;
+      return {...n,currentLevel,isUnlocked:dependency.ok||max,state:max?'max':dependency.ok?'available':'locked',canInvest:plan.ok,reason:plan.message||'',selected:false};
+    });
+    const edges=[],rank=id=>draft.nodes[id]||0,link=(from,to,active)=>edges.push({from,to,active,a:p[from],b:p[to]});
+    for(const b of tree.branches){
+      link('root',b.nodes[0].id,true);
+      link(b.nodes[0].id,b.nodes[1].id,rank(b.nodes[0].id)>=5);
+      const source=rank(b.nodes[1].id)>0?b.nodes[1].id:rank(b.nodes[0].id)>0?b.nodes[0].id:b.nodes[1].id;
+      link(source,'bridgeStart',rank(source)>0&&T.commonSpent(draft)>=10);
+      link('bridgeEnd',b.nodes[2].id,!!draft.keystone&&rank(b.nodes[1].id)>=5);
+      for(let i=2;i<4;i++)link(b.nodes[i].id,b.nodes[i+1].id,rank(b.nodes[i].id)>=5&&!!draft.keystone);
+      for(const u of tree.ultimates)link(b.nodes[4].id,u.id,rank(b.nodes[4].id)>=5&&T.commonSpent(draft)>=50&&!!draft.keystone);
+    }
+    for(const k of tree.keystones){link('bridgeStart',k.id,T.commonSpent(draft)>=10&&(!draft.keystone||draft.keystone===k.id));link(k.id,'bridgeEnd',draft.keystone===k.id);}
+    return {...config,nodes,edges,root:p.root};
+  }
+  const images=new Map();
+  function getImage(path,repaint){
+    let entry=images.get(path);
+    if(!entry){const image=new Image();entry={image,ready:false,callbacks:new Set()};images.set(path,entry);image.onload=()=>{entry.ready=true;for(const fn of entry.callbacks)fn();entry.callbacks.clear();};image.onerror=()=>entry.callbacks.clear();image.src=path;}
+    if(!entry.ready&&repaint)entry.callbacks.add(repaint);
+    return entry.ready?entry.image:null;
+  }
+  function renderTalentTree(ctx,config,offsetX=0,offsetY=0,repaint){
+    ctx.save();ctx.translate(offsetX,offsetY);ctx.lineWidth=2;
+    for(const edge of config.edges){
+      ctx.strokeStyle=edge.active?'#f3ca40':'#1a365d';ctx.shadowBlur=edge.active?10:0;ctx.shadowColor='#f3ca40';
+      ctx.beginPath();ctx.moveTo(edge.a.x,edge.a.y);const mid=(edge.a.y+edge.b.y)/2;ctx.bezierCurveTo(edge.a.x,mid,edge.b.x,mid,edge.b.x,edge.b.y);ctx.stroke();
+    }
+    ctx.shadowBlur=0;
+    const drawIcon=(path,x,y,locked)=>{
+      const img=getImage(path,repaint);ctx.save();
+      ctx.filter=locked?'grayscale(100%) opacity(50%)':'none';
+      // HD sources are sampled smoothly inside a circular 32px badge.
+      ctx.beginPath();ctx.arc(x,y,16,0,Math.PI*2);ctx.clip();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+      if(img)ctx.drawImage(img,x-16,y-16,32,32);
+      else{ctx.fillStyle='#213b4c';ctx.fillRect(x-16,y-16,32,32);}
+      ctx.restore();
+    };
+    drawIcon(iconPath('anchor'),config.root.x,config.root.y,false);
+    for(const n of config.nodes){
+      drawIcon(n.icon,n.x,n.y,n.state==='locked');
+      if(n.state==='max'||n.selected){ctx.strokeStyle=n.state==='max'?'#f3ca40':'#fff3bf';ctx.lineWidth=n.state==='max'?3:2;ctx.beginPath();ctx.arc(n.x,n.y,20,0,Math.PI*2);ctx.stroke();}
+      ctx.fillStyle=n.state==='locked'?'#87959e':n.state==='max'?'#f3ca40':'#ffffff';ctx.font='10px Arial';ctx.textAlign='center';
+      ctx.fillText(n.currentLevel+'/'+n.maxLevel,n.x,n.y+29);
+    }
+    ctx.restore();
+  }
+  function hitTest(config,x,y){return config.nodes.find(n=>Math.abs(n.x-x)<=24&&Math.abs(n.y-y)<=24)||null;}
+  let renderedConfig=null;
   function render({game,draft,selected,message,escapeHTML:E,canReset}){
     const T=root.MareTalents,tree=T.getTree(game.classId),saved=T.buildFor(game),available=T.totalEarned(game)-T.spent(draft),pending=T.spent(draft)-T.spent(saved),all=T.nodes(game.classId),positions=layout(tree);
     const node=all.find(n=>n.id===selected),exclusive=tree.keystones.find(k=>k.id===selected),ultimate=tree.ultimates.find(k=>k.id===selected),item=node||exclusive||ultimate;
     const plan=item?T.invest(game,draft,item.id):null,rank=node?(draft.nodes[node.id]||0):0;
     const trained=id=>id==='root'||(draft.nodes[id]||0)>0||draft.keystone===id||draft.ultimate===id;
-    const edges=[];
-    const link=(from,to,active,kind='')=>{const a=positions[from],b=positions[to];edges.push(`<path data-talent-edge="${from}:${to}" class="${active?'lit':''} ${kind}" d="M${a.x} ${a.y} C${a.x} ${(a.y+b.y)/2},${b.x} ${(a.y+b.y)/2},${b.x} ${b.y}"/>`);};
-    for(const b of tree.branches){link('root',b.nodes[0].id,trained(b.nodes[0].id));link(b.nodes[0].id,b.nodes[1].id,(draft.nodes[b.nodes[0].id]||0)>=5&&trained(b.nodes[1].id));
-      const source=trained(b.nodes[1].id)?b.nodes[1].id:trained(b.nodes[0].id)?b.nodes[0].id:b.nodes[1].id;link(source,'bridgeStart',trained(source)&&T.commonSpent(draft)>=10);
-      link('bridgeEnd',b.nodes[2].id,!!draft.keystone&&trained(b.nodes[2].id));
-      for(let i=2;i<4;i++)link(b.nodes[i].id,b.nodes[i+1].id,(draft.nodes[b.nodes[i].id]||0)>=5&&trained(b.nodes[i+1].id));
-      for(const u of tree.ultimates)link(b.nodes[4].id,u.id,(draft.nodes[b.nodes[4].id]||0)>=5&&draft.ultimate===u.id,'final-edge');
-    }
-    for(const k of tree.keystones){link('bridgeStart',k.id,draft.keystone===k.id);link(k.id,'bridgeEnd',draft.keystone===k.id);}
-    const button=(n,kind)=>{const p=positions[n.id],active=trained(n.id),allowed=T.invest(game,draft,n.id).ok,normal=kind==='common';return `<button type="button" style="left:${p.x}px;top:${p.y}px" data-node-x="${p.x}" data-node-y="${p.y}" data-talent-select="${n.id}" class="constellation-node ${normal?'talent-node':kind==='final'?'talent-ultimate':'talent-keystone'} ${active?'is-trained is-chosen':''} ${allowed?'is-available':'is-locked'} ${selected===n.id?'is-selected':''}" aria-pressed="${selected===n.id}" aria-label="${E(n.name)}. ${normal?(draft.nodes[n.id]||0)+' de 10 pontos':active?'Escolhido':kind==='final'?'Final, 3 PT':'Intermediário, 1 PT'}"><span class="node-disc">${glyph(normal?statIcon(n.stat):kind==='final'?'star':'anchor')}<small>${normal?(draft.nodes[n.id]||0)+'/10':active?'✓':kind==='final'?'3 PT':'1 PT'}</small></span><strong class="node-label">${E(n.name)}</strong></button>`;};
+    const config=configFor(game,draft);config.nodes.forEach(n=>n.selected=n.id===selected);renderedConfig=config;
+    const button=(n,kind)=>{const p=positions[n.id],active=trained(n.id),visual=config.nodes.find(v=>v.id===n.id),allowed=visual.isUnlocked,normal=kind==='common';return `<button type="button" style="left:${p.x}px;top:${p.y}px" data-node-x="${p.x}" data-node-y="${p.y}" data-talent-select="${n.id}" class="constellation-node ${normal?'talent-node':kind==='final'?'talent-ultimate':'talent-keystone'} ${active?'is-trained is-chosen':''} ${allowed?'is-available':'is-locked'} ${visual.state==='max'?'is-max':''} ${selected===n.id?'is-selected':''}" data-node-state="${visual.state}" aria-pressed="${selected===n.id}" aria-label="${E(n.name)}. ${normal?(draft.nodes[n.id]||0)+' de 10 pontos':active?'Escolhido':kind==='final'?'Final, 3 PT':'Intermediário, 1 PT'}"><span class="node-disc" aria-hidden="true"></span><strong class="node-label">${E(n.name)}</strong></button>`;};
     return `<section class="talent-window constellation-window"><header class="talent-heading"><div><small>Constelação de talentos</small><h2>${E(tree.name)}</h2><p>Dois caminhos. Um intermediário. Um final.</p></div><div class="talent-budget"><strong data-talent-points>${available} PT</strong><span>${game.level} de níveis + ${root.MareAchievements.bonus(game)} de conquistas</span><span>${T.branchCount(game.classId,draft)} / 2 ramos · ${pending} PT na prévia</span></div></header>
-    <div class="talent-workspace constellation-workspace"><div><div class="constellation-toolbar"><span>Arraste para explorar · Role para ampliar</span><div><button type="button" data-tree-zoom="out" aria-label="Diminuir zoom">−</button><button type="button" data-tree-zoom="in" aria-label="Aumentar zoom">+</button><button type="button" data-tree-zoom="fit">Visão geral</button><button type="button" data-tree-zoom="root">Tronco</button></div></div><div class="constellation-viewport" data-tree-class="${game.classId}" tabindex="0" aria-label="Árvore interativa. Arraste, use zoom ou navegue nos talentos com Tab."><div class="constellation-canvas" style="width:${WIDTH}px;height:${HEIGHT}px"><svg class="constellation-lines" viewBox="0 0 ${WIDTH} ${HEIGHT}" aria-hidden="true">${edges.join('')}</svg><div class="constellation-root" style="left:500px;top:1240px">${glyph('anchor')}<strong>Tronco central</strong><small>Fundação inata · Nível 1</small></div>${all.map(n=>button(n,'common')).join('')}${tree.keystones.map(n=>button(n,'mid')).join('')}${tree.ultimates.map(n=>button(n,'final')).join('')}${tree.branches.map((b,i)=>`<span class="constellation-branch-title" style="left:${[170,500,830][i]}px;top:1000px">${E(b.name)}</span>`).join('')}<span class="constellation-tier-label" style="top:735px">Ponte dos exclusivos</span><span class="constellation-tier-label" style="top:65px">Aprimoramentos finais</span></div></div></div>
-    <aside class="talent-inspector"><small>${ultimate?'Aprimoramento exclusivo final':exclusive?'Talento exclusivo intermediário':node?'Talento passivo':'Sua rota'}</small><h3>${item?E(item.name):'Trace seu caminho'}</h3><p>${node?E(T.describeNode(node)):item?E(item.description):'Comece no tronco, siga as linhas e escolha até dois caminhos. As conexões douradas mostram os investimentos da sua prévia.'}</p>${node?`<dl><div><dt>Graduação</dt><dd>${rank} / ${node.maxRank}</dd></div><div><dt>Ramo</dt><dd>${E(tree.branches[node.branch].name)}</dd></div><div><dt>Tier</dt><dd>${node.tier+1}</dd></div></dl><p>${node.tier?'Requer 5 pontos no nó anterior.':'Conectado ao tronco inato.'}${node.tier>=2?' Requer um intermediário para novos investimentos.':''}</p>`:''}${ultimate?'<p>Requer 50 PT comuns, um intermediário e 5 pontos no último tier de um ramo. Custa 3 PT; escolha apenas um final.</p>':''}${exclusive?'<p>Requer 10 PT comuns. Custa 1 PT; escolha apenas um intermediário.</p>':''}${item?`<button type="button" class="dialog-button" data-talent-add="${item.id}" ${!plan.ok?'disabled':''}>${node?'+1 PT NA PRÉVIA':'ESCOLHER NA PRÉVIA'}</button>${!plan.ok?`<p class="talent-reason">${E(plan.message)}</p>`:''}`:''}<p class="talent-message" role="status">${E(message||'Confirme a prévia para aplicar os bônus.')}</p><p class="talent-solo-note">${game.classId==='healer'?'Solo: aura, bênção, reviver e vínculo funcionam em você. Efeitos de grupo aguardam aliados reais.':'Passivos automáticos. Ataques secundários não criam cópias recursivas.'}</p></aside></div>
+    <div class="talent-workspace constellation-workspace"><div><div class="constellation-toolbar"><span>Clique para investir · Shift+clique para inspecionar · Arraste e amplie</span><div><button type="button" data-tree-zoom="out" aria-label="Diminuir zoom">−</button><button type="button" data-tree-zoom="in" aria-label="Aumentar zoom">+</button><button type="button" data-tree-zoom="fit">Visão geral</button><button type="button" data-tree-zoom="root">Tronco</button></div></div><div class="constellation-viewport" data-tree-class="${game.classId}" tabindex="0" aria-label="Árvore interativa. Arraste, use zoom ou navegue nos talentos com Tab."><div class="constellation-canvas" style="width:${WIDTH}px;height:${HEIGHT}px"><canvas class="talent-tree-surface" width="${WIDTH}" height="${HEIGHT}" aria-hidden="true"></canvas><div class="constellation-root" style="left:500px;top:1240px"><strong>Tronco central</strong><small>Fundação inata · Nível 1</small></div>${all.map(n=>button(n,'common')).join('')}${tree.keystones.map(n=>button(n,'mid')).join('')}${tree.ultimates.map(n=>button(n,'final')).join('')}${tree.branches.map((b,i)=>`<span class="constellation-branch-title" style="left:${[170,500,830][i]}px;top:1000px">${E(b.name)}</span>`).join('')}<span class="constellation-tier-label" style="top:735px">Ponte dos exclusivos</span><span class="constellation-tier-label" style="top:65px">Aprimoramentos finais</span></div></div></div>
+    <aside class="talent-inspector"><small>${ultimate?'Aprimoramento exclusivo final':exclusive?'Talento exclusivo intermediário':node?'Talento passivo':'Sua rota'}</small><h3>${item?E(item.name):'Trace seu caminho'}</h3><p>${node?E(T.describeNode(node)):item?E(item.description):'Comece no tronco, siga as linhas e escolha até dois caminhos. As conexões douradas mostram os requisitos já atingidos. Clique em um nó para adicionar pontos à prévia.'}</p>${node?`<dl><div><dt>Graduação</dt><dd>${rank} / ${node.maxRank}</dd></div><div><dt>Ramo</dt><dd>${E(tree.branches[node.branch].name)}</dd></div><div><dt>Tier</dt><dd>${node.tier+1}</dd></div></dl><p>${node.tier?'Requer 5 pontos no nó anterior.':'Conectado ao tronco inato.'}${node.tier>=2?' Requer um intermediário para novos investimentos.':''}</p>`:''}${ultimate?'<p>Requer 50 PT comuns, um intermediário e 5 pontos no último tier de um ramo. Custa 3 PT; escolha apenas um final.</p>':''}${exclusive?'<p>Requer 10 PT comuns. Custa 1 PT; escolha apenas um intermediário.</p>':''}${item?`<button type="button" class="dialog-button" data-talent-add="${item.id}" ${!plan.ok?'disabled':''}>${node?'+1 PT NA PRÉVIA':'ESCOLHER NA PRÉVIA'}</button>${!plan.ok?`<p class="talent-reason">${E(plan.message)}</p>`:''}`:''}<p class="talent-message" role="status">${E(message||'Confirme a prévia para aplicar os bônus.')}</p><p class="talent-solo-note">${game.classId==='healer'?'Solo: aura, bênção, reviver e vínculo funcionam em você. Efeitos de grupo aguardam aliados reais.':'Passivos automáticos. Ataques secundários não criam cópias recursivas.'}</p></aside></div>
     <footer class="talent-actions"><span>${T.spent(draft)} PT investidos · ${pending} por confirmar</span><button type="button" class="dialog-button secondary" data-talent-cancel>DESCARTAR PRÉVIA</button><button type="button" class="dialog-button" data-talent-confirm ${pending<=0?'disabled':''}>CONFIRMAR TALENTOS</button><button type="button" class="talent-reset" data-talent-reset ${!canReset||T.spent(saved)===0?'disabled':''}>Redefinir no porto</button></footer></section>`;
   }
   function mount(body){
     detach();const vp=body.querySelector('.constellation-viewport');if(!vp)return;const canvas=vp.querySelector('.constellation-canvas'),id=vp.dataset.treeClass,w=vp.clientWidth,h=vp.clientHeight;
+    const surface=canvas.querySelector('.talent-tree-surface'),config=renderedConfig;
+    let alive=true;const repaint=()=>{if(!alive||!surface.isConnected)return;const ctx=surface.getContext('2d');ctx.clearRect(0,0,WIDTH,HEIGHT);renderTalentTree(ctx,config,0,0,repaint);surface.dataset.litEdges=config.edges.filter(e=>e.active).length;surface.dataset.edgeCount=config.edges.length;surface.dataset.iconsReady=config.nodes.every(n=>images.get(n.icon)?.ready);};repaint();
     let view=views.get(id);if(!view){const s=.65;view={s,x:(w-WIDTH*s)/2,y:h-HEIGHT*s,w,h};views.set(id,view);}else{view.x+=(w-view.w)/2;view.y+=(h-view.h)/2;view.w=w;view.h=h;}
-    const paint=()=>{canvas.style.transform=`translate(${view.x}px,${view.y}px) scale(${view.s})`;};
+    let density=0;const paint=()=>{const next=Math.min(3,(window.devicePixelRatio||1)*Math.max(1,view.s));if(next!==density){density=next;surface.width=Math.round(WIDTH*density);surface.height=Math.round(HEIGHT*density);surface.getContext('2d').setTransform(density,0,0,density,0,0);repaint();}canvas.style.transform=`translate(${view.x}px,${view.y}px) scale(${view.s})`;};
     const zoom=(s,cx=w/2,cy=h/2)=>{s=Math.max(.2,Math.min(1.8,s));const ratio=s/view.s;view.x=cx-(cx-view.x)*ratio;view.y=cy-(cy-view.y)*ratio;view.s=s;paint();};
     body.querySelectorAll('[data-tree-zoom]').forEach(b=>b.onclick=()=>{const a=b.dataset.treeZoom;if(a==='fit'){view.s=Math.min(vp.clientWidth/WIDTH,vp.clientHeight/HEIGHT)*.95;view.x=(vp.clientWidth-WIDTH*view.s)/2;view.y=(vp.clientHeight-HEIGHT*view.s)/2;paint();}else if(a==='root'){view.s=Math.max(.65,view.s);view.x=vp.clientWidth/2-500*view.s;view.y=vp.clientHeight-HEIGHT*view.s;paint();}else zoom(view.s*(a==='in'?1.2:1/1.2));});
     vp.addEventListener('wheel',e=>{e.preventDefault();const r=vp.getBoundingClientRect();zoom(view.s*(e.deltaY<0?1.12:1/1.12),e.clientX-r.left,e.clientY-r.top);},{passive:false});
@@ -43,9 +102,10 @@
     vp.addEventListener('pointermove',e=>{if(!pointers.has(e.pointerId))return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2){const [a,b]=[...pointers.values()],next=Math.hypot(a.x-b.x,a.y-b.y),r=vp.getBoundingClientRect();if(pinch)zoom(view.s*next/pinch,(a.x+b.x)/2-r.left,(a.y+b.y)/2-r.top);pinch=next;dragged=true;}else if(prior){const dx=e.clientX-prior.x,dy=e.clientY-prior.y;if(dragged||Math.abs(dx)+Math.abs(dy)>3){dragged=true;view.x+=dx;view.y+=dy;prior={x:e.clientX,y:e.clientY};paint();}}});
     const end=e=>{pointers.delete(e.pointerId);prior=null;pinch=0;};vp.addEventListener('pointerup',end);vp.addEventListener('pointercancel',end);
     vp.addEventListener('click',e=>{if(dragged&&e.detail){e.preventDefault();e.stopPropagation();}},{capture:true});
+    vp.addEventListener('click',e=>{if(e.target.closest('[data-talent-select]')||dragged)return;const r=vp.getBoundingClientRect(),node=hitTest(config,(e.clientX-r.left-view.x)/view.s,(e.clientY-r.top-view.y)/view.s);if(node)vp.querySelector('[data-talent-select="'+node.id+'"]')?.dispatchEvent(new MouseEvent('click',{bubbles:true,shiftKey:e.shiftKey}));});
     const revealFocused=n=>{if(!n||!vp.contains(n))return;const x=Number(n.dataset.nodeX)*view.s+view.x,y=Number(n.dataset.nodeY)*view.s+view.y;const margin=55*view.s+2;if(x<margin||x>vp.clientWidth-margin||y<margin||y>vp.clientHeight-95*view.s){view.x=vp.clientWidth/2-Number(n.dataset.nodeX)*view.s;view.y=vp.clientHeight/2-Number(n.dataset.nodeY)*view.s;paint();}};vp.addEventListener('focusin',e=>revealFocused(e.target.closest('[data-node-x]')));
     vp.addEventListener('keydown',e=>{if(e.target!==vp)return;if(['+','-','ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key)){e.preventDefault();if(e.key==='+')zoom(view.s*1.2);else if(e.key==='-')zoom(view.s/1.2);else{view.x+=e.key==='ArrowLeft'?40:e.key==='ArrowRight'?-40:0;view.y+=e.key==='ArrowUp'?40:e.key==='ArrowDown'?-40:0;paint();}}});paint();
-    const observer=new ResizeObserver(()=>{if(!vp.isConnected){observer.disconnect();return;}const nw=vp.clientWidth,nh=vp.clientHeight;view.x+=(nw-view.w)/2;view.y+=(nh-view.h)/2;view.w=nw;view.h=nh;paint();revealFocused(document.activeElement?.closest('[data-node-x]'));});observer.observe(vp);detach=()=>observer.disconnect();
+    const observer=new ResizeObserver(()=>{if(!vp.isConnected){observer.disconnect();return;}const nw=vp.clientWidth,nh=vp.clientHeight;view.x+=(nw-view.w)/2;view.y+=(nh-view.h)/2;view.w=nw;view.h=nh;paint();revealFocused(document.activeElement?.closest('[data-node-x]'));});observer.observe(vp);detach=()=>{alive=false;observer.disconnect();for(const entry of images.values())entry.callbacks.delete(repaint);};
   }
   const number=n=>Number(n).toLocaleString('pt-BR');
   function renderAchievements({game,escapeHTML:E,message,category='all'}){
@@ -56,5 +116,6 @@
   function refreshAchievements(body,game){
     if(!body.querySelector('.achievement-journal'))return;const list=root.MareAchievements.list(game);body.querySelector('[data-achievement-ready]').textContent=list.filter(a=>a.ready).length+' recompensa(s) disponível(is)';for(const a of list){const el=body.querySelector('[data-achievement-id="'+a.id+'"]');if(!el)continue;el.querySelector('.achievement-count').textContent=number(a.progress)+' / '+number(a.target);const bar=el.querySelector('[role=progressbar]');bar.setAttribute('aria-valuenow',a.progress);bar.firstElementChild.style.width=a.progress/a.target*100+'%';const b=el.querySelector('button');b.disabled=!a.ready;b.textContent=a.claimed?'Resgatado':!a.enabled?'Em breve':a.ready?'Resgatar':'Em progresso';}
   }
-  root.MareTalentUI={unmount:()=>detach(),render,mount,layout,renderAchievements,refreshAchievements};
+  const api={unmount:()=>detach(),render,mount,layout,TALENT_TREE_CONFIG,configFor,renderTalentTree,hitTest,renderAchievements,refreshAchievements};
+  root.MareTalentUI=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

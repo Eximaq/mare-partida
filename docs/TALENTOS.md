@@ -154,3 +154,16 @@ As recargas de Escudo de Energia, Imortalidade, EMP e Anjo Guardião são timest
 - Build Pages inclui 22 scripts/CSS versionados por conteúdo. Caminhos relativos preservados.
 
 `tests/achievements-ultimates.test.cjs` cobre 21 grupos de conquistas, migração e todos os finais. `tests/constellation_browser.py` cobre as transações, rotas/ponte/final, cinco resoluções, arraste/zoom/foco, visitas reais e cenários de combate dos 21 finais em saves isolados. RNG controlado nesses cenários torna gatilhos probabilísticos reproduzíveis; a simulação, atributos, monstros, dano, navegação e ações são os do jogo. Capturas ficam no diretório temporário do sistema, fora do Git. Rodar também todas as suítes Node e as regressões de talentos anteriores, personagens, Bento, inventário/forja e cache Pages.
+
+## Ícones HD e renderização interna — 26/10/2026
+
+As sete classes mantêm os mesmos 21 talentos por árvore, IDs, bônus, custos, escolhas exclusivas e investimentos. O exemplo de quatro nós foi usado como contrato de configuração, sem substituir as árvores.
+
+- MareTalentUI.TALENT_TREE_CONFIG contém ID, nome, tipo, ícone, nível máximo, posição, dependências e gates. configFor(game,draft) aplica os níveis da prévia sem alterar os templates nem o save.
+- Dependências comuns em talent-system.js (requires), compartilhadas por validação e normalização. Intermediários/finais mantêm os requisitos agregados e escolha única existentes.
+- Canvas desenha conexões antes dos ícones. A conexão acende ao cumprir o requisito, mesmo sem investimento no destino. Bloqueados: cinza/50%; máximo: contorno e progresso dourados.
+- Nove fontes PixelLab de **512×512**, exibidas em **32×32** coordenadas da árvore. O backing do Canvas acompanha densidade/zoom (até 3×), com amostragem suave. Fontes sem redimensionamento; limpeza exata de letras geradas fora do medalhão da espada via PixelLab Workbench. Recorte circular no Canvas.
+- Clique/toque/Enter tenta investir na prévia, verificando requisitos, limite de ramos, máximo e PT. Shift+clique apenas inspeciona. Botão +1 preservado. Confirmar aplica transacionalmente; descartar preserva o save.
+- Botões DOM mantêm nomes acessíveis, progresso e foco. Pan/zoom/pinça preservados, assim como a moldura externa.
+- Proveniência: assets/ui/talents/manifest.json. Custo: 18 gerações (9 estudos iniciais 32px e 9 artes HD utilizadas). Estudos fora do pacote público.
+- Sem mudança da versão de save. Ranks avançados herdados v1 preservados; novos investimentos exigem o intermediário. Rollback: reverter o commit, preservando armazenamento local.

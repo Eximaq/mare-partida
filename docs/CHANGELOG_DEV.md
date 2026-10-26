@@ -361,3 +361,13 @@ Validação: 81 arquivos Node, 92 testes Python; navegador nas sete Zoans em amb
 Branch feature/jiki-rank-b sobre 89ecb2d. Catálogo/lore/ícones/passivos, Grande Devorador com carga 6s e reconjuração gratuita, barra e partículas seguindo o jogador, dano 200–450%, raio de 2 tiles e explosão original; Punho Foguete homing com loop estrito 1–12 e despedaçamento 13–17, 250% no alvo. Backend valida tempo de carga/voo, energia/recargas, alcance, dono/instância e tokens únicos. Nove arquivos originais importados sem geração paga. Limpeza de carga, projéteis e VFX em transições/morte/retirada, recargas preservadas. Descrição dos itens de fruta conectada ao tooltip da mochila. Documentação e reversão em [JIKI-RANK-B.md](JIKI-RANK-B.md).
 
 Validação: 82 arquivos Node e 99 testes Python; navegador em três resoluções, API local (inclusive 6s reais até lançamento automático), 20 abates e limpeza de estados. Build Pages, preview estático e diff check aprovados. Evidências e banco de QA fora do Git.
+
+## 26/10/2026 — Árvores de talentos: Canvas e ícones HD
+
+Base: 2f034b2; branch feature/talent-node-icons-dependencies.
+
+Refatoração interna das sete árvores, preservando os 147 talentos, investimentos e regras. Canvas para conexões/ícones; configuração por classe, estados bloqueado/disponível/máximo, clique para investir na prévia e confirmação transacional existente. Nove ícones PixelLab 512×512 substituem os glifos da árvore; conquistas e HUD externo preservados. Requisitos comuns declarados nos dados e compartilhados por validação/normalização.
+
+Arquivos: talent-system.js, talent-ui.js, game.js, ui-screens.css, assets/manifest e testes/documentação específicos. Nenhum save, credencial ou evidência em massa incluído. Evidências locais de 26/10 na pasta temporária de QA, fora do Git. Sem migração nova ou mudança de balanceamento; rollback por revert do commit.
+
+Validação desta entrega: 83 suítes Node, 99 testes Python de backend/artes e 4 de hierarquia aprovados. Novo teste de navegador aprovado nas sete classes e sete resoluções, incluindo toque, falha de storage, saves v1, confirmação/reload, máximo, dependências e fontes HD. Mesmo fluxo principal aprovado no preview estático. Build Pages aprovado; 100 hashes JS/CSS e cópia dos assets conferidos. O teste legado pages_cache_browser.py falhou na asserção MareEmberRenderer.stats().monsters == 4 ao visitar Dawn; o renderizador do mapa não foi alterado nesta tarefa. Nenhum merge automático.
