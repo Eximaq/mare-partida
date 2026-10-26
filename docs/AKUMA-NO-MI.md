@@ -49,3 +49,5 @@ O lote original estabeleceu fruta 48×48, auras animadas e o mesmo relógio `req
 - Navegador: silhuetas, registro, bolsa, slot, HP, HUD e Canvas.
 
 [Hoya-Hoya Rank B: Gênio controlável e Majin Saidan](HOYA-RANK-B.md).
+
+[Transição visual comum das Zoans atuais e futuras](ZOAN-TRANSICAO.md).

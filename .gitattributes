@@ -28,3 +28,5 @@ assets/akuma/beta/*.json -text
 assets/akuma/hana/*.json -text
 
 assets/akuma/hoya/*.json -text
+
+assets/akuma/zoan-transition/*.json -text
