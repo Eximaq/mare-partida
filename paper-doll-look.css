@@ -10,4 +10,7 @@
 .doll-dressing p {line-height:1.5;}
 .doll-dressing-actions {display:flex;gap:10px;flex-wrap:wrap;}
 .doll-dressing-actions button {min-height:44px;}
+.doll-equipment {margin-top:20px;padding-top:16px;border-top:1px solid #987044;overflow-wrap:anywhere;}
+.doll-equipment li {margin:10px 0;line-height:1.4;}
+.doll-equipment button {min-height:44px;max-width:100%;white-space:normal;}
 @media(max-width:600px){.doll-dressing-grid {grid-template-columns:1fr;}.doll-dressing figure {padding:10px;}}

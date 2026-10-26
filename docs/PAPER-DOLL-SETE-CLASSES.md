@@ -6,7 +6,7 @@
 
 Abra `tools/paper-doll-inspector/index.html?pack=complete`. Selecione qualquer uma das sete classes e quatro facções na mesma janela. Idle, Walk e Attack mantêm corpo, cabelo, roupa e arma separados. O gesto muda conforme a categoria; a facção não duplica a animação.
 
-Para combate, abra `?dev=1&paperDollReview=complete`, escolha a classe no laboratório e use sua arma inicial. Remova botas e demais peças sem arte modular. O Lutador usa mãos livres: remova sua arma. O save normal permanece isolado.
+Para combate, abra `?dev=1&paperDollReview=complete`, escolha a classe no laboratório e use sua arma inicial. Em Personagem → Aparência, o painel identifica cada equipamento sem camada. Use **Preparar conjunto de teste**: guarda as peças incompatíveis na mochila e reaproveita a arma inicial, quando disponível. Caso falte, cria uma arma apenas no laboratório. O Lutador fica com mãos livres. Mochila cheia ou falha de gravação cancela a operação sem perder itens; repetir a preparação não duplica armas. Classe, facção, itens guardados, refinamentos e travas são preservados. O save normal permanece isolado.
 
 | Classe | Equipamento do protótipo | Movimento |
 |---|---|---|
