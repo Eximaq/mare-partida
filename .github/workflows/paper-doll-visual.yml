@@ -19,6 +19,9 @@ on:
       - 'tests/paper_doll_unarmed_browser.py'
       - 'tests/paper_doll_gunner_browser.py'
       - 'tests/paper_doll_rogue_browser.py'
+      - 'tests/paper_doll_complete_browser.py'
+      - 'pixellab-pip-generations/paper-doll-complete-20261026/**'
+      - 'pixellab-pip-generations/paper-doll-final-categories-20261026/**'
       - 'pixellab-pip-generations/paper-doll-rogue-20261025/**'
       - 'pixellab-pip-generations/paper-doll-gunner-20261025/**'
       - 'pixellab-pip-generations/paper-doll-unarmed-combat-20261024/**'
@@ -196,6 +199,7 @@ jobs:
           python tests/paper_doll_unarmed_browser.py
           python tests/paper_doll_gunner_browser.py
           python tests/paper_doll_rogue_browser.py
+          python tests/paper_doll_complete_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-navy-starter-20261023/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-hair-continuity-20261022/ python tests/paper_doll_world_review_browser.py
           MARE_REVIEW_PACK=pixellab-pip-generations/paper-doll-basic-sword-20261021/ python tests/paper_doll_world_review_browser.py

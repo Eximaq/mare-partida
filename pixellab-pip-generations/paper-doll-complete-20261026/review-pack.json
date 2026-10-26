@@ -1,0 +1,4786 @@
+{
+  "reviewOnly": true,
+  "productionEnabled": false,
+  "full_character_artwork_approved": false,
+  "status": "All six basic attack categories / seven classes; opt-in review only.",
+  "rig": {
+    "id": "human-v1",
+    "revision": 1,
+    "frameWidth": 84,
+    "frameHeight": 84,
+    "pivotX": 42,
+    "pivotY": 65,
+    "scale": 1.5217391304347827,
+    "requiredSlots": [
+      "body",
+      "hair",
+      "outfit"
+    ],
+    "animations": {
+      "idle": {
+        "frames": 4,
+        "fps": 4,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "walk": {
+        "frames": 8,
+        "fps": 8,
+        "loop": true,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-sword": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-unarmed": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-firearm": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-daggers": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-tech": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      },
+      "attack-focus": {
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "directions": [
+          "south",
+          "north",
+          "west",
+          "east"
+        ]
+      }
+    }
+  },
+  "pieces": [
+    {
+      "id": "complete-body",
+      "rigId": "human-v1",
+      "slot": "body",
+      "available": true,
+      "approved": false,
+      "zIndex": 0,
+      "animations": {
+        "idle": {
+          "kind": "sheet",
+          "url": "shared-body-idle.png",
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        },
+        "walk": {
+          "kind": "sheet",
+          "url": "shared-body-walk.png",
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        },
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "sword-body-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 0
+        },
+        "attack-unarmed": {
+          "kind": "sheet",
+          "url": "unarmed-body-punch.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "west",
+            "east",
+            "north"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 0
+        },
+        "attack-firearm": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "sheet",
+          "url": "firearm-body-firearm.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        },
+        "attack-daggers": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "sheet",
+          "url": "daggers-body-daggers.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        },
+        "attack-tech": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "sheet",
+          "url": "firearm-body-firearm.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        },
+        "attack-focus": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "sheet",
+          "url": "body-focus.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 20
+        }
+      }
+    },
+    {
+      "id": "complete-hair",
+      "rigId": "human-v1",
+      "slot": "hair",
+      "available": true,
+      "approved": false,
+      "zIndex": 60,
+      "animations": {
+        "idle": {
+          "kind": "sheet",
+          "url": "shared-hair-idle.png",
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 60
+        },
+        "walk": {
+          "kind": "sheet",
+          "url": "shared-hair-walk.png",
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 60
+        },
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "sword-hair-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 40
+        },
+        "attack-unarmed": {
+          "kind": "rigid-attachment",
+          "url": "unarmed-hair-south.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "west",
+            "east",
+            "north"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 40,
+          "sources": {
+            "south": {
+              "url": "unarmed-hair-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "west": {
+              "url": "unarmed-hair-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "east": {
+              "url": "unarmed-hair-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "north": {
+              "url": "unarmed-hair-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "west": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "north": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ]
+          }
+        },
+        "attack-firearm": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "firearm-hair-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 40,
+          "sources": {
+            "south": {
+              "url": "firearm-hair-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "north": {
+              "url": "firearm-hair-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "west": {
+              "url": "firearm-hair-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "east": {
+              "url": "firearm-hair-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "north": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "west": [
+              {
+                "x": 41,
+                "y": 65
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 40,
+                "y": 67
+              },
+              {
+                "x": 38,
+                "y": 67
+              },
+              {
+                "x": 40,
+                "y": 67
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 41,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 43,
+                "y": 66
+              },
+              {
+                "x": 44,
+                "y": 67
+              },
+              {
+                "x": 44,
+                "y": 67
+              },
+              {
+                "x": 44,
+                "y": 67
+              },
+              {
+                "x": 43,
+                "y": 66
+              },
+              {
+                "x": 43,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ]
+          }
+        },
+        "attack-daggers": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "daggers-hair-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 40,
+          "sources": {
+            "south": {
+              "url": "daggers-hair-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "north": {
+              "url": "daggers-hair-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "west": {
+              "url": "daggers-hair-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "east": {
+              "url": "daggers-hair-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "north": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "west": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 41,
+                "y": 65
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 41,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 43,
+                "y": 65
+              },
+              {
+                "x": 43,
+                "y": 65
+              },
+              {
+                "x": 44,
+                "y": 66
+              },
+              {
+                "x": 43,
+                "y": 65
+              },
+              {
+                "x": 43,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ]
+          }
+        },
+        "attack-tech": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "firearm-hair-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 40,
+          "sources": {
+            "south": {
+              "url": "firearm-hair-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "north": {
+              "url": "firearm-hair-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "west": {
+              "url": "firearm-hair-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "east": {
+              "url": "firearm-hair-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "north": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "west": [
+              {
+                "x": 41,
+                "y": 65
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 40,
+                "y": 67
+              },
+              {
+                "x": 38,
+                "y": 67
+              },
+              {
+                "x": 40,
+                "y": 67
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 41,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 43,
+                "y": 66
+              },
+              {
+                "x": 44,
+                "y": 67
+              },
+              {
+                "x": 44,
+                "y": 67
+              },
+              {
+                "x": 44,
+                "y": 67
+              },
+              {
+                "x": 43,
+                "y": 66
+              },
+              {
+                "x": 43,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ]
+          }
+        },
+        "attack-focus": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "focus-hair-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 40,
+          "sources": {
+            "south": {
+              "url": "focus-hair-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "north": {
+              "url": "focus-hair-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "west": {
+              "url": "focus-hair-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            },
+            "east": {
+              "url": "focus-hair-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 52
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 67
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 66
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "north": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 64
+              },
+              {
+                "x": 44,
+                "y": 64
+              },
+              {
+                "x": 44,
+                "y": 64
+              },
+              {
+                "x": 42,
+                "y": 64
+              },
+              {
+                "x": 42,
+                "y": 64
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "west": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 41,
+                "y": 65
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 40,
+                "y": 66
+              },
+              {
+                "x": 41,
+                "y": 66
+              },
+              {
+                "x": 41,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 43,
+                "y": 65
+              },
+              {
+                "x": 44,
+                "y": 66
+              },
+              {
+                "x": 47,
+                "y": 67
+              },
+              {
+                "x": 44,
+                "y": 66
+              },
+              {
+                "x": 43,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              },
+              {
+                "x": 42,
+                "y": 65
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "complete-outfit",
+      "slot": "outfit",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 50,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "shared-outfit-idle.png"
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "shared-outfit-walk.png"
+        },
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "sword-outfit-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "zIndex": 30
+        },
+        "attack-unarmed": {
+          "kind": "sheet",
+          "url": "unarmed-outfit-punch.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "west",
+            "east",
+            "north"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 30
+        },
+        "attack-firearm": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "sheet",
+          "url": "firearm-outfit-firearm.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 30
+        },
+        "attack-daggers": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "sheet",
+          "url": "daggers-outfit-daggers.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 30
+        },
+        "attack-tech": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "sheet",
+          "url": "firearm-outfit-firearm.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 30
+        },
+        "attack-focus": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "sheet",
+          "url": "outfit-focus.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 30
+        }
+      }
+    },
+    {
+      "id": "complete-sword",
+      "slot": "weapon",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 80,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "sword-weapon-south.png",
+          "kind": "rigid-attachment",
+          "sources": {
+            "south": {
+              "url": "sword-weapon-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 20,
+              "anchorY": 36
+            },
+            "north": {
+              "url": "sword-weapon-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 42,
+              "anchorY": 35
+            },
+            "west": {
+              "url": "sword-weapon-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 26,
+              "anchorY": 36
+            },
+            "east": {
+              "url": "sword-weapon-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 29,
+              "anchorY": 37
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 28,
+                "y": 48
+              },
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 29,
+                "y": 48
+              }
+            ],
+            "north": [
+              {
+                "x": 52,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 35,
+                "y": 44
+              },
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 37,
+                "y": 48
+              }
+            ],
+            "east": [
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              }
+            ]
+          },
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            },
+            "west": {
+              "zIndex": 10
+            }
+          }
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "url": "sword-rigid-weapon.png",
+          "kind": "rigid-attachment",
+          "sockets": {
+            "south": [
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 33,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 49
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 52,
+                "y": 49
+              },
+              {
+                "x": 51,
+                "y": 46
+              },
+              {
+                "x": 50,
+                "y": 45
+              },
+              {
+                "x": 50,
+                "y": 46
+              },
+              {
+                "x": 52,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 38,
+                "y": 47
+              },
+              {
+                "x": 37,
+                "y": 45
+              },
+              {
+                "x": 38,
+                "y": 47
+              },
+              {
+                "x": 42,
+                "y": 49
+              },
+              {
+                "x": 45,
+                "y": 50
+              },
+              {
+                "x": 47,
+                "y": 50
+              },
+              {
+                "x": 47,
+                "y": 50
+              },
+              {
+                "x": 44,
+                "y": 48
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 47
+              },
+              {
+                "x": 47,
+                "y": 47
+              },
+              {
+                "x": 51,
+                "y": 46
+              },
+              {
+                "x": 50,
+                "y": 47
+              },
+              {
+                "x": 45,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 49
+              },
+              {
+                "x": 36,
+                "y": 49
+              },
+              {
+                "x": 33,
+                "y": 49
+              }
+            ]
+          },
+          "zIndex": 10,
+          "sources": {
+            "south": {
+              "url": "sword-rigid-weapon.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 20,
+              "anchorY": 36
+            },
+            "north": {
+              "url": "sword-weapon-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 42,
+              "anchorY": 35
+            },
+            "west": {
+              "url": "sword-weapon-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 26,
+              "anchorY": 36
+            },
+            "east": {
+              "url": "sword-weapon-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 29,
+              "anchorY": 37
+            }
+          },
+          "directionOverrides": {
+            "west": {
+              "zIndex": 80
+            },
+            "east": {
+              "zIndex": 80
+            }
+          }
+        },
+        "attack-sword": {
+          "kind": "sheet",
+          "url": "sword-weapon-attack.png",
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "poseOverrides": {
+            "west": [
+              {
+                "offsetX": 0,
+                "offsetY": -1
+              },
+              {
+                "offsetX": 0,
+                "offsetY": 1
+              },
+              {
+                "offsetX": 0,
+                "offsetY": -1,
+                "zIndex": -10
+              },
+              {
+                "offsetX": 0,
+                "offsetY": -1,
+                "zIndex": -10
+              },
+              {
+                "offsetX": 0,
+                "offsetY": -1,
+                "zIndex": -10
+              },
+              {
+                "offsetX": 1,
+                "offsetY": 3
+              },
+              {
+                "offsetX": 4,
+                "offsetY": 5
+              },
+              {
+                "offsetX": -1,
+                "offsetY": -1
+              }
+            ],
+            "east": [
+              {
+                "offsetX": 1,
+                "offsetY": -3
+              },
+              {
+                "offsetX": -2,
+                "offsetY": -1
+              },
+              {
+                "offsetX": 1,
+                "offsetY": 0
+              },
+              {
+                "offsetX": 6,
+                "offsetY": -1
+              },
+              {
+                "offsetX": 3,
+                "offsetY": -1
+              },
+              {
+                "offsetX": 19,
+                "offsetY": -6
+              },
+              {
+                "offsetX": 3,
+                "offsetY": 4
+              },
+              {
+                "offsetX": 3,
+                "offsetY": -2
+              }
+            ]
+          },
+          "occludedFrames": {
+            "north": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ]
+          },
+          "directionOverrides": {
+            "north": {
+              "zIndex": -10,
+              "offsetY": -1
+            }
+          },
+          "zIndex": 50
+        }
+      }
+    },
+    {
+      "id": "complete-firearm",
+      "slot": "weapon",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 80,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "kind": "rigid-attachment",
+          "url": "firearm-musket-east-layer.png",
+          "zIndex": 10,
+          "source": {
+            "width": 64,
+            "height": 64,
+            "anchorX": 43,
+            "anchorY": 24
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 30,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 28,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 30,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 29,
+                "y": 48,
+                "quarterTurns": 1
+              }
+            ],
+            "north": [
+              {
+                "x": 52,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 48,
+                "quarterTurns": 1
+              }
+            ],
+            "west": [
+              {
+                "x": 36,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 35,
+                "y": 44,
+                "quarterTurns": 1
+              },
+              {
+                "x": 36,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 37,
+                "y": 48,
+                "quarterTurns": 1
+              }
+            ],
+            "east": [
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              }
+            ]
+          }
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "kind": "rigid-attachment",
+          "url": "firearm-musket-east-layer.png",
+          "zIndex": 10,
+          "source": {
+            "width": 64,
+            "height": 64,
+            "anchorX": 43,
+            "anchorY": 24
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 32,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 31,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 33,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 32,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 31,
+                "y": 48,
+                "quarterTurns": 1
+              },
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 1
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 52,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 50,
+                "y": 45,
+                "quarterTurns": 1
+              },
+              {
+                "x": 50,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 52,
+                "y": 48,
+                "quarterTurns": 1
+              }
+            ],
+            "west": [
+              {
+                "x": 38,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 37,
+                "y": 45,
+                "quarterTurns": 1
+              },
+              {
+                "x": 38,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 42,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 45,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 47,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 47,
+                "y": 50,
+                "quarterTurns": 1
+              },
+              {
+                "x": 44,
+                "y": 48,
+                "quarterTurns": 1
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 47,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 50,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 45,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 36,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 33,
+                "y": 49,
+                "quarterTurns": 1
+              }
+            ]
+          }
+        },
+        "attack-firearm": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "kind": "rigid-attachment",
+          "url": "firearm-musket-east-layer.png",
+          "zIndex": 10,
+          "directionOverrides": {
+            "south": {
+              "zIndex": 50
+            }
+          },
+          "sources": {
+            "south": {
+              "url": "firearm-musket-south-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 31,
+              "anchorY": 23
+            },
+            "north": {
+              "url": "firearm-musket-north-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 32,
+              "anchorY": 24
+            },
+            "west": {
+              "url": "firearm-musket-west-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 22,
+              "anchorY": 23
+            },
+            "east": {
+              "url": "firearm-musket-east-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 43,
+              "anchorY": 24
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 31,
+                "y": 47
+              },
+              {
+                "x": 40,
+                "y": 39
+              },
+              {
+                "x": 41,
+                "y": 38
+              },
+              {
+                "x": 41,
+                "y": 38
+              },
+              {
+                "x": 41,
+                "y": 38
+              },
+              {
+                "x": 41,
+                "y": 40
+              },
+              {
+                "x": 32,
+                "y": 47
+              },
+              {
+                "x": 31,
+                "y": 48
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 47
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 51,
+                "y": 47
+              },
+              {
+                "x": 51,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 37,
+                "y": 44
+              },
+              {
+                "x": 32,
+                "y": 41
+              },
+              {
+                "x": 27,
+                "y": 39
+              },
+              {
+                "x": 26,
+                "y": 41
+              },
+              {
+                "x": 27,
+                "y": 40
+              },
+              {
+                "x": 32,
+                "y": 41
+              },
+              {
+                "x": 37,
+                "y": 46
+              },
+              {
+                "x": 39,
+                "y": 47
+              }
+            ],
+            "east": [
+              {
+                "x": 49,
+                "y": 42
+              },
+              {
+                "x": 51,
+                "y": 38
+              },
+              {
+                "x": 53,
+                "y": 36
+              },
+              {
+                "x": 53,
+                "y": 38
+              },
+              {
+                "x": 53,
+                "y": 37
+              },
+              {
+                "x": 51,
+                "y": 38
+              },
+              {
+                "x": 49,
+                "y": 42
+              },
+              {
+                "x": 41,
+                "y": 46,
+                "quarterTurns": 1
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "complete-daggers",
+      "slot": "weapon",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 80,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "daggers-dagger-south-layer.png",
+          "sources": {
+            "south": {
+              "url": "daggers-dagger-south-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 20,
+              "anchorY": 38
+            },
+            "north": {
+              "url": "daggers-dagger-north-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 46,
+              "anchorY": 30
+            },
+            "west": {
+              "url": "daggers-dagger-west-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 27,
+              "anchorY": 36
+            },
+            "east": {
+              "url": "daggers-dagger-east-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 34,
+              "anchorY": 36
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 30,
+                "y": 49,
+                "quarterTurns": 0
+              },
+              {
+                "x": 28,
+                "y": 48,
+                "quarterTurns": 0
+              },
+              {
+                "x": 30,
+                "y": 49,
+                "quarterTurns": 0
+              },
+              {
+                "x": 29,
+                "y": 48,
+                "quarterTurns": 0
+              }
+            ],
+            "north": [
+              {
+                "x": 52,
+                "y": 48,
+                "quarterTurns": 0
+              },
+              {
+                "x": 51,
+                "y": 48,
+                "quarterTurns": 0
+              },
+              {
+                "x": 51,
+                "y": 48,
+                "quarterTurns": 0
+              },
+              {
+                "x": 51,
+                "y": 48,
+                "quarterTurns": 0
+              }
+            ],
+            "west": [
+              {
+                "x": 36,
+                "y": 46,
+                "quarterTurns": 3
+              },
+              {
+                "x": 35,
+                "y": 44,
+                "quarterTurns": 3
+              },
+              {
+                "x": 36,
+                "y": 46,
+                "quarterTurns": 3
+              },
+              {
+                "x": 37,
+                "y": 48,
+                "quarterTurns": 3
+              }
+            ],
+            "east": [
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 47,
+                "quarterTurns": 1
+              }
+            ]
+          },
+          "secondarySockets": {
+            "south": [
+              {
+                "x": 52,
+                "y": 50,
+                "quarterTurns": 3
+              },
+              {
+                "x": 54,
+                "y": 49,
+                "quarterTurns": 3
+              },
+              {
+                "x": 52,
+                "y": 50,
+                "quarterTurns": 3
+              },
+              {
+                "x": 52,
+                "y": 49,
+                "quarterTurns": 3
+              }
+            ],
+            "north": [
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 0
+              },
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 0
+              },
+              {
+                "x": 34,
+                "y": 49,
+                "quarterTurns": 0
+              },
+              {
+                "x": 34,
+                "y": 49,
+                "quarterTurns": 0
+              }
+            ],
+            "west": [
+              null,
+              null,
+              null,
+              null
+            ],
+            "east": [
+              null,
+              null,
+              null,
+              null
+            ]
+          },
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 10
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "daggers-dagger-south-layer.png",
+          "sources": {
+            "south": {
+              "url": "daggers-dagger-south-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 20,
+              "anchorY": 38
+            },
+            "north": {
+              "url": "daggers-dagger-north-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 46,
+              "anchorY": 30
+            },
+            "west": {
+              "url": "daggers-dagger-west-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 27,
+              "anchorY": 36
+            },
+            "east": {
+              "url": "daggers-dagger-east-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 34,
+              "anchorY": 36
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 32,
+                "y": 48,
+                "quarterTurns": 0
+              },
+              {
+                "x": 31,
+                "y": 48,
+                "quarterTurns": 0
+              },
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 0
+              },
+              {
+                "x": 33,
+                "y": 49,
+                "quarterTurns": 0
+              },
+              {
+                "x": 32,
+                "y": 48,
+                "quarterTurns": 0
+              },
+              {
+                "x": 31,
+                "y": 48,
+                "quarterTurns": 0
+              },
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 0
+              },
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 0
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 50,
+                "quarterTurns": 0
+              },
+              {
+                "x": 51,
+                "y": 50,
+                "quarterTurns": 0
+              },
+              {
+                "x": 51,
+                "y": 50,
+                "quarterTurns": 0
+              },
+              {
+                "x": 52,
+                "y": 49,
+                "quarterTurns": 0
+              },
+              {
+                "x": 51,
+                "y": 46,
+                "quarterTurns": 0
+              },
+              {
+                "x": 50,
+                "y": 45,
+                "quarterTurns": 0
+              },
+              {
+                "x": 50,
+                "y": 46,
+                "quarterTurns": 0
+              },
+              {
+                "x": 52,
+                "y": 48,
+                "quarterTurns": 0
+              }
+            ],
+            "west": [
+              {
+                "x": 38,
+                "y": 47,
+                "quarterTurns": 3
+              },
+              {
+                "x": 37,
+                "y": 45,
+                "quarterTurns": 3
+              },
+              {
+                "x": 38,
+                "y": 47,
+                "quarterTurns": 3
+              },
+              {
+                "x": 42,
+                "y": 49,
+                "quarterTurns": 3
+              },
+              {
+                "x": 45,
+                "y": 50,
+                "quarterTurns": 3
+              },
+              {
+                "x": 47,
+                "y": 50,
+                "quarterTurns": 3
+              },
+              {
+                "x": 47,
+                "y": 50,
+                "quarterTurns": 3
+              },
+              {
+                "x": 44,
+                "y": 48,
+                "quarterTurns": 3
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 47,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 51,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 50,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 45,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 39,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 36,
+                "y": 49,
+                "quarterTurns": 1
+              },
+              {
+                "x": 33,
+                "y": 49,
+                "quarterTurns": 1
+              }
+            ]
+          },
+          "secondarySockets": {
+            "south": [
+              {
+                "x": 50,
+                "y": 50,
+                "quarterTurns": 3
+              },
+              {
+                "x": 50,
+                "y": 49,
+                "quarterTurns": 3
+              },
+              {
+                "x": 50,
+                "y": 49,
+                "quarterTurns": 3
+              },
+              {
+                "x": 50,
+                "y": 49,
+                "quarterTurns": 3
+              },
+              {
+                "x": 50,
+                "y": 49,
+                "quarterTurns": 3
+              },
+              {
+                "x": 49,
+                "y": 50,
+                "quarterTurns": 3
+              },
+              {
+                "x": 48,
+                "y": 51,
+                "quarterTurns": 3
+              },
+              {
+                "x": 48,
+                "y": 51,
+                "quarterTurns": 3
+              }
+            ],
+            "north": [
+              {
+                "x": 32,
+                "y": 46,
+                "quarterTurns": 0
+              },
+              {
+                "x": 33,
+                "y": 45,
+                "quarterTurns": 0
+              },
+              {
+                "x": 33,
+                "y": 46,
+                "quarterTurns": 0
+              },
+              {
+                "x": 32,
+                "y": 48,
+                "quarterTurns": 0
+              },
+              {
+                "x": 32,
+                "y": 50,
+                "quarterTurns": 0
+              },
+              {
+                "x": 32,
+                "y": 51,
+                "quarterTurns": 0
+              },
+              {
+                "x": 33,
+                "y": 51,
+                "quarterTurns": 0
+              },
+              {
+                "x": 32,
+                "y": 49,
+                "quarterTurns": 0
+              }
+            ],
+            "west": [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            "east": [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          },
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 10
+        },
+        "attack-daggers": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "daggers-dagger-south-layer.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "zIndex": 10,
+          "directionOverrides": {
+            "south": {
+              "zIndex": 50
+            }
+          },
+          "sources": {
+            "south": {
+              "url": "daggers-dagger-south-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 20,
+              "anchorY": 38
+            },
+            "north": {
+              "url": "daggers-dagger-north-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 46,
+              "anchorY": 30
+            },
+            "west": {
+              "url": "daggers-dagger-west-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 27,
+              "anchorY": 36
+            },
+            "east": {
+              "url": "daggers-dagger-east-layer.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 34,
+              "anchorY": 36
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 31,
+                "y": 47,
+                "quarterTurns": 0
+              },
+              {
+                "x": 31,
+                "y": 47,
+                "quarterTurns": 0
+              },
+              {
+                "x": 31,
+                "y": 42,
+                "quarterTurns": 0
+              },
+              {
+                "x": 33,
+                "y": 39,
+                "quarterTurns": 0
+              },
+              {
+                "x": 31,
+                "y": 42,
+                "quarterTurns": 0
+              },
+              {
+                "x": 32,
+                "y": 47,
+                "quarterTurns": 0
+              },
+              {
+                "x": 31,
+                "y": 48,
+                "quarterTurns": 0
+              },
+              {
+                "x": 31,
+                "y": 48,
+                "quarterTurns": 0
+              }
+            ],
+            "north": [
+              {
+                "x": 50,
+                "y": 47,
+                "quarterTurns": 0
+              },
+              {
+                "x": 50,
+                "y": 46,
+                "quarterTurns": 0
+              },
+              {
+                "x": 47,
+                "y": 40,
+                "quarterTurns": 0
+              },
+              {
+                "x": 46,
+                "y": 36,
+                "quarterTurns": 0
+              },
+              {
+                "x": 47,
+                "y": 38,
+                "quarterTurns": 0
+              },
+              {
+                "x": 50,
+                "y": 45,
+                "quarterTurns": 0
+              },
+              {
+                "x": 50,
+                "y": 47,
+                "quarterTurns": 0
+              },
+              {
+                "x": 50,
+                "y": 48,
+                "quarterTurns": 0
+              }
+            ],
+            "west": [
+              {
+                "x": 38,
+                "y": 47,
+                "quarterTurns": 3
+              },
+              {
+                "x": 34,
+                "y": 43,
+                "quarterTurns": 0
+              },
+              {
+                "x": 31,
+                "y": 40,
+                "quarterTurns": 0
+              },
+              {
+                "x": 28,
+                "y": 41,
+                "quarterTurns": 0
+              },
+              {
+                "x": 31,
+                "y": 42,
+                "quarterTurns": 0
+              },
+              {
+                "x": 34,
+                "y": 42,
+                "quarterTurns": 0
+              },
+              {
+                "x": 37,
+                "y": 47,
+                "quarterTurns": 3
+              },
+              {
+                "x": 38,
+                "y": 48,
+                "quarterTurns": 3
+              }
+            ],
+            "east": [
+              {
+                "x": 41,
+                "y": 46,
+                "quarterTurns": 1
+              },
+              {
+                "x": 46,
+                "y": 43,
+                "quarterTurns": 0
+              },
+              {
+                "x": 51,
+                "y": 38,
+                "quarterTurns": 0
+              },
+              {
+                "x": 53,
+                "y": 36,
+                "quarterTurns": 0
+              },
+              {
+                "x": 51,
+                "y": 38,
+                "quarterTurns": 0
+              },
+              {
+                "x": 47,
+                "y": 43,
+                "quarterTurns": 0
+              },
+              {
+                "x": 41,
+                "y": 47,
+                "quarterTurns": 1
+              },
+              {
+                "x": 41,
+                "y": 47,
+                "quarterTurns": 1
+              }
+            ]
+          },
+          "secondarySockets": {
+            "south": [
+              {
+                "x": 52,
+                "y": 47,
+                "quarterTurns": 3
+              },
+              {
+                "x": 46,
+                "y": 41,
+                "quarterTurns": 3
+              },
+              {
+                "x": 42,
+                "y": 41,
+                "quarterTurns": 3
+              },
+              {
+                "x": 43,
+                "y": 42,
+                "quarterTurns": 3
+              },
+              {
+                "x": 42,
+                "y": 41,
+                "quarterTurns": 3
+              },
+              {
+                "x": 46,
+                "y": 42,
+                "quarterTurns": 3
+              },
+              {
+                "x": 50,
+                "y": 46,
+                "quarterTurns": 3
+              },
+              {
+                "x": 52,
+                "y": 48,
+                "quarterTurns": 3
+              }
+            ],
+            "north": [
+              {
+                "x": 33,
+                "y": 47,
+                "quarterTurns": 0
+              },
+              {
+                "x": 33,
+                "y": 46,
+                "quarterTurns": 0
+              },
+              {
+                "x": 36,
+                "y": 40,
+                "quarterTurns": 0
+              },
+              {
+                "x": 36,
+                "y": 37,
+                "quarterTurns": 0
+              },
+              {
+                "x": 35,
+                "y": 39,
+                "quarterTurns": 0
+              },
+              {
+                "x": 33,
+                "y": 46,
+                "quarterTurns": 0
+              },
+              {
+                "x": 33,
+                "y": 48,
+                "quarterTurns": 0
+              },
+              {
+                "x": 33,
+                "y": 48,
+                "quarterTurns": 0
+              }
+            ],
+            "west": [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ],
+            "east": [
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null
+            ]
+          }
+        }
+      },
+      "name": "Adagas da Bruma"
+    },
+    {
+      "id": "complete-tech",
+      "slot": "weapon",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 80,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "tech-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "sources": {
+            "south": {
+              "url": "tech-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 23,
+              "anchorY": 24
+            },
+            "north": {
+              "url": "tech-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 46,
+              "anchorY": 21
+            },
+            "west": {
+              "url": "tech-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 24,
+              "anchorY": 26
+            },
+            "east": {
+              "url": "tech-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 35,
+              "anchorY": 27
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 28,
+                "y": 48
+              },
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 29,
+                "y": 48
+              }
+            ],
+            "north": [
+              {
+                "x": 52,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 35,
+                "y": 44
+              },
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 37,
+                "y": 48
+              }
+            ],
+            "east": [
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              }
+            ]
+          },
+          "zIndex": 50,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "tech-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "sources": {
+            "south": {
+              "url": "tech-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 23,
+              "anchorY": 24
+            },
+            "north": {
+              "url": "tech-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 46,
+              "anchorY": 21
+            },
+            "west": {
+              "url": "tech-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 24,
+              "anchorY": 26
+            },
+            "east": {
+              "url": "tech-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 35,
+              "anchorY": 27
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 33,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 49
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 52,
+                "y": 49
+              },
+              {
+                "x": 51,
+                "y": 46
+              },
+              {
+                "x": 50,
+                "y": 45
+              },
+              {
+                "x": 50,
+                "y": 46
+              },
+              {
+                "x": 52,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 38,
+                "y": 47
+              },
+              {
+                "x": 37,
+                "y": 45
+              },
+              {
+                "x": 38,
+                "y": 47
+              },
+              {
+                "x": 42,
+                "y": 49
+              },
+              {
+                "x": 45,
+                "y": 50
+              },
+              {
+                "x": 47,
+                "y": 50
+              },
+              {
+                "x": 47,
+                "y": 50
+              },
+              {
+                "x": 44,
+                "y": 48
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 47
+              },
+              {
+                "x": 47,
+                "y": 47
+              },
+              {
+                "x": 51,
+                "y": 46
+              },
+              {
+                "x": 50,
+                "y": 47
+              },
+              {
+                "x": 45,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 49
+              },
+              {
+                "x": 36,
+                "y": 49
+              },
+              {
+                "x": 33,
+                "y": 49
+              }
+            ]
+          },
+          "zIndex": 50,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        },
+        "attack-tech": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "tech-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "sources": {
+            "south": {
+              "url": "tech-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 23,
+              "anchorY": 24
+            },
+            "north": {
+              "url": "tech-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 46,
+              "anchorY": 21
+            },
+            "west": {
+              "url": "tech-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 24,
+              "anchorY": 26
+            },
+            "east": {
+              "url": "tech-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 35,
+              "anchorY": 27
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 31,
+                "y": 47
+              },
+              {
+                "x": 40,
+                "y": 39
+              },
+              {
+                "x": 41,
+                "y": 38
+              },
+              {
+                "x": 41,
+                "y": 38
+              },
+              {
+                "x": 41,
+                "y": 38
+              },
+              {
+                "x": 41,
+                "y": 40
+              },
+              {
+                "x": 32,
+                "y": 47
+              },
+              {
+                "x": 31,
+                "y": 48
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 47
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 45,
+                "y": 36
+              },
+              {
+                "x": 51,
+                "y": 47
+              },
+              {
+                "x": 51,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 37,
+                "y": 44
+              },
+              {
+                "x": 32,
+                "y": 41
+              },
+              {
+                "x": 27,
+                "y": 39
+              },
+              {
+                "x": 26,
+                "y": 41
+              },
+              {
+                "x": 27,
+                "y": 40
+              },
+              {
+                "x": 32,
+                "y": 41
+              },
+              {
+                "x": 37,
+                "y": 46
+              },
+              {
+                "x": 39,
+                "y": 47
+              }
+            ],
+            "east": [
+              {
+                "x": 49,
+                "y": 42
+              },
+              {
+                "x": 51,
+                "y": 38
+              },
+              {
+                "x": 53,
+                "y": 36
+              },
+              {
+                "x": 53,
+                "y": 38
+              },
+              {
+                "x": 53,
+                "y": 37
+              },
+              {
+                "x": 51,
+                "y": 38
+              },
+              {
+                "x": 49,
+                "y": 42
+              },
+              {
+                "x": 41,
+                "y": 46
+              }
+            ]
+          },
+          "zIndex": 50,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        }
+      },
+      "name": "Manopla de A\u00e7o"
+    },
+    {
+      "id": "complete-compass",
+      "slot": "weapon",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 80,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "compass-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "sources": {
+            "south": {
+              "url": "compass-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 45,
+              "anchorY": 24
+            },
+            "north": {
+              "url": "compass-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 45,
+              "anchorY": 23
+            },
+            "west": {
+              "url": "compass-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 17,
+              "anchorY": 25
+            },
+            "east": {
+              "url": "compass-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 43,
+              "anchorY": 26
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 28,
+                "y": 48
+              },
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 29,
+                "y": 48
+              }
+            ],
+            "north": [
+              {
+                "x": 52,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 35,
+                "y": 44
+              },
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 37,
+                "y": 48
+              }
+            ],
+            "east": [
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              }
+            ]
+          },
+          "zIndex": 50,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "compass-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "sources": {
+            "south": {
+              "url": "compass-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 45,
+              "anchorY": 24
+            },
+            "north": {
+              "url": "compass-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 45,
+              "anchorY": 23
+            },
+            "west": {
+              "url": "compass-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 17,
+              "anchorY": 25
+            },
+            "east": {
+              "url": "compass-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 43,
+              "anchorY": 26
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 33,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 49
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 52,
+                "y": 49
+              },
+              {
+                "x": 51,
+                "y": 46
+              },
+              {
+                "x": 50,
+                "y": 45
+              },
+              {
+                "x": 50,
+                "y": 46
+              },
+              {
+                "x": 52,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 38,
+                "y": 47
+              },
+              {
+                "x": 37,
+                "y": 45
+              },
+              {
+                "x": 38,
+                "y": 47
+              },
+              {
+                "x": 42,
+                "y": 49
+              },
+              {
+                "x": 45,
+                "y": 50
+              },
+              {
+                "x": 47,
+                "y": 50
+              },
+              {
+                "x": 47,
+                "y": 50
+              },
+              {
+                "x": 44,
+                "y": 48
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 47
+              },
+              {
+                "x": 47,
+                "y": 47
+              },
+              {
+                "x": 51,
+                "y": 46
+              },
+              {
+                "x": 50,
+                "y": 47
+              },
+              {
+                "x": 45,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 49
+              },
+              {
+                "x": 36,
+                "y": 49
+              },
+              {
+                "x": 33,
+                "y": 49
+              }
+            ]
+          },
+          "zIndex": 50,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        },
+        "attack-focus": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "compass-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "sources": {
+            "south": {
+              "url": "compass-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 45,
+              "anchorY": 24
+            },
+            "north": {
+              "url": "compass-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 45,
+              "anchorY": 23
+            },
+            "west": {
+              "url": "compass-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 17,
+              "anchorY": 25
+            },
+            "east": {
+              "url": "compass-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 43,
+              "anchorY": 26
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 33,
+                "y": 47
+              },
+              {
+                "x": 37,
+                "y": 38
+              },
+              {
+                "x": 36,
+                "y": 37
+              },
+              {
+                "x": 37,
+                "y": 41
+              },
+              {
+                "x": 38,
+                "y": 45
+              },
+              {
+                "x": 33,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 48
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 47
+              },
+              {
+                "x": 50,
+                "y": 43
+              },
+              {
+                "x": 49,
+                "y": 36
+              },
+              {
+                "x": 49,
+                "y": 31
+              },
+              {
+                "x": 51,
+                "y": 34
+              },
+              {
+                "x": 50,
+                "y": 39
+              },
+              {
+                "x": 51,
+                "y": 44
+              },
+              {
+                "x": 51,
+                "y": 47
+              }
+            ],
+            "west": [
+              {
+                "x": 37,
+                "y": 46
+              },
+              {
+                "x": 31,
+                "y": 41
+              },
+              {
+                "x": 27,
+                "y": 36
+              },
+              {
+                "x": 23,
+                "y": 38
+              },
+              {
+                "x": 27,
+                "y": 39
+              },
+              {
+                "x": 31,
+                "y": 41
+              },
+              {
+                "x": 35,
+                "y": 45
+              },
+              {
+                "x": 37,
+                "y": 46
+              }
+            ],
+            "east": [
+              {
+                "x": 45,
+                "y": 43
+              },
+              {
+                "x": 48,
+                "y": 40
+              },
+              {
+                "x": 52,
+                "y": 34
+              },
+              {
+                "x": 53,
+                "y": 31
+              },
+              {
+                "x": 54,
+                "y": 32
+              },
+              {
+                "x": 53,
+                "y": 38
+              },
+              {
+                "x": 48,
+                "y": 42
+              },
+              {
+                "x": 45,
+                "y": 43
+              }
+            ]
+          },
+          "zIndex": 50,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        }
+      },
+      "name": "Compasso de Tempestade"
+    },
+    {
+      "id": "complete-staff",
+      "slot": "weapon",
+      "rigId": "human-v1",
+      "available": true,
+      "approved": false,
+      "zIndex": 80,
+      "animations": {
+        "idle": {
+          "frames": 4,
+          "fps": 4,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "staff-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "sources": {
+            "south": {
+              "url": "staff-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 19,
+              "anchorY": 30
+            },
+            "north": {
+              "url": "staff-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 45,
+              "anchorY": 28
+            },
+            "west": {
+              "url": "staff-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 12,
+              "anchorY": 26
+            },
+            "east": {
+              "url": "staff-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 43,
+              "anchorY": 28
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 28,
+                "y": 48
+              },
+              {
+                "x": 30,
+                "y": 49
+              },
+              {
+                "x": 29,
+                "y": 48
+              }
+            ],
+            "north": [
+              {
+                "x": 52,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              },
+              {
+                "x": 51,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 35,
+                "y": 44
+              },
+              {
+                "x": 36,
+                "y": 46
+              },
+              {
+                "x": 37,
+                "y": 48
+              }
+            ],
+            "east": [
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 47
+              }
+            ]
+          },
+          "zIndex": 50,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        },
+        "walk": {
+          "frames": 8,
+          "fps": 8,
+          "loop": true,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "staff-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "sources": {
+            "south": {
+              "url": "staff-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 19,
+              "anchorY": 30
+            },
+            "north": {
+              "url": "staff-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 45,
+              "anchorY": 28
+            },
+            "west": {
+              "url": "staff-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 12,
+              "anchorY": 26
+            },
+            "east": {
+              "url": "staff-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 43,
+              "anchorY": 28
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 33,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 31,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 49
+              },
+              {
+                "x": 32,
+                "y": 49
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 51,
+                "y": 50
+              },
+              {
+                "x": 52,
+                "y": 49
+              },
+              {
+                "x": 51,
+                "y": 46
+              },
+              {
+                "x": 50,
+                "y": 45
+              },
+              {
+                "x": 50,
+                "y": 46
+              },
+              {
+                "x": 52,
+                "y": 48
+              }
+            ],
+            "west": [
+              {
+                "x": 38,
+                "y": 47
+              },
+              {
+                "x": 37,
+                "y": 45
+              },
+              {
+                "x": 38,
+                "y": 47
+              },
+              {
+                "x": 42,
+                "y": 49
+              },
+              {
+                "x": 45,
+                "y": 50
+              },
+              {
+                "x": 47,
+                "y": 50
+              },
+              {
+                "x": 47,
+                "y": 50
+              },
+              {
+                "x": 44,
+                "y": 48
+              }
+            ],
+            "east": [
+              {
+                "x": 42,
+                "y": 47
+              },
+              {
+                "x": 47,
+                "y": 47
+              },
+              {
+                "x": 51,
+                "y": 46
+              },
+              {
+                "x": 50,
+                "y": 47
+              },
+              {
+                "x": 45,
+                "y": 47
+              },
+              {
+                "x": 39,
+                "y": 49
+              },
+              {
+                "x": 36,
+                "y": 49
+              },
+              {
+                "x": 33,
+                "y": 49
+              }
+            ]
+          },
+          "zIndex": 50,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        },
+        "attack-focus": {
+          "frames": 8,
+          "fps": 12,
+          "loop": false,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "kind": "rigid-attachment",
+          "url": "staff-south.png",
+          "frameWidth": 84,
+          "frameHeight": 84,
+          "sources": {
+            "south": {
+              "url": "staff-south.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 19,
+              "anchorY": 30
+            },
+            "north": {
+              "url": "staff-north.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 45,
+              "anchorY": 28
+            },
+            "west": {
+              "url": "staff-west.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 12,
+              "anchorY": 26
+            },
+            "east": {
+              "url": "staff-east.png",
+              "width": 64,
+              "height": 64,
+              "anchorX": 43,
+              "anchorY": 28
+            }
+          },
+          "sockets": {
+            "south": [
+              {
+                "x": 32,
+                "y": 48
+              },
+              {
+                "x": 33,
+                "y": 47
+              },
+              {
+                "x": 37,
+                "y": 38
+              },
+              {
+                "x": 36,
+                "y": 37
+              },
+              {
+                "x": 37,
+                "y": 41
+              },
+              {
+                "x": 38,
+                "y": 45
+              },
+              {
+                "x": 33,
+                "y": 48
+              },
+              {
+                "x": 32,
+                "y": 48
+              }
+            ],
+            "north": [
+              {
+                "x": 51,
+                "y": 47
+              },
+              {
+                "x": 50,
+                "y": 43
+              },
+              {
+                "x": 49,
+                "y": 36
+              },
+              {
+                "x": 49,
+                "y": 31
+              },
+              {
+                "x": 51,
+                "y": 34
+              },
+              {
+                "x": 50,
+                "y": 39
+              },
+              {
+                "x": 51,
+                "y": 44
+              },
+              {
+                "x": 51,
+                "y": 47
+              }
+            ],
+            "west": [
+              {
+                "x": 37,
+                "y": 46
+              },
+              {
+                "x": 31,
+                "y": 41
+              },
+              {
+                "x": 27,
+                "y": 36
+              },
+              {
+                "x": 23,
+                "y": 38
+              },
+              {
+                "x": 27,
+                "y": 39
+              },
+              {
+                "x": 31,
+                "y": 41
+              },
+              {
+                "x": 35,
+                "y": 45
+              },
+              {
+                "x": 37,
+                "y": 46
+              }
+            ],
+            "east": [
+              {
+                "x": 45,
+                "y": 43
+              },
+              {
+                "x": 48,
+                "y": 40
+              },
+              {
+                "x": 52,
+                "y": 34
+              },
+              {
+                "x": 53,
+                "y": 31
+              },
+              {
+                "x": 54,
+                "y": 32
+              },
+              {
+                "x": 53,
+                "y": 38
+              },
+              {
+                "x": 48,
+                "y": 42
+              },
+              {
+                "x": 45,
+                "y": 43
+              }
+            ]
+          },
+          "zIndex": 50,
+          "directionOverrides": {
+            "north": {
+              "zIndex": 10
+            }
+          }
+        }
+      },
+      "name": "Cajado do Farol"
+    }
+  ],
+  "appearance": {
+    "rigId": "human-v1",
+    "pieces": {
+      "body": "complete-body",
+      "hair": "complete-hair",
+      "outfit": "complete-outfit",
+      "weapon": "complete-sword"
+    }
+  },
+  "coverage": {
+    "idle": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "walk": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-sword": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-unarmed": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-firearm": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-daggers": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-tech": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "attack-focus": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ]
+  },
+  "bindings": {
+    "weapon": {
+      "slot": "weapon",
+      "items": {
+        "0": "complete-sword",
+        "4": "complete-firearm",
+        "12": "complete-daggers",
+        "14": "complete-tech",
+        "16": "complete-compass",
+        "31": "complete-staff"
+      }
+    },
+    "coat": {
+      "slot": "outfit",
+      "items": {
+        "6": "complete-outfit"
+      }
+    }
+  },
+  "completeCategories": true,
+  "classId": "sword",
+  "previewEquipment": {
+    "weapon": 0
+  },
+  "categoryWeapons": {
+    "sword": "complete-sword",
+    "firearm": "complete-firearm",
+    "daggers": "complete-daggers",
+    "tech": "complete-tech",
+    "focus": "complete-compass"
+  },
+  "unarmedCategoryHasNoWeapon": true
+}

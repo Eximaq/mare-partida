@@ -1,0 +1,18 @@
+{
+  "job_id": "d6172c99-cf9b-45ec-b4f5-0338437628f4",
+  "frames": [
+    {
+      "path": "tech-south-raw/00.png",
+      "sha256": "3a011441fcad3a7ceb8cbff1b054f1ad9cdee9351f0aa0b245524352742bf00e",
+      "bounds": [
+        20,
+        11,
+        42,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}

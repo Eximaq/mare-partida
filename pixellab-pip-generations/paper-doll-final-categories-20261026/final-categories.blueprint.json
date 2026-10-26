@@ -1,0 +1,234 @@
+[
+  {
+    "_comment": "body-east-request",
+    "MCP animate_image": {
+      "first_frame_url": "body-east-reference.png",
+      "last_frame_url": "body-east-reference.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Stay facing east to the right in strict profile. Lift the right hand from resting position to chest height, extend the forearm forward in a short deliberate spell-casting gesture, then return to the supplied resting pose. The left hand rests near the waist. Keep feet planted and body proportions stable. Hands empty. No turning, spinning, stepping, weapons, glow or effects."
+    },
+    "_comment_prompt": "Termine o que falta: Tecnologia e Canalização no personagem único, reutilizando animações básicas entre classes/facções, com economia de créditos e testes."
+  },
+  {
+    "_comment": "body-north-request",
+    "MCP animate_image": {
+      "first_frame_url": "body-north-reference.png",
+      "last_frame_url": "body-north-reference.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Stay facing north away from the viewer, back of head and back always visible. Lift the right hand from resting position to chest height, extend the forearm forward in a short deliberate spell-casting gesture, then return to the supplied resting pose. The left hand rests near the waist. Keep feet planted and body proportions stable. Hands empty. No turning, spinning, stepping, weapons, glow or effects."
+    }
+  },
+  {
+    "_comment": "body-south-request",
+    "MCP animate_image": {
+      "first_frame_url": "body-south-reference.png",
+      "last_frame_url": "body-south-reference.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Stay facing south toward the viewer, face always visible. Lift the right hand from resting position to chest height, extend the forearm forward in a short deliberate spell-casting gesture, then return to the supplied resting pose. The left hand rests near the waist. Keep feet planted and body proportions stable. Hands empty. No turning, spinning, stepping, weapons, glow or effects."
+    }
+  },
+  {
+    "_comment": "body-west-request",
+    "MCP animate_image": {
+      "first_frame_url": "body-west-reference.png",
+      "last_frame_url": "body-west-reference.png",
+      "frame_count": 8,
+      "no_background": true,
+      "action": "Stay facing west to the left in strict profile. Lift the right hand from resting position to chest height, extend the forearm forward in a short deliberate spell-casting gesture, then return to the supplied resting pose. The left hand rests near the waist. Keep feet planted and body proportions stable. Hands empty. No turning, spinning, stepping, weapons, glow or effects."
+    }
+  },
+  {
+    "_comment": "compass-east-request",
+    "MCP edit_image_pixen": {
+      "image_url": "body-east-raw/04.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a small round brass compass with a blue glass face resting in the right palm, no floating parts to this right-facing profile human. Fit the object to the existing right hand without moving the fingers. Match the nautical pixel art scale and shading. Preserve face, bald head, body, limbs, shorts, pose and transparent 64x64 canvas. No clothing, hair, extra hands, aura or particles."
+    }
+  },
+  {
+    "_comment": "compass-north-request",
+    "MCP edit_image_pixen": {
+      "image_url": "body-north-raw/04.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a small round brass compass with a blue glass face resting in the right palm, no floating parts to this north-facing, back-view human. Fit the object to the existing right hand without moving the fingers. Match the nautical pixel art scale and shading. Preserve face, bald head, body, limbs, shorts, pose and transparent 64x64 canvas. No clothing, hair, extra hands, aura or particles."
+    }
+  },
+  {
+    "_comment": "compass-south-request",
+    "MCP edit_image_pixen": {
+      "image_url": "body-south-raw/03.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a small round brass compass with a blue glass face resting in the right palm, no floating parts to this south-facing human. Fit the object to the existing right hand without moving the fingers. Match the nautical pixel art scale and shading. Preserve face, bald head, body, limbs, shorts, pose and transparent 64x64 canvas. No clothing, hair, extra hands, aura or particles."
+    }
+  },
+  {
+    "_comment": "compass-west-request",
+    "MCP edit_image_pixen": {
+      "image_url": "body-west-raw/04.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a small round brass compass with a blue glass face resting in the right palm, no floating parts to this left-facing profile human. Fit the object to the existing right hand without moving the fingers. Match the nautical pixel art scale and shading. Preserve face, bald head, body, limbs, shorts, pose and transparent 64x64 canvas. No clothing, hair, extra hands, aura or particles."
+    }
+  },
+  {
+    "_comment": "outfit-batch-0-request",
+    "MCP transfer_outfit": {
+      "frame_urls": [
+        "body-north-raw/01.png",
+        "body-north-raw/02.png",
+        "body-north-raw/03.png",
+        "body-north-raw/04.png",
+        "body-north-raw/05.png",
+        "body-north-raw/06.png",
+        "body-north-raw/07.png",
+        "body-north-raw/08.png",
+        "body-west-raw/01.png",
+        "body-west-raw/02.png",
+        "body-west-raw/03.png",
+        "body-west-raw/04.png"
+      ],
+      "reference_image_url": "outfit-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "additional_instructions": "Transfer only the cream short-sleeved shirt and navy sailor waistcoat. Keep the bald head, face, bare hands, charcoal shorts, limbs, native pixel scale and every input pose. No hair, weapons, extra limbs or effects. Preserve direction, feet and frame order."
+    }
+  },
+  {
+    "_comment": "outfit-batch-1-request",
+    "MCP transfer_outfit": {
+      "frame_urls": [
+        "body-west-raw/05.png",
+        "body-west-raw/06.png",
+        "body-west-raw/07.png",
+        "body-west-raw/08.png",
+        "body-east-raw/01.png",
+        "body-east-raw/02.png",
+        "body-east-raw/03.png",
+        "body-east-raw/04.png",
+        "body-east-raw/05.png",
+        "body-east-raw/06.png",
+        "body-east-raw/07.png",
+        "body-east-raw/08.png"
+      ],
+      "reference_image_url": "outfit-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "additional_instructions": "Transfer only the cream short-sleeved shirt and navy sailor waistcoat. Keep the bald head, face, bare hands, charcoal shorts, limbs, native pixel scale and every input pose. No hair, weapons, extra limbs or effects. Preserve direction, feet and frame order."
+    }
+  },
+  {
+    "_comment": "outfit-south-request",
+    "MCP transfer_outfit": {
+      "frame_urls": [
+        "body-south-raw/01.png",
+        "body-south-raw/02.png",
+        "body-south-raw/03.png",
+        "body-south-raw/04.png",
+        "body-south-raw/05.png",
+        "body-south-raw/06.png",
+        "body-south-raw/07.png",
+        "body-south-raw/08.png"
+      ],
+      "reference_image_url": "outfit-reference.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "additional_instructions": "Transfer only the cream short-sleeved shirt and navy sailor waistcoat. Keep the bald head, face, bare hands, charcoal shorts, limbs, native pixel scale and every input pose. No hair, weapons, extra limbs or effects. Preserve direction, feet and frame order."
+    }
+  },
+  {
+    "_comment": "staff-east-request",
+    "MCP edit_image_pixen": {
+      "image_url": "body-east-raw/04.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a short ivory and brass lighthouse staff held in the right hand, vertical shaft and small amber crystal at its top to this right-facing profile human. Fit the object to the existing right hand without moving the fingers. Match the nautical pixel art scale and shading. Preserve face, bald head, body, limbs, shorts, pose and transparent 64x64 canvas. No clothing, hair, extra hands, aura or particles."
+    }
+  },
+  {
+    "_comment": "staff-north-request",
+    "MCP edit_image_pixen": {
+      "image_url": "body-north-raw/04.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a short ivory and brass lighthouse staff held in the right hand, vertical shaft and small amber crystal at its top to this north-facing, back-view human. Fit the object to the existing right hand without moving the fingers. Match the nautical pixel art scale and shading. Preserve face, bald head, body, limbs, shorts, pose and transparent 64x64 canvas. No clothing, hair, extra hands, aura or particles."
+    }
+  },
+  {
+    "_comment": "staff-south-request",
+    "MCP edit_image_pixen": {
+      "image_url": "body-south-raw/03.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a short ivory and brass lighthouse staff held in the right hand, vertical shaft and small amber crystal at its top to this south-facing human. Fit the object to the existing right hand without moving the fingers. Match the nautical pixel art scale and shading. Preserve face, bald head, body, limbs, shorts, pose and transparent 64x64 canvas. No clothing, hair, extra hands, aura or particles."
+    }
+  },
+  {
+    "_comment": "staff-west-request",
+    "MCP edit_image_pixen": {
+      "image_url": "body-west-raw/04.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a short ivory and brass lighthouse staff held in the right hand, vertical shaft and small amber crystal at its top to this left-facing profile human. Fit the object to the existing right hand without moving the fingers. Match the nautical pixel art scale and shading. Preserve face, bald head, body, limbs, shorts, pose and transparent 64x64 canvas. No clothing, hair, extra hands, aura or particles."
+    }
+  },
+  {
+    "_comment": "tech-east-request",
+    "MCP edit_image_pixen": {
+      "image_url": "tech-east-input.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a compact steel and brass energy gauntlet enclosing the raised right fist of this human facing east in right profile, with a tiny cyan emitter at its knuckles pointing forward. Match the crisp nautical pixel style and scale. Preserve body, face, pose, limbs, shorts, canvas and transparency. No other gear, clothing, glow, projectiles or extra hands."
+    }
+  },
+  {
+    "_comment": "tech-north-request",
+    "MCP edit_image_pixen": {
+      "image_url": "tech-north-input.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a compact steel and brass energy gauntlet enclosing the raised right fist of this human facing north with back to the viewer, with a tiny cyan emitter at its knuckles pointing forward. Match the crisp nautical pixel style and scale. Preserve body, face, pose, limbs, shorts, canvas and transparency. No other gear, clothing, glow, projectiles or extra hands."
+    }
+  },
+  {
+    "_comment": "tech-south-request",
+    "MCP edit_image_pixen": {
+      "image_url": "tech-south-input.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a compact steel and brass energy gauntlet enclosing the raised right fist of this human facing south facing the viewer, with a tiny cyan emitter at its knuckles pointing forward. Match the crisp nautical pixel style and scale. Preserve body, face, pose, limbs, shorts, canvas and transparency. No other gear, clothing, glow, projectiles or extra hands."
+    }
+  },
+  {
+    "_comment": "tech-west-request",
+    "MCP edit_image_pixen": {
+      "image_url": "tech-west-input.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "description": "Add only a compact steel and brass energy gauntlet enclosing the raised right fist of this human facing west in left profile, with a tiny cyan emitter at its knuckles pointing forward. Match the crisp nautical pixel style and scale. Preserve body, face, pose, limbs, shorts, canvas and transparency. No other gear, clothing, glow, projectiles or extra hands."
+    }
+  },
+  {
+    "TASK": "Inspect all native generated frames. Preserve originals; run assemble_complete.py to extract garment/object pixels and attach them to measured hands. Technology deliberately reuses the existing validated firearm body gesture. Combine existing sword, unarmed, firearm and dagger clips. Do not regenerate recovered gallery images or enable production flags."
+  }
+]

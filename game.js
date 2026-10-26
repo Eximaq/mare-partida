@@ -1660,7 +1660,7 @@
     if(!['status','talents','achievements','haki','akuma','hierarchy','appearance'].includes(characterTab))characterTab='status';
     $('dialogTitle').textContent=({status:'Personagem',talents:'Talentos',achievements:'Conquistas',haki:'Haki',akuma:'Akuma no Mi',hierarchy:'Hierarquia dos Mares',appearance:'Aparência'})[characterTab];
     if(characterTab==='appearance'){
-      if(!DEV_ACTIVE||!paperDollReview.snapshot().enabled){body.innerHTML='<p>A personalização está em avaliação no laboratório Paper Doll.</p><a class="dialog-button" href="?dev=1&amp;paperDollReview=navy-starter">Abrir laboratório de aparência</a>';return;}
+      if(!DEV_ACTIVE||!paperDollReview.snapshot().enabled){body.innerHTML='<p>A personalização está em avaliação no laboratório Paper Doll.</p><a class="dialog-button" href="?dev=1&amp;paperDollReview=complete">Abrir laboratório de aparência</a>';return;}
       dollLookDraft=dollLookDraft||MarePaperDollLook.read(game);body.innerHTML=MarePaperDollLook.render(game,dollLookDraft,dollLookMessage);return;
     }
     if(characterTab==='hierarchy'){renderHierarchy(body);return;}

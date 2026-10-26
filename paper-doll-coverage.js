@@ -12,6 +12,7 @@
     };
     for(const [action,frames]of Object.entries(actions))for(const direction of directions)for(const slot of slots){
       const category=action.startsWith('attack-')?action.slice(7):'sword';
+      if(slot==='weapon'&&category==='unarmed'&&pack?.completeCategories===true)continue;
       const pieceId=slot==='weapon'?(pack?.categoryWeapons?.[category]||(category==='sword'?pack?.appearance?.pieces?.weapon:null)):pack?.appearance?.pieces?.[slot];
       const piece=pack?.pieces?.find(p=>p.id===pieceId&&p.slot===slot);
       const valid=compatible(piece,action,direction,frames);
@@ -19,7 +20,7 @@
     }
     const approved=pack?.full_character_artwork_approved===true&&pack?.pieces?.every(p=>p.approved===true)===true;
     const missingWeaponLocomotion=[];
-    for(const category of categories.filter(c=>c!=='sword')){
+    for(const category of categories.filter(c=>c!=='sword'&&!(c==='unarmed'&&pack?.completeCategories===true))){
       const piece=pack?.pieces?.find(p=>p.id===pack?.categoryWeapons?.[category]&&p.slot==='weapon');
       for(const action of ['idle','walk'])for(const direction of directions)if(!compatible(piece,action,direction,actions[action]))missingWeaponLocomotion.push({category,action,direction,frames:actions[action]});
     }

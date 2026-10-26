@@ -2,9 +2,11 @@
 
 Atualizado em 26/10/2026. Este documento descreve o código e os assets presentes; não representa aprovação artística ou liberação global.
 
-Continuação: [Lutador em quatro direções](PAPER-DOLL-SOCOS-COMBATE.md) e [Atirador em quatro direções](PAPER-DOLL-ATIRADOR.md), disponíveis em pacotes opt-in do laboratório DEV. Cada pacote cobre 32 poses de ataque, além de Idle e Walk compartilhados. O lote acumula 146 gerações contabilizadas conservadoramente de um teto de 300, sem jobs pendentes desta etapa. Os pacotes continuam sem aprovação artística global.
+Continuação: [Lutador em quatro direções](PAPER-DOLL-SOCOS-COMBATE.md) e [Atirador em quatro direções](PAPER-DOLL-ATIRADOR.md), disponíveis em pacotes opt-in do laboratório DEV. Cada pacote cobre 32 poses de ataque, além de Idle e Walk compartilhados. Antes da etapa final, o lote acumulava 146 gerações contabilizadas conservadoramente de um teto de 300, sem jobs pendentes desta etapa. Os pacotes continuam sem aprovação artística global.
 
 Continuação de 26/10: [Gatuno modular](PAPER-DOLL-GATUNO.md), 38 gerações cobradas, quatro direções e duas adagas separadas. Sem novas tentativas pagas.
+
+Etapa final de 26/10: Tecnologia, Canalização e bancada unificada implementadas. Reserva conservadora acumulada **222/300**, incluindo cobranças finais não expostas de resultados recuperados da galeria. Nenhuma geração repetida após a pausa.
 
 ## Integração executada
 
@@ -18,7 +20,7 @@ Continuação de 26/10: [Gatuno modular](PAPER-DOLL-GATUNO.md), 38 gerações co
 - Pacotes aceitam peças adicionais e `categoryWeapons`, preservando validação de IDs, direção, frames e categoria. Arma de uma categoria nunca substitui implicitamente a de outra.
 - Auditoria `paper-doll-coverage.js` distingue cobertura declarada, aprovação artística e habilitação de produção. A validação real das imagens continua no compositor/carregador.
 
-## Assets que ainda impedem a conclusão
+## Cobertura básica concluída no pacote unificado
 
 | Categoria de ataque | Classes atendidas | Corpo/cabelo/roupa | Arma/encaixes |
 |---|---|---:|---|
@@ -26,10 +28,10 @@ Continuação de 26/10: [Gatuno modular](PAPER-DOLL-GATUNO.md), 38 gerações co
 | Punhos | Lutador | 32 poses disponíveis no pacote DEV | mãos livres; equipamento incompatível usa fallback |
 | Arma de fogo | Atirador | 32 poses disponíveis no pacote DEV | Mosquete de Convés com encaixes nas quatro direções |
 | Adagas | Gatuno | 32 poses disponíveis no pacote DEV | Adagas da Bruma com encaixe independente por mão |
-| Tecnologia | Ciborgue | 32 poses por camada ausentes | pendentes |
-| Canalização | Estrategista e Suporte | 32 poses por camada ausentes | pendentes |
+| Tecnologia | Ciborgue | 32 poses reaproveitadas do gesto de disparo validado | Manopla de Aço separada |
+| Canalização | Estrategista e Suporte | 32 poses compartilhadas disponíveis | Compasso de Tempestade e Cajado do Farol separados |
 
-Cobertura ainda ausente: **192 posições de camada** (2 categorias × 4 direções × 8 poses × 3 camadas). Isso não significa 192 gerações ou imagens únicas: cabelo rígido pode reutilizar pixels com encaixes validados. As armas dessas duas categorias ainda exigem encaixes em 64 poses de ataque e 96 poses de locomoção. Não confundir a cobertura técnica dos pacotes DEV com sua aprovação para produção.
+As seis categorias de ataque básico estão cobertas no [pacote unificado das sete classes](PAPER-DOLL-SETE-CLASSES.md). São 560 poses de classe/ação/direção verificadas no navegador, com os mesmos movimentos entre facções. A ausência de arma do Lutador é explícita; equipamentos de punhos sem peças continuam com fallback. Cobertura técnica não equivale a aprovação artística ou ativação global.
 
 Os demais equipamentos, novos cabelos, corpos e vestuários não têm arte modular validada. Habilidades, reações e morte ainda recorrem ao legado quando não cobertos. Não declarar que a presença de fallback conclui esses assets.
 

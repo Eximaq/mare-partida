@@ -1,0 +1,18 @@
+{
+  "job_id": "a14bc954-e32f-46f3-be57-340c92932528",
+  "frames": [
+    {
+      "path": "tech-east-raw/00.png",
+      "sha256": "14c2fe627c829f4a5dcd0511488857f7837149125809f4ae3c44ce53f280250f",
+      "bounds": [
+        26,
+        9,
+        51,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}

@@ -1,5 +1,7 @@
 # Desenvolvimento compartilhado no GitHub
 
+**Personagem único: sete classes na mesma bancada.** [Guia do pacote unificado](docs/PAPER-DOLL-SETE-CLASSES.md), [bancada com seleção de classe/facção](tools/paper-doll-inspector/index.html?pack=complete) e [combate DEV](?dev=1&paperDollReview=complete). As seis categorias de ataque básico estão cobertas; equipamentos adicionais e habilidades sem arte preservam o legado. Ainda em avaliação artística.
+
 Gatuno modular em avaliação: [guia e limites](docs/PAPER-DOLL-GATUNO.md), [bancada](tools/paper-doll-inspector/index.html?pack=rogue) e [combate DEV](?dev=1&paperDollReview=rogue). Adagas separadas por mão, movimento compartilhado entre facções e save normal preservado.
 
 Atirador modular em avaliação: [guia e limites](docs/PAPER-DOLL-ATIRADOR.md), [bancada](tools/paper-doll-inspector/index.html?pack=gunner-east) e [combate DEV](?dev=1&paperDollReview=gunner). Idle, caminhada e disparo em quatro direções; Mosquete de Convés separado, save normal preservado.

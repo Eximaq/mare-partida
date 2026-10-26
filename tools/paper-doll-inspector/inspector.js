@@ -19,7 +19,7 @@
   function buildIdentity(){
     for(const [id,values]of [['classId',catalog.classes],['factionId',catalog.factions]]){
       $(id).replaceChildren(...Object.entries(values).map(([value,item])=>{const option=document.createElement('option');option.value=value;option.textContent=item.name;return option;}));$(id).value=player[id];
-      $(id).addEventListener('change',()=>{pause();sequenceIndex=-1;finished=false;player[id]=$(id).value;if(id==='classId'){player.equipment.weapon={def:catalog.classes[player.classId].weapon};buildWeapons();}$('frame').value=0;elapsed=0;render();});
+      $(id).addEventListener('change',()=>{pause();sequenceIndex=-1;finished=false;player[id]=$(id).value;if(id==='classId'){player.equipment.weapon=imported?.completeCategories&&player.classId==='brawler'?null:{def:catalog.classes[player.classId].weapon};buildWeapons();}$('frame').value=0;elapsed=0;render();});
     }
   }
   function buildWeapons(){
@@ -58,6 +58,7 @@
   function appearance(){
     if(!imported)return catalog.appearance(player);
     const result={rigId,pieces:{...imported.pieces},blocked:[]};
+    if(imported.completeCategories){const category=catalog.profile(player).category;if(player.equipment.weapon)result.pieces.weapon=imported.categoryWeapons[category];else delete result.pieces.weapon;}
     for(const [equipmentSlot,binding]of Object.entries(imported.bindings||{})){
       const item=player.equipment[equipmentSlot];if(!item)continue;
       const pieceId=binding.items?.[item.def];
@@ -222,7 +223,7 @@
         data.rig?.requiredSlots?.length!==studySlots.length||studySlots.some(s=>!data.rig.requiredSlots.includes(s))||
         !Array.isArray(data.pieces)||data.pieces.length!==studySlots.length||Object.keys(data.appearance?.pieces||{}).length!==studySlots.length||
         studySlots.some(s=>data.pieces.filter(p=>p.slot===s&&p.id===data.appearance?.pieces?.[s]).length!==1)||data.bindings))throw Error('Estudo parcial exige exatamente suas camadas declaradas, sem equipamentos e com produção bloqueada.');
-      if(data.rig?.frameWidth!==84||data.rig?.frameHeight!==84||(!studySlots&&expected.requiredSlots.some(s=>!data.rig?.requiredSlots?.includes(s))))throw Error('O protótipo exige rig84 e corpo, cabelo, roupa e arma.');
+      if(data.rig?.frameWidth!==84||data.rig?.frameHeight!==84||(!studySlots&&(data.completeCategories?['body','hair','outfit']:expected.requiredSlots).some(s=>!data.rig?.requiredSlots?.includes(s))))throw Error('O protótipo exige rig84 e corpo, cabelo, roupa e arma.');
       const declared=Object.entries(data.rig.animations||{});
       if(!declared.length||declared.some(([id,a])=>!a||!Object.hasOwn(expected.animations,id)||a.frames!==expected.animations[id].frames||a.fps!==expected.animations[id].fps||a.loop!==expected.animations[id].loop||!expected.animations[id].directions.every(d=>a.directions?.includes(d))))throw Error('As sequências declaradas devem seguir o contrato4/8/8 e quatro direções.');
       // Canonical timelines keep missing actions inspectable through the legacy fallback.
@@ -251,7 +252,7 @@
         if(!Number.isInteger(def)||catalog.weaponItems[def]?.[0]!==catalog.profile(player).category||!data.bindings?.weapon?.items?.[def])throw Error('Arma inicial da prévia incompatível.');
         player.equipment.weapon={def};buildWeapons();
       }
-      pause();sequenceIndex=-1;finished=false;releaseUrls();objectUrls=urls;runtime=candidate;rigId=data.rig.id;imported={...data.appearance,bindings:data.bindings,scope:data.scope};importedSource=structuredClone(data);importedFileNames=fileUrls;$('classId').disabled=true;$('factionId').disabled=true;$('weapon').disabled=!data.bindings?.weapon;$('outfit').disabled=!data.bindings?.coat;
+      pause();sequenceIndex=-1;finished=false;releaseUrls();objectUrls=urls;runtime=candidate;rigId=data.rig.id;imported={...data.appearance,bindings:data.bindings,scope:data.scope,completeCategories:data.completeCategories,categoryWeapons:data.categoryWeapons};importedSource=structuredClone(data);importedFileNames=fileUrls;$('classId').disabled=!data.completeCategories;$('factionId').disabled=!data.completeCategories;$('weapon').disabled=!data.bindings?.weapon;$('outfit').disabled=!data.bindings?.coat;
       const actions=[...$('animation').options].map(o=>o.value),current=$('animation').value;
       if(!data.rig.animations[poseAnimationId(current)])$('animation').value=actions.find(a=>data.rig.animations[poseAnimationId(a)])||current;
       $('frame').value=0;elapsed=0;$('importStatus').textContent='Pacote local recebido. Confira todas as poses e pendências.';render();
@@ -260,7 +261,7 @@
   $('importPack').addEventListener('change',()=>importFiles([...$('importPack').files]));
   async function bundledReview(){
     const key=new URLSearchParams(location.search).get('pack');
-    const packs={'rogue':'../../pixellab-pip-generations/paper-doll-rogue-20261025/','gunner-east':'../../pixellab-pip-generations/paper-doll-gunner-20261025/','unarmed':'../../pixellab-pip-generations/paper-doll-unarmed-combat-20261024/','punch':'../../pixellab-pip-generations/paper-doll-category-attacks-20261023/','punch-east':'../../pixellab-pip-generations/paper-doll-category-attacks-20261023/','navy-starter':'../../pixellab-pip-generations/paper-doll-navy-starter-20261023/','hair-continuity':'../../pixellab-pip-generations/paper-doll-hair-continuity-20261022/','body-continuity':'../../pixellab-pip-generations/paper-doll-body-continuity-20261022/','bento-east-fit':'../../pixellab-pip-generations/paper-doll-east-fit-20261022/','basic-sword':'../../pixellab-pip-generations/paper-doll-basic-sword-20261021/','walk-profiles':'../../pixellab-pip-generations/paper-doll-walk-profiles-20261021/','walk-north-complete':'../../pixellab-pip-generations/paper-doll-north-finish-20261021/','walk-north':'../../pixellab-pip-generations/paper-doll-walk-north-20261021/','walk-south':'../../pixellab-pip-generations/paper-doll-walk-fit-20261021/','expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
+    const packs={'complete':'../../pixellab-pip-generations/paper-doll-complete-20261026/','rogue':'../../pixellab-pip-generations/paper-doll-rogue-20261025/','gunner-east':'../../pixellab-pip-generations/paper-doll-gunner-20261025/','unarmed':'../../pixellab-pip-generations/paper-doll-unarmed-combat-20261024/','punch':'../../pixellab-pip-generations/paper-doll-category-attacks-20261023/','punch-east':'../../pixellab-pip-generations/paper-doll-category-attacks-20261023/','navy-starter':'../../pixellab-pip-generations/paper-doll-navy-starter-20261023/','hair-continuity':'../../pixellab-pip-generations/paper-doll-hair-continuity-20261022/','body-continuity':'../../pixellab-pip-generations/paper-doll-body-continuity-20261022/','bento-east-fit':'../../pixellab-pip-generations/paper-doll-east-fit-20261022/','basic-sword':'../../pixellab-pip-generations/paper-doll-basic-sword-20261021/','walk-profiles':'../../pixellab-pip-generations/paper-doll-walk-profiles-20261021/','walk-north-complete':'../../pixellab-pip-generations/paper-doll-north-finish-20261021/','walk-north':'../../pixellab-pip-generations/paper-doll-walk-north-20261021/','walk-south':'../../pixellab-pip-generations/paper-doll-walk-fit-20261021/','expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
     if(!key||!packs[key])return;
     try{
       $('importStatus').textContent='Carregando prévia incluída no projeto…';

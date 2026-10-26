@@ -1,0 +1,17 @@
+{
+  "frame_urls": [
+    "body-south-raw/01.png",
+    "body-south-raw/02.png",
+    "body-south-raw/03.png",
+    "body-south-raw/04.png",
+    "body-south-raw/05.png",
+    "body-south-raw/06.png",
+    "body-south-raw/07.png",
+    "body-south-raw/08.png"
+  ],
+  "reference_image_url": "outfit-reference.png",
+  "width": 64,
+  "height": 64,
+  "no_background": true,
+  "additional_instructions": "Transfer only the cream short-sleeved shirt and navy sailor waistcoat. Keep the bald head, face, bare hands, charcoal shorts, limbs, native pixel scale and every input pose. No hair, weapons, extra limbs or effects. Preserve direction, feet and frame order."
+}

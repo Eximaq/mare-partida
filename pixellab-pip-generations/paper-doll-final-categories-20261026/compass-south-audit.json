@@ -1,0 +1,18 @@
+{
+  "job_id": "502258de-a051-43fe-956c-23518cd3cf76",
+  "frames": [
+    {
+      "path": "compass-south-raw/00.png",
+      "sha256": "c5e20973583d3f668c7d5fa75fed2496acff17bea39adf32a89088891531dd44",
+      "bounds": [
+        22,
+        11,
+        50,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}
