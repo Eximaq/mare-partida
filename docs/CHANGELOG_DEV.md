@@ -371,3 +371,13 @@ Refatoração interna das sete árvores, preservando os 147 talentos, investimen
 Arquivos: talent-system.js, talent-ui.js, game.js, ui-screens.css, assets/manifest e testes/documentação específicos. Nenhum save, credencial ou evidência em massa incluído. Evidências locais de 26/10 na pasta temporária de QA, fora do Git. Sem migração nova ou mudança de balanceamento; rollback por revert do commit.
 
 Validação desta entrega: 83 suítes Node, 99 testes Python de backend/artes e 4 de hierarquia aprovados. Novo teste de navegador aprovado nas sete classes e sete resoluções, incluindo toque, falha de storage, saves v1, confirmação/reload, máximo, dependências e fontes HD. Mesmo fluxo principal aprovado no preview estático. Build Pages aprovado; 100 hashes JS/CSS e cópia dos assets conferidos. O teste legado pages_cache_browser.py falhou na asserção MareEmberRenderer.stats().monsters == 4 ao visitar Dawn; o renderizador do mapa não foi alterado nesta tarefa. Nenhum merge automático.
+
+## 26/10/2026 — Revisão dos talentos aprovada pelo proprietário
+
+Branch fix/talent-tree-96px-special-icons, a partir de main e302c09 (PR #120 já incorporado). Preservadas as alterações recentes do pacote Paper Doll do outro colaborador.
+
+Ícones em 96px reais no zoom inicial, nove recortes transparentes, fundo oceânico enviado, janela responsiva com cabeçalho compacto e inspector sob seleção. Criados e integrados 42 ícones PixelLab específicos (21 intermediários + 21 finais), com transparência e manifestos de proveniência. Junção visual dos requisitos dos finais reduz cruzamentos. Sem mudança de save ou balanceamento.
+
+Validação inicial: 83 suítes Node; navegador nas sete classes e sete resoluções; mesmo fluxo no pacote Pages; build aprovado. Revalidação sobre main atual registrada no PR. Capturas e auditoria de alpha ficam somente na pasta temporária local de revisão, fora do Git. O proprietário confirmou o visual e autorizou o envio. Rollback por revert do commit, preservando armazenamento local.
+
+Validação final sobre e302c09: 84 suítes Node aprovadas; teste específico de assets repetido após conferir unicidade dos 42 PNGs e hash do fundo. Navegador aprovado nas sete classes e sete resoluções, também no pacote Pages atualizado, sem erros de página.

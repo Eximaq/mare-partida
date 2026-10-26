@@ -167,3 +167,15 @@ As sete classes mantêm os mesmos 21 talentos por árvore, IDs, bônus, custos, 
 - Botões DOM mantêm nomes acessíveis, progresso e foco. Pan/zoom/pinça preservados, assim como a moldura externa.
 - Proveniência: assets/ui/talents/manifest.json. Custo: 18 gerações (9 estudos iniciais 32px e 9 artes HD utilizadas). Estudos fora do pacote público.
 - Sem mudança da versão de save. Ranks avançados herdados v1 preservados; novos investimentos exigem o intermediário. Rollback: reverter o commit, preservando armazenamento local.
+
+## Revisão aprovada: 96 px, transparência e ícones exclusivos — 26/10/2026
+
+O proprietário rejeitou a escala de 32px por falta de legibilidade e aprovou a revisão visual antes da publicação.
+
+- Os ícones passam a 96×96 coordenadas de tela ao abrir (zoom inicial 100%). O botão “96 px” restaura a escala; “Visão geral” é uma opção explícita. Margens transparentes são medidas uma vez e descontadas no desenho para que a arte ocupe o tamanho anunciado.
+- Nove recortes transparentes preservam os medalhões originais em cutouts/. Remoção feita no PixelLab Workbench, sem novas gerações pagas. Fontes anteriores mantidas por proveniência.
+- Cada um dos 21 intermediários e 21 finais usa seu próprio PNG em special/, em vez da fruta/estrela genérica. Fontes nativas 256×256 com transparência; custo do lote: 42 gerações. O manifesto inclui prompts, IDs, classe e habilidade correspondente.
+- O fundo é a segunda imagem enviada pelo proprietário, copiada sem alterações em ocean-background.jpeg. SHA-256 registrado no manifesto.
+- Janela ampla e cabeçalho compacto; detalhes só aparecem ao selecionar um nó. No móvel, a árvore mantém 96px e permite arraste, com detalhes em fluxo e rolagem. Ancoragem inicial no tronco é recalculada após mudanças de tamanho.
+- As conexões dos finais passam por uma junção que expressa o requisito “qualquer ponta válida”, sem cruzamentos de todas as pontas com todos os finais. Nenhuma regra, custo, talento ou investimento foi alterado.
+- Testes cobrem as sete classes, sete resoluções, toque, zoom, confirmação/recarga, falha de storage, saves antigos, tamanho 96px e 42 caminhos exclusivos.

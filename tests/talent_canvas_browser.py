@@ -29,6 +29,7 @@ with sync_playwright() as p:
   seed=copy.deepcopy(template);seed.update(level=30,classId=cls)
   c,q=checked(seed);tree(q)
   assert q.locator('[data-talent-select]').count()==21
+  assert q.locator('[data-talent-select]').first.bounding_box()['width']==96
   surface=q.locator('.talent-tree-surface')
   q.wait_for_function("document.querySelector('.talent-tree-surface').dataset.iconsReady==='true'")
   assert q.evaluate("MareTalentUI.TALENT_TREE_CONFIG['"+cls+"'].nodes.length")==21
@@ -78,7 +79,7 @@ with sync_playwright() as p:
  c.add_init_script("localStorage.setItem('mare-partida-save-v1',"+json.dumps(json.dumps(template))+")")
  q=c.new_page();q.on('pageerror',lambda e:errors.append(e.stack));q.goto(BASE_URL);q.wait_for_load_state('networkidle');tree(q)
  assert q.locator('.talent-tree-surface').evaluate('(e)=>e.width')==2000
- assert q.evaluate("Promise.all(MareTalentUI.TALENT_TREE_CONFIG.sword.nodes.map(n=>new Promise(r=>{const i=new Image;i.onload=()=>r(i.naturalWidth===512&&i.naturalHeight===512);i.src=n.icon}))).then(a=>a.every(Boolean))")
+ assert q.evaluate("Promise.all(MareTalentUI.TALENT_TREE_CONFIG.sword.nodes.map(n=>new Promise(r=>{const i=new Image;i.onload=()=>r([256,512].includes(i.naturalWidth)&&i.naturalWidth===i.naturalHeight);i.src=n.icon}))).then(a=>a.every(Boolean))")
  c.close()
  # Touch and failed storage: preview is reversible and confirmation stays atomic.
  c=b.new_context(viewport=dict(width=393,height=852),has_touch=True,is_mobile=True)
@@ -92,4 +93,4 @@ with sync_playwright() as p:
  confirm(q);assert saved(q)['talentBuilds']['sword']['nodes']['sword-0-0']==1
  assert not errors,errors
  b.close()
-print(json.dumps({'seven_classes':True,'responsive_sizes':7,'HD':512,'errors':errors,'screenshots':str(OUT)}))
+print(json.dumps({'seven_classes':True,'responsive_sizes':7,'common_HD':512,'special_HD':256,'display':96,'errors':errors,'screenshots':str(OUT)}))

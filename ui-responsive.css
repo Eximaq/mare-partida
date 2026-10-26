@@ -511,3 +511,27 @@
   #panelOverlay.inventory-mode .op-equip-slot{height:74px;min-height:74px;padding:5px}
   #panelOverlay.inventory-mode .op-equip-slot .op-slot-label{font-size:10px}
 }
+
+/* Keep 96px talent art readable; mobile pans the tree instead of shrinking it. */
+@media(max-width:760px){
+ #panelOverlay:has(.constellation-window){padding:8px}
+ #panelOverlay:has(.constellation-window)>.dialog{width:calc(100vw - 16px);height:calc(100dvh - 16px);max-height:calc(100dvh - 16px)}
+ #panelOverlay:has(.constellation-window) .dialog-body{display:block;overflow-y:auto}
+ .constellation-window{display:block;height:auto;min-height:100%;padding:12px;overflow:visible}
+ .constellation-window .talent-heading{gap:8px;margin-bottom:10px;align-items:flex-start}
+ .constellation-window .talent-heading h2{font-size:19px}
+ .constellation-window .talent-heading p{font-size:10px;max-width:150px}
+ .constellation-window .talent-budget{font-size:10px;max-width:150px}
+ .constellation-window .talent-budget>strong{font-size:22px}
+ .constellation-window .constellation-workspace{display:block;height:auto}
+ .constellation-workspace>div:first-child{height:calc(100dvh - 285px);min-height:320px}
+ .constellation-window .constellation-toolbar{display:block}
+ .constellation-window .constellation-toolbar>span{display:none}
+ .constellation-toolbar>div{display:flex;flex-wrap:wrap;justify-content:center}
+ .constellation-window .talent-inspector{height:auto;max-height:230px;margin-top:12px;padding:12px}
+ .constellation-window:not(.has-selection) .talent-inspector{display:none}
+ .constellation-window .talent-actions{margin-top:12px;padding:10px 0;background:#112a32}
+ .constellation-window .talent-actions>span{flex-basis:100%}
+ .constellation-window .talent-actions .dialog-button{flex:1;font-size:10px;padding:8px}
+ .constellation-window .talent-reset{font-size:11px}
+}

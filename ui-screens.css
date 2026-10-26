@@ -61,16 +61,54 @@
 #panelOverlay.inventory-mode .op-item-icon .item-icon.rogue-weapon-art,#panelOverlay.inventory-mode .op-item-icon .lamina-trevas-slot-animation{width:40px;height:40px;max-width:40px;max-height:40px;object-fit:contain;image-rendering:pixelated}
 #panelOverlay.inventory-mode .op-slot-icon .item-icon.rogue-weapon-art,#panelOverlay.inventory-mode .op-slot-icon .lamina-trevas-slot-animation{width:36px;height:36px;max-width:36px;max-height:36px;object-fit:contain;image-rendering:pixelated}
 
-/* Talent canvas: preserve the window shell and accessible DOM hit targets. */
+
+/* Talent tree review: full-size icons over the owner's ocean background. */
+#panelOverlay:has(.constellation-window){padding:16px}
+#panelOverlay:has(.constellation-window)>.dialog{width:min(1800px,calc(100vw - 32px));max-width:none;height:calc(100dvh - 32px);max-height:calc(100dvh - 32px);display:flex;flex-direction:column;overflow:hidden}
+#panelOverlay:has(.constellation-window) .dialog-header{min-height:54px;padding:8px 18px;flex:0 0 auto}
+#panelOverlay:has(.constellation-window) .dialog-header small{display:none}
+#panelOverlay:has(.constellation-window) .dialog-body{padding:0;min-height:0;flex:1;overflow:hidden;display:flex;flex-direction:column}
+.constellation-window{display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;min-height:0;flex:1;padding:14px 18px 10px;overflow:hidden}
+.constellation-window .talent-heading{margin:0;padding:0 0 10px;gap:16px;align-items:center}
+.constellation-window .talent-heading h2{font-size:23px;margin:2px 0 4px}
+.constellation-window .talent-heading small{font-size:11px}
+.constellation-window .talent-heading p{font-size:12px}
+.constellation-window .talent-budget{font-size:12px;gap:3px}
+.constellation-window .talent-budget>strong{font-size:24px;color:#f3ce73}
+.constellation-window .constellation-workspace{display:grid;grid-template-columns:minmax(0,1fr) 270px;gap:16px;min-height:0;height:100%;align-items:stretch}
+.constellation-workspace>div:first-child{display:grid;grid-template-rows:auto minmax(0,1fr);min-height:0;min-width:0}
+.constellation-window .constellation-toolbar{flex-direction:row;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 8px;font-size:11px}
+.constellation-toolbar>div{align-items:center;flex-wrap:wrap;gap:5px}
+.constellation-toolbar output{min-width:44px;text-align:center;color:#8fd9df;font-size:12px}
+.constellation-window .constellation-viewport{height:100%;max-height:none;min-height:0;background:#061c31 url('assets/ui/talents/ocean-background.jpeg') center center/cover no-repeat;border:1px solid #8b7446;border-radius:3px;overflow:hidden;box-shadow:inset 0 0 45px #00112166}
 .talent-tree-surface{image-rendering:auto;position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.constellation-viewport .constellation-node .node-disc{background:none;border:0;box-shadow:none;transform:none;outline:none}
-.constellation-viewport .constellation-node{width:64px;height:64px;background:none;border:0;box-shadow:none;padding:0;border-radius:50%}
-.constellation-viewport .constellation-node .node-disc{width:64px;height:64px}
-.constellation-viewport .constellation-node .node-label{top:70px;font-size:16px}
+.constellation-viewport .constellation-node,.constellation-viewport .constellation-node.ui-button{width:96px;height:96px;min-width:96px;min-height:96px;background:none;border:0;box-shadow:none;padding:0;border-radius:50%;color:#fff0c4}
+.constellation-viewport .constellation-node .node-disc{width:96px;height:96px;background:none;border:0;box-shadow:none;transform:none;outline:none}
+.constellation-viewport .constellation-node .node-label{top:128px;width:214px;font-size:16px;line-height:1.2;color:#fff0c4;font-weight:600;text-shadow:0 2px 3px #00101c,1px 0 #00101c,-1px 0 #00101c;pointer-events:none}
 .constellation-viewport .constellation-node.is-locked:not(.is-trained){opacity:1}
-.constellation-viewport .constellation-node.is-locked .node-label{color:#87959e}
-.constellation-viewport .constellation-node.is-max .node-label{color:#f3ca40}
-.constellation-viewport .constellation-node:hover{outline:2px solid #f3ca40;outline-offset:2px}
-.constellation-canvas .constellation-root{width:64px;height:64px;background:none;border:0;box-shadow:none;pointer-events:none}
-.constellation-canvas .constellation-root strong{top:50px}
-.constellation-canvas .constellation-root small{top:79px}
+.constellation-viewport .constellation-node.is-locked .node-label{color:#8cabbf}
+.constellation-viewport .constellation-node.is-max .node-label{color:#ffe18a}
+.constellation-viewport .constellation-node:hover{outline:2px solid #f3ca40;outline-offset:5px}
+.constellation-viewport .constellation-node:focus-visible{outline:3px solid #b9f6ff;outline-offset:6px}
+.constellation-canvas .constellation-root{width:96px;height:96px;background:none;border:0;box-shadow:none;pointer-events:none}
+.constellation-canvas .constellation-root strong{top:128px;font-size:18px;color:#f5d891;text-shadow:0 2px 3px #00101c}
+.constellation-canvas .constellation-root small{top:155px;font-size:12px;color:#a5bec9}
+.constellation-canvas .constellation-tier-label{left:8px;width:140px;text-align:left;line-height:1.4;font-size:14px;color:#94dce8;letter-spacing:0;text-shadow:0 2px 3px #00101c}
+.constellation-window .talent-inspector{position:static;min-width:0;min-height:0;max-height:100%;height:100%;overflow:auto;padding:16px;background:linear-gradient(#112a39ee,#061b2bee);border:1px solid #8b7446;border-top:3px solid #c8a35c;box-shadow:inset 0 0 20px #00101c66;overscroll-behavior:contain}
+.constellation-window .talent-inspector h3{font-size:18px;line-height:1.3;margin:8px 0 14px}
+.constellation-window .talent-inspector p{font-size:12px;line-height:1.6}
+.constellation-window .talent-actions{margin:0;padding:10px 0 0;gap:8px;align-items:center;flex-wrap:wrap}
+.constellation-window .talent-actions>span{font-size:12px;flex:1}
+.constellation-window .talent-actions .dialog-button{font-size:11px;min-height:38px;padding:8px 12px}
+@media(max-width:1100px) and (min-width:761px){
+ .constellation-window .constellation-workspace{grid-template-columns:minmax(0,1fr) 230px;gap:12px}
+ .constellation-window .constellation-toolbar>span{max-width:190px}
+}
+
+/* Compact heading leaves the scene room for the large nodes. */
+.constellation-window .talent-heading>div>small,.constellation-window .talent-heading p{display:none}
+.constellation-window .talent-heading h2{margin:0;font-size:22px}
+.constellation-window .talent-budget{display:flex;flex-direction:row;align-items:center;gap:12px}
+.constellation-window .talent-budget>span:first-of-type{display:none}
+.constellation-window:not(.has-selection) .constellation-workspace{grid-template-columns:minmax(0,1fr)}
+.constellation-window:not(.has-selection) .talent-inspector{display:none}

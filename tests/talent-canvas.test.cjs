@@ -34,9 +34,18 @@ global.Image=class{set src(v){this.width=512;this.height=512;this.onload();}};
 const g=game('sword'),config=UI.configFor(g,T.empty());UI.renderTalentTree(ctx,config,12,20);
 assert.ok(calls.find(c=>c.name==='translate'&&c.args[0]===12&&c.args[1]===20));
 const firstDraw=calls.findIndex(c=>c.name==='drawImage'),lastStroke=calls.map(c=>c.name).lastIndexOf('stroke');assert.ok(firstDraw>lastStroke);
-assert.ok(calls.filter(c=>c.name==='drawImage').every(c=>c.args[3]===32&&c.args[4]===32));
+assert.ok(calls.filter(c=>c.name==='drawImage').every(c=>c.args[7]<=96&&c.args[8]<=96&&Math.max(c.args[7],c.args[8])===96));
 assert.ok(calls.some(c=>c.name==='drawImage'&&c.filter==='grayscale(100%) opacity(50%)'));
 assert.ok(calls.some(c=>c.name==='set'&&c.key==='strokeStyle'&&c.value==='#f3ca40'));
 assert.ok(calls.some(c=>c.name==='set'&&c.key==='strokeStyle'&&c.value==='#1a365d'));
 assert.ok(calls.some(c=>c.name==='fillText'&&c.args[0]==='0/10'));
-console.log('Canvas: seven trees, original IDs, prerequisites, budget, max ranks, legacy investments, hit tests, draw order and 32px HD sampling passed.');
+console.log('Canvas: seven trees, original IDs, prerequisites, budget, max ranks, legacy investments, hit tests, draw order and 96px transparent HD sampling passed.');
+
+const attempts=[];global.Image=class{set src(v){attempts.push(v);this.width=this.height=256;if(v.includes('retry='))this.onload();else this.onerror();}};
+UI.renderTalentTree(ctx,{...config,edges:[],nodes:[{...config.nodes[0],icon:'retry-probe.png'}]});
+assert.deepEqual(attempts,['retry-probe.png','retry-probe.png?retry=1']);
+
+const crypto=require('node:crypto'),specialManifest=JSON.parse(fs.readFileSync('assets/ui/talents/special/manifest.json','utf8'));
+assert.equal(specialManifest.icons.length,42);
+const hashes=new Set();for(const icon of specialManifest.icons){const bytes=fs.readFileSync('assets/ui/talents/special/'+icon.file);assert.equal(bytes.readUInt32BE(16),256);assert.equal(bytes.readUInt32BE(20),256);hashes.add(crypto.createHash('sha256').update(bytes).digest('hex'));}assert.equal(hashes.size,42);
+const artManifest=JSON.parse(fs.readFileSync('assets/ui/talents/manifest.json','utf8'));assert.equal(artManifest.scene.sha256,crypto.createHash('sha256').update(fs.readFileSync('assets/ui/talents/ocean-background.jpeg')).digest('hex'));
