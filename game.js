@@ -439,11 +439,22 @@
   function hoyaEquipped(){return MareAkuma.itemData(game?.equipment?.akuma_no_mi,itemDefs)?.id===MareHoya.rules.id;}
   function hoyaActive(){return scene==='hunt'&&hoyaEquipped()&&game?.hp>0&&MareHoya.active(session?.genie,world.time);}
   function combatFocus(){return hoyaActive()?session.genie:world.hero;}
-  function clearHoya(){
-    const g=session?.genie;if(g){g.commandSeq++;g.clock.reset();session.genie=null;if(akumaBackend)void akumaRequest('end-protection',{}).catch(()=>{});for(const m of world?.mobs||[])m.telegraph=null;}
+  function clearHoya(sync=true){
+    const g=session?.genie;if(g){g.commandSeq++;g.clock.reset();session.genie=null;if(sync&&akumaBackend)void akumaRequest('end-protection',{}).catch(()=>{});for(const m of world?.mobs||[])m.telegraph=null;}
     if(world?.hero){world.hero.isUntargetable=false;world.hero.isInvulnerable=false;}
   }
+  async function cancelHoya(){
+    if(!hoyaActive()||session.fruitCastPending)return false;
+    const initial=session,g=session.genie;session.fruitCastPending=true;
+    try{
+      if(akumaBackend)await akumaRequest('hoya-cancel',{instance:game.area});
+      if(session!==initial||session.genie!==g)return false;
+      clearHoya(false);world.hero.walking=0;camera.update(world.hero,activeMap(),0,true);saveGame();updateUI();
+      toast('Gênio cancelado. A recarga continua contando.');return true;
+    }catch(error){toast(error.message,'danger');return false;}finally{initial.fruitCastPending=false;}
+  }
   async function useHoyaSkill(fruit,skill,manual){
+    if(skill.key==='1'&&hoyaActive())return manual?cancelHoya():false;
     if(scene!=='hunt'||game.hp<=0||session.respawn>0||session.fruitCastPending||MareRankC.controlled(world.hero,world.time))return false;
     if(skill.key==='2'&&!hoyaActive()||skill.key==='1'&&hoyaActive())return false;
     const cd=MareAkuma.cooldownKey(fruit.id,skill.key);if(game.energy<skill.cost||Date.now()<(game.fruitCooldowns?.[cd]||0))return false;
@@ -505,7 +516,7 @@
     if(g.hp<=0){clearHoya();toast('O Gênio foi derrotado. Sua proteção terminou.','danger');}
   }
   function drawHoyaGenie(g){
-    if(MareHoya.empowered(g,world.time))MareHoya.drawEffect(ctx,'buff',g.x,g.y-48*g.scale,(world.time-g.started)*1000,{width:128*g.scale,height:128*g.scale});
+    if(MareHoya.empowered(g,world.time))MareHoya.drawEffect(ctx,'buff',g.x,g.y-64*g.scale,(world.time-g.started)*1000,{width:128*g.scale,height:128*g.scale});
     MareHoya.drawActor(ctx,g,world.time);const s=MareHoya.stats(g,world.time),lift=106*g.scale;
     ctx.textAlign='center';ctx.font='bold 12px Trebuchet MS';ctx.fillStyle='#bceeff';ctx.fillText('Gênio · '+Math.ceil(Math.min(g.until-world.time,(g.realUntil-Date.now())/1000))+'s',g.x,g.y-lift);
     px(ctx,g.x-32,g.y-lift+6,64,6,'#001819');px(ctx,g.x-31,g.y-lift+7,62*Math.max(0,g.hp/s.maxHP),4,'#67d8f3');
@@ -1298,11 +1309,12 @@
     const fruitSkill=MareAkuma.activeSkill(MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id);
     [0,1].forEach((i)=>{const fruitId=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id,slotSkill=MareAkuma.activeSkill(fruitId,String(i+1)),fruitSlot=!!slotSkill,remaining=fruitId===MareRankC.rules.mato.id&&i===0&&rankCFreeCasts()?0:fruitSlot?Math.max(0,((game.fruitCooldowns?.[MareAkuma.cooldownKey(fruitId,slotSkill.key)]||0)-Date.now())/1000):session.cooldowns[i],el=$('cooldown'+(i+1)),button=$('skill'+(i+1)),icon=$('skill'+(i+1)+'Icon');
       button.disabled=fruitId===MareHoya.rules.id&&i===1&&!hoyaActive();
+      if(i===0){let label=$('hoyaSkillAction');if(!label){label=document.createElement('span');label.id='hoyaSkillAction';label.className='hoya-action-label hidden';button.append(label);}const hoya=fruitId===MareHoya.rules.id;label.classList.toggle('hidden',!hoya);const action=hoyaActive()?'cancel':game.fruitCooldowns?.[MareHoya.rules.id+':1']?'recast':'summon';label.textContent=action==='cancel'?'Cancelar Gênio':action==='recast'?'Reconjurar':'Invocar Gênio';button.dataset.hoyaAction=hoya?action:'';}
       const iconSrc=fruitSlot?slotSkill.icon_path||MareAkuma.byId(fruitId)?.skill_icon_path||'':'';
       if(icon.dataset.fruitIcon!==iconSrc){icon.dataset.fruitIcon=iconSrc;icon.innerHTML=iconSrc?`<img src="${iconSrc}" alt="" draggable="false">`:'';}
       if(!iconSrc)icon.textContent=i===0?c.symbol:['guard','heal','blessing'].includes(c.skills[1].type)?'✚':c.skills[1].type==='area'?'✺':'✦';
       const cooling=remaining>.1;el.classList.toggle('cooling',cooling);el.textContent=cooling?remaining.toFixed(1)+'s':'';button.classList.toggle('is-cooling',cooling);button.style.setProperty('--cooldown-angle',`${Math.min(360,remaining/(fruitSlot?MareAkumaPassives.cooldown(slotSkill.cooldown,fruitId):MareAkumaPassives.cooldown(c.skills[i].cd||1,fruitId)*(game.factionId==='government'?.92:1))*360)}deg`);
-      if(fruitSlot)button.setAttribute('aria-label',slotSkill.name+(fruitId===MareRankC.rules.mato.id&&i===0&&rankCFreeCasts()?' — '+world.target.matoCharges+' cargas gratuitas':' — '+MareAkumaPassives.cooldown(slotSkill.cooldown,fruitId)+'s'));});
+      if(fruitSlot)button.setAttribute('aria-label',(fruitId===MareHoya.rules.id&&i===0?(hoyaActive()?'Cancelar Gênio — recarga preservada':game.fruitCooldowns?.[MareHoya.rules.id+':1']?'Reconjurar Gênio':slotSkill.name):slotSkill.name)+(fruitId===MareRankC.rules.mato.id&&i===0&&rankCFreeCasts()?' — '+world.target.matoCharges+' cargas gratuitas':' — '+MareAkumaPassives.cooldown(slotSkill.cooldown,fruitId)+'s'));});
     const zoan=equippedZoan(),third=fruitSkill?.key==='3',thirdButton=$('skill3'),transformButton=$('zoanTransform');
     thirdButton.classList.toggle('hidden',!third);transformButton.classList.toggle('hidden',!zoan);transformButton.classList.toggle('active',!!game.zoanTransformed);transformButton.setAttribute('aria-pressed',String(!!game.zoanTransformed));
     if(zoan){const icon=$('zoanTransformIcon'),src=zoan.icon_path;if(icon.dataset.src!==src){icon.dataset.src=src;icon.innerHTML=`<img src="${src}" alt="" draggable="false">`;}transformButton.setAttribute('aria-label',(game.zoanTransformed?'Retornar à forma humana':'Transformar em '+zoan.name)+' (T)');transformButton.removeAttribute('title');}
@@ -1405,7 +1417,8 @@
   function tooltipSkill(button){
     const fruit=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs),key=button.id==='skill3'?'3':button.id==='skill2'?'2':'1',active=MareAkuma.activeSkill(fruit?.id,key);
     if(button.id==='zoanTransform')return {key:'T',name:game.zoanTransformed?'Retornar à forma humana':'Transformação Zoan',cooldown:0,cost:0,description:`Alterna entre a forma humana e ${fruit?.name||'a forma animal'}.`};
-    if(active?.key===key){const backend=backendFruitCatalog?.[fruit.id]?.skills?.find(skill=>skill.key===key)||backendFruitCatalog?.[fruit.id]?.skill;return {key,name:backend?.name||active.name,cooldown:MareAkumaPassives.cooldown(backend?.cooldown??active.cooldown,fruit.id),cost:fruit.id===MareRankC.rules.mato.id&&key==='1'&&rankCFreeCasts()?0:backend?.cost??active.cost??0,costText:fruit.id===MareRankC.rules.mato.id&&key==='1'&&rankCFreeCasts()?'Gratuito · '+world.target.matoCharges+' cargas':null,resource:backend?.resource||'Energia',description:backend?.description||active.description||fruitTooltipFallback[fruit.id],damageType:backend?.damage_type||active.damage_type||(['akuma_uma_uma','akuma_inu_dachshund'].includes(fruit.id)?'physical':'')};}
+    if(fruit?.id===MareHoya.rules.id&&key==='1'&&hoyaActive())return {key,name:'Cancelar Gênio',cooldown:0,cost:0,description:'Encerra a invocação, o controle, o buff e a proteção. O personagem volta ao normal. A recarga original continua contando; reconjure quando ela terminar.'};
+    if(active?.key===key){const backend=backendFruitCatalog?.[fruit.id]?.skills?.find(skill=>skill.key===key)||backendFruitCatalog?.[fruit.id]?.skill;return {key,name:fruit.id===MareHoya.rules.id&&key==='1'&&game.fruitCooldowns?.[MareHoya.rules.id+':1']?'Reconjurar Gênio':backend?.name||active.name,cooldown:MareAkumaPassives.cooldown(backend?.cooldown??active.cooldown,fruit.id),cost:fruit.id===MareRankC.rules.mato.id&&key==='1'&&rankCFreeCasts()?0:backend?.cost??active.cost??0,costText:fruit.id===MareRankC.rules.mato.id&&key==='1'&&rankCFreeCasts()?'Gratuito · '+world.target.matoCharges+' cargas':null,resource:backend?.resource||'Energia',description:backend?.description||active.description||fruitTooltipFallback[fruit.id],damageType:backend?.damage_type||active.damage_type||(['akuma_uma_uma','akuma_inu_dachshund'].includes(fruit.id)?'physical':'')};}
     if(key==='3')return null;
     const skill=classes[game.classId].skills[Number(key)-1];
     return {key,name:skill.name,cooldown:MareAkumaPassives.cooldown(skill.cd,fruit?.id)*(game.factionId==='government'?.92:1),cost:skill.cost,resource:'Energia',description:skill.desc,damageType:game.classId==='strategist'?'magic':skill.type==='strike'||skill.type==='area'?'physical':''};

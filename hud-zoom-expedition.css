@@ -38,3 +38,8 @@
   .hunt-xp-tracker .hunt-xp-metrics{font-size:9px;flex-wrap:wrap;gap:3px}
 }
 @media(prefers-reduced-motion:reduce){.hunt-xp-tracker .hunt-xp-track i{transition:none}}
+
+/* Hoya's existing skill slot doubles as the explicit cancel/recast control. */
+.hoya-action-label{position:absolute;bottom:calc(100% + 7px);left:50%;transform:translateX(-50%);white-space:nowrap;padding:3px 6px;border:1px solid #7ac5d9;border-radius:4px;background:#09272ff2;color:#d4f9ff;font:700 10px/1.2 'Trebuchet MS',sans-serif;pointer-events:none}
+.skill-button[data-hoya-action="cancel"]{border-color:#edab79;box-shadow:0 0 9px #edab7955}
+.skill-button[data-hoya-action="cancel"] .hoya-action-label{border-color:#edab79;color:#ffe0c7}
