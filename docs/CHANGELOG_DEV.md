@@ -355,3 +355,9 @@ Validação desta correção: 77 arquivos Node e 92 testes Python aprovados. Hoy
 Branch feature/zoan-transform-transition sobre 9d227ad. explosion-take-2 original em toda mudança de forma Zoan; 17×71ms, overlay frontal seguindo o personagem e revelação gradual da nova forma. Observador comum por identidade atende novas frutas sem lista de IDs e permite envelope visual maior por metadados. Reload/mapa/morte limpam a transição. Formas, combate, saves e recargas preservados. Origem, reprodução e reversão em [ZOAN-TRANSICAO.md](ZOAN-TRANSICAO.md). Nenhuma geração paga.
 
 Validação: 81 arquivos Node, 92 testes Python; navegador nas sete Zoans em ambos os sentidos, três resoluções, API e Pages, morte/mapa/reload e recusa da API aprovados. Build Pages e diff check sem erros. Capturas recentes fora do Git.
+
+## 26/10/2026 — Jiki Jiki Rank B
+
+Branch feature/jiki-rank-b sobre 89ecb2d. Catálogo/lore/ícones/passivos, Grande Devorador com carga 6s e reconjuração gratuita, barra e partículas seguindo o jogador, dano 200–450%, raio de 2 tiles e explosão original; Punho Foguete homing com loop estrito 1–12 e despedaçamento 13–17, 250% no alvo. Backend valida tempo de carga/voo, energia/recargas, alcance, dono/instância e tokens únicos. Nove arquivos originais importados sem geração paga. Limpeza de carga, projéteis e VFX em transições/morte/retirada, recargas preservadas. Descrição dos itens de fruta conectada ao tooltip da mochila. Documentação e reversão em [JIKI-RANK-B.md](JIKI-RANK-B.md).
+
+Validação: 82 arquivos Node e 99 testes Python; navegador em três resoluções, API local (inclusive 6s reais até lançamento automático), 20 abates e limpeza de estados. Build Pages, preview estático e diff check aprovados. Evidências e banco de QA fora do Git.

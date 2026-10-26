@@ -51,3 +51,5 @@ O lote original estabeleceu fruta 48×48, auras animadas e o mesmo relógio `req
 [Hoya-Hoya Rank B: Gênio controlável e Majin Saidan](HOYA-RANK-B.md).
 
 [Transição visual comum das Zoans atuais e futuras](ZOAN-TRANSICAO.md).
+
+[Jiki Jiki Rank B: carga magnética e Punho Foguete](JIKI-RANK-B.md).

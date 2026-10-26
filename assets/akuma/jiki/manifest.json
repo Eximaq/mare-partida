@@ -1,0 +1,38 @@
+[
+  {
+    "asset": "fruit.png",
+    "sha256": "1d89baa71cb0831bc27c1650570491320af94166809051c8807c939749160e6c"
+  },
+  {
+    "asset": "skill-1.png",
+    "sha256": "5ef784c380b061502055becf2ba7875c12545be2a50f31bed78c2b4f42eacee2"
+  },
+  {
+    "asset": "skill-2.png",
+    "sha256": "83454a36ccbe4a208d89e70f4e8658ac3212bf1aaac688b19484f86f82694943"
+  },
+  {
+    "asset": "power-aura-take-5.png",
+    "sha256": "a44f2a5d864f7a15baa775c0672e35d84abd85d9f259ba8098c416e1f1fadb0a"
+  },
+  {
+    "asset": "power-aura-take-5.json",
+    "sha256": "4a604b21eb7709c01f0ad5e9ed4462326f880b093b0cde897464193aa6e3b1ff"
+  },
+  {
+    "asset": "explosion-take-1.png",
+    "sha256": "9c0b862c1efa88328e246984d3956bcd3b0bbbf481efd69637e6198bc5d2c593"
+  },
+  {
+    "asset": "explosion-take-1.json",
+    "sha256": "444e304754cddba4fd87df0eb641221ba77ef85466f9c26c468cc78e7d5e21f1"
+  },
+  {
+    "asset": "explosion-take-3.png",
+    "sha256": "df8065fa1ccaa3895b67e9b2e91a1e5243edbdae1fd65d29f7d9ed6c999883db"
+  },
+  {
+    "asset": "explosion-take-3.json",
+    "sha256": "f9b193628567ff16d1b6e59be9f1b63861f6d7acbe53f6263d0fbb79dda3ac99"
+  }
+]
