@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "date": "2026-10-26",
+  "provider": "PixelLab",
+  "model": "pixen",
+  "sourceSize": [
+    512,
+    512
+  ],
+  "displaySize": [
+    32,
+    32
+  ],
+  "background": "opaque navy; circular clipping in Canvas",
+  "reference": "Owner-provided nautical heart, crossed swords, anchor shield and spiral fruit references",
+  "generationCost": {
+    "HD": 9,
+    "earlier32pxStudies": 9,
+    "total": 18
+  },
+  "images": [
+    {
+      "file": "talent_heart.png",
+      "jobId": "e2c7fcab-4bee-42e8-b8c3-27812301cb7b",
+      "assetId": "6597544a-6fcb-55fd-84f3-f488de71ffce"
+    },
+    {
+      "file": "talent_sword.png",
+      "jobId": "7e812a85-4e5f-4d27-abad-042896dc1bf8",
+      "assetId": "e0217833-ecaf-5938-9d6e-874e03e9898f",
+      "cleanup": {
+        "provider": "PixelLab pixelart_workbench",
+        "imageId": "2a18195c-85a2-4d67-8951-5e6823d162c0",
+        "operation": "copy background over generated corner lettering, preserve badge pixels",
+        "cost": 0
+      }
+    },
+    {
+      "file": "talent_shield.png",
+      "jobId": "31fa3082-223d-4ab5-82e7-1a3809789dc3",
+      "assetId": "a5306a4c-1f5a-5adf-80a8-d183a2182d8a"
+    },
+    {
+      "file": "talent_fruit.png",
+      "jobId": "353907b2-a733-4bcf-a00c-1b6438e0db77",
+      "assetId": "010cb03d-9b81-5c82-b9c5-4675607b071d"
+    },
+    {
+      "file": "talent_eye.png",
+      "jobId": "663e5681-5919-4a76-a3db-e99932d65067",
+      "assetId": "d027c1b9-2e75-57ed-820d-635ccc4ddfee"
+    },
+    {
+      "file": "talent_flame.png",
+      "jobId": "42c7f2dc-c806-41d6-a893-ea8cc7dc8f2c",
+      "assetId": "f3928a27-acda-5810-9963-48a1f715eaa6"
+    },
+    {
+      "file": "talent_boots.png",
+      "jobId": "73db3f08-7cbe-4629-bd14-fe31e97a361a",
+      "assetId": "e23a07b9-ebe5-5cfb-832c-05c65ec37f90"
+    },
+    {
+      "file": "talent_anchor.png",
+      "jobId": "11e3a4d9-efcc-4da7-a6d3-7ae029745d59",
+      "assetId": "27fd4771-8567-5bf4-9ebe-ac79b79fd4d4"
+    },
+    {
+      "file": "talent_star.png",
+      "jobId": "463b8282-c3b2-445d-ac86-1eb423d3e52e",
+      "assetId": "3e7a1e60-1087-57b7-a99a-5325b037070e"
+    }
+  ]
+}
