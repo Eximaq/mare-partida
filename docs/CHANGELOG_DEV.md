@@ -343,3 +343,9 @@ Primeira chamada Pro aprovada: 10 gerações; retornou 16 ícones individuais64 
 Branch feature/hoya-genie-beta-aura sobre f6d1232. Gênio existente de 96px, buff 144px, controle por clique, proteção do invocador, atributos e duas habilidades Rank B. Nova aura Beta de 37 frames na passiva e prisão. Implementação, origem e testes em [HOYA-RANK-B.md](HOYA-RANK-B.md). Saves e índices anteriores preservados; sem novas gerações PixelLab.
 
 Validação: 77 arquivos Node, 91 testes Python; Hoya em três resoluções com 20 abates, Beta/Hana e Supa no navegador, build Pages e diff check aprovados. Capturas fora do repositório; nenhuma geração paga.
+
+## 25/10/2026 — Cancelamento Hoya e aura de energia Beta
+
+Branch fix/hoya-controls-beta-orb sobre becbb85 (merge PR114). Botão/tecla 1 alterna para Cancelar Gênio durante a invocação. Cancelamento encerra todas as mecânicas temporárias e restaura o personagem, preservando energia e os prazos originais de recarga; botão Reconjurar inicia outra invocação somente após a recarga. Rota hoya-cancel valida a instância e invalida o ataque antigo. Skill 2 do Gênio subiu 16px vezes a escala, alinhando a base da folha aos pés. Beta passa a usar energy-orb-take-3 original (25×83ms), em primeiro plano, com a base cobrindo os pés, na passiva e prisão; tether preservado. Fontes anteriores de gosma removidas por não serem mais usadas. Nenhuma geração paga; saves e passivos preservados. Para reverter, reverter o commit desta branch.
+
+Validação desta correção: 77 arquivos Node e 92 testes Python aprovados. Hoya no navegador em 1920×1080, 1366×768 e 1280×720; cancelamento real pelo botão, sem energia, preservação exata dos cooldowns, remoção da proteção, bloqueio da Skill 2 e reconjuração após recarga no relógio de teste. Beta/Hana na API local com nova aura e prisão, tether, mitigação, multihit e stun aprovados. Build Pages, preview estático e diff check aprovados; capturas locais de 25/10/2026 fora do Git.

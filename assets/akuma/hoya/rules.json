@@ -24,7 +24,7 @@
       "name": "Invocação Majin",
       "cost": 60,
       "cooldown": 90,
-      "description": "Invoca o Gênio por até 60s, com 150% dos atributos totais. Você fica protegido e controla o Gênio por cliques. A derrota dele encerra a invocação.",
+      "description": "Invoca o Gênio por até 60s, com 150% dos atributos totais. Você fica protegido e controla o Gênio por cliques. Pressione 1 novamente para cancelar e voltar ao normal; a recarga continua contando. Reconjure após a recarga.",
       "icon_path": "assets/akuma/hoya/skill-1.png"
     },
     {
