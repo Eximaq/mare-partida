@@ -27,3 +27,7 @@ O Dachshund possui margens transparentes diferentes entre idle, caminhada e ataq
 ## Validação
 
 Executar `node tests/akuma-system.test.cjs`, `python tests/akuma_backend_test.py`, regressões Node pertinentes e `python tools/build_pages.py`. No navegador, conferir registro, silhueta bloqueada, equipamento, T, três atalhos, recarga, ataque básico, caminhada, colisão da Arrancada, lentidão da Mordida, retrato e prévias.
+
+## Transição de forma
+
+O botão T usa a [transição comum Zoan](ZOAN-TRANSICAO.md): explosion-take-2 cobre o personagem, revela a nova forma e desaparece após 1207ms. Também funciona ao retornar à forma humana e nas Zoans dos demais ranks, sem alterar as habilidades.
