@@ -59,10 +59,12 @@ with sync_playwright() as p:
  q.locator('#devLauncher').click();q.locator('#devClass').select_option(CLASS);q.locator('[data-dev-command=class]').click();q.locator('#closePanel').click()
  # Start with a genuinely equipped unsupported garment; preparation must store it.
  q.add_init_script("""{const k='mare-partida-dev-save-v1',g=JSON.parse(localStorage.getItem(k));if(g&&!sessionStorage.kitFixture){if(!g.equipment.boots)g.equipment.boots={id:'qa-boots',def:8,level:1,plus:3,rarity:'common',locked:true};localStorage.setItem(k,JSON.stringify(g));sessionStorage.kitFixture='1';}}""")
- q.reload(wait_until='networkidle');q.wait_for_function('__mareDiagnostics().paperDollReview.state==="ready"')
+ q.reload(wait_until='networkidle');q.wait_for_function('__mareDiagnostics().paperDollReview.state!=="loading"')
+ assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready',q.evaluate('__mareDiagnostics().paperDollReview')
  data=json.loads(q.evaluate('localStorage.getItem("mare-partida-dev-save-v1")'));boots=data['equipment']['boots']
  q.locator('#characterMenuTrigger').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
  assert q.locator('[data-doll-kit]').is_visible()
+ q.locator('.doll-equipment').scroll_into_view_if_needed();q.screenshot(path=str(OUT/'equipment-blocked.png'))
  # Storage failure must leave the live equipment and persisted inventory intact.
  if CLASS=='sword':
   before=q.evaluate('localStorage.getItem("mare-partida-dev-save-v1")')
@@ -75,7 +77,7 @@ with sync_playwright() as p:
  assert prepared['equipment']['boots'] is None and boots in prepared['inventory']
  assert len({i['id'] for i in prepared['inventory']})==len(prepared['inventory'])
  assert not q.locator('[data-doll-kit]').count()
- q.set_viewport_size({'width':393,'height':852});assert q.evaluate('document.documentElement.scrollWidth<=innerWidth');q.screenshot(path=str(OUT/'equipment-ready.png'));q.set_viewport_size({'width':1366,'height':900})
+ q.set_viewport_size({'width':393,'height':852});assert q.evaluate('document.documentElement.scrollWidth<=innerWidth');q.locator('.doll-equipment').scroll_into_view_if_needed();q.screenshot(path=str(OUT/'equipment-ready.png'));q.set_viewport_size({'width':1366,'height':900})
  q.locator('#closePanel').click()
  q.clock.run_for(200);assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready'
  normal=q.evaluate('localStorage.getItem("mare-partida-save-v1")')
