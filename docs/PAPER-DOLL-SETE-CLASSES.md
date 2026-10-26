@@ -30,7 +30,7 @@ A manopla, o compasso e o cajado continuam rígidos e seguem a mão. O cajado la
 
 ## Testes executados
 
-- 88 testes Node antes da sincronização final com main.
+- 89 testes Node após sincronização com main, incluindo a transição Zoan do colaborador.
 - Chromium: 560 poses (7 classes × 4 direções × 20 poses de Idle/Walk/Attack).
 - Combate real das sete classes: oito poses por ataque, quatro direções, um impacto, troca/remover/reequipar arma, fallback de habilidades, celular e save normal preservado.
 - Revisão de mundo: Haki, cache limitado, desativação da prévia, save e bypass de Zoan.
