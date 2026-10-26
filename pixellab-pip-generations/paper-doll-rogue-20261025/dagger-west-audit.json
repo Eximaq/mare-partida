@@ -1,0 +1,18 @@
+{
+  "job_id": "d13f1a96-aa70-48f3-a026-9404f51d79b3",
+  "frames": [
+    {
+      "path": "dagger-west-raw/00.png",
+      "sha256": "a4e43969589aea1f672c6a7482fef0176ddfdcbe5a084fe3df8c5a22200ad196",
+      "bounds": [
+        15,
+        9,
+        39,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}

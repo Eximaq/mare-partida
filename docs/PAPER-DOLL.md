@@ -268,3 +268,10 @@ A fase entrega a infraestrutura e a prévia com fallback pela exceção expressa
 ## Cabelo nas três ações
 
 [Estudo de corpo e cabelo curto](PAPER-DOLL-CABELO-CONTINUIDADE.md):80 poses com cabelo existente; ataque reutiliza superfícies direcionais com encaixes próprios, sem alterar os movimentos ou gastar gerações. Escopo parcial, sem roupa/arma e fora de produção.
+
+
+## Duas armas rígidas sincronizadas
+
+Um clipe `kind: "rigid-attachment"` no slot `weapon` pode declarar `secondarySockets`, com o mesmo mapa de direções e comprimento de frames de `sockets`. Cada entrada é `{x, y, quarterTurns?}` ou `null` quando a mão distante está encoberta. Coordenadas inteiras dentro do canvas; rotação inteira de 0 a 3 quartos de volta. Não permite espelhamento ou interpolação.
+
+As duas mãos reutilizam a imagem direcional e sua âncora, mas recebem deslocamentos independentes. Herdam profundidade por direção/pose. Ocultar ou remover a arma afeta ambas; o cache considera os dois encaixes. Um mapa incompleto ou inválido rejeita a peça inteira, inclusive quando o erro está em outro frame. Corpo/roupa não podem usar esse recurso para simular movimento. O compositor não cria eventos de dano. Exemplo real: pacote `paper-doll-rogue-20261025`.

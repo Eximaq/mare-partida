@@ -1,0 +1,550 @@
+{
+  "source_pixels_only": true,
+  "weapon_regions": {
+    "south": [
+      14,
+      37,
+      22,
+      47
+    ],
+    "north": [
+      44,
+      18,
+      49,
+      34
+    ],
+    "west": [
+      17,
+      33,
+      28,
+      39
+    ],
+    "east": [
+      33,
+      33,
+      45,
+      40
+    ]
+  },
+  "weapon_anchors": {
+    "south": [
+      20,
+      38
+    ],
+    "north": [
+      46,
+      30
+    ],
+    "west": [
+      27,
+      36
+    ],
+    "east": [
+      34,
+      36
+    ]
+  },
+  "frames": [
+    {
+      "direction": "south",
+      "frame": 0,
+      "primary_hand": [
+        21,
+        34
+      ],
+      "secondary_hand": [
+        42,
+        34
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 1,
+      "primary_hand": [
+        21,
+        34
+      ],
+      "secondary_hand": [
+        36,
+        28
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 2,
+      "primary_hand": [
+        21,
+        29
+      ],
+      "secondary_hand": [
+        32,
+        28
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        1
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 3,
+      "primary_hand": [
+        23,
+        26
+      ],
+      "secondary_hand": [
+        33,
+        29
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        1
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 4,
+      "primary_hand": [
+        21,
+        29
+      ],
+      "secondary_hand": [
+        32,
+        28
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        1
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 5,
+      "primary_hand": [
+        22,
+        34
+      ],
+      "secondary_hand": [
+        36,
+        29
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        1
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 6,
+      "primary_hand": [
+        21,
+        35
+      ],
+      "secondary_hand": [
+        40,
+        33
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        1
+      ]
+    },
+    {
+      "direction": "south",
+      "frame": 7,
+      "primary_hand": [
+        21,
+        35
+      ],
+      "secondary_hand": [
+        42,
+        35
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 0,
+      "primary_hand": [
+        40,
+        34
+      ],
+      "secondary_hand": [
+        23,
+        34
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 1,
+      "primary_hand": [
+        40,
+        33
+      ],
+      "secondary_hand": [
+        23,
+        33
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 2,
+      "primary_hand": [
+        37,
+        27
+      ],
+      "secondary_hand": [
+        26,
+        27
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 3,
+      "primary_hand": [
+        36,
+        23
+      ],
+      "secondary_hand": [
+        26,
+        24
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 4,
+      "primary_hand": [
+        37,
+        25
+      ],
+      "secondary_hand": [
+        25,
+        26
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 5,
+      "primary_hand": [
+        40,
+        32
+      ],
+      "secondary_hand": [
+        23,
+        33
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 6,
+      "primary_hand": [
+        40,
+        34
+      ],
+      "secondary_hand": [
+        23,
+        35
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "north",
+      "frame": 7,
+      "primary_hand": [
+        40,
+        35
+      ],
+      "secondary_hand": [
+        23,
+        35
+      ],
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 0,
+      "primary_hand": [
+        28,
+        34
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 3,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 1,
+      "primary_hand": [
+        24,
+        30
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        -1,
+        0
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 2,
+      "primary_hand": [
+        21,
+        27
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        -2,
+        1
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 3,
+      "primary_hand": [
+        18,
+        28
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        -2,
+        1
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 4,
+      "primary_hand": [
+        21,
+        29
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        -2,
+        1
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 5,
+      "primary_hand": [
+        24,
+        29
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        -2,
+        1
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 6,
+      "primary_hand": [
+        27,
+        34
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 3,
+      "hair_offset": [
+        -1,
+        0
+      ]
+    },
+    {
+      "direction": "west",
+      "frame": 7,
+      "primary_hand": [
+        28,
+        35
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 3,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 0,
+      "primary_hand": [
+        31,
+        33
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 1,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 1,
+      "primary_hand": [
+        36,
+        30
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        1,
+        0
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 2,
+      "primary_hand": [
+        41,
+        25
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        1,
+        0
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 3,
+      "primary_hand": [
+        43,
+        23
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        2,
+        1
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 4,
+      "primary_hand": [
+        41,
+        25
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        1,
+        0
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 5,
+      "primary_hand": [
+        37,
+        30
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 0,
+      "hair_offset": [
+        1,
+        0
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 6,
+      "primary_hand": [
+        31,
+        34
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 1,
+      "hair_offset": [
+        0,
+        0
+      ]
+    },
+    {
+      "direction": "east",
+      "frame": 7,
+      "primary_hand": [
+        31,
+        34
+      ],
+      "secondary_hand": "occluded in profile",
+      "weapon_quarter_turns": 1,
+      "hair_offset": [
+        0,
+        0
+      ]
+    }
+  ],
+  "productionEnabled": false,
+  "notes": [
+    "North edit changed the body: only isolated blade pixels are used; anatomy remains the original animation.",
+    "Far dagger is occluded in profile; front/back use two attachments."
+  ]
+}

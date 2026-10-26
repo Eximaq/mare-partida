@@ -1,0 +1,106 @@
+{
+  "job_id": "a6cf9d9a-33e5-4c76-85c5-4b66290610f5",
+  "frames": [
+    {
+      "path": "body-east-raw/00.png",
+      "sha256": "d7d6a84a2ef92b64ac9c57944e5ae1fc8696de52f2858811c5c688b15d0984f6",
+      "bounds": [
+        24,
+        7,
+        38,
+        52
+      ],
+      "role": "input-echo"
+    },
+    {
+      "path": "body-east-raw/01.png",
+      "sha256": "fabbf982dba6b1b123a5310b85b1422cf512826f968405ffdb4a68108acf472b",
+      "bounds": [
+        25,
+        7,
+        38,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-east-raw/02.png",
+      "sha256": "b2c2402e41076bdb0e2ae37a605ba3cff644762803cc2debed5a0fe4806f160e",
+      "bounds": [
+        26,
+        7,
+        41,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-east-raw/03.png",
+      "sha256": "55798edceb830112eafc1d0346275e104cc2c3037526749a7a3ac2f1e2d386ab",
+      "bounds": [
+        25,
+        7,
+        45,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-east-raw/04.png",
+      "sha256": "8e1c204f1e3a7fad3736c0a4ce2b752500006b27b492ec81f641486931c9bba8",
+      "bounds": [
+        22,
+        8,
+        46,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-east-raw/05.png",
+      "sha256": "9fcbe29724337e055a11c2b03e6f01b1d2deee4fc6f7081deaea5c969ead0365",
+      "bounds": [
+        25,
+        7,
+        45,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-east-raw/06.png",
+      "sha256": "68d80293a6a294f920b511ffca102f352c0a842ddec38a0fcc7c7f607cb0d2b9",
+      "bounds": [
+        26,
+        7,
+        43,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-east-raw/07.png",
+      "sha256": "ab23d35056a3c60aeef74e6d30734a273c4bcfc56d410ba176d57ca7ad7d00a5",
+      "bounds": [
+        25,
+        7,
+        38,
+        52
+      ],
+      "role": "generated"
+    },
+    {
+      "path": "body-east-raw/08.png",
+      "sha256": "c344861f8e03a50fa647897b62ca7553c37f7d5b105b2018a8396e3eab2ab233",
+      "bounds": [
+        24,
+        7,
+        38,
+        52
+      ],
+      "role": "generated"
+    }
+  ],
+  "source_order_preserved": true,
+  "productionEnabled": false
+}
