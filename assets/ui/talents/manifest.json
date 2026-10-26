@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "date": "2026-10-26",
   "provider": "PixelLab",
   "model": "pixen",
@@ -8,10 +8,10 @@
     512
   ],
   "displaySize": [
-    32,
-    32
+    96,
+    96
   ],
-  "background": "opaque navy; circular clipping in Canvas",
+  "background": "transparent exterior; alpha bounds fit visible artwork to 96px",
   "reference": "Owner-provided nautical heart, crossed swords, anchor shield and spiral fruit references",
   "generationCost": {
     "HD": 9,
@@ -70,5 +70,49 @@
       "jobId": "463b8282-c3b2-445d-ac86-1eb423d3e52e",
       "assetId": "3e7a1e60-1087-57b7-a99a-5325b037070e"
     }
-  ]
+  ],
+  "cutouts": [
+    {
+      "key": "heart",
+      "imageId": "be480e9a-1897-4ee2-8f6c-4c8e77558e29"
+    },
+    {
+      "key": "sword",
+      "imageId": "1354f922-d97a-4ac7-b381-44402eaf2a53"
+    },
+    {
+      "key": "shield",
+      "imageId": "2465b738-67ec-4ff4-a5af-72fbbf775f04"
+    },
+    {
+      "key": "fruit",
+      "imageId": "c1654156-4bda-4fd0-9009-91a1dc97be3d"
+    },
+    {
+      "key": "eye",
+      "imageId": "cd1d6bc1-b29e-433b-a3a3-66cc2c9f18a8"
+    },
+    {
+      "key": "flame",
+      "imageId": "6d5b903c-d137-4f20-a23f-88535d15b96f"
+    },
+    {
+      "key": "boots",
+      "imageId": "07869c1f-a448-48c5-a96b-4ad0d1b12ed1"
+    },
+    {
+      "key": "anchor",
+      "imageId": "77479f01-64b2-4bad-abca-d601067aafb0"
+    },
+    {
+      "key": "star",
+      "imageId": "8aaedcee-156b-486f-852a-bac979b82f5f"
+    }
+  ],
+  "scene": {
+    "file": "ocean-background.jpeg",
+    "source": "User supplied Gemini_Generated_Image_q59fbmq59fbmq59f.jpeg",
+    "sha256": "8ca1cf7a94e0a2c746c5c6ad5ed02582ba8fc124a47cf18057763ff29a6ccb6f"
+  },
+  "specialIcons": "special/manifest.json"
 }
