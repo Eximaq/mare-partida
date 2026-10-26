@@ -33,6 +33,14 @@ class HoyaTest(unittest.TestCase):
   with self.assertRaises(ValueError):self.h.start_attack('p','beach',96,0,{'id':'m','x':300,'y':0})
   with self.assertRaises(ValueError):self.h.command('other','beach',0,0)
   self.h.receive('p',100000,False);self.assertFalse(self.h.active('p'));self.assertFalse(self.h.state('p')['isInvulnerable'])
+ def test_cancel_preserves_cooldown_and_allows_recast_when_ready(self):
+  self.cast();self.cast('2');target={'id':'m','x':150,'y':0,'alive':True};a=self.h.start_attack('p','beach',96,0,target);cd=dict(self.s.state('p')['cooldowns'])
+  with self.assertRaises(ValueError):self.h.cancel('p','other')
+  self.assertTrue(self.h.active('p'));self.assertTrue(self.h.cancel('p','beach')['cancelled']);self.assertEqual(self.s.state('p')['cooldowns'],cd);self.assertFalse(self.h.state('p')['isInvulnerable']);self.assertFalse(self.h.state('p')['isUntargetable'])
+  with self.assertRaises(ValueError):self.h.impact('p',a['token'],'beach',96,0,target)
+  with self.assertRaises(ValueError):self.cast()
+  with self.assertRaises(ValueError):self.cast('2')
+  self.now=1090;self.cast();p=self.h.state('p');self.assertTrue(p['active']);self.assertEqual(p['expires_at'],1150);self.assertEqual(p['stats']['attack'],150);self.assertEqual(p['hp'],150);self.assertEqual(p['buff_until'],0)
  def test_unequip_and_map_cleanup(self):
   self.cast();self.s.equip('p',None);self.assertFalse(self.h.active('p'))
   self.s.equip('p',HOYA);self.now+=100;self.cast();self.s.end_protection('p');self.assertFalse(self.h.active('p'))

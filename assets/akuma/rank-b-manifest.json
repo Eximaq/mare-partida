@@ -20,12 +20,12 @@
     "sha256": "afeb792f12f56894cb79ec064588411fd184ab014c159fc6a2a1f4078c69e03d"
   },
   {
-    "asset": "assets/akuma/beta/power-aura-take-5.png",
-    "sha256": "b50bcb6710d955d78a6c85350c3d5d1a57dd5750282a9d2b06d7be7428db1b8a"
+    "asset": "assets/akuma/beta/energy-orb-take-3.png",
+    "sha256": "84aeac6fa6efb13be99c98370628a7c73f699baa46f8802976902add73717a67"
   },
   {
-    "asset": "assets/akuma/beta/power-aura-take-5.json",
-    "sha256": "9494ec23f627243edf28ed806638762cd36a5e66b7bb0ffc923feb1b06da91a4"
+    "asset": "assets/akuma/beta/energy-orb-take-3.json",
+    "sha256": "ff5ffcee12ddce24183a958546172bc5cfc287243716fd5d0906aeb112f612b4"
   },
   {
     "asset": "assets/akuma/beta/power-aura-take-6.png",

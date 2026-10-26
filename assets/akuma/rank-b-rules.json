@@ -14,9 +14,10 @@
     "radius": 128,
     "rootDuration": 4000,
     "legVfx": {
-      "width": 104,
-      "height": 61,
-      "lift": 18
+      "width": 96,
+      "height": 96,
+      "foot": 57,
+      "baseOffset": 2
     },
     "skills": [
       {

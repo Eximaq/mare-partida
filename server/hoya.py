@@ -45,6 +45,11 @@ class HoyaService:
   ready=now+skill['cooldown']
   with store.db:store.db.execute('INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)',(player,HOYA,key,ready))
   return {'energy_spent':skill['cost'],'effect':{**self.state(player),'ready_at':ready}}
+ def cancel(self,player,instance):
+  p=self.pets.get(player)
+  if p and p['instance']!=instance:raise ValueError('Instância diferente')
+  self.clear(player)
+  return {'cancelled':True,**self.state(player)}
  def command(self,player,instance,x,y,target_id=None):
   if not self.active(player) or self.pets[player]['instance']!=instance or not all(finite(v) for v in [x,y]):raise ValueError('Gênio ou comando inválido')
   self.pets[player]['target_id']=target_id;return {'accepted':True}
