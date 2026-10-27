@@ -18,13 +18,13 @@
       const footprintWidth=object.widthCells*CELL,footprintHeight=object.heightCells*CELL;
       const wall=['36a93476-fbe2-49db-83f6-2aa8d96f65a4','76a7682f-2c3d-433d-ba02-72e77e0f1911'].includes(object.assetId);
       const width=Math.max(8,Math.round(footprintWidth*(wall?1:.65))),height=wall?(object.widthCells===1?CELL:24):Math.max(8,Math.min(32,Math.round(footprintHeight*.2)));
-      return {id:'pixellab-object-'+object.placementId,x:Math.round(left+(footprintWidth-width)/2),y:Math.round(top+CELL-height),w:width,h:height,isSolid:true,footprint:true,sourceId:object.placementId};
+      return {id:'pixellab-object-'+object.placementId,x:Math.round(left+(footprintWidth-width)/2),y:Math.round(top+CELL-height),w:width,h:height,isSolid:true,blocksProjectiles:wall||object.heightCells>1.5,footprint:true,sourceId:object.placementId};
     }
     const width=Math.max(18,Math.min(96,object.widthCells*CELL*.58));
     const height=Math.max(16,Math.min(52,object.heightCells*CELL*.28));
     const center=worldPoint(source,[object.cellX,object.cellY]);
     const bottom=(object.cellY-source.minY+1)*CELL;
-    return {id:'pixellab-object-'+object.id,x:Math.round(center.x-width/2),y:Math.round(bottom-height),w:Math.round(width),h:Math.round(height),isSolid:true,footprint:true,sourceId:object.id};
+    return {id:'pixellab-object-'+object.id,x:Math.round(center.x-width/2),y:Math.round(bottom-height),w:Math.round(width),h:Math.round(height),isSolid:true,blocksProjectiles:object.heightCells>1.5,footprint:true,sourceId:object.id};
   }
   function terrainCell(source,x,y){
     const col=Math.floor(x/CELL),row=Math.floor(y/CELL);

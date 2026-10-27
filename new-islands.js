@@ -21,7 +21,7 @@
       const w=tree?28:Math.max(16,Math.round(sw*TILE*(counter ? .75 : .72)));
       const h=tree?24:Math.max(14,Math.round(sh*TILE*(counter ? .32 : .42)));
       const center=sourceCell(sx,sy);
-      return {id:id+'-object-'+index,x:Math.round(center.x-w/2),y:Math.round(center.y+11-h),w,h};
+      return {id:id+'-object-'+index,x:Math.round(center.x-w/2),y:Math.round(center.y+11-h),w,h,blocksProjectiles:tree||sh>1.5};
     }).filter((o,index)=>o.x+o.w>0&&o.y+o.h>0&&o.x<width*TILE&&o.y<height*TILE&&(id!=='arlong'||def.walkable.includes(at(placedObjects[id].placements[index][1]-sourceOrigin.x,placedObjects[id].placements[index][2]-sourceOrigin.y))));
     const blocked=(x,y,r=10)=>colliders.some(o=>x+r>o.x&&x-r<o.x+o.w&&y+r>o.y&&y-r<o.y+o.h);
     const valid=(x,y,allowed=def.walkable)=>allowed.includes(at(x,y));

@@ -31,8 +31,8 @@
     {id:'south-palms',x:990,y:1700,w:90,h:48},
     {id:'east-palms',x:2200,y:1690,w:90,h:48}
   ].map(o=>{
-    const w=Math.max(TILE,o.w),h=Math.max(TILE,o.h);
-    return {...o,x:Math.round(o.x+(o.w-w)/2),y:Math.round(o.y+(o.h-h)/2),w,h,isSolid:true};
+    const small=/lamp|chest|barrels/.test(o.id),w=small?o.w:Math.max(TILE,o.w),h=small?o.h:Math.max(TILE,o.h);
+    return {...o,x:Math.round(o.x+(o.w-w)/2),y:Math.round(o.y+(o.h-h)/2),w,h,isSolid:true,blocksProjectiles:/house|tree|palms|monument/.test(o.id)};
   });
   const terrainWalkable=(x,y,r=10)=>[[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].every(([dx,dy])=>passable(x+dx,y+dy));
   const spawn=point(5,9);
@@ -100,6 +100,6 @@
       ctx.restore();
     }
   }
-  root.MareLobby={data,point,terrain,terrainWalkable,colliders,depthObjects,depthProp,spawn,npcs,portals,paths,map,ground,foreground,pivotY,sortDepth,image};
+  root.MareLobby={data,point,terrain,terrainWalkable,colliders,depthObjects,depthProp,upper,spawn,npcs,portals,paths,map,ground,foreground,pivotY,sortDepth,image};
   if(typeof module!=='undefined')module.exports=root.MareLobby;
 })(globalThis);

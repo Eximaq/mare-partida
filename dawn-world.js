@@ -5,7 +5,7 @@
   const mask=Uint8Array.from(atob(D.mask.bits),c=>c.charCodeAt(0)),fromSource=(x,y)=>({x:x+D.offset.x,y:y+D.offset.y});
   function sample(x,y){const col=Math.floor(x/D.mask.step),row=Math.floor(y/D.mask.step);if(col<0||row<0||col>=D.mask.cols||row>=D.mask.rows)return false;const i=row*D.mask.cols+col;return !!(mask[i>>3]&(1<<(i&7)));}
   function ground(x,y,r=0){return [[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].every(([dx,dy])=>sample(x+dx,y+dy));}
-  const props=D.props,colliders=props.map(p=>{const b=p.kind==='boat'?p.bounds:p.foot;return{id:p.id,x:b.x,y:b.y,w:b.width,h:b.height};});
+  const props=D.props,colliders=props.map(p=>{const b=p.kind==='boat'?p.bounds:p.foot;return{id:p.id,x:b.x,y:b.y,w:b.width,h:b.height,blocksProjectiles:['tree','house'].includes(p.kind)};});
   // Exact checks are opt-in for this densely authored map, avoiding sampled corner cuts.
   function maskLine(a,b,ox,oy){
     const size=D.mask.step,sx=a.x+ox,sy=a.y+oy,ex=b.x+ox,ey=b.y+oy,dx=ex-sx,dy=ey-sy,ix=Math.sign(dx),iy=Math.sign(dy);
@@ -17,10 +17,10 @@
     }return false;
   }
   function segmentBlocked(a,b,r){
-    if(colliders.some(c=>{let lo=0,hi=1;for(const [v,d,min,max]of [[a.x,b.x-a.x,c.x-r-.05,c.x+c.w+r+.05],[a.y,b.y-a.y,c.y-r-.05,c.y+c.h+r+.05]]){if(Math.abs(d)<1e-12){if(v<min||v>max)return false;}else{let u=(min-v)/d,w=(max-v)/d;if(u>w)[u,w]=[w,u];lo=Math.max(lo,u);hi=Math.min(hi,w);if(lo>hi)return false;}}return true;}))return true;
+    if(colliders.some(c=>{if(c.isSolid===false||c.blocksMovement===false)return false;let lo=0,hi=1;for(const [v,d,min,max]of [[a.x,b.x-a.x,c.x-r-.05,c.x+c.w+r+.05],[a.y,b.y-a.y,c.y-r-.05,c.y+c.h+r+.05]]){if(Math.abs(d)<1e-12){if(v<min||v>max)return false;}else{let u=(min-v)/d,w=(max-v)/d;if(u>w)[u,w]=[w,u];lo=Math.max(lo,u);hi=Math.min(hi,w);if(lo>hi)return false;}}return true;}))return true;
     return [[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].some(([x,y])=>!maskLine(a,b,x,y));
   }
-  function free(x,y,r=10){return ground(x,y,r)&&!colliders.some(c=>x+r>c.x&&x-r<c.x+c.w&&y+r>c.y&&y-r<c.y+c.h);}
+  function free(x,y,r=10){return ground(x,y,r)&&!colliders.some(c=>c.isSolid!==false&&c.blocksMovement!==false&&x+r>c.x&&x-r<c.x+c.w&&y+r>c.y&&y-r<c.y+c.h);}
   function anchor(x,y){const p=fromSource(x,y),snap=v=>Math.floor(v/16)*16+8;p.x=snap(p.x);p.y=snap(p.y);if(free(p.x,p.y))return p;for(let ring=16;ring<=128;ring+=16)for(let dy=-ring;dy<=ring;dy+=16)for(let dx=-ring;dx<=ring;dx+=16)if(Math.max(Math.abs(dx),Math.abs(dy))===ring&&free(p.x+dx,p.y+dy))return{x:p.x+dx,y:p.y+dy};throw Error('Dawn anchor outside exported ground');}
   const spawn=anchor(-480,960),returnPoint={id:'return',...anchor(-592,960),radius:38};
   const districts=[['cais','Cais de Dawn',1,2,-224,992],['corsarios','Bosque dos Corsários',3,4,0,896],['estaleiro','Praia dos Barqueiros',3,4,320,1088],['mercado','Enseada das Conchas',4,4,800,1088],['ancoras','Passarela das Âncoras',4,5,320,704],['farol','Clareira dos Vigias',5,5,480,512],['caldeira','Vila do Capitão',5,5,800,416]].map(([id,name,min,max,x,y])=>({id,name,min,max,...anchor(x,y)}));
