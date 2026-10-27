@@ -48,3 +48,11 @@ Os prompts pedem, em inglês, gesto curto de canalização sem giro ou efeitos, 
 ## Limites restantes fora da cobertura básica
 
 Os equipamentos adicionais, novos cabelos/roupas e animações específicas de habilidade, dano e morte continuam no sistema legado quando não cobertos. A arte completa precisa da avaliação do proprietário antes de uma troca global na aventura. O pacote unificado permite avaliar tudo no mesmo lugar; não altera mapas, economia, saves normais ou regras das sete classes.
+
+## Correção de continuidade e disparo
+
+A caminhada do pacote completo usa distância real (ciclo de 80 pixels do mundo), conservando a fase ao virar ou retomar. O relógio global deixa de escolher a passada; uma tecla pressionada contra colisão não anima caminhada sem deslocamento. Os oito frames e seus pixels permanecem intactos.
+
+Ataques de arma de fogo, tecnologia e canalização alinham a pose nativa de liberação (frame 3, índice zero) ao `hitFrameRatio` do relógio real. Preparação e recuperação redistribuem seu tempo sem alterar a ordem dos frames, duração do golpe, velocidade, custo ou dano. Projéteis partem de pontos medidos nas peças equipadas, transformados pelos mesmos sockets/pivô/escala, e não avançam no próprio subpasso em que nascem. Habilidades e formas Zoan mantêm seus caminhos existentes.
+
+Regressões incluem parada/retomada/curvas/colisões, limites do ciclo, ordem dos oito frames e conferência de pose/origem no instante de emissão em quatro direções. Capturas de caminhada por teclado ficam nas evidências locais, sem versionar imagens em massa. Nenhuma geração ou reparo de pixels nesta correção.

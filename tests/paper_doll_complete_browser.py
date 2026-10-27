@@ -17,7 +17,7 @@ HOOK="""
 window.__completeTest={strike(direction,skill=false){
  autoPlay=false;cancelBasicAttack();const controller=classCombatController();controller?.reset('front');const m=livingMobs()[0],delta={south:[0,15],north:[0,-15],west:[-15,0],east:[15,0]}[direction];m.x=world.hero.x+delta[0];m.y=world.hero.y+delta[1];m.hp=m.maxHP=100000;m.alive=true;
  session.respawn=0;const old=Math.random;Math.random=()=>.5;
- const before=game.stats.damage,frames=[],damageTimeline=[];let duration;
+ world.projectiles=[];const before=game.stats.damage,frames=[],damageTimeline=[],poseFrames=[],shots=[];let duration;
  try{
  heroAttack(m,1,skill?{damageType:'physical'}:null);duration=basicAttackPose()?.duration||controller?.snapshot().duration;
  const canvas=document.createElement('canvas');canvas.width=200;canvas.height=200;
@@ -26,11 +26,17 @@ window.__completeTest={strike(direction,skill=false){
   const count=paperDollReview.snapshot().draws,damageBeforeRender=game.stats.damage;
   drawPlayerSprite(canvas.getContext('2d'),100,140);
   if(game.stats.damage!==damageBeforeRender)throw Error('Rendering dealt damage');
-  frames.push(paperDollReview.snapshot().draws>count);damageTimeline.push(game.stats.damage-before);
+  frames.push(paperDollReview.snapshot().draws>count);damageTimeline.push(game.stats.damage-before);poseFrames.push(paperDollReview.snapshot().lastPose?.frameIndex);shots.push(world.projectiles.map(p=>({x:p.x,y:p.y,progress:p.progress})));
  }
  }finally{Math.random=old;}
- const result={damage:game.stats.damage-before,frames,damageTimeline,duration};cancelBasicAttack();controller?.reset('front');return result;
-}, snapshot(){return JSON.stringify(game)},stop(){autoPlay=false}};
+ const result={damage:game.stats.damage-before,frames,damageTimeline,poseFrames,shots,release:paperDollReview.snapshot().lastRelease,duration};cancelBasicAttack();controller?.reset('front');return result;
+}, walkFixture(direction){
+ autoPlay=false;autoSkills=false;travelPath=[];world.spawnClock=1e9;cancelBasicAttack();classCombatController()?.reset('front');
+ this.walkTarget=world.mobs[0]||this.walkTarget;world.mobs=this.walkTarget?[this.walkTarget]:[];for(const m of world.mobs){m.speed=0;m.attackClock=1e9;}
+ const nav=navigator(),delta={east:[170,0],west:[-170,0],south:[0,170],north:[0,-170]}[direction];
+ for(let y=192;y<nav.map.height-192;y+=64)for(let x=192;x<nav.map.width-192;x+=64){const end={x:x+delta[0],y:y+delta[1]};if(nav.walkable(x,y)&&nav.walkable(end.x,end.y)&&nav.clear({x,y},end)&&Array.from({length:86},(_,i)=>nav.walkable(x+delta[0]*i/85,y+delta[1]*i/85)).every(Boolean)){Object.assign(world.hero,{x,y});for(const m of world.mobs){m.x=x+800;m.y=y+800;}drawWorld();return {x,y};}}
+ throw Error('No walk test lane');
+}, restoreWalkTarget(){world.mobs=[this.walkTarget];world.target=this.walkTarget;}, movement(){return {time:world.time,x:world.hero.x,y:world.hero.y,keys:[...keys]};}, capture(){const c=document.createElement('canvas');c.width=200;c.height=200;drawPlayerSprite(c.getContext('2d'),100,150);return c.toDataURL();}, snapshot(){return JSON.stringify(game)},stop(){autoPlay=false}};
 
 """
 with sync_playwright() as p:
@@ -82,12 +88,31 @@ with sync_playwright() as p:
  q.clock.run_for(200);assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready'
  normal=q.evaluate('localStorage.getItem("mare-partida-save-v1")')
  q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.evaluate('__completeTest.stop()')
+ if CLASS=='gunner':
+  q.clock.pause_at(q.evaluate('Date.now()+100'))
+  for direction,key in [('east','d'),('west','a'),('south','s'),('north','w')]:
+   q.evaluate('(d)=>__completeTest.walkFixture(d)',direction);q.clock.run_for(50);q.keyboard.down(key);images=[];walk_frames=set()
+   for i in range(48):
+    previous=q.evaluate('__completeTest.movement()');q.clock.run_for(17);state=q.evaluate('__mareDiagnostics().paperDollReview.lastPose');assert state['animationId']=='walk',(i,state,previous,q.evaluate('__completeTest.movement()'));walk_frames.add(state['frameIndex'])
+    images.append(Image.open(io.BytesIO(base64.b64decode(q.evaluate('__completeTest.capture()').split(',')[1]))).convert('RGBA'))
+   q.keyboard.up(key);q.clock.run_for(250);assert q.evaluate('__mareDiagnostics().paperDollReview.lastPose.animationId')=='idle'
+   assert len(walk_frames)>=6,(direction,walk_frames)
+   background=Image.new('RGBA',(200,200),'#203333');rgb=[]
+   for im in images:rgb.append(Image.alpha_composite(background,im).convert('RGB'))
+   rgb[0].save(OUT/('walk-live-'+direction+'.gif'),save_all=True,append_images=rgb[1:],duration=17,loop=0)
+  q.evaluate('__completeTest.restoreWalkTarget()')
  coverage=q.evaluate("fetch('pixellab-pip-generations/paper-doll-complete-20261026/review-pack.json').then(r=>r.json()).then(p=>p.coverage['attack-"+CATEGORY+"'])")
  rows=[]
  for d in ['south','west','east','north']:
   result=q.evaluate('(d)=>__completeTest.strike(d)',d);assert result['damage']>0,(CLASS,d,result);assert result['frames']==[d in coverage]*8,(d,result);rows.append(result)
  assert len({r['damage'] for r in rows})==1,rows
  for r in rows: assert r['damageTimeline'][0]==0 and sum(a!=b for a,b in zip(r['damageTimeline'],r['damageTimeline'][1:]))==1,r
+ if CATEGORY in ['firearm','tech','focus']:
+  for r in rows:
+   first=next(i for i,shots in enumerate(r['shots']) if shots)
+   assert r['poseFrames'][first]==3,(CLASS,r)
+   assert r['shots'][first][0]['x']==r['release']['x'] and r['shots'][first][0]['y']==r['release']['y']
+   assert r['shots'][first][0]['progress']==0
  skill=q.evaluate('__completeTest.strike("south",true)');assert skill['frames']==[False]*8
  # Use the real inventory controls: removing/re-equipping changes the renderer immediately.
  if CLASS!='brawler':
