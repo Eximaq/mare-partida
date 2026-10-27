@@ -89,8 +89,51 @@
       if(ok){draws++;lastReason=null;}else{fallbacks++;lastReason=config.blocked[0]?.code||'missing-animation';}
       return ok;
     }
-    return {ready,draw,snapshot};
+    return {ready,draw,snapshot,equipmentStatus:player=>equipmentStatus(pack,player),prepareEquipment:(player,options)=>state==='ready'?prepareEquipment(pack,player,options):{ok:false,message:'Aguarde o carregamento do conjunto.'}};
   }
-  root.MarePaperDollReview={id,requested,appearance,create};
+  function equipmentStatus(pack,player){
+    const catalog=root.MarePaperDollCatalog,profile=catalog.profile(player);
+    if(!pack?.completeCategories)return {ready:false,issues:[],message:'Abra o pacote das sete classes para preparar equipamentos.'};
+    if(!profile)return {ready:false,issues:[],message:player?.zoanTransformed?'Volte à forma humana para avaliar o conjunto.':'Personagem incompatível com este conjunto.'};
+    const issues=[];
+    for(const slot of ['weapon','coat','head','boots','legs','cloak','gloves']){
+      const item=player.equipment?.[slot];
+      if(slot==='weapon'){
+        if(profile.category==='unarmed'){if(item)issues.push({slot,def:item.def,reason:'empty-hands'});continue;}
+        if(!item){issues.push({slot,def:null,reason:'missing-weapon'});continue;}
+        if(catalog.weaponItems[item.def]?.[0]!==profile.category){issues.push({slot,def:item.def,reason:'wrong-category'});continue;}
+      }
+      if(item&&!pack.bindings?.[slot]?.items?.[item.def])issues.push({slot,def:item.def,reason:'missing-art'});
+    }
+    return {ready:issues.length===0,issues,message:issues.length?'Estas peças impedem o conjunto modular:':'Equipamento compatível com repouso, caminhada e ataque básico.'};
+  }
+  // A real DEV inventory transaction, never a cosmetic suppression of equipment.
+  function prepareEquipment(pack,player,{capacity=120,makeWeapon}={}){
+    const fail=message=>({ok:false,message});
+    if(player?.devSandbox!==true||pack?.reviewOnly!==true||pack?.productionEnabled!==false||!pack?.completeCategories)return fail('Preparação disponível somente no laboratório das sete classes.');
+    const report=equipmentStatus(pack,player);
+    if(!root.MarePaperDollCatalog.eligible(player))return fail(report.message);
+    if(report.ready)return {ok:true,state:player,message:'Seu conjunto já está pronto. Nenhum item alterado.'};
+    const next={...player,equipment:{...player.equipment},inventory:[...player.inventory]},weaponIssue=report.issues.find(i=>i.slot==='weapon');
+    const profile=root.MarePaperDollCatalog.profile(player),target=root.MarePaperDollCatalog.classes[player.classId].weapon;
+    let replacement=null;
+    if(weaponIssue&&profile.category!=='unarmed'){
+      if(!pack.bindings?.weapon?.items?.[target])return fail('A arma inicial ainda não tem camada compatível.');
+      const index=next.inventory.findIndex(i=>i.def===target);
+      if(index>=0)replacement=next.inventory.splice(index,1)[0];
+    }
+    for(const {slot}of report.issues){if(next.equipment[slot])next.inventory.push(next.equipment[slot]);next.equipment[slot]=null;}
+    if(!Number.isSafeInteger(capacity)||capacity<0||next.inventory.length>capacity)return fail('Libere espaço na mochila para guardar as peças atuais. Nada foi alterado.');
+    if(weaponIssue&&profile.category!=='unarmed'){
+      if(!replacement){
+        if(typeof makeWeapon!=='function')return fail('Arma inicial indisponível no laboratório.');
+        replacement=makeWeapon(target);
+        if(!replacement?.id||replacement.def!==target||next.inventory.some(i=>i.id===replacement.id)||Object.values(next.equipment).some(i=>i?.id===replacement.id))return fail('Não foi possível preparar uma arma de teste válida.');
+      }
+      next.equipment.weapon=replacement;
+    }
+    return {ok:true,state:next,message:'Conjunto preparado. Peças retiradas foram guardadas na mochila do laboratório.'};
+  }
+  root.MarePaperDollReview={id,requested,appearance,create,equipmentStatus,prepareEquipment};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.MarePaperDollReview;
 })(typeof globalThis!=='undefined'?globalThis:window);

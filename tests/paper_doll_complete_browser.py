@@ -57,10 +57,28 @@ with sync_playwright() as p:
  q.goto(BASE+'?dev=1&paperDollReview=complete',wait_until='networkidle');q.wait_for_function('__mareDiagnostics().paperDollReview.state!=="loading"');assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready',q.evaluate('__mareDiagnostics().paperDollReview')
  # DEV defaults to the current normal class; remove genuinely equipped items in UI.
  q.locator('#devLauncher').click();q.locator('#devClass').select_option(CLASS);q.locator('[data-dev-command=class]').click();q.locator('#closePanel').click()
- for slot in (['boots','weapon'] if CLASS=='brawler' else ['boots']):
-  data=json.loads(q.evaluate('localStorage.getItem("mare-partida-dev-save-v1")'))
-  if data['equipment'].get(slot):
-   q.locator('.bottom-nav [data-panel=inventory]').click();q.locator('[data-inv-slot='+slot+']').click();q.locator('[data-unequip='+slot+']').click();q.locator('[data-close-panel]').click()
+ # Start with a genuinely equipped unsupported garment; preparation must store it.
+ q.add_init_script("""{const k='mare-partida-dev-save-v1',g=JSON.parse(localStorage.getItem(k));if(g&&!sessionStorage.kitFixture){if(!g.equipment.boots)g.equipment.boots={id:'qa-boots',def:8,level:1,plus:3,rarity:'common',locked:true};localStorage.setItem(k,JSON.stringify(g));sessionStorage.kitFixture='1';}}""")
+ q.reload(wait_until='networkidle');q.wait_for_function('__mareDiagnostics().paperDollReview.state!=="loading"')
+ assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready',q.evaluate('__mareDiagnostics().paperDollReview')
+ data=json.loads(q.evaluate('localStorage.getItem("mare-partida-dev-save-v1")'));boots=data['equipment']['boots']
+ q.locator('#characterMenuTrigger').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
+ assert q.locator('[data-doll-kit]').is_visible()
+ q.locator('.doll-equipment').scroll_into_view_if_needed();q.screenshot(path=str(OUT/'equipment-blocked.png'))
+ # Storage failure must leave the live equipment and persisted inventory intact.
+ if CLASS=='sword':
+  before=q.evaluate('localStorage.getItem("mare-partida-dev-save-v1")')
+  q.evaluate("() => {window.kitSet=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='mare-partida-dev-save-v1')throw Error('quota');return window.kitSet.call(this,k,v)};}")
+  q.locator('[data-doll-kit]').click();assert q.get_by_text('Não foi possível salvar. Equipamentos anteriores preservados.').is_visible()
+  assert q.evaluate('localStorage.getItem("mare-partida-dev-save-v1")')==before
+  q.evaluate('() => {Storage.prototype.setItem=window.kitSet;}')
+ q.locator('[data-doll-kit]').click();q.wait_for_function('document.querySelector("#dollLookState").textContent.includes("sincronizadas")')
+ prepared=json.loads(q.evaluate('localStorage.getItem("mare-partida-dev-save-v1")'))
+ assert prepared['equipment']['boots'] is None and boots in prepared['inventory']
+ assert len({i['id'] for i in prepared['inventory']})==len(prepared['inventory'])
+ assert not q.locator('[data-doll-kit]').count()
+ q.set_viewport_size({'width':393,'height':852});assert q.evaluate('document.documentElement.scrollWidth<=innerWidth');q.locator('.doll-equipment').scroll_into_view_if_needed();q.screenshot(path=str(OUT/'equipment-ready.png'));q.set_viewport_size({'width':1366,'height':900})
+ q.locator('#closePanel').click()
  q.clock.run_for(200);assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready'
  normal=q.evaluate('localStorage.getItem("mare-partida-save-v1")')
  q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.evaluate('__completeTest.stop()')

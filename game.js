@@ -1729,7 +1729,7 @@
     $('dialogTitle').textContent=({status:'Personagem',talents:'Talentos',achievements:'Conquistas',haki:'Haki',akuma:'Akuma no Mi',hierarchy:'Hierarquia dos Mares',appearance:'Aparência'})[characterTab];
     if(characterTab==='appearance'){
       if(!DEV_ACTIVE||!paperDollReview.snapshot().enabled){body.innerHTML='<p>A personalização está em avaliação no laboratório Paper Doll.</p><a class="dialog-button" href="?dev=1&amp;paperDollReview=complete">Abrir laboratório de aparência</a>';return;}
-      dollLookDraft=dollLookDraft||MarePaperDollLook.read(game);body.innerHTML=MarePaperDollLook.render(game,dollLookDraft,dollLookMessage);return;
+      dollLookDraft=dollLookDraft||MarePaperDollLook.read(game);body.innerHTML=MarePaperDollLook.render(game,dollLookDraft,dollLookMessage,paperDollReview.equipmentStatus(game),itemDefs);return;
     }
     if(characterTab==='hierarchy'){renderHierarchy(body);return;}
     if(characterTab==='status'){renderCharacter(body);body.insertAdjacentHTML('afterbegin','<button type="button" class="dungeon-back" data-panel="inventory">Abrir inventário e equipamentos</button><button type="button" class="dungeon-back" data-character-section="appearance">Personalizar aparência</button>');return;}
@@ -1858,6 +1858,18 @@
     toast('Inimigo de teste criado. Feche o laboratório para combater.');
   }
   document.addEventListener('click',e=>{
+    if(e.target.closest('[data-doll-kit]')){
+      if(!DEV_ACTIVE||currentPanel!=='character'||characterTab!=='appearance')return;
+      const result=paperDollReview.prepareEquipment(game,{capacity:BAG_CAPACITY,makeWeapon:def=>{const item=newItem(itemDefs[def],1,false);item.origin='Laboratório DEV';return item;}});
+      dollLookMessage=result.message;
+      if(result.ok&&result.state!==game){
+        const next=result.state,before=getDerived(),after=getDerived(next,null);
+        next.hp=Math.min(after.maxHP,Math.round(after.maxHP*game.hp/before.maxHP));next.energy=Math.min(next.energy,after.maxEnergy);
+        try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;cancelBasicAttack();world.hero.combat=null;}
+        catch{dollLookMessage='Não foi possível salvar. Equipamentos anteriores preservados.';}
+      }
+      updateUI();renderPanel();return;
+    }
     if(e.target.closest('[data-doll-look-cancel]')){dollLookDraft=MarePaperDollLook.read(game);dollLookMessage='Alterações descartadas.';renderPanel();return;}
     if(e.target.closest('[data-doll-look-apply]')){
       if(!DEV_ACTIVE||currentPanel!=='character'||characterTab!=='appearance')return;
