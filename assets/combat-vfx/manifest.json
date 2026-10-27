@@ -129,15 +129,15 @@
     },
     {
       "id": "punch",
-      "source": "Efeito no alvo do soco lutador",
+      "source": "power-aura-take-13",
       "files": [
         {
           "file": "punch.png",
-          "sha256": "c2329b78773563ed36d91e9aabe84a8a9dd6773ad1032624b319345d55e4ff89"
+          "sha256": "4314a70e10c67012d64a216ae53204c00e596ac4ff7bb102b6e1581427f61be7"
         },
         {
           "file": "punch.json",
-          "sha256": "c5b6cd90ab84b1dd76f491584a09962351def78f72605a54a4f9fb2cd91d3c7d"
+          "sha256": "af7634153a4b8e6e04ed6f2128d7a74e32aa5ebbae27a7b0e2bba1e46130d02a"
         }
       ]
     },

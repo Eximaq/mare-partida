@@ -2,7 +2,7 @@
 
 ## Assets e reprodução
 
-14 PNGs e 14 JSONs fornecidos pelo proprietário, copiados integralmente para assets/combat-vfx/. Os 190 quadros usam retângulos e durações do JSON original (83 ms por quadro). Manifesto com hashes e nomes de origem; nenhuma geração ou modificação de arte. Os pivots externos dos exports não são usados como posição de interface: os impactos são ancorados no peito, conforme o pedido.
+14 PNGs e 14 JSONs fornecidos pelo proprietário, copiados integralmente para assets/combat-vfx/. Os 194 quadros usam retângulos e durações do JSON original (83 ms por quadro). Manifesto com hashes e nomes de origem; nenhuma geração ou modificação de arte. Os pivots externos dos exports não são usados como posição de interface: os impactos são ancorados no peito, conforme o pedido.
 
 combat-vfx.js implementa animação, classificação, voo, colisão e layout. combat-vfx-data.js é derivado de assets/combat-vfx/rules.json; tools/import_combat_vfx.py recompõe os metadados a partir da pasta fornecida, preservando bytes dos PNGs/JSONs.
 
@@ -33,11 +33,11 @@ A exclusividade de impacto é respeitada; nos demais casos, metadados explícito
 | Atirador | 1–12, loop | 13 |
 | Curandeiro | 1–10, loop | 11 |
 | Mago | 1–10, loop | 11 |
-| Ciborgue | 1–10, loop | 11 |
+| Ciborgue | Feixe ancorado, 1–10 em loop | 11 |
 
-Internamente os índices começam em zero. O projétil acompanha o alvo vivo, gira para o vetor atual e verifica caminho/colisão. Na chegada, congela suas coordenadas, inicia a faixa de impacto com elapsed zero e só então executa o desconto de HP e os procs de contato/roubo de vida. O impacto continua mesmo que esse golpe mate o alvo. Em área, há um lançamento por vítima elegível, com custo e recarga consumidos uma única vez pela habilidade. Perfuração e ataques secundários com trajetória também usam a colisão.
+Internamente os índices começam em zero. Atirador, Mago e Curandeiro usam um projétil que acompanha o alvo vivo, gira para o vetor atual e verifica caminho/colisão. O Ciborgue usa um feixe preso ao emissor, apontado continuamente ao alvo inclusive nas diagonais; o contato ocorre após 120 ms de emissão, sem um objeto voando. Na chegada, congela suas coordenadas, inicia a faixa de impacto com elapsed zero e só então executa o desconto de HP e os procs de contato/roubo de vida. O impacto toca os quadros finais a 3× após o dano e mantém o último quadro por um desenho, mesmo que esse golpe mate o alvo. Em área, há um lançamento por vítima elegível, com custo e recarga consumidos uma única vez pela habilidade. Perfuração e ataques secundários com trajetória também usam a colisão.
 
-O ponto de saída do personagem modular foi preservado. Um projétil criado durante o tick permanece na origem nesse primeiro tick. Morte/desaparecimento/proteção do alvo, obstáculo, expiração, troca de personagem/fruta/forma ou área cancelam disparos incompatíveis. Filas limitadas a 64 projéteis e 96 efeitos curtos por sessão, sem serializar callbacks no save.
+O ponto de saída do personagem modular foi preservado. Um projétil criado durante o tick permanece na origem nesse primeiro tick. Quando o alvo morre, disparos ainda visíveis encerram os quadros finais sobre sua última posição sem repetir dano. Desaparecimento de alvo vivo, proteção, obstáculo, expiração, troca de personagem/fruta/forma ou área cancelam disparos incompatíveis. Filas limitadas a 64 projéteis e 96 efeitos curtos por sessão, sem serializar callbacks no save.
 
 ## Status aéreos
 
@@ -60,7 +60,7 @@ A API local continua recebendo o mundo simulado pelo cliente; não se tornou um 
 ## Validação
 
 - tests/combat-vfx.test.cjs: limites de quadros, loop, HP atrasado, tracking, impacto fixo, token assíncrono, cancelamentos, classificação e tempos exatos de status.
-- tests/combat_vfx_artwork_test.py: hashes dos 28 arquivos, transparência, 190 quadros e metadados.
+- tests/combat_vfx_artwork_test.py: hashes dos 28 arquivos, transparência, 194 quadros e metadados.
 - tests/combat_vfx_backend_test.py: timing, dono/área/alvo, replay, cancelamento, expiração e descritores de status.
 - tests/combat_vfx_browser.cjs: sete classes, HP apenas na colisão, primeiro quadro de impacto, habilidade em área sem custo duplicado, status estáticos/CC em loop, cura e alvo morto. Executar no estático e com MARE_EXPECT_API=1 na API atual.
 - Regressão de velocidade: 56 casos preservando impacto corpo a corpo e dano de projétil na colisão.
@@ -71,3 +71,15 @@ Evidências de navegador, saves e banco de teste ficam em diretório temporário
 ## Resultado da entrega
 
 Passaram 87 suítes Node, 113 testes Python de backend/arte e quatro testes de hierarquia. A aceitação de VFX passou em estático, API atual e pacote Pages, além do fallback simulado de API sem as novas rotas. Caçada automática das sete classes validada no estático. Regressões de Ryu, Lobo, Hoya, Doru, Jiki, Beta/Hana e os 56 cenários de velocidade de ataque passaram. Build Pages concluído.
+
+## Ajuste de finalização e Ciborgue — 27/10/2026
+
+Impactos de dano terminam a 3×; cura e status mantêm o tempo original. O último quadro recebe uma passagem de render antes da remoção. Referências de alvos derrotados permanecem somente no VFX temporário, permitindo terminar após a limpeza do monstro, sem novo dano/recompensa. O feixe Ciborgue atualiza a origem ao mover o personagem, calcula o ângulo por atan2 e estende a arte entre emissor e alvo; não desloca um projétil separado. Durante a cauda do impacto, o raio continua ligado ao emissor e desvanece, enquanto os quadros de explosão ficam no contato. A API usa o aquecimento de 120 ms, em vez de tempo de viagem, para esse tipo.
+
+Testes adicionais verificam as oito direções, deslocamento da origem, golpe letal, remoção do alvo, velocidade 3× e apresentação do último quadro. Os PNGs e JSONs fornecidos permanecem intactos.
+
+Validação do ajuste: 87 suítes Node e 114 testes Python passaram. Navegador estático, API atual e Pages passaram; oito direções e movimento do emissor verificados, incluindo golpe letal com limpeza do alvo. Os 56 cenários de cadência de ataque passaram sem alteração de dano ou recarga. Build Pages concluído.
+
+## Novo impacto de pancada — 27/10/2026
+
+O efeito compartilhado punch foi substituído pelo power-aura-take-13 fornecido pelo proprietário: 13 quadros de 212×221 px, 83 ms cada, total original de 1079 ms. PNG e JSON preservados byte a byte. A renderização mantém a proporção nativa e a reprodução acelerada após o dano. A categoria continua atendendo Pugilista, Girafa, Bisão, cauda do Ryu, socos Hana e demais golpes contusivos. O nome lógico punch e os mapeamentos foram mantidos; não há alteração das animações corporais do personagem ou das fórmulas. A imagem usa versão por hash para impedir mistura do atlas novo com o antigo em cache.

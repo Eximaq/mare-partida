@@ -19,6 +19,11 @@ class CombatVfxTest(unittest.TestCase):
   with self.assertRaises(ValueError):self.v.impact('p',s['token'],'beach',0,0,self.target)
   self.now+=10
   with self.assertRaises(ValueError):self.hit(s['token'])
+ def test_cyborg_is_anchored_beam(self):
+  target={'id':'far','x':400,'y':0,'alive':True};s=self.v.launch('p','beach','cyborg',0,0,target,500)
+  self.now+=.02
+  with self.assertRaises(ValueError):self.v.impact('p',s['token'],'beach',400,0,target)
+  self.now+=.1;self.assertEqual(self.v.impact('p',s['token'],'beach',400,0,target)['phase'],'impact')
  def test_cancel(self):
   s=self.launch();self.v.clear('p');self.now+=1
   with self.assertRaises(ValueError):self.hit(s['token'])
