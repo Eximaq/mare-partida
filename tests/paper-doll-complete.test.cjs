@@ -13,7 +13,7 @@ for(const [classId,c]of Object.entries(MarePaperDollCatalog.classes))for(const f
 }
 const state=coverage.inspect(pack);assert.equal(state.missingAnatomyAndClothingFrames,0);assert.equal(state.missingWeaponLocomotionFrames,0);assert(Object.values(state.readyByCategory).every(Boolean));assert.equal(state.status,'awaiting-art-review');assert.equal(state.productionReady,false);
 (async()=>{
- for(const mutate of [p=>p.completeCategories=false,p=>delete p.categoryWeapons.tech,p=>p.coverage['attack-focus']=['south'],p=>p.rig.animations['attack-tech'].frames=4,p=>p.productionEnabled=true]){
+ for(const mutate of [p=>p.completeCategories=false,p=>delete p.categoryWeapons.tech,p=>p.coverage['attack-focus']=['south'],p=>p.rig.animations['attack-tech'].frames=4,p=>p.productionEnabled=true,p=>delete p.pieces.find(x=>x.id==='complete-tech').emission,p=>p.pieces.find(x=>x.id==='complete-firearm').emission.points.east.x=-1,p=>p.rig.animations.walk.rootOffsets.east=[],p=>p.rig.animations.walk.rootOffsets.east[0].y=Infinity]){
   const data=structuredClone(pack);mutate(data);const r=review.create({search:'?paperDollReview=complete',devActive:true,baseURL:'http://localhost/',fetch:async()=>({ok:true,json:async()=>data}),getImage:()=>{throw Error('invalid data reached images')}});assert.equal((await r.ready).state,'failed');
  }
  console.log('Complete shared package: 28 identities, equipment mapping, full basic coverage, explicit empty hands, normal-save/production gates and malformed manifest guards passed.');

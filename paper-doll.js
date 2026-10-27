@@ -16,6 +16,7 @@
       if(!r.id||!integer(r.frameWidth)||!integer(r.frameHeight)||r.frameWidth<1||r.frameHeight<1||!integer(r.pivotX)||!integer(r.pivotY)||!Number.isFinite(r.scale)||r.scale<=0)throw new TypeError('Invalid rig geometry.');
       if(r.frameWidth>512||r.frameHeight>512||r.pivotX<0||r.pivotX>r.frameWidth||r.pivotY<0||r.pivotY>r.frameHeight)throw new TypeError('Rig exceeds supported bounds.');
       for(const a of Object.values(r.animations||{}))if(!integer(a.frames)||a.frames<1||a.frames>64||!Number.isFinite(a.fps)||a.fps<=0||typeof a.loop!=='boolean'||!Array.isArray(a.directions)||!a.directions.length||new Set(a.directions).size!==a.directions.length||a.directions.some(d=>!directions.includes(d)))throw new TypeError('Invalid rig animation.');
+      for(const a of Object.values(r.animations||{}))if(a.rootOffsets!==undefined&&a.directions.some(d=>!Array.isArray(a.rootOffsets?.[d])||a.rootOffsets[d].length!==a.frames||a.rootOffsets[d].some(p=>!p||!integer(p.x)||!integer(p.y)||Math.abs(p.x)>r.frameWidth||Math.abs(p.y)>r.frameHeight)))throw new TypeError('Invalid root offsets.');
       if(!Object.keys(r.animations||{}).length)throw new TypeError('Rig has no animations.');
       r.requiredSlots=r.requiredSlots||['body','hair','outfit','weapon'];
       if(r.requiredSlots.some(s=>!slots.includes(s)))throw new TypeError('Invalid required slot.');
@@ -114,7 +115,8 @@
         // Exact quarter-turns rotate a rigid weapon around its grip. Anatomy never rotates.
         const quarterTurns=rigid?(socket.quarterTurns??0):0;
         const anchors=rigid?[[source.anchorX,source.anchorY],[source.height-1-source.anchorY,source.anchorX],[source.width-1-source.anchorX,source.height-1-source.anchorY],[source.anchorY,source.width-1-source.anchorX]]:null;
-        const offsetX=(overrides.offsetX??byDirection.offsetX??clip.offsetX??0)+(rigid?socket.x-anchors[quarterTurns][0]:0),offsetY=(overrides.offsetY??byDirection.offsetY??clip.offsetY??0)+(rigid?socket.y-anchors[quarterTurns][1]:0);
+        const rootOffset=a.rootOffsets?.[direction]?.[frameIndex]||{x:0,y:0};
+        const offsetX=rootOffset.x+(overrides.offsetX??byDirection.offsetX??clip.offsetX??0)+(rigid?socket.x-anchors[quarterTurns][0]:0),offsetY=rootOffset.y+(overrides.offsetY??byDirection.offsetY??clip.offsetY??0)+(rigid?socket.y-anchors[quarterTurns][1]:0);
         const zIndex=overrides.zIndex??byDirection.zIndex??clip.zIndex??p.zIndex??slots.indexOf(slot)*10;
         if(![pivotX,pivotY,offsetX,offsetY,zIndex].every(integer)||pivotX<0||pivotX>r.frameWidth||pivotY<0||pivotY>r.frameHeight||Math.abs(offsetX)>512||Math.abs(offsetY)>512){problem('invalid-transform');continue;}
         let image;try{image=getImage(url);}catch{problem('failed-image');continue;}
@@ -135,6 +137,21 @@
       layers.sort((x,y)=>x.zIndex-y.zIndex||slots.indexOf(x.slot)-slots.indexOf(y.slot));
       return {valid:missing.length===0,rig:r,pose:{animationId:pose.animationId,direction,frameIndex},layers,missing};
     }
+    function bounds(r,visible){
+      const left=Math.min(0,...visible.map(l=>r.pivotX-l.pivotX+l.offsetX)),top=Math.min(0,...visible.map(l=>r.pivotY-l.pivotY+l.offsetY));
+      const right=Math.max(r.frameWidth,...visible.map(l=>r.pivotX-l.pivotX+l.offsetX+(l.quarterTurns%2?l.height:l.width))),bottom=Math.max(r.frameHeight,...visible.map(l=>r.pivotY-l.pivotY+l.offsetY+(l.quarterTurns%2?l.width:l.height)));
+      return {left,top,right,bottom};
+    }
+    function attachmentPoint(appearance,pose,slot,point,x,y,{scale=null,outerScale=1,hidden=[],allowDraft=false}={}){
+      const plan=resolve(appearance,pose,{allowDraft});if(!plan.valid)return null;
+      const layer=plan.layers.find(l=>l.slot===slot&&!hidden.includes(slot)),r=plan.rig,factor=scale??r.scale;
+      if(!layer||!point||![point.x,point.y].every(integer)||point.x<0||point.y<0||point.x>=layer.width||point.y>=layer.height||!Number.isFinite(factor)||factor<=0||!Number.isFinite(outerScale)||outerScale<=0)return null;
+      const b=bounds(r,plan.layers.filter(l=>!hidden.includes(l.slot))),w=b.right-b.left,h=b.bottom-b.top,px=point.x,py=point.y;
+      const q=[[px,py],[layer.height-1-py,px],[layer.width-1-px,layer.height-1-py],[py,layer.width-1-px]][layer.quarterTurns];
+      const u=r.pivotX-layer.pivotX+layer.offsetX-b.left+q[0]+.5,v=r.pivotY-layer.pivotY+layer.offsetY-b.top+q[1]+.5;
+      const dx=Math.round((outerScale===1?x:0)-(r.pivotX-b.left)*factor),dy=Math.round((outerScale===1?y:0)-(r.pivotY-b.top)*factor);
+      return {x:(outerScale===1?0:x)+(dx+u*Math.round(w*factor)/w)*outerScale,y:(outerScale===1?0:y)+(dy+v*Math.round(h*factor)/h)*outerScale};
+    }
     function draw(context,appearance,pose,x,y,{scale=null,hidden=[],allowDraft=false}={}){
       const plan=resolve(appearance,pose,{allowDraft});
       if(!plan.valid){fallbacks++;return false;}
@@ -146,10 +163,7 @@
       else{
         misses++;compositions++;
         // Expand around the rig pivot so legitimate offsets/pivots never clip a layer.
-        const left=Math.min(0,...visible.map(l=>r.pivotX-l.pivotX+l.offsetX));
-        const top=Math.min(0,...visible.map(l=>r.pivotY-l.pivotY+l.offsetY));
-        const right=Math.max(r.frameWidth,...visible.map(l=>r.pivotX-l.pivotX+l.offsetX+(l.quarterTurns%2?l.height:l.width)));
-        const bottom=Math.max(r.frameHeight,...visible.map(l=>r.pivotY-l.pivotY+l.offsetY+(l.quarterTurns%2?l.width:l.height)));
+        const {left,top,right,bottom}=bounds(r,visible);
         if(right-left>2048||bottom-top>2048)return false;
         try{
           const image=createCanvas(right-left,bottom-top),ctx=image.getContext('2d');ctx.imageSmoothingEnabled=false;
@@ -174,7 +188,7 @@
       context.drawImage(c.image,Math.round(x-c.pivotX*factor),Math.round(y-c.pivotY*factor),Math.round(c.image.width*factor),Math.round(c.image.height*factor));context.restore();return true;
     }
     const stats=()=>({hits,misses,fallbacks,compositions,cacheEntries:cache.size,cacheBytes:bytes,maxCacheBytes,maxCacheEntries});
-    return {registerRig,registerPiece,sample,resolve,draw,clear,stats,rig:id=>rigs.has(id)?clone(rigs.get(id)):null,piece:id=>pieces.has(id)?clone(pieces.get(id)):null};
+    return {registerRig,registerPiece,sample,resolve,draw,attachmentPoint,clear,stats,rig:id=>rigs.has(id)?clone(rigs.get(id)):null,piece:id=>pieces.has(id)?clone(pieces.get(id)):null};
   }
   const api={create,slots,directions};root.MarePaperDoll=api;
   if(typeof module!=='undefined'&&module.exports)module.exports=api;

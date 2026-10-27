@@ -14,3 +14,5 @@
 .doll-equipment li {margin:10px 0;line-height:1.4;}
 .doll-equipment button {min-height:44px;max-width:100%;white-space:normal;}
 @media(max-width:600px){.doll-dressing-grid {grid-template-columns:1fr;}.doll-dressing figure {padding:10px;}}
+
+.doll-debug-readout {position:fixed;right:12px;top:72px;width:340px;max-width:calc(100vw - 24px);max-height:38vh;overflow:auto;z-index:19;margin:0;padding:12px;border:1px solid #ad8550;background:#30241cf0;color:#f4e5c4;font:11px/1.4 monospace;white-space:pre-wrap;overflow-wrap:anywhere;pointer-events:none;}
