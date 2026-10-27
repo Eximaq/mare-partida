@@ -60,12 +60,12 @@ with sync_playwright() as p:
   response=route.fetch();s=response.text();needle='  window.__mareDiagnostics=';assert needle in s;route.fulfill(response=response,body=s.replace(needle,HOOK+needle))
  c.route('**/game.js*',game_route)
  q.goto(BASE,wait_until='networkidle');q.locator('#characterName').fill('Teste de adagas');q.locator('#nextToClass').click();q.locator('[data-class='+CLASS+']').click();q.locator('#createCharacter').click();q.clock.run_for(200)
- q.goto(BASE+'?dev=1&paperDollReview=complete',wait_until='networkidle');q.wait_for_function('__mareDiagnostics().paperDollReview.state!=="loading"');assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready',q.evaluate('__mareDiagnostics().paperDollReview')
+ q.goto(BASE+'?dev=1&paperDollReview=complete',wait_until='networkidle');q.wait_for_function('window.__mareDiagnostics&&__mareDiagnostics().paperDollReview.state!=="loading"');assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready',q.evaluate('__mareDiagnostics().paperDollReview')
  # DEV defaults to the current normal class; remove genuinely equipped items in UI.
  q.locator('#devLauncher').click();q.locator('#devClass').select_option(CLASS);q.locator('[data-dev-command=class]').click();q.locator('#closePanel').click()
  # Start with a genuinely equipped unsupported garment; preparation must store it.
  q.add_init_script("""{const k='mare-partida-dev-save-v1',g=JSON.parse(localStorage.getItem(k));if(g&&!sessionStorage.kitFixture){if(!g.equipment.boots)g.equipment.boots={id:'qa-boots',def:8,level:1,plus:3,rarity:'common',locked:true};localStorage.setItem(k,JSON.stringify(g));sessionStorage.kitFixture='1';}}""")
- q.reload(wait_until='networkidle');q.wait_for_function('__mareDiagnostics().paperDollReview.state!=="loading"')
+ q.reload(wait_until='networkidle');q.wait_for_function('window.__mareDiagnostics&&__mareDiagnostics().paperDollReview.state!=="loading"')
  assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready',q.evaluate('__mareDiagnostics().paperDollReview')
  data=json.loads(q.evaluate('localStorage.getItem("mare-partida-dev-save-v1")'));boots=data['equipment']['boots']
  q.locator('#characterMenuTrigger').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
