@@ -23,20 +23,40 @@
   if(/adaga|garra|mordida/i.test(name))return 'dagger';
   return damageType==='elemental'||damageType==='magic'?'mage':'punch';
  }
- function projectile(kind,origin,targetId,meta={}){if(!data.flightEnds[kind])throw Error('Invalid projectile kind');return {kind,x:origin.x,y:origin.y,origin:{...origin},targetId,phase:'flight',elapsed:0,age:0,angle:0,...meta};}
- function step(p,dt,{target,clear=()=>true,valid=()=>true,authorize=()=>true,onHit=()=>{}}={}){
-  if(p.phase==='done')return;p.age+=dt;
-  if(p.phase==='impact'){p.elapsed+=dt*1000;if(frame(p.kind,p.elapsed,{start:data.flightEnds[p.kind]})===null)p.phase='done';return;}
-  if(!valid(p)||!target||target.alive===false||target.isUntargetable||target.isInvulnerable||p.age>data.maxFlight){p.phase='done';return;}
+ function projectile(kind,origin,targetId,meta={}){if(!data.flightEnds[kind])throw Error('Invalid projectile kind');return {kind,mode:kind==='cyborg'?'beam':'projectile',x:origin.x,y:origin.y,origin:{...origin},targetId,phase:'flight',elapsed:0,age:0,angle:0,...meta};}
+ function impactDuration(p){return data.effects[p.kind].frames.slice(data.flightEnds[p.kind]).reduce((sum,f)=>sum+f.duration,0);}
+ function finishImpact(p,point){p.phase='impact';p.x=point.x;p.y=point.y;p.elapsed=0;p.playbackRate=data.impactPlaybackRate;p.finalFrameShown=false;}
+ function beamGeometry(p,origin=p.origin){const dx=p.x-origin.x,dy=p.y-origin.y;return {x:(p.x+origin.x)/2,y:(p.y+origin.y)/2,width:Math.hypot(dx,dy),angle:Math.atan2(dy,dx)};}
+ function step(p,dt,{target,origin=p.origin,clear=()=>true,valid=()=>true,authorize=()=>true,onHit=()=>{}}={}){
+  if(p.phase==='done')return;p.age+=dt;if(p.mode==='beam')p.origin={...origin};
+  if(p.phase==='impact'){
+   if(p.finalFrameShown){p.phase='done';return;}p.elapsed+=dt*1000*(p.playbackRate||data.impactPlaybackRate);
+   const duration=impactDuration(p);if(p.elapsed>=duration){p.elapsed=Math.max(0,duration-.001);p.finalFrameShown=true;}return;
+  }
+  if(!valid(p)||!target||target.isUntargetable||target.isInvulnerable||p.age>data.maxFlight){p.phase='done';return;}
+  // A dead target still receives the visual tail; never invoke another damage callback.
+  if(target.alive===false){finishImpact(p,target);return;}
+  if(p.mode==='beam'){p.x=target.x;p.y=target.y;p.angle=beamGeometry(p).angle;if(!clear(p.origin,target)){p.phase='done';return;}}
   if(p.phase==='waiting')return;
-  const dx=target.x-p.x,dy=target.y-p.y,d=Math.hypot(dx,dy),amount=Math.min(d,Math.max(0,dt)*data.projectileSpeed),next={x:p.x+(d?dx/d*amount:0),y:p.y+(d?dy/d*amount:0)};
-  if(!clear(p,next)){p.phase='done';return;}p.x=next.x;p.y=next.y;p.angle=Math.atan2(dy,dx);p.elapsed+=dt*1000;
-  if(d-amount<=data.hitRadius){
-   const accept=ok=>{if(ok===false||p.phase==='done'||!valid(p)){p.phase='done';return;}p.phase='impact';p.elapsed=0;onHit(p);};
+  let contact=false;
+  if(p.mode==='beam'){p.elapsed+=dt*1000;contact=p.age+1e-9>=data.cyborgBeamWarmup;}
+  else{
+   const dx=target.x-p.x,dy=target.y-p.y,d=Math.hypot(dx,dy),amount=Math.min(d,Math.max(0,dt)*data.projectileSpeed),next={x:p.x+(d?dx/d*amount:0),y:p.y+(d?dy/d*amount:0)};
+   if(!clear(p,next)){p.phase='done';return;}p.x=next.x;p.y=next.y;p.angle=Math.atan2(dy,dx);p.elapsed+=dt*1000;contact=d-amount<=data.hitRadius;
+  }
+  if(contact){
+   const accept=ok=>{if(ok===false||p.phase==='done'||!valid(p)){p.phase='done';return;}finishImpact(p,{x:p.x,y:p.y});if(target.alive!==false)onHit(p);};
    try{const result=authorize(p);if(result?.then){p.phase='waiting';result.then(accept).catch(()=>{p.phase='done';});}else accept(result);}catch{p.phase='done';}
   }
  }
- function drawProjectile(c,p){if(p.phase==='done')return false;const end=data.flightEnds[p.kind];return draw(c,p.kind,p.x,p.y,p.elapsed,{start:p.phase==='impact'?end:0,end:p.phase==='impact'?null:end-1,loop:p.phase==='flight',staticFrame:p.phase==='waiting'?end-1:null,angle:p.phase==='impact'?0:p.angle});}
+ function drawProjectile(c,p,{origin=p.origin}={}){
+  if(p.phase==='done')return false;const end=data.flightEnds[p.kind];
+  if(p.mode==='beam'){
+   const box=beamGeometry(p,origin);if(box.width>0){c.save();if(p.phase==='impact')c.globalAlpha*=Math.max(0,1-p.elapsed/impactDuration(p));draw(c,p.kind,box.x,box.y,p.age*1000,{width:box.width,height:64,angle:box.angle,end:end-1,loop:true});c.restore();}
+   if(p.phase!=='impact')return true;
+  }
+  return draw(c,p.kind,p.x,p.y,p.elapsed,{start:p.phase==='impact'?end:0,end:p.phase==='impact'?null:end-1,loop:p.phase==='flight',staticFrame:p.phase==='waiting'?end-1:null,angle:p.phase==='impact'?0:p.angle});
+ }
  function layout(x,y,{height=74,barWidth=60,nameWidth=0}={}){const head=y-height,barY=head-36;return {x,y,head,barY,nameY:barY-7,chestY:y-height*.45,iconX:x+Math.max(barWidth/2,nameWidth/2)+13,iconY:barY+3,ccY:head-14};}
  function statuses(entity={},now=0,epoch=Date.now(),extra={}){
   const remaining=entity.talentControl?.remaining>0,stunned=(remaining&&entity.talentControl.type==='stun')||entity.ryuStunUntil>now||entity.bisonStunUntil>now||(entity.hanaStunFrom<=now&&entity.hanaStunUntil>now),bound=(remaining&&entity.talentControl.type!=='stun')||entity.betaRootUntil>now||entity.doruRootUntil>now;
@@ -45,5 +65,5 @@
  }
  function drawStatuses(c,box,status,now){status.icons.forEach((kind,i)=>draw(c,kind,box.iconX+i*21,box.iconY,0,{width:data.statusSize,staticFrame:0}));status.cc.forEach((kind,i)=>draw(c,kind,box.x+(i-(status.cc.length-1)/2)*28,box.ccY,now*1000,{width:data.ccSize,loop:true}));}
  if(typeof Image!=='undefined')preload();
- const api={data,frame,draw,preload,classify,projectile,step,drawProjectile,layout,statuses,drawStatuses};root.MareCombatVfx=api;if(typeof module!=='undefined')module.exports=api;
+ const api={data,frame,draw,preload,classify,projectile,impactDuration,finishImpact,beamGeometry,step,drawProjectile,layout,statuses,drawStatuses};root.MareCombatVfx=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

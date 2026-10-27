@@ -33,11 +33,11 @@ A exclusividade de impacto é respeitada; nos demais casos, metadados explícito
 | Atirador | 1–12, loop | 13 |
 | Curandeiro | 1–10, loop | 11 |
 | Mago | 1–10, loop | 11 |
-| Ciborgue | 1–10, loop | 11 |
+| Ciborgue | Feixe ancorado, 1–10 em loop | 11 |
 
-Internamente os índices começam em zero. O projétil acompanha o alvo vivo, gira para o vetor atual e verifica caminho/colisão. Na chegada, congela suas coordenadas, inicia a faixa de impacto com elapsed zero e só então executa o desconto de HP e os procs de contato/roubo de vida. O impacto continua mesmo que esse golpe mate o alvo. Em área, há um lançamento por vítima elegível, com custo e recarga consumidos uma única vez pela habilidade. Perfuração e ataques secundários com trajetória também usam a colisão.
+Internamente os índices começam em zero. Atirador, Mago e Curandeiro usam um projétil que acompanha o alvo vivo, gira para o vetor atual e verifica caminho/colisão. O Ciborgue usa um feixe preso ao emissor, apontado continuamente ao alvo inclusive nas diagonais; o contato ocorre após 120 ms de emissão, sem um objeto voando. Na chegada, congela suas coordenadas, inicia a faixa de impacto com elapsed zero e só então executa o desconto de HP e os procs de contato/roubo de vida. O impacto toca os quadros finais a 3× após o dano e mantém o último quadro por um desenho, mesmo que esse golpe mate o alvo. Em área, há um lançamento por vítima elegível, com custo e recarga consumidos uma única vez pela habilidade. Perfuração e ataques secundários com trajetória também usam a colisão.
 
-O ponto de saída do personagem modular foi preservado. Um projétil criado durante o tick permanece na origem nesse primeiro tick. Morte/desaparecimento/proteção do alvo, obstáculo, expiração, troca de personagem/fruta/forma ou área cancelam disparos incompatíveis. Filas limitadas a 64 projéteis e 96 efeitos curtos por sessão, sem serializar callbacks no save.
+O ponto de saída do personagem modular foi preservado. Um projétil criado durante o tick permanece na origem nesse primeiro tick. Quando o alvo morre, disparos ainda visíveis encerram os quadros finais sobre sua última posição sem repetir dano. Desaparecimento de alvo vivo, proteção, obstáculo, expiração, troca de personagem/fruta/forma ou área cancelam disparos incompatíveis. Filas limitadas a 64 projéteis e 96 efeitos curtos por sessão, sem serializar callbacks no save.
 
 ## Status aéreos
 
@@ -71,3 +71,11 @@ Evidências de navegador, saves e banco de teste ficam em diretório temporário
 ## Resultado da entrega
 
 Passaram 87 suítes Node, 113 testes Python de backend/arte e quatro testes de hierarquia. A aceitação de VFX passou em estático, API atual e pacote Pages, além do fallback simulado de API sem as novas rotas. Caçada automática das sete classes validada no estático. Regressões de Ryu, Lobo, Hoya, Doru, Jiki, Beta/Hana e os 56 cenários de velocidade de ataque passaram. Build Pages concluído.
+
+## Ajuste de finalização e Ciborgue — 27/10/2026
+
+Impactos de dano terminam a 3×; cura e status mantêm o tempo original. O último quadro recebe uma passagem de render antes da remoção. Referências de alvos derrotados permanecem somente no VFX temporário, permitindo terminar após a limpeza do monstro, sem novo dano/recompensa. O feixe Ciborgue atualiza a origem ao mover o personagem, calcula o ângulo por atan2 e estende a arte entre emissor e alvo; não desloca um projétil separado. Durante a cauda do impacto, o raio continua ligado ao emissor e desvanece, enquanto os quadros de explosão ficam no contato. A API usa o aquecimento de 120 ms, em vez de tempo de viagem, para esse tipo.
+
+Testes adicionais verificam as oito direções, deslocamento da origem, golpe letal, remoção do alvo, velocidade 3× e apresentação do último quadro. Os PNGs e JSONs fornecidos permanecem intactos.
+
+Validação do ajuste: 87 suítes Node e 114 testes Python passaram. Navegador estático, API atual e Pages passaram; oito direções e movimento do emissor verificados, incluindo golpe letal com limpeza do alvo. Os 56 cenários de cadência de ataque passaram sem alteração de dano ou recarga. Build Pages concluído.

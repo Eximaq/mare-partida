@@ -23,7 +23,8 @@ class CombatVfxService:
   shot=self.shots.get(token);now=self.clock()
   if not shot or shot['owner']!=player or shot['instance']!=instance or shot['expires']<=now or not isinstance(target,dict) or str(target.get('id'))!=str(shot['target_id']) or target.get('alive') is not True or target.get('isUntargetable') or target.get('isInvulnerable') or not all(finite(v) for v in [x,y,target.get('x'),target.get('y')]):raise ValueError('Impacto inválido ou repetido')
   distance=math.hypot(x-shot['x'],y-shot['y'])
-  if distance>shot['reach']+64 or now-shot['started']+.05<max(0,distance-RULES['hitRadius'])/RULES['projectileSpeed'] or math.hypot(x-target['x'],y-target['y'])>RULES['hitRadius']+2:raise ValueError('Impacto antecipado ou fora do alvo')
+  minimum=RULES['cyborgBeamWarmup'] if shot['kind']=='cyborg' else max(0,distance-RULES['hitRadius'])/RULES['projectileSpeed']
+  if distance>shot['reach']+64 or now-shot['started']+.05<minimum or math.hypot(x-target['x'],y-target['y'])>RULES['hitRadius']+2:raise ValueError('Impacto antecipado ou fora do alvo')
   self.shots.pop(token);return {'phase':'impact','target_id':shot['target_id'],'impactStartFrame':RULES['flightEnds'][shot['kind']],'at':now}
 
 def player_statuses(state,now):

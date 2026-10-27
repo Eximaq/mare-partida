@@ -1033,18 +1033,19 @@
   function emitCombatVfx(kind,actor){
     if(!kind||!MareCombatVfx.data.effects[kind])return;
     session.combatHits ||= [];if(kind==='heal'&&session.combatHits.some(f=>f.kind===kind&&f.actor===actor&&world.time-f.started<.15))return;
-    const point=combatChest(actor),start=MareCombatVfx.data.flightEnds[kind]||0;session.combatHits.push({kind,actor,x:point.x,y:point.y,started:world.time,start});if(session.combatHits.length>96)session.combatHits.shift();
+    const point=combatChest(actor),start=MareCombatVfx.data.flightEnds[kind]||0;session.combatHits.push({kind,actor,x:point.x,y:point.y,started:world.time,start,rate:kind==='heal'?1:MareCombatVfx.data.impactPlaybackRate});if(session.combatHits.length>96)session.combatHits.shift();
   }
   function launchCombatProjectile(kind,origin,target,onHit){
     const active=session,area=game.area,identity=basicAttackIdentity(),equippedFruitId=game.equipment?.akuma_no_mi?.fruitId||null,reach=getDerived().range+125;
-    const p=MareCombatVfx.projectile(kind,origin,target.id,{target,commit:onHit,session:active,area,identity,equippedFruitId,born:world.time});
-    if(combatVfxBackend&&akumaBackend){const point=combatChest(target);p.launchReady=false;p.receipt=akumaRequest('vfx-launch',{instance:area,kind,x:origin.x,y:origin.y,target:{...point,id:target.id},reach}).then(r=>{p.launchReady=true;p.age=0;p.born=world.time;return r.token;});p.receipt.catch(()=>{p.phase='done';});}
+    const p=MareCombatVfx.projectile(kind,origin,target.id,{target,commit:onHit,session:active,area,identity,equippedFruitId,born:world.time,originOffset:{x:origin.x-world.hero.x,y:origin.y-world.hero.y}});if(kind==='cyborg'){const point=combatChest(target);p.x=point.x;p.y=point.y;}
+    if(combatVfxBackend&&akumaBackend){const point=combatChest(target);p.launchReady=false;p.receipt=akumaRequest('vfx-launch',{instance:area,kind,x:origin.x,y:origin.y,target:{...point,id:target.id},reach}).then(r=>{p.launchReady=true;p.age=0;p.born=world.time;return r.token;});p.receipt.catch(()=>{if(p.phase!=='impact')p.phase='done';});}
     active.combatProjectiles ||= [];active.combatProjectiles.push(p);if(active.combatProjectiles.length>64){active.combatProjectiles[0].phase='done';active.combatProjectiles.shift();}return p;
   }
+  function combatBeamOrigin(p){return p.mode==='beam'?{x:world.hero.x+p.originOffset.x,y:world.hero.y+p.originOffset.y}:p.origin;}
   function stepCombatVfx(dt){
-    session.combatHits=(session.combatHits||[]).filter(f=>(world.time-f.started)*1000<MareCombatVfx.data.effects[f.kind].frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0));
-    for(const p of session.combatProjectiles||[]){const valid=()=>session===p.session&&game.area===p.area&&scene==='hunt'&&game.hp>0&&session.respawn<=0&&basicAttackIdentity()===p.identity&&(game.equipment?.akuma_no_mi?.fruitId||null)===p.equippedFruitId&&world.mobs.includes(p.target)&&p.target.alive;if(p.phase!=='impact'&&!valid()){p.phase='done';continue;}if(p.launchReady===false){p.age+=dt;if(p.age>MareCombatVfx.data.maxFlight)p.phase='done';continue;}MareCombatVfx.step(p,p.born===world.time?0:dt,{
-      target:combatChest(p.target),valid,
+    session.combatHits=(session.combatHits||[]).filter(f=>(world.time-f.started)*1000*(f.rate||1)<MareCombatVfx.data.effects[f.kind].frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0)+(f.kind==='heal'?0:83));
+    for(const p of session.combatProjectiles||[]){const valid=()=>session===p.session&&game.area===p.area&&scene==='hunt'&&game.hp>0&&session.respawn<=0&&basicAttackIdentity()===p.identity&&(game.equipment?.akuma_no_mi?.fruitId||null)===p.equippedFruitId&&(world.mobs.includes(p.target)||p.target.alive===false);if(p.phase!=='impact'&&!valid()){p.phase='done';continue;}if(p.phase!=='impact'&&p.target.alive===false){MareCombatVfx.finishImpact(p,combatChest(p.target));p.launchReady=true;continue;}if(p.launchReady===false){p.age+=dt;if(p.age>MareCombatVfx.data.maxFlight)p.phase='done';continue;}MareCombatVfx.step(p,p.born===world.time?0:dt,{
+      target:combatChest(p.target),origin:combatBeamOrigin(p),valid,
       clear:(a,b)=>navigator().clear({x:a.x,y:a.y+24},{x:b.x,y:b.y+24}),
       authorize:()=>p.receipt?p.receipt.then(token=>{const point=combatChest(p.target);return akumaRequest('vfx-impact',{token,instance:p.area,x:p.x,y:p.y,target:{...point,id:p.target.id}});}):true,
       onHit:()=>p.commit()
@@ -1060,8 +1061,8 @@
     const box=combatHudBox(actor,width,name);ctx.save();ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#03171c';ctx.strokeText(name,actor.x,box.nameY);ctx.fillStyle='#effcf5';ctx.fillText(name,actor.x,box.nameY);px(ctx,actor.x-width/2,box.barY,width,7,'#001819');px(ctx,actor.x-width/2+1,box.barY+1,(width-2)*Math.max(0,Math.min(1,hp/Math.max(1,maxHP))),5,color);if(world.target===actor){ctx.strokeStyle='#d9b777';ctx.lineWidth=2;ctx.strokeRect(actor.x-width/2-3,box.barY-3,width+6,13);}ctx.restore();
   }
   function drawCombatVfx(){
-    for(const p of session.combatProjectiles||[])MareCombatVfx.drawProjectile(ctx,p);
-    for(const f of session.combatHits||[]){const point=f.actor?combatChest(f.actor):f;MareCombatVfx.draw(ctx,f.kind,point.x,point.y,(world.time-f.started)*1000,{width:f.kind==='explosion'?96:f.kind==='heal'?Math.min(120,combatActorHeight(f.actor)+16):64,start:f.start||0});}
+    for(const p of session.combatProjectiles||[])MareCombatVfx.drawProjectile(ctx,p,{origin:combatBeamOrigin(p)});
+    for(const f of session.combatHits||[]){const point=f.actor?combatChest(f.actor):f;MareCombatVfx.draw(ctx,f.kind,point.x,point.y,Math.min((world.time-f.started)*1000*(f.rate||1),MareCombatVfx.data.effects[f.kind].frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0)-.001),{width:f.kind==='explosion'?96:f.kind==='heal'?Math.min(120,combatActorHeight(f.actor)+16):64,start:f.start||0});}
     if(game.hp>0&&session.respawn<=0)MareCombatVfx.drawStatuses(ctx,combatHudBox(world.hero,60,game.name),combatStatus(world.hero),world.time);
     for(const actor of livingMobs())MareCombatVfx.drawStatuses(ctx,combatHudBox(actor,actor.type==='boss'?88:65,monsterName(actor)+' · Nv.'+actor.level),combatStatus(actor),world.time);
     if(hoyaActive())MareCombatVfx.drawStatuses(ctx,combatHudBox(session.genie,64,'Gênio'),combatStatus(session.genie),world.time);

@@ -1482,5 +1482,7 @@
       "1": "punch",
       "2": null
     }
-  }
+  },
+  "impactPlaybackRate": 3,
+  "cyborgBeamWarmup": 0.12
 }
