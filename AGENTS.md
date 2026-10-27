@@ -9,6 +9,21 @@
 4. `AGENT.md` e histórico do `README.md` (contexto/objetivos, nunca implementação presumida).
 Se houver conflito material, informe antes de alterar comportamento, save ou arte aprovada.
 
+## Prioridade permanente das skills locais
+Orientação explícita do proprietário: manter esta prioridade em todas as tarefas e sessões até o fim do desenvolvimento do jogo.
+
+- Antes de iniciar a tarefa, identificar as skills pertinentes em `.agents/skills/` com `rg --files --hidden .agents/skills -g 'SKILL.md'` e ler seus `SKILL.md` antes da ação correspondente. Não depender apenas do catálogo global da sessão.
+- Priorizar os fluxos das skills locais aplicáveis; skills gerais complementam esse conjunto, respeitando sempre as instruções do proprietário e as regras superiores da sessão.
+- **Bugs e comportamento inesperado:** [systematic-debugging](.agents/skills/systematic-debugging/SKILL.md), investigando a causa antes de propor correções.
+- **Implementações e correções de código:** [test-driven-development](.agents/skills/test-driven-development/SKILL.md), observando a falha do teste antes da implementação, conforme o escopo e as exceções da própria skill.
+- **Antes de commit, PR e declaração de conclusão:** [verification-before-completion](.agents/skills/verification-before-completion/SKILL.md), executando e conferindo as verificações pertinentes.
+- **Automação e testes de navegador:** [agent-browser](.agents/skills/agent-browser/SKILL.md), seguindo suas orientações de ferramenta e carregamento do guia atual.
+- **Criação ou reformulação de interfaces:** [frontend-design](.agents/skills/frontend-design/SKILL.md), preservando a identidade náutica aprovada.
+- **Revisão de UI, UX e acessibilidade:** [web-design-guidelines](.agents/skills/web-design-guidelines/SKILL.md).
+- PixelLab continua pertinente a sprites, animações, assets e créditos; Webapp Testing complementa a validação web quando aplicável.
+- Não afirmar que uma skill foi utilizada sem realmente ler e seguir seu fluxo. Testes feitos depois da implementação não equivalem a TDD.
+- Reaproveitar a leitura na mesma sessão enquanto as instruções não mudarem; carregar apenas as skills e referências necessárias à tarefa.
+
 ## Inicialização mínima (sem varrer o repositório inteiro)
 1. `pwd; git status --short; git branch --show-current; git log -1 --oneline`.
 2. Identifique os arquivos com pesquisa dirigida: `rg -n 'termo|identificador' --glob '!dist/**' --glob '!assets/**' --glob '!pixellab-pip-generations/**'`; depois `rg --files | rg 'nome-ou-subsistema'`. Não despeje `game.js`, `README.md`, logs ou manifests enormes sem necessidade.
