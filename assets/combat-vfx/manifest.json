@@ -1,0 +1,201 @@
+{
+  "source": "Owner supplied VFX sheets and JSON frame timings",
+  "assets": [
+    {
+      "id": "dagger",
+      "source": "Ataque recebido com adaga",
+      "files": [
+        {
+          "file": "dagger.png",
+          "sha256": "1ebf3da5b3360ff55c1087bc05a50dfef178ad5e1e91091ea3dda7ea8c0f71f0"
+        },
+        {
+          "file": "dagger.json",
+          "sha256": "988439b74a715e93119e93558cdb528c5e53ec9664f57bcfc488f6870e3f5a17"
+        }
+      ]
+    },
+    {
+      "id": "gunner",
+      "source": "Atirador - Sprite de ataque junto com recebimento de dano alvo",
+      "files": [
+        {
+          "file": "gunner.png",
+          "sha256": "1585aebd4b36205c849aebc02a819e52282f9e10eef63fb7b6e1b3df6a6c7034"
+        },
+        {
+          "file": "gunner.json",
+          "sha256": "3990deab6bababe86d36854ace97e288684e55657e4a88482e58452466296957"
+        }
+      ]
+    },
+    {
+      "id": "stun",
+      "source": "Atordoamento",
+      "files": [
+        {
+          "file": "stun.png",
+          "sha256": "73947221816c6a2331e4ec8f1fc1205ebe02bb14f82b4554e99e20f0a8963a60"
+        },
+        {
+          "file": "stun.json",
+          "sha256": "1811275f85de5241b349ea2c797f162084d93332900fa4ca34d446968e6e033a"
+        }
+      ]
+    },
+    {
+      "id": "armorUp",
+      "source": "Aumento armadura",
+      "files": [
+        {
+          "file": "armorUp.png",
+          "sha256": "49c5da4e742cb44ed33fb1b18a091e1d6541d5e8b4568bc185c27464819b9d65"
+        },
+        {
+          "file": "armorUp.json",
+          "sha256": "988439b74a715e93119e93558cdb528c5e53ec9664f57bcfc488f6870e3f5a17"
+        }
+      ]
+    },
+    {
+      "id": "buff",
+      "source": "Buff",
+      "files": [
+        {
+          "file": "buff.png",
+          "sha256": "0d2a2653d8d0f525898f60795415557be9f964a3712af1971f2159868d07b134"
+        },
+        {
+          "file": "buff.json",
+          "sha256": "40addd0e77b8cd2edd9af3f32697c8de8aa2f4ee8b3eb0ca844713c45d7365a5"
+        }
+      ]
+    },
+    {
+      "id": "cyborg",
+      "source": "Ciborgue - Ataque e recebimento de dano pelo alvo",
+      "files": [
+        {
+          "file": "cyborg.png",
+          "sha256": "83bade710b22f39d8d1299cb8d73b30f966afa063bdddc20575a8cd671cf1531"
+        },
+        {
+          "file": "cyborg.json",
+          "sha256": "3990deab6bababe86d36854ace97e288684e55657e4a88482e58452466296957"
+        }
+      ]
+    },
+    {
+      "id": "sword",
+      "source": "Corte recebido com espada",
+      "files": [
+        {
+          "file": "sword.png",
+          "sha256": "34caa502bb96019973f0fd600f1fff8860fd0b0c4a0c0789022cd41d88c8c64c"
+        },
+        {
+          "file": "sword.json",
+          "sha256": "e8f45065df48b62dfa5d2b967129ca0674857a1dc76af3555b57c15c4cdd86de"
+        }
+      ]
+    },
+    {
+      "id": "heal",
+      "source": "Cura",
+      "files": [
+        {
+          "file": "heal.png",
+          "sha256": "76a5efa5e9514c0e3191d8996f42eb45233994c9b5a38c51ca0fcbed32e14ec6"
+        },
+        {
+          "file": "heal.json",
+          "sha256": "40addd0e77b8cd2edd9af3f32697c8de8aa2f4ee8b3eb0ca844713c45d7365a5"
+        }
+      ]
+    },
+    {
+      "id": "healer",
+      "source": "Curandeiro - Ataque e recebimento de dano pelo alvo",
+      "files": [
+        {
+          "file": "healer.png",
+          "sha256": "960a87bdc6252816a9e0c6fcba3b042945bf3c6ab1d23f579183b633691967cb"
+        },
+        {
+          "file": "healer.json",
+          "sha256": "3990deab6bababe86d36854ace97e288684e55657e4a88482e58452466296957"
+        }
+      ]
+    },
+    {
+      "id": "punch",
+      "source": "Efeito no alvo do soco lutador",
+      "files": [
+        {
+          "file": "punch.png",
+          "sha256": "c2329b78773563ed36d91e9aabe84a8a9dd6773ad1032624b319345d55e4ff89"
+        },
+        {
+          "file": "punch.json",
+          "sha256": "c5b6cd90ab84b1dd76f491584a09962351def78f72605a54a4f9fb2cd91d3c7d"
+        }
+      ]
+    },
+    {
+      "id": "explosion",
+      "source": "Explosao efect",
+      "files": [
+        {
+          "file": "explosion.png",
+          "sha256": "3ea1dbb7b4f206b80638d9f9624677da93a2043c1b0fb14587e1e2bbd5389246"
+        },
+        {
+          "file": "explosion.json",
+          "sha256": "988439b74a715e93119e93558cdb528c5e53ec9664f57bcfc488f6870e3f5a17"
+        }
+      ]
+    },
+    {
+      "id": "mage",
+      "source": "Mago - Ataque e recebimento de dano pelo alvo",
+      "files": [
+        {
+          "file": "mage.png",
+          "sha256": "6c85ae6da57b44f23e2c5a6746856cdfc9cab021d44567d238a7f84fa7405d16"
+        },
+        {
+          "file": "mage.json",
+          "sha256": "3990deab6bababe86d36854ace97e288684e55657e4a88482e58452466296957"
+        }
+      ]
+    },
+    {
+      "id": "bind",
+      "source": "Paralisamento",
+      "files": [
+        {
+          "file": "bind.png",
+          "sha256": "d4808285b261ff669a3b1bfb59119b2aa788779325335b914ed98e8370e32edd"
+        },
+        {
+          "file": "bind.json",
+          "sha256": "f0112b745fdaa625bfa8d42fccb54bbdc1adcf05c8922a7749f6512dbc56bdf4"
+        }
+      ]
+    },
+    {
+      "id": "armorDown",
+      "source": "Redução de armadura",
+      "files": [
+        {
+          "file": "armorDown.png",
+          "sha256": "2e9fc352affb5df666a9ea11f2b8309b5770f0f6d02e8858dd8520f00088a5f4"
+        },
+        {
+          "file": "armorDown.json",
+          "sha256": "988439b74a715e93119e93558cdb528c5e53ec9664f57bcfc488f6870e3f5a17"
+        }
+      ]
+    }
+  ]
+}

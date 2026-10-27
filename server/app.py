@@ -12,6 +12,7 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
 from akuma import AkumaStore, public_catalog
+from combat_vfx import RULES as COMBAT_VFX_RULES
 from monsters import MonsterStore, WORLD_LEVEL_BANDS
 from hierarchy import HierarchyStore
 
@@ -43,6 +44,8 @@ class Handler(SimpleHTTPRequestHandler):
             return self.reply(200, MONSTERS.catalog())
         if route.path == "/api/world/levels":
             return self.reply(200, WORLD_LEVEL_BANDS)
+        if route.path == '/api/akuma/vfx-catalog':
+            return self.reply(200,{'version':1,'flightEnds':COMBAT_VFX_RULES['flightEnds']})
         if route.path == "/api/akuma/catalog":
             return self.reply(200, public_catalog())
         if route.path == "/api/akuma/state":
@@ -72,6 +75,8 @@ class Handler(SimpleHTTPRequestHandler):
             "/api/akuma/cast": lambda d: STORE.cast(d["player_id"], d["instance"], float(d["x"]), float(d["y"]), d.get("enemies", []), d.get("direction", [0, 1]), d.get("skill_key"), d.get("energy"), d.get("physical_attack"), d.get("target_id"), d.get("crit_multiplier"), d.get("rank_c_context")),
             '/api/akuma/jiki-cancel-charge':lambda d:STORE.jiki.cancel_charge(d['player_id']),
             '/api/akuma/jiki-release':lambda d:STORE.jiki.release(d['player_id'],d['token'],d['instance'],d['x'],d['y'],d['point'],d.get('controlled',False)),
+            '/api/akuma/vfx-launch':lambda d:STORE.vfx.launch(d['player_id'],d['instance'],d['kind'],d['x'],d['y'],d['target'],d['reach']),
+            '/api/akuma/vfx-impact':lambda d:STORE.vfx.impact(d['player_id'],d['token'],d['instance'],d['x'],d['y'],d['target']),
             '/api/akuma/ryu-impact':lambda d:STORE.ryu.impact(STORE,d['player_id'],d['token'],d['instance'],d['x'],d['y'],d.get('enemies',[]),d.get('controlled',False)),
             '/api/akuma/jiki-impact':lambda d:STORE.jiki.impact(d['player_id'],d['token'],d['instance'],d['x'],d['y'],d.get('enemies',[]),d.get('hit',True)),
             '/api/akuma/hoya-cancel':lambda d:STORE.hoya.cancel(d['player_id'],d['instance']),

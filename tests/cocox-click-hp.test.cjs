@@ -37,6 +37,7 @@ const idleBar=r.cocoxHealthBarY(mob);
 mob.moving=1;
 assert.ok(r.cocoxHealthBarY(mob)<idleBar,'running sprite has taller HP offset');
 assert.match(game,/MareRareRenderer\.cocoxHitTest\(m,x,y\)/);
-assert.match(game,/MareRareRenderer\.cocoxHealthBarY\(m\)/);
+assert.match(game,/MareRareRenderer\.cocoxHealthBarY\(actor\)/);
+const V=require('../combat-vfx.js'),box=r.cocoxLayout(mob),hud=V.layout(mob.x,mob.y,{height:mob.y-box.top});assert.equal(hud.barY,box.top-36);assert.ok(hud.ccY+V.data.ccSize/2<=box.top);assert.ok(hud.barY+7<hud.ccY-V.data.ccSize/2);
 assert.ok(!game.includes("m.type==='cocox'?118"),'no fixed HP offset remains');
 console.log('Cocox sprite: adaptive selection and health bar tested for idle, run and attack.');
