@@ -109,7 +109,7 @@ with sync_playwright() as p:
  q.reload(wait_until='networkidle');q.wait_for_function('window.__mareDiagnostics&&__mareDiagnostics().paperDollReview.state!=="loading"')
  assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready',q.evaluate('__mareDiagnostics().paperDollReview')
  data=json.loads(q.evaluate('localStorage.getItem("mare-partida-dev-save-v1")'));boots=data['equipment']['boots']
- q.locator('#characterMenuTrigger').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
+ q.locator('#characterMenuBrowse').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
  assert q.locator('[data-doll-kit]').is_visible()
  q.locator('.doll-equipment').scroll_into_view_if_needed();q.screenshot(path=str(OUT/'equipment-blocked.png'))
  # Storage failure must leave the live equipment and persisted inventory intact.

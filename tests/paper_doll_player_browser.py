@@ -23,7 +23,7 @@ with sync_playwright() as p:
  data=json.loads(q.evaluate('localStorage.getItem("mare-partida-save-v1")'))
  assert data['paperDollLook']=={'version':1,'hair':'bald','outfit':'base'}
  assert not data.get('devSandbox');assert not q.evaluate('localStorage.getItem("mare-partida-dev-save-v1")')
- q.locator('#characterMenuTrigger').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
+ q.locator('#characterMenuBrowse').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
  assert q.locator('[data-doll-look-apply]').is_visible();assert not q.locator('[data-doll-kit]').count()
  before_portrait=q.evaluate('__playerQA.preview()')
  # Storage rejection must preserve both the live appearance and persisted save.

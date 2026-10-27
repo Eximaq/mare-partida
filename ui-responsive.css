@@ -535,3 +535,8 @@
  .constellation-window .talent-actions .dialog-button{flex:1;font-size:10px;padding:8px}
  .constellation-window .talent-reset{font-size:11px}
 }
+
+@media(max-width:760px){
+  #mainMenu .character-menu-anchor:has(.character-notification-control){grid-column:span 2}
+  #mainMenu #characterMenuBrowse{width:32px;height:32px;min-height:32px}
+}
