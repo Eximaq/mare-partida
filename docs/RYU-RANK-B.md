@@ -4,7 +4,7 @@
 
 Registrar no Compêndio Rank B e equipar. A fruta transforma automaticamente; T alterna entre humano e dinossauro. As teclas 1 e 2 acionam os ataques apenas na forma Zoan, em caçada, com alvo vivo a até 96 px (1,5 tile) e linha de visão livre.
 
-O proprietário aprovou **128×128 px no mapa** em 26/10/2026, após comparar 64, 96 e 112 px. A dimensão de destino é comum a idle, caminhada, ataque básico, mordida e cauda nas quatro direções. Pivots nos pés acompanham cada frame original. Retratos são ajustados ao espaço da interface; não usam os 128 px do mapa. A transição Zoan compartilhada cobre a forma de 128 px.
+O proprietário aprovou **128×128 px no mapa** em 26/10/2026, após comparar 64, 96 e 112 px. A referência de escala é a célula parada de 64 px renderizada em 128 px. Caminhada, ataque básico, mordida e cauda preservam o mesmo fator de 2× por pixel original nas quatro direções; células maiores por padding podem ocupar 152 ou 160 px sem reduzir o corpo. Pivots nos pés acompanham cada frame original. Retratos são ajustados ao espaço da interface; não usam os 128 px do mapa. A transição Zoan compartilhada cobre a forma de 128 px.
 
 ## Regras
 
@@ -34,7 +34,7 @@ Personagem existente do PixelLab: dc1eb4bb-f3bb-4f6f-861b-f635c8b02f64, Ryu Ryu 
 
 ## Validação
 
-- tests/ryu-system.test.cjs: catálogo, fórmulas, Haki, defesa, 3s e 304 frames em 128 px.
+- tests/ryu-system.test.cjs: catálogo, fórmulas, Haki, defesa, 3s e 304 frames com escala corporal constante relativa à forma parada de 128 px.
 - tests/ryu_backend_test.py: catálogo/passivos, transformação, energia, alcance, Haki, timing, recarga, cancelamento, token de uso único e expiração.
 - tests/ryu_artwork_test.py: pixels originais dos 304 frames.
 - tests/ryu_browser.cjs: registro, HUD, transformação, impacto, dano, alvo único, bloqueio real de movimento/ataques, duração exata do stun, cancelamento, recarga e reload. Executar contra o servidor estático e, com MARE_EXPECT_API=1, contra a API local.
@@ -45,3 +45,7 @@ A API opcional valida os contratos usando o mundo informado pelo cliente, como a
 ## Resultado da entrega — 26/10/2026
 
 86 suítes Node passaram; 108 testes Python de backend/arte e quatro testes de hierarquia passaram. Navegador: Ryu na versão estática, com API e no pacote Pages; regressões de Lobo e transições Zoan passaram. A suíte Ryu também verifica cancelamento por morte e remoção da fruta. Build Pages concluído.
+
+## Correção da caminhada — 26/10/2026
+
+A primeira versão comprimia células de animação de 76/80 px para os mesmos 128 px usados pela célula parada de 64 px. Isso reduzia o corpo ao andar. O renderizador agora usa 128/64 como escala comum, preservando padding, pixels originais e ancoragem nos pés em todas as animações. O teste no navegador compara os limites visíveis do primeiro frame de caminhada e da pose parada nas quatro direções; o teste Node cobre a densidade dos 304 quadros e escalas de prévia. Nenhuma nova geração ou alteração dos PNGs.
