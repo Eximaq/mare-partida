@@ -72,6 +72,7 @@ class Handler(SimpleHTTPRequestHandler):
             "/api/akuma/cast": lambda d: STORE.cast(d["player_id"], d["instance"], float(d["x"]), float(d["y"]), d.get("enemies", []), d.get("direction", [0, 1]), d.get("skill_key"), d.get("energy"), d.get("physical_attack"), d.get("target_id"), d.get("crit_multiplier"), d.get("rank_c_context")),
             '/api/akuma/jiki-cancel-charge':lambda d:STORE.jiki.cancel_charge(d['player_id']),
             '/api/akuma/jiki-release':lambda d:STORE.jiki.release(d['player_id'],d['token'],d['instance'],d['x'],d['y'],d['point'],d.get('controlled',False)),
+            '/api/akuma/ryu-impact':lambda d:STORE.ryu.impact(STORE,d['player_id'],d['token'],d['instance'],d['x'],d['y'],d.get('enemies',[]),d.get('controlled',False)),
             '/api/akuma/jiki-impact':lambda d:STORE.jiki.impact(d['player_id'],d['token'],d['instance'],d['x'],d['y'],d.get('enemies',[]),d.get('hit',True)),
             '/api/akuma/hoya-cancel':lambda d:STORE.hoya.cancel(d['player_id'],d['instance']),
             '/api/akuma/hoya-command':lambda d:STORE.hoya.command(d['player_id'],d['instance'],d['x'],d['y'],d.get('target_id')),

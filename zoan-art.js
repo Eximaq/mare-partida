@@ -22,6 +22,7 @@
     return cache.get(url);
   }
   function status(fruitId,action='idle',direction='front'){
+    if(fruitId==='akuma_ryu_ryu')return root.MareRyu.status(action,direction);
     if(fruitId==='akuma_neko_leopard')return root.MareNeko.status(action,direction);
     if(fruitId==='akuma_inu_wolf')return root.MareWolf.status(action,direction);
     if(fruitId==='akuma_ushi_giraffe')return root.MareUshi.status(action,direction);
@@ -31,6 +32,7 @@
     if(!image.complete)return 'loading';return image.naturalWidth>=(name==='tori'?64:48)?'ready':'failed';
   }
   function draw(c,fruitId,x,y,{action='idle',direction='front',time=0,scale=1,duration=.75,progress=null}={}){
+    if(fruitId==='akuma_ryu_ryu')return root.MareRyu.drawActor(c,x,y,{action,direction,time,scale,progress});
     if(fruitId==='akuma_ushi_bison')return root.MareRankCExpansion.drawActor(c,x,y,{action,direction,time,progress,height:64*scale});
     if(fruitId==='akuma_neko_leopard')return root.MareNeko.drawActor(c,x,y,{action,direction,time,scale,progress});
     if(fruitId==='akuma_inu_wolf')return root.MareWolf.drawActor(c,x,y,{action,direction,time,scale,duration,progress});
@@ -61,6 +63,7 @@
     c.restore();return true;
   }
   function attackTiming(fruitId,direction='front'){
+    if(fruitId==='akuma_ryu_ryu'){const c=root.MareRyu.clip('attack',direction);return {frames:c.frames,fps:c.fps,impact_frame:c.impact_frame,loop:false};}
     if(fruitId==='akuma_ushi_bison'){const c=root.MareRankCExpansion.clip('attack',direction);return {frames:c.frames,fps:12,hitFrameRatio:.5,loop:false};}
     const facing=directions[direction]||direction,system=fruitId==='akuma_neko_leopard'?root.MareNeko:fruitId==='akuma_ushi_giraffe'?root.MareUshi:fruitId==='akuma_inu_wolf'?root.MareWolf:null;
     if(system){const clip=system.clips.attack[facing];return {frames:clip.frames,fps:clip.fps,impact_frame:clip.impact_frame??Math.floor(clip.frames*.45),hitFrameRatio:clip.hitFrameRatio,loop:false};}

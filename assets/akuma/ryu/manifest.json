@@ -1,0 +1,19 @@
+{
+  "character_id": "dc1eb4bb-f3bb-4f6f-861b-f635c8b02f64",
+  "source": "Existing PixelLab character and owner supplied icons",
+  "zip_sha256": "4ddeab6a666b6e42f08e887fb1eeb7a7fcf0484712360213bfba1ebe4cc3b558",
+  "assets": [
+    {
+      "file": "fruit.png",
+      "sha256": "21cf30f9edd11bfc7aa60ef529255e83fe420552ee3b29aa92a3f637c5817dd9"
+    },
+    {
+      "file": "skill-1.png",
+      "sha256": "87b24eb4d24ab3ff19501f679f89b6742fb57ef9fcfa6d3636fb0ec825e9ce41"
+    },
+    {
+      "file": "skill-2.png",
+      "sha256": "c1fb4708240fdd18fdc034830b72ddbe668bd254edc500538bfbffefe6de7965"
+    }
+  ]
+}

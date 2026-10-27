@@ -11,6 +11,7 @@
   if(!root.MareRankB&&typeof module!=='undefined')require('./rank-b-system.js');
   if(!root.MareHoya&&typeof module!=='undefined')require('./hoya-system.js');
   if(!root.MareJiki&&typeof module!=='undefined')require('./jiki-system.js');
+  if(!root.MareRyu&&typeof module!=='undefined')require('./ryu-system.js');
   const ranks=Object.freeze(['E','D','C','B','A','S']);
   const slotsPerRank=5;
   // Keep in sync with assets/akuma/supa/rules.json (validated by regression tests).
@@ -37,6 +38,7 @@
     ...Object.entries(root.MareRankB.rules).map(([key,r])=>new AkumaNoMiData(r.id,r.name,'B','assets/akuma/'+key+'/fruit.png',{},'','assets/akuma/'+key+'/skill-1.png','',1,1,{family:r.family,subtype:r.family==='logia'?'Logia':'Paramecia',skills:r.skills,description:r.description,physicalDamageReduction:r.physicalDamageReduction||0})),
     new AkumaNoMiData(root.MareHoya.rules.id,root.MareHoya.rules.name,'B','assets/akuma/hoya/fruit.png',{},'','assets/akuma/hoya/skill-1.png','',1,1,{family:'paramecia',subtype:'Paramecia',skills:root.MareHoya.rules.skills,description:root.MareHoya.rules.description}),
     new AkumaNoMiData(root.MareJiki.rules.id,root.MareJiki.rules.name,'B','assets/akuma/jiki/fruit.png',{},'','assets/akuma/jiki/skill-1.png','',1,1,{family:'paramecia',subtype:'Paramecia',skills:root.MareJiki.rules.skills,description:root.MareJiki.rules.description})
+    ,new AkumaNoMiData(root.MareRyu.rules.id,root.MareRyu.rules.name,'B','assets/akuma/ryu/fruit.png',{},'','assets/akuma/ryu/skill-1.png','',1,1,{family:'zoan',subtype:'Zoan Ancestral',zoan_sprite_sheet:'assets/akuma/ryu/preview-south.png',skills:root.MareRyu.rules.skills,description:root.MareRyu.rules.description,transformationVisual:{width:root.MareRyu.rules.worldSize,height:root.MareRyu.rules.worldSize}})
   ]);
   for(const fruit of catalog)if(root.MareAkumaPassives.stats[fruit.id])fruit.passiveStats={...root.MareAkumaPassives.stats[fruit.id]};
   const byId=(id,entries=catalog)=>entries.find(fruit=>fruit.id===id)||null;
