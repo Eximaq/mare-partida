@@ -2,7 +2,7 @@
 
 ## Assets e reprodução
 
-14 PNGs e 14 JSONs fornecidos pelo proprietário, copiados integralmente para assets/combat-vfx/. Os 190 quadros usam retângulos e durações do JSON original (83 ms por quadro). Manifesto com hashes e nomes de origem; nenhuma geração ou modificação de arte. Os pivots externos dos exports não são usados como posição de interface: os impactos são ancorados no peito, conforme o pedido.
+14 PNGs e 14 JSONs fornecidos pelo proprietário, copiados integralmente para assets/combat-vfx/. Os 194 quadros usam retângulos e durações do JSON original (83 ms por quadro). Manifesto com hashes e nomes de origem; nenhuma geração ou modificação de arte. Os pivots externos dos exports não são usados como posição de interface: os impactos são ancorados no peito, conforme o pedido.
 
 combat-vfx.js implementa animação, classificação, voo, colisão e layout. combat-vfx-data.js é derivado de assets/combat-vfx/rules.json; tools/import_combat_vfx.py recompõe os metadados a partir da pasta fornecida, preservando bytes dos PNGs/JSONs.
 
@@ -60,7 +60,7 @@ A API local continua recebendo o mundo simulado pelo cliente; não se tornou um 
 ## Validação
 
 - tests/combat-vfx.test.cjs: limites de quadros, loop, HP atrasado, tracking, impacto fixo, token assíncrono, cancelamentos, classificação e tempos exatos de status.
-- tests/combat_vfx_artwork_test.py: hashes dos 28 arquivos, transparência, 190 quadros e metadados.
+- tests/combat_vfx_artwork_test.py: hashes dos 28 arquivos, transparência, 194 quadros e metadados.
 - tests/combat_vfx_backend_test.py: timing, dono/área/alvo, replay, cancelamento, expiração e descritores de status.
 - tests/combat_vfx_browser.cjs: sete classes, HP apenas na colisão, primeiro quadro de impacto, habilidade em área sem custo duplicado, status estáticos/CC em loop, cura e alvo morto. Executar no estático e com MARE_EXPECT_API=1 na API atual.
 - Regressão de velocidade: 56 casos preservando impacto corpo a corpo e dano de projétil na colisão.
@@ -79,3 +79,7 @@ Impactos de dano terminam a 3×; cura e status mantêm o tempo original. O últi
 Testes adicionais verificam as oito direções, deslocamento da origem, golpe letal, remoção do alvo, velocidade 3× e apresentação do último quadro. Os PNGs e JSONs fornecidos permanecem intactos.
 
 Validação do ajuste: 87 suítes Node e 114 testes Python passaram. Navegador estático, API atual e Pages passaram; oito direções e movimento do emissor verificados, incluindo golpe letal com limpeza do alvo. Os 56 cenários de cadência de ataque passaram sem alteração de dano ou recarga. Build Pages concluído.
+
+## Novo impacto de pancada — 27/10/2026
+
+O efeito compartilhado punch foi substituído pelo power-aura-take-13 fornecido pelo proprietário: 13 quadros de 212×221 px, 83 ms cada, total original de 1079 ms. PNG e JSON preservados byte a byte. A renderização mantém a proporção nativa e a reprodução acelerada após o dano. A categoria continua atendendo Pugilista, Girafa, Bisão, cauda do Ryu, socos Hana e demais golpes contusivos. O nome lógico punch e os mapeamentos foram mantidos; não há alteração das animações corporais do personagem ou das fórmulas. A imagem usa versão por hash para impedir mistura do atlas novo com o antigo em cache.

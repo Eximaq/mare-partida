@@ -10,7 +10,7 @@
   const last=Math.min(effect.frames.length-1,end??effect.frames.length-1),first=Math.max(0,start),duration=effect.frames.slice(first,last+1).reduce((s,f)=>s+f.duration,0);if(!duration)return null;
   let time=loop?elapsed%duration:elapsed;if(time>=duration)return null;for(let i=first;i<=last;i++){if(time<effect.frames[i].duration)return i;time-=effect.frames[i].duration;}return last;
  }
- function draw(c,kind,x,y,elapsed,{width=64,height=width,angle=0,...options}={}){const index=frame(kind,elapsed,options),im=image(kind);if(index===null||!im?.complete||!im.naturalWidth)return false;const f=data.effects[kind].frames[index];c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x),Math.round(y));if(angle)c.rotate(angle);c.drawImage(im,f.x,f.y,f.w,f.h,-width/2,-height/2,width,height);c.restore();return true;}
+ function draw(c,kind,x,y,elapsed,{width=64,height=null,angle=0,...options}={}){const index=frame(kind,elapsed,options),im=image(kind);if(index===null||!im?.complete||!im.naturalWidth)return false;const f=data.effects[kind].frames[index],drawHeight=height??width*f.h/f.w;c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x),Math.round(y));if(angle)c.rotate(angle);c.drawImage(im,f.x,f.y,f.w,f.h,-width/2,-drawHeight/2,width,drawHeight);c.restore();return true;}
  function classify({classId,fruitId,skillKey,category,exclusive=false,source='fruit',name='',damageType}={}){
   if(exclusive||source==='fruit'&&data.exclusiveFruitImpacts.includes(fruitId))return null;
   const alias={cutting:'sword',slashing:'sword',blunt:'punch',magical:'mage',piercing:'dagger',explosive:'explosion'};category=alias[category]||category;

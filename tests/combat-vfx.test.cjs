@@ -1,5 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),V=require('../combat-vfx.js');
+assert.equal(V.data.effects.punch.frames.length,13);assert.equal(V.data.effects.punch.duration,1079);assert.equal(V.data.effects.punch.frames[12].y,663);
 assert.deepEqual(V.data,JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/combat-vfx/rules.json'))));
 for(const [kind,count]of Object.entries({gunner:12,healer:10,mage:10,cyborg:10})){
  assert.equal(V.frame(kind,0,{end:count-1,loop:true}),0);assert.equal(V.frame(kind,count*83-1,{end:count-1,loop:true}),count-1);assert.equal(V.frame(kind,count*83,{end:count-1,loop:true}),0);assert.equal(V.frame(kind,0,{start:count}),count);
@@ -14,3 +15,5 @@ const box=V.layout(100,200,{height:128,nameWidth:200});assert.ok(box.iconX-9>200
 
 for(const [dx,dy]of [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1]]){const origin={x:20,y:30},target={x:20+dx*50,y:30+dy*50,alive:true},p=V.projectile('cyborg',origin,'m');let hits=0;const hooks={origin,target,onHit(){hits++}};V.step(p,.04,hooks);assert.equal(p.mode,'beam');assert.equal(hits,0);assert.equal(p.x,target.x);assert.equal(p.y,target.y);const box=V.beamGeometry(p);assert.ok(Math.abs(box.x-Math.cos(box.angle)*box.width/2-origin.x)<1e-8);assert.ok(Math.abs(box.y-Math.sin(box.angle)*box.width/2-origin.y)<1e-8);origin.x+=3;origin.y+=2;V.step(p,.081,hooks);assert.equal(hits,1);assert.equal(p.playbackRate,3);assert.deepEqual(p.origin,origin);target.alive=false;V.step(p,.4,hooks);assert.equal(p.phase,'impact');V.step(p,.02,hooks);assert.equal(p.finalFrameShown,true);assert.equal(V.frame('cyborg',p.elapsed,{start:10}),24);V.step(p,.01,hooks);assert.equal(p.phase,'done');assert.equal(hits,1);}
 console.log('Cyborg: eight aim directions, moving anchor, no flying head, accelerated lethal impact and last frame passed');
+
+{const vm=require('node:vm'),sandbox={Image:class{constructor(){this.complete=true;this.naturalWidth=848;}}};vm.createContext(sandbox);for(const file of ['combat-vfx-data.js','combat-vfx.js'])vm.runInContext(fs.readFileSync(path.join(__dirname,'..',file),'utf8'),sandbox);let draw;const ctx={save(){},restore(){},translate(){},drawImage(...args){draw=args}};assert.equal(sandbox.MareCombatVfx.draw(ctx,'punch',100,100,0,{width:64}),true);assert.equal(draw[3],212);assert.equal(draw[4],221);assert.equal(draw[7],64);assert.equal(draw[8],64*221/212);}
