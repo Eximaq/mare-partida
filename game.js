@@ -1437,6 +1437,30 @@
     else if(session.talents.shield>0){label='Escudo de Energia';value=session.talents.shield;max=Math.round(d.maxHP*.3);}
     el.classList.toggle('hidden',!label);$('miniTalentResource').classList.toggle('hidden',!label);if(label){$('miniTalentLabel').textContent={Vigor:'Vigor','Escudo de Mana':'Mana','Invulnerável':'Imune','Escudo de Energia':'Escudo'}[label];$('miniTalentResource').title=label;$('miniTalentText').textContent=fmt(value)+' / '+fmt(max);$('miniTalentFill').style.width=(Math.max(0,Math.min(1,value/max))*100)+'%';$('talentResourceLabel').textContent=label;$('talentResourceValue').textContent=fmt(value)+' / '+fmt(max);bar('talentResourceFill',value,max);}
   }
+  const notificationManager=MareNotifications.create();
+  window.NotificationManager=notificationManager;
+  const notificationLabels=new WeakMap();
+  notificationManager.subscribe(state=>{
+    for(const button of document.querySelectorAll('[data-notification]')){
+      if(!notificationLabels.has(button))notificationLabels.set(button,button.getAttribute('aria-label')||button.querySelector('span')?.textContent||'Personagem');
+      const count=state[button.dataset.notification]||0;
+      let badge=button.querySelector('.hud-notification-badge');
+      if(!badge){badge=document.createElement('span');badge.className='hud-notification-badge';badge.setAttribute('aria-hidden','true');button.append(badge);}
+      badge.textContent=MareNotifications.label(count);badge.hidden=count<=0;
+      button.setAttribute('aria-label',notificationLabels.get(button)+(count>0?', '+count+' pendência'+(count===1?'':'s'):''));
+    }
+    const trigger=$('characterMenuTrigger');
+    trigger.setAttribute('aria-haspopup',state.character>0?'dialog':'menu');
+    trigger.setAttribute('aria-controls',state.character>0?'panelOverlay':'characterQuickMenu');
+    if(state.character>0)trigger.removeAttribute('aria-expanded');
+    else trigger.setAttribute('aria-expanded',String(!$('characterQuickMenu').classList.contains('hidden')));
+    let announcement=$('hudNotificationStatus');
+    if(!announcement){announcement=document.createElement('span');announcement.id='hudNotificationStatus';announcement.className='hud-notification-status';announcement.setAttribute('role','status');announcement.setAttribute('aria-live','polite');announcement.setAttribute('aria-atomic','true');$('mainMenu').append(announcement);}
+    announcement.textContent=state.character>0?'Personagem: '+state.character+' pendências.':'';
+  });
+  function updateNotifications(){
+    notificationManager.update({attributes:game.attributePoints,talents:MareTalents.available(game),canBePromoted:MareHierarchy.next(game.hierarchyTier,game.level).state==='ready',unclaimedAchievements:MareAchievements.list(game).filter(a=>a.ready).map(a=>a.id)});
+  }
   function updateUI(){if(!game||!session)return;
     const telemetry=MareHudTelemetry.stats({scene,elapsed:session.elapsed,xp:session.xp,levelXP:game.xp,neededXP:xpNeeded(game.level)});
     const tracker=$('huntXpTracker');
@@ -1451,7 +1475,7 @@
         tracker.setAttribute('aria-label','XP por hora '+(telemetry.rate===null?'calculando':fmt(telemetry.rate))+'; tempo de caçada '+telemetry.duration+'; XP obtido '+fmt(telemetry.earned));
       }
     }
-    updateHuntHUD();updateHakiHUD();if(characterTab==='haki'&&currentPanel==='character')MareHakiUI.refresh($('dialogBody'),game,session.haki,{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0});game=observeAchievements();if(characterTab==='achievements'&&currentPanel==='character')MareTalentUI.refreshAchievements($('dialogBody'),game);updateTalentResource();if(currentPanel==='forge'&&forgeUI.tab==='fusion'&&forgeFusionStamp!==fusionInventoryStamp())renderPanel();let derived=getDerived(),c=classes[game.classId];$('heroLevel').textContent=game.level;$('heroClass').textContent=c.name.toUpperCase();configureFactionVisual();$('heroName').textContent=game.name;$('heroPower').textContent=fmt(derived.power);$('hpText').textContent=fmt(game.hp)+' / '+fmt(derived.maxHP);$('energyText').textContent=fmt(game.energy)+' / '+fmt(derived.maxEnergy);$('xpText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));bar('hpFill',game.hp,derived.maxHP);bar('energyFill',game.energy,derived.maxEnergy);bar('xpFill',game.xp,xpNeeded(game.level));$('goldAmount').textContent=fmt(game.gold);$('statAttack').textContent=fmt(derived.attack);$('statDefense').textContent=fmt(derived.defense);$('statCrit').textContent=Math.round(derived.crit*100)+'%';$('statSpeed').textContent=derived.speed.toFixed(2)+'/s';$('sessionTimer').textContent=elapsedString(session.elapsed);$('killsCount').textContent=fmt(game.stats.kills);$('bossCount').textContent=fmt(game.stats.boss);$('goldEarned').textContent=fmt(session.gold);$('damageTotal').textContent=fmt(game.stats.damage);$('expeditionState').textContent=scene==='lobby'?'NO PORTO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇANDO':'EM PAUSA';$('potionCount').textContent=game.potions;$('autoLabel').textContent=autoPlay?'ATIVADA':'PAUSADA';$('autoToggle').classList.toggle('active',autoPlay);$('autoToggle').disabled=scene==='lobby';$('autoToggle').classList.toggle('hidden',scene==='lobby');$('combatState').innerHTML='<i class="pulse-dot '+(autoPlay?'':'paused')+'"></i>'+(scene==='lobby'?'PORTO SEGURO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇADA AUTOMÁTICA':'CAÇADA PAUSADA');$('targetHint').textContent=scene==='lobby'?'NPCS · MISSÕES · FORJA · EXPEDIÇÕES':world.target?.alive?'ALVO: '+monsterName(world.target).toUpperCase():'PROCURANDO ALVO...';
+    updateHuntHUD();updateHakiHUD();if(characterTab==='haki'&&currentPanel==='character')MareHakiUI.refresh($('dialogBody'),game,session.haki,{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0});game=observeAchievements();updateNotifications();if(characterTab==='achievements'&&currentPanel==='character')MareTalentUI.refreshAchievements($('dialogBody'),game);updateTalentResource();if(currentPanel==='forge'&&forgeUI.tab==='fusion'&&forgeFusionStamp!==fusionInventoryStamp())renderPanel();let derived=getDerived(),c=classes[game.classId];$('heroLevel').textContent=game.level;$('heroClass').textContent=c.name.toUpperCase();configureFactionVisual();$('heroName').textContent=game.name;$('heroPower').textContent=fmt(derived.power);$('hpText').textContent=fmt(game.hp)+' / '+fmt(derived.maxHP);$('energyText').textContent=fmt(game.energy)+' / '+fmt(derived.maxEnergy);$('xpText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));bar('hpFill',game.hp,derived.maxHP);bar('energyFill',game.energy,derived.maxEnergy);bar('xpFill',game.xp,xpNeeded(game.level));$('goldAmount').textContent=fmt(game.gold);$('statAttack').textContent=fmt(derived.attack);$('statDefense').textContent=fmt(derived.defense);$('statCrit').textContent=Math.round(derived.crit*100)+'%';$('statSpeed').textContent=derived.speed.toFixed(2)+'/s';$('sessionTimer').textContent=elapsedString(session.elapsed);$('killsCount').textContent=fmt(game.stats.kills);$('bossCount').textContent=fmt(game.stats.boss);$('goldEarned').textContent=fmt(session.gold);$('damageTotal').textContent=fmt(game.stats.damage);$('expeditionState').textContent=scene==='lobby'?'NO PORTO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇANDO':'EM PAUSA';$('potionCount').textContent=game.potions;$('autoLabel').textContent=autoPlay?'ATIVADA':'PAUSADA';$('autoToggle').classList.toggle('active',autoPlay);$('autoToggle').disabled=scene==='lobby';$('autoToggle').classList.toggle('hidden',scene==='lobby');$('combatState').innerHTML='<i class="pulse-dot '+(autoPlay?'':'paused')+'"></i>'+(scene==='lobby'?'PORTO SEGURO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇADA AUTOMÁTICA':'CAÇADA PAUSADA');$('targetHint').textContent=scene==='lobby'?'NPCS · MISSÕES · FORJA · EXPEDIÇÕES':world.target?.alive?'ALVO: '+monsterName(world.target).toUpperCase():'PROCURANDO ALVO...';
     const hasTarget=scene==='hunt'&&world.target?.alive;
     $('targetHud').classList.toggle('hidden',scene!=='hunt'||!hasTarget);
     if(scene==='hunt'){
@@ -2000,12 +2024,14 @@
     devApply(command);
   });
   $('dialogBody').addEventListener('change',e=>{if(currentPanel==='dev'&&e.target.dataset.devOption)devApply({type:'option',name:e.target.dataset.devOption,enabled:e.target.checked});});
+  let characterMenuReturnFocus=null;
   function closeCharacterMenu(restoreFocus=false){
     const menu=$('characterQuickMenu'),trigger=$('characterMenuTrigger');
     if(!menu||!trigger)return;
     menu.classList.add('hidden');
-    trigger.setAttribute('aria-expanded','false');
-    if(restoreFocus)trigger.focus({preventScroll:true});
+    if(notificationManager.state.character<=0)trigger.setAttribute('aria-expanded','false');
+    $('characterMenuBrowse').setAttribute('aria-expanded','false');
+    if(restoreFocus)(characterMenuReturnFocus||trigger).focus({preventScroll:true});
   }
   function closeCaptainMenu(restoreFocus=false){
     const menu=$('captainQuickMenu'),trigger=$('captainMenuTrigger');
@@ -2040,13 +2066,16 @@
     if(opening)menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});
     else trigger.focus({preventScroll:true});
   }
-  function toggleCharacterMenu(){
+  function toggleCharacterMenu(browse=false){
     const menu=$('characterQuickMenu'),trigger=$('characterMenuTrigger');
     if(!game||!menu||!trigger||!$('panelOverlay').classList.contains('hidden')||document.querySelector('.confirmation-overlay'))return;
     const opening=menu.classList.contains('hidden');
+    if(!browse){updateNotifications();const pending=notificationManager.focus();if(pending){openPanel('character',pending);return;}}
+    characterMenuReturnFocus=browse?$('characterMenuBrowse'):trigger;
     closeModesMenu();closeCaptainMenu();
     menu.classList.toggle('hidden',!opening);
-    trigger.setAttribute('aria-expanded',String(opening));
+    if(notificationManager.state.character<=0)trigger.setAttribute('aria-expanded',String(opening));
+    $('characterMenuBrowse').setAttribute('aria-expanded',String(opening));
     $('characterMenuHakiHint').textContent=game.has_haki_unlocked?'Despertado':'Nível 50 + Livro da Vontade';
     menu.querySelector('[data-character-section="haki"]')?.classList.toggle('is-locked',!game.has_haki_unlocked);
     if(opening)menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});
@@ -2072,9 +2101,10 @@
     if(panel==='inventory')inventoryUI.page=0;
     if(panel==='character'&&currentPanel!=='character'){attributeDraft=MareCharacters.empty();characterTab='status';talentDraft=null;selectedTalent=null;talentMessage='';talentDraftSeq=game.talentSeq;}
     if(panel==='character'&&['status','talents','achievements','haki','akuma','hierarchy','appearance'].includes(characterSection)){if(characterTab!==characterSection){attributeDraft=MareCharacters.empty();talentDraft=null;selectedTalent=null;talentMessage='';talentDraftSeq=game.talentSeq;}characterTab=characterSection;}
+    if(panel==='character'&&characterSection==='achievements'&&notificationManager.state.achievements>0)achievementCategory='all';
     currentPanel=panel;$('panelOverlay').classList.remove('hidden');renderPanel();if(panel==='character'&&characterTab==='hierarchy')void syncHierarchy();$('dialogBody').scrollTop=0;
     if(panel==='map')$('voyageRegionTabs').querySelector('[aria-selected=true]')?.focus({preventScroll:true});
-    else if(panel==='character')$('dialogBody').querySelector('button:not(:disabled),input:not(:disabled)')?.focus({preventScroll:true});
+    else if(panel==='character'){const attention=characterTab==='status'&&notificationManager.state.status>0?$('dialogBody').querySelector('[data-attribute-add]:not(:disabled)'):null;(attention||$('dialogBody').querySelector('button:not(:disabled),input:not(:disabled)'))?.focus({preventScroll:true});if(attention)attention.scrollIntoView({block:'nearest'});}
     else if(navigation.includes(panel)||['dev','hunt'].includes(panel))$('dialogBody').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
   }
   function closePanel(){dollLookDraft=null;dollLookMessage='';closeCharacterMenu();closeModesMenu();closeCaptainMenu();MareTalentUI.unmount();$('characterTabs')?.remove();talentDraft=null;const wasNavigation=['modes','map','prison'].includes(currentPanel);$('voyageRegionTabs')?.remove();attributeDraft=MareCharacters.empty();allocationMessage="";currentPanel=null;document.querySelectorAll('.bottom-nav [aria-pressed]').forEach(b=>b.setAttribute('aria-pressed','false'));$('panelOverlay').classList.add('hidden');$('panelOverlay').classList.remove('inventory-mode','character-mode','voyage-mode','modes-mode');$('inventoryHeadMeta')?.classList.add('hidden');if(wasNavigation)(mapReturnFocus?.isConnected?mapReturnFocus:$('mainMenu').querySelector('[data-panel=modes]'))?.focus({preventScroll:true});MareUI.restoreFocus($('panelOverlay'));}
@@ -2707,6 +2737,7 @@ function applySceneHudLayout(){
     const quickMode=e.target.closest('[data-quick-mode]');
     if(quickMode){closeModesMenu();openPanel(quickMode.dataset.quickMode);return;}
     if(!$('modesQuickMenu')?.contains(e.target))closeModesMenu();
+    if(e.target.closest('#characterMenuBrowse')){toggleCharacterMenu(true);return;}
     const menuTrigger=e.target.closest('[data-character-menu-trigger]');
     if(menuTrigger){toggleCharacterMenu();return;}
     const section=e.target.closest('[data-character-section]');

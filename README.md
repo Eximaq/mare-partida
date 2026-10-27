@@ -66,6 +66,8 @@ A [expansão lateral](pixellab-pip-generations/paper-doll-walk-profiles-20261021
 
 ## Interface UI/UX 2.0
 
+A HUD soma pontos de atributos, PT, promoções disponíveis e conquistas não resgatadas em badges com navegação direta para a pendência. A seta de Personagem mantém o menu completo. [Regras, acessibilidade e validação](docs/UI-DESIGN-SYSTEM.md#notificações-de-pendências--27102026).
+
 A identidade de navio foi preservada na revisão: madeira, cordas, bronze e pergaminho, com a organização responsiva e a navegação acessível da UI 2.0. O inventário voltou a ter três colunas de pergaminho e slots harmonizados em madeira escura.
 
 Tokens e componentes compartilhados, HUD nas bordas com Haki na barra de ações, menus compactos, chat local com filtros e janelas padronizadas. Navegação mantém os sistemas existentes e adiciona controle uniforme de foco, Escape e confirmações. [Guia para novas funcionalidades e validação](docs/UI-DESIGN-SYSTEM.md).
