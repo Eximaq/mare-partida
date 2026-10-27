@@ -9,7 +9,8 @@
  function drawActor(c,x,y,{action='idle',direction='front',time=0,scale=1,progress=null}={}){
   const p=clip(action,direction),im=image(p.image);if(!im.complete||!im.naturalWidth)return false;
   const frame=Number.isFinite(progress)?Math.min(p.frames-1,Math.floor(Math.max(0,Math.min(1,progress))*p.frames)):['idle','walk'].includes(action)?Math.floor(Math.max(0,time)*p.fps)%p.frames:Math.min(p.frames-1,Math.floor(Math.max(0,time)*p.fps));
-  const size=rules.worldSize*scale,factor=size/p.size;c.save();c.imageSmoothingEnabled=false;c.drawImage(im,frame*p.size,0,p.size,p.size,Math.round(x-size/2),Math.round(y-p.feet[frame]*factor),size,size);c.restore();return true;
+  // Animation cells contain extra transparent padding; preserve the idle pixel scale.
+  const factor=rules.worldSize*scale/clip('idle',direction).size,size=p.size*factor;c.save();c.imageSmoothingEnabled=false;c.drawImage(im,frame*p.size,0,p.size,p.size,Math.round(x-size/2),Math.round(y-p.feet[frame]*factor),size,size);c.restore();return true;
  }
  function reduction(target={},hasHaki=false){if(hasHaki)return 0;const id=target.fruitId||target.equippedFruitId||target.fruit?.id;return id==='akuma_beta_beta'?.3:Math.max(0,Math.min(1,Number(target.physicalDamageReduction)||0));}
  const mitigate=(amount,target,hasHaki=false)=>Math.max(1,Math.floor(amount*(1-reduction(target,hasHaki))));
