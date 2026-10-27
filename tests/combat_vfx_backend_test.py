@@ -10,7 +10,7 @@ class CombatVfxTest(unittest.TestCase):
   for kind,count in [('gunner',12),('mage',10),('healer',10),('cyborg',10)]:
    s=self.launch(kind);self.assertEqual(s['flightFrameCount'],count)
    with self.assertRaises(ValueError):self.hit(s['token'])
-   self.now+=1;hit=self.hit(s['token']);self.assertEqual(hit['impactStartFrame'],count)
+   self.now+=1;hit=self.hit(s['token']);self.assertEqual(hit['impactStartFrame'],0 if kind=='cyborg' else count)
    with self.assertRaises(ValueError):self.hit(s['token'])
  def test_owner_zone_collision_and_expiry(self):
   s=self.launch();self.now+=1

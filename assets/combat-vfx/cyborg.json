@@ -1,7 +1,7 @@
 {
  "frames": [
   {
-   "filename": "power-aura-take-11 0.png",
+   "filename": "power-aura-take-15 0.png",
    "frame": {
     "x": 0,
     "y": 0,
@@ -27,7 +27,7 @@
    "duration": 83
   },
   {
-   "filename": "power-aura-take-11 1.png",
+   "filename": "power-aura-take-15 1.png",
    "frame": {
     "x": 64,
     "y": 0,
@@ -53,7 +53,7 @@
    "duration": 83
   },
   {
-   "filename": "power-aura-take-11 2.png",
+   "filename": "power-aura-take-15 2.png",
    "frame": {
     "x": 128,
     "y": 0,
@@ -79,59 +79,7 @@
    "duration": 83
   },
   {
-   "filename": "power-aura-take-11 3.png",
-   "frame": {
-    "x": 192,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 4.png",
-   "frame": {
-    "x": 256,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 5.png",
+   "filename": "power-aura-take-15 3.png",
    "frame": {
     "x": 0,
     "y": 64,
@@ -157,7 +105,7 @@
    "duration": 83
   },
   {
-   "filename": "power-aura-take-11 6.png",
+   "filename": "power-aura-take-15 4.png",
    "frame": {
     "x": 64,
     "y": 64,
@@ -183,7 +131,7 @@
    "duration": 83
   },
   {
-   "filename": "power-aura-take-11 7.png",
+   "filename": "power-aura-take-15 5.png",
    "frame": {
     "x": 128,
     "y": 64,
@@ -209,59 +157,7 @@
    "duration": 83
   },
   {
-   "filename": "power-aura-take-11 8.png",
-   "frame": {
-    "x": 192,
-    "y": 64,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 9.png",
-   "frame": {
-    "x": 256,
-    "y": 64,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 10.png",
+   "filename": "power-aura-take-15 6.png",
    "frame": {
     "x": 0,
     "y": 128,
@@ -287,7 +183,7 @@
    "duration": 83
   },
   {
-   "filename": "power-aura-take-11 11.png",
+   "filename": "power-aura-take-15 7.png",
    "frame": {
     "x": 64,
     "y": 128,
@@ -313,322 +209,10 @@
    "duration": 83
   },
   {
-   "filename": "power-aura-take-11 12.png",
+   "filename": "power-aura-take-15 8.png",
    "frame": {
     "x": 128,
     "y": 128,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 13.png",
-   "frame": {
-    "x": 192,
-    "y": 128,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 14.png",
-   "frame": {
-    "x": 256,
-    "y": 128,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 15.png",
-   "frame": {
-    "x": 0,
-    "y": 192,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 16.png",
-   "frame": {
-    "x": 64,
-    "y": 192,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 17.png",
-   "frame": {
-    "x": 128,
-    "y": 192,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 18.png",
-   "frame": {
-    "x": 192,
-    "y": 192,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 19.png",
-   "frame": {
-    "x": 256,
-    "y": 192,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 20.png",
-   "frame": {
-    "x": 0,
-    "y": 256,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 21.png",
-   "frame": {
-    "x": 64,
-    "y": 256,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 22.png",
-   "frame": {
-    "x": 128,
-    "y": 256,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 23.png",
-   "frame": {
-    "x": 192,
-    "y": 256,
-    "w": 64,
-    "h": 64
-   },
-   "rotated": false,
-   "trimmed": false,
-   "spriteSourceSize": {
-    "x": 0,
-    "y": 0,
-    "w": 64,
-    "h": 64
-   },
-   "sourceSize": {
-    "w": 64,
-    "h": 64
-   },
-   "pivot": {
-    "x": 0.75,
-    "y": 1.53125
-   },
-   "duration": 83
-  },
-  {
-   "filename": "power-aura-take-11 24.png",
-   "frame": {
-    "x": 256,
-    "y": 256,
     "w": 64,
     "h": 64
    },
@@ -653,11 +237,11 @@
  ],
  "meta": {
   "app": "PixelLab VFX Creator",
-  "image": "power-aura-take-11.png",
+  "image": "power-aura-take-15.png",
   "format": "RGBA8888",
   "size": {
-   "w": 320,
-   "h": 320
+   "w": 192,
+   "h": 192
   },
   "scale": "1",
   "anchor": {
@@ -667,9 +251,9 @@
   },
   "frameTags": [
    {
-    "name": "power-aura-take-11",
+    "name": "power-aura-take-15",
     "from": 0,
-    "to": 24,
+    "to": 8,
     "direction": "forward"
    }
   ]

@@ -24,7 +24,8 @@
   return damageType==='elemental'||damageType==='magic'?'mage':'punch';
  }
  function projectile(kind,origin,targetId,meta={}){if(!data.flightEnds[kind])throw Error('Invalid projectile kind');return {kind,mode:kind==='cyborg'?'beam':'projectile',x:origin.x,y:origin.y,origin:{...origin},targetId,phase:'flight',elapsed:0,age:0,angle:0,...meta};}
- function impactDuration(p){return data.effects[p.kind].frames.slice(data.flightEnds[p.kind]).reduce((sum,f)=>sum+f.duration,0);}
+ function impactStart(kind){return data.impactStarts?.[kind]??data.flightEnds[kind]??0;}
+ function impactDuration(p){return data.effects[p.kind].frames.slice(impactStart(p.kind)).reduce((sum,f)=>sum+f.duration,0);}
  function finishImpact(p,point){p.phase='impact';p.x=point.x;p.y=point.y;p.elapsed=0;p.playbackRate=data.impactPlaybackRate;p.finalFrameShown=false;}
  function beamGeometry(p,origin=p.origin){const dx=p.x-origin.x,dy=p.y-origin.y;return {x:(p.x+origin.x)/2,y:(p.y+origin.y)/2,width:Math.hypot(dx,dy),angle:Math.atan2(dy,dx)};}
  function step(p,dt,{target,origin=p.origin,clear=()=>true,valid=()=>true,authorize=()=>true,onHit=()=>{}}={}){
@@ -52,10 +53,10 @@
  function drawProjectile(c,p,{origin=p.origin}={}){
   if(p.phase==='done')return false;const end=data.flightEnds[p.kind];
   if(p.mode==='beam'){
-   const box=beamGeometry(p,origin);if(box.width>0){c.save();if(p.phase==='impact')c.globalAlpha*=Math.max(0,1-p.elapsed/impactDuration(p));draw(c,p.kind,box.x,box.y,p.age*1000,{width:box.width,height:64,angle:box.angle,end:end-1,loop:true});c.restore();}
+   const box=beamGeometry(p,origin);if(box.width>0){c.save();if(p.phase==='impact')c.globalAlpha*=Math.max(0,1-p.elapsed/impactDuration(p));draw(c,data.beamEffects?.[p.kind]||p.kind,box.x,box.y,p.age*1000,{width:box.width,height:64,angle:box.angle,end:end-1,loop:true});c.restore();}
    if(p.phase!=='impact')return true;
   }
-  return draw(c,p.kind,p.x,p.y,p.elapsed,{start:p.phase==='impact'?end:0,end:p.phase==='impact'?null:end-1,loop:p.phase==='flight',staticFrame:p.phase==='waiting'?end-1:null,angle:p.phase==='impact'?0:p.angle});
+  return draw(c,p.kind,p.x,p.y,p.elapsed,{start:p.phase==='impact'?impactStart(p.kind):0,end:p.phase==='impact'?null:end-1,loop:p.phase==='flight',staticFrame:p.phase==='waiting'?end-1:null,angle:p.phase==='impact'?0:p.angle});
  }
  function layout(x,y,{height=74,barWidth=60,nameWidth=0}={}){const head=y-height,barY=head-36;return {x,y,head,barY,nameY:barY-7,chestY:y-height*.45,iconX:x+Math.max(barWidth/2,nameWidth/2)+13,iconY:barY+3,ccY:head-14};}
  function statuses(entity={},now=0,epoch=Date.now(),extra={}){
@@ -65,5 +66,5 @@
  }
  function drawStatuses(c,box,status,now){status.icons.forEach((kind,i)=>draw(c,kind,box.iconX+i*21,box.iconY,0,{width:data.statusSize,staticFrame:0}));status.cc.forEach((kind,i)=>draw(c,kind,box.x+(i-(status.cc.length-1)/2)*28,box.ccY,now*1000,{width:data.ccSize,loop:true}));}
  if(typeof Image!=='undefined')preload();
- const api={data,frame,draw,preload,classify,projectile,impactDuration,finishImpact,beamGeometry,step,drawProjectile,layout,statuses,drawStatuses};root.MareCombatVfx=api;if(typeof module!=='undefined')module.exports=api;
+ const api={data,frame,draw,preload,classify,projectile,impactStart,impactDuration,finishImpact,beamGeometry,step,drawProjectile,layout,statuses,drawStatuses};root.MareCombatVfx=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

@@ -2,7 +2,7 @@
 
 ## Assets e reprodução
 
-14 PNGs e 14 JSONs fornecidos pelo proprietário, copiados integralmente para assets/combat-vfx/. Os 194 quadros usam retângulos e durações do JSON original (83 ms por quadro). Manifesto com hashes e nomes de origem; nenhuma geração ou modificação de arte. Os pivots externos dos exports não são usados como posição de interface: os impactos são ancorados no peito, conforme o pedido.
+15 PNGs e 15 JSONs fornecidos pelo proprietário, copiados integralmente para assets/combat-vfx/. Os 203 quadros usam retângulos e durações do JSON original (83 ms por quadro). Manifesto com hashes e nomes de origem; nenhuma geração ou modificação de arte. Os pivots externos dos exports não são usados como posição de interface: os impactos são ancorados no peito, conforme o pedido.
 
 combat-vfx.js implementa animação, classificação, voo, colisão e layout. combat-vfx-data.js é derivado de assets/combat-vfx/rules.json; tools/import_combat_vfx.py recompõe os metadados a partir da pasta fornecida, preservando bytes dos PNGs/JSONs.
 
@@ -11,18 +11,18 @@ combat-vfx.js implementa animação, classificação, voo, colisão e layout. co
 | Origem | Efeito aplicado |
 |---|---|
 | Espadachim / Supa | Corte recebido com espada |
-| Gatuno / Neko / Lobo / mordida do Ryu / Dachshund | Ataque recebido com adaga |
-| Lutador / Girafa / Bisão / cauda do Ryu / socos Hana / Uma / Beri | Efeito no alvo do soco lutador |
+| Gatuno / Lobo / mordida do Ryu / Dachshund | Ataque recebido com adaga |
+| Lutador / Neko / Girafa / Bisão / cauda do Ryu / socos Hana / Uma / Beri | Efeito no alvo do soco lutador |
 | Gênio Hoya / machados Mato | Corte recebido com espada |
 | Atirador | Arquivo combinado Atirador: voo + impacto |
-| Ciborgue | Arquivo combinado Ciborgue: voo + impacto |
+| Ciborgue | Feixe ancorado + novo Efeito ciborgue no alvo (9 quadros) |
 | Elemental | Arquivo combinado Mago: voo + impacto |
 | Curandeiro | Arquivo combinado Curandeiro: voo + impacto |
 | Explosões de talentos e novas habilidades sem impacto próprio | Explosao efect |
 | Poder elemental genérico sem impacto próprio | Frames de impacto do Mago |
 | Cura efetiva instantânea, poção, comida, roubo de vida | Cura, uma reprodução sobre o corpo |
 
-Doru, Jiki, Beta e Bomu preservam seus impactos exclusivos. Hana mantém os braços de lançamento e os golpes recebem a pancada; o estrangulamento preserva seu overlay exclusivo. Sangramento, veneno e queimadura periódicos não repetem um impacto de arma a cada tick. Kuku, Albatroz, Horu e Kobu usam cura/buff/status quando pertinente; não criam um acerto sem dano.
+Doru, Jiki, Beta e Bomu preservam seus impactos exclusivos. Hana usa a pancada compartilhada em cada um dos quatro acertos, sem a sobreposição antiga; o estrangulamento preserva seu overlay exclusivo. Sangramento, veneno e queimadura periódicos não repetem um impacto de arma a cada tick. Kuku, Albatroz, Horu e Kobu usam cura/buff/status quando pertinente; não criam um acerto sem dano.
 
 A exclusividade de impacto é respeitada; nos demais casos, metadados explícitos têm prioridade. Categorias cutting/slashing, blunt, piercing, magical e explosive são aceitas; novos nomes também têm fallback por corte, explosão ou tipo elemental. Cada fruta pode ter uma regra geral e exceções por skill. Nenhum multiplicador de dano, energia, recarga ou passivo foi alterado por esta atualização.
 
@@ -33,7 +33,7 @@ A exclusividade de impacto é respeitada; nos demais casos, metadados explícito
 | Atirador | 1–12, loop | 13 |
 | Curandeiro | 1–10, loop | 11 |
 | Mago | 1–10, loop | 11 |
-| Ciborgue | Feixe ancorado, 1–10 em loop | 11 |
+| Ciborgue | Feixe ancorado, atlas cyborgBeam, 1–10 em loop | 1 do novo atlas cyborg |
 
 Internamente os índices começam em zero. Atirador, Mago e Curandeiro usam um projétil que acompanha o alvo vivo, gira para o vetor atual e verifica caminho/colisão. O Ciborgue usa um feixe preso ao emissor, apontado continuamente ao alvo inclusive nas diagonais; o contato ocorre após 120 ms de emissão, sem um objeto voando. Na chegada, congela suas coordenadas, inicia a faixa de impacto com elapsed zero e só então executa o desconto de HP e os procs de contato/roubo de vida. O impacto toca os quadros finais a 3× após o dano e mantém o último quadro por um desenho, mesmo que esse golpe mate o alvo. Em área, há um lançamento por vítima elegível, com custo e recarga consumidos uma única vez pela habilidade. Perfuração e ataques secundários com trajetória também usam a colisão.
 
@@ -60,7 +60,7 @@ A API local continua recebendo o mundo simulado pelo cliente; não se tornou um 
 ## Validação
 
 - tests/combat-vfx.test.cjs: limites de quadros, loop, HP atrasado, tracking, impacto fixo, token assíncrono, cancelamentos, classificação e tempos exatos de status.
-- tests/combat_vfx_artwork_test.py: hashes dos 28 arquivos, transparência, 194 quadros e metadados.
+- tests/combat_vfx_artwork_test.py: hashes dos 30 arquivos, transparência, 203 quadros e metadados.
 - tests/combat_vfx_backend_test.py: timing, dono/área/alvo, replay, cancelamento, expiração e descritores de status.
 - tests/combat_vfx_browser.cjs: sete classes, HP apenas na colisão, primeiro quadro de impacto, habilidade em área sem custo duplicado, status estáticos/CC em loop, cura e alvo morto. Executar no estático e com MARE_EXPECT_API=1 na API atual.
 - Regressão de velocidade: 56 casos preservando impacto corpo a corpo e dano de projétil na colisão.
@@ -83,3 +83,9 @@ Validação do ajuste: 87 suítes Node e 114 testes Python passaram. Navegador e
 ## Novo impacto de pancada — 27/10/2026
 
 O efeito compartilhado punch foi substituído pelo power-aura-take-13 fornecido pelo proprietário: 13 quadros de 212×221 px, 83 ms cada, total original de 1079 ms. PNG e JSON preservados byte a byte. A renderização mantém a proporção nativa e a reprodução acelerada após o dano. A categoria continua atendendo Pugilista, Girafa, Bisão, cauda do Ryu, socos Hana e demais golpes contusivos. O nome lógico punch e os mapeamentos foram mantidos; não há alteração das animações corporais do personagem ou das fórmulas. A imagem usa versão por hash para impedir mistura do atlas novo com o antigo em cache.
+
+## Ciborgue, Neko e socos herdados — 27/10/2026
+
+Efeito ciborgue substitui o impacto elétrico: PNG/JSON originais, 9 quadros de 64×64 e 747 ms, reproduzidos a 3× após o dano. O atlas anterior permanece somente como fonte do raio ancorado (cyborgBeam, primeiros dez quadros). O início do impacto agora é independente da faixa do raio, configurado em impactStarts e compartilhado com a API. Neko usa punch no básico, Bote Feroz e nos quatro acertos da Fúria Felina; o overlay Slash Tiger antigo saiu do combate. Hana também remove o overlay antigo de socos e usa os quatro impactos punch sincronizados ao dano, preservando seu cronograma e o estrangulamento. Girafa, Bisão, cauda Ryu, Uma, Beri e golpes contusivos genéricos continuam no mesmo atlas punch atualizado.
+
+Validação desta troca: 88 suítes Node; 114 testes Python de backend/arte e 4 de hierarquia; navegador estático, API atual e Pages; regressões Neko e Beta/Hana; 56 cenários de cadência; build Pages. Inspeção visual do impacto elétrico na diagonal concluída.

@@ -20,6 +20,7 @@ const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8'),bridge=` 
  const punch=await page.evaluate(async()=>{const q=__rankBQA,m=q.world.target,b=m.hp,attack=q.stats().physical,ok=await q.useFruitSkill(true,'1');return {ok,b,attack};});assert(punch.ok);
  for(let i=0;i<4;i++){if(process.env.MARE_EXPECT_API)await page.waitForTimeout(365);await page.evaluate(()=>__rankBQA.step(MareRankB.effects.punch.duration/4000));}
  assert.equal(await page.evaluate(b=>b-__rankBQA.world.target.hp,punch.b),4*Math.floor(punch.attack*.8));
+ assert.equal(await page.evaluate(()=>__rankBQA.session.combatHits.filter(f=>f.kind==='punch').length),4);
  const choke=await page.evaluate(async()=>{const q=__rankBQA,m=q.world.target,b=m.hp,attack=q.stats().physical,ok=await q.useFruitSkill(true,'2');return {ok,b,attack,initial:b-m.hp};});assert(choke.ok);assert.equal(choke.initial,Math.floor(choke.attack));
  if(process.env.MARE_EXPECT_API)await page.waitForTimeout(1025);await page.evaluate(()=>__rankBQA.step(MareRankB.chokeLead/1000));const held=await page.evaluate(()=>{const q=__rankBQA,m=q.world.target,x=m.x,y=m.y;const clock=m.attackClock;q.simulate(.05);return {stun:m.isStunned,immobilized:m.isImmobilized,stopped:x===m.x&&y===m.y,clockUnchanged:m.attackClock===clock,frame:MareRankB.frame('choke',MareRankB.chokeLead)};});assert(held.stun&&held.immobilized&&held.stopped&&held.clockUnchanged);assert.equal(held.frame.x,128);assert.equal(held.frame.y,128);
  await page.waitForTimeout(100);await page.screenshot({path:os.tmpdir()+'/rank-b-hana-held.png'});
