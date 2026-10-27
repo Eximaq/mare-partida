@@ -1025,7 +1025,7 @@
     if(forceBoss){session.bossNotice=3.3;$('bossBanner').classList.remove('hidden');log(region.boss+' aguarda no setor final.','danger');}
   }
   function spawnVisual(x,y,text,color='#f9e9bc',size=15){world.fx.push({x,y,text,color,life:1.25,max:1.25,dy:-28,size});if(world.fx.length>70)world.fx.splice(0,10);}
-  function addProjectile(x,y,tx,ty,color='#f4dfa1'){world.projectiles.push({x,y,tx,ty,progress:0,color});}
+  function addProjectile(x,y,tx,ty,color='#f4dfa1',born=null){world.projectiles.push({x,y,tx,ty,progress:0,color,born});}
   function distance(a,b){return Math.hypot(a.x-b.x,a.y-b.y);}
   function livingMobs(){return world.mobs.filter(m=>m.alive&&m.hp>0);}
   function classCombatAsset(){return classCombat.asset(game);}
@@ -1095,7 +1095,10 @@
     if(!commit)world.hero.attackAnim=zoan?.75:.22;
     if(skill?.element==='lightning')m.slow=4.5;
     const color=skill?.element==='fire'?'#ff995b':skill?.element==='lightning'?'#dac2ff':elemental?'#70d9f1':classes[game.classId].color;
-    if(!zoan&&['gunner','cyborg','strategist','healer'].includes(game.classId))addProjectile(world.hero.x+world.hero.facing*13,world.hero.y-27,m.x,m.y-24,color);
+    if(!zoan&&['gunner','cyborg','strategist','healer'].includes(game.classId)){
+      const muzzle=!skill&&DEV_ACTIVE?paperDollReview.projectileOrigin(game,world.hero,classCombatController()?.snapshot()||basicAttackPose(),horuBuffActive()?MareRankC.rules.horu.scale:1):null;
+      addProjectile(muzzle?.x??world.hero.x+world.hero.facing*13,muzzle?.y??world.hero.y-27,m.x,m.y-24,color,muzzle?world.time:null);
+    }
     else world.fx.push({x:m.x,y:m.y-9,slash:true,life:.22,max:.22,dy:0,color});
     if(elemental)world.fx.push({x:m.x,y:m.y-10,ring:1,life:.35,max:.35,color});
     if(['spatial','orbital'].includes(ultimate))addProjectile(world.hero.x,world.hero.y-24,m.x,m.y-24,'#8adcf5');
@@ -1247,7 +1250,7 @@
     const combat=classCombatController();
     retimeAttack(combat,getDerived().speed);
     combat?.step(dt,{moving:world.hero.walking>0,inCombat:scene==='hunt',direction:world.hero.direction});
-    world.fx=world.fx.filter(f=>(f.life-=dt)>0);for(let f of world.fx)if(Number.isFinite(f.dy))f.y+=f.dy*dt;world.projectiles=world.projectiles.filter(p=>(p.progress+=dt*3.7)<1);
+    world.fx=world.fx.filter(f=>(f.life-=dt)>0);for(let f of world.fx)if(Number.isFinite(f.dy))f.y+=f.dy*dt;world.projectiles=world.projectiles.filter(p=>(p.progress+=p.born===world.time?0:dt*3.7)<1);
     if(world.hero.talentControl)world.hero.talentControl.remaining=Math.max(0,world.hero.talentControl.remaining-dt);
     for(const action of MareTalentCombat.tick(session.talents,dt,scene==='hunt'?livingMobs():[])){if(scene==='hunt'&&session.respawn<=0&&action.target.alive)outputDamage(action.target,action.amount);}
     if(session.respawn<=0)applyUltimateActions(MareUltimates.tick(game,session.talents.ultimate,dt,{hero:world.hero,stats:getDerived(),inCombat:scene==='hunt'&&(session.talents.combatRemaining>0||!!world.target?.alive),inHunt:scene==='hunt',enemies:scene==='hunt'?livingMobs():[],clear:(a,b)=>navigator().clear(a,b),move:(m,dx,dy)=>navigator().move(m,dx,dy)}));
@@ -2260,9 +2263,9 @@
   function drawCoral(x,y){px(ctx,x-4,y-18,8,28,'#c78375');px(ctx,x-15,y-19,7,12,'#de9b82');px(ctx,x+12,y-28,7,31,'#d3857c');px(ctx,x-20,y-20,17,6,'#e4a190');px(ctx,x+4,y-23,20,7,'#e7aa93');px(ctx,x-11,y+2,28,8,'#92735f');}
   function drawCrate(x,y){px(ctx,x-13,y-17,30,26,'#634e38');px(ctx,x-10,y-13,24,20,'#9f8158');px(ctx,x-10,y-12,24,3,'#c29b66');px(ctx,x-2,y-13,3,20,'#5f4938');px(ctx,x-10,y+3,24,3,'#614b36');}
   function drawRuin(x,y){px(ctx,x-10,y-18,23,24,'#52635c');px(ctx,x-12,y-25,27,9,'#859385');px(ctx,x-8,y-19,5,25,'#98a18a');px(ctx,x+8,y-19,5,25,'#3e594d');px(ctx,x-18,y+6,39,9,'#53695e');}
-  function drawPaperDoll(c,x,y,action,direction,time,scale=null,progress=null){
+  function drawPaperDoll(c,x,y,action,direction,time,scale=null,progress=null,timing=null){
     if(!MarePaperDollCatalog.eligible(game))return false;
-    if(DEV_ACTIVE&&paperDollReview.draw(c,game,action,direction,time,x,y,scale,progress))return true;
+    if(DEV_ACTIVE&&paperDollReview.draw(c,game,action,direction,time,x,y,scale,progress,timing))return true;
     const appearance=MarePaperDollCatalog.appearance(game),pose=MarePaperDollCatalog.sample(paperDoll,game,action,direction,time,{progress});
     return pose?paperDoll.draw(c,appearance,pose,x,y,{scale}):false;
   }
@@ -2299,7 +2302,9 @@
       return drawn;
     }
     const combat=classCombatController(),pose=combat?.snapshot()||basicAttackPose(),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
-    if((!attack||combat||basicAttackPose())&&drawPaperDoll(c,x,y,requested,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time,null,pose?.locked?pose.progress:null))return true;
+    const gait=DEV_ACTIVE&&paperDollReview.snapshot().packId==='complete'?MarePaperDollReview.walkPose(hero,world.time,moving&&!pose?.locked):null;
+    const dollAction=requested==='walk'&&gait&&!gait.moving?'idle':requested,dollTime=dollAction==='walk'&&gait?gait.time:pose?.locked?pose.elapsed:world.time;
+    if((!attack||combat||basicAttackPose())&&drawPaperDoll(c,x,y,dollAction,pose?.locked?pose.direction:hero.direction,dollTime,null,pose?.locked?pose.progress:null,pose))return true;
     if(basicAttackPose()&&!classCombat.asset(game))return drawFactionSprite(c,x,y,game.factionId,'idle',74,false,pose.direction,world.time);
     if(classCombat.entry(game)){
       const action=pose?.locked?pose.action:attack?'attack':'combat-idle';

@@ -2,6 +2,27 @@
 /* Explicit DEV preview, transient only. Never approve art or persist appearance. */
 ((root)=>{
   const id='navy-starter',folders={'navy-starter':'pixellab-pip-generations/paper-doll-navy-starter-20261023/',unarmed:'pixellab-pip-generations/paper-doll-unarmed-combat-20261024/',gunner:'pixellab-pip-generations/paper-doll-gunner-20261025/',rogue:'pixellab-pip-generations/paper-doll-rogue-20261025/',complete:'pixellab-pip-generations/paper-doll-complete-20261026/'};
+  const gaitStates=new WeakMap(),ranged=new Set(['firearm','tech','focus']);
+  // Native source coordinates measured on the existing weapons, not hero offsets.
+  const emitters={
+    'complete-firearm':{south:[31,19],north:[32,6],west:[4,21],east:[60,20]},
+    'complete-tech':{south:[23,15],north:[46,11],west:[12,25],east:[43,26]},
+    'complete-compass':{south:[45,19],north:[46,16],west:[16,18],east:[44,23]},
+    'complete-staff':{south:[19,17],north:[46,11],west:[13,13],east:[43,12]}
+  };
+  function walkPose(actor,time,active){
+    const previous=gaitStates.get(actor);
+    if(previous?.time===time)return previous.pose;
+    const distance=previous?Math.hypot(actor.x-previous.x,actor.y-previous.y):0;
+    const moving=!!active&&distance>.001&&distance<160;
+    // One two-step cycle per 80 world pixels, with phase preserved through turns/stops.
+    const phase=((previous?.phase||0)+(moving?distance/80:0))%1;
+    const pose={moving,time:phase};gaitStates.set(actor,{x:actor.x,y:actor.y,time,phase,pose});return pose;
+  }
+  function shotProgress(progress,hitRatio=.5){
+    const p=Math.max(0,Math.min(1,progress)),hit=Math.max(.001,Math.min(.999,hitRatio));
+    return p<=hit?p/hit*(3/8):3/8+(p-hit)/(1-hit)*(5/8);
+  }
   function requested(search,devActive){return devActive===true&&Object.hasOwn(folders,new URLSearchParams(search).get('paperDollReview'));}
   function appearance(pack,player){
     const catalog=root.MarePaperDollCatalog;
@@ -32,9 +53,9 @@
     const selected=new URLSearchParams(search).get('paperDollReview'),unarmedPack=selected==='unarmed',gunnerPack=selected==='gunner',roguePack=selected==='rogue',completePack=selected==='complete';
     const weaponCategory=gunnerPack?'firearm':roguePack?'daggers':null;
     const enabled=requested(search,devActive),runtime=root.MarePaperDollCatalog.createRuntime({getImage});
-    let pack=null,coverage=null,state=enabled?'loading':'off',message='',draws=0,fallbacks=0,lastReason=null;
+    let pack=null,coverage=null,state=enabled?'loading':'off',message='',draws=0,fallbacks=0,lastReason=null,lastPose=null,lastRelease=null;
     const notify=()=>onChange(snapshot());
-    function snapshot(){return {enabled,state,message,draws,fallbacks,lastReason,packId:selected,artworkApproved:false,coverage,...runtime.stats()};}
+    function snapshot(){return {enabled,state,message,draws,fallbacks,lastReason,lastPose,lastRelease,packId:selected,artworkApproved:false,coverage,...runtime.stats()};}
     const ready=enabled?(async()=>{
       try{
         const base=new URL(folders[selected],baseURL),response=await fetcher(new URL('review-pack.json',base),{cache:'no-store'});
@@ -80,16 +101,30 @@
       }catch(e){pack=null;state='failed';message='Prévia indisponível: '+e.message+' Sprite original preservado.';}
       notify();return snapshot();
     })():Promise.resolve(snapshot());
-    function draw(ctx,player,action,direction,time,x,y,scale,progress=null){
+    function draw(ctx,player,action,direction,time,x,y,scale,progress=null,timing=null){
       if(!pack||state!=='ready'||player?.devSandbox!==true)return false;
-      const config=appearance(pack,player),pose=root.MarePaperDollCatalog.sample(runtime,player,action,direction,time,{progress});
+      const category=root.MarePaperDollCatalog.profile(player)?.category;
+      const synchronized=completePack&&action==='attack'&&ranged.has(category)&&Number.isFinite(progress)?shotProgress(progress,timing?.hitFrameRatio??.5):progress;
+      const config=appearance(pack,player),pose=root.MarePaperDollCatalog.sample(runtime,player,action,direction,time,{progress:synchronized});
       if(!config||!pose){fallbacks++;lastReason='unsupported-character-or-action';return false;}
       if(config.hidden.includes('weapon')&&action!=='idle'&&action!=='walk'&&!((unarmedPack||completePack)&&player.classId==='brawler'&&action==='attack')){fallbacks++;lastReason='missing-unarmed-animation';return false;}
       const ok=runtime.draw(ctx,config,pose,x,y,{scale,hidden:config.hidden,allowDraft:true});
-      if(ok){draws++;lastReason=null;}else{fallbacks++;lastReason=config.blocked[0]?.code||'missing-animation';}
+      if(ok){draws++;lastReason=null;lastPose={...pose};}else{fallbacks++;lastReason=config.blocked[0]?.code||'missing-animation';}
       return ok;
     }
-    return {ready,draw,snapshot,equipmentStatus:player=>equipmentStatus(pack,player),prepareEquipment:(player,options)=>state==='ready'?prepareEquipment(pack,player,options):{ok:false,message:'Aguarde o carregamento do conjunto.'}};
+    function projectileOrigin(player,actor,timing,scaleFactor=1){
+      if(!completePack||state!=='ready'||player?.devSandbox!==true||!timing?.locked)return null;
+      const config=appearance(pack,player),category=root.MarePaperDollCatalog.profile(player)?.category;
+      if(!config||!ranged.has(category))return null;
+      const pose=runtime.sample('human-v1','attack-'+category,timing.direction,0,{progress:3/8}),resolved=runtime.resolve(config,pose,{allowDraft:true});
+      const layer=resolved.layers.find(l=>l.slot==='weapon'),point=emitters[config.pieces.weapon]?.[pose?.direction];
+      if(!resolved.valid||!layer||!point)return null;
+      const [px,py]=point,q=layer.quarterTurns,rotated=[[px,py],[layer.height-1-py,px],[layer.width-1-px,layer.height-1-py],[py,layer.width-1-px]][q];
+      const scale=pack.rig.scale*(Number.isFinite(scaleFactor)&&scaleFactor>0?scaleFactor:1);
+      const origin={x:actor.x+(layer.offsetX+rotated[0]-layer.pivotX)*scale,y:actor.y+(layer.offsetY+rotated[1]-layer.pivotY)*scale};
+      lastRelease={...origin,frameIndex:3,direction:pose.direction,category};return origin;
+    }
+    return {ready,draw,snapshot,projectileOrigin,equipmentStatus:player=>equipmentStatus(pack,player),prepareEquipment:(player,options)=>state==='ready'?prepareEquipment(pack,player,options):{ok:false,message:'Aguarde o carregamento do conjunto.'}};
   }
   function equipmentStatus(pack,player){
     const catalog=root.MarePaperDollCatalog,profile=catalog.profile(player);
@@ -134,6 +169,6 @@
     }
     return {ok:true,state:next,message:'Conjunto preparado. Peças retiradas foram guardadas na mochila do laboratório.'};
   }
-  root.MarePaperDollReview={id,requested,appearance,create,equipmentStatus,prepareEquipment};
+  root.MarePaperDollReview={id,requested,appearance,create,equipmentStatus,prepareEquipment,walkPose,shotProgress};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.MarePaperDollReview;
 })(typeof globalThis!=='undefined'?globalThis:window);
