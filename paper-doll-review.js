@@ -21,17 +21,20 @@
     const release=releaseFrame/frames;return p<=hit?p/hit*release:release+(p-hit)/(1-hit)*(1-release);
   }
   function requested(search,devActive){return devActive===true&&Object.hasOwn(folders,new URLSearchParams(search).get('paperDollReview'));}
-  function playerAppearance(pack,player,definition){
+  function cosmetics(pack,player,options){
+    return options.lookCatalog?.resolve(pack,player,options)||{pieces:{...pack.appearance.pieces},hidden:[],cosmeticFallbacks:[]};
+  }
+  function playerAppearance(pack,player,definition,options){
     const catalog=root.MarePaperDollCatalog,profile=catalog.profile(player);
     if(!profile||player?.devSandbox===true||pack.productionEnabled!==true||pack.full_character_artwork_approved!==true)return null;
-    const result={rigId:pack.rig.id,pieces:{...pack.appearance.pieces},blocked:[],substitutions:[],hidden:root.MarePaperDollLook?.hidden(player)||[]};
+    const result={rigId:pack.rig.id,...cosmetics(pack,player,options),blocked:[],substitutions:[]};
     const weapon=player.equipment?.weapon;
     if(!weapon||profile.category==='unarmed')delete result.pieces.weapon;
     else{
       const type=catalog.weaponItems[weapon.def]?.[0],def=definition?.(weapon.def);
       if(type!==profile.category&&def?.type!==player.classId)return null;
       const exact=pack.bindings.weapon.items[weapon.def];
-      result.pieces.weapon=exact||(player.classId==='healer'?'complete-staff':pack.categoryWeapons[profile.category]);
+      result.pieces.weapon=exact||pack.bindings.weapon.items[catalog.classes[player.classId]?.weapon]||pack.categoryWeapons[profile.category];
       if(!exact)result.substitutions.push({slot:'weapon',def:weapon.def,reason:'category-default'});
     }
     for(const slot of ['coat','head','boots','legs','cloak','gloves']){
@@ -42,13 +45,15 @@
     }
     return result;
   }
-  function appearance(pack,player,{production=false,definition=null}={}){
-    if(production)return playerAppearance(pack,player,definition);
+  function appearance(pack,player,{production=false,definition=null,lookCatalog=root.MarePaperDollLook,unavailablePieces=new Set()}={}){
+    const options={production,lookCatalog,unavailablePieces};
+    if(production)return playerAppearance(pack,player,definition,options);
     const catalog=root.MarePaperDollCatalog;
     if(!catalog.eligible(player))return null;
     const unarmed=!player.equipment?.weapon,bodyWeapon=pack.completeCategories===true&&catalog.usesBodyWeapon(player);
     if(pack.unarmedOnly===true&&!unarmed)return null;
-    const result={rigId:pack.rig.id,pieces:{...pack.appearance.pieces},blocked:[],hidden:[...((unarmed||bodyWeapon)?['weapon']:[]),...(root.MarePaperDollLook?.hidden(player)||[])]};
+    const result={rigId:pack.rig.id,...cosmetics(pack,player,options),blocked:[]};
+    result.hidden=[...((unarmed||bodyWeapon)?['weapon']:[]),...result.hidden];
     // Body identity is independent of class/faction. Missing weapon artwork
     // still falls back; empty hands and body-driven fist weapons omit that layer.
     const category=catalog.profile(player).category;
@@ -68,11 +73,12 @@
     for(const slot of ['head','boots','legs','cloak','gloves'])if(player.equipment?.[slot])result.blocked.push({slot:'accessory',pieceId:String(player.equipment[slot].def),code:'unmapped-equipment'});
     return result;
   }
-  function create({search='',devActive=false,production=false,definition=null,getImage,fetch:fetcher=root.fetch?.bind(root),baseURL=root.location?.href,onChange=()=>{}}={}){
+  function create({search='',devActive=false,production=false,definition=null,lookCatalog=root.MarePaperDollLook,getImage,fetch:fetcher=root.fetch?.bind(root),baseURL=root.location?.href,onChange=()=>{}}={}){
     production=production===true&&devActive!==true;
     const selected=production?'complete':new URLSearchParams(search).get('paperDollReview'),unarmedPack=selected==='unarmed',gunnerPack=selected==='gunner',roguePack=selected==='rogue',completePack=selected==='complete';
     const weaponCategory=gunnerPack?'firearm':roguePack?'daggers':null;
-    const enabled=production||requested(search,devActive),runtime=root.MarePaperDollCatalog.createRuntime({getImage}),resolveAppearance=player=>appearance(pack,player,{production,definition}),allowed=player=>production?player&&player.devSandbox!==true:player?.devSandbox===true;
+    const unavailablePieces=new Set();
+    const enabled=production||requested(search,devActive),runtime=root.MarePaperDollCatalog.createRuntime({getImage}),resolveAppearance=player=>appearance(pack,player,{production,definition,lookCatalog,unavailablePieces}),allowed=player=>production?player&&player.devSandbox!==true:player?.devSandbox===true;
     let pack=null,coverage=null,state=enabled?'loading':'off',message='',draws=0,fallbacks=0,lastReason=null,lastPose=null,lastRelease=null;
     let simulationTime=0,renderFrame=0,releaseSequence=0,selectedRelease=null,suspended=false,identity=null,observedActor=null,currentTiming=null;
     const releases=new Map(),releaseTokens=new WeakMap();
@@ -122,26 +128,51 @@
         for(const [category,pieceId]of Object.entries(data.categoryWeapons||{})){
           if(!Object.hasOwn(root.MarePaperDollCatalog.categories,category)||!data.pieces.some(p=>p.id===pieceId&&p.slot==='weapon'))throw Error('Arma de categoria inválida.');
         }
-        const urls=new Set();
-        const path=name=>{if(typeof name!=='string'||!/^[a-z0-9-]+\.png$/.test(name))throw Error('Fonte inválida.');const url=new URL(name,base).href;urls.add(url);return url;};
+        const requiredIds=new Set([...Object.values(data.appearance.pieces),...Object.values(data.categoryWeapons||{}),...Object.values(data.bindings||{}).flatMap(b=>Object.values(b.items||{}))]);
+        const optionalIds=new Set(Object.values(lookCatalog?.data.groups||{}).flatMap(g=>g.options.filter(o=>o.approved&&o.pieceId&&!requiredIds.has(o.pieceId)).map(o=>o.pieceId)));
+        const urls=new Set(),pieceURLs=new Map();
+        const path=name=>{if(typeof name!=='string'||!/^[a-z0-9-]+\.png$/.test(name))throw Error('Fonte inválida.');return new URL(name,base).href;};
         for(const p of data.pieces){
-          if(p.approved!==production||!p.available)throw Error('Estado da peça inválido.');
-          const rangedClip=Object.entries(p.animations).find(([name])=>name.startsWith('attack-')&&ranged.has(name.slice(7)))?.[1];
-          if(completePack&&p.slot==='weapon'&&rangedClip){
-            const e=p.emission;
-            if(!e||!Number.isInteger(e.frame)||e.frame<0||e.frame>=rangedClip.frames||rangedClip.directions.some(d=>{const point=e.points?.[d],source=rangedClip.sources?.[d];return !point||!source||!Number.isInteger(point.x)||!Number.isInteger(point.y)||point.x<0||point.y<0||point.x>=source.width||point.y>=source.height;}))throw Error('Origem de emissão inválida ou ausente.');
-          }
-          for(const clip of Object.values(p.animations)){clip.url=path(clip.url);for(const source of Object.values(clip.sources||{}))source.url=path(source.url);}
-          runtime.registerPiece(p);
+          const optional=optionalIds.has(p.id),sources=new Set();
+          try{
+            if(optional&&!lookCatalog.compatible(data,p,p.slot,{production}))throw Error('Opção sem cobertura completa.');
+            if(p.approved!==production||!p.available)throw Error('Estado da peça inválido.');
+            const rangedClip=Object.entries(p.animations).find(([name])=>name.startsWith('attack-')&&ranged.has(name.slice(7)))?.[1];
+            if(completePack&&p.slot==='weapon'&&rangedClip){
+              const e=p.emission;
+              if(!e||!Number.isInteger(e.frame)||e.frame<0||e.frame>=rangedClip.frames||rangedClip.directions.some(d=>{const point=e.points?.[d],source=rangedClip.sources?.[d];return !point||!source||!Number.isInteger(point.x)||!Number.isInteger(point.y)||point.x<0||point.y<0||point.x>=source.width||point.y>=source.height;}))throw Error('Origem de emissão inválida ou ausente.');
+            }
+            for(const clip of Object.values(p.animations)){clip.url=path(clip.url);sources.add(clip.url);for(const source of Object.values(clip.sources||{})){source.url=path(source.url);sources.add(source.url);}}
+            runtime.registerPiece(p);
+            pieceURLs.set(p.id,sources);for(const url of sources)urls.add(url);
+          }catch(e){if(!optional)throw e;unavailablePieces.add(p.id);}
         }
         // Keep cold starts within a small connection budget on mobile browsers.
-        const pending=[...urls];
-        for(let i=0;i<pending.length;i+=6)await Promise.all(pending.slice(i,i+6).map(url=>getImage(url).decode()));
+        const pending=[...urls],failedURLs=new Set();
+        for(let i=0;i<pending.length;i+=6){
+          const batch=pending.slice(i,i+6),results=await Promise.allSettled(batch.map(url=>Promise.resolve().then(()=>getImage(url).decode())));
+          results.forEach((result,n)=>{if(result.status==='rejected')failedURLs.add(batch[n]);});
+        }
+        for(const [pieceId,sources]of pieceURLs)if([...sources].some(url=>failedURLs.has(url))){
+          if(!optionalIds.has(pieceId))throw Error('Imagem obrigatória indisponível.');
+          unavailablePieces.add(pieceId);
+        }
         for(const [action,clip]of Object.entries(data.rig.animations))for(const direction of ((unarmedPack||weaponCategory||completePack)?data.coverage[action]:clip.directions))for(let frameIndex=0;frameIndex<clip.frames;frameIndex++){
           const category=action.startsWith('attack-')?action.slice(7):'sword',config={...data.appearance,pieces:{...data.appearance.pieces}};
           if(data.categoryWeapons?.[category])config.pieces.weapon=data.categoryWeapons[category];
           if(completePack&&category==='unarmed')delete config.pieces.weapon;
           if(!runtime.resolve(config,{animationId:action,direction,frameIndex},{allowDraft:!production}).valid)throw Error('Há frames incompatíveis ou ausentes.');
+        }
+        // Validate optional pieces once, across every pose, before exposing them.
+        for(const pieceId of optionalIds){
+          if(unavailablePieces.has(pieceId)||!pieceURLs.has(pieceId))continue;
+          const piece=data.pieces.find(p=>p.id===pieceId);
+          outer:for(const [action,clip]of Object.entries(data.rig.animations))for(const direction of data.coverage?.[action]||clip.directions)for(let frameIndex=0;frameIndex<clip.frames;frameIndex++){
+            const config={...data.appearance,pieces:{...data.appearance.pieces,[piece.slot]:pieceId}};
+            // Weapon coverage is category-specific; test the cosmetic with a bare body.
+            delete config.pieces.weapon;
+            if(!runtime.resolve(config,{animationId:action,direction,frameIndex},{allowDraft:!production}).valid){unavailablePieces.add(pieceId);break outer;}
+          }
         }
         pack=data;coverage=root.MarePaperDollCoverage?.inspect(pack)||null;state='ready';message=unarmedPack?'Ensaio desarmado: remova arma e equipamentos sem peças. Corpo comum em repouso e caminhada; Lutador usa os socos disponíveis. Direções ausentes mantêm o visual original.':'Corpo comum: sete classes e quatro facções, sem arma, em repouso e caminhada. Espada inicial compatível; outros equipamentos e ataques sem arte usam o personagem original.';
         if(completePack)message='Personagem único em avaliação: sete classes, quatro facções. Equipamentos sem arte e habilidades preservam o visual original. Lutador aceita os punhos equipados, preservando seus atributos.';
@@ -191,7 +222,7 @@
           corners:[[0,0],[l.width-1,0],[l.width-1,l.height-1],[0,l.height-1]].map(([x,y])=>runtime.attachmentPoint(config,pose,l.slot,{x,y},actor.x,actor.y,options))};
       }),emission:(()=>{const e=runtime.piece(config.pieces.weapon)?.emission,p=e?.points[pose.direction];return p?runtime.attachmentPoint(config,pose,'weapon',p,actor.x,actor.y,options):null;})()};
     }
-    return {ready,draw,snapshot,inspect,projectileOrigin,synchronize,prepareFrame,finishFrame,holdProjectile,releaseOrigin:id=>{const e=releases.get(id);return e?{x:e.x,y:e.y}:null;},cancelVisual,setSuspended:value=>{suspended=!!value;cancelVisual();},equipmentStatus:player=>production?{ready:state==='ready',issues:[],substitutions:pack?resolveAppearance(player)?.substitutions||[]:[],message:state==='ready'?'Seus equipamentos e bônus continuam ativos.':message}:equipmentStatus(pack,player),prepareEquipment:(player,options)=>!production&&state==='ready'?prepareEquipment(pack,player,options):{ok:false,message:'Preparação de equipamento disponível apenas no laboratório.'}};
+    return {ready,draw,snapshot,inspect,projectileOrigin,synchronize,prepareFrame,finishFrame,holdProjectile,releaseOrigin:id=>{const e=releases.get(id);return e?{x:e.x,y:e.y}:null;},cancelVisual,setSuspended:value=>{suspended=!!value;cancelVisual();},equipmentStatus:player=>production?{ready:state==='ready',issues:[],substitutions:pack?resolveAppearance(player)?.substitutions||[]:[],cosmeticFallbacks:pack?resolveAppearance(player)?.cosmeticFallbacks||[]:[],message:state==='ready'?'Seus equipamentos e bônus continuam ativos.':message}:equipmentStatus(pack,player),prepareEquipment:(player,options)=>!production&&state==='ready'?prepareEquipment(pack,player,options):{ok:false,message:'Preparação de equipamento disponível apenas no laboratório.'}};
   }
   function equipmentStatus(pack,player){
     const catalog=root.MarePaperDollCatalog,profile=catalog.profile(player);

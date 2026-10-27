@@ -32,4 +32,6 @@ jobs:
             node "$file"
           done
       - name: Verificar site estatico
-        run: python3 tools/build_pages.py
+        run: |
+          python3 tests/paper_doll_pages_test.py
+          python3 tools/build_pages.py

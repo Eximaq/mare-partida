@@ -2659,7 +2659,7 @@ function applySceneHudLayout(){
   document.addEventListener('change',e=>{const key=e.target.dataset.creationLook;if(Object.hasOwn(MarePaperDollLook.choices,key)&&Object.hasOwn(MarePaperDollLook.choices[key],e.target.value))creationLookDraft={...creationLookDraft,[key]:e.target.value};});
   function openCreation(edit=false){
     document.querySelector('.creation-appearance')?.classList.toggle('hidden',DEV_ACTIVE);
-    editingCharacter=edit;creationLookDraft=MarePaperDollLook.read(edit?game:null);document.querySelectorAll('[data-creation-look]').forEach(el=>{el.value=creationLookDraft[el.dataset.creationLook];});
+    editingCharacter=edit;creationLookDraft=MarePaperDollLook.read(edit?game:null);$('creationLookFields').innerHTML=MarePaperDollLook.fields('creation-look',creationLookDraft);
     if(edit&&game){selectedFaction=game.factionId;selectedClass=game.classId;$('characterName').value=game.name;}
     document.querySelectorAll('[data-faction]').forEach(btn=>btn.classList.toggle('chosen',btn.dataset.faction===selectedFaction));
     document.querySelectorAll('[data-class]').forEach(btn=>btn.classList.toggle('chosen',btn.dataset.class===selectedClass));

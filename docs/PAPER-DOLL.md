@@ -288,3 +288,7 @@ Armas de disparo do pacote completo declaram `emission = {frame:3, points:{south
 `runtime.attachmentPoint(appearance, pose, slot, point, x, y, options)` projeta um ponto pela geometria real do compositor, incluindo bounds, arredondamento do destino e rotação. `scale` corresponde à escala do rig/desenho; `outerScale` representa a transformação externa ancorada no ator (como Horu), não uma alteração da folha. O resultado é nulo quando a pose/peça/ponto não é válido. Conferir emissão e encaixe no diagnóstico opcional da bancada e no DEV antes de aprovar novas peças.
 
 `MarePaperDollReview.stepWalk()` recebe o deslocamento do passo físico; `walkPose()` somente consulta. A fase permanece contínua em parada/retomada e direção; teleporte, colisão sem deslocamento e troca de contexto não inventam distância. O relógio lógico de combate continua separado da apresentação. Detalhes e limitações: [refinamento do runtime](PAPER-DOLL-REFINAMENTO.md).
+
+## Catálogo expansível de aparência
+
+Contrato de IDs, compatibilidade v1, prioridade de equipamentos e fallback de peças futuras: [Catálogo de aparência](PAPER-DOLL-CATALOGO.md). A criação e o editor compartilham os mesmos registros; opções experimentais continuam fora de produção.

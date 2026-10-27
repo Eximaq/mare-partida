@@ -15,7 +15,7 @@ web_files = ['index.html', 'ui-preview.html', 'ui-art-direction.css', 'journal-f
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
              'forge-ui.js', 'game-tooltips.js', 'player-hub.js', 'hud-telemetry.js', 'hierarchy-system.js', 'hierarchy-ui.js', 'combat-vfx-data.js', 'combat-vfx.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js', 'lobby-map-data.js', 'lobby-world.js',
               'dawn-map-data.js', 'dawn-world.js', 'dawn-renderer.js', 'rare-world.js', 'rare-renderer.js', 'new-islands-data.js', 'new-islands-objects.js', 'new-islands.js', 'monster-catalog.js', 'new-islands-art.js', 'pixellab-world-maps-data.js', 'conchas-pixellab-data.js', 'conchas-structures.js', 'pixellab-world-maps.js', 'world-system.js', 'orange-world.js', 'conchas-world.js', 'conchas-renderer.js', 'terrain-autotile.js', 'orange-terrain.js', 'orange-renderer.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'dev-tools.js', 'hunt-system.js']
-web_files += ['paper-doll-look.js', 'paper-doll-coverage.js', 'paper-doll-look.css']
+web_files += ['paper-doll-look-data.js', 'paper-doll-look.js', 'paper-doll-coverage.js', 'paper-doll-look.css']
 for f in web_files:
     if not (ROOT / f).is_file():
         raise SystemExit(f'Arquivo necessário ausente: {f}')
@@ -470,15 +470,13 @@ for category in ('gunner', 'rogue'):
             raise ValueError('Unsafe weapon-review asset path')
         shutil.copy2(ROOT/review/name, OUT/review/name)
 
-# Combined seven-class opt-in review. Original paid source files stay out of Pages.
+# Collect both release and DEV dependencies, including future release-only pieces.
+# Original paid source files stay out of Pages.
+from paper_doll_pages import pack_sources
 review = Path('pixellab-pip-generations/paper-doll-complete-20261026')
 (OUT/review).mkdir(parents=True, exist_ok=True)
-manifest = json.loads((ROOT/review/'review-pack.json').read_text(encoding='utf-8'))
 files = {'review-pack.json', 'player-pack.json'}
-for piece in manifest['pieces']:
-    for clip in piece['animations'].values():
-        files.add(clip['url'])
-        files.update(source['url'] for source in clip.get('sources', {}).values())
+files.update(pack_sources(*(json.loads((ROOT/review/name).read_text(encoding='utf-8')) for name in sorted(files))))
 for name in sorted(files):
     if Path(name).name != name or Path(name).suffix not in {'.png', '.json'}:
         raise ValueError('Unsafe combined-review asset path')
