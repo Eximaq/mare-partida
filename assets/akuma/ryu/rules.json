@@ -1,0 +1,39 @@
+{
+  "id": "akuma_ryu_ryu",
+  "name": "Ryu Ryu no Mi",
+  "family": "zoan",
+  "subtype": "Zoan Ancestral",
+  "description": "Fruta do Diabo do tipo Zoan Ancestral que permite ao usuário se transformar em um dinossauro carnívoro implacável. Concede um poder físico descomunal e mandíbulas capazes de canalizar Haki, permitindo rasgar as defesas intangíveis de usuários Logia e atordoar oponentes com golpes brutais de sua cauda pesada.",
+  "worldSize": 128,
+  "range": 96,
+  "passiveStats": {
+    "max_hp": 220,
+    "physical_attack": 32,
+    "physical_defense": 12,
+    "armor_penetration": 0.05
+  },
+  "skills": [
+    {
+      "key": "1",
+      "name": "Mordida com Haki",
+      "cost": 45,
+      "cooldown": 18,
+      "multiplier": 4.5,
+      "hasHaki": true,
+      "damage_type": "physical",
+      "icon_path": "assets/akuma/ryu/skill-1.png",
+      "description": "Mordida de alvo único: 450% do ataque físico. Haki nativo ignora a mitigação Logia do alvo; defesa física comum segue a fórmula normal. Alcance: 1,5 tile."
+    },
+    {
+      "key": "2",
+      "name": "Impacto da Cauda",
+      "cost": 35,
+      "cooldown": 16,
+      "multiplier": 1.5,
+      "stunDuration": 3000,
+      "damage_type": "physical",
+      "icon_path": "assets/akuma/ryu/skill-2.png",
+      "description": "Impacto frontal de alvo único: 150% do ataque físico e 3s de atordoamento, bloqueando movimento e ataques. Alcance: 1,5 tile."
+    }
+  ]
+}

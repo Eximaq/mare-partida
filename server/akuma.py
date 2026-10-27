@@ -7,6 +7,7 @@ import sqlite3
 import time
 import uuid
 from jiki import JikiService, RULES as JIKI_RULES, JIKI
+from ryu import RyuService, RULES as RYU_RULES, RYU
 from hoya import HoyaService, RULES as HOYA_RULES, HOYA
 from rank_b import RankBService, RULES as RANK_B_RULES, BETA, HANA, mitigate
 from rank_c_expansion import RankCExpansionService, RULES as EXPANSION_RULES, BISON, BOMU, KOBU
@@ -26,6 +27,7 @@ WOLF_RULES = json.loads((Path(__file__).resolve().parents[1] / "assets/akuma/wol
 WOLF_ID = WOLF_RULES['id']
 
 FRUITS = {
+    RYU: {'type':'akuma_no_mi','family':'zoan','subtype':'Zoan Ancestral','rank':'B','name':RYU_RULES['name'],'description':RYU_RULES['description'],'icon_path':'assets/akuma/ryu/fruit.png','cooldown':18,'skills':RYU_RULES['skills']},
     WOLF_ID: {"type":"akuma_no_mi", "family":"zoan", "subtype":"Zoan Carnívora", "rank":"D", "name":"Inu Inu no Mi: Modelo Lobo", "description":WOLF_RULES['description'], "cooldown":14, "icon_path":"assets/akuma/wolf/fruit.png"},
     DORU_ID: {"type":"akuma_no_mi", "family":"paramecia", "rank":"D", "name":"Doru Doru no Mi", "description":DORU_RULES['description'], "cooldown":12, "icon_path":"assets/akuma/doru/fruit.png"},
     USHI_ID: {"type":"akuma_no_mi", "family":"zoan", "rank":"D", "name":"Ushi-Ushi no Mi: Modelo Girafa", "description":USHI_RULES["description"], "cooldown":12, "icon_path":"assets/akuma/ushi/fruit.png"},
@@ -58,6 +60,7 @@ for fruit_id, modifiers in DEVIL_FRUIT_STATS.items():
 
 # Public catalog metadata for the HUD. Combat validation remains in cast().
 SKILL_TOOLTIPS = {
+    RYU:RYU_RULES['skills'][0],
     JIKI:JIKI_RULES['skills'][0],
     HOYA:HOYA_RULES['skills'][0],
     **{r['id']:r['skills'][0] for r in RANK_B_RULES.values()},
@@ -90,6 +93,7 @@ class AkumaStore:
         self.rank_b=RankBService(clock)
         self.hoya=HoyaService(clock)
         self.jiki=JikiService(clock)
+        self.ryu=RyuService(clock)
         self.rank_c_expansion=RankCExpansionService(clock)
         # World enemies and projectiles are transient, scoped by player/instance.
         self.doru_projectiles = {}
@@ -155,11 +159,12 @@ class AkumaStore:
             self.rank_b.clear(player_id)
             self.hoya.clear(player_id)
             self.jiki.clear(player_id)
+            self.ryu.clear(player_id)
             self.rank_c_expansion.clear(player_id)
             with self.db:
                 self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
                 self.db.execute("UPDATE players SET wolf_aura_until=0 WHERE id=?", (player_id,))
-        if fruit_id in (NEKO_ID, USHI_ID, WOLF_ID, BISON) and previous_fruit != fruit_id:
+        if fruit_id in (NEKO_ID, USHI_ID, WOLF_ID, BISON, RYU) and previous_fruit != fruit_id:
             with self.db:
                 self.db.execute("UPDATE players SET transformed=1 WHERE id=?", (player_id,))
         return self.state(player_id)
@@ -171,6 +176,7 @@ class AkumaStore:
         with self.db:
             self.db.execute("UPDATE players SET transformed=? WHERE id=?", (int(bool(enabled)), player_id))
             if not enabled:
+                self.ryu.clear(player_id)
                 self.rank_c_expansion.clear(player_id)
                 self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
                 self.db.execute("UPDATE players SET wolf_aura_until=0 WHERE id=?", (player_id,))
@@ -200,6 +206,7 @@ class AkumaStore:
         fruit_id = state["equipped"]
         if not fruit_id:
             raise ValueError("Nenhuma fruta equipada")
+        if fruit_id==RYU:return self.ryu.cast(self,player_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id==JIKI:return self.jiki.cast(self,player_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id==HOYA:return self.hoya.cast(self,player_id,instance,x,y,str(skill_key),energy,rank_c_context or {})
         if fruit_id in (BETA,HANA):return self.rank_b.cast(self,player_id,fruit_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
@@ -331,6 +338,7 @@ class AkumaStore:
         self.rank_b.clear(player_id)
         self.hoya.clear(player_id)
         self.jiki.clear(player_id)
+        self.ryu.clear(player_id)
         self.rank_c_expansion.clear(player_id)
         with self.db:
             self.db.execute("UPDATE players SET metallic_until=0 WHERE id=?", (player_id,))
