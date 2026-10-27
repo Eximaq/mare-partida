@@ -45,7 +45,7 @@ A física/linha de visão continua no cliente, como no projeto atual. Esta revis
 
 O jogador era desenhado depois da fila ordenada, ficando sempre na frente de monstros/props. Agora jogador, monstros, NPCs, Gênio e recortes de cenário compartilham a ordenação pelos pés/base no eixo Y, com desempate estável. Nome e HP do jogador ficam na camada aérea posterior.
 
-world-depth.js reúne os recortes das cenas e mantém um cache limitado a 64 overlays. O mapa composto continua sendo a camada de fundo. Os objetos só são reaplicados para ocluir atores atrás deles; atores à frente são desenhados depois. Dawn reutiliza suas máscaras originais; Conchas usa o foreground original; o porto mantém seus recortes de copas/telhados. Nas demais ilhas, máscaras transparentes originais de 50 objetos foram recuperadas por consulta somente leitura ao PixelLab, sem geração e sem modificar os PNGs compostos. assets/map-depth/provenance.json registra IDs, dimensões e hashes dos PNGs copiados.
+world-depth.js reúne os recortes das cenas e mantém um cache limitado a 64 overlays. O mapa composto continua sendo a camada de fundo. Os objetos só são reaplicados para ocluir atores atrás deles; atores à frente são desenhados depois. Dawn reutiliza suas máscaras originais; Conchas usa o foreground original; o porto passou a usar máscaras transparentes dos objetos do export atual (ver correção abaixo). Nas demais ilhas, máscaras transparentes originais de 50 objetos foram recuperadas por consulta somente leitura ao PixelLab, sem geração e sem modificar os PNGs compostos. assets/map-depth/provenance.json registra IDs, dimensões e hashes dos PNGs copiados.
 
 A inspeção detectou que recortar somente um retângulo copiava chão sobre o personagem. O teste reproduziu o erro (canto transparente virava opaco) e a máscara real corrigiu esse caso. A silhueta clara semitransparente é limitada à interseção entre o corpo atual e os pixels reaplicados do objeto alto; não pinta o personagem inteiro quando ele está em terreno aberto. Transformações e crescimento usam a altura/largura visual atual. Nenhuma nova identidade visual ou arte foi gerada.
 
@@ -78,3 +78,13 @@ Capturas e relatórios completos ficam em diretório temporário local, fora do 
 ## Arquivos e compatibilidade
 
 Motor: world-system.js. Composição: world-depth.js e game.js. Metadados: dawn-world.js, lobby-world.js, new-islands.js e pixellab-world-maps.js. Publicação: index.html, ui-preview.html e tools/build_pages.py. Auditoria: tools/audit_maps.cjs e testes de mapa/combate/Pages. Sem migração ou alteração das chaves de save; rollback por reversão do PR.
+
+## Correção posterior: chão sobre personagens no lobby
+
+O relato do proprietário mostrou que os recortes geométricos antigos do lobby ainda reaplicavam grama e calçamento sobre NPCs e jogador. O teste em 1824,1170 reproduziu alpha 255 onde deveria haver transparência, antes da correção.
+
+A revisão cobre o lobby inteiro: 73 placements de objetos com altura, incluindo construções, árvores, palmeiras, postes, barris e estruturas do porto. Os bounds e bases visuais são independentes dos colliders e usam os objetos originais do mapa 5cf16074-4d27-437e-acd5-869fe9339f26. As posições foram conferidas com os pixels do export vigente; o padding transparente das árvores frutíferas não aumenta sua base visual. Elementos de chão de 32px, fogueira e personagem já composto no mapa permanecem apenas no fundo.
+
+Os recortes de elipses/retângulos ampliados e polígonos aproximados de telhado foram retirados. O caminho legado de foreground também delega às mesmas máscaras. O PNG composto do lobby, NPCs, colisões e saves permanecem intactos. Foram recuperados 16 PNGs originais adicionais, sem geração de arte; os demais objetos reutilizam máscaras já presentes.
+
+Validação desta correção: 119 testes Node passaram; o teste dedicado de navegador percorreu todos os 73 recortes, verificando 603.051 pixels transparentes e 574.949 pixels de objetos, com zero vazamentos fora das máscaras. Os pontos de chão do relato ficam transparentes. Conferência visual da Nami/jogador no lobby e regressão de profundidade em nove cenas, desktop e móvel, passaram no fonte e no pacote Pages reconstruído. As 18 rotas reais de caminhada do lobby também passaram, com 9.840 células de navegação. Capturas e relatórios permanecem fora do Git.
