@@ -15,6 +15,16 @@ for(const classId of Object.keys(MarePaperDollCatalog.classes)){
  assert(!R.prepareEquipment(pack,{...g,devSandbox:false}).ok);
  assert(!R.prepareEquipment(pack,{...g,zoanTransformed:true}).ok);
 }
+for(const def of [2,3]){
+ const fists={id:'fists',def,plus:8,rarity:'legendary',pearls:[{level:3}]};
+ const g={devSandbox:true,classId:'brawler',factionId:'marine',equipment:{weapon:fists,coat:{def:6}},inventory:[]};
+ assert(MarePaperDollCatalog.usesBodyWeapon(g));assert(R.equipmentStatus(pack,g).ready);
+ const ready=R.prepareEquipment(pack,g);assert.equal(ready.state,g);assert.equal(ready.state.equipment.weapon,fists);
+ const blocked={...g,equipment:{...g.equipment,boots:{id:'boots',def:8}}},prepared=R.prepareEquipment(pack,blocked);
+ assert(prepared.ok);assert.equal(prepared.state.equipment.weapon,fists,'keep actual equipped fists and every modifier');
+ assert(!prepared.state.inventory.includes(fists),'never unequip fists to conceal rendering errors');
+}
+assert(!MarePaperDollCatalog.usesBodyWeapon({classId:'brawler',equipment:{weapon:{def:0}}}));
 const base={devSandbox:true,classId:'sword',factionId:'pirate',equipment:{},inventory:[]};let calls=0;
 const r=R.prepareEquipment(pack,base,{makeWeapon:def=>(calls++,{id:'test',def})});assert(r.ok);assert.equal(calls,1);assert.equal(r.state.equipment.weapon.def,0);
 assert(!R.prepareEquipment(pack,base,{makeWeapon:()=>({id:'bad',def:4})}).ok);

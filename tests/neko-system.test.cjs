@@ -45,7 +45,7 @@ for(const [action,dirs] of Object.entries(N.clips))for(const [direction,clip] of
 }
 const game=fs.readFileSync(require.resolve('../game.js'),'utf8');
 assert.ok(game.includes("zoan.id==='akuma_neko_leopard'?MareNeko.visuals.worldScale:isUshiForm()?MareUshi.visuals.worldScale:74/48"));
-assert.ok(game.includes('isNekoForm()?MareNeko.visuals.labelLift:isUshiForm()?MareUshi.visuals.labelLift:isWolfForm()?MareWolf.visuals.labelLift:0'));
+for(const name of ['MareNeko','MareUshi','MareWolf'])assert.ok(game.includes('74+'+name+'.visuals.labelLift'),'shared overhead uses native form height');
 const hero=game.slice(game.indexOf('  function drawTalentedHero('),game.indexOf('  function drawForegroundLayer('));
 assert.ok(hero.indexOf("supaImages.shield")<hero.indexOf('drawPlayerSprite'),'retaliation draws behind the hero');
 assert.ok(!game.slice(game.indexOf('  function drawWorld(')).split('    for(let f of world.fx)')[0].includes('supaImages.shield'),'shield is not redrawn above the hero');

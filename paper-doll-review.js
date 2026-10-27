@@ -24,20 +24,20 @@
   function appearance(pack,player){
     const catalog=root.MarePaperDollCatalog;
     if(!catalog.eligible(player))return null;
-    const unarmed=!player.equipment?.weapon;
+    const unarmed=!player.equipment?.weapon,bodyWeapon=pack.completeCategories===true&&catalog.usesBodyWeapon(player);
     if(pack.unarmedOnly===true&&!unarmed)return null;
-    const result={rigId:pack.rig.id,pieces:{...pack.appearance.pieces},blocked:[],hidden:[...(unarmed?['weapon']:[]),...(root.MarePaperDollLook?.hidden(player)||[])]};
+    const result={rigId:pack.rig.id,pieces:{...pack.appearance.pieces},blocked:[],hidden:[...((unarmed||bodyWeapon)?['weapon']:[]),...(root.MarePaperDollLook?.hidden(player)||[])]};
     // Body identity is independent of class/faction. Missing weapon artwork
-    // still falls back; only genuinely unequipped hands omit the sword layer.
+    // still falls back; empty hands and body-driven fist weapons omit that layer.
     const category=catalog.profile(player).category;
-    if(pack.completeCategories===true&&unarmed)delete result.pieces.weapon;
-    if(!unarmed){
+    if(pack.completeCategories===true&&(unarmed||bodyWeapon))delete result.pieces.weapon;
+    if(!unarmed&&!bodyWeapon){
       if(catalog.weaponItems[player.equipment.weapon.def]?.[0]!==category)return null;
       if(category!=='sword'&&!pack.categoryWeapons?.[category])return null;
       if(pack.categoryWeapons?.[category])result.pieces.weapon=pack.categoryWeapons[category];
     }
     for(const [equipmentSlot,binding]of Object.entries(pack.bindings||{})){
-      const item=player.equipment?.[equipmentSlot];if(!item)continue;
+      const item=player.equipment?.[equipmentSlot];if(!item||equipmentSlot==='weapon'&&bodyWeapon)continue;
       const piece=Object.hasOwn(binding.items,item.def)?binding.items[item.def]:null;
       if(piece)result.pieces[binding.slot]=piece;
       else result.blocked.push({slot:binding.slot,pieceId:String(item.def),code:'unmapped-equipment'});
@@ -119,7 +119,7 @@
           if(!runtime.resolve(config,{animationId:action,direction,frameIndex},{allowDraft:true}).valid)throw Error('Há frames incompatíveis ou ausentes.');
         }
         pack=data;coverage=root.MarePaperDollCoverage?.inspect(pack)||null;state='ready';message=unarmedPack?'Ensaio desarmado: remova arma e equipamentos sem peças. Corpo comum em repouso e caminhada; Lutador usa os socos disponíveis. Direções ausentes mantêm o visual original.':'Corpo comum: sete classes e quatro facções, sem arma, em repouso e caminhada. Espada inicial compatível; outros equipamentos e ataques sem arte usam o personagem original.';
-        if(completePack)message='Personagem único em avaliação: sete classes, quatro facções. Equipamentos sem arte e habilidades preservam o visual original. Lutador sem arma equipada.';
+        if(completePack)message='Personagem único em avaliação: sete classes, quatro facções. Equipamentos sem arte e habilidades preservam o visual original. Lutador aceita os punhos equipados, preservando seus atributos.';
         if(gunnerPack)message='Atirador modular em avaliação. Use o mosquete compatível; ações, direções e equipamentos sem peças mantêm o personagem original.';
         if(roguePack)message='Gatuno modular em avaliação. Use as Adagas da Bruma; ações, direções e equipamentos sem peças mantêm o personagem original.';
       }catch(e){pack=null;state='failed';message='Prévia indisponível: '+e.message+' Sprite original preservado.';}
@@ -127,13 +127,18 @@
     })():Promise.resolve(snapshot());
     function draw(ctx,player,action,direction,time,x,y,scale,progress=null,timing=null,worldView=false){
       if(!pack||state!=='ready'||player?.devSandbox!==true)return false;
+      const requestedAction=action;
+      if(completePack&&['sword','brawler'].includes(player.classId)){
+        if(['combat-idle','guard','hurt'].includes(action)){action='idle';progress=null;}
+        else if(['skill','skill-1','skill-2','combo'].includes(action)){action='attack';if(Number.isFinite(progress))progress=shotProgress(progress,timing?.hitFrameRatio??.5);}
+      }
       const category=root.MarePaperDollCatalog.profile(player)?.category,config=appearance(pack,player),emission=runtime.piece(config?.pieces.weapon)?.emission;
       const synchronized=completePack&&action==='attack'&&ranged.has(category)&&Number.isFinite(progress)?shotProgress(progress,timing?.hitFrameRatio??.5,emission?.frame??3):progress;
       const event=worldView?selectedRelease:null,pose=event?.pose||root.MarePaperDollCatalog.sample(runtime,player,action,direction,time,{progress:synchronized});
       if(!config||!pose){fallbacks++;lastReason='unsupported-character-or-action';return false;}
       if(config.hidden.includes('weapon')&&action!=='idle'&&action!=='walk'&&!((unarmedPack||completePack)&&player.classId==='brawler'&&action==='attack')){fallbacks++;lastReason='missing-unarmed-animation';return false;}
       const ok=runtime.draw(ctx,config,pose,x,y,{scale,hidden:config.hidden,allowDraft:true});
-      if(ok){draws++;lastReason=null;if(worldView||lastPose?.view!=='world')lastPose={...pose,view:worldView?'world':'preview',simulationTime,renderFrame,attackId:event?.id??null};}else{fallbacks++;lastReason=config.blocked[0]?.code||'missing-animation';if(worldView)lastPose=null;}
+      if(ok){draws++;lastReason=null;if(worldView||lastPose?.view!=='world')lastPose={...pose,requestedAction,view:worldView?'world':'preview',simulationTime,renderFrame,attackId:event?.id??null};}else{fallbacks++;lastReason=config.blocked[0]?.code||'missing-animation';if(worldView)lastPose=null;}
       return ok;
     }
     function projectileOrigin(player,actor,timing,scaleFactor=1){
@@ -170,7 +175,7 @@
     for(const slot of ['weapon','coat','head','boots','legs','cloak','gloves']){
       const item=player.equipment?.[slot];
       if(slot==='weapon'){
-        if(profile.category==='unarmed'){if(item)issues.push({slot,def:item.def,reason:'empty-hands'});continue;}
+        if(profile.category==='unarmed'){if(!catalog.usesBodyWeapon(player))issues.push({slot,def:item?.def,reason:'wrong-category'});continue;}
         if(!item){issues.push({slot,def:null,reason:'missing-weapon'});continue;}
         if(catalog.weaponItems[item.def]?.[0]!==profile.category){issues.push({slot,def:item.def,reason:'wrong-category'});continue;}
       }

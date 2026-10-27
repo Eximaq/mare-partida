@@ -19,7 +19,7 @@
   function buildIdentity(){
     for(const [id,values]of [['classId',catalog.classes],['factionId',catalog.factions]]){
       $(id).replaceChildren(...Object.entries(values).map(([value,item])=>{const option=document.createElement('option');option.value=value;option.textContent=item.name;return option;}));$(id).value=player[id];
-      $(id).addEventListener('change',()=>{pause();sequenceIndex=-1;finished=false;player[id]=$(id).value;if(id==='classId'){player.equipment.weapon=imported?.completeCategories&&player.classId==='brawler'?null:{def:catalog.classes[player.classId].weapon};buildWeapons();}$('frame').value=0;elapsed=0;render();});
+      $(id).addEventListener('change',()=>{pause();sequenceIndex=-1;finished=false;player[id]=$(id).value;if(id==='classId'){player.equipment.weapon={def:catalog.classes[player.classId].weapon};buildWeapons();}$('frame').value=0;elapsed=0;render();});
     }
   }
   function buildWeapons(){
@@ -58,9 +58,9 @@
   function appearance(){
     if(!imported)return catalog.appearance(player);
     const result={rigId,pieces:{...imported.pieces},blocked:[]};
-    if(imported.completeCategories){const category=catalog.profile(player).category;if(player.equipment.weapon)result.pieces.weapon=imported.categoryWeapons[category];else delete result.pieces.weapon;}
+    if(imported.completeCategories){const category=catalog.profile(player).category;if(player.equipment.weapon&&!catalog.usesBodyWeapon(player))result.pieces.weapon=imported.categoryWeapons[category];else delete result.pieces.weapon;}
     for(const [equipmentSlot,binding]of Object.entries(imported.bindings||{})){
-      const item=player.equipment[equipmentSlot];if(!item)continue;
+      const item=player.equipment[equipmentSlot];if(!item||imported.completeCategories&&equipmentSlot==='weapon'&&catalog.usesBodyWeapon(player))continue;
       const pieceId=binding.items?.[item.def];
       if(pieceId)result.pieces[binding.slot]=pieceId;
       else result.blocked.push({slot:binding.slot,pieceId:String(item.def),code:'unmapped-equipment'});

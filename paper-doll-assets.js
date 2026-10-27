@@ -42,6 +42,7 @@
     return {rigId:sharedRig.id,bodyId:'human-body',hairId:'human-hair',outfitId:'human-outfit-'+player.factionId,weaponId:'human-weapon-'+c.weapon,
       category:c.category,classId:player.classId,factionId:player.factionId};
   }
+  function usesBodyWeapon(player){return profile(player)?.category==='unarmed'&&(!player.equipment?.weapon||weaponItems[player.equipment.weapon.def]?.[0]==='unarmed');}
   function animationId(player,action){
     const p=profile(player);if(!p)return null;
     if(action==='idle'||action==='walk')return action;
@@ -73,6 +74,6 @@
     const id=animationId(player,action);return id?runtime.sample(sharedRig.id,id,direction,time,options):null;
   }
   function createRuntime(options){const runtime=root.MarePaperDoll.create(options);for(const r of [rig,sharedRig])runtime.registerRig(r);for(const p of [...pieces,...sharedPieces])runtime.registerPiece(p);return runtime;}
-  const api={rig,pieces,defaults,bindings,reference,sharedRig,sharedPieces,sharedBindings,classes,factions,categories,weaponItems,profile,animationId,referenceFor,sample,appearance,eligible,createRuntime};root.MarePaperDollCatalog=api;
+  const api={rig,pieces,defaults,bindings,reference,sharedRig,sharedPieces,sharedBindings,classes,factions,categories,weaponItems,profile,usesBodyWeapon,animationId,referenceFor,sample,appearance,eligible,createRuntime};root.MarePaperDollCatalog=api;
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:window);
