@@ -12,7 +12,7 @@ Nenhuma peça foi registrada no motor, ativada na aventura normal ou incorporada
 | Colete de Convés | **Candidato estático para avaliação visual** | A composição gerada também recoloriu anatomia. Uma máscara seleciona apenas roupa; a prévia mantém rosto, mãos expostas, calças e pés do corpo original |
 | Sabre de Coral | **Candidato estático para avaliação visual** | Extraídos os pixels da arma fora da silhueta original; a mão original permanece em primeiro plano. Não altera o item `def:1` nem seus atributos |
 
-“Candidato” não significa aprovação artística nem cobertura completa de animação. As três edições pagas cobrem somente **Idle/sul/frame 0**. O complemento técnico abaixo reutiliza movimentos existentes para conferir o attachment do sabre; a roupa ferrugem ainda não tem frames de caminhada. Não há ataque, outras direções ou validação nas sete classes para as novas peças.
+“Candidato” não significa aprovação artística nem cobertura completa de animação. As três edições pagas deste piloto cobrem somente **Idle/sul/frame 0**. O complemento técnico abaixo usa a roupa azul existente para conferir o attachment do sabre. Os frames do colete ferrugem foram produzidos depois, no [lote separado de movimento](../paper-doll-catalog-outfit-motion-20261027/README.md). Não há ataque, outras direções ou validação em combate nas sete classes para as novas peças.
 
 ### Ver o resultado
 
@@ -59,7 +59,7 @@ Foi preparada uma inspeção de attachment para a direção sul, reutilizando in
 
 Os PNGs preservam a ordem original dos frames. O helper de GIF verificou alpha/cores sem quantização e a contagem dos quadros. Como GIF armazena centésimos de segundo, a caminhada alterna 120/130ms para manter o ciclo de 1.000ms, equivalente à média nativa de 8FPS; o contrato de runtime continua 125ms por frame. Repouso mantém 250ms por frame. São prévias ampliadas 4×, sem alteração dos sprites originais ou do jogo.
 
-**Zero gerações adicionais neste complemento.** A transferência da roupa nos 12 frames é uma proposta separada, estimada em 10–25 gerações, teto de 25 e sem retries; ainda não foi executada.
+**Zero gerações adicionais neste complemento do sabre.** A transferência da roupa foi aprovada e executada em uma etapa separada: 12 frames frontais, cobrança confirmada de 10 gerações, teto de 25, sem retries. [Avaliação do colete em repouso e caminhada](../paper-doll-catalog-outfit-motion-20261027/preview.html). Essa etapa também permanece fora da produção.
 
 Avaliar o desenho da roupa e do sabre antes de produzir outros frames. Para o cabelo, o Pixen de edição livre falhou em preservar a pose: outra tentativa precisa de plano e orçamento próprios, preferencialmente com proteção por máscara. Não ampliar automaticamente o lote nem tratar a previsão de gerações da auditoria como custo de uma rota já validada.
 

@@ -1,0 +1,99 @@
+[
+  {
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-outfit-motion-replay",
+      "output_collision_policy": "create_unique"
+    },
+    "_comment_prompt": "Aprovo",
+    "_comment": "Approved one outfit transfer: twelve native south-facing frames, Idle 0-3 then Walk 0-7, cap 25 generations, no retries.",
+    "TASK": {
+      "description": "Verify explicit approval and an authenticated PixelLab MCP connection. Create a unique empty output directory. Copy the twelve supplied native body PNG inputs and the fitting reference unchanged. Keep their order, 64x64 canvas and transparency.",
+      "inputs": [
+        "body-idle-south-00.png",
+        "body-idle-south-01.png",
+        "body-idle-south-02.png",
+        "body-idle-south-03.png",
+        "body-walk-south-00.png",
+        "body-walk-south-01.png",
+        "body-walk-south-02.png",
+        "body-walk-south-03.png",
+        "body-walk-south-04.png",
+        "body-walk-south-05.png",
+        "body-walk-south-06.png",
+        "body-walk-south-07.png",
+        "deck-rust-fit-candidate.png"
+      ]
+    }
+  },
+  {
+    "MCP transfer_outfit": {
+      "frame_urls": [
+        "body-idle-south-00.png",
+        "body-idle-south-01.png",
+        "body-idle-south-02.png",
+        "body-idle-south-03.png",
+        "body-walk-south-00.png",
+        "body-walk-south-01.png",
+        "body-walk-south-02.png",
+        "body-walk-south-03.png",
+        "body-walk-south-04.png",
+        "body-walk-south-05.png",
+        "body-walk-south-06.png",
+        "body-walk-south-07.png"
+      ],
+      "reference_image_url": "deck-rust-fit-candidate.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "additional_instructions": "Transfer only the rust-red waistcoat, ivory rolled-sleeve shirt, slim diagonal leather strap and brass clasp from the reference onto each south-facing walking or idle body. Preserve each input frame's anatomy, face, arms, hands, shorts, feet, pose, pixel scale and order. Keep the garment model consistent throughout and the background transparent. Do not add hair or weapons."
+    }
+  },
+  {
+    "TASK": {
+      "description": "Save all twelve original returned images in order as raw-00.png through raw-11.png; keep the existing body inputs. Assemble a transparent four-column original sheet. Do not treat a changed composite as an isolated garment layer.",
+      "outputs": [
+        "raw-00.png",
+        "raw-01.png",
+        "raw-02.png",
+        "raw-03.png",
+        "raw-04.png",
+        "raw-05.png",
+        "raw-06.png",
+        "raw-07.png",
+        "raw-08.png",
+        "raw-09.png",
+        "raw-10.png",
+        "raw-11.png",
+        "raw-sheet.png"
+      ]
+    }
+  },
+  {
+    "TASK": {
+      "description": "Use the supplied pose-specific clothing guides and assemble_review.py to select existing generated garment pixels, preserving the original anatomy outside each selection. The supplied extraction masks document this run; revalidate geometry for any replay, without painting repairs or accepting a failed pose. Preserve frame order, 32/52 native pivot and 10/13 padding to the 84x84 rig with pivot 42/65. Existing project body/hair/sword sources must match the recorded source release. All results stay unapproved and outside production.",
+      "inputs": [
+        "input-order.json",
+        "existing-outfit-guides.png",
+        "assemble_review.py"
+      ],
+      "outputs": [
+        "outfit-layers.png",
+        "extraction-masks.png",
+        "fitted-bodies.png",
+        "combined-frames.png",
+        "review.json"
+      ]
+    }
+  },
+  {
+    "TASK": {
+      "description": "Inspect every frame and the loops. Make separate Idle (four frames at 250ms) and Walk (eight frames; GIF 120/130ms alternating for a 1000ms cycle, runtime 125ms) previews with the existing black hair and Coral Sabre attachment. This is not new body animation or coverage of attacks/other directions. Use native PNGs as authoritative; verify GIF transparency, colors and frame count.",
+      "outputs": [
+        "idle-review.gif",
+        "walk-review.gif",
+        "preview.html"
+      ]
+    }
+  }
+]
