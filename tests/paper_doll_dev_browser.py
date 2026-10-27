@@ -12,7 +12,8 @@ with sync_playwright() as p:
  c.route('**/__dev_version',lambda r:r.fulfill(body='stable'))
  q.goto(BASE+'?paperDollReview=navy-starter',wait_until='networkidle')
  q.locator('#characterName').fill('Revisao Isolada');q.locator('#nextToClass').click();q.locator('[data-class=sword]').click();q.locator('#createCharacter').click();q.clock.run_for(300)
- assert not q.evaluate('__mareDiagnostics().paperDollReview.enabled')
+ assert q.evaluate('__mareDiagnostics().paperDollReview.production')
+ assert q.evaluate('__mareDiagnostics().paperDollReview.packId')=='complete','A draft URL must not opt normal saves into draft artwork'
  assert not any('paper-doll-navy-starter' in u for u in requests)
  normal=q.evaluate('localStorage.getItem("'+NORMAL+'")')
  q.goto(BASE+'?dev=1&paperDollReview=navy-starter',wait_until='networkidle')
@@ -40,7 +41,8 @@ with sync_playwright() as p:
  assert q.evaluate('__mareDiagnostics().damage')>0 and state()['draws']>before
  assert state()['cacheEntries']<=96 and state()['cacheBytes']<=4*1024*1024
  q.screenshot(path=str(OUT/'combat-1366.png'))
- assert not any('appearance' in k.lower() or 'paper' in k.lower() for k in saved())
+ assert saved().get('paperDollLook')==json.loads(normal).get('paperDollLook')
+ assert not any(('appearance' in k.lower() or 'paper' in k.lower()) and k!='paperDollLook' for k in saved())
  assert q.evaluate('localStorage.getItem("'+NORMAL+'")')==normal
  # DEV class changes must fall back, not show a swordsman for every action category.
  q.locator('#devLauncher').click();q.locator('#devClass').select_option('gunner');q.locator('[data-dev-command=class]').click();q.locator('#closePanel').click();q.clock.run_for(200)
@@ -80,12 +82,12 @@ with sync_playwright() as p:
  q.set_viewport_size({'width':393,'height':852});q.locator('#devLauncher').click();assert q.evaluate('document.documentElement.scrollWidth<=innerWidth');q.screenshot(path=str(OUT/'laboratory-393.png'),full_page=True)
  q.get_by_role('link',name='Desativar prévia visual').click();q.wait_for_function('window.__mareDiagnostics?.().paperDollReview.state==="off"')
  q.locator('#devLauncher').click();q.locator('[data-dev-exit]').click();q.wait_for_function('window.__mareDiagnostics?.().dev.active===false')
- assert 'paperDollReview' not in q.url and not state()['enabled']
+ assert 'paperDollReview' not in q.url and state()['production'] and state()['packId']=='complete'
  restored=json.loads(q.evaluate('localStorage.getItem("'+NORMAL+'")'));assert restored['classId']=='sword' and not restored.get('devSandbox')
  assert not errors,errors
  # Failed asset requests must leave a working game with the legacy sprite.
  c2=b.new_context();c2.add_init_script('localStorage.setItem('+json.dumps(NORMAL)+','+json.dumps(normal)+')');c2.route('**/paper-doll-navy-starter-20261023/review-pack.json',lambda r:r.fulfill(status=404,body='missing'))
  fail=c2.new_page();fail.goto(BASE+'?dev=1&paperDollReview=navy-starter',wait_until='networkidle');fail.wait_for_function('window.__mareDiagnostics?.().paperDollReview.state==="failed"');assert fail.evaluate('__mareDiagnostics().paperDollReview.draws')==0
  assert fail.locator('#worldCanvas').is_visible();c2.close();c.close();b.close()
-print('DEV preview passed: no normal asset requests, explicit activation, inventory fallback/removal, real hunt damage, class fallback, mobile, disable/exit, failed loading and normal-save isolation.')
+print('DEV preview passed: no normal draft requests, explicit draft activation, inventory fallback/removal, real hunt damage, class fallback, mobile, disable/exit, failed loading and normal-save isolation.')
 

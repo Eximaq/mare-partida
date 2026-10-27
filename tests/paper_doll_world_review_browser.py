@@ -54,6 +54,8 @@ COMBAT_FIXTURE='''
 def context(browser,seed=None):
  c=browser.new_context(viewport={'width':1366,'height':900})
  c.route('**/api/akuma/catalog',lambda r:r.fulfill(status=404,body='{}'))
+ # Isolate this historical draft; the production pack is covered separately.
+ c.route('**/player-pack.json',lambda r:r.fulfill(status=503,body='{}'))
  c.route('**/__dev_version',lambda r:r.fulfill(body='stable'))
  def patch(route):
   response=route.fetch();route.fulfill(response=response,body=response.text()+INJECT)
@@ -91,7 +93,7 @@ with sync_playwright() as p:
  assert actual_walk_fallbacks==missing_walk,state
  q.screenshot(path=str(OUT/'world-modular-review-idle.png'))
  baseline=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
- assert not any('paper' in key.lower() or 'appearance' in key.lower() for key in baseline)
+ assert not any(('paper' in key.lower() or 'appearance' in key.lower()) and key!='paperDollLook' for key in baseline)
  q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
  q.clock.run_for(12000);state=q.evaluate('__paperDollWorldReview');diag=q.evaluate('__mareDiagnostics()')
  attack_dirs=coverage('attack-sword')
@@ -115,7 +117,7 @@ with sync_playwright() as p:
  q.screenshot(path=str(OUT/'world-modular-review-combat-fallback.png'))
  before=q.evaluate('()=>{__paperDollWorldReview.enabled=false;return __mareDiagnostics().paperDoll.compositions}');q.clock.run_for(1500)
  assert q.evaluate('__mareDiagnostics().paperDoll.compositions')==before
- saved=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));assert not any('paper' in key.lower() or 'appearance' in key.lower() for key in saved)
+ saved=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));assert not any(('paper' in key.lower() or 'appearance' in key.lower()) and key!='paperDollLook' for key in saved)
  import base64
  for d,url in state.get('attackSnapshots',{}).items():(OUT/('world-basic-attack-'+d+'.png')).write_bytes(base64.b64decode(url.split(',',1)[1]))
  summary={'scope':'isolated browser fixture only; not production enablement','idle_directions':sorted(k for k in state['draws'] if k.startswith('idle/')),'modular_frames':state['draws'],'legacy_actions':sorted(state['fallbacks']),'attack_snapshots':list(state.get('attackSnapshots',{})),'damage':diag['damage'],'cache':diag['paperDoll']}

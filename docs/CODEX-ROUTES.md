@@ -11,7 +11,7 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 | Mapas/Dawn | `dawn-world.js`, `dawn-map-data.js`, `dawn-renderer.js` | `docs/DAWN-MAPA-MANUAL.md`, `tests/dawn_manual_browser.py` | Mapa fornecido pelo proprietário e fidelidade |
 | Mapas/Conchas | `conchas-world.js`, `conchas-renderer.js`, `conchas-*.js` | `docs/CIDADE-DAS-CONCHAS.md`, testes de Conchas | Rotas, casas, colisões; PRs recentes podem mudar geometria |
 | Arquipélago/ilhas | `archipelago.js`, `new-islands*.js` | `docs/ARQUIPELAGO-REGIOES.md`, testes das ilhas | IDs persistidos e permissões de entrada |
-| Paper Doll | `paper-doll.js`, `paper-doll-assets.js`, `paper-doll-review.js` | `docs/PAPER-DOLL.md`, `docs/PAPER-DOLL-CONJUNTO-AZUL.md`, testes `paper_doll*` | `approved:false`; fallback; DEV ≠ produção |
+| Paper Doll | `paper-doll.js`, `paper-doll-assets.js`, `paper-doll-review.js` | `docs/PAPER-DOLL-JOGO-NORMAL.md`, `docs/PAPER-DOLL.md`, testes `paper_doll*` | Release aprovado separado dos drafts; fallback; DEV ≠ produção |
 | Sprites/PixelLab | manifests do pacote específico, `assets/**` do subsistema | `docs/ART_BIBLE.md` se existente, docs do pacote | Custo explícito, licença, pivôs, nearest-neighbor |
 | Haki | `haki-system.js`, `haki-ui.js`, `haki-art.js` | `docs/HAKI.md`, testes de Haki/talentos | Consumo transacional e saves |
 | Talentos/conquistas | `talent-*.js`, `achievement-system.js`, `ultimate-system.js` | `docs/TALENTOS.md`, testes de talentos | Conquistas únicas, respec e resets |

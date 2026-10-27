@@ -5,7 +5,9 @@ from playwright.sync_api import sync_playwright
 ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'docs/evidence-paper-doll';OUT.mkdir(parents=True,exist_ok=True)
 URL=os.environ.get('MARE_TEST_URL','http://127.0.0.1:8123/');KEY='mare-partida-save-v1';errors=[];rows=[]
 def new_page(browser,seed=None,size=(1366,900),clock=True):
+ # Exercise the real legacy fallback explicitly when the approved pack cannot load.
  c=browser.new_context(viewport={'width':size[0],'height':size[1]});c.route('**/api/akuma/catalog',lambda r:r.fulfill(status=404,body='{}'));c.route('**/__dev_version',lambda r:r.fulfill(body='stable'))
+ c.route('**/player-pack.json',lambda r:r.fulfill(status=503,body='{}'))
  if seed:c.add_init_script('if(!sessionStorage.seeded){localStorage.setItem('+json.dumps(KEY)+','+json.dumps(json.dumps(seed))+');sessionStorage.seeded="1"}')
  q=c.new_page();q.on('pageerror',lambda e:errors.append(str(e)))
  if clock:q.clock.install()
@@ -74,7 +76,7 @@ with sync_playwright() as p:
  c,q=new_page(b);game(q);q.locator('#characterName').fill('Nauta Paper Doll');q.locator('#nextToClass').click();q.locator('[data-class=sword]').click();q.locator('#createCharacter').click();q.clock.run_for(100);template=saved(q);book_def=diag(q)['hakiBookDef'];c.close()
  seed=copy.deepcopy(template);seed['inventory'].append({'id':'proto-sabre','def':1,'level':1,'plus':0,'rarity':'uncommon','locked':False,'obtainedAt':1})
  c,q=new_page(b,seed);game(q);q.locator('.bottom-nav [data-panel=inventory]').click();q.locator('[data-item=proto-sabre]').click();q.locator('[data-equip=proto-sabre]').click();assert diag(q)['paperDoll']['appearance']['pieces']['weapon']=='human-weapon-1'
- q.screenshot(path=str(OUT/'inventory-fallback.png'));q.locator('[data-inv-slot=weapon]').click();q.locator('[data-unequip=weapon]').click();assert diag(q)['paperDoll']['appearance']['pieces']['weapon']=='human-weapon-0';q.keyboard.press('Escape');q.reload();q.wait_for_function('typeof __mareDiagnostics==="function"');after=saved(q);assert after['equipment']['weapon'] is None;assert after['gold']==seed['gold'];assert after['name']==seed['name'];assert not any('paper' in k.lower() or 'appearance' in k.lower() for k in after);c.close()
+ q.screenshot(path=str(OUT/'inventory-fallback.png'));q.locator('[data-inv-slot=weapon]').click();q.locator('[data-unequip=weapon]').click();assert diag(q)['paperDoll']['appearance']['pieces']['weapon']=='human-weapon-0';q.keyboard.press('Escape');q.reload();q.wait_for_function('typeof __mareDiagnostics==="function"');after=saved(q);assert after['equipment']['weapon'] is None;assert after['gold']==seed['gold'];assert after['name']==seed['name'];assert after.get('paperDollLook')==seed.get('paperDollLook');c.close()
  haki=copy.deepcopy(template);haki.update(level=50,hp=99999,has_haki_unlocked=True,haki={'current':100,'unlocked':True})
  c,q=new_page(b,haki);game(q);travel(q)
  if diag(q)['autoPlay']:q.locator('#autoToggle').click()

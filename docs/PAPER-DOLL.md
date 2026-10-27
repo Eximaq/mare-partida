@@ -1,5 +1,7 @@
 # Paper Doll 1.0 — Fase 1
 
+Estado atual de 27/10: [integração do personagem único na aventura normal](PAPER-DOLL-JOGO-NORMAL.md), com manifesto de produção separado e aparência persistente. Os contratos e estudos históricos abaixo permanecem preservados.
+
 ## Contrato adicional de encaixes — 24/10/2026
 
 `rigid-attachment` aceita arma, cabelo curto e acessórios quando a peça conserva sua forma e possui encaixe inteiro para cada frame/direção. Corpo, calças, botas e roupa continuam exigindo frames reais. Para cabelo/acessórios, `quarterTurns` deve ser zero; rotações em quartos de volta são exclusivas de armas. Cada vista deve fornecer sua fonte nativa em `sources[direction]`, sem espelhar outra direção. Cabeça móvel exige sockets medidos; cabelo longo/deformável exige animação própria.
