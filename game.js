@@ -670,7 +670,7 @@
   function drawRankB(){
     const X=MareRankB;
     for(const f of session.rankBBursts||[])X.drawBurst(ctx,f,(world.time-f.started)*1000);
-    for(const job of session.rankBJobs||[]){const m=world.mobs.find(m=>String(m.id)===String(job.targetId)&&m.alive);if(!m)continue;const elapsed=(world.time-job.started)*1000;if(job.kind==='root'){X.drawTether(ctx,world.hero,m,elapsed);X.drawLegs(ctx,m,elapsed);}else X.draw(ctx,job.kind,m.x,m.y-40,elapsed,{width:104,height:104});}
+    for(const job of session.rankBJobs||[]){const m=world.mobs.find(m=>String(m.id)===String(job.targetId)&&m.alive);if(!m)continue;const elapsed=(world.time-job.started)*1000;if(job.kind==='root'){X.drawTether(ctx,world.hero,m,elapsed);X.drawLegs(ctx,m,elapsed);}else if(job.kind==='choke')X.draw(ctx,job.kind,m.x,m.y-40,elapsed,{width:104,height:104});}
   }
   function isBisonForm(){return !!(game?.zoanTransformed&&equippedZoan()?.id===MareRankCExpansion.rules.bison.id);}
   function bisonSkillActive(){return !!(isBisonForm()&&session?.bisonAction);}
@@ -1034,7 +1034,7 @@
   function emitCombatVfx(kind,actor){
     if(!kind||!MareCombatVfx.data.effects[kind])return;
     session.combatHits ||= [];if(kind==='heal'&&session.combatHits.some(f=>f.kind===kind&&f.actor===actor&&world.time-f.started<.15))return;
-    const point=combatChest(actor),start=MareCombatVfx.data.flightEnds[kind]||0;session.combatHits.push({kind,actor,x:point.x,y:point.y,started:world.time,start,rate:kind==='heal'?1:MareCombatVfx.data.impactPlaybackRate});if(session.combatHits.length>96)session.combatHits.shift();
+    const point=combatChest(actor),start=MareCombatVfx.impactStart(kind);session.combatHits.push({kind,actor,x:point.x,y:point.y,started:world.time,start,rate:kind==='heal'?1:MareCombatVfx.data.impactPlaybackRate});if(session.combatHits.length>96)session.combatHits.shift();
   }
   function launchCombatProjectile(kind,origin,target,onHit){
     const active=session,area=game.area,identity=basicAttackIdentity(),equippedFruitId=game.equipment?.akuma_no_mi?.fruitId||null,reach=getDerived().range+125;
@@ -2504,7 +2504,7 @@
     if(['orange','loguetown'].includes(activeMap().id))MarePixelMapRenderer.environment(ctx,activeMap().id,world.time,reducedFX);
     if(activeMap().id==='embers')MareEmberRenderer.environment(ctx,camera,W,H,world.time,reducedFX);
     for(let p of world.projectiles){let x=p.x+(p.tx-p.x)*p.progress,y=p.y+(p.ty-p.y)*p.progress;ctx.fillStyle=p.color;ctx.fillRect(x-3,y-3,11,6);ctx.fillStyle='#fff7db';ctx.fillRect(x+1,y-2,4,3);}
-    if(session.nekoAction?.kind==='combo'){const target=world.mobs.find(m=>m.id===session.nekoAction.targetId);if(target?.alive)MareNeko.drawSlash(ctx,session.nekoAction.x,session.nekoAction.y,(world.time-session.nekoAction.started)*1000);}
+    // Neko impacts use the shared punch effect at each actual damage event.
     for(let f of world.fx){ctx.globalAlpha=f.fruit||f.zoanVfx||f.supaVfx?1:clamp(f.life/f.max,0,1);if(f.wolfImpact){MareWolf.drawEffect(ctx,'bleed',f.x,f.y,(world.time-f.started)*1000);}else if(f.supaVfx){MareSupaArt.draw(ctx,supaImages[f.supaVfx],f.supaVfx,f.x,f.y,Date.now()-f.startedAt,{scale:MareAkuma.supaRules.radius*2/MareSupaArt.animations.slash.frames[0].w});}else if(f.zoanVfx){MareZoanArt.drawVfx(ctx,f.zoanVfx,f.followHero?world.hero.x:f.x,f.followHero?world.hero.y:f.y,{time:f.max-f.life,scale:74/48,loop:!!f.loop});}else if(f.fruit){drawFruitBurst(ctx,f.x,f.y,f.fruit,f.max-f.life);}else if(f.slash){ctx.strokeStyle=f.color;ctx.lineWidth=5;ctx.beginPath();ctx.arc(f.x,f.y-17,29,-2.35,.2);ctx.stroke();}else if(f.ring){ctx.strokeStyle=f.color;ctx.lineWidth=4;ctx.beginPath();ctx.ellipse(f.x,f.y-4,(1-f.life/f.max)*61+6,(1-f.life/f.max)*26+5,0,0,Math.PI*2);ctx.stroke();}else {ctx.textAlign='center';ctx.font='bold '+f.size+'px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#0b2323';ctx.strokeText(f.text,f.x,f.y);ctx.fillStyle=f.color;ctx.fillText(f.text,f.x,f.y);}}ctx.globalAlpha=1;
     drawCombatVfx();
     ctx.restore();

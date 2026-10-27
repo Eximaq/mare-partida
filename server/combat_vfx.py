@@ -25,7 +25,7 @@ class CombatVfxService:
   distance=math.hypot(x-shot['x'],y-shot['y'])
   minimum=RULES['cyborgBeamWarmup'] if shot['kind']=='cyborg' else max(0,distance-RULES['hitRadius'])/RULES['projectileSpeed']
   if distance>shot['reach']+64 or now-shot['started']+.05<minimum or math.hypot(x-target['x'],y-target['y'])>RULES['hitRadius']+2:raise ValueError('Impacto antecipado ou fora do alvo')
-  self.shots.pop(token);return {'phase':'impact','target_id':shot['target_id'],'impactStartFrame':RULES['flightEnds'][shot['kind']],'at':now}
+  self.shots.pop(token);return {'phase':'impact','target_id':shot['target_id'],'impactStartFrame':RULES.get('impactStarts',{}).get(shot['kind'],RULES['flightEnds'][shot['kind']]),'at':now}
 
 def player_statuses(state,now):
  entries=[]

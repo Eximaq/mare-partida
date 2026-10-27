@@ -59,3 +59,5 @@ Nenhum PNG existente foi modificado, nenhuma geração PixelLab foi solicitada e
 - Capturas locais em `docs/evidence-paper-doll/melee-continuity/` (ignoradas). CI inclui o teste melee e publica evidências no artifact existente. Sem consumo de créditos nem alterações nos PNGs.
 
 Verificação local desta correção: 87 arquivos Node passaram; combate real nas sete classes, 56 cenários de velocidade humano/Zoan, Ryu, diagnóstico DEV, build estático, 192 geometrias de emissão, 32 apoios dos pés e 12 casos de ciclo visual passaram. Os cinco testes Python do backend VFX também passaram. O teste de integridade da arte VFX falha no checkout Windows por conversão CRLF dos JSONs; passou sem alterações quando executado sobre os bytes exatos de `origin/main` em diretório temporário. Nenhum asset foi regravado para contornar esse teste.
+
+Publicação: integrada também a main `2f80cfe` (efeitos compartilhados de Cyborg/Neko/Hana). A regressão histórica `class_combat_v2_browser.py` foi alinhada ao dano por colisão: exige projétil em impacto para dano ranged e mantém o latch de impacto para melee. Um projétil anterior pode atingir o alvo durante a preparação do ataque seguinte.
