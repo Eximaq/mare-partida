@@ -6,6 +6,7 @@ import math
 import sqlite3
 import time
 import uuid
+from combat_vfx import CombatVfxService, player_statuses
 from jiki import JikiService, RULES as JIKI_RULES, JIKI
 from ryu import RyuService, RULES as RYU_RULES, RYU
 from hoya import HoyaService, RULES as HOYA_RULES, HOYA
@@ -94,6 +95,7 @@ class AkumaStore:
         self.hoya=HoyaService(clock)
         self.jiki=JikiService(clock)
         self.ryu=RyuService(clock)
+        self.vfx=CombatVfxService(clock)
         self.rank_c_expansion=RankCExpansionService(clock)
         # World enemies and projectiles are transient, scoped by player/instance.
         self.doru_projectiles = {}
@@ -137,7 +139,9 @@ class AkumaStore:
         unlocked = [r[0] for r in self.db.execute("SELECT fruit_id FROM unlocks WHERE player_id=? ORDER BY fruit_id", (player_id,))]
         cooldowns = {r[0]: r[1] for r in self.db.execute("SELECT fruit_id,ready_at FROM fruit_cooldowns WHERE player_id=?", (player_id,))}
         cooldowns.update({r[0]+":"+r[1]: r[2] for r in self.db.execute("SELECT fruit_id,skill_key,ready_at FROM skill_cooldowns WHERE player_id=?", (player_id,))})
-        return {"wild_fury_until": row["wild_fury_until"], "metallic_until": row["metallic_until"], "rank_c":self.rank_c.state(player_id), "rank_b":self.rank_b.state(player_id), "hoya":self.hoya.state(player_id),"jiki":self.jiki.state(player_id), "unlocked": unlocked, "passive_stats": passive_stats(row["equipped"]), "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock() or self.hoya.active(player_id),"is_untargetable":self.hoya.active(player_id), "invulnerable_until": row["invulnerable_until"]}
+        result={"wolf_aura_until":row['wolf_aura_until'],"wild_fury_until": row["wild_fury_until"], "metallic_until": row["metallic_until"], "rank_c":self.rank_c.state(player_id), "rank_b":self.rank_b.state(player_id), "hoya":self.hoya.state(player_id),"jiki":self.jiki.state(player_id), "unlocked": unlocked, "passive_stats": passive_stats(row["equipped"]), "equipped": row["equipped"], "transformed": bool(row["transformed"]), "high_altitude_until": row["high_altitude_until"], "cooldowns": cooldowns, "cooldown_until": cooldowns.get(row["equipped"], 0), "is_invulnerable": row["invulnerable_until"] > self.clock() or self.hoya.active(player_id),"is_untargetable":self.hoya.active(player_id), "invulnerable_until": row["invulnerable_until"]}
+
+        return {**result,'vfx_statuses':player_statuses(result,self.clock())}
 
     def register(self, player_id: str, fruit_id: str):
         self.player(player_id)
@@ -160,6 +164,7 @@ class AkumaStore:
             self.hoya.clear(player_id)
             self.jiki.clear(player_id)
             self.ryu.clear(player_id)
+            self.vfx.clear(player_id)
             self.rank_c_expansion.clear(player_id)
             with self.db:
                 self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
@@ -177,6 +182,7 @@ class AkumaStore:
             self.db.execute("UPDATE players SET transformed=? WHERE id=?", (int(bool(enabled)), player_id))
             if not enabled:
                 self.ryu.clear(player_id)
+                self.vfx.clear(player_id)
                 self.rank_c_expansion.clear(player_id)
                 self.db.execute("UPDATE players SET wild_fury_until=0 WHERE id=?", (player_id,))
                 self.db.execute("UPDATE players SET wolf_aura_until=0 WHERE id=?", (player_id,))
@@ -339,6 +345,7 @@ class AkumaStore:
         self.hoya.clear(player_id)
         self.jiki.clear(player_id)
         self.ryu.clear(player_id)
+        self.vfx.clear(player_id)
         self.rank_c_expansion.clear(player_id)
         with self.db:
             self.db.execute("UPDATE players SET metallic_until=0 WHERE id=?", (player_id,))
