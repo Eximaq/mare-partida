@@ -18,16 +18,16 @@ with sync_playwright() as p:
  def open_look():
   q.locator('#characterMenuTrigger').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
  def saved():return q.evaluate('JSON.parse(localStorage.getItem("'+DEV+'"))')
- open_look();assert q.get_by_role('link',name='Abrir laboratório de aparência').is_visible()
- q.get_by_role('link',name='Abrir laboratório de aparência').click()
+ open_look();assert q.locator('[data-doll-look-apply]').is_visible();assert q.evaluate('__mareDiagnostics().paperDollReview.production')
+ q.goto(BASE+'?dev=1&paperDollReview=navy-starter',wait_until='networkidle')
  q.wait_for_function('window.__mareDiagnostics?.().paperDollReview.state==="ready"')
  normal=q.evaluate('localStorage.getItem("'+NORMAL+'")')
  open_look();q.wait_for_function('document.querySelector("#dollLookState")?.textContent.includes("sincronizadas")')
- assert 'paperDollLook' not in saved()
+ assert q.evaluate('MarePaperDollLook.read(JSON.parse(localStorage.getItem("'+DEV+'")))')=={'version':1,'hair':'short-black','outfit':'navy'}
  q.locator('[data-doll-look=hair]').select_option('bald')
  q.locator('[data-doll-look-cancel]').click()
  assert q.locator('[data-doll-look=hair]').input_value()=='short-black'
- assert 'paperDollLook' not in saved()
+ assert q.evaluate('MarePaperDollLook.read(JSON.parse(localStorage.getItem("'+DEV+'")))')=={'version':1,'hair':'short-black','outfit':'navy'}
  q.locator('[data-doll-look=hair]').select_option('bald');q.locator('[data-doll-look-apply]').click()
  assert saved()['paperDollLook']=={'version':1,'hair':'bald','outfit':'navy'}
  for direction in ['south','north','west','east']:
@@ -59,4 +59,4 @@ with sync_playwright() as p:
  assert q.evaluate('localStorage.getItem("'+NORMAL+'")')==normal
  assert not errors,errors
  c.close();b.close()
-print('Appearance editor passed: normal gate, four directions/actions, draft cancellation, apply/reload, storage rollback, mobile and normal-save isolation.')
+print('Appearance editor passed: normal release and separate DEV draft, four directions/actions, draft cancellation, apply/reload, storage rollback, mobile and normal-save isolation.')

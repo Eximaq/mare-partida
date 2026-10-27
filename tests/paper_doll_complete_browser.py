@@ -92,7 +92,7 @@ with sync_playwright() as p:
     assert not state['missing'],(action,d,i,state)
  inspector.locator('#direction').select_option('east');inspector.locator('#frame').fill('3');inspector.screenshot(path=str(OUT/'east-preview.png'),full_page=True);inspector.close()
  c=b.new_context(viewport={'width':1366,'height':900});q=c.new_page();q.clock.install();errors=[]
- q.on('pageerror',lambda e:errors.append(str(e)))
+ q.on('pageerror',lambda e:(errors.append(str(e)),print('PAGEERROR:',e,flush=True)))
  c.route('**/api/akuma/catalog',lambda r:r.fulfill(status=404,body='{}'));c.route('**/__dev_version',lambda r:r.fulfill(body='stable'))
  def game_route(route):
   response=route.fetch();s=response.text();needle='  window.__mareDiagnostics=';assert needle in s

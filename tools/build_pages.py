@@ -474,7 +474,7 @@ for category in ('gunner', 'rogue'):
 review = Path('pixellab-pip-generations/paper-doll-complete-20261026')
 (OUT/review).mkdir(parents=True, exist_ok=True)
 manifest = json.loads((ROOT/review/'review-pack.json').read_text(encoding='utf-8'))
-files = {'review-pack.json'}
+files = {'review-pack.json', 'player-pack.json'}
 for piece in manifest['pieces']:
     for clip in piece['animations'].values():
         files.add(clip['url'])

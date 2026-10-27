@@ -16,3 +16,7 @@
 @media(max-width:600px){.doll-dressing-grid {grid-template-columns:1fr;}.doll-dressing figure {padding:10px;}}
 
 .doll-debug-readout {position:fixed;right:12px;top:72px;width:340px;max-width:calc(100vw - 24px);max-height:38vh;overflow:auto;z-index:19;margin:0;padding:12px;border:1px solid #ad8550;background:#30241cf0;color:#f4e5c4;font:11px/1.4 monospace;white-space:pre-wrap;overflow-wrap:anywhere;pointer-events:none;}
+
+.creation-appearance{display:grid;grid-template-columns:minmax(0,1fr) minmax(180px,.7fr);gap:20px;margin:20px 0;padding:18px;border:1px solid #987044;background:#3d2c20;color:#edddbd}
+.creation-appearance h3{margin:0;color:#f4d590;font-family:Georgia,serif}.creation-appearance label{display:grid;gap:6px;margin:12px 0}.creation-appearance select{width:100%;min-height:44px;background:#35271b;color:#f4e5c4;border:1px solid #ad8550;padding:8px}.creation-appearance figure{margin:0;text-align:center}.creation-appearance canvas{max-width:100%;height:auto;image-rendering:pixelated}.creation-appearance figcaption{font-size:13px;line-height:1.4}.creation-appearance select:focus-visible{outline:2px solid #f4d590;outline-offset:3px}
+@media(max-width:600px){.creation-appearance{grid-template-columns:1fr;gap:8px}.creation-appearance figure{grid-row:1}.creation-appearance canvas{width:170px}}

@@ -5,7 +5,7 @@
   const classCombat=MareCombatRegistry.create({sprites:MareFactionSprites,animation:MareCombatAnimation});
   const paperDoll=MarePaperDollCatalog.createRuntime({getImage:MareFactionSprites.image});
   const DEV_ACTIVE=MareDev.active(location.search);
-  const paperDollReview=MarePaperDollReview.create({search:location.search,devActive:DEV_ACTIVE,getImage:MareFactionSprites.image});
+  const paperDollReview=MarePaperDollReview.create({search:location.search,devActive:DEV_ACTIVE,production:!DEV_ACTIVE,definition:def=>itemDefs[def],getImage:MareFactionSprites.image,onChange:()=>{if(game){renderPortrait();if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
   let paperDollDebug=DEV_ACTIVE&&new URLSearchParams(location.search).get('paperDollDebug')==='1';
   const STORAGE_KEY=MareDev.key(location.search);
   let suppressSave=false,devMessage='';
@@ -238,7 +238,7 @@
   let autoPlay = true, autoSkills = true, reducedFX = false;
   let attributeDraft=MareCharacters.empty(),attributeQuantity=1,allocationMessage="";
   let hierarchyBackend=false,hierarchyBoard=[],hierarchyMessage='';
-  let dollLookDraft=null,dollLookMessage='';
+  let dollLookDraft=null,dollLookMessage='',creationLookDraft={...MarePaperDollLook.defaults};
   let characterTab=null,akumaRank='E',talentDraft=null,selectedTalent=null,talentMessage='',talentDraftSeq=0,achievementCategory='all';
   const fruitAuraImages=Object.fromEntries(MareAkuma.catalog.filter(fruit=>fruit.vfx_sprite_sheet).map(fruit=>{const image=new Image();image.src=fruit.vfx_sprite_sheet;return [fruit.id,image];}));
   let current_fruit_vfx=null,fruitVfxImage=null,akumaBackend=false,combatVfxBackend=false,akumaCorpseQueue=Promise.resolve();
@@ -1151,7 +1151,7 @@
     return actual;
     };
     if(!zoan&&MareCombatVfx.data.flightEnds[MareCombatVfx.data.classHits[game.classId]]){
-      const muzzle=!skill&&DEV_ACTIVE?paperDollReview.projectileOrigin(game,world.hero,{...(classCombatController()?.snapshot()||basicAttackPose()),token:session.basicAttack?.clock||world.hero.combat,simulationTime:world.time},horuBuffActive()?MareRankC.rules.horu.scale:1):null;
+      const muzzle=!skill?paperDollReview.projectileOrigin(game,world.hero,{...(classCombatController()?.snapshot()||basicAttackPose()),token:session.basicAttack?.clock||world.hero.combat,simulationTime:world.time},horuBuffActive()?MareRankC.rules.horu.scale:1):null;
       launchCombatProjectile(MareCombatVfx.data.classHits[game.classId],{x:muzzle?.x??world.hero.x+world.hero.facing*13,y:muzzle?.y??world.hero.y-27,releaseId:muzzle?.releaseId??null},m,land);
     }else land();
     return true;
@@ -1289,7 +1289,7 @@
     if(!game||!session)return;
     const actor=world.hero,from={x:actor.x,y:actor.y},identity=scene+':'+game.area+':'+basicAttackIdentity();
     try{tickSimulation(dt);}finally{
-      if(DEV_ACTIVE&&paperDollReview.snapshot().packId==='complete'&&world.hero===actor){
+      if(paperDollReview.snapshot().packId==='complete'&&world.hero===actor){
         const context=scene+':'+game.area+':'+basicAttackIdentity(),active=identity===context&&MarePaperDollCatalog.eligible(game)&&actor.walking>0&&!classCombatController()?.locked()&&!basicAttackPose();
         MarePaperDollReview.stepWalk(actor,world.time,active,{from,dt,context});paperDollReview.synchronize(game,world.time,actor,classCombatController()?.snapshot()||basicAttackPose());
       }
@@ -1485,7 +1485,7 @@
     $('lootList').innerHTML=session.recentLoot.length?session.recentLoot.map(x=>`<div class="loot-entry"><span>${lootIcon(x.name)}${escapeHTML(x.name)}</span><b>OBTIDO</b></div>`).join(''):'<div class="empty-note">Sua próxima descoberta aparecerá aqui.</div>';
     updateMiniHud();const time=(6+Math.floor(world.time/90))%24; $('worldClock').textContent='DIA '+String(1+Math.floor(world.time/(90*24))).padStart(2,'0')+' · '+String(time).padStart(2,'0')+':00';
   }
-  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{time:world.time,scale:equippedZoan().id===MareRyu.rules.id?64/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?90/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?1:64/48});else drawConfiguredHuman(portrait,36,70,classCombat.entry(game)?'combat-idle':'idle','south',world.time,64);const mini=$('miniPortrait');if(mini){const mc=mini.getContext('2d');mc.imageSmoothingEnabled=false;mc.clearRect(0,0,64,64);mc.drawImage($('portrait'),0,0,64,64);}}
+  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{time:world.time,scale:equippedZoan().id===MareRyu.rules.id?64/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?90/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?1:64/48});else if(!drawPaperDoll(portrait,36,70,'idle','south',world.time,64/46))drawConfiguredHuman(portrait,36,70,classCombat.entry(game)?'combat-idle':'idle','south',world.time,64);const mini=$('miniPortrait');if(mini){const mc=mini.getContext('2d');mc.imageSmoothingEnabled=false;mc.clearRect(0,0,64,64);mc.drawImage($('portrait'),0,0,64,64);}}
   function worldChange(area){if(!zones[area])return;if(game.level<zones[area].min){toast('Você precisa alcançar o nível '+zones[area].min+'.','danger');return;}game.area=area;const island=MareArchipelago.byArea(area);if(island)game=MareAchievements.record(game,'islandVisited',island.id);game.hp=getDerived().maxHP;game.energy=getDerived().maxEnergy;enterHunt();toast('Você navegou até '+zones[area].name+'.','good');log('Nova região: '+zones[area].name,'good');saveGame();}
   function claimQuest(id){let q=questDefs.find(q=>q.id===id);if(!q||game.claimed.includes(id)||questProgress(q)<q.target)return;game.claimed.push(id);game.gold+=q.gold;gainXP(q.xp);session.gold+=q.gold;game.stats.goldEarned+=q.gold;toast('Contrato concluído! +'+q.gold+' dobrões','good');log('Recompensa do contrato: '+q.title,'gold');saveGame();updateUI();if(currentPanel==='contracts')renderPanel();}
   function getInventoryItem(id){return game.inventory.find(i=>i.id===id)||Object.values(game.equipment).find(i=>i?.id===id)||null;}
@@ -1822,8 +1822,8 @@
     if(!['status','talents','achievements','haki','akuma','hierarchy','appearance'].includes(characterTab))characterTab='status';
     $('dialogTitle').textContent=({status:'Personagem',talents:'Talentos',achievements:'Conquistas',haki:'Haki',akuma:'Akuma no Mi',hierarchy:'Hierarquia dos Mares',appearance:'Aparência'})[characterTab];
     if(characterTab==='appearance'){
-      if(!DEV_ACTIVE||!paperDollReview.snapshot().enabled){body.innerHTML='<p>A personalização está em avaliação no laboratório Paper Doll.</p><a class="dialog-button" href="?dev=1&amp;paperDollReview=complete">Abrir laboratório de aparência</a>';return;}
-      dollLookDraft=dollLookDraft||MarePaperDollLook.read(game);body.innerHTML=MarePaperDollLook.render(game,dollLookDraft,dollLookMessage,paperDollReview.equipmentStatus(game),itemDefs);return;
+      if(!paperDollReview.snapshot().enabled){body.innerHTML='<p>A personalização está em avaliação no laboratório Paper Doll.</p><a class="dialog-button" href="?dev=1&amp;paperDollReview=complete">Abrir laboratório de aparência</a>';return;}
+      dollLookDraft=dollLookDraft||MarePaperDollLook.read(game);body.innerHTML=MarePaperDollLook.render(game,dollLookDraft,dollLookMessage,paperDollReview.equipmentStatus(game),itemDefs,{production:!DEV_ACTIVE});return;
     }
     if(characterTab==='hierarchy'){renderHierarchy(body);return;}
     if(characterTab==='status'){renderCharacter(body);body.insertAdjacentHTML('afterbegin','<button type="button" class="dungeon-back" data-panel="inventory">Abrir inventário e equipamentos</button><button type="button" class="dungeon-back" data-character-section="appearance">Personalizar aparência</button>');return;}
@@ -1966,9 +1966,9 @@
     }
     if(e.target.closest('[data-doll-look-cancel]')){dollLookDraft=MarePaperDollLook.read(game);dollLookMessage='Alterações descartadas.';renderPanel();return;}
     if(e.target.closest('[data-doll-look-apply]')){
-      if(!DEV_ACTIVE||currentPanel!=='character'||characterTab!=='appearance')return;
-      const next=MarePaperDollLook.apply(game,dollLookDraft);if(!next)return;
-      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;dollLookMessage='Aparência aplicada ao personagem.';}
+      if(currentPanel!=='character'||characterTab!=='appearance')return;
+      const next=MarePaperDollLook.apply(game,dollLookDraft,{production:!DEV_ACTIVE});if(!next)return;
+      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;paperDollReview.cancelVisual();renderPortrait();dollLookMessage='Aparência aplicada ao personagem.';}
       catch{dollLookMessage='Não foi possível salvar. A aparência anterior foi preservada.';}
       renderPanel();return;
     }
@@ -2320,7 +2320,7 @@
   function drawRuin(x,y){px(ctx,x-10,y-18,23,24,'#52635c');px(ctx,x-12,y-25,27,9,'#859385');px(ctx,x-8,y-19,5,25,'#98a18a');px(ctx,x+8,y-19,5,25,'#3e594d');px(ctx,x-18,y+6,39,9,'#53695e');}
   function drawPaperDoll(c,x,y,action,direction,time,scale=null,progress=null,timing=null,worldView=false){
     if(!MarePaperDollCatalog.eligible(game))return false;
-    if(DEV_ACTIVE&&paperDollReview.draw(c,game,action,direction,time,x,y,scale,progress,timing,worldView))return true;
+    if(paperDollReview.draw(c,game,action,direction,time,x,y,scale,progress,timing,worldView))return true;
     const appearance=MarePaperDollCatalog.appearance(game),pose=MarePaperDollCatalog.sample(paperDoll,game,action,direction,time,{progress});
     return pose?paperDoll.draw(c,appearance,pose,x,y,{scale}):false;
   }
@@ -2357,11 +2357,11 @@
       return drawn;
     }
     const combat=classCombatController(),pose=combat?.snapshot()||basicAttackPose(),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
-    const gait=DEV_ACTIVE&&paperDollReview.snapshot().packId==='complete'?MarePaperDollReview.walkPose(hero,world.time,moving&&!pose?.locked):null;
+    const gait=paperDollReview.snapshot().packId==='complete'?MarePaperDollReview.walkPose(hero,world.time,moving&&!pose?.locked):null;
     const dollAction=requested==='walk'&&gait&&!gait.moving?'idle':requested,dollTime=dollAction==='walk'&&gait?gait.time:pose?.locked?pose.elapsed:world.time;
     // Some melee identities have no skill controller; reuse their real attack clip
     // over their existing visual window without changing damage or cooldowns.
-    const instantMelee=['sword','brawler'].includes(game.classId)&&attack&&!pose?.locked;
+    const instantMelee=(!DEV_ACTIVE||['sword','brawler'].includes(game.classId))&&attack&&!pose?.locked;
     const dollProgress=pose?.locked?pose.progress:instantMelee?Math.min(1,Math.max(0,1-hero.attackAnim/.22)):null;
     if((!attack||combat||basicAttackPose()||instantMelee)&&drawPaperDoll(c,x,y,dollAction,pose?.locked?pose.direction:hero.direction,dollTime,null,dollProgress,pose,c===ctx))return true;
     if(basicAttackPose()&&!classCombat.asset(game))return drawFactionSprite(c,x,y,game.factionId,'idle',74,false,pose.direction,world.time);
@@ -2529,7 +2529,7 @@
       const canvas=$('dollLookCanvas');if(canvas){
         const c=canvas.getContext('2d'),direction=$('dollLookDirection').value,action=$('dollLookAction').value;
         c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
-        const preview={...game,paperDollLook:dollLookDraft||MarePaperDollLook.read(game)};
+        const preview={...game,zoanTransformed:false,paperDollLook:dollLookDraft||MarePaperDollLook.read(game)};
         const modular=paperDollReview.draw(c,preview,action,direction,action==='attack'?world.time%(.667):world.time,126,218,2.5);
         if(!modular)drawConfiguredHuman(c,126,218,action,direction,world.time,115);
         $('dollLookState').textContent=modular?'Camadas modulares sincronizadas':'Visual original: esta combinação ainda não tem camadas compatíveis.';
@@ -2538,7 +2538,7 @@
 
     if(currentPanel==='character'&&characterTab==='akuma')for(const canvas of document.querySelectorAll('canvas[data-akuma-aura]')){const fruit=MareAkuma.byId(canvas.dataset.akumaAura),c=canvas.getContext('2d');c.clearRect(0,0,48,48);c.imageSmoothingEnabled=false;vfx_aura.draw(c,24,48,world.time,1,fruit);}
   }
-  function frame(t){if(!lastTime)lastTime=t;const dt=Math.min(.25,Math.max(0,(t-lastTime)/1000));lastTime=t;if(game&&!document.hidden){for(let remaining=dt;remaining>0;remaining-=.05)tick(Math.min(.05,remaining));renderUIClock+=dt;saveClock+=dt;if(renderUIClock>.27){renderUIClock=0;updateUI();}if(saveClock>(game.has_haki_unlocked?1:7)){saveClock=0;saveGame();}camera.update(combatFocus(),activeMap(),dt);}presentWorld();drawVfxPanels();requestAnimationFrame(frame);}
+  function frame(t){if(!lastTime)lastTime=t;const dt=Math.min(.25,Math.max(0,(t-lastTime)/1000));lastTime=t;if(game&&!document.hidden){for(let remaining=dt;remaining>0;remaining-=.05)tick(Math.min(.05,remaining));renderUIClock+=dt;saveClock+=dt;if(renderUIClock>.27){renderUIClock=0;updateUI();}if(saveClock>(game.has_haki_unlocked?1:7)){saveClock=0;saveGame();}camera.update(combatFocus(),activeMap(),dt);}presentWorld();drawVfxPanels();drawCreationAppearance(t/1000);requestAnimationFrame(frame);}
 
 
 const targetHud=document.createElement('div');
@@ -2649,8 +2649,17 @@ function applySceneHudLayout(){
     $('stepFaction').classList.toggle('active',step===1);$('stepClass').classList.toggle('active',step===2);
     $('creationError').textContent='';
   }
+  function drawCreationAppearance(time){
+    const canvas=$('creationLookCanvas');if(DEV_ACTIVE||!canvas||$('startOverlay').classList.contains('hidden'))return;
+    const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
+    const player={classId:selectedClass,factionId:selectedFaction,paperDollLook:creationLookDraft,equipment:{weapon:{def:starterWeapon(selectedClass)},coat:editingCharacter?game.equipment.coat:{def:6}},...(DEV_ACTIVE?{devSandbox:true}:{})};
+    const drawn=paperDollReview.draw(c,player,'idle','south',time,110,162,2);
+    $('creationLookState').textContent=drawn?'Esta será sua aparência. Equipamentos podem mudar o visual.':paperDollReview.snapshot().state==='failed'?'Prévia indisponível. Sua escolha será preservada.':'Carregando personagem…';
+  }
+  document.addEventListener('change',e=>{const key=e.target.dataset.creationLook;if(Object.hasOwn(MarePaperDollLook.choices,key)&&Object.hasOwn(MarePaperDollLook.choices[key],e.target.value))creationLookDraft={...creationLookDraft,[key]:e.target.value};});
   function openCreation(edit=false){
-    editingCharacter=edit;
+    document.querySelector('.creation-appearance')?.classList.toggle('hidden',DEV_ACTIVE);
+    editingCharacter=edit;creationLookDraft=MarePaperDollLook.read(edit?game:null);document.querySelectorAll('[data-creation-look]').forEach(el=>{el.value=creationLookDraft[el.dataset.creationLook];});
     if(edit&&game){selectedFaction=game.factionId;selectedClass=game.classId;$('characterName').value=game.name;}
     document.querySelectorAll('[data-faction]').forEach(btn=>btn.classList.toggle('chosen',btn.dataset.faction===selectedFaction));
     document.querySelectorAll('[data-class]').forEach(btn=>btn.classList.toggle('chosen',btn.dataset.class===selectedClass));
@@ -2666,14 +2675,14 @@ function applySceneHudLayout(){
     if(name.length<3||name.length>18){$('creationError').textContent='Use um nome de 3 a 18 caracteres.';return;}
     if(editingCharacter&&game){
       if(game.classId!==selectedClass&&game.equipment.weapon&&game.inventory.length>=BAG_CAPACITY){$('creationError').textContent='Libere um espaço na mochila para guardar sua arma atual antes de trocar a classe.';return;}
-      const changed=game.classId!==selectedClass;if(changed){talentDraft=null;characterTab=null;}game.name=name;game.factionId=selectedFaction;game.classId=selectedClass;MareHierarchy.migrate(game);void syncHierarchy();
+      const changed=game.classId!==selectedClass;if(changed){talentDraft=null;characterTab=null;}game.name=name;game.factionId=selectedFaction;game.classId=selectedClass;if(!DEV_ACTIVE)game.paperDollLook={...creationLookDraft};MareHierarchy.migrate(game);void syncHierarchy();
       if(changed){
         const old=game.equipment.weapon;if(old)game.inventory.push(old);
         game.equipment.weapon=newItem(itemDefs[starterWeapon(selectedClass)]);
       }
       const d=getDerived();game.hp=Math.min(d.maxHP,Math.max(1,game.hp));game.energy=Math.min(d.maxEnergy,Math.max(0,game.energy));
       session.talents=MareTalentCombat.create();session.cooldowns=[0,0];session.guard=0;session.blessing=0;toast('Facção e classe atualizadas!','good');$('startOverlay').classList.add('hidden');configureFactionVisual();renderPortrait();updateUI();saveGame();editingCharacter=false;
-    }else{game=createGame(name,selectedClass);startGame();}
+    }else{game=createGame(name,selectedClass);if(!DEV_ACTIVE)game.paperDollLook={...creationLookDraft};startGame();}
   });
   $('characterName').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(!$('factionStep').classList.contains('hidden'))$('nextToClass').click();else $('createCharacter').click();}});
   $('autoToggle').addEventListener('click',()=>{if(scene!=='hunt'||!game)return;autoPlay=!autoPlay;if(autoPlay){travelPath=[];lobbyDestination=null;lobbyAction=null;pursuit.delete(world.hero);}toast(autoPlay?'Auto-caçada retomada.':'Auto-caçada pausada.');updateUI();});
@@ -2800,7 +2809,7 @@ function applySceneHudLayout(){
     b=e.target.closest('[data-reset]');if(b){showConfirmation('Recomeçar aventura?','Seu personagem salvo neste navegador será apagado. Exporte o save pela Ajuda antes de continuar.',()=>{localStorage.removeItem(STORAGE_KEY);suppressSave=true;location.reload();});return;}
   });
   $('dialogBody').addEventListener('change',e=>{
-    const key=e.target.dataset.dollLook;if(!key||!DEV_ACTIVE||characterTab!=='appearance'||!Object.hasOwn(MarePaperDollLook.choices,key))return;
+    const key=e.target.dataset.dollLook;if(!key||currentPanel!=='character'||characterTab!=='appearance'||!Object.hasOwn(MarePaperDollLook.choices,key))return;
     if(Object.hasOwn(MarePaperDollLook.choices[key],e.target.value))dollLookDraft={...(dollLookDraft||MarePaperDollLook.read(game)),[key]:e.target.value};
   });
   $('dialogBody').addEventListener('change',e=>{const key=e.target.dataset.prisonOption;if(currentPanel!=='prison'||!['autoAdvance','pauseBeforeBoss'].includes(key))return;const next=MarePrison.migrate(game);next.impelDown.options[key]=e.target.checked;try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;}catch{e.target.checked=game.impelDown.options[key];toast('Não foi possível salvar a preferência.','danger');}});

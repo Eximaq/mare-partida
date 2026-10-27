@@ -60,7 +60,8 @@ with sync_playwright() as p:
   saved=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
   assert saved['classId']==seed['classId'] and saved['factionId']==seed['factionId']
   assert saved['equipment']==seed['equipment'] and saved['attributes']==seed['attributes'],(row,seed['equipment'],saved['equipment'],seed['attributes'],saved['attributes'])
-  assert not any('paper' in k.lower() or 'appearance' in k.lower() for k in saved)
+  assert saved.get('paperDollLook')==seed.get('paperDollLook')
+  assert not any(('paper' in k.lower() or 'appearance' in k.lower()) and k!='paperDollLook' for k in saved)
   c.close()
  assert not errors,errors;b.close()
  result={'passed':True,'scope':'28 shared profiles; fallback only; no modular art','rows':rows,'errors':errors}

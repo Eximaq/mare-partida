@@ -1,5 +1,7 @@
 # Desenvolvimento compartilhado no GitHub
 
+Atualização de 27/10: o [personagem único na aventura normal](docs/PAPER-DOLL-JOGO-NORMAL.md) inclui escolhas de aparência na criação, editor persistente, equipamentos sem perda de identidade e save DEV separado. As notas de protótipo abaixo permanecem como histórico.
+
 **Efeitos de combate e status:** impactos por categoria de golpe, projéteis com HP sincronizado à colisão e indicadores aéreos de buff/controle. [Mapeamento, quadros, compatibilidade e testes](docs/COMBAT-VFX-STATUS.md).
 
 **Ryu Ryu no Mi — Rank B / Zoan Ancestral:** transformação de 128×128 px aprovada, ataque básico nativo, Mordida com Haki (450%) e Impacto da Cauda com atordoamento de 3s. [Regras, arte original e validação](docs/RYU-RANK-B.md).

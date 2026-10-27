@@ -43,6 +43,8 @@ COMBAT_FIXTURE='''
 def context(browser,seed=None):
  c=browser.new_context(viewport={'width':1366,'height':900})
  c.route('**/api/akuma/catalog',lambda r:r.fulfill(status=404,body='{}'))
+ # Isolate this historical draft; the production pack is covered separately.
+ c.route('**/player-pack.json',lambda r:r.fulfill(status=503,body='{}'))
  c.route('**/__dev_version',lambda r:r.fulfill(body='stable'))
  def patch(route):
   response=route.fetch();route.fulfill(response=response,body=response.text()+INJECT)
@@ -75,7 +77,7 @@ with sync_playwright() as p:
   q.screenshot(path=str(OUT/('east-fit-combat-'+direction+'.png')))
  diag=q.evaluate('__mareDiagnostics()');assert diag['paperDoll']['cacheEntries']<=96 and diag['paperDoll']['cacheBytes']<=4*1024*1024
  before=q.evaluate('()=>{__paperDollWorldReview.enabled=false;return __mareDiagnostics().paperDoll.compositions}');q.clock.run_for(1000);assert q.evaluate('__mareDiagnostics().paperDoll.compositions')==before
- saved=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));assert not any('paper' in k.lower() or 'appearance' in k.lower() for k in saved)
+ saved=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));assert saved.get('paperDollLook')==baseline.get('paperDollLook');assert not any(('paper' in k.lower() or 'appearance' in k.lower()) and k!='paperDollLook' for k in saved)
  c.close()
  haki=copy.deepcopy(baseline);haki.update(level=50,hp=99999,has_haki_unlocked=True,haki={'current':100,'unlocked':True})
  c,q=context(browser,haki);q.on('pageerror',lambda e:errors.append(str(e)));q.goto(BASE);q.wait_for_function('typeof __mareDiagnostics==="function"')
