@@ -73,15 +73,15 @@
     },
     {
       "id": "cyborg",
-      "source": "Ciborgue - Ataque e recebimento de dano pelo alvo",
+      "source": "Efeito ciborgue",
       "files": [
         {
           "file": "cyborg.png",
-          "sha256": "83bade710b22f39d8d1299cb8d73b30f966afa063bdddc20575a8cd671cf1531"
+          "sha256": "c0f7bbfbad26c59d3f93f4d55ce07b2d9224899143464c7c4b9fff95d2020858"
         },
         {
           "file": "cyborg.json",
-          "sha256": "3990deab6bababe86d36854ace97e288684e55657e4a88482e58452466296957"
+          "sha256": "dc7bc22596676d988c54fe3442a27517c9e826a445f929a77a12e5b15edc784b"
         }
       ]
     },
@@ -194,6 +194,20 @@
         {
           "file": "armorDown.json",
           "sha256": "988439b74a715e93119e93558cdb528c5e53ec9664f57bcfc488f6870e3f5a17"
+        }
+      ]
+    },
+    {
+      "id": "cyborgBeam",
+      "source": "Ciborgue - Ataque e recebimento de dano pelo alvo",
+      "files": [
+        {
+          "file": "cyborgBeam.png",
+          "sha256": "83bade710b22f39d8d1299cb8d73b30f966afa063bdddc20575a8cd671cf1531"
+        },
+        {
+          "file": "cyborgBeam.json",
+          "sha256": "3990deab6bababe86d36854ace97e288684e55657e4a88482e58452466296957"
         }
       ]
     }

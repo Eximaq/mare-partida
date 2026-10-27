@@ -35,9 +35,9 @@ const bridge=`  window.__nekoQA={paused:false,enterHunt,returnLobby,useFruitSkil
    const q=__nekoQA,selected=q.world.target,ok=await q.useFruitSkill(true,'2'),damage=[10000-selected.hp],p={x:q.world.hero.x,y:q.world.hero.y};
    q.world.target=q.world.mobs[1];q.manual('d',.1);const blocked=q.world.hero.x===p.x&&q.world.hero.y===p.y;
    for(let i=0;i<3;i++){q.step(.167);damage.push(10000-selected.hp);}
-   return {ok,blocked,damage,other:q.world.mobs[1].hp,spent:q.session.skillEnergySpent};
+   return {ok,blocked,damage,other:q.world.mobs[1].hp,spent:q.session.skillEnergySpent,hitKinds:q.session.combatHits.map(f=>f.kind)};
   });
-  assert.equal(combo.ok,true);assert.equal(combo.blocked,true);assert.equal(combo.other,10000);assert.equal(combo.spent,32);
+  assert.ok(combo.hitKinds.length>=4);assert.ok(combo.hitKinds.every(k=>k==='punch'));assert.equal(combo.ok,true);assert.equal(combo.blocked,true);assert.equal(combo.other,10000);assert.equal(combo.spent,32);
   assert.deepEqual(combo.damage,[1,2,3,4].map(n=>n*Math.floor(setup.physical*.8)));
   if(process.env.MARE_QA_DIR){fs.mkdirSync(process.env.MARE_QA_DIR,{recursive:true});await page.screenshot({path:path.join(process.env.MARE_QA_DIR,'neko-combo.png')});}
   const unlocked=await page.evaluate(()=>{const q=__nekoQA;q.step(.4);const free=!q.session.nekoAction;q.manual('d',.1);return {free,moved:q.world.hero.x};});assert.equal(unlocked.free,true);
@@ -62,7 +62,7 @@ const bridge=`  window.__nekoQA={paused:false,enterHunt,returnLobby,useFruitSkil
   await page.evaluate(async()=>{const q=__nekoQA;await q.toggleZoanTransform();q.enterHunt();q.stopAuto();q.paused=true;});
   const death=await page.evaluate(()=>{const q=__nekoQA;q.game.zoanTransformed=true;q.game.hp=1;q.session.nekoAction={kind:'combo',targetId:q.world.mobs[0].id,nextHit:0,started:q.world.time};q.takeDamage(1000000,null,false,true);return {hp:q.game.hp,action:q.session.nekoAction};});assert.equal(death.hp,0);assert.equal(death.action,null);
   assert.deepEqual(errors,[]);
-  console.log('Neko browser: Rank D, auto-transform, four native directional clips, Cross Punch, selected-target-only four hits, movement lock/release, through-target dash, guaranteed rear critical, terrain collision, costs, cooldown, reload/save indices and transformation/death cancellation passed.');
+  console.log('Neko browser: Rank D, auto-transform, four native directional clips, shared punch impacts, selected-target-only four hits, movement lock/release, through-target dash, guaranteed rear critical, terrain collision, costs, cooldown, reload/save indices and transformation/death cancellation passed.');
   await context.close();
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});
