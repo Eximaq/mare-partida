@@ -2,13 +2,13 @@
 /* Depth metadata and original-pixel overlays for flattened owner maps. */
 ((root)=>{
  const cache=new Map(),images=new Map(),overlays=new Map();let mask=null,cover=null;
- const assetIds=[...new Set([...Object.values(root.MareNewIslandObjects||{}).flatMap(o=>o.assets),...['orange','loguetown'].flatMap(id=>root.MarePixelWorldMaps?.[id]?.source.objects.map(o=>o.assetId)||[])])];
+ const assetIds=[...new Set([...(root.MareLobby?.depthObjects||[]).map(p=>p.assetId),...Object.values(root.MareNewIslandObjects||{}).flatMap(o=>o.assets),...['orange','loguetown'].flatMap(id=>root.MarePixelWorldMaps?.[id]?.source.objects.map(o=>o.assetId)||[])])];
  if(typeof Image==='function')for(const id of assetIds){const im=new Image();im.src='assets/map-depth/objects/'+id+'.png';images.set(id,im);}
  const ready=()=>[...images.values()].every(im=>im.complete&&im.naturalWidth>0);
  function maskedOverlay(p,source){const im=images.get(p.assetId);if(!im?.complete||!im.naturalWidth)return null;if(overlays.has(p))return overlays.get(p);const canvas=document.createElement('canvas');canvas.width=Math.ceil(p.w);canvas.height=Math.ceil(p.h);const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.drawImage(source,p.x,p.y,p.w,p.h,0,0,p.w,p.h);c.globalCompositeOperation='destination-in';c.drawImage(im,0,0,p.w,p.h);overlays.set(p,canvas);if(overlays.size>64)overlays.delete(overlays.keys().next().value);return canvas;}
 
  function regions(id){if(cache.has(id))return cache.get(id);let items=[];
-  if(id==='lobby'&&root.MareLobby){items=[...root.MareLobby.depthObjects.map(p=>({id:p.id,x:p.x0,y:p.y0,w:p.x1-p.x0,h:p.y1-p.y0,base:p.pivotY,tall:true,type:'lobby',prop:p})),...(root.MareLobby.upper||[]).map((p,i)=>({id:'roof-'+i,x:p.x0,y:p.y0,w:p.x1-p.x0,h:p.base-p.y0,base:p.base,tall:true,type:'roof',prop:p}))];}
+  if(id==='lobby'&&root.MareLobby){items=root.MareLobby.depthObjects.map(p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,base:p.pivotY,tall:p.h>72,type:'lobby',assetId:p.assetId}));}
   else if(id==='dawn'&&root.MareDawn)items=root.MareDawn.props.map(p=>({id:p.id,x:p.bounds.x,y:p.bounds.y,w:p.bounds.width,h:p.bounds.height,base:p.y,tall:['house','tree'].includes(p.kind),type:'dawn',prop:p}));
   else if(id==='embers'&&root.MareEmber)items=root.MareEmber.props.filter(p=>!p.ground).map(p=>{const size=128*p.scale;return {id:p.id,x:p.drawX??p.x-size/2,y:p.drawY??p.y-size*.85,w:size,h:size,base:p.y,tall:size>80,type:'ember',prop:p};});
   else if(root.MarePixelWorldMaps?.[id]){items=root.MarePixelWorldMaps[id].props.map(p=>({id:p.id||p.placementId,x:p.x,y:p.y,w:p.width,h:p.height,base:p.bottomY,tall:p.height>96,type:'pixel',mapId:id,assetId:p.assetId}));if(id==='conchas')items.push(...(root.MareConchasStructures?.colliders||[]).map((p,i)=>({id:'fort-'+i,x:p.x,y:p.y-80,w:p.w,h:p.h+80,base:p.y+p.h,tall:true,type:'pixel',mapId:id})));}
@@ -16,15 +16,13 @@
   const seen=new Set();items=items.filter(p=>{if(![p.x,p.y,p.w,p.h,p.base].every(Number.isFinite)||p.w<=0||p.h<=0)return false;const key=[p.type,p.x,p.y,p.w,p.h,p.base].join(':');if(seen.has(key))return false;seen.add(key);return true;});cache.set(id,items);return items;
  }
  function draw(ctx,p,actors){if(!actors.some(a=>root.MareWorld.occluded(a,[{...p,tall:true}],a.visualHeight||120,a.visualWidth||64)))return false;
-  if(p.type==='lobby'){root.MareLobby.depthProp(ctx,p.prop);return true;}
   if(p.type==='dawn'){root.MareDawnRenderer.prop(ctx,p.prop,actors);return true;}
   if(p.type==='ember'){root.MareEmberRenderer.prop(ctx,p.prop);return true;}
-  const image=p.type==='roof'?root.MareLobby.image:p.type==='pixel'?root.MarePixelWorldMaps.imageCache[p.mapId==='conchas'?'conchasForeground':p.mapId]:root.MareNewIslands.images[p.mapId];
+  const image=p.type==='lobby'?root.MareLobby.image:p.type==='pixel'?root.MarePixelWorldMaps.imageCache[p.mapId==='conchas'?'conchasForeground':p.mapId]:root.MareNewIslands.images[p.mapId];
   if(!image?.complete||!image.naturalWidth)return false;
-  if(p.type!=='roof'&&p.mapId!=='conchas'){const overlay=maskedOverlay(p,image);if(!overlay)return false;ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(overlay,p.x,p.y);ctx.restore();return true;}
+  if(p.mapId!=='conchas'){const overlay=maskedOverlay(p,image);if(!overlay)return false;ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(overlay,p.x,p.y);ctx.restore();return true;}
   ctx.save();ctx.imageSmoothingEnabled=false;ctx.beginPath();
-  if(p.type==='roof'){p.prop.polygon.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.closePath();}
-  else if(p.tree)ctx.ellipse(p.x+p.w/2,p.y+p.h/2,p.w/2,p.h/2,0,0,Math.PI*2);
+  if(p.tree)ctx.ellipse(p.x+p.w/2,p.y+p.h/2,p.w/2,p.h/2,0,0,Math.PI*2);
   else ctx.rect(p.x,p.y,p.w,p.h);
   ctx.clip();ctx.drawImage(image,p.x,p.y,p.w,p.h,p.x,p.y,p.w,p.h);ctx.restore();return true;
  }
