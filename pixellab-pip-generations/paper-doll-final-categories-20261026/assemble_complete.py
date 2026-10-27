@@ -85,6 +85,11 @@ for kind,item,category,name in [('tech',14,'tech','Manopla de Aço'),('compass',
  m['pieces'].append(piece);m['bindings']['weapon']['items'][str(item)]=piece['id']
  if kind!='staff':m['categoryWeapons'][category]=piece['id']
 m['coverage']={a:DIRS for a in m['rig']['animations']};m['unarmedCategoryHasNoWeapon']=True
+emissions=json.loads((P/'emitter-points.json').read_text())
+for piece in m['pieces']:
+ if piece['id'] in emissions:piece['emission']=emissions[piece['id']]
+walk_body=Image.open(OUT/'shared-body-walk.png')
+m['rig']['animations']['walk']['rootOffsets']={d:[{'x':0,'y':65-walk_body.crop((f*84,row*84,(f+1)*84,(row+1)*84)).getbbox()[3]} for f in range(8)] for row,d in enumerate(DIRS)}
 (OUT/'review-pack.json').write_text(json.dumps(m,indent=2)+'\n',encoding='utf-8')
 (P/'layer-audit.json').write_text(json.dumps({'source_pixels_only':True,'focus_hand_sockets':hands,'equipment_regions':regions,'anchors':anchors,'tech_motion_reused_from':'gunner validated firearm gesture','body_and_clothing_echo_excluded':True,'productionEnabled':False},indent=2)+'\n')
 print('Combined 7 classes, 6 attack categories, 3 shared body layers and separate weapons.')

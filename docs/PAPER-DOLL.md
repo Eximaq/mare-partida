@@ -275,3 +275,14 @@ A fase entrega a infraestrutura e a prévia com fallback pela exceção expressa
 Um clipe `kind: "rigid-attachment"` no slot `weapon` pode declarar `secondarySockets`, com o mesmo mapa de direções e comprimento de frames de `sockets`. Cada entrada é `{x, y, quarterTurns?}` ou `null` quando a mão distante está encoberta. Coordenadas inteiras dentro do canvas; rotação inteira de 0 a 3 quartos de volta. Não permite espelhamento ou interpolação.
 
 As duas mãos reutilizam a imagem direcional e sua âncora, mas recebem deslocamentos independentes. Herdam profundidade por direção/pose. Ocultar ou remover a arma afeta ambas; o cache considera os dois encaixes. Um mapa incompleto ou inválido rejeita a peça inteira, inclusive quando o erro está em outro frame. Corpo/roupa não podem usar esse recurso para simular movimento. O compositor não cria eventos de dano. Exemplo real: pacote `paper-doll-rogue-20261025`.
+
+
+## Metadados de geometria do conjunto completo
+
+O pacote de revisão das sete classes pode declarar `rig.animations.walk.rootOffsets[direction][frameIndex] = {x,y}`: inteiros nativos, um por frame e direção. O deslocamento de raiz se aplica igualmente a todas as camadas e aos sockets; não altera os PNGs nem substitui offsets particulares de roupa/arma. Os estudos anteriores continuam sem este metadado.
+
+Armas de disparo do pacote completo declaram `emission = {frame:3, points:{south:{x,y},north:{x,y},west:{x,y},east:{x,y}}}`. Pontos são coordenadas inteiras do pixel na fonte nativa de cada arma, antes de rotação; o emissor é seu centro. O frame é índice zero e precisa existir na animação. Não copiar coordenadas do canvas final nem inserir tabelas independentes no jogo.
+
+`runtime.attachmentPoint(appearance, pose, slot, point, x, y, options)` projeta um ponto pela geometria real do compositor, incluindo bounds, arredondamento do destino e rotação. `scale` corresponde à escala do rig/desenho; `outerScale` representa a transformação externa ancorada no ator (como Horu), não uma alteração da folha. O resultado é nulo quando a pose/peça/ponto não é válido. Conferir emissão e encaixe no diagnóstico opcional da bancada e no DEV antes de aprovar novas peças.
+
+`MarePaperDollReview.stepWalk()` recebe o deslocamento do passo físico; `walkPose()` somente consulta. A fase permanece contínua em parada/retomada e direção; teleporte, colisão sem deslocamento e troca de contexto não inventam distância. O relógio lógico de combate continua separado da apresentação. Detalhes e limitações: [refinamento do runtime](PAPER-DOLL-REFINAMENTO.md).

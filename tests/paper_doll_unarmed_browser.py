@@ -69,7 +69,11 @@ with sync_playwright() as p:
   result=q.evaluate('(d)=>__unarmedTest.strike(d)',d);assert result['damage']>0;assert result['frames']==[d in coverage]*8,(d,result);rows.append(result)
  assert len({r['damage'] for r in rows})==1,rows
  for r in rows: assert r['damageTimeline'][0]==0 and sum(a!=b for a,b in zip(r['damageTimeline'],r['damageTimeline'][1:]))==1,r
- skill=q.evaluate('__unarmedTest.strike("south",true)');assert skill['frames']==[False]*8
+ # The brawler now keeps its modular attack clip during instant melee skills.
+ # This is visual continuity only: rendering must still not apply damage.
+ skill=q.evaluate('__unarmedTest.strike("south",true)')
+ assert skill['frames']==[True]*8,skill
+ assert len(set(skill['damageTimeline']))==1,'Rendering modified skill damage'
  # Real loop also deals damage; rendering is not the attack scheduler.
  before=q.evaluate('__mareDiagnostics().damage');q.clock.run_for(1200)
  q.screenshot(path=str(OUT/'combat.png'));q.set_viewport_size({'width':393,'height':852});q.screenshot(path=str(OUT/'mobile.png'));assert q.evaluate('document.documentElement.scrollWidth<=innerWidth')

@@ -19,7 +19,7 @@
   function buildIdentity(){
     for(const [id,values]of [['classId',catalog.classes],['factionId',catalog.factions]]){
       $(id).replaceChildren(...Object.entries(values).map(([value,item])=>{const option=document.createElement('option');option.value=value;option.textContent=item.name;return option;}));$(id).value=player[id];
-      $(id).addEventListener('change',()=>{pause();sequenceIndex=-1;finished=false;player[id]=$(id).value;if(id==='classId'){player.equipment.weapon=imported?.completeCategories&&player.classId==='brawler'?null:{def:catalog.classes[player.classId].weapon};buildWeapons();}$('frame').value=0;elapsed=0;render();});
+      $(id).addEventListener('change',()=>{pause();sequenceIndex=-1;finished=false;player[id]=$(id).value;if(id==='classId'){player.equipment.weapon={def:catalog.classes[player.classId].weapon};buildWeapons();}$('frame').value=0;elapsed=0;render();});
     }
   }
   function buildWeapons(){
@@ -58,9 +58,9 @@
   function appearance(){
     if(!imported)return catalog.appearance(player);
     const result={rigId,pieces:{...imported.pieces},blocked:[]};
-    if(imported.completeCategories){const category=catalog.profile(player).category;if(player.equipment.weapon)result.pieces.weapon=imported.categoryWeapons[category];else delete result.pieces.weapon;}
+    if(imported.completeCategories){const category=catalog.profile(player).category;if(player.equipment.weapon&&!catalog.usesBodyWeapon(player))result.pieces.weapon=imported.categoryWeapons[category];else delete result.pieces.weapon;}
     for(const [equipmentSlot,binding]of Object.entries(imported.bindings||{})){
-      const item=player.equipment[equipmentSlot];if(!item)continue;
+      const item=player.equipment[equipmentSlot];if(!item||imported.completeCategories&&equipmentSlot==='weapon'&&catalog.usesBodyWeapon(player))continue;
       const pieceId=binding.items?.[item.def];
       if(pieceId)result.pieces[binding.slot]=pieceId;
       else result.blocked.push({slot:binding.slot,pieceId:String(item.def),code:'unmapped-equipment'});
@@ -82,12 +82,26 @@
     }
     c.restore();
   }
+  function motionDiagnostic(c,config,pose,scale,plan){
+    const options={scale,allowDraft:!!imported,hidden:[...hidden]},point=(slot,p)=>runtime.attachmentPoint(config,pose,slot,p,150,240,options);
+    const cross=(p,color)=>{if(!p)return;c.strokeStyle=color;c.beginPath();c.moveTo(p.x-5,p.y);c.lineTo(p.x+5,p.y);c.moveTo(p.x,p.y-5);c.lineTo(p.x,p.y+5);c.stroke();};
+    const layers=[];c.save();c.lineWidth=1;cross({x:150,y:240},'#ffe486');
+    for(const l of plan.layers){
+      if(l.slot!=='weapon'||hidden.has(l.slot))continue;
+      const piece=runtime.piece(l.pieceId),clip=piece.animations[l.animationId],source=clip.sources?.[l.direction]||clip.source;
+      const hand=source?point(l.slot,{x:source.anchorX,y:source.anchorY}):null;
+      const corners=[[0,0],[l.width-1,0],[l.width-1,l.height-1],[0,l.height-1]].map(([x,y])=>point(l.slot,{x,y}));
+      cross(hand,'#76e8ff');if(corners.every(Boolean)){c.strokeStyle='#e5ad70';c.beginPath();c.moveTo(corners[0].x,corners[0].y);for(const p of corners.slice(1))c.lineTo(p.x,p.y);c.closePath();c.stroke();}
+      const emission=piece.emission?.points[pose.direction]?point(l.slot,piece.emission.points[pose.direction]):null;cross(emission,'#ff62c7');
+      layers.push({piece:l.pieceId,z:l.zIndex,socket:l.socket,hand,corners,emission,releaseFrame:piece.emission?.frame??null});
+    }c.restore();return {pose,phase:pose.frameIndex/selectedClip().frames,pivot:{x:150,y:240},layers,fallback:plan.missing};
+  }
   function detail(term,value){const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=term;dd.textContent=String(value);$('readout').append(dt,dd);}
   function render(){
     const animationId=$('animation').value,rig=runtime.rig(rigId),clip=selectedClip(),index=Math.min(Number($('frame').value),clip.frames-1),scale=Number($('zoom').value),config=appearance();
     $('frame').max=clip.frames-1;$('frame').value=index;$('frameLabel').textContent=(index+1)+' / '+clip.frames;
     const visibleDirections=$('direction').value==='all'?MarePaperDoll.directions:[$('direction').value];document.body.classList.toggle('single',visibleDirections.length===1);
-    const plans=[],differences=[];let referenceReady=true;
+    const plans=[],differences=[],diagnostics=[];let referenceReady=true;
     for(const [direction,board]of boards){
       board.section.hidden=!visibleDirections.includes(direction);if(board.section.hidden)continue;
       const pose={animationId:poseAnimationId(animationId),direction,frameIndex:index},plan=runtime.resolve(config,pose,{allowDraft:!!imported});plans.push(plan);
@@ -99,10 +113,12 @@
       for(let n=0;n<a.length;n+=4)if(a[n]!==b[n]||a[n+1]!==b[n+1]||a[n+2]!==b[n+2]||a[n+3]!==b[n+3])changed++;
       differences.push({direction,pixels:changed});
       if($('pivots').checked){pivot(original,scale);pivot(result,scale,plan);}
+      if($('motionDiagnostics').checked)diagnostics.push(motionDiagnostic(result,config,pose,scale,plan));
       board.canvases[1].previousElementSibling.textContent=drawn?(imported?.scope==='layered-gesture-review'?'Soco · Três camadas':bodyStudy()?(hairStudy()?'Corpo e cabelo · Sem vestuário':'Corpo-base · Sem vestuário'):'Paper Doll · Pacote em inspeção'):'Paper Doll · Fallback';
       const reference=catalog.referenceFor(player,animationId);
       board.note.textContent=reference?.animated===false?reference.note+(drawn?' Pacote modular local em inspeção.':' O pacote modular continua pendente.'):!loaded?'Referência ainda não carregada ou indisponível.':drawn?'Frame '+index+' compartilhado · '+plan.layers.length+' camadas. Diferença: '+changed+' pixels; pode incluir mudanças de aparência.':'Fallback do sprite original · '+plan.missing.length+' pendências · '+changed+' pixels de diferença.';
     }
+    $('motionPanel').hidden=!$('motionDiagnostics').checked;$('motionReadout').textContent=JSON.stringify(diagnostics,null,2);
     const first=plans[0],valid=plans.length>0&&plans.every(p=>p.valid),readyDirections=plans.filter(p=>p.valid).map(p=>p.pose.direction);
     $('status').textContent=valid?'Pacote local sincronizado para inspeção. Aprovação artística e integração não concedidas por esta ferramenta.':'Fallback ativo: faltam camadas modulares compatíveis. O personagem original está preservado.';
     if(valid&&bodyStudy())$('status').textContent=hairStudy()?'Estudo de corpo e cabelo: mesma peça curta nas três ações. Roupa, calçados e arma ainda não incluídos; personagem completo em revisão.':'Estudo só do corpo: movimentos existentes reunidos para conferir anatomia e continuidade. Não inclui roupas, cabelo ou arma; personagem completo ainda não validado.';
@@ -127,7 +143,7 @@
     $('playbackStatus').textContent=progress+(finished?'Ensaio concluído. ':playing?'Reproduzindo. ':'Pausado. ')+(valid?(imported?.scope==='layered-gesture-review'?'Soco em avaliação; três camadas independentes.':bodyStudy()?(hairStudy()?'Corpo e cabelo em avaliação; demais peças pendentes.':'Corpo-base somente; acabamento entre ações ainda em avaliação.'):'Camadas modulares em inspeção.'):'Sprite original por fallback; esta ação ainda não tem conjunto modular completo.');
   }
   function pause(){playing=false;$('play').textContent='Reproduzir';$('play').setAttribute('aria-pressed','false');}
-  for(const id of ['animation','direction','zoom','pivots'])$(id).addEventListener('change',()=>{if(id==='animation'){$('frame').value=0;elapsed=0;sequenceIndex=-1;finished=false;pause();}render();});
+  for(const id of ['animation','direction','zoom','pivots','motionDiagnostics'])$(id).addEventListener('change',()=>{if(id==='animation'){$('frame').value=0;elapsed=0;sequenceIndex=-1;finished=false;pause();}render();});
   $('frame').addEventListener('input',()=>{pause();sequenceIndex=-1;finished=false;render();});
   $('playbackMode').addEventListener('change',()=>{pause();sequenceIndex=-1;finished=false;elapsed=0;$('frame').value=0;render();});
   function setSequenceStage(index){sequenceIndex=index;$('animation').value=sequence[index];$('frame').max=selectedClip().frames-1;$('frame').value=0;elapsed=0;}

@@ -3,44 +3,41 @@
 ((root)=>{
   const id='navy-starter',folders={'navy-starter':'pixellab-pip-generations/paper-doll-navy-starter-20261023/',unarmed:'pixellab-pip-generations/paper-doll-unarmed-combat-20261024/',gunner:'pixellab-pip-generations/paper-doll-gunner-20261025/',rogue:'pixellab-pip-generations/paper-doll-rogue-20261025/',complete:'pixellab-pip-generations/paper-doll-complete-20261026/'};
   const gaitStates=new WeakMap(),ranged=new Set(['firearm','tech','focus']);
-  // Native source coordinates measured on the existing weapons, not hero offsets.
-  const emitters={
-    'complete-firearm':{south:[31,19],north:[32,6],west:[4,21],east:[60,20]},
-    'complete-tech':{south:[23,15],north:[46,11],west:[12,25],east:[43,26]},
-    'complete-compass':{south:[45,19],north:[46,16],west:[16,18],east:[44,23]},
-    'complete-staff':{south:[19,17],north:[46,11],west:[13,13],east:[43,12]}
-  };
-  function walkPose(actor,time,active){
+  function walkPose(actor){return {...(gaitStates.get(actor)?.pose||{moving:false,time:0,phase:0,distance:0,speed:0,stepDistance:0,timestamp:0})};}
+  function stepWalk(actor,time,active,{from=null,dt=null,context=null}={}){
     const previous=gaitStates.get(actor);
-    if(previous?.time===time)return previous.pose;
-    const distance=previous?Math.hypot(actor.x-previous.x,actor.y-previous.y):0;
-    const moving=!!active&&distance>.001&&distance<160;
-    // One two-step cycle per 80 world pixels, with phase preserved through turns/stops.
-    const phase=((previous?.phase||0)+(moving?distance/80:0))%1;
-    const pose={moving,time:phase};gaitStates.set(actor,{x:actor.x,y:actor.y,time,phase,pose});return pose;
+    if(!Number.isFinite(time)||!Number.isFinite(actor.x)||!Number.isFinite(actor.y))return walkPose(actor);
+    if(previous&&time===previous.time&&!from)return walkPose(actor);
+    const origin=from||previous,elapsed=dt??(previous?time-previous.time:0);
+    const distance=origin?Math.hypot(actor.x-origin.x,actor.y-origin.y):0;
+    const moving=!!active&&elapsed>0&&Number.isFinite(elapsed)&&distance>.001&&distance<160&&(!previous||previous.context===context)&&(!previous||time>=previous.time);
+    // Preserve the existing stride until a complete art-based calibration is approved.
+    const phase=((previous?.pose.phase||0)+(moving?distance/80:0))%1;
+    const pose={moving,time:phase,phase,distance:(previous?.pose.distance||0)+(moving?distance:0),speed:moving?distance/elapsed:0,stepDistance:moving?distance:0,timestamp:time};
+    gaitStates.set(actor,{x:actor.x,y:actor.y,time,context,pose});return {...pose};
   }
-  function shotProgress(progress,hitRatio=.5){
+  function shotProgress(progress,hitRatio=.5,releaseFrame=3,frames=8){
     const p=Math.max(0,Math.min(1,progress)),hit=Math.max(.001,Math.min(.999,hitRatio));
-    return p<=hit?p/hit*(3/8):3/8+(p-hit)/(1-hit)*(5/8);
+    const release=releaseFrame/frames;return p<=hit?p/hit*release:release+(p-hit)/(1-hit)*(1-release);
   }
   function requested(search,devActive){return devActive===true&&Object.hasOwn(folders,new URLSearchParams(search).get('paperDollReview'));}
   function appearance(pack,player){
     const catalog=root.MarePaperDollCatalog;
     if(!catalog.eligible(player))return null;
-    const unarmed=!player.equipment?.weapon;
+    const unarmed=!player.equipment?.weapon,bodyWeapon=pack.completeCategories===true&&catalog.usesBodyWeapon(player);
     if(pack.unarmedOnly===true&&!unarmed)return null;
-    const result={rigId:pack.rig.id,pieces:{...pack.appearance.pieces},blocked:[],hidden:[...(unarmed?['weapon']:[]),...(root.MarePaperDollLook?.hidden(player)||[])]};
+    const result={rigId:pack.rig.id,pieces:{...pack.appearance.pieces},blocked:[],hidden:[...((unarmed||bodyWeapon)?['weapon']:[]),...(root.MarePaperDollLook?.hidden(player)||[])]};
     // Body identity is independent of class/faction. Missing weapon artwork
-    // still falls back; only genuinely unequipped hands omit the sword layer.
+    // still falls back; empty hands and body-driven fist weapons omit that layer.
     const category=catalog.profile(player).category;
-    if(pack.completeCategories===true&&unarmed)delete result.pieces.weapon;
-    if(!unarmed){
+    if(pack.completeCategories===true&&(unarmed||bodyWeapon))delete result.pieces.weapon;
+    if(!unarmed&&!bodyWeapon){
       if(catalog.weaponItems[player.equipment.weapon.def]?.[0]!==category)return null;
       if(category!=='sword'&&!pack.categoryWeapons?.[category])return null;
       if(pack.categoryWeapons?.[category])result.pieces.weapon=pack.categoryWeapons[category];
     }
     for(const [equipmentSlot,binding]of Object.entries(pack.bindings||{})){
-      const item=player.equipment?.[equipmentSlot];if(!item)continue;
+      const item=player.equipment?.[equipmentSlot];if(!item||equipmentSlot==='weapon'&&bodyWeapon)continue;
       const piece=Object.hasOwn(binding.items,item.def)?binding.items[item.def]:null;
       if(piece)result.pieces[binding.slot]=piece;
       else result.blocked.push({slot:binding.slot,pieceId:String(item.def),code:'unmapped-equipment'});
@@ -54,8 +51,30 @@
     const weaponCategory=gunnerPack?'firearm':roguePack?'daggers':null;
     const enabled=requested(search,devActive),runtime=root.MarePaperDollCatalog.createRuntime({getImage});
     let pack=null,coverage=null,state=enabled?'loading':'off',message='',draws=0,fallbacks=0,lastReason=null,lastPose=null,lastRelease=null;
+    let simulationTime=0,renderFrame=0,releaseSequence=0,selectedRelease=null,suspended=false,identity=null,observedActor=null,currentTiming=null;
+    const releases=new Map(),releaseTokens=new WeakMap();
+    const signature=player=>JSON.stringify([player?.classId,player?.factionId,player?.zoanTransformed,player?.paperDollLook,player?.equipment]);
+    function cancelVisual(){releases.clear();selectedRelease=null;lastPose=null;lastRelease=null;}
+    function synchronize(player,time,actor=null,timing=undefined){
+      if(actor)observedActor=actor;if(timing!==undefined)currentTiming=timing?.locked?{action:timing.action,progress:timing.progress,elapsed:timing.elapsed,duration:timing.duration,direction:timing.direction,hitFrameRatio:timing.hitFrameRatio}:null;
+      const next=signature(player);if(identity!==next||!root.MarePaperDollCatalog.eligible(player))cancelVisual();identity=next;
+      if(time!==simulationTime){lastPose=null;lastRelease=null;}simulationTime=time;
+      for(const [id,event]of releases)if(event.presented&&time-event.time>.5)releases.delete(id);
+    }
+    function prepareFrame(player,actor,time,scaleFactor=1){
+      synchronize(player,time,actor);renderFrame++;lastPose=null;lastRelease=null;selectedRelease=null;
+      if(!completePack||suspended)return;
+      selectedRelease=[...releases.values()].filter(e=>!e.presented&&e.identity===identity).at(-1)||null;
+      if(selectedRelease){
+        const e=selectedRelease,origin=runtime.attachmentPoint(e.config,e.pose,'weapon',e.point,actor.x,actor.y,{outerScale:scaleFactor,hidden:e.config.hidden,allowDraft:true});
+        if(!origin){cancelVisual();return;}Object.assign(e,origin);
+        lastRelease={id:e.id,attackId:e.id,x:e.x,y:e.y,frameIndex:e.pose.frameIndex,direction:e.pose.direction,category:e.category,simulationTime:time,renderFrame};
+      }
+    }
+    function finishFrame(){for(const event of releases.values())event.presented=true;selectedRelease=null;}
+    function holdProjectile(id){return releases.has(id)&&!releases.get(id).presented&&!suspended;}
     const notify=()=>onChange(snapshot());
-    function snapshot(){return {enabled,state,message,draws,fallbacks,lastReason,lastPose,lastRelease,packId:selected,artworkApproved:false,coverage,...runtime.stats()};}
+    function snapshot(){return {enabled,state,message,draws,fallbacks,lastReason,lastPose,lastRelease,motion:{gait:walkPose(observedActor),attack:currentTiming},presentation:{simulationTime,renderFrame,pending:[...releases.values()].filter(e=>!e.presented).length,suspended},packId:selected,artworkApproved:false,coverage,...runtime.stats()};}
     const ready=enabled?(async()=>{
       try{
         const base=new URL(folders[selected],baseURL),response=await fetcher(new URL('review-pack.json',base),{cache:'no-store'});
@@ -75,7 +94,7 @@
             if(completePack&&directions.length!==4)throw Error('Direções incompletas.');
             if(unarmedPack&&action!=='attack-unarmed'&&directions.length!==4)throw Error('Locomoção incompleta.');
           }
-          runtime.registerRig({...canonical,requiredSlots:required});
+          runtime.registerRig({...canonical,animations:Object.fromEntries(Object.entries(canonical.animations).map(([name,clip])=>[name,{...clip,...(data.rig.animations[name]?.rootOffsets?{rootOffsets:data.rig.animations[name].rootOffsets}:{})}])),requiredSlots:required});
         }
         for(const [category,pieceId]of Object.entries(data.categoryWeapons||{})){
           if(!Object.hasOwn(root.MarePaperDollCatalog.categories,category)||!data.pieces.some(p=>p.id===pieceId&&p.slot==='weapon'))throw Error('Arma de categoria inválida.');
@@ -84,6 +103,11 @@
         const path=name=>{if(typeof name!=='string'||!/^[a-z0-9-]+\.png$/.test(name))throw Error('Fonte inválida.');const url=new URL(name,base).href;urls.add(url);return url;};
         for(const p of data.pieces){
           if(p.approved!==false||!p.available)throw Error('Estado da peça inválido.');
+          const rangedClip=Object.entries(p.animations).find(([name])=>name.startsWith('attack-')&&ranged.has(name.slice(7)))?.[1];
+          if(completePack&&p.slot==='weapon'&&rangedClip){
+            const e=p.emission;
+            if(!e||!Number.isInteger(e.frame)||e.frame<0||e.frame>=rangedClip.frames||rangedClip.directions.some(d=>{const point=e.points?.[d],source=rangedClip.sources?.[d];return !point||!source||!Number.isInteger(point.x)||!Number.isInteger(point.y)||point.x<0||point.y<0||point.x>=source.width||point.y>=source.height;}))throw Error('Origem de emissão inválida ou ausente.');
+          }
           for(const clip of Object.values(p.animations)){clip.url=path(clip.url);for(const source of Object.values(clip.sources||{}))source.url=path(source.url);}
           runtime.registerPiece(p);
         }
@@ -95,36 +119,53 @@
           if(!runtime.resolve(config,{animationId:action,direction,frameIndex},{allowDraft:true}).valid)throw Error('Há frames incompatíveis ou ausentes.');
         }
         pack=data;coverage=root.MarePaperDollCoverage?.inspect(pack)||null;state='ready';message=unarmedPack?'Ensaio desarmado: remova arma e equipamentos sem peças. Corpo comum em repouso e caminhada; Lutador usa os socos disponíveis. Direções ausentes mantêm o visual original.':'Corpo comum: sete classes e quatro facções, sem arma, em repouso e caminhada. Espada inicial compatível; outros equipamentos e ataques sem arte usam o personagem original.';
-        if(completePack)message='Personagem único em avaliação: sete classes, quatro facções. Equipamentos sem arte e habilidades preservam o visual original. Lutador sem arma equipada.';
+        if(completePack)message='Personagem único em avaliação: sete classes, quatro facções. Equipamentos sem arte e habilidades preservam o visual original. Lutador aceita os punhos equipados, preservando seus atributos.';
         if(gunnerPack)message='Atirador modular em avaliação. Use o mosquete compatível; ações, direções e equipamentos sem peças mantêm o personagem original.';
         if(roguePack)message='Gatuno modular em avaliação. Use as Adagas da Bruma; ações, direções e equipamentos sem peças mantêm o personagem original.';
       }catch(e){pack=null;state='failed';message='Prévia indisponível: '+e.message+' Sprite original preservado.';}
       notify();return snapshot();
     })():Promise.resolve(snapshot());
-    function draw(ctx,player,action,direction,time,x,y,scale,progress=null,timing=null){
+    function draw(ctx,player,action,direction,time,x,y,scale,progress=null,timing=null,worldView=false){
       if(!pack||state!=='ready'||player?.devSandbox!==true)return false;
-      const category=root.MarePaperDollCatalog.profile(player)?.category;
-      const synchronized=completePack&&action==='attack'&&ranged.has(category)&&Number.isFinite(progress)?shotProgress(progress,timing?.hitFrameRatio??.5):progress;
-      const config=appearance(pack,player),pose=root.MarePaperDollCatalog.sample(runtime,player,action,direction,time,{progress:synchronized});
+      const requestedAction=action;
+      if(completePack&&['sword','brawler'].includes(player.classId)){
+        if(['combat-idle','guard','hurt'].includes(action)){action='idle';progress=null;}
+        else if(['skill','skill-1','skill-2','combo'].includes(action)){action='attack';if(Number.isFinite(progress))progress=shotProgress(progress,timing?.hitFrameRatio??.5);}
+      }
+      const category=root.MarePaperDollCatalog.profile(player)?.category,config=appearance(pack,player),emission=runtime.piece(config?.pieces.weapon)?.emission;
+      const synchronized=completePack&&action==='attack'&&ranged.has(category)&&Number.isFinite(progress)?shotProgress(progress,timing?.hitFrameRatio??.5,emission?.frame??3):progress;
+      const event=worldView?selectedRelease:null,pose=event?.pose||root.MarePaperDollCatalog.sample(runtime,player,action,direction,time,{progress:synchronized});
       if(!config||!pose){fallbacks++;lastReason='unsupported-character-or-action';return false;}
       if(config.hidden.includes('weapon')&&action!=='idle'&&action!=='walk'&&!((unarmedPack||completePack)&&player.classId==='brawler'&&action==='attack')){fallbacks++;lastReason='missing-unarmed-animation';return false;}
       const ok=runtime.draw(ctx,config,pose,x,y,{scale,hidden:config.hidden,allowDraft:true});
-      if(ok){draws++;lastReason=null;lastPose={...pose};}else{fallbacks++;lastReason=config.blocked[0]?.code||'missing-animation';}
+      if(ok){draws++;lastReason=null;if(worldView||lastPose?.view!=='world')lastPose={...pose,requestedAction,view:worldView?'world':'preview',simulationTime,renderFrame,attackId:event?.id??null};}else{fallbacks++;lastReason=config.blocked[0]?.code||'missing-animation';if(worldView)lastPose=null;}
       return ok;
     }
     function projectileOrigin(player,actor,timing,scaleFactor=1){
       if(!completePack||state!=='ready'||player?.devSandbox!==true||!timing?.locked)return null;
       const config=appearance(pack,player),category=root.MarePaperDollCatalog.profile(player)?.category;
       if(!config||!ranged.has(category))return null;
-      const pose=runtime.sample('human-v1','attack-'+category,timing.direction,0,{progress:3/8}),resolved=runtime.resolve(config,pose,{allowDraft:true});
-      const layer=resolved.layers.find(l=>l.slot==='weapon'),point=emitters[config.pieces.weapon]?.[pose?.direction];
-      if(!resolved.valid||!layer||!point)return null;
-      const [px,py]=point,q=layer.quarterTurns,rotated=[[px,py],[layer.height-1-py,px],[layer.width-1-px,layer.height-1-py],[py,layer.width-1-px]][q];
-      const scale=pack.rig.scale*(Number.isFinite(scaleFactor)&&scaleFactor>0?scaleFactor:1);
-      const origin={x:actor.x+(layer.offsetX+rotated[0]-layer.pivotX)*scale,y:actor.y+(layer.offsetY+rotated[1]-layer.pivotY)*scale};
-      lastRelease={...origin,frameIndex:3,direction:pose.direction,category};return origin;
+      const emission=runtime.piece(config.pieces.weapon)?.emission;if(!emission)return null;
+      const pose=runtime.sample('human-v1','attack-'+category,timing.direction,0,{progress:emission.frame/8}),point=emission.points[pose?.direction];
+      const origin=runtime.attachmentPoint(config,pose,'weapon',point,actor.x,actor.y,{outerScale:scaleFactor,hidden:config.hidden,allowDraft:true});if(!origin)return null;
+      if(suspended)return origin;
+      const token=timing.token||timing,previous=releaseTokens.get(token);if(previous&&releases.has(previous))return {...origin,releaseId:previous};
+      synchronize(player,timing.simulationTime??simulationTime);
+      const id=++releaseSequence;releaseTokens.set(token,id);releases.set(id,{id,...origin,config,point,pose,category,identity,time:simulationTime,presented:false});
+      if(releases.size>8)releases.delete(releases.keys().next().value);
+      return {...origin,releaseId:id};
     }
-    return {ready,draw,snapshot,projectileOrigin,equipmentStatus:player=>equipmentStatus(pack,player),prepareEquipment:(player,options)=>state==='ready'?prepareEquipment(pack,player,options):{ok:false,message:'Aguarde o carregamento do conjunto.'}};
+    function inspect(player,pose,actor={x:0,y:0},outerScale=1){
+      const config=pack&&appearance(pack,player);if(!config||!pose)return {valid:false,layers:[],missing:[{code:'no-current-pose'}],emission:null};
+      const plan=runtime.resolve(config,pose,{allowDraft:true}),options={outerScale,hidden:config.hidden,allowDraft:true};
+      return {valid:plan.valid,missing:plan.missing,pivot:{x:actor.x,y:actor.y},layers:plan.layers.map(l=>{
+        const clip=runtime.piece(l.pieceId).animations[l.animationId],source=clip.sources?.[l.direction]||clip.source;
+        return {slot:l.slot,pieceId:l.pieceId,pivotX:l.pivotX,pivotY:l.pivotY,offsetX:l.offsetX,offsetY:l.offsetY,zIndex:l.zIndex,socket:l.socket,
+          hand:source?runtime.attachmentPoint(config,pose,l.slot,{x:source.anchorX,y:source.anchorY},actor.x,actor.y,options):null,
+          corners:[[0,0],[l.width-1,0],[l.width-1,l.height-1],[0,l.height-1]].map(([x,y])=>runtime.attachmentPoint(config,pose,l.slot,{x,y},actor.x,actor.y,options))};
+      }),emission:(()=>{const e=runtime.piece(config.pieces.weapon)?.emission,p=e?.points[pose.direction];return p?runtime.attachmentPoint(config,pose,'weapon',p,actor.x,actor.y,options):null;})()};
+    }
+    return {ready,draw,snapshot,inspect,projectileOrigin,synchronize,prepareFrame,finishFrame,holdProjectile,releaseOrigin:id=>{const e=releases.get(id);return e?{x:e.x,y:e.y}:null;},cancelVisual,setSuspended:value=>{suspended=!!value;cancelVisual();},equipmentStatus:player=>equipmentStatus(pack,player),prepareEquipment:(player,options)=>state==='ready'?prepareEquipment(pack,player,options):{ok:false,message:'Aguarde o carregamento do conjunto.'}};
   }
   function equipmentStatus(pack,player){
     const catalog=root.MarePaperDollCatalog,profile=catalog.profile(player);
@@ -134,7 +175,7 @@
     for(const slot of ['weapon','coat','head','boots','legs','cloak','gloves']){
       const item=player.equipment?.[slot];
       if(slot==='weapon'){
-        if(profile.category==='unarmed'){if(item)issues.push({slot,def:item.def,reason:'empty-hands'});continue;}
+        if(profile.category==='unarmed'){if(!catalog.usesBodyWeapon(player))issues.push({slot,def:item?.def,reason:'wrong-category'});continue;}
         if(!item){issues.push({slot,def:null,reason:'missing-weapon'});continue;}
         if(catalog.weaponItems[item.def]?.[0]!==profile.category){issues.push({slot,def:item.def,reason:'wrong-category'});continue;}
       }
@@ -169,6 +210,6 @@
     }
     return {ok:true,state:next,message:'Conjunto preparado. Peças retiradas foram guardadas na mochila do laboratório.'};
   }
-  root.MarePaperDollReview={id,requested,appearance,create,equipmentStatus,prepareEquipment,walkPose,shotProgress};
+  root.MarePaperDollReview={id,requested,appearance,create,equipmentStatus,prepareEquipment,walkPose,stepWalk,shotProgress};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.MarePaperDollReview;
 })(typeof globalThis!=='undefined'?globalThis:window);

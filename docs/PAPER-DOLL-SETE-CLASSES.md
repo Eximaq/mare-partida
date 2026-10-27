@@ -56,3 +56,8 @@ A caminhada do pacote completo usa distância real (ciclo de 80 pixels do mundo)
 Ataques de arma de fogo, tecnologia e canalização alinham a pose nativa de liberação (frame 3, índice zero) ao `hitFrameRatio` do relógio real. Preparação e recuperação redistribuem seu tempo sem alterar a ordem dos frames, duração do golpe, velocidade, custo ou dano. Projéteis partem de pontos medidos nas peças equipadas, transformados pelos mesmos sockets/pivô/escala, e não avançam no próprio subpasso em que nascem. Habilidades e formas Zoan mantêm seus caminhos existentes.
 
 Regressões incluem parada/retomada/curvas/colisões, limites do ciclo, ordem dos oito frames e conferência de pose/origem no instante de emissão em quatro direções. Capturas de caminhada por teclado ficam nas evidências locais, sem versionar imagens em massa. Nenhuma geração ou reparo de pixels nesta correção.
+
+
+## Refinamento do runtime
+
+A fase da caminhada passou a ser atualizada por passo físico, e a emissão visual conserva a pose correta quando o delta atravessa o impacto. Offsets geométricos estabilizam o plano dos pés sem editar os PNGs. Diagnóstico, evidências, testes e limites artísticos estão em [PAPER-DOLL-REFINAMENTO.md](PAPER-DOLL-REFINAMENTO.md). A arte permanece em avaliação, restrita ao DEV.

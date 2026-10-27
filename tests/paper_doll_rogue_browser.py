@@ -7,21 +7,21 @@ ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'docs/evidence-paper-doll/rogu
 BASE=os.environ.get('MARE_TEST_URL','http://127.0.0.1:8126/dist/')
 HOOK="""
 window.__rogueTest={strike(direction,skill=false){
- autoPlay=false;cancelBasicAttack();const m=livingMobs()[0],delta={south:[0,15],north:[0,-15],west:[-15,0],east:[15,0]}[direction];m.x=world.hero.x+delta[0];m.y=world.hero.y+delta[1];m.hp=m.maxHP=100000;m.alive=true;
+ autoPlay=false;cancelBasicAttack();const controller=classCombatController();controller?.reset('front');const m=livingMobs()[0],delta={south:[0,15],north:[0,-15],west:[-15,0],east:[15,0]}[direction];m.x=world.hero.x+delta[0];m.y=world.hero.y+delta[1];m.hp=m.maxHP=100000;m.alive=true;
  session.respawn=0;const old=Math.random;Math.random=()=>.5;
  const before=game.stats.damage,frames=[],damageTimeline=[];let duration;
  try{
- heroAttack(m,1,skill?{damageType:'physical'}:null);duration=basicAttackPose()?.duration;
+ const accepted=heroAttack(m,1,skill?{damageType:'physical'}:null);if(!accepted)throw Error('Combat fixture rejected');duration=basicAttackPose()?.duration||controller?.snapshot().duration||.22;
  const canvas=document.createElement('canvas');canvas.width=200;canvas.height=200;
  for(let i=0;i<8;i++){
-  if(!skill)stepBasicAttack(duration*(i===0?.01:.125));
+  const dt=duration*(i===0?.01:.125);world.time+=dt;if(controller)controller.step(dt,{inCombat:true,direction:world.hero.direction});else if(!skill)stepBasicAttack(dt);else if(i)world.hero.attackAnim=Math.max(0,world.hero.attackAnim-dt);stepCombatVfx(dt);
   const count=paperDollReview.snapshot().draws,damageBeforeRender=game.stats.damage;
   drawPlayerSprite(canvas.getContext('2d'),100,140);
   if(game.stats.damage!==damageBeforeRender)throw Error('Rendering dealt damage');
   frames.push(paperDollReview.snapshot().draws>count);damageTimeline.push(game.stats.damage-before);
  }
  }finally{Math.random=old;}
- const result={damage:game.stats.damage-before,frames,damageTimeline,duration};cancelBasicAttack();return result;
+ const result={damage:game.stats.damage-before,frames,damageTimeline,duration};cancelBasicAttack();controller?.reset('front');return result;
 }, snapshot(){return JSON.stringify(game)},stop(){autoPlay=false}};
 
 """

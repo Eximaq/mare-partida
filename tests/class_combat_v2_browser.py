@@ -28,11 +28,14 @@ with sync_playwright() as p:
    if d['combat']:seen.add(d['combat']['action'])
    if d['damage']>last['damage']:
     hits+=1
-    # A skill may apply immediate damage while the basic-attack controller
-    # is only starting up. Validate the impact latch for basic-attack damage,
-    # not unrelated skill hits; keep the assertion strict for both snapshots.
+    # Ranged damage belongs to a projectile already in flight, which can land
+    # while the next attack is winding up. Melee still uses its impact latch.
     if d['combat'] and d['skillUses']==last['skillUses']:
-     assert d['combat']['impactDone'] or (last['combat'] and last['combat']['impactDone']),(cls,last['combat'],d['combat'])
+     if cls in ['gunner','cyborg','strategist','healer']:
+      shots=d['akuma']['combatVfx']['projectiles']
+      assert any(p['phase']=='impact' for p in shots),(cls,'damage without projectile collision',shots)
+     else:
+      assert d['combat']['impactDone'] or (last['combat'] and last['combat']['impactDone']),(cls,last['combat'],d['combat'])
     if not captured:q.screenshot(path=str(OUT/(cls+'-combat.png')));captured=True
    last=d
    if hits>=4 and d['kills']>=2:break
