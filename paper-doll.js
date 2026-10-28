@@ -4,7 +4,9 @@
   const slotLabels=Object.freeze({cloak:'Capa',body:'Corpo-base',pants:'Calças',boots:'Calçados',outfit:'Roupa / armadura',belt:'Cinto',gloves:'Luvas',necklace:'Colar',hair:'Cabelo',head:'Cabeça',eyewear:'Óculos',accessory:'Acessório legado',charm:'Acessório',ring:'Anel',weapon:'Arma'});
   const slots=Object.freeze(Object.keys(slotLabels));
   // Preserve the historical depths of every existing layer.
-  const slotDepth=Object.freeze({cloak:-10,body:0,pants:10,boots:20,outfit:30,belt:32,gloves:35,necklace:37,hair:40,head:45,eyewear:47,accessory:50,charm:52,ring:54,weapon:60});
+  const slotDepth=Object.freeze({cloak:-10,body:0,pants:10,boots:20,outfit:30,belt:32,gloves:35,necklace:37,hair:40,head:70,eyewear:75,accessory:50,charm:52,ring:54,weapon:60});
+  const rigidSlots=new Set(['weapon','hair','accessory','head','eyewear','necklace','belt','ring','charm','boots','gloves']);
+  const pairedSlots=new Set(['weapon','boots','gloves']);
   const directions=['south','north','west','east'];
   const aliases={front:'south',back:'north',left:'west',right:'east'};
   const clone=value=>JSON.parse(JSON.stringify(value));
@@ -46,7 +48,7 @@
           const c=createCanvas(image.naturalWidth,image.naturalHeight),ctx=c.getContext('2d',{willReadFrequently:true});
           ctx.drawImage(image,0,0);const rgba=ctx.getImageData(0,0,c.width,c.height).data;
           for(let row=0;row<clip.directions.length&&!result;row++){
-            let animated=clip.frames===1;
+            let animated=clip.frames===1||clip.occludedFrames?.[clip.directions[row]]?.length===clip.frames;
             for(let col=0;col<clip.frames;col++){
             let visible=false;
             for(let y=0;y<r.frameHeight&&!visible;y++)for(let x=0;x<r.frameWidth;x++)if(rgba[((row*r.frameHeight+y)*c.width+col*r.frameWidth+x)*4+3]){visible=true;break;}
@@ -90,13 +92,16 @@
         // null explicitly means the far hand is occluded in this pose.
         if(clip.secondarySockets!==undefined){
           const valid=s=>s===null||(s&&integer(s.x)&&integer(s.y)&&s.x>=0&&s.x<=r.frameWidth&&s.y>=0&&s.y<=r.frameHeight&&(s.quarterTurns===undefined||(integer(s.quarterTurns)&&s.quarterTurns>=0&&s.quarterTurns<=3)));
-          if(!rigid||slot!=='weapon'||!clip.secondarySockets||Array.isArray(clip.secondarySockets)||Object.keys(clip.secondarySockets).some(d=>!clip.directions.includes(d))||!clip.directions.every(d=>Array.isArray(clip.secondarySockets[d])&&clip.secondarySockets[d].length===a.frames&&clip.secondarySockets[d].every(valid))){problem('invalid-secondary-socket');continue;}
+          if(!rigid||!pairedSlots.has(slot)||!clip.secondarySockets||Array.isArray(clip.secondarySockets)||Object.keys(clip.secondarySockets).some(d=>!clip.directions.includes(d))||!clip.directions.every(d=>Array.isArray(clip.secondarySockets[d])&&clip.secondarySockets[d].length===a.frames&&clip.secondarySockets[d].every(valid))){problem('invalid-secondary-socket');continue;}
         }
-        // Genuine full weapon occlusion is explicit; empty anatomy never passes as a pose.
+        const wearableOcclusion=slot!=='body'&&slot!=='hair'&&slot!=='weapon';
+        // Sheet weapons require genuinely empty cells. Rigid wearables keep their
+        // valid source and explicitly omit hidden poses (e.g. glasses from behind).
+        // Non-rigid wearables still require genuinely empty declared cells.
         if(clip.occludedFrames!==undefined){
           const occluded=clip.occludedFrames;
-          if(slot!=='weapon'||rigid||!occluded||typeof occluded!=='object'||Array.isArray(occluded)||
-            Object.entries(occluded).some(([d,frames])=>!clip.directions.includes(d)||!Array.isArray(frames)||frames.length>=clip.frames||
+          if(!(slot==='weapon'&&!rigid)&&!wearableOcclusion||!occluded||typeof occluded!=='object'||Array.isArray(occluded)||
+            Object.entries(occluded).some(([d,frames])=>!clip.directions.includes(d)||!Array.isArray(frames)||(wearableOcclusion?frames.length>clip.frames:frames.length>=clip.frames)||
               new Set(frames).size!==frames.length||frames.some(i=>!integer(i)||i<0||i>=clip.frames))){problem('invalid-occlusion');continue;}
         }
         let sourceWidth=r.frameWidth,sourceHeight=r.frameHeight,socket=null,source=null,url=clip.url;
@@ -107,10 +112,10 @@
             if(!clip.sources||Array.isArray(clip.sources)||!clip.directions.every(d=>validSource(clip.sources[d])&&typeof clip.sources[d].url==='string'&&clip.sources[d].url)){problem('invalid-attachment-source');continue;}
             source=clip.sources[direction];url=source.url;
           }else source=clip.source;
-          if(!['weapon','hair','accessory'].includes(slot)||!validSource(source)){problem('invalid-attachment-source');continue;}
+          if(!rigidSlots.has(slot)||!validSource(source)){problem('invalid-attachment-source');continue;}
           const complete=clip.directions.every(d=>Array.isArray(clip.sockets?.[d])&&clip.sockets[d].length===a.frames&&clip.sockets[d].every(s=>s&&integer(s.x)&&integer(s.y)&&s.x>=0&&s.x<=r.frameWidth&&s.y>=0&&s.y<=r.frameHeight&&(s.quarterTurns===undefined||(integer(s.quarterTurns)&&s.quarterTurns>=0&&s.quarterTurns<=3))));
           if(!complete){problem('missing-socket');continue;}
-          if(slot!=='weapon'&&clip.directions.some(d=>clip.sockets[d].some(s=>(s.quarterTurns??0)!==0))){problem('invalid-transform');continue;}
+          if(!pairedSlots.has(slot)&&clip.directions.some(d=>clip.sockets[d].some(s=>(s.quarterTurns??0)!==0))){problem('invalid-transform');continue;}
           sourceWidth=source.width;sourceHeight=source.height;socket=clip.sockets[direction][frameIndex];
         }
         const row=clip.directions.indexOf(direction),overrides=clip.poseOverrides?.[direction]?.[frameIndex]||{},byDirection=clip.directionOverrides?.[direction]||{};
@@ -127,6 +132,7 @@
         if(!image.naturalWidth||!image.naturalHeight){problem('failed-image');continue;}
         if(image.naturalWidth!==(rigid?sourceWidth:r.frameWidth*clip.frames)||image.naturalHeight!==(rigid?sourceHeight:r.frameHeight*clip.directions.length)){problem('invalid-sheet-size');continue;}
         const invalid=rigid?imageAudit(image,{url,frames:1,directions:['south']},{frameWidth:sourceWidth,frameHeight:sourceHeight}):imageAudit(image,clip,r);if(invalid){problem(invalid);continue;}
+        if(wearableOcclusion&&clip.occludedFrames?.[direction]?.includes(frameIndex))continue;
         layers.push({slot,pieceId:id,revision:p.revision||1,image,url,animationId:pose.animationId,direction,frameIndex,
           kind:rigid?'rigid-attachment':'sheet',socket:rigid?{...socket}:null,quarterTurns,
           pivotX,pivotY,offsetX,offsetY,zIndex,sx:rigid?0:frameIndex*r.frameWidth,sy:rigid?0:row*r.frameHeight,width:sourceWidth,height:sourceHeight});

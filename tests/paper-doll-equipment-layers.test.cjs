@@ -44,6 +44,8 @@ runtime.registerRig(pack.rig);pack.pieces.forEach(p=>runtime.registerPiece(p));
 for(const animationId of ['idle','walk','attack-sword'])for(const direction of engine.directions)for(let frameIndex=0;frameIndex<pack.rig.animations[animationId].frames;frameIndex++){
  const plan=runtime.resolve(appearance,{animationId,direction,frameIndex});assert(plan.valid,JSON.stringify(plan.missing));
  for(const slot of [...Object.values(byGear),'head','eyewear']){const layer=plan.layers.find(l=>l.slot===slot);assert.equal(layer.frameIndex,frameIndex);assert.equal(layer.pivotX,42);assert.equal(layer.pivotY,65);}
+ assert(plan.layers.find(l=>l.slot==='head').zIndex>plan.layers.find(l=>l.slot==='hair').zIndex,'a fitted hat must cover the existing approved hair');
+ assert(plan.layers.find(l=>l.slot==='eyewear').zIndex>plan.layers.find(l=>l.slot==='head').zIndex,'lenses sit in front of headgear by default');
  assert.equal(plan.layers.find(l=>l.slot==='cloak').zIndex,direction==='north'?38:-10);
 }
 const pose={animationId:'idle',direction:'south',frameIndex:0},out={save(){},restore(){},drawImage(){}};
