@@ -59,10 +59,19 @@ with sync_playwright() as p:
  d=state(q);boss=next(m for m in d['mobs'] if m['type']=='boss');box=q.locator('#worldCanvas').bounding_box();zoom=d['camera']['zoom']
  q.mouse.click(box['x']+(boss['x']-d['camera']['x'])*zoom,box['y']+(boss['y']-30-d['camera']['y'])*zoom)
  assert state(q)['autoPlay'],'Selecting the boss must start combat'
+ # Provoke with one real hit, then wait without killing the level5 boss first.
+ # Pausing auto-hunt does not disengage an already provoked neutral monster.
+ for _ in range(200):
+  q.clock.run_for(50);target=next((m for m in state(q)['mobs'] if m['id']==boss['id']),None)
+  assert target is not None,'Boss must survive the first provoking hit'
+  if target['hp']<target['maxHP']:break
+ else:raise AssertionError('The selected boss never received a provoking hit')
+ q.locator('#autoToggle').click();assert not state(q)['autoPlay']
  for _ in range(150):
   q.clock.run_for(200)
   if any(m['telegraph'] for m in state(q)['mobs']):warned=True;break
  assert warned,{'hero':state(q)['hero'],'bosses':[m for m in state(q)['mobs'] if m['type']=='boss']};q.screenshot(path=str(OUT/'chefe-aviso.png'))
+ q.locator('#autoToggle').click();assert state(q)['autoPlay']
  for _ in range(240):
   q.clock.run_for(1000)
   if state(q)['hunt']['progress']['areas']['beach']['bosses']>0:break
