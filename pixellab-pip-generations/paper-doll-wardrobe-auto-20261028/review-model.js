@@ -24,6 +24,12 @@
       }
     };
   }
-  if (typeof module !== 'undefined' && module.exports) module.exports = { createReview };
-  else root.WardrobeReview = { createReview };
+  function candidateStatus(ref) {
+    if (!ref.layer) return 'Sem camada extraída nesta vista. Nenhum fallback é apresentado como peça nova.';
+    if (ref.method === 'masked-pro-flash') return 'Camada gerada diretamente sob máscara; perfil e pixels protegidos preservados. Referência estática ainda não aprovada para produção.';
+    const erasures = ref.audit?.skipped_alpha_erasures?.length || 0;
+    return 'Somente peça dentro da máscara, ainda não aprovada.' + (erasures ? ` ${erasures} pixels que a edição apagaria foram preservados do corpo original; requer revisão.` : '');
+  }
+  if (typeof module !== 'undefined' && module.exports) module.exports = { createReview, candidateStatus };
+  else root.WardrobeReview = { createReview, candidateStatus };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

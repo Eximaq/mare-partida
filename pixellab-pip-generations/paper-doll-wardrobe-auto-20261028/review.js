@@ -32,11 +32,10 @@
     $('piece-title').textContent = piece.label;
     $('note').textContent = piece.note;
     for (const button of $('pieces').children) button.setAttribute('aria-pressed', String(button.dataset.id === selected));
-    $('raw-status').textContent = ref.image ? 'Referência bruta sem aprovação; pode conter alterações indevidas.' : (ref.note || 'Não gerado após reprovação da primeira vista.');
-    const erasures = ref.audit?.skipped_alpha_erasures.length || 0;
-    $('candidate-status').textContent = ref.layer ? ('Somente peça dentro da máscara, ainda não aprovada.' + (erasures ? ` ${erasures} pixels que a edição apagaria foram preservados do corpo original; requer revisão.` : '')) : 'Sem camada extraída nesta vista. Nenhum fallback é apresentado como peça nova.';
+    $('raw-status').textContent = ref.image ? (ref.method === 'masked-pro-flash' ? 'Edição anterior do Pixen, reprovada. A correção Pro Flash aparece na camada candidata.' : 'Referência bruta sem aprovação; pode conter alterações indevidas.') : (ref.note || 'Não gerado após reprovação da primeira vista.');
+    $('candidate-status').textContent = WardrobeReview.candidateStatus(ref);
     $('geometry').textContent = 'Referência 64×64; pivô 32/52. Padding transparente 10/13 restaura 84×84 e pivô 42/65, sem redimensionamento.';
-    $('usage').textContent = `${data.usage.confirmedGenerations} gerações com recibo; 1 tentativa sem custo confirmado, reservada em 1. Nenhuma transferência de animação nem retry foi enviado.`;
+    $('usage').textContent = `${data.usage.confirmedGenerations} gerações com recibo; 1 tentativa sem custo confirmado, reservada em 1. ${data.usage.retriesSubmitted} correções autorizadas; nenhuma transferência de animação enviada.`;
     $('audit').textContent = JSON.stringify(ref.audit || { status: ref.status, jobId: ref.jobId || null, note: ref.note || piece.note }, null, 2);
     try {
       const [body, raw, layer] = await Promise.all([image(ref.source), image(ref.image), image(ref.layer)]);

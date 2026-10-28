@@ -4,7 +4,7 @@ O proprietário retomou a execução automática do plano de dez peças, com tet
 de 840 gerações e sem tentativas extras. A inspeção das referências bloqueou os
 lotes de animação. **O conjunto visual completo ainda não está pronto.**
 
-## Resultado observado
+## Rodada inicial de referências
 
 - 36 imagens entregues por `edit_image_pixen`, com recibos de 1 geração cada:
   **36 gerações confirmadas**.
@@ -19,7 +19,7 @@ lotes de animação. **O conjunto visual completo ainda não está pronto.**
   que a edição apagaria foram mantidos do corpo original; isso é exposto na
   prévia e exige revisão artística.
 
-## Inspeção por peça
+## Inspeção da rodada inicial por peça
 
 | Peça | Bloqueio do conjunto direcional |
 | --- | --- |
@@ -37,6 +37,45 @@ lotes de animação. **O conjunto visual completo ainda não está pronto.**
 O defeito está nos resultados das edições, comparados com as entradas corretas
 de perfil. Não foi encontrada necessidade de mudar o compositor ou os movimentos
 do personagem para contornar essas referências.
+
+## Piloto de correção com máscara — autorizado e executado
+
+O proprietário autorizou duas chamadas `inpaint_image_pro_flash`, teto de 10
+gerações, oeste primeiro e leste condicionada ao encaixe da primeira. Ambas
+foram entregues e cobradas em 5 gerações cada: **10 nesta etapa, 46 confirmadas
+no acumulado**, mais a reserva desconhecida de 1 da submissão anterior.
+Comprometimento conservador acumulado: **47**, dentro do teto geral de 840.
+
+As máscaras aprovadas tinham 91 pixels no oeste e 104 no leste. As saídas
+nativas 64×64 contêm somente a calça, com transparência fora da máscara.
+Compostas sobre as entradas originais, preservaram o perfil, a anatomia e a
+pose. Nenhum pixel protegido foi alterado; nenhuma escala, pintura corretiva,
+mudança de animação ou nova geração foi aplicada depois do retorno.
+
+| Vista | Pixels visíveis da camada | Fora da máscara | Corpo protegido alterado | Cobrança |
+| --- | ---: | ---: | ---: | ---: |
+| Oeste | 91 | 0 | 0 | 5 |
+| Leste | 96 | 0 | 0 | 5 |
+
+As duas referências passaram no encaixe **estático**. Não demonstram movimento,
+continuidade de tecido, harmonia de paleta com sul/norte ou cobertura das sete
+classes. Permanecem `approved:false` e fora do runtime. A prévia agora mostra
+o bruto Pixen reprovado no centro e a correção mascarada à direita.
+
+Fontes, máscaras, originais, auditorias e receita literal ficam em
+`pixellab-pip-generations/paper-doll-wardrobe-masked-20261028/`.
+`result-summary.json` registra escopo, recibos e limites. A receita
+`masked-trousers.blueprint.json` contém os prompts exatos em inglês, fontes,
+máscaras, seed e parâmetros efetivamente usados; não autoriza replay.
+O prompt pede somente calças náuticas na região mascarada, mantendo o perfil
+esquerdo/direito, silhueta das pernas, pés descalços e mãos à frente do tecido,
+sem acessórios, pose nova ou anatomia adicional.
+
+Verificação do piloto: 101 suítes Node e 25 testes Python passaram, incluindo
+os dois testes novos dos arquivos reais. A comparação oeste/leste e o isolamento
+da camada foram conferidos no navegador, sem erros no console; largura mobile
+390×844 sem overflow da página. Build e diff check passaram, com as duas pastas
+de drafts excluídas do `dist`. Não houve alteração do runtime ou dos saves.
 
 ## Arquivos de revisão
 
@@ -66,11 +105,12 @@ reprovando mudanças fora da região. Um rascunho recomposto não aprova o bruto
 
 ## Continuação necessária
 
-1. Validar uma correção econômica de perfil oeste/leste, com direção explícita
-   e preservação de silhueta. É retry fora do lote sem tentativas extras e
-   depende de nova autorização; não foi executado automaticamente.
-2. Corrigir as referências de geometria, escala e oclusão reprovadas em lotes
-   pequenos. Não promover as vistas sul como conjuntos completos.
+1. Comparar material, cintura e recorte das quatro vistas da calça. O piloto
+   mascarado resolveu a virada dos perfis nesta pose; isso não libera as
+   transferências nem autoriza corrigir outras peças.
+2. Corrigir as demais referências de geometria, escala e oclusão em lotes
+   pequenos com autorização correspondente. Não promover as vistas sul como
+   conjuntos completos. O piloto de 10 gerações foi integralmente consumido.
 3. Somente com referências coerentes, transferir calça/capa para as 240 poses
    existentes; medir sockets e oclusões das peças rígidas.
 4. Inspecionar Idle/Walk/Attack nas quatro direções e sete classes, então integrar
@@ -80,7 +120,7 @@ O jogo mantém os assets, equipamentos, saves e animações aprovados anteriorme
 Não foram criados itens nem alteradas regras de combate. Esta galeria de drafts
 fica fora do build de produção; não houve merge nem publicação no Pages.
 
-## Verificação desta rodada
+## Verificação da rodada inicial
 
 - 101 suítes Node autônomas, zero falhas; `supa-browser.test.cjs` depende de
   ambiente E2E próprio e não faz parte dessa execução.
@@ -89,7 +129,7 @@ fica fora do build de produção; não houve merge nem publicação no Pages.
   implementação da proteção de arquivos e das flags explícitas de draft.
 - `python tools/build_pages.py` e `git diff --check` passaram. Confirmada a
   ausência desta pasta de drafts no `dist`.
-- Nove camadas verificadas pixel a pixel: somente pixels originais gerados
+- As nove camadas iniciais foram verificadas pixel a pixel: somente pixels originais gerados
   dentro da máscara, corpo preservado fora dela e padding 84×84 sem escala.
 - Navegador real: comparação sul/oeste, isolamento de boné, pivô, seleção de
   capa/norte e estado sem job dos óculos/oeste; sem erros de console. Mobile

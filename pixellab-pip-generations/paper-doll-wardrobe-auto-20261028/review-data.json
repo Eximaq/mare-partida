@@ -26,12 +26,14 @@
   ],
   "coverage": "Apenas referências da pose Idle 0; sem Walk ou Attack. Não é um pacote de runtime.",
   "usage": {
-    "confirmedGenerations": 36,
+    "confirmedGenerations": 46,
     "unknownSubmissions": 1,
     "unknownEstimate": 1,
     "cap": 840,
     "transfersSubmitted": 0,
-    "retriesSubmitted": 0
+    "retriesSubmitted": 2,
+    "confirmedOriginalGenerations": 36,
+    "confirmedRepairGenerations": 10
   },
   "pieces": [
     {
@@ -40,7 +42,7 @@
       "approved": false,
       "productionEnabled": false,
       "complete": false,
-      "note": "As duas vistas laterais viraram para a frente; não servem como referência de transferência. O boné extra foi excluído da candidata sul.",
+      "note": "O bruto Pixen virou as laterais para a frente. O piloto com máscara preservou os perfis oeste e leste na pose Idle 0. Paleta, quatro vistas e cobertura animada ainda precisam de revisão; nenhuma peça foi ativada.",
       "references": {
         "south": {
           "source": "source/body-south.png",
@@ -130,17 +132,87 @@
         },
         "west": {
           "source": "source/body-west.png",
-          "status": "unapproved-reference",
+          "status": "masked-static-candidate",
           "image": "originals/pants-west.png",
           "jobId": "7b5426be-3629-4b7c-b301-3a465e48c625",
-          "chargedGenerations": 1
+          "chargedGenerations": 1,
+          "layer": "candidates/pants-west-masked-layer.png",
+          "mask": "masks/pants-west-masked.png",
+          "audit": {
+            "passed": true,
+            "scope": "structural contact only; artistic approval required",
+            "artwork_approved": false,
+            "size": [
+              64,
+              64
+            ],
+            "contact_anchor": [
+              35,
+              35
+            ],
+            "visible_layer_pixels": 91,
+            "outside_mask_pixels": 0,
+            "body_occlusion_allowed": true,
+            "unprotected_body_pixels": 0,
+            "permitted_body_occlusion_pixels": 91,
+            "changed_unmasked_body_pixels": 0,
+            "body_overlap_pixels": 91,
+            "partial_alpha_pixels": 0,
+            "changed_body_pixels": 90,
+            "hand_contact_pixels": 18,
+            "anchor_contact_pixels": 18,
+            "layer_bbox": [
+              27,
+              34,
+              37,
+              48
+            ]
+          },
+          "method": "masked-pro-flash",
+          "layerJobId": "ff63bfde-9ab5-4bf4-82c3-7aa145b8b503",
+          "layerChargedGenerations": 5
         },
         "east": {
           "source": "source/body-east.png",
-          "status": "unapproved-reference",
+          "status": "masked-static-candidate",
           "image": "originals/pants-east.png",
           "jobId": "9674ca6f-0d12-45eb-b2d0-b8d53baff832",
-          "chargedGenerations": 1
+          "chargedGenerations": 1,
+          "layer": "candidates/pants-east-masked-layer.png",
+          "mask": "masks/pants-east-masked.png",
+          "audit": {
+            "passed": true,
+            "scope": "structural contact only; artistic approval required",
+            "artwork_approved": false,
+            "size": [
+              64,
+              64
+            ],
+            "contact_anchor": [
+              31,
+              35
+            ],
+            "visible_layer_pixels": 96,
+            "outside_mask_pixels": 0,
+            "body_occlusion_allowed": true,
+            "unprotected_body_pixels": 0,
+            "permitted_body_occlusion_pixels": 104,
+            "changed_unmasked_body_pixels": 0,
+            "body_overlap_pixels": 96,
+            "partial_alpha_pixels": 0,
+            "changed_body_pixels": 94,
+            "hand_contact_pixels": 33,
+            "anchor_contact_pixels": 33,
+            "layer_bbox": [
+              27,
+              32,
+              36,
+              48
+            ]
+          },
+          "method": "masked-pro-flash",
+          "layerJobId": "3d0fc79d-90f7-4617-89c7-e22452e2dde0",
+          "layerChargedGenerations": 5
         }
       }
     },

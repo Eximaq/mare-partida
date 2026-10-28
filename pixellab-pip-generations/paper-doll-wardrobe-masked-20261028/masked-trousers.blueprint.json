@@ -1,0 +1,41 @@
+[
+  {
+    "_comment": "Authorized masked trousers pilot only: west first, east only if west passes. A new explicit request is required to replay.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-wardrobe-masked-replay",
+      "output_collision_policy": "create_unique"
+    },
+    "TASK": "Check explicit user run authority and MCP authentication; create a unique empty output directory. Use the unchanged native bodies and exact binary masks supplied. No other equipment or animation transfer."
+  },
+  {
+    "_comment": "west trousers — one masked changes-only output",
+    "MCP inpaint_image_pro_flash": {
+      "description": "Add only plain navy sailor trousers to the masked waist and legs of this existing human, preserving the strict left-facing side profile. Follow the existing leg silhouette and bends. Leave feet bare and hands in front of the cloth. Keep crisp nautical pixels, navy fabric and simple stepped shading. No belt buckle visible from this side, no headwear, extra anatomy or change of pose. Output only the fitted trousers on transparency.",
+      "image_base64": "inputs/body-west.png",
+      "mask_image_base64": "inputs/mask-west.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1350402902
+    }
+  },
+  {
+    "TASK": "Inspect west native output and composite. Reject pixels outside the exact mask, fractional alpha, pose/identity drift or bad garment fit. Never repair pixels locally or add an unpaid retry. Stop before east if this fails."
+  },
+  {
+    "_comment": "east trousers — one masked changes-only output",
+    "MCP inpaint_image_pro_flash": {
+      "description": "Add only plain navy sailor trousers to the masked waist and legs of this existing human, preserving the strict right-facing side profile. Follow the existing leg silhouette and bends. Leave feet bare and hands in front of the cloth. Keep crisp nautical pixels, navy fabric and simple stepped shading. No belt buckle visible from this side, no headwear, extra anatomy or change of pose. Output only the fitted trousers on transparency.",
+      "image_base64": "inputs/body-east.png",
+      "mask_image_base64": "inputs/mask-east.png",
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1350402902
+    }
+  },
+  {
+    "TASK": "Inspect east native output and composite. Reject pixels outside the exact mask, fractional alpha, pose/identity drift or bad garment fit. Never repair pixels locally or add an unpaid retry. Keep both results as static reference candidates, not animated or production-ready."
+  }
+]

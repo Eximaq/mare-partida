@@ -105,6 +105,7 @@ on:
       - 'tests/paper-doll-attachment.test.cjs'
       - 'tests/paper_doll_fit_audit_test.py'
       - 'tests/paper_doll_masked_candidate_test.py'
+      - 'tests/paper_doll_masked_references_test.py'
       - 'tests/paper_doll_batch_audit_test.py'
       - 'tools/paper_doll_fit_audit.py'
       - 'tools/paper_doll_batch_audit.py'
@@ -136,6 +137,7 @@ jobs:
           python -m playwright install --with-deps chromium
           python tests/paper_doll_fit_audit_test.py
           python tests/paper_doll_masked_candidate_test.py
+          python tests/paper_doll_masked_references_test.py
           python tests/paper_doll_batch_audit_test.py
           python tests/paper_doll_body_edit_test.py
           python tests/paper_doll_compact_test.py
