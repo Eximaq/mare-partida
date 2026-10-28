@@ -6,7 +6,7 @@ from polish_support import page_for, create, fixture, saved
 
 OUT=Path(os.environ.get('MARE_INVENTORY_EVIDENCE','/tmp/mare-inventory-visual'))/'hud'
 OUT.mkdir(parents=True,exist_ok=True)
-SIZES=[(1366,768),(1024,768),(768,900),(390,844),(320,568),(844,390)]
+SIZES=[(1366,768),(1024,768),(768,900),(390,844),(320,568),(844,390),(568,320)]
 SECTIONS=['inventory','forge','status','talents','achievements','haki','akuma','hierarchy','contracts','map','prison','help','journal','myprofile','settings','appearance']
 KEYS=['inventory','equipment','gold','potions','materials','attributes','level','classId','factionId','talentTrees']
 
@@ -60,6 +60,19 @@ with sync_playwright() as p:
         q.get_by_role('combobox',name='Densidade da HUD',exact=True).select_option('standard')
         q.locator('#closePanel').click()
         assert {k:saved(q).get(k) for k in KEYS}==before,'Presentation changed game progress'
+        open_panel(q,'map');q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
+        q.clock.run_for(300)
+        if q.get_by_role('button',name='Fechar canal',exact=True).is_visible():
+            q.get_by_role('button',name='Fechar canal',exact=True).click()
+        q.clock.run_for(300)
+        for a,bx in [('#targetHud','#mainMenu'),('#huntXpTracker','#journeyHud'),('#huntXpTracker','#mainMenu')]:
+            first,second=q.locator(a),q.locator(bx)
+            assert first.is_visible() and second.is_visible(),(a,bx,'combat fixture must expose both surfaces')
+            r,t=first.bounding_box(),second.bounding_box()
+            x=min(r['x']+r['width'],t['x']+t['width'])-max(r['x'],t['x'])
+            y=min(r['y']+r['height'],t['y']+t['height'])-max(r['y'],t['y'])
+            assert x<=1 or y<=1,(a,bx,w,h,x,y)
+        q.screenshot(path=str(OUT/f'combat-{w}-{h}.png'))
         results.append({'viewport':[w,h],'windows':len(SECTIONS),'overflow':False})
         c.close()
     b.close();assert not errors,errors
