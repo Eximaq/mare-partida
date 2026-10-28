@@ -1,0 +1,271 @@
+{
+  "schemaVersion": 1,
+  "productionEnabled": false,
+  "designApproved": true,
+  "animationApproved": false,
+  "frame": {
+    "width": 128,
+    "height": 128
+  },
+  "pivot": {
+    "x": 64,
+    "y": 112
+  },
+  "referenceHeight": 96,
+  "directions": [
+    "south",
+    "north",
+    "west",
+    "east"
+  ],
+  "bodies": {
+    "masculino": {
+      "references": {
+        "south": "assets/masculino-south.png",
+        "north": "assets/masculino-north.png",
+        "west": "assets/masculino-west.png",
+        "east": "assets/masculino-east.png"
+      },
+      "clips": {
+        "walk": {
+          "south": {
+            "modular": true,
+            "layers": {
+              "body": "assets/masculino-walk-south-body.png",
+              "face": "assets/masculino-walk-south-face.png",
+              "hair": "assets/masculino-walk-south-hair.png",
+              "pants": "assets/masculino-walk-south-pants.png",
+              "top": "assets/masculino-walk-south-top.png"
+            },
+            "frames": 8,
+            "fps": 8,
+            "loop": true,
+            "reviewed": false,
+            "headAnchors": [
+              {
+                "frame": 0,
+                "headOffset": {
+                  "x": 0,
+                  "y": 0
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 1,
+                "headOffset": {
+                  "x": 0,
+                  "y": -1
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 2,
+                "headOffset": {
+                  "x": 0,
+                  "y": -1
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 3,
+                "headOffset": {
+                  "x": 0,
+                  "y": 0
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 4,
+                "headOffset": {
+                  "x": 0,
+                  "y": -1
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 5,
+                "headOffset": {
+                  "x": 0,
+                  "y": -1
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 6,
+                "headOffset": {
+                  "x": 0,
+                  "y": 0
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 7,
+                "headOffset": {
+                  "x": 0,
+                  "y": 0
+                },
+                "headDirection": "south"
+              }
+            ],
+            "sourceMotion": "Existing feminine walk south, eight recovered poses; shared retargeted guide across bodies",
+            "bodyJob": "e30e5b13-8cd8-49de-bc78-527dc6eb8d8b"
+          }
+        }
+      },
+      "layers": {
+        "south": {
+          "body": "assets/masculino-south-body.png",
+          "face": "assets/masculino-south-face.png",
+          "hair": "assets/masculino-south-hair.png",
+          "pants": "assets/masculino-south-pants.png",
+          "top": "assets/masculino-south-top.png"
+        },
+        "north": {
+          "body": "assets/masculino-north-body.png",
+          "face": "assets/masculino-north-face.png",
+          "hair": "assets/masculino-north-hair.png",
+          "pants": "assets/masculino-north-pants.png",
+          "top": "assets/masculino-north-top.png"
+        },
+        "west": {
+          "body": "assets/masculino-west-body.png",
+          "face": "assets/masculino-west-face.png",
+          "hair": "assets/masculino-west-hair.png",
+          "pants": "assets/masculino-west-pants.png",
+          "top": "assets/masculino-west-top.png"
+        },
+        "east": {
+          "body": "assets/masculino-east-body.png",
+          "face": "assets/masculino-east-face.png",
+          "hair": "assets/masculino-east-hair.png",
+          "pants": "assets/masculino-east-pants.png",
+          "top": "assets/masculino-east-top.png"
+        }
+      }
+    },
+    "feminino": {
+      "references": {
+        "south": "assets/feminino-south.png",
+        "north": "assets/feminino-north.png",
+        "west": "assets/feminino-west.png",
+        "east": "assets/feminino-east.png"
+      },
+      "clips": {
+        "walk": {
+          "south": {
+            "modular": true,
+            "layers": {
+              "body": "assets/feminino-walk-south-body.png",
+              "face": "assets/feminino-walk-south-face.png",
+              "hair": "assets/feminino-walk-south-hair.png",
+              "pants": "assets/feminino-walk-south-pants.png",
+              "top": "assets/feminino-walk-south-top.png"
+            },
+            "frames": 8,
+            "fps": 8,
+            "loop": true,
+            "reviewed": false,
+            "headAnchors": [
+              {
+                "frame": 0,
+                "headOffset": {
+                  "x": 0,
+                  "y": 0
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 1,
+                "headOffset": {
+                  "x": 0,
+                  "y": -1
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 2,
+                "headOffset": {
+                  "x": 0,
+                  "y": -1
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 3,
+                "headOffset": {
+                  "x": 0,
+                  "y": 0
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 4,
+                "headOffset": {
+                  "x": 0,
+                  "y": -1
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 5,
+                "headOffset": {
+                  "x": 0,
+                  "y": -1
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 6,
+                "headOffset": {
+                  "x": 0,
+                  "y": 0
+                },
+                "headDirection": "south"
+              },
+              {
+                "frame": 7,
+                "headOffset": {
+                  "x": 0,
+                  "y": 0
+                },
+                "headDirection": "south"
+              }
+            ],
+            "sourceMotion": "Existing feminine walk south, eight recovered poses; shared retargeted guide across bodies",
+            "bodyJob": "8ded60f5-6ad5-44d7-a1a2-00a56d1f447a"
+          }
+        }
+      },
+      "layers": {
+        "south": {
+          "body": "assets/feminino-south-body.png",
+          "face": "assets/feminino-south-face.png",
+          "hair": "assets/feminino-south-hair.png",
+          "pants": "assets/feminino-south-pants.png",
+          "top": "assets/feminino-south-top.png"
+        },
+        "north": {
+          "body": "assets/feminino-north-body.png",
+          "face": "assets/feminino-north-face.png",
+          "hair": "assets/feminino-north-hair.png",
+          "pants": "assets/feminino-north-pants.png",
+          "top": "assets/feminino-north-top.png"
+        },
+        "west": {
+          "body": "assets/feminino-west-body.png",
+          "face": "assets/feminino-west-face.png",
+          "hair": "assets/feminino-west-hair.png",
+          "pants": "assets/feminino-west-pants.png",
+          "top": "assets/feminino-west-top.png"
+        },
+        "east": {
+          "body": "assets/feminino-east-body.png",
+          "face": "assets/feminino-east-face.png",
+          "hair": "assets/feminino-east-hair.png",
+          "pants": "assets/feminino-east-pants.png",
+          "top": "assets/feminino-east-top.png"
+        }
+      }
+    }
+  }
+}

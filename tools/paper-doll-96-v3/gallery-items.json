@@ -1,0 +1,86 @@
+{
+  "projectName": "Jade Dragon",
+  "projectId": "f5b4fc25-691a-4d78-a579-f586de4507e1",
+  "sheets": [
+    {
+      "name": "masculino-static-body.png",
+      "id": "4b37c009-d25c-410a-81dc-b44cd715fe2b"
+    },
+    {
+      "name": "masculino-walk-south-body.png",
+      "id": "5bcea69c-2620-41d2-bf29-a8227da1f38e"
+    },
+    {
+      "name": "masculino-static-face.png",
+      "id": "c912541a-bc7f-4280-9e97-7a950cd4cedc"
+    },
+    {
+      "name": "masculino-walk-south-face.png",
+      "id": "2f3abe41-0049-4c9e-b622-9e9fb1114711"
+    },
+    {
+      "name": "masculino-static-hair.png",
+      "id": "cea4adb1-00f7-4b12-8f54-f09659c58f8f"
+    },
+    {
+      "name": "masculino-walk-south-hair.png",
+      "id": "649e083f-1146-43dd-b6f3-a73870c110c1"
+    },
+    {
+      "name": "masculino-static-pants.png",
+      "id": "417e8355-77e7-4c9e-9c88-28481ab38f99"
+    },
+    {
+      "name": "masculino-walk-south-pants.png",
+      "id": "f7da7900-ed8f-424a-a5d1-6b6a5a66f56a"
+    },
+    {
+      "name": "masculino-static-top.png",
+      "id": "40fca133-d3fa-421a-8b23-3e30606698ab"
+    },
+    {
+      "name": "masculino-walk-south-top.png",
+      "id": "5c948c56-dc6c-46d4-9afa-4c90be9a2806"
+    },
+    {
+      "name": "feminino-static-body.png",
+      "id": "c47c7bbc-d684-4247-bc48-0ef12faa99a7"
+    },
+    {
+      "name": "feminino-walk-south-body.png",
+      "id": "ba716888-dc31-4f3b-998d-5876e75c19c2"
+    },
+    {
+      "name": "feminino-static-face.png",
+      "id": "a044c804-7cc8-4710-9cb5-f31904f7c02a"
+    },
+    {
+      "name": "feminino-walk-south-face.png",
+      "id": "213c9a50-ed15-4dc3-9cdb-525baf17b7d6"
+    },
+    {
+      "name": "feminino-static-hair.png",
+      "id": "94b375ef-8c1c-45e1-a822-29b4b41eb4be"
+    },
+    {
+      "name": "feminino-walk-south-hair.png",
+      "id": "21a3e71b-e9c8-41b0-8e36-7ac450567ff4"
+    },
+    {
+      "name": "feminino-static-pants.png",
+      "id": "2c938905-a5a0-4a8d-b1ed-1b3deffaf1f2"
+    },
+    {
+      "name": "feminino-walk-south-pants.png",
+      "id": "4ac464fe-5932-4b61-a180-f711430fde8a"
+    },
+    {
+      "name": "feminino-static-top.png",
+      "id": "e4d822f0-7d3f-46d4-b3a2-25ea87a1ae0f"
+    },
+    {
+      "name": "feminino-walk-south-top.png",
+      "id": "ff5aa0a5-6dc9-49af-95be-9523850c67ca"
+    }
+  ]
+}

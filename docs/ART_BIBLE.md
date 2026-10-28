@@ -1,5 +1,16 @@
 # Referência visual — Maré Partida
 
+## Nova base aprovada de 96 px — 28/10/2026
+
+O proprietário aprovou o desenho masculino/feminino na simulação do lobby.
+Canvas128, altura de referência96, pivô64/112 e escala fixa; roupa, rosto e cabelo
+independentes do corpo neutro. Oito referências recompostas sem diferença de
+pixels e dois ciclos frontais candidatos estão na
+[bancada isolada](../tools/paper-doll-96-v3/). A aprovação do desenho não homologa
+as animações nem substitui o personagem publicado. Cobertura e custos em
+[PAPER-DOLL-96-V3.md](PAPER-DOLL-96-V3.md). Os contratos84 anteriores permanecem
+como fonte dos movimentos e histórico, sem ativar a nova criação feminina.
+
 Continuação de22/10: [candidato de encaixe leste no Workbench](PAPER-DOLL-ENCAIXE-LESTE.md). O ataque pode ser inspecionado em quatro direções; o novo vestuário leste ainda precisa de harmonização artística. Sem geração paga nesta etapa e sem ativação em produção.
 
 

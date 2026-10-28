@@ -1,5 +1,7 @@
 # Desenvolvimento compartilhado no GitHub
 
+**Personagens de 96 px em revisão:** [bases com corpo, rosto, cabelo e roupas independentes](docs/PAPER-DOLL-96-V3.md), quatro direções para os dois corpos e primeiros ciclos frontais de caminhada. [Abrir a bancada](tools/paper-doll-96-v3/). Demais movimentos e integração no jogo ainda pendentes.
+
 **Impel Down jogável:** mapa original, um adversário por andar, chefes a cada cinco e progressão automática com marcos salvos. [Regras, compatibilidade e validação](docs/IMPEL-DOWN.md).
 
 Atualização de 27/10: o [personagem único na aventura normal](docs/PAPER-DOLL-JOGO-NORMAL.md) inclui escolhas de aparência na criação, editor persistente, equipamentos sem perda de identidade e save DEV separado. As notas de protótipo abaixo permanecem como histórico.

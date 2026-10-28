@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Personagens 96 px · revisão de animações</title>
+<link rel="stylesheet" href="preview.css">
+<main>
+  <h1>Personagens · 96 px</h1>
+  <p>Comparação da aparência aprovada com as novas animações no lobby.</p>
+  <div class="controls">
+    <label>Corpo <select id="body"><option value="feminino">Feminino</option><option value="masculino">Masculino</option></select></label>
+    <label>Direção <select id="direction"><option value="south">Sul</option><option value="north">Norte</option><option value="west">Oeste</option><option value="east">Leste</option></select></label>
+    <label>Movimento <select id="action"><option value="static">Pose aprovada</option><option value="walk">Caminhada</option><option value="idle">Parado</option></select></label>
+    <button id="play" type="button">Pausar</button>
+    <label>Frame <input id="frame" type="range" min="0" max="7" value="0"></label>
+  </div>
+  <fieldset><legend>Camadas independentes</legend><label><input type="checkbox" data-layer="hair" checked>Cabelo</label><label><input type="checkbox" data-layer="face" checked>Rosto</label><label><input type="checkbox" data-layer="top" checked>Roupa superior</label><label><input type="checkbox" data-layer="pants" checked>Calça / bermuda</label></fieldset>
+  <p id="status" role="status">Carregando…</p>
+  <div class="maps">
+    <section><h2>Aparência aprovada</h2><canvas id="reference" width="600" height="400" aria-label="Referência parada no lobby"></canvas></section>
+    <section><h2>Movimento em avaliação</h2><canvas id="animated" width="600" height="400" aria-label="Animação no lobby"></canvas></section>
+  </div>
+  <h2>Inspeção ampliada · 2×</h2>
+  <canvas id="detail" width="256" height="256" aria-label="Frame ampliado sem suavização"></canvas>
+  <p>As animações são candidatas. Use as caixas acima para conferir cada peça separadamente. Direções e movimentos ainda não produzidos ficam identificados.</p>
+  <p>Esta página não altera o personagem nem o save do jogo.</p>
+</main>
+<script src="rig.js"></script>
+<script src="layers.js"></script>
+<script src="preview.js"></script>
+</html>

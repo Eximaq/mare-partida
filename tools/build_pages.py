@@ -490,3 +490,34 @@ assert trousers_pack['productionEnabled'] is False
 for name in sorted({'review-pack.json'} | pack_sources(trousers_pack)):
     shutil.copy2(ROOT/trousers_review/name, OUT/trousers_review/name)
 shutil.copy2(ROOT/'docs/HANDOFF-CALCAS-PAPER-DOLL.md', OUT/'docs/HANDOFF-CALCAS-PAPER-DOLL.md')
+
+# Approved 96px design, isolated modular-motion review. No raw generation data.
+review96 = Path('tools/paper-doll-96-v3')
+review96_pack = json.loads((ROOT/review96/'manifest.json').read_text(encoding='utf-8'))
+assert review96_pack['productionEnabled'] is False
+review96_files = {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'manifest.json', 'gallery-items.json'}
+for body in review96_pack['bodies'].values():
+    review96_files.update(body['references'].values())
+    for layers in body.get('layers', {}).values():
+        review96_files.update(layers.values())
+    for directions in body.get('clips', {}).values():
+        for clip in directions.values():
+            assert clip.get('modular') is True
+            review96_files.update(clip['layers'].values())
+for name in sorted(review96_files):
+    if name not in {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'manifest.json', 'gallery-items.json'}:
+        if not re.fullmatch(r'assets/[a-z0-9-]+\.png', name):
+            raise ValueError('Unsafe 96px review asset')
+    target = OUT/review96/name
+    target.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copy2(ROOT/review96/name, target)
+def version_review96(match):
+    source = (OUT/review96/match.group(2)).resolve()
+    if not source.is_relative_to(OUT.resolve()) or source.suffix not in ('.js', '.css') or not source.is_file():
+        return match.group(0)
+    digest = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+    return f'{match.group(1)}{match.group(2)}?v={digest}{match.group(3)}'
+review96_html = OUT/review96/'index.html'
+review96_html.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_review96,
+                                   review96_html.read_text(encoding='utf-8')), encoding='utf-8')
+shutil.copy2(ROOT/'docs/PAPER-DOLL-96-V3.md', OUT/'docs/PAPER-DOLL-96-V3.md')
