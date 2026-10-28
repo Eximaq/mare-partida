@@ -4,15 +4,15 @@ const path=require('node:path');
 const a=require('../archipelago.js');
 const names=['Ilha Dawn','Cidade das Conchas','Orange Town','Ilha dos Animais Raros','Vila Syrup','Baratie','Parque Arlong','Loguetown'];
 assert.deepEqual(a.list('east-blue').map(i=>i.name),names);
-assert.equal(new Set(a.islands.map(i=>i.id)).size,8);
-a.islands.forEach((i,n)=>{
+assert.equal(new Set(a.islands.map(i=>i.id)).size,9);
+a.list('east-blue').forEach((i,n)=>{
   assert.deepEqual(i.recommended,i.id==='conchas'?[8,8]:[n*5+1,n*5+5]);
   assert.equal(i.order,n+1);
   assert.equal(a.get(i.id),i);
   assert(Object.isFrozen(i));
 });
-assert.deepEqual(a.regions.map(r=>[r.id,r.locked]),[['east-blue',false],['alabasta',true]]);
-assert.deepEqual(a.list('alabasta'),[]);
+assert.deepEqual(a.regions.map(r=>[r.id,r.locked]),[['east-blue',false],['alabasta',false]]);
+assert.deepEqual(a.list('alabasta').map(i=>i.id),['alabasta-desert']);
 assert.deepEqual(a.list('missing'),[]);
 assert.equal(a.byArea(null),null);
 assert.equal(a.byArea('missing'),null);

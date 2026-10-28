@@ -195,10 +195,10 @@
     "area": "loguetown",
     "base_id": "cocox",
     "multipliers": {
-      "max_hp": 1.0,
-      "physical_attack": 1.0,
-      "physical_defense": 1.0,
-      "magic_defense": 1.0
+      "max_hp": 1,
+      "physical_attack": 1,
+      "physical_defense": 1,
+      "magic_defense": 1
     },
     "move_speed": 78,
     "attack_seconds": 1.4,
@@ -215,10 +215,10 @@
     "area": "swamp",
     "base_id": "cesar",
     "multipliers": {
-      "max_hp": 1.0,
-      "physical_attack": 1.0,
-      "physical_defense": 1.0,
-      "magic_defense": 1.0
+      "max_hp": 1,
+      "physical_attack": 1,
+      "physical_defense": 1,
+      "magic_defense": 1
     },
     "move_speed": 64,
     "attack_seconds": 1.6,
@@ -226,6 +226,26 @@
     "reach": 52,
     "behavior": "aggressive_patrol",
     "sprite_id": "411318d7-6ee7-43ea-ba8a-11b0fc0ce182",
+    "boss": false
+  },
+  "bananawani": {
+    "id": "bananawani",
+    "name": "Bananawani",
+    "level": 45,
+    "area": "alabasta",
+    "base_id": "cocox",
+    "multipliers": {
+      "max_hp": 1.25,
+      "physical_attack": 1.04,
+      "physical_defense": 1.08,
+      "magic_defense": 1.1
+    },
+    "move_speed": 68,
+    "attack_seconds": 1.7,
+    "aggro_radius": 420,
+    "reach": 72,
+    "behavior": "aggressive_oasis_patrol",
+    "sprite_id": "f41faf53-de02-481a-b594-76c0c1b88380",
     "boss": false
   }
 }
