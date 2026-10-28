@@ -260,9 +260,11 @@
 
 /* Character equipment presentation: three readable columns without changing
    equipment buttons, rarity artwork, selected states or data bindings. */
+@media(min-width:1181px){
 #panelOverlay.inventory-mode .op-body-grid{
   grid-template-columns:minmax(400px,1.07fr) minmax(410px,1.18fr) minmax(215px,.61fr);
   gap:10px;
+}
 }
 #panelOverlay.inventory-mode .op-character-panel{
   min-width:0;
@@ -276,9 +278,7 @@
   padding:12px 9px;
   border:1px solid rgba(140,111,73,.55);
   border-radius:9px;
-  background:
-    radial-gradient(ellipse at 50% 12%,rgba(62,91,100,.44),transparent 70%),
-    linear-gradient(155deg,#192c31,#121e25 62%,#1e2e32);
+  background:var(--rpg-planks);
   box-shadow:inset 0 1px 0 rgba(246,218,161,.10),inset 0 0 18px rgba(0,0,0,.16);
 }
 #panelOverlay.inventory-mode .op-equip-side{
@@ -536,7 +536,54 @@
  .constellation-window .talent-reset{font-size:11px}
 }
 
+
+/* Nautical window polish: respect the existing breakpoints and native scrolling. */
+.op-section-nav{display:none}
+#panelOverlay.inventory-mode .op-category-tabs .ui-button{background:var(--rpg-planks);color:var(--rpg-text)}
+#panelOverlay.inventory-mode .op-category-tabs .ui-button.active{background:var(--rpg-paper-light);color:var(--rpg-ink);border-color:var(--rpg-brass)}
 @media(max-width:760px){
-  #mainMenu .character-menu-anchor:has(.character-notification-control){grid-column:span 2}
-  #mainMenu #characterMenuBrowse{width:32px;height:32px;min-height:32px}
+  .dialog-header,.ui-window-header{gap:12px;min-height:60px}
+  .dialog-header h2,.ui-window-header h2{font-size:20px;line-height:1.25}
+  .close-button,.op-close,.ui-close{width:44px;height:44px;min-height:44px}
+  .dialog-body,.ui-window-body{padding:12px;scroll-padding-block:12px}
+  :is(.dialog-body,.ui-window-body) :is(input:not([type=checkbox]):not([type=radio]):not([type=range]),select){font-size:16px;min-height:40px}
+  .dialog-body .ui-button,.ui-window-body .ui-button{min-height:40px;line-height:1.3}
+  #panelOverlay.inventory-mode .op-body-grid{grid-template-columns:minmax(0,1fr);gap:12px}
+  #panelOverlay.inventory-mode .op-panel{width:auto;min-width:0}
+  #panelOverlay.inventory-mode .op-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+  #panelOverlay.inventory-mode .op-tool-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  #panelOverlay.inventory-mode .op-search{grid-column:1/-1;width:100%;min-width:0}
+  #panelOverlay.inventory-mode .op-tool-row select{width:100%;min-width:0}
+  #panelOverlay.inventory-mode .op-tabs .ui-button{min-width:0;color:var(--rpg-ink);background:var(--rpg-paper)}
+  #panelOverlay.inventory-mode .op-tabs .ui-button.active{color:var(--rpg-text);background:var(--rpg-planks);border-color:var(--rpg-brass)}
+  #panelOverlay.inventory-mode .op-section-nav{display:flex;flex-basis:100%;gap:6px;border-top:1px solid #a4845077;padding-top:6px}
+  .op-section-nav a{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;min-height:40px;padding:5px;border:1px solid var(--rpg-brass);border-radius:3px;color:var(--rpg-text);text-decoration:none;font-size:12px;background:var(--rpg-planks)}
+  .op-section-nav a:hover{background:var(--rpg-wood-light)}
+  #panelOverlay.inventory-mode .op-panel{scroll-margin-top:130px}
+  #panelOverlay.inventory-mode .op-avatar-stage{height:132px;min-height:132px;width:140px}
+  #panelOverlay.inventory-mode .op-avatar-column{padding-bottom:8px}
+  .archipelago-islands .archipelago-island{display:flex;flex-direction:column;justify-content:flex-start;gap:6px;padding:12px 8px;min-width:0}
+  .archipelago-island .archipelago-island-copy{width:100%;min-width:0;text-align:center}
+  .archipelago-island-copy strong{font-size:13px;line-height:1.35;display:block}
+  .archipelago-island-copy small{font-size:12px;line-height:1.4;display:block;margin-top:4px}
+  .constellation-window .talent-budget{flex-wrap:wrap;justify-content:flex-end;gap:4px}
+  .constellation-window .talent-budget>strong{white-space:nowrap;font-size:22px}
+  .forge2-tabs{position:sticky;top:0;z-index:2;background:var(--rpg-planks);padding:6px;border-bottom:1px solid var(--rpg-brass)}
+}
+@media(min-width:761px) and (max-width:1180px){
+  #panelOverlay.inventory-mode .op-body-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #panelOverlay.inventory-mode .op-character-panel{grid-column:1/-1}
+  #panelOverlay.inventory-mode .op-info-panel{grid-column:auto;max-height:none}
+}
+@media(max-width:760px){.chat-open #huntXpTracker{visibility:hidden}}
+@media(min-width:761px) and (max-width:1024px){
+  .target-hud{left:calc(var(--profile-right,244px) + 12px);transform:none;width:min(240px,calc(var(--menu-left,412px) - var(--profile-right,244px) - 24px))}
+}
+@media(max-height:500px) and (orientation:landscape){
+  .target-hud{left:calc(var(--profile-right,228px) + 12px);transform:none;width:min(200px,calc(var(--menu-left,492px) - var(--profile-right,228px) - 24px))}
+}
+@media(max-width:600px) and (max-height:500px) and (orientation:landscape){
+  .target-hud{top:calc(var(--profile-bottom,180px) + 8px);left:8px;width:min(240px,calc(100vw - 190px))}
+  #huntXpTracker.hunt-xp-tracker{top:8px;bottom:auto;left:calc(var(--profile-right,228px) + 12px);right:auto;width:min(200px,calc(var(--menu-left,444px) - var(--profile-right,228px) - 24px))}
+  .hunt-xp-tracker .hunt-xp-track,.hunt-xp-tracker .hunt-xp-level{display:none}
 }
