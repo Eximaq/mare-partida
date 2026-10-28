@@ -1,7 +1,10 @@
 'use strict';
 /* Rendering only: this module owns no combat clocks, equipment or persistence. */
 ((root)=>{
-  const slots=['body','pants','boots','outfit','hair','accessory','weapon'];
+  const slotLabels=Object.freeze({cloak:'Capa',body:'Corpo-base',pants:'Calças',boots:'Calçados',outfit:'Roupa / armadura',belt:'Cinto',gloves:'Luvas',necklace:'Colar',hair:'Cabelo',head:'Cabeça',eyewear:'Óculos',accessory:'Acessório legado',charm:'Acessório',ring:'Anel',weapon:'Arma'});
+  const slots=Object.freeze(Object.keys(slotLabels));
+  // Preserve the historical depths of every existing layer.
+  const slotDepth=Object.freeze({cloak:-10,body:0,pants:10,boots:20,outfit:30,belt:32,gloves:35,necklace:37,hair:40,head:45,eyewear:47,accessory:50,charm:52,ring:54,weapon:60});
   const directions=['south','north','west','east'];
   const aliases={front:'south',back:'north',left:'west',right:'east'};
   const clone=value=>JSON.parse(JSON.stringify(value));
@@ -117,7 +120,7 @@
         const anchors=rigid?[[source.anchorX,source.anchorY],[source.height-1-source.anchorY,source.anchorX],[source.width-1-source.anchorX,source.height-1-source.anchorY],[source.anchorY,source.width-1-source.anchorX]]:null;
         const rootOffset=a.rootOffsets?.[direction]?.[frameIndex]||{x:0,y:0};
         const offsetX=rootOffset.x+(overrides.offsetX??byDirection.offsetX??clip.offsetX??0)+(rigid?socket.x-anchors[quarterTurns][0]:0),offsetY=rootOffset.y+(overrides.offsetY??byDirection.offsetY??clip.offsetY??0)+(rigid?socket.y-anchors[quarterTurns][1]:0);
-        const zIndex=overrides.zIndex??byDirection.zIndex??clip.zIndex??p.zIndex??slots.indexOf(slot)*10;
+        const zIndex=overrides.zIndex??byDirection.zIndex??clip.zIndex??p.zIndex??slotDepth[slot];
         if(![pivotX,pivotY,offsetX,offsetY,zIndex].every(integer)||pivotX<0||pivotX>r.frameWidth||pivotY<0||pivotY>r.frameHeight||Math.abs(offsetX)>512||Math.abs(offsetY)>512){problem('invalid-transform');continue;}
         let image;try{image=getImage(url);}catch{problem('failed-image');continue;}
         if(!image?.complete){problem('loading-image');continue;}
@@ -190,6 +193,6 @@
     const stats=()=>({hits,misses,fallbacks,compositions,cacheEntries:cache.size,cacheBytes:bytes,maxCacheBytes,maxCacheEntries});
     return {registerRig,registerPiece,sample,resolve,draw,attachmentPoint,clear,stats,rig:id=>rigs.has(id)?clone(rigs.get(id)):null,piece:id=>pieces.has(id)?clone(pieces.get(id)):null};
   }
-  const api={create,slots,directions};root.MarePaperDoll=api;
+  const api={create,slots,slotLabels,slotDepth,directions};root.MarePaperDoll=api;
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:window);

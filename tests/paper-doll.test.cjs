@@ -65,7 +65,7 @@ assert.throws(()=>engine.registerRig({...rig,pivotX:.5}),TypeError);assert.throw
 for(const code of ['empty-frame','static-animation','unreadable-image']){
  const invalid=create({getImage:image,createCanvas:canvas,validatePixels:()=>code});invalid.registerRig(rig);for(const p of definitions)invalid.registerPiece(p);assert(invalid.resolve(appearance,pose).missing.every(m=>m.code===code));
 }
-assert.equal(slots.length,7);
+assert.equal(new Set(slots).size,15,'independent visual slots, including legacy accessory');
 const failedCanvas=create({getImage:image,createCanvas:()=>({getContext:()=>null}),validatePixels:()=>null});failedCanvas.registerRig(rig);for(const p of definitions)failedCanvas.registerPiece(p);assert(!failedCanvas.draw(output,appearance,pose,0,0),'canvas allocation failure uses legacy fallback');
 const failedLoader=create({getImage:()=>{throw Error('invalid image URL')},createCanvas:canvas});failedLoader.registerRig(rig);for(const p of definitions)failedLoader.registerPiece(p);assert(failedLoader.resolve(appearance,pose).missing.every(m=>m.code==='failed-image'));
 const player={classId:'sword',factionId:'pirate',equipment:{weapon:{def:0},coat:{def:6}}},untouched=JSON.stringify(player);

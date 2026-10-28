@@ -292,3 +292,7 @@ Armas de disparo do pacote completo declaram `emission = {frame:3, points:{south
 ## Catálogo expansível de aparência
 
 Contrato de IDs, compatibilidade v1, prioridade de equipamentos e fallback de peças futuras: [Catálogo de aparência](PAPER-DOLL-CATALOGO.md). A criação e o editor compartilham os mesmos registros; opções experimentais continuam fora de produção.
+
+## Peças independentes por equipamento
+
+[Contrato de camadas e bindings](PAPER-DOLL-EQUIPAMENTOS.md): calças, calçados, luvas, capa, cabeça, óculos e acessórios coexistem no compositor existente. As artes individuais ainda precisam ser produzidas/aprovadas; os pixels e saves existentes permanecem preservados.

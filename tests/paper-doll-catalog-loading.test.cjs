@@ -43,5 +43,16 @@ async function load(pack,{badURL=null,badPixels=null}={}){
  const incomplete=makePack();delete incomplete.pieces.at(-1).animations['attack-tech'];
  const partial=await load(incomplete);assert.equal(partial.state.state,'ready');assert.equal(partial.r.inspect(player,{animationId:'idle',direction:'south',frameIndex:0}).layers.find(l=>l.slot==='hair').pieceId,'complete-hair');
  const requiredFailure=await load(makePack(),{badURL:'shared-hair-idle.png'});assert.equal(requiredFailure.state.state,'failed','required art failures still use the original renderer');
+ const equipmentPack=makePack(),cape=structuredClone(equipmentPack.pieces.find(p=>p.slot==='outfit'));
+ cape.id='test-cloak';cape.slot='cloak';cape.animations.idle.url='optional-cloak.png';equipmentPack.pieces.push(cape);
+ equipmentPack.bindings.cloak={slot:'cloak',items:{300:'test-cloak'}};
+ const equipped={...player,equipment:{...player.equipment,cloak:{def:300}}},pose={animationId:'idle',direction:'north',frameIndex:0};
+ const capeReady=await load(equipmentPack);assert.equal(capeReady.state.state,'ready');assert.equal(capeReady.r.inspect(equipped,pose).layers.find(l=>l.slot==='cloak').pieceId,'test-cloak');
+ assert(!capeReady.r.inspect(player,pose).layers.some(l=>l.slot==='cloak'),'an unequipped cape is never visible');
+ for(const fault of [{badURL:'optional-cloak.png'},{badPixels:'optional-cloak.png'}]){
+  const {r,state}=await load(equipmentPack,fault);assert.equal(state.state,'ready');const plan=r.inspect(equipped,pose);assert(plan.valid);assert(!plan.layers.some(l=>l.slot==='cloak'));assert(r.equipmentStatus(equipped).substitutions.some(x=>x.slot==='cloak'));
+ }
+ const unsafe=structuredClone(equipmentPack);unsafe.pieces.at(-1).animations.idle.url='../unsafe.png';
+ const rejected=await load(unsafe);assert.equal(rejected.state.state,'ready');assert(!rejected.r.inspect(equipped,pose).layers.some(l=>l.slot==='cloak'));
  console.log('Catalog loading: optional network/pixel/coverage failures use whole-piece defaults, core failures retain legacy fallback; <=6 decodes.');
 })().catch(e=>{console.error(e);process.exitCode=1;});

@@ -34,6 +34,41 @@
   const sharedPieces=sharedDefinitions.map(([id,slot,name])=>({id,slot,name,rigId:sharedRig.id,revision:1,approved:false,available:false,animations:{},source:'missing; no modular source supplied'}));
   const sharedBindings={weapon:{slot:'weapon',items:Object.fromEntries(Object.keys(weaponItems).map(id=>[id,'human-weapon-'+id]))},
     coat:{slot:'outfit',items:{6:'human-coat-6',7:'human-coat-7'}},head:{slot:'accessory',items:{18:'human-head-18'}}};
+  // Equipment keys are existing save/inventory keys, not new gameplay slots.
+  const equipmentLayers=Object.freeze({weapon:['weapon'],coat:['outfit'],legs:['pants'],boots:['boots'],gloves:['gloves'],cloak:['cloak'],head:['head','eyewear','accessory'],necklace:['necklace'],belt:['belt'],ring:['ring'],charm:['charm','accessory']});
+  Object.values(equipmentLayers).forEach(Object.freeze);
+  function equipmentBinding(pack,equipmentSlot,def){
+    const allowed=equipmentLayers[equipmentSlot],binding=pack.bindings?.[equipmentSlot];
+    if(!allowed||!binding?.items||!Object.hasOwn(binding.items,def))return [];
+    const value=binding.items[def],layers=typeof value==='string'?{[binding.slot||allowed[0]]:value}:value?.layers;
+    if(!layers||typeof layers!=='object'||Array.isArray(layers))return [];
+    const entries=Object.entries(layers);
+    if(!entries.length||entries.some(([slot,id])=>!allowed.includes(slot)||typeof id!=='string'||!/^[a-z][a-z0-9-]{0,63}$/.test(id)))return [];
+    return entries.map(([slot,pieceId])=>({slot,pieceId}));
+  }
+  function equipmentBindings(pack){
+    return Object.entries(pack.bindings||{}).flatMap(([equipmentSlot,binding])=>Object.keys(binding.items||{}).flatMap(def=>equipmentBinding(pack,equipmentSlot,def).map(entry=>({...entry,equipmentSlot,def}))));
+  }
+  function compatible(pack,piece,slot,{production=false}={}){
+    if(!piece||piece.slot!==slot||piece.rigId!==pack.rig.id||piece.available!==true||piece.approved!==production)return false;
+    return Object.entries(pack.rig.animations).every(([action,expected])=>{
+      const clip=piece.animations?.[action],directions=pack.coverage?.[action]||expected.directions;
+      return clip&&typeof clip.url==='string'&&clip.url.length>0&&clip.frames===expected.frames&&clip.fps===expected.fps&&clip.loop===expected.loop&&clip.frameWidth===pack.rig.frameWidth&&clip.frameHeight===pack.rig.frameHeight&&Array.isArray(clip.directions)&&new Set(clip.directions).size===clip.directions.length&&clip.directions.every(d=>expected.directions.includes(d))&&directions.every(d=>clip.directions.includes(d));
+    });
+  }
+  function equipmentPieces(pack,player,{production=false,unavailablePieces=new Set()}={}){
+    const pieces={},substitutions=[];
+    for(const equipmentSlot of Object.keys(equipmentLayers)){
+      if(equipmentSlot==='weapon')continue;
+      const item=player?.equipment?.[equipmentSlot];if(!item)continue;
+      const layers=equipmentBinding(pack,equipmentSlot,item.def);
+      const usable=layers.length&&layers.every(({slot,pieceId})=>!unavailablePieces.has(pieceId)&&compatible(pack,pack.pieces.find(p=>p.id===pieceId),slot,{production}));
+      const collision=layers.some(({slot,pieceId})=>pieces[slot]&&pieces[slot]!==pieceId);
+      if(!usable||collision){substitutions.push({slot:equipmentSlot,def:item.def,reason:collision?'conflicting-layers':'missing-art'});continue;}
+      for(const {slot,pieceId}of layers)pieces[slot]=pieceId;
+    }
+    return {pieces,substitutions};
+  }
   const memo=new WeakMap();
   function eligible(player){return Object.hasOwn(classes,player?.classId)&&Object.hasOwn(factions,player?.factionId)&&!player?.zoanTransformed;}
   function profile(player){
@@ -74,6 +109,6 @@
     const id=animationId(player,action);return id?runtime.sample(sharedRig.id,id,direction,time,options):null;
   }
   function createRuntime(options){const runtime=root.MarePaperDoll.create(options);for(const r of [rig,sharedRig])runtime.registerRig(r);for(const p of [...pieces,...sharedPieces])runtime.registerPiece(p);return runtime;}
-  const api={rig,pieces,defaults,bindings,reference,sharedRig,sharedPieces,sharedBindings,classes,factions,categories,weaponItems,profile,usesBodyWeapon,animationId,referenceFor,sample,appearance,eligible,createRuntime};root.MarePaperDollCatalog=api;
+  const api={rig,pieces,defaults,bindings,reference,sharedRig,sharedPieces,sharedBindings,classes,factions,categories,weaponItems,equipmentLayers,equipmentBinding,equipmentBindings,equipmentPieces,compatible,profile,usesBodyWeapon,animationId,referenceFor,sample,appearance,eligible,createRuntime};root.MarePaperDollCatalog=api;
   if(typeof module!=='undefined'&&module.exports)module.exports=api;
 })(typeof globalThis!=='undefined'?globalThis:window);

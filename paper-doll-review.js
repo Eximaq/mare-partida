@@ -33,16 +33,14 @@
     else{
       const type=catalog.weaponItems[weapon.def]?.[0],def=definition?.(weapon.def);
       if(type!==profile.category&&def?.type!==player.classId)return null;
-      const exact=pack.bindings.weapon.items[weapon.def];
-      result.pieces.weapon=exact||pack.bindings.weapon.items[catalog.classes[player.classId]?.weapon]||pack.categoryWeapons[profile.category];
+      const exact=catalog.equipmentBinding(pack,'weapon',weapon.def)[0]?.pieceId;
+      result.pieces.weapon=exact||catalog.equipmentBinding(pack,'weapon',catalog.classes[player.classId]?.weapon)[0]?.pieceId||pack.categoryWeapons[profile.category];
       if(!exact)result.substitutions.push({slot:'weapon',def:weapon.def,reason:'category-default'});
     }
-    for(const slot of ['coat','head','boots','legs','cloak','gloves']){
-      const item=player.equipment?.[slot];if(!item)continue;
-      const binding=pack.bindings[slot],piece=binding?.items?.[item.def];
-      if(piece)result.pieces[binding.slot]=piece;
-      else result.substitutions.push({slot,def:item.def,reason:'category-default'});
-    }
+    const equipment=catalog.equipmentPieces(pack,player,options);
+    // Optional gear never becomes a permanent cosmetic through pack defaults.
+    for(const slot of new Set(Object.values(catalog.equipmentLayers).flat()))if(slot!=='weapon'&&slot!=='outfit')delete result.pieces[slot];
+    Object.assign(result.pieces,equipment.pieces);result.substitutions.push(...equipment.substitutions);
     return result;
   }
   function appearance(pack,player,{production=false,definition=null,lookCatalog=root.MarePaperDollLook,unavailablePieces=new Set()}={}){
@@ -65,12 +63,12 @@
     }
     for(const [equipmentSlot,binding]of Object.entries(pack.bindings||{})){
       const item=player.equipment?.[equipmentSlot];if(!item||equipmentSlot==='weapon'&&bodyWeapon)continue;
-      const piece=Object.hasOwn(binding.items,item.def)?binding.items[item.def]:null;
-      if(piece)result.pieces[binding.slot]=piece;
+      const layers=catalog.equipmentBinding(pack,equipmentSlot,item.def);
+      if(layers.length)for(const {slot,pieceId}of layers)result.pieces[slot]=pieceId;
       else result.blocked.push({slot:binding.slot,pieceId:String(item.def),code:'unmapped-equipment'});
     }
     // Unsupported visible garments cannot silently disappear in a complete prototype.
-    for(const slot of ['head','boots','legs','cloak','gloves'])if(player.equipment?.[slot])result.blocked.push({slot:'accessory',pieceId:String(player.equipment[slot].def),code:'unmapped-equipment'});
+    for(const slot of Object.keys(catalog.equipmentLayers))if(slot!=='weapon'&&slot!=='coat'&&player.equipment?.[slot]&&!pack.bindings?.[slot])result.blocked.push({slot:'accessory',pieceId:String(player.equipment[slot].def),code:'unmapped-equipment'});
     return result;
   }
   function create({search='',devActive=false,production=false,definition=null,lookCatalog=root.MarePaperDollLook,getImage,fetch:fetcher=root.fetch?.bind(root),baseURL=root.location?.href,onChange=()=>{}}={}){
@@ -128,14 +126,15 @@
         for(const [category,pieceId]of Object.entries(data.categoryWeapons||{})){
           if(!Object.hasOwn(root.MarePaperDollCatalog.categories,category)||!data.pieces.some(p=>p.id===pieceId&&p.slot==='weapon'))throw Error('Arma de categoria inválida.');
         }
-        const requiredIds=new Set([...Object.values(data.appearance.pieces),...Object.values(data.categoryWeapons||{}),...Object.values(data.bindings||{}).flatMap(b=>Object.values(b.items||{}))]);
-        const optionalIds=new Set(Object.values(lookCatalog?.data.groups||{}).flatMap(g=>g.options.filter(o=>o.approved&&o.pieceId&&!requiredIds.has(o.pieceId)).map(o=>o.pieceId)));
+        const bindings=root.MarePaperDollCatalog.equipmentBindings(data);
+        const requiredIds=new Set([...Object.values(data.appearance.pieces),...Object.values(data.categoryWeapons||{}),...bindings.filter(b=>b.equipmentSlot==='weapon').map(b=>b.pieceId)]);
+        const optionalIds=new Set([...Object.values(lookCatalog?.data.groups||{}).flatMap(g=>g.options.filter(o=>o.approved&&o.pieceId).map(o=>o.pieceId)),...bindings.filter(b=>b.equipmentSlot!=='weapon').map(b=>b.pieceId)].filter(id=>!requiredIds.has(id)));
         const urls=new Set(),pieceURLs=new Map();
         const path=name=>{if(typeof name!=='string'||!/^[a-z0-9-]+\.png$/.test(name))throw Error('Fonte inválida.');return new URL(name,base).href;};
         for(const p of data.pieces){
           const optional=optionalIds.has(p.id),sources=new Set();
           try{
-            if(optional&&!lookCatalog.compatible(data,p,p.slot,{production}))throw Error('Opção sem cobertura completa.');
+            if(optional&&!root.MarePaperDollCatalog.compatible(data,p,p.slot,{production}))throw Error('Opção sem cobertura completa.');
             if(p.approved!==production||!p.available)throw Error('Estado da peça inválido.');
             const rangedClip=Object.entries(p.animations).find(([name])=>name.startsWith('attack-')&&ranged.has(name.slice(7)))?.[1];
             if(completePack&&p.slot==='weapon'&&rangedClip){
@@ -229,14 +228,14 @@
     if(!pack?.completeCategories)return {ready:false,issues:[],message:'Abra o pacote das sete classes para preparar equipamentos.'};
     if(!profile)return {ready:false,issues:[],message:player?.zoanTransformed?'Volte à forma humana para avaliar o conjunto.':'Personagem incompatível com este conjunto.'};
     const issues=[];
-    for(const slot of ['weapon','coat','head','boots','legs','cloak','gloves']){
+    for(const slot of Object.keys(catalog.equipmentLayers)){
       const item=player.equipment?.[slot];
       if(slot==='weapon'){
         if(profile.category==='unarmed'){if(!catalog.usesBodyWeapon(player))issues.push({slot,def:item?.def,reason:'wrong-category'});continue;}
         if(!item){issues.push({slot,def:null,reason:'missing-weapon'});continue;}
         if(catalog.weaponItems[item.def]?.[0]!==profile.category){issues.push({slot,def:item.def,reason:'wrong-category'});continue;}
       }
-      if(item&&!pack.bindings?.[slot]?.items?.[item.def])issues.push({slot,def:item.def,reason:'missing-art'});
+      if(item&&!catalog.equipmentBinding(pack,slot,item.def).length)issues.push({slot,def:item.def,reason:'missing-art'});
     }
     return {ready:issues.length===0,issues,message:issues.length?'Estas peças impedem o conjunto modular:':'Equipamento compatível com repouso, caminhada e ataque básico.'};
   }

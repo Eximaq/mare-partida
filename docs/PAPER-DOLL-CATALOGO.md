@@ -61,8 +61,9 @@ offsets, sockets, oclusões e profundidade seguem [PAPER-DOLL.md](PAPER-DOLL.md)
 A carga audita cada alternativa em todas as poses pelo motor, inclusive pixels.
 Erro de decode, peça não aprovada ou cobertura incompleta selecionam o padrão
 **para a peça inteira**, evitando trocas entre frames. O editor informa a falha
-sem apagar a preferência. Defaults, armas de categoria e peças de equipamentos
-são obrigatórios: falhas neles preservam o fallback atômico para o sprite antigo.
+sem apagar a preferência. Defaults e armas são obrigatórios: falhas neles
+preservam o fallback atômico para o sprite antigo. Peças adicionais de equipamentos
+são opcionais; a falha preserva o visual base e os atributos do item.
 
 Mantêm-se seis decodes simultâneos e o cache do compositor. Não há lazy loading:
 o manifesto ainda carrega todas as imagens. Medir download e memória mobile
@@ -78,7 +79,8 @@ antes de ampliar muito o catálogo.
 4. Executar testes e build. A exportação reúne PNGs referidos pelos manifestos
    de produção **e** DEV; aceita apenas nomes locais planos e não copia diretórios
    de geração em massa.
-5. Conferir criação, editor, equipamentos, save/reload, Zoan, desktop/mobile,
+5. Seguir [o contrato de peças independentes](PAPER-DOLL-EQUIPAMENTOS.md) para
+   calçados, calças, luvas, capas e acessórios. Conferir criação, editor, equipamentos, save/reload, Zoan, desktop/mobile,
    fallback e carregamento, antes da publicação aprovada.
 
 ## Verificação desta etapa

@@ -36,13 +36,7 @@
       return Object.entries(data.groups).filter(([key,g])=>entries[key][look[key]].hidden&&!(g.equipmentSlot&&player?.equipment?.[g.equipmentSlot])).map(([,g])=>g.slot);
     }
     // Whole-clip coverage prevents a selected garment reverting on individual frames.
-    function compatible(pack,piece,slot,{production=false}={}){
-      if(!piece||piece.slot!==slot||piece.rigId!==pack.rig.id||piece.available!==true||piece.approved!==production)return false;
-      return Object.entries(pack.rig.animations).every(([action,expected])=>{
-        const clip=piece.animations?.[action],directions=pack.coverage?.[action]||expected.directions;
-        return clip&&typeof clip.url==='string'&&clip.url.length>0&&clip.frames===expected.frames&&clip.fps===expected.fps&&clip.loop===expected.loop&&clip.frameWidth===pack.rig.frameWidth&&clip.frameHeight===pack.rig.frameHeight&&Array.isArray(clip.directions)&&new Set(clip.directions).size===clip.directions.length&&clip.directions.every(d=>expected.directions.includes(d))&&directions.every(d=>clip.directions.includes(d));
-      });
-    }
+    function compatible(pack,piece,slot,options){return root.MarePaperDollCatalog.compatible(pack,piece,slot,options);}
     function resolve(pack,player,{production=false,unavailablePieces=new Set()}={}){
       const pieces={...pack.appearance.pieces},cosmeticFallbacks=[],look=read(player);
       for(const [key,group]of Object.entries(data.groups)){
@@ -63,7 +57,7 @@
       const safe=valid(draft)?draft:defaults;
       const controls=fields('doll-look',safe);
       const fallbackNotice=equipment?.cosmeticFallbacks?.length?'<p role="status">Uma aparência selecionada está indisponível. Usamos o visual padrão; sua escolha continua salva.</p>':'';
-      const slots={weapon:'Arma',coat:'Torso',head:'Cabeça',boots:'Pés',legs:'Pernas',cloak:'Capa',gloves:'Mãos'};
+      const slots={weapon:'Arma',coat:'Torso',head:'Cabeça',boots:'Pés',legs:'Pernas',cloak:'Capa',gloves:'Mãos',necklace:'Colar',belt:'Cinto',ring:'Anel',charm:'Acessório'};
       const reasons={'empty-hands':'O Lutador usa mãos livres neste conjunto.','missing-weapon':'Equipe a arma inicial da classe.','wrong-category':'Arma de outra categoria.','missing-art':'Esta peça ainda não tem camada modular.'};
       const equipmentPanel=production?(equipment?.substitutions?.length?`<section class="doll-equipment"><h3>Aparência dos equipamentos</h3><p>As peças abaixo usam o visual padrão disponível. Seus atributos e bônus continuam ativos.</p><ul>${equipment.substitutions.map(i=>`<li>${E(slots[i.slot]||i.slot)} · ${E(defs[i.def]?.name||'Equipamento')}</li>`).join('')}</ul></section>`:''):equipment?`<section class="doll-equipment"><h3>Conjunto de equipamentos</h3><p>${E(equipment.message)}</p>${equipment.issues.length?`<ul>${equipment.issues.map(i=>`<li><strong>${E(slots[i.slot]||i.slot)}${i.def!==null?' · '+E(defs[i.def]?.name||'Item '+i.def):''}</strong><br>${E(reasons[i.reason]||i.reason)}</li>`).join('')}</ul><button type="button" data-doll-kit>Preparar conjunto de teste</button><p>Guarda as peças incompatíveis na mochila e equipa a arma inicial disponível. Se necessário, cria uma arma somente no laboratório. Não altera classe, facção ou save normal.</p>`:''}</section>`:'';
       return `<section class="doll-dressing"><header><h2>Seu personagem</h2><p>Uma aparência compartilhada entre classes e facções.</p></header><div class="doll-dressing-grid"><figure><canvas id="dollLookCanvas" width="252" height="252" aria-label="Prévia animada da aparência"></canvas><figcaption id="dollLookState" role="status">Carregando prévia…</figcaption><label>Direção<select id="dollLookDirection"><option value="south">Frente</option><option value="north">Costas</option><option value="west">Esquerda</option><option value="east">Direita</option></select></label><label>Movimento<select id="dollLookAction"><option value="idle">Repouso</option><option value="walk">Caminhada</option><option value="attack">Ataque</option></select></label></figure><div class="doll-dressing-controls">${controls}<p>${production?'A roupa equipada tem prioridade sobre a roupa padrão. Você pode mudar estas escolhas a qualquer momento.':'Armadura equipada substitui a roupa padrão. Armas e peças ainda sem camadas usam o personagem original.'}</p><p>${production?'A aparência é salva com seu progresso. Classe e facção continuam definindo seu estilo de combate e seus bônus.':'Prévia de laboratório. As alterações ficam somente no save de teste.'}</p><p role="status">${E(message)}</p><div class="doll-dressing-actions"><button type="button" data-doll-look-apply>Aplicar aparência</button><button type="button" data-doll-look-cancel>Descartar alterações</button></div>${fallbackNotice}${equipmentPanel}</div></div></section>`;
