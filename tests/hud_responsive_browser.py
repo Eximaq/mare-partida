@@ -18,7 +18,7 @@ def open_panel(q,name):
         open_panel(q,'status')
         q.get_by_role('button',name='Personalizar aparência',exact=True).click()
     elif name in ['status','talents','achievements','haki','akuma','hierarchy']:
-        q.locator('#characterMenuBrowse').click()
+        q.locator('#characterMenuTrigger').click()
         q.locator('[data-character-section='+name+']').click()
     elif name in ['map','prison']:
         q.locator('#modesMenuTrigger').click()
@@ -33,6 +33,19 @@ with sync_playwright() as p:
     for w,h in SIZES:
         c,q=page_for(b,copy.deepcopy(seed),(w,h),errors)
         before={k:saved(q).get(k) for k in KEYS}
+        trigger=q.locator('#characterMenuTrigger');menu=q.locator('#characterQuickMenu')
+        assert q.locator('#characterMenuBrowse').count()==0,'no secondary arrow control'
+        assert trigger.get_attribute('aria-haspopup')=='menu'
+        assert trigger.get_attribute('aria-controls')=='characterQuickMenu'
+        assert trigger.locator('.hud-notification-badge').is_visible(),'fixture must expose pending points'
+        trigger.click();assert menu.is_visible() and not q.locator('#panelOverlay').is_visible()
+        assert trigger.get_attribute('aria-expanded')=='true'
+        trigger.click();assert not menu.is_visible()
+        q.keyboard.press('p');assert menu.is_visible()
+        q.keyboard.press('ArrowDown')
+        assert q.locator(':focus').get_attribute('data-character-section')=='talents'
+        q.keyboard.press('Escape');assert not menu.is_visible()
+        assert trigger.evaluate('e=>e===document.activeElement')
         for name in SECTIONS:
             open_panel(q,name)
             content=q.locator('#dialogBody')

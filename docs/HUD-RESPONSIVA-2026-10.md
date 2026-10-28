@@ -40,6 +40,11 @@ teclado virtual de iOS/Android e aparelhos físicos não foram ensaiados.
 
 ## Manutenção
 
+Correção de acesso ao Personagem: o próprio ícone abre/fecha a lista de seções,
+inclusive com pendências. A seta adicional foi removida. Os badges continuam
+no ícone e nas seções; não redirecionam automaticamente para uma janela.
+Tecla P, setas, Escape e retorno do foco usam o mesmo acionador.
+
 - Respeitar os breakpoints de 1180 e 760 px; colunas com mínimos de desktop
   devem existir apenas na media query correspondente.
 - Reusar `--rpg-planks`, `--rpg-brass`, `--rpg-paper` e `--rpg-text`.

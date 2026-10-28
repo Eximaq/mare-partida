@@ -29,7 +29,7 @@ def loaded(q):
     q.wait_for_function("[...document.querySelectorAll('#dialogBody img,.class-art img')].filter(i=>i.getClientRects().length).every(i=>i.complete&&i.naturalWidth>0)")
 def open_surface(q,name):
     if name in ['status','talents','achievements','haki','akuma']:
-        q.locator('#characterMenuBrowse').click();q.locator('[data-character-section='+name+']').click()
+        q.locator('#characterMenuTrigger').click();q.locator('[data-character-section='+name+']').click()
     elif name in ['map','prison']:
         q.locator('#modesMenuTrigger').click();q.locator('[data-quick-mode='+name+']').click()
     elif name=='shop':

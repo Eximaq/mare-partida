@@ -23,7 +23,7 @@ def fixture(template):
     return g
 def panel(q,key):
     if key=='character':
-        q.locator('#characterMenuBrowse').click();q.locator('[data-character-section=status]').click();return
+        q.locator('#characterMenuTrigger').click();q.locator('[data-character-section=status]').click();return
     q.locator('.bottom-nav [data-panel="'+('modes' if key in ['map','prison'] else key)+'"]').click()
     if key in ['map','prison']:q.locator('[data-quick-mode="'+key+'"]').click()
 def close(q):q.locator('[data-close-panel]' if q.locator('#panelOverlay.inventory-mode').count() else '#closePanel').click()
