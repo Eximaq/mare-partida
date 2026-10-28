@@ -10,6 +10,7 @@ Abra **Modos de jogo (M) → Impel Down**. O modo permanece separado do Mapa do 
 - Um adversário por andar, sorteado do catálogo existente de monstros comuns. Não há filtro pelo nível do jogador.
 - HP, ataque e defesa: atributo base × 1.30 ** (andar − 1), arredondado para inteiro. Movimento e velocidade de ataque não são multiplicados. A fórmula não aparece na HUD.
 - Chefes nos andares 5, 10, 15…100. A função spawnImpelDownBoss é o ponto de substituição pelos IDs futuros; hoje reutiliza a arte de boss existente e atributos fortes do catálogo, explicitamente identificado como Guardião Provisório.
+- Atualização de28/10/2026: o inimigo se aproxima e ataca por iniciativa própria, mesmo sem receber dano. A neutralidade e o limite de perseguição das caçadas comuns não se aplicam ao duelo de Impel Down.
 - Jogador à esquerda (480,736), inimigo à direita (1744,736). O encontro usa navegação, alcance, animações, impactos, habilidades e controles reais da engine.
 - Vitória mostra **Andar Concluído**, salva e avança automaticamente, inclusive antes dos chefes. Restaura a vida e as posições, mantém recargas e energia. Ataques, projéteis e controles do encontro anterior são descartados.
 - Queda mantém o mesmo andar e o mesmo monstro, reiniciando o duelo com vida restaurada após o respawn. Não concede progresso.

@@ -1,3 +1,9 @@
+## 28/10/2026 — Patrulha dos monstros e agressividade em Impel Down
+
+Monstros das nove regiões caminham e fazem pausas perto do ponto fixo (raio máximo72px), respeitando colisões e controles. Permanecem neutros até receber dano; respawns e limites de perseguição são preservados. Em Impel Down, o adversário inicia a aproximação e o ataque sem provocação, atravessando a arena por navegação.
+
+Regressões cobrem patrulha, bloqueios, isolamento de agressão, nove mapas, respawn persistente e aproximação/ataque contra jogador parado em Impel Down. Sem geração de arte ou alteração de atributos/recompensas. Validação:137 testes Node aprovados, testes de navegador das nove regiões e de Impel Down aprovados tanto na fonte quanto no pacote Pages; build estático concluído.
+
 ## 23/10/2026 — Animação da Katana da Maelstrom e upgrade da Nodachi de Fogo
 
 Branch `feature/katana-maelstrom-slot-animation`, baseada na `main` `ffc9ca2`. A folha RGBA 256×256 fornecida pelo proprietário foi preservada como está; seus 16 quadros 64×64 animam o item na mochila e no equipamento em loop de 0,5 s. A imagem estática continua nos detalhes fora dos slots. A Nodachi de Fogo passa a Lendária pela escala existente; a Forja v4 migra cópias antigas de Épica, conserva os extras anteriores e completa os espaços da nova raridade com valores determinísticos. Sem mudança manual nos atributos base ou no combate.
