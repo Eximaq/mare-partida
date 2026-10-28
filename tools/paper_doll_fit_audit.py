@@ -2,7 +2,7 @@
 
 This checks one static pose. It does not approve artwork or animation coverage.
 """
-import argparse,json
+import argparse,json,math
 from pathlib import Path
 from PIL import Image
 
@@ -93,6 +93,36 @@ def audit_changes_layer(base_path,layer_path,mask_path,contact,allow_body_occlus
             'changed_body_pixels':body_changes,'hand_contact_pixels':len(contacts),
             'anchor_contact_pixels':len(contacts),
             'layer_bbox':layer.getbbox()}
+
+
+def audit_material_coverage(base_path,edited_path,required_mask_path,reference_layer_path,min_ratio=.95,max_rgb_distance=48):
+    """Detect unchanged skin where an isolated reference garment must cover it.
+
+    The caller supplies an explicit, nonempty required region (e.g. calves),
+    not the whole editable mask. This is a rejection gate, never art approval.
+    It neither extracts nor changes pixels and cannot certify pose continuity.
+    """
+    if isinstance(min_ratio,bool) or not math.isfinite(min_ratio) or not 0<min_ratio<=1:
+        raise ValueError('Coverage ratio must be finite and in (0,1].')
+    if isinstance(max_rgb_distance,bool) or not math.isfinite(max_rgb_distance) or max_rgb_distance<=0:
+        raise ValueError('Color distance must be finite and positive.')
+    base=Image.open(base_path).convert('RGBA');edited=Image.open(edited_path).convert('RGBA');ref=Image.open(reference_layer_path).convert('RGBA')
+    if base.size!=edited.size or ref.size!=base.size:raise ValueError('Native canvases must match.')
+    required=allowed_pixels(base,mask_path=required_mask_path)
+    bp=list(pixels(base));ep=list(pixels(edited));material={c[:3] for c in pixels(ref) if c[3]==255}
+    if not material or any(bp[i][3]!=255 for i in required):raise ValueError('Reference and required body pixels must be visible.')
+    original={bp[i][:3] for i in required};covered=[];missing=[]
+    def distance(c,colors):return min(sum((c[k]-other[k])**2 for k in range(3)) for other in colors)
+    for i in sorted(required):
+        c=ep[i];d=distance(c,material)
+        ok=c[3]==255 and d<=max_rgb_distance**2 and d<distance(c,original)
+        (covered if ok else missing).append(i)
+    ratio=len(covered)/len(required)
+    return {'passed':ratio>=min_ratio,'artwork_approved':False,
+            'scope':'material coverage only; pose, motion and artwork require visual inspection',
+            'required_pixels':len(required),'covered_pixels':len(covered),'coverage_ratio':ratio,
+            'minimum_ratio':min_ratio,'uncovered_pixels':len(missing),
+            'uncovered_sample':[[i%base.width,i//base.width] for i in missing[:16]]}
 
 
 def inspection_draft(base_path,edit_path,layer_path,composite_path,region=None,mask_path=None):

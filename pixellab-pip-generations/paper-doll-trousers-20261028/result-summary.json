@@ -1,0 +1,104 @@
+{
+  "scope": "Incomplete trouser production. Four static references; seven outfit-transfer batches. No further jobs after failed material/pose gates.",
+  "approved": false,
+  "productionEnabled": false,
+  "targetFrames": 240,
+  "reviewLocomotionFrames": 24,
+  "missingOrUnapprovedFrames": 216,
+  "rawTransferFrames": 105,
+  "batchesSubmitted": [
+    0,
+    1,
+    4,
+    8,
+    12,
+    9,
+    13
+  ],
+  "batchesNotSubmitted": [
+    2,
+    3,
+    5,
+    6,
+    7,
+    10,
+    11,
+    14,
+    15
+  ],
+  "chargedGenerations": 90.0,
+  "previousConfirmedGenerations": 46,
+  "overallConfirmedGenerations": 136,
+  "unknownChargeReservation": 1,
+  "overallCommittedGenerations": 137,
+  "stageCap": 420,
+  "overallCap": 840,
+  "jobs": [
+    {
+      "jobId": "a2616501-a1fe-4e02-a751-2836bc7a2827",
+      "tool": "inpaint_image_pro_flash",
+      "chargedGenerations": 5.0,
+      "outcome": "static-reference-only"
+    },
+    {
+      "jobId": "225684d4-64b4-4e5a-bce5-2a87947ccb7b",
+      "tool": "inpaint_image_pro_flash",
+      "chargedGenerations": 5.0,
+      "outcome": "static-reference-only"
+    },
+    {
+      "jobId": "0a97d3c2-15d1-45be-ad31-13e9a8accbb6",
+      "tool": "inpaint_image_pro_flash",
+      "chargedGenerations": 5.0,
+      "outcome": "static-reference-only"
+    },
+    {
+      "jobId": "00aded9b-4247-4ef1-825f-844962482c7f",
+      "tool": "inpaint_image_pro_flash",
+      "chargedGenerations": 5.0,
+      "outcome": "static-reference-only"
+    },
+    {
+      "jobId": "004c5218-465b-4d72-a3bd-3fa925b503f6",
+      "tool": "transfer_outfit",
+      "chargedGenerations": 10.0,
+      "outcome": "masked-static-candidates-reviewable"
+    },
+    {
+      "jobId": "1819ac87-48ce-457c-84df-baba05c1719c",
+      "tool": "transfer_outfit",
+      "chargedGenerations": 10.0,
+      "outcome": "rejected-original-shorts-retained"
+    },
+    {
+      "jobId": "f968af90-af90-4ae6-8d7a-44a061447d71",
+      "tool": "transfer_outfit",
+      "chargedGenerations": 10.0,
+      "outcome": "rejected-original-shorts-retained"
+    },
+    {
+      "jobId": "f6c9078c-8f45-414a-a277-dfef14a19b5d",
+      "tool": "transfer_outfit",
+      "chargedGenerations": 10.0,
+      "outcome": "profile-motion-reference-pass"
+    },
+    {
+      "jobId": "d1c5a219-8b9b-44df-a37a-11efc909bb9e",
+      "tool": "transfer_outfit",
+      "chargedGenerations": 10.0,
+      "outcome": "profile-motion-reference-pass"
+    },
+    {
+      "jobId": "0c67f8ea-82b2-45b4-84c1-09e8bf1e86ef",
+      "tool": "transfer_outfit",
+      "chargedGenerations": 10.0,
+      "outcome": "rejected-leg-pose-drift"
+    },
+    {
+      "jobId": "e7da90b1-e62e-450c-baac-a535ef4aa283",
+      "tool": "transfer_outfit",
+      "chargedGenerations": 10.0,
+      "outcome": "rejected-facing-and-leg-pose-drift"
+    }
+  ]
+}

@@ -1,0 +1,112 @@
+{
+  "direction": "west",
+  "frames": [
+    "body-idle-west-00.png",
+    "body-idle-west-01.png",
+    "body-idle-west-02.png",
+    "body-idle-west-03.png",
+    "body-walk-west-00.png",
+    "body-walk-west-01.png",
+    "body-walk-west-02.png",
+    "body-walk-west-03.png",
+    "body-walk-west-04.png",
+    "body-walk-west-05.png",
+    "body-walk-west-06.png",
+    "body-walk-west-07.png",
+    "body-attack-sword-west-00.png",
+    "body-attack-sword-west-01.png",
+    "body-attack-sword-west-02.png"
+  ],
+  "poses": [
+    {
+      "file": "body-idle-west-00.png",
+      "animationId": "idle",
+      "direction": "west",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-idle-west-01.png",
+      "animationId": "idle",
+      "direction": "west",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-idle-west-02.png",
+      "animationId": "idle",
+      "direction": "west",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-idle-west-03.png",
+      "animationId": "idle",
+      "direction": "west",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-walk-west-00.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-walk-west-01.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-walk-west-02.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-walk-west-03.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-walk-west-04.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-walk-west-05.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-walk-west-06.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-walk-west-07.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-sword-west-00.png",
+      "animationId": "attack-sword",
+      "direction": "west",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-sword-west-01.png",
+      "animationId": "attack-sword",
+      "direction": "west",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-sword-west-02.png",
+      "animationId": "attack-sword",
+      "direction": "west",
+      "frameIndex": 2
+    }
+  ]
+}

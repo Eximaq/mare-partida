@@ -1,5 +1,10 @@
 # Produção de equipamentos — referências de 28/10/2026
 
+Continuação mais recente: [handoff da calça para o colaborador](HANDOFF-CALCAS-PAPER-DOLL.md).
+A tentativa completa consumiu 90 gerações nesta rodada e parou por falhas de
+cobertura/postura. Há uma prévia parcial de 24 frames, sem ativação no jogo.
+O acumulado está em 136 gerações confirmadas, mais reserva desconhecida de 1.
+
 O proprietário retomou a execução automática do plano de dez peças, com teto
 de 840 gerações e sem tentativas extras. A inspeção das referências bloqueou os
 lotes de animação. **O conjunto visual completo ainda não está pronto.**

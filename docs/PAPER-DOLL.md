@@ -1,5 +1,7 @@
 # Paper Doll 1.0 — Fase 1
 
+Continuidade de equipamentos: [handoff da calça e limites atuais](HANDOFF-CALCAS-PAPER-DOLL.md).
+
 Estado atual de 27/10: [integração do personagem único na aventura normal](PAPER-DOLL-JOGO-NORMAL.md), com manifesto de produção separado e aparência persistente. Os contratos e estudos históricos abaixo permanecem preservados.
 
 ## Contrato adicional de encaixes — 24/10/2026

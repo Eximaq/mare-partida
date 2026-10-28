@@ -54,10 +54,15 @@ with sync_playwright() as p:
   if not d['path']:break
  assert not state(q)['path'],'Boss approach path did not finish'
  assert not state(q)['autoPlay'],'Approach point must not click a monster or enable attacks'
+ # Fixed-spawn monsters are neutral until hit. Explicitly select the real boss
+ # through the canvas before expecting its attack warning; proximity is not aggro.
+ d=state(q);boss=next(m for m in d['mobs'] if m['type']=='boss');box=q.locator('#worldCanvas').bounding_box();zoom=d['camera']['zoom']
+ q.mouse.click(box['x']+(boss['x']-d['camera']['x'])*zoom,box['y']+(boss['y']-30-d['camera']['y'])*zoom)
+ assert state(q)['autoPlay'],'Selecting the boss must start combat'
  for _ in range(150):
   q.clock.run_for(200)
   if any(m['telegraph'] for m in state(q)['mobs']):warned=True;break
- assert warned,{'hero':state(q)['hero'],'bosses':[m for m in state(q)['mobs'] if m['type']=='boss']};q.screenshot(path=str(OUT/'chefe-aviso.png'));q.locator('#autoToggle').click()
+ assert warned,{'hero':state(q)['hero'],'bosses':[m for m in state(q)['mobs'] if m['type']=='boss']};q.screenshot(path=str(OUT/'chefe-aviso.png'))
  for _ in range(240):
   q.clock.run_for(1000)
   if state(q)['hunt']['progress']['areas']['beach']['bosses']>0:break

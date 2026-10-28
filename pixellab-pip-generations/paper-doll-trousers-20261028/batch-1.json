@@ -1,0 +1,112 @@
+{
+  "direction": "south",
+  "frames": [
+    "body-attack-sword-south-03.png",
+    "body-attack-sword-south-04.png",
+    "body-attack-sword-south-05.png",
+    "body-attack-sword-south-06.png",
+    "body-attack-sword-south-07.png",
+    "body-attack-unarmed-south-00.png",
+    "body-attack-unarmed-south-01.png",
+    "body-attack-unarmed-south-02.png",
+    "body-attack-unarmed-south-03.png",
+    "body-attack-unarmed-south-04.png",
+    "body-attack-unarmed-south-05.png",
+    "body-attack-unarmed-south-06.png",
+    "body-attack-unarmed-south-07.png",
+    "body-attack-firearm-south-00.png",
+    "body-attack-firearm-south-01.png"
+  ],
+  "poses": [
+    {
+      "file": "body-attack-sword-south-03.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-sword-south-04.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-sword-south-05.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-sword-south-06.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-sword-south-07.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-unarmed-south-00.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-unarmed-south-01.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-unarmed-south-02.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-unarmed-south-03.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-unarmed-south-04.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-unarmed-south-05.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-unarmed-south-06.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-unarmed-south-07.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-firearm-south-00.png",
+      "animationId": "attack-firearm",
+      "direction": "south",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-firearm-south-01.png",
+      "animationId": "attack-firearm",
+      "direction": "south",
+      "frameIndex": 1
+    }
+  ]
+}

@@ -1,0 +1,1811 @@
+{
+  "version": 1,
+  "generationPerformed": false,
+  "sourceHashes": {
+    "shared-body-idle.png": "b04361d22abe344f5fba079994b5625c6fe4822b308dc5ca7478300deab43348",
+    "shared-body-walk.png": "a5c81f23d0172f7a7a87000cb1e2e64169959e5dd4b5740e34216944653c5ded",
+    "sword-body-attack.png": "b59089c2c0232960c826a3922e36158a9141e92186b5d0d65267ac00670b793b",
+    "unarmed-body-punch.png": "fee5cdbc6b47bef2e3de849bb97778c2caa3aa6565c46fddab191e56e1b797cf",
+    "firearm-body-firearm.png": "a6505ee8097eb8f5b9b426587a22b93059a167014cbf39020d99b1f04a1c2b12",
+    "daggers-body-daggers.png": "128ff22877d769241d6475418253c6129fd6be609bb83b15223e887cf86dbf43",
+    "body-focus.png": "c339ac7cfe2d95d9289695f9ed362cb1c78d7afc99a6bde3db696db2b56a0feb"
+  },
+  "sourceCanvas": [
+    84,
+    84
+  ],
+  "inputCanvas": [
+    64,
+    64
+  ],
+  "crop": [
+    10,
+    13,
+    74,
+    77
+  ],
+  "pivot": {
+    "x": 32,
+    "y": 52
+  },
+  "restorePadding": {
+    "left": 10,
+    "top": 13,
+    "right": 10,
+    "bottom": 7
+  },
+  "frames": [
+    {
+      "file": "body-idle-south-00.png",
+      "animationId": "idle",
+      "direction": "south",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-idle-south-01.png",
+      "animationId": "idle",
+      "direction": "south",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-idle-south-02.png",
+      "animationId": "idle",
+      "direction": "south",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-idle-south-03.png",
+      "animationId": "idle",
+      "direction": "south",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-idle-north-00.png",
+      "animationId": "idle",
+      "direction": "north",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-idle-north-01.png",
+      "animationId": "idle",
+      "direction": "north",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-idle-north-02.png",
+      "animationId": "idle",
+      "direction": "north",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-idle-north-03.png",
+      "animationId": "idle",
+      "direction": "north",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-idle-west-00.png",
+      "animationId": "idle",
+      "direction": "west",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-idle-west-01.png",
+      "animationId": "idle",
+      "direction": "west",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-idle-west-02.png",
+      "animationId": "idle",
+      "direction": "west",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-idle-west-03.png",
+      "animationId": "idle",
+      "direction": "west",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-idle-east-00.png",
+      "animationId": "idle",
+      "direction": "east",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-idle-east-01.png",
+      "animationId": "idle",
+      "direction": "east",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-idle-east-02.png",
+      "animationId": "idle",
+      "direction": "east",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-idle-east-03.png",
+      "animationId": "idle",
+      "direction": "east",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-walk-south-00.png",
+      "animationId": "walk",
+      "direction": "south",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-walk-south-01.png",
+      "animationId": "walk",
+      "direction": "south",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-walk-south-02.png",
+      "animationId": "walk",
+      "direction": "south",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-walk-south-03.png",
+      "animationId": "walk",
+      "direction": "south",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-walk-south-04.png",
+      "animationId": "walk",
+      "direction": "south",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-walk-south-05.png",
+      "animationId": "walk",
+      "direction": "south",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-walk-south-06.png",
+      "animationId": "walk",
+      "direction": "south",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-walk-south-07.png",
+      "animationId": "walk",
+      "direction": "south",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-walk-north-00.png",
+      "animationId": "walk",
+      "direction": "north",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-walk-north-01.png",
+      "animationId": "walk",
+      "direction": "north",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-walk-north-02.png",
+      "animationId": "walk",
+      "direction": "north",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-walk-north-03.png",
+      "animationId": "walk",
+      "direction": "north",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-walk-north-04.png",
+      "animationId": "walk",
+      "direction": "north",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-walk-north-05.png",
+      "animationId": "walk",
+      "direction": "north",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-walk-north-06.png",
+      "animationId": "walk",
+      "direction": "north",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-walk-north-07.png",
+      "animationId": "walk",
+      "direction": "north",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-walk-west-00.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-walk-west-01.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-walk-west-02.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-walk-west-03.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-walk-west-04.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-walk-west-05.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-walk-west-06.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-walk-west-07.png",
+      "animationId": "walk",
+      "direction": "west",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-walk-east-00.png",
+      "animationId": "walk",
+      "direction": "east",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-walk-east-01.png",
+      "animationId": "walk",
+      "direction": "east",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-walk-east-02.png",
+      "animationId": "walk",
+      "direction": "east",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-walk-east-03.png",
+      "animationId": "walk",
+      "direction": "east",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-walk-east-04.png",
+      "animationId": "walk",
+      "direction": "east",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-walk-east-05.png",
+      "animationId": "walk",
+      "direction": "east",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-walk-east-06.png",
+      "animationId": "walk",
+      "direction": "east",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-walk-east-07.png",
+      "animationId": "walk",
+      "direction": "east",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-sword-south-00.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-sword-south-01.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-sword-south-02.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-sword-south-03.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-sword-south-04.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-sword-south-05.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-sword-south-06.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-sword-south-07.png",
+      "animationId": "attack-sword",
+      "direction": "south",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-sword-north-00.png",
+      "animationId": "attack-sword",
+      "direction": "north",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-sword-north-01.png",
+      "animationId": "attack-sword",
+      "direction": "north",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-sword-north-02.png",
+      "animationId": "attack-sword",
+      "direction": "north",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-sword-north-03.png",
+      "animationId": "attack-sword",
+      "direction": "north",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-sword-north-04.png",
+      "animationId": "attack-sword",
+      "direction": "north",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-sword-north-05.png",
+      "animationId": "attack-sword",
+      "direction": "north",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-sword-north-06.png",
+      "animationId": "attack-sword",
+      "direction": "north",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-sword-north-07.png",
+      "animationId": "attack-sword",
+      "direction": "north",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-sword-west-00.png",
+      "animationId": "attack-sword",
+      "direction": "west",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-sword-west-01.png",
+      "animationId": "attack-sword",
+      "direction": "west",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-sword-west-02.png",
+      "animationId": "attack-sword",
+      "direction": "west",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-sword-west-03.png",
+      "animationId": "attack-sword",
+      "direction": "west",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-sword-west-04.png",
+      "animationId": "attack-sword",
+      "direction": "west",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-sword-west-05.png",
+      "animationId": "attack-sword",
+      "direction": "west",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-sword-west-06.png",
+      "animationId": "attack-sword",
+      "direction": "west",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-sword-west-07.png",
+      "animationId": "attack-sword",
+      "direction": "west",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-sword-east-00.png",
+      "animationId": "attack-sword",
+      "direction": "east",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-sword-east-01.png",
+      "animationId": "attack-sword",
+      "direction": "east",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-sword-east-02.png",
+      "animationId": "attack-sword",
+      "direction": "east",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-sword-east-03.png",
+      "animationId": "attack-sword",
+      "direction": "east",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-sword-east-04.png",
+      "animationId": "attack-sword",
+      "direction": "east",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-sword-east-05.png",
+      "animationId": "attack-sword",
+      "direction": "east",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-sword-east-06.png",
+      "animationId": "attack-sword",
+      "direction": "east",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-sword-east-07.png",
+      "animationId": "attack-sword",
+      "direction": "east",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-unarmed-south-00.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-unarmed-south-01.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-unarmed-south-02.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-unarmed-south-03.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-unarmed-south-04.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-unarmed-south-05.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-unarmed-south-06.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-unarmed-south-07.png",
+      "animationId": "attack-unarmed",
+      "direction": "south",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-unarmed-west-00.png",
+      "animationId": "attack-unarmed",
+      "direction": "west",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-unarmed-west-01.png",
+      "animationId": "attack-unarmed",
+      "direction": "west",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-unarmed-west-02.png",
+      "animationId": "attack-unarmed",
+      "direction": "west",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-unarmed-west-03.png",
+      "animationId": "attack-unarmed",
+      "direction": "west",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-unarmed-west-04.png",
+      "animationId": "attack-unarmed",
+      "direction": "west",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-unarmed-west-05.png",
+      "animationId": "attack-unarmed",
+      "direction": "west",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-unarmed-west-06.png",
+      "animationId": "attack-unarmed",
+      "direction": "west",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-unarmed-west-07.png",
+      "animationId": "attack-unarmed",
+      "direction": "west",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-unarmed-east-00.png",
+      "animationId": "attack-unarmed",
+      "direction": "east",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-unarmed-east-01.png",
+      "animationId": "attack-unarmed",
+      "direction": "east",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-unarmed-east-02.png",
+      "animationId": "attack-unarmed",
+      "direction": "east",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-unarmed-east-03.png",
+      "animationId": "attack-unarmed",
+      "direction": "east",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-unarmed-east-04.png",
+      "animationId": "attack-unarmed",
+      "direction": "east",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-unarmed-east-05.png",
+      "animationId": "attack-unarmed",
+      "direction": "east",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-unarmed-east-06.png",
+      "animationId": "attack-unarmed",
+      "direction": "east",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-unarmed-east-07.png",
+      "animationId": "attack-unarmed",
+      "direction": "east",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-unarmed-north-00.png",
+      "animationId": "attack-unarmed",
+      "direction": "north",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-unarmed-north-01.png",
+      "animationId": "attack-unarmed",
+      "direction": "north",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-unarmed-north-02.png",
+      "animationId": "attack-unarmed",
+      "direction": "north",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-unarmed-north-03.png",
+      "animationId": "attack-unarmed",
+      "direction": "north",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-unarmed-north-04.png",
+      "animationId": "attack-unarmed",
+      "direction": "north",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-unarmed-north-05.png",
+      "animationId": "attack-unarmed",
+      "direction": "north",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-unarmed-north-06.png",
+      "animationId": "attack-unarmed",
+      "direction": "north",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-unarmed-north-07.png",
+      "animationId": "attack-unarmed",
+      "direction": "north",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-firearm-south-00.png",
+      "animationId": "attack-firearm",
+      "direction": "south",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-firearm-south-01.png",
+      "animationId": "attack-firearm",
+      "direction": "south",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-firearm-south-02.png",
+      "animationId": "attack-firearm",
+      "direction": "south",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-firearm-south-03.png",
+      "animationId": "attack-firearm",
+      "direction": "south",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-firearm-south-04.png",
+      "animationId": "attack-firearm",
+      "direction": "south",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-firearm-south-05.png",
+      "animationId": "attack-firearm",
+      "direction": "south",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-firearm-south-06.png",
+      "animationId": "attack-firearm",
+      "direction": "south",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-firearm-south-07.png",
+      "animationId": "attack-firearm",
+      "direction": "south",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-firearm-north-00.png",
+      "animationId": "attack-firearm",
+      "direction": "north",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-firearm-north-01.png",
+      "animationId": "attack-firearm",
+      "direction": "north",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-firearm-north-02.png",
+      "animationId": "attack-firearm",
+      "direction": "north",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-firearm-north-03.png",
+      "animationId": "attack-firearm",
+      "direction": "north",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-firearm-north-04.png",
+      "animationId": "attack-firearm",
+      "direction": "north",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-firearm-north-05.png",
+      "animationId": "attack-firearm",
+      "direction": "north",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-firearm-north-06.png",
+      "animationId": "attack-firearm",
+      "direction": "north",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-firearm-north-07.png",
+      "animationId": "attack-firearm",
+      "direction": "north",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-firearm-west-00.png",
+      "animationId": "attack-firearm",
+      "direction": "west",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-firearm-west-01.png",
+      "animationId": "attack-firearm",
+      "direction": "west",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-firearm-west-02.png",
+      "animationId": "attack-firearm",
+      "direction": "west",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-firearm-west-03.png",
+      "animationId": "attack-firearm",
+      "direction": "west",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-firearm-west-04.png",
+      "animationId": "attack-firearm",
+      "direction": "west",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-firearm-west-05.png",
+      "animationId": "attack-firearm",
+      "direction": "west",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-firearm-west-06.png",
+      "animationId": "attack-firearm",
+      "direction": "west",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-firearm-west-07.png",
+      "animationId": "attack-firearm",
+      "direction": "west",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-firearm-east-00.png",
+      "animationId": "attack-firearm",
+      "direction": "east",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-firearm-east-01.png",
+      "animationId": "attack-firearm",
+      "direction": "east",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-firearm-east-02.png",
+      "animationId": "attack-firearm",
+      "direction": "east",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-firearm-east-03.png",
+      "animationId": "attack-firearm",
+      "direction": "east",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-firearm-east-04.png",
+      "animationId": "attack-firearm",
+      "direction": "east",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-firearm-east-05.png",
+      "animationId": "attack-firearm",
+      "direction": "east",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-firearm-east-06.png",
+      "animationId": "attack-firearm",
+      "direction": "east",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-firearm-east-07.png",
+      "animationId": "attack-firearm",
+      "direction": "east",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-daggers-south-00.png",
+      "animationId": "attack-daggers",
+      "direction": "south",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-daggers-south-01.png",
+      "animationId": "attack-daggers",
+      "direction": "south",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-daggers-south-02.png",
+      "animationId": "attack-daggers",
+      "direction": "south",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-daggers-south-03.png",
+      "animationId": "attack-daggers",
+      "direction": "south",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-daggers-south-04.png",
+      "animationId": "attack-daggers",
+      "direction": "south",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-daggers-south-05.png",
+      "animationId": "attack-daggers",
+      "direction": "south",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-daggers-south-06.png",
+      "animationId": "attack-daggers",
+      "direction": "south",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-daggers-south-07.png",
+      "animationId": "attack-daggers",
+      "direction": "south",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-daggers-north-00.png",
+      "animationId": "attack-daggers",
+      "direction": "north",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-daggers-north-01.png",
+      "animationId": "attack-daggers",
+      "direction": "north",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-daggers-north-02.png",
+      "animationId": "attack-daggers",
+      "direction": "north",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-daggers-north-03.png",
+      "animationId": "attack-daggers",
+      "direction": "north",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-daggers-north-04.png",
+      "animationId": "attack-daggers",
+      "direction": "north",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-daggers-north-05.png",
+      "animationId": "attack-daggers",
+      "direction": "north",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-daggers-north-06.png",
+      "animationId": "attack-daggers",
+      "direction": "north",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-daggers-north-07.png",
+      "animationId": "attack-daggers",
+      "direction": "north",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-daggers-west-00.png",
+      "animationId": "attack-daggers",
+      "direction": "west",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-daggers-west-01.png",
+      "animationId": "attack-daggers",
+      "direction": "west",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-daggers-west-02.png",
+      "animationId": "attack-daggers",
+      "direction": "west",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-daggers-west-03.png",
+      "animationId": "attack-daggers",
+      "direction": "west",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-daggers-west-04.png",
+      "animationId": "attack-daggers",
+      "direction": "west",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-daggers-west-05.png",
+      "animationId": "attack-daggers",
+      "direction": "west",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-daggers-west-06.png",
+      "animationId": "attack-daggers",
+      "direction": "west",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-daggers-west-07.png",
+      "animationId": "attack-daggers",
+      "direction": "west",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-daggers-east-00.png",
+      "animationId": "attack-daggers",
+      "direction": "east",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-daggers-east-01.png",
+      "animationId": "attack-daggers",
+      "direction": "east",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-daggers-east-02.png",
+      "animationId": "attack-daggers",
+      "direction": "east",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-daggers-east-03.png",
+      "animationId": "attack-daggers",
+      "direction": "east",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-daggers-east-04.png",
+      "animationId": "attack-daggers",
+      "direction": "east",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-daggers-east-05.png",
+      "animationId": "attack-daggers",
+      "direction": "east",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-daggers-east-06.png",
+      "animationId": "attack-daggers",
+      "direction": "east",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-daggers-east-07.png",
+      "animationId": "attack-daggers",
+      "direction": "east",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-tech-south-00.png",
+      "animationId": "attack-tech",
+      "direction": "south",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-tech-south-01.png",
+      "animationId": "attack-tech",
+      "direction": "south",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-tech-south-02.png",
+      "animationId": "attack-tech",
+      "direction": "south",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-tech-south-03.png",
+      "animationId": "attack-tech",
+      "direction": "south",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-tech-south-04.png",
+      "animationId": "attack-tech",
+      "direction": "south",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-tech-south-05.png",
+      "animationId": "attack-tech",
+      "direction": "south",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-tech-south-06.png",
+      "animationId": "attack-tech",
+      "direction": "south",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-tech-south-07.png",
+      "animationId": "attack-tech",
+      "direction": "south",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-tech-north-00.png",
+      "animationId": "attack-tech",
+      "direction": "north",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-tech-north-01.png",
+      "animationId": "attack-tech",
+      "direction": "north",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-tech-north-02.png",
+      "animationId": "attack-tech",
+      "direction": "north",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-tech-north-03.png",
+      "animationId": "attack-tech",
+      "direction": "north",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-tech-north-04.png",
+      "animationId": "attack-tech",
+      "direction": "north",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-tech-north-05.png",
+      "animationId": "attack-tech",
+      "direction": "north",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-tech-north-06.png",
+      "animationId": "attack-tech",
+      "direction": "north",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-tech-north-07.png",
+      "animationId": "attack-tech",
+      "direction": "north",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-tech-west-00.png",
+      "animationId": "attack-tech",
+      "direction": "west",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-tech-west-01.png",
+      "animationId": "attack-tech",
+      "direction": "west",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-tech-west-02.png",
+      "animationId": "attack-tech",
+      "direction": "west",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-tech-west-03.png",
+      "animationId": "attack-tech",
+      "direction": "west",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-tech-west-04.png",
+      "animationId": "attack-tech",
+      "direction": "west",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-tech-west-05.png",
+      "animationId": "attack-tech",
+      "direction": "west",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-tech-west-06.png",
+      "animationId": "attack-tech",
+      "direction": "west",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-tech-west-07.png",
+      "animationId": "attack-tech",
+      "direction": "west",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-tech-east-00.png",
+      "animationId": "attack-tech",
+      "direction": "east",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-tech-east-01.png",
+      "animationId": "attack-tech",
+      "direction": "east",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-tech-east-02.png",
+      "animationId": "attack-tech",
+      "direction": "east",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-tech-east-03.png",
+      "animationId": "attack-tech",
+      "direction": "east",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-tech-east-04.png",
+      "animationId": "attack-tech",
+      "direction": "east",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-tech-east-05.png",
+      "animationId": "attack-tech",
+      "direction": "east",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-tech-east-06.png",
+      "animationId": "attack-tech",
+      "direction": "east",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-tech-east-07.png",
+      "animationId": "attack-tech",
+      "direction": "east",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-focus-south-00.png",
+      "animationId": "attack-focus",
+      "direction": "south",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-focus-south-01.png",
+      "animationId": "attack-focus",
+      "direction": "south",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-focus-south-02.png",
+      "animationId": "attack-focus",
+      "direction": "south",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-focus-south-03.png",
+      "animationId": "attack-focus",
+      "direction": "south",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-focus-south-04.png",
+      "animationId": "attack-focus",
+      "direction": "south",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-focus-south-05.png",
+      "animationId": "attack-focus",
+      "direction": "south",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-focus-south-06.png",
+      "animationId": "attack-focus",
+      "direction": "south",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-focus-south-07.png",
+      "animationId": "attack-focus",
+      "direction": "south",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-focus-north-00.png",
+      "animationId": "attack-focus",
+      "direction": "north",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-focus-north-01.png",
+      "animationId": "attack-focus",
+      "direction": "north",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-focus-north-02.png",
+      "animationId": "attack-focus",
+      "direction": "north",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-focus-north-03.png",
+      "animationId": "attack-focus",
+      "direction": "north",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-focus-north-04.png",
+      "animationId": "attack-focus",
+      "direction": "north",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-focus-north-05.png",
+      "animationId": "attack-focus",
+      "direction": "north",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-focus-north-06.png",
+      "animationId": "attack-focus",
+      "direction": "north",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-focus-north-07.png",
+      "animationId": "attack-focus",
+      "direction": "north",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-focus-west-00.png",
+      "animationId": "attack-focus",
+      "direction": "west",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-focus-west-01.png",
+      "animationId": "attack-focus",
+      "direction": "west",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-focus-west-02.png",
+      "animationId": "attack-focus",
+      "direction": "west",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-focus-west-03.png",
+      "animationId": "attack-focus",
+      "direction": "west",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-focus-west-04.png",
+      "animationId": "attack-focus",
+      "direction": "west",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-focus-west-05.png",
+      "animationId": "attack-focus",
+      "direction": "west",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-focus-west-06.png",
+      "animationId": "attack-focus",
+      "direction": "west",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-focus-west-07.png",
+      "animationId": "attack-focus",
+      "direction": "west",
+      "frameIndex": 7
+    },
+    {
+      "file": "body-attack-focus-east-00.png",
+      "animationId": "attack-focus",
+      "direction": "east",
+      "frameIndex": 0
+    },
+    {
+      "file": "body-attack-focus-east-01.png",
+      "animationId": "attack-focus",
+      "direction": "east",
+      "frameIndex": 1
+    },
+    {
+      "file": "body-attack-focus-east-02.png",
+      "animationId": "attack-focus",
+      "direction": "east",
+      "frameIndex": 2
+    },
+    {
+      "file": "body-attack-focus-east-03.png",
+      "animationId": "attack-focus",
+      "direction": "east",
+      "frameIndex": 3
+    },
+    {
+      "file": "body-attack-focus-east-04.png",
+      "animationId": "attack-focus",
+      "direction": "east",
+      "frameIndex": 4
+    },
+    {
+      "file": "body-attack-focus-east-05.png",
+      "animationId": "attack-focus",
+      "direction": "east",
+      "frameIndex": 5
+    },
+    {
+      "file": "body-attack-focus-east-06.png",
+      "animationId": "attack-focus",
+      "direction": "east",
+      "frameIndex": 6
+    },
+    {
+      "file": "body-attack-focus-east-07.png",
+      "animationId": "attack-focus",
+      "direction": "east",
+      "frameIndex": 7
+    }
+  ],
+  "batches": [
+    {
+      "direction": "south",
+      "frames": [
+        "body-idle-south-00.png",
+        "body-idle-south-01.png",
+        "body-idle-south-02.png",
+        "body-idle-south-03.png",
+        "body-walk-south-00.png",
+        "body-walk-south-01.png",
+        "body-walk-south-02.png",
+        "body-walk-south-03.png",
+        "body-walk-south-04.png",
+        "body-walk-south-05.png",
+        "body-walk-south-06.png",
+        "body-walk-south-07.png",
+        "body-attack-sword-south-00.png",
+        "body-attack-sword-south-01.png",
+        "body-attack-sword-south-02.png"
+      ]
+    },
+    {
+      "direction": "south",
+      "frames": [
+        "body-attack-sword-south-03.png",
+        "body-attack-sword-south-04.png",
+        "body-attack-sword-south-05.png",
+        "body-attack-sword-south-06.png",
+        "body-attack-sword-south-07.png",
+        "body-attack-unarmed-south-00.png",
+        "body-attack-unarmed-south-01.png",
+        "body-attack-unarmed-south-02.png",
+        "body-attack-unarmed-south-03.png",
+        "body-attack-unarmed-south-04.png",
+        "body-attack-unarmed-south-05.png",
+        "body-attack-unarmed-south-06.png",
+        "body-attack-unarmed-south-07.png",
+        "body-attack-firearm-south-00.png",
+        "body-attack-firearm-south-01.png"
+      ]
+    },
+    {
+      "direction": "south",
+      "frames": [
+        "body-attack-firearm-south-02.png",
+        "body-attack-firearm-south-03.png",
+        "body-attack-firearm-south-04.png",
+        "body-attack-firearm-south-05.png",
+        "body-attack-firearm-south-06.png",
+        "body-attack-firearm-south-07.png",
+        "body-attack-daggers-south-00.png",
+        "body-attack-daggers-south-01.png",
+        "body-attack-daggers-south-02.png",
+        "body-attack-daggers-south-03.png",
+        "body-attack-daggers-south-04.png",
+        "body-attack-daggers-south-05.png",
+        "body-attack-daggers-south-06.png",
+        "body-attack-daggers-south-07.png",
+        "body-attack-tech-south-00.png"
+      ]
+    },
+    {
+      "direction": "south",
+      "frames": [
+        "body-attack-tech-south-01.png",
+        "body-attack-tech-south-02.png",
+        "body-attack-tech-south-03.png",
+        "body-attack-tech-south-04.png",
+        "body-attack-tech-south-05.png",
+        "body-attack-tech-south-06.png",
+        "body-attack-tech-south-07.png",
+        "body-attack-focus-south-00.png",
+        "body-attack-focus-south-01.png",
+        "body-attack-focus-south-02.png",
+        "body-attack-focus-south-03.png",
+        "body-attack-focus-south-04.png",
+        "body-attack-focus-south-05.png",
+        "body-attack-focus-south-06.png",
+        "body-attack-focus-south-07.png"
+      ]
+    },
+    {
+      "direction": "north",
+      "frames": [
+        "body-idle-north-00.png",
+        "body-idle-north-01.png",
+        "body-idle-north-02.png",
+        "body-idle-north-03.png",
+        "body-walk-north-00.png",
+        "body-walk-north-01.png",
+        "body-walk-north-02.png",
+        "body-walk-north-03.png",
+        "body-walk-north-04.png",
+        "body-walk-north-05.png",
+        "body-walk-north-06.png",
+        "body-walk-north-07.png",
+        "body-attack-sword-north-00.png",
+        "body-attack-sword-north-01.png",
+        "body-attack-sword-north-02.png"
+      ]
+    },
+    {
+      "direction": "north",
+      "frames": [
+        "body-attack-sword-north-03.png",
+        "body-attack-sword-north-04.png",
+        "body-attack-sword-north-05.png",
+        "body-attack-sword-north-06.png",
+        "body-attack-sword-north-07.png",
+        "body-attack-unarmed-north-00.png",
+        "body-attack-unarmed-north-01.png",
+        "body-attack-unarmed-north-02.png",
+        "body-attack-unarmed-north-03.png",
+        "body-attack-unarmed-north-04.png",
+        "body-attack-unarmed-north-05.png",
+        "body-attack-unarmed-north-06.png",
+        "body-attack-unarmed-north-07.png",
+        "body-attack-firearm-north-00.png",
+        "body-attack-firearm-north-01.png"
+      ]
+    },
+    {
+      "direction": "north",
+      "frames": [
+        "body-attack-firearm-north-02.png",
+        "body-attack-firearm-north-03.png",
+        "body-attack-firearm-north-04.png",
+        "body-attack-firearm-north-05.png",
+        "body-attack-firearm-north-06.png",
+        "body-attack-firearm-north-07.png",
+        "body-attack-daggers-north-00.png",
+        "body-attack-daggers-north-01.png",
+        "body-attack-daggers-north-02.png",
+        "body-attack-daggers-north-03.png",
+        "body-attack-daggers-north-04.png",
+        "body-attack-daggers-north-05.png",
+        "body-attack-daggers-north-06.png",
+        "body-attack-daggers-north-07.png",
+        "body-attack-tech-north-00.png"
+      ]
+    },
+    {
+      "direction": "north",
+      "frames": [
+        "body-attack-tech-north-01.png",
+        "body-attack-tech-north-02.png",
+        "body-attack-tech-north-03.png",
+        "body-attack-tech-north-04.png",
+        "body-attack-tech-north-05.png",
+        "body-attack-tech-north-06.png",
+        "body-attack-tech-north-07.png",
+        "body-attack-focus-north-00.png",
+        "body-attack-focus-north-01.png",
+        "body-attack-focus-north-02.png",
+        "body-attack-focus-north-03.png",
+        "body-attack-focus-north-04.png",
+        "body-attack-focus-north-05.png",
+        "body-attack-focus-north-06.png",
+        "body-attack-focus-north-07.png"
+      ]
+    },
+    {
+      "direction": "west",
+      "frames": [
+        "body-idle-west-00.png",
+        "body-idle-west-01.png",
+        "body-idle-west-02.png",
+        "body-idle-west-03.png",
+        "body-walk-west-00.png",
+        "body-walk-west-01.png",
+        "body-walk-west-02.png",
+        "body-walk-west-03.png",
+        "body-walk-west-04.png",
+        "body-walk-west-05.png",
+        "body-walk-west-06.png",
+        "body-walk-west-07.png",
+        "body-attack-sword-west-00.png",
+        "body-attack-sword-west-01.png",
+        "body-attack-sword-west-02.png"
+      ]
+    },
+    {
+      "direction": "west",
+      "frames": [
+        "body-attack-sword-west-03.png",
+        "body-attack-sword-west-04.png",
+        "body-attack-sword-west-05.png",
+        "body-attack-sword-west-06.png",
+        "body-attack-sword-west-07.png",
+        "body-attack-unarmed-west-00.png",
+        "body-attack-unarmed-west-01.png",
+        "body-attack-unarmed-west-02.png",
+        "body-attack-unarmed-west-03.png",
+        "body-attack-unarmed-west-04.png",
+        "body-attack-unarmed-west-05.png",
+        "body-attack-unarmed-west-06.png",
+        "body-attack-unarmed-west-07.png",
+        "body-attack-firearm-west-00.png",
+        "body-attack-firearm-west-01.png"
+      ]
+    },
+    {
+      "direction": "west",
+      "frames": [
+        "body-attack-firearm-west-02.png",
+        "body-attack-firearm-west-03.png",
+        "body-attack-firearm-west-04.png",
+        "body-attack-firearm-west-05.png",
+        "body-attack-firearm-west-06.png",
+        "body-attack-firearm-west-07.png",
+        "body-attack-daggers-west-00.png",
+        "body-attack-daggers-west-01.png",
+        "body-attack-daggers-west-02.png",
+        "body-attack-daggers-west-03.png",
+        "body-attack-daggers-west-04.png",
+        "body-attack-daggers-west-05.png",
+        "body-attack-daggers-west-06.png",
+        "body-attack-daggers-west-07.png",
+        "body-attack-tech-west-00.png"
+      ]
+    },
+    {
+      "direction": "west",
+      "frames": [
+        "body-attack-tech-west-01.png",
+        "body-attack-tech-west-02.png",
+        "body-attack-tech-west-03.png",
+        "body-attack-tech-west-04.png",
+        "body-attack-tech-west-05.png",
+        "body-attack-tech-west-06.png",
+        "body-attack-tech-west-07.png",
+        "body-attack-focus-west-00.png",
+        "body-attack-focus-west-01.png",
+        "body-attack-focus-west-02.png",
+        "body-attack-focus-west-03.png",
+        "body-attack-focus-west-04.png",
+        "body-attack-focus-west-05.png",
+        "body-attack-focus-west-06.png",
+        "body-attack-focus-west-07.png"
+      ]
+    },
+    {
+      "direction": "east",
+      "frames": [
+        "body-idle-east-00.png",
+        "body-idle-east-01.png",
+        "body-idle-east-02.png",
+        "body-idle-east-03.png",
+        "body-walk-east-00.png",
+        "body-walk-east-01.png",
+        "body-walk-east-02.png",
+        "body-walk-east-03.png",
+        "body-walk-east-04.png",
+        "body-walk-east-05.png",
+        "body-walk-east-06.png",
+        "body-walk-east-07.png",
+        "body-attack-sword-east-00.png",
+        "body-attack-sword-east-01.png",
+        "body-attack-sword-east-02.png"
+      ]
+    },
+    {
+      "direction": "east",
+      "frames": [
+        "body-attack-sword-east-03.png",
+        "body-attack-sword-east-04.png",
+        "body-attack-sword-east-05.png",
+        "body-attack-sword-east-06.png",
+        "body-attack-sword-east-07.png",
+        "body-attack-unarmed-east-00.png",
+        "body-attack-unarmed-east-01.png",
+        "body-attack-unarmed-east-02.png",
+        "body-attack-unarmed-east-03.png",
+        "body-attack-unarmed-east-04.png",
+        "body-attack-unarmed-east-05.png",
+        "body-attack-unarmed-east-06.png",
+        "body-attack-unarmed-east-07.png",
+        "body-attack-firearm-east-00.png",
+        "body-attack-firearm-east-01.png"
+      ]
+    },
+    {
+      "direction": "east",
+      "frames": [
+        "body-attack-firearm-east-02.png",
+        "body-attack-firearm-east-03.png",
+        "body-attack-firearm-east-04.png",
+        "body-attack-firearm-east-05.png",
+        "body-attack-firearm-east-06.png",
+        "body-attack-firearm-east-07.png",
+        "body-attack-daggers-east-00.png",
+        "body-attack-daggers-east-01.png",
+        "body-attack-daggers-east-02.png",
+        "body-attack-daggers-east-03.png",
+        "body-attack-daggers-east-04.png",
+        "body-attack-daggers-east-05.png",
+        "body-attack-daggers-east-06.png",
+        "body-attack-daggers-east-07.png",
+        "body-attack-tech-east-00.png"
+      ]
+    },
+    {
+      "direction": "east",
+      "frames": [
+        "body-attack-tech-east-01.png",
+        "body-attack-tech-east-02.png",
+        "body-attack-tech-east-03.png",
+        "body-attack-tech-east-04.png",
+        "body-attack-tech-east-05.png",
+        "body-attack-tech-east-06.png",
+        "body-attack-tech-east-07.png",
+        "body-attack-focus-east-00.png",
+        "body-attack-focus-east-01.png",
+        "body-attack-focus-east-02.png",
+        "body-attack-focus-east-03.png",
+        "body-attack-focus-east-04.png",
+        "body-attack-focus-east-05.png",
+        "body-attack-focus-east-06.png",
+        "body-attack-focus-east-07.png"
+      ]
+    }
+  ],
+  "scope": "Source preparation contract only; not permission to generate or replay.",
+  "paidBatchesSubmitted": [
+    0,
+    1,
+    4,
+    8,
+    12,
+    9,
+    13
+  ]
+}

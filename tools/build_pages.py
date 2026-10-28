@@ -481,3 +481,12 @@ for name in sorted(files):
     if Path(name).name != name or Path(name).suffix not in {'.png', '.json'}:
         raise ValueError('Unsafe combined-review asset path')
     shutil.copy2(ROOT/review/name, OUT/review/name)
+
+# Opt-in trousers locomotion study; never copy raw generations, masks or ledgers.
+trousers_review = Path('pixellab-pip-generations/paper-doll-trousers-20261028')
+trousers_pack = json.loads((ROOT/trousers_review/'review-pack.json').read_text(encoding='utf-8'))
+assert trousers_pack['productionEnabled'] is False
+(OUT/trousers_review).mkdir(parents=True, exist_ok=True)
+for name in sorted({'review-pack.json'} | pack_sources(trousers_pack)):
+    shutil.copy2(ROOT/trousers_review/name, OUT/trousers_review/name)
+shutil.copy2(ROOT/'docs/HANDOFF-CALCAS-PAPER-DOLL.md', OUT/'docs/HANDOFF-CALCAS-PAPER-DOLL.md')
