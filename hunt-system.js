@@ -5,7 +5,9 @@
   const newIslands=root.MareNewIslands||(typeof module!=='undefined'?(require('./new-islands-data.js'),require('./new-islands.js')):null);
   const monsterCatalog=root.MareMonsterCatalog||(typeof module!=='undefined'?require('./monster-catalog.js'):null);
   const pixelMaps=root.MarePixelWorldMaps||(typeof module!=='undefined'?(require('./pixellab-world-maps-data.js'),require('./pixellab-world-maps.js')):null);
+  const alabasta=root.MareAlabasta||(typeof module!=='undefined'?require('./alabasta-world.js'):null);
   const regions={
+    alabasta:{name:'Deserto de Alabasta',min:40,max:50,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:alabasta.districts.map(d=>({...d,min:45,max:45,roles:['bananawani']}))},
     rare:{name:'Ilha dos Animais Raros',min:16,max:20,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.rare.districts.map(d=>({...d,min:18,max:18,roles:['cocox']}))},
     syrup:{name:'Vila Syrup',min:21,max:25,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.syrup.districts.map((d,i)=>({...d,min:23,max:23,roles:i%2?['buchi','sham']:['sham','buchi']}))},
     baratie:{name:'Baratie',min:26,max:30,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.baratie.districts.map((d,i)=>({...d,min:28,max:28,roles:i%2?['gin','pearl']:['pearl','gin']}))},
@@ -33,7 +35,7 @@
     if(monsterCatalog[type]){const m=monsterCatalog[type];if(m.area!==area)throw Error('Monstro fora da ilha');return {level:m.level,maxHP:m.max_hp,attack:m.physical_attack,defense:m.physical_defense,magicDefense:m.magic_defense,speed:m.move_speed,reach:m.reach,attackSec:m.attack_seconds,aggro:m.aggro_radius,xp:Math.round(140*1.055**(m.level-18)),gold:[Math.round(45*1.055**(m.level-18)),Math.round(70*1.055**(m.level-18))]};}
     return {level,maxHP:Math.round((70+level*22)*(1+level*.035)*a.hp),attack:Math.round((6+level*2.2)*a.attack),defense:Math.round((2+level*1.15)*a.defense),speed:a.speed,reach:a.reach,attackSec:a.attackSec,aggro:a.aggro,xp:type==='boss'?level*35:Math.round((14+level*6)*(type==='crab'?1.1:type==='spirit'?1.12:1)),gold:type==='boss'?[level*12,level*17]:[4+level*2,8+level*3]};
   }
-  function migrate(g){const old=g.hunts?.areas||{};return {...g,hunts:{version:VERSION,areas:Object.fromEntries(Object.keys(regions).map(id=>{const a=old[id]||{};return [id,{kills:int(a.kills),bosses:int(a.bosses),firstRewardClaimed:a.firstRewardClaimed===true,bossReadyAt:int(a.bossReadyAt)}];}))}};}
+  function migrate(g){const old=g.hunts?.areas||{};return {...g,hunts:{version:VERSION,areas:Object.fromEntries(Object.keys(regions).map(id=>{const a=old[id]||{};return [id,{kills:int(a.kills),bosses:int(a.bosses),firstRewardClaimed:a.firstRewardClaimed===true,bossReadyAt:int(a.bossReadyAt),respawns:Object.fromEntries(Object.entries(a.respawns&&typeof a.respawns==='object'&&!Array.isArray(a.respawns)?a.respawns:{}).filter(([key,value])=>key.startsWith(id+'-')&&Number.isSafeInteger(value)&&value>=0))}];}))}};}
   function recordKill(g,area,type,now=Date.now()){const state=migrate(g),a=state.hunts.areas[area];if(!a)return {state,first:false};a.kills++;const first=type==='boss'&&a.bosses===0;if(type==='boss'){a.bosses++;a.bossReadyAt=now+get(area).respawn*1000;}return {state,first};}
   function bossReady(g,area,point,now=Date.now(),anchors=[]){const a=g.hunts?.areas?.[area],s=sectors(area,anchors).at(-1);return !!(get(area)?.boss&&a&&s&&a.kills>=12&&now>=a.bossReadyAt&&Math.hypot(point.x-s.x,point.y-s.y)<=340);}
   function rewards(area,m,playerLevel,roll=.5){

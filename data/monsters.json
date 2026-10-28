@@ -12,7 +12,7 @@
     "attack_seconds": 1.35,
     "aggro_radius": 370,
     "reach": 56,
-    "behavior": "aggressive_forest_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "71a074a4-26d7-4f04-9be5-a1dd05fdf3c3"
   },
   "sham": {
@@ -31,7 +31,7 @@
     "attack_seconds": 1.25,
     "aggro_radius": 370,
     "reach": 55,
-    "behavior": "aggressive_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "0003fa85-1d60-4fa7-91c0-f2951d430a58"
   },
   "buchi": {
@@ -50,7 +50,7 @@
     "attack_seconds": 1.5,
     "aggro_radius": 370,
     "reach": 62,
-    "behavior": "aggressive_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "191ea516-7425-4886-99ec-96c11b6ea64e"
   },
   "pearl": {
@@ -69,7 +69,7 @@
     "attack_seconds": 1.65,
     "aggro_radius": 370,
     "reach": 60,
-    "behavior": "aggressive_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "0912194d-7d3c-4fdd-8678-cac0713105ce"
   },
   "gin": {
@@ -88,7 +88,7 @@
     "attack_seconds": 1.2,
     "aggro_radius": 370,
     "reach": 72,
-    "behavior": "aggressive_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "71e7ad11-b263-4d45-bba4-e1337a521ebc"
   },
   "kuroobi": {
@@ -107,7 +107,7 @@
     "attack_seconds": 1.45,
     "aggro_radius": 390,
     "reach": 66,
-    "behavior": "aggressive_karate_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "4e72340c-7beb-45ad-8c5d-613149a30281",
     "boss": false
   },
@@ -127,7 +127,7 @@
     "attack_seconds": 1.2,
     "aggro_radius": 390,
     "reach": 70,
-    "behavior": "aggressive_shooter_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "3139378f-61a7-4f6f-bd97-419be0db5b07",
     "boss": false
   },
@@ -144,7 +144,7 @@
     "attack_seconds": 1.8,
     "aggro_radius": 300,
     "reach": 52,
-    "behavior": "aggressive_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "da9c0817-8ea5-425f-a164-7e2362bd46bc",
     "boss": false
   },
@@ -164,7 +164,7 @@
     "attack_seconds": 1.75,
     "aggro_radius": 340,
     "reach": 96,
-    "behavior": "aggressive_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "115d5400-e87f-4990-96d5-39605ee0311c",
     "boss": false
   },
@@ -184,7 +184,7 @@
     "attack_seconds": 1.25,
     "aggro_radius": 340,
     "reach": 68,
-    "behavior": "aggressive_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "30284edc-eb47-475b-9019-c84ef902e164",
     "boss": false
   },
@@ -195,16 +195,16 @@
     "area": "loguetown",
     "base_id": "cocox",
     "multipliers": {
-      "max_hp": 1.0,
-      "physical_attack": 1.0,
-      "physical_defense": 1.0,
-      "magic_defense": 1.0
+      "max_hp": 1,
+      "physical_attack": 1,
+      "physical_defense": 1,
+      "magic_defense": 1
     },
     "move_speed": 78,
     "attack_seconds": 1.4,
     "aggro_radius": 390,
     "reach": 60,
-    "behavior": "aggressive_city_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "c9675963-81b3-4ec2-9a52-ea3c106edffe",
     "boss": false
   },
@@ -215,17 +215,37 @@
     "area": "swamp",
     "base_id": "cesar",
     "multipliers": {
-      "max_hp": 1.0,
-      "physical_attack": 1.0,
-      "physical_defense": 1.0,
-      "magic_defense": 1.0
+      "max_hp": 1,
+      "physical_attack": 1,
+      "physical_defense": 1,
+      "magic_defense": 1
     },
     "move_speed": 64,
     "attack_seconds": 1.6,
     "aggro_radius": 320,
     "reach": 52,
-    "behavior": "aggressive_patrol",
+    "behavior": "reactive_homebound",
     "sprite_id": "411318d7-6ee7-43ea-ba8a-11b0fc0ce182",
+    "boss": false
+  },
+  "bananawani": {
+    "id": "bananawani",
+    "name": "Bananawani",
+    "level": 45,
+    "area": "alabasta",
+    "base_id": "cocox",
+    "multipliers": {
+      "max_hp": 1.25,
+      "physical_attack": 1.04,
+      "physical_defense": 1.08,
+      "magic_defense": 1.1
+    },
+    "move_speed": 68,
+    "attack_seconds": 1.7,
+    "aggro_radius": 420,
+    "reach": 72,
+    "behavior": "reactive_homebound",
+    "sprite_id": "f41faf53-de02-481a-b594-76c0c1b88380",
     "boss": false
   }
 }

@@ -28,7 +28,9 @@ class MonsterCatalogTest(unittest.TestCase):
         self.assertEqual(WORLD_LEVEL_BANDS["orange"], (11, 15))
         self.assertEqual(WORLD_LEVEL_BANDS["loguetown"], (36, 40))
         self.assertEqual(WORLD_LEVEL_BANDS["swamp"], (6, 10))
+        self.assertEqual(WORLD_LEVEL_BANDS["alabasta"], (40, 50))
         expected = {
+            "bananawani": (45, "alabasta", 4244, 212, 89, 25, "f41faf53-de02-481a-b594-76c0c1b88380"),
             "mr3": (13, "orange", 454, 21, 12, 8, "115d5400-e87f-4990-96d5-39605ee0311c"),
             "cabaji": (13, "orange", 314, 34, 11, 6, "30284edc-eb47-475b-9019-c84ef902e164"),
             "marinheiro": (40, "loguetown", 2478, 156, 64, 19, "c9675963-81b3-4ec2-9a52-ea3c106edffe"),

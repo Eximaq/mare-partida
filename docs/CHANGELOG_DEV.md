@@ -393,3 +393,18 @@ Validação final sobre e302c09: 84 suítes Node aprovadas; teste específico de
 - Regressão combat_vfx_browser.cjs: sete classes,20 abates cada, impactos e HP sincronizados. Auditoria completa:12 mapas,134/134 rotas válidas; no Impel624 células abertas,um componente e2/2 rotas,zero colisores inválidos/duplicados. As29 duplicações dos demais mapas são normalizadas pelo auditor existente, sem editar as fontes.
 - Build Pages executado; sintaxe e git diff --check sem erros. Capturas locais temporárias impel-map-*.png e impel-panel-*.png, fora do repositório.
 - Limites:chefes específicos e prêmios acima do50 ainda indefinidos; progressão estática/offline, sem servidor autoritativo. Reverter o commit restaura a prévia mantendo backup do save e ledger.
+
+## 28/10/2026 — Deserto de Alabasta
+
+- Branch feature/alabasta-desert,base c9ccaaa. Região Alabasta liberada:Deserto de Alabasta,Nv.40–50,entrada40. Mapa original81×72 tiles64 e111 objetos preservados; muros terreno2 e transições/cantos sólidos, água/exterior com colisão contínua, máscaras alpha no Y-sorting.
+- Bananawani45:4244HP,212ATQ,89DEF,25DEF mágica; caminhada e ataque originais,56 frames alinhados sem reamostragem. Ampliação final de50% solicitada, constante em idle/walk/attack; pegada física preservada. Catálogo Python/JS e regras de região integrados. Sem gerações pagas.
+-131 testes Node e2 testes Python passaram. Navegador:gate39/40,atributos reais,20 abates com XP/ouro,retorno/reload,24 verificações de muros com ambos atores e80 máscaras com429844 pixels transparentes sem vazamento de chão. Quatro viewports desktop/móvel. Auditoria:12/12 rotas,um componente,zero colisores inválidos/duplicados. Build Pages e diff check passaram. Falhas transitórias do servidor HTTP local padrão foram reproduzidas como scripts não carregados; a execução final passou em HTTP1.1 com backlog128,sem relaxar asserções.
+- Procedência e hashes:assets/alabasta/provenance.json; regras,arquivos e reversão:docs/ALABASTA.md. Capturas temporárias fora do Git; saves e índices preservados. Push/PR não significam merge/deploy.
+
+## 28/10/2026 — Respawns fixos e monstros reativos em todos os mapas
+
+- Branch feature/fixed-neutral-monsters,base368cfea.82 pontos comuns fixos nas nove regiões,dois por setor;chefe de Dawn com ponto separado e requisitos preservados. Impel Down mantém um inimigo por andar e passa a reagir apenas a dano.
+- Proximidade não provoca ataques;dano alerta somente o alvo atingido. Leash260px,retorno por navegação,proteção durante retorno,vida restaurada na origem e desengajamento após morte do jogador. Inimigos não são removidos ao mudar de setor.
+- Respawn após pelo menos30s,no mesmo ponto,com prazo salvo por região para impedir reset por viagem/reload. Migração idempotente preserva progressão e ignora prazos inválidos. Catálogos Python/JS usam reactive_homebound;XP,ouro,drops e arte não mudam.
+- Verificação:135 testes Node e2 Python passaram;83 pontos navegáveis e setores corretos;navegador nas nove regiões confirmou neutralidade,retaliação isolada,leash,morte,respawn,persistência/viagem/reload. Impel Down passou progressão/chefes/marcos/storage;Alabasta passou20 abates com o relógio de teste avançando o novo prazo. Build Pages e diff check passaram. Sem gerações pagas.
+- Arquivos/reversão em docs/MONSTER-SPAWNS.md. Saves mantêm as mesmas chaves e índices de itens;campo adicional de prazos. Sem merge/deploy automático.
