@@ -1737,9 +1737,10 @@
         <div class="op-title-banner"><span class="op-jolly">☠</span><strong>INVENTÁRIO</strong></div>
         <div class="op-bag-capacity"><img class="menu-inline-icon" src="icones_menu_pirata/png/64/inventario.png" alt=""> MOCHILA <b>${game.inventory.length} / ${BAG_CAPACITY}</b></div>
         <div class="op-top-actions"><kbd>[I]</kbd><button type="button" class="op-close" data-close-panel aria-label="Fechar inventário">✕</button></div>
+        <nav class="op-section-nav" aria-label="Seções do inventário"><a href="#inventory-equipment">Equipamentos</a><a href="#inventory-bag">Mochila</a><a href="#inventory-detail">Detalhes</a></nav>
       </div>
       <div class="op-body-grid">
-        <section class="op-panel op-character-panel">
+        <section id="inventory-equipment" tabindex="-1" class="op-panel op-character-panel">
           <div class="op-tabs">${[['equipment','EQUIPAMENTO'],['visual','VISUAL'],['style','ESTILO']].map(([id,label])=>`<button type="button" data-inv-tab="${id}" class="${tab===id?'active':''}">${label}</button>`).join('')}</div>
           <div class="op-character-core">
             <div class="op-equip-side left">${left}</div>
@@ -1754,14 +1755,14 @@
           </div>
           <label class="op-hide-check"><input type="checkbox" id="invHideProfile" ${game.preferences?.hideItems?'checked':''}><span>Ocultar itens no perfil</span></label>
         </section>
-        <section class="op-panel op-bag-panel">
+        <section id="inventory-bag" tabindex="-1" class="op-panel op-bag-panel">
           <div class="op-panel-head"><div class="op-head-left"><img class="menu-inline-icon" src="icones_menu_pirata/png/64/inventario.png" alt=""><h3>MOCHILA</h3></div><button type="button" class="op-best-btn" data-auto-equip>EQUIPAR MELHORES</button></div>
-          <div class="op-tool-row"><label class="op-search"><span>⌕</span><input id="invSearch" type="search" placeholder="Buscar pelo nome..." value="${escapeHTML(inventoryUI.query)}" autocomplete="off"></label><select id="invSort" aria-label="Ordenação"><option value="recent" ${inventoryUI.sort==='recent'?'selected':''}>Recentes</option><option value="rarity" ${inventoryUI.sort==='rarity'?'selected':''}>Raridade</option><option value="power" ${inventoryUI.sort==='power'?'selected':''}>Maior poder</option><option value="name" ${inventoryUI.sort==='name'?'selected':''}>Nome (A–Z)</option></select><select id="invRarity" aria-label="Filtro de raridade">${[['all','Todas'],['common','Comum'],['uncommon','Incomum'],['rare','Raro'],['epic','Épico'],['legendary','Lendário'],['supreme','Supremo']].map(([v,l])=>`<option value="${v}" ${inventoryUI.rarity===v?'selected':''}>${l}</option>`).join('')}</select></div>
+          <div class="op-tool-row"><label class="op-search"><span>⌕</span><input id="invSearch" type="search" aria-label="Buscar item pelo nome" placeholder="Buscar pelo nome..." value="${escapeHTML(inventoryUI.query)}" autocomplete="off"></label><select id="invSort" aria-label="Ordenação"><option value="recent" ${inventoryUI.sort==='recent'?'selected':''}>Recentes</option><option value="rarity" ${inventoryUI.sort==='rarity'?'selected':''}>Raridade</option><option value="power" ${inventoryUI.sort==='power'?'selected':''}>Maior poder</option><option value="name" ${inventoryUI.sort==='name'?'selected':''}>Nome (A–Z)</option></select><select id="invRarity" aria-label="Filtro de raridade">${[['all','Todas'],['common','Comum'],['uncommon','Incomum'],['rare','Raro'],['epic','Épico'],['legendary','Lendário'],['supreme','Supremo']].map(([v,l])=>`<option value="${v}" ${inventoryUI.rarity===v?'selected':''}>${l}</option>`).join('')}</select></div>
           <div class="op-category-tabs">${filterCategories.map(([id,label])=>`<button type="button" data-inv-category="${id}" class="${inventoryUI.category===id?'active':''}">${label}</button>`).join('')}</div>
           <div class="op-grid-wrap"><div class="op-grid">${slots}</div></div>
           <div class="op-pagination"><span class="op-page-count">${all.length?inventoryUI.page*BAG_PER_PAGE+1:0}–${Math.min((inventoryUI.page+1)*BAG_PER_PAGE,all.length)} de ${all.length}</span><button type="button" data-inv-page="${inventoryUI.page-1}" ${inventoryUI.page===0?'disabled':''}>‹</button>${Array.from({length:pages},(_,n)=>`<button type="button" data-inv-page="${n}" class="${n===inventoryUI.page?'active':''}">${n+1}</button>`).join('')}<button type="button" data-inv-page="${inventoryUI.page+1}" ${inventoryUI.page===pages-1?'disabled':''}>›</button></div>
         </section>
-        <section class="op-panel op-detail-panel">${detail}</section>
+        <section id="inventory-detail" tabindex="-1" class="op-panel op-detail-panel">${detail}</section>
       </div>
     </div>`;
     drawCurrentPreview($('inventorySprite'),185);

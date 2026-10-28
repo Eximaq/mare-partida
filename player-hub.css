@@ -12,14 +12,14 @@
 #panelOverlay[data-ui-panel="settings"] .dialog-body{padding:16px;background:#0e1d24;color:#e8e2d4;overflow-y:auto;min-height:0}
 #panelOverlay[data-ui-panel="journal"] .dialog-header,
 #panelOverlay[data-ui-panel="myprofile"] .dialog-header,
-#panelOverlay[data-ui-panel="settings"] .dialog-header{background:linear-gradient(105deg,#3e2a20,#182b2c);border-bottom:1px solid #9d7952}
+#panelOverlay[data-ui-panel="settings"] .dialog-header{background:var(--rpg-planks);border-bottom:1px solid #9d7952}
 .captain-journal,.captain-profile,.captain-settings{display:grid;gap:14px;color:#e8e2d4;font:13px/1.55 var(--rpg-font,'Segoe UI',Arial,sans-serif)}
 .captain-journal h2,.captain-profile h2,.captain-settings h2{margin:0;font:700 24px/1.2 var(--rpg-heading,Georgia,serif);color:#f4e3b9}
 .captain-lead,.captain-muted{margin:0;color:#aec0bf}
 .captain-tabs{display:flex;gap:5px;border-bottom:1px solid #6e5360;padding-bottom:5px;overflow-x:auto;scrollbar-width:thin}
 .captain-tabs button{flex:1 0 auto;min-height:34px;padding:6px 9px;border:1px solid transparent;border-bottom:2px solid transparent;background:#19282f;color:#b4bbbd;cursor:pointer;font:700 11px/1.4 var(--rpg-font,Arial,sans-serif);white-space:normal}
 .captain-tabs button:hover,.captain-tabs button:focus-visible{color:#f6e6b8;border-color:#8b6d47}
-.captain-tabs button[aria-pressed="true"]{background:#30223f;color:#ffe6b0;border-bottom-color:#bd8eec}
+.captain-tabs button[aria-pressed="true"]{background:var(--rpg-wood);color:#ffe6b0;border-bottom-color:var(--rpg-brass)}
 .captain-news{display:grid;gap:9px;max-height:455px;overflow-y:auto}
 .captain-news-item,.captain-fact,.captain-setting-card{background:#172a32;border:1px solid #40525a;border-radius:4px}
 .captain-news-item{padding:14px}
@@ -30,8 +30,8 @@
 .captain-empty{text-align:center;padding:26px 18px;border:1px dashed #6a685c;border-radius:4px;background:#13252b;color:#c1c4c4}
 .captain-empty h3{margin:0 0 6px;color:#e6c994}
 .captain-empty p{margin:0}
-.captain-profile-banner{display:flex;align-items:center;gap:12px;min-height:124px;padding:14px;background:radial-gradient(ellipse at 75% 30%,#6c2b863b,transparent 65%),linear-gradient(135deg,#2d1e45,#132c35 80%);border:1px solid #8c648f;border-radius:5px;overflow:hidden}
-.captain-profile-avatar{width:78px;height:78px;flex:0 0 78px;border:2px solid #c79be9;border-radius:9px;background:#122c38;display:grid;place-items:center}
+.captain-profile-banner{display:flex;align-items:center;gap:12px;min-height:124px;padding:14px;background:var(--rpg-planks);border:1px solid var(--rpg-brass);border-radius:5px;overflow:hidden}
+.captain-profile-avatar{width:78px;height:78px;flex:0 0 78px;border:2px solid var(--rpg-brass);border-radius:9px;background:#122c38;display:grid;place-items:center}
 .captain-profile-avatar canvas{width:64px;height:64px;image-rendering:pixelated}
 .captain-profile-name{display:grid;gap:2px;min-width:0;flex:1}
 .captain-profile-name small{color:#bdc9ce;font-size:10px}
@@ -49,26 +49,27 @@
 .captain-setting-cards{display:grid;gap:8px}
 .captain-setting-card{overflow:hidden}
 .captain-setting-heading{display:flex;align-items:center;text-align:left;width:100%;min-height:64px;gap:12px;border:0;background:transparent;color:#e9e4df;padding:11px 13px;cursor:pointer}
-.captain-setting-heading:hover,.captain-setting-heading:focus-visible{background:#253640;outline:1px solid #a879ca}
-.captain-setting-icon{display:grid;place-items:center;flex:0 0 37px;height:37px;border:1px solid #7a5b9d;background:#261938;color:#ddc2ef;font-size:23px}
+.captain-setting-heading:hover,.captain-setting-heading:focus-visible{background:#253640;outline:2px solid var(--rpg-focus)}
+.captain-setting-icon{display:grid;place-items:center;flex:0 0 37px;height:37px;border:1px solid var(--rpg-brass);background:var(--rpg-planks);color:var(--rpg-focus);font-size:23px}
 .captain-setting-heading>span:nth-child(2){flex:1;display:grid;gap:2px;min-width:0}
 .captain-setting-heading strong{font-size:13px}
 .captain-setting-heading small{color:#bbc3c8;font-size:11px}
-.captain-setting-heading em{font-style:normal;color:#d2aaef;font-size:10px}
-.captain-chevron{font-size:22px;color:#d2b4cf}
+.captain-setting-heading em{font-style:normal;color:var(--rpg-muted);font-size:10px}
+.captain-chevron{font-size:22px;color:var(--rpg-brass)}
 .captain-settings-detail{display:grid;grid-template-columns:1fr;gap:9px;padding:12px 14px 14px;border-top:1px solid #49575d;background:#10252c}
 .captain-settings-detail>p{margin:0;color:#acbdbc;font-size:11px;line-height:1.5}
 .captain-setting-line{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;color:#ecdfd1}
 .captain-setting-line:has(input[type=range]){align-items:stretch;flex-direction:column}
-.captain-setting-line input[type=range]{width:100%;accent-color:#c49bd4}
+.captain-setting-line input[type=range]{width:100%;accent-color:var(--rpg-brass)}
 .captain-setting-line select{padding:7px;background:#182f35;border:1px solid #ac8a57;color:#fff2d0;max-width:100%}
-.captain-setting-line input[type=checkbox]{width:18px;height:18px;accent-color:#ad82d0}
+.captain-setting-line input[type=checkbox]{width:18px;height:18px;accent-color:var(--rpg-brass)}
 .captain-settings-detail .captain-fact{padding:7px 9px}
-[data-mare-density="compact"] #mainMenu [data-panel]{width:52px!important;height:46px!important;min-height:46px!important}
-[data-mare-density="compact"] #mainMenu [data-panel] img{width:27px!important;height:27px!important}
+[data-mare-density="compact"] #mainMenu [data-panel]{width:36px;height:36px;min-height:36px}
+[data-mare-density="compact"] #mainMenu [data-panel] img{width:26px;height:26px}
 [data-mare-text="large"] .captain-settings,[data-mare-text="large"] .captain-profile,[data-mare-text="large"] .captain-journal{font-size:15px}
 [data-mare-motion="reduced"] .captain-settings *,[data-mare-motion="reduced"] .captain-profile *,[data-mare-motion="reduced"] .captain-journal *{animation:none!important;transition:none!important}
 @media(max-width:760px){
+ [data-mare-density="compact"] #mainMenu [data-panel]{width:32px;height:32px;min-height:32px}
  #mainMenu .captain-quick-menu{left:auto;right:0;transform:none;width:min(245px,calc(100vw - 20px))}
  #mainMenu .captain-quick-menu::before{right:16px}
  #panelOverlay[data-ui-panel="journal"] .dialog,#panelOverlay[data-ui-panel="myprofile"] .dialog,#panelOverlay[data-ui-panel="settings"] .dialog{width:calc(100vw - 16px);max-height:calc(100dvh - 16px)}
