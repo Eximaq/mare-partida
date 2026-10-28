@@ -15,6 +15,10 @@ restaurar o canvas original. Os nomes já seguem a ordem do jogo.
 - Direções: `south` (frente), `north` (costas), `west` (esquerda), `east` (direita).
 - Pivô das referências 64×64: **32,52**. Canvas final do jogo: **84×84**, pivô **42,65**.
 - Não redimensionar, espelhar, girar o corpo ou reconstruir a animação.
+- Se uma peça ficar cortada em 64×64, não encolher o personagem. Use canvas 84×84,
+  acrescentando somente margens de 10 px à esquerda, 13 acima, 10 à direita e
+  7 abaixo; o pivô volta a 42,65. Informe que o arquivo já está em 84×84 para
+  evitar aplicar essas margens duas vezes na integração.
 - Escolher o corpo como referência de pose/anatomia. O ícone do item pode orientar
   o desenho da peça, mas não deve ser ampliado para virar roupa de personagem.
 
