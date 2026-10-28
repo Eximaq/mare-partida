@@ -536,10 +536,6 @@
  .constellation-window .talent-reset{font-size:11px}
 }
 
-@media(max-width:760px){
-  #mainMenu .character-menu-anchor:has(.character-notification-control){grid-column:span 2}
-  #mainMenu #characterMenuBrowse{width:32px;height:32px;min-height:32px}
-}
 
 /* Nautical window polish: respect the existing breakpoints and native scrolling. */
 .op-section-nav{display:none}

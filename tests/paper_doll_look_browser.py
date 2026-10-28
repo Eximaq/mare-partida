@@ -16,7 +16,7 @@ with sync_playwright() as p:
  q.wait_for_function('typeof window.__mareDiagnostics==="function"')
  q.locator('#characterName').fill('Aparencia Compartilhada');q.locator('#nextToClass').click();q.locator('[data-class=sword]').click();q.locator('#createCharacter').click()
  def open_look():
-  q.locator('#characterMenuBrowse').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
+  q.locator('#characterMenuTrigger').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
  def saved():return q.evaluate('JSON.parse(localStorage.getItem("'+DEV+'"))')
  open_look();assert q.locator('[data-doll-look-apply]').is_visible();assert q.evaluate('__mareDiagnostics().paperDollReview.production')
  q.goto(BASE+'?dev=1&paperDollReview=navy-starter',wait_until='networkidle')

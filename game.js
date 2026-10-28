@@ -1484,10 +1484,7 @@
       button.setAttribute('aria-label',notificationLabels.get(button)+(count>0?', '+count+' pendência'+(count===1?'':'s'):''));
     }
     const trigger=$('characterMenuTrigger');
-    trigger.setAttribute('aria-haspopup',state.character>0?'dialog':'menu');
-    trigger.setAttribute('aria-controls',state.character>0?'panelOverlay':'characterQuickMenu');
-    if(state.character>0)trigger.removeAttribute('aria-expanded');
-    else trigger.setAttribute('aria-expanded',String(!$('characterQuickMenu').classList.contains('hidden')));
+    trigger.setAttribute('aria-expanded',String(!$('characterQuickMenu').classList.contains('hidden')));
     let announcement=$('hudNotificationStatus');
     if(!announcement){announcement=document.createElement('span');announcement.id='hudNotificationStatus';announcement.className='hud-notification-status';announcement.setAttribute('role','status');announcement.setAttribute('aria-live','polite');announcement.setAttribute('aria-atomic','true');$('mainMenu').append(announcement);}
     announcement.textContent=state.character>0?'Personagem: '+state.character+' pendências.':'';
@@ -2058,14 +2055,12 @@
     devApply(command);
   });
   $('dialogBody').addEventListener('change',e=>{if(currentPanel==='dev'&&e.target.dataset.devOption)devApply({type:'option',name:e.target.dataset.devOption,enabled:e.target.checked});});
-  let characterMenuReturnFocus=null;
   function closeCharacterMenu(restoreFocus=false){
     const menu=$('characterQuickMenu'),trigger=$('characterMenuTrigger');
     if(!menu||!trigger)return;
     menu.classList.add('hidden');
-    if(notificationManager.state.character<=0)trigger.setAttribute('aria-expanded','false');
-    $('characterMenuBrowse').setAttribute('aria-expanded','false');
-    if(restoreFocus)(characterMenuReturnFocus||trigger).focus({preventScroll:true});
+    trigger.setAttribute('aria-expanded','false');
+    if(restoreFocus)trigger.focus({preventScroll:true});
   }
   function closeCaptainMenu(restoreFocus=false){
     const menu=$('captainQuickMenu'),trigger=$('captainMenuTrigger');
@@ -2100,16 +2095,14 @@
     if(opening)menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});
     else trigger.focus({preventScroll:true});
   }
-  function toggleCharacterMenu(browse=false){
+  function toggleCharacterMenu(){
     const menu=$('characterQuickMenu'),trigger=$('characterMenuTrigger');
     if(!game||!menu||!trigger||!$('panelOverlay').classList.contains('hidden')||document.querySelector('.confirmation-overlay'))return;
     const opening=menu.classList.contains('hidden');
-    if(!browse){updateNotifications();const pending=notificationManager.focus();if(pending){openPanel('character',pending);return;}}
-    characterMenuReturnFocus=browse?$('characterMenuBrowse'):trigger;
+    updateNotifications();
     closeModesMenu();closeCaptainMenu();
     menu.classList.toggle('hidden',!opening);
-    if(notificationManager.state.character<=0)trigger.setAttribute('aria-expanded',String(opening));
-    $('characterMenuBrowse').setAttribute('aria-expanded',String(opening));
+    trigger.setAttribute('aria-expanded',String(opening));
     $('characterMenuHakiHint').textContent=game.has_haki_unlocked?'Despertado':'Nível 50 + Livro da Vontade';
     menu.querySelector('[data-character-section="haki"]')?.classList.toggle('is-locked',!game.has_haki_unlocked);
     if(opening)menu.querySelector('[role="menuitem"]')?.focus({preventScroll:true});
@@ -2775,7 +2768,6 @@ function applySceneHudLayout(){
     const quickMode=e.target.closest('[data-quick-mode]');
     if(quickMode){closeModesMenu();openPanel(quickMode.dataset.quickMode);return;}
     if(!$('modesQuickMenu')?.contains(e.target))closeModesMenu();
-    if(e.target.closest('#characterMenuBrowse')){toggleCharacterMenu(true);return;}
     const menuTrigger=e.target.closest('[data-character-menu-trigger]');
     if(menuTrigger){toggleCharacterMenu();return;}
     const section=e.target.closest('[data-character-section]');
