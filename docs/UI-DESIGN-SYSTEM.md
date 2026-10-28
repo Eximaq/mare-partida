@@ -93,3 +93,22 @@ Revisão validada pelas 20 suítes Node, matriz completa de sete resoluções, F
 ## Inventário — fundos e densidade
 
 **Revisão de inventário — 24/10/2026:** slots equipados, inclusive Akuma no Mi, têm base escura uniforme e contorno da cor da raridade; não recebem mais a imagem de moldura de raridade como fundo completo. Os itens na mochila continuam usando as molduras PNG aprovadas, sem distorcer sprites. A grade ocupa toda a largura da bandeja, com sete linhas e colunas por viewport: acima de 1180px, 9×7 (63 por página); 1025–1180px, 8×7 (56); 761–1024px, 7×7 (49); 390–760px, 6×7 (42); até 389px, 5×7 (35). A capacidade **continua 120 itens salvos**; os slots vazios são apenas visuais. O tamanho de página e o índice inicial são recalculados ao cruzar breakpoints enquanto o painel está aberto, preservando busca, filtros, seleção, operações de itens e compatibilidade de saves. O corpo do inventário continua rolável no celular.
+
+## Notificações de pendências — 27/10/2026
+
+`notification-system.js` deriva um snapshot imutável e notifica observadores somente quando os contadores mudam. O objeto global `NotificationManager` é a instância da HUD; não é persistido e não concede recompensas. `game.js` alimenta o snapshot no ciclo existente de atualização da interface (cerca de 270 ms), depois de observar conquistas, além das atualizações imediatas das transações. Usa os contratos atuais:
+
+- Personagem/status: `game.attributePoints`.
+- Talentos: `MareTalents.available(game)`, considerando investimentos e recompensas reais.
+- Hierarquia: um alerta apenas quando `MareHierarchy.next(...).state === 'ready'`; promoções futuras bloqueadas por itens não contam.
+- Conquistas: quantidade de entradas `ready` de `MareAchievements.list(game)`, sem contar feitos resgatados ou sistemas indisponíveis.
+
+O ícone principal Personagem soma as quatro seções. Seu clique e o atalho P abrem a primeira pendência na ordem atributos → talentos → promoção → conquistas. A seta separada mantém acesso manual a todas as seções; sem pendências, o próprio ícone abre o menu. Abrir ou fechar uma janela nunca elimina o badge: somente o estado real altera o contador. Atributos recebem foco no controle de distribuição, e conquistas pendentes abrem a categoria Todas para evitar um filtro anterior esconder o resgate.
+
+Badges rosa-escuro com texto branco ficam no canto superior direito do botão, somem com zero e exibem 99+ acima de 99. A fonte local `assets/ui/notifications/pixel-digits.ttf` contém desenhos originais 3×5 de dígitos e sinal +; o script opcional `tools/build_badge_font.py` reproduz o arquivo com fonttools. Não há geração de arte ou requisição de fonte externa. Textos acessíveis conservam o número completo; o resumo usa status polite e as áreas de toque do ícone e da seta não se sobrepõem. Estilos compartilhados em `ui-hud.css`, composição compacta em `ui-responsive.css`.
+
+Validação: 122 testes Node passaram. `tests/notification_browser.cjs` verifica as quatro prioridades, prévia e confirmação real de atributos, investimento de PT, promoção, resgate com geração de PT, zero/99+, reload, oito dimensões (desktop/móvel/paisagem), toque e movimento reduzido. `tests/pages_cache_browser.py` passou com 106 recursos versionados e save preservado. O personagem no modo normal passou em criação, aparência, equipamento, reload e isolamento DEV.
+
+Limitação de regressão ampla: `tests/ui_ux2_browser.py` passou nas quatro dimensões desktop e parou no inventário a 393 px por overflow horizontal. A comparação com origin/main sem badges reproduziu exatamente clientWidth 371 / scrollWidth 1053; em paisagem 640 px, ambos tiveram 618 / 1053. Uma execução complementar conferiu as demais janelas, atributos/talentos/conquistas e navegação em 393, 360 e 320 px, passando essas três matrizes antes de reencontrar o mesmo problema do inventário em paisagem. Essa falha preexistente não foi corrigida nem teve sua asserção removida nesta atualização. Capturas/relatórios ficam em diretório temporário local, fora do Git.
+
+Sem mudança de schema/chaves de save, custos, recompensas ou regras de promoção. O pacote Pages inclui o novo módulo e a fonte; build/push/PR não significam merge ou deploy em produção.

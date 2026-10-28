@@ -29,7 +29,7 @@ test('PixelLab maps replace Orange Town and unlock Loguetown with passable, reac
     assert.equal(map.pixelLabId,source.pixelLabId);
     assert.equal(map.width,source.columns*64);
     assert.equal(map.height,source.rows*64);
-    assert.equal(map.colliders.length,source.objects.length);
+    for(const object of source.objects){const c=pixelMaps.objectCollider(source,object);assert.ok(map.colliders.some(o=>o.x===c.x&&o.y===c.y&&o.w===c.w&&o.h===c.h),'every source object retains its collision, including duplicate placements');}
     assert(map.colliders.every(c=>c.isSolid&&c.footprint));
     assert.equal(nav.walkable(map.spawn.x,map.spawn.y),true);
     assert.ok(nav.path(map.spawn,map.returnPoint).length>0);

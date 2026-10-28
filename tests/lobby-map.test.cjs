@@ -32,10 +32,15 @@ test('existing 64px Lobby map has a walkable spawn and reachable services',()=>{
 });
 const actor={x:0,y:10,height:24,isCharacter:true};const multi={x:0,y:0,height:192,pivotOffsetY:160};assert.equal(lobby.pivotY(actor),34);assert.equal(lobby.pivotY(multi),160);assert.deepEqual(lobby.sortDepth([multi,actor]).map(lobby.pivotY),[34,160]);
 
-assert(lobby.depthObjects.every(o=>o.id.includes('tree')||o.id.includes('palms')));
+test('lobby depth covers current object placements instead of collider-derived ground clips',()=>{
+ assert.equal(lobby.depthObjects.length,73);
+ assert.equal(new Set(lobby.depthObjects.map(o=>o.id)).size,73);
+ assert(lobby.depthObjects.every(o=>/^[a-f0-9-]{36}$/.test(o.assetId)&&[o.x,o.y,o.w,o.h,o.pivotY].every(Number.isFinite)));
+ assert.equal(lobby.upper.length,0,'geometric roof clips must never copy flattened ground');
+});
 
-for(const c of lobby.colliders){assert.equal(c.isSolid,true,c.id);assert(c.w>=64&&c.h>=64,c.id);}
-const render=require('node:fs').readFileSync(require('node:path').join(__dirname,'../game.js'),'utf8');assert.match(render,/drawEntityLayer\(\);drawHeroLayer\(\);[\s\S]{0,800}drawForegroundLayer\(/);
+for(const c of lobby.colliders){assert.equal(c.isSolid,true,c.id);assert.equal(new MareWorld.Navigation(lobby.map,32).walkable(c.x+c.w/2,c.y+c.h/2),false,c.id+' still stops movement');}
+assert.deepEqual(MareWorld.sortDepth([{id:'hero-front',y:120},{id:'tree',y:100},{id:'hero-behind',y:80}]).map(o=>o.id),['hero-behind','tree','hero-front']);
 
 test('fruit tree trunks block a 32x20 foot box without sealing nearby grass',()=>{
  const nav=new globalThis.MareWorld.Navigation(lobby.map,32);
@@ -44,3 +49,6 @@ test('fruit tree trunks block a 32x20 foot box without sealing nearby grass',()=
  }
  assert.equal(nav.walkable(1760,680),true);
 });
+
+test('a narrow lamp base does not create a 64px invisible wall around clear paving',()=>{const nav=new MareWorld.Navigation(lobby.map,32);assert.equal(nav.walkable(1336,840),true);});
+test('dock barrels stop feet but not a ranged attack across their low tops',()=>{const nav=new MareWorld.Navigation(lobby.map,32);assert.equal(nav.clear({x:2200,y:1554},{x:2400,y:1554}),false);assert.equal(nav.projectileClear({x:2200,y:1554},{x:2400,y:1554}),true);});

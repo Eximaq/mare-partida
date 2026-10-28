@@ -72,9 +72,23 @@
     push(node){const a=this.items;a.push(node);let i=a.length-1;while(i>0){const p=(i-1)>>1;if(a[p].f<=node.f)break;a[i]=a[p];i=p;}a[i]=node;}
     pop(){const a=this.items,first=a[0],last=a.pop();if(a.length){let i=0;while(i*2+1<a.length){let c=i*2+1;if(c+1<a.length&&a[c+1].f<a[c].f)c++;if(a[c].f>=last.f)break;a[i]=a[c];i=c;}a[i]=last;}return first;}
   }
+  // Sweep the feet footprint rather than only testing separated sample points.
+  function segmentRect(a,b,o){let lo=0,hi=1;for(const [v,d,min,max]of [[a.x,b.x-a.x,o.x,o.x+o.w],[a.y,b.y-a.y,o.y,o.y+o.h]]){if(Math.abs(d)<1e-12){if(v<min||v>max)return false;}else{let u=(min-v)/d,w=(max-v)/d;if(u>w)[u,w]=[w,u];lo=Math.max(lo,u);hi=Math.min(hi,w);if(lo>hi)return false;}}return true;}
+  function sweptFoot(a,b,o,r,foot){
+    if(foot)return segmentRect(a,b,{x:o.x-foot.w/2+.001,y:o.y+.001,w:o.w+foot.w-.002,h:o.h+foot.h-.002});
+    if(segmentRect(a,b,o))return true;
+    const pointDistance=p=>(p.x-clamp(p.x,o.x,o.x+o.w))**2+(p.y-clamp(p.y,o.y,o.y+o.h))**2;
+    if(pointDistance(a)<r*r||pointDistance(b)<r*r)return true;
+    const dx=b.x-a.x,dy=b.y-a.y,len=dx*dx+dy*dy;
+    return [[o.x,o.y],[o.x+o.w,o.y],[o.x,o.y+o.h],[o.x+o.w,o.y+o.h]].some(([x,y])=>{const t=len?clamp(((x-a.x)*dx+(y-a.y)*dy)/len,0,1):0;return (a.x+t*dx-x)**2+(a.y+t*dy-y)**2<r*r;});
+  }
+  function blocksProjectile(o){return o.blocksProjectiles??(o.isSolid!==false&&o.blocksMovement!==false&&(/house|wall|hall|fort|tree|palms|pillar|obelisk|building/i.test(o.id||'')||o.h>=64));}
+  function occluded(actor,props,height=74,width=48){return props.some(p=>p.tall!==false&&actor.y<(p.base??p.y+p.h)&&actor.y>p.y&&actor.y-height<p.y+p.h&&actor.x+width/2>p.x&&actor.x-width/2<p.x+p.w);}
+  const sortDepth=items=>items.map((item,index)=>({item,index})).sort((a,b)=>(a.item.pivotY??a.item.y)-(b.item.pivotY??b.item.y)||a.index-b.index).map(({item})=>item);
+  function cleanColliders(items=[]){const seen=new Set();return items.filter(o=>{if(!o||![o.x,o.y,o.w,o.h].every(Number.isFinite)||o.w<=0||o.h<=0)return false;const key=[o.x,o.y,o.w,o.h,o.isSolid!==false,o.blocksMovement!==false,blocksProjectile(o)].join(':');if(seen.has(key))return false;seen.add(key);return true;});}
   class Navigation {
     constructor(map,cell=24,radius=10){
-      this.map=map;this.cell=cell;this.radius=radius;
+      this.map=map;map.colliders=cleanColliders(map.colliders);this.cell=cell;this.radius=radius;
       this.cols=Math.ceil(map.width/cell);this.rows=Math.ceil(map.height/cell);
       this.grid=new Uint8Array(this.cols*this.rows);
       for(let y=0;y<this.rows;y++)for(let x=0;x<this.cols;x++)this.grid[y*this.cols+x]=this.walkable((x+.5)*cell,(y+.5)*cell)?1:0;
@@ -83,15 +97,18 @@
       if(!Number.isFinite(x)||!Number.isFinite(y)||x<r||y<r||x>this.map.width-r||y>this.map.height-r)return false;
       if(this.map.terrainWalkable&&!this.map.terrainWalkable(x,y,r))return false;
       const foot=this.map.playerFootprint;
-      if(foot)return !this.map.colliders.some(o=>o.isSolid!==false&&
+      if(foot&&(x<foot.w/2||x>this.map.width-foot.w/2||y<foot.h||y>this.map.height))return false;
+      if(foot)return !this.map.colliders.some(o=>o.isSolid!==false&&o.blocksMovement!==false&&
         x-foot.w/2<o.x+o.w&&x+foot.w/2>o.x&&y-foot.h<o.y+o.h&&y>o.y);
       // A small circular footprint at the feet, independent of visual height.
       return !this.map.colliders.some(o=>{
+        if(o.isSolid===false||o.blocksMovement===false)return false;
         const px=clamp(x,o.x,o.x+o.w),py=clamp(y,o.y,o.y+o.h);
         return (x-px)**2+(y-py)**2<r*r;
       });
     }
-    clear(a,b){if(this.map.segmentBlocked?.(a,b,this.radius))return false;const d=Math.hypot(b.x-a.x,b.y-a.y),steps=Math.max(1,Math.ceil(d/5));for(let i=0;i<=steps;i++){let t=i/steps;if(!this.walkable(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t))return false;}return true;}
+    projectileClear(a,b){if(![a.x,a.y,b.x,b.y].every(Number.isFinite)||[a,b].some(p=>p.x<0||p.y<0||p.x>this.map.width||p.y>this.map.height))return false;return !this.map.colliders.some(o=>blocksProjectile(o)&&segmentRect(a,b,o));}
+    clear(a,b){if(![a.x,a.y,b.x,b.y].every(Number.isFinite)||[a,b].some(p=>p.x<0||p.y<0||p.x>this.map.width||p.y>this.map.height))return false;if(this.map.segmentBlocked?.(a,b,this.radius)||this.map.colliders.some(o=>o.isSolid!==false&&o.blocksMovement!==false&&sweptFoot(a,b,o,this.radius,this.map.playerFootprint)))return false;const d=Math.hypot(b.x-a.x,b.y-a.y),steps=Math.max(1,Math.ceil(d/5));for(let i=0;i<=steps;i++){let t=i/steps;if(!this.walkable(a.x+(b.x-a.x)*t,a.y+(b.y-a.y)*t))return false;}return true;}
     nearest(p){
       const x=clamp(p.x,this.radius,this.map.width-this.radius),y=clamp(p.y,this.radius,this.map.height-this.radius);
       if(this.walkable(x,y))return {x,y};
@@ -140,13 +157,14 @@
       return result;
     }
     move(entity,dx,dy){
+      if(![entity.x,entity.y,dx,dy].every(Number.isFinite)||Math.hypot(dx,dy)>Math.hypot(this.map.width,this.map.height)*2)return;
       const steps=Math.max(1,Math.ceil(Math.hypot(dx,dy)/5));
       for(let i=0;i<steps;i++){
-        if(this.walkable(entity.x+dx/steps,entity.y+dy/steps)){
+        if(this.clear(entity,{x:entity.x+dx/steps,y:entity.y+dy/steps})){
           entity.x+=dx/steps;entity.y+=dy/steps;continue;
         }
-        if(this.walkable(entity.x+dx/steps,entity.y))entity.x+=dx/steps;
-        if(this.walkable(entity.x,entity.y+dy/steps))entity.y+=dy/steps;
+        if(this.clear(entity,{x:entity.x+dx/steps,y:entity.y}))entity.x+=dx/steps;
+        if(this.clear(entity,{x:entity.x,y:entity.y+dy/steps}))entity.y+=dy/steps;
       }
     }
     follow(entity,path,speed,dt){
@@ -165,5 +183,5 @@
       if(moved>0)entity.walking=.2;return moved;
     }
   }
-  globalThis.MareWorld={maps,Camera,Navigation};
+  globalThis.MareWorld={maps,Camera,Navigation,sortDepth,segmentRect,blocksProjectile,cleanColliders,occluded};
 })();

@@ -8,13 +8,10 @@ const lobby=require('../lobby-world.js');
 require('../world-system.js');
 const {Navigation}=globalThis.MareWorld;
 
-test('Lobby foreground occludes only when feet are behind a roof',()=>{
-  let draws=0;
-  const ctx={save(){},restore(){},beginPath(){},moveTo(){},lineTo(){},closePath(){},clip(){},drawImage(){draws++;}};
-  lobby.foreground(ctx,[{x:1400,y:1070}]);
-  assert.equal(draws,1);
-  draws=0;lobby.foreground(ctx,[{x:1400,y:1120}]);
-  assert.equal(draws,0,'roof cannot hide a character standing south of its base');
+test('Lobby legacy foreground delegates to the same transparent-object renderer',()=>{
+  const calls=[],regions=[{id:'house'},{id:'tree'}],actors=[{x:1400,y:1070}],ctx={};
+  globalThis.MareWorldDepth={regions(id){assert.equal(id,'lobby');return regions;},draw(...args){calls.push(args);}};
+  try { lobby.foreground(ctx,actors);assert.deepEqual(calls,regions.map(r=>[ctx,r,actors])); } finally { delete globalThis.MareWorldDepth; }
 });
 
 test('feet collide with houses, stall, chests, barrels, trees, water, and boundaries',()=>{
