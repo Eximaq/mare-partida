@@ -19,7 +19,9 @@ BASE=os.environ.get('MARE_TEST_URL','http://127.0.0.1:8126/dist/')
 HOOK="""
 window.__completeTest={combatFixture(direction='east'){
  const nav=navigator(),[dx,dy]={south:[0,15],north:[0,-15],west:[-15,0],east:[15,0]}[direction],category=MarePaperDollCatalog.profile(game).category,m=world.mobs[0];
- for(let y=192;y<nav.map.height-192;y+=16)for(let x=192;x<nav.map.width-192;x+=16){const target={...m,x:x+dx,y:y+dy};if(!nav.walkable(x,y)||!nav.clear({x,y},target))continue;const emission=paperDollReview.inspect(game,{animationId:'attack-'+category,direction,frameIndex:3},{x,y}).emission,chest=combatChest(target);if(emission&&!nav.clear({x:emission.x,y:emission.y+24},{x:chest.x,y:chest.y+24}))continue;Object.assign(world.hero,{x,y});return;}throw Error('No clear combat fixture for '+direction);
+ if(!m)throw Error('Missing combat fixture target');
+ Object.assign(m,{hp:100000,maxHP:100000,alive:true});
+ for(let y=192;y<nav.map.height-192;y+=16)for(let x=192;x<nav.map.width-192;x+=16){const target={...m,x:x+dx,y:y+dy};if(!nav.walkable(x,y)||!nav.clear({x,y},target))continue;const emission=paperDollReview.inspect(game,{animationId:'attack-'+category,direction,frameIndex:3},{x,y}).emission,chest=combatChest(target);if(emission&&!nav.clear({x:emission.x,y:emission.y+24},{x:chest.x,y:chest.y+24}))continue;Object.assign(world.hero,{x,y});Object.assign(m,{x:target.x,y:target.y,anchorX:target.x,anchorY:target.y,engaged:false,returning:false,telegraph:null});return;}throw Error('No clear combat fixture for '+direction);
 },strike(direction,skill=false){
  autoPlay=false;cancelBasicAttack();this.combatFixture(direction);const controller=classCombatController();controller?.reset('front');const m=livingMobs()[0],delta={south:[0,15],north:[0,-15],west:[-15,0],east:[15,0]}[direction];m.x=world.hero.x+delta[0];m.y=world.hero.y+delta[1];m.hp=m.maxHP=100000;m.alive=true;
  session.respawn=0;const old=Math.random;Math.random=()=>.5;

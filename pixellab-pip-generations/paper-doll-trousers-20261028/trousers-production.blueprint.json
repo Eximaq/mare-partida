@@ -1,0 +1,328 @@
+[
+  {
+    "_comment": "Actual submissions, including rejected outputs. This recipe is not approval; it must not replay automatically.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-trousers-replay",
+      "output_collision_policy": "create_unique"
+    },
+    "TASK": "Check a new explicit paid authorization, MCP authentication and source-contract hashes. Create a unique empty destination. All image inputs are native supplied PNGs; preserve pixels and dimensions. No automatic retries."
+  },
+  {
+    "_comment": "reference-south; inspect results before any dependent work",
+    "MCP inpaint_image_pro_flash": {
+      "description": "Add only plain navy sailor trousers inside the mask, fitted to this existing human facing south toward the viewer. Follow the existing waist, leg silhouette and bends. Match only the trouser fabric colors and stepped shading of the right-hand context reference. Keep feet bare and hands in front of the cloth. Preserve the exact pose, silhouette and all protected pixels. No belt, buckle, headwear, extra anatomy or change of facing. Output only fitted trousers on transparency.",
+      "image_base64": "inputs/source-south.png",
+      "mask_image_base64": "inputs/mask-south.png",
+      "context_image": {
+        "base64": "inputs/context-south.png",
+        "usage_description": "Left image: preserve this exact pose and facing. Right image: copy only the navy trouser fabric palette and stepped shading, not orientation, anatomy, buckle or other clothes."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1350402902
+    }
+  },
+  {
+    "TASK": "Preserve all outputs. Inspect exact pose, full-length garment coverage, transparency and direction. Reject unchanged shorts or posture/facing drift; stop dependent work for that direction. Never repair artwork by painting, warping or duplicating frames. Independently authorized directions retain their checkpoints."
+  },
+  {
+    "_comment": "reference-north; inspect results before any dependent work",
+    "MCP inpaint_image_pro_flash": {
+      "description": "Add only plain navy sailor trousers inside the mask, fitted to this existing human facing north away from the viewer. Follow the existing waist, leg silhouette and bends. Match only the trouser fabric colors and stepped shading of the right-hand context reference. Keep feet bare and hands in front of the cloth. Preserve the exact pose, silhouette and all protected pixels. No belt, buckle, headwear, extra anatomy or change of facing. Output only fitted trousers on transparency.",
+      "image_base64": "inputs/source-north.png",
+      "mask_image_base64": "inputs/mask-north.png",
+      "context_image": {
+        "base64": "inputs/context-north.png",
+        "usage_description": "Left image: preserve this exact pose and facing. Right image: copy only the navy trouser fabric palette and stepped shading, not orientation, anatomy, buckle or other clothes."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1350402902
+    }
+  },
+  {
+    "TASK": "Preserve all outputs. Inspect exact pose, full-length garment coverage, transparency and direction. Reject unchanged shorts or posture/facing drift; stop dependent work for that direction. Never repair artwork by painting, warping or duplicating frames. Independently authorized directions retain their checkpoints."
+  },
+  {
+    "_comment": "reference-west; inspect results before any dependent work",
+    "MCP inpaint_image_pro_flash": {
+      "description": "Add only plain navy sailor trousers inside the mask, fitted to this existing human facing west in strict left-facing profile. Follow the existing waist, leg silhouette and bends. Match only the trouser fabric colors and stepped shading of the right-hand context reference. Keep feet bare and hands in front of the cloth. Preserve the exact pose, silhouette and all protected pixels. No belt, buckle, headwear, extra anatomy or change of facing. Output only fitted trousers on transparency.",
+      "image_base64": "inputs/source-west.png",
+      "mask_image_base64": "inputs/mask-west.png",
+      "context_image": {
+        "base64": "inputs/context-west.png",
+        "usage_description": "Left image: preserve this exact pose and facing. Right image: copy only the navy trouser fabric palette and stepped shading, not orientation, anatomy, buckle or other clothes."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1350402902
+    }
+  },
+  {
+    "TASK": "Preserve all outputs. Inspect exact pose, full-length garment coverage, transparency and direction. Reject unchanged shorts or posture/facing drift; stop dependent work for that direction. Never repair artwork by painting, warping or duplicating frames. Independently authorized directions retain their checkpoints."
+  },
+  {
+    "_comment": "reference-east; inspect results before any dependent work",
+    "MCP inpaint_image_pro_flash": {
+      "description": "Add only plain navy sailor trousers inside the mask, fitted to this existing human facing east in strict right-facing profile. Follow the existing waist, leg silhouette and bends. Match only the trouser fabric colors and stepped shading of the right-hand context reference. Keep feet bare and hands in front of the cloth. Preserve the exact pose, silhouette and all protected pixels. No belt, buckle, headwear, extra anatomy or change of facing. Output only fitted trousers on transparency.",
+      "image_base64": "inputs/source-east.png",
+      "mask_image_base64": "inputs/mask-east.png",
+      "context_image": {
+        "base64": "inputs/context-east.png",
+        "usage_description": "Left image: preserve this exact pose and facing. Right image: copy only the navy trouser fabric palette and stepped shading, not orientation, anatomy, buckle or other clothes."
+      },
+      "bounding_box": {
+        "x": 0,
+        "y": 0,
+        "width": 64,
+        "height": 64
+      },
+      "output_method": "New layer with changes",
+      "crop_to_mask": true,
+      "no_background": true,
+      "seed": 1350402902
+    }
+  },
+  {
+    "TASK": "Preserve all outputs. Inspect exact pose, full-length garment coverage, transparency and direction. Reject unchanged shorts or posture/facing drift; stop dependent work for that direction. Never repair artwork by painting, warping or duplicating frames. Independently authorized directions retain their checkpoints."
+  },
+  {
+    "_comment": "batch-0; inspect results before any dependent work",
+    "MCP transfer_outfit": {
+      "frames_base64": [
+        "inputs/body-idle-south-00.png",
+        "inputs/body-idle-south-01.png",
+        "inputs/body-idle-south-02.png",
+        "inputs/body-idle-south-03.png",
+        "inputs/body-walk-south-00.png",
+        "inputs/body-walk-south-01.png",
+        "inputs/body-walk-south-02.png",
+        "inputs/body-walk-south-03.png",
+        "inputs/body-walk-south-04.png",
+        "inputs/body-walk-south-05.png",
+        "inputs/body-walk-south-06.png",
+        "inputs/body-walk-south-07.png",
+        "inputs/body-attack-sword-south-00.png",
+        "inputs/body-attack-sword-south-01.png",
+        "inputs/body-attack-sword-south-02.png"
+      ],
+      "reference_image_base64": "references/south.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "additional_instructions": "Fit only the reference garment to each supplied body pose. Preserve the existing anatomy, facing, motion, foot positions and frame order. Keep all unrelated pixels unchanged, the same crisp pixel scale and transparent background. No other clothes, props or extra anatomy."
+    }
+  },
+  {
+    "TASK": "Preserve all outputs. Inspect exact pose, full-length garment coverage, transparency and direction. Reject unchanged shorts or posture/facing drift; stop dependent work for that direction. Never repair artwork by painting, warping or duplicating frames. Independently authorized directions retain their checkpoints."
+  },
+  {
+    "_comment": "batch-1; inspect results before any dependent work",
+    "MCP transfer_outfit": {
+      "frames_base64": [
+        "inputs/body-attack-sword-south-03.png",
+        "inputs/body-attack-sword-south-04.png",
+        "inputs/body-attack-sword-south-05.png",
+        "inputs/body-attack-sword-south-06.png",
+        "inputs/body-attack-sword-south-07.png",
+        "inputs/body-attack-unarmed-south-00.png",
+        "inputs/body-attack-unarmed-south-01.png",
+        "inputs/body-attack-unarmed-south-02.png",
+        "inputs/body-attack-unarmed-south-03.png",
+        "inputs/body-attack-unarmed-south-04.png",
+        "inputs/body-attack-unarmed-south-05.png",
+        "inputs/body-attack-unarmed-south-06.png",
+        "inputs/body-attack-unarmed-south-07.png",
+        "inputs/body-attack-firearm-south-00.png",
+        "inputs/body-attack-firearm-south-01.png"
+      ],
+      "reference_image_base64": "references/south.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "additional_instructions": "Fit only the reference garment to each supplied body pose. Preserve the existing anatomy, facing, motion, foot positions and frame order. Keep all unrelated pixels unchanged, the same crisp pixel scale and transparent background. No other clothes, props or extra anatomy."
+    }
+  },
+  {
+    "TASK": "Preserve all outputs. Inspect exact pose, full-length garment coverage, transparency and direction. Reject unchanged shorts or posture/facing drift; stop dependent work for that direction. Never repair artwork by painting, warping or duplicating frames. Independently authorized directions retain their checkpoints."
+  },
+  {
+    "_comment": "batch-4; inspect results before any dependent work",
+    "MCP transfer_outfit": {
+      "frames_base64": [
+        "inputs/body-idle-north-00.png",
+        "inputs/body-idle-north-01.png",
+        "inputs/body-idle-north-02.png",
+        "inputs/body-idle-north-03.png",
+        "inputs/body-walk-north-00.png",
+        "inputs/body-walk-north-01.png",
+        "inputs/body-walk-north-02.png",
+        "inputs/body-walk-north-03.png",
+        "inputs/body-walk-north-04.png",
+        "inputs/body-walk-north-05.png",
+        "inputs/body-walk-north-06.png",
+        "inputs/body-walk-north-07.png",
+        "inputs/body-attack-sword-north-00.png",
+        "inputs/body-attack-sword-north-01.png",
+        "inputs/body-attack-sword-north-02.png"
+      ],
+      "reference_image_base64": "references/north.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "additional_instructions": "Fit only the reference garment to each supplied body pose. Preserve the existing anatomy, facing, motion, foot positions and frame order. Keep all unrelated pixels unchanged, the same crisp pixel scale and transparent background. No other clothes, props or extra anatomy."
+    }
+  },
+  {
+    "TASK": "Preserve all outputs. Inspect exact pose, full-length garment coverage, transparency and direction. Reject unchanged shorts or posture/facing drift; stop dependent work for that direction. Never repair artwork by painting, warping or duplicating frames. Independently authorized directions retain their checkpoints."
+  },
+  {
+    "_comment": "batch-8; inspect results before any dependent work",
+    "MCP transfer_outfit": {
+      "frames_base64": [
+        "inputs/body-idle-west-00.png",
+        "inputs/body-idle-west-01.png",
+        "inputs/body-idle-west-02.png",
+        "inputs/body-idle-west-03.png",
+        "inputs/body-walk-west-00.png",
+        "inputs/body-walk-west-01.png",
+        "inputs/body-walk-west-02.png",
+        "inputs/body-walk-west-03.png",
+        "inputs/body-walk-west-04.png",
+        "inputs/body-walk-west-05.png",
+        "inputs/body-walk-west-06.png",
+        "inputs/body-walk-west-07.png",
+        "inputs/body-attack-sword-west-00.png",
+        "inputs/body-attack-sword-west-01.png",
+        "inputs/body-attack-sword-west-02.png"
+      ],
+      "reference_image_base64": "references/west.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "additional_instructions": "Fit only the reference garment to each supplied body pose. Preserve the existing anatomy, facing, motion, foot positions and frame order. Keep all unrelated pixels unchanged, the same crisp pixel scale and transparent background. No other clothes, props or extra anatomy."
+    }
+  },
+  {
+    "TASK": "Preserve all outputs. Inspect exact pose, full-length garment coverage, transparency and direction. Reject unchanged shorts or posture/facing drift; stop dependent work for that direction. Never repair artwork by painting, warping or duplicating frames. Independently authorized directions retain their checkpoints."
+  },
+  {
+    "_comment": "batch-12; inspect results before any dependent work",
+    "MCP transfer_outfit": {
+      "frames_base64": [
+        "inputs/body-idle-east-00.png",
+        "inputs/body-idle-east-01.png",
+        "inputs/body-idle-east-02.png",
+        "inputs/body-idle-east-03.png",
+        "inputs/body-walk-east-00.png",
+        "inputs/body-walk-east-01.png",
+        "inputs/body-walk-east-02.png",
+        "inputs/body-walk-east-03.png",
+        "inputs/body-walk-east-04.png",
+        "inputs/body-walk-east-05.png",
+        "inputs/body-walk-east-06.png",
+        "inputs/body-walk-east-07.png",
+        "inputs/body-attack-sword-east-00.png",
+        "inputs/body-attack-sword-east-01.png",
+        "inputs/body-attack-sword-east-02.png"
+      ],
+      "reference_image_base64": "references/east.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "additional_instructions": "Fit only the reference garment to each supplied body pose. Preserve the existing anatomy, facing, motion, foot positions and frame order. Keep all unrelated pixels unchanged, the same crisp pixel scale and transparent background. No other clothes, props or extra anatomy."
+    }
+  },
+  {
+    "TASK": "Preserve all outputs. Inspect exact pose, full-length garment coverage, transparency and direction. Reject unchanged shorts or posture/facing drift; stop dependent work for that direction. Never repair artwork by painting, warping or duplicating frames. Independently authorized directions retain their checkpoints."
+  },
+  {
+    "_comment": "batch-9; inspect results before any dependent work",
+    "MCP transfer_outfit": {
+      "frames_base64": [
+        "inputs/body-attack-sword-west-03.png",
+        "inputs/body-attack-sword-west-04.png",
+        "inputs/body-attack-sword-west-05.png",
+        "inputs/body-attack-sword-west-06.png",
+        "inputs/body-attack-sword-west-07.png",
+        "inputs/body-attack-unarmed-west-00.png",
+        "inputs/body-attack-unarmed-west-01.png",
+        "inputs/body-attack-unarmed-west-02.png",
+        "inputs/body-attack-unarmed-west-03.png",
+        "inputs/body-attack-unarmed-west-04.png",
+        "inputs/body-attack-unarmed-west-05.png",
+        "inputs/body-attack-unarmed-west-06.png",
+        "inputs/body-attack-unarmed-west-07.png",
+        "inputs/body-attack-firearm-west-00.png",
+        "inputs/body-attack-firearm-west-01.png"
+      ],
+      "reference_image_base64": "references/west.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "additional_instructions": "Fit only the reference garment to each supplied body pose. Preserve the existing anatomy, facing, motion, foot positions and frame order. Keep all unrelated pixels unchanged, the same crisp pixel scale and transparent background. No other clothes, props or extra anatomy."
+    }
+  },
+  {
+    "TASK": "Preserve all outputs. Inspect exact pose, full-length garment coverage, transparency and direction. Reject unchanged shorts or posture/facing drift; stop dependent work for that direction. Never repair artwork by painting, warping or duplicating frames. Independently authorized directions retain their checkpoints."
+  },
+  {
+    "_comment": "batch-13; inspect results before any dependent work",
+    "MCP transfer_outfit": {
+      "frames_base64": [
+        "inputs/body-attack-sword-east-03.png",
+        "inputs/body-attack-sword-east-04.png",
+        "inputs/body-attack-sword-east-05.png",
+        "inputs/body-attack-sword-east-06.png",
+        "inputs/body-attack-sword-east-07.png",
+        "inputs/body-attack-unarmed-east-00.png",
+        "inputs/body-attack-unarmed-east-01.png",
+        "inputs/body-attack-unarmed-east-02.png",
+        "inputs/body-attack-unarmed-east-03.png",
+        "inputs/body-attack-unarmed-east-04.png",
+        "inputs/body-attack-unarmed-east-05.png",
+        "inputs/body-attack-unarmed-east-06.png",
+        "inputs/body-attack-unarmed-east-07.png",
+        "inputs/body-attack-firearm-east-00.png",
+        "inputs/body-attack-firearm-east-01.png"
+      ],
+      "reference_image_base64": "references/east.png",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "additional_instructions": "Fit only the reference garment to each supplied body pose. Preserve the existing anatomy, facing, motion, foot positions and frame order. Keep all unrelated pixels unchanged, the same crisp pixel scale and transparent background. No other clothes, props or extra anatomy."
+    }
+  },
+  {
+    "TASK": "Preserve all outputs. Inspect exact pose, full-length garment coverage, transparency and direction. Reject unchanged shorts or posture/facing drift; stop dependent work for that direction. Never repair artwork by painting, warping or duplicating frames. Independently authorized directions retain their checkpoints."
+  }
+]

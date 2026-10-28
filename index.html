@@ -88,6 +88,7 @@
   <script defer src="paper-doll.js"></script>
   <script defer src="paper-doll-assets.js"></script>
   <script defer src="paper-doll-coverage.js"></script>
+  <script defer src="paper-doll-look-data.js"></script>
   <script defer src="paper-doll-look.js"></script>
   <script defer src="paper-doll-review.js"></script>
   <link rel="stylesheet" href="paper-doll-look.css">
@@ -235,7 +236,7 @@
             <button class="class-choice" data-class="healer" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/31.png?v=20261020" alt=""></span><strong>SUPORTE / CURANDEIRO</strong><small>Cura, proteção e ataques de água.</small><em>Suporte · ESP / INT</em><span class="birth-stats">FOR 5 · DES 8 · VIT 10 · INT 12 · ESP 15<small>50 pontos de nascimento</small></span></button>
           </div>
           <section class="creation-appearance" aria-labelledby="creationLookTitle">
-            <div><h3 id="creationLookTitle">Seu personagem</h3><p>A aparência é independente da classe e da facção.</p><label>Cabelo<select data-creation-look="hair"><option value="short-black">Curto preto</option><option value="bald">Sem cabelo</option></select></label><label>Roupa padrão<select data-creation-look="outfit"><option value="navy">Colete azul e linho</option><option value="base">Somente corpo-base</option></select></label><p>A roupa padrão aparece quando o torso está sem equipamento. Você começa a aventura com um casaco equipado.</p></div>
+            <div><h3 id="creationLookTitle">Seu personagem</h3><p>A aparência é independente da classe e da facção.</p><div id="creationLookFields"></div><p>A roupa padrão aparece quando o torso está sem equipamento. Você começa a aventura com um casaco equipado.</p></div>
             <figure><canvas id="creationLookCanvas" width="220" height="180" aria-label="Prévia do seu personagem"></canvas><figcaption id="creationLookState" role="status">Carregando personagem…</figcaption></figure>
           </section>
           <div class="creation-actions"><button id="backToFaction" type="button" class="secondary-button">← VOLTAR</button><button id="createCharacter" type="button" class="primary-button">COMEÇAR AVENTURA <span>→</span></button></div>

@@ -32,3 +32,11 @@ marked.approved=false;runtime.registerPiece(marked);
 assert.equal(runtime.resolve(look,pose).missing[0].code,'unapproved-piece');assert(runtime.resolve(look,pose,{allowDraft:true}).valid);
 marked.available=false;runtime.registerPiece(marked);assert.equal(runtime.resolve(look,pose,{allowDraft:true}).missing[0].code,'missing-source');
 console.log('Weapon occlusion: actual transparent cells, cache key isolation, malformed declarations, anatomy and production gates passed.');
+runtime.registerRig({...rig,requiredSlots:['body']});runtime.registerPiece(body);
+const cape=piece('cloak');cape.animations.attack.occludedFrames={north:[0,1,2]};
+images.set('cloak',sheet([]));runtime.registerPiece(cape);
+const cloaked={rigId:rig.id,pieces:{body:'body',cloak:'cloak'}};
+for(let frameIndex=0;frameIndex<3;frameIndex++){
+ const hidden=runtime.resolve(cloaked,{...pose,frameIndex});assert(hidden.valid,'a genuinely hidden cape can have an explicitly empty direction');assert(!hidden.layers.some(l=>l.slot==='cloak'));
+}
+images.set('cloak',sheet([1]));assert.equal(runtime.resolve(cloaked,pose).missing[0].code,'occluded-frame-has-pixels','an occlusion declaration cannot hide visible sheet pixels');

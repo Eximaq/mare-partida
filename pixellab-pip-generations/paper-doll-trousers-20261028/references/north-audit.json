@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "scope": "structural contact only; artistic approval required",
+  "artwork_approved": false,
+  "size": [
+    64,
+    64
+  ],
+  "contact_anchor": [
+    32,
+    35
+  ],
+  "visible_layer_pixels": 178,
+  "outside_mask_pixels": 0,
+  "body_occlusion_allowed": true,
+  "unprotected_body_pixels": 0,
+  "permitted_body_occlusion_pixels": 180,
+  "changed_unmasked_body_pixels": 0,
+  "body_overlap_pixels": 178,
+  "partial_alpha_pixels": 0,
+  "changed_body_pixels": 170,
+  "hand_contact_pixels": 42,
+  "anchor_contact_pixels": 42,
+  "layer_bbox": [
+    25,
+    33,
+    39,
+    48
+  ]
+}

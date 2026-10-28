@@ -1,0 +1,980 @@
+{
+  "schema": "mare-equipment-art-review-v1",
+  "approved": false,
+  "productionEnabled": false,
+  "canvas": [
+    64,
+    64
+  ],
+  "canonicalCanvas": [
+    84,
+    84
+  ],
+  "pivot": [
+    32,
+    52
+  ],
+  "canonicalPivot": [
+    42,
+    65
+  ],
+  "padding": [
+    10,
+    13,
+    10,
+    7
+  ],
+  "coverage": "Apenas referências da pose Idle 0; sem Walk ou Attack. Não é um pacote de runtime.",
+  "usage": {
+    "confirmedGenerations": 46,
+    "unknownSubmissions": 1,
+    "unknownEstimate": 1,
+    "cap": 840,
+    "transfersSubmitted": 0,
+    "retriesSubmitted": 2,
+    "confirmedOriginalGenerations": 36,
+    "confirmedRepairGenerations": 10
+  },
+  "pieces": [
+    {
+      "id": "pants",
+      "label": "Calças náuticas",
+      "approved": false,
+      "productionEnabled": false,
+      "complete": false,
+      "note": "O bruto Pixen virou as laterais para a frente. O piloto com máscara preservou os perfis oeste e leste na pose Idle 0. Paleta, quatro vistas e cobertura animada ainda precisam de revisão; nenhuma peça foi ativada.",
+      "references": {
+        "south": {
+          "source": "source/body-south.png",
+          "status": "static-candidate",
+          "image": "originals/pants-south.png",
+          "jobId": "a6c9ff75-341d-484b-b8b6-76830efe6dfa",
+          "chargedGenerations": 1,
+          "layer": "candidates/pants-south-layer.png",
+          "mask": "masks/pants-south.png",
+          "audit": {
+            "status": "unapproved inspection derivation; not final artwork",
+            "artwork_approved": false,
+            "productionEnabled": false,
+            "raw_audit": {
+              "passed": false,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "pants-south.png",
+              "changed_pixels": 535,
+              "changed_bbox": [
+                21,
+                5,
+                43,
+                51
+              ],
+              "outside_region_pixels": 350,
+              "alpha_erasure_pixels": 5,
+              "recomposition_mismatch_pixels": 5
+            },
+            "draft_audit": {
+              "passed": true,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "pants-south.png",
+              "changed_pixels": 180,
+              "changed_bbox": [
+                24,
+                32,
+                40,
+                49
+              ],
+              "outside_region_pixels": 0,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "copied_generated_pixels": 180,
+            "skipped_alpha_erasures": [
+              [
+                31,
+                41
+              ],
+              [
+                32,
+                41
+              ],
+              [
+                31,
+                42
+              ],
+              [
+                32,
+                42
+              ],
+              [
+                33,
+                43
+              ]
+            ],
+            "layer_file": "pants-south-layer.png",
+            "composite_file": "pants-south-composite.png"
+          }
+        },
+        "north": {
+          "source": "source/body-north.png",
+          "status": "unapproved-reference",
+          "image": "originals/pants-north.png",
+          "jobId": "d446907f-e1ae-4580-8346-b5a32a906f1f",
+          "chargedGenerations": 1
+        },
+        "west": {
+          "source": "source/body-west.png",
+          "status": "masked-static-candidate",
+          "image": "originals/pants-west.png",
+          "jobId": "7b5426be-3629-4b7c-b301-3a465e48c625",
+          "chargedGenerations": 1,
+          "layer": "candidates/pants-west-masked-layer.png",
+          "mask": "masks/pants-west-masked.png",
+          "audit": {
+            "passed": true,
+            "scope": "structural contact only; artistic approval required",
+            "artwork_approved": false,
+            "size": [
+              64,
+              64
+            ],
+            "contact_anchor": [
+              35,
+              35
+            ],
+            "visible_layer_pixels": 91,
+            "outside_mask_pixels": 0,
+            "body_occlusion_allowed": true,
+            "unprotected_body_pixels": 0,
+            "permitted_body_occlusion_pixels": 91,
+            "changed_unmasked_body_pixels": 0,
+            "body_overlap_pixels": 91,
+            "partial_alpha_pixels": 0,
+            "changed_body_pixels": 90,
+            "hand_contact_pixels": 18,
+            "anchor_contact_pixels": 18,
+            "layer_bbox": [
+              27,
+              34,
+              37,
+              48
+            ]
+          },
+          "method": "masked-pro-flash",
+          "layerJobId": "ff63bfde-9ab5-4bf4-82c3-7aa145b8b503",
+          "layerChargedGenerations": 5
+        },
+        "east": {
+          "source": "source/body-east.png",
+          "status": "masked-static-candidate",
+          "image": "originals/pants-east.png",
+          "jobId": "9674ca6f-0d12-45eb-b2d0-b8d53baff832",
+          "chargedGenerations": 1,
+          "layer": "candidates/pants-east-masked-layer.png",
+          "mask": "masks/pants-east-masked.png",
+          "audit": {
+            "passed": true,
+            "scope": "structural contact only; artistic approval required",
+            "artwork_approved": false,
+            "size": [
+              64,
+              64
+            ],
+            "contact_anchor": [
+              31,
+              35
+            ],
+            "visible_layer_pixels": 96,
+            "outside_mask_pixels": 0,
+            "body_occlusion_allowed": true,
+            "unprotected_body_pixels": 0,
+            "permitted_body_occlusion_pixels": 104,
+            "changed_unmasked_body_pixels": 0,
+            "body_overlap_pixels": 96,
+            "partial_alpha_pixels": 0,
+            "changed_body_pixels": 94,
+            "hand_contact_pixels": 33,
+            "anchor_contact_pixels": 33,
+            "layer_bbox": [
+              27,
+              32,
+              36,
+              48
+            ]
+          },
+          "method": "masked-pro-flash",
+          "layerJobId": "3d0fc79d-90f7-4617-89c7-e22452e2dde0",
+          "layerChargedGenerations": 5
+        }
+      }
+    },
+    {
+      "id": "boots",
+      "label": "Botas de marinheiro",
+      "approved": false,
+      "productionEnabled": false,
+      "complete": false,
+      "note": "A vista oeste virou para a frente. Os pares ainda precisam de encaixes e oclusão medidos por pose.",
+      "references": {
+        "south": {
+          "source": "source/body-south.png",
+          "status": "static-candidate",
+          "image": "originals/boots-south.png",
+          "jobId": "b4087684-fb8a-4838-bef9-3d00bb971abc",
+          "chargedGenerations": 1,
+          "layer": "candidates/boots-south-layer.png",
+          "mask": "masks/boots-south.png",
+          "audit": {
+            "status": "unapproved inspection derivation; not final artwork",
+            "artwork_approved": false,
+            "productionEnabled": false,
+            "raw_audit": {
+              "passed": false,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "boots-south.png",
+              "changed_pixels": 549,
+              "changed_bbox": [
+                21,
+                9,
+                44,
+                55
+              ],
+              "outside_region_pixels": 417,
+              "alpha_erasure_pixels": 5,
+              "recomposition_mismatch_pixels": 5
+            },
+            "draft_audit": {
+              "passed": true,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "boots-south.png",
+              "changed_pixels": 127,
+              "changed_bbox": [
+                22,
+                44,
+                42,
+                54
+              ],
+              "outside_region_pixels": 0,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "copied_generated_pixels": 127,
+            "skipped_alpha_erasures": [
+              [
+                22,
+                50
+              ],
+              [
+                23,
+                50
+              ],
+              [
+                40,
+                50
+              ],
+              [
+                41,
+                50
+              ],
+              [
+                22,
+                51
+              ]
+            ],
+            "layer_file": "boots-south-layer.png",
+            "composite_file": "boots-south-composite.png"
+          }
+        },
+        "north": {
+          "source": "source/body-north.png",
+          "status": "unapproved-reference",
+          "image": "originals/boots-north.png",
+          "jobId": "7f456499-c044-4c75-93ef-7ccdfa23e6bc",
+          "chargedGenerations": 1
+        },
+        "west": {
+          "source": "source/body-west.png",
+          "status": "unapproved-reference",
+          "image": "originals/boots-west.png",
+          "jobId": "db964da0-d18d-4e8e-99b9-c782c2d91a52",
+          "chargedGenerations": 1
+        },
+        "east": {
+          "source": "source/body-east.png",
+          "status": "unapproved-reference",
+          "image": "originals/boots-east.png",
+          "jobId": "8fa4099b-3c40-4b98-8c7b-6123587b0643",
+          "chargedGenerations": 1
+        }
+      }
+    },
+    {
+      "id": "gloves",
+      "label": "Luvas de couro",
+      "approved": false,
+      "productionEnabled": false,
+      "complete": false,
+      "note": "A vista oeste virou para a frente. A luva também cobre parte do antebraço; não foi aprovada como luva sem dedos.",
+      "references": {
+        "south": {
+          "source": "source/body-south.png",
+          "status": "static-candidate",
+          "image": "originals/gloves-south.png",
+          "jobId": "e8c612dd-43b0-4fe6-8606-83d56ac0d66a",
+          "chargedGenerations": 1,
+          "layer": "candidates/gloves-south-layer.png",
+          "mask": "masks/gloves-south.png",
+          "audit": {
+            "status": "unapproved inspection derivation; not final artwork",
+            "artwork_approved": false,
+            "productionEnabled": false,
+            "raw_audit": {
+              "passed": false,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "gloves-south.png",
+              "changed_pixels": 447,
+              "changed_bbox": [
+                20,
+                9,
+                44,
+                51
+              ],
+              "outside_region_pixels": 391,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "draft_audit": {
+              "passed": true,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "gloves-south.png",
+              "changed_pixels": 56,
+              "changed_bbox": [
+                20,
+                28,
+                44,
+                39
+              ],
+              "outside_region_pixels": 0,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "copied_generated_pixels": 56,
+            "skipped_alpha_erasures": [],
+            "layer_file": "gloves-south-layer.png",
+            "composite_file": "gloves-south-composite.png"
+          }
+        },
+        "north": {
+          "source": "source/body-north.png",
+          "status": "unapproved-reference",
+          "image": "originals/gloves-north.png",
+          "jobId": "947e8d06-7ced-4e8f-bcd4-ff51e8c53dcf",
+          "chargedGenerations": 1
+        },
+        "west": {
+          "source": "source/body-west.png",
+          "status": "unapproved-reference",
+          "image": "originals/gloves-west.png",
+          "jobId": "4817d776-f075-48e7-b158-1e5b1a67e1a4",
+          "chargedGenerations": 1
+        },
+        "east": {
+          "source": "source/body-east.png",
+          "status": "unapproved-reference",
+          "image": "originals/gloves-east.png",
+          "jobId": "842bda8c-86b4-4fef-9430-a3a3ff6ebab7",
+          "chargedGenerations": 1
+        }
+      }
+    },
+    {
+      "id": "cloak",
+      "label": "Capa vinho",
+      "approved": false,
+      "productionEnabled": false,
+      "complete": false,
+      "note": "Sul e laterais são estudos aproveitáveis. No norte, a capa deixa o centro das costas descoberto e não mantém a construção esperada. Transferências bloqueadas.",
+      "references": {
+        "south": {
+          "source": "source/body-south.png",
+          "status": "static-candidate",
+          "image": "originals/cloak-south.png",
+          "jobId": "e6a9cc5f-189c-4fc6-8b4f-1c82dfacbbb8",
+          "chargedGenerations": 1,
+          "layer": "candidates/cloak-south-layer.png",
+          "mask": "masks/cloak-south.png",
+          "audit": {
+            "status": "unapproved inspection derivation; not final artwork",
+            "artwork_approved": false,
+            "productionEnabled": false,
+            "raw_audit": {
+              "passed": false,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "cloak-south.png",
+              "changed_pixels": 588,
+              "changed_bbox": [
+                19,
+                8,
+                45,
+                51
+              ],
+              "outside_region_pixels": 366,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "draft_audit": {
+              "passed": true,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "cloak-south.png",
+              "changed_pixels": 222,
+              "changed_bbox": [
+                19,
+                19,
+                45,
+                46
+              ],
+              "outside_region_pixels": 0,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "copied_generated_pixels": 222,
+            "skipped_alpha_erasures": [],
+            "layer_file": "cloak-south-layer.png",
+            "composite_file": "cloak-south-composite.png"
+          }
+        },
+        "north": {
+          "source": "source/body-north.png",
+          "status": "unapproved-reference",
+          "image": "originals/cloak-north.png",
+          "jobId": "a9badbf2-4853-4ae0-ac74-d96a2c6a1667",
+          "chargedGenerations": 1
+        },
+        "west": {
+          "source": "source/body-west.png",
+          "status": "unapproved-reference",
+          "image": "originals/cloak-west.png",
+          "jobId": "864844f8-d56f-47cc-adc6-b0a99eb8e742",
+          "chargedGenerations": 1
+        },
+        "east": {
+          "source": "source/body-east.png",
+          "status": "unapproved-reference",
+          "image": "originals/cloak-east.png",
+          "jobId": "90828093-98c5-41aa-8eb0-e161e5976467",
+          "chargedGenerations": 1
+        }
+      }
+    },
+    {
+      "id": "head",
+      "label": "Boné náutico",
+      "approved": false,
+      "productionEnabled": false,
+      "complete": false,
+      "note": "No oeste o boné virou para a frente; no norte a aba e o emblema continuam frontais. Não há quatro vistas coerentes.",
+      "references": {
+        "south": {
+          "source": "source/body-south.png",
+          "status": "static-candidate",
+          "image": "originals/head-south.png",
+          "jobId": "52716053-b2c7-4225-b014-99b4d450063f",
+          "chargedGenerations": 1,
+          "layer": "candidates/head-south-layer.png",
+          "mask": "masks/head-south.png",
+          "audit": {
+            "status": "unapproved inspection derivation; not final artwork",
+            "artwork_approved": false,
+            "productionEnabled": false,
+            "raw_audit": {
+              "passed": false,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "head-south.png",
+              "changed_pixels": 503,
+              "changed_bbox": [
+                21,
+                5,
+                43,
+                51
+              ],
+              "outside_region_pixels": 418,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "draft_audit": {
+              "passed": true,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "head-south.png",
+              "changed_pixels": 85,
+              "changed_bbox": [
+                25,
+                5,
+                39,
+                13
+              ],
+              "outside_region_pixels": 0,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "copied_generated_pixels": 85,
+            "skipped_alpha_erasures": [],
+            "layer_file": "head-south-layer.png",
+            "composite_file": "head-south-composite.png"
+          }
+        },
+        "north": {
+          "source": "source/body-north.png",
+          "status": "unapproved-reference",
+          "image": "originals/head-north.png",
+          "jobId": "44560cfd-c5a2-4b20-b701-d717760298b4",
+          "chargedGenerations": 1
+        },
+        "west": {
+          "source": "source/body-west.png",
+          "status": "unapproved-reference",
+          "image": "originals/head-west.png",
+          "jobId": "1388f1d2-c208-48ae-b230-dc5525707e9d",
+          "chargedGenerations": 1
+        },
+        "east": {
+          "source": "source/body-east.png",
+          "status": "unapproved-reference",
+          "image": "originals/head-east.png",
+          "jobId": "a3f10238-b526-478a-9132-5ca933f5d725",
+          "chargedGenerations": 1
+        }
+      }
+    },
+    {
+      "id": "eyewear",
+      "label": "Óculos de latão",
+      "approved": false,
+      "productionEnabled": false,
+      "complete": false,
+      "note": "Oeste falhou no serviço sem job nem recibo. Norte desenhou lentes através da parte posterior da cabeça; essa direção deveria ser ocluída.",
+      "references": {
+        "south": {
+          "source": "source/body-south.png",
+          "status": "static-candidate",
+          "image": "originals/eyewear-south.png",
+          "jobId": "cc26b73f-c43a-4123-bd82-fd486f583793",
+          "chargedGenerations": 1,
+          "layer": "candidates/eyewear-south-layer.png",
+          "mask": "masks/eyewear-south.png",
+          "audit": {
+            "status": "unapproved inspection derivation; not final artwork",
+            "artwork_approved": false,
+            "productionEnabled": false,
+            "raw_audit": {
+              "passed": false,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "eyewear-south.png",
+              "changed_pixels": 447,
+              "changed_bbox": [
+                21,
+                9,
+                43,
+                51
+              ],
+              "outside_region_pixels": 391,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "draft_audit": {
+              "passed": true,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "eyewear-south.png",
+              "changed_pixels": 56,
+              "changed_bbox": [
+                26,
+                12,
+                38,
+                18
+              ],
+              "outside_region_pixels": 0,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "copied_generated_pixels": 56,
+            "skipped_alpha_erasures": [],
+            "layer_file": "eyewear-south-layer.png",
+            "composite_file": "eyewear-south-composite.png"
+          }
+        },
+        "north": {
+          "source": "source/body-north.png",
+          "status": "unapproved-reference",
+          "image": "originals/eyewear-north.png",
+          "jobId": "6709e33f-eb73-4b02-8930-fe2dcfb397e6",
+          "chargedGenerations": 1
+        },
+        "west": {
+          "source": "source/body-west.png",
+          "status": "service-error",
+          "note": "Sem job ID nem recibo; custo desconhecido, reservado conservadoramente em 1 geração."
+        },
+        "east": {
+          "source": "source/body-east.png",
+          "status": "unapproved-reference",
+          "image": "originals/eyewear-east.png",
+          "jobId": "36ed9be7-5b3f-4ab0-8202-f816cb0accc0",
+          "chargedGenerations": 1
+        }
+      }
+    },
+    {
+      "id": "necklace",
+      "label": "Medalhão de bronze",
+      "approved": false,
+      "productionEnabled": false,
+      "complete": false,
+      "note": "Norte desenhou o medalhão nas costas; oeste e leste viraram o corpo para a frente. Geometria lateral incompatível.",
+      "references": {
+        "south": {
+          "source": "source/body-south.png",
+          "status": "static-candidate",
+          "image": "originals/necklace-south.png",
+          "jobId": "08cd25ed-500e-42b9-b4b3-ddec6b1a4cd2",
+          "chargedGenerations": 1,
+          "layer": "candidates/necklace-south-layer.png",
+          "mask": "masks/necklace-south.png",
+          "audit": {
+            "status": "unapproved inspection derivation; not final artwork",
+            "artwork_approved": false,
+            "productionEnabled": false,
+            "raw_audit": {
+              "passed": false,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "necklace-south.png",
+              "changed_pixels": 421,
+              "changed_bbox": [
+                21,
+                9,
+                43,
+                51
+              ],
+              "outside_region_pixels": 365,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "draft_audit": {
+              "passed": true,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "necklace-south.png",
+              "changed_pixels": 56,
+              "changed_bbox": [
+                28,
+                22,
+                36,
+                29
+              ],
+              "outside_region_pixels": 0,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "copied_generated_pixels": 56,
+            "skipped_alpha_erasures": [],
+            "layer_file": "necklace-south-layer.png",
+            "composite_file": "necklace-south-composite.png"
+          }
+        },
+        "north": {
+          "source": "source/body-north.png",
+          "status": "unapproved-reference",
+          "image": "originals/necklace-north.png",
+          "jobId": "5ea51aee-b4bb-43a0-bc12-2f2e9fb66dff",
+          "chargedGenerations": 1
+        },
+        "west": {
+          "source": "source/body-west.png",
+          "status": "unapproved-reference",
+          "image": "originals/necklace-west.png",
+          "jobId": "76d46118-337d-44b2-91f9-975ff9982326",
+          "chargedGenerations": 1
+        },
+        "east": {
+          "source": "source/body-east.png",
+          "status": "unapproved-reference",
+          "image": "originals/necklace-east.png",
+          "jobId": "efacde11-9d18-46ed-bf36-2f7863cbadb5",
+          "chargedGenerations": 1
+        }
+      }
+    },
+    {
+      "id": "belt",
+      "label": "Cinto de couro",
+      "approved": false,
+      "productionEnabled": false,
+      "complete": false,
+      "note": "Oeste e leste viraram para a frente, e a fivela aparece atrás no norte. As referências não são um conjunto direcional válido.",
+      "references": {
+        "south": {
+          "source": "source/body-south.png",
+          "status": "static-candidate",
+          "image": "originals/belt-south.png",
+          "jobId": "1174ffa5-4825-4ee3-a552-30e047c3d4c3",
+          "chargedGenerations": 1,
+          "layer": "candidates/belt-south-layer.png",
+          "mask": "masks/belt-south.png",
+          "audit": {
+            "status": "unapproved inspection derivation; not final artwork",
+            "artwork_approved": false,
+            "productionEnabled": false,
+            "raw_audit": {
+              "passed": false,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "belt-south.png",
+              "changed_pixels": 436,
+              "changed_bbox": [
+                21,
+                9,
+                43,
+                51
+              ],
+              "outside_region_pixels": 386,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "draft_audit": {
+              "passed": true,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "belt-south.png",
+              "changed_pixels": 50,
+              "changed_bbox": [
+                26,
+                31,
+                38,
+                36
+              ],
+              "outside_region_pixels": 0,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "copied_generated_pixels": 50,
+            "skipped_alpha_erasures": [],
+            "layer_file": "belt-south-layer.png",
+            "composite_file": "belt-south-composite.png"
+          }
+        },
+        "north": {
+          "source": "source/body-north.png",
+          "status": "unapproved-reference",
+          "image": "originals/belt-north.png",
+          "jobId": "c7e8802f-aaa3-4314-86f5-08e617662ecf",
+          "chargedGenerations": 1
+        },
+        "west": {
+          "source": "source/body-west.png",
+          "status": "unapproved-reference",
+          "image": "originals/belt-west.png",
+          "jobId": "4771fa28-b40e-4ed1-8970-df85fc14dd07",
+          "chargedGenerations": 1
+        },
+        "east": {
+          "source": "source/body-east.png",
+          "status": "unapproved-reference",
+          "image": "originals/belt-east.png",
+          "jobId": "c1ad410f-4238-46d8-b965-16c309ce4032",
+          "chargedGenerations": 1
+        }
+      }
+    },
+    {
+      "id": "ring",
+      "label": "Anel de latão",
+      "approved": false,
+      "productionEnabled": false,
+      "complete": false,
+      "note": "O anel virou uma argola grande fora da mão. Reprovado no primeiro teste; demais direções não foram solicitadas.",
+      "references": {
+        "south": {
+          "source": "source/body-south.png",
+          "status": "unapproved-reference",
+          "image": "originals/ring-south.png",
+          "jobId": "2ec64bdd-db6d-47c1-b182-235d5776f0cb",
+          "chargedGenerations": 1
+        },
+        "north": {
+          "source": "source/body-north.png",
+          "status": "not-generated"
+        },
+        "west": {
+          "source": "source/body-west.png",
+          "status": "not-generated"
+        },
+        "east": {
+          "source": "source/body-east.png",
+          "status": "not-generated"
+        }
+      }
+    },
+    {
+      "id": "charm",
+      "label": "Bússola de cinto",
+      "approved": false,
+      "productionEnabled": false,
+      "complete": false,
+      "note": "Oeste virou para a frente e aumentou muito o pingente; leste mudou sua escala. Falta consistência entre vistas.",
+      "references": {
+        "south": {
+          "source": "source/body-south.png",
+          "status": "static-candidate",
+          "image": "originals/charm-south.png",
+          "jobId": "4ccb74b8-b223-4dc3-879c-239dbd382214",
+          "chargedGenerations": 1,
+          "layer": "candidates/charm-south-layer.png",
+          "mask": "masks/charm-south.png",
+          "audit": {
+            "status": "unapproved inspection derivation; not final artwork",
+            "artwork_approved": false,
+            "productionEnabled": false,
+            "raw_audit": {
+              "passed": false,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "charm-south.png",
+              "changed_pixels": 442,
+              "changed_bbox": [
+                21,
+                9,
+                43,
+                51
+              ],
+              "outside_region_pixels": 410,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "draft_audit": {
+              "passed": true,
+              "scope": "static structural fit only; artwork approval required",
+              "size": [
+                64,
+                64
+              ],
+              "allowed_region": null,
+              "allowed_mask": "charm-south.png",
+              "changed_pixels": 32,
+              "changed_bbox": [
+                35,
+                32,
+                42,
+                41
+              ],
+              "outside_region_pixels": 0,
+              "alpha_erasure_pixels": 0,
+              "recomposition_mismatch_pixels": 0
+            },
+            "copied_generated_pixels": 32,
+            "skipped_alpha_erasures": [],
+            "layer_file": "charm-south-layer.png",
+            "composite_file": "charm-south-composite.png"
+          }
+        },
+        "north": {
+          "source": "source/body-north.png",
+          "status": "unapproved-reference",
+          "image": "originals/charm-north.png",
+          "jobId": "8eee2424-a9a1-46c1-99d2-f366e574e37d",
+          "chargedGenerations": 1
+        },
+        "west": {
+          "source": "source/body-west.png",
+          "status": "unapproved-reference",
+          "image": "originals/charm-west.png",
+          "jobId": "8f82fbe0-3c84-482e-a962-5542024f8827",
+          "chargedGenerations": 1
+        },
+        "east": {
+          "source": "source/body-east.png",
+          "status": "unapproved-reference",
+          "image": "originals/charm-east.png",
+          "jobId": "7722a725-12f9-4d78-971f-209113b2d504",
+          "chargedGenerations": 1
+        }
+      }
+    }
+  ]
+}

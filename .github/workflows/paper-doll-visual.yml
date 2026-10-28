@@ -10,6 +10,10 @@ on:
       - 'assets/paper-doll/**'
       - 'tools/paper-doll-inspector/**'
       - 'tools/build_pages.py'
+      - 'tools/prepare_paper_doll_inputs.py'
+      - 'tools/package_paper_doll_manual.py'
+      - 'tests/paper_doll_inputs_test.py'
+      - 'docs/PAPER-DOLL-GERACAO-MANUAL.md'
       - 'docs/PAPER-DOLL.md'
       - 'docs/PAPER-DOLL-CONJUNTO-AZUL.md'
       - 'pixellab-pip-generations/paper-doll-navy-starter-20261023/**'
@@ -100,6 +104,10 @@ on:
       - 'tests/paper_doll_rigid_assembly_test.py'
       - 'tests/paper-doll-attachment.test.cjs'
       - 'tests/paper_doll_fit_audit_test.py'
+      - 'tests/paper_doll_masked_candidate_test.py'
+      - 'tests/paper_doll_masked_references_test.py'
+      - 'tests/paper_doll_material_coverage_test.py'
+      - 'tests/paper_doll_trousers_art_test.py'
       - 'tests/paper_doll_batch_audit_test.py'
       - 'tools/paper_doll_fit_audit.py'
       - 'tools/paper_doll_batch_audit.py'
@@ -130,6 +138,10 @@ jobs:
           python -m pip install playwright==1.63.0 Pillow==13.0.0
           python -m playwright install --with-deps chromium
           python tests/paper_doll_fit_audit_test.py
+          python tests/paper_doll_masked_candidate_test.py
+          python tests/paper_doll_masked_references_test.py
+          python tests/paper_doll_material_coverage_test.py
+          python tests/paper_doll_trousers_art_test.py
           python tests/paper_doll_batch_audit_test.py
           python tests/paper_doll_body_edit_test.py
           python tests/paper_doll_compact_test.py
@@ -157,6 +169,7 @@ jobs:
           python pixellab-pip-generations/paper-doll-body-continuity-20261022/assemble_review.py
           python pixellab-pip-generations/paper-doll-hair-continuity-20261022/assemble_review.py
           python pixellab-pip-generations/paper-doll-navy-starter-20261023/assemble_review.py
+          python tests/paper_doll_inputs_test.py
           python tools/build_pages.py
       - name: Conferir bancada, fallback e jogo
         env:

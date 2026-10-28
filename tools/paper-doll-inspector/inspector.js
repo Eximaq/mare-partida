@@ -1,7 +1,7 @@
 'use strict';
 (()=>{
   const $=id=>document.getElementById(id),catalog=MarePaperDollCatalog;
-  const labels={body:'Corpo-base',pants:'Calças',boots:'Botas',outfit:'Roupa / armadura',hair:'Cabelo',accessory:'Acessório',weapon:'Arma'};
+  const labels=MarePaperDoll.slotLabels;
   const names={south:'Sul · Frente',north:'Norte · Costas',west:'Oeste · Esquerda',east:'Leste · Direita'};
   const codes={'missing-source':'Fonte modular ausente','missing-piece':'Peça ausente','missing-animation':'Animação ausente','unsupported-pose':'Pose incompatível','incompatible-animation':'Sequência incompatível','incompatible-rig':'Rig incompatível','loading-image':'Carregando PNG','failed-image':'Falha ao carregar PNG','invalid-sheet-size':'Dimensões da folha incorretas','empty-frame':'Frame vazio','unreadable-image':'PNG ilegível','invalid-transform':'Pivô ou offset inválido','unmapped-equipment':'Equipamento sem representação modular','unsupported-character':'Perfil humano não suportado','incompatible-weapon':'Arma incompatível com a categoria de ação','unapproved-piece':'Peça sem aprovação'};
   codes['missing-direction']='Direção ainda sem frames';
@@ -27,6 +27,24 @@
     $('weapon').replaceChildren(...entries.map(([id,[,name]])=>{const option=document.createElement('option');option.value=id;option.textContent=name;return option;}));
     const none=document.createElement('option');none.value='none';none.textContent='Removida · Visual padrão';$('weapon').append(none);$('weapon').value=player.equipment.weapon?.def??'none';
     $('animation').querySelector('[value=attack]').textContent='Attack · '+catalog.categories[category];
+  }
+  function buildVisualEquipment(reset=false){
+    const container=$('visualEquipment');container.replaceChildren();
+    for(const gear of Object.keys(catalog.equipmentLayers)){
+      if(gear==='weapon'||gear==='coat')continue;
+      if(reset)delete player.equipment[gear];
+      const ids=Object.keys(imported?.bindings?.[gear]?.items||{}).filter(def=>catalog.equipmentBinding(imported,gear,def).length);
+      if(!ids.length)continue;
+      const label=document.createElement('label'),select=document.createElement('select');
+      select.id='gear-'+gear;select.dataset.equipmentSlot=gear;
+      const first=catalog.equipmentBinding(imported,gear,ids[0])[0];label.textContent=labels[first.slot];label.htmlFor=select.id;
+      const empty=document.createElement('option');empty.value='none';empty.textContent='Sem equipamento';select.append(empty);
+      for(const def of ids){const option=document.createElement('option');option.value=def;option.textContent=catalog.equipmentBinding(imported,gear,def).map(({pieceId})=>runtime.piece(pieceId)?.name||pieceId).join(' + ');select.append(option);}
+      select.value=player.equipment[gear]?.def??'none';
+      select.addEventListener('change',()=>{pause();player.equipment[gear]=select.value==='none'?null:{def:Number(select.value)};render();});
+      label.append(select);container.append(label);
+    }
+    if(!container.childElementCount){const note=document.createElement('p');note.className='muted';note.textContent='Sem peças individuais neste pacote. Calças, calçados, luvas, capa e acessórios terão seletores quando houver bindings e arte compatíveis.';container.append(note);}
   }
   const hidden=new Set();let playing=false,elapsed=0,last=0,lastState={};
   const sequence=['idle','walk','attack','idle'];
@@ -61,8 +79,8 @@
     if(imported.completeCategories){const category=catalog.profile(player).category;if(player.equipment.weapon&&!catalog.usesBodyWeapon(player))result.pieces.weapon=imported.categoryWeapons[category];else delete result.pieces.weapon;}
     for(const [equipmentSlot,binding]of Object.entries(imported.bindings||{})){
       const item=player.equipment[equipmentSlot];if(!item||imported.completeCategories&&equipmentSlot==='weapon'&&catalog.usesBodyWeapon(player))continue;
-      const pieceId=binding.items?.[item.def];
-      if(pieceId)result.pieces[binding.slot]=pieceId;
+      const layers=catalog.equipmentBinding(imported,equipmentSlot,item.def);
+      if(layers.length)for(const {slot,pieceId}of layers)result.pieces[slot]=pieceId;
       else result.blocked.push({slot:binding.slot,pieceId:String(item.def),code:'unmapped-equipment'});
     }
     return result;
@@ -226,7 +244,7 @@
     data.appearance={...data.appearance,pieces:{...appearance().pieces}};data.reviewOnly=true;
     const url=URL.createObjectURL(new Blob([JSON.stringify(data,null,2)+'\n'],{type:'application/json'})),link=document.createElement('a');link.href=url;link.download='paper-doll-review.json';link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
   });
-  $('resetPack').addEventListener('click',()=>{pause();sequenceIndex=-1;finished=false;releaseUrls();runtime=catalog.createRuntime({getImage:MareFactionSprites.image});rigId=catalog.sharedRig.id;imported=null;importedSource=null;importedFileNames=new Map();$('weapon').disabled=false;$('outfit').disabled=false;$('classId').disabled=false;$('factionId').disabled=false;buildWeapons();$('importPack').value='';$('importStatus').textContent='Catálogo original restaurado.';render();});
+  $('resetPack').addEventListener('click',()=>{pause();sequenceIndex=-1;finished=false;releaseUrls();runtime=catalog.createRuntime({getImage:MareFactionSprites.image});rigId=catalog.sharedRig.id;imported=null;importedSource=null;importedFileNames=new Map();$('weapon').disabled=false;$('outfit').disabled=false;$('classId').disabled=false;$('factionId').disabled=false;buildWeapons();$('importPack').value='';$('importStatus').textContent='Catálogo original restaurado.';buildVisualEquipment(true);render();});
   async function importFiles(files){
     const urls=[];
     try{
@@ -271,13 +289,13 @@
       pause();sequenceIndex=-1;finished=false;releaseUrls();objectUrls=urls;runtime=candidate;rigId=data.rig.id;imported={...data.appearance,bindings:data.bindings,scope:data.scope,completeCategories:data.completeCategories,categoryWeapons:data.categoryWeapons};importedSource=structuredClone(data);importedFileNames=fileUrls;$('classId').disabled=!data.completeCategories;$('factionId').disabled=!data.completeCategories;$('weapon').disabled=!data.bindings?.weapon;$('outfit').disabled=!data.bindings?.coat;
       const actions=[...$('animation').options].map(o=>o.value),current=$('animation').value;
       if(!data.rig.animations[poseAnimationId(current)])$('animation').value=actions.find(a=>data.rig.animations[poseAnimationId(a)])||current;
-      $('frame').value=0;elapsed=0;$('importStatus').textContent='Pacote local recebido. Confira todas as poses e pendências.';render();
+      $('frame').value=0;elapsed=0;$('importStatus').textContent='Pacote local recebido. Confira todas as poses e pendências.';buildVisualEquipment(true);render();
     }catch(e){for(const url of urls){MareFactionSprites.forgetImage?.(url);URL.revokeObjectURL(url);}$('importStatus').textContent='Pacote não aplicado: '+e.message;}
   }
   $('importPack').addEventListener('change',()=>importFiles([...$('importPack').files]));
   async function bundledReview(){
     const key=new URLSearchParams(location.search).get('pack');
-    const packs={'complete':'../../pixellab-pip-generations/paper-doll-complete-20261026/','rogue':'../../pixellab-pip-generations/paper-doll-rogue-20261025/','gunner-east':'../../pixellab-pip-generations/paper-doll-gunner-20261025/','unarmed':'../../pixellab-pip-generations/paper-doll-unarmed-combat-20261024/','punch':'../../pixellab-pip-generations/paper-doll-category-attacks-20261023/','punch-east':'../../pixellab-pip-generations/paper-doll-category-attacks-20261023/','navy-starter':'../../pixellab-pip-generations/paper-doll-navy-starter-20261023/','hair-continuity':'../../pixellab-pip-generations/paper-doll-hair-continuity-20261022/','body-continuity':'../../pixellab-pip-generations/paper-doll-body-continuity-20261022/','bento-east-fit':'../../pixellab-pip-generations/paper-doll-east-fit-20261022/','basic-sword':'../../pixellab-pip-generations/paper-doll-basic-sword-20261021/','walk-profiles':'../../pixellab-pip-generations/paper-doll-walk-profiles-20261021/','walk-north-complete':'../../pixellab-pip-generations/paper-doll-north-finish-20261021/','walk-north':'../../pixellab-pip-generations/paper-doll-walk-north-20261021/','walk-south':'../../pixellab-pip-generations/paper-doll-walk-fit-20261021/','expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
+    const packs={'trousers':'../../pixellab-pip-generations/paper-doll-trousers-20261028/','complete':'../../pixellab-pip-generations/paper-doll-complete-20261026/','rogue':'../../pixellab-pip-generations/paper-doll-rogue-20261025/','gunner-east':'../../pixellab-pip-generations/paper-doll-gunner-20261025/','unarmed':'../../pixellab-pip-generations/paper-doll-unarmed-combat-20261024/','punch':'../../pixellab-pip-generations/paper-doll-category-attacks-20261023/','punch-east':'../../pixellab-pip-generations/paper-doll-category-attacks-20261023/','navy-starter':'../../pixellab-pip-generations/paper-doll-navy-starter-20261023/','hair-continuity':'../../pixellab-pip-generations/paper-doll-hair-continuity-20261022/','body-continuity':'../../pixellab-pip-generations/paper-doll-body-continuity-20261022/','bento-east-fit':'../../pixellab-pip-generations/paper-doll-east-fit-20261022/','basic-sword':'../../pixellab-pip-generations/paper-doll-basic-sword-20261021/','walk-profiles':'../../pixellab-pip-generations/paper-doll-walk-profiles-20261021/','walk-north-complete':'../../pixellab-pip-generations/paper-doll-north-finish-20261021/','walk-north':'../../pixellab-pip-generations/paper-doll-walk-north-20261021/','walk-south':'../../pixellab-pip-generations/paper-doll-walk-fit-20261021/','expansion-idle':'../../pixellab-pip-generations/paper-doll-expansion-20261021/','front-idle':'../../pixellab-pip-generations/paper-doll-hair-outfit-20261021/'};
     if(!key||!packs[key])return;
     try{
       $('importStatus').textContent='Carregando prévia incluída no projeto…';
@@ -293,7 +311,7 @@
   }
   window.addEventListener('mare-faction-sprite-ready',render);
   window.__paperDollInspector={state:()=>structuredClone({...lastState,playback:{playing,finished,sequenceIndex,mode:$('playbackMode').value}})};
-  buildIdentity();buildWeapons();buildBoards();buildLayers();render();bundledReview();
+  buildIdentity();buildWeapons();buildBoards();buildLayers();buildVisualEquipment();render();bundledReview();
   function tick(now){
     const dt=last?Math.min(.1,(now-last)/1000):0;last=now;
     if(playing&&!document.hidden){

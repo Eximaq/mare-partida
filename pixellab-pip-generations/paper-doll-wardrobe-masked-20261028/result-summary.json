@@ -1,0 +1,80 @@
+{
+  "scope": "Two static masked trouser references; no animation transfer or production activation.",
+  "approved": false,
+  "productionEnabled": false,
+  "complete": false,
+  "chargedGenerations": 10,
+  "overallConfirmedGenerations": 46,
+  "overallUnknownChargeReservations": 1,
+  "overallCommittedGenerations": 47,
+  "directions": {
+    "west": {
+      "jobId": "ff63bfde-9ab5-4bf4-82c3-7aa145b8b503",
+      "chargedGenerations": 5,
+      "audit": {
+        "passed": true,
+        "scope": "structural contact only; artistic approval required",
+        "artwork_approved": false,
+        "size": [
+          64,
+          64
+        ],
+        "contact_anchor": [
+          35,
+          35
+        ],
+        "visible_layer_pixels": 91,
+        "outside_mask_pixels": 0,
+        "body_occlusion_allowed": true,
+        "unprotected_body_pixels": 0,
+        "permitted_body_occlusion_pixels": 91,
+        "changed_unmasked_body_pixels": 0,
+        "body_overlap_pixels": 91,
+        "partial_alpha_pixels": 0,
+        "changed_body_pixels": 90,
+        "hand_contact_pixels": 18,
+        "anchor_contact_pixels": 18,
+        "layer_bbox": [
+          27,
+          34,
+          37,
+          48
+        ]
+      }
+    },
+    "east": {
+      "jobId": "3d0fc79d-90f7-4617-89c7-e22452e2dde0",
+      "chargedGenerations": 5,
+      "audit": {
+        "passed": true,
+        "scope": "structural contact only; artistic approval required",
+        "artwork_approved": false,
+        "size": [
+          64,
+          64
+        ],
+        "contact_anchor": [
+          31,
+          35
+        ],
+        "visible_layer_pixels": 96,
+        "outside_mask_pixels": 0,
+        "body_occlusion_allowed": true,
+        "unprotected_body_pixels": 0,
+        "permitted_body_occlusion_pixels": 104,
+        "changed_unmasked_body_pixels": 0,
+        "body_overlap_pixels": 96,
+        "partial_alpha_pixels": 0,
+        "changed_body_pixels": 94,
+        "hand_contact_pixels": 33,
+        "anchor_contact_pixels": 33,
+        "layer_bbox": [
+          27,
+          32,
+          36,
+          48
+        ]
+      }
+    }
+  }
+}

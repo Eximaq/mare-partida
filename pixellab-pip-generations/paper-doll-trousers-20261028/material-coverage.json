@@ -1,0 +1,207 @@
+{
+  "south": {
+    "reference": {
+      "passed": true,
+      "artwork_approved": false,
+      "scope": "material coverage only; pose, motion and artwork require visual inspection",
+      "required_pixels": 22,
+      "covered_pixels": 22,
+      "coverage_ratio": 1.0,
+      "minimum_ratio": 0.95,
+      "uncovered_pixels": 0,
+      "uncovered_sample": []
+    },
+    "firstTransfer": {
+      "passed": true,
+      "artwork_approved": false,
+      "scope": "material coverage only; pose, motion and artwork require visual inspection",
+      "required_pixels": 22,
+      "covered_pixels": 22,
+      "coverage_ratio": 1.0,
+      "minimum_ratio": 0.95,
+      "uncovered_pixels": 0,
+      "uncovered_sample": []
+    }
+  },
+  "north": {
+    "reference": {
+      "passed": true,
+      "artwork_approved": false,
+      "scope": "material coverage only; pose, motion and artwork require visual inspection",
+      "required_pixels": 22,
+      "covered_pixels": 22,
+      "coverage_ratio": 1.0,
+      "minimum_ratio": 0.95,
+      "uncovered_pixels": 0,
+      "uncovered_sample": []
+    },
+    "firstTransfer": {
+      "passed": false,
+      "artwork_approved": false,
+      "scope": "material coverage only; pose, motion and artwork require visual inspection",
+      "required_pixels": 22,
+      "covered_pixels": 0,
+      "coverage_ratio": 0.0,
+      "minimum_ratio": 0.95,
+      "uncovered_pixels": 22,
+      "uncovered_sample": [
+        [
+          26,
+          44
+        ],
+        [
+          27,
+          44
+        ],
+        [
+          28,
+          44
+        ],
+        [
+          35,
+          44
+        ],
+        [
+          36,
+          44
+        ],
+        [
+          37,
+          44
+        ],
+        [
+          26,
+          45
+        ],
+        [
+          27,
+          45
+        ],
+        [
+          28,
+          45
+        ],
+        [
+          35,
+          45
+        ],
+        [
+          36,
+          45
+        ],
+        [
+          37,
+          45
+        ],
+        [
+          26,
+          46
+        ],
+        [
+          27,
+          46
+        ],
+        [
+          28,
+          46
+        ],
+        [
+          35,
+          46
+        ]
+      ]
+    }
+  },
+  "west": {
+    "reference": {
+      "passed": true,
+      "artwork_approved": false,
+      "scope": "material coverage only; pose, motion and artwork require visual inspection",
+      "required_pixels": 24,
+      "covered_pixels": 23,
+      "coverage_ratio": 0.9583333333333334,
+      "minimum_ratio": 0.95,
+      "uncovered_pixels": 1,
+      "uncovered_sample": [
+        [
+          29,
+          47
+        ]
+      ]
+    },
+    "firstTransfer": {
+      "passed": false,
+      "artwork_approved": false,
+      "scope": "material coverage only; pose, motion and artwork require visual inspection",
+      "required_pixels": 24,
+      "covered_pixels": 18,
+      "coverage_ratio": 0.75,
+      "minimum_ratio": 0.95,
+      "uncovered_pixels": 6,
+      "uncovered_sample": [
+        [
+          30,
+          46
+        ],
+        [
+          31,
+          46
+        ],
+        [
+          28,
+          47
+        ],
+        [
+          29,
+          47
+        ],
+        [
+          30,
+          47
+        ],
+        [
+          31,
+          47
+        ]
+      ]
+    }
+  },
+  "east": {
+    "reference": {
+      "passed": true,
+      "artwork_approved": false,
+      "scope": "material coverage only; pose, motion and artwork require visual inspection",
+      "required_pixels": 27,
+      "covered_pixels": 26,
+      "coverage_ratio": 0.9629629629629629,
+      "minimum_ratio": 0.95,
+      "uncovered_pixels": 1,
+      "uncovered_sample": [
+        [
+          33,
+          47
+        ]
+      ]
+    },
+    "firstTransfer": {
+      "passed": false,
+      "artwork_approved": false,
+      "scope": "material coverage only; pose, motion and artwork require visual inspection",
+      "required_pixels": 27,
+      "covered_pixels": 25,
+      "coverage_ratio": 0.9259259259259259,
+      "minimum_ratio": 0.95,
+      "uncovered_pixels": 2,
+      "uncovered_sample": [
+        [
+          33,
+          46
+        ],
+        [
+          33,
+          47
+        ]
+      ]
+    }
+  }
+}
