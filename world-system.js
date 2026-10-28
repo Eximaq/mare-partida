@@ -42,6 +42,7 @@
     maps.lobby.interactions=[{id:'expeditions',...MareIsland.npcs.luffy,radius:58}];
   }
   if(globalThis.MareLobby)maps.lobby=MareLobby.map;
+  if(globalThis.MareImpel)maps['impel-down']=MareImpel.map;
   if(globalThis.MareEmber)maps.embers=MareEmber.map;
   if(globalThis.MareOrange)maps.orange=MareOrange.map;
   if(globalThis.MarePixelWorldMaps?.conchas)maps.conchas=MarePixelWorldMaps.conchas.map;

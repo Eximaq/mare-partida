@@ -1,5 +1,7 @@
 # Desenvolvimento compartilhado no GitHub
 
+**Impel Down jogável:** mapa original, um adversário por andar, chefes a cada cinco e progressão automática com marcos salvos. [Regras, compatibilidade e validação](docs/IMPEL-DOWN.md).
+
 Atualização de 27/10: o [personagem único na aventura normal](docs/PAPER-DOLL-JOGO-NORMAL.md) inclui escolhas de aparência na criação, editor persistente, equipamentos sem perda de identidade e save DEV separado. As notas de protótipo abaixo permanecem como histórico.
 
 **Efeitos de combate e status:** impactos por categoria de golpe, projéteis com HP sincronizado à colisão e indicadores aéreos de buff/controle. [Mapeamento, quadros, compatibilidade e testes](docs/COMBAT-VFX-STATUS.md).

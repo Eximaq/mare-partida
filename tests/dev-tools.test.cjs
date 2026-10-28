@@ -18,7 +18,7 @@ for(const cls of Object.keys(T.trees)){
 }
 let r=D.execute(g,{type:'haki-kit'},ctx);assert(r.ok);assert.equal(r.state.level,50);assert.equal(r.state.inventory.length,1);
 r=D.execute(r.state,{type:'haki-unlock'},ctx);assert(r.ok);assert(r.state.has_haki_unlocked);assert.equal(r.state.inventory.length,0);
-assert(!D.execute(g,{type:'prison-preview',floor:101},ctx).ok);assert(!P.available);
+assert(!D.execute(g,{type:'prison-preview',floor:101},ctx).ok);assert(P.available);assert(!P.canEnter(g,2));
 let full={...g,inventory:Array.from({length:120},(_,i)=>({id:String(i),def:0}))};const frozen=JSON.stringify(full);
 assert(!D.execute(full,{type:'item',index:0,count:2,level:1,plus:0,rarity:'common'},ctx).ok);assert(!D.execute(full,{type:'class',classId:'brawler'},ctx).ok);assert.equal(JSON.stringify(full),frozen);
 r=D.execute(g,{type:'achievement',id:'kills-0'},ctx);assert(r.ok);assert.equal(r.state.stats.kills,100);assert.equal(A.bonus(r.state),0);assert(!D.execute(g,{type:'achievement',id:'floors-0'},ctx).ok);

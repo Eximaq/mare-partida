@@ -381,3 +381,15 @@ Branch fix/talent-tree-96px-special-icons, a partir de main e302c09 (PR #120 já
 Validação inicial: 83 suítes Node; navegador nas sete classes e sete resoluções; mesmo fluxo no pacote Pages; build aprovado. Revalidação sobre main atual registrada no PR. Capturas e auditoria de alpha ficam somente na pasta temporária local de revisão, fora do Git. O proprietário confirmou o visual e autorizou o envio. Rollback por revert do commit, preservando armazenamento local.
 
 Validação final sobre e302c09: 84 suítes Node aprovadas; teste específico de assets repetido após conferir unicidade dos 42 PNGs e hash do fundo. Navegador aprovado nas sete classes e sete resoluções, também no pacote Pages atualizado, sem erros de página.
+
+## 27/10/2026 — Impel Down jogável
+
+- Branch feature/impel-down-map-progression, base58988dc. Solicitação explícita substitui a prévia bloqueada: um monstro por andar, HP/ATQ/DEF ×1,30 composto e chefes a cada5.
+- Importado o mapa original PixelLab (34×21 células64), sem gerações ou mudanças na arte. Celas/perímetro sólidos, terreno/lava separado de colisão de tiros; mapa inteiro atrás dos atores. Procedência e SHA em assets/impel-down/provenance.json.
+- Controlador independente em prison-system.js/game.js, navegação e combate existentes, spawns opostos, avanço automático, cura entre andares e recargas preservadas. Derrota reinicia o mesmo duelo. Andar100 encerra no porto.
+- Gravação antes do avanço, retry visível em falha, ledger de marcos preservado, prêmio pendente com mochila cheia. Sem novo loot/XP/ouro regional. Savev1 e índices de itens mantidos. Preferências antigas preservadas no JSON, substituídas na execução pela subida automática pedida.
+- Registro do mapa em world-system.js/HTML/Pages; auditoria aceita --map. Documentação consolidada em IMPEL-DOWN.md. Testes antigos Node ajustados apenas nas expectativas das regras substituídas.
+- Validação:127 testes Node passaram; navegador real no código-fonte e pacote Pages, combate e subida, chefe5, hits duplicados, morte/respawn, reload, falha de storage, mochila cheia, resgate único e andar100. Quatro tamanhos:1920×1080,1366×768,1280×720,393×851; painel sem overflow horizontal.
+- Regressão combat_vfx_browser.cjs: sete classes,20 abates cada, impactos e HP sincronizados. Auditoria completa:12 mapas,134/134 rotas válidas; no Impel624 células abertas,um componente e2/2 rotas,zero colisores inválidos/duplicados. As29 duplicações dos demais mapas são normalizadas pelo auditor existente, sem editar as fontes.
+- Build Pages executado; sintaxe e git diff --check sem erros. Capturas locais temporárias impel-map-*.png e impel-panel-*.png, fora do repositório.
+- Limites:chefes específicos e prêmios acima do50 ainda indefinidos; progressão estática/offline, sem servidor autoritativo. Reverter o commit restaura a prévia mantendo backup do save e ledger.
