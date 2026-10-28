@@ -1,0 +1,29 @@
+{
+  "source": "PixelLab map supplied by project owner",
+  "mapId": "5dd2fc7d-23be-4067-bfc2-925c8d494bf5",
+  "name": "Impel Down",
+  "tileSize": 64,
+  "columns": 34,
+  "rows": 21,
+  "sourceOrigin": {
+    "x": -1,
+    "y": -3
+  },
+  "width": 2176,
+  "height": 1344,
+  "sha256": "132655de14a544a2df56c8e9bf8b20bc60179a243a9a974abfa62e7dae438602",
+  "import": "Six native-resolution crops joined without resampling or artwork changes",
+  "placedObjects": 45,
+  "objectStatuses": "All 45 placements reported ok",
+  "terrain": {
+    "a": 447,
+    ".": 15,
+    "l": 21,
+    "b": 217,
+    "c": 14
+  },
+  "emptyCells": "15 exterior cells in the eastern margin; not traversable",
+  "layers": "Flattened map rendered behind actors; terrain never duplicated in foreground",
+  "collisions": "Contiguous top cells and perimeter walls block movement and shots; lava and exterior block movement only; small debris remains ground decoration",
+  "removedGhosts": 0
+}

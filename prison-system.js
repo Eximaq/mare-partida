@@ -1,5 +1,5 @@
 'use strict';
-/* Pure prison progression and inventory transactions. Live rules stay unavailable. */
+/* Impel Down progression and transactions shared by the live controller and UI. */
 ((root)=>{
   const FLOOR_COUNT=100,VERSION=1,CAPACITY=120;
   const clone=value=>JSON.parse(JSON.stringify(value));
@@ -10,7 +10,7 @@
     slot:'consumable',rarity:['common','uncommon','rare'][level-1],
     attack:0,defense:0,hp:0,symbol:'▣'
   })));
-  function multiplier(floor){if(!validFloor(floor))throw Error('Andar inválido');return floor<=10?.5:Math.ceil(floor/10);}
+  function multiplier(floor){if(!validFloor(floor))throw Error('Andar inválido');return Math.pow(1.30,floor-1);}
   function scaleMonster(base,floor){
     const result={...base},factor=multiplier(floor);
     for(const key of ['hp','atk','def']){
@@ -20,19 +20,31 @@
     return result;
   }
   const rewardFor=floor=>milestones.includes(floor)?{kind:'pearl-box',level:1,quantity:1}:null;
-  const isBossFloor=floor=>validFloor(floor)&&floor%10===0;
+  const isBossFloor=floor=>validFloor(floor)&&floor%5===0;
   const unlockedThrough=save=>Math.min(FLOOR_COUNT,migrate(save).impelDown.cleared+1);
   const canInspect=(save,floor)=>validFloor(floor)&&floor<=unlockedThrough(save);
   // Presentation receives final stats, never the balancing factor or formula.
   function floorDetails(floor,catalog){
     if(!validFloor(floor))throw Error('Andar inválido');
-    const waves=3,types=isBossFloor(floor)?[['bandit',6],['boss',1]]:[['bandit',6],['spirit',3]];
-    const monsters=types.map(([type,quantity])=>{
-      const base=catalog[type];if(!base)return null;
-      const stats=scaleMonster(base,floor);
-      return {id:type,name:base.name,src:`assets/monsters/${type}.png`,level:floor,quantity,hp:stats.hp,attack:stats.atk};
-    }).filter(Boolean);
+    const waves=1,pool=commonPool(catalog),base=isBossFloor(floor)?spawnImpelDownBoss(floor,catalog):pool[0];
+    const monsters=base?[{id:base.type,name:base.name,src:`assets/monsters/${base.type}.png`,level:floor,quantity:1,hp:scaleMonster(base,floor).hp,attack:scaleMonster(base,floor).atk}]:[];
     return {floor,level:floor,waves,monsters,total:monsters.reduce((sum,m)=>sum+m.quantity,0),boss:isBossFloor(floor)};
+  }
+  function commonPool(catalog){return Object.entries(catalog).filter(([id,m])=>id!=='boss'&&!m.boss&&['hp','atk','def'].every(k=>Number.isFinite(m[k])&&m[k]>=0)&&m.hp>0).map(([type,m])=>({...m,type}));}
+  function spawnImpelDownBoss(floor,catalog){
+    if(!validFloor(floor))throw Error('Andar inválido');
+    const pool=commonPool(catalog),base=catalog.boss||pool[0];if(!base)return null;
+    return {...base,type:'boss',name:'Guardião Provisório de Impel Down',hp:Math.max(base.hp,...pool.map(m=>m.hp))*2,atk:Math.ceil(Math.max(base.atk,...pool.map(m=>m.atk))*1.5),def:Math.ceil(Math.max(base.def,...pool.map(m=>m.def))*1.5),placeholder:true};
+  }
+  function createRun({floor=1,catalog,random=Math.random,spawnBoss=f=>spawnImpelDownBoss(f,catalog)}={}){
+    if(!validFloor(floor))throw Error('Andar inválido');let currentFloor=floor,phase='idle',enemy=null,serial=0;
+    return {get currentFloor(){return currentFloor;},get phase(){return phase;},get enemy(){return enemy;},
+      startFloor(){if(phase==='active')return enemy;if(phase!=='idle')throw Error('Andar ainda não pode iniciar');let base;
+        if(isBossFloor(currentFloor))base=spawnBoss(currentFloor);else{const pool=commonPool(catalog),roll=random();if(!pool.length||!Number.isFinite(roll)||roll<0||roll>=1)throw Error('Pool ou sorteio inválido');base=pool[Math.floor(roll*pool.length)];}
+        if(!base)throw Error('Encontro não configurado');enemy={...scaleMonster(base,currentFloor),floor:currentFloor,token:'impel-'+currentFloor+'-'+(++serial)};phase='active';return enemy;},
+      defeat(token){if(phase!=='active'||token!==enemy.token)return false;phase='cleared';return true;},
+      advance(){if(phase!=='cleared')return false;currentFloor++;enemy=null;phase=validFloor(currentFloor)?'idle':'complete';return true;}
+    };
   }
   function migrate(original){
     const save=clone(original),old=save.impelDown||{};
@@ -89,6 +101,6 @@
     }
     return Object.freeze({available,canEnter,completeFloor,claimMilestone,nextAction});
   }
-  const api={VERSION,FLOOR_COUNT,boxes,milestones,validFloor,multiplier,scaleMonster,rewardFor,isBossFloor,unlockedThrough,canInspect,floorDetails,migrate,canDrop,openBox,createSystem,...createSystem()};
+  const api={VERSION,FLOOR_COUNT,commonPool,spawnImpelDownBoss,createRun,boxes,milestones,validFloor,multiplier,scaleMonster,rewardFor,isBossFloor,unlockedThrough,canInspect,floorDetails,migrate,canDrop,openBox,createSystem,...createSystem({available:true})};
   root.MarePrison=Object.freeze(api);if(typeof module!=='undefined')module.exports=root.MarePrison;
 })(globalThis);
