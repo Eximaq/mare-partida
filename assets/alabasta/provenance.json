@@ -1,0 +1,115 @@
+{
+  "source": "PixelLab owner map: Alabasta mapa 1",
+  "mapId": "a6da583d-86dc-443e-becc-d5f2457e3bab",
+  "sourceOrigin": {
+    "x": -34,
+    "y": -47
+  },
+  "tileSize": 64,
+  "columns": 81,
+  "rows": 72,
+  "width": 5184,
+  "height": 4608,
+  "paintedCells": 4948,
+  "objects": 111,
+  "invalidObjects": 0,
+  "removedGhosts": 0,
+  "import": "36 native-resolution crops joined without resampling; object positions and pixels preserved",
+  "mapSha256": "1e93363dd4f9d25eb0cbe60af20f4e07ecf32fe90a6aeda21b408b7b1faf5603",
+  "walls": {
+    "terrainId": 2,
+    "name": "Sand walls, typical of the Egyptian pyramids",
+    "ascii": [
+      "a",
+      "o"
+    ],
+    "cornerMargin": 4,
+    "blocksMovement": true,
+    "blocksProjectiles": true
+  },
+  "water": {
+    "blocksMovement": true,
+    "blocksProjectiles": false
+  },
+  "depth": "Only original transparent object masks are reapplied; no rectangular floor overlays",
+  "masks": [
+    {
+      "assetId": "5a21bf39-9fd0-4079-8148-f8b5bfc80f61",
+      "width": 64,
+      "height": 64,
+      "sha256": "42a12f723e78ef27194ed80669f38d93bd904006f8bf0974ab423fd3a62697cd"
+    },
+    {
+      "assetId": "764b472f-19a3-4293-b1cb-9830897bcb00",
+      "width": 206,
+      "height": 166,
+      "sha256": "6c2826c0c2c38702bfd040f8ef61da2b6e47fb391559e660095af7cc179fe8b1"
+    },
+    {
+      "assetId": "42ff97e5-b547-4dc2-8652-794f92df2492",
+      "width": 151,
+      "height": 158,
+      "sha256": "cfb2d8759bf5de000ad77f2dfc636a42864b081e850e417174721610ef50d1e0"
+    },
+    {
+      "assetId": "b1ee8d38-c2d4-4211-81d4-085a3d0932fa",
+      "width": 60,
+      "height": 101,
+      "sha256": "9c33ae5f88d2f7cd45ed3092d37057480b3c2c6418a44892d57d1b147a4c3882"
+    },
+    {
+      "assetId": "3ba69414-2c7d-4c5f-bd70-7cff54d0dcbf",
+      "width": 49,
+      "height": 120,
+      "sha256": "35380533efd49b3f2fc131b8583494c1896a14e15553825076a1806bb5228d8f"
+    },
+    {
+      "assetId": "2b00f499-a125-43ff-9004-89a5bd2ffb53",
+      "width": 59,
+      "height": 61,
+      "sha256": "da42e4ac22dd992a3eaaed2ab87bc6958b0117c969aba88010c04f8c013d57fc"
+    },
+    {
+      "assetId": "2d3f512e-8f2b-4979-9d93-3ec9be5a76de",
+      "width": 82,
+      "height": 86,
+      "sha256": "bcd467a6e48ae84956d4b6327f9c8b1b3bf7bd3da5c343b63ea1f75ec0f19a0b"
+    },
+    {
+      "assetId": "251e7eb5-5e2a-4563-9594-6208eb0488a9",
+      "width": 32,
+      "height": 32,
+      "sha256": "9cfd50cacd882734a41fb1c4abd8f91a848146e35fc34f1042836d6d9aa43c15"
+    },
+    {
+      "assetId": "b1d435b9-1617-49d3-841c-bfa36391c8f6",
+      "width": 64,
+      "height": 64,
+      "sha256": "61d94e77923d0710dd5f9da009bd40f18c083088c2eaf4b4287d2b048b03e10d"
+    },
+    {
+      "assetId": "0d909fb2-e617-4005-8748-7c76de24d532",
+      "width": 64,
+      "height": 64,
+      "sha256": "6b472cd3433a7334d1d50bd1b2189050b72e7db195e3f903ac54e0bc85791633"
+    },
+    {
+      "assetId": "9a9d35f9-ecf3-4a84-9b5c-e44a4c59b71b",
+      "width": 32,
+      "height": 32,
+      "sha256": "3c7abf288c0a134e316a6dc3a4ea085a64dfecaf2788c59f85bc0bbf9ab52246"
+    }
+  ],
+  "character": {
+    "id": "f41faf53-de02-481a-b594-76c0c1b88380",
+    "name": "Bananawani",
+    "idle": 4,
+    "walk": 16,
+    "attack": 36,
+    "frameCanvas": 112,
+    "renderCanvas": 168,
+    "scale": 1.5,
+    "frames": "../new-islands/bananawani/frames.json",
+    "generated": false
+  }
+}

@@ -5,7 +5,9 @@
   const newIslands=root.MareNewIslands||(typeof module!=='undefined'?(require('./new-islands-data.js'),require('./new-islands.js')):null);
   const monsterCatalog=root.MareMonsterCatalog||(typeof module!=='undefined'?require('./monster-catalog.js'):null);
   const pixelMaps=root.MarePixelWorldMaps||(typeof module!=='undefined'?(require('./pixellab-world-maps-data.js'),require('./pixellab-world-maps.js')):null);
+  const alabasta=root.MareAlabasta||(typeof module!=='undefined'?require('./alabasta-world.js'):null);
   const regions={
+    alabasta:{name:'Deserto de Alabasta',min:40,max:50,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:alabasta.districts.map(d=>({...d,min:45,max:45,roles:['bananawani']}))},
     rare:{name:'Ilha dos Animais Raros',min:16,max:20,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.rare.districts.map(d=>({...d,min:18,max:18,roles:['cocox']}))},
     syrup:{name:'Vila Syrup',min:21,max:25,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.syrup.districts.map((d,i)=>({...d,min:23,max:23,roles:i%2?['buchi','sham']:['sham','buchi']}))},
     baratie:{name:'Baratie',min:26,max:30,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.baratie.districts.map((d,i)=>({...d,min:28,max:28,roles:i%2?['gin','pearl']:['pearl','gin']}))},

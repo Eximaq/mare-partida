@@ -12,7 +12,7 @@ GROWTH = {"max_hp": 1.065, "physical_attack": 1.055, "physical_defense": 1.05, "
 WORLD_LEVEL_BANDS = {
     "beach": (1, 5), "swamp": (6, 10), "orange": (11, 15),
     "rare": (16, 20), "syrup": (21, 25), "baratie": (26, 30),
-    "arlong": (31, 35), "loguetown": (36, 40),
+    "arlong": (31, 35), "loguetown": (36, 40), "alabasta": (40, 50),
 }
 
 
