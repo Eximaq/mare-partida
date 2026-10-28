@@ -38,5 +38,7 @@ const profile=api.render('myprofile',{game:{name:'Capitão Teste',classId:'sword
 assert.ok(profile.includes('Capitão Teste')&&profile.includes('2.917')&&profile.includes('36'));
 assert.ok(profile.includes('Indisponível')&&!profile.includes('#2.578'),'no invented online rankings');
 const settings=api.render('settings',{game:{}});assert.ok(settings.includes('data-settings-card="audio"'));
+listeners.click({target:{closest:s=>s==='[data-settings-card]'?{dataset:{settingsCard:'interface'}}:null}});
+assert.ok(api.render('settings',{game:{}}).includes('aria-label="Densidade da HUD"'),'preference must have a readable Portuguese label');
 assert.ok(css.includes('@media(max-width:760px)'));
 console.log('Central do Navegante: navegação, PNG, save local, perfil verdadeiro, configurações e publicação OK');

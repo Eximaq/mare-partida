@@ -58,6 +58,7 @@
     function measure(){
       const r=document.querySelector('.topbar').getBoundingClientRect(),a=document.querySelector('.action-panel').getBoundingClientRect(),m=document.getElementById('mainMenu').getBoundingClientRect();
       const style=document.documentElement.style;style.setProperty('--profile-bottom',Math.ceil(r.bottom)+'px');style.setProperty('--rpg-action-height',Math.ceil(a.height)+'px');style.setProperty('--menu-bottom',Math.ceil(m.bottom)+'px');style.setProperty('--journey-height',Math.ceil(journey.getBoundingClientRect().height)+'px');style.setProperty('--utilities-bottom',Math.ceil(utilities.getBoundingClientRect().bottom)+'px');style.setProperty('--target-height',Math.ceil(document.getElementById('targetHud').getBoundingClientRect().height)+'px');
+      style.setProperty('--profile-right',Math.ceil(r.right)+'px');style.setProperty('--menu-left',Math.floor(m.left)+'px');style.setProperty('--journey-reserved-bottom',Math.ceil(innerHeight-journey.getBoundingClientRect().top)+'px');
       const mobile=innerWidth<=760;if(mobile!==wasMobile){journey.classList.toggle('collapsed',mobile);document.getElementById('journeyToggle').setAttribute('aria-expanded',String(!mobile));journey.querySelector('.journey-chevron').textContent=mobile?'+':'−';wasMobile=mobile;}
     }
     const resize=new ResizeObserver(measure);for(const el of [document.querySelector('.topbar'),document.querySelector('.action-panel'),document.getElementById('mainMenu'),journey,utilities,document.getElementById('targetHud')])resize.observe(el);

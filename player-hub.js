@@ -46,7 +46,8 @@
     return body+'</section>';
   }
   const settingCards=[['general','GERAL','Idioma, conexão e conta.','⚑'],['audio','ÁUDIO','Música e volume.','♫'],['graphics','GRÁFICOS','Qualidade e quantidade de efeitos.','✧'],['interface','INTERFACE E CONTROLES','Organização e atalhos.','✥'],['accessibility','ACESSIBILIDADE','Legibilidade e movimento.','◎']];
-  const select=(id,options,current)=>'<select data-captain-setting="'+id+'" aria-label="'+escape(id)+'">'+options.map(([value,label])=>'<option value="'+value+'" '+(current===value?'selected':'')+'>'+escape(label)+'</option>').join('')+'</select>';
+  const settingLabels={quality:'Efeitos visuais',density:'Densidade da HUD',motion:'Animações de interface'};
+  const select=(id,options,current)=>'<select data-captain-setting="'+id+'" aria-label="'+escape(settingLabels[id]||id)+'">'+options.map(([value,label])=>'<option value="'+value+'" '+(current===value?'selected':'')+'>'+escape(label)+'</option>').join('')+'</select>';
   function settingDetail(id){
     const a=root.MareAudio?.getState?.()||{muted:true,volume:0};
     if(id==='general')return '<div class="captain-settings-detail">'+field('Idioma','Português (Brasil)')+field('Conexão','Jogo local · navegador')+field('Conta','Não disponível nesta versão')+'<p>Os saves continuam locais e independentes das preferências de interface.</p></div>';
