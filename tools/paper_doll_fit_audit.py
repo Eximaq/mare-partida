@@ -97,6 +97,11 @@ def audit_changes_layer(base_path,layer_path,mask_path,contact,allow_body_occlus
 
 def inspection_draft(base_path,edit_path,layer_path,composite_path,region=None,mask_path=None):
     """Explicit review-only composition; never silently accept the raw edit as fitted."""
+    outputs=[Path(layer_path),Path(composite_path)]
+    if outputs[0].resolve()==outputs[1].resolve():
+        raise ValueError('Layer and composite require distinct output files.')
+    for output in outputs:
+        if output.exists():raise FileExistsError(output)
     raw=audit(base_path,edit_path,region,mask_path=mask_path)
     if raw.get('reason')=='canvas-size-mismatch':raise ValueError('Draft cannot rescale images.')
     base=Image.open(base_path).convert('RGBA');edit=Image.open(edit_path).convert('RGBA')
@@ -106,8 +111,10 @@ def inspection_draft(base_path,edit_path,layer_path,composite_path,region=None,m
         if a[i]==b[i] or not(a[i][3] or b[i][3]):continue
         if b[i][3]<a[i][3]:erasures.append([i%base.width,i//base.width]);continue
         layer.putpixel((i%base.width,i//base.width),b[i]);copied+=1
-    layer.save(layer_path);Image.alpha_composite(base,layer).save(composite_path)
-    return {'status':'unapproved inspection derivation; not final artwork','raw_audit':raw,
+    for output,image in zip(outputs,[layer,Image.alpha_composite(base,layer)]):
+        with output.open('xb') as stream:image.save(stream,format='PNG')
+    return {'status':'unapproved inspection derivation; not final artwork',
+            'artwork_approved':False,'productionEnabled':False,'raw_audit':raw,
             'draft_audit':audit(base_path,composite_path,region,mask_path=mask_path),
             'copied_generated_pixels':copied,'skipped_alpha_erasures':erasures,
             'layer_file':Path(layer_path).name,'composite_file':Path(composite_path).name}

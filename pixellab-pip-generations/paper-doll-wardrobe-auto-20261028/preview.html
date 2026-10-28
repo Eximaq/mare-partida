@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Oficina de equipamentos — Maré Partida</title>
+<link rel="stylesheet" href="review.css">
+<header><a href="../../tools/paper-doll-inspector/index.html?pack=complete">← Bancada do personagem atual</a><h1>Oficina de equipamentos</h1><p>Referências estáticas do mesmo corpo. Peças em inspeção, sem ativação no jogo.</p></header>
+<main><nav id="pieces" aria-label="Peças de equipamento"></nav><section aria-labelledby="piece-title">
+<div class="title-row"><h2 id="piece-title">Carregando referências…</h2><span class="tag">Não aprovado</span></div>
+<p id="note" class="notice" role="status"></p>
+<div class="controls"><label>Direção <select id="direction"><option value="south">Sul</option><option value="north">Norte</option><option value="west">Oeste</option><option value="east">Leste</option></select></label><label>Ampliação <select id="scale"><option value="2">2×</option><option value="4" selected>4×</option><option value="6">6×</option></select></label><label><input type="checkbox" id="pivot"> Mostrar pivô</label><label><input type="checkbox" id="layer-only"> Isolar peça</label></div>
+<div class="comparisons">
+<figure><figcaption>Corpo preservado</figcaption><div class="stage"><canvas id="source" width="64" height="64" aria-label="Corpo original"></canvas></div><p>Entrada nativa de 64×64, sem escala.</p></figure>
+<figure><figcaption>Retorno bruto do PixelLab</figcaption><div class="stage"><canvas id="raw" width="64" height="64" aria-label="Edição bruta do PixelLab"></canvas></div><p id="raw-status"></p></figure>
+<figure><figcaption>Candidata extraída</figcaption><div class="stage"><canvas id="candidate" width="64" height="64" aria-label="Peça extraída sobre o corpo original"></canvas></div><p id="candidate-status"></p></figure>
+</div>
+<div class="facts"><p id="geometry"></p><p><strong>Cobertura:</strong> apenas pose 0 de Idle. Não demonstra caminhada, ataque, encaixes ou oclusões durante combate.</p><p id="usage"></p></div>
+<details><summary>Auditoria da referência selecionada</summary><pre id="audit"></pre></details>
+</section></main>
+<footer>As referências não são um pacote Paper Doll de produção. Saves, itens, animações e aparência atual do jogo permanecem preservados.</footer>
+<script src="review-model.js"></script><script src="review.js"></script>
+</html>

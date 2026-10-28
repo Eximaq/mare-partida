@@ -104,6 +104,7 @@ on:
       - 'tests/paper_doll_rigid_assembly_test.py'
       - 'tests/paper-doll-attachment.test.cjs'
       - 'tests/paper_doll_fit_audit_test.py'
+      - 'tests/paper_doll_masked_candidate_test.py'
       - 'tests/paper_doll_batch_audit_test.py'
       - 'tools/paper_doll_fit_audit.py'
       - 'tools/paper_doll_batch_audit.py'
@@ -134,6 +135,7 @@ jobs:
           python -m pip install playwright==1.63.0 Pillow==13.0.0
           python -m playwright install --with-deps chromium
           python tests/paper_doll_fit_audit_test.py
+          python tests/paper_doll_masked_candidate_test.py
           python tests/paper_doll_batch_audit_test.py
           python tests/paper_doll_body_edit_test.py
           python tests/paper_doll_compact_test.py

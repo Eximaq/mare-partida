@@ -1,0 +1,421 @@
+[
+  {
+    "_comment": "Actual reference submissions; several outputs failed review. Do not replay without a new explicit user request.",
+    "_pixellab": {
+      "paid_call_policy": "explicit_user_run_request_required",
+      "output_directory": "pixellab-pip-generations/paper-doll-wardrobe-replay",
+      "output_collision_policy": "create_unique"
+    },
+    "TASK": "Verify a new explicit paid run authorization and MCP authentication, then create an empty unique output directory. Preserve existing files."
+  },
+  {
+    "_comment": "pants-south — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only plain navy sailor trousers fitted to both legs and waist of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-south.png"
+    }
+  },
+  {
+    "_comment": "pants-north — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only plain navy sailor trousers fitted to both legs and waist of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-north.png"
+    }
+  },
+  {
+    "_comment": "boots-south — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only brown leather sailor boots with small brass buckles fitted to both existing feet of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-south.png"
+    }
+  },
+  {
+    "_comment": "gloves-south — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only brown fingerless leather gloves fitted to both existing hands of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-south.png"
+    }
+  },
+  {
+    "_comment": "cloak-south — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a short burgundy sailing cape with a worn hem fitted to shoulders and back of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-south.png"
+    }
+  },
+  {
+    "_comment": "head-south — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a navy sailor cap with a small plain brass badge fitted to the scalp of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-south.png"
+    }
+  },
+  {
+    "_comment": "eyewear-south — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only small round brass goggles with clear lenses fitted to the eyes and temples of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-south.png"
+    }
+  },
+  {
+    "_comment": "necklace-south — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a small bronze medallion on a short cord fitted to the neck and upper chest of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-south.png"
+    }
+  },
+  {
+    "_comment": "belt-south — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a brown leather belt with a plain brass buckle fitted to the waist of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-south.png"
+    }
+  },
+  {
+    "_comment": "ring-south — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a small brass ring with a muted turquoise stone fitted to one existing hand of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-south.png"
+    }
+  },
+  {
+    "_comment": "charm-south — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a small brass compass charm fitted to the belt at the right hip of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-south.png"
+    }
+  },
+  {
+    "_comment": "pants-west — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only plain navy sailor trousers fitted to both legs and waist of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-west.png"
+    }
+  },
+  {
+    "_comment": "pants-east — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only plain navy sailor trousers fitted to both legs and waist of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-east.png"
+    }
+  },
+  {
+    "_comment": "cloak-north — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a short burgundy sailing cape with a worn hem fitted to shoulders and back of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-north.png"
+    }
+  },
+  {
+    "_comment": "cloak-west — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a short burgundy sailing cape with a worn hem fitted to shoulders and back of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-west.png"
+    }
+  },
+  {
+    "_comment": "cloak-east — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a short burgundy sailing cape with a worn hem fitted to shoulders and back of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-east.png"
+    }
+  },
+  {
+    "_comment": "boots-north — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only brown leather sailor boots with small brass buckles fitted to both existing feet of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-north.png"
+    }
+  },
+  {
+    "_comment": "boots-west — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only brown leather sailor boots with small brass buckles fitted to both existing feet of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-west.png"
+    }
+  },
+  {
+    "_comment": "boots-east — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only brown leather sailor boots with small brass buckles fitted to both existing feet of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-east.png"
+    }
+  },
+  {
+    "_comment": "gloves-north — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only brown fingerless leather gloves fitted to both existing hands of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-north.png"
+    }
+  },
+  {
+    "_comment": "gloves-west — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only brown fingerless leather gloves fitted to both existing hands of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-west.png"
+    }
+  },
+  {
+    "_comment": "gloves-east — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only brown fingerless leather gloves fitted to both existing hands of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-east.png"
+    }
+  },
+  {
+    "_comment": "head-north — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a navy sailor cap with a small plain brass badge fitted to the scalp of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-north.png"
+    }
+  },
+  {
+    "_comment": "head-west — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a navy sailor cap with a small plain brass badge fitted to the scalp of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-west.png"
+    }
+  },
+  {
+    "_comment": "head-east — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a navy sailor cap with a small plain brass badge fitted to the scalp of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-east.png"
+    }
+  },
+  {
+    "_comment": "eyewear-north — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only small round brass goggles with clear lenses fitted to the eyes and temples of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-north.png"
+    }
+  },
+  {
+    "_comment": "eyewear-west — service failed without a job ID; charge unknown",
+    "MCP edit_image_pixen": {
+      "description": "Add only small round brass goggles with clear lenses fitted to the eyes and temples of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-west.png"
+    }
+  },
+  {
+    "_comment": "eyewear-east — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only small round brass goggles with clear lenses fitted to the eyes and temples of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-east.png"
+    }
+  },
+  {
+    "_comment": "necklace-north — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a small bronze medallion on a short cord fitted to the neck and upper chest of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-north.png"
+    }
+  },
+  {
+    "_comment": "necklace-west — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a small bronze medallion on a short cord fitted to the neck and upper chest of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-west.png"
+    }
+  },
+  {
+    "_comment": "necklace-east — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a small bronze medallion on a short cord fitted to the neck and upper chest of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-east.png"
+    }
+  },
+  {
+    "_comment": "belt-north — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a brown leather belt with a plain brass buckle fitted to the waist of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-north.png"
+    }
+  },
+  {
+    "_comment": "belt-west — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a brown leather belt with a plain brass buckle fitted to the waist of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-west.png"
+    }
+  },
+  {
+    "_comment": "belt-east — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a brown leather belt with a plain brass buckle fitted to the waist of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-east.png"
+    }
+  },
+  {
+    "_comment": "charm-north — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a small brass compass charm fitted to the belt at the right hip of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-north.png"
+    }
+  },
+  {
+    "_comment": "charm-west — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a small brass compass charm fitted to the belt at the right hip of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-west.png"
+    }
+  },
+  {
+    "_comment": "charm-east — reference only; not approved for runtime",
+    "MCP edit_image_pixen": {
+      "description": "Add only a small brass compass charm fitted to the belt at the right hip of this human in the supplied facing. Preserve every other body, face, pose, pixel and transparent background. Match the existing crisp nautical pixel art. No detached objects or extra anatomy.",
+      "width": 64,
+      "height": 64,
+      "no_background": true,
+      "seed": 1350402902,
+      "image_base64": "source/body-east.png"
+    }
+  },
+  {
+    "TASK": "Inspect directions and anatomy against each unchanged source. Block failed references and their dependent transfers. No retries are authorized by this recipe. Optional masked static drafts must remain unapproved; compose only original generated pixels under the supplied masks. Restore 84x84 only by padding left10/top13. Never promote these drafts to gameplay."
+  }
+]

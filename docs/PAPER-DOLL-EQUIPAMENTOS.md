@@ -2,7 +2,9 @@
 
 O compositor existente agora aceita 15 slots. Não há novo sistema de personagens,
 inventário ou saves. Este contrato organiza as futuras artes por equipamento.
-Nenhuma arte nova foi gerada nem asset de produção alterado nesta etapa; custo PixelLab: zero.
+Na preparação da arquitetura não houve geração. A rodada de referências
+automáticas está registrada em [Produção de equipamentos](PAPER-DOLL-PRODUCAO-EQUIPAMENTOS.md);
+nenhuma dessas candidatas foi ativada no pacote de produção.
 
 | Chave existente no equipamento | Slot visual |
 |---|---|
@@ -107,8 +109,9 @@ transparente, voltando ao pivô original `[42,65]`. A ferramenta recusa cortes d
 anatomia e pastas de saída já existentes; não sobrescreve o trabalho anterior.
 
 O corpo atual tem 240 poses, distribuídas em 16 lotes de 15. Esta preparação não
-significa que as roupas foram geradas ou aprovadas. O proprietário optou por
-gerar manualmente no PixelLab; o orçamento automático proposto não foi aprovado.
+significa que as roupas foram geradas ou aprovadas. Após avaliar a alternativa
+manual, o proprietário retomou a execução automática em 28/10, no lote limitado
+registrado no relatório de produção.
 Referências ajustadas ao corpo vêm primeiro; transferências de roupa só após
 validar as referências. Nenhuma autorização é inferida de uma pasta, deste
 documento ou de um manifesto de entradas.

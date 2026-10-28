@@ -1,9 +1,12 @@
 # O que gerar manualmente no PixelLab
 
-**Geração manual pelo proprietário. Nenhuma geração paga está autorizada ou foi
-executada pelo agente nesta etapa.** O orçamento automático anteriormente
-proposto não foi aprovado. Não é necessário gerar personagens ou movimentos
-novos: corpo, cabelo, camisa/colete e armas existentes serão reaproveitados.
+Este guia continua disponível como alternativa de produção manual. Em 28/10,
+o proprietário retomou a execução automática do lote anteriormente detalhado,
+com teto de 840 gerações e sem retries. O resultado e os bloqueios da primeira
+rodada estão em [Produção de equipamentos](PAPER-DOLL-PRODUCAO-EQUIPAMENTOS.md).
+Não é necessário gerar personagens ou movimentos novos: corpo, cabelo,
+camisa/colete e armas existentes serão reaproveitados. Este documento não
+autoriza repetir gerações.
 
 ## Arquivos de referência
 
