@@ -6,15 +6,15 @@ const seed=()=>({name:'Nauta',classId:'sword',gold:120,materials:4,inventory:[],
 const snap=v=>JSON.stringify(v);
 let tests=0;
 function test(name,run){run();tests++;console.log(name+': passed');}
-test('All 100 floors, specified blocks and bounded linear power scaling',()=>{
- for(let f=1;f<=100;f++)assert.equal(P.multiplier(f),f<=10?.5:Math.ceil(f/10));
+test('All 100 floors, compounded power scaling',()=>{
+ for(let f=1;f<=100;f++)assert.equal(P.multiplier(f),1.30**(f-1));
  for(const f of [0,101,1.5,NaN,'1',undefined])assert.throws(()=>P.multiplier(f));
- const base={hp:100,atk:20,def:10,speed:5,xp:12};assert.deepEqual(P.scaleMonster(base,1),{hp:50,atk:10,def:5,speed:5,xp:12});
- assert.deepEqual(P.scaleMonster(base,100),{hp:1000,atk:200,def:100,speed:5,xp:12});assert.equal(base.hp,100);
+ const base={hp:100,atk:20,def:10,speed:5,xp:12};assert.deepEqual(P.scaleMonster(base,1),{hp:100,atk:20,def:10,speed:5,xp:12});
+ assert.deepEqual(P.scaleMonster(base,100),{hp:Math.round(100*1.30**99),atk:Math.round(20*1.30**99),def:Math.round(10*1.30**99),speed:5,xp:12});assert.equal(base.hp,100);
  assert.throws(()=>P.scaleMonster({hp:-1,atk:2,def:3},1));
 });
-test('Production preview rejects entrance, victories and reward claims',()=>{
- const g=seed(),before=snap(g);assert.equal(P.available,false);
+test('Explicitly disabled system rejects entrance, victories and reward claims',()=>{
+ const g=seed(),before=snap(g),P=require('../prison-system.js').createSystem();assert.equal(P.available,false);
  for(let f=1;f<=100;f++){assert.equal(P.canEnter(g,f),false);assert.equal(P.completeFloor(g,f,true,defs).ok,false);}
  assert.equal(P.claimMilestone(g,5,defs).ok,false);assert.equal(snap(g),before);
 });
@@ -80,9 +80,9 @@ test('Only completed floors and the next floor can be inspected, capped at 100',
 });
 test('Phase presentation exposes final monster data without balancing factors',()=>{
  const catalog={bandit:{name:'Corsário',hp:67,atk:10,def:5},spirit:{name:'Sentinela',hp:52,atk:12,def:3},boss:{name:'Guardião',hp:350,atk:17,def:10}};
- const first=P.floorDetails(1,catalog);assert.equal(first.waves,3);assert.equal(first.total,9);assert.equal(first.monsters[0].hp,34);assert.equal(first.monsters[0].attack,5);
+ const first=P.floorDetails(1,catalog);assert.equal(first.waves,1);assert.equal(first.total,1);assert.equal(first.monsters[0].hp,67);assert.equal(first.monsters[0].attack,10);
  assert(first.monsters.every(m=>m.level===1&&m.quantity>0));assert.equal(P.floorDetails(10,catalog).boss,true);
- assert.equal(P.floorDetails(10,catalog).monsters[1].id,'boss');assert(!/multiplier|factor|scale/.test(JSON.stringify(first)));assert.equal(catalog.bandit.hp,67);
+ assert.equal(P.floorDetails(10,catalog).monsters[0].id,'boss');assert(!/multiplier|factor|scale/.test(JSON.stringify(first)));assert.equal(catalog.bandit.hp,67);
  assert.equal(P.floorDetails(1,{}).monsters.length,0);
 });
 test('Ascent preferences persist and determine the next action only when available',()=>{
@@ -90,6 +90,6 @@ test('Ascent preferences persist and determine the next action only when availab
  let result=active.completeFloor(g,9,true,defs);assert(result.ok);assert.deepEqual(result.next,{floor:10,autoEnter:false});
  g.impelDown.options.pauseBeforeBoss=false;result=active.completeFloor(g,9,true,defs);assert.deepEqual(result.next,{floor:10,autoEnter:true});
  g.impelDown.options.autoAdvance=false;result=active.completeFloor(g,9,true,defs);assert.equal(result.next.autoEnter,false);
- assert.equal(P.nextAction(g),null);assert.deepEqual(P.migrate(P.migrate(g)),P.migrate(g));
+ assert.deepEqual(P.nextAction(g),{floor:9,autoEnter:false});assert.deepEqual(P.migrate(P.migrate(g)),P.migrate(g));
 });
 console.log(tests+' prison/drop/box groups passed.');
