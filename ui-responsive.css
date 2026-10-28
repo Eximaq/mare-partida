@@ -580,6 +580,9 @@
   #panelOverlay.inventory-mode .op-info-panel{grid-column:auto;max-height:none}
 }
 @media(max-width:760px){.chat-open #huntXpTracker{visibility:hidden}}
+@media(min-width:761px) and (max-width:1024px){
+  .target-hud{left:calc(var(--profile-right,244px) + 12px);transform:none;width:min(240px,calc(var(--menu-left,412px) - var(--profile-right,244px) - 24px))}
+}
 @media(max-height:500px) and (orientation:landscape){
   .target-hud{left:calc(var(--profile-right,228px) + 12px);transform:none;width:min(200px,calc(var(--menu-left,492px) - var(--profile-right,228px) - 24px))}
 }
