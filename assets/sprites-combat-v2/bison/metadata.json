@@ -1928,7 +1928,9 @@
         "anchor": [
           58.0,
           99
-        ]
+        ],
+        "loop_start": 4,
+        "loop_end": 25
       },
       "west": {
         "image": "assets/sprites-combat-v2/bison/walk-west.png",
@@ -2265,7 +2267,9 @@
         "anchor": [
           64.0,
           101
-        ]
+        ],
+        "loop_start": 4,
+        "loop_end": 25
       },
       "east": {
         "image": "assets/sprites-combat-v2/bison/walk-east.png",
@@ -2602,7 +2606,9 @@
         "anchor": [
           64.0,
           101
-        ]
+        ],
+        "loop_start": 4,
+        "loop_end": 25
       },
       "south": {
         "image": "assets/sprites-combat-v2/bison/walk-south.png",
@@ -2939,7 +2945,9 @@
         "anchor": [
           64.0,
           108
-        ]
+        ],
+        "loop_start": 4,
+        "loop_end": 25
       }
     },
     "special": {

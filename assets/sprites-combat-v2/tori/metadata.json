@@ -2226,7 +2226,9 @@
         "anchor": [
           66.0,
           113
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 13
       },
       "west": {
         "image": "assets/sprites-combat-v2/tori/walk-west.png",
@@ -2563,7 +2565,9 @@
         "anchor": [
           66.0,
           113
-        ]
+        ],
+        "loop_start": 10,
+        "loop_end": 23
       },
       "east": {
         "image": "assets/sprites-combat-v2/tori/walk-east.png",
@@ -2900,7 +2904,9 @@
         "anchor": [
           66.0,
           113
-        ]
+        ],
+        "loop_start": 10,
+        "loop_end": 23
       },
       "north": {
         "image": "assets/sprites-combat-v2/tori/walk-north.png",
@@ -3237,11 +3243,14 @@
         "anchor": [
           66.0,
           113
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 13
       }
     }
   },
   "fps_source": "Not provided by export; playback FPS configured locally",
+  "world_scale": 1.5,
   "legacyHeight": 47,
   "logical_attack": {
     "south": {
@@ -3270,5 +3279,6 @@
     }
   },
   "monster": false,
-  "worldHeight": 47
+  "worldHeight": 47,
+  "world_header_height": 114.5625
 }

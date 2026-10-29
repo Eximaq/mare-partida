@@ -4978,7 +4978,9 @@
         "anchor": [
           66.0,
           113
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 25
       },
       "north": {
         "image": "assets/sprites-combat-v2/ryu/walk-north.png",
@@ -5315,7 +5317,9 @@
         "anchor": [
           66.0,
           112
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 25
       },
       "east": {
         "image": "assets/sprites-combat-v2/ryu/walk-east.png",
@@ -5652,7 +5656,9 @@
         "anchor": [
           66.0,
           113
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 25
       },
       "west": {
         "image": "assets/sprites-combat-v2/ryu/walk-west.png",
@@ -5989,7 +5995,9 @@
         "anchor": [
           66.0,
           113
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 25
       }
     }
   },

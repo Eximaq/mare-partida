@@ -574,7 +574,9 @@
         "anchor": [
           62.0,
           103
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 26
       },
       "east": {
         "image": "assets/sprites-combat-v2/inu/run-east.png",
@@ -911,7 +913,9 @@
         "anchor": [
           66.0,
           95
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 26
       },
       "south": {
         "image": "assets/sprites-combat-v2/inu/run-south.png",
@@ -1248,7 +1252,9 @@
         "anchor": [
           66.0,
           111
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 26
       },
       "west": {
         "image": "assets/sprites-combat-v2/inu/run-west.png",
@@ -1585,7 +1591,9 @@
         "anchor": [
           66.0,
           95
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 26
       }
     },
     "hurt": {
@@ -3286,6 +3294,7 @@
     }
   },
   "fps_source": "Not provided by export; playback FPS configured locally",
+  "idle_extent_ratio": 1.803921568627451,
   "legacyHeight": 40,
   "logical_attack": {
     "south": {
@@ -3314,5 +3323,6 @@
     }
   },
   "monster": false,
-  "worldHeight": 40
+  "worldHeight": 40,
+  "world_header_height": 111.24183006535948
 }
