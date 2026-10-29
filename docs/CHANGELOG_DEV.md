@@ -1,3 +1,7 @@
+## 29/10/2026 — Cabine do Navegante aprovada e integrada
+
+Após a aprovação visual explícita do proprietário, a composição da prévia foi aplicada a `index.html`, compartilhando `ui-navigator.css`, a base visual e os assets aprovados. Scripts e regras de jogo preservados. Sem novas gerações PixelLab, merge ou deploy. Validação da entrada principal e limites em [HUD-NAVIGATOR-DIRECTION.md](HUD-NAVIGATOR-DIRECTION.md).
+
 ## 29/10/2026 — Nova prévia da Cabine do Navegante
 
 Reformulação completa em `ui-preview.html`: cartão de capitão integrado, busto clicável, recursos sem molduras individuais, paleta de tinta e bronze fosco, navegação unificada e janelas discretas. Arte original PixelLab: 11 gerações confirmadas, 15 assets nativos, fontes locais OFL e receita versionada. Nenhuma imagem enviada pelo proprietário usada como referência. [Direção, capturas e verificações](HUD-NAVIGATOR-DIRECTION.md). Prévia aguardando aceite artístico; entrada principal preservada, sem merge/deploy. Cinco suítes focadas aprovadas; suíte completa com 145 aprovações e uma inicialização bloqueada pela ausência de Playwright.

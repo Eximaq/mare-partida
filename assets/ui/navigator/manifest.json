@@ -1,5 +1,5 @@
 {
-  "status": "prototype-awaiting-owner-visual-review",
+  "status": "owner-approved-integrated",
   "source_run": "pixellab-pip-generations/hud-navigator-20261029",
   "reference_images": [],
   "processing": "Native crops, portrait inner alpha mask, lossless encoding; no painting or resampling",

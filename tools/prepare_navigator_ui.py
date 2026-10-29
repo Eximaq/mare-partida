@@ -1,4 +1,4 @@
-"""Native crops for the navigator prototype. No local painting or resampling."""
+"""Native crops for the approved navigator HUD. No local painting or resampling."""
 import hashlib
 import json
 from pathlib import Path
@@ -75,7 +75,7 @@ def main():
         entry['bytes'] = destination.stat().st_size
         entry['sha256'] = hashlib.sha256(destination.read_bytes()).hexdigest()
     (OUT / 'manifest.json').write_text(json.dumps({
-        'status': 'prototype-awaiting-owner-visual-review',
+        'status': 'owner-approved-integrated',
         'source_run': RUN.relative_to(ROOT).as_posix(),
         'reference_images': [], 'processing': 'Native crops, portrait inner alpha mask, lossless encoding; no painting or resampling',
         'fonts': {'family': 'Alegreya Sans', 'weights': [400, 500, 700], 'license': 'fonts/OFL.txt', 'source': 'https://fonts.google.com/specimen/Alegreya+Sans'},

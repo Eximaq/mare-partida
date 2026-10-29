@@ -1,6 +1,6 @@
 # HUD náutica — revisão em pixel art
 
-> Histórico da direção anterior, rejeitada pelo proprietário. A nova proposta jogável e sua aprovação pendente estão em [Cabine do Navegante](HUD-NAVIGATOR-DIRECTION.md); a entrada principal ainda não foi promovida.
+> Histórico da direção anterior, rejeitada pelo proprietário. A direção aprovada e integrada à entrada principal está em [Cabine do Navegante](HUD-NAVIGATOR-DIRECTION.md).
 
 29/10/2026 · `feature/nautical-hud-assets-v2` · [PR #147](https://github.com/Eximaq/mare-partida/pull/147).
 

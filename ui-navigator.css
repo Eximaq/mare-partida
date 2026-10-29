@@ -1,4 +1,4 @@
-/* Navigator prototype. New composition; no owner-supplied reference imagery.
+/* Owner-approved navigator HUD. New composition; no owner-supplied reference imagery.
    Existing IDs, handlers, resource amounts and game content remain authoritative. */
 @font-face{font-family:'Alegreya Sans';font-style:normal;font-weight:400;font-display:swap;src:url('assets/ui/navigator/fonts/alegreya-sans-400.woff2') format('woff2')}
 @font-face{font-family:'Alegreya Sans';font-style:normal;font-weight:500;font-display:swap;src:url('assets/ui/navigator/fonts/alegreya-sans-500.woff2') format('woff2')}

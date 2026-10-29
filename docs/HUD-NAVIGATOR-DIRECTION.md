@@ -26,7 +26,7 @@ O cartão mede 296 px de largura e cresce com os recursos condicionais (137 px n
 
 ## Escopo e aprovação
 
-Implementação completa em `ui-preview.html`, `ui-navigator.css` e `assets/ui/navigator/`. Mesmos scripts, IDs, controles, eventos e estados do jogo. A entrada principal permanece intacta até avaliação artística do proprietário, conforme a sequência de arte do `AGENTS.md`.
+Direção aprovada pelo proprietário em 29/10/2026, com a resposta explícita “Aprovar a direção”. Composição promovida de `ui-preview.html` para `index.html`, incluindo os estilos de base usados na prévia. `ui-navigator.css` e `assets/ui/navigator/` são compartilhados pelas duas entradas. Mesmos scripts, IDs, controles, eventos e estados do jogo; sequência artística do `AGENTS.md` cumprida. Aprovação visual não autoriza merge ou deploy.
 
 Invariantes: saves, itens, combate, colisões, sprites e flags Paper Doll. Riscos principais: CSS legado, foco/rolagem dos modais, espaço dos recursos condicionais e colisão entre HUDs no celular. Verificação: navegação real, recursos cheios/parciais, inventário, janelas e seis viewports, além dos testes focados e build estático.
 
@@ -50,5 +50,6 @@ Cobrança confirmada: **11 gerações** (10 do estudo, 1 do emblema), teto 12, n
 - Busca, seleção e detalhe de item no celular; foco visível de 2 px, Tab no diálogo e Escape para fechar. Retrato abre Personagem. Preferência de movimento reduzido desliga a animação do líquido.
 - Vida cheia e parcial conferidas contra texto e largura real; contadores ficam fora do preenchimento. Transformação Uma-Uma acionada pelo inventário: canvas intacto e apresentação de 46 × 46, sem corte do corpo. Cenários de porto, Ilha Dawn e Baratie inspecionados.
 - Navegação cobria o botão DEV no celular; posição corrigida e abertura do laboratório novamente confirmada. Testes finais usaram origem local separada `localhost:8768`, preservando a sessão ativa do proprietário em `localhost:8766`.
+- Após a aprovação, `index.html` foi validado diretamente: skin carregada, canvas 64 × 64 preservado, um acesso visível aos atributos pelo retrato e diálogo Personagem aberto. HUD e inventário em 1366×768, 390×844 e 360×800 ficaram dentro da tela, sem overflow horizontal nem colisões entre os widgets inferiores medidos. As cinco suítes focadas passaram novamente; build Pages e sintaxe Python também aprovados. Sem novas gerações PixelLab.
 
-Limites: validação em navegador de desktop com viewports simulados, sem certificação em aparelhos físicos ou outros motores. A energia foi observada cheia; não há evidência final registrada de um estado parcial de energia. Capturas e medições extensas ficam no diretório ignorado `docs/evidence-hud-navigator/`, sem publicação em massa. `index.html` permanece com a direção anterior até o aceite artístico; não houve merge nem deploy.
+Limites: validação em navegador de desktop com viewports simulados, sem certificação em aparelhos físicos ou outros motores. A energia foi observada cheia; não há evidência final registrada de um estado parcial de energia. Capturas e medições extensas ficam no diretório ignorado `docs/evidence-hud-navigator/`, sem publicação em massa. A direção aprovada está integrada na entrada principal da branch; não houve merge nem deploy.

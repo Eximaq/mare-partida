@@ -5,7 +5,7 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 | Tarefa | Código a localizar primeiro | Documentos e testes a procurar | Atenção |
 |---|---|---|---|
 | Login/portal | `portal/index.html`, `portal/portal.js`, `portal/portal.css`, `tools/build_pages.py` | `docs/COLABORACAO_GITHUB.md`; testes web/build relevantes | Não afirmar Supabase conectado sem confirmar; preservar fundo/arte aprovada |
-| HUD/UI/inventário | `ui-system.js`, `notification-system.js`, `ui-*.css`, `ui-preview.html`, `game.js` (somente funções de UI), `forge-ui.js` | `docs/UI-DESIGN.md` (se existir), `docs/HUD-NAVIGATOR-DIRECTION.md` (prévia aguardando aprovação), testes de inventário | Índices `itemDefs`, equipamentos e saves |
+| HUD/UI/inventário | `ui-system.js`, `notification-system.js`, `ui-*.css`, `index.html`, `ui-preview.html`, `game.js` (somente funções de UI), `forge-ui.js` | `docs/UI-DESIGN.md` (se existir), `docs/HUD-NAVIGATOR-DIRECTION.md` (direção aprovada), testes de inventário | Índices `itemDefs`, equipamentos e saves |
 | Personagens/classes | `character-system.js`, `game.js` funções de criação | testes de personagem; sec. 3 de `AGENT.md` somente se necessário | Facção ≠ classe; dados migrados |
 | Combate/caçadas | `hunt-system.js`, `monster-behavior.js`, `world-system.js`, `combat-*.js` | `docs/MONSTER-SPAWNS.md`, `docs/CACADAS-1-20.md`, `docs/ATTACK-SPEED-ANIMATION.md`, testes de combate/caça | Dano real/hit-frame, LOS, cooldown e anti-duplicação |
 | Física/profundidade global | `world-system.js`, `world-depth.js`, `game.js` (combatLine/filas de desenho) | `docs/MAP-COLLISION-AUDIT.md`, `tools/audit_maps.cjs`, testes map-physics-audit/world-depth/map_audit_browser | Separar pés e disparos; preservar máscaras e pixels dos mapas |
