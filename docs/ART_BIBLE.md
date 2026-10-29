@@ -64,3 +64,10 @@ Revisão de composição de 19/10/2026: mapa 32×32 tiles de 64px, sem reduzir a
 ## Personagem único — 20/10/2026
 
 O contrato `human-v1` compartilha corpo/cabelo entre as sete classes e quatro facções. Roupa é uma camada independente; ataques são categorias de ação/arma, sem reutilizar uma espada como tiro ou magia. O manifesto vazio em `assets/paper-doll/human/manifest.json` e `docs/PAPER-DOLL.md` definem as peças futuras. Esta etapa não produziu imagens nem autoriza recoloração/recortes dos personagens fundidos. O visual atual continua como fallback até a validação artística de peças reais; o editor de aparência será uma fase posterior.
+
+
+## 28/10/2026 — Importação dos 21 sprites de combate v2
+
+Referências medidas nos assets existentes: altura opaca do Idle anterior para manter a escala aparente; mesma densidade/pixel scale entre estados, compensação de canvases transparentes de ações e pivô estável na margem inicial dos pés. O pacote novo traz Idle92px (Cocox) ou96px; ações124–144px, com6–29 quadros. Fontes PixelLab existentes, sem nova geração, pintura ou reamostragem. Preservar contornos/paletas originais e nearest-neighbor; não deformar a arte para preencher o antigo canvas. FPS autoral não informado no export:12/24FPS são configuração de apresentação, e os tempos de combate continuam antigos. Hurt usa quatro quadros inspecionados em180ms.
+
+[Auditoria, dimensões por conjunto, integridade dos5.957 frames, fallbacks e pendências de aprovação](SPRITES-COMBAT-V2.md). Não inferir aprovação visual pelo sucesso dos testes técnicos.

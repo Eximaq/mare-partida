@@ -13,7 +13,7 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 | Mapas/Conchas | `conchas-world.js`, `conchas-renderer.js`, `conchas-*.js` | `docs/CIDADE-DAS-CONCHAS.md`, testes de Conchas | Rotas, casas, colisões; PRs recentes podem mudar geometria |
 | Arquipélago/ilhas | `archipelago.js`, `new-islands*.js` | `docs/ARQUIPELAGO-REGIOES.md`, testes das ilhas | IDs persistidos e permissões de entrada |
 | Paper Doll | `paper-doll.js`, `paper-doll-assets.js`, `paper-doll-review.js` | `docs/PAPER-DOLL-JOGO-NORMAL.md`, `docs/PAPER-DOLL.md`, testes `paper_doll*` | Release aprovado separado dos drafts; fallback; DEV ≠ produção |
-| Sprites/PixelLab | manifests do pacote específico, `assets/**` do subsistema | `docs/ART_BIBLE.md` se existente, docs do pacote | Custo explícito, licença, pivôs, nearest-neighbor |
+| Sprites/PixelLab | `sprite-combat-v2.js`, `sprite-combat-v2-data.js`, manifests do pacote específico, `assets/**` do subsistema | `docs/ART_BIBLE.md`, `docs/SPRITES-COMBAT-V2.md`, testes `sprite_combat_v2*` e `sprite-combat-v2*` | Custo explícito, licença, pivôs, nearest-neighbor; timing lógico permanece nos controladores existentes |
 | Haki | `haki-system.js`, `haki-ui.js`, `haki-art.js` | `docs/HAKI.md`, testes de Haki/talentos | Consumo transacional e saves |
 | Talentos/conquistas | `talent-*.js`, `achievement-system.js`, `ultimate-system.js` | `docs/TALENTOS.md`, testes de talentos | Conquistas únicas, respec e resets |
 | Forja/itens | `forge-system.js`, `forge-ui.js`, `game.js` definição de itens | testes de forja/inventário | Índices append-only, pérolas, refinamento |

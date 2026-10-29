@@ -1,0 +1,7 @@
+{
+  "inspection": "Contact poses inspected from native source strips; frame numbers are zero-based. Presentation only; logical damage timings remain in legacy controllers.",
+  "attack": {"bananawani":14,"bison":16,"buchi":10,"cabaji":14,"chew":19,"cocox":10,"gin":12,"helmeppo":18,"hoya":14,"inu":19,"kuroobi":18,"marinheiro":14,"mr3":18,"neko":19,"pearl":16,"ryu":19,"sham":6,"tori":10,"uma":14,"ushi":12,"wolf":7},
+  "special": {"uma":23,"neko":12,"ushi":16,"wolf":14,"ryu":19,"bison":14},
+  "special-2": {"ryu":16},
+  "hurt_start": {"bananawani":6,"bison":7,"buchi":9,"cabaji":6,"chew":6,"cocox":3,"gin":6,"helmeppo":3,"inu":6,"kuroobi":11,"marinheiro":3,"mr3":6,"neko":6,"pearl":3,"ryu":6,"sham":3,"tori":3,"uma":6,"ushi":9}
+}
