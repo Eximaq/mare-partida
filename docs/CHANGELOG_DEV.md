@@ -1,5 +1,7 @@
 ## 29/10/2026 — Cabine do Navegante aprovada e integrada
 
+Lançamento no Pages autorizado pelo proprietário. Na preparação, removido o botão Personagem redundante trazido da prévia, com reprodução da regressão existente antes da correção. Os 145 testes Node autônomos passaram; E2E de Supa permanece separado, conforme o CI. Menu real conferido com seis atalhos.
+
 Após a aprovação visual explícita do proprietário, a composição da prévia foi aplicada a `index.html`, compartilhando `ui-navigator.css`, a base visual e os assets aprovados. Scripts e regras de jogo preservados. Sem novas gerações PixelLab, merge ou deploy. Validação da entrada principal e limites em [HUD-NAVIGATOR-DIRECTION.md](HUD-NAVIGATOR-DIRECTION.md).
 
 ## 29/10/2026 — Nova prévia da Cabine do Navegante

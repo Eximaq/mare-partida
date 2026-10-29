@@ -110,7 +110,6 @@ html[data-mare-motion=reduced] #app .profile-resource .mini-meter i::after{anima
 #app #mainMenu [data-panel]{width:42px;height:42px;min-height:42px;padding:7px;border:0;border-radius:0;box-shadow:none;background:none}
 #app #mainMenu [data-panel] img{width:28px;height:28px;object-fit:contain;filter:none}
 #app #mainMenu .character-menu-anchor{display:block;width:42px;height:42px;flex:none;position:static}
-#app #characterMenuBrowse{display:none}
 #app #mainMenu [data-panel]:is(:hover,[aria-expanded=true]){background:var(--nav-slate) repeat}
 #app #mainMenu .character-quick-menu{padding:8px;border:0;background:var(--nav-ink) repeat;border-image:var(--nav-window) 18/7px/0 stretch;box-shadow:none}
 #app #mainMenu .character-quick-menu button[role=menuitem]{min-height:46px;border:0;border-image:none;background:none;font-size:15px}
