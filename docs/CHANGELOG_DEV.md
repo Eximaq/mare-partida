@@ -1,3 +1,7 @@
+## 29/10/2026 — HUD náutica com pixel art nativa
+
+Revisão do PR #147 após avaliação visual do proprietário. Texturas pesadas foram substituídas por molduras discretas, superfícies calmas e líquidos de quatro tons com movimento suave. A largura visível não fica sob o contador; a preferência Reduzidas interrompe a animação. Os 19 WebPs somam 3.830 bytes. PixelLab autorizado: 10 gerações confirmadas, fontes e receita versionadas. [Direção, evidências e limites](HUD-PIXEL-REFINEMENT.md). Sem mudanças de save/combate, merge ou deploy.
+
 ## 29/10/2026 — Escalas Zoan e loops de caminhada
 
 Após a publicação autorizada do PR#145, a branch `fix/zoan-scale-walk-frames` dobra o Cavalo, aumenta o Albatroz em50% e normaliza o tamanho aparente do Dachshund entre frente/costas/perfis. Loops direcionais passam a excluir entradas/saídas de repouso e a cauda congelada da Girafa norte. As três Zoans iniciais pré-carregam locomoção ao equipar; retratos mantêm encaixe limitado. PNGs, saves, dano, cadência, velocidades e colisões permanecem inalterados.

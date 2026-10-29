@@ -1,4 +1,4 @@
-/* Nautical raster materials. Geometry, event targets and live meter widths stay
+/* Native pixel nautical materials. Geometry, event targets and live meter widths stay
    with their existing owners. Artwork/provenance: assets/ui/nautical/manifest.json.
    Border-image paints inward; small controls retain their original hit boxes. */
 :root {
@@ -25,10 +25,10 @@
   --rpg-gold-button:var(--naut-hover);
   --rpg-hud-bg:var(--naut-sea);
   --rpg-recess:var(--naut-navy);
-  --rpg-surface:#102c38;
-  --rpg-raised:#10202d;
-  --rpg-paper:#e6d4ab;
-  --rpg-text:#f5e8c9;
+  --rpg-surface:#243a3d;
+  --rpg-raised:#1a2930;
+  --rpg-paper:#e8cf92;
+  --rpg-text:#eee6ce;
   --rpg-muted:#c5baa2;
   --rpg-inset:none;
 }
@@ -36,36 +36,38 @@
 /* Large, medium and compact shells share artwork, never a scaled screenshot. */
 body :is(.dialog,.creation-dialog,.confirmation-card,.ui-window),
 #panelOverlay.inventory-mode .dialog {
-  border-image:var(--naut-window) 44 / 15px / 0 stretch;
+  border-image:var(--naut-window) 18 / 8px / 0 stretch;
   border-radius:0;
   background:var(--naut-sea) repeat;
   box-shadow:none;
+  image-rendering:pixelated;
 }
 body :is(.dialog-header,.ui-window-header),
 #panelOverlay :is(.dialog-header,.op-topbar),
 #app :is(.floating-title,.journey-heading,.prison-masthead,.captain-profile-banner,.hierarchy-heading) {
   background:var(--naut-wood) repeat;
-  border-image:var(--naut-header) 44 / 9px / 0 stretch;
+  border-image:var(--naut-header) 8 / 4px / 0 stretch;
   border-radius:0;
   box-shadow:none;
 }
 body :is(.dialog-header h2,.ui-window-header h2),
 #app :is(.op-title-banner strong,.creation-top h1,.captain-profile h2,.hierarchy-heading h2) {
-  font-family:Georgia,'Palatino Linotype',serif;
+  font-family:Bahnschrift,'Trebuchet MS',sans-serif;
   font-weight:700;
-  color:#f3d797;
+  color:#e8cf92;
 }
 #app :is(.topbar,.action-panel,.floating-chat,.journey-hud,.target-hud,.left-panel,.right-panel,
   .character-quick-menu,.captain-quick-menu,.world-topline,.world-location),
 #huntXpTracker.hunt-xp-tracker {
   background:var(--naut-sea) repeat;
-  border-image:var(--naut-window) 44 / 10px / 0 stretch;
+  border-image:var(--naut-window) 18 / 6px / 0 stretch;
   border-radius:0;
   box-shadow:none;
+  image-rendering:pixelated;
 }
 #app #mainMenu {
   background:var(--naut-wood) repeat;
-  border-image:var(--naut-header) 44 / 9px / 0 stretch;
+  border-image:var(--naut-header) 8 / 4px / 0 stretch;
   border-radius:0;
   box-shadow:none;
 }
@@ -85,13 +87,13 @@ body :is(.dialog-header h2,.ui-window-header h2),
   .captain-news-item,.captain-fact,.captain-setting-card,.captain-settings-detail,
   .help-copy section,.creation-appearance,.doll-dressing-controls,.doll-dressing figure) {
   background:var(--naut-navy) repeat;
-  border-image:var(--naut-compact) 44 / 7px / 0 stretch;
+  border-image:var(--naut-compact) 8 / 4px / 0 stretch;
   border-radius:0;
   box-shadow:none;
 }
 #app :is(.faction-choice,.class-choice) {
   background:var(--naut-sea) repeat;
-  border-image:var(--naut-compact) 44 / 9px / 0 stretch;
+  border-image:var(--naut-compact) 8 / 4px / 0 stretch;
   border-radius:0;
   box-shadow:none;
 }
@@ -106,18 +108,18 @@ body :is(.dialog-header h2,.ui-window-header h2),
 }
 #app :is(.op-panel,.op-info-panel,.op-detail-box,.op-origin-row>div,.contract-modal-entry) {
   background:var(--naut-paper) repeat;
-  border-image:var(--naut-paper-frame) 44 / 7px / 0 stretch;
+  border-image:var(--naut-paper-frame) 18 / 4px / 0 stretch;
   border-radius:0;
   box-shadow:none;
 }
 #app :is(.op-title-banner,.op-jolly,.op-bag-capacity,.op-power-box) {
   background:var(--naut-wood) repeat;
-  border-image:var(--naut-header) 44 / 6px / 0 stretch;
+  border-image:var(--naut-header) 8 / 3px / 0 stretch;
   box-shadow:none;
 }
 #app :is(.op-character-core,.op-character-stats>div) {
   background:var(--naut-navy) repeat;
-  border-image:var(--naut-compact) 44 / 6px / 0 stretch;
+  border-image:var(--naut-compact) 8 / 4px / 0 stretch;
   box-shadow:none;
 }
 
@@ -129,7 +131,7 @@ body :is(.ui-button,.close-button,.op-close,.ui-close),
   .skill-button,#hakiQuickCast button,.chat-tabs button,.chat-compose button,
   .chat-corner-toggle,.world-command button,.journey-heading,.auto-button,
   #expeditionMini,.journey-footer button,.floating-title button,.captain-tabs button) {
-  border-image:var(--naut-button,var(--naut-normal)) 44 fill / 6px / 0 stretch;
+  border-image:var(--naut-button,var(--naut-normal)) 6 fill / 3px / 0 stretch;
   background:none;
   border-radius:0;
   color:var(--naut-button-text,#f5e8c9);
@@ -142,7 +144,7 @@ body button:is([aria-pressed=true],[aria-selected=true],[aria-expanded=true],.ac
 }
 body button:hover:where(:not(:disabled)) {--naut-button:var(--naut-hover)}
 body button:active:where(:not(:disabled)) {--naut-button:var(--naut-pressed);filter:none}
-body button:disabled {--naut-button:var(--naut-disabled);--naut-button-text:#bebdb4}
+body button:disabled {--naut-button:var(--naut-disabled);--naut-button-text:#bebdb4;opacity:.55}
 body button:focus-visible,#app button:focus-visible {
   --naut-button:var(--naut-focus);
   outline:2px solid #f6e3ad;
@@ -152,20 +154,20 @@ body button:focus-visible,#app button:focus-visible {
 #app :is(.op-item,.op-equip-slot):not([class*=rarity-]),
 #app :is(.op-empty-slot,.forge2-material-slot,.forge2-socket,.ui-slot) {
   background:var(--naut-navy) repeat;
-  border-image:var(--naut-slot) 44 / 5px / 0 stretch;
+  border-image:var(--naut-slot) 6 / 3px / 0 stretch;
   border-radius:0;
   box-shadow:none;
 }
 #panelOverlay.inventory-mode .op-grid>.op-item.empty,
 #panelOverlay.inventory-mode .op-equip-slot:not(.filled) {
   background:var(--naut-navy) repeat;
-  border-image:var(--naut-slot) 44 fill / 5px / 0 stretch;
+  border-image:var(--naut-slot) 6 fill / 3px / 0 stretch;
   border-radius:0;
   box-shadow:none;
 }
 #app :is(.forge2-tile,.forge2-pearl) {
   background:var(--naut-wood) repeat;
-  border-image:var(--naut-slot) 44 / 5px / 0 stretch;
+  border-image:var(--naut-slot) 6 / 3px / 0 stretch;
   box-shadow:none;
 }
 #app :is(.op-slot-frame,.op-slot-icon,.op-item-icon) {box-shadow:none}
@@ -175,7 +177,7 @@ body button:focus-visible,#app button:focus-visible {
 }
 #app :is(input:not([type=checkbox]):not([type=range]),select,textarea) {
   background:var(--naut-navy) repeat #10202d;
-  border-image:var(--naut-compact) 44 / 4px / 0 stretch;
+  border-image:var(--naut-compact) 8 / 3px / 0 stretch;
   box-shadow:none;
 }
 #app .op-inventory-shell :is(input:not([type=checkbox]),select) {
@@ -185,12 +187,16 @@ body button:focus-visible,#app button:focus-visible {
   border-image-source:var(--naut-paper-frame);
 }
 
-/* Live resources: fixed track/frame + independent clipped fill. No fake values.
+/* Native 64x8 liquid tiles render at 2x. Only their small surface/reflections
+   drift; the live inline width remains the sole owner of the resource amount.
    Keep the legacy negative-z layer so the existing labels remain above it. */
 #app .profile-resource {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) max-content;
+  column-gap:6px;
   background:var(--naut-navy) repeat;
   height:22px;
-  padding-inline:9px;
+  padding-inline:6px;
   border-radius:0;
   overflow:visible;
   border:0;
@@ -200,12 +206,14 @@ body button:focus-visible,#app button:focus-visible {
   position:absolute;
   inset:0;
   border:1px solid transparent;
-  border-image:var(--naut-header) 44 / 5px / 0 stretch;
+  border-image:var(--naut-track) 3 / 3px / 0 stretch;
   pointer-events:none;
 }
-#app .profile-resource .mini-meter {inset:4px;width:auto;height:auto;overflow:hidden}
+#app .profile-resource .mini-meter {grid-area:1 / 1 / 2 / 2;inset:3px 0;width:auto;height:auto;overflow:hidden}
 #app .profile-resource .mini-meter i {
-  background:var(--naut-hp) center top / 144px 36px repeat-x;
+  background:var(--naut-hp) 0 top / 128px 16px repeat-x;
+  image-rendering:pixelated;
+  animation:naut-liquid-drift 10s steps(64,end) infinite;
   box-shadow:none;
 }
 #app .profile-resource.energy .mini-meter i {
@@ -213,9 +221,16 @@ body button:focus-visible,#app button:focus-visible {
 }
 #app :is(.profile-resource.haki-will,#miniTalentResource) .mini-meter i {
   background-image:var(--naut-xp);
+  animation:none;
+}
+@keyframes naut-liquid-drift {to {background-position-x:128px}}
+html[data-mare-motion=reduced] #app .profile-resource .mini-meter i {animation:none}
+@media(prefers-reduced-motion:reduce) {
+  #app .profile-resource .mini-meter i {animation:none}
 }
 #app .profile-resource :is(b,span:first-child) {line-height:22px;z-index:1}
-#app .profile-resource>span:first-child {display:inline-flex;align-items:center;gap:4px}
+#app .profile-resource>span:first-child {position:relative;inset:auto;grid-area:1 / 1 / 2 / 2;display:inline-flex;align-items:center;gap:4px}
+#app .profile-resource>b {position:static;grid-area:1 / 2 / 2 / 3;font-variant-numeric:tabular-nums}
 #app .profile-resource>span:first-child::before {
   content:'';
   display:inline-block;
@@ -234,54 +249,54 @@ body button:focus-visible,#app button:focus-visible {
   height:8px;
   background:var(--naut-navy) repeat;
   border:1px solid transparent;
-  border-image:var(--naut-track) 44 / 2px / 0 stretch;
+  border-image:var(--naut-track) 3 / 2px / 0 stretch;
   border-radius:0;
   padding:1px;
 }
 #app .profile-xp .mini-meter i {
-  background:var(--naut-xp) center top / 128px 20px repeat-x;
+  background:var(--naut-xp) left top / 128px 8px repeat-x;
 }
 #app :is(.meter,.journey-track,.progress-track,.hunt-xp-track,.target-hud-bar,.achievement-progress,
   .hierarchy-progress,.forge2-refinement) {
   background:var(--naut-navy) repeat;
-  border-image:var(--naut-track) 44 / 3px / 0 stretch;
+  border-image:var(--naut-track) 3 / 3px / 0 stretch;
   border-radius:0;
   box-shadow:none;
 }
 #app :is(.meter>span,.journey-track i,.progress-track i,.hunt-xp-track i,
   .achievement-progress>span,.hierarchy-progress>span) {
-  background:var(--naut-xp) center top / 128px 24px repeat-x;
+  background:var(--naut-xp) left top / 128px 16px repeat-x;
   box-shadow:none;
 }
 #app .meter.hp>span {background-image:var(--naut-hp)}
 #app .meter.energy>span {background-image:var(--naut-energy)}
-#app .target-hud-bar i {background:var(--naut-hp) center top / 128px 24px repeat-x}
+#app .target-hud-bar i {background:var(--naut-hp) left top / 128px 16px repeat-x}
 
 /* Feedback keeps semantic text/colors; decoration comes from the compact frame. */
 body :is(.game-tooltip,.ui-tooltip,.menu-tooltip,.npc-tooltip,.toast,.ui-notice,.ui-empty),
 #app :is(.boss-banner,.forge2-outcome,.talent-message,.captain-empty,.haki-locked) {
   background:var(--naut-navy) repeat;
-  border-image:var(--naut-compact) 44 / 6px / 0 stretch;
+  border-image:var(--naut-compact) 8 / 4px / 0 stretch;
   border-radius:0;
   box-shadow:none;
 }
 body .confirmation-card {padding:26px}
 #app :is(.creation-emblem,.achievement-emblem) {
   background:var(--naut-wood) repeat;
-  border-image:var(--naut-header) 44 / 6px / 0 stretch;
+  border-image:var(--naut-header) 8 / 3px / 0 stretch;
   box-shadow:none;
 }
 /* Ship/water artwork and the talent constellation are deliberate richer centers;
    preserve their existing images, transforms, hit areas and icon masks. */
 @media(max-width:760px) {
   body :is(.dialog,.creation-dialog,.ui-window),#panelOverlay.inventory-mode .dialog {
-    border-image-width:9px;
+    border-image-width:4px;
   }
   #app .profile-resource {height:20px}
   #app .profile-resource :is(b,span:first-child) {line-height:20px}
-  #app .topbar {border-image-width:7px}
-  #app :is(.dialog-header,.op-topbar) {border-image-width:6px}
-  #app :is(.op-panel,.character-identity,.character-allocation,.character-derived) {border-image-width:5px}
+  #app .topbar {border-image-width:4px}
+  #app :is(.dialog-header,.op-topbar) {border-image-width:4px}
+  #app :is(.op-panel,.character-identity,.character-allocation,.character-derived) {border-image-width:3px}
   body .confirmation-card {padding:22px}
 }
 @media(forced-colors:active) {
@@ -289,4 +304,4 @@ body .confirmation-card {padding:26px}
   #app .profile-resource {outline:1px solid CanvasText}
 }
 
-#app .haki-reserve em {background:var(--naut-xp) center top / 128px 24px repeat-x}
+#app .haki-reserve em {background:var(--naut-xp) left top / 128px 16px repeat-x}

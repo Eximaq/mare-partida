@@ -1,226 +1,316 @@
 {
-  "version": 2,
-  "source": "Original ImageGen raster atlas; user references used only as art direction, not copied into distribution.",
-  "sourceSHA256": "06a1e0b8a14b51aa830124a4541ab2714fe70cb313b856384fc6fb0be01f756c",
-  "method": "One built-in ImageGen call; measured extraction and WebP encoding with Pillow. No PixelLab calls.",
-  "textBakedIn": false,
-  "frameSlice": 44,
-  "assets": [
+  "version": 3,
+  "style": "native restrained nautical pixel art",
+  "source_run": "pixellab-pip-generations/hud-native-pixel-20261029",
+  "ui_asset_id": "28483549-9dc2-429e-b08a-b60b989ca2a2",
+  "liquid_drawing_id": "4b3266b1-b175-485b-8bfa-16b37416eea0",
+  "generation_cost": 10,
+  "workbench_pricing": "PixelLab describes Workbench as free for subscribers; no per-call usage returned",
+  "processing": "Crop and lossless WebP encoding only; no resizing, recoloring or local painting",
+  "files": [
     {
-      "file": "frames/window.webp",
-      "width": 256,
-      "height": 256,
+      "path": "frames/window.webp",
+      "source": "atlas",
       "crop": [
-        5,
-        5,
-        309,
-        309
+        132,
+        16,
+        240,
+        126
       ],
-      "bytes": 14170
+      "size": [
+        108,
+        110
+      ],
+      "bytes": 702,
+      "sha256": "558579b5edcf2d6c0aa0110ba8c8226b57069bfd306168547805496cad4c5622"
     },
     {
-      "file": "panels/sea.webp",
-      "width": 144,
-      "height": 144,
-      "bytes": 1772
-    },
-    {
-      "file": "frames/compact.webp",
-      "width": 256,
-      "height": 256,
+      "path": "frames/compact.webp",
+      "source": "atlas",
       "crop": [
-        319,
-        5,
-        623,
-        309
+        164,
+        193,
+        240,
+        217
       ],
-      "bytes": 8152
+      "size": [
+        76,
+        24
+      ],
+      "bytes": 274,
+      "sha256": "7e61c2779272041a23ed90c1ca58f400004f642e5fcef04e206bf8cb1910a469"
     },
     {
-      "file": "panels/navy.webp",
-      "width": 144,
-      "height": 144,
-      "bytes": 1162
-    },
-    {
-      "file": "frames/parchment.webp",
-      "width": 256,
-      "height": 256,
+      "path": "frames/parchment.webp",
+      "source": "atlas",
       "crop": [
-        633,
-        5,
-        936,
-        309
+        132,
+        16,
+        240,
+        126
       ],
-      "bytes": 19694
+      "size": [
+        108,
+        110
+      ],
+      "bytes": 702,
+      "sha256": "558579b5edcf2d6c0aa0110ba8c8226b57069bfd306168547805496cad4c5622"
     },
     {
-      "file": "panels/parchment.webp",
-      "width": 144,
-      "height": 144,
-      "bytes": 3954
-    },
-    {
-      "file": "panels/wood.webp",
-      "width": 256,
-      "height": 256,
+      "path": "panels/sea.webp",
+      "source": "atlas",
       "crop": [
-        946,
-        5,
-        1249,
-        309
+        150,
+        40,
+        166,
+        56
       ],
-      "bytes": 23950
+      "size": [
+        16,
+        16
+      ],
+      "bytes": 38,
+      "sha256": "f4b57638518c5719d2d20553b9b9e22e4fd35835829262f16a997bc2197b861d"
     },
     {
-      "file": "buttons/normal.webp",
-      "width": 256,
-      "height": 256,
+      "path": "panels/navy.webp",
+      "source": "atlas",
       "crop": [
-        5,
-        319,
-        309,
-        602
+        60,
+        199,
+        68,
+        207
       ],
-      "bytes": 20978
+      "size": [
+        8,
+        8
+      ],
+      "bytes": 38,
+      "sha256": "38138099915ce4f80ceb6d867160b85d63b1709601ae86d06a68ab6582bd50dc"
     },
     {
-      "file": "buttons/hover.webp",
-      "width": 256,
-      "height": 256,
+      "path": "panels/wood.webp",
+      "source": "atlas",
       "crop": [
-        319,
-        319,
-        623,
-        602
+        84,
+        141,
+        100,
+        149
       ],
-      "bytes": 24344
+      "size": [
+        16,
+        8
+      ],
+      "bytes": 38,
+      "sha256": "0d75c97d0227907bca36ce7803a951c8cf9e85f8c3a167bf3992faa824244a5f"
     },
     {
-      "file": "buttons/pressed.webp",
-      "width": 256,
-      "height": 256,
+      "path": "panels/parchment.webp",
+      "source": "atlas",
       "crop": [
-        633,
-        319,
-        936,
-        602
+        28,
+        104,
+        44,
+        110
       ],
-      "bytes": 17346
+      "size": [
+        16,
+        6
+      ],
+      "bytes": 38,
+      "sha256": "ee708d3973ca82d567ed16096405b0685437ed80e80d0d124ba657d293093318"
     },
     {
-      "file": "buttons/selected.webp",
-      "width": 256,
-      "height": 256,
+      "path": "headers/rope.webp",
+      "source": "atlas",
       "crop": [
-        946,
-        319,
-        1249,
-        602
+        15,
+        133,
+        241,
+        157
       ],
-      "bytes": 15746
+      "size": [
+        226,
+        24
+      ],
+      "bytes": 442,
+      "sha256": "c8d12986c0b06c534e45bda85ad10b898fda970f406150489ba93b46ff8a969d"
     },
     {
-      "file": "buttons/disabled.webp",
-      "width": 256,
-      "height": 256,
+      "path": "buttons/normal.webp",
+      "source": "atlas",
       "crop": [
-        5,
-        612,
-        309,
-        887
+        70,
+        165,
+        124,
+        186
       ],
-      "bytes": 20786
+      "size": [
+        54,
+        21
+      ],
+      "bytes": 146,
+      "sha256": "8e7ce80549f95ac5df96d542aedaeabff7b376add08b58529f4458fb2d5f175f"
     },
     {
-      "file": "buttons/focus.webp",
-      "width": 256,
-      "height": 256,
+      "path": "buttons/hover.webp",
+      "source": "atlas",
       "crop": [
-        319,
-        612,
-        623,
-        887
+        15,
+        165,
+        63,
+        186
       ],
-      "bytes": 19858
+      "size": [
+        48,
+        21
+      ],
+      "bytes": 198,
+      "sha256": "af96a64847739706bfd0205a34c3860e7a236506c477822b45dcb9c04e34f5d1"
     },
     {
-      "file": "slots/empty.webp",
-      "width": 256,
-      "height": 256,
+      "path": "buttons/pressed.webp",
+      "source": "atlas",
       "crop": [
-        633,
-        612,
-        936,
-        887
+        194,
+        165,
+        241,
+        186
       ],
-      "bytes": 12474
+      "size": [
+        47,
+        21
+      ],
+      "bytes": 164,
+      "sha256": "cc45c298e7ec2b5723e32a18f4c39e4102e3636c145311012baad9d1316c1763"
     },
     {
-      "file": "headers/rope.webp",
-      "width": 256,
-      "height": 256,
+      "path": "buttons/selected.webp",
+      "source": "atlas",
       "crop": [
-        946,
-        612,
-        1249,
-        887
+        132,
+        165,
+        188,
+        186
       ],
-      "bytes": 22582
+      "size": [
+        56,
+        21
+      ],
+      "bytes": 154,
+      "sha256": "f2a7871c647867046c5d38cd3c39407f27ca44256b6b4deac587af78b8fa27bc"
     },
     {
-      "file": "bars/track.webp",
-      "width": 256,
-      "height": 256,
+      "path": "buttons/disabled.webp",
+      "source": "atlas",
       "crop": [
-        5,
-        897,
-        309,
-        1249
+        70,
+        165,
+        124,
+        186
       ],
-      "bytes": 7436
+      "size": [
+        54,
+        21
+      ],
+      "bytes": 146,
+      "sha256": "8e7ce80549f95ac5df96d542aedaeabff7b376add08b58529f4458fb2d5f175f"
     },
     {
-      "file": "bars/health.webp",
-      "width": 256,
-      "height": 256,
+      "path": "buttons/focus.webp",
+      "source": "atlas",
       "crop": [
-        319,
-        897,
-        623,
-        1249
+        15,
+        165,
+        63,
+        186
       ],
-      "bytes": 12992
+      "size": [
+        48,
+        21
+      ],
+      "bytes": 198,
+      "sha256": "af96a64847739706bfd0205a34c3860e7a236506c477822b45dcb9c04e34f5d1"
     },
     {
-      "file": "bars/energy.webp",
-      "width": 256,
-      "height": 256,
+      "path": "slots/empty.webp",
+      "source": "atlas",
       "crop": [
-        633,
-        897,
-        936,
-        1249
+        132,
+        193,
+        156,
+        217
       ],
-      "bytes": 16952
+      "size": [
+        24,
+        24
+      ],
+      "bytes": 178,
+      "sha256": "61a75814346c29fbc80116343bdf29aaa6c023d0e30f357ec110dff7dc910b44"
     },
     {
-      "file": "bars/experience.webp",
-      "width": 256,
-      "height": 256,
+      "path": "bars/track.webp",
+      "source": "liquid",
       "crop": [
-        946,
-        897,
-        1249,
-        1249
+        0,
+        26,
+        64,
+        38
       ],
-      "bytes": 20140
+      "size": [
+        64,
+        12
+      ],
+      "bytes": 92,
+      "sha256": "f7d39f5c3c79f14c86dbf1ed3f5272bac8ccafcd3a1873dfd49580b9b87c4697"
+    },
+    {
+      "path": "bars/health.webp",
+      "source": "liquid",
+      "crop": [
+        0,
+        0,
+        64,
+        8
+      ],
+      "size": [
+        64,
+        8
+      ],
+      "bytes": 102,
+      "sha256": "f44c52ffbb8df51147dd80e0a5b8c82574be2d212d522a25a86533b2b6bd6382"
+    },
+    {
+      "path": "bars/energy.webp",
+      "source": "liquid",
+      "crop": [
+        0,
+        8,
+        64,
+        16
+      ],
+      "size": [
+        64,
+        8
+      ],
+      "bytes": 104,
+      "sha256": "5c46c15f2017e554ecc2d19de6134bc6f6cd3ce6d979a2c7cdc7fd19772a9f1d"
+    },
+    {
+      "path": "bars/experience.webp",
+      "source": "liquid",
+      "crop": [
+        0,
+        16,
+        64,
+        24
+      ],
+      "size": [
+        64,
+        8
+      ],
+      "bytes": 76,
+      "sha256": "d785887083bd19f97552e09689b018baa1e433d24fafe58daa6b0de050375bc6"
     }
-  ],
-  "preserved": [
-    "assets/ui/inventory-slots/*.png",
-    "icones_menu_pirata/png/48/*.png",
-    "assets/ui/talents/*",
-    "assets/haki/*"
   ]
 }

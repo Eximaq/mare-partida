@@ -1,0 +1,44 @@
+{
+  "jobs": [
+    {
+      "job_id": "28483549-9dc2-429e-b08a-b60b989ca2a2",
+      "status": "completed",
+      "tool": "MCP create_ui_asset",
+      "reported_usage": {
+        "generations": 10.0
+      },
+      "estimated_usage": {
+        "generations": 10.0
+      },
+      "created_at": "2026-10-29T12:32:55.319727+00:00",
+      "outcome": "integrated",
+      "outcome_note": "Native atlas.png and liquid-materials.png inspected; 19 lossless runtime crops; exact requests in hud-native-pixel.blueprint.json",
+      "asset_id": "28483549-9dc2-429e-b08a-b60b989ca2a2",
+      "seed": "omitted",
+      "outputs": [
+        "atlas.png",
+        "liquid-materials.png"
+      ],
+      "request_file": "hud-native-pixel.blueprint.json",
+      "workbench_derivatives": [
+        {
+          "drawing_id": "38dfa8d7-5534-41e0-8aff-92649da2e15f",
+          "outcome": "superseded by track extension"
+        },
+        {
+          "drawing_id": "4b3266b1-b175-485b-8bfa-16b37416eea0",
+          "outcome": "integrated",
+          "output": "liquid-materials.png"
+        }
+      ]
+    }
+  ],
+  "plan": {
+    "scope": "One native pixel UI kit and optional liquid study for the requested HUD revision",
+    "approval_context": "User explicitly approved PixelLab artwork to improve nautical HUD fidelity in this conversation",
+    "generation_cap": 20,
+    "retry_limit": 0,
+    "retries_used": 0,
+    "remaining_work": []
+  }
+}

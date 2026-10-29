@@ -1,5 +1,7 @@
 # HUD náutica v2 — auditoria, implementação e validação
 
+> Histórico da primeira aplicação. Seus materiais foram substituídos após a avaliação do proprietário. Para a arte, custos, animação e verificações atuais, consulte [HUD — revisão em pixel art](HUD-PIXEL-REFINEMENT.md).
+
 Base: origin/main ce262cf. A pasta original e a branch Paper Doll permanecem intactas. Capturas desta sessão: docs/evidence-nautical-v2/before (ignoradas pelo Git).
 
 | Grupo | Componentes e entradas | Primitivas visuais a substituir |
