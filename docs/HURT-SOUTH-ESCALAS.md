@@ -1,6 +1,6 @@
 # Hurt South e escalas — 29/10/2026
 
-Branch `fix/south-hurt-character-scales`, baseada em `origin/main` `ce262cf` (PR#146 publicado). Atualização para revisão, sem merge/deploy automático. Checkout original preservado.
+Branch `fix/south-hurt-character-scales`, baseada em `origin/main` `ce262cf` (PR#146 publicado), depois atualizada com `019f436` (HUD aprovada no PR#147). Merge e Pages do PR#148 autorizados explicitamente pelo proprietário em29/10. O único conflito estava no changelog; ambas as entradas foram preservadas. Checkout original preservado.
 
 ## Comportamento
 
@@ -50,4 +50,4 @@ Capturas locais em `docs/evidence-south-hurt/` (ignorado pelo Git), incluindo ga
 
 Hurt norte/leste/oeste próprios deixam de ser pendência: South em todas as direções é a decisão explícita do proprietário. Nenhum Hurt falta nos 21 conjuntos; o ataque oeste do Kuroobi também está disponível. Permanecem FPS autoral não informado pelo export, revisão visual humana, ensaio prolongado de desempenho e teste em celular físico. A falha antiga de cadência humana documentada no relatório original está fora deste ajuste e não foi mascarada.
 
-Para rollback, reverter o commit deste PR e reconstruir Pages. Merge e publicação desta atualização aguardam autorização específica após revisão.
+Para rollback, reverter o commit deste PR e reconstruir Pages. A autorização de merge/publicação já foi recebida; o resultado efetivo deve ser conferido no workflow Pages e no site público.
