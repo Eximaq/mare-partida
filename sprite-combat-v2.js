@@ -14,10 +14,11 @@
  }
  function resolve(key,action='idle',direction='front'){
   const entry=data()[key];if(!entry)return null;
-  const facing=directions[direction]||direction;
+  // The owner intentionally uses the native South reaction for damage from every facing.
+  const facing=action==='hurt'?'south':directions[direction]||direction;
   const aliases={dash:'special',charge:'special',finish:'special',headbutt:'special',bite:'special',tail:'special-2'};
   action=aliases[action]||action;
-  // No fabricated directions: missing hurt/attack uses the NEW idle in that facing.
+  // Missing clips still fall back to the new Idle; no directions are fabricated.
   const requested=entry.clips[action]?.[facing];
   const locomotion=['walk','run'].includes(action)?(entry.clips.walk?.[facing]||entry.clips.run?.[facing]):null;
   return {entry,clip:requested||locomotion||entry.clips.idle[facing]||entry.clips.idle.south,requested:!!requested,action,facing};
@@ -65,7 +66,7 @@
   // Legacy mobs apply damage immediately. Begin at contact; never defer their damage.
   const clip=resolve(m.type,action,m.emberFacing||'south').clip;
   const progress=reaction??(attacking?(clip.impact_frame??0)/clip.frames+(1-m.attackAnim/duration)*(1-(clip.impact_frame??0)/clip.frames):null);
-  return draw(c,m.type,m.x,m.y+3,{action,direction:m.emberFacing||'south',time:now+(m.bob||0),progress,height:entry.worldHeight,flash:reaction!==null&&!resolve(m.type,'hurt',m.emberFacing||'south').requested});
+  return draw(c,m.type,m.x,m.y+3,{action,direction:m.emberFacing||'south',time:now+(m.bob||0),progress,height:entry.worldHeight*(entry.world_scale??1),flash:reaction!==null&&!resolve(m.type,'hurt',m.emberFacing||'south').requested});
  }
  function install(){
   const art=root.MareZoanArt;
@@ -82,7 +83,7 @@
   }
   if(root.MareNewIslandArt){const old=root.MareNewIslandArt.monster;root.MareNewIslandArt.monster=(c,m,t)=>data()[m.type]?.monster?monster(c,m,t):old(c,m,t);}
   if(root.MareRareRenderer){const old=root.MareRareRenderer.monster;root.MareRareRenderer.monster=(c,m,t)=>m.type==='cocox'&&data().cocox?monster(c,m,t):old(c,m,t);}
-  if(root.MareHoya){const system=root.MareHoya,old=system.drawActor,oldPreload=system.preload;system.drawActor=(c,g,t)=>{if(!data().hoya)return old(c,g,t);const p=g.clock.snapshot(),reaction=hurtProgress(g,t);return draw(c,'hoya',g.x,g.y,{action:reaction!==null?'hurt':p.locked?'attack':g.walking>0?'walk':'idle',direction:g.direction,time:t,progress:reaction??(p.locked?p.progress:null),hitRatio:p.hitFrameRatio,height:data().hoya.worldHeight*g.scale,flash:reaction!==null});};system.preload=()=>{preload('hoya');oldPreload();};}
+  if(root.MareHoya){const system=root.MareHoya,old=system.drawActor,oldPreload=system.preload;system.drawActor=(c,g,t)=>{if(!data().hoya)return old(c,g,t);const p=g.clock.snapshot(),reaction=hurtProgress(g,t);return draw(c,'hoya',g.x,g.y,{action:reaction!==null?'hurt':p.locked?'attack':g.walking>0?'walk':'idle',direction:g.direction,time:t,progress:reaction??(p.locked?p.progress:null),hitRatio:p.hitFrameRatio,height:data().hoya.worldHeight*g.scale*(data().hoya.world_scale??1)});};system.preload=()=>{preload('hoya');oldPreload();};}
  }
  root.MareSpriteCombatV2={hurt,hurtProgress,resolve,draw,monster,status,preload,frameAt,install,fruits,HURT_SECONDS};
  install();

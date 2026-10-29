@@ -1,3 +1,7 @@
+## 29/10/2026 — Hurt South e escalas de dez personagens (merge e Pages aprovados)
+
+Os 21 conjuntos passam a usar Hurt South em qualquer orientação por decisão do proprietário; Lobo/Hoya recebem seus novos Hurt e Kuroobi recebe ataque oeste e novas versões norte/leste. Marinheiro +100%, Hoya/Pearl +40%, Mr.3/Cabaji/Buchi +50%, Kuroobi/Chew +30%, Sham/Gin +20%. Cabeçalhos acompanham a arte sem alterar combate, projéteis, colisões ou saves. 106 arquivos Node, 6.044 frames RGBA originais, escalas/dano no navegador e build Pages aprovados. Merge e Pages autorizados explicitamente pelo proprietário; HUD aprovada do PR#147 preservada na integração. Sem geração paga. [Relatório](HURT-SOUTH-ESCALAS.md).
+
 ## 29/10/2026 — Cabine do Navegante aprovada e integrada
 
 Lançamento no Pages autorizado pelo proprietário. Na preparação, removido o botão Personagem redundante trazido da prévia, com reprodução da regressão existente antes da correção. Os 145 testes Node autônomos passaram; E2E de Supa permanece separado, conforme o CI. Menu real conferido com seis atalhos.
@@ -20,7 +24,7 @@ Validação:105 arquivos Node,5.957 frames RGBA preservados,4.608 amostras reais
 
 ## 28/10/2026 — Sprites PixelLab e combate visual v2 (em revisão)
 
-Branch `feature/pixellab-sprites-combat-v2`, base `88dc017`. Os 21 conjuntos novos foram importados sem alterar seus 5.957 frames nativos. Renderizadores existentes, prévias e silhuetas usam os novos assets; Hurt visual de180ms acompanha a perda efetiva de HP e os sete especiais acompanham os eventos existentes, sem alterar dano, colisão, custos, recargas ou saves. Assets antigos e trabalho local do proprietário foram preservados.
+Branch `feature/pixellab-sprites-combat-v2`, base `88dc017`. Os 21 conjuntos novos foram importados sem alterar seus 5.957 frames nativos. Renderizadores existentes, prévias e silhuetas usam os novos assets; Hurt visual de 180 ms acompanha a perda efetiva de HP e os sete especiais acompanham os eventos existentes, sem alterar dano, colisão, custos, recargas ou saves. Assets antigos e trabalho local do proprietário foram preservados.
 
 Validação:104 arquivos de teste Node,97 scripts com sintaxe válida, comparação RGBA completa, seis regressões específicas de fruta, E2E no fonte e no Pages local com1.146 poses/sete especiais/20 abates/nove mapas/reload e capturas desktop/móvel. Existe uma falha antiga de cadência humana reproduzida também com fontes da main. Faltam Hurt do Lobo/Hoya, direções de Hurt dos demais e ataque oeste do Kuroobi. Não houve geração paga, merge ou deploy. [Relatório completo e pendências](SPRITES-COMBAT-V2.md).
 

@@ -1056,7 +1056,12 @@
   }
   function combatChest(actor){return {x:actor.x,y:actor.y-combatActorHeight(actor)*.45,alive:actor.alive!==false,isUntargetable:actor.isUntargetable,isInvulnerable:actor.isInvulnerable};}
   function combatVisualHeight(actor){
-    const logical=combatActorHeight(actor);if(actor!==world.hero||!game.zoanTransformed)return logical;
+    const logical=combatActorHeight(actor);
+    if(actor!==world.hero){
+      const genie=actor===session?.genie,entry=MareSpriteCombatV2Data[genie?'hoya':actor.type];
+      return entry?.world_scale?Math.max(logical,Math.ceil(entry.worldHeight*entry.world_scale*(genie?(actor.scale||1):1))):logical;
+    }
+    if(!game.zoanTransformed)return logical;
     const key=MareSpriteCombatV2.fruits[equippedZoan()?.id],height=MareSpriteCombatV2Data[key]?.world_header_height;
     return height?Math.max(logical,Math.ceil(height*(MareUltimates.selected(game)==='titan'?1.35:1))):logical;
   }

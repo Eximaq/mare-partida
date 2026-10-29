@@ -16,13 +16,13 @@ assert.equal(S.hurt(actor,5,1.3),true);
 assert.equal(S.hurtProgress(actor,1.29),null,'scene clock reset must clear stale reactions');
 console.log('Visual Hurt: effective damage only, immediate start, 180ms bound, multi-hit coalescing, protected actions and clock reset passed');
 require('../sprite-combat-v2-data.js');
-// A directional fallback must not replay a south-only reaction facing sideways.
-assert.equal(S.resolve('kuroobi','attack','west').clip.source_animation,'idle');
+// South Hurt is now the explicit art direction, independent of actor facing.
+assert.equal(S.resolve('kuroobi','attack','west').requested,true);
 assert.equal(S.resolve('ryu','bite','east').clip.source_animation,'Ataque_special_haki_1');
 assert.equal(S.resolve('ryu','tail','east').clip.source_animation,'Ataque_especial_2');
 assert.equal(S.resolve('uma','walk','east').clip.source_animation,'Corrida');
-assert.equal(S.resolve('wolf','hurt','south').requested,false);
-assert.equal(S.resolve('tori','hurt','west').requested,false);
+assert.equal(S.resolve('wolf','hurt','south').requested,true);
+assert.equal(S.resolve('tori','hurt','west').clip.image,'assets/sprites-combat-v2/tori/hurt-south.png');
 const hurtClip=S.resolve('cocox','hurt','south').clip;
 assert.equal(S.frameAt(hurtClip,{progress:0}),3);assert.equal(S.frameAt(hurtClip,{progress:1}),6);
 const attack=S.resolve('neko','attack','south').clip;

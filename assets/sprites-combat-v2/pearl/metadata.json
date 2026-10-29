@@ -3286,6 +3286,7 @@
     }
   },
   "fps_source": "Not provided by export; playback FPS configured locally",
+  "world_scale": 1.4,
   "legacyHeight": 42,
   "monster": true,
   "worldHeight": 94.5

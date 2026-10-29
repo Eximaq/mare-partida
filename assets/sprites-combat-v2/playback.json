@@ -1,10 +1,10 @@
 {
   "inspection": "Contact poses inspected from native source strips; frame numbers are zero-based. Presentation only; logical damage timings remain in legacy controllers.",
-  "attack": {"bananawani":14,"bison":16,"buchi":10,"cabaji":14,"chew":19,"cocox":10,"gin":12,"helmeppo":18,"hoya":14,"inu":19,"kuroobi":18,"marinheiro":14,"mr3":18,"neko":19,"pearl":16,"ryu":19,"sham":6,"tori":10,"uma":14,"ushi":12,"wolf":7},
+  "attack": {"bananawani":14,"bison":16,"buchi":10,"cabaji":14,"chew":19,"cocox":10,"gin":12,"helmeppo":18,"hoya":14,"inu":19,"kuroobi":{"south":18,"north":14,"west":16,"east":16},"marinheiro":14,"mr3":18,"neko":19,"pearl":16,"ryu":19,"sham":6,"tori":10,"uma":14,"ushi":12,"wolf":7},
   "special": {"uma":23,"neko":12,"ushi":16,"wolf":14,"ryu":19,"bison":14},
   "special-2": {"ryu":16},
-  "hurt_start": {"bananawani":6,"bison":7,"buchi":9,"cabaji":6,"chew":6,"cocox":3,"gin":6,"helmeppo":3,"inu":6,"kuroobi":11,"marinheiro":3,"mr3":6,"neko":6,"pearl":3,"ryu":6,"sham":3,"tori":3,"uma":6,"ushi":9},
-  "world_scale": {"uma":2,"tori":1.5},
+  "hurt_start": {"bananawani":6,"bison":7,"buchi":9,"cabaji":6,"chew":6,"cocox":3,"gin":6,"helmeppo":3,"inu":6,"kuroobi":11,"marinheiro":3,"mr3":6,"neko":6,"pearl":3,"ryu":6,"sham":3,"tori":3,"uma":6,"ushi":9,"wolf":3,"hoya":3},
+  "world_scale": {"uma":2,"tori":1.5,"marinheiro":2,"hoya":1.4,"mr3":1.5,"cabaji":1.5,"kuroobi":1.3,"chew":1.3,"buchi":1.5,"sham":1.2,"gin":1.2,"pearl":1.4},
   "match_profile_extent": ["inu"],
   "locomotion_loops": {
     "uma": {"south":[3,26],"north":[3,26],"west":[4,26],"east":[4,26]},
