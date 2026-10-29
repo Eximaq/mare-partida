@@ -35,7 +35,8 @@
               "face": "assets/masculino-walk-south-face.png",
               "hair": "assets/masculino-walk-south-hair.png",
               "pants": "assets/masculino-walk-south-pants.png",
-              "top": "assets/masculino-walk-south-top.png"
+              "top": "assets/masculino-walk-south-top.png",
+              "headBase": "assets/masculino-walk-south-head-base.png"
             },
             "frames": 8,
             "fps": 8,
@@ -109,6 +110,219 @@
             ],
             "sourceMotion": "Existing feminine walk south, eight recovered poses; shared retargeted guide across bodies",
             "bodyJob": "e30e5b13-8cd8-49de-bc78-527dc6eb8d8b"
+          },
+          "north": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/masculino-walk-north-head-base.png",
+              "body": "assets/masculino-walk-north-body.png",
+              "underArms": "assets/masculino-walk-north-under-arms.png",
+              "foreground": "assets/masculino-walk-north-foreground.png",
+              "face": "assets/masculino-walk-north-face.png",
+              "hair": "assets/masculino-walk-north-hair.png",
+              "pants": "assets/masculino-walk-north-pants.png",
+              "top": "assets/masculino-walk-north-top.png"
+            },
+            "frames": 8,
+            "fps": 8,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": -1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -2.8038095238,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -2.8038095238,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -2.8038095238,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -2.8038095238,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px walk poses; approved 96px body identity, original rigid head",
+            "bodyJob": "e17edd8d-3329-4c0b-8751-2d7068204d80",
+            "sourceHashes": [
+              "8a337f2c5e76b6852f9bdf74724a05911bdee4fbc450b44702822c3568e5b3df",
+              "3b28aa4df6597b9a159503a2695b208b239a981d7294bdf32a883367c7b90bde",
+              "750d8c14c683d9cb4a588e73740265756103fb590a5fc07edb99a191a2c42422",
+              "3afc3846727e3e0dacd4f89e066c276605aae29b3121172172cee3a6245bea11",
+              "a7abaf164ca4d3261073cc8efb9f9c05946f2dbef912dd73e4e1e8c4539506c9",
+              "82966dd0c55156f2690eb8206d1da7cf28de8aca56793c001002cc096129b481",
+              "0990ddfdd3abd310fc03276a7356ecf3ad748a4e83ef8aac23f3c6e1188ecabc",
+              "f1e38c0345fb260ce589f0a203c7adfc4030e84d816e8431d39d432889fb7e38"
+            ]
+          },
+          "west": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/masculino-walk-west-head-base.png",
+              "body": "assets/masculino-walk-west-body.png",
+              "underArms": "assets/masculino-walk-west-under-arms.png",
+              "foreground": "assets/masculino-walk-west-foreground.png",
+              "face": "assets/masculino-walk-west-face.png",
+              "hair": "assets/masculino-walk-west-hair.png",
+              "pants": "assets/masculino-walk-west-pants.png",
+              "top": "assets/masculino-walk-west-top.png"
+            },
+            "frames": 8,
+            "fps": 8,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": -1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -2.8038095238,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -2.8038095238,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px walk poses; approved 96px body identity, original rigid head",
+            "bodyJob": "a8f9acf2-20eb-4203-a65d-3a905e167b4c",
+            "sourceHashes": [
+              "c7198d60a66ee4e6695a176ae037df94305c5cb29c8ad08922ba279881d83186",
+              "7a725cb5ee337186e559538e4bd9477a318c9eafc6cec82a8eddc10049c527b4",
+              "06bb32847c0ab21336394572638169629cf17f2116a434fdeefa54961962725a",
+              "9acdd6a99e6998734e90032ac688d6d2ab434aa731953aed3f22395192462707",
+              "bbc3ddd85bde7c1693b4c8a6978967d4e456e50de433dd189340d23b5d2f7344",
+              "f6db26d44cc3c3e0c2538bb0e48e44a0e34c07fe1058d27c3a4ba6b668049d54",
+              "a87dcc70104fbe8563338c2cf6b0859ae874c6581ea21dcd1ddff626d6bb88a6",
+              "d6ac8cb8b584441af2d65b685be6b4125d64a9da5f96b8da8a47a8b94c2b1423"
+            ]
+          },
+          "east": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/masculino-walk-east-head-base.png",
+              "body": "assets/masculino-walk-east-body.png",
+              "underArms": "assets/masculino-walk-east-under-arms.png",
+              "foreground": "assets/masculino-walk-east-foreground.png",
+              "face": "assets/masculino-walk-east-face.png",
+              "hair": "assets/masculino-walk-east-hair.png",
+              "pants": "assets/masculino-walk-east-pants.png",
+              "top": "assets/masculino-walk-east-top.png"
+            },
+            "frames": 8,
+            "fps": 8,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 2.8038095238,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px walk poses; approved 96px body identity, original rigid head",
+            "bodyJob": "9f4becc6-bc66-4d29-ac71-ba7a4eb82c13",
+            "sourceHashes": [
+              "f8b1f14e93338c7dd73d3231a8db5a805ffba96edae1da0348a792eab6fa96d9",
+              "aa51ce2b0bf9624e8ca8b5972b4d78cb90cc2a9bf7a8ed5020c5eeebf9d6fb5e",
+              "e593c1e2a440818eac1c8fc9888f072eef5984c821ab364d2017c1607432606f",
+              "9cc3271086f986c2a8953ffcfd0d79acd69e88cf26e0bb3023d940bf2d3e8513",
+              "a52e6df93a6976af582bd60e2ef2d2601414f212ecd4b5fa2b8cf220fe65d7cc",
+              "9c120a2ac66bca9d28266847096ba9f02ed35f128051eed83b33e041830260fb",
+              "9482980298de79be8e024d90dfbcff1e8b399b1861162d92199aac0aad5f9097",
+              "748494a073eae3b6dd1d3346b7bbe3eb0f16c4649db3941814bdb77919e3b6ac"
+            ]
           }
         },
         "attack-unarmed": {
@@ -2214,6 +2428,196 @@
               "cleanImage": "e23d1db1-9279-49ee-84c0-1d9be48e5b4f"
             }
           }
+        },
+        "idle": {
+          "south": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/masculino-idle-south-head-base.png",
+              "body": "assets/masculino-idle-south-body.png",
+              "underArms": "assets/masculino-idle-south-under-arms.png",
+              "foreground": "assets/masculino-idle-south-foreground.png",
+              "face": "assets/masculino-idle-south-face.png",
+              "hair": "assets/masculino-idle-south-hair.png",
+              "pants": "assets/masculino-idle-south-pants.png",
+              "top": "assets/masculino-idle-south-top.png"
+            },
+            "frames": 4,
+            "fps": 4,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 2.8038095238,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px idle poses; approved 96px body identity, original rigid head",
+            "bodyJob": "c35f0037-5d2c-4b40-b7b9-5fc832d4d016",
+            "sourceHashes": [
+              "73d4590ad921b5080411348470d01cf6c83c249c267928b3f2755e208eeda464",
+              "bde29e8626d5c1b5fffa1211c5f619dfd2b656be8a50aad8766019ff0d013673",
+              "0021e6fc1be0c5c55e283d7329adca40a41a7458edfb91b7b30a4df44634c0dd",
+              "f351b2413b350837abad4d2aa87b6fb15326455b4718b54beac4e6d50b590ecd"
+            ]
+          },
+          "north": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/masculino-idle-north-head-base.png",
+              "body": "assets/masculino-idle-north-body.png",
+              "underArms": "assets/masculino-idle-north-under-arms.png",
+              "foreground": "assets/masculino-idle-north-foreground.png",
+              "face": "assets/masculino-idle-north-face.png",
+              "hair": "assets/masculino-idle-north-hair.png",
+              "pants": "assets/masculino-idle-north-pants.png",
+              "top": "assets/masculino-idle-north-top.png"
+            },
+            "frames": 4,
+            "fps": 4,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 2.8038095238,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 2.8038095238,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px idle poses; approved 96px body identity, original rigid head",
+            "bodyJob": "80ecb92f-6f08-42f7-992a-b15306f01193",
+            "sourceHashes": [
+              "96805991aaa0eb564c4567f99ef8f5e27190ab56c27cc0f013e3bfe70ed5bd86",
+              "ecf902a55b4c5b62144397bd433eee3690eaf23accffa969159a5d8d20630655",
+              "edbe2ed2fd5337296269a0d50cb80e0b7fe5ca5c4ec834e2d0fd37be3f5c252f",
+              "5542866f78fc7dea2227ccc2242f15ed586edd5b3e356047b9db972d7ee4912a"
+            ]
+          },
+          "west": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/masculino-idle-west-head-base.png",
+              "body": "assets/masculino-idle-west-body.png",
+              "underArms": "assets/masculino-idle-west-under-arms.png",
+              "foreground": "assets/masculino-idle-west-foreground.png",
+              "face": "assets/masculino-idle-west-face.png",
+              "hair": "assets/masculino-idle-west-hair.png",
+              "pants": "assets/masculino-idle-west-pants.png",
+              "top": "assets/masculino-idle-west-top.png"
+            },
+            "frames": 4,
+            "fps": 4,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 1.6,
+                "y": -2.8038095238,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px idle poses; approved 96px body identity, original rigid head",
+            "bodyJob": "571654a3-1de4-4f6a-b3dc-595daa1994ae",
+            "sourceHashes": [
+              "9d6a672f7e0791a502ac21cdbe2f9ce8a35197fa144bf709114a6f83ea5e3e4a",
+              "ebcb979e02edf4cf0d6c963d33a540666b1a9ad74a02a60c18359630782ca2ca",
+              "581a51a70b554cf6f74b2dbf8b7ae69fc3ec06634b56e6658bed1368b0c4386c",
+              "50f9be5c5ea65e97c7366a3f6ad6a2e40a9bf8e7b2053b6e368c7cffbc0a9727"
+            ]
+          },
+          "east": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/masculino-idle-east-head-base.png",
+              "body": "assets/masculino-idle-east-body.png",
+              "underArms": "assets/masculino-idle-east-under-arms.png",
+              "foreground": "assets/masculino-idle-east-foreground.png",
+              "face": "assets/masculino-idle-east-face.png",
+              "hair": "assets/masculino-idle-east-hair.png",
+              "pants": "assets/masculino-idle-east-pants.png",
+              "top": "assets/masculino-idle-east-top.png"
+            },
+            "frames": 4,
+            "fps": 4,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px idle poses; approved 96px body identity, original rigid head",
+            "bodyJob": "ae81ee2d-5572-429f-a3b0-1d92004d8433",
+            "sourceHashes": [
+              "d044a85dabf568ebf7cc2fcabf529997ba077779f918b2f599a8d263ef8a5a1a",
+              "f87bac31fc7072dbb008eae211b5b29732509b66072a9fff1601318dc7c273fa",
+              "90cb44631f2ccefb650a822c21ae54d0e81d680889f60c0c666644e9432dbcc5",
+              "178fcf0e123e2e91f37a5f4c7c0f6e0db6d1d8fce57d50308a34783ff3a01ed8"
+            ]
+          }
         }
       },
       "layers": {
@@ -2263,7 +2667,8 @@
               "face": "assets/feminino-walk-south-face.png",
               "hair": "assets/feminino-walk-south-hair.png",
               "pants": "assets/feminino-walk-south-pants.png",
-              "top": "assets/feminino-walk-south-top.png"
+              "top": "assets/feminino-walk-south-top.png",
+              "headBase": "assets/feminino-walk-south-head-base.png"
             },
             "frames": 8,
             "fps": 8,
@@ -2337,6 +2742,219 @@
             ],
             "sourceMotion": "Existing feminine walk south, eight recovered poses; shared retargeted guide across bodies",
             "bodyJob": "8ded60f5-6ad5-44d7-a1a2-00a56d1f447a"
+          },
+          "north": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/feminino-walk-north-head-base.png",
+              "body": "assets/feminino-walk-north-body.png",
+              "underArms": "assets/feminino-walk-north-under-arms.png",
+              "foreground": "assets/feminino-walk-north-foreground.png",
+              "face": "assets/feminino-walk-north-face.png",
+              "hair": "assets/feminino-walk-north-hair.png",
+              "pants": "assets/feminino-walk-north-pants.png",
+              "top": "assets/feminino-walk-north-top.png"
+            },
+            "frames": 8,
+            "fps": 8,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": -1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 1.6,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px walk poses; approved 96px body identity, original rigid head",
+            "bodyJob": "1164e355-12c0-445c-895e-de15df94c9f5",
+            "sourceHashes": [
+              "7900686057a9fa12e103b6d31c4d2b4261660d966556efff917379f75e8f753d",
+              "00d2536e9067c880887f382fac5a57c230ab0e852731f2bb52fe0e254550bd1c",
+              "2df716b1b99bd45a5cfefebb74089ca63060555c3896403d68924663d90e0ccf",
+              "5b1008715d93484771bd9b538ad42c8a67c2338db9dd3144c8c273382ee1d007",
+              "ad7162335dd11f7e4ce9a851d22b34516c5bb9f9bffb579030608f532db8435a",
+              "42d9e5abe7f3411e82b172857037c4853d5066e1607cb7ccf10ebdafb52a0b52",
+              "6ce09ab10ba57fc3da08322b27c2ae31c4e86f209c7ba9c3e4e0f7b018a0241b",
+              "386d2edfd8cbca68ee50e4630afcc2e4995eced53e2c6552bcc950b1c925aeae"
+            ]
+          },
+          "west": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/feminino-walk-west-head-base.png",
+              "body": "assets/feminino-walk-west-body.png",
+              "underArms": "assets/feminino-walk-west-under-arms.png",
+              "foreground": "assets/feminino-walk-west-foreground.png",
+              "face": "assets/feminino-walk-west-face.png",
+              "hair": "assets/feminino-walk-west-hair.png",
+              "pants": "assets/feminino-walk-west-pants.png",
+              "top": "assets/feminino-walk-west-top.png"
+            },
+            "frames": 8,
+            "fps": 8,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px walk poses; approved 96px body identity, original rigid head",
+            "bodyJob": "133f4c08-3ea3-4ac6-8041-9649ae415825",
+            "sourceHashes": [
+              "b31f62cf7dd8e32409cd2fddb2b560c1e0b592727b948599e1a6886dee04972d",
+              "5015a9d51d9b9f42d4a5593b5ecd29561ceccfd5cb49036669275758720d995b",
+              "7339bec868498895e743fd0eafc8996d0ec75e82df45c54573bd0ecae99542da",
+              "9772f32c5657e83ce4a51772e42d4e9d95d6c90648c845515e4d606c4b42eb82",
+              "29dbc78bc68f1f445673bcb7ebd47dc0680a8836b6901c372619cf8a1a36181e",
+              "f1e82a36edcfe67d5e7d530fbfb25ec16749c5cc9c39806e2136e9ea7fe433d0",
+              "f81c8292ffd092e1171d20d43da77f2b1569561bcd3015837f0f3a6d534d9f3a",
+              "b3a233cce47573d845d746197991bcd2dc14707f55d5b1eb61695af4ed035af2"
+            ]
+          },
+          "east": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/feminino-walk-east-head-base.png",
+              "body": "assets/feminino-walk-east-body.png",
+              "underArms": "assets/feminino-walk-east-under-arms.png",
+              "foreground": "assets/feminino-walk-east-foreground.png",
+              "face": "assets/feminino-walk-east-face.png",
+              "hair": "assets/feminino-walk-east-hair.png",
+              "pants": "assets/feminino-walk-east-pants.png",
+              "top": "assets/feminino-walk-east-top.png"
+            },
+            "frames": 8,
+            "fps": 8,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 2.8038095238,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1.4019047619,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px walk poses; approved 96px body identity, original rigid head",
+            "bodyJob": "e1e2562f-186d-41a0-92b4-4f4e17084b30",
+            "sourceHashes": [
+              "75a214e9537ad0e98adef59275c9a1acf9172113ba5257678f63650acac88886",
+              "95d3efca15bb7cef513177cae950a3163f4c6665ef8d47fe648b7e79b914ac73",
+              "0305e97b7bd3e4b9c540eab28b0679c8f726674c46fa46bbf17058f17bef0345",
+              "5dfaaf21b3a8c43a4cd1bd1bbbe50f9a15d64f53c784754369e276aecb482526",
+              "f7cad5850bb1b2410d5dceeab2a9a7dd997d5838348731529df79bc875aa3fbc",
+              "fbe0cd58e276cd405b769418c43bf3446aad9c6844ef27da157b08b9e709d3d4",
+              "e9737a6b9c33346c2c0bb8b6ba91dc32a815ec214e5f7ff4725f944e72af724b",
+              "268ac8dab5f77a8c0f67eb58b27a4e3e478fc08e8931c457c19e94897519b99c"
+            ]
           }
         },
         "attack-sword": {
@@ -4442,6 +5060,196 @@
               "cleanImage": "829c6faa-1665-421d-b014-4f6f2337dda5"
             }
           }
+        },
+        "idle": {
+          "south": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/feminino-idle-south-head-base.png",
+              "body": "assets/feminino-idle-south-body.png",
+              "underArms": "assets/feminino-idle-south-under-arms.png",
+              "foreground": "assets/feminino-idle-south-foreground.png",
+              "face": "assets/feminino-idle-south-face.png",
+              "hair": "assets/feminino-idle-south-hair.png",
+              "pants": "assets/feminino-idle-south-pants.png",
+              "top": "assets/feminino-idle-south-top.png"
+            },
+            "frames": 4,
+            "fps": 4,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px idle poses; approved 96px body identity, original rigid head",
+            "bodyJob": "48b61ae2-6809-4eef-ae87-e383a5f4ac35",
+            "sourceHashes": [
+              "3cbc7876d7ab53eba4b1fb54f28402ab29f97884c01b2a9957335709ca1217a7",
+              "477c1c414ced7279e58cb0a09de078940c74bab6c5f2a8b967bd9e2c40fe9063",
+              "3f80f9e1ef37f1248b52de37ac72f2e33b646909cbcd6a2fc5ac382c43d90532",
+              "eb1df22146ca0f5509f17f41b8d5052e0ffcce83ce1d6afbdeeb282dab9bc42f"
+            ]
+          },
+          "north": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/feminino-idle-north-head-base.png",
+              "body": "assets/feminino-idle-north-body.png",
+              "underArms": "assets/feminino-idle-north-under-arms.png",
+              "foreground": "assets/feminino-idle-north-foreground.png",
+              "face": "assets/feminino-idle-north-face.png",
+              "hair": "assets/feminino-idle-north-hair.png",
+              "pants": "assets/feminino-idle-north-pants.png",
+              "top": "assets/feminino-idle-north-top.png"
+            },
+            "frames": 4,
+            "fps": 4,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px idle poses; approved 96px body identity, original rigid head",
+            "bodyJob": "aaf92b51-a347-424e-937d-1d71c00ed464",
+            "sourceHashes": [
+              "066fa20ddb05bb7dc195b677b294b926a6c87bc7ed7ef4b00f5353c11fb8c2b0",
+              "455d1addce8a9ee9cd259dd9b5d7489095f5d84d94b57fd609693b29d07fdcfa",
+              "0bac79ccbe838d4be58e81f9d517abd94043a8de8d91fb2ed3e6ca7042eb47d7",
+              "55c3d2d0ea846747b9ae4bf107bd2d15589a918f52f362c66a88e4b34883afb2"
+            ]
+          },
+          "west": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/feminino-idle-west-head-base.png",
+              "body": "assets/feminino-idle-west-body.png",
+              "underArms": "assets/feminino-idle-west-under-arms.png",
+              "foreground": "assets/feminino-idle-west-foreground.png",
+              "face": "assets/feminino-idle-west-face.png",
+              "hair": "assets/feminino-idle-west-hair.png",
+              "pants": "assets/feminino-idle-west-pants.png",
+              "top": "assets/feminino-idle-west-top.png"
+            },
+            "frames": 4,
+            "fps": 4,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px idle poses; approved 96px body identity, original rigid head",
+            "bodyJob": "e6fd910f-0db8-47a6-a267-a7ba285b2fd7",
+            "sourceHashes": [
+              "b4384ab6801cbe63ab34ba665fe1ab6420b6b64180606f000160e2f11f42f80d",
+              "bc45c8e80db5adda4d03a7b1dcbac3f060d392174bac6e88a04ccea8e879de32",
+              "ce455c8ac83abe1615c807e066f6d5685c03fdf326da3cd781395394936c087c",
+              "6721068b25ae3066ff78637d490e0b43359b33e2b05c4805a9fbcde9b5d543da"
+            ]
+          },
+          "east": {
+            "modular": true,
+            "layers": {
+              "headBase": "assets/feminino-idle-east-head-base.png",
+              "body": "assets/feminino-idle-east-body.png",
+              "underArms": "assets/feminino-idle-east-under-arms.png",
+              "foreground": "assets/feminino-idle-east-foreground.png",
+              "face": "assets/feminino-idle-east-face.png",
+              "hair": "assets/feminino-idle-east-hair.png",
+              "pants": "assets/feminino-idle-east-pants.png",
+              "top": "assets/feminino-idle-east-top.png"
+            },
+            "frames": 4,
+            "fps": 4,
+            "loop": true,
+            "reviewed": false,
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              }
+            ],
+            "sourceMotion": "Existing 84px idle poses; approved 96px body identity, original rigid head",
+            "bodyJob": "868b63b7-ec1a-4f96-ad87-c1d40f37014b",
+            "sourceHashes": [
+              "e1fa92dd0efd8444ca01e0bc05729ae67ef9f11ae0126573756c5db5001172dc",
+              "2a99b40e2abe028bf16b489e5c43fe2014656ead91a9db514087f8f0564109ab",
+              "57515e13cd496755c83c00fc16f2f6013ebe101d72fe1733684cd9514d767cf8",
+              "e8205d714c6fcdb2be60e22e70a391ed81a33d5ea7d4e3ecc68d93017a13fd29"
+            ]
+          }
         }
       },
       "layers": {
@@ -4486,5 +5294,5 @@
     "fps": 12,
     "artApprovalPending": true
   },
-  "visualRevision": "clean-face-fit-4"
+  "visualRevision": "full-fit-v5-10"
 }

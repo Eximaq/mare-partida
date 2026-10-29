@@ -35,7 +35,13 @@
       },
       "galleryId": "d1f1f67e-2679-43a7-b71e-b2cbe5635a66",
       "sourceJob": "0a7e854c-0238-4187-8e3c-c33ee052bb9d",
-      "approval": "candidate"
+      "approval": "candidate",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 127,
+        "femalePixelCoordinateSum": 128
+      }
     },
     {
       "id": "hair-spiky",
@@ -58,7 +64,13 @@
       },
       "galleryId": "a26d8b2c-3c6f-40fb-9e31-2046b728f385",
       "sourceJob": "c60b06ca-101c-4ce7-9ae8-856db31a060a",
-      "approval": "candidate"
+      "approval": "candidate",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 127,
+        "femalePixelCoordinateSum": 128
+      }
     },
     {
       "id": "hair-swept",
@@ -81,7 +93,13 @@
       },
       "galleryId": "9ff1e231-62c6-401c-a7b5-b0b1582e2fc6",
       "sourceJob": "0ad6889c-0232-4aa2-9c50-8799c892a5d2",
-      "approval": "candidate"
+      "approval": "candidate",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 127,
+        "femalePixelCoordinateSum": 128
+      }
     },
     {
       "id": "hair-bob",
@@ -104,7 +122,13 @@
       },
       "galleryId": "15cb2ffd-7e4b-40bc-9c51-05d27b5d6e8b",
       "sourceJob": "b5a4ffc6-4d33-4006-b764-153bc42f593a",
-      "approval": "candidate"
+      "approval": "candidate",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 127,
+        "femalePixelCoordinateSum": 128
+      }
     },
     {
       "id": "hair-wavy",
@@ -127,7 +151,13 @@
       },
       "galleryId": "898714f6-e26a-4597-b45b-ea08352dca56",
       "sourceJob": "1e73a1ad-044d-4bbe-9862-9aa4c0ac04f7",
-      "approval": "candidate"
+      "approval": "candidate",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 127,
+        "femalePixelCoordinateSum": 128
+      }
     },
     {
       "id": "hair-braided",
@@ -150,7 +180,13 @@
       },
       "galleryId": "03c3fdaf-e211-4941-9dea-a803d6093a8a",
       "sourceJob": "2b911367-516f-4525-98ed-ba5e8bf27910",
-      "approval": "candidate"
+      "approval": "candidate",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 127,
+        "femalePixelCoordinateSum": 128
+      }
     },
     {
       "id": "face-gentle",
@@ -342,7 +378,9 @@
       },
       "galleryId": "ad9cdb24-6a64-47f6-9941-1a5a79ae7c8f",
       "sourceJob": "a77fe19f-3fc9-417f-addb-fbd831f48262",
-      "approval": "candidate"
+      "approval": "candidate",
+      "hairOcclusion": "crown",
+      "hairlineY": 34
     },
     {
       "id": "item-21",
@@ -487,6 +525,178 @@
       "galleryId": "15a666e5-5e8c-4efa-8705-3f4b77d55dde",
       "sourceJob": "2df9d78d-e85d-4d3f-b1bf-42badc2a4954",
       "approval": "candidate"
+    },
+    {
+      "id": "hair-ponytail",
+      "kind": "hair",
+      "name": "Rabo de cavalo",
+      "description": "neatly tied medium ponytail, compact crown, low tied tail, practical adventurous style, forehead readable",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-hair-ponytail-masculino-south.png",
+          "north": "assets/custom-hair-ponytail-masculino-north.png",
+          "west": "assets/custom-hair-ponytail-masculino-west.png",
+          "east": "assets/custom-hair-ponytail-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-hair-ponytail-feminino-south.png",
+          "north": "assets/custom-hair-ponytail-feminino-north.png",
+          "west": "assets/custom-hair-ponytail-feminino-west.png",
+          "east": "assets/custom-hair-ponytail-feminino-east.png"
+        }
+      },
+      "sourceJob": "7b6fbab1-aec1-4676-997a-a93cc7fcaba2",
+      "approval": "candidate",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 127,
+        "femalePixelCoordinateSum": 128
+      },
+      "galleryId": "c86d7598-4703-4ef1-9c3c-edb3f54dede1"
+    },
+    {
+      "id": "hair-curly",
+      "kind": "hair",
+      "name": "Cacheado curto",
+      "description": "short rounded natural curls, tidy silhouette, small readable curl clusters, forehead and ears visible",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-hair-curly-masculino-south.png",
+          "north": "assets/custom-hair-curly-masculino-north.png",
+          "west": "assets/custom-hair-curly-masculino-west.png",
+          "east": "assets/custom-hair-curly-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-hair-curly-feminino-south.png",
+          "north": "assets/custom-hair-curly-feminino-north.png",
+          "west": "assets/custom-hair-curly-feminino-west.png",
+          "east": "assets/custom-hair-curly-feminino-east.png"
+        }
+      },
+      "sourceJob": "dbc62af9-e2ab-416c-b798-47e6236ec2c5",
+      "approval": "candidate",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 127,
+        "femalePixelCoordinateSum": 128
+      },
+      "galleryId": "82813762-00bb-463f-bf98-6b9465ab37de"
+    },
+    {
+      "id": "hair-long",
+      "kind": "hair",
+      "name": "Longo repartido",
+      "description": "shoulder length straight layered hair, middle part, face open, clean tapered sides, compact ends above shoulders",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-hair-long-masculino-south.png",
+          "north": "assets/custom-hair-long-masculino-north.png",
+          "west": "assets/custom-hair-long-masculino-west.png",
+          "east": "assets/custom-hair-long-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-hair-long-feminino-south.png",
+          "north": "assets/custom-hair-long-feminino-north.png",
+          "west": "assets/custom-hair-long-feminino-west.png",
+          "east": "assets/custom-hair-long-feminino-east.png"
+        }
+      },
+      "sourceJob": "7602cfac-5027-42fd-ab1f-58699ae06330",
+      "approval": "candidate",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 127,
+        "femalePixelCoordinateSum": 128
+      },
+      "galleryId": "c63320ed-271e-4b0c-af4c-f31a2eed73cd"
+    },
+    {
+      "id": "hair-undercut",
+      "kind": "hair",
+      "name": "Undercut",
+      "description": "short undercut with swept compact top, shaved sides, crisp part, no spikes or ornaments",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-hair-undercut-masculino-south.png",
+          "north": "assets/custom-hair-undercut-masculino-north.png",
+          "west": "assets/custom-hair-undercut-masculino-west.png",
+          "east": "assets/custom-hair-undercut-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-hair-undercut-feminino-south.png",
+          "north": "assets/custom-hair-undercut-feminino-north.png",
+          "west": "assets/custom-hair-undercut-feminino-west.png",
+          "east": "assets/custom-hair-undercut-feminino-east.png"
+        }
+      },
+      "sourceJob": "00a6cb82-170f-400e-85ed-d60268bc1478",
+      "approval": "candidate",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 127,
+        "femalePixelCoordinateSum": 128
+      },
+      "galleryId": "571dfba3-e478-4de8-aab1-f3050712a0a0"
+    },
+    {
+      "id": "face-calm",
+      "kind": "face",
+      "name": "Sereno",
+      "description": "calm gentle eyes, neat slightly curved eyebrows, same size clean original face, understated expression",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-face-calm-masculino-south.png",
+          "north": "assets/custom-face-calm-masculino-north.png",
+          "west": "assets/custom-face-calm-masculino-west.png",
+          "east": "assets/custom-face-calm-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-face-calm-feminino-south.png",
+          "north": "assets/custom-face-calm-feminino-north.png",
+          "west": "assets/custom-face-calm-feminino-west.png",
+          "east": "assets/custom-face-calm-feminino-east.png"
+        }
+      },
+      "sourceJob": "90b101de-0caf-48b0-ae6c-dc6ed5ec580c",
+      "approval": "candidate",
+      "physiognomy": "original-derived",
+      "featurePolicy": "masked-expression-with-original-footprint",
+      "galleryId": "8259e446-fc38-4f8c-98c1-22b5d4b3f3c7"
+    },
+    {
+      "id": "face-resolute",
+      "kind": "face",
+      "name": "Determinado",
+      "description": "confident focused eyes and slightly angled tidy eyebrows, same size clean original face, subtle determined expression",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-face-resolute-masculino-south.png",
+          "north": "assets/custom-face-resolute-masculino-north.png",
+          "west": "assets/custom-face-resolute-masculino-west.png",
+          "east": "assets/custom-face-resolute-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-face-resolute-feminino-south.png",
+          "north": "assets/custom-face-resolute-feminino-north.png",
+          "west": "assets/custom-face-resolute-feminino-west.png",
+          "east": "assets/custom-face-resolute-feminino-east.png"
+        }
+      },
+      "sourceJob": "db53c8c7-9185-4fe4-a87d-c78417497cd3",
+      "approval": "candidate",
+      "physiognomy": "original-derived",
+      "featurePolicy": "masked-expression-with-original-footprint",
+      "galleryId": "911836e1-5a49-4360-86d8-f76d160383a0"
     }
   ],
   "palettes": {
@@ -553,28 +763,304 @@
         "masculino",
         "feminino"
       ]
-    }
+    },
+    "locomotionSheets": [
+      {
+        "key": "masculino-idle-face",
+        "kind": "locomotion",
+        "id": "dc7b35a1-a6f9-4a11-996a-23e8263cc0c1",
+        "created": true
+      },
+      {
+        "key": "masculino-idle-underArms",
+        "kind": "locomotion",
+        "id": "8714985b-d746-4b0f-bab4-94f3a5daca66",
+        "created": true
+      },
+      {
+        "key": "masculino-idle-pants",
+        "kind": "locomotion",
+        "id": "630b49a9-760a-4805-a05c-ae7d9e209ccb",
+        "created": true
+      },
+      {
+        "key": "masculino-idle-foreground",
+        "kind": "locomotion",
+        "id": "2249ca24-c087-416e-a135-144686f03d88",
+        "created": true
+      },
+      {
+        "key": "masculino-idle-top",
+        "kind": "locomotion",
+        "id": "8af12f89-57e3-4f0a-8c21-458241811b74",
+        "created": true
+      },
+      {
+        "key": "masculino-idle-hair",
+        "kind": "locomotion",
+        "id": "e14b2c3d-9e8c-40db-a074-d7fa9162ce7b",
+        "created": true
+      },
+      {
+        "key": "masculino-walk-underArms",
+        "kind": "locomotion",
+        "id": "85ec74c2-2154-4357-8d72-1aa47e704491",
+        "created": true
+      },
+      {
+        "key": "masculino-walk-headBase",
+        "kind": "locomotion",
+        "id": "bffb3c0d-c632-403e-8eeb-c3c052e54033",
+        "created": true
+      },
+      {
+        "key": "masculino-idle-body",
+        "kind": "locomotion",
+        "id": "d412b5d3-1bb8-47b4-8697-e05e9304c37b",
+        "created": true
+      },
+      {
+        "key": "masculino-idle-headBase",
+        "kind": "locomotion",
+        "id": "9c0be4c4-9f06-4ae6-a43f-1696e53b6ac3",
+        "created": true
+      },
+      {
+        "key": "masculino-walk-body",
+        "kind": "locomotion",
+        "id": "f6207b3b-b1ef-4916-9498-b2276ab11976",
+        "created": true
+      },
+      {
+        "key": "masculino-walk-face",
+        "kind": "locomotion",
+        "id": "284a632a-2679-4d3b-977f-e59489794781",
+        "created": true
+      },
+      {
+        "key": "masculino-walk-pants",
+        "kind": "locomotion",
+        "id": "b07783a6-40c6-4e30-8621-b15af64cdd98",
+        "created": true
+      },
+      {
+        "key": "masculino-walk-foreground",
+        "kind": "locomotion",
+        "id": "d2416a53-3322-47f7-9226-de79e7191dfe",
+        "created": true
+      },
+      {
+        "key": "masculino-walk-top",
+        "kind": "locomotion",
+        "id": "e163bc67-3ee2-4eb3-81a8-60777235c0e7",
+        "created": true
+      },
+      {
+        "key": "feminino-idle-pants",
+        "kind": "locomotion",
+        "id": "3cab5d1e-51c8-4378-b69b-24ee2be368de",
+        "created": true
+      },
+      {
+        "key": "feminino-idle-hair",
+        "kind": "locomotion",
+        "id": "d3aca66b-1f3a-4b27-9dae-a2e56cc1e960",
+        "created": true
+      },
+      {
+        "key": "feminino-walk-headBase",
+        "kind": "locomotion",
+        "id": "1e20cf7e-0e60-4721-80f8-36852cb0f476",
+        "created": true
+      },
+      {
+        "key": "feminino-idle-headBase",
+        "kind": "locomotion",
+        "id": "a4352a43-10cb-481d-b40d-40d646ba66ed",
+        "created": true
+      },
+      {
+        "key": "feminino-idle-foreground",
+        "kind": "locomotion",
+        "id": "28a1a9a9-7ada-4667-bc87-92074c288249",
+        "created": true
+      },
+      {
+        "key": "masculino-walk-hair",
+        "kind": "locomotion",
+        "id": "fd242e22-6b62-4ef0-bfae-929bac500633",
+        "created": true
+      },
+      {
+        "key": "feminino-idle-body",
+        "kind": "locomotion",
+        "id": "c1ea1a95-d10e-4fa5-9f98-276938a5779f",
+        "created": true
+      },
+      {
+        "key": "feminino-idle-face",
+        "kind": "locomotion",
+        "id": "90bceb6b-0054-4db7-8657-569ffbc3c55d",
+        "created": true
+      },
+      {
+        "key": "feminino-idle-underArms",
+        "kind": "locomotion",
+        "id": "38f9fe30-65c5-44e3-b3cb-6c7d0d0f25f2",
+        "created": true
+      },
+      {
+        "key": "feminino-walk-underArms",
+        "kind": "locomotion",
+        "id": "a9cca04b-9053-471a-8b8d-96961e8ddd8c",
+        "created": true
+      },
+      {
+        "key": "feminino-walk-pants",
+        "kind": "locomotion",
+        "id": "72ba21cb-d086-4c1a-ace2-bd4cc5f45a1d",
+        "created": true
+      },
+      {
+        "key": "feminino-walk-face",
+        "kind": "locomotion",
+        "id": "935293d5-0c18-42ae-9917-3fced505322c",
+        "created": true
+      },
+      {
+        "key": "feminino-walk-hair",
+        "kind": "locomotion",
+        "id": "b15f1077-09e5-4037-9000-4b44fb66f2b9",
+        "created": true
+      },
+      {
+        "key": "feminino-walk-foreground",
+        "kind": "locomotion",
+        "id": "02606a7d-6bca-4f27-a098-c668f8d1367f",
+        "created": true
+      },
+      {
+        "key": "feminino-idle-top",
+        "kind": "locomotion",
+        "id": "75c16639-f06e-4bd4-89c9-8ba0826cfb05",
+        "created": true
+      },
+      {
+        "key": "feminino-walk-top",
+        "kind": "locomotion",
+        "id": "70fb7a98-6e14-483d-a994-601e73317164",
+        "created": true
+      },
+      {
+        "key": "feminino-walk-body",
+        "kind": "locomotion",
+        "id": "e271ad49-e773-46d8-906a-ebdb8a2dbaa6",
+        "created": true
+      }
+    ],
+    "masterSheets": [
+      {
+        "key": "originalHairs",
+        "kind": "master",
+        "id": "16fd2f34-7623-42d1-9dda-5fe78ea62ab8",
+        "created": true
+      },
+      {
+        "key": "originalHeads",
+        "kind": "master",
+        "id": "99e4c49f-173c-4e20-8697-91d8c32dd9f7",
+        "created": true
+      },
+      {
+        "key": "originalHands",
+        "kind": "master",
+        "id": "eee473b9-4c01-4d70-b7cf-99474f53f35b",
+        "created": true
+      }
+    ],
+    "totalSheets": 161,
+    "revisedExistingSheets": 40
   },
   "costs": {
     "initialBatch": 180,
     "faceCoverageStudy": 9,
     "contactMeasurements": 33.6,
-    "total": 222.6,
-    "exactAssembly": 0
+    "total": 342.8,
+    "exactAssembly": 0,
+    "roundV5": {
+      "animations": 42,
+      "styles": 54,
+      "sourceMeasurements": 7.2,
+      "fitMeasurements": 8,
+      "total": 120.2,
+      "exactAssembly": 0,
+      "headRepair": 9,
+      "confirmedGenerationReceipts": 120.2,
+      "observedAccountDelta": 141.2,
+      "unattributedAccountDelta": 21
+    }
   },
   "coverage": {
     "staticViews": 8,
-    "distinctMotionFrames": 336,
-    "models": 20,
-    "generatedPosesPending": [
-      "idle:south",
-      "idle:north",
-      "idle:west",
-      "idle:east",
-      "walk:north",
-      "walk:west",
-      "walk:east"
-    ]
+    "distinctMotionFrames": 416,
+    "models": 26,
+    "generatedPosesPending": []
   },
-  "facialPolicy": "Original facial geometry and clean pixel clusters; iris variants only. Generative face studies rejected by owner."
+  "facialPolicy": "Original clean facial geometry is the default; optional subtle masked expressions preserve the original alpha footprint. Faces remain replaceable below hair.",
+  "originalHairs": {
+    "masculino": {
+      "south": "assets/custom-original-hair-masculino-south.png",
+      "north": "assets/custom-original-hair-masculino-north.png",
+      "west": "assets/custom-original-hair-masculino-west.png",
+      "east": "assets/custom-original-hair-masculino-east.png"
+    },
+    "feminino": {
+      "south": "assets/custom-original-hair-feminino-south.png",
+      "north": "assets/custom-original-hair-feminino-north.png",
+      "west": "assets/custom-original-hair-feminino-west.png",
+      "east": "assets/custom-original-hair-feminino-east.png"
+    }
+  },
+  "sideMirroring": {
+    "source": "east",
+    "target": "west",
+    "pixelCoordinateSums": {
+      "masculino": 127,
+      "feminino": 128
+    },
+    "scope": "hair-only; approved body poses are not mirrored"
+  },
+  "originalHeads": {
+    "masculino": {
+      "south": "assets/custom-original-head-masculino-south.png",
+      "north": "assets/custom-original-head-masculino-north.png",
+      "west": "assets/custom-original-head-masculino-west.png",
+      "east": "assets/custom-original-head-masculino-east.png"
+    },
+    "feminino": {
+      "south": "assets/custom-original-head-feminino-south.png",
+      "north": "assets/custom-original-head-feminino-north.png",
+      "west": "assets/custom-original-head-feminino-west.png",
+      "east": "assets/custom-original-head-feminino-east.png"
+    }
+  },
+  "originalHands": {
+    "masculino": {
+      "south": "assets/custom-original-hands-masculino-south.png",
+      "north": "assets/custom-original-hands-masculino-north.png",
+      "west": "assets/custom-original-hands-masculino-west.png",
+      "east": "assets/custom-original-hands-masculino-east.png"
+    },
+    "feminino": {
+      "south": "assets/custom-original-hands-feminino-south.png",
+      "north": "assets/custom-original-hands-feminino-north.png",
+      "west": "assets/custom-original-hands-feminino-west.png",
+      "east": "assets/custom-original-hands-feminino-east.png"
+    }
+  },
+  "headRepair": {
+    "job": "ddf4bec9-3ca4-49d4-a30d-245e010521fc",
+    "outsideMaskDifferences": 0,
+    "interiorNeutralSkinCopies": true
+  }
 }

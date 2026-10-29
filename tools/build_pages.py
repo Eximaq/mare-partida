@@ -502,6 +502,9 @@ assert appearance96_pack['productionEnabled'] is False
 for style in appearance96_pack['styles']:
     for directions in style['layers'].values():
         review96_files.update(directions.values())
+for collection in ['originalFaces', 'originalHairs', 'originalHeads', 'originalHands']:
+    for directions in appearance96_pack.get(collection, {}).values():
+        review96_files.update(directions.values())
 for body in review96_pack['bodies'].values():
     review96_files.update(body['references'].values())
     for layers in body.get('layers', {}).values():

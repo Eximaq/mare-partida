@@ -53,8 +53,8 @@
     const key = [selected.key, JSON.stringify(selected.look), fi, ...hidden].join(':');
     if (composites.has(key)) return composites.get(key);
     const tile = document.createElement('canvas'); tile.width = spec.width; tile.height = spec.height;
-    if(Object.keys(selected.look).length)wardrobe.draw(tile.getContext('2d'),loaded,selected,fi,spec,hidden,selected.look);
-    else MareLayers96.draw(tile.getContext('2d'), loaded, selected.layers, fi, spec, hidden);
+    if(Object.keys(selected.look).length)wardrobe.draw(tile.getContext('2d'),selected.images||loaded,selected,fi,spec,hidden,selected.look);
+    else MareLayers96.draw(tile.getContext('2d'), selected.images||loaded, selected.layers, fi, spec, hidden);
     composites.set(key, tile);
     if (composites.size > 64) composites.delete(composites.keys().next().value);
     return tile;
@@ -62,7 +62,8 @@
   async function render(body, action, direction, fi = 0, hidden = [], look = {}) {
     const selected = selection(body, action, direction);selected.look=look;
     if (!selected.layers) throw Error('Movimento ainda não disponível.');
-    await Promise.all(Object.values(selected.layers).map(image));await wardrobe.prepare(selected,look);
+    const baseImages=await Promise.all(Object.values(selected.layers).map(async file=>[file,await image(file)]));
+    const appearanceImages=await wardrobe.prepare(selected,look);selected.images=new Map([...baseImages,...appearanceImages]);
     return compose(selected, fi, hidden);
   }
   function actor(ctx, img, spec, x = 300, feet = 260) {
@@ -103,8 +104,11 @@
     $('status').textContent = 'Carregando camadas…';
     const extras=catalog.styles.filter(p=>Object.values(next.look).includes(p.id)).map(p=>p.layers[next.body][next.direction]);
     if(next.look.face!=='none'&&catalog.originalFaces?.[next.body]?.[next.direction])extras.push(catalog.originalFaces[next.body][next.direction]);
+    if(next.look.hair!=='none'&&catalog.originalHairs?.[next.body]?.[next.direction])extras.push(catalog.originalHairs[next.body][next.direction]);
+    if(catalog.originalHeads?.[next.body]?.[next.direction])extras.push(catalog.originalHeads[next.body][next.direction]);
+    if(catalog.originalHands?.[next.body]?.[next.direction])extras.push(catalog.originalHands[next.body][next.direction]);
     protectedFiles = new Set([next.reference, ...Object.values(next.layers || {}),...extras]);
-    await Promise.all([...protectedFiles].map(image));
+    next.images=new Map(await Promise.all([...protectedFiles].map(async file=>[file,await image(file)])));
     if (token !== version) return;
     frame = 0; epoch = performance.now(); active = next; draw(epoch);
   }

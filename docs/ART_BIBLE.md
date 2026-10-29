@@ -1,5 +1,9 @@
 # Referência visual — Maré Partida
 
+## Continuação de 29/10/2026 — locomoção e encaixes
+
+A bancada96 cobre Idle/Walk nas quatro direções dos dois corpos, além dos seis ataques. Dez cabelos e seis opções faciais derivadas da base limpa; FlipX lateral dos cabelos, cabeça/rosto no mesmo socket e equipamentos independentes com contatos refinados. São candidatos de avaliação artística, sem ativação no jogo. Ver [PAPER-DOLL-96-PERSONALIZACAO.md](PAPER-DOLL-96-PERSONALIZACAO.md).
+
 ## Nova base aprovada de 96 px — 28/10/2026
 
 O proprietário aprovou o desenho masculino/feminino na simulação do lobby.

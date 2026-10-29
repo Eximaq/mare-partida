@@ -61,7 +61,7 @@ const origin = process.argv.find(value => /^https?:\/\//.test(value)) || 'http:/
       assert.equal(result.changed, 0, JSON.stringify(result));
       assert.ok(result.toggles >= (result.direction === 'north' ? 2 : 3), JSON.stringify(result));
     }
-    for (const clip of audit.clips) { assert.equal(clip.frames, 8); assert.ok(clip.unique >= 6); assert.equal(clip.edgePixels, 0); }
+    for (const clip of audit.clips) { assert.equal(clip.frames, clip.action === 'idle' ? 4 : 8); assert.ok(clip.unique >= (clip.action === 'idle' ? 3 : 6)); assert.equal(clip.edgePixels, 0); }
     for (const body of ['feminino', 'masculino']) for (const direction of ['south', 'north', 'west', 'east']) {
       await page.selectOption('#body', body); await page.selectOption('#direction', direction);
       for (const layer of ['hair', 'face', 'pants', 'top']) { await page.uncheck(`[data-layer="${layer}"]`); await page.check(`[data-layer="${layer}"]`); }

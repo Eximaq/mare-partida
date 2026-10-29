@@ -60,6 +60,13 @@
       return { x: d.x + along * vx - across * vy + padding, y: d.y + along * vy + across * vx + padding };
     };
   }
+  function opaqueMesh(source,map,width=128,height=128) {
+    let x0=width,y0=height,x1=0,y1=0;
+    for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(source[(y*width+x)*4+3]){x0=Math.min(x0,x);y0=Math.min(y0,y);x1=Math.max(x1,x+1);y1=Math.max(y1,y+1);}
+    if(x1===0)return [];
+    const q=[{x:x0,y:y0},{x:x1,y:y0},{x:x1,y:y1},{x:x0,y:y1}];
+    return [[0,1,2],[0,2,3]].map(ids=>ids.map(i=>({source:q[i],target:map(q[i])})));
+  }
   function pair(source, slot, restPoints, posePoints, padding, width, height) {
     const r = index(restPoints), p = index(posePoints), output = {};
     const endpoint = slot === 'boots' ? ' LEG' : ' ARM', parent = slot === 'boots' ? ' KNEE' : ' ELBOW';
@@ -67,12 +74,13 @@
       const other = side === 'LEFT' ? 'RIGHT' : 'LEFT', piece = new Uint8ClampedArray(source.length);
       for (let y = 0; y < 128; y++) for (let x = 0; x < 128; x++) {
         const i = (y * 128 + x) * 4;
+        if(!source[i+3])continue;
         const a = Math.hypot(x - r[side + endpoint].x, y - r[side + endpoint].y);
         const b = Math.hypot(x - r[other + endpoint].x, y - r[other + endpoint].y);
         if (a < b || (a === b && side === 'RIGHT')) piece.set(source.subarray(i, i + 4), i);
       }
       const map = bone(r[side + parent], r[side + endpoint], p[side + parent], p[side + endpoint], padding, false);
-      output[side] = motion.rasterMesh(piece, 128, 128, motion.affineMesh(map), width, height);
+      output[side] = motion.rasterMesh(piece, 128, 128, opaqueMesh(piece,map), width, height);
     }
     return output;
   }
@@ -106,14 +114,27 @@
     }
     return triangles;
   }
+  function shoulderTransform(restPoints, posePoints, padding) {
+    const r=index(restPoints),p=index(posePoints);
+    const center=j=>({x:(j['LEFT SHOULDER'].x+j['RIGHT SHOULDER'].x)/2,y:(j['LEFT SHOULDER'].y+j['RIGHT SHOULDER'].y)/2});
+    const a=center(r),b=center(p),rh={x:(r['LEFT HIP'].x+r['RIGHT HIP'].x)/2,y:(r['LEFT HIP'].y+r['RIGHT HIP'].y)/2},ph={x:(p['LEFT HIP'].x+p['RIGHT HIP'].x)/2,y:(p['LEFT HIP'].y+p['RIGHT HIP'].y)/2};
+    const angle=Math.atan2(ph.y-p.NECK.y,ph.x-p.NECK.x)-Math.atan2(rh.y-r.NECK.y,rh.x-r.NECK.x),cos=Math.cos(angle),sin=Math.sin(angle);
+    return {map(v){return {x:b.x+(v.x-a.x)*cos-(v.y-a.y)*sin+padding,y:b.y+(v.x-a.x)*sin+(v.y-a.y)*cos+padding};}};
+  }
+  function clipToHead(source, head) {
+    if(source.length!==head.length)throw Error('Head mask dimensions differ');
+    const out=new Uint8ClampedArray(source);
+    for(let i=0;i<out.length;i+=4)out[i+3]=Math.min(out[i+3],head[i+3]);
+    return out;
+  }
   function attach(source, slot, rest, pose, socket, padding, width, height, box) {
     if (['boots', 'gloves'].includes(slot)) return pair(source, slot, rest, pose, padding, width, height);
     if (slot === 'pants') return { full: trousers(source, rest, pose, padding, width, height) };
     const nose = rest.find(p => p.label === 'NOSE');
     const map = ['hair', 'face', 'head'].includes(slot)
       ? motion.socketTransform({ x: nose.x * 128, y: nose.y * 128 }, socket || { x: 0, y: 0 }, padding).map
-      : motion.torsoTransform(rest, pose, padding).map;
-    const mesh = slot === 'pants' ? trouserMesh(rest, pose, box, padding) : motion.affineMesh(map);
+      : slot==='cloak'?shoulderTransform(rest,pose,padding).map:motion.torsoTransform(rest, pose, padding).map;
+    const mesh = slot === 'pants' ? trouserMesh(rest, pose, box, padding) : opaqueMesh(source,map);
     return { full: motion.rasterMesh(source, 128, 128, mesh, width, height) };
   }
   function trousers(source, restPoints, posePoints, padding, width, height) {
@@ -150,12 +171,16 @@
     const midpoint=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
     const hip=midpoint(p['LEFT HIP'],p['RIGHT HIP']),restHip=midpoint(r['LEFT HIP'],r['RIGHT HIP']);
     const waistInverse=bone(p.NECK,hip,r.NECK,restHip,0),maps={};
+    let sourceBottom=-1;for(let y=0;y<128;y++)for(let x=0;x<128;x++)if(source[(y*128+x)*4+3]>150)sourceBottom=Math.max(sourceBottom,y);
     for(const side of ['LEFT','RIGHT'])maps[side]={upper:bone(p[side+' HIP'],p[side+' KNEE'],r[side+' HIP'],r[side+' KNEE'],0),lower:bone(p[side+' KNEE'],p[side+' LEG'],r[side+' KNEE'],r[side+' LEG'],0)};
     const sample=point=>{
-      const xx=Math.round(point.x),yy=Math.round(point.y);let best=Infinity,found=-1;
+      if(point.y>sourceBottom+.5)return -1;
+      const xx=Math.round(point.x),yy=Math.round(point.y),direct=xx>=0&&yy>=0&&xx<128&&yy<128?(yy*128+xx)*4:-1;
+      if(direct>=0&&source[direct+3]>150)return direct;
+      let best=Infinity,found=-1;
       for(let dy=-7;dy<=7;dy++)for(let dx=-7;dx<=7;dx++){
         const x=xx+dx,y=yy+dy,d=dx*dx+dy*dy;if(x<0||y<0||x>=128||y>=128||d>=best)continue;
-        const i=(y*128+x)*4;if(source[i+3]>150){best=d;found=i;}
+        const i=(y*128+x)*4;if(source[i+3]>150&&Math.max(source[i],source[i+1],source[i+2])>=55){best=d;found=i;}
       }
       return found;
     };
@@ -164,6 +189,8 @@
       if(body[i+3]<100||v.y<hip.y-7)continue;
       const distance=side=>Math.min(motion.distanceToSegment(v,p[side+' HIP'],p[side+' KNEE']),motion.distanceToSegment(v,p[side+' KNEE'],p[side+' LEG']));
       const dl=distance('LEFT'),dr=distance('RIGHT'),side=dl<dr?'LEFT':'RIGHT';
+      const armDistance=Math.min(...['LEFT','RIGHT'].map(s=>motion.distanceToSegment(v,p[s+' ELBOW'],p[s+' ARM'])));
+      if(armDistance<=5.5&&armDistance+2<Math.min(dl,dr))continue;
       if(Math.min(dl,dr)>13||v.y>p[side+' LEG'].y+2)continue;
       const knee=motion.distanceToSegment(v,p[side+' HIP'],p[side+' KNEE']),shin=motion.distanceToSegment(v,p[side+' KNEE'],p[side+' LEG']);
       const point=v.y<hip.y+3?waistInverse(v):(knee<shin?maps[side].upper(v):maps[side].lower(v));
@@ -189,5 +216,5 @@
     }
     return out;
   }
-  return { skins, hairs, recolor, materialMask, isSkin, attach, pair, trousers, fitTrousersToBody, closeTopCoverage, trouserMesh, catalogItem };
+  return { skins, hairs, recolor, materialMask, isSkin, opaqueMesh, shoulderTransform, clipToHead, attach, pair, trousers, fitTrousersToBody, closeTopCoverage, trouserMesh, catalogItem };
 });

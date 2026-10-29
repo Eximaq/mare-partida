@@ -1,5 +1,6 @@
 /* Native paper-doll attachment assembly. No API calls, interpolation or save access. */
 const motion = require('./paper-doll-96-v3/motion.js');
+const appearance = require('./paper-doll-96-v3/appearance.js');
 const rgba = (width, height) => new Uint8ClampedArray(width * height * 4);
 function bounds(pixels, width, height) {
   let x0 = width, y0 = height, x1 = 0, y1 = 0;
@@ -26,6 +27,12 @@ function buildFrame(raw, reference, recipe, frame) {
   const erased = motion.rasterMesh(headMask, 128, 128, motion.affineMesh(generatedHead.map), size, size);
   parts.body = new Uint8ClampedArray(raw);
   for (let i = 0; i < erased.length; i += 4) if (erased[i + 3]) parts.body.fill(0, i, i + 4);
+  // Locomotion keeps both arms below the neck. Replace the generated head
+  // completely with the approved rigid head; do not leave a second scalp rim.
+  if (recipe.locomotionHeadCut === true) {
+    const cut = Math.round(44 + padding + (recipe.headSockets?.[frame]?.y || 0));
+    parts.body.fill(0, 0, Math.max(0, Math.min(size, cut)) * size * 4);
+  }
   parts.underArms = rgba(size, size); parts.foreground = rgba(size, size);
   const joints = Object.fromEntries(pose.map(j => [j.label, { x: j.x * 128 + padding, y: j.y * 128 + padding, z: j.z_index || 0 }]));
   const leftZ = joints['LEFT ARM'].z, rightZ = joints['RIGHT ARM'].z;
@@ -52,6 +59,9 @@ function buildFrame(raw, reference, recipe, frame) {
       motion.clothMesh(slot, rest, pose, box, padding), size, size) : rgba(size, size);
     // Material may cover the real body; it must never protrude into the air.
     for (let i = 0; i < raw.length; i += 4) if (raw[i + 3] < 100) parts[slot].fill(0, i, i + 4);
+  }
+  if (recipe.locomotionHeadCut === true) {
+    parts.pants = appearance.fitTrousersToBody(reference.pants, raw, rest, pose, padding, size, size);
   }
   // Generation can widen the neutral underwear beyond the retargeted garment.
   // Extend only existing cloth pixels onto that neutral material, never skin.

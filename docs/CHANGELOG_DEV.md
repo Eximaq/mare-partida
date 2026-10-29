@@ -1,3 +1,14 @@
+# 29/10/2026 — Locomoção96 completa e revisão de encaixes
+
+- PR144, branch feature/paper-doll-96px-rebuild, base6ee815f. Produzidos14 ciclos pendentes: Idle4 e Walk8 quadros; quatro vistas nos dois corpos.
+-4 cabelos novos e2 expressões discretas, paletas preservadas. FlipX leste→oeste em todos os cabelos, sem espelhar corpos.
+- Cabeça neutra com orelhas/pescoço protegidos, rosto contido no alpha da cabeça, matriz compartilhada por socket e preservação de braços erguidos.
+-416 poses medidas;456 correções em127 quadros resolvem rótulos trocados/colapsados. Capas presas aos ombros, roupas sobre a silhueta e68 pixels órfãos removidos de7 quadros e1 referência.
+- Revisão adicional das matrizes:402 pixels residuais removidos em17 camadas de bandanas, elmos e capas; regressão no extrator preserva destaques superiores.
+-161 folhas finais na Jade Dragon, com atualizações dos IDs existentes. Fontes, custos e evidências fora do Git; catálogo público sem credenciais/saves.
+- Rotina de26.536 combinações,22 matrizes espelhadas e424 casos de contenção facial; validação final registrada na entrega.
+- Sem migração de personagem publicado, save ou balanceamento. Documento PAPER-DOLL-96-PERSONALIZACAO.md atualizado; arte permanece em avaliação.
+
 # 29/10/2026 — Personalização96 e correção de camadas
 
 - Continuação do PR144, branch `feature/paper-doll-96px-rebuild`, base39efa85.

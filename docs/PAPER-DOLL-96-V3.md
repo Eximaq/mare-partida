@@ -9,15 +9,13 @@ animações, equipamentos ou de uma migração do personagem publicado.**
 - Oito referências: masculino/feminino × sul, norte, oeste e leste.
 - Cada referência tem corpo neutro, rosto, cabelo, bermuda e roupa superior
   independentes; a roupa superior masculina é uma camada vazia legítima.
-- Dois ciclos candidatos de caminhada frontal, oito frames reais por corpo,
-  8 FPS, com as mesmas cinco camadas. Não são cobertura completa de locomoção.
+- Oito ciclos de caminhada, oito frames reais a 8 FPS, e oito de Idle, quatro frames a 4 FPS: quatro direções por corpo. Camadas independentes.
 - Os seis ataques anteriores foram retargeteados para os dois corpos nas
   quatro direções: espada, soco, disparo, adagas, tecnologia e canalização.
   São48 entradas de oito frames reais,12FPS, com início, golpe e recuperação.
   Disparo e tecnologia eram idênticos nos PNGs/fontes anteriores: compartilham
   oito clips, resultando em40 animações geradas distintas, sem custo duplicado.
-- Parado animado e demais direções de caminhada **ainda faltam**.
-  A pose estática não é anunciada como uma animação de Idle.
+- A continuação de29/10 completou os14 ciclos pendentes. A pose estática aprovada continua separada do Idle animado. Encaixes, contatos refinados, novos estilos e custos em [PAPER-DOLL-96-PERSONALIZACAO.md](PAPER-DOLL-96-PERSONALIZACAO.md).
 
 Abrir `tools/paper-doll-96-v3/`. Os controles ocultam cada peça sem modificar
 save. Movimentos ausentes ficam vazios e identificados; não há fallback que
