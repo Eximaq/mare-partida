@@ -1,3 +1,17 @@
+## 29/10/2026 — Cabine do Navegante aprovada e integrada
+
+Lançamento no Pages autorizado pelo proprietário. Na preparação, removido o botão Personagem redundante trazido da prévia, com reprodução da regressão existente antes da correção. Os 145 testes Node autônomos passaram; E2E de Supa permanece separado, conforme o CI. Menu real conferido com seis atalhos.
+
+Após a aprovação visual explícita do proprietário, a composição da prévia foi aplicada a `index.html`, compartilhando `ui-navigator.css`, a base visual e os assets aprovados. Scripts e regras de jogo preservados. Sem novas gerações PixelLab, merge ou deploy. Validação da entrada principal e limites em [HUD-NAVIGATOR-DIRECTION.md](HUD-NAVIGATOR-DIRECTION.md).
+
+## 29/10/2026 — Nova prévia da Cabine do Navegante
+
+Reformulação completa em `ui-preview.html`: cartão de capitão integrado, busto clicável, recursos sem molduras individuais, paleta de tinta e bronze fosco, navegação unificada e janelas discretas. Arte original PixelLab: 11 gerações confirmadas, 15 assets nativos, fontes locais OFL e receita versionada. Nenhuma imagem enviada pelo proprietário usada como referência. [Direção, capturas e verificações](HUD-NAVIGATOR-DIRECTION.md). Prévia aguardando aceite artístico; entrada principal preservada, sem merge/deploy. Cinco suítes focadas aprovadas; suíte completa com 145 aprovações e uma inicialização bloqueada pela ausência de Playwright.
+
+## 29/10/2026 — HUD náutica com pixel art nativa
+
+Revisão do PR #147 após avaliação visual do proprietário. Texturas pesadas foram substituídas por molduras discretas, superfícies calmas e líquidos de quatro tons com movimento suave. A largura visível não fica sob o contador; a preferência Reduzidas interrompe a animação. Os 19 WebPs somam 3.830 bytes. PixelLab autorizado: 10 gerações confirmadas, fontes e receita versionadas. [Direção, evidências e limites](HUD-PIXEL-REFINEMENT.md). Sem mudanças de save/combate, merge ou deploy.
+
 ## 29/10/2026 — Escalas Zoan e loops de caminhada
 
 Após a publicação autorizada do PR#145, a branch `fix/zoan-scale-walk-frames` dobra o Cavalo, aumenta o Albatroz em50% e normaliza o tamanho aparente do Dachshund entre frente/costas/perfis. Loops direcionais passam a excluir entradas/saídas de repouso e a cauda congelada da Girafa norte. As três Zoans iniciais pré-carregam locomoção ao equipar; retratos mantêm encaixe limitado. PNGs, saves, dano, cadência, velocidades e colisões permanecem inalterados.
@@ -426,3 +440,12 @@ Validação final sobre e302c09: 84 suítes Node aprovadas; teste específico de
 - Respawn após pelo menos30s,no mesmo ponto,com prazo salvo por região para impedir reset por viagem/reload. Migração idempotente preserva progressão e ignora prazos inválidos. Catálogos Python/JS usam reactive_homebound;XP,ouro,drops e arte não mudam.
 - Verificação:135 testes Node e2 Python passaram;83 pontos navegáveis e setores corretos;navegador nas nove regiões confirmou neutralidade,retaliação isolada,leash,morte,respawn,persistência/viagem/reload. Impel Down passou progressão/chefes/marcos/storage;Alabasta passou20 abates com o relógio de teste avançando o novo prazo. Build Pages e diff check passaram. Sem gerações pagas.
 - Arquivos/reversão em docs/MONSTER-SPAWNS.md. Saves mantêm as mesmas chaves e índices de itens;campo adicional de prazos. Sem merge/deploy automático.
+
+## 29/10/2026 — HUD náutica com materiais raster e molduras em 9-slice
+
+- Branch `feature/nautical-hud-assets-v2`, base `ce262cf` da main; checkout original e dois commits locais de Paper Doll preservados separadamente.
+- Auditoria de HUD, inventário, personagem/progressão, forja, mapa/prisão, NPCs, Central, criação e componentes compartilhados em `docs/HUD-NAUTICAL-ASSETS-V2.md`.
+- 19 WebPs originais (284.488 bytes), uma geração ImageGen embutida, zero chamadas PixelLab. Madeira, cordame, bronze, petróleo e pergaminho em imagens; seis estados de botão, slots neutros e preenchimentos vivos separados das molduras. PNGs de raridade e artes aprovadas preservados.
+- Nova folha final `ui-nautical-assets.css` nas duas entradas e no build; sem alterações em JavaScript de jogo, dados, handlers, fórmulas ou saves. Comparativo representativo único versionado; evidências completas ignoradas.
+- 145 testes Node passaram; seis suítes focadas, sintaxe raiz, build/URLs/bytes e diff check passaram. Navegador: 14 janelas em seis viewports, criação móvel, scroll, foco/tooltip, NPC, equipamento/trava/reload, aprimoramento, fusão/imbuir, 59 abates/2 chefes com barras reais e retorno. Moldura de vida estável entre 20,2% e 100%.
+- Limites: arraste automatizado inconclusivo também na base; seleção por clique/automática funcional. `supa-browser.test.cjs` sem módulo Node Playwright; não declarado aprovado. Aparelhos físicos/Safari/Firefox e benchmark formal não executados. Rollback e demais limites no relatório. Sem merge/deploy automático.
