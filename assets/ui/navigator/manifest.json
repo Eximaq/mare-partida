@@ -1,0 +1,252 @@
+{
+  "status": "prototype-awaiting-owner-visual-review",
+  "source_run": "pixellab-pip-generations/hud-navigator-20261029",
+  "reference_images": [],
+  "processing": "Native crops, portrait inner alpha mask, lossless encoding; no painting or resampling",
+  "fonts": {
+    "family": "Alegreya Sans",
+    "weights": [
+      400,
+      500,
+      700
+    ],
+    "license": "fonts/OFL.txt",
+    "source": "https://fonts.google.com/specimen/Alegreya+Sans"
+  },
+  "files": [
+    {
+      "file": "window.webp",
+      "source": "atlas.png",
+      "crop": [
+        4,
+        4,
+        129,
+        137
+      ],
+      "size": [
+        125,
+        133
+      ],
+      "sha256": "375ebe8375cf73f0f2cdbfc1db3d2606f6b95bd46c1e6b032f6e78e41c1afb4b",
+      "bytes": 544
+    },
+    {
+      "file": "panel.webp",
+      "source": "atlas.png",
+      "crop": [
+        136,
+        120,
+        253,
+        193
+      ],
+      "size": [
+        117,
+        73
+      ],
+      "sha256": "531ab54ec553b82045d76d82c313b64166af18e4c9ce1df44700560a9ed957f5",
+      "bytes": 612
+    },
+    {
+      "file": "control.webp",
+      "source": "atlas.png",
+      "crop": [
+        136,
+        84,
+        253,
+        113
+      ],
+      "size": [
+        117,
+        29
+      ],
+      "sha256": "3d74e54c0d9038aa7f982e6fbd07a3750bff0b4b0b396dd40cb4fb62641aafd3",
+      "bytes": 204
+    },
+    {
+      "file": "portrait.webp",
+      "source": "atlas.png",
+      "crop": [
+        163,
+        8,
+        228,
+        73
+      ],
+      "size": [
+        65,
+        65
+      ],
+      "sha256": "7018ad8446d76f874c6ac5883ecff457d19ca4bdc65d0ba7225f487feb7f0e0f",
+      "bytes": 354
+    },
+    {
+      "file": "paper.webp",
+      "source": "atlas.png",
+      "crop": [
+        184,
+        201,
+        252,
+        249
+      ],
+      "size": [
+        68,
+        48
+      ],
+      "sha256": "101751475e6a5117ea212aae3d8fc00992704f56b22c2f0d1af7524064c50209",
+      "bytes": 130
+    },
+    {
+      "file": "ink.webp",
+      "source": "atlas.png",
+      "crop": [
+        32,
+        36,
+        48,
+        52
+      ],
+      "size": [
+        16,
+        16
+      ],
+      "sha256": "fe54557030510e30ff5f38ca0518579012a0e6e9bf1c08dd513c92edff8a2e35",
+      "bytes": 38
+    },
+    {
+      "file": "slate.webp",
+      "source": "atlas.png",
+      "crop": [
+        168,
+        145,
+        184,
+        161
+      ],
+      "size": [
+        16,
+        16
+      ],
+      "sha256": "68e9c596ed8273e8332f9e4866b00414c2b5c7c47897833a234c94f163dde7f9",
+      "bytes": 38
+    },
+    {
+      "file": "paper-fill.webp",
+      "source": "atlas.png",
+      "crop": [
+        200,
+        220,
+        216,
+        236
+      ],
+      "size": [
+        16,
+        16
+      ],
+      "sha256": "f85d60c5040d8ae541cd4ebd4b1ee7ce1aaa1fb57a73c360ca9cbd70eed88fb9",
+      "bytes": 38
+    },
+    {
+      "file": "rule.webp",
+      "source": "atlas.png",
+      "crop": [
+        38,
+        5,
+        54,
+        6
+      ],
+      "size": [
+        16,
+        1
+      ],
+      "sha256": "b1d6f2638b53be916370b0ceee3a947e106ee3b62a0485e0117de34f7fa3153a",
+      "bytes": 38
+    },
+    {
+      "file": "emblem.webp",
+      "source": "emblem.png",
+      "size": [
+        28,
+        28
+      ],
+      "bytes": 314,
+      "sha256": "b378e7c2f758165338330be0915531389a034cf00e0bb955f9543cbd2942c4e2"
+    },
+    {
+      "file": "health.webp",
+      "source": "liquid.png",
+      "crop": [
+        0,
+        0,
+        64,
+        4
+      ],
+      "size": [
+        64,
+        4
+      ],
+      "bytes": 80,
+      "sha256": "c88929b22caa572f4016f237a4d117e5931032921f62b2748d134bc665afa013"
+    },
+    {
+      "file": "energy.webp",
+      "source": "liquid.png",
+      "crop": [
+        0,
+        4,
+        64,
+        8
+      ],
+      "size": [
+        64,
+        4
+      ],
+      "bytes": 84,
+      "sha256": "7f044e56aa3254c3133e3a5239b2751a3ac04ae5de7d612861104a5aa542baf3"
+    },
+    {
+      "file": "gold.webp",
+      "source": "liquid.png",
+      "crop": [
+        0,
+        8,
+        64,
+        12
+      ],
+      "size": [
+        64,
+        4
+      ],
+      "bytes": 70,
+      "sha256": "53a524b340604984e5b9009390065bf5e2ebb25ce84ba9be4206b34f24ed4145"
+    },
+    {
+      "file": "heart-icon.webp",
+      "source": "profile-icons.png",
+      "crop": [
+        0,
+        0,
+        12,
+        12
+      ],
+      "size": [
+        12,
+        12
+      ],
+      "bytes": 108,
+      "sha256": "f13358efd4704de167ce26154993838b3acf877b98dd97197f95f9a64cd118dc"
+    },
+    {
+      "file": "energy-icon.webp",
+      "source": "profile-icons.png",
+      "crop": [
+        12,
+        0,
+        24,
+        12
+      ],
+      "size": [
+        12,
+        12
+      ],
+      "bytes": 110,
+      "sha256": "80c51367587898710bf70a3534cfeb6d163148045468b088b006a49704352825"
+    }
+  ]
+}

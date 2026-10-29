@@ -1,3 +1,7 @@
+## 29/10/2026 — Nova prévia da Cabine do Navegante
+
+Reformulação completa em `ui-preview.html`: cartão de capitão integrado, busto clicável, recursos sem molduras individuais, paleta de tinta e bronze fosco, navegação unificada e janelas discretas. Arte original PixelLab: 11 gerações confirmadas, 15 assets nativos, fontes locais OFL e receita versionada. Nenhuma imagem enviada pelo proprietário usada como referência. [Direção, capturas e verificações](HUD-NAVIGATOR-DIRECTION.md). Prévia aguardando aceite artístico; entrada principal preservada, sem merge/deploy. Cinco suítes focadas aprovadas; suíte completa com 145 aprovações e uma inicialização bloqueada pela ausência de Playwright.
+
 ## 29/10/2026 — HUD náutica com pixel art nativa
 
 Revisão do PR #147 após avaliação visual do proprietário. Texturas pesadas foram substituídas por molduras discretas, superfícies calmas e líquidos de quatro tons com movimento suave. A largura visível não fica sob o contador; a preferência Reduzidas interrompe a animação. Os 19 WebPs somam 3.830 bytes. PixelLab autorizado: 10 gerações confirmadas, fontes e receita versionadas. [Direção, evidências e limites](HUD-PIXEL-REFINEMENT.md). Sem mudanças de save/combate, merge ou deploy.

@@ -1,5 +1,7 @@
 # HUD náutica — revisão em pixel art
 
+> Histórico da direção anterior, rejeitada pelo proprietário. A nova proposta jogável e sua aprovação pendente estão em [Cabine do Navegante](HUD-NAVIGATOR-DIRECTION.md); a entrada principal ainda não foi promovida.
+
 29/10/2026 · `feature/nautical-hud-assets-v2` · [PR #147](https://github.com/Eximaq/mare-partida/pull/147).
 
 O proprietário rejeitou a primeira aplicação por excesso de madeira, brilho e aparência de textura sobreposta. Esta revisão substitui esses materiais por pixel art nativa mais simples. A direção continua náutica, com azul petróleo, latão contido e madeira restrita a superfícies uniformes dos cabeçalhos.
