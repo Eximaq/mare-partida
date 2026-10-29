@@ -1,0 +1,226 @@
+{
+  "version": 2,
+  "source": "Original ImageGen raster atlas; user references used only as art direction, not copied into distribution.",
+  "sourceSHA256": "06a1e0b8a14b51aa830124a4541ab2714fe70cb313b856384fc6fb0be01f756c",
+  "method": "One built-in ImageGen call; measured extraction and WebP encoding with Pillow. No PixelLab calls.",
+  "textBakedIn": false,
+  "frameSlice": 44,
+  "assets": [
+    {
+      "file": "frames/window.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        5,
+        5,
+        309,
+        309
+      ],
+      "bytes": 14170
+    },
+    {
+      "file": "panels/sea.webp",
+      "width": 144,
+      "height": 144,
+      "bytes": 1772
+    },
+    {
+      "file": "frames/compact.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        319,
+        5,
+        623,
+        309
+      ],
+      "bytes": 8152
+    },
+    {
+      "file": "panels/navy.webp",
+      "width": 144,
+      "height": 144,
+      "bytes": 1162
+    },
+    {
+      "file": "frames/parchment.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        633,
+        5,
+        936,
+        309
+      ],
+      "bytes": 19694
+    },
+    {
+      "file": "panels/parchment.webp",
+      "width": 144,
+      "height": 144,
+      "bytes": 3954
+    },
+    {
+      "file": "panels/wood.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        946,
+        5,
+        1249,
+        309
+      ],
+      "bytes": 23950
+    },
+    {
+      "file": "buttons/normal.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        5,
+        319,
+        309,
+        602
+      ],
+      "bytes": 20978
+    },
+    {
+      "file": "buttons/hover.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        319,
+        319,
+        623,
+        602
+      ],
+      "bytes": 24344
+    },
+    {
+      "file": "buttons/pressed.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        633,
+        319,
+        936,
+        602
+      ],
+      "bytes": 17346
+    },
+    {
+      "file": "buttons/selected.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        946,
+        319,
+        1249,
+        602
+      ],
+      "bytes": 15746
+    },
+    {
+      "file": "buttons/disabled.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        5,
+        612,
+        309,
+        887
+      ],
+      "bytes": 20786
+    },
+    {
+      "file": "buttons/focus.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        319,
+        612,
+        623,
+        887
+      ],
+      "bytes": 19858
+    },
+    {
+      "file": "slots/empty.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        633,
+        612,
+        936,
+        887
+      ],
+      "bytes": 12474
+    },
+    {
+      "file": "headers/rope.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        946,
+        612,
+        1249,
+        887
+      ],
+      "bytes": 22582
+    },
+    {
+      "file": "bars/track.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        5,
+        897,
+        309,
+        1249
+      ],
+      "bytes": 7436
+    },
+    {
+      "file": "bars/health.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        319,
+        897,
+        623,
+        1249
+      ],
+      "bytes": 12992
+    },
+    {
+      "file": "bars/energy.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        633,
+        897,
+        936,
+        1249
+      ],
+      "bytes": 16952
+    },
+    {
+      "file": "bars/experience.webp",
+      "width": 256,
+      "height": 256,
+      "crop": [
+        946,
+        897,
+        1249,
+        1249
+      ],
+      "bytes": 20140
+    }
+  ],
+  "preserved": [
+    "assets/ui/inventory-slots/*.png",
+    "icones_menu_pirata/png/48/*.png",
+    "assets/ui/talents/*",
+    "assets/haki/*"
+  ]
+}
