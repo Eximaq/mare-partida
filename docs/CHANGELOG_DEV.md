@@ -426,3 +426,12 @@ Validação final sobre e302c09: 84 suítes Node aprovadas; teste específico de
 - Respawn após pelo menos30s,no mesmo ponto,com prazo salvo por região para impedir reset por viagem/reload. Migração idempotente preserva progressão e ignora prazos inválidos. Catálogos Python/JS usam reactive_homebound;XP,ouro,drops e arte não mudam.
 - Verificação:135 testes Node e2 Python passaram;83 pontos navegáveis e setores corretos;navegador nas nove regiões confirmou neutralidade,retaliação isolada,leash,morte,respawn,persistência/viagem/reload. Impel Down passou progressão/chefes/marcos/storage;Alabasta passou20 abates com o relógio de teste avançando o novo prazo. Build Pages e diff check passaram. Sem gerações pagas.
 - Arquivos/reversão em docs/MONSTER-SPAWNS.md. Saves mantêm as mesmas chaves e índices de itens;campo adicional de prazos. Sem merge/deploy automático.
+
+## 29/10/2026 — HUD náutica com materiais raster e molduras em 9-slice
+
+- Branch `feature/nautical-hud-assets-v2`, base `ce262cf` da main; checkout original e dois commits locais de Paper Doll preservados separadamente.
+- Auditoria de HUD, inventário, personagem/progressão, forja, mapa/prisão, NPCs, Central, criação e componentes compartilhados em `docs/HUD-NAUTICAL-ASSETS-V2.md`.
+- 19 WebPs originais (284.488 bytes), uma geração ImageGen embutida, zero chamadas PixelLab. Madeira, cordame, bronze, petróleo e pergaminho em imagens; seis estados de botão, slots neutros e preenchimentos vivos separados das molduras. PNGs de raridade e artes aprovadas preservados.
+- Nova folha final `ui-nautical-assets.css` nas duas entradas e no build; sem alterações em JavaScript de jogo, dados, handlers, fórmulas ou saves. Comparativo representativo único versionado; evidências completas ignoradas.
+- 145 testes Node passaram; seis suítes focadas, sintaxe raiz, build/URLs/bytes e diff check passaram. Navegador: 14 janelas em seis viewports, criação móvel, scroll, foco/tooltip, NPC, equipamento/trava/reload, aprimoramento, fusão/imbuir, 59 abates/2 chefes com barras reais e retorno. Moldura de vida estável entre 20,2% e 100%.
+- Limites: arraste automatizado inconclusivo também na base; seleção por clique/automática funcional. `supa-browser.test.cjs` sem módulo Node Playwright; não declarado aprovado. Aparelhos físicos/Safari/Firefox e benchmark formal não executados. Rollback e demais limites no relatório. Sem merge/deploy automático.

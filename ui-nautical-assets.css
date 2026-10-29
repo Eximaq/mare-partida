@@ -1,0 +1,292 @@
+/* Nautical raster materials. Geometry, event targets and live meter widths stay
+   with their existing owners. Artwork/provenance: assets/ui/nautical/manifest.json.
+   Border-image paints inward; small controls retain their original hit boxes. */
+:root {
+  --naut-window:url('assets/ui/nautical/frames/window.webp');
+  --naut-compact:url('assets/ui/nautical/frames/compact.webp');
+  --naut-paper-frame:url('assets/ui/nautical/frames/parchment.webp');
+  --naut-sea:url('assets/ui/nautical/panels/sea.webp');
+  --naut-navy:url('assets/ui/nautical/panels/navy.webp');
+  --naut-paper:url('assets/ui/nautical/panels/parchment.webp');
+  --naut-wood:url('assets/ui/nautical/panels/wood.webp');
+  --naut-header:url('assets/ui/nautical/headers/rope.webp');
+  --naut-normal:url('assets/ui/nautical/buttons/normal.webp');
+  --naut-hover:url('assets/ui/nautical/buttons/hover.webp');
+  --naut-pressed:url('assets/ui/nautical/buttons/pressed.webp');
+  --naut-selected:url('assets/ui/nautical/buttons/selected.webp');
+  --naut-disabled:url('assets/ui/nautical/buttons/disabled.webp');
+  --naut-focus:url('assets/ui/nautical/buttons/focus.webp');
+  --naut-slot:url('assets/ui/nautical/slots/empty.webp');
+  --naut-track:url('assets/ui/nautical/bars/track.webp');
+  --naut-hp:url('assets/ui/nautical/bars/health.webp');
+  --naut-energy:url('assets/ui/nautical/bars/energy.webp');
+  --naut-xp:url('assets/ui/nautical/bars/experience.webp');
+  --rpg-planks:var(--naut-wood);
+  --rpg-gold-button:var(--naut-hover);
+  --rpg-hud-bg:var(--naut-sea);
+  --rpg-recess:var(--naut-navy);
+  --rpg-surface:#102c38;
+  --rpg-raised:#10202d;
+  --rpg-paper:#e6d4ab;
+  --rpg-text:#f5e8c9;
+  --rpg-muted:#c5baa2;
+  --rpg-inset:none;
+}
+
+/* Large, medium and compact shells share artwork, never a scaled screenshot. */
+body :is(.dialog,.creation-dialog,.confirmation-card,.ui-window),
+#panelOverlay.inventory-mode .dialog {
+  border-image:var(--naut-window) 44 / 15px / 0 stretch;
+  border-radius:0;
+  background:var(--naut-sea) repeat;
+  box-shadow:none;
+}
+body :is(.dialog-header,.ui-window-header),
+#panelOverlay :is(.dialog-header,.op-topbar),
+#app :is(.floating-title,.journey-heading,.prison-masthead,.captain-profile-banner,.hierarchy-heading) {
+  background:var(--naut-wood) repeat;
+  border-image:var(--naut-header) 44 / 9px / 0 stretch;
+  border-radius:0;
+  box-shadow:none;
+}
+body :is(.dialog-header h2,.ui-window-header h2),
+#app :is(.op-title-banner strong,.creation-top h1,.captain-profile h2,.hierarchy-heading h2) {
+  font-family:Georgia,'Palatino Linotype',serif;
+  font-weight:700;
+  color:#f3d797;
+}
+#app :is(.topbar,.action-panel,.floating-chat,.journey-hud,.target-hud,.left-panel,.right-panel,
+  .character-quick-menu,.captain-quick-menu,.world-topline,.world-location),
+#huntXpTracker.hunt-xp-tracker {
+  background:var(--naut-sea) repeat;
+  border-image:var(--naut-window) 44 / 10px / 0 stretch;
+  border-radius:0;
+  box-shadow:none;
+}
+#app #mainMenu {
+  background:var(--naut-wood) repeat;
+  border-image:var(--naut-header) 44 / 9px / 0 stretch;
+  border-radius:0;
+  box-shadow:none;
+}
+#app :is(.action-panel,.topbar)::before,
+#app :is(.action-panel,.topbar)::after {background-image:none;box-shadow:none}
+
+/* Shared surfaces cover dynamically mounted feature windows as well. */
+#app :is(.ui-card,.character-identity,.character-allocation,.character-derived,
+  .character-skills,.attribute-budget,.character-power,.forge2-selection,
+  .forge2-operation,.forge2-costs,.forge2-preview,.forge2-summary,
+  .forge2-fusion-details,.forge2-fusion-materials,.talent-inspector,.talent-budget,
+  .achievement-entry,.achievement-count,.haki-reserve,.haki-state,
+  .haki-disciplines>article,.akuma-rank-panel,.akuma-slot,.akuma-passive,
+  .hierarchy-player,.hierarchy-board,.hierarchy-podium-card,.prison-stage-panel,
+  .prison-monsters-panel,.prison-rules,.prison-summary,.prison-first-clear,
+  .hunt-boss-brief,.hunt-economy,.hunt-sectors>article,.item-detail,
+  .captain-news-item,.captain-fact,.captain-setting-card,.captain-settings-detail,
+  .help-copy section,.creation-appearance,.doll-dressing-controls,.doll-dressing figure) {
+  background:var(--naut-navy) repeat;
+  border-image:var(--naut-compact) 44 / 7px / 0 stretch;
+  border-radius:0;
+  box-shadow:none;
+}
+#app :is(.faction-choice,.class-choice) {
+  background:var(--naut-sea) repeat;
+  border-image:var(--naut-compact) 44 / 9px / 0 stretch;
+  border-radius:0;
+  box-shadow:none;
+}
+#app :is(.faction-choice,.class-choice).chosen {
+  border-image-source:var(--naut-selected);
+}
+#panelOverlay :is(.dialog-body,.ui-window-body) {background:var(--naut-sea) repeat}
+#panelOverlay.inventory-mode .dialog-body {background:var(--naut-wood) repeat}
+#app :is(.op-inventory-shell,.op-body-grid,.op-equipment-board,.op-grid-wrap) {
+  background:var(--naut-wood) repeat;
+  box-shadow:none;
+}
+#app :is(.op-panel,.op-info-panel,.op-detail-box,.op-origin-row>div,.contract-modal-entry) {
+  background:var(--naut-paper) repeat;
+  border-image:var(--naut-paper-frame) 44 / 7px / 0 stretch;
+  border-radius:0;
+  box-shadow:none;
+}
+#app :is(.op-title-banner,.op-jolly,.op-bag-capacity,.op-power-box) {
+  background:var(--naut-wood) repeat;
+  border-image:var(--naut-header) 44 / 6px / 0 stretch;
+  box-shadow:none;
+}
+#app :is(.op-character-core,.op-character-stats>div) {
+  background:var(--naut-navy) repeat;
+  border-image:var(--naut-compact) 44 / 6px / 0 stretch;
+  box-shadow:none;
+}
+
+/* Shared controls resolve one material variable. Equal-specificity states keep
+   focus/disabled/pressed predictable even inside feature-specific selectors. */
+body :is(.ui-button,.close-button,.op-close,.ui-close),
+#app :is(.ui-button,.close-button,.op-close,.profile-heading button,
+  #mainMenu [data-panel],#captainMenuTrigger,.character-quick-menu [role=menuitem],
+  .skill-button,#hakiQuickCast button,.chat-tabs button,.chat-compose button,
+  .chat-corner-toggle,.world-command button,.journey-heading,.auto-button,
+  #expeditionMini,.journey-footer button,.floating-title button,.captain-tabs button) {
+  border-image:var(--naut-button,var(--naut-normal)) 44 fill / 6px / 0 stretch;
+  background:none;
+  border-radius:0;
+  color:var(--naut-button-text,#f5e8c9);
+  box-shadow:none;
+  text-shadow:none;
+}
+body button:is(.primary,[data-variant=primary]) {--naut-button:var(--naut-hover)}
+body button:is([aria-pressed=true],[aria-selected=true],[aria-expanded=true],.active,.selected) {
+  --naut-button:var(--naut-selected);
+}
+body button:hover:where(:not(:disabled)) {--naut-button:var(--naut-hover)}
+body button:active:where(:not(:disabled)) {--naut-button:var(--naut-pressed);filter:none}
+body button:disabled {--naut-button:var(--naut-disabled);--naut-button-text:#bebdb4}
+body button:focus-visible,#app button:focus-visible {
+  --naut-button:var(--naut-focus);
+  outline:2px solid #f6e3ad;
+  outline-offset:2px;
+}
+/* Item and talent imagery are never replaced by a generic button image. */
+#app :is(.op-item,.op-equip-slot):not([class*=rarity-]),
+#app :is(.op-empty-slot,.forge2-material-slot,.forge2-socket,.ui-slot) {
+  background:var(--naut-navy) repeat;
+  border-image:var(--naut-slot) 44 / 5px / 0 stretch;
+  border-radius:0;
+  box-shadow:none;
+}
+#panelOverlay.inventory-mode .op-grid>.op-item.empty,
+#panelOverlay.inventory-mode .op-equip-slot:not(.filled) {
+  background:var(--naut-navy) repeat;
+  border-image:var(--naut-slot) 44 fill / 5px / 0 stretch;
+  border-radius:0;
+  box-shadow:none;
+}
+#app :is(.forge2-tile,.forge2-pearl) {
+  background:var(--naut-wood) repeat;
+  border-image:var(--naut-slot) 44 / 5px / 0 stretch;
+  box-shadow:none;
+}
+#app :is(.op-slot-frame,.op-slot-icon,.op-item-icon) {box-shadow:none}
+#app :is(.op-item,.op-equip-slot,.forge2-tile,.forge2-pearl):is(:hover,.selected,[aria-pressed=true]) {
+  outline:2px solid var(--rpg-focus);
+  outline-offset:-2px;
+}
+#app :is(input:not([type=checkbox]):not([type=range]),select,textarea) {
+  background:var(--naut-navy) repeat #10202d;
+  border-image:var(--naut-compact) 44 / 4px / 0 stretch;
+  box-shadow:none;
+}
+#app .op-inventory-shell :is(input:not([type=checkbox]),select) {
+  background:var(--naut-paper) repeat #e6d4ab;
+  color:#322718;
+  color-scheme:light;
+  border-image-source:var(--naut-paper-frame);
+}
+
+/* Live resources: fixed track/frame + independent clipped fill. No fake values.
+   Keep the legacy negative-z layer so the existing labels remain above it. */
+#app .profile-resource {
+  background:var(--naut-navy) repeat;
+  height:22px;
+  padding-inline:9px;
+  border-radius:0;
+  overflow:visible;
+  border:0;
+}
+#app .profile-resource::after {
+  content:'';
+  position:absolute;
+  inset:0;
+  border:1px solid transparent;
+  border-image:var(--naut-header) 44 / 5px / 0 stretch;
+  pointer-events:none;
+}
+#app .profile-resource .mini-meter {inset:4px;width:auto;height:auto;overflow:hidden}
+#app .profile-resource .mini-meter i {
+  background:var(--naut-hp) center top / 144px 36px repeat-x;
+  box-shadow:none;
+}
+#app .profile-resource.energy .mini-meter i {
+  background-image:var(--naut-energy);
+}
+#app :is(.profile-resource.haki-will,#miniTalentResource) .mini-meter i {
+  background-image:var(--naut-xp);
+}
+#app .profile-resource :is(b,span:first-child) {line-height:22px;z-index:1}
+#app .profile-resource>span:first-child {display:inline-flex;align-items:center;gap:4px}
+#app .profile-resource>span:first-child::before {
+  content:'';
+  display:inline-block;
+  width:12px;
+  height:12px;
+  background:url('assets/ui/talents/talent_heart.png') center / contain no-repeat;
+  image-rendering:pixelated;
+}
+#app .profile-resource.energy>span:first-child::before {
+  background-image:url('assets/ui/talents/talent_anchor.png');
+}
+#app :is(.haki-will,#miniTalentResource)>span:first-child::before {
+  background-image:url('assets/ui/talents/talent_star.png');
+}
+#app .profile-xp .mini-meter {
+  height:8px;
+  background:var(--naut-navy) repeat;
+  border:1px solid transparent;
+  border-image:var(--naut-track) 44 / 2px / 0 stretch;
+  border-radius:0;
+  padding:1px;
+}
+#app .profile-xp .mini-meter i {
+  background:var(--naut-xp) center top / 128px 20px repeat-x;
+}
+#app :is(.meter,.journey-track,.progress-track,.hunt-xp-track,.target-hud-bar,.achievement-progress,
+  .hierarchy-progress,.forge2-refinement) {
+  background:var(--naut-navy) repeat;
+  border-image:var(--naut-track) 44 / 3px / 0 stretch;
+  border-radius:0;
+  box-shadow:none;
+}
+#app :is(.meter>span,.journey-track i,.progress-track i,.hunt-xp-track i,
+  .achievement-progress>span,.hierarchy-progress>span) {
+  background:var(--naut-xp) center top / 128px 24px repeat-x;
+  box-shadow:none;
+}
+#app .meter.hp>span {background-image:var(--naut-hp)}
+#app .meter.energy>span {background-image:var(--naut-energy)}
+#app .target-hud-bar i {background:var(--naut-hp) center top / 128px 24px repeat-x}
+
+/* Feedback keeps semantic text/colors; decoration comes from the compact frame. */
+body :is(.game-tooltip,.ui-tooltip,.menu-tooltip,.npc-tooltip,.toast,.ui-notice,.ui-empty),
+#app :is(.boss-banner,.forge2-outcome,.talent-message,.captain-empty,.haki-locked) {
+  background:var(--naut-navy) repeat;
+  border-image:var(--naut-compact) 44 / 6px / 0 stretch;
+  border-radius:0;
+  box-shadow:none;
+}
+body .confirmation-card {padding:26px}
+#app :is(.creation-emblem,.achievement-emblem) {
+  background:var(--naut-wood) repeat;
+  border-image:var(--naut-header) 44 / 6px / 0 stretch;
+  box-shadow:none;
+}
+/* Ship/water artwork and the talent constellation are deliberate richer centers;
+   preserve their existing images, transforms, hit areas and icon masks. */
+@media(max-width:760px) {
+  body :is(.dialog,.creation-dialog,.ui-window),#panelOverlay.inventory-mode .dialog {
+    border-image-width:9px;
+  }
+  #app .profile-resource {height:20px}
+  #app .profile-resource :is(b,span:first-child) {line-height:20px}
+  #app .topbar {border-image-width:7px}
+  #app :is(.dialog-header,.op-topbar) {border-image-width:6px}
+  #app :is(.op-panel,.character-identity,.character-allocation,.character-derived) {border-image-width:5px}
+  body .confirmation-card {padding:22px}
+}
+@media(forced-colors:active) {
+  body button:focus-visible {outline:2px solid Highlight}
+  #app .profile-resource {outline:1px solid CanvasText}
+}
+
+#app .haki-reserve em {background:var(--naut-xp) center top / 128px 24px repeat-x}
