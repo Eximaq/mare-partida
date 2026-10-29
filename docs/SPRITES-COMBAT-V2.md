@@ -1,6 +1,6 @@
 # Sprites e animações de combate v2 — 28/10/2026
 
-**Estado: implementação para revisão; aceite integral pendente de assets ausentes e aprovação visual do proprietário.** Branch `feature/pixellab-sprites-combat-v2`, criada de `origin/main` `88dc017b7fca01fccadb62f35183df4948757ef1`. Checkout separado em `../mare-pixellab-combat-v2`; o checkout original e seu trabalho não commitado foram preservados. Sem merge, deploy ou geração paga.
+**Registro da entrega original:** PR#145 publicado após aprovação; PR#146 publicou os ajustes de escala/caminhada. A seção de testes abaixo registra a validação original. **Atualização em revisão em 29/10:** [Hurt South, Lobo/Hoya, ataques Kuroobi e dez escalas](HURT-SOUTH-ESCALAS.md) resolve as lacunas de assets apontadas neste registro, sem novo merge/deploy automático. Branch original `feature/pixellab-sprites-combat-v2`, base `88dc017`; checkout original e seu trabalho local preservados.
 
 ## Auditoria e decisões
 
@@ -27,18 +27,18 @@ Todos estão integrados no desenho e nas interfaces pertinentes. A tabela descre
 | Gin → Gin New | gin | 29 | — | 29 | 29, sul | — |
 | Pearl → Pearl New | pearl | 29 | — | 29 | 29, sul | — |
 | Chew → CHEW NEW | chew | 29 | — | 29 | 29, sul | — |
-| Kuroobi → KUROOBI NEWQ | kuroobi | 29 | — | 29, sul/norte/leste | 29, sul | — |
+| Kuroobi → KUROOBI NEWQ | kuroobi | 29 | — | 29, quatro direções | 29, sul | — |
 | Marinheiro → Marinheiro NEW | marinheiro | 25 | — | 29 | 29, sul | — |
 | Cabaji → Cabaji NEW | cabaji | 29 | — | 29 | 29, sul | — |
 | Neko Leopard → Leopard NEW | neko | 29 | — | 29 | 29, sul | 29 |
 | Ushi Girafa → Model Giraffa New | ushi | 29 | — | 29 | 29, sul | 29 |
-| Inu Lobo → Modelo Lobo NEW | wolf | — | 8 (running-jump) | 29 | **ausente** | 29 |
-| Genio Hoya → Genio Hoya New | hoya | 29 | — | 29 | **ausente** | — |
+| Inu Lobo → Modelo Lobo NEW | wolf | — | 8 (running-jump) | 29 | 29, sul | 29 |
+| Genio Hoya → Genio Hoya New | hoya | 29 | — | 29 | 29, sul | — |
 | Ryu Ryu → Model Alossauro | ryu | 29 | — | 29 | 29, sul | 29 + 29 |
 | Ushi Bisão → Model Bisao New | bison | 29 | — | 29 | 29, sul | 29 |
 | Bananawani → Bananawani NEW | bananawani | 8 | — | 29 | 29, sul | — |
 
-Números são frames por direção. Run real é o fallback de locomoção onde não existe Walk; onde não existe Run, continua a caminhada. Não foram espelhadas direções nem reaproveitadas animações antigas no lugar de novas equivalentes. Kuroobi/oeste usa o novo Idle/oeste, sem simular um ataque ausente. Hurt indisponível conserva a orientação e usa um breve realce, identificado como fallback, sem alegar animação nativa.
+Números são frames por direção. Run real é o fallback de locomoção onde não existe Walk; onde não existe Run, continua a caminhada. Não foram espelhadas direções nem reaproveitadas animações antigas no lugar de novas equivalentes. Após a atualização de 29/10, Kuroobi tem quatro ataques nativos e todos usam Hurt South por decisão explícita do proprietário, sem alterar a orientação armazenada do ator.
 
 ## Sete habilidades
 
@@ -62,7 +62,7 @@ Após a mutação de HP, somente perda positiva registra uma reação no ator. N
 
 Uma `WeakMap` guarda timestamps transitórios, fora do save. Janela fixa de **180 ms**, quatro quadros reais escolhidos da faixa de recuo/impacto, sem editar PNGs. Os índices por personagem estão em `assets/sprites-combat-v2/playback.json`. Golpes dentro da janela não a reiniciam nem a prolongam. Após 180 ms, o desenho consulta novamente o estado atual: Idle, locomoção ou ataque. Os relógios de ataque continuam avançando; Hurt não cancela callbacks nem duplica dano. Reset do relógio da cena invalida uma reação antiga.
 
-Lobo e Hoya não exportaram Hurt; essa ausência foi reconfirmada no serviço antes do fechamento. Os outros 19 só exportaram sul. Portanto **não foi atingido o critério de animação Hurt nativa para todos os personagens/direções**. O realce é somente fallback visual.
+Na entrega original, Lobo/Hoya não exportavam Hurt e os demais19 só tinham sul. Em29/10, os dois Hurt South foram disponibilizados e integrados. O proprietário definiu South para dano em qualquer orientação, resolvendo essa pendência sem gerar outras direções.
 
 ## Pixels, escalas e carregamento
 
@@ -103,14 +103,14 @@ Validações executadas em Windows, Node 24.15.0, Python 3.13.7 e Chromium headl
 
 ## Pendências, revisão e rollback
 
-Faltam exatamente:
+Pendências da entrega original, atualizadas em 29/10:
 
-1. `wolf/hurt-{south,north,east,west}.png` e `hoya/hurt-{south,north,east,west}.png`: animações inexistentes nos respectivos exports novos.
-2. `hurt-{north,east,west}.png` nos demais 19 conjuntos: somente sul foi disponibilizado.
-3. `kuroobi/attack-west.png`: direção inexistente no novo ataque.
+1. Resolvido: Hurt South do Lobo e Hoya integrado.
+2. Resolvido por decisão do proprietário: usar South em qualquer orientação nos21 conjuntos.
+3. Resolvido: ataque oeste Kuroobi e novas versões norte/leste integrados.
 4. FPS autoral e aprovação visual dos pivôs, poses de contato e fallbacks. Não se geraram assets para preencher lacunas.
 5. Falha preexistente de cadência humana; ensaio prolongado de memória/FPS e teste em aparelho móvel físico não executados.
 
 Capturas recentes ficam somente em `docs/evidence-sprites-v2/` (ignorado pelo Git), incluindo galerias dos 21 em Idle/Walk/Attack/Hurt/Special e telas desktop/móvel; há repetição em `dist/` para conferir o pacote. Data local: 28/10/2026. Nenhuma evidência em massa, ZIP, save, credencial ou inventário privado PixelLab entra no commit.
 
-Saves mantêm formato, chaves e índices de itens; não há migração. Para reverter, reverter os commits deste PR e reconstruir Pages. Assets antigos e renderizadores anteriores foram preservados. O checkout original permanece intocado. **Merge e produção dependem de autorização expressa do proprietário, após revisão visual e funcional.** Próximo passo mínimo: fornecer os clipes/direções ausentes e revisar visualmente este candidato; nenhuma nova geração paga está autorizada.
+Saves mantêm formato, chaves e índices de itens; não há migração. Para reverter, reverter os commits deste PR e reconstruir Pages. Assets antigos e renderizadores anteriores foram preservados. O checkout original permanece intocado. **Merge e produção dependem de autorização expressa do proprietário, após revisão visual e funcional.** A revisão atual está no relatório Hurt South; não faltam mais os clipes citados nesta entrega original e nenhuma geração paga foi solicitada.

@@ -87,7 +87,9 @@ def main():
                 if action in ['walk','run'] and loop:
                     assert 0 <= loop[0] < loop[1] < clip['frames'], (key,direction,loop)
                     clip['loop_start'],clip['loop_end'] = loop
-                if key in playback.get(action, {}): clip['impact_frame'] = playback[action][key]
+                if key in playback.get(action, {}):
+                    impact = playback[action][key]
+                    clip['impact_frame'] = impact[direction] if isinstance(impact, dict) else impact
                 if action == 'hurt':
                     clip['playback_start'] = playback['hurt_start'][key]
                     clip['playback_frames'] = 4

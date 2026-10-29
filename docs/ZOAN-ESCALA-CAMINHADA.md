@@ -1,6 +1,6 @@
 # Ajustes Zoan — escala e caminhada — 29/10/2026
 
-Branch `fix/zoan-scale-walk-frames`, base `bb564ec` (PR #145 já integrado e publicado com autorização). Este ajuste está separado para revisão, sem novo merge/deploy automático.
+Branch `fix/zoan-scale-walk-frames`, base `bb564ec` (PR #145 já integrado e publicado com autorização). Publicado após autorização no PR#146. [Hurt South e escalas adicionais](HURT-SOUTH-ESCALAS.md) constituem uma atualização posterior em revisão.
 
 ## Resultado
 
@@ -54,4 +54,4 @@ Cavalo, Albatroz e Dachshund também passam a pré-carregar seus clipes ao equip
 
 ## Compatibilidade e limites
 
-Saves, IDs, mecânicas, navegação e PNGs originais permanecem intactos. Reverter o commit do ajuste restaura escalas/loops anteriores. Não foram gerados os Hurt/direções ausentes apontados no relatório anterior. A falha antiga da fixture de cadência humana também não foi alterada nesta tarefa. Aprovação visual do proprietário e merge deste ajuste continuam pendentes.
+Saves, IDs, mecânicas, navegação e PNGs originais permanecem intactos. Reverter o commit do ajuste restaura escalas/loops anteriores. Os Hurt ausentes foram disponibilizados posteriormente pelo proprietário; a integração está documentada na atualização Hurt South. A falha antiga da fixture de cadência humana também não foi alterada nesta tarefa. Este ajuste foi aprovado, integrado e publicado no PR#146.
