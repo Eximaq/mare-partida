@@ -4485,5 +4485,6 @@
     "realFramesPerClip": 8,
     "fps": 12,
     "artApprovalPending": true
-  }
+  },
+  "visualRevision": "clean-face-fit-4"
 }

@@ -1,0 +1,580 @@
+{
+  "version": 1,
+  "productionEnabled": false,
+  "cell": {
+    "width": 128,
+    "height": 128
+  },
+  "sourceCatalog": "catalogo_itens_mare_partida.pdf (22/10/2026)",
+  "equipmentSlots": [
+    "pants",
+    "boots",
+    "gloves",
+    "cloak",
+    "head"
+  ],
+  "styles": [
+    {
+      "id": "hair-cropped",
+      "kind": "hair",
+      "name": "Curto rente",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-hair-cropped-masculino-south.png",
+          "north": "assets/custom-hair-cropped-masculino-north.png",
+          "west": "assets/custom-hair-cropped-masculino-west.png",
+          "east": "assets/custom-hair-cropped-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-hair-cropped-feminino-south.png",
+          "north": "assets/custom-hair-cropped-feminino-north.png",
+          "west": "assets/custom-hair-cropped-feminino-west.png",
+          "east": "assets/custom-hair-cropped-feminino-east.png"
+        }
+      },
+      "galleryId": "d1f1f67e-2679-43a7-b71e-b2cbe5635a66",
+      "sourceJob": "0a7e854c-0238-4187-8e3c-c33ee052bb9d",
+      "approval": "candidate"
+    },
+    {
+      "id": "hair-spiky",
+      "kind": "hair",
+      "name": "Espetado",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-hair-spiky-masculino-south.png",
+          "north": "assets/custom-hair-spiky-masculino-north.png",
+          "west": "assets/custom-hair-spiky-masculino-west.png",
+          "east": "assets/custom-hair-spiky-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-hair-spiky-feminino-south.png",
+          "north": "assets/custom-hair-spiky-feminino-north.png",
+          "west": "assets/custom-hair-spiky-feminino-west.png",
+          "east": "assets/custom-hair-spiky-feminino-east.png"
+        }
+      },
+      "galleryId": "a26d8b2c-3c6f-40fb-9e31-2046b728f385",
+      "sourceJob": "c60b06ca-101c-4ce7-9ae8-856db31a060a",
+      "approval": "candidate"
+    },
+    {
+      "id": "hair-swept",
+      "kind": "hair",
+      "name": "Lateral",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-hair-swept-masculino-south.png",
+          "north": "assets/custom-hair-swept-masculino-north.png",
+          "west": "assets/custom-hair-swept-masculino-west.png",
+          "east": "assets/custom-hair-swept-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-hair-swept-feminino-south.png",
+          "north": "assets/custom-hair-swept-feminino-north.png",
+          "west": "assets/custom-hair-swept-feminino-west.png",
+          "east": "assets/custom-hair-swept-feminino-east.png"
+        }
+      },
+      "galleryId": "9ff1e231-62c6-401c-a7b5-b0b1582e2fc6",
+      "sourceJob": "0ad6889c-0232-4aa2-9c50-8799c892a5d2",
+      "approval": "candidate"
+    },
+    {
+      "id": "hair-bob",
+      "kind": "hair",
+      "name": "Chanel",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-hair-bob-masculino-south.png",
+          "north": "assets/custom-hair-bob-masculino-north.png",
+          "west": "assets/custom-hair-bob-masculino-west.png",
+          "east": "assets/custom-hair-bob-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-hair-bob-feminino-south.png",
+          "north": "assets/custom-hair-bob-feminino-north.png",
+          "west": "assets/custom-hair-bob-feminino-west.png",
+          "east": "assets/custom-hair-bob-feminino-east.png"
+        }
+      },
+      "galleryId": "15cb2ffd-7e4b-40bc-9c51-05d27b5d6e8b",
+      "sourceJob": "b5a4ffc6-4d33-4006-b764-153bc42f593a",
+      "approval": "candidate"
+    },
+    {
+      "id": "hair-wavy",
+      "kind": "hair",
+      "name": "Ondulado",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-hair-wavy-masculino-south.png",
+          "north": "assets/custom-hair-wavy-masculino-north.png",
+          "west": "assets/custom-hair-wavy-masculino-west.png",
+          "east": "assets/custom-hair-wavy-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-hair-wavy-feminino-south.png",
+          "north": "assets/custom-hair-wavy-feminino-north.png",
+          "west": "assets/custom-hair-wavy-feminino-west.png",
+          "east": "assets/custom-hair-wavy-feminino-east.png"
+        }
+      },
+      "galleryId": "898714f6-e26a-4597-b45b-ea08352dca56",
+      "sourceJob": "1e73a1ad-044d-4bbe-9862-9aa4c0ac04f7",
+      "approval": "candidate"
+    },
+    {
+      "id": "hair-braided",
+      "kind": "hair",
+      "name": "Tranças presas",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-hair-braided-masculino-south.png",
+          "north": "assets/custom-hair-braided-masculino-north.png",
+          "west": "assets/custom-hair-braided-masculino-west.png",
+          "east": "assets/custom-hair-braided-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-hair-braided-feminino-south.png",
+          "north": "assets/custom-hair-braided-feminino-north.png",
+          "west": "assets/custom-hair-braided-feminino-west.png",
+          "east": "assets/custom-hair-braided-feminino-east.png"
+        }
+      },
+      "galleryId": "03c3fdaf-e211-4941-9dea-a803d6093a8a",
+      "sourceJob": "2b911367-516f-4525-98ed-ba5e8bf27910",
+      "approval": "candidate"
+    },
+    {
+      "id": "face-gentle",
+      "kind": "face",
+      "name": "Original · Azul",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-face-gentle-masculino-south.png",
+          "north": "assets/custom-face-gentle-masculino-north.png",
+          "west": "assets/custom-face-gentle-masculino-west.png",
+          "east": "assets/custom-face-gentle-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-face-gentle-feminino-south.png",
+          "north": "assets/custom-face-gentle-feminino-north.png",
+          "west": "assets/custom-face-gentle-feminino-west.png",
+          "east": "assets/custom-face-gentle-feminino-east.png"
+        }
+      },
+      "source": "original-clean-face-features",
+      "physiognomy": "original",
+      "galleryId": "97747fb4-8204-40ae-ae98-eed3bc2c8861",
+      "approval": "candidate"
+    },
+    {
+      "id": "face-sharp",
+      "kind": "face",
+      "name": "Original · Castanho",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-face-sharp-masculino-south.png",
+          "north": "assets/custom-face-sharp-masculino-north.png",
+          "west": "assets/custom-face-sharp-masculino-west.png",
+          "east": "assets/custom-face-sharp-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-face-sharp-feminino-south.png",
+          "north": "assets/custom-face-sharp-feminino-north.png",
+          "west": "assets/custom-face-sharp-feminino-west.png",
+          "east": "assets/custom-face-sharp-feminino-east.png"
+        }
+      },
+      "source": "original-clean-face-features",
+      "physiognomy": "original",
+      "galleryId": "1d587a35-f91f-41c6-b133-7ae867f6da9a",
+      "approval": "candidate"
+    },
+    {
+      "id": "face-cheerful",
+      "kind": "face",
+      "name": "Original · Verde",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-face-cheerful-masculino-south.png",
+          "north": "assets/custom-face-cheerful-masculino-north.png",
+          "west": "assets/custom-face-cheerful-masculino-west.png",
+          "east": "assets/custom-face-cheerful-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-face-cheerful-feminino-south.png",
+          "north": "assets/custom-face-cheerful-feminino-north.png",
+          "west": "assets/custom-face-cheerful-feminino-west.png",
+          "east": "assets/custom-face-cheerful-feminino-east.png"
+        }
+      },
+      "source": "original-clean-face-features",
+      "physiognomy": "original",
+      "galleryId": "97985d62-84b4-4d5c-a63d-675ea58857af",
+      "approval": "candidate"
+    },
+    {
+      "id": "face-veteran",
+      "kind": "face",
+      "name": "Original · Cinza",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-face-veteran-masculino-south.png",
+          "north": "assets/custom-face-veteran-masculino-north.png",
+          "west": "assets/custom-face-veteran-masculino-west.png",
+          "east": "assets/custom-face-veteran-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-face-veteran-feminino-south.png",
+          "north": "assets/custom-face-veteran-feminino-north.png",
+          "west": "assets/custom-face-veteran-feminino-west.png",
+          "east": "assets/custom-face-veteran-feminino-east.png"
+        }
+      },
+      "source": "original-clean-face-features",
+      "physiognomy": "original",
+      "galleryId": "94761cd9-0e7a-40ba-821f-8404eaca0c3a",
+      "approval": "candidate"
+    },
+    {
+      "id": "item-8",
+      "itemId": 8,
+      "kind": "boots",
+      "name": "Botas de Navegante",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-item-8-masculino-south.png",
+          "north": "assets/custom-item-8-masculino-north.png",
+          "west": "assets/custom-item-8-masculino-west.png",
+          "east": "assets/custom-item-8-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-item-8-feminino-south.png",
+          "north": "assets/custom-item-8-feminino-north.png",
+          "west": "assets/custom-item-8-feminino-west.png",
+          "east": "assets/custom-item-8-feminino-east.png"
+        }
+      },
+      "galleryId": "70ea8e0a-c6b2-4d3c-a6f0-3ab2cee0e6fb",
+      "sourceJob": "e74e2681-e2c1-488d-b668-806a55c39448",
+      "approval": "candidate"
+    },
+    {
+      "id": "item-9",
+      "itemId": 9,
+      "kind": "boots",
+      "name": "Botas do Recifal",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-item-9-masculino-south.png",
+          "north": "assets/custom-item-9-masculino-north.png",
+          "west": "assets/custom-item-9-masculino-west.png",
+          "east": "assets/custom-item-9-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-item-9-feminino-south.png",
+          "north": "assets/custom-item-9-feminino-north.png",
+          "west": "assets/custom-item-9-feminino-west.png",
+          "east": "assets/custom-item-9-feminino-east.png"
+        }
+      },
+      "galleryId": "7acdadd7-58d0-4705-9fa3-9bc1fdcda436",
+      "sourceJob": "069220b5-38e8-4c4a-832c-878f39d06ae1",
+      "approval": "candidate"
+    },
+    {
+      "id": "item-18",
+      "itemId": 18,
+      "kind": "head",
+      "name": "Bandana das Correntes",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-item-18-masculino-south.png",
+          "north": "assets/custom-item-18-masculino-north.png",
+          "west": "assets/custom-item-18-masculino-west.png",
+          "east": "assets/custom-item-18-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-item-18-feminino-south.png",
+          "north": "assets/custom-item-18-feminino-north.png",
+          "west": "assets/custom-item-18-feminino-west.png",
+          "east": "assets/custom-item-18-feminino-east.png"
+        }
+      },
+      "galleryId": "ed4a217b-5a69-4410-83da-a98ae18d5558",
+      "sourceJob": "d4093e7a-efbe-495a-9f3f-6a9a5c84c121",
+      "approval": "candidate"
+    },
+    {
+      "id": "item-19",
+      "itemId": 19,
+      "kind": "head",
+      "name": "Capacete do Corsário",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-item-19-masculino-south.png",
+          "north": "assets/custom-item-19-masculino-north.png",
+          "west": "assets/custom-item-19-masculino-west.png",
+          "east": "assets/custom-item-19-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-item-19-feminino-south.png",
+          "north": "assets/custom-item-19-feminino-north.png",
+          "west": "assets/custom-item-19-feminino-west.png",
+          "east": "assets/custom-item-19-feminino-east.png"
+        }
+      },
+      "galleryId": "ad9cdb24-6a64-47f6-9941-1a5a79ae7c8f",
+      "sourceJob": "a77fe19f-3fc9-417f-addb-fbd831f48262",
+      "approval": "candidate"
+    },
+    {
+      "id": "item-21",
+      "itemId": 21,
+      "kind": "pants",
+      "name": "Grevas de Navegante",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-item-21-masculino-south.png",
+          "north": "assets/custom-item-21-masculino-north.png",
+          "west": "assets/custom-item-21-masculino-west.png",
+          "east": "assets/custom-item-21-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-item-21-feminino-south.png",
+          "north": "assets/custom-item-21-feminino-north.png",
+          "west": "assets/custom-item-21-feminino-west.png",
+          "east": "assets/custom-item-21-feminino-east.png"
+        }
+      },
+      "galleryId": "52656df2-ad54-42b8-88a8-5d56e9028169",
+      "sourceJob": "601f6625-63a6-49f2-a14d-94e880a01053",
+      "approval": "candidate"
+    },
+    {
+      "id": "item-22",
+      "itemId": 22,
+      "kind": "pants",
+      "name": "Calças da Maré Alta",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-item-22-masculino-south.png",
+          "north": "assets/custom-item-22-masculino-north.png",
+          "west": "assets/custom-item-22-masculino-west.png",
+          "east": "assets/custom-item-22-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-item-22-feminino-south.png",
+          "north": "assets/custom-item-22-feminino-north.png",
+          "west": "assets/custom-item-22-feminino-west.png",
+          "east": "assets/custom-item-22-feminino-east.png"
+        }
+      },
+      "galleryId": "e740c5c8-d763-4e8a-9e2d-ddc4aa33c05e",
+      "sourceJob": "367e3a17-b33d-494a-8702-39600fbb8804",
+      "approval": "candidate"
+    },
+    {
+      "id": "item-23",
+      "itemId": 23,
+      "kind": "cloak",
+      "name": "Manto do Faroleiro",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-item-23-masculino-south.png",
+          "north": "assets/custom-item-23-masculino-north.png",
+          "west": "assets/custom-item-23-masculino-west.png",
+          "east": "assets/custom-item-23-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-item-23-feminino-south.png",
+          "north": "assets/custom-item-23-feminino-north.png",
+          "west": "assets/custom-item-23-feminino-west.png",
+          "east": "assets/custom-item-23-feminino-east.png"
+        }
+      },
+      "galleryId": "8a39c158-5ec3-4587-b585-ad533125d26a",
+      "sourceJob": "cf9c9d4e-4adf-4d6c-be9e-e6142c0716d1",
+      "approval": "candidate"
+    },
+    {
+      "id": "item-24",
+      "itemId": 24,
+      "kind": "cloak",
+      "name": "Capa do Horizonte",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-item-24-masculino-south.png",
+          "north": "assets/custom-item-24-masculino-north.png",
+          "west": "assets/custom-item-24-masculino-west.png",
+          "east": "assets/custom-item-24-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-item-24-feminino-south.png",
+          "north": "assets/custom-item-24-feminino-north.png",
+          "west": "assets/custom-item-24-feminino-west.png",
+          "east": "assets/custom-item-24-feminino-east.png"
+        }
+      },
+      "galleryId": "b5679d05-cee0-42af-961a-6e0f3e54b4a4",
+      "sourceJob": "b35fd6de-333a-44cb-afc0-2c7f81e0e2c6",
+      "approval": "candidate"
+    },
+    {
+      "id": "item-25",
+      "itemId": 25,
+      "kind": "gloves",
+      "name": "Luvas de Cordame",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-item-25-masculino-south.png",
+          "north": "assets/custom-item-25-masculino-north.png",
+          "west": "assets/custom-item-25-masculino-west.png",
+          "east": "assets/custom-item-25-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-item-25-feminino-south.png",
+          "north": "assets/custom-item-25-feminino-north.png",
+          "west": "assets/custom-item-25-feminino-west.png",
+          "east": "assets/custom-item-25-feminino-east.png"
+        }
+      },
+      "galleryId": "45c4959d-8eb2-4a8f-b34c-c27611192a00",
+      "sourceJob": "7d880278-a4d6-4d2f-8b93-e1a971373443",
+      "approval": "candidate"
+    },
+    {
+      "id": "item-26",
+      "itemId": 26,
+      "kind": "gloves",
+      "name": "Luvas do Vigia",
+      "reviewed": false,
+      "layers": {
+        "masculino": {
+          "south": "assets/custom-item-26-masculino-south.png",
+          "north": "assets/custom-item-26-masculino-north.png",
+          "west": "assets/custom-item-26-masculino-west.png",
+          "east": "assets/custom-item-26-masculino-east.png"
+        },
+        "feminino": {
+          "south": "assets/custom-item-26-feminino-south.png",
+          "north": "assets/custom-item-26-feminino-north.png",
+          "west": "assets/custom-item-26-feminino-west.png",
+          "east": "assets/custom-item-26-feminino-east.png"
+        }
+      },
+      "galleryId": "15a666e5-5e8c-4efa-8705-3f4b77d55dde",
+      "sourceJob": "2df9d78d-e85d-4d3f-b1bf-42badc2a4954",
+      "approval": "candidate"
+    }
+  ],
+  "palettes": {
+    "skin": [
+      "porcelain",
+      "light",
+      "warm",
+      "olive",
+      "copper",
+      "brown",
+      "dark",
+      "ebony"
+    ],
+    "hair": [
+      "black",
+      "brown",
+      "blonde",
+      "auburn",
+      "silver",
+      "blue",
+      "violet",
+      "pink",
+      "green",
+      "white"
+    ]
+  },
+  "originalFaces": {
+    "masculino": {
+      "south": "assets/custom-face-gentle-masculino-south.png",
+      "north": "assets/custom-face-gentle-masculino-north.png",
+      "west": "assets/custom-face-gentle-masculino-west.png",
+      "east": "assets/custom-face-gentle-masculino-east.png"
+    },
+    "feminino": {
+      "south": "assets/custom-face-gentle-feminino-south.png",
+      "north": "assets/custom-face-gentle-feminino-north.png",
+      "west": "assets/custom-face-gentle-feminino-west.png",
+      "east": "assets/custom-face-gentle-feminino-east.png"
+    }
+  },
+  "headCalibration": {
+    "south": {
+      "hairX": 1,
+      "hairY": 0
+    },
+    "reason": "Original eye axis is approximately one native pixel right of the scalp centre, both bodies."
+  },
+  "gallery": {
+    "projectName": "Jade Dragon",
+    "projectId": "f5b4fc25-691a-4d78-a579-f586de4507e1",
+    "sheet": {
+      "width": 512,
+      "height": 256,
+      "columns": 4,
+      "rows": 2,
+      "cell": 128,
+      "directions": [
+        "south",
+        "north",
+        "west",
+        "east"
+      ],
+      "bodies": [
+        "masculino",
+        "feminino"
+      ]
+    }
+  },
+  "costs": {
+    "initialBatch": 180,
+    "faceCoverageStudy": 9,
+    "contactMeasurements": 33.6,
+    "total": 222.6,
+    "exactAssembly": 0
+  },
+  "coverage": {
+    "staticViews": 8,
+    "distinctMotionFrames": 336,
+    "models": 20,
+    "generatedPosesPending": [
+      "idle:south",
+      "idle:north",
+      "idle:west",
+      "idle:east",
+      "walk:north",
+      "walk:west",
+      "walk:east"
+    ]
+  },
+  "facialPolicy": "Original facial geometry and clean pixel clusters; iris variants only. Generative face studies rejected by owner."
+}

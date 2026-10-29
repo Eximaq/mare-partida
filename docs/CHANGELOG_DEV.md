@@ -1,3 +1,14 @@
+# 29/10/2026 — Personalização96 e correção de camadas
+
+- Continuação do PR144, branch `feature/paper-doll-96px-rebuild`, base39efa85.
+-6 cabelos,8 paletas de pele,10 de cabelo e10 equipamentos dos slots combinados, dois corpos/quatro vistas. Catálogo e IDs preservados.
+- Hierarquia explícita por direção; rosto antes do cabelo, equipamento de cabeça depois; luvas posteriores ocultas pelo tronco e calças/calçados sem pele embutida.
+-336 poses novas medidas para encaixe, textura de calça sobre a superfície real da perna, correção do colar/abertura das capas.
+- Após rejeição artística dos rostos generativos, substituição por traços originais limpos com íris discretas; ajuste frontal do cabelo+1px conforme eixo dos olhos.
+-20 folhas finais na Jade Dragon. Custos confirmados222,6; calibração/cópias/paletas/exportações exatas gratuitas. Fontes e evidências fora do Git.
+- Testes de paletas, itens, geometria/contatos e navegador em6880 casos individuais+688 conjuntos; suíte/build e resultados finais na entrega.
+- Sem migração de saves ou ativação em produção. Idle4 vistas e WalkN/W/E seguem pendentes; catálogo/rig preservam compatibilidade futura. Detalhes em PAPER-DOLL-96-PERSONALIZACAO.md.
+
 # 29/10/2026 — Ataques modulares da base96 (PR144)
 
 - Branch `feature/paper-doll-96px-rebuild`; continuação da base39fb1fd, com `origin/main` integrado sem descartar as atualizações de HUD dos colaboradores.

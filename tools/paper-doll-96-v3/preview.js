@@ -2,9 +2,11 @@
 (async function () {
   'use strict';
   const $ = id => document.getElementById(id), rig = window.MareRig96, motion = window.MareMotion96;
-  const response = await fetch('manifest.json');
+  if(location.protocol==='file:'){$('status').textContent='Abra esta bancada pelo endereço HTTP da prévia para carregar as camadas e animações.';return;}
+  const response = await fetch('manifest.json', {cache:'no-store'});
   if (!response.ok) throw Error('Não foi possível carregar o pacote.');
   const manifest = await response.json();
+  const [catalog, appearanceRigs] = await Promise.all(['appearance-catalog.json','appearance-rig.json'].map(async file => { const r=await fetch(file, {cache:'no-store'}); if(!r.ok) throw Error('Catálogo de aparência indisponível.'); return r.json(); }));
   window.MareLayers96.validate(manifest);
   const loaded = new Map(), inflight = new Map(), composites = new Map();
   let protectedFiles = new Set(), active = null, version = 0;
@@ -22,34 +24,45 @@
       const img = new Image();
       img.onload = () => { loaded.set(url, img); inflight.delete(url); trimImages(); resolve(img); };
       img.onerror = () => { inflight.delete(url); reject(Error('Imagem ausente: ' + url)); };
-      img.src = url;
+      img.src = url + (url.includes('?') ? '&' : '?') + 'revision=' + encodeURIComponent(manifest.visualRevision || 'base');
     });
     inflight.set(url, promise); return promise;
   }
   const map = await new Promise((resolve, reject) => {
     const img = new Image(); img.onload = () => resolve(img); img.onerror = reject; img.src = '../../assets/lobby-map.png';
   });
+  const wardrobe = MareWardrobe96.create(catalog, appearanceRigs, image);
+  const controlNames={hair:'Cabelo',face:'Rosto',skin:'Pele',hairColor:'Cor do cabelo',pants:'Calças',boots:'Calçados',gloves:'Luvas',cloak:'Capa',head:'Cabeça'};
+  for(const [slot,label] of Object.entries(controlNames)){
+    const wrapper=document.createElement('label');wrapper.textContent=label+' ';const select=document.createElement('select');select.id='look-'+slot;select.dataset.look=slot;
+    const initial=new Option(['hair','face'].includes(slot)?'Original':slot==='skin'?'Original':slot==='hairColor'?'Castanho':'Sem equipamento',slot==='hairColor'?'brown':'original');select.add(initial);
+    if(['hair','face'].includes(slot))select.add(new Option('Sem '+label.toLowerCase(),'none'));
+    const list=slot==='skin'?Object.entries(MareAppearance96.skins).map(([id,p])=>({id,name:p.name})):slot==='hairColor'?Object.entries(MareAppearance96.hairs).filter(([id])=>id!=='brown').map(([id,p])=>({id,name:p.name})):catalog.styles.filter(p=>p.kind===slot);
+    for(const item of list)select.add(new Option(item.name,item.id));wrapper.append(select);$('appearance-controls').append(wrapper);
+  }
+  const lookValues=()=>Object.fromEntries([...document.querySelectorAll('[data-look]')].map(el=>[el.dataset.look,el.value]));
   let playing = true, epoch = performance.now(), frame = 0;
   function selection(bodyName = $('body').value, action = $('action').value, direction = $('direction').value) {
     const body = manifest.bodies[bodyName], clip = body.clips[action]?.[direction];
-    return { key: [bodyName, action, direction].join(':'), reference: body.references[direction],
+    return { body:bodyName,action,direction,look:{},key: [bodyName, action, direction].join(':'), reference: body.references[direction],
       clip: clip?.modular ? clip : null,
       layers: action === 'static' ? body.layers?.[direction] : clip?.modular ? clip.layers : null };
   }
   function compose(selected, fi, hidden = []) {
     const spec = motion.clipSpec(manifest, selected.clip);
-    const key = [selected.key, fi, ...hidden].join(':');
+    const key = [selected.key, JSON.stringify(selected.look), fi, ...hidden].join(':');
     if (composites.has(key)) return composites.get(key);
     const tile = document.createElement('canvas'); tile.width = spec.width; tile.height = spec.height;
-    MareLayers96.draw(tile.getContext('2d'), loaded, selected.layers, fi, spec, hidden);
+    if(Object.keys(selected.look).length)wardrobe.draw(tile.getContext('2d'),loaded,selected,fi,spec,hidden,selected.look);
+    else MareLayers96.draw(tile.getContext('2d'), loaded, selected.layers, fi, spec, hidden);
     composites.set(key, tile);
     if (composites.size > 64) composites.delete(composites.keys().next().value);
     return tile;
   }
-  async function render(body, action, direction, fi = 0, hidden = []) {
-    const selected = selection(body, action, direction);
+  async function render(body, action, direction, fi = 0, hidden = [], look = {}) {
+    const selected = selection(body, action, direction);selected.look=look;
     if (!selected.layers) throw Error('Movimento ainda não disponível.');
-    await Promise.all(Object.values(selected.layers).map(image));
+    await Promise.all(Object.values(selected.layers).map(image));await wardrobe.prepare(selected,look);
     return compose(selected, fi, hidden);
   }
   function actor(ctx, img, spec, x = 300, feet = 260) {
@@ -85,14 +98,18 @@
     } else $('status').textContent = 'Este movimento/direção ainda não foi produzido.';
   }
   async function refresh() {
-    const token = ++version, next = selection(); active = null;
+    const token = ++version, next = selection(); next.look=lookValues(); active = null;
+    for(const option of $('action').options){option.dataset.baseLabel ||= option.textContent;const available=option.value==='static'||!!manifest.bodies[next.body].clips[option.value]?.[next.direction];option.disabled=!available;option.textContent=option.dataset.baseLabel+(available?'':' · pendente');}
     $('status').textContent = 'Carregando camadas…';
-    protectedFiles = new Set([next.reference, ...Object.values(next.layers || {})]);
+    const extras=catalog.styles.filter(p=>Object.values(next.look).includes(p.id)).map(p=>p.layers[next.body][next.direction]);
+    if(next.look.face!=='none'&&catalog.originalFaces?.[next.body]?.[next.direction])extras.push(catalog.originalFaces[next.body][next.direction]);
+    protectedFiles = new Set([next.reference, ...Object.values(next.layers || {}),...extras]);
     await Promise.all([...protectedFiles].map(image));
     if (token !== version) return;
     frame = 0; epoch = performance.now(); active = next; draw(epoch);
   }
   function showError(error) { $('status').textContent = error.message; console.error(error); }
+  for(const el of document.querySelectorAll('[data-look]'))el.addEventListener('change',()=>refresh().catch(showError));
   for (const id of ['body', 'direction', 'action']) $(id).addEventListener('change', () => refresh().catch(showError));
   $('frame').addEventListener('input', () => { playing = false; frame = Number($('frame').value); $('play').textContent = 'Reproduzir'; draw(performance.now()); });
   $('play').addEventListener('click', () => {
@@ -102,6 +119,6 @@
   });
   function tick(now) { draw(now); requestAnimationFrame(tick); }
   await refresh(); requestAnimationFrame(tick);
-  window.__review96v3 = { manifest, loaded, selection, render, image, draw, get frame() { return frame; },
+  window.__review96v3 = { manifest, catalog, appearanceRigs, wardrobe, loaded, selection, render, image, draw, get frame() { return frame; },
     get playing() { return playing; }, get cacheSize() { return composites.size; }, get imageCacheSize() { return loaded.size; } };
 })().catch(error => { document.getElementById('status').textContent = error.message; console.error(error); });
