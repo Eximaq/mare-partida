@@ -1,3 +1,9 @@
+## 28/10/2026 — Sprites PixelLab e combate visual v2 (em revisão)
+
+Branch `feature/pixellab-sprites-combat-v2`, base `88dc017`. Os 21 conjuntos novos foram importados sem alterar seus 5.957 frames nativos. Renderizadores existentes, prévias e silhuetas usam os novos assets; Hurt visual de180ms acompanha a perda efetiva de HP e os sete especiais acompanham os eventos existentes, sem alterar dano, colisão, custos, recargas ou saves. Assets antigos e trabalho local do proprietário foram preservados.
+
+Validação:104 arquivos de teste Node,97 scripts com sintaxe válida, comparação RGBA completa, seis regressões específicas de fruta, E2E no fonte e no Pages local com1.146 poses/sete especiais/20 abates/nove mapas/reload e capturas desktop/móvel. Existe uma falha antiga de cadência humana reproduzida também com fontes da main. Faltam Hurt do Lobo/Hoya, direções de Hurt dos demais e ataque oeste do Kuroobi. Não houve geração paga, merge ou deploy. [Relatório completo e pendências](SPRITES-COMBAT-V2.md).
+
 ## 28/10/2026 — Patrulha dos monstros e agressividade em Impel Down
 
 Monstros das nove regiões caminham e fazem pausas perto do ponto fixo (raio máximo72px), respeitando colisões e controles. Permanecem neutros até receber dano; respawns e limites de perseguição são preservados. Em Impel Down, o adversário inicia a aproximação e o ataque sem provocação, atravessando a arena por navegação.

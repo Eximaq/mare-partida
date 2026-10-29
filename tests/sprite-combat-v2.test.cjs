@@ -1,0 +1,30 @@
+'use strict';
+const assert=require('node:assert/strict');
+// A missing damage gate, refreshed timestamp on every hit, or wrong priority must fail here.
+require('../sprite-combat-v2.js');
+const S=globalThis.MareSpriteCombatV2,actor={};
+assert.equal(S.hurt(actor,0,1),false);
+assert.equal(S.hurtProgress(actor,1),null);
+assert.equal(S.hurt(actor,5,1),true);
+assert.equal(S.hurtProgress(actor,1),0);
+assert.equal(S.hurt(actor,5,1.05),false);
+assert.ok(Math.abs(S.hurtProgress(actor,1.09)-.5)<1e-8);
+assert.equal(S.hurtProgress(actor,1.181),null,'consecutive hits cannot extend the reaction');
+assert.equal(S.hurt(actor,5,1.2,{protected:true}),false,'skill/transition/death never queue stale hurt');
+assert.equal(S.hurtProgress(actor,1.2),null);
+assert.equal(S.hurt(actor,5,1.3),true);
+assert.equal(S.hurtProgress(actor,1.29),null,'scene clock reset must clear stale reactions');
+console.log('Visual Hurt: effective damage only, immediate start, 180ms bound, multi-hit coalescing, protected actions and clock reset passed');
+require('../sprite-combat-v2-data.js');
+// A directional fallback must not replay a south-only reaction facing sideways.
+assert.equal(S.resolve('kuroobi','attack','west').clip.source_animation,'idle');
+assert.equal(S.resolve('ryu','bite','east').clip.source_animation,'Ataque_special_haki_1');
+assert.equal(S.resolve('ryu','tail','east').clip.source_animation,'Ataque_especial_2');
+assert.equal(S.resolve('uma','walk','east').clip.source_animation,'Corrida');
+assert.equal(S.resolve('wolf','hurt','south').requested,false);
+assert.equal(S.resolve('tori','hurt','west').requested,false);
+const hurtClip=S.resolve('cocox','hurt','south').clip;
+assert.equal(S.frameAt(hurtClip,{progress:0}),3);assert.equal(S.frameAt(hurtClip,{progress:1}),6);
+const attack=S.resolve('neko','attack','south').clip;
+assert.equal(S.frameAt(attack,{progress:4/9,hitRatio:4/9}),19,'new contact pose aligns to unchanged logical impact');
+console.log('Presentation: direction-safe fallback, separate Ryu specials, native run fallback, inspected Hurt ranges and visual-only contact alignment passed');
