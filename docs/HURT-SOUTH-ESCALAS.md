@@ -46,6 +46,8 @@ Arredondamento de destino e amostragem nearest-neighbor podem variar até 2 px. 
 
 Capturas locais em `docs/evidence-south-hurt/` (ignorado pelo Git), incluindo galeria das 40 poses, fontes das animações novas e telas 1366×768/390×844. Sem saves, caches ou evidências em massa no commit.
 
+Na integração com a HUD do PR#147, o CI reproduziu uma falha em `hud_responsive_browser.py`: XP/h sobrepunha o menu em844×390. A reserva de altura do diário colocava o XP/h em y=−49px. Em telas horizontais baixas, XP/h passa a ficar abaixo das utilidades à esquerda; em até760px, alvo e XP/h usam a coluna livre à direita do perfil. Não foram alteradas as asserções. A reprodução isolada falhou antes e passou depois; a suíte original passou nos sete tamanhos, incluindo844×390 e568×320. Dez suítes Node de UI, build e integridade Pages passaram novamente. Os estilos novos e as duas entradas também passam a acionar o workflow visual de inventário, fechando a lacuna que deixou a alteração anterior sem esse teste. Capturas em `docs/evidence-south-hurt/hud-fix/`.
+
 ## Limites e revisão
 
 Hurt norte/leste/oeste próprios deixam de ser pendência: South em todas as direções é a decisão explícita do proprietário. Nenhum Hurt falta nos 21 conjuntos; o ataque oeste do Kuroobi também está disponível. Permanecem FPS autoral não informado pelo export, revisão visual humana, ensaio prolongado de desempenho e teste em celular físico. A falha antiga de cadência humana documentada no relatório original está fora deste ajuste e não foi mascarada.

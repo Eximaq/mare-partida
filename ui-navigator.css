@@ -254,4 +254,12 @@ body .confirmation-card{padding:26px}
   #app #panelOverlay :is(button.ui-button,.close-button,.op-close){min-height:44px}
   #app #panelOverlay :is(.close-button,.op-close){min-width:44px}
 }
+/* Short landscape screens cannot reserve a full journey card above the bottom edge. */
+@media(max-height:500px) and (orientation:landscape) and (min-width:761px){
+  #app #huntXpTracker.hunt-xp-tracker{top:calc(var(--utilities-bottom,200px) + 8px);bottom:auto;left:var(--rpg-edge);right:auto;width:260px}
+}
+@media(max-height:500px) and (orientation:landscape) and (max-width:760px){
+  #app .target-hud{top:12px;left:auto;right:12px;width:calc(100vw - var(--profile-right,306px) - 24px)}
+  #app #huntXpTracker.hunt-xp-tracker{top:calc(var(--target-height,72px) + 24px);bottom:auto;left:auto;right:12px;width:calc(100vw - var(--profile-right,306px) - 24px)}
+}
 @media(forced-colors:active){body :is(button,a,input,select,textarea):focus-visible{outline:2px solid Highlight}#app .profile-resource{outline:1px solid CanvasText}}
