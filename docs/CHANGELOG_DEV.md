@@ -1,3 +1,13 @@
+# 29/10/2026 — Ataques modulares da base96 (PR144)
+
+- Branch `feature/paper-doll-96px-rebuild`; continuação da base39fb1fd, com `origin/main` integrado sem descartar as atualizações de HUD dos colaboradores.
+- Seis categorias anteriores, quatro direções, dois corpos:48 entradas,40 clips distintos, oito frames reais12FPS; tecnologia/disparo compartilham fontes idênticos.
+- Margem nativa160/pivô80,128 preserva a escala96. Cabeça neutra, rosto, cabelo, roupa e oclusão dos braços independentes. Malha de roupa e sockets do modelo anterior; nenhum preenchimento temporal.
+- PixelLab:333 medições e40 animações,153,3 gerações adicionais confirmadas. Lote de20 simultâneas; assinatura já habilitada pelo proprietário.80 folhas gratuitas por camada salvas na Jade Dragon, somando100 com as bases anteriores.
+- Bancada carrega atlas sob demanda com caches limitados; controles de repetição e remoção das peças. Armas/flashes acrescentados pelo gerador em regiões laterais foram removidos por patches guardados; não são equipamento de produção.
+- Testes: Node de rig, malha, montagem,48 entradas e contratos; navegador em400 quadros, referências sem diferença, bordas livres e save intocado. Suíte Node:148/148; navegador fonte e build público aprovados; `python tools/build_pages.py` concluído. Capturas atuais no pacote local `Ataques-96-v3`, fora do Git.
+- Compatibilidade/rollback: aventura normal, catálogo, saves e trabalho de calças preservados. Desfazer somente o commit desta etapa remove a atualização da bancada. Revisão artística, Idle animado, demais caminhadas e integração no jogo permanecem pendentes.
+
 ## 28/10/2026 — Patrulha dos monstros e agressividade em Impel Down
 
 Monstros das nove regiões caminham e fazem pausas perto do ponto fixo (raio máximo72px), respeitando colisões e controles. Permanecem neutros até receber dano; respawns e limites de perseguição são preservados. Em Impel Down, o adversário inicia a aproximação e o ataque sem provocação, atravessando a arena por navegação.

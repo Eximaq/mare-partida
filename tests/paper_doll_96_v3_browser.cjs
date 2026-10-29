@@ -9,13 +9,14 @@ const origin = process.argv.find(value => /^https?:\/\//.test(value)) || 'http:/
     const response = await page.goto(new URL('tools/paper-doll-96-v3/', origin).href);
     assert.equal(response.status(), 200);
     await page.waitForFunction(() => window.__review96v3);
-    const audit = await page.evaluate(() => {
+    const audit = await page.evaluate(async () => {
       const q = window.__review96v3, size = q.manifest.frame;
       const canvas = () => Object.assign(document.createElement('canvas'), size);
       const results = [];
       for (const [bodyName, body] of Object.entries(q.manifest.bodies)) for (const [direction, pieces] of Object.entries(body.layers)) {
+        await q.render(bodyName, 'static', direction);
         const expected = canvas(), actual = canvas();
-        expected.getContext('2d').drawImage(q.loaded.get(body.references[direction]), 0, 0);
+        expected.getContext('2d').drawImage(await q.image(body.references[direction]), 0, 0);
         MareLayers96.draw(actual.getContext('2d'), q.loaded, pieces, 0, size);
         const a = actual.getContext('2d').getImageData(0, 0, 128, 128).data;
         const b = expected.getContext('2d').getImageData(0, 0, 128, 128).data;
@@ -41,17 +42,20 @@ const origin = process.argv.find(value => /^https?:\/\//.test(value)) || 'http:/
         if (!clip.modular) continue;
         const digests = new Set(); let edgePixels = 0;
         for (let f = 0; f < clip.frames; f++) {
-          const c = canvas(); MareLayers96.draw(c.getContext('2d'), q.loaded, clip.layers, f, size);
-          const d = c.getContext('2d').getImageData(0, 0, 128, 128).data;
-          for (let n = 0; n < 128; n++) for (const p of [n, n * 128, n * 128 + 127, 127 * 128 + n]) if (d[p * 4 + 3] > 100) edgePixels++;
+          const c = await q.render(bodyName, action, direction, f);
+          const w = c.width, h = c.height;
+          const d = c.getContext('2d').getImageData(0, 0, w, h).data;
+          for (let n = 0; n < Math.max(w,h); n++) for (const p of [n < w ? n : -1, n < h ? n * w : -1, n < h ? n * w + w - 1 : -1, n < w ? (h - 1) * w + n : -1]) if (p >= 0 && d[p * 4 + 3] > 100) edgePixels++;
           digests.add(c.toDataURL());
         }
         clips.push({ bodyName, action, direction, frames: clip.frames, unique: digests.size, edgePixels });
       }
-      return { results, clips, storage: localStorage.length, disabled: q.manifest.productionEnabled === false };
+      return { results, clips, cacheSize: q.cacheSize, imageCacheSize: q.imageCacheSize, storage: localStorage.length, disabled: q.manifest.productionEnabled === false };
     });
     assert.equal(audit.results.length, 8);
     assert.ok(audit.disabled);
+    assert.ok(audit.cacheSize <= 64);
+    assert.ok(audit.imageCacheSize <= 32);
     assert.equal(audit.storage, 0);
     for (const result of audit.results) {
       assert.equal(result.changed, 0, JSON.stringify(result));

@@ -5,6 +5,7 @@
 })(typeof globalThis === 'object' ? globalThis : this, function () {
   'use strict';
   const order = ['body', 'pants', 'top', 'face', 'hair'];
+  const renderOrder = ['underArms', 'body', 'headBase', 'pants', 'top', 'face', 'hair', 'foreground'];
   function safeFile(file) {
     return typeof file === 'string' && /^assets\/[a-z0-9-]+\.png$/.test(file);
   }
@@ -17,12 +18,15 @@
       }
       for (const action of Object.values(body.clips || {})) for (const clip of Object.values(action)) {
         if (clip.modular === true && !order.every(slot => safeFile(clip.layers?.[slot]))) throw Error('Incomplete animated layer set');
+        if (clip.layers && !Object.values(clip.layers).every(safeFile)) throw Error('Unsafe optional layer path');
+        if (clip.frame && (![clip.frame.width, clip.frame.height].every(n => Number.isInteger(n) && n >= 128 && n <= 256)
+            || !clip.pivot || !Number.isFinite(clip.pivot.x) || !Number.isFinite(clip.pivot.y))) throw Error('Invalid padded clip');
       }
     }
     return true;
   }
   function visible(layers, hidden = []) {
-    return order.filter(slot => layers?.[slot] && !hidden.includes(slot)).map(slot => ({ slot, file: layers[slot] }));
+    return renderOrder.filter(slot => layers?.[slot] && !hidden.includes(slot)).map(slot => ({ slot, file: layers[slot] }));
   }
   function draw(ctx, images, layers, frame, frameSize, hidden = []) {
     const pieces = visible(layers, hidden);
@@ -34,8 +38,10 @@
       target.drawImage(image, x, 0, frameSize.width, frameSize.height, 0, 0, frameSize.width, frameSize.height);
     };
     const body = pieces.find(piece => piece.slot === 'body');
+    const underArms = pieces.find(piece => piece.slot === 'underArms');
+    if (underArms) render(ctx, underArms.file);
     if (body) render(ctx, body.file);
-    const overlays = pieces.filter(piece => piece.slot !== 'body');
+    const overlays = pieces.filter(piece => piece.slot !== 'body' && piece.slot !== 'underArms');
     if (body && overlays.length) {
       // Preserve the approved partially transparent edge pixels. Underpaint is
       // revealed only when a piece is hidden; it must not tint that piece's edge.
@@ -50,5 +56,5 @@
     }
     for (const piece of overlays) render(ctx, piece.file);
   }
-  return { order, validate, visible, draw };
+  return { order, renderOrder, validate, visible, draw };
 });

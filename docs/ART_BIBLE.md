@@ -11,6 +11,13 @@ as animações nem substitui o personagem publicado. Cobertura e custos em
 [PAPER-DOLL-96-V3.md](PAPER-DOLL-96-V3.md). Os contratos84 anteriores permanecem
 como fonte dos movimentos e histórico, sem ativar a nova criação feminina.
 
+29/10: seis categorias de ataque ×quatro direções ×dois corpos disponíveis
+na bancada, oito frames reais12FPS.40 clips distintos cobrem48 entradas porque
+tecnologia/disparo compartilham os fontes anteriores. Células160/pivô80,128
+preservam a escala96. Cabeça neutra, rosto, cabelo, roupa e oclusão das mãos
+permanecem separados. Folhas completas por camada na pasta Jade Dragon.
+São candidatos de animação/encaixe para aprovação artística, sem migração do jogo.
+
 Continuação de22/10: [candidato de encaixe leste no Workbench](PAPER-DOLL-ENCAIXE-LESTE.md). O ataque pode ser inspecionado em quatro direções; o novo vestuário leste ainda precisa de harmonização artística. Sem geração paga nesta etapa e sem ativação em produção.
 
 
