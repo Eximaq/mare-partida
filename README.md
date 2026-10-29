@@ -1,6 +1,6 @@
 # Desenvolvimento compartilhado no GitHub
 
-Sprites de combate v2: [21 conjuntos importados, validação e animações ainda ausentes](docs/SPRITES-COMBAT-V2.md). Candidato em branch separada, aguardando revisão; nenhuma publicação em produção.
+Sprites de combate v2: [21 conjuntos importados, validação e animações ainda ausentes](docs/SPRITES-COMBAT-V2.md), publicados após aprovação no PR#145. [Ajustes de escala e caminhada Zoan](docs/ZOAN-ESCALA-CAMINHADA.md) em revisão separada.
 
 **Impel Down jogável:** mapa original, um adversário por andar, chefes a cada cinco e progressão automática com marcos salvos. [Regras, compatibilidade e validação](docs/IMPEL-DOWN.md).
 

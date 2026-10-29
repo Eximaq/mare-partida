@@ -1928,7 +1928,9 @@
         "anchor": [
           66.0,
           112
-        ]
+        ],
+        "loop_start": 4,
+        "loop_end": 26
       },
       "south": {
         "image": "assets/sprites-combat-v2/uma/run-south.png",
@@ -2254,7 +2256,9 @@
         "anchor": [
           66.0,
           118
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 26
       },
       "west": {
         "image": "assets/sprites-combat-v2/uma/run-west.png",
@@ -2591,7 +2595,9 @@
         "anchor": [
           66.0,
           112
-        ]
+        ],
+        "loop_start": 4,
+        "loop_end": 26
       },
       "north": {
         "image": "assets/sprites-combat-v2/uma/run-north.png",
@@ -2928,7 +2934,9 @@
         "anchor": [
           66.0,
           112
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 26
       }
     },
     "hurt": {
@@ -4629,6 +4637,7 @@
     }
   },
   "fps_source": "Not provided by export; playback FPS configured locally",
+  "world_scale": 2,
   "legacyHeight": 44,
   "logical_attack": {
     "south": {
@@ -4657,5 +4666,6 @@
     }
   },
   "monster": false,
-  "worldHeight": 44
+  "worldHeight": 44,
+  "world_header_height": 135.66666666666669
 }

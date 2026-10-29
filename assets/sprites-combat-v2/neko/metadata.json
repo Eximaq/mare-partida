@@ -574,7 +574,9 @@
         "anchor": [
           68.0,
           116
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 25
       },
       "north": {
         "image": "assets/sprites-combat-v2/neko/walk-north.png",
@@ -911,7 +913,9 @@
         "anchor": [
           66.0,
           113
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 25
       },
       "west": {
         "image": "assets/sprites-combat-v2/neko/walk-west.png",
@@ -1248,7 +1252,9 @@
         "anchor": [
           66.0,
           113
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 25
       },
       "east": {
         "image": "assets/sprites-combat-v2/neko/walk-east.png",
@@ -1585,7 +1591,9 @@
         "anchor": [
           66.0,
           113
-        ]
+        ],
+        "loop_start": 3,
+        "loop_end": 25
       }
     },
     "hurt": {

@@ -39,14 +39,20 @@
    p=p<=r?(r>0?p/r*contact:contact):contact+(p-r)/(1-r||1)*(1-contact);
   }
   if(clip.playback_frames){const index=p??clamp(time/clip.playback_seconds);return clip.playback_start+Math.min(clip.playback_frames-1,Math.floor(index*clip.playback_frames));}
-  return p!==null?Math.min(clip.frames-1,Math.floor(p*clip.frames+1e-9)):clip.loop?Math.floor(Math.max(0,time)*clip.fps)%clip.frames:Math.min(clip.frames-1,Math.floor(Math.max(0,time)*clip.fps));
+  if(p!==null)return Math.min(clip.frames-1,Math.floor(p*clip.frames+1e-9));
+  const step=Math.floor(Math.max(0,time)*clip.fps+1e-9);
+  if(clip.loop){const start=clip.loop_start??0,end=clip.loop_end??clip.frames-1;return start+step%(end-start+1);}
+  return Math.min(clip.frames-1,step);
  }
- function draw(c,key,x,y,{action='idle',direction='front',time=0,scale=1,height=null,progress=null,hitRatio=null,flash=false}={}){
+ function draw(c,key,x,y,{action='idle',direction='front',time=0,scale=1,height=null,progress=null,hitRatio=null,flash=false,fit=null}={}){
   const r=resolve(key,action,direction);if(!r)return false;
   let clip=r.clip,im=image(clip.image);
   if(!im.complete||!im.naturalWidth){clip=r.entry.clips.idle[r.facing]||r.entry.clips.idle.south;im=image(clip.image);if(!im.complete||!im.naturalWidth)return false;}
   const frame=frameAt(clip,{time,progress,hitRatio}),base=r.entry.clips.idle[r.facing]||r.entry.clips.idle.south;
-  const reference=base.bounds[0][3]-base.bounds[0][1],factor=(height??r.entry.legacyHeight*scale)/reference;
+  const b=base.bounds[0],extent=Math.max(b[2]-b[0],b[3]-b[1]);
+  const reference=r.entry.idle_extent_ratio?extent/r.entry.idle_extent_ratio:b[3]-b[1];
+  let factor=(height??r.entry.legacyHeight*scale)/reference;
+  if(Number.isFinite(fit)&&fit>0)factor=Math.min(factor,fit/extent);
   const size=Math.round(clip.size*factor),foot=clip.anchor[1];
   c.save();c.imageSmoothingEnabled=false;if(flash)c.filter='brightness(1.5)';
   c.drawImage(im,frame*clip.size,0,clip.size,clip.size,Math.round(x-size/2),Math.round(y-foot*factor),size,size);c.restore();return true;

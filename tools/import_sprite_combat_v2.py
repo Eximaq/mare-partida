@@ -74,11 +74,19 @@ def main():
         entries = dict(pool.map(import_one, records))
     playback = json.loads((OUT/'playback.json').read_text(encoding='utf8'))
     for key, entry in entries.items():
+        if key in playback.get('world_scale', {}): entry['world_scale'] = playback['world_scale'][key]
+        if key in playback.get('match_profile_extent', []):
+            b = entry['clips']['idle']['east']['bounds'][0]
+            entry['idle_extent_ratio'] = max(b[2]-b[0],b[3]-b[1])/(b[3]-b[1])
         for action, ds in entry['clips'].items():
             for direction, clip in ds.items():
                 # Retain the source canvas origin and motion, including jumps and weapon trails.
                 # Compensate only the first-frame transparent margin; do not chase each bbox.
                 clip['anchor'] = [clip['size']/2, clip['bounds'][0][3]]
+                loop = playback.get('locomotion_loops', {}).get(key, {}).get(direction)
+                if action in ['walk','run'] and loop:
+                    assert 0 <= loop[0] < loop[1] < clip['frames'], (key,direction,loop)
+                    clip['loop_start'],clip['loop_end'] = loop
                 if key in playback.get(action, {}): clip['impact_frame'] = playback[action][key]
                 if action == 'hurt':
                     clip['playback_start'] = playback['hurt_start'][key]
@@ -109,6 +117,14 @@ def main():
             old_scale = rules['worldSize']/cell
         entry['monster'] = key not in ['tori','uma','inu','neko','ushi','wolf','ryu','bison','hoya']
         entry['worldHeight'] = entry['legacyHeight']*(old_scale if old_scale is not None else (128 if key=='helmeppo' else 168 if key=='bananawani' else 80)/cell)
+        if key in ['uma','tori','inu']:
+            target = entry['legacyHeight']*(104/64 if key=='tori' else 74/48)*entry.get('world_scale',1)
+            heights = []
+            for direction in ['south','north','west','east']:
+                b = entry['clips']['idle'][direction]['bounds'][0]
+                ref = max(b[2]-b[0],b[3]-b[1])/entry['idle_extent_ratio'] if 'idle_extent_ratio' in entry else b[3]-b[1]
+                heights.append(target/ref*(b[3]-b[1]))
+            entry['world_header_height'] = max(heights)
         (OUT/key/'metadata.json').write_text(json.dumps(entry,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
     # Keep complete source metrics in per-character metadata; runtime needs only playback fields.
     runtime = json.loads(json.dumps(entries))

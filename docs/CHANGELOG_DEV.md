@@ -1,3 +1,9 @@
+## 29/10/2026 — Escalas Zoan e loops de caminhada
+
+Após a publicação autorizada do PR#145, a branch `fix/zoan-scale-walk-frames` dobra o Cavalo, aumenta o Albatroz em50% e normaliza o tamanho aparente do Dachshund entre frente/costas/perfis. Loops direcionais passam a excluir entradas/saídas de repouso e a cauda congelada da Girafa norte. As três Zoans iniciais pré-carregam locomoção ao equipar; retratos mantêm encaixe limitado. PNGs, saves, dano, cadência, velocidades e colisões permanecem inalterados.
+
+Validação:105 arquivos Node,5.957 frames RGBA preservados,4.608 amostras reais de caminhada das oito formas em quatro direções, E2E de21 conjuntos/sete especiais/20 abates/nove mapas/save no dist e build Pages aprovados. [Relatório, faixas de quadros, medidas e capturas](ZOAN-ESCALA-CAMINHADA.md). Ajuste aguardando revisão, sem merge/deploy automático.
+
 ## 28/10/2026 — Sprites PixelLab e combate visual v2 (em revisão)
 
 Branch `feature/pixellab-sprites-combat-v2`, base `88dc017`. Os 21 conjuntos novos foram importados sem alterar seus 5.957 frames nativos. Renderizadores existentes, prévias e silhuetas usam os novos assets; Hurt visual de180ms acompanha a perda efetiva de HP e os sete especiais acompanham os eventos existentes, sem alterar dano, colisão, custos, recargas ou saves. Assets antigos e trabalho local do proprietário foram preservados.
