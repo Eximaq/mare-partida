@@ -1,6 +1,6 @@
 {
   "schema": "mare-native-fit-96-v1",
-  "revision": "native-ownership-v9-4",
+  "revision": "structural-occlusion-v10-2",
   "productionEnabled": false,
   "canvas": {
     "rest": [
@@ -116,37 +116,37 @@
           "x": 0.5897216796875,
           "y": 0.3956298828125,
           "label": "LEFT SHOULDER",
-          "z_index": -1
+          "z_index": 1
         },
         {
           "x": 0.415771484375,
           "y": 0.3956298828125,
           "label": "RIGHT SHOULDER",
-          "z_index": -1
+          "z_index": 1
         },
         {
           "x": 0.628173828125,
           "y": 0.496337890625,
           "label": "LEFT ELBOW",
-          "z_index": 0
+          "z_index": 1
         },
         {
           "x": 0.3736572265625,
           "y": 0.496337890625,
           "label": "RIGHT ELBOW",
-          "z_index": 0
+          "z_index": 1
         },
         {
-          "x": 0.6446533203125,
-          "y": 0.587890625,
+          "x": 0.64739990234375,
+          "y": 0.5875701904296875,
           "label": "LEFT ARM",
-          "z_index": 0
+          "z_index": 1
         },
         {
-          "x": 0.357177734375,
-          "y": 0.5860595703125,
+          "x": 0.3543548583984375,
+          "y": 0.5875701904296875,
           "label": "RIGHT ARM",
-          "z_index": 0
+          "z_index": 1
         },
         {
           "x": 0.5604248046875,
@@ -226,37 +226,37 @@
           "x": 0.4066162109375,
           "y": 0.3974609375,
           "label": "LEFT SHOULDER",
-          "z_index": -1
+          "z_index": -4
         },
         {
           "x": 0.5933837890625,
           "y": 0.3974609375,
           "label": "RIGHT SHOULDER",
-          "z_index": -1
+          "z_index": -4
         },
         {
           "x": 0.371826171875,
           "y": 0.5,
           "label": "LEFT ELBOW",
-          "z_index": -2
+          "z_index": -4
         },
         {
           "x": 0.6263427734375,
           "y": 0.4981689453125,
           "label": "RIGHT ELBOW",
-          "z_index": -2
+          "z_index": -4
         },
         {
-          "x": 0.353515625,
-          "y": 0.587890625,
+          "x": 0.35271453857421875,
+          "y": 0.5897674560546875,
           "label": "LEFT ARM",
-          "z_index": -2
+          "z_index": -4
         },
         {
-          "x": 0.642822265625,
-          "y": 0.587890625,
+          "x": 0.6418495178222656,
+          "y": 0.5879936218261719,
           "label": "RIGHT ARM",
-          "z_index": -2
+          "z_index": -4
         },
         {
           "x": 0.4395751953125,
@@ -336,37 +336,37 @@
           "x": 0.4759521484375,
           "y": 0.39013671875,
           "label": "LEFT SHOULDER",
-          "z_index": -1
+          "z_index": -5
         },
         {
           "x": 0.5528564453125,
           "y": 0.4029541015625,
           "label": "RIGHT SHOULDER",
-          "z_index": -1
+          "z_index": 1
         },
         {
           "x": 0.4906005859375,
           "y": 0.4945068359375,
           "label": "LEFT ELBOW",
-          "z_index": 0
+          "z_index": -5
         },
         {
           "x": 0.5748291015625,
           "y": 0.5091552734375,
           "label": "RIGHT ELBOW",
-          "z_index": 0
+          "z_index": 1
         },
         {
-          "x": 0.466796875,
-          "y": 0.5732421875,
+          "x": 0.47436396280924475,
+          "y": 0.5629920959472656,
           "label": "LEFT ARM",
-          "z_index": 0
+          "z_index": -5
         },
         {
-          "x": 0.54736328125,
-          "y": 0.6025390625,
+          "x": 0.5507532755533855,
+          "y": 0.6003379821777344,
           "label": "RIGHT ARM",
-          "z_index": 0
+          "z_index": 1
         },
         {
           "x": 0.470458984375,
@@ -446,37 +446,37 @@
           "x": 0.5240478515625,
           "y": 0.39013671875,
           "label": "LEFT SHOULDER",
-          "z_index": -1
+          "z_index": -5
         },
         {
           "x": 0.4471435546875,
           "y": 0.4029541015625,
           "label": "RIGHT SHOULDER",
-          "z_index": -1
+          "z_index": 1
         },
         {
           "x": 0.5093994140625,
           "y": 0.4945068359375,
           "label": "LEFT ELBOW",
-          "z_index": 0
+          "z_index": -5
         },
         {
           "x": 0.4251708984375,
           "y": 0.5091552734375,
           "label": "RIGHT ELBOW",
-          "z_index": 0
+          "z_index": 1
         },
         {
-          "x": 0.533203125,
-          "y": 0.5732421875,
+          "x": 0.5256360371907552,
+          "y": 0.5629920959472656,
           "label": "LEFT ARM",
-          "z_index": 0
+          "z_index": -5
         },
         {
-          "x": 0.45263671875,
-          "y": 0.6025390625,
+          "x": 0.44924672444661456,
+          "y": 0.6003379821777344,
           "label": "RIGHT ARM",
-          "z_index": 0
+          "z_index": 1
         },
         {
           "x": 0.529541015625,
@@ -558,37 +558,37 @@
           "x": 0.580810546875,
           "y": 0.393798828125,
           "label": "LEFT SHOULDER",
-          "z_index": -1
+          "z_index": 1
         },
         {
           "x": 0.427001953125,
           "y": 0.393798828125,
           "label": "RIGHT SHOULDER",
-          "z_index": -1
+          "z_index": 1
         },
         {
           "x": 0.6192626953125,
           "y": 0.496337890625,
           "label": "LEFT ELBOW",
-          "z_index": 0
+          "z_index": 1
         },
         {
           "x": 0.3885498046875,
           "y": 0.496337890625,
           "label": "RIGHT ELBOW",
-          "z_index": 0
+          "z_index": 1
         },
         {
-          "x": 0.639404296875,
-          "y": 0.591552734375,
+          "x": 0.6408233642578125,
+          "y": 0.5910797119140625,
           "label": "LEFT ARM",
-          "z_index": 0
+          "z_index": 1
         },
         {
-          "x": 0.368408203125,
-          "y": 0.5897216796875,
+          "x": 0.3635711669921875,
+          "y": 0.5910797119140625,
           "label": "RIGHT ARM",
-          "z_index": 0
+          "z_index": 1
         },
         {
           "x": 0.5606689453125,
@@ -668,37 +668,37 @@
           "x": 0.4212646484375,
           "y": 0.3992919921875,
           "label": "LEFT SHOULDER",
-          "z_index": -1
+          "z_index": -4
         },
         {
           "x": 0.58056640625,
           "y": 0.3992919921875,
           "label": "RIGHT SHOULDER",
-          "z_index": -1
+          "z_index": -4
         },
         {
           "x": 0.3828125,
           "y": 0.4981689453125,
           "label": "LEFT ELBOW",
-          "z_index": -2
+          "z_index": -4
         },
         {
           "x": 0.6153564453125,
           "y": 0.5,
           "label": "RIGHT ELBOW",
-          "z_index": -2
+          "z_index": -4
         },
         {
-          "x": 0.36083984375,
-          "y": 0.5933837890625,
+          "x": 0.35921327273050946,
+          "y": 0.5915114084879558,
           "label": "LEFT ARM",
-          "z_index": -2
+          "z_index": -4
         },
         {
-          "x": 0.63916015625,
-          "y": 0.5933837890625,
+          "x": 0.635666569073995,
+          "y": 0.5915114084879558,
           "label": "RIGHT ARM",
-          "z_index": -2
+          "z_index": -4
         },
         {
           "x": 0.445068359375,
@@ -778,7 +778,7 @@
           "x": 0.4722900390625,
           "y": 0.3828125,
           "label": "LEFT SHOULDER",
-          "z_index": -4
+          "z_index": -6
         },
         {
           "x": 0.5345458984375,
@@ -790,7 +790,7 @@
           "x": 0.4832763671875,
           "y": 0.4908447265625,
           "label": "LEFT ELBOW",
-          "z_index": -4
+          "z_index": -6
         },
         {
           "x": 0.551025390625,
@@ -799,14 +799,14 @@
           "z_index": 0
         },
         {
-          "x": 0.466796875,
-          "y": 0.5787353515625,
+          "x": 0.4797515869140625,
+          "y": 0.5720291137695312,
           "label": "LEFT ARM",
-          "z_index": -4
+          "z_index": -6
         },
         {
-          "x": 0.5272216796875,
-          "y": 0.591552734375,
+          "x": 0.5276451110839844,
+          "y": 0.5950889587402344,
           "label": "RIGHT ARM",
           "z_index": 0
         },
@@ -888,7 +888,7 @@
           "x": 0.5277099609375,
           "y": 0.3828125,
           "label": "LEFT SHOULDER",
-          "z_index": -4
+          "z_index": -6
         },
         {
           "x": 0.4654541015625,
@@ -900,7 +900,7 @@
           "x": 0.5167236328125,
           "y": 0.4908447265625,
           "label": "LEFT ELBOW",
-          "z_index": -4
+          "z_index": -6
         },
         {
           "x": 0.448974609375,
@@ -909,14 +909,14 @@
           "z_index": 0
         },
         {
-          "x": 0.533203125,
-          "y": 0.5787353515625,
+          "x": 0.5202484130859375,
+          "y": 0.5720291137695312,
           "label": "LEFT ARM",
-          "z_index": -4
+          "z_index": -6
         },
         {
-          "x": 0.4727783203125,
-          "y": 0.591552734375,
+          "x": 0.4723548889160156,
+          "y": 0.5950889587402344,
           "label": "RIGHT ARM",
           "z_index": 0
         },
@@ -1188,7 +1188,11 @@
     "surfacePanels": "../paper_doll_96_surface_assembly.cjs",
     "fit": "surface.js",
     "validation": "../../tests/paper_doll_96_visual_fit_browser.cjs",
-    "anatomyCleanup": "../paper_doll_96_contact_refinement.cjs"
+    "anatomyCleanup": "../paper_doll_96_contact_refinement.cjs",
+    "poseRepair": "../paper_doll_96_repair_rig.cjs",
+    "ownership": "../paper_doll_96_bake_ownership.cjs",
+    "torsoBake": "../paper_doll_96_bake_torso_browser.cjs",
+    "layerValidation": "../../tests/paper_doll_96_structural_browser.cjs"
   },
   "referenceMaskPolicy": "Native rest silhouettes from the cleaned materials; guidance for new assets, not collision or movement masks.",
   "referenceNormalization": {
@@ -1389,7 +1393,8 @@
     "template-mask-boots": "429a62b3-ff59-4318-ac02-0fe09704f655",
     "template-mask-gloves": "293f7bce-271a-46d2-a4ae-fe2005514fbe",
     "template-mask-head": "784a45d3-e34c-4cb8-b27a-360501970d7a",
-    "template-mask-cloak": "9864aff4-2a64-4bc8-a37f-9d89f09da7cf"
+    "template-mask-cloak": "9864aff4-2a64-4bc8-a37f-9d89f09da7cf",
+    "template-mask-torso": "db8b41bc-5963-4209-ba52-8bf4c294a707"
   },
   "faceColorProtection": {
     "masculino": {
@@ -1500,7 +1505,7 @@
       6,
       7
     ],
-    "fit": "native-torso-surface-v8",
+    "fit": "native-torso-directional-depth-v10",
     "armOcclusion": "native skin and visible arm depth",
     "sourceViews": [
       "south",
@@ -1521,8 +1526,14 @@
     "frames": 424,
     "atlasCount": 16,
     "shirtAtlasCount": 32,
-    "handPriority": "native hands after garment and cape, before gloves",
-    "headBoundary": "head shoulder extension clipped at equipped collar"
+    "handPriority": "Apply native hands before gloves, subject to torso, head and directional cape occlusion",
+    "headBoundary": "head shoulder extension clipped at equipped collar",
+    "cameraDepth": {
+      "north": "arms behind dorsal surface; preserve exposed native silhouette",
+      "east": "RIGHT near, LEFT far",
+      "west": "complete east composition mirrored",
+      "south": "preserve current native gesture"
+    }
   },
   "torsoMaterialPolicy": "explicit per-item palette; no unlisted colours"
 }

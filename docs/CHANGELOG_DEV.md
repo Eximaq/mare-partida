@@ -1,3 +1,11 @@
+# 30/10/2026 — Correção estrutural de oclusão96 (v10)
+
+- Branch fix/paper-doll-structural-occlusion, checkpoint ed03bdf do PR#144. Corrigidas prioridade incondicional das mãos sobre capa, profundidade lateral ambígua, três contatos de cabeça femininos copiados de ombros e antebraços pintados sobre o dorso.
+- 22 quadros em sete folhas North receberam superfície dorsal da matriz96 atual: nenhum pixel fora da região e nenhuma mudança de alpha.57 dos64 PNGs primários preservados. Máscaras, roupa-base e Torso reconsolidados; molde e contatos atualizados para reutilização.
+- Auditoria independente reprovou o checkpoint defeituoso e aprovou a revisão na fonte e Pages.159 testes Node e quatro Python aprovados; corpo, cabelo, rosto e equipamentos revistos no navegador.
+- 84 folhas existentes atualizadas na Jade Dragon,85 salvamentos gratuitos e zero gerações. Produção e aprovação artística continuam separadas da validação técnica.
+- [Causas, arquivos, testes, capturas, preservação e reversão](PAPER-DOLL-96-STRUCTURAL-V10.md).
+
 # 30/10/2026 — Revisão global de roupas e anatomia96 (v9)
 
 - Branch feature/paper-doll-96px-rebuild, base f796b44. Reproduzidos os defeitos enviados pelo proprietário: roupa-base incompleta, peitoral lateral aberto, mãos/luvas apagadas e ombro da cabeça desenhado sobre tecido. A aprovação dos detectores v8 não significava ausência dessas falhas.

@@ -25,15 +25,14 @@ function pasteCell(to,from,size,columns,index){for(let y=0;y<size;y++)to.set(fro
     const points=action==='static'?rigs.rests[body][dir]:rigs.clips[body][action][dir].poses[frame],by=Object.fromEntries(keypoints.map(p=>[p.label,{...p,x:(p.x*size-pad)/128,y:(p.y*size-pad)/128}]));
     const old=Object.fromEntries(points.map(p=>[p.label,p])),d=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
     const priors=Object.fromEntries((action==='static'?reference.rests[body][dir]:reference.clips[body][action][dir].poses[frame]).map(p=>[p.label,p]));
-    const swap=d(old['LEFT SHOULDER'],by['RIGHT SHOULDER'])+d(old['RIGHT SHOULDER'],by['LEFT SHOULDER'])<d(old['LEFT SHOULDER'],by['LEFT SHOULDER'])+d(old['RIGHT SHOULDER'],by['RIGHT SHOULDER']);
     const wristCost=(side,candidate)=>2*d(priors[side+' ELBOW'],candidate)+d(priors[side+' ARM'],candidate);
     const wristSwap=wristCost('LEFT',by['RIGHT ARM'])+wristCost('RIGHT',by['LEFT ARM'])<wristCost('LEFT',by['LEFT ARM'])+wristCost('RIGHT',by['RIGHT ARM']);
     const collapsed=/^(walk|idle|static)$/.test(action)&&d(by['LEFT ARM'],by['RIGHT ARM'])*128<4&&d(priors['LEFT ARM'],priors['RIGHT ARM'])*128>15;
-    for(const side of ['LEFT','RIGHT']){const sourceSide=swap?(side==='LEFT'?'RIGHT':'LEFT'):side,p=old[side+' ARM'];let measured=by[(wristSwap?(side==='LEFT'?'RIGHT':'LEFT'):side)+' ARM'];
+    for(const side of ['LEFT','RIGHT']){const p=old[side+' ARM'];let measured=by[(wristSwap?(side==='LEFT'?'RIGHT':'LEFT'):side)+' ARM'];
       const length=d(priors[side+' ELBOW'],measured)*128,priorLength=d(priors[side+' ELBOW'],priors[side+' ARM'])*128;
       if(collapsed||length<3.8&&priorLength>7||length>25||length>16&&length>priorLength*1.8)measured=priors[side+' ARM'];
       corrections.push({body,action,dir,frame,side,distance:d(priors[side+' ARM'],measured)*128});p.x=measured.x;p.y=measured.y;
-      const front=dir!=='east'||by[sourceSide+' ARM'].z_index>=by.NECK.z_index;
+      const front=dir==='south'||dir==='east'&&side==='RIGHT';
       for(const part of [' ARM',' ELBOW',' SHOULDER'])old[side+part].z_index=(old.NECK.z_index||0)+(front?2:-4);
     }
     measurements++;
@@ -48,7 +47,7 @@ function pasteCell(to,from,size,columns,index){for(let y=0;y<size;y++)to.set(fro
    }
    rigs.clips[body]['attack-tech']=structuredClone(rigs.clips[body]['attack-firearm']);
   }
-  rigs.ownershipMeasurements={method:'PixelLab estimate-skeleton on native body frames',count:measurements,updatedJoints:['LEFT ARM','RIGHT ARM'],depth:'near/far arms normalized from measured view',preserved:'head, shoulder/elbow positions, hips, legs, timing'};
+  rigs.ownershipMeasurements={method:'PixelLab estimate-skeleton on native body frames',count:measurements,updatedJoints:['LEFT ARM','RIGHT ARM'],depth:'Canonical camera: north behind back, east/west RIGHT near and LEFT far',preserved:'head, shoulder/elbow positions, hips, legs, timing'};
   await fs.writeFile(path.join(root,'appearance-rig.json'),JSON.stringify(rigs)+'\n');
  }
  const atlases=catalog.nativeOwnership?.atlases||{},counts={poses:0,defaultClothingFrames:0,atlases:0};

@@ -1,6 +1,6 @@
 # Contrato de encaixe — personagens modulares de 96 px
 
-Revisão v9, 30/10/2026. A revisão visual do proprietário confirmou defeitos na v8 apesar dos testes anteriores. A v9 substitui o encaixe do Torso por máscaras anatômicas fixas de cada pose, corrige pulsos/profundidade dos braços, cobertura das roupas e sobreposição da cabeça. A bancada continua isolada, com produção desativada. Teste automatizado não significa aprovação artística.
+Revisão v10, 30/10/2026. As evidências do proprietário confirmaram falhas de profundidade e oclusão que os detectores v9 não cobriam. [Diagnóstico e correção estrutural](PAPER-DOLL-96-STRUCTURAL-V10.md). Produção continua desativada; o histórico abaixo preserva os resultados e limites das revisões anteriores.
 
 ## Arquivos e escala
 
@@ -191,3 +191,10 @@ A auditoria de mangas diferencia tecido sobre o braço superior de pele exposta 
 As rotinas de assets usam Sharp e Playwright no ambiente de edição. Para um novo Torso, definir sua paleta, limpar as matrizes, consolidar todas as animações e rodar as auditorias; reutilizar as máscaras existentes. Medir pulsos de novo somente quando a anatomia-base mudar.
 
 A repetição local das duas rotinas de consolidação não alterou nenhum dos 926 PNGs da biblioteca (comparação SHA-256 antes/depois), sem novas gerações. A limpeza cromática também é idempotente: reaplicar a paleta preserva pixels já aprovados.
+
+
+## Revisão v10 — prioridade depende da superfície visível
+
+Mãos não têm prioridade incondicional sobre capa ou dorso. North usa braços atrás da superfície dorsal; as partes expostas permanecem visíveis. East usa RIGHT próximo/LEFT distante, e West espelha a composição inteira. Não usar o z do pulso do estimador como profundidade de câmera. NECK copiado de um ombro é inválido e deve ser corrigido antes da consolidação.
+
+O reparador usa somente a matriz96 atual para a superfície dorsal; braços fora dela e silhuetas originais permanecem intactos. O molde e seus contatos foram atualizados. Executar reparador de pose, consolidação anatômica, consolidação do Torso e auditoria estrutural antes de publicar novos itens. Ver comandos, resultados, preservação e pendências no relatório v10.

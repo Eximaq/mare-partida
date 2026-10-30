@@ -242,9 +242,17 @@
       const restored=new Uint8ClampedArray(torsoBodyPixels.length),skinRamp=api.skins[look.skin]?.ramp;
       const bare=skinRamp?api.recolor(neutralPixels,api.materialMask(neutralPixels,'skin'),skinRamp):neutralPixels;
       for(let p=0;p<ownership.hands.length;p++)if(ownership.hands[p])restored.set(bare.subarray(p*4,p*4+4),p*4);
-      ctx.drawImage(fromPixels(restored,spec.width,spec.height),0,0);
-      if(pieces.gloves)for(const side of behind)ctx.drawImage(pieces.gloves[side],0,0);
-      if(pieces.gloves)for(const side of inFront)ctx.drawImage(pieces.gloves[side],0,0);
+      const frontHands=fromPixels(restored,spec.width,spec.height);
+      // North-facing arms are behind the back panel. Native pixels outside
+      // the cape remain visible; no palm may punch through opaque fabric.
+      const visibleArm=image=>{
+        if(selected.direction!=='north'||!pieces.cloak)return ctx.drawImage(image,0,0);
+        const c=canvas(spec.width,spec.height),cx=c.getContext('2d');cx.drawImage(image,0,0);
+        cx.globalCompositeOperation='destination-out';cx.drawImage(pieces.cloak.full,0,0);ctx.drawImage(c,0,0);
+      };
+      visibleArm(frontHands);
+      if(pieces.gloves)for(const side of behind)visibleArm(pieces.gloves[side]);
+      if(pieces.gloves)for(const side of inFront)visibleArm(pieces.gloves[side]);
     }
     return {prepare,requiredFiles,draw,get cacheSize(){return textures.size;},get attachmentCacheSize(){return attachments.size;}};
   }

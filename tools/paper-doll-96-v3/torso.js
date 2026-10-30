@@ -11,6 +11,13 @@
       waist: Math.max(8, Math.abs(j['LEFT HIP'].x - j['RIGHT HIP'].x) / 2 + 2) };
   };
   const radius = (g, t) => g.shoulder * (1 - t) + g.waist * t;
+  // The dorsal surface occludes arms aiming away from the camera. The same
+  // region is used by the native back repair and by item ownership.
+  const backCore = (g,x,y) => {
+    const q=g.axis.at(x,y),t=q.along/g.axis.length;
+    const w=(g.shoulder-.5)*(1-Math.max(0,t))+(g.waist-1)*Math.max(0,t);
+    return t>=0&&t<=.84&&Math.abs(q.across)<=w;
+  };
   const skin = (r,g,b) => r > 45 && r > b * 1.25 && g / r > .28 && g / r < .94;
   const garment = (r,g,b) => Math.max(r,g,b)>=72 && Math.max(r,g,b)-Math.min(r,g,b)<=32 || b>r*1.1 && b>=g*.85;
   // Item-independent ownership from native body pixels and measured joints.
@@ -25,10 +32,11 @@
       const isSkin=skin(body[i],body[i+1],body[i+2]),isGarment=garment(body[i],body[i+1],body[i+2]);
       const sorted=bones.map(b=>({...b,d:distance(b.lower,xx,yy),u:distance(b.upper,xx,yy)})).sort((a,b)=>a.d-b.d),b=sorted[0];
       const torsoDistance=Math.abs(q.across);
-      const palm=isSkin && bones.some(a=>{const v=a.lower.at(xx,yy);return a.z>=g.j.NECK.z&&Math.hypot(xx-a.lower.b.x,yy-a.lower.b.y)<=6.3&&v.along>a.lower.length*.6;});
-      const lower=isSkin && bones.some(a=>{const v=a.lower.at(xx,yy);return a.z>=g.j.NECK.z&&distance(a.lower,xx,yy)<3.8&&v.along>=0&&v.along<=a.lower.length+5;});
+      const backView=bones.every(a=>a.z<g.j.NECK.z),visible=a=>a.z>=g.j.NECK.z||backView&&!backCore(g,xx,yy);
+      const palm=isSkin && bones.some(a=>{const v=a.lower.at(xx,yy);return visible(a)&&Math.hypot(xx-a.lower.b.x,yy-a.lower.b.y)<=6.3&&v.along>a.lower.length*.6;});
+      const lower=isSkin && bones.some(a=>{const v=a.lower.at(xx,yy);return visible(a)&&distance(a.lower,xx,yy)<3.8&&v.along>=0&&v.along<=a.lower.length+5;});
       if(palm||lower)hands[p]=1;
-      const upper=b.upper.at(xx,yy),bareUpper=isSkin && b.z>=g.j.NECK.z && b.u<3.8 && b.u+.65<torsoDistance && upper.along>b.upper.length*.48;
+      const upper=b.upper.at(xx,yy),bareUpper=isSkin && visible(b) && b.u<3.8 && b.u+.65<torsoDistance && upper.along>b.upper.length*.48;
       if(hands[p]||lower||bareUpper)arms[p]=1;
       const wide=Math.max(13,g.shoulder+3)*(1-Math.max(0,t))+Math.max(9,g.waist+1)*Math.max(0,t);
       const chest=t>=-.28&&t<=1.02&&Math.abs(q.across)<=wide;
@@ -117,5 +125,5 @@
     return { pants, top, counts };
   }
   function unpack(pixels){const n=pixels.length/4,hands=new Uint8Array(n),arms=new Uint8Array(n),cloth=new Uint8Array(n);for(let p=0;p<n;p++){cloth[p]=pixels[p*4]>=128?1:0;hands[p]=pixels[p*4+1]>=128?1:0;arms[p]=pixels[p*4+2]>=128?1:0;}return {cloth,hands,arms};}
-  return { fit, geometry, radius, baseClothing, ownership, garment, unpack };
+  return { fit, geometry, radius, baseClothing, ownership, garment, unpack, backCore };
 });
