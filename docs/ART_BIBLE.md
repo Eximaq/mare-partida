@@ -1,5 +1,37 @@
 # Referência visual — Maré Partida
 
+## Torso e perfis — 30/10/2026, v8
+
+Torso mantém a altura96 e os canvases/pivôs128/160 atuais, usando Casaco de Marinheiro e Casaco da Bruma como peitorais compactos, sem caudas que disputem a capa. Fontes estáticas nativas nos dois corpos; 832 quadros consolidados sobre a anatomia existente. Perfil facial de olho único, oeste espelhado; acessórios sem pele copiada, capacete sem cabelo aparente. Cabeça possui a pele; feições possuem íris/pálpebras/boca. Oito moldes e regras no [contrato](PAPER-DOLL-96-FIT-CONTRACT.md). Custo adicional20 gerações em dois trabalhos PixelLab, sem alterar a escala ou ativar produção.
+
+## Revisão canônica v7 — 30/10/2026
+
+Os defeitos de encaixe da revisão anterior foram confirmados. Dez cabelos e dez equipamentos foram refeitos no PixelLab (20 trabalhos, 200 gerações). Os seis rostos foram separados em feições limpas; corpo, pescoço, rosto, cabelo e acessórios agora compartilham a mesma lateral espelhada e sockets inteiros. Luvas e calçados usam a anatomia nativa de cada pose; capas têm tecido posterior completo. Ver [contrato e moldes reutilizáveis](PAPER-DOLL-96-FIT-CONTRACT.md). A bancada permanece isolada e a integração em produção continua pendente.
+
+Revisão nativa 96: [contrato e moldes reutilizáveis](PAPER-DOLL-96-FIT-CONTRACT.md), materiais por membro, gesto das mãos e paletas preservados. A integração no personagem publicado continua pendente.
+
+## Continuação de 29/10/2026 — locomoção e encaixes
+
+A bancada96 cobre Idle/Walk nas quatro direções dos dois corpos, além dos seis ataques. Dez cabelos e seis opções faciais derivadas da base limpa; FlipX lateral dos cabelos, cabeça/rosto no mesmo socket e equipamentos independentes com contatos refinados. São candidatos de avaliação artística, sem ativação no jogo. Ver [PAPER-DOLL-96-PERSONALIZACAO.md](PAPER-DOLL-96-PERSONALIZACAO.md).
+
+## Nova base aprovada de 96 px — 28/10/2026
+
+O proprietário aprovou o desenho masculino/feminino na simulação do lobby.
+Canvas128, altura de referência96, pivô64/112 e escala fixa; roupa, rosto e cabelo
+independentes do corpo neutro. Oito referências recompostas sem diferença de
+pixels e dois ciclos frontais candidatos estão na
+[bancada isolada](../tools/paper-doll-96-v3/). A aprovação do desenho não homologa
+as animações nem substitui o personagem publicado. Cobertura e custos em
+[PAPER-DOLL-96-V3.md](PAPER-DOLL-96-V3.md). Os contratos84 anteriores permanecem
+como fonte dos movimentos e histórico, sem ativar a nova criação feminina.
+
+29/10: seis categorias de ataque ×quatro direções ×dois corpos disponíveis
+na bancada, oito frames reais12FPS.40 clips distintos cobrem48 entradas porque
+tecnologia/disparo compartilham os fontes anteriores. Células160/pivô80,128
+preservam a escala96. Cabeça neutra, rosto, cabelo, roupa e oclusão das mãos
+permanecem separados. Folhas completas por camada na pasta Jade Dragon.
+São candidatos de animação/encaixe para aprovação artística, sem migração do jogo.
+
 Continuação de22/10: [candidato de encaixe leste no Workbench](PAPER-DOLL-ENCAIXE-LESTE.md). O ataque pode ser inspecionado em quatro direções; o novo vestuário leste ainda precisa de harmonização artística. Sem geração paga nesta etapa e sem ativação em produção.
 
 
@@ -76,3 +108,9 @@ Referências medidas nos assets existentes: altura opaca do Idle anterior para m
 ## Alubarna — export completo e escalas (29/10/2026)
 
 O proprietário escolheu103×82 células64 nos cinco destinos. Uma imagem6592×5248 e208 objetos nativos compartilhados preservam pixels, posição e profundidade. Escala aparente: Puppu110px < Merry Christmas120px < Valentine135px < Double Finger150px < Mr.1 170px. Hurt South mantém a política aprovada. Sem geração paga. [Proveniência e validação](ALUBARNA.md).
+
+### 30/10/2026 — Revisão v9 de peitorais e anatomia96
+
+Dois peitorais refeitos como camisas fechadas com mangas curtas; tecido separado de pele antes do encaixe. 16 folhas anatômicas fixas para 424 poses, 32 folhas de peitoral com poses estáticas e movimento. Pulsos medidos sobre os próprios frames, lados resolvidos por cotovelo/pose anterior e profundidade normalizada. Cabeça não pode redesenhar ombro sobre roupa; luva fechada conserva a silhueta nativa dos dedos. Capa mantida, sujeita à mesma prioridade das mãos. Referências históricas, escala, corpo e timing preservados. Custos: 38 gerações de reparo artístico + 31,9 de medição, total69,9. Contrato e limites em PAPER-DOLL-96-FIT-CONTRACT.md.
+
+A revisão cromática v9 limita os dois peitorais a paletas explícitas por material; pontos rosados e pele copiada do gerador não são aceitos. Os 34 exports conservaram seu alpha. A fonte anatômica continua igual para os dois tecidos, preservando encaixes ao trocar material.

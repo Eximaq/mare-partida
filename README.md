@@ -2,6 +2,10 @@ Portal de pré-lançamento **Kaizoku Idle**: [página](portal/index.html) e [pub
 
 # Desenvolvimento compartilhado no GitHub
 
+Bancada96 v10: correções estruturais de capa, braços, peitorais laterais e três pivôs de cabeça femininos. [Diagnóstico, testes e compatibilidade](docs/PAPER-DOLL-96-STRUCTURAL-V10.md). [Contrato e moldes reutilizáveis](docs/PAPER-DOLL-96-FIT-CONTRACT.md). Biblioteca isolada; integração no personagem publicado depende de aprovação visual.
+
+**Personagens de 96 px em revisão:** [bases com corpo, rosto, cabelo e roupas independentes](docs/PAPER-DOLL-96-V3.md), Idle, caminhada e seis ataques nas quatro direções dos dois corpos. [Abrir a bancada](tools/paper-doll-96-v3/). [Cabelos, rostos, peles e equipamentos](docs/PAPER-DOLL-96-PERSONALIZACAO.md). Avaliação artística e integração no jogo ainda pendentes.
+
 [Alubarna 01–05 e aba Skypiea](docs/ALUBARNA.md): cinco destinos completos, monstros Nv.53/58/63/68/75 e animações nativas. Em revisão, sem merge/deploy automático.
 
 Sprites de combate v2: [21 conjuntos importados e validação](docs/SPRITES-COMBAT-V2.md), publicados após aprovação no PR#145. [Escala e caminhada Zoan](docs/ZOAN-ESCALA-CAMINHADA.md) publicadas no PR#146. [Hurt South, novos clipes e dez aumentos de tamanho](docs/HURT-SOUTH-ESCALAS.md) publicados no PR#148.

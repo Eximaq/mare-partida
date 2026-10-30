@@ -1,3 +1,79 @@
+# 30/10/2026 — Correção estrutural de oclusão96 (v10)
+
+- Branch fix/paper-doll-structural-occlusion, checkpoint ed03bdf do PR#144. Corrigidas prioridade incondicional das mãos sobre capa, profundidade lateral ambígua, três contatos de cabeça femininos copiados de ombros e antebraços pintados sobre o dorso.
+- 22 quadros em sete folhas North receberam superfície dorsal da matriz96 atual: nenhum pixel fora da região e nenhuma mudança de alpha.57 dos64 PNGs primários preservados. Máscaras, roupa-base e Torso reconsolidados; molde e contatos atualizados para reutilização.
+- Auditoria independente reprovou o checkpoint defeituoso e aprovou a revisão na fonte e Pages.159 testes Node, quatro Python e44.840 combinações de aparência aprovados;618 composições South válidas idênticas ao checkpoint. Corpo, cabelo, rosto e equipamentos revistos no navegador.
+- 84 folhas existentes atualizadas na Jade Dragon,85 salvamentos gratuitos e zero gerações. Produção e aprovação artística continuam separadas da validação técnica.
+- [Causas, arquivos, testes, capturas, preservação e reversão](PAPER-DOLL-96-STRUCTURAL-V10.md).
+
+# 30/10/2026 — Revisão global de roupas e anatomia96 (v9)
+
+- Branch feature/paper-doll-96px-rebuild, base f796b44. Reproduzidos os defeitos enviados pelo proprietário: roupa-base incompleta, peitoral lateral aberto, mãos/luvas apagadas e ombro da cabeça desenhado sobre tecido. A aprovação dos detectores v8 não significava ausência dessas falhas.
+- 318 medições nativas, lados de pulso resolvidos por cotovelos/pose anterior, rejeição de membros colapsados e profundidade dos braços normalizada; oeste espelhado.16 folhas anatômicas independentes dos itens para 424 poses.64 PNGs de corpo, pivôs e timing preservados.
+- Dois peitorais refeitos com mangas curtas e peito fechado:32 folhas,848 quadros; roupa-base/foreground consolidados nas 416 poses móveis. Mãos têm prioridade sobre tecido/capa, luvas fechadas preservam dedos, cabeça limitada à gola. Capa mantida.
+- Paletas explícitas de tecido removem pele embutida e pontos rosados.34 exports de material limpos sem mudança no alpha. Atlases anatômicos grandes reorganizados em 320 células idênticas, sem redimensionamento.
+- 235 folhas prontas e24 fontes registradas na Jade Dragon;89 folhas distintas salvas (69 atualizadas,20 novas),123 operações gratuitas, incluindo ajuste cromático. Custo confirmado 69,9 gerações:38 de arte e 31,9 de medição. IDs de itens/galeria, atributos e saves preservados.
+- Validação:158 testes Node autônomos; sete testes96 repetidos, quatro testes Python e build Pages aprovados. 44.840 combinações de aparência e 6.360 conjuntos específicos de mãos/ombros/tecido/capa passaram. Detector de encaixe: 224 matrizes, 424 poses e 112 estados, sem violações nos critérios medidos. Espelhamento: 3.286 composições, 842 quadros-fonte e 64 materiais sem divergências. Conferência final das paletas e antebraços registrada na entrega.
+- Contrato, limites e rotinas reutilizáveis em PAPER-DOLL-96-FIT-CONTRACT.md. A bancada permanece isolada e depende de aprovação artística; sem ativação em produção ou merge automático.
+
+# 30/10/2026 — Torso, pele e perfis96 (v8)
+
+- Branch feature/paper-doll-96px-rebuild, base dd2cf8f; feedback posterior à v7 reproduzido com peles escuras. Pele clara removida das matrizes de bandana/capacete, cabeça com sombras próprias recoloridas e feições laterais compactas, oeste espelhado. Capacete19 oculta o cabelo inteiro e mantém a escolha para sua retirada.
+- Torso liga o visual ao slot coat já existente: Casaco de Marinheiro6 e Casaco da Bruma7, dois corpos/quatro vistas. Dois jobs PixelLab com máscara,20 gerações confirmadas; pixels fora das máscaras preservados.28 folhas e832 quadros de movimento consolidados sem novas gerações.
+- Peitoral segue corpo principal e profundidade dos braços; sprites consolidados comparados à montagem. Roupa-base das416 poses ajustada à anatomia para eliminar roupa íntima clara nas laterais. Oito moldes e rotina reutilizável de consolidação salvos.
+- Validação: 158 testes Node autônomos e 44.840 combinações de aparência passaram. Auditoria específica, na fonte e no dist: 848 encaixes de Torso, 192 casos de pele/cabeça, 424 casos de capacete sem cabelo e 68.898 pixels de braços visíveis preservados, sem divergências nos critérios medidos. Build Pages e quatro testes Python aprovados. Detector final: 224 matrizes, 424 poses e 112 estados de interface, sem violações. Capturas atuais em 1920×1080, 1366×768 e 1280×720.
+- Jade Dragon:215 folhas consolidadas,64 salvamentos desta revisão (33 atualizações,31 novas),22 fontes de geração vinculadas. IDs de itens, atributos, saves e referências históricas preservados; biblioteca ainda isolada, sem ativação em produção ou merge automático. Contrato e limites em PAPER-DOLL-96-FIT-CONTRACT.md.
+
+# 30/10/2026 — Revisão canônica v7 dos encaixes96
+
+Os defeitos de encaixe da revisão anterior foram confirmados. Dez cabelos e dez equipamentos foram refeitos no PixelLab (20 trabalhos, 200 gerações). Os seis rostos foram separados em feições limpas; corpo, pescoço, rosto, cabelo e acessórios agora compartilham a mesma lateral espelhada e sockets inteiros. Luvas e calçados usam a anatomia nativa de cada pose; capas têm tecido posterior completo. Ver [contrato e moldes reutilizáveis](PAPER-DOLL-96-FIT-CONTRACT.md). A bancada permanece isolada e a integração em produção continua pendente.
+
+- Publicação: 172 folhas existentes atualizadas, IDs preservados, 184 folhas consolidadas e 20 fontes novas vinculadas à Jade Dragon. Sete moldes e contrato reutilizáveis.
+- Verificação atual: 424 poses, 112 estados de interface, zero fragmentos soltos, pés descobertos, pixels semitransparentes ou rosto sobre cabelo no detector de encaixe. A revisão visual dos ciclos complementa as medições.
+- Validação final:157 testes Node autônomos,103 scripts com sintaxe válida,4 testes Python e build Pages aprovados. Navegador:26.536 combinações e3.074 comparações exatas de FlipX passaram; fonte/dist sem saves criados. Referências, limites, capturas atuais e reversão em PAPER-DOLL-96-FIT-CONTRACT.md.
+- Conciliação com origin/main preserva os sprites de combate, HUD, portal e mapas dos colaboradores. Conflitos apenas em README e changelog, com os dois históricos mantidos. Sem merge do PR ou ativação em produção.
+
+## Histórico da revisão nativa v6 — 29/10/2026
+
+- Branch feature/paper-doll-96px-rebuild, base b8103b4. Correção solicitada após rejeição visual; nenhum novo job pago.
+- Cabeça neutra restaurada, cabelos sem olhos, faces sob cabelo e rampas adaptadas ao material. Corpo/underArms sem mandíbula antiga; tiras de cabeça/face/cabelo reconsolidadas.
+- Dez equipamentos auditados: materiais independentes e 128 painéis completos de membros, sem transportar pele, mãos ou pernas com roupa/capa.
+- Ordem do gesto por braço corrigida; luva fechada acompanha dedos reais, pés substituídos sob as botas e perna distante ocluída pela próxima.
+- Templates nativos, JSON de contatos e módulos de limpeza/transporte salvos; contrato84 e saves preservados. Referências completas não reescritas; normalização de alpha das camadas documentada,25 bordas canônicas enumeradas.
+- Validação específica em 424 poses e 416 painéis; resultados finais, commit e publicação na entrega. Aventura normal e criação feminina continuam fora da ativação desta etapa.
+
+# 29/10/2026 — Locomoção96 completa e revisão de encaixes
+
+- PR144, branch feature/paper-doll-96px-rebuild, base6ee815f. Produzidos14 ciclos pendentes: Idle4 e Walk8 quadros; quatro vistas nos dois corpos.
+-4 cabelos novos e2 expressões discretas, paletas preservadas. FlipX leste→oeste em todos os cabelos, sem espelhar corpos.
+- Cabeça neutra com orelhas/pescoço protegidos, rosto contido no alpha da cabeça, matriz compartilhada por socket e preservação de braços erguidos.
+-416 poses medidas;456 correções em127 quadros resolvem rótulos trocados/colapsados. Capas presas aos ombros, roupas sobre a silhueta e68 pixels órfãos removidos de7 quadros e1 referência.
+- Revisão adicional das matrizes:402 pixels residuais removidos em17 camadas de bandanas, elmos e capas; regressão no extrator preserva destaques superiores.
+-161 folhas finais na Jade Dragon, com atualizações dos IDs existentes. Fontes, custos e evidências fora do Git; catálogo público sem credenciais/saves.
+- Rotina de26.536 combinações,22 matrizes espelhadas e424 casos de contenção facial; validação final registrada na entrega.
+- Sem migração de personagem publicado, save ou balanceamento. Documento PAPER-DOLL-96-PERSONALIZACAO.md atualizado; arte permanece em avaliação.
+
+# 29/10/2026 — Personalização96 e correção de camadas
+
+- Continuação do PR144, branch `feature/paper-doll-96px-rebuild`, base39efa85.
+-6 cabelos,8 paletas de pele,10 de cabelo e10 equipamentos dos slots combinados, dois corpos/quatro vistas. Catálogo e IDs preservados.
+- Hierarquia explícita por direção; rosto antes do cabelo, equipamento de cabeça depois; luvas posteriores ocultas pelo tronco e calças/calçados sem pele embutida.
+-336 poses novas medidas para encaixe, textura de calça sobre a superfície real da perna, correção do colar/abertura das capas.
+- Após rejeição artística dos rostos generativos, substituição por traços originais limpos com íris discretas; ajuste frontal do cabelo+1px conforme eixo dos olhos.
+-20 folhas finais na Jade Dragon. Custos confirmados222,6; calibração/cópias/paletas/exportações exatas gratuitas. Fontes e evidências fora do Git.
+- Testes de paletas, itens, geometria/contatos e navegador em6880 casos individuais+688 conjuntos; suíte/build e resultados finais na entrega.
+- Sem migração de saves ou ativação em produção. Idle4 vistas e WalkN/W/E seguem pendentes; catálogo/rig preservam compatibilidade futura. Detalhes em PAPER-DOLL-96-PERSONALIZACAO.md.
+
+# 29/10/2026 — Ataques modulares da base96 (PR144)
+
+- Branch `feature/paper-doll-96px-rebuild`; continuação da base39fb1fd, com `origin/main` integrado sem descartar as atualizações de HUD dos colaboradores.
+- Seis categorias anteriores, quatro direções, dois corpos:48 entradas,40 clips distintos, oito frames reais12FPS; tecnologia/disparo compartilham fontes idênticos.
+- Margem nativa160/pivô80,128 preserva a escala96. Cabeça neutra, rosto, cabelo, roupa e oclusão dos braços independentes. Malha de roupa e sockets do modelo anterior; nenhum preenchimento temporal.
+- PixelLab:333 medições e40 animações,153,3 gerações adicionais confirmadas. Lote de20 simultâneas; assinatura já habilitada pelo proprietário.80 folhas gratuitas por camada salvas na Jade Dragon, somando100 com as bases anteriores.
+- Bancada carrega atlas sob demanda com caches limitados; controles de repetição e remoção das peças. Armas/flashes acrescentados pelo gerador em regiões laterais foram removidos por patches guardados; não são equipamento de produção.
+- Testes: Node de rig, malha, montagem,48 entradas e contratos; navegador em400 quadros, referências sem diferença, bordas livres e save intocado. Suíte Node:148/148; navegador fonte e build público aprovados; `python tools/build_pages.py` concluído. Capturas atuais no pacote local `Ataques-96-v3`, fora do Git.
+- Compatibilidade/rollback: aventura normal, catálogo, saves e trabalho de calças preservados. Desfazer somente o commit desta etapa remove a atualização da bancada. Revisão artística, Idle animado, demais caminhadas e integração no jogo permanecem pendentes.
+
 ## 29/10/2026 — Alubarna 01–05 e Skypiea (em revisão)
 
 Cinco instâncias do mapa completo exportado pelo proprietário, em Alabasta, com Puppu Nv.53, Valentine Nv.58, Merry Christmas Nv.63, Double Finger Nv.68 e Mr.1 Nv.75. Escalas ordenadas, quatro direções, Hurt South e 50 spawns novos. Arco norte navegável sem alterar a arte. Skypiea recebe aba com conteúdo futuro. 107 arquivos Node, 7.285 frames nativos, navegador no fonte/dist, 25 abates por execução e backend aprovados. Sem geração paga ou merge/deploy automático. [Relatório](ALUBARNA.md).

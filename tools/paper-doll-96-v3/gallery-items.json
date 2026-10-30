@@ -1,0 +1,746 @@
+{
+  "projectName": "Jade Dragon",
+  "projectId": "f5b4fc25-691a-4d78-a579-f586de4507e1",
+  "sheets": [
+    {
+      "name": "masculino-static-body.png",
+      "id": "4b37c009-d25c-410a-81dc-b44cd715fe2b"
+    },
+    {
+      "name": "masculino-walk-south-body.png",
+      "id": "5bcea69c-2620-41d2-bf29-a8227da1f38e"
+    },
+    {
+      "name": "masculino-static-face.png",
+      "id": "c912541a-bc7f-4280-9e97-7a950cd4cedc"
+    },
+    {
+      "name": "masculino-walk-south-face.png",
+      "id": "2f3abe41-0049-4c9e-b622-9e9fb1114711"
+    },
+    {
+      "name": "masculino-static-hair.png",
+      "id": "cea4adb1-00f7-4b12-8f54-f09659c58f8f"
+    },
+    {
+      "name": "masculino-walk-south-hair.png",
+      "id": "649e083f-1146-43dd-b6f3-a73870c110c1"
+    },
+    {
+      "name": "masculino-static-pants.png",
+      "id": "417e8355-77e7-4c9e-9c88-28481ab38f99"
+    },
+    {
+      "name": "masculino-walk-south-pants.png",
+      "id": "f7da7900-ed8f-424a-a5d1-6b6a5a66f56a"
+    },
+    {
+      "name": "masculino-static-top.png",
+      "id": "40fca133-d3fa-421a-8b23-3e30606698ab"
+    },
+    {
+      "name": "masculino-walk-south-top.png",
+      "id": "5c948c56-dc6c-46d4-9afa-4c90be9a2806"
+    },
+    {
+      "name": "feminino-static-body.png",
+      "id": "c47c7bbc-d684-4247-bc48-0ef12faa99a7"
+    },
+    {
+      "name": "feminino-walk-south-body.png",
+      "id": "ba716888-dc31-4f3b-998d-5876e75c19c2"
+    },
+    {
+      "name": "feminino-static-face.png",
+      "id": "a044c804-7cc8-4710-9cb5-f31904f7c02a"
+    },
+    {
+      "name": "feminino-walk-south-face.png",
+      "id": "213c9a50-ed15-4dc3-9cdb-525baf17b7d6"
+    },
+    {
+      "name": "feminino-static-hair.png",
+      "id": "94b375ef-8c1c-45e1-a822-29b4b41eb4be"
+    },
+    {
+      "name": "feminino-walk-south-hair.png",
+      "id": "21a3e71b-e9c8-41b0-8e36-7ac450567ff4"
+    },
+    {
+      "name": "feminino-static-pants.png",
+      "id": "2c938905-a5a0-4a8d-b1ed-1b3deffaf1f2"
+    },
+    {
+      "name": "feminino-walk-south-pants.png",
+      "id": "4ac464fe-5932-4b61-a180-f711430fde8a"
+    },
+    {
+      "name": "feminino-static-top.png",
+      "id": "e4d822f0-7d3f-46d4-b3a2-25ea87a1ae0f"
+    },
+    {
+      "name": "feminino-walk-south-top.png",
+      "id": "ff5aa0a5-6dc9-49af-95be-9523850c67ca"
+    },
+    {
+      "name": "masculino-attack-sword-underArms.png",
+      "id": "e3329716-ea09-4d90-9361-8e81bfc51196",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-sword-body.png",
+      "id": "b5f7f3db-44c0-4c6f-8181-b4a968222637",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-sword-headBase.png",
+      "id": "52644bae-c2c3-440e-b362-3c3a1afe4a9a",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-sword-pants.png",
+      "id": "9b4b0863-d32f-490f-95c1-eb3083600e74",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-sword-top.png",
+      "id": "b60053bc-6148-4f92-a406-9b433d1f57bb",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-sword-face.png",
+      "id": "f6dc3997-3a38-434a-83f9-7d96e9ebcdd7",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-sword-hair.png",
+      "id": "a75709df-d8f3-4453-8435-2f069e9fbe18",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-sword-foreground.png",
+      "id": "e2ab7998-e5d5-40ac-a25f-aa697da2d728",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-unarmed-underArms.png",
+      "id": "5a1f4ed1-97f3-466c-98c3-fe0c04319b2a",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-unarmed-body.png",
+      "id": "d8f160b6-8924-4b8f-84a0-d2288d548ae0",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-unarmed-headBase.png",
+      "id": "89e868bb-9b38-40a4-b6d7-434461af4e29",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-unarmed-top.png",
+      "id": "1240d3a1-3d67-4a30-aef5-5b4cc24884f4",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-unarmed-pants.png",
+      "id": "f22eb7a4-fc70-43ec-bd09-b6d97de9b0c8",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-unarmed-face.png",
+      "id": "266ca370-08e7-4418-93c4-adf8e0ec8edf",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-unarmed-hair.png",
+      "id": "dc914ac7-db71-4980-bb95-68331e47897f",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-unarmed-foreground.png",
+      "id": "660a4b1b-dd22-4cae-81c0-9894ad1cad2c",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-firearm-underArms.png",
+      "id": "fbd67292-2541-49ea-b2b4-b0887d2046c8",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-firearm-body.png",
+      "id": "829458e0-f7c1-4cad-8f24-0a4efaf68b17",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-firearm-headBase.png",
+      "id": "c983c608-08ab-4f7c-baec-b0047c9b0dff",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-firearm-pants.png",
+      "id": "792ac938-561c-4fd7-bb73-37c1b2111d8d",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-firearm-top.png",
+      "id": "39bc76ec-3b4a-4e4d-9c37-a3af4e26b7d2",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-firearm-face.png",
+      "id": "b2644b5a-46e3-4b86-bc9b-5591017a6320",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-firearm-hair.png",
+      "id": "6fa3121c-36a6-4696-9c31-fa3ce7c977d3",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-firearm-foreground.png",
+      "id": "9be600c5-1be4-4448-bad3-600f4bd901ff",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-daggers-underArms.png",
+      "id": "474f548e-ca6c-4970-a56a-69b5d51c7837",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-daggers-body.png",
+      "id": "43b7ff3d-a1b6-488f-ac56-35a8988b13a1",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-daggers-headBase.png",
+      "id": "1f425ac7-6647-41fb-82fa-09746fe7e392",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-daggers-pants.png",
+      "id": "55ea2568-27f7-41a5-b58e-d53e3bfe0862",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-daggers-top.png",
+      "id": "5a6b5744-d9e2-4cda-8858-6915c34695b3",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-daggers-face.png",
+      "id": "74ea570d-8b90-44ee-81cb-2ef449963b6e",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-daggers-hair.png",
+      "id": "63a0da69-2610-4a96-ad16-4266568ed32c",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-daggers-foreground.png",
+      "id": "6ab6f974-92a6-4b38-b6c6-c83a124676f7",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-focus-underArms.png",
+      "id": "7f1421b7-6bff-4370-932f-c1e0c0fa04a4",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-focus-body.png",
+      "id": "65379b88-e7d7-4f80-8b65-d027c53e63d3",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-focus-headBase.png",
+      "id": "acd94d83-8b9a-4d52-948b-a03af7464799",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-focus-pants.png",
+      "id": "59dadb46-e09f-455f-a969-1e6963078d96",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-focus-top.png",
+      "id": "385be368-e26c-4467-86d4-cfa49e461827",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-focus-face.png",
+      "id": "8f498721-7194-435b-860b-8d99fe9a7bbc",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-focus-foreground.png",
+      "id": "46f688b9-fb0c-42af-bbeb-ce3cea01a8ad",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-sword-underArms.png",
+      "id": "0cc898e5-ad47-48e2-82e6-474a950df58a",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-sword-body.png",
+      "id": "2796031d-e1f5-4744-a8ab-6d3213f30806",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-sword-headBase.png",
+      "id": "cdf1b332-411c-4e72-9e81-f05dd302f278",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-sword-pants.png",
+      "id": "359633d3-748c-4fb9-8401-5b81156b7c62",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-sword-top.png",
+      "id": "d94938d3-c05f-47f4-b4ee-fce472f7089f",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-sword-face.png",
+      "id": "c03ec184-ecfc-45de-a524-0354abcd2805",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "masculino-attack-focus-hair.png",
+      "id": "3089e730-ea97-4836-a685-312879e5aa80",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-sword-hair.png",
+      "id": "d8d68323-bfbd-4902-8722-69c863545e95",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-sword-foreground.png",
+      "id": "625cb22b-83ed-4d8a-9d94-339ced29d05d",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-unarmed-underArms.png",
+      "id": "5bc7969a-2d4a-4fe4-ba79-567b97515a1a",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-unarmed-body.png",
+      "id": "47a99890-8993-408a-aff8-183514a3f79e",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-unarmed-headBase.png",
+      "id": "79be423b-4d23-4c11-9061-291851adce6f",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-unarmed-pants.png",
+      "id": "bed19736-10c4-4f04-b76a-a055d716d62b",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-unarmed-face.png",
+      "id": "34c225a1-2d6d-41d7-8978-484e7f2f5c58",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-unarmed-top.png",
+      "id": "c9488ea6-d1d8-4722-aebb-b1970d8931c7",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-unarmed-hair.png",
+      "id": "a6fdfa09-494c-410d-9fac-616ab2ea1c5c",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-unarmed-foreground.png",
+      "id": "fb9f873f-307e-4f5c-a2f4-57b516a3d205",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-firearm-underArms.png",
+      "id": "85c3576f-97da-487c-a925-752345b87a7a",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-firearm-body.png",
+      "id": "631d712a-c3a8-4974-afc1-a88c049f2d8d",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-firearm-headBase.png",
+      "id": "8615b0ff-8163-49e0-b68f-94ff204c9f5c",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-firearm-pants.png",
+      "id": "d00a9e33-bbc5-4499-a233-8ef5f6d3355e",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-firearm-top.png",
+      "id": "9168c968-d945-45e8-8500-e2acffd5aa15",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-firearm-face.png",
+      "id": "282657b3-57fa-4d8c-9617-d8d8da698014",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-firearm-hair.png",
+      "id": "6085a896-83bf-4c5e-b5c1-33a3b4eaaa17",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-firearm-foreground.png",
+      "id": "78c335a3-4329-4333-9f2a-06664cc08e6e",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-daggers-underArms.png",
+      "id": "9eb13eb8-264f-4bcd-9618-7b7b5db88653",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-daggers-body.png",
+      "id": "1cdb80df-9452-4a75-b93a-d05fb70142af",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-daggers-headBase.png",
+      "id": "2894c043-5b3a-4d0b-8064-5cce3a84cd91",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-daggers-pants.png",
+      "id": "8c4dd4e4-f8d8-4edb-90ae-e81f7bc4f4d8",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-daggers-top.png",
+      "id": "555cf0a4-c2f3-4519-9236-56fc16d764ad",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-daggers-face.png",
+      "id": "c5a68181-2070-4155-aa88-7d1757bd9e9b",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-daggers-hair.png",
+      "id": "579ad078-3676-42fa-a6c7-c42387f06bb9",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-daggers-foreground.png",
+      "id": "59d68096-7631-44ef-8c66-0d866907ace4",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-focus-underArms.png",
+      "id": "ef48dc80-26d3-4116-b22d-95667335402d",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-focus-body.png",
+      "id": "d62aa561-da1f-4e5d-b389-7213858a9b3f",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-focus-headBase.png",
+      "id": "e625eb1e-0981-40e0-aa4e-eaa9ccbcdbdc",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-focus-pants.png",
+      "id": "f348eaca-470b-4aaa-9e51-094190f05cc0",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-focus-top.png",
+      "id": "3e07e4b4-17a2-4c0e-a9cd-0d3555086ae6",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-focus-face.png",
+      "id": "d6cb5476-bda9-43f0-9f4d-356d3162355d",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-focus-hair.png",
+      "id": "830417cd-d3b1-44b1-8f2c-e1f1b7fd66da",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    },
+    {
+      "name": "feminino-attack-focus-foreground.png",
+      "id": "c59b8b18-55c5-4c83-ad07-f98dce18ed73",
+      "kind": "attack",
+      "cell": 160,
+      "columns": 6,
+      "frames": 32
+    }
+  ],
+  "attackSheet": {
+    "width": 960,
+    "height": 960,
+    "columns": 6,
+    "rows": 6,
+    "cell": 160,
+    "framesPerDirection": 8,
+    "directions": [
+      "south",
+      "north",
+      "west",
+      "east"
+    ],
+    "emptyIndices": [
+      32,
+      33,
+      34,
+      35
+    ]
+  }
+}

@@ -1,5 +1,7 @@
 # Continuidade — Paper Doll e calças
 
+Para a biblioteca 96, consultar [o contrato de encaixe e os moldes atuais](PAPER-DOLL-96-FIT-CONTRACT.md). Este documento mantém o contrato84 e o item22 como histórico compatível.
+
 Estado de 28/10/2026, PR #134. **A calça completa não está pronta nem ativada no
 jogo normal.** Esta entrega consolida a infraestrutura validada e deixa fontes,
 prévia parcial e falhas identificadas para o próximo desenvolvedor.

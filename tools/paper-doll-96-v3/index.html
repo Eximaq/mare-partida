@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Personagens 96 px · revisão de animações</title>
+<link rel="stylesheet" href="preview.css">
+<main>
+  <h1>Personagens · 96 px</h1>
+  <p>Comparação da aparência aprovada com as novas animações no lobby.</p>
+  <p>Bases para próximos itens: <a href="assets/template-body.png" download>Corpos neutros</a> · <a href="assets/template-head.png" download>Cabeças neutras</a> · <a href="fit-template.json" download>Molde e contatos</a> · <a href="../../docs/PAPER-DOLL-96-FIT-CONTRACT.md">Guia de encaixe</a>.</p>
+  <div class="controls">
+    <label>Corpo <select id="body"><option value="feminino">Feminino</option><option value="masculino">Masculino</option></select></label>
+    <label>Direção <select id="direction"><option value="south">Sul</option><option value="north">Norte</option><option value="west">Oeste</option><option value="east">Leste</option></select></label>
+    <label>Movimento <select id="action"><option value="static">Pose aprovada</option><option value="walk">Caminhada</option><option value="idle">Parado</option><option value="attack-sword">Ataque · Espada</option><option value="attack-unarmed">Ataque · Soco</option><option value="attack-firearm">Ataque · Disparo</option><option value="attack-daggers">Ataque · Adagas</option><option value="attack-tech">Ataque · Tecnologia</option><option value="attack-focus">Ataque · Canalização</option></select></label>
+    <button id="play" type="button">Pausar</button>
+    <label><input id="repeat" type="checkbox" checked>Repetir na prévia</label>
+    <label>Frame <input id="frame" type="range" min="0" max="7" value="0"></label>
+  </div>
+  <fieldset><legend>Camadas independentes</legend><label><input type="checkbox" data-layer="hair" checked>Cabelo</label><label><input type="checkbox" data-layer="face" checked>Rosto</label><label><input type="checkbox" data-layer="top" checked>Roupa superior</label><label><input type="checkbox" data-layer="pants" checked>Calça / bermuda</label></fieldset>
+  <fieldset id="appearance-controls"><legend>Personalização e equipamentos · modelos em avaliação</legend></fieldset>
+  <p id="status" role="status">Carregando…</p>
+  <div class="maps">
+    <section><h2>Aparência aprovada</h2><canvas id="reference" width="600" height="400" aria-label="Referência parada no lobby"></canvas></section>
+    <section><h2>Movimento em avaliação</h2><canvas id="animated" width="600" height="400" aria-label="Animação no lobby"></canvas></section>
+  </div>
+  <h2>Inspeção ampliada · 2×</h2>
+  <canvas id="detail" width="256" height="256" aria-label="Frame ampliado sem suavização"></canvas>
+  <p>As animações são candidatas. Idle, caminhada e ataques estão disponíveis nas quatro direções. Use os controles para comparar peças separadas e conjuntos mistos.</p>
+  <p>Esta página não altera o personagem nem o save do jogo.</p>
+</main>
+<script src="rig.js"></script>
+<script src="layers.js"></script>
+<script src="motion.js"></script>
+<script src="surface.js"></script>
+<script src="torso.js"></script>
+<script src="appearance.js"></script>
+<script src="wardrobe.js"></script>
+<script src="preview.js"></script>
+</html>
