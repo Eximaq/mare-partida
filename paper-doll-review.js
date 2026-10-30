@@ -24,6 +24,15 @@
   function cosmetics(pack,player,options){
     return options.lookCatalog?.resolve(pack,player,options)||{pieces:{...pack.appearance.pieces},hidden:[],cosmeticFallbacks:[]};
   }
+  function headgearAppearance(result,pack,player){
+    const policy=root.MareHeadgear;if(!policy)return result;
+    const layers=root.MarePaperDollCatalog.equipmentBinding(pack,'head',player.equipment?.head?.def);
+    const model=pack.pieces.find(p=>layers.some(l=>l.pieceId===p.id));
+    const state=policy.resolve(player.equipment?.head,{model,hidden:policy.hidden(player)});
+    if(!state.visible)for(const {slot,pieceId}of layers)if(result.pieces[slot]===pieceId)delete result.pieces[slot];
+    if(state.visible&&state.hideHair&&layers.some(l=>result.pieces[l.slot]===l.pieceId))result.hidden=[...new Set([...result.hidden,'hair'])];
+    return result;
+  }
   function playerAppearance(pack,player,definition,options){
     const catalog=root.MarePaperDollCatalog,profile=catalog.profile(player);
     if(!profile||player?.devSandbox===true||pack.productionEnabled!==true||pack.full_character_artwork_approved!==true)return null;
@@ -41,7 +50,7 @@
     // Optional gear never becomes a permanent cosmetic through pack defaults.
     for(const slot of new Set(Object.values(catalog.equipmentLayers).flat()))if(slot!=='weapon'&&slot!=='outfit')delete result.pieces[slot];
     Object.assign(result.pieces,equipment.pieces);result.substitutions.push(...equipment.substitutions);
-    return result;
+    return headgearAppearance(result,pack,player);
   }
   function appearance(pack,player,{production=false,definition=null,lookCatalog=root.MarePaperDollLook,unavailablePieces=new Set()}={}){
     const options={production,lookCatalog,unavailablePieces};
@@ -69,7 +78,7 @@
     }
     // Unsupported visible garments cannot silently disappear in a complete prototype.
     for(const slot of Object.keys(catalog.equipmentLayers))if(slot!=='weapon'&&slot!=='coat'&&player.equipment?.[slot]&&!pack.bindings?.[slot])result.blocked.push({slot:'accessory',pieceId:String(player.equipment[slot].def),code:'unmapped-equipment'});
-    return result;
+    return headgearAppearance(result,pack,player);
   }
   function create({search='',devActive=false,production=false,definition=null,lookCatalog=root.MarePaperDollLook,getImage,fetch:fetcher=root.fetch?.bind(root),baseURL=root.location?.href,onChange=()=>{}}={}){
     production=production===true&&devActive!==true;
@@ -80,7 +89,7 @@
     let pack=null,coverage=null,state=enabled?'loading':'off',message='',draws=0,fallbacks=0,lastReason=null,lastPose=null,lastRelease=null;
     let simulationTime=0,renderFrame=0,releaseSequence=0,selectedRelease=null,suspended=false,identity=null,observedActor=null,currentTiming=null;
     const releases=new Map(),releaseTokens=new WeakMap();
-    const signature=player=>JSON.stringify([player?.classId,player?.factionId,player?.zoanTransformed,player?.paperDollLook,player?.equipment]);
+    const signature=player=>JSON.stringify([player?.classId,player?.factionId,player?.zoanTransformed,player?.paperDollLook,player?.preferences?.hideHeadgear,player?.equipment]);
     function cancelVisual(){releases.clear();selectedRelease=null;lastPose=null;lastRelease=null;}
     function synchronize(player,time,actor=null,timing=undefined){
       if(actor)observedActor=actor;if(timing!==undefined)currentTiming=timing?.locked?{action:timing.action,progress:timing.progress,elapsed:timing.elapsed,duration:timing.duration,direction:timing.direction,hitFrameRatio:timing.hitFrameRatio}:null;

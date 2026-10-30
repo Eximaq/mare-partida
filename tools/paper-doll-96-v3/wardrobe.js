@@ -25,8 +25,13 @@
       const value=build();attachments.set(key,value);if(attachments.size>96)attachments.delete(attachments.keys().next().value);return value;
     }
     const descriptor=(slot,id)=>catalog.styles.find(s=>s.id===id&&s.kind===slot);
+    function headLook(look,hidden=[]){
+      const model=descriptor('head',look.head),state=window.MareHeadgear.resolve(model?.itemId,{model,hidden:look.hideHeadgear===true||hidden.includes('head')});
+      return state.visible?look:{...look,head:'original'};
+    }
     const choices=look=>['hair','face','pants','boots','gloves','torso','cloak','head'].map(slot=>({slot,style:descriptor(slot,look[slot])})).filter(p=>p.style);
     function requiredFiles(selected,look) {
+      look=headLook(look);
       const files=choices(look).flatMap(p=>[p.style.layers[selected.body][selected.direction],...Object.values(p.style.parts?.[selected.body]?.[selected.direction]||{}),p.style.animations?.[selected.body]?.[selected.action]?.file].filter(Boolean));
       if(catalog.fitBases?.[selected.body]?.[selected.direction])files.push(catalog.fitBases[selected.body][selected.direction]);
       if(look.face!=='none'&&catalog.originalFaces?.[selected.body]?.[selected.direction])files.push(catalog.originalFaces[selected.body][selected.direction]);
@@ -49,6 +54,7 @@
       return result;
     }
     function draw(ctx,images,selected,fi,spec,hidden,look) {
+      look=headLook(look,hidden);
       // Inspection is local to the art bench. It never changes owned equipment.
       if(look.inspectionBareHands)look={...look,gloves:'original'};
       const r=rigs.clips[selected.body]?.[selected.action]?.[selected.direction];
@@ -62,8 +68,9 @@
       for(const slot of ['hair','face','pants'])if(look[slot]==='none'||descriptor(slot,look[slot]))visibleHidden.push(slot);
       const skin=api.skins[look.skin]?.ramp;
       const headStyle=hidden.includes('head')?null:descriptor('head',look.head);
-      const hideHair=headStyle?.hairOcclusion==='all';
+      const hideHair=window.MareHeadgear.resolve(headStyle?.itemId,{model:headStyle}).hideHair;
       if(hideHair)visibleHidden.push('hair');
+      if(look.baseOutfitHidden&&!descriptor('torso',look.torso))visibleHidden.push('top');
       if(descriptor('torso',look.torso))visibleHidden.push('top');
       const originalFrame=canvas(spec.width,spec.height);
       if(skin)for(const slot of ['body','headBase','underArms','foreground','face']){

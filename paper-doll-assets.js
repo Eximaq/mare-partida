@@ -59,7 +59,7 @@
   function equipmentPieces(pack,player,{production=false,unavailablePieces=new Set()}={}){
     const pieces={},substitutions=[];
     for(const equipmentSlot of Object.keys(equipmentLayers)){
-      if(equipmentSlot==='weapon')continue;
+      if(equipmentSlot==='weapon'||equipmentSlot==='head'&&root.MareHeadgear?.hidden(player))continue;
       const item=player?.equipment?.[equipmentSlot];if(!item)continue;
       const layers=equipmentBinding(pack,equipmentSlot,item.def);
       const usable=layers.length&&layers.every(({slot,pieceId})=>!unavailablePieces.has(pieceId)&&compatible(pack,pack.pieces.find(p=>p.id===pieceId),slot,{production}));

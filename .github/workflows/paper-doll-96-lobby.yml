@@ -5,6 +5,11 @@ on:
     paths:
       - 'paper-doll-96-lobby.js'
       - 'game.js'
+      - 'headgear-visibility.js'
+      - 'inventory-compact.css'
+      - 'ui-preview.html'
+      - 'tests/headgear-visibility.test.cjs'
+      - 'tests/headgear_visibility_browser.cjs'
       - 'index.html'
       - 'tools/paper-doll-96-v3/**'
       - 'tools/build_pages.py'
@@ -69,7 +74,7 @@ jobs:
       - name: Auditar armas e combate real
         run: |
           node tests/paper-doll-96-weapons.test.cjs
-          node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --evidence="$RUNNER_TEMP/weapons96"
+          node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --default-player --evidence="$RUNNER_TEMP/weapons96"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -98,10 +103,39 @@ jobs:
       - name: Auditar armas e combate real
         run: |
           node tests/paper-doll-96-other-weapons.test.cjs
-          node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --other-classes --evidence="$RUNNER_TEMP/other-weapons96"
+          node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --other-classes --default-player --evidence="$RUNNER_TEMP/other-weapons96"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: paper-doll-96-other-weapons
           path: ${{ runner.temp }}/other-weapons96
+          if-no-files-found: ignore
+
+  headgear96:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar navegador e Pages
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
+          npx playwright install --with-deps chromium
+          python tools/build_pages.py
+          python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/headgear96-server.txt" 2>&1 &
+          curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
+      - name: Validar cabeça, inventário e personagem padrão
+        run: |
+          node tests/headgear-visibility.test.cjs
+          node tests/headgear_visibility_browser.cjs http://127.0.0.1:8157/dist/ --evidence="$RUNNER_TEMP/headgear96"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: paper-doll-headgear96
+          path: ${{ runner.temp }}/headgear96
           if-no-files-found: ignore

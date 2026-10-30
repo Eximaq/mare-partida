@@ -1,5 +1,8 @@
 # Personagem único na aventura normal
 
+Atualização: [Sprint 2 — base padrão de 96 px e visibilidade da cabeça](CAPACETES-E-VISIBILIDADE.md). A descrição de 84 px abaixo é histórica e permanece como fallback.
+
+
 Implementação de 27/10/2026, autorizada pelo proprietário após a avaliação do conjunto e a correção melee. Branch `feature/paper-doll-player-integration`.
 
 ## Uso

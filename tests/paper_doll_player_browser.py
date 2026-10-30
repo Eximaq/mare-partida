@@ -1,4 +1,4 @@
-"""Normal adventure, cosmetic persistence, equipment identity and isolated sandbox."""
+"""Legacy84 fallback, cosmetic persistence, equipment identity and isolated sandbox. Native96 default is covered by headgear_visibility_browser."""
 import os,json
 from pathlib import Path
 from playwright.sync_api import sync_playwright
@@ -13,7 +13,7 @@ with sync_playwright() as p:
   route.fulfill(response=response,body=source.replace(needle,hook+needle))
  c.route('**/game.js*',game_route)
  c.route('**/api/akuma/catalog',lambda r:r.fulfill(status=404,body='{}'));c.route('**/__dev_version',lambda r:r.fulfill(body='stable'))
- q.goto(BASE,wait_until='networkidle');q.wait_for_function('window.__mareDiagnostics')
+ q.goto(BASE+'?paperDoll96=0',wait_until='networkidle');q.wait_for_function('window.__mareDiagnostics')
  q.wait_for_function('__mareDiagnostics().paperDollReview.state!=="loading"')
  assert q.evaluate('__mareDiagnostics().paperDollReview.production') is True,'Normal adventure must load an approved production pack without DEV query'
  q.locator('#characterName').fill('Marujo modular');q.locator('#nextToClass').click()
@@ -68,7 +68,7 @@ with sync_playwright() as p:
  assert not errors,errors
  perf_context=b.new_context(viewport={'width':1366,'height':900});perf_context.add_init_script('localStorage.setItem("mare-partida-save-v1",'+json.dumps(normal)+')')
  perf_context.route('**/api/**',lambda r:r.fulfill(status=404,body='{}'));perf_context.route('**/__dev_version',lambda r:r.fulfill(body='stable'))
- perf=perf_context.new_page();perf.goto(BASE,wait_until='networkidle');perf.wait_for_function('window.__mareDiagnostics?.().paperDollReview.state==="ready"')
+ perf=perf_context.new_page();perf.goto(BASE+'?paperDoll96=0',wait_until='networkidle');perf.wait_for_function('window.__mareDiagnostics?.().paperDollReview.state==="ready"')
  perf.locator('#enterHunt').click();perf.locator('[data-quick-mode=map]').click();perf.locator('[data-island=dawn]').click();perf.locator('[data-travel-area=beach]').click()
  metrics=perf.evaluate("""async()=>{const samples=[],end=performance.now()+1800;let last=performance.now();await new Promise(resolve=>{function frame(t){samples.push(t-last);last=t;if(t<end)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)});const sorted=samples.filter(x=>x>0).sort((a,b)=>a-b);return {frames:sorted.length,p95:sorted[Math.floor(sorted.length*.95)],renderer:__mareDiagnostics().paperDollReview};}""")
  assert metrics['frames']>=30 and metrics['p95']<100,metrics;assert metrics['renderer']['cacheEntries']<=96 and metrics['renderer']['cacheBytes']<=4*1024*1024

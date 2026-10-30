@@ -173,3 +173,14 @@
   100%{background-position:0% 0%}
 }
 @media (prefers-reduced-motion:reduce){#panelOverlay.inventory-mode .maelstrom-katana-slot-animation{animation:none;background-position:0% 0%}}
+
+/* Cosmetic visibility control in the lower right of the character preview. */
+.op-avatar-stage{position:relative}
+#panelOverlay.inventory-mode .op-headgear-toggle{position:absolute;right:8px;bottom:8px;z-index:2;display:grid;place-items:center;width:34px;height:34px;padding:6px;border:1px solid #a88546;border-radius:7px;background:#263241;color:#f2d292;box-shadow:0 2px 5px #0008;cursor:pointer;touch-action:manipulation}
+#panelOverlay.inventory-mode .op-headgear-toggle svg{width:22px;min-width:22px;height:22px;flex-shrink:0}
+#panelOverlay.inventory-mode .op-headgear-toggle.is-hidden{background:#161f2b;color:#b1b7c3;border-color:#6e7784}
+#panelOverlay.inventory-mode .op-headgear-toggle:focus-visible{outline:2px solid #f6df9a;outline-offset:3px}
+#panelOverlay.inventory-mode .op-headgear-toggle:disabled{opacity:.4;cursor:default}
+@media(pointer:coarse){#panelOverlay.inventory-mode .op-headgear-toggle{width:44px;height:44px}}
+
+@media(hover:hover){#panelOverlay.inventory-mode .op-headgear-toggle:not(:disabled):hover{background:#3b4b5c;color:#fff0cb;border-color:#e8cc87}}
