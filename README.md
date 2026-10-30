@@ -1,3 +1,5 @@
+Portal de pré-lançamento **Kaizoku Idle**: [página](portal/index.html) e [publicação na Cloudflare](docs/PORTAL-KAIZOKU.md).
+
 # Desenvolvimento compartilhado no GitHub
 
 [Alubarna 01–05 e aba Skypiea](docs/ALUBARNA.md): cinco destinos completos, monstros Nv.53/58/63/68/75 e animações nativas. Em revisão, sem merge/deploy automático.

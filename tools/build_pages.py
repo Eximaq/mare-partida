@@ -4,6 +4,7 @@ import shutil
 import hashlib
 import re
 import json
+from build_portal import version_portal_assets
 
 ROOT = Path(__file__).resolve().parent.parent
 OUT = ROOT / 'dist'
@@ -20,8 +21,9 @@ for f in web_files:
     if not (ROOT / f).is_file():
         raise SystemExit(f'Arquivo necessário ausente: {f}')
     shutil.copy2(ROOT/f, OUT/f)
-# Standalone account portal preview; the existing game entry remains unchanged.
+# Public portal uses the same cache protection as the dedicated Cloudflare build.
 shutil.copytree(ROOT/'portal', OUT/'portal')
+version_portal_assets(OUT/'portal')
 # A new HTML document must never combine this release with cached older scripts.
 # Content hashes change only when the referenced public file changes; saves are untouched.
 def version_asset(match):
