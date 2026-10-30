@@ -39,7 +39,7 @@ source=source.replace('  window.__mareDiagnostics=',bridge).replace('function ti
    for(const sys of [MareNeko,MareUshi,MareWolf,MareRyu,MareRankCExpansion])sys.drawActor(c,128,220,{action:'attack',progress:.5});
    for(const key of Object.keys(MareSpriteCombatV2Data).filter(k=>MareSpriteCombatV2Data[k].monster))MareNewIslandArt.monster(c,{type:key,x:128,y:220,alive:true,moving:0,emberFacing:'south'},q.world.time);
    const g=MareHoya.create(q.stats(),128,220,q.world.time);MareHoya.drawActor(c,g,q.world.time);return urls;
-  });assert.equal(surfaces.length,26);assert.ok(surfaces.every(u=>u.includes('/assets/sprites-combat-v2/')));
+  });assert.equal(surfaces.length,31);assert.ok(surfaces.every(u=>u.includes('/assets/sprites-combat-v2/')));
   for(const id of Object.keys(await page.evaluate(()=>MareSpriteCombatV2.fruits))){
    const r=await page.evaluate(id=>{const q=__spritesQA;q.cancelBasicAttack();q.game.equipment.akuma_no_mi={id:'qa-'+id,def:q.defs.findIndex(d=>d.fruitId===id),fruitId:id,plus:0,level:1};q.game.zoanTransformed=true;q.syncFruitVfx();q.game.hp=q.stats().maxHP;q.session.respawn=0;q.session.fruitInvulnerable=0;q.world.hero.direction='front';q.session.zoanTransition=null;q.world.time+=1;const before=q.game.hp;q.takeDamage(5,null,false,true);const hurt=MareSpriteCombatV2.hurtProgress(q.world.hero,q.world.time);const c=document.createElement('canvas').getContext('2d');let url;c.drawImage=(im)=>{url=im.src};q.drawPlayerSpriteBase(c,128,220);return {loss:before-q.game.hp,hurt,url};},id);
    assert.equal(r.loss,5,id);assert.equal(r.hurt,0,id);assert.ok(r.url.includes('/assets/sprites-combat-v2/'),id);
@@ -70,6 +70,6 @@ source=source.replace('  window.__mareDiagnostics=',bridge).replace('function ti
   const save=await page.evaluate(()=>{const q=__spritesQA;q.saveGame();return {level:q.game.level,gold:q.game.gold,kills:q.game.stats.kills};});
   if(process.env.MARE_QA_DIR){fs.mkdirSync(process.env.MARE_QA_DIR,{recursive:true});for(const [w,h]of [[1920,1080],[1366,768],[1280,720],[390,844]]){await page.setViewportSize({width:w,height:h});await page.evaluate(()=>__spritesQA.draw());await page.screenshot({path:path.join(process.env.MARE_QA_DIR,`world-${w}.png`)});}}
   await page.reload({waitUntil:'networkidle'});await page.waitForFunction(()=>!!__spritesQA.game);assert.deepEqual(await page.evaluate(()=>({level:__spritesQA.game.level,gold:__spritesQA.game.gold,kills:__spritesQA.game.stats.kills})),save);
-  assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);console.log('Sprite v2 browser: 21 characters, '+rendering+' native poses, all render surfaces, real HP/Hurt boundary, repeated hits, all Zoans and save reload passed.');await context.close();
+  assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);console.log('Sprite v2 browser: 26 characters, '+rendering+' native poses, all render surfaces, real HP/Hurt boundary, repeated hits, all Zoans and save reload passed.');await context.close();
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});

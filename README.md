@@ -2,7 +2,9 @@ Portal de pré-lançamento **Kaizoku Idle**: [página](portal/index.html) e [pub
 
 # Desenvolvimento compartilhado no GitHub
 
-Sprites de combate v2: [21 conjuntos importados e validação](docs/SPRITES-COMBAT-V2.md), publicados após aprovação no PR#145. [Escala e caminhada Zoan](docs/ZOAN-ESCALA-CAMINHADA.md) publicadas no PR#146. [Hurt South, novos clipes e dez aumentos de tamanho](docs/HURT-SOUTH-ESCALAS.md) em revisão separada.
+[Alubarna 01–05 e aba Skypiea](docs/ALUBARNA.md): cinco destinos completos, monstros Nv.53/58/63/68/75 e animações nativas. Em revisão, sem merge/deploy automático.
+
+Sprites de combate v2: [21 conjuntos importados e validação](docs/SPRITES-COMBAT-V2.md), publicados após aprovação no PR#145. [Escala e caminhada Zoan](docs/ZOAN-ESCALA-CAMINHADA.md) publicadas no PR#146. [Hurt South, novos clipes e dez aumentos de tamanho](docs/HURT-SOUTH-ESCALAS.md) publicados no PR#148.
 
 **Impel Down jogável:** mapa original, um adversário por andar, chefes a cada cinco e progressão automática com marcos salvos. [Regras, compatibilidade e validação](docs/IMPEL-DOWN.md).
 

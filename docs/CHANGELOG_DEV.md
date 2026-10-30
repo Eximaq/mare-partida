@@ -1,3 +1,7 @@
+## 29/10/2026 — Alubarna 01–05 e Skypiea (em revisão)
+
+Cinco instâncias do mapa completo exportado pelo proprietário, em Alabasta, com Puppu Nv.53, Valentine Nv.58, Merry Christmas Nv.63, Double Finger Nv.68 e Mr.1 Nv.75. Escalas ordenadas, quatro direções, Hurt South e 50 spawns novos. Arco norte navegável sem alterar a arte. Skypiea recebe aba com conteúdo futuro. 107 arquivos Node, 7.285 frames nativos, navegador no fonte/dist, 25 abates por execução e backend aprovados. Sem geração paga ou merge/deploy automático. [Relatório](ALUBARNA.md).
+
 ## 29/10/2026 — Portal: cache do Pages e logo oficial
 
 Branch `fix/portal-pages-cache`, base `2b3a48a`. Corrige HTML novo com CSS antigo no GitHub Pages: os dois builds agora compartilham hash de conteúdo nas URLs dos assets. Substitui a logo inicial pelo recorte transparente do emblema oficial enviado pelo proprietário, mantendo os arquivos anteriores e o cenário.

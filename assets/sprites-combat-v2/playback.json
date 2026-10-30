@@ -1,9 +1,9 @@
 {
   "inspection": "Contact poses inspected from native source strips; frame numbers are zero-based. Presentation only; logical damage timings remain in legacy controllers.",
-  "attack": {"bananawani":14,"bison":16,"buchi":10,"cabaji":14,"chew":19,"cocox":10,"gin":12,"helmeppo":18,"hoya":14,"inu":19,"kuroobi":{"south":18,"north":14,"west":16,"east":16},"marinheiro":14,"mr3":18,"neko":19,"pearl":16,"ryu":19,"sham":6,"tori":10,"uma":14,"ushi":12,"wolf":7},
+  "attack": {"bananawani":14,"bison":16,"buchi":10,"cabaji":14,"chew":19,"cocox":10,"gin":12,"helmeppo":18,"hoya":14,"inu":19,"kuroobi":{"south":18,"north":14,"west":16,"east":16},"marinheiro":14,"mr3":18,"neko":19,"pearl":16,"ryu":19,"sham":6,"tori":10,"uma":14,"ushi":12,"wolf":7,"puppu":10,"valentine":4,"merry":23,"doublefinger":6,"mr1":7},
   "special": {"uma":23,"neko":12,"ushi":16,"wolf":14,"ryu":19,"bison":14},
   "special-2": {"ryu":16},
-  "hurt_start": {"bananawani":6,"bison":7,"buchi":9,"cabaji":6,"chew":6,"cocox":3,"gin":6,"helmeppo":3,"inu":6,"kuroobi":11,"marinheiro":3,"mr3":6,"neko":6,"pearl":3,"ryu":6,"sham":3,"tori":3,"uma":6,"ushi":9,"wolf":3,"hoya":3},
+  "hurt_start": {"bananawani":6,"bison":7,"buchi":9,"cabaji":6,"chew":6,"cocox":3,"gin":6,"helmeppo":3,"inu":6,"kuroobi":11,"marinheiro":3,"mr3":6,"neko":6,"pearl":3,"ryu":6,"sham":3,"tori":3,"uma":6,"ushi":9,"wolf":3,"hoya":3,"puppu":0,"valentine":1,"merry":2,"doublefinger":3,"mr1":2},
   "world_scale": {"uma":2,"tori":1.5,"marinheiro":2,"hoya":1.4,"mr3":1.5,"cabaji":1.5,"kuroobi":1.3,"chew":1.3,"buchi":1.5,"sham":1.2,"gin":1.2,"pearl":1.4},
   "match_profile_extent": ["inu"],
   "locomotion_loops": {
@@ -14,5 +14,12 @@
     "ushi": {"south":[4,25],"north":[3,22],"west":[3,25],"east":[3,25]},
     "ryu": {"south":[3,25],"north":[3,25],"west":[3,25],"east":[3,25]},
     "bison": {"south":[4,25],"north":[4,25],"west":[4,25],"east":[4,25]}
+  },
+  "native_monsters": {
+    "puppu": {"id":"2a8d274a-85ff-4e0c-a8e2-81704cbd1315","name":"Puppu","worldHeight":110,"direction_selection":{"walk:east":"ee79c7fc","walk:west":"ce62c887","walk:north":"d7c24e6f","walk:south":"42196d84","attack:west":"b0e045a9","attack:east":"0f51b574","attack:north":"3aa5d885","attack:south":"b6a91465","hurt:south":"a6353023"}},
+    "valentine": {"id":"ae436f58-ab02-4ae8-b259-826e408bd00d","name":"Miss Valentine","worldHeight":135,"direction_selection":{"attack:north":"5d19cd46","attack:west":"2651ebd1","attack:south":"c3be7b79","attack:east":"3c630bce","walk:north":"852fc8c8","walk:west":"149f3527","walk:south":"623df8ed","walk:east":"9dc1da99","hurt:south":"045a5751"}},
+    "merry": {"id":"f1bf1943-362c-4057-a191-aca9648906e7","name":"Miss Merry Christmas","worldHeight":120,"direction_selection":{"attack:west":"cc68b93a","attack:east":"b1278b4c","attack:north":"d81e41f6","attack:south":"7246e044","walk:north":"47b68d6a","walk:west":"4e751904","walk:east":"f355f974","walk:south":"1a1a8790","hurt:south":"7ed0b4b5"}},
+    "doublefinger": {"id":"6b7bdeb4-36d9-42d5-a4c1-f540a3896d92","name":"Miss Double Finger","worldHeight":150,"direction_selection":{"walk:west":"f354536f","walk:east":"5b28c2b7","walk:north":"6fe43cef","walk:south":"84b21228","attack:west":"ad2d58fe","attack:north":"cc2768b9","attack:east":"4eea03b6","attack:south":"e0f3cb51","hurt:south":"ff121f7a"}},
+    "mr1": {"id":"a51c5540-cb66-47ad-971d-a9f6d9f314d3","name":"Mr.1","worldHeight":170,"direction_selection":{"attack:west":"136e94cf","attack:south":"d6e80702","attack:east":"afc309ea","attack:north":"b7752034","walk:north":"145ea73f","walk:west":"1bec5420","walk:east":"facac27f","walk:south":"51d6d6c3","hurt:south":"924f3ad7"}}
   }
 }

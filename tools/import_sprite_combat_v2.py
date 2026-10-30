@@ -9,10 +9,10 @@ OUT = ROOT / 'assets/sprites-combat-v2'
 
 def category(key, name):
     n = name.lower()
-    if 'sofrer' in n or 'jerk' in n: return 'hurt'
+    if any(s in n for s in ['sofrer','jerk','flinch','flash_red','tense']): return 'hurt'
     if 'special' in n or 'especial' in n:
         return 'special-2' if key == 'ryu' and '2' in n else 'special'
-    if any(s in n for s in ['walk', 'caminh', 'glide', 'corrida', 'running']):
+    if any(s in n for s in ['walk', 'caminh', 'glide', 'corrida', 'running', 'step_forward', 'heavy_step']):
         return 'run' if any(s in n for s in ['corrida', 'running']) else 'walk'
     return 'attack'
 
@@ -39,7 +39,14 @@ def import_one(record):
             action = 'idle' if original == 'idle' else category(key, original)
             if action in entry['clips']: raise ValueError((key, action, original))
             entry['clips'][action] = {}
-            for direction, files in directions.items():
+            normalized = {}
+            for original_direction, files in directions.items():
+                match = re.fullmatch(r'(south|north|east|west)-([a-f0-9]{8})', original_direction) if action != 'idle' else None
+                direction = match[1] if match else original_direction
+                chosen = record.get('direction_selection', {}).get(action+':'+direction)
+                if match and chosen and match[2] != chosen: continue
+                if direction not in normalized or match: normalized[direction] = files
+            for direction, files in normalized.items():
                 files = [files] if isinstance(files, str) else files
                 images = [Image.open(io.BytesIO(z.read(f))).convert('RGBA') for f in files]
                 size = max(max(im.size) for im in images)
@@ -69,6 +76,13 @@ def main():
         {'key':p.parent.name,'id':d['id'],'source':'name: '+d['name']}
         for p in sorted(OUT.glob('*/metadata.json'))
         for d in [json.loads(p.read_text(encoding='utf8'))]]
+    playback = json.loads((OUT/'playback.json').read_text(encoding='utf8'))
+    native = playback.get('native_monsters', {})
+    known = {r['key'] for r in records}
+    for key, cfg in native.items():
+        if key not in known: records.append({'key':key,'id':cfg['id'],'source':'name: '+cfg['name']})
+    for record in records:
+        if record['key'] in native: record['direction_selection'] = native[record['key']].get('direction_selection', {})
     SOURCE.mkdir(parents=True,exist_ok=True)
     with concurrent.futures.ThreadPoolExecutor(max_workers=4) as pool:
         entries = dict(pool.map(import_one, records))
@@ -94,6 +108,10 @@ def main():
                     clip['playback_start'] = playback['hurt_start'][key]
                     clip['playback_frames'] = 4
                     clip['playback_seconds'] = .18
+        if key in native:
+            entry.update(legacyHeight=native[key]['worldHeight'],worldHeight=native[key]['worldHeight'],world_scale=1,idle_extent_ratio=1,monster=True)
+            (OUT/key/'metadata.json').write_text(json.dumps(entry,ensure_ascii=False,indent=2)+'\n',encoding='utf8')
+            continue
         if key in ['tori','uma','inu']:
             old = ROOT / f'assets/akuma/zoan/{key}-idle-south.png'; old_scale = 1
         elif key == 'cocox':

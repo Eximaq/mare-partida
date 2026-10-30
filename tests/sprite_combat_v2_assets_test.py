@@ -7,7 +7,7 @@ ROOT=Path(__file__).resolve().parents[1]
 class NativeFrames(unittest.TestCase):
     def test_original_pixels_and_playback_ranges(self):
         files=list((ROOT/'assets/sprites-combat-v2').glob('*/metadata.json'))
-        self.assertEqual(len(files),21)
+        self.assertEqual(len(files),26)
         count=0
         for path in files:
             entry=json.loads(path.read_text(encoding='utf8'))
@@ -25,6 +25,6 @@ class NativeFrames(unittest.TestCase):
                         self.assertLessEqual(clip['playback_start']+clip['playback_frames'],clip['frames'])
                         self.assertGreaterEqual(clip['playback_seconds'],.12)
                         self.assertLessEqual(clip['playback_seconds'],.22)
-        print('Verified',count,'unaltered native frames across 21 characters.')
+        print('Verified',count,'unaltered native frames across 26 characters.')
 
 if __name__=='__main__':unittest.main()

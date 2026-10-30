@@ -2,13 +2,14 @@
 /* Depth metadata and original-pixel overlays for flattened owner maps. */
 ((root)=>{
  const cache=new Map(),images=new Map(),overlays=new Map();let mask=null,cover=null;
- const assetIds=[...new Set([...(root.MareAlabasta?.props||[]).map(p=>p.assetId),...(root.MareLobby?.depthObjects||[]).map(p=>p.assetId),...Object.values(root.MareNewIslandObjects||{}).flatMap(o=>o.assets),...['orange','loguetown'].flatMap(id=>root.MarePixelWorldMaps?.[id]?.source.objects.map(o=>o.assetId)||[])])];
+ const assetIds=[...new Set([...(root.MareAlubarna?.props||[]).map(p=>p.assetId),...(root.MareAlabasta?.props||[]).map(p=>p.assetId),...(root.MareLobby?.depthObjects||[]).map(p=>p.assetId),...Object.values(root.MareNewIslandObjects||{}).flatMap(o=>o.assets),...['orange','loguetown'].flatMap(id=>root.MarePixelWorldMaps?.[id]?.source.objects.map(o=>o.assetId)||[])])];
  if(typeof Image==='function')for(const id of assetIds){const im=new Image();im.src='assets/map-depth/objects/'+id+'.png';images.set(id,im);}
  const ready=()=>[...images.values()].every(im=>im.complete&&im.naturalWidth>0);
  function maskedOverlay(p,source){const im=images.get(p.assetId);if(!im?.complete||!im.naturalWidth)return null;if(overlays.has(p))return overlays.get(p);const canvas=document.createElement('canvas');canvas.width=Math.ceil(p.w);canvas.height=Math.ceil(p.h);const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.drawImage(source,p.x,p.y,p.w,p.h,0,0,p.w,p.h);c.globalCompositeOperation='destination-in';c.drawImage(im,0,0,p.w,p.h);overlays.set(p,canvas);if(overlays.size>64)overlays.delete(overlays.keys().next().value);return canvas;}
 
  function regions(id){if(cache.has(id))return cache.get(id);let items=[];
   if(id==='lobby'&&root.MareLobby){items=root.MareLobby.depthObjects.map(p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,base:p.pivotY,tall:p.h>72,type:'lobby',assetId:p.assetId}));}
+  else if(root.MareAlubarna?.worlds[id])items=root.MareAlubarna.props.filter(p=>p.h>40).map(p=>({...p,tall:p.h>96,type:'alubarna'}));
   else if(id==='alabasta'&&root.MareAlabasta)items=root.MareAlabasta.props.filter(p=>p.h>40).map(p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,base:p.base,tall:p.h>96,type:'alabasta',assetId:p.assetId}));
   else if(id==='dawn'&&root.MareDawn)items=root.MareDawn.props.map(p=>({id:p.id,x:p.bounds.x,y:p.bounds.y,w:p.bounds.width,h:p.bounds.height,base:p.y,tall:['house','tree'].includes(p.kind),type:'dawn',prop:p}));
   else if(id==='embers'&&root.MareEmber)items=root.MareEmber.props.filter(p=>!p.ground).map(p=>{const size=128*p.scale;return {id:p.id,x:p.drawX??p.x-size/2,y:p.drawY??p.y-size*.85,w:size,h:size,base:p.y,tall:size>80,type:'ember',prop:p};});
@@ -19,7 +20,7 @@
  function draw(ctx,p,actors){if(!actors.some(a=>root.MareWorld.occluded(a,[{...p,tall:true}],a.visualHeight||120,a.visualWidth||64)))return false;
   if(p.type==='dawn'){root.MareDawnRenderer.prop(ctx,p.prop,actors);return true;}
   if(p.type==='ember'){root.MareEmberRenderer.prop(ctx,p.prop);return true;}
-  const image=p.type==='alabasta'?root.MareAlabasta.image:p.type==='lobby'?root.MareLobby.image:p.type==='pixel'?root.MarePixelWorldMaps.imageCache[p.mapId==='conchas'?'conchasForeground':p.mapId]:root.MareNewIslands.images[p.mapId];
+  const image=p.type==='alubarna'?root.MareAlubarna.image:p.type==='alabasta'?root.MareAlabasta.image:p.type==='lobby'?root.MareLobby.image:p.type==='pixel'?root.MarePixelWorldMaps.imageCache[p.mapId==='conchas'?'conchasForeground':p.mapId]:root.MareNewIslands.images[p.mapId];
   if(!image?.complete||!image.naturalWidth)return false;
   if(p.mapId!=='conchas'){const overlay=maskedOverlay(p,image);if(!overlay)return false;ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(overlay,p.x,p.y);ctx.restore();return true;}
   ctx.save();ctx.imageSmoothingEnabled=false;ctx.beginPath();

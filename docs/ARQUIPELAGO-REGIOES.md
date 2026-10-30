@@ -1,5 +1,7 @@
 # Regiões e detalhes do Arquipélago
 
+Atualização de29/10/2026 em revisão: Alabasta inclui o Deserto Nv.40–50 e cinco destinos Alubarna Nv.50–75. Skypiea possui aba habilitada com ilhas em breve. [Mapa completo, monstros e validação](ALUBARNA.md). As descrições históricas de Alabasta bloqueada abaixo foram superadas.
+
 Revisão de 22/10/2026: Orange Town usa o mapa PixelLab atualizado e as patrulhas de Mr. 3/Cabaji no Nv.13. Loguetown está liberada para Nv.36–40, com Marinheiros Nv.40. O Lobby continua como ponto de entrada padrão.
 
 Atualização de 19/10/2026. A janela fica em **Modos de jogo (M) → Mapa do Arquipélago**. Botão de viagem e NPC de expedição abrem a mesma lista de modos. East Blue abre por padrão; Alabasta está desabilitada, com `data-status="locked"`, nome e aviso visível abaixo do título.
