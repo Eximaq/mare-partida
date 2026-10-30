@@ -84,8 +84,8 @@ const hook=`window.__lobby96QA={get game(){return game},get runtime(){return lob
   await page.evaluate(()=>__lobby96QA.draw());assert.equal(await page.evaluate(()=>__mareDiagnostics().lobby96.draws),0);
   assert(await page.evaluate(()=>__mareDiagnostics().paperDollReview.draws)>0);
   await context.unroute('**/tools/paper-doll-96-v3/manifest.json');
-  // The ordinary adventure requests no 96px assets at all.
-  let requests=0;page.on('request',r=>{if(r.url().includes('tools/paper-doll-96-v3/'))requests++;});await go(base);
+  // Explicit legacy rollback requests no native96 assets. The default release is covered by headgear_visibility_browser.
+  let requests=0;page.on('request',r=>{if(r.url().includes('tools/paper-doll-96-v3/'))requests++;});await go(base+'?paperDoll96=0');
   assert.equal(await page.evaluate(()=>__mareDiagnostics().lobby96.state),'off');assert.equal(requests,0);
   assert.deepEqual(errors,[]);
   console.log(JSON.stringify({pixels,profiles:28,attackPreviews,viewports:8,peakLoads:stats.peakLoads,cache:{images:stats.images,bundles:stats.bundles,previews:stats.previews},saveIsolation:true,missingManifestFallback:true,normalRequests:requests,errors}));

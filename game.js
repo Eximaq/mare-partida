@@ -1755,7 +1755,7 @@
           <div class="op-character-core">
             <div class="op-equip-side left">${left}</div>
             <div class="op-avatar-column">
-              <div class="op-avatar-stage"><canvas id="inventorySprite" width="180" height="220" aria-label="Visual atual do personagem"></canvas></div>
+              <div class="op-avatar-stage"><canvas id="inventorySprite" width="180" height="220" aria-label="Visual atual do personagem"></canvas>${MareHeadgear.button(game)}</div>
               <div class="op-avatar-meta"><strong>${escapeHTML(game.name)}</strong><span>Nível ${game.level}</span><span>Classe: ${escapeHTML(classes[game.classId].name.replace(' / ',' · '))}</span></div>
               <div class="op-power-banner ${feedback?'power-updated':''}"><span>⚔⚔</span><label>PODER TOTAL</label><b>${fmt(stats.power)}</b></div>
               <div class="op-stats-list"><div><span>❤ Vida</span><b>${fmt(stats.maxHP)}</b></div><div><span>⚔ Ataque</span><b>${fmt(stats.attack)}</b></div><div><span>🛡 Defesa</span><b>${fmt(stats.defense)}</b></div></div>
@@ -1893,7 +1893,7 @@
     if(!['status','talents','achievements','haki','akuma','hierarchy','appearance'].includes(characterTab))characterTab='status';
     $('dialogTitle').textContent=({status:'Personagem',talents:'Talentos',achievements:'Conquistas',haki:'Haki',akuma:'Akuma no Mi',hierarchy:'Hierarquia dos Mares',appearance:'Aparência'})[characterTab];
     if(characterTab==='appearance'){
-      if(lobby96.snapshot().enabled&&scene==='lobby'){body.innerHTML=lobby96.panel(game);return;}
+      if(lobby96.snapshot().rehearsal&&scene==='lobby'){body.innerHTML=lobby96.panel(game);return;}
       if(!paperDollReview.snapshot().enabled){body.innerHTML='<p>A personalização está em avaliação no laboratório Paper Doll.</p><a class="dialog-button" href="?dev=1&amp;paperDollReview=complete">Abrir laboratório de aparência</a>';return;}
       dollLookDraft=dollLookDraft||MarePaperDollLook.read(game);body.innerHTML=MarePaperDollLook.render(game,dollLookDraft,dollLookMessage,paperDollReview.equipmentStatus(game),itemDefs,{production:!DEV_ACTIVE});return;
     }
@@ -2023,6 +2023,13 @@
     toast('Inimigo de teste criado. Feche o laboratório para combater.');
   }
   document.addEventListener('click',e=>{
+    if(e.target.closest('[data-headgear-visibility]')){
+      if(currentPanel!=='inventory'||!game.equipment?.head)return;
+      const next=MareHeadgear.withPreference(game,!MareHeadgear.hidden(game));
+      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;$('saveDot').style.background='#65c9bc';}
+      catch{toast('Não foi possível salvar a preferência. O visual anterior foi preservado.','danger');return;}
+      renderPortrait();renderPanel();document.querySelector('[data-headgear-visibility]')?.focus({preventScroll:true});return;
+    }
     if(e.target.closest('[data-lobby96-apply]')){if(currentPanel!=='character'||characterTab!=='appearance'||scene!=='lobby')return;if(lobby96.apply(game)){$('lobby96Message').textContent='Preparando o visual para o lobby…';renderPortrait();}return;}
     if(e.target.closest('[data-lobby96-cancel]')){lobby96.discard();renderPanel();return;}
     if(e.target.closest('[data-doll-kit]')){
@@ -2642,7 +2649,8 @@
         const c=canvas.getContext('2d'),direction=$('dollLookDirection').value,action=$('dollLookAction').value;
         c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
         const preview={...game,zoanTransformed:false,paperDollLook:dollLookDraft||MarePaperDollLook.read(game)};
-        const modular=paperDollReview.draw(c,preview,action,direction,action==='attack'?world.time%(.667):world.time,126,218,2.5);
+        const previewTime=action==='attack'?world.time%(.667):world.time;
+        const modular=lobby96.draw(c,preview,{scene:'lobby',action,direction,time:previewTime,x:126,y:218,scale:2.5})||paperDollReview.draw(c,preview,action,direction,previewTime,126,218,2.5);
         if(!modular)drawConfiguredHuman(c,126,218,action,direction,world.time,115);
         $('dollLookState').textContent=modular?'Camadas modulares sincronizadas':'Visual original: esta combinação ainda não tem camadas compatíveis.';
       }
@@ -2766,7 +2774,7 @@ function applySceneHudLayout(){
     const canvas=$('creationLookCanvas');if(DEV_ACTIVE||!canvas||$('startOverlay').classList.contains('hidden'))return;
     const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
     const player={classId:selectedClass,factionId:selectedFaction,paperDollLook:creationLookDraft,equipment:{weapon:{def:starterWeapon(selectedClass)},coat:editingCharacter?game.equipment.coat:{def:6}},...(DEV_ACTIVE?{devSandbox:true}:{})};
-    const drawn=paperDollReview.draw(c,player,'idle','south',time,110,162,2);
+    const drawn=lobby96.draw(c,player,{scene:'lobby',action:'idle',direction:'south',time,x:110,y:162,scale:2})||paperDollReview.draw(c,player,'idle','south',time,110,162,2);
     $('creationLookState').textContent=drawn?'Esta será sua aparência. Equipamentos podem mudar o visual.':paperDollReview.snapshot().state==='failed'?'Prévia indisponível. Sua escolha será preservada.':'Carregando personagem…';
   }
   document.addEventListener('change',e=>{const key=e.target.dataset.creationLook;if(Object.hasOwn(MarePaperDollLook.choices,key)&&Object.hasOwn(MarePaperDollLook.choices[key],e.target.value))creationLookDraft={...creationLookDraft,[key]:e.target.value};});
@@ -2985,6 +2993,7 @@ function applySceneHudLayout(){
 
   window.addEventListener('keydown',(e)=>{
     if(e.key==='F9'&&DEV_ACTIVE){e.preventDefault();paperDollDebug=!paperDollDebug;return;}
+    if([' ','Enter'].includes(e.key)&&document.activeElement?.matches('[data-headgear-visibility]'))return;
     const isTyping=['INPUT','TEXTAREA','SELECT'].includes(document.activeElement?.tagName)||document.activeElement?.isContentEditable;
     if(e.key==='Escape'){
       if(!$('startOverlay').classList.contains('hidden'))return;

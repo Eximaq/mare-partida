@@ -1,3 +1,5 @@
+**Sprint 2:** [capacetes, cabelo e botão de visibilidade](docs/CAPACETES-E-VISIBILIDADE.md). Base de 96 px como padrão por autorização do proprietário; botão no canto inferior direito do personagem no inventário.
+
 Portal de pré-lançamento **Kaizoku Idle**: [página](portal/index.html) e [publicação na Cloudflare](docs/PORTAL-KAIZOKU.md).
 
 **Demais classes, 96 px:** [dez armas PixelLab, completando 22 itens nas sete classes](docs/PAPER-DOLL-96-ARMAS-DEMAIS-CLASSES.md), peças vestidas, vistas de disparo e origem de projétil integrada. Reutiliza a base de 96 px.

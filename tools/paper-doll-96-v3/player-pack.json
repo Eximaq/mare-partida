@@ -1,0 +1,10 @@
+{
+  "id": "native-player96-v1",
+  "productionEnabled": true,
+  "ownerApprovedOn": "2026-10-30",
+  "manifestRevision": "structural-occlusion-v10-2",
+  "weaponRevision": "weapons96-pixellab-pro-v4-e8cc8f370a",
+  "source": "Existing native96 materials and authored animations; owner authorised default use in Sprint2.",
+  "headgearPolicy": "../../headgear-visibility.js",
+  "fallbackQuery": "paperDoll96=0"
+}

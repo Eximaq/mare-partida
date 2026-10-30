@@ -16,7 +16,7 @@ web_files = ['index.html', 'ui-preview.html', 'ui-art-direction.css', 'journal-f
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
              'forge-ui.js', 'game-tooltips.js', 'player-hub.js', 'hud-telemetry.js', 'notification-system.js', 'hierarchy-system.js', 'hierarchy-ui.js', 'combat-vfx-data.js', 'combat-vfx.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js', 'lobby-map-data.js', 'lobby-world.js', 'impel-down-world.js', 'alabasta-map-data.js', 'alabasta-world.js', 'alubarna-map-data.js', 'alubarna-world.js',
               'dawn-map-data.js', 'dawn-world.js', 'dawn-renderer.js', 'rare-world.js', 'rare-renderer.js', 'new-islands-data.js', 'new-islands-objects.js', 'new-islands.js', 'monster-catalog.js', 'new-islands-art.js', 'pixellab-world-maps-data.js', 'conchas-pixellab-data.js', 'conchas-structures.js', 'pixellab-world-maps.js', 'world-system.js', 'world-depth.js', 'orange-world.js', 'conchas-world.js', 'conchas-renderer.js', 'terrain-autotile.js', 'orange-terrain.js', 'orange-renderer.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'dev-tools.js', 'hunt-system.js', 'monster-behavior.js']
-web_files += ['paper-doll-96-lobby.js', 'paper-doll-look-data.js', 'paper-doll-look.js', 'paper-doll-coverage.js', 'paper-doll-look.css', 'sprite-combat-v2-data.js', 'sprite-combat-v2.js', 'ui-navigator.css']
+web_files += ['headgear-visibility.js', 'paper-doll-96-lobby.js', 'paper-doll-look-data.js', 'paper-doll-look.js', 'paper-doll-coverage.js', 'paper-doll-look.css', 'sprite-combat-v2-data.js', 'sprite-combat-v2.js', 'ui-navigator.css']
 for f in web_files:
     if not (ROOT / f).is_file():
         raise SystemExit(f'Arquivo necessário ausente: {f}')
@@ -499,7 +499,7 @@ shutil.copy2(ROOT/'docs/PAPER-DOLL-96-FIT-CONTRACT.md', OUT/'docs/PAPER-DOLL-96-
 review96 = Path('tools/paper-doll-96-v3')
 review96_pack = json.loads((ROOT/review96/'manifest.json').read_text(encoding='utf-8'))
 assert review96_pack['productionEnabled'] is False
-review96_files = {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json'}
+review96_files = {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}
 appearance96_pack = json.loads((ROOT/review96/'appearance-catalog.json').read_text(encoding='utf-8'))
 assert appearance96_pack['productionEnabled'] is False
 for animations in appearance96_pack.get('nativeOwnership', {}).get('atlases', {}).values():
@@ -530,7 +530,7 @@ for body in review96_pack['bodies'].values():
             assert clip.get('modular') is True
             review96_files.update(clip['layers'].values())
 for name in sorted(review96_files):
-    if name not in {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json'}:
+    if name not in {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}:
         if not re.fullmatch(r'assets/[a-z0-9-]+\.png', name):
             raise ValueError('Unsafe 96px review asset')
     target = OUT/review96/name
@@ -552,3 +552,5 @@ shutil.copy2(ROOT/'docs/PAPER-DOLL-96-LOBBY.md', OUT/'docs/PAPER-DOLL-96-LOBBY.m
 shutil.copy2(ROOT/'docs/PAPER-DOLL-96-ARMAS.md', OUT/'docs/PAPER-DOLL-96-ARMAS.md')
 
 shutil.copy2(ROOT/'docs/PAPER-DOLL-96-ARMAS-DEMAIS-CLASSES.md', OUT/'docs/PAPER-DOLL-96-ARMAS-DEMAIS-CLASSES.md')
+
+shutil.copy2(ROOT/'docs/CAPACETES-E-VISIBILIDADE.md', OUT/'docs/CAPACETES-E-VISIBILIDADE.md')

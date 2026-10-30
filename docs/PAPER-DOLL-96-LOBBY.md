@@ -1,5 +1,8 @@
 # Sprint seguinte ao PR144 — ensaio96 no lobby real
 
+Atualização: [Sprint 2 — lançamento da base de 96 px e visibilidade da cabeça](CAPACETES-E-VISIBILIDADE.md). A liberação padrão foi autorizada pelo proprietário; o ensaio abaixo permanece disponível por query explícita.
+
+
 Continuação: [armas das demais classes, 22 itens nas sete classes](PAPER-DOLL-96-ARMAS-DEMAIS-CLASSES.md). O escopo abaixo conserva o histórico da etapa anterior.
 
 Continuação da sprint: [armas e combate96 de Espadachim/Gatuno](PAPER-DOLL-96-ARMAS.md). O estágio descrito abaixo permanece como histórico; os12 materiais passam a acompanhar armas realmente equipadas também na caçada do opt-in.
