@@ -1,3 +1,10 @@
+# 30/10/2026 — Seleção de facções: emblemas HD e Marinha
+
+- Base 6268c16 (merge PR156), branch feature/faction-selection-emblems. Os quatro sprites dos cards da Etapa 01 foram substituídos pelos recortes da imagem definitiva fornecida pelo proprietário, na ordem existente: Exército Revolucionário, Pirata, Marinha e Governo Mundial.
+- Quatro PNGs de 912×912 com transparência real, recorte nativo, bordas preservadas e exportação sem perdas. Pixels RGB visíveis comparados à fonte: zero diferenças. Nenhuma geração PixelLab ou crédito consumido. Procedência e recortes em assets/ui/faction-emblems/source.json; detalhes em docs/FACCOES-EMBLEMAS-HD.md.
+- Nome compartilhado exibido alterado para Marinha/MARINHA; ID marine, saves, cargos, itens, sprites antigos, bônus, classes e personalização preservados. CSS exclusivo dos emblemas mantém a imagem quadrada e centralizada no espaço anterior, sem aumentar os cards.
+- Teste de navegador observado falhando antes da implementação e aprovado depois, na fonte e em Pages: oito resoluções, layout comparado à base, transparência, associação, seleção, hover, teclado, quatro facções salvas e navegação pelas três etapas. Quinze testes Node focados e regressão histórica de sprites/movimento/saves nas quatro facções aprovados. Novo job factionSelection; evidências fora do Git.
+
 # 30/10/2026 — Sprint 3: Sua Aparência
 
 - Base 4ea153f, branch feature/character-appearance-step3, dependente do PR155 (Sprint 2). Fluxo facção/nome → classe → aparência → confirmação. Voltar conserva o rascunho; confirmação grava o candidato antes de substituir o personagem vivo. Falha de armazenamento preserva os dados anteriores. A edição existente de classe/facção conserva o equipamento e também confirma a aparência.

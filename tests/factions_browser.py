@@ -16,9 +16,9 @@ with sync_playwright() as p:
     for faction in ['revolutionary','pirate','marine','government']:
         context=browser.new_context(viewport={'width':1920,'height':1080})
         page=context.new_page();page.route('**/__dev_version',lambda route:route.fulfill(body='stable-test'));page.on('pageerror',lambda e:errors.append(str(e)))
-        page.clock.install();page.goto('http://127.0.0.1:8123/');page.wait_for_load_state('networkidle')
+        page.clock.install();page.goto(os.environ.get('MARE_TEST_URL','http://127.0.0.1:8123/'));page.wait_for_load_state('networkidle')
         assert page.locator('[data-faction]').count()==4 and page.locator('[data-class]').count()==7
-        for image in page.locator('.faction-choice img').all():assert image.evaluate('im=>im.complete&&im.naturalWidth===48')
+        for image in page.locator('.faction-choice img').all():assert image.evaluate('im=>im.complete&&im.naturalWidth===912&&im.naturalHeight===912')
         page.screenshot(path=str(OUT/'selection.png'))
         page.locator('#characterName').fill('Teste '+faction[:8]);page.locator('[data-faction="'+faction+'"]').click()
         page.locator('#nextToClass').click();page.locator('#nextToAppearance').click();page.locator('#createCharacter').click();page.locator('[data-confirm-accept]').click();page.clock.run_for(250)
