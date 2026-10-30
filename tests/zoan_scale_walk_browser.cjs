@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 let source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
 source=source.replace('  window.__mareDiagnostics=',`  window.__zoanScaleQA={paused:false,drawPlayerSpriteBase,syncFruitVfx,combatHudBox,combatActorHeight,get game(){return game},get world(){return world},get session(){return session},get defs(){return itemDefs}};\n  window.__mareDiagnostics=`).replace('function tick(dt){','function tick(dt){if(window.__zoanScaleQA?.paused)return;');
-(async()=>{const browser=await chromium.launch({headless:true});try{
+(async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});try{
  const context=await browser.newContext({viewport:{width:1366,height:768}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));
  await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8162/',{waitUntil:'networkidle'});

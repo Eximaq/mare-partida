@@ -2,11 +2,9 @@
 /* MARÉ PARTIDA — demonstração local, sem multiplayer e sem bibliotecas externas.
    Conteúdo original. Todo o progresso é salvo exclusivamente no navegador. */
 (() => {
-  const classCombat=MareCombatRegistry.create({sprites:MareFactionSprites,animation:MareCombatAnimation});
-  const paperDoll=MarePaperDollCatalog.createRuntime({getImage:MareFactionSprites.image});
+  const classCombat=MareCombatRegistry.create({sprites:MareFactionSprites,animation:MareCombatAnimation,loadVisuals:false});
   const DEV_ACTIVE=MareDev.active(location.search);
-  const paperDollReview=MarePaperDollReview.create({search:location.search,devActive:DEV_ACTIVE,production:!DEV_ACTIVE,definition:def=>itemDefs[def],getImage:MareFactionSprites.image,onChange:()=>{if(game){renderPortrait();if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
-  const lobby96=MarePaperDoll96Lobby.create({search:location.search,onChange:()=>{if(game){renderPortrait();if(currentPanel==='character'&&characterTab==='appearance'){if(!$('lobby96Canvas'))renderPanel();else if($('lobby96Message'))$('lobby96Message').textContent=lobby96.snapshot().message||(lobby96.height(game,scene)?'Visual aplicado somente ao ensaio desta sessão.':'Preparando o visual para o lobby…');}}}});
+  const lobby96=MarePaperDoll96Lobby.create({search:location.search,onChange:()=>{if(game){renderPortrait();if(currentPanel==='character'&&characterTab==='appearance')renderPanel();}}});
   let paperDollDebug=DEV_ACTIVE&&new URLSearchParams(location.search).get('paperDollDebug')==='1';
   const STORAGE_KEY=MareDev.key(location.search);
   let suppressSave=false,devMessage='';
@@ -121,12 +119,6 @@
     c.strokeRect(Math.round(x-7),Math.round(y-18),14,14);
     c.beginPath();c.moveTo(Math.round(x),Math.round(y-15));c.lineTo(Math.round(x),Math.round(y-10));c.stroke();
     c.fillStyle='#f07b7b';c.fillRect(Math.round(x-1),Math.round(y-7),2,2);c.restore();
-  }
-  function drawFactionSprite(c,x,y,fac,action='idle',size=70,flip=false,direction='south',time=world.time){
-    if(globalThis.MareFactionSprites?.draw(c,fac,x,y,{action,direction,time,height:size}))return true;
-    const state=globalThis.MareFactionSprites?.status(fac,action);
-    if(state==='failed'||state==='missing'||state==='unsupported'){drawMissingSprite(c,x,y);return true;}
-    return false;
   }
   function configureFactionVisual(){
     const f=factions[game?.factionId]||factions.pirate;
@@ -243,7 +235,7 @@
   let autoPlay = true, autoSkills = true, reducedFX = false;
   let attributeDraft=MareCharacters.empty(),attributeQuantity=1,allocationMessage="";
   let hierarchyBackend=false,hierarchyBoard=[],hierarchyMessage='';
-  let dollLookDraft=null,dollLookMessage='',creationLookDraft={...MarePaperDollLook.defaults},creationAppearanceDraft=MareCharacterAppearance.read(null),appearanceDraft=null,creationDirection='south',profileDirection='south',creationStep=1;
+  let dollLookMessage='',creationLookDraft=MareCharacterAppearance.legacyLook(null),creationAppearanceDraft=MareCharacterAppearance.read(null),appearanceDraft=null,creationDirection='south',profileDirection='south',creationStep=1;
   let characterTab=null,akumaRank='E',talentDraft=null,selectedTalent=null,talentMessage='',talentDraftSeq=0,achievementCategory='all';
   const fruitAuraImages=Object.fromEntries(MareAkuma.catalog.filter(fruit=>fruit.vfx_sprite_sheet).map(fruit=>{const image=new Image();image.src=fruit.vfx_sprite_sheet;return [fruit.id,image];}));
   let current_fruit_vfx=null,fruitVfxImage=null,akumaBackend=false,combatVfxBackend=false,akumaCorpseQueue=Promise.resolve();
@@ -1088,7 +1080,7 @@
       authorize:()=>p.receipt?p.receipt.then(token=>{const point=combatChest(p.target);return akumaRequest('vfx-impact',{token,instance:p.area,x:p.x,y:p.y,target:{...point,id:p.target.id}});}):true,
       onHit:()=>p.commit()
     });}
-    session.combatProjectiles=(session.combatProjectiles||[]).filter(p=>p.phase!=='done'||paperDollReview.holdProjectile(p.releaseId));
+    session.combatProjectiles=(session.combatProjectiles||[]).filter(p=>p.phase!=='done');
   }
   function combatStatus(actor){
     const hero=actor===world.hero,genie=actor===session.genie,rt=session.talents;
@@ -1099,7 +1091,7 @@
     const box=combatHudBox(actor,width,name);ctx.save();ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#03171c';ctx.strokeText(name,actor.x,box.nameY);ctx.fillStyle='#effcf5';ctx.fillText(name,actor.x,box.nameY);px(ctx,actor.x-width/2,box.barY,width,7,'#001819');px(ctx,actor.x-width/2+1,box.barY+1,(width-2)*Math.max(0,Math.min(1,hp/Math.max(1,maxHP))),5,color);if(world.target===actor){ctx.strokeStyle='#d9b777';ctx.lineWidth=2;ctx.strokeRect(actor.x-width/2-3,box.barY-3,width+6,13);}ctx.restore();
   }
   function drawCombatVfx(){
-    for(const p of session.combatProjectiles||[]){const release=paperDollReview.holdProjectile(p.releaseId)?paperDollReview.releaseOrigin(p.releaseId):null;const shown=release?{...p,origin:release,x:p.mode==='beam'?p.x:release.x,y:p.mode==='beam'?p.y:release.y,phase:'flight',elapsed:0}:p;MareCombatVfx.drawProjectile(ctx,shown,{origin:release||combatBeamOrigin(p)});}
+    for(const p of session.combatProjectiles||[])MareCombatVfx.drawProjectile(ctx,p,{origin:combatBeamOrigin(p)});
     for(const f of session.combatHits||[]){const point=f.actor?combatChest(f.actor):f;MareCombatVfx.draw(ctx,f.kind,point.x,point.y,Math.min((world.time-f.started)*1000*(f.rate||1),MareCombatVfx.data.effects[f.kind].frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0)-.001),{width:f.kind==='explosion'?96:f.kind==='heal'?Math.min(120,combatActorHeight(f.actor)+16):64,start:f.start||0});}
     if(game.hp>0&&session.respawn<=0)MareCombatVfx.drawStatuses(ctx,combatHudBox(world.hero,60,game.name),combatStatus(world.hero),world.time);
     for(const actor of livingMobs())MareCombatVfx.drawStatuses(ctx,combatHudBox(actor,actor.type==='boss'?88:65,monsterName(actor)+' · Nv.'+actor.level),combatStatus(actor),world.time);
@@ -1121,7 +1113,7 @@
   function outputDamage(m,amount,crit=false,visual={}){if(!m||!m.alive||m.returning||amount<=0)return 0;MareMonsterBehavior.hurt(m);MareHaki.touch(game,session.haki);const damage=Math.min(m.hp,Math.max(1,Math.floor(amount)));m.hp=Math.max(0,m.hp-damage);MareSpriteCombatV2.hurt(m,damage,world.time,{protected:m.hp<=0||!!m.telegraph});m.hit=.25;game.stats.damage+=damage;const fruitVisual=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs);emitCombatVfx(MareCombatVfx.classify({fruitId:fruitVisual?.id,name:fruitVisual?.skills?.[0]?.name||'',damageType:fruitVisual?.family==='logia'?'magic':undefined,...visual}),m);spawnVisual(m.x+rand(-8,8),m.y-40,String(damage),crit?'#ffcd73':'#fff5e4',crit?22:15);if(((getDerived().fruitLifesteal||0)>0||wolfAuraActive())&&!session.wolfLeechResolving){session.wolfLeechResolving=true;try{session.healingDone+=restoreHero(damage*((getDerived().fruitLifesteal||0)+(wolfAuraActive()?MareWolf.rules.lifesteal:0)),{ignoreEfficiency:true});}finally{session.wolfLeechResolving=false;}}if(m.hp<=0)killMob(m);return damage;}
   function basicAttackIdentity(){return game?.zoanTransformed&&equippedZoan()?equippedZoan().id:game?.classId+':'+game?.factionId;}
   function basicAttackPose(){const a=session?.basicAttack;return a?.clock.locked()?a.clock.snapshot():null;}
-  function cancelBasicAttack(){paperDollReview.cancelVisual();if(session?.basicAttack)session.basicAttack.clock.reset();if(session)session.basicAttack=null;if(world?.hero)world.hero.attackAnim=0;}
+  function cancelBasicAttack(){if(session?.basicAttack)session.basicAttack.clock.reset();if(session)session.basicAttack=null;if(world?.hero)world.hero.attackAnim=0;}
   function retimeAttack(clock,speed){
     const before=clock?.snapshot();if(!before?.scaled||!clock.setAttackSpeed(speed))return;
     const after=clock.snapshot();if(session.attackClock>0)session.attackClock*=after.duration/before.duration;
@@ -1188,7 +1180,7 @@
     return actual;
     };
     if(!zoan&&MareCombatVfx.data.flightEnds[MareCombatVfx.data.classHits[game.classId]]){
-      const muzzle=!skill?(lobby96.projectileOrigin(game,world.hero,classCombatController()?.snapshot()||basicAttackPose()||{},horuBuffActive()?MareRankC.rules.horu.scale:1)||paperDollReview.projectileOrigin(game,world.hero,{...(classCombatController()?.snapshot()||basicAttackPose()),token:session.basicAttack?.clock||world.hero.combat,simulationTime:world.time},horuBuffActive()?MareRankC.rules.horu.scale:1)):null;
+      const muzzle=!skill?(lobby96.projectileOrigin(game,world.hero,classCombatController()?.snapshot()||basicAttackPose()||{},horuBuffActive()?MareRankC.rules.horu.scale:1)):null;
       launchCombatProjectile(MareCombatVfx.data.classHits[game.classId],{x:muzzle?.x??world.hero.x+world.hero.facing*13,y:muzzle?.y??world.hero.y-27,releaseId:muzzle?.releaseId??null},m,land);
     }else land();
     return true;
@@ -1326,9 +1318,9 @@
     if(!game||!session)return;
     const actor=world.hero,from={x:actor.x,y:actor.y},identity=scene+':'+game.area+':'+basicAttackIdentity();
     try{tickSimulation(dt);}finally{
-      if(paperDollReview.snapshot().packId==='complete'&&world.hero===actor){
-        const context=scene+':'+game.area+':'+basicAttackIdentity(),active=identity===context&&MarePaperDollCatalog.eligible(game)&&actor.walking>0&&!classCombatController()?.locked()&&!basicAttackPose();
-        MarePaperDollReview.stepWalk(actor,world.time,active,{from,dt,context});paperDollReview.synchronize(game,world.time,actor,classCombatController()?.snapshot()||basicAttackPose());
+      if(world.hero===actor){
+        const context=scene+':'+game.area+':'+basicAttackIdentity(),active=identity===context&&!game.zoanTransformed&&actor.walking>0&&!classCombatController()?.locked()&&!basicAttackPose();
+        lobby96.stepWalk(actor,world.time,active,{from,dt,context});
       }
     }
   }
@@ -1341,7 +1333,7 @@
     const combat=classCombatController();
     retimeAttack(combat,getDerived().speed);
     combat?.step(dt,{moving:world.hero.walking>0,inCombat:scene==='hunt',direction:world.hero.direction});
-    world.fx=world.fx.filter(f=>(f.life-=dt)>0);for(let f of world.fx)if(Number.isFinite(f.dy))f.y+=f.dy*dt;world.projectiles=world.projectiles.filter(p=>(p.progress+=(p.born===world.time||paperDollReview.holdProjectile(p.releaseId))?0:dt*3.7)<1);
+    world.fx=world.fx.filter(f=>(f.life-=dt)>0);for(let f of world.fx)if(Number.isFinite(f.dy))f.y+=f.dy*dt;world.projectiles=world.projectiles.filter(p=>(p.progress+=(p.born===world.time)?0:dt*3.7)<1);
     if(world.hero.talentControl)world.hero.talentControl.remaining=Math.max(0,world.hero.talentControl.remaining-dt);
     for(const action of MareTalentCombat.tick(session.talents,dt,scene==='hunt'?livingMobs():[])){if(scene==='hunt'&&session.respawn<=0&&action.target.alive)outputDamage(action.target,action.amount,false,{exclusive:true});}
     if(session.respawn<=0)applyUltimateActions(MareUltimates.tick(game,session.talents.ultimate,dt,{hero:world.hero,stats:getDerived(),inCombat:scene==='hunt'&&(session.talents.combatRemaining>0||!!world.target?.alive),inHunt:scene==='hunt',enemies:scene==='hunt'?livingMobs():[],clear:(a,b)=>combatLine(a,b),move:(m,dx,dy)=>navigator().move(m,dx,dy)}));
@@ -1556,7 +1548,7 @@
     $('lootList').innerHTML=session.recentLoot.length?session.recentLoot.map(x=>`<div class="loot-entry"><span>${lootIcon(x.name)}${escapeHTML(x.name)}</span><b>OBTIDO</b></div>`).join(''):'<div class="empty-note">Sua próxima descoberta aparecerá aqui.</div>';
     updateMiniHud();const time=(6+Math.floor(world.time/90))%24; $('worldClock').textContent='DIA '+String(1+Math.floor(world.time/(90*24))).padStart(2,'0')+' · '+String(time).padStart(2,'0')+':00';
   }
-  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{fit:64,time:world.time,scale:equippedZoan().id===MareRyu.rules.id?64/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?90/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?1:64/48});else if(!drawPaperDoll(portrait,36,70,'idle','south',world.time,64/46))drawConfiguredHuman(portrait,36,70,classCombat.entry(game)?'combat-idle':'idle','south',world.time,64);const mini=$('miniPortrait');if(mini){const mc=mini.getContext('2d');mc.imageSmoothingEnabled=false;mc.clearRect(0,0,64,64);mc.drawImage($('portrait'),0,0,64,64);}}
+  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{fit:64,time:world.time,scale:equippedZoan().id===MareRyu.rules.id?64/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?90/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?1:64/48});else drawPaperDoll(portrait,36,70,'idle','south',world.time,64/46);const mini=$('miniPortrait');if(mini){const mc=mini.getContext('2d');mc.imageSmoothingEnabled=false;mc.clearRect(0,0,64,64);mc.drawImage($('portrait'),0,0,64,64);}}
   function worldChange(area){if(!zones[area])return;if(game.level<zones[area].min){toast('Você precisa alcançar o nível '+zones[area].min+'.','danger');return;}game.area=area;const island=MareArchipelago.byArea(area);if(island)game=MareAchievements.record(game,'islandVisited',island.id);game.hp=getDerived().maxHP;game.energy=getDerived().maxEnergy;enterHunt();toast('Você navegou até '+zones[area].name+'.','good');log('Nova região: '+zones[area].name,'good');saveGame();}
   function claimQuest(id){let q=questDefs.find(q=>q.id===id);if(!q||game.claimed.includes(id)||questProgress(q)<q.target)return;game.claimed.push(id);game.gold+=q.gold;gainXP(q.xp);session.gold+=q.gold;game.stats.goldEarned+=q.gold;toast('Contrato concluído! +'+q.gold+' dobrões','good');log('Recompensa do contrato: '+q.title,'gold');saveGame();updateUI();if(currentPanel==='contracts')renderPanel();}
   function getInventoryItem(id){return game.inventory.find(i=>i.id===id)||Object.values(game.equipment).find(i=>i?.id===id)||null;}
@@ -1706,12 +1698,10 @@
   }
   function drawCurrentPreview(canvas,height){
     const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
-    const armed=classCombatAsset();
     if(world.hero.visible!==false)vfx_aura.draw(c,canvas.width/2,canvas.height-10,world.time,height/48);
     if(world.hero.visible===false)drawBeriSeparation(c,canvas.width/2,canvas.height-10,1-session.fruitBurst/1.5,height/48);
     else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(c,equippedZoan().id,canvas.width/2,canvas.height-10,{fit:Math.min(canvas.width-16,height),time:world.time,scale:equippedZoan().id===MareRyu.rules.id?height/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?height*1.25/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?height/64:height/48});
-    else if(drawPaperDoll(c,canvas.width/2,canvas.height-10,'idle','south',world.time,height/46)){}
-    else drawConfiguredHuman(c,canvas.width/2,canvas.height-10,armed?'combat-idle':'idle','south',world.time,height);
+    else drawPaperDoll(c,canvas.width/2,canvas.height-10,'idle','south',world.time,height/46);
   }
   function invSymbol(entry){return itemIcon(entry.kind==='gear'?entry.item.def:entry.kind,entry.name,true);}
   function invSlotHtml(slot){
@@ -1894,13 +1884,11 @@
     if(!['status','talents','achievements','haki','akuma','hierarchy','appearance'].includes(characterTab))characterTab='status';
     $('dialogTitle').textContent=({status:'Personagem',talents:'Talentos',achievements:'Conquistas',haki:'Haki',akuma:'Akuma no Mi',hierarchy:'Hierarquia dos Mares',appearance:'Aparência'})[characterTab];
     if(characterTab==='appearance'){
-      if(lobby96.snapshot().rehearsal&&scene==='lobby'){body.innerHTML=lobby96.panel(game);return;}
       if(lobby96.snapshot().enabled){
         appearanceDraft=appearanceDraft||MareCharacterAppearance.read(game);
         body.innerHTML='<section id="profileAppearance"><header><h2>Sua aparência</h2><p>Escolhas visuais independentes da classe e dos equipamentos. Confirme para salvar.</p></header><div class="appearance-studio"><div id="profileAppearanceFields" class="appearance-fields">'+MareCharacterAppearance.fields(appearanceDraft,'profile')+'</div><figure class="appearance-preview"><div class="appearance-stage"><canvas id="profileAppearanceCanvas" width="320" height="256" aria-label="Prévia da aparência"></canvas></div><figcaption id="profileAppearanceState" role="status"></figcaption><nav class="appearance-directions" aria-label="Direção da prévia">'+Object.entries({north:'Norte',south:'Sul',east:'Leste',west:'Oeste'}).map(([id,name])=>'<button type="button" data-appearance-direction="'+id+'" aria-pressed="'+(profileDirection===id)+'">'+name+'</button>').join('')+'</nav><p>Capacetes visíveis podem ocultar o cabelo.<br>Seu penteado continua salvo.</p></figure></div><p role="status">'+escapeHTML(dollLookMessage)+'</p><div class="creation-actions">'+MareUI.button({label:'Descartar alterações',attributes:{'data-appearance-cancel':''}})+MareUI.button({label:'Salvar aparência',variant:'primary',attributes:{'data-appearance-apply':''}})+'</div></section>';return;
       }
-      if(!paperDollReview.snapshot().enabled){body.innerHTML='<p>A personalização está em avaliação no laboratório Paper Doll.</p><a class="dialog-button" href="?dev=1&amp;paperDollReview=complete">Abrir laboratório de aparência</a>';return;}
-      dollLookDraft=dollLookDraft||MarePaperDollLook.read(game);body.innerHTML=MarePaperDollLook.render(game,dollLookDraft,dollLookMessage,paperDollReview.equipmentStatus(game),itemDefs,{production:!DEV_ACTIVE});return;
+
     }
     if(characterTab==='hierarchy'){renderHierarchy(body);return;}
     if(characterTab==='status'){renderCharacter(body);body.insertAdjacentHTML('afterbegin','<button type="button" class="dungeon-back" data-panel="inventory">Abrir inventário e equipamentos</button><button type="button" class="dungeon-back" data-character-section="appearance">Personalizar aparência</button>');return;}
@@ -1989,7 +1977,7 @@
     if(currentPanel==='modes')renderModes(body);
     if(currentPanel==='prison')renderPrison(body);
     if(currentPanel==='hunt')renderHuntRoute(body);
-    if(currentPanel==='dev')body.innerHTML=MareDev.render({g:game,on:DEV_ACTIVE,classes,defs:itemDefs,E:escapeHTML,status:devMessage,review:{...paperDollReview.snapshot(),debugEnabled:paperDollDebug}});
+    if(currentPanel==='dev')body.innerHTML=MareDev.render({g:game,on:DEV_ACTIVE,classes,defs:itemDefs,E:escapeHTML,status:devMessage,review:{...lobby96.snapshot(),debugEnabled:paperDollDebug}});
     if(currentPanel==='help'){body.innerHTML=`<div class="help-copy"><p><strong>Bem-vindo a Maré Partida.</strong> Esta é uma demonstração jogável offline de um futuro RPG Idle online, em um universo marítimo original.</p><ul><li><strong>Lobby:</strong> clique no chão para caminhar e nos NPCs para abrir seus serviços. Abra Modos de jogo (M) e escolha Arquipélago para viajar ou Impel Down para enfrentar os andares da prisão.</li><li><strong>Auto-caçada:</strong> seu personagem procura monstros, anda até eles e ataca sozinho. O botão AUTO-CAÇADA pausa ou retoma.</li><li><strong>Teclas 1 e 2:</strong> ativam habilidades; se a caçada estiver ligada, o personagem também usa habilidades automaticamente quando apropriado.</li><li><strong>Tecla Q:</strong> usa uma poção de vida. É possível comprar mais por 35 dobrões.</li><li><strong>Contratos:</strong> conclua as caçadas listadas à direita e resgate as recompensas.</li><li><strong>Inventário:</strong> equipe os itens encontrados. Equipamentos alteram atributos reais.</li><li><strong>Forja:</strong> consome materiais e dobrões para melhorar equipamentos até +5.</li><li><strong>Mapa:</strong> a Cidade das Conchas é desbloqueada no nível 6.</li><li><strong>Salvamento:</strong> seu progresso é salvo automaticamente neste navegador, com LocalStorage. Não existe conta online, chat real ou progresso com a página fechada nesta versão.</li></ul><p>Este é um protótipo gratuito de desenvolvimento. O MMORPG, o servidor multiplayer, o banco de dados e as relíquias estão planejados para fases posteriores.</p><button class="dialog-button secondary" data-export="1">EXPORTAR SAVE (JSON)</button><button class="dialog-button secondary" data-import="1">IMPORTAR SAVE</button><button class="dialog-button secondary" data-reset="1">RECOMEÇAR JOGO</button></div><input type="file" id="saveImport" accept=".json,application/json" style="display:none"/>`;}
     if(currentPanel==='help'){
       const list=body.querySelector('.help-copy ul'),items=[...list.children],sections=document.createElement('div');sections.className='help-sections';
@@ -2035,37 +2023,13 @@
       catch{toast('Não foi possível salvar a preferência. O visual anterior foi preservado.','danger');return;}
       renderPortrait();renderPanel();document.querySelector('[data-headgear-visibility]')?.focus({preventScroll:true});return;
     }
-    if(e.target.closest('[data-lobby96-apply]')){if(currentPanel!=='character'||characterTab!=='appearance'||scene!=='lobby')return;if(lobby96.apply(game)){$('lobby96Message').textContent='Preparando o visual para o lobby…';renderPortrait();}return;}
-    if(e.target.closest('[data-lobby96-cancel]')){lobby96.discard();renderPanel();return;}
-    if(e.target.closest('[data-doll-kit]')){
-      if(!DEV_ACTIVE||currentPanel!=='character'||characterTab!=='appearance')return;
-      const result=paperDollReview.prepareEquipment(game,{capacity:BAG_CAPACITY,makeWeapon:def=>{const item=newItem(itemDefs[def],1,false);item.origin='Laboratório DEV';return item;}});
-      dollLookMessage=result.message;
-      if(result.ok&&result.state!==game){
-        const next=result.state,before=getDerived(),after=getDerived(next,null);
-        next.hp=Math.min(after.maxHP,Math.round(after.maxHP*game.hp/before.maxHP));next.energy=Math.min(next.energy,after.maxEnergy);
-        try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;cancelBasicAttack();world.hero.combat=null;}
-        catch{dollLookMessage='Não foi possível salvar. Equipamentos anteriores preservados.';}
-      }
-      updateUI();renderPanel();return;
-    }
     if(e.target.closest('[data-appearance-cancel]')){appearanceDraft=MareCharacterAppearance.read(game);dollLookMessage='Alterações descartadas.';renderPanel();return;}
     if(e.target.closest('[data-appearance-apply]')){
       if(currentPanel!=='character'||characterTab!=='appearance')return;
-      try{const next=MareCharacterAppearance.commit(game,appearanceDraft,n=>{localStorage.setItem(STORAGE_KEY,JSON.stringify(n));return true;});if(next){game=next;paperDollReview.cancelVisual();renderPortrait();dollLookMessage='Aparência salva.';}}
+      try{const next=MareCharacterAppearance.commit(game,appearanceDraft,n=>{localStorage.setItem(STORAGE_KEY,JSON.stringify(n));return true;});if(next){game=next;renderPortrait();dollLookMessage='Aparência salva.';}}
       catch{dollLookMessage='Não foi possível salvar. A aparência anterior foi preservada.';}
       renderPanel();return;
     }
-    if(e.target.closest('[data-doll-look-cancel]')){dollLookDraft=MarePaperDollLook.read(game);dollLookMessage='Alterações descartadas.';renderPanel();return;}
-    if(e.target.closest('[data-doll-look-apply]')){
-      if(currentPanel!=='character'||characterTab!=='appearance')return;
-      const next=MarePaperDollLook.apply(game,dollLookDraft,{production:!DEV_ACTIVE});if(!next)return;
-      if(next.appearance96)next.appearance96=MareCharacterAppearance.normalize({...next.appearance96,hairStyle:next.paperDollLook.hair==='bald'?'none':'original',hairColor:'black'});
-      try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;paperDollReview.cancelVisual();renderPortrait();dollLookMessage='Aparência aplicada ao personagem.';}
-      catch{dollLookMessage='Não foi possível salvar. A aparência anterior foi preservada.';}
-      renderPanel();return;
-    }
-
     const sector=e.target.closest('[data-hunt-sector]');if(sector){followHuntSector(sector.dataset.huntSector);return;}const first=e.target.closest('[data-hunt-first]');if(first&&!first.disabled){claimHuntFirst(first.dataset.huntFirst);return;}
     if(e.target.closest('[data-dev-open]')&&MareDev.ENABLED){openPanel('dev');return;}
     if(currentPanel!=='dev')return;
@@ -2170,7 +2134,7 @@
     else if(panel==='character'){const attention=characterTab==='status'&&notificationManager.state.status>0?$('dialogBody').querySelector('[data-attribute-add]:not(:disabled)'):null;(attention||$('dialogBody').querySelector('button:not(:disabled),input:not(:disabled)'))?.focus({preventScroll:true});if(attention)attention.scrollIntoView({block:'nearest'});}
     else if(navigation.includes(panel)||['dev','hunt'].includes(panel))$('dialogBody').querySelector('button:not(:disabled)')?.focus({preventScroll:true});
   }
-  function closePanel(){appearanceDraft=null;dollLookDraft=null;dollLookMessage='';closeCharacterMenu();closeModesMenu();closeCaptainMenu();MareTalentUI.unmount();$('characterTabs')?.remove();talentDraft=null;const wasNavigation=['modes','map','prison'].includes(currentPanel);$('voyageRegionTabs')?.remove();attributeDraft=MareCharacters.empty();allocationMessage="";currentPanel=null;document.querySelectorAll('.bottom-nav [aria-pressed]').forEach(b=>b.setAttribute('aria-pressed','false'));$('panelOverlay').classList.add('hidden');$('panelOverlay').classList.remove('inventory-mode','character-mode','voyage-mode','modes-mode');$('inventoryHeadMeta')?.classList.add('hidden');if(wasNavigation)(mapReturnFocus?.isConnected?mapReturnFocus:$('mainMenu').querySelector('[data-panel=modes]'))?.focus({preventScroll:true});MareUI.restoreFocus($('panelOverlay'));}
+  function closePanel(){appearanceDraft=null;dollLookMessage='';closeCharacterMenu();closeModesMenu();closeCaptainMenu();MareTalentUI.unmount();$('characterTabs')?.remove();talentDraft=null;const wasNavigation=['modes','map','prison'].includes(currentPanel);$('voyageRegionTabs')?.remove();attributeDraft=MareCharacters.empty();allocationMessage="";currentPanel=null;document.querySelectorAll('.bottom-nav [aria-pressed]').forEach(b=>b.setAttribute('aria-pressed','false'));$('panelOverlay').classList.add('hidden');$('panelOverlay').classList.remove('inventory-mode','character-mode','voyage-mode','modes-mode');$('inventoryHeadMeta')?.classList.add('hidden');if(wasNavigation)(mapReturnFocus?.isConnected?mapReturnFocus:$('mainMenu').querySelector('[data-panel=modes]'))?.focus({preventScroll:true});MareUI.restoreFocus($('panelOverlay'));}
   function exportSave(){saveGame();const blob=new Blob([JSON.stringify(game,null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=DEV_ACTIVE?'mare-partida-DEV-save.json':'mare-partida-save.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),5000);}
   function importSave(file){let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);if(!classes[d.classId]||!Number.isInteger(d.level)||!d.equipment||typeof d.name!=='string')throw Error('Save inválido');if(d.level<1)throw Error('Nível inválido');if(!MareDev.canImport(d,DEV_ACTIVE)){toast('Save de laboratório só pode ser importado no modo DEV.','danger');return;}if(DEV_ACTIVE)d.devSandbox=true;preserveSave(localStorage.getItem(STORAGE_KEY),STORAGE_KEY+'-before-import');preserveSave(JSON.stringify(d),STORAGE_KEY+'-import-source');localStorage.setItem(STORAGE_KEY,JSON.stringify(MareAkuma.migrate(MareHaki.migrate(MareTalents.migrate(MarePrison.migrate(MareForge.migrate(MareCharacters.migrate(MareHunt.migrate(d)),itemDefs)))))));suppressSave=true;location.reload();}catch(err){toast('Arquivo de salvamento inválido.','danger');}};reader.readAsText(file);}
 
@@ -2417,29 +2381,11 @@
   function drawCrate(x,y){px(ctx,x-13,y-17,30,26,'#634e38');px(ctx,x-10,y-13,24,20,'#9f8158');px(ctx,x-10,y-12,24,3,'#c29b66');px(ctx,x-2,y-13,3,20,'#5f4938');px(ctx,x-10,y+3,24,3,'#614b36');}
   function drawRuin(x,y){px(ctx,x-10,y-18,23,24,'#52635c');px(ctx,x-12,y-25,27,9,'#859385');px(ctx,x-8,y-19,5,25,'#98a18a');px(ctx,x+8,y-19,5,25,'#3e594d');px(ctx,x-18,y+6,39,9,'#53695e');}
   function drawPaperDoll(c,x,y,action,direction,time,scale=null,progress=null,timing=null,worldView=false){
-    if(lobby96.draw(c,game,{scene,action,direction,time,progress,timing,x,y,scale,worldView}))return true;
-    if(!MarePaperDollCatalog.eligible(game))return false;
-    if(paperDollReview.draw(c,game,action,direction,time,x,y,scale,progress,timing,worldView))return true;
-    const appearance=MarePaperDollCatalog.appearance(game),pose=MarePaperDollCatalog.sample(paperDoll,game,action,direction,time,{progress});
-    return pose?paperDoll.draw(c,appearance,pose,x,y,{scale}):false;
-  }
-  const reportedSpriteFailures=new Set();
-  function drawConfiguredHuman(c,x,y,action,direction,time,height=74,progress=null){
-    const entry=classCombat.entry(game);
-    if(!entry)return drawFactionSprite(c,x,y,game.factionId,action==='walk'?'walk':'idle',height,false,direction,time);
-    const clip=classCombat.action(game,action);
-    if(classCombat.draw(c,game,x,y,{action,direction,time,height,progress}))return true;
-    const state=MareFactionSprites.status(entry.assetId,clip);
-    if(state==='failed'||state==='missing'||state==='unsupported'){
-      const key=entry.assetId+':'+clip+':'+direction;
-      if(!reportedSpriteFailures.has(key)){reportedSpriteFailures.add(key);console.error('[sprite] Asset atual indisponível:',key,state);}
-      drawMissingSprite(c,x,y);return true;
-    }
-    return false;
+    return lobby96.draw(c,game,{scene,action,direction,time,progress,timing,x,y,scale,worldView,consumer:worldView?'world':c.canvas.id||'preview'});
   }
   function drawPlayerSprite(c,x,y){if(c===ctx&&horuBuffActive()){c.save();c.translate(x,y);c.scale(MareRankC.rules.horu.scale,MareRankC.rules.horu.scale);const ok=drawPlayerSpriteBase(c,0,0);c.restore();return ok;}return drawPlayerSpriteBase(c,x,y);}
   function drawUpdatedZoan(c,zoan,x,y,moving){
-    const S=MareSpriteCombatV2,key=S.fruits[zoan.id],entry=MareSpriteCombatV2Data[key];if(!entry)return false;
+    const S=MareSpriteCombatV2,key=S.fruits[zoan.id],entry=MareSpriteCombatV2Data[key];if(!entry){S.reportMissing('player-transformation',zoan.id);return false;}
     const hero=world.hero,basic=basicAttackPose(),now=world.time;
     const scale=key==='tori'?104/64:['uma','inu'].includes(key)?74/48:key==='neko'?MareNeko.visuals.worldScale:key==='ushi'?MareUshi.visuals.worldScale:key==='wolf'?MareWolf.visuals.worldScale:key==='bison'?MareRankCExpansion.rules.bison.visuals.worldSize/64:1;
     const options={action:basic?'attack':moving?'walk':'idle',direction:basic?.direction||hero.direction,time:now,scale:scale*(entry.world_scale??1),height:key==='ryu'?entry.worldHeight:null,progress:basic?.progress??null,hitRatio:basic?.hitFrameRatio??null};
@@ -2464,36 +2410,15 @@
   function drawPlayerSpriteBase(c,x,y){
     const hero=world.hero,attack=hero.attackAnim>0&&scene==='hunt',moving=hero.walking>0&&!betaEquipped();
     const zoan=equippedZoan();
-    if(game.zoanTransformed&&zoan&&drawUpdatedZoan(c,zoan,x,y,moving))return true;
-    if(isRyuForm()){const a=session.ryuAction,basic=basicAttackPose();return MareRyu.drawActor(c,x,y,{action:a?MareRyu.action(a.key):basic?'attack':moving?'walk':'idle',direction:a?.direction||basic?.direction||hero.direction,time:a?world.time-a.started:basic?basic.elapsed:world.time,progress:basic?.progress,scale:1});}
-    if(isBisonForm()){const a=session.bisonAction,basic=basicAttackPose();return MareRankCExpansion.drawActor(c,x,y,{action:a?'dash':basic?'attack':moving?'walk':'idle',direction:basic?.direction||hero.direction,time:world.time,progress:a?Math.min(1,(world.time-a.started)/.67):basic?.progress,height:MareRankCExpansion.rules.bison.visuals.worldSize});}
-    if(game.zoanTransformed&&zoan){
-      const basic=basicAttackPose();
-      if(basic)return MareZoanArt.draw(c,zoan.id,x,y,{action:'attack',direction:basic.direction,time:basic.elapsed,progress:basic.progress,duration:basic.duration,scale:isWolfForm()?MareWolf.visuals.worldScale:isUshiForm()?MareUshi.visuals.worldScale:isNekoForm()?MareNeko.visuals.worldScale:zoan.id==='akuma_tori_albatroz'?104/64:74/48});
-      const nekoAction=zoan.id==='akuma_neko_leopard'?session.nekoAction:null;
-      if(isWolfForm()){const a=session.wolfAction,action=a?(a.phase==='finish'?'finish':'charge'):attack?'attack':moving?'walk':'idle',time=a?world.time-(a.phase==='finish'?a.finished:a.started):attack?(session.wolfBasicDuration||.75)-hero.attackAnim:world.time;return MareZoanArt.draw(c,zoan.id,x,y,{action,direction:hero.direction,time,scale:MareWolf.visuals.worldScale,duration:session.wolfBasicDuration||.75});}
-      const ushiAction=isUshiForm()?session.ushiAction:null;
-      const skillActive=world.time<(session.zoanActionUntil||0),action=ushiAction?'headbutt':nekoAction?(nekoAction.kind==='dash'?'dash':'attack'):skillActive||attack?'attack':moving?'walk':'idle';
-      const time=ushiAction?world.time-ushiAction.started:nekoAction?(nekoAction.kind==='combo'?(world.time-nekoAction.started)%.5:world.time-nekoAction.started):skillActive?world.time-(session.zoanActionUntil-.75):(attack?(isUshiForm()?MareUshi.rules.attackDuration:zoan.id==='akuma_neko_leopard'?.5:.75)-hero.attackAnim:world.time);
-      const drawn=MareZoanArt.draw(c,zoan.id,x,y,{action,direction:hero.direction,time,scale:zoan.id==='akuma_tori_albatroz'?104/64:zoan.id==='akuma_neko_leopard'?MareNeko.visuals.worldScale:isUshiForm()?MareUshi.visuals.worldScale:74/48});
-      if(!drawn&&MareZoanArt.status?.(zoan.id,action,hero.direction)==='failed')drawMissingSprite(c,x,y);
-      return drawn;
-    }
+    if(game.zoanTransformed&&zoan)return drawUpdatedZoan(c,zoan,x,y,moving);
     const combat=classCombatController(),pose=combat?.snapshot()||basicAttackPose(),requested=pose?.locked?pose.action:attack?'attack':moving?'walk':'idle';
-    const gait=paperDollReview.snapshot().packId==='complete'?MarePaperDollReview.walkPose(hero,world.time,moving&&!pose?.locked):null;
+    const gait=lobby96.walkPose(hero);
     const dollAction=requested==='walk'&&gait&&!gait.moving?'idle':requested,dollTime=dollAction==='walk'&&gait?gait.time:pose?.locked?pose.elapsed:world.time;
     // Some melee identities have no skill controller; reuse their real attack clip
     // over their existing visual window without changing damage or cooldowns.
     const instantMelee=(!DEV_ACTIVE||['sword','brawler'].includes(game.classId))&&attack&&!pose?.locked;
     const dollProgress=pose?.locked?pose.progress:instantMelee?Math.min(1,Math.max(0,1-hero.attackAnim/.22)):null;
-    if((!attack||combat||basicAttackPose()||instantMelee)&&drawPaperDoll(c,x,y,dollAction,pose?.locked?pose.direction:hero.direction,dollTime,null,dollProgress,pose,c===ctx))return true;
-    if(basicAttackPose()&&!classCombat.asset(game))return drawFactionSprite(c,x,y,game.factionId,'idle',74,false,pose.direction,world.time);
-    if(classCombat.entry(game)){
-      const action=pose?.locked?pose.action:attack?'attack':'combat-idle';
-      return drawConfiguredHuman(c,x,y,action,pose?.locked?pose.direction:hero.direction,pose?.locked?pose.elapsed:world.time,74,pose?.locked?pose.progress:null);
-    }
-    if(['attack','skill','skill-1','skill-2','hurt','death','guard'].includes(requested))return true;
-    return drawConfiguredHuman(c,x,y,moving?'walk':'idle',hero.direction,world.time);
+    return drawPaperDoll(c,x,y,dollAction,pose?.locked?pose.direction:hero.direction,dollTime,null,dollProgress,pose,c===ctx);
   }
   function drawFactionShowcase(actor){
     const a=MareFactionSprites.assets[actor.id];
@@ -2601,23 +2526,11 @@
   }
   function drawHeroLayer(){if(session?.respawn>0&&!classCombatController()){ctx.globalAlpha=.5+Math.sin(world.time*8)*.25;}syncZoanTransition();ctx.save();ctx.globalAlpha*=MareZoanTransition.bodyAlpha(session.zoanTransition,world.time);drawTalentedHero(world.hero.x,world.hero.y);ctx.restore();MareZoanTransition.draw(ctx,session.zoanTransition,world.hero.x,world.hero.y,world.time);if(hoyaActive())MareHoya.drawEffect(ctx,'summoner',world.hero.x,world.hero.y-38,(world.time-session.genie.started)*1000,{width:128,height:128});ctx.globalAlpha=1;}
   function drawPaperDollDiagnostics(){
-    let panel=$('paperDollDebugReadout');
-    if(!DEV_ACTIVE||!paperDollDebug||!game){if(panel)panel.hidden=true;return;}
-    if(!panel){panel=document.createElement('pre');panel.id='paperDollDebugReadout';panel.className='doll-debug-readout';panel.setAttribute('aria-label','Diagnóstico de animação DEV');document.body.append(panel);}panel.hidden=false;
-    const s=paperDollReview.snapshot(),factor=horuBuffActive()?MareRankC.rules.horu.scale:1,g=paperDollReview.inspect(game,s.lastPose,world.hero,factor),a=s.motion.attack;
-    panel.textContent=JSON.stringify({acao:s.lastPose?.animationId||a?.action||'legado',direcao:s.lastPose?.direction||world.hero.direction,frame:s.lastPose?.frameIndex??null,fase:Number(s.motion.gait.phase.toFixed(3)),velocidade:Number(s.motion.gait.speed.toFixed(1)),distancia:Number(s.motion.gait.distance.toFixed(1)),progresso:a?.progress??null,impacto:a?.hitFrameRatio??null,liberacao:s.lastRelease,tempo:s.presentation.simulationTime,quadro:s.presentation.renderFrame,fallback:s.lastReason||(!g.valid?g.missing:null),pivo:g.pivot,encaixes:g.layers.filter(l=>l.slot==='weapon').map(l=>({peca:l.pieceId,z:l.zIndex,mao:l.hand,posicao:l.corners}))},null,2)+'\nF9 ou menu DEV: ocultar diagnóstico';
-    ctx.save();ctx.translate(-Math.round(camera.x),-Math.round(camera.y));ctx.lineWidth=1;
-    const cross=(p,color)=>{if(!p)return;ctx.strokeStyle=color;ctx.beginPath();ctx.moveTo(p.x-5,p.y);ctx.lineTo(p.x+5,p.y);ctx.moveTo(p.x,p.y-5);ctx.lineTo(p.x,p.y+5);ctx.stroke();};cross(world.hero,'#ffe486');
-    for(const layer of g.layers.filter(l=>l.slot==='weapon')){cross(layer.hand,'#76e8ff');const c=layer.corners;if(c.every(Boolean)){ctx.strokeStyle='#e5ad70';ctx.beginPath();ctx.moveTo(c[0].x,c[0].y);for(const p of c.slice(1))ctx.lineTo(p.x,p.y);ctx.closePath();ctx.stroke();}}
-    cross(g.emission,'#ff62c7');ctx.restore();
+    let panel=$('paperDollDebugReadout');if(!DEV_ACTIVE||!paperDollDebug||!game){if(panel)panel.hidden=true;return;}
+    if(!panel){panel=document.createElement('pre');panel.id='paperDollDebugReadout';panel.className='doll-debug-readout';panel.setAttribute('aria-label','Diagnóstico do personagem atual');document.body.append(panel);}
+    panel.hidden=false;panel.textContent=JSON.stringify(lobby96.snapshot(),null,2);
   }
-  function presentWorld(){
-    if(game&&world){
-      paperDollReview.prepareFrame(game,world.hero,world.time,horuBuffActive()?MareRankC.rules.horu.scale:1);
-      for(const p of world.projectiles)if(paperDollReview.holdProjectile(p.releaseId)){const origin=paperDollReview.releaseOrigin(p.releaseId);if(origin){p.x=origin.x;p.y=origin.y;}}
-    }
-    drawWorld();drawPaperDollDiagnostics();paperDollReview.finishFrame();
-  }
+  function presentWorld(){drawWorld();drawPaperDollDiagnostics();}
   function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}ctx.save();ctx.translate(-Math.round(camera.x),-Math.round(camera.y));drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();drawEntityLayer();
     drawRankB();
     drawExpansion();
@@ -2657,22 +2570,22 @@
     if(currentPanel==='inventory'){const canvas=$('inventorySprite');if(canvas)drawCurrentPreview(canvas,185);}
     if(currentPanel==='character'&&characterTab==='status'){const canvas=$('characterSprite');if(canvas)drawCurrentPreview(canvas,155);}
     if(currentPanel==='character'&&characterTab==='appearance'){
-      const appearance=$('profileAppearanceCanvas');if(appearance){const c=appearance.getContext('2d');c.clearRect(0,0,appearance.width,appearance.height);const ok=lobby96.preview(c,game,{action:'idle',direction:profileDirection,time:0,appearance:appearanceDraft||MareCharacterAppearance.read(game)});$('profileAppearanceState').textContent=ok?'Prévia atualizada':lobby96.snapshot().message||'Carregando personagem…';}
-      const rehearsal=$('lobby96Canvas');if(rehearsal){const c=rehearsal.getContext('2d');c.clearRect(0,0,rehearsal.width,rehearsal.height);const ok=lobby96.preview(c,game,{action:$('lobby96Action').value,direction:$('lobby96Direction').value,time:world.time});$('lobby96State').textContent=ok?('Prévia de 96 px · '+(game.equipment?.weapon?'arma equipada':'sem arma')):lobby96.snapshot().message||'Carregando camadas…';}
-      const canvas=$('dollLookCanvas');if(canvas){
-        const c=canvas.getContext('2d'),direction=$('dollLookDirection').value,action=$('dollLookAction').value;
-        c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
-        const preview={...game,zoanTransformed:false,paperDollLook:dollLookDraft||MarePaperDollLook.read(game)};
-        const previewTime=action==='attack'?world.time%(.667):world.time;
-        const modular=lobby96.draw(c,preview,{scene:'lobby',action,direction,time:previewTime,x:126,y:218,scale:2.5})||paperDollReview.draw(c,preview,action,direction,previewTime,126,218,2.5);
-        if(!modular)drawConfiguredHuman(c,126,218,action,direction,world.time,115);
-        $('dollLookState').textContent=modular?'Camadas modulares sincronizadas':'Visual original: esta combinação ainda não tem camadas compatíveis.';
-      }
+      const appearance=$('profileAppearanceCanvas');if(appearance){const c=appearance.getContext('2d');c.clearRect(0,0,appearance.width,appearance.height);const ok=lobby96.preview(c,game,{action:'idle',direction:profileDirection,time:0,appearance:appearanceDraft||MareCharacterAppearance.read(game),consumer:'appearance-editor'});$('profileAppearanceState').textContent=ok?'Prévia atualizada':lobby96.snapshot().previewMessage||lobby96.snapshot().message||'Carregando personagem…';}
+
     }
 
     if(currentPanel==='character'&&characterTab==='akuma')for(const canvas of document.querySelectorAll('canvas[data-akuma-aura]')){const fruit=MareAkuma.byId(canvas.dataset.akumaAura),c=canvas.getContext('2d');c.clearRect(0,0,48,48);c.imageSmoothingEnabled=false;vfx_aura.draw(c,24,48,world.time,1,fruit);}
   }
-  function frame(t){if(!lastTime)lastTime=t;const dt=Math.min(.25,Math.max(0,(t-lastTime)/1000));lastTime=t;if(game&&!document.hidden){for(let remaining=dt;remaining>0;remaining-=.05)tick(Math.min(.05,remaining));renderUIClock+=dt;saveClock+=dt;if(renderUIClock>.27){renderUIClock=0;updateUI();}if(saveClock>(game.has_haki_unlocked?1:7)){saveClock=0;saveGame();}camera.update(combatFocus(),activeMap(),dt);}presentWorld();drawVfxPanels();drawCreationAppearance(t/1000);requestAnimationFrame(frame);}
+  function updatePlayerVisualStatus(){
+    const node=$('playerVisualStatus');if(!node)return;
+    let state=lobby96.snapshot().visualState;
+    const fruit=game?.zoanTransformed?equippedZoan():null;
+    if(fruit){const key=MareSpriteCombatV2.fruits[fruit.id],pose=basicAttackPose();state=MareSpriteCombatV2.visualStatus(key,pose?'attack':world.hero.walking>0?'walk':'idle',pose?.direction||world.hero.direction);if(state==='missing')state='failed';}
+    const visible=!!game&&['loading','failed','degraded'].includes(state);node.classList.toggle('hidden',!visible);node.dataset.state=state;
+    node.textContent=state==='failed'?'Visual indisponível. Recarregue a página.':state==='degraded'?'Há equipamento sem arte disponível.':'Carregando personagem…';
+    $('miniPortrait').setAttribute('aria-busy',String(visible&&state==='loading'));
+  }
+  function frame(t){if(!lastTime)lastTime=t;const dt=Math.min(.25,Math.max(0,(t-lastTime)/1000));lastTime=t;if(game&&!document.hidden){for(let remaining=dt;remaining>0;remaining-=.05)tick(Math.min(.05,remaining));renderUIClock+=dt;saveClock+=dt;if(renderUIClock>.27){renderUIClock=0;updateUI();}if(saveClock>(game.has_haki_unlocked?1:7)){saveClock=0;saveGame();}camera.update(combatFocus(),activeMap(),dt);}presentWorld();drawVfxPanels();drawCreationAppearance(t/1000);updatePlayerVisualStatus();requestAnimationFrame(frame);}
 
 
 const targetHud=document.createElement('div');
@@ -2792,8 +2705,8 @@ function applySceneHudLayout(){
     const canvas=$('creationLookCanvas');if(!canvas||creationStep!==3||$('startOverlay').classList.contains('hidden'))return;
     const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
     const player={classId:selectedClass,factionId:selectedFaction,paperDollLook:creationLookDraft,equipment:{coat:{def:6}}};
-    const drawn=lobby96.preview(c,player,{action:'idle',direction:creationDirection,time:0,appearance:creationAppearanceDraft});
-    $('creationLookState').textContent=drawn?'Prévia atualizada · '+({north:'Norte',south:'Sul',east:'Leste',west:'Oeste'})[creationDirection]:lobby96.snapshot().state==='off'?'A prévia personalizada requer o visual padrão de 96 px.':lobby96.snapshot().message||'Carregando personagem…';
+    const drawn=lobby96.preview(c,player,{action:'idle',direction:creationDirection,time:0,appearance:creationAppearanceDraft,consumer:'character-creation'});
+    $('creationLookState').textContent=drawn?'Prévia atualizada · '+({north:'Norte',south:'Sul',east:'Leste',west:'Oeste'})[creationDirection]:lobby96.snapshot().previewMessage||lobby96.snapshot().message||'Carregando personagem…';
   }
   function appearanceControl(event){
     const creation=!!event.target.closest('#appearanceStep'),profile=!!event.target.closest('#profileAppearance');
@@ -2813,7 +2726,7 @@ function applySceneHudLayout(){
   document.addEventListener('change',appearanceControl);
   document.addEventListener('click',e=>{if(e.target.closest('[data-appearance-cycle],[data-appearance-color],[data-appearance-direction]'))appearanceControl(e);});
   function openCreation(edit=false){
-    editingCharacter=edit;creationLookDraft=MarePaperDollLook.read(edit?game:null);creationAppearanceDraft=MareCharacterAppearance.read(edit?game:null);creationDirection='south';
+    editingCharacter=edit;creationLookDraft=MareCharacterAppearance.legacyLook(edit?game:null);creationAppearanceDraft=MareCharacterAppearance.read(edit?game:null);creationDirection='south';
     $('appearanceStep').querySelectorAll('[data-appearance-direction]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.appearanceDirection==='south')));
     if(edit&&game){selectedFaction=game.factionId;selectedClass=game.classId;$('characterName').value=game.name;}
     document.querySelectorAll('[data-faction]').forEach(btn=>btn.classList.toggle('chosen',btn.dataset.faction===selectedFaction));
@@ -2971,11 +2884,6 @@ function applySceneHudLayout(){
     b=e.target.closest('[data-import]');if(b){let input=$('saveImport');input.addEventListener('change',()=>{if(input.files[0])importSave(input.files[0]);},{once:true});input.click();return;}
     b=e.target.closest('[data-reset]');if(b){showConfirmation('Recomeçar aventura?','Seu personagem salvo neste navegador será apagado. Exporte o save pela Ajuda antes de continuar.',()=>{localStorage.removeItem(STORAGE_KEY);suppressSave=true;location.reload();});return;}
   });
-  $('dialogBody').addEventListener('change',e=>{
-    if(e.target.dataset.lobby96Look&&currentPanel==='character'&&characterTab==='appearance'){lobby96.setDraft(e.target.dataset.lobby96Look,e.target.value);return;}
-    const key=e.target.dataset.dollLook;if(!key||currentPanel!=='character'||characterTab!=='appearance'||!Object.hasOwn(MarePaperDollLook.choices,key))return;
-    if(Object.hasOwn(MarePaperDollLook.choices[key],e.target.value))dollLookDraft={...(dollLookDraft||MarePaperDollLook.read(game)),[key]:e.target.value};
-  });
   $('dialogBody').addEventListener('change',e=>{const key=e.target.dataset.prisonOption;if(currentPanel!=='prison'||!['autoAdvance','pauseBeforeBoss'].includes(key))return;const next=MarePrison.migrate(game);next.impelDown.options[key]=e.target.checked;try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;}catch{e.target.checked=game.impelDown.options[key];toast('Não foi possível salvar a preferência.','danger');}});
   $('dialogBody').addEventListener('error',e=>{if(e.target.matches('[data-monster-preview]')){const frame=e.target.closest('.dungeon-monster');frame.dataset.state='unavailable';frame.innerHTML=monsterUnavailable();}},true);
   let fusionDragToken='';
@@ -3080,15 +2988,15 @@ function applySceneHudLayout(){
   window.addEventListener('blur',()=>keys.clear());
   let hiddenAt=0;
   document.addEventListener('visibilitychange',()=>{
-    if(document.hidden){paperDollReview.setSuspended(true);keys.clear();hiddenAt=Date.now();saveGame();}
-    else {if(hiddenAt&&game&&session){const seconds=Math.min(45,(Date.now()-hiddenAt)/1000);for(let left=seconds;left>0;left-=.06)tick(Math.min(.06,left));hiddenAt=0;}paperDollReview.setSuspended(false);lastTime=performance.now();updateUI();}
+    if(document.hidden){keys.clear();hiddenAt=Date.now();saveGame();}
+    else {if(hiddenAt&&game&&session){const seconds=Math.min(45,(Date.now()-hiddenAt)/1000);for(let left=seconds;left>0;left-=.06)tick(Math.min(.06,left));hiddenAt=0;}lastTime=performance.now();updateUI();}
   });
   window.addEventListener('beforeunload',()=>saveGame());
-  $('devLauncher').hidden=!MareDev.ENABLED;$('devLauncher').textContent=DEV_ACTIVE?'DEV ATIVO':'DEV';document.body.classList.toggle('dev-sandbox',DEV_ACTIVE);if(DEV_ACTIVE){document.title='[DEV] '+document.title;const badge=document.createElement('div');badge.className='dev-badge';badge.textContent=paperDollReview.snapshot().enabled?'LABORATÓRIO · PAPER DOLL EM REVISÃO':'LABORATÓRIO · SAVE DE TESTE';document.body.append(badge);}
+  $('devLauncher').hidden=!MareDev.ENABLED;$('devLauncher').textContent=DEV_ACTIVE?'DEV ATIVO':'DEV';document.body.classList.toggle('dev-sandbox',DEV_ACTIVE);if(DEV_ACTIVE){document.title='[DEV] '+document.title;const badge=document.createElement('div');badge.className='dev-badge';badge.textContent='LABORATÓRIO · SAVE DE TESTE';document.body.append(badge);}
   const previous=loadGame();if(previous){game=previous;clearExpansion();let d=getDerived();game.hp=clamp(Number(game.hp)||1,0,d.maxHP);game.energy=clamp(Number(game.energy)||0,0,d.maxEnergy);startGame();toast('Bem-vindo de volta, '+game.name+'!','good');}else{$('startOverlay').classList.remove('hidden');openCreation(false);$('characterName').focus();}
   // Diagnóstico somente leitura para testes de regressão da demo local.
-  if(DEV_ACTIVE&&paperDollReview.snapshot().enabled)window.__marePaperDollDebug=()=>paperDollReview.snapshot();
-  window.__mareDiagnostics=()=>({dev:{active:DEV_ACTIVE,key:STORAGE_KEY,options:game?.devOptions},akuma:{rankC:{horuActive:horuBuffActive(),horuUntil:session?.horuBuffUntil||0,speedUntil:world.hero.horuSpeedUntil||0,shots:(session?.rankCProjectiles||[]).map(p=>({...p})),marks:world.mobs.filter(m=>MareRankC.marked(m)).map(m=>({id:m.id,until:m.matoMarkUntil,charges:m.matoCharges}))},registered:MareAkuma.registered(game),equipped:game?.equipment?.akuma_no_mi?.id||null,current_fruit_vfx,cooldowns:{...game?.fruitCooldowns},combatVfx:{backend:combatVfxBackend,projectiles:(session?.combatProjectiles||[]).map(p=>({kind:p.kind,phase:p.phase,x:p.x,y:p.y,elapsed:p.elapsed})),hits:(session?.combatHits||[]).map(f=>({kind:f.kind,started:f.started})),heroStatus:session?combatStatus(world.hero):null},shieldActive:supaShieldActive(),shieldUntil:session?.supaShieldUntil||0,nekoAction:session?.nekoAction?{...session.nekoAction}:null,nekoTransformed:isNekoForm(),wolfTransformed:isWolfForm(),wolfAuraActive:wolfAuraActive(),wolfAction:session?.wolfAction?{...session.wolfAction}:null,ryuTransformed:isRyuForm(),ryuAction:session?.ryuAction?{...session.ryuAction}:null,ryuImpactPending:session?.ryuImpactPending||0,ryuSyncError:session?.ryuSyncError||null,doruProjectiles:(session?.doruProjectiles||[]).map(p=>({...p})),doruImpactPending:session?.doruImpactPending||0,doruSyncError:session?.doruSyncError||null,ushiTransformed:isUshiForm(),ushiBuffActive:ushiBuffActive(),ushiAction:session?.ushiAction?{...session.ushiAction}:null,fx:world.fx.filter(f=>f.supaVfx).map(f=>({...f}))},hakiBookDef:itemDefs.indexOf(MareHaki.book),haki:game?{...game.haki,...session?.haki,unlocked:game.has_haki_unlocked}:null,hunt:game?{progress:game.hunts,sector:MareHunt.sectorAt(game.area,world.hero,huntAnchors()),bossReady:MareHunt.bossReady(game,game.area,world.hero,Date.now(),huntAnchors())}:null,scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H,zoom:worldZoom.value},telemetry:session?MareHudTelemetry.stats({scene,elapsed:session.elapsed,xp:session.xp,levelXP:game?.xp,neededXP:game?xpNeeded(game.level):1}):null,map:{id:activeMap().id,width:activeMap().width,height:activeMap().height},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):activeMap().id==='rare'?MareRare.paths.map(p=>({...p})):activeMap().id==='dawn'?MareDawn.paths.map(p=>({...p})):activeMap().id==='conchas'?MarePixelWorldMaps.conchas.districts.map(p=>({...p})):['orange','loguetown'].includes(activeMap().id)?huntAnchors():activeMap().id==='embers'?MareEmber.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,talents:session?.talents?MareTalentCombat.snapshot(session.talents):null,talentPoints:game?MareTalents.available(game):0,classId:game?.classId,combat:world.hero.combat?.snapshot()??basicAttackPose(),combatAssetId:world.hero.combatAssetId??null,paperDollReview:paperDollReview.snapshot(),lobby96:lobby96.snapshot(),paperDoll:{...paperDoll.stats(),appearance:game?MarePaperDollCatalog.appearance(game):null},energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,skillEnergySpent:session?.skillEnergySpent,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,type:m.type,name:monsterName(m),skin:m.skin,district:m.district,area:m.area,maxHP:m.maxHP,attack:m.attack,defense:m.defense,telegraph:m.telegraph?{...m.telegraph}:null,x:m.x,y:m.y,hp:m.hp,wolfBleed:m.wolfBleed?{...m.wolfBleed}:null,ryuStunUntil:m.ryuStunUntil||0,isStunned:MareRyu.stunned(m,world.time)||MareRankB.stunned(m,world.time)||m.talentControl?.remaining>0,isRooted:MareDoru.isRooted(m,world.time),doruRootUntil:m.doruRootUntil||0,poison:m.talentPoison?{...m.talentPoison}:null,level:m.level,hakiDebuff:m.hakiDebuff||0,control:m.talentControl?{...m.talentControl}:null,emp:m.empRemaining||0,marks:m.assassinMarks||0,burn:m.ultimateBurn?{...m.ultimateBurn}:null,clonePoison:m.clonePoison?{...m.clonePoison}:null,wear:m.talentWear?{...m.talentWear}:null,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});
+  if(DEV_ACTIVE)window.__marePaperDollDebug=()=>lobby96.snapshot();
+  window.__mareDiagnostics=()=>({dev:{active:DEV_ACTIVE,key:STORAGE_KEY,options:game?.devOptions},akuma:{rankC:{horuActive:horuBuffActive(),horuUntil:session?.horuBuffUntil||0,speedUntil:world.hero.horuSpeedUntil||0,shots:(session?.rankCProjectiles||[]).map(p=>({...p})),marks:world.mobs.filter(m=>MareRankC.marked(m)).map(m=>({id:m.id,until:m.matoMarkUntil,charges:m.matoCharges}))},registered:MareAkuma.registered(game),equipped:game?.equipment?.akuma_no_mi?.id||null,current_fruit_vfx,cooldowns:{...game?.fruitCooldowns},combatVfx:{backend:combatVfxBackend,projectiles:(session?.combatProjectiles||[]).map(p=>({kind:p.kind,phase:p.phase,x:p.x,y:p.y,elapsed:p.elapsed})),hits:(session?.combatHits||[]).map(f=>({kind:f.kind,started:f.started})),heroStatus:session?combatStatus(world.hero):null},shieldActive:supaShieldActive(),shieldUntil:session?.supaShieldUntil||0,nekoAction:session?.nekoAction?{...session.nekoAction}:null,nekoTransformed:isNekoForm(),wolfTransformed:isWolfForm(),wolfAuraActive:wolfAuraActive(),wolfAction:session?.wolfAction?{...session.wolfAction}:null,ryuTransformed:isRyuForm(),ryuAction:session?.ryuAction?{...session.ryuAction}:null,ryuImpactPending:session?.ryuImpactPending||0,ryuSyncError:session?.ryuSyncError||null,doruProjectiles:(session?.doruProjectiles||[]).map(p=>({...p})),doruImpactPending:session?.doruImpactPending||0,doruSyncError:session?.doruSyncError||null,ushiTransformed:isUshiForm(),ushiBuffActive:ushiBuffActive(),ushiAction:session?.ushiAction?{...session.ushiAction}:null,fx:world.fx.filter(f=>f.supaVfx).map(f=>({...f}))},hakiBookDef:itemDefs.indexOf(MareHaki.book),haki:game?{...game.haki,...session?.haki,unlocked:game.has_haki_unlocked}:null,hunt:game?{progress:game.hunts,sector:MareHunt.sectorAt(game.area,world.hero,huntAnchors()),bossReady:MareHunt.bossReady(game,game.area,world.hero,Date.now(),huntAnchors())}:null,scene,autoPlay,hero:{...world.hero},camera:{x:camera.x,y:camera.y,width:W,height:H,zoom:worldZoom.value},telemetry:session?MareHudTelemetry.stats({scene,elapsed:session.elapsed,xp:session.xp,levelXP:game?.xp,neededXP:game?xpNeeded(game.level):1}):null,map:{id:activeMap().id,width:activeMap().width,height:activeMap().height},colliders:activeMap().colliders.map(o=>({...o})),npcs:npcs.map(n=>({...n})),path:travelPath.map(p=>({...p})),destination:lobbyDestination?{...lobbyDestination}:null,walkable:navigator().walkable(world.hero.x,world.hero.y),landmarks:scene==='lobby'?MareIsland.paths.map(p=>({...p})):activeMap().id==='rare'?MareRare.paths.map(p=>({...p})):activeMap().id==='dawn'?MareDawn.paths.map(p=>({...p})):activeMap().id==='conchas'?MarePixelWorldMaps.conchas.districts.map(p=>({...p})):['orange','loguetown'].includes(activeMap().id)?huntAnchors():activeMap().id==='embers'?MareEmber.paths.map(p=>({...p})):[],alive:livingMobs().length,attackClock:session?.attackClock??null,stats:game?getDerived():null,attributes:game?{...game.attributes}:null,attributePoints:game?.attributePoints??0,talents:session?.talents?MareTalentCombat.snapshot(session.talents):null,talentPoints:game?MareTalents.available(game):0,classId:game?.classId,combat:world.hero.combat?.snapshot()??basicAttackPose(),combatAssetId:world.hero.combatAssetId??null,paperDollReview:{enabled:false,state:'retired',draws:0,packId:null},lobby96:lobby96.snapshot(),paperDoll:{enabled:false,state:'retired',draws:0},energy:game?.energy,hp:game?.hp,skillUses:session?.skillUses,skillEnergySpent:session?.skillEnergySpent,healingDone:session?.healingDone,guard:session?.guard,cooldowns:session?.cooldowns?.slice(),mobs:livingMobs().map(m=>({id:m.id,type:m.type,name:monsterName(m),skin:m.skin,district:m.district,area:m.area,maxHP:m.maxHP,attack:m.attack,defense:m.defense,telegraph:m.telegraph?{...m.telegraph}:null,x:m.x,y:m.y,hp:m.hp,wolfBleed:m.wolfBleed?{...m.wolfBleed}:null,ryuStunUntil:m.ryuStunUntil||0,isStunned:MareRyu.stunned(m,world.time)||MareRankB.stunned(m,world.time)||m.talentControl?.remaining>0,isRooted:MareDoru.isRooted(m,world.time),doruRootUntil:m.doruRootUntil||0,poison:m.talentPoison?{...m.talentPoison}:null,level:m.level,hakiDebuff:m.hakiDebuff||0,control:m.talentControl?{...m.talentControl}:null,emp:m.empRemaining||0,marks:m.assassinMarks||0,burn:m.ultimateBurn?{...m.ultimateBurn}:null,clonePoison:m.clonePoison?{...m.clonePoison}:null,wear:m.talentWear?{...m.talentWear}:null,taunt:m.taunt?{...m.taunt}:null})),kills:game?.stats.kills??0,damage:game?.stats.damage??0,level:game?.level??0});
   requestAnimationFrame(frame);
 })();
 

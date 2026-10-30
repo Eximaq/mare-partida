@@ -15,7 +15,7 @@ assert.deepEqual(next.preferences,{hideItems:true,hideHeadgear:true});assert(H.h
 assert.equal(H.withPreference(player,'true'),null);
 for(const [p,label,pressed]of [[player,'Ocultar capacete','true'],[next,'Mostrar capacete','false']]){const html=H.button(p);assert(html.includes('aria-label="'+label+'"'));assert(html.includes('aria-pressed="'+pressed+'"'));assert(!html.includes('disabled'));}
 assert(H.button({}).includes('disabled'));
-assert(R.enabled(''));assert(R.enabled('?paperDoll96=1'));assert(!R.enabled('?paperDoll96=0'));assert(!R.enabled('?dev=1'));assert(R.enabled('?dev=1&paperDoll96=1'));
+assert(R.enabled(''));assert(R.enabled('?paperDoll96=1'));assert(R.enabled('?paperDoll96=0'));assert(R.enabled('?dev=1'));assert(R.enabled('?dev=1&paperDoll96=1'));
 const catalog=require('../tools/paper-doll-96-v3/appearance-catalog.json');
 assert.equal(R.outfit(catalog,{paperDollLook:{version:1,hair:'short-black'}},R.defaults,{production:true}).look.hairColor,'black','retain saved short-black appearance in native96');
 assert.equal(R.outfit(catalog,{paperDollLook:{version:1,hair:'short-black'}},R.defaults).look.hairColor,'brown','rehearsal palette stays independent');
@@ -25,6 +25,6 @@ require('../paper-doll.js');require('../paper-doll-assets.js');require('../paper
 const Legacy=require('../paper-doll-review.js'),legacyPack=structuredClone(require('../pixellab-pip-generations/paper-doll-complete-20261026/player-pack.json'));
 const headPiece={...structuredClone(legacyPack.pieces.find(p=>p.slot==='hair')),id:'head-fixture',slot:'head',hideHair:true};legacyPack.pieces.push(headPiece);legacyPack.bindings.head={slot:'head',items:{19:headPiece.id}};
 const legacyPlayer={classId:'sword',factionId:'pirate',equipment:{head:{def:19}}};
-assert(Legacy.appearance(legacyPack,legacyPlayer,{production:true}).hidden.includes('hair'),'mapped headgear also hides hair in legacy fallback');
+assert(Legacy.appearance(legacyPack,legacyPlayer,{production:true}).hidden.includes('hair'),'archived compositor retains its isolated headgear contract');
 const legacyHidden=Legacy.appearance(legacyPack,H.withPreference(legacyPlayer,true),{production:true});assert(!legacyHidden.hidden.includes('hair'));assert.equal(legacyHidden.pieces.head,undefined);
 console.log('Headgear: configurable hair policy, immutable preference, accessible button, release/default and DEV isolation passed.');

@@ -5,8 +5,10 @@ import hashlib
 import re
 import json
 from build_portal import version_portal_assets
+from player96_release import verify_release
 
 ROOT = Path(__file__).resolve().parent.parent
+verify_release()
 OUT = ROOT / 'dist'
 if OUT.exists():
     shutil.rmtree(OUT)
@@ -26,12 +28,21 @@ shutil.copytree(ROOT/'portal', OUT/'portal')
 version_portal_assets(OUT/'portal')
 # A new HTML document must never combine this release with cached older scripts.
 # Content hashes change only when the referenced public file changes; saves are untouched.
+asset_versions = {}
+
 def version_asset(match):
     relative = match.group(2)
     source = OUT / relative
     if relative not in web_files or source.suffix not in ('.js', '.css'):
         return match.group(0)
-    version = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+    if relative not in asset_versions:
+        digest = hashlib.sha256(source.read_bytes())
+        if relative == 'sprite-combat-v2.js':
+            digest.update((ROOT / 'sprite-combat-v2-data.js').read_bytes())
+            for image in sorted((ROOT / 'assets/sprites-combat-v2').rglob('*.png')):
+                digest.update(image.relative_to(ROOT).as_posix().encode() + b'\0' + image.read_bytes())
+        asset_versions[relative] = digest.hexdigest()[:16]
+    version = asset_versions[relative]
     return f'{match.group(1)}{relative}?v={version}{match.group(3)}'
 
 for page in ['index.html', 'ui-preview.html']:

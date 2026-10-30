@@ -9,7 +9,13 @@ links=re.findall(r'(?:src|href)="([^\"]+\.(?:js|css))\?v=([a-f0-9]+)"',entry)
 expected=re.findall(r'(?:src|href)="([^\"]+\.(?:js|css))"',(ROOT/'index.html').read_text(encoding='utf-8'))
 assert len(links)==len(expected),(len(links),len(expected))
 assert {name for name,_ in links}==set(expected)
-for name,version in links:assert version==hashlib.sha256((ROOT/'dist'/name).read_bytes()).hexdigest()[:16]
+for name,version in links:
+ digest=hashlib.sha256((ROOT/'dist'/name).read_bytes())
+ if name=='sprite-combat-v2.js':
+  digest.update((ROOT/'dist/sprite-combat-v2-data.js').read_bytes())
+  for image in sorted((ROOT/'dist/assets/sprites-combat-v2').rglob('*.png')):
+   digest.update(image.relative_to(ROOT/'dist').as_posix().encode()+b'\0'+image.read_bytes())
+ assert version==digest.hexdigest()[:16],name
 requests=[]
 class Release(http.server.SimpleHTTPRequestHandler):
  def __init__(self,*args,**kwargs):super().__init__(*args,directory=str(ROOT/'dist'),**kwargs)

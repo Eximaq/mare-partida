@@ -1,10 +1,18 @@
 'use strict';
 /* Visual adapter for the existing renderers. No combat clock, callback or save data. */
 ((root)=>{
- const reactions=new WeakMap(),images=new Map(),HURT_SECONDS=.18;
+ const reactions=new WeakMap(),images=new Map(),lastDraw=new Map(),HURT_SECONDS=.18;
  const directions={front:'south',back:'north',left:'west',right:'east'};
  const fruits={akuma_tori_albatroz:'tori',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko',akuma_ushi_giraffe:'ushi',akuma_inu_wolf:'wolf',akuma_ryu_ryu:'ryu',akuma_ushi_bison:'bison'};
  const data=()=>root.MareSpriteCombatV2Data||{};
+ const errors=new Map(),assetBase=typeof document!=='undefined'&&document.currentScript?.src?new URL('.',document.currentScript.src):null;
+ const assetVersion=typeof document!=='undefined'&&document.currentScript?.src?new URL(document.currentScript.src).searchParams.get('v')||'current-player-v2-20261030':'current-player-v2-20261030';
+ function resourceURL(file){if(!assetBase)return file;const target=new URL(file,assetBase);target.searchParams.set('revision',assetVersion);return target.href;}
+ function reportMissing(component,asset,action=null,direction=null,code='missing-current-resource'){
+  const key=[asset,action,direction,code].join(':');if(errors.has(key))return;
+  const detail={component,asset,resolved:typeof asset==='string'&&asset.startsWith('assets/')?resourceURL(asset):asset,action,direction,code,status:'failed'};errors.set(key,detail);while(errors.size>24)errors.delete(errors.keys().next().value);console.error('[current-player-sprite]',detail);
+ }
+
  function hurtProgress(actor,now){const start=reactions.get(actor);if(start===undefined)return null;const elapsed=now-start;if(elapsed<0||elapsed>=HURT_SECONDS){reactions.delete(actor);return null;}return elapsed/HURT_SECONDS;}
  function hurt(actor,damage,now,{protected:protectedAction=false}={}){
   if(!actor||!Number.isFinite(damage)||damage<=0||!Number.isFinite(now))return false;
@@ -18,19 +26,20 @@
   const facing=action==='hurt'?'south':directions[direction]||direction;
   const aliases={dash:'special',charge:'special',finish:'special',headbutt:'special',bite:'special',tail:'special-2'};
   action=aliases[action]||action;
-  // Missing clips still fall back to the new Idle; no directions are fabricated.
+  // Authored locomotion aliases remain valid. Playable forms never borrow an unrelated action.
   const requested=entry.clips[action]?.[facing];
   const locomotion=['walk','run'].includes(action)?(entry.clips.walk?.[facing]||entry.clips.run?.[facing]):null;
-  return {entry,clip:requested||locomotion||entry.clips.idle[facing]||entry.clips.idle.south,requested:!!requested,action,facing};
+  return {entry,clip:requested||locomotion||(Object.values(fruits).includes(key)?null:entry.clips.idle[facing]||entry.clips.idle.south),requested:!!requested,action,facing};
  }
- function image(url){
+ function image(url,context={}){
+  if(!/^assets\/sprites-combat-v2\/[a-z0-9-]+\/[a-zA-Z0-9_.-]+\.png$/.test(url)){reportMissing(context.consumer||'sprite-combat-v2',String(url),context.action,context.direction,'invalid-current-path');return null;}
   if(!images.has(url)){
    const im=new Image(),notify=()=>{if(typeof window!=='undefined')window.dispatchEvent(new Event('mare-zoan-sprite-ready'));};
-   im.addEventListener?.('load',notify);im.addEventListener?.('error',notify);im.src=url;images.set(url,im);
+   im.addEventListener?.('load',notify);im.addEventListener?.('error',()=>{reportMissing(context.consumer||'sprite-combat-v2',url,context.action,context.direction,'image-load');notify();});im.src=resourceURL(url);images.set(url,im);
   }return images.get(url);
  }
- function preload(key){const entry=data()[key];if(entry)for(const ds of Object.values(entry.clips))for(const c of Object.values(ds))image(c.image);}
- function status(key,action,direction){const r=resolve(key,action,direction);if(!r)return 'missing';const im=image(r.clip.image);return !im.complete?'loading':im.naturalWidth?'ready':'failed';}
+ function preload(key){const entry=data()[key];if(entry)for(const [action,ds]of Object.entries(entry.clips))for(const [direction,c]of Object.entries(ds))image(c.image,{consumer:'current-sprite-preload:'+key,action,direction});}
+ function status(key,action,direction){const r=resolve(key,action,direction);if(!r?.clip){reportMissing('current-sprite:'+key,key,action,direction);return 'missing';}const im=image(r.clip.image,{consumer:'current-sprite:'+key,action:r.action,direction:r.facing});if(!im)return 'failed';if(!im.complete)return 'loading';if(im.naturalWidth===r.clip.size*r.clip.frames&&im.naturalHeight===r.clip.size)return 'ready';reportMissing('current-sprite:'+key,r.clip.image,r.action,r.facing,'image-dimensions');return 'failed';}
  const clamp=n=>Math.max(0,Math.min(1,n));
  // Retiming is exclusively visual: map the unchanged logical hit ratio to the inspected contact pose.
  function frameAt(clip,{time=0,progress=null,hitRatio=null}={}){
@@ -46,9 +55,11 @@
   return Math.min(clip.frames-1,step);
  }
  function draw(c,key,x,y,{action='idle',direction='front',time=0,scale=1,height=null,progress=null,hitRatio=null,flash=false,fit=null}={}){
-  const r=resolve(key,action,direction);if(!r)return false;
-  let clip=r.clip,im=image(clip.image);
-  if(!im.complete||!im.naturalWidth){clip=r.entry.clips.idle[r.facing]||r.entry.clips.idle.south;im=image(clip.image);if(!im.complete||!im.naturalWidth)return false;}
+  lastDraw.set(key,{action,direction});
+  const r=resolve(key,action,direction);if(!r?.clip){reportMissing('current-sprite:'+key,key,action,direction);return false;}
+  const clip=r.clip,im=image(clip.image,{consumer:'current-sprite:'+key,action:r.action,direction:r.facing});
+  if(!im||!im.complete)return false;
+  if(im.naturalWidth!==clip.size*clip.frames||im.naturalHeight!==clip.size){reportMissing('current-sprite:'+key,clip.image,r.action,r.facing,'image-dimensions');return false;}
   const frame=frameAt(clip,{time,progress,hitRatio}),base=r.entry.clips.idle[r.facing]||r.entry.clips.idle.south;
   const b=base.bounds[0],extent=Math.max(b[2]-b[0],b[3]-b[1]);
   const reference=r.entry.idle_extent_ratio?extent/r.entry.idle_extent_ratio:b[3]-b[1];
@@ -70,21 +81,21 @@
  }
  function install(){
   const art=root.MareZoanArt;
-  if(art){const original=art.draw,oldStatus=art.status,oldTiming=art.attackTiming;art.draw=function(c,id,x,y,o={}){const key=fruits[id];return key&&data()[key]?draw(c,key,x,y,{...o,...(key==='ryu'?{height:data().ryu.worldHeight*(o.scale??1)}:{})}):original(c,id,x,y,o);};art.status=(id,a,d)=>fruits[id]?status(fruits[id],a,d):oldStatus(id,a,d);
+  if(art){const original=art.draw,oldStatus=art.status,oldTiming=art.attackTiming;art.draw=function(c,id,x,y,o={}){const key=fruits[id];if(!key||!data()[key]){reportMissing('player-transformation',id,o.action,o.direction);return false;}return draw(c,key,x,y,{...o,...(key==='ryu'?{height:data().ryu.worldHeight*(o.scale??1)}:{})});};art.status=(id,a,d)=>fruits[id]?status(fruits[id],a,d):'missing';
    // Original logical metadata remains authoritative, independent of image loading.
    art.attackTiming=(id,d='front')=>data()[fruits[id]]?.logical_attack?.[directions[d]||d]||oldTiming(id,d);
   }
   for(const [name,key,mode]of [['MareNeko','neko','scale'],['MareUshi','ushi','scale'],['MareWolf','wolf','scale'],['MareRyu','ryu','world'],['MareRankCExpansion','bison','height']]){
    const system=root[name];if(!system)continue;
    const original=system.drawActor,oldStatus=system.status,oldPreload=system.preload;
-   system.drawActor=function(c,x,y,o={}){const entry=data()[key];if(!entry)return original(c,x,y,o);const height=mode==='world'?entry.worldHeight*(o.scale??1):mode==='height'?entry.legacyHeight*(o.height??64)/64:null;return draw(c,key,x,y,{...o,height});};
-   system.status=(a,d)=>data()[key]?status(key,a,d):oldStatus(a,d);
-   system.preload=()=>{if(data()[key])preload(key);oldPreload();};
+   system.drawActor=function(c,x,y,o={}){const entry=data()[key];if(!entry){reportMissing('player-transformation',key,o.action,o.direction);return false;}const height=mode==='world'?entry.worldHeight*(o.scale??1):mode==='height'?entry.legacyHeight*(o.height??64)/64:null;return draw(c,key,x,y,{...o,height});};
+   system.status=(a,d)=>status(key,a,d);
+   system.preload=()=>{if(data()[key])preload(key);oldPreload({actors:false});};
   }
   if(root.MareNewIslandArt){const old=root.MareNewIslandArt.monster;root.MareNewIslandArt.monster=(c,m,t)=>data()[m.type]?.monster?monster(c,m,t):old(c,m,t);}
   if(root.MareRareRenderer){const old=root.MareRareRenderer.monster;root.MareRareRenderer.monster=(c,m,t)=>m.type==='cocox'&&data().cocox?monster(c,m,t):old(c,m,t);}
-  if(root.MareHoya){const system=root.MareHoya,old=system.drawActor,oldPreload=system.preload;system.drawActor=(c,g,t)=>{if(!data().hoya)return old(c,g,t);const p=g.clock.snapshot(),reaction=hurtProgress(g,t);return draw(c,'hoya',g.x,g.y,{action:reaction!==null?'hurt':p.locked?'attack':g.walking>0?'walk':'idle',direction:g.direction,time:t,progress:reaction??(p.locked?p.progress:null),hitRatio:p.hitFrameRatio,height:data().hoya.worldHeight*g.scale*(data().hoya.world_scale??1)});};system.preload=()=>{preload('hoya');oldPreload();};}
+  if(root.MareHoya){const system=root.MareHoya,old=system.drawActor,oldPreload=system.preload;system.drawActor=(c,g,t)=>{if(!data().hoya)return old(c,g,t);const p=g.clock.snapshot(),reaction=hurtProgress(g,t);return draw(c,'hoya',g.x,g.y,{action:reaction!==null?'hurt':p.locked?'attack':g.walking>0?'walk':'idle',direction:g.direction,time:t,progress:reaction??(p.locked?p.progress:null),hitRatio:p.hitFrameRatio,height:data().hoya.worldHeight*g.scale*(data().hoya.world_scale??1)});};system.preload=()=>{preload('hoya');oldPreload({actors:false});};}
  }
- root.MareSpriteCombatV2={hurt,hurtProgress,resolve,draw,monster,status,preload,frameAt,install,fruits,HURT_SECONDS};
+ root.MareSpriteCombatV2={hurt,hurtProgress,resolve,draw,monster,status,visualStatus(key,action,direction){const p=lastDraw.get(key);return status(key,p?.action||action,p?.direction||direction);},preload,frameAt,install,fruits,HURT_SECONDS,reportMissing,diagnostics:()=>[...errors.values()]};
  install();
 })(globalThis);

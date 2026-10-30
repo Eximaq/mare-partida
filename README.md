@@ -1,3 +1,5 @@
+**Sprites atuais:** [fonte única e auditoria estrutural](docs/SPRITES-ATUAIS-FONTE-UNICA.md). O personagem jogável usa native96 em criação, lobby, inventário e combate; formas Zoan usam SpriteCombatV2. Fallbacks84 e flags de rollback antigas foram desativados. As notas de ensaios anteriores abaixo são históricas.
+
 **Sprint 3:** [Sua Aparência](docs/PERSONAGEM-APARENCIA-96.md): nova etapa após classe, gênero, cabelos/olhos e cores independentes, prévia em quatro direções e persistência.
 
 **Sprint 2:** [capacetes, cabelo e botão de visibilidade](docs/CAPACETES-E-VISIBILIDADE.md). Base de 96 px como padrão por autorização do proprietário; botão no canto inferior direito do personagem no inventário.

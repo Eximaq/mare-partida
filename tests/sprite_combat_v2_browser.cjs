@@ -8,7 +8,8 @@ source=source.replace('  window.__mareDiagnostics=',bridge).replace('function ti
 (async()=>{
  const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
  try{
-  const context=await browser.newContext({viewport:{width:1366,height:768}}),page=await context.newPage(),errors=[],failed=[];
+  const context=await browser.newContext({viewport:{width:1366,height:768}}),page=await context.newPage(),errors=[],failed=[],requested=[];
+  page.on('request',r=>requested.push(new URL(r.url()).pathname));
   page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400&&r.url().includes('/assets/sprites-combat-v2/'))failed.push(r.url());});
   await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));
   await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8158/',{waitUntil:'networkidle'});
@@ -70,6 +71,7 @@ source=source.replace('  window.__mareDiagnostics=',bridge).replace('function ti
   const save=await page.evaluate(()=>{const q=__spritesQA;q.saveGame();return {level:q.game.level,gold:q.game.gold,kills:q.game.stats.kills};});
   if(process.env.MARE_QA_DIR){fs.mkdirSync(process.env.MARE_QA_DIR,{recursive:true});for(const [w,h]of [[1920,1080],[1366,768],[1280,720],[390,844]]){await page.setViewportSize({width:w,height:h});await page.evaluate(()=>__spritesQA.draw());await page.screenshot({path:path.join(process.env.MARE_QA_DIR,`world-${w}.png`)});}}
   await page.reload({waitUntil:'networkidle'});await page.waitForFunction(()=>!!__spritesQA.game);assert.deepEqual(await page.evaluate(()=>({level:__spritesQA.game.level,gold:__spritesQA.game.gold,kills:__spritesQA.game.stats.kills})),save);
+  const retired=await page.evaluate(()=>{const paths=[];function visit(v){if(v&&typeof v==='object'){if(typeof v.image==='string')paths.push(v.image);for(const child of Object.values(v))visit(child);}}for(const api of [MareNeko,MareUshi,MareWolf,MareRyu,MareRankCExpansion])visit(api.clips);for(const name of ['tori','uma','inu'])for(const action of ['idle','walk','attack'])for(const dir of ['south','north','east','west'])paths.push('assets/akuma/zoan/'+name+'-'+action+'-'+dir+'.png');return paths;});assert.deepEqual(requested.filter(url=>retired.some(file=>url.endsWith('/'+file))),[],'current transformations must never request retired actor sheets');
   assert.deepEqual(errors,[]);assert.deepEqual(failed,[]);console.log('Sprite v2 browser: 26 characters, '+rendering+' native poses, all render surfaces, real HP/Hurt boundary, repeated hits, all Zoans and save reload passed.');await context.close();
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});

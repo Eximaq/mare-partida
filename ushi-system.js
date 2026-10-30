@@ -6,7 +6,7 @@
   const visuals=Object.freeze({worldScale:112/64,labelLift:32});
   const directionNames={front:'south',back:'north',left:'west',right:'east'},images=new Map();
   function image(url){if(!images.has(url)){const im=new Image();im.addEventListener?.('load',()=>{if(typeof window!=='undefined')window.dispatchEvent(new Event('mare-zoan-sprite-ready'));});im.src=url;images.set(url,im);}return images.get(url);}
-  function preload(){for(const dirs of Object.values(clips))for(const clip of Object.values(dirs))image(clip.image);image(vfx.image);}
+  function preload({actors=true}={}){if(actors)for(const dirs of Object.values(clips))for(const clip of Object.values(dirs))image(clip.image);image(vfx.image);}
   function status(action='idle',direction='front'){const clip=clips[action]?.[directionNames[direction]||direction]||clips.idle.south,im=image(clip.image);return !im.complete?'loading':im.naturalWidth?'ready':'failed';}
   function drawActor(c,x,y,{action='idle',direction='front',time=0,scale=1,progress=null}={}){
     const clip=clips[action]?.[directionNames[direction]||direction]||clips.idle.south,im=image(clip.image);if(!im.complete||!im.naturalWidth)return false;
