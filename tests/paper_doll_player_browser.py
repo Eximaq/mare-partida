@@ -17,11 +17,11 @@ with sync_playwright() as p:
  q.wait_for_function('__mareDiagnostics().paperDollReview.state!=="loading"')
  assert q.evaluate('__mareDiagnostics().paperDollReview.production') is True,'Normal adventure must load an approved production pack without DEV query'
  q.locator('#characterName').fill('Marujo modular');q.locator('#nextToClass').click()
- q.locator('[data-creation-look=hair]').select_option('bald');q.locator('[data-creation-look=outfit]').select_option('base')
- q.screenshot(path=str(OUT/'creation-desktop.png'),full_page=True);q.set_viewport_size({'width':393,'height':852});assert q.evaluate('document.documentElement.scrollWidth<=innerWidth');q.locator('.creation-appearance').scroll_into_view_if_needed();q.screenshot(path=str(OUT/'creation-mobile.png'),full_page=True);q.set_viewport_size({'width':1366,'height':900});q.locator('#createCharacter').click();q.clock.run_for(100);q.clock.pause_at(q.evaluate('Date.now()+100'))
+ q.locator('#nextToAppearance').click();q.locator('#creation-hairStyle').select_option('none')
+ q.screenshot(path=str(OUT/'creation-desktop.png'),full_page=True);q.set_viewport_size({'width':393,'height':852});assert q.evaluate('document.documentElement.scrollWidth<=innerWidth');q.locator('#appearanceStep').scroll_into_view_if_needed();q.screenshot(path=str(OUT/'creation-mobile.png'),full_page=True);q.set_viewport_size({'width':1366,'height':900});q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(100);q.clock.pause_at(q.evaluate('Date.now()+100'))
  assert q.evaluate('(__playerQA.draw(),__mareDiagnostics().paperDollReview.lastPose.animationId)')=='idle'
  data=json.loads(q.evaluate('localStorage.getItem("mare-partida-save-v1")'))
- assert data['paperDollLook']=={'version':1,'hair':'bald','outfit':'base'}
+ assert data['paperDollLook']=={'version':1,'hair':'bald','outfit':'navy'}
  assert not data.get('devSandbox');assert not q.evaluate('localStorage.getItem("mare-partida-dev-save-v1")')
  q.locator('#characterMenuTrigger').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
  assert q.locator('[data-doll-look-apply]').is_visible();assert not q.locator('[data-doll-kit]').count()

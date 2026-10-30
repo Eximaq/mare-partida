@@ -61,7 +61,7 @@ def context(browser,seed=None):
 with sync_playwright() as p:
  browser=p.chromium.launch();c,q=context(browser);errors=[];q.on('pageerror',lambda e:errors.append(str(e)))
  q.goto(BASE,wait_until='domcontentloaded');q.wait_for_function('typeof __mareDiagnostics==="function"')
- q.locator('#characterName').fill('Encaixe Leste');q.locator('#nextToClass').click();q.locator('[data-class=sword]').click();q.locator('#createCharacter').click();q.clock.run_for(300)
+ q.locator('#characterName').fill('Encaixe Leste');q.locator('#nextToClass').click();q.locator('[data-class=sword]').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(300)
  files={clip['url'] for piece in pack['pieces'] for clip in piece['animations'].values()}
  q.evaluate('urls=>Promise.all(urls.map(url=>MareFactionSprites.image(url).decode()))',list(files))
  assert q.evaluate('__mareDiagnostics().paperDoll.compositions')==0,'Attack-only candidate must not replace Idle'

@@ -88,7 +88,7 @@ with sync_playwright() as playwright:
     context, page = open_page(browser)
     page.locator("#characterName").fill("Nauta Conchas")
     page.locator("#nextToClass").click()
-    page.locator("#createCharacter").click()
+    page.locator('#nextToAppearance').click();page.locator("#createCharacter").click();page.locator('[data-confirm-accept]').click()
     page.clock.run_for(100)
     template = json.loads(page.evaluate("localStorage.getItem(" + json.dumps(KEY) + ")"))
     context.close()

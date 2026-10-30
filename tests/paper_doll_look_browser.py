@@ -14,7 +14,7 @@ with sync_playwright() as p:
  c.route('**/api/akuma/catalog',lambda r:r.fulfill(status=404,body='{}'))
  q.goto(BASE,wait_until='networkidle')
  q.wait_for_function('typeof window.__mareDiagnostics==="function"')
- q.locator('#characterName').fill('Aparencia Compartilhada');q.locator('#nextToClass').click();q.locator('[data-class=sword]').click();q.locator('#createCharacter').click()
+ q.locator('#characterName').fill('Aparencia Compartilhada');q.locator('#nextToClass').click();q.locator('[data-class=sword]').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click()
  def open_look():
   q.locator('#characterMenuTrigger').click();q.locator('[data-character-section=status]').click();q.locator('[data-character-section=appearance]').click()
  def saved():return q.evaluate('JSON.parse(localStorage.getItem("'+DEV+'"))')

@@ -8,7 +8,7 @@ const expected={puppu:110,merry:120,valentine:135,doublefinger:150,mr1:170};
  page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400&&/alubarna|sprites-combat-v2\/(puppu|merry|valentine|doublefinger|mr1)/.test(r.url()))missing.push(r.url());});
  await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));
  await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8162/',{waitUntil:'networkidle'});
- await page.locator('#characterName').fill('Alubarna QA');await page.locator('#nextToClass').click();await page.locator('#createCharacter').click();await page.evaluate(()=>{__alubarnaQA.paused=true;__alubarnaQA.stop();});
+ await page.locator('#characterName').fill('Alubarna QA');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.evaluate(()=>{__alubarnaQA.paused=true;__alubarnaQA.stop();});
  const openMap=async()=>{await page.locator('#mainMenu [data-panel=modes]').click();await page.locator('[data-quick-mode=map]').click();};
  await openMap();await page.locator('[data-voyage-region=alabasta]').click();assert.equal(await page.locator('[data-island]').count(),6);
  await page.locator('[data-island=alubarna-01]').click();assert(await page.locator('[data-travel-area=alubarna-01]').isDisabled(),'level gate visible in actual UI');

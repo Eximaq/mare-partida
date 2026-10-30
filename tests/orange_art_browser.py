@@ -6,7 +6,7 @@ ROOT=Path(__file__).resolve().parents[1];OUT=ROOT/'docs/evidence-orange-town';OU
 with sync_playwright() as p:
     b=p.chromium.launch();q=b.new_page(viewport={'width':2048,'height':2048});errors=[];q.on('pageerror',lambda e:errors.append(str(e)))
     q.goto(os.environ.get('MARE_TEST_URL','http://127.0.0.1:8123/'));q.evaluate('MareOrangeRenderer.boot')
-    q.locator('#characterName').fill('Nauta composição');q.locator('#nextToClass').click();q.locator('#createCharacter').click()
+    q.locator('#characterName').fill('Nauta composição');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click()
     q.locator('#devLauncher').click();q.locator('[data-dev-enter]').click();q.wait_for_url('**/?dev=1');q.wait_for_function('window.__mareDiagnostics?.().dev.active')
     q.locator('#devLauncher').click();q.locator('#devLevel').fill('30');q.locator('[data-dev-command=level]:not([data-value])').click();q.locator('[data-dev-travel=orange]').click();q.evaluate('MareOrangeRenderer.boot');q.wait_for_timeout(100)
     stats=q.evaluate('MareOrangeRenderer.stats()');assert stats['artReady'] and stats['monsters']==4 and not stats['missing'],stats;print(stats)

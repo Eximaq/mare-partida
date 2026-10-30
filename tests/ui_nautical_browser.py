@@ -18,7 +18,7 @@ with sync_playwright() as p:
     def close(q):q.locator('[data-close-panel]' if q.locator('.inventory-mode').count() else '#closePanel').click();assert q.locator('#panelOverlay').is_hidden()
     expected={'sword':[15,14,9,6,6],'brawler':[14,9,13,5,9],'gunner':[9,15,8,10,8],'rogue':[10,16,9,7,8],'cyborg':[11,6,17,8,8],'strategist':[5,8,8,17,12],'healer':[5,8,10,12,15]}
     for cls,values in expected.items():
-        c,q=page_for();q.locator('#characterName').fill('Nauta '+cls);q.locator('#nextToClass').click();assert q.locator('[data-class="'+cls+'"] .birth-stats').is_visible();q.locator('[data-class="'+cls+'"]').click();q.locator('#createCharacter').click();d=diag(q);assert list(page_birth(q).values())==values;assert all(a>=b for a,b in zip(d['stats']['attributes'].values(),values));assert sum(values)==50 and d['attributePoints']==0
+        c,q=page_for();q.locator('#characterName').fill('Nauta '+cls);q.locator('#nextToClass').click();assert q.locator('[data-class="'+cls+'"] .birth-stats').is_visible();q.locator('[data-class="'+cls+'"]').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();d=diag(q);assert list(page_birth(q).values())==values;assert all(a>=b for a,b in zip(d['stats']['attributes'].values(),values));assert sum(values)==50 and d['attributePoints']==0
         if cls=='sword':template=saved(q)
         c.close()
     record('seven_class_births','All seven created through actual UI; exact birth tables, total50, zero spent/unspent at level1.')

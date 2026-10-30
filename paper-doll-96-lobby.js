@@ -2,6 +2,7 @@
 (function(root){
   'use strict';
   const Headgear=root.MareHeadgear||(typeof module!=='undefined'&&module.exports?require('./headgear-visibility.js'):null);
+  const Cosmetics=root.MareCharacterAppearance||(typeof module!=='undefined'&&module.exports?require('./character-appearance.js'):null);
   const defaults=Object.freeze({body:'masculino',hair:'original',face:'original',skin:'original',hairColor:'brown',kit:'equipped'});
   const slots=Object.freeze({coat:'torso',legs:'pants',boots:'boots',gloves:'gloves',cloak:'cloak',head:'head'});
   const actions=['idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus','attack-tech'];
@@ -9,8 +10,10 @@
   const enabled=search=>{const p=new URLSearchParams(search);const flag=p.get('paperDoll96');return (flag===null||flag==='1')&&(p.get('dev')!=='1'||p.get('paperDoll96')==='1');};
   const clipKey=(action,dir,look)=>action+':'+dir+':'+(look.hideHeadgear?'hidden':'visible');
   const safeFile=file=>typeof file==='string'&&/^assets\/[a-z0-9-]+\.png$/.test(file);
+  function appearanceLook(player,look,production=false){return production&&player?.appearance96?{...look,...Cosmetics.toLook(player)}:look;}
   function outfit(catalog,player,look,{production=false}={}){
-    const value={hair:look.hair,face:look.face,skin:look.skin,hairColor:look.hairColor},missing=[];
+    look=appearanceLook(player,look,production);
+    const value={hair:look.hair,face:look.face,skin:look.skin,hairColor:look.hairColor,...(look.eyeColor?{eyeColor:look.eyeColor}:{})},missing=[];
     for(const kind of Object.values(slots))value[kind]='original';
     const kits={'sample-a':{coat:6,legs:21,boots:8,gloves:25,cloak:23,head:18},'sample-b':{coat:7,legs:22,boots:9,gloves:26,cloak:24,head:19}};
     for(const [slot,kind]of Object.entries(slots)){
@@ -20,8 +23,8 @@
       if(item)value[kind]=item.id;else missing.push({slot,def});
     }
     value.hideHeadgear=Headgear.hidden(player);
-    if(production&&look.hair==='original'&&look.hairColor==='brown'&&(!player?.paperDollLook||player.paperDollLook.hair==='short-black'))value.hairColor='black';
-    if(look.hair==='original'&&player?.paperDollLook?.hair==='bald')value.hair='none';
+    if(production&&!player?.appearance96&&look.hair==='original'&&look.hairColor==='brown'&&(!player?.paperDollLook||player.paperDollLook.hair==='short-black'))value.hairColor='black';
+    if(!player?.appearance96&&look.hair==='original'&&player?.paperDollLook?.hair==='bald')value.hair='none';
     value.baseOutfitHidden=player?.paperDollLook?.outfit==='base'&&!player?.equipment?.coat;
     return {look:value,missing};
   }
@@ -38,7 +41,7 @@
     const snapshot=()=>({enabled:active,rehearsal,state,message,look:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,bundles:bundles.size,previews:previews.size,peakLoads});
     function report(error){message='Ensaio indisponível. Visual anterior preservado. '+error.message;onChange();}
     async function json(file){const r=await fetch(new URL(file,base),{cache:'no-store'});if(!r.ok)throw Error('Arquivo ausente: '+file);return r.json();}
-    function script(file){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL(file+'?revision='+encodeURIComponent(manifest.visualRevision+'-'+weaponCatalog.revision+'-headgear96-v1'),base).href;s.onload=resolve;s.onerror=()=>reject(Error('Compositor ausente: '+file));document.head.append(s);});}
+    function script(file){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL(file+'?revision='+encodeURIComponent(manifest.visualRevision+'-'+weaponCatalog.revision+'-appearance96-v1'),base).href;s.onload=resolve;s.onerror=()=>reject(Error('Compositor ausente: '+file));document.head.append(s);});}
     async function image(file){
       if(!safeFile(file))throw Error('Caminho de camada inválido.');
       if(images.has(file)){const value=images.get(file);images.delete(file);images.set(file,value);return value;}
@@ -70,7 +73,7 @@
         wardrobe=root.MareWardrobe96.create(catalog,rigs,image,{weapons:weaponCatalog});state='ready';onChange();
       }catch(error){state='failed';report(error);}return snapshot();
     })():Promise.resolve(snapshot());
-    function resolve(player,look=current){const value=outfit(catalog,player,look,{production:!rehearsal}),category=weaponCatalog.classes[player?.classId]||null,model=weaponCatalog.items.find(w=>w.itemId===player?.equipment?.weapon?.def&&w.category===category);value.look.weapon=model?.id||'original';if(player?.equipment?.weapon&&!model)value.missing.push({slot:'weapon',def:player.equipment.weapon.def});const supported=!!category&&(!player?.equipment?.weapon||!!model);return {...value,body:look.body,category,attack:model?.attackAction||'attack-'+category,supported,key:JSON.stringify([look.body,{...value.look,hideHeadgear:false},supported?category:null])};}
+    function resolve(player,look=current,production=!rehearsal){look=appearanceLook(player,look,production);const value=outfit(catalog,player,look,{production}),category=weaponCatalog.classes[player?.classId]||null,model=weaponCatalog.items.find(w=>w.itemId===player?.equipment?.weapon?.def&&w.category===category);value.look.weapon=model?.id||'original';if(player?.equipment?.weapon&&!model)value.missing.push({slot:'weapon',def:player.equipment.weapon.def});const supported=!!category&&(!player?.equipment?.weapon||!!model);return {...value,body:look.body,category,attack:model?.attackAction||'attack-'+category,supported,key:JSON.stringify([look.body,{...value.look,hideHeadgear:false},supported?category:null])};}
     function selected(body,action,direction,look){const clip=manifest.bodies[body].clips[action][direction];return {body,action,direction,clip,layers:clip.layers,look,key:[body,action,direction].join(':')};}
     async function compose(body,action,direction,look,cancel=()=>false){
       const sel=selected(body,action,direction,look),spec=root.MareMotion96.clipSpec(manifest,sel.clip);
@@ -144,9 +147,9 @@
       return `<section class="doll-dressing"><header><h2>Ensaio de aparência no lobby · 96 px</h2><p>Escolhas temporárias. Seu personagem salvo e os atributos dos equipamentos são preservados.</p></header><div class="doll-dressing-grid"><figure><canvas id="lobby96Canvas" width="512" height="512" aria-label="Prévia da aparência de 96 pixels"></canvas><figcaption id="lobby96State" role="status"></figcaption><label>Direção<select id="lobby96Direction"><option value="south">Frente</option><option value="north">Costas</option><option value="west">Esquerda</option><option value="east">Direita</option></select></label><label>Movimento<select id="lobby96Action">${actions.map(a=>`<option value="${a}">${({idle:'Repouso',walk:'Caminhada','attack-sword':'Espada','attack-unarmed':'Punhos','attack-firearm':'Disparo','attack-daggers':'Adagas','attack-focus':'Canalização','attack-tech':'Tecnologia'})[a]}</option>`).join('')}</select></label></figure><div class="doll-dressing-controls">${fields}<p>Os conjuntos de ensaio mudam somente o visual. As prévias não causam dano. As armas equipadas das sete classes acompanham os movimentos e o combate. Peças sem matriz mantêm o visual anterior.</p>${missing.length?root.MareUI.notice({text:'Há equipamentos atuais sem arte de 96 px. Eles mantêm seus bônus; esta prévia não mostra uma peça substituta.',tone:'info'}):''}<div class="doll-dressing-actions">${root.MareUI.button({label:'Visualizar no lobby',attributes:{'data-lobby96-apply':''}})}${root.MareUI.button({label:'Descartar alterações',attributes:{'data-lobby96-cancel':''}})}</div><p id="lobby96Message" role="status">${E(message)}</p></div></div></section>`;
     }
     let previewPending=false;
-    function preview(ctx,player,{action='idle',direction='south',time=0}={}){
+    function preview(ctx,player,{action='idle',direction='south',time=0,appearance=null}={}){
       if(state!=='ready'||!actions.includes(action)||!['south','north','west','east'].includes(direction))return false;
-      const value=resolve(player,draft),dir=direction==='west'?'east':direction,key=value.key+':'+clipKey(action,dir,value.look);
+      const value=appearance?resolve({...player,appearance96:appearance},current,true):resolve(player,draft),dir=direction==='west'?'east':direction,key=value.key+':'+clipKey(action,dir,value.look);
       let entry=previews.get(key);
       if(!entry){
         if(previewPending)return false;
@@ -169,6 +172,6 @@
     const height=(player,scene)=>active&&state==='ready'&&(scene==='lobby'||scene==='hunt'&&resolve(player).supported)&&!player?.zoanTransformed&&bundles.has(resolve(player).key)?96:null;
     return {ready,snapshot,draw,height,ensure,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
   }
-  root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,frameAt,directionOf};
+  root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,appearanceLook,frameAt,directionOf};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.MarePaperDoll96Lobby;
 })(typeof globalThis!=='undefined'?globalThis:window);

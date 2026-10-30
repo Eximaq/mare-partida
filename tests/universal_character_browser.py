@@ -43,7 +43,7 @@ with sync_playwright() as p:
  # identity in the actual game and preserves all existing character/gear fields.
  c=b.new_context();c.route('**/api/akuma/catalog',lambda r:r.fulfill(status=404,body='{}'))
  q=c.new_page();q.goto(URL,wait_until='domcontentloaded');q.wait_for_function('typeof __mareDiagnostics==="function"')
- q.locator('#characterName').fill('Base comum isolada');q.locator('#nextToClass').click();q.locator('#createCharacter').click()
+ q.locator('#characterName').fill('Base comum isolada');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click()
  template=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));c.close()
  weapons={'sword':0,'brawler':2,'gunner':4,'rogue':12,'cyborg':14,'strategist':16,'healer':31}
  for row in rows:

@@ -8,7 +8,7 @@ with sync_playwright() as p:
     browser=p.chromium.launch(headless=True);context=browser.new_context(viewport={'width':1366,'height':768});page=context.new_page();errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)));page.clock.install()
     page.goto('http://127.0.0.1:8123/');page.wait_for_load_state('networkidle')
-    page.locator('#characterName').fill('Bento Teste');page.locator('[data-faction="pirate"]').click();page.locator('#nextToClass').click();page.locator('[data-class="sword"]').click();page.locator('#createCharacter').click();page.clock.run_for(200)
+    page.locator('#characterName').fill('Bento Teste');page.locator('[data-faction="pirate"]').click();page.locator('#nextToClass').click();page.locator('[data-class="sword"]').click();page.locator('#nextToAppearance').click();page.locator('#createCharacter').click();page.locator('[data-confirm-accept]').click();page.clock.run_for(200)
     save=json.loads(page.evaluate("localStorage.getItem('mare-partida-save-v1')"))
     page.screenshot(path=str(OUT/'lobby.png'));page.locator('#enterHunt').click();page.locator('[data-mode=map]').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click()
     seen=set();captures=set();impacts=0;last=page.evaluate('window.__mareDiagnostics()')
@@ -49,7 +49,7 @@ with sync_playwright() as p:
     c.close()
     for faction,cls in [('marine','sword'),('pirate','brawler')]:
         c=browser.new_context();q=c.new_page();q.clock.install();q.goto('http://127.0.0.1:8123/');q.wait_for_load_state('networkidle')
-        q.locator('#characterName').fill('Outro Estilo');q.locator('[data-faction="'+faction+'"]').click();q.locator('#nextToClass').click();q.locator('[data-class="'+cls+'"]').click();q.locator('#createCharacter').click();q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.clock.run_for(200)
+        q.locator('#characterName').fill('Outro Estilo');q.locator('[data-faction="'+faction+'"]').click();q.locator('#nextToClass').click();q.locator('[data-class="'+cls+'"]').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.clock.run_for(200)
         assert q.evaluate('window.__mareDiagnostics().combat') is None
         c.close()
     results.append({'test':'faction_and_class_scope','passed':True,'other_factions_and_classes_use_original_sprites':True})

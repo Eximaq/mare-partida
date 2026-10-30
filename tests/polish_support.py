@@ -1,4 +1,4 @@
-import copy,json
+import copy,json,os
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 KEY='mare-partida-save-v1'
@@ -9,10 +9,10 @@ def page_for(browser,seed=None,size=(1366,768),errors=None):
     if seed:c.add_init_script("if(!sessionStorage.seeded){localStorage.setItem("+json.dumps(KEY)+","+json.dumps(json.dumps(seed))+");sessionStorage.seeded='1'}")
     q=c.new_page()
     if errors is not None:q.on('pageerror',lambda e:errors.append(str(e)))
-    q.clock.install();q.goto('http://127.0.0.1:8123/');q.wait_for_load_state('networkidle');q.wait_for_function('typeof __mareDiagnostics==="function"');return c,q
+    q.clock.install();q.goto(os.environ.get('MARE_TEST_URL','http://127.0.0.1:8123/'));q.wait_for_load_state('networkidle');q.wait_for_function('typeof __mareDiagnostics==="function"');return c,q
 def saved(q):return json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
 def create(q):
-    q.locator('#characterName').fill('Nauta Polimento');q.locator('#nextToClass').click();q.locator('#createCharacter').click();q.clock.run_for(100)
+    q.locator('#characterName').fill('Nauta Polimento');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(100)
     return saved(q)
 def fixture(template):
     g=copy.deepcopy(template);g.update(level=10,gold=5000,materials=100,potions=6,hp=120,energy=80)

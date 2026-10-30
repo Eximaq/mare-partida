@@ -56,7 +56,7 @@ with sync_playwright() as p:
     browser=p.chromium.launch();c,q=page_for(browser,errors=errors);q.screenshot(path=str(OUT/'creation.png'));template=create(q);c.close()
     for w,h in SIZES:
         c,q=page_for(browser,size=(w,h),errors=errors);bounds(q,'.creation-dialog');q.screenshot(path=str(OUT/f'creation-faction-{w}.png'))
-        q.locator('#characterName').fill('Nauta UI2');q.locator('#nextToClass').click();assert q.locator('.class-choice').count()==7;assert q.evaluate('document.documentElement.scrollWidth<=innerWidth+1');q.screenshot(path=str(OUT/f'creation-class-{w}.png'));q.locator('#createCharacter').click();assert not visible(q,'#startOverlay');c.close()
+        q.locator('#characterName').fill('Nauta UI2');q.locator('#nextToClass').click();assert q.locator('.class-choice').count()==7;assert q.evaluate('document.documentElement.scrollWidth<=innerWidth+1');q.screenshot(path=str(OUT/f'creation-class-{w}.png'));q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();assert not visible(q,'#startOverlay');c.close()
     seed=fixture(template);seed.update(level=50,has_haki_unlocked=True,haki={'current':100,'unlocked':True})
     for w,h in SIZES:
         c,q=page_for(browser,seed,(w,h),errors);q.wait_for_timeout(120);no_overlap(q);q.clock.run_for(3800);before=safe_fields(saved(q));no_overlap(q)

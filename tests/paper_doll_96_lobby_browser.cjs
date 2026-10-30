@@ -15,7 +15,7 @@ const hook=`window.__lobby96QA={get game(){return game},get runtime(){return lob
   await context.route('**/__dev_version',r=>r.fulfill({body:'stable'}));
   const go=async url=>{await page.goto(url,{waitUntil:'networkidle'});await page.waitForFunction(()=>window.__lobby96QA&&__mareDiagnostics().paperDollReview.state==='ready');};
   await go(base+'?paperDoll96=1');await page.waitForFunction(()=>__mareDiagnostics().lobby96.state==='ready');
-  await page.locator('#characterName').fill('Revisão96');await page.locator('#nextToClass').click();await page.locator('#createCharacter').click();
+  await page.locator('#characterName').fill('Revisão96');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();
   assert(await page.evaluate(()=>__lobby96QA.runtime.ensure(__lobby96QA.game)));
   await page.evaluate(()=>__lobby96QA.draw());assert.equal(await page.evaluate(()=>__mareDiagnostics().lobby96.lastPose.action),'idle');
   const initial=await page.evaluate(()=>JSON.stringify(__lobby96QA.game)),saved=await page.evaluate(()=>localStorage.getItem('mare-partida-save-v1'));

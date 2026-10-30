@@ -8,7 +8,7 @@ source=source.replace('function originalDerived(', 'function getDerived(...args)
 (async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});try{
  const context=await browser.newContext({viewport:{width:Number(process.env.MARE_TEST_WIDTH)||1440,height:900}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8140/',{waitUntil:'domcontentloaded'});
- await page.locator('#characterName').fill('Attack QA');await page.locator('#nextToClass').click();await page.locator('#createCharacter').click();
+ await page.locator('#characterName').fill('Attack QA');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();
  await page.evaluate(()=>{const q=__attackQA;q.game.level=30;q.enterHunt();q.paused=true;q.stop();q.world.spawnClock=1e9;Math.random=()=>.5;
   const n=q.nav();let origin,target;for(let y=128;y<n.map.height-128&&!origin;y+=64)for(let x=128;x<n.map.width-128&&!origin;x+=64){if(n.walkable(x,y)&&n.clear({x,y},{x:x+45,y})){origin={x,y};target={x:x+45,y};}}
   if(!origin)throw Error('No open attack fixture');Object.assign(q.world.hero,origin);q.center();q.world.mobs=[{id:'victim',type:'bandit',district:__mareDiagnostics().hunt.sector.id,alive:true,hp:100000,maxHP:100000,defense:0,level:8,area:q.game.area,...target,anchorX:target.x,anchorY:target.y,attack:0,attackClock:999,bob:0,speed:0}];q.world.target=q.world.mobs[0];

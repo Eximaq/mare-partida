@@ -18,7 +18,7 @@ def page(browser,seed=None,size=(1366,768)):
 def inspect(q):
     q.locator('#modesMenuTrigger').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=orange-town]').click()
 with sync_playwright() as p:
-    b=p.chromium.launch();c,q=page(b);q.locator('#characterName').fill('Nauta Orange');q.locator('#nextToClass').click();q.locator('#createCharacter').click();q.clock.run_for(100);template=saved(q);c.close()
+    b=p.chromium.launch();c,q=page(b);q.locator('#characterName').fill('Nauta Orange');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(100);template=saved(q);c.close()
     low=copy.deepcopy(template);low['level']=20;c,q=page(b,low);inspect(q);assert q.locator('[data-travel-area=orange]').is_disabled();c.close()
     high=copy.deepcopy(template);high['level']=30
     for w,h in [(1920,1080),(1366,768),(1280,720),(393,852),(320,568)]:

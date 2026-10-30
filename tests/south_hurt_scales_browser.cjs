@@ -10,7 +10,7 @@ const targets={marinheiro:150,hoya:126,mr3:112.5,cabaji:112.5,kuroobi:122.85,che
  page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400&&r.url().includes('/assets/sprites-combat-v2/'))failed.push(r.url());});
  await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));
  await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8162/',{waitUntil:'networkidle'});
- await page.locator('#characterName').fill('Hurt Escala QA');await page.locator('#nextToClass').click();await page.locator('#createCharacter').click();
+ await page.locator('#characterName').fill('Hurt Escala QA');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();
  await page.evaluate(()=>{const q=__hurtScaleQA;q.enterHunt();q.stop();q.paused=true;});
  // Load one character at a time, as equip does, without flooding the local HTTP fixture.
  for(const key of await page.evaluate(()=>Object.keys(MareSpriteCombatV2Data))){

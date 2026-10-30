@@ -72,7 +72,7 @@ def context(browser,seed=None):
 with sync_playwright() as p:
  browser=p.chromium.launch();c,q=context(browser);errors=[];q.on('pageerror',lambda e:errors.append(str(e)))
  q.goto(BASE,wait_until='domcontentloaded');q.wait_for_function('typeof __mareDiagnostics==="function"')
- q.locator('#characterName').fill('Revisao Modular');q.locator('#nextToClass').click();q.locator('[data-class=sword]').click();q.locator('#createCharacter').click()
+ q.locator('#characterName').fill('Revisao Modular');q.locator('#nextToClass').click();q.locator('[data-class=sword]').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click()
  q.clock.run_for(300);q.wait_for_function('__mareDiagnostics().paperDoll.compositions>0')
  files={clip['url'] for piece in pack['pieces'] for clip in piece['animations'].values()}
  files.update(source['url'] for piece in pack['pieces'] for clip in piece['animations'].values() for source in clip.get('sources',{}).values())

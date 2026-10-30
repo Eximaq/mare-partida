@@ -3,6 +3,11 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'character-appearance.js'
+      - 'ui-screens.css'
+      - 'tests/character-appearance.test.cjs'
+      - 'tests/character_appearance_browser.cjs'
+      - 'tests/character_appearance_materials_browser.cjs'
       - 'paper-doll-96-lobby.js'
       - 'game.js'
       - 'headgear-visibility.js'
@@ -138,4 +143,34 @@ jobs:
         with:
           name: paper-doll-headgear96
           path: ${{ runner.temp }}/headgear96
+          if-no-files-found: ignore
+
+  appearance96:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar navegador e Pages
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
+          npx playwright install --with-deps chromium
+          python tools/build_pages.py
+          python -m http.server 8159 --bind 127.0.0.1 > "$RUNNER_TEMP/appearance-server.txt" 2>&1 &
+          curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8159/dist/ > /dev/null
+      - name: Validar criação, persistência e camadas
+        run: |
+          node tests/character-appearance.test.cjs
+          node tests/character_appearance_browser.cjs http://127.0.0.1:8159/dist/ --evidence="$RUNNER_TEMP/appearance96"
+          node tests/character_appearance_materials_browser.cjs http://127.0.0.1:8159/dist/ --evidence="$RUNNER_TEMP/appearance96"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: character-appearance96
+          path: ${{ runner.temp }}/appearance96
           if-no-files-found: ignore

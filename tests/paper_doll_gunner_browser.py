@@ -43,7 +43,7 @@ with sync_playwright() as p:
  def game_route(route):
   response=route.fetch();s=response.text();needle='  window.__mareDiagnostics=';assert needle in s;route.fulfill(response=response,body=s.replace(needle,HOOK+needle))
  c.route('**/game.js*',game_route)
- q.goto(BASE,wait_until='networkidle');q.locator('#characterName').fill('Teste de disparos');q.locator('#nextToClass').click();q.locator('[data-class=gunner]').click();q.locator('#createCharacter').click();q.clock.run_for(200)
+ q.goto(BASE,wait_until='networkidle');q.locator('#characterName').fill('Teste de disparos');q.locator('#nextToClass').click();q.locator('[data-class=gunner]').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(200)
  q.goto(BASE+'?dev=1&paperDollReview=gunner',wait_until='networkidle');q.wait_for_function('__mareDiagnostics().paperDollReview.state!=="loading"');assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready',q.evaluate('__mareDiagnostics().paperDollReview')
  # DEV defaults to the current normal class; remove genuinely equipped items in UI.
  q.locator('#devLauncher').click();q.locator('#devClass').select_option('gunner');q.locator('[data-dev-command=class]').click();q.locator('#closePanel').click()

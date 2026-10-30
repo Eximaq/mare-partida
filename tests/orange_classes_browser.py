@@ -9,7 +9,7 @@ def page(b,seed=None):
     if seed:c.add_init_script('localStorage.setItem('+json.dumps(KEY)+','+json.dumps(json.dumps(seed))+')')
     q=c.new_page();q.on('pageerror',lambda e:errors.append(str(e)));q.clock.install();q.goto('http://127.0.0.1:8123/');q.wait_for_function('typeof __mareDiagnostics==="function"');q.evaluate('MareOrangeRenderer.boot');return c,q
 with sync_playwright() as p:
-    b=p.chromium.launch();c,q=page(b);q.locator('#characterName').fill('Nauta amostra');q.locator('#nextToClass').click();q.locator('#createCharacter').click();q.clock.run_for(100);template=saved(q);c.close();rows=[]
+    b=p.chromium.launch();c,q=page(b);q.locator('#characterName').fill('Nauta amostra');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(100);template=saved(q);c.close();rows=[]
     for cls,(index,primary,secondary) in weapons.items():
         seed=copy.deepcopy(template);seed.update(classId=cls,level=21,hp=99999,energy=99999,potions=30)
         seed['attributes']={k:0 for k in seed['attributes']};seed['attributes'][primary]=70;seed['attributes'][secondary]=30

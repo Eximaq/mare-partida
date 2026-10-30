@@ -19,7 +19,7 @@ with sync_playwright() as p:
     page.goto(PREVIEW);page.wait_for_load_state('networkidle')
     page.wait_for_function('typeof __mareDiagnostics==="function"')
     page.locator('#characterName').fill('Teste Molduras')
-    page.locator('#nextToClass').click();page.locator('#createCharacter').click()
+    page.locator('#nextToClass').click();page.locator('#nextToAppearance').click();page.locator('#createCharacter').click();page.locator('[data-confirm-accept]').click()
     page.wait_for_timeout(400)
     save=copy.deepcopy(page.evaluate("JSON.parse(localStorage.getItem('mare-partida-save-v1'))"))
     save['inventory']=[{

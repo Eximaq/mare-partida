@@ -4,7 +4,7 @@ const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8'),bridge=` 
 (async()=>{const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});try{
  const context=await browser.newContext({viewport:{width:Number(process.env.MARE_TEST_WIDTH)||1440,height:900}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));const impacts=[];page.on('response',r=>{if(r.url().includes('/rank-c-impact'))impacts.push(r.status());});page.setDefaultTimeout(10000);
  await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source.replace('  window.__mareDiagnostics=',bridge).replace('function tick(dt){','function tick(dt){if(window.__passiveQA?.paused)return;')}));await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8140/',{waitUntil:'domcontentloaded'});
- await page.locator('#characterName').fill('Passivos QA');await page.locator('#nextToClass').click();await page.locator('#createCharacter').click();
+ await page.locator('#characterName').fill('Passivos QA');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();
  await page.evaluate(async()=>{const q=__passiveQA;q.paused=true;q.game.classId='sword';q.game.factionId='pirate';q.game.level=30;for(const id of Object.keys(MareAkumaPassives.stats))await q.registerFruit(id);});
 
  const ids=['akuma_horu_horu','akuma_mato_mato'];

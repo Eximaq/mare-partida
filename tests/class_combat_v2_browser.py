@@ -19,7 +19,7 @@ def travel(q):
  q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
 def state(q):return q.evaluate('__mareDiagnostics()')
 with sync_playwright() as p:
- b=p.chromium.launch();c,q=page(b);q.locator('#characterName').fill('Animacoes isoladas');q.locator('#nextToClass').click();q.locator('#createCharacter').click();q.clock.run_for(100);template=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));c.close();rows=[]
+ b=p.chromium.launch();c,q=page(b);q.locator('#characterName').fill('Animacoes isoladas');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(100);template=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));c.close();rows=[]
  for cls,weapon in WEAPONS.items():
   seed=copy.deepcopy(template);seed.update(classId=cls,level=10,hp=140,energy=9999,potions=10);seed['equipment']['weapon']['def']=weapon
   c,q=page(b,seed);travel(q);seen=set();hits=0;last=state(q);captured=False

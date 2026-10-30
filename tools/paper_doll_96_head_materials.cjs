@@ -165,4 +165,21 @@ function profileFace(head, body, iris, expression = 'original') {
   put(body === 'feminino' ? 70 : 69, mouthY, [42, 26, 24]);
   return { pixels: out, protection };
 }
-module.exports = { mirrorHeadFamily, components, restoreHead, normalizeFace, cleanHair, mirrorHairEast, cleanBodyHead, cleanFaceFeatures, profileFace };
+// Import-only separation for the dark chestnut Sprint 3 AI sources. This is
+// deliberately not a general runtime hair-colour classifier: blonde highlights
+// may share skin hues. Native head skin is restored by the existing compositor.
+function separateGeneratedHairSkin(source,head=null,direction=null) {
+  validate(source);const out=new Uint8ClampedArray(source);
+  for(let i=0;i<out.length;i+=4){const r=out[i],g=out[i+1],b=out[i+2];
+    if(out[i+3]&&r>=130&&g>r*.58&&b>r*.3&&r>g*1.12&&r>b*1.4)out.fill(0,i,i+4);
+  }
+  // These two short styles have exposed ears and necks. Protect anatomy by
+  // its native pixels as well as colour: shaded skin can be dark brown.
+  if(head){validate(head);for(let p=0;p<FRAME*FRAME;p++){
+    const x=p%FRAME,y=Math.floor(p/FRAME);
+    const exposed=direction==='east'?(y>=39||x>=55&&x<=61&&y>=33):direction==='south'?y>=32:direction==='north'?y>=44:false;
+    if(exposed&&head[p*4+3])out.fill(0,p*4,p*4+4);
+  }}
+  return out;
+}
+module.exports = { separateGeneratedHairSkin, mirrorHeadFamily, components, restoreHead, normalizeFace, cleanHair, mirrorHairEast, cleanBodyHead, cleanFaceFeatures, profileFace };
