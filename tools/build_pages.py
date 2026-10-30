@@ -502,6 +502,8 @@ assert review96_pack['productionEnabled'] is False
 review96_files = {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json'}
 appearance96_pack = json.loads((ROOT/review96/'appearance-catalog.json').read_text(encoding='utf-8'))
 assert appearance96_pack['productionEnabled'] is False
+for animations in appearance96_pack.get('nativeOwnership', {}).get('atlases', {}).values():
+    review96_files.update(atlas['file'] for atlas in animations.values())
 fit96_template = json.loads((ROOT/review96/'fit-template.json').read_text(encoding='utf-8'))
 review96_files.update(fit96_template['references'].values())
 for style in appearance96_pack['styles']:

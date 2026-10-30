@@ -5,6 +5,7 @@ const path = require('node:path');
 const root = path.join(__dirname, '../tools/paper-doll-96-v3');
 const appearance = require(path.join(root, 'appearance.js'));
 const torso = require(path.join(root, 'torso.js'));
+const torsoMaterials = require('../tools/paper_doll_96_torso_materials.cjs');
 const head = require('../tools/paper_doll_96_head_materials.cjs');
 const { cleanHeadwear } = require('../tools/paper_doll_96_headwear.cjs');
 const catalog = require(path.join(root, 'appearance-catalog.json'));
@@ -12,6 +13,13 @@ const rig = require(path.join(root, 'appearance-rig.json'));
 assert.ok(catalog.equipmentSlots.includes('torso'));
 assert.deepEqual(catalog.styles.filter(s => s.kind === 'torso').map(s => [s.itemId, s.equipmentSlot]), [[6, 'coat'], [7, 'coat']]);
 assert.equal(catalog.styles.find(s => s.itemId === 19).hairOcclusion, 'all');
+assert.equal(catalog.nativeOwnership.schema,'mare-native-ownership-v9');
+assert.equal(new Set(Object.values(catalog.nativeOwnership.atlases).flatMap(a=>Object.values(a).map(v=>v.file))).size,16);
+for(const body of ['masculino','feminino'])for(const [action,atlas]of Object.entries(catalog.nativeOwnership.atlases[body])){
+ const png=fs.readFileSync(path.join(root,atlas.file));assert.equal(png.readUInt32BE(16),atlas.cell*atlas.columns);assert.equal(png.readUInt32BE(20),atlas.cell*atlas.rows);
+ assert.equal(atlas.framesPerDirection,action==='static'?1:action==='idle'?4:8);
+}
+for(const style of catalog.styles.filter(s=>s.kind==='torso'))for(const body of ['masculino','feminino'])assert.equal(style.animations[body].static.framesPerDirection,1);
 for(const style of catalog.styles.filter(s=>s.kind==='torso'))for(const body of ['masculino','feminino'])for(const action of ['idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus','attack-tech']){
   const atlas=style.animations[body][action],png=fs.readFileSync(path.join(root,atlas.file));
   assert.equal(atlas.framesPerDirection,action==='idle'?4:8);
@@ -49,4 +57,14 @@ assert.ok(result.some((v,i)=>i%4===3&&v===255));
 for(let i=3;i<result.length;i+=4)if(result[i])assert.equal(body[i],255,'torso cannot extend outside native body');
 const blank=torso.fit(material,new Uint8ClampedArray(body.length),rest,rest,0,128,128).full;
 assert.ok(blank.every(v=>v===0));
+const foregroundNoise=new Uint8ClampedArray(body);const ownA=torso.ownership(body,rest,0,128,128),ownB=torso.ownership(body,rest,0,128,128,foregroundNoise);
+assert.deepEqual(ownA,ownB,'ownership cannot change when an item or old foreground changes');
+const bra=new Uint8ClampedArray(body.length),female=rig.rests.feminino.east,n=female.find(p=>p.label==='NECK');
+const bx=Math.round(n.x*128)+3,by=Math.round(n.y*128)+1;bra.set([200,199,199,255],(by*128+bx)*4);
+assert.equal(torso.baseClothing(bra,female,0,128,128,true).top[(by*128+bx)*4+3],255,'upper bra pixels must not remain grey');
+const noisyShirt=new Uint8ClampedArray(body.length);noisyShirt.set([185,88,162,255],(70*128+62)*4);
+const indexed=torsoMaterials.clean(noisyShirt,6,rest,'south');
+assert.deepEqual(torsoMaterials.clean(indexed,6,rest,'south'),indexed,'cleaning an approved material twice must preserve its pixels');
+assert.equal(indexed[(70*128+62)*4+3],255);assert.notDeepEqual(indexed.slice((70*128+62)*4,(70*128+62)*4+3),noisyShirt.slice((70*128+62)*4,(70*128+62)*4+3));
+assert.deepEqual(catalog.styles.find(s=>s.itemId===6).materialPalette,torsoMaterials.allowed(6));
 console.log('96px torso: existing coat IDs, native fit, profile features, head-only skin shades and headwear without baked flesh passed');

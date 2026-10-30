@@ -6,6 +6,13 @@
   const fromPixels = (pixels,w,h) => { const c=canvas(w,h);c.getContext('2d').putImageData(new ImageData(pixels,w,h),0,0);return c; };
   function create(catalog, rigs, load) {
     const textures=new Map(),attachments=new Map();
+    if(catalog.nativeOwnership){
+      for(const style of catalog.styles.filter(s=>s.kind==='torso'))if(!style.materialPalette?.length)throw Error('Missing torso material palette: '+style.id);
+      for(const body of Object.keys(catalog.fitBases))for(const action of ['static','idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus','attack-tech']){
+        if(!catalog.nativeOwnership.atlases?.[body]?.[action])throw Error('Incomplete anatomy mask: '+body+'/'+action);
+        for(const style of catalog.styles.filter(s=>s.kind==='torso'))if(!style.animations?.[body]?.[action])throw Error('Incomplete torso animation: '+style.id+'/'+body+'/'+action);
+      }
+    }
     if(/^native-surface-v[67]$/.test(catalog.fitVersion))for(const style of catalog.styles){
       if(!['pants','boots','gloves'].includes(style.kind))continue;
       const required=style.kind==='pants'?['LEFTupper','LEFTlower','RIGHTupper','RIGHTlower']:['LEFT','RIGHT'];
@@ -25,6 +32,7 @@
       if(look.hair!=='none'&&catalog.originalHairs?.[selected.body]?.[selected.direction])files.push(catalog.originalHairs[selected.body][selected.direction]);
       if(catalog.originalHeads?.[selected.body]?.[selected.direction])files.push(catalog.originalHeads[selected.body][selected.direction]);
       if(catalog.originalHands?.[selected.body]?.[selected.direction])files.push(catalog.originalHands[selected.body][selected.direction]);
+      if(catalog.nativeOwnership?.atlases?.[selected.body]?.[selected.action])files.push(catalog.nativeOwnership.atlases[selected.body][selected.action].file);
       return [...new Set(files)];
     }
     async function prepare(selected,look){return new Map(await Promise.all(requiredFiles(selected,look).map(async file=>[file,await load(file)])));}
@@ -75,13 +83,24 @@
         originalFrame.getContext('2d').clearRect(Math.round(44+socket.x+padding),Math.round(12+socket.y+padding),44,32);
       }
       const neutral=canvas(spec.width,spec.height);
-      for(const slot of ['body','underArms','foreground']){const file=selected.layers[slot];if(file)neutral.getContext('2d').drawImage(images.get(file),fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);}
+      for(const slot of ['underArms','body','foreground']){const file=selected.layers[slot];if(file)neutral.getContext('2d').drawImage(images.get(file),fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);}
       const handCanvas=canvas(spec.width,spec.height);for(const slot of ['underArms','foreground']){const file=selected.layers[slot];if(file)handCanvas.getContext('2d').drawImage(images.get(file),fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);}
       const handSurface=handCanvas.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
       const neutralPixels=neutral.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
       const torsoBody=canvas(spec.width,spec.height),torsoBodyContext=torsoBody.getContext('2d');
       torsoBodyContext.drawImage(images.get(selected.layers.body),fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);
       const torsoBodyPixels=torsoBodyContext.getImageData(0,0,spec.width,spec.height).data;
+      const nativeForeground=canvas(spec.width,spec.height);
+      if(selected.layers.foreground)nativeForeground.getContext('2d').drawImage(images.get(selected.layers.foreground),fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);
+      const foregroundPixels=nativeForeground.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
+      const ownerAtlas=catalog.nativeOwnership?.atlases?.[selected.body]?.[selected.action];
+      const ownership=ownerAtlas?fitted(['ownership',ownerAtlas.file,selected.direction,fi].join(':'),()=>{
+        const c=canvas(spec.width,spec.height),n=ownerAtlas.directions.indexOf(selected.direction)*ownerAtlas.framesPerDirection+fi;
+        const image=images.get(ownerAtlas.file);
+        if(n<0||fi>=ownerAtlas.framesPerDirection||ownerAtlas.cell!==spec.width||image.width!==ownerAtlas.columns*ownerAtlas.cell||image.height!==ownerAtlas.rows*ownerAtlas.cell)throw Error('Invalid anatomy atlas');
+        c.getContext('2d').drawImage(image,n%ownerAtlas.columns*ownerAtlas.cell,Math.floor(n/ownerAtlas.columns)*ownerAtlas.cell,ownerAtlas.cell,ownerAtlas.cell,0,0,spec.width,spec.height);
+        return MareTorso96.unpack(c.getContext('2d').getImageData(0,0,spec.width,spec.height).data);
+      }):MareTorso96.ownership(torsoBodyPixels,pose,padding,spec.width,spec.height,foregroundPixels);
       const restFile=catalog.fitBases?.[selected.body]?.[selected.direction];
       const restPixels=restFile?texture(images.get(restFile),restFile,'body',null).pixels:null;
       for(const p of choices(look)){
@@ -94,14 +113,15 @@
         const sourceParts=Object.fromEntries(Object.entries(p.style.parts?.[selected.body]?.[selected.direction]||{}).map(([name,file])=>[name,texture(images.get(file),file,p.slot,null).pixels]));
         const atlas=p.style.animations?.[selected.body]?.[selected.action];
         const torsoPiece=()=>{
-          if(!atlas)return api.fitTorsoToBody(data,torsoBodyPixels,rest,pose,padding,spec.width,spec.height,handSurface);
+          if(!atlas)return api.fitTorsoToBody(data,torsoBodyPixels,rest,pose,padding,spec.width,spec.height,foregroundPixels,ownership);
           const index=atlas.directions.indexOf(selected.direction)*atlas.framesPerDirection+fi;
-          if(index<0||fi>=atlas.framesPerDirection||atlas.cell!==spec.width)throw Error('Invalid torso animation');
+          const atlasImage=images.get(atlas.file);
+          if(index<0||fi>=atlas.framesPerDirection||atlas.cell!==spec.width||atlasImage.width!==atlas.columns*atlas.cell||atlasImage.height!==atlas.rows*atlas.cell)throw Error('Invalid torso animation');
           const c=canvas(spec.width,spec.height),cx=c.getContext('2d');
-          cx.drawImage(images.get(atlas.file),index%atlas.columns*atlas.cell,Math.floor(index/atlas.columns)*atlas.cell,atlas.cell,atlas.cell,0,0,spec.width,spec.height);
+          cx.drawImage(atlasImage,index%atlas.columns*atlas.cell,Math.floor(index/atlas.columns)*atlas.cell,atlas.cell,atlas.cell,0,0,spec.width,spec.height);
           return {full:cx.getImageData(0,0,spec.width,spec.height).data};
         };
-        const attached=fitted([file,selected.key,fi,palette?.join(',')||'',atlas?.file||'surface'].join(':'),()=>p.slot==='torso'?torsoPiece():p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,material:p.style.nativeMaterial}):api.attach(data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
+        const attached=fitted([file,selected.key,fi,palette?.join(',')||'',atlas?.file||'surface'].join(':'),()=>p.slot==='torso'?torsoPiece():p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,handOwnership:ownership.hands,material:p.style.nativeMaterial}):api.attach(data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
         if(p.slot==='boots'){
           coveredFeet=p.style.nativeMaterial?new Uint8ClampedArray(neutralPixels.length):api.bootCoverage(neutralPixels,rest,pose,padding,spec.width,spec.height,sourceParts);
           if(p.style.nativeMaterial)for(let i=3;i<coveredFeet.length;i+=4)if(attached.LEFT[i]||attached.RIGHT[i])coveredFeet[i]=255;
@@ -131,6 +151,13 @@
         const data=texture(images.get(cleanHeadFile),cleanHeadFile,'headSkin',skin).pixels;
         pieces.headBase={full:fromPixels(fitted([cleanHeadFile,selected.key,fi,skin?.join(',')||''].join(':'),()=>api.attach(data,'head',rest,pose,socket,padding,spec.width,spec.height)).full,spec.width,spec.height)};
       }
+      if(pieces.torso&&pieces.headBase){
+        const c=pieces.headBase.full,cx=c.getContext('2d'),d=cx.getImageData(0,0,spec.width,spec.height),collar=Math.floor(pose.find(p=>p.label==='NECK').y*128+padding)-1;
+        // Canonical heads contain a small piece of bare shoulder. It belongs
+        // below the neckline, and must not repaint flesh over an equipped shirt.
+        for(let y=Math.max(0,collar);y<spec.height;y++)for(let x=0;x<spec.width;x++)if(ownership.cloth[y*spec.width+x])d.data[(y*spec.width+x)*4+3]=0;
+        cx.putImageData(d,0,0);
+      }
       if(pieces.face&&pieces.headBase){
         const fc=pieces.face.full,hc=pieces.headBase.full;
         const data=fc.getContext('2d').getImageData(0,0,spec.width,spec.height).data,mask=hc.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
@@ -152,7 +179,7 @@
         if(slot==='top'&&descriptor('torso',look.torso))return;
         if(slot==='hair'&&hideHair)return;
         const file=selected.layers[slot],image=file&&map.get(file);if(!image)return;
-        if(slot==='top'&&selected.body==='feminino'&&selected.clip&&catalog.baseClothingFit!=='native-underwear-v8'){
+        if(slot==='top'&&selected.body==='feminino'&&selected.clip&&!/^native-underwear-v[89]$/.test(catalog.baseClothingFit)){
           const c=canvas(spec.width,spec.height),cx=c.getContext('2d');cx.drawImage(image,fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);
           const d=cx.getImageData(0,0,c.width,c.height).data;
           ctx.drawImage(fromPixels(api.closeTopCoverage(d,neutralPixels,pose,padding,spec.width,spec.height),spec.width,spec.height),0,0);
@@ -176,7 +203,7 @@
             const i=(y*spec.width+x)*4;if(!d.data[i+3]||neutralPixels[i+3]<100)continue;
             const torso=y>=j.NECK.y-1&&y<=hip.y+6&&MareMotion96.distanceToSegment({x,y},j.NECK,hip)<radius;
             const head=headPixels&&headPixels[i+3]>=128;
-            if(torso||head)d.data[i+3]=0;
+            if((torso||head)&&!ownership.hands[y*spec.width+x])d.data[i+3]=0;
           }
           cx.putImageData(d,0,0);
         }
@@ -210,6 +237,13 @@
       if(!hideHair){hairPass(()=>original('hair'));full('hair');}full('head');
       if(pieces.hands)for(const side of inFront)ctx.drawImage(pieces.hands[side],0,0);
       for(const side of inFront)if(foreground[side])ctx.drawImage(foreground[side],0,0);
+      // Bare native palms/forearms are independent of every garment. Restore
+      // their exact pixels before gloves, including static poses without strips.
+      const restored=new Uint8ClampedArray(torsoBodyPixels.length),skinRamp=api.skins[look.skin]?.ramp;
+      const bare=skinRamp?api.recolor(neutralPixels,api.materialMask(neutralPixels,'skin'),skinRamp):neutralPixels;
+      for(let p=0;p<ownership.hands.length;p++)if(ownership.hands[p])restored.set(bare.subarray(p*4,p*4+4),p*4);
+      ctx.drawImage(fromPixels(restored,spec.width,spec.height),0,0);
+      if(pieces.gloves)for(const side of behind)ctx.drawImage(pieces.gloves[side],0,0);
       if(pieces.gloves)for(const side of inFront)ctx.drawImage(pieces.gloves[side],0,0);
     }
     return {prepare,requiredFiles,draw,get cacheSize(){return textures.size;},get attachmentCacheSize(){return attachments.size;}};

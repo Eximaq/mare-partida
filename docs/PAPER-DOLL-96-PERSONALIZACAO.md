@@ -1,6 +1,16 @@
 # Personalização de 96 px — cobertura e encaixes
 
-## Torso, pele e perfis — revisão v8 de 30/10/2026
+Revisão ativa v9: máscaras anatômicas independentes por pose, pulsos e profundidade corrigidos, mangas curtas e mãos preservadas. O relato de bugs da v8 foi confirmado; seus números abaixo representam o histórico, não aprovação visual. Ver o contrato atualizado.
+
+## Encaixes e paletas — revisão v9 de 30/10/2026
+
+28 modelos, 12 IDs de equipamento existentes e 235 folhas prontas na Jade Dragon. Os dois peitorais agora são fechados, com mangas curtas, 32 folhas e 848 quadros, incluindo estáticos. As 16 folhas anatômicas representam 424 poses e pertencem ao corpo, independentemente do equipamento escolhido. A cor da pele nunca depende do tecido.
+
+Pulsos e profundidade foram corrigidos sobre os quadros nativos; roupas/capas não apagam mãos, luvas fechadas conservam os dedos e a cabeça não redesenha ombros sobre a camisa. As cores do tecido são limitadas à paleta explícita do modelo, removendo pele embutida e pontos rosados indevidos. Novos itens devem ser consolidados e auditados em todas as poses antes de aparecer no seletor.
+
+A fonte bruta do gerador é histórica; usar as folhas consolidadas e os moldes da revisão atual. Custo v9: 69,9 gerações (38 arte +31,9 medições). Salvar e consolidar são operações gratuitas. A biblioteca continua em avaliação artística.
+
+## Torso, pele e perfis — histórico da revisão v8 de 30/10/2026
 
 Torso reutiliza Casaco de Marinheiro (ID6) e Casaco da Bruma (ID7), slot `coat` existente. Dois modelos próprios para masculino/feminino, com 28 folhas e 832 quadros de movimento consolidados. Capacete oculta todo o cabelo; bandana preserva o penteado. Removida a pele clara embutida nos acessórios e criadas feições próprias de perfil, espelhadas para oeste. Roupa-base ajustada nas 416 poses para não deixar roupa íntima clara escapar nas laterais.
 

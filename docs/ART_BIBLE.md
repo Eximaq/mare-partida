@@ -108,3 +108,9 @@ Referências medidas nos assets existentes: altura opaca do Idle anterior para m
 ## Alubarna — export completo e escalas (29/10/2026)
 
 O proprietário escolheu103×82 células64 nos cinco destinos. Uma imagem6592×5248 e208 objetos nativos compartilhados preservam pixels, posição e profundidade. Escala aparente: Puppu110px < Merry Christmas120px < Valentine135px < Double Finger150px < Mr.1 170px. Hurt South mantém a política aprovada. Sem geração paga. [Proveniência e validação](ALUBARNA.md).
+
+### 30/10/2026 — Revisão v9 de peitorais e anatomia96
+
+Dois peitorais refeitos como camisas fechadas com mangas curtas; tecido separado de pele antes do encaixe. 16 folhas anatômicas fixas para 424 poses, 32 folhas de peitoral com poses estáticas e movimento. Pulsos medidos sobre os próprios frames, lados resolvidos por cotovelo/pose anterior e profundidade normalizada. Cabeça não pode redesenhar ombro sobre roupa; luva fechada conserva a silhueta nativa dos dedos. Capa mantida, sujeita à mesma prioridade das mãos. Referências históricas, escala, corpo e timing preservados. Custos: 38 gerações de reparo artístico + 31,9 de medição, total69,9. Contrato e limites em PAPER-DOLL-96-FIT-CONTRACT.md.
+
+A revisão cromática v9 limita os dois peitorais a paletas explícitas por material; pontos rosados e pele copiada do gerador não são aceitos. Os 34 exports conservaram seu alpha. A fonte anatômica continua igual para os dois tecidos, preservando encaixes ao trocar material.

@@ -234,6 +234,17 @@
         else for(const p of group)data.fill(0,p*4,p*4+4);
       }
     }
+    // A closed glove owns every native palm pixel, including a one-pixel finger
+    // separated by the generic component cleanup. Never synthesize a new hand.
+    if(slot==='gloves'&&design.fingerCoverage==='full'&&design.handOwnership){
+      for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+        const p=y*width+x,i=p*4;if(!design.handOwnership[p]||!body[i+3])continue;
+        const xx=x-padding,yy=y-padding,candidates=target.rig.list.map(b=>({b,d:Math.hypot(xx-b.b.x,yy-b.b.y),q:b.at(xx,yy)})).filter(a=>a.d<=6.5&&a.q.along>=a.b.length*.65).sort((a,b)=>a.d-b.d);
+        if(!candidates.length)continue;const to=out[candidates[0].b.side];if(to[i+3])continue;
+        const light=.2126*body[i]+.7152*body[i+1]+.0722*body[i+2],shade=Math.max(body[i],body[i+1],body[i+2])<65?0:light<160?2:3;
+        to.set([...ramp[shade],255],i);
+      }
+    }
     return out;
   }
 

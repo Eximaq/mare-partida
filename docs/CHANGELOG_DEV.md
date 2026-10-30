@@ -1,3 +1,13 @@
+# 30/10/2026 — Revisão global de roupas e anatomia96 (v9)
+
+- Branch feature/paper-doll-96px-rebuild, base f796b44. Reproduzidos os defeitos enviados pelo proprietário: roupa-base incompleta, peitoral lateral aberto, mãos/luvas apagadas e ombro da cabeça desenhado sobre tecido. A aprovação dos detectores v8 não significava ausência dessas falhas.
+- 318 medições nativas, lados de pulso resolvidos por cotovelos/pose anterior, rejeição de membros colapsados e profundidade dos braços normalizada; oeste espelhado.16 folhas anatômicas independentes dos itens para 424 poses.64 PNGs de corpo, pivôs e timing preservados.
+- Dois peitorais refeitos com mangas curtas e peito fechado:32 folhas,848 quadros; roupa-base/foreground consolidados nas 416 poses móveis. Mãos têm prioridade sobre tecido/capa, luvas fechadas preservam dedos, cabeça limitada à gola. Capa mantida.
+- Paletas explícitas de tecido removem pele embutida e pontos rosados.34 exports de material limpos sem mudança no alpha. Atlases anatômicos grandes reorganizados em 320 células idênticas, sem redimensionamento.
+- 235 folhas prontas e24 fontes registradas na Jade Dragon;89 folhas distintas salvas (69 atualizadas,20 novas),123 operações gratuitas, incluindo ajuste cromático. Custo confirmado 69,9 gerações:38 de arte e 31,9 de medição. IDs de itens/galeria, atributos e saves preservados.
+- Validação:158 testes Node autônomos; sete testes96 repetidos, quatro testes Python e build Pages aprovados. 44.840 combinações de aparência e 6.360 conjuntos específicos de mãos/ombros/tecido/capa passaram. Detector de encaixe: 224 matrizes, 424 poses e 112 estados, sem violações nos critérios medidos. Espelhamento: 3.286 composições, 842 quadros-fonte e 64 materiais sem divergências. Conferência final das paletas e antebraços registrada na entrega.
+- Contrato, limites e rotinas reutilizáveis em PAPER-DOLL-96-FIT-CONTRACT.md. A bancada permanece isolada e depende de aprovação artística; sem ativação em produção ou merge automático.
+
 # 30/10/2026 — Torso, pele e perfis96 (v8)
 
 - Branch feature/paper-doll-96px-rebuild, base dd2cf8f; feedback posterior à v7 reproduzido com peles escuras. Pele clara removida das matrizes de bandana/capacete, cabeça com sombras próprias recoloridas e feições laterais compactas, oeste espelhado. Capacete19 oculta o cabelo inteiro e mantém a escolha para sua retirada.

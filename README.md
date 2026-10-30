@@ -2,7 +2,7 @@ Portal de pré-lançamento **Kaizoku Idle**: [página](portal/index.html) e [pub
 
 # Desenvolvimento compartilhado no GitHub
 
-Bancada96 v8: Torso com os dois casacos existentes, perfis faciais próprios, pele sem manchas de acessórios e capacete sem cabelo aparente. [Contrato e oito moldes reutilizáveis](docs/PAPER-DOLL-96-FIT-CONTRACT.md); 28 folhas de peitorais e 832 quadros consolidados. A integração no personagem publicado continua pendente.
+Bancada96 v9: peitorais fechados com mangas curtas, máscaras anatômicas fixas para 424 poses e correções de mãos, ombros e roupa-base. [Contrato e moldes reutilizáveis](docs/PAPER-DOLL-96-FIT-CONTRACT.md); 32 folhas de peitoral (848 quadros), 16 folhas anatômicas e paletas de tecido verificadas. Biblioteca isolada; integração no personagem publicado depende de aprovação visual.
 
 **Personagens de 96 px em revisão:** [bases com corpo, rosto, cabelo e roupas independentes](docs/PAPER-DOLL-96-V3.md), Idle, caminhada e seis ataques nas quatro direções dos dois corpos. [Abrir a bancada](tools/paper-doll-96-v3/). [Cabelos, rostos, peles e equipamentos](docs/PAPER-DOLL-96-PERSONALIZACAO.md). Avaliação artística e integração no jogo ainda pendentes.
 

@@ -1653,11 +1653,13 @@
           "east": "assets/custom-item-6-feminino-east.png"
         }
       },
-      "fit": "native-torso-surface-v8",
+      "fit": "native-anatomy-v9",
       "canonicalSource": {
-        "jobId": "e7ffed32-b8fc-41c0-bdb3-eadcba599708",
-        "assetId": "5a60ea25-0200-5ae4-8af6-7626d7ee2dfc",
-        "revision": "torso-profile-v8"
+        "jobId": "f43734da-3530-40af-850c-ce9c8f233af6",
+        "assetId": "8af1346b-3ec6-51c9-aade-773ec2d0bdd1",
+        "revision": "native-ownership-v9",
+        "method": "masked short-sleeve shirt; native flesh removed before extraction",
+        "postProcess": "explicit indexed fabric palette, no skin in material, fixed anatomy"
       },
       "animations": {
         "masculino": {
@@ -1771,8 +1773,22 @@
               "west",
               "east"
             ],
-            "sharedWith": "attack-firearm",
-            "galleryId": "20d3ae74-a3f1-47a7-aa6c-e5efb15c589e"
+            "galleryId": "20d3ae74-a3f1-47a7-aa6c-e5efb15c589e",
+            "sharedWith": "attack-firearm"
+          },
+          "static": {
+            "file": "assets/torso-item-6-masculino-static.png",
+            "cell": 128,
+            "columns": 1,
+            "rows": 4,
+            "framesPerDirection": 1,
+            "directions": [
+              "south",
+              "north",
+              "west",
+              "east"
+            ],
+            "galleryId": "b7aba40e-012d-40af-b115-785afbab8d13"
           }
         },
         "feminino": {
@@ -1886,12 +1902,88 @@
               "west",
               "east"
             ],
-            "sharedWith": "attack-firearm",
-            "galleryId": "37c2ce6a-be98-4092-b031-7038ec597e52"
+            "galleryId": "37c2ce6a-be98-4092-b031-7038ec597e52",
+            "sharedWith": "attack-firearm"
+          },
+          "static": {
+            "file": "assets/torso-item-6-feminino-static.png",
+            "cell": 128,
+            "columns": 1,
+            "rows": 4,
+            "framesPerDirection": 1,
+            "directions": [
+              "south",
+              "north",
+              "west",
+              "east"
+            ],
+            "galleryId": "e6223ec8-753a-4e74-b0de-bcdceb8021d1"
           }
         }
       },
-      "galleryId": "66f0cc7f-15f3-4983-9f3b-587c6551dbe7"
+      "galleryId": "66f0cc7f-15f3-4983-9f3b-587c6551dbe7",
+      "materialPalette": [
+        [
+          8,
+          12,
+          20
+        ],
+        [
+          13,
+          19,
+          30
+        ],
+        [
+          25,
+          35,
+          52
+        ],
+        [
+          38,
+          52,
+          75
+        ],
+        [
+          60,
+          78,
+          109
+        ],
+        [
+          94,
+          115,
+          144
+        ],
+        [
+          119,
+          120,
+          110
+        ],
+        [
+          193,
+          192,
+          173
+        ],
+        [
+          237,
+          234,
+          213
+        ],
+        [
+          56,
+          70,
+          87
+        ],
+        [
+          103,
+          121,
+          138
+        ],
+        [
+          174,
+          192,
+          205
+        ]
+      ]
     },
     {
       "id": "item-7",
@@ -1915,11 +2007,13 @@
           "east": "assets/custom-item-7-feminino-east.png"
         }
       },
-      "fit": "native-torso-surface-v8",
+      "fit": "native-anatomy-v9",
       "canonicalSource": {
-        "jobId": "90ba790b-ea42-42dd-b7a9-a3ce867a1e9c",
-        "assetId": "55a05a70-aa77-58d7-bb8d-1a57b6c5fd62",
-        "revision": "torso-profile-v8"
+        "jobId": "08f0b1b5-9156-45cf-ae2e-a4f5e3142738",
+        "assetId": "a6b00916-4026-50c4-9260-2efab61496c0",
+        "revision": "native-ownership-v9",
+        "method": "masked short-sleeve shirt; native flesh removed before extraction",
+        "postProcess": "explicit indexed fabric palette, no skin in material, fixed anatomy"
       },
       "animations": {
         "masculino": {
@@ -2033,8 +2127,22 @@
               "west",
               "east"
             ],
-            "sharedWith": "attack-firearm",
-            "galleryId": "fcc88f95-3f11-4f40-9b74-6184070caec2"
+            "galleryId": "fcc88f95-3f11-4f40-9b74-6184070caec2",
+            "sharedWith": "attack-firearm"
+          },
+          "static": {
+            "file": "assets/torso-item-7-masculino-static.png",
+            "cell": 128,
+            "columns": 1,
+            "rows": 4,
+            "framesPerDirection": 1,
+            "directions": [
+              "south",
+              "north",
+              "west",
+              "east"
+            ],
+            "galleryId": "101b9be9-54d8-4e11-bd6f-0c80e6042dc5"
           }
         },
         "feminino": {
@@ -2148,12 +2256,88 @@
               "west",
               "east"
             ],
-            "sharedWith": "attack-firearm",
-            "galleryId": "64f72c7d-235c-4ef2-88dc-a10982bf9005"
+            "galleryId": "64f72c7d-235c-4ef2-88dc-a10982bf9005",
+            "sharedWith": "attack-firearm"
+          },
+          "static": {
+            "file": "assets/torso-item-7-feminino-static.png",
+            "cell": 128,
+            "columns": 1,
+            "rows": 4,
+            "framesPerDirection": 1,
+            "directions": [
+              "south",
+              "north",
+              "west",
+              "east"
+            ],
+            "galleryId": "e30514cf-5f1d-4a8a-bb07-d8ac59e28b2c"
           }
         }
       },
-      "galleryId": "1bdd6d6b-a55f-4bd2-840b-489949b10acd"
+      "galleryId": "1bdd6d6b-a55f-4bd2-840b-489949b10acd",
+      "materialPalette": [
+        [
+          8,
+          14,
+          17
+        ],
+        [
+          12,
+          18,
+          24
+        ],
+        [
+          26,
+          37,
+          42
+        ],
+        [
+          42,
+          58,
+          61
+        ],
+        [
+          66,
+          82,
+          83
+        ],
+        [
+          101,
+          117,
+          112
+        ],
+        [
+          76,
+          85,
+          80
+        ],
+        [
+          133,
+          144,
+          133
+        ],
+        [
+          196,
+          205,
+          187
+        ],
+        [
+          50,
+          66,
+          71
+        ],
+        [
+          101,
+          124,
+          130
+        ],
+        [
+          167,
+          188,
+          193
+        ]
+      ]
     }
   ],
   "palettes": {
@@ -2431,7 +2615,7 @@
         "created": true
       }
     ],
-    "totalSheets": 215,
+    "totalSheets": 235,
     "revisedExistingSheets": 40,
     "nativeFitUpdates": [
       {
@@ -3313,7 +3497,7 @@
         "linked": true
       }
     ],
-    "nativeFitRevision": "torso-profile-v8-3",
+    "nativeFitRevision": "native-ownership-v9-4",
     "canonicalUpdates": [
       {
         "key": "masculino-static-body",
@@ -4176,203 +4360,231 @@
         "hash": "0021908cd37dff724a004ba62d5e91c3cb6dc1748e5ec4bf65194b783c966f87"
       }
     ],
-    "canonicalSourceSheets": 22,
+    "canonicalSourceSheets": 24,
     "torsoSheets": [
       {
         "key": "item-6-masculino-idle-torso",
         "id": "528dc245-3ea0-4053-ade6-2dfe6f49ce85",
+        "styleId": "item-6",
         "body": "masculino",
-        "action": "idle",
-        "styleId": "item-6"
+        "action": "idle"
       },
       {
         "key": "item-6-masculino-walk-torso",
         "id": "94e3aba0-a289-470f-ac3b-970143a8cbdd",
+        "styleId": "item-6",
         "body": "masculino",
-        "action": "walk",
-        "styleId": "item-6"
+        "action": "walk"
       },
       {
         "key": "item-6-masculino-attack-sword-torso",
         "id": "a3b9260b-1e7e-4955-b4eb-df4b8e402c9b",
+        "styleId": "item-6",
         "body": "masculino",
-        "action": "attack-sword",
-        "styleId": "item-6"
+        "action": "attack-sword"
       },
       {
         "key": "item-6-masculino-attack-unarmed-torso",
         "id": "b0407c7f-12c6-458d-8b14-8563ef7c4374",
+        "styleId": "item-6",
         "body": "masculino",
-        "action": "attack-unarmed",
-        "styleId": "item-6"
+        "action": "attack-unarmed"
       },
       {
         "key": "item-6-masculino-attack-firearm-torso",
         "id": "20d3ae74-a3f1-47a7-aa6c-e5efb15c589e",
+        "styleId": "item-6",
         "body": "masculino",
-        "action": "attack-firearm",
-        "styleId": "item-6"
+        "action": "attack-firearm"
       },
       {
         "key": "item-6-masculino-attack-daggers-torso",
         "id": "3ce0d2a3-76c9-4c88-a4f0-e55347b525a2",
+        "styleId": "item-6",
         "body": "masculino",
-        "action": "attack-daggers",
-        "styleId": "item-6"
+        "action": "attack-daggers"
       },
       {
         "key": "item-6-masculino-attack-focus-torso",
         "id": "17eb3eae-6b31-462d-a3d9-f625e106a370",
+        "styleId": "item-6",
         "body": "masculino",
-        "action": "attack-focus",
-        "styleId": "item-6"
+        "action": "attack-focus"
+      },
+      {
+        "key": "item-6-masculino-static-torso",
+        "id": "b7aba40e-012d-40af-b115-785afbab8d13",
+        "styleId": "item-6",
+        "body": "masculino",
+        "action": "static"
       },
       {
         "key": "item-6-feminino-idle-torso",
         "id": "22268386-8189-4e07-a73d-da43f02d1f6e",
+        "styleId": "item-6",
         "body": "feminino",
-        "action": "idle",
-        "styleId": "item-6"
+        "action": "idle"
       },
       {
         "key": "item-6-feminino-walk-torso",
         "id": "b873e803-52be-4bda-aecd-216e24725d66",
+        "styleId": "item-6",
         "body": "feminino",
-        "action": "walk",
-        "styleId": "item-6"
+        "action": "walk"
       },
       {
         "key": "item-6-feminino-attack-sword-torso",
         "id": "e854781f-ccc6-4850-9bf5-b0baf84e77e7",
+        "styleId": "item-6",
         "body": "feminino",
-        "action": "attack-sword",
-        "styleId": "item-6"
+        "action": "attack-sword"
       },
       {
         "key": "item-6-feminino-attack-unarmed-torso",
         "id": "b096e3b2-ccee-40c0-8f98-9a9ebd80e095",
+        "styleId": "item-6",
         "body": "feminino",
-        "action": "attack-unarmed",
-        "styleId": "item-6"
+        "action": "attack-unarmed"
       },
       {
         "key": "item-6-feminino-attack-firearm-torso",
         "id": "37c2ce6a-be98-4092-b031-7038ec597e52",
+        "styleId": "item-6",
         "body": "feminino",
-        "action": "attack-firearm",
-        "styleId": "item-6"
+        "action": "attack-firearm"
       },
       {
         "key": "item-6-feminino-attack-daggers-torso",
         "id": "5ce25568-1389-431e-8b69-2b0dd0784cde",
+        "styleId": "item-6",
         "body": "feminino",
-        "action": "attack-daggers",
-        "styleId": "item-6"
+        "action": "attack-daggers"
       },
       {
         "key": "item-6-feminino-attack-focus-torso",
         "id": "48c79cff-8d49-4fcf-8f76-4cb9b49de5a5",
+        "styleId": "item-6",
         "body": "feminino",
-        "action": "attack-focus",
-        "styleId": "item-6"
+        "action": "attack-focus"
+      },
+      {
+        "key": "item-6-feminino-static-torso",
+        "id": "e6223ec8-753a-4e74-b0de-bcdceb8021d1",
+        "styleId": "item-6",
+        "body": "feminino",
+        "action": "static"
       },
       {
         "key": "item-7-masculino-idle-torso",
         "id": "98c193a9-db32-4aa5-89f4-c55c236f3c43",
+        "styleId": "item-7",
         "body": "masculino",
-        "action": "idle",
-        "styleId": "item-7"
+        "action": "idle"
       },
       {
         "key": "item-7-masculino-walk-torso",
         "id": "cd65f494-35e5-403d-a6c8-9369516085bb",
+        "styleId": "item-7",
         "body": "masculino",
-        "action": "walk",
-        "styleId": "item-7"
+        "action": "walk"
       },
       {
         "key": "item-7-masculino-attack-sword-torso",
         "id": "f6e49a0b-f13c-4c1c-b9c1-9a2e749e1a29",
+        "styleId": "item-7",
         "body": "masculino",
-        "action": "attack-sword",
-        "styleId": "item-7"
+        "action": "attack-sword"
       },
       {
         "key": "item-7-masculino-attack-unarmed-torso",
         "id": "1c8ef53e-6cb7-4504-ae4f-d56a6e96efa9",
+        "styleId": "item-7",
         "body": "masculino",
-        "action": "attack-unarmed",
-        "styleId": "item-7"
+        "action": "attack-unarmed"
       },
       {
         "key": "item-7-masculino-attack-firearm-torso",
         "id": "fcc88f95-3f11-4f40-9b74-6184070caec2",
+        "styleId": "item-7",
         "body": "masculino",
-        "action": "attack-firearm",
-        "styleId": "item-7"
+        "action": "attack-firearm"
       },
       {
         "key": "item-7-masculino-attack-daggers-torso",
         "id": "6c74ab56-0941-4d56-8c92-ab7fc178ca66",
+        "styleId": "item-7",
         "body": "masculino",
-        "action": "attack-daggers",
-        "styleId": "item-7"
+        "action": "attack-daggers"
       },
       {
         "key": "item-7-masculino-attack-focus-torso",
         "id": "7f90fc60-27e2-4165-82e6-22a612ec4136",
+        "styleId": "item-7",
         "body": "masculino",
-        "action": "attack-focus",
-        "styleId": "item-7"
+        "action": "attack-focus"
+      },
+      {
+        "key": "item-7-masculino-static-torso",
+        "id": "101b9be9-54d8-4e11-bd6f-0c80e6042dc5",
+        "styleId": "item-7",
+        "body": "masculino",
+        "action": "static"
       },
       {
         "key": "item-7-feminino-idle-torso",
         "id": "7a2320fe-50ef-43b9-bcce-d6553563e248",
+        "styleId": "item-7",
         "body": "feminino",
-        "action": "idle",
-        "styleId": "item-7"
+        "action": "idle"
       },
       {
         "key": "item-7-feminino-walk-torso",
         "id": "f92f085b-7f3f-4667-9bca-f7626aff7ee4",
+        "styleId": "item-7",
         "body": "feminino",
-        "action": "walk",
-        "styleId": "item-7"
+        "action": "walk"
       },
       {
         "key": "item-7-feminino-attack-sword-torso",
         "id": "2ea5e7fa-be65-4aaa-b831-c2b642da1c16",
+        "styleId": "item-7",
         "body": "feminino",
-        "action": "attack-sword",
-        "styleId": "item-7"
+        "action": "attack-sword"
       },
       {
         "key": "item-7-feminino-attack-unarmed-torso",
         "id": "6184198c-2209-4df6-bb57-f4a6bf2a62e2",
+        "styleId": "item-7",
         "body": "feminino",
-        "action": "attack-unarmed",
-        "styleId": "item-7"
+        "action": "attack-unarmed"
       },
       {
         "key": "item-7-feminino-attack-firearm-torso",
         "id": "64f72c7d-235c-4ef2-88dc-a10982bf9005",
+        "styleId": "item-7",
         "body": "feminino",
-        "action": "attack-firearm",
-        "styleId": "item-7"
+        "action": "attack-firearm"
       },
       {
         "key": "item-7-feminino-attack-daggers-torso",
         "id": "30341ea0-8f38-474c-86a5-68d19d5de4b4",
+        "styleId": "item-7",
         "body": "feminino",
-        "action": "attack-daggers",
-        "styleId": "item-7"
+        "action": "attack-daggers"
       },
       {
         "key": "item-7-feminino-attack-focus-torso",
         "id": "90fa8989-6ee7-4f04-9e89-ec073c72d0d8",
+        "styleId": "item-7",
         "body": "feminino",
-        "action": "attack-focus",
-        "styleId": "item-7"
+        "action": "attack-focus"
+      },
+      {
+        "key": "item-7-feminino-static-torso",
+        "id": "e30514cf-5f1d-4a8a-bb07-d8ac59e28b2c",
+        "styleId": "item-7",
+        "body": "feminino",
+        "action": "static"
       }
     ],
     "appearanceV8Updates": [
@@ -4760,7 +4972,646 @@
         "hash": "15d75e74debb1194ef1ce60a78d48a02238391be9c22043f1413058aee599e44",
         "created": true
       }
-    ]
+    ],
+    "appearanceV9Updates": [
+      {
+        "key": "masculino-walk-south-pants",
+        "id": "f7da7900-ed8f-424a-a5d1-6b6a5a66f56a",
+        "hash": "7f9f3dd348bfd7da7a61d76c9096880b8605a0ff0db9739133ed38cc02a2c663",
+        "created": false
+      },
+      {
+        "key": "feminino-walk-south-pants",
+        "id": "4ac464fe-5932-4b61-a180-f711430fde8a",
+        "hash": "1c2fa8006107ca37e601a287a5d92bb53987ac3d8328194d2940cd853d2ba588",
+        "created": false
+      },
+      {
+        "key": "feminino-walk-south-top",
+        "id": "ff5aa0a5-6dc9-49af-95be-9523850c67ca",
+        "hash": "eb13528282a570ba31ab4dd38d074e4c4af6d6aa21f3b6d0c7b7d8a9d8467085",
+        "created": false
+      },
+      {
+        "key": "masculino-attack-sword-pants",
+        "id": "9b4b0863-d32f-490f-95c1-eb3083600e74",
+        "hash": "4ad1a848d40db5b2ab3ac2f04da4a4a4f05dd114edea42f11e06b99cf5650700",
+        "created": false
+      },
+      {
+        "key": "masculino-attack-sword-foreground",
+        "id": "e2ab7998-e5d5-40ac-a25f-aa697da2d728",
+        "hash": "e4c4559140eb2cd9edafafcd8c4c57ad825f2b6363ea501cb53db7ea5a5a9f38",
+        "created": false
+      },
+      {
+        "key": "masculino-attack-unarmed-pants",
+        "id": "f22eb7a4-fc70-43ec-bd09-b6d97de9b0c8",
+        "hash": "9cad31d940bdeb06c83d6effaf9e1788bf84ac9f48e5e30a0354e141577acc55",
+        "created": false
+      },
+      {
+        "key": "masculino-attack-unarmed-foreground",
+        "id": "660a4b1b-dd22-4cae-81c0-9894ad1cad2c",
+        "hash": "c20fba45b0da022d7aaa4567a84734655dea3089591330f4fb252b2f3743e1fe",
+        "created": false
+      },
+      {
+        "key": "masculino-attack-firearm-pants",
+        "id": "792ac938-561c-4fd7-bb73-37c1b2111d8d",
+        "hash": "241b28a3efb86f0845370b266191cc8737217c1537bcb58d5f109ff988fb41bf",
+        "created": false
+      },
+      {
+        "key": "masculino-attack-firearm-foreground",
+        "id": "9be600c5-1be4-4448-bad3-600f4bd901ff",
+        "hash": "b082fd22206bae92c37820eb9cab7aee141a6c81d53dca8b015a9ebe1df815a2",
+        "created": false
+      },
+      {
+        "key": "masculino-attack-daggers-pants",
+        "id": "55ea2568-27f7-41a5-b58e-d53e3bfe0862",
+        "hash": "27050974067d8196a457c7b84db2d18d53308db612240eedb186141b1805375e",
+        "created": false
+      },
+      {
+        "key": "masculino-attack-daggers-foreground",
+        "id": "6ab6f974-92a6-4b38-b6c6-c83a124676f7",
+        "hash": "1a671381190e97a6a08c283f68ec8f31efc5ba360f3c12b3428b429ad35b2dc5",
+        "created": false
+      },
+      {
+        "key": "masculino-attack-focus-pants",
+        "id": "59dadb46-e09f-455f-a969-1e6963078d96",
+        "hash": "9df74dcc3b073bcad4e61f6a8a64fa115b2070c030fc31b7c07abe36536b9d58",
+        "created": false
+      },
+      {
+        "key": "masculino-attack-focus-foreground",
+        "id": "46f688b9-fb0c-42af-bbeb-ce3cea01a8ad",
+        "hash": "f484125540a3dab0d3d520bdfd6df70b6fb49fb34819cf4aa4bb53f1d14f92e0",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-sword-pants",
+        "id": "359633d3-748c-4fb9-8401-5b81156b7c62",
+        "hash": "b8cf0b07634a8ed03c7c93daa5140bc816e35ec581c4041409f4b86a20340390",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-sword-top",
+        "id": "d94938d3-c05f-47f4-b4ee-fce472f7089f",
+        "hash": "d6cf0c3befaccee3e88addc27638aa2d97978c95c5c20462d0f4c05055b04c7c",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-sword-foreground",
+        "id": "625cb22b-83ed-4d8a-9d94-339ced29d05d",
+        "hash": "1a1e1e6e2767774f5628243bb4ad93976a1c5d69ba1d904456c87b010540c9b2",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-unarmed-pants",
+        "id": "bed19736-10c4-4f04-b76a-a055d716d62b",
+        "hash": "76ff9912622d74be454a40661cd91d0ac3e06e938a128768f2d2fe06b4fced3c",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-unarmed-top",
+        "id": "c9488ea6-d1d8-4722-aebb-b1970d8931c7",
+        "hash": "313f3672188021451e58a3d7610d1af2ed1b0ad47a31d1bd2451dcf3b330dcf9",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-unarmed-foreground",
+        "id": "fb9f873f-307e-4f5c-a2f4-57b516a3d205",
+        "hash": "89d71ce53e562f766ea5f75b7aed8549d6cb042d3ef039c1c9878f69091f95d5",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-firearm-pants",
+        "id": "d00a9e33-bbc5-4499-a233-8ef5f6d3355e",
+        "hash": "7cbd1827fc2f189a33ec65aed2e9d163dfad019e0b6be5a7dd7836a6e8fef57e",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-firearm-top",
+        "id": "9168c968-d945-45e8-8500-e2acffd5aa15",
+        "hash": "06c287a14604e9c9548e1a9299060c66695315fb4530d9e06fcb1291b01ca3d1",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-firearm-foreground",
+        "id": "78c335a3-4329-4333-9f2a-06664cc08e6e",
+        "hash": "6cad159d6302347d6854a78ac1a6d62d599e84f9828818336cc9bf5415aed62f",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-daggers-pants",
+        "id": "8c4dd4e4-f8d8-4edb-90ae-e81f7bc4f4d8",
+        "hash": "0428717164f5b3d64981521d58126634eb5a7c2b8a0a86b212e3bfff1a366b60",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-daggers-top",
+        "id": "555cf0a4-c2f3-4519-9236-56fc16d764ad",
+        "hash": "2498396523e579ecc6faa932204435a85408989b46643c628b07a2f89ad71575",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-daggers-foreground",
+        "id": "59d68096-7631-44ef-8c66-0d866907ace4",
+        "hash": "452df7c0161b5b71556eb2b40e0cba06374c720face909de9f64a929bed13c02",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-focus-pants",
+        "id": "f348eaca-470b-4aaa-9e51-094190f05cc0",
+        "hash": "dc3f2e4b09134703ec9769f90a7726ac882f4f591f909fdb98e9d0a61b73e87c",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-focus-top",
+        "id": "3e07e4b4-17a2-4c0e-a9cd-0d3555086ae6",
+        "hash": "d827e0ca65cc3d799d1073a6bf12c37a9ba1d11e72f5b92e6a3a14519ab92a6c",
+        "created": false
+      },
+      {
+        "key": "feminino-attack-focus-foreground",
+        "id": "c59b8b18-55c5-4c83-ad07-f98dce18ed73",
+        "hash": "6d5a9a82f1eac21d16c8615cb45756e93944e7e2f947196ceea180d23e966101",
+        "created": false
+      },
+      {
+        "key": "masculino-idle-pants",
+        "id": "630b49a9-760a-4805-a05c-ae7d9e209ccb",
+        "hash": "9281fae160902e3734fb7c868d3058328139a12f0822f9919b9ef4344140784c",
+        "created": false
+      },
+      {
+        "key": "masculino-idle-foreground",
+        "id": "2249ca24-c087-416e-a135-144686f03d88",
+        "hash": "0e409d87b64f5322f5ab99ec1bdffb3d513211e837f284d7c10cd9ecd944851a",
+        "created": false
+      },
+      {
+        "key": "masculino-walk-pants",
+        "id": "b07783a6-40c6-4e30-8621-b15af64cdd98",
+        "hash": "22c9b0657390916890708b355354f176e380fa950e4b8602de4acb441a21e409",
+        "created": false
+      },
+      {
+        "key": "masculino-walk-foreground",
+        "id": "d2416a53-3322-47f7-9226-de79e7191dfe",
+        "hash": "2ec35a0805534558c8ab9f09345fac7e3181e44b65797dfe964b18e3418c251e",
+        "created": false
+      },
+      {
+        "key": "feminino-idle-pants",
+        "id": "3cab5d1e-51c8-4378-b69b-24ee2be368de",
+        "hash": "fe8f2f0a3bec070ff967128bf513c2aa9b295c9a7a6e24b6eebc0c16c028a013",
+        "created": false
+      },
+      {
+        "key": "feminino-idle-foreground",
+        "id": "28a1a9a9-7ada-4667-bc87-92074c288249",
+        "hash": "d0e44fdbd26ce9cccbbb1b4083292d0e0a01ba5cfa33fa35929bf0ea6b690437",
+        "created": false
+      },
+      {
+        "key": "feminino-walk-pants",
+        "id": "72ba21cb-d086-4c1a-ace2-bd4cc5f45a1d",
+        "hash": "dfb59f5fc67abebc97f698a88be5f3cfe6e1ec7ae35370ca806fdeb17db87f26",
+        "created": false
+      },
+      {
+        "key": "feminino-walk-foreground",
+        "id": "02606a7d-6bca-4f27-a098-c668f8d1367f",
+        "hash": "b4e55f75905857d0f6c65585236be04dde5ba975046f2c3b74dcd1574bbe98c3",
+        "created": false
+      },
+      {
+        "key": "feminino-idle-top",
+        "id": "75c16639-f06e-4bd4-89c9-8ba0826cfb05",
+        "hash": "69d6495598a94a651c01a4b428478abd4bd184c58897953818abec462561d7e2",
+        "created": false
+      },
+      {
+        "key": "feminino-walk-top",
+        "id": "70fb7a98-6e14-483d-a994-601e73317164",
+        "hash": "62a9d45cc26088756e623231a05d2a172c913855f18823c4dbca98c48793c4a8",
+        "created": false
+      },
+      {
+        "key": "item-6",
+        "id": "66f0cc7f-15f3-4983-9f3b-587c6551dbe7",
+        "hash": "870213d8b181c0e5f9aaa91f90520689e532fd0849f981a7961eccef59262e81",
+        "created": false
+      },
+      {
+        "key": "item-6-masculino-idle-torso",
+        "id": "528dc245-3ea0-4053-ade6-2dfe6f49ce85",
+        "hash": "1828d96e39ac82351c1e89fda685e2529ed422488c1af271c5c3d632096d4bba",
+        "created": false
+      },
+      {
+        "key": "item-6-masculino-walk-torso",
+        "id": "94e3aba0-a289-470f-ac3b-970143a8cbdd",
+        "hash": "a8206307480e185aa34147d13e7619388991b67f750609d96c1f75c7d75eede8",
+        "created": false
+      },
+      {
+        "key": "item-6-masculino-attack-sword-torso",
+        "id": "a3b9260b-1e7e-4955-b4eb-df4b8e402c9b",
+        "hash": "48a7b5e6ddf61c0ce23bfb830935d91e6b092a771d551b4f1562bb74c0edfc78",
+        "created": false
+      },
+      {
+        "key": "item-6-masculino-attack-unarmed-torso",
+        "id": "b0407c7f-12c6-458d-8b14-8563ef7c4374",
+        "hash": "08693033ef7b8861457c572a047ae704b40c51a7e55b09ce26340c72dab1b815",
+        "created": false
+      },
+      {
+        "key": "item-6-masculino-attack-firearm-torso",
+        "id": "20d3ae74-a3f1-47a7-aa6c-e5efb15c589e",
+        "hash": "f30663f7f24084b8c31a169661e05985b45d6ac96945e16b14fe2c5d1db0fc7b",
+        "created": false
+      },
+      {
+        "key": "item-6-masculino-attack-daggers-torso",
+        "id": "3ce0d2a3-76c9-4c88-a4f0-e55347b525a2",
+        "hash": "c03dc1ff9ffda432a0e1e1880c1cd627cf4b53b19e702505aed832c5e5d9d748",
+        "created": false
+      },
+      {
+        "key": "item-6-masculino-attack-focus-torso",
+        "id": "17eb3eae-6b31-462d-a3d9-f625e106a370",
+        "hash": "c566cada2aaea8a280f237c941c3b7aa96f2fe2f19a6a43393728cd6d3d532d0",
+        "created": false
+      },
+      {
+        "key": "item-6-feminino-idle-torso",
+        "id": "22268386-8189-4e07-a73d-da43f02d1f6e",
+        "hash": "60c44c0f1f9f93c05a3a20122800c727d3afa01247af7ea7b97ab2ce0ddce82e",
+        "created": false
+      },
+      {
+        "key": "item-6-feminino-walk-torso",
+        "id": "b873e803-52be-4bda-aecd-216e24725d66",
+        "hash": "d0c165cb30f495bb1c596b26fbfc80fb4fc8c31b1c0c1b3a455794804e2ae544",
+        "created": false
+      },
+      {
+        "key": "item-6-feminino-attack-sword-torso",
+        "id": "e854781f-ccc6-4850-9bf5-b0baf84e77e7",
+        "hash": "ff8c63dcd0686e6f12aa988c0d25f2d9609970d4d14fc3f21ba6c26e8f9bcc77",
+        "created": false
+      },
+      {
+        "key": "item-6-feminino-attack-unarmed-torso",
+        "id": "b096e3b2-ccee-40c0-8f98-9a9ebd80e095",
+        "hash": "e8f6ee21e0a11bfcd1e14ea92f969dac7de838cd716ec00be51e8c243328544c",
+        "created": false
+      },
+      {
+        "key": "item-6-feminino-attack-firearm-torso",
+        "id": "37c2ce6a-be98-4092-b031-7038ec597e52",
+        "hash": "92847e74e7b452e20558aeb1152307c61a577aa2249f380dd3e8effc3b7d5bcc",
+        "created": false
+      },
+      {
+        "key": "item-6-feminino-attack-daggers-torso",
+        "id": "5ce25568-1389-431e-8b69-2b0dd0784cde",
+        "hash": "718d3359265874fcf7beae9805253afcd76c32971ee7314bc72d516de2c4189f",
+        "created": false
+      },
+      {
+        "key": "item-6-feminino-attack-focus-torso",
+        "id": "48c79cff-8d49-4fcf-8f76-4cb9b49de5a5",
+        "hash": "a1136146e4a912c22e3d55dd23822c9495691758b1be7965de4506234266341f",
+        "created": false
+      },
+      {
+        "key": "item-7",
+        "id": "1bdd6d6b-a55f-4bd2-840b-489949b10acd",
+        "hash": "518b4d29407b68fde77b79312106a9b48ab762cfecbaad4a6761eb7d4e2d30e1",
+        "created": false
+      },
+      {
+        "key": "item-7-masculino-idle-torso",
+        "id": "98c193a9-db32-4aa5-89f4-c55c236f3c43",
+        "hash": "3db91d8af2093bafda03f878a8a61907eaa729c2591de819f83d62423f763af2",
+        "created": false
+      },
+      {
+        "key": "item-7-masculino-walk-torso",
+        "id": "cd65f494-35e5-403d-a6c8-9369516085bb",
+        "hash": "7a66e10db927b7b6d72f68cb044a47f9624c9a3bb314b8f1e536ff29b14094c0",
+        "created": false
+      },
+      {
+        "key": "item-7-masculino-attack-sword-torso",
+        "id": "f6e49a0b-f13c-4c1c-b9c1-9a2e749e1a29",
+        "hash": "259b4fe2b8e61581df6a9db096f2b9343382475d8626415043f9ad36b2d89274",
+        "created": false
+      },
+      {
+        "key": "item-7-masculino-attack-unarmed-torso",
+        "id": "1c8ef53e-6cb7-4504-ae4f-d56a6e96efa9",
+        "hash": "441426553e261bb41c4ae5fa71c2eabc1583d93a00ab88694733f2a4d982ba7f",
+        "created": false
+      },
+      {
+        "key": "item-7-masculino-attack-firearm-torso",
+        "id": "fcc88f95-3f11-4f40-9b74-6184070caec2",
+        "hash": "f5c2f865d956cbf9a76ad32a013e34d446d21408327aebcdb41e9c7f89130a3d",
+        "created": false
+      },
+      {
+        "key": "item-7-masculino-attack-daggers-torso",
+        "id": "6c74ab56-0941-4d56-8c92-ab7fc178ca66",
+        "hash": "6939b1f88ce450beb7d27abe64e5ac539ea0d074e001492652693e26f02a34ab",
+        "created": false
+      },
+      {
+        "key": "item-7-masculino-attack-focus-torso",
+        "id": "7f90fc60-27e2-4165-82e6-22a612ec4136",
+        "hash": "be269011b46fd39d1648b5f1f6302ed0cbf02526d225ac07fd06aac45b18cc5b",
+        "created": false
+      },
+      {
+        "key": "item-7-feminino-idle-torso",
+        "id": "7a2320fe-50ef-43b9-bcce-d6553563e248",
+        "hash": "32495fac470f0ea5b8eb691a4daaddfc09c2330a483d63fc875bc82d8ea58737",
+        "created": false
+      },
+      {
+        "key": "item-7-feminino-walk-torso",
+        "id": "f92f085b-7f3f-4667-9bca-f7626aff7ee4",
+        "hash": "06dc4f758996181d4625327a340f0ab1fe2076c63c7fbc3701df6b68a53659c2",
+        "created": false
+      },
+      {
+        "key": "item-7-feminino-attack-sword-torso",
+        "id": "2ea5e7fa-be65-4aaa-b831-c2b642da1c16",
+        "hash": "a0186fe6fe5a4108329868cbe40b490ab5eb101851eaadf4ca61a9cba84bb85d",
+        "created": false
+      },
+      {
+        "key": "item-7-feminino-attack-unarmed-torso",
+        "id": "6184198c-2209-4df6-bb57-f4a6bf2a62e2",
+        "hash": "3712638293a3d9dff4283eae5a28ae70fd21498080fc19dd748f23b10b6e9570",
+        "created": false
+      },
+      {
+        "key": "item-7-feminino-attack-firearm-torso",
+        "id": "64f72c7d-235c-4ef2-88dc-a10982bf9005",
+        "hash": "cb795be99e5a08e8a78a2006dbc52ec1b62a99b1baaa110d598b7ec8d7feba2f",
+        "created": false
+      },
+      {
+        "key": "item-7-feminino-attack-daggers-torso",
+        "id": "30341ea0-8f38-474c-86a5-68d19d5de4b4",
+        "hash": "cffc04a4022768d1c8d97d4cce4056b0ea158b1d0f0457a82dec12ff59c9b924",
+        "created": false
+      },
+      {
+        "key": "item-7-feminino-attack-focus-torso",
+        "id": "90fa8989-6ee7-4f04-9e89-ec073c72d0d8",
+        "hash": "a545f0d737013e55a4ed3d506560edea332dee94404f69547f40cd3e2090ce47",
+        "created": false
+      },
+      {
+        "key": "template-mask-torso",
+        "id": "db8b41bc-5963-4209-ba52-8bf4c294a707",
+        "hash": "e3f395406d02d9ab6623631688ab7ab787efbaba1c2dcefe04872cf00cfe7ab4",
+        "created": false
+      },
+      {
+        "key": "item-6-masculino-static-torso",
+        "id": "b7aba40e-012d-40af-b115-785afbab8d13",
+        "hash": "8fc0002a753d735e9163112369edd294368d943036fa54ddfab017849dc7bab0",
+        "created": true
+      },
+      {
+        "key": "item-6-feminino-static-torso",
+        "id": "e6223ec8-753a-4e74-b0de-bcdceb8021d1",
+        "hash": "557ec6d02c6adaaaf60f123a7ce8ceb8b964b9c53ec14d60c59a4ac444247b41",
+        "created": true
+      },
+      {
+        "key": "item-7-masculino-static-torso",
+        "id": "101b9be9-54d8-4e11-bd6f-0c80e6042dc5",
+        "hash": "913b4c841b6dc8ac2646465dbae3ca8126379515d51dda1523956a26df141932",
+        "created": true
+      },
+      {
+        "key": "item-7-feminino-static-torso",
+        "id": "e30514cf-5f1d-4a8a-bb07-d8ac59e28b2c",
+        "hash": "873cc7d63dbe5633979ad71c955a9e42a8ea63434864e8ca8019e274422815e3",
+        "created": true
+      },
+      {
+        "key": "ownership-masculino-static",
+        "id": "75872332-3a46-49d7-adfe-b7cc360e9caf",
+        "hash": "6db78e9266eaa18116087a45579d79c24af503e604700d7b9a6b5d5ecafe7828",
+        "created": true
+      },
+      {
+        "key": "ownership-masculino-walk",
+        "id": "52f7a4ba-ecf3-4331-9197-ba73173737ee",
+        "hash": "1a6b40a416691648a146f4a08a37f9ae944a8f8d1a8f9ae42e89a2e3d3484cb5",
+        "created": true
+      },
+      {
+        "key": "ownership-masculino-attack-unarmed",
+        "id": "3a6641cb-cf1b-47af-a19f-2709f0490106",
+        "hash": "5920f57a40c6310cd7c68a4273d61c2d18dce26f5ced27c0b401558d3620df18",
+        "created": true
+      },
+      {
+        "key": "ownership-masculino-attack-sword",
+        "id": "2118f877-dbc3-497d-931f-592adf839029",
+        "hash": "2d3949d578318e04f6536efcb9ddbc71a0c23f4fa1e4e2117a92f8573da517b4",
+        "created": true
+      },
+      {
+        "key": "ownership-masculino-attack-firearm",
+        "id": "3aaf1ce6-005a-4607-848d-58c0679473b2",
+        "hash": "544ffcb13bff79ef4545cb8042f0accdb88db04f4d03d726bb416d8bbeb69d44",
+        "created": true
+      },
+      {
+        "key": "ownership-masculino-attack-daggers",
+        "id": "0e70b273-d0a8-4be4-a118-4fb5a39f72de",
+        "hash": "f4c7e58dd25a4e0ca97765e56c78b2459486ebeaec2f1558a8ae04bb786ee1f4",
+        "created": true
+      },
+      {
+        "key": "ownership-masculino-attack-focus",
+        "id": "6d9f3339-0424-4534-9f59-80dea66d25ec",
+        "hash": "de43e1a352ba70ab8ef0918c53929e76260e031e6e8c4205f259241008794af5",
+        "created": true
+      },
+      {
+        "key": "ownership-masculino-idle",
+        "id": "b6896e38-b9b2-476b-ad7f-939cfaae4b97",
+        "hash": "abc05bc4dabc6437c227227448aed28d83735b9702b90f1685cbbc15b9efa201",
+        "created": true
+      },
+      {
+        "key": "ownership-feminino-static",
+        "id": "8edf3993-853d-4a60-b90e-941b55cf56eb",
+        "hash": "f5cba72d4670e0c0c971272cac145940d69fab4aee923d68c237a5ec1d37db8e",
+        "created": true
+      },
+      {
+        "key": "ownership-feminino-walk",
+        "id": "d2632937-36c1-4c13-bb6a-08371449d012",
+        "hash": "5e1f5ef4fe690f64f2eb831af9e633c8e9a7a26c75c65c1d71f3c79a1603e063",
+        "created": true
+      },
+      {
+        "key": "ownership-feminino-attack-sword",
+        "id": "b306e121-1664-4098-ad17-1a63ccfa1338",
+        "hash": "42ad8107d424063df4a0949f8fa49be7845325d1e250fd9d1a6b9b5e6521b5d4",
+        "created": true
+      },
+      {
+        "key": "ownership-feminino-attack-unarmed",
+        "id": "ea1c28bd-d20e-479f-ba89-4ff788b8be95",
+        "hash": "993a95656b4866530cdc2fcf9a5fa1f8377757b12b035f4f39baaf960aee598a",
+        "created": true
+      },
+      {
+        "key": "ownership-feminino-attack-firearm",
+        "id": "82d948ab-17d1-4e39-83d9-43e816ff5a9d",
+        "hash": "8279dd2a9065ae53427419bf49f1d652917938ccde7e0f703b0e64cfccdb4a1d",
+        "created": true
+      },
+      {
+        "key": "ownership-feminino-attack-daggers",
+        "id": "781a4ebc-d78e-436a-9b6d-67bf03c843f6",
+        "hash": "718a0b27893e7c800246f34a1be90aa0df6f66a928a93c06bfcfa7569b9eabd9",
+        "created": true
+      },
+      {
+        "key": "ownership-feminino-attack-focus",
+        "id": "cee86ca7-61e1-4dba-bb66-88528c13dd92",
+        "hash": "8bfe9a216e957269c39ef2121cf174eca837ca835bbf17d4b4f1362d667ee235",
+        "created": true
+      },
+      {
+        "key": "ownership-feminino-idle",
+        "id": "3d18ceea-99d2-4b80-a591-c5953004babd",
+        "hash": "baaf0125d000915b353dd99d85a4f099c99afcae3bd0420c6b65c7cd6061ccb0",
+        "created": true
+      }
+    ],
+    "ownershipSheets": [
+      {
+        "key": "ownership-masculino-static",
+        "id": "75872332-3a46-49d7-adfe-b7cc360e9caf",
+        "body": "masculino",
+        "action": "static"
+      },
+      {
+        "key": "ownership-masculino-walk",
+        "id": "52f7a4ba-ecf3-4331-9197-ba73173737ee",
+        "body": "masculino",
+        "action": "walk"
+      },
+      {
+        "key": "ownership-masculino-attack-unarmed",
+        "id": "3a6641cb-cf1b-47af-a19f-2709f0490106",
+        "body": "masculino",
+        "action": "attack-unarmed"
+      },
+      {
+        "key": "ownership-masculino-attack-sword",
+        "id": "2118f877-dbc3-497d-931f-592adf839029",
+        "body": "masculino",
+        "action": "attack-sword"
+      },
+      {
+        "key": "ownership-masculino-attack-firearm",
+        "id": "3aaf1ce6-005a-4607-848d-58c0679473b2",
+        "body": "masculino",
+        "action": "attack-firearm"
+      },
+      {
+        "key": "ownership-masculino-attack-daggers",
+        "id": "0e70b273-d0a8-4be4-a118-4fb5a39f72de",
+        "body": "masculino",
+        "action": "attack-daggers"
+      },
+      {
+        "key": "ownership-masculino-attack-focus",
+        "id": "6d9f3339-0424-4534-9f59-80dea66d25ec",
+        "body": "masculino",
+        "action": "attack-focus"
+      },
+      {
+        "key": "ownership-masculino-idle",
+        "id": "b6896e38-b9b2-476b-ad7f-939cfaae4b97",
+        "body": "masculino",
+        "action": "idle"
+      },
+      {
+        "key": "ownership-feminino-static",
+        "id": "8edf3993-853d-4a60-b90e-941b55cf56eb",
+        "body": "feminino",
+        "action": "static"
+      },
+      {
+        "key": "ownership-feminino-walk",
+        "id": "d2632937-36c1-4c13-bb6a-08371449d012",
+        "body": "feminino",
+        "action": "walk"
+      },
+      {
+        "key": "ownership-feminino-attack-sword",
+        "id": "b306e121-1664-4098-ad17-1a63ccfa1338",
+        "body": "feminino",
+        "action": "attack-sword"
+      },
+      {
+        "key": "ownership-feminino-attack-unarmed",
+        "id": "ea1c28bd-d20e-479f-ba89-4ff788b8be95",
+        "body": "feminino",
+        "action": "attack-unarmed"
+      },
+      {
+        "key": "ownership-feminino-attack-firearm",
+        "id": "82d948ab-17d1-4e39-83d9-43e816ff5a9d",
+        "body": "feminino",
+        "action": "attack-firearm"
+      },
+      {
+        "key": "ownership-feminino-attack-daggers",
+        "id": "781a4ebc-d78e-436a-9b6d-67bf03c843f6",
+        "body": "feminino",
+        "action": "attack-daggers"
+      },
+      {
+        "key": "ownership-feminino-attack-focus",
+        "id": "cee86ca7-61e1-4dba-bb66-88528c13dd92",
+        "body": "feminino",
+        "action": "attack-focus"
+      },
+      {
+        "key": "ownership-feminino-idle",
+        "id": "3d18ceea-99d2-4b80-a591-c5953004babd",
+        "body": "feminino",
+        "action": "idle"
+      }
+    ],
+    "canonicalSourcesV9": [
+      "8af1346b-3ec6-51c9-aade-773ec2d0bdd1",
+      "a6b00916-4026-50c4-9260-2efab61496c0"
+    ],
+    "v9SaveOperations": 123
   },
   "costs": {
     "initialBatch": 180,
@@ -4806,7 +5657,9 @@
     "models": 28,
     "generatedPosesPending": [],
     "torsoMotionFrames": 832,
-    "defaultClothingFrames": 416
+    "defaultClothingFrames": 416,
+    "torsoStaticFrames": 16,
+    "nativeOwnershipFrames": 424
   },
   "facialPolicy": "Original clean facial geometry is the default; optional subtle masked expressions preserve the original alpha footprint. Faces remain replaceable below hair.",
   "originalHairs": {
@@ -4945,12 +5798,280 @@
     "allLayers": true,
     "swapLimbLabels": false
   },
-  "canonicalRevision": "torso-profile-v8-3",
+  "canonicalRevision": "native-ownership-v9-4",
   "profileFaces": {
     "revision": "native-profile-v8",
     "source": "east",
     "west": "whole-character-flipX",
     "featuresOnly": true
   },
-  "baseClothingFit": "native-underwear-v8"
+  "baseClothingFit": "native-underwear-v9",
+  "nativeOwnership": {
+    "schema": "mare-native-ownership-v9",
+    "channels": {
+      "r": "torso and short sleeves",
+      "g": "bare hands and foreground forearms",
+      "b": "near arms"
+    },
+    "atlases": {
+      "masculino": {
+        "static": {
+          "file": "assets/ownership-masculino-static.png",
+          "cell": 128,
+          "columns": 1,
+          "rows": 4,
+          "framesPerDirection": 1,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "75872332-3a46-49d7-adfe-b7cc360e9caf"
+        },
+        "walk": {
+          "file": "assets/ownership-masculino-walk.png",
+          "cell": 128,
+          "columns": 8,
+          "rows": 4,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "52f7a4ba-ecf3-4331-9197-ba73173737ee"
+        },
+        "attack-unarmed": {
+          "file": "assets/ownership-masculino-attack-unarmed-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "3a6641cb-cf1b-47af-a19f-2709f0490106"
+        },
+        "attack-sword": {
+          "file": "assets/ownership-masculino-attack-sword-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "2118f877-dbc3-497d-931f-592adf839029"
+        },
+        "attack-firearm": {
+          "file": "assets/ownership-masculino-attack-firearm-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "3aaf1ce6-005a-4607-848d-58c0679473b2"
+        },
+        "attack-daggers": {
+          "file": "assets/ownership-masculino-attack-daggers-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "0e70b273-d0a8-4be4-a118-4fb5a39f72de"
+        },
+        "attack-focus": {
+          "file": "assets/ownership-masculino-attack-focus-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "6d9f3339-0424-4534-9f59-80dea66d25ec"
+        },
+        "idle": {
+          "file": "assets/ownership-masculino-idle.png",
+          "cell": 128,
+          "columns": 4,
+          "rows": 4,
+          "framesPerDirection": 4,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "b6896e38-b9b2-476b-ad7f-939cfaae4b97"
+        },
+        "attack-tech": {
+          "file": "assets/ownership-masculino-attack-firearm-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "3aaf1ce6-005a-4607-848d-58c0679473b2",
+          "sharedWith": "attack-firearm"
+        }
+      },
+      "feminino": {
+        "static": {
+          "file": "assets/ownership-feminino-static.png",
+          "cell": 128,
+          "columns": 1,
+          "rows": 4,
+          "framesPerDirection": 1,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "8edf3993-853d-4a60-b90e-941b55cf56eb"
+        },
+        "walk": {
+          "file": "assets/ownership-feminino-walk.png",
+          "cell": 128,
+          "columns": 8,
+          "rows": 4,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "d2632937-36c1-4c13-bb6a-08371449d012"
+        },
+        "attack-sword": {
+          "file": "assets/ownership-feminino-attack-sword-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "b306e121-1664-4098-ad17-1a63ccfa1338"
+        },
+        "attack-unarmed": {
+          "file": "assets/ownership-feminino-attack-unarmed-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "ea1c28bd-d20e-479f-ba89-4ff788b8be95"
+        },
+        "attack-firearm": {
+          "file": "assets/ownership-feminino-attack-firearm-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "82d948ab-17d1-4e39-83d9-43e816ff5a9d"
+        },
+        "attack-daggers": {
+          "file": "assets/ownership-feminino-attack-daggers-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "781a4ebc-d78e-436a-9b6d-67bf03c843f6"
+        },
+        "attack-focus": {
+          "file": "assets/ownership-feminino-attack-focus-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "cee86ca7-61e1-4dba-bb66-88528c13dd92"
+        },
+        "idle": {
+          "file": "assets/ownership-feminino-idle.png",
+          "cell": 128,
+          "columns": 4,
+          "rows": 4,
+          "framesPerDirection": 4,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "3d18ceea-99d2-4b80-a591-c5953004babd"
+        },
+        "attack-tech": {
+          "file": "assets/ownership-feminino-attack-firearm-packed.png",
+          "cell": 160,
+          "columns": 6,
+          "rows": 6,
+          "framesPerDirection": 8,
+          "directions": [
+            "south",
+            "north",
+            "west",
+            "east"
+          ],
+          "galleryId": "82d948ab-17d1-4e39-83d9-43e816ff5a9d",
+          "sharedWith": "attack-firearm"
+        }
+      }
+    }
+  }
 }

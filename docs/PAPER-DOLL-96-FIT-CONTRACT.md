@@ -1,6 +1,6 @@
 # Contrato de encaixe — personagens modulares de 96 px
 
-Revisão v8, 30/10/2026. A bancada continua isolada, com produção desativada. O feedback posterior à v7 revelou pele clara embutida em bandana/capacete e roupa-base fora da superfície de algumas poses. A v8 corrige essas fontes, acrescenta perfis faciais próprios e o slot Torso. Teste automatizado não significa aprovação artística.
+Revisão v9, 30/10/2026. A revisão visual do proprietário confirmou defeitos na v8 apesar dos testes anteriores. A v9 substitui o encaixe do Torso por máscaras anatômicas fixas de cada pose, corrige pulsos/profundidade dos braços, cobertura das roupas e sobreposição da cabeça. A bancada continua isolada, com produção desativada. Teste automatizado não significa aprovação artística.
 
 ## Arquivos e escala
 
@@ -142,3 +142,52 @@ Publicação v8: **215 folhas consolidadas** na Jade Dragon, com 64 salvamentos 
 ### Validação final da revisão v8
 
 Na fonte e no build Pages, os 848 encaixes de Torso corresponderam à regra de montagem; 192 casos de pele e 424 casos de capacete passaram. O espelhamento confirmou 3.286 composições exatas, 842 quadros-fonte e 64 materiais sem divergências. O detector do build conferiu 224 matrizes, 424 poses e 112 estados de interface sem violações. Também passaram 158 testes Node autônomos, quatro testes Python, 44.840 combinações de aparência e o build estático. Capturas do lobby em 1920×1080, 1366×768 e 1280×720 permanecem fora do repositório. Esses resultados não substituem a aprovação artística; produção continua desativada.
+
+## Revisão v9 — anatomia independente dos itens
+
+### Falhas confirmadas na v8
+
+- O limite superior da roupa-base deixava pixels da roupa íntima cinza expostos.
+- Pulsos trocados, colapsados sobre o cotovelo e profundidade ambígua dos dois braços permitiam que o peitoral cobrisse mãos ou deixasse o peito aberto.
+- O recorte de cabeça continha dois pixels de ombro e os redesenhava sobre a camisa masculina lateral.
+- A limpeza de componentes das luvas podia remover pixels reais dos dedos. A auditoria anterior comparava parte da geometria com a própria regra de montagem e não detectava essas falhas.
+
+### Fonte anatômica reutilizável
+
+318 poses nativas foram medidas; oeste é derivado de leste, completando 424 poses. A importação usa os cotovelos e a pose anterior para resolver os lados dos pulsos, recusa membros colapsados ou de comprimento incompatível e normaliza a profundidade perto/longe. Cabeça, corpo, pernas, duração e pivôs aprovados permanecem iguais.
+
+16 folhas em `assets/ownership-*.png` guardam máscaras por pose: R = peito e mangas curtas, G = mãos/antebraços visíveis, B = braços próximos. Essas máscaras não dependem da roupa escolhida, da cor da pele ou do cabelo. O catálogo registra dimensões, direções e ordem dos quadros.
+
+- `paper_doll_96_bake_ownership.cjs`: consolida anatomia, roupa-base e braços a partir dos arquivos nativos; sem rede. A opção `--estimates=<pasta>` importa medições existentes e `--reference-rig=<arquivo>` mantém a referência anterior explícita. Não contém credenciais nem faz chamadas pagas.
+- `paper_doll_96_bake_torso_browser.cjs`: aplica qualquer modelo Torso cadastrado às máscaras existentes. Gera oito folhas por corpo/modelo, incluindo pose estática. Os dois modelos atuais somam 32 folhas, 848 quadros (832 em movimento e 16 estáticos). Tecnologia compartilha disparo. IDs de galeria existentes são preservados.
+- Camadas: tecido sobre o corpo; cabeça limitada à gola quando equipada; mãos nativas preservadas após roupa/capa; luvas desenhadas sobre essas mãos. Capacete continua ocultando todo o cabelo.
+- Oito moldes estáticos permanecem disponíveis, com máscara de Torso atualizada. As 16 folhas anatômicas complementam esses moldes.
+
+### Inclusão dos próximos itens
+
+Gerar a arte nas matrizes aprovadas, separar tecido de pele e respeitar o contorno anatômico. Consolidar todas as poses antes de adicionar o modelo ao seletor. Uma animação Torso incompleta agora impede a montagem, em vez de usar silenciosamente um recorte inadequado. Usar a mesma máscara congelada para todos os materiais; nunca redesenhar pulsos para acomodar uma roupa.
+
+O contrato atual de Torso é uma camisa fechada até a cintura, com mangas curtas. Formas como mangas compridas, saias e volumes externos exigem painéis e critérios próprios. Arte nova só é aceita depois da auditoria de mãos, ombros, roupa-base, combinações e inspeção visual dos ciclos; gerar um PNG não basta para declarar compatibilidade.
+
+Custo v9 confirmado: 38 gerações de arte em quatro reparos (20 no primeiro passe e 18 no passe final) e 31,9 em medições anatômicas, incluindo a amostra inicial. Total 69,9. Consolidação e salvamento das folhas não consomem gerações. Fontes intermediárias ficam registradas como intermediárias, sem aprovação artística implícita.
+
+### Paleta e formato final v9
+
+`paper_doll_96_torso_materials.cjs` limpa e indexa a paleta de cada tecido. Um teste de regressão inclui o ponto rosado RGB 185,88,162 encontrado na camisa azul. A limpeza preservou integralmente o alpha dos 34 arquivos exportados de Torso. A auditoria recusa cores fora da paleta declarada, em vez de aceitar qualquer cor devolvida pelo gerador. Para materiais futuros, declarar uma paleta própria; não aplicar um detector genérico de pele a tecidos marrons.
+
+Formato das folhas anatômicas: estático 128×512, Idle 512×512, Walk 1024×512 e ataques 960×960, sempre na célula nativa 128/160. A matriz de ataques tem seis colunas; não assumir oito.320 células foram reorganizadas sem alterar bytes dos pixels, para atender ao limite de lado1024 do PixelLab.
+
+Galeria final: 235 folhas consolidadas e 24 fontes registradas na Jade Dragon. Esta revisão alterou 89 folhas distintas (69 existentes, 20 novas); 123 salvamentos gratuitos incluem a revisão cromática de 34 folhas. IDs existentes preservados. Os 64 PNGs de corpo principal permanecem byte a byte iguais à revisão anterior.
+
+A auditoria de mangas diferencia tecido sobre o braço superior de pele exposta no antebraço. Comparar a cor de uma antiga camada underArms com a cor do peito não prova que aquele pixel seja uma mão visível. As sondas independentes de ombros, punhos e antebraços, a comparação da montagem com as folhas consolidadas e a inspeção dos ciclos complementam-se. Os resultados das seções históricas v6–v8 não equivalem a aprovação visual.
+
+### Resultado final v9.4
+
+- 6.360 conjuntos específicos: 110.808 amostras de palma, 205.578 de antebraço, 32.592 de ombro e 1.100.196 de roupa-base, sem violações. Essas sondas usam os pixels nativos e os pontos medidos, separadamente do encaixe do item.
+- 848 quadros de Torso conferidos contra a montagem, 16 matrizes com paleta permitida, 192 combinações de pele/cabeça e 424 poses de capacete sem cabelo: sem divergências. 138.038 pixels de braços expostos preservados.
+- 44.840 combinações de aparência, 3.286 comparações exatas de espelhamento, 424 poses de limpeza e detector com 224 matrizes/112 estados de interface aprovados. 158 testes Node autônomos e sete testes96 repetidos; quatro testes Python e build Pages aprovados.
+- Capturas atuais do lobby em 1920×1080, 1366×768 e 1280×720; demonstrativo de movimento com 24 quadros e inspeção das 16 folhas de ciclos, mantidos fora do Git. Aprovação artística e integração em produção continuam pendentes.
+
+As rotinas de assets usam Sharp e Playwright no ambiente de edição. Para um novo Torso, definir sua paleta, limpar as matrizes, consolidar todas as animações e rodar as auditorias; reutilizar as máscaras existentes. Medir pulsos de novo somente quando a anatomia-base mudar.
+
+A repetição local das duas rotinas de consolidação não alterou nenhum dos 926 PNGs da biblioteca (comparação SHA-256 antes/depois), sem novas gerações. A limpeza cromática também é idempotente: reaplicar a paleta preserva pixels já aprovados.

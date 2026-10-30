@@ -1,6 +1,6 @@
 {
   "schema": "mare-native-fit-96-v1",
-  "revision": "torso-profile-v8-3",
+  "revision": "native-ownership-v9-4",
   "productionEnabled": false,
   "canvas": {
     "rest": [
@@ -1515,5 +1515,14 @@
     "headwear": "fabric/metal only; no baked skin",
     "torso": "garment only; never recolour with skin"
   },
-  "helmetHairPolicy": "all"
+  "helmetHairPolicy": "all",
+  "nativeOwnership": {
+    "schema": "mare-native-ownership-v9",
+    "frames": 424,
+    "atlasCount": 16,
+    "shirtAtlasCount": 32,
+    "handPriority": "native hands after garment and cape, before gloves",
+    "headBoundary": "head shoulder extension clipped at equipped collar"
+  },
+  "torsoMaterialPolicy": "explicit per-item palette; no unlisted colours"
 }

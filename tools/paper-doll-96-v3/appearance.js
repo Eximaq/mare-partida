@@ -188,7 +188,7 @@
     return out;
   }
   function fitPairToBody(source,slot,rest,pose,padding,width,height,body,restBody,sourceParts,options={}){
-    if(options.material)return surface.nativeMaterial(source,slot,rest,pose,padding,width,height,body,sourceParts,{...options.material,handSurface:options.handSurface});
+    if(options.material)return surface.nativeMaterial(source,slot,rest,pose,padding,width,height,body,sourceParts,{...options.material,handSurface:options.handSurface,handOwnership:options.handOwnership});
     if(!sourceParts||!sourceParts.LEFT||!sourceParts.RIGHT)return pair(source,slot,rest,pose,padding,width,height);
     const r=index(rest),p=index(pose),out={},end=slot==='boots'?' LEG':' ARM',parent=slot==='boots'?' KNEE':' ELBOW';
     for(const side of ['LEFT','RIGHT']){const material=sourceParts[side],map=bone(r[side+parent],r[side+end],p[side+parent],p[side+end],padding,false);

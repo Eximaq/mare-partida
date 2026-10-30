@@ -23,13 +23,13 @@ const origin = process.argv.find(v => /^https?:\/\//.test(v)) || 'http://127.0.0
         return c.getContext('2d').getImageData(0,0,size,size).data;
       };
       for (const style of q.catalog.styles.filter(s => s.kind === 'torso')) for (const [body, b] of Object.entries(q.manifest.bodies)) {
-        for (const action of ['idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus']) {
-          const frames = b.clips[action].east.frames, size = b.clips[action].east.frame?.width || 128, padding = (size-128)/2;
+        for (const action of ['static','idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus']) {
+          const frames = b.clips[action]?.east.frames || 1, size = b.clips[action]?.east.frame?.width || 128, padding = (size-128)/2;
           const columns = size === 160 ? 6 : frames, rows = Math.ceil(frames*4/columns);
           const c = document.createElement('canvas'); c.width = columns*size; c.height = rows*size;
           const ctx = c.getContext('2d'); ctx.imageSmoothingEnabled = false;
           for (const direction of ['south','north','east']) {
-            const clip = b.clips[action][direction], rig = q.appearanceRigs.clips[body][action][direction];
+            const clip = b.clips[action]?.[direction]||{layers:b.layers[direction]}, rig = q.appearanceRigs.clips[body]?.[action]?.[direction]||{rest:q.appearanceRigs.rests[body][direction],poses:[q.appearanceRigs.rests[body][direction]]};
             const source = await pixels(style.layers[body][direction],128);
             for (let frame=0;frame<frames;frame++) {
               const neutral = document.createElement('canvas'), hands = document.createElement('canvas');
@@ -37,9 +37,13 @@ const origin = process.argv.find(v => /^https?:\/\//.test(v)) || 'http://127.0.0
               for (const slot of ['body','underArms','foreground']) {
                 const file=clip.layers[slot];if(!file)continue;const image=await q.image(file);
                 if(slot==='body')neutral.getContext('2d').drawImage(image,frame*size,0,size,size,0,0,size,size);
-                if(slot!=='body')hands.getContext('2d').drawImage(image,frame*size,0,size,size,0,0,size,size);
+                if(slot==='foreground')hands.getContext('2d').drawImage(image,frame*size,0,size,size,0,0,size,size);
               }
-              const fitted=MareTorso96.fit(source,neutral.getContext('2d').getImageData(0,0,size,size).data,rig.rest,rig.poses[frame],padding,size,size,hands.getContext('2d').getImageData(0,0,size,size).data).full;
+              const owner=q.catalog.nativeOwnership.atlases[body][action],oc=document.createElement('canvas');oc.width=oc.height=size;
+              const ownerIndex=owner.directions.indexOf(direction)*owner.framesPerDirection+frame;
+              oc.getContext('2d').drawImage(await q.image(owner.file),ownerIndex%owner.columns*size,Math.floor(ownerIndex/owner.columns)*size,size,size,0,0,size,size);
+              const owned=MareTorso96.unpack(oc.getContext('2d').getImageData(0,0,size,size).data);
+              const fitted=MareTorso96.fit(source,neutral.getContext('2d').getImageData(0,0,size,size).data,rig.rest,rig.poses[frame],padding,size,size,hands.getContext('2d').getImageData(0,0,size,size).data,owned).full;
               const index=dirs.indexOf(direction)*frames+frame;
               ctx.putImageData(new ImageData(fitted,size,size),index%columns*size,Math.floor(index/columns)*size);
               if(direction==='east') {
@@ -56,7 +60,7 @@ const origin = process.argv.find(v => /^https?:\/\//.test(v)) || 'http://127.0.0
       return output;
     });
     const catalog=JSON.parse(await fs.readFile(path.join(root,'appearance-catalog.json'),'utf8'));
-    assert.equal(atlases.length,catalog.styles.filter(s=>s.kind==='torso').reduce((n,s)=>n+Object.keys(s.layers).length*7,0));
+    assert.equal(atlases.length,catalog.styles.filter(s=>s.kind==='torso').reduce((n,s)=>n+Object.keys(s.layers).length*8,0));
     for(const {png,id,body,action,...atlas} of atlases){
       assert.match(atlas.file,/^assets\/torso-item-[0-9]+-(masculino|feminino)-[a-z-]+\.png$/);
       await fs.writeFile(path.join(root,atlas.file),Buffer.from(png,'base64'));

@@ -36,7 +36,8 @@
               "hair": "assets/masculino-walk-south-hair.png",
               "pants": "assets/masculino-walk-south-pants.png",
               "top": "assets/masculino-walk-south-top.png",
-              "headBase": "assets/masculino-walk-south-head-base.png"
+              "headBase": "assets/masculino-walk-south-head-base.png",
+              "foreground": "assets/masculino-walk-south-foreground.png"
             },
             "frames": 8,
             "fps": 8,
@@ -2888,7 +2889,8 @@
               "hair": "assets/feminino-walk-south-hair.png",
               "pants": "assets/feminino-walk-south-pants.png",
               "top": "assets/feminino-walk-south-top.png",
-              "headBase": "assets/feminino-walk-south-head-base.png"
+              "headBase": "assets/feminino-walk-south-head-base.png",
+              "foreground": "assets/feminino-walk-south-foreground.png"
             },
             "frames": 8,
             "fps": 8,
@@ -5734,5 +5736,5 @@
     "fps": 12,
     "artApprovalPending": true
   },
-  "visualRevision": "torso-profile-v8-3"
+  "visualRevision": "native-ownership-v9-4"
 }
