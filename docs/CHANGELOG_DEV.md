@@ -1,3 +1,9 @@
+## 29/10/2026 — Portal: cache do Pages e logo oficial
+
+Branch `fix/portal-pages-cache`, base `2b3a48a`. Corrige HTML novo com CSS antigo no GitHub Pages: os dois builds agora compartilham hash de conteúdo nas URLs dos assets. Substitui a logo inicial pelo recorte transparente do emblema oficial enviado pelo proprietário, mantendo os arquivos anteriores e o cenário.
+
+Reprodução anterior: logo de 1448 px e cabeçalho em bloco. Depois: 3 testes de build, 106 arquivos Node, ambos os builds e dez cenários de navegador passaram; nenhum carregamento do CSS antigo. Sem mudanças em saves/gameplay. [Fonte da logo, causa, testes e capturas](PORTAL-KAIZOKU.md).
+
 ## 29/10/2026 - Portal Kaizoku Idle: em breve
 
 Branch `feature/portal-em-breve`, base `origin/main df7aa55`. O portal de login vira uma landing page de desenvolvimento com logo Kaizoku Idle, fundo original preservado, mensagem acessivel e layout responsivo. Build separado `tools/build_portal.py` gera `dist-portal/` com redirecionamento da raiz; somente assets explicitamente permitidos. Jogo, saves e trabalhos locais do checkout original preservados.

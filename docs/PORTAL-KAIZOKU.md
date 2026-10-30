@@ -36,11 +36,21 @@ python -m http.server 8831 --bind 127.0.0.1 --directory dist-portal
 
 Abrir `http://127.0.0.1:8831/`; deve terminar em `/portal/`. O ZIP local `dist-portal.zip`, quando gerado, contém o pacote para upload manual; saída e ZIP não entram no Git.
 
-## Logo e proveniência
+## Logo oficial e recorte
 
-Arquivo: `portal/assets/logo-kaizoku-idle.png` (1448×1086, RGBA transparente). Gerado com a ferramenta integrada ImageGen, usando a logo existente como referência e mantendo o arquivo antigo. Nenhuma geração PixelLab foi usada.
+O portal usa agora `portal/assets/logo-kaizoku-idle-oficial.png`, PNG RGBA transparente de 2005×784. Fonte fornecida pelo proprietário: `Emblema Pirata Kaizoku Idle.png`. A ferramenta integrada ImageGen extraiu o conjunto do nome e seus elementos ligados às letras, removendo fundo branco, mar, navios, ilhas e moldura circular. Nenhum crédito PixelLab foi usado.
 
-Prompt final: “Substituir MARÉ PARTIDA por KAIZOKU na primeira linha e IDLE na segunda. Preservar letras douradas em pixel art, ondas ciano, bússola superior e faixa de pergaminho. Texto da faixa: SUA JORNADA COMEÇA NO MAR. Fundo realmente transparente, sem marca d’água, sem símbolos de franquias protegidas.”
+Prompt final (extração): “Extract ONLY the existing two-line title artwork reading KAIZOKU / IDLE. Keep the original letter shapes, cyan-blue lettering, gold bevels, gold IDLE lettering, dark outlines, integrated skull-and-hat O, hat on K and rope flourishes. Remove the white background, circular border, sky, clouds, birds, sea, islands and ships. Genuine alpha transparency, including holes between letters; tightly cropped, no redesign or new elements.”
+
+A primeira logo gerada, `logo-kaizoku-idle.png`, foi preservada como histórico e não é mais referenciada pela página.
+
+## Correção de cache no Pages — 29/10/2026
+
+O HTML publicado pelo GitHub Pages não versionava os assets do portal, embora o build Cloudflare já o fizesse. Com CSS antigo, o novo HTML exibia a logo em 1448 px e o cabeçalho em bloco, reproduzindo a captura enviada pelo proprietário.
+
+`version_portal_assets` agora é compartilhada pelos dois builds. As URLs de CSS e imagens levam hash do conteúdo; saves, gameplay e o fundo aprovado não mudam.
+
+Validação da correção: 3 testes de build passaram (a regressão falhou antes do patch), 106 arquivos Node passaram, ambos os builds passaram e `python tests/portal_pages_cache_browser.py` verificou os dois pacotes em 1920, 1366, 1280, 390 e 320 px com uma resposta antiga simulada para o CSS sem versão. Nenhum dos pacotes corrigidos pediu esse CSS antigo; imagens, layout, teclado e preservação de storage passaram. Capturas atuais em `docs/evidence-portal-cache/`, fora do Git.
 
 ## Validação e limites — 29/10/2026
 

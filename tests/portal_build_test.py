@@ -1,5 +1,6 @@
 """The public coming-soon package must not ship the game or local files."""
 import re
+import hashlib
 import subprocess
 import sys
 import tempfile
@@ -11,6 +12,17 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 class PortalBuildTest(unittest.TestCase):
+    def test_pages_styles_bypass_cached_unversioned_assets(self):
+        from urllib.parse import parse_qs
+        portal = ROOT / 'dist/portal'
+        html = (portal / 'index.html').read_text(encoding='utf-8')
+        styles = re.findall(r'href="([^"]+\.css(?:[?][^"]+)?)"', html)
+        self.assertEqual(len(styles), 2)
+        for reference in styles:
+            url = urlsplit(reference)
+            digest = hashlib.sha256((portal / url.path).read_bytes()).hexdigest()[:16]
+            self.assertEqual(parse_qs(url.query).get('v'), [digest], reference)
+
     def test_refuses_to_publish_stale_game_or_overwrite_source(self):
         with tempfile.TemporaryDirectory() as temporary:
             output = Path(temporary) / 'site'
