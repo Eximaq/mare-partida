@@ -10,6 +10,10 @@ on:
       - 'tools/build_pages.py'
       - 'tests/paper-doll-96-lobby.test.cjs'
       - 'tests/paper_doll_96_lobby_browser.cjs'
+      - 'tests/paper-doll-96-weapons.test.cjs'
+      - 'tests/paper-doll-96-other-weapons.test.cjs'
+      - 'tests/paper_doll_96_weapons_browser.cjs'
+      - 'tools/paper_doll_96_weapon_materials.cjs'
       - '.github/workflows/paper-doll-96-lobby.yml'
   workflow_dispatch:
 permissions:
@@ -42,4 +46,62 @@ jobs:
         with:
           name: paper-doll-96-lobby
           path: ${{ runner.temp }}/lobby96
+          if-no-files-found: ignore
+
+  weapons96:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar navegador e Pages
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
+          npx playwright install --with-deps chromium
+          python tools/build_pages.py
+          python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/weapons96-server.txt" 2>&1 &
+          curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
+      - name: Auditar armas e combate real
+        run: |
+          node tests/paper-doll-96-weapons.test.cjs
+          node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --evidence="$RUNNER_TEMP/weapons96"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: paper-doll-96-weapons
+          path: ${{ runner.temp }}/weapons96
+          if-no-files-found: ignore
+
+  otherWeapons96:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar navegador e Pages
+        run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.62.1
+          npx playwright install --with-deps chromium
+          python tools/build_pages.py
+          python -m http.server 8157 --bind 127.0.0.1 > "$RUNNER_TEMP/other-weapons96-server.txt" 2>&1 &
+          curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
+      - name: Auditar armas e combate real
+        run: |
+          node tests/paper-doll-96-other-weapons.test.cjs
+          node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --other-classes --evidence="$RUNNER_TEMP/other-weapons96"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: paper-doll-96-other-weapons
+          path: ${{ runner.temp }}/other-weapons96
           if-no-files-found: ignore

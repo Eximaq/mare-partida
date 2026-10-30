@@ -499,7 +499,7 @@ shutil.copy2(ROOT/'docs/PAPER-DOLL-96-FIT-CONTRACT.md', OUT/'docs/PAPER-DOLL-96-
 review96 = Path('tools/paper-doll-96-v3')
 review96_pack = json.loads((ROOT/review96/'manifest.json').read_text(encoding='utf-8'))
 assert review96_pack['productionEnabled'] is False
-review96_files = {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json'}
+review96_files = {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json'}
 appearance96_pack = json.loads((ROOT/review96/'appearance-catalog.json').read_text(encoding='utf-8'))
 assert appearance96_pack['productionEnabled'] is False
 for animations in appearance96_pack.get('nativeOwnership', {}).get('atlases', {}).values():
@@ -517,6 +517,10 @@ for style in appearance96_pack['styles']:
 for collection in ['originalFaces', 'originalHairs', 'originalHeads', 'originalHands']:
     for directions in appearance96_pack.get(collection, {}).values():
         review96_files.update(directions.values())
+weapon96_pack = json.loads((ROOT/review96/'weapons.json').read_text(encoding='utf-8'))
+assert weapon96_pack['reviewOnly'] is True
+review96_files.update(item['source'] for item in weapon96_pack['items'])
+review96_files.update(view['source'] for item in weapon96_pack['items'] for view in item.get('views', {}).values())
 for body in review96_pack['bodies'].values():
     review96_files.update(body['references'].values())
     for layers in body.get('layers', {}).values():
@@ -526,7 +530,7 @@ for body in review96_pack['bodies'].values():
             assert clip.get('modular') is True
             review96_files.update(clip['layers'].values())
 for name in sorted(review96_files):
-    if name not in {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json'}:
+    if name not in {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json'}:
         if not re.fullmatch(r'assets/[a-z0-9-]+\.png', name):
             raise ValueError('Unsafe 96px review asset')
     target = OUT/review96/name
@@ -544,3 +548,7 @@ review96_html.write_text(re.sub(r'((?:src|href)=")([^"?]+)(")', version_review96
 shutil.copy2(ROOT/'docs/PAPER-DOLL-96-V3.md', OUT/'docs/PAPER-DOLL-96-V3.md')
 
 shutil.copy2(ROOT/'docs/PAPER-DOLL-96-LOBBY.md', OUT/'docs/PAPER-DOLL-96-LOBBY.md')
+
+shutil.copy2(ROOT/'docs/PAPER-DOLL-96-ARMAS.md', OUT/'docs/PAPER-DOLL-96-ARMAS.md')
+
+shutil.copy2(ROOT/'docs/PAPER-DOLL-96-ARMAS-DEMAIS-CLASSES.md', OUT/'docs/PAPER-DOLL-96-ARMAS-DEMAIS-CLASSES.md')

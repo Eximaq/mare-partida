@@ -1,5 +1,16 @@
 # Referência visual — Maré Partida
 
+## Armas das demais classes, 96 px — 30/10/2026
+
+Base 47f68fe do PR153, branch feature/weapons-other-classes-96. Dez itens existentes: 2/3, 4/5, 14/15, 16/17 e 31/32. Referências originais 32×32 preservadas; corpo de 96 px em células 128/160, pivôs 64/112 e 80/128, quatro vistas, Idle com 4 quadros a 4 FPS, Walk com 8 quadros a 8 FPS e ataques com 8 quadros a 12 FPS. Contorno escuro de um pixel, luz superior esquerda e fundo transparente na grade nativa. Fontes finais: 16×16 para punhos/manopla/orbe; 24×24 para canhão/compasso/relicário; 64×32 para rifle; 32×24 para pistola; 24×80 para cajado. Três armas de disparo têm vistas Pro 32×32. Compasso e relicário derivam de novos designs Pro. Aproveitar contato, profundidade e margem da sprint1, com adaptação para peças vestidas, armas de fogo e focos. Amostras precederam o restante do lote; custo confirmado de 190 gerações em 15 Create Pro e 4 Edit Pro, mais Workbench gratuito. [Contrato das demais classes](PAPER-DOLL-96-ARMAS-DEMAIS-CLASSES.md).
+
+
+## Armas equipadas96 — 30/10/2026
+
+[Contrato da sprint1](PAPER-DOLL-96-ARMAS.md): doze armas geradas na IA PixelLab Pro, direção artística Ultra HD Masterpiece. Fontes nativas32/40/64/80/96, sem redução de imagem ou paleta; suporte128 com margem transparente. Corpo/ícones preservados. Cabos ajustados à mão; eixo da arte, fio externo, profundidade e envelope por pose. Ame final: segunda variante da galeria escolhida pelo proprietário. Efeitos equipados somente70/74. Custo PixelLab190 gerações, além dos estudos imagegen anteriores rejeitados.
+
+
+
 ## Torso e perfis — 30/10/2026, v8
 
 Torso mantém a altura96 e os canvases/pivôs128/160 atuais, usando Casaco de Marinheiro e Casaco da Bruma como peitorais compactos, sem caudas que disputem a capa. Fontes estáticas nativas nos dois corpos; 832 quadros consolidados sobre a anatomia existente. Perfil facial de olho único, oeste espelhado; acessórios sem pele copiada, capacete sem cabelo aparente. Cabeça possui a pele; feições possuem íris/pálpebras/boca. Oito moldes e regras no [contrato](PAPER-DOLL-96-FIT-CONTRACT.md). Custo adicional20 gerações em dois trabalhos PixelLab, sem alterar a escala ou ativar produção.

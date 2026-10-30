@@ -1,5 +1,9 @@
 # Contrato de encaixe — personagens modulares de 96 px
 
+Continuação: [armas das demais classes, 22 itens nas sete classes](PAPER-DOLL-96-ARMAS-DEMAIS-CLASSES.md). O escopo abaixo conserva o histórico da etapa anterior.
+
+Armas: [contatos por pose, margens, profundidade e fio externo](PAPER-DOLL-96-ARMAS.md). A extensão não muda os canvases nativos, as máscaras ou os PNGs de corpo/vestuário v10.
+
 Revisão v10, 30/10/2026. As evidências do proprietário confirmaram falhas de profundidade e oclusão que os detectores v9 não cobriam. [Diagnóstico e correção estrutural](PAPER-DOLL-96-STRUCTURAL-V10.md). Produção continua desativada; o histórico abaixo preserva os resultados e limites das revisões anteriores.
 
 ## Arquivos e escala
