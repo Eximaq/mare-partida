@@ -78,6 +78,23 @@ function pasteCell(to,from,size,columns,index){for(let y=0;y<size;y++)to.set(fro
   }
   atlases[body]['attack-tech']={...atlases[body]['attack-firearm'],sharedWith:'attack-firearm'};
  }
+ // The reusable rest guide is derived from the same ownership atlas. Never
+ // leave an older template behind after importing new anatomical contacts.
+ const guide=new Uint8ClampedArray(512*256*4);
+ for(const [row,body]of ['masculino','feminino'].entries()){
+  const a=atlases[body].static,d=new Uint8ClampedArray(await sharp(path.join(root,a.file)).ensureAlpha().raw().toBuffer());
+  for(const [column,dir]of ['south','north','west','east'].entries()){
+   const n=a.directions.indexOf(dir)*a.framesPerDirection;
+   for(let y=0;y<128;y++)for(let x=0;x<128;x++){
+    const from=((Math.floor(n/a.columns)*128+y)*a.columns*128+n%a.columns*128+x)*4,to=((row*128+y)*512+column*128+x)*4;
+    if(d[from]>=128)guide.set([255,255,255,255],to);
+   }
+  }
+ }
+ await save('assets/template-mask-torso.png',guide,512,256);
+ const template=JSON.parse(await fs.readFile(path.join(root,'fit-template.json'),'utf8'));
+ template.restContacts=structuredClone(rigs.rests);template.revision=manifest.visualRevision;
+ await fs.writeFile(path.join(root,'fit-template.json'),JSON.stringify(template,null,2)+'\n');
  catalog.nativeOwnership={schema:'mare-native-ownership-v9',channels:{r:'torso and short sleeves',g:'bare hands and foreground forearms',b:'near arms'},atlases};catalog.baseClothingFit='native-underwear-v9';
  await fs.writeFile(path.join(root,'manifest.json'),JSON.stringify(manifest,null,2)+'\n');
  await fs.writeFile(path.join(root,'appearance-catalog.json'),JSON.stringify(catalog,null,2)+'\n');

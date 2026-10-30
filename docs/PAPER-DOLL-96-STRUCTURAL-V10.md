@@ -42,7 +42,7 @@ node tools/paper_doll_96_bake_torso_browser.cjs http://127.0.0.1:PORTA/
 python tools/build_pages.py
 ```
 
-O servidor deve apontar para a raiz do repositório. Os construtores de PNG requerem Sharp; os de navegador requerem Playwright/Chromium. O molde do Torso e os contatos publicados devem acompanhar a revisão das máscaras. Uma nova peça não recebe aprovação automática por reutilizar o molde: conferir vistas, todos os quadros e combinações relevantes.
+O servidor deve apontar para a raiz do repositório. A consolidação anatômica também atualiza automaticamente o molde estático de Torso e copia os contatos atuais para fit-template, evitando um guia antigo após nova importação. Os construtores de PNG requerem Sharp; os de navegador requerem Playwright/Chromium. O molde do Torso e os contatos publicados devem acompanhar a revisão das máscaras. Uma nova peça não recebe aprovação automática por reutilizar o molde: conferir vistas, todos os quadros e combinações relevantes.
 
 ## Testes executados
 
@@ -60,7 +60,7 @@ O servidor deve apontar para a raiz do repositório. Os construtores de PNG requ
 | Espelhamento |64 materiais,842 quadros-fonte e3.286 composições exatas |
 | Biblioteca de movimentos |480 quadros de entrada, oito referências estáticas preservadas, caches limitados, sem save criado |
 | Limpeza nativa |424 poses, sem resíduos detectados |
-| Repetibilidade | Nova execução do reparador não produz reparos adicionais; consolidação repetida preservou926 PNGs byte a byte, antes da atualização intencional do molde |
+| Repetibilidade | Nova execução do reparador não produz reparos adicionais; consolidação repetida preservou926 PNGs byte a byte, inclusive na checagem final com atualização automática do molde |
 | Build/empacotamento | Pages construído e quatro testes Python aprovados |
 
 A verificação adicional das mãos distantes expostas confirma que o plano distante não dispensa a cobertura das luvas:769 pixels conferidos sem pele descoberta pela luva fechada. As contagens descrevem detectores específicos; não equivalem a ausência de todo defeito artístico possível.
