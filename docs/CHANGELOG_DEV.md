@@ -1,3 +1,14 @@
+# 30/10/2026 — Sprint pós-PR144: ensaio96 no lobby real
+
+- Merge do PR144 confirmado em 9684c01; nova branch feature/paper-doll-96-player. O passo mínimo seguinte leva a biblioteca ao cenário jogável antes de substituir o combate publicado.
+- Opt-in explícito paperDoll96=1: corpos masculino/feminino, cabelos, rostos, oito paletas de pele, dez paletas de cabelo, equipamento real e dois conjuntos temporários. Mesmos pixels/compositor do PR144, sem nova geração ou alteração de PNG.
+- Direções legadas convertidas; West espelhado; altura96 aplicada ao nome/oclusão visual, preservando colisão, navegação e combate. Carregamento atômico de Idle/Walk, seis decodificações simultâneas e caches limitados.
+- Janela de aparência revisa seis ataques nas quatro direções; gestos de ensaio sem armas ou dano. Caçadas e Zoans mantêm seus renderizadores atuais. Não há persistência96, migração, concessão ou mutação de equipamento.
+- Validação local:160 testes Node e quatro testes Python aprovados; regressão completa do personagem normal aprovada. Chromium/Pages:192 comparações pixel a pixel com a bancada,28 perfis,48 prévias de ataque e oito resoluções/orientações. Aplicação/descarte/reload, movimento real, retorno do combate, caches e falha de manifesto aprovados. Zero erros de página e zero requisições96 no fluxo sem opt-in.
+- Capturas recentes nas três resoluções desktop e no móvel, guardadas fora do repositório; workflow específico publica evidências como artifact. CI remoto tem resultado independente dos testes locais.
+- Reversão de uso: retirar o parâmetro; de código: reverter somente esta sprint e reconstruir Pages. Próxima etapa: aprovação da escala no mapa, armas/emissão96 no combate e manifesto/persistência de lançamento separados.
+- [Uso, arquivos, compatibilidade, testes e pendências](PAPER-DOLL-96-LOBBY.md).
+
 # 30/10/2026 — Correção estrutural de oclusão96 (v10)
 
 - Branch fix/paper-doll-structural-occlusion, checkpoint ed03bdf do PR#144. Corrigidas prioridade incondicional das mãos sobre capa, profundidade lateral ambígua, três contatos de cabeça femininos copiados de ombros e antebraços pintados sobre o dorso.
