@@ -36,7 +36,11 @@ for(const style of catalog.styles)for(const body of ['masculino','feminino'])for
   const png=fs.readFileSync(path.join(root,file));assert.equal(png.readUInt32BE(16),128);assert.equal(png.readUInt32BE(20),128);
   if(style.kind==='face')assert.ok(['original','original-derived'].includes(style.physiognomy),'faces must derive from the clean original');
 }
-assert.equal(catalog.headCalibration.south.hairX,1);
+assert.equal(catalog.headFit,'canonical-neck-v7');
+for(const direction of ['south','north','west','east']){
+  assert.equal(catalog.headCalibration[direction]?.hairX||0,0);
+  assert.equal(catalog.headCalibration[direction]?.hairY||0,0);
+}
 const fit=JSON.parse(fs.readFileSync(path.join(root,'appearance-rig.json')));
 assert.equal(fit.contactCalibration.measuredFrames,416);
 for(const body of ['masculino','feminino'])for(const directions of Object.values(fit.clips[body]))for(const clip of Object.values(directions)){
@@ -68,7 +72,7 @@ const capeRest=rest.concat([{label:'LEFT SHOULDER',x:76/128,y:52/128},{label:'RI
 const capePose=capeRest.map(p=>({...p,x:p.x+.04,y:p.y-.02}));
 const mapped=appearance.shoulderTransform(capeRest,capePose,16).map({x:64,y:52});
 assert.ok(Math.abs(mapped.x-(64+.04*128+16))<.0001);assert.ok(Math.abs(mapped.y-(52-.02*128+16))<.0001);
-assert.deepEqual(catalog.sideMirroring.pixelCoordinateSums,{masculino:127,feminino:128});
+assert.deepEqual(catalog.sideMirroring.pixelCoordinateSums,{masculino:128,feminino:128});
 for(const collection of ['originalHeads','originalHairs','originalHands'])for(const body of ['masculino','feminino'])for(const dir of ['south','north','west','east'])assert.ok(fs.existsSync(path.join(root,catalog[collection][body][dir])));
 console.log('Face containment, exact mirror pivots and shoulder-bound cape transport passed');
 

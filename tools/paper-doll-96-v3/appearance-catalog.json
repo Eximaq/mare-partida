@@ -39,8 +39,13 @@
       "sideMirroring": {
         "source": "east",
         "target": "west",
-        "malePixelCoordinateSum": 127,
+        "malePixelCoordinateSum": 128,
         "femalePixelCoordinateSum": 128
+      },
+      "canonicalSource": {
+        "jobId": "f2d65848-dce0-43a0-bc6f-e11b7b0bd526",
+        "assetId": "b36f3c36-4337-5ad3-8dd6-b95b17f8bf75",
+        "revision": "canonical-native-v7"
       }
     },
     {
@@ -68,8 +73,13 @@
       "sideMirroring": {
         "source": "east",
         "target": "west",
-        "malePixelCoordinateSum": 127,
+        "malePixelCoordinateSum": 128,
         "femalePixelCoordinateSum": 128
+      },
+      "canonicalSource": {
+        "jobId": "fbd5a39e-6ecf-4bbb-9e61-5dc76212508c",
+        "assetId": "00c5e1c3-ae47-54bd-8fc4-03beb4c8f834",
+        "revision": "canonical-native-v7"
       }
     },
     {
@@ -97,8 +107,13 @@
       "sideMirroring": {
         "source": "east",
         "target": "west",
-        "malePixelCoordinateSum": 127,
+        "malePixelCoordinateSum": 128,
         "femalePixelCoordinateSum": 128
+      },
+      "canonicalSource": {
+        "jobId": "5b406604-11e2-4e59-9922-02a07bc6c20e",
+        "assetId": "e6aec45d-12c5-520e-a575-bb1c8f55c387",
+        "revision": "canonical-native-v7"
       }
     },
     {
@@ -126,8 +141,13 @@
       "sideMirroring": {
         "source": "east",
         "target": "west",
-        "malePixelCoordinateSum": 127,
+        "malePixelCoordinateSum": 128,
         "femalePixelCoordinateSum": 128
+      },
+      "canonicalSource": {
+        "jobId": "0787fd48-9dc6-48db-9b7b-24a6d23e89e3",
+        "assetId": "db1eafe0-0a86-55ec-9275-986a637f9ee9",
+        "revision": "canonical-native-v7"
       }
     },
     {
@@ -155,8 +175,13 @@
       "sideMirroring": {
         "source": "east",
         "target": "west",
-        "malePixelCoordinateSum": 127,
+        "malePixelCoordinateSum": 128,
         "femalePixelCoordinateSum": 128
+      },
+      "canonicalSource": {
+        "jobId": "38d74687-49b2-477f-b42c-5e1a2e4029cb",
+        "assetId": "d2d242c5-b5e0-5779-958a-8c3f6382bf2f",
+        "revision": "canonical-native-v7"
       }
     },
     {
@@ -184,8 +209,13 @@
       "sideMirroring": {
         "source": "east",
         "target": "west",
-        "malePixelCoordinateSum": 127,
+        "malePixelCoordinateSum": 128,
         "femalePixelCoordinateSum": 128
+      },
+      "canonicalSource": {
+        "jobId": "7d7c9da6-b088-49f2-adac-79378a19ef93",
+        "assetId": "f42d6022-eae8-53e9-a16e-b7f01270d2ff",
+        "revision": "canonical-native-v7"
       }
     },
     {
@@ -306,7 +336,86 @@
       },
       "galleryId": "70ea8e0a-c6b2-4d3c-a6f0-3ab2cee0e6fb",
       "sourceJob": "e74e2681-e2c1-488d-b668-806a55c39448",
-      "approval": "candidate"
+      "approval": "candidate",
+      "parts": {
+        "masculino": {
+          "south": {
+            "LEFT": "assets/custom-item-8-masculino-south-left.png",
+            "RIGHT": "assets/custom-item-8-masculino-south-right.png"
+          },
+          "north": {
+            "LEFT": "assets/custom-item-8-masculino-north-left.png",
+            "RIGHT": "assets/custom-item-8-masculino-north-right.png"
+          },
+          "west": {
+            "LEFT": "assets/custom-item-8-masculino-west-left.png",
+            "RIGHT": "assets/custom-item-8-masculino-west-right.png"
+          },
+          "east": {
+            "LEFT": "assets/custom-item-8-masculino-east-left.png",
+            "RIGHT": "assets/custom-item-8-masculino-east-right.png"
+          }
+        },
+        "feminino": {
+          "south": {
+            "LEFT": "assets/custom-item-8-feminino-south-left.png",
+            "RIGHT": "assets/custom-item-8-feminino-south-right.png"
+          },
+          "north": {
+            "LEFT": "assets/custom-item-8-feminino-north-left.png",
+            "RIGHT": "assets/custom-item-8-feminino-north-right.png"
+          },
+          "west": {
+            "LEFT": "assets/custom-item-8-feminino-west-left.png",
+            "RIGHT": "assets/custom-item-8-feminino-west-right.png"
+          },
+          "east": {
+            "LEFT": "assets/custom-item-8-feminino-east-left.png",
+            "RIGHT": "assets/custom-item-8-feminino-east-right.png"
+          }
+        }
+      },
+      "partGallery": {
+        "LEFT": "34185efa-182e-40ed-b2b2-4c0f786600c7",
+        "RIGHT": "f956ef67-2d0e-45f1-90ca-e5388d13b971"
+      },
+      "canonicalSource": {
+        "jobId": "4c78f1d0-217f-4e5d-8ef3-86ee756610bc",
+        "assetId": "8361c072-c413-5479-9b8e-0e38097c06a8",
+        "revision": "canonical-native-v7"
+      },
+      "nativeMaterial": {
+        "ramp": [
+          [
+            22,
+            17,
+            20
+          ],
+          [
+            55,
+            33,
+            27
+          ],
+          [
+            95,
+            54,
+            33
+          ],
+          [
+            142,
+            84,
+            43
+          ],
+          [
+            178,
+            117,
+            64
+          ]
+        ],
+        "fingerCoverage": "full",
+        "kneePlate": false,
+        "cuffStart": 0.62
+      }
     },
     {
       "id": "item-9",
@@ -330,7 +439,96 @@
       },
       "galleryId": "7acdadd7-58d0-4705-9fa3-9bc1fdcda436",
       "sourceJob": "069220b5-38e8-4c4a-832c-878f39d06ae1",
-      "approval": "candidate"
+      "approval": "candidate",
+      "parts": {
+        "masculino": {
+          "south": {
+            "LEFT": "assets/custom-item-9-masculino-south-left.png",
+            "RIGHT": "assets/custom-item-9-masculino-south-right.png"
+          },
+          "north": {
+            "LEFT": "assets/custom-item-9-masculino-north-left.png",
+            "RIGHT": "assets/custom-item-9-masculino-north-right.png"
+          },
+          "west": {
+            "LEFT": "assets/custom-item-9-masculino-west-left.png",
+            "RIGHT": "assets/custom-item-9-masculino-west-right.png"
+          },
+          "east": {
+            "LEFT": "assets/custom-item-9-masculino-east-left.png",
+            "RIGHT": "assets/custom-item-9-masculino-east-right.png"
+          }
+        },
+        "feminino": {
+          "south": {
+            "LEFT": "assets/custom-item-9-feminino-south-left.png",
+            "RIGHT": "assets/custom-item-9-feminino-south-right.png"
+          },
+          "north": {
+            "LEFT": "assets/custom-item-9-feminino-north-left.png",
+            "RIGHT": "assets/custom-item-9-feminino-north-right.png"
+          },
+          "west": {
+            "LEFT": "assets/custom-item-9-feminino-west-left.png",
+            "RIGHT": "assets/custom-item-9-feminino-west-right.png"
+          },
+          "east": {
+            "LEFT": "assets/custom-item-9-feminino-east-left.png",
+            "RIGHT": "assets/custom-item-9-feminino-east-right.png"
+          }
+        }
+      },
+      "partGallery": {
+        "LEFT": "0b5d735a-25f6-4a98-b083-2aa513e7f1df",
+        "RIGHT": "b1362bd0-fbb0-4e93-851e-2909b6e817ae"
+      },
+      "materialPalette": {
+        "name": "reef-steel",
+        "purpose": "cool metal cuff and rivets remain distinct from skin",
+        "ramp": [
+          "#2b4e67",
+          "#548098",
+          "#93b7c8",
+          "#c8e0ea"
+        ]
+      },
+      "canonicalSource": {
+        "jobId": "0fd97b96-dd34-4912-947a-20c37f5003d6",
+        "assetId": "ff9c5c1b-87bf-5820-af5e-0c816c5d17fb",
+        "revision": "canonical-native-v7"
+      },
+      "nativeMaterial": {
+        "ramp": [
+          [
+            12,
+            18,
+            28
+          ],
+          [
+            23,
+            34,
+            48
+          ],
+          [
+            39,
+            56,
+            76
+          ],
+          [
+            62,
+            83,
+            106
+          ],
+          [
+            99,
+            126,
+            147
+          ]
+        ],
+        "fingerCoverage": "full",
+        "kneePlate": false,
+        "cuffStart": 0.62
+      }
     },
     {
       "id": "item-18",
@@ -354,7 +552,12 @@
       },
       "galleryId": "ed4a217b-5a69-4410-83da-a98ae18d5558",
       "sourceJob": "d4093e7a-efbe-495a-9f3f-6a9a5c84c121",
-      "approval": "candidate"
+      "approval": "candidate",
+      "canonicalSource": {
+        "jobId": "23e2db22-ead2-40ba-b45e-9f644b6ee100",
+        "assetId": "e12398fa-553c-590d-a84f-8ff97cdf3e8d",
+        "revision": "canonical-native-v7"
+      }
     },
     {
       "id": "item-19",
@@ -380,7 +583,12 @@
       "sourceJob": "a77fe19f-3fc9-417f-addb-fbd831f48262",
       "approval": "candidate",
       "hairOcclusion": "crown",
-      "hairlineY": 34
+      "hairlineY": 34,
+      "canonicalSource": {
+        "jobId": "cb089c4b-6c31-4fd3-b9f6-e1620acf84a8",
+        "assetId": "f00b6973-6357-5f57-8e44-6e482e3d949d",
+        "revision": "canonical-native-v7"
+      }
     },
     {
       "id": "item-21",
@@ -404,7 +612,104 @@
       },
       "galleryId": "52656df2-ad54-42b8-88a8-5d56e9028169",
       "sourceJob": "601f6625-63a6-49f2-a14d-94e880a01053",
-      "approval": "candidate"
+      "approval": "candidate",
+      "parts": {
+        "masculino": {
+          "south": {
+            "LEFTupper": "assets/custom-item-21-masculino-south-left-upper.png",
+            "LEFTlower": "assets/custom-item-21-masculino-south-left-lower.png",
+            "RIGHTupper": "assets/custom-item-21-masculino-south-right-upper.png",
+            "RIGHTlower": "assets/custom-item-21-masculino-south-right-lower.png"
+          },
+          "north": {
+            "LEFTupper": "assets/custom-item-21-masculino-north-left-upper.png",
+            "LEFTlower": "assets/custom-item-21-masculino-north-left-lower.png",
+            "RIGHTupper": "assets/custom-item-21-masculino-north-right-upper.png",
+            "RIGHTlower": "assets/custom-item-21-masculino-north-right-lower.png"
+          },
+          "west": {
+            "LEFTupper": "assets/custom-item-21-masculino-west-left-upper.png",
+            "LEFTlower": "assets/custom-item-21-masculino-west-left-lower.png",
+            "RIGHTupper": "assets/custom-item-21-masculino-west-right-upper.png",
+            "RIGHTlower": "assets/custom-item-21-masculino-west-right-lower.png"
+          },
+          "east": {
+            "LEFTupper": "assets/custom-item-21-masculino-east-left-upper.png",
+            "LEFTlower": "assets/custom-item-21-masculino-east-left-lower.png",
+            "RIGHTupper": "assets/custom-item-21-masculino-east-right-upper.png",
+            "RIGHTlower": "assets/custom-item-21-masculino-east-right-lower.png"
+          }
+        },
+        "feminino": {
+          "south": {
+            "LEFTupper": "assets/custom-item-21-feminino-south-left-upper.png",
+            "LEFTlower": "assets/custom-item-21-feminino-south-left-lower.png",
+            "RIGHTupper": "assets/custom-item-21-feminino-south-right-upper.png",
+            "RIGHTlower": "assets/custom-item-21-feminino-south-right-lower.png"
+          },
+          "north": {
+            "LEFTupper": "assets/custom-item-21-feminino-north-left-upper.png",
+            "LEFTlower": "assets/custom-item-21-feminino-north-left-lower.png",
+            "RIGHTupper": "assets/custom-item-21-feminino-north-right-upper.png",
+            "RIGHTlower": "assets/custom-item-21-feminino-north-right-lower.png"
+          },
+          "west": {
+            "LEFTupper": "assets/custom-item-21-feminino-west-left-upper.png",
+            "LEFTlower": "assets/custom-item-21-feminino-west-left-lower.png",
+            "RIGHTupper": "assets/custom-item-21-feminino-west-right-upper.png",
+            "RIGHTlower": "assets/custom-item-21-feminino-west-right-lower.png"
+          },
+          "east": {
+            "LEFTupper": "assets/custom-item-21-feminino-east-left-upper.png",
+            "LEFTlower": "assets/custom-item-21-feminino-east-left-lower.png",
+            "RIGHTupper": "assets/custom-item-21-feminino-east-right-upper.png",
+            "RIGHTlower": "assets/custom-item-21-feminino-east-right-lower.png"
+          }
+        }
+      },
+      "partGallery": {
+        "LEFTupper": "6dae37f7-be53-4b3f-ad2f-21d214396c36",
+        "LEFTlower": "b5dfd8d0-b0ae-48d3-aa7b-4a17b70f977a",
+        "RIGHTupper": "edbf1973-da3f-4026-9729-7b4757f3953d",
+        "RIGHTlower": "a6829174-534f-496e-9c80-9c2d628653e1"
+      },
+      "canonicalSource": {
+        "jobId": "3a3986df-a16a-465e-9178-b79df7c3af6e",
+        "assetId": "be057414-cb85-530c-913c-6c9b75550d7f",
+        "revision": "canonical-native-v7"
+      },
+      "nativeMaterial": {
+        "ramp": [
+          [
+            12,
+            18,
+            28
+          ],
+          [
+            23,
+            34,
+            48
+          ],
+          [
+            39,
+            56,
+            76
+          ],
+          [
+            62,
+            83,
+            106
+          ],
+          [
+            99,
+            126,
+            147
+          ]
+        ],
+        "fingerCoverage": "full",
+        "kneePlate": true,
+        "cuffStart": 0.6
+      }
     },
     {
       "id": "item-22",
@@ -428,7 +733,104 @@
       },
       "galleryId": "e740c5c8-d763-4e8a-9e2d-ddc4aa33c05e",
       "sourceJob": "367e3a17-b33d-494a-8702-39600fbb8804",
-      "approval": "candidate"
+      "approval": "candidate",
+      "parts": {
+        "masculino": {
+          "south": {
+            "LEFTupper": "assets/custom-item-22-masculino-south-left-upper.png",
+            "LEFTlower": "assets/custom-item-22-masculino-south-left-lower.png",
+            "RIGHTupper": "assets/custom-item-22-masculino-south-right-upper.png",
+            "RIGHTlower": "assets/custom-item-22-masculino-south-right-lower.png"
+          },
+          "north": {
+            "LEFTupper": "assets/custom-item-22-masculino-north-left-upper.png",
+            "LEFTlower": "assets/custom-item-22-masculino-north-left-lower.png",
+            "RIGHTupper": "assets/custom-item-22-masculino-north-right-upper.png",
+            "RIGHTlower": "assets/custom-item-22-masculino-north-right-lower.png"
+          },
+          "west": {
+            "LEFTupper": "assets/custom-item-22-masculino-west-left-upper.png",
+            "LEFTlower": "assets/custom-item-22-masculino-west-left-lower.png",
+            "RIGHTupper": "assets/custom-item-22-masculino-west-right-upper.png",
+            "RIGHTlower": "assets/custom-item-22-masculino-west-right-lower.png"
+          },
+          "east": {
+            "LEFTupper": "assets/custom-item-22-masculino-east-left-upper.png",
+            "LEFTlower": "assets/custom-item-22-masculino-east-left-lower.png",
+            "RIGHTupper": "assets/custom-item-22-masculino-east-right-upper.png",
+            "RIGHTlower": "assets/custom-item-22-masculino-east-right-lower.png"
+          }
+        },
+        "feminino": {
+          "south": {
+            "LEFTupper": "assets/custom-item-22-feminino-south-left-upper.png",
+            "LEFTlower": "assets/custom-item-22-feminino-south-left-lower.png",
+            "RIGHTupper": "assets/custom-item-22-feminino-south-right-upper.png",
+            "RIGHTlower": "assets/custom-item-22-feminino-south-right-lower.png"
+          },
+          "north": {
+            "LEFTupper": "assets/custom-item-22-feminino-north-left-upper.png",
+            "LEFTlower": "assets/custom-item-22-feminino-north-left-lower.png",
+            "RIGHTupper": "assets/custom-item-22-feminino-north-right-upper.png",
+            "RIGHTlower": "assets/custom-item-22-feminino-north-right-lower.png"
+          },
+          "west": {
+            "LEFTupper": "assets/custom-item-22-feminino-west-left-upper.png",
+            "LEFTlower": "assets/custom-item-22-feminino-west-left-lower.png",
+            "RIGHTupper": "assets/custom-item-22-feminino-west-right-upper.png",
+            "RIGHTlower": "assets/custom-item-22-feminino-west-right-lower.png"
+          },
+          "east": {
+            "LEFTupper": "assets/custom-item-22-feminino-east-left-upper.png",
+            "LEFTlower": "assets/custom-item-22-feminino-east-left-lower.png",
+            "RIGHTupper": "assets/custom-item-22-feminino-east-right-upper.png",
+            "RIGHTlower": "assets/custom-item-22-feminino-east-right-lower.png"
+          }
+        }
+      },
+      "partGallery": {
+        "LEFTupper": "2728fe13-f606-4fea-8b37-3acf78e9a35b",
+        "LEFTlower": "b8298576-495a-4172-bb59-8bd53e5074d9",
+        "RIGHTupper": "724e28c8-edc9-41ba-a728-0baa089563db",
+        "RIGHTlower": "698ed1e6-b0c2-450d-acee-2292b3d870bb"
+      },
+      "canonicalSource": {
+        "jobId": "20951b71-b9f0-49b9-acf6-042e8017850b",
+        "assetId": "f0e742dd-8ad4-54d4-a8ba-6853eec0f923",
+        "revision": "canonical-native-v7"
+      },
+      "nativeMaterial": {
+        "ramp": [
+          [
+            12,
+            18,
+            28
+          ],
+          [
+            23,
+            34,
+            48
+          ],
+          [
+            39,
+            56,
+            76
+          ],
+          [
+            62,
+            83,
+            106
+          ],
+          [
+            99,
+            126,
+            147
+          ]
+        ],
+        "fingerCoverage": "full",
+        "kneePlate": false,
+        "cuffStart": 0.6
+      }
     },
     {
       "id": "item-23",
@@ -452,7 +854,12 @@
       },
       "galleryId": "8a39c158-5ec3-4587-b585-ad533125d26a",
       "sourceJob": "cf9c9d4e-4adf-4d6c-be9e-e6142c0716d1",
-      "approval": "candidate"
+      "approval": "candidate",
+      "canonicalSource": {
+        "jobId": "79f655ca-f12c-436e-92eb-089a2efa80f4",
+        "assetId": "49607aba-921c-5deb-8aba-5d086da7293e",
+        "revision": "canonical-native-v7"
+      }
     },
     {
       "id": "item-24",
@@ -476,7 +883,12 @@
       },
       "galleryId": "b5679d05-cee0-42af-961a-6e0f3e54b4a4",
       "sourceJob": "b35fd6de-333a-44cb-afc0-2c7f81e0e2c6",
-      "approval": "candidate"
+      "approval": "candidate",
+      "canonicalSource": {
+        "jobId": "c49e35d6-23eb-4c46-a572-070f025adedd",
+        "assetId": "ede843c6-a2d3-5ef5-8f18-41797a43c5c8",
+        "revision": "canonical-native-v7"
+      }
     },
     {
       "id": "item-25",
@@ -500,7 +912,98 @@
       },
       "galleryId": "45c4959d-8eb2-4a8f-b34c-c27611192a00",
       "sourceJob": "7d880278-a4d6-4d2f-8b93-e1a971373443",
-      "approval": "candidate"
+      "approval": "candidate",
+      "parts": {
+        "masculino": {
+          "south": {
+            "LEFT": "assets/custom-item-25-masculino-south-left.png",
+            "RIGHT": "assets/custom-item-25-masculino-south-right.png"
+          },
+          "north": {
+            "LEFT": "assets/custom-item-25-masculino-north-left.png",
+            "RIGHT": "assets/custom-item-25-masculino-north-right.png"
+          },
+          "west": {
+            "LEFT": "assets/custom-item-25-masculino-west-left.png",
+            "RIGHT": "assets/custom-item-25-masculino-west-right.png"
+          },
+          "east": {
+            "LEFT": "assets/custom-item-25-masculino-east-left.png",
+            "RIGHT": "assets/custom-item-25-masculino-east-right.png"
+          }
+        },
+        "feminino": {
+          "south": {
+            "LEFT": "assets/custom-item-25-feminino-south-left.png",
+            "RIGHT": "assets/custom-item-25-feminino-south-right.png"
+          },
+          "north": {
+            "LEFT": "assets/custom-item-25-feminino-north-left.png",
+            "RIGHT": "assets/custom-item-25-feminino-north-right.png"
+          },
+          "west": {
+            "LEFT": "assets/custom-item-25-feminino-west-left.png",
+            "RIGHT": "assets/custom-item-25-feminino-west-right.png"
+          },
+          "east": {
+            "LEFT": "assets/custom-item-25-feminino-east-left.png",
+            "RIGHT": "assets/custom-item-25-feminino-east-right.png"
+          }
+        }
+      },
+      "nativeCalibration": {
+        "feminino": {
+          "south": {
+            "LEFT": {
+              "x": 1,
+              "y": 1,
+              "reason": "cuff-to-wrist-contact"
+            }
+          }
+        }
+      },
+      "fingerCoverage": "fingerless",
+      "partGallery": {
+        "LEFT": "e6f6ddc9-5070-44ad-b154-32a239d1f19d",
+        "RIGHT": "b736e292-81e8-4e3e-949e-0b3384d386d2"
+      },
+      "canonicalSource": {
+        "jobId": "38744aac-7a0a-49a3-8541-635f61bfac08",
+        "assetId": "14a5f336-605a-5cfa-9c85-f0b46231bf94",
+        "revision": "canonical-native-v7"
+      },
+      "nativeMaterial": {
+        "ramp": [
+          [
+            22,
+            17,
+            20
+          ],
+          [
+            55,
+            33,
+            27
+          ],
+          [
+            95,
+            54,
+            33
+          ],
+          [
+            142,
+            84,
+            43
+          ],
+          [
+            178,
+            117,
+            64
+          ]
+        ],
+        "fingerCoverage": "fingerless",
+        "kneePlate": false,
+        "cuffStart": 0.6
+      }
     },
     {
       "id": "item-26",
@@ -524,7 +1027,87 @@
       },
       "galleryId": "15a666e5-5e8c-4efa-8705-3f4b77d55dde",
       "sourceJob": "2df9d78d-e85d-4d3f-b1bf-42badc2a4954",
-      "approval": "candidate"
+      "approval": "candidate",
+      "parts": {
+        "masculino": {
+          "south": {
+            "LEFT": "assets/custom-item-26-masculino-south-left.png",
+            "RIGHT": "assets/custom-item-26-masculino-south-right.png"
+          },
+          "north": {
+            "LEFT": "assets/custom-item-26-masculino-north-left.png",
+            "RIGHT": "assets/custom-item-26-masculino-north-right.png"
+          },
+          "west": {
+            "LEFT": "assets/custom-item-26-masculino-west-left.png",
+            "RIGHT": "assets/custom-item-26-masculino-west-right.png"
+          },
+          "east": {
+            "LEFT": "assets/custom-item-26-masculino-east-left.png",
+            "RIGHT": "assets/custom-item-26-masculino-east-right.png"
+          }
+        },
+        "feminino": {
+          "south": {
+            "LEFT": "assets/custom-item-26-feminino-south-left.png",
+            "RIGHT": "assets/custom-item-26-feminino-south-right.png"
+          },
+          "north": {
+            "LEFT": "assets/custom-item-26-feminino-north-left.png",
+            "RIGHT": "assets/custom-item-26-feminino-north-right.png"
+          },
+          "west": {
+            "LEFT": "assets/custom-item-26-feminino-west-left.png",
+            "RIGHT": "assets/custom-item-26-feminino-west-right.png"
+          },
+          "east": {
+            "LEFT": "assets/custom-item-26-feminino-east-left.png",
+            "RIGHT": "assets/custom-item-26-feminino-east-right.png"
+          }
+        }
+      },
+      "fingerCoverage": "full",
+      "partGallery": {
+        "LEFT": "0eb36477-c7b6-4b4d-acb4-191fa57f6fbd",
+        "RIGHT": "ab42e634-bce9-40e6-b0a8-521e0f72cca8"
+      },
+      "canonicalSource": {
+        "jobId": "622415be-eae5-4002-b22c-ef554e57a7d8",
+        "assetId": "f0ff7df8-6c27-54ae-b1ab-9ecf25878582",
+        "revision": "canonical-native-v7"
+      },
+      "nativeMaterial": {
+        "ramp": [
+          [
+            12,
+            18,
+            28
+          ],
+          [
+            23,
+            34,
+            48
+          ],
+          [
+            39,
+            56,
+            76
+          ],
+          [
+            62,
+            83,
+            106
+          ],
+          [
+            99,
+            126,
+            147
+          ]
+        ],
+        "fingerCoverage": "full",
+        "kneePlate": false,
+        "cuffStart": 0.6
+      }
     },
     {
       "id": "hair-ponytail",
@@ -551,10 +1134,15 @@
       "sideMirroring": {
         "source": "east",
         "target": "west",
-        "malePixelCoordinateSum": 127,
+        "malePixelCoordinateSum": 128,
         "femalePixelCoordinateSum": 128
       },
-      "galleryId": "c86d7598-4703-4ef1-9c3c-edb3f54dede1"
+      "galleryId": "c86d7598-4703-4ef1-9c3c-edb3f54dede1",
+      "canonicalSource": {
+        "jobId": "1a309f71-fef7-47bd-9aee-7ed0868ab4a8",
+        "assetId": "b3c2abb5-48ca-54e3-a5d9-bbf81fa5c4c2",
+        "revision": "canonical-native-v7"
+      }
     },
     {
       "id": "hair-curly",
@@ -581,10 +1169,15 @@
       "sideMirroring": {
         "source": "east",
         "target": "west",
-        "malePixelCoordinateSum": 127,
+        "malePixelCoordinateSum": 128,
         "femalePixelCoordinateSum": 128
       },
-      "galleryId": "82813762-00bb-463f-bf98-6b9465ab37de"
+      "galleryId": "82813762-00bb-463f-bf98-6b9465ab37de",
+      "canonicalSource": {
+        "jobId": "dbe20bd9-3b6d-4135-9bdc-4c6a9052830f",
+        "assetId": "da9b32db-a25a-58e4-abcf-8198350129d9",
+        "revision": "canonical-native-v7"
+      }
     },
     {
       "id": "hair-long",
@@ -611,10 +1204,15 @@
       "sideMirroring": {
         "source": "east",
         "target": "west",
-        "malePixelCoordinateSum": 127,
+        "malePixelCoordinateSum": 128,
         "femalePixelCoordinateSum": 128
       },
-      "galleryId": "c63320ed-271e-4b0c-af4c-f31a2eed73cd"
+      "galleryId": "c63320ed-271e-4b0c-af4c-f31a2eed73cd",
+      "canonicalSource": {
+        "jobId": "339c7a94-c906-47a5-9189-ce4cba6b3180",
+        "assetId": "853ac358-0fd3-5278-80ff-6383b6bf3c16",
+        "revision": "canonical-native-v7"
+      }
     },
     {
       "id": "hair-undercut",
@@ -641,10 +1239,15 @@
       "sideMirroring": {
         "source": "east",
         "target": "west",
-        "malePixelCoordinateSum": 127,
+        "malePixelCoordinateSum": 128,
         "femalePixelCoordinateSum": 128
       },
-      "galleryId": "571dfba3-e478-4de8-aab1-f3050712a0a0"
+      "galleryId": "571dfba3-e478-4de8-aab1-f3050712a0a0",
+      "canonicalSource": {
+        "jobId": "afa9ef72-a532-40d1-8848-1703644fb811",
+        "assetId": "7efce3b6-88f3-5ff9-8fec-306f9583b199",
+        "revision": "canonical-native-v7"
+      }
     },
     {
       "id": "face-calm",
@@ -738,11 +1341,7 @@
     }
   },
   "headCalibration": {
-    "south": {
-      "hairX": 1,
-      "hairY": 0
-    },
-    "reason": "Original eye axis is approximately one native pixel right of the scalp centre, both bodies."
+    "reason": "Complete head and west pose family mirrors east about x=64. Integer neck attachment; no independent hair offsets."
   },
   "gallery": {
     "projectName": "Jade Dragon",
@@ -978,8 +1577,1746 @@
         "created": true
       }
     ],
-    "totalSheets": 161,
-    "revisedExistingSheets": 40
+    "totalSheets": 184,
+    "revisedExistingSheets": 40,
+    "nativeFitUpdates": [
+      {
+        "key": "masculino-static-body",
+        "id": "4b37c009-d25c-410a-81dc-b44cd715fe2b",
+        "created": false
+      },
+      {
+        "key": "masculino-walk-south-body",
+        "id": "5bcea69c-2620-41d2-bf29-a8227da1f38e",
+        "created": false
+      },
+      {
+        "key": "masculino-static-face",
+        "id": "c912541a-bc7f-4280-9e97-7a950cd4cedc",
+        "created": false
+      },
+      {
+        "key": "masculino-walk-south-face",
+        "id": "2f3abe41-0049-4c9e-b622-9e9fb1114711",
+        "created": false
+      },
+      {
+        "key": "masculino-static-hair",
+        "id": "cea4adb1-00f7-4b12-8f54-f09659c58f8f",
+        "created": false
+      },
+      {
+        "key": "masculino-walk-south-hair",
+        "id": "649e083f-1146-43dd-b6f3-a73870c110c1",
+        "created": false
+      },
+      {
+        "key": "masculino-static-pants",
+        "id": "417e8355-77e7-4c9e-9c88-28481ab38f99",
+        "created": false
+      },
+      {
+        "key": "masculino-walk-south-pants",
+        "id": "f7da7900-ed8f-424a-a5d1-6b6a5a66f56a",
+        "created": false
+      },
+      {
+        "key": "feminino-static-body",
+        "id": "c47c7bbc-d684-4247-bc48-0ef12faa99a7",
+        "created": false
+      },
+      {
+        "key": "feminino-walk-south-body",
+        "id": "ba716888-dc31-4f3b-998d-5876e75c19c2",
+        "created": false
+      },
+      {
+        "key": "feminino-static-face",
+        "id": "a044c804-7cc8-4710-9cb5-f31904f7c02a",
+        "created": false
+      },
+      {
+        "key": "feminino-walk-south-face",
+        "id": "213c9a50-ed15-4dc3-9cdb-525baf17b7d6",
+        "created": false
+      },
+      {
+        "key": "feminino-static-hair",
+        "id": "94b375ef-8c1c-45e1-a822-29b4b41eb4be",
+        "created": false
+      },
+      {
+        "key": "feminino-walk-south-hair",
+        "id": "21a3e71b-e9c8-41b0-8e36-7ac450567ff4",
+        "created": false
+      },
+      {
+        "key": "feminino-static-pants",
+        "id": "2c938905-a5a0-4a8d-b1ed-1b3deffaf1f2",
+        "created": false
+      },
+      {
+        "key": "feminino-walk-south-pants",
+        "id": "4ac464fe-5932-4b61-a180-f711430fde8a",
+        "created": false
+      },
+      {
+        "key": "feminino-static-top",
+        "id": "e4d822f0-7d3f-46d4-b3a2-25ea87a1ae0f",
+        "created": false
+      },
+      {
+        "key": "masculino-attack-sword-underArms",
+        "id": "e3329716-ea09-4d90-9361-8e81bfc51196",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-sword-body",
+        "id": "b5f7f3db-44c0-4c6f-8181-b4a968222637",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-sword-headBase",
+        "id": "52644bae-c2c3-440e-b362-3c3a1afe4a9a",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-sword-pants",
+        "id": "9b4b0863-d32f-490f-95c1-eb3083600e74",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-sword-face",
+        "id": "f6dc3997-3a38-434a-83f9-7d96e9ebcdd7",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-sword-hair",
+        "id": "a75709df-d8f3-4453-8435-2f069e9fbe18",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-unarmed-underArms",
+        "id": "5a1f4ed1-97f3-466c-98c3-fe0c04319b2a",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-unarmed-body",
+        "id": "d8f160b6-8924-4b8f-84a0-d2288d548ae0",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-unarmed-headBase",
+        "id": "89e868bb-9b38-40a4-b6d7-434461af4e29",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-unarmed-pants",
+        "id": "f22eb7a4-fc70-43ec-bd09-b6d97de9b0c8",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-unarmed-face",
+        "id": "266ca370-08e7-4418-93c4-adf8e0ec8edf",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-unarmed-hair",
+        "id": "dc914ac7-db71-4980-bb95-68331e47897f",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-firearm-underArms",
+        "id": "fbd67292-2541-49ea-b2b4-b0887d2046c8",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-firearm-body",
+        "id": "829458e0-f7c1-4cad-8f24-0a4efaf68b17",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-firearm-headBase",
+        "id": "c983c608-08ab-4f7c-baec-b0047c9b0dff",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-firearm-pants",
+        "id": "792ac938-561c-4fd7-bb73-37c1b2111d8d",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-firearm-face",
+        "id": "b2644b5a-46e3-4b86-bc9b-5591017a6320",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-firearm-hair",
+        "id": "6fa3121c-36a6-4696-9c31-fa3ce7c977d3",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-daggers-body",
+        "id": "43b7ff3d-a1b6-488f-ac56-35a8988b13a1",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-daggers-headBase",
+        "id": "1f425ac7-6647-41fb-82fa-09746fe7e392",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-daggers-pants",
+        "id": "55ea2568-27f7-41a5-b58e-d53e3bfe0862",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-daggers-face",
+        "id": "74ea570d-8b90-44ee-81cb-2ef449963b6e",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-daggers-hair",
+        "id": "63a0da69-2610-4a96-ad16-4266568ed32c",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-focus-underArms",
+        "id": "7f1421b7-6bff-4370-932f-c1e0c0fa04a4",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-focus-body",
+        "id": "65379b88-e7d7-4f80-8b65-d027c53e63d3",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-focus-headBase",
+        "id": "acd94d83-8b9a-4d52-948b-a03af7464799",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-focus-pants",
+        "id": "59dadb46-e09f-455f-a969-1e6963078d96",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-focus-face",
+        "id": "8f498721-7194-435b-860b-8d99fe9a7bbc",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-sword-underArms",
+        "id": "0cc898e5-ad47-48e2-82e6-474a950df58a",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-sword-body",
+        "id": "2796031d-e1f5-4744-a8ab-6d3213f30806",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-sword-headBase",
+        "id": "cdf1b332-411c-4e72-9e81-f05dd302f278",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-sword-pants",
+        "id": "359633d3-748c-4fb9-8401-5b81156b7c62",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-sword-top",
+        "id": "d94938d3-c05f-47f4-b4ee-fce472f7089f",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-sword-face",
+        "id": "c03ec184-ecfc-45de-a524-0354abcd2805",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-attack-focus-hair",
+        "id": "3089e730-ea97-4836-a685-312879e5aa80",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-sword-hair",
+        "id": "d8d68323-bfbd-4902-8722-69c863545e95",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-unarmed-underArms",
+        "id": "5bc7969a-2d4a-4fe4-ba79-567b97515a1a",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-unarmed-body",
+        "id": "47a99890-8993-408a-aff8-183514a3f79e",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-unarmed-headBase",
+        "id": "79be423b-4d23-4c11-9061-291851adce6f",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-unarmed-pants",
+        "id": "bed19736-10c4-4f04-b76a-a055d716d62b",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-unarmed-face",
+        "id": "34c225a1-2d6d-41d7-8978-484e7f2f5c58",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-unarmed-top",
+        "id": "c9488ea6-d1d8-4722-aebb-b1970d8931c7",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-unarmed-hair",
+        "id": "a6fdfa09-494c-410d-9fac-616ab2ea1c5c",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-firearm-underArms",
+        "id": "85c3576f-97da-487c-a925-752345b87a7a",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-firearm-body",
+        "id": "631d712a-c3a8-4974-afc1-a88c049f2d8d",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-firearm-headBase",
+        "id": "8615b0ff-8163-49e0-b68f-94ff204c9f5c",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-firearm-pants",
+        "id": "d00a9e33-bbc5-4499-a233-8ef5f6d3355e",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-firearm-top",
+        "id": "9168c968-d945-45e8-8500-e2acffd5aa15",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-firearm-face",
+        "id": "282657b3-57fa-4d8c-9617-d8d8da698014",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-firearm-hair",
+        "id": "6085a896-83bf-4c5e-b5c1-33a3b4eaaa17",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-daggers-underArms",
+        "id": "9eb13eb8-264f-4bcd-9618-7b7b5db88653",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-daggers-body",
+        "id": "1cdb80df-9452-4a75-b93a-d05fb70142af",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-daggers-headBase",
+        "id": "2894c043-5b3a-4d0b-8064-5cce3a84cd91",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-daggers-pants",
+        "id": "8c4dd4e4-f8d8-4edb-90ae-e81f7bc4f4d8",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-daggers-top",
+        "id": "555cf0a4-c2f3-4519-9236-56fc16d764ad",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-daggers-face",
+        "id": "c5a68181-2070-4155-aa88-7d1757bd9e9b",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-daggers-hair",
+        "id": "579ad078-3676-42fa-a6c7-c42387f06bb9",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-focus-underArms",
+        "id": "ef48dc80-26d3-4116-b22d-95667335402d",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-focus-body",
+        "id": "d62aa561-da1f-4e5d-b389-7213858a9b3f",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-focus-headBase",
+        "id": "e625eb1e-0981-40e0-aa4e-eaa9ccbcdbdc",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-focus-pants",
+        "id": "f348eaca-470b-4aaa-9e51-094190f05cc0",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-focus-top",
+        "id": "3e07e4b4-17a2-4c0e-a9cd-0d3555086ae6",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-focus-face",
+        "id": "d6cb5476-bda9-43f0-9f4d-356d3162355d",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-attack-focus-hair",
+        "id": "830417cd-d3b1-44b1-8f2c-e1f1b7fd66da",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-idle-face",
+        "id": "dc7b35a1-a6f9-4a11-996a-23e8263cc0c1",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-idle-pants",
+        "id": "630b49a9-760a-4805-a05c-ae7d9e209ccb",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-idle-hair",
+        "id": "e14b2c3d-9e8c-40db-a074-d7fa9162ce7b",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-walk-headBase",
+        "id": "bffb3c0d-c632-403e-8eeb-c3c052e54033",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-idle-body",
+        "id": "d412b5d3-1bb8-47b4-8697-e05e9304c37b",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-idle-headBase",
+        "id": "9c0be4c4-9f06-4ae6-a43f-1696e53b6ac3",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-walk-body",
+        "id": "f6207b3b-b1ef-4916-9498-b2276ab11976",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-walk-face",
+        "id": "284a632a-2679-4d3b-977f-e59489794781",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-walk-pants",
+        "id": "b07783a6-40c6-4e30-8621-b15af64cdd98",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-idle-pants",
+        "id": "3cab5d1e-51c8-4378-b69b-24ee2be368de",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-idle-hair",
+        "id": "d3aca66b-1f3a-4b27-9dae-a2e56cc1e960",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-walk-headBase",
+        "id": "1e20cf7e-0e60-4721-80f8-36852cb0f476",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-idle-headBase",
+        "id": "a4352a43-10cb-481d-b40d-40d646ba66ed",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "masculino-walk-hair",
+        "id": "fd242e22-6b62-4ef0-bfae-929bac500633",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-idle-body",
+        "id": "c1ea1a95-d10e-4fa5-9f98-276938a5779f",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-idle-face",
+        "id": "90bceb6b-0054-4db7-8657-569ffbc3c55d",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-walk-pants",
+        "id": "72ba21cb-d086-4c1a-ace2-bd4cc5f45a1d",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-walk-face",
+        "id": "935293d5-0c18-42ae-9917-3fced505322c",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-walk-hair",
+        "id": "b15f1077-09e5-4037-9000-4b44fb66f2b9",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-idle-top",
+        "id": "75c16639-f06e-4bd4-89c9-8ba0826cfb05",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-walk-top",
+        "id": "70fb7a98-6e14-483d-a994-601e73317164",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "feminino-walk-body",
+        "id": "e271ad49-e773-46d8-906a-ebdb8a2dbaa6",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "originalHairs",
+        "id": "16fd2f34-7623-42d1-9dda-5fe78ea62ab8",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "originalHeads",
+        "id": "99e4c49f-173c-4e20-8697-91d8c32dd9f7",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "originalHands",
+        "id": "eee473b9-4c01-4d70-b7cf-99474f53f35b",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "hair-cropped",
+        "id": "d1f1f67e-2679-43a7-b71e-b2cbe5635a66",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "hair-wavy",
+        "id": "898714f6-e26a-4597-b45b-ea08352dca56",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "hair-braided",
+        "id": "03c3fdaf-e211-4941-9dea-a803d6093a8a",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "face-gentle",
+        "id": "97747fb4-8204-40ae-ae98-eed3bc2c8861",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "face-sharp",
+        "id": "1d587a35-f91f-41c6-b133-7ae867f6da9a",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "face-cheerful",
+        "id": "97985d62-84b4-4d5c-a63d-675ea58857af",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "face-veteran",
+        "id": "94761cd9-0e7a-40ba-821f-8404eaca0c3a",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "item-8",
+        "id": "70ea8e0a-c6b2-4d3c-a6f0-3ab2cee0e6fb",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "item-9",
+        "id": "7acdadd7-58d0-4705-9fa3-9bc1fdcda436",
+        "created": false,
+        "linked": true,
+        "palette": "reef-steel"
+      },
+      {
+        "key": "item-21",
+        "id": "52656df2-ad54-42b8-88a8-5d56e9028169",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "item-22",
+        "id": "e740c5c8-d763-4e8a-9e2d-ddc4aa33c05e",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "item-23",
+        "id": "8a39c158-5ec3-4587-b585-ad533125d26a",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "item-24",
+        "id": "b5679d05-cee0-42af-961a-6e0f3e54b4a4",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "item-25",
+        "id": "45c4959d-8eb2-4a8f-b34c-c27611192a00",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "item-26",
+        "id": "15a666e5-5e8c-4efa-8705-3f4b77d55dde",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "hair-ponytail",
+        "id": "c86d7598-4703-4ef1-9c3c-edb3f54dede1",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "face-calm",
+        "id": "8259e446-fc38-4f8c-98c1-22b5d4b3f3c7",
+        "created": false,
+        "linked": true
+      },
+      {
+        "key": "face-resolute",
+        "id": "911836e1-5a49-4360-86d8-f76d160383a0",
+        "created": false,
+        "linked": true
+      }
+    ],
+    "panelSheets": [
+      {
+        "key": "item-8-panel-left",
+        "id": "34185efa-182e-40ed-b2b2-4c0f786600c7",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-8-panel-right",
+        "id": "f956ef67-2d0e-45f1-90ca-e5388d13b971",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-9-panel-left",
+        "id": "0b5d735a-25f6-4a98-b083-2aa513e7f1df",
+        "created": true,
+        "linked": true,
+        "palette": "reef-steel"
+      },
+      {
+        "key": "item-9-panel-right",
+        "id": "b1362bd0-fbb0-4e93-851e-2909b6e817ae",
+        "created": true,
+        "linked": true,
+        "palette": "reef-steel"
+      },
+      {
+        "key": "item-21-panel-leftupper",
+        "id": "6dae37f7-be53-4b3f-ad2f-21d214396c36",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-21-panel-leftlower",
+        "id": "b5dfd8d0-b0ae-48d3-aa7b-4a17b70f977a",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-21-panel-rightupper",
+        "id": "edbf1973-da3f-4026-9729-7b4757f3953d",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-21-panel-rightlower",
+        "id": "a6829174-534f-496e-9c80-9c2d628653e1",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-22-panel-leftupper",
+        "id": "2728fe13-f606-4fea-8b37-3acf78e9a35b",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-22-panel-leftlower",
+        "id": "b8298576-495a-4172-bb59-8bd53e5074d9",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-22-panel-rightupper",
+        "id": "724e28c8-edc9-41ba-a728-0baa089563db",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-22-panel-rightlower",
+        "id": "698ed1e6-b0c2-450d-acee-2292b3d870bb",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-25-panel-left",
+        "id": "e6f6ddc9-5070-44ad-b154-32a239d1f19d",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-25-panel-right",
+        "id": "b736e292-81e8-4e3e-949e-0b3384d386d2",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-26-panel-left",
+        "id": "0eb36477-c7b6-4b4d-acb4-191fa57f6fbd",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "item-26-panel-right",
+        "id": "ab42e634-bce9-40e6-b0a8-521e0f72cca8",
+        "created": true,
+        "linked": true
+      }
+    ],
+    "templateSheets": [
+      {
+        "key": "template-body",
+        "id": "914fd668-650f-47a9-abdd-03887b01de67",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "template-head",
+        "id": "ed9f5223-38f9-4341-be66-9705ed02f20d",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "template-mask-pants",
+        "id": "817edf84-1590-4dcb-8a53-e947e2b9bad6",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "template-mask-boots",
+        "id": "429a62b3-ff59-4318-ac02-0fe09704f655",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "template-mask-gloves",
+        "id": "293f7bce-271a-46d2-a4ae-fe2005514fbe",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "template-mask-head",
+        "id": "784a45d3-e34c-4cb8-b27a-360501970d7a",
+        "created": true,
+        "linked": true
+      },
+      {
+        "key": "template-mask-cloak",
+        "id": "9864aff4-2a64-4bc8-a37f-9d89f09da7cf",
+        "created": true,
+        "linked": true
+      }
+    ],
+    "nativeFitRevision": "canonical-native-v7-3",
+    "canonicalUpdates": [
+      {
+        "key": "masculino-static-body",
+        "id": "4b37c009-d25c-410a-81dc-b44cd715fe2b",
+        "hash": "b513d893e867a81a1c5f1fccdd2ffbe5c33db0e4294d7781ba97a8ac06df8b79"
+      },
+      {
+        "key": "masculino-walk-south-body",
+        "id": "5bcea69c-2620-41d2-bf29-a8227da1f38e",
+        "hash": "52493220a091193ed305f538e51c2dfabb1ee800e9736a8a5fa8379763b2863c"
+      },
+      {
+        "key": "masculino-static-face",
+        "id": "c912541a-bc7f-4280-9e97-7a950cd4cedc",
+        "hash": "8827c5b2851aba6020296705b4550fc1eba10ebc33ea8957c9fcf1922287899d"
+      },
+      {
+        "key": "masculino-walk-south-face",
+        "id": "2f3abe41-0049-4c9e-b622-9e9fb1114711",
+        "hash": "e2de3c103cda5e700eec7924c3bf103df8da4319171c938442753bf8135f93ca"
+      },
+      {
+        "key": "masculino-static-hair",
+        "id": "cea4adb1-00f7-4b12-8f54-f09659c58f8f",
+        "hash": "b3120f7389575cb4bd75df7b205a7fdc0bc635589cf4ae561ecf4c04f151e5e7"
+      },
+      {
+        "key": "masculino-walk-south-hair",
+        "id": "649e083f-1146-43dd-b6f3-a73870c110c1",
+        "hash": "dcff967cf67ecd2175865760bbe7df129060ee6968bdeaac76783585e60ff071"
+      },
+      {
+        "key": "masculino-static-pants",
+        "id": "417e8355-77e7-4c9e-9c88-28481ab38f99",
+        "hash": "5bcda65b8f19fb9d6c7d4b239575184ecebcbe6fb4bda3a9e4e2635290f0a6e4"
+      },
+      {
+        "key": "feminino-static-body",
+        "id": "c47c7bbc-d684-4247-bc48-0ef12faa99a7",
+        "hash": "75b823d1601e56decf12f6484f2a21d9d0f7ae8f59f4301f03de8d1be9e2f2d8"
+      },
+      {
+        "key": "feminino-walk-south-body",
+        "id": "ba716888-dc31-4f3b-998d-5876e75c19c2",
+        "hash": "777fb1e164b6624c7508ce1a2291f3582d417e32d27c57944e9edb6f94854fb5"
+      },
+      {
+        "key": "feminino-static-face",
+        "id": "a044c804-7cc8-4710-9cb5-f31904f7c02a",
+        "hash": "6b167883f41a5e62236ec72c3ab22ab034fb19d7515d61d057c32f3a3d17b1ea"
+      },
+      {
+        "key": "feminino-walk-south-face",
+        "id": "213c9a50-ed15-4dc3-9cdb-525baf17b7d6",
+        "hash": "2a0bbf0376ecf22be07b0c54baebd04e2cf0f751236fe5fcc8756c5690ba8c63"
+      },
+      {
+        "key": "feminino-static-hair",
+        "id": "94b375ef-8c1c-45e1-a822-29b4b41eb4be",
+        "hash": "04c808c60cfce4dab1e17b5b4d39afee34e7c33984b139f0e19ca138c8417935"
+      },
+      {
+        "key": "feminino-walk-south-hair",
+        "id": "21a3e71b-e9c8-41b0-8e36-7ac450567ff4",
+        "hash": "b3b67e6675d26a6c9ed499bd61004c497e71622d4c561558456e62b2bed60c40"
+      },
+      {
+        "key": "feminino-static-pants",
+        "id": "2c938905-a5a0-4a8d-b1ed-1b3deffaf1f2",
+        "hash": "e6c0d9c51f9139d6cc920f3b3aba37cfa1289d256230054fc01fd055b0e7d17e"
+      },
+      {
+        "key": "feminino-static-top",
+        "id": "e4d822f0-7d3f-46d4-b3a2-25ea87a1ae0f",
+        "hash": "4404f8c6e7f6f72c3b9af20bb322f0a4292005a940f03ce34856fe4d71793020"
+      },
+      {
+        "key": "masculino-attack-sword-underArms",
+        "id": "e3329716-ea09-4d90-9361-8e81bfc51196",
+        "hash": "5dac76144ba35450c673d29dd33e09c40adb69c242de4b4ec55e78639682e837"
+      },
+      {
+        "key": "masculino-attack-sword-body",
+        "id": "b5f7f3db-44c0-4c6f-8181-b4a968222637",
+        "hash": "a82d5b4e4300d071d8d36c016eed2cae55b02a453b012d1599b9f99758a50b18"
+      },
+      {
+        "key": "masculino-attack-sword-headBase",
+        "id": "52644bae-c2c3-440e-b362-3c3a1afe4a9a",
+        "hash": "f6d3e6b34ba063d6e53ddd267be8bc830905585808c7fdbe9e79abf27c202358"
+      },
+      {
+        "key": "masculino-attack-sword-pants",
+        "id": "9b4b0863-d32f-490f-95c1-eb3083600e74",
+        "hash": "9ddd54aebb0f5143307a53c12b2deab97382f3941cc9941c0af534db6fe0f317"
+      },
+      {
+        "key": "masculino-attack-sword-face",
+        "id": "f6dc3997-3a38-434a-83f9-7d96e9ebcdd7",
+        "hash": "0b5bd15820fee5ac39a0ac0babffa7cf702b80be98271f9c03a66f06e9c5d9eb"
+      },
+      {
+        "key": "masculino-attack-sword-hair",
+        "id": "a75709df-d8f3-4453-8435-2f069e9fbe18",
+        "hash": "26693a82d23b1d8a72e2fdc68d6af291f8da1a6e4e91c9f8963c4569cecd1fd1"
+      },
+      {
+        "key": "masculino-attack-sword-foreground",
+        "id": "e2ab7998-e5d5-40ac-a25f-aa697da2d728",
+        "hash": "ba2b62e9b329510043b4bc26b1a23cc2986a2747ad7f790825a3e75d51a85eb5"
+      },
+      {
+        "key": "masculino-attack-unarmed-underArms",
+        "id": "5a1f4ed1-97f3-466c-98c3-fe0c04319b2a",
+        "hash": "77ad6eae5c2336159f1793637bc43d55888c79f76c062d9adb63075d7ce6aa2a"
+      },
+      {
+        "key": "masculino-attack-unarmed-body",
+        "id": "d8f160b6-8924-4b8f-84a0-d2288d548ae0",
+        "hash": "e50069711cad6a2c081a20ae252dbee1f3beec482ae240029315c59dd9af29f0"
+      },
+      {
+        "key": "masculino-attack-unarmed-headBase",
+        "id": "89e868bb-9b38-40a4-b6d7-434461af4e29",
+        "hash": "e78f3eff500685a8bb174b098b0818463e5fdd7de8bef31ac65e26296c6a1b42"
+      },
+      {
+        "key": "masculino-attack-unarmed-pants",
+        "id": "f22eb7a4-fc70-43ec-bd09-b6d97de9b0c8",
+        "hash": "117371b52c91405208c5164afecd5010cea8fe48decbc73363f418e9772abc94"
+      },
+      {
+        "key": "masculino-attack-unarmed-face",
+        "id": "266ca370-08e7-4418-93c4-adf8e0ec8edf",
+        "hash": "2676b9f5d493a4b84553f0bab037f57b06259485b7edb8687ca2978032bf9ba7"
+      },
+      {
+        "key": "masculino-attack-unarmed-hair",
+        "id": "dc914ac7-db71-4980-bb95-68331e47897f",
+        "hash": "5f084f426e1e8f4bf25986a11e61696ffe02770356c2a1e28b84eb0e46d64fe1"
+      },
+      {
+        "key": "masculino-attack-unarmed-foreground",
+        "id": "660a4b1b-dd22-4cae-81c0-9894ad1cad2c",
+        "hash": "f366a01fe0a41b91e23215eb80c6e4df8c4834ecafcdda094e5129019516daa4"
+      },
+      {
+        "key": "masculino-attack-firearm-underArms",
+        "id": "fbd67292-2541-49ea-b2b4-b0887d2046c8",
+        "hash": "e10c2d363c1390dcb8796dc8ff2076c0d4e3675722fba256342d3a7bd609772a"
+      },
+      {
+        "key": "masculino-attack-firearm-body",
+        "id": "829458e0-f7c1-4cad-8f24-0a4efaf68b17",
+        "hash": "c0092ebddd1ff710083b70eae04febf4e9548e3c2e1ed99d3a9a6c73f95ad2d1"
+      },
+      {
+        "key": "masculino-attack-firearm-headBase",
+        "id": "c983c608-08ab-4f7c-baec-b0047c9b0dff",
+        "hash": "3005e9df5184a701b0cab447ee0e28f50a6bb558ace31badfc51fcefb5ae9532"
+      },
+      {
+        "key": "masculino-attack-firearm-pants",
+        "id": "792ac938-561c-4fd7-bb73-37c1b2111d8d",
+        "hash": "c1458ba776a32b4eeefbfef473a3cac5b47545747e2d6d92f81b508b6eac434e"
+      },
+      {
+        "key": "masculino-attack-firearm-face",
+        "id": "b2644b5a-46e3-4b86-bc9b-5591017a6320",
+        "hash": "465a95e59000bae8b0c9c58db615aefb22144e75a6378e956edf5eb4da49f186"
+      },
+      {
+        "key": "masculino-attack-firearm-hair",
+        "id": "6fa3121c-36a6-4696-9c31-fa3ce7c977d3",
+        "hash": "706fbfda019b4d8310715c8ea3262fa7cd9b8c4faf050ad6fb80dafe2d01f9d7"
+      },
+      {
+        "key": "masculino-attack-firearm-foreground",
+        "id": "9be600c5-1be4-4448-bad3-600f4bd901ff",
+        "hash": "fd7fce3151db60b88f76339bd87c22680bc41d558147cb48e98dcd0e342e1d0e"
+      },
+      {
+        "key": "masculino-attack-daggers-face",
+        "id": "74ea570d-8b90-44ee-81cb-2ef449963b6e",
+        "hash": "a0605e5acda7e29f7d501f430e9cc1ded8c66b09e265b1e75311a3e688faaf3b"
+      },
+      {
+        "key": "masculino-attack-daggers-hair",
+        "id": "63a0da69-2610-4a96-ad16-4266568ed32c",
+        "hash": "373803b313681f178dd29986c02df42e35ff0567c104bb1cbbca723d61ad0fc8"
+      },
+      {
+        "key": "masculino-attack-daggers-foreground",
+        "id": "6ab6f974-92a6-4b38-b6c6-c83a124676f7",
+        "hash": "bf8fb41d86e2cf4f7422a46dac3b537a717af3b606f28ada5a0d23812adae4ed"
+      },
+      {
+        "key": "masculino-attack-focus-underArms",
+        "id": "7f1421b7-6bff-4370-932f-c1e0c0fa04a4",
+        "hash": "60ed92561f4d57e58f471394e8182ffc4d93fa7644266e30cdbf19532c05d8df"
+      },
+      {
+        "key": "masculino-attack-daggers-underArms",
+        "id": "474f548e-ca6c-4970-a56a-69b5d51c7837",
+        "hash": "40550967a1ecdedf14d59c9960f6fdc9b3c0bc767f4e86fe256b6f60423508c4"
+      },
+      {
+        "key": "masculino-attack-daggers-body",
+        "id": "43b7ff3d-a1b6-488f-ac56-35a8988b13a1",
+        "hash": "59e8d3dc2a2863abd025ae376aa81059f8fafc049af5b0403c18a509dcc9cf12"
+      },
+      {
+        "key": "masculino-attack-daggers-headBase",
+        "id": "1f425ac7-6647-41fb-82fa-09746fe7e392",
+        "hash": "7027da4523bf52e2518b28a95c2baee90c0068dded6094e602536466428a24c2"
+      },
+      {
+        "key": "masculino-attack-daggers-pants",
+        "id": "55ea2568-27f7-41a5-b58e-d53e3bfe0862",
+        "hash": "88a81fba2cef21aaaa7234102210581fc422a1852ed0d8baa1ffd8fc191b279b"
+      },
+      {
+        "key": "masculino-attack-focus-body",
+        "id": "65379b88-e7d7-4f80-8b65-d027c53e63d3",
+        "hash": "4a7feabb02e20dac361d3b7d33c3d84f33a51b26afacd84cafa6ee0451df4847"
+      },
+      {
+        "key": "masculino-attack-focus-headBase",
+        "id": "acd94d83-8b9a-4d52-948b-a03af7464799",
+        "hash": "2f1b3d9800675ad84bde0effe14ef0dd027ac23f11cf21e69d75d4fa435debf4"
+      },
+      {
+        "key": "masculino-attack-focus-pants",
+        "id": "59dadb46-e09f-455f-a969-1e6963078d96",
+        "hash": "2cf1d949f0d089c102592f418483675852ec042b341bc12d2b42e1f0667fa34b"
+      },
+      {
+        "key": "masculino-attack-focus-face",
+        "id": "8f498721-7194-435b-860b-8d99fe9a7bbc",
+        "hash": "76f288f30527901b27a6d55c55cca13e926c5371b875ea53adbe17e0a5f9ecd4"
+      },
+      {
+        "key": "masculino-attack-focus-foreground",
+        "id": "46f688b9-fb0c-42af-bbeb-ce3cea01a8ad",
+        "hash": "f514e9d3443a5d161e731dc5775af0fb603a4c619ead3c2ce2f9e0f53fd5b891"
+      },
+      {
+        "key": "feminino-attack-sword-underArms",
+        "id": "0cc898e5-ad47-48e2-82e6-474a950df58a",
+        "hash": "15ae467018aa213d006a18e3d4e75e9e23697214eb50ff83bf5854b684d0da1f"
+      },
+      {
+        "key": "feminino-attack-sword-body",
+        "id": "2796031d-e1f5-4744-a8ab-6d3213f30806",
+        "hash": "486614f30d8150165373ee6a90e63bbd3cd0e12b860416864cd66915222a9c3a"
+      },
+      {
+        "key": "feminino-attack-sword-headBase",
+        "id": "cdf1b332-411c-4e72-9e81-f05dd302f278",
+        "hash": "562bcfe3f35ce1767c0714c0c36fda33611e0672874a65333463c2dd8da02c46"
+      },
+      {
+        "key": "feminino-attack-sword-pants",
+        "id": "359633d3-748c-4fb9-8401-5b81156b7c62",
+        "hash": "0f924f193b8b07d991aab9c33dc2da9586d34761bbfed3941c7b061242b4dc15"
+      },
+      {
+        "key": "feminino-attack-sword-top",
+        "id": "d94938d3-c05f-47f4-b4ee-fce472f7089f",
+        "hash": "8de5ef1f37f7cc535261ef7e432d5b5761d0fd1df0ea967d1fa9e3941ca961a4"
+      },
+      {
+        "key": "feminino-attack-sword-face",
+        "id": "c03ec184-ecfc-45de-a524-0354abcd2805",
+        "hash": "d37210b5b1d16750554b8a0e15babc0f2de1a2f2c708313e0a460574e0bbe0fe"
+      },
+      {
+        "key": "masculino-attack-focus-hair",
+        "id": "3089e730-ea97-4836-a685-312879e5aa80",
+        "hash": "2fd00614f129339a18ebe2edeb4a2d3d6febcf7bdd6cf8ce6cbf376d19a4b24b"
+      },
+      {
+        "key": "feminino-attack-sword-hair",
+        "id": "d8d68323-bfbd-4902-8722-69c863545e95",
+        "hash": "664792137824e2d6e1db7d616fc9307674a6f4778e681c434c901fcdce99f670"
+      },
+      {
+        "key": "feminino-attack-sword-foreground",
+        "id": "625cb22b-83ed-4d8a-9d94-339ced29d05d",
+        "hash": "10df4c2b6ff58a0bb2319d5e56d92e0604adbbcb9b190a019f2fec2a3cc09e39"
+      },
+      {
+        "key": "feminino-attack-unarmed-underArms",
+        "id": "5bc7969a-2d4a-4fe4-ba79-567b97515a1a",
+        "hash": "cdf4aa5e31f127c2d135fbfcf58047b223b17d0c637c5222005c70c8cb79ae22"
+      },
+      {
+        "key": "feminino-attack-unarmed-body",
+        "id": "47a99890-8993-408a-aff8-183514a3f79e",
+        "hash": "ded03bcdaecc3a8750745562df58370867676ef32f5722316b28fd8aeb90bf79"
+      },
+      {
+        "key": "feminino-attack-unarmed-headBase",
+        "id": "79be423b-4d23-4c11-9061-291851adce6f",
+        "hash": "137851ef5988671343b5eb7cc0000cf240a43a4cf87a839428271b0d0d7bddb4"
+      },
+      {
+        "key": "feminino-attack-unarmed-pants",
+        "id": "bed19736-10c4-4f04-b76a-a055d716d62b",
+        "hash": "2680bdaab730dc3aa5524275dc4805e7d26c8c8bcc430055ac35bd2d5287a337"
+      },
+      {
+        "key": "feminino-attack-unarmed-face",
+        "id": "34c225a1-2d6d-41d7-8978-484e7f2f5c58",
+        "hash": "49e08302f95137e8bc495dd550084fb346df04fe18827b0bf27fe8a753b444fe"
+      },
+      {
+        "key": "feminino-attack-unarmed-top",
+        "id": "c9488ea6-d1d8-4722-aebb-b1970d8931c7",
+        "hash": "5cdbb5059daac33912dcbd8f7371624eb299b01f20083f2ae54cb54312dbe637"
+      },
+      {
+        "key": "feminino-attack-unarmed-hair",
+        "id": "a6fdfa09-494c-410d-9fac-616ab2ea1c5c",
+        "hash": "0cb1e69520e7ea28ab8ee05280f23ba6023e61a1d9e94b4e570accb04027491d"
+      },
+      {
+        "key": "feminino-attack-unarmed-foreground",
+        "id": "fb9f873f-307e-4f5c-a2f4-57b516a3d205",
+        "hash": "21c76a35099322cbfe376df5752b4416287765f90ef3521c234dbe9cff5e56b8"
+      },
+      {
+        "key": "feminino-attack-firearm-underArms",
+        "id": "85c3576f-97da-487c-a925-752345b87a7a",
+        "hash": "2e3a7fc635c44ecc7284df1f9498ac78c16ec8edd4c868231966109ddf030c7f"
+      },
+      {
+        "key": "feminino-attack-firearm-body",
+        "id": "631d712a-c3a8-4974-afc1-a88c049f2d8d",
+        "hash": "38708baf430135e0f7c6ddafed9fd1078740b6c25d0907fa3035e6fb14086a85"
+      },
+      {
+        "key": "feminino-attack-firearm-headBase",
+        "id": "8615b0ff-8163-49e0-b68f-94ff204c9f5c",
+        "hash": "8c719c9b44649a25016ee6d19563f709919eed793eb4b37cfd766ec8b2412ede"
+      },
+      {
+        "key": "feminino-attack-firearm-pants",
+        "id": "d00a9e33-bbc5-4499-a233-8ef5f6d3355e",
+        "hash": "7cae322e795044c7478c469e01ed4028fccbb22eb2d69038a8b909a3a89824be"
+      },
+      {
+        "key": "feminino-attack-firearm-top",
+        "id": "9168c968-d945-45e8-8500-e2acffd5aa15",
+        "hash": "4b6463168df41068d61a0f2a85a04f689dd5de246919e6c5dd29c888d14568fa"
+      },
+      {
+        "key": "feminino-attack-firearm-face",
+        "id": "282657b3-57fa-4d8c-9617-d8d8da698014",
+        "hash": "be1ac83257bbb805eaf32d35d79584b7a46fa56f2171a1a42f881387ae6d15c1"
+      },
+      {
+        "key": "feminino-attack-firearm-hair",
+        "id": "6085a896-83bf-4c5e-b5c1-33a3b4eaaa17",
+        "hash": "84b983aabc09355822d6947305083d9140e86855e5f0096e486b68ac2ab99329"
+      },
+      {
+        "key": "feminino-attack-firearm-foreground",
+        "id": "78c335a3-4329-4333-9f2a-06664cc08e6e",
+        "hash": "f16c9af3bc44d4737b9be0017141e973d5bbe5a14a593e616302df3341f8b76c"
+      },
+      {
+        "key": "feminino-attack-daggers-underArms",
+        "id": "9eb13eb8-264f-4bcd-9618-7b7b5db88653",
+        "hash": "731f567b72cf98ee116cd8432c68553d5e78c26b363fe547cbffa370ac22380a"
+      },
+      {
+        "key": "feminino-attack-daggers-body",
+        "id": "1cdb80df-9452-4a75-b93a-d05fb70142af",
+        "hash": "883cb0ac98644317e0e9ef09fd61ae1af0cdfc398083902ef26c1c5435a481f4"
+      },
+      {
+        "key": "feminino-attack-daggers-headBase",
+        "id": "2894c043-5b3a-4d0b-8064-5cce3a84cd91",
+        "hash": "af549821020422bc515f4599bb120ef96ff13d9077cb736f96f1b2a60dd2cd34"
+      },
+      {
+        "key": "feminino-attack-daggers-pants",
+        "id": "8c4dd4e4-f8d8-4edb-90ae-e81f7bc4f4d8",
+        "hash": "ac4018d4be12fd4811ae5308c93d4354583537bc1fe7bcb27e5480d3afbe22b3"
+      },
+      {
+        "key": "feminino-attack-daggers-top",
+        "id": "555cf0a4-c2f3-4519-9236-56fc16d764ad",
+        "hash": "dcece7d118ed0a5bc9d07c30caf339f469fdcb5087a609df7c9e8888d042a7df"
+      },
+      {
+        "key": "feminino-attack-daggers-face",
+        "id": "c5a68181-2070-4155-aa88-7d1757bd9e9b",
+        "hash": "663f66a16b7e2b7ea5579389261dfce073468edaf13c39b71696eb89b5083c71"
+      },
+      {
+        "key": "feminino-attack-daggers-hair",
+        "id": "579ad078-3676-42fa-a6c7-c42387f06bb9",
+        "hash": "27d5c6cd2c9b156c2e2beb0e3e5088ebf2630f0185b4ec4be8f8e8e0a16740a7"
+      },
+      {
+        "key": "feminino-attack-daggers-foreground",
+        "id": "59d68096-7631-44ef-8c66-0d866907ace4",
+        "hash": "d78dc7568d22b7318f4f5eda058fb4f3f64d80475eb705f992bbdd5ff0ee6635"
+      },
+      {
+        "key": "feminino-attack-focus-underArms",
+        "id": "ef48dc80-26d3-4116-b22d-95667335402d",
+        "hash": "995481620076537e8a871aa669b08dea533b05d5e889dad9d9842ec8b8f9dbd1"
+      },
+      {
+        "key": "feminino-attack-focus-body",
+        "id": "d62aa561-da1f-4e5d-b389-7213858a9b3f",
+        "hash": "f4e96c1e241c08f28fb36ffcfae92a1f1f13dcb9c70014f02b02f6deffc13286"
+      },
+      {
+        "key": "feminino-attack-focus-headBase",
+        "id": "e625eb1e-0981-40e0-aa4e-eaa9ccbcdbdc",
+        "hash": "6fee04721aa21529b2080cfaaaf020d9116adcb222adab6cb840c790cafd0045"
+      },
+      {
+        "key": "feminino-attack-focus-pants",
+        "id": "f348eaca-470b-4aaa-9e51-094190f05cc0",
+        "hash": "1a2ddab1988d10dc81522a9ceae1ccee66bbe06975381d4cda2d5cb3ad235b89"
+      },
+      {
+        "key": "feminino-attack-focus-top",
+        "id": "3e07e4b4-17a2-4c0e-a9cd-0d3555086ae6",
+        "hash": "81b4820029e6cdcef0fd341e26a34007b864bf472fc77c24c148b1aa6f506dfb"
+      },
+      {
+        "key": "feminino-attack-focus-face",
+        "id": "d6cb5476-bda9-43f0-9f4d-356d3162355d",
+        "hash": "ac181a4be9e1d31516fec61e9ed939436d766d68c59a11aab281161342e2d84c"
+      },
+      {
+        "key": "feminino-attack-focus-hair",
+        "id": "830417cd-d3b1-44b1-8f2c-e1f1b7fd66da",
+        "hash": "f77c45520ef7e63de7ef1725db015981ffcefa1edf4dc0104950232c95469c97"
+      },
+      {
+        "key": "feminino-attack-focus-foreground",
+        "id": "c59b8b18-55c5-4c83-ad07-f98dce18ed73",
+        "hash": "06dca6a1eb673e7d01515aef561fa14e73a37fc9b7cb2518ce014465f19faf27"
+      },
+      {
+        "key": "masculino-idle-face",
+        "id": "dc7b35a1-a6f9-4a11-996a-23e8263cc0c1",
+        "hash": "1245207e251fa378c99ca8b4c85f0025cbd7f421bcc5f3d65e6e365d1b9ad78b"
+      },
+      {
+        "key": "masculino-idle-underArms",
+        "id": "8714985b-d746-4b0f-bab4-94f3a5daca66",
+        "hash": "2b007025cdccd624e7f64c557d8011ddde73d2745e75f3cc26935860f15c7069"
+      },
+      {
+        "key": "masculino-idle-pants",
+        "id": "630b49a9-760a-4805-a05c-ae7d9e209ccb",
+        "hash": "c99fcee9f2fd50e2b82529f2103c89cef2e29ac262a8dec4d8beb3d214667981"
+      },
+      {
+        "key": "masculino-idle-foreground",
+        "id": "2249ca24-c087-416e-a135-144686f03d88",
+        "hash": "e36e68611dff51c67a616aeefd18a1d7b8fdc20ad884cd11e61f4037cc1862bf"
+      },
+      {
+        "key": "masculino-idle-hair",
+        "id": "e14b2c3d-9e8c-40db-a074-d7fa9162ce7b",
+        "hash": "d007fe7218b8130192b6489e32a9d892ef0e6fd6bdee184e4604ca2f953aabb4"
+      },
+      {
+        "key": "masculino-walk-underArms",
+        "id": "85ec74c2-2154-4357-8d72-1aa47e704491",
+        "hash": "c23706ad6a709c2fb7a59c94e87b94f1aa1118402b42ab7e82e16e117516b0da"
+      },
+      {
+        "key": "masculino-walk-headBase",
+        "id": "bffb3c0d-c632-403e-8eeb-c3c052e54033",
+        "hash": "0b08c13a3e5a45798183f1bd01c9ec06a52b8721415f5ad34852687210994a43"
+      },
+      {
+        "key": "masculino-idle-body",
+        "id": "d412b5d3-1bb8-47b4-8697-e05e9304c37b",
+        "hash": "242ddb81383c3ace7c0ba099e579882f2a877903ae3007753cb84dbc6f5573f8"
+      },
+      {
+        "key": "masculino-idle-headBase",
+        "id": "9c0be4c4-9f06-4ae6-a43f-1696e53b6ac3",
+        "hash": "e8f49f03535a2e8d65a029cdfe33f65114e6f45d8ec808dc6cc880b555397097"
+      },
+      {
+        "key": "masculino-walk-body",
+        "id": "f6207b3b-b1ef-4916-9498-b2276ab11976",
+        "hash": "c104084e3ba4114ac349ebad3a068db8491b39c63ef6f0fec80b80df8ce0f0f8"
+      },
+      {
+        "key": "masculino-walk-face",
+        "id": "284a632a-2679-4d3b-977f-e59489794781",
+        "hash": "1dc20f868fc5d24d3152940bfb69a29cd61a9e79b92bbb6da57dd10487c07c2d"
+      },
+      {
+        "key": "masculino-walk-pants",
+        "id": "b07783a6-40c6-4e30-8621-b15af64cdd98",
+        "hash": "e90fa27f1635f2e4980acf9cbbddc92760c408f0039af94d391c62d3fdff493e"
+      },
+      {
+        "key": "masculino-walk-foreground",
+        "id": "d2416a53-3322-47f7-9226-de79e7191dfe",
+        "hash": "d19aec9edd9c7e15c5f262381a8379913412f7cf50582872d5546be6b250d398"
+      },
+      {
+        "key": "feminino-idle-pants",
+        "id": "3cab5d1e-51c8-4378-b69b-24ee2be368de",
+        "hash": "c998592bfce1efaa10ba489432fed6ab57042ff6fb2639855efac5c31e863be7"
+      },
+      {
+        "key": "feminino-idle-hair",
+        "id": "d3aca66b-1f3a-4b27-9dae-a2e56cc1e960",
+        "hash": "135d8b43822d059abfd1e0221951ee0a3a8a419931aad9f895f0d2701c274a9b"
+      },
+      {
+        "key": "feminino-walk-headBase",
+        "id": "1e20cf7e-0e60-4721-80f8-36852cb0f476",
+        "hash": "5d08511e759d4036c4a06deddf11eeae266dc32717c4251c99dc085700d5d506"
+      },
+      {
+        "key": "feminino-idle-headBase",
+        "id": "a4352a43-10cb-481d-b40d-40d646ba66ed",
+        "hash": "7c8859e45e30f155c10b7bc38754af7502f75fd123ac520715b8df198f99420d"
+      },
+      {
+        "key": "feminino-idle-foreground",
+        "id": "28a1a9a9-7ada-4667-bc87-92074c288249",
+        "hash": "2f38c9481faedf3e4366b571e5c6a043337628b3b9d0278bc62d2f90e0b48475"
+      },
+      {
+        "key": "masculino-walk-hair",
+        "id": "fd242e22-6b62-4ef0-bfae-929bac500633",
+        "hash": "e32f776149f5c659280d74db373bbedb23a79268ae0a3fa42ddaa9a2606d65b3"
+      },
+      {
+        "key": "feminino-idle-body",
+        "id": "c1ea1a95-d10e-4fa5-9f98-276938a5779f",
+        "hash": "a9d685712ca72e33fd8e735399a5cc85f09db11873dda649541dc9d7e8d9bc98"
+      },
+      {
+        "key": "feminino-idle-face",
+        "id": "90bceb6b-0054-4db7-8657-569ffbc3c55d",
+        "hash": "376134d5f2fd3c504a11dca0dd7d2cfc501a92c2be72f119d99e560b538f212c"
+      },
+      {
+        "key": "feminino-idle-underArms",
+        "id": "38f9fe30-65c5-44e3-b3cb-6c7d0d0f25f2",
+        "hash": "38730adc0e3617a2f4777e35486337112df41b43298b77cb378b9b95798b5b10"
+      },
+      {
+        "key": "feminino-walk-underArms",
+        "id": "a9cca04b-9053-471a-8b8d-96961e8ddd8c",
+        "hash": "b37778688661c9c6dacc356e849c59f282940be4e19b904a1b1fcd7a1a2e0a16"
+      },
+      {
+        "key": "feminino-walk-pants",
+        "id": "72ba21cb-d086-4c1a-ace2-bd4cc5f45a1d",
+        "hash": "e51b56182a700ec86d7f6fcc5a84a2ccb196c2605a645232673c02c95e17ab9e"
+      },
+      {
+        "key": "feminino-walk-face",
+        "id": "935293d5-0c18-42ae-9917-3fced505322c",
+        "hash": "2823c8021dbc90ae4f7fd2ee7471b8ba1c7dfceff1de7f1971c8c5bfba1bb05f"
+      },
+      {
+        "key": "feminino-walk-hair",
+        "id": "b15f1077-09e5-4037-9000-4b44fb66f2b9",
+        "hash": "8400cb708bd5e049cb0556079abd5dd60ec1cb7f44f0059dc6ab656cc38ea05b"
+      },
+      {
+        "key": "feminino-walk-foreground",
+        "id": "02606a7d-6bca-4f27-a098-c668f8d1367f",
+        "hash": "02c45bfa26823a691ed00e120b8861bcaa0a9ca0283287a541b517ece3b00d67"
+      },
+      {
+        "key": "feminino-idle-top",
+        "id": "75c16639-f06e-4bd4-89c9-8ba0826cfb05",
+        "hash": "a165b1422461188344449a4c1824901c3dc8513075218588dcf0aff6bd35e06d"
+      },
+      {
+        "key": "feminino-walk-top",
+        "id": "70fb7a98-6e14-483d-a994-601e73317164",
+        "hash": "9bb09e269e0469e50254e94d8b711cf2379abda381506ba66c808a472a975b61"
+      },
+      {
+        "key": "feminino-walk-body",
+        "id": "e271ad49-e773-46d8-906a-ebdb8a2dbaa6",
+        "hash": "a1ee6638ff0c2010fe6a4b04835881fa24ba2d6fea387eae8d189c30efd1894e"
+      },
+      {
+        "key": "originalHairs",
+        "id": "16fd2f34-7623-42d1-9dda-5fe78ea62ab8",
+        "hash": "492534c0d6b3e7582a3bf50891393a211387ee616a496a6dbaa63fe34a843c39"
+      },
+      {
+        "key": "originalHeads",
+        "id": "99e4c49f-173c-4e20-8697-91d8c32dd9f7",
+        "hash": "a9fab16bc7acb7c75468767030d6caea6fc68840dcc124ac6a172a342488bbc0"
+      },
+      {
+        "key": "originalHands",
+        "id": "eee473b9-4c01-4d70-b7cf-99474f53f35b",
+        "hash": "5d4d714c40514417a8a05fa8e9e24224b0da77654022cc8d9141242a56840714"
+      },
+      {
+        "key": "hair-cropped",
+        "id": "d1f1f67e-2679-43a7-b71e-b2cbe5635a66",
+        "hash": "07e906542518eaeb89bd94a545630e2ec1712c3f0e4fd289220388ba570db136"
+      },
+      {
+        "key": "hair-spiky",
+        "id": "a26d8b2c-3c6f-40fb-9e31-2046b728f385",
+        "hash": "49d605e3b45357e2c988fb1fb431d496475ad110b3de4d62ae28e5ea9638354f"
+      },
+      {
+        "key": "hair-swept",
+        "id": "9ff1e231-62c6-401c-a7b5-b0b1582e2fc6",
+        "hash": "6597da95fd2f8182f68f613c39ba1f94ce1ea4b452d1fc089b3cdc252ccd4aaa"
+      },
+      {
+        "key": "hair-bob",
+        "id": "15cb2ffd-7e4b-40bc-9c51-05d27b5d6e8b",
+        "hash": "21741ea71df87f7e911bb554a5fd4eca9efe151a7d3a29cb29a4a6b581bd5117"
+      },
+      {
+        "key": "hair-wavy",
+        "id": "898714f6-e26a-4597-b45b-ea08352dca56",
+        "hash": "272616a04188aed4cbb4d2d55dd15cdde72241ed8e07405a3003b41e21b3b37c"
+      },
+      {
+        "key": "hair-braided",
+        "id": "03c3fdaf-e211-4941-9dea-a803d6093a8a",
+        "hash": "6377712afa61d8ce3dcf8eb76a2a074f8b183aa906f4010abf51a44ae9ee30ba"
+      },
+      {
+        "key": "face-gentle",
+        "id": "97747fb4-8204-40ae-ae98-eed3bc2c8861",
+        "hash": "f03d432317e31383d62062c1887c3fa6cb719303db094f2d808c352ba7458322"
+      },
+      {
+        "key": "face-sharp",
+        "id": "1d587a35-f91f-41c6-b133-7ae867f6da9a",
+        "hash": "12ac527cee8a01d7c0a55d173dbf41af4d250f3f73c55684bf261e3912d04f34"
+      },
+      {
+        "key": "face-cheerful",
+        "id": "97985d62-84b4-4d5c-a63d-675ea58857af",
+        "hash": "f29bcde1f4eb901e5dda6466e4fc87f64e37d13d2e091122da499b4193655d3f"
+      },
+      {
+        "key": "face-veteran",
+        "id": "94761cd9-0e7a-40ba-821f-8404eaca0c3a",
+        "hash": "5f20aa8d8cef76f916eaa88d3f2931e7ebf748003b9542fbc35083ebd608a783"
+      },
+      {
+        "key": "item-8",
+        "id": "70ea8e0a-c6b2-4d3c-a6f0-3ab2cee0e6fb",
+        "hash": "6b5037e01a53f3dc40c2e421cb661e938bc02f1476d82de36b569b31f5828192"
+      },
+      {
+        "key": "item-9",
+        "id": "7acdadd7-58d0-4705-9fa3-9bc1fdcda436",
+        "hash": "ae9847e105da7cbcc08d7494f9d8705c4a82c2e5dcd29e4ff804d882c797b09d"
+      },
+      {
+        "key": "item-18",
+        "id": "ed4a217b-5a69-4410-83da-a98ae18d5558",
+        "hash": "bdf8b5568f42725ded6addb670643874fcf1707a66666fe42b8877aaed9046ff"
+      },
+      {
+        "key": "item-19",
+        "id": "ad9cdb24-6a64-47f6-9941-1a5a79ae7c8f",
+        "hash": "8a80fefc1ff31e03934ad9cb642dac3885880934fd65bcd5f68f8292ee313462"
+      },
+      {
+        "key": "item-21",
+        "id": "52656df2-ad54-42b8-88a8-5d56e9028169",
+        "hash": "01faa1e9b7464b4d2a1bb26b06c0ab58f4497437d42df38e8b7a7122069d9720"
+      },
+      {
+        "key": "item-22",
+        "id": "e740c5c8-d763-4e8a-9e2d-ddc4aa33c05e",
+        "hash": "5cc37f8a950ea3a8a90e528e2116a2dd010ca57eed8f850d2945cb44e06b7c95"
+      },
+      {
+        "key": "item-23",
+        "id": "8a39c158-5ec3-4587-b585-ad533125d26a",
+        "hash": "0568493aefe916fdad489def4c897839fcaabcdc7d0ea528a47710bf10b95456"
+      },
+      {
+        "key": "item-24",
+        "id": "b5679d05-cee0-42af-961a-6e0f3e54b4a4",
+        "hash": "f00cf9b77af4a975587394f1551f41a97c3c921341744c5108be79b5751c1ad8"
+      },
+      {
+        "key": "item-25",
+        "id": "45c4959d-8eb2-4a8f-b34c-c27611192a00",
+        "hash": "2677883c517f5f650fbdd9008bf6adcd1f1a74ea6745affe0b2536c45fd2c56b"
+      },
+      {
+        "key": "item-26",
+        "id": "15a666e5-5e8c-4efa-8705-3f4b77d55dde",
+        "hash": "8d70fd739b7ccfc637748345bca0883d52587d9c92a2f0fbb541007042b6dddd"
+      },
+      {
+        "key": "hair-ponytail",
+        "id": "c86d7598-4703-4ef1-9c3c-edb3f54dede1",
+        "hash": "33178e2c1da03795cb5df123afda13a8525ca0fff7df74b855835bd46eb6b91b"
+      },
+      {
+        "key": "hair-curly",
+        "id": "82813762-00bb-463f-bf98-6b9465ab37de",
+        "hash": "f86e5d331d6126984f4e9f14290df834357e55c025f2ca347299327decfa7c62"
+      },
+      {
+        "key": "hair-long",
+        "id": "c63320ed-271e-4b0c-af4c-f31a2eed73cd",
+        "hash": "7ce715a10f1daa21f62b0b21ccb37407b34bc0029a1b69240352daf1066c09cd"
+      },
+      {
+        "key": "hair-undercut",
+        "id": "571dfba3-e478-4de8-aab1-f3050712a0a0",
+        "hash": "84da5d6039b355e6e94b8aca3b5444bf0b9d94dea5d63e5512ba441fb0407dcb"
+      },
+      {
+        "key": "face-calm",
+        "id": "8259e446-fc38-4f8c-98c1-22b5d4b3f3c7",
+        "hash": "44656a8733a7783f006061b5f5e94a0bca87bfa5c500cec5f1c4d2f088898960"
+      },
+      {
+        "key": "face-resolute",
+        "id": "911836e1-5a49-4360-86d8-f76d160383a0",
+        "hash": "208fec3534b231be0f9de2e21f269e32ac89db44466ffb617e03f5aa953c32d9"
+      },
+      {
+        "key": "item-8-panel-left",
+        "id": "34185efa-182e-40ed-b2b2-4c0f786600c7",
+        "hash": "843b12f8e2d01d0c2f10a170df3fd7ef58670347f0ee194c781ed05761fb2786"
+      },
+      {
+        "key": "item-8-panel-right",
+        "id": "f956ef67-2d0e-45f1-90ca-e5388d13b971",
+        "hash": "8d26bd1e10beba67cd39f7e907fa812d88ca62bb423a10288cedc43bf3b4605b"
+      },
+      {
+        "key": "item-9-panel-left",
+        "id": "0b5d735a-25f6-4a98-b083-2aa513e7f1df",
+        "hash": "9fde6c3836c5c94e0a6c7cba9a84c2053714d910a9f275eb25f7a2f37ce4a8de"
+      },
+      {
+        "key": "item-9-panel-right",
+        "id": "b1362bd0-fbb0-4e93-851e-2909b6e817ae",
+        "hash": "1278ac5d10d675c33bd2222b855d5bb37ffcd84c463552471bcbee8f93724689"
+      },
+      {
+        "key": "item-21-panel-leftupper",
+        "id": "6dae37f7-be53-4b3f-ad2f-21d214396c36",
+        "hash": "6d023a467b2432804894e99c5f83c35d6d16166fb31937e47852e0f45527b89e"
+      },
+      {
+        "key": "item-21-panel-leftlower",
+        "id": "b5dfd8d0-b0ae-48d3-aa7b-4a17b70f977a",
+        "hash": "62e1beb70ba7a5e6bd30809dc1d41986cdd3210f0330096f7850c7b53f8c82bf"
+      },
+      {
+        "key": "item-21-panel-rightupper",
+        "id": "edbf1973-da3f-4026-9729-7b4757f3953d",
+        "hash": "b6e055bcd6df234d74c0db2603457609a6df8b2f060e0f7616e71e8442105ed2"
+      },
+      {
+        "key": "item-21-panel-rightlower",
+        "id": "a6829174-534f-496e-9c80-9c2d628653e1",
+        "hash": "5c83c3e8f58797b8fbeb26f31dc90c91ac6265331af09cdd1718b08454b7eb06"
+      },
+      {
+        "key": "item-22-panel-leftupper",
+        "id": "2728fe13-f606-4fea-8b37-3acf78e9a35b",
+        "hash": "3d6d5008a351948cfcb7054ad6bc9d78a148b2686f382591c52003a0d0bf72c6"
+      },
+      {
+        "key": "item-22-panel-leftlower",
+        "id": "b8298576-495a-4172-bb59-8bd53e5074d9",
+        "hash": "bb06d9887d6a574a36ba4c0f8f4cfdbff07b3fa04b064eb2ede7ea8e50473fea"
+      },
+      {
+        "key": "item-22-panel-rightupper",
+        "id": "724e28c8-edc9-41ba-a728-0baa089563db",
+        "hash": "ab31a047cbc0def9f477d0740860ba99e4c7d510505e8eff5ea2ec8330bcc0ba"
+      },
+      {
+        "key": "item-22-panel-rightlower",
+        "id": "698ed1e6-b0c2-450d-acee-2292b3d870bb",
+        "hash": "918ae2551a0fb50863d9caa107aa3b0945ceca0f604673532f8c61c776c063b1"
+      },
+      {
+        "key": "item-25-panel-left",
+        "id": "e6f6ddc9-5070-44ad-b154-32a239d1f19d",
+        "hash": "a2c4cbcf2defcfa0c1cc4af40daed2cc0863474d54933e7b95c336adb6e4792c"
+      },
+      {
+        "key": "item-25-panel-right",
+        "id": "b736e292-81e8-4e3e-949e-0b3384d386d2",
+        "hash": "5f69cc2efced3a6ea5a3fffe614ca46977a192fe21075d4f87fa673635e283ea"
+      },
+      {
+        "key": "item-26-panel-left",
+        "id": "0eb36477-c7b6-4b4d-acb4-191fa57f6fbd",
+        "hash": "4e1cb732a45e7fafcc1b9037d93513ae90153af6f8a6b9b6625f6c850d1e5c2e"
+      },
+      {
+        "key": "item-26-panel-right",
+        "id": "ab42e634-bce9-40e6-b0a8-521e0f72cca8",
+        "hash": "41d9a4d32344bc5157ebda00586a38cef8bf0619682ee94967f95c8474653afe"
+      },
+      {
+        "key": "template-body",
+        "id": "914fd668-650f-47a9-abdd-03887b01de67",
+        "hash": "dc27deeefe44956ef56044a7da4656be5e4d2b9da2aa12c0b674f80558a28b35"
+      },
+      {
+        "key": "template-head",
+        "id": "ed9f5223-38f9-4341-be66-9705ed02f20d",
+        "hash": "a9fab16bc7acb7c75468767030d6caea6fc68840dcc124ac6a172a342488bbc0"
+      },
+      {
+        "key": "template-mask-pants",
+        "id": "817edf84-1590-4dcb-8a53-e947e2b9bad6",
+        "hash": "15a66dfbf42a394b0c4a1f2b61d37c00bca9c43b12d31444d84f67d518149a67"
+      },
+      {
+        "key": "template-mask-boots",
+        "id": "429a62b3-ff59-4318-ac02-0fe09704f655",
+        "hash": "d22d9bb9d4a391b8b65b4e2b3165e6a52f3c970d4ad59dbef0f7df580cbaae6a"
+      },
+      {
+        "key": "template-mask-gloves",
+        "id": "293f7bce-271a-46d2-a4ae-fe2005514fbe",
+        "hash": "f944c2524fa312b93d8a16534dbd1bd5221659591bdf8c8ed9669bc8423afc17"
+      },
+      {
+        "key": "template-mask-head",
+        "id": "784a45d3-e34c-4cb8-b27a-360501970d7a",
+        "hash": "fe8bb24dba809f62469530ebc7bf99aae2de90216d2ae43656b8747968e67a4b"
+      },
+      {
+        "key": "template-mask-cloak",
+        "id": "9864aff4-2a64-4bc8-a37f-9d89f09da7cf",
+        "hash": "0021908cd37dff724a004ba62d5e91c3cb6dc1748e5ec4bf65194b783c966f87"
+      }
+    ],
+    "canonicalSourceSheets": 20
   },
   "costs": {
     "initialBatch": 180,
@@ -998,6 +3335,16 @@
       "confirmedGenerationReceipts": 120.2,
       "observedAccountDelta": 141.2,
       "unattributedAccountDelta": 21
+    },
+    "nativeFitV6": {
+      "paidGenerationJobs": 0,
+      "method": "native pixel correction, complete panels and pose fitting"
+    },
+    "canonicalV7": {
+      "paidGenerationJobs": 20,
+      "chargedGenerations": 200,
+      "hair": 10,
+      "equipment": 10
     }
   },
   "coverage": {
@@ -1025,10 +3372,10 @@
     "source": "east",
     "target": "west",
     "pixelCoordinateSums": {
-      "masculino": 127,
+      "masculino": 128,
       "feminino": 128
     },
-    "scope": "hair-only; approved body poses are not mirrored"
+    "scope": "whole-character; native poses, heads and all independent layers share the same mirrored pivot"
   },
   "originalHeads": {
     "masculino": {
@@ -1062,5 +3409,100 @@
     "job": "ddf4bec9-3ca4-49d4-a30d-245e010521fc",
     "outsideMaskDifferences": 0,
     "interiorNeutralSkinCopies": true
-  }
+  },
+  "fitBases": {
+    "masculino": {
+      "south": "assets/masculino-south-body.png",
+      "north": "assets/masculino-north-body.png",
+      "west": "assets/masculino-west-body.png",
+      "east": "assets/masculino-east-body.png"
+    },
+    "feminino": {
+      "south": "assets/feminino-south-body.png",
+      "north": "assets/feminino-north-body.png",
+      "west": "assets/feminino-west-body.png",
+      "east": "assets/feminino-east-body.png"
+    }
+  },
+  "fitVersion": "native-surface-v7",
+  "template": "fit-template.json",
+  "faceColorProtection": {
+    "masculino": {
+      "south": [
+        4667,
+        4668,
+        4675,
+        4676,
+        4677,
+        4795,
+        4796,
+        4803,
+        4804,
+        4805,
+        4923,
+        4924,
+        4931,
+        4932,
+        4933
+      ],
+      "north": [],
+      "west": [
+        4667,
+        4795,
+        4923
+      ],
+      "east": [
+        4677,
+        4805,
+        4933
+      ]
+    },
+    "feminino": {
+      "south": [
+        4668,
+        4669,
+        4677,
+        4678,
+        4796,
+        4797,
+        4804,
+        4805,
+        4924,
+        4925,
+        4932,
+        4933
+      ],
+      "north": [],
+      "west": [
+        4411,
+        4410,
+        4409,
+        4408,
+        4537,
+        4666,
+        4665,
+        4794
+      ],
+      "east": [
+        4421,
+        4422,
+        4423,
+        4424,
+        4551,
+        4678,
+        4679,
+        4806
+      ]
+    }
+  },
+  "headFit": "canonical-neck-v7",
+  "canonicalMirror": {
+    "source": "east",
+    "target": "west",
+    "pixelSum": 128,
+    "framePadding": true,
+    "allLayers": true,
+    "swapLimbLabels": false
+  },
+  "canonicalRevision": "canonical-native-v7-3"
 }

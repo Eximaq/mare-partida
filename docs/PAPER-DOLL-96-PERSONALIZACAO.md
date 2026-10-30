@@ -1,6 +1,32 @@
 # Personalização de 96 px — cobertura e encaixes
 
+## Revisão canônica v7 — 30/10/2026
+
+Os defeitos de encaixe da revisão anterior foram confirmados. Dez cabelos e dez equipamentos foram refeitos no PixelLab (20 trabalhos, 200 gerações). Os seis rostos foram separados em feições limpas; corpo, pescoço, rosto, cabelo e acessórios agora compartilham a mesma lateral espelhada e sockets inteiros. Luvas e calçados usam a anatomia nativa de cada pose; capas têm tecido posterior completo. Ver [contrato e moldes reutilizáveis](PAPER-DOLL-96-FIT-CONTRACT.md). A bancada permanece isolada e a integração em produção continua pendente.
+
+A pasta **Jade Dragon** conserva as **184 folhas consolidadas**, com **172 atualizações v7** dos IDs existentes. As **20 fontes novas** também estão vinculadas à pasta. Os sete moldes e o contrato abaixo são a base para criar novas peças, com menos gerações por movimento.
+
 29/10/2026, continuação do PR #144. **Bancada de avaliação artística, sem ativação na aventura normal.** Os movimentos pendentes do contrato anterior foram produzidos; a avaliação dos novos desenhos continua necessária.
+
+## Histórico: revisão nativa v6 — 29/10/2026 (substituída pela v7)
+
+A revisão anterior foi reprovada visualmente pelo proprietário. Esta etapa corrige a extração e a montagem sem gerar novamente os movimentos: oito matrizes de cabeça foram restauradas da anatomia aprovada; olhos embutidos em cabelos foram removidos; feições e materiais passaram a usar alpha binário. Os cabelos preservam tinta e cinco faixas de sombra, inclusive nos modelos escuros.
+
+Os dez equipamentos foram auditados nos dois corpos e quatro vistas. Luvas e botas usam 64 painéis independentes por membro; as duas peças de perna usam mais 64 painéis de coxa/canela, incluindo superfícies ocultas nas vistas laterais. Capas não carregam braços ou pernas copiados. Calças seguem os painéis da própria perna e não emprestam textura do outro membro. Calçados substituem a área vestida do pé e respeitam a profundidade da perna próxima. Luvas fechadas preservam os dedos da pose; os gestos originais são desenhados antes da luva do mesmo braço.
+
+O compositor limita a peça ao volume nativo mais um pixel de quantização, recupera o contorno cortado e remove ilhas criadas pelo ajuste. Isso não reduz o detector apenas para aprovar uma peça fora do corpo. O rosto fica sob o cabelo, e a máscara de elmo acompanha a rotação da cabeça em pixels inteiros.
+
+As camadas antigas tinham transparências residuais, inclusive pixels quase invisíveis. Foram normalizados 119 arquivos de camadas e oito matrizes de mãos; os PNGs de referência completos continuam preservados. Na comparação canônica há 25 correções de borda semitransparente, registradas individualmente em fit-template.json; nenhum pixel opaco da referência foi dispensado da comparação.
+
+**Base para os próximos itens:** [contrato de encaixe](PAPER-DOLL-96-FIT-CONTRACT.md), [metadados e contatos](../tools/paper-doll-96-v3/fit-template.json), [corpos neutros](../tools/paper-doll-96-v3/assets/template-body.png) e [cabeças neutras](../tools/paper-doll-96-v3/assets/template-head.png). Os cinco mapas de referência derivam dos materiais limpos. As rotinas head_materials, equipment_materials e surface_assembly reaproveitam as matrizes sem gerar cada frame de novo.
+
+**Custo desta revisão: zero novos jobs pagos de geração.** Correção e consolidação nativa de pixels; os recibos das gerações anteriores permanecem abaixo. Preservados Idle4, Walk8 e ataques8; para futuros ataques considerar6–8 após conferir o gesto, sem cortar quadros aleatoriamente dos ciclos existentes.
+
+Validação específica:424 poses,3.392 encaixes de luvas/calçados,848 ajustes de calça,2.544 faces,4.240 cabelos e848 conjuntos mistos. O detector cobre contato, ilhas, extrusão, alpha, contenção facial, ordem real e luvas erguidas. Painéis recentes ficam fora do Git; os resultados não substituem aprovação artística do proprietário.
+
+A varredura final removeu também 18 resíduos no disparo lateral feminino. A troca de conjuntos pela interface usa a mesma lista completa de imagens da API, incluindo painéis e referências de superfície. As íris possuem proteção própria durante a recoloração da pele, editável por modelo de rosto; a face não é um parâmetro imutável.
+
+A pasta **Jade Dragon** contém agora **184 folhas**:161 anteriores,16 painéis independentes e7 moldes. Foram atualizadas124 folhas existentes, preservando seus IDs.
 
 ## Conteúdo atual
 
@@ -67,7 +93,7 @@ A rotina em tools/paper_doll_96_contact_refinement.cjs compara rótulos com os g
 
 ## Biblioteca e arquivos
 
-appearance-catalog.json registra os 26 modelos, paletas, calibrações e IDs. appearance-rig.json registra contatos e sockets. A pasta **Jade Dragon** do PixelLab contém **161 folhas finais**: 100 anteriores, 20 da primeira personalização e 41 novas (incluindo a matriz de mãos). Folhas existentes corrigidas são atualizadas no próprio ID.
+appearance-catalog.json registra os 26 modelos, paletas, calibrações e IDs. appearance-rig.json registra contatos e sockets. Antes da revisão v6, a pasta **Jade Dragon** continha161 folhas:100 iniciais,20 da primeira personalização e41 da locomoção (incluindo a matriz de mãos). As23 adições da revisão v6 elevam o total atual a184. Folhas existentes corrigidas são atualizadas no próprio ID.
 
 - Materiais: 512×256, células128; colunas S/N/W/E, linhas masculino/feminino.
 - Locomoção por camada: Idle 512×512, Walk 1024×512; células128, linhas S/N/W/E, 4 ou 8 quadros por linha. Camadas vazias são legítimas.

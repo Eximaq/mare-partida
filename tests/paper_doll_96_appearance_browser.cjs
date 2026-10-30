@@ -79,9 +79,11 @@ const origin=process.argv.find(v=>/^https?:\/\//.test(v))||'http://127.0.0.1:815
       const b=await q.render('feminino','static','south',0,[],{hair:hair.id,face:'face-sharp',hairColor:'brown'});
       const aa=a.getContext('2d').getImageData(0,0,128,128).data,bb=b.getContext('2d').getImageData(0,0,128,128).data;
       let faceOverHair=0;
-      for(let y=0;y<128;y++)for(let x=0;x<127;x++)if(mask[(y*128+x)*4+3]===255){const i=(y*128+x+1)*4;if([0,1,2,3].some(c=>aa[i+c]!==bb[i+c]))faceOverHair++;}
+      const dx=q.catalog.headCalibration?.south?.hairX||0,dy=q.catalog.headCalibration?.south?.hairY||0;
+      for(let y=0;y<128;y++)for(let x=0;x<128;x++)if(mask[(y*128+x)*4+3]===255){const xx=x+dx,yy=y+dy;if(xx<0||xx>=128||yy<0||yy>=128)continue;const i=(yy*128+xx)*4;if([0,1,2,3].some(c=>aa[i+c]!==bb[i+c]))faceOverHair++;}
       return {raisedArmsLost,mirroredPixels,mirroredMatrices,faceOutsideHead,containedFrames,emptyCombinations,counts,frames:Object.values(counts).reduce((a,b)=>a+b,0),kits,facialGeometryChanges,failures:failures.slice(0,20),failureCount:failures.length,faceOverHair,storage:localStorage.length,cache:q.cacheSize,images:q.imageCacheSize,textures:q.wardrobe.cacheSize,attachments:q.wardrobe.attachmentCacheSize};
     });
+    console.log(JSON.stringify(audit));
     assert.equal(audit.frames,11024);
     assert.equal(audit.kits,13568);
     assert.equal(audit.emptyCombinations,1944);assert.equal(audit.mirroredMatrices,22);assert.equal(audit.mirroredPixels,0);assert.equal(audit.faceOutsideHead,0);assert.equal(audit.raisedArmsLost,0);assert.equal(audit.containedFrames,424);

@@ -109,7 +109,49 @@
               }
             ],
             "sourceMotion": "Existing feminine walk south, eight recovered poses; shared retargeted guide across bodies",
-            "bodyJob": "e30e5b13-8cd8-49de-bc78-527dc6eb8d8b"
+            "bodyJob": "e30e5b13-8cd8-49de-bc78-527dc6eb8d8b",
+            "headSockets": [
+              {
+                "x": -1,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              }
+            ]
           },
           "north": {
             "modular": true,
@@ -129,43 +171,43 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
-                "y": -1.4019047619,
+                "x": -1,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": -4,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -1.4019047619,
+                "y": -3,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -2.8038095238,
+                "y": -2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -2.8038095238,
+                "y": -2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -1.4019047619,
+                "y": -4,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": -2.8038095238,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": -2.8038095238,
+                "y": -4,
                 "angle": 0
               }
             ],
@@ -200,58 +242,63 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
-                "y": -1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": -2.8038095238,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": -2.8038095238,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": -1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.4019047619,
+                "x": 1,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
                 "y": 0,
                 "angle": 0
+              },
+              {
+                "x": 2,
+                "y": 2,
+                "angle": 0
+              },
+              {
+                "x": 2,
+                "y": 2,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 4,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 2,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 2,
+                "angle": 0
               }
             ],
-            "sourceMotion": "Existing 84px walk poses; approved 96px body identity, original rigid head",
-            "bodyJob": "a8f9acf2-20eb-4203-a65d-3a905e167b4c",
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "bodyJob": "9f4becc6-bc66-4d29-ac71-ba7a4eb82c13",
             "sourceHashes": [
-              "c7198d60a66ee4e6695a176ae037df94305c5cb29c8ad08922ba279881d83186",
-              "7a725cb5ee337186e559538e4bd9477a318c9eafc6cec82a8eddc10049c527b4",
-              "06bb32847c0ab21336394572638169629cf17f2116a434fdeefa54961962725a",
-              "9acdd6a99e6998734e90032ac688d6d2ab434aa731953aed3f22395192462707",
-              "bbc3ddd85bde7c1693b4c8a6978967d4e456e50de433dd189340d23b5d2f7344",
-              "f6db26d44cc3c3e0c2538bb0e48e44a0e34c07fe1058d27c3a4ba6b668049d54",
-              "a87dcc70104fbe8563338c2cf6b0859ae874c6581ea21dcd1ddff626d6bb88a6",
-              "d6ac8cb8b584441af2d65b685be6b4125d64a9da5f96b8da8a47a8b94c2b1423"
-            ]
+              "f8b1f14e93338c7dd73d3231a8db5a805ffba96edae1da0348a792eab6fa96d9",
+              "aa51ce2b0bf9624e8ca8b5972b4d78cb90cc2a9bf7a8ed5020c5eeebf9d6fb5e",
+              "e593c1e2a440818eac1c8fc9888f072eef5984c821ab364d2017c1607432606f",
+              "9cc3271086f986c2a8953ffcfd0d79acd69e88cf26e0bb3023d940bf2d3e8513",
+              "a52e6df93a6976af582bd60e2ef2d2601414f212ecd4b5fa2b8cf220fe65d7cc",
+              "9c120a2ac66bca9d28266847096ba9f02ed35f128051eed83b33e041830260fb",
+              "9482980298de79be8e024d90dfbcff1e8b399b1861162d92199aac0aad5f9097",
+              "748494a073eae3b6dd1d3346b7bbe3eb0f16c4649db3941814bdb77919e3b6ac"
+            ],
+            "mirror": {
+              "source": "east",
+              "pixelSum": 128,
+              "allLayers": true
+            }
           },
           "east": {
             "modular": true,
@@ -271,7 +318,7 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
@@ -281,33 +328,33 @@
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 1.4019047619,
+                "x": -2,
+                "y": 2,
+                "angle": 0
+              },
+              {
+                "x": -2,
+                "y": 2,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 4,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.4019047619,
+                "y": 2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.8038095238,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.4019047619,
+                "y": 2,
                 "angle": 0
               }
             ],
@@ -353,42 +400,42 @@
             "headSockets": [
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
+                "y": -1,
                 "angle": 0
               }
             ],
@@ -449,22 +496,22 @@
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -1,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
@@ -531,8 +578,28 @@
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 2,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 2,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 2,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": -1,
                 "angle": 0
               },
               {
@@ -542,49 +609,57 @@
               },
               {
                 "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               }
             ],
             "source": {
               "body": "masculino",
               "action": "attack-unarmed",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
               "sourceFrames": [
-                "3a52a6e01f2ca891cbea272d55402a052d4892e4edf5918bb11419516b4d6e61",
-                "cc09291d1f66a6c8e3165d5b61caf46f5020f61f75bb5147b84d9e89c01bb9b7",
-                "6e07ad0d2994a3c23d221dac41aa4e4f3c70b433c5e3f1b7e71398873c3c0cb6",
-                "3dff709d1199db4efce9c840eb03a453de911b7a9ffafe41ca8c3492112f05e3",
-                "a8fbd28421e29b7683724716fbef3f375a5f51968677dd881093b5696166adf2",
-                "686a190b54adc5a2fe77f43abbe3d70c2f73562a6cbe5103a34df62dd3879a54",
-                "78ea322d25e6d667c1adf025b8c690c3491daba1f27b8bb51fdaa5b42a131629",
-                "8e908513711f3d1ffa412ba854e3ec51680dd1a2e997ae9a18eb5697ad5156c7"
+                "476820022c21199a4630624ab6ab150fdc8fe70e768517d73fb837100251b160",
+                "1ab0e329d30aecb826d8bd7ef015e574276acfc38b55b59a33666b769dd8a5de",
+                "e27cc8e0ae5d4d283122e92de9659890ca2f113d37a1b4d2da13028e3ab29458",
+                "2d1b75d54feb8efc93caa45198aab7683231eacb5cda9a2130ee0331f5d696f4",
+                "ebc1c4dc3a53fb8f985866946e9e208ac11295238c739d3e33834d972e9c7f3d",
+                "8cb4f17eac0063435ceb022111f97b64913bfe9ecc98454f5772009fbdbfcdfe",
+                "23712352b49b852b7b02c0df70c12ae2a97f159cefaf6e1094de0845d7e3f2b6",
+                "561f75c9d0ddb8857d40d3d1ac8fc9947c3f924a5b5b58e743fc46901b7e34da"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "bodyJob": "73a03af1-81ad-4e68-ac52-7013afee50ef",
-              "cleanImage": "a9191b66-b5df-4b5b-ac19-6159f108b66e"
+              "bodyJob": "f8db42ff-d6b4-4e03-8df6-ccd27f7b207d",
+              "cleanImage": "ae4efe10-33b3-4347-ad85-215fac3b8490",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "masculino",
+                "action": "attack-unarmed",
+                "direction": "west",
+                "poseFrames": 8,
+                "sourceFrames": [
+                  "3a52a6e01f2ca891cbea272d55402a052d4892e4edf5918bb11419516b4d6e61",
+                  "cc09291d1f66a6c8e3165d5b61caf46f5020f61f75bb5147b84d9e89c01bb9b7",
+                  "6e07ad0d2994a3c23d221dac41aa4e4f3c70b433c5e3f1b7e71398873c3c0cb6",
+                  "3dff709d1199db4efce9c840eb03a453de911b7a9ffafe41ca8c3492112f05e3",
+                  "a8fbd28421e29b7683724716fbef3f375a5f51968677dd881093b5696166adf2",
+                  "686a190b54adc5a2fe77f43abbe3d70c2f73562a6cbe5103a34df62dd3879a54",
+                  "78ea322d25e6d667c1adf025b8c690c3491daba1f27b8bb51fdaa5b42a131629",
+                  "8e908513711f3d1ffa412ba854e3ec51680dd1a2e997ae9a18eb5697ad5156c7"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "bodyJob": "73a03af1-81ad-4e68-ac52-7013afee50ef",
+                "cleanImage": "a9191b66-b5df-4b5b-ac19-6159f108b66e"
+              }
+            },
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
             }
           },
           "east": {
@@ -618,8 +693,28 @@
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
+                "angle": 0
+              },
+              {
+                "x": -2,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -2,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": -2,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": -1,
                 "angle": 0
               },
               {
@@ -629,27 +724,7 @@
               },
               {
                 "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               }
             ],
@@ -703,42 +778,42 @@
             "headSockets": [
               {
                 "x": 0,
-                "y": -1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -2.803809523809524,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 3.2,
-                "y": -2.803809523809524,
-                "angle": 0
-              },
-              {
-                "x": 3.2,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": -1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": -1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 3.2,
-                "y": -2.803809523809524,
+                "x": 3,
+                "y": -3,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -2.803809523809524,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": 3,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -2,
                 "angle": 0
               }
             ],
@@ -790,42 +865,42 @@
             "headSockets": [
               {
                 "x": 0,
-                "y": -2.803809523809524,
+                "y": -3,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -2.803809523809524,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -1.401904761904762,
+                "y": -3,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -3,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": -1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": -2.803809523809524,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": -2.803809523809524,
+                "y": -3,
                 "angle": 0
               }
             ],
@@ -876,65 +951,93 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
-                "y": -1.401904761904762,
+                "x": 1,
+                "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": -1.401904761904762,
+                "x": 1,
+                "y": 0,
                 "angle": 0
               },
               {
-                "x": 1.6,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 2,
                 "angle": 0
               },
               {
-                "x": 1.6,
+                "x": 0,
+                "y": 4,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 3,
+                "angle": 0
+              },
+              {
+                "x": 3,
+                "y": 3,
+                "angle": 0
+              },
+              {
+                "x": 2,
                 "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": -1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": -1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": -1.401904761904762,
                 "angle": 0
               }
             ],
             "source": {
               "body": "masculino",
               "action": "attack-sword",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
-              "bodyJob": "207fe10a-f13c-4f61-b86b-8b47d19d3603",
               "sourceFrames": [
-                "da1f923d2b11785c0cc8640e5bb3be61fce018234dd06210339b4adeeca16bc1",
-                "aafe94af316a9205006a108c0618ffb7baa6f1bce57cffd072f7f02902338211",
-                "59bc40fbd124ccc511eb62aa33957bddb0ff48ed0692c8408c80a948c2bd0e58",
-                "fce900811282d64607f7b3cd1ce35a8110cea1e449bad7869454e8f9a54c5c62",
-                "ad320afb586abab1fe633a00488a559b59b223bd5cf614ffb1828eebae165f5e",
-                "6ad0d1a85c7bee11577d921bd2a17b5c4bc738b2a7e297105a1b1b31356656aa",
-                "ab3778c2e4788aaa5bb9ea375d55f58df5ae7643577282ee5eecd84381612c0c",
-                "f9e50d9b1c2e20726a8b297495cca6b759e7243cbd1100ffab701d1b83465215"
+                "8ad5f6f55479fd616369c82f591c8041ff27391264ad9b51b1097cd05d53290a",
+                "7808cab21bbf6916e2ae322f9355a0c6a6a38a2a8b21a7c3219c1b0c9347a78c",
+                "27401ca453f07a693956dfb431dd3c4d1f8ee1833270803551d305df38b6b97b",
+                "28690524fbb7a3042ff7f8544c0116ae4de56fc74bc5f26fe87fee2279eaf5c6",
+                "0e8a82cb91711e42d15ee84629fdb58072958cbdac25e327f445989a3e0526f7",
+                "2a90857a77b54a03d1c0455d545fec43cdbafd40cf8493a37b5a7720f7e443e1",
+                "b38e3c7be0ee64d49ca0bf42e581101d51890d37432aca1d88d618c9264077c0",
+                "ec344b270d5b0b882855274ffa4f7aebd28d1473219bcce72b6987dbc7c30abb"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "cleanImage": "528db391-5e58-4598-a1c9-007b81a7c340"
+              "bodyJob": "dd6c59ec-ff54-49e3-b96d-b6272e5391b2",
+              "cleanImage": "1fbf707d-62dd-4081-9b5e-4b1f116e66d6",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "masculino",
+                "action": "attack-sword",
+                "direction": "west",
+                "poseFrames": 8,
+                "bodyJob": "207fe10a-f13c-4f61-b86b-8b47d19d3603",
+                "sourceFrames": [
+                  "da1f923d2b11785c0cc8640e5bb3be61fce018234dd06210339b4adeeca16bc1",
+                  "aafe94af316a9205006a108c0618ffb7baa6f1bce57cffd072f7f02902338211",
+                  "59bc40fbd124ccc511eb62aa33957bddb0ff48ed0692c8408c80a948c2bd0e58",
+                  "fce900811282d64607f7b3cd1ce35a8110cea1e449bad7869454e8f9a54c5c62",
+                  "ad320afb586abab1fe633a00488a559b59b223bd5cf614ffb1828eebae165f5e",
+                  "6ad0d1a85c7bee11577d921bd2a17b5c4bc738b2a7e297105a1b1b31356656aa",
+                  "ab3778c2e4788aaa5bb9ea375d55f58df5ae7643577282ee5eecd84381612c0c",
+                  "f9e50d9b1c2e20726a8b297495cca6b759e7243cbd1100ffab701d1b83465215"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "cleanImage": "528db391-5e58-4598-a1c9-007b81a7c340"
+              }
+            },
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
             }
           },
           "east": {
@@ -963,43 +1066,43 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
+                "x": -1,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": 2.803809523809524,
+                "y": 2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 4.2057142857142855,
+                "y": 4,
                 "angle": 0
               },
               {
-                "x": -1.6,
-                "y": 4.2057142857142855,
+                "x": -1,
+                "y": 3,
                 "angle": 0
               },
               {
-                "x": -1.6,
-                "y": 4.2057142857142855,
+                "x": -3,
+                "y": 3,
                 "angle": 0
               },
               {
-                "x": -3.2,
-                "y": 4.2057142857142855,
-                "angle": 0
-              },
-              {
-                "x": -1.6,
-                "y": 1.401904761904762,
+                "x": -2,
+                "y": 0,
                 "angle": 0
               }
             ],
@@ -1058,27 +1161,27 @@
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
@@ -1145,32 +1248,32 @@
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 0,
                 "angle": 0
               },
               {
@@ -1226,37 +1329,7 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": -1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -4.8,
-                "y": 2.803809523809524,
-                "angle": 0
-              },
-              {
-                "x": -6.4,
-                "y": 2.803809523809524,
-                "angle": 0
-              },
-              {
-                "x": -4.8,
-                "y": 2.803809523809524,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -1.6,
+                "x": 0,
                 "y": 0,
                 "angle": 0
               },
@@ -1264,27 +1337,85 @@
                 "x": 0,
                 "y": 0,
                 "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 1,
+                "angle": 0
               }
             ],
             "source": {
               "body": "masculino",
               "action": "attack-firearm",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
               "sourceFrames": [
-                "8b7a16693e923fc8dc01ef2a5c2d8f772ad72dfa7dc32d0fa69b87ec9cc05089",
-                "27807d4d52c634990164b42c0c6aad9780960349fba0465e567a0a19997f724f",
-                "797a6b9ea13b709d726ce81d77287a13ebb838a1f382101f09f3ccb740c8d931",
-                "751dd71a5b2d7deb408630506117e731f1d0e51ec529d2ca9108f622e6c88ed0",
-                "afa9c9d714eeec4f6a7a78b9ae870a75df78e9ea0e9ba84425a66d4e2cd69bbb",
-                "4fdd02c6c7513841aef93c5cfb77b8bfed565f6ac69d09dfc0f9e05591a788e2",
-                "b916ecb6571e158115ecc3cf6846d3177ed9c790931263b570e3c7b4549728af",
-                "d5c655ba6990a99288efc708984967ee7957f74cd85bf06c467aa2c0878f9d27"
+                "dc2d5b245ea1bfa58467a9e66d7458b6b90a08843c7284502db52eed99bdf9fb",
+                "f06f87dd779410e1fa7155cbd350721604eff5a4cf4dc7b82d85a2c14161ad68",
+                "fb1c0c2845b21b5b3b65c2a8096de038df1de57fa9e1048ac8d9bc02c1b804bc",
+                "ceafe6c40eec900de3c2c0c84ef1527ae18de089702a459c1e44733ef9eb4b86",
+                "152b57d056152d49052955ae030a9aecf4fc11a7eb3c9cc6005e76b306098633",
+                "de9220a6b07c439db30e1191d814f70ab3d19729d04e0564902b48665a5a5a66",
+                "6bb2c69b1cd6bd7df68c660eb337136f540d6f42199333c91aad5e23223269d9",
+                "7e7fdacda822d351d3c05f73d16175a153250b7e3205da3461946d3c4b9f13c2"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "bodyJob": "c597c224-a45c-4a4a-be4d-3488d1e68cb7",
-              "cleanImage": "23515831-afa5-4da9-8dd1-d0f48f250b3d"
+              "bodyJob": "7172ff20-c4ae-4736-805c-5c0e6a6ec94f",
+              "cleanImage": "6be0f6c6-1753-4df6-adf3-4128a2b197c3",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "masculino",
+                "action": "attack-firearm",
+                "direction": "west",
+                "poseFrames": 8,
+                "sourceFrames": [
+                  "8b7a16693e923fc8dc01ef2a5c2d8f772ad72dfa7dc32d0fa69b87ec9cc05089",
+                  "27807d4d52c634990164b42c0c6aad9780960349fba0465e567a0a19997f724f",
+                  "797a6b9ea13b709d726ce81d77287a13ebb838a1f382101f09f3ccb740c8d931",
+                  "751dd71a5b2d7deb408630506117e731f1d0e51ec529d2ca9108f622e6c88ed0",
+                  "afa9c9d714eeec4f6a7a78b9ae870a75df78e9ea0e9ba84425a66d4e2cd69bbb",
+                  "4fdd02c6c7513841aef93c5cfb77b8bfed565f6ac69d09dfc0f9e05591a788e2",
+                  "b916ecb6571e158115ecc3cf6846d3177ed9c790931263b570e3c7b4549728af",
+                  "d5c655ba6990a99288efc708984967ee7957f74cd85bf06c467aa2c0878f9d27"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "bodyJob": "c597c224-a45c-4a4a-be4d-3488d1e68cb7",
+                "cleanImage": "23515831-afa5-4da9-8dd1-d0f48f250b3d"
+              }
+            },
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
             }
           },
           "east": {
@@ -1318,38 +1449,38 @@
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 1.401904761904762,
+                "x": 0,
+                "y": 0,
                 "angle": 0
               },
               {
-                "x": 3.2,
-                "y": 2.803809523809524,
+                "x": 1,
+                "y": 1,
                 "angle": 0
               },
               {
-                "x": 3.2,
-                "y": 2.803809523809524,
+                "x": 1,
+                "y": 1,
                 "angle": 0
               },
               {
-                "x": 3.2,
-                "y": 2.803809523809524,
+                "x": 1,
+                "y": 1,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": 1.401904761904762,
+                "x": -1,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
                 "y": 0,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
                 "angle": 0
               }
             ],
@@ -1408,27 +1539,27 @@
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
@@ -1496,32 +1627,32 @@
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 0,
                 "angle": 0
               },
               {
@@ -1578,37 +1709,7 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": -1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -4.8,
-                "y": 2.803809523809524,
-                "angle": 0
-              },
-              {
-                "x": -6.4,
-                "y": 2.803809523809524,
-                "angle": 0
-              },
-              {
-                "x": -4.8,
-                "y": 2.803809523809524,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -1.6,
+                "x": 0,
                 "y": 0,
                 "angle": 0
               },
@@ -1616,29 +1717,87 @@
                 "x": 0,
                 "y": 0,
                 "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 1,
+                "angle": 0
               }
             ],
             "source": {
               "body": "masculino",
               "action": "attack-firearm",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
               "sourceFrames": [
-                "8b7a16693e923fc8dc01ef2a5c2d8f772ad72dfa7dc32d0fa69b87ec9cc05089",
-                "27807d4d52c634990164b42c0c6aad9780960349fba0465e567a0a19997f724f",
-                "797a6b9ea13b709d726ce81d77287a13ebb838a1f382101f09f3ccb740c8d931",
-                "751dd71a5b2d7deb408630506117e731f1d0e51ec529d2ca9108f622e6c88ed0",
-                "afa9c9d714eeec4f6a7a78b9ae870a75df78e9ea0e9ba84425a66d4e2cd69bbb",
-                "4fdd02c6c7513841aef93c5cfb77b8bfed565f6ac69d09dfc0f9e05591a788e2",
-                "b916ecb6571e158115ecc3cf6846d3177ed9c790931263b570e3c7b4549728af",
-                "d5c655ba6990a99288efc708984967ee7957f74cd85bf06c467aa2c0878f9d27"
+                "dc2d5b245ea1bfa58467a9e66d7458b6b90a08843c7284502db52eed99bdf9fb",
+                "f06f87dd779410e1fa7155cbd350721604eff5a4cf4dc7b82d85a2c14161ad68",
+                "fb1c0c2845b21b5b3b65c2a8096de038df1de57fa9e1048ac8d9bc02c1b804bc",
+                "ceafe6c40eec900de3c2c0c84ef1527ae18de089702a459c1e44733ef9eb4b86",
+                "152b57d056152d49052955ae030a9aecf4fc11a7eb3c9cc6005e76b306098633",
+                "de9220a6b07c439db30e1191d814f70ab3d19729d04e0564902b48665a5a5a66",
+                "6bb2c69b1cd6bd7df68c660eb337136f540d6f42199333c91aad5e23223269d9",
+                "7e7fdacda822d351d3c05f73d16175a153250b7e3205da3461946d3c4b9f13c2"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "bodyJob": "c597c224-a45c-4a4a-be4d-3488d1e68cb7",
-              "cleanImage": "23515831-afa5-4da9-8dd1-d0f48f250b3d"
+              "bodyJob": "7172ff20-c4ae-4736-805c-5c0e6a6ec94f",
+              "cleanImage": "6be0f6c6-1753-4df6-adf3-4128a2b197c3",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "masculino",
+                "action": "attack-firearm",
+                "direction": "west",
+                "poseFrames": 8,
+                "sourceFrames": [
+                  "8b7a16693e923fc8dc01ef2a5c2d8f772ad72dfa7dc32d0fa69b87ec9cc05089",
+                  "27807d4d52c634990164b42c0c6aad9780960349fba0465e567a0a19997f724f",
+                  "797a6b9ea13b709d726ce81d77287a13ebb838a1f382101f09f3ccb740c8d931",
+                  "751dd71a5b2d7deb408630506117e731f1d0e51ec529d2ca9108f622e6c88ed0",
+                  "afa9c9d714eeec4f6a7a78b9ae870a75df78e9ea0e9ba84425a66d4e2cd69bbb",
+                  "4fdd02c6c7513841aef93c5cfb77b8bfed565f6ac69d09dfc0f9e05591a788e2",
+                  "b916ecb6571e158115ecc3cf6846d3177ed9c790931263b570e3c7b4549728af",
+                  "d5c655ba6990a99288efc708984967ee7957f74cd85bf06c467aa2c0878f9d27"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "bodyJob": "c597c224-a45c-4a4a-be4d-3488d1e68cb7",
+                "cleanImage": "23515831-afa5-4da9-8dd1-d0f48f250b3d"
+              }
             },
-            "sharedWith": "attack-firearm"
+            "sharedWith": "attack-firearm",
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
+            }
           },
           "east": {
             "modular": true,
@@ -1671,38 +1830,38 @@
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 1.401904761904762,
+                "x": 0,
+                "y": 0,
                 "angle": 0
               },
               {
-                "x": 3.2,
-                "y": 2.803809523809524,
+                "x": 1,
+                "y": 1,
                 "angle": 0
               },
               {
-                "x": 3.2,
-                "y": 2.803809523809524,
+                "x": 1,
+                "y": 1,
                 "angle": 0
               },
               {
-                "x": 3.2,
-                "y": 2.803809523809524,
+                "x": 1,
+                "y": 1,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": 1.401904761904762,
+                "x": -1,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
                 "y": 0,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
                 "angle": 0
               }
             ],
@@ -1761,33 +1920,33 @@
                 "angle": 0
               },
               {
+                "x": -1,
+                "y": -1,
+                "angle": 0
+              },
+              {
                 "x": 0,
                 "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.401904761904762,
+                "y": 1,
                 "angle": 0
               },
               {
@@ -1854,22 +2013,22 @@
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
                 "angle": 0
               },
               {
@@ -1930,42 +2089,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": -1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -1.6,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 3,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 2,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 3,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 1,
                 "y": 0,
                 "angle": 0
               }
@@ -1973,22 +2132,50 @@
             "source": {
               "body": "masculino",
               "action": "attack-daggers",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
               "sourceFrames": [
-                "944f12a2b70fa16d3c64e09ec1f97b129d4534f429528b1a3a059cc78b959aea",
-                "7d445874dd4bb5eec340b3407939f631a863d5a4311dab6200006402e7d5f76e",
-                "a7bbfb61466a1f1b23b0a7856a03b5ec8cf85a34f3442deabaca6015e53b1499",
-                "31e1e229fca855af9d46b774902e147af70e92f845be3a08735d7a43d442adb0",
-                "e930aa3826971a0c23da09bc7f99a4c11cc7dda0997d3cb57364773a954276ad",
-                "c264797ec713f883cccee1e4d5755f45b97ac11b8905f7090467383e80941aa1",
-                "509c28a6e6d05dfdd78242998d2156d7ff2e7427a1cf8ab843b876b42fe6eb20",
-                "13c032c9525845ce654de8aceda29bb87c3eb153edfa68dc34f3bdc9e2c791c5"
+                "86616e134c57d2634d862d52a421a5ebcee7842fdb1e71ccc0d9ed3324e4e4ff",
+                "f43dd2656d1345d596eaf411e98ff1a2605b4464b83c1fd9fb4a4561d865321a",
+                "1bd2753da2f05242029ea64a616d14c627a59600c4bab27e147d2cd36ae05ab1",
+                "52ca5b935da2bb9e97bc3ca9356e13475b7a0e1b8d6d247fe6d740ce39b350f7",
+                "886b90041551946eafe65f15b053b6820e53ee61642222fb85859a3dd150c44e",
+                "493aed29688cb7edf3d50a1bf0ea4ac9c333702ae875af1f3c5ee63ed7745c69",
+                "af8887e4dff9bec6f4837e855dd080b0d9e195a4a8d314c4070e4b478464eed4",
+                "e253c4df362e8e24296529b09be945a51877b277d92d75b015abecced8dd9bb1"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "bodyJob": "00705640-1667-43cd-a3f7-f92b79a3ade1",
-              "cleanImage": "702fdf9e-3b7c-449d-ae8e-0a61571d11c8"
+              "bodyJob": "39b24b13-ca48-4978-86c3-f4236c375a84",
+              "cleanImage": "d51cc7f7-4f74-467f-b938-37406ed6fe0a",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "masculino",
+                "action": "attack-daggers",
+                "direction": "west",
+                "poseFrames": 8,
+                "sourceFrames": [
+                  "944f12a2b70fa16d3c64e09ec1f97b129d4534f429528b1a3a059cc78b959aea",
+                  "7d445874dd4bb5eec340b3407939f631a863d5a4311dab6200006402e7d5f76e",
+                  "a7bbfb61466a1f1b23b0a7856a03b5ec8cf85a34f3442deabaca6015e53b1499",
+                  "31e1e229fca855af9d46b774902e147af70e92f845be3a08735d7a43d442adb0",
+                  "e930aa3826971a0c23da09bc7f99a4c11cc7dda0997d3cb57364773a954276ad",
+                  "c264797ec713f883cccee1e4d5755f45b97ac11b8905f7090467383e80941aa1",
+                  "509c28a6e6d05dfdd78242998d2156d7ff2e7427a1cf8ab843b876b42fe6eb20",
+                  "13c032c9525845ce654de8aceda29bb87c3eb153edfa68dc34f3bdc9e2c791c5"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "bodyJob": "00705640-1667-43cd-a3f7-f92b79a3ade1",
+                "cleanImage": "702fdf9e-3b7c-449d-ae8e-0a61571d11c8"
+              }
+            },
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
             }
           },
           "east": {
@@ -2017,32 +2204,7 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
@@ -2052,7 +2214,32 @@
                 "angle": 0
               },
               {
+                "x": -3,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": -2,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": -3,
+                "y": 0,
+                "angle": 0
+              },
+              {
                 "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": -1,
                 "y": 0,
                 "angle": 0
               }
@@ -2112,32 +2299,32 @@
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.803809523809524,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 1,
                 "angle": 0
               },
               {
@@ -2204,27 +2391,27 @@
               },
               {
                 "x": 0,
-                "y": -1.401904761904762,
+                "y": -2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -1.401904761904762,
+                "y": -2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -1.401904761904762,
+                "y": -2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -1.401904761904762,
+                "y": -2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
@@ -2280,65 +2467,93 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": -1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -1.6,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -1.6,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
                 "y": 0,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": -3,
+                "y": 2,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 1,
                 "angle": 0
               }
             ],
             "source": {
               "body": "masculino",
               "action": "attack-focus",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
               "sourceFrames": [
-                "f6b21a73d38d0d1705aa03ecbb439a4578c80a12c8629b78bf48f6ff087b67e9",
-                "b83c8861d84caea7c9b439fbff32333e9519155f537d0f655b3f0ee1fb9bd674",
-                "3119ca2776ccd7d24d1f0a55d84e5fcb0bbc84bd60b73d72fffb33a6a18bc1fd",
-                "f8546db70af1126b746250bc010feb3ed67a1b94cdcb5ecd87fec4fb2085276a",
-                "b1bffed402a35559029c7c878d60612197447f523c301d7639821fe6cf64dc3e",
-                "d178126ec2763be3286110b13088e3d077bfb3db85427ee1b97d1f4ffb141d84",
-                "cf83adca93562fdc3c0cb5aee1db59f8728d65e774502d385fb8c244a76dae85",
-                "f9645bf0195f10a37a55a5167f36d8fd2ab600417b9adb30f17a575bb946c0b6"
+                "1e921c16b4f7653de91129843cd8e90b3e909ecb146e10df8e308d1f0a974345",
+                "34957b005877bbf4fb6fd47708cd2c4b4587050ad4227a1fe7eedf6b4cd67cf3",
+                "d41c15e73175d13979b3e519bd44126957d148fec563eec3314f0b8309300855",
+                "6097ff8b475d110efbc8d1e16f69d72e341bb122f8f1d9904b7b28160e384071",
+                "0e7479300212758202e06ead03d1974f6e7e651c59c1bcfca0846b378bc32f8b",
+                "52b023d0246dba9c52cbf89083080165d69e4443bb9c73228439e50854ea85f4",
+                "2ffac86b09561efd27db379f1e84b9c14f98b744bf23e593941d275676ad39db",
+                "250826a254d4698bb1ca6f4e715765d45f9b889b60b24cf4f5e0b25ec044ae86"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "bodyJob": "85a0dd91-8aad-4539-be47-3c5d13ea8125",
-              "cleanImage": "6c7a40bd-9731-4396-a980-cf7992cdec21"
+              "bodyJob": "78967aae-8c82-49d2-ba0a-880cab7a2f0f",
+              "cleanImage": "e23d1db1-9279-49ee-84c0-1d9be48e5b4f",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "masculino",
+                "action": "attack-focus",
+                "direction": "west",
+                "poseFrames": 8,
+                "sourceFrames": [
+                  "f6b21a73d38d0d1705aa03ecbb439a4578c80a12c8629b78bf48f6ff087b67e9",
+                  "b83c8861d84caea7c9b439fbff32333e9519155f537d0f655b3f0ee1fb9bd674",
+                  "3119ca2776ccd7d24d1f0a55d84e5fcb0bbc84bd60b73d72fffb33a6a18bc1fd",
+                  "f8546db70af1126b746250bc010feb3ed67a1b94cdcb5ecd87fec4fb2085276a",
+                  "b1bffed402a35559029c7c878d60612197447f523c301d7639821fe6cf64dc3e",
+                  "d178126ec2763be3286110b13088e3d077bfb3db85427ee1b97d1f4ffb141d84",
+                  "cf83adca93562fdc3c0cb5aee1db59f8728d65e774502d385fb8c244a76dae85",
+                  "f9645bf0195f10a37a55a5167f36d8fd2ab600417b9adb30f17a575bb946c0b6"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "bodyJob": "85a0dd91-8aad-4539-be47-3c5d13ea8125",
+                "cleanImage": "6c7a40bd-9731-4396-a980-cf7992cdec21"
+              }
+            },
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
             }
           },
           "east": {
@@ -2367,32 +2582,7 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 4.8,
-                "y": 2.803809523809524,
-                "angle": 0
-              },
-              {
-                "x": 3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
@@ -2402,8 +2592,33 @@
                 "angle": 0
               },
               {
+                "x": 1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": 3,
+                "y": 2,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 1,
+                "angle": 0
+              },
+              {
                 "x": 0,
-                "y": 0,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
                 "angle": 0
               }
             ],
@@ -2453,18 +2668,18 @@
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 1.4019047619,
+                "x": -1,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.8038095238,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.4019047619,
+                "y": 0,
                 "angle": 0
               }
             ],
@@ -2501,17 +2716,17 @@
               },
               {
                 "x": 0,
-                "y": 1.4019047619,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.8038095238,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.8038095238,
+                "y": 0,
                 "angle": 0
               }
             ],
@@ -2542,34 +2757,39 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": -1.4019047619,
+                "x": 1,
+                "y": 2,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": -2.8038095238,
+                "x": 1,
+                "y": 2,
                 "angle": 0
               }
             ],
-            "sourceMotion": "Existing 84px idle poses; approved 96px body identity, original rigid head",
-            "bodyJob": "571654a3-1de4-4f6a-b3dc-595daa1994ae",
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "bodyJob": "ae81ee2d-5572-429f-a3b0-1d92004d8433",
             "sourceHashes": [
-              "9d6a672f7e0791a502ac21cdbe2f9ce8a35197fa144bf709114a6f83ea5e3e4a",
-              "ebcb979e02edf4cf0d6c963d33a540666b1a9ad74a02a60c18359630782ca2ca",
-              "581a51a70b554cf6f74b2dbf8b7ae69fc3ec06634b56e6658bed1368b0c4386c",
-              "50f9be5c5ea65e97c7366a3f6ad6a2e40a9bf8e7b2053b6e368c7cffbc0a9727"
-            ]
+              "d044a85dabf568ebf7cc2fcabf529997ba077779f918b2f599a8d263ef8a5a1a",
+              "f87bac31fc7072dbb008eae211b5b29732509b66072a9fff1601318dc7c273fa",
+              "90cb44631f2ccefb650a822c21ae54d0e81d680889f60c0c666644e9432dbcc5",
+              "178fcf0e123e2e91f37a5f4c7c0f6e0db6d1d8fce57d50308a34783ff3a01ed8"
+            ],
+            "mirror": {
+              "source": "east",
+              "pixelSum": 128,
+              "allLayers": true
+            }
           },
           "east": {
             "modular": true,
@@ -2589,23 +2809,23 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 1.4019047619,
+                "x": -1,
+                "y": 2,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 1.4019047619,
+                "x": -1,
+                "y": 2,
                 "angle": 0
               }
             ],
@@ -2741,7 +2961,49 @@
               }
             ],
             "sourceMotion": "Existing feminine walk south, eight recovered poses; shared retargeted guide across bodies",
-            "bodyJob": "8ded60f5-6ad5-44d7-a1a2-00a56d1f447a"
+            "bodyJob": "8ded60f5-6ad5-44d7-a1a2-00a56d1f447a",
+            "headSockets": [
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              }
+            ]
           },
           "north": {
             "modular": true,
@@ -2762,12 +3024,7 @@
             "headSockets": [
               {
                 "x": 0,
-                "y": -1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": 0,
+                "y": -2,
                 "angle": 0
               },
               {
@@ -2777,22 +3034,27 @@
               },
               {
                 "x": 0,
-                "y": 1.4019047619,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
+                "y": 2,
+                "angle": 0
+              },
+              {
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": -1.4019047619,
+                "y": -2,
                 "angle": 0
               },
               {
@@ -2832,58 +3094,63 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
-                "y": 0,
+                "x": 1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 3,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 2,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.4019047619,
+                "y": 2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.4019047619,
+                "y": 2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.4019047619,
+                "y": 2,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               }
             ],
-            "sourceMotion": "Existing 84px walk poses; approved 96px body identity, original rigid head",
-            "bodyJob": "133f4c08-3ea3-4ac6-8041-9649ae415825",
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "bodyJob": "e1e2562f-186d-41a0-92b4-4f4e17084b30",
             "sourceHashes": [
-              "b31f62cf7dd8e32409cd2fddb2b560c1e0b592727b948599e1a6886dee04972d",
-              "5015a9d51d9b9f42d4a5593b5ecd29561ceccfd5cb49036669275758720d995b",
-              "7339bec868498895e743fd0eafc8996d0ec75e82df45c54573bd0ecae99542da",
-              "9772f32c5657e83ce4a51772e42d4e9d95d6c90648c845515e4d606c4b42eb82",
-              "29dbc78bc68f1f445673bcb7ebd47dc0680a8836b6901c372619cf8a1a36181e",
-              "f1e82a36edcfe67d5e7d530fbfb25ec16749c5cc9c39806e2136e9ea7fe433d0",
-              "f81c8292ffd092e1171d20d43da77f2b1569561bcd3015837f0f3a6d534d9f3a",
-              "b3a233cce47573d845d746197991bcd2dc14707f55d5b1eb61695af4ed035af2"
-            ]
+              "75a214e9537ad0e98adef59275c9a1acf9172113ba5257678f63650acac88886",
+              "95d3efca15bb7cef513177cae950a3163f4c6665ef8d47fe648b7e79b914ac73",
+              "0305e97b7bd3e4b9c540eab28b0679c8f726674c46fa46bbf17058f17bef0345",
+              "5dfaaf21b3a8c43a4cd1bd1bbbe50f9a15d64f53c784754369e276aecb482526",
+              "f7cad5850bb1b2410d5dceeab2a9a7dd997d5838348731529df79bc875aa3fbc",
+              "fbe0cd58e276cd405b769418c43bf3446aad9c6844ef27da157b08b9e709d3d4",
+              "e9737a6b9c33346c2c0bb8b6ba91dc32a815ec214e5f7ff4725f944e72af724b",
+              "268ac8dab5f77a8c0f67eb58b27a4e3e478fc08e8931c457c19e94897519b99c"
+            ],
+            "mirror": {
+              "source": "east",
+              "pixelSum": 128,
+              "allLayers": true
+            }
           },
           "east": {
             "modular": true,
@@ -2903,42 +3170,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
-                "y": 1.4019047619,
+                "x": -1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 3,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 2,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.4019047619,
+                "y": 2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 2.8038095238,
+                "y": 2,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.4019047619,
+                "y": 2,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.4019047619,
-                "angle": 0
-              },
-              {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               }
@@ -2984,37 +3251,37 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 3.2,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 3.2,
-                "y": 0,
+                "x": 0,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": -1.6,
-                "y": 0,
+                "x": 1,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": -1.6,
-                "y": 0,
+                "x": 0,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": -1.6,
+                "x": 0,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 0,
                 "y": 0,
                 "angle": 0
               },
@@ -3072,7 +3339,7 @@
             "headSockets": [
               {
                 "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               },
               {
@@ -3082,7 +3349,12 @@
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": 10,
+                "y": -2,
                 "angle": 0
               },
               {
@@ -3092,22 +3364,17 @@
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
+                "x": 10,
+                "y": 1,
                 "angle": 0
               }
             ],
@@ -3158,42 +3425,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 1.6,
+                "x": 2,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 2,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": 2,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": 2,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               }
@@ -3201,22 +3468,50 @@
             "source": {
               "body": "feminino",
               "action": "attack-sword",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
               "sourceFrames": [
-                "8433df36f80076909dafb1384168094414764a99d83bd827d3f780349bf7c36f",
-                "76d550b4a82c7833209b46bd02a9d73795fd057a894d8b919d4e4db7ebdbe21a",
-                "ee9cba976c02ee78a2667fa615fac1ca33d9f91c7bcbb799fb1b17833b81d361",
-                "5d5a638ca78b446c6122079a12bd44194b58982bc4c35553ea7a39a7cd87870f",
-                "ba346e9ed34d1bcb0a2ebfd42646433eb4232bc5851b467b340675a36ae3d70d",
-                "90bef4fe46b50bf4a0ce9ea44b46e803994462587ba3620d99a2777ab6ec4926",
-                "d327b5be7167dd9545b6547b884da8c6d5730f3882984cf515f25c5cc3db76df",
-                "4ca5607f0f19128dc4d06745d7672214ac0e89f72dd1efd2e6ef047ba3afec13"
+                "05abe499e9157a697c5ae4e6b2578e90b719d23df4818a2ce301b78d7eb9b75a",
+                "3b781efd51ab98f20ce05ef0068e9ec72fff08356aeb20edf3c822909627111e",
+                "105374cf1c325b44bfeb5e79dca8bebdd9ab3e1f99e57f05a843663a350a76d2",
+                "4c6065de71a4082b8027835f74629c209a294617b53bd036068f1db3e3de3e68",
+                "9addbe30d22350ce6b64d5b34773e627a1d5aab7f7e71b3ac0decd981e4969a1",
+                "05387812c252928790d45c7e4e7f433a974007369c8dec5d0dc26182d80996b3",
+                "f7f4dfbcc9293deadcf65894c639b5a6f605b41e14fe6080e85828ff8e110cb3",
+                "0a6a19e8abcf443d7d7b57c3977e69c75a327cd04c5a2c6f2c3d006849d70e66"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "bodyJob": "de80af4a-5c71-4dc2-ba5b-107cf877e4bb",
-              "cleanImage": "a0026017-fc11-4804-b8d1-0b396fe11945"
+              "bodyJob": "02e78587-7b6d-4ea7-b47d-75b82ab14126",
+              "cleanImage": "7cbc94c1-4cf2-4959-811f-d6afca06d9b9",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "feminino",
+                "action": "attack-sword",
+                "direction": "west",
+                "poseFrames": 8,
+                "sourceFrames": [
+                  "8433df36f80076909dafb1384168094414764a99d83bd827d3f780349bf7c36f",
+                  "76d550b4a82c7833209b46bd02a9d73795fd057a894d8b919d4e4db7ebdbe21a",
+                  "ee9cba976c02ee78a2667fa615fac1ca33d9f91c7bcbb799fb1b17833b81d361",
+                  "5d5a638ca78b446c6122079a12bd44194b58982bc4c35553ea7a39a7cd87870f",
+                  "ba346e9ed34d1bcb0a2ebfd42646433eb4232bc5851b467b340675a36ae3d70d",
+                  "90bef4fe46b50bf4a0ce9ea44b46e803994462587ba3620d99a2777ab6ec4926",
+                  "d327b5be7167dd9545b6547b884da8c6d5730f3882984cf515f25c5cc3db76df",
+                  "4ca5607f0f19128dc4d06745d7672214ac0e89f72dd1efd2e6ef047ba3afec13"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "bodyJob": "de80af4a-5c71-4dc2-ba5b-107cf877e4bb",
+                "cleanImage": "a0026017-fc11-4804-b8d1-0b396fe11945"
+              }
+            },
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
             }
           },
           "east": {
@@ -3245,42 +3540,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": -1.6,
+                "x": -2,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -2,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": -2,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": -2,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": -1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": -1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               }
@@ -3334,38 +3629,38 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": -1.6,
-                "y": 1.401904761904762,
+                "x": -2,
+                "y": 1,
                 "angle": 0
               },
               {
-                "x": -1.6,
-                "y": 2.803809523809524,
+                "x": -2,
+                "y": 0,
                 "angle": 0
               },
               {
-                "x": -1.6,
-                "y": 2.803809523809524,
+                "x": -2,
+                "y": 1,
                 "angle": 0
               },
               {
-                "x": 4.8,
-                "y": 5.607619047619048,
+                "x": 5,
+                "y": 4,
                 "angle": 0
               },
               {
-                "x": 3.2,
-                "y": 4.2057142857142855,
+                "x": 2,
+                "y": 3,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 2.803809523809524,
+                "x": 1,
+                "y": 2,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 1.401904761904762,
+                "x": 1,
+                "y": 1,
                 "angle": 0
               },
               {
@@ -3427,22 +3722,22 @@
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 0,
                 "angle": 0
               },
               {
@@ -3508,42 +3803,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
+                "x": 2,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 5,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 6,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 8,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": -4,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -2,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -4.8,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -3.2,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -1.6,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               }
@@ -3551,22 +3846,50 @@
             "source": {
               "body": "feminino",
               "action": "attack-unarmed",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
               "sourceFrames": [
-                "24bf58b4356334331f64febc24a3719882502e7af86633e1c9d4c796e334e220",
-                "fa7c26a1b8093df3bfac5ebb730e0513635072cb405f10b06f62de5226bd2e1a",
-                "a87e8b8f10a266c649d220161ad063713069c86896a65dff34b658306c3f22bb",
-                "96f6ee498eab3ebda59577903726400fcd68116481e9aa6f6d3485cb3064a5a9",
-                "644371427b08f1f89266b6181ade2006d4974ab1e025f687b4d74f7993debc16",
-                "a22be1313cdee1a17936b743081cb04c90e89c8cf1c7eeb2ce9f40451ab53e2e",
-                "6e2c7f4d255b78d983bae6c3bda3364fb87d1f04e4664b0b1546e5a2fae88b3b",
-                "9577e774498d778e43c52535bc491bbdd0317b42125424d0fe2a47b01be05d69"
+                "f248a96d92aae21e8114f91482542ea05ef453ecfb3cf0268b7542f4a3353402",
+                "7d9f7ceab863281da8f649aaea20e879e8d1b0793b97d1d2ba747159f448b6ab",
+                "08f883fac3b1582f97fe0d10ff73c9061867dd93ef2cdb73c01191b2f444f421",
+                "d971d9eaaee701063d5852e89420c90e0d4759f01a84c0293a64dead7cb7878e",
+                "ab16282907b8cd7774060f82e4c8b046cacf76826cf002b44d5e5c1f0084b8ad",
+                "54eac624d47f13381dd2cce57fe7558a4dbd36c1a3d96113ac92d867e0ed11a6",
+                "e9851520711899255de3d9cdce0110856951860914cadbd2a9bd4560e3ea8f8f",
+                "7e2d270b5ae92e428ffd9d39fd2adfaf1c5bc15311d813869d04f8bc94e85ebf"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "bodyJob": "eb6e74ae-c0bb-41e9-bd84-25f427818950",
-              "cleanImage": "e490055c-b247-4a32-9e5b-a755c4f17092"
+              "bodyJob": "636cc772-1938-48fe-84cb-d709b9859516",
+              "cleanImage": "990dc330-8dff-4c30-b4d8-bf69df6a5eeb",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "feminino",
+                "action": "attack-unarmed",
+                "direction": "west",
+                "poseFrames": 8,
+                "sourceFrames": [
+                  "24bf58b4356334331f64febc24a3719882502e7af86633e1c9d4c796e334e220",
+                  "fa7c26a1b8093df3bfac5ebb730e0513635072cb405f10b06f62de5226bd2e1a",
+                  "a87e8b8f10a266c649d220161ad063713069c86896a65dff34b658306c3f22bb",
+                  "96f6ee498eab3ebda59577903726400fcd68116481e9aa6f6d3485cb3064a5a9",
+                  "644371427b08f1f89266b6181ade2006d4974ab1e025f687b4d74f7993debc16",
+                  "a22be1313cdee1a17936b743081cb04c90e89c8cf1c7eeb2ce9f40451ab53e2e",
+                  "6e2c7f4d255b78d983bae6c3bda3364fb87d1f04e4664b0b1546e5a2fae88b3b",
+                  "9577e774498d778e43c52535bc491bbdd0317b42125424d0fe2a47b01be05d69"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "bodyJob": "eb6e74ae-c0bb-41e9-bd84-25f427818950",
+                "cleanImage": "e490055c-b247-4a32-9e5b-a755c4f17092"
+              }
+            },
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
             }
           },
           "east": {
@@ -3595,42 +3918,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": -1.6,
+                "x": -2,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -5,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": -6,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": -8,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 4,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 2,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": -3.2,
-                "y": -1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -4.8,
-                "y": -1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": -6.4,
-                "y": -1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 6.4,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 4.8,
-                "y": 1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 3.2,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               }
@@ -3695,7 +4018,22 @@
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -3,
                 "angle": 0
               },
               {
@@ -3705,22 +4043,7 @@
               },
               {
                 "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               }
             ],
@@ -3777,22 +4100,22 @@
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 1,
                 "angle": 0
               },
               {
@@ -3858,42 +4181,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 2,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 3,
+                "y": -3,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 3,
+                "y": -3,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 2,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               }
@@ -3901,22 +4224,50 @@
             "source": {
               "body": "feminino",
               "action": "attack-firearm",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
               "sourceFrames": [
-                "da7e924c2d4d8d7bcba7a347921c96ee50d88523d3cfeae2e10f7ccd828ec49b",
-                "af5cf0b9986da42bd74f6e85dd8341323885ec4549aedb06330de635ddb80653",
-                "2f1ca133b5bd3f60286f184fbf47e19430042ca4e4c94246680407fd4fb95fb7",
-                "ebb8b25ad0e1230f608b18c13ee1bde6e7cda952f42581ad29bb6e11a49a57ab",
-                "553838798d62f41d30a48662efe37b37b06be10924828f4a946032ac2db1a42f",
-                "49c88f72795482d6ba9516b468761cf3da9e2814fa730a0fbf85aad5f5d14cf9",
-                "08f8121756e322fc801692a4ee204054c4bc9af2debe0a302cedc19c00630e53",
-                "2e14ffc2b0c01364fb9eecce3f207b51baf26c149381c2143dfd2138c8be6098"
+                "c36eb39fd15f4dcef4dfc16b0682cf71fe2784f14d4bfbed1fd71d6a86aa9dd8",
+                "22e054d513a6654a01d0f21416c4529cf15bf099bafd3a7bbc07557828ec5c5d",
+                "bb959400ac51abd92e974215656a42e4b3e70bef25b95586dc3fa743c442744f",
+                "0f2252b5c3d217e4a010479426d032778ada76b2ae7ce655b9eaaa6dda9a1a4b",
+                "cb5c8131e30e4cb33cb0abbfbdc8d39e34525ab1ea999049ddcb3e032e629166",
+                "4f5f69fc310c2811ca6101e13d758302818ae95240e8a3f408a0d23e1eb50a97",
+                "6c2c51e89cc4343b166864cd838195a2e0b8be28c5885190f841292f1c768e07",
+                "0ec94e3001aeed5400155e61e47b45a39d8e57019375d1199fac0afee4237a90"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "bodyJob": "1c70ebfc-aab6-473f-ad55-85ad7c4aead2",
-              "cleanImage": "df175394-718d-44a4-954f-b7f8f52e7acd"
+              "bodyJob": "fe772f8d-b7ff-43ea-b59d-c9804ab881ae",
+              "cleanImage": "48683f69-a187-45b3-a69d-423753ee06a5",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "feminino",
+                "action": "attack-firearm",
+                "direction": "west",
+                "poseFrames": 8,
+                "sourceFrames": [
+                  "da7e924c2d4d8d7bcba7a347921c96ee50d88523d3cfeae2e10f7ccd828ec49b",
+                  "af5cf0b9986da42bd74f6e85dd8341323885ec4549aedb06330de635ddb80653",
+                  "2f1ca133b5bd3f60286f184fbf47e19430042ca4e4c94246680407fd4fb95fb7",
+                  "ebb8b25ad0e1230f608b18c13ee1bde6e7cda952f42581ad29bb6e11a49a57ab",
+                  "553838798d62f41d30a48662efe37b37b06be10924828f4a946032ac2db1a42f",
+                  "49c88f72795482d6ba9516b468761cf3da9e2814fa730a0fbf85aad5f5d14cf9",
+                  "08f8121756e322fc801692a4ee204054c4bc9af2debe0a302cedc19c00630e53",
+                  "2e14ffc2b0c01364fb9eecce3f207b51baf26c149381c2143dfd2138c8be6098"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "bodyJob": "1c70ebfc-aab6-473f-ad55-85ad7c4aead2",
+                "cleanImage": "df175394-718d-44a4-954f-b7f8f52e7acd"
+              }
+            },
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
             }
           },
           "east": {
@@ -3945,42 +4296,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
-                "y": 0,
+                "x": -2,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -3,
+                "y": -3,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -3,
+                "y": -3,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -2,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               }
@@ -4045,7 +4396,22 @@
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -3,
                 "angle": 0
               },
               {
@@ -4055,22 +4421,7 @@
               },
               {
                 "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               }
             ],
@@ -4128,22 +4479,22 @@
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 1,
                 "angle": 0
               },
               {
@@ -4210,42 +4561,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 2,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 3,
+                "y": -3,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 3,
+                "y": -3,
                 "angle": 0
               },
               {
-                "x": 1.6,
-                "y": 0,
+                "x": 2,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               }
@@ -4253,24 +4604,52 @@
             "source": {
               "body": "feminino",
               "action": "attack-firearm",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
               "sourceFrames": [
-                "da7e924c2d4d8d7bcba7a347921c96ee50d88523d3cfeae2e10f7ccd828ec49b",
-                "af5cf0b9986da42bd74f6e85dd8341323885ec4549aedb06330de635ddb80653",
-                "2f1ca133b5bd3f60286f184fbf47e19430042ca4e4c94246680407fd4fb95fb7",
-                "ebb8b25ad0e1230f608b18c13ee1bde6e7cda952f42581ad29bb6e11a49a57ab",
-                "553838798d62f41d30a48662efe37b37b06be10924828f4a946032ac2db1a42f",
-                "49c88f72795482d6ba9516b468761cf3da9e2814fa730a0fbf85aad5f5d14cf9",
-                "08f8121756e322fc801692a4ee204054c4bc9af2debe0a302cedc19c00630e53",
-                "2e14ffc2b0c01364fb9eecce3f207b51baf26c149381c2143dfd2138c8be6098"
+                "c36eb39fd15f4dcef4dfc16b0682cf71fe2784f14d4bfbed1fd71d6a86aa9dd8",
+                "22e054d513a6654a01d0f21416c4529cf15bf099bafd3a7bbc07557828ec5c5d",
+                "bb959400ac51abd92e974215656a42e4b3e70bef25b95586dc3fa743c442744f",
+                "0f2252b5c3d217e4a010479426d032778ada76b2ae7ce655b9eaaa6dda9a1a4b",
+                "cb5c8131e30e4cb33cb0abbfbdc8d39e34525ab1ea999049ddcb3e032e629166",
+                "4f5f69fc310c2811ca6101e13d758302818ae95240e8a3f408a0d23e1eb50a97",
+                "6c2c51e89cc4343b166864cd838195a2e0b8be28c5885190f841292f1c768e07",
+                "0ec94e3001aeed5400155e61e47b45a39d8e57019375d1199fac0afee4237a90"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "bodyJob": "1c70ebfc-aab6-473f-ad55-85ad7c4aead2",
-              "cleanImage": "df175394-718d-44a4-954f-b7f8f52e7acd"
+              "bodyJob": "fe772f8d-b7ff-43ea-b59d-c9804ab881ae",
+              "cleanImage": "48683f69-a187-45b3-a69d-423753ee06a5",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "feminino",
+                "action": "attack-firearm",
+                "direction": "west",
+                "poseFrames": 8,
+                "sourceFrames": [
+                  "da7e924c2d4d8d7bcba7a347921c96ee50d88523d3cfeae2e10f7ccd828ec49b",
+                  "af5cf0b9986da42bd74f6e85dd8341323885ec4549aedb06330de635ddb80653",
+                  "2f1ca133b5bd3f60286f184fbf47e19430042ca4e4c94246680407fd4fb95fb7",
+                  "ebb8b25ad0e1230f608b18c13ee1bde6e7cda952f42581ad29bb6e11a49a57ab",
+                  "553838798d62f41d30a48662efe37b37b06be10924828f4a946032ac2db1a42f",
+                  "49c88f72795482d6ba9516b468761cf3da9e2814fa730a0fbf85aad5f5d14cf9",
+                  "08f8121756e322fc801692a4ee204054c4bc9af2debe0a302cedc19c00630e53",
+                  "2e14ffc2b0c01364fb9eecce3f207b51baf26c149381c2143dfd2138c8be6098"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "bodyJob": "1c70ebfc-aab6-473f-ad55-85ad7c4aead2",
+                "cleanImage": "df175394-718d-44a4-954f-b7f8f52e7acd"
+              }
             },
-            "sharedWith": "attack-firearm"
+            "sharedWith": "attack-firearm",
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
+            }
           },
           "east": {
             "modular": true,
@@ -4298,42 +4677,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
-                "y": 0,
+                "x": -2,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -3,
+                "y": -3,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -2,
+                "y": -2,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -3,
+                "y": -3,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
+                "x": -2,
+                "y": -1,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               }
@@ -4389,27 +4768,27 @@
             "headSockets": [
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 4.2057142857142855,
+                "y": 1,
                 "angle": 0
               },
               {
-                "x": -1.6,
-                "y": 7.0095238095238095,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 7.0095238095238095,
+                "x": -1,
+                "y": 4,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 4.2057142857142855,
+                "y": 6,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 3,
                 "angle": 0
               },
               {
@@ -4419,12 +4798,12 @@
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               }
             ],
@@ -4481,22 +4860,22 @@
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 0,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 1.401904761904762,
+                "y": 0,
                 "angle": 0
               },
               {
@@ -4562,42 +4941,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": -3.2,
+                "x": 3,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": -1.6,
+                "x": 3,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": -1.6,
+                "x": 3,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": -1.6,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": -1.6,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": -3.2,
+                "x": -1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": -1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               }
@@ -4605,22 +4984,50 @@
             "source": {
               "body": "feminino",
               "action": "attack-daggers",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
               "sourceFrames": [
-                "81ca2cd844f3e4f5d55d77e32811eba9e07078f09c091212dda683e673e97791",
-                "788c0a77367052ce37501fc34d69bc00e2c85bd8b84ea77b286894d3b5891f13",
-                "8bf876f8bf822236938c36024209e99ee2dd426e67bb87a7299f020a9c8fe27b",
-                "3c1abf243ecbacb370433872f3bdaa6e57e37c54abe0047c7f0d9379aaa1160a",
-                "1263611dbd834422231b3338583a376579b36d4f3cf5d5e4a8c4415e1f08c4a8",
-                "490ef60f029ccd90d5d9d277643e7d08a55e11959c0c625087501cb10e0ba4a8",
-                "137377fea893c107196946b442cf90b3c403d351d839c59fff64027b827d60de",
-                "15330ad5fceb6a70efe8204a84d09498397df959c1e3bb31ba2c23f1b1c27752"
+                "fe414c738c317b4f9ff8e697d5cffce04d70b58aab954274faf985ba567736d5",
+                "6f6205a89b826d18d94c8f92f86e55e400f4e9da35b4e114fff5dde9ff5b694d",
+                "46127cbdf2fd85a444e8ef883d507143d802cb25b20648f09bb61ebb6ad336f3",
+                "d40a37946a3b63fa2843bb955cf32ae5ceb1828e5671bff0c899bb8974373bbc",
+                "3bd95302ff2935e596d38317b7da7937576c0cee95682c4f6aaf9eceee8c84b1",
+                "67f7e716c3733dba0552e76660e3eb2d7ccd678bba4eca885bfa33e4ebe84bca",
+                "31d17f72537e958407e42c335c20be3fb6105c5d6dcb1fbb7789bbda50ac2c82",
+                "f493ec66c316ca139e487489ee2706843b325f59075cfb8f4afe70d78550be76"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "bodyJob": "9cbec44c-8b7d-472f-8f09-3f0f03e38dfb",
-              "cleanImage": "3c641308-c956-4c28-81c3-89a4ad37ed93"
+              "bodyJob": "59128d4f-7f5b-4fac-ac88-e2cb0858ee28",
+              "cleanImage": "d9c14766-9bd4-412b-b695-5c274083c701",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "feminino",
+                "action": "attack-daggers",
+                "direction": "west",
+                "poseFrames": 8,
+                "sourceFrames": [
+                  "81ca2cd844f3e4f5d55d77e32811eba9e07078f09c091212dda683e673e97791",
+                  "788c0a77367052ce37501fc34d69bc00e2c85bd8b84ea77b286894d3b5891f13",
+                  "8bf876f8bf822236938c36024209e99ee2dd426e67bb87a7299f020a9c8fe27b",
+                  "3c1abf243ecbacb370433872f3bdaa6e57e37c54abe0047c7f0d9379aaa1160a",
+                  "1263611dbd834422231b3338583a376579b36d4f3cf5d5e4a8c4415e1f08c4a8",
+                  "490ef60f029ccd90d5d9d277643e7d08a55e11959c0c625087501cb10e0ba4a8",
+                  "137377fea893c107196946b442cf90b3c403d351d839c59fff64027b827d60de",
+                  "15330ad5fceb6a70efe8204a84d09498397df959c1e3bb31ba2c23f1b1c27752"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "bodyJob": "9cbec44c-8b7d-472f-8f09-3f0f03e38dfb",
+                "cleanImage": "3c641308-c956-4c28-81c3-89a4ad37ed93"
+              }
+            },
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
             }
           },
           "east": {
@@ -4649,42 +5056,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": -1.6,
+                "x": -3,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": -1.6,
+                "x": -3,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": -1.6,
+                "x": -3,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 1.6,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 3.2,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 1.6,
+                "x": 1,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               }
@@ -4744,6 +5151,26 @@
               },
               {
                 "x": 0,
+                "y": 1,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": 0,
+                "angle": 0
+              },
+              {
+                "x": 11,
                 "y": 0,
                 "angle": 0
               },
@@ -4754,27 +5181,7 @@
               },
               {
                 "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               }
             ],
@@ -4826,37 +5233,37 @@
             "headSockets": [
               {
                 "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": -1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": -1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": -1.401904761904762,
-                "angle": 0
-              },
-              {
-                "x": 1.6,
-                "y": -1.401904761904762,
+                "y": -1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -3,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -2,
+                "angle": 0
+              },
+              {
+                "x": 0,
+                "y": -1,
                 "angle": 0
               },
               {
@@ -4912,42 +5319,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 1,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               }
@@ -4955,22 +5362,50 @@
             "source": {
               "body": "feminino",
               "action": "attack-focus",
-              "direction": "west",
+              "direction": "east",
               "poseFrames": 8,
               "sourceFrames": [
-                "6e62762150b2f2335075e2b9e75e6ae30eb5c716cb30ba5b81d551a803d2c0a6",
-                "23ae46be1c9de9d828d95fc7a0589c78ab02d35c49fe36a7742a38c5fb48a3b5",
-                "3e5b33bbe25d63ecd03d9cb0f929780dd0e57775ac477c259e0855ff69fe058e",
-                "c23e2a6a7fd2c3dba3d0126d02c5ddae78b88daf04cdfa49db95e8f0d9138e9d",
-                "64b380bef5baea486dab66b08e14b7c8a519abd78a18365d9e635d5eb9a2c75d",
-                "4299cf7f9a65686565ea46d02bbe7c3100d49a59073600fd5f7e2562592ca06c",
-                "28ad2785acd29875faf0ff950e16d7bb2fc170fa1fa988223446daca5e0113c2",
-                "03f0d9e921eec687608086963a3190140ad59af025150e38c652fb1ba99a15a3"
+                "9e2d0c65e058eae4742429cb2d16ecf634c6b34264927cf92d782463895a9a00",
+                "1136e2d708f6d1cc76e889f2ee0e1675e918dc096a55fb19c5f00780423cd95b",
+                "46ca133fadff77db75f49a65487181745abb196d06dfa47a16cceab2b4679b63",
+                "798316bf961754b512437b2fb9a57a5a75118ae51be2e4d1fbd994923121c8af",
+                "287c50b0f184085616ddf88922899f1021c7e13f788e218c72af0defb8b84e21",
+                "4a5ff5b7000417eca0307b01ff195a58f6b03d6270992fcc1087eccdc3d77a87",
+                "eb9e3d6c79574c1733dbbb40d04e5659642f504062b826a61a00af917dae0cf3",
+                "95ec44a19742ae9193086a13418144e161065440b71561846ff80ae5229e15a2"
               ],
               "assembly": "native-body-with-source-rig-attachments",
               "temporalInterpolation": false,
-              "bodyJob": "b211cf46-ca66-4328-86da-d76486e3ef31",
-              "cleanImage": "15e33d56-a9a5-4b45-81e2-21a987dba8ec"
+              "bodyJob": "95b1370b-51b9-4e36-887d-4496c89c951c",
+              "cleanImage": "829c6faa-1665-421d-b014-4f6f2337dda5",
+              "mirroredFrom": "east",
+              "mirrorPixelSum": 160,
+              "previousDirectionalSource": {
+                "body": "feminino",
+                "action": "attack-focus",
+                "direction": "west",
+                "poseFrames": 8,
+                "sourceFrames": [
+                  "6e62762150b2f2335075e2b9e75e6ae30eb5c716cb30ba5b81d551a803d2c0a6",
+                  "23ae46be1c9de9d828d95fc7a0589c78ab02d35c49fe36a7742a38c5fb48a3b5",
+                  "3e5b33bbe25d63ecd03d9cb0f929780dd0e57775ac477c259e0855ff69fe058e",
+                  "c23e2a6a7fd2c3dba3d0126d02c5ddae78b88daf04cdfa49db95e8f0d9138e9d",
+                  "64b380bef5baea486dab66b08e14b7c8a519abd78a18365d9e635d5eb9a2c75d",
+                  "4299cf7f9a65686565ea46d02bbe7c3100d49a59073600fd5f7e2562592ca06c",
+                  "28ad2785acd29875faf0ff950e16d7bb2fc170fa1fa988223446daca5e0113c2",
+                  "03f0d9e921eec687608086963a3190140ad59af025150e38c652fb1ba99a15a3"
+                ],
+                "assembly": "native-body-with-source-rig-attachments",
+                "temporalInterpolation": false,
+                "bodyJob": "b211cf46-ca66-4328-86da-d76486e3ef31",
+                "cleanImage": "15e33d56-a9a5-4b45-81e2-21a987dba8ec"
+              }
+            },
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "mirror": {
+              "source": "east",
+              "pixelSum": 160,
+              "allLayers": true
             }
           },
           "east": {
@@ -4999,42 +5434,42 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
+                "y": -1,
+                "angle": 0
+              },
+              {
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
-                "y": 0,
-                "angle": 0
-              },
-              {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               }
@@ -5081,7 +5516,7 @@
             "headSockets": [
               {
                 "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               },
               {
@@ -5091,12 +5526,12 @@
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": 1,
                 "angle": 0
               }
             ],
@@ -5133,7 +5568,7 @@
               },
               {
                 "x": 0,
-                "y": 0,
+                "y": -1,
                 "angle": 0
               },
               {
@@ -5174,34 +5609,39 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": 1,
                 "y": 0,
                 "angle": 0
               }
             ],
-            "sourceMotion": "Existing 84px idle poses; approved 96px body identity, original rigid head",
-            "bodyJob": "e6fd910f-0db8-47a6-a267-a7ba285b2fd7",
+            "sourceMotion": "Canonical east poses mirrored horizontally about the foot pivot; complete layer family",
+            "bodyJob": "868b63b7-ec1a-4f96-ad87-c1d40f37014b",
             "sourceHashes": [
-              "b4384ab6801cbe63ab34ba665fe1ab6420b6b64180606f000160e2f11f42f80d",
-              "bc45c8e80db5adda4d03a7b1dcbac3f060d392174bac6e88a04ccea8e879de32",
-              "ce455c8ac83abe1615c807e066f6d5685c03fdf326da3cd781395394936c087c",
-              "6721068b25ae3066ff78637d490e0b43359b33e2b05c4805a9fbcde9b5d543da"
-            ]
+              "e1fa92dd0efd8444ca01e0bc05729ae67ef9f11ae0126573756c5db5001172dc",
+              "2a99b40e2abe028bf16b489e5c43fe2014656ead91a9db514087f8f0564109ab",
+              "57515e13cd496755c83c00fc16f2f6013ebe101d72fe1733684cd9514d767cf8",
+              "e8205d714c6fcdb2be60e22e70a391ed81a33d5ea7d4e3ecc68d93017a13fd29"
+            ],
+            "mirror": {
+              "source": "east",
+              "pixelSum": 128,
+              "allLayers": true
+            }
           },
           "east": {
             "modular": true,
@@ -5221,22 +5661,22 @@
             "reviewed": false,
             "headSockets": [
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               },
               {
-                "x": 0,
+                "x": -1,
                 "y": 0,
                 "angle": 0
               }
@@ -5294,5 +5734,5 @@
     "fps": 12,
     "artApprovalPending": true
   },
-  "visualRevision": "full-fit-v5-10"
+  "visualRevision": "canonical-native-v7-3"
 }

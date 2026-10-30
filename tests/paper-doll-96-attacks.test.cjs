@@ -9,6 +9,7 @@ layers.validate(manifest);
 const actions = ['attack-sword', 'attack-unarmed', 'attack-firearm', 'attack-daggers', 'attack-tech', 'attack-focus'];
 const directions = ['south', 'north', 'west', 'east'];
 const jobs = new Set();
+const historicalJobs = new Set();
 let entries = 0;
 for (const bodyName of ['masculino', 'feminino']) {
   const body = manifest.bodies[bodyName];
@@ -23,6 +24,16 @@ for (const bodyName of ['masculino', 'feminino']) {
     assert.equal(clip.source.sourceFrames.length, 8);
     assert.ok(clip.source.sourceFrames.every(hash => /^[a-f0-9]{64}$/.test(hash)));
     jobs.add(clip.source.bodyJob);
+    historicalJobs.add(clip.source.bodyJob);
+    if(direction==='west'){
+      const east=body.clips[action].east;
+      assert.equal(clip.source.bodyJob,east.source.bodyJob);
+      assert.deepEqual(clip.source.sourceFrames,east.source.sourceFrames);
+      assert.equal(clip.source.mirroredFrom,'east');
+      assert.equal(clip.source.mirrorPixelSum,160);
+      assert.equal(clip.source.previousDirectionalSource.direction,'west');
+      historicalJobs.add(clip.source.previousDirectionalSource.bodyJob);
+    }
     const spec = motion.clipSpec(manifest, clip);
     assert.equal(spec.width, 160);
     assert.equal(spec.height, 160);
@@ -46,7 +57,8 @@ for (const bodyName of ['masculino', 'feminino']) {
   }
 }
 assert.equal(entries, 48);
-assert.equal(jobs.size, 40, 'one real animation job per distinct source clip');
+assert.equal(jobs.size,30,'three canonical directions, five attacks and two bodies');
+assert.equal(historicalJobs.size,40,'all original paid directional jobs retain their provenance');
 assert.equal(manifest.productionEnabled, false);
 const gallery = JSON.parse(fs.readFileSync(path.join(root, 'gallery-items.json')));
 assert.equal(gallery.sheets.length, 100);
@@ -55,4 +67,4 @@ assert.equal(gallery.sheets.filter(sheet => sheet.kind === 'attack').length, 80)
 assert.deepEqual(gallery.attackSheet.emptyIndices, [32, 33, 34, 35]);
 assert.equal(gallery.attackSheet.cell, 160);
 assert.ok(gallery.attackSheet.width <= 1024 && gallery.attackSheet.height <= 1024);
-console.log('96px attacks: 48 entries, 40 source animations, 8 independent layers and fixed scale passed');
+console.log('96px attacks: 48 entries, 30 canonical sources, 40 historical jobs, exact mirror metadata, independent layers and fixed scale passed');

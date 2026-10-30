@@ -1,8 +1,8 @@
 (function (root, factory) {
-  const api = factory(typeof module === 'object' && module.exports ? require('./motion.js') : root.MareMotion96);
+  const api = factory(typeof module === 'object' && module.exports ? require('./motion.js') : root.MareMotion96,typeof module === 'object' && module.exports ? require('./surface.js') : root.MareSurface96);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.MareAppearance96 = api;
-})(typeof globalThis === 'object' ? globalThis : this, function (motion) {
+})(typeof globalThis === 'object' ? globalThis : this, function (motion,surface) {
   'use strict';
   const hex = value => value.match(/[a-f0-9]{2}/gi).map(n => parseInt(n, 16));
   const skins = {
@@ -37,15 +37,27 @@
     }
     return out;
   }
-  function materialMask(source, type) {
+  function materialMask(source, type, protectedPixels=[]) {
     const mask = new Uint8Array(source.length / 4);
+    const protectedSet=new Set(protectedPixels);
+    const tones=[];
+    if(type==='hair')for(let i=0;i<source.length;i+=4){
+      if(source[i+3]<128)continue;
+      const light=.2126*source[i]+.7152*source[i+1]+.0722*source[i+2];
+      if(light>=20)tones.push(light);
+    }
+    tones.sort((a,b)=>a-b);
+    // Fixed luminance bands keep tiny shade variations from becoming salt-and-pepper contrast.
+    const cuts=[30,60,95,145];
     for (let p = 0; p < mask.length; p++) {
       const i = p * 4, r = source[i], g = source[i + 1], b = source[i + 2];
-      if (!source[i + 3]) continue;
+      if (!source[i + 3]||protectedSet.has(p)) continue;
       if (type === 'skin' && !isSkin(r, g, b)) continue;
       const light = .2126 * r + .7152 * g + .0722 * b;
       if (type === 'skin') mask[p] = light < 70 ? 1 : light < 112 ? 2 : light < 157 ? 3 : light < 202 ? 4 : 5;
-      else mask[p] = Math.min(5, 1 + Math.floor(light / 52));
+      // Keep the native ink. Quantiles preserve shading in dark hairstyles;
+      // fixed 52-point bins collapsed their entire range into one colour.
+      else if(light>=20)mask[p]=1+cuts.filter(c=>light>c).length;
     }
     return mask;
   }
@@ -127,12 +139,24 @@
     for(let i=0;i<out.length;i+=4)out[i+3]=Math.min(out[i+3],head[i+3]);
     return out;
   }
+  function clipHairCrown(source,rest,socket,padding,width,height,hairline,offsetX=0,offsetY=0){
+    const nose=rest.find(j=>j.label==='NOSE'),nx=nose.x*128,ny=nose.y*128;
+    const angle=socket?.angle||0,cs=Math.cos(angle),sn=Math.sin(angle),out=new Uint8ClampedArray(source);
+    for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+      const i=(y*width+x)*4;if(!out[i+3])continue;
+      const dx=x+.5+offsetX-padding-(socket?.x||0)-nx,dy=y+.5+offsetY-padding-(socket?.y||0)-ny;
+      const nativeY=ny-dx*sn+dy*cs;
+      if(nativeY<hairline)out.fill(0,i,i+4);
+    }return out;
+  }
   function attach(source, slot, rest, pose, socket, padding, width, height, box) {
     if (['boots', 'gloves'].includes(slot)) return pair(source, slot, rest, pose, padding, width, height);
     if (slot === 'pants') return { full: trousers(source, rest, pose, padding, width, height) };
-    const nose = rest.find(p => p.label === 'NOSE');
+    // The complete head family shares an integer translation. Raster rotation
+    // of tiny facial features created holes and different W/E footprints.
+    const headX=Math.round((socket?.x||0)+padding),headY=Math.round((socket?.y||0)+padding);
     const map = ['hair', 'face', 'head'].includes(slot)
-      ? motion.socketTransform({ x: nose.x * 128, y: nose.y * 128 }, socket || { x: 0, y: 0 }, padding).map
+      ? v=>({x:v.x+headX,y:v.y+headY})
       : slot==='cloak'?shoulderTransform(rest,pose,padding).map:motion.torsoTransform(rest, pose, padding).map;
     const mesh = slot === 'pants' ? trouserMesh(rest, pose, box, padding) : opaqueMesh(source,map);
     return { full: motion.rasterMesh(source, 128, 128, mesh, width, height) };
@@ -162,11 +186,45 @@
     overlay(motion.rasterMesh(waist,128,128,motion.affineMesh(motion.torsoTransform(restPoints,posePoints,padding).map),width,height));
     return out;
   }
+  function fitPairToBody(source,slot,rest,pose,padding,width,height,body,restBody,sourceParts,options={}){
+    if(options.material)return surface.nativeMaterial(source,slot,rest,pose,padding,width,height,body,sourceParts,{...options.material,handSurface:options.handSurface});
+    if(!sourceParts||!sourceParts.LEFT||!sourceParts.RIGHT)return pair(source,slot,rest,pose,padding,width,height);
+    const r=index(rest),p=index(pose),out={},end=slot==='boots'?' LEG':' ARM',parent=slot==='boots'?' KNEE':' ELBOW';
+    for(const side of ['LEFT','RIGHT']){const material=sourceParts[side],map=bone(r[side+parent],r[side+end],p[side+parent],p[side+end],padding,false);
+      let fitted=motion.rasterMesh(material,128,128,opaqueMesh(material,map),width,height);
+      if(slot==='gloves'&&options.coverHand)fitted=surface.shapeCoveredHand(fitted,material,rest,pose,side,padding,width,height,body,options.handSurface);
+      out[side]=surface.constrainVolume(fitted,material,body,restBody,width,height);
+    }
+    if(slot==='boots'&&options.occlusion!==false){
+      const near=p['LEFT LEG'].z>=p['RIGHT LEG'].z?'LEFT':'RIGHT',far=near==='LEFT'?'RIGHT':'LEFT';
+      const visible=surface.profile(body,pose,'boots',padding,width,height);
+      // A distant boot cannot paint over the surface of the nearer leg.
+      for(const v of visible.pixels)if(v.bone.side===near)out[far].fill(0,v.i,v.i+4);
+    }
+    return out;
+  }
+  function bootCoverage(body,rest,pose,padding,width,height,sourceParts){
+    const mask=new Uint8ClampedArray(body.length);if(!sourceParts)return mask;
+    const rb=surface.bones(rest,'boots'),pb=surface.bones(pose,'boots'),minimum={};
+    for(const b of rb.list){
+      let start=Infinity;const data=sourceParts[b.side];if(!data)continue;
+      for(let y=0;y<128;y++)for(let x=0;x<128;x++)if(data[(y*128+x)*4+3])start=Math.min(start,b.at(x,y).along/b.length);
+      minimum[b.side]=start;
+    }
+    for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+      const i=(y*width+x)*4;if(body[i+3]<128)continue;
+      let chosen=null,best=Infinity;
+      for(const b of pb.list){const p=b.at(x-padding,y-padding),distance=Math.hypot(p.across,p.along-Math.max(0,Math.min(b.length,p.along)));if(distance<best){best=distance;chosen={bone:b,...p};}}
+      if(chosen&&best<17&&chosen.along/chosen.bone.length>=minimum[chosen.bone.side]-.02)mask[i+3]=255;
+    }return mask;
+  }
   function catalogItem(catalog, id, slot) {
     const item = catalog.find(item => item.itemId === Number(id));
     return item && item.kind === slot ? item : null;
   }
-  function fitTrousersToBody(source, body, restPoints, posePoints, padding, width, height) {
+  function fitTrousersToBody(source, body, restPoints, posePoints, padding, width, height, restBody, sourceParts, options={}) {
+    if(options.material)return surface.nativeMaterial(source,'pants',restPoints,posePoints,padding,width,height,body,sourceParts,options.material).full;
+    if(restBody)return surface.transfer(source,'pants',restPoints,posePoints,padding,width,height,body,restBody,sourceParts).full;
     const r=index(restPoints),p=index(posePoints),out=new Uint8ClampedArray(body.length);
     const midpoint=(a,b)=>({x:(a.x+b.x)/2,y:(a.y+b.y)/2});
     const hip=midpoint(p['LEFT HIP'],p['RIGHT HIP']),restHip=midpoint(r['LEFT HIP'],r['RIGHT HIP']);
@@ -216,5 +274,5 @@
     }
     return out;
   }
-  return { skins, hairs, recolor, materialMask, isSkin, opaqueMesh, shoulderTransform, clipToHead, attach, pair, trousers, fitTrousersToBody, closeTopCoverage, trouserMesh, catalogItem };
+  return { skins, hairs, recolor, materialMask, isSkin, opaqueMesh, shoulderTransform, clipToHead, clipHairCrown, attach, pair, fitPairToBody, bootCoverage, trousers, fitTrousersToBody, closeTopCoverage, trouserMesh, catalogItem };
 });

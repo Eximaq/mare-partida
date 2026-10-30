@@ -13,29 +13,38 @@ const origin = process.argv.find(value => /^https?:\/\//.test(value)) || 'http:/
       const q = window.__review96v3, size = q.manifest.frame;
       const canvas = () => Object.assign(document.createElement('canvas'), size);
       const results = [];
+      const fitTemplate=await(await fetch(new URL(q.catalog.template,location.href))).json();
       for (const [bodyName, body] of Object.entries(q.manifest.bodies)) for (const [direction, pieces] of Object.entries(body.layers)) {
         await q.render(bodyName, 'static', direction);
         const expected = canvas(), actual = canvas();
-        expected.getContext('2d').drawImage(await q.image(body.references[direction]), 0, 0);
-        MareLayers96.draw(actual.getContext('2d'), q.loaded, pieces, 0, size);
+        const referenceDirection=q.catalog.canonicalMirror?.allLayers&&direction==='west'?'east':direction;
+        const ec=expected.getContext('2d');if(referenceDirection!==direction)ec.setTransform(-1,0,0,1,129,0);
+        ec.drawImage(await q.image(body.references[referenceDirection]),0,0);ec.resetTransform();
+        const staticImages=new Map(await Promise.all(Object.values(pieces).map(async f=>[f,await q.image(f)])));
+        MareLayers96.draw(actual.getContext('2d'),staticImages,pieces,0,size);
         const a = actual.getContext('2d').getImageData(0, 0, 128, 128).data;
         const b = expected.getContext('2d').getImageData(0, 0, 128, 128).data;
         let max = 0, changed = 0;
+        const edgeChanges=fitTemplate.referenceNormalization.boundaryCorrections[bodyName][referenceDirection].map(p=>referenceDirection!==direction?{...p,x:128-p.x}:p);
+        const edges=new Map(edgeChanges.map(p=>[p.y*128+p.x,p]));
         for (let i = 0; i < a.length; i += 4) {
-          // Compare premultiplied colour; low-alpha decoding has unstable RGB.
-          const diff = Math.max(Math.abs(a[i + 3] - b[i + 3]), ...[0, 1, 2].map(c => Math.abs(a[i + c] * a[i + 3] / 255 - b[i + c] * b[i + 3] / 255)));
-          max = Math.max(max, diff); if (diff > 2) changed++;
+          const p=i/4,edge=edges.get(p),referenceAlpha=b[i+3];
+          if(edge&&edge.referenceAlpha!==referenceAlpha)throw Error('Reference boundary source changed');
+          const alpha=edge?edge.normalizedAlpha:(referenceAlpha>=128?255:0);
+          let diff=Math.abs(a[i+3]-alpha);
+          if(alpha&&a[i+3]&&!edge)diff=Math.max(diff,...[0,1,2].map(c=>Math.abs(a[i+c]-b[i+c])));
+          max=Math.max(max,diff);if(diff>2)changed++;
         }
         let toggles = 0;
         for (const slot of ['hair', 'face', 'pants', 'top']) {
-          const isolated = q.loaded.get(pieces[slot]), ic = canvas(); ic.getContext('2d').drawImage(isolated, 0, 0);
+          const isolated = staticImages.get(pieces[slot]), ic = canvas(); ic.getContext('2d').drawImage(isolated, 0, 0);
           const pixels = ic.getContext('2d').getImageData(0, 0, 128, 128).data;
           if (![...pixels].some((n, i) => i % 4 === 3 && n > 100)) continue;
-          const hidden = canvas(); MareLayers96.draw(hidden.getContext('2d'), q.loaded, pieces, 0, size, [slot]);
+          const hidden = canvas(); MareLayers96.draw(hidden.getContext('2d'),staticImages,pieces,0,size,[slot]);
           const h = hidden.getContext('2d').getImageData(0, 0, 128, 128).data;
           if (h.some((v, i) => Math.abs(v - a[i]) > 10)) toggles++;
         }
-        results.push({ bodyName, direction, max, changed, toggles });
+        results.push({ bodyName, direction, max, changed, toggles, normalizedBoundary:edgeChanges.length,referenceDirection });
       }
       const clips = [];
       for (const [bodyName, body] of Object.entries(q.manifest.bodies)) for (const [action, directions] of Object.entries(body.clips)) for (const [direction, clip] of Object.entries(directions)) {

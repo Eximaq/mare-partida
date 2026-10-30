@@ -1,3 +1,19 @@
+# 30/10/2026 — Revisão canônica v7 dos encaixes96
+
+Os defeitos de encaixe da revisão anterior foram confirmados. Dez cabelos e dez equipamentos foram refeitos no PixelLab (20 trabalhos, 200 gerações). Os seis rostos foram separados em feições limpas; corpo, pescoço, rosto, cabelo e acessórios agora compartilham a mesma lateral espelhada e sockets inteiros. Luvas e calçados usam a anatomia nativa de cada pose; capas têm tecido posterior completo. Ver [contrato e moldes reutilizáveis](PAPER-DOLL-96-FIT-CONTRACT.md). A bancada permanece isolada e a integração em produção continua pendente.
+
+- Publicação: 172 folhas existentes atualizadas, IDs preservados, 184 folhas consolidadas e 20 fontes novas vinculadas à Jade Dragon. Sete moldes e contrato reutilizáveis.
+- Verificação atual: 424 poses, 112 estados de interface, zero fragmentos soltos, pés descobertos, pixels semitransparentes ou rosto sobre cabelo no detector de encaixe. A revisão visual dos ciclos complementa as medições.
+
+## Histórico da revisão nativa v6 — 29/10/2026
+
+- Branch feature/paper-doll-96px-rebuild, base b8103b4. Correção solicitada após rejeição visual; nenhum novo job pago.
+- Cabeça neutra restaurada, cabelos sem olhos, faces sob cabelo e rampas adaptadas ao material. Corpo/underArms sem mandíbula antiga; tiras de cabeça/face/cabelo reconsolidadas.
+- Dez equipamentos auditados: materiais independentes e 128 painéis completos de membros, sem transportar pele, mãos ou pernas com roupa/capa.
+- Ordem do gesto por braço corrigida; luva fechada acompanha dedos reais, pés substituídos sob as botas e perna distante ocluída pela próxima.
+- Templates nativos, JSON de contatos e módulos de limpeza/transporte salvos; contrato84 e saves preservados. Referências completas não reescritas; normalização de alpha das camadas documentada,25 bordas canônicas enumeradas.
+- Validação específica em 424 poses e 416 painéis; resultados finais, commit e publicação na entrega. Aventura normal e criação feminina continuam fora da ativação desta etapa.
+
 # 29/10/2026 — Locomoção96 completa e revisão de encaixes
 
 - PR144, branch feature/paper-doll-96px-rebuild, base6ee815f. Produzidos14 ciclos pendentes: Idle4 e Walk8 quadros; quatro vistas nos dois corpos.

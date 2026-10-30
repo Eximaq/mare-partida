@@ -48,6 +48,12 @@
       clip: clip?.modular ? clip : null,
       layers: action === 'static' ? body.layers?.[direction] : clip?.modular ? clip.layers : null };
   }
+  function displaySelection(body,action,direction){
+    const flipX=direction==='west'&&catalog.canonicalMirror?.allLayers===true;
+    const value=selection(body,action,flipX?'east':direction);
+    value.flipX=flipX;value.requestedDirection=direction;value.key=[body,action,direction].join(':');
+    value.reference=manifest.bodies[body].references[direction];return value;
+  }
   function compose(selected, fi, hidden = []) {
     const spec = motion.clipSpec(manifest, selected.clip);
     const key = [selected.key, JSON.stringify(selected.look), fi, ...hidden].join(':');
@@ -55,12 +61,13 @@
     const tile = document.createElement('canvas'); tile.width = spec.width; tile.height = spec.height;
     if(Object.keys(selected.look).length)wardrobe.draw(tile.getContext('2d'),selected.images||loaded,selected,fi,spec,hidden,selected.look);
     else MareLayers96.draw(tile.getContext('2d'), selected.images||loaded, selected.layers, fi, spec, hidden);
+    if(selected.flipX){const copy=document.createElement('canvas');copy.width=tile.width;copy.height=tile.height;copy.getContext('2d').drawImage(tile,0,0);const cx=tile.getContext('2d');cx.clearRect(0,0,tile.width,tile.height);cx.save();cx.imageSmoothingEnabled=false;cx.setTransform(-1,0,0,1,tile.width+1,0);cx.drawImage(copy,0,0);cx.restore();}
     composites.set(key, tile);
     if (composites.size > 64) composites.delete(composites.keys().next().value);
     return tile;
   }
   async function render(body, action, direction, fi = 0, hidden = [], look = {}) {
-    const selected = selection(body, action, direction);selected.look=look;
+    const selected = displaySelection(body, action, direction);selected.look=look;
     if (!selected.layers) throw Error('Movimento ainda não disponível.');
     const baseImages=await Promise.all(Object.values(selected.layers).map(async file=>[file,await image(file)]));
     const appearanceImages=await wardrobe.prepare(selected,look);selected.images=new Map([...baseImages,...appearanceImages]);
@@ -99,15 +106,10 @@
     } else $('status').textContent = 'Este movimento/direção ainda não foi produzido.';
   }
   async function refresh() {
-    const token = ++version, next = selection(); next.look=lookValues(); active = null;
+    const token = ++version, next = displaySelection($('body').value,$('action').value,$('direction').value); next.look=lookValues(); active = null;
     for(const option of $('action').options){option.dataset.baseLabel ||= option.textContent;const available=option.value==='static'||!!manifest.bodies[next.body].clips[option.value]?.[next.direction];option.disabled=!available;option.textContent=option.dataset.baseLabel+(available?'':' · pendente');}
     $('status').textContent = 'Carregando camadas…';
-    const extras=catalog.styles.filter(p=>Object.values(next.look).includes(p.id)).map(p=>p.layers[next.body][next.direction]);
-    if(next.look.face!=='none'&&catalog.originalFaces?.[next.body]?.[next.direction])extras.push(catalog.originalFaces[next.body][next.direction]);
-    if(next.look.hair!=='none'&&catalog.originalHairs?.[next.body]?.[next.direction])extras.push(catalog.originalHairs[next.body][next.direction]);
-    if(catalog.originalHeads?.[next.body]?.[next.direction])extras.push(catalog.originalHeads[next.body][next.direction]);
-    if(catalog.originalHands?.[next.body]?.[next.direction])extras.push(catalog.originalHands[next.body][next.direction]);
-    protectedFiles = new Set([next.reference, ...Object.values(next.layers || {}),...extras]);
+    protectedFiles = new Set([next.reference,...Object.values(next.layers||{}),...wardrobe.requiredFiles(next,next.look)]);
     next.images=new Map(await Promise.all([...protectedFiles].map(async file=>[file,await image(file)])));
     if (token !== version) return;
     frame = 0; epoch = performance.now(); active = next; draw(epoch);
@@ -121,7 +123,7 @@
     epoch = performance.now() - (clip ? frame * 1000 / clip.fps : 0);
     $('play').textContent = playing ? 'Pausar' : 'Reproduzir';
   });
-  function tick(now) { draw(now); requestAnimationFrame(tick); }
+  function tick(now) { try{draw(now);}catch(error){active=null;showError(error);}requestAnimationFrame(tick); }
   await refresh(); requestAnimationFrame(tick);
   window.__review96v3 = { manifest, catalog, appearanceRigs, wardrobe, loaded, selection, render, image, draw, get frame() { return frame; },
     get playing() { return playing; }, get cacheSize() { return composites.size; }, get imageCacheSize() { return loaded.size; } };

@@ -1,5 +1,7 @@
 # Desenvolvimento compartilhado no GitHub
 
+Revisão canônica v7 dos personagens de 96 px: [contrato e moldes reutilizáveis](docs/PAPER-DOLL-96-FIT-CONTRACT.md), espelhamento completo das laterais, cabeça comum, roupas por superfície e paletas preservadas. A integração no personagem publicado continua pendente.
+
 **Personagens de 96 px em revisão:** [bases com corpo, rosto, cabelo e roupas independentes](docs/PAPER-DOLL-96-V3.md), Idle, caminhada e seis ataques nas quatro direções dos dois corpos. [Abrir a bancada](tools/paper-doll-96-v3/). [Cabelos, rostos, peles e equipamentos](docs/PAPER-DOLL-96-PERSONALIZACAO.md). Avaliação artística e integração no jogo ainda pendentes.
 
 **Impel Down jogável:** mapa original, um adversário por andar, chefes a cada cinco e progressão automática com marcos salvos. [Regras, compatibilidade e validação](docs/IMPEL-DOWN.md).

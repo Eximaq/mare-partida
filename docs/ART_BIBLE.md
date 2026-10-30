@@ -1,5 +1,11 @@
 # Referência visual — Maré Partida
 
+## Revisão canônica v7 — 30/10/2026
+
+Os defeitos de encaixe da revisão anterior foram confirmados. Dez cabelos e dez equipamentos foram refeitos no PixelLab (20 trabalhos, 200 gerações). Os seis rostos foram separados em feições limpas; corpo, pescoço, rosto, cabelo e acessórios agora compartilham a mesma lateral espelhada e sockets inteiros. Luvas e calçados usam a anatomia nativa de cada pose; capas têm tecido posterior completo. Ver [contrato e moldes reutilizáveis](PAPER-DOLL-96-FIT-CONTRACT.md). A bancada permanece isolada e a integração em produção continua pendente.
+
+Revisão nativa 96: [contrato e moldes reutilizáveis](PAPER-DOLL-96-FIT-CONTRACT.md), materiais por membro, gesto das mãos e paletas preservados. A integração no personagem publicado continua pendente.
+
 ## Continuação de 29/10/2026 — locomoção e encaixes
 
 A bancada96 cobre Idle/Walk nas quatro direções dos dois corpos, além dos seis ataques. Dez cabelos e seis opções faciais derivadas da base limpa; FlipX lateral dos cabelos, cabeça/rosto no mesmo socket e equipamentos independentes com contatos refinados. São candidatos de avaliação artística, sem ativação no jogo. Ver [PAPER-DOLL-96-PERSONALIZACAO.md](PAPER-DOLL-96-PERSONALIZACAO.md).
