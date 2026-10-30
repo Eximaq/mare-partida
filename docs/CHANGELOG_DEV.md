@@ -4,6 +4,8 @@ Os defeitos de encaixe da revisão anterior foram confirmados. Dez cabelos e dez
 
 - Publicação: 172 folhas existentes atualizadas, IDs preservados, 184 folhas consolidadas e 20 fontes novas vinculadas à Jade Dragon. Sete moldes e contrato reutilizáveis.
 - Verificação atual: 424 poses, 112 estados de interface, zero fragmentos soltos, pés descobertos, pixels semitransparentes ou rosto sobre cabelo no detector de encaixe. A revisão visual dos ciclos complementa as medições.
+- Validação final:157 testes Node autônomos,103 scripts com sintaxe válida,4 testes Python e build Pages aprovados. Navegador:26.536 combinações e3.074 comparações exatas de FlipX passaram; fonte/dist sem saves criados. Referências, limites, capturas atuais e reversão em PAPER-DOLL-96-FIT-CONTRACT.md.
+- Conciliação com origin/main preserva os sprites de combate, HUD, portal e mapas dos colaboradores. Conflitos apenas em README e changelog, com os dois históricos mantidos. Sem merge do PR ou ativação em produção.
 
 ## Histórico da revisão nativa v6 — 29/10/2026
 

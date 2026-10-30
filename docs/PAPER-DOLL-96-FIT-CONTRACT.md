@@ -97,3 +97,15 @@ O contrato de 84 px em HANDOFF-CALCAS-PAPER-DOLL.md permanece como histórico do
 A revisão v7 utilizou 20 trabalhos de inpainting, dez cabelos e dez equipamentos, com cobrança de 200 gerações. Os seis rostos foram corrigidos por separação e encaixe nativos, sem gerar outras cabeças. A publicação de PNGs consolidados na galeria é separada dessas gerações.
 
 Publicação v7: Jade Dragon, 184 folhas consolidadas (172 atualizações preservando IDs), sete moldes incluídos e 20 fontes geradas vinculadas à mesma pasta. O catálogo registra IDs e hashes das folhas; os recibos completos e capturas ficam fora do Git.
+
+## Resultados da revisão de 30/10/2026
+
+- 157 testes Node autônomos aprovados após conciliar a branch com a main atual. O E2E Supa é separado, conforme o fluxo do repositório.
+- 103 scripts passaram na verificação de sintaxe; quatro testes Python de empacotamento passaram, assim como o build Pages.
+- Baseline de 480 quadros de entrada aprovado, com referências preservadas, margens livres, caches limitados e nenhum save criado.
+- 26.536 combinações verificadas: 11.024 modelos/poses, 13.568 conjuntos completos e 1.944 combinações com slots vazios. Zero divergências de espelhamento, feições fora da cabeça, rosto sobre cabelo ou braços perdidos nos detectores.
+- Encaixe conferido no fonte e no pacote estático: 424 poses, 208 matrizes, 64 pares independentes e 112 estados reais da interface. Zero fragmentos soltos, pés descobertos, material fora da superfície permitida ou alpha intermediário nos critérios medidos.
+- Comparação exata de FlipX: 60 materiais, 842 quadros de camadas e 3.074 composições, sem diferenças.
+- Limpeza nativa dos 424 quadros aprovada. Folhas de movimento dos dois corpos e capturas atuais em 1920×1080, 1366×768 e 1280×720 revisadas fora do Git.
+
+Esses resultados cobrem os casos e critérios descritos; não constituem aprovação artística do proprietário nem integração no personagem publicado. A bancada não altera saves, atributos ou IDs de itens. Para desfazer a aparência, reverter os commits específicos da bancada, preservando a conciliação com a main e os trabalhos dos colaboradores. Os recibos locais da galeria incluem as referências de restauração dos PNGs anteriores.

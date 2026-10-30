@@ -98,6 +98,6 @@ const origin=process.argv.find(v=>/^https?:\/\//.test(v))||'http://127.0.0.1:815
     await page.evaluate(async()=>{const q=__review96v3;for(const body of ['masculino','feminino'])for(const dir of ['south','north','west','east'])await q.render(body,'walk',dir,7,[],{hair:'hair-long',face:'face-resolute',head:'item-19',pants:'item-21',boots:'item-8',gloves:'item-25',cloak:'item-23'});q.draw(performance.now());});
     await page.setViewportSize({width:390,height:844});
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
-    assert.deepEqual(errors,[]);console.log(JSON.stringify(audit));
+    assert.deepEqual(errors,[]);
   }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
