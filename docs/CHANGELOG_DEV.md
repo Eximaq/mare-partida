@@ -1,3 +1,7 @@
+## 29/10/2026 — Alubarna 01–05 e Skypiea (em revisão)
+
+Cinco instâncias do mapa completo exportado pelo proprietário, em Alabasta, com Puppu Nv.53, Valentine Nv.58, Merry Christmas Nv.63, Double Finger Nv.68 e Mr.1 Nv.75. Escalas ordenadas, quatro direções, Hurt South e50 spawns novos. Arco norte navegável sem alterar a arte. Skypiea recebe aba com conteúdo futuro.107 arquivos Node,7.285 frames nativos, navegador no fonte/dist,25 abates por execução e backend aprovados. Sem geração paga ou merge/deploy automático. [Relatório](ALUBARNA.md).
+
 ## 29/10/2026 — Hurt South e escalas de dez personagens (merge e Pages aprovados)
 
 Os 21 conjuntos passam a usar Hurt South em qualquer orientação por decisão do proprietário; Lobo/Hoya recebem seus novos Hurt e Kuroobi recebe ataque oeste e novas versões norte/leste. Marinheiro +100%, Hoya/Pearl +40%, Mr.3/Cabaji/Buchi +50%, Kuroobi/Chew +30%, Sham/Gin +20%. Cabeçalhos acompanham a arte sem alterar combate, projéteis, colisões ou saves. 106 arquivos Node, 6.044 frames RGBA originais, escalas/dano no navegador e build Pages aprovados. Merge e Pages autorizados explicitamente pelo proprietário; HUD aprovada do PR#147 preservada na integração. Sem geração paga. [Relatório](HURT-SOUTH-ESCALAS.md).

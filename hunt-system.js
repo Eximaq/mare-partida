@@ -6,6 +6,7 @@
   const monsterCatalog=root.MareMonsterCatalog||(typeof module!=='undefined'?require('./monster-catalog.js'):null);
   const pixelMaps=root.MarePixelWorldMaps||(typeof module!=='undefined'?(require('./pixellab-world-maps-data.js'),require('./pixellab-world-maps.js')):null);
   const alabasta=root.MareAlabasta||(typeof module!=='undefined'?require('./alabasta-world.js'):null);
+  const alubarna=root.MareAlubarna||(typeof module!=='undefined'?require('./alubarna-world.js'):null);
   const regions={
     alabasta:{name:'Deserto de Alabasta',min:40,max:50,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:alabasta.districts.map(d=>({...d,min:45,max:45,roles:['bananawani']}))},
     rare:{name:'Ilha dos Animais Raros',min:16,max:20,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.rare.districts.map(d=>({...d,min:18,max:18,roles:['cocox']}))},
@@ -25,6 +26,7 @@
     loguetown:{name:'Loguetown',min:36,max:40,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:pixelMaps.loguetown.districts.map(d=>({...d}))},
     swamp:{name:'Cidade das Conchas',min:8,max:8,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:pixelMaps.conchas.districts.map(d=>({...d}))}
   };
+  Object.assign(regions,Object.fromEntries(alubarna.specs.map(s=>[s.id,{name:s.name,min:s.min,max:s.max,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:alubarna.worlds[s.id].districts.map(d=>({...d,min:s.level,max:s.level,roles:[s.type]}))}])));
   const archetypes={crab:{hp:1.25,attack:.8,defense:1.3,speed:36,reach:43,attackSec:2.8,aggro:220},bandit:{hp:1,attack:1,defense:1,speed:50,reach:51,attackSec:2.1,aggro:300},spirit:{hp:.82,attack:1.1,defense:.7,speed:30,reach:165,attackSec:3.1,aggro:330},boss:{hp:4.2,attack:1.5,defense:1.45,speed:30,reach:70,attackSec:2.7,aggro:390},...Object.fromEntries(Object.keys(monsterCatalog).map(id=>[id,{hp:1,attack:1,defense:1,speed:monsterCatalog[id].move_speed,reach:monsterCatalog[id].reach,attackSec:monsterCatalog[id].attack_seconds,aggro:monsterCatalog[id].aggro_radius}]))};
   const get=area=>regions[area]||null;
   function sectors(area,anchors=[]){return get(area)?.sectors.map(s=>({...s,...(anchors.find(a=>a.id===s.id)?{x:anchors.find(a=>a.id===s.id).x,y:anchors.find(a=>a.id===s.id).y}:{})}))||[];}

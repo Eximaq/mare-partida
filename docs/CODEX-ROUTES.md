@@ -11,7 +11,7 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 | Física/profundidade global | `world-system.js`, `world-depth.js`, `game.js` (combatLine/filas de desenho) | `docs/MAP-COLLISION-AUDIT.md`, `tools/audit_maps.cjs`, testes map-physics-audit/world-depth/map_audit_browser | Separar pés e disparos; preservar máscaras e pixels dos mapas |
 | Mapas/Dawn | `dawn-world.js`, `dawn-map-data.js`, `dawn-renderer.js` | `docs/DAWN-MAPA-MANUAL.md`, `tests/dawn_manual_browser.py` | Mapa fornecido pelo proprietário e fidelidade |
 | Mapas/Conchas | `conchas-world.js`, `conchas-renderer.js`, `conchas-*.js` | `docs/CIDADE-DAS-CONCHAS.md`, testes de Conchas | Rotas, casas, colisões; PRs recentes podem mudar geometria |
-| Arquipélago/ilhas | `archipelago.js`, `new-islands*.js` | `docs/ARQUIPELAGO-REGIOES.md`, testes das ilhas | IDs persistidos e permissões de entrada |
+| Arquipélago/ilhas | `archipelago.js`, `new-islands*.js`, `alubarna-*.js` | `docs/ARQUIPELAGO-REGIOES.md`, `docs/ALUBARNA.md`, testes das ilhas/Alubarna | IDs persistidos e permissões de entrada |
 | Paper Doll | `paper-doll.js`, `paper-doll-assets.js`, `paper-doll-review.js` | `docs/PAPER-DOLL-JOGO-NORMAL.md`, `docs/PAPER-DOLL.md`, testes `paper_doll*` | Release aprovado separado dos drafts; fallback; DEV ≠ produção |
 | Sprites/PixelLab | `sprite-combat-v2.js`, `sprite-combat-v2-data.js`, manifests do pacote específico, `assets/**` do subsistema | `docs/ART_BIBLE.md`, `docs/SPRITES-COMBAT-V2.md`, testes `sprite_combat_v2*` e `sprite-combat-v2*` | Custo explícito, licença, pivôs, nearest-neighbor; timing lógico permanece nos controladores existentes |
 | Haki | `haki-system.js`, `haki-ui.js`, `haki-art.js` | `docs/HAKI.md`, testes de Haki/talentos | Consumo transacional e saves |

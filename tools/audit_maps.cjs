@@ -2,7 +2,7 @@
 // Audits the actual runtime maps. JSON/Tiled cleanup always writes to a separate output.
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const ROOT=path.resolve(__dirname,'..');
-const MAP_SCRIPTS=['island-world.js','lobby-map-data.js','lobby-world.js','impel-down-world.js','alabasta-map-data.js','alabasta-world.js','ember-world.js','orange-world.js','conchas-world.js','dawn-map-data.js','dawn-world.js','rare-world.js','new-islands-data.js','new-islands-objects.js','new-islands.js','pixellab-world-maps-data.js','conchas-pixellab-data.js','conchas-structures.js','pixellab-world-maps.js','world-system.js'];
+const MAP_SCRIPTS=['island-world.js','lobby-map-data.js','lobby-world.js','impel-down-world.js','alabasta-map-data.js','alabasta-world.js', 'alubarna-map-data.js', 'alubarna-world.js','ember-world.js','orange-world.js','conchas-world.js','dawn-map-data.js','dawn-world.js','rare-world.js','new-islands-data.js','new-islands-objects.js','new-islands.js','pixellab-world-maps-data.js','conchas-pixellab-data.js','conchas-structures.js','pixellab-world-maps.js','world-system.js'];
 function loadMaps(){const context=vm.createContext({console,atob});for(const file of MAP_SCRIPTS)vm.runInContext(fs.readFileSync(path.join(ROOT,file),'utf8'),context,{filename:file});return context;}
 function sanitizeDocument(input){
  const document=structuredClone(input),issues=[];

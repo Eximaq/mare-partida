@@ -71,3 +71,8 @@ O contrato `human-v1` compartilha corpo/cabelo entre as sete classes e quatro fa
 Referências medidas nos assets existentes: altura opaca do Idle anterior para manter a escala aparente; mesma densidade/pixel scale entre estados, compensação de canvases transparentes de ações e pivô estável na margem inicial dos pés. O pacote novo traz Idle92px (Cocox) ou96px; ações124–144px, com6–29 quadros. Fontes PixelLab existentes, sem nova geração, pintura ou reamostragem. Preservar contornos/paletas originais e nearest-neighbor; não deformar a arte para preencher o antigo canvas. FPS autoral não informado no export:12/24FPS são configuração de apresentação, e os tempos de combate continuam antigos. Hurt usa quatro quadros inspecionados em180ms.
 
 [Auditoria, dimensões por conjunto, integridade dos5.957 frames, fallbacks e pendências de aprovação](SPRITES-COMBAT-V2.md). Não inferir aprovação visual pelo sucesso dos testes técnicos.
+
+
+## Alubarna — export completo e escalas (29/10/2026)
+
+O proprietário escolheu103×82 células64 nos cinco destinos. Uma imagem6592×5248 e208 objetos nativos compartilhados preservam pixels, posição e profundidade. Escala aparente: Puppu110px < Merry Christmas120px < Valentine135px < Double Finger150px < Mr.1 170px. Hurt South mantém a política aprovada. Sem geração paga. [Proveniência e validação](ALUBARNA.md).

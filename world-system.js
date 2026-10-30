@@ -43,6 +43,7 @@
   }
   if(globalThis.MareLobby)maps.lobby=MareLobby.map;
   if(globalThis.MareAlabasta)maps.alabasta=MareAlabasta.map;
+  if(globalThis.MareAlubarna)for(const [id,w]of Object.entries(MareAlubarna.worlds))maps[id]=w.map;
   if(globalThis.MareImpel)maps['impel-down']=MareImpel.map;
   if(globalThis.MareEmber)maps.embers=MareEmber.map;
   if(globalThis.MareOrange)maps.orange=MareOrange.map;
