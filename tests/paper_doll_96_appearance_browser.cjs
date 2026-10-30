@@ -1,6 +1,8 @@
 const assert=require('node:assert/strict');
 const {chromium}=require('playwright');
 const origin=process.argv.find(v=>/^https?:\/\//.test(v))||'http://127.0.0.1:8154/';
+const bodyFilter=process.argv.find(v=>v.startsWith('--body='))?.slice(7);
+assert.ok(!bodyFilter||['masculino','feminino'].includes(bodyFilter));
 (async()=>{
   const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH||'C:/Program Files/Google/Chrome/Application/chrome.exe'});
   try{
@@ -8,9 +10,10 @@ const origin=process.argv.find(v=>/^https?:\/\//.test(v))||'http://127.0.0.1:815
     page.on('pageerror',e=>errors.push(e.message));
     await page.goto(new URL('tools/paper-doll-96-v3/?revision=wardrobe-audit',origin).href);
     await page.waitForFunction(()=>window.__review96v3);
-    const audit=await page.evaluate(async()=>{
+    const audit=await page.evaluate(async bodyFilter=>{
       const q=__review96v3,failures=[],counts={},all=[];
       for(const [body,b]of Object.entries(q.manifest.bodies)){
+        if(bodyFilter&&body!==bodyFilter)continue;
         for(const direction of ['south','north','west','east'])all.push({body,action:'static',direction,frames:1});
         for(const [action,dirs]of Object.entries(b.clips))if(action!=='attack-tech')for(const [direction,clip]of Object.entries(dirs))all.push({body,action,direction,frames:clip.frames});
       }
@@ -25,15 +28,15 @@ const origin=process.argv.find(v=>/^https?:\/\//.test(v))||'http://127.0.0.1:815
         counts[style.id]=count;
       }
       let kits=0,emptyCombinations=0;
-      const slots=['pants','boots','gloves','cloak','head'];
+      const slots=['pants','boots','gloves','cloak','head','torso'];
       const ids=Object.fromEntries(slots.map(slot=>[slot,q.catalog.styles.filter(s=>s.kind===slot).map(s=>s.id)]));
       const checkEdge=(c,context)=>{const w=c.width,h=c.height,d=c.getContext('2d').getImageData(0,0,w,h).data;let edge=0;for(let n=0;n<Math.max(w,h);n++)for(const p of[n<w?n:-1,n<h?n*w:-1,n<h?n*w+w-1:-1,n<w?(h-1)*w+n:-1])if(p>=0&&d[p*4+3]>100)edge++;if(edge)failures.push({...context,edge});};
-      for(const clip of all)for(let f=0;f<clip.frames;f++)for(let set=0;set<32;set++){
+      for(const clip of all)for(let f=0;f<clip.frames;f++)for(let set=0;set<64;set++){
         const look={hair:q.catalog.styles.filter(s=>s.kind==='hair')[set%10].id,face:q.catalog.styles.filter(s=>s.kind==='face')[set%6].id,skin:Object.keys(MareAppearance96.skins)[set%8],hairColor:Object.keys(MareAppearance96.hairs)[set%10]};
         for(let s=0;s<slots.length;s++)look[slots[s]]=ids[slots[s]][(set>>s)&1];
         checkEdge(await q.render(clip.body,clip.action,clip.direction,f,[],look),{kit:set,...clip,frame:f});kits++;
       }
-      for(const clip of all.filter(c=>c.action==='static'))for(let set=0;set<243;set++){
+      for(const clip of all.filter(c=>c.action==='static'))for(let set=0;set<729;set++){
         let n=set;const look={hair:'hair-bob',face:'face-gentle',hairColor:'brown'};
         for(const slot of slots){const v=n%3;n=Math.floor(n/3);look[slot]=v===0?'original':ids[slot][v-1];}
         checkEdge(await q.render(clip.body,'static',clip.direction,0,[],look),{emptyKit:set,...clip});emptyCombinations++;
@@ -82,11 +85,12 @@ const origin=process.argv.find(v=>/^https?:\/\//.test(v))||'http://127.0.0.1:815
       const dx=q.catalog.headCalibration?.south?.hairX||0,dy=q.catalog.headCalibration?.south?.hairY||0;
       for(let y=0;y<128;y++)for(let x=0;x<128;x++)if(mask[(y*128+x)*4+3]===255){const xx=x+dx,yy=y+dy;if(xx<0||xx>=128||yy<0||yy>=128)continue;const i=(yy*128+xx)*4;if([0,1,2,3].some(c=>aa[i+c]!==bb[i+c]))faceOverHair++;}
       return {raisedArmsLost,mirroredPixels,mirroredMatrices,faceOutsideHead,containedFrames,emptyCombinations,counts,frames:Object.values(counts).reduce((a,b)=>a+b,0),kits,facialGeometryChanges,failures:failures.slice(0,20),failureCount:failures.length,faceOverHair,storage:localStorage.length,cache:q.cacheSize,images:q.imageCacheSize,textures:q.wardrobe.cacheSize,attachments:q.wardrobe.attachmentCacheSize};
-    });
+    },bodyFilter);
     console.log(JSON.stringify(audit));
-    assert.equal(audit.frames,11024);
-    assert.equal(audit.kits,13568);
-    assert.equal(audit.emptyCombinations,1944);assert.equal(audit.mirroredMatrices,22);assert.equal(audit.mirroredPixels,0);assert.equal(audit.faceOutsideHead,0);assert.equal(audit.raisedArmsLost,0);assert.equal(audit.containedFrames,424);
+    const factor=bodyFilter?.length?2:1;
+    assert.equal(audit.frames,11872/factor);
+    assert.equal(audit.kits,27136/factor);
+    assert.equal(audit.emptyCombinations,5832/factor);assert.equal(audit.mirroredMatrices,22);assert.equal(audit.mirroredPixels,0);assert.equal(audit.faceOutsideHead,0);assert.equal(audit.raisedArmsLost,0);assert.equal(audit.containedFrames,424/factor);
     assert.equal(audit.facialGeometryChanges,0,'original facial features must keep their geometry');
     assert.equal(audit.failureCount,0,JSON.stringify(audit.failures));
     assert.equal(audit.faceOverHair,0,'face must remain below hair');

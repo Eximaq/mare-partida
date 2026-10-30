@@ -1,6 +1,6 @@
 {
   "schema": "mare-native-fit-96-v1",
-  "revision": "canonical-native-v7-3",
+  "revision": "torso-profile-v8-3",
   "productionEnabled": false,
   "canvas": {
     "rest": [
@@ -48,7 +48,8 @@
     "mask-boots": "assets/template-mask-boots.png",
     "mask-gloves": "assets/template-mask-gloves.png",
     "mask-head": "assets/template-mask-head.png",
-    "mask-cloak": "assets/template-mask-cloak.png"
+    "mask-cloak": "assets/template-mask-cloak.png",
+    "torso": "assets/template-mask-torso.png"
   },
   "fitBases": {
     "masculino": {
@@ -1492,5 +1493,27 @@
     "equipment": 10,
     "method": "PixelLab masked inpaint; native dimensions; protected face plane",
     "sources": "appearance-catalog.json styles[].canonicalSource"
-  }
+  },
+  "torso": {
+    "gameSlot": "coat",
+    "itemIds": [
+      6,
+      7
+    ],
+    "fit": "native-torso-surface-v8",
+    "armOcclusion": "native skin and visible arm depth",
+    "sourceViews": [
+      "south",
+      "north",
+      "east"
+    ],
+    "west": "mirror complete east family"
+  },
+  "paletteOwnership": {
+    "head": "skin, including warm deep shadows",
+    "face": "features only: eyelids, iris, sclera and mouth",
+    "headwear": "fabric/metal only; no baked skin",
+    "torso": "garment only; never recolour with skin"
+  },
+  "helmetHairPolicy": "all"
 }

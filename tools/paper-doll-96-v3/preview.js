@@ -32,7 +32,7 @@
     const img = new Image(); img.onload = () => resolve(img); img.onerror = reject; img.src = '../../assets/lobby-map.png';
   });
   const wardrobe = MareWardrobe96.create(catalog, appearanceRigs, image);
-  const controlNames={hair:'Cabelo',face:'Rosto',skin:'Pele',hairColor:'Cor do cabelo',pants:'Calças',boots:'Calçados',gloves:'Luvas',cloak:'Capa',head:'Cabeça'};
+  const controlNames={hair:'Cabelo',face:'Rosto',skin:'Pele',hairColor:'Cor do cabelo',torso:'Torso',pants:'Calças',boots:'Calçados',gloves:'Luvas',cloak:'Capa',head:'Cabeça'};
   for(const [slot,label] of Object.entries(controlNames)){
     const wrapper=document.createElement('label');wrapper.textContent=label+' ';const select=document.createElement('select');select.id='look-'+slot;select.dataset.look=slot;
     const initial=new Option(['hair','face'].includes(slot)?'Original':slot==='skin'?'Original':slot==='hairColor'?'Castanho':'Sem equipamento',slot==='hairColor'?'brown':'original');select.add(initial);

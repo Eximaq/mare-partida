@@ -1,6 +1,6 @@
 # Contrato de encaixe — personagens modulares de 96 px
 
-Revisão canônica v7, 30/10/2026. A bancada continua isolada, com produção desativada. Os defeitos apontados nas imagens da v6 eram reais apesar das verificações geométricas anteriores; esta revisão substitui aquele encaixe. Teste automatizado não significa aprovação artística.
+Revisão v8, 30/10/2026. A bancada continua isolada, com produção desativada. O feedback posterior à v7 revelou pele clara embutida em bandana/capacete e roupa-base fora da superfície de algumas poses. A v8 corrige essas fontes, acrescenta perfis faciais próprios e o slot Torso. Teste automatizado não significa aprovação artística.
 
 ## Arquivos e escala
 
@@ -34,6 +34,10 @@ Ordem: corpo → cabeça neutra → feições → cabelo → equipamento da cabe
 - Cabeça, rosto, cabelo e bandana/elmo compartilham a mesma translação inteira, obtida da mudança do ponto NECK. A rotação rasterizada do conjunto foi removida para não fragmentar detalhes de um pixel.
 - A pele do pescoço liga a mandíbula ao tronco; não reutilizar o pescoço deslocado de uma animação anterior.
 - O rosto é recortado pela máscara da cabeça e sempre desenhado antes do cabelo.
+- As feições não recebem a rampa de pele: íris, pálpebras, boca e branco dos olhos são pigmentos independentes. A cabeça neutra é dona da pele, incluindo sombras quentes profundas.
+- As seis variantes têm perfil leste próprio sobre o crânio atual, com olho único compacto e boca; oeste é sua cópia espelhada. Não colar uma face frontal no perfil.
+- Bandana e capacete contêm somente tecido/metal e contorno. A pele do personagem usado para gerar o acessório não pode permanecer na peça.
+- Capacete do Corsário (`item-19`) usa `hairOcclusion: all`: oculta todo o cabelo em qualquer pose, mantendo a seleção para quando for retirado. Bandana continua permitindo cabelo.
 
 As seis variantes atuais mantêm o desenho limpo do rosto original. Essa escolha não torna o rosto imutável: estilos futuros podem ter outras feições dentro da cabeça comum. A proteção de cores dos olhos aceita dados por estilo em faceColorProtection; não presumir que todo pixel castanho pertença à pele.
 
@@ -53,6 +57,18 @@ A aparência gerada fornece o modelo e a paleta. **A superfície do corpo em cad
 
 Camadas: capa posterior → corpo/membros distantes → equipamento distante → calças/calçados/roupa superior → capa nas costas ao norte ou gola nas outras vistas → cabeça/rosto/cabelo/acessório → gesto e equipamento do braço próximo. A oclusão usa a anatomia e a direção, não uma lista fixa de slots.
 
+## Torso e roupa-base — v8
+
+O seletor **Torso** corresponde ao slot de jogo `coat`. Reutiliza os IDs **6, Casaco de Marinheiro**, e **7, Casaco da Bruma**, sem alterar atributos ou o catálogo de saves. Os modelos têm vistas próprias para os dois corpos. O Torso equipado substitui a camada superior padrão feminina; capa e demais slots permanecem independentes.
+
+Dois trabalhos de inpainting produziram os desenhos estáticos, preservando exatamente os pixels fora das máscaras. O encaixe usa a superfície do corpo principal e as articulações de cada pose. Braços próximos e mãos visíveis têm prioridade sobre o peitoral; um braço distante não deve abrir um buraco no tecido que está à frente dele.
+
+Foram consolidadas **28 folhas de Torso**, com **832 quadros de movimento**, além das 16 matrizes estáticas. Idle, caminhada e cinco ataques distintos possuem as quatro vistas dos dois corpos. Tecnologia compartilha o disparo. A bancada recorta essas folhas já ajustadas; não recalcula o tecido durante cada ataque. As regiões transparentes e os pivôs permanecem nativos.
+
+`tools/paper_doll_96_bake_torso_browser.cjs` reconsolida os peitorais sem geração paga, usando Playwright e um servidor HTTP da biblioteca. `torso.js` concentra a regra de superfície, profundidade e amostragem inteira. Novos desenhos reaproveitam essa rotina e as poses atuais.
+
+As camadas superiores e shorts padrão foram ajustados nas **416 poses de movimento**, usando os pixels reais da roupa-base e a anatomia das pernas. Isso elimina a roupa íntima clara que escapava da malha antiga, principalmente nos perfis femininos. As referências históricas estáticas continuam preservadas.
+
 Não extrair somente pixels cuja cor mudou: contornos e tecido inalterados também podem pertencer à peça. Também não conservar todos os contornos pretos do corpo dentro da máscara de geração. Validar região, material, continuidade e referência protegida.
 
 ## Paletas
@@ -69,10 +85,13 @@ Na pasta da bancada:
 - assets/template-body.png: dois corpos nas quatro vistas, na escala nativa.
 - assets/template-head.png: cabeças e pescoços compatíveis, sem cabelo incorporado.
 - assets/template-mask-{pants,boots,gloves,head,cloak}.png: guias de ocupação por slot.
+- assets/template-mask-torso.png: oitavo molde, com a ocupação dos peitorais nos dois corpos e quatro vistas.
 - appearance-catalog.json: modelos, painéis, fontes PixelLab e configuração nativeMaterial.
 - appearance-rig.json: contatos e sockets dos movimentos.
 
 Rotinas: tools/paper_doll_96_canonical_materials.cjs para FlipX, feições, extração protegida e capa; tools/paper_doll_96_head_materials.cjs para limpeza de crânio/pescoço; tools/paper_doll_96_equipment_materials.cjs e tools/paper_doll_96_surface_assembly.cjs para painéis; surface.js, appearance.js e wardrobe.js para a montagem por pose.
+
+Na v8, `tools/paper_doll_96_headwear.cjs` limpa o material dos dois acessórios azuis atuais; outros materiais precisam de classificação compatível. Use os PNGs limpos indicados por `layers`, `animations` e `galleryId` como referência de equipamento pronto. As imagens em `canonicalSource` são fontes de geração/procedência e ainda podem conter o corpo usado como molde.
 
 Fluxo econômico para o próximo item:
 
@@ -109,3 +128,17 @@ Publicação v7: Jade Dragon, 184 folhas consolidadas (172 atualizações preser
 - Limpeza nativa dos 424 quadros aprovada. Folhas de movimento dos dois corpos e capturas atuais em 1920×1080, 1366×768 e 1280×720 revisadas fora do Git.
 
 Esses resultados cobrem os casos e critérios descritos; não constituem aprovação artística do proprietário nem integração no personagem publicado. A bancada não altera saves, atributos ou IDs de itens. Para desfazer a aparência, reverter os commits específicos da bancada, preservando a conciliação com a main e os trabalhos dos colaboradores. Os recibos locais da galeria incluem as referências de restauração dos PNGs anteriores.
+
+## Validação adicional v8
+
+- 44.840 combinações de aparência: 11.872 modelos/poses, 27.136 conjuntos dos seis slots e 5.832 combinações com slots vazios. Sem cortes de borda, perda de braços ou face sobre cabelo nos detectores.
+- 848 encaixes de Torso, incluindo comparação exata entre a regra de superfície e os quadros consolidados; nenhum peitoral fora do corpo ou sobre braço próximo nativo.
+- 192 combinações de pele/cabeça: a pele visível corresponde à rampa da cabeça, sem pele clara copiada do acessório.
+- 424 poses com capacete: o resultado é idêntico com cabelo longo selecionado ou cabelo oculto. A troca não apaga a seleção de cabelo.
+- 68.898 pixels de braços visíveis preservados na comparação com/sem Torso. Verificações específicas em `paper-doll-96-torso.test.cjs` e `paper_doll_96_torso_browser.cjs`.
+
+Publicação v8: **215 folhas consolidadas** na Jade Dragon, com 64 salvamentos (33 atualizações e 31 folhas novas), oito moldes e 28 folhas de Torso. As duas fontes novas também foram vinculadas à pasta, somando 22 fontes de geração registradas. Custo adicional confirmado: **20 gerações, em dois trabalhos**. Consolidação dos movimentos e publicação dos PNGs não consumiram gerações.
+
+### Validação final da revisão v8
+
+Na fonte e no build Pages, os 848 encaixes de Torso corresponderam à regra de montagem; 192 casos de pele e 424 casos de capacete passaram. O espelhamento confirmou 3.286 composições exatas, 842 quadros-fonte e 64 materiais sem divergências. O detector do build conferiu 224 matrizes, 424 poses e 112 estados de interface sem violações. Também passaram 158 testes Node autônomos, quatro testes Python, 44.840 combinações de aparência e o build estático. Capturas do lobby em 1920×1080, 1366×768 e 1280×720 permanecem fora do repositório. Esses resultados não substituem a aprovação artística; produção continua desativada.

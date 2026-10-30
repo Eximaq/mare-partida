@@ -29,8 +29,8 @@ const fs = require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'../tools/paper-doll-96-v3');
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'appearance-catalog.json')));
 assert.equal(catalog.productionEnabled,false);
-assert.equal(catalog.styles.length,26);
-assert.deepEqual(catalog.styles.filter(s=>s.itemId!==undefined).map(s=>s.itemId).sort((a,b)=>a-b),[8,9,18,19,21,22,23,24,25,26]);
+assert.equal(catalog.styles.length,28);
+assert.deepEqual(catalog.styles.filter(s=>s.itemId!==undefined).map(s=>s.itemId).sort((a,b)=>a-b),[6,7,8,9,18,19,21,22,23,24,25,26]);
 for(const style of catalog.styles)for(const body of ['masculino','feminino'])for(const direction of ['south','north','west','east']){
   const file=style.layers[body][direction];assert.match(file,/^assets\/[a-z0-9-]+\.png$/);
   const png=fs.readFileSync(path.join(root,file));assert.equal(png.readUInt32BE(16),128);assert.equal(png.readUInt32BE(20),128);
@@ -54,10 +54,10 @@ const fitted=appearance.fitTrousersToBody(fabric,neutral,rest,rest,16,160,160);
 assert.equal(fitted[(100*160+78)*4+3],255,'trousers cover the actual neutral body');
 assert.deepEqual(Array.from(fitted.slice((100*160+78)*4,(100*160+78)*4+3)),[25,40,75]);
 assert.equal(fitted[0],0,'fitting must not extend outside the real body');
-console.log('96px wardrobe: 26 models, 10 existing item IDs, 416 measured poses, clean original faces and silhouette coverage passed');
+console.log('96px wardrobe: 28 models, 12 existing item IDs, 416 measured poses, clean original faces and silhouette coverage passed');
 
 assert.deepEqual(catalog.coverage.generatedPosesPending,[]);
-assert.equal(catalog.styles.find(s=>s.id==='item-19').hairOcclusion,'crown');
+assert.equal(catalog.styles.find(s=>s.id==='item-19').hairOcclusion,'all');
 for(const body of ['masculino','feminino'])for(const action of ['idle','walk'])for(const direction of ['south','north','west','east']){
   const pack=JSON.parse(fs.readFileSync(path.join(root,'manifest.json'))),clip=pack.bodies[body].clips[action][direction];
   assert.equal(clip.frames,action==='idle'?4:8);assert.equal(clip.loop,true);

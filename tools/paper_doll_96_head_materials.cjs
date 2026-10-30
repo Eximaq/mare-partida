@@ -131,4 +131,38 @@ function cleanBodyHead(source, head, rest, pose, socket, padding, width, height,
 }
 // Mirror every layer of the head family with this same pixel sum.
 const mirrorHeadFamily = source => mirrorHairEast(source,'masculino');
-module.exports = { mirrorHeadFamily, components, restoreHead, normalizeFace, cleanHair, mirrorHairEast, cleanBodyHead };
+function cleanFaceFeatures(source, protectedPixels = []) {
+  validate(source);
+  const keep = new Set(protectedPixels), out = new Uint8ClampedArray(source.length);
+  for (let p = 0; p < FRAME * FRAME; p++) {
+    const i = p * 4, rgb = source.subarray(i, i + 3), max = Math.max(...rgb), min = Math.min(...rgb);
+    // Keep eyelids, iris and sclera. Warm antialias/cheek matte belongs to
+    // the neutral head and cannot be pasted over a different skin colour.
+    if (source[i + 3] >= 128 && (keep.has(p) || max < 100 || min >= 225 && max - min <= 30)) {
+      out.set(source.subarray(i, i + 4), i); out[i + 3] = 255;
+    }
+  }
+  return out;
+}
+function profileFace(head, body, iris, expression = 'original') {
+  validate(head);
+  if (!['masculino', 'feminino'].includes(body) || iris.length !== 2) throw Error('Invalid profile face');
+  const out = new Uint8ClampedArray(head.length), protection = [];
+  const x = body === 'feminino' ? 69 : 67, y = body === 'feminino' ? 34 : 35;
+  const ink = [17, 19, 25], white = [245, 243, 237];
+  const put = (xx, yy, rgb, eye = false) => {
+    const p = yy * FRAME + xx;
+    if (!head[p * 4 + 3]) throw Error('Profile feature outside canonical skull');
+    out.set([...rgb, 255], p * 4); if (eye) protection.push(p);
+  };
+  for (let dx = 0; dx < 4; dx++) put(x + dx, y, ink);
+  put(x, y + 1, white); put(x + 1, y + 1, white);
+  put(x + 2, y + 1, iris[0], true); put(x + 3, y + 1, ink);
+  put(x + 1, y + 2, white); put(x + 2, y + 2, iris[1], true); put(x + 3, y + 2, ink);
+  put(x + 1, y - 2, ink); put(x + 2, y - (expression === 'resolute' ? 1 : 2), ink);
+  if (expression !== 'calm') put(x + 3, y - 2, ink);
+  const mouthY = body === 'feminino' ? 40 : 41;
+  put(body === 'feminino' ? 70 : 69, mouthY, [42, 26, 24]);
+  return { pixels: out, protection };
+}
+module.exports = { mirrorHeadFamily, components, restoreHead, normalizeFace, cleanHair, mirrorHairEast, cleanBodyHead, cleanFaceFeatures, profileFace };

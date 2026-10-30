@@ -1,3 +1,11 @@
+# 30/10/2026 — Torso, pele e perfis96 (v8)
+
+- Branch feature/paper-doll-96px-rebuild, base dd2cf8f; feedback posterior à v7 reproduzido com peles escuras. Pele clara removida das matrizes de bandana/capacete, cabeça com sombras próprias recoloridas e feições laterais compactas, oeste espelhado. Capacete19 oculta o cabelo inteiro e mantém a escolha para sua retirada.
+- Torso liga o visual ao slot coat já existente: Casaco de Marinheiro6 e Casaco da Bruma7, dois corpos/quatro vistas. Dois jobs PixelLab com máscara,20 gerações confirmadas; pixels fora das máscaras preservados.28 folhas e832 quadros de movimento consolidados sem novas gerações.
+- Peitoral segue corpo principal e profundidade dos braços; sprites consolidados comparados à montagem. Roupa-base das416 poses ajustada à anatomia para eliminar roupa íntima clara nas laterais. Oito moldes e rotina reutilizável de consolidação salvos.
+- Validação: 158 testes Node autônomos e 44.840 combinações de aparência passaram. Auditoria específica, na fonte e no dist: 848 encaixes de Torso, 192 casos de pele/cabeça, 424 casos de capacete sem cabelo e 68.898 pixels de braços visíveis preservados, sem divergências nos critérios medidos. Build Pages e quatro testes Python aprovados. Detector final: 224 matrizes, 424 poses e 112 estados de interface, sem violações. Capturas atuais em 1920×1080, 1366×768 e 1280×720.
+- Jade Dragon:215 folhas consolidadas,64 salvamentos desta revisão (33 atualizações,31 novas),22 fontes de geração vinculadas. IDs de itens, atributos, saves e referências históricas preservados; biblioteca ainda isolada, sem ativação em produção ou merge automático. Contrato e limites em PAPER-DOLL-96-FIT-CONTRACT.md.
+
 # 30/10/2026 — Revisão canônica v7 dos encaixes96
 
 Os defeitos de encaixe da revisão anterior foram confirmados. Dez cabelos e dez equipamentos foram refeitos no PixelLab (20 trabalhos, 200 gerações). Os seis rostos foram separados em feições limpas; corpo, pescoço, rosto, cabelo e acessórios agora compartilham a mesma lateral espelhada e sockets inteiros. Luvas e calçados usam a anatomia nativa de cada pose; capas têm tecido posterior completo. Ver [contrato e moldes reutilizáveis](PAPER-DOLL-96-FIT-CONTRACT.md). A bancada permanece isolada e a integração em produção continua pendente.

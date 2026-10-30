@@ -1,5 +1,11 @@
 # Personalização de 96 px — cobertura e encaixes
 
+## Torso, pele e perfis — revisão v8 de 30/10/2026
+
+Torso reutiliza Casaco de Marinheiro (ID6) e Casaco da Bruma (ID7), slot `coat` existente. Dois modelos próprios para masculino/feminino, com 28 folhas e 832 quadros de movimento consolidados. Capacete oculta todo o cabelo; bandana preserva o penteado. Removida a pele clara embutida nos acessórios e criadas feições próprias de perfil, espelhadas para oeste. Roupa-base ajustada nas 416 poses para não deixar roupa íntima clara escapar nas laterais.
+
+A biblioteca passa a ter 28 modelos e 12 IDs de equipamentos existentes. A Jade Dragon tem 215 folhas consolidadas e oito moldes; o [contrato atualizado](PAPER-DOLL-96-FIT-CONTRACT.md) descreve montagem, fontes e testes. Dois trabalhos novos,20 gerações confirmadas; demais quadros reaproveitam a geometria atual. A integração no personagem publicado continua pendente.
+
 ## Revisão canônica v7 — 30/10/2026
 
 Os defeitos de encaixe da revisão anterior foram confirmados. Dez cabelos e dez equipamentos foram refeitos no PixelLab (20 trabalhos, 200 gerações). Os seis rostos foram separados em feições limpas; corpo, pescoço, rosto, cabelo e acessórios agora compartilham a mesma lateral espelhada e sockets inteiros. Luvas e calçados usam a anatomia nativa de cada pose; capas têm tecido posterior completo. Ver [contrato e moldes reutilizáveis](PAPER-DOLL-96-FIT-CONTRACT.md). A bancada permanece isolada e a integração em produção continua pendente.

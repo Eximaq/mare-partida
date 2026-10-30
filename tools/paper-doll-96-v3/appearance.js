@@ -1,8 +1,8 @@
 (function (root, factory) {
-  const api = factory(typeof module === 'object' && module.exports ? require('./motion.js') : root.MareMotion96,typeof module === 'object' && module.exports ? require('./surface.js') : root.MareSurface96);
+  const api = factory(typeof module === 'object' && module.exports ? require('./motion.js') : root.MareMotion96,typeof module === 'object' && module.exports ? require('./surface.js') : root.MareSurface96,typeof module === 'object' && module.exports ? require('./torso.js') : root.MareTorso96);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.MareAppearance96 = api;
-})(typeof globalThis === 'object' ? globalThis : this, function (motion,surface) {
+})(typeof globalThis === 'object' ? globalThis : this, function (motion,surface,torso) {
   'use strict';
   const hex = value => value.match(/[a-f0-9]{2}/gi).map(n => parseInt(n, 16));
   const skins = {
@@ -53,8 +53,9 @@
       const i = p * 4, r = source[i], g = source[i + 1], b = source[i + 2];
       if (!source[i + 3]||protectedSet.has(p)) continue;
       if (type === 'skin' && !isSkin(r, g, b)) continue;
+      if (type === 'headSkin' && !(r > 30 && r > g * 1.06 && r > b * 1.13)) continue;
       const light = .2126 * r + .7152 * g + .0722 * b;
-      if (type === 'skin') mask[p] = light < 70 ? 1 : light < 112 ? 2 : light < 157 ? 3 : light < 202 ? 4 : 5;
+      if (type === 'skin' || type === 'headSkin') mask[p] = light < 70 ? 1 : light < 112 ? 2 : light < 157 ? 3 : light < 202 ? 4 : 5;
       // Keep the native ink. Quantiles preserve shading in dark hairstyles;
       // fixed 52-point bins collapsed their entire range into one colour.
       else if(light>=20)mask[p]=1+cuts.filter(c=>light>c).length;
@@ -274,5 +275,5 @@
     }
     return out;
   }
-  return { skins, hairs, recolor, materialMask, isSkin, opaqueMesh, shoulderTransform, clipToHead, clipHairCrown, attach, pair, fitPairToBody, bootCoverage, trousers, fitTrousersToBody, closeTopCoverage, trouserMesh, catalogItem };
+  return { skins, hairs, recolor, materialMask, isSkin, opaqueMesh, shoulderTransform, clipToHead, clipHairCrown, attach, pair, fitPairToBody, bootCoverage, trousers, fitTrousersToBody, fitTorsoToBody:torso.fit, closeTopCoverage, trouserMesh, catalogItem };
 });

@@ -17,9 +17,9 @@
       const value=build();attachments.set(key,value);if(attachments.size>96)attachments.delete(attachments.keys().next().value);return value;
     }
     const descriptor=(slot,id)=>catalog.styles.find(s=>s.id===id&&s.kind===slot);
-    const choices=look=>['hair','face','pants','boots','gloves','cloak','head'].map(slot=>({slot,style:descriptor(slot,look[slot])})).filter(p=>p.style);
+    const choices=look=>['hair','face','pants','boots','gloves','torso','cloak','head'].map(slot=>({slot,style:descriptor(slot,look[slot])})).filter(p=>p.style);
     function requiredFiles(selected,look) {
-      const files=choices(look).flatMap(p=>[p.style.layers[selected.body][selected.direction],...Object.values(p.style.parts?.[selected.body]?.[selected.direction]||{})]);
+      const files=choices(look).flatMap(p=>[p.style.layers[selected.body][selected.direction],...Object.values(p.style.parts?.[selected.body]?.[selected.direction]||{}),p.style.animations?.[selected.body]?.[selected.action]?.file].filter(Boolean));
       if(catalog.fitBases?.[selected.body]?.[selected.direction])files.push(catalog.fitBases[selected.body][selected.direction]);
       if(look.face!=='none'&&catalog.originalFaces?.[selected.body]?.[selected.direction])files.push(catalog.originalFaces[selected.body][selected.direction]);
       if(look.hair!=='none'&&catalog.originalHairs?.[selected.body]?.[selected.direction])files.push(catalog.originalHairs[selected.body][selected.direction]);
@@ -49,6 +49,10 @@
       const map=new Map(images),visibleHidden=[...hidden];
       for(const slot of ['hair','face','pants'])if(look[slot]==='none'||descriptor(slot,look[slot]))visibleHidden.push(slot);
       const skin=api.skins[look.skin]?.ramp;
+      const headStyle=hidden.includes('head')?null:descriptor('head',look.head);
+      const hideHair=headStyle?.hairOcclusion==='all';
+      if(hideHair)visibleHidden.push('hair');
+      if(descriptor('torso',look.torso))visibleHidden.push('top');
       const originalFrame=canvas(spec.width,spec.height);
       if(skin)for(const slot of ['body','headBase','underArms','foreground','face']){
         const file=selected.layers[slot];if(!file||visibleHidden.includes(slot))continue;
@@ -75,16 +79,29 @@
       const handCanvas=canvas(spec.width,spec.height);for(const slot of ['underArms','foreground']){const file=selected.layers[slot];if(file)handCanvas.getContext('2d').drawImage(images.get(file),fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);}
       const handSurface=handCanvas.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
       const neutralPixels=neutral.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
+      const torsoBody=canvas(spec.width,spec.height),torsoBodyContext=torsoBody.getContext('2d');
+      torsoBodyContext.drawImage(images.get(selected.layers.body),fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);
+      const torsoBodyPixels=torsoBodyContext.getImageData(0,0,spec.width,spec.height).data;
       const restFile=catalog.fitBases?.[selected.body]?.[selected.direction];
       const restPixels=restFile?texture(images.get(restFile),restFile,'body',null).pixels:null;
       for(const p of choices(look)){
         if(hidden.includes(p.slot))continue;
+        if(p.slot==='torso'&&hidden.includes('top'))continue;
         const file=p.style.layers[selected.body][selected.direction],image=images.get(file);
-        const palette=p.slot==='hair'?(look.hairColor&&look.hairColor!=='brown'?api.hairs[look.hairColor]?.ramp:null):p.slot==='face'?skin:null;
+        const palette=p.slot==='hair'?(look.hairColor&&look.hairColor!=='brown'?api.hairs[look.hairColor]?.ramp:null):null;
         const data=texture(image,file,p.slot==='face'?'face':'hair',palette,p.slot==='face'?(p.style.faceColorProtection?.[selected.body]?.[selected.direction]||catalog.faceColorProtection?.[selected.body]?.[selected.direction]||[]):[]).pixels;
         const box={x0:32,y0:60,x1:96,y1:113};
         const sourceParts=Object.fromEntries(Object.entries(p.style.parts?.[selected.body]?.[selected.direction]||{}).map(([name,file])=>[name,texture(images.get(file),file,p.slot,null).pixels]));
-        const attached=fitted([file,selected.key,fi,palette?.join(',')||''].join(':'),()=>p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,material:p.style.nativeMaterial}):api.attach(data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
+        const atlas=p.style.animations?.[selected.body]?.[selected.action];
+        const torsoPiece=()=>{
+          if(!atlas)return api.fitTorsoToBody(data,torsoBodyPixels,rest,pose,padding,spec.width,spec.height,handSurface);
+          const index=atlas.directions.indexOf(selected.direction)*atlas.framesPerDirection+fi;
+          if(index<0||fi>=atlas.framesPerDirection||atlas.cell!==spec.width)throw Error('Invalid torso animation');
+          const c=canvas(spec.width,spec.height),cx=c.getContext('2d');
+          cx.drawImage(images.get(atlas.file),index%atlas.columns*atlas.cell,Math.floor(index/atlas.columns)*atlas.cell,atlas.cell,atlas.cell,0,0,spec.width,spec.height);
+          return {full:cx.getImageData(0,0,spec.width,spec.height).data};
+        };
+        const attached=fitted([file,selected.key,fi,palette?.join(',')||'',atlas?.file||'surface'].join(':'),()=>p.slot==='torso'?torsoPiece():p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,material:p.style.nativeMaterial}):api.attach(data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
         if(p.slot==='boots'){
           coveredFeet=p.style.nativeMaterial?new Uint8ClampedArray(neutralPixels.length):api.bootCoverage(neutralPixels,rest,pose,padding,spec.width,spec.height,sourceParts);
           if(p.style.nativeMaterial)for(let i=3;i<coveredFeet.length;i+=4)if(attached.LEFT[i]||attached.RIGHT[i])coveredFeet[i]=255;
@@ -94,7 +111,7 @@
       }
       if(!pieces.face&&look.face!=='none'&&!hidden.includes('face')){
         const file=catalog.originalFaces?.[selected.body]?.[selected.direction];
-        if(file){const data=texture(images.get(file),file,'face',skin,catalog.faceColorProtection?.[selected.body]?.[selected.direction]||[]).pixels;
+        if(file){const data=texture(images.get(file),file,'face',null,catalog.faceColorProtection?.[selected.body]?.[selected.direction]||[]).pixels;
           pieces.face={full:fromPixels(fitted([file,selected.key,fi,skin?.join(',')||''].join(':'),()=>api.attach(data,'face',rest,pose,socket,padding,spec.width,spec.height)).full,spec.width,spec.height)};}
       }
       if(!pieces.hair&&look.hair!=='none'&&!hidden.includes('hair')){
@@ -111,7 +128,7 @@
       }
       const cleanHeadFile=catalog.originalHeads?.[selected.body]?.[selected.direction];
       if(cleanHeadFile&&!hidden.includes('headBase')){
-        const data=texture(images.get(cleanHeadFile),cleanHeadFile,'skin',skin).pixels;
+        const data=texture(images.get(cleanHeadFile),cleanHeadFile,'headSkin',skin).pixels;
         pieces.headBase={full:fromPixels(fitted([cleanHeadFile,selected.key,fi,skin?.join(',')||''].join(':'),()=>api.attach(data,'head',rest,pose,socket,padding,spec.width,spec.height)).full,spec.width,spec.height)};
       }
       if(pieces.face&&pieces.headBase){
@@ -125,7 +142,6 @@
       }
       ctx.clearRect(0,0,spec.width,spec.height);
       const calibration=catalog.headCalibration?.[selected.direction]||{};
-      const headStyle=hidden.includes('head')?null:descriptor('head',look.head);
       if(headStyle?.hairOcclusion==='crown'&&pieces.hair){const c=pieces.hair.full,d=c.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
         pieces.hair.full=fromPixels(api.clipHairCrown(d,rest,socket,padding,spec.width,spec.height,headStyle.hairlineY||34,calibration.hairX||0,calibration.hairY||0),spec.width,spec.height);}
       const hairPass=render=>render();
@@ -133,8 +149,10 @@
       const original=slot=>{
         if(['face','hair','headBase'].includes(slot)&&pieces[slot])return;
         if(hidden.includes(slot)||look[slot]==='none'||descriptor(slot,look[slot]))return;
+        if(slot==='top'&&descriptor('torso',look.torso))return;
+        if(slot==='hair'&&hideHair)return;
         const file=selected.layers[slot],image=file&&map.get(file);if(!image)return;
-        if(slot==='top'&&selected.body==='feminino'&&selected.clip){
+        if(slot==='top'&&selected.body==='feminino'&&selected.clip&&catalog.baseClothingFit!=='native-underwear-v8'){
           const c=canvas(spec.width,spec.height),cx=c.getContext('2d');cx.drawImage(image,fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);
           const d=cx.getImageData(0,0,c.width,c.height).data;
           ctx.drawImage(fromPixels(api.closeTopCoverage(d,neutralPixels,pose,padding,spec.width,spec.height),spec.width,spec.height),0,0);
@@ -181,7 +199,7 @@
       if(pieces.gloves)for(const side of behind)ctx.drawImage(pieces.gloves[side],0,0);
       original('pants');full('pants');
       if(pieces.boots)for(const side of ['LEFT','RIGHT'].sort((a,b)=>(pose.find(j=>j.label===a+' LEG').z_index||0)-(pose.find(j=>j.label===b+' LEG').z_index||0)))ctx.drawImage(pieces.boots[side],0,0);
-      original('top');
+      original('top');full('torso');
       if(selected.direction==='north')full('cloak');
       else if(pieces.cloak){
         const neck=pose.find(j=>j.label==='NECK').y*128+padding;
@@ -189,7 +207,7 @@
       }
       original('headBase');full('headBase');
       original('face');full('face');
-      hairPass(()=>original('hair'));full('hair');full('head');
+      if(!hideHair){hairPass(()=>original('hair'));full('hair');}full('head');
       if(pieces.hands)for(const side of inFront)ctx.drawImage(pieces.hands[side],0,0);
       for(const side of inFront)if(foreground[side])ctx.drawImage(foreground[side],0,0);
       if(pieces.gloves)for(const side of inFront)ctx.drawImage(pieces.gloves[side],0,0);

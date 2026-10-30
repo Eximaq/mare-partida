@@ -19,4 +19,4 @@ const origin=process.argv.find(v=>/^https?:\/\//.test(v))||'http://127.0.0.1:815
   }
  }
  return {revision:q.manifest.visualRevision,count,failures:failures.slice(0,12),failureCount:failures.length,storage:localStorage.length};
-});console.log(JSON.stringify(audit));assert.equal(audit.failureCount,0,JSON.stringify(audit.failures));assert.equal(audit.count.composites,3074);assert.equal(audit.storage,0);}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
+});console.log(JSON.stringify(audit));assert.equal(audit.failureCount,0,JSON.stringify(audit.failures));assert.equal(audit.count.composites,3286);assert.equal(audit.storage,0);}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

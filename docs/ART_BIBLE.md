@@ -1,5 +1,9 @@
 # Referência visual — Maré Partida
 
+## Torso e perfis — 30/10/2026, v8
+
+Torso mantém a altura96 e os canvases/pivôs128/160 atuais, usando Casaco de Marinheiro e Casaco da Bruma como peitorais compactos, sem caudas que disputem a capa. Fontes estáticas nativas nos dois corpos; 832 quadros consolidados sobre a anatomia existente. Perfil facial de olho único, oeste espelhado; acessórios sem pele copiada, capacete sem cabelo aparente. Cabeça possui a pele; feições possuem íris/pálpebras/boca. Oito moldes e regras no [contrato](PAPER-DOLL-96-FIT-CONTRACT.md). Custo adicional20 gerações em dois trabalhos PixelLab, sem alterar a escala ou ativar produção.
+
 ## Revisão canônica v7 — 30/10/2026
 
 Os defeitos de encaixe da revisão anterior foram confirmados. Dez cabelos e dez equipamentos foram refeitos no PixelLab (20 trabalhos, 200 gerações). Os seis rostos foram separados em feições limpas; corpo, pescoço, rosto, cabelo e acessórios agora compartilham a mesma lateral espelhada e sockets inteiros. Luvas e calçados usam a anatomia nativa de cada pose; capas têm tecido posterior completo. Ver [contrato e moldes reutilizáveis](PAPER-DOLL-96-FIT-CONTRACT.md). A bancada permanece isolada e a integração em produção continua pendente.
