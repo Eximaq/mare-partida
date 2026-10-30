@@ -1,0 +1,610 @@
+{
+  "version": 1,
+  "revision": "weapons96-pixellab-pro-v3-e2d6365e68",
+  "referenceHeight": 96,
+  "reviewOnly": true,
+  "source": "Owner artwork and current inventory icons; inventory files preserved",
+  "classes": {
+    "sword": "sword",
+    "rogue": "daggers"
+  },
+  "effectPolicy": {
+    "allowedItemIds": [
+      70,
+      74
+    ],
+    "frames": 4,
+    "damage": false
+  },
+  "items": [
+    {
+      "id": "weapon-0",
+      "itemId": 0,
+      "name": "Espada de Ferro Salgado",
+      "category": "sword",
+      "source": "assets/weapon-item-0.png",
+      "reference": "assets/ui/items-pixellab/0.png",
+      "referenceSha256": "790ccd861e6c617bb72d8b6ab416111568beb063d54ddd584f9940c721081d44",
+      "sha256": "2cd2280f0db818c0744c28a5daac1756e0bdb3e6f8ea2d8773035f3bf5f0f3a8",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 51,
+        "y": 77
+      },
+      "tip": {
+        "x": 84,
+        "y": 42
+      },
+      "visibleHeight": 44,
+      "edgeSide": -1,
+      "bounds": {
+        "x0": 43,
+        "y0": 42,
+        "x1": 84,
+        "y1": 85
+      },
+      "paired": false,
+      "effect": null,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "f011534b-a1b9-4365-8a0a-4a6233598232",
+        "assetId": "c712c513-8a59-5ab8-9697-300f609e0d13",
+        "candidate": 13,
+        "style": "Ultra HD Masterpiece (prompt art direction); native pixel art",
+        "chargedGenerations": 10,
+        "nativeCanvas": {
+          "width": 64,
+          "height": 64
+        },
+        "nativeSha256": "04c202f4f6aac3aa09ecd8331e333c3f4ff3477a8325f5528362583f895e4d44",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": 0.7559948751934431
+    },
+    {
+      "id": "weapon-1",
+      "itemId": 1,
+      "name": "Sabre de Coral",
+      "category": "sword",
+      "source": "assets/weapon-item-1.png",
+      "reference": "assets/ui/items-pixellab/1.png",
+      "referenceSha256": "1768bd039cb9e553259ec9541ef88a5a7b0167b8321ef56c116296327660f937",
+      "sha256": "3b38f31777ffff624ce4ceb91ec9f9ae1cd06f7bdbaf20c57467c8c90c0e8542",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 48,
+        "y": 80
+      },
+      "tip": {
+        "x": 89,
+        "y": 35
+      },
+      "visibleHeight": 58,
+      "edgeSide": 1,
+      "bounds": {
+        "x0": 37,
+        "y0": 35,
+        "x1": 90,
+        "y1": 92
+      },
+      "paired": false,
+      "effect": null,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "1e39f470-86cc-467a-a1ed-6953913e4f9c",
+        "assetId": "5e532aad-2b91-5629-9bf9-60dfd6e2899e",
+        "candidate": 10,
+        "style": "Ultra HD Masterpiece (prompt art direction); native pixel art",
+        "chargedGenerations": 10,
+        "nativeCanvas": {
+          "width": 64,
+          "height": 64
+        },
+        "nativeSha256": "b9e6d05039001aec5232376e8a6ebc47b9f122013b2366319311142bc4faf57c",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": 0.7389200320464453
+    },
+    {
+      "id": "weapon-12",
+      "itemId": 12,
+      "name": "Adagas da Bruma",
+      "category": "daggers",
+      "source": "assets/weapon-item-12.png",
+      "reference": "assets/ui/items-pixellab/12.png",
+      "referenceSha256": "2267b305ce526fcb0a2a36f189bd8ed481efc7394ac28270335cb20cfbc7cb03",
+      "sha256": "ea057692687e722daad47577f1097eea96644d7cd5f60d4ed2a5afe277e932f8",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 68,
+        "y": 71
+      },
+      "tip": {
+        "x": 51,
+        "y": 50
+      },
+      "visibleHeight": 26,
+      "edgeSide": 0,
+      "bounds": {
+        "x0": 50,
+        "y0": 50,
+        "x1": 74,
+        "y1": 75
+      },
+      "paired": true,
+      "effect": null,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "cc371896-b9d4-49c3-9ecb-e646c5334fe4",
+        "assetId": "2c8ea2f2-2855-558f-baf0-d8eb4926df9f",
+        "createJobId": "1a01d728-f929-47a5-a706-5a77525a3a7a",
+        "sourceAssetId": "055ee3c6-b611-5f7c-85f1-c4123b0acc4d",
+        "candidate": 0,
+        "style": "Ultra HD Masterpiece (prompt art direction); native32 pixel art",
+        "chargedGenerations": 10,
+        "edit": "Isolate one complete dagger from the paired design; the renderer attaches it to both hands",
+        "nativeCanvas": {
+          "width": 32,
+          "height": 32
+        },
+        "nativeSha256": "69dd14e84d1eab726c591dda967301601fa05708a5fae79414127f60c6b6b605",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": -0.6805212246672143
+    },
+    {
+      "id": "weapon-13",
+      "itemId": 13,
+      "name": "Lâminas Acrobáticas",
+      "category": "daggers",
+      "source": "assets/weapon-item-13.png",
+      "reference": "assets/ui/items-pixellab/13.png",
+      "referenceSha256": "25b54c4f2781e02ece2c337be85e965e4d6aedf64de03ebfd5759bcf8a45857a",
+      "sha256": "aba60ef6337d8d862100a27cf3175c08eb8ead22a866ebf9bfc721fd1af3af3f",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 55,
+        "y": 72
+      },
+      "tip": {
+        "x": 77,
+        "y": 50
+      },
+      "visibleHeight": 29,
+      "edgeSide": 0,
+      "bounds": {
+        "x0": 50,
+        "y0": 50,
+        "x1": 77,
+        "y1": 78
+      },
+      "paired": true,
+      "effect": null,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "ea466bdc-52d8-400f-b926-2b7b2ab1b4cf",
+        "assetId": "193a9673-39a1-5f22-9fc9-b5d219ee2e31",
+        "candidate": 8,
+        "style": "Ultra HD Masterpiece (prompt art direction); native pixel art",
+        "chargedGenerations": 10,
+        "nativeCanvas": {
+          "width": 32,
+          "height": 32
+        },
+        "nativeSha256": "aac45ad2552dc1501db17fe55838449a3186587c629d70923b6ccd59298f4397",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": 0.7853981633974483
+    },
+    {
+      "id": "weapon-67",
+      "itemId": 67,
+      "name": "Katana da Maelstrom",
+      "category": "sword",
+      "source": "assets/weapon-item-67.png",
+      "reference": "assets/ui/items-pixellab/katana-de-maelstrom.png",
+      "referenceSha256": "ca746e9b3c3d86ca816cce7ad9fc244d5bf7d43826a551758fc1dfa105f09a6b",
+      "sha256": "9fff4e55b19dfa0e329d3b6684b744099dac8ae713c46cf17693bcff111fd245",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 42,
+        "y": 86
+      },
+      "tip": {
+        "x": 93,
+        "y": 33
+      },
+      "visibleHeight": 64,
+      "edgeSide": 1,
+      "bounds": {
+        "x0": 33,
+        "y0": 32,
+        "x1": 93,
+        "y1": 95
+      },
+      "paired": false,
+      "effect": null,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "8725b610-cc3f-4099-bb4c-02cd8572348d",
+        "assetId": "f8643845-c64e-522c-891b-e72b0d01a86e",
+        "candidate": 9,
+        "style": "Ultra HD Masterpiece (prompt art direction); native pixel art",
+        "chargedGenerations": 10,
+        "nativeCanvas": {
+          "width": 64,
+          "height": 64
+        },
+        "nativeSha256": "4821267c105916198c21032962e2fcf4fbe71d07c0b33ac01ce514db3fff61ac",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": 0.766169764297741
+    },
+    {
+      "id": "weapon-68",
+      "itemId": 68,
+      "name": "Nodachi de Kairouseki",
+      "category": "sword",
+      "source": "assets/weapon-item-68.png",
+      "reference": "assets/ui/items-pixellab/nodachi-de-kairouseki.png",
+      "referenceSha256": "f140c89f5f7a041043542282e02d374a9336865d67129ea6aa6331a6150f417e",
+      "sha256": "1f86ba4021b5f57a238c89f90c3f29d74670f296f4e68e12cdba42a4d015b0ac",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 44,
+        "y": 87
+      },
+      "tip": {
+        "x": 96,
+        "y": 31
+      },
+      "visibleHeight": 66,
+      "edgeSide": -1,
+      "bounds": {
+        "x0": 34,
+        "y0": 31,
+        "x1": 96,
+        "y1": 96
+      },
+      "paired": false,
+      "effect": null,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "1e4dcd30-65c2-4091-8af8-a49fd84b2391",
+        "assetId": "616eb4bb-4d6e-5037-aa93-aa6841a3f2cd",
+        "candidate": 1,
+        "style": "Ultra HD Masterpiece (prompt art direction); native pixel art",
+        "chargedGenerations": 15,
+        "nativeCanvas": {
+          "width": 80,
+          "height": 80
+        },
+        "nativeSha256": "c007b62ccc14591379e6d8097b59ec101474cc31d128b3c94f82132f69eae046",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": 0.7483780475235182
+    },
+    {
+      "id": "weapon-69",
+      "itemId": 69,
+      "name": "Nodachi de Fogo",
+      "category": "sword",
+      "source": "assets/weapon-item-69.png",
+      "reference": "assets/ui/items-pixellab/nodachi-de-fogo.png",
+      "referenceSha256": "6f5519b0e4c595d0ddcee6fea1189d76db6fca5bad87037b59e5dcce271fdc37",
+      "sha256": "048b14861a4fa571830774b9c1846c1fd18ddd172743f9b7340b4be98d4665ad",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 44,
+        "y": 86
+      },
+      "tip": {
+        "x": 95,
+        "y": 31
+      },
+      "visibleHeight": 67,
+      "edgeSide": 1,
+      "bounds": {
+        "x0": 34,
+        "y0": 31,
+        "x1": 95,
+        "y1": 97
+      },
+      "paired": false,
+      "effect": null,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "6eedec09-d33d-4dce-a1c9-b69884a784a5",
+        "assetId": "029c8c90-5ad8-5d1e-aa4b-f95d104bd118",
+        "candidate": 2,
+        "style": "Ultra HD Masterpiece (prompt art direction); native pixel art",
+        "chargedGenerations": 15,
+        "nativeCanvas": {
+          "width": 80,
+          "height": 80
+        },
+        "nativeSha256": "eae5846a1ce3aad372d20fb319dcd79e772dd14ea250d89990d28421b8e4fc5e",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": 0.747680210930584
+    },
+    {
+      "id": "weapon-70",
+      "itemId": 70,
+      "name": "Meito: Ame no Habakiri",
+      "category": "sword",
+      "source": "assets/weapon-item-70.png",
+      "reference": "assets/ui/items-pixellab/ame-no-habakiri.png",
+      "referenceSha256": "05bdc5efcc1db0464d3a23db0661e671d4a0f12c521d245ba1d99ecffd220fd5",
+      "sha256": "3bf533053830fcd8442133c3d4a97b36f111c8f3b57c6e497942ea0b218d4441",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 64,
+        "y": 98
+      },
+      "tip": {
+        "x": 61,
+        "y": 18
+      },
+      "visibleHeight": 90,
+      "edgeSide": 1,
+      "bounds": {
+        "x0": 55,
+        "y0": 17,
+        "x1": 73,
+        "y1": 106
+      },
+      "paired": false,
+      "effect": "gold-sheen",
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "9427a861-6167-41d3-937d-93e50d39a977",
+        "assetId": "2823533c-c099-5562-8779-c2bb98eae0d8",
+        "galleryId": "2823533c-c099-5562-8779-c2bb98eae0d8",
+        "candidate": 1,
+        "selectedByOwner": true,
+        "style": "Ultra HD Masterpiece (prompt art direction); native96 pixel art",
+        "chargedGenerations": 10,
+        "edits": [
+          {
+            "tool": "pixellab-pixelart-workbench",
+            "imageId": "54017810-499f-401d-b86d-d99bcdc2bdbd",
+            "changedPixels": 127,
+            "reason": "Narrow/shorten hilt to fit native fist; selected blade and circular guard unchanged"
+          }
+        ],
+        "nativeCanvas": {
+          "width": 96,
+          "height": 96
+        },
+        "nativeSha256": "4658735ed611e9727f9a6127949b48f418e776beac620a00582e7bc1f32090c3",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": 0
+    },
+    {
+      "id": "weapon-71",
+      "itemId": 71,
+      "name": "Adaga de Cristal",
+      "category": "daggers",
+      "source": "assets/weapon-item-71.png",
+      "reference": "assets/ui/items-pixellab/adaga-de-cristal.png",
+      "referenceSha256": "1d50cf7e630c45941dad85d98cdfb31fef7df8ba34f1779abebf318c41e7838b",
+      "sha256": "2f79f7699f53659263cc24d7f9e29ba9f3d2b640d73793bd43dcbfa20080ab30",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 55,
+        "y": 73
+      },
+      "tip": {
+        "x": 80,
+        "y": 48
+      },
+      "visibleHeight": 33,
+      "edgeSide": 0,
+      "bounds": {
+        "x0": 48,
+        "y0": 48,
+        "x1": 80,
+        "y1": 80
+      },
+      "paired": true,
+      "effect": null,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "04920a9d-1e10-4402-a48d-2fa63a5bcebf",
+        "assetId": "371126a2-cd70-5ea2-9139-eb4ecb1a1b6c",
+        "candidate": 7,
+        "style": "Ultra HD Masterpiece (prompt art direction); native pixel art",
+        "chargedGenerations": 15,
+        "nativeCanvas": {
+          "width": 40,
+          "height": 40
+        },
+        "nativeSha256": "7e91eb60c6e57d0cf4684cd76c44eb01779b8c98dd31e29077f95068d1a5efb6",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": 0.7853981633974483
+    },
+    {
+      "id": "weapon-72",
+      "itemId": 72,
+      "name": "Punhal de Netuno",
+      "category": "daggers",
+      "source": "assets/weapon-item-72.png",
+      "reference": "assets/ui/items-pixellab/punhal-de-netuno.png",
+      "referenceSha256": "9019231747567573ccc11231c09a78f83d7af70d8443fd9cd900a24017c63c95",
+      "sha256": "634b32d96a2a1d19269974a78f30123c7181e8dc50e40dfa359034da935e7189",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 53,
+        "y": 74
+      },
+      "tip": {
+        "x": 79,
+        "y": 48
+      },
+      "visibleHeight": 32,
+      "edgeSide": 0,
+      "bounds": {
+        "x0": 48,
+        "y0": 48,
+        "x1": 79,
+        "y1": 79
+      },
+      "paired": true,
+      "effect": null,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "b0bd4fbe-f8f7-4236-8c77-9decf06867fc",
+        "assetId": "4b2dfd99-1542-5fc4-b406-2494db5af176",
+        "candidate": 13,
+        "style": "Ultra HD Masterpiece (prompt art direction); native pixel art",
+        "chargedGenerations": 15,
+        "nativeCanvas": {
+          "width": 40,
+          "height": 40
+        },
+        "nativeSha256": "403742068e26bf1464895e55e2d0fede5bdf9c525bd5a1721898709babeaaca0",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": 0.7853981633974483
+    },
+    {
+      "id": "weapon-73",
+      "itemId": 73,
+      "name": "Punhal Flamejante",
+      "category": "daggers",
+      "source": "assets/weapon-item-73.png",
+      "reference": "assets/ui/items-pixellab/punhal-flamejante.png",
+      "referenceSha256": "6ebb0120d2d6e144a346b3e8ddf39a1ac918b2765d88032d4f1592ceba29cee5",
+      "sha256": "55346da56a114ee7a6c7407e2c1f591a732e9547428eb5b69eae4b7d52805462",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 56,
+        "y": 72
+      },
+      "tip": {
+        "x": 78,
+        "y": 49
+      },
+      "visibleHeight": 32,
+      "edgeSide": 1,
+      "bounds": {
+        "x0": 49,
+        "y0": 48,
+        "x1": 79,
+        "y1": 79
+      },
+      "paired": true,
+      "effect": null,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "2ae3f372-089b-4c94-87e6-32b28877ee21",
+        "assetId": "40ab5b9c-b06c-5e58-9ebe-f02b670a190a",
+        "candidate": 14,
+        "style": "Ultra HD Masterpiece (prompt art direction); native pixel art",
+        "chargedGenerations": 15,
+        "nativeCanvas": {
+          "width": 40,
+          "height": 40
+        },
+        "nativeSha256": "f1e3fdfb4cead5ffc76306a166b81358bbb001b8fe7dce0c2a4821cf0ea60698",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": 0.7631795980707292
+    },
+    {
+      "id": "weapon-74",
+      "itemId": 74,
+      "name": "Lâmina das Trevas",
+      "category": "daggers",
+      "source": "assets/weapon-item-74.png",
+      "reference": "assets/ui/items-pixellab/lamina-das-trevas.png",
+      "referenceSha256": "d03cb60491ae6743e2f5f90922827dd884f3b759300be0bbb5870ad7658a9f81",
+      "sha256": "5ab8aab088d2f41995d1660c666ea30b0158194b968fcd24564e929035c7c03d",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 55,
+        "y": 74
+      },
+      "tip": {
+        "x": 77,
+        "y": 50
+      },
+      "visibleHeight": 31,
+      "edgeSide": -1,
+      "bounds": {
+        "x0": 49,
+        "y0": 49,
+        "x1": 77,
+        "y1": 79
+      },
+      "paired": true,
+      "effect": "violet-pulse",
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "cbbd0c79-df26-4ca0-aab6-4962741d1d2f",
+        "assetId": "f33adf0a-0225-571d-9842-1771d11e2e80",
+        "candidate": 14,
+        "style": "Ultra HD Masterpiece (prompt art direction); native pixel art",
+        "chargedGenerations": 15,
+        "nativeCanvas": {
+          "width": 40,
+          "height": 40
+        },
+        "nativeSha256": "65e5f7f388dd9b2f5162676a9017d48ed487e51e0fe7f578f3566774d4717f93",
+        "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      },
+      "axisAngle": 0.7419472680059175
+    }
+  ]
+}

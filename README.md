@@ -1,5 +1,7 @@
 Portal de pré-lançamento **Kaizoku Idle**: [página](portal/index.html) e [publicação na Cloudflare](docs/PORTAL-KAIZOKU.md).
 
+**Armas96:** [12 espadas e adagas com identidade própria](docs/PAPER-DOLL-96-ARMAS.md), encaixe nos dois corpos, fio para fora, revisão direcional e combate real no opt-in96. Ícones e atributos preservados.
+
 **Sprint pós-PR144:** [ensaio de 96 px no lobby real](docs/PAPER-DOLL-96-LOBBY.md), com câmera/navegação existentes, corpos masculino e feminino, equipamentos e escolhas temporárias. Abrir o jogo com `?paperDoll96=1`; combate e saves de produção mantêm sua integração atual.
 
 # Desenvolvimento compartilhado no GitHub

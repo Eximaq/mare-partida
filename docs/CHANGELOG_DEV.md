@@ -1,3 +1,15 @@
+# 30/10/2026 — Sprint1: armas PixelLab96 e empunhadura
+
+- Base be2bad9 (merge PR152), branch feature/weapons-96-integration. Doze armas existentes de Espadachim/Gatuno, dois corpos, quatro direções e movimentos Idle/Walk/Attack; equipamento real no lobby e na caçada do opt-in paperDoll96=1. IDs, ícones de inventário, atributos, drops, relógio de dano, saves e Zoans preservados.
+- Todas as fontes finais geradas na IA PixelLab Pro com direção artística Ultra HD Masterpiece; fontes nativas32/40/64/80/96 recebem apenas margem128, sem redução de imagem/paleta. Estudos anteriores rejeitados não entram no pacote. Custo confirmado:190 gerações,14 Create Pro e2 Edit Pro; Workbench exato gratuito.
+- Ame final substituída pela 2ª variante (índice1), guarda circular, da galeria2823533c-c099-5562-8779-c2bb98eae0d8 escolhida pelo proprietário. Cabo ajustado em127 pixels no Workbench, lâmina/guarda preservadas. Efeitos equipados somente na Ame e Lâmina das Trevas.
+- Contato distal da palma e variante de punho fechado envolvem o cabo; eixo nativo/fio externo, orientação por pose, profundidade por mão e margem de lâmina completa. West espelha East. Nenhum PNG existente de corpo, rosto, cabelo ou roupa alterado. Bancada sem luvas para inspeção, suporte a luvas reais preservado.
+- Validação local final:161 testes Node, quatro testes Python de Pages/portal e build aprovados. Armas:1440 poses/2160 contatos no contrato; navegador12 materiais,2204 rotações,2880 composições e960 espelhamentos, sem violações nos critérios medidos. Lobby:192 comparações de pixels,28 perfis,48 prévias de ataque, oito viewports, isolamento de save e fallback aprovados; zero requisições96 sem opt-in. Regressões do personagem normal e da composição estrutural v10 aprovadas.
+- Combate instrumentado:24 confrontos com equipamento real nos dois corpos, impacto no frame4,20 abates de inimigos de teste e retirada para ataque desarmado aprovados; zero erros de página. As criaturas são fixtures inseridas pelo navegador, sem alegação de percurso natural de auto-caçada.
+- Comparações ícone/sprite/masculino/feminino, quatro direções e ataque da Ame revisados, sem luvas, com evidências fora do Git. Catálogo com proveniência, importador e contrato reutilizáveis evitam regenerar personagem/roupas por arma. Cópia artística local mantida separadamente. CI remoto executa sua própria auditoria e publica artifacts.
+- Limites: lançamento96 geral, persistência de aparência e novas categorias não fazem parte desta sprint. Hurt/guard/death usam Idle; não são animações novas. Reversão: retirar o opt-in ou reverter somente esta sprint e reconstruir Pages. Aprovação artística futura continua separada dos detectores técnicos.
+- [Fontes, encaixe, efeitos, validação e próximos passos](PAPER-DOLL-96-ARMAS.md).
+
 # 30/10/2026 — Sprint pós-PR144: ensaio96 no lobby real
 
 - Merge do PR144 confirmado em 9684c01; nova branch feature/paper-doll-96-player. O passo mínimo seguinte leva a biblioteca ao cenário jogável antes de substituir o combate publicado.

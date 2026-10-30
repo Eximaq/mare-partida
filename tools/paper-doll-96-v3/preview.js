@@ -6,7 +6,7 @@
   const response = await fetch('manifest.json', {cache:'no-store'});
   if (!response.ok) throw Error('Não foi possível carregar o pacote.');
   const manifest = await response.json();
-  const [catalog, appearanceRigs] = await Promise.all(['appearance-catalog.json','appearance-rig.json'].map(async file => { const r=await fetch(file, {cache:'no-store'}); if(!r.ok) throw Error('Catálogo de aparência indisponível.'); return r.json(); }));
+  const [catalog, appearanceRigs, weaponCatalog] = await Promise.all(['appearance-catalog.json','appearance-rig.json','weapons.json'].map(async file => { const r=await fetch(file, {cache:'no-store'}); if(!r.ok) throw Error('Catálogo de aparência indisponível.'); return r.json(); }));
   window.MareLayers96.validate(manifest);
   const loaded = new Map(), inflight = new Map(), composites = new Map();
   let protectedFiles = new Set(), active = null, version = 0;
@@ -24,23 +24,27 @@
       const img = new Image();
       img.onload = () => { loaded.set(url, img); inflight.delete(url); trimImages(); resolve(img); };
       img.onerror = () => { inflight.delete(url); reject(Error('Imagem ausente: ' + url)); };
-      img.src = url + (url.includes('?') ? '&' : '?') + 'revision=' + encodeURIComponent(manifest.visualRevision || 'base');
+      img.src = url + (url.includes('?') ? '&' : '?') + 'revision=' + encodeURIComponent((manifest.visualRevision || 'base')+'-'+weaponCatalog.revision);
     });
     inflight.set(url, promise); return promise;
   }
   const map = await new Promise((resolve, reject) => {
     const img = new Image(); img.onload = () => resolve(img); img.onerror = reject; img.src = '../../assets/lobby-map.png';
   });
-  const wardrobe = MareWardrobe96.create(catalog, appearanceRigs, image);
-  const controlNames={hair:'Cabelo',face:'Rosto',skin:'Pele',hairColor:'Cor do cabelo',torso:'Torso',pants:'Calças',boots:'Calçados',gloves:'Luvas',cloak:'Capa',head:'Cabeça'};
+  const wardrobe = MareWardrobe96.create(catalog, appearanceRigs, image, {weapons:weaponCatalog});
+  const controlNames={hair:'Cabelo',face:'Rosto',skin:'Pele',hairColor:'Cor do cabelo',torso:'Torso',weapon:'Arma',pants:'Calças',boots:'Calçados',gloves:'Luvas',cloak:'Capa',head:'Cabeça'};
   for(const [slot,label] of Object.entries(controlNames)){
     const wrapper=document.createElement('label');wrapper.textContent=label+' ';const select=document.createElement('select');select.id='look-'+slot;select.dataset.look=slot;
     const initial=new Option(['hair','face'].includes(slot)?'Original':slot==='skin'?'Original':slot==='hairColor'?'Castanho':'Sem equipamento',slot==='hairColor'?'brown':'original');select.add(initial);
     if(['hair','face'].includes(slot))select.add(new Option('Sem '+label.toLowerCase(),'none'));
-    const list=slot==='skin'?Object.entries(MareAppearance96.skins).map(([id,p])=>({id,name:p.name})):slot==='hairColor'?Object.entries(MareAppearance96.hairs).filter(([id])=>id!=='brown').map(([id,p])=>({id,name:p.name})):catalog.styles.filter(p=>p.kind===slot);
+    const list=slot==='weapon'?weaponCatalog.items:slot==='skin'?Object.entries(MareAppearance96.skins).map(([id,p])=>({id,name:p.name})):slot==='hairColor'?Object.entries(MareAppearance96.hairs).filter(([id])=>id!=='brown').map(([id,p])=>({id,name:p.name})):catalog.styles.filter(p=>p.kind===slot);
     for(const item of list)select.add(new Option(item.name,item.id));wrapper.append(select);$('appearance-controls').append(wrapper);
   }
-  const lookValues=()=>Object.fromEntries([...document.querySelectorAll('[data-look]')].map(el=>[el.dataset.look,el.value]));
+  const lookValues=()=>{
+    const look=Object.fromEntries([...document.querySelectorAll('[data-look]')].map(el=>[el.dataset.look,el.value]));
+    if($('inspect-grip').checked&&look.weapon!=='original'){look.gloves='original';look.inspectionBareHands=true;}
+    return look;
+  };
   let playing = true, epoch = performance.now(), frame = 0;
   function selection(bodyName = $('body').value, action = $('action').value, direction = $('direction').value) {
     const body = manifest.bodies[bodyName], clip = body.clips[action]?.[direction];
@@ -58,10 +62,10 @@
     const spec = motion.clipSpec(manifest, selected.clip);
     const key = [selected.key, JSON.stringify(selected.look), fi, ...hidden].join(':');
     if (composites.has(key)) return composites.get(key);
-    const tile = document.createElement('canvas'); tile.width = spec.width; tile.height = spec.height;
-    if(Object.keys(selected.look).length)wardrobe.draw(tile.getContext('2d'),selected.images||loaded,selected,fi,spec,hidden,selected.look);
-    else MareLayers96.draw(tile.getContext('2d'), selected.images||loaded, selected.layers, fi, spec, hidden);
-    if(selected.flipX){const copy=document.createElement('canvas');copy.width=tile.width;copy.height=tile.height;copy.getContext('2d').drawImage(tile,0,0);const cx=tile.getContext('2d');cx.clearRect(0,0,tile.width,tile.height);cx.save();cx.imageSmoothingEnabled=false;cx.setTransform(-1,0,0,1,tile.width+1,0);cx.drawImage(copy,0,0);cx.restore();}
+    const tile = document.createElement('canvas'); const pad=wardrobe.weaponPadding(selected,spec,selected.look);tile.width = spec.width+pad.x*2; tile.height = spec.height+pad.top+pad.bottom;tile.mareSpec={...spec,width:tile.width,height:tile.height,pivot:{x:spec.pivot.x+pad.x,y:spec.pivot.y+pad.top}};const tc=tile.getContext('2d');tc.translate(pad.x,pad.top);
+    if(Object.keys(selected.look).length)wardrobe.draw(tc,selected.images||loaded,selected,fi,spec,hidden,selected.look);
+    else MareLayers96.draw(tc, selected.images||loaded, selected.layers, fi, spec, hidden);
+    tc.setTransform(1,0,0,1,0,0);if(selected.flipX){const copy=document.createElement('canvas');copy.width=tile.width;copy.height=tile.height;copy.getContext('2d').drawImage(tile,0,0);const cx=tile.getContext('2d');cx.clearRect(0,0,tile.width,tile.height);cx.save();cx.imageSmoothingEnabled=false;cx.setTransform(-1,0,0,1,tile.width+1,0);cx.drawImage(copy,0,0);cx.restore();}
     composites.set(key, tile);
     if (composites.size > 64) composites.delete(composites.keys().next().value);
     return tile;
@@ -100,7 +104,7 @@
     if (layers) {
       const hidden = [...document.querySelectorAll('[data-layer]')].filter(el => !el.checked).map(el => el.dataset.layer);
       const tile = compose(active, frame, hidden);
-      actor(ctx, tile, spec); dc.drawImage(tile, 0, 0, detail.width, detail.height);
+      const shown=tile.mareSpec||spec;if(detail.width!==shown.width*2||detail.height!==shown.height*2){detail.width=shown.width*2;detail.height=shown.height*2;dc.imageSmoothingEnabled=false;}actor(ctx, tile, shown); dc.drawImage(tile, 0, 0, detail.width, detail.height);
       $('status').textContent = clip ? '96 px · ' + clip.frames + ' frames reais · ' + clip.fps + ' FPS · frame ' + (frame + 1) + ' · animação em avaliação'
         : '96 px · pose estática · corpo, rosto, cabelo e roupas independentes';
     } else $('status').textContent = 'Este movimento/direção ainda não foi produzido.';
@@ -116,6 +120,7 @@
   }
   function showError(error) { $('status').textContent = error.message; console.error(error); }
   for(const el of document.querySelectorAll('[data-look]'))el.addEventListener('change',()=>refresh().catch(showError));
+  $('inspect-grip').addEventListener('change',()=>refresh().catch(showError));
   for (const id of ['body', 'direction', 'action']) $(id).addEventListener('change', () => refresh().catch(showError));
   $('frame').addEventListener('input', () => { playing = false; frame = Number($('frame').value); $('play').textContent = 'Reproduzir'; draw(performance.now()); });
   $('play').addEventListener('click', () => {
@@ -125,6 +130,6 @@
   });
   function tick(now) { try{draw(now);}catch(error){active=null;showError(error);}requestAnimationFrame(tick); }
   await refresh(); requestAnimationFrame(tick);
-  window.__review96v3 = { manifest, catalog, appearanceRigs, wardrobe, loaded, selection, render, image, draw, get frame() { return frame; },
+  window.__review96v3 = { manifest, catalog, appearanceRigs, weaponCatalog, wardrobe, loaded, selection, render, image, draw, get frame() { return frame; },
     get playing() { return playing; }, get cacheSize() { return composites.size; }, get imageCacheSize() { return loaded.size; } };
 })().catch(error => { document.getElementById('status').textContent = error.message; console.error(error); });

@@ -2397,7 +2397,7 @@
   function drawCrate(x,y){px(ctx,x-13,y-17,30,26,'#634e38');px(ctx,x-10,y-13,24,20,'#9f8158');px(ctx,x-10,y-12,24,3,'#c29b66');px(ctx,x-2,y-13,3,20,'#5f4938');px(ctx,x-10,y+3,24,3,'#614b36');}
   function drawRuin(x,y){px(ctx,x-10,y-18,23,24,'#52635c');px(ctx,x-12,y-25,27,9,'#859385');px(ctx,x-8,y-19,5,25,'#98a18a');px(ctx,x+8,y-19,5,25,'#3e594d');px(ctx,x-18,y+6,39,9,'#53695e');}
   function drawPaperDoll(c,x,y,action,direction,time,scale=null,progress=null,timing=null,worldView=false){
-    if(lobby96.draw(c,game,{scene,action,direction,time,x,y,scale,worldView}))return true;
+    if(lobby96.draw(c,game,{scene,action,direction,time,progress,timing,x,y,scale,worldView}))return true;
     if(!MarePaperDollCatalog.eligible(game))return false;
     if(paperDollReview.draw(c,game,action,direction,time,x,y,scale,progress,timing,worldView))return true;
     const appearance=MarePaperDollCatalog.appearance(game),pose=MarePaperDollCatalog.sample(paperDoll,game,action,direction,time,{progress});
@@ -2637,7 +2637,7 @@
     if(currentPanel==='inventory'){const canvas=$('inventorySprite');if(canvas)drawCurrentPreview(canvas,185);}
     if(currentPanel==='character'&&characterTab==='status'){const canvas=$('characterSprite');if(canvas)drawCurrentPreview(canvas,155);}
     if(currentPanel==='character'&&characterTab==='appearance'){
-      const rehearsal=$('lobby96Canvas');if(rehearsal){const c=rehearsal.getContext('2d');c.clearRect(0,0,rehearsal.width,rehearsal.height);const ok=lobby96.preview(c,game,{action:$('lobby96Action').value,direction:$('lobby96Direction').value,time:world.time});$('lobby96State').textContent=ok?'Prévia de 96 px · sem arma':lobby96.snapshot().message||'Carregando camadas…';}
+      const rehearsal=$('lobby96Canvas');if(rehearsal){const c=rehearsal.getContext('2d');c.clearRect(0,0,rehearsal.width,rehearsal.height);const ok=lobby96.preview(c,game,{action:$('lobby96Action').value,direction:$('lobby96Direction').value,time:world.time});$('lobby96State').textContent=ok?('Prévia de 96 px · '+(game.equipment?.weapon?'arma equipada':'sem arma')):lobby96.snapshot().message||'Carregando camadas…';}
       const canvas=$('dollLookCanvas');if(canvas){
         const c=canvas.getContext('2d'),direction=$('dollLookDirection').value,action=$('dollLookAction').value;
         c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;

@@ -1,5 +1,7 @@
 # Sprint seguinte ao PR144 — ensaio96 no lobby real
 
+Continuação da sprint: [armas e combate96 de Espadachim/Gatuno](PAPER-DOLL-96-ARMAS.md). O estágio descrito abaixo permanece como histórico; os12 materiais passam a acompanhar armas realmente equipadas também na caçada do opt-in.
+
 30/10/2026. Base: merge `9684c01` do PR#144. Branch `feature/paper-doll-96-player`.
 
 ## Escopo e uso

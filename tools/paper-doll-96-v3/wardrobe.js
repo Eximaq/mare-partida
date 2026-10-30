@@ -4,7 +4,8 @@
   const api = window.MareAppearance96;
   const canvas = (w,h) => Object.assign(document.createElement('canvas'), {width:w,height:h});
   const fromPixels = (pixels,w,h) => { const c=canvas(w,h);c.getContext('2d').putImageData(new ImageData(pixels,w,h),0,0);return c; };
-  function create(catalog, rigs, load) {
+  function create(catalog, rigs, load, options = {}) {
+    const weapons=options.weapons?window.MareWeapons96.create(options.weapons,rigs):null;
     const textures=new Map(),attachments=new Map();
     if(catalog.nativeOwnership){
       for(const style of catalog.styles.filter(s=>s.kind==='torso'))if(!style.materialPalette?.length)throw Error('Missing torso material palette: '+style.id);
@@ -33,6 +34,7 @@
       if(catalog.originalHeads?.[selected.body]?.[selected.direction])files.push(catalog.originalHeads[selected.body][selected.direction]);
       if(catalog.originalHands?.[selected.body]?.[selected.direction])files.push(catalog.originalHands[selected.body][selected.direction]);
       if(catalog.nativeOwnership?.atlases?.[selected.body]?.[selected.action])files.push(catalog.nativeOwnership.atlases[selected.body][selected.action].file);
+      if(weapons?.descriptor(look.weapon))files.push(weapons.descriptor(look.weapon).source);
       return [...new Set(files)];
     }
     async function prepare(selected,look){return new Map(await Promise.all(requiredFiles(selected,look).map(async file=>[file,await load(file)])));}
@@ -47,6 +49,8 @@
       return result;
     }
     function draw(ctx,images,selected,fi,spec,hidden,look) {
+      // Inspection is local to the art bench. It never changes owned equipment.
+      if(look.inspectionBareHands)look={...look,gloves:'original'};
       const r=rigs.clips[selected.body]?.[selected.action]?.[selected.direction];
       const rest=r?.rest||rigs.rests[selected.body][selected.direction],pose=r?.poses[fi]||rest;
       const socket={...(r?.sockets[fi]||{x:0,y:0,angle:0})},padding=(spec.width-128)/2;
@@ -219,6 +223,11 @@
           const side=dl<dr?'LEFT':'RIGHT';groups[side].set(src.subarray(i,i+4),i);
         }for(const side of ['LEFT','RIGHT'])foreground[side]=fromPixels(groups[side],spec.width,spec.height);
       }
+      const weaponPlan=weapons?.plan(selected,fi,spec,look,ownership)||[];
+      const gripSkin=(api.skins[look.skin]||api.skins.light).ramp;
+      const gripStyle=descriptor('gloves',look.gloves),gripGlove=gripStyle?.nativeMaterial?{coverage:gripStyle.fingerCoverage,ramp:gripStyle.nativeMaterial.ramp.map(c=>'#'+c.map(v=>v.toString(16).padStart(2,'0')).join(''))}:null;
+      weapons?.draw(ctx,images,weaponPlan,'back');
+      weapons?.drawGrips(ctx,weaponPlan,'back',gripSkin,gripGlove);
       if(selected.direction!=='north')full('cloak');
       ctx.drawImage(originalFrame,0,0);
       if(pieces.hands)for(const side of behind)ctx.drawImage(pieces.hands[side],0,0);
@@ -235,6 +244,7 @@
       original('headBase');full('headBase');
       original('face');full('face');
       if(!hideHair){hairPass(()=>original('hair'));full('hair');}full('head');
+      weapons?.draw(ctx,images,weaponPlan,'front');
       if(pieces.hands)for(const side of inFront)ctx.drawImage(pieces.hands[side],0,0);
       for(const side of inFront)if(foreground[side])ctx.drawImage(foreground[side],0,0);
       // Bare native palms/forearms are independent of every garment. Restore
@@ -251,10 +261,28 @@
         cx.globalCompositeOperation='destination-out';cx.drawImage(pieces.cloak.full,0,0);ctx.drawImage(c,0,0);
       };
       visibleArm(frontHands);
+      if(look.inspectionBareHands){
+        // Some native far-hand strips contain the old brown leather mitten.
+        // Repaint only those occupied palm pixels, retaining the native contour,
+        // outline and pose. Do not touch sleeves, forearms, cloth or the weapon.
+        const palms=new Uint8ClampedArray(neutralPixels.length);
+        const ramp=(api.skins[look.skin]||api.skins.light).ramp.map(c=>c.slice(1).match(/../g).map(v=>parseInt(v,16)));
+        for(const side of ['LEFT','RIGHT']){
+          const j=pose.find(v=>v.label===side+' ARM'),e=pose.find(v=>v.label===side+' ELBOW'),vx=j.x-e.x,vy=j.y-e.y,len=Math.hypot(vx,vy)||1;
+          const cx=j.x*128+padding+vx/len*2,cy=j.y*128+padding+vy/len*2;
+          for(let y=Math.max(0,Math.floor(cy-4));y<=Math.min(spec.height-1,Math.ceil(cy+4));y++)for(let x=Math.max(0,Math.floor(cx-4));x<=Math.min(spec.width-1,Math.ceil(cx+4));x++){
+            const i=(y*spec.width+x)*4,r=neutralPixels[i],g=neutralPixels[i+1],b=neutralPixels[i+2];
+            if(Math.hypot(x-cx,y-cy)>4||!neutralPixels[i+3]||r<35||r>170||g>110||r<g*1.22||g<b*1.12)continue;
+            const shade=r<65?1:r<105?2:r<145?3:4;palms.set([...ramp[shade],255],i);
+          }
+        }
+        visibleArm(fromPixels(palms,spec.width,spec.height));
+      }
       if(pieces.gloves)for(const side of behind)visibleArm(pieces.gloves[side]);
       if(pieces.gloves)for(const side of inFront)visibleArm(pieces.gloves[side]);
+      weapons?.drawGrips(ctx,weaponPlan,'front',gripSkin,gripGlove);
     }
-    return {prepare,requiredFiles,draw,get cacheSize(){return textures.size;},get attachmentCacheSize(){return attachments.size;}};
+    return {prepare,requiredFiles,draw,weaponPadding:(selected,spec,look)=>weapons?.descriptor(look.weapon)?weapons.padding(selected,spec,look):{x:0,top:0,bottom:0},weaponPlan:(selected,frame,spec,look,owner)=>weapons?.plan(selected,frame,spec,look,owner)||[],get weaponCacheSize(){return weapons?.cacheSize||0;},get cacheSize(){return textures.size;},get attachmentCacheSize(){return attachments.size;}};
   }
   window.MareWardrobe96={create};
 })();

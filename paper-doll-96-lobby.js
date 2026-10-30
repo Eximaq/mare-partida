@@ -25,14 +25,14 @@
   }
   function create({search='',baseURL=root.location?.href,onChange=()=>{}}={}){
     const active=enabled(search),base=new URL('tools/paper-doll-96-v3/',baseURL);
-    let state=active?'loading':'off',message='',manifest,catalog,rigs,wardrobe,choices={},current={...defaults},draft={...defaults};
+    let state=active?'loading':'off',message='',manifest,catalog,rigs,weaponCatalog,wardrobe,choices={},current={...defaults},draft={...defaults};
     let draws=0,lastPose=null,pending=null,wanted=null,bundles=new Map(),previews=new Map(),failed=new Set();
     const images=new Map(),inflight=new Map();let loading=0,peakLoads=0;const waiting=[];
     const pause=()=>new Promise(resolve=>setTimeout(resolve,0));
     const snapshot=()=>({enabled:active,state,message,look:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,bundles:bundles.size,previews:previews.size,peakLoads});
     function report(error){message='Ensaio indisponível. Visual anterior preservado. '+error.message;onChange();}
     async function json(file){const r=await fetch(new URL(file,base),{cache:'no-store'});if(!r.ok)throw Error('Arquivo ausente: '+file);return r.json();}
-    function script(file){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL(file+'?revision='+encodeURIComponent(manifest.visualRevision),base).href;s.onload=resolve;s.onerror=()=>reject(Error('Compositor ausente: '+file));document.head.append(s);});}
+    function script(file){return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=new URL(file+'?revision='+encodeURIComponent(manifest.visualRevision+'-'+weaponCatalog.revision),base).href;s.onload=resolve;s.onerror=()=>reject(Error('Compositor ausente: '+file));document.head.append(s);});}
     async function image(file){
       if(!safeFile(file))throw Error('Caminho de camada inválido.');
       if(images.has(file)){const value=images.get(file);images.delete(file);images.set(file,value);return value;}
@@ -40,15 +40,15 @@
       const promise=(async()=>{
         if(loading>=6)await new Promise(resolve=>waiting.push(resolve));loading++;peakLoads=Math.max(peakLoads,loading);
         try{
-          const img=new Image();img.src=new URL(file+'?revision='+encodeURIComponent(manifest.visualRevision),base).href;await img.decode();
+          const img=new Image();img.src=new URL(file+'?revision='+encodeURIComponent(manifest.visualRevision+'-'+weaponCatalog.revision),base).href;await img.decode();
           images.set(file,img);while(images.size>48)images.delete(images.keys().next().value);return img;
         }finally{loading--;waiting.shift()?.();}
       })();inflight.set(file,promise);try{return await promise;}finally{inflight.delete(file);}
     }
     const ready=active?(async()=>{
       try{
-        [manifest,catalog,rigs]=await Promise.all(['manifest.json','appearance-catalog.json','appearance-rig.json'].map(json));
-        for(const name of ['rig','layers','motion','surface','torso','appearance','wardrobe'])await script(name+'.js');
+        [manifest,catalog,rigs,weaponCatalog]=await Promise.all(['manifest.json','appearance-catalog.json','appearance-rig.json','weapons.json'].map(json));
+        for(const name of ['rig','layers','motion','surface','torso','appearance','weapons','wardrobe'])await script(name+'.js');
         root.MareLayers96.validate(manifest);
         if(catalog.productionEnabled!==false||catalog.canonicalMirror?.allLayers!==true)throw Error('Contrato de revisão incompatível.');
         for(const body of ['masculino','feminino'])for(const action of actions)for(const dir of ['south','north','east','west']){
@@ -58,22 +58,23 @@
         for(const s of catalog.styles)if(s.kind==='hair'||s.kind==='face')choices[s.kind][s.id]=s.name;
         for(const [id,p]of Object.entries(root.MareAppearance96.skins))choices.skin[id]=p.name;
         for(const [id,p]of Object.entries(root.MareAppearance96.hairs))choices.hairColor[id]=p.name;
-        wardrobe=root.MareWardrobe96.create(catalog,rigs,image);state='ready';onChange();
+        wardrobe=root.MareWardrobe96.create(catalog,rigs,image,{weapons:weaponCatalog});state='ready';onChange();
       }catch(error){state='failed';report(error);}return snapshot();
     })():Promise.resolve(snapshot());
-    function resolve(player,look=current){const value=outfit(catalog,player,look);return {...value,body:look.body,key:JSON.stringify([look.body,value.look])};}
-    function selected(body,action,direction,look){const clip=manifest.bodies[body].clips[action][direction];return {body,action,direction,clip,layers:clip.layers,look};}
+    function resolve(player,look=current){const value=outfit(catalog,player,look),category=weaponCatalog.classes[player?.classId]||null,model=weaponCatalog.items.find(w=>w.itemId===player?.equipment?.weapon?.def&&w.category===category);value.look.weapon=model?.id||'original';if(player?.equipment?.weapon&&!model)value.missing.push({slot:'weapon',def:player.equipment.weapon.def});const supported=!!category&&(!player?.equipment?.weapon||!!model);return {...value,body:look.body,category,supported,key:JSON.stringify([look.body,value.look,supported?category:null])};}
+    function selected(body,action,direction,look){const clip=manifest.bodies[body].clips[action][direction];return {body,action,direction,clip,layers:clip.layers,look,key:[body,action,direction].join(':')};}
     async function compose(body,action,direction,look,cancel=()=>false){
       const sel=selected(body,action,direction,look),spec=root.MareMotion96.clipSpec(manifest,sel.clip);
       const files=[...new Set([...Object.values(sel.layers),...wardrobe.requiredFiles(sel,look)])];
       const loaded=new Map(await Promise.all(files.map(async file=>[file,await image(file)])));
-      const strip=Object.assign(document.createElement('canvas'),{width:spec.width*sel.clip.frames,height:spec.height}),ctx=strip.getContext('2d');
+      const pad=wardrobe.weaponPadding(sel,spec,look),renderSpec={...spec,width:spec.width+pad.x*2,height:spec.height+pad.top+pad.bottom,pivot:{x:spec.pivot.x+pad.x,y:spec.pivot.y+pad.top}};
+      const strip=Object.assign(document.createElement('canvas'),{width:renderSpec.width*sel.clip.frames,height:renderSpec.height}),ctx=strip.getContext('2d');
       for(let frame=0;frame<sel.clip.frames;frame++){
         if(cancel())return null;
-        const tile=Object.assign(document.createElement('canvas'),{width:spec.width,height:spec.height});
-        wardrobe.draw(tile.getContext('2d'),loaded,sel,frame,spec,[],look);ctx.drawImage(tile,frame*spec.width,0);await pause();
+        const tile=Object.assign(document.createElement('canvas'),{width:renderSpec.width,height:renderSpec.height});
+        const tc=tile.getContext('2d');tc.translate(pad.x,pad.top);wardrobe.draw(tc,loaded,sel,frame,spec,[],look);ctx.drawImage(tile,frame*renderSpec.width,0);await pause();
       }
-      return {strip,spec,clip:sel.clip};
+      return {strip,spec:renderSpec,nativeSpec:spec,clip:sel.clip};
     }
     function ensure(player){
       if(state!=='ready')return Promise.resolve(false);
@@ -85,7 +86,7 @@
         while(wanted&&!bundles.has(wanted.key)&&!failed.has(wanted.key)){
           const next=wanted,bundle=new Map();
           try{
-            for(const action of ['idle','walk'])for(const dir of ['south','north','east']){
+            for(const action of ['idle','walk',...(next.supported?['attack-'+next.category,'attack-unarmed']:[])].filter((v,i,a)=>a.indexOf(v)===i))for(const dir of ['south','north','east']){
               if(wanted.key!==next.key)break;
               const value=await compose(next.body,action,dir,next.look,()=>wanted.key!==next.key);
               if(value)bundle.set(action+':'+dir,value);
@@ -103,12 +104,19 @@
       if(direction==='west'){ctx.translate(spec.width+1,0);ctx.scale(-1,1);}
       ctx.drawImage(strip,frame*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);ctx.restore();
     }
-    function draw(ctx,player,{scene,action='idle',direction='south',time=0,x=0,y=0,scale=null,worldView=false}={}){
+    function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false}={}){
       direction=directionOf(direction);
-      if(!active||scene!=='lobby'||state!=='ready'||player?.zoanTransformed||!['idle','walk'].includes(action)||!['south','north','east','west'].includes(direction))return false;
-      ensure(player);const value=resolve(player),bundle=bundles.get(value.key),clip=bundle?.get(action+':'+(direction==='west'?'east':direction));if(!clip)return false;
-      const frame=frameAt(clip.clip,time);paint(ctx,clip,direction,frame,x,y,scale===null?1:scale*46/96);draws++;
-      if(worldView)lastPose={body:value.body,action,direction,frame,scale:1,pivot:{x,y},missing:value.missing};return true;
+      if(!active||state!=='ready'||player?.zoanTransformed||!['south','north','east','west'].includes(direction))return false;
+      const value=resolve(player);if(scene!=='lobby'&&!(scene==='hunt'&&value.supported))return false;
+      const requested=action;
+      if(['combat-idle','guard','hurt','death'].includes(action))action='idle';
+      else if(['attack','skill','skill-1','skill-2','combo','cast','heal','reload','dodge'].includes(action))action=player?.equipment?.weapon?'attack-'+value.category:'attack-unarmed';
+      if(!['idle','walk'].includes(action)&&!value.supported)return false;
+      ensure(player);const bundle=bundles.get(value.key),clip=bundle?.get(action+':'+(direction==='west'?'east':direction));if(!clip)return false;
+      const hit=Math.max(.001,Math.min(.999,timing?.hitFrameRatio??.5));
+      const p=Number.isFinite(progress)&&!clip.clip.loop?(progress<=hit?progress/hit*.5:.5+(progress-hit)/(1-hit)*.5):null;
+      const frame=frameAt(clip.clip,time,p);paint(ctx,clip,direction,frame,x,y,scale===null?1:scale*46/96);draws++;
+      if(worldView)lastPose={body:value.body,action,requestedAction:requested,direction,frame,progress:p,weapon:value.look.weapon,scale:1,pivot:{x,y},missing:value.missing};return true;
     }
     function valid(look){return Object.keys(defaults).every(key=>Object.hasOwn(choices[key]||{},look?.[key]));}
     function setDraft(key,value){if(Object.hasOwn(choices[key]||{},value)){draft={...draft,[key]:value};return true;}return false;}
@@ -120,7 +128,7 @@
       const labels={body:'Corpo',hair:'Cabelo',face:'Rosto',skin:'Pele',hairColor:'Cor do cabelo',kit:'Equipamentos no ensaio'};
       const fields=Object.entries(choices).map(([key,options])=>`<label>${labels[key]}<select data-lobby96-look="${key}">${Object.entries(options).map(([id,name])=>`<option value="${E(id)}" ${draft[key]===id?'selected':''}>${E(name)}</option>`).join('')}</select></label>`).join('');
       const missing=resolve(player,draft).missing;
-      return `<section class="doll-dressing"><header><h2>Ensaio de aparência no lobby · 96 px</h2><p>Escolhas temporárias. Seu personagem salvo e os atributos dos equipamentos são preservados.</p></header><div class="doll-dressing-grid"><figure><canvas id="lobby96Canvas" width="320" height="320" aria-label="Prévia da aparência de 96 pixels"></canvas><figcaption id="lobby96State" role="status"></figcaption><label>Direção<select id="lobby96Direction"><option value="south">Frente</option><option value="north">Costas</option><option value="west">Esquerda</option><option value="east">Direita</option></select></label><label>Movimento<select id="lobby96Action">${actions.map(a=>`<option value="${a}">${({idle:'Repouso',walk:'Caminhada','attack-sword':'Espada','attack-unarmed':'Punhos','attack-firearm':'Disparo','attack-daggers':'Adagas','attack-focus':'Canalização','attack-tech':'Tecnologia'})[a]}</option>`).join('')}</select></label></figure><div class="doll-dressing-controls">${fields}<p>Os conjuntos de ensaio mudam somente o visual. Ataques nesta janela não causam dano e ainda não incluem armas. Nas caçadas, o visual atual permanece ativo.</p>${missing.length?root.MareUI.notice({text:'Há equipamentos atuais sem arte de 96 px. Eles mantêm seus bônus; esta prévia não mostra uma peça substituta.',tone:'info'}):''}<div class="doll-dressing-actions">${root.MareUI.button({label:'Visualizar no lobby',attributes:{'data-lobby96-apply':''}})}${root.MareUI.button({label:'Descartar alterações',attributes:{'data-lobby96-cancel':''}})}</div><p id="lobby96Message" role="status">${E(message)}</p></div></div></section>`;
+      return `<section class="doll-dressing"><header><h2>Ensaio de aparência no lobby · 96 px</h2><p>Escolhas temporárias. Seu personagem salvo e os atributos dos equipamentos são preservados.</p></header><div class="doll-dressing-grid"><figure><canvas id="lobby96Canvas" width="512" height="512" aria-label="Prévia da aparência de 96 pixels"></canvas><figcaption id="lobby96State" role="status"></figcaption><label>Direção<select id="lobby96Direction"><option value="south">Frente</option><option value="north">Costas</option><option value="west">Esquerda</option><option value="east">Direita</option></select></label><label>Movimento<select id="lobby96Action">${actions.map(a=>`<option value="${a}">${({idle:'Repouso',walk:'Caminhada','attack-sword':'Espada','attack-unarmed':'Punhos','attack-firearm':'Disparo','attack-daggers':'Adagas','attack-focus':'Canalização','attack-tech':'Tecnologia'})[a]}</option>`).join('')}</select></label></figure><div class="doll-dressing-controls">${fields}<p>Os conjuntos de ensaio mudam somente o visual. As prévias não causam dano. Espadas e adagas equipadas acompanham os movimentos e o combate; as demais categorias mantêm seu visual atual.</p>${missing.length?root.MareUI.notice({text:'Há equipamentos atuais sem arte de 96 px. Eles mantêm seus bônus; esta prévia não mostra uma peça substituta.',tone:'info'}):''}<div class="doll-dressing-actions">${root.MareUI.button({label:'Visualizar no lobby',attributes:{'data-lobby96-apply':''}})}${root.MareUI.button({label:'Descartar alterações',attributes:{'data-lobby96-cancel':''}})}</div><p id="lobby96Message" role="status">${E(message)}</p></div></div></section>`;
     }
     let previewPending=false;
     function preview(ctx,player,{action='idle',direction='south',time=0}={}){
@@ -137,7 +145,7 @@
       const frame=frameAt(entry.value.clip,entry.value.clip.loop?time:time%(entry.value.clip.frames/entry.value.clip.fps+.25));
       paint(ctx,entry.value,direction,frame,ctx.canvas.width/2,ctx.canvas.height-24,2);return true;
     }
-    const height=(player,scene)=>active&&state==='ready'&&scene==='lobby'&&!player?.zoanTransformed&&bundles.has(resolve(player).key)?96:null;
+    const height=(player,scene)=>active&&state==='ready'&&(scene==='lobby'||scene==='hunt'&&resolve(player).supported)&&!player?.zoanTransformed&&bundles.has(resolve(player).key)?96:null;
     return {ready,snapshot,draw,height,ensure,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
   }
   root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,frameAt,directionOf};

@@ -112,3 +112,6 @@
 .constellation-window .talent-budget>span:first-of-type{display:none}
 .constellation-window:not(.has-selection) .constellation-workspace{grid-template-columns:minmax(0,1fr)}
 .constellation-window:not(.has-selection) .talent-inspector{display:none}
+
+/* Native weapon padding stays outside the character without changing body scale. */
+.doll-dressing #lobby96Canvas { width:384px; max-width:100%; }
