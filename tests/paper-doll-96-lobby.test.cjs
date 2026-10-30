@@ -1,0 +1,34 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const R=require('../paper-doll-96-lobby.js'),catalog=require('../tools/paper-doll-96-v3/appearance-catalog.json');
+assert.equal(R.directionOf('front'),'south');assert.equal(R.directionOf('right'),'east');assert.equal(R.directionOf('west'),'west');
+assert(R.enabled('?paperDoll96=1'));for(const s of ['', '?dev=1','?paperDoll96=0','?paperDoll96=true','?paperDoll96=../'])assert(!R.enabled(s));
+assert.deepEqual(R.slots,{coat:'torso',legs:'pants',boots:'boots',gloves:'gloves',cloak:'cloak',head:'head'});
+const player={classId:'sword',factionId:'pirate',gold:900,inventory:[{id:'kept'}],equipment:{coat:{def:6},legs:{def:22},boots:{def:9},gloves:{def:26},cloak:{def:24},head:{def:19},weapon:{def:0}}};
+const before=JSON.stringify(player),look={...R.defaults},resolved=R.outfit(catalog,player,look);
+for(const [slot,kind]of Object.entries(R.slots))assert.equal(resolved.look[kind],'item-'+player.equipment[slot].def);
+assert.equal(resolved.missing.length,0);assert.equal(JSON.stringify(player),before);
+const none=R.outfit(catalog,player,{...look,kit:'none'});for(const kind of Object.values(R.slots))assert.equal(none.look[kind],'original');
+for(const kit of ['sample-a','sample-b']){
+ const r=R.outfit(catalog,player,{...look,kit});assert.equal(r.missing.length,0);
+ for(const kind of Object.values(R.slots))assert(catalog.styles.some(s=>s.kind===kind&&s.id===r.look[kind]));
+ assert.equal(JSON.stringify(player),before,'a rehearsal must never grant or equip items');
+}
+const missing=R.outfit(catalog,{equipment:{coat:{def:999},head:{def:0},boots:{def:'9'}}},look);
+assert.deepEqual(missing.missing,[{slot:'coat',def:999},{slot:'boots',def:'9'},{slot:'head',def:0}]);
+assert.equal(missing.look.torso,'original','do not invent a substitute for missing artwork');
+assert.equal(R.frameAt({frames:8,fps:8,loop:true},1),0);assert.equal(R.frameAt({frames:8,fps:8,loop:true},.875),7);
+assert.equal(R.frameAt({frames:8,fps:12,loop:false},99),7);assert.equal(R.frameAt({frames:8,fps:12,loop:false},0,1),7);
+assert.equal(R.frameAt({frames:8,fps:12,loop:false},-1),0);
+const source=fs.readFileSync(path.join(__dirname,'../paper-doll-96-lobby.js'),'utf8');
+assert(!/localStorage|sessionStorage|setItem\(/.test(source),'runtime owns no persistence');
+assert(source.includes('MareWardrobe96.create'),'reuse the audited compositor');
+assert(source.includes('spec.width+1'),'retain the canonical mirror pivot');
+assert(source.includes("scene!=='lobby'"),'combat activation is outside this sprint');
+assert(source.includes('player?.zoanTransformed'),'transformed bodies must never use human layers');
+assert(source.includes('images.size>48')&&source.includes('bundles.size>2')&&source.includes('previews.size>8'),'bound native and composite caches');
+const off=R.create({search:'',baseURL:'http://localhost/game/'});
+assert.equal(off.snapshot().state,'off');assert.equal(off.draw(null,null,{scene:'lobby'}),false);
+assert.equal(require('../tools/paper-doll-96-v3/manifest.json').productionEnabled,false);
+assert.equal(catalog.productionEnabled,false);
+console.log('paper-doll-96-lobby: exact opt-in, equipment ownership, missing-art report, native timing, save/Zoan/combat isolation passed');

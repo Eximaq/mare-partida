@@ -1,5 +1,7 @@
 Portal de pré-lançamento **Kaizoku Idle**: [página](portal/index.html) e [publicação na Cloudflare](docs/PORTAL-KAIZOKU.md).
 
+**Sprint pós-PR144:** [ensaio de 96 px no lobby real](docs/PAPER-DOLL-96-LOBBY.md), com câmera/navegação existentes, corpos masculino e feminino, equipamentos e escolhas temporárias. Abrir o jogo com `?paperDoll96=1`; combate e saves de produção mantêm sua integração atual.
+
 # Desenvolvimento compartilhado no GitHub
 
 Bancada96 v10: correções estruturais de capa, braços, peitorais laterais e três pivôs de cabeça femininos. [Diagnóstico, testes e compatibilidade](docs/PAPER-DOLL-96-STRUCTURAL-V10.md). [Contrato e moldes reutilizáveis](docs/PAPER-DOLL-96-FIT-CONTRACT.md). Biblioteca isolada; integração no personagem publicado depende de aprovação visual.
