@@ -1548,6 +1548,142 @@
             4665
           ]
         }
+      },
+      "eyeIris": {
+        "masculino": {
+          "south": [
+            [
+              4675,
+              2
+            ],
+            [
+              4795,
+              2
+            ],
+            [
+              4796,
+              2
+            ],
+            [
+              4803,
+              2
+            ],
+            [
+              4804,
+              2
+            ],
+            [
+              4805,
+              2
+            ],
+            [
+              4923,
+              2
+            ],
+            [
+              4924,
+              2
+            ],
+            [
+              4931,
+              4
+            ],
+            [
+              4932,
+              2
+            ],
+            [
+              4933,
+              2
+            ]
+          ],
+          "north": [],
+          "east": [
+            [
+              4677,
+              2
+            ],
+            [
+              4805,
+              4
+            ]
+          ],
+          "west": [
+            [
+              4667,
+              2
+            ],
+            [
+              4795,
+              4
+            ]
+          ]
+        },
+        "feminino": {
+          "south": [
+            [
+              4667,
+              2
+            ],
+            [
+              4668,
+              2
+            ],
+            [
+              4676,
+              2
+            ],
+            [
+              4677,
+              2
+            ],
+            [
+              4796,
+              4
+            ],
+            [
+              4804,
+              4
+            ],
+            [
+              4805,
+              2
+            ],
+            [
+              4923,
+              2
+            ],
+            [
+              4932,
+              4
+            ],
+            [
+              4933,
+              2
+            ]
+          ],
+          "north": [],
+          "east": [
+            [
+              4551,
+              2
+            ],
+            [
+              4679,
+              4
+            ]
+          ],
+          "west": [
+            [
+              4537,
+              2
+            ],
+            [
+              4665,
+              4
+            ]
+          ]
+        }
       }
     },
     {
@@ -1627,6 +1763,150 @@
           "west": [
             4537,
             4665
+          ]
+        }
+      },
+      "eyeIris": {
+        "masculino": {
+          "south": [
+            [
+              4675,
+              2
+            ],
+            [
+              4676,
+              4
+            ],
+            [
+              4795,
+              2
+            ],
+            [
+              4796,
+              2
+            ],
+            [
+              4804,
+              2
+            ],
+            [
+              4805,
+              4
+            ],
+            [
+              4923,
+              2
+            ],
+            [
+              4924,
+              2
+            ],
+            [
+              4931,
+              2
+            ],
+            [
+              4932,
+              2
+            ],
+            [
+              4933,
+              4
+            ]
+          ],
+          "north": [],
+          "east": [
+            [
+              4677,
+              2
+            ],
+            [
+              4805,
+              4
+            ]
+          ],
+          "west": [
+            [
+              4667,
+              2
+            ],
+            [
+              4795,
+              4
+            ]
+          ]
+        },
+        "feminino": {
+          "south": [
+            [
+              4539,
+              2
+            ],
+            [
+              4540,
+              2
+            ],
+            [
+              4667,
+              2
+            ],
+            [
+              4668,
+              2
+            ],
+            [
+              4669,
+              2
+            ],
+            [
+              4676,
+              2
+            ],
+            [
+              4677,
+              2
+            ],
+            [
+              4795,
+              2
+            ],
+            [
+              4796,
+              4
+            ],
+            [
+              4797,
+              4
+            ],
+            [
+              4804,
+              2
+            ],
+            [
+              4805,
+              2
+            ]
+          ],
+          "north": [],
+          "east": [
+            [
+              4551,
+              2
+            ],
+            [
+              4679,
+              4
+            ]
+          ],
+          "west": [
+            [
+              4537,
+              2
+            ],
+            [
+              4665,
+              4
+            ]
           ]
         }
       }
@@ -2338,6 +2618,807 @@
           193
         ]
       ]
+    },
+    {
+      "id": "hair-topknot",
+      "name": "Coque alto",
+      "kind": "hair",
+      "sourceJob": "79e9d5b9-3cfc-4e08-9265-9d6c57c8c5a6",
+      "galleryId": "c83e76a2-be0c-55d9-8d65-a3d244bc5826",
+      "layers": {
+        "masculino": {
+          "south": "assets/appearance3-hair-topknot-masculino-south.png",
+          "north": "assets/appearance3-hair-topknot-masculino-north.png",
+          "east": "assets/appearance3-hair-topknot-masculino-east.png",
+          "west": "assets/appearance3-hair-topknot-masculino-west.png"
+        },
+        "feminino": {
+          "south": "assets/appearance3-hair-topknot-feminino-south.png",
+          "north": "assets/appearance3-hair-topknot-feminino-north.png",
+          "east": "assets/appearance3-hair-topknot-feminino-east.png",
+          "west": "assets/appearance3-hair-topknot-feminino-west.png"
+        }
+      },
+      "reviewed": true,
+      "canonicalSource": "east",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 128,
+        "femalePixelCoordinateSum": 128
+      },
+      "approval": "Sprint 3: native head sockets, pilot validated before expansion",
+      "materialPolicy": "skin-free dark chestnut source; warm forehead and ear matte separated before hair palette; canonical skull supplies exposed skin; exposed canonical ears and neck excluded, including dark skin shadows"
+    },
+    {
+      "id": "face-almond",
+      "name": "Amendoado",
+      "kind": "face",
+      "sourceJob": "d344db12-b083-467f-9c6c-bfd422c3679d",
+      "galleryId": "e50cc8fc-45e0-59b5-94a6-3cd6f9da3b0e",
+      "layers": {
+        "masculino": {
+          "south": "assets/appearance3-face-almond-masculino-south.png",
+          "north": "assets/appearance3-face-almond-masculino-north.png",
+          "east": "assets/appearance3-face-almond-masculino-east.png",
+          "west": "assets/appearance3-face-almond-masculino-west.png"
+        },
+        "feminino": {
+          "south": "assets/appearance3-face-almond-feminino-south.png",
+          "north": "assets/appearance3-face-almond-feminino-north.png",
+          "east": "assets/appearance3-face-almond-feminino-east.png",
+          "west": "assets/appearance3-face-almond-feminino-west.png"
+        }
+      },
+      "reviewed": true,
+      "canonicalSource": "east",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 128,
+        "femalePixelCoordinateSum": 128
+      },
+      "approval": "Sprint 3: native head sockets, pilot validated before expansion",
+      "physiognomy": "pixellab-features",
+      "featurePolicy": "skin-free features; exact iris mask",
+      "faceColorProtection": {
+        "masculino": {
+          "south": [
+            4536,
+            4537,
+            4538,
+            4539,
+            4540,
+            4547,
+            4548,
+            4549,
+            4550,
+            4665,
+            4666,
+            4667,
+            4668,
+            4675,
+            4676,
+            4677,
+            4678,
+            4793,
+            4794,
+            4795,
+            4796,
+            4803,
+            4804,
+            4805,
+            4806,
+            4922,
+            4923,
+            4924,
+            4931,
+            4932,
+            4933
+          ],
+          "north": [],
+          "east": [
+            4167,
+            4295,
+            4423,
+            4547,
+            4548,
+            4549,
+            4550,
+            4551,
+            4676,
+            4677,
+            4678,
+            4679,
+            4804,
+            4805,
+            4806,
+            4807,
+            5317
+          ],
+          "west": [
+            4153,
+            4281,
+            4409,
+            4537,
+            4538,
+            4539,
+            4540,
+            4541,
+            4665,
+            4666,
+            4667,
+            4668,
+            4793,
+            4794,
+            4795,
+            4796,
+            5307
+          ]
+        },
+        "feminino": {
+          "south": [
+            4409,
+            4410,
+            4411,
+            4412,
+            4420,
+            4421,
+            4422,
+            4536,
+            4537,
+            4538,
+            4539,
+            4540,
+            4547,
+            4548,
+            4549,
+            4550,
+            4665,
+            4666,
+            4667,
+            4668,
+            4675,
+            4676,
+            4677,
+            4678,
+            4793,
+            4794,
+            4795,
+            4796,
+            4797,
+            4803,
+            4804,
+            4805,
+            4806,
+            4923,
+            4924,
+            4932,
+            4933,
+            5048
+          ],
+          "north": [],
+          "east": [
+            4166,
+            4167,
+            4421,
+            4422,
+            4423,
+            4424,
+            4425,
+            4549,
+            4550,
+            4551,
+            4552,
+            4553,
+            4678,
+            4679,
+            4680,
+            4681
+          ],
+          "west": [
+            4153,
+            4154,
+            4407,
+            4408,
+            4409,
+            4410,
+            4411,
+            4535,
+            4536,
+            4537,
+            4538,
+            4539,
+            4663,
+            4664,
+            4665,
+            4666
+          ]
+        }
+      },
+      "eyeIris": {
+        "masculino": {
+          "south": [
+            [
+              4666,
+              4
+            ],
+            [
+              4667,
+              2
+            ],
+            [
+              4676,
+              2
+            ],
+            [
+              4677,
+              2
+            ],
+            [
+              4794,
+              2
+            ],
+            [
+              4795,
+              2
+            ],
+            [
+              4796,
+              2
+            ],
+            [
+              4803,
+              2
+            ],
+            [
+              4805,
+              4
+            ],
+            [
+              4922,
+              4
+            ],
+            [
+              4923,
+              4
+            ],
+            [
+              4932,
+              4
+            ],
+            [
+              4933,
+              4
+            ]
+          ],
+          "north": [],
+          "east": [
+            [
+              4677,
+              4
+            ],
+            [
+              4678,
+              2
+            ],
+            [
+              4805,
+              4
+            ],
+            [
+              4806,
+              4
+            ]
+          ],
+          "west": [
+            [
+              4666,
+              2
+            ],
+            [
+              4667,
+              4
+            ],
+            [
+              4794,
+              4
+            ],
+            [
+              4795,
+              4
+            ]
+          ]
+        },
+        "feminino": {
+          "south": [
+            [
+              4666,
+              2
+            ],
+            [
+              4668,
+              2
+            ],
+            [
+              4677,
+              2
+            ],
+            [
+              4795,
+              2
+            ],
+            [
+              4796,
+              4
+            ],
+            [
+              4804,
+              4
+            ],
+            [
+              4805,
+              2
+            ],
+            [
+              4923,
+              4
+            ],
+            [
+              4932,
+              2
+            ],
+            [
+              4933,
+              4
+            ]
+          ],
+          "north": [],
+          "east": [
+            [
+              4551,
+              2
+            ],
+            [
+              4552,
+              2
+            ],
+            [
+              4679,
+              4
+            ],
+            [
+              4680,
+              4
+            ]
+          ],
+          "west": [
+            [
+              4536,
+              2
+            ],
+            [
+              4537,
+              2
+            ],
+            [
+              4664,
+              4
+            ],
+            [
+              4665,
+              4
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "id": "hair-afro",
+      "name": "Afro arredondado",
+      "kind": "hair",
+      "sourceJob": "411832d7-cc72-4fb9-be1e-039af256649b",
+      "galleryId": "541994b3-5f6f-5c1b-a1b9-43c2b8a80e49",
+      "layers": {
+        "masculino": {
+          "south": "assets/appearance3-hair-afro-masculino-south.png",
+          "north": "assets/appearance3-hair-afro-masculino-north.png",
+          "east": "assets/appearance3-hair-afro-masculino-east.png",
+          "west": "assets/appearance3-hair-afro-masculino-west.png"
+        },
+        "feminino": {
+          "south": "assets/appearance3-hair-afro-feminino-south.png",
+          "north": "assets/appearance3-hair-afro-feminino-north.png",
+          "east": "assets/appearance3-hair-afro-feminino-east.png",
+          "west": "assets/appearance3-hair-afro-feminino-west.png"
+        }
+      },
+      "reviewed": true,
+      "canonicalSource": "east",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 128,
+        "femalePixelCoordinateSum": 128
+      },
+      "approval": "Sprint 3: native head sockets, pilot validated before expansion",
+      "materialPolicy": "skin-free dark chestnut source; warm forehead and ear matte separated before hair palette; canonical skull supplies exposed skin; exposed canonical ears and neck excluded, including dark skin shadows"
+    },
+    {
+      "id": "face-focused",
+      "name": "Atento",
+      "kind": "face",
+      "sourceJob": "7de62392-3c66-4572-886d-c0652f74009a",
+      "galleryId": "9f070864-f6d0-50e5-8ab1-a69e3475cf48",
+      "layers": {
+        "masculino": {
+          "south": "assets/appearance3-face-focused-masculino-south.png",
+          "north": "assets/appearance3-face-focused-masculino-north.png",
+          "east": "assets/appearance3-face-focused-masculino-east.png",
+          "west": "assets/appearance3-face-focused-masculino-west.png"
+        },
+        "feminino": {
+          "south": "assets/appearance3-face-focused-feminino-south.png",
+          "north": "assets/appearance3-face-focused-feminino-north.png",
+          "east": "assets/appearance3-face-focused-feminino-east.png",
+          "west": "assets/appearance3-face-focused-feminino-west.png"
+        }
+      },
+      "reviewed": true,
+      "canonicalSource": "east",
+      "sideMirroring": {
+        "source": "east",
+        "target": "west",
+        "malePixelCoordinateSum": 128,
+        "femalePixelCoordinateSum": 128
+      },
+      "approval": "Sprint 3: native head sockets, pilot validated before expansion",
+      "physiognomy": "pixellab-features",
+      "featurePolicy": "skin-free features; exact iris mask",
+      "faceColorProtection": {
+        "masculino": {
+          "south": [
+            4537,
+            4538,
+            4539,
+            4540,
+            4541,
+            4546,
+            4547,
+            4548,
+            4549,
+            4550,
+            4665,
+            4666,
+            4667,
+            4668,
+            4675,
+            4676,
+            4677,
+            4678,
+            4794,
+            4795,
+            4796,
+            4803,
+            4804,
+            4805,
+            4806,
+            4922,
+            4923,
+            4924,
+            4931,
+            4932,
+            4933,
+            4934
+          ],
+          "north": [],
+          "east": [
+            4167,
+            4292,
+            4293,
+            4295,
+            4423,
+            4547,
+            4548,
+            4549,
+            4550,
+            4551,
+            4675,
+            4676,
+            4677,
+            4678,
+            4679,
+            4804,
+            4805,
+            4807,
+            4935,
+            5317
+          ],
+          "west": [
+            4153,
+            4281,
+            4283,
+            4284,
+            4409,
+            4537,
+            4538,
+            4539,
+            4540,
+            4541,
+            4665,
+            4666,
+            4667,
+            4668,
+            4669,
+            4793,
+            4795,
+            4796,
+            4921,
+            5307
+          ]
+        },
+        "feminino": {
+          "south": [
+            4282,
+            4409,
+            4410,
+            4411,
+            4412,
+            4413,
+            4419,
+            4420,
+            4421,
+            4422,
+            4538,
+            4539,
+            4540,
+            4547,
+            4548,
+            4549,
+            4550,
+            4666,
+            4667,
+            4668,
+            4675,
+            4676,
+            4677,
+            4678,
+            4794,
+            4795,
+            4796,
+            4797,
+            4803,
+            4804,
+            4805,
+            4806,
+            4923,
+            4924,
+            4925,
+            4932,
+            4933,
+            4934
+          ],
+          "north": [],
+          "east": [
+            4166,
+            4420,
+            4421,
+            4422,
+            4423,
+            4424,
+            4549,
+            4550,
+            4551,
+            4552,
+            4677,
+            4678,
+            4679,
+            4680,
+            4806
+          ],
+          "west": [
+            4154,
+            4408,
+            4409,
+            4410,
+            4411,
+            4412,
+            4536,
+            4537,
+            4538,
+            4539,
+            4664,
+            4665,
+            4666,
+            4667,
+            4794
+          ]
+        }
+      },
+      "eyeIris": {
+        "masculino": {
+          "south": [
+            [
+              4668,
+              2
+            ],
+            [
+              4675,
+              2
+            ],
+            [
+              4676,
+              2
+            ],
+            [
+              4677,
+              2
+            ],
+            [
+              4795,
+              2
+            ],
+            [
+              4796,
+              4
+            ],
+            [
+              4803,
+              4
+            ],
+            [
+              4804,
+              2
+            ],
+            [
+              4805,
+              4
+            ],
+            [
+              4923,
+              4
+            ],
+            [
+              4924,
+              4
+            ],
+            [
+              4931,
+              4
+            ],
+            [
+              4932,
+              4
+            ],
+            [
+              4933,
+              4
+            ]
+          ],
+          "north": [],
+          "east": [
+            [
+              4677,
+              4
+            ],
+            [
+              4678,
+              2
+            ],
+            [
+              4805,
+              4
+            ]
+          ],
+          "west": [
+            [
+              4666,
+              2
+            ],
+            [
+              4667,
+              4
+            ],
+            [
+              4795,
+              4
+            ]
+          ]
+        },
+        "feminino": {
+          "south": [
+            [
+              4548,
+              2
+            ],
+            [
+              4668,
+              4
+            ],
+            [
+              4676,
+              4
+            ],
+            [
+              4677,
+              4
+            ],
+            [
+              4795,
+              4
+            ],
+            [
+              4796,
+              4
+            ],
+            [
+              4804,
+              4
+            ],
+            [
+              4805,
+              4
+            ],
+            [
+              4923,
+              4
+            ],
+            [
+              4932,
+              4
+            ],
+            [
+              4933,
+              4
+            ]
+          ],
+          "north": [],
+          "east": [
+            [
+              4550,
+              4
+            ],
+            [
+              4551,
+              2
+            ],
+            [
+              4678,
+              4
+            ],
+            [
+              4679,
+              2
+            ],
+            [
+              4806,
+              4
+            ]
+          ],
+          "west": [
+            [
+              4537,
+              2
+            ],
+            [
+              4538,
+              4
+            ],
+            [
+              4665,
+              2
+            ],
+            [
+              4666,
+              4
+            ],
+            [
+              4794,
+              4
+            ]
+          ]
+        }
+      }
     }
   ],
   "palettes": {
@@ -6581,5 +7662,137 @@
       }
     }
   },
-  "compositionRevision": "directional-depth-v10"
+  "compositionRevision": "directional-depth-v10",
+  "originalEyeIris": {
+    "masculino": {
+      "south": [
+        [
+          4677,
+          2
+        ],
+        [
+          4795,
+          2
+        ],
+        [
+          4796,
+          2
+        ],
+        [
+          4803,
+          2
+        ],
+        [
+          4804,
+          2
+        ],
+        [
+          4805,
+          2
+        ],
+        [
+          4923,
+          2
+        ],
+        [
+          4924,
+          2
+        ],
+        [
+          4931,
+          2
+        ],
+        [
+          4932,
+          2
+        ],
+        [
+          4933,
+          2
+        ]
+      ],
+      "north": [],
+      "east": [
+        [
+          4677,
+          2
+        ],
+        [
+          4805,
+          4
+        ]
+      ],
+      "west": [
+        [
+          4667,
+          2
+        ],
+        [
+          4795,
+          4
+        ]
+      ]
+    },
+    "feminino": {
+      "south": [
+        [
+          4678,
+          4
+        ],
+        [
+          4796,
+          2
+        ],
+        [
+          4797,
+          2
+        ],
+        [
+          4804,
+          2
+        ],
+        [
+          4805,
+          2
+        ],
+        [
+          4924,
+          2
+        ],
+        [
+          4925,
+          2
+        ],
+        [
+          4932,
+          2
+        ],
+        [
+          4933,
+          2
+        ]
+      ],
+      "north": [],
+      "east": [
+        [
+          4551,
+          2
+        ],
+        [
+          4679,
+          4
+        ]
+      ],
+      "west": [
+        [
+          4537,
+          2
+        ],
+        [
+          4665,
+          4
+        ]
+      ]
+    }
+  }
 }

@@ -21,7 +21,7 @@ with sync_playwright() as p:
         for image in page.locator('.faction-choice img').all():assert image.evaluate('im=>im.complete&&im.naturalWidth===48')
         page.screenshot(path=str(OUT/'selection.png'))
         page.locator('#characterName').fill('Teste '+faction[:8]);page.locator('[data-faction="'+faction+'"]').click()
-        page.locator('#nextToClass').click();page.locator('#createCharacter').click();page.clock.run_for(250)
+        page.locator('#nextToClass').click();page.locator('#nextToAppearance').click();page.locator('#createCharacter').click();page.locator('[data-confirm-accept]').click();page.clock.run_for(250)
         def diag():return page.evaluate('window.__mareDiagnostics()')
         def run(ms):page.clock.run_for(ms)
         meta=page.evaluate('(id)=>MareFactionSprites.assets[id].meta',faction)

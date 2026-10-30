@@ -11,7 +11,7 @@ with sync_playwright() as p:
     c.add_init_script('Math.random=(()=>{let x=42317;return()=>{x=(Math.imul(1664525,x)+1013904223)>>>0;return x/4294967296}})()')
     q=c.new_page();q.on('pageerror',lambda e:errors.append(str(e)));q.clock.install(time=1792500000000);q.goto(os.environ.get('MARE_TEST_URL','http://127.0.0.1:8123/'))
     q.wait_for_function('typeof __mareDiagnostics==="function"');q.evaluate('MareOrangeRenderer.boot')
-    q.locator('#characterName').fill('Nauta terreno');q.locator('#nextToClass').click();q.locator('#createCharacter').click();q.clock.run_for(100)
+    q.locator('#characterName').fill('Nauta terreno');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(100)
     q.locator('#devLauncher').click();q.locator('[data-dev-enter]').click();q.wait_for_url('**/?dev=1');q.wait_for_function('window.__mareDiagnostics?.().dev.active')
     q.locator('#devLauncher').click();q.locator('#devLevel').fill('30');q.locator('[data-dev-command=level]:not([data-value])').click();q.locator('[data-dev-option=godMode]').check();q.locator('[data-dev-travel=orange]').click();q.evaluate('MareOrangeRenderer.boot')
     if q.evaluate('__mareDiagnostics().autoPlay'):q.locator('#autoToggle').click()

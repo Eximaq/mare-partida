@@ -1,3 +1,5 @@
+**Sprint 3:** [Sua Aparência](docs/PERSONAGEM-APARENCIA-96.md): nova etapa após classe, gênero, cabelos/olhos e cores independentes, prévia em quatro direções e persistência.
+
 **Sprint 2:** [capacetes, cabelo e botão de visibilidade](docs/CAPACETES-E-VISIBILIDADE.md). Base de 96 px como padrão por autorização do proprietário; botão no canto inferior direito do personagem no inventário.
 
 Portal de pré-lançamento **Kaizoku Idle**: [página](portal/index.html) e [publicação na Cloudflare](docs/PORTAL-KAIZOKU.md).

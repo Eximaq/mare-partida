@@ -19,7 +19,7 @@ const bridge=`  window.__supaQA={enterHunt,useFruitSkill,takeDamage,get game(){r
     await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8130/',{waitUntil:'domcontentloaded'});
     await page.locator('#characterName').fill('Supa QA');
     await page.locator('#nextToClass').click();
-    await page.locator('#createCharacter').click();
+    await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();
     await page.locator('#characterMenuTrigger').click();
     await page.locator('[data-character-section=akuma]').click();
     await page.locator('[data-akuma-rank=D]').click();

@@ -13,7 +13,7 @@ with sync_playwright() as p:
  assert 'emission' in q.locator('#motionReadout').text_content();q.screenshot(path=str(OUT/'inspector.png'),full_page=True)
  q.locator('#motionDiagnostics').uncheck();assert q.locator('.board:not([hidden]) canvas').nth(1).evaluate('(c)=>c.toDataURL()')==clean
  q.goto(BASE,wait_until='networkidle');assert q.evaluate('typeof window.__marePaperDollDebug')=='undefined';assert not q.locator('#paperDollDebugReadout').count()
- q.locator('#characterName').fill('QA Modular');q.locator('#nextToClass').click();q.locator('#createCharacter').click();normal=q.evaluate('localStorage.getItem("mare-partida-save-v1")')
+ q.locator('#characterName').fill('QA Modular');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();normal=q.evaluate('localStorage.getItem("mare-partida-save-v1")')
  q.goto(BASE+'?dev=1&paperDollReview=complete&paperDollDebug=1',wait_until='networkidle');q.wait_for_function('window.__marePaperDollDebug?.().state==="ready"');normal=q.evaluate('localStorage.getItem("mare-partida-save-v1")');q.locator('#paperDollDebugReadout').wait_for(state='visible')
  q.keyboard.press('F9');q.locator('#paperDollDebugReadout').wait_for(state='hidden');q.keyboard.press('F9');q.locator('#paperDollDebugReadout').wait_for(state='visible')
  q.set_viewport_size({'width':393,'height':852});assert q.evaluate('document.documentElement.scrollWidth<=innerWidth');q.screenshot(path=str(OUT/'dev-mobile.png'))

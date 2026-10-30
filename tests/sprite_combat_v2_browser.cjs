@@ -12,7 +12,7 @@ source=source.replace('  window.__mareDiagnostics=',bridge).replace('function ti
   page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400&&r.url().includes('/assets/sprites-combat-v2/'))failed.push(r.url());});
   await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));
   await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8158/',{waitUntil:'networkidle'});
-  await page.locator('#characterName').fill('Sprites QA');await page.locator('#nextToClass').click();await page.locator('#createCharacter').click();
+  await page.locator('#characterName').fill('Sprites QA');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();
   // Supports the red run before the entry point is wired.
   if(!await page.evaluate(()=>!!globalThis.MareSpriteCombatV2Data)){
    await page.addScriptTag({url:'sprite-combat-v2-data.js'});await page.addScriptTag({url:'sprite-combat-v2.js'});

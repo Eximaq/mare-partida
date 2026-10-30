@@ -43,12 +43,13 @@
       return [...new Set(files)];
     }
     async function prepare(selected,look){return new Map(await Promise.all(requiredFiles(selected,look).map(async file=>[file,await load(file)])));}
-    function texture(image,key,material,palette,protectedPixels=[]) {
-      const id=[key,material,palette?.join(',')||''].join(':');
+    function texture(image,key,material,palette,protectedPixels=[],iris=[],eyeColor=null) {
+      const id=[key,material,palette?.join(',')||'',eyeColor||''].join(':');
       if(textures.has(id))return textures.get(id);
       const c=canvas(image.width,image.height),ctx=c.getContext('2d');ctx.drawImage(image,0,0);
       let data=ctx.getImageData(0,0,c.width,c.height).data;
       if(palette)data=api.recolor(data,api.materialMask(data,material==='face'?'skin':material,protectedPixels),palette);
+      if(eyeColor)data=window.MareCharacterAppearance.recolorEyes(data,iris,eyeColor);
       const result={pixels:data,width:c.width,height:c.height};textures.set(id,result);
       if(textures.size>32)textures.delete(textures.keys().next().value);
       return result;
@@ -119,7 +120,7 @@
         if(p.slot==='torso'&&hidden.includes('top'))continue;
         const file=p.style.layers[selected.body][selected.direction],image=images.get(file);
         const palette=p.slot==='hair'?(look.hairColor&&look.hairColor!=='brown'?api.hairs[look.hairColor]?.ramp:null):null;
-        const data=texture(image,file,p.slot==='face'?'face':'hair',palette,p.slot==='face'?(p.style.faceColorProtection?.[selected.body]?.[selected.direction]||catalog.faceColorProtection?.[selected.body]?.[selected.direction]||[]):[]).pixels;
+        const data=texture(image,file,p.slot==='face'?'face':'hair',palette,p.slot==='face'?(p.style.faceColorProtection?.[selected.body]?.[selected.direction]||catalog.faceColorProtection?.[selected.body]?.[selected.direction]||[]):[],p.style.eyeIris?.[selected.body]?.[selected.direction]||[],p.slot==='face'?look.eyeColor:null).pixels;
         const box={x0:32,y0:60,x1:96,y1:113};
         const sourceParts=Object.fromEntries(Object.entries(p.style.parts?.[selected.body]?.[selected.direction]||{}).map(([name,file])=>[name,texture(images.get(file),file,p.slot,null).pixels]));
         const atlas=p.style.animations?.[selected.body]?.[selected.action];
@@ -132,7 +133,7 @@
           cx.drawImage(atlasImage,index%atlas.columns*atlas.cell,Math.floor(index/atlas.columns)*atlas.cell,atlas.cell,atlas.cell,0,0,spec.width,spec.height);
           return {full:cx.getImageData(0,0,spec.width,spec.height).data};
         };
-        const attached=fitted([file,selected.key,fi,palette?.join(',')||'',atlas?.file||'surface'].join(':'),()=>p.slot==='torso'?torsoPiece():p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,handOwnership:ownership.hands,material:p.style.nativeMaterial}):api.attach(data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
+        const attached=fitted([file,selected.key,fi,palette?.join(',')||'',p.slot==='face'?look.eyeColor:'',atlas?.file||'surface'].join(':'),()=>p.slot==='torso'?torsoPiece():p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,handOwnership:ownership.hands,material:p.style.nativeMaterial}):api.attach(data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
         if(p.slot==='boots'){
           coveredFeet=p.style.nativeMaterial?new Uint8ClampedArray(neutralPixels.length):api.bootCoverage(neutralPixels,rest,pose,padding,spec.width,spec.height,sourceParts);
           if(p.style.nativeMaterial)for(let i=3;i<coveredFeet.length;i+=4)if(attached.LEFT[i]||attached.RIGHT[i])coveredFeet[i]=255;
@@ -142,8 +143,8 @@
       }
       if(!pieces.face&&look.face!=='none'&&!hidden.includes('face')){
         const file=catalog.originalFaces?.[selected.body]?.[selected.direction];
-        if(file){const data=texture(images.get(file),file,'face',null,catalog.faceColorProtection?.[selected.body]?.[selected.direction]||[]).pixels;
-          pieces.face={full:fromPixels(fitted([file,selected.key,fi,skin?.join(',')||''].join(':'),()=>api.attach(data,'face',rest,pose,socket,padding,spec.width,spec.height)).full,spec.width,spec.height)};}
+        if(file){const data=texture(images.get(file),file,'face',null,catalog.faceColorProtection?.[selected.body]?.[selected.direction]||[],catalog.originalEyeIris?.[selected.body]?.[selected.direction]||[],look.eyeColor).pixels;
+          pieces.face={full:fromPixels(fitted([file,selected.key,fi,skin?.join(',')||'',look.eyeColor||''].join(':'),()=>api.attach(data,'face',rest,pose,socket,padding,spec.width,spec.height)).full,spec.width,spec.height)};}
       }
       if(!pieces.hair&&look.hair!=='none'&&!hidden.includes('hair')){
         const file=catalog.originalHairs?.[selected.body]?.[selected.direction];

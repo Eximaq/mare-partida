@@ -15,7 +15,7 @@ with sync_playwright() as p:
     page=context.new_page();page.route('**/__dev_version',lambda route:route.fulfill(body='stable-test'));errors=[]
     page.on('pageerror',lambda e:errors.append(str(e)))
     page.clock.install();page.goto('http://127.0.0.1:8123');page.wait_for_load_state('networkidle')
-    page.locator('#characterName').fill('Navegante Teste');page.locator('#nextToClass').click();page.locator('#createCharacter').click()
+    page.locator('#characterName').fill('Navegante Teste');page.locator('#nextToClass').click();page.locator('#nextToAppearance').click();page.locator('#createCharacter').click();page.locator('[data-confirm-accept]').click()
     def run(ms):page.clock.run_for(ms)
     def diag():return page.evaluate('window.__mareDiagnostics()')
     def physical():

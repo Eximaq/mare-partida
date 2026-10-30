@@ -102,7 +102,7 @@ with sync_playwright() as p:
   route.fulfill(response=response,body=s.replace(needle,HOOK+needle))
  c.route('**/game.js*',game_route)
  c.add_init_script('''window.addEventListener('DOMContentLoaded',()=>{const draw=MareCombatVfx.drawProjectile;MareCombatVfx.drawProjectile=function(ctx,p,options){(window.drawnProjectiles ||= []).push({x:p.x,y:p.y,origin:options.origin||p.origin,elapsed:p.elapsed,phase:p.phase});return draw.call(this,ctx,p,options)}});''')
- q.goto(BASE,wait_until='networkidle');q.wait_for_function('typeof window.__mareDiagnostics==="function"');q.locator('#characterName').fill('Teste de adagas');q.locator('#nextToClass').click();q.locator('[data-class='+CLASS+']').click();q.locator('#createCharacter').click();q.clock.run_for(200)
+ q.goto(BASE,wait_until='networkidle');q.wait_for_function('typeof window.__mareDiagnostics==="function"');q.locator('#characterName').fill('Teste de adagas');q.locator('#nextToClass').click();q.locator('[data-class='+CLASS+']').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(200)
  q.goto(BASE+'?dev=1&paperDollReview=complete',wait_until='networkidle');q.wait_for_function('window.__mareDiagnostics&&__mareDiagnostics().paperDollReview.state!=="loading"');assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready',q.evaluate('__mareDiagnostics().paperDollReview')
  # DEV defaults to the current normal class; remove genuinely equipped items in UI.
  q.locator('#devLauncher').click();q.locator('#devClass').select_option(CLASS);q.locator('[data-dev-command=class]').click();q.locator('#closePanel').click()

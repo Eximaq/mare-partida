@@ -1,32 +1,11 @@
 (function (root, factory) {
-  const api = factory(typeof module === 'object' && module.exports ? require('./motion.js') : root.MareMotion96,typeof module === 'object' && module.exports ? require('./surface.js') : root.MareSurface96,typeof module === 'object' && module.exports ? require('./torso.js') : root.MareTorso96);
+  const api = factory(typeof module === 'object' && module.exports ? require('./motion.js') : root.MareMotion96,typeof module === 'object' && module.exports ? require('./surface.js') : root.MareSurface96,typeof module === 'object' && module.exports ? require('./torso.js') : root.MareTorso96,typeof module === 'object' && module.exports ? require('../../character-appearance.js') : root.MareCharacterAppearance);
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.MareAppearance96 = api;
-})(typeof globalThis === 'object' ? globalThis : this, function (motion,surface,torso) {
+})(typeof globalThis === 'object' ? globalThis : this, function (motion,surface,torso,cosmetics) {
   'use strict';
   const hex = value => value.match(/[a-f0-9]{2}/gi).map(n => parseInt(n, 16));
-  const skins = {
-    porcelain: { name: 'Porcelana', ramp: ['#694a40','#a57360','#d9a68b','#f4c7aa','#ffe3c6'] },
-    light: { name: 'Claro', ramp: ['#634332','#956346','#c98e61','#edb17d','#ffd09c'] },
-    warm: { name: 'Dourado', ramp: ['#543323','#855030','#b87943','#d99a5b','#f4bd7c'] },
-    olive: { name: 'Oliva', ramp: ['#44382b','#6d573b','#9a7b50','#bda06a','#ddc58c'] },
-    copper: { name: 'Cobre', ramp: ['#432b25','#6c3e2c','#985937','#bd7a49','#dfa169'] },
-    brown: { name: 'Moreno', ramp: ['#33231f','#50352a','#795039','#a27450','#c3976c'] },
-    dark: { name: 'Escuro', ramp: ['#241c1b','#3b2925','#573c30','#785641','#a27b59'] },
-    ebony: { name: 'Ébano', ramp: ['#19171a','#2a2325','#41312e','#5d463b','#82654f'] }
-  };
-  const hairs = {
-    black: { name: 'Preto', ramp: ['#10131c','#202530','#353d49','#58616c','#7f8994'] },
-    brown: { name: 'Castanho', ramp: ['#23171b','#452c27','#70472f','#a06a42','#cf995f'] },
-    blonde: { name: 'Loiro', ramp: ['#4b3425','#805930','#b68a44','#dec574','#fff0ad'] },
-    auburn: { name: 'Ruivo', ramp: ['#321923','#612b28','#9b4530','#cf713f','#f6ac65'] },
-    silver: { name: 'Prateado', ramp: ['#34354d','#5c627b','#929bb0','#c4cddb','#edf1f5'] },
-    blue: { name: 'Azul', ramp: ['#171b3b','#253565','#365a96','#5b91c6','#93d0e5'] },
-    violet: { name: 'Violeta', ramp: ['#281b3b','#493369','#77509a','#ae7bc1','#dfb1e3'] },
-    pink: { name: 'Rosa', ramp: ['#3e233a','#75405d','#ad6585','#d898b0','#f7cbda'] },
-    green: { name: 'Verde', ramp: ['#172f2e','#2c5043','#497d58','#80ad72','#bbdca4'] },
-    white: { name: 'Branco', ramp: ['#545369','#85869a','#b4bbca','#dce3ea','#ffffff'] }
-  };
+  const {skins,hairs}=cosmetics;
   function isSkin(r, g, b) { return r > 45 && g / r > .33 && g / r < .9 && r > b * 1.28; }
   function recolor(source, mask, ramp) {
     if (source.length / 4 !== mask.length || ramp.length !== 5) throw Error('Invalid material palette');

@@ -11,7 +11,7 @@ const bridge=`  window.__ushiQA={paused:false,enterHunt,returnLobby,useFruitSkil
   page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(10000);
   await page.route('**/game.js*',route=>route.fulfill({contentType:'application/javascript',body:source.replace('  window.__mareDiagnostics=',bridge).replace('function tick(dt){','function tick(dt){if(window.__ushiQA?.paused)return;')}));
   await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8134/',{waitUntil:'domcontentloaded'});
-  await page.locator('#characterName').fill('Girafa QA');await page.locator('#nextToClass').click();await page.locator('#createCharacter').click();
+  await page.locator('#characterName').fill('Girafa QA');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();
   await page.locator('#characterMenuTrigger').click();await page.locator('[data-character-section=akuma]').click();await page.locator('[data-akuma-rank=D]').click();await page.locator('[data-fruit-register=akuma_ushi_giraffe]').click();
   await page.waitForFunction(()=>__mareDiagnostics().akuma.registered.includes('akuma_ushi_giraffe'));
   await page.keyboard.press('Escape');await page.keyboard.press('i');

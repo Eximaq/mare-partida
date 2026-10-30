@@ -11,7 +11,7 @@ with sync_playwright() as p:
  c.route('**/api/akuma/catalog',lambda r:r.fulfill(status=404,body='{}'))
  c.route('**/__dev_version',lambda r:r.fulfill(body='stable'))
  q.goto(BASE+'?paperDollReview=navy-starter',wait_until='networkidle')
- q.locator('#characterName').fill('Revisao Isolada');q.locator('#nextToClass').click();q.locator('[data-class=sword]').click();q.locator('#createCharacter').click();q.clock.run_for(300)
+ q.locator('#characterName').fill('Revisao Isolada');q.locator('#nextToClass').click();q.locator('[data-class=sword]').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(300)
  assert q.evaluate('__mareDiagnostics().paperDollReview.production')
  assert q.evaluate('__mareDiagnostics().paperDollReview.packId')=='complete','A draft URL must not opt normal saves into draft artwork'
  assert not any('paper-doll-navy-starter' in u for u in requests)

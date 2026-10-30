@@ -7,7 +7,7 @@ source=source.replace('  window.__mareDiagnostics=',`  window.__zoanScaleQA={pau
  const context=await browser.newContext({viewport:{width:1366,height:768}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));
  await page.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8162/',{waitUntil:'networkidle'});
- await page.locator('#characterName').fill('Escala Zoan QA');await page.locator('#nextToClass').click();await page.locator('#createCharacter').click();await page.evaluate(()=>__zoanScaleQA.paused=true);
+ await page.locator('#characterName').fill('Escala Zoan QA');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.evaluate(()=>__zoanScaleQA.paused=true);
  const rows=[];
  for(const [id,key]of Object.entries(await page.evaluate(()=>MareSpriteCombatV2.fruits))){
   const prefetch=['uma','inu','tori'].includes(key)?page.waitForRequest(r=>r.url().includes('/'+key+'/'+(key==='tori'?'walk':'run')+'-east.png'),{timeout:5000}):null;

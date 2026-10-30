@@ -31,11 +31,11 @@ const out=process.argv.find(s=>s.startsWith('--evidence='))?.slice(11),gameOnly=
   await game.goto(origin,{waitUntil:'networkidle'});await game.waitForFunction(()=>window.__headQA&&__mareDiagnostics().lobby96.state==='ready');
   const oldRevision=require('../tools/paper-doll-96-v3/manifest.json').visualRevision+'-'+require('../tools/paper-doll-96-v3/weapons.json').revision;
   assert(scriptRequests.length&&scriptRequests.every(u=>new URL(u).searchParams.get('revision')!==oldRevision),'updated compositor must invalidate the previous dynamic script cache');
-  await game.locator('#characterName').fill('Capacetes96');await game.locator('#nextToClass').click();await game.locator('#createCharacter').click();await game.waitForFunction(()=>__headQA.g);await game.evaluate(async()=>{__headQA.pause();await __headQA.r.ensure(__headQA.g);});
+  await game.locator('#characterName').fill('Capacetes96');await game.locator('#nextToClass').click();await game.locator('#nextToAppearance').click();await game.locator('#createCharacter').click();await game.locator('[data-confirm-accept]').click();await game.waitForFunction(()=>__headQA.g);await game.evaluate(async()=>{__headQA.pause();await __headQA.r.ensure(__headQA.g);});
   assert.equal(await game.evaluate(()=>__headQA.r.snapshot().enabled),true,'native96 enabled without query');
   const results=[];
   for(const body of ['masculino','feminino'])for(const id of [18,19]){
-   await game.evaluate(async({body,id})=>{const q=__headQA;q.r.setDraft('body',body);q.r.setDraft('kit','equipped');q.r.apply(q.g);await q.equip(id);q.open();q.portrait();},{body,id});
+   await game.evaluate(async({body,id})=>{const q=__headQA;q.g.appearance96={...MareCharacterAppearance.read(q.g),gender:body};q.r.setDraft('body',body);q.r.setDraft('kit','equipped');q.r.apply(q.g);await q.equip(id);q.open();q.portrait();},{body,id});
    const before=await game.evaluate(()=>__headQA.state());assert.equal(before.head.def,id);
    const toggle=()=>game.locator('[data-headgear-visibility]').click();await toggle();
    const hidden=await game.evaluate(()=>__headQA.state());assert.equal(hidden.hidden,true);assert.deepEqual(hidden.head,before.head);assert.deepEqual(hidden.inventory,before.inventory);assert.deepEqual(hidden.stats,before.stats);assert(hidden.portrait!==before.portrait,'head visibility must change the portrait');assert.equal(JSON.parse(hidden.save).preferences.hideHeadgear,true);

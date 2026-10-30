@@ -95,6 +95,7 @@
   <script defer src="paper-doll-coverage.js"></script>
   <script defer src="paper-doll-look-data.js"></script>
   <script defer src="headgear-visibility.js"></script>
+  <script defer src="character-appearance.js"></script>
   <script defer src="paper-doll-look.js"></script>
   <script defer src="paper-doll-review.js"></script>
   <script defer src="paper-doll-96-lobby.js"></script>
@@ -221,7 +222,7 @@
           <span class="creation-emblem">✦</span>
           <div><div class="creation-eyebrow">MARÉ PARTIDA • CRÔNICAS DAS CORRENTES</div><h1>ESCOLHA SEU <em>DESTINO</em></h1><p>Uma origem. Sete caminhos de batalha. Sua história começa aqui.</p></div>
         </div>
-        <div class="creation-progress"><span id="stepFaction" class="step active"><b>01</b> SUA FACÇÃO</span><span class="progress-rule"></span><span id="stepClass" class="step"><b>02</b> SUA CLASSE</span></div>
+        <div class="creation-progress"><span id="stepFaction" class="step active"><b>01</b> SUA FACÇÃO</span><span class="progress-rule"></span><span id="stepClass" class="step"><b>02</b> SUA CLASSE</span><span class="progress-rule"></span><span id="stepAppearance" class="step"><b>03</b> SUA APARÊNCIA</span></div>
         <div id="factionStep">
           <div class="creation-section-heading"><div><span>PRIMEIRO PASSO</span><h2>De qual lado dos mares você está?</h2></div><small>A facção define sua origem e seus bônus iniciais.</small></div>
           <label class="name-label" for="characterName">NOME DO AVENTUREIRO</label>
@@ -245,11 +246,15 @@
             <button class="class-choice" data-class="strategist" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/16.png?v=20261020" alt=""></span><strong>ESTRATEGISTA ELEMENTAL / MAGO</strong><small>Fogo e tempestades de eletricidade.</small><em>Dano elemental · INT / ESP</em><span class="birth-stats">FOR 5 · DES 8 · VIT 8 · INT 17 · ESP 12<small>50 pontos de nascimento</small></span></button>
             <button class="class-choice" data-class="healer" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/31.png?v=20261020" alt=""></span><strong>SUPORTE / CURANDEIRO</strong><small>Cura, proteção e ataques de água.</small><em>Suporte · ESP / INT</em><span class="birth-stats">FOR 5 · DES 8 · VIT 10 · INT 12 · ESP 15<small>50 pontos de nascimento</small></span></button>
           </div>
-          <section class="creation-appearance" aria-labelledby="creationLookTitle">
-            <div><h3 id="creationLookTitle">Seu personagem</h3><p>A aparência é independente da classe e da facção.</p><div id="creationLookFields"></div><p>A roupa padrão aparece quando o torso está sem equipamento. Você começa a aventura com um casaco equipado.</p></div>
-            <figure><canvas id="creationLookCanvas" width="220" height="180" aria-label="Prévia do seu personagem"></canvas><figcaption id="creationLookState" role="status">Carregando personagem…</figcaption></figure>
+          <div class="creation-actions"><button id="backToFaction" type="button" class="secondary-button">← VOLTAR</button><button id="nextToAppearance" type="button" class="primary-button">CONTINUAR PARA APARÊNCIA <span>→</span></button></div>
+        </div>
+        <div id="appearanceStep" class="hidden">
+          <div class="creation-section-heading"><div><span>TERCEIRO PASSO</span><h2>Sua marca nos mares.</h2></div><small>Escolhas visuais, independentes da classe.</small></div>
+          <section class="appearance-studio" aria-label="Sua aparência">
+            <div id="creationAppearanceFields" class="appearance-fields"></div>
+            <figure class="appearance-preview"><div class="appearance-stage"><canvas id="creationLookCanvas" width="320" height="256" aria-label="Prévia do personagem personalizado"></canvas></div><figcaption id="creationLookState" role="status">Carregando personagem…</figcaption><nav class="appearance-directions" aria-label="Direção da prévia"><button type="button" data-appearance-direction="north" aria-pressed="false">Norte</button><button type="button" data-appearance-direction="south" aria-pressed="true">Sul</button><button type="button" data-appearance-direction="east" aria-pressed="false">Leste</button><button type="button" data-appearance-direction="west" aria-pressed="false">Oeste</button></nav><p>As cores preservam luz e sombra.<br>Você poderá rever sua aparência no personagem.</p></figure>
           </section>
-          <div class="creation-actions"><button id="backToFaction" type="button" class="secondary-button">← VOLTAR</button><button id="createCharacter" type="button" class="primary-button">COMEÇAR AVENTURA <span>→</span></button></div>
+          <div class="creation-actions"><button id="backToClass" type="button" class="secondary-button">← VOLTAR</button><button id="createCharacter" type="button" class="primary-button">CONFIRMAR E CONTINUAR <span>→</span></button></div>
         </div>
         <div id="creationError" class="creation-error"></div>
         <small class="local-only">DEMO OFFLINE · O PROGRESSO É SALVO NO NAVEGADOR</small>
