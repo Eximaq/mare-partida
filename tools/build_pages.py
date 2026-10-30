@@ -520,6 +520,7 @@ for collection in ['originalFaces', 'originalHairs', 'originalHeads', 'originalH
 weapon96_pack = json.loads((ROOT/review96/'weapons.json').read_text(encoding='utf-8'))
 assert weapon96_pack['reviewOnly'] is True
 review96_files.update(item['source'] for item in weapon96_pack['items'])
+review96_files.update(view['source'] for item in weapon96_pack['items'] for view in item.get('views', {}).values())
 for body in review96_pack['bodies'].values():
     review96_files.update(body['references'].values())
     for layers in body.get('layers', {}).values():
@@ -549,3 +550,5 @@ shutil.copy2(ROOT/'docs/PAPER-DOLL-96-V3.md', OUT/'docs/PAPER-DOLL-96-V3.md')
 shutil.copy2(ROOT/'docs/PAPER-DOLL-96-LOBBY.md', OUT/'docs/PAPER-DOLL-96-LOBBY.md')
 
 shutil.copy2(ROOT/'docs/PAPER-DOLL-96-ARMAS.md', OUT/'docs/PAPER-DOLL-96-ARMAS.md')
+
+shutil.copy2(ROOT/'docs/PAPER-DOLL-96-ARMAS-DEMAIS-CLASSES.md', OUT/'docs/PAPER-DOLL-96-ARMAS-DEMAIS-CLASSES.md')

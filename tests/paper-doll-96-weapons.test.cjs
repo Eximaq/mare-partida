@@ -1,6 +1,8 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const W=require('../tools/paper-doll-96-v3/weapons.js'),catalog=require('../tools/paper-doll-96-v3/weapons.json'),rigs=require('../tools/paper-doll-96-v3/appearance-rig.json'),manifest=require('../tools/paper-doll-96-v3/manifest.json');
+const W=require('../tools/paper-doll-96-v3/weapons.js'),allCatalog=require('../tools/paper-doll-96-v3/weapons.json'),rigs=require('../tools/paper-doll-96-v3/appearance-rig.json'),manifest=require('../tools/paper-doll-96-v3/manifest.json');
+const catalog={...allCatalog,items:allCatalog.items.filter(w=>!w.attachment)};
+assert(W.validate(allCatalog));
 const base=path.join(__dirname,'../tools/paper-doll-96-v3'),root=path.join(__dirname,'..'),hash=b=>crypto.createHash('sha256').update(b).digest('hex');
 assert(W.validate(catalog));assert.equal(catalog.items.length,12);assert.deepEqual(catalog.items.map(w=>w.itemId),[0,1,12,13,67,68,69,70,71,72,73,74]);
 assert.deepEqual(catalog.items.filter(w=>w.effect).map(w=>w.itemId),[70,74]);

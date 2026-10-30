@@ -34,7 +34,7 @@
       if(catalog.originalHeads?.[selected.body]?.[selected.direction])files.push(catalog.originalHeads[selected.body][selected.direction]);
       if(catalog.originalHands?.[selected.body]?.[selected.direction])files.push(catalog.originalHands[selected.body][selected.direction]);
       if(catalog.nativeOwnership?.atlases?.[selected.body]?.[selected.action])files.push(catalog.nativeOwnership.atlases[selected.body][selected.action].file);
-      if(weapons?.descriptor(look.weapon))files.push(weapons.descriptor(look.weapon).source);
+      if(weapons?.descriptor(look.weapon,selected.direction))files.push(weapons.descriptor(look.weapon,selected.direction).source);
       return [...new Set(files)];
     }
     async function prepare(selected,look){return new Map(await Promise.all(requiredFiles(selected,look).map(async file=>[file,await load(file)])));}
@@ -281,6 +281,24 @@
       if(pieces.gloves)for(const side of behind)visibleArm(pieces.gloves[side]);
       if(pieces.gloves)for(const side of inFront)visibleArm(pieces.gloves[side]);
       weapons?.drawGrips(ctx,weaponPlan,'front',gripSkin,gripGlove);
+      let wornBody=neutralPixels,wornHands=ownership.hands;
+      if(weaponPlan.some(e=>e.depth==='back'&&['gauntlet','wrist-cannon'].includes(e.model.attachment?.kind))){
+        // Use the actual dressed silhouette, including hair/helmet/cloth that
+        // extends outside the neutral body. The weapon-free recursion stops here.
+        const occluder=canvas(spec.width,spec.height);draw(occluder.getContext('2d'),images,selected,fi,spec,hidden,{...look,weapon:'original'});
+        wornBody=occluder.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
+        // The torso ownership atlas deliberately excludes palms inside the head
+        // region. A raised native hand can still be visible there. Recover only
+        // its actually visible limb pixels, never the hair or clothing in front.
+        wornHands=ownership.hands.slice();
+        const nativeHand=skin?api.recolor(handSurface,api.materialMask(handSurface,'skin'),skin):handSurface;
+        for(const entry of weaponPlan.filter(e=>e.depth==='back'))for(let y=Math.max(0,entry.y-8);y<Math.min(spec.height,entry.y+9);y++)for(let x=Math.max(0,entry.x-8);x<Math.min(spec.width,entry.x+9);x++){
+          const p=y*spec.width+x,i=p*4;
+          if(nativeHand[i+3]&&[0,1,2,3].every(k=>nativeHand[i+k]===wornBody[i+k]))wornHands[p]=1;
+        }
+      }
+      weapons?.drawWorn(ctx,images,weaponPlan,spec,{body:wornBody,hands:wornHands,head:headPixels,cloak:selected.direction==='north'?pieces.cloak?.full:null});
+      return weaponPlan.map(entry=>({side:entry.side,point:weapons.point(entry),itemId:entry.model.itemId}));
     }
     return {prepare,requiredFiles,draw,weaponPadding:(selected,spec,look)=>weapons?.descriptor(look.weapon)?weapons.padding(selected,spec,look):{x:0,top:0,bottom:0},weaponPlan:(selected,frame,spec,look,owner)=>weapons?.plan(selected,frame,spec,look,owner)||[],get weaponCacheSize(){return weapons?.cacheSize||0;},get cacheSize(){return textures.size;},get attachmentCacheSize(){return attachments.size;}};
   }

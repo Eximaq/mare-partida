@@ -1187,7 +1187,7 @@
     return actual;
     };
     if(!zoan&&MareCombatVfx.data.flightEnds[MareCombatVfx.data.classHits[game.classId]]){
-      const muzzle=!skill?paperDollReview.projectileOrigin(game,world.hero,{...(classCombatController()?.snapshot()||basicAttackPose()),token:session.basicAttack?.clock||world.hero.combat,simulationTime:world.time},horuBuffActive()?MareRankC.rules.horu.scale:1):null;
+      const muzzle=!skill?(lobby96.projectileOrigin(game,world.hero,classCombatController()?.snapshot()||basicAttackPose()||{},horuBuffActive()?MareRankC.rules.horu.scale:1)||paperDollReview.projectileOrigin(game,world.hero,{...(classCombatController()?.snapshot()||basicAttackPose()),token:session.basicAttack?.clock||world.hero.combat,simulationTime:world.time},horuBuffActive()?MareRankC.rules.horu.scale:1)):null;
       launchCombatProjectile(MareCombatVfx.data.classHits[game.classId],{x:muzzle?.x??world.hero.x+world.hero.facing*13,y:muzzle?.y??world.hero.y-27,releaseId:muzzle?.releaseId??null},m,land);
     }else land();
     return true;

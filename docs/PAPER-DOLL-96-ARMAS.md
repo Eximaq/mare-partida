@@ -1,5 +1,7 @@
 # Sprint1 — armas PixelLab na base96
 
+Continuação: [armas das demais classes, 22 itens nas sete classes](PAPER-DOLL-96-ARMAS-DEMAIS-CLASSES.md). O escopo abaixo conserva o histórico da etapa anterior.
+
 30/10/2026. Base `be2bad9` (merge PR152), branch `feature/weapons-96-integration`.
 
 ## Escopo

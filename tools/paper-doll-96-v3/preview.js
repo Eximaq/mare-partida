@@ -119,7 +119,7 @@
     frame = 0; epoch = performance.now(); active = next; draw(epoch);
   }
   function showError(error) { $('status').textContent = error.message; console.error(error); }
-  for(const el of document.querySelectorAll('[data-look]'))el.addEventListener('change',()=>refresh().catch(showError));
+  for(const el of document.querySelectorAll('[data-look]'))el.addEventListener('change',()=>{if(el.dataset.look==='weapon'&&$('action').value.startsWith('attack-')){const weapon=weaponCatalog.items.find(w=>w.id===el.value);if(weapon)$('action').value=weapon.attackAction||'attack-'+weapon.category;}refresh().catch(showError);});
   $('inspect-grip').addEventListener('change',()=>refresh().catch(showError));
   for (const id of ['body', 'direction', 'action']) $(id).addEventListener('change', () => refresh().catch(showError));
   $('frame').addEventListener('input', () => { playing = false; frame = Number($('frame').value); $('play').textContent = 'Reproduzir'; draw(performance.now()); });

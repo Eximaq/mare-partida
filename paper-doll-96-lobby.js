@@ -61,20 +61,20 @@
         wardrobe=root.MareWardrobe96.create(catalog,rigs,image,{weapons:weaponCatalog});state='ready';onChange();
       }catch(error){state='failed';report(error);}return snapshot();
     })():Promise.resolve(snapshot());
-    function resolve(player,look=current){const value=outfit(catalog,player,look),category=weaponCatalog.classes[player?.classId]||null,model=weaponCatalog.items.find(w=>w.itemId===player?.equipment?.weapon?.def&&w.category===category);value.look.weapon=model?.id||'original';if(player?.equipment?.weapon&&!model)value.missing.push({slot:'weapon',def:player.equipment.weapon.def});const supported=!!category&&(!player?.equipment?.weapon||!!model);return {...value,body:look.body,category,supported,key:JSON.stringify([look.body,value.look,supported?category:null])};}
+    function resolve(player,look=current){const value=outfit(catalog,player,look),category=weaponCatalog.classes[player?.classId]||null,model=weaponCatalog.items.find(w=>w.itemId===player?.equipment?.weapon?.def&&w.category===category);value.look.weapon=model?.id||'original';if(player?.equipment?.weapon&&!model)value.missing.push({slot:'weapon',def:player.equipment.weapon.def});const supported=!!category&&(!player?.equipment?.weapon||!!model);return {...value,body:look.body,category,attack:model?.attackAction||'attack-'+category,supported,key:JSON.stringify([look.body,value.look,supported?category:null])};}
     function selected(body,action,direction,look){const clip=manifest.bodies[body].clips[action][direction];return {body,action,direction,clip,layers:clip.layers,look,key:[body,action,direction].join(':')};}
     async function compose(body,action,direction,look,cancel=()=>false){
       const sel=selected(body,action,direction,look),spec=root.MareMotion96.clipSpec(manifest,sel.clip);
       const files=[...new Set([...Object.values(sel.layers),...wardrobe.requiredFiles(sel,look)])];
       const loaded=new Map(await Promise.all(files.map(async file=>[file,await image(file)])));
       const pad=wardrobe.weaponPadding(sel,spec,look),renderSpec={...spec,width:spec.width+pad.x*2,height:spec.height+pad.top+pad.bottom,pivot:{x:spec.pivot.x+pad.x,y:spec.pivot.y+pad.top}};
-      const strip=Object.assign(document.createElement('canvas'),{width:renderSpec.width*sel.clip.frames,height:renderSpec.height}),ctx=strip.getContext('2d');
+      const strip=Object.assign(document.createElement('canvas'),{width:renderSpec.width*sel.clip.frames,height:renderSpec.height}),ctx=strip.getContext('2d'),emissions=[];
       for(let frame=0;frame<sel.clip.frames;frame++){
         if(cancel())return null;
         const tile=Object.assign(document.createElement('canvas'),{width:renderSpec.width,height:renderSpec.height});
-        const tc=tile.getContext('2d');tc.translate(pad.x,pad.top);wardrobe.draw(tc,loaded,sel,frame,spec,[],look);ctx.drawImage(tile,frame*renderSpec.width,0);await pause();
+        const tc=tile.getContext('2d');tc.translate(pad.x,pad.top);emissions.push(wardrobe.draw(tc,loaded,sel,frame,spec,[],look));ctx.drawImage(tile,frame*renderSpec.width,0);await pause();
       }
-      return {strip,spec:renderSpec,nativeSpec:spec,clip:sel.clip};
+      return {strip,spec:renderSpec,nativeSpec:spec,clip:sel.clip,emissions};
     }
     function ensure(player){
       if(state!=='ready')return Promise.resolve(false);
@@ -86,7 +86,7 @@
         while(wanted&&!bundles.has(wanted.key)&&!failed.has(wanted.key)){
           const next=wanted,bundle=new Map();
           try{
-            for(const action of ['idle','walk',...(next.supported?['attack-'+next.category,'attack-unarmed']:[])].filter((v,i,a)=>a.indexOf(v)===i))for(const dir of ['south','north','east']){
+            for(const action of ['idle','walk',...(next.supported?[next.attack,'attack-unarmed']:[])].filter((v,i,a)=>a.indexOf(v)===i))for(const dir of ['south','north','east']){
               if(wanted.key!==next.key)break;
               const value=await compose(next.body,action,dir,next.look,()=>wanted.key!==next.key);
               if(value)bundle.set(action+':'+dir,value);
@@ -110,7 +110,7 @@
       const value=resolve(player);if(scene!=='lobby'&&!(scene==='hunt'&&value.supported))return false;
       const requested=action;
       if(['combat-idle','guard','hurt','death'].includes(action))action='idle';
-      else if(['attack','skill','skill-1','skill-2','combo','cast','heal','reload','dodge'].includes(action))action=player?.equipment?.weapon?'attack-'+value.category:'attack-unarmed';
+      else if(['attack','skill','skill-1','skill-2','combo','cast','heal','reload','dodge'].includes(action))action=player?.equipment?.weapon?value.attack:'attack-unarmed';
       if(!['idle','walk'].includes(action)&&!value.supported)return false;
       ensure(player);const bundle=bundles.get(value.key),clip=bundle?.get(action+':'+(direction==='west'?'east':direction));if(!clip)return false;
       const hit=Math.max(.001,Math.min(.999,timing?.hitFrameRatio??.5));
@@ -128,7 +128,7 @@
       const labels={body:'Corpo',hair:'Cabelo',face:'Rosto',skin:'Pele',hairColor:'Cor do cabelo',kit:'Equipamentos no ensaio'};
       const fields=Object.entries(choices).map(([key,options])=>`<label>${labels[key]}<select data-lobby96-look="${key}">${Object.entries(options).map(([id,name])=>`<option value="${E(id)}" ${draft[key]===id?'selected':''}>${E(name)}</option>`).join('')}</select></label>`).join('');
       const missing=resolve(player,draft).missing;
-      return `<section class="doll-dressing"><header><h2>Ensaio de aparência no lobby · 96 px</h2><p>Escolhas temporárias. Seu personagem salvo e os atributos dos equipamentos são preservados.</p></header><div class="doll-dressing-grid"><figure><canvas id="lobby96Canvas" width="512" height="512" aria-label="Prévia da aparência de 96 pixels"></canvas><figcaption id="lobby96State" role="status"></figcaption><label>Direção<select id="lobby96Direction"><option value="south">Frente</option><option value="north">Costas</option><option value="west">Esquerda</option><option value="east">Direita</option></select></label><label>Movimento<select id="lobby96Action">${actions.map(a=>`<option value="${a}">${({idle:'Repouso',walk:'Caminhada','attack-sword':'Espada','attack-unarmed':'Punhos','attack-firearm':'Disparo','attack-daggers':'Adagas','attack-focus':'Canalização','attack-tech':'Tecnologia'})[a]}</option>`).join('')}</select></label></figure><div class="doll-dressing-controls">${fields}<p>Os conjuntos de ensaio mudam somente o visual. As prévias não causam dano. Espadas e adagas equipadas acompanham os movimentos e o combate; as demais categorias mantêm seu visual atual.</p>${missing.length?root.MareUI.notice({text:'Há equipamentos atuais sem arte de 96 px. Eles mantêm seus bônus; esta prévia não mostra uma peça substituta.',tone:'info'}):''}<div class="doll-dressing-actions">${root.MareUI.button({label:'Visualizar no lobby',attributes:{'data-lobby96-apply':''}})}${root.MareUI.button({label:'Descartar alterações',attributes:{'data-lobby96-cancel':''}})}</div><p id="lobby96Message" role="status">${E(message)}</p></div></div></section>`;
+      return `<section class="doll-dressing"><header><h2>Ensaio de aparência no lobby · 96 px</h2><p>Escolhas temporárias. Seu personagem salvo e os atributos dos equipamentos são preservados.</p></header><div class="doll-dressing-grid"><figure><canvas id="lobby96Canvas" width="512" height="512" aria-label="Prévia da aparência de 96 pixels"></canvas><figcaption id="lobby96State" role="status"></figcaption><label>Direção<select id="lobby96Direction"><option value="south">Frente</option><option value="north">Costas</option><option value="west">Esquerda</option><option value="east">Direita</option></select></label><label>Movimento<select id="lobby96Action">${actions.map(a=>`<option value="${a}">${({idle:'Repouso',walk:'Caminhada','attack-sword':'Espada','attack-unarmed':'Punhos','attack-firearm':'Disparo','attack-daggers':'Adagas','attack-focus':'Canalização','attack-tech':'Tecnologia'})[a]}</option>`).join('')}</select></label></figure><div class="doll-dressing-controls">${fields}<p>Os conjuntos de ensaio mudam somente o visual. As prévias não causam dano. As armas equipadas das sete classes acompanham os movimentos e o combate. Peças sem matriz mantêm o visual anterior.</p>${missing.length?root.MareUI.notice({text:'Há equipamentos atuais sem arte de 96 px. Eles mantêm seus bônus; esta prévia não mostra uma peça substituta.',tone:'info'}):''}<div class="doll-dressing-actions">${root.MareUI.button({label:'Visualizar no lobby',attributes:{'data-lobby96-apply':''}})}${root.MareUI.button({label:'Descartar alterações',attributes:{'data-lobby96-cancel':''}})}</div><p id="lobby96Message" role="status">${E(message)}</p></div></div></section>`;
     }
     let previewPending=false;
     function preview(ctx,player,{action='idle',direction='south',time=0}={}){
@@ -145,8 +145,16 @@
       const frame=frameAt(entry.value.clip,entry.value.clip.loop?time:time%(entry.value.clip.frames/entry.value.clip.fps+.25));
       paint(ctx,entry.value,direction,frame,ctx.canvas.width/2,ctx.canvas.height-24,2);return true;
     }
+    function projectileOrigin(player,hero,pose={},scale=1){
+      if(!active||state!=='ready'||player?.zoanTransformed)return null;
+      const value=resolve(player);if(!value.supported||!['firearm','tech','focus'].includes(value.category)||value.look.weapon==='original')return null;
+      const direction=directionOf(pose.direction||hero.direction),clip=bundles.get(value.key)?.get(value.attack+':'+(direction==='west'?'east':direction));
+      const point=clip?.emissions[4]?.[0]?.point;if(!point)return null;
+      const spec=clip.nativeSpec,x=direction==='west'?spec.width+1-point.x:point.x;
+      return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(point.y-spec.pivot.y)*scale,frame:4,weapon:value.look.weapon};
+    }
     const height=(player,scene)=>active&&state==='ready'&&(scene==='lobby'||scene==='hunt'&&resolve(player).supported)&&!player?.zoanTransformed&&bundles.has(resolve(player).key)?96:null;
-    return {ready,snapshot,draw,height,ensure,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
+    return {ready,snapshot,draw,height,ensure,projectileOrigin,panel,preview,setDraft,apply,discard,valid,resolve:player=>state==='ready'?resolve(player):null};
   }
   root.MarePaperDoll96Lobby={create,enabled,defaults,slots,outfit,frameAt,directionOf};
   if(typeof module!=='undefined'&&module.exports)module.exports=root.MarePaperDoll96Lobby;

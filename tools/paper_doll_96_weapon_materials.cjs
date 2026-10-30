@@ -14,7 +14,8 @@ async function run(){
   const edits=JSON.parse(await fs.readFile(input,'utf8'));
   for(const edit of edits){
    const index=manifest.items.findIndex(i=>i.itemId===edit.itemId);if(index<0)throw Error('Unknown existing weapon '+edit.itemId);
-   const previous=manifest.items[index],source=await fs.readFile(path.resolve(path.dirname(input),edit.file));
+   const parent=manifest.items[index];if(edit.view&&!['south','north'].includes(edit.view))throw Error('Invalid view');
+   const previous=edit.view?{source:'assets/weapon-item-'+edit.itemId+'-'+edit.view+'.png'}:parent,source=await fs.readFile(path.resolve(path.dirname(input),edit.file));
    const {data,info}=await sharp(source).ensureAlpha().raw().toBuffer({resolveWithObject:true});
    if(info.width>128||info.height>128)throw Error('Native source too large; regenerate, do not downsample');
    for(let i=3;i<data.length;i+=4)if(data[i]!==0&&data[i]!==255)throw Error('Non-binary alpha in native source '+edit.itemId);
@@ -27,13 +28,16 @@ async function run(){
    const axis=edit.axisAngle??(Math.atan2(tip.y-grip.y,tip.x-grip.x)+Math.PI/2),axisAngle=Math.atan2(Math.sin(axis),Math.cos(axis));
    if(!Number.isFinite(axisAngle))throw Error('Invalid authored hilt axis');
    await fs.writeFile(path.join(dest,previous.source),tile);
-   manifest.items[index]={...previous,sha256:hash(tile),grip,tip,axisAngle,visibleHeight:box.y1-box.y0+1,bounds:box,edgeSide:edit.edgeSide,generation:{...edit.generation,nativeCanvas:{width:info.width,height:info.height},nativeSha256:hash(source),processing:'transparent padding only; no resize, palette reduction or geometry reconstruction'}};
+   const imported={source:previous.source,sha256:hash(tile),grip,tip,axisAngle,visibleHeight:box.y1-box.y0+1,bounds:box,edgeSide:edit.edgeSide,generation:{...edit.generation,nativeCanvas:{width:info.width,height:info.height},nativeSha256:hash(source),processing:'transparent padding only; no resize, palette reduction or geometry reconstruction'}};
+   manifest.items[index]=edit.view?{...parent,views:{...parent.views,[edit.view]:imported}}:{...parent,...imported};
   }
-  manifest.revision='weapons96-pixellab-pro-v3-'+hash(Buffer.from(manifest.items.map(i=>i.sha256).join(':'))).slice(0,10);
+ }
+ if(input||process.argv.includes('--refresh')){
+  manifest.revision='weapons96-pixellab-pro-v4-'+hash(Buffer.from(JSON.stringify({fitRevision:manifest.fitRevision||1,classes:manifest.classes,items:manifest.items}))).slice(0,10);
   await fs.writeFile(path.join(dest,'weapons.json'),JSON.stringify(manifest,null,2)+'\n');
  }
  for(const item of manifest.items){
-  const bytes=await fs.readFile(path.join(dest,item.source));if(hash(bytes)!==item.sha256)throw Error('Changed material '+item.itemId);
+  for(const material of [item,...Object.values(item.views||{})]){const bytes=await fs.readFile(path.join(dest,material.source));if(hash(bytes)!==material.sha256)throw Error('Changed material '+item.itemId);}
   const original=await fs.readFile(path.join(root,item.reference));if(hash(original)!==item.referenceSha256)throw Error('Changed original inventory art '+item.itemId);
  }
  console.log(JSON.stringify({materials:manifest.items.length,imported:!!input,revision:manifest.revision,originalsUnchanged:true}));
