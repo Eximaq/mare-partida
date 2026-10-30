@@ -69,7 +69,7 @@ A verificação adicional das mãos distantes expostas confirma que o plano dist
 
 Foram inspecionados quadros completos de Idle, Walk e dos cinco ataques distintos de ambos os corpos, com prioridade para todas as vistas North, ataques South femininos e perfis East/West. Também foram revisadas vistas dorsais sem capa, para não esconder o defeito com equipamento.
 
-A comparação antes/depois apresenta capa North, peitoral West, dorso masculino no disparo, cabeça feminina na espada/canalização e luvas femininas. Prévia animada de24 quadros preserva a escala de pixels; a repetição com pausa serve à revisão. Capturas recentes da bancada em1920×1080,1366×768 e1280×720 foram guardadas fora do repositório, junto aos recibos e ao checkpoint. A bancada exibe o personagem sobre o cenário do lobby; a aventura publicada continua usando sua integração existente.
+A comparação antes/depois apresenta capa North, peitoral West, dorso masculino no disparo, cabeça feminina na espada/canalização e luvas femininas. Prévia animada preserva a escala de pixels e usa tempos variáveis para mostrar todos os quadros sem pular poses; a repetição com pausa serve à revisão. Capturas recentes da bancada em1920×1080,1366×768 e1280×720 foram guardadas fora do repositório, junto aos recibos e ao checkpoint. A bancada exibe o personagem sobre o cenário do lobby; a aventura publicada continua usando sua integração existente.
 
 ## Galeria e custo
 
