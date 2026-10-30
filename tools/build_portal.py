@@ -9,8 +9,20 @@ ROOT = Path(__file__).resolve().parents[1]
 # Deliberate allowlist: no account code, gameplay, local data or review assets.
 PUBLIC_FILES = (
     'index.html', 'portal.css', 'ocean-art.css',
-    'assets/logo-kaizoku-idle.png', 'assets/ui/banner-compass.webp',
+    'assets/logo-kaizoku-idle-oficial.png', 'assets/ui/banner-compass.webp',
 )
+
+
+def version_portal_assets(portal):
+    entry = portal / 'index.html'
+
+    def version(match):
+        source = portal / match[2]
+        digest = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
+        return f'{match[1]}{match[2]}?v={digest}{match[3]}'
+
+    entry.write_text(re.sub(r'((?:src|href)=")([.]/[^"?]+)(")', version,
+                            entry.read_text(encoding='utf-8')), encoding='utf-8')
 
 
 def build(output):
@@ -29,15 +41,7 @@ def build(output):
         destination = portal / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(ROOT / 'portal' / relative, destination)
-    entry = portal / 'index.html'
-
-    def version(match):
-        source = portal / match[2]
-        digest = hashlib.sha256(source.read_bytes()).hexdigest()[:16]
-        return f'{match[1]}{match[2]}?v={digest}{match[3]}'
-
-    entry.write_text(re.sub(r'((?:src|href)=")([.]/[^"?]+)(")', version,
-                            entry.read_text(encoding='utf-8')), encoding='utf-8')
+    version_portal_assets(portal)
     (output / 'index.html').write_text('''<!doctype html>
 <html lang="pt-BR"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
