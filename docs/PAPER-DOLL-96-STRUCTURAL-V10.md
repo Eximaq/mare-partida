@@ -50,19 +50,20 @@ O servidor deve apontar para a raiz do repositório. Os construtores de PNG requ
 | --- | --- |
 | Suíte Node autônoma |159 aprovados; arquivos locais não relacionados e E2E externo excluídos conforme fluxo existente |
 | Contratos estruturais |480 poses de entrada,1.440 relações de profundidade e três referências de cabeça verificadas |
-| Auditoria nova em Chromium, fonte e Pages |1.908 combinações North,2.682.648 pixels internos de capa,172.188 pixels expostos,99.570 pixels centrais de costas com/sem luvas,1.260 testemunhas do peitoral lateral: zero violações |
+| Auditoria nova em Chromium, fonte e Pages |1.908 combinações North,2.682.648 pixels internos de capa,172.188 pixels expostos,99.570 pixels centrais de costas com/sem luvas,1.260 testemunhas do peitoral lateral e769 pixels de palmas distantes expostas: zero violações |
 | Contraprova sobre o checkpoint v9 | Falhou como esperado:304.620 violações de capa,1.152 testemunhas de abdômen, três referências de cabeça e20 relações de profundidade. Confirma que a auditoria encontra os defeitos anteriores |
 | Auditoria de propriedade |6.360 conjuntos:89.220 pixels de palma,167.262 de antebraço e32.592 de ombro verificados;48.438 provas estavam ocultas pela capa e foram classificadas como tal. Zero violações |
 | Torso/pele/capacete |848 encaixes,192 casos de pele,424 casos de cabelo sob elmo e133.232 pixels de braço visível: zero violações |
 | Encaixe geral |424 poses,224 matrizes,3.392 lados de pares,848 calças,2.544 rostos,4.240 cabelos e112 estados da UI: zero violações nos critérios medidos |
 | Preservação direta do checkpoint |618 composições South idênticas:318 masculinas e300 femininas, excluindo apenas as três poses femininas intencionalmente corrigidas |
+| Aparência completa |44.840 combinações:11.872 modelos/poses,27.136 conjuntos e5.832 combinações com slots vazios; ambos os corpos aprovados |
 | Espelhamento |64 materiais,842 quadros-fonte e3.286 composições exatas |
 | Biblioteca de movimentos |480 quadros de entrada, oito referências estáticas preservadas, caches limitados, sem save criado |
 | Limpeza nativa |424 poses, sem resíduos detectados |
 | Repetibilidade | Nova execução do reparador não produz reparos adicionais; consolidação repetida preservou926 PNGs byte a byte, antes da atualização intencional do molde |
 | Build/empacotamento | Pages construído e quatro testes Python aprovados |
 
-A varredura adicional de aparência completa é registrada ao encerrar a validação desta revisão. As contagens descrevem detectores específicos; não equivalem a ausência de todo defeito artístico possível.
+A verificação adicional das mãos distantes expostas confirma que o plano distante não dispensa a cobertura das luvas:769 pixels conferidos sem pele descoberta pela luva fechada. As contagens descrevem detectores específicos; não equivalem a ausência de todo defeito artístico possível.
 
 ## Inspeção visual
 

@@ -8,7 +8,7 @@ const baseline=process.argv.find(a=>a.startsWith('--library-dir='))?.slice(14);
  if(baseline)await p.route('**/tools/paper-doll-96-v3/**',async route=>{const relative=new URL(route.request().url()).pathname.split('/tools/paper-doll-96-v3/')[1]||'index.html';if(relative.includes('..'))throw Error('Invalid baseline path');await route.fulfill({body:await fs.readFile(path.join(baseline,relative)),contentType:relative.endsWith('.png')?'image/png':relative.endsWith('.json')?'application/json':relative.endsWith('.js')?'application/javascript':'text/html'});});
  await p.goto(new URL('tools/paper-doll-96-v3/',origin).href);await p.waitForFunction(()=>window.__review96v3);
  const result=await p.evaluate(async()=>{
-  const q=__review96v3,issues=[],counts={poses:0,capeCases:0,capeInterior:0,exposedHands:0,abdomenWitnesses:0,headContacts:0,depthReferences:0,backGlovePixels:0},metrics={capePierced:0,exposedHandsChanged:0,abdomenBare:0,headReferenceInvalid:0,depthInvalid:0,backGlovePierced:0};
+  const q=__review96v3,issues=[],counts={poses:0,capeCases:0,capeInterior:0,exposedHands:0,abdomenWitnesses:0,headContacts:0,depthReferences:0,backGlovePixels:0,farPalmPixels:0},metrics={capePierced:0,exposedHandsChanged:0,abdomenBare:0,headReferenceInvalid:0,depthInvalid:0,backGlovePierced:0,farPalmUncovered:0};
   const read=c=>c.getContext('2d').getImageData(0,0,c.width,c.height).data;
   const raw=async(file)=>{const im=await q.image(file),c=document.createElement('canvas');c.width=im.width;c.height=im.height;c.getContext('2d').drawImage(im,0,0);return read(c);};
   const same=(a,b,i)=>[0,1,2,3].every(k=>a[i+k]===b[i+k]);
@@ -43,6 +43,20 @@ const baseline=process.argv.find(a=>a.startsWith('--library-dir='))?.slice(14);
    const d=read(await q.render('masculino','walk',dir,0,[],{torso,cloak,gloves,skin:'original',hair:'none',face:'none'})),style=q.catalog.styles.find(s=>s.id===torso),allowed=new Set(style.materialPalette.map(c=>c.join(',')));
    for(let y=60;y<=66;y++)for(let x=64;x<=68;x++){const xx=dir==='west'?128-x:x,i=(y*128+xx)*4;counts.abdomenWitnesses++;if(d[i+3]!==255||!allowed.has(Array.from(d.subarray(i,i+3)).join(',')))metrics.abdomenBare++;}
   }
+  // Camera depth must not erase an exposed far hand or leave its full glove
+  // unpainted. Compare visible native pixels, rather than trusting a z flag.
+  for(const body of ['masculino','feminino'])for(const action of ['idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus']){
+   const rig=q.appearanceRigs.clips[body][action].east,clip=q.manifest.bodies[body].clips[action].east,size=clip.frame?.width||128,pad=(size-128)/2,native=await raw(clip.layers.body);
+   for(let f=0;f<rig.poses.length;f++){
+    const look={torso:'item-7',hair:'none',face:'none',skin:'original'},a=read(await q.render(body,action,'east',f,[],look)),z=read(await q.render(body,action,'east',f,[],{...look,gloves:'item-26'})),j=rig.poses[f].find(p=>p.label==='LEFT ARM');
+    for(let y=Math.floor(j.y*128+pad-2);y<=j.y*128+pad+2;y++)for(let x=Math.floor(j.x*128+pad-2);x<=j.x*128+pad+2;x++){
+     if(x<0||y<0||x>=size||y>=size||Math.hypot(x-j.x*128-pad,y-j.y*128-pad)>2)continue;
+     const i=(y*size+x)*4,n=(y*clip.frames*size+f*size+x)*4,r=a[i],g=a[i+1],b=a[i+2];
+     if(!a[i+3]||r<65||r<b*1.28||g/r<.33||g/r>.9||[0,1,2,3].some(k=>a[i+k]!==native[n+k]))continue;
+     counts.farPalmPixels++;if(same(a,z,i))metrics.farPalmUncovered++;
+    }
+   }
+  }
   for(const [body,actions]of Object.entries(q.appearanceRigs.clips))for(const [action,dirs]of Object.entries(actions))for(const [dir,rig]of Object.entries(dirs))for(const pose of rig.poses){
    const j=Object.fromEntries(pose.map(p=>[p.label,p])),n=j.NECK,l=j['LEFT SHOULDER'],r=j['RIGHT SHOULDER'];
    const span=Math.hypot(l.x-r.x,l.y-r.y)*128,offset=Math.hypot(n.x-(l.x+r.x)/2,n.y-(l.y+r.y)/2)*128;
@@ -50,5 +64,5 @@ const baseline=process.argv.find(a=>a.startsWith('--library-dir='))?.slice(14);
    if(dir==='east'||dir==='west')for(const side of ['LEFT','RIGHT']){if((j[side+' ARM'].z_index>n.z_index)!==(side==='RIGHT'))metrics.depthInvalid++;counts.depthReferences++;}
   }
   for(const [key,n]of Object.entries(metrics))if(n)issues.push({key,n});return {revision:q.manifest.visualRevision,counts,metrics,issues,storage:localStorage.length};
- });console.log(JSON.stringify(result));if(output){await fs.mkdir(output,{recursive:true});await fs.writeFile(output+'/structural-audit.json',JSON.stringify(result,null,2));}assert.equal(result.counts.poses,106);assert.equal(result.counts.capeCases,1908);assert.ok(result.counts.capeInterior>100000);assert.equal(result.storage,0);assert.deepEqual(errors,[]);assert.deepEqual(result.issues,[]);
+ });console.log(JSON.stringify(result));if(output){await fs.mkdir(output,{recursive:true});await fs.writeFile(output+'/structural-audit.json',JSON.stringify(result,null,2));}assert.equal(result.counts.poses,106);assert.equal(result.counts.capeCases,1908);assert.ok(result.counts.capeInterior>100000);assert.ok(result.counts.farPalmPixels>500);assert.equal(result.storage,0);assert.deepEqual(errors,[]);assert.deepEqual(result.issues,[]);
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

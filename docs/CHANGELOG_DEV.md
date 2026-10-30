@@ -2,7 +2,7 @@
 
 - Branch fix/paper-doll-structural-occlusion, checkpoint ed03bdf do PR#144. Corrigidas prioridade incondicional das mãos sobre capa, profundidade lateral ambígua, três contatos de cabeça femininos copiados de ombros e antebraços pintados sobre o dorso.
 - 22 quadros em sete folhas North receberam superfície dorsal da matriz96 atual: nenhum pixel fora da região e nenhuma mudança de alpha.57 dos64 PNGs primários preservados. Máscaras, roupa-base e Torso reconsolidados; molde e contatos atualizados para reutilização.
-- Auditoria independente reprovou o checkpoint defeituoso e aprovou a revisão na fonte e Pages.159 testes Node e quatro Python aprovados; corpo, cabelo, rosto e equipamentos revistos no navegador.
+- Auditoria independente reprovou o checkpoint defeituoso e aprovou a revisão na fonte e Pages.159 testes Node, quatro Python e44.840 combinações de aparência aprovados;618 composições South válidas idênticas ao checkpoint. Corpo, cabelo, rosto e equipamentos revistos no navegador.
 - 84 folhas existentes atualizadas na Jade Dragon,85 salvamentos gratuitos e zero gerações. Produção e aprovação artística continuam separadas da validação técnica.
 - [Causas, arquivos, testes, capturas, preservação e reversão](PAPER-DOLL-96-STRUCTURAL-V10.md).
 
