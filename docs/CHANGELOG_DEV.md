@@ -46,6 +46,52 @@ Os defeitos de encaixe da revisão anterior foram confirmados. Dez cabelos e dez
 - Testes: Node de rig, malha, montagem,48 entradas e contratos; navegador em400 quadros, referências sem diferença, bordas livres e save intocado. Suíte Node:148/148; navegador fonte e build público aprovados; `python tools/build_pages.py` concluído. Capturas atuais no pacote local `Ataques-96-v3`, fora do Git.
 - Compatibilidade/rollback: aventura normal, catálogo, saves e trabalho de calças preservados. Desfazer somente o commit desta etapa remove a atualização da bancada. Revisão artística, Idle animado, demais caminhadas e integração no jogo permanecem pendentes.
 
+## 29/10/2026 — Alubarna 01–05 e Skypiea (em revisão)
+
+Cinco instâncias do mapa completo exportado pelo proprietário, em Alabasta, com Puppu Nv.53, Valentine Nv.58, Merry Christmas Nv.63, Double Finger Nv.68 e Mr.1 Nv.75. Escalas ordenadas, quatro direções, Hurt South e 50 spawns novos. Arco norte navegável sem alterar a arte. Skypiea recebe aba com conteúdo futuro. 107 arquivos Node, 7.285 frames nativos, navegador no fonte/dist, 25 abates por execução e backend aprovados. Sem geração paga ou merge/deploy automático. [Relatório](ALUBARNA.md).
+
+## 29/10/2026 — Portal: cache do Pages e logo oficial
+
+Branch `fix/portal-pages-cache`, base `2b3a48a`. Corrige HTML novo com CSS antigo no GitHub Pages: os dois builds agora compartilham hash de conteúdo nas URLs dos assets. Substitui a logo inicial pelo recorte transparente do emblema oficial enviado pelo proprietário, mantendo os arquivos anteriores e o cenário.
+
+Reprodução anterior: logo de 1448 px e cabeçalho em bloco. Depois: 3 testes de build, 106 arquivos Node, ambos os builds e dez cenários de navegador passaram; nenhum carregamento do CSS antigo. Sem mudanças em saves/gameplay. [Fonte da logo, causa, testes e capturas](PORTAL-KAIZOKU.md).
+
+## 29/10/2026 - Portal Kaizoku Idle: em breve
+
+Branch `feature/portal-em-breve`, base `origin/main df7aa55`. O portal de login vira uma landing page de desenvolvimento com logo Kaizoku Idle, fundo original preservado, mensagem acessivel e layout responsivo. Build separado `tools/build_portal.py` gera `dist-portal/` com redirecionamento da raiz; somente assets explicitamente permitidos. Jogo, saves e trabalhos locais do checkout original preservados.
+
+Validacao: 106 arquivos Node passaram, 2 testes do pacote passaram, builds Pages/portal passaram e Chromium conferido em sete resolucoes com teclado e movimento reduzido. Axe: zero violacoes automaticas, contraste dos ornamentos/texto com sombra revisado visualmente. Capturas locais em `docs/evidence-portal/`. Cloudflare e dominio ainda nao publicados; sem merge. [Configuracao, logo, testes e rollback](PORTAL-KAIZOKU.md).
+
+## 29/10/2026 — Hurt South e escalas de dez personagens (merge e Pages aprovados)
+
+Os 21 conjuntos passam a usar Hurt South em qualquer orientação por decisão do proprietário; Lobo/Hoya recebem seus novos Hurt e Kuroobi recebe ataque oeste e novas versões norte/leste. Marinheiro +100%, Hoya/Pearl +40%, Mr.3/Cabaji/Buchi +50%, Kuroobi/Chew +30%, Sham/Gin +20%. Cabeçalhos acompanham a arte sem alterar combate, projéteis, colisões ou saves. 106 arquivos Node, 6.044 frames RGBA originais, escalas/dano no navegador e build Pages aprovados. Merge e Pages autorizados explicitamente pelo proprietário; HUD aprovada do PR#147 preservada na integração. Sem geração paga. [Relatório](HURT-SOUTH-ESCALAS.md).
+
+## 29/10/2026 — Cabine do Navegante aprovada e integrada
+
+Lançamento no Pages autorizado pelo proprietário. Na preparação, removido o botão Personagem redundante trazido da prévia, com reprodução da regressão existente antes da correção. Os 145 testes Node autônomos passaram; E2E de Supa permanece separado, conforme o CI. Menu real conferido com seis atalhos.
+
+Após a aprovação visual explícita do proprietário, a composição da prévia foi aplicada a `index.html`, compartilhando `ui-navigator.css`, a base visual e os assets aprovados. Scripts e regras de jogo preservados. Sem novas gerações PixelLab, merge ou deploy. Validação da entrada principal e limites em [HUD-NAVIGATOR-DIRECTION.md](HUD-NAVIGATOR-DIRECTION.md).
+
+## 29/10/2026 — Nova prévia da Cabine do Navegante
+
+Reformulação completa em `ui-preview.html`: cartão de capitão integrado, busto clicável, recursos sem molduras individuais, paleta de tinta e bronze fosco, navegação unificada e janelas discretas. Arte original PixelLab: 11 gerações confirmadas, 15 assets nativos, fontes locais OFL e receita versionada. Nenhuma imagem enviada pelo proprietário usada como referência. [Direção, capturas e verificações](HUD-NAVIGATOR-DIRECTION.md). Prévia aguardando aceite artístico; entrada principal preservada, sem merge/deploy. Cinco suítes focadas aprovadas; suíte completa com 145 aprovações e uma inicialização bloqueada pela ausência de Playwright.
+
+## 29/10/2026 — HUD náutica com pixel art nativa
+
+Revisão do PR #147 após avaliação visual do proprietário. Texturas pesadas foram substituídas por molduras discretas, superfícies calmas e líquidos de quatro tons com movimento suave. A largura visível não fica sob o contador; a preferência Reduzidas interrompe a animação. Os 19 WebPs somam 3.830 bytes. PixelLab autorizado: 10 gerações confirmadas, fontes e receita versionadas. [Direção, evidências e limites](HUD-PIXEL-REFINEMENT.md). Sem mudanças de save/combate, merge ou deploy.
+
+## 29/10/2026 — Escalas Zoan e loops de caminhada
+
+Após a publicação autorizada do PR#145, a branch `fix/zoan-scale-walk-frames` dobra o Cavalo, aumenta o Albatroz em50% e normaliza o tamanho aparente do Dachshund entre frente/costas/perfis. Loops direcionais passam a excluir entradas/saídas de repouso e a cauda congelada da Girafa norte. As três Zoans iniciais pré-carregam locomoção ao equipar; retratos mantêm encaixe limitado. PNGs, saves, dano, cadência, velocidades e colisões permanecem inalterados.
+
+Validação:105 arquivos Node,5.957 frames RGBA preservados,4.608 amostras reais de caminhada das oito formas em quatro direções, E2E de21 conjuntos/sete especiais/20 abates/nove mapas/save no dist e build Pages aprovados. [Relatório, faixas de quadros, medidas e capturas](ZOAN-ESCALA-CAMINHADA.md). Ajuste aguardando revisão, sem merge/deploy automático.
+
+## 28/10/2026 — Sprites PixelLab e combate visual v2 (em revisão)
+
+Branch `feature/pixellab-sprites-combat-v2`, base `88dc017`. Os 21 conjuntos novos foram importados sem alterar seus 5.957 frames nativos. Renderizadores existentes, prévias e silhuetas usam os novos assets; Hurt visual de 180 ms acompanha a perda efetiva de HP e os sete especiais acompanham os eventos existentes, sem alterar dano, colisão, custos, recargas ou saves. Assets antigos e trabalho local do proprietário foram preservados.
+
+Validação:104 arquivos de teste Node,97 scripts com sintaxe válida, comparação RGBA completa, seis regressões específicas de fruta, E2E no fonte e no Pages local com1.146 poses/sete especiais/20 abates/nove mapas/reload e capturas desktop/móvel. Existe uma falha antiga de cadência humana reproduzida também com fontes da main. Faltam Hurt do Lobo/Hoya, direções de Hurt dos demais e ataque oeste do Kuroobi. Não houve geração paga, merge ou deploy. [Relatório completo e pendências](SPRITES-COMBAT-V2.md).
+
 ## 28/10/2026 — Patrulha dos monstros e agressividade em Impel Down
 
 Monstros das nove regiões caminham e fazem pausas perto do ponto fixo (raio máximo72px), respeitando colisões e controles. Permanecem neutros até receber dano; respawns e limites de perseguição são preservados. Em Impel Down, o adversário inicia a aproximação e o ataque sem provocação, atravessando a arena por navegação.
@@ -462,3 +508,12 @@ Validação final sobre e302c09: 84 suítes Node aprovadas; teste específico de
 - Respawn após pelo menos30s,no mesmo ponto,com prazo salvo por região para impedir reset por viagem/reload. Migração idempotente preserva progressão e ignora prazos inválidos. Catálogos Python/JS usam reactive_homebound;XP,ouro,drops e arte não mudam.
 - Verificação:135 testes Node e2 Python passaram;83 pontos navegáveis e setores corretos;navegador nas nove regiões confirmou neutralidade,retaliação isolada,leash,morte,respawn,persistência/viagem/reload. Impel Down passou progressão/chefes/marcos/storage;Alabasta passou20 abates com o relógio de teste avançando o novo prazo. Build Pages e diff check passaram. Sem gerações pagas.
 - Arquivos/reversão em docs/MONSTER-SPAWNS.md. Saves mantêm as mesmas chaves e índices de itens;campo adicional de prazos. Sem merge/deploy automático.
+
+## 29/10/2026 — HUD náutica com materiais raster e molduras em 9-slice
+
+- Branch `feature/nautical-hud-assets-v2`, base `ce262cf` da main; checkout original e dois commits locais de Paper Doll preservados separadamente.
+- Auditoria de HUD, inventário, personagem/progressão, forja, mapa/prisão, NPCs, Central, criação e componentes compartilhados em `docs/HUD-NAUTICAL-ASSETS-V2.md`.
+- 19 WebPs originais (284.488 bytes), uma geração ImageGen embutida, zero chamadas PixelLab. Madeira, cordame, bronze, petróleo e pergaminho em imagens; seis estados de botão, slots neutros e preenchimentos vivos separados das molduras. PNGs de raridade e artes aprovadas preservados.
+- Nova folha final `ui-nautical-assets.css` nas duas entradas e no build; sem alterações em JavaScript de jogo, dados, handlers, fórmulas ou saves. Comparativo representativo único versionado; evidências completas ignoradas.
+- 145 testes Node passaram; seis suítes focadas, sintaxe raiz, build/URLs/bytes e diff check passaram. Navegador: 14 janelas em seis viewports, criação móvel, scroll, foco/tooltip, NPC, equipamento/trava/reload, aprimoramento, fusão/imbuir, 59 abates/2 chefes com barras reais e retorno. Moldura de vida estável entre 20,2% e 100%.
+- Limites: arraste automatizado inconclusivo também na base; seleção por clique/automática funcional. `supa-browser.test.cjs` sem módulo Node Playwright; não declarado aprovado. Aparelhos físicos/Safari/Firefox e benchmark formal não executados. Rollback e demais limites no relatório. Sem merge/deploy automático.

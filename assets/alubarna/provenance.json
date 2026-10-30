@@ -1,0 +1,81 @@
+{
+  "source": {
+    "mapId": "a6da583d-86dc-443e-becc-d5f2457e3bab",
+    "name": "Alubarna",
+    "origin": [
+      -3008,
+      -3072
+    ],
+    "archiveSha256": "1289cfce1b11493e679991170dbe4f48e468686d1fde945ab647d6d8942d2610",
+    "imageSha256": "1a071df25670275b22ef0f8c99056e3cf1d628a289408cb00b4504c5440a9fb5"
+  },
+  "dimensions": [
+    6592,
+    5248
+  ],
+  "objectCount": 208,
+  "uniqueMasks": 42,
+  "maskSha256": {
+    "alubarna-0daad08443b6599fa505": "0daad08443b6599fa505ae5ce992fceee041f1506bdeb02d5750145fb4a34996",
+    "alubarna-3194993f2e79c39564e7": "3194993f2e79c39564e729d7b7dcd079b69ba962dee7d20118e4dd255aa50c3a",
+    "alubarna-71cdde7bedf77ec81dc2": "71cdde7bedf77ec81dc2aad3fa4b2c08172d12be81e7c4c0e3d26acd1829d759",
+    "alubarna-2b9112c133670473d817": "2b9112c133670473d817793677e5cd30bdda4602d88912e042f7e0238131da94",
+    "alubarna-737c88f3b38308e134a8": "737c88f3b38308e134a877458f2d9d13c67e29980131f4b68555611a8c75447d",
+    "alubarna-988e207e44e3789829e5": "988e207e44e3789829e5330b91cb22a1065be18d51e6bc2ec1565ac20ed44195",
+    "alubarna-bc962f35325e3b6a487a": "bc962f35325e3b6a487ab2a40312b834cd8599ab8ebbb5d925672d38cb302274",
+    "alubarna-85ee04a2989e4309aeb6": "85ee04a2989e4309aeb6a58604c5084b44af400839b0f48d2bccba54c3d7a305",
+    "alubarna-ce526b8f63607b1ffb3b": "ce526b8f63607b1ffb3b1dbe7cc4f89f89da3915a72ab64d9fb163eda8d79fd9",
+    "alubarna-0f6a725831c164fad2a3": "0f6a725831c164fad2a3af8077a98540921f9508a82692165950e701323428a4",
+    "alubarna-933eee8fb3da604dbf30": "933eee8fb3da604dbf30d397b089f2c5d328bc1866aedbb9c36c3636f6c72de4",
+    "alubarna-b855b62e641e709ac725": "b855b62e641e709ac725e478e4209baf1c3401108f046c457b78ee8e3385dc05",
+    "alubarna-d0a381bab0efd5307fea": "d0a381bab0efd5307feadcdf564aee2b6182dfb78f51ea833a09e206d993dd4c",
+    "alubarna-4e6ee802569d29b54230": "4e6ee802569d29b54230ebfedfe093de0aac275612bac13a987545471ebdf165",
+    "alubarna-a289598cb9f987faec5e": "a289598cb9f987faec5e4cc735283dd21b679126de4e37b5c70bb4d15803773c",
+    "alubarna-5a4f7b03626b976d4db6": "5a4f7b03626b976d4db6a0b4e7cd346a872729bf65b27a19c69d62cda36e0320",
+    "alubarna-161cc3e83f25f75d194f": "161cc3e83f25f75d194ff2f979402bfa127230e3d8e82353eff11e3c3d753108",
+    "alubarna-ccafe13dbe967252bd27": "ccafe13dbe967252bd273c8cd2bc32cb18949482dfa5dc894b0ee23d468d343a",
+    "alubarna-3dbca10236997ee61c0e": "3dbca10236997ee61c0e149cc6337c531dbac6917c8ac5b9da8d7d36e303c6a5",
+    "alubarna-f16c17f987da340c7618": "f16c17f987da340c761891303a16a08e286368ca01f402f66eed4e9322c6fc30",
+    "alubarna-116afff5aa3db01fa8b1": "116afff5aa3db01fa8b12d76d77c8c73ce7b8edcd05ee5a03f3a6b06618cfb43",
+    "alubarna-4e503ba53dc705cd6d7b": "4e503ba53dc705cd6d7b5f3d2f788367d096a9ec12247d00e1403d0e382a97cb",
+    "alubarna-da4bf3ce5fd161121dcc": "da4bf3ce5fd161121dcca7479438c3a30b439f66d8ab09d10f8fa49e61a7a335",
+    "alubarna-137308a0eb7ddf1a893a": "137308a0eb7ddf1a893ab2674fd674de48ac343f7668ebc467e58944f0f95df8",
+    "alubarna-284037bc1556043cf99e": "284037bc1556043cf99ecbddf8a85b4a7df36191151341da3431659579820e1e",
+    "alubarna-89b6f55daf3c20ad0cf1": "89b6f55daf3c20ad0cf14c14ec672f28f9eeb5d6587bcc2555f759a8d1e124b9",
+    "alubarna-b7c4756c095b36b47eb7": "b7c4756c095b36b47eb753fc0baa59b4db557d012843591f7abdc8f2fd1f2239",
+    "alubarna-b726cff8a329e9462fe3": "b726cff8a329e9462fe373c4610ee0a6d27bf9a6761f8179477c3eac0dba2d46",
+    "alubarna-474e7ba64c08cb1b0d2c": "474e7ba64c08cb1b0d2c4fa0d8784b2d20601d2937a2e90615fcd6f20f8b6cef",
+    "alubarna-06ff364ca948dbcfe107": "06ff364ca948dbcfe10788ca3d1eeca9c2ac5af834bbf1dc887da82cbe93bfaa",
+    "alubarna-af1ad02bb0a90768f2c7": "af1ad02bb0a90768f2c7d7a12d6d90e67af023fa69925030abdd514ab6f2f019",
+    "alubarna-40f0927df7c8beb6a69d": "40f0927df7c8beb6a69d78f861c86c2f47713dcb8727350e079026d8838c27a5",
+    "alubarna-27219957098611c3fb53": "27219957098611c3fb53ed3edd1b5ccb145d7fa20be0a59771e683fa2f887471",
+    "alubarna-6f14ab6663b0601c4e86": "6f14ab6663b0601c4e863362a36d485c8347254d9941fa1fb8cbe95c0d4e4559",
+    "alubarna-8ec87341f3d5e7721c5a": "8ec87341f3d5e7721c5a0f41c7e0d2dace7bc68d8aa92bed60f29347925b8b2a",
+    "alubarna-acd087c3aa7fd1225c16": "acd087c3aa7fd1225c1665da32fcc40d347bb088d3c01a0c1a18156ebdc1c469",
+    "alubarna-4d8c72edfbd43a4f26da": "4d8c72edfbd43a4f26da6c89b9c2177f7b0fe796530ae7a57b65259d6bf66039",
+    "alubarna-85878749161472bcfb7f": "85878749161472bcfb7ffb1d4e7550910cfb632bbea3920fb7907b7537e91898",
+    "alubarna-288401d4818894a439d3": "288401d4818894a439d36f301cf4623755fcb29b5154bbd50cca576c3a81d47f",
+    "alubarna-22e6f05818e0add8fcc0": "22e6f05818e0add8fcc0e17096e5ad5f3fc6dc4bd0bc78cbf99dadd2517c0ed1",
+    "alubarna-499ffc5bbf662f81f5d8": "499ffc5bbf662f81f5d819bb6859fa8528629a3e30e2dd3b172a17b9205b6c7b",
+    "alubarna-ddc2758cae0d2bd56e4d": "ddc2758cae0d2bd56e4d5bb083e18661aee0b526e30e08744d6024220f9f082f"
+  },
+  "walkableTerrain": [
+    "w",
+    "c",
+    "h",
+    "o",
+    "u",
+    "g",
+    "r",
+    "m"
+  ],
+  "projectileWalls": [
+    "p",
+    "a",
+    "n",
+    "y"
+  ],
+  "collisionSource": "Native terrain grid and exported object groundBounds; feet 32x20",
+  "connectedGridPoints": 6772,
+  "sharedImage": true
+}

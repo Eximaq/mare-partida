@@ -1,0 +1,66 @@
+{
+  "jobs": [
+    {
+      "job_id": "ba525ee9-cdcc-45a6-bc84-f9b45ae1fd4a",
+      "status": "ok",
+      "tool": "MCP create_ui_asset",
+      "reported_usage": {
+        "generations": 10.0
+      },
+      "estimated_usage": {
+        "generations": 10.0
+      },
+      "created_at": "2026-10-29T14:13:44.118948+00:00",
+      "outcome": "integrated",
+      "outcome_note": "Owner explicitly approved the direction on 2026-10-29; selected assets promoted to index.html with the shared navigator skin; no merge or deploy.",
+      "seed": "omitted; not returned",
+      "outputs": [
+        "atlas.png"
+      ],
+      "derivatives": [
+        "assets/ui/navigator/manifest.json"
+      ],
+      "workbench_jobs": [
+        "0d2fed1a-61e4-4138-a9f6-a42025348884",
+        "74c0098a-9610-4743-9db3-5afe77272573"
+      ],
+      "owner_approval": {
+        "date": "2026-10-29",
+        "answer": "Aprovar a direcao"
+      }
+    },
+    {
+      "job_id": "c6df203d-313d-4e48-b8d7-d8d410991744",
+      "status": "ok",
+      "tool": "MCP create_image_pixen",
+      "reported_usage": {
+        "generations": 1.0
+      },
+      "estimated_usage": {
+        "generations": 1.0
+      },
+      "created_at": "2026-10-29T14:14:18.440358+00:00",
+      "outcome": "integrated",
+      "outcome_note": "Owner explicitly approved the direction on 2026-10-29; selected assets promoted to index.html with the shared navigator skin; no merge or deploy.",
+      "seed": "omitted; not returned",
+      "outputs": [
+        "emblem.png"
+      ],
+      "derivatives": [
+        "assets/ui/navigator/emblem.webp"
+      ],
+      "owner_approval": {
+        "date": "2026-10-29",
+        "answer": "Aprovar a direcao"
+      }
+    }
+  ],
+  "plan": {
+    "scope": "Owner-approved navigator HUD integrated in index.html and shared with ui-preview.html; no supplied reference images",
+    "approval_context": "Owner explicitly answered Aprovar a direcao to promotion of the integrated profile; no merge/deploy authorized",
+    "generation_cap": 12,
+    "retry_limit": 0,
+    "retries_used": 0,
+    "remaining_work": []
+  }
+}

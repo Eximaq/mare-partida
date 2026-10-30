@@ -5,15 +5,15 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 | Tarefa | Código a localizar primeiro | Documentos e testes a procurar | Atenção |
 |---|---|---|---|
 | Login/portal | `portal/index.html`, `portal/portal.js`, `portal/portal.css`, `tools/build_pages.py` | `docs/COLABORACAO_GITHUB.md`; testes web/build relevantes | Não afirmar Supabase conectado sem confirmar; preservar fundo/arte aprovada |
-| HUD/UI/inventário | `ui-system.js`, `notification-system.js`, `ui-*.css`, `game.js` (somente funções de UI), `forge-ui.js` | `docs/UI-DESIGN.md` (se existir), testes de inventário | Índices `itemDefs`, equipamentos e saves |
+| HUD/UI/inventário | `ui-system.js`, `notification-system.js`, `ui-*.css`, `index.html`, `ui-preview.html`, `game.js` (somente funções de UI), `forge-ui.js` | `docs/UI-DESIGN.md` (se existir), `docs/HUD-NAVIGATOR-DIRECTION.md` (direção aprovada), testes de inventário | Índices `itemDefs`, equipamentos e saves |
 | Personagens/classes | `character-system.js`, `game.js` funções de criação | testes de personagem; sec. 3 de `AGENT.md` somente se necessário | Facção ≠ classe; dados migrados |
 | Combate/caçadas | `hunt-system.js`, `monster-behavior.js`, `world-system.js`, `combat-*.js` | `docs/MONSTER-SPAWNS.md`, `docs/CACADAS-1-20.md`, `docs/ATTACK-SPEED-ANIMATION.md`, testes de combate/caça | Dano real/hit-frame, LOS, cooldown e anti-duplicação |
 | Física/profundidade global | `world-system.js`, `world-depth.js`, `game.js` (combatLine/filas de desenho) | `docs/MAP-COLLISION-AUDIT.md`, `tools/audit_maps.cjs`, testes map-physics-audit/world-depth/map_audit_browser | Separar pés e disparos; preservar máscaras e pixels dos mapas |
 | Mapas/Dawn | `dawn-world.js`, `dawn-map-data.js`, `dawn-renderer.js` | `docs/DAWN-MAPA-MANUAL.md`, `tests/dawn_manual_browser.py` | Mapa fornecido pelo proprietário e fidelidade |
 | Mapas/Conchas | `conchas-world.js`, `conchas-renderer.js`, `conchas-*.js` | `docs/CIDADE-DAS-CONCHAS.md`, testes de Conchas | Rotas, casas, colisões; PRs recentes podem mudar geometria |
-| Arquipélago/ilhas | `archipelago.js`, `new-islands*.js` | `docs/ARQUIPELAGO-REGIOES.md`, testes das ilhas | IDs persistidos e permissões de entrada |
+| Arquipélago/ilhas | `archipelago.js`, `new-islands*.js`, `alubarna-*.js` | `docs/ARQUIPELAGO-REGIOES.md`, `docs/ALUBARNA.md`, testes das ilhas/Alubarna | IDs persistidos e permissões de entrada |
 | Paper Doll | `paper-doll.js`, `paper-doll-assets.js`, `paper-doll-review.js` | `docs/PAPER-DOLL-JOGO-NORMAL.md`, `docs/PAPER-DOLL.md`, testes `paper_doll*` | Release aprovado separado dos drafts; fallback; DEV ≠ produção |
-| Sprites/PixelLab | manifests do pacote específico, `assets/**` do subsistema | `docs/ART_BIBLE.md` se existente, docs do pacote | Custo explícito, licença, pivôs, nearest-neighbor |
+| Sprites/PixelLab | `sprite-combat-v2.js`, `sprite-combat-v2-data.js`, manifests do pacote específico, `assets/**` do subsistema | `docs/ART_BIBLE.md`, `docs/SPRITES-COMBAT-V2.md`, testes `sprite_combat_v2*` e `sprite-combat-v2*` | Custo explícito, licença, pivôs, nearest-neighbor; timing lógico permanece nos controladores existentes |
 | Haki | `haki-system.js`, `haki-ui.js`, `haki-art.js` | `docs/HAKI.md`, testes de Haki/talentos | Consumo transacional e saves |
 | Talentos/conquistas | `talent-*.js`, `achievement-system.js`, `ultimate-system.js` | `docs/TALENTOS.md`, testes de talentos | Conquistas únicas, respec e resets |
 | Forja/itens | `forge-system.js`, `forge-ui.js`, `game.js` definição de itens | testes de forja/inventário | Índices append-only, pérolas, refinamento |

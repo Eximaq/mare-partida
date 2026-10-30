@@ -43,3 +43,4 @@ saves/
 Thumbs.db
 .vscode/settings.json
 .idea/
+/dist-portal/

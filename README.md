@@ -1,8 +1,14 @@
+Portal de pré-lançamento **Kaizoku Idle**: [página](portal/index.html) e [publicação na Cloudflare](docs/PORTAL-KAIZOKU.md).
+
 # Desenvolvimento compartilhado no GitHub
 
 Revisão canônica v7 dos personagens de 96 px: [contrato e moldes reutilizáveis](docs/PAPER-DOLL-96-FIT-CONTRACT.md), espelhamento completo das laterais, cabeça comum, roupas por superfície e paletas preservadas. A integração no personagem publicado continua pendente.
 
 **Personagens de 96 px em revisão:** [bases com corpo, rosto, cabelo e roupas independentes](docs/PAPER-DOLL-96-V3.md), Idle, caminhada e seis ataques nas quatro direções dos dois corpos. [Abrir a bancada](tools/paper-doll-96-v3/). [Cabelos, rostos, peles e equipamentos](docs/PAPER-DOLL-96-PERSONALIZACAO.md). Avaliação artística e integração no jogo ainda pendentes.
+
+[Alubarna 01–05 e aba Skypiea](docs/ALUBARNA.md): cinco destinos completos, monstros Nv.53/58/63/68/75 e animações nativas. Em revisão, sem merge/deploy automático.
+
+Sprites de combate v2: [21 conjuntos importados e validação](docs/SPRITES-COMBAT-V2.md), publicados após aprovação no PR#145. [Escala e caminhada Zoan](docs/ZOAN-ESCALA-CAMINHADA.md) publicadas no PR#146. [Hurt South, novos clipes e dez aumentos de tamanho](docs/HURT-SOUTH-ESCALAS.md) publicados no PR#148.
 
 **Impel Down jogável:** mapa original, um adversário por andar, chefes a cada cinco e progressão automática com marcos salvos. [Regras, compatibilidade e validação](docs/IMPEL-DOWN.md).
 

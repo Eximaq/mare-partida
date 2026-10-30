@@ -1,0 +1,170 @@
+[
+  {
+    "_comment": "User-authorized HUD visual revision. Existing in-game 48px compass supplies style only. No external reference pixels are reused.",
+    "MCP create_ui_asset": {
+      "description": "Cohesive native pixel-art nautical RPG UI. Quiet dark teal panel interiors, warm parchment, thin muted brass rims, sparse low-contrast timber strokes only on headers, small readable corners, restrained four-tone red and blue liquid bars. Broad clean pixel clusters, consistent one-pixel outlines, no photographic grain, ornate filigree, neon glare, text or numbers.",
+      "palette": [
+        "#111b24",
+        "#1a2930",
+        "#243a3d",
+        "#314b4b",
+        "#2c221f",
+        "#43322a",
+        "#594235",
+        "#70513b",
+        "#8a694a",
+        "#96733e",
+        "#b58c4f",
+        "#d1ad68",
+        "#e8cf92",
+        "#f1e0b0",
+        "#eee6ce",
+        "#6f2539",
+        "#9c3445",
+        "#c24952",
+        "#dc6f69",
+        "#203959",
+        "#2e5477",
+        "#3d7f9f",
+        "#69a4b8",
+        "#c5bc9d"
+      ],
+      "max_colors": 24,
+      "width": 256,
+      "height": 256,
+      "no_background": true,
+      "name": "Mare Partida - restrained native pixel HUD",
+      "pieces": [
+        {
+          "id": "navy_window",
+          "kind": "rounded_rect",
+          "x": 8,
+          "y": 8,
+          "w": 240,
+          "h": 240,
+          "radius": 6
+        },
+        {
+          "id": "parchment_window",
+          "kind": "rounded_rect",
+          "x": 264,
+          "y": 8,
+          "w": 240,
+          "h": 240,
+          "radius": 6
+        },
+        {
+          "id": "timber_header",
+          "kind": "rounded_rect",
+          "x": 8,
+          "y": 264,
+          "w": 496,
+          "h": 48,
+          "radius": 4
+        },
+        {
+          "id": "normal_button",
+          "kind": "rounded_rect",
+          "x": 8,
+          "y": 328,
+          "w": 112,
+          "h": 48,
+          "radius": 4
+        },
+        {
+          "id": "hover_button",
+          "kind": "rounded_rect",
+          "x": 136,
+          "y": 328,
+          "w": 112,
+          "h": 48,
+          "radius": 4
+        },
+        {
+          "id": "pressed_button",
+          "kind": "rounded_rect",
+          "x": 264,
+          "y": 328,
+          "w": 112,
+          "h": 48,
+          "radius": 4
+        },
+        {
+          "id": "selected_button",
+          "kind": "rounded_rect",
+          "x": 392,
+          "y": 328,
+          "w": 112,
+          "h": 48,
+          "radius": 4
+        },
+        {
+          "id": "disabled_button",
+          "kind": "rounded_rect",
+          "x": 8,
+          "y": 392,
+          "w": 112,
+          "h": 48,
+          "radius": 4
+        },
+        {
+          "id": "focus_button",
+          "kind": "rounded_rect",
+          "x": 136,
+          "y": 392,
+          "w": 112,
+          "h": 48,
+          "radius": 4
+        },
+        {
+          "id": "inventory_slot",
+          "kind": "rounded_rect",
+          "x": 264,
+          "y": 392,
+          "w": 48,
+          "h": 48,
+          "radius": 2
+        },
+        {
+          "id": "compact_panel",
+          "kind": "rounded_rect",
+          "x": 328,
+          "y": 392,
+          "w": 176,
+          "h": 112,
+          "radius": 4
+        },
+        {
+          "id": "red_liquid_bar",
+          "kind": "rounded_rect",
+          "x": 8,
+          "y": 456,
+          "w": 240,
+          "h": 40,
+          "radius": 6
+        },
+        {
+          "id": "blue_liquid_bar",
+          "kind": "rounded_rect",
+          "x": 264,
+          "y": 456,
+          "w": 240,
+          "h": 40,
+          "radius": 6
+        }
+      ],
+      "style_image_base64": "../../icones_menu_pirata/png/48/mapa.png"
+    }
+  },
+  {
+    "_comment": "Final liquid materials and empty track. Exact native pixels authored by PixelLab Workbench, with the restrained atlas palette.",
+    "MCP pixelart_workbench": {
+      "argv": [
+        "draw",
+        "--recipe",
+        "{\"job\":{\"canvas\":[64,40],\"frame_count\":1,\"durations_ms\":[100],\"views\":[{\"id\":\"liquid\",\"offset\":[0,0]}],\"source_bookends_exact\":false},\"scene\":{\"palette\":{\"wine\":\"#6f2539\",\"red\":\"#9c3445\",\"lightred\":\"#c24952\",\"redglint\":\"#dc6f69\",\"deepblue\":\"#203959\",\"blue\":\"#2e5477\",\"water\":\"#3d7f9f\",\"blueglint\":\"#69a4b8\",\"deepgold\":\"#70513b\",\"gold\":\"#96733e\",\"lightgold\":\"#b58c4f\",\"goldglint\":\"#d1ad68\",\"ink\":\"#111b24\",\"rim\":\"#96733e\",\"rimlight\":\"#b58c4f\",\"inset\":\"#1a2930\"},\"layers\":[{\"id\":\"liquid\",\"name\":\"Body - liquid materials\"}],\"views\":{\"liquid\":{\"nodes\":{\"health\":{\"layer\":\"liquid\",\"at\":[0,0],\"draw\":[{\"op\":\"rect\",\"box\":[0,1,63,7],\"color\":\"red\"},{\"op\":\"rect\",\"box\":[0,6,63,7],\"color\":\"wine\"},{\"op\":\"rect\",\"box\":[0,1,63,2],\"color\":\"lightred\"},{\"op\":\"rect\",\"box\":[0,0,15,0],\"color\":\"lightred\"},{\"op\":\"rect\",\"box\":[40,0,55,0],\"color\":\"lightred\"},{\"op\":\"rect\",\"box\":[2,1,10,1],\"color\":\"redglint\"},{\"op\":\"rect\",\"box\":[42,1,47,1],\"color\":\"redglint\"},{\"op\":\"rect\",\"box\":[27,3,34,3],\"color\":\"lightred\"}]},\"energy\":{\"layer\":\"liquid\",\"at\":[0,8],\"draw\":[{\"op\":\"rect\",\"box\":[0,1,63,7],\"color\":\"blue\"},{\"op\":\"rect\",\"box\":[0,2,63,5],\"color\":\"water\"},{\"op\":\"rect\",\"box\":[0,6,63,7],\"color\":\"deepblue\"},{\"op\":\"rect\",\"box\":[14,0,35,0],\"color\":\"water\"},{\"op\":\"rect\",\"box\":[54,0,63,0],\"color\":\"water\"},{\"op\":\"rect\",\"box\":[0,0,3,0],\"color\":\"water\"},{\"op\":\"rect\",\"box\":[17,1,27,1],\"color\":\"blueglint\"},{\"op\":\"rect\",\"box\":[43,2,49,2],\"color\":\"blueglint\"},{\"op\":\"rect\",\"box\":[7,4,14,4],\"color\":\"blue\"}]},\"experience\":{\"layer\":\"liquid\",\"at\":[0,16],\"draw\":[{\"op\":\"rect\",\"box\":[0,0,63,7],\"color\":\"gold\"},{\"op\":\"rect\",\"box\":[0,0,63,1],\"color\":\"lightgold\"},{\"op\":\"rect\",\"box\":[0,0,63,0],\"color\":\"goldglint\"},{\"op\":\"rect\",\"box\":[0,6,63,7],\"color\":\"deepgold\"}]},\"track\":{\"layer\":\"liquid\",\"at\":[0,26],\"draw\":[{\"op\":\"rect\",\"box\":[0,1,63,10],\"color\":\"ink\"},{\"op\":\"rect\",\"box\":[1,0,62,11],\"color\":\"ink\"},{\"op\":\"polygon\",\"points\":[[2,1],[61,1],[62,2],[62,9],[61,10],[2,10],[1,9],[1,2]],\"color\":\"rim\"},{\"op\":\"rect\",\"box\":[2,2,61,9],\"color\":\"inset\"},{\"op\":\"rect\",\"box\":[3,1,60,1],\"color\":\"rimlight\"}]}}}}}}"
+      ],
+      "mode": "low"
+    }
+  }
+]

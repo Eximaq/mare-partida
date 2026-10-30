@@ -35,3 +35,5 @@ jobs:
         run: |
           python3 tests/paper_doll_pages_test.py
           python3 tools/build_pages.py
+          python3 tests/portal_build_test.py
+          python3 tools/build_portal.py
