@@ -1,0 +1,53 @@
+{
+  "source": "Gemini_Generated_Image_97idfr97idfr97id.jpeg",
+  "sha256": "81f448c0b46e05022274af043cc7537715965ed32b1c2ddcf5905d2ff7559ff9",
+  "sourceSize": [
+    2400,
+    1792
+  ],
+  "canvas": [
+    912,
+    912
+  ],
+  "processing": "Native RGB crop, transparent padding and conservative circular alpha; no resampling, repainting, AI generation or lossy output compression.",
+  "alphaRadius": 444,
+  "alphaFeather": 1,
+  "emblems": [
+    {
+      "id": "revolutionary",
+      "position": "bottom-right",
+      "center": [
+        1800,
+        1347
+      ],
+      "file": "revolutionary.png"
+    },
+    {
+      "id": "pirate",
+      "position": "bottom-left",
+      "center": [
+        600,
+        1347
+      ],
+      "file": "pirate.png"
+    },
+    {
+      "id": "marine",
+      "position": "top-left",
+      "center": [
+        600,
+        451
+      ],
+      "file": "marine.png"
+    },
+    {
+      "id": "government",
+      "position": "top-right",
+      "center": [
+        1800,
+        451
+      ],
+      "file": "government.png"
+    }
+  ]
+}
