@@ -1,3 +1,5 @@
+Portal de pré-lançamento **Kaizoku Idle**: [página](portal/index.html) e [publicação na Cloudflare](docs/PORTAL-KAIZOKU.md).
+
 # Desenvolvimento compartilhado no GitHub
 
 Sprites de combate v2: [21 conjuntos importados e validação](docs/SPRITES-COMBAT-V2.md), publicados após aprovação no PR#145. [Escala e caminhada Zoan](docs/ZOAN-ESCALA-CAMINHADA.md) publicadas no PR#146. [Hurt South, novos clipes e dez aumentos de tamanho](docs/HURT-SOUTH-ESCALAS.md) em revisão separada.

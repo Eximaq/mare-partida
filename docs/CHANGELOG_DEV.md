@@ -1,3 +1,9 @@
+## 29/10/2026 - Portal Kaizoku Idle: em breve
+
+Branch `feature/portal-em-breve`, base `origin/main df7aa55`. O portal de login vira uma landing page de desenvolvimento com logo Kaizoku Idle, fundo original preservado, mensagem acessivel e layout responsivo. Build separado `tools/build_portal.py` gera `dist-portal/` com redirecionamento da raiz; somente assets explicitamente permitidos. Jogo, saves e trabalhos locais do checkout original preservados.
+
+Validacao: 106 arquivos Node passaram, 2 testes do pacote passaram, builds Pages/portal passaram e Chromium conferido em sete resolucoes com teclado e movimento reduzido. Axe: zero violacoes automaticas, contraste dos ornamentos/texto com sombra revisado visualmente. Capturas locais em `docs/evidence-portal/`. Cloudflare e dominio ainda nao publicados; sem merge. [Configuracao, logo, testes e rollback](PORTAL-KAIZOKU.md).
+
 ## 29/10/2026 — Hurt South e escalas de dez personagens (merge e Pages aprovados)
 
 Os 21 conjuntos passam a usar Hurt South em qualquer orientação por decisão do proprietário; Lobo/Hoya recebem seus novos Hurt e Kuroobi recebe ataque oeste e novas versões norte/leste. Marinheiro +100%, Hoya/Pearl +40%, Mr.3/Cabaji/Buchi +50%, Kuroobi/Chew +30%, Sham/Gin +20%. Cabeçalhos acompanham a arte sem alterar combate, projéteis, colisões ou saves. 106 arquivos Node, 6.044 frames RGBA originais, escalas/dano no navegador e build Pages aprovados. Merge e Pages autorizados explicitamente pelo proprietário; HUD aprovada do PR#147 preservada na integração. Sem geração paga. [Relatório](HURT-SOUTH-ESCALAS.md).
