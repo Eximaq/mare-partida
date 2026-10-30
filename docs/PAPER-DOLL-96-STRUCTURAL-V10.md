@@ -81,4 +81,4 @@ A bancada não altera saves, slots, IDs de itens, atributos ou persistência da 
 
 Não foram criados novos modelos de armas nem efeitos nesta correção. As animações de espada/adagas/disparo/tecnologia/canalização usam o conteúdo que já existe na biblioteca; esta validação não afirma cobertura de armas futuras nem de todas as combinações que ainda não existem. Aprovação artística e ativação no personagem publicado permanecem pendentes do proprietário.
 
-Para desfazer, reverter somente o commit desta branch sobre ed03bdf, reconstruir Pages e restaurar na galeria as folhas anteriores pelos recibos/checkpoint. Não reverter trabalhos de colaboradores nem reescrever main. Próxima etapa mínima: revisão visual do proprietário no lobby antes de qualquer integração na aventura.
+Para desfazer, reverter somente os commits desta revisão sobre ed03bdf, reconstruir Pages e restaurar na galeria as folhas anteriores pelos recibos/checkpoint. Não reverter trabalhos de colaboradores nem reescrever main. Próxima etapa mínima: revisão visual do proprietário no lobby antes de qualquer integração na aventura.
