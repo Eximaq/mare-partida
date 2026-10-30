@@ -68,8 +68,9 @@
     const facing=directions[direction]||direction,system=fruitId==='akuma_neko_leopard'?root.MareNeko:fruitId==='akuma_ushi_giraffe'?root.MareUshi:fruitId==='akuma_inu_wolf'?root.MareWolf:null;
     if(system){const clip=system.clips.attack[facing];return {frames:clip.frames,fps:clip.fps,impact_frame:clip.impact_frame??Math.floor(clip.frames*.45),hitFrameRatio:clip.hitFrameRatio,loop:false};}
     const name=names[fruitId];if(!name)return null;
-    const size=name==='tori'?64:48,image=asset(name,'attack',facing);if(!image.complete||image.naturalWidth<size)return null;
-    const frames=Math.floor(image.naturalWidth/size);return {frames,fps:12,impact_frame:Math.floor(frames*.45),loop:false};
+    // Existing Tori/Uma/Inu logical clips: 9 frames at 12fps, contact at 4.
+    // Timing must stay available without requesting a retired actor sheet.
+    return {frames:9,fps:12,impact_frame:4,loop:false};
   }
   root.MareZoanArt={draw,drawVfx,status,names,attackTiming};
   if(typeof module!=='undefined')module.exports=root.MareZoanArt;

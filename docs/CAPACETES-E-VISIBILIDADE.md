@@ -1,5 +1,7 @@
 # Sprint 2 — equipamentos de cabeça e visibilidade
 
+> Atualização de 30/10/2026: a regra vigente está em [Sprites atuais — fonte única](SPRITES-ATUAIS-FONTE-UNICA.md). O jogador usa exclusivamente native96 (inclusive DEV); `paperDoll96=0` não reativa o modelo antigo. Referências abaixo a rollback/fallback84 ou ensaio temporário no mundo são históricas e foram substituídas. Bancadas antigas continuam isoladas.
+
 Base: merge do PR154, `ed73c27`. Branch `feature/headgear-visibility`.
 
 ## Comportamento

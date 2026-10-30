@@ -1,7 +1,7 @@
 'use strict';
 /* Class/faction identity is explicit. Missing art never borrows another faction. */
 ((root)=>{
-  function create({sprites,animation}={}){
+  function create({sprites,animation,loadVisuals=true}={}){
     const entries=new Map();
     function register({classId,factionId,assetId,actions={}}){
       if(!classId||!factionId||!assetId)throw new TypeError('A combat set needs class, faction and asset IDs.');
@@ -10,7 +10,7 @@
     function entry(player){return entries.get(player?.factionId+':'+player?.classId)||null;}
     function asset(player){
       const e=entry(player);if(!e)return null;
-      sprites.ensure?.(e.assetId);
+      if(loadVisuals)sprites.ensure?.(e.assetId);
       const a=sprites.assets[e.assetId];
       // The configured identity must not switch to a generic sprite while its sheets load.
       if(!a?.meta.production_approved)return null;
@@ -33,6 +33,7 @@
       return actor.combat;
     }
     function draw(context,player,x,y,options={}){
+      if(!loadVisuals)return false;
       const a=asset(player);if(!a)return false;
       return sprites.draw(context,a.id,x,y,{...options,action:action(player,options.action||'idle')});
     }

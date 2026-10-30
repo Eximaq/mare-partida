@@ -90,16 +90,9 @@
   <script defer src="combat-animation.js"></script>
   <script defer src="combat-registry.js"></script>
   <script defer src="combat-assets.js"></script>
-  <script defer src="paper-doll.js"></script>
-  <script defer src="paper-doll-assets.js"></script>
-  <script defer src="paper-doll-coverage.js"></script>
-  <script defer src="paper-doll-look-data.js"></script>
   <script defer src="headgear-visibility.js"></script>
   <script defer src="character-appearance.js"></script>
-  <script defer src="paper-doll-look.js"></script>
-  <script defer src="paper-doll-review.js"></script>
   <script defer src="paper-doll-96-lobby.js"></script>
-  <link rel="stylesheet" href="paper-doll-look.css">
   <script defer src="forge-system.js"></script>
   <script defer src="forge-ui.js"></script>
   <script defer src="prison-system.js"></script>
@@ -138,6 +131,7 @@
       <button type="button" id="closeFactionPreview" aria-label="Fechar mostruário">×</button></div>
     </section>
     <header class="topbar" aria-label="Perfil do aventureiro">
+      <span id="playerVisualStatus" class="player-visual-status hidden" role="status"></span>
       <div class="helm-portrait-ribbon" aria-hidden="true"><span>✦</span> Diário de bordo <span>✦</span></div>
       <div class="profile-heading"><button type="button" class="navigator-portrait" data-hud="status" title="Personagem e atributos (P)" aria-label="Abrir atributos"><canvas id="miniPortrait" width="64" height="64" aria-label="Avatar do personagem"></canvas></button><div><div class="profile-name-row"><strong id="miniName">Aventureiro</strong><span id="miniLevel">Nv.1</span></div><span id="miniClass">Espadachim</span></div></div>
       <div id="miniTalentResource" class="profile-resource talent-resource hidden"><span id="miniTalentLabel">Vigor</span><span class="mini-meter"><i id="miniTalentFill"></i></span><b id="miniTalentText"></b></div>

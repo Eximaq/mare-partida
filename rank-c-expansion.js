@@ -4,7 +4,7 @@
  const {rules,effects,clips}=root.MareRankCExpansionData,images=new Map(),directions={front:'south',back:'north',left:'west',right:'east'};
  const has=id=>Object.values(rules).some(r=>r.id===id),visible=(p,v)=>!!v&&p.x>=v.x&&p.y>=v.y&&p.x<=v.x+v.width&&p.y<=v.y+v.height;
  function image(url){if(!images.has(url)){const im=new Image();im.src=url;images.set(url,im);}return images.get(url);}
- function preload(){for(const ds of Object.values(clips))for(const c of Object.values(ds))image(c.image);for(const fx of Object.values(effects))image(fx.image);}
+ function preload({actors=true}={}){if(actors)for(const ds of Object.values(clips))for(const c of Object.values(ds))image(c.image);for(const fx of Object.values(effects))image(fx.image);}
  function clip(action,direction){return clips[action]?.[directions[direction]||direction]||clips.idle.south;}
  function status(action='idle',direction='front'){const im=image(clip(action,direction).image);return !im.complete?'loading':im.naturalWidth?'ready':'failed';}
  // Exported animation cells include transparent padding; preserve the native 64px pixel scale.

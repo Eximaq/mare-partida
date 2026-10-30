@@ -4,7 +4,7 @@
  const {rules,clips}=root.MareRyuData,images=new Map(),directions={front:'south',back:'north',left:'west',right:'east'};
  const clip=(action='idle',direction='front')=>clips[action]?.[directions[direction]||direction]||clips.idle.south;
  function image(url){if(!images.has(url)){const im=new Image();im.addEventListener?.('load',()=>{if(typeof window!=='undefined')window.dispatchEvent(new Event('mare-zoan-sprite-ready'));});im.src=url;images.set(url,im);}return images.get(url);}
- function preload(){for(const dirs of Object.values(clips))for(const c of Object.values(dirs))image(c.image);}
+ function preload({actors=true}={}){if(actors)for(const dirs of Object.values(clips))for(const c of Object.values(dirs))image(c.image);}
  function status(action='idle',direction='front'){const im=image(clip(action,direction).image);return !im.complete?'loading':im.naturalWidth?'ready':'failed';}
  function drawActor(c,x,y,{action='idle',direction='front',time=0,scale=1,progress=null}={}){
   const p=clip(action,direction),im=image(p.image);if(!im.complete||!im.naturalWidth)return false;

@@ -6,5 +6,3920 @@
   "weaponRevision": "weapons96-pixellab-pro-v4-e8cc8f370a",
   "source": "Existing native96 materials and authored animations; owner authorised default use in Sprint2.",
   "headgearPolicy": "../../headgear-visibility.js",
-  "fallbackQuery": "paperDoll96=0"
+  "renderer": "native96",
+  "assetRevision": "native96-5dbae4385025f074",
+  "resources": {
+    "assets/appearance3-face-almond-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-almond-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-almond-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-almond-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-almond-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-almond-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-almond-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-almond-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-focused-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-focused-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-focused-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-focused-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-focused-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-focused-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-focused-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-face-focused-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-afro-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-afro-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-afro-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-afro-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-afro-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-afro-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-afro-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-afro-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-topknot-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-topknot-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-topknot-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-topknot-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-topknot-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-topknot-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-topknot-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/appearance3-hair-topknot-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-calm-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-calm-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-calm-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-calm-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-calm-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-calm-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-calm-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-calm-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-cheerful-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-cheerful-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-cheerful-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-cheerful-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-cheerful-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-cheerful-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-cheerful-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-cheerful-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-gentle-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-gentle-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-gentle-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-gentle-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-gentle-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-gentle-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-gentle-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-gentle-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-resolute-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-resolute-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-resolute-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-resolute-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-resolute-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-resolute-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-resolute-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-resolute-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-sharp-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-sharp-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-sharp-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-sharp-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-sharp-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-sharp-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-sharp-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-sharp-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-veteran-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-veteran-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-veteran-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-veteran-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-veteran-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-veteran-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-veteran-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-face-veteran-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-bob-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-bob-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-bob-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-bob-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-bob-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-bob-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-bob-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-bob-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-braided-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-braided-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-braided-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-braided-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-braided-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-braided-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-braided-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-braided-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-cropped-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-cropped-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-cropped-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-cropped-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-cropped-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-cropped-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-cropped-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-cropped-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-curly-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-curly-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-curly-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-curly-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-curly-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-curly-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-curly-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-curly-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-long-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-long-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-long-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-long-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-long-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-long-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-long-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-long-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-ponytail-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-ponytail-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-ponytail-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-ponytail-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-ponytail-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-ponytail-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-ponytail-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-ponytail-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-spiky-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-spiky-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-spiky-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-spiky-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-spiky-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-spiky-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-spiky-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-spiky-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-swept-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-swept-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-swept-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-swept-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-swept-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-swept-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-swept-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-swept-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-undercut-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-undercut-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-undercut-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-undercut-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-undercut-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-undercut-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-undercut-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-undercut-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-wavy-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-wavy-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-wavy-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-wavy-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-wavy-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-wavy-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-wavy-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-hair-wavy-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-18-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-18-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-18-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-18-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-18-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-18-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-18-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-18-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-19-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-19-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-19-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-19-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-19-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-19-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-19-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-19-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-east-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-east-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-east-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-east-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-north-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-north-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-north-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-north-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-south-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-south-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-south-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-south-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-west-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-west-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-west-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-west-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-east-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-east-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-east-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-east-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-north-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-north-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-north-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-north-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-south-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-south-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-south-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-south-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-west-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-west-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-west-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-west-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-21-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-east-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-east-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-east-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-east-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-north-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-north-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-north-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-north-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-south-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-south-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-south-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-south-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-west-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-west-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-west-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-west-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-east-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-east-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-east-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-east-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-north-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-north-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-north-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-north-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-south-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-south-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-south-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-south-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-west-left-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-west-left-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-west-right-lower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-west-right-upper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-22-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-23-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-23-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-23-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-23-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-23-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-23-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-23-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-23-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-24-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-24-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-24-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-24-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-24-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-24-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-24-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-24-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-25-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-26-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-6-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-6-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-6-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-6-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-6-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-6-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-6-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-6-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-7-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-7-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-7-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-7-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-7-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-7-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-7-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-7-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-8-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-9-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hair-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hair-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hair-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hair-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hair-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hair-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hair-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hair-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hands-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hands-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hands-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hands-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hands-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hands-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hands-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-hands-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-head-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-head-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-head-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-head-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-head-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-head-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-head-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-original-head-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/feminino-attack-daggers-east-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-east-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-east-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-east-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-east-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-east-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-east-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-east-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-north-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-north-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-north-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-north-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-north-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-north-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-north-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-north-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-south-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-south-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-south-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-south-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-south-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-south-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-south-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-south-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-west-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-west-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-west-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-west-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-west-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-west-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-west-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-daggers-west-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-east-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-east-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-east-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-east-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-east-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-east-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-east-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-east-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-north-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-north-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-north-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-north-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-north-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-north-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-north-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-north-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-south-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-south-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-south-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-south-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-south-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-south-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-south-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-south-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-west-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-west-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-west-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-west-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-west-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-west-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-west-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-firearm-west-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-east-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-east-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-east-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-east-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-east-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-east-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-east-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-east-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-north-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-north-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-north-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-north-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-north-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-north-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-north-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-north-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-south-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-south-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-south-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-south-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-south-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-south-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-south-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-south-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-west-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-west-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-west-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-west-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-west-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-west-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-west-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-focus-west-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-east-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-east-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-east-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-east-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-east-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-east-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-east-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-east-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-north-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-north-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-north-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-north-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-north-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-north-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-north-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-north-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-south-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-south-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-south-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-south-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-south-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-south-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-south-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-south-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-west-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-west-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-west-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-west-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-west-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-west-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-west-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-sword-west-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-east-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-east-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-east-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-east-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-east-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-east-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-east-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-east-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-north-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-north-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-north-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-north-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-north-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-north-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-north-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-north-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-south-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-south-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-south-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-south-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-south-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-south-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-south-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-south-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-west-body.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-west-face.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-west-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-west-hair.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-west-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-west-pants.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-west-top.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-attack-unarmed-west-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/feminino-east-body.png": [
+      128,
+      128
+    ],
+    "assets/feminino-east-face.png": [
+      128,
+      128
+    ],
+    "assets/feminino-east-hair.png": [
+      128,
+      128
+    ],
+    "assets/feminino-east-pants.png": [
+      128,
+      128
+    ],
+    "assets/feminino-east-top.png": [
+      128,
+      128
+    ],
+    "assets/feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/feminino-idle-east-body.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-east-face.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-east-foreground.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-east-hair.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-east-head-base.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-east-pants.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-east-top.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-east-under-arms.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-north-body.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-north-face.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-north-foreground.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-north-hair.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-north-head-base.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-north-pants.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-north-top.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-north-under-arms.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-south-body.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-south-face.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-south-foreground.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-south-hair.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-south-head-base.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-south-pants.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-south-top.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-south-under-arms.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-west-body.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-west-face.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-west-foreground.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-west-hair.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-west-head-base.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-west-pants.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-west-top.png": [
+      512,
+      128
+    ],
+    "assets/feminino-idle-west-under-arms.png": [
+      512,
+      128
+    ],
+    "assets/feminino-north-body.png": [
+      128,
+      128
+    ],
+    "assets/feminino-north-face.png": [
+      128,
+      128
+    ],
+    "assets/feminino-north-hair.png": [
+      128,
+      128
+    ],
+    "assets/feminino-north-pants.png": [
+      128,
+      128
+    ],
+    "assets/feminino-north-top.png": [
+      128,
+      128
+    ],
+    "assets/feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/feminino-south-body.png": [
+      128,
+      128
+    ],
+    "assets/feminino-south-face.png": [
+      128,
+      128
+    ],
+    "assets/feminino-south-hair.png": [
+      128,
+      128
+    ],
+    "assets/feminino-south-pants.png": [
+      128,
+      128
+    ],
+    "assets/feminino-south-top.png": [
+      128,
+      128
+    ],
+    "assets/feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/feminino-walk-east-body.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-east-face.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-east-foreground.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-east-hair.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-east-head-base.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-east-pants.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-east-top.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-east-under-arms.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-north-body.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-north-face.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-north-foreground.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-north-hair.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-north-head-base.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-north-pants.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-north-top.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-north-under-arms.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-south-body.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-south-face.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-south-foreground.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-south-hair.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-south-head-base.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-south-pants.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-south-top.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-west-body.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-west-face.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-west-foreground.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-west-hair.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-west-head-base.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-west-pants.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-west-top.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-walk-west-under-arms.png": [
+      1024,
+      128
+    ],
+    "assets/feminino-west-body.png": [
+      128,
+      128
+    ],
+    "assets/feminino-west-face.png": [
+      128,
+      128
+    ],
+    "assets/feminino-west-hair.png": [
+      128,
+      128
+    ],
+    "assets/feminino-west-pants.png": [
+      128,
+      128
+    ],
+    "assets/feminino-west-top.png": [
+      128,
+      128
+    ],
+    "assets/feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/masculino-attack-daggers-east-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-east-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-east-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-east-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-east-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-east-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-east-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-east-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-north-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-north-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-north-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-north-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-north-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-north-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-north-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-north-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-south-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-south-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-south-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-south-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-south-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-south-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-south-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-south-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-west-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-west-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-west-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-west-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-west-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-west-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-west-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-daggers-west-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-east-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-east-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-east-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-east-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-east-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-east-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-east-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-east-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-north-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-north-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-north-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-north-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-north-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-north-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-north-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-north-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-south-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-south-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-south-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-south-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-south-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-south-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-south-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-south-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-west-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-west-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-west-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-west-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-west-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-west-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-west-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-firearm-west-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-east-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-east-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-east-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-east-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-east-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-east-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-east-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-east-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-north-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-north-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-north-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-north-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-north-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-north-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-north-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-north-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-south-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-south-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-south-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-south-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-south-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-south-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-south-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-south-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-west-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-west-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-west-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-west-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-west-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-west-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-west-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-focus-west-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-east-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-east-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-east-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-east-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-east-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-east-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-east-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-east-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-north-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-north-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-north-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-north-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-north-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-north-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-north-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-north-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-south-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-south-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-south-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-south-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-south-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-south-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-south-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-south-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-west-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-west-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-west-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-west-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-west-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-west-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-west-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-sword-west-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-east-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-east-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-east-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-east-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-east-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-east-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-east-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-east-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-north-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-north-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-north-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-north-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-north-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-north-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-north-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-north-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-south-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-south-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-south-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-south-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-south-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-south-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-south-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-south-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-west-body.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-west-face.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-west-foreground.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-west-hair.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-west-head-base.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-west-pants.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-west-top.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-attack-unarmed-west-under-arms.png": [
+      1280,
+      160
+    ],
+    "assets/masculino-east-body.png": [
+      128,
+      128
+    ],
+    "assets/masculino-east-face.png": [
+      128,
+      128
+    ],
+    "assets/masculino-east-hair.png": [
+      128,
+      128
+    ],
+    "assets/masculino-east-pants.png": [
+      128,
+      128
+    ],
+    "assets/masculino-east-top.png": [
+      128,
+      128
+    ],
+    "assets/masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/masculino-idle-east-body.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-east-face.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-east-foreground.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-east-hair.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-east-head-base.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-east-pants.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-east-top.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-east-under-arms.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-north-body.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-north-face.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-north-foreground.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-north-hair.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-north-head-base.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-north-pants.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-north-top.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-north-under-arms.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-south-body.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-south-face.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-south-foreground.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-south-hair.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-south-head-base.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-south-pants.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-south-top.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-south-under-arms.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-west-body.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-west-face.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-west-foreground.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-west-hair.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-west-head-base.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-west-pants.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-west-top.png": [
+      512,
+      128
+    ],
+    "assets/masculino-idle-west-under-arms.png": [
+      512,
+      128
+    ],
+    "assets/masculino-north-body.png": [
+      128,
+      128
+    ],
+    "assets/masculino-north-face.png": [
+      128,
+      128
+    ],
+    "assets/masculino-north-hair.png": [
+      128,
+      128
+    ],
+    "assets/masculino-north-pants.png": [
+      128,
+      128
+    ],
+    "assets/masculino-north-top.png": [
+      128,
+      128
+    ],
+    "assets/masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/masculino-south-body.png": [
+      128,
+      128
+    ],
+    "assets/masculino-south-face.png": [
+      128,
+      128
+    ],
+    "assets/masculino-south-hair.png": [
+      128,
+      128
+    ],
+    "assets/masculino-south-pants.png": [
+      128,
+      128
+    ],
+    "assets/masculino-south-top.png": [
+      128,
+      128
+    ],
+    "assets/masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/masculino-walk-east-body.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-east-face.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-east-foreground.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-east-hair.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-east-head-base.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-east-pants.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-east-top.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-east-under-arms.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-north-body.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-north-face.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-north-foreground.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-north-hair.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-north-head-base.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-north-pants.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-north-top.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-north-under-arms.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-south-body.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-south-face.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-south-foreground.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-south-hair.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-south-head-base.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-south-pants.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-south-top.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-west-body.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-west-face.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-west-foreground.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-west-hair.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-west-head-base.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-west-pants.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-west-top.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-walk-west-under-arms.png": [
+      1024,
+      128
+    ],
+    "assets/masculino-west-body.png": [
+      128,
+      128
+    ],
+    "assets/masculino-west-face.png": [
+      128,
+      128
+    ],
+    "assets/masculino-west-hair.png": [
+      128,
+      128
+    ],
+    "assets/masculino-west-pants.png": [
+      128,
+      128
+    ],
+    "assets/masculino-west-top.png": [
+      128,
+      128
+    ],
+    "assets/masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/ownership-feminino-attack-daggers-packed.png": [
+      960,
+      960
+    ],
+    "assets/ownership-feminino-attack-firearm-packed.png": [
+      960,
+      960
+    ],
+    "assets/ownership-feminino-attack-focus-packed.png": [
+      960,
+      960
+    ],
+    "assets/ownership-feminino-attack-sword-packed.png": [
+      960,
+      960
+    ],
+    "assets/ownership-feminino-attack-unarmed-packed.png": [
+      960,
+      960
+    ],
+    "assets/ownership-feminino-idle.png": [
+      512,
+      512
+    ],
+    "assets/ownership-feminino-static.png": [
+      128,
+      512
+    ],
+    "assets/ownership-feminino-walk.png": [
+      1024,
+      512
+    ],
+    "assets/ownership-masculino-attack-daggers-packed.png": [
+      960,
+      960
+    ],
+    "assets/ownership-masculino-attack-firearm-packed.png": [
+      960,
+      960
+    ],
+    "assets/ownership-masculino-attack-focus-packed.png": [
+      960,
+      960
+    ],
+    "assets/ownership-masculino-attack-sword-packed.png": [
+      960,
+      960
+    ],
+    "assets/ownership-masculino-attack-unarmed-packed.png": [
+      960,
+      960
+    ],
+    "assets/ownership-masculino-idle.png": [
+      512,
+      512
+    ],
+    "assets/ownership-masculino-static.png": [
+      128,
+      512
+    ],
+    "assets/ownership-masculino-walk.png": [
+      1024,
+      512
+    ],
+    "assets/torso-item-6-feminino-attack-daggers.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-6-feminino-attack-firearm.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-6-feminino-attack-focus.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-6-feminino-attack-sword.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-6-feminino-attack-unarmed.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-6-feminino-idle.png": [
+      512,
+      512
+    ],
+    "assets/torso-item-6-feminino-static.png": [
+      128,
+      512
+    ],
+    "assets/torso-item-6-feminino-walk.png": [
+      1024,
+      512
+    ],
+    "assets/torso-item-6-masculino-attack-daggers.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-6-masculino-attack-firearm.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-6-masculino-attack-focus.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-6-masculino-attack-sword.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-6-masculino-attack-unarmed.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-6-masculino-idle.png": [
+      512,
+      512
+    ],
+    "assets/torso-item-6-masculino-static.png": [
+      128,
+      512
+    ],
+    "assets/torso-item-6-masculino-walk.png": [
+      1024,
+      512
+    ],
+    "assets/torso-item-7-feminino-attack-daggers.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-7-feminino-attack-firearm.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-7-feminino-attack-focus.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-7-feminino-attack-sword.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-7-feminino-attack-unarmed.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-7-feminino-idle.png": [
+      512,
+      512
+    ],
+    "assets/torso-item-7-feminino-static.png": [
+      128,
+      512
+    ],
+    "assets/torso-item-7-feminino-walk.png": [
+      1024,
+      512
+    ],
+    "assets/torso-item-7-masculino-attack-daggers.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-7-masculino-attack-firearm.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-7-masculino-attack-focus.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-7-masculino-attack-sword.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-7-masculino-attack-unarmed.png": [
+      960,
+      960
+    ],
+    "assets/torso-item-7-masculino-idle.png": [
+      512,
+      512
+    ],
+    "assets/torso-item-7-masculino-static.png": [
+      128,
+      512
+    ],
+    "assets/torso-item-7-masculino-walk.png": [
+      1024,
+      512
+    ],
+    "assets/weapon-item-0.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-1.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-12.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-13.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-14.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-15-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-15-south.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-15.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-16.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-17.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-2.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-3.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-31.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-32.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-4-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-4-south.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-4.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-5-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-5-south.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-5.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-67.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-68.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-69.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-70.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-71.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-72.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-73.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-74.png": [
+      128,
+      128
+    ]
+  }
 }

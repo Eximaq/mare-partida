@@ -45,6 +45,7 @@ test('dedicated character art remains selected during loading and failure',()=>{
   assert(registry.asset(papacapim),'failed load does not change identity');
   ready=true;assert.equal(registry.draw({},papacapim,0,0,{action:'combat-idle'}),true);
   const source=fs.readFileSync(require.resolve('../game.js'),'utf8');
-  assert(source.includes('classCombat.entry(game)'),'world chooses configured identity');
+  assert(source.includes('return lobby96.draw(c,game'),'world uses the current player owner');
+  assert(!source.includes('drawConfiguredHuman(')&&!source.includes('paperDollReview.draw('),'no old human fallback can run');
   assert(!source.includes('assets/sprites/'),'legacy base sprites are never requested');
 });

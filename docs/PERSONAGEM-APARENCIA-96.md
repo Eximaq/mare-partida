@@ -1,5 +1,7 @@
 # Sprint 3 — Sua Aparência
 
+> Atualização de 30/10/2026: a regra vigente está em [Sprites atuais — fonte única](SPRITES-ATUAIS-FONTE-UNICA.md). O jogador usa exclusivamente native96 (inclusive DEV); `paperDoll96=0` não reativa o modelo antigo. Referências abaixo a rollback/fallback84 ou ensaio temporário no mundo são históricas e foram substituídas. Bancadas antigas continuam isoladas.
+
 Base: 4ea153f, Sprint 2/PR155. Branch: feature/character-appearance-step3. A revisão deve entrar após a Sprint 2; não há merge automático.
 
 ## Fluxo e opções

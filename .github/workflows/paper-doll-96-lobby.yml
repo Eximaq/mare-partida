@@ -1,4 +1,4 @@
-name: Paper Doll 96 — ensaio no lobby
+name: Personagem atual — propriedade exclusiva e regressão
 on:
   pull_request:
     branches: [main]
@@ -9,6 +9,17 @@ on:
       - 'tests/character_appearance_browser.cjs'
       - 'tests/character_appearance_materials_browser.cjs'
       - 'paper-doll-96-lobby.js'
+      - 'combat-registry.js'
+      - 'sprite-combat-v2.js'
+      - 'sprite-combat-v2-data.js'
+      - 'zoan-art.js'
+      - 'assets/sprites-combat-v2/**'
+      - 'rank-c-expansion.js'
+      - '*-system.js'
+      - 'tools/player96_release.py'
+      - 'tests/player96_release_test.py'
+      - 'tests/current-player-*.test.cjs'
+      - 'tests/player_sprite_ownership_browser.cjs'
       - 'game.js'
       - 'headgear-visibility.js'
       - 'inventory-compact.css'
@@ -31,7 +42,7 @@ permissions:
 jobs:
   lobby96:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -49,6 +60,10 @@ jobs:
           curl --retry 20 --retry-connrefused --retry-delay 1 --fail http://127.0.0.1:8157/dist/ > /dev/null
       - name: Verificar contrato e lobby real
         run: |
+          python tools/player96_release.py --check
+          python tests/player96_release_test.py
+          node --test tests/current-player-release.test.cjs tests/current-player-sprites.test.cjs
+          node tests/player_sprite_ownership_browser.cjs http://127.0.0.1:8157/dist/ --evidence="$RUNNER_TEMP/lobby96/ownership"
           node tests/paper-doll-96-lobby.test.cjs
           node tests/paper_doll_96_lobby_browser.cjs http://127.0.0.1:8157/dist/ --evidence="$RUNNER_TEMP/lobby96"
       - uses: actions/upload-artifact@v4
