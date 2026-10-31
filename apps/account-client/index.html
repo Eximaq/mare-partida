@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#091b23" />
+    <title>Registro de bordo — Maré Partida</title>
+    <link rel="stylesheet" href="./account.css" />
+    <script type="module" src="./account.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="#account">Pular para a conta</a>
+    <header>
+      <a class="brand" href="/">Maré Partida <span>Registro de bordo</span></a>
+      <p id="environment">Ambiente de desenvolvimento</p>
+    </header>
+    <main>
+      <aside>
+        <div class="compass" aria-hidden="true">✦</div>
+        <h1>Seu nome.<br />Seu lugar nos mares.</h1>
+        <p>
+          Guarde sua identidade e escolha o personagem que acompanhará sua
+          jornada.
+        </p>
+        <div class="note">
+          <strong>Uma nova travessia</strong>
+          <p>
+            O personagem online começa do zero. Sua aventura salva neste
+            navegador continua na demonstração, sem alterações.
+          </p>
+          <a href="/">Abrir demonstração local</a>
+        </div>
+      </aside>
+      <section
+        id="account"
+        class="ledger"
+        aria-labelledby="panel-title"
+        tabindex="-1"
+      >
+        <h2 id="panel-title">Entrar na conta</h2>
+        <p id="status" role="status" aria-live="polite"></p>
+        <div id="signed-out">
+          <nav aria-label="Acesso à conta">
+            <button type="button" data-mode="login" aria-pressed="true">
+              Entrar</button
+            ><button type="button" data-mode="signup" aria-pressed="false">
+              Criar conta</button
+            ><button type="button" data-mode="recover" aria-pressed="false">
+              Recuperar acesso
+            </button>
+          </nav>
+          <form id="auth-form">
+            <label for="email">E-mail</label
+            ><input
+              id="email"
+              name="email"
+              type="email"
+              spellcheck="false"
+              autocomplete="username"
+              required
+              maxlength="254"
+            />
+            <div id="password-field">
+              <label for="password">Senha</label
+              ><input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                minlength="12"
+                maxlength="128"
+                required
+              /><small>Use uma senha com pelo menos 12 caracteres.</small>
+            </div>
+            <button class="primary" id="auth-submit" type="submit">
+              Entrar
+            </button>
+          </form>
+          <p class="quiet">
+            A criação da conta exige confirmação pelo e-mail. Abra o link neste
+            mesmo navegador.
+          </p>
+        </div>
+        <form id="reset-form" hidden>
+          <p>
+            Escolha uma nova senha. Ao concluir, entre novamente na sua conta.
+          </p>
+          <label for="new-password">Nova senha</label
+          ><input
+            id="new-password"
+            name="new-password"
+            type="password"
+            autocomplete="new-password"
+            minlength="12"
+            maxlength="128"
+            required
+          /><button class="primary" type="submit">Salvar nova senha</button>
+        </form>
+        <div id="signed-in" hidden>
+          <div id="character" hidden>
+            <h3 id="character-name"></h3>
+            <p id="character-details"></p>
+            <p id="control-state">Nenhum controle solicitado nesta aba.</p>
+            <button type="button" id="control">Controlar nesta aba</button>
+          </div>
+          <form id="character-form">
+            <p>
+              Um personagem por conta. Escolha com calma: estas opções não
+              poderão ser alteradas nesta etapa.
+            </p>
+            <label for="name">Nome do personagem</label
+            ><input
+              id="name"
+              name="name"
+              required
+              maxlength="40"
+              autocomplete="off"
+            /><label for="class">Classe</label
+            ><select id="class" name="classId">
+              <option value="sword">Espadachim</option>
+              <option value="brawler">Lutador</option>
+              <option value="gunner">Atirador</option>
+              <option value="rogue">Gatuno</option>
+              <option value="cyborg">Ciborgue</option>
+              <option value="strategist">Estrategista</option>
+              <option value="healer">Curandeiro</option></select
+            ><label for="faction">Facção</label
+            ><select id="faction" name="factionId">
+              <option value="pirate">Pirata</option>
+              <option value="marine">Marinha</option>
+              <option value="revolutionary">Revolucionário</option>
+              <option value="government">Governo</option></select
+            ><button class="primary" type="submit">Criar personagem</button>
+          </form>
+          <p class="quiet">
+            Esta etapa registra sua conta e seu personagem. A aventura online
+            será liberada em uma etapa futura.
+          </p>
+          <div class="session-actions">
+            <button type="button" id="rotate">Renovar sessão</button
+            ><button type="button" id="logout">Sair deste dispositivo</button
+            ><button type="button" id="logout-all">
+              Sair de todos os dispositivos
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>Maré Partida · Contas de desenvolvimento</footer>
+  </body>
+</html>

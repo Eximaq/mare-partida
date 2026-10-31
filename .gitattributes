@@ -1,4 +1,11 @@
 * text=auto
+# Scope normalization to the new backend; do not rewrite existing game assets.
+/apps/** text eol=lf
+/packages/** text eol=lf
+/infra/** text eol=lf
+/tests/foundation/** text eol=lf
+/tests/integration/server* text eol=lf
+
 *.png binary
 *.webp binary
 *.jpg binary

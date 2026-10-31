@@ -1,0 +1,33 @@
+{
+  "name": "mare-partida",
+  "private": true,
+  "version": "0.1.0",
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "workspaces": [
+    "apps/game-server",
+    "packages/shared"
+  ],
+  "scripts": {
+    "build": "npm run build -w @mare/shared && npm run build -w @mare/game-server",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "npm run test:foundation && npm run test:legacy",
+    "test:foundation": "node --import tsx --test tests/foundation/*.test.mts",
+    "test:integration": "node --env-file-if-exists=.env.test.local --import tsx --test tests/integration/server*.test.mts",
+    "test:legacy": "node tools/run_node_tests.cjs",
+    "dev:server": "node --env-file-if-exists=.env.server.local --import tsx apps/game-server/src/main.ts",
+    "dev:certificate": "node --import tsx tools/create-dev-certificate.mts",
+    "dev:gateway": "node --import tsx tools/dev-gateway.mts",
+    "test:auth-browser": "node --env-file-if-exists=.env.test.local --import tsx tools/auth-browser-fixture.mts",
+    "start:server": "node --env-file-if-exists=.env.server.local apps/game-server/dist/main.js",
+    "db:migrate": "node --env-file-if-exists=.env.migration.local apps/game-server/dist/migrate-cli.js"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "@types/pg": "8.23.1",
+    "selfsigned": "5.5.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2"
+  }
+}

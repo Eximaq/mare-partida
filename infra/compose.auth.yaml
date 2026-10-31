@@ -1,0 +1,13 @@
+# Opt-in overlay. Supply values through an ignored local env file; never print `config`.
+services:
+  server:
+    environment:
+      AUTH_ENABLED: "true"
+      AUTH_PUBLIC_ORIGIN: https://localhost:9443
+      SUPABASE_URL: ${SUPABASE_URL:?Set the separate development project URL}
+      SUPABASE_PUBLISHABLE_KEY: ${SUPABASE_PUBLISHABLE_KEY:?Set its public publishable key}
+      SUPABASE_JWT_ALGORITHM: ${SUPABASE_JWT_ALGORITHM:-ES256}
+      AUTH_ENCRYPTION_KEY: ${AUTH_ENCRYPTION_KEY:?Set a private random 32-byte base64 key}
+      SESSION_ABSOLUTE_SECONDS: ${SESSION_ABSOLUTE_SECONDS:?Set an explicit session policy}
+      SESSION_IDLE_SECONDS: ${SESSION_IDLE_SECONDS:?Set an explicit session policy}
+      PROVIDER_RECHECK_SECONDS: ${PROVIDER_RECHECK_SECONDS:?Set an explicit session policy}
