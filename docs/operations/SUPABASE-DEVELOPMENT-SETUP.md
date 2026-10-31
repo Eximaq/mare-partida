@@ -4,6 +4,31 @@ O proprietário escolheu criar/configurar o projeto manualmente. Este roteiro n�
 autoriza o agente a criar recursos, alterar projetos existentes, contratar planos ou
 enviar e-mails. Não forneça senhas, tokens, links de recuperação ou chaves no chat.
 
+## Situação informada em 31/10/2026
+
+O proprietário informou ter criado manualmente `mare-partida-auth-dev` no plano
+gratuito, com e-mail/senha, confirmação obrigatória, JWT de 900 segundos e assinatura
+assimétrica. Informou também Site URL `https://localhost:9443/online/`, retorno exato
+`https://localhost:9443/v1/auth/callback`, Data API e exposição automática de novas
+tabelas desativadas, e serviço de e-mail padrão com destinatário autorizado.
+
+Essas configurações são **declaração do proprietário, ainda não verificadas no
+provedor**. A URL pública e a configuração privada local serão fornecidas depois.
+Confirmar o algoritmo efetivo (ES256 ou RS256) antes da ativação; não inferir somente
+da expressão “assimétrico”. O proprietário definiu JWT de 900 s e escolheu a política
+BFF mais curta: 24 horas absolutas e 2 horas sem requisições autenticadas.
+
+Data API desativada não muda a arquitetura: o BFF usa o serviço Auth, e as tabelas
+de contas, sessões e personagens ficam no PostgreSQL do jogo, separado do Supabase.
+Nenhuma migration do jogo deve ser executada no banco do projeto hospedado.
+
+Antes de cadastrar contas ou enviar e-mails de confirmação/recuperação, solicitar
+autorização específica para o projeto e os destinatários de teste. Para troca de
+senha e logout remoto, combinar também o escopo das contas descartáveis. A criação
+manual do projeto não equivale a autorização para esses ensaios.
+
+## Roteiro de referência
+
 1. No dashboard Supabase, escolha uma organização **Free** e crie um projeto novo,
    por exemplo `mare-partida-auth-dev`. Confira o custo exibido antes de confirmar;
    se exigir pagamento ou upgrade, pare. Não reutilize um projeto existente. Escolha
@@ -11,7 +36,7 @@ enviar e-mails. Não forneça senhas, tokens, links de recuperação ou chaves n
 2. Guarde a senha do banco do Supabase em seu gerenciador. O jogo não precisará dessa
    senha nem de service_role/secret key: o banco do jogo permanece separado.
 3. Em Auth, habilite e-mail/senha e **Confirm email**. Mantenha proteção contra reuso
-   de refresh. Configure expiração do JWT em 900 segundos após aceitar essa política.
+   de refresh. Configure expiração do JWT em 900 segundos, conforme política aprovada.
    Use chave de assinatura assimétrica; registre o algoritmo e issuer públicos.
 4. Configure Site URL `https://localhost:9443/online/` e permita exatamente
    `https://localhost:9443/v1/auth/callback`. Não use wildcard de produção. Links

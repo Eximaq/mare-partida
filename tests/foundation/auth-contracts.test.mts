@@ -1,5 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { readFileSync } from "node:fs";
+import { parseEnv } from "node:util";
 import {
   characterCreateSchema,
   loginSchema,
@@ -7,6 +9,25 @@ import {
 } from "../../packages/shared/src/schemas/auth.js";
 import { Vault, equal } from "../../apps/game-server/src/auth/vault.js";
 import { readAuthConfig } from "../../apps/game-server/src/auth/config.js";
+
+test("development template keeps Auth disabled and applies the approved 24h/2h BFF policy", () => {
+  const example = parseEnv(
+    readFileSync(new URL("../../.env.example", import.meta.url), "utf8"),
+  );
+  assert.equal(readAuthConfig(example), undefined);
+  const enabled = readAuthConfig({
+    ...example,
+    AUTH_ENABLED: "true",
+    SUPABASE_URL: "https://exampledev.supabase.co",
+    SUPABASE_PUBLISHABLE_KEY: "sb_publishable_fixture",
+    AUTH_ENCRYPTION_KEY: Buffer.alloc(32, 7).toString("base64"),
+  });
+  assert.deepEqual(enabled?.policy, {
+    absoluteMs: 86400000,
+    idleMs: 7200000,
+    recheckMs: 900000,
+  });
+});
 test("identity/economy overposting and unsafe character names cannot cross the online boundary", () => {
   const valid = { name: "Capitão Maré", classId: "sword", factionId: "pirate" };
   assert.deepEqual(characterCreateSchema.parse(valid), valid);

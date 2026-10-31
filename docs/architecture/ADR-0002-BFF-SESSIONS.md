@@ -56,10 +56,12 @@ necessária para desenvolver/testar localmente e não será criada nesta tarefa.
   a trocar senha; não permite acessar personagem. Troca concluída revoga sessões
   internas anteriores e exige novo login. Fluxo incompleto não concede autoridade.
 
-## Política temporal proposta antes da implementação
+## Política temporal aprovada em 31/10/2026
 
-JWT de 15 minutos; sessão interna com validade absoluta de 7 dias e ociosidade de
-24 horas sem requisições autenticadas; atividades idle normais podem manter sessão.
+O proprietário escolheu a opção mais curta, substituindo a proposta inicial de
+7 dias/24 horas: JWT de 15 minutos; sessão interna com validade absoluta de 24 horas
+e ociosidade de 2 horas sem requisições autenticadas. Atividades idle normais podem
+manter sessão.
 Revogação interna imediata. Revogação externa detectada no próximo refresh, limitado
 a 15 minutos; operações em curso têm deadline próprio. Refresh não estende validade
 absoluta. As durações são configuração validada, não constantes dispersas. Preauth e
@@ -92,8 +94,8 @@ enquanto o anterior não se resolver. Autenticação desligada por padrão sem c
 
 ## Homologação e publicação
 
-A aplicação continua desabilitada por padrão. Os TTLs acima são proposta configurável,
-não aprovação implícita do proprietário: a ativação exige valores explícitos. Rotação
+A aplicação continua desabilitada por padrão. Os TTLs acima foram escolhidos pelo
+proprietário e seguem configuráveis: a ativação exige valores explícitos. Rotação
 opaca ocorre no login, callback e endpoint de renovação; não há rotação periódica
 automática nem período de tolerância para reutilizar cookie substituído. Refresh do
 provedor é serializado por sessão. A fronteira autorização/escrita adquire lock da

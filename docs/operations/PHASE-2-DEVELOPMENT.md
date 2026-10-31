@@ -11,6 +11,21 @@ Requisitos: Node indicado em `.node-version`, npm, Python para o build legado e
 PostgreSQL 18.6. A migração é executada pelo owner; a aplicação usa somente runtime.
 Não utilizar credenciais admin/owner em `.env.server.local`.
 
+Na preparação local de 31/10/2026 foi criado o banco vazio `mare_auth_dev` na
+instância de desenvolvimento já existente, sem restart. Foram criadas roles próprias
+`mare_auth_owner` (migração) e `mare_auth_runtime` (aplicação), sem privilégios de
+superusuário, criação de banco/roles ou bypass de RLS. As migrations 0001/0002 e os
+grants foram aplicados nesse banco; repetição, readiness e negativas de privilégio
+passaram. O banco da Fase 1 não foi migrado nem reutilizado.
+
+As URLs correspondentes ficam somente em `.env.migration.local` e `.env.server.local`,
+ignorados. A chave de cifragem foi gerada localmente sem saída em logs. O arquivo do
+servidor mantém Auth desligado e campos Supabase incompletos, aguardando o proprietário.
+Os comandos Docker abaixo são uma **alternativa de instalação**: usam os nomes
+genéricos `mare_owner`/`mare_runtime` em outra instância. Não reaplicar seus grants
+sem adaptar a role à instância; no banco preparado, o destinatário é
+`mare_auth_runtime`.
+
 ```sh
 npm ci --ignore-scripts
 npm run build
@@ -53,7 +68,8 @@ linha placeholder `AUTH_ENCRYPTION_KEY` do arquivo local, pode-se executar:
 node --input-type=module -e "import{appendFileSync,readFileSync}from'node:fs';import{randomBytes}from'node:crypto';const p='.env.server.local';if(/^AUTH_ENCRYPTION_KEY=/m.test(readFileSync(p,'utf8')))throw Error('Key already configured');appendFileSync(p,'\nAUTH_ENCRYPTION_KEY='+randomBytes(32).toString('base64')+'\n',{mode:0o600});"
 ```
 
-Proposta pendente de política: JWT 900 s, sessão absoluta 604800 s, inatividade 86400 s,
+Política aprovada pelo proprietário em 31/10/2026: JWT 900 s, sessão absoluta 86400 s,
+inatividade 7200 s,
 revalidação do provedor no máximo 900 s. Configuração não aceita ausência dos TTLs.
 Atividade autenticada mantém a janela de inatividade, nunca a validade absoluta.
 Revogação interna é transacional; detecção de revogação externa admite a janela de
@@ -131,7 +147,7 @@ e-mail, dados pessoais, senhas ou tokens. Mocks/SDK com JWT local não substitue
 ## Limites operacionais antes de exposição pública
 
 - Escolher hospedagem com origem HTTPS comum; Pages estático não executa o BFF.
-- Aprovar TTLs, limites por IP atrás de proxy confiável e proteção adicional de abuso.
+- Manter os TTLs aprovados; definir limites por IP atrás de proxy confiável e proteção adicional de abuso.
   IP não autoriza contas. O gateway local remove headers de origem de IP não confiáveis.
 - Definir retenção de metadados e gestão/backup da chave. Tokens expirados/revogados
   são apagados por lotes; metadados de sessão ainda não têm retenção automática final.

@@ -106,10 +106,10 @@ não assumir que duas chamadas sempre provocam revogação.
 [Logout](https://supabase.com/docs/guides/auth/signout) ·
 [Sessões](https://supabase.com/docs/guides/auth/sessions).
 
-Proposta para discussão: access JWT de 15–60 minutos, sessão interna de até 7 dias
-com renovação limitada e reautenticação para operações sensíveis. Não fixar esses
-valores sem decidir revogação externa, dispositivos e recuperação. Idle legítimo não
-é ausência de atividade de segurança; não exigir cliques constantes. Alguns controles
+Decisão posterior do proprietário em 31/10/2026: JWT de 15 minutos, sessão BFF de
+24 horas absolutas e 2 horas de inatividade, substituindo a proposta inicial de até
+7 dias. Refresh não amplia a validade absoluta. Idle legítimo não é ausência de
+atividade de segurança; não exigir cliques constantes. Alguns controles
 de sessão do provedor dependem do plano contratado; não pressupor contratação.
 
 ## Autorização e contratos HTTP propostos

@@ -31,10 +31,16 @@ de logout após refresh. A versão final evita ampliar grants para contornar tes
 
 ## Resultados observados
 
+Preparação adicional de 31/10/2026: banco local separado `mare_auth_dev`, roles
+próprias e zero contas/personagens, migrations 0001/0002 repetíveis, grants mínimos
+verificados e smoke HTTPS real com health/ready 200. Auth permaneceu desligado
+(rota CSRF 404), sem chamadas ao Supabase. O teste da política de sessão aprovada
+falhou com o exemplo anterior e passou após atualização para 24 h/2 h.
+
 | Ensaio local | Resultado |
 |---|---|
 | Build / TypeScript estrito | Passaram |
-| Fundação, contratos, gateway TLS, SDK com JWTs locais | 27/27 |
+| Fundação, contratos, gateway TLS, SDK com JWTs locais | 28/28 após a política aprovada |
 | Integração PostgreSQL real, incluindo role LOGIN mínima | 17/17 |
 | Legado Node | 122/122 arquivos; supa-browser tem harness separado |
 | Python backend / hierarquia | 69 + 4 |
@@ -58,13 +64,17 @@ efetivo no Draft PR; configuração escrita não equivale a execução bem-suced
 
 ## Aceitação e riscos ainda abertos
 
-**A Fase 2 não está homologada no Supabase real.** O proprietário escolheu preparar
-manualmente um projeto gratuito separado. Não houve criação/alteração de projeto,
-envio de e-mail, configuração remota ou uso de credencial do provedor. SDK com servidor
-simulado não comprova o comportamento do ambiente hospedado.
+**A Fase 2 não está homologada no Supabase real.** Em 31/10/2026, o proprietário
+informou ter criado/configurado manualmente o projeto gratuito `mare-partida-auth-dev`,
+com confirmação obrigatória e JWT de 900 s. A URL pública e a configuração privada
+local ainda estão pendentes; não houve validação remota. O agente não criou/alterou
+o projeto, enviou e-mails ou utilizou credenciais do provedor. SDK com servidor
+simulado não comprova o comportamento do ambiente hospedado. Ver o
+[estado de preparação](../operations/SUPABASE-DEVELOPMENT-SETUP.md).
 
-Política temporal proposta: JWT/revalidação até 15 min, sessão absoluta 7 dias,
-inatividade 24 h. Permanece configurável e exige decisão explícita na ativação.
+Política escolhida pelo proprietário em 31/10/2026: JWT/revalidação até 15 min,
+sessão absoluta de 24 horas e inatividade de 2 horas. O exemplo e a configuração
+privada local adotam esses valores; Auth segue desligado até preparar o provedor.
 Pendentes: entrega real de e-mail, confirmação/recuperação, concorrência de refresh
 no provedor, revogação externa/JWKS, hospedagem de origem comum para produção,
 retenção/chaves, proteção adicional contra abuso e testes de carga.
