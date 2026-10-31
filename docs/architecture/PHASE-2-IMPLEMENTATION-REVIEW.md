@@ -68,17 +68,27 @@ efetivo no Draft PR; configuração escrita não equivale a execução bem-suced
 informou ter criado/configurado manualmente o projeto gratuito `mare-partida-auth-dev`,
 com confirmação obrigatória e JWT de 900 s. Depois de ele preencher a configuração
 privada, foi autorizada e executada pré-validação remota somente GET: publishable key
-aceita, Auth com confirmação obrigatória e JWKS ES256 compatível. A Data API retornou
-401 exigindo chave privilegiada; seu estado no painel não foi comprovado por essa
-leitura. O agente não criou/alterou o projeto, cadastrou contas ou enviou e-mails.
+aceita, Auth com confirmação obrigatória e JWKS ES256 compatível. A resposta 401 da
+Data API não comprovava seu estado. Na preparação funcional posterior, o dashboard
+do projeto confirmou `Enable Data API` desligado e `Data API is disabled`, sem
+service_role/secret key nem alteração de configuração.
 Configuração local válida e metadados remotos não substituem os ensaios de sessão.
 SDK com servidor simulado não comprova o comportamento do ambiente hospedado. Ver o
 [estado de preparação](../operations/SUPABASE-DEVELOPMENT-SETUP.md).
 
 Política escolhida pelo proprietário em 31/10/2026: JWT/revalidação até 15 min,
 sessão absoluta de 24 horas e inatividade de 2 horas. O exemplo e a configuração
-privada local adotam esses valores; Auth segue desligado até autorizar os ensaios.
-Pendentes: entrega real de e-mail, confirmação/recuperação, concorrência de refresh
+privada local adotam esses valores. A preparação funcional autorizada substituiu a
+senha de `mare_auth_runtime` e a chave de cifragem, rejeitou a senha antiga e confirmou
+ausência de registros cifrados a migrar. Auth foi ativado apenas no ambiente local:
+readiness/CSRF passaram e `/v1/me` sem sessão foi recusado; tela HTTPS real carregou.
+Depois de autorização específica, o proprietário cadastrou uma conta e informou
+recebimento do e-mail. Login real, JWT ES256 com assinatura válida e duração de 900 s,
+persistência por reload e logout passaram; fila remota vazia. A recusa antes da
+confirmação ficou inconclusiva porque um link foi aberto durante o ensaio. O callback
+PKCE completo não foi comprovado. Não houve recuperação, segunda conta ou personagem.
+Auth voltou a desligado e somente os processos API/gateway do ensaio foram encerrados.
+Pendentes: confirmação em sequência controlada/callback, recuperação, concorrência de refresh
 no provedor, revogação externa/JWKS, hospedagem de origem comum para produção,
 retenção/chaves, proteção adicional contra abuso e testes de carga.
 

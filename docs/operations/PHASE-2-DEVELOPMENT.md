@@ -123,8 +123,48 @@ na imagem da API ou em homologação real. Ele não envia e-mails.
 
 ## Aceitação no Supabase real — ainda pendente
 
-O projeto e a configuração local foram preparados pelo proprietário, e a conexão
-de leitura já foi validada. Após autorizar os ensaios com duas caixas sob seu controle:
+O projeto e a configuração local foram preparados pelo proprietário. A conexão de
+leitura, a troca das duas credenciais locais, a Data API desligada no dashboard e
+o HTTPS com Auth ativo foram verificados. O primeiro ensaio real passou em login,
+JWT ES256/900 s, reload e logout. A recusa antes da confirmação ficou inconclusiva
+porque o link foi aberto durante o ensaio; callback completo segue pendente.
+Auth voltou a desligado e os processos do ensaio foram encerrados. Ver o
+[relatório funcional](SUPABASE-DEVELOPMENT-SETUP.md#primeiro-ensaio-funcional-real--31102026).
+Os testes abaixo continuam distintos dos testes locais com provedor simulado.
+
+### Etapa inicial: uma conta autorizada
+
+Combinar com o proprietário um e-mail sob seu controle, permitido pelo serviço de
+e-mail padrão do projeto, e autorização específica para um cadastro e uma mensagem
+de confirmação. A senha é definida por ele na tela local, sem passar pelo chat.
+
+1. Submeter o cadastro uma única vez. A resposta neutra da API não comprova entrega;
+   se não chegar, registrar pendência sem reenviar automaticamente.
+2. Antes de abrir o link, testar uma tentativa de login com a senha correta: deve
+   ser recusada e não criar sessão local autenticada.
+3. O proprietário abre o link no mesmo perfil/navegador que iniciou o cadastro,
+   preservando o cookie PKCE. Não compartilhar o link nem abri-lo em outro perfil.
+4. Verificar sessão após confirmação, persistência por reload e login explícito.
+   Validar assinatura de um JWT emitido com JWKS, algoritmo ES256 e `exp - iat = 900`
+   somente em memória. Registrar apenas resultados e contagens, nunca tokens/claims.
+5. Testar logout local e rejeição de acesso posterior. Aguardar a fila de revogação
+   antes de encerrar. Não criar personagem, recuperar senha ou cadastrar segunda
+   conta como consequência automática desta etapa.
+
+### Etapas adicionais: autorização separada antes da execução
+
+| Ensaio | Contas e operações necessárias |
+|---|---|
+| Recuperação | Mesma conta de teste; mais um e-mail de recuperação, senha nova definida pelo proprietário, teste de sessão restrita e revogação global |
+| Autorização cruzada | Segunda caixa sob controle do proprietário; mais um cadastro e uma confirmação; um personagem novo por conta, leitura/controle cruzados devem falhar sem alterar personagens |
+| Abas, dispositivos e refresh | Conta já autorizada em duas abas e dois perfis, espera pelo vencimento real, refresh concorrente, controle exclusivo, rotação e logout local/global |
+| Revogação externa ou chaves | Escopo explícito da conta/projeto; apresentar antes qualquer mudança no dashboard, sem afetar contas fora do ensaio |
+
+Não assumir que autorização de uma linha permite executar as demais. Um destinatário
+adicional depende das restrições reais do SMTP gratuito; não contornar por serviço
+pago, alteração DNS ou uso de endereço de terceiros.
+
+Matriz completa a executar somente conforme as autorizações correspondentes:
 
 1. Cadastro com confirmação obrigatória: login antes de confirmar falha; link no
    mesmo navegador cria sessão. Link repetido, expirado e em outro perfil falha.

@@ -14,8 +14,9 @@ tabelas desativadas, e serviço de e-mail padrão com destinatário autorizado.
 
 O proprietário preencheu URL, publishable key e algoritmo no arquivo local ignorado.
 A pré-validação abaixo confirmou conexão Auth, chave aceita, confirmação obrigatória
-e chave pública ES256 compatível. As demais opções do painel continuam informadas
-pelo proprietário. JWT de 900 s e política BFF de 24 horas absolutas/2 horas sem
+e chave pública ES256 compatível. Na preparação funcional, a Data API desligada foi
+confirmada diretamente no dashboard, sem chave privilegiada. As demais opções do
+painel continuam informadas pelo proprietário. JWT de 900 s e política BFF de 24 horas absolutas/2 horas sem
 requisições autenticadas foram definidos por ele.
 
 Data API desativada não muda a arquitetura: o BFF usa o serviço Auth, e as tabelas
@@ -57,6 +58,61 @@ usar uma secret/service_role key só para ampliar essa pré-validação.
 Referências para interpretação: [settings do Auth](https://github.com/supabase/auth/blob/master/internal/api/settings.go),
 [chaves de assinatura/JWKS](https://supabase.com/docs/guides/auth/signing-keys) e
 [chaves de aplicação](https://supabase.com/docs/guides/getting-started/api-keys).
+
+## Preparação da homologação funcional — 31/10/2026
+
+Executada sobre o código `89ce3a0`, exclusivamente no projeto de desenvolvimento e
+em `https://localhost:9443/online/`. A autorização para preparar o ambiente não
+inclui recuperação de senha, segunda conta ou envio ilimitado de mensagens.
+
+| Verificação anterior ao cadastro | Resultado observado |
+|---|---|
+| Senha local de `mare_auth_runtime` | Substituída por valor aleatório novo; conexão nova passou; senha anterior recusada com SQLSTATE 28P01 |
+| Chave local de cifragem | Substituída por 32 bytes novos; chave anterior não decifra registro sintético cifrado com a nova |
+| Preservação na rotação | Nenhum registro cifrado, fluxo ou revogação pendente; nenhuma sessão perdida; banco sem restart e sem exclusão de dados |
+| Proteção das credenciais | Valores não impressos; configuração somente em arquivos ignorados; nenhuma chave privilegiada Supabase utilizada |
+| Data API no dashboard do projeto correto | `Enable Data API` desligado e mensagem `Data API is disabled`; nenhuma configuração alterada |
+| Exposição automática de tabelas | Controle não visível enquanto a Data API está desligada; não habilitada para inspecioná-lo |
+| HTTPS com adapter real ativo localmente | Readiness 200, CSRF 200, cookie de pré-autenticação Secure/HttpOnly/SameSite=Lax/Path=/; `/v1/me` sem sessão retorna 401 |
+| Navegador | Tela de contas carregou após o proprietário aceitar somente o certificado local; sem mudança global de segurança |
+
+Os testes de preparação, isoladamente, não emitem JWT de usuário nem comprovam
+entrega de e-mail. A verificação funcional posterior está registrada abaixo; nunca
+copiar token, identificador pessoal, cookie ou link de confirmação para evidências.
+
+O [roteiro por autorizações](PHASE-2-DEVELOPMENT.md#aceitação-no-supabase-real--ainda-pendente)
+separa o ensaio inicial dos testes adicionais. Ao encerrar a janela de homologação,
+restaurar `AUTH_ENABLED=false` e encerrar apenas os processos locais do ensaio, sem
+reverter as credenciais novas nem interromper PostgreSQL.
+
+## Primeiro ensaio funcional real — 31/10/2026
+
+O proprietário autorizou um e-mail sob seu controle e um único cadastro/envio no
+projeto de desenvolvimento. Ele definiu a senha na tela local e submeteu o cadastro
+uma vez. Não houve reenvio, recuperação, segunda conta ou criação de personagem.
+
+| Fluxo | Resultado |
+|---|---|
+| Cadastro | Resposta neutra esperada; recebimento de uma mensagem de confirmação informado pelo proprietário |
+| Login sem confirmação | **Inconclusivo**: o acesso foi permitido, mas o proprietário informou que abriu um link durante o ensaio; não foi estabelecido um estado ainda não confirmado no instante do login |
+| Confirmação no provedor | `GET /auth/v1/user` com a sessão da própria conta informa e-mail confirmado; settings continua exigindo confirmação |
+| Callback BFF/PKCE completo | **Pendente**: fluxo de cadastro ainda pendente na inspeção; o ensaio não comprovou seu consumo pelo callback neste perfil |
+| Login com senha | Passou no provedor real e na aplicação local; uma conta e uma sessão local, sem personagem |
+| JWT realmente emitido | Assinatura verificada com JWKS, issuer/audience esperados e ES256; `exp - iat = 900`; identidade do token corresponde ao usuário do provedor |
+| Persistência | Tela autenticada permaneceu após reload da mesma aba |
+| Logout local | Tela voltou ao login e permaneceu assim após reload; zero sessões locais ativas, uma revogada e fila de revogação remota vazia |
+| Encerramento | `AUTH_ENABLED=false` restaurado; processos API/gateway deste ensaio encerrados; PostgreSQL mantido ativo |
+
+O acesso permitido não deve ser apresentado como teste negativo aprovado nem como
+falha confirmada do requisito: a sequência de confirmação foi alterada durante o
+ensaio. Repetir esse caso requer uma conta ainda não confirmada e autorização
+adicional para o destinatário/cadastro. Não desfazer confirmação, apagar a conta ou
+usar chaves administrativas para fabricar esse estado.
+
+Resultado parcial: login, JWT, reload e logout reais passaram. Confirmação obrigatória
+em execução controlada, callback, recuperação, múltiplos dispositivos, refresh
+concorrente e autorização cruzada continuam gates de homologação. A conta de teste
+foi preservada; evidências visuais sem credenciais ficam fora do repositório.
 
 ## Roteiro de referência
 
