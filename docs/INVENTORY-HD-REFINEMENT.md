@@ -36,6 +36,10 @@ Duas esperas pelo estado ready do personagem excederam o prazo nas sequências l
 
 ## Arquivos e recuperação
 
-Arte: assets/ui/items-hd/*; assets/ui/inventory-hd/* (novos componentes, fonte e licença); item-art.js. Integração: game.js, index.html, ui-tokens.css, ui-components.css, ui-screens.css, tools/build_pages.py. Testes: tests/item-art.test.cjs, tests/inventory-hd-browser.cjs, tests/inventory-layout-browser.py, .github/workflows/inventory-visual.yml. Documentação: este relatório, INVENTORY-PIRATE-HD.md, UI-DESIGN-SYSTEM.md, CHANGELOG_DEV.md e README.md.
+Arte: assets/ui/items-hd/*; assets/ui/inventory-hd/* (novos componentes, fonte e licença); item-art.js. Integração: game.js, index.html, ui-preview.html, ui-tokens.css, ui-components.css, ui-screens.css, tools/build_pages.py. Testes: tests/item-art.test.cjs, tests/inventory-hd-browser.cjs, tests/inventory-layout-browser.py, .github/workflows/inventory-visual.yml. Documentação: este relatório, INVENTORY-PIRATE-HD.md, UI-DESIGN-SYSTEM.md, CHANGELOG_DEV.md e README.md.
 
 Sem migração de save, alteração de economia, classe, atributos ou índices de itens. Preservar dados e trabalho local do repositório original. Reverter os commits desta revisão recupera a apresentação anterior; nenhum asset antigo foi apagado. Próximo passo: revisão visual do proprietário antes de qualquer merge. Após aprovação, aplicar os componentes reutilizáveis à Forja em sprint separada.
+
+## Conferência remota e paridade da prévia
+
+A primeira rodada remota desta revisão identificou que ui-preview.html ainda não carregava item-art.js. O teste de paridade de scripts da HUD/Rank A apontou corretamente essa integração incompleta; o módulo foi incluído na prévia. As 38 entradas Node dos contratos envolvidos passaram após a correção, e o build Pages foi refeito. Esse diagnóstico substitui a suposição de que todas as falhas remotas seriam anteriores ao refino. Demais checks remotos devem ser acompanhados no PR; ele continua em rascunho, sem autorização de merge.
