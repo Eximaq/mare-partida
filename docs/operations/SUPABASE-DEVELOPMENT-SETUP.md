@@ -114,6 +114,53 @@ em execução controlada, callback, recuperação, múltiplos dispositivos, refr
 concorrente e autorização cruzada continuam gates de homologação. A conta de teste
 foi preservada; evidências visuais sem credenciais ficam fora do repositório.
 
+## Rodada 1 — conta existente, 31/10/2026
+
+Escopo confirmado pelo proprietário: somente a conta de teste existente, personagem
+online próprio, duas sessões isoladas, duas abas no mesmo perfil, refresh real,
+transferência de controle e logout local/global. Código do ensaio: `f189f2e`;
+nenhuma alteração no runtime para produzir os resultados. Nenhum novo e-mail.
+
+O acesso pelo Opera no Windows foi confirmado pelo proprietário depois de autorizar
+confiança no certificado público local apenas em `CurrentUser\Root`. A validação
+HTTPS normal do Windows passou. Foram observadas conexões locais de Opera e ChatGPT
+ao mesmo gateway em loopback; não houve exposição externa, DNS ou relaxamento TLS.
+Ver o [diagnóstico operacional](PHASE-2-DEVELOPMENT.md#diagnóstico-de-acesso-no-windows).
+
+| Critério | Resultado da rodada |
+|---|---|
+| Perfis isolados | Passou: duas sessões BFF, dois tokens opacos distintos e duas sessões Supabase, vinculadas a uma única conta |
+| Persistência | Passou: mesma conta/personagem na segunda aba; reload no Opera confirmado pelo proprietário; personagem preservado após reinício da API entre janelas |
+| JWT e prazos iniciais | Passou: ambas as assinaturas ES256 verificadas com JWKS, `exp - iat = 900`; validade absoluta BFF de 24 h; configuração de inatividade de 2 h intacta |
+| Controle entre abas | Passou: epoch 1 para 2; a aba anterior perdeu o controle mantendo o login |
+| Controle entre navegadores | Passou: epoch 3 associado à outra sessão; a aba integrada perdeu o controle mantendo o login |
+| Refresh após expiração e concorrência | Passou nas duas abas: JWT anterior expirado; novo JWT ES256/900 s com assinatura válida, access/refresh substituídos, mesma identidade, sessão BFF e sessão do provedor; expiração absoluta inalterada |
+| Serialização observada | Espera por lock no PostgreSQL durante carregamento concorrente das duas abas; ambas terminaram autenticadas, sem duplicar sessão |
+| Logout local | Passou: ambas as abas integradas voltaram ao login; somente a sessão do Opera permaneceu utilizável; fila remota drenada |
+| Refresh no outro navegador após logout local | Passou: JWT anterior expirado, assinatura do novo JWT ES256/900 s válida; tokens substituídos, mesma identidade e sessão, prazo absoluto preservado; reload sem senha confirmado pelo proprietário |
+| Logout global | Passou: executado com duas sessões ativas; zero sessões autorizadas pelo estado/epoch da conta; quatro registros revogados após manutenção; fila remota vazia; ambas as telas voltaram ao login após reload |
+| Encerramento | Auth desligado e API/gateway/observador encerrados; PostgreSQL, conta e personagem preservados; certificado público continua confiável somente no usuário autorizado |
+
+Os JWTs são comparados apenas em memória por observador de leitura. Evidências usam
+contagens, aliases de sessão e resultados booleanos; nenhum cookie, token, senha,
+e-mail, identificador de conta/personagem ou código de callback é registrado.
+Não foram alterados relógio, `exp`, prazos no banco ou política para acelerar testes.
+
+O logout global invalida pela versão de autorização da conta imediatamente; a
+contagem de sessões utilizáveis deve verificar também `account_epoch = auth_epoch`,
+além de prazos e `revoked_at`. Apenas contar linhas sem `revoked_at` não comprova
+sessões autorizadas. A manutenção preenche posteriormente os registros revogados.
+
+### Matriz de aprovação da Fase 2
+
+| Bloco | Situação | Condição restante |
+|---|---|---|
+| Acesso local, HTTPS e origem | Aprovado nesta máquina | Serviços precisam estar ativos durante cada janela; confiança do certificado foi autorizada para o usuário atual |
+| Rodada 1: sessões e controlador | Aprovada no provedor real | Manter os prazos aprovados; não confundir o ensaio de JWT de 900 s com espera de 24 h/2 h, cobertas em configuração e testes locais |
+| Rodada 2: segunda conta e autorização cruzada | Pendente de autorização específica | Segundo destinatário próprio e elegível no SMTP; um cadastro/confirmação; negativo antes da confirmação, callback, personagem e tentativas cruzadas/overposting |
+| Rodada 3: recuperação | Pendente de autorização específica | Dois envios planejados em janelas com cota disponível; fluxo não consumido expirado e fluxo válido; senha definida pelo proprietário; invalidação das sessões anteriores |
+| Aceitação completa da Fase 2 | Não encerrada | Concluir os blocos pendentes; não iniciar a Fase 3 |
+
 ## Roteiro de referência
 
 1. No dashboard Supabase, escolha uma organização **Free** e crie um projeto novo,

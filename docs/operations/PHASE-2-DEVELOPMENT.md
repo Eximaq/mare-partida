@@ -40,6 +40,33 @@ store ou DNS. Se já existirem, o comando falha em vez de sobrescrevê-los. O na
 de teste pode aceitar **somente esse certificado local** em perfil descartável;
 não desabilitar validação TLS para o processo Node ou para o Supabase.
 
+### Diagnóstico de acesso no Windows
+
+Usar exatamente `https://localhost:9443/online/`. O gateway HTTPS escuta em
+`127.0.0.1:9443` e encaminha a API para `127.0.0.1:8788`. Os dois processos precisam
+permanecer ativos durante a janela de teste. Depois do encerramento intencional,
+recusa de conexão é esperada; a página não é um serviço publicado na Internet.
+
+Não confundir `ERR_CONNECTION_REFUSED` com `NET::ERR_CERT_AUTHORITY_INVALID`.
+Em 31/10/2026, foram observados os listeners Node no Windows e respostas 200 para
+`/online/` e `/health/ready`. O proprietário apresentou depois uma tela de erro de
+confiança do certificado. Não há evidência suficiente para atribuir o erro de conexão
+anterior a uma causa única ou afirmar o estado da porta naquele instante específico.
+
+Após autorização específica, apenas o certificado público local existente foi
+importado em `Cert:\CurrentUser\Root`, com hash conferido. Nenhuma chave privada foi
+importada; `LocalMachine` e opções globais de TLS não foram alterados. O cliente HTTPS
+do Windows passou sem ignorar certificados, e o proprietário confirmou a abertura
+normal da página no Opera, sem aviso. Essa confiança persiste entre janelas de teste;
+sua instalação ou remoção exige escopo explícito, sem limpar outros certificados.
+
+Não automatizar o aceite de avisos nem usar flags para ignorá-los. Diagnosticar a
+confiança antes de testar contas; não usar HTTP como alternativa ao BFF seguro.
+Embora o IP também alcance a página, `https://127.0.0.1:9443` é outra origem: seu
+Origin foi recusado com 403. A origem localhost continua exigindo sessão (401 sem
+autenticação). Cookie de pré-autenticação verificado: Secure, HttpOnly, host-only,
+SameSite=Lax e Path=/; nenhum valor de cookie foi registrado.
+
 Com Docker disponível, preencher `infra/env/compose.env.example` em um arquivo
 ignorado `.env.compose.local`, usando senhas diferentes e aleatórias (hex evita
 problemas de encoding na URL).
@@ -130,6 +157,9 @@ JWT ES256/900 s, reload e logout. A recusa antes da confirmação ficou inconclu
 porque o link foi aberto durante o ensaio; callback completo segue pendente.
 Auth voltou a desligado e os processos do ensaio foram encerrados. Ver o
 [relatório funcional](SUPABASE-DEVELOPMENT-SETUP.md#primeiro-ensaio-funcional-real--31102026).
+Na Rodada 1 posterior, passaram dois perfis, persistência, refresh real e concorrente,
+controle exclusivo e logout local/global. Ver a
+[matriz atual de aprovação](SUPABASE-DEVELOPMENT-SETUP.md#matriz-de-aprovação-da-fase-2).
 Os testes abaixo continuam distintos dos testes locais com provedor simulado.
 
 ### Etapa inicial: uma conta autorizada
@@ -163,6 +193,23 @@ de confirmação. A senha é definida por ele na tela local, sem passar pelo cha
 Não assumir que autorização de uma linha permite executar as demais. Um destinatário
 adicional depende das restrições reais do SMTP gratuito; não contornar por serviço
 pago, alteração DNS ou uso de endereço de terceiros.
+
+Sequência econômica proposta para as próximas rodadas: zero e-mails nos testes de
+sessão/controle; uma confirmação para a segunda conta; duas recuperações, uma para
+deixar um fluxo não consumido expirar e outra para trocar a senha com sucesso. O caso
+de callback expirado pode ser coberto pelo fluxo de recuperação do mesmo mecanismo
+PKCE, identificando seu tipo na evidência. Isso não comprova expiração de um fluxo
+de cadastro ainda não consumido; se esse caso adicional for exigido, planejar outra
+mensagem e obter autorização própria. Callback já usado não prova expiração.
+
+Na consulta à [documentação oficial do SMTP](https://supabase.com/docs/guides/auth/auth-smtp)
+em 31/10/2026, o serviço padrão limita o projeto a duas mensagens por hora e envia
+somente para endereços da equipe do projeto. Confirmar elegibilidade e cota antes de
+cada janela; dividir os três envios planejados entre janelas e nunca fazer retry
+automático. Essa proposta não autoriza adicionar membros, mudar SMTP, alterar limites
+ou enviar mensagens. A recuperação exige consentimento explícito para a conta,
+dois envios planejados, senha nova definida pelo proprietário e invalidação global
+das sessões anteriores. Não registrar senha, link ou códigos nos relatórios.
 
 Matriz completa a executar somente conforme as autorizações correspondentes:
 

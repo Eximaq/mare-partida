@@ -2,11 +2,15 @@
 
 Revisão local em 31/10/2026. Branch `feature/auth-sessions`, criada a partir da
 fundação aprovada `3addd2ae93c1d2862500ee0aea4ece9bff7fd217`. PR #160 permanece
-Draft, aberto e sem alterações. Última main consultada: `ab77811ecca70be4c0a02513ec1b4ac9b0643023`.
+Draft, aberto e sem alterações. Última main consultada: `c24f8858a4901dded35911d1f58100fdc1af44d0`.
 A compatibilidade integrada é verificada pelo ref de PR e CI, sem merge na main.
 As adições concorrentes no topo do README e em `.gitattributes` foram conciliadas
 por commit normal na branch da Fase 2: preservam os links Rank A e regras de bytes
-dos assets da main, junto das regras/documentação do backend. Nenhum asset foi editado.
+dos assets da main, junto das regras/documentação do backend. A atualização posterior
+preserva também os links de HUD/Bari/Doku/Ito, a rota documental de HUD e suas regras
+de metadados. Esses ajustes textuais não importam ou alteram o runtime do jogo nesta
+branch; a integração completa continua pertencendo ao futuro merge autorizado.
+Nenhum asset foi editado.
 
 ## Entrega implementada
 
@@ -88,8 +92,17 @@ persistência por reload e logout passaram; fila remota vazia. A recusa antes da
 confirmação ficou inconclusiva porque um link foi aberto durante o ensaio. O callback
 PKCE completo não foi comprovado. Não houve recuperação, segunda conta ou personagem.
 Auth voltou a desligado e somente os processos API/gateway do ensaio foram encerrados.
-Pendentes: confirmação em sequência controlada/callback, recuperação, concorrência de refresh
-no provedor, revogação externa/JWKS, hospedagem de origem comum para produção,
+Na Rodada 1 posterior, autorizada para a conta existente, passaram os dois perfis
+isolados, persistência, refresh real após 900 s, concorrência entre abas com espera
+de lock observada, transferência exclusiva de controle e logout local/global.
+Ambos os perfis renovaram tokens com assinatura ES256 válida e prazo de 900 s, sem
+trocar identidade ou estender o vencimento absoluto. O encerramento confirmou zero
+sessões autorizadas, fila remota vazia e Auth desligado; conta/personagem preservados.
+O acesso normal no Opera exigiu confiança explícita no certificado público apenas
+no usuário Windows; TLS permaneceu validado e os serviços em loopback.
+
+Pendentes: confirmação em sequência controlada/callback, recuperação, autorização
+cruzada real, rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,
 retenção/chaves, proteção adicional contra abuso e testes de carga.
 
 A recuperação de rede do pool PostgreSQL passou sem reiniciar o serviço. Restart
