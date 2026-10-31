@@ -1,3 +1,5 @@
+**Servidor autoritativo — Fase 1 local:** [arquitetura e limites](docs/architecture/AUTHORITATIVE-FOUNDATION.md) · [execução, banco e testes](docs/operations/LOCAL-SERVER.md). Fundação independente; o jogo e os saves atuais permanecem no navegador.
+
 **Sprites atuais:** [fonte única e auditoria estrutural](docs/SPRITES-ATUAIS-FONTE-UNICA.md). O personagem jogável usa native96 em criação, lobby, inventário e combate; formas Zoan usam SpriteCombatV2. Fallbacks84 e flags de rollback antigas foram desativados. As notas de ensaios anteriores abaixo são históricas.
 
 **Sprint 3:** [Sua Aparência](docs/PERSONAGEM-APARENCIA-96.md): nova etapa após classe, gênero, cabelos/olhos e cores independentes, prévia em quatro direções e persistência.

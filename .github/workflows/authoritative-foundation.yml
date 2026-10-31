@@ -1,0 +1,84 @@
+name: Authoritative server foundation
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  foundation:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:18.6-bookworm
+        env:
+          POSTGRES_USER: mare_test_admin
+          POSTGRES_PASSWORD: disposable-ci-only
+          POSTGRES_DB: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U mare_test_admin -d postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      TEST_DATABASE_URL: postgresql://mare_test_admin:disposable-ci-only@127.0.0.1:5432/postgres
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - run: npm run typecheck
+      - run: npm run test:foundation
+      - run: npm run test:integration
+  docker-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate disposable credentials for this runner
+        shell: bash
+        run: |
+          for name in MARE_ADMIN_PASSWORD MARE_OWNER_PASSWORD MARE_RUNTIME_PASSWORD; do
+            value=$(openssl rand -hex 32)
+            echo "::add-mask::$value"
+            echo "$name=$value" >> "$GITHUB_ENV"
+          done
+      - name: Validate and build Compose profiles
+        run: |
+          docker compose -f infra/compose.yaml --profile server --profile tools config --quiet
+          docker compose -f infra/compose.yaml --profile server --profile tools build
+      - name: Initialize isolated database and run migrations
+        run: |
+          docker compose -f infra/compose.yaml up -d --wait postgres
+          docker compose -f infra/compose.yaml --profile tools run --rm migrate
+          docker compose -f infra/compose.yaml exec -T postgres psql -v ON_ERROR_STOP=1 -U mare_owner -d mare_dev -f /opt/mare/grant-health.sql
+          docker compose -f infra/compose.yaml --profile tools run --rm migrate
+      - name: Check container health, isolation and runtime privileges
+        run: |
+          docker compose -f infra/compose.yaml --profile server up -d --wait --wait-timeout 90 server
+          curl --fail --silent http://127.0.0.1:8787/health/live
+          curl --fail --silent http://127.0.0.1:8787/health/ready
+          docker compose -f infra/compose.yaml exec -T server node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import { existsSync } from 'node:fs';
+          import pg from 'pg';
+          assert.notEqual(process.getuid(), 0);
+          for (const path of ['/app/.env', '/app/.git', '/app/game.js', '/app/node_modules/typescript']) {
+            assert.equal(existsSync(path), false, path);
+          }
+          const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+          try {
+            assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
+            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 1);
+            await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
+            await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
+          } finally { await pool.end(); }
+          for (const path of ['/.env', '/.git/HEAD', '/api/akuma/register', '/ws']) {
+            assert.equal((await fetch(`http://127.0.0.1:8787${path}`)).status, 404);
+          }
+          assert.equal((await fetch('http://127.0.0.1:8787/health/live', { method: 'POST' })).status, 405);
+          console.log('Docker smoke passed: health, migration repeatability, non-root runtime, no game or credential files, restricted SQL role.');
+          JS
