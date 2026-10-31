@@ -19,7 +19,7 @@ class RankSService:
   origin={'x':x,'y':y};target=next((m for m in enemies if live(m) and str(m.get('id'))==str(ctx.get('target_id'))),None)
   if family=='mera' and key=='1' and (not target or dist(origin,target)>320):raise ValueError('Alvo fora do alcance')
   if family=='mera' and key=='2' and not any(live(m) and dist(origin,m)<=256 for m in enemies):raise ValueError('Nenhum alvo ao alcance')
-  limits={'gura':{'1':256,'2':192},'hie':{'1':320,'2':384,'3':64},'phoenix':{'1':128,'3':320}}
+  limits={'gura':{'1':256},'hie':{'1':320,'2':384,'3':64},'phoenix':{'1':128,'3':320}}
   if key in limits.get(family,{}) and (not target or dist(origin,target)>limits[family][key]):raise ValueError('Alvo fora do alcance')
   if store.state(p)['cooldowns'].get(fruit+':'+key,0)>now or energy<skill['cost']:raise ValueError('Recarga ou energia insuficiente')
   magic_pen=ctx.get('magic_penetration',0)

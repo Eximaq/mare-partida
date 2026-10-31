@@ -4,9 +4,9 @@ As três frutas entram no catálogo Rank S com três slots de habilidade. As reg
 
 ## Gura-Gura
 
-- Aura usa somente os frames 17–21 do recurso enviado. Sua renderização é ampliada, centralizada no personagem e tem opacidade de 68%.
-- Rachadura Espacial: cone frontal de quatro tiles, 450% de dano físico e 2,5 s de atordoamento.
-- Quebra-Crânio: área de três tiles, 450% de dano físico sem defesa ou escudo e redução de 80% da defesa por 3 s.
+- Aura usa somente os frames 17–21 do recurso enviado. Sua renderização mantém a escala aprovada, centralizada no personagem e com opacidade de 68%. O buff usa os frames 5–15 na mesma escala.
+- Rachadura Espacial: cone frontal de quatro tiles, 450% de dano físico e 2,5 s de atordoamento. Poeira 2 é desenhada em cada tile do cone.
+- Quebra-Crânio: área de três tiles, 450% de dano físico sem defesa ou escudo e redução de 80% da defesa por 3 s. Poeira 1 é desenhada em cada tile da área.
 - Exército de um Homem Só: mais 60% de ataque e defesa durante 10 s.
 
 ## Hie-Hie
@@ -18,10 +18,11 @@ As três frutas entram no catálogo Rank S com três slots de habilidade. As reg
 
 ## Tori-Tori: Model Phoenix
 
+- A aura é visível na forma Zoan e usa 70% da escala quando o personagem volta à forma humana.
 - A forma transformada usa o personagem PixelLab AI `7acf1282-14f7-429b-9e4e-5ed3adacee7a`, com frames nativos das quatro direções para idle, Walking, Attack e Tuck the wings tightly against. A escala de mundo é 130%.
 - Regenera 10% da vida máxima e da energia máxima a cada 10 s equipada.
-- Phoenix Flame mergulha até dois tiles, causa 400%, reduz defesa em 50% e cura recebida em 80%.
-- Chamas da Restauração mantém o totem por 7 s, repetindo os frames 18–41 e curando 15% da vida máxima por segundo enquanto o personagem está dentro de cinco tiles.
+- Phoenix Flame usa a animação corporal de asas recolhidas voltada ao alvo, sem deslocar o personagem; causa 400% até dois tiles, reduz defesa em 50% e cura recebida em 80%.
+- Chamas da Restauração mantém o totem fixo de 96 px por 7 s, repetindo os frames 18–41. As chamas dos frames 1–6 cobrem todos os 81 tiles do raio de cinco tiles, em tamanho de 64 px cada. Cura 15% da vida máxima por segundo enquanto o personagem está dentro da área.
 - Energia Flamejante percorre o caminho até o alvo em cinco impactos, somando 550%, e aplica redução de cura recebida de 80%.
 
 Os recursos enviados pelo usuário foram preservados em `assets/akuma/{gura,hie,phoenix}`. As prévias automatizadas ficam fora do repositório.
