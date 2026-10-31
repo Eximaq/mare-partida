@@ -20,7 +20,7 @@ def state(q,id):return q.locator('[data-talent-select="'+id+'"]').get_attribute(
 def confirm(q):
  q.locator('[data-talent-confirm]').click();q.locator('[data-confirm-accept]').click()
 with sync_playwright() as p:
- b=p.chromium.launch(executable_path=os.environ.get('CHROME_PATH','C:/Program Files/Google/Chrome/Application/chrome.exe'))
+ b=p.chromium.launch(executable_path=os.environ.get('CHROME_PATH'))
  errors=[]
  def checked(seed=None):
   c,q=page_for(b,seed);q.on('pageerror',lambda e:errors.append(e.stack));return c,q

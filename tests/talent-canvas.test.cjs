@@ -49,3 +49,9 @@ const crypto=require('node:crypto'),specialManifest=JSON.parse(fs.readFileSync('
 assert.equal(specialManifest.icons.length,42);
 const hashes=new Set();for(const icon of specialManifest.icons){const bytes=fs.readFileSync('assets/ui/talents/special/'+icon.file);assert.equal(bytes.readUInt32BE(16),256);assert.equal(bytes.readUInt32BE(20),256);hashes.add(crypto.createHash('sha256').update(bytes).digest('hex'));}assert.equal(hashes.size,42);
 const artManifest=JSON.parse(fs.readFileSync('assets/ui/talents/manifest.json','utf8'));assert.equal(artManifest.scene.sha256,crypto.createHash('sha256').update(fs.readFileSync('assets/ui/talents/ocean-background.jpeg')).digest('hex'));
+
+// View bounds apply to every input before transform/painting.
+assert.equal(UI.MIN_ZOOM,.58);assert.equal(UI.MAX_ZOOM,1.8);for(const [input,expected] of [[.1,.58],[.58,.58],[1,1],[2,1.8],[NaN,1]])assert.equal(UI.clampZoom(input),expected);
+
+// Maxed and selected art must not acquire another ring in the Canvas layer.
+calls.length=0;UI.renderTalentTree(ctx,{...config,nodes:[{...config.nodes[0],state:"max",selected:true,currentLevel:10}]});assert.ok(!calls.some(c=>c.name==="arc"&&c.args[2]===53));

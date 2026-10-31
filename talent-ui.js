@@ -1,7 +1,8 @@
 'use strict';
 ((root)=>{
   let detach=()=>{};
-  const views=new Map(),WIDTH=1000,HEIGHT=1380,ICON_SIZE=96;
+  const views=new Map(),WIDTH=1000,HEIGHT=1380,ICON_SIZE=96,MIN_ZOOM=.58,MAX_ZOOM=1.8;
+  const clampZoom=s=>Math.max(MIN_ZOOM,Math.min(MAX_ZOOM,Number.isFinite(s)?s:1));
   const iconPaths={blade:'M8 32 30 8l4 4L12 36m-5-8 9 9M6 37l5-5',heart:'M21 36S5 25 5 15C5 4 18 3 21 12 25 3 37 4 37 15c0 10-16 21-16 21Z',shield:'M21 4 36 10v12c0 9-15 16-15 16S6 31 6 22V10Z M21 12v17m-7-9h14',star:'m21 3 5 12 13 1-10 9 3 14-11-7-11 7 3-14L3 16l13-1Z',flame:'M24 3c5 13-10 12-5 22 3-1 5-5 5-8 13 11 10 22-3 22C4 39 2 22 13 13c-1 9 2 10 2 10S12 9 24 3Z',anchor:'M21 12v25M10 18h22M5 26c0 15 32 15 32 0M5 26l-2 7m2-7 7 3m25-3 2 7m-2-7-7 3M21 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10Z',eye:'M3 21s8-13 18-13 18 13 18 13-8 13-18 13S3 21 3 21Zm18-6a6 6 0 1 0 0 12 6 6 0 0 0 0-12Z'};
   const glyph=(id)=>`<svg viewBox="0 0 42 42" aria-hidden="true"><path d="${iconPaths[id]||iconPaths.star}"/></svg>`;
   function layout(tree){
@@ -73,7 +74,6 @@
     drawIcon(iconPath('anchor'),config.root.x,config.root.y,false);
     for(const n of config.nodes){
       drawIcon(n.icon,n.x,n.y,n.state==='locked');
-      if(n.state==='max'||n.selected){ctx.strokeStyle=n.state==='max'?'#f3ca40':'#fff3bf';ctx.lineWidth=n.state==='max'?3:2;ctx.beginPath();ctx.arc(n.x,n.y,53,0,Math.PI*2);ctx.stroke();}
       ctx.fillStyle='rgba(4,17,32,.92)';ctx.fillRect(n.x-29,n.y+52,58,23);ctx.strokeStyle=n.state==='locked'?'#365b72':n.state==='max'?'#f3ca40':'#bda15d';ctx.lineWidth=1;ctx.strokeRect(n.x-29,n.y+52,58,23);
       ctx.fillStyle=n.state==='locked'?'#93afc1':n.state==='max'?'#f3ca40':'#fff3cc';ctx.font='bold 14px Arial';ctx.textAlign='center';
       ctx.fillText(n.currentLevel+'/'+n.maxLevel,n.x,n.y+69);
@@ -99,9 +99,10 @@
     const surface=canvas.querySelector('.talent-tree-surface'),config=renderedConfig;
     let alive=true;const repaint=()=>{if(!alive||!surface.isConnected)return;const ctx=surface.getContext('2d');ctx.clearRect(0,0,WIDTH,HEIGHT);renderTalentTree(ctx,config,0,0,repaint);surface.dataset.litEdges=config.edges.filter(e=>e.active).length;surface.dataset.edgeCount=config.edges.length;surface.dataset.iconsReady=config.nodes.every(n=>images.get(n.icon)?.ready);};repaint();
     let view=views.get(id);if(!view){const s=1;view={s,x:(w-WIDTH*s)/2,y:h-HEIGHT*s,w,h,anchor:'root'};views.set(id,view);}else{view.x+=(w-view.w)/2;view.y+=(h-view.h)/2;view.w=w;view.h=h;}
-    let density=0;const paint=()=>{const next=Math.min(3,(window.devicePixelRatio||1)*Math.max(1,view.s));if(next!==density){density=next;surface.width=Math.round(WIDTH*density);surface.height=Math.round(HEIGHT*density);surface.getContext('2d').setTransform(density,0,0,density,0,0);repaint();}canvas.style.transform=`translate(${view.x}px,${view.y}px) scale(${view.s})`;const label=body.querySelector('[data-tree-scale]');if(label)label.textContent=Math.round(view.s*100)+'%';};
-    const zoom=(s,cx=w/2,cy=h/2)=>{view.anchor=null;s=Math.max(.2,Math.min(1.8,s));const ratio=s/view.s;view.x=cx-(cx-view.x)*ratio;view.y=cy-(cy-view.y)*ratio;view.s=s;paint();};
-    body.querySelectorAll('[data-tree-zoom]').forEach(b=>b.onclick=()=>{const a=b.dataset.treeZoom;if(a==='actual'){zoom(1);}else if(a==='fit'){view.s=Math.min(vp.clientWidth/WIDTH,vp.clientHeight/HEIGHT)*.95;view.x=(vp.clientWidth-WIDTH*view.s)/2;view.y=(vp.clientHeight-HEIGHT*view.s)/2;paint();}else if(a==='root'){view.anchor='root';view.s=1;view.x=vp.clientWidth/2-500*view.s;view.y=vp.clientHeight-HEIGHT*view.s;paint();}else zoom(view.s*(a==='in'?1.2:1/1.2));});
+    view.s=clampZoom(view.s);
+    let density=0;const paint=()=>{const next=Math.min(3,(window.devicePixelRatio||1)*Math.max(1,view.s));if(next!==density){density=next;surface.width=Math.round(WIDTH*density);surface.height=Math.round(HEIGHT*density);surface.getContext('2d').setTransform(density,0,0,density,0,0);repaint();}canvas.style.transform=`translate(${view.x}px,${view.y}px) scale(${view.s})`;const label=body.querySelector('[data-tree-scale]');if(label)label.textContent=Math.round(view.s*100)+'%';const out=body.querySelector('[data-tree-zoom=out]'),inside=body.querySelector('[data-tree-zoom=in]');if(out)out.disabled=view.s<=MIN_ZOOM;if(inside)inside.disabled=view.s>=MAX_ZOOM;};
+    const zoom=(s,cx=w/2,cy=h/2)=>{view.anchor=null;s=clampZoom(s);const ratio=s/view.s;view.x=cx-(cx-view.x)*ratio;view.y=cy-(cy-view.y)*ratio;view.s=s;paint();};
+    body.querySelectorAll('[data-tree-zoom]').forEach(b=>b.onclick=()=>{const a=b.dataset.treeZoom;if(a==='actual'){zoom(1);}else if(a==='fit'){view.s=clampZoom(Math.min(vp.clientWidth/WIDTH,vp.clientHeight/HEIGHT)*.95);view.x=(vp.clientWidth-WIDTH*view.s)/2;view.y=(vp.clientHeight-HEIGHT*view.s)/2;paint();}else if(a==='root'){view.anchor='root';view.s=1;view.x=vp.clientWidth/2-500*view.s;view.y=vp.clientHeight-HEIGHT*view.s;paint();}else zoom(view.s*(a==='in'?1.2:1/1.2));});
     vp.addEventListener('wheel',e=>{e.preventDefault();const r=vp.getBoundingClientRect();zoom(view.s*(e.deltaY<0?1.12:1/1.12),e.clientX-r.left,e.clientY-r.top);},{passive:false});
     const pointers=new Map();let prior=null,pinch=0,dragged=false;
     vp.addEventListener('pointerdown',e=>{if(e.button&&e.pointerType==='mouse')return;pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});prior={x:e.clientX,y:e.clientY};dragged=false;if(!e.target.closest('button')||pointers.size>1)vp.setPointerCapture(e.pointerId);if(pointers.size===2){const [a,b]=[...pointers.values()];pinch=Math.hypot(a.x-b.x,a.y-b.y);}});
@@ -122,6 +123,6 @@
   function refreshAchievements(body,game){
     if(!body.querySelector('.achievement-journal'))return;const list=root.MareAchievements.list(game);body.querySelector('[data-achievement-ready]').textContent=list.filter(a=>a.ready).length+' recompensa(s) disponível(is)';for(const a of list){const el=body.querySelector('[data-achievement-id="'+a.id+'"]');if(!el)continue;el.querySelector('.achievement-count').textContent=number(a.progress)+' / '+number(a.target);const bar=el.querySelector('[role=progressbar]');bar.setAttribute('aria-valuenow',a.progress);bar.firstElementChild.style.width=a.progress/a.target*100+'%';const b=el.querySelector('button');b.disabled=!a.ready;b.textContent=a.claimed?'Resgatado':!a.enabled?'Em breve':a.ready?'Resgatar':'Em progresso';}
   }
-  const api={ICON_SIZE,unmount:()=>detach(),render,mount,layout,TALENT_TREE_CONFIG,configFor,renderTalentTree,hitTest,renderAchievements,refreshAchievements};
+  const api={ICON_SIZE,MIN_ZOOM,MAX_ZOOM,clampZoom,unmount:()=>detach(),render,mount,layout,TALENT_TREE_CONFIG,configFor,renderTalentTree,hitTest,renderAchievements,refreshAchievements};
   root.MareTalentUI=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
