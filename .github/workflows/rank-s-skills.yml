@@ -1,0 +1,62 @@
+name: Rank S — Yami e Mera
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'rank-s-*.js'
+      - 'rank-a-system.js'
+      - 'akuma-system.js'
+      - 'game.js'
+      - 'index.html'
+      - 'ui-preview.html'
+      - 'assets/akuma/yami/**'
+      - 'assets/akuma/mera/**'
+      - 'assets/akuma/rank-s-*.json'
+      - 'server/**'
+      - 'tests/rank_s*'
+      - 'tests/rank-s*'
+      - 'tools/import_rank_s.py'
+      - 'tools/build_pages.py'
+      - '.github/workflows/rank-s-skills.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rankS:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preparar Chromium e leitura das artes
+        run: |
+          python3 -m pip install pillow
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Contratos, frames e regressões
+        run: |
+          node --test tests/rank-s-system.test.cjs tests/rank-a-system.test.cjs tests/rank-a-expansion.test.cjs tests/akuma-system.test.cjs
+          python3 tools/build_pages.py
+          python3 -m unittest discover -s tests -p '*_test.py'
+      - name: Seis habilidades no pacote estático e com API
+        env:
+          MARE_AKUMA_DB: ${{ runner.temp }}/rank-s-qa.sqlite3
+          MARE_QA_DIR: ${{ runner.temp }}/rank-s-capturas
+        run: |
+          python3 -m http.server 8170 --bind 127.0.0.1 > /tmp/rank-s-static.log 2>&1 &
+          python3 server/app.py > /tmp/rank-s-api.log 2>&1 &
+          sleep 2
+          MARE_TEST_URL=http://127.0.0.1:8170/dist/ node tests/rank_s_browser.cjs
+          MARE_TEST_URL=http://127.0.0.1:8123/ MARE_EXPECT_API=1 node tests/rank_s_browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rank-s-capturas
+          path: ${{ runner.temp }}/rank-s-capturas/
+          if-no-files-found: warn
+          retention-days: 14

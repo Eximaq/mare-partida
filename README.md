@@ -1,3 +1,5 @@
+[Yami e Mera Rank S: auras, seis habilidades e proporções aprovadas](docs/RANK-S-YAMI-MERA.md).
+
 [HUD do personagem: painel de pergaminho, cartaz expansível e fonte Alabasta Pirate](docs/CHARACTER-PARCHMENT-HUD.md).
 
 [Bari, Doku e Ito Rank A: barreiras, venenos cumulativos e fios](docs/RANK-A-BARI-DOKU-ITO.md).

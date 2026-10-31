@@ -1,3 +1,9 @@
+## 31/10/2026 — Yami e Mera Rank S
+
+- Duas frutas S append-only, três slots, auras passivas e seis habilidades integradas ao controlador avançado existente. PNG/JSON fornecidos preservados: 26 arquivos, 361 quadros.
+- Proporções aprovadas: tamanho/alcance Yami −40%; tamanho/contato Hibashira +40%. Âncoras das auras, desenho do pilar e contato de chão de Liberation revisados em navegador.
+- Regras, parâmetros iniciais, validação, compatibilidade e rollback em [RANK-S-YAMI-MERA.md](RANK-S-YAMI-MERA.md). Branch feature/rank-s-yami-mera, base c24f885. Evidências e dados de QA fora do repositório.
+
 ## 31/10/2026 — HUD de personagem em pergaminho
 
 - Painel fornecido pelo proprietário integrado ao perfil compacto, com HP/energia/XP dinâmicos e cartaz expansível. Nome em Alabasta Pirate local; caracteres ausentes preservados pela fonte de apoio.
