@@ -67,9 +67,12 @@ not passwords in command arguments/history. Grants are already applied on this h
 
 ## Optional Docker environment
 
-Docker Engine/Compose were unavailable on this Windows host: definitions are prepared,
-but no container build/run is claimed. Stop portable PostgreSQL before binding the same
-55432 port. Copy `infra/.env.example` to ignored `infra/.env.local` and replace all
+Docker Engine/Compose are unavailable on this Windows host. The final review executed
+and passed build/run/migration/health/privilege checks on Linux CI; see the
+[review](../architecture/PHASE-1-FINAL-REVIEW.md). The default host port 55432 must be
+free before starting Compose; do not interrupt an existing database to run this check.
+Use an isolated host or explicitly configure a distinct port instead.
+Copy `infra/.env.example` to ignored `infra/.env.local` and replace all
 placeholders with distinct random hexadecimal passwords, safe in connection URLs.
 
 ```sh

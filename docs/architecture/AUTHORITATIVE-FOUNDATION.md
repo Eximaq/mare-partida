@@ -64,5 +64,7 @@ per test, dropping only that database. No in-memory substitute or silent skip.
 Tests exercise malformed inputs, health/file exposure, migration concurrency/rollback,
 checksum drift, repeatability, foreign keys and unique ownership.
 
-Docker/Actions definitions are prepared; no container or remote CI run is claimed on
-the Windows host without Docker. See [local operations](../operations/LOCAL-SERVER.md).
+Docker is unavailable on the Windows host. The final review ran the Compose build,
+migrations, health and privilege smoke checks successfully on Linux CI. See the
+[final review](PHASE-1-FINAL-REVIEW.md), [Phase 2 plan](PHASE-2-AUTH-SESSIONS-PLAN.md)
+and [local operations](../operations/LOCAL-SERVER.md) for evidence and limitations.
