@@ -2,7 +2,7 @@ const assert=require('node:assert/strict');const {chromium}=require('playwright'
 await p.route('**/api/akuma/catalog',r=>r.fulfill({status:404,body:'{}'}));
 await p.route('**/__dev_version',r=>r.fulfill({body:'stable'}));
 await p.route('**/game.js*',async r=>{const a=await r.fetch();
-await r.fulfill({response:a,body:(await a.text()).replace('  window.__mareDiagnostics=','  window.__invQA={get game(){return game},defs:itemDefs,newItem,openPanel,renderPanel,get ui(){return inventoryUI},stats:getDerived,save:saveGame,refresh:updateUI,select(id){selectedItem=id;renderPanel()}};\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')})});
+await r.fulfill({response:a,body:(await a.text()).replace('  window.__mareDiagnostics=','  window.__invQA={get game(){return game},defs:itemDefs,newItem,openPanel,renderPanel,get ui(){return inventoryUI},stats:getDerived,get forge(){return forgeUI},save:saveGame,refresh:updateUI,select(id){selectedItem=id;renderPanel()}};\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')})});
 await p.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8159/');
 await p.waitForFunction(()=>window.__invQA&&__mareDiagnostics().lobby96.state==='ready',null,{timeout:90000});
 await p.locator('#characterName').fill('Papacapim');
@@ -28,6 +28,18 @@ await p.locator('[data-inv-category="fruits"]').click();assert((await p.locator(
 await p.locator('[data-inv-category="all"]').click();
 const head=await p.evaluate(()=>{const q=__invQA,d=q.defs.find(x=>x.name==='Capacete do Corsário'),i=q.newItem(d,25);q.game.inventory.push(i);q.select(i.id);return i.id});
 await p.locator('[data-equip="'+head+'"]').click();assert.equal(await p.evaluate(()=>__invQA.game.equipment.head.id),head);assert.equal(await p.locator('[data-unequip="head"]').count(),1);assert.equal(await p.locator('[data-equip]').count(),0);
+// Exercise the requested contextual actions on a disposable gear item.
+const actionItem=await p.evaluate(()=>{const q=__invQA,i=q.newItem(q.defs[0],20);q.game.inventory.push(i);q.game.gold=10000;q.select(i.id);return {id:i.id,price:14+i.level*7+i.plus*18}});
+assert.equal(await p.locator('.op-item-actions .op-action').count(),4);
+assert.equal(await p.getByText('Anunciar no Mercado',{exact:true}).count(),0);assert.equal(await p.getByText('Depositar no Cofre',{exact:true}).count(),0);
+await p.locator('[data-inv-lock="'+actionItem.id+'"]').click();assert(await p.locator('[data-sell="'+actionItem.id+'"]').isDisabled());
+const lockedGold=await p.evaluate(()=>__invQA.game.gold);await p.locator('[data-inv-lock="'+actionItem.id+'"]').click();
+await p.locator('[data-inventory-forge="'+actionItem.id+'"]').click();assert.equal(await p.evaluate(()=>__invQA.forge.itemId),actionItem.id);assert.equal(await p.evaluate(()=>__invQA.forge.tab),'upgrade');
+await p.evaluate(id=>{__invQA.openPanel('inventory');__invQA.select(id)},actionItem.id);
+await p.locator('[data-equip="'+actionItem.id+'"]').click();assert.equal(await p.locator('[data-sell="'+actionItem.id+'"]').count(),0);assert.equal(await p.locator('.op-item-actions .op-action').count(),3);
+await p.locator('[data-unequip="weapon"]').click();await p.locator('[data-sell="'+actionItem.id+'"]').click();assert.equal(await p.evaluate(id=>__invQA.game.inventory.some(i=>i.id===id),actionItem.id),false);assert.equal(await p.evaluate(()=>__invQA.game.gold),lockedGold+actionItem.price);
+assert.equal(await p.evaluate(()=>__invQA.defs.filter((d,i)=>!MareItemArt.path(i,d)).length),0,'Every catalog item resolves to HD art');
+await p.locator('[data-inv-slot="head"]').click();
 const before=await p.evaluate(()=>JSON.stringify({e:__invQA.game.equipment,s:__invQA.stats()}));
 await p.locator('[data-headgear-visibility]').click();assert.equal(await p.evaluate(()=>JSON.stringify({e:__invQA.game.equipment,s:__invQA.stats()})),before);
 await p.locator('[data-unequip="head"]').click();assert.equal(await p.evaluate(()=>__invQA.game.equipment.head),null);

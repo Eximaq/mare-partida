@@ -17,6 +17,9 @@ on:
       - 'inventory-compact.css'
       - 'tests/inventory-layout-browser.py'
       - 'tests/inventory-hd-browser.cjs'
+      - 'tests/item-art.test.cjs'
+      - 'item-art.js'
+      - 'assets/ui/items-hd/**'
       - 'ui-components.css'
       - 'ui-tokens.css'
       - 'assets/ui/inventory-hd/**'
@@ -47,6 +50,7 @@ jobs:
         run: |
           python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-inventory-http.log 2>&1 &
           sleep 2
+          node --test tests/item-art.test.cjs
           python -X utf8 tests/inventory-layout-browser.py
           python -X utf8 tests/hud_responsive_browser.py
           NODE_PATH=/tmp/mare-inventory-node/node_modules MARE_TEST_URL=http://127.0.0.1:8123/ MARE_QA_DIR=/tmp/mare-inventory-visual/hd node tests/inventory-hd-browser.cjs

@@ -25,7 +25,7 @@ def verify_grid(page, columns):
     assert frames.count()>0
     for i in range(frames.count()):
         background=frames.nth(i).evaluate('e=>getComputedStyle(e).backgroundImage')
-        assert background=='none',(i,background)
+        assert 'url(' not in background,(i,background)
     # Check every rarity on both kinds of slot with browser-computed styles.
     # Only temporary DOM classes change; the actual save and game logic do not.
     rarity_styles=page.evaluate("""() => {
@@ -79,7 +79,7 @@ def verify_grid(page, columns):
         expected='/'+style['rarity']+'.png'
         assert expected in style['bagFrame'] and expected in style['equipFrame'],style
         assert style['bagFrame']==style['equipFrame'],style
-        assert style['bagImage']==style['equipImage']=='none',style
+        assert style['bagImage']=='none' and 'url(' not in style['equipImage'],style
         assert abs(float(style['bagAlpha'])-.70)<.001 and abs(float(style['equipAlpha'])-.70)<.001,style
         rgb=rarity_colors[style['rarity']]
         for key in ['bagColor','equipColor']:
@@ -124,6 +124,7 @@ def verify_equipment_profile(page, viewport_width):
         labelClipping:slots.filter(s=>s.querySelector('.op-slot-label').scrollWidth>s.querySelector('.op-slot-label').clientWidth+2).map(s=>s.dataset.invSlot),
         slotWidths:slots.map(s=>rect(s).width),
         slotHeights:slots.map(s=>rect(s).height),
+        labelOverlaps:slots.filter(s=>rect(s.querySelector('.op-slot-label')).y<rect(s.querySelector('.op-slot-frame')).bottom-1).map(s=>s.dataset.invSlot),
         icons,
         buttonsIntact:slots.every(s=>s.tagName==='BUTTON'&&s.hasAttribute('data-inv-slot')),
         profileToggle:!!document.querySelector('#invHideProfile')
@@ -135,6 +136,7 @@ def verify_equipment_profile(page, viewport_width):
     assert layout['buttonsIntact'] and layout['profileToggle'],layout
     assert min(layout['labelFontSizes'])>=10,layout
     assert not layout['labelClipping'],layout
+    assert not layout['labelOverlaps'],layout
     assert min(layout['slotWidths'])>=54 and min(layout['slotHeights'])>=44,layout
     assert page.locator('.op-fruit-equipped [data-inv-slot=akuma_no_mi]').count()==1
     assert page.locator('#panelOverlay [data-inv-slot]').count()==12
