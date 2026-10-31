@@ -211,7 +211,58 @@ ou enviar mensagens. A recuperação exige consentimento explícito para a conta
 dois envios planejados, senha nova definida pelo proprietário e invalidação global
 das sessões anteriores. Não registrar senha, link ou códigos nos relatórios.
 
-Matriz completa a executar somente conforme as autorizações correspondentes:
+### Preparação da Rodada 2
+
+Base aprovada `be2eb46`. Pré-validação de leitura confirmou uma conta, um personagem
+Teste Alfa, zero sessões autorizadas e fila remota vazia. Auth permanece desligado
+até o destinatário e um único envio serem confirmados. O endereço será preenchido
+no arquivo ignorado `.env.round2.local`, campo `ROUND2_TEST_EMAIL`, sem senha/link.
+O proprietário deve confirmar controle da caixa, elegibilidade no SMTP padrão e
+cota disponível; não adicionar membros ou mudar SMTP para contornar restrições.
+
+Procedimento após a autorização específica:
+
+1. Abrir a janela HTTPS local com os TTLs aprovados. Manter a conta A em um perfil
+   isolado e iniciar B no Opera, onde o proprietário abrirá o e-mail no mesmo perfil.
+   Confirmar página correta antes do cadastro; senha definida pelo proprietário.
+2. Uma única submissão de cadastro e uma tentativa de login antes de abrir o link.
+   Esperado: recusa e ausência de sessão B autenticada. Se um scanner ou abertura
+   antecipada confirmar a conta, classificar o negativo como inconclusivo.
+3. Confirmar o e-mail no navegador original, antes de expirar o fluxo de 10 minutos.
+   Verificar consumo único do fluxo, sessão B válida e retorno sem código na URL.
+   Não copiar links/códigos para chat, PR, histórico de comandos ou logs de teste.
+4. Verificar callbacks sem correlação, inválidos e reutilizados sem criar sessão.
+   Não testar um código falso com a correlação original antes do callback válido:
+   uma tentativa pode consumir o fluxo local. Isolar os casos negativos para não
+   inviabilizar o único envio autorizado.
+5. Identidades e sessões A/B devem ser distintas. Para criar B, enviar duas operações
+   concorrentes com nomes diferentes: exatamente um personagem persistido, uma
+   operação vencedora e conflito na outra; repetir a mesma entrada verifica a
+   idempotência. Preservar identidade, dono e conteúdo do personagem A.
+6. Pela sessão A, consultar e tentar controlar B, inclusive renovação/seleção pelas
+   rotas disponíveis: resposta de não encontrado sem dados de B. Comparar com ID
+   inexistente. ID malformado deve falhar na validação. Não há seleção de gameplay
+   online implementada; não inventar um endpoint para esse ensaio.
+7. Enviar accountId, ownerId, characterId e campos extras nos corpos: contratos
+   estritos devem recusar. Adulterar IDs de rota e query: nunca podem determinar
+   dono ou ampliar autorização. Um parâmetro de query ignorado com segurança não
+   equivale a autorização; registrar separadamente de uma rejeição explícita.
+8. Conferir os dois personagens, ausência de alterações econômicas e respostas sem
+   dados de terceiros. Encerrar sessões, drenar revogações, desligar Auth e processos
+   locais; preservar PostgreSQL, contas e personagens. Não enviar recuperação.
+
+**Expiração:** callback já consumido e depois repetido não comprova expiração de
+fluxo não consumido. Com um único cadastro/envio, priorizar callback válido e replay.
+O caso de expiração real não consumida fica bloqueado pelo orçamento autorizado,
+até combinar outro fluxo/envio específico. Uma fixture local de expiração pode
+complementar a regressão, mas não será rotulada como homologação real do Supabase.
+Não alterar relógio, timestamps ou confirmação hospedada para produzir aprovação.
+
+Classificar cada caso como aprovado, falha real, bloqueio do ambiente ou inconclusivo.
+Falha real exige investigação/regressão antes da correção; bloqueio SMTP/cota não
+autoriza retry automático. Nenhum resultado dessa rodada foi aprovado na preparação.
+
+### Matriz completa a executar conforme as autorizações correspondentes
 
 1. Cadastro com confirmação obrigatória: login antes de confirmar falha; link no
    mesmo navegador cria sessão. Link repetido, expirado e em outro perfil falha.
