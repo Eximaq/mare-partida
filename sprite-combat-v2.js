@@ -3,7 +3,7 @@
 ((root)=>{
  const reactions=new WeakMap(),images=new Map(),lastDraw=new Map(),HURT_SECONDS=.18;
  const directions={front:'south',back:'north',left:'west',right:'east'};
- const fruits={akuma_tori_albatroz:'tori',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko',akuma_ushi_giraffe:'ushi',akuma_inu_wolf:'wolf',akuma_ryu_ryu:'ryu',akuma_ushi_bison:'bison'};
+ const fruits={akuma_tori_albatroz:'tori',akuma_tori_phoenix:'phoenix',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko',akuma_ushi_giraffe:'ushi',akuma_inu_wolf:'wolf',akuma_ryu_ryu:'ryu',akuma_ushi_bison:'bison'};
  const data=()=>root.MareSpriteCombatV2Data||{};
  const errors=new Map(),assetBase=typeof document!=='undefined'&&document.currentScript?.src?new URL('.',document.currentScript.src):null;
  const assetVersion=typeof document!=='undefined'&&document.currentScript?.src?new URL(document.currentScript.src).searchParams.get('v')||'current-player-v2-20261030':'current-player-v2-20261030';
@@ -25,7 +25,7 @@
   // The owner intentionally uses the native South reaction for damage from every facing.
   const facing=action==='hurt'?'south':directions[direction]||direction;
   const aliases={dash:'special',charge:'special',finish:'special',headbutt:'special',bite:'special',tail:'special-2'};
-  action=aliases[action]||action;
+  action=key==='phoenix'&&action==='dash'?'dash':aliases[action]||action;
   // Authored locomotion aliases remain valid. Playable forms never borrow an unrelated action.
   const requested=entry.clips[action]?.[facing];
   const locomotion=['walk','run'].includes(action)?(entry.clips.walk?.[facing]||entry.clips.run?.[facing]):null;

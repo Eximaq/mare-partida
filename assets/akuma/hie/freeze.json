@@ -1,0 +1,261 @@
+{
+ "frames": [
+  {
+   "filename": "power-aura-take-4 0.png",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 110
+   },
+   "pivot": {
+    "x": 0.3870967741935484,
+    "y": 0.8909090909090909
+   },
+   "duration": 83
+  },
+  {
+   "filename": "power-aura-take-4 1.png",
+   "frame": {
+    "x": 124,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 110
+   },
+   "pivot": {
+    "x": 0.3870967741935484,
+    "y": 0.8909090909090909
+   },
+   "duration": 83
+  },
+  {
+   "filename": "power-aura-take-4 2.png",
+   "frame": {
+    "x": 248,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 110
+   },
+   "pivot": {
+    "x": 0.3870967741935484,
+    "y": 0.8909090909090909
+   },
+   "duration": 83
+  },
+  {
+   "filename": "power-aura-take-4 3.png",
+   "frame": {
+    "x": 0,
+    "y": 110,
+    "w": 124,
+    "h": 110
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 110
+   },
+   "pivot": {
+    "x": 0.3870967741935484,
+    "y": 0.8909090909090909
+   },
+   "duration": 83
+  },
+  {
+   "filename": "power-aura-take-4 4.png",
+   "frame": {
+    "x": 124,
+    "y": 110,
+    "w": 124,
+    "h": 110
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 110
+   },
+   "pivot": {
+    "x": 0.3870967741935484,
+    "y": 0.8909090909090909
+   },
+   "duration": 83
+  },
+  {
+   "filename": "power-aura-take-4 5.png",
+   "frame": {
+    "x": 248,
+    "y": 110,
+    "w": 124,
+    "h": 110
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 110
+   },
+   "pivot": {
+    "x": 0.3870967741935484,
+    "y": 0.8909090909090909
+   },
+   "duration": 83
+  },
+  {
+   "filename": "power-aura-take-4 6.png",
+   "frame": {
+    "x": 0,
+    "y": 220,
+    "w": 124,
+    "h": 110
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 110
+   },
+   "pivot": {
+    "x": 0.3870967741935484,
+    "y": 0.8909090909090909
+   },
+   "duration": 83
+  },
+  {
+   "filename": "power-aura-take-4 7.png",
+   "frame": {
+    "x": 124,
+    "y": 220,
+    "w": 124,
+    "h": 110
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 110
+   },
+   "pivot": {
+    "x": 0.3870967741935484,
+    "y": 0.8909090909090909
+   },
+   "duration": 83
+  },
+  {
+   "filename": "power-aura-take-4 8.png",
+   "frame": {
+    "x": 248,
+    "y": 220,
+    "w": 124,
+    "h": 110
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 124,
+    "h": 110
+   },
+   "sourceSize": {
+    "w": 124,
+    "h": 110
+   },
+   "pivot": {
+    "x": 0.3870967741935484,
+    "y": 0.8909090909090909
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "PixelLab VFX Creator",
+  "image": "power-aura-take-4.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 372,
+   "h": 330
+  },
+  "scale": "1",
+  "anchor": {
+   "kind": "origin",
+   "x": 48,
+   "y": 98
+  },
+  "frameTags": [
+   {
+    "name": "power-aura-take-4",
+    "from": 0,
+    "to": 8,
+    "direction": "forward"
+   }
+  ]
+ }
+}

@@ -19,14 +19,17 @@ class RankSService:
   origin={'x':x,'y':y};target=next((m for m in enemies if live(m) and str(m.get('id'))==str(ctx.get('target_id'))),None)
   if family=='mera' and key=='1' and (not target or dist(origin,target)>320):raise ValueError('Alvo fora do alcance')
   if family=='mera' and key=='2' and not any(live(m) and dist(origin,m)<=256 for m in enemies):raise ValueError('Nenhum alvo ao alcance')
+  limits={'gura':{'1':256,'2':192},'hie':{'1':320,'2':384,'3':64},'phoenix':{'1':128,'3':320}}
+  if key in limits.get(family,{}) and (not target or dist(origin,target)>limits[family][key]):raise ValueError('Alvo fora do alcance')
   if store.state(p)['cooldowns'].get(fruit+':'+key,0)>now or energy<skill['cost']:raise ValueError('Recarga ou energia insuficiente')
   magic_pen=ctx.get('magic_penetration',0)
   if not finite(magic_pen) or not 0<=magic_pen<=1:raise ValueError('Penetração inválida')
-  kind=({'1':'vortex','2':'blackHole','3':'liberation'} if family=='yami' else {'1':'fireFist','2':'fireRain','3':'pillar'})[key]
+  kinds={'yami':{'1':'vortex','2':'blackHole','3':'liberation'},'mera':{'1':'fireFist','2':'fireRain','3':'pillar'},'gura':{'1':'guraCrack','2':'guraSkull','3':'guraBuff'},'hie':{'1':'hieSpears','2':'hieBird','3':'hieFreeze'},'phoenix':{'1':'phoenixDash','2':'phoenixTotem','3':'phoenixEnergy'}}
+  kind=kinds[family][key]
   vector=list(direction)
   if target and dist(origin,target)>0:vector=[(target['x']-x)/dist(origin,target),(target['y']-y)/dist(origin,target)]
   token='s:'+uuid.uuid4().hex;self.jobs={k:j for k,j in self.jobs.items() if j['expires']>now}
-  self.jobs[token]={'owner':p,'instance':instance,'started':now,'expires':now+30,'kind':kind,'origin':origin,'direction':vector,'special':ctx['special_attack'],'pen':magic_pen,'used':set(),'rain':set(),'pillar':{}}
+  self.jobs[token]={'owner':p,'instance':instance,'started':now,'expires':now+30,'kind':kind,'origin':origin,'direction':vector,'attack':attack,'special':ctx['special_attack'],'pen':magic_pen,'used':set(),'rain':set(),'pillar':{}}
   owned=[k for k,j in self.jobs.items() if j['owner']==p]
   for k in owned[:-32]:self.jobs.pop(k,None)
   ready=now+skill['cooldown']
@@ -39,7 +42,7 @@ class RankSService:
  def impact(self,p,token,instance,enemies,target_id,event=None,context=None):
   j=self.jobs.get(token);now=self.clock();ctx=context or {};event=str(event or '');m=next((m for m in enemies if live(m) and str(m.get('id'))==str(target_id)),None)
   if not j or j['owner']!=p or j['instance']!=instance or now>j['expires'] or not m or (str(target_id),event) in j['used']:raise ValueError('Impacto inválido ou repetido')
-  age=now-j['started'];kind=j['kind'];mult=0;delay=0;silence=0;slow=0;renew=False;dot=False
+  age=now-j['started'];kind=j['kind'];mult=0;delay=0;silence=0;slow=0;renew=False;dot=False;absolute=False;stun=0;defense_break=0;healing_break=0
   if not event.startswith('burn:') and ctx.get('effect_age') is not None:
    logical=ctx['effect_age']
    if not finite(logical) or logical<0 or logical>age+.15:raise ValueError('Frame lógico futuro ou inválido')
@@ -75,13 +78,28 @@ class RankSService:
     value=event[7:] if event.startswith('pillar:') else '';impact=ctx.get('impact_point')
     if not value.isdigit() or not point(impact) or age>=7 or dist(j['origin'],impact)>360*age+8 or dist(impact,m)>RULES['mera']['pillar']['radius'] or now+.035<j['pillar'].get(str(target_id),0)+1:raise ValueError('Contato de pilar inválido')
     delay=int(value)/1000;mult=4.5;renew=True
+   elif kind in ('guraCrack','guraSkull'):
+    dx=m['x']-j['origin']['x'];dy=m['y']-j['origin']['y'];vx,vy=j['direction']
+    if event!='impact' or math.hypot(dx,dy)>(256 if kind=='guraCrack' else 192) or (kind=='guraCrack' and dx*vx+dy*vy<abs(dx*vy-dy*vx)):raise ValueError('Fora do tremor')
+    delay=.35;mult=4.5;absolute=kind=='guraSkull';stun=2.5 if kind=='guraCrack' else 0;defense_break=.8 if kind=='guraSkull' else 0
+   elif kind in ('hieSpears','hieBird'):
+    value=event[7:] if event.startswith('impact:') else ''
+    if not value.isdigit() or int(value)>=(5 if kind=='hieSpears' else 1) or dist(j['origin'],m)>(320 if kind=='hieSpears' else 384):raise ValueError('Projétil de gelo inválido')
+    delay=.55;mult=4.2 if kind=='hieSpears' else 4.5;slow=.4
+   elif kind=='phoenixDash':
+    if event!='impact' or dist(j['origin'],m)>128:raise ValueError('Mergulho fora do alcance')
+    delay=.49;mult=4;defense_break=.5;healing_break=.8
+   elif kind=='phoenixEnergy':
+    value=event[7:] if event.startswith('energy:') else ''
+    if not value.isdigit() or not 1<=int(value)<=5 or dist(j['origin'],m)>320:raise ValueError('Energia fora do alcance')
+    delay=int(value)*1.2/5;mult=1.1;healing_break=.8 if int(value)==5 else 0
    else:raise ValueError('Efeito desconhecido')
    if age+.06<delay:raise ValueError('Impacto antecipado')
-   armor=m.get('magicDefense',m.get('defense',0))
+   armor=0 if absolute else m.get('defense',0) if kind.startswith('gura') else m.get('magicDefense',m.get('defense',0))
    if not finite(armor) or armor<0:raise ValueError('Defesa inválida')
-   damage=max(1,math.floor(j['special']*mult-armor*(1-j['pen'])*.3))
+   damage=max(1,math.floor((j['attack'] if kind.startswith('gura') else j['special'])*mult-armor*(1-j['pen'])*.3))
    if kind=='fireRain':j['rain'].add(event[5:])
    if kind=='pillar':j['pillar'][str(target_id)]=now
    if renew:self.renew(p,instance,m,j,token,now)
   j['used'].add((str(target_id),event))
-  return {'damage':damage,'target_id':target_id,'event':event,'dot':dot,'silence':silence,'slow':slow}
+  return {'damage':damage,'target_id':target_id,'event':event,'dot':dot,'silence':silence,'slow':slow,'stun':stun,'defense_break':defense_break,'healing_break':healing_break,'ignore_all_mitigation':absolute}

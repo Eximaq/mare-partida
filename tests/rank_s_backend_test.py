@@ -11,7 +11,7 @@ class RankSTest(unittest.TestCase):
   a={'enemies':self.enemies(),'skill_key':key,'energy':500,'physical_attack':80,'target_id':'m','direction':[1,0],'rank_c_context':{'special_attack':200}};a.update(kw);return self.s.cast('p','beach',0,0,**a)
  def hit(self,r,event,**kw):return self.s.rank_a.impact('p',r['effect']['token'],'beach',kw.pop('enemies',self.enemies()),'m',event,kw)
  def test_rank_s_catalog_and_three_slots(self):
-  rows=[r for r in public_catalog().values() if r['rank']=='S'];self.assertEqual(len(rows),2)
+  rows=[r for r in public_catalog().values() if r['rank']=='S'];self.assertEqual(len(rows),5)
   for r in rows:self.assertEqual([s['key'] for s in r['skills']],['1','2','3'])
  def test_vortex_timing_silence_and_duplicate(self):
   self.equip('akuma_yami_yami');r=self.cast('1')
@@ -61,4 +61,20 @@ class RankSTest(unittest.TestCase):
    self.assertGreater(self.hit(r,event,enemies=[{'id':'m','x':inside,'y':0,'hp':10000}])['damage'],0)
   self.equip('akuma_mera_mera');r=self.cast('3');self.now+=.1
   self.assertGreater(self.hit(r,'pillar:100',impact_point={'x':0,'y':0},enemies=[{'id':'m','x':65,'y':0,'hp':10000}])['damage'],0)
+ def test_gura_hie_phoenix_casts_and_impacts(self):
+  cases=[('akuma_gura_gura','1','impact',180,.35),('akuma_gura_gura','2','impact',180,.35),
+         ('akuma_hie_hie','1','impact:0',180,.55),('akuma_hie_hie','2','impact:0',180,.55),
+         ('akuma_tori_phoenix','1','impact',100,.49),('akuma_tori_phoenix','3','energy:1',180,.24)]
+  for fruit,key,event,range_x,delay in cases:
+   with self.subTest(fruit=fruit,key=key):
+    self.equip(fruit)
+    r=self.cast(key,enemies=[{'id':'m','x':range_x,'y':0,'hp':10000}])
+    self.now+=delay
+    result=self.hit(r,event,enemies=[{'id':'m','x':range_x,'y':0,'hp':10000}])
+    self.assertGreater(result['damage'],0)
+    with self.assertRaises(ValueError):self.hit(r,event,enemies=[{'id':'m','x':range_x,'y':0,'hp':10000}])
+    self.now+=40
+  for fruit,key in [('akuma_gura_gura','3'),('akuma_tori_phoenix','2'),('akuma_hie_hie','3')]:
+   self.equip(fruit);self.assertTrue(self.cast(key)['effect']['token'])
+   self.now+=40
 if __name__=='__main__':unittest.main()
