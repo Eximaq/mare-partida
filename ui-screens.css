@@ -127,3 +127,127 @@
 /* HD emblems use the existing faction art slot; character sprites stay pixelated elsewhere. */
 #factionStep .faction-art{position:relative}
 #factionStep .faction-art > .faction-emblem{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:auto;height:auto;max-width:calc(100% - 8px);max-height:calc(100% - 8px);aspect-ratio:1;object-fit:contain;image-rendering:auto}
+
+/* Inventory HD: composition only; all game rules and the approved HUD stay in their controllers. */
+#app #panelOverlay.inventory-mode.pirate-hd{padding:12px}
+#app #panelOverlay.inventory-mode.pirate-hd .dialog{width:min(1680px,calc(100vw - 24px));height:calc(100dvh - 24px);max-height:100%;background:#07171b;border:0;box-shadow:0 14px 60px #000b}
+#app #panelOverlay.inventory-mode.pirate-hd .dialog-body{height:100%;overflow:hidden;padding:0}
+#app #panelOverlay.inventory-mode.pirate-hd .op-inventory-shell{display:flex;flex-direction:column;min-width:0;height:100%;background:#06171b;color:#f9e5b8}
+#app #panelOverlay.inventory-mode.pirate-hd .op-topbar{flex:0 0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;padding:4px 16px 10px;gap:8px;min-height:66px;background:#06171b;border-bottom:1px solid #bd914c}
+#app #panelOverlay.inventory-mode.pirate-hd .op-title-banner{padding:5px 22px 5px 8px;background:linear-gradient(#0a090aaa,#0a090aaa),var(--rpg-hd-wood);border:2px solid #bf8d3f;box-shadow:inset 0 0 0 2px #302017,0 0 0 1px #61401b;border-radius:3px;display:flex;align-items:center;gap:14px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-title-banner strong{font:700 clamp(22px,2.2vw,32px)/1 var(--rpg-hd-heading);color:#ffe8b0}
+#app #panelOverlay.inventory-mode.pirate-hd .op-jolly{width:46px;height:46px;background:none;border:0;object-fit:contain;border-radius:0}
+#app #panelOverlay.inventory-mode.pirate-hd .op-close{width:44px;height:44px;border:2px solid #b98736;background:var(--rpg-hd-wood);color:#ffdf9e;font-size:30px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-body-grid{display:grid;grid-template-columns:minmax(310px,1fr) minmax(420px,1.55fr) minmax(295px,1fr);gap:8px;padding:10px 2px 2px;min-height:0;flex:1;overflow:hidden;align-items:stretch}
+#app #panelOverlay.inventory-mode.pirate-hd .op-panel{border:20px solid transparent;border-image:var(--rpg-hd-frame) 90 100 / 30px / 0 stretch;padding:10px 7px;background:linear-gradient(#0d070530,#0d070530),var(--rpg-hd-wood) center/512px 256px;border-radius:0;color:#f9e5b8;min-height:0;min-width:0;overflow:auto;max-height:none;box-shadow:none}
+#app #panelOverlay.inventory-mode.pirate-hd .op-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin:0 0 10px}
+#app #panelOverlay.inventory-mode.pirate-hd :is(.op-tabs,.op-category-tabs) button{min-width:0;background:linear-gradient(#13232b,#07171e);color:#ffe9b6;border:1px solid #b58c47;border-radius:3px;font-size:11px;min-height:36px;padding:6px 4px;text-wrap:wrap;box-shadow:inset 0 1px #edcb7940,inset 0 -2px #0008}
+#app #panelOverlay.inventory-mode.pirate-hd :is(.op-tabs,.op-category-tabs) button.active{background:linear-gradient(#a16c24,#422811);color:#fff1bf;outline:1px solid #ffd66b;outline-offset:-3px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-character-core{grid-template-columns:64px minmax(0,1fr) 64px;gap:8px;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-side{gap:5px;display:flex;flex-direction:column}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot{height:clamp(46px,6.4vh,66px);min-height:46px;max-height:none;padding:3px;gap:1px;border:1px solid #886b3d;border-radius:3px;background:#101c21;box-shadow:inset 0 0 0 2px #03090b}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot .op-slot-label{font-size:9px;min-height:11px;line-height:1.2;order:2;color:#f6dfaa}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot .op-slot-frame{min-height:26px;height:auto;padding:0;flex:1}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot .op-slot-icon .item-icon{width:32px;height:32px;max-height:36px;max-width:100%;object-fit:contain}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot.filled{background-image:none;border-color:var(--rarity,#b58b4b)}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot.rarity-uncommon{border-color:var(--rpg-uncommon)}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot.rarity-rare{border-color:var(--rpg-rare)}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot.rarity-epic{border-color:var(--rpg-epic)}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot.rarity-legendary{border-color:var(--rpg-legendary)}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot.rarity-supreme{border-color:var(--rpg-supreme)}
+#app #panelOverlay.inventory-mode.pirate-hd .op-slot-power{display:none}
+#app #panelOverlay.inventory-mode.pirate-hd .op-avatar-column{grid-column:auto;grid-row:auto;max-width:none;padding:0;margin:0;border:0;gap:6px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-avatar-stage{width:100%;max-width:none;height:clamp(190px,27vh,300px);min-height:0;padding:0;border:1px solid #ad8140;border-radius:2px;background:radial-gradient(ellipse,#17333b,#06131b 80%);box-shadow:inset 0 0 16px #0008;overflow:hidden}
+#app #panelOverlay.inventory-mode.pirate-hd #inventorySprite{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+#app #panelOverlay.inventory-mode.pirate-hd .op-avatar-meta{gap:3px;min-width:0;text-align:center}
+#app #panelOverlay.inventory-mode.pirate-hd .op-avatar-meta strong{font:700 clamp(17px,1.5vw,24px)/1.25 'Alabasta Pirate',Georgia,serif;overflow-wrap:anywhere;color:#ffe5a4}
+#app #panelOverlay.inventory-mode.pirate-hd .op-avatar-meta span{font:12px/1.35 var(--rpg-font);overflow-wrap:anywhere}
+#app #panelOverlay.inventory-mode.pirate-hd .op-character-summary{margin-top:10px;border:1px solid #a77c3d;padding:6px 10px;background:#130d09a8}
+#app #panelOverlay.inventory-mode.pirate-hd .op-power-banner{margin:0;padding:5px 0;display:flex;gap:6px;background:none;border:0;box-shadow:none;justify-content:space-between}
+#app #panelOverlay.inventory-mode.pirate-hd .op-power-banner label{font:700 13px var(--rpg-hd-heading)}
+#app #panelOverlay.inventory-mode.pirate-hd .op-power-banner b{font-size:24px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-stats-list{margin:0;gap:0}
+#app #panelOverlay.inventory-mode.pirate-hd .op-stats-list div{padding:5px 0;border:0;border-top:1px solid #b18c4544;border-radius:0;background:none;font-size:13px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-fruit-equipped{display:flex;align-items:center;gap:12px;margin-top:10px;border:1px solid #a77c3d;padding:5px 8px;background:#130d09a8}
+#app #panelOverlay.inventory-mode.pirate-hd .op-fruit-equipped .op-equip-slot{flex:0 0 60px;height:58px}.ui-hd .op-fruit-equipped>div{min-width:0;display:grid;gap:4px}.ui-hd .op-fruit-equipped>div strong{font-size:11px}.ui-hd .op-fruit-equipped>div span{font-size:13px;overflow-wrap:anywhere}
+#app #panelOverlay.inventory-mode.pirate-hd .op-hide-check{font-size:12px;color:#e6cfa7;margin-top:8px;padding:0;border:0}
+#app #panelOverlay.inventory-mode.pirate-hd .op-bag-panel{display:flex;flex-direction:column;overflow:hidden}
+#app #panelOverlay.inventory-mode.pirate-hd .op-panel-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:0 0 10px;border-bottom:1px solid #b18c4566;color:#ffe3a6;margin-bottom:12px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-head-left h3{font:700 23px var(--rpg-hd-heading);color:#ffe3a6}.ui-hd .op-head-left{min-width:0}
+#app #panelOverlay.inventory-mode.pirate-hd .op-bag-capacity{margin-left:auto;font:13px var(--rpg-font);white-space:nowrap}.ui-hd .op-bag-capacity b{color:#fff0c6}
+#app #panelOverlay.inventory-mode.pirate-hd .op-best-btn{width:100%;padding:8px;min-height:36px;border:1px solid #c29b4c;background:linear-gradient(#b18334,#79521f);color:#fff3c2;font-size:12px;box-shadow:inset 0 1px #ffdc9b,inset 0 -2px #2c190b}
+#app #panelOverlay.inventory-mode.pirate-hd .op-tool-row{grid-template-columns:minmax(120px,1fr) 100px 90px;gap:6px;margin-bottom:10px;flex-shrink:0}
+#app #panelOverlay.inventory-mode.pirate-hd .op-tool-row :is(input,select){min-width:0;font-size:12px;min-height:36px;height:36px}.ui-hd .op-search{min-width:0}
+#app #panelOverlay.inventory-mode.pirate-hd .op-search{height:36px;background:#ebd4a0;color:#4d351c;border:1px solid #d4ad62}
+#app #panelOverlay.inventory-mode.pirate-hd .op-search input{background:transparent;border:0;color:#302017;width:100%;padding:5px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-tool-row select{background:#0c2028;border:1px solid #b18b4d;color:#ffe6af;padding:4px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-category-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;flex:0 0 auto;overflow:visible;margin-bottom:12px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-grid-wrap{padding:6px;border:1px solid #5b4a2f;min-height:0;background:#05141b;overflow-y:auto;overflow-x:hidden;flex:1}
+#app #panelOverlay.inventory-mode.pirate-hd .op-grid{display:grid;width:100%;max-width:100%;grid-template-columns:repeat(var(--bag-columns,9),minmax(0,1fr));grid-template-rows:none;grid-auto-rows:auto;gap:5px;min-height:0;align-content:start}
+#app #panelOverlay.inventory-mode.pirate-hd .op-item{width:100%;height:auto;min-height:0;aspect-ratio:1;padding:4px;border-radius:3px;position:relative}
+#app #panelOverlay.inventory-mode.pirate-hd .op-item.empty{background:#10242c;border:1px solid #253943}
+#app #panelOverlay.inventory-mode.pirate-hd .op-item .item-icon{width:82%;height:82%;max-width:none;max-height:none;object-fit:contain;image-rendering:pixelated}
+#app #panelOverlay.inventory-mode.pirate-hd .op-item.selected{outline:2px solid #ffe290;outline-offset:-1px;box-shadow:inset 0 0 0 4px #f9d66c80}
+#app #panelOverlay.inventory-mode.pirate-hd .op-pagination{color:#d2b98d;flex-shrink:0;min-height:38px;padding-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+#app #panelOverlay.inventory-mode.pirate-hd .op-page-count{color:#d2b98d;font-size:12px;margin-right:auto}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-panel{background:var(--rpg-hd-paper) center/100% 100%;color:#302017;display:flex;flex-direction:column;overflow:hidden}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-wrap{min-height:0;height:auto;flex:1;display:flex;flex-direction:column;gap:10px;color:#302017;overflow:hidden;font:13px/1.5 var(--rpg-font)}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-head{display:grid;grid-template-columns:72px minmax(0,1fr);align-items:center;gap:12px;padding:4px 0 12px;flex-shrink:0;border-bottom:1px solid #9d723a80}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-icon{width:72px;height:72px;background:#0a1c24;border:2px solid #946e36;box-shadow:inset 0 0 0 2px #020a0c}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-icon .item-icon{width:90%;height:90%;object-fit:contain;image-rendering:pixelated}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-head h3{font:700 22px/1.2 var(--rpg-hd-heading);color:#5e2787;overflow-wrap:anywhere;margin:0 0 5px}.ui-hd .op-detail-head small{overflow-wrap:anywhere}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-content{min-height:0;overflow:auto;flex:1;scrollbar-color:#99703a transparent;padding-right:4px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-box{background:none;border:0;padding:0;box-shadow:none;color:#302017}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-box p{font:13px/1.6 var(--rpg-font);color:#302017}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-actions{flex:0 0 auto;border-top:1px solid #9d723a80;padding-top:8px;display:grid;gap:6px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-action{margin:0;min-height:42px;font:700 16px var(--rpg-hd-heading);padding:8px;border:2px solid #a57b38;background:linear-gradient(#ffc94d,#b47619);color:#241607;box-shadow:inset 0 1px #ffecb2,inset 0 -2px #5e380a}
+#app #panelOverlay.inventory-mode.pirate-hd .op-action.secondary{background:linear-gradient(#18333e,#081b25);color:#ffe2a7;font-size:13px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-bottom-actions button{min-width:0;font-size:10px}.ui-hd .op-detail-actions:empty{display:none}
+@media(max-width:1100px){#app #panelOverlay.inventory-mode.pirate-hd .op-body-grid{grid-template-columns:minmax(290px,1fr) minmax(380px,1.4fr);overflow:auto;align-content:start}#app #panelOverlay.inventory-mode.pirate-hd .op-character-panel{grid-column:auto}#app #panelOverlay.inventory-mode.pirate-hd .op-detail-panel{grid-column:1/-1;min-height:400px}#app #panelOverlay.inventory-mode.pirate-hd .op-bag-panel{min-height:670px}#app #panelOverlay.inventory-mode.pirate-hd .op-character-panel{min-height:670px}}
+@media(max-width:760px){#app #panelOverlay.inventory-mode.pirate-hd{padding:4px}#app #panelOverlay.inventory-mode.pirate-hd .dialog{width:calc(100vw - 8px);height:calc(100dvh - 8px)}#app #panelOverlay.inventory-mode.pirate-hd .op-body-grid{display:flex;flex-direction:column;overflow:auto;padding:6px 0;gap:8px;align-content:normal}#app #panelOverlay.inventory-mode.pirate-hd .op-panel{flex:0 0 auto;width:100%;min-height:0;padding:8px 5px;border-width:16px}#app #panelOverlay.inventory-mode.pirate-hd .op-bag-panel{height:650px}#app #panelOverlay.inventory-mode.pirate-hd .op-detail-panel{height:600px}#app #panelOverlay.inventory-mode.pirate-hd .op-topbar{padding:6px;min-height:60px}#app #panelOverlay.inventory-mode.pirate-hd .op-title-banner{padding:3px 8px;gap:6px}#app #panelOverlay.inventory-mode.pirate-hd .op-jolly{width:32px;height:32px}#app #panelOverlay.inventory-mode.pirate-hd .op-title-banner strong{font-size:20px}#app #panelOverlay.inventory-mode.pirate-hd .op-character-core{grid-template-columns:56px minmax(0,1fr) 56px;gap:6px}#app #panelOverlay.inventory-mode.pirate-hd .op-equip-side.left{grid-row:auto;grid-column:auto}#app #panelOverlay.inventory-mode.pirate-hd .op-equip-side.right{grid-row:auto;grid-column:auto}#app #panelOverlay.inventory-mode.pirate-hd .op-avatar-column{grid-column:auto;grid-row:auto;width:100%}#app #panelOverlay.inventory-mode.pirate-hd .op-avatar-stage{height:190px;width:100%}#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot{min-height:49px;height:49px}#app #panelOverlay.inventory-mode.pirate-hd .op-tool-row{grid-template-columns:1fr 1fr}#app #panelOverlay.inventory-mode.pirate-hd .op-search{grid-column:1/-1}#app #panelOverlay.inventory-mode.pirate-hd .op-tool-row :is(input,select){font-size:16px;height:40px}#app #panelOverlay.inventory-mode.pirate-hd .op-section-nav{display:flex}#app #panelOverlay.inventory-mode.pirate-hd .op-panel{scroll-margin-top:0}#app #panelOverlay.inventory-mode.pirate-hd .op-pagination button{min-width:36px;min-height:36px}}
+
+#app #panelOverlay.inventory-mode.pirate-hd :is(.op-title-banner,.op-jolly,.op-character-core,.op-bag-capacity,.op-equip-slot,.op-tabs button,.op-category-tabs button,.op-power-banner,.op-detail-box,.op-action,.op-tool-row input,.op-tool-row select){border-image:none}
+
+#app #panelOverlay.inventory-mode.pirate-hd .op-panel{border-image:var(--rpg-hd-panel) 52 52 / 28px / 0 stretch;background-size:512px 256px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-panel{background-size:auto 100%}
+#app #panelOverlay.inventory-mode.pirate-hd .hd-panel-heading{font:700 clamp(17px,1.45vw,24px)/1.2 var(--rpg-hd-heading);color:#ffe4a6}
+#app #panelOverlay.inventory-mode.pirate-hd :is(.op-title-banner,.op-close,.op-best-btn,.op-action,.op-pagination button){border:8px solid transparent;border-image:var(--rpg-hd-button) 16 16 fill / 8px / 0 stretch;background:none;box-shadow:none}
+#app #panelOverlay.inventory-mode.pirate-hd .op-title-banner{padding:0 12px 0 2px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-close{padding:0;display:flex;align-items:center;justify-content:center}
+#app #panelOverlay.inventory-mode.pirate-hd :is(.op-tabs,.op-category-tabs) button{border:6px solid transparent;border-image:var(--rpg-hd-tab) 25 60 fill / 10px 18px / 0 stretch;min-height:40px;font:700 12px/1.2 var(--rpg-hd-heading);padding:4px 2px;background:none}
+#app #panelOverlay.inventory-mode.pirate-hd :is(.op-tabs,.op-category-tabs) button.active{outline:1px solid #ffe388;outline-offset:-2px;filter:brightness(1.25)}
+#app #panelOverlay.inventory-mode.pirate-hd .op-best-btn{font:700 13px var(--rpg-hd-heading);color:#ffe2a1;min-height:38px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-action{font:700 18px var(--rpg-hd-heading);color:#ffe2a1;min-height:46px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-tool-row .op-search input{color:#302017;background:transparent}
+#app #panelOverlay.inventory-mode.pirate-hd .op-search{background:#edd7a7}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot{border-image:var(--rpg-hd-slot) 16 / 5px / 0 stretch;background:#101c21}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot.filled{border-image:none}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot.filled::after,#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot.filled::before{display:none}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-box{border-image:none}
+#app #panelOverlay.inventory-mode.pirate-hd .op-skill-row strong{font:700 16px/1.3 var(--rpg-font)}
+#app #panelOverlay.inventory-mode.pirate-hd .op-skill-row small{font-size:13px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-head small{font-size:14px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-detail-box p{font-size:15px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-avatar-meta span{font-size:13px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-item-icon{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-feedback{display:block;margin:8px 0;padding:8px;color:#b9e1b3;border:1px solid #527a49;background:#162417;font-size:12px}#app #panelOverlay.inventory-mode.pirate-hd .op-equip-feedback>span{display:flex;flex-wrap:wrap;gap:6px}#app #panelOverlay.inventory-mode.pirate-hd .op-character-core{padding-bottom:0}#app #panelOverlay.inventory-mode.pirate-hd .op-panel:not(.op-detail-panel){background-image:linear-gradient(#08040266,#08040266),var(--rpg-hd-wood)}
+
+#app #panelOverlay.inventory-mode.pirate-hd .op-tabs button{font:700 13px/1.2 var(--rpg-font);text-transform:none}
+#app #panelOverlay.inventory-mode.pirate-hd .op-slot-label{font-size:10px}
+@media(min-width:1101px) and (max-height:850px){
+#app #panelOverlay.inventory-mode.pirate-hd .op-panel{border-width:16px;padding:7px}
+#app #panelOverlay.inventory-mode.pirate-hd .hd-panel-heading{font-size:17px;padding:6px;margin-bottom:8px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-tabs{margin-bottom:8px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-tabs button{min-height:30px;font-size:12px;padding:3px 0}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot{height:46px;min-height:46px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-avatar-stage{height:185px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-character-summary{margin-top:7px;padding:3px 8px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-stats-list div{padding:3px 0;font-size:12px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-power-banner{padding:3px 0}
+#app #panelOverlay.inventory-mode.pirate-hd .op-power-banner b{font-size:21px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-fruit-equipped{margin-top:7px;padding:3px 6px}
+#app #panelOverlay.inventory-mode.pirate-hd .op-fruit-equipped .op-equip-slot{height:48px;min-height:48px}
+}
+
+@media(min-width:1101px){#app #panelOverlay.inventory-mode.pirate-hd .op-best-btn{width:auto;flex:0 0 auto;max-width:46%;font-size:11px;white-space:nowrap}#app #panelOverlay.inventory-mode.pirate-hd .op-panel-head{flex-wrap:nowrap}#app #panelOverlay.inventory-mode.pirate-hd .op-head-left h3{font-size:21px}}

@@ -151,7 +151,7 @@ html[data-mare-motion=reduced] #app .profile-resource .mini-meter i::after{anima
 #app .chat-corner-toggle{left:var(--rpg-edge);bottom:var(--rpg-edge);height:30px;min-height:30px;border:0;border-radius:0;background:none;border-image:var(--nav-control) 8 fill/3px/0 stretch;box-shadow:none;font:500 13px/1 var(--rpg-font)}
 .chat-open #app .chat-corner-toggle{bottom:calc(var(--rpg-edge) + 192px)}
 /* Shared windows: dark sailcloth and a restrained bronze instrument edge. */
-body :is(.dialog,.creation-dialog,.confirmation-card,.ui-window),#panelOverlay.inventory-mode .dialog{
+body :is(.dialog,.creation-dialog,.confirmation-card,.ui-window),#panelOverlay.inventory-mode:not(.pirate-hd) .dialog{
   background:var(--nav-ink) repeat;border:0;border-image:var(--nav-window) 18/9px/0 stretch;border-radius:0;box-shadow:none;image-rendering:pixelated;
 }
 body :is(.dialog-header,.ui-window-header),#panelOverlay :is(.dialog-header,.op-topbar){background:var(--nav-rule) left bottom/100% 1px no-repeat;border:0;box-shadow:none;padding:15px 20px;min-height:54px}
@@ -176,24 +176,24 @@ body :is(button,a,input,select,textarea):focus-visible{outline:2px solid #e0d3ad
 #app #panelOverlay :is(button.ui-button,button,a,input,select,textarea):focus-visible{outline:2px solid #e0d3ad;outline-offset:3px}
 #app :is(input:not([type=checkbox]):not([type=range]),select,textarea),#app #panelOverlay :is(input:not([type=checkbox]):not([type=range]),select,textarea){background:var(--nav-ink) repeat;border:0;border-image:var(--nav-control) 8/3px/0 stretch;border-radius:0;box-shadow:none;color:#eee3c8;font-size:15px}
 /* Inventory uses the character + item as its focal points, not timber planks. */
-#panelOverlay.inventory-mode .dialog-body,#app :is(.op-inventory-shell,.op-body-grid,.op-equipment-board,.op-grid-wrap){background:var(--nav-ink) repeat;box-shadow:none}
+#panelOverlay.inventory-mode:not(.pirate-hd) .dialog-body,#app :is(.op-inventory-shell,.op-body-grid,.op-equipment-board,.op-grid-wrap){background:var(--nav-ink) repeat;box-shadow:none}
 #app :is(.op-panel,.op-info-panel,.op-detail-box,.op-origin-row>div,.contract-modal-entry){background:var(--nav-paper-fill) repeat;border:0;border-image:var(--nav-paper) 8/5px/0 stretch;border-radius:0;box-shadow:none;color:#26363a}
 #app :is(.op-title-banner,.op-jolly,.op-bag-capacity,.op-power-box,.op-character-core,.op-character-stats>div){background:var(--nav-slate) repeat;border:0;border-image:var(--nav-panel) 14/4px/0 stretch;box-shadow:none;color:#eee3c8}
 #app .op-inventory-shell :is(input:not([type=checkbox]),select){background:var(--nav-paper-fill) repeat;color:#26363a;color-scheme:light}
-#app #panelOverlay.inventory-mode :is(.op-inventory-shell,.op-body-grid,.op-equipment-board,.op-grid-wrap,.op-grid){background:var(--nav-ink) repeat;box-shadow:none}
-#app #panelOverlay.inventory-mode .op-panel{background:var(--nav-paper-fill) repeat;border:0;border-image:var(--nav-paper) 8/5px/0 stretch;box-shadow:none}
-#app #panelOverlay.inventory-mode :is(.op-character-panel,.op-bag-panel){background:var(--nav-ink) repeat;border-image:var(--nav-window) 18/6px/0 stretch;color:#eee3c8}
-#app #panelOverlay.inventory-mode :is(.op-character-panel,.op-bag-panel) :is(h3,h4,.op-bag-meta,.op-bag-count,.op-pagination){color:#eee3c8}
-#app #panelOverlay.inventory-mode :is(.op-title-banner,.op-jolly,.op-bag-capacity,.op-power-box,.op-character-core,.op-character-stats>div){background:var(--nav-slate) repeat;border:0;border-image:var(--nav-panel) 14/4px/0 stretch;box-shadow:none;color:#eee3c8}
-#app #panelOverlay.inventory-mode .op-title-banner{background:none;border:0;border-image:none;box-shadow:none}
-#app #panelOverlay.inventory-mode .op-avatar-meta strong{font-family:var(--rpg-font);font-size:20px;color:#eee3c8}
-#app #panelOverlay.inventory-mode .op-power-banner{background:var(--nav-slate) repeat;border:0;border-image:var(--nav-control) 8/3px/0 stretch;box-shadow:none;color:#eee3c8}
-#app #panelOverlay.inventory-mode :is(.op-info-panel,.op-detail-box,.op-origin-row>div){background:var(--nav-paper-fill) repeat;border:0;border-image:var(--nav-paper) 8/4px/0 stretch;box-shadow:none;color:#26363a}
-#app #panelOverlay.inventory-mode :is(input:not([type=checkbox]),select){background:var(--nav-paper-fill) repeat;color:#26363a;color-scheme:light;font-size:13px}
-#app #panelOverlay.inventory-mode .ui-button{font-size:12px}
-#panelOverlay.inventory-mode .op-grid>.op-item.empty,#panelOverlay.inventory-mode .op-equip-slot:not(.filled){background:var(--nav-slate) repeat;border:0;border-image:none;border-radius:3px;box-shadow:none}
-#app #panelOverlay.inventory-mode :is(.op-item.empty,.op-equip-slot:not(.filled)){background:var(--nav-slate) repeat;border:0;border-image:none;border-radius:3px;box-shadow:none}
-#app #panelOverlay.inventory-mode .op-equip-slot:not(.filled){border:1px solid transparent;border-image:var(--nav-panel) 14/2px/0 stretch}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) :is(.op-inventory-shell,.op-body-grid,.op-equipment-board,.op-grid-wrap,.op-grid){background:var(--nav-ink) repeat;box-shadow:none}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) .op-panel{background:var(--nav-paper-fill) repeat;border:0;border-image:var(--nav-paper) 8/5px/0 stretch;box-shadow:none}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) :is(.op-character-panel,.op-bag-panel){background:var(--nav-ink) repeat;border-image:var(--nav-window) 18/6px/0 stretch;color:#eee3c8}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) :is(.op-character-panel,.op-bag-panel) :is(h3,h4,.op-bag-meta,.op-bag-count,.op-pagination){color:#eee3c8}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) :is(.op-title-banner,.op-jolly,.op-bag-capacity,.op-power-box,.op-character-core,.op-character-stats>div){background:var(--nav-slate) repeat;border:0;border-image:var(--nav-panel) 14/4px/0 stretch;box-shadow:none;color:#eee3c8}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) .op-title-banner{background:none;border:0;border-image:none;box-shadow:none}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) .op-avatar-meta strong{font-family:var(--rpg-font);font-size:20px;color:#eee3c8}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) .op-power-banner{background:var(--nav-slate) repeat;border:0;border-image:var(--nav-control) 8/3px/0 stretch;box-shadow:none;color:#eee3c8}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) :is(.op-info-panel,.op-detail-box,.op-origin-row>div){background:var(--nav-paper-fill) repeat;border:0;border-image:var(--nav-paper) 8/4px/0 stretch;box-shadow:none;color:#26363a}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) :is(input:not([type=checkbox]),select){background:var(--nav-paper-fill) repeat;color:#26363a;color-scheme:light;font-size:13px}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) .ui-button{font-size:12px}
+#panelOverlay.inventory-mode:not(.pirate-hd) .op-grid>.op-item.empty,#panelOverlay.inventory-mode:not(.pirate-hd) .op-equip-slot:not(.filled){background:var(--nav-slate) repeat;border:0;border-image:none;border-radius:3px;box-shadow:none}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) :is(.op-item.empty,.op-equip-slot:not(.filled)){background:var(--nav-slate) repeat;border:0;border-image:none;border-radius:3px;box-shadow:none}
+#app #panelOverlay.inventory-mode:not(.pirate-hd) .op-equip-slot:not(.filled){border:1px solid transparent;border-image:var(--nav-panel) 14/2px/0 stretch}
 #app :is(.op-slot-frame,.op-slot-icon,.op-item-icon){box-shadow:none}
 #app :is(.op-item,.op-equip-slot,.forge2-tile,.forge2-pearl):is(:hover,.selected,[aria-pressed=true]){outline:2px solid #cebd92;outline-offset:-2px}
 #app :is(.op-empty-slot,.forge2-material-slot,.forge2-socket,.ui-slot){background:var(--nav-ink) repeat;border:0;border-image:var(--nav-panel) 14/3px/0 stretch;box-shadow:none}
@@ -247,7 +247,7 @@ body .confirmation-card{padding:26px}
   .chat-open #app .chat-corner-toggle{bottom:calc(var(--rpg-safe-bottom) + 310px)}
   #app .target-hud{top:calc(var(--utilities-bottom,212px) + 8px);left:12px;right:auto;transform:none;width:calc((100vw - 36px)/2);padding:7px}
   #app #huntXpTracker.hunt-xp-tracker{top:calc(var(--utilities-bottom,212px) + var(--target-height,70px) + 16px);left:12px;width:calc((100vw - 36px)/2)}
-  body :is(.dialog,.creation-dialog,.ui-window),#panelOverlay.inventory-mode .dialog{border-image-width:6px}
+  body :is(.dialog,.creation-dialog,.ui-window),#panelOverlay.inventory-mode:not(.pirate-hd) .dialog{border-image-width:6px}
   body :is(.dialog-header,.ui-window-header),#panelOverlay :is(.dialog-header,.op-topbar){padding:6px 14px;min-height:48px}
   body :is(.dialog-header h2,.ui-window-header h2),#app .op-title-banner strong{font-size:21px}
   #panelOverlay :is(.dialog-body,.ui-window-body){font-size:15px}

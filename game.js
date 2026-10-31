@@ -1751,9 +1751,9 @@
     const src=`assets/ui/items-pixellab/${artKey}.png?v=20261020`;
     return `<img class="item-icon" src="${src}" alt="${escapeHTML(name||pearl?.name||def?.name||'')}" draggable="false">`;
   }
-  function drawCurrentPreview(canvas,height){
+  function drawCurrentPreview(canvas,height,{aura=true}={}){
     const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
-    if(world.hero.visible!==false)vfx_aura.draw(c,canvas.width/2,canvas.height-10,world.time,height/48);
+    if(aura&&world.hero.visible!==false)vfx_aura.draw(c,canvas.width/2,canvas.height-10,world.time,height/48);
     if(world.hero.visible===false)drawBeriSeparation(c,canvas.width/2,canvas.height-10,1-session.fruitBurst/1.5,height/48);
     else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(c,equippedZoan().id,canvas.width/2,canvas.height-10,{fit:Math.min(canvas.width-16,height),time:world.time,scale:equippedZoan().id===MareRyu.rules.id?height/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?height*1.25/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?height/64:height/48});
     else drawPaperDoll(c,canvas.width/2,canvas.height-10,'idle','south',world.time,height/46);
@@ -1774,7 +1774,7 @@
     if(inventoryUI.pageSize&&inventoryUI.pageSize!==BAG_PER_PAGE)inventoryUI.page=MareUI.inventoryPageAtResize(inventoryUI.page,inventoryUI.pageSize,BAG_PER_PAGE);
     inventoryUI.pageSize=BAG_PER_PAGE;
     if(!invSelected())selectedItem=game.equipment.weapon?.id||game.inventory[0]?.id||(game.potions>0?'virtual-potion':game.materials>0?'virtual-material':null);
-    const overlay=$('panelOverlay');overlay.classList.add('inventory-mode');
+    const overlay=$('panelOverlay');overlay.classList.add('inventory-mode','pirate-hd');
     const headMeta=$('inventoryHeadMeta');if(headMeta)headMeta.classList.add('hidden');
     const stats=getDerived();const f=factions[game.factionId]||factions.pirate;
     const filterCategories=[['all','TUDO'],['weapons','ARMAS'],['armor','ARMADURAS'],['fruits','AKUMA NO MI'],['consumables','CONSUMÍVEIS'],['materials','MATERIAIS'],['pearls','PÉROLAS']];
@@ -1785,43 +1785,60 @@
       return `<button class="op-item rarity-${entry.rarity} ${selected?'selected':''}" type="button" aria-pressed="${selected}" aria-label="${escapeHTML(entry.name)}" data-item="${entry.id}" ${item&&MareAkuma.isFruit(item,itemDefs)?'draggable="true" data-fruit-drag="'+escapeHTML(item.id)+'"':''}><span class="op-item-icon">${icon}</span>${item&&item.plus?`<span class="op-item-refine">+${item.plus}</span>`:''}${item&&item.locked?'<span class="op-item-lock" role="img" aria-label="Item bloqueado"></span>':''}${entry.qty>1?`<span class="op-item-qty">x${entry.qty}</span>`:''}</button>`;
     }).join('') + Array.from({length:BAG_PER_PAGE-shown.length},()=>'<span class="op-item empty" aria-hidden="true"></span>').join('');
     const sel=invSelected(); const detail=inventoryDetail(sel);
-    const left=inventorySlotsLeft.map(invSlotHtml).join('')+'<span class="op-equip-spacer" aria-hidden="true"></span>'; const right=inventorySlotsRight.map(invSlotHtml).join('');
+    const left=inventorySlotsLeft.map(invSlotHtml).join('')+'<span class="op-equip-spacer" aria-hidden="true"></span>'; const right=inventorySlotsRight.filter(slot=>slot!=='akuma_no_mi').map(invSlotHtml).join('');
     const tab=inventoryUI.tab,feedback=activeEquipmentFeedback();
     const avatarExtra=tab==='visual'?`<div class="op-avatar-note"><strong>${escapeHTML(f.name)}</strong><p>${escapeHTML(f.desc)}</p></div>`:tab==='style'?`<div class="op-avatar-note"><strong>ESTILO</strong><p>${escapeHTML(classes[game.classId].skills[0].name)} · ${escapeHTML(classes[game.classId].skills[1].name)}</p></div>`:'';
-    body.innerHTML=`<div class="op-inventory-shell">
+    body.innerHTML=`<div class="op-inventory-shell ui-hd">
       <div class="op-topbar">
-        <div class="op-title-banner"><span class="op-jolly">☠</span><strong>INVENTÁRIO</strong></div>
-        <div class="op-bag-capacity"><img class="menu-inline-icon" src="icones_menu_pirata/png/64/inventario.png" alt=""> MOCHILA <b>${game.inventory.length} / ${BAG_CAPACITY}</b></div>
+        <div class="op-title-banner"><img class="op-jolly" src="assets/ui/faction-emblems/${escapeHTML(factions[game.factionId]?game.factionId:'pirate')}.png" alt=""><strong>INVENTÁRIO</strong></div>
+
         <div class="op-top-actions"><kbd>[I]</kbd><button type="button" class="op-close" data-close-panel aria-label="Fechar inventário">✕</button></div>
         <nav class="op-section-nav" aria-label="Seções do inventário"><a href="#inventory-equipment">Equipamentos</a><a href="#inventory-bag">Mochila</a><a href="#inventory-detail">Detalhes</a></nav>
       </div>
       <div class="op-body-grid">
-        <section id="inventory-equipment" tabindex="-1" class="op-panel op-character-panel">
-          <div class="op-tabs">${[['equipment','EQUIPAMENTO'],['visual','VISUAL'],['style','ESTILO']].map(([id,label])=>`<button type="button" data-inv-tab="${id}" class="${tab===id?'active':''}">${label}</button>`).join('')}</div>
+        <section id="inventory-equipment" tabindex="-1" class="hd-frame op-panel op-character-panel">
+          <h3 class="hd-panel-heading">EQUIPAMENTO</h3><div class="op-tabs" aria-label="Apresentação do personagem">${[['equipment','Equipamento'],['visual','Visual'],['style','Estilo']].map(([id,label])=>`<button type="button" data-inv-tab="${id}" class="${tab===id?'active':''}">${label}</button>`).join('')}</div>
           <div class="op-character-core">
             <div class="op-equip-side left">${left}</div>
             <div class="op-avatar-column">
               <div class="op-avatar-stage"><canvas id="inventorySprite" width="180" height="220" aria-label="Visual atual do personagem"></canvas>${MareHeadgear.button(game)}</div>
               <div class="op-avatar-meta"><strong>${escapeHTML(game.name)}</strong><span>Nível ${game.level}</span><span>Classe: ${escapeHTML(classes[game.classId].name.replace(' / ',' · '))}</span></div>
-              <div class="op-power-banner ${feedback?'power-updated':''}"><span>⚔⚔</span><label>PODER TOTAL</label><b>${fmt(stats.power)}</b></div>
-              <div class="op-stats-list"><div><span>❤ Vida</span><b>${fmt(stats.maxHP)}</b></div><div><span>⚔ Ataque</span><b>${fmt(stats.attack)}</b></div><div><span>🛡 Defesa</span><b>${fmt(stats.defense)}</b></div></div>
-              ${feedback?`<output class="op-equip-feedback" aria-live="polite">${escapeHTML(feedback.message)}<span>${statDeltaHtml(feedback.before,feedback.after)}</span></output>`:''}${avatarExtra}
+${avatarExtra}
             </div>
             <div class="op-equip-side right">${right}</div>
           </div>
+          <div class="op-character-summary">
+            <div class="op-power-banner ${feedback?'power-updated':''}"><span>⚔⚔</span><label>PODER TOTAL</label><b>${fmt(stats.power)}</b></div>
+              <div class="op-stats-list"><div><span>❤ Vida</span><b>${fmt(stats.maxHP)}</b></div><div><span>⚔ Ataque</span><b>${fmt(stats.attack)}</b></div><div><span>🛡 Defesa</span><b>${fmt(stats.defense)}</b></div></div>
+          </div>
+          ${feedback?`<output class="op-equip-feedback" aria-live="polite">${escapeHTML(feedback.message)}<span>${statDeltaHtml(feedback.before,feedback.after)}</span></output>`:''}<div class="op-fruit-equipped">${invSlotHtml('akuma_no_mi')}<div><strong>AKUMA NO MI</strong><span>${escapeHTML(MareAkuma.itemData(game.equipment.akuma_no_mi,itemDefs)?.name||'Nenhuma fruta equipada')}</span></div></div>
           <label class="op-hide-check"><input type="checkbox" id="invHideProfile" ${game.preferences?.hideItems?'checked':''}><span>Ocultar itens no perfil</span></label>
         </section>
-        <section id="inventory-bag" tabindex="-1" class="op-panel op-bag-panel">
-          <div class="op-panel-head"><div class="op-head-left"><img class="menu-inline-icon" src="icones_menu_pirata/png/64/inventario.png" alt=""><h3>MOCHILA</h3></div><button type="button" class="op-best-btn" data-auto-equip>EQUIPAR MELHORES</button></div>
+        <section id="inventory-bag" tabindex="-1" class="hd-frame op-panel op-bag-panel">
+          <div class="op-panel-head"><div class="op-head-left"><img class="menu-inline-icon" src="icones_menu_pirata/png/64/inventario.png" alt=""><h3>MOCHILA</h3></div><div class="op-bag-capacity"><b>${game.inventory.length} / ${BAG_CAPACITY}</b></div><button type="button" class="op-best-btn" data-auto-equip>EQUIPAR MELHORES</button></div>
           <div class="op-tool-row"><label class="op-search"><span>⌕</span><input id="invSearch" type="search" aria-label="Buscar item pelo nome" placeholder="Buscar pelo nome..." value="${escapeHTML(inventoryUI.query)}" autocomplete="off"></label><select id="invSort" aria-label="Ordenação"><option value="recent" ${inventoryUI.sort==='recent'?'selected':''}>Recentes</option><option value="rarity" ${inventoryUI.sort==='rarity'?'selected':''}>Raridade</option><option value="power" ${inventoryUI.sort==='power'?'selected':''}>Maior poder</option><option value="name" ${inventoryUI.sort==='name'?'selected':''}>Nome (A–Z)</option></select><select id="invRarity" aria-label="Filtro de raridade">${[['all','Todas'],['common','Comum'],['uncommon','Incomum'],['rare','Raro'],['epic','Épico'],['legendary','Lendário'],['supreme','Supremo']].map(([v,l])=>`<option value="${v}" ${inventoryUI.rarity===v?'selected':''}>${l}</option>`).join('')}</select></div>
           <div class="op-category-tabs">${filterCategories.map(([id,label])=>`<button type="button" data-inv-category="${id}" class="${inventoryUI.category===id?'active':''}">${label}</button>`).join('')}</div>
           <div class="op-grid-wrap"><div class="op-grid">${slots}</div></div>
           <div class="op-pagination"><span class="op-page-count">${all.length?inventoryUI.page*BAG_PER_PAGE+1:0}–${Math.min((inventoryUI.page+1)*BAG_PER_PAGE,all.length)} de ${all.length}</span><button type="button" data-inv-page="${inventoryUI.page-1}" ${inventoryUI.page===0?'disabled':''}>‹</button>${Array.from({length:pages},(_,n)=>`<button type="button" data-inv-page="${n}" class="${n===inventoryUI.page?'active':''}">${n+1}</button>`).join('')}<button type="button" data-inv-page="${inventoryUI.page+1}" ${inventoryUI.page===pages-1?'disabled':''}>›</button></div>
         </section>
-        <section id="inventory-detail" tabindex="-1" class="op-panel op-detail-panel">${detail}</section>
+        <section id="inventory-detail" tabindex="-1" class="hd-frame op-panel op-detail-panel"><h3 class="hd-panel-heading">DETALHES DO ITEM</h3>${detail}</section>
       </div>
     </div>`;
-    drawCurrentPreview($('inventorySprite'),185);
+    layoutInventoryDetail();
+    const preview=$('inventorySprite');
+    const redraw=()=>{if(currentPanel==='inventory'&&preview.isConnected)drawCurrentPreview(preview,185,{aura:false});};
+    redraw();void lobby96.ready.then(()=>lobby96.ensure(game)).then(redraw);
+  }
+  function layoutInventoryDetail(){
+    const wrap=$('inventory-detail')?.querySelector('.op-detail-wrap');if(!wrap)return;
+    const content=document.createElement('div'),actions=document.createElement('footer');content.className='op-detail-content';actions.className='op-detail-actions';
+    for(const child of [...wrap.children]){if(child.matches('.op-detail-head'))continue;(child.matches('.op-action,.op-bottom-actions,.op-sell-line')?actions:content).append(child);}
+    wrap.append(content,actions);MareUI.upgrade(wrap);
+  }
+  function selectInventoryItem(id){
+    selectedItem=id;
+    for(const button of $('dialogBody').querySelectorAll('[data-item],[data-inv-slot]')){const chosen=button.dataset.item?button.dataset.item===id:game.equipment[button.dataset.invSlot]?.id===id;button.classList.toggle('selected',chosen);button.setAttribute('aria-pressed',String(chosen));}
+    const panel=$('inventory-detail');panel.innerHTML='<h3 class="hd-panel-heading">DETALHES DO ITEM</h3>'+inventoryDetail(invSelected());layoutInventoryDetail();
   }
   // Recalculate the visible page only when the responsive column tier changes.
   // Keep search, selected item, save data, and all inventory actions intact.
@@ -1838,7 +1855,7 @@
     if(itemBase(sel.item).kind==='haki-book')return hakiBookDetail(sel.item);
     if(MareAkuma.isFruit(sel.item,itemDefs)){
       const fruit=MareAkuma.itemData(sel.item,itemDefs),eq=hasEquipped(sel.item),stats=MareAkuma.bonusStats(sel.item,itemDefs);
-      return `<div class="op-detail-wrap"><div class="op-detail-head"><div class="op-detail-icon">${itemIcon(sel.item.def,fruit?.name||'Akuma no Mi')}</div><div><h3>${escapeHTML(fruit?.name||'Akuma no Mi')}</h3><small>Rank ${escapeHTML(fruit?.rank||'?')} · ${fruit?.subtype|| (fruit?.family==='paramecia'?'Paramecia':'Akuma no Mi')}</small></div></div><div class="op-detail-box"><p>Fruta equipável por qualquer classe e rank.</p>${fruit?.description?`<p>${escapeHTML(fruit.description)}</p>`:''}${fruit?.physicalDamageReduction?'<p>Intangibilidade Logia: −30% de dano físico. Haki anula essa redução.</p>':''}${MareAkuma.activeSkills(fruit?.id).length>1?MareAkuma.activeSkills(fruit.id).map(skill=>`<p><strong>${escapeHTML(skill.name)}</strong> · ${skill.cost} Energia · ${skill.cooldown}s<br>${escapeHTML(skill.description)}</p>`).join(''):''}<div class="op-effect-list">${Object.entries(stats).map(([key,value])=>{const labels={...MareAkumaPassives.labels,healing_received_percent:'Cura recebida',max_hp_percent:'Vida máxima',impact_resistance_percent:'Resistência a impacto',move_speed_percent:'Velocidade de movimento',evasion_percent:'Esquiva',physical_defense_percent:'Defesa física'};return `<div><span>${escapeHTML(labels[key]||key.replace('bonus_','').replaceAll('_',' '))}</span><b>+${(key.endsWith('_percent')||(key in MareAkumaPassives.labels&&MareAkumaPassives.percent(key)))?Math.round(value*100)+'%':value}</b></div>`;}).join('')}</div></div>${eq?`<button type="button" class="op-action primary" data-unequip="akuma_no_mi">RETIRAR</button>`:`<button type="button" class="op-action primary" data-equip="${escapeHTML(sel.item.id)}">EQUIPAR</button>`}</div>`;
+      return `<div class="op-detail-wrap"><div class="op-detail-head"><div class="op-detail-icon">${itemIcon(sel.item.def,fruit?.name||'Akuma no Mi')}</div><div><h3>${escapeHTML(fruit?.name||'Akuma no Mi')}</h3><small>Rank ${escapeHTML(fruit?.rank||'?')} · ${fruit?.subtype|| (fruit?.family==='paramecia'?'Paramecia':'Akuma no Mi')}</small></div></div><div class="op-detail-box"><p>Fruta equipável por qualquer classe e rank.</p>${fruit?.description&&fruit.description!==fruit.name+' Rank '+fruit.rank?`<p>${escapeHTML(fruit.description)}</p>`:''}${fruit?.physicalDamageReduction?'<p>Intangibilidade Logia: −30% de dano físico. Haki anula essa redução.</p>':''}${MareAkuma.activeSkills(fruit?.id).length?`<section class="op-active-skills"><h4>HABILIDADES ATIVAS</h4>${MareAkuma.activeSkills(fruit.id).map(skill=>`<article class="op-skill-row">${skill.icon_path?`<img src="${escapeHTML(skill.icon_path)}" alt="" loading="lazy">`:''}<div><strong>${escapeHTML(skill.name)}</strong><small>${skill.cost} Energia · ${skill.cooldown}s</small>${skill.description&&skill.description!==skill.name?`<p>${escapeHTML(skill.description)}</p>`:''}</div></article>`).join('')}</section>`:''}${Object.keys(stats).length?'<h4>PASSIVAS</h4>':''}<div class="op-effect-list">${Object.entries(stats).map(([key,value])=>{const labels={...MareAkumaPassives.labels,healing_received_percent:'Cura recebida',max_hp_percent:'Vida máxima',impact_resistance_percent:'Resistência a impacto',move_speed_percent:'Velocidade de movimento',evasion_percent:'Esquiva',physical_defense_percent:'Defesa física'};return `<div><span>${escapeHTML(labels[key]||key.replace('bonus_','').replaceAll('_',' '))}</span><b>+${(key.endsWith('_percent')||(key in MareAkumaPassives.labels&&MareAkumaPassives.percent(key)))?Math.round(value*100)+'%':value}</b></div>`;}).join('')}</div></div>${eq?`<button type="button" class="op-action primary" data-unequip="akuma_no_mi">RETIRAR</button>`:`<button type="button" class="op-action primary" data-equip="${escapeHTML(sel.item.id)}">EQUIPAR</button>`}</div>`;
     }
     if(itemBase(sel.item).kind==='pearl-box')return pearlBoxDetail(sel.item);
     if(MareForge.isPearl(sel.item,itemDefs))return pearlInventoryDetail(sel.item);
@@ -2015,7 +2032,7 @@
       <section class="prison-monsters-panel"><h3>Adversário do andar</h3><p>${boss?'Guardião provisório. Os chefes específicos serão definidos futuramente.':'Um monstro comum do catálogo será sorteado ao entrar no andar.'}</p></section>
       <div class="prison-bottom-panels"><div><section class="prison-first-clear"><h3>Primeira conquista</h3><p>${reward?'1× Caixa de Pérolas Nível 1 · '+(p.claimed.includes(floor)?'Recebida':'Uma única vez'):'Este andar abre o próximo portão.'}</p></section><section class="prison-rules"><h3>Regras da prisão</h3><ul><li>A subida é automática após cada vitória, inclusive antes dos chefes.</li><li>Sua vida é restaurada ao iniciar cada andar. Recargas são mantidas.</li><li>Se cair, tente novamente o mesmo andar.</li><li>Marcos de 5 a 50 entregam uma caixa uma única vez; mochila cheia mantém o prêmio pendente.</li><li>Recompensas acima do andar 50 ainda serão definidas.</li></ul>${impelRun?'<button type="button" class="dialog-button" data-prison-exit>Voltar ao porto</button>':''}</section></div><section class="prison-milestones"><h3>Marcos</h3><div>${MarePrison.milestones.map(f=>`<article data-prison-milestone="${f}"><div><b>Andar ${f}</b><small>${p.claimed.includes(f)?'Recebido':p.cleared>=f?'Pendente':'A conquistar'}</small></div><p><img src="assets/ui/items-pixellab/pearl-box-1.png?v=20261020" alt="">1× Caixa de Pérolas Nível 1</p>${p.cleared>=f&&!p.claimed.includes(f)?`<button type="button" class="dialog-button" data-prison-claim="${f}">Resgatar</button>`:''}</article>`).join('')}</div></section></div></section>`;
   }
-  function renderPanel(){if(!currentPanel||!game)return;$('panelOverlay').dataset.uiPanel=currentPanel;const body=$('dialogBody');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');$('panelOverlay').classList.toggle('voyage-mode',['map','prison'].includes(currentPanel));$('panelOverlay').classList.toggle('modes-mode',currentPanel==='modes');if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={journal:'Jornal do Porto',myprofile:'Meu Perfil',settings:'Configurações',hunt:'Rota da caçada',dev:'Laboratório DEV',inventory:'Inventário',forge:'Forja das Correntes',character:'Personagem',modes:'Modos de jogo',prison:'Impel Down',map:'Mapa do Arquipélago',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;if(currentPanel!=='map')$('voyageRegionTabs')?.remove();body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel||(b.dataset.panel==='modes'&&['map','prison'].includes(currentPanel)))));
+  function renderPanel(){if(!currentPanel||!game)return;$('panelOverlay').dataset.uiPanel=currentPanel;const body=$('dialogBody');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');$('panelOverlay').classList.toggle('voyage-mode',['map','prison'].includes(currentPanel));$('panelOverlay').classList.toggle('modes-mode',currentPanel==='modes');if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode','pirate-hd');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={journal:'Jornal do Porto',myprofile:'Meu Perfil',settings:'Configurações',hunt:'Rota da caçada',dev:'Laboratório DEV',inventory:'Inventário',forge:'Forja das Correntes',character:'Personagem',modes:'Modos de jogo',prison:'Impel Down',map:'Mapa do Arquipélago',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;if(currentPanel!=='map')$('voyageRegionTabs')?.remove();body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel||(b.dataset.panel==='modes'&&['map','prison'].includes(currentPanel)))));
     if(['journal','myprofile','settings'].includes(currentPanel)){
       const g=game,s=getDerived(),className=classes[game.classId]?.name||game.classId;
       const equipment=Object.entries(game.equipment||{}).filter(([,item])=>item).map(([slot,item])=>({slot:slotNames[slot]||slot,name:itemBase(item).name}));
@@ -2859,7 +2876,7 @@ function applySceneHudLayout(){
     b=e.target.closest('[data-inv-tab]');if(b){inventoryUI.tab=b.dataset.invTab;renderPanel();return;}
     b=e.target.closest('[data-inv-category]');if(b){inventoryUI.category=b.dataset.invCategory;inventoryUI.page=0;renderPanel();return;}
     b=e.target.closest('[data-inv-page]');if(b&&!b.disabled){inventoryUI.page=Number(b.dataset.invPage);renderPanel();return;}
-    b=e.target.closest('[data-inv-slot]');if(b){const it=game.equipment[b.dataset.invSlot];selectedItem=it?.id||null;renderPanel();return;}
+    b=e.target.closest('[data-inv-slot]');if(b){const it=game.equipment[b.dataset.invSlot];selectInventoryItem(it?.id||null);return;}
     b=e.target.closest('[data-auto-equip]');if(b){equipBest();return;}
     b=e.target.closest('[data-inv-lock]');if(b){const it=getInventoryItem(b.dataset.invLock);if(it){it.locked=!it.locked;saveGame();renderPanel();}return;}
     b=e.target.closest('[data-inv-use-potion]');if(b){if(usePotion(true)){saveGame();updateUI();renderPanel();}return;}
@@ -2877,7 +2894,7 @@ function applySceneHudLayout(){
     b=e.target.closest('[data-close-panel]');if(b){closePanel();return;}
     b=e.target.closest('[data-buy-potion]');if(b){buyPotion();renderPanel();return;}
     b=e.target.closest('[data-claim]');if(b){claimQuest(b.dataset.claim);return;}
-    b=e.target.closest('[data-item]');if(b){selectedItem=b.dataset.item;renderPanel();return;}
+    b=e.target.closest('[data-item]');if(b){selectInventoryItem(b.dataset.item);return;}
     b=e.target.closest('[data-fruit-register]');if(b){registerFruit(b.dataset.fruitRegister);return;}
     b=e.target.closest('[data-equip]');if(b){equipItem(b.dataset.equip);return;}
     b=e.target.closest('[data-unequip]');if(b){unequip(b.dataset.unequip);return;}
