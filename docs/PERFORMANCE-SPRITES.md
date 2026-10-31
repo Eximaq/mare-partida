@@ -36,3 +36,7 @@ Superfícies temporárias com leitura frequente usam canvas de CPU, evitando rea
 ## Preparação seletiva
 
 O jogador publica o primeiro clip exato assim que pronto, mantendo as demais direções/ações em preparação serial. Não usa pose de outra aparência nem de outra ação como substituta. Prepara somente a visibilidade solicitada do capacete; alternar a preferência prepara sua própria composição. Sem capacete, ambas as chaves apontam para os mesmos pixels. Um tile por clip é reutilizado. Teste de escalonamento passou; navegador validou carregamento atrasado, recurso ausente, dimensão inválida, troca obsoleta e flags antigas, sem pedidos de sprite antigo.
+
+## Cache de imagens
+
+O ensaio encontrou 148 recursos atuais únicos (cerca de 81 MiB decodificados ao longo das trocas), mas camadas pequenas chegaram a ser decodificadas dez vezes. O cache agora usa LRU com limite de 192 entradas e 64 MiB estimados por largura×altura×4; o limite de concorrência continua em 6. A revisão de recursos e a validação dimensional permanecem. O conjunto inteiro não fica retido indiscriminadamente; composições e prévias mantêm seus limites anteriores. Snapshot informa imageBytes.
