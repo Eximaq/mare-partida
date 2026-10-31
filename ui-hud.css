@@ -89,3 +89,48 @@
 .hud-notification-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 
 .player-visual-status{position:absolute;top:calc(100% + 4px);left:8px;right:8px;padding:5px 8px;font-size:11px;line-height:1.35;color:var(--rpg-text,#eee3c8);background:#142e37;border:1px solid #ab8c53;pointer-events:none}.player-visual-status[data-state=failed]{border-color:#ce7971}
+
+/* Owner-supplied parchment status panel, isolated from the other navigator surfaces. */
+@font-face{font-family:'Alabasta Pirate';font-style:normal;font-weight:700;font-display:swap;src:url('assets/ui/character-hud/Alabasta_Pirate.ttf') format('truetype')}
+#app .topbar.parchment-profile{width:300px;max-width:calc(100vw - 24px);padding:0;gap:2px;background:none;border:0;border-image:none;box-shadow:none;overflow:visible;color:#f7e3b6}
+#app .parchment-profile .profile-heading{position:relative;display:flex;gap:8px;height:46px;min-height:46px;margin:0 5px;padding:0 0 0 48px;border:0;background:#301c24;border-image:none}
+#app .parchment-profile .profile-heading .navigator-portrait{position:absolute;left:0;top:0;width:42px;height:46px;min-height:46px;border:2px solid #ad8854;border-image:none;background:#302024;overflow:hidden}
+#app .parchment-profile .navigator-portrait #miniPortrait{left:-31px;top:-5px;width:104px;height:104px;background:none}
+#app:has(#zoanTransform[aria-pressed=true]) .parchment-profile .navigator-portrait #miniPortrait{left:0;top:0;width:38px;height:42px}
+#app .parchment-profile .profile-heading>div{min-width:0;flex:1}
+#app .parchment-profile .profile-name-row{height:26px;min-height:26px}
+#app .parchment-profile #miniName,#app #heroName{font:700 24px/1.1 'Alabasta Pirate','Alegreya Sans',serif;letter-spacing:.2px;text-transform:none}
+#app .parchment-profile #miniName{display:block;width:100%;max-width:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#f5d59c;text-shadow:1px 1px #1b1017}
+#app .parchment-profile #miniClass{font:500 12px/16px var(--rpg-font);color:#e2ca9d}
+#app .parchment-profile #characterPosterToggle{position:static;flex:none;display:grid;place-items:center;width:44px;height:44px;min-height:44px;padding:0;border:0;border-image:none;background:none;color:#f4cf87;font:700 23px/1 var(--rpg-font);touch-action:manipulation}
+#app .parchment-profile #characterPosterToggle[aria-expanded=true]>span{transform:rotate(180deg)}
+#app .parchment-profile .parchment-status{position:relative;width:100%;aspect-ratio:361/166;background:url('assets/ui/character-hud/status.png') left top/100% auto no-repeat;image-rendering:pixelated}
+#app .parchment-profile .parchment-meter{position:absolute;isolation:isolate;display:flex;align-items:center;gap:3px;left:18.56%;width:45.43%;height:9.64%;padding:0 3px;overflow:hidden;background:#341e25;color:#fff6e0;font:700 10px/1 var(--rpg-font);font-variant-numeric:tabular-nums}
+#app .parchment-profile .parchment-hp{top:21.08%}
+#app .parchment-profile .parchment-energy{top:48.19%;background:#30253d}
+#app .parchment-profile .parchment-xp{top:63.25%;width:73.41%;height:9.64%;background:#76551a}
+#app .parchment-profile .parchment-meter .mini-meter{position:absolute;inset:0;z-index:-1;display:block;width:100%;height:100%;background:none;border:0;overflow:hidden}
+#app .parchment-profile .parchment-meter .mini-meter i{display:block;height:100%;background:linear-gradient(#ff8a6b 0 20%,#dd4d4b 20% 75%,#ab2a38 75%);box-shadow:none;transition:none}
+#app .parchment-profile .parchment-meter .mini-meter i::after{content:none;animation:none}
+#app .parchment-profile .parchment-energy .mini-meter i{background:linear-gradient(#b1a0e5 0 20%,#8a69b8 20% 75%,#62448d 75%)}
+#app .parchment-profile .parchment-xp .mini-meter i{background:linear-gradient(#fff09a 0 20%,#eac342 20% 75%,#b58221 75%)}
+#app .parchment-profile .parchment-meter-label{font-size:9px;flex:none;z-index:1;text-shadow:1px 1px #241321}
+#app .parchment-profile .parchment-meter>b{position:relative;z-index:1;flex:1;text-align:right;white-space:nowrap;font:700 10px/1 var(--rpg-font);text-shadow:1px 1px #241321,0 0 2px #241321}
+#app .parchment-profile #miniLevel{position:absolute;left:70.64%;top:20.48%;width:20.22%;height:12.05%;display:flex;align-items:center;justify-content:center;padding:0;border:0;background:#321d24;color:#f5d59c;font:700 12px/1 var(--rpg-font);white-space:nowrap}
+#app .parchment-profile .profile-power{position:absolute;left:70.64%;top:46.99%;width:21.05%;height:13.25%;display:flex;flex-direction:column;gap:0;align-items:center;justify-content:center;min-width:0;margin:0;background:#321d24}
+#app .parchment-profile .profile-power>span{display:block;color:#f1cf9d;font:500 8px/1 var(--rpg-font)}
+#app .parchment-profile .profile-power>strong{max-width:100%;color:#ffe6b7;font:700 11px/1 var(--rpg-font);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#app .parchment-profile #miniGold{position:absolute;left:25.2%;top:76.5%;width:66.5%;height:14.45%;display:flex;align-items:center;justify-content:flex-end;margin:0;padding:0 5px;background:#321d24;color:#f7d17d;font:700 13px/1 var(--rpg-font);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .parchment-profile .parchment-tools{display:flex;justify-content:flex-end;margin:0 7px;min-height:22px}
+#app .parchment-profile #attributePointsHud{min-height:22px;padding:1px 4px;color:#f4daa4;background:#321d24;border:1px solid #ad8854;border-image:none;font:500 11px/1 var(--rpg-font);text-decoration:none}
+#app .parchment-profile :is(#miniWillpower,#miniTalentResource){width:calc(100% - 22px);margin:0 11px;padding:2px 4px;background:#321d24;height:18px}
+#app .topbar.parchment-profile.poster-expanded{z-index:calc(var(--rpg-z-popover) + 1)}
+#app .parchment-profile .character-poster{position:absolute;left:0;top:calc(100% + 4px);width:100%;max-height:calc(100dvh - var(--profile-bottom,220px) - 16px);overflow:auto;overscroll-behavior:contain;background:#301c24;border:1px solid #ab8753;box-shadow:0 5px 12px #0008;scrollbar-width:thin;scrollbar-color:#ad8854 #301c24}
+#app .parchment-profile .wanted-sheet{position:relative;width:100%;aspect-ratio:357/420;overflow:hidden;image-rendering:pixelated}
+#app .parchment-profile .wanted-paper{position:absolute;inset:0 auto auto 0;width:100%;height:auto;max-width:none;pointer-events:none}
+#app .parchment-profile #wantedPortrait{position:absolute;left:28.3%;top:30.6%;width:42.3%;height:35.7%;object-fit:contain;background:#302a2b;border:0;image-rendering:pixelated}
+#app .parchment-profile #wantedName{position:absolute;left:22%;top:70.6%;width:57%;height:8.4%;display:flex;align-items:center;justify-content:center;padding:2px 4px;overflow:hidden;color:#442622;text-align:center;text-shadow:none;font:700 28px/1 'Alabasta Pirate','Alegreya Sans',serif;white-space:nowrap}
+#app .parchment-profile #wantedBounty{position:absolute;left:46%;top:83.1%;width:37%;height:6%;display:flex;align-items:center;justify-content:center;color:#442622;text-align:center;font:700 21px/1 var(--rpg-font);font-variant-numeric:tabular-nums}
+#app .parchment-profile .wanted-future{margin:0;padding:5px 10px;color:#e5cca1;text-align:center;font:500 12px/1.3 var(--rpg-font)}
+#app .parchment-profile #characterPosterClose{display:block;width:calc(100% - 20px);min-height:38px;margin:4px 10px 10px;padding:6px;border:1px solid #ad8854;border-image:none;background:#38242b;color:#f5d59c;font:500 13px/1 var(--rpg-font);touch-action:manipulation}
+#app .parchment-profile :is(#characterPosterToggle,.navigator-portrait,#characterPosterClose,#attributePointsHud):focus-visible{outline:2px solid #ffe7ac;outline-offset:2px}
