@@ -459,7 +459,23 @@ válidos; esta aprovação não autoriza produção, merge ou Fase 3.
 Encerramento verificado: AUTH_ENABLED=false, API 8788/gateway 9443 encerrados,
 PostgreSQL 55432 ativo. Não houve alteração de runtime; somente documentação foi
 preparada para publicação. Helpers/evidências ficam fora do Git. main bddd32f foi
-consultada e a compatibilidade foi verificada por merge-tree, sem merge ou rebase.
+consultada e a compatibilidade textual foi verificada por merge-tree, sem merge
+ou rebase. A integração de gameplay não está aprovada: ver bloqueio abaixo.
+
+**Bloqueio de integração detectado após a publicação:** a CI de e54f802 passou
+fundação e Docker/Linux, mas falhou em testes/sprite-south-hurt.test.cjs: o catálogo
+atual inclui phoenix sem clip hurt/south e o teste tenta ler clip.image de null.
+O teste passa na branch isolada. Cópias byte a byte dos três arquivos envolvidos
+(teste, resolver e catálogo) reproduziram a mesma falha em main bddd32f e no ref
+de integração d851d543; esses três arquivos são idênticos entre main e integração.
+É uma falha real de compatibilidade catálogo/teste da base atual, não um resultado
+dos testes de autenticação nem uma falha de ambiente. Nenhum arquivo de gameplay,
+asset ou teste legado foi alterado. Correção proposta: revisar o contrato de hurt
+da entrada phoenix e seu asset/fallback com o responsável pelo catálogo, sem
+enfraquecer a asserção apenas para obter CI verde. A integração permanece bloqueada
+até essa correção separada. Evidência:
+[regressão de jogo](https://github.com/Eximaq/mare-partida/actions/runs/41241014919),
+[fundação e Docker/Linux](https://github.com/Eximaq/mare-partida/actions/runs/41241015120).
 
 ### Matriz de aprovação da Fase 2
 
@@ -469,6 +485,7 @@ consultada e a compatibilidade foi verificada por merge-tree, sem merge ou rebas
 | Rodada 1: sessões e controlador | Aprovada no provedor real | Manter os prazos aprovados; não confundir o ensaio de JWT de 900 s com espera de 24 h/2 h, cobertas em configuração e testes locais |
 | Rodada 2: contas e autorização cruzada | Evidências principais aprovadas: 40 testes cruzados, confirmação, primeira corrida, expiração BFF e correlação real G com controle positivo | G usa cliente HTTP original + navegador negativo; B/C cobrem navegador original. Expiração específica do token remoto e perda de resposta induzida no provedor não ensaiadas; correção de timeout coberta localmente |
 | Rodada 3: recuperação | Aprovada nos fluxos reais autorizados: três envios, expiração BFF, sessão restrita, troca, senha antiga/nova, invalidação interna e refresh remoto recusado | Clientes HTTP isolados; sem preenchimento de senha pela UI, expiração específica do token remoto ou perda de resposta induzida no provedor |
+| Integração com main bddd32f | Bloqueada na regressão de sprites; fundação e Docker/Linux passaram | Mesmo erro de phoenix/hurt reproduzido na main e no ref de integração; corrigir separadamente, preservando trabalho dos colaboradores |
 | Aceitação completa da Fase 2 | Rodadas funcionais 1–3 executadas; revisão final dos limites pelo proprietário | Não equivale a prontidão de produção; revisar riscos abaixo e na revisão arquitetural. Fase 3 não iniciada nem autorizada por este relatório |
 
 ## Roteiro de referência

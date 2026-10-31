@@ -165,6 +165,15 @@ Expiração comprovada no BFF, não no token de e-mail remoto; reset com respost
 perdida não foi induzido no provedor. Rodadas funcionais 1–3 executadas, sujeitas
 à revisão final dos limites pelo proprietário; sem autorização de Fase 3/produção.
 
+A CI de e54f802 passou fundação/Docker, mas a integração com main bddd32f falhou
+em sprite-south-hurt.test.cjs: phoenix retorna clip null para hurt/south. A mesma
+falha foi reproduzida em cópias exatas do teste, catálogo e resolver da main e do
+ref de integração d851d543; esses arquivos são idênticos nas duas referências.
+O teste passa no HEAD isolado da Fase 2. Bloqueio real de integração de gameplay,
+fora da alteração documental desta rodada; nenhum asset/teste legado foi editado.
+Compatibilidade textual sem conflitos não equivale a integração aprovada. Revisar
+o contrato de hurt/asset/fallback de phoenix em tarefa separada, sem mascarar o erro.
+
 Pendentes/limites: expiração específica do token de e-mail remoto (BFF já ensaiado),
 preenchimento da nova senha na UI e perda de resposta no reset hospedado,
 rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,

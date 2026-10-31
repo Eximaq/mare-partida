@@ -135,6 +135,11 @@ expiração remota do token de e-mail e falha de transporte no reset não induzi
 Auth/API/gateway encerrados, quatro contas/três personagens preservados e nenhuma
 revogação pendente. Ver [execução e matriz final da Rodada 3](SUPABASE-DEVELOPMENT-SETUP.md#rodada-3--recuperação-real-concluída-em-31102026).
 
+Bloqueio separado: a CI de integração com main bddd32f falhou no teste de hurt/south
+de phoenix, reproduzido também na main. Fundação/Docker passaram; a autenticação
+não foi a causa. Nenhum catálogo, asset ou teste legado foi alterado para contornar
+a falha. A matriz registra a correção de gameplay/teste como tarefa separada.
+
 Seguir [SUPABASE-DEVELOPMENT-SETUP.md](SUPABASE-DEVELOPMENT-SETUP.md). Não criar ou
 alterar projetos automaticamente. Copiar `.env.example` para `.env.server.local`,
 preencher runtime DB, URL do projeto separado, publishable key e algoritmo público.
