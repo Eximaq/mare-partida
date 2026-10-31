@@ -71,3 +71,7 @@ A composição atual deixa de solicitar as faixas de cabeça/rosto/cabelo substi
 ## Alternativas rejeitadas
 
 Também foi medido um protótipo com Worker/OffscreenCanvas, usando exatamente o mesmo compositor. Preservou os pixels e reduziu os picos nos equipamentos, mas piorou o comportamento de Dawn neste ambiente, inclusive depois de ajustar superfícies e pré-carregamento. Foi retirado da alteração entregue. Seu código experimental e as evidências ficaram somente na pasta privada externa; nenhum novo sistema paralelo foi deixado no jogo. Espaçar a composição por requestAnimationFrame também não superou o caminho mantido.
+
+## Retenção durante a caçada
+
+Quando as animações já estão compiladas e não há composição pendente, o cache de imagens de origem é reduzido para até 8 MiB durante a caçada. Pequenos encaixes têm preferência de retenção; as duas aparências compiladas continuam disponíveis para desenhar sem recarregar fontes. Na preparação e nas trocas rápidas do lobby, o limite continua sendo 64 MiB/192 entradas. O navegador confirmou a liberação sem perder as 24 poses nem recarregar uma aparência inalterada. Esses limites descrevem o cache controlado pelo jogo, não toda a memória interna do navegador.

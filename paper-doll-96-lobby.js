@@ -135,6 +135,13 @@
       }
       return {strip,spec:renderSpec,nativeSpec:spec,clip:sel.clip,emissions};
     }
+    function trimSourceImages(){
+      // Ready animation strips own their pixels. Keep small fittings warm instead of retaining every source atlas during combat.
+      while(imageBytes>8*1024*1024&&images.size){
+        let key;for(const [file,img]of images)if(img.naturalWidth*img.naturalHeight*4>256*1024){key=file;break;}
+        key??=images.keys().next().value;const img=images.get(key);imageBytes-=img.naturalWidth*img.naturalHeight*4;images.delete(key);
+      }
+    }
     function releaseBundle(bundle){for(const value of new Set(bundle?.values())){const strip=value?.strip;if(strip){strip.width=0;strip.height=0;}}}
     function ensure(player,{consumer='player-prepare'}={}){
       if(state!=='ready')return Promise.resolve(false);
@@ -173,6 +180,7 @@
       direction=directionOf(direction);if(worldView)lastPose=null;
       if(!active||state!=='ready'||player?.zoanTransformed||!['south','north','east','west'].includes(direction))return false;
       const value=resolve(player);if(scene!=='lobby'&&!(scene==='hunt'&&value.supported))return false;
+      if(scene==='hunt'&&!pending&&!previewPending)trimSourceImages();
       const requested=action;
       if(['combat-idle','guard','hurt','death'].includes(action))action='idle';
       else if(['attack','skill','skill-1','skill-2','combo','cast','heal','reload','dodge'].includes(action))action=player?.equipment?.weapon?value.attack:'attack-unarmed';
