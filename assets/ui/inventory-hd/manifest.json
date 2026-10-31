@@ -61,5 +61,50 @@
       ],
       "sha256": "0cb2f12ef4190df42a25450a7d424c6405b5113fd73b4f714b4de5192eb71ba8"
     }
-  ]
+  ],
+  "refinement": {
+    "date": "2026-10-31",
+    "cost": 50,
+    "frameJob": "811173df-24ca-4556-aab6-d0c77ac16533",
+    "controlsJob": "fbe6bb59-5754-4065-9a9d-bc0ff1f31775",
+    "frameCrop": [
+      63,
+      63,
+      449,
+      449
+    ],
+    "controlCrops": {
+      "primary-v2": [
+        2,
+        10,
+        235,
+        124
+      ],
+      "secondary-v2": [
+        277,
+        11,
+        510,
+        123
+      ],
+      "heading-v2": [
+        1,
+        164,
+        236,
+        278
+      ],
+      "tab-v2": [
+        276,
+        165,
+        512,
+        278
+      ]
+    },
+    "font": {
+      "family": "Alegreya SC",
+      "weight": 700,
+      "source": "https://github.com/google/fonts/tree/main/ofl/alegreyasc",
+      "license": "SIL OFL 1.1"
+    },
+    "processing": "exact alpha crops; no bitmap resizing"
+  }
 }
