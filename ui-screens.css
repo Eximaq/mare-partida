@@ -80,10 +80,17 @@
 .constellation-window .constellation-toolbar{flex-direction:row;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 8px;font-size:11px}
 .constellation-toolbar>div{align-items:center;flex-wrap:wrap;gap:5px}
 .constellation-toolbar output{min-width:44px;text-align:center;color:#8fd9df;font-size:12px}
-.constellation-window .constellation-viewport{height:100%;max-height:none;min-height:0;background:#061c31 url('assets/ui/talents/ocean-background.jpeg') center center/cover no-repeat;border:1px solid #8b7446;border-radius:3px;overflow:hidden;box-shadow:inset 0 0 45px #00112166}
+.constellation-window .constellation-viewport{user-select:none;height:100%;max-height:none;min-height:0;background:#061c31 url('assets/ui/talents/ocean-background.jpeg') center center/cover no-repeat;border:1px solid #8b7446;border-radius:3px;overflow:hidden;box-shadow:inset 0 0 45px #00112166}
 .talent-tree-surface{image-rendering:auto;position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
-.constellation-viewport .constellation-node,.constellation-viewport .constellation-node.ui-button{width:96px;height:96px;min-width:96px;min-height:96px;background:none;border:0;box-shadow:none;padding:0;border-radius:50%;color:#fff0c4}
-.constellation-viewport .constellation-node .node-disc{width:96px;height:96px;background:none;border:0;box-shadow:none;transform:none;outline:none}
+#app #panelOverlay .constellation-viewport .constellation-node{position:absolute;display:block;width:96px;height:96px;min-width:96px;min-height:96px;margin:0;padding:0;background:none;border:0;border-image:none;box-shadow:none;border-radius:50%;outline:none;filter:none;transform:translate(-50%,-50%);color:#fff0c4;transition:none}
+#app #panelOverlay .constellation-viewport .constellation-node:is(:hover,:focus-visible,.is-selected){outline:none;box-shadow:none;filter:none}
+#app #panelOverlay .constellation-viewport .constellation-node .node-disc{display:none}
+#app #panelOverlay .constellation-viewport .constellation-node::before{content:none}
+/* One centered DOM ring owns max, selection, hover and keyboard focus. */
+#app #panelOverlay .constellation-viewport .constellation-node::after{content:"";position:absolute;inset:-5px;border:3px solid transparent;border-radius:50%;pointer-events:none}
+#app #panelOverlay .constellation-viewport .constellation-node:is(.is-max,:hover)::after{border-color:#f3ca40}
+#app #panelOverlay .constellation-viewport .constellation-node.is-selected::after{border-color:#fff3bf}
+#app #panelOverlay .constellation-viewport .constellation-node:focus-visible::after{border-color:#b9f6ff}
 .constellation-viewport .constellation-node .node-label{top:128px;width:214px;font-size:16px;line-height:1.2;color:#fff0c4;font-weight:600;text-shadow:0 2px 3px #00101c,1px 0 #00101c,-1px 0 #00101c;pointer-events:none}
 .constellation-viewport .constellation-node.is-locked:not(.is-trained){opacity:1}
 .constellation-viewport .constellation-node.is-locked .node-label{color:#8cabbf}

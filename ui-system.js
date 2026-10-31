@@ -31,7 +31,7 @@
   function destroy(el){close(el);modalBindings.delete(el);el.remove();}
   function upgrade(el){
     if(el.closest?.('.ui-hd'))for(const b of el.querySelectorAll('.op-action,.op-best-btn,.op-pagination button'))b.classList.add('hd-control');
-    for(const b of el.querySelectorAll('button'))if(!b.matches('.op-item,.op-equip-slot,.forge2-tile,.forge2-pearl,.forge2-material-slot,.talent-node,[data-talent-node],.voyage-ship,.island-card,.class-choice,.faction-choice,.close-button,.op-close,.ui-close'))b.classList.add('ui-button');
+    for(const b of el.querySelectorAll('button'))if(!b.matches('.op-item,.op-equip-slot,.forge2-tile,.forge2-pearl,.forge2-material-slot,.talent-node,.constellation-node,[data-talent-node],.voyage-ship,.island-card,.class-choice,.faction-choice,.close-button,.op-close,.ui-close'))b.classList.add('ui-button');
     for(const tab of el.querySelectorAll('.forge2-tabs,.op-tabs,.op-category-tabs,.voyage-region-tabs,.akuma-rank-tabs'))tab.classList.add('ui-tabs');
   }
   function mountHUD(){
