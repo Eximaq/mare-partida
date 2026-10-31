@@ -2,11 +2,29 @@
 (function () {
   'use strict';
   const api = window.MareAppearance96;
-  const canvas = (w,h) => Object.assign(document.createElement('canvas'), {width:w,height:h});
+  // These working surfaces are read back for pixel masks, not presented directly.
+  const canvas = (w,h) => {const c=Object.assign(document.createElement('canvas'), {width:w,height:h});c.getContext('2d',{willReadFrequently:true});return c;};
   const fromPixels = (pixels,w,h) => { const c=canvas(w,h);c.getContext('2d').putImageData(new ImageData(pixels,w,h),0,0);return c; };
   function create(catalog, rigs, load, options = {}) {
     const weapons=options.weapons?window.MareWeapons96.create(options.weapons,rigs):null;
-    const textures=new Map(),attachments=new Map();
+    const textures=new Map(),attachments=new Map(),skinStrips=new Map();let skinCacheBytes=0;
+    function skinStrip(image,file,frame,spec,ramp){
+      const key=[file,spec.width,spec.height,ramp.join(',')].join(':');
+      let entry=skinStrips.get(key);
+      if(entry){skinStrips.delete(key);skinStrips.set(key,entry);}
+      else {
+        const strip=canvas(image.width,image.height);entry={strip,frames:new Set(),bytes:image.width*image.height*4};
+        skinStrips.set(key,entry);skinCacheBytes+=entry.bytes;
+        while(skinCacheBytes>16*1024*1024||skinStrips.size>12){const oldest=skinStrips.keys().next().value;skinCacheBytes-=skinStrips.get(oldest).bytes;skinStrips.delete(oldest);}
+      }
+      if(!entry.frames.has(frame)){
+        const tile=canvas(spec.width,spec.height),tc=tile.getContext('2d');tc.drawImage(image,frame*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);
+        const source=tc.getImageData(0,0,spec.width,spec.height).data;
+        const pixels=api.recolor(source,api.materialMask(source,'skin'),ramp);
+        entry.strip.getContext('2d').putImageData(new ImageData(pixels,spec.width,spec.height),frame*spec.width,0);entry.frames.add(frame);
+      }
+      return entry.strip;
+    }
     if(catalog.nativeOwnership){
       for(const style of catalog.styles.filter(s=>s.kind==='torso'))if(!style.materialPalette?.length)throw Error('Missing torso material palette: '+style.id);
       for(const body of Object.keys(catalog.fitBases))for(const action of ['static','idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus','attack-tech']){
@@ -76,14 +94,7 @@
       const originalFrame=canvas(spec.width,spec.height);
       if(skin)for(const slot of ['body','headBase','underArms','foreground','face']){
         const file=selected.layers[slot];if(!file||visibleHidden.includes(slot))continue;
-        const image=images.get(file),c=canvas(spec.width,spec.height),cx=c.getContext('2d');
-        cx.drawImage(image,fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);
-        const source=cx.getImageData(0,0,c.width,c.height).data;
-        const recoloured=api.recolor(source,api.materialMask(source,'skin'),skin);
-        // Keep the strip indexing contract while replacing just this pose.
-        const strip=canvas(image.width,image.height);strip.getContext('2d').drawImage(image,0,0);
-        strip.getContext('2d').putImageData(new ImageData(recoloured,c.width,c.height),fi*spec.width,0);
-        map.set(file,strip);
+        map.set(file,skinStrip(images.get(file),file,fi,spec,skin));
       }
       // Render the neutral body first. Every visible surface is drawn exactly
       // once below; a replacement face must never cover an earlier hair pass.
@@ -308,7 +319,7 @@
       weapons?.drawWorn(ctx,images,weaponPlan,spec,{body:wornBody,hands:wornHands,head:headPixels,cloak:selected.direction==='north'?pieces.cloak?.full:null});
       return weaponPlan.map(entry=>({side:entry.side,point:weapons.point(entry),itemId:entry.model.itemId}));
     }
-    return {prepare,requiredFiles,draw,weaponPadding:(selected,spec,look)=>weapons?.descriptor(look.weapon)?weapons.padding(selected,spec,look):{x:0,top:0,bottom:0},weaponPlan:(selected,frame,spec,look,owner)=>weapons?.plan(selected,frame,spec,look,owner)||[],get weaponCacheSize(){return weapons?.cacheSize||0;},get cacheSize(){return textures.size;},get attachmentCacheSize(){return attachments.size;}};
+    return {prepare,requiredFiles,draw,weaponPadding:(selected,spec,look)=>weapons?.descriptor(look.weapon)?weapons.padding(selected,spec,look):{x:0,top:0,bottom:0},weaponPlan:(selected,frame,spec,look,owner)=>weapons?.plan(selected,frame,spec,look,owner)||[],get skinCacheBytes(){return skinCacheBytes;},get weaponCacheSize(){return weapons?.cacheSize||0;},get cacheSize(){return textures.size;},get attachmentCacheSize(){return attachments.size;}};
   }
   window.MareWardrobe96={create};
 })();

@@ -28,3 +28,7 @@ Sondas: tests/performance_sprite_browser.cjs e tests/performance_server.cjs. Pas
 | Outros arquivos sem prova suficiente de uso | INDETERMINADO | Preservar até rastrear também caminhos dinâmicos |
 
 Não foram encontrados arquivos versionados .bak/.tmp/.orig/.pyc/.old/Thumbs.db/.DS_Store. Nenhuma exclusão em massa é justificada. As otimizações e a limpeza terão commits distintos.
+
+## Composição e cache de pele
+
+Superfícies temporárias com leitura frequente usam canvas de CPU, evitando readbacks GPU por máscara. Faixas recoloridas são preenchidas por pose sob demanda e reutilizadas, com chave de arquivo/dimensões/paleta e limites de 12 faixas/16 MiB. Teste no navegador: 144 poses, RGBA idêntico à versão de base; repetição da pose passou de 5 recolorações para 1, cache observado 9.830.400 bytes.
