@@ -318,6 +318,48 @@ sessões autorizadas e zero revogações pendentes. D/E permaneceram no provedor
 sem personagem ou conta local criada. Nenhuma alteração de runtime, gameplay,
 assets, saves, prazo de JWT/sessão, produção, DNS, merge ou Fase 3.
 
+### Janela F — resposta perdida e correção do estado PKCE
+
+Em 31/10/2026, após autorização de um cadastro/envio adicional e confirmação de
+acesso à mensagem encaminhada, foi feita exatamente uma tentativa pelo BFF local.
+O BFF retornou 202, mas persistiu estado PKCE vazio. Os logs Auth do projeto de
+desenvolvimento registraram POST `/signup` 200 e confirmação solicitada com sucesso.
+O fluxo local foi persistido cerca de 4,021 s após o início, compatível com o limite
+de transporte de 4 s. Não houve reenvio, recuperação, uso do link ou criação de
+conta/personagem/sessão no banco do jogo. A entrega deste e-mail não foi comprovada.
+
+**Falha real de disponibilidade do callback:** em erro de transporte, o SDK remove
+o verificador; o adaptador lançava erro e o serviço guardava um objeto vazio.
+A aceitação remota do cadastro não garantia a preservação local do estado.
+Não atribuir a falha ao SMTP nem registrar o ensaio de correlação como aprovado.
+
+A regressão reproduziu o timeout real de 4 s com SDK real, servidor HTTP de teste
+e PostgreSQL descartável: cadastro e recuperação falhavam no callback legítimo
+antes da correção. O adaptador agora captura somente o estado PKCE antes da chamada
+e o retorna em erros de transporte/servidor classificados pelo SDK como resultado
+incerto. O serviço continua cifrando esse estado, vinculando-o aos cookies originais
+e exigindo código válido, JWT verificado e usuário confirmado antes de criar sessão.
+Erros explícitos de validação/limite continuam falhando; não há retry de envio,
+aumento de timeout, alteração de TTL, aceitação de sessão imediata no cadastro ou
+exposição do verificador ao cliente. A captura não recupera fluxos antigos vazios.
+
+Após a correção, os testes comprovaram callback legítimo, rejeição de outro contexto
+antes de consultar o provedor, rejeição de replay, apenas uma solicitação de envio
+e restrição da sessão de recuperação. São regressões locais, **não homologação de
+recuperação nem validação da correção no Supabase hospedado**. A repetição real da
+correlação permanece pendente de novo destinatário/janela e orçamento de envio
+especificamente autorizados. O envio F já foi consumido.
+
+Validação desta correção: `npm run typecheck`, `npm run build`, `npm test`
+(28 testes de fundação e 122/122 arquivos Node legados), `npm run test:integration`
+(19/19, PostgreSQL local real) e `git diff --check`. A nova regressão falhou nos
+dois cenários antes do patch e passou depois. Docker não foi executado neste Windows;
+a CI Docker/Linux deve ser verificada no commit publicado, sem equipará-la a Supabase real.
+
+Encerramento: Auth desligado, API/gateway encerrados, PostgreSQL preservado;
+A/B/C e seus três personagens iguais à referência inicial, zero sessões
+autorizadas e zero revogações pendentes. Gameplay, HUD, assets e saves intactos.
+
 ### Rodada 3 — proposta para aprovação separada
 
 Usar uma conta de teste confirmada escolhida pelo proprietário, preferencialmente
@@ -352,7 +394,7 @@ a barreira de expiração do BFF, sem provar expiração do token de e-mail do p
 |---|---|---|
 | Acesso local, HTTPS e origem | Aprovado nesta máquina | Serviços precisam estar ativos durante cada janela; confiança do certificado foi autorizada para o usuário atual |
 | Rodada 1: sessões e controlador | Aprovada no provedor real | Manter os prazos aprovados; não confundir o ensaio de JWT de 900 s com espera de 24 h/2 h, cobertas em configuração e testes locais |
-| Rodada 2: contas e autorização cruzada | Parcial: 40 testes cruzados, confirmação, primeira corrida e expiração BFF aprovados | Repetir correlação incompatível com controle positivo válido: D foi recusado também pelo provedor por expiração PKCE. Expiração do token de e-mail do provedor não foi ensaiada |
+| Rodada 2: contas e autorização cruzada | Parcial: 40 testes cruzados, confirmação, primeira corrida e expiração BFF aprovados | Correlação com controle positivo válido pendente: D expirou no provedor; F revelou perda do estado PKCE após resposta incerta. Correção passou em regressão local, ainda requer ensaio hospedado autorizado. Expiração do token de e-mail remoto não ensaiada |
 | Rodada 3: recuperação | Pendente de autorização específica | Dois envios planejados em janelas com cota disponível; fluxo não consumido expirado e fluxo válido; senha definida pelo proprietário; invalidação das sessões anteriores |
 | Aceitação completa da Fase 2 | Não encerrada | Concluir os blocos pendentes; não iniciar a Fase 3 |
 

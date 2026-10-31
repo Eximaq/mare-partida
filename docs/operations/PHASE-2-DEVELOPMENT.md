@@ -106,6 +106,15 @@ Não estender prazos ou reenviar automaticamente para obter aprovação. Detalhe
 limitações de contexto HTTP/navegador e encerramento seguro constam na
 [matriz e janela D/E](SUPABASE-DEVELOPMENT-SETUP.md#janela-de--expiração-real-e-limite-do-ensaio-de-correlação).
 
+A janela F revelou perda do estado PKCE após resultado de transporte incerto,
+apesar de cadastro aceito remotamente. O adaptador foi corrigido com regressão
+prévia: captura apenas PKCE antes da chamada e o preserva cifrado para o callback
+vinculado ao contexto original, sem reenviar o e-mail nem alterar limites de tempo.
+As regressões locais passaram; a confirmação hospedada desta correção e a prova
+completa de correlação seguem pendentes de novo envio especificamente autorizado.
+O fluxo F já vazio não é recuperável pela correção. Ver
+[evidências e limites da janela F](SUPABASE-DEVELOPMENT-SETUP.md#janela-f--resposta-perdida-e-correção-do-estado-pkce).
+
 Seguir [SUPABASE-DEVELOPMENT-SETUP.md](SUPABASE-DEVELOPMENT-SETUP.md). Não criar ou
 alterar projetos automaticamente. Copiar `.env.example` para `.env.server.local`,
 preencher runtime DB, URL do projeto separado, publishable key e algoritmo público.

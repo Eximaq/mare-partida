@@ -2,7 +2,7 @@
 
 Revisão local em 31/10/2026. Branch `feature/auth-sessions`, criada a partir da
 fundação aprovada `3addd2ae93c1d2862500ee0aea4ece9bff7fd217`. PR #160 permanece
-Draft, aberto e sem alterações. Última main consultada: `15726277f03f825ae30a0239317b09975d5eee68`.
+Draft, aberto e sem alterações. Última main consultada: `25fab142f33b220551edfeec7ecdf142354cdce3`.
 A compatibilidade integrada é verificada pelo ref de PR e CI, sem merge na main.
 As adições concorrentes no topo do README e em `.gitattributes` foram conciliadas
 por commit normal na branch da Fase 2: preservam os links Rank A e regras de bytes
@@ -47,7 +47,7 @@ falhou com o exemplo anterior e passou após atualização para 24 h/2 h.
 |---|---|
 | Build / TypeScript estrito | Passaram |
 | Fundação, contratos, gateway TLS, SDK com JWTs locais | 28/28 após a política aprovada |
-| Integração PostgreSQL real, incluindo role LOGIN mínima | 17/17 |
+| Integração PostgreSQL real, incluindo role LOGIN mínima e resposta PKCE perdida | 19/19 após a correção da janela F |
 | Legado Node | 122/122 arquivos; supa-browser tem harness separado |
 | Python backend / hierarquia | 69 + 4 |
 | Testes release native96 / Pages / portal | 3 + 1 + 3 |
@@ -131,7 +131,17 @@ O cliente original era HTTP isolado, não outro navegador; links compartilhados
 pelo proprietário no chat constituem limitação adicional. Sem novos personagens,
 contas/sessões locais, mudança de runtime ou prazos; Auth/API/gateway encerrados.
 
-Pendentes: repetir correlação incompatível com controle positivo dentro do prazo
+Na janela F, o único cadastro autorizado retornou 202 local e 200 no provedor,
+mas o estado PKCE ficou vazio após cerca de 4 s. O SDK apaga o verificador quando
+a resposta falha, mesmo com cadastro aceito remotamente. Regressões reproduziram
+a falha antes da correção usando SDK real e PostgreSQL descartável. O adaptador
+agora preserva apenas PKCE antes da chamada quando o resultado é incerto, sem
+retry de envio, alteração dos prazos ou afrouxamento das verificações do callback.
+Os testes locais de cadastro/recuperação passaram; outro contexto e replay continuam
+recusados. A correção ainda exige homologação hospedada: não reutiliza o fluxo F
+vazio nem autoriza outro e-mail. A/B/C preservados; Auth/API/gateway desligados.
+
+Pendentes: homologar a correção de resposta perdida e repetir correlação incompatível com controle positivo dentro do prazo
 remoto, recuperação, rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,
 retenção/chaves, proteção adicional contra abuso e testes de carga.
 

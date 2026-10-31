@@ -1,4 +1,8 @@
-import { GoTrueClient, type Session } from "@supabase/auth-js";
+import {
+  GoTrueClient,
+  isAuthRetryableFetchError,
+  type Session,
+} from "@supabase/auth-js";
 import { createRemoteJWKSet, jwtVerify, customFetch, errors } from "jose";
 import { z } from "zod";
 import { AuthFault, unauthorized } from "./errors.js";
@@ -54,7 +58,10 @@ export class SupabaseProvider implements AuthProvider {
       { [customFetch]: this.fetch, timeoutDuration: 4000, cacheMaxAge: 300000 },
     );
   }
-  private client(state: Record<string, string> = {}) {
+  private client(
+    state: Record<string, string> = {},
+    fetcher: typeof fetch = this.fetch,
+  ) {
     return new GoTrueClient({
       url: this.config.url + "/auth/v1",
       headers: { apikey: this.config.publishableKey },
@@ -65,7 +72,7 @@ export class SupabaseProvider implements AuthProvider {
       flowType: "pkce",
       skipAutoInitialize: true,
       debug: false,
-      fetch: this.fetch,
+      fetch: fetcher,
       storage: {
         getItem: (key) => state[key] ?? null,
         setItem: (key, value) => {
@@ -200,7 +207,16 @@ export class SupabaseProvider implements AuthProvider {
     redirect: string,
   ) {
     const state: Record<string, string> = {};
-    const client = this.client(state);
+    let preparedState: Record<string, string> = {};
+    const client = this.client(state, async (input, init) => {
+      // The SDK removes its verifier after a transport/server error, even if
+      // the provider accepted the request and sent the email. Keep only PKCE
+      // material captured before sending, never a session or user payload.
+      preparedState = Object.fromEntries(
+        Object.entries(state).filter(([key]) => key.endsWith("-code-verifier")),
+      );
+      return this.fetch(input, init);
+    });
     if (kind === "signup") {
       if (!password) throw new AuthFault(400, "invalid_request");
       const { data, error } = await client.signUp({
@@ -208,12 +224,16 @@ export class SupabaseProvider implements AuthProvider {
         password,
         options: { emailRedirectTo: redirect },
       });
+      // Do not retry the send. Only a verified, browser-bound callback may
+      // turn this ambiguous result into a session; AuthService seals the state.
+      if (isAuthRetryableFetchError(error)) return preparedState;
       this.failure(error);
       if (data.session) throw new AuthFault(503, "email_confirmation_required");
     } else {
       const { error } = await client.resetPasswordForEmail(email, {
         redirectTo: redirect,
       });
+      if (isAuthRetryableFetchError(error)) return preparedState;
       this.failure(error);
     }
     return state;
