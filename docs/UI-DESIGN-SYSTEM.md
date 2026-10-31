@@ -1,3 +1,5 @@
+[Inventário pirata HD e componentes reutilizáveis — sprint em revisão visual](INVENTORY-PIRATE-HD.md).
+
 # Maré Partida — UI 2.0
 
 ## Identidade e auditoria
