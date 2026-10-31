@@ -16,3 +16,9 @@ Captura antes: tmp/inventory-qa/before.png (fora do Git), 1672×941. HUD aprovad
 4. Ensaios funcionais/visuais desktop e móvel, HUD, build e publicação em PR.
 
 Nenhum save de usuário ou evidência em massa será incluído. Trabalho local não commitado na pasta original permanece preservado; a sprint usa worktree limpo da main publicada.
+
+## Base artística validada
+
+PixelLab AI Pro gerou uma folha 600×448 com quatro peças isoladas (job a9fd678d-ce76-4aba-bb5f-a7bbe726299c, custo 25 gerações): moldura, slot, botão e aba. Fonte preservado em assets/ui/inventory-hd/source-kit.png; recortes exatos com alfa, sem interpolação ou repintura, verificados pixel a pixel. Dimensões, regiões e SHA256 no manifesto da pasta. Madeira/pergaminho da HUD e quatro emblemas oficiais reaproveitados. Não foram gerados itens nem personagens.
+
+Novos parâmetros --rpg-hd-* estendem ui-tokens.css; componentes opt-in .ui-hd (hd-frame, hd-control, hd-panel-heading, linhas de skill) ficam em ui-components.css e reaproveitam MareUI.upgrade. Nenhum token existente foi redefinido. O inventário aplica pirate-hd no modal; ui-navigator.css conserva o visual anterior somente fora dessa composição, sem modificar a HUD.

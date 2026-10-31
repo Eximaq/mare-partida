@@ -1,0 +1,65 @@
+{
+  "generator": "PixelLab AI Pro",
+  "job": "a9fd678d-ce76-4aba-bb5f-a7bbe726299c",
+  "cost": 25,
+  "source": "source-kit.png",
+  "method": "Exact alpha-bounds crops; no resizing or repainting. Original RGBA preserved.",
+  "files": [
+    {
+      "file": "panel.png",
+      "size": [
+        285,
+        422
+      ],
+      "sourceRectangle": [
+        15,
+        14,
+        300,
+        436
+      ],
+      "sha256": "1afae032892d7abcc9266ba36e8d6e131c980ba09c8f0ad0c284c7d536133ded"
+    },
+    {
+      "file": "slot.png",
+      "size": [
+        121,
+        122
+      ],
+      "sourceRectangle": [
+        393,
+        27,
+        514,
+        149
+      ],
+      "sha256": "904358e2820f6528bf0db9d476985918393dc623b0c3d069b4c732967e61fc33"
+    },
+    {
+      "file": "button.png",
+      "size": [
+        270,
+        79
+      ],
+      "sourceRectangle": [
+        315,
+        207,
+        585,
+        286
+      ],
+      "sha256": "5762c95872d1e94909ed87997f674e1aa0c662a3f13d804edda53f02f0574464"
+    },
+    {
+      "file": "tab.png",
+      "size": [
+        232,
+        73
+      ],
+      "sourceRectangle": [
+        335,
+        346,
+        567,
+        419
+      ],
+      "sha256": "0cb2f12ef4190df42a25450a7d424c6405b5113fd73b4f714b4de5192eb71ba8"
+    }
+  ]
+}
