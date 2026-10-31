@@ -1,0 +1,58 @@
+name: Rank A — Ope, Mero e HUD de três habilidades
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'rank-a-*.js'
+      - 'akuma-system.js'
+      - 'game.js'
+      - 'index.html'
+      - 'ui-preview.html'
+      - 'assets/akuma/**'
+      - 'server/**'
+      - 'tests/rank*a*'
+      - 'tools/import_rank_a.py'
+      - 'tools/build_pages.py'
+      - '.github/workflows/rank-a-skills.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rankA:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preparar navegador e leitura dos atlas
+        run: |
+          python3 -m pip install pillow
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Contratos, arte e regressões Python
+        run: |
+          node --test tests/rank-a-system.test.cjs tests/akuma-system.test.cjs tests/ui-mobile-preview.test.cjs
+          python3 tools/build_pages.py
+          python3 -m unittest discover -s tests -p '*_test.py'
+      - name: Jogo estático e API com banco isolado
+        env:
+          MARE_AKUMA_DB: ${{ runner.temp }}/rank-a-qa.sqlite3
+          MARE_QA_DIR: ${{ runner.temp }}/rank-a-capturas
+        run: |
+          python3 -m http.server 8161 --bind 127.0.0.1 > /tmp/rank-a-static.log 2>&1 &
+          python3 server/app.py > /tmp/rank-a-api.log 2>&1 &
+          sleep 2
+          MARE_TEST_URL=http://127.0.0.1:8161/dist/ node tests/rank_a_browser.cjs
+          MARE_TEST_URL=http://127.0.0.1:8123/ MARE_EXPECT_API=1 node tests/rank_a_browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rank-a-capturas
+          path: ${{ runner.temp }}/rank-a-capturas/
+          if-no-files-found: warn
+          retention-days: 14

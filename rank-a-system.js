@@ -78,13 +78,13 @@
   if(j.kind==='tact'){const size=256*progress;return {x:target.x,y:target.y-.375*size,width:size,height:size};}
   return {x:target.x,y:target.y-100,width:512,height:512};
  }
- function draw(ctx,s,now,enemies){
-  if(s.room&&now<s.room.until){const age=now-s.room.started,grow=Math.min(1,age/.25);ctx.save();ctx.globalAlpha=.55;paint(ctx,'room',roomFrame(age),s.room.x,s.room.y-160*grow,640*grow,640*grow);ctx.restore();}
-  for(const j of s.jobs){const age=now-j.started,t=enemies.find(m=>m.id===j.targetId)||j.point;if(j.kind==='mellow'){const k=Math.min(1,age/j.duration),[dx,dy]=j.direction;paint(ctx,'mellow',frame('mellow',k),j.origin.x+dx*96*k,j.origin.y-30+dy*96*k,192*k,192*k,Math.atan2(dy,dx));}
+ function draw(ctx,s,now,enemies,layer='all'){
+  if(layer!=='back'&&s.room&&now<s.room.until){const age=now-s.room.started,grow=Math.min(1,age/.25);ctx.save();ctx.globalAlpha=.55;paint(ctx,'room',roomFrame(age),s.room.x,s.room.y-160*grow,640*grow,640*grow);ctx.restore();}
+  for(const j of s.jobs){if(layer==='back'&&j.kind!=='gamma'||layer==='front'&&j.kind==='gamma')continue;const age=now-j.started,t=enemies.find(m=>m.id===j.targetId)||j.point;if(j.kind==='mellow'){const k=Math.min(1,age/j.duration),[dx,dy]=j.direction;paint(ctx,'mellow',frame('mellow',k),j.origin.x+dx*96*k,j.origin.y-30+dy*96*k,192*k,192*k,Math.atan2(dy,dx));}
    else if(j.kind==='kiss'){const angle=t?Math.atan2(t.y-j.origin.y,t.x-j.origin.x):0;paint(ctx,'kiss',j.hit?14+Math.min(10,Math.floor((now-j.impact)/.08)):Math.floor(age/.05)%14,j.x,j.y-32,80,80,angle);}
    else if(t){const p=layout(j,t,now);paint(ctx,j.kind,frame(j.kind,age/j.duration),p.x,p.y,p.width,p.height);}
   }
-  for(const f of s.trails){ctx.save();ctx.globalAlpha=1-(now-f.started)/.25;ctx.strokeStyle='#72f4ff';ctx.lineWidth=3;ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(f.x,f.y-30);ctx.lineTo(f.to.x,f.to.y-30);ctx.stroke();ctx.restore();}
+  for(const f of layer==='back'?[]:s.trails){ctx.save();ctx.globalAlpha=1-(now-f.started)/.25;ctx.strokeStyle='#72f4ff';ctx.lineWidth=3;ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(f.x,f.y-30);ctx.lineTo(f.to.x,f.to.y-30);ctx.stroke();ctx.restore();}
  }
  const api={rules,effects,has,create,roomActive,roomFrame,skill,cooldownKey,stunned,petrified,defenseFactor,valid,cast,step,clear,preload,draw,damage,direction,layout};root.MareRankA=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
