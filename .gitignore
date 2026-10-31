@@ -44,3 +44,9 @@ Thumbs.db
 .vscode/settings.json
 .idea/
 /dist-portal/
+
+# Authoritative server foundation (local build and database only)
+/apps/*/dist/
+/packages/*/dist/
+*.tsbuildinfo
+/infra/local/

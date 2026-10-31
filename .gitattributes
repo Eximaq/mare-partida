@@ -32,3 +32,10 @@ assets/akuma/hoya/*.json -text
 assets/akuma/zoan-transition/*.json -text
 
 assets/akuma/jiki/*.json -text
+
+# Scope normalization to the new backend; do not rewrite existing game assets.
+/apps/** text eol=lf
+/packages/** text eol=lf
+/infra/** text eol=lf
+/tests/foundation/** text eol=lf
+/tests/integration/server* text eol=lf
