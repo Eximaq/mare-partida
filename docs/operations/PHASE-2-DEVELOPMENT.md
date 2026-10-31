@@ -278,6 +278,23 @@ desligados; conta A e Teste Alfa preservados. Aprovações podem ocorrer pelo ch
 uma caixa de e-mail só pode ser lida após conexão autorizada, sem copiar links de
 confirmação para o chat. Não há conexão Gmail confirmada nesta preparação.
 
+**Rechecagem após configuração manual de SMTP:** o proprietário informou Gmail com
+senha de app. O dashboard do projeto de desenvolvimento confirmou custom SMTP
+habilitado, host `smtp.gmail.com`, porta `465` e formulário sem alterações pendentes.
+Os valores de remetente e usuário estão protegidos pela interface; sua igualdade
+não foi comprovada. O campo Password não foi lido, revelado ou alterado. A presença
+de configuração salva não comprova que a senha está correta nem que houve entrega.
+
+Uma conexão TLS do Windows local ao Gmail na porta 465 validou o certificado e
+recebeu greeting 220, sem AUTH nem envio. Isso não comprova a conexão originada no
+Supabase. A autenticação SMTP e a entrega seguem pendentes do único envio autorizado.
+O bloqueio anterior por destinatário fora da equipe corresponde ao SMTP padrão,
+substituído pela configuração personalizada; não atribuir falha de entrega sem teste.
+Antes do cadastro, renovar a confirmação específica do destinatário/envio conforme
+pedido atual; confirmar que remetente/username representam a conta Google correta e
+que eventual senha compartilhada no chat foi revogada e substituída. Não solicitar
+valores de senha. Auth e processos locais permanecem desligados nesta pré-validação.
+
 ### Matriz completa a executar conforme as autorizações correspondentes
 
 1. Cadastro com confirmação obrigatória: login antes de confirmar falha; link no

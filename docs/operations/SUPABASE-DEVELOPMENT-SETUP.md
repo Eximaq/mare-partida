@@ -157,7 +157,7 @@ sessões autorizadas. A manutenção preenche posteriormente os registros revoga
 |---|---|---|
 | Acesso local, HTTPS e origem | Aprovado nesta máquina | Serviços precisam estar ativos durante cada janela; confiança do certificado foi autorizada para o usuário atual |
 | Rodada 1: sessões e controlador | Aprovada no provedor real | Manter os prazos aprovados; não confundir o ensaio de JWT de 900 s com espera de 24 h/2 h, cobertas em configuração e testes locais |
-| Rodada 2: segunda conta e autorização cruzada | Bloqueio do ambiente na preparação | Destinatário B informado, mas não consta na equipe consultada; SMTP padrão não permite entrega. Nenhum cadastro/envio tentado; casos hospedados ainda não executados |
+| Rodada 2: segunda conta e autorização cruzada | Pré-validação SMTP concluída parcialmente; aguarda autorização de envio | SMTP personalizado habilitado com Gmail/465; senha não acessada. Autenticação e entrega pendentes; nenhum cadastro/envio tentado. O bloqueio de equipe anterior aplicava-se ao SMTP padrão |
 | Rodada 3: recuperação | Pendente de autorização específica | Dois envios planejados em janelas com cota disponível; fluxo não consumido expirado e fluxo válido; senha definida pelo proprietário; invalidação das sessões anteriores |
 | Aceitação completa da Fase 2 | Não encerrada | Concluir os blocos pendentes; não iniciar a Fase 3 |
 
