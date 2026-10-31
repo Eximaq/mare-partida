@@ -46,3 +46,16 @@ O ensaio encontrou 148 recursos atuais únicos (cerca de 81 MiB decodificados ao
 Alabasta, Alubarna, mapas NewIslands e projeções PixelWorldMaps deixam de carregar no boot. A seleção de viagem antecipa somente o destino e os monstros associados; a entrada direta também prepara seus recursos. Máscaras de profundidade são solicitadas por região. As bancadas Ember/Orange/Conchas preservam o contrato boot (Promise idempotente), agora acionado explicitamente ou ao desenhar. Fontes e dados de colisão foram preservados. Alabasta foi validada no navegador com viagem, 80 máscaras, 24 paredes, combate e persistência.
 
 Uma tentativa de eliminar os chunks intermediários de Dawn foi rejeitada: preservou os pixels em escala 1:1, mas mudou a amostragem em zoom. O desenho original foi restaurado integralmente. Esse custo segue como oportunidade, sem sacrificar consistência visual.
+
+## Limpeza confirmada e preservação
+
+Removida a função sem chamadores classCombatAsset de game.js, após procurar referências em todos os JS/CJS/Python/HTML/JSON versionados. Não há dependência de saves. Nenhum arquivo artístico foi excluído: os candidatos antigos rastreados continuam necessários às bancadas, NPCs, efeitos ou à proveniência. A ausência de importação estática isolada não prova obsolescência. Lista de arquivos excluídos: nenhuma; a limpeza desta fase remove código morto, sem inventar justificativas para apagar fontes.
+
+## Validações funcionais e visuais
+
+- Suíte completa Node: 188 testes, 188 aprovados. A primeira execução sem NODE_PATH falhou somente ao localizar Playwright; a execução com as dependências locais passou integralmente.
+- Python: 8 testes de release atual, 7.285 frames imutáveis de 26 personagens e publicação estática aprovados. Build Pages executado.
+- Navegador: 144 poses comparadas byte a byte, criação/aparência em seis viewports, 480 poses de capacetes, 40 alternâncias rápidas, restauração do cabelo, persistência e rollback.
+- Ownership atual: ausência/corrupção de imagens, solicitação atrasada e resposta obsoleta, sem fallback antigo ou loop de requisições.
+- Alabasta: viagem, paredes, profundidade, combate e save. Alubarna: cinco regiões, 20 vistas de monstros, caminhada/ataque/hurt, mortes/XP e save.
+- Corrigida a verificação antiga de Alubarna: compara pathname, preservando a revisão no URL. Nenhuma mudança artística ou de combate foi necessária para esse ajuste.
