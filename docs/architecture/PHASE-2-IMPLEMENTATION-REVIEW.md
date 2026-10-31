@@ -4,6 +4,9 @@ Revisão local em 31/10/2026. Branch `feature/auth-sessions`, criada a partir da
 fundação aprovada `3addd2ae93c1d2862500ee0aea4ece9bff7fd217`. PR #160 permanece
 Draft, aberto e sem alterações. Última main consultada: `ab77811ecca70be4c0a02513ec1b4ac9b0643023`.
 A compatibilidade integrada é verificada pelo ref de PR e CI, sem merge na main.
+As adições concorrentes no topo do README e em `.gitattributes` foram conciliadas
+por commit normal na branch da Fase 2: preservam os links Rank A e regras de bytes
+dos assets da main, junto das regras/documentação do backend. Nenhum asset foi editado.
 
 ## Entrega implementada
 

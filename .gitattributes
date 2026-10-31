@@ -33,6 +33,11 @@ assets/akuma/zoan-transition/*.json -text
 
 assets/akuma/jiki/*.json -text
 
+# Preserve imported combat sheets and Rank A animation metadata byte-for-byte.
+assets/combat-vfx/*.json -text
+assets/akuma/ope/*.json -text
+assets/akuma/mero/*.json -text
+
 # Scope normalization to the new backend; do not rewrite existing game assets.
 /apps/** text eol=lf
 /packages/** text eol=lf
