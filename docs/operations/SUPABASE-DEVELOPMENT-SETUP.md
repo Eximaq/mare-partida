@@ -151,13 +151,64 @@ contagem de sessões utilizáveis deve verificar também `account_epoch = auth_e
 além de prazos e `revoked_at`. Apenas contar linhas sem `revoked_at` não comprova
 sessões autorizadas. A manutenção preenche posteriormente os registros revogados.
 
+## Rodada 2 — execução real, 31/10/2026
+
+Código do backend `591106c`, projeto exclusivo de desenvolvimento e origem
+`https://localhost:9443`. O proprietário confirmou substituição de eventual
+credencial exposta, coerência do SMTP e autorizou um cadastro/um e-mail para B.
+Houve uma submissão de cadastro, sem reenvio ou recuperação. Após informar atraso
+na chegada, o proprietário usou o link. O fluxo PKCE foi consumido, a conta B e sua
+sessão foram criadas; JWT ES256/900 s e usuário confirmado/destinatário esperado
+foram verificados em memória, sem publicar dados do usuário.
+
+A página QA ficou somente em `infra/local/`, ignorada. O gateway usou a implementação
+original e uma cópia byte a byte do cliente de contas, acrescentando apenas a página
+de testes local. O backend, gameplay, mapas, HUD, Paper Doll, assets e saves não foram
+modificados. Os testes de autorização usaram cookies reais nos dois perfis e APIs
+reais, sem provider simulado nem chaves administrativas.
+
+| Caso | Classificação e evidência |
+|---|---|
+| Entrega e callback PKCE válido | Aprovado: link usado pelo proprietário, fluxo consumido e sessão B emitida no contexto correspondente |
+| Login antes de confirmar | Inconclusivo: o link foi aberto antes de executar a tentativa negativa; a confirmação não foi revertida |
+| Identidades/sessões independentes | Aprovado: duas contas e sessões do provedor distintas; conta B verificada contra o destinatário autorizado |
+| A acessa/controla/seleciona B | Aprovado: 20 casos HTTP; alvo alheio e inexistente retornam mesmo erro 404, sem dados de B |
+| B acessa/controla/seleciona A | Aprovado: 20 casos HTTP equivalentes; personagem próprio permanece inalterado |
+| Corpos com accountId/ownerId/characterId/extras | Aprovado: 400 nos contratos estritos, incluindo campos aninhados |
+| IDs de rota/query adulterados | Aprovado: não mudam proprietário; query de seleção continua retornando apenas o personagem próprio. Parâmetros ignorados não foram apresentados como rejeitados |
+| Concorrência com personagem B já existente | Aprovado: duas tentativas de criar outro personagem retornam 409/409; retries idênticos retornam 201/201 com o mesmo ID; um personagem por conta no banco |
+| Corrida da primeira criação de B | Inconclusivo: ao observar a ferramenta, B já possuía personagem e o guard recusava nova criação. Nenhum personagem foi apagado para recriar o estado |
+| Reutilização do link real | Aprovado: provedor retorna otp_expired e BFF rejeita invalid_auth_flow, sem novo código de autorização; nenhuma conta, sessão ou fluxo adicional; sessão B existente preservada |
+| Entradas inválidas do callback | Aprovado como ensaio HTTP local: seis negativos, incluindo código ausente/duplicado/excessivo e fixture de pré-auth expirada; não equivalem a um link hospedado não consumido |
+| Código real em navegador incompatível | Inconclusivo: não observado antes do consumo do link; negativo local sem correlação foi executado separadamente |
+| Fluxo real não consumido até expirar | Bloqueado pelo escopo de um único envio, já utilizado no callback válido; otp_expired de link usado não comprova este caso |
+| Preservação e encerramento | Aprovado: duas contas/dois personagens, Teste Alfa idêntico ao snapshot inicial; zero sessões autorizadas e fila remota vazia; Auth/API/gateway desligados; PostgreSQL preservado |
+
+Uma expectativa incorreta do ensaio foi corrigida após conferir o roteamento:
+`not-a-uuid` nem corresponde à rota e retorna 404; um UUID malformado que corresponde
+à rota chega ao validador e retorna 400. Ambos foram verificados nos dois sentidos.
+Isso não exigiu correção de produção. Não se observou falha real de autorização nos
+40 casos; os cenários não observados continuam pendentes, sem aprovação presumida.
+
+Evidências sanitizadas ficam fora do Git; IDs usados como alvos só aparecem na
+configuração local ignorada do ensaio. Senhas foram digitadas pelo proprietário;
+links foram usados em campo protegido, sem copiar conteúdo para chat/log/relatório.
+Os casos de replay usam o link já consumido, não uma segunda mensagem.
+
+Para fechar as lacunas, propor nova janela com uma conta temporária ainda não
+confirmada e um envio adicional especificamente autorizado, preservando A/B. Ela
+poderá reunir o negativo antes da confirmação, correlação incompatível, espera real
+pela expiração sem consumir o fluxo e, após login legítimo, corrida da primeira
+criação. O procedimento e destinatário devem ser aprovados antes da execução; não
+usar confirmação administrativa, alterar relógios/timestamps ou apagar personagens.
+
 ### Matriz de aprovação da Fase 2
 
 | Bloco | Situação | Condição restante |
 |---|---|---|
 | Acesso local, HTTPS e origem | Aprovado nesta máquina | Serviços precisam estar ativos durante cada janela; confiança do certificado foi autorizada para o usuário atual |
 | Rodada 1: sessões e controlador | Aprovada no provedor real | Manter os prazos aprovados; não confundir o ensaio de JWT de 900 s com espera de 24 h/2 h, cobertas em configuração e testes locais |
-| Rodada 2: segunda conta e autorização cruzada | Pré-validação SMTP concluída parcialmente; aguarda autorização de envio | SMTP personalizado habilitado com Gmail/465; senha não acessada. Autenticação e entrega pendentes; nenhum cadastro/envio tentado. O bloqueio de equipe anterior aplicava-se ao SMTP padrão |
+| Rodada 2: segunda conta e autorização cruzada | Parcial: autorização cruzada aprovada; casos de confirmação pendentes | SMTP/PKCE válido, 40 negativos entre contas, concorrência com personagem existente e replay aprovados. Negativo antes da confirmação, correlação real incompatível, expiração não consumida e primeira criação concorrente ainda não encerrados |
 | Rodada 3: recuperação | Pendente de autorização específica | Dois envios planejados em janelas com cota disponível; fluxo não consumido expirado e fluxo válido; senha definida pelo proprietário; invalidação das sessões anteriores |
 | Aceitação completa da Fase 2 | Não encerrada | Concluir os blocos pendentes; não iniciar a Fase 3 |
 

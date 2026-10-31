@@ -241,7 +241,8 @@ Procedimento após a autorização específica:
    idempotência. Preservar identidade, dono e conteúdo do personagem A.
 6. Pela sessão A, consultar e tentar controlar B, inclusive renovação/seleção pelas
    rotas disponíveis: resposta de não encontrado sem dados de B. Comparar com ID
-   inexistente. ID malformado deve falhar na validação. Não há seleção de gameplay
+   inexistente. Texto fora do padrão da rota recebe 404; UUID malformado que chega
+   ao validador recebe 400. Não há seleção de gameplay
    online implementada; não inventar um endpoint para esse ensaio.
 7. Enviar accountId, ownerId, characterId e campos extras nos corpos: contratos
    estritos devem recusar. Adulterar IDs de rota e query: nunca podem determinar
@@ -294,6 +295,16 @@ Antes do cadastro, renovar a confirmação específica do destinatário/envio co
 pedido atual; confirmar que remetente/username representam a conta Google correta e
 que eventual senha compartilhada no chat foi revogada e substituída. Não solicitar
 valores de senha. Auth e processos locais permanecem desligados nesta pré-validação.
+
+Na execução real posterior, o único cadastro/e-mail autorizado produziu callback
+válido e sessão B. Os 40 testes de autorização A/B, concorrência para personagem já
+existente e replay passaram. O link foi aberto antes do negativo de login, e a
+primeira criação não foi observada na ferramenta; esses casos não foram aprovados.
+Expiração real não consumida e código real no navegador incompatível continuam
+pendentes conforme o [relatório e classificações](SUPABASE-DEVELOPMENT-SETUP.md#rodada-2--execução-real-31102026).
+Não houve recuperação, reenvio ou correção de código de produção. Conta A/Teste Alfa e B foram
+preservados, com um personagem por conta. A janela foi encerrada com Auth e processos
+locais desligados, zero sessões autorizadas e fila de revogação remota vazia.
 
 ### Matriz completa a executar conforme as autorizações correspondentes
 

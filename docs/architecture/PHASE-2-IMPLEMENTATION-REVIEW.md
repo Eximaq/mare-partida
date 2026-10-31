@@ -2,7 +2,7 @@
 
 Revisão local em 31/10/2026. Branch `feature/auth-sessions`, criada a partir da
 fundação aprovada `3addd2ae93c1d2862500ee0aea4ece9bff7fd217`. PR #160 permanece
-Draft, aberto e sem alterações. Última main consultada: `c24f8858a4901dded35911d1f58100fdc1af44d0`.
+Draft, aberto e sem alterações. Última main consultada: `15726277f03f825ae30a0239317b09975d5eee68`.
 A compatibilidade integrada é verificada pelo ref de PR e CI, sem merge na main.
 As adições concorrentes no topo do README e em `.gitattributes` foram conciliadas
 por commit normal na branch da Fase 2: preservam os links Rank A e regras de bytes
@@ -11,6 +11,8 @@ preserva também os links de HUD/Bari/Doku/Ito, a rota documental de HUD e suas 
 de metadados. Esses ajustes textuais não importam ou alteram o runtime do jogo nesta
 branch; a integração completa continua pertencendo ao futuro merge autorizado.
 Nenhum asset foi editado.
+Os índices e regras adicionados para Rank S na main posterior foram igualmente
+preservados por conciliação textual, sem alterar os arquivos do jogo nesta branch.
 
 ## Entrega implementada
 
@@ -101,8 +103,19 @@ sessões autorizadas, fila remota vazia e Auth desligado; conta/personagem prese
 O acesso normal no Opera exigiu confiança explícita no certificado público apenas
 no usuário Windows; TLS permaneceu validado e os serviços em loopback.
 
-Pendentes: confirmação em sequência controlada/callback, recuperação, autorização
-cruzada real, rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,
+Na Rodada 2, um cadastro/e-mail autorizado resultou em confirmação e callback PKCE
+válido, com sessão B independente e JWT ES256/900 s verificado. Passaram 20 casos
+reais A→B e 20 B→A, sem leitura/controle/seleção de personagem alheio ou sobreposição
+de dono por campos/IDs. Concorrência com B existente preservou o limite de um
+personagem; replay do link não criou sessão. Teste Alfa permaneceu intacto. Não houve
+mudança de código de produção: somente ferramenta local ignorada e documentação. O negativo de
+login antes da confirmação e a corrida de primeira criação não foram observados;
+correlação incompatível com código real e expiração não consumida não estão encerradas.
+A janela terminou com duas contas/dois personagens preservados, zero sessões
+autorizadas, fila vazia e Auth/processos locais desligados.
+
+Pendentes: os negativos de confirmação/correlação/expiração e primeira criação
+indicados na matriz, recuperação, rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,
 retenção/chaves, proteção adicional contra abuso e testes de carga.
 
 A recuperação de rede do pool PostgreSQL passou sem reiniciar o serviço. Restart
