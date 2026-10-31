@@ -70,7 +70,7 @@
   function create({search='',baseURL=root.location?.href,onChange=()=>{}}={}){
     const active=enabled(search),rehearsal=false,base=new URL('tools/paper-doll-96-v3/',baseURL);
     let state=active?'loading':'off',message='',previewMessage='',release=null,assetRevision=null,manifest,catalog,rigs,weaponCatalog,wardrobe,choices={},current={...defaults},draft={...defaults};
-    let draws=0,lastPose=null,pending=null,wanted=null,bundles=new Map(),previews=new Map(),failed=new Set();
+    let draws=0,lastPose=null,pending=null,preparing=null,wanted=null,bundles=new Map(),previews=new Map(),failed=new Set();
     const images=new Map(),inflight=new Map(),imageFailures=new Map(),diagnostics=new Map();let loading=0,peakLoads=0;const waiting=[];
     const pause=()=>new Promise(resolve=>setTimeout(resolve,0));
     const snapshot=()=>({renderer:'native96',enabled:active,rehearsal,state,message,previewMessage,assetRevision,visualState:state!=='ready'?state:wanted&&failed.has(wanted.key)?'failed':wanted&&!bundles.has(wanted.key)?'loading':wanted?.missing.length?'degraded':'ready',errors:[...diagnostics.values()],missing:wanted?.missing||[],look:wanted?{body:wanted.body,...wanted.look,kit:'equipped'}:{...current},draft:{...draft},draws,lastPose,loading:!!pending,images:images.size,bundles:bundles.size,previews:previews.size,peakLoads});
@@ -120,7 +120,7 @@
         wardrobe=root.MareWardrobe96.create(catalog,rigs,image,{weapons:weaponCatalog});state='ready';onChange();
       }catch(error){state='failed';report(error,{consumer:'player-init',asset:'player-pack.json'});}return snapshot();
     })():Promise.resolve(snapshot());
-    function resolve(player,look=current,production=true){look=appearanceLook(player,production?defaults:look,production);const value=outfit(catalog,player,look,{production}),category=weaponCatalog.classes[player?.classId]||null,model=weaponCatalog.items.find(w=>w.itemId===player?.equipment?.weapon?.def&&w.category===category);value.look.weapon=model?.id||'original';if(player?.equipment?.weapon&&!model)value.missing.push({slot:'weapon',def:player.equipment.weapon.def});const supported=!!category;for(const m of value.missing)diagnose(failure('Equipamento sem arte atual: '+m.def,{component:'equipment-resolver',asset:'item:'+m.def,slot:m.slot,code:'unmapped-equipment'}));return {...value,body:look.body,category,attack:model?.attackAction||'attack-'+category,supported,key:JSON.stringify([look.body,{...value.look,hideHeadgear:false},supported?category:null])};}
+    function resolve(player,look=current,production=true){look=appearanceLook(player,production?defaults:look,production);const value=outfit(catalog,player,look,{production}),category=weaponCatalog.classes[player?.classId]||null,model=weaponCatalog.items.find(w=>w.itemId===player?.equipment?.weapon?.def&&w.category===category);value.look.weapon=model?.id||'original';if(player?.equipment?.weapon&&!model)value.missing.push({slot:'weapon',def:player.equipment.weapon.def});const supported=!!category;for(const m of value.missing)diagnose(failure('Equipamento sem arte atual: '+m.def,{component:'equipment-resolver',asset:'item:'+m.def,slot:m.slot,code:'unmapped-equipment'}));return {...value,body:look.body,category,attack:model?.attackAction||'attack-'+category,supported,key:JSON.stringify([look.body,{...value.look,hideHeadgear:value.look.head==='original'?false:value.look.hideHeadgear},supported?category:null])};}
     function selected(body,action,direction,look){const clip=manifest.bodies[body].clips[action][direction];return {body,action,direction,clip,layers:clip.layers,look,key:[body,action,direction].join(':')};}
     async function compose(body,action,direction,look,cancel=()=>false,consumer='player-prepare'){
       const sel=selected(body,action,direction,look),spec=root.MareMotion96.clipSpec(manifest,sel.clip);
@@ -128,10 +128,10 @@
       const loaded=new Map(await Promise.all(files.map(async file=>[file,await image(file,{consumer,body,action,direction})])));
       const pad=wardrobe.weaponPadding(sel,spec,look),renderSpec={...spec,width:spec.width+pad.x*2,height:spec.height+pad.top+pad.bottom,pivot:{x:spec.pivot.x+pad.x,y:spec.pivot.y+pad.top}};
       const strip=Object.assign(document.createElement('canvas'),{width:renderSpec.width*sel.clip.frames,height:renderSpec.height}),ctx=strip.getContext('2d'),emissions=[];
+      const tile=Object.assign(document.createElement('canvas'),{width:renderSpec.width,height:renderSpec.height}),tc=tile.getContext('2d');tc.translate(pad.x,pad.top);
       for(let frame=0;frame<sel.clip.frames;frame++){
         if(cancel())return null;
-        const tile=Object.assign(document.createElement('canvas'),{width:renderSpec.width,height:renderSpec.height});
-        const tc=tile.getContext('2d');tc.translate(pad.x,pad.top);emissions.push(wardrobe.draw(tc,loaded,sel,frame,spec,[],look));ctx.drawImage(tile,frame*renderSpec.width,0);await pause();
+        tc.clearRect(-pad.x,-pad.top,tile.width,tile.height);emissions.push(wardrobe.draw(tc,loaded,sel,frame,spec,[],look));ctx.drawImage(tile,frame*renderSpec.width,0);await pause();
       }
       return {strip,spec:renderSpec,nativeSpec:spec,clip:sel.clip,emissions};
     }
@@ -143,15 +143,15 @@
       if(pending)return pending;
       pending=(async()=>{
         while(wanted&&!bundles.has(wanted.key)&&!failed.has(wanted.key)){
-          const next=wanted,bundle=new Map();
+          const next=wanted,bundle=new Map();preparing={key:next.key,bundle};
           try{
             for(const action of ['idle','walk',...(next.supported?[next.attack,'attack-unarmed']:[])].filter((v,i,a)=>a.indexOf(v)===i))for(const dir of ['south','north','east']){
               if(wanted.key!==next.key)break;
-              for(const hideHeadgear of [false,true]){
+              for(const hideHeadgear of [next.look.hideHeadgear]){
                 const stateLook={...next.look,hideHeadgear},key=clipKey(action,dir,stateLook);
-                if(hideHeadgear&&next.look.head==='original'){bundle.set(key,bundle.get(clipKey(action,dir,{hideHeadgear:false})));continue;}
+
                 const value=await compose(next.body,action,dir,stateLook,()=>wanted.key!==next.key,consumer);
-                if(value)bundle.set(key,value);
+                if(value){bundle.set(key,value);if(next.look.head==='original')bundle.set(clipKey(action,dir,{hideHeadgear:!hideHeadgear}),value);}
               }
             }
             if(wanted.key!==next.key)continue;
@@ -159,8 +159,9 @@
           }catch(error){failed.add(next.key);if(failed.size>8)failed.delete(failed.values().next().value);if(wanted?.key===next.key)report(error,{consumer});else diagnose(error,{consumer});}
         }
         return bundles.has(wanted?.key);
-      })().finally(()=>{pending=null;});return pending;
+      })().finally(()=>{pending=null;preparing=null;});return pending;
     }
+    const bundleFor=key=>bundles.get(key)||(preparing?.key===key&&!failed.has(key)?preparing.bundle:null);
     function paint(ctx,value,direction,frame,x,y,scale){
       const {spec,strip}=value;ctx.save();ctx.imageSmoothingEnabled=false;
       ctx.translate(Math.round(x),Math.round(y));ctx.scale(scale,scale);ctx.translate(-spec.pivot.x,-spec.pivot.y);
@@ -175,7 +176,7 @@
       if(['combat-idle','guard','hurt','death'].includes(action))action='idle';
       else if(['attack','skill','skill-1','skill-2','combo','cast','heal','reload','dodge'].includes(action))action=player?.equipment?.weapon?value.attack:'attack-unarmed';
       if(!actions.includes(action)||!value.supported){diagnose(failure('Ação atual indisponível',{component:consumer,asset:player?.classId,action,direction,code:'unsupported-current-action'}));return false;}
-      ensure(player,{consumer});const bundle=bundles.get(value.key),clip=bundle?.get(clipKey(action,direction==='west'?'east':direction,value.look));if(!clip)return false;
+      ensure(player,{consumer});const bundle=bundleFor(value.key),clip=bundle?.get(clipKey(action,direction==='west'?'east':direction,value.look));if(!clip)return false;
       const hit=Math.max(.001,Math.min(.999,timing?.hitFrameRatio??.5));
       const p=Number.isFinite(progress)&&!clip.clip.loop?(progress<=hit?progress/hit*.5:.5+(progress-hit)/(1-hit)*.5):null;
       const frame=frameAt(clip.clip,time,p);paint(ctx,clip,direction,frame,x,y,scale===null?1:scale*46/96);draws++;
@@ -212,7 +213,7 @@
     function projectileOrigin(player,hero,pose={},scale=1){
       if(!active||state!=='ready'||player?.zoanTransformed)return null;
       const value=resolve(player);if(!value.supported||!['firearm','tech','focus'].includes(value.category)||value.look.weapon==='original')return null;
-      const direction=directionOf(pose.direction||hero.direction),clip=bundles.get(value.key)?.get(clipKey(value.attack,direction==='west'?'east':direction,value.look));
+      const direction=directionOf(pose.direction||hero.direction),clip=bundleFor(value.key)?.get(clipKey(value.attack,direction==='west'?'east':direction,value.look));
       const point=clip?.emissions[4]?.[0]?.point;if(!point)return null;
       const spec=clip.nativeSpec,x=direction==='west'?spec.width+1-point.x:point.x;
       return {x:hero.x+(x-spec.pivot.x)*scale,y:hero.y+(point.y-spec.pivot.y)*scale,frame:4,weapon:value.look.weapon};

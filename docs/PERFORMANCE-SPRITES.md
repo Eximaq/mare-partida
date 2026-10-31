@@ -32,3 +32,7 @@ Não foram encontrados arquivos versionados .bak/.tmp/.orig/.pyc/.old/Thumbs.db/
 ## Composição e cache de pele
 
 Superfícies temporárias com leitura frequente usam canvas de CPU, evitando readbacks GPU por máscara. Faixas recoloridas são preenchidas por pose sob demanda e reutilizadas, com chave de arquivo/dimensões/paleta e limites de 12 faixas/16 MiB. Teste no navegador: 144 poses, RGBA idêntico à versão de base; repetição da pose passou de 5 recolorações para 1, cache observado 9.830.400 bytes.
+
+## Preparação seletiva
+
+O jogador publica o primeiro clip exato assim que pronto, mantendo as demais direções/ações em preparação serial. Não usa pose de outra aparência nem de outra ação como substituta. Prepara somente a visibilidade solicitada do capacete; alternar a preferência prepara sua própria composição. Sem capacete, ambas as chaves apontam para os mesmos pixels. Um tile por clip é reutilizado. Teste de escalonamento passou; navegador validou carregamento atrasado, recurso ausente, dimensão inválida, troca obsoleta e flags antigas, sem pedidos de sprite antigo.
