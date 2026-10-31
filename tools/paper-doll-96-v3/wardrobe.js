@@ -48,19 +48,25 @@
       return state.visible?look:{...look,head:'original'};
     }
     const choices=look=>['hair','face','pants','boots','gloves','torso','cloak','head'].map(slot=>({slot,style:descriptor(slot,look[slot])})).filter(p=>p.style);
-    function requiredFiles(selected,look) {
-      look=headLook(look);
-      const files=choices(look).flatMap(p=>[p.style.layers[selected.body][selected.direction],...Object.values(p.style.parts?.[selected.body]?.[selected.direction]||{}),p.style.animations?.[selected.body]?.[selected.action]?.file].filter(Boolean));
+    function hidesHair(look){const model=descriptor('head',look.head);return window.MareHeadgear.resolve(model?.itemId,{model}).hideHair;}
+    function nativeFiles(selected,look){
+      look=headLook(look);const body=selected.body,dir=selected.direction;
+      const replaced={headBase:!!catalog.originalHeads?.[body]?.[dir],face:look.face==='none'||!!descriptor('face',look.face)||!!catalog.originalFaces?.[body]?.[dir],hair:look.hair==='none'||hidesHair(look)||!!descriptor('hair',look.hair)||!!catalog.originalHairs?.[body]?.[dir],top:look.baseOutfitHidden||!!descriptor('torso',look.torso),pants:look.pants==='none'||!!descriptor('pants',look.pants)};
+      return Object.entries(selected.layers).filter(([slot])=>!replaced[slot]).map(([,file])=>file);
+    }
+    function requiredFiles(selected,look,hidden=null) {
+      look=headLook(look,hidden||[]);const inspectable=hidden===null;
+      const files=choices(look).filter(p=>p.slot!=='hair'||inspectable||!hidesHair(look)).flatMap(p=>[p.style.layers[selected.body][selected.direction],...Object.values(p.style.parts?.[selected.body]?.[selected.direction]||{}),p.style.animations?.[selected.body]?.[selected.action]?.file].filter(Boolean));
       if(catalog.fitBases?.[selected.body]?.[selected.direction])files.push(catalog.fitBases[selected.body][selected.direction]);
-      if(look.face!=='none'&&catalog.originalFaces?.[selected.body]?.[selected.direction])files.push(catalog.originalFaces[selected.body][selected.direction]);
-      if(look.hair!=='none'&&catalog.originalHairs?.[selected.body]?.[selected.direction])files.push(catalog.originalHairs[selected.body][selected.direction]);
+      if(look.face!=='none'&&!descriptor('face',look.face)&&catalog.originalFaces?.[selected.body]?.[selected.direction])files.push(catalog.originalFaces[selected.body][selected.direction]);
+      if(look.hair!=='none'&&(inspectable||!hidesHair(look))&&!descriptor('hair',look.hair)&&catalog.originalHairs?.[selected.body]?.[selected.direction])files.push(catalog.originalHairs[selected.body][selected.direction]);
       if(catalog.originalHeads?.[selected.body]?.[selected.direction])files.push(catalog.originalHeads[selected.body][selected.direction]);
-      if(catalog.originalHands?.[selected.body]?.[selected.direction])files.push(catalog.originalHands[selected.body][selected.direction]);
+      if(catalog.headFit!=='canonical-neck-v7'&&catalog.originalHands?.[selected.body]?.[selected.direction])files.push(catalog.originalHands[selected.body][selected.direction]);
       if(catalog.nativeOwnership?.atlases?.[selected.body]?.[selected.action])files.push(catalog.nativeOwnership.atlases[selected.body][selected.action].file);
       if(weapons?.descriptor(look.weapon,selected.direction))files.push(weapons.descriptor(look.weapon,selected.direction).source);
       return [...new Set(files)];
     }
-    async function prepare(selected,look){return new Map(await Promise.all(requiredFiles(selected,look).map(async file=>[file,await load(file)])));}
+    async function prepare(selected,look,hidden=null){return new Map(await Promise.all(requiredFiles(selected,look,hidden).map(async file=>[file,await load(file)])));}
     function texture(image,key,material,palette,protectedPixels=[],iris=[],eyeColor=null) {
       const id=[key,material,palette?.join(',')||'',eyeColor||''].join(':');
       if(textures.has(id))return textures.get(id);
@@ -83,7 +89,7 @@
         const oldNeck=rest.find(j=>j.label==='NECK'),newNeck=pose.find(j=>j.label==='NECK');
         socket.x=Math.round((newNeck.x-oldNeck.x)*128);socket.y=Math.round((newNeck.y-oldNeck.y)*128);socket.angle=0;
       }
-      const map=new Map(images),visibleHidden=[...hidden];
+      const map=new Map(images),visibleHidden=[...hidden],needed=new Set(nativeFiles(selected,look));
       for(const slot of ['hair','face','pants'])if(look[slot]==='none'||descriptor(slot,look[slot]))visibleHidden.push(slot);
       const skin=api.skins[look.skin]?.ramp;
       const headStyle=hidden.includes('head')?null:descriptor('head',look.head);
@@ -93,7 +99,7 @@
       if(descriptor('torso',look.torso))visibleHidden.push('top');
       const originalFrame=canvas(spec.width,spec.height);
       if(skin)for(const slot of ['body','headBase','underArms','foreground','face']){
-        const file=selected.layers[slot];if(!file||visibleHidden.includes(slot))continue;
+        const file=selected.layers[slot];if(!file||!needed.has(file)||visibleHidden.includes(slot))continue;
         map.set(file,skinStrip(images.get(file),file,fi,spec,skin));
       }
       // Render the neutral body first. Every visible surface is drawn exactly
@@ -127,6 +133,7 @@
       const restFile=catalog.fitBases?.[selected.body]?.[selected.direction];
       const restPixels=restFile?texture(images.get(restFile),restFile,'body',null).pixels:null;
       for(const p of choices(look)){
+        if(p.slot==='hair'&&hideHair)continue;
         if(hidden.includes(p.slot))continue;
         if(p.slot==='torso'&&hidden.includes('top'))continue;
         const file=p.style.layers[selected.body][selected.direction],image=images.get(file);
@@ -157,7 +164,7 @@
         if(file){const data=texture(images.get(file),file,'face',null,catalog.faceColorProtection?.[selected.body]?.[selected.direction]||[],catalog.originalEyeIris?.[selected.body]?.[selected.direction]||[],look.eyeColor).pixels;
           pieces.face={full:fromPixels(fitted([file,selected.key,fi,skin?.join(',')||'',look.eyeColor||''].join(':'),()=>api.attach(data,'face',rest,pose,socket,padding,spec.width,spec.height)).full,spec.width,spec.height)};}
       }
-      if(!pieces.hair&&look.hair!=='none'&&!hidden.includes('hair')){
+      if(!hideHair&&!pieces.hair&&look.hair!=='none'&&!hidden.includes('hair')){
         const file=catalog.originalHairs?.[selected.body]?.[selected.direction];
         if(file){const palette=look.hairColor&&look.hairColor!=='brown'?api.hairs[look.hairColor]?.ramp:null;
           const data=texture(images.get(file),file,'hair',palette).pixels;
@@ -319,7 +326,7 @@
       weapons?.drawWorn(ctx,images,weaponPlan,spec,{body:wornBody,hands:wornHands,head:headPixels,cloak:selected.direction==='north'?pieces.cloak?.full:null});
       return weaponPlan.map(entry=>({side:entry.side,point:weapons.point(entry),itemId:entry.model.itemId}));
     }
-    return {prepare,requiredFiles,draw,weaponPadding:(selected,spec,look)=>weapons?.descriptor(look.weapon)?weapons.padding(selected,spec,look):{x:0,top:0,bottom:0},weaponPlan:(selected,frame,spec,look,owner)=>weapons?.plan(selected,frame,spec,look,owner)||[],get skinCacheBytes(){return skinCacheBytes;},get weaponCacheSize(){return weapons?.cacheSize||0;},get cacheSize(){return textures.size;},get attachmentCacheSize(){return attachments.size;}};
+    return {prepare,requiredFiles,nativeFiles,draw,weaponPadding:(selected,spec,look)=>weapons?.descriptor(look.weapon)?weapons.padding(selected,spec,look):{x:0,top:0,bottom:0},weaponPlan:(selected,frame,spec,look,owner)=>weapons?.plan(selected,frame,spec,look,owner)||[],get skinCacheBytes(){return skinCacheBytes;},get weaponCacheSize(){return weapons?.cacheSize||0;},get cacheSize(){return textures.size;},get attachmentCacheSize(){return attachments.size;}};
   }
   window.MareWardrobe96={create};
 })();

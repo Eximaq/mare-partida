@@ -124,7 +124,7 @@
     function selected(body,action,direction,look){const clip=manifest.bodies[body].clips[action][direction];return {body,action,direction,clip,layers:clip.layers,look,key:[body,action,direction].join(':')};}
     async function compose(body,action,direction,look,cancel=()=>false,consumer='player-prepare'){
       const sel=selected(body,action,direction,look),spec=root.MareMotion96.clipSpec(manifest,sel.clip);
-      const files=[...new Set([...Object.values(sel.layers),...wardrobe.requiredFiles(sel,look)])];
+      const files=[...new Set([...wardrobe.nativeFiles(sel,look),...wardrobe.requiredFiles(sel,look,[])])];
       const loaded=new Map(await Promise.all(files.map(async file=>[file,await image(file,{consumer,body,action,direction})])));
       const pad=wardrobe.weaponPadding(sel,spec,look),renderSpec={...spec,width:spec.width+pad.x*2,height:spec.height+pad.top+pad.bottom,pivot:{x:spec.pivot.x+pad.x,y:spec.pivot.y+pad.top}};
       const strip=Object.assign(document.createElement('canvas'),{width:renderSpec.width*sel.clip.frames,height:renderSpec.height}),ctx=strip.getContext('2d'),emissions=[];
@@ -135,6 +135,7 @@
       }
       return {strip,spec:renderSpec,nativeSpec:spec,clip:sel.clip,emissions};
     }
+    function releaseBundle(bundle){for(const value of new Set(bundle?.values())){const strip=value?.strip;if(strip){strip.width=0;strip.height=0;}}}
     function ensure(player,{consumer='player-prepare'}={}){
       if(state!=='ready')return Promise.resolve(false);
       const target=resolve(player);wanted=target;
@@ -154,9 +155,9 @@
                 if(value){bundle.set(key,value);if(next.look.head==='original')bundle.set(clipKey(action,dir,{hideHeadgear:!hideHeadgear}),value);}
               }
             }
-            if(wanted.key!==next.key)continue;
-            bundles.set(next.key,bundle);while(bundles.size>2)bundles.delete(bundles.keys().next().value);message='';onChange();
-          }catch(error){failed.add(next.key);if(failed.size>8)failed.delete(failed.values().next().value);if(wanted?.key===next.key)report(error,{consumer});else diagnose(error,{consumer});}
+            if(wanted.key!==next.key){releaseBundle(bundle);continue;}
+            bundles.set(next.key,bundle);while(bundles.size>2){const key=bundles.keys().next().value;releaseBundle(bundles.get(key));bundles.delete(key);}message='';onChange();
+          }catch(error){releaseBundle(bundle);failed.add(next.key);if(failed.size>8)failed.delete(failed.values().next().value);if(wanted?.key===next.key)report(error,{consumer});else diagnose(error,{consumer});}
         }
         return bundles.has(wanted?.key);
       })().finally(()=>{pending=null;preparing=null;});return pending;
@@ -204,7 +205,7 @@
         if(previewPending)return false;
         previewPending=true;entry={value:null,error:null};previews.set(key,entry);
         entry.promise=compose(value.body,action,dir,value.look,()=>false,consumer).then(v=>{entry.value=v;}).catch(error=>{entry.error=error;diagnose(error,{consumer});if(previewWanted===key)previewMessage='Prévia indisponível. O diagnóstico registra o recurso com falha.';}).finally(()=>{previewPending=false;});
-        while(previews.size>8)previews.delete(previews.keys().next().value);
+        while(previews.size>8){const key=previews.keys().next().value,strip=previews.get(key).value?.strip;if(strip){strip.width=0;strip.height=0;}previews.delete(key);}
       }
       if(!entry.value)return false;
       const frame=frameAt(entry.value.clip,entry.value.clip.loop?time:time%(entry.value.clip.frames/entry.value.clip.fps+.25));

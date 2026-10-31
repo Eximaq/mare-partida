@@ -74,7 +74,7 @@
     const selected = displaySelection(body, action, direction);selected.look=look;
     if (!selected.layers) throw Error('Movimento ainda não disponível.');
     const baseImages=await Promise.all(Object.values(selected.layers).map(async file=>[file,await image(file)]));
-    const appearanceImages=await wardrobe.prepare(selected,look);selected.images=new Map([...baseImages,...appearanceImages]);
+    const appearanceImages=await wardrobe.prepare(selected,look,hidden);selected.images=new Map([...baseImages,...appearanceImages]);
     return compose(selected, fi, hidden);
   }
   function actor(ctx, img, spec, x = 300, feet = 260) {
