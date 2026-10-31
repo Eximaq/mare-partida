@@ -96,7 +96,7 @@ Arquivos inteiros versionados excluídos: nenhum. Não foram encontrados .bak/.t
 
 ## Validações
 
-- Suíte completa Node: 191 testes aprovados. Inclui criação/persistência, atributos, equipamentos, animações, combate, colisões, mapas e novos contratos de carregamento/cache.
+- Suíte completa Node: 192 testes aprovados. Inclui criação/persistência, atributos, equipamentos, animações, combate, colisões, mapas e novos contratos de carregamento/cache.
 - Python: 8 testes aprovados de release, frames e publicação. python tools/build_pages.py executado com sucesso e revisão atual verificada antes da geração.
 - Comparação visual de 144 poses: zero diferenças RGBA em relação à base. Cache da pele observado em 9,375 MiB nesse ensaio, abaixo do limite de 16 MiB.
 - Carregamento nativo real: masculino/feminino, 24 poses; zero pedidos de heads animadas substituídas; zero recargas da aparência inalterada; limites de imagens, bytes, bundles, prévias e concorrência respeitados, incluindo retenção de até 8 MiB durante a caçada.
@@ -104,15 +104,22 @@ Arquivos inteiros versionados excluídos: nenhum. Não foram encontrados .bak/.t
 - Aparência: criação, quatro direções, navegação do rascunho, confirmação, persistência, rollback e seis viewports.
 - Ownership: imagem ausente, dimensão inválida, solicitação atrasada, resposta obsoleta e flags antigas; zero pedidos de jogador antigo e nenhuma repetição infinita.
 - Alabasta: viagem, 80 máscaras de profundidade, 24 paredes, combate, XP e persistência, aguardando o ator do registro atual. Alubarna: cinco regiões, 20 vistas de monstros e estados walk/attack/hurt, combate e save.
-- Dawn: 12 combinações de câmera/zoom comparadas byte a byte; zero diferenças. Segunda passagem aquecida sem novas alocações de chunks.
+- Dawn: 12 combinações de câmera/zoom comparadas byte a byte; zero diferenças. Segunda passagem aquecida sem novas alocações de chunks. Validação completa das sete rotas, recompensas, reload, cinco viewports e 8.380.416 pixels originais também aprovada; 35 chunks dentro da grade finita.
+- Armas: 2.880 composições auditadas, 24 combates e 20 eliminações controladas; demais classes no renderer padrão: 20 combates, 20 eliminações controladas e 104 eliminações naturais contínuas, sem erros de navegador e com fontes limitadas a 8 MiB durante a caçada.
+- Lobby: 192 comparações de pixels, 28 perfis, 48 prévias de ataque e oito viewports; isolamento de rascunho, reload e falha de manifesto aprovados.
+- Conchas: cinco viewports, viagem, setores, Helmeppo atual e compatibilidade de saves aprovados. A auditoria eliminou 11 pedidos de máscaras inexistentes: Conchas usa seu foreground já composto.
 
-Na primeira execução sem a instalação local do Playwright configurada, somente o teste de navegador Supa não encontrou a dependência. A suíte completa passou depois de configurar NODE_PATH/CHROME_PATH e o servidor local. O teste antigo de Alubarna também foi ajustado para comparar pathname e aceitar a revisão no URL. Falhas de pré-carregamento e a dependência compartilhada de Dawn ganharam regressões próprias.
+Na primeira execução sem a instalação local do Playwright configurada, somente o teste de navegador Supa não encontrou a dependência. A suíte completa passou depois de configurar NODE_PATH/CHROME_PATH e o servidor local. Os testes antigos de cache passaram a verificar os limites por bytes e entradas, além da concorrência. O ensaio de lobby restaura as alterações sintéticas antes de testar viagens que salvam deliberadamente. O teste antigo de Alubarna também foi ajustado para comparar pathname e aceitar a revisão no URL. Falhas de pré-carregamento e a dependência compartilhada de Dawn ganharam regressões próprias.
 
 ## Alternativas descartadas e limites restantes
 
 Um protótipo de Worker/OffscreenCanvas preservou pixels e melhorou a preparação, mas piorou o comportamento de Dawn neste ambiente; foi retirado da entrega. Tentar substituir chunks por recortes diretos alterou pixels em zoom e também foi rejeitado. O compositor atual e os pixels originais foram mantidos; a correção aceita em Dawn é somente a política de cache.
 
 Ainda merecem trabalho medido: primeiro inventário, primeiro desenho de Dawn, custo do chão por frame, inicialização das grades de navegação e retenção de mapas já visitados. Auras não equipadas e outros pequenos carregamentos existentes têm prioridade menor que os gargalos confirmados. Não foi feita uma refatoração ampla sem medição, nem são anunciadas ausência de vazamentos ou fluidez constante em todo hardware.
+
+## Ajustes na validação automática
+
+O workflow de capturas foi fixado em Ubuntu 24.04, compatível com a versão de Playwright já utilizada; a instalação anterior falhava no ubuntu-latest atualizado. O capturador foi atualizado para passar por Sua Aparência e confirmar a criação, mantendo a mesma comparação de câmeras. As cinco vistas de Orange foram comparadas com a base 7b14fa7: zero diferenças de pixels e nenhum erro de JavaScript. Esses ajustes não alteram sprites ou o fluxo do jogador.
 
 ## Arquivos da alteração
 
@@ -128,6 +135,12 @@ Ainda merecem trabalho medido: primeiro inventário, primeiro desenho de Dawn, c
 - `orange-renderer.js` — modificado
 - `paper-doll-96-lobby.js` — modificado
 - `pixellab-world-maps.js` — modificado
+- `.github/workflows/orange-terrain-visual.yml` — modificado
+- `tools/capture-orange.mjs` — modificado
+- `tests/conchas_browser.py` — modificado
+- `tests/dawn_manual_browser.py` — modificado
+- `tests/paper_doll_96_lobby_browser.cjs` — modificado
+- `tests/paper_doll_96_weapons_browser.cjs` — modificado
 - `tests/alabasta_browser.cjs` — modificado
 - `tests/alubarna_browser.cjs` — modificado
 - `tests/paper-doll-96-lobby.test.cjs` — modificado

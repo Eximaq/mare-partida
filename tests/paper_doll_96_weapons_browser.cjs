@@ -92,7 +92,7 @@ const defaultPlayer=process.argv.includes('--default-player');
   for(const id of [2,4,14,16,31]){
    await game.evaluate(async id=>{__weaponQA.equip(id);await __weaponQA.r.ensure(__weaponQA.g);},id);const before=await game.evaluate(()=>__weaponQA.startNatural());let result,steps=0;
    do{naturalTime+=10000;await game.clock.setFixedTime(naturalTime);result=await game.evaluate(()=>__weaponQA.naturalStep());steps++;}while(result.kills-before.kills<20&&steps<60&&result.deaths===before.deaths);
-   assert(result.kills-before.kills>=20,JSON.stringify({id,before,result,steps}));assert.equal(result.deaths,before.deaths,'twenty consecutive native-spawn kills');assert(result.xp>before.xp);assert(result.hp>0);assert(result.spawns>=20);assert(result.cache.images<=48&&result.cache.bundles<=2&&result.cache.peakLoads<=6);
+   assert(result.kills-before.kills>=20,JSON.stringify({id,before,result,steps}));assert.equal(result.deaths,before.deaths,'twenty consecutive native-spawn kills');assert(result.xp>before.xp);assert(result.hp>0);assert(result.spawns>=20);assert(result.cache.images<=192&&result.cache.imageBytes<=8*1024*1024&&result.cache.bundles<=2&&result.cache.peakLoads<=6);
    natural.push({id,kills:result.kills-before.kills,xp:result.xp-before.xp,level:result.level,spawns:result.spawns,simulatedSeconds:steps*10,wallMsPerBatch:result.wallMs,heap:result.heap});console.log('weapons-natural:'+id+':'+(result.kills-before.kills));
   }
   if(output){await fs.writeFile(path.join(output,'natural-hunt.json'),JSON.stringify(natural,null,2));await game.screenshot({path:path.join(output,'hunt-1366.png')});}
