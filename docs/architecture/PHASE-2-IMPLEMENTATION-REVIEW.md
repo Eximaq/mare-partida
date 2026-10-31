@@ -66,15 +66,18 @@ efetivo no Draft PR; configuração escrita não equivale a execução bem-suced
 
 **A Fase 2 não está homologada no Supabase real.** Em 31/10/2026, o proprietário
 informou ter criado/configurado manualmente o projeto gratuito `mare-partida-auth-dev`,
-com confirmação obrigatória e JWT de 900 s. A URL pública e a configuração privada
-local ainda estão pendentes; não houve validação remota. O agente não criou/alterou
-o projeto, enviou e-mails ou utilizou credenciais do provedor. SDK com servidor
-simulado não comprova o comportamento do ambiente hospedado. Ver o
+com confirmação obrigatória e JWT de 900 s. Depois de ele preencher a configuração
+privada, foi autorizada e executada pré-validação remota somente GET: publishable key
+aceita, Auth com confirmação obrigatória e JWKS ES256 compatível. A Data API retornou
+401 exigindo chave privilegiada; seu estado no painel não foi comprovado por essa
+leitura. O agente não criou/alterou o projeto, cadastrou contas ou enviou e-mails.
+Configuração local válida e metadados remotos não substituem os ensaios de sessão.
+SDK com servidor simulado não comprova o comportamento do ambiente hospedado. Ver o
 [estado de preparação](../operations/SUPABASE-DEVELOPMENT-SETUP.md).
 
 Política escolhida pelo proprietário em 31/10/2026: JWT/revalidação até 15 min,
 sessão absoluta de 24 horas e inatividade de 2 horas. O exemplo e a configuração
-privada local adotam esses valores; Auth segue desligado até preparar o provedor.
+privada local adotam esses valores; Auth segue desligado até autorizar os ensaios.
 Pendentes: entrega real de e-mail, confirmação/recuperação, concorrência de refresh
 no provedor, revogação externa/JWKS, hospedagem de origem comum para produção,
 retenção/chaves, proteção adicional contra abuso e testes de carga.

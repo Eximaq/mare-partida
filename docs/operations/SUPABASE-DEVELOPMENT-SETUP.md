@@ -12,11 +12,11 @@ assimétrica. Informou também Site URL `https://localhost:9443/online/`, retorn
 `https://localhost:9443/v1/auth/callback`, Data API e exposição automática de novas
 tabelas desativadas, e serviço de e-mail padrão com destinatário autorizado.
 
-Essas configurações são **declaração do proprietário, ainda não verificadas no
-provedor**. A URL pública e a configuração privada local serão fornecidas depois.
-Confirmar o algoritmo efetivo (ES256 ou RS256) antes da ativação; não inferir somente
-da expressão “assimétrico”. O proprietário definiu JWT de 900 s e escolheu a política
-BFF mais curta: 24 horas absolutas e 2 horas sem requisições autenticadas.
+O proprietário preencheu URL, publishable key e algoritmo no arquivo local ignorado.
+A pré-validação abaixo confirmou conexão Auth, chave aceita, confirmação obrigatória
+e chave pública ES256 compatível. As demais opções do painel continuam informadas
+pelo proprietário. JWT de 900 s e política BFF de 24 horas absolutas/2 horas sem
+requisições autenticadas foram definidos por ele.
 
 Data API desativada não muda a arquitetura: o BFF usa o serviço Auth, e as tabelas
 de contas, sessões e personagens ficam no PostgreSQL do jogo, separado do Supabase.
@@ -26,6 +26,37 @@ Antes de cadastrar contas ou enviar e-mails de confirmação/recuperação, soli
 autorização específica para o projeto e os destinatários de teste. Para troca de
 senha e logout remoto, combinar também o escopo das contas descartáveis. A criação
 manual do projeto não equivale a autorização para esses ensaios.
+
+## Pré-validação remota somente de leitura — 31/10/2026
+
+Executada sobre a implementação `4b48b8a`, com autorização explícita para validar
+configuração e conexão, sem cadastros/e-mails. Valores privados, URL do projeto,
+identificadores de chaves e corpos completos de resposta não foram publicados.
+
+| Verificação | Resultado |
+|---|---|
+| `.env.server.local` | Ignorado e não rastreado; sem campos duplicados; validadores da aplicação passaram |
+| BFF e banco | Origem HTTPS local correta; PostgreSQL local `mare_auth_dev`, role runtime própria; 24 h/2 h |
+| Chave de cifragem | 32 bytes válidos; não exibida |
+| `GET /auth/v1/settings` com publishable key | 200; chave inválida de controle recebeu 401 |
+| Configurações Auth expostas em settings | E-mail habilitado, `mailer_autoconfirm=false`, cadastro habilitado, anônimos desabilitados |
+| `GET /auth/v1/.well-known/jwks.json` | 200; chave pública ES256 compatível importada para verificação, sem material privado |
+| `GET /rest/v1/` | 401, exige chave secreta; não comprova a opção Data API desativada |
+| PostgreSQL do jogo | Readiness passou; consulta READ ONLY confirmou zero contas, personagens e sessões; runtime sem privilégios elevados |
+
+Todas as chamadas remotas foram GET, com TLS validado, redirects recusados e limites
+de espera/resposta. O arquivo privado não foi alterado; `AUTH_ENABLED=false` permanece.
+Não houve login, token de usuário, criação de sessão/conta, e-mail ou mudança remota.
+
+Não se confirmou por esses endpoints: Site URL/allowlist de retorno, expiração real
+de JWT emitido, entrega SMTP, flag Data API/exposição automática de tabelas ou plano
+contratado. JWKS compatível não comprova qual chave assina uma sessão emitida agora.
+Esses resultados não encerram a homologação funcional do Supabase. Não solicitar ou
+usar uma secret/service_role key só para ampliar essa pré-validação.
+
+Referências para interpretação: [settings do Auth](https://github.com/supabase/auth/blob/master/internal/api/settings.go),
+[chaves de assinatura/JWKS](https://supabase.com/docs/guides/auth/signing-keys) e
+[chaves de aplicação](https://supabase.com/docs/guides/getting-started/api-keys).
 
 ## Roteiro de referência
 

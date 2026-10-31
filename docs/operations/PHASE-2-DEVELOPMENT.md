@@ -20,7 +20,9 @@ passaram. O banco da Fase 1 não foi migrado nem reutilizado.
 
 As URLs correspondentes ficam somente em `.env.migration.local` e `.env.server.local`,
 ignorados. A chave de cifragem foi gerada localmente sem saída em logs. O arquivo do
-servidor mantém Auth desligado e campos Supabase incompletos, aguardando o proprietário.
+servidor mantém Auth desligado. O proprietário preencheu os campos Supabase e a
+[pré-validação de conexão](SUPABASE-DEVELOPMENT-SETUP.md) passou em 31/10/2026,
+usando apenas GET e publishable key; os ensaios com contas/e-mails aguardam autorização.
 Os comandos Docker abaixo são uma **alternativa de instalação**: usam os nomes
 genéricos `mare_owner`/`mare_runtime` em outra instância. Não reaplicar seus grants
 sem adaptar a role à instância; no banco preparado, o destinatário é
@@ -121,8 +123,8 @@ na imagem da API ou em homologação real. Ele não envia e-mails.
 
 ## Aceitação no Supabase real — ainda pendente
 
-Após o proprietário criar/configurar o projeto, preencher os arquivos ignorados e
-autorizar os ensaios com duas caixas sob seu controle:
+O projeto e a configuração local foram preparados pelo proprietário, e a conexão
+de leitura já foi validada. Após autorizar os ensaios com duas caixas sob seu controle:
 
 1. Cadastro com confirmação obrigatória: login antes de confirmar falha; link no
    mesmo navegador cria sessão. Link repetido, expirado e em outro perfil falha.
