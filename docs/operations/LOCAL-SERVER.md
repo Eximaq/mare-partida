@@ -23,8 +23,16 @@ frontend bundler/framework was introduced. The lockfile pins installed dependenc
 
 Portable EDB PostgreSQL 18.6 is under `$env:LOCALAPPDATA\MarePartida\postgres-18.6`.
 The isolated cluster is `$env:LOCALAPPDATA\MarePartida\authoritative-dev\data`.
-No Windows service or global PATH change is needed. Root `.env` contains generated,
-ignored credentials for runtime, migration owner and test admin; never share it.
+No Windows service or global PATH change is needed. Each command loads a distinct
+ignored credential file: `.env.server.local` (runtime), `.env.migration.local` (owner)
+and `.env.test.local` (test admin). The original mixed `.env` is preserved locally but
+is no longer loaded by the npm commands; never share it or any of the local files.
+Create runtime configuration from `.env.example`; migration/test templates live in
+`infra/env/`. Keep privileged credentials out of the runtime process environment,
+including inherited shell variables. File separation is not OS sandboxing: use separate
+OS identities/secret mounts and access controls before a deployment. Restart old Node
+processes to adopt the separated configuration. Compose already injects only runtime
+credentials into its server container.
 
 ```powershell
 & .\infra\postgres-local.ps1 -Action status
@@ -49,8 +57,9 @@ was not changed. PostgreSQL itself was started successfully via its portable bin
 
 On another Windows machine, obtain binaries from PostgreSQL's official Windows/EDB
 page, initialize a dedicated SCRAM cluster on loopback, provision the roles/database
-described in `infra/postgres/init-roles.sh`, and create `.env` from `.env.example` with
-unique passwords. Do not reuse another project's database or production credentials.
+described in `infra/postgres/init-roles.sh`, and create the three local env files from
+their role-specific templates with unique passwords. Do not reuse another project's
+database or production credentials.
 
 After initial migration, execute `infra/postgres/grant-health.sql` as `mare_owner`
 using psql. Supply PGHOST/PGPORT/PGUSER/PGDATABASE/PGPASSWORD in the process environment,
