@@ -7,7 +7,7 @@
     Object.freeze({id:'alabasta',name:'Alabasta',locked:false}),
     Object.freeze({id:'skypiea',name:'Skypiea',locked:false})
   ]);
-  const loot=Object.freeze(['Dobrões e experiência','Equipamentos da classe','Ferro Salgado e poções']);
+  const loot=Object.freeze(['Berry e experiência','Equipamentos da classe','Ferro Salgado e poções']);
   const islands=Object.freeze([
     {id:'dawn',name:'Ilha Dawn',recommended:[1,5],area:'beach',minLevel:1,description:'A Ilha Dawn criada manualmente no PixelLab: cais de madeira, bosque, praias e uma vila costeira. Explore os caminhos da ilha e enfrente César.',drops:loot,monster:{name:'César',role:'Nv. 5',src:'assets/monsters/cesar-idle.png',sheet:true}},
     {id:'conchas',name:'Cidade das Conchas',recommended:[8,8],area:'swamp',minLevel:8,description:'Explore a Cidade das Conchas, desembarque na faixa de areia ao sul e enfrente Helmeppo, que patrulha as ruas no nível 8.',drops:loot,monster:{name:'Helmeppo',role:'Patrulha · Nv. 8',src:'assets/sprites-combat-v2/helmeppo/idle-south.png',sheet:false}},

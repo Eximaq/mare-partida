@@ -97,7 +97,7 @@
 #app .parchment-profile .parchment-status{position:relative;width:100%;aspect-ratio:3/2;background:url('assets/ui/character-hud/hd/status.png') center/contain no-repeat}
 #app .parchment-profile .hud-hierarchy{position:absolute;left:6%;top:8%;width:68%;height:24%;display:flex;align-items:center;justify-content:center}
 #hudRankArt{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
-#hudHierarchyTitle{position:relative;width:66%;text-align:center;color:#fff5da;font:700 14px/1.1 'Alegreya Sans',sans-serif;white-space:nowrap;text-shadow:0 1px 2px #000,1px 0 #302018;overflow:hidden}
+#hudHierarchyTitle{position:relative;transform:translateY(2.5px);width:66%;text-align:center;color:#fff5da;font:700 14px/1.1 'Alegreya Sans',sans-serif;white-space:nowrap;text-shadow:0 1px 2px #000,1px 0 #302018;overflow:hidden}
 .hud-rank-order{position:absolute;bottom:-2px;left:calc(50% - 9px);min-width:18px;text-align:center;font:700 9px/12px var(--rpg-font);color:#f4d294;background:#302018;border:1px solid #ac8241;border-radius:50%}
 #hudFactionName{position:absolute;left:8%;top:33%;width:62%;text-align:center;font:600 10px/1 var(--rpg-font);color:#ebc98d;white-space:nowrap}
 #app .parchment-profile #characterPosterToggle{position:absolute;right:5%;top:6%;display:block;width:21%;aspect-ratio:1;height:auto;min-height:44px;padding:0;border:0;border-image:none;background:none;touch-action:manipulation}
@@ -113,12 +113,16 @@
 #app .parchment-profile .parchment-xp .mini-meter i{background:linear-gradient(#fff0a3,#e3b634 35%,#b77b12 70%,#f0c74b);box-shadow:inset 0 1px #fff2aa,inset 0 -1px #624209}
 #app .parchment-profile .parchment-meter-label{font:700 11px/1 var(--rpg-font);flex:none;z-index:1;text-shadow:1px 1px #241321}
 #app .parchment-profile .parchment-meter>b{position:relative;z-index:1;flex:1;text-align:right;white-space:nowrap;font:700 10px/1 var(--rpg-font);text-shadow:1px 1px #241321,0 0 2px #241321}
-#app .parchment-profile #miniLevel{position:absolute;left:73%;top:42%;width:20%;height:11%;display:flex;align-items:center;justify-content:center;padding:0;border:0;background:none;color:#f5d59c;font:700 12px/1 var(--rpg-font);white-space:nowrap}
-#app .parchment-profile .profile-power{position:absolute;left:73%;top:58%;width:20%;height:23%;display:flex;flex-direction:column;gap:3px;align-items:center;justify-content:center;min-width:0;margin:0;background:none}
-#app .parchment-profile .profile-power>span{color:#f1cf9d;font:500 10px/1 var(--rpg-font)}
-#app .parchment-profile .profile-power>strong{max-width:100%;color:#ffe6b7;font:700 12px/1 var(--rpg-font);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#app .parchment-profile #miniGold{position:absolute;left:9%;top:86%;width:82%;height:7%;display:flex;align-items:center;justify-content:flex-end;gap:8px;margin:0;padding:0;color:#f7d17d;background:none;font:700 12px/1 var(--rpg-font);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#app .parchment-profile #miniGold::before{content:'Dobrões';margin-right:auto;font-size:10px}
+#app .parchment-profile :is(.profile-level,.profile-power){position:absolute;left:73%;width:20%;height:19%;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;min-width:0;margin:0;padding:2px;border:1px solid #bd965b;border-radius:3px;background:linear-gradient(100deg,#1d100bcf,#38251ce8,#1d100bd9);box-shadow:inset 0 0 0 1px #5b3c25,0 1px 2px #140c08;font-variant-numeric:tabular-nums}
+#app .parchment-profile .profile-level{top:41%}
+#app .parchment-profile .profile-power{top:64%}
+#app .parchment-profile :is(.profile-level,.profile-power)>span{color:#e2c492;font:500 10px/1 var(--rpg-font)}
+#app .parchment-profile :is(#miniLevel,#miniPower){position:static;display:block;width:100%;height:auto;padding:0;border:0;background:none;text-align:center;color:#ffe6b7;font:700 15px/1 var(--rpg-font);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .parchment-profile .profile-berry{position:absolute;left:9%;top:85%;width:84%;height:10%;display:flex;align-items:center;gap:5px;padding:0 5px;border:1px solid #b28a4b;border-radius:3px;background:#20110dd9;box-shadow:inset 0 0 0 1px #51351e;color:#e6c78b;font:600 10px/1 var(--rpg-font)}
+/* One original 362px cell, displayed without resampling the source file. */
+.berry-coin{flex:none;width:20px;height:20px;background:url('assets/ui/character-hud/hd/berry-coins.png') 0 -9px/120px 40px no-repeat}
+#app .parchment-profile #miniGold{position:static;display:block;flex:1;min-width:0;width:auto;height:auto;margin:0;padding:0;text-align:right;color:#f7d17d;background:none;font:700 12px/1 var(--rpg-font);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .parchment-profile #miniGold::before{content:none}
 #app .parchment-profile .parchment-tools{display:flex;justify-content:flex-end;margin:0 7px;min-height:22px}
 #app .parchment-profile #attributePointsHud{min-height:22px;padding:1px 4px;color:#f4daa4;background:#321d24;border:1px solid #ad8854;border-image:none;font:500 11px/1 var(--rpg-font);text-decoration:none}
 #app .parchment-profile :is(#miniWillpower,#miniTalentResource){width:calc(100% - 22px);margin:0 11px;padding:2px 4px;background:#321d24;height:18px}
@@ -149,3 +153,8 @@
 #app .parchment-profile .wanted-bounty-label{top:82%}
 
 #app .parchment-profile .hud-hierarchy{isolation:isolate}
+
+/* Joined wood-and-gold extension; the reserve is separate from Haki unlock. */
+#app .parchment-profile #miniWillpower{position:relative;isolation:isolate;width:88%;height:30px;margin:-13px 6% 0;padding:7px 6px 4px;border:1px solid #c6a164;border-top:0;border-radius:0 0 5px 5px;background:#302018 url('assets/ui/character-hud/hd/wood.png') center/cover;box-shadow:inset 0 0 0 1px #624323,0 2px 2px #120a09;font:600 10px/1 var(--rpg-font);gap:5px}
+#app .parchment-profile #miniWillpower .mini-meter{flex:1;min-width:0;height:10px;border:1px solid #b89556;background:#201326}
+#app .parchment-profile #miniWillpower b{font:700 10px/1 var(--rpg-font);white-space:nowrap;color:#f9e7c0}

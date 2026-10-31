@@ -75,3 +75,15 @@ Madeira #302018, ouro #c69849, pergaminho #e3be7c; títulos vermelho #8f2535, ve
 ## Limites
 
 Patamares 6–8 são validados como apresentação, sem liberar sua progressão. A inspeção artística não substitui o aceite do proprietário; a HUD menor em mobile exige rolagem do cartaz, preservando sua proporção. Testes de promoção online continuam cobertos no backend, enquanto o teste visual usa preview estático isolado.
+
+## Refinamento: Berry, placas numéricas e Vontade
+
+Título de todas as facções deslocado 2,5 CSS px para baixo pela mesma regra, sem mover moldura ou numeral. Nível e Poder usam pequenas placas douradas na coluna existente; valores reais em destaque com ajuste de fonte para números longos. Nenhuma alteração de progressão ou atributos.
+
+Berry é o nome apresentado na HUD, lojas, recompensas, talentos e mensagens. O campo persistido gold, custos, bônus e fórmulas permanecem os mesmos. A sequência de moedas fornecida foi copiada integralmente (2172×724, seis células), com hash/origem no manifesto. CSS mostra apenas a primeira moeda, estática; sem novo timer, animação ou geração artística. A animação permanece um refinamento opcional.
+
+Vontade usa a madeira existente e uma borda dourada como extensão inferior unida ao painel, abaixo do Berry. Visível somente em nível >= MareHaki.rules.level (50), mostra game.haki.current e o máximo canônico (100). Auditoria: o desbloqueio das habilidades já exige nível 50 **e consumo do Livro da Vontade**. Essa regra continua intacta; ver a reserva não concede Haki, e os atalhos continuam ocultos sem o livro.
+
+Arquivos: index.html/ui-preview.html (estrutura); ui-hud.css (acabamento); character-hud.js (ajuste dos números); game.js (dados e visibilidade); textos de achievement-system.js, archipelago.js, dev-tools.js, forge-system.js, forge-ui.js, player-hub.js, talent-system.js e talent-ui.js; berry-coins.png/manifest.json; teste de navegador. A diretriz permanente aprovada da HUD está em HUD-VISUAL-STANDARD.md.
+
+Validação: 24 testes Node, 4 Python, build Pages e navegador real no pacote dist passaram. Cobertura adicional: níveis 49/50/100 sem livro, Vontade 37/100, Haki desbloqueado, saldo 0/1250/987654321, poder derivado, deslocamento compartilhado dos 32 títulos, quatro facções, oito resoluções, persistência, toque e teclado. Sem erros JavaScript nem recursos da HUD ausentes. Capturas privadas fora do repositório. Nenhum crédito PixelLab utilizado neste refinamento.

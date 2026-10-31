@@ -18,10 +18,29 @@ const hook="  window.__hudQA={get game(){return game},get world(){return world},
  assert(await p.locator('#wantedPortrait').evaluate(c=>{const a=c.getContext('2d').getImageData(0,0,c.width,c.height).data;return a.some((v,i)=>i%4===3&&v>0)&&a[3]===0}),'shared portrait rendered');
  await p.locator('#characterPosterToggle').focus();await p.keyboard.press('Escape');assert(await p.locator('#characterPoster').isHidden());assert.equal(await p.evaluate(()=>document.activeElement.id),'characterPosterToggle');await p.keyboard.press('Enter');assert(await p.locator('#characterPoster').isVisible());await p.mouse.click(650,400);assert(await p.locator('#characterPoster').isHidden());
 
+ // Reserve visibility follows level; the book still gates the actual abilities.
+ for(const level of [49,50,100]){
+  await p.evaluate(level=>{__hudQA.game.level=level;__hudQA.game.has_haki_unlocked=false;__hudQA.game.haki.current=37;__hudQA.refresh()},level);
+  assert.equal(await p.locator('#miniWillpower').isVisible(),level>=50);
+  assert(await p.locator('#hakiQuickCast').isHidden());
+  assert.equal(await p.locator('#miniLevel').innerText(),String(level));
+  assert.equal(Number((await p.locator('#miniPower').innerText()).replace(/\D/g,'')),await p.evaluate(()=>Math.round(__hudQA.stats().power)));
+  assert(await p.locator('#miniPower').evaluate(e=>e.scrollWidth<=e.clientWidth));
+  if(level>=50){assert.equal(await p.locator('#willpowerText').innerText(),'37 / 100');assert.equal(await p.locator('#willpowerFill').evaluate(e=>e.style.width),'37%');}
+  await p.screenshot({path:path.join(out,'hud-level-'+level+'.png')});
+ }
+ for(const value of [0,1250,987654321]){
+  await p.evaluate(value=>{__hudQA.game.gold=value;__hudQA.refresh()},value);
+  assert.equal((await p.locator('#miniGold').innerText()).replace(/\D/g,''),String(value));
+ }
+ assert.equal(await p.locator('.berry-coin').evaluate(e=>getComputedStyle(e).animationName),'none');
+ assert(!await p.locator('.topbar').innerText().then(t=>/dobrões/i.test(t)));
  const canonical=require('../hierarchy-system.js');
  for(const [faction,titles]of Object.entries(canonical.titles))for(let i=0;i<titles.length;i++){
   await p.evaluate(({faction,tier})=>{__hudQA.game.factionId=faction;__hudQA.game.hierarchyTier=tier;__hudQA.game.hierarchyFaction=faction;__hudQA.refresh()},{faction,tier:i+1});
   assert.equal(await p.locator('#hudHierarchyTitle').innerText(),titles[i]);
+  assert.equal(await p.locator('#hudHierarchyTitle').evaluate(e=>new DOMMatrix(getComputedStyle(e).transform).m42),2.5);
+  if(i===0||i===4)await p.screenshot({path:path.join(out,'hud-'+faction+'-tier-'+(i+1)+'.png')});
   assert(await p.locator('#hudHierarchyTitle').evaluate(e=>e.scrollWidth<=e.clientWidth+1),'title fits '+titles[i]);
   await p.waitForFunction(()=>document.getElementById('hudRankArt').complete&&document.getElementById('hudRankArt').naturalWidth>0);
   assert.match(await p.locator('#hudFactionEmblem').getAttribute('src'),new RegExp('/'+faction+'.png$'));
@@ -46,7 +65,7 @@ const hook="  window.__hudQA={get game(){return game},get world(){return world},
  const layouts=[];
  for(const [width,height] of [[1920,1080],[1366,768],[1280,720],[1024,768],[393,852],[360,800],[320,568],[844,390]]){
   await p.setViewportSize({width,height});await p.waitForTimeout(100);if(height<500&&await p.locator('#floatingChat').evaluate(e=>e.classList.contains('hud-open')))await p.locator('#chatCornerToggle').click();await p.evaluate(()=>__hudQA.refresh());
-  const compact=await p.locator('.topbar').boundingBox();assert(compact.width<=width-16&&compact.x>=0&&compact.y>=0&&compact.height<=250,'compact profile fits '+width);
+  const compact=await p.locator('.topbar').boundingBox();assert(compact.width<=width-16&&compact.x>=0&&compact.y>=0&&compact.height<=270,'compact profile fits '+width);
 
   assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth),'no horizontal overflow '+width);
   await p.screenshot({path:path.join(out,'hud-compact-'+width+'.png')});
