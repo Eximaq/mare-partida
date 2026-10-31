@@ -1,3 +1,5 @@
+[Yami e Mera Rank S: auras, seis habilidades e proporções aprovadas](RANK-S-YAMI-MERA.md).
+
 [Bari, Doku e Ito Rank A: barreiras, venenos cumulativos e fios](RANK-A-BARI-DOKU-ITO.md).
 
 [Ope e Mero Rank A: três habilidades, ROOM/Shambles e petrificação](RANK-A-OPE-MERO.md).

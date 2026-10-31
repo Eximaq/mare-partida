@@ -10,6 +10,7 @@ from combat_vfx import CombatVfxService, player_statuses
 from jiki import JikiService, RULES as JIKI_RULES, JIKI
 from ryu import RyuService, RULES as RYU_RULES, RYU
 from hoya import HoyaService, RULES as HOYA_RULES, HOYA
+from rank_s import RULES as RANK_S_RULES
 from rank_a import RankAService, RULES as RANK_A_RULES, OPE, MERO
 from rank_b import RankBService, RULES as RANK_B_RULES, BETA, HANA, mitigate
 from rank_c_expansion import RankCExpansionService, RULES as EXPANSION_RULES, BISON, BOMU, KOBU
@@ -58,6 +59,9 @@ FRUITS[JIKI]={'type':'akuma_no_mi','family':'paramecia','rank':'B','name':JIKI_R
 for key,rule in RANK_A_RULES.items():
     FRUITS[rule['id']]={'type':'akuma_no_mi','family':'paramecia','rank':'A','name':rule['name'],'description':rule['description'],'icon_path':'assets/akuma/'+key+'/fruit.png','cooldown':rule['skills'][0]['cooldown'],'skills':rule['skills']}
 
+for key,rule in RANK_S_RULES.items():
+    FRUITS[rule['id']]={'type':'akuma_no_mi','family':'logia','rank':'S','name':rule['name'],'description':rule['description'],'icon_path':'assets/akuma/'+key+'/fruit.png','cooldown':rule['skills'][0]['cooldown'],'skills':rule['skills']}
+
 for fruit_id, modifiers in DEVIL_FRUIT_STATS.items():
     FRUITS[fruit_id]['passive_stats']=dict(modifiers)
     FRUITS[fruit_id]['passiveStats']=dict(modifiers)
@@ -65,6 +69,7 @@ for fruit_id, modifiers in DEVIL_FRUIT_STATS.items():
 
 # Public catalog metadata for the HUD. Combat validation remains in cast().
 SKILL_TOOLTIPS = {
+    **{r['id']:r['skills'][0] for r in RANK_S_RULES.values()},
     **{r['id']:r['skills'][0] for r in RANK_A_RULES.values()},
     RYU:RYU_RULES['skills'][0],
     JIKI:JIKI_RULES['skills'][0],
@@ -219,7 +224,8 @@ class AkumaStore:
         fruit_id = state["equipped"]
         if not fruit_id:
             raise ValueError("Nenhuma fruta equipada")
-        if fruit_id in {r['id'] for r in RANK_A_RULES.values()}:return self.rank_a.cast(self,player_id,fruit_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id},direction)
+        if (rank_c_context or {}).get('silenced'):raise ValueError('Akuma no Mi silenciada')
+        if fruit_id in {r['id'] for r in [*RANK_A_RULES.values(),*RANK_S_RULES.values()]}:return self.rank_a.cast(self,player_id,fruit_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id},direction)
         if fruit_id==RYU:return self.ryu.cast(self,player_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id==JIKI:return self.jiki.cast(self,player_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id==HOYA:return self.hoya.cast(self,player_id,instance,x,y,str(skill_key),energy,rank_c_context or {})

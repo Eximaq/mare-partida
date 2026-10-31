@@ -1,0 +1,135 @@
+{
+  "origin": "Owner-supplied Rank S PNG/JSON; bytes unchanged",
+  "files": [
+    {
+      "file": "assets/akuma/yami/fruit.png",
+      "source": "Yami Yami no Mi/Crie itens baseado na imagen … (3).png",
+      "sha256": "95d16318da74173b608632628b5a8d94b12c153f551f65441409766d6c830a89"
+    },
+    {
+      "file": "assets/akuma/yami/skill-1.png",
+      "source": "Yami Yami no Mi/Skill 1 Yami.png",
+      "sha256": "037979e11573893b13af355772fe7569d2997dfb852d34c55360977359b9cd71"
+    },
+    {
+      "file": "assets/akuma/yami/skill-2.png",
+      "source": "Yami Yami no Mi/Skill 2.png",
+      "sha256": "ceadd502f906fb7970fbb06587d8eabfe34580be2a6b889da5bdc8b88e003cb9"
+    },
+    {
+      "file": "assets/akuma/yami/skill-3.png",
+      "source": "Yami Yami no Mi/Skill 3.png",
+      "sha256": "6b0362b83f9effbae017e521073ff05ad2ec5097e8c8c53bdff6f9e562b7c3c3"
+    },
+    {
+      "file": "assets/akuma/yami/Aura Yami.png",
+      "source": "Yami Yami no Mi/Aura Yami.png",
+      "sha256": "a2b0f20b7f03b55e8a63eaca73aed3ea84eb10f816374118776b7931ab894bcb"
+    },
+    {
+      "file": "assets/akuma/yami/Aura Yami.json",
+      "source": "Yami Yami no Mi/Aura Yami.json",
+      "sha256": "6473e0c056cd8de384cfd3220781b768baa6541e3be8ab11c6f24985d3525ad9"
+    },
+    {
+      "file": "assets/akuma/yami/Yami 1.png",
+      "source": "Yami Yami no Mi/Yami 1.png",
+      "sha256": "a39ac002fcfbbd9ce8502b7a2f0551a455957aa1641c328502a6b4204db9fd44"
+    },
+    {
+      "file": "assets/akuma/yami/Yami 1.json",
+      "source": "Yami Yami no Mi/Yami 1.json",
+      "sha256": "64290ac09444408ab5fae9efc61fe1beb7063646dd9a03aae8866563435708e3"
+    },
+    {
+      "file": "assets/akuma/yami/Black Hole.png",
+      "source": "Yami Yami no Mi/Black Hole.png",
+      "sha256": "2879ab7f2f392c88ee844d883000f505d7b08d027b7382a28dd02e286c969109"
+    },
+    {
+      "file": "assets/akuma/yami/Black Hole.json",
+      "source": "Yami Yami no Mi/Black Hole.json",
+      "sha256": "a6687a800d4762d14da7e984433413cfa7f30acaafcc5adf8edb4a97f7d2b7b0"
+    },
+    {
+      "file": "assets/akuma/yami/Porrada chao.png",
+      "source": "Yami Yami no Mi/Porrada chao.png",
+      "sha256": "a96dc1af220064b2e05f166436001eeca9aa378943ead76df5af07b02ff3ef90"
+    },
+    {
+      "file": "assets/akuma/yami/Porrada chao.json",
+      "source": "Yami Yami no Mi/Porrada chao.json",
+      "sha256": "0b528d301c1561c70420b6f050ce14b15c1a36237f1f7f12a01171b1a57c6464"
+    },
+    {
+      "file": "assets/akuma/mera/fruit.png",
+      "source": "Mera Mera no Mi/Mera Mera no Mi.png",
+      "sha256": "99a11b669c6646734ab8e1857882b9030e271c3277abac54692c1238ec2b5ed0"
+    },
+    {
+      "file": "assets/akuma/mera/skill-1.png",
+      "source": "Mera Mera no Mi/Skill 1 Mera.png",
+      "sha256": "af5473bd70d67cbf85ec436a5f8509c7a1b8cbcc2c6fa2153ff258fb1d2df9b1"
+    },
+    {
+      "file": "assets/akuma/mera/skill-2.png",
+      "source": "Mera Mera no Mi/Skill 2 Mera.png",
+      "sha256": "9bb5934ee4303cfc77e624e6b45b16fce33462295a152aa8aa46e3de59140bd8"
+    },
+    {
+      "file": "assets/akuma/mera/skill-3.png",
+      "source": "Mera Mera no Mi/Skill 3 Mera.png",
+      "sha256": "f37b034ea80ddce1be05cbb333550fa3a6eec1bb9ad119a43f1250a53bfd0d44"
+    },
+    {
+      "file": "assets/akuma/mera/aura.png",
+      "source": "Mera Mera no Mi/aura.png",
+      "sha256": "35125a8a7716f5c4d9efad0c669d17d5a80ea4bb597036aeb5bb2e4f5d2984a1"
+    },
+    {
+      "file": "assets/akuma/mera/aura.json",
+      "source": "Mera Mera no Mi/aura.json",
+      "sha256": "088f57ace575c6d79971acb7ccb90f0ad69d70095826190a7e9da82b62bef6f5"
+    },
+    {
+      "file": "assets/akuma/mera/your-sprite-take-4.png",
+      "source": "Mera Mera no Mi/your-sprite-take-4.png",
+      "sha256": "c1e19e05b70169a4f85e357f47892e4fd3c35aee7f75506b7e601a869c745886"
+    },
+    {
+      "file": "assets/akuma/mera/your-sprite-take-4.json",
+      "source": "Mera Mera no Mi/your-sprite-take-4.json",
+      "sha256": "0ebd309ec2a1e6da8e9eadecde42c80b03255140eff572f2270509a99cdc8b4d"
+    },
+    {
+      "file": "assets/akuma/mera/chuva.png",
+      "source": "Mera Mera no Mi/chuva.png",
+      "sha256": "ac1f6196df97ed13fb61fcd1971a37eb23ec445c7208fdcf5fda62b2449ec331"
+    },
+    {
+      "file": "assets/akuma/mera/chuva.json",
+      "source": "Mera Mera no Mi/chuva.json",
+      "sha256": "6407bd50885df1e5b69f1f5dd67328cbaf7b64621ae96ad64d3ebf165469d147"
+    },
+    {
+      "file": "assets/akuma/mera/Espiral.png",
+      "source": "Mera Mera no Mi/Espiral.png",
+      "sha256": "66c6ecf7dc29be442659bbdd499c233ac339a0922906fc4fc3b90de48bd0de06"
+    },
+    {
+      "file": "assets/akuma/mera/Espiral.json",
+      "source": "Mera Mera no Mi/Espiral.json",
+      "sha256": "02094b3f924c4a08f87d074864891ac465737e7ae25ef1da2816e85af8ffedde"
+    },
+    {
+      "file": "assets/akuma/mera/your-sprite-take-6.png",
+      "source": "Mera Mera no Mi/your-sprite-take-6.png",
+      "sha256": "cee8beed5682b02726c061caf985e7a8c69a4346247c804ed3a6787dc0149073"
+    },
+    {
+      "file": "assets/akuma/mera/your-sprite-take-6.json",
+      "source": "Mera Mera no Mi/your-sprite-take-6.json",
+      "sha256": "1bf6a357498c7faf1d24fd9541e11c09f70e9579ba7fd478dced2bd2855312e1"
+    }
+  ]
+}
