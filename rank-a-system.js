@@ -2,6 +2,8 @@
 /* Rank A deterministic combat timeline. Runtime state is never serialized. */
 ((root)=>{
  if(!root.MareRankAData&&typeof module!=='undefined')require('./rank-a-data.js');
+ if(!root.MareRankAExpansion&&typeof module!=='undefined')require('./rank-a-expansion.js');
+ const ext=root.MareRankAExpansion;
  const {rules,effects}=root.MareRankAData,images=new Map(),loads=new Map(),EPS=1e-8;
  const has=id=>Object.values(rules).some(r=>r.id===id),create=()=>({room:null,jobs:[],trails:[]});
  const roomActive=(s,t)=>!!s?.room&&t+EPS>=s.room.started+.25&&t<s.room.until&&(!Number.isFinite(s.room.realUntil)||Date.now()<s.room.realUntil);
@@ -15,6 +17,7 @@
  const cooldownKey=(id,k,s,t)=>id+':'+(id===rules.ope.id&&String(k)==='1'&&roomActive(s,t)?'shambles':k);
  function valid(s,c){
   if(!has(c.fruit)||!skill(c.fruit,c.key,s,c.now)||!Number.isFinite(c.now))return false;
+  if(ext.has(c.fruit))return ext.valid(s,c);
   const ope=c.fruit===rules.ope.id;
   if(ope&&c.key==='1'&&!roomActive(s,c.now))return !s.room||c.now>=s.room.until||s.room.realUntil<=Date.now();
   if(!ope&&c.key==='1')return true;
@@ -32,7 +35,7 @@
   return Math.max(0,Math.floor(n));
  }
  function cast(s,c){
-  c={...c,key:String(c.key)};if(!valid(s,c))return false;
+  c={...c,key:String(c.key)};if(!valid(s,c))return false;if(ext.has(c.fruit))return ext.cast(s,c);
   const ope=c.fruit===rules.ope.id,now=c.now,base={started:now,origin:{x:c.hero.x,y:c.hero.y},power:ope?c.stats.physical:c.stats.elemental,physical:c.stats.physical,elemental:c.stats.elemental,pen:c.stats.penetration||0,magicPen:c.stats.magicPen||0,targetId:c.target?.id,hit:false,fruit:c.fruit,token:c.token};
   if(ope&&c.key==='1'){
    if(roomActive(s,now)){const from={x:c.hero.x,y:c.hero.y},to={x:c.target.x,y:c.target.y};Object.assign(c.hero,to);Object.assign(c.target,from);s.trails.push({...from,to,started:now});control(c.target,now,2);c.hit(c.target,(c.damage||damage)(c.target,c.stats.physical,2,false,c.stats.penetration),{kind:'shambles'});c.onSwap?.();}
@@ -43,6 +46,7 @@
   s.jobs.push({...base,kind,duration,hitIds:new Set(),x:c.hero.x,y:c.hero.y,direction:direction(c.hero),point:c.target?{x:c.target.x,y:c.target.y}:null});if(s.jobs.length>32)s.jobs.shift();return true;
  }
  function step(s,c){
+  ext.step(s,c);
   if(s.room&&(c.now>=s.room.until||s.room.realUntil<=Date.now()))s.room=null;s.trails=s.trails.filter(v=>c.now-v.started<.25);
   s.jobs=s.jobs.filter(j=>{
    const age=c.now-j.started,target=c.enemies.find(m=>m.id===j.targetId),ope=j.fruit===rules.ope.id;
@@ -67,10 +71,10 @@
    return age+EPS<j.duration;
   });
  }
- function clear(s,enemies=[]){s.room=null;s.jobs=[];s.trails=[];for(const m of enemies)for(const k of ['rankAStunUntil','petrifiedUntil','rankADefenseUntil'])delete m[k];}
- function preload(id){if(typeof Image!=='function')return Promise.resolve(false);const keys=id===rules.ope.id?['room','tact','gamma']:['mellow','kiss','rain'];return Promise.all(keys.map(key=>{if(!loads.has(key)){const im=new Image();images.set(key,im);loads.set(key,new Promise(resolve=>{im.onload=()=>resolve(im.naturalWidth>0);im.onerror=()=>resolve(false);im.src=effects[key].image;}));}return loads.get(key);})).then(values=>values.every(Boolean));}
+ function clear(s,enemies=[]){ext.clear(s,enemies);s.room=null;s.jobs=[];s.trails=[];for(const m of enemies)for(const k of ['rankAStunUntil','petrifiedUntil','rankADefenseUntil'])delete m[k];}
+ function preload(id){if(typeof Image!=='function')return Promise.resolve(false);const keys=Object.values(rules).find(r=>r.id===id)?.effectKeys||(id===rules.ope.id?['room','tact','gamma']:['mellow','kiss','rain']);return Promise.all(keys.map(key=>{if(!loads.has(key)){const im=new Image();images.set(key,im);loads.set(key,new Promise(resolve=>{im.onload=()=>resolve(im.naturalWidth>0);im.onerror=()=>resolve(false);im.src=effects[key].image;}));}return loads.get(key);})).then(values=>values.every(Boolean));}
 
- function paint(ctx,key,index,x,y,w,h=w,rotation=0){const im=images.get(key),f=effects[key].frames[index];if(!im?.complete||!im.naturalWidth||!f)return false;ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(Math.round(x),Math.round(y));ctx.rotate(rotation);ctx.drawImage(im,f.x,f.y,f.w,f.h,-w/2,-h/2,w,h);ctx.restore();return true;}
+ function paint(ctx,key,index,x,y,w,h=w,rotation=0,flip=false,crop=null){const im=images.get(key),f=effects[key].frames[index];if(!im?.complete||!im.naturalWidth||!f)return false;ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(Math.round(x),Math.round(y));ctx.rotate(rotation);if(flip)ctx.scale(-1,1);ctx.drawImage(im,f.x+(crop?.x||0),f.y+(crop?.y||0),crop?.w||f.w,crop?.h||f.h,-w/2,-h/2,w,h);ctx.restore();return true;}
  function frame(key,ratio){return Math.min(effects[key].frames.length-1,Math.floor(Math.max(0,ratio)*effects[key].frames.length));}
  function layout(j,target,now){
   const progress=Math.min(1,Math.max(0,(now-j.started)/j.duration));
@@ -78,7 +82,8 @@
   if(j.kind==='tact'){const size=256*progress;return {x:target.x,y:target.y-.375*size,width:size,height:size};}
   return {x:target.x,y:target.y-100,width:512,height:512};
  }
- function draw(ctx,s,now,enemies,layer='all'){
+ function draw(ctx,s,now,enemies,layer='all',hero=null){
+  ext.draw(ctx,s,now,enemies,layer,paint,effects,hero);
   if(layer!=='back'&&s.room&&now<s.room.until){const age=now-s.room.started,grow=Math.min(1,age/.25);ctx.save();ctx.globalAlpha=.55;paint(ctx,'room',roomFrame(age),s.room.x,s.room.y-160*grow,640*grow,640*grow);ctx.restore();}
   for(const j of s.jobs){if(layer==='back'&&j.kind!=='gamma'||layer==='front'&&j.kind==='gamma')continue;const age=now-j.started,t=enemies.find(m=>m.id===j.targetId)||j.point;if(j.kind==='mellow'){const k=Math.min(1,age/j.duration),[dx,dy]=j.direction;paint(ctx,'mellow',frame('mellow',k),j.origin.x+dx*96*k,j.origin.y-30+dy*96*k,192*k,192*k,Math.atan2(dy,dx));}
    else if(j.kind==='kiss'){const angle=t?Math.atan2(t.y-j.origin.y,t.x-j.origin.x):0;paint(ctx,'kiss',j.hit?14+Math.min(10,Math.floor((now-j.impact)/.08)):Math.floor(age/.05)%14,j.x,j.y-32,80,80,angle);}
@@ -86,5 +91,5 @@
   }
   for(const f of layer==='back'?[]:s.trails){ctx.save();ctx.globalAlpha=1-(now-f.started)/.25;ctx.strokeStyle='#72f4ff';ctx.lineWidth=3;ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(f.x,f.y-30);ctx.lineTo(f.to.x,f.to.y-30);ctx.stroke();ctx.restore();}
  }
- const api={rules,effects,has,create,roomActive,roomFrame,skill,cooldownKey,stunned,petrified,defenseFactor,valid,cast,step,clear,preload,draw,damage,direction,layout};root.MareRankA=api;if(typeof module!=='undefined')module.exports=api;
+ const api={rules,effects,has,create,roomActive,roomFrame,skill,cooldownKey,stunned,petrified,defenseFactor,valid,cast,step,clear,preload,draw,damage,direction,layout,protect:ext.protect,domeActive:ext.domeActive,attackBlocked:ext.attackBlocked,dragged:ext.dragged,slowFactor:ext.slowFactor,parasiteFrame:ext.parasiteFrame,cleanseControl:ext.cleanseControl,attackTags:ext.attackTags};root.MareRankA=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

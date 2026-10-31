@@ -37,3 +37,7 @@ assets/akuma/jiki/*.json -text
 assets/combat-vfx/*.json -text
 assets/akuma/ope/*.json -text
 assets/akuma/mero/*.json -text
+
+assets/akuma/bari/*.json -text
+assets/akuma/doku/*.json -text
+assets/akuma/ito/*.json -text

@@ -3,6 +3,11 @@ import argparse,json,hashlib,shutil
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 SOURCES={'ope':('Ope Ope no Mi',{'fruit.png':'Ope Ope no Mi.png','skill-1.png':'Skill 1.png','shambles.png':'Skill 1.2.png','skill-2.png':'Skill 2.png','skill-3.png':'Skill 3.png'},{'room':'power-aura-take-16','tact':'power-aura-take-15','gamma':'power-aura-take-12'}),'mero':('Mero Mero no Mi',{'fruit.png':'Mero Mero no Mi.png','skill-1.png':'Skill 4.png','skill-2.png':'Skill 5.png','skill-3.png':'Skill 6.png'},{'mellow':'power-aura-take-16','kiss':'firelight-take-1','rain':'power-aura-take-1'})}
+SOURCES.update({
+ 'bari':('Bara bara no mi',{'fruit.png':'Bari Bari no Mi.png','skill-1.png':'Skill 2.png','skill-2.png':'Skill 3.png','skill-3.png':'Skill 1.png'},{'bariPush':'power-aura-take-2','bariDome':'power-aura-take-1','bariCharge':'impact-burst-take-1'}),
+ 'doku':('Doku Doku',{'fruit.png':'Doku Doku no Mi.png','skill-1.png':'Skill 4.png','skill-2.png':'Skill 5.png','skill-3.png':'Skill 6.png'},{'hydra':'Dragao','gasBomb':'Boma Veneno','poison':'Veneno constante','redPoison':'Veneno vermelho'}),
+ 'ito':('Ito Ito no Mi',{'fruit.png':'Ito Ito no Mi.png','skill-1.png':'Skill 7.png','skill-2.png':'Skill 9.png','skill-3.png':'Skill 8.png'},{'tamaito':'Disparos','parasite':'Paralizy','overheat':'ground-sigil-take-3'})
+})
 def main(source):
  effects={};origins=[]
  for family,(folder,icons,sheets) in SOURCES.items():

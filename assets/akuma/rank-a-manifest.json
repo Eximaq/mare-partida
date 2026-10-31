@@ -106,6 +106,166 @@
       "file": "assets/akuma/mero/power-aura-take-1.json",
       "source": "Mero Mero no Mi/power-aura-take-1.json",
       "sha256": "bdd37a32f8aae11c4f4e3965bcd372ac0095f4284b262432ab5f8b999e3a62d0"
+    },
+    {
+      "file": "assets/akuma/bari/fruit.png",
+      "source": "Bara bara no mi/Bari Bari no Mi.png",
+      "sha256": "f914ef9c4f2767efdd34219e082bc122ac4d4d90224821c19bc8aeb776a6c906"
+    },
+    {
+      "file": "assets/akuma/bari/skill-1.png",
+      "source": "Bara bara no mi/Skill 2.png",
+      "sha256": "32add36b0b5ffbc04825fead15cf9da65a7d1a49a08fc1ff8f0344580112fb02"
+    },
+    {
+      "file": "assets/akuma/bari/skill-2.png",
+      "source": "Bara bara no mi/Skill 3.png",
+      "sha256": "0b47a7f0ee286d8a6d8f6b5cae2c71aaa41284d69555293f2789a4e981d18532"
+    },
+    {
+      "file": "assets/akuma/bari/skill-3.png",
+      "source": "Bara bara no mi/Skill 1.png",
+      "sha256": "fb433383e0e0d68db34815653d380dffb793ccb5e5d397b54bed40ea72419101"
+    },
+    {
+      "file": "assets/akuma/bari/power-aura-take-2.png",
+      "source": "Bara bara no mi/power-aura-take-2.png",
+      "sha256": "6e428270612fa732cc04aca21c281649051ac4de59f6cedadfbc29c453d3d171"
+    },
+    {
+      "file": "assets/akuma/bari/power-aura-take-2.json",
+      "source": "Bara bara no mi/power-aura-take-2.json",
+      "sha256": "fd5c648ed9b7cefb67bf33b0b695aa5e0e178fee2706b1715ff6a7658e312040"
+    },
+    {
+      "file": "assets/akuma/bari/power-aura-take-1.png",
+      "source": "Bara bara no mi/power-aura-take-1.png",
+      "sha256": "5fade45ef11a0d2dcca10e7a85a9fb0af4086f97a795bab0dc29ecf31ffb0f1b"
+    },
+    {
+      "file": "assets/akuma/bari/power-aura-take-1.json",
+      "source": "Bara bara no mi/power-aura-take-1.json",
+      "sha256": "7d8532461d69aed41188e047d43333430f591eb73cc924420f487e04cc868559"
+    },
+    {
+      "file": "assets/akuma/bari/impact-burst-take-1.png",
+      "source": "Bara bara no mi/impact-burst-take-1.png",
+      "sha256": "e8fbe9d7b2925ccb4f23180674782a4968cb8f6b1606871357d11e4ad533665c"
+    },
+    {
+      "file": "assets/akuma/bari/impact-burst-take-1.json",
+      "source": "Bara bara no mi/impact-burst-take-1.json",
+      "sha256": "a84107c5aaa3b65501ff3a278c60c8696474459b93194c9a0757900656e7d4b2"
+    },
+    {
+      "file": "assets/akuma/doku/fruit.png",
+      "source": "Doku Doku/Doku Doku no Mi.png",
+      "sha256": "95d16318da74173b608632628b5a8d94b12c153f551f65441409766d6c830a89"
+    },
+    {
+      "file": "assets/akuma/doku/skill-1.png",
+      "source": "Doku Doku/Skill 4.png",
+      "sha256": "5ea6dad485896fe6df4393040df4d94dcda22d48218ed137cacb070c2f6f3a73"
+    },
+    {
+      "file": "assets/akuma/doku/skill-2.png",
+      "source": "Doku Doku/Skill 5.png",
+      "sha256": "4c01b1e8f4b027fb67730808e3accabe0875786ba019acb6e9d1c3bae05959f1"
+    },
+    {
+      "file": "assets/akuma/doku/skill-3.png",
+      "source": "Doku Doku/Skill 6.png",
+      "sha256": "e6047edcf4be24e977e42d13def7b2acc141e0fe6d4164fa82c714273d6a9ddd"
+    },
+    {
+      "file": "assets/akuma/doku/Dragao.png",
+      "source": "Doku Doku/Dragao.png",
+      "sha256": "ff78fcaa8415da754a93f2f0ccfffc9d75606c779f4abd55522af2e4af12907e"
+    },
+    {
+      "file": "assets/akuma/doku/Dragao.json",
+      "source": "Doku Doku/Dragao.json",
+      "sha256": "4ca90426aca8389e607720c5a81bd5ba7a7edcf06fca87eff981208ee2fe1304"
+    },
+    {
+      "file": "assets/akuma/doku/Boma Veneno.png",
+      "source": "Doku Doku/Boma Veneno.png",
+      "sha256": "023006b2a43d6c39970491ade58c2f9b360ea601d04f74d52d648f89e460545f"
+    },
+    {
+      "file": "assets/akuma/doku/Boma Veneno.json",
+      "source": "Doku Doku/Boma Veneno.json",
+      "sha256": "d9c3cf434c24a78fad90adb617a94884aa8749ddd3963307379954b0c1318b6a"
+    },
+    {
+      "file": "assets/akuma/doku/Veneno constante.png",
+      "source": "Doku Doku/Veneno constante.png",
+      "sha256": "62a3e4c6c2d7b717a1541a485b7a6c88632944e6a122df72e84abcc93bf81b62"
+    },
+    {
+      "file": "assets/akuma/doku/Veneno constante.json",
+      "source": "Doku Doku/Veneno constante.json",
+      "sha256": "ba50efdd34682d5ecaa0373122c07b6fa0d897c7479d9d40497dc32b252b6254"
+    },
+    {
+      "file": "assets/akuma/doku/Veneno vermelho.png",
+      "source": "Doku Doku/Veneno vermelho.png",
+      "sha256": "bbebd228c4de064eb233edb8af29849c2054d29d759466d5f01fb25382b2d798"
+    },
+    {
+      "file": "assets/akuma/doku/Veneno vermelho.json",
+      "source": "Doku Doku/Veneno vermelho.json",
+      "sha256": "cee9ab2cebc6d9389606faab9b758b20f9e8f4d06c4a0b1736306b710f542d40"
+    },
+    {
+      "file": "assets/akuma/ito/fruit.png",
+      "source": "Ito Ito no Mi/Ito Ito no Mi.png",
+      "sha256": "cf85f5e45f755eff5942e46b6b7263764f1f691d4cd09f2cb9bb6c87318c6a7e"
+    },
+    {
+      "file": "assets/akuma/ito/skill-1.png",
+      "source": "Ito Ito no Mi/Skill 7.png",
+      "sha256": "7d492b660c6961bb3559ec6c17427618634716ab3f4c4547ee4fc251707c285b"
+    },
+    {
+      "file": "assets/akuma/ito/skill-2.png",
+      "source": "Ito Ito no Mi/Skill 9.png",
+      "sha256": "d8d380838bf40265d60f757ceb24f4372e7ef4efead8e6a712e9f98ed4f31aa3"
+    },
+    {
+      "file": "assets/akuma/ito/skill-3.png",
+      "source": "Ito Ito no Mi/Skill 8.png",
+      "sha256": "99b43a3ec07b235f3cb4c49814a399138995ade0fb7ce4b8f38e6078439343cc"
+    },
+    {
+      "file": "assets/akuma/ito/Disparos.png",
+      "source": "Ito Ito no Mi/Disparos.png",
+      "sha256": "b099e8f0695020995f447d9995f86382b9e6a0d37be875308ff292c26ef8d10c"
+    },
+    {
+      "file": "assets/akuma/ito/Disparos.json",
+      "source": "Ito Ito no Mi/Disparos.json",
+      "sha256": "fd5c648ed9b7cefb67bf33b0b695aa5e0e178fee2706b1715ff6a7658e312040"
+    },
+    {
+      "file": "assets/akuma/ito/Paralizy.png",
+      "source": "Ito Ito no Mi/Paralizy.png",
+      "sha256": "083e25143c67e6c560ed36e820b2c81a3065d54bfd3a96e235f5c2733fe6b6c1"
+    },
+    {
+      "file": "assets/akuma/ito/Paralizy.json",
+      "source": "Ito Ito no Mi/Paralizy.json",
+      "sha256": "fd5c648ed9b7cefb67bf33b0b695aa5e0e178fee2706b1715ff6a7658e312040"
+    },
+    {
+      "file": "assets/akuma/ito/ground-sigil-take-3.png",
+      "source": "Ito Ito no Mi/ground-sigil-take-3.png",
+      "sha256": "c3051e8647aa10b79bd647ce57510f5d88f8952373af7d7e32edff9b3f4d87d5"
+    },
+    {
+      "file": "assets/akuma/ito/ground-sigil-take-3.json",
+      "source": "Ito Ito no Mi/ground-sigil-take-3.json",
+      "sha256": "a98bf4237adff4bc822ee4b3f7c5a92f47430534eef0eb9f833e0b91a0bb85c3"
     }
   ]
 }
