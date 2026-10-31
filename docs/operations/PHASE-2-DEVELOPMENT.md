@@ -262,6 +262,22 @@ Classificar cada caso como aprovado, falha real, bloqueio do ambiente ou inconcl
 Falha real exige investigação/regressão antes da correção; bloqueio SMTP/cota não
 autoriza retry automático. Nenhum resultado dessa rodada foi aprovado na preparação.
 
+**Bloqueio observado em 31/10/2026:** após o proprietário informar o destinatário B,
+a pesquisa de leitura no dashboard Team retornou zero correspondências em uma equipe
+com um membro. O endereço fica apenas no arquivo local ignorado. Como o SMTP padrão
+aceita somente endereços da equipe, a entrega real está bloqueada pelo ambiente;
+nenhum cadastro ou envio foi tentado. Não adicionar membros ou conceder permissões
+somente para contornar o limite. Uma alternativa SMTP de desenvolvimento precisa ser
+planejada e autorizada separadamente, sem mudança DNS/produção ou custo automático.
+
+Quatro regressões locais focadas passaram: contratos contra overposting, barreira
+HTTP/CSRF, propriedade/limite de personagem e correlação/uso único de fluxo. Usaram
+PostgreSQL descartável e provedor simulado; não validam o cadastro B hospedado nem
+representam envio de recuperação. Auth e os processos de aplicação continuam
+desligados; conta A e Teste Alfa preservados. Aprovações podem ocorrer pelo chat;
+uma caixa de e-mail só pode ser lida após conexão autorizada, sem copiar links de
+confirmação para o chat. Não há conexão Gmail confirmada nesta preparação.
+
 ### Matriz completa a executar conforme as autorizações correspondentes
 
 1. Cadastro com confirmação obrigatória: login antes de confirmar falha; link no
