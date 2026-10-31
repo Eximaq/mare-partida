@@ -162,6 +162,7 @@
 #app #panelOverlay.inventory-mode.pirate-hd .op-slot-power{display:none}#app #panelOverlay.inventory-mode.pirate-hd .op-slot-refine{font:700 11px var(--rpg-font);color:#fff0c0;text-shadow:1px 1px #000}
 #app #panelOverlay.inventory-mode.pirate-hd .op-avatar-column{grid-column:auto;grid-row:auto;max-width:none;padding:0;margin:0;border:0;gap:6px}
 #app #panelOverlay.inventory-mode.pirate-hd .op-avatar-stage{position:relative;width:100%;max-width:none;height:240px;min-height:0;padding:0;border:5px solid transparent;border-image:var(--rpg-hd-panel) 105 / 16px / 0 stretch;border-radius:0;background:radial-gradient(ellipse,#12313b,#031019 85%);box-shadow:inset 0 0 20px #0009;overflow:hidden}
+#app #panelOverlay.inventory-mode.pirate-hd .op-avatar-stage [data-headgear-visibility]{right:3px;bottom:3px}
 #app #panelOverlay.inventory-mode.pirate-hd #inventorySprite{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
 #app #panelOverlay.inventory-mode.pirate-hd .op-avatar-meta{gap:4px;min-width:0;text-align:center;width:100%;align-self:stretch}
 #app #panelOverlay.inventory-mode.pirate-hd .op-avatar-meta strong{font:700 clamp(19px,1.65vw,27px)/1.15 var(--rpg-font);overflow-wrap:anywhere;color:#2b1b10;padding:5px 6px;background:var(--rpg-hd-paper) center/100% 100%;border:1px solid #b27e37;box-shadow:0 2px 3px #000a;display:block;width:100%}

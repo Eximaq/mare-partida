@@ -43,3 +43,5 @@ Sem migração de save, alteração de economia, classe, atributos ou índices d
 ## Conferência remota e paridade da prévia
 
 A primeira rodada remota desta revisão identificou que ui-preview.html ainda não carregava item-art.js. O teste de paridade de scripts da HUD/Rank A apontou corretamente essa integração incompleta; o módulo foi incluído na prévia. As 38 entradas Node dos contratos envolvidos passaram após a correção, e o build Pages foi refeito. Esse diagnóstico substitui a suposição de que todas as falhas remotas seriam anteriores ao refino. Demais checks remotos devem ser acompanhados no PR; ele continua em rascunho, sem autorização de merge.
+
+O teste específico de capacetes também foi executado na revisão: a nova borda de 5px exigia compensar o posicionamento absoluto do botão para manter a distância de 8px do limite externo. Ajuste feito somente no inventário. tests/headgear_visibility_browser.cjs --game-only passou em masculino/feminino com bandana/capacete, toggles rápidos, reload, rollback de storage, slot vazio, canto direito/inferior, teclado e isolamento DEV; sem erros.
