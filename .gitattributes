@@ -41,3 +41,6 @@ assets/akuma/mero/*.json -text
 assets/akuma/bari/*.json -text
 assets/akuma/doku/*.json -text
 assets/akuma/ito/*.json -text
+
+assets/akuma/yami/*.json -text
+assets/akuma/mera/*.json -text

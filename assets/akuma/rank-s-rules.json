@@ -1,0 +1,124 @@
+{
+  "yami": {
+    "id": "akuma_yami_yami",
+    "name": "Yami-Yami no Mi",
+    "family": "logia",
+    "description": "Escuridão que atrai, esmaga e libera duas ondas de impacto.",
+    "auraKey": "yamiAura",
+    "auraFrames": 35,
+    "skills": [
+      {
+        "key": "1",
+        "name": "Vórtice Negro",
+        "cost": 45,
+        "cooldown": 18,
+        "icon_path": "assets/akuma/yami/skill-1.png",
+        "description": "Atrai inimigos num raio de 2,4 tiles, causa 400% mágico e silencia Akuma no Mi por 5s."
+      },
+      {
+        "key": "2",
+        "name": "Black Hole",
+        "cost": 55,
+        "cooldown": 24,
+        "icon_path": "assets/akuma/yami/skill-2.png",
+        "description": "Poça fixa de 1,8 tiles por 6s: lentidão de 80% e 250% mágico por segundo."
+      },
+      {
+        "key": "3",
+        "name": "Liberation",
+        "cost": 65,
+        "cooldown": 30,
+        "icon_path": "assets/akuma/yami/skill-3.png",
+        "description": "Duas ondas em raio de 2,4 tiles, de 400% e 300% mágico, cada uma com empurrão."
+      }
+    ],
+    "vortex": {
+      "radius": 153.6,
+      "duration": 0.6,
+      "impactFrame": 20,
+      "pullDuration": 0.18,
+      "silence": 5,
+      "visualWidth": 307.2
+    },
+    "hole": {
+      "radius": 115.2,
+      "duration": 6,
+      "intro": 0.5,
+      "loopFrom": 19,
+      "slow": 0.8,
+      "interval": 1,
+      "visualWidth": 230.4
+    },
+    "liberation": {
+      "radius": 153.6,
+      "knockback": 96,
+      "impactFrames": [
+        1,
+        26
+      ],
+      "visualWidth": 307.2,
+      "visualHeight": 288
+    }
+  },
+  "mera": {
+    "id": "akuma_mera_mera",
+    "name": "Mera-Mera no Mi",
+    "family": "logia",
+    "description": "Punhos, chuva e um pilar perseguidor que renovam queimaduras.",
+    "auraKey": "meraAura",
+    "auraFrames": 35,
+    "skills": [
+      {
+        "key": "1",
+        "name": "Punho de Fogo",
+        "cost": 45,
+        "cooldown": 14,
+        "icon_path": "assets/akuma/mera/skill-1.png",
+        "description": "Punho largo de 5 tiles, 450% mágico e queimadura de 10% do poder base por 4s."
+      },
+      {
+        "key": "2",
+        "name": "Chuva de Fogo",
+        "cost": 50,
+        "cooldown": 20,
+        "icon_path": "assets/akuma/mera/skill-2.png",
+        "description": "Cinco projéteis de 130% mágico, detectam alvos até 4 tiles e renovam a queimadura."
+      },
+      {
+        "key": "3",
+        "name": "Hibashira",
+        "cost": 70,
+        "cooldown": 32,
+        "icon_path": "assets/akuma/mera/skill-3.png",
+        "description": "Pilar perseguidor por 7s, 450% mágico por contato com intervalo de 1s, empurrão e queimadura."
+      }
+    ],
+    "fist": {
+      "range": 320,
+      "halfWidth": 32,
+      "speed": 900
+    },
+    "rain": {
+      "range": 256,
+      "count": 5,
+      "interval": 0.12,
+      "fallDuration": 0.25,
+      "hitRadius": 32
+    },
+    "pillar": {
+      "duration": 7,
+      "speed": 360,
+      "radius": 67.2,
+      "interval": 1,
+      "knockback": 96,
+      "visualWidth": 179.2,
+      "visualHeight": 235.2,
+      "visualOffsetY": 91
+    },
+    "burn": {
+      "duration": 4,
+      "multiplier": 0.1,
+      "interval": 1
+    }
+  }
+}
