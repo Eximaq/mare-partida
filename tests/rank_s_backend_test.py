@@ -61,6 +61,10 @@ class RankSTest(unittest.TestCase):
    self.assertGreater(self.hit(r,event,enemies=[{'id':'m','x':inside,'y':0,'hp':10000}])['damage'],0)
   self.equip('akuma_mera_mera');r=self.cast('3');self.now+=.1
   self.assertGreater(self.hit(r,'pillar:100',impact_point={'x':0,'y':0},enemies=[{'id':'m','x':65,'y':0,'hp':10000}])['damage'],0)
+ def test_hie_freeze_reaches_three_tiles_only(self):
+  self.equip('akuma_hie_hie')
+  with self.assertRaises(ValueError):self.cast('3',enemies=[{'id':'m','x':193,'y':0,'hp':10000}])
+  self.assertTrue(self.cast('3',enemies=[{'id':'m','x':192,'y':0,'hp':10000}])['effect']['token'])
  def test_gura_hie_phoenix_casts_and_impacts(self):
   cases=[('akuma_gura_gura','1','impact',180,.35),('akuma_gura_gura','2','impact',180,.35),
          ('akuma_hie_hie','1','impact:0',180,.55),('akuma_hie_hie','2','impact:0',180,.55),
