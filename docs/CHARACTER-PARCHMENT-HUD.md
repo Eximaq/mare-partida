@@ -1,3 +1,5 @@
+> Registro histórico. A [sprint HUD HD](HUD-HD-HIERARCHY.md) substitui a composição abaixo: nome/retrato apenas no cartaz, Bounty vazia e hierarquia acima do HP.
+
 # HUD de personagem — cartaz de pergaminho
 
 Atualização solicitada em 31/10/2026. Branch feature/character-parchment-hud, base 132b54f (PR163 já incorporado).

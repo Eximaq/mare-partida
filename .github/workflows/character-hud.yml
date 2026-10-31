@@ -38,7 +38,7 @@ jobs:
         run: |
           node --check character-hud.js
           node --check game.js
-          node --test tests/ui-system.test.cjs tests/ui-mobile-preview.test.cjs tests/inventory-compact.test.cjs tests/hud-zoom-xph.test.cjs tests/player-hub.test.cjs
+          node --test tests/ui-system.test.cjs tests/ui-mobile-preview.test.cjs tests/inventory-compact.test.cjs tests/hud-zoom-xph.test.cjs tests/player-hub.test.cjs tests/character-hud-hierarchy.test.cjs tests/hierarchy.test.cjs
           python3 tools/build_pages.py
       - name: HUD em oito resoluções
         env:
