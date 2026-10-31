@@ -59,3 +59,15 @@ Removida a função sem chamadores classCombatAsset de game.js, após procurar r
 - Ownership atual: ausência/corrupção de imagens, solicitação atrasada e resposta obsoleta, sem fallback antigo ou loop de requisições.
 - Alabasta: viagem, paredes, profundidade, combate e save. Alubarna: cinco regiões, 20 vistas de monstros, caminhada/ataque/hurt, mortes/XP e save.
 - Corrigida a verificação antiga de Alubarna: compara pathname, preservando a revisão no URL. Nenhuma mudança artística ou de combate foi necessária para esse ajuste.
+
+## Dependências verificadas após a medição
+
+Ember não é inteiramente legado: as animações de César também atendem Dawn. O aquecimento desses atores foi separado do terreno e é solicitado após a preparação do jogador atual, além da seleção da viagem. A requisição do manifesto é compartilhada e falhas ficam limitadas, sem rejeitar o início do jogo ou gerar novas tentativas por frame.
+
+## Camadas realmente necessárias
+
+A composição atual deixa de solicitar as faixas de cabeça/rosto/cabelo substituídas pelos recursos canônicos, além de roupa base coberta e cabelo oculto pelo capacete. As bancadas mantêm as dependências necessárias para ocultar camadas manualmente. Os resultados de composições descartadas têm seus canvas esvaziados; ficam no máximo duas aparências e oito prévias. O teste no navegador reproduziu carregamentos desnecessários na versão anterior e passou com os dois corpos/24 poses, sem recarregar aparência inalterada. A comparação de 144 poses manteve RGBA idêntico à base.
+
+## Alternativas rejeitadas
+
+Também foi medido um protótipo com Worker/OffscreenCanvas, usando exatamente o mesmo compositor. Preservou os pixels e reduziu os picos nos equipamentos, mas piorou o comportamento de Dawn neste ambiente, inclusive depois de ajustar superfícies e pré-carregamento. Foi retirado da alteração entregue. Seu código experimental e as evidências ficaram somente na pasta privada externa; nenhum novo sistema paralelo foi deixado no jogo. Espaçar a composição por requestAnimationFrame também não superou o caminho mantido.
