@@ -1,0 +1,111 @@
+{
+  "origin": "Owner supplied files; imported unchanged",
+  "mellowSource": "take-16 confirmed by owner instead of requested take-18",
+  "files": [
+    {
+      "file": "assets/akuma/ope/fruit.png",
+      "source": "Ope Ope no Mi/Ope Ope no Mi.png",
+      "sha256": "84ad7afb089211998269f2c7983262fd4a698d248231e6817773eb5a8b05e4c7"
+    },
+    {
+      "file": "assets/akuma/ope/skill-1.png",
+      "source": "Ope Ope no Mi/Skill 1.png",
+      "sha256": "0f4420cb6658f60734f53dd98147b9841857be5d6078af27b08d102254f9236f"
+    },
+    {
+      "file": "assets/akuma/ope/shambles.png",
+      "source": "Ope Ope no Mi/Skill 1.2.png",
+      "sha256": "360219365d9675e7e64474ce1f032d4dd343733ec5b0cf83c94d1ad58ed26093"
+    },
+    {
+      "file": "assets/akuma/ope/skill-2.png",
+      "source": "Ope Ope no Mi/Skill 2.png",
+      "sha256": "5204caeec6a392f1f33113943d11d6ccfab7e75acdaa527f372c94507b97c74b"
+    },
+    {
+      "file": "assets/akuma/ope/skill-3.png",
+      "source": "Ope Ope no Mi/Skill 3.png",
+      "sha256": "b41213a4e37d50c7d58cd035f54f42fdc492a159ed481303656abd144307d2f0"
+    },
+    {
+      "file": "assets/akuma/ope/power-aura-take-16.png",
+      "source": "Ope Ope no Mi/power-aura-take-16.png",
+      "sha256": "77d086593440d284947ba54356b4f7d19969c7edf0aa32fba4374f4206efcd3f"
+    },
+    {
+      "file": "assets/akuma/ope/power-aura-take-16.json",
+      "source": "Ope Ope no Mi/power-aura-take-16.json",
+      "sha256": "ef58bd09659c9352888509523bc091e49fa7f678476e2f9a76a60e39538f0b8c"
+    },
+    {
+      "file": "assets/akuma/ope/power-aura-take-15.png",
+      "source": "Ope Ope no Mi/power-aura-take-15.png",
+      "sha256": "f332709377cff3c49a2744ebc44f2558e3f3227d3b331f7d52068e94b47692e3"
+    },
+    {
+      "file": "assets/akuma/ope/power-aura-take-15.json",
+      "source": "Ope Ope no Mi/power-aura-take-15.json",
+      "sha256": "ef58bd09659c9352888509523bc091e49fa7f678476e2f9a76a60e39538f0b8c"
+    },
+    {
+      "file": "assets/akuma/ope/power-aura-take-12.png",
+      "source": "Ope Ope no Mi/power-aura-take-12.png",
+      "sha256": "5657c4df2c5556fd25a5db17b8bf82f052aea9bbc1b5640deaddc72643a29413"
+    },
+    {
+      "file": "assets/akuma/ope/power-aura-take-12.json",
+      "source": "Ope Ope no Mi/power-aura-take-12.json",
+      "sha256": "52cb9ce34bc32e67c233bb412f075f8fcd27c9bb681417e15c63790bbdad6fe5"
+    },
+    {
+      "file": "assets/akuma/mero/fruit.png",
+      "source": "Mero Mero no Mi/Mero Mero no Mi.png",
+      "sha256": "5db5a093d3a5378f8358debdcdeaa905417ffe99f376f54c7c00dd67c0a87ef1"
+    },
+    {
+      "file": "assets/akuma/mero/skill-1.png",
+      "source": "Mero Mero no Mi/Skill 4.png",
+      "sha256": "c78419720b0f7d6b489d6c62dddb88ca65469e2169c0e5ebe1a7371c4f5d2068"
+    },
+    {
+      "file": "assets/akuma/mero/skill-2.png",
+      "source": "Mero Mero no Mi/Skill 5.png",
+      "sha256": "c19ac648d8880a96fcaced40ae10d4f87904dc9423a704bcfb3368243050f6a8"
+    },
+    {
+      "file": "assets/akuma/mero/skill-3.png",
+      "source": "Mero Mero no Mi/Skill 6.png",
+      "sha256": "0ab82fc0a1c2ffad4f14bdde7c891d17e2d61dc2c2059843c1689336e3191b75"
+    },
+    {
+      "file": "assets/akuma/mero/power-aura-take-16.png",
+      "source": "Mero Mero no Mi/power-aura-take-16.png",
+      "sha256": "8e5b419d10475b4ed4c4cd6bfef4f84222959f2e4d3aeb43a73b320a595429be"
+    },
+    {
+      "file": "assets/akuma/mero/power-aura-take-16.json",
+      "source": "Mero Mero no Mi/power-aura-take-16.json",
+      "sha256": "52cb9ce34bc32e67c233bb412f075f8fcd27c9bb681417e15c63790bbdad6fe5"
+    },
+    {
+      "file": "assets/akuma/mero/firelight-take-1.png",
+      "source": "Mero Mero no Mi/firelight-take-1.png",
+      "sha256": "d752db5eec1a34f168e3b9b3fc44533f0203d76bed95d42ce7e43df79813e562"
+    },
+    {
+      "file": "assets/akuma/mero/firelight-take-1.json",
+      "source": "Mero Mero no Mi/firelight-take-1.json",
+      "sha256": "4b8fee85197fd626a6bd3156fb85866bf522c7e37a8249f8b2771eb779e96ff6"
+    },
+    {
+      "file": "assets/akuma/mero/power-aura-take-1.png",
+      "source": "Mero Mero no Mi/power-aura-take-1.png",
+      "sha256": "37218f8064f7b7a6ca20fa300d418f63afe9a7adaeb62964f03847f8fd8075b3"
+    },
+    {
+      "file": "assets/akuma/mero/power-aura-take-1.json",
+      "source": "Mero Mero no Mi/power-aura-take-1.json",
+      "sha256": "bdd37a32f8aae11c4f4e3965bcd372ac0095f4284b262432ab5f8b999e3a62d0"
+    }
+  ]
+}

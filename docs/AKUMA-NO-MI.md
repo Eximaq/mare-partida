@@ -1,3 +1,5 @@
+[Ope e Mero Rank A: três habilidades, ROOM/Shambles e petrificação](RANK-A-OPE-MERO.md).
+
 # Akuma no Mi — Lote 1 Rank E
 
 [Beta-Beta e Hana-Hana Rank B: Logia, vínculo viscoso e combos de braços](RANK-B-BETA-HANA.md).

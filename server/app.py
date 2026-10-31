@@ -84,6 +84,8 @@ class Handler(SimpleHTTPRequestHandler):
             '/api/akuma/hoya-attack':lambda d:STORE.hoya.start_attack(d['player_id'],d['instance'],d['x'],d['y'],d['target']),
             '/api/akuma/hoya-impact':lambda d:STORE.hoya.impact(d['player_id'],d['token'],d['instance'],d['x'],d['y'],d['target']),
             '/api/akuma/hoya-damage':lambda d:STORE.hoya.receive(d['player_id'],d['amount'],d.get('physical',True)),
+            '/api/akuma/rank-a-clear':lambda d:(STORE.rank_a.clear(d['player_id']) or {}),
+            '/api/akuma/rank-a-impact':lambda d:STORE.rank_a.impact(d['player_id'],d['token'],d['instance'],d.get('enemies',[]),d['target_id']),
             '/api/akuma/rank-b-tick':lambda d:STORE.rank_b.tick(d['player_id'],d['token'],d['index'],d['instance'],d.get('enemies',[])),
             '/api/akuma/expansion-impact':lambda d:STORE.rank_c_expansion.impact(d['player_id'],d['token'],d['index'],d['instance'],d['x'],d['y'],d.get('enemies',[])),
             '/api/akuma/expansion-field':lambda d:STORE.rank_c_expansion.tick(d['player_id'],d['instance'],d['x'],d['y'],d['view'],d.get('enemies',[])),

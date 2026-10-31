@@ -621,3 +621,8 @@ Validação final sobre e302c09: 84 suítes Node aprovadas; teste específico de
 - Nova folha final `ui-nautical-assets.css` nas duas entradas e no build; sem alterações em JavaScript de jogo, dados, handlers, fórmulas ou saves. Comparativo representativo único versionado; evidências completas ignoradas.
 - 145 testes Node passaram; seis suítes focadas, sintaxe raiz, build/URLs/bytes e diff check passaram. Navegador: 14 janelas em seis viewports, criação móvel, scroll, foco/tooltip, NPC, equipamento/trava/reload, aprimoramento, fusão/imbuir, 59 abates/2 chefes com barras reais e retorno. Moldura de vida estável entre 20,2% e 100%.
 - Limites: arraste automatizado inconclusivo também na base; seleção por clique/automática funcional. `supa-browser.test.cjs` sem módulo Node Playwright; não declarado aprovado. Aparelhos físicos/Safari/Firefox e benchmark formal não executados. Rollback e demais limites no relatório. Sem merge/deploy automático.
+
+
+## 30/10/2026 — Ope/Mero Rank A e HUD de três habilidades
+
+Base c4b7cf6, branch feature/rank-a-ope-mero. Seis habilidades e Shambles dinâmico integrados ao catálogo, combate, HUD e API opcional; assets originais preservados. Relatório de regras, parâmetros iniciais, regressões, fonte dos 158 quadros e rollback: [RANK-A-OPE-MERO.md](RANK-A-OPE-MERO.md). As prévias não reaproveitam o texto de ativação ROOM em outros golpes.
