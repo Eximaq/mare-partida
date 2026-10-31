@@ -4,8 +4,9 @@
 - Base main: `7b14fa74dabd51d2efd51021dc6304e3f9bdfa9b`.
 - Core implementation commit: `16c18e0d9e586fcfb3a90962db948598df8f8629`.
 - Local infrastructure/documentation accompany this checkpoint. Confirm HEAD/status on resume.
-- Owner authorized Phase 1 but expressly prohibited publishing: no push, remote Draft PR,
-  merge, deployment or DNS change. Do not apply older automatic-push guidance here.
+- The final Phase 1 review now authorizes branch publication and a remote Draft PR.
+  No merge, production deployment or DNS change. Present the review and pending
+  architectural decisions before any Phase 2 implementation.
 - Previous checkout `mare-partida-v12` is read-only and preserved, including its working
   changes and ignored/untracked files. A sibling preservation directory holds the ZIP,
   hashes, patches and review inventory; nothing was imported into this branch.

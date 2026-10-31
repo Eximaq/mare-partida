@@ -11,6 +11,6 @@ async function main() {
   } finally { await pool.end(); }
 }
 main().catch(() => {
-  console.error(JSON.stringify({ event: 'migration_failed', message: 'Check configuration, database access and migration history. No changes committed on failure.' }));
+  console.error(JSON.stringify({ event: 'migration_failed', message: 'Check configuration, database access and migration history. If the connection failed during COMMIT, the outcome may be unknown; inspect the migration ledger before retrying.' }));
   process.exitCode = 1;
 });

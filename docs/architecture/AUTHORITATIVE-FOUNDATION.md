@@ -1,8 +1,9 @@
 # Authoritative server — Phase 1
 
 Base: `main` at `7b14fa74dabd51d2efd51021dc6304e3f9bdfa9b`.
-Branch: `refactor/authoritative-server`. Current owner instruction: local work only;
-no push, remote Draft PR, merge, DNS change or deployment.
+Branch: `refactor/authoritative-server`. The final Phase 1 review authorizes branch
+publication and a remote Draft PR. No merge, DNS change or production deployment.
+Phase 2 implementation awaits presentation of the review and pending decisions.
 
 ## Decision and boundary
 

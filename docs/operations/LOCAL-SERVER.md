@@ -104,4 +104,16 @@ instead of substituting old sprites. No reset of browser saves is required.
 Phase 2 adds real identity, account/character authorization and sessions. Online
 economy/combat, public WSS, TLS/deploy, backup SLA and 600-CCU acceptance remain pending.
 Production configuration is refused until those deployment/security gates exist.
-Current instruction permits local work only: no push, remote PR, merge or publication.
+The final Phase 1 review authorizes pushing this branch and opening a Draft PR only.
+No merge or production deployment is authorized. Phase 2 implementation must wait for
+the review results and pending architectural decisions to be presented.
+
+## Migration failure diagnosis
+
+SQL errors before COMMIT roll back the batch, as exercised by the integration tests.
+A lost connection during COMMIT can leave the client unable to determine whether the
+transaction committed. Reconnect and inspect `mare_meta.schema_migrations` against
+the unchanged migration files before retrying. The migrator checks the ledger and
+skips already-applied migrations. Never edit history, reset the database or assume a
+failure message alone proves rollback. Crash recovery, restart and backup restoration
+have not been validated by the network-interruption test.

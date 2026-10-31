@@ -4,7 +4,7 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 
 | Tarefa | Código a localizar primeiro | Documentos e testes a procurar | Atenção |
 |---|---|---|---|
-| Fundação do servidor autoritativo | `apps/game-server`, `packages/shared`, `infra` | `docs/architecture/AUTHORITATIVE-FOUNDATION.md`, `docs/operations/LOCAL-SERVER.md`, `tests/foundation`, `tests/integration/server*` | Fase 1 local: sem autenticação/gameplay online; preservar frontend/saves; não publicar sem nova autorização |
+| Fundação do servidor autoritativo | `apps/game-server`, `packages/shared`, `infra` | `docs/architecture/AUTHORITATIVE-FOUNDATION.md`, `docs/operations/LOCAL-SERVER.md`, `tests/foundation`, `tests/integration/server*` | Fase 1: sem autenticação/gameplay online; preservar frontend/saves; publicação da branch e Draft PR autorizados na revisão; sem merge/deploy |
 | Login/portal | `portal/index.html`, `portal/portal.js`, `portal/portal.css`, `tools/build_pages.py` | `docs/COLABORACAO_GITHUB.md`; testes web/build relevantes | Não afirmar Supabase conectado sem confirmar; preservar fundo/arte aprovada |
 | HUD/UI/inventário | `ui-system.js`, `notification-system.js`, `ui-*.css`, `index.html`, `ui-preview.html`, `game.js` (somente funções de UI), `forge-ui.js` | `docs/UI-DESIGN.md` (se existir), `docs/HUD-NAVIGATOR-DIRECTION.md` (direção aprovada), testes de inventário | Índices `itemDefs`, equipamentos e saves |
 | Personalização visual/criação | `character-appearance.js`, `game.js` criação, `paper-doll-96-lobby.js`, `tools/paper-doll-96-v3/wardrobe.js` | `docs/PERSONAGEM-APARENCIA-96.md`; testes character-appearance/character_appearance | Rascunho separado, íris mascarada, pele fora do cabelo, política de capacete |
