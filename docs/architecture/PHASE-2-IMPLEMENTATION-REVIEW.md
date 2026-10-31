@@ -114,8 +114,15 @@ correlação incompatível com código real e expiração não consumida não es
 A janela terminou com duas contas/dois personagens preservados, zero sessões
 autorizadas, fila vazia e Auth/processos locais desligados.
 
-Pendentes: os negativos de confirmação/correlação/expiração e primeira criação
-indicados na matriz, recuperação, rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,
+Na janela adicional C, o login antes da confirmação foi recusado (401, sem sessão),
+o callback PKCE válido retornou 303 e a primeira criação concorrente retornou
+201/409, com exatamente um personagem persistido. Retries idênticos: 201/201 com
+o mesmo personagem. A/B intactos; JWT ES256/900 s; três contas/três personagens e
+zero sessões autorizadas/revogações pendentes ao encerrar, com Auth/API/gateway
+desligados e PostgreSQL preservado. Um único cadastro/envio, sem alteração de runtime.
+
+Pendentes: correlação real incompatível e expiração de cadastro não consumido
+indicadas na matriz, recuperação, rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,
 retenção/chaves, proteção adicional contra abuso e testes de carga.
 
 A recuperação de rede do pool PostgreSQL passou sem reiniciar o serviço. Restart

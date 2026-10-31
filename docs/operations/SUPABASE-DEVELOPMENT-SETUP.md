@@ -195,12 +195,97 @@ configuração local ignorada do ensaio. Senhas foram digitadas pelo proprietár
 links foram usados em campo protegido, sem copiar conteúdo para chat/log/relatório.
 Os casos de replay usam o link já consumido, não uma segunda mensagem.
 
-Para fechar as lacunas, propor nova janela com uma conta temporária ainda não
-confirmada e um envio adicional especificamente autorizado, preservando A/B. Ela
-poderá reunir o negativo antes da confirmação, correlação incompatível, espera real
-pela expiração sem consumir o fluxo e, após login legítimo, corrida da primeira
-criação. O procedimento e destinatário devem ser aprovados antes da execução; não
-usar confirmação administrativa, alterar relógios/timestamps ou apagar personagens.
+### Janela adicional da Conta C
+
+O proprietário autorizou um cadastro e um único e-mail para uma terceira conta sob
+seu controle, preservando A/B. O destinatário fica somente no ambiente local ignorado.
+A sequência reserva esse envio ao login negativo antes da confirmação, callback
+PKCE válido no navegador original e corrida da primeira criação de personagem.
+Não abrir o link em outro perfil: a verificação no provedor pode consumir a
+confirmação antes de o BFF rejeitar a ausência de correlação. Esse teste real fica
+pendente de um procedimento separado; os negativos locais não o substituem.
+
+Antes da corrida, comprovar zero personagens para C e guardar uma referência local
+dos personagens A/B. Disparar duas requisições simultâneas com nomes diferentes:
+o contrato espera 201/409, exatamente uma linha persistida para C e nenhum efeito
+em A/B. Repetições dos dados vencedores devem retornar 201 com o mesmo personagem.
+Um guard da ferramenta impede executar a corrida com A/B ou personagem preexistente.
+
+Um link não comprova simultaneamente confirmação válida e expiração sem uso.
+A expiração real de um novo fluxo de cadastro exige outro envio e autorização
+própria, ainda não concedida. Não alterar relógios, códigos, dados do provedor ou
+personagens para fabricar o cenário. A autorização de C não inclui recuperação.
+
+### Resultado da janela C e matriz consolidada — 31/10/2026
+
+Backend sem alteração desde `e59b29f`; ferramenta QA exclusiva em diretório local
+ignorado. O proprietário definiu a senha diretamente na aplicação, submeteu um
+cadastro e, antes de abrir o link, tentou entrar com a mesma senha informada por ele.
+O gateway registrou somente método, rota sem query e status: signup 202, login 401,
+callback 303; nenhum corpo, cookie, código ou endereço de e-mail foi registrado.
+Após o 401, o banco tinha duas contas, dois personagens e zero sessões autorizadas.
+O link foi aberto no navegador original pelo proprietário; a identidade de C e sua
+confirmação foram verificadas no provedor em memória, com JWT assinado ES256/900 s.
+
+A consulta anterior à corrida confirmou zero personagens de C. Dois POSTs iniciados
+em paralelo, com nomes diferentes e sessão real, retornaram 201/409. A consulta
+posterior confirmou exatamente um personagem de C, três personagens no total e A/B
+idênticos à referência anterior. Dois retries idênticos retornaram 201/201 e o mesmo
+ID do vencedor. Não houve exclusão, recriação, escrita direta de personagens ou
+alteração dos prazos aprovados.
+
+| Cenário consolidado | Resultado | Limite ou risco residual |
+|---|---|---|
+| Autorização cruzada A/B | Aprovado anteriormente: 40/40 | Nenhuma falha de autorização observada nesse conjunto; não equivale a auditoria exaustiva |
+| Login antes da confirmação | Aprovado em C: 401 e nenhuma sessão criada | Erro público permanece neutro; senha foi digitada pelo proprietário, não capturada pelo ensaio |
+| Confirmação e callback PKCE válido | Aprovado em B e C; C retornou 303 no navegador original | Link válido foi reservado a esse fluxo |
+| Identidades e sessões independentes | Aprovado; identidade C conferida contra destinatário autorizado | Nenhum identificador pessoal publicado |
+| Primeira criação concorrente | Aprovado em C: 201/409, zero antes e uma linha depois | O ensaio cobre duas requisições concorrentes; não é teste de carga |
+| Idempotência e limite de um personagem | Aprovado: retries C 201/201 com mesmo ID; B já coberto | A/B/C preservados, sem dados econômicos locais importados |
+| Link real reutilizado | Aprovado anteriormente em B | Replay não comprova expiração sem uso |
+| Entradas inválidas e correlação local | Aprovado em testes HTTP locais anteriores | Fixtures não substituem ensaio real com código válido em outro navegador |
+| Código real em contexto incompatível | Inconclusivo anteriormente; execução adicional adiada | Risco de consumir confirmação; nenhum teste destrutivo do fluxo válido foi feito. Requer procedimento e escopo próprios |
+| Cadastro real não consumido até expirar | Pendente de autorização e outro envio | Um único link não pode provar expiração sem uso e confirmação válida; não aprovado por equivalência |
+| Preservação e encerramento | Aprovado: A/B intactos, três contas/três personagens, zero sessões autorizadas e zero revogações pendentes | Auth false; API/gateway parados; PostgreSQL mantido ativo |
+
+No início desta janela PostgreSQL já estava parado: conexão recusada e nenhum
+processo observado. O início normal pelo helper documentado foi executado sem
+parada deliberada, alteração de configuração ou inicialização de cluster. O banco
+registrou recuperação automática e ficou pronto; A/B foram consultados antes do
+cadastro. A causa da interrupção anterior não foi estabelecida. Essa observação
+não comprova restauração de backup, RPO/RTO nem substitui um plano de recuperação
+de desastre. Não houve tentativa de reproduzir o exercício stop/start bloqueado.
+
+Nenhuma falha real foi observada nos casos desta janela. Nenhum segundo envio,
+recuperação, merge, deploy de backend, alteração DNS ou Fase 3 foi executado.
+As evidências sanitizadas permanecem fora do Git; o relatório contém apenas o resumo.
+
+### Rodada 3 — proposta para aprovação separada
+
+Usar uma conta de teste confirmada escolhida pelo proprietário, preferencialmente
+C para reduzir interferência em A/B. Autorizar explicitamente destinatário, dois
+envios de recuperação, troca de senha pelo proprietário e invalidação de todas as
+sessões dessa conta. Não há autorização de execução nesta preparação.
+
+1. Primeiro envio: deixar o fluxo de recuperação não consumido ultrapassar seu
+   prazo real de 600 s no BFF, sem alterar relógios. Verificar rejeição e ausência de
+   sessão de recuperação. Isso comprova a barreira local observada; não atribuir
+   ao provedor uma expiração que tenha sido rejeitada antes de alcançá-lo.
+2. Segundo envio, em janela com cota disponível: manter previamente duas sessões
+   da conta selecionada, concluir callback no navegador original e verificar que
+   a sessão de recuperação não permite APIs de personagem.
+3. O proprietário define e submete a nova senha na tela local. Verificar sucesso,
+   consumo da sessão de recuperação, rejeição da senha antiga, login com a nova
+   senha e invalidação das sessões internas anteriores nos dois perfis. Conferir
+   a fila de revogação remota e registrar qualquer pendência, sem presumir revogação
+   imediata de JWTs já emitidos no provedor.
+4. Rejeitar repetição do fluxo já usado sem novo e-mail. Fazer logout, desligar
+   Auth/API/gateway e preservar PostgreSQL, contas, personagens e saves.
+
+Os dois envios cobrem expiração e recuperação válida em fluxos separados. Eventuais
+mensagens automáticas de segurança configuradas no provedor precisam ser conferidas
+antes da autorização; não prometer quantidade total de mensagens sem essa leitura.
+Expiração de recuperação não substitui a de cadastro ainda pendente na Rodada 2.
 
 ### Matriz de aprovação da Fase 2
 
@@ -208,7 +293,7 @@ usar confirmação administrativa, alterar relógios/timestamps ou apagar person
 |---|---|---|
 | Acesso local, HTTPS e origem | Aprovado nesta máquina | Serviços precisam estar ativos durante cada janela; confiança do certificado foi autorizada para o usuário atual |
 | Rodada 1: sessões e controlador | Aprovada no provedor real | Manter os prazos aprovados; não confundir o ensaio de JWT de 900 s com espera de 24 h/2 h, cobertas em configuração e testes locais |
-| Rodada 2: segunda conta e autorização cruzada | Parcial: autorização cruzada aprovada; casos de confirmação pendentes | SMTP/PKCE válido, 40 negativos entre contas, concorrência com personagem existente e replay aprovados. Negativo antes da confirmação, correlação real incompatível, expiração não consumida e primeira criação concorrente ainda não encerrados |
+| Rodada 2: contas e autorização cruzada | Parcial: 40 testes cruzados, confirmação e primeira criação concorrente aprovados | C encerrou login pré-confirmação, PKCE válido e primeira corrida 201/409. Correlação real incompatível e expiração de cadastro não consumido permanecem abertas |
 | Rodada 3: recuperação | Pendente de autorização específica | Dois envios planejados em janelas com cota disponível; fluxo não consumido expirado e fluxo válido; senha definida pelo proprietário; invalidação das sessões anteriores |
 | Aceitação completa da Fase 2 | Não encerrada | Concluir os blocos pendentes; não iniciar a Fase 3 |
 

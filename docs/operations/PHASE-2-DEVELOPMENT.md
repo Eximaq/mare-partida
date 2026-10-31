@@ -85,6 +85,17 @@ configurar `.env.migration.local` pelo template `infra/env/migration.env.example
 executar `npm run db:migrate` e aplicar os dois grants como owner nesse banco.
 Não reiniciar, reconfigurar nem tentar contornar restrições da instância existente.
 
+## Janela adicional C — resultado e limites
+
+Em 31/10/2026, um cadastro/envio adicional autorizado permitiu observar login 401
+antes da confirmação, callback PKCE 303 e primeira criação concorrente 201/409,
+com uma única linha para C. Retries idênticos retornaram 201/201 com o mesmo ID.
+A/B foram preservados; Auth/API/gateway desligados ao final, PostgreSQL ativo.
+Código válido em perfil incompatível não foi usado para evitar consumo do link;
+expiração de cadastro sem uso exige outro envio e autorização específica.
+Matriz consolidada e proposta da Rodada 3 em
+[preparação Supabase](SUPABASE-DEVELOPMENT-SETUP.md#resultado-da-janela-c-e-matriz-consolidada--31102026).
+
 ## Ativação após preparação manual do provedor
 
 Seguir [SUPABASE-DEVELOPMENT-SETUP.md](SUPABASE-DEVELOPMENT-SETUP.md). Não criar ou
