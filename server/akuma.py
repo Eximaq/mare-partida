@@ -219,7 +219,7 @@ class AkumaStore:
         fruit_id = state["equipped"]
         if not fruit_id:
             raise ValueError("Nenhuma fruta equipada")
-        if fruit_id in (OPE,MERO):return self.rank_a.cast(self,player_id,fruit_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id},direction)
+        if fruit_id in {r['id'] for r in RANK_A_RULES.values()}:return self.rank_a.cast(self,player_id,fruit_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id},direction)
         if fruit_id==RYU:return self.ryu.cast(self,player_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id==JIKI:return self.jiki.cast(self,player_id,instance,x,y,enemies,str(skill_key),energy,physical_attack,{**(rank_c_context or {}),'target_id':target_id})
         if fruit_id==HOYA:return self.hoya.cast(self,player_id,instance,x,y,str(skill_key),energy,rank_c_context or {})
@@ -325,7 +325,7 @@ class AkumaStore:
             self.db.execute("INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)", (player_id, SUPA_ID, skill["key"], now+skill["cooldown"]))
         return {"effect": effect, "energy_spent": skill["cost"], "energy_remaining": float(energy)-skill["cost"], "state": self.state(player_id)}
 
-    def receive_damage(self, player_id, original, received=None, physical=True, direct=False, reflected=False, damage_type=None, has_haki=False):
+    def receive_damage(self, player_id, original, received=None, physical=True, direct=False, reflected=False, damage_type=None, has_haki=False, projectile=False, melee=False):
         """Resolve Supa after ordinary defense; reflected damage cannot reflect again.
 
         The optional prototype service receives combat inputs from the local client.
@@ -337,6 +337,7 @@ class AkumaStore:
             raise ValueError("Dano inválido")
         if state['equipped']==BOMU and damage_type=='explosion':return {'damage':0,'reflected':0,'immune':True}
         if self.hoya.active(player_id):return {'damage':0,'reflected':0,'isUntargetable':True,'isInvulnerable':True}
+        if self.rank_a.expansion.active(player_id):return self.rank_a.expansion.protect(player_id,received,projectile,melee,reflected)
         received=mitigate(received,state['equipped'],physical,has_haki is True)
         active = state["equipped"] == SUPA_ID and state["metallic_until"] > self.clock()
         enabled = active and physical and not direct and not reflected and original > 0 and received > 0

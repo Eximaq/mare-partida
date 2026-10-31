@@ -3,6 +3,7 @@
 The existing client still simulates the world; these contracts do not claim PvP authority.
 """
 import json,math,uuid
+from rank_a_expansion import RankAExpansionService,IDS as EXPANSION_IDS
 from pathlib import Path
 RULES=json.loads((Path(__file__).resolve().parents[1]/'assets/akuma/rank-a-rules.json').read_text(encoding='utf8'))
 OPE=RULES['ope']['id'];MERO=RULES['mero']['id']
@@ -10,8 +11,8 @@ def finite(v):return isinstance(v,(int,float)) and not isinstance(v,bool) and ma
 def live(e):return e and e.get('alive',True) and e.get('hp',1)>0 and not e.get('returning') and not e.get('isUntargetable') and not e.get('isInvulnerable') and all(finite(e.get(k)) for k in ['x','y'])
 def distance(a,b):return math.hypot(a['x']-b['x'],a['y']-b['y'])
 class RankAService:
- def __init__(self,clock):self.clock=clock;self.rooms={};self.jobs={}
- def clear(self,p):self.rooms.pop(p,None);self.jobs={k:j for k,j in self.jobs.items() if j['owner']!=p}
+ def __init__(self,clock):self.clock=clock;self.rooms={};self.jobs={};self.expansion=RankAExpansionService(clock)
+ def clear(self,p):self.expansion.clear(p);self.rooms.pop(p,None);self.jobs={k:j for k,j in self.jobs.items() if j['owner']!=p}
  def state(self,p):
   r=self.rooms.get(p);return {'room':r if r and r['until']>self.clock() else None}
  def apply_stats(self,p,stats):
@@ -21,6 +22,7 @@ class RankAService:
     if key in result:result[key]*=1.3
   return result
  def cast(self,store,p,fruit,instance,x,y,enemies,key,energy,attack,ctx,direction):
+  if fruit in EXPANSION_IDS:return self.expansion.cast(store,p,fruit,instance,x,y,enemies,key,energy,attack,ctx,direction)
   now=self.clock();ctx=ctx or {};rule=RULES['ope' if fruit==OPE else 'mero'];room=self.state(p)['room'];swap=fruit==OPE and key=='1' and room and now>=room['started']+.25
   skill=rule['shambles'] if swap else next((s for s in rule['skills'] if s['key']==key),None)
   if not skill or not instance or not all(finite(v) for v in [x,y,energy,attack,ctx.get('special_attack')]) or min(energy,attack,ctx['special_attack'])<0 or ctx.get('controlled'):raise ValueError('Posição, poder ou controle inválido')
@@ -47,7 +49,8 @@ class RankAService:
   ready=now+skill['cooldown']
   with store.db:store.db.execute('INSERT OR REPLACE INTO skill_cooldowns VALUES(?,?,?,?)',(p,fruit,cd,ready))
   return {'effect':{**effect,'ready_at':ready},'energy_spent':skill['cost'],'energy_remaining':energy-skill['cost']}
- def impact(self,p,token,instance,enemies,target_id):
+ def impact(self,p,token,instance,enemies,target_id,event=None,context=None):
+  if token in self.expansion.jobs:return self.expansion.impact(p,token,instance,enemies,target_id,event,context)
   j=self.jobs.get(token);now=self.clock();m=next((e for e in enemies if live(e) and str(e.get('id'))==str(target_id)),None)
   if not j or j['owner']!=p or j['instance']!=instance or j['expires']<=now or not m or str(target_id) in j['used']:raise ValueError('Impacto inválido ou repetido')
   kind=j['kind'];elapsed=now-j['started'];delay={'tact':.6,'gamma':1.8,'mellow':0,'kiss':0,'rain':1}[kind]

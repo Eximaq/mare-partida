@@ -1,3 +1,5 @@
+[Bari, Doku e Ito Rank A: barreiras, venenos cumulativos e fios](RANK-A-BARI-DOKU-ITO.md).
+
 [Ope e Mero Rank A: três habilidades, ROOM/Shambles e petrificação](RANK-A-OPE-MERO.md).
 
 # Akuma no Mi — Lote 1 Rank E
