@@ -11,3 +11,9 @@ console.log('Rank B: 16 original hashes, shared passives/catalog, Logia/Haki, ex
 
 // New energy orb is rendered fully in front, with its visible base over the feet.
 global.Image=class {constructor(){this.complete=true;this.naturalWidth=320}};const draws=[],ctx={save(){},restore(){},drawImage(...a){draws.push(a)}};for(let i=0;i<25;i++){B.drawLegs(ctx,{x:100,y:200},i*83);const a=draws.at(-1);assert.equal(a.at(-2),96);assert.equal(a.at(-1),96);assert.ok(Math.abs(a[6]+57/64*96-202)<=.5);}assert(B.effects.slime.image.endsWith('energy-orb-take-3.png'));
+
+for(const id of ['akuma_mera_mera','akuma_yami_yami','akuma_hie_hie']){
+  assert.equal(B.reduction(100,{equipped:id,physical:true,hasHaki:false}),70);
+  assert.equal(B.reduction(100,{equipped:id,physical:true,hasHaki:true}),100);
+  assert.equal(B.reduction(100,{equipped:id,physical:false,hasHaki:false}),100);
+}
