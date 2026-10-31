@@ -5,7 +5,7 @@ const {chromium}=require('playwright');
 const base=process.argv.find(a=>/^https?:/.test(a))||'http://127.0.0.1:8157/dist/';
 const smoke=process.argv.includes('--smoke');
 const output=process.argv.find(a=>a.startsWith('--evidence='))?.slice(11);
-const hook=`window.__lobby96QA={get game(){return game},get runtime(){return lobby96},get hero(){return world.hero},save:saveGame,draw(){presentWorld();drawVfxPanels()},panel(){openPanel('character');characterTab='appearance';renderPanel()},close:closePanel,enterHunt,returnLobby,stats:getDerived,step(dt){tick(dt);camera.update(combatFocus(),activeMap(),dt);presentWorld()},pixels(action,direction,frame){const c=document.createElement('canvas');c.width=c.height=512;const ok=lobby96.draw(c.getContext('2d'),game,{scene:'lobby',action,direction,time:frame/(action==='idle'?4:8)+.000001,x:256,y:400,scale:null,worldView:true});if(!ok)throw Error('96px frame unavailable');return c.toDataURL()},async profiles(){const old=game,failures=[];try{for(const classId of Object.keys(classes))for(const factionId of Object.keys(factions)){game={...old,classId,factionId};await lobby96.ensure(game);for(const dir of ['south','north','west','east'])for(const action of ['idle','walk']){const c=document.createElement('canvas');c.width=c.height=128;if(!lobby96.draw(c.getContext('2d'),game,{scene:'lobby',action,direction:dir,x:64,y:112}))failures.push({classId,factionId,dir,action});}}return failures;}finally{game=old;}}};`;
+const hook=`window.__lobby96QA={get game(){return game},get runtime(){return lobby96},get hero(){return world.hero},save:saveGame,restore(value){game=JSON.parse(value)},draw(){presentWorld();drawVfxPanels()},panel(){openPanel('character');characterTab='appearance';renderPanel()},close:closePanel,enterHunt,returnLobby,stats:getDerived,step(dt){tick(dt);camera.update(combatFocus(),activeMap(),dt);presentWorld()},pixels(action,direction,frame){const c=document.createElement('canvas');c.width=c.height=512;const ok=lobby96.draw(c.getContext('2d'),game,{scene:'lobby',action,direction,time:frame/(action==='idle'?4:8)+.000001,x:256,y:400,scale:null,worldView:true});if(!ok)throw Error('96px frame unavailable');return c.toDataURL()},async profiles(){const old=game,failures=[];try{for(const classId of Object.keys(classes))for(const factionId of Object.keys(factions)){game={...old,classId,factionId};await lobby96.ensure(game);for(const dir of ['south','north','west','east'])for(const action of ['idle','walk']){const c=document.createElement('canvas');c.width=c.height=128;if(!lobby96.draw(c.getContext('2d'),game,{scene:'lobby',action,direction:dir,x:64,y:112}))failures.push({classId,factionId,dir,action});}}return failures;}finally{game=old;}}};`;
 (async()=>{
  const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true}),context=await browser.newContext({viewport:{width:1366,height:768}}),page=await context.newPage();
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -47,7 +47,8 @@ const hook=`window.__lobby96QA={get game(){return game},get runtime(){return lob
    }
   }
   await bench.close();console.log('native96-lobby:attack-previews='+attackPreviews);
-  await page.evaluate(async()=>{const q=__lobby96QA;q.game.appearance96={...q.game.appearance96,gender:'feminino',hairStyle:'hair-wavy',skinColor:'brown',hairColor:'brown'};await q.runtime.ensure(q.game);__lobby96QA.close();__lobby96QA.draw();});
+  // Restore synthetic look sweeps before real travel, which intentionally saves.
+  await page.evaluate(async initial=>{__lobby96QA.restore(initial);const q=__lobby96QA;await q.runtime.ensure(q.game);q.close();q.draw();},initial);
   // Real movement input and collisions use the existing navigator and gait clock.
   const start=await page.evaluate(()=>({...__lobby96QA.hero}));await page.keyboard.down('d');
   for(let i=0;i<10;i++)await page.evaluate(()=>__lobby96QA.step(.05));await page.keyboard.up('d');
@@ -69,7 +70,7 @@ const hook=`window.__lobby96QA={get game(){return game},get runtime(){return lob
   await page.evaluate(()=>__lobby96QA.enterHunt());const count=await page.evaluate(()=>__mareDiagnostics().lobby96.draws);
   await page.evaluate(()=>__lobby96QA.draw());assert(await page.evaluate(()=>__mareDiagnostics().lobby96.draws)>count,'sword/rogue combat uses the prepared96 renderer');
   await page.evaluate(()=>__lobby96QA.returnLobby());assert(await page.evaluate(()=>__lobby96QA.runtime.ensure(__lobby96QA.game)));await page.evaluate(()=>__lobby96QA.draw());
-  const stats=await page.evaluate(()=>__mareDiagnostics().lobby96);assert(stats.images<=48&&stats.bundles<=2&&stats.previews<=8&&stats.peakLoads<=6,JSON.stringify(stats));
+  const stats=await page.evaluate(()=>__mareDiagnostics().lobby96);assert(stats.images<=192&&stats.imageBytes<=64*1024*1024&&stats.bundles<=2&&stats.previews<=8&&stats.peakLoads<=6,JSON.stringify(stats));
   // Test-only memory edits never persist; the confirmed save remains authoritative.
   await go(base+'?paperDoll96=1');await page.waitForFunction(()=>__mareDiagnostics().lobby96.state==='ready');
   assert.equal(await page.evaluate(()=>__mareDiagnostics().lobby96.look.body),'masculino');

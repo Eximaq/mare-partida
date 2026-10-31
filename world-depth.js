@@ -2,8 +2,7 @@
 /* Depth metadata and original-pixel overlays for flattened owner maps. */
 ((root)=>{
  const cache=new Map(),images=new Map(),overlays=new Map();let mask=null,cover=null;
- const assetIds=[...new Set([...(root.MareAlubarna?.props||[]).map(p=>p.assetId),...(root.MareAlabasta?.props||[]).map(p=>p.assetId),...(root.MareLobby?.depthObjects||[]).map(p=>p.assetId),...Object.values(root.MareNewIslandObjects||{}).flatMap(o=>o.assets),...['orange','loguetown'].flatMap(id=>root.MarePixelWorldMaps?.[id]?.source.objects.map(o=>o.assetId)||[])])];
- if(typeof Image==='function')for(const id of assetIds){const im=new Image();im.src='assets/map-depth/objects/'+id+'.png';images.set(id,im);}
+ function prepare(items){if(typeof Image!=='function')return;for(const id of new Set(items.filter(p=>p.type!=='pixel'||p.mapId!=='conchas').map(p=>p.assetId).filter(Boolean)))if(!images.has(id)){const im=new Image();im.src='assets/map-depth/objects/'+id+'.png';images.set(id,im);}}
  const ready=()=>[...images.values()].every(im=>im.complete&&im.naturalWidth>0);
  function maskedOverlay(p,source){const im=images.get(p.assetId);if(!im?.complete||!im.naturalWidth)return null;if(overlays.has(p))return overlays.get(p);const canvas=document.createElement('canvas');canvas.width=Math.ceil(p.w);canvas.height=Math.ceil(p.h);const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.drawImage(source,p.x,p.y,p.w,p.h,0,0,p.w,p.h);c.globalCompositeOperation='destination-in';c.drawImage(im,0,0,p.w,p.h);overlays.set(p,canvas);if(overlays.size>64)overlays.delete(overlays.keys().next().value);return canvas;}
 
@@ -15,7 +14,7 @@
   else if(id==='embers'&&root.MareEmber)items=root.MareEmber.props.filter(p=>!p.ground).map(p=>{const size=128*p.scale;return {id:p.id,x:p.drawX??p.x-size/2,y:p.drawY??p.y-size*.85,w:size,h:size,base:p.y,tall:size>80,type:'ember',prop:p};});
   else if(root.MarePixelWorldMaps?.[id]){items=root.MarePixelWorldMaps[id].props.map(p=>({id:p.id||p.placementId,x:p.x,y:p.y,w:p.width,h:p.height,base:p.bottomY,tall:p.height>96,type:'pixel',mapId:id,assetId:p.assetId}));if(id==='conchas')items.push(...(root.MareConchasStructures?.colliders||[]).map((p,i)=>({id:'fort-'+i,x:p.x,y:p.y-80,w:p.w,h:p.h+80,base:p.y+p.h,tall:true,type:'pixel',mapId:id})));}
   else if(root.MareNewIslands?.[id]){const world=root.MareNewIslands[id],source=root.MareNewIslandObjects[id];items=source.placements.map(([assetIndex,x,y,w,h],i)=>{const pt=world.sourceCell(x,y),tree=source.assets[assetIndex]==='21d6c94c-29cb-440d-87d7-f2e6e54fb923';return {id:id+'-'+i,x:pt.x-w*32,y:pt.y+32-h*64,w:w*64,h:h*64,base:pt.y+32,tall:h>1.5,tree,type:'island',mapId:id,assetId:source.assets[assetIndex]};});}
-  const seen=new Set();items=items.filter(p=>{if(![p.x,p.y,p.w,p.h,p.base].every(Number.isFinite)||p.w<=0||p.h<=0)return false;const key=[p.type,p.x,p.y,p.w,p.h,p.base].join(':');if(seen.has(key))return false;seen.add(key);return true;});cache.set(id,items);return items;
+  const seen=new Set();items=items.filter(p=>{if(![p.x,p.y,p.w,p.h,p.base].every(Number.isFinite)||p.w<=0||p.h<=0)return false;const key=[p.type,p.x,p.y,p.w,p.h,p.base].join(':');if(seen.has(key))return false;seen.add(key);return true;});cache.set(id,items);prepare(items);return items;
  }
  function draw(ctx,p,actors){if(!actors.some(a=>root.MareWorld.occluded(a,[{...p,tall:true}],a.visualHeight||120,a.visualWidth||64)))return false;
   if(p.type==='dawn'){root.MareDawnRenderer.prop(ctx,p.prop,actors);return true;}

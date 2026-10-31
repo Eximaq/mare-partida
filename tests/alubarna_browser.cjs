@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 let source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
 source=source.replace('  window.__mareDiagnostics=','  window.__alubarnaQA={paused:false,returnLobby,saveGame,draw:drawWorld,combatHudBox,outputDamage,get game(){return game},get world(){return world},nav:navigator,stats:getDerived,stop(){autoPlay=false;autoSkills=false},start(){autoPlay=true;autoSkills=false},step(dt){this.paused=false;try{tick(dt)}finally{this.paused=true}},center(){camera.update(world.hero,activeMap(),0,true)}};'+String.fromCharCode(10)+'  window.__mareDiagnostics=').replace('function tick(dt){','function tick(dt){if(window.__alubarnaQA?.paused)return;');
 const expected={puppu:110,merry:120,valentine:135,doublefinger:150,mr1:170};
-(async()=>{const browser=await chromium.launch({headless:true});try{
+(async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{
  const context=await browser.newContext({viewport:{width:1366,height:768}}),page=await context.newPage(),errors=[],missing=[];
  page.on('pageerror',e=>errors.push(e.message));page.on('response',r=>{if(r.status()>=400&&/alubarna|sprites-combat-v2\/(puppu|merry|valentine|doublefinger|mr1)/.test(r.url()))missing.push(r.url());});
  await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));
@@ -26,7 +26,7 @@ const expected={puppu:110,merry:120,valentine:135,doublefinger:150,mr1:170};
    q.outputDamage(m,7);MareNewIslandArt.monster(c,m,q.world.time);const hurt=calls.at(-1),hp=m.hp;MareNewIslandArt.monster(c,m,q.world.time);result.push({key,direction,width:x1-x0+1,height:y1-y0+1,top:y0,barBottom:q.combatHudBox(m).barY+7,walk,attack,hurt,hp,same:m.hp===hp});
   }return result;
  });
- for(const r of scales){assert(Math.abs(Math.max(r.width,r.height)-expected[r.key])<=2,JSON.stringify(r));assert(r.barBottom<r.top);assert(r.walk.endsWith('/walk-'+r.direction+'.png'));assert(r.attack.endsWith('/attack-'+r.direction+'.png'));assert(r.hurt.endsWith('/hurt-south.png'));assert.equal(r.hp,9993);assert.equal(r.same,true);}
+ for(const r of scales){assert(Math.abs(Math.max(r.width,r.height)-expected[r.key])<=2,JSON.stringify(r));assert(r.barBottom<r.top);assert(new URL(r.walk).pathname.endsWith('/walk-'+r.direction+'.png'));assert(new URL(r.attack).pathname.endsWith('/attack-'+r.direction+'.png'));assert(new URL(r.hurt).pathname.endsWith('/hurt-south.png'));assert.equal(r.hp,9993);assert.equal(r.same,true);}
  await page.evaluate(()=>{const canvas=document.createElement('canvas');canvas.id='new-monsters';canvas.width=1300;canvas.height=400;Object.assign(canvas.style,{position:'fixed',top:0,left:0,zIndex:99999,background:'#25303b'});document.body.append(canvas);const c=canvas.getContext('2d');for(const [i,k]of ['puppu','merry','valentine','doublefinger','mr1'].entries()){MareNewIslandArt.monster(c,{type:k,x:130+i*260,y:300,alive:true,emberFacing:'south'},100);c.fillStyle='white';c.font='18px sans-serif';c.fillText(k,60+i*260,335);}});
  await page.locator('#new-monsters').screenshot({path:path.join(out,'monster-scales.png')});await page.evaluate(()=>document.querySelector('#new-monsters').remove());
  const visits=[];

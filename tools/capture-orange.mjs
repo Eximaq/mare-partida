@@ -15,7 +15,7 @@ try{
    await page.addInitScript('Math.random=(()=>{let x=42317;return()=>{x=(Math.imul(1664525,x)+1013904223)>>>0;return x/4294967296}})()');
    if(phase==='before')await page.route('**/*.js',route=>{const filename=new URL(route.request().url()).pathname.split('/').at(-1);return baseline.has(filename)?route.fulfill({body:baseline.get(filename),contentType:'application/javascript'}):route.continue();});
    await page.goto(new URL('../',url).href,{waitUntil:'load'});await page.waitForFunction(()=>typeof __mareDiagnostics==='function');await page.evaluate('MareOrangeRenderer.boot');
-   await page.locator('#characterName').fill('Nauta terreno');await page.locator('#nextToClass').click();await page.locator('#createCharacter').click();await page.clock.runFor(100);
+   await page.locator('#characterName').fill('Nauta terreno');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.clock.runFor(100);
    await page.locator('#devLauncher').click();await page.locator('[data-dev-enter]').click();await page.waitForURL('**/?dev=1');await page.waitForFunction(()=>window.__mareDiagnostics?.().dev.active);
    await page.locator('#devLauncher').click();await page.locator('#devLevel').fill('30');await page.locator('[data-dev-command=level]:not([data-value])').click();await page.locator('[data-dev-option=godMode]').check();await page.locator('[data-dev-travel=orange]').click();await page.evaluate('MareOrangeRenderer.boot');
    if(await page.evaluate('__mareDiagnostics().autoPlay'))await page.locator('#autoToggle').click();await page.clock.runFor(100);
