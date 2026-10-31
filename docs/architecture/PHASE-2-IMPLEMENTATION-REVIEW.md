@@ -2,7 +2,7 @@
 
 Revisão local em 31/10/2026. Branch `feature/auth-sessions`, criada a partir da
 fundação aprovada `3addd2ae93c1d2862500ee0aea4ece9bff7fd217`. PR #160 permanece
-Draft, aberto e sem alterações. Última main consultada: `bddd32fdf0b449d425e3172eb1d23b5257e544f3`.
+Draft, aberto e sem alterações. Última main consultada: `93368fd2ad6ef4151e37f3a40dad43717197b35d`.
 A compatibilidade integrada é verificada pelo ref de PR e CI, sem merge na main.
 As adições concorrentes no topo do README e em `.gitattributes` foram conciliadas
 por commit normal na branch da Fase 2: preservam os links Rank A e regras de bytes
@@ -173,6 +173,34 @@ O teste passa no HEAD isolado da Fase 2. Bloqueio real de integração de gamepl
 fora da alteração documental desta rodada; nenhum asset/teste legado foi editado.
 Compatibilidade textual sem conflitos não equivale a integração aprovada. Revisar
 o contrato de hurt/asset/fallback de phoenix em tarefa separada, sem mascarar o erro.
+
+Investigação posterior, somente leitura do runtime: a falha continua na main
+93368fd, incluindo a atualização de habilidades do PR #171. O teste passa em
+94508ab (pai da introdução) e falha em 85490a6 (introdução da Fênix). Entre 27
+entradas do catálogo atual, somente phoenix não resolve hurt/south. Ela registra
+idle, walk, attack e dash nas quatro direções; não há hurt-south.png no repositório.
+Os 16 PNGs existentes foram conferidos pelo cabeçalho e todos correspondem às
+dimensões declaradas. O teste geral sprite-combat-v2.test.cjs passa, mas não cobre
+a nova forma nesse contrato; sprite-south-hurt.test.cjs detecta a omissão.
+
+O efeito não se limita ao teste: game.js:2458 seleciona hurt após dano e o resolver
+recusa substituir ações ausentes das formas jogáveis. A função real drawUpdatedZoan
+foi executada isoladamente com o catálogo/resolver reais e canvas/imagens simulados:
+antes do golpe houve um desenho; durante a reação, retorno false e nenhum desenho;
+após 0,18 s, o desenho voltou. O chamador de mundo não desenha um substituto nesse
+retorno. Isso demonstra a interrupção de desenho no caminho de código; não houve
+validação visual em navegador nem uso de save. O TypeError de clip.image ocorre
+na asserção do teste; o jogo retorna false nesse caminho, em vez de lançar esse erro.
+
+Correção recomendada, ainda não implementada: localizar uma animação hurt/south
+genuína da Fênix no material original aprovado e integrar seus metadados corretos,
+preservando a regra South e a duração visual. A disponibilidade fora do repositório
+não foi verificada. Se esse material não existir, a decisão artística e eventual
+fallback específico precisam de aprovação antes de alterar o contrato. Não remover
+phoenix do teste nem reaproveitar idle/attack como se fossem hurt para obter CI verde.
+Acrescentar regressão do desenho durante dano e conferir no navegador com save
+descartável quando a correção for autorizada. Nenhum gameplay, asset ou teste
+produtivo foi alterado nesta investigação; Auth continua desligado.
 
 Pendentes/limites: expiração específica do token de e-mail remoto (BFF já ensaiado),
 preenchimento da nova senha na UI e perda de resposta no reset hospedado,
