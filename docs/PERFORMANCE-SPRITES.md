@@ -77,3 +77,7 @@ Também foi medido um protótipo com Worker/OffscreenCanvas, usando exatamente o
 Quando as animações já estão compiladas e não há composição pendente, o cache de imagens de origem é reduzido para até 8 MiB durante a caçada. Pequenos encaixes têm preferência de retenção; as duas aparências compiladas continuam disponíveis para desenhar sem recarregar fontes. Na preparação e nas trocas rápidas do lobby, o limite continua sendo 64 MiB/192 entradas. O navegador confirmou a liberação sem perder as 24 poses nem recarregar uma aparência inalterada. Esses limites descrevem o cache controlado pelo jogo, não toda a memória interna do navegador.
 
 O aquecimento de monstros segue o registro instalado: quando o ator já pertence a SpriteCombatV2, prepara suas imagens atuais e não as folhas antigas de NewIslandArt. As fontes antigas continuam disponíveis apenas para dependências legítimas e bancadas. A validação de Alabasta passou a aguardar os estados do ator atual.
+
+## Cache de cenário de Dawn
+
+O cache de 20 chunks podia ser menor que a área visível em telas maiores/zoom reduzido. Seus acertos também não atualizavam a ordem de uso. O limite agora corresponde à grade finita do mapa (35 chunks de 512 px, aproximadamente 35 MiB de RGBA), com atualização LRU nos acertos. No ensaio do mapa inteiro aquecido, a segunda passagem passou de 35 novas alocações de canvas para zero. Comparação com a base em 12 câmeras/zooms: zero diferenças RGBA. O desenho original dos chunks foi preservado.
