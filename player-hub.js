@@ -67,7 +67,7 @@
   function render(panel,snapshot){ctx=snapshot;if(panel==='journal')return journalHTML();if(panel==='myprofile')return profileHTML();if(panel==='settings')return settingsHTML();return '';}
   function hydrate(panel){
     if(panel==='myprofile'){
-      const src=document.getElementById('miniPortrait'),target=document.getElementById('captainProfilePortrait');
+      const src=document.getElementById('portrait'),target=document.getElementById('captainProfilePortrait');
       if(src&&target){const c=target.getContext('2d');c.imageSmoothingEnabled=false;c.clearRect(0,0,64,64);c.drawImage(src,0,0,64,64);}
     }
   }

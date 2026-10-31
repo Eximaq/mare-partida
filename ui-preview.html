@@ -139,13 +139,14 @@
     </section>
     <header class="topbar parchment-profile" aria-label="Perfil do aventureiro">
       <span id="playerVisualStatus" class="player-visual-status hidden" role="status"></span>
-      <div class="helm-portrait-ribbon" aria-hidden="true"></div>
-      <div class="profile-heading">
-        <button type="button" class="navigator-portrait" data-hud="status" title="Personagem e atributos (P)" aria-label="Abrir atributos"><canvas id="miniPortrait" width="64" height="64" aria-label="Avatar do personagem"></canvas></button>
-        <div><div class="profile-name-row"><strong id="miniName" translate="no">Aventureiro</strong></div><span id="miniClass">Espadachim</span></div>
-        <button type="button" id="characterPosterToggle" aria-controls="characterPoster" aria-expanded="false" aria-label="Expandir cartaz do personagem" title="Expandir cartaz do personagem"><span aria-hidden="true">▾</span></button>
-      </div>
       <div class="parchment-status">
+        <div class="hud-hierarchy">
+          <img id="hudRankArt" width="480" height="96" alt="" hidden>
+          <strong id="hudHierarchyTitle"></strong>
+          <span class="hud-rank-order" aria-label="Patamar"><span id="hudHierarchyTier"></span></span>
+        </div>
+        <span id="hudFactionName"></span>
+        <button type="button" id="characterPosterToggle" aria-controls="characterPoster" aria-expanded="false" aria-label="Expandir cartaz do personagem" title="Expandir cartaz do personagem"><img id="hudFactionEmblem" width="912" height="912" alt="" hidden></button>
         <div class="parchment-meter parchment-hp" role="meter" aria-label="Vida" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="mini-meter"><i id="miniHP"></i></span><span class="parchment-meter-label">HP</span><b id="miniHPText">100 / 100</b></div>
         <div class="parchment-meter parchment-energy" role="meter" aria-label="Energia" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="mini-meter"><i id="miniEnergy"></i></span><span class="parchment-meter-label">EN</span><b id="miniEnergyText">70 / 70</b></div>
         <div class="parchment-meter parchment-xp" role="meter" aria-label="Experiência" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="mini-meter"><i id="miniXP"></i></span><span class="parchment-meter-label">XP</span><b id="miniXPText">0 / 80</b></div>
@@ -164,12 +165,12 @@
       <div class="parchment-tools"><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div>
       <section id="characterPoster" class="character-poster" hidden aria-label="Cartaz do personagem">
         <div class="wanted-sheet">
-          <img class="wanted-paper" src="assets/ui/character-hud/poster.png" width="357" height="502" alt="Cartaz de procurado em pergaminho" draggable="false">
-          <canvas id="wantedPortrait" width="144" height="144" aria-label="Retrato atual do personagem"></canvas>
+          <img class="wanted-paper" src="assets/ui/character-hud/hd/poster.png" width="448" height="600" alt="Cartaz de procurado em pergaminho" draggable="false">
+          <div class="wanted-heading" aria-hidden="true"><strong>WANTED</strong><span>DEAD OR ALIVE</span></div>
+          <canvas id="wantedPortrait" width="192" height="192" aria-label="Retrato atual do personagem"></canvas>
           <strong id="wantedName" translate="no">Aventureiro</strong>
-          <output id="wantedBounty" aria-label="Recompensa futura, zero">0</output>
+          <div class="wanted-bounty-label">฿ Bounty: <output id="wantedBounty" aria-label="Recompensa não definida"></output></div>
         </div>
-        <p class="wanted-future">Recompensa · Em breve</p>
         <button type="button" id="characterPosterClose" aria-label="Recolher cartaz do personagem">Recolher cartaz</button>
       </section>
       <div class="location-heading"><span id="locationName">Porto das Correntes</span><span id="worldClock">DIA 01 · 06:00</span></div>

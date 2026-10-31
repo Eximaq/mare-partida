@@ -1,3 +1,5 @@
+[HUD HD: títulos da Hierarquia dos Mares, emblemas oficiais e cartaz com retrato native96](docs/HUD-HD-HIERARCHY.md).
+
 [Yami e Mera Rank S: auras, seis habilidades e proporções aprovadas](docs/RANK-S-YAMI-MERA.md).
 
 [HUD do personagem: painel de pergaminho, cartaz expansível e fonte Alabasta Pirate](docs/CHARACTER-PARCHMENT-HUD.md).

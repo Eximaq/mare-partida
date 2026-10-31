@@ -1581,7 +1581,7 @@
     $('lootList').innerHTML=session.recentLoot.length?session.recentLoot.map(x=>`<div class="loot-entry"><span>${lootIcon(x.name)}${escapeHTML(x.name)}</span><b>OBTIDO</b></div>`).join(''):'<div class="empty-note">Sua próxima descoberta aparecerá aqui.</div>';
     updateMiniHud();const time=(6+Math.floor(world.time/90))%24; $('worldClock').textContent='DIA '+String(1+Math.floor(world.time/(90*24))).padStart(2,'0')+' · '+String(time).padStart(2,'0')+':00';
   }
-  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{fit:64,time:world.time,scale:equippedZoan().id===MareRyu.rules.id?64/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?90/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?1:64/48});else drawPaperDoll(portrait,36,70,'idle','south',world.time,64/46);vfx_aura.draw(portrait,36,70,world.time,64/48,null,'front');const mini=$('miniPortrait');if(mini){const mc=mini.getContext('2d');mc.imageSmoothingEnabled=false;mc.clearRect(0,0,64,64);mc.drawImage($('portrait'),0,0,64,64);}window.MareCharacterHUD?.portrait($('portrait'));}
+  function renderPortrait(){if(!game)return;portrait.clearRect(0,0,72,72);portrait.fillStyle='#1b2632';portrait.fillRect(0,0,72,72);for(let i=0;i<18;i++){portrait.fillStyle=i%2?'#29394c':'#202f3f';portrait.fillRect((i*31)%72,(i*23)%72,4,4);}if(world.hero.visible!==false)vfx_aura.draw(portrait,36,70,world.time,64/48);if(world.hero.visible===false)drawBeriSeparation(portrait,36,70,1-session.fruitBurst/1.5,64/48);else if(game.zoanTransformed&&equippedZoan())MareZoanArt.draw(portrait,equippedZoan().id,36,70,{fit:64,time:world.time,scale:equippedZoan().id===MareRyu.rules.id?64/MareRyu.rules.worldSize:equippedZoan().id==='akuma_tori_albatroz'?90/64:['akuma_neko_leopard',MareUshi.rules.id,MareWolf.rules.id,MareRankCExpansion.rules.bison.id,MareRyu.rules.id].includes(equippedZoan().id)?1:64/48});else drawPaperDoll(portrait,36,70,'idle','south',world.time,64/46);vfx_aura.draw(portrait,36,70,world.time,64/48,null,'front');window.MareCharacterHUD?.portrait((c,canvas)=>{lobby96.draw(c,{...game,zoanTransformed:false},{scene:'lobby',action:'idle',direction:'south',time:0,x:canvas.width/2,y:canvas.height-12,scale:192/46,consumer:'wantedPortrait'});});}
   // Prepare only the selected destination, before sailing or a direct transition.
   function prepareRegion(area){
     if(!zones[area]||game.level<zones[area].min)return;
@@ -2631,7 +2631,7 @@
     if(fruit){const key=MareSpriteCombatV2.fruits[fruit.id],pose=basicAttackPose();state=MareSpriteCombatV2.visualStatus(key,pose?'attack':world.hero.walking>0?'walk':'idle',pose?.direction||world.hero.direction);if(state==='missing')state='failed';}
     const visible=!!game&&['loading','failed','degraded'].includes(state);node.classList.toggle('hidden',!visible);node.dataset.state=state;
     node.textContent=state==='failed'?'Visual indisponível. Recarregue a página.':state==='degraded'?'Há equipamento sem arte disponível.':'Carregando personagem…';
-    $('miniPortrait').setAttribute('aria-busy',String(visible&&state==='loading'));
+    $('wantedPortrait').setAttribute('aria-busy',String(visible&&state==='loading'));
   }
   function frame(t){if(!lastTime)lastTime=t;const dt=Math.min(.25,Math.max(0,(t-lastTime)/1000));lastTime=t;if(game&&!document.hidden){for(let remaining=dt;remaining>0;remaining-=.05)tick(Math.min(.05,remaining));renderUIClock+=dt;saveClock+=dt;if(renderUIClock>.27){renderUIClock=0;updateUI();}if(saveClock>(game.has_haki_unlocked?1:7)){saveClock=0;saveGame();}camera.update(combatFocus(),activeMap(),dt);}presentWorld();drawVfxPanels();drawCreationAppearance(t/1000);updatePlayerVisualStatus();requestAnimationFrame(frame);}
 
@@ -2718,17 +2718,17 @@ function applySceneHudLayout(){
   // Indicadores compactos mantêm informações críticas legíveis com as janelas fechadas.
   function updateMiniHud(){if(!game)return;const s=getDerived();
     $('attributePointsHud').textContent=game.attributePoints+' ponto'+(game.attributePoints===1?'':'s');$('attributePointsHud').classList.toggle('has-points',game.attributePoints>0);
-    if($('miniName')){$('miniName').textContent=game.name;$('miniName').title=game.name;$('miniLevel').textContent='Nv.'+game.level;}
+    $('miniLevel').textContent='Nv.'+game.level;
     if($('miniHP'))$('miniHP').style.width=(100*clamp(game.hp/s.maxHP,0,1)).toFixed(1)+'%';
     if($('miniEnergy'))$('miniEnergy').style.width=(100*clamp(game.energy/s.maxEnergy,0,1)).toFixed(1)+'%';
     if($('miniGold'))$('miniGold').textContent=fmt(game.gold);
-    $('miniClass').textContent=classes[game.classId].name;$('miniClass').title=classes[game.classId].name;
+
     $('miniPower').textContent=fmt(s.power);
     $('miniHPText').textContent=fmt(game.hp)+' / '+fmt(s.maxHP);
     $('miniEnergyText').textContent=fmt(game.energy)+' / '+fmt(s.maxEnergy);
     $('miniXPText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));
     $('miniXP').style.width=(100*clamp(game.xp/xpNeeded(game.level),0,1)).toFixed(1)+'%';
-    window.MareCharacterHUD?.update({name:game.name,hp:game.hp,maxHP:s.maxHP,energy:game.energy,maxEnergy:s.maxEnergy,xp:game.xp,neededXP:xpNeeded(game.level)});
+    window.MareCharacterHUD?.update({name:game.name,factionId:game.factionId,hierarchyTier:game.hierarchyTier,hp:game.hp,maxHP:s.maxHP,energy:game.energy,maxEnergy:s.maxEnergy,xp:game.xp,neededXP:xpNeeded(game.level)});
     if(impelRun){$('journeyTitle').textContent='Andar '+impelRun.currentFloor+(MarePrison.isBossFloor(impelRun.currentFloor)?' · Chefe':'');$('journeyChapter').textContent='Impel Down';$('journeyProgress').textContent=game.impelDown.cleared+' / 100 concluídos';$('journeyFill').style.width=game.impelDown.cleared+'%';const a=$('journeyAction');a.textContent=impelRun.pending?'Salvar conclusão':'Ver andares';a.dataset.panel='prison';delete a.dataset.claim;return;}
     const quest=questDefs.find(q=>!game.claimed.includes(q.id)&&(scene!=='hunt'||!['orange','swamp','beach','rare'].includes(game.area)||q.area===game.area));
     $('journeyTitle').textContent=quest?quest.title:'Contratos concluídos';
