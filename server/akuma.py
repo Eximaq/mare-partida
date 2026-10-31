@@ -60,7 +60,7 @@ for key,rule in RANK_A_RULES.items():
     FRUITS[rule['id']]={'type':'akuma_no_mi','family':'paramecia','rank':'A','name':rule['name'],'description':rule['description'],'icon_path':'assets/akuma/'+key+'/fruit.png','cooldown':rule['skills'][0]['cooldown'],'skills':rule['skills']}
 
 for key,rule in RANK_S_RULES.items():
-    FRUITS[rule['id']]={'type':'akuma_no_mi','family':'logia','rank':'S','name':rule['name'],'description':rule['description'],'icon_path':'assets/akuma/'+key+'/fruit.png','cooldown':rule['skills'][0]['cooldown'],'skills':rule['skills']}
+    FRUITS[rule['id']]={'type':'akuma_no_mi','family':rule['family'],'rank':'S','name':rule['name'],'description':rule['description'],'icon_path':'assets/akuma/'+key+'/fruit.png','cooldown':rule['skills'][0]['cooldown'],'skills':rule['skills']}
 
 for fruit_id, modifiers in DEVIL_FRUIT_STATS.items():
     FRUITS[fruit_id]['passive_stats']=dict(modifiers)
