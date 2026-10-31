@@ -592,3 +592,8 @@
 @media(max-width:760px){#app .topbar.parchment-profile{left:calc(env(safe-area-inset-left,0px) + 12px);top:calc(env(safe-area-inset-top,0px) + 12px);width:280px;max-width:calc(100vw - 24px)}}
 @media(max-width:360px){#app .topbar.parchment-profile{width:270px}#app .parchment-profile #miniName{font-size:22px}}
 @media(max-height:500px) and (orientation:landscape){#app .topbar.parchment-profile{width:260px}#app .parchment-profile .character-poster{max-height:calc(100dvh - var(--profile-bottom,200px) - 12px)}}
+
+/* A taller character card must not push expanded hunt routes behind the bottom menu.
+   Mobile journey starts 60px below the profile; reserve another 144px for navigation. */
+@media(max-width:760px) and (min-height:501px){#app:has(.parchment-profile) #journeyHud{max-height:calc(100dvh - var(--profile-bottom,212px) - 204px);overflow-y:auto;overscroll-behavior:contain}}
+@media(max-width:760px){body.chat-open #app:has(.parchment-profile) #hudUtilities{visibility:hidden}}
