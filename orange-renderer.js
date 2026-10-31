@@ -4,7 +4,7 @@
   const O=root.MareOrange,images={},characters={},chunks=new Map(),failed=new Set();let manifest={ready:false},terrain=null,ocean=null,revision=0;
   const ready=i=>i?.complete&&i.naturalWidth>0;
   function image(key,url){return new Promise(resolve=>{const i=new Image();i.onload=()=>{images[key]=i;failed.delete(key);revision++;chunks.clear();resolve(i);};i.onerror=()=>{failed.add(key);resolve(null);};i.src=url;});}
-  const boot=Promise.all([
+  let boot=null;function prepare(){return boot ||=Promise.all([
     fetch('assets/terrain/harbor-v2/manifest.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Terrain manifest unavailable');return r.json();}).then(async data=>{
       const urls=[...Object.values(data.sets).map(s=>s.url),...Object.values(data.variants||{}).flat()];await Promise.all(urls.map(url=>image(url,url)));
       terrain=root.MareOrangeTerrain.configure(O,data,images);
@@ -22,6 +22,7 @@
         characters[id]={...asset,sheets};
       }
     }).catch(()=>null));
+  }
   // New ground compositor draws cached pixel-art layers and 8-way autotiles.
   function chunk(cx,cy){
     const key=cx+','+cy+':'+revision;if(chunks.has(key))return chunks.get(key);
@@ -32,20 +33,20 @@
     if(chunks.size>20)chunks.delete(chunks.keys().next().value);
     return canvas;
   }
-  function ground(c,camera,width,height,time,reduced){
+  function ground(c,camera,width,height,time,reduced){prepare();
     // Animated base is always present beneath transparent sea-only chunk regions.
     // Integer world-space phase prevents camera-dependent waves or interpolation.
     const phase=reduced?0:Math.floor(time*2)%64;c.save();c.translate(phase,0);
     c.fillStyle=ocean?c.createPattern(ocean,'repeat'):'#235a65';c.fillRect(camera.x-phase,camera.y,width,height);c.restore();
     for(let y=Math.floor(camera.y/512);y<Math.min(4,Math.ceil((camera.y+height)/512));y++)for(let x=Math.floor(camera.x/512);x<Math.min(4,Math.ceil((camera.x+width)/512));x++)c.drawImage(chunk(x,y),x*512,y*512);
   }
-  function prop(c,p){
+  function prop(c,p){prepare();
     const img=images[p.kind==='building'?'buildings':'harbor'];if(!ready(img))return;
     const size=p.kind==='building'?(manifest.buildings?.cell_size||256):256;
     c.drawImage(img,(p.cell%2)*size,Math.floor(p.cell/2)*size,size,size,Math.round(p.x-p.width/2),Math.round(p.y-p.height),p.width,p.height);
   }
   const motion=new WeakMap();
-  function monster(c,m,time){
+  function monster(c,m,time){prepare();
     const a=characters[O.skins[m.type]?.id];if(!a)return false;
     const previous=motion.get(m),moving=previous&&Math.hypot(m.x-previous.x,m.y-previous.y)>.01;motion.set(m,{x:m.x,y:m.y});
     const action=moving&&!m.telegraph?'walk':'idle',anim=a.animations[action]||a.animations.idle,img=a.sheets[action]||a.sheets.idle;if(!anim||!ready(img))return false;
@@ -57,5 +58,5 @@
     const r=O.returnPoint;c.save();c.strokeStyle='#bce0d2';c.lineWidth=2;c.beginPath();c.ellipse(r.x,r.y,reduced?27:27+Math.sin(time*2),11,0,0,Math.PI*2);c.stroke();c.textAlign='center';c.font='bold 11px Trebuchet MS';c.fillStyle='#f4e3b7';c.fillText('Voltar ao porto',r.x,r.y+28);c.restore();
   }
   function setWoodSource(){} // Preserve the existing game API; piers now use their native atlas.
-  root.MareOrangeRenderer={boot,ground,prop,monster,environment,setWoodSource,stats:()=>({chunks:chunks.size,artReady:manifest.ready&&!!terrain&&failed.size===0,terrainReady:!!terrain,terrainStatus:terrain?.manifest.status,monsters:Object.keys(characters).length,missing:[...failed]})};
+  root.MareOrangeRenderer={get boot(){return prepare();},prepare,ground,prop,monster,environment,setWoodSource,stats:()=>({chunks:chunks.size,artReady:manifest.ready&&!!terrain&&failed.size===0,terrainReady:!!terrain,terrainStatus:terrain?.manifest.status,monsters:Object.keys(characters).length,missing:[...failed]})};
 })(globalThis);

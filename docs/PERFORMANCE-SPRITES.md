@@ -40,3 +40,9 @@ O jogador publica o primeiro clip exato assim que pronto, mantendo as demais dir
 ## Cache de imagens
 
 O ensaio encontrou 148 recursos atuais únicos (cerca de 81 MiB decodificados ao longo das trocas), mas camadas pequenas chegaram a ser decodificadas dez vezes. O cache agora usa LRU com limite de 192 entradas e 64 MiB estimados por largura×altura×4; o limite de concorrência continua em 6. A revisão de recursos e a validação dimensional permanecem. O conjunto inteiro não fica retido indiscriminadamente; composições e prévias mantêm seus limites anteriores. Snapshot informa imageBytes.
+
+## Carregamento por região
+
+Alabasta, Alubarna, mapas NewIslands e projeções PixelWorldMaps deixam de carregar no boot. A seleção de viagem antecipa somente o destino e os monstros associados; a entrada direta também prepara seus recursos. Máscaras de profundidade são solicitadas por região. As bancadas Ember/Orange/Conchas preservam o contrato boot (Promise idempotente), agora acionado explicitamente ou ao desenhar. Fontes e dados de colisão foram preservados. Alabasta foi validada no navegador com viagem, 80 máscaras, 24 paredes, combate e persistência.
+
+Uma tentativa de eliminar os chunks intermediários de Dawn foi rejeitada: preservou os pixels em escala 1:1, mas mudou a amostragem em zoom. O desenho original foi restaurado integralmente. Esse custo segue como oportunidade, sem sacrificar consistência visual.
