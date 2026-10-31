@@ -42,3 +42,7 @@ Sem migração de save, índices de itens, economia ou atributos. Assets antigos
 Janelas existentes candidatas à próxima sprint: Forja (slots, painel, botões, atributos); mercador e contratos (cabeçalho, conteúdo em pergaminho e ações); Personagem/Hierarquia/Haki (painéis e tabs); Modos/Mapa/Prisão (controle de seleção e detalhes). Aplicar uma janela por vez. Criação de personagem também existe e mantém tema próprio nesta sprint. Nenhuma dessas telas foi reformulada aqui.
 
 Arquivos: game.js; ui-tokens.css; ui-components.css; ui-system.js; ui-screens.css; ui-navigator.css; assets/ui/inventory-hd/; tests/inventory-hd-browser.cjs; README.md; docs/UI-DESIGN-SYSTEM.md; este relatório. Composição da HUD principal e ui-hud.css permanecem inalterados.
+
+## Ajuste após a primeira execução remota
+
+O teste de inventário legado supunha insets apenas em px, Akuma na coluna direita e equipamento abaixo do avatar em mobile. Foi atualizado para a composição HD (insets percentuais válidos, faixa separada, 12 slots, três colunas no perfil) e passou nas sete resoluções e no resize; validação de raridades/persistência/clicks preservada. Rótulos ganharam 10px mínimos e largura útil para não cortar Perneiras no celular. O workflow passa também a executar a suíte HD funcional. A primeira rodada remota apontou ainda falhas fora da revisão visual: rank_s_browser em hakiQuickCast e seleção de facções; não há declaração de CI completo aprovado. PR permanece em rascunho para revisão.

@@ -146,7 +146,7 @@
 #app #panelOverlay.inventory-mode.pirate-hd .op-character-core{grid-template-columns:64px minmax(0,1fr) 64px;gap:8px;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
 #app #panelOverlay.inventory-mode.pirate-hd .op-equip-side{gap:5px;display:flex;flex-direction:column}
 #app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot{height:clamp(46px,6.4vh,66px);min-height:46px;max-height:none;padding:3px;gap:1px;border:1px solid #886b3d;border-radius:3px;background:#101c21;box-shadow:inset 0 0 0 2px #03090b}
-#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot .op-slot-label{font-size:9px;min-height:11px;line-height:1.2;order:2;color:#f6dfaa}
+#app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot .op-slot-label{font-size:10px;min-height:12px;line-height:1.2;order:2;color:#f6dfaa;width:calc(100% + 8px);max-width:none;margin-inline:-4px;text-align:center}
 #app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot .op-slot-frame{min-height:26px;height:auto;padding:0;flex:1}
 #app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot .op-slot-icon .item-icon{width:32px;height:32px;max-height:36px;max-width:100%;object-fit:contain}
 #app #panelOverlay.inventory-mode.pirate-hd .op-equip-slot.filled{background-image:none;border-color:var(--rarity,#b58b4b)}
