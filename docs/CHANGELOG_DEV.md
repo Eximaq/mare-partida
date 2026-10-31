@@ -626,3 +626,8 @@ Validação final sobre e302c09: 84 suítes Node aprovadas; teste específico de
 ## 30/10/2026 — Ope/Mero Rank A e HUD de três habilidades
 
 Base c4b7cf6, branch feature/rank-a-ope-mero. Seis habilidades e Shambles dinâmico integrados ao catálogo, combate, HUD e API opcional; assets originais preservados. Relatório de regras, parâmetros iniciais, regressões, fonte dos 158 quadros e rollback: [RANK-A-OPE-MERO.md](RANK-A-OPE-MERO.md). As prévias não reaproveitam o texto de ativação ROOM em outros golpes.
+
+
+## 31/10/2026 — Bari, Doku e Ito Rank A
+
+Base ab77811, branch feature/rank-a-bari-doku-ito. Nove habilidades integradas à HUD Rank A e ao serviço opcional, 294 quadros originais importados, barreiras com física, venenos cumulativos e controle estrito de Parasite. Regras, decisões iniciais, origem e validação: [RANK-A-BARI-DOKU-ITO.md](RANK-A-BARI-DOKU-ITO.md).

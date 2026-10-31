@@ -1,4 +1,4 @@
-name: Rank A — Ope, Mero e HUD de três habilidades
+name: Rank A — cinco frutas e HUD de três habilidades
 on:
   pull_request:
     branches: [main]
@@ -36,7 +36,7 @@ jobs:
           npx playwright install --with-deps chromium
       - name: Contratos, arte e regressões Python
         run: |
-          node --test tests/rank-a-system.test.cjs tests/akuma-system.test.cjs tests/ui-mobile-preview.test.cjs
+          node --test tests/rank-a-system.test.cjs tests/rank-a-expansion.test.cjs tests/akuma-system.test.cjs tests/ui-mobile-preview.test.cjs
           python3 tools/build_pages.py
           python3 -m unittest discover -s tests -p '*_test.py'
       - name: Jogo estático e API com banco isolado
@@ -49,6 +49,8 @@ jobs:
           sleep 2
           MARE_TEST_URL=http://127.0.0.1:8161/dist/ node tests/rank_a_browser.cjs
           MARE_TEST_URL=http://127.0.0.1:8123/ MARE_EXPECT_API=1 node tests/rank_a_browser.cjs
+          MARE_TEST_URL=http://127.0.0.1:8161/dist/ node tests/rank_a_expansion_browser.cjs
+          MARE_TEST_URL=http://127.0.0.1:8123/ MARE_EXPECT_API=1 node tests/rank_a_expansion_browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
