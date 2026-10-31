@@ -244,9 +244,9 @@ alteração dos prazos aprovados.
 | Idempotência e limite de um personagem | Aprovado: retries C 201/201 com mesmo ID; B já coberto | A/B/C preservados, sem dados econômicos locais importados |
 | Link real reutilizado | Aprovado anteriormente em B | Replay não comprova expiração sem uso |
 | Entradas inválidas e correlação local | Aprovado em testes HTTP locais anteriores | Fixtures não substituem ensaio real com código válido em outro navegador |
-| Código real em contexto incompatível | Recusa observada em D, mas prova completa inconclusiva | O controle positivo no contexto original falhou por expiração PKCE no provedor; repetir em janela curta, com novo envio especificamente autorizado |
+| Código real em contexto incompatível | Aprovado em G: contexto incompatível recusado; mesmo código aceito imediatamente no original | Original era cliente HTTP isolado, negativo era navegador integrado; não equivale a dois navegadores. D permanece inconclusivo historicamente |
 | Cadastro real não consumido até expirar no BFF | Aprovado em E: 897 s, callback 400 e nenhuma sessão | Link ainda aceito pelo provedor (303 com código); não comprova expiração do link de e-mail no Supabase |
-| Preservação e encerramento | Aprovado: A/B intactos, três contas/três personagens, zero sessões autorizadas e zero revogações pendentes | Auth false; API/gateway parados; PostgreSQL mantido ativo |
+| Preservação e encerramento | Aprovado após G: A/B/C intactos, quatro contas/três personagens, zero sessões autorizadas e zero revogações pendentes | G só recebeu conta, sem personagem; Auth false; API/gateway parados; PostgreSQL mantido ativo |
 
 No início desta janela PostgreSQL já estava parado: conexão recusada e nenhum
 processo observado. O início normal pelo helper documentado foi executado sem
@@ -346,8 +346,8 @@ exposição do verificador ao cliente. A captura não recupera fluxos antigos va
 Após a correção, os testes comprovaram callback legítimo, rejeição de outro contexto
 antes de consultar o provedor, rejeição de replay, apenas uma solicitação de envio
 e restrição da sessão de recuperação. São regressões locais, **não homologação de
-recuperação nem validação da correção no Supabase hospedado**. A repetição real da
-correlação permanece pendente de novo destinatário/janela e orçamento de envio
+recuperação nem validação da correção no Supabase hospedado**. Naquele encerramento,
+a repetição real da correlação dependia de novo destinatário/janela e orçamento de envio
 especificamente autorizados. O envio F já foi consumido.
 
 Validação desta correção: `npm run typecheck`, `npm run build`, `npm test`
@@ -359,6 +359,55 @@ a CI Docker/Linux deve ser verificada no commit publicado, sem equipará-la a Su
 Encerramento: Auth desligado, API/gateway encerrados, PostgreSQL preservado;
 A/B/C e seus três personagens iguais à referência inicial, zero sessões
 autorizadas e zero revogações pendentes. Gameplay, HUD, assets e saves intactos.
+
+### Janela G — correlação real com controle positivo válido
+
+Em 31/10/2026, usando `230e636`, o proprietário autorizou um cadastro e um único
+envio para novo alias sob seu controle. O acesso à caixa foi preparado antes do
+envio. A mensagem chegou ao Spam e foi lida diretamente no navegador de teste;
+não foi necessário encaminhamento ou abertura do link pelo proprietário.
+
+O BFF retornou 202 e preservou PKCE. O link foi apresentado ao navegador integrado,
+que não tinha os cookies do cliente HTTP original: callback 400 `invalid_auth_flow`.
+O fluxo original permaneceu presente e válido. O mesmo código emitido pelo provedor
+foi imediatamente entregue ao contexto HTTP original, com seus cookies e validação
+TLS: callback 303, cerca de 33 s após o cadastro, e sessão `play` persistida.
+JWT verificado pelo backend e inspecionado apenas em memória: ES256, `exp-iat=900`.
+
+Uma falha do cliente HTTP de teste inicialmente produziu `/v1/me` 400:
+ele retransmitia o cookie de fluxo vazio após receber `Max-Age=0`, em vez de
+apagá-lo como um navegador. O helper local ignorado foi corrigido para respeitar
+a exclusão do cookie; a mesma sessão passou a retornar 200, sem repetir cadastro,
+callback positivo ou login. Não foi uma falha do backend nem exigiu novo e-mail.
+O resultado original foi preservado na evidência junto da correção do helper.
+
+| Verificação G | Resultado observado |
+|---|---|
+| Cadastro/envio | Uma solicitação; 202; PKCE preparado; mensagem recebida no Spam |
+| Contexto incompatível | 400; fluxo original ainda presente e válido |
+| Controle positivo | Mesmo código, cookies originais; 303; `/v1/me` 200 após correção do helper |
+| Replay após uso | 400; sessão legítima existente continuou autenticada |
+| Identidade verificada | Uma nova conta local; JWT ES256/900 s; nenhum personagem novo |
+| Logout | 204; `/v1/me` 401 depois; zero sessões autorizadas e revogações pendentes |
+| Preservação | A/B/C e os três personagens iguais à referência inicial |
+
+**Aprovada a correlação de contexto com provedor real e controle positivo válido.**
+O original era um cliente HTTP isolado e o negativo um navegador, não dois
+navegadores. B/C já cobriram confirmação no navegador original. O código real em G
+não foi consumido pela recusa incompatível. Não alterar a classificação histórica
+de D/F nem inferir expiração do token remoto a partir destes resultados.
+
+O runtime corrigido passou no fluxo hospedado normal. A perda de resposta não foi
+induzida no Supabase nesta janela: o caminho de preservação após timeout continua
+comprovado pela regressão local com SDK real e PostgreSQL, não por falha remota
+forçada. Não há justificativa para outro envio automático apenas para forçar isso.
+O teste não inclui recuperação de senha, carga ou criação de personagem G.
+
+Encerramento verificado: quatro contas/três personagens, Auth false, API 8788 e
+gateway 9443 encerrados, PostgreSQL 55432 ativo. Sem alteração de runtime neste
+registro; nenhum merge, deploy de backend, DNS, dado econômico ou Fase 3.
+Evidências sem credenciais/identificadores ficam fora do Git. Compatibilidade com
+`main` `25fab142` verificada por `merge-tree`, sem merge.
 
 ### Rodada 3 — proposta para aprovação separada
 
@@ -394,7 +443,7 @@ a barreira de expiração do BFF, sem provar expiração do token de e-mail do p
 |---|---|---|
 | Acesso local, HTTPS e origem | Aprovado nesta máquina | Serviços precisam estar ativos durante cada janela; confiança do certificado foi autorizada para o usuário atual |
 | Rodada 1: sessões e controlador | Aprovada no provedor real | Manter os prazos aprovados; não confundir o ensaio de JWT de 900 s com espera de 24 h/2 h, cobertas em configuração e testes locais |
-| Rodada 2: contas e autorização cruzada | Parcial: 40 testes cruzados, confirmação, primeira corrida e expiração BFF aprovados | Correlação com controle positivo válido pendente: D expirou no provedor; F revelou perda do estado PKCE após resposta incerta. Correção passou em regressão local, ainda requer ensaio hospedado autorizado. Expiração do token de e-mail remoto não ensaiada |
+| Rodada 2: contas e autorização cruzada | Evidências principais aprovadas: 40 testes cruzados, confirmação, primeira corrida, expiração BFF e correlação real G com controle positivo | G usa cliente HTTP original + navegador negativo; B/C cobrem navegador original. Expiração específica do token remoto e perda de resposta induzida no provedor não ensaiadas; correção de timeout coberta localmente |
 | Rodada 3: recuperação | Pendente de autorização específica | Dois envios planejados em janelas com cota disponível; fluxo não consumido expirado e fluxo válido; senha definida pelo proprietário; invalidação das sessões anteriores |
 | Aceitação completa da Fase 2 | Não encerrada | Concluir os blocos pendentes; não iniciar a Fase 3 |
 

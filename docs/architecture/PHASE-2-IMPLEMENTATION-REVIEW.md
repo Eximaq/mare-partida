@@ -138,11 +138,21 @@ a falha antes da correção usando SDK real e PostgreSQL descartável. O adaptad
 agora preserva apenas PKCE antes da chamada quando o resultado é incerto, sem
 retry de envio, alteração dos prazos ou afrouxamento das verificações do callback.
 Os testes locais de cadastro/recuperação passaram; outro contexto e replay continuam
-recusados. A correção ainda exige homologação hospedada: não reutiliza o fluxo F
-vazio nem autoriza outro e-mail. A/B/C preservados; Auth/API/gateway desligados.
+recusados. Naquele encerramento, a correção ainda exigia ensaio hospedado; não
+reutilizava o fluxo F vazio nem autorizava outro e-mail. A/B/C preservados;
+Auth/API/gateway desligados.
 
-Pendentes: homologar a correção de resposta perdida e repetir correlação incompatível com controle positivo dentro do prazo
-remoto, recuperação, rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,
+A janela G, já em `230e636`, concluiu correlação real com controle positivo válido:
+um cadastro/envio, 400 no contexto incompatível e 303 no original com o mesmo código
+em cerca de 33 s. Sessão válida, JWT ES256/900 s, replay 400 e logout 204/401.
+O helper ignorado foi ajustado para respeitar exclusão de cookie com Max-Age=0;
+nenhuma alteração de runtime. Original HTTP isolado e negativo no navegador;
+não declarar dois navegadores neste caso. Quatro contas/três personagens, A/B/C
+preservados, zero sessões/revogações e Auth/API/gateway desligados.
+A perda de resposta remota não foi induzida: o ramo de timeout é coberto localmente.
+
+Pendentes: recuperação, expiração específica do token de e-mail remoto (BFF já ensaiado),
+rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,
 retenção/chaves, proteção adicional contra abuso e testes de carga.
 
 A recuperação de rede do pool PostgreSQL passou sem reiniciar o serviço. Restart

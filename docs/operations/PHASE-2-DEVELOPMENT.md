@@ -110,10 +110,19 @@ A janela F revelou perda do estado PKCE após resultado de transporte incerto,
 apesar de cadastro aceito remotamente. O adaptador foi corrigido com regressão
 prévia: captura apenas PKCE antes da chamada e o preserva cifrado para o callback
 vinculado ao contexto original, sem reenviar o e-mail nem alterar limites de tempo.
-As regressões locais passaram; a confirmação hospedada desta correção e a prova
-completa de correlação seguem pendentes de novo envio especificamente autorizado.
+As regressões locais passaram; naquele encerramento a confirmação hospedada e a
+prova completa de correlação dependiam de novo envio especificamente autorizado.
 O fluxo F já vazio não é recuperável pela correção. Ver
 [evidências e limites da janela F](SUPABASE-DEVELOPMENT-SETUP.md#janela-f--resposta-perdida-e-correção-do-estado-pkce).
+
+A janela G concluiu a prova de correlação em `230e636`: um único envio, mensagem
+recebida no Spam, contexto incompatível 400 e mesmo código aceito no original (303),
+com sessão válida e JWT ES256/900 s. O helper HTTP foi corrigido para apagar cookies
+com Max-Age=0; isso não alterou o backend nem repetiu o envio. Replay 400 e logout
+204/401; quatro contas e três personagens, A/B/C preservados, Auth/API/gateway
+desligados. O original era HTTP isolado, não outro navegador. A resposta perdida
+não foi forçada no provedor real; a regressão correspondente continua sendo local.
+Ver [janela G e matriz atualizada](SUPABASE-DEVELOPMENT-SETUP.md#janela-g--correlação-real-com-controle-positivo-válido).
 
 Seguir [SUPABASE-DEVELOPMENT-SETUP.md](SUPABASE-DEVELOPMENT-SETUP.md). Não criar ou
 alterar projetos automaticamente. Copiar `.env.example` para `.env.server.local`,
