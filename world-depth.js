@@ -2,7 +2,7 @@
 /* Depth metadata and original-pixel overlays for flattened owner maps. */
 ((root)=>{
  const cache=new Map(),images=new Map(),overlays=new Map();let mask=null,cover=null;
- function prepare(items){if(typeof Image!=='function')return;for(const id of new Set(items.map(p=>p.assetId).filter(Boolean)))if(!images.has(id)){const im=new Image();im.src='assets/map-depth/objects/'+id+'.png';images.set(id,im);}}
+ function prepare(items){if(typeof Image!=='function')return;for(const id of new Set(items.filter(p=>p.type!=='pixel'||p.mapId!=='conchas').map(p=>p.assetId).filter(Boolean)))if(!images.has(id)){const im=new Image();im.src='assets/map-depth/objects/'+id+'.png';images.set(id,im);}}
  const ready=()=>[...images.values()].every(im=>im.complete&&im.naturalWidth>0);
  function maskedOverlay(p,source){const im=images.get(p.assetId);if(!im?.complete||!im.naturalWidth)return null;if(overlays.has(p))return overlays.get(p);const canvas=document.createElement('canvas');canvas.width=Math.ceil(p.w);canvas.height=Math.ceil(p.h);const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.drawImage(source,p.x,p.y,p.w,p.h,0,0,p.w,p.h);c.globalCompositeOperation='destination-in';c.drawImage(im,0,0,p.w,p.h);overlays.set(p,canvas);if(overlays.size>64)overlays.delete(overlays.keys().next().value);return canvas;}
 
