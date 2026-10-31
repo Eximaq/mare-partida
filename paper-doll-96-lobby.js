@@ -180,7 +180,7 @@
       direction=directionOf(direction);if(worldView)lastPose=null;
       if(!active||state!=='ready'||player?.zoanTransformed||!['south','north','east','west'].includes(direction))return false;
       const value=resolve(player);if(scene!=='lobby'&&!(scene==='hunt'&&value.supported))return false;
-      if(scene==='hunt'&&!pending&&!previewPending)trimSourceImages();
+      if(scene==='hunt'&&!pending&&!previewPending&&bundles.has(value.key))trimSourceImages();
       const requested=action;
       if(['combat-idle','guard','hurt','death'].includes(action))action='idle';
       else if(['attack','skill','skill-1','skill-2','combo','cast','heal','reload','dodge'].includes(action))action=player?.equipment?.weapon?value.attack:'attack-unarmed';
