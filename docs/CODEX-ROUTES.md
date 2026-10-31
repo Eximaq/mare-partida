@@ -32,6 +32,14 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 - Não carregar estes documentos em correções textuais simples; mantê-los pequenos e atualizados a partir de falhas comprovadas.
 
 ## Procedimento rápido de leitura
+
+Autenticação online em desenvolvimento: `apps/game-server/src/auth/`,
+`packages/shared/src/schemas/auth.ts`, `apps/account-client/`;
+ver `docs/architecture/ADR-0002-BFF-SESSIONS.md` e
+`docs/operations/PHASE-2-DEVELOPMENT.md`. Testes: `tests/foundation/auth*`,
+`supabase-provider.test.mts`, `gateway.test.mts`, `tests/integration/server-auth*`.
+Sem integração de gameplay/saves; homologação Supabase real continua pendente.
+
 ```bash
 git status --short && git log -1 --oneline
 rg --files | rg '(portal|paper-doll|conchas|tests)'  # troque pelo domínio da tarefa

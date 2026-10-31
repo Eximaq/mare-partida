@@ -59,8 +59,8 @@ jobs:
       - name: Check container health, isolation and runtime privileges
         run: |
           docker compose -f infra/compose.yaml --profile server up -d --wait --wait-timeout 90 server
-          curl --fail --silent http://127.0.0.1:8787/health/live
-          curl --fail --silent http://127.0.0.1:8787/health/ready
+          curl --fail --silent http://127.0.0.1:8788/health/live
+          curl --fail --silent http://127.0.0.1:8788/health/ready
           docker compose -f infra/compose.yaml exec -T server node --input-type=module <<'JS'
           import assert from 'node:assert/strict';
           import { existsSync } from 'node:fs';
@@ -72,7 +72,7 @@ jobs:
           const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
           try {
             assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
-            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 1);
+            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 2);
             await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
           } finally { await pool.end(); }
@@ -81,4 +81,37 @@ jobs:
           }
           assert.equal((await fetch('http://127.0.0.1:8787/health/live', { method: 'POST' })).status, 405);
           console.log('Docker smoke passed: health, migration repeatability, non-root runtime, no game or credential files, restricted SQL role.');
+          JS
+      - name: Enable BFF locally without contacting a provider
+        shell: bash
+        run: |
+          value=$(openssl rand -base64 32)
+          echo "::add-mask::$value"
+          echo "AUTH_ENCRYPTION_KEY=$value" >> "$GITHUB_ENV"
+          docker compose -f infra/compose.yaml exec -T postgres psql -v ON_ERROR_STOP=1 -U mare_owner -d mare_dev -f /opt/mare/grant-auth.sql
+      - name: Verify auth-enabled container and minimum SQL grants
+        env:
+          SUPABASE_URL: https://phase2-ci.supabase.co
+          SUPABASE_PUBLISHABLE_KEY: sb_publishable_ci_unused_fixture
+          SESSION_ABSOLUTE_SECONDS: "3600"
+          SESSION_IDLE_SECONDS: "600"
+          PROVIDER_RECHECK_SECONDS: "60"
+        run: |
+          docker compose -f infra/compose.yaml -f infra/compose.auth.yaml --profile server config --quiet
+          docker compose -f infra/compose.yaml -f infra/compose.auth.yaml --profile server up -d --wait --wait-timeout 90 server
+          docker compose -f infra/compose.yaml -f infra/compose.auth.yaml exec -T server node --input-type=module <<'JS'
+          import assert from 'node:assert/strict';
+          import pg from 'pg';
+          const csrf = await fetch('http://127.0.0.1:8787/v1/auth/csrf');
+          assert.equal(csrf.status,200);
+          assert.match(csrf.headers.get('set-cookie'),/Secure; HttpOnly; SameSite=Lax/);
+          assert.equal((await fetch('http://127.0.0.1:8787/v1/me')).status,401);
+          const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
+          try {
+            await pool.query('SELECT id FROM mare_game.accounts LIMIT 1');
+            await assert.rejects(pool.query('UPDATE mare_game.characters SET name=name'),{code:'42501'});
+            await assert.rejects(pool.query('UPDATE mare_game.accounts SET subject=subject'),{code:'42501'});
+            await assert.rejects(pool.query('CREATE SCHEMA forbidden'),{code:'42501'});
+          } finally { await pool.end(); }
+          console.log('Auth-enabled Docker smoke passed; no hosted Supabase calls were made.');
           JS

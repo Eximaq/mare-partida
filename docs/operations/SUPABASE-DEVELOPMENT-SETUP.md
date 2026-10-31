@@ -1,0 +1,39 @@
+# Preparação manual do Supabase de desenvolvimento
+
+O proprietário escolheu criar/configurar o projeto manualmente. Este roteiro não
+autoriza o agente a criar recursos, alterar projetos existentes, contratar planos ou
+enviar e-mails. Não forneça senhas, tokens, links de recuperação ou chaves no chat.
+
+1. No dashboard Supabase, escolha uma organização **Free** e crie um projeto novo,
+   por exemplo `mare-partida-auth-dev`. Confira o custo exibido antes de confirmar;
+   se exigir pagamento ou upgrade, pare. Não reutilize um projeto existente. Escolha
+   a região adequada ao seu teste; a região não será alterada pelo agente.
+2. Guarde a senha do banco do Supabase em seu gerenciador. O jogo não precisará dessa
+   senha nem de service_role/secret key: o banco do jogo permanece separado.
+3. Em Auth, habilite e-mail/senha e **Confirm email**. Mantenha proteção contra reuso
+   de refresh. Configure expiração do JWT em 900 segundos após aceitar essa política.
+   Use chave de assinatura assimétrica; registre o algoritmo e issuer públicos.
+4. Configure Site URL `https://localhost:9443/online/` e permita exatamente
+   `https://localhost:9443/v1/auth/callback`. Não use wildcard de produção. Links
+   abrirão na máquina local, no navegador que iniciou o fluxo PKCE. O gateway local
+   e o backend devem estar ativos antes do teste.
+5. Para os primeiros ensaios, use e-mail sob seu controle permitido pelo serviço de
+   e-mail padrão do projeto. Esse serviço tem limites baixos e restrições de
+   destinatário: não garante entrega a usuários gerais. SMTP próprio é uma decisão
+   separada; não habilitar serviço pago ou DNS para este ensaio.
+6. Informe ao agente somente o nome e a URL pública do projeto quando estiver pronto.
+   A publishable key e contas de teste serão preenchidas por você em arquivos locais
+   ignorados, a partir dos exemplos fornecidos pela implementação. Não colocar chaves
+   privilegiadas nem credenciais na linha de comando, screenshot, PR ou logs.
+7. Antes de qualquer chamada real, combinar quais contas/e-mails de teste podem ser
+   usados e autorizar explicitamente cadastro, envio de confirmação/recuperação,
+   troca de senha e logout dessas contas. Não usar contas de jogadores reais.
+
+O plano Free possui limites e projetos podem ser pausados por inatividade; consulte
+a [página oficial de planos](https://supabase.com/pricing) no momento da criação.
+Detalhes do [SMTP de teste](https://supabase.com/docs/guides/auth/auth-smtp) e das
+[URLs de retorno](https://supabase.com/docs/guides/auth/redirect-urls).
+
+Até a homologação real, testes locais/CI não devem ser descritos como validação do
+Supabase hospedado. A etapa pode avançar em código, contratos e testes isolados, mas
+permanece um gate de aceitação explícito.

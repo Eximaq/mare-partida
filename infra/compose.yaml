@@ -1,4 +1,4 @@
-name: mare-authoritative-local
+name: mare-auth-local
 services:
   postgres:
     image: postgres:18.6-bookworm
@@ -9,11 +9,12 @@ services:
       MARE_OWNER_PASSWORD: ${MARE_OWNER_PASSWORD:?Set a unique local owner password}
       MARE_RUNTIME_PASSWORD: ${MARE_RUNTIME_PASSWORD:?Set a unique local runtime password}
     ports:
-      - "127.0.0.1:55432:5432"
+      - "127.0.0.1:55433:5432"
     volumes:
       - mare_pgdata:/var/lib/postgresql
       - ./postgres/init-roles.sh:/docker-entrypoint-initdb.d/001-roles.sh:ro
       - ./postgres/grant-health.sql:/opt/mare/grant-health.sql:ro
+      - ./postgres/grant-auth.sql:/opt/mare/grant-auth.sql:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U mare_admin -d postgres"]
       interval: 5s
@@ -30,7 +31,7 @@ services:
       PORT: 8787
       DATABASE_URL: postgresql://mare_runtime:${MARE_RUNTIME_PASSWORD:?Required}@postgres:5432/mare_dev
     ports:
-      - "127.0.0.1:8787:8787"
+      - "127.0.0.1:8788:8787"
     depends_on:
       postgres:
         condition: service_healthy

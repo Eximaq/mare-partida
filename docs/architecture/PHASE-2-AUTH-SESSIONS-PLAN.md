@@ -1,8 +1,13 @@
 # Fase 2 — Autenticação, sessões e autorização de personagens
 
-Proposta de 30/10/2026, produzida na revisão da Fase 1. **Não implementada.**
-Nenhum projeto Supabase, usuário remoto, configuração de SMTP ou serviço pago foi
-criado/alterado. As decisões abaixo devem ser resolvidas antes da implementação.
+Plano de 30/10/2026, produzido na revisão da Fase 1; implementação de desenvolvimento
+autorizada depois pelo proprietário. Contratos, BFF, sessões, personagem e tela isolada
+estão implementados na branch `feature/auth-sessions`, baseada em `3addd2a`.
+**Aceitação da Fase 2 ainda depende de homologação Supabase real.** Nenhum projeto,
+usuário remoto, SMTP ou serviço pago foi criado/alterado pelo agente.
+As decisões atuais e diferenças em relação à proposta histórica abaixo estão na
+[ADR 0002](ADR-0002-BFF-SESSIONS.md) e no
+[guia de desenvolvimento](../operations/PHASE-2-DEVELOPMENT.md).
 
 ## Resultado esperado e fronteira
 
