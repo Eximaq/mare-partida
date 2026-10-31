@@ -98,6 +98,14 @@ Matriz consolidada e proposta da Rodada 3 em
 
 ## Ativação após preparação manual do provedor
 
+A continuação D/E comprovou expiração do fluxo de cadastro no BFF após 897 s,
+sem sessão criada. O token de e-mail remoto ainda era válido. A recusa no contexto
+incompatível foi observada, mas o controle positivo falhou com 422 no Supabase por
+PKCE expirado; manter o caso inconclusivo até repetição em janela curta autorizada.
+Não estender prazos ou reenviar automaticamente para obter aprovação. Detalhes,
+limitações de contexto HTTP/navegador e encerramento seguro constam na
+[matriz e janela D/E](SUPABASE-DEVELOPMENT-SETUP.md#janela-de--expiração-real-e-limite-do-ensaio-de-correlação).
+
 Seguir [SUPABASE-DEVELOPMENT-SETUP.md](SUPABASE-DEVELOPMENT-SETUP.md). Não criar ou
 alterar projetos automaticamente. Copiar `.env.example` para `.env.server.local`,
 preencher runtime DB, URL do projeto separado, publishable key e algoritmo público.

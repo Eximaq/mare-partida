@@ -121,8 +121,18 @@ o mesmo personagem. A/B intactos; JWT ES256/900 s; três contas/três personagen
 zero sessões autorizadas/revogações pendentes ao encerrar, com Auth/API/gateway
 desligados e PostgreSQL preservado. Um único cadastro/envio, sem alteração de runtime.
 
-Pendentes: correlação real incompatível e expiração de cadastro não consumido
-indicadas na matriz, recuperação, rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,
+Na janela D/E, dois cadastros/envios adicionais foram autorizados. E comprovou
+expiração real do BFF: sem uso por 897 s, provedor 303 com código, BFF 400 sem sessão
+com cookies originais vencidos. Não comprova expiração do token de e-mail remoto.
+D foi recusado no navegador incompatível, mas o controle positivo também falhou:
+logs Auth identificaram POST /token 422 por fluxo PKCE expirado no provedor, apesar
+do prazo local restante. O ensaio completo de correlação permanece inconclusivo.
+O cliente original era HTTP isolado, não outro navegador; links compartilhados
+pelo proprietário no chat constituem limitação adicional. Sem novos personagens,
+contas/sessões locais, mudança de runtime ou prazos; Auth/API/gateway encerrados.
+
+Pendentes: repetir correlação incompatível com controle positivo dentro do prazo
+remoto, recuperação, rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,
 retenção/chaves, proteção adicional contra abuso e testes de carga.
 
 A recuperação de rede do pool PostgreSQL passou sem reiniciar o serviço. Restart

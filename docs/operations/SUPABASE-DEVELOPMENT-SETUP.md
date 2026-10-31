@@ -244,8 +244,8 @@ alteração dos prazos aprovados.
 | Idempotência e limite de um personagem | Aprovado: retries C 201/201 com mesmo ID; B já coberto | A/B/C preservados, sem dados econômicos locais importados |
 | Link real reutilizado | Aprovado anteriormente em B | Replay não comprova expiração sem uso |
 | Entradas inválidas e correlação local | Aprovado em testes HTTP locais anteriores | Fixtures não substituem ensaio real com código válido em outro navegador |
-| Código real em contexto incompatível | Inconclusivo anteriormente; execução adicional adiada | Risco de consumir confirmação; nenhum teste destrutivo do fluxo válido foi feito. Requer procedimento e escopo próprios |
-| Cadastro real não consumido até expirar | Pendente de autorização e outro envio | Um único link não pode provar expiração sem uso e confirmação válida; não aprovado por equivalência |
+| Código real em contexto incompatível | Recusa observada em D, mas prova completa inconclusiva | O controle positivo no contexto original falhou por expiração PKCE no provedor; repetir em janela curta, com novo envio especificamente autorizado |
+| Cadastro real não consumido até expirar no BFF | Aprovado em E: 897 s, callback 400 e nenhuma sessão | Link ainda aceito pelo provedor (303 com código); não comprova expiração do link de e-mail no Supabase |
 | Preservação e encerramento | Aprovado: A/B intactos, três contas/três personagens, zero sessões autorizadas e zero revogações pendentes | Auth false; API/gateway parados; PostgreSQL mantido ativo |
 
 No início desta janela PostgreSQL já estava parado: conexão recusada e nenhum
@@ -259,6 +259,64 @@ de desastre. Não houve tentativa de reproduzir o exercício stop/start bloquead
 Nenhuma falha real foi observada nos casos desta janela. Nenhum segundo envio,
 recuperação, merge, deploy de backend, alteração DNS ou Fase 3 foi executado.
 As evidências sanitizadas permanecem fora do Git; o relatório contém apenas o resumo.
+
+### Janela D/E — expiração real e limite do ensaio de correlação
+
+Em 31/10/2026, o proprietário autorizou exatamente dois cadastros temporários e
+dois envios, um por alias de Gmail sob seu controle. Nenhum reenvio ou recuperação.
+As contas A/B/C não foram recadastradas ou alteradas. O cliente HTTP de teste chamou
+o BFF HTTPS local com validação TLS, cookies separados por fluxo e senhas aleatórias
+geradas em memória. As senhas não foram guardadas; estas identidades são temporárias
+e não receberam personagens. Isso não representa um ensaio iniciado em dois
+navegadores: o contexto original era um cliente HTTP isolado, e o contexto negativo
+foi o navegador integrado sem os cookies daquele fluxo.
+
+Os dois cadastros retornaram 202 e persistiram estado PKCE do provedor. A ferramenta
+de controle do Opera interrompeu a primeira janela por não conseguir verificar a URL;
+Auth/API/gateway foram desligados, PostgreSQL preservado. Após autorização para
+continuar, retomou-se somente pelo navegador integrado, sem contornar a restrição
+do Opera e sem novos envios. O relógio e os prazos não foram alterados.
+
+O proprietário compartilhou os links no chat e confirmou que não os havia aberto;
+depois identificou o destinatário do primeiro. Essa exposição é uma limitação do
+manuseio do ensaio, não deve ser repetida. Relatório/PR não contêm links, códigos,
+tokens, endereços pessoais ou credenciais. Artefatos privados ficaram cifrados em
+diretório local ignorado; evidências sanitizadas permanecem fora do Git.
+
+**D — correlação:** o provedor emitiu um código e o navegador sem a correlação
+recebeu `invalid_auth_flow`. Antes do controle positivo, o banco continuava com três
+contas/três personagens e zero sessões autorizadas; o fluxo D ainda tinha cerca de
+84 s de validade local. Contudo, a troca no cliente HTTP original retornou 400 no
+BFF. Leitura dos logs Auth do projeto identificou a causa remota: POST `/token`,
+422, `invalid flow state, flow state has expired`. O dashboard confirmou D no
+provedor, sem último login. Nenhuma conta/sessão local D foi criada.
+
+Classificação: recusa segura observada, mas **prova completa inconclusiva por
+expiração no provedor**, pois o controle positivo não demonstrou um código ainda
+trocável. Não classificar como falha de autorização nem aprovar por equivalência.
+A [documentação PKCE](https://supabase.com/docs/guides/auth/sessions/pkce-flow)
+descreve validade curta e uso único; o log remoto é a evidência da causa neste caso.
+Não inferir o instante exato de início do prazo remoto apenas pelo redirect.
+Repetir em janela curta, com acesso à mensagem preparado antes do cadastro e troca
+imediata, exige outra confirmação especificamente autorizada. Não aumentar TTLs
+para contornar o problema; revisar a compatibilidade dos prazos BFF/provedor antes
+de prometer ao usuário dez minutos de conclusão garantida.
+
+**E — expiração:** o fluxo local foi observado vencido sem uso. Imediatamente antes
+da verificação, o dashboard mostrava E ainda sem confirmação/último login. Após
+897 s desde o início, o link foi usado uma única vez: provedor 303 com código, BFF
+400 `invalid_auth_flow` ao receber os cookies originais já vencidos, e `/v1/me` sem
+autenticação. O ensaio deliberadamente reapresentou os cookies antigos para verificar
+que o servidor não aceita esse replay; não alterou seus valores nem datas.
+**Aprovada a barreira real de expiração do BFF.** O link do provedor ainda era válido;
+expiração do próprio token de e-mail Supabase não foi ensaiada. O prazo local pode
+recusar antes de alcançar a troca remota; não atribuir essa recusa ao provedor.
+
+Encerramento: Auth false, portas 8788/9443 fechadas, PostgreSQL 55432 ativo,
+três contas/três personagens no jogo, A/B/C iguais à referência inicial, zero
+sessões autorizadas e zero revogações pendentes. D/E permaneceram no provedor,
+sem personagem ou conta local criada. Nenhuma alteração de runtime, gameplay,
+assets, saves, prazo de JWT/sessão, produção, DNS, merge ou Fase 3.
 
 ### Rodada 3 — proposta para aprovação separada
 
@@ -285,7 +343,8 @@ sessões dessa conta. Não há autorização de execução nesta preparação.
 Os dois envios cobrem expiração e recuperação válida em fluxos separados. Eventuais
 mensagens automáticas de segurança configuradas no provedor precisam ser conferidas
 antes da autorização; não prometer quantidade total de mensagens sem essa leitura.
-Expiração de recuperação não substitui a de cadastro ainda pendente na Rodada 2.
+Expiração de recuperação deve ser registrada como tal; o cadastro E já comprovou
+a barreira de expiração do BFF, sem provar expiração do token de e-mail do provedor.
 
 ### Matriz de aprovação da Fase 2
 
@@ -293,7 +352,7 @@ Expiração de recuperação não substitui a de cadastro ainda pendente na Roda
 |---|---|---|
 | Acesso local, HTTPS e origem | Aprovado nesta máquina | Serviços precisam estar ativos durante cada janela; confiança do certificado foi autorizada para o usuário atual |
 | Rodada 1: sessões e controlador | Aprovada no provedor real | Manter os prazos aprovados; não confundir o ensaio de JWT de 900 s com espera de 24 h/2 h, cobertas em configuração e testes locais |
-| Rodada 2: contas e autorização cruzada | Parcial: 40 testes cruzados, confirmação e primeira criação concorrente aprovados | C encerrou login pré-confirmação, PKCE válido e primeira corrida 201/409. Correlação real incompatível e expiração de cadastro não consumido permanecem abertas |
+| Rodada 2: contas e autorização cruzada | Parcial: 40 testes cruzados, confirmação, primeira corrida e expiração BFF aprovados | Repetir correlação incompatível com controle positivo válido: D foi recusado também pelo provedor por expiração PKCE. Expiração do token de e-mail do provedor não foi ensaiada |
 | Rodada 3: recuperação | Pendente de autorização específica | Dois envios planejados em janelas com cota disponível; fluxo não consumido expirado e fluxo válido; senha definida pelo proprietário; invalidação das sessões anteriores |
 | Aceitação completa da Fase 2 | Não encerrada | Concluir os blocos pendentes; não iniciar a Fase 3 |
 
