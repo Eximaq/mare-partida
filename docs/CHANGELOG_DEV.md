@@ -1,3 +1,9 @@
+## 31/10/2026 — HUD de personagem em pergaminho
+
+- Painel fornecido pelo proprietário integrado ao perfil compacto, com HP/energia/XP dinâmicos e cartaz expansível. Nome em Alabasta Pirate local; caracteres ausentes preservados pela fonte de apoio.
+- Bounty fixo em 0 e Em breve, independente das moedas. Retratos reutilizam o renderer existente; saves e regras de jogo preservados.
+- Validação responsiva, teclado, Haki, atributos, transição, reload e build documentados em [CHARACTER-PARCHMENT-HUD.md](CHARACTER-PARCHMENT-HUD.md).
+
 # 30/10/2026 — Sprites atuais: propriedade exclusiva, falhas e cache
 
 - Base f095720 (merge PR157), branch fix/current-player-sprite-ownership. Diagnóstico completo e regras vigentes em [SPRITES-ATUAIS-FONTE-UNICA.md](SPRITES-ATUAIS-FONTE-UNICA.md).

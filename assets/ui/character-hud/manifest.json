@@ -1,0 +1,47 @@
+{
+  "source": "Owner-supplied Pirate_status_panel_Wanted_poster.zip and Alabasta_Pirate.ttf, approved for integration 2026-10-31",
+  "modifications": "Original PNG and TTF bytes preserved. CSS overlays make bars and values dynamic.",
+  "bounty": "Fixed at 0; gameplay implementation deferred by owner.",
+  "assets": [
+    {
+      "file": "status.png",
+      "source": "Pirate_status_panel_Wanted_poster/elements/status_section_on_parchment/status_section_on_parchment.png",
+      "sha256": "f676b09240b73e5836e11cd93808b8e838bbbd04d351faec7edee8f8d36bdb0d"
+    },
+    {
+      "file": "poster.png",
+      "source": "Pirate_status_panel_Wanted_poster/elements/aged_parchment_wanted_poster.png",
+      "sha256": "1734d7c7d223ca97caac652902aab5eb7f5fdcc62530c524351a55c25d32030f"
+    },
+    {
+      "file": "portrait.png",
+      "source": "Pirate_status_panel_Wanted_poster/elements/empty_square_portrait_box.png",
+      "sha256": "5fb1e8cbf0c71cb253c29e9709fe02bd1fdc9e2d91ce285c39d4054deb35d673"
+    },
+    {
+      "file": "ribbon.png",
+      "source": "Pirate_status_panel_Wanted_poster/elements/blank_ornamental_parchment_ribbon_banner_no_text.png",
+      "sha256": "9895c74033626f22b4df216ec327196e2e2ae5ba0422ccf6628070cd99ec410f"
+    },
+    {
+      "file": "hp.png",
+      "source": "Pirate_status_panel_Wanted_poster/elements/red_HP_bar.png",
+      "sha256": "a4722bc69566aafc4d8ff27172779d15f69d82f46b08ac0e02ae2db2fe99a927"
+    },
+    {
+      "file": "energy.png",
+      "source": "Pirate_status_panel_Wanted_poster/elements/purple_mana_bar.png",
+      "sha256": "bfdc1f2566c2be547b9bd64f8f0212e914159ffe4fcdac980c734b4d32b532a3"
+    },
+    {
+      "file": "bounty.png",
+      "source": "Pirate_status_panel_Wanted_poster/elements/bounty_line_with_blank_underline.png",
+      "sha256": "9218e25aa6195d489af85282006889c00eeb95ee44b35f205cfacda912632678"
+    },
+    {
+      "file": "Alabasta_Pirate.ttf",
+      "source": "Alabasta_Pirate.ttf",
+      "sha256": "59426f66669f7f59ddfd2ebf6819ff53f867ab98f7f6594712c7f8e35d0c6654"
+    }
+  ]
+}

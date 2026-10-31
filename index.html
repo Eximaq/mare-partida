@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="modes-menu.css" />
   <link rel="stylesheet" href="inventory-compact.css" />
   <link rel="stylesheet" href="ui-components.css" />
+  <link rel="preload" href="assets/ui/character-hud/Alabasta_Pirate.ttf" as="font" type="font/ttf" crossorigin />
   <link rel="stylesheet" href="ui-hud.css" />
   <link rel="stylesheet" href="hud-zoom-expedition.css" />
   <link rel="stylesheet" href="ui-screens.css" />
@@ -119,6 +120,7 @@
   <script defer src="combat-vfx-data.js"></script>
   <script defer src="combat-vfx.js"></script>
   <script defer src="notification-system.js"></script>
+  <script defer src="character-hud.js"></script>
   <script defer src="game.js"></script>
   <script defer src="audio-system.js"></script>
   <link rel="preload" href="assets/ui/navigator/fonts/alegreya-sans-400.woff2" as="font" type="font/woff2" crossorigin />
@@ -133,13 +135,23 @@
       <select id="factionInspectionDirection" aria-label="Direção dos sprites"><option value="south">Frente</option><option value="north">Costas</option><option value="west">Esquerda</option><option value="east">Direita</option></select>
       <button type="button" id="closeFactionPreview" aria-label="Fechar mostruário">×</button></div>
     </section>
-    <header class="topbar" aria-label="Perfil do aventureiro">
+    <header class="topbar parchment-profile" aria-label="Perfil do aventureiro">
       <span id="playerVisualStatus" class="player-visual-status hidden" role="status"></span>
-      <div class="helm-portrait-ribbon" aria-hidden="true"><span>✦</span> Diário de bordo <span>✦</span></div>
-      <div class="profile-heading"><button type="button" class="navigator-portrait" data-hud="status" title="Personagem e atributos (P)" aria-label="Abrir atributos"><canvas id="miniPortrait" width="64" height="64" aria-label="Avatar do personagem"></canvas></button><div><div class="profile-name-row"><strong id="miniName">Aventureiro</strong><span id="miniLevel">Nv.1</span></div><span id="miniClass">Espadachim</span></div></div>
+      <div class="helm-portrait-ribbon" aria-hidden="true"></div>
+      <div class="profile-heading">
+        <button type="button" class="navigator-portrait" data-hud="status" title="Personagem e atributos (P)" aria-label="Abrir atributos"><canvas id="miniPortrait" width="64" height="64" aria-label="Avatar do personagem"></canvas></button>
+        <div><div class="profile-name-row"><strong id="miniName" translate="no">Aventureiro</strong></div><span id="miniClass">Espadachim</span></div>
+        <button type="button" id="characterPosterToggle" aria-controls="characterPoster" aria-expanded="false" aria-label="Expandir cartaz do personagem" title="Expandir cartaz do personagem"><span aria-hidden="true">▾</span></button>
+      </div>
+      <div class="parchment-status">
+        <div class="parchment-meter parchment-hp" role="meter" aria-label="Vida" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="mini-meter"><i id="miniHP"></i></span><span class="parchment-meter-label">HP</span><b id="miniHPText">100 / 100</b></div>
+        <div class="parchment-meter parchment-energy" role="meter" aria-label="Energia" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="mini-meter"><i id="miniEnergy"></i></span><span class="parchment-meter-label">EN</span><b id="miniEnergyText">70 / 70</b></div>
+        <div class="parchment-meter parchment-xp" role="meter" aria-label="Experiência" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="mini-meter"><i id="miniXP"></i></span><span class="parchment-meter-label">XP</span><b id="miniXPText">0 / 80</b></div>
+        <span id="miniLevel">Nv.1</span>
+        <div class="profile-power"><span>Poder</span><strong id="miniPower">0</strong></div>
+        <strong id="miniGold" title="Dobrões">0</strong>
+      </div>
       <div id="miniTalentResource" class="profile-resource talent-resource hidden"><span id="miniTalentLabel">Vigor</span><span class="mini-meter"><i id="miniTalentFill"></i></span><b id="miniTalentText"></b></div>
-      <div class="profile-resource"><span title="Vida"><span class="navigator-resource-label">Vida</span></span><span class="mini-meter"><i id="miniHP"></i></span><b id="miniHPText">100 / 100</b></div>
-      <div class="profile-resource energy"><span title="Energia"><span class="navigator-resource-label">Energia</span></span><span class="mini-meter energy"><i id="miniEnergy"></i></span><b id="miniEnergyText">70 / 70</b></div>
       <div id="miniWillpower" class="profile-resource haki-will hidden" role="meter" aria-label="Força de Vontade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span>Vontade</span><span class="mini-meter"><i id="willpowerFill"></i></span><b id="willpowerText">100 / 100</b></div>
       <div id="hakiQuickCast" class="haki-quick hidden" role="group" aria-label="Atalhos de Haki">
         <button type="button" data-haki-toggle="armament" aria-label="Haki do Armamento (H)" aria-keyshortcuts="H" aria-pressed="false"><img class="haki-icon" src="assets/haki/armament.png?v=quickcast-20261019" width="32" height="32" alt=""><kbd>H</kbd><span class="haki-quick-state" aria-hidden="true"></span></button>
@@ -147,8 +159,17 @@
         <button type="button" id="hakiKing" aria-label="Haki do Rei (K)" aria-keyshortcuts="K"><img class="haki-icon" src="assets/haki/conqueror.png?v=quickcast-20261019" width="32" height="32" alt=""><kbd>K</kbd><span class="haki-cooldown-sweep" aria-hidden="true"></span><span class="haki-quick-state" aria-hidden="true"></span></button>
         <span id="hakiQuickStatus" class="haki-quick-caption">Haki pronto</span>
       </div>
-      <div class="profile-xp" title="Experiência"><span>XP <b id="miniXPText">0 / 80</b></span><span class="mini-meter xp"><i id="miniXP"></i></span></div>
-      <div class="profile-summary"><div class="profile-power"><span>Poder</span><strong id="miniPower">0</strong></div><div class="profile-wallet"><strong id="miniGold" title="Dobrões">0 ✦</strong><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div></div>
+      <div class="parchment-tools"><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div>
+      <section id="characterPoster" class="character-poster" hidden aria-label="Cartaz do personagem">
+        <div class="wanted-sheet">
+          <img class="wanted-paper" src="assets/ui/character-hud/poster.png" width="357" height="502" alt="Cartaz de procurado em pergaminho" draggable="false">
+          <canvas id="wantedPortrait" width="144" height="144" aria-label="Retrato atual do personagem"></canvas>
+          <strong id="wantedName" translate="no">Aventureiro</strong>
+          <output id="wantedBounty" aria-label="Recompensa futura, zero">0</output>
+        </div>
+        <p class="wanted-future">Recompensa · Em breve</p>
+        <button type="button" id="characterPosterClose" aria-label="Recolher cartaz do personagem">Recolher cartaz</button>
+      </section>
       <div class="location-heading"><span id="locationName">Porto das Correntes</span><span id="worldClock">DIA 01 · 06:00</span></div>
     </header>
 

@@ -587,3 +587,8 @@
   #huntXpTracker.hunt-xp-tracker{top:8px;bottom:auto;left:calc(var(--profile-right,228px) + 12px);right:auto;width:min(200px,calc(var(--menu-left,444px) - var(--profile-right,228px) - 24px))}
   .hunt-xp-tracker .hunt-xp-track,.hunt-xp-tracker .hunt-xp-level{display:none}
 }
+
+/* Parchment character card keeps its own proportions at every breakpoint. */
+@media(max-width:760px){#app .topbar.parchment-profile{left:calc(env(safe-area-inset-left,0px) + 12px);top:calc(env(safe-area-inset-top,0px) + 12px);width:280px;max-width:calc(100vw - 24px)}}
+@media(max-width:360px){#app .topbar.parchment-profile{width:270px}#app .parchment-profile #miniName{font-size:22px}}
+@media(max-height:500px) and (orientation:landscape){#app .topbar.parchment-profile{width:260px}#app .parchment-profile .character-poster{max-height:calc(100dvh - var(--profile-bottom,200px) - 12px)}}
