@@ -124,6 +124,17 @@ desligados. O original era HTTP isolado, não outro navegador. A resposta perdid
 não foi forçada no provedor real; a regressão correspondente continua sendo local.
 Ver [janela G e matriz atualizada](SUPABASE-DEVELOPMENT-SETUP.md#janela-g--correlação-real-com-controle-positivo-válido).
 
+A Rodada 3 concluiu recuperação real na conta temporária G, com três envios
+autorizados para permitir participação somente pelo celular: preparar senha e
+duas sessões, esperar expiração real sem uso e executar a troca final. Callback
+expirado aos 614 s recusado; fluxos válidos com sessão recovery/ES256/900 s.
+Sessões restritas não acessam personagens. Troca final invalidou os dois contextos
+e seus refresh remotos; senha antiga recusada, nova aceita, replay recusado e
+logout confirmado. Clientes HTTP isolados, sem preenchimento de senha pela UI;
+expiração remota do token de e-mail e falha de transporte no reset não induzidas.
+Auth/API/gateway encerrados, quatro contas/três personagens preservados e nenhuma
+revogação pendente. Ver [execução e matriz final da Rodada 3](SUPABASE-DEVELOPMENT-SETUP.md#rodada-3--recuperação-real-concluída-em-31102026).
+
 Seguir [SUPABASE-DEVELOPMENT-SETUP.md](SUPABASE-DEVELOPMENT-SETUP.md). Não criar ou
 alterar projetos automaticamente. Copiar `.env.example` para `.env.server.local`,
 preencher runtime DB, URL do projeto separado, publishable key e algoritmo público.
@@ -185,7 +196,12 @@ e a senha pública de fixture `Local test password only`. Digitar `stop` no term
 encerra apenas esse processo e remove somente seu banco. Não incluir esse harness
 na imagem da API ou em homologação real. Ele não envia e-mails.
 
-## Aceitação no Supabase real — ainda pendente
+## Aceitação no Supabase real — histórico e limites
+
+Estado atual: Rodadas 1–3 executadas, incluindo recuperação autorizada na conta
+temporária G. Os itens abaixo registram preparação e ensaios anteriores; consultar
+a [matriz atualizada](SUPABASE-DEVELOPMENT-SETUP.md#matriz-de-aprovação-da-fase-2)
+para resultados e limites. Isso não autoriza merge, produção ou Fase 3.
 
 O projeto e a configuração local foram preparados pelo proprietário. A conexão de
 leitura, a troca das duas credenciais locais, a Data API desligada no dashboard e

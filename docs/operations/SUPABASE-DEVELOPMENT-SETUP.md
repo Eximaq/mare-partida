@@ -409,33 +409,57 @@ registro; nenhum merge, deploy de backend, DNS, dado econômico ou Fase 3.
 Evidências sem credenciais/identificadores ficam fora do Git. Compatibilidade com
 `main` `25fab142` verificada por `merge-tree`, sem merge.
 
-### Rodada 3 — proposta para aprovação separada
+### Rodada 3 — recuperação real concluída em 31/10/2026
 
-Usar uma conta de teste confirmada escolhida pelo proprietário, preferencialmente
-C para reduzir interferência em A/B. Autorizar explicitamente destinatário, dois
-envios de recuperação, troca de senha pelo proprietário e invalidação de todas as
-sessões dessa conta. Não há autorização de execução nesta preparação.
+Executada sobre o commit b4eae89 (runtime 230e636), exclusivamente no projeto
+Supabase de desenvolvimento e BFF HTTPS local. O proprietário estava no celular
+e autorizou especificamente três solicitações de recuperação, senhas temporárias
+geradas sem exibição e revogação de todas as sessões da conta G, já confirmada e
+sem personagem. A/B/C não participaram. Não houve novo cadastro ou personagem.
 
-1. Primeiro envio: deixar o fluxo de recuperação não consumido ultrapassar seu
-   prazo real de 600 s no BFF, sem alterar relógios. Verificar rejeição e ausência de
-   sessão de recuperação. Isso comprova a barreira local observada; não atribuir
-   ao provedor uma expiração que tenha sido rejeitada antes de alcançá-lo.
-2. Segundo envio, em janela com cota disponível: manter previamente duas sessões
-   da conta selecionada, concluir callback no navegador original e verificar que
-   a sessão de recuperação não permite APIs de personagem.
-3. O proprietário define e submete a nova senha na tela local. Verificar sucesso,
-   consumo da sessão de recuperação, rejeição da senha antiga, login com a nova
-   senha e invalidação das sessões internas anteriores nos dois perfis. Conferir
-   a fila de revogação remota e registrar qualquer pendência, sem presumir revogação
-   imediata de JWTs já emitidos no provedor.
-4. Rejeitar repetição do fluxo já usado sem novo e-mail. Fazer logout, desligar
-   Auth/API/gateway e preservar PostgreSQL, contas, personagens e saves.
+O primeiro envio foi necessário para estabelecer uma senha temporária conhecida
+pelo ensaio: a senha aleatória do cadastro G havia sido descartada. Isso permitiu
+preparar duas sessões antes da troca final. Os outros dois envios separaram a
+expiração sem uso da recuperação válida. Não houve reenvio automático. Antes da
+janela, leitura do dashboard confirmou a notificação adicional de senha alterada
+desligada; a configuração não foi alterada. As três mensagens chegaram ao Spam.
 
-Os dois envios cobrem expiração e recuperação válida em fluxos separados. Eventuais
-mensagens automáticas de segurança configuradas no provedor precisam ser conferidas
-antes da autorização; não prometer quantidade total de mensagens sem essa leitura.
-Expiração de recuperação deve ser registrada como tal; o cadastro E já comprovou
-a barreira de expiração do BFF, sem provar expiração do token de e-mail do provedor.
+Foram usados clientes HTTP isolados com TLS validado, cookies separados, CSRF e
+APIs reais do BFF. O Gmail foi lido pela UI; links foram transferidos cifrados e
+consumidos pelo cliente original. Não se trata de teste de preenchimento interativo
+da tela de nova senha ou de dois navegadores. Não foram usados service_role,
+secret key, credenciais administrativas nem alteração direta de contas hospedadas.
+Senhas só existiram em memória e arquivo auxiliar cifrado, removidas desse arquivo
+ao encerrar; nenhum valor foi publicado, registrado em saída ou entregue pelo chat.
+
+| Cenário | Resultado real | Evidência/limite |
+|---|---|---|
+| Primeiro callback | 303, sessão recovery, JWT ES256/900 s | Identidade comparada à conta G existente; nenhuma conta nova |
+| Privilégios da sessão de recuperação | 401 para /v1/me, criar personagem, consultar e controlar personagem alheio | Repetido nos dois fluxos válidos; nenhum personagem criado |
+| Preparação da senha e sessões | Reset 200, sessão de recuperação encerrada; dois logins 200 | Dois contextos HTTP isolados da mesma conta |
+| Expiração sem uso | Aos 614 s, callback 400 invalid_auth_flow e nenhuma sessão de recuperação | Pré-auth vencida e fluxo ausente/expirado; cookies originais vencidos reapresentados; relógio/TTL intactos |
+| Limite da prova de expiração | Provedor 303 com código | A barreira comprovada é a do BFF; não prova expiração do token de e-mail Supabase |
+| Sessões antes da troca final | Ambas 200 mesmo após o teste do fluxo expirado | Pedido/expiração de recuperação não invalidou essas sessões |
+| Terceiro callback e troca final | Callback 303 em cerca de 31 s; reset 200 | Sessão recovery, JWT ES256/900 s e identidade G verificados |
+| Reutilização da sessão de recuperação | Reset repetido com cookies/CSRF originais: 401 | O token usado não permite uma segunda troca |
+| Replay de callback | 400 nos fluxos válidos já usados | Nenhum novo envio |
+| Sessões antigas após a troca | 401 nos dois contextos; zero sessões autorizadas | Comparação considera epoch da conta, revogação e prazos |
+| Revogação remota | Refresh antigo das duas sessões recusado pelo Supabase via adaptador (401) | Não equivale a invalidação imediata de JWTs já emitidos; fila de revogação vazia |
+| Senha antiga/nova | Login com antiga 401; nova 200 e /v1/me 200 | Uma tentativa de cada, sem imprimir valores |
+| Logout final | 204; /v1/me 401 | Zero sessões autorizadas e zero revogações pendentes |
+| Preservação | Quatro contas/três personagens iguais à referência inicial | A/B/C e G preservados; nenhum dado econômico ou save importado |
+
+**Aprovados os cenários reais autorizados desta rodada; nenhuma falha funcional
+observada.** Expiração específica do token remoto, perda de resposta durante o
+reset hospedado e preenchimento de nova senha pela UI não foram ensaiados nesta
+janela. O resultado incerto do reset permanece coberto localmente, sem alegar
+atomicidade entre Supabase e PostgreSQL. Os limites das outras rodadas continuam
+válidos; esta aprovação não autoriza produção, merge ou Fase 3.
+
+Encerramento verificado: AUTH_ENABLED=false, API 8788/gateway 9443 encerrados,
+PostgreSQL 55432 ativo. Não houve alteração de runtime; somente documentação foi
+preparada para publicação. Helpers/evidências ficam fora do Git. main bddd32f foi
+consultada e a compatibilidade foi verificada por merge-tree, sem merge ou rebase.
 
 ### Matriz de aprovação da Fase 2
 
@@ -444,8 +468,8 @@ a barreira de expiração do BFF, sem provar expiração do token de e-mail do p
 | Acesso local, HTTPS e origem | Aprovado nesta máquina | Serviços precisam estar ativos durante cada janela; confiança do certificado foi autorizada para o usuário atual |
 | Rodada 1: sessões e controlador | Aprovada no provedor real | Manter os prazos aprovados; não confundir o ensaio de JWT de 900 s com espera de 24 h/2 h, cobertas em configuração e testes locais |
 | Rodada 2: contas e autorização cruzada | Evidências principais aprovadas: 40 testes cruzados, confirmação, primeira corrida, expiração BFF e correlação real G com controle positivo | G usa cliente HTTP original + navegador negativo; B/C cobrem navegador original. Expiração específica do token remoto e perda de resposta induzida no provedor não ensaiadas; correção de timeout coberta localmente |
-| Rodada 3: recuperação | Pendente de autorização específica | Dois envios planejados em janelas com cota disponível; fluxo não consumido expirado e fluxo válido; senha definida pelo proprietário; invalidação das sessões anteriores |
-| Aceitação completa da Fase 2 | Não encerrada | Concluir os blocos pendentes; não iniciar a Fase 3 |
+| Rodada 3: recuperação | Aprovada nos fluxos reais autorizados: três envios, expiração BFF, sessão restrita, troca, senha antiga/nova, invalidação interna e refresh remoto recusado | Clientes HTTP isolados; sem preenchimento de senha pela UI, expiração específica do token remoto ou perda de resposta induzida no provedor |
+| Aceitação completa da Fase 2 | Rodadas funcionais 1–3 executadas; revisão final dos limites pelo proprietário | Não equivale a prontidão de produção; revisar riscos abaixo e na revisão arquitetural. Fase 3 não iniciada nem autorizada por este relatório |
 
 ## Roteiro de referência
 

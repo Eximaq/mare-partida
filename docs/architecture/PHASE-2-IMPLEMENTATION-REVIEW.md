@@ -2,7 +2,7 @@
 
 Revisão local em 31/10/2026. Branch `feature/auth-sessions`, criada a partir da
 fundação aprovada `3addd2ae93c1d2862500ee0aea4ece9bff7fd217`. PR #160 permanece
-Draft, aberto e sem alterações. Última main consultada: `25fab142f33b220551edfeec7ecdf142354cdce3`.
+Draft, aberto e sem alterações. Última main consultada: `bddd32fdf0b449d425e3172eb1d23b5257e544f3`.
 A compatibilidade integrada é verificada pelo ref de PR e CI, sem merge na main.
 As adições concorrentes no topo do README e em `.gitattributes` foram conciliadas
 por commit normal na branch da Fase 2: preservam os links Rank A e regras de bytes
@@ -151,7 +151,22 @@ não declarar dois navegadores neste caso. Quatro contas/três personagens, A/B/
 preservados, zero sessões/revogações e Auth/API/gateway desligados.
 A perda de resposta remota não foi induzida: o ramo de timeout é coberto localmente.
 
-Pendentes: recuperação, expiração específica do token de e-mail remoto (BFF já ensaiado),
+A Rodada 3 foi executada com três recuperações especificamente autorizadas da
+conta temporária G, sem personagem: preparação de senha/sessões, expiração real
+sem uso e troca final. Callback expirado aos 614 s: 400; callback válido: 303 e
+sessão restrita, JWT ES256/900 s. APIs de personagem recusadas com 401. Reset 200;
+sessão de recuperação reutilizada 401; callbacks repetidos 400. Duas sessões
+antigas passaram de 200 a 401; ambos os refresh antigos foram recusados pelo
+provedor via adaptador (401). Senha antiga 401, nova 200; logout 204/401 e fila
+remota vazia. Quatro contas/três personagens intactos, Auth/API/gateway desligados.
+Não houve alteração de runtime, senha pelo chat ou chave administrativa. O ensaio
+usou clientes HTTP isolados; não testou preenchimento interativo da nova senha.
+Expiração comprovada no BFF, não no token de e-mail remoto; reset com resposta
+perdida não foi induzido no provedor. Rodadas funcionais 1–3 executadas, sujeitas
+à revisão final dos limites pelo proprietário; sem autorização de Fase 3/produção.
+
+Pendentes/limites: expiração específica do token de e-mail remoto (BFF já ensaiado),
+preenchimento da nova senha na UI e perda de resposta no reset hospedado,
 rotação de chave e revogação iniciada no painel, hospedagem de origem comum para produção,
 retenção/chaves, proteção adicional contra abuso e testes de carga.
 
