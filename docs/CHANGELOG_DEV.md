@@ -1,3 +1,7 @@
+## 31/10/2026 — Refino do inventário e ícones HD (PR 172, em revisão)
+
+Reconstrução PixelLab Pro de 102 ícones e componentes dourados; tipografia local Alegreya SC/Sans, atributos legíveis, rótulos compactos sem sobreposição e ações Equipar/Bloquear/Vender diretamente/Forja. Mercado/Cofre ocultados. Custos: 390 gerações. Sem mudar saves ou sprites de combate. Dez entradas Node, testes de inventário em fonte/dist e HUD passaram; build Pages aprovado. [Fontes, arquivos, testes e limites](INVENTORY-HD-REFINEMENT.md).
+
 ## 31/10/2026 — Yami e Mera Rank S
 
 - Duas frutas S append-only, três slots, auras passivas e seis habilidades integradas ao controlador avançado existente. PNG/JSON fornecidos preservados: 26 arquivos, 361 quadros.
@@ -643,3 +647,14 @@ Base c4b7cf6, branch feature/rank-a-ope-mero. Seis habilidades e Shambles dinâm
 ## 31/10/2026 — Bari, Doku e Ito Rank A
 
 Base ab77811, branch feature/rank-a-bari-doku-ito. Nove habilidades integradas à HUD Rank A e ao serviço opcional, 294 quadros originais importados, barreiras com física, venenos cumulativos e controle estrito de Parasite. Regras, decisões iniciais, origem e validação: [RANK-A-BARI-DOKU-ITO.md](RANK-A-BARI-DOKU-ITO.md).
+
+## 31/10/2026 — Inventário pirata HD (revisão visual)
+
+Branch feature/inventory-pirate-hd, base 93368fd. Base .ui-hd opt-in sobre os tokens/componentes existentes, quatro peças PixelLab Pro (25 gerações), molduras por bordas, três painéis compactos e dados reais. Slots/abas/ações preservados; detalhes ativos/passivos estruturados; seleção incremental sem reconstruir a mochila; prévia native96 pronta após carregamento e sem aura de combate sobre os equipamentos. HUD principal preservada.
+
+Testes, custos/origem, arquivos, comparativos, limitações e sequência de telas em [INVENTORY-PIRATE-HD.md](INVENTORY-PIRATE-HD.md). Oito regressões Node pertinentes; inventário fonte/dist em nove viewports, feminino, reload, toque, atalhos, Equipar Melhores e poção; HUD em oito viewports e quatro facções/níveis 49–51; build/diff aprovados. Suite ampla 240/242 inicialmente, Supa browser passou isoladamente após resolver dependência/servidor. Falha sprite-south-hurt reproduzida na base anterior e registrada. Capturas/saves isolados fora do Git. Sem migração, exclusão de assets antigos ou mudança de balanceamento. Rollback pelos commits da branch. Arte aguarda avaliação do proprietário; sem merge automático.
+
+
+### 31/10/2026 — Refinamento final dos componentes do inventário
+
+Branch feature/inventory-final-components, base 7e24c47 (PR172 ainda em rascunho). Componentes PixelLab isolados, 16 ícones gráficos, quatro placas, moeda Berry oficial reutilizada; 50 gerações confirmadas. Cabeçalho compacto sem cenário, faixas de atributos, letras com sombras curtas e quatro ações 2×2. Comparação canônica em cópia do mesmo slot: maior verde, menor/igual vermelho; estados especiais explícitos, sem alterações do save na seleção. Zeros de atributos/+0 ocultos, penalidades mantidas; Forja com item/contexto preservado sem consumo ao abrir. 18 testes Node aprovados; inventário fonte/dist em nove tamanhos, layout em sete, comparação/Forja e persistência no Chrome; build/diff passaram. [Relatório](INVENTORY-FINAL-COMPONENTS.md). Capturas reais e saves controlados fora do Git. Sem novas artes de itens/personagens, migração ou merge automático.

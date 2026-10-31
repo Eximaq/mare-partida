@@ -30,6 +30,7 @@
   }
   function destroy(el){close(el);modalBindings.delete(el);el.remove();}
   function upgrade(el){
+    if(el.closest?.('.ui-hd'))for(const b of el.querySelectorAll('.op-action,.op-best-btn,.op-pagination button'))b.classList.add('hd-control');
     for(const b of el.querySelectorAll('button'))if(!b.matches('.op-item,.op-equip-slot,.forge2-tile,.forge2-pearl,.forge2-material-slot,.talent-node,[data-talent-node],.voyage-ship,.island-card,.class-choice,.faction-choice,.close-button,.op-close,.ui-close'))b.classList.add('ui-button');
     for(const tab of el.querySelectorAll('.forge2-tabs,.op-tabs,.op-category-tabs,.voyage-region-tabs,.akuma-rank-tabs'))tab.classList.add('ui-tabs');
   }
@@ -105,7 +106,17 @@
     const current=Math.max(0,Math.floor(Number(page)||0));
     return oldPageSize>0&&newPageSize>0?Math.floor(current*oldPageSize/newPageSize):current;
   };
-  root.MareUI={escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals,inventoryGrid,inventoryPageAtResize};
+  // Presentation only: callers supply the canonical power results.
+  const inventoryNumericRows=rows=>rows.filter(row=>row.value!==0);
+  const inventoryPowerState=({equipped=false,compatible=true,hasReference=false,beforePower,afterPower}={})=>{
+    if(equipped)return {state:'equipped',delta:null};
+    if(!compatible)return {state:'incompatible',delta:null};
+    if(!hasReference)return {state:'empty',delta:null};
+    if(!Number.isFinite(beforePower)||!Number.isFinite(afterPower))return {state:'unavailable',delta:null};
+    const delta=afterPower-beforePower;
+    return {state:delta>0?'better':delta<0?'worse':'equal',delta};
+  };
+  root.MareUI={escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals,inventoryGrid,inventoryPageAtResize,inventoryNumericRows,inventoryPowerState};
   if(typeof document!=='undefined')document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot,{once:true}):boot();
   if(typeof module!=='undefined')module.exports=root.MareUI;
 })(globalThis);

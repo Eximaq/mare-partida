@@ -1,3 +1,7 @@
+[Inventário — refino visual e 102 ícones PixelLab HD, aguardando aprovação](docs/INVENTORY-HD-REFINEMENT.md).
+
+[Inventário pirata HD e componentes reutilizáveis — sprint em revisão visual](docs/INVENTORY-PIRATE-HD.md).
+
 [Padrão visual permanente das próximas HUDs](docs/HUD-VISUAL-STANDARD.md).
 
 [HUD HD: títulos da Hierarquia dos Mares, emblemas oficiais e cartaz com retrato native96](docs/HUD-HD-HIERARCHY.md).

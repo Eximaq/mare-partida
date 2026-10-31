@@ -25,7 +25,7 @@ def verify_grid(page, columns):
     assert frames.count()>0
     for i in range(frames.count()):
         background=frames.nth(i).evaluate('e=>getComputedStyle(e).backgroundImage')
-        assert background=='none',(i,background)
+        assert 'url(' not in background,(i,background)
     # Check every rarity on both kinds of slot with browser-computed styles.
     # Only temporary DOM classes change; the actual save and game logic do not.
     rarity_styles=page.evaluate("""() => {
@@ -79,13 +79,13 @@ def verify_grid(page, columns):
         expected='/'+style['rarity']+'.png'
         assert expected in style['bagFrame'] and expected in style['equipFrame'],style
         assert style['bagFrame']==style['equipFrame'],style
-        assert style['bagImage']==style['equipImage']=='none',style
+        assert style['bagImage']=='none' and 'url(' not in style['equipImage'],style
         assert abs(float(style['bagAlpha'])-.70)<.001 and abs(float(style['equipAlpha'])-.70)<.001,style
         rgb=rarity_colors[style['rarity']]
         for key in ['bagColor','equipColor']:
             assert style[key]==f'rgba({rgb[0]}, {rgb[1]}, {rgb[2]}, 0.7)',style
         assert style['bagOpacity']==style['equipOpacity']=='1',style
-        assert all(float(value.removesuffix('px'))>0 for key in ['bagInset','equipInset'] for value in style[key].split()),style
+        assert all(float(value.removesuffix('px').removesuffix('%'))>0 for key in ['bagInset','equipInset'] for value in style[key].split()),style
         assert style['bagMask'].split(', ')==style['equipMask'].split(', ')==['exclude','exclude'],style
         assert 'content-box' in style['bagClip'] and 'content-box' in style['equipClip'],style
         assert style['bagFrameSize']==style['equipFrameSize']=='100% 100%',style
@@ -124,28 +124,27 @@ def verify_equipment_profile(page, viewport_width):
         labelClipping:slots.filter(s=>s.querySelector('.op-slot-label').scrollWidth>s.querySelector('.op-slot-label').clientWidth+2).map(s=>s.dataset.invSlot),
         slotWidths:slots.map(s=>rect(s).width),
         slotHeights:slots.map(s=>rect(s).height),
+        labelOverlaps:slots.filter(s=>rect(s.querySelector('.op-slot-label')).y<rect(s.querySelector('.op-slot-frame')).bottom-1).map(s=>s.dataset.invSlot),
         icons,
         buttonsIntact:slots.every(s=>s.tagName==='BUTTON'&&s.hasAttribute('data-inv-slot')),
         profileToggle:!!document.querySelector('#invHideProfile')
       };
     }""")
-    assert layout['leftCount']==5 and layout['rightCount']==7,layout
+    assert layout['leftCount']==5 and layout['rightCount']==6,layout
     assert layout['leftOrder']==['head','necklace','coat','legs','boots'],layout
-    assert layout['rightOrder']==['weapon','cloak','gloves','ring','belt','charm','akuma_no_mi'],layout
+    assert layout['rightOrder']==['weapon','cloak','gloves','ring','belt','charm'],layout
     assert layout['buttonsIntact'] and layout['profileToggle'],layout
     assert min(layout['labelFontSizes'])>=10,layout
     assert not layout['labelClipping'],layout
-    assert min(layout['slotWidths'])>=65 and min(layout['slotHeights'])>=70,layout
+    assert not layout['labelOverlaps'],layout
+    assert min(layout['slotWidths'])>=54 and min(layout['slotHeights'])>=44,layout
+    assert page.locator('.op-fruit-equipped [data-inv-slot=akuma_no_mi]').count()==1
+    assert page.locator('#panelOverlay [data-inv-slot]').count()==12
     assert layout['icons'] and all(i['dx']<=4 and i['dy']<=4 for i in layout['icons']),layout
-    if viewport_width>760:
-        assert layout['columns']==3,layout
-        assert layout['left']['right']<=layout['avatar']['x']+2,layout
-        assert layout['avatar']['right']<=layout['right']['x']+2,layout
-    else:
-        assert layout['columns']==2,layout
-        assert layout['avatar']['bottom']<=layout['left']['y']+2,layout
-        assert layout['avatar']['bottom']<=layout['right']['y']+2,layout
-        assert layout['left']['right']<=layout['right']['x']+2,layout
+    # HD composition keeps equipment flanking the avatar on every viewport.
+    assert layout['columns']==3,layout
+    assert layout['left']['right']<=layout['avatar']['x']+2,layout
+    assert layout['avatar']['right']<=layout['right']['x']+2,layout
     # Clicking the existing equipment button still selects an item and does not mutate saves.
     filled=page.locator('#panelOverlay.inventory-mode .op-equip-slot.filled')
     assert filled.count()>0
@@ -155,7 +154,7 @@ def verify_equipment_profile(page, viewport_width):
     return layout
 
 with sync_playwright() as p:
-    browser=p.chromium.launch()
+    browser=p.chromium.launch(executable_path=os.environ.get('CHROME_PATH'))
     c,q=page_for(browser)
     base=create(q);c.close()
     data=fixture(base)

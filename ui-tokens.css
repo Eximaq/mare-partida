@@ -36,3 +36,12 @@
 }
 /* CSS variables cannot be used in media conditions: canonical breakpoints are
    1180 (inventory columns), 1024 (tablet), 760 (phone), 480 and 360 (compact). */
+
+/* Approved HD materials; opt-in components share the existing RPG vocabulary. */
+:root{--rpg-hd-wood:url('assets/ui/character-hud/hd/wood.png');--rpg-hd-paper:url('assets/ui/character-hud/hd/parchment.png');--rpg-hd-frame:url('assets/ui/character-hud/hd/status.png');--rpg-hd-gold:#c89c4c;--rpg-hd-ink:#302017;--rpg-hd-heading:Georgia,'Times New Roman',serif;}
+
+:root{--rpg-hd-panel:url('assets/ui/inventory-hd/frame-v2.png');--rpg-hd-button:url('assets/ui/inventory-final/primary.png');--rpg-hd-tab:url('assets/ui/inventory-hd/tab-v2.png');--rpg-hd-slot:url('assets/ui/inventory-hd/slot.png')}
+
+:root{--rpg-hd-secondary:url('assets/ui/inventory-final/secondary.png');--rpg-hd-plaque:url('assets/ui/inventory-hd/heading-v2.png')}
+
+:root{--inv-positive:url('assets/ui/inventory-final/positive.png');--inv-negative:url('assets/ui/inventory-final/negative.png')}

@@ -1,0 +1,2254 @@
+{
+  "version": "20261031-refine",
+  "tool": "PixelLab AI edit_image (Pro)",
+  "generationCost": 340,
+  "initialBatches": 26,
+  "repairBatches": 8,
+  "processing": "AI reconstruction on 128x128 canvases; alpha-bounds crop and 4px transparent padding only; no bitmap resizing in delivered PNGs",
+  "icons": [
+    {
+      "key": "0",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        1,
+        4,
+        105,
+        116
+      ],
+      "padding": 4,
+      "width": 112,
+      "height": 120,
+      "sourceSha256": "2408449a6ead613d2874bdea540dd92fbf296a12ce84a611211cc669a7ef9f00",
+      "sha256": "834d9a0ff504ea977b3d1a58530f8ec079fc1d92c398872940c0204b94cd2035",
+      "source": "assets/ui/items-pixellab/0.png",
+      "job": "e6195457-4649-45cc-bfdf-856afcb5b746",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/e6195457-4649-45cc-bfdf-856afcb5b746/download?index=1"
+    },
+    {
+      "key": "1",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        12,
+        9,
+        91,
+        100
+      ],
+      "padding": 4,
+      "width": 87,
+      "height": 99,
+      "sourceSha256": "8e3f7d837fe362e059542ce702cab4a7f218a868cd33cd6aebc6417f39f6de71",
+      "sha256": "1f6c5bd8868eeec01dcdb5b2b527a8887dfe757b4b6de440f771603d015d4509",
+      "source": "assets/ui/items-pixellab/1.png",
+      "job": "0da7abe5-9d59-4cd6-8145-0720b59c1e68",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/0da7abe5-9d59-4cd6-8145-0720b59c1e68/download?index=0"
+    },
+    {
+      "key": "10",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        9,
+        6,
+        81,
+        97
+      ],
+      "padding": 4,
+      "width": 80,
+      "height": 99,
+      "sourceSha256": "0e51a870150a574aa33c739386230c2ca925c7c3d456cecb77a417e1d2dcc1bb",
+      "sha256": "2cccc84e76aa26325a72e20daa24ad109ec669ff36f8a2e2866c2d7bda88fffd",
+      "source": "assets/ui/items-pixellab/10.png",
+      "job": "0da7abe5-9d59-4cd6-8145-0720b59c1e68",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/0da7abe5-9d59-4cd6-8145-0720b59c1e68/download?index=1"
+    },
+    {
+      "key": "11",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        2,
+        0,
+        95,
+        95
+      ],
+      "padding": 4,
+      "width": 101,
+      "height": 103,
+      "sourceSha256": "535136f236ad4bf7fa6cb1e26583f4125e675a404b2cf7b412444245f25cebeb",
+      "sha256": "a8fce07f00a587114a84febce17e90eec8f2f3ea5bb2c892478649f3e6b44686",
+      "source": "assets/ui/items-pixellab/11.png",
+      "job": "0da7abe5-9d59-4cd6-8145-0720b59c1e68",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/0da7abe5-9d59-4cd6-8145-0720b59c1e68/download?index=2"
+    },
+    {
+      "key": "12",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        3,
+        7,
+        91,
+        92
+      ],
+      "padding": 4,
+      "width": 96,
+      "height": 93,
+      "sourceSha256": "4be9567fa3bca84431cc547faa530c92cb4bfb25e6b2c6ac5e98714d8dfe210c",
+      "sha256": "05952f2f13c1247c37b6cbc480d64e8a99ebd02c14187f56ceea2384574347cd",
+      "source": "assets/ui/items-pixellab/12.png",
+      "job": "0da7abe5-9d59-4cd6-8145-0720b59c1e68",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/0da7abe5-9d59-4cd6-8145-0720b59c1e68/download?index=3"
+    },
+    {
+      "key": "13",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        5,
+        5,
+        95,
+        102
+      ],
+      "padding": 4,
+      "width": 98,
+      "height": 105,
+      "sourceSha256": "5ac44d1c34c34b4aef27266bf15f5eeac088946030fe5bec9f6082d95b55ebf4",
+      "sha256": "604678310acd8c51bda307716c3ac9b98480a5fdbec9141654fa98ab2428bd44",
+      "source": "assets/ui/items-pixellab/13.png",
+      "job": "25264e56-1fcb-45ea-9d9f-f25f3efe28ab",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/25264e56-1fcb-45ea-9d9f-f25f3efe28ab/download?index=0"
+    },
+    {
+      "key": "14",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        16,
+        7,
+        82,
+        103
+      ],
+      "padding": 4,
+      "width": 74,
+      "height": 104,
+      "sourceSha256": "82a144f58ce2d92d30478fec3904378c9a1a778ad28aa0a750fc033191ade9a9",
+      "sha256": "240975b27d60afe113c6f959a022c2f215ff0c409946e2bfdc444e021597c69c",
+      "source": "assets/ui/items-pixellab/14.png",
+      "job": "25264e56-1fcb-45ea-9d9f-f25f3efe28ab",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/25264e56-1fcb-45ea-9d9f-f25f3efe28ab/download?index=1"
+    },
+    {
+      "key": "15",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        1,
+        10,
+        101,
+        95
+      ],
+      "padding": 4,
+      "width": 108,
+      "height": 93,
+      "sourceSha256": "28cab002e5f11ff6567d255bfef1941834c149ef3e173b75cfdd3565c3ca2861",
+      "sha256": "a3a66ee1d080b188486bc37159a0d4344928e1ffc663fadb2af668da254bd007",
+      "source": "assets/ui/items-pixellab/15.png",
+      "job": "25264e56-1fcb-45ea-9d9f-f25f3efe28ab",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/25264e56-1fcb-45ea-9d9f-f25f3efe28ab/download?index=2"
+    },
+    {
+      "key": "16",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        14,
+        2,
+        86,
+        96
+      ],
+      "padding": 4,
+      "width": 80,
+      "height": 102,
+      "sourceSha256": "891d43833d694381a26cf10ea7c7f3194ee66263b6de0ffb8b6eb2b8891e1d7e",
+      "sha256": "d8cdc82523fd5a8a578576ef73e2fc1085d601698007740ed5b53afe6797cbde",
+      "source": "assets/ui/items-pixellab/16.png",
+      "job": "25264e56-1fcb-45ea-9d9f-f25f3efe28ab",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/25264e56-1fcb-45ea-9d9f-f25f3efe28ab/download?index=3"
+    },
+    {
+      "key": "17",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        10,
+        12,
+        97,
+        100
+      ],
+      "padding": 4,
+      "width": 95,
+      "height": 96,
+      "sourceSha256": "6788c346c2fa70e321d715b59eb90ebeb92f7c6b85f804774b96526aedac8e45",
+      "sha256": "8fdb505a1724268ab2d7f22f58a2d3a833ae2653807f821f158cd313438d184a",
+      "source": "assets/ui/items-pixellab/17.png",
+      "job": "b26e7e3d-ee52-47dc-a1ee-093362c8e969",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/b26e7e3d-ee52-47dc-a1ee-093362c8e969/download?index=0"
+    },
+    {
+      "key": "18",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        9,
+        17,
+        99,
+        96
+      ],
+      "padding": 4,
+      "width": 98,
+      "height": 87,
+      "sourceSha256": "f2f3e90a194862c212cd2998a20e96e1016c964009521117035d15c254b7c84a",
+      "sha256": "e36462afd50162b2e34d825d3dc42f4673502cbdacc7de4b86ff42c51795bb90",
+      "source": "assets/ui/items-pixellab/18.png",
+      "job": "b26e7e3d-ee52-47dc-a1ee-093362c8e969",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/b26e7e3d-ee52-47dc-a1ee-093362c8e969/download?index=1"
+    },
+    {
+      "key": "19",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        21,
+        3,
+        93,
+        98
+      ],
+      "padding": 4,
+      "width": 80,
+      "height": 103,
+      "sourceSha256": "7907d4eb59c57a15caa042bc0239998a5fd504e45185ff02914a334eab2bda2c",
+      "sha256": "d4aa1868a3482dcdb91b93bc4ac5fe84689c7e8d0416c434303120df8c783bde",
+      "source": "assets/ui/items-pixellab/19.png",
+      "job": "b26e7e3d-ee52-47dc-a1ee-093362c8e969",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/b26e7e3d-ee52-47dc-a1ee-093362c8e969/download?index=2"
+    },
+    {
+      "key": "2",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        2,
+        5,
+        101,
+        94
+      ],
+      "padding": 4,
+      "width": 107,
+      "height": 97,
+      "sourceSha256": "a54031c27383f1c7f10566990b7b1dc1a7163156f3ad4c94d0c6a75ce8ca7a5f",
+      "sha256": "8a15816d6f8c30ac2b2e388d1178e0e6049f0c17a1fd108694f56f29b1c56896",
+      "source": "assets/ui/items-pixellab/2.png",
+      "job": "b26e7e3d-ee52-47dc-a1ee-093362c8e969",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/b26e7e3d-ee52-47dc-a1ee-093362c8e969/download?index=3"
+    },
+    {
+      "key": "20",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        23,
+        8,
+        95,
+        115
+      ],
+      "padding": 4,
+      "width": 80,
+      "height": 115,
+      "sourceSha256": "6f6b522e41c498b1808ab790adc0dabc2f1b3f499fe3ab608ed5ea5d9bb285aa",
+      "sha256": "320b1c02bff28d93a071c10caa8fdd596229b301a2e3dac1f947399dd5b5770f",
+      "source": "assets/ui/items-pixellab/20.png",
+      "job": "bfba4bdb-968a-41b0-8d69-623fce7bb096",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/bfba4bdb-968a-41b0-8d69-623fce7bb096/download?index=0"
+    },
+    {
+      "key": "21",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        2,
+        12,
+        106,
+        113
+      ],
+      "padding": 4,
+      "width": 112,
+      "height": 109,
+      "sourceSha256": "df7edb61250377160ad1f5625dfef5969bf8c70053dea59ac5b0660296307b21",
+      "sha256": "ef0492d51d83d6c4a5eb6123eeb389cc8256dcf7ba332581ba7b35e768815d52",
+      "source": "assets/ui/items-pixellab/21.png",
+      "job": "bfba4bdb-968a-41b0-8d69-623fce7bb096",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/bfba4bdb-968a-41b0-8d69-623fce7bb096/download?index=1"
+    },
+    {
+      "key": "22",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        13,
+        1,
+        101,
+        114
+      ],
+      "padding": 4,
+      "width": 96,
+      "height": 121,
+      "sourceSha256": "180aa95fde282ef498952cff8f182e784c1a50defbafa240046fe0472057c208",
+      "sha256": "ad9ab70c82eb6274b3718f4373c590f75d98488f049f3144fe7c7ab25ecff1e6",
+      "source": "assets/ui/items-pixellab/22.png",
+      "job": "bfba4bdb-968a-41b0-8d69-623fce7bb096",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/bfba4bdb-968a-41b0-8d69-623fce7bb096/download?index=2"
+    },
+    {
+      "key": "23",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        2,
+        1,
+        107,
+        116
+      ],
+      "padding": 4,
+      "width": 113,
+      "height": 123,
+      "sourceSha256": "ab956900fb096eefcc0cc26345f6ddb67c51421cdca2b050bdd5dbc73a9fb770",
+      "sha256": "0c7bb2fbdcd84638eec50222cc177ba84a93e7e1d6cec0fbb95e264e914f2551",
+      "source": "assets/ui/items-pixellab/23.png",
+      "job": "bfba4bdb-968a-41b0-8d69-623fce7bb096",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/bfba4bdb-968a-41b0-8d69-623fce7bb096/download?index=3"
+    },
+    {
+      "key": "24",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        14,
+        2,
+        110,
+        104
+      ],
+      "padding": 4,
+      "width": 104,
+      "height": 110,
+      "sourceSha256": "bb2f3ea6850131827d1910d3770fc1325bb6839cf2be2dd6d2370995755c071f",
+      "sha256": "6e075cd675700dde05c8da37051aeebbb708e3365ba72f666e5c91cea4b4ec4c",
+      "source": "assets/ui/items-pixellab/24.png",
+      "job": "e718bd47-e171-4c5e-98fc-a2561a81527f",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/e718bd47-e171-4c5e-98fc-a2561a81527f/download?index=0"
+    },
+    {
+      "key": "25",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        2,
+        13,
+        101,
+        98
+      ],
+      "padding": 4,
+      "width": 107,
+      "height": 93,
+      "sourceSha256": "57abad3d21f2801e0edfb4c6c429934c6048cec7876020a3ffa23cfec0d9e948",
+      "sha256": "a79a1f34e2f70f51807e1f87037c7aeadfd54447d019251bb20b16d8ec5cbaed",
+      "source": "assets/ui/items-pixellab/25.png",
+      "job": "e718bd47-e171-4c5e-98fc-a2561a81527f",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/e718bd47-e171-4c5e-98fc-a2561a81527f/download?index=1"
+    },
+    {
+      "key": "26",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        4,
+        6,
+        106,
+        98
+      ],
+      "padding": 4,
+      "width": 110,
+      "height": 100,
+      "sourceSha256": "6d73da2b5852173108d4503928ee92946486475121a0582349e2e30806abd99f",
+      "sha256": "25c57a5019ccbe49e176f9881ec439cd7c4649ed3d1288563618e49479399fa7",
+      "source": "assets/ui/items-pixellab/26.png",
+      "job": "e718bd47-e171-4c5e-98fc-a2561a81527f",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/e718bd47-e171-4c5e-98fc-a2561a81527f/download?index=2"
+    },
+    {
+      "key": "27",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        12,
+        8,
+        99,
+        96
+      ],
+      "padding": 4,
+      "width": 95,
+      "height": 96,
+      "sourceSha256": "5042b67c59e89f38288eda43f33da7f436762948b9285dcb12446adb954f2b83",
+      "sha256": "299c6bcd75a84d11788f5d7f378ff2e2468158edbfbc0ba2a057fb7d82af23fb",
+      "source": "assets/ui/items-pixellab/27.png",
+      "job": "e718bd47-e171-4c5e-98fc-a2561a81527f",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/e718bd47-e171-4c5e-98fc-a2561a81527f/download?index=3"
+    },
+    {
+      "key": "28",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        10,
+        10,
+        121,
+        122
+      ],
+      "padding": 4,
+      "width": 119,
+      "height": 120,
+      "sourceSha256": "c1138a93dac60beeeb561149f5b0c0944af4512d1d452df7fd36c22c5b470c3a",
+      "sha256": "4433dc268c5bf23a3bd411cc143c0035e7c73ef82ce2a5e58cd746db9d52744a",
+      "source": "assets/ui/items-pixellab/28.png",
+      "job": "820e6abb-6739-4f59-a803-9872d59dfded",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/820e6abb-6739-4f59-a803-9872d59dfded/download?index=0"
+    },
+    {
+      "key": "29",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        3,
+        26,
+        87,
+        75
+      ],
+      "padding": 4,
+      "width": 92,
+      "height": 57,
+      "sourceSha256": "c46e549a4d83cc841280be23c6858358a466d4efad43f977aff3f52a2b581c9b",
+      "sha256": "121a96ba27b2d12b6e6a4a15b2b5e7146ab29d6a270d8a034c3b3f20a26e3e59",
+      "source": "assets/ui/items-pixellab/29.png",
+      "job": "b7c3a472-0848-4a64-ac7a-ec0e947ba7dc",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/b7c3a472-0848-4a64-ac7a-ec0e947ba7dc/download?index=1"
+    },
+    {
+      "key": "3",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        7,
+        1,
+        81,
+        81
+      ],
+      "padding": 4,
+      "width": 82,
+      "height": 88,
+      "sourceSha256": "66735a51af9ea43a048a1fd0b00edaf954849565c89c330339ed3c74aa204ed0",
+      "sha256": "4ac3d870f282060e199d3383dcac22504484690563d9ef65a99bf5985d219240",
+      "source": "assets/ui/items-pixellab/3.png",
+      "job": "b7c3a472-0848-4a64-ac7a-ec0e947ba7dc",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/b7c3a472-0848-4a64-ac7a-ec0e947ba7dc/download?index=2"
+    },
+    {
+      "key": "30",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        2,
+        14,
+        86,
+        85
+      ],
+      "padding": 4,
+      "width": 92,
+      "height": 79,
+      "sourceSha256": "fb9ae072c723e8b80fb5a6fcd69a2de9d3ed5948a964d100e61a8decb973ee57",
+      "sha256": "bac7e725144049d1965597bbdd88b43996f2c358430cb422d1766fd31043160e",
+      "source": "assets/ui/items-pixellab/30.png",
+      "job": "b7c3a472-0848-4a64-ac7a-ec0e947ba7dc",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/b7c3a472-0848-4a64-ac7a-ec0e947ba7dc/download?index=3"
+    },
+    {
+      "key": "31",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        3,
+        2,
+        112,
+        113
+      ],
+      "padding": 4,
+      "width": 117,
+      "height": 119,
+      "sourceSha256": "247e5eeae73ca393e853fd20d1f6d78f65316ca3fbf548e4b03170c797458649",
+      "sha256": "07d3a5cd98d3c5d827abc9df9f9a3aefef25ebbf3ef4d018deb9ad68d5e514b9",
+      "source": "assets/ui/items-pixellab/31.png",
+      "job": "6fd99ce6-2f07-4aa8-b716-42124ad368ad",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/6fd99ce6-2f07-4aa8-b716-42124ad368ad/download?index=0"
+    },
+    {
+      "key": "32",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        3,
+        9,
+        109,
+        108
+      ],
+      "padding": 4,
+      "width": 114,
+      "height": 107,
+      "sourceSha256": "7c19b3a8a4399cd14ad161383a70d24bedb1b385393f319976c6a25cd2274353",
+      "sha256": "1f41a346eb9a8e988671e2fe188021a5216e47a9ef800774b88f04409507de95",
+      "source": "assets/ui/items-pixellab/32.png",
+      "job": "6fd99ce6-2f07-4aa8-b716-42124ad368ad",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/6fd99ce6-2f07-4aa8-b716-42124ad368ad/download?index=1"
+    },
+    {
+      "key": "4",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        4,
+        112,
+        113
+      ],
+      "padding": 4,
+      "width": 112,
+      "height": 117,
+      "sourceSha256": "ca7ab9276e4bb78632fdeaf93c6fbfde3aa264af1d4af1ce295566bc6d947dfb",
+      "sha256": "366e01d8e2772efd346b42d4b73709ce763af67c42e075f1aa443d0d849766a0",
+      "source": "assets/ui/items-pixellab/4.png",
+      "job": "6fd99ce6-2f07-4aa8-b716-42124ad368ad",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/6fd99ce6-2f07-4aa8-b716-42124ad368ad/download?index=2"
+    },
+    {
+      "key": "5",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        1,
+        2,
+        108,
+        108
+      ],
+      "padding": 4,
+      "width": 115,
+      "height": 114,
+      "sourceSha256": "339d6467e0eb9a7d2daaaf7a9784df4a527e66b35026f32804c4c3cec798546e",
+      "sha256": "04f89f3b3690841b17889edf098952f6f2f02045c1c7b966d4778530bcc41ae1",
+      "source": "assets/ui/items-pixellab/5.png",
+      "job": "6fd99ce6-2f07-4aa8-b716-42124ad368ad",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/6fd99ce6-2f07-4aa8-b716-42124ad368ad/download?index=3"
+    },
+    {
+      "key": "6",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        6,
+        9,
+        104,
+        117
+      ],
+      "padding": 4,
+      "width": 106,
+      "height": 116,
+      "sourceSha256": "5ca5e598c7725e75122b2bfec87cfd4c1af339da1b600412e7cce37615d3c4fc",
+      "sha256": "54bdb693127208215a981da55b9ea4ddfcc322e7dee610ecdeabfd3cf18b2800",
+      "source": "assets/ui/items-pixellab/6.png",
+      "job": "e6195457-4649-45cc-bfdf-856afcb5b746",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/e6195457-4649-45cc-bfdf-856afcb5b746/download?index=2"
+    },
+    {
+      "key": "7",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        8,
+        121,
+        122
+      ],
+      "padding": 4,
+      "width": 121,
+      "height": 122,
+      "sourceSha256": "6a635dc44263c5e75caf13d122092a3b3b96fcd0099093d5ea786cd048eeecfc",
+      "sha256": "9c4cd50cc6322b45e6ec99d2a81ce63150e3cd5551c7f1e5032c77530098445d",
+      "source": "assets/ui/items-pixellab/7.png",
+      "job": "820e6abb-6739-4f59-a803-9872d59dfded",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/820e6abb-6739-4f59-a803-9872d59dfded/download?index=1"
+    },
+    {
+      "key": "8",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        10,
+        13,
+        109,
+        115
+      ],
+      "padding": 4,
+      "width": 107,
+      "height": 110,
+      "sourceSha256": "76843c644715db71ade2adfba5360ed7721dabc37202c0da80123f307752a66d",
+      "sha256": "d3fec06c2b8c7898620355980730158b25e730096121d2cc8ad57684513e974f",
+      "source": "assets/ui/items-pixellab/8.png",
+      "job": "e6195457-4649-45cc-bfdf-856afcb5b746",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/e6195457-4649-45cc-bfdf-856afcb5b746/download?index=3"
+    },
+    {
+      "key": "9",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        9,
+        10,
+        121,
+        122
+      ],
+      "padding": 4,
+      "width": 120,
+      "height": 120,
+      "sourceSha256": "7147ed0494a042dc6a50dd5dea6738856decd8e81a1b19fde735ae100e7e2aac",
+      "sha256": "3da47c887efe4c23149970d16c6bcc8292ae60b59c5816bc6d6565793c1dfd46",
+      "source": "assets/ui/items-pixellab/9.png",
+      "job": "820e6abb-6739-4f59-a803-9872d59dfded",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/820e6abb-6739-4f59-a803-9872d59dfded/download?index=2"
+    },
+    {
+      "key": "adaga-de-cristal",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        13,
+        10,
+        120,
+        122
+      ],
+      "padding": 4,
+      "width": 115,
+      "height": 120,
+      "sourceSha256": "a65f2c4b1f0a3c2685834cad338dd614ebf304aa24681f05b5c513469ae4980b",
+      "sha256": "64f10026fd950ce4bb3774857de1da9a3461abcc18c37e812be3e9bbb28fcfde",
+      "source": "assets/ui/items-pixellab/adaga-de-cristal.png",
+      "job": "820e6abb-6739-4f59-a803-9872d59dfded",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/820e6abb-6739-4f59-a803-9872d59dfded/download?index=3"
+    },
+    {
+      "key": "akuma_bari_bari",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        11,
+        2,
+        87,
+        97
+      ],
+      "padding": 4,
+      "width": 84,
+      "height": 103,
+      "sourceSha256": "7c2c69e86d9f89fc27c1e4afee729058798820686c0abd0d7391c5e84d910888",
+      "sha256": "7ce252d91d9ca7ee3f4d1f0010028a54ee39eec2d26266d7fc89164cb6c0f59b",
+      "source": "assets/akuma/bari/fruit.png",
+      "job": "c73de04d-a4cc-4f84-8812-7ee01d09143e",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/c73de04d-a4cc-4f84-8812-7ee01d09143e/download?index=3"
+    },
+    {
+      "key": "akuma_beri_beri",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        7,
+        0,
+        95,
+        108
+      ],
+      "padding": 4,
+      "width": 96,
+      "height": 116,
+      "sourceSha256": "30532a98c385947caadc94f2bd605f3d58875f5e1a6826610da5284a2a868a8e",
+      "sha256": "05529a553355f272da57b7bdc2ed86fb65c046d230cea07674b6aa80c9b7be37",
+      "source": "assets/akuma/beri-icon.png",
+      "job": "8b629e17-b860-4e0a-96f3-fc2140c20859",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/8b629e17-b860-4e0a-96f3-fc2140c20859/download?index=2"
+    },
+    {
+      "key": "akuma_beta_beta",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        20,
+        10,
+        106,
+        121
+      ],
+      "padding": 4,
+      "width": 94,
+      "height": 119,
+      "sourceSha256": "ff880d2159ad068f0ee530db3ad05339f87151034de3a6dfbe06ed037882ba16",
+      "sha256": "025ae30ab1efc9ffe32e066efd011f95dda053c81b71c506a053a012f6dbc137",
+      "source": "assets/akuma/beta/fruit.png",
+      "job": "748923d3-41fe-42f2-b543-24b5d1a417f3",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/748923d3-41fe-42f2-b543-24b5d1a417f3/download?index=0"
+    },
+    {
+      "key": "akuma_bomu_bomu",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        27,
+        10,
+        107,
+        122
+      ],
+      "padding": 4,
+      "width": 88,
+      "height": 120,
+      "sourceSha256": "5b392ffadbdafc009e7c3078d92b936099893a265d56c7a1f97dd0e59bce2ca4",
+      "sha256": "7a98c99487bcd6a5d585b6c95dbd21bddb135c52d8718ce8a1671a50c9d74e6b",
+      "source": "assets/akuma/bomu/fruit.png",
+      "job": "748923d3-41fe-42f2-b543-24b5d1a417f3",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/748923d3-41fe-42f2-b543-24b5d1a417f3/download?index=1"
+    },
+    {
+      "key": "akuma_doku_doku",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        13,
+        15,
+        96,
+        118
+      ],
+      "padding": 4,
+      "width": 91,
+      "height": 111,
+      "sourceSha256": "142b06c401b3814ebbac5045a611904d58bd03cbd4a2f69c324313d81a2fa1d8",
+      "sha256": "76b7a658fdb6b5a3b705de0646f63b527862c21a9e9d553d9cbc9e9f08565fc2",
+      "source": "assets/akuma/doku/fruit.png",
+      "job": "ae937e68-8c9b-4449-b5d4-627d8f528989",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/ae937e68-8c9b-4449-b5d4-627d8f528989/download?index=0"
+    },
+    {
+      "key": "akuma_doru_doru",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        49,
+        9,
+        107,
+        120
+      ],
+      "padding": 4,
+      "width": 66,
+      "height": 119,
+      "sourceSha256": "cd0181a2b3500768d88a392dc5979deec7744d0a4d5c57bc7060d52243390577",
+      "sha256": "3b7cd7fdd031494b52ed2f43358064270718b2c696b2d355b66ae16e85615446",
+      "source": "assets/akuma/doru/fruit.png",
+      "job": "748923d3-41fe-42f2-b543-24b5d1a417f3",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/748923d3-41fe-42f2-b543-24b5d1a417f3/download?index=2"
+    },
+    {
+      "key": "akuma_gura_gura",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        17,
+        3,
+        105,
+        121
+      ],
+      "padding": 4,
+      "width": 96,
+      "height": 126,
+      "sourceSha256": "a71f4c6b597a9ccaf08ed929380fbb7db82d00cc48fb15f7e4de62909b5eda38",
+      "sha256": "5f647de4054617e856265fc6f45eebec5a0cd1191d22e11ad1d357763a01eed4",
+      "source": "assets/akuma/gura/fruit.png",
+      "job": "e6195457-4649-45cc-bfdf-856afcb5b746",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/e6195457-4649-45cc-bfdf-856afcb5b746/download?index=0"
+    },
+    {
+      "key": "akuma_hana_hana",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        21,
+        8,
+        107,
+        122
+      ],
+      "padding": 4,
+      "width": 94,
+      "height": 122,
+      "sourceSha256": "de98e679869f6f45238a7f7ee21fd7ff533390176f5c4d20805b8e62d35d5a00",
+      "sha256": "380232e50d49b1bf7f91d02acea2272cd8c40ef16dcb748335f2d82c2c083d04",
+      "source": "assets/akuma/hana/fruit.png",
+      "job": "748923d3-41fe-42f2-b543-24b5d1a417f3",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/748923d3-41fe-42f2-b543-24b5d1a417f3/download?index=3"
+    },
+    {
+      "key": "akuma_hie_hie",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        7,
+        3,
+        89,
+        102
+      ],
+      "padding": 4,
+      "width": 90,
+      "height": 107,
+      "sourceSha256": "c7e5aee46590856e1eeacc512c7dd16c560237529afe23ff696dfeee8dae1bae",
+      "sha256": "43d23b1aa126630bc82b0067e519dc257f8f4bd248cf4aeadeb1840f186ef4c8",
+      "source": "assets/akuma/hie/fruit.png",
+      "job": "1d55f294-977b-43cd-b002-ca77eee68371",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/1d55f294-977b-43cd-b002-ca77eee68371/download?index=0"
+    },
+    {
+      "key": "akuma_horu_horu",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        26,
+        9,
+        107,
+        120
+      ],
+      "padding": 4,
+      "width": 89,
+      "height": 119,
+      "sourceSha256": "409130939e4579b22a31f26c68ec066e73f2c96f300016637a382f68a65bb0c6",
+      "sha256": "8e0509c7e8593af8ff7e799245fd85fc8272c0381f1ff2d869f4ec6e7e965576",
+      "source": "assets/akuma/horu/fruit.png",
+      "job": "f665f006-4d99-4f2d-9fe7-0e8ab61ee943",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/f665f006-4d99-4f2d-9fe7-0e8ab61ee943/download?index=0"
+    },
+    {
+      "key": "akuma_hoya_hoya",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        19,
+        9,
+        106,
+        120
+      ],
+      "padding": 4,
+      "width": 95,
+      "height": 119,
+      "sourceSha256": "00898e2dea91c449bb1a80a4f94f7e341fef94be35f73211203d25611051531d",
+      "sha256": "59d3494395519b5c8dd404cdc77b26346d38dc7ed8ea906e4c3e4367d2aa938d",
+      "source": "assets/akuma/hoya/fruit.png",
+      "job": "f665f006-4d99-4f2d-9fe7-0e8ab61ee943",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/f665f006-4d99-4f2d-9fe7-0e8ab61ee943/download?index=1"
+    },
+    {
+      "key": "akuma_inu_dachshund",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        31,
+        8,
+        107,
+        120
+      ],
+      "padding": 4,
+      "width": 84,
+      "height": 120,
+      "sourceSha256": "a27e0b68c5d9ebd466679fbba6f90f7fd52fc47621f383f5ac31453623e0e063",
+      "sha256": "21573e21454c76eae6d76f4e1fd8a34b8ce926d436fd6b2aaab884b0cdf91347",
+      "source": "assets/akuma/zoan/inu-fruit.png",
+      "job": "f665f006-4d99-4f2d-9fe7-0e8ab61ee943",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/f665f006-4d99-4f2d-9fe7-0e8ab61ee943/download?index=2"
+    },
+    {
+      "key": "akuma_inu_wolf",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        18,
+        8,
+        107,
+        120
+      ],
+      "padding": 4,
+      "width": 97,
+      "height": 120,
+      "sourceSha256": "e0bb1fb2a9b5498a10a36394f0eae0c6569109e7ca3d0bc4b4a64ee3a533fc35",
+      "sha256": "ce1b1f7f569d2ea646fbfe0f280f5d0d1d0e13c7536a4529aed3c49f5facf070",
+      "source": "assets/akuma/wolf/fruit.png",
+      "job": "f665f006-4d99-4f2d-9fe7-0e8ab61ee943",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/f665f006-4d99-4f2d-9fe7-0e8ab61ee943/download?index=3"
+    },
+    {
+      "key": "akuma_ito_ito",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        22,
+        14,
+        99,
+        118
+      ],
+      "padding": 4,
+      "width": 85,
+      "height": 112,
+      "sourceSha256": "43fe0f533aea4e74a31a1d863cfa58449bac4f0708abec8715db2da76fae6f2a",
+      "sha256": "a502d3ff2e1fd4d84e09fa6b8fbf6a30a7d6bb0e13a714ef80a51f34ecfa3965",
+      "source": "assets/akuma/ito/fruit.png",
+      "job": "ae937e68-8c9b-4449-b5d4-627d8f528989",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/ae937e68-8c9b-4449-b5d4-627d8f528989/download?index=1"
+    },
+    {
+      "key": "akuma_jiki_jiki",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        16,
+        8,
+        110,
+        121
+      ],
+      "padding": 4,
+      "width": 102,
+      "height": 121,
+      "sourceSha256": "9ac467e1a6152c33ac921ab3b8a7aa627b8a0738fc8c5b1475817599067f12cd",
+      "sha256": "19642d3850b1f633bf7cc36ee58ce55a39c1ea23f4c3a9db536eadee3214c9c9",
+      "source": "assets/akuma/jiki/fruit.png",
+      "job": "707bdcbd-26c1-46d0-a73d-094e6850ec02",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/707bdcbd-26c1-46d0-a73d-094e6850ec02/download?index=0"
+    },
+    {
+      "key": "akuma_kobu_kobu",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        35,
+        10,
+        109,
+        120
+      ],
+      "padding": 4,
+      "width": 82,
+      "height": 118,
+      "sourceSha256": "8cce0f59a5f8c94f8005888b7b0823f1a30f9ca44c5c50ff6a8b3ea76046e71d",
+      "sha256": "bdefede0f878f95bc920f47938a0927fc97d0f7a11151c5dee7d4bca40ac80cd",
+      "source": "assets/akuma/kobu/fruit.png",
+      "job": "707bdcbd-26c1-46d0-a73d-094e6850ec02",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/707bdcbd-26c1-46d0-a73d-094e6850ec02/download?index=1"
+    },
+    {
+      "key": "akuma_kuku_kuku",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        20,
+        14,
+        90,
+        107
+      ],
+      "padding": 4,
+      "width": 78,
+      "height": 101,
+      "sourceSha256": "7e8b57e078ace496a9c0e157fd1fbdedc352a681700cb4947a66528a2125d9eb",
+      "sha256": "23167b7590e0edb34f575718def0f48a0892d616133ff35b629ee00b1506e24b",
+      "source": "assets/akuma/kuku-icon.png",
+      "job": "8b629e17-b860-4e0a-96f3-fc2140c20859",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/8b629e17-b860-4e0a-96f3-fc2140c20859/download?index=1"
+    },
+    {
+      "key": "akuma_mato_mato",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        23,
+        10,
+        109,
+        121
+      ],
+      "padding": 4,
+      "width": 94,
+      "height": 119,
+      "sourceSha256": "f240fb9f9f86fe90416088567c5c4d70ee9c0f5ab3a618e881b4c0ea5454d3aa",
+      "sha256": "eef1a7c9f8c9d606c37b98ff2938f8583142f4bd4bdf788c2a0749a91a4be831",
+      "source": "assets/akuma/mato/fruit.png",
+      "job": "707bdcbd-26c1-46d0-a73d-094e6850ec02",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/707bdcbd-26c1-46d0-a73d-094e6850ec02/download?index=2"
+    },
+    {
+      "key": "akuma_mera_mera",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        7,
+        2,
+        96,
+        110
+      ],
+      "padding": 4,
+      "width": 97,
+      "height": 116,
+      "sourceSha256": "6d50b251cf5dadce38ea939d7a3575964829d03c32a69819a9c79f779ac54e02",
+      "sha256": "3dbf6f0697eda6f8f6c3db07bb9bafa8c82df8952daf35eefed779596aadbba1",
+      "source": "assets/akuma/mera/fruit.png",
+      "job": "ae937e68-8c9b-4449-b5d4-627d8f528989",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/ae937e68-8c9b-4449-b5d4-627d8f528989/download?index=3"
+    },
+    {
+      "key": "akuma_mero_mero",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        7,
+        5,
+        91,
+        98
+      ],
+      "padding": 4,
+      "width": 92,
+      "height": 101,
+      "sourceSha256": "32e99c3b983588eae3ef98fb5ab9fbc48f777598d32b77994096d57a613e4279",
+      "sha256": "b9720a2fde77a3667899a940ab617981a008ec877c6270d9bb7ae4acba194d55",
+      "source": "assets/akuma/mero/fruit.png",
+      "job": "c73de04d-a4cc-4f84-8812-7ee01d09143e",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/c73de04d-a4cc-4f84-8812-7ee01d09143e/download?index=2"
+    },
+    {
+      "key": "akuma_neko_leopard",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        24,
+        11,
+        109,
+        120
+      ],
+      "padding": 4,
+      "width": 93,
+      "height": 117,
+      "sourceSha256": "3bf2c62158464bf4b50da487613766175f28b1d32fc950e0266677463062d3d6",
+      "sha256": "50a7bab849cf6c17ea8b95967553c6d18ee41be6cab49ab87f681d57f7bad7ed",
+      "source": "assets/akuma/neko/fruit.png",
+      "job": "707bdcbd-26c1-46d0-a73d-094e6850ec02",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/707bdcbd-26c1-46d0-a73d-094e6850ec02/download?index=3"
+    },
+    {
+      "key": "akuma_ope_ope",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        12,
+        15,
+        97,
+        113
+      ],
+      "padding": 4,
+      "width": 93,
+      "height": 106,
+      "sourceSha256": "3802486560756fb010fd0b6c9d2345a5cd4c19eb4f397a83838c955f057aa8e9",
+      "sha256": "7e3183fd7f71b059b3a899f86754a20c1a6da6850ed3676bcb529920d3b34b93",
+      "source": "assets/akuma/ope/fruit.png",
+      "job": "c73de04d-a4cc-4f84-8812-7ee01d09143e",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/c73de04d-a4cc-4f84-8812-7ee01d09143e/download?index=1"
+    },
+    {
+      "key": "akuma_ryu_ryu",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        20,
+        11,
+        92,
+        107
+      ],
+      "padding": 4,
+      "width": 80,
+      "height": 104,
+      "sourceSha256": "842f9694ffa2d3d0854eae69a32d15bb00c3ac9243e640732c20e6aff02cd8ab",
+      "sha256": "ad33dc5c738b15ae09158f3178e6099641a68c78bbe83cb72f09bf16bae2291b",
+      "source": "assets/akuma/ryu/fruit.png",
+      "job": "c73de04d-a4cc-4f84-8812-7ee01d09143e",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/c73de04d-a4cc-4f84-8812-7ee01d09143e/download?index=0"
+    },
+    {
+      "key": "akuma_supa_supa",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        13,
+        120,
+        118
+      ],
+      "padding": 4,
+      "width": 120,
+      "height": 113,
+      "sourceSha256": "53556c5b5ae470d444b8557e1b308e41cbc9fc1955b110953205d27440dfea3d",
+      "sha256": "23f0cc08c74b07ded03cb49829ac1222777573d35778dd173b9278596a1c1a2b",
+      "source": "assets/akuma/supa/fruit.png",
+      "job": "1dbe33b8-9d05-4abe-951a-d589816455e7",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/1dbe33b8-9d05-4abe-951a-d589816455e7/download?index=0"
+    },
+    {
+      "key": "akuma_tori_albatroz",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        10,
+        3,
+        91,
+        108
+      ],
+      "padding": 4,
+      "width": 89,
+      "height": 113,
+      "sourceSha256": "a947fe3ad1ced96426cf8ce9cc30f9a338ac4f11d1347a20c43fbbc52753908f",
+      "sha256": "7830f2e4d83de173a5895032bf9fa95e4d22c58fdefdca33790850703bc64081",
+      "source": "assets/akuma/zoan/tori-fruit.png",
+      "job": "8b629e17-b860-4e0a-96f3-fc2140c20859",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/8b629e17-b860-4e0a-96f3-fc2140c20859/download?index=3"
+    },
+    {
+      "key": "akuma_tori_phoenix",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        1,
+        85,
+        99
+      ],
+      "padding": 4,
+      "width": 85,
+      "height": 106,
+      "sourceSha256": "a664d9fd19faeebb18456f895137edf4e458757b711c05a379b1b677011fdf84",
+      "sha256": "f7ae29b9803a5975f7e7f395534477201b4a8f0947d5ba4da177f6a77490f6eb",
+      "source": "assets/akuma/phoenix/fruit.png",
+      "job": "1d55f294-977b-43cd-b002-ca77eee68371",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/1d55f294-977b-43cd-b002-ca77eee68371/download?index=1"
+    },
+    {
+      "key": "akuma_uma_uma",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        26,
+        8,
+        101,
+        119
+      ],
+      "padding": 4,
+      "width": 83,
+      "height": 119,
+      "sourceSha256": "e1d72498b7bc01c6a78656ade5fa16f468aee916d9da78561f3ff462e86da895",
+      "sha256": "5f994c27d0d6991e2b287f7104eed2a5a35915046931ac53c9d96f95f06f711c",
+      "source": "assets/akuma/zoan/uma-fruit.png",
+      "job": "1dbe33b8-9d05-4abe-951a-d589816455e7",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/1dbe33b8-9d05-4abe-951a-d589816455e7/download?index=1"
+    },
+    {
+      "key": "akuma_ushi_bison",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        9,
+        120,
+        119
+      ],
+      "padding": 4,
+      "width": 120,
+      "height": 118,
+      "sourceSha256": "f60fec3e704e4bb4107d3e617bdda18ebf2d9fa3174d40397c3042545c6d9a8e",
+      "sha256": "c926639cc920e95a6fa95553136b609aaea456b2448da25ec4d0982a8c0a3db8",
+      "source": "assets/akuma/bison/fruit.png",
+      "job": "1dbe33b8-9d05-4abe-951a-d589816455e7",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/1dbe33b8-9d05-4abe-951a-d589816455e7/download?index=2"
+    },
+    {
+      "key": "akuma_ushi_giraffe",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        14,
+        120,
+        119
+      ],
+      "padding": 4,
+      "width": 120,
+      "height": 113,
+      "sourceSha256": "1b7063ae643f5e8cd53f56db246cd1e64ba105986968aac97d7cd03c62a59439",
+      "sha256": "6200fa6480ba00bf771aecf979881677a72e256cfce687be61e1da2d99aa9570",
+      "source": "assets/akuma/ushi/fruit.png",
+      "job": "1dbe33b8-9d05-4abe-951a-d589816455e7",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/1dbe33b8-9d05-4abe-951a-d589816455e7/download?index=3"
+    },
+    {
+      "key": "akuma_yami_yami",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        12,
+        3,
+        97,
+        109
+      ],
+      "padding": 4,
+      "width": 93,
+      "height": 114,
+      "sourceSha256": "6d403b3a412df87b651ae06fac25897c7ac2ee81ff85be4c0a2aed806889da9a",
+      "sha256": "776193561b0bc29d0d5960c195a4ec22b99147fc4c60790dd8e4de32c2784043",
+      "source": "assets/akuma/yami/fruit.png",
+      "job": "ae937e68-8c9b-4449-b5d4-627d8f528989",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/ae937e68-8c9b-4449-b5d4-627d8f528989/download?index=2"
+    },
+    {
+      "key": "ame-no-habakiri",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        0,
+        0,
+        112,
+        116
+      ],
+      "padding": 4,
+      "width": 120,
+      "height": 124,
+      "sourceSha256": "3953e285bd54d9dc23e7691422c2fc53b937331700642a746633836a46b8fc84",
+      "sha256": "a60ec27e3ad8585c501a7dee533f2647e1dbba9303846ab4c57f927a1fb8c22d",
+      "source": "assets/ui/items-pixellab/ame-no-habakiri.png",
+      "job": "ad46dd40-1471-4c40-ab83-3034148a9309",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/ad46dd40-1471-4c40-ab83-3034148a9309/download?index=3"
+    },
+    {
+      "key": "book",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        15,
+        7,
+        95,
+        106
+      ],
+      "padding": 4,
+      "width": 88,
+      "height": 107,
+      "sourceSha256": "acbbc2341eebdb6ea910ce107e37e50ed7b025fa04135c38d33d1e849c26577a",
+      "sha256": "35554c5fb8c5795d9fd5a0ed5553149a6f5f7cf87ce8277120f197f61e067b14",
+      "source": "assets/ui/items-pixellab/book.png",
+      "job": "216c8c37-7cb4-47b8-a2a2-1ea71fead6cc",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/216c8c37-7cb4-47b8-a2a2-1ea71fead6cc/download?index=0"
+    },
+    {
+      "key": "katana-de-maelstrom",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        1,
+        0,
+        98,
+        104
+      ],
+      "padding": 4,
+      "width": 105,
+      "height": 112,
+      "sourceSha256": "c791cc50c6ac97eb83bd40460903c1894f3302f0f7010c23d4228923bf25baba",
+      "sha256": "aad1ad61696e5d038262e083ecf7d4f09a17d1549dac30d05cadb74c490836ec",
+      "source": "assets/ui/items-pixellab/katana-de-maelstrom.png",
+      "job": "216c8c37-7cb4-47b8-a2a2-1ea71fead6cc",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/216c8c37-7cb4-47b8-a2a2-1ea71fead6cc/download?index=1"
+    },
+    {
+      "key": "lamina-das-trevas",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        5,
+        4,
+        101,
+        103
+      ],
+      "padding": 4,
+      "width": 104,
+      "height": 107,
+      "sourceSha256": "aadc4992d8c97196424a5469fd8ca2d30991d7336a379666b39279489cfebe1c",
+      "sha256": "9c1af7b606b94f98ef083adc8bfcb4f46ed0e567f3a640ef41f0f51bcc59a789",
+      "source": "assets/ui/items-pixellab/lamina-das-trevas.png",
+      "job": "216c8c37-7cb4-47b8-a2a2-1ea71fead6cc",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/216c8c37-7cb4-47b8-a2a2-1ea71fead6cc/download?index=2"
+    },
+    {
+      "key": "material",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        2,
+        21,
+        103,
+        97
+      ],
+      "padding": 4,
+      "width": 109,
+      "height": 84,
+      "sourceSha256": "259fd8144f00a14a8a193b2839140cecd925dcee1de512cfa759f85deff8df80",
+      "sha256": "2284d16bad5513b1778d2deedc6070c1708c8069b8bbfd32dbf48106e5e25f18",
+      "source": "assets/ui/items-pixellab/material.png",
+      "job": "216c8c37-7cb4-47b8-a2a2-1ea71fead6cc",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/216c8c37-7cb4-47b8-a2a2-1ea71fead6cc/download?index=3"
+    },
+    {
+      "key": "nodachi-de-fogo",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        0,
+        0,
+        111,
+        116
+      ],
+      "padding": 4,
+      "width": 119,
+      "height": 124,
+      "sourceSha256": "f260f34d6d2ff510a931736af6a734d9c5f2fab7e575baf79600a2230f4b397f",
+      "sha256": "4513bf41bd32c5e9833c7902eb63858727186795881e1ad9e05175f27e784aa4",
+      "source": "assets/ui/items-pixellab/nodachi-de-fogo.png",
+      "job": "f33dd865-2c2e-435e-a8c8-d6387c4658eb",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/f33dd865-2c2e-435e-a8c8-d6387c4658eb/download?index=0"
+    },
+    {
+      "key": "nodachi-de-kairouseki",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        0,
+        0,
+        112,
+        116
+      ],
+      "padding": 4,
+      "width": 120,
+      "height": 124,
+      "sourceSha256": "359e0bd7fb133a923873dac97dfff908662c48efc3f0716cbaf68cd7725b3059",
+      "sha256": "8f63f35749df3edc5d8876ffff47b951f9c750047ee8ed8d8c9fc6bb7b16c6f4",
+      "source": "assets/ui/items-pixellab/nodachi-de-kairouseki.png",
+      "job": "f33dd865-2c2e-435e-a8c8-d6387c4658eb",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/f33dd865-2c2e-435e-a8c8-d6387c4658eb/download?index=1"
+    },
+    {
+      "key": "pearl-box-1",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        9,
+        23,
+        121,
+        124
+      ],
+      "padding": 4,
+      "width": 120,
+      "height": 109,
+      "sourceSha256": "5da547010694a6265ac49652739203e2e16c0918a73c74363138a182c2bc0298",
+      "sha256": "f4c96a337df4b54c01a10aedf5c66f43f089044d0196b9313e10df1a29c00eef",
+      "source": "assets/ui/items-pixellab/pearl-box-1.png",
+      "job": "146c95f6-0f4f-402b-a387-c4355649aa27",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/146c95f6-0f4f-402b-a387-c4355649aa27/download?index=0"
+    },
+    {
+      "key": "pearl-box-2",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        17,
+        120,
+        120
+      ],
+      "padding": 4,
+      "width": 120,
+      "height": 111,
+      "sourceSha256": "d7535de599944c9419ae8a7826fc6b407706c235bbdc1fb9d04d07dacbeb2f2a",
+      "sha256": "d01e8176796be60aee1029a6a5f4275db7aa36179db393f203eb97029b3d2cd5",
+      "source": "assets/ui/items-pixellab/pearl-box-2.png",
+      "job": "146c95f6-0f4f-402b-a387-c4355649aa27",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/146c95f6-0f4f-402b-a387-c4355649aa27/download?index=1"
+    },
+    {
+      "key": "pearl-box-3",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        5,
+        12,
+        95,
+        100
+      ],
+      "padding": 4,
+      "width": 98,
+      "height": 96,
+      "sourceSha256": "455cdce454f45e8c1e795c8e2db3c8cddf70443b934791aee95f54bc8f92b76e",
+      "sha256": "c4021362dfda0ee231905455b3884f430a2d48122f606a7f0d4e896a6c863d10",
+      "source": "assets/ui/items-pixellab/pearl-box-3.png",
+      "job": "6c1dcdb4-6b7f-4756-a034-08e1c2d8b20d",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/6c1dcdb4-6b7f-4756-a034-08e1c2d8b20d/download?index=0"
+    },
+    {
+      "key": "pearl_des_1",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        9,
+        8,
+        120,
+        120
+      ],
+      "padding": 4,
+      "width": 119,
+      "height": 120,
+      "sourceSha256": "36910b495f5b124ec46c2b0de27b75e419baa4b6232f73a34f7554e3fa359f55",
+      "sha256": "3ea85f1524ee000486e04bde3e71352dc3a74d95e4e499dd57e14521dc904ffe",
+      "source": "assets/ui/items-pixellab/pearl_des_1.png",
+      "job": "146c95f6-0f4f-402b-a387-c4355649aa27",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/146c95f6-0f4f-402b-a387-c4355649aa27/download?index=2"
+    },
+    {
+      "key": "pearl_des_2",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        17,
+        9,
+        89,
+        89
+      ],
+      "padding": 4,
+      "width": 80,
+      "height": 88,
+      "sourceSha256": "c933f1b94029176eaec370bf3c2ae463d5a79e3806cac7013c55aad0988789b9",
+      "sha256": "46224e9d0a591770fa11a73755f33c40437f66f7ac1e3b9cf8c49514e433e062",
+      "source": "assets/ui/items-pixellab/pearl_des_2.png",
+      "job": "6c1dcdb4-6b7f-4756-a034-08e1c2d8b20d",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/6c1dcdb4-6b7f-4756-a034-08e1c2d8b20d/download?index=2"
+    },
+    {
+      "key": "pearl_des_3",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        5,
+        5,
+        95,
+        95
+      ],
+      "padding": 4,
+      "width": 98,
+      "height": 98,
+      "sourceSha256": "d4790fbaebe87cf3054f8bec3e1452c76cc3a98af589d0e5e161b5e3f0ac0a3d",
+      "sha256": "1b597e53cb9072277ce9be8323ee725484cb7ff89952f554088be623c557b161",
+      "source": "assets/ui/items-pixellab/pearl_des_3.png",
+      "job": "6c1dcdb4-6b7f-4756-a034-08e1c2d8b20d",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/6c1dcdb4-6b7f-4756-a034-08e1c2d8b20d/download?index=3"
+    },
+    {
+      "key": "pearl_des_4",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        1,
+        17,
+        95,
+        97
+      ],
+      "padding": 4,
+      "width": 102,
+      "height": 88,
+      "sourceSha256": "1beed40fed69760dfd6157ac346b456dcb5891483273089ffff1d8a210128269",
+      "sha256": "2ec22c73ecc4bac1a4cbdf0540ff6f5a4b46c911e8ca44bb4e451fe2787d2d3e",
+      "source": "assets/ui/items-pixellab/pearl_des_4.png",
+      "job": "04fed770-fe44-45d4-a20e-5b6ccb6c6f2d",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/04fed770-fe44-45d4-a20e-5b6ccb6c6f2d/download?index=0"
+    },
+    {
+      "key": "pearl_des_5",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        0,
+        0,
+        94,
+        97
+      ],
+      "padding": 4,
+      "width": 102,
+      "height": 105,
+      "sourceSha256": "2de33565fdfef95f97e82002a56bb11188f7dfe6b255d0fcca018385c3d7f619",
+      "sha256": "ce3fa98dbf5e8ef85c838f76311a35c2cd689dd9ceddd1d6d0823c49b441cb80",
+      "source": "assets/ui/items-pixellab/pearl_des_5.png",
+      "job": "04fed770-fe44-45d4-a20e-5b6ccb6c6f2d",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/04fed770-fe44-45d4-a20e-5b6ccb6c6f2d/download?index=1"
+    },
+    {
+      "key": "pearl_esp_1",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        11,
+        11,
+        93,
+        93
+      ],
+      "padding": 4,
+      "width": 90,
+      "height": 90,
+      "sourceSha256": "086be0b3740c489a2011237a1578adb44d82119a02132019a824a65050bacde5",
+      "sha256": "dcec79efc4179d1ba4f76b3926a6032c3f5830257452e15ea408f058c2e00953",
+      "source": "assets/ui/items-pixellab/pearl_esp_1.png",
+      "job": "04fed770-fe44-45d4-a20e-5b6ccb6c6f2d",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/04fed770-fe44-45d4-a20e-5b6ccb6c6f2d/download?index=2"
+    },
+    {
+      "key": "pearl_esp_2",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        9,
+        6,
+        95,
+        95
+      ],
+      "padding": 4,
+      "width": 94,
+      "height": 97,
+      "sourceSha256": "83de4c4ebd43a688b6e043a0b32260f04d7ee1ee548fd3a0dfd5d04a2c58ad88",
+      "sha256": "bc719ae226dc14b4fc7c3c7baf3a5864c9393863b878c3a051843ff64232d9f1",
+      "source": "assets/ui/items-pixellab/pearl_esp_2.png",
+      "job": "04fed770-fe44-45d4-a20e-5b6ccb6c6f2d",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/04fed770-fe44-45d4-a20e-5b6ccb6c6f2d/download?index=3"
+    },
+    {
+      "key": "pearl_esp_3",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        21,
+        8,
+        105,
+        120
+      ],
+      "padding": 4,
+      "width": 92,
+      "height": 120,
+      "sourceSha256": "7a24d1ffd2c806649348cd8b6c4931cb22aca1f7eb241ea7c7e79b1aaa4587cd",
+      "sha256": "48f50b396d1afc59f7a40c49caa974bd63f744317c233d7ac27504df5f7696e7",
+      "source": "assets/ui/items-pixellab/pearl_esp_3.png",
+      "job": "146c95f6-0f4f-402b-a387-c4355649aa27",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/146c95f6-0f4f-402b-a387-c4355649aa27/download?index=3"
+    },
+    {
+      "key": "pearl_esp_4",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        16,
+        4,
+        112,
+        124
+      ],
+      "padding": 4,
+      "width": 104,
+      "height": 128,
+      "sourceSha256": "17147d580f773ca86d478349094ae4655b1be5b0526a4dca90847b0912f909cf",
+      "sha256": "2e72584e0b09b5f240d4b02b0dd57516f646ec35350e2c910f1db07e31feed51",
+      "source": "assets/ui/items-pixellab/pearl_esp_4.png",
+      "job": "6cd4ed7e-30bb-4fd6-9cc8-ff7a58c69497",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/6cd4ed7e-30bb-4fd6-9cc8-ff7a58c69497/download?index=0"
+    },
+    {
+      "key": "pearl_esp_5",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        25,
+        120,
+        109
+      ],
+      "padding": 4,
+      "width": 120,
+      "height": 92,
+      "sourceSha256": "5c1bb21946472d46a74c29e8be8b7d55c5a581300c0bb7c67e10bb4650da5f0b",
+      "sha256": "c6a3d857fe6631c1db888c905eb35a6b7e9de6f44fe4c6e3e11f03bc8628facb",
+      "source": "assets/ui/items-pixellab/pearl_esp_5.png",
+      "job": "6cd4ed7e-30bb-4fd6-9cc8-ff7a58c69497",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/6cd4ed7e-30bb-4fd6-9cc8-ff7a58c69497/download?index=1"
+    },
+    {
+      "key": "pearl_for_1",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        16,
+        120,
+        128
+      ],
+      "padding": 4,
+      "width": 120,
+      "height": 120,
+      "sourceSha256": "6671cb046bae75d6354a2bc6974675eb9b08758734ba83945ac4f1fc34e16aeb",
+      "sha256": "3be3791b384c864dc147ea31c0cfdb47cd9dc617419bd3ebb3e17078207d6907",
+      "source": "assets/ui/items-pixellab/pearl_for_1.png",
+      "job": "6cd4ed7e-30bb-4fd6-9cc8-ff7a58c69497",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/6cd4ed7e-30bb-4fd6-9cc8-ff7a58c69497/download?index=2"
+    },
+    {
+      "key": "pearl_for_2",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        16,
+        120,
+        128
+      ],
+      "padding": 4,
+      "width": 120,
+      "height": 120,
+      "sourceSha256": "3010ef83ddb16a7658a42d0d59b3e4e9b8042937a053da48f569a53d833268d6",
+      "sha256": "ce0effe8cdf12aa0803f0712806778d6f43b21c65a6c079cd5c73d5fe429fb52",
+      "source": "assets/ui/items-pixellab/pearl_for_2.png",
+      "job": "6cd4ed7e-30bb-4fd6-9cc8-ff7a58c69497",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/6cd4ed7e-30bb-4fd6-9cc8-ff7a58c69497/download?index=3"
+    },
+    {
+      "key": "pearl_for_3",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        11,
+        119,
+        122
+      ],
+      "padding": 4,
+      "width": 119,
+      "height": 119,
+      "sourceSha256": "6cdb368f803c33a029730adee22d736d47263f87cb77beb6fb066ae0653a3580",
+      "sha256": "bf88c766de396b80c8cadcc3fb27b64c796b130ba36894e4cb34ef8326d832fd",
+      "source": "assets/ui/items-pixellab/pearl_for_3.png",
+      "job": "d605e58f-4972-4b92-a457-4f8232b20d74",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/d605e58f-4972-4b92-a457-4f8232b20d74/download?index=0"
+    },
+    {
+      "key": "pearl_for_4",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        22,
+        119,
+        103
+      ],
+      "padding": 4,
+      "width": 119,
+      "height": 89,
+      "sourceSha256": "fc3ca341af2250a30cc76aff5ed76538d9c0c2c4a491d03dcbfad77a8ee9bb4e",
+      "sha256": "406ecf8b2b4d7455128c43c799f59138fb71d8582f42fedbe215fbba9fc155b5",
+      "source": "assets/ui/items-pixellab/pearl_for_4.png",
+      "job": "d605e58f-4972-4b92-a457-4f8232b20d74",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/d605e58f-4972-4b92-a457-4f8232b20d74/download?index=1"
+    },
+    {
+      "key": "pearl_for_5",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        8,
+        10,
+        119,
+        126
+      ],
+      "padding": 4,
+      "width": 119,
+      "height": 124,
+      "sourceSha256": "e901ae1e856c4e90f0f61248f17c49c2d3a17758000c790d95ffd68923a210b6",
+      "sha256": "70058a9e4d64f568e16431d0a6e03e3a4291a479ca1dd7edad653461da180c69",
+      "source": "assets/ui/items-pixellab/pearl_for_5.png",
+      "job": "d605e58f-4972-4b92-a457-4f8232b20d74",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/d605e58f-4972-4b92-a457-4f8232b20d74/download?index=2"
+    },
+    {
+      "key": "pearl_int_1",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        5,
+        13,
+        85,
+        93
+      ],
+      "padding": 4,
+      "width": 88,
+      "height": 88,
+      "sourceSha256": "ca6a122523e855661a5f86665250706bab5e47922f4017c1a25894763857f7e8",
+      "sha256": "56a3218e1f6535284391c7d499c2ac073869b657a8ce572524e5ba06242ea2f5",
+      "source": "assets/ui/items-pixellab/pearl_int_1.png",
+      "job": "0e11f911-ba5f-46db-ab8c-f2e65a2f401c",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/0e11f911-ba5f-46db-ab8c-f2e65a2f401c/download?index=0"
+    },
+    {
+      "key": "pearl_int_2",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        25,
+        8,
+        101,
+        121
+      ],
+      "padding": 4,
+      "width": 84,
+      "height": 121,
+      "sourceSha256": "c23bebee09c95a38ae7a4c7c177d9569315b5b92aa12b358b3143b2ca5340736",
+      "sha256": "22399c626cb97d30abf4fb2012be7eac52efd99dddfbbccc05da1d0d5a30beab",
+      "source": "assets/ui/items-pixellab/pearl_int_2.png",
+      "job": "d605e58f-4972-4b92-a457-4f8232b20d74",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/d605e58f-4972-4b92-a457-4f8232b20d74/download?index=3"
+    },
+    {
+      "key": "pearl_int_3",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        5,
+        3,
+        83,
+        96
+      ],
+      "padding": 4,
+      "width": 86,
+      "height": 101,
+      "sourceSha256": "e7aa41e0894ba161fee6f7871d0343180966b4160f08843cf957be314b26f90b",
+      "sha256": "00eb0015a7203620336a4c985ccb612bb6c98b19afa31f0fe9bde841dd79e441",
+      "source": "assets/ui/items-pixellab/pearl_int_3.png",
+      "job": "0e11f911-ba5f-46db-ab8c-f2e65a2f401c",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/0e11f911-ba5f-46db-ab8c-f2e65a2f401c/download?index=2"
+    },
+    {
+      "key": "pearl_int_4",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        6,
+        5,
+        83,
+        91
+      ],
+      "padding": 4,
+      "width": 85,
+      "height": 94,
+      "sourceSha256": "4dd64f7c33715736c1e680f728e2227ed2883c8906788eaaff178dcd1b394808",
+      "sha256": "39d7c0bf1e902fbaac856f4bce96a336a22f312edc5a6c0b04bd8ab2ac53f727",
+      "source": "assets/ui/items-pixellab/pearl_int_4.png",
+      "job": "0e11f911-ba5f-46db-ab8c-f2e65a2f401c",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/0e11f911-ba5f-46db-ab8c-f2e65a2f401c/download?index=3"
+    },
+    {
+      "key": "pearl_int_5",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        12,
+        2,
+        102,
+        112
+      ],
+      "padding": 4,
+      "width": 98,
+      "height": 118,
+      "sourceSha256": "f5e506de214b79a7edb9d2ed84533c9a6124af0d2386ef4d732360c747635d9e",
+      "sha256": "4a1362c26530cb5038f28a6392bd76926b5e321de4fc2d94c33724191236bc0d",
+      "source": "assets/ui/items-pixellab/pearl_int_5.png",
+      "job": "e12566ea-dbf3-4130-a34d-712e4adf411d",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/e12566ea-dbf3-4130-a34d-712e4adf411d/download?index=0"
+    },
+    {
+      "key": "pearl_vit_1",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        12,
+        19,
+        104,
+        110
+      ],
+      "padding": 4,
+      "width": 100,
+      "height": 99,
+      "sourceSha256": "231a384b0dd2ede40d39e09da676df44b8de1401764638046500cd5aa2b1aeef",
+      "sha256": "072044b248890d816276628b774294d8c2fb8fe269ad9d7c5199f922119cac56",
+      "source": "assets/ui/items-pixellab/pearl_vit_1.png",
+      "job": "e12566ea-dbf3-4130-a34d-712e4adf411d",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/e12566ea-dbf3-4130-a34d-712e4adf411d/download?index=1"
+    },
+    {
+      "key": "pearl_vit_2",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        7,
+        12,
+        111,
+        116
+      ],
+      "padding": 4,
+      "width": 112,
+      "height": 112,
+      "sourceSha256": "1b6045f255ba18a433c98c5930576590f4cecdf60d98caa0ca0a73c2725f99b0",
+      "sha256": "f29a016e43f2b467512e1932e6f824da7dd4f0e3aa913495334ebf6db13db579",
+      "source": "assets/ui/items-pixellab/pearl_vit_2.png",
+      "job": "e12566ea-dbf3-4130-a34d-712e4adf411d",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/e12566ea-dbf3-4130-a34d-712e4adf411d/download?index=2"
+    },
+    {
+      "key": "pearl_vit_3",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        5,
+        11,
+        109,
+        115
+      ],
+      "padding": 4,
+      "width": 112,
+      "height": 112,
+      "sourceSha256": "0514cff3ac94293ba08234a0285ff43cd31bd8d20f03222db6d94f64f65b141f",
+      "sha256": "5b13ebcb7df1270f30f3c68dc86de8e613d690f1005fb7a86100cb0ad42c8e14",
+      "source": "assets/ui/items-pixellab/pearl_vit_3.png",
+      "job": "e12566ea-dbf3-4130-a34d-712e4adf411d",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/e12566ea-dbf3-4130-a34d-712e4adf411d/download?index=3"
+    },
+    {
+      "key": "pearl_vit_4",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        3,
+        18,
+        93,
+        90
+      ],
+      "padding": 4,
+      "width": 98,
+      "height": 80,
+      "sourceSha256": "6013ac4c750a59cedfe829fb6cf629a574f9bef01b1b7583bd0f7506504f0992",
+      "sha256": "754b6adfe63b931f22896a80b47f6b40a35c365f9e252d7ec2ae82415a1a1323",
+      "source": "assets/ui/items-pixellab/pearl_vit_4.png",
+      "job": "c6a5b353-6b5b-4e79-a621-af3ea620b1e3",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/c6a5b353-6b5b-4e79-a621-af3ea620b1e3/download?index=0"
+    },
+    {
+      "key": "pearl_vit_5",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        0,
+        1,
+        94,
+        94
+      ],
+      "padding": 4,
+      "width": 102,
+      "height": 101,
+      "sourceSha256": "803a3e0b33a888fcb129579958995c2f6dd072781eafb1ab47436582f01dc90d",
+      "sha256": "d7223075f024ff55733f53189edbc151c6e1aab4802735f771014d005895ef3e",
+      "source": "assets/ui/items-pixellab/pearl_vit_5.png",
+      "job": "c6a5b353-6b5b-4e79-a621-af3ea620b1e3",
+      "index": 1,
+      "url": "https://api.pixellab.ai/mcp/images/c6a5b353-6b5b-4e79-a621-af3ea620b1e3/download?index=1"
+    },
+    {
+      "key": "potion",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        24,
+        4,
+        84,
+        92
+      ],
+      "padding": 4,
+      "width": 68,
+      "height": 96,
+      "sourceSha256": "244433986b1164e40e4034a17309a373fac6ca8aa63261f45a099795b03fce00",
+      "sha256": "3fc0366cb4fb06069d5d357b4d6a645ec1bc3b376237952b024a2ef93e44afc3",
+      "source": "assets/ui/items-pixellab/potion.png",
+      "job": "c6a5b353-6b5b-4e79-a621-af3ea620b1e3",
+      "index": 2,
+      "url": "https://api.pixellab.ai/mcp/images/c6a5b353-6b5b-4e79-a621-af3ea620b1e3/download?index=2"
+    },
+    {
+      "key": "punhal-de-netuno",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        5,
+        3,
+        93,
+        93
+      ],
+      "padding": 4,
+      "width": 96,
+      "height": 98,
+      "sourceSha256": "8a64f8a16591ea74726759a15c59a2cec9e3240ca1568666e3883d269ae6baca",
+      "sha256": "ab9a25e2e57a951536d3ddbe5a0cb46922ae89567d601069fc54de393a75df5a",
+      "source": "assets/ui/items-pixellab/punhal-de-netuno.png",
+      "job": "c6a5b353-6b5b-4e79-a621-af3ea620b1e3",
+      "index": 3,
+      "url": "https://api.pixellab.ai/mcp/images/c6a5b353-6b5b-4e79-a621-af3ea620b1e3/download?index=3"
+    },
+    {
+      "key": "punhal-flamejante",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "crop": [
+        2,
+        2,
+        99,
+        109
+      ],
+      "padding": 4,
+      "width": 105,
+      "height": 115,
+      "sourceSha256": "f274bbf3bd9ed9c71c95ecc78a790ae8a9779a795c18bb26c157414a077f7506",
+      "sha256": "b4479f43d45630972905b46d3961cac9fd63dfb9cca0770c40a3c687510f4479",
+      "source": "assets/ui/items-pixellab/punhal-flamejante.png",
+      "job": "8b629e17-b860-4e0a-96f3-fc2140c20859",
+      "index": 0,
+      "url": "https://api.pixellab.ai/mcp/images/8b629e17-b860-4e0a-96f3-fc2140c20859/download?index=0"
+    }
+  ]
+}
