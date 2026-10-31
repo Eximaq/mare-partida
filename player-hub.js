@@ -40,7 +40,7 @@
     if(profileTab==='overview')body+='<h3>CAÇADOR</h3><div class="captain-facts">'+field('Nível',g.level)+field('Classe',className)+field('Poder',fmt(s.power))+field('Tempo de jogo',clock(g.totalPlay))+field('Aventureiro desde',date(g.created))+field('Título','Aventureiro')+'</div>'+
       '<h3>POSIÇÃO NOS RANKINGS</h3><div class="captain-facts">'+field('Ranking de nível','Indisponível')+field('Ranking de poder','Indisponível')+'</div>'+
       '<p class="captain-muted">Os rankings requerem servidor e contas online, ainda não implementados.</p>'+
-      '<h3>COMBATE E PROGRESSO</h3><div class="captain-facts">'+field('Monstros derrotados',fmt(g.stats?.kills))+field('Dano causado',fmt(g.stats?.damage))+field('Dobrões recebidos',fmt(g.stats?.goldEarned))+field('Duelos PvP','Indisponível')+'</div>';
+      '<h3>COMBATE E PROGRESSO</h3><div class="captain-facts">'+field('Monstros derrotados',fmt(g.stats?.kills))+field('Dano causado',fmt(g.stats?.damage))+field('Berry recebidos',fmt(g.stats?.goldEarned))+field('Duelos PvP','Indisponível')+'</div>';
     if(profileTab==='gear')body+='<h3>EQUIPAMENTOS ATUAIS</h3><div class="captain-facts">'+(ctx.equipment?.length?ctx.equipment.map(x=>field(x.slot,x.name)).join(''):'<p>Nenhum equipamento selecionado.</p>')+'</div>';
     if(profileTab==='wall'||profileTab==='custom')body+='<div class="captain-empty">'+(profileTab==='wall'?'Mural público em desenvolvimento.':'Personalização pública do perfil em desenvolvimento.')+'</div>';
     return body+'</section>';

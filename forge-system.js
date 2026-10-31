@@ -110,12 +110,12 @@
       }else if(type==='remove'){
         const socket=command.socket,p=pearlById[item?.sockets?.[socket]];
         if(!requireItem()||!Number.isInteger(socket)||socket<0||socket>=item.sockets.length||!p)return fail('Escolha um socket ocupado.');
-        if(g.inventory.length>=CAPACITY)return fail('Libere um espaço na mochila antes de remover a pérola.');cost={gold:removalCost(item,p)};if(!pay(cost))return fail('Dobrões insuficientes.');
+        if(g.inventory.length>=CAPACITY)return fail('Libere um espaço na mochila antes de remover a pérola.');cost={gold:removalCost(item,p)};if(!pay(cost))return fail('Berry insuficientes.');
         g.inventory.push(pearlItem(p.id));item.sockets[socket]=null;result={type,success:true,cost,message:`${p.name} devolvida à mochila.`};
       }else if(type==='fuse'){
         const plan=pearlFusion(g,command.itemIds,defs);if(plan.error)return fail(plan.error);const p=plan.pearl;
-        cost={gold:plan.gold};if(!pay(cost))return fail('Dobrões insuficientes.');const ids=new Set(command.itemIds);g.inventory=g.inventory.filter(i=>!ids.has(i.id));
-        const success=draw(random)<plan.chance,next=pearls.find(q=>q.attribute===p.attribute&&q.level===p.level+1);if(success)g.inventory.push(pearlItem(next.id));result={type,success,cost,message:success?`Fusão concluída: ${next.name}.`:'Fusão falhou. As cinco pérolas e os dobrões foram consumidos.'};
+        cost={gold:plan.gold};if(!pay(cost))return fail('Berry insuficientes.');const ids=new Set(command.itemIds);g.inventory=g.inventory.filter(i=>!ids.has(i.id));
+        const success=draw(random)<plan.chance,next=pearls.find(q=>q.attribute===p.attribute&&q.level===p.level+1);if(success)g.inventory.push(pearlItem(next.id));result={type,success,cost,message:success?`Fusão concluída: ${next.name}.`:'Fusão falhou. As cinco pérolas e os Berry foram consumidos.'};
       }else if(type==='fuseEquipment'){
         const plan=equipmentFusion(g,command.itemIds,command.slot,defs);if(plan.error)return fail(plan.error);cost=plan.cost;if(!pay(cost))return fail('Recursos insuficientes.');
         const ids=new Set(command.itemIds);g.inventory=g.inventory.filter(i=>!ids.has(i.id));let suffix=0,id;do{id=`forge-gear-${g.forgeSeq+1}-${suffix++}`;}while(find(g,id));

@@ -10,7 +10,7 @@
   function add(category,metric,entries,feature=null){entries.forEach(([name,target,points],i)=>catalog.push({id:metric+'-'+i,category,metric,name,target,points,feature}));}
   add('kills','kills',[['Primeiros confrontos',100,1],['Caçador experiente',500,1],['Extermínio',2000,2],['Flagelo dos mares',10000,3]]);
   add('prison','floors',[['Primeira descida',10,1],['Nas profundezas',30,2],['Prisioneiro lendário',50,3],['Fuga impossível',100,5]],'prison');
-  add('wealth','coins',[['Bolsa de dobrões',10000,1],['Tesouro do capitão',100000,1],['Fortuna dos mares',1000000,2]]);
+  add('wealth','coins',[['Bolsa de Berry',10000,1],['Tesouro do capitão',100000,1],['Fortuna dos mares',1000000,2]]);
   add('level','level',[['Novato',5,1],['Promissor',10,1],['Veterano',20,2],['Supernova',50,3],['Lenda do Novo Mundo',100,5]]);
   add('power','power',[['Força Desperta',1000,1],['Ameaça Local',5000,1],['Ameaça Global',20000,2],['Nível Shichibukai',50000,3],['Nível Yonkou',100000,5]]);
   add('fruit','fruits',[['O Gosto do Demônio',1,2],['Colecionador de Maldições',5,3]],'fruit');

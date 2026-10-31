@@ -19,7 +19,7 @@
     pierce:{name:'Munição Perfurante',description:'Projéteis têm 30% de chance de atingir até 2 inimigos atrás do alvo, com 50% do dano e respeitando obstáculos.'},
     focus:{name:'Foco Extremo',description:'Com 100% de vida, o primeiro acerto em cada inimigo é sempre crítico.'},
     poison:{name:'Lâminas Envenenadas',description:'Acertos aplicam veneno: 20% do dano físico base por segundo durante 4 segundos. Reaplicar renova; não acumula.'},
-    lightHands:{name:'Mãos Leves',description:'Chance relativa de equipamentos raros ou melhores +20%. Críticos têm 15% de chance de roubar 2 dobrões, até 6 por inimigo. Não cria Gemas ou Pérolas.'},
+    lightHands:{name:'Mãos Leves',description:'Chance relativa de equipamentos raros ou melhores +20%. Críticos têm 15% de chance de roubar 2 Berry, até 6 por inimigo. Não cria Gemas ou Pérolas.'},
     backstab:{name:'Golpe Furtivo',description:'O primeiro acerto pelas costas em cada inimigo causa 150% do dano físico base como dano verdadeiro.'},
     energyShield:{name:'Escudo de Energia',description:'Um golpe letal deixa 1 de vida e ativa escudo de 30% da vida máxima por 5 segundos. Recarga: 90 segundos, preservada ao recarregar.'},
     unstable:{name:'Núcleo Instável',description:'Golpes recebidos têm 20% de chance de causar explosão térmica: 60% do ataque em um raio de 120 pixels.'},

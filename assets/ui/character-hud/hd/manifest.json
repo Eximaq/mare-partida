@@ -40,6 +40,17 @@
         600
       ],
       "cost": 25
+    },
+    {
+      "file": "berry-coins.png",
+      "source": "Sequência de Moedas Douradas DB.png — supplied by owner",
+      "size": [
+        2172,
+        724
+      ],
+      "cost": 0,
+      "method": "Original file copied unchanged; first of six cells shown statically through CSS background viewport",
+      "sha256": "597728b36501650999b4f5982d6f3bc10ac23cd9a93d72d81a94f5a2486f4aaf"
     }
   ],
   "sample": {

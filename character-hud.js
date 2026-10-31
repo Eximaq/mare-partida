@@ -1,7 +1,7 @@
 'use strict';
 /* Presentation only. The existing character renderer and resource rules remain authoritative. */
 ((root)=>{
-  let toggle,panel,source=null,rankKey=null;
+  let toggle,panel,source=null,rankKey=null,numericKey=null;
   const $=id=>document.getElementById(id);
   const expanded=()=>!!panel&&!panel.hidden;
   function portrait(canvas){
@@ -12,10 +12,10 @@
   }
   function fitName(){
     const ctx=document.createElement('canvas').getContext('2d');
-    for(const [id,max,min]of [['wantedName',22,10],['hudHierarchyTitle',14,9]]){
+    for(const [id,max,min]of [['wantedName',22,10],['hudHierarchyTitle',14,9],['miniLevel',15,10],['miniPower',15,9]]){
       if(id==='wantedName'&&!expanded())continue;
       const name=$(id);if(!name||!name.clientWidth)continue;
-      ctx.font='700 '+max+'px '+(id==='hudHierarchyTitle'?'"Alegreya Sans", sans-serif':'"Alabasta Pirate", serif');
+      ctx.font='700 '+max+'px '+(id==='wantedName'?'"Alabasta Pirate", serif':'"Alegreya Sans", sans-serif');
       const width=Math.max(1,name.clientWidth-8),measured=ctx.measureText(name.textContent).width;
       name.style.fontSize=Math.max(min,Math.min(max,max*width/Math.max(1,measured)))+'px';
     }
@@ -38,6 +38,8 @@
     if(name.textContent!==data.name){name.textContent=data.name;name.title=data.name;fitName();}
     // Bounty is an unimplemented feature, not a balance derived from coins or kills.
     if($('wantedBounty').textContent!=='')$('wantedBounty').textContent='';
+    const numbers=$('miniLevel')?.textContent+':'+$('miniPower')?.textContent;
+    if(numbers!==numericKey){numericKey=numbers;fitName();}
     const faction=data.factionId,tier=data.hierarchyTier,key=faction+':'+tier;
     if(key!==rankKey){
       rankKey=key;
