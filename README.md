@@ -1,10 +1,10 @@
 [Ope e Mero Rank A: três habilidades, ROOM/Shambles e petrificação](docs/RANK-A-OPE-MERO.md).
 
+**Sprites atuais:** [fonte única e auditoria estrutural](docs/SPRITES-ATUAIS-FONTE-UNICA.md). O personagem jogável usa native96 em criação, lobby, inventário e combate; formas Zoan usam SpriteCombatV2. Fallbacks84 e flags de rollback antigas foram desativados. As notas de ensaios anteriores abaixo são históricas.
+
 **Servidor autoritativo — Fase 1 local:** [arquitetura e limites](docs/architecture/AUTHORITATIVE-FOUNDATION.md) · [execução, banco e testes](docs/operations/LOCAL-SERVER.md). Fundação independente; o jogo e os saves atuais permanecem no navegador.
 
 **Fase 2 em desenvolvimento:** [BFF, sessões e personagens](docs/architecture/PHASE-2-IMPLEMENTATION-REVIEW.md) · [preparação local e homologação](docs/operations/PHASE-2-DEVELOPMENT.md). Auth desabilitado por padrão; homologação Supabase real pendente.
-
-**Sprites atuais:** [fonte única e auditoria estrutural](docs/SPRITES-ATUAIS-FONTE-UNICA.md). O personagem jogável usa native96 em criação, lobby, inventário e combate; formas Zoan usam SpriteCombatV2. Fallbacks84 e flags de rollback antigas foram desativados. As notas de ensaios anteriores abaixo são históricas.
 
 **Sprint 3:** [Sua Aparência](docs/PERSONAGEM-APARENCIA-96.md): nova etapa após classe, gênero, cabelos/olhos e cores independentes, prévia em quatro direções e persistência.
 
