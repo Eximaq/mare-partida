@@ -36,7 +36,7 @@ await p.locator('[data-inv-lock="'+actionItem.id+'"]').click();assert(await p.lo
 const lockedGold=await p.evaluate(()=>__invQA.game.gold);await p.locator('[data-inv-lock="'+actionItem.id+'"]').click();
 await p.locator('[data-inventory-forge="'+actionItem.id+'"]').click();assert.equal(await p.evaluate(()=>__invQA.forge.itemId),actionItem.id);assert.equal(await p.evaluate(()=>__invQA.forge.tab),'upgrade');
 await p.evaluate(id=>{__invQA.openPanel('inventory');__invQA.select(id)},actionItem.id);
-await p.locator('[data-equip="'+actionItem.id+'"]').click();assert.equal(await p.locator('[data-sell="'+actionItem.id+'"]').count(),0);assert.equal(await p.locator('.op-item-actions .op-action').count(),3);
+await p.locator('[data-equip="'+actionItem.id+'"]').click();assert(await p.locator('[data-sell="'+actionItem.id+'"]').isDisabled());assert.equal(await p.locator('.op-item-actions .op-action').count(),4);
 await p.locator('[data-unequip="weapon"]').click();await p.locator('[data-sell="'+actionItem.id+'"]').click();assert.equal(await p.evaluate(id=>__invQA.game.inventory.some(i=>i.id===id),actionItem.id),false);assert.equal(await p.evaluate(()=>__invQA.game.gold),lockedGold+actionItem.price);
 assert.equal(await p.evaluate(()=>__invQA.defs.filter((d,i)=>!MareItemArt.path(i,d)).length),0,'Every catalog item resolves to HD art');
 await p.locator('[data-inv-slot="head"]').click();

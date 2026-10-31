@@ -106,7 +106,17 @@
     const current=Math.max(0,Math.floor(Number(page)||0));
     return oldPageSize>0&&newPageSize>0?Math.floor(current*oldPageSize/newPageSize):current;
   };
-  root.MareUI={escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals,inventoryGrid,inventoryPageAtResize};
+  // Presentation only: callers supply the canonical power results.
+  const inventoryNumericRows=rows=>rows.filter(row=>row.value!==0);
+  const inventoryPowerState=({equipped=false,compatible=true,hasReference=false,beforePower,afterPower}={})=>{
+    if(equipped)return {state:'equipped',delta:null};
+    if(!compatible)return {state:'incompatible',delta:null};
+    if(!hasReference)return {state:'empty',delta:null};
+    if(!Number.isFinite(beforePower)||!Number.isFinite(afterPower))return {state:'unavailable',delta:null};
+    const delta=afterPower-beforePower;
+    return {state:delta>0?'better':delta<0?'worse':'equal',delta};
+  };
+  root.MareUI={escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals,inventoryGrid,inventoryPageAtResize,inventoryNumericRows,inventoryPowerState};
   if(typeof document!=='undefined')document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot,{once:true}):boot();
   if(typeof module!=='undefined')module.exports=root.MareUI;
 })(globalThis);
