@@ -14,7 +14,7 @@ As três frutas entram no catálogo Rank S com três slots de habilidade. As reg
 - Passiva Logia recebe a redução física já usada pelas outras Logias, salvo ataques com Haki.
 - Lanças de Gelo: cinco impactos de 420% num alcance de cinco tiles.
 - Pássaro Gélido: 450% num alcance de seis tiles; a animação respeita o frame 39.
-- Ambos aplicam lentidão de movimento e ataque. Tempo Gélido congela por até 5 s; o próximo golpe despedaça o gelo e adiciona 600% de dano.
+- Ambos aplicam lentidão de movimento e ataque. Tempo Gélido congela por até 5 s; o próximo golpe despedaça o gelo e adiciona 600% de dano. Após a liberação, o alvo recebe 40% de lentidão e 50% de redução de velocidade de ataque.
 
 ## Tori-Tori: Model Phoenix
 
