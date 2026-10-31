@@ -1,3 +1,5 @@
+> A apresentação inicial abaixo foi reprovada visualmente. Continuação com ícones e componentes reconstruídos: [Refino HD](INVENTORY-HD-REFINEMENT.md).
+
 # Inventário pirata HD — 31/10/2026
 
 Branch feature/inventory-pirate-hd, base 93368fd. HTML/CSS e JavaScript nativos; mundo Canvas 2D. Não há framework de interface.

@@ -1,3 +1,5 @@
+[Inventário — refino visual e 102 ícones PixelLab HD, aguardando aprovação](docs/INVENTORY-HD-REFINEMENT.md).
+
 [Inventário pirata HD e componentes reutilizáveis — sprint em revisão visual](docs/INVENTORY-PIRATE-HD.md).
 
 [Padrão visual permanente das próximas HUDs](docs/HUD-VISUAL-STANDARD.md).

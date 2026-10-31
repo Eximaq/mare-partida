@@ -1,3 +1,7 @@
+## 31/10/2026 — Refino do inventário e ícones HD (PR 172, em revisão)
+
+Reconstrução PixelLab Pro de 102 ícones e componentes dourados; tipografia local Alegreya SC/Sans, atributos legíveis, rótulos compactos sem sobreposição e ações Equipar/Bloquear/Vender diretamente/Forja. Mercado/Cofre ocultados. Custos: 390 gerações. Sem mudar saves ou sprites de combate. Dez entradas Node, testes de inventário em fonte/dist e HUD passaram; build Pages aprovado. [Fontes, arquivos, testes e limites](INVENTORY-HD-REFINEMENT.md).
+
 ## 31/10/2026 — Yami e Mera Rank S
 
 - Duas frutas S append-only, três slots, auras passivas e seis habilidades integradas ao controlador avançado existente. PNG/JSON fornecidos preservados: 26 arquivos, 361 quadros.
