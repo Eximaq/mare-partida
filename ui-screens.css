@@ -1009,7 +1009,37 @@
  #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-title-pair h3{font-size:20px;margin-bottom:5px}
  #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-title-pair p{font-size:18px;margin-top:3px}
  #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-title-plate{min-height:80px}
- #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-title-plate .rank-insignia{width:65px;height:65px}
  #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-requirements{gap:6px}
  #app #panelOverlay.hud-density.honors-hd-mode .promote{min-height:44px;font-size:21px}
+}
+
+/* Utility windows keep their existing actions with content-sized presentation. */
+#app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt])>.dialog{width:min(1000px,calc(100vw - 24px));height:auto;max-height:calc(100dvh - 24px);border:12px solid transparent;border-image:var(--rpg-hd-panel) 105 / 22px / 0 stretch;background:var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.hud-density[data-ui-panel=shop]>.dialog{width:min(580px,calc(100vw - 24px))}
+#app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt]) .dialog-header{min-height:64px;padding:8px 12px;background:var(--rpg-hd-wood) center/512px 256px;border-bottom:1px solid #ae873d}
+#app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt]) #dialogTitle{font:700 28px/1.1 'Inventory Alegreya SC',Georgia,serif}
+#app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt]) #dialogBody{padding:12px;overflow:auto;font-size:16px}
+#app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt]) .dialog-button{min-height:44px;padding:7px 12px;background:var(--rpg-workshop-surface) center/512px;font-size:16px}
+#app #panelOverlay.hud-density[data-ui-panel=help] .help-copy{font:16px/1.4 'Alegreya Sans',sans-serif;max-width:none}
+#app #panelOverlay.hud-density[data-ui-panel=help] .help-copy :is(p,li){font:inherit;margin-block:7px}
+#app #panelOverlay.hud-density[data-ui-panel=help] .help-sections{gap:10px}
+#app #panelOverlay.hud-density[data-ui-panel=help] .help-sections>section{padding:10px 12px;background:var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.hud-density[data-ui-panel=help] .help-copy h3{font-size:20px;margin-bottom:7px}
+#app #panelOverlay.hud-density[data-ui-panel=shop] .item-detail{display:grid;grid-template-columns:72px minmax(0,1fr);gap:8px 12px;padding:12px;background:var(--rpg-workshop-surface) center/512px;font-size:16px}
+#app #panelOverlay.hud-density[data-ui-panel=shop] .item-detail>.item-icon{grid-column:1;grid-row:1/3}
+#app #panelOverlay.hud-density[data-ui-panel=shop] .item-detail>h3{grid-column:2;margin:0;font-size:24px}
+#app #panelOverlay.hud-density[data-ui-panel=shop] .item-detail>p{grid-column:2;margin:0;font-size:16px}
+#app #panelOverlay.hud-density[data-ui-panel=shop] .item-detail>.dialog-button{grid-column:1/-1;justify-self:start}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-route{font-size:16px;line-height:1.4;max-width:none;margin:0}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-route header{margin-bottom:8px;padding:0;gap:8px}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-route h2{font-size:26px;margin:0}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-sectors{gap:7px}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-sectors button{min-height:52px;padding:7px;font-size:16px;background:var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-sectors small{font-size:14px}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-boss-brief{padding:10px;background:var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-economy{font-size:14px;background:var(--rpg-workshop-surface) center/512px}
+@media(max-width:760px){
+ #app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt])>.dialog{width:calc(100vw - 8px);max-height:calc(100dvh - 8px)}
+ #app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt]) #dialogBody{padding:8px}
+ #app #panelOverlay.hud-density[data-ui-panel=help] .help-sections{grid-template-columns:minmax(0,1fr)}
 }

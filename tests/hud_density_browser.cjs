@@ -97,7 +97,7 @@ const panels=[['haki'],['forge'],['inventory'],['character','status'],['characte
   await p.setViewportSize({width:1920,height:1080});
   for(const tab of ['upgrade','imbue','fusion','reforge']){
    await p.evaluate(tab=>{__densityQA.ui.tab=tab;__densityQA.open('forge')},tab);
-   if(tab==='fusion')await p.locator('[data-forge-fusion-mode=pearls]').click();
+   if(tab==='fusion'){await p.locator('[data-forge-fusion-mode=equipment]').click();await capture('forge-gear.png');await p.locator('[data-forge-fusion-mode=pearls]').click();}
    const button=p.locator('.forge2-operation-content [data-forge-action]').last();assert(await button.count());await button.scrollIntoViewIfNeeded();const box=await button.boundingBox();assert(box.y+box.height<=1080);
    await p.mouse.move(1,1);await capture('forge-'+(tab==='fusion'?'pearls':tab)+'.png');
   }

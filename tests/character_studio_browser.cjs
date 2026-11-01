@@ -8,7 +8,7 @@ const out=process.env.STUDIO_EVIDENCE||'tmp/character-hd';
  try{
  const p=await browser.newPage({viewport:{width:1448,height:1086}}),errors=[],missing=[];
  p.on('pageerror',e=>errors.push(e.message));p.on('response',r=>{if(r.status()>=400&&r.url().includes('/character-studio/'))missing.push(r.url());});
- await p.route(/\/game\.js(?:\?|$)/,async route=>{const response=await route.fetch();let s=await response.text();s=s.replace('  requestAnimationFrame(frame);','  window.__studioQA={get player(){return game},renderer:lobby96,openCreation,openPanel,closePanel,getDerived,level(n){game.level=n;},class(id){game.classId=id;updateUI();renderPanel();}};\n  requestAnimationFrame(frame);');await route.fulfill({response,body:s});});
+ await p.route(/\/game\.js(?:\?|$)/,async route=>{const response=await route.fetch();let s=await response.text();s=s.replace('  window.__mareDiagnostics=','  window.__studioQA={get player(){return game},renderer:lobby96,openCreation,openPanel,closePanel,getDerived,level(n){game.level=n;},class(id){game.classId=id;updateUI();renderPanel();}};\n  window.__mareDiagnostics=');await route.fulfill({response,body:s});});
 
  async function auditSymbols(selector){
   const results=await p.locator(selector).evaluateAll(async imgs=>Promise.all(imgs.map(async img=>{
@@ -48,7 +48,7 @@ const out=process.env.STUDIO_EVIDENCE||'tmp/character-hd';
  await p.setViewportSize({width:1448,height:1086});
  await auditSymbols('.studio-control-icon,.studio-step-icon');await checkSelectorAlignment();
  const sharedCreation=await p.locator('.studio-appearance').evaluate(e=>[...e.querySelectorAll('[data-appearance]')].map(n=>n.dataset.appearance));
- await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__studioQA.player);
+ await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__studioQA.player);
  await p.evaluate(()=>{__studioQA.level(6);__studioQA.openPanel('character','status');});
  await p.waitForTimeout(300);
 await auditSymbols('.attribute-row>.studio-icon,.studio-derived-groups h4 img');await p.screenshot({path:path.join(out,'character-unspent.png')});
