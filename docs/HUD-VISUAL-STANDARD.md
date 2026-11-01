@@ -69,3 +69,7 @@ Família de 32 insígnias e quatro placas PixelLab compartilhada com a HUD, cate
 ## Central do Navegante HD
 
 Meu Perfil, Equipamentos, Jornal do Morgan e todas as seções de Configurações usam a mesma família de madeira e metal escuros, dourado envelhecido, botões escuros/dourados e tipografia real. Reutilizar os componentes de captain-hd.css e assets/ui/captain-hd/ nas próximas telas equivalentes. Manter ícones isolados com alfa, dados dinâmicos separados e arte oficial de equipamentos por ID. O Morgan aprovado é um recurso editorial específico do jornal. Ver docs/CENTRAL-NAVEGANTE-HD.md.
+
+## Criação e HUDs remanescentes (novembro de 2026)
+
+A criação usa lista compacta e detalhes selecionados com os seis especiais canônicos. As HUDs de gameplay reutilizam o metal escuro/ madeira da Forja pelo token --rpg-workshop-surface e preservam a geometria anterior. Ver [auditoria, proveniência e comparação](CRIACAO-HARMONIZACAO-HD.md). Nenhum ícone especial ou emblema precisa ser regenerado.
