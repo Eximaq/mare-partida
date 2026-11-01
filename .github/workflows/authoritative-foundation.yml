@@ -32,12 +32,22 @@ jobs:
       - run: npm run build
       - run: npm run typecheck
       - run: npm run test:foundation
+      - name: PostgreSQL archive tools
+        run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client-18
       - run: npm run test:integration
+        env:
+          PG_BIN: /usr/lib/postgresql/18/bin
   docker-smoke:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+      - name: Validate prepared HTTPS proxy configuration
+        shell: bash
+        run: |
+          mkdir -p "$RUNNER_TEMP/mare-tls"
+          openssl req -x509 -newkey rsa:2048 -nodes -keyout "$RUNNER_TEMP/mare-tls/privkey.pem" -out "$RUNNER_TEMP/mare-tls/fullchain.pem" -days 1 -subj /CN=game.example.invalid 2>/dev/null
+          docker run --rm -v "$PWD/infra/hosting/nginx.conf.example:/etc/nginx/conf.d/default.conf:ro" -v "$RUNNER_TEMP/mare-tls:/etc/mare/tls:ro" nginx:stable nginx -t
       - name: Generate disposable credentials for this runner
         shell: bash
         run: |
@@ -72,7 +82,7 @@ jobs:
           const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
           try {
             assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
-            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 10);
+            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 13);
             await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
           } finally { await pool.end(); }

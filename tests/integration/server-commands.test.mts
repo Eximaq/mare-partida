@@ -146,7 +146,7 @@ test("command receipts survive restart, SQL failures roll back, and retries reta
     assert.equal(storage.includes(control.token), false); assert.equal(storage.includes(login.token), false);
   }));
 
-test("command rate and history limits bound storage while preserving exact retry", async () =>
+test("command rate limits preserve retry while old receipts never impose a lifetime stop", async () =>
   authDatabase(async ({ service, pool }) => {
     const login = await service.login("command-budget@example.invalid", "fixture");
     const character = await service.createCharacter(login.token, { name: "Budget", classId: "sword", factionId: "pirate" });
@@ -168,10 +168,10 @@ test("command rate and history limits bound storage while preserving exact retry
     await pool.query(`INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result,created_at)
       SELECT $1,gen_random_uuid(),repeat('b',64),$2::jsonb,clock_timestamp()-interval '2 minutes' FROM generate_series(1,9940)`,
       [character.id, JSON.stringify(result)]);
-    await assert.rejects(service.command(login.token, character.id, { ...input, requestId: randomUUID() }), { code: "command_history_full" });
-    await assert.rejects(service.command(login.token, character.id, { ...input, requestId: randomUUID(), action: "journey.begin" }), { code: "command_history_full" });
-    assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.character_journey_ledger")).rows[0].n, 0);
-    assert.equal((await service.characterState(login.token, character.id)).version, 0);
+    await service.command(login.token, character.id, { ...input, requestId: randomUUID() });
+    await service.command(login.token, character.id, { ...input, requestId: randomUUID(), action: "journey.begin" });
+    assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.character_journey_ledger")).rows[0].n, 1);
+    assert.equal((await service.characterState(login.token, character.id)).version, 1);
     assert.deepEqual(await service.command(login.token, character.id, input), result);
-    assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.character_commands")).rows[0].n, 10000);
+    assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.character_commands")).rows[0].n, 10002);
   }));

@@ -34,7 +34,7 @@ test("a completed combat exposes a server-owned encounter identity and allows a 
   const saved=(await pool.query("SELECT * FROM mare_game.combat_encounters")).rows;
   const second=await f.send(f.input("combat.begin",6));
   assert.notEqual(second.combat.encounterId,first.combat.encounterId);assert.equal(second.combat.encounterNumber,2);
-  assert.equal(second.combat.playerHp,30);assert.equal(second.combat.enemyHp,36);assert.equal(second.combat.turn,0);
+  assert.equal(second.combat.playerHp,38);assert.equal(second.combat.enemyHp,36);assert.equal(second.combat.turn,0);
   assert.deepEqual((await pool.query("SELECT * FROM mare_game.combat_encounters WHERE encounter_id=$1",[old.encounter_id])).rows,saved);
   // Old begin/claim retries remain historical; they cannot restart, heal or pay this new run.
   assert.deepEqual(await f.send(begin),first);assert.deepEqual(await f.send(claim),paid);
@@ -53,7 +53,7 @@ test("defeat permits a fresh encounter after rest, preserving lost HP and rounds
   assert.equal(results.filter(r=>r.status==="fulfilled").length,1);
   for(const result of results) if(result.status==="rejected") assert.equal(result.reason.code,"state_version_conflict");
   const rows=(await pool.query("SELECT phase,player_hp,turn FROM mare_game.combat_encounters ORDER BY ordinal")).rows;
-  assert.deepEqual(rows,[{phase:"lost",player_hp:0,turn:1},{phase:"active",player_hp:30,turn:0}]);
+  assert.deepEqual(rows,[{phase:"lost",player_hp:0,turn:1},{phase:"active",player_hp:38,turn:0}]);
   assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.combat_rounds")).rows[0].n,1);
   assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.combat_rewards")).rows[0].n,0);
 }));
@@ -90,7 +90,7 @@ test("rolling start budget is atomic across service instances and expires by dat
   assert.equal(outcomes.filter(r=>r.status==="fulfilled").length,1);assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.combat_encounters")).rows[0].n,11);
 }));
 
-test("100-encounter pilot history fails closed without deleting receipts or historical rewards",async()=>authDatabase(async({service,pool})=>{
+test("encounters continue beyond the pilot hundred while preserving every old record",async()=>authDatabase(async({service,pool})=>{
   const f=await fixture(service,pool);await f.send(f.input("combat.begin",3));
   await pool.query("UPDATE mare_game.combat_encounters SET player_hp=1,next_attack_at=clock_timestamp()-interval '1 second'");
   await f.send(f.input("combat.attack",4));
@@ -101,9 +101,9 @@ test("100-encounter pilot history fails closed without deleting receipts or hist
     INSERT INTO mare_game.combat_encounters(character_id,begin_request_id,last_request_id,ordinal,phase,player_hp,enemy_hp,turn,closed_at,started_at)
     SELECT $1,request_id,request_id,row_number() OVER()+1,'lost',0,25,1,clock_timestamp()-interval '61 seconds',clock_timestamp()-interval '25 hours' FROM receipts`,[f.character.id]);
   const before=(await pool.query("SELECT * FROM mare_game.combat_encounters ORDER BY ordinal")).rows;
-  await assert.rejects(f.send(f.input("combat.begin",5)),{code:"combat_history_full"});
-  const state=await service.onlineState(f.session.token,f.character.id);assert.equal(state.combat.historyFull,true);assert.equal(state.combat.canBegin,false);
-  assert.deepEqual((await pool.query("SELECT * FROM mare_game.combat_encounters ORDER BY ordinal")).rows,before);
+  const begun=await f.send(f.input("combat.begin",5));assert.equal(begun.combat.encounterNumber,101);
+  const state=await service.onlineState(f.session.token,f.character.id);assert.equal(state.combat.historyFull,false);assert.equal(state.combat.canBegin,false);
+  assert.deepEqual((await pool.query("SELECT * FROM mare_game.combat_encounters WHERE ordinal<=100 ORDER BY ordinal")).rows,before);
   assert.equal(state.state.gold,"8");
 }));
 
@@ -126,9 +126,9 @@ test("3F upgrade preserves active, won, lost and claimed histories and never rec
     }
     const names=["characters","character_progression","character_commands","character_combats","character_combat_rounds","character_combat_rewards"];
     const before=await Promise.all(names.map(t=>pool.query(`SELECT to_jsonb(t) AS row FROM mare_game.${t} t ORDER BY to_jsonb(t)::text`)));
-    assert.deepEqual(await applyMigrations(pool),["0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     for(const [i,t] of names.entries()) assert.deepEqual((await pool.query(`SELECT to_jsonb(t) AS row FROM mare_game.${t} t ORDER BY to_jsonb(t)::text`)).rows,before[i]!.rows);
-    for(const [old,current,extras] of [["character_combats","combat_encounters",["encounter_id","ordinal","closed_at"]],["character_combat_rounds","combat_rounds",["encounter_id"]],["character_combat_rewards","combat_rewards",["encounter_id"]]] as const) {
+    for(const [old,current,extras] of [["character_combats","combat_encounters",["encounter_id","ordinal","closed_at","fighter","player_max_hp"]],["character_combat_rounds","combat_rounds",["encounter_id"]],["character_combat_rewards","combat_rewards",["encounter_id"]]] as const) {
       const copied=await pool.query(`SELECT to_jsonb(t)-$1::text[] AS row FROM mare_game.${current} t ORDER BY (to_jsonb(t)-$1::text[])::text`,[extras]);
       assert.deepEqual(copied.rows,before[names.indexOf(old)]!.rows);
     }

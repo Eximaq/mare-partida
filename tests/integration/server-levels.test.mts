@@ -33,7 +33,7 @@ test("two victories reach level two atomically and replay never grants a second 
   const snapshot:any=await service.onlineState(f.session.token,f.character.id);
   assert.deepEqual(snapshot.progression,{catalogId:"online-levels-v1",maxLevel:20,earnedAttributePoints:5,xpIntoLevel:"0",xpForNextLevel:"105",xpToNextLevel:"105",atCap:false});
   assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.character_level_ledger")).rows[0].n,1);
-  assert.equal(snapshot.combat.playerHp,30,"level advancement does not change combat HP");
+  assert.equal(snapshot.combat.playerHp,38,"level advancement does not change combat HP");
 }));
 
 async function wonFixture(service:any,pool:any) {
@@ -93,7 +93,7 @@ test("3G upgrade preserves XP/gold/receipts, backfills each earned level once an
       const receipt=await service.command(session.token,character.id,command);fixtures.push({session,character,command,receipt,xp,level});
     }
     const receipts=(await pool.query("SELECT * FROM mare_game.character_commands ORDER BY request_id")).rows;
-    assert.deepEqual(await applyMigrations(pool),["0009_level_progression.sql", "0010_attribute_allocation.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     assert.deepEqual((await pool.query("SELECT * FROM mare_game.character_commands ORDER BY request_id")).rows,receipts);
     for(const f of fixtures) {
       const state=await service.characterState(f.session.token,f.character.id);assert.equal(state.level,f.level);assert.equal(state.experience,f.xp);assert.equal(state.gold,"12");assert.equal(state.version,f.level>1?1:0);

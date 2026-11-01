@@ -38,10 +38,10 @@ test("combat HTTP accepts intentions only, enforces cooldown and credits a won e
   try {
     const begin=f.input("combat.begin",3), response=await send(begin);
     assert.equal(response.status,200,"combat.begin must be accepted after the hunt");
-    const begun=await response.json();assert.equal(begun.state.version,4);assert.equal(begun.combat.playerHp,30);assert.equal(begun.combat.enemyHp,36);
+    const begun=await response.json();assert.equal(begun.state.version,4);assert.equal(begun.combat.playerHp,38);assert.equal(begun.combat.enemyHp,36);
     assert.deepEqual(await (await send(begin)).json(),begun);
     const timing=(await pool.query("SELECT extract(epoch FROM next_attack_at-started_at)::float8 AS delay FROM mare_game.combat_encounters")).rows[0];
-    assert.ok(timing.delay>=2&&timing.delay<3);
+    assert.ok(timing.delay>=1.85&&timing.delay<2);
     await pool.query("UPDATE mare_game.combat_encounters SET next_attack_at=clock_timestamp()+interval '1 hour'");
     const attack=f.input("combat.attack",4);
     assert.deepEqual(await (await send(attack)).json(),{error:"combat_cooldown"});
@@ -54,7 +54,7 @@ test("combat HTTP accepts intentions only, enforces cooldown and credits a won e
     assert.equal(cross.status,404);assert.equal(missing.status,404);assert.deepEqual(await cross.json(),await missing.json());
     assert.equal((await send(attack,f.session.token,f.character.id,{"x-csrf-token":"forged"})).status,403);
     await readyAttack(pool);
-    const hit=await (await send(attack)).json();assert.equal(hit.combat.turn,1);assert.ok(hit.combat.enemyHp>=22&&hit.combat.enemyHp<=26);assert.ok(hit.combat.playerHp>=19&&hit.combat.playerHp<=23);
+    const hit=await (await send(attack)).json();assert.equal(hit.combat.turn,1);assert.ok(hit.combat.enemyHp>=19&&hit.combat.enemyHp<=23);assert.ok(hit.combat.playerHp>=27&&hit.combat.playerHp<=31);
     assert.deepEqual(await (await send(attack)).json(),hit);
     // Fixture a lethal remaining HP, without replacing the runtime RNG or damage calculation.
     await pool.query("UPDATE mare_game.combat_encounters SET enemy_hp=1");await readyAttack(pool);
@@ -166,7 +166,7 @@ test("combat migration preserves the completed hunt, old receipts and existing b
     const f=await fixture(service,pool,true,true);
     const tables=["accounts","characters","character_progression","character_commands","character_hunts","character_hunt_rewards"];
     const before=await Promise.all(tables.map(t=>pool.query(`SELECT * FROM mare_game.${t}`)));
-    assert.deepEqual(await applyMigrations(pool),["0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     for(const [i,t] of tables.entries()) assert.deepEqual((await pool.query(`SELECT * FROM mare_game.${t}`)).rows,before[i]!.rows);
     await assert.rejects(pool.query("INSERT INTO mare_game.combat_encounters(character_id,begin_request_id,last_request_id) VALUES($1,$2,$2)",[f.character.id,randomUUID()]),{code:"23503"});
     await f.send(f.input("combat.begin",3));

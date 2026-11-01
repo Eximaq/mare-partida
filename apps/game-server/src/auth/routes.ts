@@ -1,4 +1,5 @@
 import type { IncomingMessage, ServerResponse } from "node:http";
+import {clientAddress} from "../client-address.js";
 import { z } from "zod";
 import {
   loginSchema,
@@ -106,6 +107,7 @@ export function createAuthHandler(options: {
   vault: Vault;
   origin: string;
   cookieSeconds: number;
+  trustedProxyIp?: string;
 }) {
   const { service, vault, origin } = options;
   return async (request: IncomingMessage, response: ServerResponse) => {
@@ -121,6 +123,7 @@ export function createAuthHandler(options: {
     };
     const started = Date.now();
     try {
+      let ip:string;try{ip=clientAddress(request,options.trustedProxyIp);}catch{throw new AuthFault(400,"invalid_proxy_identity");}
       const url = new URL(request.url ?? "/", origin),
         path = url.pathname;
       const match =
@@ -157,7 +160,7 @@ export function createAuthHandler(options: {
         reply(405, { error: "method_not_allowed" });
         return;
       }
-      await service.rateLimit("ip:" + request.socket.remoteAddress, 300, 60);
+      await service.rateLimit("ip:" + ip, 300, 60);
       const jar = cookies(request),
         session = jar.get(SESSION),
         preauth = jar.get(PREAUTH);
@@ -230,7 +233,7 @@ export function createAuthHandler(options: {
       if (path === "/v1/auth/login") {
         const credentials = parse(loginSchema, value);
         await service.rateLimit(
-          "login-ip:" + request.socket.remoteAddress,
+          "login-ip:" + ip,
           20,
           60,
         );
@@ -251,7 +254,7 @@ export function createAuthHandler(options: {
             ? parse(loginSchema, value)
             : parse(recoverSchema, value);
         await service.rateLimit(
-          "email-ip:" + request.socket.remoteAddress,
+          "email-ip:" + ip,
           10,
           3600,
         );
