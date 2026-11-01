@@ -1,0 +1,59 @@
+name: Compêndio HD — registro, ícones e filtros
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'compendium-ui.js'
+      - 'compendium-hd.css'
+      - 'assets/ui/compendium-hd/**'
+      - 'akuma-system.js'
+      - 'character-system.js'
+      - 'rank-a-data.js'
+      - 'rank-s-data.js'
+      - 'game.js'
+      - 'game-tooltips.js'
+      - 'game-tooltips.css'
+      - 'index.html'
+      - 'item-art.js'
+      - 'tests/compendium*'
+      - '.github/workflows/compendium-hd.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compendium:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      MARE_COMPENDIUM_EVIDENCE: /tmp/mare-compendium-hd
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar Chromium
+        run: |
+          python -m pip install playwright==1.63.0
+          python -m playwright install --with-deps chromium
+      - name: Validar catálogo, bônus e componentes compartilhados
+        run: |
+          node --test tests/compendium-hd.test.cjs tests/akuma-system.test.cjs tests/character-system.test.cjs tests/game-tooltips.test.cjs tests/forge-system.test.cjs tests/rank-a-system.test.cjs tests/rank-a-expansion.test.cjs tests/rank-b-system.test.cjs tests/rank-s-system.test.cjs tests/rank-s-three.test.cjs tests/inventory-components.test.cjs tests/inventory-comparison.test.cjs tests/inventory-rarity-slots.test.cjs
+          python tests/akuma_backend_test.py
+          python tools/build_pages.py
+      - name: Conferir o jogo e o pacote público
+        run: |
+          python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-compendium-http.log 2>&1 &
+          sleep 2
+          MARE_TEST_URL=http://127.0.0.1:8123/ python -X utf8 tests/compendium_hd_browser.py
+          MARE_TEST_URL=http://127.0.0.1:8123/dist/ python -X utf8 tests/compendium_hd_browser.py
+      - name: Capturas reais
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compendium-hd
+          path: /tmp/mare-compendium-hd/
+          if-no-files-found: warn
+          retention-days: 14

@@ -1,0 +1,31 @@
+'use strict';
+const assert=require('node:assert/strict'),fs=require('node:fs');
+const UI=require('../compendium-ui.js'),A=require('../akuma-system.js'),C=require('../character-system.js'),F=require('../forge-system.js'),Tips=require('../game-tooltips.js');
+const expected={S:'supreme',A:'legendary',B:'legendary',C:'epic',D:'epic',E:'rare'};
+const game={akumaCompendium:['akuma_kuku_kuku','akuma_ushi_bison','akuma_yami_yami','akuma_kuku_kuku'],inventory:[],equipment:{}};
+const before=JSON.stringify(game),state=UI.createState(),model=UI.model(game,state);
+assert.equal(model.rows.length,30);assert.equal(model.count,3);assert.equal(model.bonus,.3);assert.equal(model.ranks.length,6);
+for(const rank of A.ranks){assert.equal(A.rarityFor(rank),expected[rank]);const row=model.ranks.find(r=>r.rank===rank);assert.equal(row.total,A.catalog.filter(f=>f.rank===rank).length);assert.equal(row.name,F.rarity[expected[rank]].name);}
+for(const f of A.catalog){assert.equal(UI.classification(f).id,expected[f.rank]);assert(f.description.length>10,f.id);assert(!/[ÃÂ�]|â€/.test(f.description),f.id);assert(fs.existsSync(UI.artwork(f).split('?')[0]),f.id);assert(!/sprites-combat|idle-|zoan_sprite/.test(UI.artwork(f)));assert.equal(UI.tooltip(game,f.id).description,f.description);}
+assert.equal(UI.model(game,{...state,rarity:'legendary'}).rows.length,10);
+assert.deepEqual(new Set(UI.model(game,{...state,rarity:'epic'}).rows.map(f=>f.rank)),new Set(['C','D']));
+assert.equal(UI.model(game,{...state,type:'zoan',rank:'D'}).rows.length,3);
+assert.equal(UI.model(game,{...state,type:'logia',rank:'E'}).rows.length,0);
+assert.equal(UI.model({...game,akumaCompendium:A.catalog.map(f=>f.id)},state).bonus,3);
+assert.equal(UI.model(game,{...state,query:'fenix'}).rows.length,0,'search follows actual canonical name, no fabricated fruits');
+assert.equal(UI.model(game,{...state,query:'supa'}).selected.id,'akuma_supa_supa');
+assert.equal(UI.model(game,{...state,query:'missing',selected:A.catalog[0].id}).selected,null);
+assert.deepEqual(UI.model(game,{...state,query:'missing'}).ranks,model.ranks,'progress never depends on filter');
+assert.equal(JSON.stringify(game),before,'render models cannot mutate player');
+const known=A.byId('akuma_kuku_kuku'),newFruit=A.byId('akuma_uma_uma');
+assert.equal(UI.registration(game,known).registered,true);assert.equal(UI.registration(game,known).possessed,false);assert(!UI.registration(game,known).eligible);
+const full={...game,inventory:Array.from({length:120},()=>({fruitId:'other'}))};
+assert(!UI.registration(full,newFruit).eligible);
+assert(UI.registration({...full,equipment:{akuma_no_mi:{fruitId:newFruit.id}}},newFruit).eligible,'owned fruit needs no extra slot');
+const reg=A.register(game,newFruit.id).state,repeat=A.register(reg,newFruit.id).state;
+assert.equal(A.passiveCount(reg),4);assert.equal(A.passiveCount(repeat),4);
+assert.equal(C.compendiumMultiplier(A.passiveCount(reg)),1.004);
+assert.equal(UI.model(reg,{...state,rank:'S'}).bonus,.4,'global bonus is independent of visible rank');
+assert.equal(UI.registration(reg,newFruit).registered,true);
+const tip=Tips.compendiumHTML({...UI.tooltip(game,newFruit.id),name:'<script>'});assert(tip.includes('&lt;script&gt;'));assert(!tip.includes('<script>'));assert(tip.includes('Rank E'));
+console.log('Compendium HD: 30 canonical fruits, rank/rarity separation, current HD fruit icons, individual Zoan art, descriptions, combined filters, global bonuses, permanent unique registration and pure views passed.');

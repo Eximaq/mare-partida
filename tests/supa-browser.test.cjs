@@ -22,8 +22,8 @@ const bridge=`  window.__supaQA={enterHunt,useFruitSkill,takeDamage,get game(){r
     await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();
     await page.locator('#characterMenuTrigger').click();
     await page.locator('[data-character-section=akuma]').click();
-    await page.locator('[data-akuma-rank=D]').click();
-    await page.locator('[data-fruit-register=akuma_supa_supa]').click();
+    await page.locator('[data-compendium-rank=D]').click();
+    await page.locator('[data-compendium-fruit=akuma_supa_supa]').click();await page.locator('[data-fruit-register=akuma_supa_supa]').click();
     await page.waitForFunction(()=>__mareDiagnostics().akuma.registered.includes('akuma_supa_supa'));
     await page.keyboard.press('Escape');
     await page.keyboard.press('i');

@@ -54,3 +54,8 @@ As telas de status e aparência reutilizam os materiais acima. A criação e a e
 ## Talentos — 31/10/2026
 
 A tela de talentos usa a mesma madeira no cabeçalho e no rodapé; identidade e detalhes são centralizados pelo desenho visível. Medalhões e nós originais preservados. Consulte [TALENTOS-HD.md](TALENTOS-HD.md).
+
+
+## Compêndio — 01/11/2026
+
+A composição do compêndio usa cabeçalho decorativo em toda a largura, tipos, ranks, galeria e detalhes, preservando os ícones oficiais. Os símbolos transparentes de Paramecia/Zoan/Logia ficam em assets/ui/compendium-hd/types-atlas.png e podem ser reutilizados. Origem, custo e regras: [COMPENDIO-HD.md](COMPENDIO-HD.md).

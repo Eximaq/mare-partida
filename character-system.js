@@ -56,9 +56,10 @@
       {name:'Bênção do Farol',cost:27,cd:16,type:'blessing',desc:'Proteção e regeneração por 8s; potência aumenta com Espírito.'}]};
     return classes;
   }
+  const compendiumMultiplier=count=>1+Math.max(0,Number(count)||0)*.001;
   function derive(g,c,f,gear){
     const r=roles[g.classId],lvl=g.level-1;
-    const compendiumBonus=1+Math.max(0,Number(gear.akumaRegistered)||0)*.001;
+    const compendiumBonus=compendiumMultiplier(gear.akumaRegistered);
     const preAttributes=Object.fromEntries(keys.map(k=>[k,((birth[g.classId]||birth.sword)[k]+integer(g.attributes?.[k]))*(k==='strength'?compendiumBonus:1)+Math.max(0,Number(gear.attributes?.[k])||0)]));
     const a=Object.fromEntries(keys.map(k=>[k,Math.round(preAttributes[k]*(1+Math.max(0,Number(gear.pearlPercent?.[k])||0))*1e6)/1e6]));
     const {strength:S,dexterity:D,vitality:V,intelligence:I,spirit:E}=a;
@@ -92,7 +93,7 @@
       return {id:recipient.id,amount:recipient.hp-before};
     });
   }
-  const api={attributes,birth,keys,empty,earned,spent,migrate,commit,roles,configure,derive,damage,incoming,healRecipients};
+  const api={attributes,birth,keys,empty,earned,spent,migrate,commit,roles,configure,compendiumMultiplier,derive,damage,incoming,healRecipients};
   globalThis.MareCharacters=api;
   if(typeof module!=='undefined')module.exports=api;
 })();
