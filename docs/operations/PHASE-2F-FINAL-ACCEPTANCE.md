@@ -1,5 +1,13 @@
 # Etapa 2F — matriz de aceite e janela final
 
+**Fechamento atualizado em 01/11/2026:** o proprietário aprovou a integração e
+a publicação estática. PR #162 integrado à main em `5b88df6`, após 22/22 checks
+aprovados sobre `736bcf5`. GitHub Pages publicado com sucesso pelo run
+`41313632342`; página verificada no navegador. Auth/API continuam locais e
+desligados. A [Etapa 3A](../architecture/PHASE-3-SERVER-STATE-PLAN.md) foi iniciada
+em branch separada. As restrições e autorizações das seções históricas abaixo
+descrevem aquelas janelas; não anulam este aceite posterior.
+
 Preparação autorizada em 31/10/2026. Referência técnica verificada: `c8be42f`,
 branch `feature/auth-sessions`, PR #162 Draft, base de integração main `8550cfa`.
 **Estado: F02 aprovado no cenário real autorizado sobre `f98063e`. F01 aprovado
@@ -9,8 +17,7 @@ em 01/11/2026: rotação ES256 real, caches aquecido/vazio, refresh natural e
 encerramento verificados. F04 aprovado em 01/11/2026: link recusado após 65 minutos
 e log remoto `email link has expired`. F05 hospedado aprovado em segurança e
 reconciliação; ressalva de interface corrigida com validação local posterior,
-aceite final ainda aberto; não há
-autorização de Fase 3.**
+aceite final e avanço posterior autorizados no fechamento acima.**
 Este documento concentra o status atual. Os relatos das rodadas 1–3 preservam
 seus resultados históricos e não autorizam novos envios ou operações externas.
 F01: [resultado aprovado e histórico das tentativas](PHASE-2F-F01-RECOVERY-RETRY.md).
@@ -44,7 +51,7 @@ nesta matriz e no relatório vinculado; o escopo histórico acima não os substi
 | F04 | Expiração do token remoto de e-mail sem uso | Aprovado: único link de G aberto após 65 min; callback 400/otp_expired e log remoto GET /verify com `email link has expired` às 06:00:29Z de 01/11; [registro F04](PHASE-2F-F04-EMAIL-EXPIRY.md) | Sem novo envio/reset; dados preservados, Auth false/API/gateway parados; não testa a fronteira exata de 3600 s |
 | F05 | Resposta perdida durante reset hospedado | Aprovado em segurança/reconciliação sobre `5332f51`: um envio, PUT remoto 200/resposta descartada/BFF 503; sessões anteriores revogadas, retries 401, senha antiga recusada/nova aceita, persistência e logout. UI corrigida posteriormente, 5/5 regressões e navegador com provedor simulado; [resultado F05](PHASE-2F-F05-RESET-RESPONSE.md) | Texto inicial hospedado não capturado; correção UI validada localmente, sem novo SMTP. Sem alegar queda física de rede ou atomicidade |
 | O01 | Operação antes de exposição pública | Pendente | Origem de produção, retenção/chaves, abuso, carga e backup/restauração; nenhuma publicação nesta fase |
-| G01 | Aceite final da Fase 2 | Aberto | Revisão do proprietário: F01–F05, correção local da UX e limites da evidência; matriz sem falhas abertas ocultadas |
+| G01 | Aceite final da Fase 2 | Aprovado pelo proprietário para integração e publicação estática; PR #162 integrado | Limites dos ensaios preservados. O01 continua aplicável antes de exposição pública do backend |
 
 Evidências de A06: [fundação e Docker/Linux](https://github.com/Eximaq/mare-partida/actions/runs/41263542593),
 [regressão integrada](https://github.com/Eximaq/mare-partida/actions/runs/41263542566),

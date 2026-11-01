@@ -126,6 +126,7 @@ export function createAuthHandler(options: {
         /^\/v1\/characters\/([0-9a-f-]{36})(?:\/(control)(?:\/(renew))?)?$/.exec(
           path,
         );
+      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/state$/.exec(path);
       const known = [
         "/v1/auth/csrf",
         "/v1/auth/signup",
@@ -138,7 +139,7 @@ export function createAuthHandler(options: {
         "/v1/me",
         "/v1/characters",
       ];
-      if (!known.includes(path) && !match) {
+      if (!known.includes(path) && !match && !stateMatch) {
         request.resume();
         reply(404, { error: "not_found" });
         return;
@@ -147,7 +148,7 @@ export function createAuthHandler(options: {
         path === "/v1/auth/csrf" ||
         path === "/v1/auth/callback" ||
         path === "/v1/me" ||
-        (!!match && !match[2]);
+        (!!match && !match[2]) || !!stateMatch;
       if (request.method !== (get ? "GET" : "POST")) {
         request.resume();
         response.setHeader("Allow", get ? "GET" : "POST");
@@ -200,6 +201,12 @@ export function createAuthHandler(options: {
       if (get) {
         request.resume();
         if (!session) throw unauthorized();
+        if (stateMatch) {
+          if (url.search || request.headers["transfer-encoding"] || Number(request.headers["content-length"] ?? 0) !== 0)
+            throw new AuthFault(400, "invalid_request");
+          reply(200, await service.characterState(session, parse(z.uuid(), stateMatch[1])));
+          return;
+        }
         if (path === "/v1/me") {
           reply(200, await service.me(session));
           return;

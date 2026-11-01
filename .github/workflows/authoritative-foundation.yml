@@ -72,7 +72,7 @@ jobs:
           const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
           try {
             assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
-            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 2);
+            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 3);
             await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
           } finally { await pool.end(); }
@@ -109,6 +109,8 @@ jobs:
           const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
           try {
             await pool.query('SELECT id FROM mare_game.accounts LIMIT 1');
+            await pool.query('SELECT character_id FROM mare_game.character_progression LIMIT 1');
+            await assert.rejects(pool.query('UPDATE mare_game.character_progression SET gold=1'),{code:'42501'});
             await assert.rejects(pool.query('UPDATE mare_game.characters SET name=name'),{code:'42501'});
             await assert.rejects(pool.query('UPDATE mare_game.accounts SET subject=subject'),{code:'42501'});
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'),{code:'42501'});

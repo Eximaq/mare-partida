@@ -10,6 +10,7 @@ import {
 } from "./provider.js";
 import { digest, opaque, Vault } from "./vault.js";
 import type { SessionPolicy } from "./config.js";
+import { initializeCharacterState, readCharacterState } from "../characters/state.js";
 type SessionRow = {
   id: string;
   account_id: string;
@@ -122,7 +123,7 @@ export class AuthService {
     kind: "play" | "recovery",
     run: (client: PoolClient, row: SessionRow) => Promise<T | AuthFault>,
   ): Promise<T> {
-    return this.tx(async (client) => {
+    const outcome = await this.tx<{ ok: true; value: T } | { ok: false; error: unknown }>(async (client) => {
       const row = (
         await client.query<SessionRow>(
           `SELECT s.*,clock_timestamp() AS now FROM mare_game.app_sessions s
@@ -196,8 +197,19 @@ export class AuthService {
         [row.id, this.options.policy.idleMs],
       );
       if (!valid.rowCount) return unauthorized();
-      return run(client, row);
+      // A provider refresh may already have consumed its old token. Domain errors
+      // must roll back only the operation, not the accepted session rotation.
+      await client.query("SAVEPOINT authorized_operation");
+      try {
+        const value = await run(client, row);
+        return value instanceof AuthFault ? value : { ok: true, value };
+      } catch (error) {
+        await client.query("ROLLBACK TO SAVEPOINT authorized_operation");
+        return { ok: false, error };
+      }
     });
+    if (!outcome.ok) throw outcome.error;
+    return outcome.value;
   }
   async login(email: string, password: string, oldToken?: string) {
     const tokens = await this.options.provider.login(email, password);
@@ -250,6 +262,12 @@ export class AuthService {
       };
     });
   }
+  async characterState(token: string, id: string) {
+    return this.withSession(token, "play", async (client, row) => {
+      await this.owned(client, row.account_id, id);
+      return readCharacterState(client, id);
+    });
+  }
   private async owned(
     client: PoolClient,
     account: string,
@@ -273,8 +291,8 @@ export class AuthService {
   }
   async createCharacter(token: string, input: CharacterCreate) {
     return this.withSession(token, "play", async (client, row) => {
-      await client.query(
-        `INSERT INTO mare_game.characters(id,account_id,name,class_id,faction_id) VALUES($1,$2,$3,$4,$5) ON CONFLICT(account_id) DO NOTHING`,
+      const created = await client.query(
+        `INSERT INTO mare_game.characters(id,account_id,name,class_id,faction_id) VALUES($1,$2,$3,$4,$5) ON CONFLICT(account_id) DO NOTHING RETURNING id`,
         [
           randomUUID(),
           row.account_id,
@@ -295,6 +313,7 @@ export class AuthService {
         character.factionId !== input.factionId
       )
         return new AuthFault(409, "character_exists");
+      if (created.rowCount) await initializeCharacterState(client, character.id);
       return character;
     });
   }
