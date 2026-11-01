@@ -3,7 +3,7 @@
 ((root)=>{
  const reactions=new WeakMap(),images=new Map(),lastDraw=new Map(),HURT_SECONDS=.18;
  const directions={front:'south',back:'north',left:'west',right:'east'};
- const fruits={akuma_tori_albatroz:'tori',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko',akuma_ushi_giraffe:'ushi',akuma_inu_wolf:'wolf',akuma_ryu_ryu:'ryu',akuma_ushi_bison:'bison'};
+ const fruits={akuma_tori_albatroz:'tori',akuma_tori_phoenix:'phoenix',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko',akuma_ushi_giraffe:'ushi',akuma_inu_wolf:'wolf',akuma_ryu_ryu:'ryu',akuma_ushi_bison:'bison'};
  const data=()=>root.MareSpriteCombatV2Data||{};
  const errors=new Map(),assetBase=typeof document!=='undefined'&&document.currentScript?.src?new URL('.',document.currentScript.src):null;
  const assetVersion=typeof document!=='undefined'&&document.currentScript?.src?new URL(document.currentScript.src).searchParams.get('v')||'current-player-v2-20261030':'current-player-v2-20261030';
@@ -25,7 +25,7 @@
   // The owner intentionally uses the native South reaction for damage from every facing.
   const facing=action==='hurt'?'south':directions[direction]||direction;
   const aliases={dash:'special',charge:'special',finish:'special',headbutt:'special',bite:'special',tail:'special-2'};
-  action=aliases[action]||action;
+  action=key==='phoenix'&&action==='dash'?'dash':aliases[action]||action;
   // Authored locomotion aliases remain valid. Playable forms never borrow an unrelated action.
   const requested=entry.clips[action]?.[facing];
   const locomotion=['walk','run'].includes(action)?(entry.clips.walk?.[facing]||entry.clips.run?.[facing]):null;
@@ -80,6 +80,10 @@
   return draw(c,m.type,m.x,m.y+3,{action,direction:m.emberFacing||'south',time:now+(m.bob||0),progress,height:entry.worldHeight*(entry.world_scale??1),flash:reaction!==null&&!resolve(m.type,'hurt',m.emberFacing||'south').requested});
  }
  function install(){
+  // PR177 native Hurt backport; keep catalog contributions from main conflict-free.
+  // Register the approved clip, never substitute another action or overwrite authored Hurt.
+  const phoenix=data().phoenix;
+  if(phoenix&&!phoenix.clips.hurt)phoenix.clips.hurt={"south":{"image":"assets/sprites-combat-v2/phoenix/hurt-south.png","size":132,"frames":4,"fps":22.22222222222222,"loop":false,"bounds":[[21,25,111,113],[16,28,115,110],[22,34,111,111],[33,33,99,108]],"anchor":[66,113],"source_animation":"Recoil briefly from a frontal hit, contract the wings, then recover the original pose in place.","playback_start":0,"playback_frames":4,"playback_seconds":0.18}};
   const art=root.MareZoanArt;
   if(art){const original=art.draw,oldStatus=art.status,oldTiming=art.attackTiming;art.draw=function(c,id,x,y,o={}){const key=fruits[id];if(!key||!data()[key]){reportMissing('player-transformation',id,o.action,o.direction);return false;}return draw(c,key,x,y,{...o,...(key==='ryu'?{height:data().ryu.worldHeight*(o.scale??1)}:{})});};art.status=(id,a,d)=>fruits[id]?status(fruits[id],a,d):'missing';
    // Original logical metadata remains authoritative, independent of image loading.

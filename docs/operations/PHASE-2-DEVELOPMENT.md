@@ -414,8 +414,9 @@ as regras antes do push; não presumir que um Draft PR impeça deploy automátic
 
 As regras não apagam previews antigos. Somente o preview `76cb9297` foi excluído
 com autorização específica. Nenhum outro deployment ou projeto foi removido.
-Antes da integração de #162, revisar também a correção isolada #177; não iniciar
-Fase 3 nem publicar o BFF por consequência de um push de documentação.
+A correção necessária de #177 foi incorporada de forma seletiva em #162,
+sem merge. Revisar a CI do novo commit contra main; não iniciar Fase 3 nem
+publicar o BFF por consequência de um push.
 
 Antes das integrações locais, exigir `pg_isready` aceitando conexões; escutar na
 porta não basta. Nesta revalidação houve recuperação automática de interrupção

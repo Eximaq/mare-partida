@@ -1,0 +1,60 @@
+{
+  "pixelLabId": "7acf1282-14f7-429b-9e4e-5ed3adacee7a",
+  "clips": {
+    "hurt": {
+      "south": {
+        "image": "assets/sprites-combat-v2/phoenix/hurt-south.png",
+        "size": 132,
+        "frames": 4,
+        "fps": 22.22222222222222,
+        "loop": false,
+        "bounds": [
+          [
+            21,
+            25,
+            111,
+            113
+          ],
+          [
+            16,
+            28,
+            115,
+            110
+          ],
+          [
+            22,
+            34,
+            111,
+            111
+          ],
+          [
+            33,
+            33,
+            99,
+            108
+          ]
+        ],
+        "anchor": [
+          66,
+          113
+        ],
+        "source_animation": "Recoil briefly from a frontal hit, contract the wings, then recover the original pose in place.",
+        "playback_start": 0,
+        "playback_frames": 4,
+        "playback_seconds": 0.18
+      }
+    }
+  },
+  "hurt_source": {
+    "animation_group_id": "c098c481-6461-463d-b29b-d51d03ca108f",
+    "animation_id": "32d4e1ef-b4a7-4254-b4b4-c5f6e0df8e33",
+    "approved": "2026-10-31",
+    "rgba_sha256": [
+      "20d94d7760538055061bf0d822376367f6de4e7482b648db603466abd44bec42",
+      "fcb6eee76a6ec7798914016007d7fb69e5d3d7f6712993bebbc876d5821f885b",
+      "0e145d117323f2ddb6e4b34cd8c937ae8e5a54b8858a0004d6093a072b2343d4",
+      "744b20467534f31877d00c4a14641ac3190f3e4ccbc11f300ef8d872c2bfcbfb"
+    ],
+    "anchor_note": "Original South idle foot 95 + centered canvas padding (132 - 96) / 2 = 113. Fixed anchor across all four frames; source pixels unchanged."
+  }
+}

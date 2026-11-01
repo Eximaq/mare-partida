@@ -10,7 +10,8 @@ dos assets da main, junto das regras/documentação do backend. A atualização 
 preserva também os links de HUD/Bari/Doku/Ito, a rota documental de HUD e suas regras
 de metadados. Esses ajustes textuais não importam ou alteram o runtime do jogo nesta
 branch; a integração completa continua pertencendo ao futuro merge autorizado.
-Nenhum asset foi editado.
+A implementação Auth preserva os assets; a correção de compatibilidade autorizada
+do PR #177 foi posteriormente incorporada conforme a seção final deste documento.
 Os índices e regras adicionados para Rank S na main posterior foram igualmente
 preservados por conciliação textual, sem alterar os arquivos do jogo nesta branch.
 
@@ -252,3 +253,40 @@ alias foram excluídos, ambos com HTTP 404. Produção e outros previews preserv
 As branches de Auth, fundação e correção da Fênix foram excluídas dos previews
 automáticos; novos commits desta tarefa usam também `[CF-Pages-Skip]`.
 O build observado executava `tools/build_portal.py`, sem publicar o backend.
+
+
+## Correção incorporada do PR #177 — 31/10/2026
+
+Por autorização explícita, a branch de Auth recebeu a correção de `27f1953` e
+`b08d0b2`, sem merge, rebase ou alteração da main. Como esta branch antecede a
+Fênix, também recebeu somente os pré-requisitos de renderização de `8550cfa`:
+catálogo, mapeamento e arquivos nativos da Fênix. Todas as entradas anteriores
+do catálogo permanecem semanticamente idênticas. `game.js`, código do servidor,
+economia, mapas, HUD, chaves de saves e políticas de sessão não foram alterados.
+
+A aplicação literal criava conflitos add/add nos arquivos novos da main.
+Para evitá-los, o catálogo e `phoenix/layout.json` permanecem iguais à main;
+`install()` do renderizador registra o mesmo Hurt nativo do #177 somente quando
+a entrada ainda não possui Hurt. Não usa outra ação como fallback e não sobrescreve
+Hurt existente. O PNG é idêntico ao aprovado; `hurt-layout.json` preserva os
+metadados e hashes originais. Os testes de desenho e de armas são os do #177,
+sem remoção de asserções. A composição por `merge-tree` com `8550cfa` ficou sem
+conflitos, sem atualizar refs nem realizar merge.
+
+A regressão de desenho falhou antes do Hurt e passou após a correção. O teste de
+armas verifica os contratos reais das 22 armas e não o texto de estado de UI.
+Build/typecheck, 28 testes de fundação, 19 integrações PostgreSQL reais e
+123/123 arquivos Node legados passaram após a adaptação final. O E2E Supa
+permanece no harness separado, conforme a suíte oficial.
+O provedor das integrações é simulado; não houve novo ensaio hospedado ou e-mail.
+Build Pages e testes Python de Pages (1) e portal (3) passaram. No navegador,
+a tela de criação carregou e uma fixture executou a função real de desenho:
+quatro quadros visíveis em 0/50/100/150 ms, retorno a Idle norte em 181 ms,
+sem alterar HP/orientação. Esse ensaio isola o renderizador; não representa uma
+nova rodada de gameplay, login ou recuperação real. Helpers ficam fora do Git.
+
+Esta correção remove a dependência de merge do #177 para validar #162. A CI deve
+avaliar o novo commit contra main; os resultados anteriores de falha continuam
+históricos. PRs #160 e #177 preservados, #162 continua Draft, Auth desligado.
+Nenhum deploy ou início da Fase 3. As pendências funcionais e operacionais da
+homologação permanecem as já registradas; corrigir CI não aprova produção.
