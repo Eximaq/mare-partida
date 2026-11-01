@@ -62,6 +62,16 @@ falhou quando um retry de criação o reinicializava; passou ao limitar iniciali
 à inserção nova. O teste de valores malformados reproduziu uma exceção na conversão
 para BigInt, corrigida por validação sequencial antes da conversão.
 
+A revisão reproduziu também perda de refresh aceito quando uma consulta de
+personagem era recusada depois da rotação remota. `withSession` agora usa um
+savepoint após autenticar: erro da operação desfaz apenas suas alterações e
+preserva a nova credencial/validade da sessão. O erro original é devolvido após
+commit, sem liberar a operação negada. Testes com token de refresh descartável
+cobrem tanto 404 quanto falha SQL de inicialização, mantendo rollback do personagem.
+Resultados AuthFault retornados intencionalmente, como reset incerto que revoga
+sessões, mantêm o comportamento anterior. Não se promete atomicidade com o provedor
+nem recuperação de commit perdido por falha física do banco.
+
 Integrações usam PostgreSQL real em bancos UUID descartáveis e provedor simulado,
 sem chamadas ao Supabase. Cobrem upgrade 0001/0002, reaplicação, precisão numérica,
 invariantes SQL, rollback, duas contas, recuperação, revogação, concorrência de
@@ -70,6 +80,8 @@ Fase 2, que permanecem registradas separadamente.
 
 Não aplicar automaticamente 0003 ao banco de homologação existente durante estes
 testes. Antes de iniciar essa versão sobre um banco persistente: executar migrações
-com a role de migração e reaplicar grant-auth.sql; readiness exige o histórico
+com a role de migração e reaplicar grant-auth.sql para a role runtime configurada
+(na homologação existente, adaptar mare_runtime para mare_auth_runtime conforme
+PHASE-2-DEVELOPMENT.md); readiness exige o histórico
 completo. Nunca modificar migrações já aplicadas. Auth permanece desligado ao
 encerrar, e nenhuma credencial é copiada para o frontend/Pages.

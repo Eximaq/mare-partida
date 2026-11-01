@@ -123,7 +123,7 @@ export class AuthService {
     kind: "play" | "recovery",
     run: (client: PoolClient, row: SessionRow) => Promise<T | AuthFault>,
   ): Promise<T> {
-    return this.tx(async (client) => {
+    const outcome = await this.tx<{ ok: true; value: T } | { ok: false; error: unknown }>(async (client) => {
       const row = (
         await client.query<SessionRow>(
           `SELECT s.*,clock_timestamp() AS now FROM mare_game.app_sessions s
@@ -197,8 +197,19 @@ export class AuthService {
         [row.id, this.options.policy.idleMs],
       );
       if (!valid.rowCount) return unauthorized();
-      return run(client, row);
+      // A provider refresh may already have consumed its old token. Domain errors
+      // must roll back only the operation, not the accepted session rotation.
+      await client.query("SAVEPOINT authorized_operation");
+      try {
+        const value = await run(client, row);
+        return value instanceof AuthFault ? value : { ok: true, value };
+      } catch (error) {
+        await client.query("ROLLBACK TO SAVEPOINT authorized_operation");
+        return { ok: false, error };
+      }
     });
+    if (!outcome.ok) throw outcome.error;
+    return outcome.value;
   }
   async login(email: string, password: string, oldToken?: string) {
     const tokens = await this.options.provider.login(email, password);

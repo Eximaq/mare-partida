@@ -8,8 +8,19 @@ import { test } from "node:test";
 import type { AddressInfo } from "node:net";
 import { createHttpServer } from "../../apps/game-server/src/http.js";
 import { createAuthHandler } from "../../apps/game-server/src/auth/routes.js";
-import { authDatabase } from "./auth-support.mjs";
+import { authDatabase, type FakeProvider } from "./auth-support.mjs";
 import { applyMigrations } from "../../apps/game-server/src/db/migrations.js";
+
+function singleUseRefresh(provider: FakeProvider) {
+  const refresh = provider.refresh.bind(provider);
+  provider.refresh = async (token) => {
+    const session = await refresh(token);
+    provider.sessions.delete(token);
+    const rotated = { ...session, refreshToken: "rotated-fixture-" + randomUUID() };
+    provider.sessions.set(rotated.refreshToken, rotated);
+    return rotated;
+  };
+}
 
 test("owned state starts clean, survives reload, denies cross-account reads and exposes no client economic writes", async () =>
   authDatabase(async ({ service, vault, pool }) => {
@@ -100,11 +111,25 @@ test("Phase 2 upgrade backfills clean state once without changing identities or 
 });
 
 test("failed progression initialization rolls back the new character in the same transaction", async () =>
-  authDatabase(async ({ service, pool }) => {
+  authDatabase(async ({ service, pool, provider }) => {
     const session = await service.login("rollback@example.invalid", "fixture");
+    singleUseRefresh(provider);
+    await pool.query("UPDATE mare_game.app_sessions SET provider_valid_until=clock_timestamp()-interval '1 second'");
     await pool.query("ALTER TABLE mare_game.character_progression ADD CONSTRAINT reject_test_default CHECK(level=99)");
     await assert.rejects(service.createCharacter(session.token,
       { name: "Rollback", classId: "sword", factionId: "pirate" }), { code: "23514" });
     assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.characters")).rows[0].n, 0);
     assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.character_progression")).rows[0].n, 0);
+    await assert.doesNotReject(service.me(session.token), "SQL operation failure must preserve the accepted refresh");
+    assert.equal(provider.refreshes, 1);
+  }));
+
+test("a denied state read preserves a successful single-use provider refresh", async () =>
+  authDatabase(async ({ service, pool, provider }) => {
+    const login = await service.login("refresh-state@example.invalid", "fixture");
+    singleUseRefresh(provider);
+    await pool.query("UPDATE mare_game.app_sessions SET provider_valid_until=clock_timestamp()-interval '1 second'");
+    await assert.rejects(service.characterState(login.token, randomUUID()), { status: 404 });
+    await assert.doesNotReject(service.me(login.token), "a rejected character request must not corrupt the BFF session");
+    assert.equal(provider.refreshes, 1, "accepted refresh stays committed despite the rejected gameplay operation");
   }));
