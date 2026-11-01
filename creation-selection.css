@@ -1,0 +1,158 @@
+/* Creation composition. Gameplay geometry is handled separately and left unchanged. */
+#app #startOverlay .creation-dialog{width:min(1690px,calc(100vw - 12px));max-width:none;height:calc(100dvh - 12px);max-height:none;min-height:0;padding:22px 32px 16px;overflow:auto;display:flex;flex-direction:column;gap:0;border:16px solid transparent;border-image:url('assets/ui/inventory-hd/frame-v2.png') 46 /24px;background:linear-gradient(#08070833,#08070844),var(--rpg-hd-wood) center/650px;image-rendering:auto;color:#f3e6c7}
+#app #startOverlay .creation-top{display:flex;align-items:center;gap:18px;flex:none;margin:0;padding:0 0 12px;border-bottom:1px solid #b58b48;background:none;min-height:0}
+#app #startOverlay .creation-top h1{font:700 clamp(32px,3.3vw,54px)/1.05 'Inventory Alegreya SC',Georgia,serif;margin:4px 0;color:#ffe5ac;text-shadow:0 2px 2px #000}
+#app #startOverlay .creation-top h1 em{font-style:normal;color:#d2ae6d}
+#app #startOverlay .creation-top p{font:20px/1.3 'Alegreya Sans',sans-serif;margin:0;color:#e0d7c3}
+#app #startOverlay .creation-eyebrow{font:700 14px/1.2 'Inventory Alegreya SC',Georgia,serif;color:#dfbc78;letter-spacing:.02em}
+#app #startOverlay .creation-progress{flex:none;margin:8px 0 14px;padding:8px 12px}
+#app #startOverlay :is(#factionStep,#classStep){min-height:0;display:flex;flex-direction:column;flex:1;gap:12px}
+#app #startOverlay .creation-section-heading{display:flex;align-items:center;gap:16px;justify-content:space-between;flex:none;margin:0;padding:0;background:none;border:0}
+#app #startOverlay .creation-section-heading h2{font:700 26px/1.1 'Inventory Alegreya SC',Georgia,serif;margin:3px 0;color:#fff0cb}
+#app #startOverlay .creation-section-heading span{font-size:12px;color:#dfba75}
+#app #startOverlay .creation-section-heading small{font-size:16px;color:#d1c6b0}
+#app #startOverlay #classStep>.creation-section-heading{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);padding:0;border:0;white-space:nowrap}
+#app #startOverlay .creation-class-layout{display:grid;grid-template-columns:minmax(285px,.72fr) minmax(0,1.55fr);gap:22px;flex:1;min-height:0}
+#app #startOverlay .class-choices{display:flex;flex-direction:column;gap:7px;min-width:0;overflow:auto;min-height:0;padding:2px}
+#app #startOverlay .class-choice{display:flex;align-items:center;gap:12px;text-align:left;flex:1 0 65px;width:100%;max-width:none;min-height:65px;margin:0;padding:8px 12px;border:5px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 /6px;background:linear-gradient(#0a0d11a8,#0a0d11bb),var(--rpg-workshop-surface) center/512px;box-shadow:none;border-radius:0;color:#f1e6c8;cursor:pointer}
+#app #startOverlay .class-choice.chosen{border-image-source:url('assets/ui/honors-hd/button-gold.png');background:linear-gradient(#77501355,#3c271a66),var(--rpg-workshop-surface) center/512px;outline:0;box-shadow:inset 0 0 18px #c38a1922}
+#app #startOverlay .class-choice .class-art{width:46px;height:46px;min-height:0;flex:none;margin:0;padding:0;border:0;background:none;display:grid;place-items:center}
+#app #startOverlay .class-art img{display:block;width:100%;height:100%;object-fit:contain;image-rendering:auto}
+#app #startOverlay .creation-class-label{display:grid;gap:4px;min-width:0}
+#app #startOverlay .class-choice strong{overflow-wrap:anywhere;font:700 17px/1.15 'Inventory Alegreya SC',Georgia,serif;margin:0;color:#fcebc6}
+#app #startOverlay .class-choice small{font:15px/1.2 'Alegreya Sans',sans-serif;color:#c1d0d1;margin:0}
+#app #startOverlay .selection-chevron{margin-left:auto;color:#e2c283;font-size:24px}
+#app #startOverlay #creationClassDetail{min-width:0;min-height:0;overflow:auto;border:6px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 /7px;background:linear-gradient(#05080c99,#05080cb8),var(--rpg-workshop-surface) center/512px}
+#app #startOverlay .creation-class-detail{display:flex;flex-direction:column;gap:12px;min-height:100%;padding:16px}
+#app #startOverlay .creation-class-intro{position:relative;display:flex;min-height:220px;flex:none;overflow:hidden}
+#app #startOverlay .creation-class-copy{position:relative;z-index:1;width:58%;padding:8px 8px 8px 0;display:flex;flex-direction:column;justify-content:center}
+#app #startOverlay .creation-class-copy h2{display:flex;align-items:center;gap:12px;font:700 clamp(24px,2.25vw,36px)/1.1 'Inventory Alegreya SC',Georgia,serif;margin:0;color:#ffe8b5;overflow-wrap:anywhere}
+#app #startOverlay .creation-class-copy h2 img{width:48px;height:48px;object-fit:contain;flex:none}
+#app #startOverlay .creation-class-copy p{font:16px/1.35 'Alegreya Sans',sans-serif;color:#bbd1d8;margin:12px 0 0}
+#app #startOverlay .creation-class-copy .creation-class-lead{font-size:19px;color:#ebcf98;margin-top:8px}
+#app #startOverlay .creation-class-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px}
+#app #startOverlay .creation-class-chips span{font:15px/1.2 'Alegreya Sans',sans-serif;border:1px solid #9e7c43;border-radius:14px;padding:4px 10px;background:#49351699;color:#f2dbab}
+#app #startOverlay .creation-class-illustration{position:absolute;right:0;top:0;width:46%;height:100%;margin:0;pointer-events:none}
+#app #startOverlay .creation-class-illustration img{width:100%;height:100%;object-fit:contain;object-position:right center;mask-image:linear-gradient(90deg,transparent,#000 17%);opacity:.95}
+#app #startOverlay .creation-class-illustration figcaption{position:absolute;bottom:3px;left:15px;right:6px;padding:3px 6px;background:#070a0bc9;font:11px/1.2 'Alegreya Sans',sans-serif;color:#d0d0bf;text-align:right}
+#app #startOverlay :is(.creation-birth,.creation-specials){min-width:0}
+#app #startOverlay :is(.creation-birth h3,.creation-specials h3){font:700 18px/1.2 'Inventory Alegreya SC',Georgia,serif;color:#e7c27c;margin:0 0 8px}
+#app #startOverlay .creation-birth h3 small{float:right;font:14px 'Alegreya Sans',sans-serif;color:#b5c4c7}
+#app #startOverlay .creation-birth>div{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+#app #startOverlay .creation-birth>div>div{display:grid;grid-template-columns:30px 1fr;align-items:center;gap:0 8px;padding:7px;border:1px solid #625138;background:#080c1077;font:14px/1.1 'Alegreya Sans',sans-serif;color:#b2ced6}
+#app #startOverlay .creation-birth img{grid-row:1/3;width:30px;height:30px;object-fit:contain}
+#app #startOverlay .creation-birth b{font-size:22px;color:#ffe6b2}
+#app #startOverlay .creation-specials header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}
+#app #startOverlay .creation-specials header h3{margin:0}
+#app #startOverlay .creation-specials header small{font:13px/1.2 'Alegreya Sans',sans-serif;color:#b7c9ca}
+#app #startOverlay .creation-special-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+#app #startOverlay .creation-special{display:flex;align-items:flex-start;gap:10px;min-width:0;min-height:112px;text-align:left;border:1px solid #78613c;border-radius:0;padding:9px;background:linear-gradient(#070b10a8,#070b10bb),var(--rpg-workshop-surface) center/512px;cursor:help;color:#eef0e4;box-shadow:none}
+#app #startOverlay .creation-special img{display:block;width:60px;height:60px;object-fit:contain;flex:none;image-rendering:auto}
+#app #startOverlay .creation-special>span{display:grid;gap:5px;min-width:0}
+#app #startOverlay .creation-special small{font:12px/1 'Alegreya Sans',sans-serif;color:#d3b16a}
+#app #startOverlay .creation-special strong{font:700 15px/1.12 'Inventory Alegreya SC',Georgia,serif;color:#fff0cc;overflow-wrap:anywhere}
+#app #startOverlay .creation-special>span>span{font:14px/1.25 'Alegreya Sans',sans-serif;color:#bcd0d4}
+#app #startOverlay .creation-actions{display:flex;justify-content:space-between;gap:14px;flex:none;margin:0;padding-top:3px}
+#app #startOverlay :is(.creation-actions button,#nextToClass){min-height:51px;padding:8px 18px;border:7px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 /8px;background:linear-gradient(#080c1088,#080c1099),var(--rpg-workshop-surface) center/512px;color:#ffebbc;font:700 19px/1.2 'Inventory Alegreya SC',Georgia,serif;border-radius:0;box-shadow:none}
+#app #startOverlay #nextToClass{flex:none;width:100%}
+#app #startOverlay .creation-actions .primary-button{margin-left:auto;min-width:47%}
+#app #startOverlay .creation-error{flex:none;min-height:0;margin:0;font-size:15px}
+#app #startOverlay .creation-error:empty{display:none}
+#app #startOverlay .local-only{flex:none;text-align:center;font-size:10px;color:#aa9271;margin:6px 0 0}
+#app #startOverlay .name-label{font:700 13px/1 'Inventory Alegreya SC',serif;color:#e7d9ba;margin:0}
+#app #startOverlay #characterName{flex:none;width:100%;height:46px;padding:10px 14px;margin:0;border:1px solid #a38550;border-radius:0;background:linear-gradient(#05080abb,#05080abb),var(--rpg-workshop-surface) center/512px;color:#fff0cd;font:19px 'Alegreya Sans',sans-serif}
+#app #startOverlay .faction-choices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;min-height:0;flex:1;margin:0;align-items:stretch}
+#app #startOverlay .faction-choice{display:flex;flex-direction:column;min-width:0;padding:0;border:6px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 /7px;background:linear-gradient(#060a0dbb,#060a0ddd),var(--rpg-workshop-surface) center/512px;box-shadow:none;border-radius:0;color:#fff0d0}
+#app #startOverlay .faction-choice.chosen{border-image-source:url('assets/ui/honors-hd/button-gold.png');box-shadow:inset 0 0 15px #dfae2c22;outline:0}
+#app #startOverlay .faction-art{position:relative;width:100%;flex:1;min-height:96px;max-height:205px;margin:0;padding:5px;display:grid;place-items:center;overflow:hidden;border:0;background:none}
+#app #startOverlay .faction-art .creation-faction-scene{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;opacity:.8;image-rendering:auto}
+#app #startOverlay .faction-art::after{content:'';position:absolute;inset:0;background:linear-gradient(transparent 45%,#090d10d9);pointer-events:none}
+#app #startOverlay .faction-art .faction-emblem{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:1;display:block;width:auto;height:calc(100% - 12px);aspect-ratio:1;max-width:75%;max-height:150px;object-fit:contain;image-rendering:auto;filter:drop-shadow(0 3px 4px #000b)}
+#app #startOverlay .faction-details{flex:none;display:grid;gap:6px;min-height:112px;padding:6px 10px 8px;position:relative}
+#app #startOverlay .faction-details strong{font:700 20px/1.1 'Inventory Alegreya SC',Georgia,serif;color:#ffedc4}
+#app #startOverlay .faction-details small{font:16px/1.15 'Alegreya Sans',sans-serif;color:#c7d0c9}
+#app #startOverlay .faction-details em{font:700 16px/1.2 'Alegreya Sans',sans-serif;color:#f0d38e;margin-top:4px;padding-top:8px;border-top:1px solid #75603c}
+#app #startOverlay .creation-faction-summary{position:relative;display:grid;grid-template-columns:1.2fr 1fr;align-items:center;gap:18px;min-height:130px;padding:8px 20px;border:6px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 /7px;background:linear-gradient(#05080b99,#05080b99),var(--rpg-workshop-surface) center/512px;overflow:hidden}
+#app #startOverlay .creation-faction-identity{display:flex;align-items:center;gap:20px;position:relative;z-index:1}
+#app #startOverlay .creation-faction-identity>img{width:90px;height:90px;object-fit:contain;flex:none}
+#app #startOverlay .creation-faction-identity>div{display:grid;gap:5px}
+#app #startOverlay .creation-faction-summary small{font:700 13px 'Inventory Alegreya SC',serif;letter-spacing:.04em;color:#d5b674}
+#app #startOverlay .creation-faction-summary h3{margin:0;font:700 32px/1.1 'Inventory Alegreya SC',Georgia,serif;color:#ffe2a7}
+#app #startOverlay .creation-faction-summary p{margin:0;font:17px/1.2 'Alegreya Sans',sans-serif;color:#e1d1b4}
+#app #startOverlay .creation-faction-benefit{display:grid;gap:8px;z-index:1;position:relative;padding-right:35%}
+#app #startOverlay .creation-faction-benefit strong{font:700 21px/1.25 'Inventory Alegreya SC',Georgia,serif;color:#ffe4a4}
+#app #startOverlay .creation-faction-benefit>span{font:14px 'Alegreya Sans',sans-serif;color:#b8c5c5}
+#app #startOverlay .creation-faction-summary-art{position:absolute;right:0;top:0;width:32%;height:100%;object-fit:cover;mask-image:linear-gradient(90deg,transparent,#000 38%);opacity:.65}
+#app #startOverlay :is(.class-choice,.creation-special,.faction-choice,button):focus-visible{outline:2px solid #ffdc8e;outline-offset:2px}
+@media(max-width:1180px){
+ #app #startOverlay .creation-dialog{padding:16px}
+ #app #startOverlay .creation-class-layout{grid-template-columns:minmax(235px,.65fr) minmax(0,1.4fr);gap:12px}
+ #app #startOverlay .creation-class-intro{min-height:180px}
+ #app #startOverlay .creation-class-copy{width:65%}
+ #app #startOverlay .creation-class-illustration{width:38%}
+ #app #startOverlay .creation-special-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #app #startOverlay .faction-choices{grid-template-columns:repeat(2,minmax(0,1fr));flex:none}
+ #app #startOverlay .faction-art{height:150px;flex:none}
+ #app #startOverlay .creation-faction-summary{grid-template-columns:1fr;min-height:140px}
+ #app #startOverlay .creation-faction-benefit{padding:0 30% 0 125px}
+}
+@media(max-width:760px){
+ #app #startOverlay .creation-dialog{border-width:9px;border-image-width:16px;padding:10px;width:calc(100vw - 6px);height:calc(100dvh - 6px)}
+ #app #startOverlay .creation-top{gap:8px}
+ #app #startOverlay .creation-top h1{font-size:30px}
+ #app #startOverlay .creation-top p{font-size:16px}
+ #app #startOverlay .creation-emblem,#app #startOverlay .studio-brand-icon{width:38px;height:48px}
+ #app #startOverlay .creation-eyebrow{font-size:10px}
+ #app #startOverlay .creation-class-layout{display:flex;flex-direction:column;flex:none;gap:12px}
+ #app #startOverlay .class-choices{overflow:visible;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ #app #startOverlay .class-choice{min-height:85px;gap:7px;padding:7px;align-items:flex-start}
+ #app #startOverlay .class-choice .class-art{width:30px;height:34px}
+ #app #startOverlay .class-choice strong{font-size:14px}
+ #app #startOverlay .class-choice small{display:none}
+ #app #startOverlay .selection-chevron{display:none}
+ #app #startOverlay #creationClassDetail{overflow:visible}
+ #app #startOverlay .creation-class-detail{padding:10px}
+ #app #startOverlay .creation-class-intro{min-height:190px}
+ #app #startOverlay .creation-class-copy{width:70%}
+ #app #startOverlay .creation-class-copy h2{font-size:23px}
+ #app #startOverlay .creation-class-copy h2 img{width:30px;height:30px}
+ #app #startOverlay .creation-class-copy p{font-size:14px}
+ #app #startOverlay .creation-class-copy .creation-class-lead{font-size:16px}
+ #app #startOverlay .creation-class-illustration{width:35%;opacity:.6}
+ #app #startOverlay .creation-class-illustration figcaption{display:none}
+ #app #startOverlay .creation-class-chips span{font-size:12px;padding:3px 7px}
+ #app #startOverlay .creation-special-grid{grid-template-columns:1fr}
+ #app #startOverlay .creation-special{min-height:95px}
+ #app #startOverlay .creation-special strong{font-size:17px}
+ #app #startOverlay .creation-special>span>span{font-size:16px}
+ #app #startOverlay .creation-birth>div{gap:4px}
+ #app #startOverlay .creation-birth>div>div{display:flex;flex-direction:column;padding:6px 2px;gap:3px}
+ #app #startOverlay .creation-birth img{width:24px;height:24px}
+ #app #startOverlay .creation-birth b{font-size:20px}
+ #app #startOverlay .creation-birth h3 small{float:none;display:block}
+ #app #startOverlay .creation-specials header{display:block}
+ #app #startOverlay .creation-specials header small{display:block;margin-top:5px}
+ #app #startOverlay .creation-actions{gap:8px;flex-wrap:wrap}
+ #app #startOverlay .creation-actions button{flex:1;min-width:0;font-size:16px;padding:7px}
+ #app #startOverlay .creation-section-heading{display:block}
+ #app #startOverlay .creation-section-heading h2{font-size:22px}
+ #app #startOverlay .creation-section-heading small{font-size:14px}
+ #app #startOverlay .faction-choices{gap:8px}
+ #app #startOverlay .faction-art{height:110px;min-height:110px}
+ #app #startOverlay .faction-art .faction-emblem{width:80px;height:80px;max-width:80px;max-height:80px}
+ #app #startOverlay .faction-details strong{font-size:17px}
+ #app #startOverlay .faction-details small{font-size:14px}
+ #app #startOverlay .faction-details em{font-size:14px}
+ #app #startOverlay .faction-details{padding:8px;min-height:120px}
+ #app #startOverlay .creation-faction-summary{padding:12px;gap:8px}
+ #app #startOverlay .creation-faction-identity{gap:10px}
+ #app #startOverlay .creation-faction-identity>img{width:68px;height:68px}
+ #app #startOverlay .creation-faction-summary h3{font-size:23px}
+ #app #startOverlay .creation-faction-summary p{font-size:15px}
+ #app #startOverlay .creation-faction-benefit{padding:0}
+ #app #startOverlay .creation-faction-summary-art{opacity:.2;width:50%}
+}
+
+#app #startOverlay .class-choice{flex-direction:row}
+@media(min-width:1181px){#app #startOverlay .creation-class-intro{min-height:150px} #app #startOverlay .creation-class-detail{padding:10px;gap:8px}}
+#app #startOverlay .creation-special{min-height:102px}

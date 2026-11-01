@@ -1593,6 +1593,7 @@
         tracker.setAttribute('aria-label','XP por hora '+(telemetry.rate===null?'calculando':fmt(telemetry.rate))+'; tempo de caçada '+telemetry.duration+'; XP obtido '+fmt(telemetry.earned));
       }
     }
+    const rateStatus=document.querySelector('#floatingExpedition .rates-card .micro-light');if(rateStatus){const live=scene==='hunt'&&autoPlay&&session.respawn<=0;rateStatus.dataset.live=String(live);rateStatus.textContent=live?'● AO VIVO':scene==='lobby'?'● NO PORTO':'● EM PAUSA';}
     updateHuntHUD();updateHakiHUD();if(currentPanel==='contracts')refreshContractsBoard();if(currentPanel==='inventory')refreshInventoryComparison();if(characterTab==='haki'&&currentPanel==='character')MareHakiUI.refresh($('dialogBody'),game,session.haki,{inHunt:scene==='hunt',alive:game.hp>0&&session.respawn<=0});game=observeAchievements();updateNotifications();if(characterTab==='achievements'&&currentPanel==='character')MareTalentUI.refreshAchievements($('dialogBody'),game);updateTalentResource();if(currentPanel==='forge'&&forgeUI.tab==='fusion'&&forgeFusionStamp!==fusionInventoryStamp())renderPanel();let derived=getDerived(),c=classes[game.classId];$('heroLevel').textContent=game.level;$('heroClass').textContent=c.name.toUpperCase();configureFactionVisual();$('heroName').textContent=game.name;$('heroPower').textContent=fmt(derived.power);$('hpText').textContent=fmt(game.hp)+' / '+fmt(derived.maxHP);$('energyText').textContent=fmt(game.energy)+' / '+fmt(derived.maxEnergy);$('xpText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));bar('hpFill',game.hp,derived.maxHP);bar('energyFill',game.energy,derived.maxEnergy);bar('xpFill',game.xp,xpNeeded(game.level));$('goldAmount').textContent=fmt(game.gold);$('statAttack').textContent=fmt(derived.attack);$('statDefense').textContent=fmt(derived.defense);$('statCrit').textContent=Math.round(derived.crit*100)+'%';$('statSpeed').textContent=derived.speed.toFixed(2)+'/s';$('sessionTimer').textContent=elapsedString(session.elapsed);$('killsCount').textContent=fmt(game.stats.kills);$('bossCount').textContent=fmt(game.stats.boss);$('goldEarned').textContent=fmt(session.gold);$('damageTotal').textContent=fmt(game.stats.damage);$('expeditionState').textContent=scene==='lobby'?'NO PORTO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇANDO':'EM PAUSA';$('potionCount').textContent=game.potions;$('autoLabel').textContent=autoPlay?'ATIVADA':'PAUSADA';$('autoToggle').classList.toggle('active',autoPlay);$('autoToggle').disabled=scene==='lobby';$('autoToggle').classList.toggle('hidden',scene==='lobby');$('combatState').innerHTML='<i class="pulse-dot '+(autoPlay?'':'paused')+'"></i>'+(scene==='lobby'?'PORTO SEGURO':session.respawn>0?'RENASCENDO':autoPlay?'CAÇADA AUTOMÁTICA':'CAÇADA PAUSADA');$('targetHint').textContent=scene==='lobby'?'NPCS · MISSÕES · FORJA · EXPEDIÇÕES':world.target?.alive?'ALVO: '+monsterName(world.target).toUpperCase():'PROCURANDO ALVO...';
     const hasTarget=scene==='hunt'&&world.target?.alive;
     $('targetHud').classList.toggle('hidden',scene!=='hunt'||!hasTarget);
@@ -2934,8 +2935,19 @@ function applySceneHudLayout(){
 
   }
   // Eventos de interface
+  function renderCreationClass(){
+    const icons=Object.fromEntries(Object.keys(classes).map(id=>{const key=starterWeapon(id);return [id,MareItemArt.path(key,itemDefs[key])||itemDefs[key].icon_path];}));
+    const list=document.querySelector('#classStep .class-choices');if(!list.children.length)list.innerHTML=MareCreationSelection.list(classes,icons,selectedClass);
+    for(const button of list.querySelectorAll('[data-class]')){const selected=button.dataset.class===selectedClass;button.classList.toggle('chosen',selected);button.setAttribute('aria-pressed',String(selected));}
+    $('creationClassDetail').innerHTML=MareCreationSelection.detail(selectedClass,classes,icons);
+  }
+  function renderCreationFaction(){
+    for(const button of document.querySelectorAll('#factionStep [data-faction]')){const id=button.dataset.faction;if(!button.dataset.creationArt){button.innerHTML=MareCreationSelection.factionCard(id,factions[id]);button.dataset.creationArt=id;}button.classList.toggle('chosen',id===selectedFaction);button.setAttribute('aria-pressed',String(id===selectedFaction));}
+    $('creationFactionSummary').innerHTML=MareCreationSelection.factionSummary(selectedFaction,factions[selectedFaction]);
+  }
   function showCreationStep(step){
     creationStep=step;
+    if(step===1)renderCreationFaction();if(step===2)renderCreationClass();
     for(const [i,id]of ['factionStep','classStep','appearanceStep'].entries())$(id).classList.toggle('hidden',step!==i+1);
     for(const [i,id]of ['stepFaction','stepClass','stepAppearance'].entries()){const active=step===i+1;$(id).classList.toggle('active',active);if(active)$(id).setAttribute('aria-current','step');else $(id).removeAttribute('aria-current');}
     $('creationError').textContent='';
@@ -2976,8 +2988,10 @@ function applySceneHudLayout(){
     $('createCharacter').innerHTML='CONFIRMAR E CONTINUAR <span>→</span>';
     showCreationStep(1);$('startOverlay').classList.remove('hidden');
   }
-  document.querySelectorAll('[data-faction]').forEach(btn=>btn.addEventListener('click',()=>{selectedFaction=btn.dataset.faction;document.querySelectorAll('[data-faction]').forEach(b=>b.classList.toggle('chosen',b===btn));}));
-  document.querySelectorAll('[data-class]').forEach(btn=>btn.addEventListener('click',()=>{selectedClass=btn.dataset.class;document.querySelectorAll('[data-class]').forEach(b=>b.classList.toggle('chosen',b===btn));}));
+  document.addEventListener('click',e=>{
+    const faction=e.target.closest('#factionStep [data-faction]');if(faction&&factions[faction.dataset.faction]){selectedFaction=faction.dataset.faction;renderCreationFaction();return;}
+    const choice=e.target.closest('#classStep [data-class]');if(choice&&classes[choice.dataset.class]){selectedClass=choice.dataset.class;renderCreationClass();}
+  });
   $('nextToClass').addEventListener('click',()=>{let name=$('characterName').value.trim().replace(/\s+/g,' ');if(name.length<3||name.length>18){$('creationError').textContent='Use um nome de 3 a 18 caracteres.';return;}showCreationStep(2);});
   $('backToFaction').addEventListener('click',()=>showCreationStep(1));
   $('nextToAppearance').addEventListener('click',()=>showCreationStep(3));

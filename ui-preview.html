@@ -129,6 +129,7 @@
   <script defer src="compendium-ui.js"></script>
   <script defer src="contracts-board.js"></script>
   <script defer src="voyage-ui.js"></script>
+  <script defer src="creation-selection.js"></script>
   <script defer src="game.js"></script>
   <script defer src="audio-system.js"></script>
   <link rel="preload" href="assets/ui/navigator/fonts/alegreya-sans-400.woff2" as="font" type="font/woff2" crossorigin />
@@ -138,6 +139,8 @@
   <link rel="stylesheet" href="compendium-hd.css" />
   <link rel="stylesheet" href="honors-hd.css" />
   <link rel="stylesheet" href="voyage-hd.css" />
+  <link rel="stylesheet" href="creation-selection.css">
+  <link rel="stylesheet" href="gameplay-harmony.css">
 </head>
 <body>
   <div class="ambient-noise" aria-hidden="true"></div>
@@ -239,7 +242,7 @@
       </section>
 
       <aside class="right-panel side-panel" aria-label="Painel flutuante da expedição"><div class="floating-title"><span>◈ EXPEDIÇÃO & CONTRATOS</span><button type="button" data-close-window="expedition" aria-label="Fechar expedição">×</button></div>
-        <section class="panel-block expedition-card"><div class="section-heading"><span>EXPEDIÇÃO</span><span class="ornament">✣</span></div><div class="expedition-badge"><span class="crossed-blades">⚔</span><div><small>STATUS DA EXPEDIÇÃO</small><strong id="expeditionState">CAÇANDO</strong></div><div class="expedition-since" id="sessionTimer">00:00</div></div><div class="expedition-grid"><div><small>INIMIGOS</small><b id="killsCount">0</b></div><div><small>CHEFES</small><b id="bossCount">0</b></div><div><small>OURO GANHO</small><b id="goldEarned">0</b></div><div><small>DANO TOTAL</small><b id="damageTotal">0</b></div></div></section>
+        <section class="panel-block expedition-card"><div class="section-heading"><span>EXPEDIÇÃO</span><span class="ornament">✣</span></div><div class="expedition-badge"><span class="crossed-blades">⚔</span><div><small>STATUS DA EXPEDIÇÃO</small><strong id="expeditionState">CAÇANDO</strong></div><div class="expedition-since" id="sessionTimer">00:00</div></div><div class="expedition-grid"><div><small>INIMIGOS</small><b id="killsCount">0</b></div><div><small>CHEFES</small><b id="bossCount">0</b></div><div><small>BERRY GANHOS</small><b id="goldEarned">0</b></div><div><small>DANO TOTAL</small><b id="damageTotal">0</b></div></div></section>
         <section class="panel-block rates-card"><div class="section-heading"><span>EFICIÊNCIA DE CAÇA</span><span class="micro-light">● AO VIVO</span></div><div class="rate-line"><div><span>EXPERIÊNCIA / H</span><b id="xpPerHour">—</b></div><div class="rate-glyph">↗</div></div><div class="rate-line"><div><span>Berry / H</span><b id="goldPerHour">—</b></div><div class="rate-glyph">↗</div></div><div class="rate-footnote">Projeção após 20 segundos de atividade.</div></section>
         <section class="panel-block quest-card"><div class="section-heading"><span>JORNADA E CONTRATOS</span><span class="contract-mark">◈</span></div><div id="questList" class="quest-list"></div></section>
         <section class="panel-block loot-card"><div class="section-heading"><span>ÚLTIMOS ESPÓLIOS</span><button class="text-button" data-panel="inventory">ABRIR BOLSA ↗</button></div><div id="lootList" class="loot-list"><div class="empty-note">Sua próxima descoberta aparecerá aqui.</div></div></section>
@@ -257,28 +260,21 @@
         </div>
         <div class="creation-progress" role="list" aria-label="Etapas de criação"><span id="stepFaction" role="listitem" class="step active" aria-current="step"><img class="studio-step-icon" src="assets/ui/character-studio/steps/faction.png?v=alpha-native-v1" alt=""><b>01</b><span class="studio-step-label">SUA FACÇÃO</span></span><span class="progress-rule" aria-hidden="true"></span><span id="stepClass" role="listitem" class="step"><img class="studio-step-icon" src="assets/ui/character-studio/steps/class.png?v=alpha-native-v1" alt=""><b>02</b><span class="studio-step-label">SUA CLASSE</span></span><span class="progress-rule" aria-hidden="true"></span><span id="stepAppearance" role="listitem" class="step"><img class="studio-step-icon" src="assets/ui/character-studio/steps/appearance.png?v=alpha-native-v1" alt=""><b>03</b><span class="studio-step-label">SUA APARÊNCIA</span></span></div>
         <div id="factionStep">
-          <div class="creation-section-heading"><div><span>PRIMEIRO PASSO</span><h2>De qual lado dos mares você está?</h2></div><small>A facção muda aparência e bônus iniciais.</small></div>
+          <div class="creation-section-heading"><div><span>PRIMEIRO PASSO</span><h2>De qual lado dos mares você está?</h2></div><small>A facção define sua origem e seus bônus iniciais.</small></div>
           <label class="name-label" for="characterName">NOME DO AVENTUREIRO</label>
           <input id="characterName" maxlength="18" placeholder="Nome do seu personagem" autocomplete="off" spellcheck="false" />
           <div class="faction-choices">
-            <button class="faction-choice" data-faction="revolutionary" type="button"><span class="faction-art"><img class="faction-emblem" src="assets/ui/faction-emblems/revolutionary.png" width="912" height="912" alt="Emblema do Exército Revolucionário" /></span><span class="faction-details"><strong>EXÉRCITO REVOLUCIONÁRIO</strong><small>Liberdade • mobilidade • precisão</small><em>Velocidade +8% · Crítico +5%</em></span></button>
-            <button class="faction-choice chosen" data-faction="pirate" type="button"><span class="faction-art"><img class="faction-emblem" src="assets/ui/faction-emblems/pirate.png" width="912" height="912" alt="Emblema Pirata" /></span><span class="faction-details"><strong>PIRATA</strong><small>Aventura • ofensiva • espólios</small><em>Ataque +10% · Berry +8%</em></span></button>
-            <button class="faction-choice" data-faction="marine" type="button"><span class="faction-art"><img class="faction-emblem" src="assets/ui/faction-emblems/marine.png" width="912" height="912" alt="Emblema da Marinha" /></span><span class="faction-details"><strong>MARINHA</strong><small>Disciplina • defesa • constância</small><em>HP +8% · Defesa +10%</em></span></button>
-            <button class="faction-choice" data-faction="government" type="button"><span class="faction-art"><img class="faction-emblem" src="assets/ui/faction-emblems/government.png" width="912" height="912" alt="Emblema do Governo Mundial" /></span><span class="faction-details"><strong>GOVERNO MUNDIAL</strong><small>Precisão • técnicas • controle</small><em>Energia +10% · Recarga -8%</em></span></button>
+            <button class="faction-choice" data-faction="revolutionary" type="button"></button>
+            <button class="faction-choice chosen" data-faction="pirate" type="button"></button>
+            <button class="faction-choice" data-faction="marine" type="button"></button>
+            <button class="faction-choice" data-faction="government" type="button"></button>
           </div>
+          <section id="creationFactionSummary" class="creation-faction-summary" aria-label="Resumo da facção selecionada"></section>
           <button id="nextToClass" class="primary-button" type="button">CONTINUAR PARA AS CLASSES <span>→</span></button>
         </div>
         <div id="classStep" class="hidden">
           <div class="creation-section-heading"><div><span>SEGUNDO PASSO</span><h2>Como você vai lutar?</h2></div><small>Sua classe define habilidades, alcance e atributos.</small></div>
-          <div class="class-choices">
-            <button class="class-choice chosen" data-class="sword" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/0.png?v=20261020" alt=""></span><strong>ESPADACHIM</strong><small>Cortes rápidos e golpes letais.</small><em>Corpo a corpo · dano</em><span class="birth-stats">FOR 15 · DES 14 · VIT 9 · INT 6 · ESP 6<small>50 pontos de nascimento</small></span></button>
-            <button class="class-choice" data-class="brawler" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/2.png?v=20261020" alt=""></span><strong>LUTADOR / PUGILISTA</strong><small>Combos, defesa e força bruta.</small><em>Corpo a corpo · resistência</em><span class="birth-stats">FOR 14 · DES 9 · VIT 13 · INT 5 · ESP 9<small>50 pontos de nascimento</small></span></button>
-            <button class="class-choice" data-class="gunner" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/4.png?v=20261020" alt=""></span><strong>ATIRADOR / FRANCO-ATIRADOR</strong><small>Precisão e munições especiais.</small><em>Longa distância · crítico</em><span class="birth-stats">FOR 9 · DES 15 · VIT 8 · INT 10 · ESP 8<small>50 pontos de nascimento</small></span></button>
-            <button class="class-choice" data-class="rogue" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/12.png?v=20261020" alt=""></span><strong>GATUNO / ACROBATA</strong><small>Esquiva, furtividade e agilidade.</small><em>Velocidade · crítico</em><span class="birth-stats">FOR 10 · DES 16 · VIT 9 · INT 7 · ESP 8<small>50 pontos de nascimento</small></span></button>
-            <button class="class-choice" data-class="cyborg" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/14.png?v=20261020" alt=""></span><strong>CIBORGUE / ENGENHEIRO</strong><small>Vitalidade, blindagem e provocação.</small><em>Tanque · VIT / FOR</em><span class="birth-stats">FOR 11 · DES 6 · VIT 17 · INT 8 · ESP 8<small>50 pontos de nascimento</small></span></button>
-            <button class="class-choice" data-class="strategist" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/16.png?v=20261020" alt=""></span><strong>ESTRATEGISTA ELEMENTAL / MAGO</strong><small>Fogo e tempestades de eletricidade.</small><em>Dano elemental · INT / ESP</em><span class="birth-stats">FOR 5 · DES 8 · VIT 8 · INT 17 · ESP 12<small>50 pontos de nascimento</small></span></button>
-            <button class="class-choice" data-class="healer" type="button"><span class="class-art"><img class="item-icon" src="assets/ui/items-pixellab/31.png?v=20261020" alt=""></span><strong>SUPORTE / CURANDEIRO</strong><small>Cura, proteção e ataques de água.</small><em>Suporte · ESP / INT</em><span class="birth-stats">FOR 5 · DES 8 · VIT 10 · INT 12 · ESP 15<small>50 pontos de nascimento</small></span></button>
-          </div>
+          <div class="creation-class-layout"><nav class="class-choices" aria-label="Escolha sua classe"></nav><div id="creationClassDetail"></div></div>
           <div class="creation-actions"><button id="backToFaction" type="button" class="secondary-button">← VOLTAR</button><button id="nextToAppearance" type="button" class="primary-button">CONTINUAR PARA APARÊNCIA <span>→</span></button></div>
         </div>
         <div id="appearanceStep" class="hidden">

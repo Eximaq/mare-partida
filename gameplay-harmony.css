@@ -1,0 +1,23 @@
+/* Harmonization only: no positions, dimensions, margins, padding, display or HUD anchors. */
+#app :is(#mainMenu,#characterQuickMenu,#modesQuickMenu,#captainQuickMenu,#floatingChat,#floatingExpedition,#journeyHud,.action-panel,#huntXpTracker){background-image:linear-gradient(#05070b99,#05070ba8),var(--rpg-workshop-surface);background-position:center;background-size:auto,512px;background-repeat:repeat;border-image-source:url('assets/ui/honors-hd/button-dark.png');border-image-slice:22 28;color:#f3e3bf}
+#app #mainMenu :is([data-panel],button[role=menuitem]),#app #mainMenu .menu-tooltip{background-image:linear-gradient(#070a0cb8,#070a0cbb),var(--rpg-workshop-surface);background-position:center;background-size:auto,512px;background-color:#141114;border-image-source:url('assets/ui/honors-hd/button-dark.png');border-image-slice:22 28;color:#f0dfbc}
+#app #mainMenu button[role=menuitem]:is(:hover,:focus-visible),#app #mainMenu [data-panel]:is(:hover,[aria-expanded=true]){background-image:linear-gradient(#77500b66,#3d281b66),var(--rpg-workshop-surface);border-image-source:url('assets/ui/honors-hd/button-gold.png');border-color:#e5b765}
+#app :is(#floatingChat,#floatingExpedition) :is(.floating-title,.section-heading,.panel-block,.side-footer){background-image:linear-gradient(#07090bb0,#07090bc0),var(--rpg-workshop-surface);background-position:center;background-size:auto,512px;color:#f0d5a0;border-image-source:url('assets/ui/honors-hd/button-dark.png');border-image-slice:22 28}
+#app #floatingChat :is(.chat-tabs button,.chat-compose input,.chat-compose button,.log-scroller){background-image:linear-gradient(#05090ac0,#05090ac7),var(--rpg-workshop-surface);background-position:center;background-size:auto,512px;background-color:#171417;border-image-source:url('assets/ui/honors-hd/button-dark.png');border-image-slice:22 28;color:#eae6d5}
+#app #floatingChat .chat-tabs button[aria-pressed=true]{background-image:linear-gradient(#97610c70,#3d271a88),var(--rpg-workshop-surface);border-image-source:url('assets/ui/honors-hd/button-gold.png');color:#ffe5a3}
+#app #floatingChat .log-line time{color:#d9b675}
+#app #floatingChat .log-line{border-color:#6e573e}
+#app #floatingChat .chat-compose input::placeholder{color:#b8beb8}
+#app :is(#journeyHud,.world-command) button,#app :is(#chatCornerToggle,#expeditionMini),#app .action-panel :is(.skill-button,.skill-icon,.shop-potion),#app #floatingExpedition :is(.expedition-badge,.expedition-grid>div,.rate-line,.quest,.quest-list,.loot-list){background-image:linear-gradient(#06090cb8,#06090cc0),var(--rpg-workshop-surface);background-position:center;background-size:auto,512px;border-image-source:url('assets/ui/honors-hd/button-dark.png');border-image-slice:22 28;color:#f4e4be}
+#app #journeyHud :is(.journey-heading,.journey-footer,.journey-content,.journey-controls),#app #floatingExpedition .quest-title{background-image:linear-gradient(#080b0db8,#080b0dc8),var(--rpg-workshop-surface);background-position:center;background-size:auto,512px}
+#app :is(#journeyHud,.world-command) button:is(:hover,:focus-visible),#app #chatCornerToggle:is(:hover,:focus-visible),#app .action-panel .skill-button:focus-visible{border-color:#f0c66f;border-image-source:url('assets/ui/honors-hd/button-gold.png')}
+#app .action-panel :is(.action-heading,.action-row){background-image:linear-gradient(#05080a99,#05080aa8),var(--rpg-workshop-surface);background-position:center;background-size:auto,512px}
+#app .action-panel :is(.keycap,.potion-count){text-shadow:0 1px 2px #000;color:#fff4d7}
+#app #floatingExpedition .expedition-grid>div{position:relative}
+#app #floatingExpedition .expedition-grid>div::after{content:'';position:absolute;right:5px;top:5px;width:20px;height:20px;background:center/contain no-repeat;opacity:.6;pointer-events:none}
+#app #floatingExpedition .expedition-grid>div:nth-child(1)::after{background-image:url('assets/ui/inventory-final/icons/attack.png')}
+#app #floatingExpedition .expedition-grid>div:nth-child(2)::after{background-image:url('assets/ui/contracts-hd/boss.png')}
+#app #floatingExpedition .expedition-grid>div:nth-child(3)::after{background-image:url('assets/ui/inventory-final/icons/bag.png')}
+#app #floatingExpedition .expedition-grid>div:nth-child(4)::after{background-image:url('assets/ui/inventory-final/icons/power.png')}
+#app #floatingExpedition .rates-card .micro-light[data-live=false]{color:#d5b17a}
+#app #floatingExpedition .rates-card .micro-light[data-live=true]{color:#7fce9a}

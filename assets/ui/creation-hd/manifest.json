@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "provider": "PixelLab AI",
+  "model": "Pro",
+  "size": [
+    512,
+    288
+  ],
+  "purpose": "Supporting class illustrations and faction scenery only. Existing official emblems, icons, talent artwork and material textures are reused.",
+  "assets": [
+    {
+      "file": "class-sword.png",
+      "job": "cc03816a-7e02-4194-91bd-8068a61d45e5",
+      "galleryAsset": "d582acaa-5b8d-511a-bc43-3a01f5f7e63e",
+      "width": 512,
+      "height": 288,
+      "creditsUSD": 0.15,
+      "prompt": "Kaizoku Idle neutral swordsman class illustration, Masterpiece Ultra HD pixel art. Original navy adventurer, outward-facing sword with correct grip, right-weighted ship deck composition. No text, logo, frame or interface.",
+      "sha256": "6f2ff9cd0cf98515cbe49f1c0979924319ba27b571f1551b3a7141e994331f17"
+    },
+    {
+      "file": "class-brawler.png",
+      "job": "d69f2c41-7a38-4278-a285-2c33f05f1d24",
+      "galleryAsset": "dd5adc47-8d66-5459-8157-2870a864e2cf",
+      "width": 512,
+      "height": 288,
+      "creditsUSD": 0.15,
+      "prompt": "Kaizoku Idle class identity illustration. Masterpiece Ultra HD refined pixel art, premium crisp detailed painted pixel-art quality, aged warm gold, deep navy and burgundy, cinematic natural light, sophisticated shading and refined fabric. An original powerful unarmed martial artist with wrapped fists in a guarded boxing stance, sleeveless navy vest, sturdy leather belt, muscular but anatomically natural arms. Three-quarter medium full-body view, character on RIGHT two-thirds of wide composition, wooden ship deck, rigging, lantern and bright blue sea behind. Left quarter quiet, dark, low detail for interface blend. Generic adventurer with no faction-specific uniform, no straw hat, no franchise characters, no logos, no skull emblems. Illustration for a class menu, not a sprite or icon or whole screen. No UI controls, no frame, letters, numbers, text or watermark. Match reference palette, rendering and detail, but depict the specified distinct class.",
+      "sha256": "2497dfa561d295b051293e6de9d36e73451cbb228a26b972b6bd95fc6c6faaef"
+    },
+    {
+      "file": "class-rogue.png",
+      "job": "83b44d11-861f-4f94-9e9f-af804ff8c8e4",
+      "galleryAsset": "dc8fbc7c-1908-5c88-891c-ecc701cb2d20",
+      "width": 512,
+      "height": 288,
+      "creditsUSD": 0.15,
+      "prompt": "Kaizoku Idle class identity illustration. Masterpiece Ultra HD refined pixel art, premium crisp detailed painted pixel-art quality, aged warm gold, deep navy and burgundy, cinematic natural light, sophisticated shading and refined fabric. An original agile acrobat with two slender daggers pointing outward, light burgundy and navy leather outfit, dynamic balanced crouch, no hood covering the face. Three-quarter medium full-body view, character on RIGHT two-thirds of wide composition, wooden ship deck, rigging, lantern and bright blue sea behind. Left quarter quiet, dark, low detail for interface blend. Generic adventurer with no faction-specific uniform, no straw hat, no franchise characters, no logos, no skull emblems. Illustration for a class menu, not a sprite or icon or whole screen. No UI controls, no frame, letters, numbers, text or watermark. Match reference palette, rendering and detail, but depict the specified distinct class.",
+      "sha256": "942142889b126a30877aa94f348f68113f8767b697cc8375eeb50f8289b1f4e2"
+    },
+    {
+      "file": "class-cyborg.png",
+      "job": "dddad520-6a80-4909-b3b1-a0c8e8be452d",
+      "galleryAsset": "4cca06cf-f523-50a0-ae97-b6cf87c34a8e",
+      "width": 512,
+      "height": 288,
+      "creditsUSD": 0.15,
+      "prompt": "Kaizoku Idle class identity illustration. Masterpiece Ultra HD refined pixel art, premium crisp detailed painted pixel-art quality, aged warm gold, deep navy and burgundy, cinematic natural light, sophisticated shading and refined fabric. An original naval engineer with a sophisticated brass and black iron mechanical forearm, sturdy navy working coat, visible tools, human face, dignified bulky silhouette. Three-quarter medium full-body view, character on RIGHT two-thirds of wide composition, wooden ship deck, rigging, lantern and bright blue sea behind. Left quarter quiet, dark, low detail for interface blend. Generic adventurer with no faction-specific uniform, no straw hat, no franchise characters, no logos, no skull emblems. Illustration for a class menu, not a sprite or icon or whole screen. No UI controls, no frame, letters, numbers, text or watermark. Match reference palette, rendering and detail, but depict the specified distinct class.",
+      "sha256": "7b9d352176c4431bd2ed8840d254ac93d152ba397c38af0436b4bc52234d3523"
+    },
+    {
+      "file": "class-strategist.png",
+      "job": "390c005c-56d8-465f-9ad2-49c59aa542e9",
+      "galleryAsset": "bf8a8d2a-7480-5c72-8830-7604b27f2712",
+      "width": 512,
+      "height": 288,
+      "creditsUSD": 0.15,
+      "prompt": "Kaizoku Idle class identity illustration. Masterpiece Ultra HD refined pixel art, premium crisp detailed painted pixel-art quality, aged warm gold, deep navy and burgundy, cinematic natural light, sophisticated shading and refined fabric. An original elemental strategist with an elegant staff and a restrained blue electric arc and warm ember in the other hand, navy robes, analytical expression. Three-quarter medium full-body view, character on RIGHT two-thirds of wide composition, wooden ship deck, rigging, lantern and bright blue sea behind. Left quarter quiet, dark, low detail for interface blend. Generic adventurer with no faction-specific uniform, no straw hat, no franchise characters, no logos, no skull emblems. Illustration for a class menu, not a sprite or icon or whole screen. No UI controls, no frame, letters, numbers, text or watermark. Match reference palette, rendering and detail, but depict the specified distinct class.",
+      "sha256": "93c90e5f3a950a653643d47bdcea84aa3de020c5a6eb32ba77e09d1853b18b7f"
+    },
+    {
+      "file": "class-healer.png",
+      "job": "524ea572-849d-4199-95da-0aff590735aa",
+      "galleryAsset": "77424487-947b-5fd1-8d99-b348ac29ec19",
+      "width": 512,
+      "height": 288,
+      "creditsUSD": 0.15,
+      "prompt": "Kaizoku Idle class identity illustration. Masterpiece Ultra HD refined pixel art, premium crisp detailed painted pixel-art quality, aged warm gold, deep navy and burgundy, cinematic natural light, sophisticated shading and refined fabric. An original compassionate battlefield healer with a slender ornate staff, small aqua healing glow and navy ivory cloth garments, practical satchel, original adult adventurer. Three-quarter medium full-body view, character on RIGHT two-thirds of wide composition, wooden ship deck, rigging, lantern and bright blue sea behind. Left quarter quiet, dark, low detail for interface blend. Generic adventurer with no faction-specific uniform, no straw hat, no franchise characters, no logos, no skull emblems. Illustration for a class menu, not a sprite or icon or whole screen. No UI controls, no frame, letters, numbers, text or watermark. Match reference palette, rendering and detail, but depict the specified distinct class.",
+      "sha256": "e3783485409ddb37297bc62dd3d4237bf172b510e815d541f0709ad74a006ec5"
+    },
+    {
+      "file": "faction-pirate.png",
+      "job": "0a3921f2-28fe-4506-b9da-88a674e2745f",
+      "galleryAsset": "fff88a53-4958-5c1f-a0cd-d928d2b5bafc",
+      "width": 512,
+      "height": 288,
+      "creditsUSD": 0.15,
+      "prompt": "Kaizoku Idle faction card scenic illustration. Masterpiece Ultra HD refined pixel art, crisp premium detail, sophisticated warm gold highlights and deep dark navy shadows. A wooden adventurous ship deck with rigging, sails, warm evening sea light, treasure chests and distant rocky islands, plain dark sails. Wide cinematic composition, architecture and scenery only, center kept readable for an existing emblem overlay. No characters, no written words, no logos, no symbols or emblems, no skulls, no UI, no frames, no buttons, no watermark. Distinct thematic environment, rich wood and stone detail, controlled highlights, high quality native pixel art.",
+      "sha256": "905bb8b6956ef172d53f1b66e29c81bdc385fd9862f4b5712821e7aa7ff367db"
+    },
+    {
+      "file": "faction-revolutionary.png",
+      "job": "d2f10b1a-4a22-499b-b9fe-4cb6afe02539",
+      "galleryAsset": "39d0be42-4283-5ace-aa57-c713c5e9cc20",
+      "width": 512,
+      "height": 288,
+      "creditsUSD": 0.15,
+      "prompt": "Kaizoku Idle faction card scenic illustration. Masterpiece Ultra HD refined pixel art, crisp premium detail, sophisticated warm gold highlights and deep dark navy shadows. A coastal resistance fortress with weathered dark stone, plain crimson hanging banners, warm lanterns, dramatic burgundy sunset and distant ships. Wide cinematic composition, architecture and scenery only, center kept readable for an existing emblem overlay. No characters, no written words, no logos, no symbols or emblems, no skulls, no UI, no frames, no buttons, no watermark. Distinct thematic environment, rich wood and stone detail, controlled highlights, high quality native pixel art.",
+      "sha256": "deedf5be55854883be3f9e153e8fa3d2d596808ed4cb332f7b70fb6a0e72a3f6"
+    },
+    {
+      "file": "faction-marine.png",
+      "job": "cd2517ce-fd74-4367-9656-c645f16976f3",
+      "galleryAsset": "869d0401-30d8-5704-9806-469038ad4a61",
+      "width": 512,
+      "height": 288,
+      "creditsUSD": 0.15,
+      "prompt": "Kaizoku Idle faction card scenic illustration. Masterpiece Ultra HD refined pixel art, crisp premium detail, sophisticated warm gold highlights and deep dark navy shadows. A disciplined white stone coastal naval fortress with blue rooftops, plain blue banners, watchtowers and orderly harbor, brilliant clear sky. Wide cinematic composition, architecture and scenery only, center kept readable for an existing emblem overlay. No characters, no written words, no logos, no symbols or emblems, no skulls, no UI, no frames, no buttons, no watermark. Distinct thematic environment, rich wood and stone detail, controlled highlights, high quality native pixel art.",
+      "sha256": "498024d9e4e3c6de7c4823e391e0eb79d4bb33e7637905475950b5b93ded1cbd"
+    },
+    {
+      "file": "faction-government.png",
+      "job": "bfd9c070-fd9c-4568-8ef5-629be291a7c0",
+      "galleryAsset": "94640cf5-f711-56a5-a1cd-2b30d5fffd51",
+      "width": 512,
+      "height": 288,
+      "creditsUSD": 0.15,
+      "prompt": "Kaizoku Idle faction card scenic illustration. Masterpiece Ultra HD refined pixel art, crisp premium detail, sophisticated warm gold highlights and deep dark navy shadows. An imposing formal ivory palace courtyard by the ocean, ornate gold details, deep violet and navy plain banners, elegant stone stairs and solemn blue twilight. Wide cinematic composition, architecture and scenery only, center kept readable for an existing emblem overlay. No characters, no written words, no logos, no symbols or emblems, no skulls, no UI, no frames, no buttons, no watermark. Distinct thematic environment, rich wood and stone detail, controlled highlights, high quality native pixel art.",
+      "sha256": "9cb973820b913f05f78f1238efac3a5946397ae7a5c8ec5e2051397b5966f8d2"
+    },
+    {
+      "file": "class-gunner.png",
+      "job": "84e08378-f5f5-4f72-9a52-6035160c02f9",
+      "galleryAsset": "9836e171-1eac-5457-9410-f592aea3e184",
+      "width": 512,
+      "height": 288,
+      "creditsUSD": 0.15,
+      "prompt": "Masterpiece Ultra HD refined pixel art illustration for Kaizoku Idle class selection. An original naval marksman on the RIGHT half of a wooden ship deck, three-quarter standing view, dark navy coat, brass trim, leather boots, warm lantern and blue sea. He holds ONE compact historically plausible flintlock carbine in a relaxed low-ready pose across his waist. Weapon length about the distance from his hip to opposite shoulder, NOT taller than his body. One straight narrow steel barrel, one continuous wooden stock with distinct broad shoulder butt, one trigger and brass trigger guard. Right hand grips the stock wrist immediately behind the trigger; left hand supports the wooden fore-end beneath the barrel. Muzzle directed diagonally down-left, buttstock beside right upper arm. Clear functional firearm silhouette, consistent straight barrel, no crossed poles, no duplicated barrels, no second weapon, no extensions beyond muzzle or butt. Anatomically coherent hands and five fingers, no fused hands. Keep entire carbine and both hands inside canvas. Left quarter quiet dark rigging to blend into interface. Premium intricate crisp pixel detail and controlled shading, not a sprite, not a full UI, no frame, text, logo, skull, watermark or straw hat.",
+      "sha256": "d6532abe16fe611a21082a1e1bf730d75863e2915cf0707d833b565bfb9b4f6c"
+    }
+  ],
+  "rejected": [
+    {
+      "job": "49171c25-bf86-487a-9739-b978dd0275bd",
+      "reason": "Rifle silhouette and length rejected during visual review; replaced with compact single-barrel carbine.",
+      "creditsUSD": 0.15
+    }
+  ],
+  "generationTotalUSD": 1.8
+}

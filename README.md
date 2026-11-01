@@ -1,3 +1,5 @@
+[Criação HD: classes, facções e harmonização das HUDs com geometria preservada](docs/CRIACAO-HARMONIZACAO-HD.md).
+
 [Meu Perfil, Equipamentos, Jornal do Morgan e Configurações HD](docs/CENTRAL-NAVEGANTE-HD.md).
 
 [Conquistas e Hierarquia HD: consulta das quatro facções, 32 insígnias e ranking filtrado](docs/CONQUISTAS-HIERARQUIA-HD.md).
