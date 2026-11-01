@@ -1,9 +1,10 @@
 # F05 — perda da resposta de troca de senha
 
-Preparação local autorizada em 01/11/2026, sobre `31a92ed`. **O teste hospedado
-continua pendente de autorização específica.** Não enviar recuperação de G enquanto
-o F04 espera a expiração: outro pedido para a mesma conta poderia substituir o
-token reservado e prejudicar o ensaio. Não iniciar Fase 3, merge ou deploy.
+Preparação local autorizada em 01/11/2026, sobre `31a92ed`. **Ensaio hospedado
+autorizado e concluído em 01/11/2026, sobre `5332f51`: segurança e reconciliação
+aprovadas; ressalva de interface aberta abaixo.** F04 foi concluído antes deste
+único novo envio para G. Não iniciar Fase 3, merge ou deploy. O aceite final da
+Fase 2 permanece com o proprietário.
 
 ## Ensaio local executado
 
@@ -32,7 +33,7 @@ não foi executado nesta preparação sem mudanças de interface. São testes de
 existente, sem alteração de código de produção; não representam um ciclo TDD de
 uma correção nem substituem o F05 real.
 
-## Proposta para a janela hospedada — ainda não autorizada
+## Procedimento aprovado para a janela hospedada
 
 Somente depois de concluir/classificar F04, usar G e um novo pedido/e-mail de
 recuperação, com aprovação específica. O proprietário conhece a senha atual após
@@ -74,6 +75,67 @@ resolver uma falha sem autorização adicional.
 - Desarmar o injetor, drenar a fila quando possível, Auth false e API/gateway
   próprios parados; preservar PostgreSQL, contas, personagens, gameplay e saves.
 
-A aprovação do teste real deverá nomear G, o único envio, a troca efetiva de senha,
-a perda deliberada da resposta e a revogação das sessões de G. Esta documentação
-não autoriza essas ações. [Matriz de aceite](PHASE-2F-FINAL-ACCEPTANCE.md).
+A autorização específica do proprietário cobriu G, um único envio, a troca efetiva
+de senha, a perda deliberada da resposta e a revogação das sessões de G. Não autoriza
+outro envio ou nova troca. [Matriz de aceite](PHASE-2F-FINAL-ACCEPTANCE.md).
+
+## Ensaio real e evidências sanitizadas
+
+Horários abaixo em UTC de 01/11/2026 (São Paulo = UTC menos três horas).
+Somente `mare-partida-auth-dev` e HTTPS local, com verificação TLS habilitada.
+Notificação automática de senha alterada estava desativada no painel; conferida
+em leitura, sem mudar configuração. Não foram usados recursos administrativos.
+
+O controle automático do Opera foi bloqueado pela ferramenta antes de qualquer
+envio. Auth e os processos foram desligados nessa interrupção. A janela foi
+retomada com autorização para orientação manual: o proprietário operou o Opera
+normal/privativo e digitou senhas; o perfil integrado foi o outro login anterior.
+Não houve contorno da proteção da ferramenta. O fluxo recovery usou a mesma
+janela privativa desde o pedido até o callback.
+
+Instrumentação privada e ignorada pelo Git: guardas de projeto, destinatário,
+método/rota e bearer comparado em memória à sessão recovery de G no PostgreSQL.
+Marcadores exclusivos em disco limitam pedido recovery e PUT remoto a um cada,
+inclusive após reinício. O injetor foi armado após conferir duas sessões play e
+uma recovery de G; oito verificações offline passaram, incluindo concorrência,
+repetição, projeto/destinatário divergente, bearer incompatível e recusa remota.
+Nenhuma senha, token ou corpo de pedido foi registrado pelo observador.
+
+| Critério | Resultado observado | Classificação |
+|---|---|---|
+| Sessões anteriores | Dois logins G em perfis separados, 06:50:33 e 06:52:10; duas sessões play autorizadas no banco | Aprovado |
+| Um envio | Único pedido recovery aceito pelo provedor 200 às 06:54:21 e BFF 202; sem cadastro/reenvio | Aprovado |
+| Callback e identidade | PKCE 200 às 06:55:56; callback 303 às 06:55:57; recovery de G validada, JWT ES256/900 s | Aprovado |
+| Resposta perdida | PUT remoto 200 às 06:58:06.386; injetor descartou a resposta às 06:58:06.387; reset BFF 503 às 06:58:06.405 | Aprovado |
+| Revogação | Epoch G incrementado uma vez; duas sessões play e recovery sem autorização; logout remoto 204 às 06:58:11; fila zerada antes do novo login | Aprovado |
+| Repetições | Duas chamadas adicionais de reset às 06:58:23 e 06:58:46 retornaram 401; apenas um PUT chegou ao provedor | Aprovado para recusa; não alegar apenas uma submissão na UI |
+| Navegadores antigos | Opera normal voltou ao login conforme captura do proprietário; perfil integrado também observado em login; leituras /v1/me 401 | Aprovado |
+| Senha antiga/nova | Proprietário informou tentativa antiga e depois nova; provedor 400/BFF 401 às 07:08:42, provedor/BFF 200 às 07:08:53; nova identidade de G validada em leitura | Aprovado |
+| Persistência e saída | /v1/me 200 após recarregar às 07:09:33; logout local 204 às 07:09:45; /v1/me 401 após recarregar; logout remoto 204 às 07:09:51 | Aprovado |
+| Mensagem da primeira falha | Primeiro status 503 comprovado; texto inicial na UI não foi capturado. Proprietário relatou depois “Sua sessão terminou. Entre novamente.”, compatível com os retries 401 | Inconclusivo quanto ao texto inicial; sem ocultar a observação |
+| Encerramento | Injetor desarmado; Auth false/API/gateway parados às 07:10:14; somente PostgreSQL em loopback | Aprovado |
+
+Estado final: **quatro contas, três personagens, zero sessões autorizadas, zero
+revogações pendentes e zero fluxos recovery válidos**. Fingerprints dos personagens
+e demais contas preservados. G continua sem personagem, com epoch +1 esperado.
+JWT 900 s, sessão play absoluta 24 h/inatividade 2 h mantidos. Sem alterações em
+gameplay, HUD, Paper Doll, mapas, assets, saves ou runtime versionado.
+
+## Ressalva de interface e limites do resultado
+
+**Observação real de UX:** após a resposta perdida, o formulário de definir senha
+permaneceu visível e permitiu novas submissões. As duas foram recusadas pelo
+backend; isso não demonstrou sessão ainda válida nem nova troca no provedor.
+Proposta de correção separada: consumir a tela de reset ao receber resultado
+incerto/sessão inválida, apresentar acesso ao login e preservar a explicação sobre
+a senha possivelmente alterada, com regressão de interface. Não corrigido nesta
+janela; decisão pendente antes do aceite final da Fase 2.
+
+O descarte foi local, após resposta real de sucesso, e durou menos de um segundo;
+não foi uma queda física de rede ou o timeout de quatro segundos do ensaio local.
+Não se afirma atomicidade entre bancos nem invalidação imediata de JWT remoto já
+emitido. Refresh tokens antigos não foram apresentados novamente ao provedor
+nesta janela; o logout remoto 204 e a revogação interna foram comprovados.
+Documentos são a única mudança versionada desta conclusão. Testes offline e
+evidências privadas permanecem ignorados; os resultados locais anteriores não
+são apresentados como nova execução da suíte completa nesta janela.
