@@ -1,3 +1,5 @@
+[Mapa do Arquipélago e Impel Down HD: destinos, prévia persistente e regras preservadas](docs/MAPA-PRISAO-HD.md).
+
 [Forja HD: Aprimorar, Imbuir, Fusão e Reforja com mecânicas preservadas](docs/FORJA-HD.md).
 
 [Quadro de Contratos HD: duas colunas, Nami à direita e progresso real](docs/QUADRO-CONTRATOS-HD.md).
