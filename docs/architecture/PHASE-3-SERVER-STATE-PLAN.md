@@ -47,9 +47,10 @@ a resposta não expõe o dono nem credenciais. Cache-Control continua no-store.
    sem recompensa econômica, com ledger, versão, rollback e recibo na mesma
    transação. Testes de concorrência, replay, controlador, perda de resposta e
    rejeição de saldo/XP fornecido pelo cliente. Sem integração no gameplay local.
-4. **3D:** integrar o modo online por funcionalidade, mantendo o modo demonstração
-   e seus saves isolados. Inventário, recompensas, RNG e combate exigem contratos
-   próprios; nenhum deles está migrado por esta entrega.
+4. **3D (primeiro fluxo implementado):** [painel online](PHASE-3D-ONLINE-PANEL.md),
+   consulta autorizada do marco, início de jornada e reconciliação por aba. Modo
+   demonstração e saves isolados. Inventário, recompensas, RNG e combate exigem
+   contratos próprios; nenhum deles está migrado por esta entrega.
 
 3B/3C definiram os comandos iniciais, retenção limitada ao piloto e reconciliação
 por requestId/versão; retenção para economia contínua permanece pendente. Origem pública,

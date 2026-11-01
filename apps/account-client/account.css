@@ -188,6 +188,13 @@ small {
   padding-top: 20px;
   border-top: 1px solid var(--line);
 }
+.online-progress { margin: 24px 0; padding-top: 20px; border-top: 1px solid var(--line); }
+.online-progress h4 { margin: 0; font: 1.3rem Georgia, serif; color: var(--brass); }
+.online-values { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.online-values dt { font-size: .84rem; color: var(--muted); }
+.online-values dd { margin: 6px 0 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.online-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.online-progress .quiet { margin-top: 8px; }
 #status:empty {
   display: none;
 }
