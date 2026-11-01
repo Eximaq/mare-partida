@@ -76,6 +76,45 @@ Não desativar proteções do Gmail, aumentar prazos ou mudar template/fluxo sem
 e autorização. O orçamento de um envio foi consumido; qualquer novo envio ou
 alteração do Supabase exige nova autorização específica. F02–F05 não executados.
 
+## F01 — diagnóstico em leitura após o ensaio
+
+A investigação posterior não enviou mensagens, não abriu novamente o link de
+recuperação, não ligou Auth e não alterou Supabase, templates, prazos ou contas.
+
+| Hipótese/verificação | Evidência obtida | Conclusão permitida |
+|---|---|---|
+| Link antigo ou alterado na navegação | Token completo do registro API Gateway comparado em memória ao link da mensagem nova; igualdade exata, um parâmetro token, tipo recovery e redirect esperado | Não houve substituição/truncamento observável entre esse e-mail e a requisição registrada |
+| Conta incorreta | Destinatário do evento user_recovery_requested coincide com o autorizado; digest do actor corresponde à única conta local sem personagem (G) | Pedido associado à conta existente correta; nenhum ID/endereço publicado |
+| Prazo remoto curto | Painel Email: OTP expiration 3600 s; recusa aproximadamente 42 s após pedido | Não há evidência de vencimento por espera normal; OTP de e-mail é separado do JWT de 900 s |
+| Template/redirect | Template usa `{{ .ConfirmationURL }}`; Site URL e allowlist incluem a origem/callback HTTPS local esperados | Não foi encontrada divergência nestas configurações; nenhum Save acionado |
+| Perda do estado PKCE local | Fluxo cifrado legível, com verificador presente e apenas material de verificador; callback chegou sem código, já com erro do provedor | A troca PKCE nem foi alcançada; não é evidência de cookie, CSRF ou verifier inválido |
+| Repetição/consumo antecipado | Recorte de logs consultado contém um pedido recovery e um GET /auth/v1/verify associado ao clique; usuário negou outro clique | Scanner/prefetch não foi comprovado; ausência no recorte não prova ausência universal |
+| Ponto exato de falha | Auth: One-time token not found; API Gateway: GET /auth/v1/verify 303 redirecionando com otp_expired; callback local 400 | Rejeição na consulta do token do provedor, antes da emissão do código PKCE; não confundir o 303 de transporte com sucesso |
+
+A leitura do [código oficial de verificação](https://github.com/supabase/auth/blob/master/internal/api/verify.go)
+mostra que token não encontrado e token vencido podem produzir o mesmo código
+público otp_expired por caminhos distintos. Isso é consistente com o erro interno
+observado; não comprova a versão implantada ou a causa da ausência do token.
+
+**Diagnóstico delimitado:** o link novo chegou intacto ao projeto correto, que o
+recusou por token não encontrado. A causa interna permanece inconclusiva. Não há
+base para culpar o usuário, afirmar consumo pelo Gmail/navegador, declarar bug do
+Supabase ou aplicar uma correção especulativa no servidor do jogo. Não houve teste
+de nova assinatura JWT, nova sessão ou alteração de senha nesta investigação.
+
+Resumo preparado para eventual suporte: runtime `f1ef36b`, PKCE recovery,
+/recover aceito, uma mensagem entregue, /verify 42 s depois com token exatamente
+igual ao e-mail, erro interno One-time token not found, OTP 3600 s, template padrão,
+callback permitido, nenhum código para exchange. A correlação por projeto/horários
+e request IDs fica em canais privados autorizados, nunca com token/link/credenciais.
+Enviar esse resumo ao suporte é comunicação externa e requer autorização; não foi
+enviado. Repetir com outro e-mail ou mudar template também depende de autorização
+específica. Não consumir mais quota apenas para tentar novamente sem hipótese.
+
+CI do registro `4a89b6c`: oito checks aprovados. Isso valida a branch e não transforma
+o ensaio F01 em sucesso. Auth permaneceu false, serviços locais parados e dados
+preservados. Sem merge, deploy, DNS ou Fase 3.
+
 ## Preparação da execução — após autorização do lote
 
 1. Confirmar o destinatário e a conta temporária existente (preferencialmente G,
