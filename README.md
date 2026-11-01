@@ -1,3 +1,5 @@
+[Forja HD: Aprimorar, Imbuir, Fusão e Reforja com mecânicas preservadas](docs/FORJA-HD.md).
+
 [Quadro de Contratos HD: duas colunas, Nami à direita e progresso real](docs/QUADRO-CONTRATOS-HD.md).
 
 [Inventário — refino visual e 102 ícones PixelLab HD, aguardando aprovação](docs/INVENTORY-HD-REFINEMENT.md).

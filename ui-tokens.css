@@ -45,3 +45,6 @@
 :root{--rpg-hd-secondary:url('assets/ui/inventory-final/secondary.png');--rpg-hd-plaque:url('assets/ui/inventory-hd/heading-v2.png')}
 
 :root{--inv-positive:url('assets/ui/inventory-final/positive.png');--inv-negative:url('assets/ui/inventory-final/negative.png')}
+
+/* Owner-approved material shared by future UI surfaces. Lazy until referenced. */
+:root{--rpg-workshop-surface:url('assets/ui/forge-hd/workshop-surface.png')}
