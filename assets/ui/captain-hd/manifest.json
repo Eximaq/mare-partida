@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "usage": "Meu Perfil, Jornal do Morgan e Configurações; presentation only",
+  "pixelLab": {
+    "model": "Pro",
+    "job": "62db29b4-47a1-435b-8cf5-e4eacd09d0bb",
+    "gallery": "49cea63d-bd89-5178-896f-fd7ac9981594",
+    "size": [
+      512,
+      256
+    ],
+    "creditChargeUSD": 0.15,
+    "transparent": true,
+    "cells": [
+      "flag",
+      "music",
+      "compass star",
+      "crossed swords",
+      "newspaper",
+      "hourglass",
+      "crown",
+      "speech bubble"
+    ],
+    "description": "Masterpiece Ultra HD refined pixel art; eight isolated aged gold symbols; 4 columns by 2 rows; no plates or text"
+  },
+  "approvedCrops": {
+    "method": "Exact native-resolution Canvas crop and PNG export, no resampling, no generated replacement",
+    "morgan": {
+      "source": "Imagem do ChatGPT 1 de nov. de 2026, 09_38_02-3.png",
+      "region": [
+        609,
+        134,
+        1018,
+        328
+      ]
+    },
+    "settings": {
+      "source": "Imagem do ChatGPT 1 de nov. de 2026, 09_38_03-4.png",
+      "regions": [
+        {
+          "file": "general-scene.png",
+          "region": [
+            745,
+            263,
+            572,
+            118
+          ]
+        },
+        {
+          "file": "audio-scene.png",
+          "region": [
+            745,
+            426,
+            572,
+            118
+          ]
+        },
+        {
+          "file": "graphics-scene.png",
+          "region": [
+            745,
+            588,
+            572,
+            118
+          ]
+        },
+        {
+          "file": "interface-scene.png",
+          "region": [
+            745,
+            750,
+            572,
+            118
+          ]
+        },
+        {
+          "file": "accessibility-scene.png",
+          "region": [
+            745,
+            909,
+            572,
+            118
+          ]
+        }
+      ]
+    }
+  },
+  "reused": [
+    "inventory-hd/frame-v2.png",
+    "character-hud/hd/wood.png",
+    "forge-hd/workshop-surface.png",
+    "honors-hd/button-dark.png",
+    "honors-hd/button-gold.png",
+    "honors-hd/faction-banner.png",
+    "official item-art registry, faction emblems and talent class emblems"
+  ],
+  "files": [
+    {
+      "file": "accessibility-scene.png",
+      "width": 572,
+      "height": 118,
+      "sha256": "ced82302518ecb918b2da9eff593f1c1529db76f1cd0d73ce03b56e7c0a13f69"
+    },
+    {
+      "file": "audio-scene.png",
+      "width": 572,
+      "height": 118,
+      "sha256": "2d9bc74f5e50b8a1f0b0b6398bf8c19ad229a46bdd2524de4723f2b5b549bbe7"
+    },
+    {
+      "file": "general-scene.png",
+      "width": 572,
+      "height": 118,
+      "sha256": "6d14c09335e241c158cb36776745bcc1f76e0688074d81ebb0f1bc52ad152ec9"
+    },
+    {
+      "file": "graphics-scene.png",
+      "width": 572,
+      "height": 118,
+      "sha256": "33ff0decfc1dce093af671718eaaf65c67f0aa71168d1774c6a224216dea0765"
+    },
+    {
+      "file": "icons.png",
+      "width": 512,
+      "height": 256,
+      "sha256": "4a27d3ae84885edbcfdbd450d5b6eb5053e31a8550e02a423d272c222b58ef09"
+    },
+    {
+      "file": "interface-scene.png",
+      "width": 572,
+      "height": 118,
+      "sha256": "61561291933a1409b57531296b2ba2b0c7a3835bbf6292b5dadfeb0b651d7fd1"
+    },
+    {
+      "file": "morgan-approved.png",
+      "width": 1018,
+      "height": 328,
+      "sha256": "6411dd933846e85b765b14afdb8bd0973bdcd153f32ea0780e14233e2814ed03"
+    }
+  ]
+}
