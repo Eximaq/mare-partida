@@ -36,6 +36,8 @@
 
 **Encontros repetíveis — Etapa 3G:** [ciclo de novos encontros](docs/architecture/PHASE-3G-REPEATABLE-ENCOUNTERS.md), com descanso de 60 segundos, histórico por encontro e prêmio idempotente. Limites do piloto: 10 inícios em 24 horas e 100 encontros por personagem. [Avaliação inicial de VPS](docs/operations/INITIAL-VPS-ASSESSMENT.md).
 
+**Progressão online — Etapa 3H:** [níveis e pontos conquistados](docs/architecture/PHASE-3H-LEVEL-PROGRESSION.md), com catálogo versionado, evolução atômica por recompensa e preservação do XP acumulado. Distribuição de atributos e mudanças de combate seguem para outra etapa.
+
 **Fase 2 em desenvolvimento:** [BFF, sessões e personagens](docs/architecture/PHASE-2-IMPLEMENTATION-REVIEW.md) · [preparação local e homologação](docs/operations/PHASE-2-DEVELOPMENT.md). Auth desabilitado por padrão; rodadas funcionais Supabase 1–3 registradas. [Matriz e janela final da Etapa 2F](docs/operations/PHASE-2F-FINAL-ACCEPTANCE.md), ainda sem aceite final.
 
 **Sprint 3:** [Sua Aparência](docs/PERSONAGEM-APARENCIA-96.md): nova etapa após classe, gênero, cabelos/olhos e cores independentes, prévia em quatro direções e persistência.

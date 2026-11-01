@@ -104,3 +104,13 @@ export async function authDatabase(
     await admin.end();
   }
 }
+
+// Migration fixture only: seed a previously committed 3G hunt before the level tables exist.
+export async function seedPreLevelHuntReward(pool:pg.Pool,characterId:string) {
+  assert.match(new URL(pool.options.connectionString!).pathname,/^\/mare_test_[a-f0-9]{32}$/);
+  const requestId=randomUUID();
+  await pool.query("INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,repeat('a',64),'{}')",[characterId,requestId]);
+  await pool.query("INSERT INTO mare_game.character_hunt_rewards(character_id,request_id,version_before,experience_before,gold_before) VALUES($1,$2,2,0,0)",[characterId,requestId]);
+  await pool.query("UPDATE mare_game.character_progression SET experience=20,gold=8 WHERE character_id=$1",[characterId]);
+  await pool.query("UPDATE mare_game.characters SET state_version=3 WHERE id=$1",[characterId]);
+}

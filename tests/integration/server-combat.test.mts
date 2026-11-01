@@ -11,9 +11,9 @@ import type { AddressInfo } from "node:net";
 import { AuthService } from "../../apps/game-server/src/auth/service.js";
 import { createHttpServer } from "../../apps/game-server/src/http.js";
 import { createAuthHandler } from "../../apps/game-server/src/auth/routes.js";
-import { authDatabase } from "./auth-support.mjs";
+import { authDatabase,seedPreLevelHuntReward } from "./auth-support.mjs";
 
-async function fixture(service: AuthService, pool: any, ready=true) {
+async function fixture(service: AuthService, pool: any, ready=true,legacy=false) {
   const session=await service.login("combat@example.invalid","fixture");
   const character=await service.createCharacter(session.token,{name:"Combat",classId:"sword",factionId:"pirate"});
   const lease=await service.acquireControl(session.token,character.id);
@@ -22,7 +22,7 @@ async function fixture(service: AuthService, pool: any, ready=true) {
   if(ready) {
     await send(input("journey.begin",0));await send(input("hunt.begin",1));
     await pool.query("UPDATE mare_game.character_hunts SET begun_at=clock_timestamp()-interval '31 seconds'");
-    await send(input("hunt.claim",2));
+    if(legacy) await seedPreLevelHuntReward(pool,character.id); else await send(input("hunt.claim",2));
   }
   return {session,character,input,send};
 }
@@ -45,7 +45,7 @@ test("combat HTTP accepts intentions only, enforces cooldown and credits a won e
     await pool.query("UPDATE mare_game.combat_encounters SET next_attack_at=clock_timestamp()+interval '1 hour'");
     const attack=f.input("combat.attack",4);
     assert.deepEqual(await (await send(attack)).json(),{error:"combat_cooldown"});
-    for(const field of ["damage","playerHp","enemyHp","reward","gold","experience","ownerId","accountId","characterId","roll","seed","turn","nextAttackAt"]) {
+    for(const field of ["level","earnedAttributePoints","catalogId","damage","playerHp","enemyHp","reward","gold","experience","ownerId","accountId","characterId","roll","seed","turn","nextAttackAt"]) {
       assert.equal((await send({...attack,[field]:999})).status,400);
       assert.equal((await send({...attack,payload:{[field]:999}})).status,400);
     }
@@ -163,10 +163,10 @@ test("combat migration preserves the completed hunt, old receipts and existing b
   for(const name of ["0001_foundation.sql","0002_auth_sessions.sql","0003_character_progression.sql","0004_character_commands.sql","0005_character_journey.sql","0006_first_hunt.sql"])
     await copyFile(new URL(`../../apps/game-server/migrations/${name}`,import.meta.url),join(directory,name));
   await authDatabase(async({service,pool})=>{
-    const f=await fixture(service,pool);
+    const f=await fixture(service,pool,true,true);
     const tables=["accounts","characters","character_progression","character_commands","character_hunts","character_hunt_rewards"];
     const before=await Promise.all(tables.map(t=>pool.query(`SELECT * FROM mare_game.${t}`)));
-    assert.deepEqual(await applyMigrations(pool),["0007_first_combat.sql", "0008_repeatable_encounters.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     for(const [i,t] of tables.entries()) assert.deepEqual((await pool.query(`SELECT * FROM mare_game.${t}`)).rows,before[i]!.rows);
     await assert.rejects(pool.query("INSERT INTO mare_game.combat_encounters(character_id,begin_request_id,last_request_id) VALUES($1,$2,$2)",[f.character.id,randomUUID()]),{code:"23503"});
     await f.send(f.input("combat.begin",3));
@@ -177,6 +177,7 @@ test("combat migration preserves the completed hunt, old receipts and existing b
 test("combat reward survives real socket loss after commit and restart without a second credit", async () =>
   authDatabase(async ({ service, pool, provider, vault }) => {
     const f=await wonFixture(service,pool),session=f.session,character=f.character;
+    await pool.query("UPDATE mare_game.character_progression SET experience=50");
     const command=f.input("combat.claim",5);
     const backend = createHttpServer({ isReady: async () => true,
       handle: createAuthHandler({ service, vault, origin: "https://localhost:9443", cookieSeconds: 3600 }) });
@@ -200,7 +201,8 @@ test("combat reward survives real socket loss after commit and restart without a
       assert.equal(dropped, 1);
       assert.equal((await service.characterState(session.token, character.id)).version, 6);
       const retry = await send(); assert.equal(retry.status, 200);
-      const accepted = await retry.json(); assert.equal(accepted.state.gold,"20"); assert.equal(accepted.state.experience,"50");
+      const accepted = await retry.json(); assert.equal(accepted.state.gold,"20"); assert.equal(accepted.state.experience,"80");assert.equal(accepted.state.level,2);
+      assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.character_level_ledger")).rows[0].n,1);
       const restarted = new AuthService({ pool, provider, vault, origin: "https://localhost:9443",
         policy: { absoluteMs: 3600000, idleMs: 300000, recheckMs: 60000 } });
       assert.deepEqual(await restarted.command(session.token, character.id, command), accepted);
