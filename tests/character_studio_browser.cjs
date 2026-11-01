@@ -9,6 +9,25 @@ const out=process.env.STUDIO_EVIDENCE||'tmp/character-hd';
  const p=await browser.newPage({viewport:{width:1448,height:1086}}),errors=[],missing=[];
  p.on('pageerror',e=>errors.push(e.message));p.on('response',r=>{if(r.status()>=400&&r.url().includes('/character-studio/'))missing.push(r.url());});
  await p.route(/\/game\.js(?:\?|$)/,async route=>{const response=await route.fetch();let s=await response.text();s=s.replace('  requestAnimationFrame(frame);','  window.__studioQA={get player(){return game},renderer:lobby96,openCreation,openPanel,closePanel,getDerived,level(n){game.level=n;},class(id){game.classId=id;updateUI();renderPanel();}};\n  requestAnimationFrame(frame);');await route.fulfill({response,body:s});});
+
+ async function auditSymbols(selector){
+  const results=await p.locator(selector).evaluateAll(async imgs=>Promise.all(imgs.map(async img=>{
+   await img.decode();const c=document.createElement('canvas');c.width=img.naturalWidth;c.height=img.naturalHeight;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);const pixels=ctx.getImageData(0,0,c.width,c.height).data;
+   let clear=0,edge=0,green=0,opaque=0;for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){const i=(y*c.width+x)*4,a=pixels[i+3];if(!a)clear++;else{opaque++;if(x<2||y<2||x>=c.width-2||y>=c.height-2)edge++;if(a>240&&pixels[i+1]>pixels[i]*1.3&&pixels[i+1]>pixels[i+2]*1.05)green++;}}
+   const st=getComputedStyle(img);return {src:img.getAttribute('src'),width:c.width,height:c.height,clear:clear/(c.width*c.height),edge,green,opaque,background:st.backgroundColor,image:st.backgroundImage,shadow:st.boxShadow};
+  })));
+  for(const r of results){assert.equal(r.width,64,r.src);assert.equal(r.height,64,r.src);assert(r.clear>.2&&r.clear<.95,'real transparent isolated symbol '+JSON.stringify(r));assert.equal(r.edge,0,'clear safe margin '+r.src);assert.equal(r.background,'rgba(0, 0, 0, 0)');assert.equal(r.image,'none');assert.equal(r.shadow,'none');if(r.src.split('?')[0].endsWith('/dexterity.png'))assert(r.green>30,'legitimate green boot must remain opaque');}
+  return results;
+ }
+ async function checkSelectorAlignment(){
+  const boxes=await p.locator('.studio-appearance .appearance-selector').evaluateAll(els=>els.map(e=>{const r=e.getBoundingClientRect();return {x:r.left,right:r.right};}));
+  assert.equal(boxes.length,7);
+  assert(Math.max(...boxes.map(b=>b.x))-Math.min(...boxes.map(b=>b.x))<1.5,'alternate selector left alignment');
+  assert(Math.max(...boxes.map(b=>b.right))-Math.min(...boxes.map(b=>b.right))<1.5,'alternate selector right alignment');
+  const swatches=await p.locator('.appearance-swatch').evaluateAll(els=>els.map(e=>{const key=e.dataset.appearanceColor,value=e.dataset.value,table={hairColor:MareCharacterAppearance.hairs,eyeColor:MareCharacterAppearance.eyes,skinColor:MareCharacterAppearance.skins}[key];return e.style.getPropertyValue('--swatch')===table[value].ramp[3];}));
+  assert(swatches.every(Boolean),'selectable palette values must remain unchanged');
+ }
+
  await p.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8159/');
  await p.waitForFunction(()=>window.__studioQA);
  await p.locator('#characterName').fill('Papacapim');
@@ -22,11 +41,17 @@ const out=process.env.STUDIO_EVIDENCE||'tmp/character-hd';
  }
  await p.locator('[data-faction=pirate]').click();await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();
  await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));
- await p.evaluate(()=>document.fonts.ready);await p.screenshot({path:path.join(out,'appearance-creation.png')});
+ await p.evaluate(()=>document.fonts.ready);await p.screenshot({path:path.join(out,'appearance-creation.png')});await p.locator('.creation-progress').screenshot({path:path.join(out,'appearance-steps.png')});
+ assert.equal(await p.locator('.creation-progress>.step').count(),3);assert.equal(await p.locator('.creation-progress>.progress-rule').count(),2);
+ const rails=await p.locator('.creation-progress .step').evaluateAll(els=>els.map(e=>({height:e.getBoundingClientRect().height,background:getComputedStyle(e).backgroundImage,current:e.getAttribute('aria-current')})));assert(rails.every(r=>r.background==='none'));assert.equal(rails.filter(r=>r.current==='step').length,1);
+ for(const width of [393,320]){await p.setViewportSize({width,height:852});await checkSelectorAlignment();const nodes=await p.locator('.creation-progress>.step').evaluateAll(els=>els.map(e=>{const r=e.getBoundingClientRect();return {x:r.x,right:r.right,y:r.y,bottom:r.bottom};}));assert(Math.max(...nodes.map(n=>n.y))-Math.min(...nodes.map(n=>n.y))<2,'progress steps share one row');assert(nodes[0].right<nodes[1].x&&nodes[1].right<nodes[2].x,'progress steps never overlap');assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));await p.locator('.creation-dialog').evaluate(e=>e.scrollTop=0);await p.screenshot({path:path.join(out,'appearance-creation-'+width+'.png')});}
+ await p.setViewportSize({width:1448,height:1086});
+ await auditSymbols('.studio-control-icon,.studio-step-icon');await checkSelectorAlignment();
  const sharedCreation=await p.locator('.studio-appearance').evaluate(e=>[...e.querySelectorAll('[data-appearance]')].map(n=>n.dataset.appearance));
  await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__studioQA.player);
  await p.evaluate(()=>{__studioQA.level(6);__studioQA.openPanel('character','status');});
  await p.waitForTimeout(300);
+await auditSymbols('.attribute-row>.studio-icon,.studio-derived-groups h4 img');await p.screenshot({path:path.join(out,'character-unspent.png')});
  const before=await p.evaluate(()=>({attrs:{...__studioQA.player.attributes},stats:__studioQA.getDerived()}));
  await p.locator('[data-attribute-quantity="5"]').click();await p.locator('[data-attribute-add=strength]').click();
  assert.equal(await p.locator('#pointsAvailable').innerText(),'20');
@@ -70,6 +95,7 @@ const out=process.env.STUDIO_EVIDENCE||'tmp/character-hd';
  await p.evaluate(()=>__studioQA.openPanel('character','appearance'));
  assert.deepEqual(await p.locator('.studio-appearance').evaluate(e=>[...e.querySelectorAll('[data-appearance]')].map(n=>n.dataset.appearance)),sharedCreation);
  assert((await p.locator('#profile-hairColor').evaluate(e=>getComputedStyle(e).backgroundImage)).includes('workshop-surface.png'));
+await auditSymbols('.studio-control-icon');await checkSelectorAlignment();
  const cosmeticsBefore=await p.evaluate(()=>JSON.stringify(__studioQA.player.appearance96));
  await p.locator('#profile-gender').selectOption('feminino');await p.locator('#profile-hairStyle').selectOption('hair-topknot');
  await p.locator('[data-appearance-color=hairColor][data-value=violet]').click();
@@ -87,7 +113,7 @@ const out=process.env.STUDIO_EVIDENCE||'tmp/character-hd';
  for(const [width,height]of [[1366,768],[1280,720],[393,852],[320,568],[852,393]]){
   await p.setViewportSize({width,height});
   assert(await p.locator('#dialogBody').evaluate(e=>e.scrollWidth<=e.clientWidth+1),'editor horizontal overflow '+width);
-  await p.locator('[data-appearance-apply]').scrollIntoViewIfNeeded();assert(await p.locator('[data-appearance-apply]').isVisible());
+  await checkSelectorAlignment();await p.locator('[data-appearance-apply]').scrollIntoViewIfNeeded();assert(await p.locator('[data-appearance-apply]').isVisible());
   if(width===393)await p.screenshot({path:path.join(out,'appearance-editor-mobile.png')});
  }
  assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);

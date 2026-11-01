@@ -75,14 +75,14 @@
 #app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-look-controls header p{font-size:16px;line-height:1.2;margin:0;color:#c5c4ba}
 #app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-fields{display:grid;gap:9px}
 #app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-field{display:grid;grid-template-columns:46px minmax(100px,.8fr) minmax(150px,1.4fr);align-items:center;gap:8px;padding:8px;border:1px solid #92724466;background:#070a0c38;border-radius:3px;margin:0}
-#app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-control-icon{width:43px;height:43px;object-fit:cover;grid-column:1;grid-row:1}
+#app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-control-icon{width:43px;height:43px;object-fit:contain;grid-column:1;grid-row:1}
 #app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-field label{font:700 18px/1.1 'Alegreya Sans',sans-serif;color:#f7e6c1;grid-column:2;grid-row:1;margin:0}
 #app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-selector{display:grid;grid-template-columns:32px minmax(0,1fr) 32px;gap:0;grid-column:3;grid-row:1;min-width:0}
 #app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-selector button{min-width:0;min-height:40px;padding:0;font-size:24px;border-width:6px}
 #app #panelOverlay.character-studio-mode .studio-appearance .appearance-field select,#app #startOverlay .studio-appearance .appearance-field select{width:100%;min-width:0;min-height:40px;max-width:none;padding:3px 5px;background:var(--rpg-workshop-surface) center/512px;color:#ffe8ba;border:1px solid #957b4d;border-image:none;border-radius:0;font:16px/1.1 'Alegreya Sans',sans-serif;text-align:center;box-shadow:inset 0 0 14px #0005}
 #app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance select option{color:#f5e3b9;background:#1c1b1a}
 #app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-field:has(.appearance-swatches){grid-template-rows:auto auto;row-gap:6px}
-#app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-field:has(.appearance-swatches) .appearance-selector{grid-column:3;max-width:155px;justify-self:end}
+#app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-field:has(.appearance-swatches) .appearance-selector{grid-column:3;max-width:none;justify-self:stretch}
 #app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-swatches{grid-column:2/4;grid-row:2;display:flex;flex-wrap:wrap;gap:9px;margin:0}
 #app #panelOverlay.character-studio-mode .studio-appearance .appearance-swatch,#app #startOverlay .studio-appearance .appearance-swatch{display:block;position:relative;width:29px;height:29px;min-width:29px;min-height:29px;padding:0;margin:0;border:2px solid #c5c7bc;border-image:none;border-radius:50%;background:var(--swatch);box-shadow:inset 0 0 0 2px #121b25;outline:1px solid #0008;filter:none}
 #app #panelOverlay.character-studio-mode .studio-appearance .appearance-swatch[aria-pressed=true],#app #startOverlay .studio-appearance .appearance-swatch[aria-pressed=true]{outline:2px solid #ffd473;outline-offset:3px;box-shadow:inset 0 0 0 2px #111}
@@ -117,3 +117,34 @@
 #app #panelOverlay.character-studio-mode #profileAppearance .creation-actions button[data-appearance-apply]{border-image-source:var(--rpg-hd-button);font-size:20px;color:#fff2c6}
 
 #app #panelOverlay.character-studio-mode .studio-character .studio-name{font-family:'Alabasta Pirate',Georgia,serif;text-transform:none;letter-spacing:.2px}
+
+#app #startOverlay .creation-progress .step{display:flex;align-items:center;gap:9px;min-height:50px}
+#app #startOverlay .studio-step-icon{width:32px;height:32px;object-fit:contain;background:none;border:0;box-shadow:none;flex:none}
+#app :is(#startOverlay,#panelOverlay.character-studio-mode) :is(.studio-control-icon,.attribute-row>.studio-icon,.studio-derived-groups h4 img){background:none;border:0;box-shadow:none;object-fit:contain}
+@media(max-width:760px){#app #startOverlay .creation-progress .step{gap:5px;font-size:12px;padding:4px 6px;min-height:44px}#app #startOverlay .studio-step-icon{width:23px;height:23px}#app #startOverlay .creation-progress .step b{display:none}}
+
+@media(max-width:760px){#app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-field .appearance-selector,#app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-field:has(.appearance-swatches) .appearance-selector{grid-column:1/-1;grid-row:2;width:100%;max-width:none;justify-self:stretch}#app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-field label{grid-column:2/-1}#app :is(#panelOverlay.character-studio-mode,#startOverlay) .studio-appearance .appearance-swatches{grid-column:1/-1;grid-row:3}}
+
+#app #startOverlay .creation-emblem{background:none;border:0;box-shadow:none;flex:none;width:60px;height:60px}
+#app #startOverlay .studio-brand-icon{display:block;width:60px;height:60px;object-fit:contain;background:none;border:0;box-shadow:none}
+
+/* One continuous progress rail: isolated icon alpha, numbered nodes and a single shared surface. */
+#app #startOverlay .creation-progress{display:grid;grid-template-columns:minmax(0,1fr) 46px minmax(0,1fr) 46px minmax(0,1fr);align-items:center;gap:12px;padding:13px 20px;margin:12px 0 18px;border-top:1px solid #8f6a36;border-bottom:1px solid #8f6a36;background:linear-gradient(#080a0c44,#080a0c44),var(--rpg-workshop-surface) center/512px;box-shadow:inset 0 1px #e8bf6c16,inset 0 -1px #0008}
+#app #startOverlay .creation-progress .step{display:flex;align-items:center;justify-content:center;gap:10px;min-width:0;min-height:48px;padding:0;background:none;border:0;border-image:none;outline:0;box-shadow:none;border-radius:0;color:#d0c4aa;font:700 18px/1.15 'Inventory Alegreya SC',Georgia,serif;white-space:normal}
+#app #startOverlay .creation-progress .step b{display:flex;align-items:center;justify-content:center;flex:none;width:38px;height:38px;min-width:38px;margin:0;border-radius:50%;border:1px solid #9d7d4b;background:linear-gradient(#060a0d77,#060a0d77),var(--rpg-workshop-surface) center/512px;color:#dac9a5;font:700 17px/1 'Inventory Alegreya SC',serif;box-shadow:inset 0 0 0 3px #0e1010,0 1px 3px #0008}
+#app #startOverlay .creation-progress .studio-step-icon{width:30px;height:30px;flex:none;filter:none}
+#app #startOverlay .creation-progress .studio-step-label{min-width:0;text-align:left;letter-spacing:.4px}
+#app #startOverlay .creation-progress .step.active{color:#ffe3a0;background:none;border:0;box-shadow:none;outline:0}
+#app #startOverlay .creation-progress .step.active b{color:#fff0bb;border-color:#f1be5c;box-shadow:inset 0 0 0 3px #3c2810,0 0 9px #e7ae3b44}
+#app #startOverlay .creation-progress .progress-rule{display:block;position:relative;min-width:0;width:100%;height:1px;margin:0;background:linear-gradient(90deg,#907448,#cfab60);border:0;flex:none}
+#app #startOverlay .creation-progress .progress-rule::after{content:'›';position:absolute;right:-3px;top:50%;transform:translateY(-55%);font:24px/1 Georgia,serif;color:#d2aa62}
+@media(max-width:760px){
+ #app #startOverlay .creation-progress{grid-template-columns:minmax(0,1fr) 12px minmax(0,1fr) 12px minmax(0,1fr);gap:4px;padding:10px 4px;margin:10px 0 13px}
+ #app #startOverlay .creation-progress .step{display:grid;grid-template-columns:23px 28px;justify-content:center;gap:5px;min-height:65px;font-size:12px;line-height:1.15}
+ #app #startOverlay .creation-progress .step b{display:flex;width:28px;height:28px;min-width:28px;font-size:13px}
+ #app #startOverlay .creation-progress .studio-step-icon{width:23px;height:23px}
+ #app #startOverlay .creation-progress .studio-step-label{grid-column:1/-1;text-align:center;letter-spacing:0;min-height:28px}
+ #app #startOverlay .creation-progress .progress-rule::after{font-size:19px;right:-1px}
+}
+
+#app #startOverlay .creation-progress .step b{padding:0}

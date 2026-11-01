@@ -1,10 +1,10 @@
 {
-  "version": 1,
+  "version": 2,
   "project": "Kaizoku Idle",
   "date": "2026-10-31",
   "usage": "Character status, shared appearance creation/editor, class HUD skill icons",
   "pixelLab": {
-    "generations": 50,
+    "generations": 60,
     "jobs": [
       {
         "job": "7af38382-c68c-40b9-91f2-e35bed700505",
@@ -51,6 +51,365 @@
         "generations": 25,
         "file": "harbor.png",
         "prompt": "Masterpiece HD detailed refined pixel art BACKGROUND for Kaizoku Idle pirate RPG character customization. A beautiful quiet nautical harbor at sunset, wooden dock foreground, warm hanging lantern at far left, aged wood barrels and rope coils along far edges, tall sailing ships and masts in the distance across golden blue water, richly shaded amber sky. Front-facing game character stage, slightly elevated horizon at upper third. A clear empty unobstructed broad wood platform at lower center, where a separate live player sprite will stand. Center foreground has muted medium-dark wood and simple clean plank lines so any skin/hair color silhouette remains easy to see. Fine premium art, coherent lighting, aged dark wood and metal atmosphere, no blur, no excessive bright sparks. NO PEOPLE, NO CHARACTERS, no statue, no silhouette, NO text, NO letters, no UI, no logo, no embedded frame, no skull portrait. Do not draw the player; keep the central stage completely empty. 600x448 native illustration."
+      },
+      {
+        "job": "f35c914d-a9b6-4147-8e89-5897836c69f3",
+        "gallery": "c658ee6b-1b47-567c-bf44-7433eec094a3",
+        "model": "Pro",
+        "size": [
+          256,
+          256
+        ],
+        "generations": 10,
+        "file": "symbols-alpha-atlas.png",
+        "transparent": true,
+        "prompt": "Masterpiece HD refined pixel art isolated UI SYMBOL ATLAS for Kaizoku Idle premium nautical fantasy RPG. EXACT 4 columns x 4 rows, total 256x256, each cell64x64. True TRANSPARENT ALPHA background and transparent empty gutters. Sixteen separate complete centered symbols, one per cell, same perceived visual size about46x46 with9px clear margin. NO frames, NO circular backplates, NO square tiles, NO colored panels, NO scenery, NO text, NO letters, NO shadows cast on a background. Symbols only; intentional tight internal shading and dark outlines allowed. Rich aged gold contours, dimensional jewel colors and clean edge pixels. Must read at36-44px. Left-to-right top-to-bottom: (1) elegant combined male and female gender symbol in aged gold; (2) sculpted golden hair tuft silhouette; (3) golden hair lock with three tiny jewel accents for hair color, no plate; (4) a golden eye outline with pale cyan iris; (5) golden eye with prismatic iris accent for eye color; (6) small warm golden human head profile, skin model; (7) three overlapping small head profiles in natural warm skin tones, skin tone choice; (8) gold nautical compass and anchor emblem, faction choice; (9) crossed silver swords with gold hilts, class choice; (10) gold hand mirror and quill, appearance choice; (11) bronze armored clenched fist, strength; (12) GREEN leather boot with restrained gold trim, dexterity, keep the legitimate green leather opaque; (13) polished RED heart, vitality; (14) open PURPLE book with gold binding, intelligence; (15) glowing CYAN spiral flame, spirit; (16) gold precision crosshair with four small points. Every icon standalone on transparency, no independent background rectangle, no badge backing disc. Keep all real object colors including green boot, red heart, purple book. Refined HD pixel art, high definition handcrafted details, no blur.",
+        "grid": [
+          4,
+          4
+        ],
+        "cell": [
+          64,
+          64
+        ],
+        "exports": [
+          {
+            "file": "controls/gender.png",
+            "cell": 0,
+            "sourceCell": [
+              0,
+              0,
+              64,
+              64
+            ],
+            "sourceAlphaBounds": [
+              10,
+              6,
+              58,
+              59
+            ],
+            "destination": [
+              8,
+              5
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "controls/hairStyle.png",
+            "cell": 1,
+            "sourceCell": [
+              64,
+              0,
+              128,
+              64
+            ],
+            "sourceAlphaBounds": [
+              6,
+              7,
+              58,
+              57
+            ],
+            "destination": [
+              6,
+              7
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "controls/hairColor.png",
+            "cell": 2,
+            "sourceCell": [
+              128,
+              0,
+              192,
+              64
+            ],
+            "sourceAlphaBounds": [
+              13,
+              5,
+              51,
+              59
+            ],
+            "destination": [
+              13,
+              5
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "controls/eyeStyle.png",
+            "cell": 3,
+            "sourceCell": [
+              192,
+              0,
+              256,
+              64
+            ],
+            "sourceAlphaBounds": [
+              3,
+              9,
+              61,
+              55
+            ],
+            "destination": [
+              3,
+              9
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "controls/eyeColor.png",
+            "cell": 4,
+            "sourceCell": [
+              0,
+              64,
+              64,
+              128
+            ],
+            "sourceAlphaBounds": [
+              3,
+              9,
+              61,
+              55
+            ],
+            "destination": [
+              3,
+              9
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "controls/skinStyle.png",
+            "cell": 5,
+            "sourceCell": [
+              64,
+              64,
+              128,
+              128
+            ],
+            "sourceAlphaBounds": [
+              15,
+              8,
+              47,
+              55
+            ],
+            "destination": [
+              16,
+              8
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "controls/skinColor.png",
+            "cell": 6,
+            "sourceCell": [
+              128,
+              64,
+              192,
+              128
+            ],
+            "sourceAlphaBounds": [
+              7,
+              15,
+              57,
+              49
+            ],
+            "destination": [
+              7,
+              15
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "steps/faction.png",
+            "cell": 7,
+            "sourceCell": [
+              192,
+              64,
+              256,
+              128
+            ],
+            "sourceAlphaBounds": [
+              7,
+              3,
+              57,
+              61
+            ],
+            "destination": [
+              7,
+              3
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "steps/class.png",
+            "cell": 8,
+            "sourceCell": [
+              0,
+              128,
+              64,
+              192
+            ],
+            "sourceAlphaBounds": [
+              5,
+              4,
+              61,
+              60
+            ],
+            "destination": [
+              4,
+              4
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "steps/appearance.png",
+            "cell": 9,
+            "sourceCell": [
+              64,
+              128,
+              128,
+              192
+            ],
+            "sourceAlphaBounds": [
+              6,
+              3,
+              59,
+              60
+            ],
+            "destination": [
+              5,
+              3
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "attributes/strength.png",
+            "cell": 10,
+            "sourceCell": [
+              128,
+              128,
+              192,
+              192
+            ],
+            "sourceAlphaBounds": [
+              13,
+              5,
+              50,
+              60
+            ],
+            "destination": [
+              13,
+              4
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "attributes/dexterity.png",
+            "cell": 11,
+            "sourceCell": [
+              192,
+              128,
+              256,
+              192
+            ],
+            "sourceAlphaBounds": [
+              6,
+              4,
+              58,
+              60
+            ],
+            "destination": [
+              6,
+              4
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "attributes/vitality.png",
+            "cell": 12,
+            "sourceCell": [
+              0,
+              192,
+              64,
+              256
+            ],
+            "sourceAlphaBounds": [
+              3,
+              6,
+              61,
+              59
+            ],
+            "destination": [
+              3,
+              5
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "attributes/intelligence.png",
+            "cell": 13,
+            "sourceCell": [
+              64,
+              192,
+              128,
+              256
+            ],
+            "sourceAlphaBounds": [
+              2,
+              8,
+              62,
+              59
+            ],
+            "destination": [
+              2,
+              6
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "attributes/spirit.png",
+            "cell": 14,
+            "sourceCell": [
+              128,
+              192,
+              192,
+              256
+            ],
+            "sourceAlphaBounds": [
+              10,
+              2,
+              55,
+              60
+            ],
+            "destination": [
+              9,
+              3
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          },
+          {
+            "file": "summary/precision.png",
+            "cell": 15,
+            "sourceCell": [
+              192,
+              192,
+              256,
+              256
+            ],
+            "sourceAlphaBounds": [
+              2,
+              3,
+              62,
+              62
+            ],
+            "destination": [
+              2,
+              2
+            ],
+            "operation": "exact crop and center translation; no recolor, no resampling, no background keying"
+          }
+        ]
       }
     ]
   },
@@ -80,84 +439,87 @@
         982
       ]
     },
-    "attributes": {
-      "strength": [
-        480,
-        416,
-        539,
-        470
-      ],
-      "dexterity": [
-        480,
-        495,
-        538,
-        552
-      ],
-      "vitality": [
-        480,
-        573,
-        539,
-        630
-      ],
-      "intelligence": [
-        480,
-        651,
-        539,
-        707
-      ],
-      "spirit": [
-        480,
-        731,
-        539,
-        787
-      ]
-    },
-    "controlSource": "Imagem do ChatGPT 31 de out. de 2026, 22_44_48.png",
-    "controls": {
-      "gender": [
-        78,
-        357,
-        145,
-        408
-      ],
-      "hairStyle": [
-        78,
-        435,
-        145,
-        487
-      ],
-      "hairColor": [
-        78,
-        530,
-        145,
-        588
-      ],
-      "eyeStyle": [
-        78,
-        612,
-        145,
-        660
-      ],
-      "eyeColor": [
-        78,
-        707,
-        145,
-        753
-      ],
-      "skinStyle": [
-        78,
-        789,
-        145,
-        837
-      ],
-      "skinColor": [
-        78,
-        869,
-        145,
-        916
-      ]
-    },
-    "coordinates": "left,top,right,bottom; exact crops, no file upscaling"
+    "coordinates": "left,top,right,bottom; exact crops, no file upscaling",
+    "superseded": {
+      "attributes": {
+        "strength": [
+          480,
+          416,
+          539,
+          470
+        ],
+        "dexterity": [
+          480,
+          495,
+          538,
+          552
+        ],
+        "vitality": [
+          480,
+          573,
+          539,
+          630
+        ],
+        "intelligence": [
+          480,
+          651,
+          539,
+          707
+        ],
+        "spirit": [
+          480,
+          731,
+          539,
+          787
+        ]
+      },
+      "controls": {
+        "gender": [
+          78,
+          357,
+          145,
+          408
+        ],
+        "hairStyle": [
+          78,
+          435,
+          145,
+          487
+        ],
+        "hairColor": [
+          78,
+          530,
+          145,
+          588
+        ],
+        "eyeStyle": [
+          78,
+          612,
+          145,
+          660
+        ],
+        "eyeColor": [
+          78,
+          707,
+          145,
+          753
+        ],
+        "skinStyle": [
+          78,
+          789,
+          145,
+          837
+        ],
+        "skinColor": [
+          78,
+          869,
+          145,
+          916
+        ]
+      },
+      "source": "Imagem do ChatGPT 31 de out. de 2026, 22_44_48.png",
+      "reason": "Opaque reference surfaces were embedded in the original control/attribute crops. Replaced by isolated PixelLab symbols with true alpha."
+    }
   },
   "sharedMaterials": [
     "assets/ui/forge-hd/workshop-surface.png",
@@ -169,75 +531,75 @@
   "files": [
     {
       "file": "attributes/dexterity.png",
-      "width": 58,
-      "height": 57,
-      "sha256": "d6e3708a1b877f896922ce521930dadd01a6feaae27d9f9b1fdd8ad4862b7ba7"
+      "width": 64,
+      "height": 64,
+      "sha256": "212d797836f3e1e538fee068ef8c8309be5679aa7f12552ad17e6f22c28a7d5a"
     },
     {
       "file": "attributes/intelligence.png",
-      "width": 59,
-      "height": 56,
-      "sha256": "e2a86fff814440546189d99e26101337e86734c582fd608db21b21b9f9efcdf8"
+      "width": 64,
+      "height": 64,
+      "sha256": "15abeb4abe9c1a799e48ed2180f457e0d335885f8b38c07ed5d526f087d23833"
     },
     {
       "file": "attributes/spirit.png",
-      "width": 59,
-      "height": 56,
-      "sha256": "71a3cff03b54d241b7e97ea2302c2fb361853ee4ec47fcf86a8ebf8ee5b4c5e6"
+      "width": 64,
+      "height": 64,
+      "sha256": "3bde44fd428c92225561277e42807246611c8cb09318daaa1a37696c1f49c7f3"
     },
     {
       "file": "attributes/strength.png",
-      "width": 59,
-      "height": 54,
-      "sha256": "2bfa9ec835a0d1982c35b14b9ca44d7c54890eb582d0010989bc31fb1c4b9857"
+      "width": 64,
+      "height": 64,
+      "sha256": "622bfc55cbdff2c58a332189b352f4aaa19e77ec2bf6cba40e3db07132029bcb"
     },
     {
       "file": "attributes/vitality.png",
-      "width": 59,
-      "height": 57,
-      "sha256": "e10c415fb67684c7876edb318738df59449469d0200d4b4a33249bcb04439e49"
+      "width": 64,
+      "height": 64,
+      "sha256": "0a0e2df03908f9f2334d6d78bc5899c817a6546f494aa1a310a1691a6068b2ca"
     },
     {
       "file": "controls/eyeColor.png",
-      "width": 67,
-      "height": 46,
-      "sha256": "9969f9388489cd35ae593ec2dca0ad0cca4a2a9d6ef731387a40cbe5f33b0ef4"
+      "width": 64,
+      "height": 64,
+      "sha256": "d5b3810b7f814d9b6ff81b49e41dfa54ef107eee1705bf86f10c17cb831b4de4"
     },
     {
       "file": "controls/eyeStyle.png",
-      "width": 67,
-      "height": 48,
-      "sha256": "82bf4bd76d29c1b9d93f1edf37e315750acd64a8ede3ccbc497ab945d657b16b"
+      "width": 64,
+      "height": 64,
+      "sha256": "4032a6dcf537876c425971d96b0b9b3f0657f79fc9f11fb7070f474bc082d943"
     },
     {
       "file": "controls/gender.png",
-      "width": 67,
-      "height": 51,
-      "sha256": "2fd335cd1bbffd0b1afca2cd41b535bb1f4c1d8bc8e1639da0b248e4fd9c93d7"
+      "width": 64,
+      "height": 64,
+      "sha256": "94df809706e444f98bd0393cbfa56c0e3882cefb6ff2f2880b9625e67d67904f"
     },
     {
       "file": "controls/hairColor.png",
-      "width": 67,
-      "height": 58,
-      "sha256": "e54ed76eade8aede49844302dbd110fd26ad0f3835c208169ee4d26d8c7a91b6"
+      "width": 64,
+      "height": 64,
+      "sha256": "874e1e3bb1ec952a0d41dbc60c52cf4ee960ae88fe7ded948bb5ac9c191556ff"
     },
     {
       "file": "controls/hairStyle.png",
-      "width": 67,
-      "height": 52,
-      "sha256": "42cc21d0961500ac11bbebd0d20bba12a69cd729c7f26bc8a6545fb6d26038bd"
+      "width": 64,
+      "height": 64,
+      "sha256": "e89457a272f1c5b226b497c7c54f3a743f2cc6f7258c9c8515df8460a902015d"
     },
     {
       "file": "controls/skinColor.png",
-      "width": 67,
-      "height": 47,
-      "sha256": "efed49549dcd6f72154cdb2235f5a79ff51ae74f6fff5be40bd62b88d7710307"
+      "width": 64,
+      "height": 64,
+      "sha256": "852ce112158ad369df47e1c2906cd94650b037d4ec1c4c0a7e597e81f1b47ebc"
     },
     {
       "file": "controls/skinStyle.png",
-      "width": 67,
-      "height": 48,
-      "sha256": "962a03c5233a62406be1495b2e03455167f8a5861888da2accdc7dbed8e76bb8"
+      "width": 64,
+      "height": 64,
+      "sha256": "bb36b65deb57d25caebc10f51749f082ce9606b3d63cdf053f6e073f3fb375f3"
     },
     {
       "file": "harbor.png",
@@ -334,6 +696,37 @@
       "width": 512,
       "height": 384,
       "sha256": "0ecf27f99e507f68acd3b070238767fb2362e55e901be6328e31c665f6ed734f"
+    },
+    {
+      "file": "steps/appearance.png",
+      "width": 64,
+      "height": 64,
+      "sha256": "6fb3d3416a429acedbc89228e24fc805303283eb061a114254261a94092235c3"
+    },
+    {
+      "file": "steps/class.png",
+      "width": 64,
+      "height": 64,
+      "sha256": "8888280a0b1fdc486b89ab9e33a27c016b84ac7c138029ae0d2d2ace93263d7c"
+    },
+    {
+      "file": "steps/faction.png",
+      "width": 64,
+      "height": 64,
+      "sha256": "85d3face4eb4823c86542b33bfc214cf16db13dad5c9a1ed81cedce5e34f0f32"
+    },
+    {
+      "file": "summary/precision.png",
+      "width": 64,
+      "height": 64,
+      "sha256": "021658350a64731b531e6921afb56d42f13c42a337df47ace92c77b16d50d603"
+    },
+    {
+      "file": "symbols-alpha-atlas.png",
+      "width": 256,
+      "height": 256,
+      "sha256": "bc65e00391c5d3d0767c5989863b74d2ec5c568343b6e1a8895993d4c450c5b7"
     }
-  ]
+  ],
+  "iconRevision": "alpha-native-v1"
 }

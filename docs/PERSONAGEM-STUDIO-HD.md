@@ -32,10 +32,10 @@ Os resultados de combate são agrupados em Sobrevivência, Ofensiva, Precisão e
 Fontes, dimensões, prompts, cortes exatos, hashes e IDs de geração: \`assets/ui/character-studio/manifest.json\`.
 
 - Dois ícones do Espadachim recortados diretamente da referência aprovada, sem ampliação do arquivo (71×70 e 71×71).
-- Cinco ícones de atributos e sete ícones de controles recortados das mesmas referências.
+- 16 símbolos isolados PixelLab AI Pro em atlas RGBA nativo 256×256: sete controles, cinco atributos, três etapas e uma mira. Exportados em 64×64 com recorte e centralização exatos, sem recoloração ou redimensionamento. Substituem os recortes opacos dos controles/atributos; os dois ícones oficiais do Espadachim continuam preservados.
 - PixelLab AI Pro: atlas nativo 512×384 com 12 ícones em células 128×128 para as outras seis classes; exports por célula preservam os pixels originais.
 - PixelLab AI Pro: porto vazio ao entardecer, nativo 600×448, atrás do personagem real.
-- Custo confirmado dos dois jobs: **50 gerações** (25 + 25). As molduras, botões, fonte, emblemas e madeira/metal foram reutilizados.
+- Custo confirmado dos três jobs: **60 gerações** (25 + 25 + 10). As molduras, botões, fonte, emblemas e madeira/metal foram reutilizados.
 
 As referências completas e capturas de QA ficam fora do versionamento. Nenhum novo sprite corporal, penteado ou rosto foi gerado nesta sprint.
 
@@ -57,3 +57,13 @@ Viewports do aceite: 1920×1080, 1448×1086, 1366×768, 1280×720, 393×852, 320
 Não altera progressão, atributos base, balanceamento, equipamento ou saves. Não adiciona variantes de pele inexistentes, nem novas mecânicas sugeridas nas referências. O acabamento aguarda avaliação visual do proprietário; não fazer merge automático.
 
 O ajuste local anterior do retrato da Forja permanece separado em \`fix/forge-portrait-fill\`, sem publicação, conforme solicitado.
+
+## Correção dos símbolos isolados
+
+O fundo verde estava incorporado aos PNGs dos recortes de controles e atributos (alfa mínimo/máximo 255/255), não no container. Os símbolos foram refeitos no PixelLab AI com canal alfa verdadeiro. Não houve chaveamento por verde, pintura por cima nem troca do fundo por outra cor. Contornos, sombreamento e a bota verde legítima permanecem opacos. Os resumos de combate também usam os novos símbolos, evitando resíduos dos ícones compartilhados antigos.
+
+Os seletores alternantes agora têm o mesmo início e fim em todas as linhas, tanto em desktop quanto no celular. As paletas e os preenchimentos dos botões/abas permanecem funcionais. A auditoria Chromium adicional confere transparência dos 16 símbolos, margem externa de dois pixels limpa, fundo CSS transparente dos elementos de ícone, bota com pixels verdes opacos, alinhamento dos sete seletores e cores exatas das paletas. Capturas nos estados normal, selecionado e desabilitado foram revisadas no tamanho real.
+
+A faixa das três etapas foi unificada em uma superfície contínua de madeira/metal, com conectores, números circulares, ícones isolados e indicação acessível da etapa atual. As três etapas permanecem alinhadas e sem sobreposição em desktop e celular; o teste confere também que são três elementos irmãos e dois conectores.
+
+Os símbolos isolados usam a revisão de URL `alpha-native-v1` para invalidar os PNGs opacos que já possam estar no cache. A assinatura do compositor foi regenerada após a atualização do módulo de campos.

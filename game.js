@@ -2799,7 +2799,7 @@ function applySceneHudLayout(){
   function showCreationStep(step){
     creationStep=step;
     for(const [i,id]of ['factionStep','classStep','appearanceStep'].entries())$(id).classList.toggle('hidden',step!==i+1);
-    for(const [i,id]of ['stepFaction','stepClass','stepAppearance'].entries())$(id).classList.toggle('active',step===i+1);
+    for(const [i,id]of ['stepFaction','stepClass','stepAppearance'].entries()){const active=step===i+1;$(id).classList.toggle('active',active);if(active)$(id).setAttribute('aria-current','step');else $(id).removeAttribute('aria-current');}
     $('creationError').textContent='';
     if(step===3)$('creationAppearanceStudio').innerHTML=MareCharacterStudio.appearance({value:creationAppearanceDraft,prefix:'creation',direction:creationDirection,factionId:selectedFaction,factionName:factions[selectedFaction].name});
     const heading=$(['factionStep','classStep','appearanceStep'][step-1]).querySelector('h2');heading.tabIndex=-1;heading.focus({preventScroll:true});
