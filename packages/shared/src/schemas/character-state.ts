@@ -11,3 +11,10 @@ export const characterStateSchema = z.strictObject({
   gold: progressionAmountSchema,
 });
 export type CharacterState = z.infer<typeof characterStateSchema>;
+
+// Current online-state metadata; immutable older command receipts retain their original shape.
+export const levelProgressionSchema = z.strictObject({
+  catalogId:z.literal("online-levels-v1"),maxLevel:z.literal(20),earnedAttributePoints:z.number().int().min(0).max(95),
+  xpIntoLevel:progressionAmountSchema,xpForNextLevel:progressionAmountSchema.nullable(),
+  xpToNextLevel:progressionAmountSchema.nullable(),atCap:z.boolean(),
+});

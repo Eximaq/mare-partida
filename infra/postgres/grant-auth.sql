@@ -7,10 +7,10 @@ GRANT SELECT, INSERT ON mare_game.characters TO mare_runtime;
 GRANT UPDATE (state_version) ON mare_game.characters TO mare_runtime;
 GRANT SELECT ON mare_game.character_journey_ledger TO mare_runtime;
 GRANT INSERT (character_id, request_id, version_before) ON mare_game.character_journey_ledger TO mare_runtime;
--- First hunt grants only XP/gold updates; level, identity and initialization stay fixed.
+-- Reward transactions may update XP/gold/level; catalog and level history stay immutable.
 GRANT SELECT ON mare_game.character_progression TO mare_runtime;
 GRANT INSERT (character_id) ON mare_game.character_progression TO mare_runtime;
-GRANT UPDATE (experience, gold) ON mare_game.character_progression TO mare_runtime;
+GRANT UPDATE (experience, gold, level) ON mare_game.character_progression TO mare_runtime;
 GRANT SELECT ON mare_game.character_hunts, mare_game.character_hunt_rewards TO mare_runtime;
 GRANT INSERT (character_id, request_id, version_before) ON mare_game.character_hunts TO mare_runtime;
 GRANT INSERT (character_id, request_id, version_before, experience_before, gold_before) ON mare_game.character_hunt_rewards TO mare_runtime;
@@ -26,3 +26,9 @@ GRANT SELECT ON mare_game.character_commands TO mare_runtime;
 GRANT INSERT (character_id, request_id, request_hash, result) ON mare_game.character_commands TO mare_runtime;
 GRANT SELECT, INSERT, UPDATE, DELETE ON mare_game.app_sessions, mare_game.auth_flows,
     mare_game.character_control, mare_game.auth_rate_limits, mare_game.provider_revocations TO mare_runtime;
+
+GRANT SELECT ON mare_game.progression_levels,mare_game.character_level_ledger TO mare_runtime;
+GRANT INSERT (character_id,level,request_id,experience_total,version_before) ON mare_game.character_level_ledger TO mare_runtime;
+
+GRANT SELECT ON mare_game.character_attribute_ledger TO mare_runtime;
+GRANT INSERT (character_id,request_id,version_before,strength,dexterity,vitality,intelligence,spirit) ON mare_game.character_attribute_ledger TO mare_runtime;

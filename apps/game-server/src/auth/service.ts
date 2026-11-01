@@ -1,3 +1,4 @@
+import {readAttributes} from "../characters/attributes.js";
 import { randomUUID } from "node:crypto";
 import type { Pool, PoolClient } from "pg";
 import { z } from "zod";
@@ -13,6 +14,7 @@ import type { SessionPolicy } from "./config.js";
 import { initializeCharacterState, readCharacterState } from "../characters/state.js";
 import { executeCharacterCommand } from "../characters/commands.js";
 import { readHunt } from "../characters/hunt.js";
+import { readLevelProgression } from "../characters/progression.js";
 import { readCombat } from "../characters/combat.js";
 type SessionRow = {
   id: string;
@@ -284,7 +286,7 @@ export class AuthService {
       const journey = (await client.query<{ started: boolean }>(
         "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started", [id],
       )).rows[0]!;
-      return { state, journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      return { state, attributes: await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(

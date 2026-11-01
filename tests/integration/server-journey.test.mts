@@ -70,8 +70,12 @@ test("3B upgrade preserves characters, progress and receipts; ledger cannot pers
     const oldResult = await service.command(session.token, character.id, command);
     const tables = ["characters", "character_progression", "character_commands"];
     const before = await Promise.all(tables.map(table => pool.query(`SELECT * FROM mare_game.${table}`)));
-    assert.deepEqual(await applyMigrations(pool), ["0005_character_journey.sql", "0006_first_hunt.sql", "0007_first_combat.sql", "0008_repeatable_encounters.sql"]);
-    for (const [i, table] of tables.entries()) assert.deepEqual((await pool.query(`SELECT * FROM mare_game.${table}`)).rows, before[i]!.rows);
+    assert.deepEqual(await applyMigrations(pool), ["0005_character_journey.sql", "0006_first_hunt.sql", "0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql"]);
+    // 3H recognizes 456 existing XP as level 4 and advances the version once; all other fields/receipts stay intact.
+    for (const [i, table] of tables.entries()) {
+      const expected=before[i]!.rows.map(row=>table==="characters"?{...row,state_version:"10"}:table==="character_progression"?{...row,level:4}:row);
+      assert.deepEqual((await pool.query(`SELECT * FROM mare_game.${table}`)).rows,expected);
+    }
     assert.deepEqual(await applyMigrations(pool), []);
     assert.deepEqual(await service.command(session.token, character.id, command), oldResult);
     await assert.rejects(pool.query("INSERT INTO mare_game.character_journey_ledger(character_id,request_id,version_before) VALUES($1,$2,9)",
@@ -79,8 +83,8 @@ test("3B upgrade preserves characters, progress and receipts; ledger cannot pers
     for (const version of [-1, Number.MAX_SAFE_INTEGER])
       await assert.rejects(pool.query("INSERT INTO mare_game.character_journey_ledger(character_id,request_id,version_before) VALUES($1,$2,$3)",
         [character.id, command.requestId, version]), { code: "23514" });
-    const accepted = await service.command(session.token, character.id, { ...command, action: "journey.begin", requestId: randomUUID() });
-    assert.deepEqual(accepted.state, { characterId: character.id, version: 10, level: 1, experience: "456", gold: "123" });
+    const accepted = await service.command(session.token, character.id, { ...command, action: "journey.begin", expectedVersion:10, requestId: randomUUID() });
+    assert.deepEqual(accepted.state, { characterId: character.id, version: 11, level: 4, experience: "456", gold: "123" });
     await assert.rejects(pool.query("INSERT INTO mare_game.character_journey_ledger(character_id,request_id,version_before) VALUES($1,$2,9)",
       [character.id, command.requestId]), { code: "23505" });
   }, directory);
