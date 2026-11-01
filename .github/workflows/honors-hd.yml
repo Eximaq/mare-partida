@@ -1,0 +1,61 @@
+name: Conquistas e Hierarquia HD
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'achievement*.js'
+      - 'hierarchy*.js'
+      - 'character-hud.js'
+      - 'honors-hd.css'
+      - 'talent-ui.js'
+      - 'game.js'
+      - 'index.html'
+      - 'ui-preview.html'
+      - 'ui-hud.css'
+      - 'server/hierarchy.py'
+      - 'server/app.py'
+      - 'assets/ui/honors-hd/**'
+      - 'tools/build_pages.py'
+      - 'tests/*honors*'
+      - 'tests/*hierarchy*'
+      - '.github/workflows/honors-hd.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  honors:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      MARE_QA_DIR: /tmp/mare-honors-hd
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+          mkdir -p "$MARE_QA_DIR"
+      - name: Regras, componentes e pacote estático
+        run: |
+          node --test tests/honors-hd.test.cjs tests/hierarchy.test.cjs tests/character-hud-hierarchy.test.cjs tests/achievements-ultimates.test.cjs tests/talent-system.test.cjs tests/notification-system.test.cjs tests/character-quick-menu.test.cjs tests/current-player-sprites.test.cjs tests/current-player-release.test.cjs
+          python tests/test_hierarchy.py
+          python tools/build_pages.py
+      - name: Navegador e serviço temporário
+        run: |
+          python tests/run_honors_hd_browser.py tests/honors_hd_browser.cjs --dist
+          python tests/run_honors_hd_browser.py tests/honors_offline_browser.cjs --dist --offline
+          python tests/run_honors_hd_browser.py tests/honors_cache_browser.cjs --dist --offline
+      - name: Capturas reais de teste
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: conquistas-hierarquia-hd
+          path: /tmp/mare-honors-hd/
+          if-no-files-found: warn
+          retention-days: 14

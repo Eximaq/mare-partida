@@ -158,3 +158,12 @@
 #app .parchment-profile #miniWillpower{position:relative;isolation:isolate;width:88%;height:30px;margin:-13px 6% 0;padding:7px 6px 4px;border:1px solid #c6a164;border-top:0;border-radius:0 0 5px 5px;background:#302018 url('assets/ui/character-hud/hd/wood.png') center/cover;box-shadow:inset 0 0 0 1px #624323,0 2px 2px #120a09;font:600 10px/1 var(--rpg-font);gap:5px}
 #app .parchment-profile #miniWillpower .mini-meter{flex:1;min-width:0;height:10px;border:1px solid #b89556;background:#201326}
 #app .parchment-profile #miniWillpower b{font:700 10px/1 var(--rpg-font);white-space:nowrap;color:#f9e7c0}
+
+/* Same canonical promotion family, within the existing title slot. */
+#hudRankInsignia{position:absolute;left:1%;top:50%;transform:translateY(-50%);width:32px;height:32px;background-size:400% 200%;background-repeat:no-repeat;pointer-events:none}
+#app .parchment-profile .hud-hierarchy #hudHierarchyTitle{margin-left:14%;width:68%}
+
+.hud-hierarchy:before{content:'';position:absolute;inset:7px 3px;border-radius:5px;background:#411b21}
+.hud-hierarchy:has([data-faction=marine]):before{background:#153858}
+.hud-hierarchy:has([data-faction=revolutionary]):before{background:#1b412c}
+.hud-hierarchy:has([data-faction=government]):before{background:#e2d7b9}

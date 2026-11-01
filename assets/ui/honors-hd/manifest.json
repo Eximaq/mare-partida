@@ -1,0 +1,209 @@
+{
+  "version": 1,
+  "date": "2026-11-01",
+  "tool": "PixelLab AI — Create Image Pro",
+  "direction": "Kaizoku Idle masterpiece HD pixel art: dark wood, aged gold metal, ivory parchment, isolated alpha icons, no baked text or numbers.",
+  "nativeSourcesPreserved": true,
+  "runtimeCalls": false,
+  "reused": [
+    "assets/ui/faction-emblems/",
+    "assets/ui/character-hud/hd/wood.png",
+    "assets/ui/character-hud/hd/parchment.png",
+    "assets/ui/forge-hd/workshop-surface.png",
+    "assets/ui/inventory-hd/frame-v2.png",
+    "assets/ui/inventory-hd/heading-v2.png"
+  ],
+  "assets": [
+    {
+      "file": "header.png",
+      "job_id": "9ba3f2c2-2370-4ad5-b359-279af0903ac7",
+      "width": 792,
+      "height": 168,
+      "charged_usd": 0.15,
+      "promptRecipe": "Decorative dark wood nautical header; compass left, lantern and chest right; blank live text area.",
+      "sha256": "f93c4f723ebba3314a0ebe13fab0f7090095da73da5afb162eb97ef78d7bfa47",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/9ba3f2c2-2370-4ad5-b359-279af0903ac7/download"
+    },
+    {
+      "file": "achievement-icons.png",
+      "job_id": "9061fbdd-78b5-48b3-8c9f-882ffb115d7d",
+      "width": 512,
+      "height": 256,
+      "charged_usd": 0.15,
+      "promptRecipe": "4x2 transparent category atlas: skulls, prison, coins, scroll, swords, fruit, eye, anchor.",
+      "sha256": "c76018c2af0db1ee8a6c4314503101d77f2d1335f43314b8f9e8506860d80e3d",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/9061fbdd-78b5-48b3-8c9f-882ffb115d7d/download"
+    },
+    {
+      "file": "faction-banner.png",
+      "job_id": "dd4f0e93-db0a-4f46-95f3-69375144ca22",
+      "width": 688,
+      "height": 192,
+      "charged_usd": 0.15,
+      "promptRecipe": "Nautical storm banner, blank ship flag on right. Official faction emblems are overlaid unchanged by the game.",
+      "sha256": "f396a084575abdf26a2b316f43d8f05a3bd2ad232915295408be8358454f2d56",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/dd4f0e93-db0a-4f46-95f3-69375144ca22/download"
+    },
+    {
+      "file": "medals.png",
+      "job_id": "547c71e8-09e1-42d2-804c-00bd06b9f06d",
+      "width": 384,
+      "height": 128,
+      "charged_usd": 0.08,
+      "promptRecipe": "3x1 gold/silver/bronze medals with empty centers for live place numbers.",
+      "sha256": "5ca49a9ff8bdfc56bdd6841876f016053579d70b14f602c4b1735db291123eb0",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/547c71e8-09e1-42d2-804c-00bd06b9f06d/download"
+    },
+    {
+      "file": "button-dark.png",
+      "job_id": "d0cb72d3-f8f2-44ec-828f-858c49c9c658",
+      "width": 480,
+      "height": 96,
+      "charged_usd": 0.115,
+      "promptRecipe": "Isolated nine-slice dark wood and gunmetal button; gold bevels; no text. Transparent interior intentionally filled by shared wood.",
+      "sha256": "f3d0416047344ea730f1cc7b1c46f4cc512fb8687ebaf377c22440a5648d145d",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/d0cb72d3-f8f2-44ec-828f-858c49c9c658/download"
+    },
+    {
+      "file": "button-gold.png",
+      "job_id": "d138ee84-2cef-42d2-a0a4-0f0ee931c156",
+      "width": 480,
+      "height": 96,
+      "charged_usd": 0.115,
+      "promptRecipe": "Isolated nine-slice gold bronze button; no text; transparent interior filled with gold-tinted shared wood.",
+      "sha256": "8eb81db58b6cbab25508210576050d166d38a1c6656ca30138f16695454b9774",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/d138ee84-2cef-42d2-a0a4-0f0ee931c156/download"
+    },
+    {
+      "file": "pirate-insignias.png",
+      "job_id": "44f65b64-2bbc-4b49-ba05-5a4e1e933820",
+      "width": 512,
+      "height": 256,
+      "charged_usd": 0.15,
+      "promptRecipe": "Eight red skull prestige medals, four columns by two rows, 128px cells.",
+      "sha256": "5bd01fdd66f8623640a381f3fcdfbcb1d929b2963d77dae2df746a5f7894a604",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/44f65b64-2bbc-4b49-ba05-5a4e1e933820/download"
+    },
+    {
+      "file": "marine-insignias.png",
+      "job_id": "d8a5958d-7877-411a-a4f7-695f428af3b3",
+      "width": 512,
+      "height": 256,
+      "charged_usd": 0.15,
+      "promptRecipe": "Eight blue anchor prestige medals, four columns by two rows, 128px cells.",
+      "sha256": "271d8e348c35c32ccaccae88666697c72eaa274860605571d09f91ec8bead953",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/d8a5958d-7877-411a-a4f7-695f428af3b3/download"
+    },
+    {
+      "file": "revolutionary-insignias.png",
+      "job_id": "3e9025b4-4c32-4ccc-943b-3a940b0f0a7d",
+      "width": 512,
+      "height": 256,
+      "charged_usd": 0.15,
+      "promptRecipe": "Eight compact green star prestige medals, 92px circles inside 128px cells; all rim details inside circles.",
+      "sha256": "8e42299653e7d6a50e3e3b35bd4da3a0aeccac768463aa4beca186783fa177b3",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/3e9025b4-4c32-4ccc-943b-3a940b0f0a7d/download"
+    },
+    {
+      "file": "government-insignias.png",
+      "job_id": "d203fdb2-4e2b-42eb-8065-6c2ebee2bcbe",
+      "width": 512,
+      "height": 256,
+      "charged_usd": 0.15,
+      "promptRecipe": "Eight compact ivory sun prestige medals, gold and silver, 92px circles inside 128px cells.",
+      "sha256": "5a3b8e070355b2e30599e4a05b84a4cc90bced42ac97b7e0cd55fd96d0ae26b0",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/d203fdb2-4e2b-42eb-8065-6c2ebee2bcbe/download"
+    },
+    {
+      "file": "pirate-plaque.png",
+      "job_id": "acaa95f6-aec6-4c5f-ada0-43289e0d45dd",
+      "width": 480,
+      "height": 96,
+      "charged_usd": 0.115,
+      "promptRecipe": "Red wood/gold horizontal title plaque, left badge area and blank live title center.",
+      "sha256": "4e0f75d1b60f97ac16dc69b36ceffbcd1ceedacc8de153ac47cabbe7bde05a6d",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/acaa95f6-aec6-4c5f-ada0-43289e0d45dd/download"
+    },
+    {
+      "file": "marine-plaque.png",
+      "job_id": "976eb347-f3e7-4168-a15e-5d03b48e6e90",
+      "width": 480,
+      "height": 96,
+      "charged_usd": 0.115,
+      "promptRecipe": "Gold title plaque; transparent blue enamel area is filled by the game; no baked title.",
+      "sha256": "b86cf15ed5033ba71ef1ff0fe556a2500dcafafd4417a8640e4ce9ef82a77910",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/976eb347-f3e7-4168-a15e-5d03b48e6e90/download"
+    },
+    {
+      "file": "revolutionary-plaque.png",
+      "job_id": "eccc4ad2-1c36-4920-bbd8-d2620cfdc877",
+      "width": 480,
+      "height": 96,
+      "charged_usd": 0.115,
+      "promptRecipe": "Gold title plaque; transparent green enamel area is filled by the game; no baked title.",
+      "sha256": "fad1c1728112b527a090b25afa913e5142acb4b5337198df0e6f00bb1b66dbb4",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/eccc4ad2-1c36-4920-bbd8-d2620cfdc877/download"
+    },
+    {
+      "file": "government-plaque.png",
+      "job_id": "e86d7bb0-53eb-4e04-87b2-d63db4e1c29f",
+      "width": 480,
+      "height": 96,
+      "charged_usd": 0.115,
+      "promptRecipe": "Ivory/silver/gold title plaque, live dark lettering, separate badge.",
+      "sha256": "43871e6a7361fa53c5cce6c21af944e5b765d0aeee0cde3fb8964c254b94443f",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/e86d7bb0-53eb-4e04-87b2-d63db4e1c29f/download"
+    },
+    {
+      "file": "sample-families.png",
+      "job_id": "d57abf98-057d-4062-9e15-3cb237432416",
+      "width": 256,
+      "height": 256,
+      "charged_usd": 0.08,
+      "promptRecipe": "Validated first 2x2 sample of four promotion families. Source only; not loaded during gameplay.",
+      "sha256": "96ee67b31885f3cc6e52788bd8b95b69e7ef03789ac6cd9eba43f56a1ebe5b54",
+      "model": "pro",
+      "download": "https://api.pixellab.ai/mcp/images/d57abf98-057d-4062-9e15-3cb237432416/download"
+    }
+  ],
+  "unusedGenerations": [
+    {
+      "job_id": "ab07c98f-6074-49ad-a02e-a6ce01d9edd8",
+      "charged_usd": 0.115,
+      "reason": "Initial 4x1 sample delayed; replaced with validated 2x2 sample. Native source remains in PixelLab gallery."
+    },
+    {
+      "job_id": "dbf0ab1a-9100-455f-9ea2-90bff97bc085",
+      "charged_usd": 0.15,
+      "reason": "Rejected before final integration: wing ornaments extended to cell edges. Replaced with compact green circular badges."
+    },
+    {
+      "job_id": "f37d3165-36f4-4a1d-aff9-01525e77dce5",
+      "charged_usd": 0.15,
+      "reason": "Rejected before final integration: external wing/ray embellishments. Replaced with compact ivory sun badges."
+    },
+    {
+      "job_id": "ce714d2a-f7a1-4bdc-8b0e-385db7d7118b",
+      "charged_usd": 0.15,
+      "reason": "Rejected: outside circle ornaments clipped at sheet edges. Replaced by compact government family."
+    }
+  ],
+  "cost": {
+    "subscriptionGenerations": 0,
+    "creditsUSD": 2.465
+  }
+}

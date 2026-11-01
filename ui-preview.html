@@ -111,6 +111,7 @@
   <script defer src="ultimate-system.js"></script>
   <script defer src="talent-system.js"></script>
   <script defer src="talent-combat.js"></script>
+  <script defer src="achievement-ui.js"></script>
   <script defer src="talent-ui.js"></script>
   <script defer src="dev-tools.js"></script>
   <script defer src="hunt-system.js"></script>
@@ -135,6 +136,7 @@
   <link rel="stylesheet" href="character-studio.css" />
   <link rel="stylesheet" href="talents-hd.css" />
   <link rel="stylesheet" href="compendium-hd.css" />
+  <link rel="stylesheet" href="honors-hd.css" />
   <link rel="stylesheet" href="voyage-hd.css" />
 </head>
 <body>
@@ -151,6 +153,7 @@
       <div class="parchment-status">
         <div class="hud-hierarchy">
           <img id="hudRankArt" width="480" height="96" alt="" hidden>
+          <span id="hudRankInsignia" aria-hidden="true" hidden></span>
           <strong id="hudHierarchyTitle"></strong>
           <span class="hud-rank-order" aria-label="Patamar"><span id="hudHierarchyTier"></span></span>
         </div>

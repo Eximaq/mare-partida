@@ -37,7 +37,7 @@ nesta matriz e no relatório vinculado; o escopo histórico acima não os substi
 | A03 | Sessões, refresh real/concorrente, controlador e logout | Rodada 1 aprovada | JWT 900 s, BFF 24 h/2 h mantidos; não foi aguardado todo o prazo de 24 h/2 h |
 | A04 | Propriedade e criação de personagem | 40 testes cruzados; primeira criação 201/409, um personagem; retries idênticos 201/201 | A/B/C e personagens preservados; sem escrita econômica |
 | A05 | Recuperação real pelo backend | Rodada 3: sessão restrita, reset, senha antiga/nova, invalidação interna e refresh recusado | Não cobre preenchimento da senha pela UI; ver F01 |
-| A06 | Integração, Node, PostgreSQL e Docker/Linux | Revalidação local: 33 fundação, 21 integrações PostgreSQL, 123 arquivos Node e typecheck aprovados. CI de `208b635`: 18/20 checks aprovados, incluindo fundação, Docker/Linux e native96 | Dois testes legados da main corrigidos no PR #182; fechamento global do CI depende de integrar essa correção e executar novamente. Não confundir correção validada com check antigo aprovado |
+| A06 | Integração, Node, PostgreSQL e Docker/Linux | Sincronização autorizada com main `5e1644c` e correções do PR #182 incorporadas à branch Auth. Typecheck, 33 testes de fundação, 21 integrações PostgreSQL, 140 arquivos Node e navegador aprovados novamente; detalhes abaixo | Checks do SHA final registrados no PR #162; os 18/20 anteriores permanecem históricos |
 | F01 | Recuperação completa pela interface | Aprovado sobre `53bb628`: um envio G, PKCE 200/callback 303, reset 200, revogação 204, login/persistência 200 e logout 204/401 no Opera | Escopo revisado sem senha antiga/duas sessões prévias; histórico da Rodada 3 preservado. Erro antigo sem causa comprovada; ver relatório F01 |
 | F02 | Revogação iniciada fora do BFF | Aprovado: logout externo 204, refresh remoto recusado, sessão interna revogada e /v1/me 401 | Uma conta/uma sessão neste ensaio; detecção na próxima revalidação, sem promessa de invalidação instantânea do JWT |
 | F03 | Rotação real da assinatura JWT/JWKS | Aprovado: nova ES256/900 s, cache aquecido/vazio, JWT antigo válido, refresh natural e mesma identidade; ver [registro F03](PHASE-2F-F03-SIGNING-ROTATION.md) | Antiga ES256 preservada como Previous; não testada revogação de chave nem executado rollback; Auth false e serviços locais parados |
@@ -99,7 +99,7 @@ e seu SHA ficam registrados no PR, preservando as falhas anteriores. Auth deve
 permanecer false ao encerrar; a aprovação técnica não publica o backend nem
 inicia a Fase 3. Permanecem as condições operacionais O01 antes de exposição pública.
 
-## Compatibilidade com a main — testes de facção e Haki
+## Compatibilidade com a main — diagnóstico anterior à sincronização
 
 O CI de `208b635` terminou com **18 checks aprovados e dois reprovados**.
 `foundation`, `docker-smoke`, `otherWeapons96` (incluindo a nova regressão de
@@ -134,6 +134,38 @@ proprietário, repetir os checks de #162 com a main atualizada. Nenhum merge,
 deploy, novo envio SMTP ou alteração Supabase foi feito para obter aprovação.
 O painel Cloudflare confirmou `skipped / No deployment available` para
 `5c1e14a` e `208b635`.
+
+## Sincronização autorizada de 01/11/2026
+
+Após autorização explícita do proprietário, somente `feature/auth-sessions`
+recebeu os commits de `fix/auth-acceptance-test-fixtures` e da main `5e1644c`.
+O primeiro merge local (`a4bb40e`) incorporou os testes corrigidos e a main
+`0897d9f`; a atualização seguinte preservou integralmente o trabalho do PR #183.
+As duas combinações ocorreram sem conflitos. Não houve merge de PR na main,
+rebase, force-push ou alteração das branches dos colaboradores.
+
+A dependência de testes do PR #182 foi incorporada ao #162 e não exige mais
+aprovação separada na main para validar Auth. O teste de reação dos sprites,
+que ainda falhava na main isolada, usa a correção já existente nesta branch;
+nenhuma arte nova foi gerada, substituída ou encomendada nesta sincronização.
+O código de `apps/game-server`, `apps/account-client` e `packages/shared`
+permaneceu idêntico ao fechamento anterior.
+
+Revalidação da combinação: TypeScript sem erros, **33/33 testes de fundação**,
+**21/21 integrações com PostgreSQL local descartável**, **140/140 arquivos Node
+legados**, build Pages e navegador real aprovados. O harness separado
+`supa-browser.test.cjs` não integra a contagem Node. Regressão de disparo
+obstruído em 1366/390 pixels; quatro facções
+em oito resoluções; seis habilidades e Haki em cinco resoluções. Zero erros
+JavaScript nas suítes. Provedor simulado nas integrações, sem repetir SMTP ou
+alterar Supabase. A suíte Node completa e o CI do commit publicado são conferidos
+antes da entrega e registrados na descrição do PR #162, sem aprovar checks antigos
+retroativamente. O histórico F01–F05 e suas limitações permanecem preservados.
+
+Auth continua false; API/gateway desligados, PostgreSQL e as quatro contas/três
+personagens preservados. Servidor estático temporário limitado a loopback e
+somente ao diretório público dist, encerrado após os testes. Prefixo
+`[CF-Pages-Skip]` mantido; sem deploy, exposição pública ou início da Fase 3.
 
 ## F01 — ensaio parcial de 31/10/2026 e encerramento
 

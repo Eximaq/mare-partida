@@ -54,6 +54,13 @@ class Handler(SimpleHTTPRequestHandler):
                     return self.reply(200, STORE.state(parse_qs(route.query).get("player_id", [""])[0]))
             except ValueError as exc:
                 return self.reply(400, {"error": str(exc)})
+        if route.path == "/api/hierarchy/ranking":
+            try:
+                faction = parse_qs(route.query).get("faction", [None])[0]
+                with LOCK:
+                    return self.reply(200, HIERARCHY.ranking(faction))
+            except ValueError as exc:
+                return self.reply(400, {"error": str(exc)})
         if route.path == "/api/hierarchy/state":
             try:
                 with LOCK:
@@ -65,7 +72,7 @@ class Handler(SimpleHTTPRequestHandler):
     def do_POST(self):
         routes = {
             "/api/hierarchy/sync": lambda d: HIERARCHY.sync(d["player_id"], d["name"], d["faction"], d["level"], d["power"], d.get("class_id", ""), d.get("portrait", "")),
-            "/api/hierarchy/promote": lambda d: HIERARCHY.promote(d["player_id"]),
+            "/api/hierarchy/promote": lambda d: HIERARCHY.promote(d["player_id"], d.get("expected_tier")),
             "/api/akuma/player": lambda d: STORE.player(d["player_id"]),
             "/api/akuma/register": lambda d: STORE.register(d["player_id"], d["fruit_id"]),
             "/api/akuma/equip": lambda d: STORE.equip(d["player_id"], d.get("fruit_id")),
