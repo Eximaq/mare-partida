@@ -37,7 +37,7 @@ nesta matriz e no relatório vinculado; o escopo histórico acima não os substi
 | A03 | Sessões, refresh real/concorrente, controlador e logout | Rodada 1 aprovada | JWT 900 s, BFF 24 h/2 h mantidos; não foi aguardado todo o prazo de 24 h/2 h |
 | A04 | Propriedade e criação de personagem | 40 testes cruzados; primeira criação 201/409, um personagem; retries idênticos 201/201 | A/B/C e personagens preservados; sem escrita econômica |
 | A05 | Recuperação real pelo backend | Rodada 3: sessão restrita, reset, senha antiga/nova, invalidação interna e refresh recusado | Não cobre preenchimento da senha pela UI; ver F01 |
-| A06 | Integração, Node, PostgreSQL e Docker/Linux | `c8be42f`: oito checks CI aprovados; local 28 fundação, 19 integração e 123 arquivos Node | Bloqueios de Fênix/hash resolvidos; CI de novos commits deve ser conferida |
+| A06 | Integração, Node, PostgreSQL e Docker/Linux | Revalidação local: 33 fundação, 21 integrações PostgreSQL, 123 arquivos Node e typecheck aprovados. Regressão de disparo obstruído corrigida e incluída no CI; detalhes abaixo | Conferir checks do commit final no PR #162; aprovações anteriores não substituem essa execução |
 | F01 | Recuperação completa pela interface | Aprovado sobre `53bb628`: um envio G, PKCE 200/callback 303, reset 200, revogação 204, login/persistência 200 e logout 204/401 no Opera | Escopo revisado sem senha antiga/duas sessões prévias; histórico da Rodada 3 preservado. Erro antigo sem causa comprovada; ver relatório F01 |
 | F02 | Revogação iniciada fora do BFF | Aprovado: logout externo 204, refresh remoto recusado, sessão interna revogada e /v1/me 401 | Uma conta/uma sessão neste ensaio; detecção na próxima revalidação, sem promessa de invalidação instantânea do JWT |
 | F03 | Rotação real da assinatura JWT/JWKS | Aprovado: nova ES256/900 s, cache aquecido/vazio, JWT antigo válido, refresh natural e mesma identidade; ver [registro F03](PHASE-2F-F03-SIGNING-ROTATION.md) | Antiga ES256 preservada como Previous; não testada revogação de chave nem executado rollback; Auth false e serviços locais parados |
@@ -52,6 +52,52 @@ Evidências de A06: [fundação e Docker/Linux](https://github.com/Eximaq/mare-p
 A preparação documental não repetiu runtime; o ensaio F01 abaixo é posterior. O plano original
 é histórico; [ADR](../architecture/ADR-0002-BFF-SESSIONS.md) e esta matriz descrevem
 as decisões vigentes. CI verde não significa autorização de produção ou Fase 3.
+
+## Fechamento da regressão de CI — disparo obstruído
+
+A investigação de `856c92b` usou uma cópia isolada de `67c4037`, a composição
+efetivamente executada pelo GitHub com main `6f9a1cd`. A caçada natural não tinha
+semente registrada. Uma busca controlada reproduziu a estagnação da arma 31:
+na semente 22 do ensaio de caçada, nove eliminações em 600 segundos simulados,
+herói parado e alvo vivo sem receber dano, apesar da linha entre os pés livre.
+
+Causa reproduzida em dois pontos do mapa: o emissor elevado do cajado estava
+obstruído pelo cenário. A decisão de atacar consultava somente o segmento entre
+os pés; o projétil real era corretamente barrado. Apenas aproximar não resolvia
+o segundo caso, pois o recuo voltava a obstruir a saída antes do disparo.
+`autoAttackLine` agora verifica também o emissor real e a mesma projeção de
+colisão do projétil. A caçada aproxima até liberar o disparo e evita recuar para
+uma posição que o bloqueie. Não mudou dano, alcance, colisores, spawns, economia,
+assets, HUD, regras de save ou endpoints do servidor.
+
+`tests/ranged_autohunt_browser.cjs` mantém o disparo inicial bloqueado (zero dano)
+e exige reposicionamento navegável e dano posterior. O caso leste falhou antes
+da correção; o oeste continuou falhando com a correção parcial, provando a
+necessidade da guarda no recuo. Ambos passaram após a correção completa, em
+1366 e 390 pixels, sem erros visuais/JavaScript. O workflow executa a regressão
+antes da auditoria completa; não foram reduzidas as exigências de vinte
+eliminações, ausência de mortes, XP, spawns ou limites de cache.
+
+O ensaio sem semente posterior à correção encontrou uma morte na etapa da arma
+4 e foi registrado como reprovado; não se atribui a causa dessa morte ao servidor
+nem se declara que toda caçada aleatória garante sobrevivência. Para tornar os
+cenários de CI repetíveis, o teste agora usa semente 1, informa-a no resultado e
+aceita `--seed=N`. A mesma semente já passava antes da correção; as novas
+regressões de posições obstruídas é que comprovam o defeito e sua correção.
+A exploração não autoriza mudar balanceamento para garantir vitória.
+
+Com a correção, as caçadas das sementes 1 e 22 passaram, com 101 e 105
+eliminações naturais, respectivamente, além dos vinte combates e vinte abates
+controlados de cada execução. Os dois casos de regressão também passaram sobre
+main `0897d9f`, recebida durante a revisão, com o patch aplicado apenas na cópia
+isolada. Nenhum commit de colaborador foi reescrito ou mesclado na branch Auth.
+
+Typecheck, 33 testes de fundação, 21 integrações PostgreSQL e os 123 arquivos
+Node legados passaram nesta revisão. Provedor simulado nas integrações; nenhum
+novo envio SMTP, reset, rotação ou alteração Supabase. O resultado final do CI
+e seu SHA ficam registrados no PR, preservando as falhas anteriores. Auth deve
+permanecer false ao encerrar; a aprovação técnica não publica o backend nem
+inicia a Fase 3. Permanecem as condições operacionais O01 antes de exposição pública.
 
 ## F01 — ensaio parcial de 31/10/2026 e encerramento
 

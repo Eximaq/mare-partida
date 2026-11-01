@@ -34,6 +34,7 @@ on:
       - 'tests/paper-doll-96-weapons.test.cjs'
       - 'tests/paper-doll-96-other-weapons.test.cjs'
       - 'tests/paper_doll_96_weapons_browser.cjs'
+      - 'tests/ranged_autohunt_browser.cjs'
       - 'tools/paper_doll_96_weapon_materials.cjs'
       - '.github/workflows/paper-doll-96-lobby.yml'
   workflow_dispatch:
@@ -123,6 +124,7 @@ jobs:
       - name: Auditar armas e combate real
         run: |
           node tests/paper-doll-96-other-weapons.test.cjs
+          node tests/ranged_autohunt_browser.cjs http://127.0.0.1:8157/dist/ --evidence="$RUNNER_TEMP/other-weapons96/ranged"
           node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --other-classes --default-player --evidence="$RUNNER_TEMP/other-weapons96"
       - uses: actions/upload-artifact@v4
         if: always()
