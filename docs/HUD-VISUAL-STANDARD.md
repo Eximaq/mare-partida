@@ -64,3 +64,8 @@ A composição do compêndio usa cabeçalho decorativo em toda a largura, tipos,
 ## Conquistas e Hierarquia — 01/11/2026
 
 Família de 32 insígnias e quatro placas PixelLab compartilhada com a HUD, categorias com alfa e materiais de madeira/metal aprovados. Textos e dados são dinâmicos. [Contrato, mapeamento, custo e validação](CONQUISTAS-HIERARQUIA-HD.md).
+
+
+## Central do Navegante HD
+
+Meu Perfil, Equipamentos, Jornal do Morgan e todas as seções de Configurações usam a mesma família de madeira e metal escuros, dourado envelhecido, botões escuros/dourados e tipografia real. Reutilizar os componentes de captain-hd.css e assets/ui/captain-hd/ nas próximas telas equivalentes. Manter ícones isolados com alfa, dados dinâmicos separados e arte oficial de equipamentos por ID. O Morgan aprovado é um recurso editorial específico do jornal. Ver docs/CENTRAL-NAVEGANTE-HD.md.

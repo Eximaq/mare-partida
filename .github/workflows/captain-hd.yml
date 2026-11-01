@@ -1,0 +1,52 @@
+name: Central do Navegante HD
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'player-hub.*'
+      - 'captain-hd.css'
+      - 'game.js'
+      - 'game-tooltips.js'
+      - 'index.html'
+      - 'journal-feed.json'
+      - 'assets/ui/captain-hd/**'
+      - 'tools/build_pages.py'
+      - 'tests/*captain*'
+      - 'tests/player-hub.test.cjs'
+      - 'tests/run_honors_hd_browser.py'
+      - '.github/workflows/captain-hd.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  captain:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      MARE_QA_DIR: /tmp/mare-captain-hd
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar Chromium
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Dados, privacidade, preferências e pacote estático
+        run: |
+          node --test tests/captain-hd.test.cjs tests/player-hub.test.cjs tests/game-tooltips.test.cjs tests/character-appearance.test.cjs tests/headgear-visibility.test.cjs tests/ui-system.test.cjs tests/character-hud-hierarchy.test.cjs
+          python tools/build_pages.py
+      - name: Navegador, controles e responsividade em dist
+        run: python tests/run_honors_hd_browser.py tests/captain_hd_browser.cjs --dist --offline
+      - name: Capturas reais
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: central-navegante-hd
+          path: /tmp/mare-captain-hd/
+          if-no-files-found: warn
+          retention-days: 14
