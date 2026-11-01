@@ -1,11 +1,41 @@
 # F01 — retomada controlada da recuperação pela interface
 
 Preparação autorizada em 01/11/2026 sobre `50cc977`, registrada em `255c5d9`.
-**Janela posterior encerrada: entrega de G confirmada no Spam; recuperação pela
-interface inconclusiva. Auth false, API/gateway parados e PostgreSQL preservado.**
-O proprietário autorizou um pedido/e-mail para G; houve também um pedido manual
-para A, fora do lote combinado, e o ensaio foi interrompido antes de usar links.
+**Estado atual: F01 aprovado na janela posterior conduzida no Opera, sobre
+`53bb628`, com nova autorização específica de um pedido/e-mail para G.
+Auth false, API/gateway parados e PostgreSQL preservado.** A janela anterior foi
+interrompida após pedido manual para A; seu registro permanece abaixo.
 Referência: [matriz 2F e diagnóstico anterior](PHASE-2F-FINAL-ACCEPTANCE.md).
+
+## F01 aprovado — Opera, 01/11/2026, 01:38–01:45
+
+Somente G; navegação conduzida pelo agente no Opera do computador do proprietário.
+O proprietário digitou e submeteu a nova senha e depois a usou no login. Nenhuma
+senha, cookie, token, endereço pessoal ou link assinado integra este relatório.
+
+| Verificação | Evidência observada (America/Sao_Paulo) |
+|---|---|
+| Pré-condições | Baseline quatro contas/três personagens, zero sessões/fila; HTTPS/readiness 200 com TLS validado, API/gateway somente em loopback |
+| Único pedido | 01:38:22: BFF 202, provedor 200; mensagem das 01:38 encontrada no Spam, destinatário exato conferido nos detalhes; sem reenvio ou pedido para outra conta |
+| Callback válido | 01:39:27: abertura única do link novo no Opera original; exchange PKCE 200, callback local 303 com código e sem erro remoto; tela Definir nova senha |
+| Identidade e sessão | G confirmada pela API do próprio usuário; sessão kind=recovery; assinatura real ES256 e exp-iat=900 verificados sem divulgar JWT |
+| Troca pela interface | 01:42:48: atualização de senha no provedor 200 e reset BFF 200; tela Senha alterada. Entre novamente.; proprietário confirmou a submissão |
+| Revogação após reset | Epoch de G incrementado uma vez; recovery revogada, zero sessões ativas; logout remoto 204 às 01:42:56 e fila vazia antes do novo login |
+| Login e persistência | 01:44:08: login remoto/BFF 200 e /v1/me 200; sessão play de G, ES256/900 s e prazo absoluto 86400 s; Opera mostrou Sua conta e permaneceu autenticado após recarregar |
+| Logout | 01:44:48: Sair deste dispositivo 204; provedor 204 às 01:44:57; recarregamento retornou Entrar na conta e /v1/me 401 |
+| Encerramento | 01:45:10: Auth false, API/gateway próprios parados; PostgreSQL preservado em 127.0.0.1:55432; zero sessões autorizadas, fila e fluxos não expirados; recovery e play revogadas |
+| Preservação | Quatro contas/três personagens, fingerprints de personagens e contas locais A/B/C inalterados; G continua sem personagem; nenhuma mudança de gameplay, assets ou saves |
+
+**Aprovado no escopo revisado de F01: recuperação pela UI, login e logout.** Não
+foram repetidos nesta janela a senha antiga, duas sessões prévias, replay ou acesso
+a personagens com cookie recovery; a cobertura específica anterior permanece na
+Rodada 3. A política de inatividade de 7200 s foi preservada, não aguardada inteira.
+Não houve mudança de template, configuração, relógio ou dados internos do provedor.
+
+O sucesso atual não determina a causa do otp_expired antigo nem demonstra correção
+de um defeito de runtime: nenhum código foi alterado. A entrega no Spam e o
+agrupamento de mensagens exigem conferir destinatário e horário em futuras janelas.
+F04/F05 e o aceite final da Fase 2 continuam separados; sem Fase 3, merge ou deploy.
 
 ## Resultado da janela de 01/11/2026
 

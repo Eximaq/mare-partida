@@ -2,18 +2,18 @@
 
 Preparação autorizada em 31/10/2026. Referência técnica verificada: `c8be42f`,
 branch `feature/auth-sessions`, PR #162 Draft, base de integração main `8550cfa`.
-**Estado: F02 aprovado no cenário real autorizado sobre `f98063e`. F01 permanece
-inconclusivo após a retomada de 01/11: entrega de G confirmada no Spam, mas houve
-pedido posterior para A e o ensaio foi interrompido antes do callback. F03 aprovado
+**Estado: F02 aprovado no cenário real autorizado sobre `f98063e`. F01 aprovado
+na janela posterior sobre `53bb628`: um envio para G, PKCE, troca de senha pela UI,
+login, persistência e logout no Opera; encerramento seguro confirmado. F03 aprovado
 em 01/11/2026: rotação ES256 real, caches aquecido/vazio, refresh natural e
 encerramento verificados. F04/F05 e aceite final continuam abertos; não há
 autorização de Fase 3.**
 Este documento concentra o status atual. Os relatos das rodadas 1–3 preservam
 seus resultados históricos e não autorizam novos envios ou operações externas.
-Retomada F01 executada sobre `255c5d9`: [entrega, interrupção, preservação e roteiro
-para nova aprovação](PHASE-2F-F01-RECOVERY-RETRY.md). Auth false e serviços locais
-parados; outra tentativa exige autorização específica. O erro remoto da primeira
-janela não foi reproduzido nem explicado por este ensaio sem callback.
+F01: [resultado aprovado e histórico das tentativas](PHASE-2F-F01-RECOVERY-RETRY.md).
+Auth false e serviços locais parados. O erro remoto da primeira janela não foi
+reproduzido na execução válida nem teve sua causa determinada. Novos envios ou
+operações externas continuam exigindo autorização específica.
 
 ## Escopo da preparação original
 
@@ -35,7 +35,7 @@ nesta matriz e no relatório vinculado; o escopo histórico acima não os substi
 | A04 | Propriedade e criação de personagem | 40 testes cruzados; primeira criação 201/409, um personagem; retries idênticos 201/201 | A/B/C e personagens preservados; sem escrita econômica |
 | A05 | Recuperação real pelo backend | Rodada 3: sessão restrita, reset, senha antiga/nova, invalidação interna e refresh recusado | Não cobre preenchimento da senha pela UI; ver F01 |
 | A06 | Integração, Node, PostgreSQL e Docker/Linux | `c8be42f`: oito checks CI aprovados; local 28 fundação, 19 integração e 123 arquivos Node | Bloqueios de Fênix/hash resolvidos; CI de novos commits deve ser conferida |
-| F01 | Recuperação completa pela interface | Inconclusivo: primeira janela com otp_expired; retomada sobre `255c5d9` com entrega de G no Spam e segundo pedido manual para A, interrompida antes do callback | Nova autorização de envio para G e controle de destinatário/contexto; reset/login/logout pela UI não executados; ver relatório da retomada |
+| F01 | Recuperação completa pela interface | Aprovado sobre `53bb628`: um envio G, PKCE 200/callback 303, reset 200, revogação 204, login/persistência 200 e logout 204/401 no Opera | Escopo revisado sem senha antiga/duas sessões prévias; histórico da Rodada 3 preservado. Erro antigo sem causa comprovada; ver relatório F01 |
 | F02 | Revogação iniciada fora do BFF | Aprovado: logout externo 204, refresh remoto recusado, sessão interna revogada e /v1/me 401 | Uma conta/uma sessão neste ensaio; detecção na próxima revalidação, sem promessa de invalidação instantânea do JWT |
 | F03 | Rotação real da assinatura JWT/JWKS | Aprovado: nova ES256/900 s, cache aquecido/vazio, JWT antigo válido, refresh natural e mesma identidade; ver [registro F03](PHASE-2F-F03-SIGNING-ROTATION.md) | Antiga ES256 preservada como Previous; não testada revogação de chave nem executado rollback; Auth false e serviços locais parados |
 | F04 | Expiração do token remoto de e-mail sem uso | Não comprovada; expiração do BFF comprovada | Envio separado, prazo remoto confirmado, espera natural; ou adiamento explícito com risco registrado |
