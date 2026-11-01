@@ -127,7 +127,9 @@ jobs:
             await assert.rejects(pool.query('DELETE FROM mare_game.character_hunt_rewards'),{code:'42501'});
             await assert.rejects(pool.query('UPDATE mare_game.character_hunts SET begun_at=now()'),{code:'42501'});
             await assert.rejects(pool.query('DELETE FROM mare_game.character_commands'),{code:'42501'});
-            await assert.rejects(pool.query('UPDATE mare_game.character_progression SET level=2'),{code:'42501'});
+            assert.equal((await pool.query('UPDATE mare_game.character_progression SET level=level WHERE false')).rowCount,0);
+            await assert.rejects(pool.query('UPDATE mare_game.character_progression SET character_id=character_id'),{code:'42501'});
+            await assert.rejects(pool.query('UPDATE mare_game.character_level_ledger SET experience_total=experience_total'),{code:'42501'});
             await assert.rejects(pool.query('UPDATE mare_game.characters SET name=name'),{code:'42501'});
             await assert.rejects(pool.query('UPDATE mare_game.accounts SET subject=subject'),{code:'42501'});
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'),{code:'42501'});
