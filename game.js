@@ -286,7 +286,7 @@
   }
   const vfx_aura={draw(c,x,y,time,scale=1,fruitOverride=null,layer='back'){
     const fruit=fruitOverride||MareAkuma.itemData(game?.equipment?.akuma_no_mi,itemDefs);if(!fruit||(MareAkuma.isZoan(fruit)&&fruit.id!==MareRankS.rules.phoenix.id)||fruit.id==='akuma_supa_supa')return;
-    if(MareRankS.has(fruit.id)){const auraScale=fruit.id===MareRankS.rules.phoenix.id&&!game?.zoanTransformed?scale*.7:scale;MareRankS.drawAura(c,fruit.id,x,y,time,auraScale,layer);return;}
+    if(MareRankS.has(fruit.id)){const auraScale=fruit.id===MareRankS.rules.phoenix.id&&!game?.zoanTransformed?scale*.7:scale;return MareRankS.drawAura(c,fruit.id,x,y,time,auraScale,layer);}
     if(layer==='front'||MareRankB.has(fruit.id)||fruit.id===MareHoya.rules.id)return;
     const auraImage=fruitAuraImages[fruit.id];
     c.save();c.imageSmoothingEnabled=false;c.globalAlpha*=fruit.id==='akuma_kuku_kuku'?.48:.85;
@@ -1624,13 +1624,13 @@
   function drawProfilePortrait(canvas,hideItems){
     const c=canvas.getContext('2d');c.clearRect(0,0,canvas.width,canvas.height);c.imageSmoothingEnabled=false;
     const player=hideItems?{...game,equipment:{},zoanTransformed:false}:game,x=canvas.width/2,y=canvas.height-24,scale=160/48;
-    if(!hideItems)vfx_aura.draw(c,x,y,world.time,scale);
+    const auraReady=hideItems||vfx_aura.draw(c,x,y,world.time,scale);
     let ready;
     if(!hideItems&&game.zoanTransformed&&equippedZoan()){
       ready=MareZoanArt.draw(c,equippedZoan().id,x,y,{fit:200,time:world.time,scale:160/64});
     }else ready=lobby96.preview(c,player,{action:'idle',direction:'south',time:0,appearance:MareCharacterAppearance.read(player),consumer:'profile-portrait'});
-    if(!hideItems)vfx_aura.draw(c,x,y,world.time,scale,null,'front');
-    return !!ready;
+    const frontReady=hideItems||vfx_aura.draw(c,x,y,world.time,scale,null,'front');
+    return !!ready&&auraReady!==false&&frontReady!==false;
   }
   // Prepare only the selected destination, before sailing or a direct transition.
   function prepareRegion(area){

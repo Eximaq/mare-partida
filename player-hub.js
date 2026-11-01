@@ -12,7 +12,7 @@
  const clock=s=>s!==null&&s!==undefined&&Number.isFinite(Number(s))?Math.floor(Math.max(0,s)/3600)+' h '+Math.floor(Math.max(0,s)%3600/60)+' min':'Não registrado';
  const art={
   compass:'assets/ui/contracts-hd/monthly.png',calendar:'assets/ui/contracts-hd/weekly.png',
-  gear:'assets/ui/inventory-final/icons/equipment.png',eye:'assets/ui/inventory-final/icons/eye.png',
+  gear:'assets/ui/inventory-final/icons/equipment.png',eye:'assets/ui/character-studio/controls/eyeStyle.png?v=alpha-native-v1',
   power:'assets/ui/inventory-final/icons/power.png',attack:'assets/ui/inventory-final/icons/attack.png',
   shirt:'assets/ui/inventory-final/icons/shirt.png',anchor:'assets/ui/inventory-final/icons/anchor.png',
   bag:'assets/ui/inventory-final/icons/bag.png',strength:'assets/ui/character-studio/attributes/strength.png'
