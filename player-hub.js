@@ -28,7 +28,7 @@
     getJournal();
     const tabs=[['all','Tudo'],['event','Eventos'],['update','Atualizações'],['notice','Avisos']];
     const items=journal.filter(x=>selectedJournal==='all'||x.type===selectedJournal);
-    return '<section class="captain-journal" data-captain-journal><p class="captain-lead">Avisos oficiais do Maré Partida, eventos e novidades do desenvolvimento.</p>'+
+    return '<section class="captain-journal" data-captain-journal><p class="captain-lead">Avisos oficiais do Kaizoku Idle, eventos e novidades do desenvolvimento.</p>'+
       '<nav class="captain-tabs" aria-label="Categorias do jornal">'+tabs.map(([id,name])=>button(name,id,selectedJournal).replace('data-captain-tab','data-journal-tab')).join('')+'</nav>'+
       '<div class="captain-news">'+(items.length?items.map(x=>'<article class="captain-news-item"><div class="captain-news-meta"><span class="captain-tag">'+escape(({event:'EVENTO',update:'ATUALIZAÇÃO',notice:'AVISO'})[x.type])+'</span><time>'+escape(x.date||'')+'</time></div><h3>'+escape(x.title)+'</h3><p>'+escape(x.summary||'')+'</p></article>').join(''):'<div class="captain-empty">'+(journalLoading?'Carregando avisos...':'Nenhuma publicação nesta categoria.')+'</div>')+'</div></section>';
   }

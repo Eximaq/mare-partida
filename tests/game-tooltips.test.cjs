@@ -20,3 +20,6 @@ assert.match(skill,/17 Energia/);
 assert.match(skill,/game-tip-number/);
 assert.equal(Tooltip.skillHTML({name:'<img>',description:'<script>'}).includes('<script>'),false);
 console.log('Game tooltips OK');
+
+const help=Tooltip.helpHTML({title:'<img>',description:'Força <script> +25%'});
+assert(help.includes('&lt;script&gt;'));assert(!help.includes('<script>'));assert(help.includes('Força'));

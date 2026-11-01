@@ -1,6 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=require('node:path'),{chromium}=require('playwright');
-const origin=process.argv.find(s=>/^https?:/.test(s))||'http://127.0.0.1:8159/';
+const origin=process.argv.find(s=>/^https?:/.test(s))||process.env.MARE_TEST_URL||'http://127.0.0.1:8159/';
 const out=process.argv.find(s=>s.startsWith('--evidence='))?.slice(11);
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{const p=await browser.newPage({viewport:{width:1366,height:900}}),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.route(/\/game\.js(?:\?|$)/,async route=>{const response=await route.fetch();let s=await response.text();s=s.replace('  requestAnimationFrame(frame);','  window.__appearanceQA={get player(){return game},get draft(){return creationAppearanceDraft},renderer:lobby96,openCreation,openPanel,closePanel,getDerived};\n  requestAnimationFrame(frame);');await route.fulfill({response,body:s});});
 await p.goto(origin);await p.waitForFunction(()=>window.__appearanceQA);await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click({timeout:3000});assert(await p.locator('#appearanceStep').isVisible());assert.equal(await p.evaluate(()=>__appearanceQA.player),null);

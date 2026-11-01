@@ -44,3 +44,8 @@ Orientação explícita do proprietário: utilizar a mesma arte de madeira e met
 - A Forja aplica esta regra nas quatro abas. Outras interfaces existentes serão adaptadas quando solicitadas; a orientação fica registrada para toda nova arte.
 
 Token compartilhado: `--rpg-workshop-surface`, definido em `ui-tokens.css`. Novas HUDs devem reutilizá-lo para manter a mesma arte e evitar cópias ou novas gerações desnecessárias.
+
+
+## Personagem e aparência compartilhada — 31/10/2026
+
+As telas de status e aparência reutilizam os materiais acima. A criação e a edição posterior usam o mesmo componente; o título e o emblema acompanham a facção. Referência de integração, arte PixelLab e validação: [PERSONAGEM-STUDIO-HD.md](PERSONAGEM-STUDIO-HD.md). Ícones de classe seguem a família dos dois recortes aprovados do Espadachim; nomes e números continuam como texto dinâmico.
