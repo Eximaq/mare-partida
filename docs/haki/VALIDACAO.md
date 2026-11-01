@@ -1,10 +1,10 @@
 # Validação da sprint Haki — 01/11/2026
 
-Branch: `feature/haki-mastery-hd`. Base auditada: `68ea929`. Trabalho isolado do checkout local com alterações não commitadas.
+Branch: `feature/haki-mastery-hd`. Base auditada: `68ea929`. Trabalho isolado do checkout local com alterações não commitadas. Atualizações de colaboradores até `0c0e448` incorporadas sem conflito.
 
 ## Resultado funcional
 
-- Suítes Node do projeto e testes novos de domínio: validação de sequência, dependências, limites, portão completo, materiais por ramo, pilhas/bag cheia, bloqueio, persistência atômica, falha de gravação e confirmação obsoleta.
+- 143 suítes Node aprovadas (a regressão longa de navegação de monstros foi executada isoladamente, 87,98 s). Testes novos de domínio: validação de sequência, dependências, limites, portão completo, materiais por ramo, pilhas/bag cheia, bloqueio, persistência atômica, falha de gravação e confirmação obsoleta.
 - Regressão Haki: H/J/K, exclusividade, auto no primeiro contato, Vontade, esgotamento, recuperação, alcance/linha de visão do Conquistador, diferença entre comuns e chefes e cooldown persistido.
 - Testes de Logia: redução específica contornada somente nas condições ofensivas previstas; cálculo de defesa preservado; Observação/desligamento não habilitam a exceção; categoria mágica e caminho Ryu preservados.
 - Testes de arte: 19 PNGs distintos com alfa real; 3 animações com quadros distintos, pivôs/dimensões coerentes; Conquistador com último quadro vazio e cobertura controlada.
