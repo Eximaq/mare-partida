@@ -26,3 +26,44 @@ As três frutas entram no catálogo Rank S com três slots de habilidade. As reg
 - Energia Flamejante desenha à frente da fênix o spritesheet fornecido `Bola de Eneriga.png`, preservando suas proporções, e percorre o caminho até o alvo em cinco impactos, somando 550%, e aplica redução de cura recebida de 80%.
 
 Os recursos enviados pelo usuário foram preservados em `assets/akuma/{gura,hie,phoenix}`. As prévias automatizadas ficam fora do repositório.
+
+## Reação de dano da Fênix — 31/10/2026
+
+A integração original não continha `hurt/south`: ao receber dano, a forma Phoenix
+ficava sem desenho durante a janela visual de 180 ms. A prévia gerada e aprovada
+pelo proprietário foi integrada com seus quatro quadros originais, na mesma ordem,
+sem redimensionar ou pintar pixels. A geração custou 2 gerações PixelLab; a
+integração não solicitou novas gerações.
+
+`assets/sprites-combat-v2/phoenix/hurt-south.png` contém quatro células RGBA de
+132 × 132 em uma folha de 528 × 132. `layout.json` registra os limites, os hashes
+RGBA por quadro e os IDs de origem. A montagem é uma concatenação horizontal sem
+máscara ou reamostragem. O pivô fixo `[66,113]` corresponde ao pivô South original
+`[48,95]` acrescido dos 18 px de margem central do canvas gerado.
+
+O catálogo e `playback.json` usam todos os quadros, de 0 a 3, durante os 180 ms
+existentes. Hurt é South em qualquer orientação; a orientação lógica do ator não
+muda. A animação não repete: ao terminar, o renderizador retoma o estado atual.
+A última pose com asas recolhidas, aprovada na prévia, permanece como fornecida.
+Dano, ataques, skills, mapas, HUD, Paper Doll e formatos de save não foram alterados.
+
+Validação na base `8550cfa`:
+
+- `node tests/phoenix-hurt.test.cjs`: falhou antes com a Fênix invisível e passou
+  depois; executa a função real `drawUpdatedZoan`, oito orientações, quatro quadros,
+  coalescência de golpes e retorno à locomoção após 180 ms.
+- `sprite-south-hurt.test.cjs` e `sprite-combat-v2.test.cjs`: aprovados.
+- Suíte de `tests/*.test.cjs`, excluindo o E2E Supa conforme o CI: 134/135 aprovados.
+  `paper-doll-96-other-weapons.test.cjs` falha no hash fixo de `itemDefs`. O teste e
+  `game.js` são idênticos à main; o hash real da main começa em `9fa06514`, enquanto
+  a asserção espera `324b10c6`. A falha herdada não foi ocultada nem alterada.
+- Navegador real no build `dist`, origem local isolada e save DEV: perda única de
+  5 HP, quatro quadros visíveis em 0/50/100/150 ms, Idle norte em 181 ms, orientação
+  preservada e zero erros de console/diagnóstico. Conferido em desktop e 390 × 844.
+  A fixture injeta controles somente na resposta HTTP de teste; não entra no build.
+- Sintaxe dos JavaScript, hashes RGBA dos quatro quadros, cópia do PNG no build,
+  `python tools/build_pages.py`, `python tests/paper_doll_pages_test.py`,
+  `python tests/portal_build_test.py` e `python tools/build_portal.py`: aprovados.
+
+Capturas em `docs/evidence-phoenix-hurt/`, ignoradas pelo Git. Integração em branch
+separada; nenhum merge ou deploy faz parte desta entrega.
