@@ -49,8 +49,11 @@ a resposta não expõe o dono nem credenciais. Cache-Control continua no-store.
    rejeição de saldo/XP fornecido pelo cliente. Sem integração no gameplay local.
 4. **3D (primeiro fluxo implementado):** [painel online](PHASE-3D-ONLINE-PANEL.md),
    consulta autorizada do marco, início de jornada e reconciliação por aba. Modo
-   demonstração e saves isolados. Inventário, recompensas, RNG e combate exigem
-   contratos próprios; nenhum deles está migrado por esta entrega.
+   demonstração e saves isolados.
+5. **3E (primeira caçada):** [Ronda do cais](PHASE-3E-FIRST-HUNT.md), missão única
+   de 30 segundos com 20 XP/8 ouro calculados e creditados no servidor. Ledger,
+   versão, saldo e recibo atômicos; reconciliação no painel separado. Inventário,
+   RNG, level-up, caçadas repetíveis e combate em mapa ainda exigem contratos próprios.
 
 3B/3C definiram os comandos iniciais, retenção limitada ao piloto e reconciliação
 por requestId/versão; retenção para economia contínua permanece pendente. Origem pública,

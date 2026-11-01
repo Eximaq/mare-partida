@@ -1,5 +1,9 @@
 # Etapa 3D — primeiro fluxo online separado da demonstração
 
+Registro do incremento 3D. A [Etapa 3E](PHASE-3E-FIRST-HUNT.md) acrescenta caçada
+temporizada, recompensa única e o campo hunt ao snapshot; mantém os limites de
+isolamento descritos aqui e estende a pendência por action.
+
 Base: main `48eb49d`. Integração incremental no cliente de contas existente,
 servido em `/online/` pelo gateway HTTPS local. Não altera nem carrega o runtime
 do gameplay, saves, mapas, HUD, Paper Doll ou assets. Não transforma a demonstração

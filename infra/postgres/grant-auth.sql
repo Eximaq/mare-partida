@@ -7,9 +7,13 @@ GRANT SELECT, INSERT ON mare_game.characters TO mare_runtime;
 GRANT UPDATE (state_version) ON mare_game.characters TO mare_runtime;
 GRANT SELECT ON mare_game.character_journey_ledger TO mare_runtime;
 GRANT INSERT (character_id, request_id, version_before) ON mare_game.character_journey_ledger TO mare_runtime;
--- Phase 3A can initialize only server defaults and read state. No economic UPDATE/DELETE.
+-- First hunt grants only XP/gold updates; level, identity and initialization stay fixed.
 GRANT SELECT ON mare_game.character_progression TO mare_runtime;
 GRANT INSERT (character_id) ON mare_game.character_progression TO mare_runtime;
+GRANT UPDATE (experience, gold) ON mare_game.character_progression TO mare_runtime;
+GRANT SELECT ON mare_game.character_hunts, mare_game.character_hunt_rewards TO mare_runtime;
+GRANT INSERT (character_id, request_id, version_before) ON mare_game.character_hunts TO mare_runtime;
+GRANT INSERT (character_id, request_id, version_before, experience_before, gold_before) ON mare_game.character_hunt_rewards TO mare_runtime;
 -- Immutable receipts; runtime cannot rewrite or purge replay protection.
 GRANT SELECT ON mare_game.character_commands TO mare_runtime;
 GRANT INSERT (character_id, request_id, request_hash, result) ON mare_game.character_commands TO mare_runtime;

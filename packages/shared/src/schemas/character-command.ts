@@ -4,14 +4,14 @@ import { characterStateSchema } from "./character-state.js";
 
 export const characterCommandSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["state.sync", "journey.begin"]),
+  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim"]),
   expectedVersion: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
   control: renewControlSchema,
   payload: z.strictObject({}),
 });
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["state.sync", "journey.begin"]),
+  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim"]),
   state: characterStateSchema,
 });
 export type CharacterCommand = z.infer<typeof characterCommandSchema>;

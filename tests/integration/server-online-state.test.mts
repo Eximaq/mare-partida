@@ -22,7 +22,9 @@ test("online state reports the ledger milestone, never infers it from version, a
     try {
       const response = await get(); assert.equal(response.status, 200);
       assert.equal(response.headers.get("cache-control"), "no-store");
-      assert.deepEqual(await response.json(), { state: { characterId: character.id, version: 7, level: 1, experience: "0", gold: "0" }, journey: { started: false } });
+      const initial = await response.json();
+      assert.equal(initial.hunt.status,"locked");
+      assert.deepEqual({state:initial.state,journey:initial.journey}, { state: { characterId: character.id, version: 7, level: 1, experience: "0", gold: "0" }, journey: { started: false } });
       for (const extra of ["ownerId", "accountId", "characterId", "gold"])
         assert.equal((await get(a.token, path + `?${extra}=forged`)).status, 400);
       const cross = await get(b.token), absent = await get(b.token, `/v1/characters/${randomUUID()}/online-state`);
