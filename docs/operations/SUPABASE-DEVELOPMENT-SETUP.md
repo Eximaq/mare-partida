@@ -12,7 +12,10 @@ sobrepõem a CI aprovada de `c8be42f`. Nenhuma nova janela foi executada nesta
 consolidação. Ensaio posterior F01 sobre `f1ef36b`: um pedido de recuperação pela UI
 e entrega confirmados; link recusado pelo provedor, causa inconclusiva. Sem reset
 ou novo login; janela encerrada com Auth false. Detalhes na matriz 2F. A/B/C/G e
-personagens permanecem preservados.
+personagens permanecem preservados. F02 posteriormente aprovado sobre `f98063e`:
+revogação externa da Conta A, refresh recusado e sessão interna invalidada na
+revalidação natural; encerrado com Auth false e dados preservados. F01 será
+retomado no fechamento, conforme decisão do proprietário; aceite final permanece aberto.
 
 ## Situação informada em 31/10/2026
 

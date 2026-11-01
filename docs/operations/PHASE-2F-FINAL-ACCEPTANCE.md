@@ -2,8 +2,9 @@
 
 Preparação autorizada em 31/10/2026. Referência técnica verificada: `c8be42f`,
 branch `feature/auth-sessions`, PR #162 Draft, base de integração main `8550cfa`.
-**Estado: F01 ensaiado parcialmente sobre `f1ef36b`; callback recusado pelo provedor,
-resultado inconclusivo e aceite final aberto. Demais lotes não executados.**
+**Estado: F02 aprovado no cenário real autorizado sobre `f98063e`. F01 permanece
+inconclusivo, adiado pelo proprietário para retomada no fechamento. F03–F05 e
+aceite final continuam abertos; não há autorização de Fase 3.**
 Este documento concentra o status atual. Os relatos das rodadas 1–3 preservam
 seus resultados históricos e não autorizam novos envios ou operações externas.
 
@@ -26,7 +27,7 @@ este roteiro. Commit/push documental no PR existente é permitido, com prefixo
 | A05 | Recuperação real pelo backend | Rodada 3: sessão restrita, reset, senha antiga/nova, invalidação interna e refresh recusado | Não cobre preenchimento da senha pela UI; ver F01 |
 | A06 | Integração, Node, PostgreSQL e Docker/Linux | `c8be42f`: oito checks CI aprovados; local 28 fundação, 19 integração e 123 arquivos Node | Bloqueios de Fênix/hash resolvidos; CI de novos commits deve ser conferida |
 | F01 | Recuperação completa pela interface | Envio UI 202 e entrega confirmada; callback remoto recusado (`otp_expired`), local 400; inconclusivo | Diagnosticar causa antes de propor outro envio; reset/login/logout pela UI não executados |
-| F02 | Revogação iniciada fora do BFF | Pendente no provedor real | Operação suportada, escopo de conta explícito, medir rejeição após revalidação |
+| F02 | Revogação iniciada fora do BFF | Aprovado: logout externo 204, refresh remoto recusado, sessão interna revogada e /v1/me 401 | Uma conta/uma sessão neste ensaio; detecção na próxima revalidação, sem promessa de invalidação instantânea do JWT |
 | F03 | Rotação real da assinatura JWT/JWKS | Pendente | Autorização do projeto e efeitos; novo JWT ES256/900 s aceito; nenhuma tolerância a assinatura inválida |
 | F04 | Expiração do token remoto de e-mail sem uso | Não comprovada; expiração do BFF comprovada | Envio separado, prazo remoto confirmado, espera natural; ou adiamento explícito com risco registrado |
 | F05 | Resposta perdida durante reset hospedado | Coberta localmente, não induzida no provedor real | Plano de injeção isolado e autorização adicional; ou adiamento explícito, sem alegar atomicidade |
@@ -203,6 +204,49 @@ exclusão de conta, troca de senha ou SQL interno como substituto silencioso.
 Logout do provedor revoga refresh; JWT já emitido pode continuar válido até expirar.
 Isso é diferente da revogação imediata interna do jogo.
 [Referência Supabase](https://supabase.com/docs/guides/auth/signout).
+
+### F02 — resultado real e encerramento, 31/10/2026
+
+O proprietário autorizou explicitamente usar a Conta A e revogar suas sessões pela
+API oficial com a própria sessão. Essa decisão substitui a investigação de uma
+operação equivalente no dashboard prevista no roteiro. Nenhuma chave administrativa,
+service_role, troca de senha ou e-mail. Login digitado pelo proprietário na UI local;
+G não foi usada porque a senha temporária havia sido descartada. B/C/G preservadas.
+
+Runtime `f98063e`, sem mudança de código. Helper local ignorado leu a sessão cifrada
+já emitida pelo BFF, verificou assinatura ES256, JWT de 900 s, identidade do provedor,
+conta autorizada e personagem existente antes do logout global no provedor.
+Somente SELECT no banco para instrumentação; nenhuma edição de sessão, epoch ou
+prazo pelo helper. O endpoint de logout do BFF não foi chamado.
+
+| Verificação | Resultado |
+|---|---|
+| Baseline | Quatro contas/três personagens, zero sessões ativas e revogações pendentes |
+| Login e leitura antes da revogação | UI autenticada; login 200 e /v1/me 200; exatamente uma sessão de A |
+| Revogação externa | Log oficial POST/logout 204; nenhuma alteração imediata de revoked_at, epoch ou provider_valid_until internos |
+| Política real | Assinatura verificada ES256 e exp-iat=900; sessão absoluta 86400 s, inatividade 7200 s e recheck 900 s inalterados |
+| Janela anterior à revalidação | Leituras 200 observadas com o mesmo cookie; nenhuma rotação manual ou novo login |
+| Revalidação natural | Primeira consulta automática após o prazo retornou 401 em 1278 ms; Supabase registrou 400 refresh_token_not_found |
+| Prova no banco | Sessão interna revogada pelo fluxo normal; prazos absoluto/inativo ainda válidos, portanto não foi expiração de 24 h/2 h |
+| Interface e persistência da recusa | Voltou a Entrar na conta; recarregamento adicional retornou 401 em 8 ms |
+| Preservação e encerramento | Fingerprint dos personagens inalterado; quatro contas/três personagens, zero sessões ativas e fila vazia; Auth false, API/gateway parados, PostgreSQL ativo em loopback |
+
+Tempos relativos: primeira recusa aproximadamente 891,2 s após o logout externo,
+na primeira leitura automática disponível após o deadline (30,4 s depois dele,
+incluindo 1,278 s de requisição). A interface consulta a cada 60 s enquanto visível;
+esse intervalo de observação não estende a autorização de requisições após o
+deadline. Não reduzir TTL, alterar relógio ou prometer revogação instantânea.
+
+**Aprovado neste cenário:** uma conta, uma sessão local e revogação global no
+provedor. Não representa teste adicional de múltiplos dispositivos, rotação de
+chaves, recuperação, carga ou indisponibilidade do provedor. Testes anteriores
+mantêm seus próprios limites. Evidências privadas só contêm status, tempos e
+contagens; tokens permaneceram apenas em memória e no armazenamento cifrado
+existente. Helpers, capturas e logs não entram no commit.
+
+F01 foi adiado expressamente pelo proprietário para retomada no fechamento, sem
+aceite do fluxo de recuperação. F03 exige autorização própria antes de qualquer
+mudança de assinatura. Sem merge, deploy, DNS ou início da Fase 3.
 
 ## Lote F03 — assinatura ES256/JWKS, orçamento de zero e-mails
 
