@@ -1,0 +1,339 @@
+{
+ "frames": [
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 0.png",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  },
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 1.png",
+   "frame": {
+    "x": 128,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  },
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 2.png",
+   "frame": {
+    "x": 256,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  },
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 3.png",
+   "frame": {
+    "x": 384,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  },
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 4.png",
+   "frame": {
+    "x": 0,
+    "y": 83,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  },
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 5.png",
+   "frame": {
+    "x": 128,
+    "y": 83,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  },
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 6.png",
+   "frame": {
+    "x": 256,
+    "y": 83,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  },
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 7.png",
+   "frame": {
+    "x": 384,
+    "y": 83,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  },
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 8.png",
+   "frame": {
+    "x": 0,
+    "y": 166,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  },
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 9.png",
+   "frame": {
+    "x": 128,
+    "y": 166,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  },
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 10.png",
+   "frame": {
+    "x": 256,
+    "y": 166,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  },
+  {
+   "filename": "kaizoku-haki-conquistador-obsidiana-carmesim 11.png",
+   "frame": {
+    "x": 384,
+    "y": 166,
+    "w": 128,
+    "h": 83
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 128,
+    "h": 83
+   },
+   "sourceSize": {
+    "w": 128,
+    "h": 83
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.5542168674698795
+   },
+   "duration": 71
+  }
+ ],
+ "meta": {
+  "app": "PixelLab VFX Creator",
+  "image": "kaizoku-haki-conquistador-obsidiana-carmesim.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 512,
+   "h": 249
+  },
+  "scale": "1",
+  "anchor": {
+   "kind": "origin",
+   "x": 64,
+   "y": 46
+  },
+  "frameTags": [
+   {
+    "name": "kaizoku-haki-conquistador-obsidiana-carmesim",
+    "from": 0,
+    "to": 11,
+    "direction": "forward"
+   }
+  ]
+ }
+}

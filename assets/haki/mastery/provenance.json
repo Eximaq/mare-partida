@@ -1,0 +1,249 @@
+{
+  "date": "2026-11-01",
+  "tool": "PixelLab",
+  "direction": "Masterpiece Ultra HD refined pixel art; obsidian metal and contained crimson energy; isolated artwork; true alpha; no text or colored plate; one consistent family",
+  "icons": [
+    {
+      "id": "armament",
+      "model": "pro",
+      "job": "7421bca7-34b4-4813-88e3-ffcdd8d84303",
+      "index": 0,
+      "file": "armament.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "400a1c2a285baa3fa7cfa4575b24744b2da10e3efc21a388290d099ef79f7ee2"
+    },
+    {
+      "id": "observation",
+      "model": "pro",
+      "job": "e3065f52-09e5-4ebc-b0da-bf680e60014a",
+      "index": 0,
+      "file": "observation.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "f7c17480c913c1b29ff99d0101065481341783e46cb5572c044a916d5bc1a6da"
+    },
+    {
+      "id": "conqueror",
+      "model": "pro",
+      "job": "b382e112-e8a4-47b2-9973-af98ec2fb80c",
+      "index": 0,
+      "file": "conqueror.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "0198e67df1c3fe995518759c69f9842ec46997ac3103269c56b27508a2895e3b"
+    },
+    {
+      "id": "fragment-armament",
+      "model": "pro",
+      "job": "f60bc6ed-bb49-4eee-8337-5d6a7a6f384b",
+      "index": 0,
+      "file": "fragment-armament.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "9836951916978af4dcaa979e6eebf65301382f579d965dfe4a15a5ba0d70c847"
+    },
+    {
+      "id": "fragment-observation",
+      "model": "pro",
+      "job": "f63a558c-89d2-4b29-b749-1517c842690c",
+      "index": 0,
+      "file": "fragment-observation.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "b626ad598265b4504077c684e93c3b5767ce52dc45cfabee205583734150d293"
+    },
+    {
+      "id": "fragment-conqueror",
+      "model": "pro",
+      "job": "944f1140-d2c5-416d-841e-74e092665cb4",
+      "index": 0,
+      "file": "fragment-conqueror.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "b4b4ed88986850462ab13ebfb4a25a0a73cf9d1bd79a86bb18a008b8fd6b3b3b"
+    },
+    {
+      "id": "coating",
+      "model": "pro",
+      "job": "01e7cfc8-4be8-426a-b365-bad68b29b136",
+      "index": 0,
+      "file": "coating.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "b05f54fbf164f412468c550a8d3baee8e7f4456dba8e9895252d72e446454985"
+    },
+    {
+      "id": "hardening",
+      "model": "pro",
+      "job": "27473fe4-1edb-448a-b482-990ac988f492",
+      "index": 0,
+      "file": "hardening.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "aacb1f5089ecb5f3a5aac4e68842b9e567628ea447bb831933d9bb5f11dac583"
+    },
+    {
+      "id": "guard",
+      "model": "pro",
+      "job": "fc75cef2-f464-4011-b427-6bcf0dc0bcce",
+      "index": 0,
+      "file": "guard.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "143f44018d535567d2882803d09c340baca682e050ff2a2c88cf5857b6a13b20"
+    },
+    {
+      "id": "imbuement",
+      "model": "pro",
+      "job": "a5a76ac6-466a-4bd7-b9b9-343c4dbff6cc",
+      "index": 0,
+      "file": "imbuement.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "264b4c89f44d4f6a7a3d54f133b62af1baee6ed1d1c902b9fcfa9574e893e3ac"
+    },
+    {
+      "id": "emission",
+      "model": "pro",
+      "job": "fbb83188-de5f-4bb1-b7e3-cb0914bd0b2d",
+      "index": 0,
+      "file": "emission.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "da4ac9decc7f24b823baa41bc957956269e825d91e43b90da2954d0a346912b3"
+    },
+    {
+      "id": "perception",
+      "model": "pro",
+      "job": "a120e92c-06a1-4e5d-977a-17f08c6444d9",
+      "index": 0,
+      "file": "perception.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "c25e1d469c1944f6c03338cd2556a0434c47fb8183216923319c2adf12d2e805"
+    },
+    {
+      "id": "anticipation",
+      "model": "pro",
+      "job": "36bbff0e-af80-407f-988f-9745de465666",
+      "index": 0,
+      "file": "anticipation.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "a22c1f3294a8aae98399679e210a01279192900803c101284394215927d7e90b"
+    },
+    {
+      "id": "intent",
+      "model": "pro",
+      "job": "ad8cea4d-63cc-4340-9b0a-633d9609f250",
+      "index": 0,
+      "file": "intent.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "79e8b57b9a5d5c37fa08dfd9f9ffefac6a678d3c3faa3b80c8d543abbc70dd4d"
+    },
+    {
+      "id": "serenity",
+      "model": "pro",
+      "job": "96fa3af5-2739-4656-8378-574cb85c7450",
+      "index": 0,
+      "file": "serenity.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "57d4333dd052e84520a01cf326d5ae8028b9b724e3d8e486b62cb459a57d5093"
+    },
+    {
+      "id": "future",
+      "model": "pro",
+      "job": "61b7cc29-64e4-4441-93e5-25af83b0a1fd",
+      "index": 0,
+      "file": "future.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "25404eae730131b3bf0b186c2baa14318ae71315615d025eca06833d07f00093"
+    },
+    {
+      "id": "presence",
+      "model": "pro",
+      "job": "c9810af4-fd69-4c9d-b0ae-377a24087e2e",
+      "index": 0,
+      "file": "presence.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "225694d81a32ae42a26be12c2be134623fe9a479408c47ded206e1a631573ad0"
+    },
+    {
+      "id": "resolve",
+      "model": "pro",
+      "job": "5f2207fa-e7f2-44bb-b325-7d342b2733d0",
+      "index": 0,
+      "file": "resolve.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "c5baedf9ec7adf8047e1515ae01f0402e3caab95726d6929d9ad530c4c79560d"
+    },
+    {
+      "id": "pressure",
+      "model": "pro",
+      "job": "b6ee60e8-8e90-4e7b-b6cc-bc455b401c88",
+      "index": 0,
+      "file": "pressure.png",
+      "width": 96,
+      "height": 96,
+      "sha256": "d8eef71b7b3cb26fbbad981e55af5fe33a594bd844689af3cc58a496de961688"
+    }
+  ],
+  "effects": [
+    {
+      "id": "armament",
+      "effect": "af750828-951f-4acb-b013-d79cae5b2701",
+      "step": "352a7d67-307a-419e-ac9e-f220120a1aa8",
+      "export": "87ffcae7-5cd6-4864-a0ff-9497f96ee62f",
+      "parts": [
+        "lightning_arcs",
+        "shadow_aura"
+      ],
+      "tool": "PixelLab VFX Workbench",
+      "png": "effect-armament.png",
+      "metadata": "effect-armament.json",
+      "preview": "effect-armament.gif"
+    },
+    {
+      "id": "observation",
+      "effect": "9034fb47-6ea9-4ca5-a943-c5947f398ed6",
+      "step": "01f48a94-0483-43b4-99d1-95fee18b3c83",
+      "export": "21e497de-301f-4b8a-a94d-cb268e730d31",
+      "parts": [
+        "orbit_motes",
+        "lightning_arcs",
+        "authored perception_eye pixels"
+      ],
+      "tool": "PixelLab VFX Workbench",
+      "png": "effect-observation.png",
+      "metadata": "effect-observation.json",
+      "preview": "effect-observation.gif"
+    },
+    {
+      "id": "conqueror",
+      "effect": "3b67e2f2-8f99-44e5-ba4b-a71f2e5be41d",
+      "step": "e4841fb3-34c5-466b-a488-f5dd01517d65",
+      "export": "f8c68385-c9d3-4de2-a611-788e8812fb55",
+      "parts": [
+        "lightning_arcs",
+        "authored pressure_ring"
+      ],
+      "tool": "PixelLab VFX Workbench",
+      "png": "effect-conqueror.png",
+      "metadata": "effect-conqueror.json",
+      "preview": "effect-conqueror.gif"
+    }
+  ],
+  "credits": {
+    "before": 3.79,
+    "after": 2.27,
+    "iconCost": 1.52,
+    "insufficientCreditErrors": false
+  },
+  "notes": "Icons generated by PixelLab Pro; effects authored, rendered, inspected and exported in PixelLab VFX Workbench (free subscriber tool). No built-in image generator substitution. Original body/equipment images unchanged."
+}

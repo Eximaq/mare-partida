@@ -1,0 +1,41 @@
+{
+  "armament": {
+    "file": "effect-armament.png",
+    "width": 33,
+    "height": 38,
+    "columns": 4,
+    "frames": 12,
+    "fps": 12.048192771084338,
+    "anchor": [
+      16,
+      20
+    ],
+    "loop": true
+  },
+  "observation": {
+    "file": "effect-observation.png",
+    "width": 28,
+    "height": 23,
+    "columns": 5,
+    "frames": 24,
+    "fps": 12.048192771084338,
+    "anchor": [
+      14,
+      11
+    ],
+    "loop": true
+  },
+  "conqueror": {
+    "file": "effect-conqueror.png",
+    "width": 128,
+    "height": 83,
+    "columns": 4,
+    "frames": 12,
+    "fps": 14.084507042253522,
+    "anchor": [
+      64,
+      46
+    ],
+    "loop": false
+  }
+}

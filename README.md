@@ -157,7 +157,7 @@ Personagem → Akuma no Mi apresenta Kuku-Kuku e Beri-Beri como silhuetas até o
 
 Para usar o serviço Python local com SQLite: python server/app.py e abra http://127.0.0.1:8123/. O pacote estático do Pages continua disponível com python tools/build_pages.py. [Regras, arquitetura e testes](docs/AKUMA-NO-MI.md).
 
-## Entrega atual — Haki na HUD de combate
+## Histórico — Haki na HUD de combate (anterior à árvore de domínio)
 
 Após despertar, três ícones aparecem junto às barras do perfil: **H** alterna Armamento, **J** alterna Observação e **K** dispara o Rei. O chat passa para **L**. Os botões mostram estado ativo, falta de Vontade e recarga do Rei (8s, persistente após reload). Novos ícones PixelLab nativos32 e VFX transparentes estão integrados. [Regras, arte e validação](docs/HAKI.md).
 
@@ -354,3 +354,6 @@ Extraia o ZIP e abra o `index.html` no Chrome, Edge ou Opera. Não há necessida
 - A maior parte dos cenários é procedural, e sua qualidade visual ainda está abaixo da referência enviada para o projeto.
 - O teste automatizado foi feito em ambiente de navegador isolado com os recursos gráficos incorporados. Por isso, a persistência do save após reiniciar o navegador não foi validada ponta a ponta; o formato foi preservado no código.
 - Em telas pequenas, os painéis de detalhes são janelas sobrepostas quando abertos. A disposição padrão é livre de sobreposições entre HUDs principais.
+
+## Haki — árvores de domínio (01/11/2026)
+Página própria, Armamento/Observação completos para desenvolver Conquistador, três materiais exclusivos e investimentos persistidos. Ativos e Vontade preservados; novas artes PixelLab negras/carmesim. Custos provisórios, fontes dos fragmentos ainda ausentes e política de migração do antigo Rei pendente do proprietário. [Arquitetura e controles](docs/haki/DOMINIO.md) · [Pendências obrigatórias](docs/haki/PENDENCIAS_HAKI.md).

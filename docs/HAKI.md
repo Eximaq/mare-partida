@@ -71,3 +71,6 @@ Verificações executadas em 19/10/2026:
 - Capturas recentes em `%TEMP%/mare-haki-qa/`, fora do Git; inspeção dos três spritesheets e dos VFX em combate. Ícones finais verificados em 32×32 nativo na mochila e nos três painéis; Rei também usa a coroa na hotbar.
 
 Amostra de desempenho local, Chromium headless/1366×768, 3,006s com Armamento e cinco monstros: 59,87 FPS e 9,54 MiB de heap JS informado pelo navegador. É uma amostra curta; não mede estabilidade prolongada ou desempenho em celulares reais.
+
+## Progressão própria — 01/11/2026
+A nova estrutura está descrita em [haki/DOMINIO.md](haki/DOMINIO.md), com auditoria em [haki/AUDITORIA.md](haki/AUDITORIA.md). Fontes dos fragmentos e política de compensação/Rei estão em [haki/PENDENCIAS_HAKI.md](haki/PENDENCIAS_HAKI.md). A jornada normal ainda não fornece os novos materiais.

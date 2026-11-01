@@ -1,0 +1,42 @@
+name: Haki — domínio e arte
+on:
+  pull_request:
+    branches: [main]
+    paths: ['haki-*.js', 'haki-mastery.css', 'assets/haki/**', 'game.js', 'dev-tools.js', 'forge-system.js', 'item-art.js', 'index.html', 'ui-preview.html', 'tools/build_pages.py', 'tests/haki*', '.github/workflows/haki-mastery.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  haki:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preparar verificação visual
+        run: |
+          python3 -m pip install pillow
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Regras, migração, materiais e arte
+        run: |
+          node tests/haki-progression.test.cjs
+          node tests/haki-system.test.cjs
+          node tests/dev-tools.test.cjs
+          node tests/paper-doll-96-other-weapons.test.cjs
+          python3 tests/haki_mastery_art_test.py
+          python3 tools/build_pages.py
+      - name: Navegador no pacote estático
+        env:
+          MARE_QA_DIR: ${{ runner.temp }}/haki-capturas
+        run: python3 tests/run_honors_hd_browser.py tests/haki_mastery_browser.cjs --offline --dist
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: haki-capturas
+          path: ${{ runner.temp }}/haki-capturas
