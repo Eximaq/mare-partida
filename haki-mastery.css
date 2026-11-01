@@ -106,3 +106,6 @@
 @media(max-width:480px){#app #panelOverlay.haki-mastery-mode .haki-disciplines{grid-template-columns:minmax(0,1fr)}#app #panelOverlay.haki-mastery-mode .haki-disciplines article>header>div{min-width:0}#app #panelOverlay.haki-mastery-mode .haki-disciplines h3{overflow-wrap:anywhere}}
 
 @media(max-width:760px){#app #panelOverlay.haki-mastery-mode .haki-disciplines article>header{display:grid;grid-template-columns:34px minmax(0,1fr) 28px}#app #panelOverlay.haki-mastery-mode .hm-control-info[open]{display:contents}#app #panelOverlay.haki-mastery-mode .hm-control-info[open]>summary{grid-column:3;grid-row:1}#app #panelOverlay.haki-mastery-mode .hm-control-info[open]>div{position:static;grid-column:1/-1;width:auto;max-width:100%;margin:5px 0;font-size:16px}}
+
+#app #panelOverlay.haki-mastery-mode .haki-reserve>header>strong{display:flex;align-items:center;gap:5px}
+#app #panelOverlay.haki-mastery-mode .hm-will-icon{width:24px;height:24px;object-fit:contain}
