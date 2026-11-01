@@ -1,5 +1,7 @@
 **Servidor completo do jogo atual — objetivo ainda aberto:** [escopo integral, critérios de segurança e estado real](docs/architecture/FULL-SERVER-PARITY.md). O alpha anterior não equivale à migração completa.
 
+**Inventário e forja originais conectados:** [comandos, conversão preservada, testes e limites](docs/architecture/ORIGINAL-INVENTORY-SERVER.md). Equipamentos, vendas, poções e operações de forja com persistência autoritativa; combate completo e demais sistemas ainda em migração.
+
 **Entrada direta online — em integração:** [login → jogo original, funções conectadas e diferenças de gameplay ainda abertas](docs/architecture/DIRECT-ONLINE-GAME.md).
 
 **Histórico da proposta de miniporto, substituída pela entrada direta:** [limites da tentativa anterior](docs/architecture/ONLINE-VISUAL-LOBBY.md).

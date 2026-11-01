@@ -45,10 +45,11 @@
       attributes: { ...o.attributes.allocated },
       attributePoints: o.attributes.available,
       stats: Object.fromEntries(Object.keys(base.stats).map((k) => [k, 0])),
+      ...(o.originalInventory?structuredClone(o.originalInventory):{}),
     };
   }
   function derived(base, data) {
-    const f = data.online.combat?.fighter ?? data.online.combatPreview;
+    const f = ['active','won','lost'].includes(data.online.combat?.status)?data.online.combat.fighter??data.online.combatPreview:data.online.combatPreview;
     return {
       ...base,
       maxHP: f.maxHp,
@@ -92,6 +93,15 @@
     combat_daily_limit: "O limite de encontros em 24 horas foi atingido.",
     pending_command: "Confira o pedido pendente antes de enviar outra ação.",
     authentication_required: "Sua sessão terminou.",
+    forge_operation_rejected: 'Operação recusada. Confira custos, bloqueios, sockets e materiais.',
+    equipment_during_combat: 'Conclua o combate antes de trocar equipamentos ou usar a forja.',
+    inventory_conversion_capacity: 'Libere espaço no inventário anterior antes da conversão. Seus itens foram preservados.',
+    item_not_found: 'Este item não está disponível no seu inventário.',
+    item_protected: 'Desbloqueie o item antes de vender ou modificar.',
+    item_class_mismatch: 'Essa arma não pertence à sua classe.',
+    inventory_full: 'Libere um espaço na mochila.',
+    potion_not_needed: 'A poção só pode ser usada em combate com vida incompleta.',
+    potion_insufficient: 'Você não possui poções.',
     invalid_server_state: "Não foi possível validar os dados do personagem.",
   };
   function mount(client, hooks) {
@@ -205,7 +215,7 @@
       if (panel === "help")
         return (
           head +
-          "<p>Use WASD ou clique no chão para caminhar. Use os NPCs e menus para abrir caçadas, inventário, mercador e personagem. As ações confirmadas permanecem salvas no servidor.</p><p>Presença de outros jogadores, habilidades, frutas, forja e mapas adicionais ainda não estão disponíveis online.</p>"
+          "<p>Use WASD ou clique no chão para caminhar. Use os NPCs e menus para abrir caçadas, inventário, mercador e personagem. As ações confirmadas permanecem salvas no servidor.</p><p>Presença de outros jogadores, habilidades, frutas e mapas adicionais ainda estão em desenvolvimento.</p>"
         );
       return (
         head + "<p>Este recurso ainda não está disponível no modo online.</p>"
@@ -274,6 +284,7 @@
           void run(() => action(b.dataset.onlineAction, b));
           return;
         }
+        if (client.data?.online.originalInventory && event.target.closest("#usePotion,#buyPotion"))return;
         if (
           event.target.closest(
             "#skill1,#skill2,#skill3,#usePotion,#buyPotion,#zoanTransform,#hakiKing,#changePath",

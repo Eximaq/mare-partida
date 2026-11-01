@@ -166,7 +166,7 @@ test("combat migration preserves the completed hunt, old receipts and existing b
     const f=await fixture(service,pool,true,true);
     const tables=["accounts","characters","character_progression","character_commands","character_hunts","character_hunt_rewards"];
     const before=await Promise.all(tables.map(t=>pool.query(`SELECT * FROM mare_game.${t}`)));
-    assert.deepEqual(await applyMigrations(pool),["0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql", "0014_original_inventory.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     for(const [i,t] of tables.entries()) assert.deepEqual((await pool.query(`SELECT * FROM mare_game.${t}`)).rows,before[i]!.rows);
     await assert.rejects(pool.query("INSERT INTO mare_game.combat_encounters(character_id,begin_request_id,last_request_id) VALUES($1,$2,$2)",[f.character.id,randomUUID()]),{code:"23503"});
     await f.send(f.input("combat.begin",3));

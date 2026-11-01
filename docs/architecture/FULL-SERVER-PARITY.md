@@ -44,8 +44,10 @@ permanecem nas mesmas posições. O backend congela sua cópia profundamente.
 
 `GET /v1/characters/:id/game-catalog` exige sessão e propriedade, não aceita filtros
 de dono e não altera progresso. Essa leitura é infraestrutura para a migração;
-não significa que inventário/forja/frutas já estejam operando integralmente no
-servidor. A economia do alpha ainda não foi convertida ou promovida por esse passo.
+não significa que frutas e os demais domínios já estejam operando integralmente no
+servidor. O incremento seguinte de [inventário, economia e forja](ORIGINAL-INVENTORY-SERVER.md)
+implementa comandos transacionais e reutiliza os painéis originais. A conversão
+alpha é única, autenticada e preserva as pilhas antigas; não importa saves locais.
 
 ## Ordem de execução e consistência
 
@@ -101,11 +103,12 @@ devem ser tratadas como escopo adicional, sem confundi-las com esta paridade.
 
 **Objetivo integral ainda não concluído.** Não declarar o lado do servidor pronto
 nem abrir produção com base na contagem de testes ou na publicação do frontend.
-Catálogo compartilhado e seu endpoint estão validados; inventário original e os
-demais domínios continuam marcados conforme o manifesto. Nenhum save, banco ou
+Catálogo compartilhado e seu endpoint estão validados; inventário, poções, economia
+e forja avançaram para paridade parcial conforme o documento do incremento e o
+manifesto. Nenhum save, banco ou
 personagem existente foi apagado nesta correção de direção.
 
-## Validação deste incremento
+## Validação do primeiro incremento (catálogo)
 
 - Build e typecheck Node/TypeScript aprovados.
 - 85 testes de fundação,102 integrações PostgreSQL/HTTP e143 arquivos Node

@@ -19,9 +19,23 @@
       "spirit",
     ],
     items = ["dock-scrap-v1", "training-weapon-v1", "dock-vest-v1"];
+  const originalSlots=['head','necklace','coat','legs','boots','weapon','cloak','gloves','ring','belt','charm','akuma_no_mi'];
+  const instanceId=v=>typeof v==='string'&&/^[a-zA-Z0-9-]{1,80}$/.test(v);
+  function validForge(op){
+    if(!op||typeof op!=='object'||!Number.isSafeInteger(op.expectedSeq)||op.expectedSeq<0)return false;
+    const fields={upgrade:['itemId'],imbue:['itemId','pearlItemId','socket'],remove:['itemId','socket'],fuse:['itemIds'],fuseEquipment:['itemIds','slot'],reforge:['itemId'],reforgeLine:['itemId','line']}[op.type];
+    if(!fields||Object.keys(op).sort().join()!==['type','expectedSeq',...fields].sort().join())return false;
+    return fields.every(k=>k==='itemIds'?Array.isArray(op[k])&&op[k].length===5&&new Set(op[k]).size===5&&op[k].every(instanceId):k==='slot'?originalSlots.includes(op[k]):k==='socket'||k==='line'?Number.isInteger(op[k])&&op[k]>=0&&op[k]<=(k==='socket'?4:7):instanceId(op[k]));
+  }
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    if(['items.initialize','potions.buy','potions.use'].includes(action))return keys==='';
+    if(['items.equip','items.sell'].includes(action))return keys==='itemId'&&instanceId(p.itemId);
+    if(action==='items.lock')return keys==='itemId,locked'&&instanceId(p.itemId)&&typeof p.locked==='boolean';
+    if(action==='items.unequip')return keys==='slot'&&originalSlots.includes(p.slot);
+    if(action==='forge.execute')return keys==='operation'&&validForge(p.operation);
+
     if (
       [
         "journey.begin",

@@ -19,9 +19,9 @@ export const fighterSchema = z
       spirit: total,
     }),
     damageType: z.enum(["physical", "elemental"]),
-    maxHp: z.number().int().min(30).max(300),
-    attackMin: z.number().int().min(10).max(60),
-    attackMax: z.number().int().min(14).max(64),
+    maxHp: z.number().int().min(30).max(32767),
+    attackMin: z.number().int().min(10).max(32763),
+    attackMax: z.number().int().min(14).max(32767),
     armor: z.number().int().min(0).max(6),
     cooldownMs: z.number().int().min(500).max(2000),
   })
