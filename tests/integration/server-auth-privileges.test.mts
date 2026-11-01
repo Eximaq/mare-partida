@@ -82,6 +82,10 @@ test("login, control and journey work with minimum grants, with narrow economic 
           "INSERT INTO mare_game.character_journey_ledger(character_id,request_id,version_before,occurred_at) VALUES(gen_random_uuid(),gen_random_uuid(),0,now())",
           "INSERT INTO mare_game.character_journey_ledger(character_id,request_id,version_before,event) VALUES(gen_random_uuid(),gen_random_uuid(),0,'forged')",
           "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result,created_at) VALUES(gen_random_uuid(),gen_random_uuid(),repeat('a',64),'{}',now())",
+          "UPDATE mare_game.character_attribute_ledger SET strength=0",
+          "DELETE FROM mare_game.character_attribute_ledger",
+          "INSERT INTO mare_game.character_attribute_ledger(character_id,request_id,version_before,strength,dexterity,vitality,intelligence,spirit,catalog_id) VALUES(gen_random_uuid(),gen_random_uuid(),0,1,0,0,0,0,'online-attributes-v1')",
+          "INSERT INTO mare_game.character_attribute_ledger(character_id,request_id,version_before,strength,dexterity,vitality,intelligence,spirit,occurred_at) VALUES(gen_random_uuid(),gen_random_uuid(),0,1,0,0,0,0,now())",
           "UPDATE mare_game.progression_levels SET required_experience=0",
           "DELETE FROM mare_game.progression_levels",
           "UPDATE mare_game.character_level_ledger SET experience_total=0",
@@ -127,6 +131,9 @@ test("login, control and journey work with minimum grants, with narrow economic 
         await pool.query("UPDATE mare_game.character_progression SET experience=50");
         const prize=await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"combat.claim",expectedVersion:5});
         assert.equal(prize.state.gold,"20");assert.equal(prize.state.experience,"80");assert.equal(prize.state.level,2);
+        const allocated=await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"attributes.allocate",expectedVersion:6,payload:{allocation:{strength:2,dexterity:0,vitality:3,intelligence:0,spirit:0}}});
+        assert.equal(allocated.attributes!.available,0);assert.equal(allocated.attributes!.spent,5);
+        assert.equal((await service.onlineState(login.token,character.id)).attributes.allocated.vitality,3);
         await service.logout(login.token, "all");
         await service.drainRevocations();
       } finally {

@@ -4,3 +4,4 @@ export * from './schemas/auth.js';
 export * from './schemas/character-state.js';
 export * from './schemas/character-command.js';
 export * from './schemas/combat.js';
+export * from './schemas/attributes.js';

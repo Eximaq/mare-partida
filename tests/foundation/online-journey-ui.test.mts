@@ -17,12 +17,12 @@ class Element {
 function page(storage = new Map<string,string>()) {
   const elements = new Map<string,Element>();
   const get = (selector: string) => { if (!elements.has(selector)) elements.set(selector,new Element()); return elements.get(selector)!; };
-  const model = { level:1, experience:"0", progression:undefined as any, started: false, hunt: "locked", combatStatus: "locked", canBegin: undefined as boolean|undefined, turn: 0, lastRequestId: null as string|null, attackReady: false, version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
+  const model = { level:1, experience:"0", progression:undefined as any, attributes:undefined as any, started: false, hunt: "locked", combatStatus: "locked", canBegin: undefined as boolean|undefined, turn: 0, lastRequestId: null as string|null, attackReady: false, version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
     me: null as null | ((signal?: AbortSignal) => Promise<Response>), send: null as null | (() => Promise<Response>),
     control: null as null | (() => Promise<Response>) };
   const timers: Array<() => void> = [];
   const deadlines = new Map<number,()=>void>(); let timerId = 0;
-  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: model.level, experience: model.experience, gold: "9007199254740993" }, progression:model.progression, journey: { started: model.started }, hunt: { catalogId:"dock-patrol-v1",name:"Ronda do cais",durationSeconds:30,experience:"20",gold:"8",status:model.hunt,startedAt:null,readyAt:null,serverNow:new Date().toISOString() }, combat:{catalogId:"dock-raider-v1",enemyName:"Fixture enemy",status:model.combatStatus,canBegin:model.canBegin,turn:model.turn,playerHp:30,enemyHp:36,playerMaxHp:30,enemyMaxHp:36,attackReady:model.attackReady,lastRequestId:model.lastRequestId,nextAttackAt:null,lastAttack:null,experience:"30",gold:"12"} });
+  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: model.level, experience: model.experience, gold: "9007199254740993" }, progression:model.progression,attributes:model.attributes, journey: { started: model.started }, hunt: { catalogId:"dock-patrol-v1",name:"Ronda do cais",durationSeconds:30,experience:"20",gold:"8",status:model.hunt,startedAt:null,readyAt:null,serverNow:new Date().toISOString() }, combat:{catalogId:"dock-raider-v1",enemyName:"Fixture enemy",status:model.combatStatus,canBegin:model.canBegin,turn:model.turn,playerHp:30,enemyHp:36,playerMaxHp:30,enemyMaxHp:36,attackReady:model.attackReady,lastRequestId:model.lastRequestId,nextAttackAt:null,lastAttack:null,experience:"30",gold:"12"} });
   runInNewContext(source, {
     URL, AbortController, setTimeout(fn:()=>void) { deadlines.set(++timerId,fn); return timerId; },
     clearTimeout(id:number) { deadlines.delete(id); }, crypto: { randomUUID }, confirm: () => true,
@@ -60,7 +60,8 @@ function page(storage = new Map<string,string>()) {
     },
   });
   const click = (selector: string) => { const fn = get(selector).listeners.get("click"); assert.ok(fn,selector+" must be wired"); fn({}); };
-  return { get, model, click, timers, storage, expire: () => { for (const fn of [...deadlines.values()]) fn(); } };
+  const submit=(selector:string)=>{const fn=get(selector).listeners.get("submit");assert.ok(fn);fn({preventDefault(){}});};
+  return { get, model, click, submit, timers, storage, expire: () => { for (const fn of [...deadlines.values()]) fn(); } };
 }
 test("panel reads server state precisely, requires control and starts the journey without using demo storage", async () => {
   const p=page(); await settle();
@@ -230,4 +231,27 @@ test("level panel displays server thresholds/earned points, preserves total XP a
 test("invalid level metadata blocks online commands instead of presenting forged points",async()=>{
   const p=page();p.model.progression={catalogId:"online-levels-v1",maxLevel:20,earnedAttributePoints:999,xpIntoLevel:"0",xpForNextLevel:"80",xpToNextLevel:"80",atCap:false};await settle();
   p.click("#control");await settle();assert.equal(p.get("#journey-start").disabled,true);assert.equal(p.model.requests.length,0);
+});
+
+const attributeFixture=()=>({catalogId:"online-attributes-v1",allocated:{strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0},earned:5,spent:0,available:5,lastRequestId:null as string|null});
+test("attribute form confirms an exact intent and restores the same payload/request after a lost reply and reload",async()=>{
+  const storage=new Map<string,string>(),p=page(storage);p.model.level=2;p.model.attributes=attributeFixture();await settle();
+  assert.match(p.get("#attribute-budget").textContent,/5/);assert.equal(p.get("#attribute-apply").disabled,true);
+  p.click("#control");await settle();p.get("#attribute-kind").value="strength";p.get("#attribute-count").value="3";
+  p.model.send=async()=>{p.model.failRead=true;throw new TypeError("reply lost");};p.submit("#attribute-form");await settle();
+  assert.equal(p.model.requests.length,1);const first=p.model.requests[0];assert.equal(first.action,"attributes.allocate");assert.deepEqual(first.payload,{allocation:{strength:3,dexterity:0,vitality:0,intelligence:0,spirit:0}});
+  assert.equal(p.get("#attribute-kind").disabled,true);
+  const next=page(storage);next.model.level=2;next.model.attributes=attributeFixture();await settle();assert.equal(next.model.requests.length,0,"reload must not POST");
+  next.click("#control");await settle();next.get("#attribute-kind").value="spirit";next.get("#attribute-count").value="5";
+  next.model.send=async()=>{next.model.attributes={...attributeFixture(),allocated:{strength:3,dexterity:0,vitality:0,intelligence:0,spirit:0},spent:3,available:2,lastRequestId:first.requestId};return Response.json({});};
+  next.submit("#attribute-form");await settle();assert.deepEqual(next.model.requests[0],first);assert.equal(storage.size,0);assert.match(next.get("#attribute-budget").textContent,/2/);
+});
+test("attribute UI blocks forged budgets and invalid input, clears state on logout, and reconciles only its own request",async()=>{
+  const p=page();p.model.level=2;p.model.attributes=attributeFixture();await settle();p.click("#control");await settle();
+  for(const amount of ["0","-1","1.5","6","NaN"]) {p.get("#attribute-kind").value="strength";p.get("#attribute-count").value=amount;p.submit("#attribute-form");await settle();}
+  assert.equal(p.model.requests.length,0);
+  p.model.attributes.available=999;p.click("#online-refresh");await settle();assert.equal(p.get("#attribute-apply").disabled,true);
+  p.model.attributes=attributeFixture();p.click("#online-refresh");await settle();p.get("#attribute-kind").value="strength";p.get("#attribute-count").value="2";
+  p.model.send=async()=>{p.model.attributes.lastRequestId=randomUUID();throw new TypeError("reply lost");};p.submit("#attribute-form");await settle();assert.equal(p.storage.size,1,"another allocation cannot confirm this intent");
+  p.click("#logout");await settle();assert.equal(p.get("#attribute-apply").disabled,true);assert.equal(p.get("#attribute-budget").textContent,"");assert.equal(p.storage.size,0);
 });

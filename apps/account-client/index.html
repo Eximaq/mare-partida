@@ -111,6 +111,22 @@
               </dl>
               <p id="level-progress" role="status" aria-live="polite"></p>
               <p id="level-points" class="quiet"></p>
+              <form id="attribute-form" aria-labelledby="attribute-title">
+                <h4 id="attribute-title">Distribuir pontos</h4>
+                <p id="attribute-budget" role="status" aria-live="polite"></p>
+                <p id="attribute-values" class="quiet"></p>
+                <p class="quiet">São pontos investidos, sem os atributos iniciais da classe. A distribuição é permanente nesta etapa e ainda não altera a vida ou o dano dos encontros.</p>
+                <label for="attribute-kind">Atributo</label>
+                <select id="attribute-kind" name="attribute" disabled>
+                  <option value="strength">Força</option><option value="dexterity">Destreza</option>
+                  <option value="vitality">Vitalidade</option><option value="intelligence">Inteligência</option>
+                  <option value="spirit">Espírito</option>
+                </select>
+                <label for="attribute-count">Pontos a investir</label>
+                <input id="attribute-count" name="points" type="number" min="1" max="95" step="1" value="1" required disabled />
+                <p id="attribute-pending" class="quiet" role="status"></p>
+                <button type="submit" id="attribute-apply" disabled>Confirmar distribuição</button>
+              </form>
               <p id="journey-state">Progresso ainda não confirmado.</p>
               <p id="journey-message" class="quiet" role="status" aria-live="polite"></p>
               <div class="online-actions">

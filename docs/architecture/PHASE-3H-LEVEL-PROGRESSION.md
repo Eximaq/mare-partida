@@ -109,3 +109,5 @@ estáticos; API/BFF não são implantados em produção por esse workflow.
   personagens reais de teste e saves preservados. Nenhum e-mail ou alteração Supabase.
 
 Docker/Linux dependem do job real do PR; não é alegada execução Docker local.
+
+Distribuição de pontos implementada posteriormente na [Etapa 3I](PHASE-3I-ATTRIBUTE-ALLOCATION.md); os limites de combate descritos acima permanecem.
