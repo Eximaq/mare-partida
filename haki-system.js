@@ -1,24 +1,25 @@
 'use strict';
 /* Persistent unlock/resource, ephemeral combat state. No offline regeneration or auto re-arm at zero. */
 ((root)=>{
+  const P=root.MareHakiProgression||(typeof require==='function'?require('./haki-progression.js'):null);
   const ids=['armament','observation','conqueror'];
-  const rules=Object.freeze({level:50,maxWillpower:100,drain:5,regen:5,kingCost:50,kingCooldown:8,stun:3,bossDuration:8,radius:360,bookChance:.05,minBossLevel:30});
+  const rules=Object.freeze({level:50,maxWillpower:100,drain:5,regen:5,kingCost:50,kingCooldown:8,stun:P.limits.stun,bossDuration:P.limits.bossDuration,radius:P.limits.radius,bookChance:.05,minBossLevel:30});
   const catalog=[
     {id:'armament',name:'Haki do Armamento',subtitle:'Busoshoku',description:'+15 pontos percentuais de penetração física e +10% de defesa.',cost:'5 Vontade/s'},
     {id:'observation',name:'Haki da Observação',subtitle:'Kenbunshoku',description:'+15 pontos percentuais de esquiva e precisão.',cost:'5 Vontade/s'},
-    {id:'conqueror',name:'Haki do Rei',subtitle:'Haoshoku',description:'Atordoa monstros comuns por 3s. Chefes perdem 15% de ataque e defesa por 8s. Alcance: 360.',cost:'50 Vontade por uso'}
+    {id:'conqueror',name:'Domínio do Conquistador',subtitle:'Haoshoku',description:'Atordoa monstros comuns por 3s. Chefes perdem 15% de ataque e defesa por 8s. Alcance: 360.',cost:'50 Vontade por uso'}
   ];
   const book={id:'will-book',name:'Livro da Vontade',kind:'haki-book',slot:'consumable',rarity:'epic',attack:0,defense:0,hp:0,symbol:'▤'};
   const clamp=n=>Math.min(100,Math.max(0,Number.isFinite(n)?n:100));
   function migrate(g){
     const h=g.haki||{},unlocked=g.has_haki_unlocked===true||h.unlocked===true;
-    return {...g,has_haki_unlocked:unlocked,haki:{version:1,unlocked,current:clamp(h.current),kingReadyAt:Number.isFinite(h.kingReadyAt)&&h.kingReadyAt>0?h.kingReadyAt:0,auto:['armament','observation'].includes(h.auto)?h.auto:null,equipped:['armament','observation'].includes(h.equipped)?h.equipped:'armament'}};
+    return {...g,has_haki_unlocked:unlocked,haki:{version:2,unlocked,mastery:P.normalize(h,unlocked),current:clamp(h.current),kingReadyAt:Number.isFinite(h.kingReadyAt)&&h.kingReadyAt>0?h.kingReadyAt:0,auto:['armament','observation'].includes(h.auto)?h.auto:null,equipped:['armament','observation'].includes(h.equipped)?h.equipped:'armament'}};
   }
   const start=()=>({active:null,inCombat:false,remaining:0,exhausted:false,kingFX:0,eyeFX:0});
   function touch(g,rt){
     if(!g.has_haki_unlocked)return;
     const first=!rt.inCombat;rt.inCombat=true;rt.remaining=6;
-    if(first&&!rt.active&&g.haki.auto&&g.haki.current>0&&!rt.exhausted)rt.active=g.haki.auto;
+    if(first&&!rt.active&&g.haki.auto&&P.learned(g,g.haki.auto)&&g.haki.current>0&&!rt.exhausted)rt.active=g.haki.auto;
   }
   function stop(rt){rt.active=null;rt.inCombat=false;rt.remaining=0;rt.exhausted=false;rt.kingFX=0;rt.eyeFX=0;}
   function tick(g,rt,dt,{alive=true,inHunt=true}={}){
@@ -26,6 +27,7 @@
     rt.kingFX=Math.max(0,rt.kingFX-dt);rt.eyeFX=Math.max(0,rt.eyeFX-dt);
     if(!g.has_haki_unlocked)return;
     if(!alive||!inHunt){stop(rt);if(alive)g.haki.current=clamp(g.haki.current+dt*rules.regen);return;}
+    if(rt.active&&!P.learned(g,rt.active))rt.active=null;
     const wasCombat=rt.inCombat,combatTime=wasCombat?Math.min(dt,rt.remaining):0;rt.remaining=Math.max(0,rt.remaining-dt);
     const activeWindow=rt.active?(wasCombat?combatTime:dt):0,activeTime=Math.min(activeWindow,g.haki.current/rules.drain);
     if(rt.active){g.haki.current=clamp(g.haki.current-activeTime*rules.drain);if(g.haki.current<=1e-8){g.haki.current=0;rt.active=null;rt.exhausted=wasCombat;}}
@@ -35,18 +37,20 @@
   }
   function toggle(g,rt,id,{alive=true,inHunt=true}={}){
     if(!g.has_haki_unlocked||!alive||!inHunt||!['armament','observation'].includes(id))return {ok:false,message:'Ative este Haki durante uma expedição, com o personagem vivo.'};
+    if(!P.learned(g,id))return {ok:false,message:'Conclua o ramo para desbloquear sua habilidade ativa.'};
     if(rt.active===id){rt.active=null;return {ok:true};}
     if(g.haki.current<=0)return {ok:false,message:'Vontade esgotada. Descanse fora de combate.'};
     g.haki.equipped=id;rt.active=id;return {ok:true};
   }
   function configure(g,id,enabled){
-    if(!g.has_haki_unlocked||!['armament','observation'].includes(id))return null;
+    if(!g.has_haki_unlocked||!P.learned(g,id)||!['armament','observation'].includes(id))return null;
     const next=migrate(g);next.haki.auto=enabled?id:(next.haki.auto===id?null:next.haki.auto);if(enabled)next.haki.equipped=id;return next;
   }
   function stats(s,g,rt){
-    if(!g.has_haki_unlocked||!rt?.active||g.haki.current<=0)return s;
-    if(rt.active==='armament')return {...s,penetration:Math.min(.95,(s.penetration||0)+.15),defense:s.defense*1.10};
-    return {...s,evasion:Math.min(.75,(s.evasion||0)+.15),accuracy:Math.min(1,(s.accuracy||0)+.15)};
+    if(!g.has_haki_unlocked||!rt?.active||!P.learned(g,rt.active)||g.haki.current<=0)return s;
+    const e=P.effects(g,rt.active);
+    if(rt.active==='armament')return {...s,penetration:Math.min(.95,(s.penetration||0)+(e.penetration||0)),defense:s.defense*(1+(e.defense||0))};
+    return {...s,evasion:Math.min(.75,(s.evasion||0)+(e.evasion||0)),accuracy:Math.min(1,(s.accuracy||0)+(e.accuracy||0))};
   }
   function unlock(g,itemId,defs){
     const next=migrate(g),item=next.inventory?.find(i=>i.id===itemId);
@@ -61,14 +65,17 @@
   const cooldown=(g,now=Date.now())=>Math.max(0,Math.min(rules.kingCooldown,((g.haki?.kingReadyAt||0)-now)/1000));
   function cast(g,rt,hero,enemies,{alive=true,inHunt=true,clear=()=>true,now=Date.now()}={}){
     if(!g.has_haki_unlocked||!alive||!inHunt)return {ok:false,message:'Use o Haki do Rei durante uma expedição, com o personagem vivo.'};
+    if(!P.learned(g,'conqueror'))return {ok:false,message:'Conclua os dois ramos iniciais e o Domínio do Conquistador.'};
     if(cooldown(g,now)>0)return {ok:false,message:'Haki do Rei recarregando: '+Math.ceil(cooldown(g,now))+'s.'};
     if(g.haki.current<rules.kingCost)return {ok:false,message:'O Haki do Rei exige 50 de Vontade.'};
     g.haki.kingReadyAt=now+rules.kingCooldown*1000;
     g.haki.current-=rules.kingCost;if(g.haki.current===0){rt.active=null;rt.exhausted=true;}
     rt.kingFX=.8;touch(g,rt);
-    const targets=enemies.filter(m=>m.alive&&Math.hypot(m.x-hero.x,m.y-hero.y)<=rules.radius&&clear(hero,m));
-    for(const m of targets){if(m.type==='boss'||m.boss)m.hakiDebuff=rules.bossDuration;else m.talentControl={type:'stun',remaining:Math.max(rules.stun,m.talentControl?.remaining||0)};}
+    const effect=P.effects(g,'conqueror');
+    const targets=enemies.filter(m=>m.alive&&Math.hypot(m.x-hero.x,m.y-hero.y)<=effect.radius&&clear(hero,m));
+    for(const m of targets){if(m.type==='boss'||m.boss)m.hakiDebuff=effect.bossDuration;else m.talentControl={type:'stun',remaining:Math.max(effect.stun,m.talentControl?.remaining||0)};}
     return {ok:true,targets:targets.length};
   }
-  const api={available:true,rules,catalog,book,migrate,start,touch,stop,tick,toggle,configure,stats,unlock,eligibleBoss,drop,cast,cooldown,ids};root.MareHaki=api;if(typeof module!=='undefined')module.exports=api;
+  const eligibleOffensive=(g,rt)=>P.learned(g,'armament')&&rt?.active==='armament'&&g.haki.current>0;
+  const api={progression:P,eligibleOffensive,available:true,rules,catalog,book,migrate,start,touch,stop,tick,toggle,configure,stats,unlock,eligibleBoss,drop,cast,cooldown,ids};root.MareHaki=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

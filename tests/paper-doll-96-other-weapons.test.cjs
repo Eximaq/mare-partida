@@ -41,7 +41,7 @@ const catalogStart=game.indexOf('  const itemDefs = ['),catalogEnd=game.indexOf(
 assert(catalogStart>=0&&catalogEnd>catalogStart,'catalog initialization must be found');
 const definitions=require('node:vm').runInNewContext(game.slice(catalogStart,catalogEnd)+';itemDefs',{
  MareForge:require('../forge-system.js'),MarePrison:require('../prison-system.js'),
- MareHaki:require('../haki-system.js'),MareAkuma:require('../akuma-system.js')
+ MareHakiProgression:require('../haki-progression.js'),MareHaki:require('../haki-system.js'),MareAkuma:require('../akuma-system.js')
 });
 const expectedWeapons=[
  [0,"Espada de Ferro Salgado","weapon","sword",6,0,0,"common",false],

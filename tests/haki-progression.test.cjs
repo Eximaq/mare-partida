@@ -1,0 +1,65 @@
+'use strict';
+const assert=require('node:assert/strict'),H=require('../haki-system.js'),P=H.progression,F=require('../forge-system.js'),D=require('../dev-tools.js'),R=require('../rank-b-system.js');
+require('../character-system.js');require('../talent-system.js');
+const defs=[{name:'existing',slot:'weapon',rarity:'common'},H.book,...P.fragments];
+let uid=0;const make=d=>({id:'test-'+uid++,def:defs.indexOf(d),level:1,plus:0});
+const fresh=()=>{let g=H.migrate({level:50,inventory:[{id:'book',def:1}],equipment:{},talentSeq:71,talentBuilds:{sword:{nodes:{existing:5}}},achievements:{claimed:['kills-0']}});return H.unlock(g,'book',defs).state};
+const grant=(g,b,n=100)=>P.addFragments(g,b,n,defs,make);
+const buy=(g,id)=>{const r=P.invest(g,id,g.haki.mastery.seq,defs,()=>true);assert(r.ok,r.message);return r.state};
+const train=(g,b)=>{for(const n of P.branches[b])for(let i=P.rank(g,n.id);i<n.max;i++)g=buy(g,n.id);return g};
+let g=fresh();assert.equal(P.held(g),false);assert(!P.learned(g,'armament'));assert(!P.gate(g));
+for(const b of P.ids)g=grant(g,b);
+const initial=JSON.stringify(g),talents=JSON.stringify(g.talentBuilds),achievements=JSON.stringify(g.achievements);
+assert.match(P.error(g,'hardening',defs),/Revestimento/);
+assert.match(P.error(g,'presence',defs),/integralmente/);
+assert(!P.invest(g,'unknown',0,defs,()=>true).ok);
+assert(!P.invest(g,'coating',5,defs,()=>true).ok);
+for(const persist of [null,()=>false,()=>{throw Error('quota')}]){assert(!P.invest(g,'coating',0,defs,persist).ok);assert.equal(JSON.stringify(g),initial);}
+const cost=P.cost(g,P.byId.coating);g=buy(g,'coating');
+assert.equal(P.quantity(g,'armament',defs),100-cost);assert.equal(P.quantity(g,'observation',defs),100);
+assert(!P.invest(g,'coating',0,defs,()=>true).ok,'stale duplicate cannot spend twice');
+assert.equal(g.haki.mastery.seq,1);
+assert.deepEqual(H.stats({defense:100},g,{active:'armament'}),{defense:100},'intermediate ownership is not an active buff');
+g=train(g,'armament');assert(P.complete(g,'armament'));assert(P.learned(g,'armament'));assert(!P.gate(g));assert.match(P.error(g,'presence',defs),/integralmente/);
+assert(!P.invest(g,'armament-final',g.haki.mastery.seq,defs,()=>true).ok);
+g=train(g,'observation');assert(P.gate(g));assert.equal(P.error(g,'presence',defs),null);
+g=train(g,'conqueror');assert(P.learned(g,'conqueror'));
+assert.deepEqual(P.effects(g,'armament'),{penetration:.15,defense:.1});
+assert.deepEqual(P.effects(g,'observation'),{accuracy:.15,evasion:.15});
+assert.equal(g.talentSeq,71);assert.equal(JSON.stringify(g.talentBuilds),talents);assert.equal(JSON.stringify(g.achievements),achievements);
+assert.equal(H.start().active,null);assert.equal(H.migrate(g).haki.mastery.completedVersions.armament,1);
+const expanded=H.migrate({...g,haki:{...g.haki,mastery:{...g.haki.mastery,ranks:{}}}});
+assert(P.gate(expanded),'completion milestone survives future expansion');assert(P.learned(expanded,'conqueror'));
+let legacy=H.migrate({has_haki_unlocked:true,haki:{version:1,unlocked:true,current:37,auto:'observation',equipped:'armament',kingReadyAt:100},inventory:[]});
+assert(P.held(legacy));assert.deepEqual(legacy.haki.mastery.ranks,{});assert(P.learned(legacy,'conqueror'));assert.equal(legacy.haki.current,37);assert.equal(legacy.inventory.length,0);
+assert.deepEqual(H.migrate(legacy),legacy);assert.match(P.error(legacy,'coating',defs),/Migração/);
+assert.equal(legacy.haki.mastery.migration.legacy.kingReadyAt,100);
+let stacks=grant(fresh(),'armament',P.MAX_STACK);stacks=grant(stacks,'armament',10);assert.equal(stacks.inventory.length,2);assert.equal(P.quantity(stacks,'armament',defs),P.MAX_STACK+10);
+stacks.inventory[0].locked=true;assert.equal(P.quantity(stacks,'armament',defs),10);
+let locked=grant(fresh(),'observation');locked.inventory[0].locked=true;assert.match(P.error(locked,'perception',defs),/insuficientes/);assert.match(P.error(locked,'coating',defs),/insuficientes/);
+assert(!F.isGear(stacks.inventory[0],defs));assert.equal(F.normalizeItem({...stacks.inventory[0]},defs).qty,P.MAX_STACK);
+const maxBag=grant(fresh(),'armament',1);for(let i=1;i<120;i++)maxBag.inventory.push({id:'gear'+i,def:0});
+assert(grant(maxBag,'armament',3));assert.equal(grant(maxBag,'observation',3),null);
+const dev=D.copy(maxBag);const ctx={active:true,defs,makeItem:make};
+assert(!D.execute(maxBag,{type:'haki-fragments'},ctx).ok,'production cannot grant fragments');
+const d=D.execute(dev,{type:'item',index:2,count:2,level:1,plus:0,rarity:'epic'},ctx);assert(d.ok);assert.equal(P.quantity(d.state,'armament',defs),3);
+const rt=H.start(),stats={defense:100,penetration:.1,accuracy:.7,evasion:.1};
+H.toggle(g,rt,'armament');assert(H.eligibleOffensive(g,rt));assert.equal(H.stats(stats,g,rt).defense,110.00000000000001);
+H.toggle(g,rt,'observation');assert(!H.eligibleOffensive(g,rt));
+H.stop(rt);assert(!H.eligibleOffensive(g,rt));assert.deepEqual(H.stats(stats,g,rt),stats);
+console.log('Haki mastery: atomic spending, stacks/full bag, locked materials, branch isolation, all gates, milestones, migration hold, no passive/class-point duplication and DEV isolation passed');
+
+const C=require('../character-system.js'),Y=require('../ryu-system.js');
+// The Logia exception is applied after ordinary armor calculation; it never zeros armor.
+for(const fruit of ['akuma_beta_beta','akuma_mera_mera','akuma_yami_yami','akuma_hie_hie']){
+ const armored=C.damage({physical:200,elemental:0},100,{type:'physical',multiplier:1});
+ assert(armored<200);assert.equal(R.reduction(armored,{equipped:fruit,physical:true}),armored*.7);
+ H.toggle(g,rt,'armament');assert.equal(R.reduction(armored,{equipped:fruit,hasHaki:H.eligibleOffensive(g,rt)}),armored);
+ H.toggle(g,rt,'observation');assert.equal(R.reduction(armored,{equipped:fruit,hasHaki:H.eligibleOffensive(g,rt)}),armored*.7);
+ assert.equal(R.reduction(armored,{equipped:fruit,physical:false}),armored,'magic keeps its existing category handling');
+ H.stop(rt);assert.equal(R.reduction(armored,{equipped:fruit,hasHaki:H.eligibleOffensive(g,rt)}),armored*.7);
+}
+const withArmor=Y.damage(200,100,1,0,{fruitId:'akuma_beta_beta'});
+const eligible=Y.damage(200,100,1,0,{fruitId:'akuma_beta_beta'},true);
+assert.equal(eligible,170);assert.equal(withArmor,118);assert(eligible<200);
+console.log('Logia: eligible active Armament only, physical category, armor preserved and expiration restored; existing magic and Ryu handling preserved');

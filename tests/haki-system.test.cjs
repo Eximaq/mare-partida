@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict');
 const H=require('../haki-system.js');
 const A=require('../achievement-system.js');
-const defs=[H.book];
+const P=H.progression;const defs=[H.book,...P.fragments];
 const base=()=>H.migrate({level:50,hp:100,inventory:[{id:'book',def:0}],stats:{},equipment:{}});
 let g=base(),rt=H.start();
 assert.equal(g.has_haki_unlocked,false);assert.equal(H.unlock({...g,level:49},'book',defs).ok,false);
@@ -10,6 +10,8 @@ assert.equal(H.unlock({...g,inventory:[{id:'book',def:0,locked:true}]},'book',de
 let result=H.unlock(g,'book',defs);assert(result.ok);assert.equal(g.inventory.length,1);
 g=result.state;assert.equal(g.inventory.length,0);assert.equal(g.haki.current,100);assert.equal(H.unlock(g,'book',defs).ok,false);
 assert.deepEqual(H.migrate(H.migrate(g)),H.migrate(g));
+assert.equal(H.configure(g,'armament',true),null);
+for(const b of P.ids){g=P.addFragments(g,b,100,defs,d=>({id:'test-'+b,def:defs.indexOf(d)}));for(const n of P.branches[b])for(let i=0;i<n.max;i++){const r=P.invest(g,n.id,g.haki.mastery.seq,defs,()=>true);assert(r.ok,r.message);g=r.state;}}
 g=H.configure(g,'armament',true);assert.equal(H.configure(g,'conqueror',true),null);
 H.touch(g,rt);assert.equal(rt.active,'armament');
 const stats={defense:100,penetration:.10,evasion:.10,accuracy:.75};

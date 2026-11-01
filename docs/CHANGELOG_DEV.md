@@ -685,3 +685,11 @@ Regressão extra: Supa, Doru, Neko, Ushi e Lobo aprovados; Ryu mantém diferenç
 ## 01/11/2026 — Conquistas e Hierarquia dos Mares HD
 
 Branch feature/achievements-hierarchy-hd, base 0897d9f. Duas janelas HD, resumo/resgates permanentes, consulta das quatro facções e dos 32 títulos, novas insígnias PixelLab e ranking filtrado no serviço antes do Top 10. Regras, save e emblemas preservados. [Relatório, arte, testes e rollback](CONQUISTAS-HIERARQUIA-HD.md).
+
+## 01/11/2026 — Haki: domínio próprio, fragmentos e arte negra/carmesim
+
+Branch `feature/haki-mastery-hd`, base `68ea929`; checkout isolado para preservar o trabalho local. Nova rota, 16 nós configuráveis, gate Armamento + Observação, três materiais empilháveis e investimento atômico. Motor Haki/Vontade único, H/J/K e interação Logia preservados. 19 ícones PixelLab Pro e 3 animações Workbench exportadas, com alfa e pivôs. Superfície compartilhada de madeira/metal escuro.
+
+Antigos despertados recebem estrutura nova e referência recuperável; compensação/Rei pendentes do proprietário, sem ranks gratuitos ou materiais distribuídos. Não há fontes de fragmentos na jornada normal. Pendência obrigatória HAKI-QUEST-DROPS em `docs/haki/PENDENCIAS_HAKI.md`; ponteiro curto no AGENT.
+
+Arquivos centrais: haki-progression/system/ui/art, haki-mastery.css, game, inventário/arte de itens, forge/dev, index/ui-preview, build, assets/haki/mastery, testes e workflow Haki. Testes e medidas reais em [haki/VALIDACAO.md](haki/VALIDACAO.md); arquitetura e rollback em [haki/DOMINIO.md](haki/DOMINIO.md). Capturas recentes ficam fora do repositório/como artefatos de CI. Nenhum asset antigo foi excluído.

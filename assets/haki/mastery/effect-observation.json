@@ -1,0 +1,651 @@
+{
+ "frames": [
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 0.png",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 1.png",
+   "frame": {
+    "x": 28,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 2.png",
+   "frame": {
+    "x": 56,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 3.png",
+   "frame": {
+    "x": 84,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 4.png",
+   "frame": {
+    "x": 112,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 5.png",
+   "frame": {
+    "x": 0,
+    "y": 23,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 6.png",
+   "frame": {
+    "x": 28,
+    "y": 23,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 7.png",
+   "frame": {
+    "x": 56,
+    "y": 23,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 8.png",
+   "frame": {
+    "x": 84,
+    "y": 23,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 9.png",
+   "frame": {
+    "x": 112,
+    "y": 23,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 10.png",
+   "frame": {
+    "x": 0,
+    "y": 46,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 11.png",
+   "frame": {
+    "x": 28,
+    "y": 46,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 12.png",
+   "frame": {
+    "x": 56,
+    "y": 46,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 13.png",
+   "frame": {
+    "x": 84,
+    "y": 46,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 14.png",
+   "frame": {
+    "x": 112,
+    "y": 46,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 15.png",
+   "frame": {
+    "x": 0,
+    "y": 69,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 16.png",
+   "frame": {
+    "x": 28,
+    "y": 69,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 17.png",
+   "frame": {
+    "x": 56,
+    "y": 69,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 18.png",
+   "frame": {
+    "x": 84,
+    "y": 69,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 19.png",
+   "frame": {
+    "x": 112,
+    "y": 69,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 20.png",
+   "frame": {
+    "x": 0,
+    "y": 92,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 21.png",
+   "frame": {
+    "x": 28,
+    "y": 92,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 22.png",
+   "frame": {
+    "x": 56,
+    "y": 92,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-observacao-obsidiana-carmesim 23.png",
+   "frame": {
+    "x": 84,
+    "y": 92,
+    "w": 28,
+    "h": 23
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 28,
+    "h": 23
+   },
+   "sourceSize": {
+    "w": 28,
+    "h": 23
+   },
+   "pivot": {
+    "x": 0.5,
+    "y": 0.4782608695652174
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "PixelLab VFX Creator",
+  "image": "kaizoku-haki-observacao-obsidiana-carmesim.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 140,
+   "h": 115
+  },
+  "scale": "1",
+  "anchor": {
+   "kind": "origin",
+   "x": 14,
+   "y": 11
+  },
+  "frameTags": [
+   {
+    "name": "kaizoku-haki-observacao-obsidiana-carmesim",
+    "from": 0,
+    "to": 23,
+    "direction": "forward"
+   }
+  ]
+ }
+}

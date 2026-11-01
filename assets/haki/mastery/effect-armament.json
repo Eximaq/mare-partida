@@ -1,0 +1,339 @@
+{
+ "frames": [
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 0.png",
+   "frame": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 1.png",
+   "frame": {
+    "x": 33,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 2.png",
+   "frame": {
+    "x": 66,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 3.png",
+   "frame": {
+    "x": 99,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 4.png",
+   "frame": {
+    "x": 0,
+    "y": 38,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 5.png",
+   "frame": {
+    "x": 33,
+    "y": 38,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 6.png",
+   "frame": {
+    "x": 66,
+    "y": 38,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 7.png",
+   "frame": {
+    "x": 99,
+    "y": 38,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 8.png",
+   "frame": {
+    "x": 0,
+    "y": 76,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 9.png",
+   "frame": {
+    "x": 33,
+    "y": 76,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 10.png",
+   "frame": {
+    "x": 66,
+    "y": 76,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  },
+  {
+   "filename": "kaizoku-haki-armamento-obsidiana-carmesim 11.png",
+   "frame": {
+    "x": 99,
+    "y": 76,
+    "w": 33,
+    "h": 38
+   },
+   "rotated": false,
+   "trimmed": false,
+   "spriteSourceSize": {
+    "x": 0,
+    "y": 0,
+    "w": 33,
+    "h": 38
+   },
+   "sourceSize": {
+    "w": 33,
+    "h": 38
+   },
+   "pivot": {
+    "x": 0.48484848484848486,
+    "y": 0.5263157894736842
+   },
+   "duration": 83
+  }
+ ],
+ "meta": {
+  "app": "PixelLab VFX Creator",
+  "image": "kaizoku-haki-armamento-obsidiana-carmesim.png",
+  "format": "RGBA8888",
+  "size": {
+   "w": 132,
+   "h": 114
+  },
+  "scale": "1",
+  "anchor": {
+   "kind": "origin",
+   "x": 16,
+   "y": 20
+  },
+  "frameTags": [
+   {
+    "name": "kaizoku-haki-armamento-obsidiana-carmesim",
+    "from": 0,
+    "to": 11,
+    "direction": "forward"
+   }
+  ]
+ }
+}
