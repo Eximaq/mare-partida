@@ -1,87 +1,106 @@
-/* Dedicated Haki route. Shared materials and modal behavior, no gameplay HUD geometry changes. */
-#app #panelOverlay.haki-mastery-mode .dialog{width:min(1640px,calc(100vw - 18px));height:calc(100dvh - 20px);max-width:none;max-height:none;display:flex;flex-direction:column;padding:14px;border:13px solid transparent;border-image:url('assets/ui/inventory-hd/frame-v2.png') 46 /21px;background:linear-gradient(#09070799,#09070799),var(--rpg-hd-wood) center/650px}
-#app #panelOverlay.haki-mastery-mode .dialog-header{flex:none;margin:0;padding:6px 10px 14px;border-bottom:1px solid #ae8449;background:linear-gradient(#08090e99,#08090e99),var(--rpg-workshop-surface) center/512px}
-#app #panelOverlay.haki-mastery-mode #dialogTitle{font:700 36px/1.05 'Inventory Alegreya SC',Georgia,serif;color:#ffe2a7}
-#app #panelOverlay.haki-mastery-mode #dialogBody{flex:1;min-height:0;padding:12px 0 0;overflow:auto}
-#app #panelOverlay.haki-mastery-mode .haki-mastery{font:17px/1.3 'Alegreya Sans',sans-serif;color:#ddd5c3;display:flex;flex-direction:column;gap:12px}
-#app #panelOverlay.haki-mastery-mode .haki-mastery :is(h2,h3){font-family:'Inventory Alegreya SC',Georgia,serif;color:#f2d493;margin:0 0 8px}
-#app #panelOverlay.haki-mastery-mode .haki-mastery h2{font-size:19px}#app #panelOverlay.haki-mastery-mode .haki-mastery h3{font-size:18px}
-#app #panelOverlay.haki-mastery-mode .haki-mastery .haki-icon{width:64px;height:64px;object-fit:contain;flex:none;background:none;border:0;image-rendering:auto}
-#app #panelOverlay.haki-mastery-mode .hm-top{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:8px 14px;border:1px solid #82673d;background:linear-gradient(#06080baa,#06080baa),var(--rpg-workshop-surface) center/512px}
-#app #panelOverlay.haki-mastery-mode .hm-materials{display:flex;gap:12px;flex:1}#app #panelOverlay.haki-mastery-mode .hm-materials>div{display:flex;align-items:center;gap:8px;border-right:1px solid #73623f;padding-right:12px;min-width:0}
-#app #panelOverlay.haki-mastery-mode .hm-materials .haki-icon{width:45px;height:45px}#app #panelOverlay.haki-mastery-mode .hm-materials span{display:grid;gap:2px}#app #panelOverlay.haki-mastery-mode .hm-materials small{font-size:14px;max-width:140px}
-#app #panelOverlay.haki-mastery-mode .haki-mastery .haki-reserve{width:220px;max-width:35%;display:grid;gap:3px;color:#e9e4d6;text-align:left}
-#app #panelOverlay.haki-mastery-mode .haki-mastery .haki-reserve i{display:block;height:12px;border:1px solid #77674c;background:#09080a;overflow:hidden}
-#app #panelOverlay.haki-mastery-mode .haki-mastery .haki-reserve em{display:block;height:100%;background:linear-gradient(0deg,#7b142d,#e74256);box-shadow:0 0 6px #c71e3f}
-#app #panelOverlay.haki-mastery-mode .hm-layout{display:grid;grid-template-columns:minmax(460px,1fr) minmax(240px,.4fr) minmax(220px,.34fr);gap:12px;align-items:start}
-#app #panelOverlay.haki-mastery-mode :is(.hm-tree,.hm-detail,.hm-info,.haki-mastery .haki-disciplines article){border:6px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 /7px;background:linear-gradient(#080609a8,#080609bc),var(--rpg-workshop-surface) center/512px;min-width:0}
-#app #panelOverlay.haki-mastery-mode .hm-tree{padding:10px;display:flex;flex-direction:column;gap:12px;background:radial-gradient(ellipse at center,#4b101c33,transparent 70%),linear-gradient(#08060999,#080609bb),var(--rpg-workshop-surface) center/512px}
-#app #panelOverlay.haki-mastery-mode .hm-branch>header{display:flex;align-items:center;justify-content:space-between;gap:8px;border-bottom:1px solid #835236;margin-bottom:10px}
-#app #panelOverlay.haki-mastery-mode .hm-branch>header h2{margin:0;font-size:19px}#app #panelOverlay.haki-mastery-mode .hm-branch>header small{font-size:13px;color:#b9a78c}
-#app #panelOverlay.haki-mastery-mode .hm-conqueror{width:70%;align-self:center}
-#app #panelOverlay.haki-mastery-mode .hm-nodes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;position:relative}
-#app #panelOverlay.haki-mastery-mode .hm-nodes:before{content:'';position:absolute;top:0;bottom:0;left:50%;width:1px;background:linear-gradient(#8c2338,#d74752,#8c2338);opacity:.6;pointer-events:none}
-#app #panelOverlay.haki-mastery-mode .hm-conqueror .hm-nodes{grid-template-columns:1fr;gap:6px}#app #panelOverlay.haki-mastery-mode .hm-conqueror .hm-nodes:before{left:22px}
-#app #panelOverlay.haki-mastery-mode .hm-node{position:relative;display:flex;align-items:center;gap:8px;text-align:left;min-width:0;min-height:86px;padding:6px;border:1px solid #72533e;border-radius:0;background:linear-gradient(#09090d99,#09090d99),var(--rpg-workshop-surface) center/512px;color:#d2c9b7;cursor:pointer}
-#app #panelOverlay.haki-mastery-mode .hm-node span{display:grid;gap:4px;min-width:0}#app #panelOverlay.haki-mastery-mode .hm-node strong{font:700 16px/1.15 'Inventory Alegreya SC',serif;overflow-wrap:anywhere;color:#eddbb9}
-#app #panelOverlay.haki-mastery-mode .hm-node small{font:14px/1.1 'Alegreya Sans',sans-serif;color:#b5b3b0}#app #panelOverlay.haki-mastery-mode .hm-node .haki-icon{width:52px;height:52px}
-#app #panelOverlay.haki-mastery-mode .hm-node.locked .haki-icon{filter:grayscale(1);opacity:.55}#app #panelOverlay.haki-mastery-mode .hm-node.complete{border-color:#c7a359}
-#app #panelOverlay.haki-mastery-mode .hm-node.partial{border-color:#b25453}#app #panelOverlay.haki-mastery-mode .hm-node.ready{border-color:#de934c}
+/* Compact mastery composition. Presentation only; catalogue, costs and saves stay in their own modules. */
+#app #panelOverlay.haki-mastery-mode .dialog{width:min(1300px,calc(100vw - 24px));height:min(850px,calc(100dvh - 24px));max-width:none;max-height:none;display:flex;flex-direction:column;padding:10px;border:13px solid transparent;border-image:url('assets/ui/inventory-hd/frame-v2.png') 46 /21px;background:linear-gradient(#09070799,#09070799),var(--rpg-hd-wood) center/650px}
+#app #panelOverlay.haki-mastery-mode .dialog-header{flex:none;min-height:58px;margin:0;padding:4px 8px 8px;border-bottom:1px solid #ae8449;background:linear-gradient(#08090e99,#08090e99),var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.haki-mastery-mode #dialogTitle{font:700 32px/1.05 'Inventory Alegreya SC',Georgia,serif;color:#ffe2a7}
+#app #panelOverlay.haki-mastery-mode #dialogBody{flex:1;min-height:0;padding:8px 0 0;overflow:auto}
+#app #panelOverlay.haki-mastery-mode .haki-mastery{font:16px/1.25 'Alegreya Sans',sans-serif;color:#ddd5c3;display:flex;flex-direction:column;gap:8px}
+#app #panelOverlay.haki-mastery-mode .haki-mastery :is(h2,h3){font-family:'Inventory Alegreya SC',Georgia,serif;color:#f2d493;margin:0}
+#app #panelOverlay.haki-mastery-mode .haki-icon{width:48px;height:48px;object-fit:contain;flex:none;background:none;border:0;image-rendering:auto}
+#app #panelOverlay.haki-mastery-mode .haki-disciplines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(190px,.9fr);gap:8px;margin:0}
+#app #panelOverlay.haki-mastery-mode :is(.haki-disciplines article,.haki-reserve,.hm-detail){border:6px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 /7px;background:linear-gradient(#080609a8,#080609bc),var(--rpg-workshop-surface) center/512px;min-width:0}
+#app #panelOverlay.haki-mastery-mode .haki-disciplines article{padding:5px 8px;display:grid;gap:4px}
+#app #panelOverlay.haki-mastery-mode .haki-disciplines article>header{display:flex;align-items:center;gap:6px;min-width:0}
+#app #panelOverlay.haki-mastery-mode .haki-disciplines h3{font-size:19px}
+#app #panelOverlay.haki-mastery-mode .haki-disciplines article>header>div{flex:1;min-width:0}
+#app #panelOverlay.haki-mastery-mode .haki-disciplines small{font-size:14px}
+#app #panelOverlay.haki-mastery-mode .haki-disciplines article.haki-active{border-image-source:url('assets/ui/honors-hd/button-gold.png')}
+#app #panelOverlay.haki-mastery-mode .hm-active-actions{display:flex;gap:12px;align-items:center}
+#app #panelOverlay.haki-mastery-mode .hm-active-actions label{display:flex;align-items:center;gap:5px;font-size:15px;cursor:pointer;min-height:32px}
+#app #panelOverlay.haki-mastery-mode .hm-active-actions input{width:18px;height:18px;min-height:0;accent-color:#d7a549}
+#app #panelOverlay.haki-mastery-mode .hm-control-reason{font-size:13px;color:#d6c3a4;min-height:16px}
+#app #panelOverlay.haki-mastery-mode .hm-control-info{position:relative;flex:none}
+#app #panelOverlay.haki-mastery-mode .hm-control-info>summary{display:grid;place-items:center;width:28px;height:28px;border:1px solid #bc9456;border-radius:50%;color:#ffd991;font:700 17px Georgia;cursor:pointer;list-style:none}
+#app #panelOverlay.haki-mastery-mode .hm-control-info>div{position:absolute;right:0;top:32px;width:240px;max-width:calc(100vw - 70px);padding:12px;border:1px solid #c49b57;background:#151015;box-shadow:0 6px 18px #000c;z-index:2;font-size:16px}
+#app #panelOverlay.haki-mastery-mode .hm-control-info p{margin:6px 0}
+#app #panelOverlay.haki-mastery-mode .haki-reserve{display:flex;flex-direction:column;justify-content:center;gap:8px;padding:10px}
+#app #panelOverlay.haki-mastery-mode .haki-reserve>header{display:flex;justify-content:space-between;gap:8px}
+#app #panelOverlay.haki-mastery-mode .haki-reserve i{display:block;height:12px;border:1px solid #91754d;background:#09080a;overflow:hidden}
+#app #panelOverlay.haki-mastery-mode .haki-reserve em{display:block;height:100%;background:linear-gradient(0deg,#7b142d,#e74256);box-shadow:0 0 6px #c71e3f}
+#app #panelOverlay.haki-mastery-mode .haki-reserve small{font-size:14px;color:#c6bba8}
+#app #panelOverlay.haki-mastery-mode .hm-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:10px;align-items:start}
+#app #panelOverlay.haki-mastery-mode .hm-tree{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:8px;border:1px solid #866137;background:radial-gradient(ellipse at center,#4b101c33,transparent 70%),linear-gradient(#08060999,#080609bb),var(--rpg-workshop-surface) center/512px;min-width:0}
+#app #panelOverlay.haki-mastery-mode .hm-branch{min-width:0}
+#app #panelOverlay.haki-mastery-mode .hm-branch>header{display:grid;gap:2px;text-align:center;padding:0 0 8px;margin-bottom:8px;border-bottom:1px solid #725438}
+#app #panelOverlay.haki-mastery-mode .hm-branch h2{font-size:21px}
+#app #panelOverlay.haki-mastery-mode .hm-branch>header>small{font-size:13px;color:#c8b89c}
+#app #panelOverlay.haki-mastery-mode .hm-fragment{display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px}
+#app #panelOverlay.haki-mastery-mode .hm-fragment .haki-icon{width:28px;height:28px}
+#app #panelOverlay.haki-mastery-mode .hm-nodes{display:flex;flex-direction:column;gap:10px;position:relative;margin:0 auto;max-width:190px}
+#app #panelOverlay.haki-mastery-mode .hm-node{position:relative;display:flex;align-items:center;gap:7px;min-width:0;min-height:58px;width:100%;padding:4px 7px;text-align:left;border:1px solid #765338;border-radius:5px;background:linear-gradient(#100d11cc,#100d11dd),var(--rpg-workshop-surface) center/512px;color:#e7d8bc;cursor:pointer}
+#app #panelOverlay.haki-mastery-mode .hm-node span{display:grid;gap:3px;min-width:0}
+#app #panelOverlay.haki-mastery-mode .hm-node strong{font:700 16px/1.05 'Inventory Alegreya SC',serif;overflow-wrap:anywhere}
+#app #panelOverlay.haki-mastery-mode .hm-node small{font:700 15px/1.1 'Alegreya Sans',sans-serif;color:#e7d8bc}
+#app #panelOverlay.haki-mastery-mode .hm-node.locked .haki-icon{filter:grayscale(1);opacity:.55}
+#app #panelOverlay.haki-mastery-mode .hm-node.complete{border-color:#d8b260}
+#app #panelOverlay.haki-mastery-mode .hm-node.partial{border-color:#c77959}
+#app #panelOverlay.haki-mastery-mode .hm-node.ready{border-color:#de934c}
 #app #panelOverlay.haki-mastery-mode .hm-node[aria-pressed=true]{outline:2px solid #f4ca76;outline-offset:1px;background:linear-gradient(#64271d55,#35171b77),var(--rpg-workshop-surface) center/512px}
-#app #panelOverlay.haki-mastery-mode .hm-node.hm-final{box-shadow:inset 0 0 12px #a3182422}
-#app #panelOverlay.haki-mastery-mode .hm-conqueror .hm-node{min-height:45px;padding:4px 8px}#app #panelOverlay.haki-mastery-mode .hm-conqueror .hm-node .haki-icon{width:36px;height:36px}
-#app #panelOverlay.haki-mastery-mode .hm-conqueror .hm-node span{display:flex;align-items:center;justify-content:space-between;flex:1;gap:8px}
-#app #panelOverlay.haki-mastery-mode .hm-gate{display:grid;text-align:center;gap:4px;padding:7px;border:1px solid #8e7045;background:#0e0a0c88;font-size:14px;color:#d0b57b}
-#app #panelOverlay.haki-mastery-mode .hm-initial{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-#app #panelOverlay.haki-mastery-mode .hm-initial .hm-nodes{grid-template-columns:1fr}#app #panelOverlay.haki-mastery-mode .hm-initial .hm-node{min-height:69px}
-#app #panelOverlay.haki-mastery-mode .hm-initial .hm-nodes:before{left:30px}
-#app #panelOverlay.haki-mastery-mode .hm-detail,#app #panelOverlay.haki-mastery-mode .hm-info{padding:14px}
-#app #panelOverlay.haki-mastery-mode .hm-detail>header{display:flex;align-items:center;gap:12px;margin:14px 0}#app #panelOverlay.haki-mastery-mode .hm-detail>header small{display:block}
-#app #panelOverlay.haki-mastery-mode .hm-detail p{margin:12px 0}#app #panelOverlay.haki-mastery-mode .hm-effect,#app #panelOverlay.haki-mastery-mode .hm-requirements{padding:10px;border:1px solid #68523c;margin:12px 0;background:#07090b66}
-#app #panelOverlay.haki-mastery-mode .hm-effect ul,#app #panelOverlay.haki-mastery-mode .hm-info ul{padding-left:18px;margin:8px 0;line-height:1.45}#app #panelOverlay.haki-mastery-mode .hm-effect li b{white-space:nowrap;color:#f1d69c}
-#app #panelOverlay.haki-mastery-mode .hm-detail>.ui-button{width:100%;min-height:47px}
-#app #panelOverlay.haki-mastery-mode .haki-mastery button:not(.hm-node){border:5px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 /6px;background:linear-gradient(#0c090ba8,#0c090ba8),var(--rpg-workshop-surface) center/512px;border-radius:0;color:#f5dfad;padding:7px 12px;font:700 17px/1.2 'Inventory Alegreya SC',Georgia,serif;cursor:pointer}
-#app #panelOverlay.haki-mastery-mode .haki-mastery button:not(.hm-node):not(:disabled):hover{border-image-source:url('assets/ui/honors-hd/button-gold.png')}
-#app #panelOverlay.haki-mastery-mode .haki-mastery button:disabled{opacity:.5;cursor:not-allowed}
-#app #panelOverlay.haki-mastery-mode .hm-info article{display:flex;align-items:flex-start;gap:8px;padding:12px 0;border-bottom:1px solid #624936}
-#app #panelOverlay.haki-mastery-mode .hm-info article .haki-icon{width:55px;height:55px}#app #panelOverlay.haki-mastery-mode .hm-info article h3{font-size:16px}#app #panelOverlay.haki-mastery-mode .hm-info article p{font-size:15px;margin:4px 0}
-#app #panelOverlay.haki-mastery-mode .hm-info>h2:not(:first-child){margin-top:18px}#app #panelOverlay.haki-mastery-mode .hm-info li{font-size:15px}
-#app #panelOverlay.haki-mastery-mode .hm-migration{padding:10px 14px;border:1px solid #a58752;background:#5c3d153d;color:#e8c990;margin:0}
-#app #panelOverlay.haki-mastery-mode .haki-mastery .haki-disciplines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:0}
-#app #panelOverlay.haki-mastery-mode .haki-mastery .haki-disciplines article{padding:12px;display:flex;flex-direction:column;gap:9px}
-#app #panelOverlay.haki-mastery-mode .haki-mastery .haki-disciplines header{display:flex;align-items:center;gap:10px}
-#app #panelOverlay.haki-mastery-mode .haki-mastery .haki-disciplines p{margin:0}#app #panelOverlay.haki-mastery-mode .haki-mastery .haki-disciplines label{font-size:15px}
-#app #panelOverlay.haki-mastery-mode .haki-mastery article.haki-active{border-image-source:url('assets/ui/honors-hd/button-gold.png')}
-#app #panelOverlay.haki-mastery-mode .haki-mastery button:focus-visible{outline:2px solid #ffda89;outline-offset:2px}
-@media(max-width:1180px){#app #panelOverlay.haki-mastery-mode .hm-layout{grid-template-columns:minmax(350px,1fr) minmax(240px,.6fr)}#app #panelOverlay.haki-mastery-mode .hm-info{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}#app #panelOverlay.haki-mastery-mode .hm-info>h2,#app #panelOverlay.haki-mastery-mode .hm-info>ul,#app #panelOverlay.haki-mastery-mode .hm-info>p{grid-column:1/-1}#app #panelOverlay.haki-mastery-mode .hm-info article{border:0}#app #panelOverlay.haki-mastery-mode .hm-conqueror{width:90%}}
-@media(max-width:760px){#app #panelOverlay.haki-mastery-mode .dialog{width:calc(100vw - 6px);height:calc(100dvh - 6px);padding:5px;border-width:8px}#app #panelOverlay.haki-mastery-mode .hm-layout{display:flex;flex-direction:column}#app #panelOverlay.haki-mastery-mode .hm-layout>*{width:100%;box-sizing:border-box}#app #panelOverlay.haki-mastery-mode .hm-top{flex-direction:column;padding:8px}#app #panelOverlay.haki-mastery-mode .hm-materials{gap:5px;width:100%}#app #panelOverlay.haki-mastery-mode .hm-materials>div{padding-right:4px;gap:3px;flex:1}#app #panelOverlay.haki-mastery-mode .hm-materials .haki-icon{width:28px;height:28px}#app #panelOverlay.haki-mastery-mode .hm-materials small{font-size:11px}#app #panelOverlay.haki-mastery-mode .haki-mastery .haki-reserve{max-width:none;width:100%}#app #panelOverlay.haki-mastery-mode .hm-info{display:block}#app #panelOverlay.haki-mastery-mode .haki-mastery .haki-disciplines{grid-template-columns:1fr}#app #panelOverlay.haki-mastery-mode .hm-node{flex-direction:column;text-align:center}#app #panelOverlay.haki-mastery-mode .hm-node .haki-icon{width:45px;height:45px}#app #panelOverlay.haki-mastery-mode .hm-node strong{font-size:15px}#app #panelOverlay.haki-mastery-mode .hm-conqueror{width:100%}#app #panelOverlay.haki-mastery-mode .hm-conqueror .hm-node{flex-direction:row;text-align:left}#app #panelOverlay.haki-mastery-mode .hm-conqueror .hm-node span{display:grid}#app #panelOverlay.haki-mastery-mode .hm-initial{gap:10px}#app #panelOverlay.haki-mastery-mode .hm-branch>header{display:block}#app #panelOverlay.haki-mastery-mode .hm-branch>header h2{font-size:16px}}
-
-/* Compact vertical branches keep final controls visible on desktop. */
-#app #panelOverlay.haki-mastery-mode .hm-conqueror{width:90%}
-#app #panelOverlay.haki-mastery-mode .hm-conqueror .hm-nodes{grid-template-columns:1fr 1fr;gap:8px}
-#app #panelOverlay.haki-mastery-mode .hm-conqueror .hm-node span{display:grid;justify-content:start;gap:3px}
-#app #panelOverlay.haki-mastery-mode .hm-node strong{font-size:15px}
-#app #panelOverlay.haki-mastery-mode .hm-node small{font-size:13px}
-#app #panelOverlay.haki-mastery-mode .hm-initial .hm-node{min-height:56px;padding:4px 7px}
-#app #panelOverlay.haki-mastery-mode .hm-node .haki-icon{width:43px;height:43px}
-#app #panelOverlay.haki-mastery-mode .hm-initial .hm-nodes{gap:9px}
-#app #panelOverlay.haki-mastery-mode .haki-reserve{padding:8px 10px;background:linear-gradient(#09090b66,#09090b88),var(--rpg-workshop-surface) center/512px;border:1px solid #82673d;color:#eed5aa}
-#app #panelOverlay.haki-mastery-mode .hm-info article p{line-height:1.3;font-size:14px}
-#app #panelOverlay.haki-mastery-mode .hm-info li{font-size:14px}
-#app #panelOverlay.haki-mastery-mode .hm-info article{padding:8px 0}
-#app #panelOverlay.haki-mastery-mode .hm-detail p{font-size:15px;line-height:1.4}
+#app #panelOverlay.haki-mastery-mode .hm-node.hm-final{min-height:66px;border-radius:8px;box-shadow:inset 0 0 12px #a3182422}
+#app #panelOverlay.haki-mastery-mode .hm-final .haki-icon{width:56px;height:56px}
+#app #panelOverlay.haki-mastery-mode .hm-gate{position:relative;display:grid;text-align:center;gap:4px;padding:9px 5px;border:1px solid #9e7945;margin-top:24px;background:#0e0a0cbb;font-size:13px;color:#e6ca90}
+#app #panelOverlay.haki-mastery-mode .hm-foundation{margin:12px 0 0;text-align:center;font-size:13px;color:#c8b89c}
 #app #panelOverlay.haki-mastery-mode .hm-detail{padding:10px}
-#app #panelOverlay.haki-mastery-mode .hm-effect,#app #panelOverlay.haki-mastery-mode .hm-requirements{margin:8px 0;padding:8px}
-#app #panelOverlay.haki-mastery-mode .hm-detail>.ui-button[data-variant=primary]:not(:disabled){border-image-source:url(assets/ui/honors-hd/button-gold.png)}
-#app #panelOverlay.haki-mastery-mode #closePanel{background:linear-gradient(#15101555,#15101588),var(--rpg-workshop-surface) center/512px;color:#ffe0a1;border:1px solid #b18a4f}
-@media(max-width:760px){#app #panelOverlay.haki-mastery-mode .hm-conqueror .hm-nodes{grid-template-columns:1fr}#app #panelOverlay.haki-mastery-mode .hm-initial .hm-node{min-height:98px}}
+#app #panelOverlay.haki-mastery-mode .hm-detail>header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+#app #panelOverlay.haki-mastery-mode .hm-detail>header small{display:block;font-size:14px}
+#app #panelOverlay.haki-mastery-mode .hm-detail h3{font-size:18px}
+#app #panelOverlay.haki-mastery-mode .hm-effect{padding:8px 0;border-block-start:1px solid #755536}
+#app #panelOverlay.haki-mastery-mode .hm-effect ul{padding:0;list-style:none;margin:6px 0 0}
+#app #panelOverlay.haki-mastery-mode .hm-effect li{display:flex;gap:10px;justify-content:space-between;font-size:15px}
+#app #panelOverlay.haki-mastery-mode .hm-effect li b{white-space:nowrap;color:#f1d69c}
+#app #panelOverlay.haki-mastery-mode .hm-requirements{border-top:1px solid #755536;padding:8px 0}
+#app #panelOverlay.haki-mastery-mode .hm-requirements p{margin:4px 0;font-size:15px}
+#app #panelOverlay.haki-mastery-mode .hm-cost{display:grid;gap:3px;margin:6px 0 10px;padding:7px;border:1px solid #80633e;color:#f3d49a}
+#app #panelOverlay.haki-mastery-mode .hm-cost span{font-size:14px}
+#app #panelOverlay.haki-mastery-mode .hm-feedback{font-size:14px;margin:7px 0;color:#dfc9a3}
+#app #panelOverlay.haki-mastery-mode .hm-training-note{margin-top:10px;font-size:14px}
+#app #panelOverlay.haki-mastery-mode .hm-training-note summary{min-height:32px;cursor:pointer;color:#e5c78d}
+#app #panelOverlay.haki-mastery-mode .hm-training-note p{margin:6px 0}
+#app #panelOverlay.haki-mastery-mode .hm-migration{padding:7px 10px;border:1px solid #a58752;background:#5c3d153d;color:#e8c990;margin:0;font-size:14px}
+#app #panelOverlay.haki-mastery-mode .haki-mastery button:not(.hm-node){border:5px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 /6px;background:linear-gradient(#0c090ba8,#0c090ba8),var(--rpg-workshop-surface) center/512px;border-radius:0;color:#f5dfad;padding:4px 8px;min-height:34px;font:700 16px/1.2 'Inventory Alegreya SC',Georgia,serif;cursor:pointer}
+#app #panelOverlay.haki-mastery-mode .haki-mastery button:not(.hm-node):not(:disabled):hover{border-image-source:url('assets/ui/honors-hd/button-gold.png')}
+#app #panelOverlay.haki-mastery-mode .haki-mastery button:disabled{opacity:.55;cursor:not-allowed}
+#app #panelOverlay.haki-mastery-mode .haki-mastery :is(button,summary,input):focus-visible{outline:2px solid #ffda89;outline-offset:2px}
+@media(max-width:1100px){
+ #app #panelOverlay.haki-mastery-mode .hm-layout{grid-template-columns:minmax(0,1fr) 250px}
+ #app #panelOverlay.haki-mastery-mode .hm-tree{gap:8px;padding:6px}
+ #app #panelOverlay.haki-mastery-mode .hm-node{flex-direction:column;text-align:center;min-height:90px;gap:3px;padding:4px}
+ #app #panelOverlay.haki-mastery-mode .hm-node strong{font-size:15px}
+ #app #panelOverlay.haki-mastery-mode .hm-node .haki-icon{width:44px;height:44px}
+ #app #panelOverlay.haki-mastery-mode .hm-fragment span{display:none}
+ #app #panelOverlay.haki-mastery-mode .haki-disciplines{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ #app #panelOverlay.haki-mastery-mode .dialog{width:calc(100vw - 8px);height:calc(100dvh - 8px);padding:6px;border-width:8px}
+ #app #panelOverlay.haki-mastery-mode .hm-layout{display:flex;flex-direction:column}
+ #app #panelOverlay.haki-mastery-mode .hm-layout>*{width:100%;box-sizing:border-box}
+ #app #panelOverlay.haki-mastery-mode .hm-tree{gap:5px;padding:5px}
+ #app #panelOverlay.haki-mastery-mode .hm-branch h2{font-size:16px;overflow-wrap:anywhere}
+ #app #panelOverlay.haki-mastery-mode .hm-node .haki-icon{width:40px;height:40px}
+ #app #panelOverlay.haki-mastery-mode .hm-node strong{font-size:14px}
+ #app #panelOverlay.haki-mastery-mode .hm-branch>header>small{font-size:12px}
+ #app #panelOverlay.haki-mastery-mode .haki-disciplines{gap:5px}
+ #app #panelOverlay.haki-mastery-mode .haki-disciplines article{padding:4px}
+ #app #panelOverlay.haki-mastery-mode .haki-disciplines h3{font-size:17px}
+ #app #panelOverlay.haki-mastery-mode .haki-disciplines article .haki-icon{width:34px;height:34px}
+ #app #panelOverlay.haki-mastery-mode .hm-active-actions{gap:6px;flex-wrap:wrap}
+ #app #panelOverlay.haki-mastery-mode .hm-gate{font-size:12px;overflow-wrap:anywhere}
+ #app #panelOverlay.haki-mastery-mode .hm-control-info>div{position:fixed;left:20px;right:20px;top:100px;width:auto;max-width:none}
+ #app #panelOverlay.haki-mastery-mode .hm-detail{padding:8px}
+}
 
-#app #panelOverlay.haki-mastery-mode .hm-node.locked .haki-icon{opacity:.8}
-#app #panelOverlay.haki-mastery-mode .haki-disciplines article p{font-size:15px;line-height:1.25}
+#app #panelOverlay.haki-mastery-mode .hm-tree{position:relative;isolation:isolate}
+#app #panelOverlay.haki-mastery-mode .hm-links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;overflow:visible}
+#app #panelOverlay.haki-mastery-mode .hm-links>path{fill:none;stroke:#87633d;stroke-width:1.5}
+#app #panelOverlay.haki-mastery-mode .hm-links>path.complete{stroke:#f0be58;stroke-width:2}
 
-#app:has(#panelOverlay.haki-mastery-mode:not(.hidden)) #toastContainer{background:none;border:0}
-#app:has(#panelOverlay.haki-mastery-mode:not(.hidden)) #toastContainer .toast{background:linear-gradient(#0b080baa,#0b080bdd),var(--rpg-workshop-surface) center/512px;border-color:#a27a42;color:#f0dbaf}
-
-#app #panelOverlay.haki-mastery-mode .haki-reserve b{color:#f1d8a5}
-
-#app #panelOverlay .op-detail-wrap>.haki-icon[src*="/mastery/fragment-"]{width:96px;height:96px;object-fit:contain;background:none}
+@media(max-width:480px){#app #panelOverlay.haki-mastery-mode .haki-disciplines{grid-template-columns:minmax(0,1fr)}#app #panelOverlay.haki-mastery-mode .haki-disciplines article>header>div{min-width:0}#app #panelOverlay.haki-mastery-mode .haki-disciplines h3{overflow-wrap:anywhere}}
