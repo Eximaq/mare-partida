@@ -1,3 +1,5 @@
+[Meu Perfil, Equipamentos, Jornal do Morgan e Configurações HD](docs/CENTRAL-NAVEGANTE-HD.md).
+
 [Conquistas e Hierarquia HD: consulta das quatro facções, 32 insígnias e ranking filtrado](docs/CONQUISTAS-HIERARQUIA-HD.md).
 
 [Mapa do Arquipélago e Impel Down HD: destinos, prévia persistente e regras preservadas](docs/MAPA-PRISAO-HD.md).
