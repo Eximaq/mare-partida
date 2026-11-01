@@ -4,6 +4,8 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 
 | Tarefa | Código a localizar primeiro | Documentos e testes a procurar | Atenção |
 |---|---|---|---|
+| Fundação do servidor autoritativo | `apps/game-server`, `packages/shared`, `infra` | `docs/architecture/AUTHORITATIVE-FOUNDATION.md`, `docs/operations/LOCAL-SERVER.md`, `tests/foundation`, `tests/integration/server*` | Fase 1: sem autenticação/gameplay online; preservar frontend/saves; publicação da branch e Draft PR autorizados na revisão; sem merge/deploy |
+| Autenticação e aceite da Fase 2 | `apps/game-server/src/auth`, `apps/account-client` | `docs/operations/PHASE-2F-FINAL-ACCEPTANCE.md`, `docs/architecture/ADR-0002-BFF-SESSIONS.md`, `docs/operations/SUPABASE-DEVELOPMENT-SETUP.md` | Matriz 2F é status atual; histórico não renova autorização; sem e-mails/mudanças Supabase antes de aprovação específica |
 | Login/portal | `portal/index.html`, `portal/portal.js`, `portal/portal.css`, `tools/build_pages.py` | `docs/COLABORACAO_GITHUB.md`; testes web/build relevantes | Não afirmar Supabase conectado sem confirmar; preservar fundo/arte aprovada |
 | HUD/UI/inventário | `character-hud.js`, `ui-system.js`, `notification-system.js`, `ui-*.css`, `index.html`, `ui-preview.html`, `game.js` (somente funções de UI), `forge-ui.js` | `docs/UI-DESIGN.md` (se existir), `docs/CHARACTER-PARCHMENT-HUD.md` (perfil/cartaz), `docs/HUD-NAVIGATOR-DIRECTION.md` (demais painéis), testes de inventário | Índices `itemDefs`, equipamentos e saves |
 | Personalização visual/criação | `character-appearance.js`, `game.js` criação, `paper-doll-96-lobby.js`, `tools/paper-doll-96-v3/wardrobe.js` | `docs/PERSONAGEM-APARENCIA-96.md`; testes character-appearance/character_appearance | Rascunho separado, íris mascarada, pele fora do cabelo, política de capacete |
@@ -32,6 +34,14 @@ Este índice é **mapa de navegação**, não descrição confiável do estado a
 - Não carregar estes documentos em correções textuais simples; mantê-los pequenos e atualizados a partir de falhas comprovadas.
 
 ## Procedimento rápido de leitura
+
+Autenticação online em desenvolvimento: `apps/game-server/src/auth/`,
+`packages/shared/src/schemas/auth.ts`, `apps/account-client/`;
+ver `docs/architecture/ADR-0002-BFF-SESSIONS.md` e
+`docs/operations/PHASE-2-DEVELOPMENT.md`. Testes: `tests/foundation/auth*`,
+`supabase-provider.test.mts`, `gateway.test.mts`, `tests/integration/server-auth*`.
+Sem integração de gameplay/saves; homologação Supabase real continua pendente.
+
 ```bash
 git status --short && git log -1 --oneline
 rg --files | rg '(portal|paper-doll|conchas|tests)'  # troque pelo domínio da tarefa

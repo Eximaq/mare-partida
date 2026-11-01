@@ -1133,6 +1133,16 @@
     active.combatProjectiles ||= [];active.combatProjectiles.push(p);if(active.combatProjectiles.length>64){active.combatProjectiles[0].phase='done';active.combatProjectiles.shift();}return p;
   }
   function combatBeamOrigin(p){return p.mode==='beam'?{x:world.hero.x+p.originOffset.x,y:world.hero.y+p.originOffset.y}:p.origin;}
+  function autoAttackLine(target,hero=world.hero){
+    if(!combatLine(hero,target))return false;
+    if(game.zoanTransformed||!MareCombatVfx.data.flightEnds[MareCombatVfx.data.classHits[game.classId]])return true;
+    // The native weapon emitter can be behind scenery even when the feet ray is clear.
+    // Use the same emission point and collision projection as the actual projectile.
+    const dx=target.x-hero.x,dy=target.y-hero.y,direction=Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'back':'front');
+    const muzzle=lobby96.projectileOrigin(game,hero,{direction},horuBuffActive()?MareRankC.rules.horu.scale:1);
+    const origin=muzzle||{x:hero.x+(dx<0?-1:dx>0?1:hero.facing)*13,y:hero.y-27},point=combatChest(target);
+    return combatLine({x:origin.x,y:origin.y+24},{x:point.x,y:point.y+24});
+  }
   function stepCombatVfx(dt){
     session.combatHits=(session.combatHits||[]).filter(f=>(world.time-f.started)*1000*(f.rate||1)<MareCombatVfx.data.effects[f.kind].frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0)+(f.kind==='heal'?0:83));
     for(const p of session.combatProjectiles||[]){const valid=()=>session===p.session&&game.area===p.area&&scene==='hunt'&&game.hp>0&&session.respawn<=0&&basicAttackIdentity()===p.identity&&(game.equipment?.akuma_no_mi?.fruitId||null)===p.equippedFruitId&&(world.mobs.includes(p.target)||p.target.alive===false);if(p.phase!=='impact'&&!valid()){p.phase='done';continue;}if(p.phase!=='impact'&&p.target.alive===false){MareCombatVfx.finishImpact(p,combatChest(p.target));p.launchReady=true;continue;}if(p.launchReady===false){p.age+=dt;if(p.age>MareCombatVfx.data.maxFlight)p.phase='done';continue;}MareCombatVfx.step(p,p.born===world.time?0:dt,{
@@ -1464,17 +1474,18 @@
     const danger=livingMobs().find(m=>m.telegraph&&MareHunt.danger(m.telegraph,world.hero));
     if(danger){const candidates=[];for(const radius of [90,170,240])for(let a=0;a<Math.PI*2;a+=Math.PI/8){const p={x:world.hero.x+Math.cos(a)*radius,y:world.hero.y+Math.sin(a)*radius};if(!livingMobs().some(m=>m.telegraph&&MareHunt.danger(m.telegraph,p,22))&&navigator().walkable(p.x,p.y)&&navigator().clear(world.hero,p))candidates.push(p);}if(candidates.length){navigateEntity(world.hero,candidates[0],stats.huntSpeed,dt,2);session.attackClock=0;return;}}
     let target=world.target?.alive&&world.target.hp>0?world.target:chooseTarget();world.target=target;
-    if(target){let dist=distance(world.hero,target), desired=stats.range-8;
-      if(dist>desired||!combatLine(world.hero,target)){
+    if(target){let dist=distance(world.hero,target), desired=stats.range-8;const attackLine=autoAttackLine(target);
+      if(dist>desired||!attackLine){
         const speed=stats.huntSpeed;
-        if(!navigateEntity(world.hero,target,speed,dt,desired)){rejectedTargets.set(target.id,world.time+4);world.target=null;}
+        if(!navigateEntity(world.hero,target,speed,dt,attackLine?desired:0)){rejectedTargets.set(target.id,world.time+4);world.target=null;}
       }
 
       else{
         // Ranged classes keep space when the local navigation permits a retreat.
         if(['gunner','strategist','healer'].includes(game.classId)&&dist<stats.range*.45&&dist>0){
           const dx=(world.hero.x-target.x)/dist,dy=(world.hero.y-target.y)/dist;
-          navigator().move(world.hero,dx*stats.huntSpeed*dt,dy*stats.huntSpeed*dt);
+          const retreat={...world.hero,x:world.hero.x+dx*stats.huntSpeed*dt,y:world.hero.y+dy*stats.huntSpeed*dt};
+          if(autoAttackLine(target,retreat))navigator().move(world.hero,dx*stats.huntSpeed*dt,dy*stats.huntSpeed*dt);
         }
         if(classCombatController()&&autoSkills&&!classCombatController().locked()){
           for(const [i,skill] of classes[game.classId].skills.entries()){

@@ -26,6 +26,10 @@
 
 **Sprites atuais:** [fonte única e auditoria estrutural](docs/SPRITES-ATUAIS-FONTE-UNICA.md). O personagem jogável usa native96 em criação, lobby, inventário e combate; formas Zoan usam SpriteCombatV2. Fallbacks84 e flags de rollback antigas foram desativados. As notas de ensaios anteriores abaixo são históricas.
 
+**Servidor autoritativo — Fase 1 local:** [arquitetura e limites](docs/architecture/AUTHORITATIVE-FOUNDATION.md) · [execução, banco e testes](docs/operations/LOCAL-SERVER.md). Fundação independente; o jogo e os saves atuais permanecem no navegador.
+
+**Fase 2 em desenvolvimento:** [BFF, sessões e personagens](docs/architecture/PHASE-2-IMPLEMENTATION-REVIEW.md) · [preparação local e homologação](docs/operations/PHASE-2-DEVELOPMENT.md). Auth desabilitado por padrão; rodadas funcionais Supabase 1–3 registradas. [Matriz e janela final da Etapa 2F](docs/operations/PHASE-2F-FINAL-ACCEPTANCE.md), ainda sem aceite final.
+
 **Sprint 3:** [Sua Aparência](docs/PERSONAGEM-APARENCIA-96.md): nova etapa após classe, gênero, cabelos/olhos e cores independentes, prévia em quatro direções e persistência.
 
 **Sprint 2:** [capacetes, cabelo e botão de visibilidade](docs/CAPACETES-E-VISIBILIDADE.md). Base de 96 px como padrão por autorização do proprietário; botão no canto inferior direito do personagem no inventário.

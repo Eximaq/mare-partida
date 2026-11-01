@@ -80,6 +80,10 @@
   return draw(c,m.type,m.x,m.y+3,{action,direction:m.emberFacing||'south',time:now+(m.bob||0),progress,height:entry.worldHeight*(entry.world_scale??1),flash:reaction!==null&&!resolve(m.type,'hurt',m.emberFacing||'south').requested});
  }
  function install(){
+  // PR177 native Hurt backport; keep catalog contributions from main conflict-free.
+  // Register the approved clip, never substitute another action or overwrite authored Hurt.
+  const phoenix=data().phoenix;
+  if(phoenix&&!phoenix.clips.hurt)phoenix.clips.hurt={"south":{"image":"assets/sprites-combat-v2/phoenix/hurt-south.png","size":132,"frames":4,"fps":22.22222222222222,"loop":false,"bounds":[[21,25,111,113],[16,28,115,110],[22,34,111,111],[33,33,99,108]],"anchor":[66,113],"source_animation":"Recoil briefly from a frontal hit, contract the wings, then recover the original pose in place.","playback_start":0,"playback_frames":4,"playback_seconds":0.18}};
   const art=root.MareZoanArt;
   if(art){const original=art.draw,oldStatus=art.status,oldTiming=art.attackTiming;art.draw=function(c,id,x,y,o={}){const key=fruits[id];if(!key||!data()[key]){reportMissing('player-transformation',id,o.action,o.direction);return false;}return draw(c,key,x,y,{...o,...(key==='ryu'?{height:data().ryu.worldHeight*(o.scale??1)}:{})});};art.status=(id,a,d)=>fruits[id]?status(fruits[id],a,d):'missing';
    // Original logical metadata remains authoritative, independent of image loading.
