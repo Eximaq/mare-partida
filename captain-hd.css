@@ -1,0 +1,185 @@
+/* Shared Captain screens. Approved dark wood, blackened metal and aged gold. */
+#app #panelOverlay.captain-hd-mode{padding:6px}
+#app #panelOverlay.captain-hd-mode .dialog{width:min(1600px,calc(100vw - 12px));height:calc(100dvh - 12px);max-height:none;min-width:0;display:flex;flex-direction:column;border:18px solid transparent;border-image:url('assets/ui/inventory-hd/frame-v2.png') 46 fill/24px;background:#17100e url('assets/ui/forge-hd/workshop-surface.png') center/512px;box-shadow:0 10px 55px #000c;color:#f9e6bb;border-radius:0}
+#app #panelOverlay.captain-hd-mode .dialog-header{flex:none;min-height:86px;padding:13px 24px;background:#24170f url('assets/ui/character-hud/hd/wood.png') center/600px;border:0;border-bottom:2px solid #a87b36;display:flex;align-items:center}
+#app #panelOverlay.captain-hd-mode .dialog-header>div:first-child{min-width:0;flex:1}
+#app #panelOverlay.captain-hd-mode .dialog-header small{font:700 13px/1.4 'Inventory Alegreya SC',Georgia,serif;letter-spacing:.09em;color:#d8af61}
+#app #panelOverlay.captain-hd-mode #dialogTitle{margin:0;font:700 clamp(28px,3.5vw,48px)/1.1 'Inventory Alegreya SC',Georgia,serif;color:#ffedbe;text-shadow:0 2px 1px #000}
+#app #panelOverlay.captain-hd-mode #closePanel{flex:none;width:52px;height:52px;padding:0;background:#141416 url('assets/ui/character-hud/hd/wood.png') center/350px;border:8px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 fill/8px;color:#f4ce85;font-size:30px;line-height:1}
+#app #panelOverlay.captain-hd-mode #dialogBody{flex:1;min-height:0;overflow:auto;padding:18px 22px;background:linear-gradient(#070a0b80,#06090a70),url('assets/ui/forge-hd/workshop-surface.png') center/512px;scrollbar-color:#a87936 #1c1714;scrollbar-width:thin}
+#app #panelOverlay.captain-hd-mode #toastContainer{background:none;border:0;flex:none}
+#app #panelOverlay.captain-hd-mode :is(.captain-profile,.captain-journal,.captain-settings){--captain-text:18px;display:grid;gap:14px;color:#f6ead0;font:var(--captain-text)/1.45 'Alegreya Sans',Georgia,serif}
+#app #panelOverlay.captain-hd-mode :is(button,select):focus-visible{outline:2px solid #ffe3a0;outline-offset:3px}
+#app #panelOverlay.captain-hd-mode .captain-tabs{display:flex;gap:10px;padding:0;border:0;overflow:visible;min-width:0}
+#app #panelOverlay.captain-hd-mode .captain-tabs button{display:flex;align-items:center;justify-content:center;gap:12px;flex:1 1 0;min-width:0;min-height:58px;padding:7px 12px;white-space:normal;border:9px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 fill/9px;background:#151517 url('assets/ui/character-hud/hd/wood.png') center/420px;color:#f6e7be;font:700 21px/1.1 'Inventory Alegreya SC',Georgia,serif;text-shadow:0 2px 2px #000;cursor:pointer;border-radius:0}
+#app #panelOverlay.captain-hd-mode .captain-tabs button[aria-pressed=true]{border-image-source:url('assets/ui/honors-hd/button-gold.png');background:linear-gradient(#9c5f0bb0,#593109c0),url('assets/ui/character-hud/hd/wood.png') center/420px;color:#fff1c6;box-shadow:inset 0 0 14px #edae3733}
+#app #panelOverlay.captain-hd-mode .captain-icon{display:inline-block;width:44px;height:44px;object-fit:contain;flex:none;filter:drop-shadow(0 2px 2px #0009);vertical-align:middle}
+#app #panelOverlay.captain-hd-mode .captain-gold-icon{background:url('assets/ui/captain-hd/icons.png') calc(var(--ci-x)*100%/3) calc(var(--ci-y)*100%)/400% 200% no-repeat}
+#app #panelOverlay.captain-hd-mode .captain-profile-banner{display:grid;grid-template-columns:190px minmax(0,1fr) 230px;align-items:center;gap:22px;min-height:230px;padding:16px 28px 16px 20px;border:9px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 fill/10px;border-radius:0;background:linear-gradient(90deg,#090e10ec 25%,#0a0b0c44 65%,#160e09aa),url('assets/ui/honors-hd/faction-banner.png') center/cover;overflow:hidden}
+#app #panelOverlay.captain-hd-mode .captain-profile-avatar{position:relative;display:grid;place-items:center;width:190px;height:190px;border:9px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 fill/10px;background:radial-gradient(ellipse,#15262b,#070d10);border-radius:0}
+#app #panelOverlay.captain-hd-mode .captain-profile-avatar canvas{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+#app #panelOverlay.captain-hd-mode #captainPortraitState{position:absolute;inset:auto 6px 4px;text-align:center;font:12px/1.2 'Alegreya Sans',sans-serif;color:#e6d8bc}
+#app #panelOverlay.captain-hd-mode .captain-profile-name{display:grid;gap:8px}
+#app #panelOverlay.captain-hd-mode .captain-profile-name h2{margin:0;font:700 clamp(30px,3.6vw,54px)/1.1 'Inventory Alegreya SC',Georgia,serif;color:#fff0c8;overflow-wrap:anywhere;text-shadow:0 2px 3px #000}
+#app #panelOverlay.captain-hd-mode .captain-profile-name>small{font-size:17px;color:#e5be77}
+#app #panelOverlay.captain-hd-mode .captain-profile-name>small:last-child{color:#b7c9ca;font-size:16px}
+#app #panelOverlay.captain-hd-mode .captain-profile-name>span{display:flex;align-items:center;gap:8px;font:700 25px/1.2 'Inventory Alegreya SC',Georgia,serif;flex-wrap:wrap}
+#app #panelOverlay.captain-hd-mode .captain-class-icon{width:38px;height:38px;object-fit:contain}
+#app #panelOverlay.captain-hd-mode .captain-profile-power{position:relative;display:grid;justify-items:center;align-content:center;text-align:center;min-height:170px;padding:10px 20px;background:linear-gradient(#e0bf8a14,#0004);border:1px solid #91713d}
+#app #panelOverlay.captain-hd-mode .captain-faction-seal{width:64px;height:64px;object-fit:contain;filter:drop-shadow(0 3px 4px #000b)}
+#app #panelOverlay.captain-hd-mode .captain-profile-power small{font:700 18px/1.3 'Inventory Alegreya SC',Georgia,serif;color:#ffedc8}
+#app #panelOverlay.captain-hd-mode .captain-profile-power strong{font:700 48px/1.2 'Inventory Alegreya SC',Georgia,serif;color:#ffd578;text-shadow:0 2px 2px #000}
+#app #panelOverlay.captain-hd-mode .captain-section{padding:12px 16px 16px;border:7px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 fill/8px;background:linear-gradient(#101112a8,#111113d8),url('assets/ui/forge-hd/workshop-surface.png') center/512px}
+#app #panelOverlay.captain-hd-mode .captain-section-head{display:flex;align-items:center;gap:12px;border-bottom:1px solid #94713f;padding:0 0 8px;margin-bottom:12px}
+#app #panelOverlay.captain-hd-mode .captain-section-head h3{margin:0;font:700 27px/1.2 'Inventory Alegreya SC',Georgia,serif;color:#f7dda5;letter-spacing:0}
+#app #panelOverlay.captain-hd-mode .captain-section-head p{margin:0 0 0 auto;color:#b8c6c5;font-size:16px}
+#app #panelOverlay.captain-hd-mode :is(.captain-facts,.captain-rank-facts,.captain-combat-facts){display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+#app #panelOverlay.captain-hd-mode .captain-fact{display:flex;align-items:center;gap:16px;padding:12px 18px;border:1px solid #b38a4e;background:linear-gradient(110deg,#161518db,#0b1013e8),url('assets/ui/forge-hd/workshop-surface.png') center/400px;border-radius:0;min-width:0}
+#app #panelOverlay.captain-hd-mode .captain-fact>div{display:grid;gap:0;min-width:0}
+#app #panelOverlay.captain-hd-mode .captain-fact small{font-size:17px;color:#bccdcd}
+#app #panelOverlay.captain-hd-mode .captain-fact strong{font:700 24px/1.22 'Inventory Alegreya SC',Georgia,serif;color:#fff0d0;overflow-wrap:anywhere}
+#app #panelOverlay.captain-hd-mode .captain-combat-facts{grid-template-columns:repeat(4,minmax(0,1fr))}
+#app #panelOverlay.captain-hd-mode .captain-combat-facts .captain-fact{gap:10px;padding:10px}
+#app #panelOverlay.captain-hd-mode .captain-rank-facts{grid-template-columns:1fr 1fr 1fr}
+#app #panelOverlay.captain-hd-mode .captain-rank-facts>p{margin:0;align-self:center}
+#app #panelOverlay.captain-hd-mode .captain-muted{color:#afc0be;font-size:16px}
+#app #panelOverlay.captain-hd-mode .captain-equipment-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+#app #panelOverlay.captain-hd-mode .captain-equipment-card{display:flex;align-items:center;gap:16px;width:100%;min-width:0;min-height:146px;padding:12px;border:6px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 fill/7px;background:linear-gradient(110deg,#14151ae8,#0b1013dd),url('assets/ui/forge-hd/workshop-surface.png') center/512px;color:#fff1ce;text-align:left;border-radius:0}
+#app #panelOverlay.captain-hd-mode button.captain-equipment-card{cursor:help}
+#app #panelOverlay.captain-hd-mode .captain-equipment-art{flex:none;display:grid;place-items:center;width:108px;aspect-ratio:1;border:1px solid #a47e40;background:radial-gradient(ellipse,#243139,#080d10);box-shadow:inset 0 0 18px #0009}
+#app #panelOverlay.captain-hd-mode .captain-equipment-art img{display:block;width:94%;height:94%;object-fit:contain;image-rendering:auto}
+#app #panelOverlay.captain-hd-mode .captain-equipment-copy{display:grid;gap:8px;min-width:0;overflow-wrap:anywhere}
+#app #panelOverlay.captain-hd-mode .captain-equipment-copy small{font-size:14px;color:#b9cfce;text-transform:uppercase}
+#app #panelOverlay.captain-hd-mode .captain-equipment-copy strong{font:700 25px/1.15 'Inventory Alegreya SC',Georgia,serif}
+#app #panelOverlay.captain-hd-mode .captain-equipment-copy>span{font-size:15px;color:#d2b786}
+#app #panelOverlay.captain-hd-mode .captain-equipment-card.is-empty{opacity:.62}
+#app #panelOverlay.captain-hd-mode .captain-empty{display:grid;justify-items:center;gap:12px;padding:35px 22px;border:1px solid #80613c;border-radius:0;background:linear-gradient(#151317dc,#121216e3),url('assets/ui/forge-hd/workshop-surface.png') center/512px;color:#bdcbc9}
+#app #panelOverlay.captain-hd-mode .captain-empty>.captain-icon{width:70px;height:70px}
+#app #panelOverlay.captain-hd-mode .captain-empty h3{margin:0;font:700 28px/1.2 'Inventory Alegreya SC',Georgia,serif;letter-spacing:0;color:#f7d89d}
+#app #panelOverlay.captain-hd-mode .captain-empty p{max-width:720px;margin:0;font-size:18px}
+#app #panelOverlay.captain-hd-mode .captain-editorial{position:relative;min-height:250px;display:grid;grid-template-columns:38% 62%;overflow:hidden;border:9px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 fill/10px;background:#21150d}
+#app #panelOverlay.captain-hd-mode .captain-editorial-copy{position:relative;z-index:1;display:flex;flex-direction:column;justify-content:center;padding:22px 28px;background:#b98d50 url('assets/ui/character-hud/hd/parchment.png') center/cover;color:#201207;box-shadow:8px 0 18px #0009}
+#app #panelOverlay.captain-hd-mode .captain-editorial-copy small{font:700 14px/1.2 'Inventory Alegreya SC',Georgia,serif;letter-spacing:.06em;color:#39200d}
+#app #panelOverlay.captain-hd-mode .captain-editorial-copy h2{margin:12px 0;font:700 38px/1 'Inventory Alegreya SC',Georgia,serif;color:#241406}
+#app #panelOverlay.captain-hd-mode .captain-editorial-copy h2 b{display:block;font-size:70px;text-transform:uppercase;letter-spacing:.02em}
+#app #panelOverlay.captain-hd-mode .captain-editorial-copy p{margin:0;font:700 17px/1.3 'Inventory Alegreya SC',Georgia,serif;color:#39200d}
+#app #panelOverlay.captain-hd-mode .captain-morgan{width:100%;height:100%;position:absolute;left:38%;width:62%;object-fit:cover;object-position:50% 35%}
+#app #panelOverlay.captain-hd-mode .captain-news{display:grid;gap:14px;max-height:none;overflow:visible}
+#app #panelOverlay.captain-hd-mode .captain-news-item{position:relative;padding:26px 36px;min-height:225px;border:8px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 fill/9px;border-radius:0;background:linear-gradient(90deg,#0c1117f2 40%,#0c1118a8),url('assets/ui/honors-hd/faction-banner.png') center/cover}
+#app #panelOverlay.captain-hd-mode .captain-news-meta{font-size:17px;gap:20px;color:#b5c6c7}
+#app #panelOverlay.captain-hd-mode .captain-tag{padding:5px 18px;border:1px solid #d3a650;border-radius:1px;background:#4a2d11;color:#ffe3a4;font:700 18px/1.2 'Inventory Alegreya SC',Georgia,serif}
+#app #panelOverlay.captain-hd-mode .captain-news-item h3{margin:18px 0 10px;font:700 36px/1.1 'Inventory Alegreya SC',Georgia,serif;color:#ffedbe}
+#app #panelOverlay.captain-hd-mode .captain-news-item p{margin:0;max-width:850px;color:#d0dcdb;font-size:22px;line-height:1.5}
+#app #panelOverlay.captain-hd-mode .captain-setting-cards{display:grid;gap:14px}
+#app #panelOverlay.captain-hd-mode .captain-setting-card{border:8px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 fill/9px;border-radius:0;background:#141213;overflow:visible}
+#app #panelOverlay.captain-hd-mode .captain-setting-heading{display:flex;align-items:center;text-align:left;gap:24px;padding:12px 22px;min-height:130px;background:linear-gradient(90deg,#121519ed 35%,#0b0d10a0 65%,#080b0d18),var(--setting-scene) right center/auto 100% no-repeat,url('assets/ui/forge-hd/workshop-surface.png') center/512px;color:#ffedc5;border:0;border-radius:0;width:100%;cursor:pointer}
+#app #panelOverlay.captain-hd-mode [data-setting-section=general]{--setting-scene:url('assets/ui/captain-hd/general-scene.png')}
+#app #panelOverlay.captain-hd-mode [data-setting-section=audio]{--setting-scene:url('assets/ui/captain-hd/audio-scene.png')}
+#app #panelOverlay.captain-hd-mode [data-setting-section=graphics]{--setting-scene:url('assets/ui/captain-hd/graphics-scene.png')}
+#app #panelOverlay.captain-hd-mode [data-setting-section=interface]{--setting-scene:url('assets/ui/captain-hd/interface-scene.png')}
+#app #panelOverlay.captain-hd-mode [data-setting-section=accessibility]{--setting-scene:url('assets/ui/captain-hd/accessibility-scene.png')}
+#app #panelOverlay.captain-hd-mode .captain-setting-icon{display:grid;place-items:center;flex:0 0 96px;height:96px;border:7px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 fill/8px;background:radial-gradient(ellipse,#2d2517,#0d1317);border-radius:0}
+#app #panelOverlay.captain-hd-mode .captain-setting-icon>.captain-icon{width:76px;height:76px}
+#app #panelOverlay.captain-hd-mode .captain-setting-copy{flex:1;min-width:0;display:grid;gap:1px}
+#app #panelOverlay.captain-hd-mode .captain-setting-heading strong{font:700 30px/1.15 'Inventory Alegreya SC',Georgia,serif;color:#fff0ca;text-shadow:0 2px 2px #000}
+#app #panelOverlay.captain-hd-mode .captain-setting-heading small{font-size:22px;color:#d4dfda}
+#app #panelOverlay.captain-hd-mode .captain-setting-heading em{font-style:normal;font-size:20px;color:#e4bd67}
+#app #panelOverlay.captain-hd-mode .captain-chevron{font-size:38px;color:#f3c975}
+#app #panelOverlay.captain-hd-mode .captain-settings-detail{display:grid;gap:14px;padding:20px 30px;border-top:1px solid #a78041;background:linear-gradient(#101014b8,#151313d1),url('assets/ui/forge-hd/workshop-surface.png') center/512px}
+#app #panelOverlay.captain-hd-mode .captain-settings-detail p{font-size:18px;color:#bdcdcc;margin:0}
+#app #panelOverlay.captain-hd-mode .captain-setting-line{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;color:#f8e7c4;font-size:21px;padding:10px 0;border-bottom:1px solid #5e4d33}
+#app #panelOverlay.captain-hd-mode .captain-setting-line select{min-height:44px;padding:8px 16px;border:1px solid #c3994e;background:#191719 url('assets/ui/character-hud/hd/wood.png') center/350px;color:#ffecc1;font-size:18px;max-width:100%}
+#app #panelOverlay.captain-hd-mode .captain-setting-line select option{background:#201b18;color:#fff0cb}
+#app #panelOverlay.captain-hd-mode input[type=checkbox]{width:24px;height:24px;accent-color:#c59a43}
+#app #panelOverlay.captain-hd-mode input[type=range]{accent-color:#d0a253;min-height:32px;width:100%}
+[data-mare-text=large] #app #panelOverlay.captain-hd-mode :is(.captain-profile,.captain-journal,.captain-settings){--captain-text:21px}
+[data-mare-text=large] #app #panelOverlay.captain-hd-mode :is(.captain-fact small,.captain-muted,.captain-profile-name>small,.captain-settings-detail p){font-size:20px}
+[data-mare-text=large] #app #panelOverlay.captain-hd-mode .captain-setting-heading small{font-size:25px}
+[data-mare-text=large] #app #panelOverlay.captain-hd-mode .captain-setting-line{font-size:24px}
+@media(max-width:1180px){
+ #app #panelOverlay.captain-hd-mode .captain-profile-banner{grid-template-columns:160px minmax(0,1fr) 180px;gap:16px;min-height:200px;padding:12px}
+ #app #panelOverlay.captain-hd-mode .captain-profile-avatar{width:160px;height:160px}
+ #app #panelOverlay.captain-hd-mode .captain-equipment-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #app #panelOverlay.captain-hd-mode .captain-combat-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
+ #app #panelOverlay.captain-hd-mode .captain-section-head p{display:none}
+ #app #panelOverlay.captain-hd-mode .captain-rank-facts{grid-template-columns:1fr 1fr}
+ #app #panelOverlay.captain-hd-mode .captain-rank-facts>p{grid-column:1/-1}
+}
+@media(max-width:760px){
+ #app #panelOverlay.captain-hd-mode{padding:3px}
+ #app #panelOverlay.captain-hd-mode .dialog{width:calc(100vw - 6px);height:calc(100dvh - 6px);border-width:9px;border-image-width:16px}
+ #app #panelOverlay.captain-hd-mode .dialog-header{min-height:69px;padding:8px 12px}
+ #app #panelOverlay.captain-hd-mode .dialog-header small{font-size:10px}
+ #app #panelOverlay.captain-hd-mode #dialogTitle{font-size:28px}
+ #app #panelOverlay.captain-hd-mode #closePanel{width:40px;height:40px;font-size:24px}
+ #app #panelOverlay.captain-hd-mode #dialogBody{padding:9px}
+ #app #panelOverlay.captain-hd-mode .captain-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+ #app #panelOverlay.captain-hd-mode .captain-tabs button{font-size:17px;gap:6px;min-height:48px;padding:5px}
+ #app #panelOverlay.captain-hd-mode .captain-tabs .captain-icon{width:29px;height:29px}
+ #app #panelOverlay.captain-hd-mode .captain-profile-banner{grid-template-columns:100px minmax(0,1fr);gap:10px;padding:10px;min-height:0}
+ #app #panelOverlay.captain-hd-mode .captain-profile-avatar{width:100px;height:118px}
+ #app #panelOverlay.captain-hd-mode .captain-profile-name h2{font-size:27px}
+ #app #panelOverlay.captain-hd-mode .captain-profile-name>span{font-size:18px;gap:4px}
+ #app #panelOverlay.captain-hd-mode .captain-profile-name>small{font-size:13px}
+ #app #panelOverlay.captain-hd-mode .captain-profile-name>small:last-child{font-size:13px}
+ #app #panelOverlay.captain-hd-mode .captain-class-icon{width:23px;height:23px}
+ #app #panelOverlay.captain-hd-mode .captain-profile-power{grid-column:1/-1;display:flex;align-items:center;justify-content:center;gap:12px;min-height:50px;padding:5px}
+ #app #panelOverlay.captain-hd-mode .captain-faction-seal{width:38px;height:38px}
+ #app #panelOverlay.captain-hd-mode .captain-profile-power strong{font-size:32px}
+ #app #panelOverlay.captain-hd-mode .captain-section{padding:8px}
+ #app #panelOverlay.captain-hd-mode .captain-section-head{gap:8px}
+ #app #panelOverlay.captain-hd-mode .captain-section-head h3{font-size:22px}
+ #app #panelOverlay.captain-hd-mode .captain-section-head .captain-icon{width:30px;height:30px}
+ #app #panelOverlay.captain-hd-mode :is(.captain-facts,.captain-combat-facts,.captain-rank-facts){grid-template-columns:1fr;gap:8px}
+ #app #panelOverlay.captain-hd-mode .captain-fact{padding:10px;gap:12px}
+ #app #panelOverlay.captain-hd-mode .captain-fact small{font-size:16px}
+ #app #panelOverlay.captain-hd-mode .captain-fact strong{font-size:22px}
+ #app #panelOverlay.captain-hd-mode .captain-equipment-grid{grid-template-columns:1fr;gap:8px}
+ #app #panelOverlay.captain-hd-mode .captain-equipment-card{min-height:115px;padding:8px;gap:12px}
+ #app #panelOverlay.captain-hd-mode .captain-equipment-art{width:86px}
+ #app #panelOverlay.captain-hd-mode .captain-equipment-copy strong{font-size:22px}
+ #app #panelOverlay.captain-hd-mode .captain-editorial{display:block;min-height:0}
+ #app #panelOverlay.captain-hd-mode .captain-editorial-copy{padding:14px}
+ #app #panelOverlay.captain-hd-mode .captain-editorial-copy h2{font-size:27px;margin:8px 0}
+ #app #panelOverlay.captain-hd-mode .captain-editorial-copy h2 b{display:inline;font-size:32px}
+ #app #panelOverlay.captain-hd-mode .captain-editorial-copy small{font-size:10px}
+ #app #panelOverlay.captain-hd-mode .captain-editorial-copy p{font-size:13px}
+ #app #panelOverlay.captain-hd-mode .captain-morgan{display:block;position:static;width:100%;height:auto;aspect-ratio:1018/328;object-fit:contain}
+ #app #panelOverlay.captain-hd-mode .captain-news-item{padding:16px;min-height:0}
+ #app #panelOverlay.captain-hd-mode .captain-news-item h3{font-size:28px}
+ #app #panelOverlay.captain-hd-mode .captain-news-item p{font-size:19px}
+ #app #panelOverlay.captain-hd-mode .captain-news-meta{font-size:14px;gap:12px;flex-wrap:wrap}
+ #app #panelOverlay.captain-hd-mode .captain-tag{font-size:14px;padding:4px 8px}
+ #app #panelOverlay.captain-hd-mode .captain-setting-heading{min-height:112px;gap:12px;padding:10px;background-size:auto,auto 100%,512px}
+ #app #panelOverlay.captain-hd-mode .captain-setting-icon{flex-basis:55px;height:60px;border-width:4px}
+ #app #panelOverlay.captain-hd-mode .captain-setting-icon>.captain-icon{width:46px;height:46px}
+ #app #panelOverlay.captain-hd-mode .captain-setting-heading strong{font-size:22px}
+ #app #panelOverlay.captain-hd-mode .captain-setting-heading small{font-size:17px}
+ #app #panelOverlay.captain-hd-mode .captain-setting-heading em{font-size:16px}
+ #app #panelOverlay.captain-hd-mode .captain-settings-detail{padding:14px}
+ #app #panelOverlay.captain-hd-mode .captain-setting-line{font-size:19px}
+ #app #panelOverlay.captain-hd-mode .captain-empty{padding:24px 14px}
+}
+@media(prefers-reduced-motion:reduce){#app #panelOverlay.captain-hd-mode *{animation:none!important;transition:none!important}}
+
+#app #panelOverlay.captain-hd-mode .dialog{image-rendering:auto}
+#app #panelOverlay.captain-hd-mode .captain-profile-banner{min-height:210px}
+#app #panelOverlay.captain-hd-mode .captain-section{padding-top:8px;padding-bottom:12px}
+#app #panelOverlay.captain-hd-mode .captain-fact{padding-top:9px;padding-bottom:9px}
+
+@media(min-width:1181px){
+#app #panelOverlay.captain-hd-mode .captain-profile-banner{grid-template-columns:166px minmax(0,1fr) 230px;min-height:188px;padding-top:10px;padding-bottom:10px}
+#app #panelOverlay.captain-hd-mode .captain-profile-avatar{width:166px;height:166px}
+#app #panelOverlay.captain-hd-mode .captain-profile-power{min-height:150px}
+#app #panelOverlay.captain-hd-mode .captain-tabs button{height:58px;min-height:58px;padding:4px 10px}
+#app #panelOverlay.captain-hd-mode .captain-tabs .captain-icon{width:34px;height:34px}
+#app #panelOverlay.captain-hd-mode .captain-section-head>.captain-icon{width:36px;height:36px}
+#app #panelOverlay.captain-hd-mode .captain-fact small{line-height:1.2}
+#app #panelOverlay.captain-hd-mode .captain-fact strong{font-size:22px}
+}
+
+#app #panelOverlay.captain-hd-mode .captain-equipment-art{height:108px;max-height:108px}
+#app #panelOverlay.captain-hd-mode .captain-setting-heading :is(small,em){font-weight:400}
+@media(max-width:760px){#app #panelOverlay.captain-hd-mode .captain-equipment-art{height:86px;max-height:86px}}
+
+@media(max-width:760px){#app #panelOverlay.captain-hd-mode .captain-setting-copy{overflow-wrap:anywhere}#app #panelOverlay.captain-hd-mode .captain-setting-heading{gap:9px}#app #panelOverlay.captain-hd-mode .captain-setting-heading strong{font-size:20px}}
