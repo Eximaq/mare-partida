@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import type { Pool, PoolClient } from "pg";
 import { z } from "zod";
-import type { CharacterCreate } from "@mare/shared";
+import type { CharacterCreate, CharacterCommand } from "@mare/shared";
 import { AuthFault, unauthorized } from "./errors.js";
 import {
   providerSessionSchema,
@@ -11,6 +11,7 @@ import {
 import { digest, opaque, Vault } from "./vault.js";
 import type { SessionPolicy } from "./config.js";
 import { initializeCharacterState, readCharacterState } from "../characters/state.js";
+import { executeCharacterCommand } from "../characters/commands.js";
 type SessionRow = {
   id: string;
   account_id: string;
@@ -266,6 +267,12 @@ export class AuthService {
     return this.withSession(token, "play", async (client, row) => {
       await this.owned(client, row.account_id, id);
       return readCharacterState(client, id);
+    });
+  }
+  async command(token: string, id: string, input: CharacterCommand) {
+    return this.withSession(token, "play", async (client, row) => {
+      await this.owned(client, row.account_id, id, true);
+      return executeCharacterCommand(client, id, row.id, input);
     });
   }
   private async owned(

@@ -9,6 +9,7 @@ import {
   characterCreateSchema,
   controlSchema,
   renewControlSchema,
+  characterCommandSchema,
 } from "@mare/shared";
 import { AuthService } from "./service.js";
 import { AuthFault, unauthorized } from "./errors.js";
@@ -127,6 +128,7 @@ export function createAuthHandler(options: {
           path,
         );
       const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/state$/.exec(path);
+      const commandMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/commands$/.exec(path);
       const known = [
         "/v1/auth/csrf",
         "/v1/auth/signup",
@@ -139,7 +141,7 @@ export function createAuthHandler(options: {
         "/v1/me",
         "/v1/characters",
       ];
-      if (!known.includes(path) && !match && !stateMatch) {
+      if (!known.includes(path) && !match && !stateMatch && !commandMatch) {
         request.resume();
         reply(404, { error: "not_found" });
         return;
@@ -272,6 +274,11 @@ export function createAuthHandler(options: {
         return;
       }
       if (!session) throw unauthorized();
+      if (commandMatch) {
+        if (url.search) throw new AuthFault(400, "invalid_request");
+        reply(200, await service.command(session, parse(z.uuid(), commandMatch[1]), parse(characterCommandSchema, value)));
+        return;
+      }
       if (path === "/v1/auth/logout") {
         const input = parse(logoutSchema, value);
         await service.logout(session, input.scope);

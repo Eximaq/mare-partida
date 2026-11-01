@@ -37,7 +37,8 @@ a resposta não expõe o dono nem credenciais. Cache-Control continua no-store.
 
 1. **3A (este incremento):** estado inicial, snapshot autorizado, migração e
    testes reais de PostgreSQL. Sem alterações no cliente de gameplay.
-2. **3B:** protocolo de comandos com requestId, versão esperada e lease/epoch do
+2. **3B (implementada):** [contrato e limites](PHASE-3B-COMMAND-PROTOCOL.md),
+   `state.sync` sem alteração econômica; protocolo com requestId, versão esperada e lease/epoch do
    controlador. Validar sessão, dono e controlador dentro da transação; guardar
    idempotência vinculada a personagem/operação/payload; repetição exata devolve
    resultado anterior e chave com payload diferente é conflito. Não conceder
