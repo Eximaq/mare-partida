@@ -9,6 +9,9 @@ encerramento verificados. F04/F05 e aceite final continuam abertos; não há
 autorização de Fase 3.**
 Este documento concentra o status atual. Os relatos das rodadas 1–3 preservam
 seus resultados históricos e não autorizam novos envios ou operações externas.
+Retomada F01 preparada sobre `50cc977`: [diagnóstico delimitado, Conta G e roteiro
+para aprovação](PHASE-2F-F01-RECOVERY-RETRY.md). Nenhum novo envio autorizado/executado
+por essa preparação; o resultado anterior permanece inconclusivo.
 
 ## Escopo da preparação original
 
