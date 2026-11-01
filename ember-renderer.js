@@ -13,13 +13,13 @@
       return monsterRequests.get(key);
     }));
   }
-  let boot=null;function prepare(){return boot ||=loadManifest().then(async data=>{
-    if(!data?.ready)return;manifest=data;
+  let artState='idle',boot=null;function prepare(){return boot ||=(artState='loading',loadManifest().then(async data=>{
+    if(!data?.ready){artState='failed';return;}manifest=data;
     const results=await Promise.all(Object.entries(data.terrain||{}).map(async([key,asset])=>{images[key]=await loadImage(asset.url);if(images[key]){const canvas=document.createElement('canvas');canvas.width=canvas.height=64;const context=canvas.getContext('2d');context.imageSmoothingEnabled=false;context.filter=({water:'contrast(.65) saturate(.8) brightness(.72)',basalt:'contrast(.55) saturate(.6) brightness(.8)',street:'contrast(.6) saturate(.7) brightness(.85)',lava:'contrast(.85) brightness(.85)'})[key]||'none';context.drawImage(images[key],0,0,64,64);textures[key]=canvas;}}));
     if(data.props)images.props=await loadImage(data.props.url);
     await prepareMonsters(Object.keys(data.monsters||{}));
-    revision++;chunks.clear();
-  }).catch(()=>{});
+    revision++;chunks.clear();artState=ready(images.props)&&Object.values(images).every(Boolean)?'ready':'failed';
+  }).catch(()=>{artState='failed';}));
   }
   function setFallback(source,wood){if(fallback===source&&woodSource===wood)return;fallback=source;woodSource=wood;chunks.clear();}
   function tile(c,key,mask,x,y,w=64,h=64){const asset=manifest.terrain?.[key],img=images[key],cell=asset?.tiles?.find(t=>t.mask===mask);if(!ready(img)||!cell)return false;c.drawImage(img,cell.x,cell.y,cell.width,cell.height,x,y,w,h);return true;}
@@ -137,5 +137,5 @@
     for(const d of E.districts){c.fillStyle='#fce7b6';c.fillRect(d.x*scale-3,d.y*scale-3,6,6);}
     if(hero){c.fillStyle='#68e0cd';c.beginPath();c.arc(hero.x*scale,hero.y*scale,4,0,Math.PI*2);c.fill();}
   }
-  root.MareEmberRenderer={get boot(){return prepare();},prepare,prepareMonsters,setFallback,ground,prop,environment,monster,overview,ready:()=>manifest.ready&&ready(images.props),stats:()=>({chunks:chunks.size,artReady:manifest.ready,monsters:Object.keys(characters).length})};
+  root.MareEmberRenderer={get boot(){return prepare();},prepare,prepareMonsters,setFallback,ground,prop,environment,monster,overview,ready:()=>artState==='ready',state:()=>artState,stats:()=>({chunks:chunks.size,artReady:manifest.ready,monsters:Object.keys(characters).length})};
 })(globalThis);
