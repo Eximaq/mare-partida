@@ -1,3 +1,5 @@
+[Interface atual do compêndio HD, classificação e silhuetas por fruta](COMPENDIO-HD.md).
+
 [Yami e Mera Rank S: auras, seis habilidades e proporções aprovadas](RANK-S-YAMI-MERA.md).
 
 [Bari, Doku e Ito Rank A: barreiras, venenos cumulativos e fios](RANK-A-BARI-DOKU-ITO.md).

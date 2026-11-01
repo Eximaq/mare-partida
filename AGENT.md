@@ -382,3 +382,8 @@ Responda sempre com estes campos:
 ## 14. Primeira ação ao receber este AGENTS.md
 
 **Não comece gerando 28 sprites nem criando backend.** Execute a auditoria do workspace real e apresente: versão ativa, estrutura, estado de cada marco, decisões divergentes, assets existentes, testes disponíveis e o próximo ticket mais importante. Se o usuário já indicar uma sprint específica, audite apenas o necessário e execute essa sprint após proteger os arquivos.
+
+
+## Entrega de Pull Requests — orientação de 01/11/2026
+
+O proprietário determinou que, a partir desta data, os PRs devem ser enviados prontos para revisão e merge, sem estado de rascunho (draft: false). Validar a atualização, publicar os commits na branch e abrir/atualizar o PR antes da entrega. O proprietário confirma o merge no site; não executar merge automático nem habilitar auto-merge sem uma solicitação explícita. Um pedido explícito de merge autoriza somente o PR indicado. Informar com clareza verificações pendentes ou falhas conhecidas, sem apresentar resultados não executados como aprovados.

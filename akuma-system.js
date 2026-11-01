@@ -16,6 +16,11 @@
   if(!root.MareRankS&&typeof module!=='undefined')require('./rank-s-system.js');
   const ranks=Object.freeze(['E','D','C','B','A','S']);
   const slotsPerRank=5;
+  // Presentation classification only; equipment/combat multipliers remain unchanged.
+  const rankRarities=Object.freeze({S:'supreme',A:'legendary',B:'legendary',C:'epic',D:'epic',E:'rare'});
+  const rarityFor=fruit=>rankRarities[typeof fruit==='string'?fruit:fruit?.rank]||'epic';
+  const familyFor=fruit=>fruit?.family||'paramecia';
+  const legacyDescriptions={"akuma_kuku_kuku":"Transforma o cadáver mais próximo em comida. Quem a recolher recupera 15% da Vida máxima.","akuma_beri_beri":"Divide o corpo em seis esferas: 1,5s de invulnerabilidade e empurrão nos inimigos próximos.","akuma_tori_albatroz":"Aumenta a velocidade de movimento em 30% por 5s e ignora armadilhas de chão.","akuma_uma_uma":"Avança 4 tiles em linha reta, causando dano físico leve e empurrando o primeiro inimigo.","akuma_inu_dachshund":"Salta até o alvo, causa dano físico e aplica 30% de lentidão e −5% de Defesa por 3s."};
   // Keep in sync with assets/akuma/supa/rules.json (validated by regression tests).
   const supaRules={"radius":128,"duration":5000,"mitigation":0.4,"reflect":0.3,"skills":[{"key":"1","name":"Espiral Cortante","cooldown":10,"cost":20,"damage_multiplier":1.3,"damage_type":"physical","icon_path":"assets/akuma/supa/skill-1.png","description":"Corte físico instantâneo de 130% do ataque físico em todos os inimigos num raio de 2 tiles (128 px)."},{"key":"2","name":"Retaliação Metálica","cooldown":20,"cost":25,"damage_type":"physical","icon_path":"assets/akuma/supa/skill-2.png","description":"Durante 5s, reduz em 40% o dano físico recebido e devolve ao atacante 30% do dano original. O escudo acompanha o personagem."}]};
   class AkumaNoMiData {
@@ -44,7 +49,10 @@
     ,...Object.entries(root.MareRankA.rules).map(([key,r])=>new AkumaNoMiData(r.id,r.name,'A','assets/akuma/'+key+'/fruit.png',{},'','assets/akuma/'+key+'/skill-1.png','',1,1,{family:r.family,skills:r.skills,description:r.description}))
     ,...Object.entries(root.MareRankS.rules).map(([key,r])=>new AkumaNoMiData(r.id,r.name,'S','assets/akuma/'+key+'/fruit.png',{},'','assets/akuma/'+key+'/skill-1.png','',1,1,{family:r.family,subtype:r.family==='logia'?'Logia':r.family==='zoan'?'Zoan':'Paramecia',skills:r.skills,description:r.description,passive_aura_sheet:root.MareRankS.effects[r.auraKey].image,zoan_sprite_sheet:r.family==='zoan'?'assets/sprites-combat-v2/phoenix/idle-south.png':null}))
   ]);
-  for(const fruit of catalog)if(root.MareAkumaPassives.stats[fruit.id])fruit.passiveStats={...root.MareAkumaPassives.stats[fruit.id]};
+  for(const fruit of catalog){
+    fruit.description ||= legacyDescriptions[fruit.id]||fruit.skills?.map(s=>s.description).filter(Boolean).join(' ')||'';
+    if(root.MareAkumaPassives.stats[fruit.id])fruit.passiveStats={...root.MareAkumaPassives.stats[fruit.id]};
+  }
   const byId=(id,entries=catalog)=>entries.find(fruit=>fruit.id===id)||null;
   const isZoan=(fruit)=>fruit?.family==='zoan';
   const isFruit=(item,defs)=>!!item&&(item.type==='akuma_no_mi'||defs?.[item.def]?.type==='akuma_no_mi');
@@ -98,6 +106,6 @@
     const enabled=active&&physical&&!direct&&original>0&&received>0;
     return {damage:enabled?received*(1-supaRules.mitigation):received,reflected:enabled?original*supaRules.reflect:0};
   }
-  root.MareAkuma={ranks,slotsPerRank,AkumaNoMiData,catalog,byId,isZoan,isFruit,registered,slotsForRank,passiveCount,register,migrate,itemData,bonusStats,applyGear,activeSkill,activeSkills,cooldownKey,supaRules,supaTargets,retaliate};
+  root.MareAkuma={ranks,rankRarities,rarityFor,familyFor,slotsPerRank,AkumaNoMiData,catalog,byId,isZoan,isFruit,registered,slotsForRank,passiveCount,register,migrate,itemData,bonusStats,applyGear,activeSkill,activeSkills,cooldownKey,supaRules,supaTargets,retaliate};
   if(typeof module!=='undefined')module.exports=root.MareAkuma;
 })(globalThis);

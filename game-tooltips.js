@@ -29,13 +29,14 @@
     return `<section class="game-tip-skill ${tone}"><div class="game-tip-kicker">${skill.passive?'TALENTO PASSIVO':'HABILIDADE '+escape(skill.key||'')}</div><h3 class="game-tip-name">${escape(skill.name)}</h3><div class="game-tip-skill-meta">${skill.passive?'<span>Efeito permanente</span>':`<span>Recarga <b>${skill.cooldown?escape(skill.cooldown)+'s':'Sem recarga'}</b></span><span>Custo <b>${skill.costText?escape(skill.costText):skill.cost?`${escape(skill.cost)} ${escape(skill.resource||'Energia')}`:'Sem custo'}</b></span>`}</div><p>${description}</p></section>`;
   }
   function helpHTML(data){return '<section class="game-tip-help"><div class="game-tip-kicker">GUIA DO PERSONAGEM</div><h3 class="game-tip-name">'+escape(data.title)+'</h3><p>'+escape(data.description)+'</p></section>';}
+  function compendiumHTML(f){if(!f)return '';return '<section class="game-tip-compendium"><div class="game-tip-kicker">COMPÊNDIO DE AKUMA NO MI</div><h3 class="game-tip-name rarity-'+escape(f.rarity)+'">'+escape(f.name)+'</h3><div class="game-tip-meta">Rank '+escape(f.rank)+' · '+escape(f.rarityName)+' · '+escape(f.type)+'</div><p class="game-tip-description">'+escape(f.description)+'</p><small>'+escape(f.state)+'</small></section>';}
   function attach(resolve){
     const node=document.createElement('div');node.id='gameTooltip';node.className='game-tooltip hidden';node.setAttribute('role','tooltip');document.body.append(node);
     let target=null;
     function place(x,y){const gap=16,margin=8;node.style.left='0px';node.style.top='0px';const box=node.getBoundingClientRect();let left=x+gap,top=y+gap;if(left+box.width>innerWidth-margin)left=x-box.width-gap;if(top+box.height>innerHeight-margin)top=y-box.height-gap;node.style.left=`${Math.max(margin,Math.min(left,innerWidth-box.width-margin))}px`;node.style.top=`${Math.max(margin,Math.min(top,innerHeight-box.height-margin))}px`;}
-    function show(element,event){const data=resolve(element);if(!data){hide();return;}target=element;node.innerHTML=data.kind==='help'?helpHTML(data):data.kind==='skill'?skillHTML(data.skill):itemHTML(data.item,data.equipped);node.classList.remove('hidden');element.setAttribute('aria-describedby','gameTooltip');const rect=element.getBoundingClientRect();place(event?.clientX??rect.right,event?.clientY??rect.top);}
+    function show(element,event){const data=resolve(element);if(!data){hide();return;}target=element;node.innerHTML=data.kind==='compendium'?compendiumHTML(data.fruit):data.kind==='help'?helpHTML(data):data.kind==='skill'?skillHTML(data.skill):itemHTML(data.item,data.equipped);node.classList.remove('hidden');element.setAttribute('aria-describedby','gameTooltip');const rect=element.getBoundingClientRect();place(event?.clientX??rect.right,event?.clientY??rect.top);}
     function hide(){if(target)target.removeAttribute('aria-describedby');target=null;node.classList.add('hidden');}
-    const selector='[data-studio-help], [data-item], [data-inv-slot], [data-talent-select], [data-haki-toggle], [data-haki-cast], #skill1, #skill2, #skill3, #zoanTransform';
+    const selector='[data-compendium-fruit], [data-studio-help], [data-item], [data-inv-slot], [data-talent-select], [data-haki-toggle], [data-haki-cast], #skill1, #skill2, #skill3, #zoanTransform';
     document.addEventListener('pointerover',event=>{const element=event.target.closest?.(selector);if(element&&element!==target)show(element,event);});
     document.addEventListener('pointermove',event=>{if(target){if(!target.isConnected){hide();return;}place(event.clientX,event.clientY);}});
     document.addEventListener('pointerout',event=>{if(target&&event.target.closest?.(selector)===target&&!target.contains(event.relatedTarget))hide();});
@@ -46,6 +47,6 @@
     document.addEventListener('scroll',()=>{if(target)hide();},true);
     return {hide,refresh(){if(target?.isConnected)show(target);else hide();}};
   }
-  root.MareTooltips={filterCleanStats,itemHTML,skillHTML,helpHTML,attach};
+  root.MareTooltips={filterCleanStats,itemHTML,skillHTML,helpHTML,compendiumHTML,attach};
   if(typeof module!=='undefined')module.exports=root.MareTooltips;
 })(globalThis);

@@ -15,3 +15,10 @@
 .game-tip-compare{margin-top:11px;padding-top:8px;border-top:1px dashed var(--rpg-line);display:grid;gap:4px}.game-tip-compare>strong{color:var(--rpg-accent);font-size:10px;margin-bottom:2px}.game-tip-compare b{font-variant-numeric:tabular-nums}.game-tip-compare .positive{color:var(--rpg-success)}.game-tip-compare .negative{color:var(--rpg-error)}.game-tip-compare .neutral{color:var(--rpg-muted)}.game-tip-score{border-top:1px solid var(--rpg-line);padding-top:4px;font-weight:700}
 .game-tip-skill{width:min(285px,calc(100vw - 18px))}.game-tip-skill-meta{display:flex;justify-content:space-between;gap:8px;margin-top:10px;color:var(--rpg-muted);font-size:11px}.game-tip-skill-meta b{color:var(--rpg-focus)}.game-tip-skill p{margin:9px 0 0;color:var(--rpg-text)}.game-tip-skill .game-tip-number{color:var(--rpg-accent)}.game-tip-skill.physical .game-tip-number{color:#efae75}.game-tip-skill.magic .game-tip-number{color:var(--rpg-energy)}
 @media(max-width:540px){.game-tooltip-grid.with-comparison{width:min(440px,calc(100vw - 16px))}.game-tip-column{padding:9px}.game-tooltip{font-size:11px}}
+
+/* Compendium descriptions use the same approved surface, outside the scrolling gallery. */
+.game-tooltip:has(.game-tip-compendium){background:linear-gradient(#090b0de6,#090b0de6),var(--rpg-workshop-surface) center/512px;border-color:#b48b49}
+.game-tip-compendium{width:min(340px,calc(100vw - 18px));padding:14px 16px;font:16px/1.35 "Alegreya Sans","Segoe UI",sans-serif}
+.game-tip-compendium .game-tip-name{font:700 23px/1.15 "Inventory Alegreya SC",Georgia,serif}
+.game-tip-compendium .game-tip-meta{font-size:12px}
+.game-tip-compendium .game-tip-description{font-size:16px}

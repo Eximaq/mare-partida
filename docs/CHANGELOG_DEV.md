@@ -673,3 +673,10 @@ Branch feature/contracts-board-hd, base c03d607. Moldura única, duas colunas, a
 ## 31/10/2026 — Talentos HD
 
 Branch feature/talents-hd; base 003a90cf (PR #178). Três colunas, árvore compacta, bônus totais reais, cabeçalho de madeira e centralização óptica dos medalhões. Sistemas de talentos/combate e saves preservados. Uma arte de fundo PixelLab Pro, 25 gerações; ícones originais intactos. Testes Node, Chromium nas sete classes e sete resoluções, build Pages. Detalhes e rollback: [TALENTOS-HD.md](TALENTOS-HD.md).
+
+
+## 01/11/2026 — Compêndio HD de Akuma no Mi
+
+Branch feature/compendium-hd; base 022004b (PR #179). Cabeçalho em toda a largura, abas de tipos, ranks separados, galeria e detalhes com dados canônicos. Silhuetas individuais dos ícones HD, inclusive Zoan; classificação S Supremo, A/B Lendário, C/D Épico e E Raro compartilhada com inventário/tooltips. Registro permanente com proteção contra duplicação e falha local de salvamento; fórmula de bônus preservada e reutilizada. Uma decoração e três símbolos PixelLab, 31 gerações; nenhum ícone de fruta refeito. Acentuação de Rank A corrigida e descrições genéricas de três Rank S completadas sem alterar números. Testes Node, serviço Python, Chromium em oito resoluções e build Pages. Documentação, compatibilidade e rollback: [COMPENDIO-HD.md](COMPENDIO-HD.md).
+
+Regressão extra: Supa, Doru, Neko, Ushi e Lobo aprovados; Ryu mantém diferença preexistente de 1 px entre idle/walk frontal, reproduzida com a base e o teste originais. Nenhum sprite ou limite da asserção foi alterado.
