@@ -4,6 +4,13 @@ O proprietário escolheu criar/configurar o projeto manualmente. Este roteiro n�
 autoriza o agente a criar recursos, alterar projetos existentes, contratar planos ou
 enviar e-mails. Não forneça senhas, tokens, links de recuperação ou chaves no chat.
 
+## Status atual e histórico
+
+A [matriz 2F](PHASE-2F-FINAL-ACCEPTANCE.md) é a referência atual de aceite e
+autorizações. As rodadas abaixo são histórico: seus bloqueios antigos não
+sobrepõem a CI aprovada de `c8be42f`. Nenhuma nova janela foi executada nesta
+consolidação. A/B/C/G e personagens permanecem preservados.
+
 ## Situação informada em 31/10/2026
 
 O proprietário informou ter criado manualmente `mare-partida-auth-dev` no plano
@@ -462,7 +469,7 @@ preparada para publicação. Helpers/evidências ficam fora do Git. main bddd32f
 consultada e a compatibilidade textual foi verificada por merge-tree, sem merge
 ou rebase. A integração de gameplay não está aprovada: ver bloqueio abaixo.
 
-**Bloqueio de integração detectado após a publicação:** a CI de e54f802 passou
+**Histórico — bloqueio de integração após a publicação (resolvido em c8be42f):** a CI de e54f802 passou
 fundação e Docker/Linux, mas falhou em testes/sprite-south-hurt.test.cjs: o catálogo
 atual inclui phoenix sem clip hurt/south e o teste tenta ler clip.image de null.
 O teste passa na branch isolada. Cópias byte a byte dos três arquivos envolvidos
@@ -479,14 +486,11 @@ até essa correção separada. Evidência:
 
 ### Matriz de aprovação da Fase 2
 
-| Bloco | Situação | Condição restante |
-|---|---|---|
-| Acesso local, HTTPS e origem | Aprovado nesta máquina | Serviços precisam estar ativos durante cada janela; confiança do certificado foi autorizada para o usuário atual |
-| Rodada 1: sessões e controlador | Aprovada no provedor real | Manter os prazos aprovados; não confundir o ensaio de JWT de 900 s com espera de 24 h/2 h, cobertas em configuração e testes locais |
-| Rodada 2: contas e autorização cruzada | Evidências principais aprovadas: 40 testes cruzados, confirmação, primeira corrida, expiração BFF e correlação real G com controle positivo | G usa cliente HTTP original + navegador negativo; B/C cobrem navegador original. Expiração específica do token remoto e perda de resposta induzida no provedor não ensaiadas; correção de timeout coberta localmente |
-| Rodada 3: recuperação | Aprovada nos fluxos reais autorizados: três envios, expiração BFF, sessão restrita, troca, senha antiga/nova, invalidação interna e refresh remoto recusado | Clientes HTTP isolados; sem preenchimento de senha pela UI, expiração específica do token remoto ou perda de resposta induzida no provedor |
-| Integração com main bddd32f | Bloqueada na regressão de sprites; fundação e Docker/Linux passaram | Mesmo erro de phoenix/hurt reproduzido na main e no ref de integração; corrigir separadamente, preservando trabalho dos colaboradores |
-| Aceitação completa da Fase 2 | Rodadas funcionais 1–3 executadas; revisão final dos limites pelo proprietário | Não equivale a prontidão de produção; revisar riscos abaixo e na revisão arquitetural. Fase 3 não iniciada nem autorizada por este relatório |
+A matriz única, com IDs, evidências, lacunas e autorizações, está na
+[Etapa 2F — aceite final](PHASE-2F-FINAL-ACCEPTANCE.md#matriz-única-de-status-atual).
+Rodadas 1–3 mantêm os resultados e limitações descritos acima. O antigo bloqueio
+Fênix/hash foi corrigido em `c8be42f`, com oito checks CI aprovados contra main
+`8550cfa`; não permanece como pendência. Aceite final aberto, sem merge/deploy/Fase 3.
 
 ## Roteiro de referência
 

@@ -1,5 +1,11 @@
 # Fase 2 — revisão da implementação de desenvolvimento
 
+**Status atual:** `c8be42f`, oito checks CI aprovados, PR #162 Draft e sem conflitos
+com main `8550cfa`. [Etapa 2F](../operations/PHASE-2F-FINAL-ACCEPTANCE.md):
+preparação autorizada, execução externa e aceite final ainda pendentes. As
+seções cronológicas registram o estado observado em cada commit; não tratar
+bloqueios antigos já resolvidos como resultados atuais.
+
 Revisão local em 31/10/2026. Branch `feature/auth-sessions`, criada a partir da
 fundação aprovada `3addd2ae93c1d2862500ee0aea4ece9bff7fd217`. PR #160 permanece
 Draft, aberto e sem alterações. Última main consultada: `8550cfa760bbee08565e98a6f7e4ff6927ea1ea2`.

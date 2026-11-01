@@ -5,6 +5,13 @@ Base aprovada `3addd2a`, branch `feature/auth-sessions`, pasta de trabalho separ
 Auth fica desligado até configuração explícita. Não há gameplay online, importação
 de saves, administração de contas ou escrita de economia nesta entrega.
 
+## Status atual
+
+Rodadas reais 1–3 registradas; correção de compatibilidade incorporada em
+`c8be42f`, com oito checks CI aprovados. A [Etapa 2F](PHASE-2F-FINAL-ACCEPTANCE.md)
+concentra a matriz atual e os lotes finais ainda não executados. Os relatos
+cronológicos abaixo preservam bloqueios e autorizações da época, sem renová-las.
+
 ## Preparação local
 
 Requisitos: Node indicado em `.node-version`, npm, Python para o build legado e

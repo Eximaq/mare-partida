@@ -1,7 +1,8 @@
 # ADR 0002 — BFF e sessão opaca do jogo
 
 Estado: direção da Etapa 2A aprovada pelo proprietário e implementada para desenvolvimento.
-Gate de origem comum passou em HTTPS local e navegador; homologação Supabase real pendente.
+Origem comum validada em HTTPS local; rodadas reais 1–3 registradas.
+Aceite final em preparação na [Etapa 2F](../operations/PHASE-2F-FINAL-ACCEPTANCE.md).
 Base: fundação 3addd2a, branch própria
 feature/auth-sessions. PR #160 permanece isolado e sem merge.
 
@@ -88,7 +89,7 @@ rota; não usar IP como identidade e não confiar em X-Forwarded-For arbitrário
 | POST /v1/characters/:id/control/renew | epoch e token de controle | Dono + sessão + token + epoch, sem comandos de gameplay |
 
 Limite de corpo antes de JSON, campos extras rejeitados, erros sanitizados, respostas
-de conta inexistente/de outro dono indistinguíveis, ausência de CORS. Readiness terá
+de conta inexistente/de outro dono indistinguíveis, ausência de CORS. Readiness possui
 um probe por vez, deadline e limite de conexões; timeout não inicia probes adicionais
 enquanto o anterior não se resolver. Autenticação desligada por padrão sem configuração.
 
@@ -115,7 +116,8 @@ Não existe transação distribuída com Supabase. Chaves e retenção operacion
 ser tratadas antes da exposição pública (ver guia operacional).
 
 Testes com provedor simulado cobrem falhas determinísticas, mas não encerram a Fase 2.
-É obrigatório registrar teste real no projeto de homologação: confirmação, login,
-refresh, recuperação e logout. Enquanto não houver ambiente autorizado/configurado,
-o Draft PR identifica a homologação como pendente, sem anunciar contas prontas.
+Confirmação, login, refresh, recuperação pelo backend e logout já foram registrados
+no projeto real de desenvolvimento. A matriz 2F separa esses resultados das lacunas
+de UI, revogação externa e rotação de assinatura. Testes simulados não encerram
+essas lacunas; o Draft PR não representa prontidão de produção.
 Sem merge, deploy, DNS, importação de saves ou alteração de gameplay/arte.

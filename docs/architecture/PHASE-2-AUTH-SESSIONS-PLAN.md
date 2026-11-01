@@ -3,8 +3,10 @@
 Plano de 30/10/2026, produzido na revisão da Fase 1; implementação de desenvolvimento
 autorizada depois pelo proprietário. Contratos, BFF, sessões, personagem e tela isolada
 estão implementados na branch `feature/auth-sessions`, baseada em `3addd2a`.
-**Aceitação da Fase 2 ainda depende de homologação Supabase real.** Nenhum projeto,
-usuário remoto, SMTP ou serviço pago foi criado/alterado pelo agente.
+**Rodadas reais 1–3 registradas; aceite final aberto na
+[Etapa 2F](../operations/PHASE-2F-FINAL-ACCEPTANCE.md).** Projeto e SMTP foram
+configurados pelo proprietário; ensaios remotos tiveram autorizações específicas.
+Esta preparação não autoriza novos envios, mudanças externas ou serviços pagos.
 As decisões atuais e diferenças em relação à proposta histórica abaixo estão na
 [ADR 0002](ADR-0002-BFF-SESSIONS.md) e no
 [guia de desenvolvimento](../operations/PHASE-2-DEVELOPMENT.md).
@@ -177,7 +179,11 @@ contas reais nem enviar e-mail a terceiros como teste. Usar contas de teste auto
 Nenhuma alegação de carga/600 CCU sem ensaio específico posterior. Migração/backup e
 recuperação precisam de ambiente autorizado antes de receber dados reais.
 
-## Decisões pendentes do proprietário
+## Decisões iniciais — histórico
+
+Supabase, BFF, TTLs, dispositivos, um personagem por conta e preservação de saves
+foram decididos e implementados. A lista original abaixo é histórica, não uma
+nova solicitação de aprovação. Decisões realmente abertas estão na matriz 2F.
 
 1. Supabase Auth confirmado? Qual projeto de desenvolvimento e método inicial de login?
    Recomendação: projeto separado, e-mail confirmado + senha e recuperação.
