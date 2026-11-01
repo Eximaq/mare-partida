@@ -30,3 +30,17 @@ Não esticar molduras, âncoras, cordas ou medalhões. Manter a proporção dos 
 Integrar as fontes de dados, persistência, carregamento e cache existentes. Não recriar sistemas nem gerar artes durante o gameplay. Carregar apenas os recursos necessários ao estado atual e preservar o versionamento de arquivos do build.
 
 Antes de publicar, revisar capturas reais no navegador em desktop e mobile, incluindo textos longos, estados vazios, valores extremos, foco de teclado, toque, sobreposições, recortes e nitidez. Testar as funcionalidades afetadas e apresentar uma prévia. Este padrão visual não autoriza novas mecânicas, mudanças de progressão ou reformas de outras HUDs sem solicitação.
+
+## Padrão aprovado para fundos — madeira e metal escuro (31/10/2026)
+
+Orientação explícita do proprietário: utilizar a mesma arte de madeira e metal escuro da Forja no lugar dos fundos verdes lisos. Esta é a base visual para as próximas artes e interfaces, incluindo campos de busca, filtros, seletores, superfícies de painéis e áreas de materiais/resultados.
+
+- Arquivo reutilizável: `assets/ui/forge-hd/workshop-surface.png`, PixelLab AI Pro, 512×512 nativo.
+- Origem, prompt, hash e custo: `assets/ui/forge-hd/manifest.json`, job `4b9e68be-ad20-4b62-924c-cd837708266b`.
+- Reutilizar o arquivo aprovado antes de gerar outro fundo. Exibir em tamanho nativo, com recorte/repetição e veladura escura discreta quando necessário à leitura.
+- Preservar a textura artesanal, a madeira escura, o metal envelhecido e a iluminação quente contida. Não retornar às superfícies verdes/azuladas lisas.
+- Conferir o estilo calculado dos campos: o tema compartilhado antigo pode recolocar `navigator/ink.webp` por precedência de seletores. O fundo efetivo deve usar a nova arte.
+- Cores semânticas de sucesso, risco e raridade continuam distintas; o padrão se refere às superfícies de fundo.
+- A Forja aplica esta regra nas quatro abas. Outras interfaces existentes serão adaptadas quando solicitadas; a orientação fica registrada para toda nova arte.
+
+Token compartilhado: `--rpg-workshop-surface`, definido em `ui-tokens.css`. Novas HUDs devem reutilizá-lo para manter a mesma arte e evitar cópias ou novas gerações desnecessárias.
