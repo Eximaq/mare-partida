@@ -178,7 +178,7 @@ test("hunt migration is additive and repeatable, preserving old account, charact
     await pool.query("UPDATE mare_game.character_progression SET gold=9007199254740993,experience=567");
     const tables=["accounts","characters","character_progression","character_commands","character_journey_ledger"];
     const before=await Promise.all(tables.map(t=>pool.query(`SELECT * FROM mare_game.${t}`)));
-    assert.deepEqual(await applyMigrations(pool),["0006_first_hunt.sql", "0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0006_first_hunt.sql", "0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     // 3H backfills level 5 from the existing 567 XP, fencing old new-command versions.
     for(const [i,t] of tables.entries()) {
       const expected=before[i]!.rows.map(row=>t==="characters"?{...row,state_version:"2"}:t==="character_progression"?{...row,level:5}:row);

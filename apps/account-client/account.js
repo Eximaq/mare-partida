@@ -6,7 +6,15 @@ let mode = "login",
 let online = null, pendingCommand = null, commandWorking = false;
 let viewRevision = 0, identityRevision = 0, identity = null;
 const PENDING_COMMAND = "mare-online-pending-v1";
+const attributeNames={strength:"Força",dexterity:"Destreza",vitality:"Vitalidade",intelligence:"Inteligência",spirit:"Espírito"};
+const attributeKeys=Object.keys(attributeNames);
+const pointValue=n=>Number.isSafeInteger(n)&&n>=0&&n<=95;
+function validAllocation(v) {
+  return !!v && typeof v==="object" && Object.keys(v).sort().join()===attributeKeys.slice().sort().join() &&
+    attributeKeys.every(k=>pointValue(v[k])) && attributeKeys.reduce((n,k)=>n+v[k],0)>0 && attributeKeys.reduce((n,k)=>n+v[k],0)<=95;
+}
 const messages = {
+  attribute_points_insufficient: "Os pontos disponíveis mudaram. Confira o saldo antes de distribuir.",
   authentication_required: "Sua sessão terminou. Entre novamente.",
   authentication_failed:
     "Não foi possível entrar. Confira os dados e a confirmação do e-mail.",
@@ -91,6 +99,7 @@ async function onlineApi(path, data) {
   finally { clearTimeout(timer); }
 }
 function clearPendingCommand() {
+  if(pendingCommand?.action==="attributes.allocate") $("#attribute-count").value="1";
   pendingCommand = null;
   try { sessionStorage.removeItem(PENDING_COMMAND); } catch { /* memory-only fallback */ }
 }
@@ -98,8 +107,9 @@ function restorePendingCommand(id) {
   if (pendingCommand?.characterId === id) return;
   try {
     const saved = JSON.parse(sessionStorage.getItem(PENDING_COMMAND) || "null");
-    if (saved && (["characterId,expectedVersion,requestId", "action,characterId,expectedVersion,requestId"].includes(Object.keys(saved).sort().join())) &&
-        (saved.action === undefined || ["hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim"].includes(saved.action)) &&
+    if (saved && (["characterId,expectedVersion,requestId", "action,characterId,expectedVersion,requestId", "action,characterId,expectedVersion,payload,requestId"].includes(Object.keys(saved).sort().join())) &&
+        (saved.action === undefined || ["hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate"].includes(saved.action)) &&
+        (saved.action === "attributes.allocate" ? saved.payload && Object.keys(saved.payload).join()==="allocation" && validAllocation(saved.payload.allocation) : saved.payload===undefined) &&
         saved.characterId === id && typeof saved.requestId === "string" &&
         /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(saved.requestId) &&
         Number.isSafeInteger(saved.expectedVersion) && saved.expectedVersion >= 0) {
@@ -111,6 +121,7 @@ function restorePendingCommand(id) {
 function pendingAction() { return pendingCommand?.action || "journey.begin"; }
 function actionConfirmed(action) {
   if (!online) return false;
+  if (action === "attributes.allocate") return !!pendingCommand && online.attributes?.lastRequestId===pendingCommand.requestId;
   if (action === "journey.begin") return online.journey.started;
   if (action === "hunt.begin") return ["active", "ready", "claimed"].includes(online.hunt?.status);
   if (action.startsWith("combat.")) return !!pendingCommand && online.combat?.lastRequestId === pendingCommand.requestId;
@@ -119,7 +130,8 @@ function actionConfirmed(action) {
 function canSend(action) {
   if (commandWorking || !active || !character || !online || !lease || (pendingCommand && pendingAction() !== action)) return false;
   // An uncertain repeated action must be replayable even if a later command ended the battle.
-  if (pendingCommand && action.startsWith("combat.")) return true;
+  if (pendingCommand && (action.startsWith("combat.") || action==="attributes.allocate")) return true;
+  if (action==="attributes.allocate") return !!online.attributes && online.attributes.available>0;
   if (action === "combat.begin") return online.combat?.canBegin ?? online.combat?.status === "available";
   if (action === "combat.attack") return online.combat?.status === "active" && online.combat.attackReady;
   if (action === "combat.claim") return online.combat?.status === "won";
@@ -135,7 +147,17 @@ function renderOnline() {
     "Nível máximo deste piloto alcançado. Todo o XP continua preservado." :
     `Próximo nível: ${progression.xpIntoLevel} / ${progression.xpForNextLevel} XP — faltam ${progression.xpToNextLevel} XP.`;
   $("#level-points").textContent=progression ?
-    `Pontos de atributo conquistados: ${progression.earnedAttributePoints}. A distribuição online será liberada em outra etapa; o combate atual mantém seus valores.` : "";
+    `Pontos de atributo conquistados: ${progression.earnedAttributePoints}. O combate deste piloto ainda mantém seus valores.` : "";
+  const attributes=online?.attributes;
+  $("#attribute-budget").textContent=attributes ? `Disponíveis: ${attributes.available} · Investidos: ${attributes.spent} de ${attributes.earned} pontos conquistados.` : "";
+  $("#attribute-values").textContent=attributes ? attributeKeys.map(k=>`${attributeNames[k]}: ${attributes.allocated[k]}`).join(" · ") : "";
+  $("#attribute-apply").disabled=!canSend("attributes.allocate");
+  $("#attribute-apply").textContent=pendingCommand?.action==="attributes.allocate" ? "Retomar distribuição" : "Confirmar distribuição";
+  $("#attribute-kind").disabled=!!pendingCommand || commandWorking || !canSend("attributes.allocate");
+  $("#attribute-count").disabled=$("#attribute-kind").disabled;
+  $("#attribute-count").max=String(attributes?.available || 1);
+  $("#attribute-pending").textContent=pendingCommand?.action==="attributes.allocate" ?
+    "Distribuição a conferir: "+attributeKeys.filter(k=>pendingCommand.payload.allocation[k]>0).map(k=>`${attributeNames[k]} +${pendingCommand.payload.allocation[k]}`).join(", ") : "";
   $("#journey-state").textContent = !online ? "Progresso ainda não confirmado." :
     online.journey.started ? "Jornada iniciada no servidor." : "Sua jornada online ainda não foi iniciada.";
   for (const [selector, action, label] of [["#journey-start","journey.begin","Iniciar jornada"],
@@ -203,6 +225,14 @@ async function loadOnline(revision, id) {
             BigInt(p.xpIntoLevel)+BigInt(p.xpToNextLevel)!==BigInt(p.xpForNextLevel)))
         throw new Error("Resposta de nível inválida.");
     }
+    if(result.attributes!==undefined) {
+      const a=result.attributes,allocated=a?.allocated;
+      if(!a || a.catalogId!=="online-attributes-v1" || !allocated || Object.keys(allocated).sort().join()!==attributeKeys.slice().sort().join() ||
+          !attributeKeys.every(k=>pointValue(allocated[k])) || !pointValue(a.earned) || a.earned!==(result.state.level-1)*5 ||
+          !pointValue(a.spent) || !pointValue(a.available) || a.spent!==attributeKeys.reduce((n,k)=>n+allocated[k],0) || a.available!==a.earned-a.spent ||
+          (a.lastRequestId!==null && (typeof a.lastRequestId!=="string" || !/^[0-9a-f-]{36}$/i.test(a.lastRequestId))))
+        throw new Error("Resposta de atributos inválida.");
+    }
     online = result;
     if (pendingCommand && actionConfirmed(pendingAction())) clearPendingCommand();
     $("#journey-message").textContent = pendingCommand ?
@@ -217,20 +247,20 @@ async function loadOnline(revision, id) {
   }
   renderOnline();
 }
-async function sendOnlineAction(action) {
+async function sendOnlineAction(action, payload={}) {
   if (!canSend(action)) return;
   const id = character.id, revision = identityRevision;
   let refusal = "";
   commandWorking = true;
   if (!pendingCommand) {
-    pendingCommand = { characterId: id, requestId: crypto.randomUUID(), expectedVersion: online.state.version, ...(action === "journey.begin" ? {} : { action }) };
+    pendingCommand = { characterId: id, requestId: crypto.randomUUID(), expectedVersion: online.state.version, ...(action === "journey.begin" ? {} : { action }), ...(action==="attributes.allocate" ? {payload} : {}) };
     try { sessionStorage.setItem(PENDING_COMMAND, JSON.stringify(pendingCommand)); } catch { /* current-tab memory remains usable */ }
   }
   renderOnline();
   try {
     await onlineApi(`/v1/characters/${id}/commands`, {
       requestId: pendingCommand.requestId, action, expectedVersion: pendingCommand.expectedVersion,
-      control: { epoch: lease.epoch, token: lease.token }, payload: {},
+      control: { epoch: lease.epoch, token: lease.token }, payload: pendingCommand.payload || {},
     });
     if (revision !== identityRevision) return;
     clearPendingCommand();
@@ -241,7 +271,7 @@ async function sendOnlineAction(action) {
     if (error.code === "control_conflict") {
       lease = null; $("#control-state").textContent = "Controle encerrado nesta aba.";
     }
-    if (["combat_rest", "combat_reward_pending", "combat_daily_limit", "combat_history_full", "state_version_conflict", "journey_already_started", "hunt_already_started", "hunt_already_claimed", "hunt_not_started", "hunt_not_ready", "hunt_required", "combat_already_started", "combat_already_claimed", "combat_not_started", "combat_not_won", "combat_finished", "combat_cooldown", "idempotency_conflict", "invalid_request"].includes(error.code)) clearPendingCommand();
+    if (["attribute_points_insufficient", "combat_rest", "combat_reward_pending", "combat_daily_limit", "combat_history_full", "state_version_conflict", "journey_already_started", "hunt_already_started", "hunt_already_claimed", "hunt_not_started", "hunt_not_ready", "hunt_required", "combat_already_started", "combat_already_claimed", "combat_not_started", "combat_not_won", "combat_finished", "combat_cooldown", "idempotency_conflict", "invalid_request"].includes(error.code)) clearPendingCommand();
     // Transport/503 errors may follow a committed action. Reconcile with GET only.
   } finally {
     if (revision === identityRevision) {
@@ -254,6 +284,18 @@ async function sendOnlineAction(action) {
     }
   }
 }
+$("#attribute-form").addEventListener("submit", event=>{
+  event.preventDefault();
+  if(!canSend("attributes.allocate")) return;
+  if(pendingCommand) {void sendOnlineAction("attributes.allocate");return;}
+  const kind=$("#attribute-kind").value,count=Number($("#attribute-count").value);
+  if(!attributeKeys.includes(kind) || !Number.isSafeInteger(count) || count<1 || count>online.attributes.available) {
+    $("#journey-message").textContent="Escolha um atributo e uma quantidade inteira dentro do saldo disponível.";return;
+  }
+  if(!confirm(`Investir ${count} ponto(s) em ${attributeNames[kind]}? Não há redistribuição nesta etapa.`)) return;
+  const allocation=Object.fromEntries(attributeKeys.map(k=>[k,k===kind?count:0]));
+  void sendOnlineAction("attributes.allocate",{allocation});
+});
 $("#journey-start").addEventListener("click", () => { void sendOnlineAction("journey.begin"); });
 $("#hunt-start").addEventListener("click", () => { void sendOnlineAction("hunt.begin"); });
 $("#hunt-claim").addEventListener("click", () => { void sendOnlineAction("hunt.claim"); });
@@ -265,6 +307,7 @@ function showLogin() {
   online = null; commandWorking = false; clearPendingCommand();
   $("#control-state").textContent = "Nenhum controle solicitado nesta aba.";
   active = false;
+  $("#attribute-count").value="1";$("#attribute-kind").value="strength";
   character = null;
   lease = null;
   $("#signed-in").hidden = true;

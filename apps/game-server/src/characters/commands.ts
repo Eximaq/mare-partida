@@ -1,11 +1,13 @@
 import type { PoolClient } from "pg";
-import { characterCommandResultSchema, type CharacterCommand, type CharacterCommandResult } from "@mare/shared";
+import { attributeKeys, characterCommandResultSchema, type CharacterCommand, type CharacterCommandResult } from "@mare/shared";
 import { AuthFault } from "../auth/errors.js";
 import { digest } from "../auth/vault.js";
 import { readCharacterState } from "./state.js";
 import { beginJourney } from "./journey.js";
 import { mutateHunt } from "./hunt.js";
 import { mutateCombat } from "./combat.js";
+
+import {allocateAttributes} from "./attributes.js";
 
 // Caller holds the account and character locks after authenticating and checking ownership.
 export async function executeCharacterCommand(
@@ -19,7 +21,8 @@ export async function executeCharacterCommand(
   if (!controller.rowCount) throw new AuthFault(409, "control_conflict");
   // Authority is checked on every replay. Credentials are deliberately excluded from storage
   // and identity, so a newly authorized controller can reconcile a lost response.
-  const hash = digest(JSON.stringify([input.action, input.expectedVersion, input.payload]));
+  const intent = input.action === "attributes.allocate" ? attributeKeys.map(k=>input.payload.allocation[k]) : input.payload;
+  const hash = digest(JSON.stringify([input.action, input.expectedVersion, intent]));
   const previous = (await client.query<{ request_hash: string; result: unknown }>(
     "SELECT request_hash,result FROM mare_game.character_commands WHERE character_id=$1 AND request_id=$2",
     [characterId, input.requestId],
@@ -52,7 +55,12 @@ export async function executeCharacterCommand(
     combat = await mutateCombat(client, characterId, input.requestId, input.action, state);
     state = await readCharacterState(client, characterId);
   }
-  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(combat ? {combat} : {}) });
+  let attributes;
+  if(input.action === "attributes.allocate") {
+    attributes=await allocateAttributes(client,characterId,input.requestId,state,input.payload.allocation);
+    state=await readCharacterState(client,characterId);
+  }
+  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}) });
   await client.query(
     "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)",
     [characterId, input.requestId, hash, JSON.stringify(result)],
