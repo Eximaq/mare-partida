@@ -127,7 +127,7 @@ export function createAuthHandler(options: {
         /^\/v1\/characters\/([0-9a-f-]{36})(?:\/(control)(?:\/(renew))?)?$/.exec(
           path,
         );
-      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/state$/.exec(path);
+      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/(state|online-state)$/.exec(path);
       const commandMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/commands$/.exec(path);
       const known = [
         "/v1/auth/csrf",
@@ -206,7 +206,8 @@ export function createAuthHandler(options: {
         if (stateMatch) {
           if (url.search || request.headers["transfer-encoding"] || Number(request.headers["content-length"] ?? 0) !== 0)
             throw new AuthFault(400, "invalid_request");
-          reply(200, await service.characterState(session, parse(z.uuid(), stateMatch[1])));
+          const id = parse(z.uuid(), stateMatch[1]);
+          reply(200, stateMatch[2] === "online-state" ? await service.onlineState(session, id) : await service.characterState(session, id));
           return;
         }
         if (path === "/v1/me") {

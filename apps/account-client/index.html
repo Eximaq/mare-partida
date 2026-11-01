@@ -102,6 +102,20 @@
             <p id="character-details"></p>
             <p id="control-state">Nenhum controle solicitado nesta aba.</p>
             <button type="button" id="control">Controlar nesta aba</button>
+            <section class="online-progress" aria-labelledby="online-title">
+              <h4 id="online-title">Progresso online</h4>
+              <dl class="online-values">
+                <div><dt>Nível</dt><dd id="online-level">—</dd></div>
+                <div><dt>Experiência</dt><dd id="online-xp">—</dd></div>
+                <div><dt>Ouro</dt><dd id="online-gold">—</dd></div>
+              </dl>
+              <p id="journey-state">Progresso ainda não confirmado.</p>
+              <p id="journey-message" class="quiet" role="status" aria-live="polite"></p>
+              <div class="online-actions">
+                <button type="button" id="journey-start" disabled>Iniciar jornada</button>
+                <button type="button" id="online-refresh">Atualizar progresso</button>
+              </div>
+            </section>
           </div>
           <form id="character-form">
             <p>
@@ -133,8 +147,8 @@
             ><button class="primary" type="submit">Criar personagem</button>
           </form>
           <p class="quiet">
-            Esta etapa registra sua conta e seu personagem. A aventura online
-            será liberada em uma etapa futura.
+            O início da jornada fica registrado no servidor. Exploração,
+            combate e recompensas online serão integrados em etapas futuras.
           </p>
           <div class="session-actions">
             <button type="button" id="rotate">Renovar sessão</button
