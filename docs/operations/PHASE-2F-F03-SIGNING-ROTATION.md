@@ -1,9 +1,93 @@
-# F03 — proposta de rotação de assinatura em desenvolvimento
+# F03 — rotação de assinatura em desenvolvimento
 
 Preparação em 01/11/2026, runtime `f98063e`, documentação-base `faec32f`.
-**Somente leitura e planejamento. Nenhuma chave criada, ativada, revogada ou excluída.**
-F03 ainda não autorizado para execução; F01 permanece pendente para o fechamento.
+**Execução autorizada em 01/11/2026, incluindo retorno único à ES256 anterior em
+caso de falha. F03 aprovado nos cenários reais abaixo; janela encerrada.**
+Nova ES256 permanece Current; F01 e o aceite final da Fase 2 continuam pendentes.
 Referência de aceite: [matriz 2F](PHASE-2F-FINAL-ACCEPTANCE.md).
+
+## Janela de execução — resultado
+
+Base `39b0890`, exclusivamente projeto de desenvolvimento. A autorização inclui
+uma standby ES256 gerada pelo provedor, ativação após propagação, logins da Conta A,
+refresh natural, cache aquecido/vazio e retorno único à ES256 anterior se necessário.
+Não inclui revogar/excluir chaves, alterar prazos, enviar e-mails ou fazer deploy.
+
+- 01/11/2026, aproximadamente 00:13:47 (America/Sao_Paulo): criada uma standby
+  ECC/P-256. Painel confirmou Current ES256 + Standby ES256 + Previous HS256.
+  Chave privada gerada pelo Supabase, sem importação, exportação ou leitura.
+- JWKS público passou de uma para duas chaves EC/P-256/ES256, mantendo a anterior.
+  A primeira leitura com ambas ocorreu após 88 s; isso não encerrou a margem de
+  propagação de 20 minutos. Auth permaneceu false, API/gateway parados.
+- Às 00:33:57, após 1210 s, o gate confirmou ambas as ES256 no JWKS. API e gateway
+  foram iniciados em loopback; HTTPS /health/ready e /online/ retornaram 200 com
+  validação TLS habilitada. Auth foi ligado somente para a janela; nesse momento,
+  a chave anterior ainda era Current e a nova aguardava ativação.
+- Baseline: quatro contas, três personagens, zero sessões internas ativas e zero
+  revogações pendentes. Fingerprint dos personagens igual ao fechamento de F02.
+- Teste complementar `node --import tsx --test tests/foundation/supabase-provider.test.mts`:
+  um teste aprovado. Provedor simulado neste teste; não substitui a rotação hospedada.
+- Coleta local com consultas somente leitura, comparação de assinatura e observação
+  de status de chamadas do BFF. Tokens não aparecem em logs; o token antigo de
+  controle foi guardado apenas cifrado em arquivo local ignorado, sem refresh token.
+- Login inicial da Conta A aceito pelo BFF: chamada de login 200 às 00:35:54,
+  JWKS 200 e identidade confirmada 200. Controle independente confirmou assinatura
+  pela ES256 anterior, JWT 900 s, uma sessão interna e personagem preservado.
+- Às 00:36:43 foi solicitada a única ativação autorizada. Painel confirmou nova
+  ES256 Current, ES256 anterior Previous e HS256 legada Previous; nenhuma standby
+  remanescente, chave revogada ou excluída. Às 00:36:48, o JWT antigo ainda passou
+  na verificação criptográfica, com 846 s restantes. A UI original permaneceu
+  autenticada após recarregar; esta leitura não foi tratada como prova de revalidação JWT.
+- Segundo login da mesma conta, no Opera isolado, às 00:37:45: BFF aceitou o JWT
+  assinado pela nova ES256, duração de 900 s e identidade preservada. Duas sessões
+  internas ativas, sem novas contas ou personagens. Mesmo processo BFF; apenas
+  uma busca JWKS registrada desde o início e cache carregado havia cerca de 111 s.
+  **Cache aquecido aprovado**; não houve restart nem nova busca para ocultar falha.
+- A sessão do Opera foi encerrada localmente para evitar refresh em segundo plano
+  durante o futuro teste de cache vazio. Logout remoto 204 às 00:41:38; sessão
+  original preservada e fila vazia. Essa antecipação do encerramento não alterou
+  o token ou o prazo da sessão reservada ao refresh.
+- Refresh natural da sessão original: primeira consulta após o vencimento acionou
+  refresh remoto 200 às 00:51:20, JWKS 200 e identidade confirmada 200; /v1/me 200
+  às 00:51:21. Novo JWT assinado pela nova ES256, 900 s, mesma sessão interna,
+  mesma sessão do provedor e mesmo proprietário/personagem. Sem alteração de
+  relógio, expiração, dados internos ou reinício antecipado. A consulta periódica
+  aconteceu cerca de 25 s após o vencimento; o BFF aguardou a revalidação para responder.
+- Após o refresh, logout local da sessão original e fila drenada. Reiniciado
+  somente o BFF; gateway e PostgreSQL mantidos. Novo processo começou sem chamadas
+  ao provedor. Login real às 00:52:38 provocou a primeira busca JWKS desse processo,
+  seguida de identidade confirmada: todas 200. JWT novo ES256/900 s validado;
+  **cache vazio aprovado**, sem refresh concorrente anterior para aquecê-lo.
+- Último logout local: revogação remota 204 às 00:53:03, fila drenada. Encerramento
+  às 00:53:22: Auth false, portas 8788/9443 sem listeners, PostgreSQL preservado
+  em loopback. Quatro contas, três personagens com fingerprint inalterado, zero
+  sessões internas ativas e zero revogações pendentes. Configuração local voltou
+  ao estado inicial; credenciais e políticas não foram alteradas.
+
+| Controle | Resultado |
+|---|---|
+| Uma standby ES256 gerada pelo provedor e propagada antes de ativar | Aprovado; 1210 s de margem e duas ES256 no JWKS |
+| Uma ativação, preservando a antiga como Previous | Aprovado; nenhuma chave revogada/excluída |
+| Token antigo ainda válido após a ativação | Aprovado por verificação criptográfica independente, antes de expirar |
+| Login com nova assinatura e cache aquecido | Aprovado no mesmo processo, sem nova busca JWKS |
+| Refresh natural e continuidade da sessão original | Aprovado no provedor real, JWT ES256/900 s |
+| Login real em novo processo/cache vazio | Aprovado; primeira busca JWKS causada pelo login |
+| Logout, preservação e encerramento local | Aprovado; zero sessões/fila, Auth false, API/gateway parados |
+| Retorno à chave anterior | Não executado: não houve falha que o exigisse |
+| Rejeição de uma chave revogada | Fora do escopo; nenhuma revogação autorizada ou executada |
+
+Limites: o ensaio cobriu o BFF local e os dois perfis autorizados; não prova o
+comportamento de consumidores desconhecidos nem disponibilidade de produção.
+A ES256 anterior e a HS256 legada continuam confiáveis no provedor; o jogo aceita
+somente ES256. A revisão/revogação dessas chaves exige escopo próprio, e não foi
+simulada por expiração de JWT. Rollback permaneceu preparado, sem execução.
+
+Sem e-mails, cadastros, mudança de senha, chave administrativa, migração, alteração
+de gameplay/assets/saves, merge, deploy, DNS ou Fase 3. Apenas este documento e a
+matriz foram modificados no repositório; auxiliares/evidências continuam ignorados.
+O teste unitário complementar usa provedor simulado; os resultados funcionais
+acima vieram do Supabase de desenvolvimento real. As seções seguintes preservam
+o plano autorizado e não representam novas operações a executar.
 
 ## Estado verificado antes da proposta
 
@@ -40,7 +124,7 @@ após rotação. Também informa cache de JWKS e limitações temporais entre mu
 de estado. A proposta abaixo preserva essa sobreposição e não promete reversão
 instantânea nem invalidação imediata de JWTs antigos.
 
-## Sequência de execução — somente após autorização
+## Sequência autorizada — plano original
 
 1. Reconferir projeto/inventário e dados; parar se surgir alteração de colaborador
    ou consumidor desconhecido. Registrar apenas contagens e comparações, sem kids.
@@ -95,7 +179,7 @@ O retorno é uma segunda alteração externa e precisa constar da autorização.
 Sem essa autorização, a resposta à falha será parar o ensaio e desligar Auth,
 apresentando o estado observado antes de qualquer nova ação no painel.
 
-## Escopo concreto para aprovação
+## Escopo submetido e aprovado — histórico
 
 Autorizar, exclusivamente neste projeto de desenvolvimento: criar uma standby
 ES256, aguardar/validar propagação, ativá-la, executar logins/refresh/restart local
@@ -103,6 +187,7 @@ com a Conta A e encerrar suas sessões de teste. Incluir explicitamente o retorn
 único à ES256 anterior em caso de falha, se desejado. Sem e-mails, revogação ou
 exclusão de chaves, alterações de configuração adicionais, merge ou deploy.
 
-F03 só será aprovado com evidências reais dos controles acima; nenhuma operação
-foi executada por esta preparação. A recuperação F01 e os demais casos pendentes
-continuam impedindo declarar aceite completo da Fase 2 ou iniciar Fase 3.
+O critério original exigia evidências reais dos controles acima; elas foram obtidas
+na execução registrada no início deste documento. A preparação original não
+executou operações. A recuperação F01 e os demais casos pendentes continuam
+impedindo declarar aceite completo da Fase 2 ou iniciar Fase 3.

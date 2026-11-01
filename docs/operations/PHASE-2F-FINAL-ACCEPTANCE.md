@@ -3,18 +3,22 @@
 Preparação autorizada em 31/10/2026. Referência técnica verificada: `c8be42f`,
 branch `feature/auth-sessions`, PR #162 Draft, base de integração main `8550cfa`.
 **Estado: F02 aprovado no cenário real autorizado sobre `f98063e`. F01 permanece
-inconclusivo, adiado pelo proprietário para retomada no fechamento. F03–F05 e
-aceite final continuam abertos; não há autorização de Fase 3.**
+inconclusivo, adiado pelo proprietário para retomada no fechamento. F03 aprovado
+em 01/11/2026: rotação ES256 real, caches aquecido/vazio, refresh natural e
+encerramento verificados. F04/F05 e aceite final continuam abertos; não há
+autorização de Fase 3.**
 Este documento concentra o status atual. Os relatos das rodadas 1–3 preservam
 seus resultados históricos e não autorizam novos envios ou operações externas.
 
-## Escopo autorizado nesta preparação
+## Escopo da preparação original
 
 Consolidar documentos, conferir contratos e elaborar os procedimentos. Nenhum
 cadastro, e-mail, reset, revogação ou alteração do Supabase está autorizado por
 esta preparação. Não iniciar API/gateway nem habilitar Auth somente para preparar
 este roteiro. Commit/push documental no PR existente é permitido, com prefixo
 `[CF-Pages-Skip]` e exclusão de previews mantida. Sem merge, deploy, DNS ou Fase 3.
+Os ensaios F02 e F03 receberam autorizações específicas posteriores, registradas
+nesta matriz e no relatório vinculado; o escopo histórico acima não os substitui.
 
 ## Matriz única de status atual
 
@@ -28,7 +32,7 @@ este roteiro. Commit/push documental no PR existente é permitido, com prefixo
 | A06 | Integração, Node, PostgreSQL e Docker/Linux | `c8be42f`: oito checks CI aprovados; local 28 fundação, 19 integração e 123 arquivos Node | Bloqueios de Fênix/hash resolvidos; CI de novos commits deve ser conferida |
 | F01 | Recuperação completa pela interface | Envio UI 202 e entrega confirmada; callback remoto recusado (`otp_expired`), local 400; inconclusivo | Diagnosticar causa antes de propor outro envio; reset/login/logout pela UI não executados |
 | F02 | Revogação iniciada fora do BFF | Aprovado: logout externo 204, refresh remoto recusado, sessão interna revogada e /v1/me 401 | Uma conta/uma sessão neste ensaio; detecção na próxima revalidação, sem promessa de invalidação instantânea do JWT |
-| F03 | Rotação real da assinatura JWT/JWKS | Pendente | Autorização do projeto e efeitos; novo JWT ES256/900 s aceito; nenhuma tolerância a assinatura inválida |
+| F03 | Rotação real da assinatura JWT/JWKS | Aprovado: nova ES256/900 s, cache aquecido/vazio, JWT antigo válido, refresh natural e mesma identidade; ver [registro F03](PHASE-2F-F03-SIGNING-ROTATION.md) | Antiga ES256 preservada como Previous; não testada revogação de chave nem executado rollback; Auth false e serviços locais parados |
 | F04 | Expiração do token remoto de e-mail sem uso | Não comprovada; expiração do BFF comprovada | Envio separado, prazo remoto confirmado, espera natural; ou adiamento explícito com risco registrado |
 | F05 | Resposta perdida durante reset hospedado | Coberta localmente, não induzida no provedor real | Plano de injeção isolado e autorização adicional; ou adiamento explícito, sem alegar atomicidade |
 | O01 | Operação antes de exposição pública | Pendente | Origem de produção, retenção/chaves, abuso, carga e backup/restauração; nenhuma publicação nesta fase |
