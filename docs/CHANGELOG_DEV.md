@@ -680,3 +680,8 @@ Branch feature/talents-hd; base 003a90cf (PR #178). Três colunas, árvore compa
 Branch feature/compendium-hd; base 022004b (PR #179). Cabeçalho em toda a largura, abas de tipos, ranks separados, galeria e detalhes com dados canônicos. Silhuetas individuais dos ícones HD, inclusive Zoan; classificação S Supremo, A/B Lendário, C/D Épico e E Raro compartilhada com inventário/tooltips. Registro permanente com proteção contra duplicação e falha local de salvamento; fórmula de bônus preservada e reutilizada. Uma decoração e três símbolos PixelLab, 31 gerações; nenhum ícone de fruta refeito. Acentuação de Rank A corrigida e descrições genéricas de três Rank S completadas sem alterar números. Testes Node, serviço Python, Chromium em oito resoluções e build Pages. Documentação, compatibilidade e rollback: [COMPENDIO-HD.md](COMPENDIO-HD.md).
 
 Regressão extra: Supa, Doru, Neko, Ushi e Lobo aprovados; Ryu mantém diferença preexistente de 1 px entre idle/walk frontal, reproduzida com a base e o teste originais. Nenhum sprite ou limite da asserção foi alterado.
+
+
+## 01/11/2026 — Conquistas e Hierarquia dos Mares HD
+
+Branch feature/achievements-hierarchy-hd, base 0897d9f. Duas janelas HD, resumo/resgates permanentes, consulta das quatro facções e dos 32 títulos, novas insígnias PixelLab e ranking filtrado no serviço antes do Top 10. Regras, save e emblemas preservados. [Relatório, arte, testes e rollback](CONQUISTAS-HIERARQUIA-HD.md).
