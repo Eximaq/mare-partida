@@ -18,7 +18,11 @@ def tree(q):
  q.wait_for_function("document.querySelector('.talent-tree-surface').dataset.iconsReady==='true'")
 def scale(q):return int(q.locator('[data-tree-scale]').inner_text().replace('%',''))
 def check_targets(q):
- rows=q.locator('[data-talent-select]').evaluate_all("""nodes=>{const c=document.querySelector('.constellation-canvas').getBoundingClientRect(),scale=c.width/1000;return nodes.map(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e),p=getComputedStyle(e,'::after');return {id:e.dataset.talentSelect,covered:e.classList.contains('ui-button')||s.backgroundColor!=='rgba(0, 0, 0, 0)'||s.borderImageSource!=='none'||getComputedStyle(e.firstElementChild).display!=='none',outline:s.outlineStyle,before:getComputedStyle(e,'::before').content,dx:r.x+r.width/2-(c.x+Number(e.dataset.nodeX)*scale),dy:r.y+r.height/2-(c.y+Number(e.dataset.nodeY)*scale),ring:[p.left,p.top,p.right,p.bottom]}})}""")
+ styles=q.evaluate("""()=>{const h=document.querySelector('.dialog-header'),f=document.querySelector('.talent-actions'),c=document.querySelector('.talent-class-panel'),m=c.querySelector('.talent-class-medallion'),d=document.querySelector('.talent-detail-title'),a=c.getBoundingClientRect(),b=m.getBoundingClientRect();return {wood:getComputedStyle(h).backgroundImage===getComputedStyle(f).backgroundImage,center:Math.abs((a.left+a.right-b.left-b.right)/2),desktop:innerWidth>1024,detail:d?getComputedStyle(d).alignItems:null}}""")
+ assert styles['wood'],styles
+ if styles['desktop']:assert styles['center']<1,styles
+ if styles['detail']:assert styles['detail']=='center',styles
+ rows=q.locator('[data-talent-select]').evaluate_all("""nodes=>{const c=document.querySelector('.constellation-canvas').getBoundingClientRect(),scale=c.width/parseFloat(document.querySelector('.constellation-canvas').style.width);return nodes.map(e=>{const r=e.getBoundingClientRect(),s=getComputedStyle(e),p=getComputedStyle(e,'::after');return {id:e.dataset.talentSelect,covered:e.classList.contains('ui-button')||s.backgroundColor!=='rgba(0, 0, 0, 0)'||s.borderImageSource!=='none'||getComputedStyle(e.firstElementChild).display!=='none',outline:s.outlineStyle,before:getComputedStyle(e,'::before').content,dx:r.x+r.width/2-(c.x+Number(e.dataset.nodeX)*scale),dy:r.y+r.height/2-(c.y+Number(e.dataset.nodeY)*scale),ring:[p.left,p.top,p.right,p.bottom]}})}""")
  assert len(rows)==21
  for r in rows:
   assert not r['covered'],r

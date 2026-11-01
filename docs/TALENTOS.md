@@ -210,3 +210,8 @@ Validação local:
 - Capturas reais e saves controlados ficam fora do Git, em diretórios temporários. Prévia final: mare-talent-visual-fix/talents-fixed.png.
 
 Workflow novo executa regressão Node, roteiro Canvas na fonte e roteiro visual no pacote estático, com capturas como artefatos temporários do CI. Publicação da branch/PR não equivale a merge; aprovação permanece com o proprietário.
+
+
+## Interface HD — 31/10/2026
+
+A constelação agora usa três colunas, madeira compartilhada, medalhões centralizados e bônus totais canônicos, com zoom mínimo de 58%. Regras e saves preservados. Consulte [TALENTOS-HD.md](TALENTOS-HD.md) para arquitetura, arte, testes e limites de enquadramento.

@@ -29,7 +29,7 @@ with sync_playwright() as p:
   seed=copy.deepcopy(template);seed.update(level=30,classId=cls)
   c,q=checked(seed);tree(q)
   assert q.locator('[data-talent-select]').count()==21
-  assert q.locator('[data-talent-select]').first.bounding_box()['width']==96
+  assert abs(q.locator('[data-talent-select]').first.bounding_box()['width']-96*int(q.locator('[data-tree-scale]').inner_text().replace('%',''))/100)<.5
   surface=q.locator('.talent-tree-surface')
   q.wait_for_function("document.querySelector('.talent-tree-surface').dataset.iconsReady==='true'")
   assert q.evaluate("MareTalentUI.TALENT_TREE_CONFIG['"+cls+"'].nodes.length")==21
@@ -69,7 +69,7 @@ with sync_playwright() as p:
   q.mouse.move(box['x']+25,box['y']+40);q.mouse.down();q.mouse.move(box['x']+80,box['y']+70,steps=6);q.mouse.up()
   assert q.locator('.talent-budget').inner_text()==before
   q.locator('[data-tree-zoom=in]').click()
-  assert q.locator('.talent-tree-surface').evaluate('(e)=>e.width')>=1000
+  assert q.locator('.talent-tree-surface').evaluate('(e)=>e.width>=MareTalentUI.WIDTH')
   q.locator('[data-tree-zoom=fit]').click()
   assert q.locator('#dialogBody').evaluate('(e)=>e.scrollWidth<=e.clientWidth+1')
   q.locator('#dialogBody').evaluate('(e)=>e.scrollTop=0');q.screenshot(path=str(OUT/('responsive-'+str(w)+'.png')))
@@ -78,7 +78,7 @@ with sync_playwright() as p:
  c=b.new_context(viewport=dict(width=1366,height=768),device_scale_factor=2)
  c.add_init_script("localStorage.setItem('mare-partida-save-v1',"+json.dumps(json.dumps(template))+")")
  q=c.new_page();q.on('pageerror',lambda e:errors.append(e.stack));q.goto(BASE_URL);q.wait_for_load_state('networkidle');tree(q)
- assert q.locator('.talent-tree-surface').evaluate('(e)=>e.width')==2000
+ assert q.locator('.talent-tree-surface').evaluate('(e)=>e.width===MareTalentUI.WIDTH*2')
  assert q.evaluate("Promise.all(MareTalentUI.TALENT_TREE_CONFIG.sword.nodes.map(n=>new Promise(r=>{const i=new Image;i.onload=()=>r([256,512].includes(i.naturalWidth)&&i.naturalWidth===i.naturalHeight);i.src=n.icon}))).then(a=>a.every(Boolean))")
  c.close()
  # Touch and failed storage: preview is reversible and confirmation stays atomic.

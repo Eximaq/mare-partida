@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "tool": "PixelLab AI Pro",
+  "jobId": "345ca40a-cb92-4417-94eb-b8035542b0b1",
+  "galleryId": "21426ae0-0f4d-5f5c-ada1-5a415ea944be",
+  "credits": 25,
+  "file": "sidebar.png",
+  "width": 300,
+  "height": 600,
+  "transparent": false,
+  "sha256": "7032a8e4ab431ba53b4cf6134d6c477aa4b0295aef1482013242be4844c6e7ab",
+  "prompt": "Masterpiece HD refined detailed pixel art decorative SIDE PANEL BACKGROUND for Kaizoku Idle premium nautical fantasy RPG talent window. Vertical 300x600 illustration. Match a dark pirate captain cabin with rich aged wood and dark navy metal, restrained warm gold trim and amber lantern light. IMPORTANT UPPER TWO THIRDS remain quiet, nearly empty dark navy fabric and subtle dark timber with a faint soft skull motif, suitable for a separate class emblem and readable text placed later. At the BOTTOM THIRD only: finely rendered hanging brass lantern on the far left, rolled old nautical charts, a small brass compass, antique gold coins and the edge of a treasure chest on a weathered wooden table. Rich handcrafted dimensional shading, polished premium texture, clean crisp edges and fine controlled pixel detail, no blurred smear, restrained highlights, no teal green blocks. Keep the bottom objects clearly legible without filling the center top. No people, no character, no lettering, NO TEXT, no UI screenshot, no buttons, no talent nodes, no skill icons, no labels, no numbers, no baked frame. One coherent nautical background only. The existing game's talent icons will be overlaid separately and MUST NOT appear in this art.",
+  "usage": "Decorative class identity sidebar only. Existing talent icons, combat data and class selection icons are reused unchanged.",
+  "reference": "Árvore de Talentos do Espadachim.png"
+}

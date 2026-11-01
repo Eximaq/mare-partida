@@ -1,0 +1,109 @@
+/* Kaizoku Idle: talent shell; canonical tree art, IDs and combat rules stay intact. */
+#app #panelOverlay.talents-hd-mode{padding:8px;--talent-heading:'Inventory Alegreya SC',Georgia,serif;--talent-body:'Alegreya Sans','Segoe UI',sans-serif}
+#app #panelOverlay.talents-hd-mode>.dialog{display:flex;flex-direction:column;width:min(1840px,calc(100vw - 16px));height:calc(100dvh - 16px);max-width:none;max-height:none;border:20px solid transparent;border-image:var(--rpg-hd-panel) 105 / 32px / 0 stretch;border-radius:0;background:var(--rpg-hd-wood) center/512px 256px;overflow:hidden;box-shadow:0 12px 60px #000a}
+#app #panelOverlay.talents-hd-mode .dialog-header{display:flex;align-items:center;gap:15px;min-height:98px;flex:none;padding:10px 15px;border:0;border-bottom:1px solid #ac8244;background:linear-gradient(90deg,#080b0de8,#080b0d77),url('assets/ui/talents/ocean-background.jpeg') 50% 70%/cover;color:#f7d79a}
+#app #panelOverlay.talents-hd-mode .dialog-header>div:first-child{flex:1;min-width:0}
+#app #panelOverlay.talents-hd-mode .dialog-header small{display:block;font:700 14px/1.1 var(--talent-heading);color:#d4ac67;letter-spacing:1.8px}
+#app #panelOverlay.talents-hd-mode #dialogTitle{font:700 clamp(31px,3.4vw,54px)/1 var(--talent-heading);text-transform:uppercase;margin:3px 0 0;color:#ffdda0;text-shadow:0 2px 2px #000}
+#app #panelOverlay.talents-hd-mode #closePanel{flex:none;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;background:none;color:#ffe3aa;font:30px/1 Georgia,serif;border:8px solid transparent;border-image:var(--rpg-hd-secondary) 25 30 fill / 8px / 0 stretch;box-shadow:none}
+#app #panelOverlay.talents-hd-mode .dialog-header .talent-heading{flex:none;margin:0;padding:0;border:0}
+#app #panelOverlay.talents-hd-mode .talent-budget{display:flex;align-items:center;gap:12px;min-width:260px;border:8px solid transparent;border-image:var(--rpg-hd-plaque) 25 40 / 10px 15px / 0 stretch;padding:6px 12px;background:linear-gradient(#05070b44,#05070b44),var(--rpg-workshop-surface) center/512px;box-shadow:inset 0 0 15px #0005;color:#e6d9be;text-align:left}
+#app #panelOverlay.talents-hd-mode .talent-budget>img{width:50px;height:50px;object-fit:contain;flex:none}
+#app #panelOverlay.talents-hd-mode .talent-budget>div{display:grid;gap:2px}
+#app #panelOverlay.talents-hd-mode .talent-budget strong{font:700 32px/1 var(--talent-heading);color:#ffe0a0}
+#app #panelOverlay.talents-hd-mode .talent-budget span{font:16px/1.2 var(--talent-body);color:#e4d7bc}
+#app #panelOverlay.talents-hd-mode .talent-budget small{font:12px/1.15 var(--talent-body);letter-spacing:0;color:#adbaaF}
+#app #panelOverlay.talents-hd-mode .dialog-body{display:flex;flex:1;min-width:0;min-height:0;padding:10px 3px 1px;overflow:hidden;background:none}
+#app #panelOverlay.talents-hd-mode .talent-hd-window{display:grid;grid-template-rows:minmax(0,1fr) auto;gap:10px;min-width:0;min-height:0;flex:1;padding:0;overflow:hidden;color:#ecdfc1;font:17px/1.35 var(--talent-body)}
+#app #panelOverlay.talents-hd-mode .constellation-workspace{display:grid;grid-template-columns:minmax(185px,.65fr) minmax(0,1.8fr) minmax(325px,1.15fr);gap:12px;height:100%;min-width:0;min-height:0;align-items:stretch}
+#app #panelOverlay.talents-hd-mode :is(.talent-class-panel,.talent-tree-panel,.talent-inspector){min-width:0;min-height:0;height:100%;border:12px solid transparent;border-image:var(--rpg-hd-plaque) 25 40 / 16px 19px / 0 stretch;border-radius:0;box-shadow:inset 0 0 24px #0007;background:linear-gradient(#04080ab0,#04080a90),var(--rpg-workshop-surface) center/512px;position:relative}
+#app #panelOverlay.talents-hd-mode .talent-class-panel{display:flex;flex-direction:column;align-items:center;gap:8px;padding:16px 12px;text-align:center;overflow:auto;background:linear-gradient(#040a12b0,#040a1244),url('assets/ui/talents/ocean-background.jpeg') 8% bottom/auto 100% no-repeat}
+#app #panelOverlay.talents-hd-mode .talent-class-medallion{width:220px;max-width:120%;aspect-ratio:1;object-fit:contain;flex:none;margin:-10px 0 -10px;filter:drop-shadow(0 3px 4px #0007)}
+#app #panelOverlay.talents-hd-mode .talent-class-panel h2{font:700 clamp(22px,2vw,32px)/1.1 var(--talent-heading);color:#ffe1a7;margin:0;text-transform:uppercase;overflow-wrap:anywhere;text-shadow:0 2px #000}
+#app #panelOverlay.talents-hd-mode .talent-class-rule{display:flex;align-items:center;gap:10px;width:90%;margin:10px 0;color:#bd934d;font-size:11px}
+#app #panelOverlay.talents-hd-mode .talent-class-rule:before,#app #panelOverlay.talents-hd-mode .talent-class-rule:after{content:'';height:1px;background:linear-gradient(90deg,transparent,#ac8343,transparent);flex:1}
+#app #panelOverlay.talents-hd-mode .talent-class-panel p{font:20px/1.45 var(--talent-body);color:#d8d5c7;margin:0;text-shadow:0 2px 3px #001019}
+#app #panelOverlay.talents-hd-mode .talent-class-compass{width:100px;height:100px;object-fit:contain;margin-top:auto;opacity:.75}
+#app #panelOverlay.talents-hd-mode .talent-class-panel>small{font:16px/1.3 var(--talent-heading);color:#d7bb7e}
+#app #panelOverlay.talents-hd-mode .talent-tree-panel{display:grid;grid-template-rows:auto minmax(0,1fr);padding:5px;background:#071a28 url('assets/ui/talents/ocean-background.jpeg') center/cover}
+#app #panelOverlay.talents-hd-mode .constellation-toolbar{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px;margin:0;padding:3px 4px 8px;font:15px/1.2 var(--talent-body);color:#e9d5a6;border-bottom:1px solid #8b713944}
+#app #panelOverlay.talents-hd-mode .constellation-toolbar>span{display:flex;align-items:center;gap:7px;max-width:none}
+#app #panelOverlay.talents-hd-mode .constellation-toolbar>div{display:flex;align-items:center;gap:4px;flex-wrap:wrap}
+#app #panelOverlay.talents-hd-mode .constellation-toolbar output{font:700 14px/1 var(--talent-body);color:#f5da9f;min-width:38px}
+#app #panelOverlay.talents-hd-mode .constellation-viewport{width:100%;height:100%;min-height:0;max-height:none;background:transparent;border:0;border-image:none;border-radius:0;box-shadow:none;overflow:hidden}
+#app #panelOverlay.talents-hd-mode .constellation-canvas{background:none}
+#app #panelOverlay.talents-hd-mode .constellation-root strong{width:190px;font:700 18px/1.2 var(--talent-heading)}
+#app #panelOverlay.talents-hd-mode .constellation-root small{width:210px}
+#app #panelOverlay.talents-hd-mode .constellation-node .node-label{width:190px;font:600 16px/1.15 var(--talent-body);text-shadow:0 1px 3px #000,1px 0 #071421,-1px 0 #071421}
+#app #panelOverlay.talents-hd-mode .talent-inspector{overflow:auto;padding:14px 16px;overscroll-behavior:contain;position:static;max-height:none;color:#e9dfcb}
+#app #panelOverlay.talents-hd-mode .talent-detail-title{display:flex;align-items:center;gap:4px;margin:-8px -8px 8px;min-width:0}
+#app #panelOverlay.talents-hd-mode .talent-detail-medallion{width:128px;height:128px;flex:none;object-fit:contain}
+#app #panelOverlay.talents-hd-mode .talent-detail-title>div{min-width:0;flex:1}
+#app #panelOverlay.talents-hd-mode .talent-inspector h3{font:700 clamp(22px,2vw,31px)/1.1 var(--talent-heading);color:#ffe3af;margin:0 0 12px;text-shadow:0 2px #000}
+#app #panelOverlay.talents-hd-mode .talent-detail-tags{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font:15px/1.2 var(--talent-body)}
+#app #panelOverlay.talents-hd-mode .talent-detail-tags span{padding:5px 8px;border:1px solid #8c784d66;border-radius:2px}
+#app #panelOverlay.talents-hd-mode .talent-detail-tags b{font:700 15px/1 var(--talent-heading);border:1px solid #a5844b;padding:5px 8px;background:#382818;color:#e3c089}
+#app #panelOverlay.talents-hd-mode .talent-detail-description{font:18px/1.4 var(--talent-body);color:#d5d2c5;margin:8px 0 20px}
+#app #panelOverlay.talents-hd-mode .talent-total-bonus{border:1px solid #ad8545;padding:13px 16px;margin:18px 0;background:#02060b50}
+#app #panelOverlay.talents-hd-mode .talent-inspector h4{font:700 18px/1.2 var(--talent-heading);color:#d9b169;text-transform:uppercase;margin:0 0 12px;letter-spacing:.2px}
+#app #panelOverlay.talents-hd-mode .talent-total-bonus strong{display:block;font:700 clamp(25px,2.1vw,35px)/1.2 var(--talent-heading);color:#ffdfa1;overflow-wrap:anywhere}
+#app #panelOverlay.talents-hd-mode .talent-total-bonus p{font:17px/1.4 var(--talent-body);margin:9px 0;color:#e1d4ba}
+#app #panelOverlay.talents-hd-mode .talent-total-bonus small{display:block;font:15px/1.3 var(--talent-body);color:#b8c1be;margin-top:10px}
+#app #panelOverlay.talents-hd-mode .talent-detail-levels{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:16px 0;border-bottom:1px solid #8a724444}
+#app #panelOverlay.talents-hd-mode .talent-detail-levels>section+section{border-left:1px solid #8a724444;padding-left:14px}
+#app #panelOverlay.talents-hd-mode .talent-detail-levels strong{display:block;font:700 27px/1.1 var(--talent-heading);color:#ffe2a8}
+#app #panelOverlay.talents-hd-mode .talent-detail-levels p,#app #panelOverlay.talents-hd-mode .talent-detail-levels small{font:16px/1.3 var(--talent-body);color:#c8cec9;display:block;margin:8px 0}
+#app #panelOverlay.talents-hd-mode .talent-requirements{padding:17px 0}
+#app #panelOverlay.talents-hd-mode .talent-requirements ul{list-style:none;margin:0;padding:0}
+#app #panelOverlay.talents-hd-mode .talent-requirements li{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:7px;align-items:start;padding:8px 0;border-top:1px solid #8a724433;font:16px/1.3 var(--talent-body)}
+#app #panelOverlay.talents-hd-mode .talent-requirements li>span:first-child{font-weight:700;color:#7bce90}
+#app #panelOverlay.talents-hd-mode .talent-requirements li>small{font-size:13px;color:#8cca8b}
+#app #panelOverlay.talents-hd-mode .talent-requirements .is-missing>small,#app #panelOverlay.talents-hd-mode .talent-requirements .is-missing>span:first-child{color:#dbab76}
+#app #panelOverlay.talents-hd-mode .talent-secondary-details{font:14px/1.4 var(--talent-body);color:#bbc2bc;margin:14px 0}
+#app #panelOverlay.talents-hd-mode .talent-secondary-details summary{cursor:pointer;color:#cdb47c}
+#app #panelOverlay.talents-hd-mode .talent-secondary-details p{font:14px/1.4 var(--talent-body)}
+#app #panelOverlay.talents-hd-mode .talent-message{font:15px/1.35 var(--talent-body);padding:8px 0;border:0;border-image:none;background:none;box-shadow:none;color:#d8b96e}
+#app #panelOverlay.talents-hd-mode .talent-reason{font:15px/1.4 var(--talent-body);color:#d1b399;margin:8px 0}
+#app #panelOverlay.talents-hd-mode .talent-solo-note{font:13px/1.3 var(--talent-body);color:#aeb7b0}
+#app #panelOverlay.talents-hd-mode .talent-empty-detail{text-align:center;padding:15px 0;color:#ced0c2}
+#app #panelOverlay.talents-hd-mode .talent-empty-detail>img{width:180px;height:180px;object-fit:contain;max-width:100%}
+#app #panelOverlay.talents-hd-mode .talent-empty-detail p{font:18px/1.4 var(--talent-body)}
+#app #panelOverlay.talents-hd-mode .talent-empty-detail small{font:15px/1.35 var(--talent-body)}
+#app #panelOverlay.talents-hd-mode .talent-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 6px 0;margin:0;border-top:1px solid #9c733a;background:var(--rpg-hd-wood) center/512px 256px}
+#app #panelOverlay.talents-hd-mode .talent-actions>span{flex:1;font:17px/1.3 var(--talent-body);color:#ddcfb4;min-width:180px}
+#app #panelOverlay.talents-hd-mode button:not(.constellation-node):not(.studio-help):where(:not(#closePanel)){min-height:44px;padding:5px 11px;border:8px solid transparent;border-image:var(--rpg-hd-secondary) 25 30 fill / 8px / 0 stretch;border-radius:0;background:none;box-shadow:none;font:700 16px/1.1 var(--talent-heading);color:#f5dfac;letter-spacing:0;transition:none}
+#app #panelOverlay.talents-hd-mode button[data-talent-confirm],#app #panelOverlay.talents-hd-mode button[data-talent-add]:not(:disabled){border-image-source:var(--rpg-hd-button);color:#fff2c7}
+#app #panelOverlay.talents-hd-mode .constellation-toolbar button{min-height:34px!important;padding:2px 6px!important;font-size:13px!important;min-width:30px}
+#app #panelOverlay.talents-hd-mode button:disabled{opacity:.48;filter:grayscale(.8);cursor:not-allowed}
+#app #panelOverlay.talents-hd-mode .constellation-node:disabled{opacity:1;filter:none}
+#app #panelOverlay.talents-hd-mode .studio-help{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;min-width:22px;min-height:22px;border:1px solid #bd9959;border-image:none;box-shadow:none;background:#0c161d;border-radius:50%;font:700 15px/1 Georgia,serif;color:#e8c27d;padding:0}
+#app #panelOverlay.talents-hd-mode :is(button:not(.constellation-node),summary):focus-visible{outline:2px solid #ffe7a2;outline-offset:2px}
+@media(max-width:1180px){#app #panelOverlay.talents-hd-mode .constellation-workspace{grid-template-columns:165px minmax(0,1fr) 315px;gap:8px}#app #panelOverlay.talents-hd-mode .talent-class-panel{padding:8px}#app #panelOverlay.talents-hd-mode .talent-class-medallion{width:170px}#app #panelOverlay.talents-hd-mode .talent-class-panel p{font-size:17px}#app #panelOverlay.talents-hd-mode .talent-inspector{padding:10px}#app #panelOverlay.talents-hd-mode .talent-detail-medallion{width:90px;height:90px}#app #panelOverlay.talents-hd-mode .talent-actions>span{font-size:15px}}
+@media(max-width:1024px){#app #panelOverlay.talents-hd-mode .constellation-workspace{grid-template-columns:minmax(0,1fr) 315px;grid-template-rows:auto minmax(0,1fr)}#app #panelOverlay.talents-hd-mode .talent-class-panel{grid-column:1/-1;display:grid;grid-template-columns:70px minmax(100px,auto) 1fr;gap:14px;align-items:center;text-align:left;border-width:8px;padding:5px 12px;overflow:hidden}#app #panelOverlay.talents-hd-mode .talent-class-medallion{width:80px;height:80px;margin:-10px}#app #panelOverlay.talents-hd-mode .talent-class-panel p{font-size:16px;line-height:1.25}#app #panelOverlay.talents-hd-mode .talent-class-panel h2{font-size:23px}#app #panelOverlay.talents-hd-mode .talent-class-rule,#app #panelOverlay.talents-hd-mode .talent-class-compass,#app #panelOverlay.talents-hd-mode .talent-class-panel>small{display:none}#app #panelOverlay.talents-hd-mode .talent-class-panel{height:auto}}
+@media(max-width:760px){#app #panelOverlay.talents-hd-mode{padding:3px}#app #panelOverlay.talents-hd-mode>.dialog{width:calc(100vw - 6px);height:calc(100dvh - 6px);border-width:12px;border-image-width:21px}#app #panelOverlay.talents-hd-mode .dialog-header{padding:5px;gap:6px;min-height:80px;flex-wrap:wrap}#app #panelOverlay.talents-hd-mode #dialogTitle{font-size:31px}#app #panelOverlay.talents-hd-mode .dialog-header>div:first-child{flex:1}#app #panelOverlay.talents-hd-mode .dialog-header>div:first-child>small{font-size:11px;letter-spacing:1px}#app #panelOverlay.talents-hd-mode .dialog-header .talent-heading{order:3;width:100%}#app #panelOverlay.talents-hd-mode .talent-budget{min-width:0;padding:3px 8px;gap:9px}#app #panelOverlay.talents-hd-mode .talent-budget>img{width:32px;height:32px}#app #panelOverlay.talents-hd-mode .talent-budget>div{display:grid;grid-template-columns:auto 1fr;align-items:center;column-gap:12px;flex:1}#app #panelOverlay.talents-hd-mode .talent-budget strong{font-size:25px;grid-row:1/3}#app #panelOverlay.talents-hd-mode .talent-budget span{font-size:14px}#app #panelOverlay.talents-hd-mode .talent-budget small{font-size:11px}#app #panelOverlay.talents-hd-mode .dialog-body{overflow:auto;padding:7px 0 0}#app #panelOverlay.talents-hd-mode .talent-hd-window{display:block;overflow:visible;flex:none;width:100%}#app #panelOverlay.talents-hd-mode .constellation-workspace{display:flex;flex-direction:column;height:auto;gap:10px}#app #panelOverlay.talents-hd-mode .talent-class-panel{grid-template-columns:55px minmax(0,1fr);gap:8px;padding:8px}#app #panelOverlay.talents-hd-mode .talent-class-medallion{width:65px;height:65px;grid-row:1/3;margin:-4px}#app #panelOverlay.talents-hd-mode .talent-class-panel h2{font-size:22px}#app #panelOverlay.talents-hd-mode .talent-class-panel p{font-size:14px;grid-column:2;line-height:1.3}#app #panelOverlay.talents-hd-mode .talent-tree-panel{height:550px;min-height:550px;padding:3px;border-width:8px}#app #panelOverlay.talents-hd-mode .constellation-toolbar{gap:6px}#app #panelOverlay.talents-hd-mode .constellation-toolbar>span{font-size:14px}#app #panelOverlay.talents-hd-mode .constellation-toolbar>div{gap:3px}#app #panelOverlay.talents-hd-mode .talent-inspector{height:auto;max-height:none;overflow:visible;padding:13px 11px;border-width:8px}#app #panelOverlay.talents-hd-mode .talent-actions{display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px;padding:10px 3px}#app #panelOverlay.talents-hd-mode .talent-actions>span{font-size:15px}#app #panelOverlay.talents-hd-mode .talent-actions button{width:100%}#app #panelOverlay.talents-hd-mode .talent-detail-medallion{width:100px;height:100px}#app #panelOverlay.talents-hd-mode .talent-detail-title h3{font-size:26px}}
+
+#app #panelOverlay.talents-hd-mode .dialog-header .talent-budget{flex-direction:row;align-items:center}
+#app #panelOverlay.talents-hd-mode .dialog-header .talent-budget small{display:none}
+#app #panelOverlay.talents-hd-mode .constellation-node .node-label{top:118px;font-size:calc(10.5px / min(var(--talent-view-scale,1),.66));line-height:1.15}
+#app #panelOverlay.talents-hd-mode .constellation-root strong{font-size:calc(14px / var(--talent-view-scale,1));line-height:1.1}
+#app #panelOverlay.talents-hd-mode .constellation-root small{font-size:calc(11px / var(--talent-view-scale,1));line-height:1.1}
+#app #panelOverlay.talents-hd-mode .talent-hd-window .talent-actions button[data-talent-confirm],#app #panelOverlay.talents-hd-mode .talent-hd-window .talent-inspector button[data-talent-add]:not(:disabled){border-image-source:var(--rpg-hd-button)}
+
+/* Latest approved alignment: the masthead shares the footer wood surface. */
+#app #panelOverlay.talents-hd-mode .dialog-header{background:var(--rpg-hd-wood) center/512px 256px}
+#app #panelOverlay.talents-hd-mode .talent-class-medallion{display:block;align-self:center;margin:0 auto;width:min(200px,100%);height:auto;aspect-ratio:1}
+#app #panelOverlay.talents-hd-mode .talent-inspector{text-align:center}
+#app #panelOverlay.talents-hd-mode .talent-detail-title{flex-direction:column;justify-content:center;align-items:center;gap:7px;margin:0 0 14px}
+#app #panelOverlay.talents-hd-mode .talent-detail-title>div{width:100%}
+#app #panelOverlay.talents-hd-mode .talent-detail-tags{justify-content:center}
+#app #panelOverlay.talents-hd-mode .talent-detail-description,#app #panelOverlay.talents-hd-mode .talent-total-bonus,#app #panelOverlay.talents-hd-mode .talent-detail-levels{text-align:center}
+#app #panelOverlay.talents-hd-mode .talent-detail-medallion{display:block;width:96px;height:96px;margin:0 auto}
+#app #panelOverlay.talents-hd-mode .talent-requirements li>span:nth-child(2){text-align:left}
+@media(max-width:1024px){#app #panelOverlay.talents-hd-mode .talent-class-medallion{width:70px;height:70px}}
+@media(max-width:760px){#app #panelOverlay.talents-hd-mode .talent-class-medallion{width:60px;height:60px}}
+
+#app #panelOverlay.talents-hd-mode .talent-class-panel{background:#0d0e18 url('assets/ui/talents-hd/sidebar.png') left bottom/cover no-repeat}
+@media(max-width:1024px){#app #panelOverlay.talents-hd-mode .talent-class-panel{background:var(--rpg-workshop-surface) center/512px}}
+
+#app #panelOverlay.talents-hd-mode .constellation-toolbar>div{min-width:0;max-width:100%;flex:0 1 auto}
+@media(max-width:760px){#app #panelOverlay.talents-hd-mode .constellation-toolbar>div{width:100%;justify-content:center}}
