@@ -9,7 +9,10 @@ enviar e-mails. Não forneça senhas, tokens, links de recuperação ou chaves n
 A [matriz 2F](PHASE-2F-FINAL-ACCEPTANCE.md) é a referência atual de aceite e
 autorizações. As rodadas abaixo são histórico: seus bloqueios antigos não
 sobrepõem a CI aprovada de `c8be42f`. Nenhuma nova janela foi executada nesta
-consolidação. A/B/C/G e personagens permanecem preservados.
+consolidação. Ensaio posterior F01 sobre `f1ef36b`: um pedido de recuperação pela UI
+e entrega confirmados; link recusado pelo provedor, causa inconclusiva. Sem reset
+ou novo login; janela encerrada com Auth false. Detalhes na matriz 2F. A/B/C/G e
+personagens permanecem preservados.
 
 ## Situação informada em 31/10/2026
 

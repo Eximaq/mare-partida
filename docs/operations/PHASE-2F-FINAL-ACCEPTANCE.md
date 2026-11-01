@@ -2,7 +2,8 @@
 
 Preparação autorizada em 31/10/2026. Referência técnica verificada: `c8be42f`,
 branch `feature/auth-sessions`, PR #162 Draft, base de integração main `8550cfa`.
-**Estado: preparação concluída; janela final NÃO executada e aceite final aberto.**
+**Estado: F01 ensaiado parcialmente sobre `f1ef36b`; callback recusado pelo provedor,
+resultado inconclusivo e aceite final aberto. Demais lotes não executados.**
 Este documento concentra o status atual. Os relatos das rodadas 1–3 preservam
 seus resultados históricos e não autorizam novos envios ou operações externas.
 
@@ -24,7 +25,7 @@ este roteiro. Commit/push documental no PR existente é permitido, com prefixo
 | A04 | Propriedade e criação de personagem | 40 testes cruzados; primeira criação 201/409, um personagem; retries idênticos 201/201 | A/B/C e personagens preservados; sem escrita econômica |
 | A05 | Recuperação real pelo backend | Rodada 3: sessão restrita, reset, senha antiga/nova, invalidação interna e refresh recusado | Não cobre preenchimento da senha pela UI; ver F01 |
 | A06 | Integração, Node, PostgreSQL e Docker/Linux | `c8be42f`: oito checks CI aprovados; local 28 fundação, 19 integração e 123 arquivos Node | Bloqueios de Fênix/hash resolvidos; CI de novos commits deve ser conferida |
-| F01 | Recuperação completa pela interface | Pendente, procedimento abaixo | Uma conta existente autorizada, um envio, participação do proprietário |
+| F01 | Recuperação completa pela interface | Envio UI 202 e entrega confirmada; callback remoto recusado (`otp_expired`), local 400; inconclusivo | Diagnosticar causa antes de propor outro envio; reset/login/logout pela UI não executados |
 | F02 | Revogação iniciada fora do BFF | Pendente no provedor real | Operação suportada, escopo de conta explícito, medir rejeição após revalidação |
 | F03 | Rotação real da assinatura JWT/JWKS | Pendente | Autorização do projeto e efeitos; novo JWT ES256/900 s aceito; nenhuma tolerância a assinatura inválida |
 | F04 | Expiração do token remoto de e-mail sem uso | Não comprovada; expiração do BFF comprovada | Envio separado, prazo remoto confirmado, espera natural; ou adiamento explícito com risco registrado |
@@ -35,9 +36,45 @@ este roteiro. Commit/push documental no PR existente é permitido, com prefixo
 Evidências de A06: [fundação e Docker/Linux](https://github.com/Eximaq/mare-partida/actions/runs/41263542593),
 [regressão integrada](https://github.com/Eximaq/mare-partida/actions/runs/41263542566),
 [native96](https://github.com/Eximaq/mare-partida/actions/runs/41263542598).
-Nenhum teste de runtime foi repetido para esta edição documental. O plano original
+A preparação documental não repetiu runtime; o ensaio F01 abaixo é posterior. O plano original
 é histórico; [ADR](../architecture/ADR-0002-BFF-SESSIONS.md) e esta matriz descrevem
 as decisões vigentes. CI verde não significa autorização de produção ou Fase 3.
+
+## F01 — ensaio parcial de 31/10/2026 e encerramento
+
+Runtime `f1ef36b`, projeto de desenvolvimento e HTTPS local. O proprietário aprovou
+usar G, conta existente confirmada e sem personagem, para um pedido/e-mail e
+recuperação pela UI, seguido de login/logout. A senha temporária anterior havia
+sido descartada: o escopo foi reduzido explicitamente, sem preparar duas sessões
+nem repetir senha antiga/invalidação; as evidências anteriores da Rodada 3 continuam
+históricas. O roteiro completo abaixo permanece referência, não prova deste ensaio.
+
+| Verificação | Resultado observado |
+|---|---|
+| Pré-condições | HTTPS/readiness 200, listeners em loopback, políticas ES256/900 s e BFF 24 h/2 h preservadas |
+| Baseline local | Quatro contas, três personagens, zero sessões ativas e revogações pendentes |
+| Solicitação pela UI | Um POST /v1/auth/recover, 202 e mensagem neutra; nenhum reenvio |
+| Entrega | Uma mensagem nova de recuperação localizada no Spam; link distinto dos três anteriores, tipo recovery e callback local correto |
+| Provedor | Log de pedido aceito (200); cerca de 42 s depois, verificação recusada com `One-time token not found`, retorno `otp_expired` |
+| Callback local | 400 invalid_auth_flow, sem código para troca PKCE; não chegou à tela de nova senha |
+| Prazo local | Um fluxo recovery ainda não expirado na consulta posterior (~101 s do início); não foi expiração de dez minutos do BFF |
+| Participação do proprietário | Informou não ter clicado no link; nenhuma nova senha foi solicitada ou preenchida |
+| Casos não executados | Reset pela UI, login com nova senha e logout; não classificados como aprovados |
+| Encerramento | Auth false, API/gateway parados, PostgreSQL preservado; quatro contas/três personagens, fingerprint dos personagens inalterado, zero sessões ativas e revogações pendentes |
+
+**Classificação: inconclusivo quanto à causa, fluxo UI não aprovado.** A recusa
+remota foi observada, mas não prova isoladamente defeito do BFF, expiração remota,
+consumo por scanner ou erro do usuário. O fluxo local pendente fica sujeito à
+expiração normal, sem exclusão manual ou mudança de prazo. Nenhum segredo, endereço,
+ID pessoal, cookie ou link assinado integra este registro.
+
+Próximo passo: correlacionar logs de verificação e configuração/template de e-mail
+em leitura antes de propor repetição. A documentação do Supabase descreve consumo
+antecipado por verificadores de links como uma possibilidade, **não comprovada
+neste caso**: [email prefetching](https://supabase.com/docs/guides/auth/auth-email-templates#email-prefetching).
+Não desativar proteções do Gmail, aumentar prazos ou mudar template/fluxo sem análise
+e autorização. O orçamento de um envio foi consumido; qualquer novo envio ou
+alteração do Supabase exige nova autorização específica. F02–F05 não executados.
 
 ## Preparação da execução — após autorização do lote
 
