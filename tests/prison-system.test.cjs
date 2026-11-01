@@ -80,9 +80,9 @@ test('Only completed floors and the next floor can be inspected, capped at 100',
 });
 test('Phase presentation exposes final monster data without balancing factors',()=>{
  const catalog={bandit:{name:'Corsário',hp:67,atk:10,def:5},spirit:{name:'Sentinela',hp:52,atk:12,def:3},boss:{name:'Guardião',hp:350,atk:17,def:10}};
- const first=P.floorDetails(1,catalog);assert.equal(first.waves,1);assert.equal(first.total,1);assert.equal(first.monsters[0].hp,67);assert.equal(first.monsters[0].attack,10);
- assert(first.monsters.every(m=>m.level===1&&m.quantity>0));assert.equal(P.floorDetails(10,catalog).boss,true);
- assert.equal(P.floorDetails(10,catalog).monsters[0].id,'boss');assert(!/multiplier|factor|scale/.test(JSON.stringify(first)));assert.equal(catalog.bandit.hp,67);
+ const first=P.floorDetails(1,catalog,P.prepareEncounter({impelDown:{cleared:0}},1,catalog,()=>0).state.impelDown.encounter);assert.equal(first.waves,1);assert.equal(first.total,1);assert.equal(first.monsters[0].hp,67);assert.equal(first.monsters[0].attack,10);
+ assert(first.monsters.every(m=>m.level===1&&m.quantity>0));assert.equal(P.floorDetails(10,catalog,P.prepareEncounter({impelDown:{cleared:9}},10,catalog).state.impelDown.encounter).boss,true);
+ assert.equal(P.floorDetails(10,catalog,P.prepareEncounter({impelDown:{cleared:9}},10,catalog).state.impelDown.encounter).monsters[0].id,'boss');assert(!/multiplier|factor|scale/.test(JSON.stringify(first)));assert.equal(catalog.bandit.hp,67);
  assert.equal(P.floorDetails(1,{}).monsters.length,0);
 });
 test('Ascent preferences persist and determine the next action only when available',()=>{
