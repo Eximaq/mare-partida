@@ -1,3 +1,5 @@
+**Teste contínuo no Windows:** [iniciar, parar e preservar dados](docs/operations/CONTINUOUS-LOCAL-SERVER.md).
+
 [Haki e HUDs compactas: medidas, validação e encaixe dos 32 patamares](docs/HUD-DENSITY-HAKI.md).
 
 [Criação HD: classes, facções e harmonização das HUDs com geometria preservada](docs/CRIACAO-HARMONIZACAO-HD.md).
