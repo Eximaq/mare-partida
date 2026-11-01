@@ -53,10 +53,14 @@ Validação na base `8550cfa`:
   depois; executa a função real `drawUpdatedZoan`, oito orientações, quatro quadros,
   coalescência de golpes e retorno à locomoção após 180 ms.
 - `sprite-south-hurt.test.cjs` e `sprite-combat-v2.test.cjs`: aprovados.
-- Suíte de `tests/*.test.cjs`, excluindo o E2E Supa conforme o CI: 134/135 aprovados.
-  `paper-doll-96-other-weapons.test.cjs` falha no hash fixo de `itemDefs`. O teste e
-  `game.js` são idênticos à main; o hash real da main começa em `9fa06514`, enquanto
-  a asserção espera `324b10c6`. A falha herdada não foi ocultada nem alterada.
+- Suíte de `tests/*.test.cjs`, excluindo o E2E Supa conforme o CI: inicialmente
+  134/135; após investigar e corrigir o teste herdado, **135/135 aprovados**.
+  O hash antigo incluía a variável de interface `inventoryForgeReturn`, adicionada
+  entre o catálogo e as missões. As definições das armas permaneceram iguais.
+  O teste agora executa a inicialização real e compara índices de save, nomes,
+  tipos, atributos e raridades das 22 armas com tuplas auditadas em `82e7082`.
+  Mutação de estado de UI passa; mutações de ataque e identidade falham.
+  As verificações de arte, 1.200 poses, 1.440 contatos e 240 vistas foram mantidas.
 - Navegador real no build `dist`, origem local isolada e save DEV: perda única de
   5 HP, quatro quadros visíveis em 0/50/100/150 ms, Idle norte em 181 ms, orientação
   preservada e zero erros de console/diagnóstico. Conferido em desktop e 390 × 844.
@@ -66,4 +70,13 @@ Validação na base `8550cfa`:
   `python tests/portal_build_test.py` e `python tools/build_portal.py`: aprovados.
 
 Capturas em `docs/evidence-phoenix-hurt/`, ignoradas pelo Git. Integração em branch
-separada; nenhum merge ou deploy faz parte desta entrega.
+separada; nenhum merge ou deploy de produção foi executado.
+
+O push inicial acionou indevidamente um preview automático do portal estático
+na integração Cloudflare existente. Após autorização, o deployment `76cb9297`
+e seu alias foram excluídos; ambos retornaram HTTP 404. A produção foi preservada.
+As branches `fix/phoenix-hurt-animation`, `feature/auth-sessions` e
+`refactor/authoritative-server` agora estão excluídas dos previews automáticos.
+Outros previews e trabalhos de colaboradores não foram removidos. O backend
+não foi publicado: o build observado executava somente `tools/build_portal.py`.
+Os próximos commits desta atualização usam também o prefixo `[CF-Pages-Skip]`.

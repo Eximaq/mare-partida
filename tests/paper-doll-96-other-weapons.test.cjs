@@ -34,6 +34,40 @@ for(const body of ['masculino','feminino'])for(const item of items)for(const act
  }
 }
 assert.equal(poses,1200);assert.equal(contacts,1440);assert.equal(viewCases,240);
-const game=fs.readFileSync(path.join(root,'game.js'),'utf8'),definitions=game.slice(game.indexOf('  const itemDefs = ['),game.indexOf('  const questDefs = [')).replace(/\r\n/g,'\n');assert.equal(hash(Buffer.from(definitions)),'324b10c6a5afcc567d5691e5438493693960ce793c67a61c9353b0bab44bfbfa','equipment IDs, stats and drops definitions unchanged');
+// Execute the catalog initialization: unrelated UI state must not affect equipment contracts.
+// Literal tuples audited against the original native96 integration (82e7082).
+const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
+const catalogStart=game.indexOf('  const itemDefs = ['),catalogEnd=game.indexOf('  const questDefs = [',catalogStart);
+assert(catalogStart>=0&&catalogEnd>catalogStart,'catalog initialization must be found');
+const definitions=require('node:vm').runInNewContext(game.slice(catalogStart,catalogEnd)+';itemDefs',{
+ MareForge:require('../forge-system.js'),MarePrison:require('../prison-system.js'),
+ MareHaki:require('../haki-system.js'),MareAkuma:require('../akuma-system.js')
+});
+const expectedWeapons=[
+ [0,"Espada de Ferro Salgado","weapon","sword",6,0,0,"common",false],
+ [1,"Sabre de Coral","weapon","sword",11,0,0,"uncommon",false],
+ [12,"Adagas da Bruma","weapon","rogue",8,0,0,"common",false],
+ [13,"Lâminas Acrobáticas","weapon","rogue",13,0,0,"rare",false],
+ [67,"Katana da Maelstrom","weapon","sword",11,0,0,"legendary",true],
+ [68,"Nodachi de Kairouseki","weapon","sword",11,0,0,"epic",true],
+ [69,"Nodachi de Fogo","weapon","sword",11,0,0,"legendary",true],
+ [70,"Meito: Ame no Habakiri","weapon","sword",11,0,0,"supreme",true],
+ [71,"Adaga de Cristal","weapon","rogue",13,0,0,"epic",true],
+ [72,"Punhal de Netuno","weapon","rogue",13,0,0,"legendary",true],
+ [73,"Punhal Flamejante","weapon","rogue",13,0,0,"legendary",true],
+ [74,"Lâmina das Trevas","weapon","rogue",13,0,0,"supreme",true],
+ [2,"Punhos de Bronze","weapon","brawler",7,1,0,"common",false],
+ [4,"Mosquete de Convés","weapon","gunner",7,0,0,"common",false],
+ [14,"Manopla de Aço","weapon","cyborg",8,3,12,"common",false],
+ [16,"Compasso de Tempestade","weapon","strategist",8,0,0,"common",false],
+ [3,"Luvas de Marfim","weapon","brawler",11,2,0,"uncommon",false],
+ [5,"Mosquete dos Faróis","weapon","gunner",12,0,0,"rare",false],
+ [15,"Canhão de Pulso","weapon","cyborg",14,2,0,"rare",false],
+ [17,"Orbe das Correntes","weapon","strategist",14,1,0,"rare",false],
+ [31,"Cajado do Farol","weapon","healer",7,1,0,"common",false],
+ [32,"Relicário da Maré Viva","weapon","healer",12,2,8,"rare",false]
+];
+const actualWeapons=catalog.items.map(({itemId})=>{const d=definitions[itemId];return [itemId,d.name,d.slot,d.type,d.attack,d.defense,d.hp,d.rarity,!!d.fixedRarity]});
+assert.deepEqual(actualWeapons,expectedWeapons,'saved weapon indices, identities, stats and rarity contracts unchanged');
 assert(game.includes('lobby96.projectileOrigin(game,world.hero'));
 console.log(JSON.stringify({newWeapons:items.length,classes:5,poses,contacts,viewCases,legacyBladesUnchanged:true}));
