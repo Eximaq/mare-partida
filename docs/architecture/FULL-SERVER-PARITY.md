@@ -114,7 +114,15 @@ personagem existente foi apagado nesta correção de direção.
 - Build estático e teste de exportação Paper Doll aprovados; dados de saves e
   assets existentes preservados. Não foi executada uma jornada visual local
   automatizada: a ferramenta informa uso do navegador local desabilitado.
-- Smoke Docker/Linux deverá confirmar a importação do catálogo na imagem e a
-  separação dos arquivos privados. Não houve execução Docker neste Windows.
+- CI Linux/Docker aprovado no run41358537343, commit5f598bf: catálogo completo na
+  imagem, build Compose, migração repetida, health checks, proxy HTTPS, usuário sem
+  root e grants mínimos. Docker executado no GitHub Actions, não neste Windows.
+- Reinício local gracioso concluído; HTTPS verificado com certificado de localhost,
+  recursos do jogo200 e catálogo401 sem sessão. PG permaneceu ativo com quatro
+  contas, três personagens e13 migrações; nenhum schema ou dado de jogo alterado.
+- O diagnóstico de balanceamento tinha dependências de Alubarna/catálogo de
+  monstros ausentes no contexto VM. Corrigidas as importações; executadas35
+  combinações de classe/nível ×3 cenários ×12 seeds. A saída ficou em diretório
+  local ignorado usando `--out`; nenhuma proposta de balanceamento foi aplicada.
 - O gate integral retorna `ready:false` (3/26 grupos implementados). Essa contagem
   é acompanhamento de escopo, não uma estimativa percentual do esforço restante.
