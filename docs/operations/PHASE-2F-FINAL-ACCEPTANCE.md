@@ -250,6 +250,10 @@ mudança de assinatura. Sem merge, deploy, DNS ou início da Fase 3.
 
 ## Lote F03 — assinatura ES256/JWKS, orçamento de zero e-mails
 
+[Proposta concreta de execução e riscos](PHASE-2F-F03-SIGNING-ROTATION.md), preparada
+em 01/11/2026 após leitura do painel. Inventário: ES256 atual, sem standby, HS256
+anterior. Nenhuma mudança de chave autorizada ou executada nesta preparação.
+
 Pedir autorização própria para preparar/rotacionar a chave de assinatura no projeto
 DE DESENVOLVIMENTO. A ação afeta a confiança de tokens do projeto inteiro, não só G;
 apresentar as sessões existentes e o plano de recuperação antes de executar.
