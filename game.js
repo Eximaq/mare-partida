@@ -235,7 +235,7 @@
   let selectedClass = 'sword', selectedFaction = 'pirate', editingCharacter = false, currentPanel = null, selectedItem = null, forgeSlot = 'weapon', lastTime = 0, renderUIClock = 0, saveClock = 0, tickClock = 0;
   let autoPlay = true, autoSkills = true, reducedFX = false;
   let attributeDraft=MareCharacters.empty(),attributeQuantity=1,allocationMessage="";
-  let hierarchyBackend=false,hierarchyMessage='',hierarchyView=null,hierarchyRequest=0,hierarchyRankingAbort=null,hierarchyPromoting=false,hierarchyMutation=0;
+  let hierarchyBackend=false,hierarchyMessage='',hierarchyView=null,hierarchyRequest=0,hierarchyRankingAbort=null,hierarchyPromoting=false,hierarchyMutation=0,hierarchySyncing=false,hierarchySyncSeq=0;
   let dollLookMessage='',creationLookDraft=MareCharacterAppearance.legacyLook(null),creationAppearanceDraft=MareCharacterAppearance.read(null),appearanceDraft=null,creationDirection='south',profileDirection='south',creationStep=1;
   let contractPeriod='daily';
   const compendiumUI=MareCompendium.createState();
@@ -1989,22 +1989,23 @@ ${avatarExtra}
     hierarchyView={faction,tier:faction===game.factionId?game.hierarchyTier:1,scope:'faction',status:'loading',board:[],busy:hierarchyPromoting};hierarchyMessage='';void loadHierarchyRanking();
   }
   async function syncHierarchy(){
-    if(!game)return;MareHierarchy.migrate(game);renderPortrait();
-    const id=game.hierarchyPlayerId,faction=game.factionId,mutation=hierarchyMutation;
+    if(!game)return;const sync=++hierarchySyncSeq;hierarchySyncing=true;MareHierarchy.migrate(game);renderPortrait();if(currentPanel==='character'&&characterTab==='hierarchy')renderPanel();
+    const id=game.hierarchyPlayerId,faction=game.factionId,mutation=hierarchyMutation,priorTier=game.hierarchyTier;
     try{
       const result=await hierarchyPost('sync',hierarchySelf());
-      if(game?.hierarchyPlayerId!==id||game.factionId!==faction||mutation!==hierarchyMutation)return;
+      if(sync!==hierarchySyncSeq||game?.hierarchyPlayerId!==id||game.factionId!==faction||mutation!==hierarchyMutation)return;
       hierarchyBackend=true;game.hierarchyTier=result.player.tier;saveGame();updateUI();
-    }catch(error){hierarchyBackend=false;}
-    if(currentPanel==='character'&&characterTab==='hierarchy'){if(hierarchyView.faction===game.factionId&&hierarchyView.tier===1)hierarchyView.tier=game.hierarchyTier;void loadHierarchyRanking();}
+    }catch(error){if(sync===hierarchySyncSeq)hierarchyBackend=false;}finally{if(sync===hierarchySyncSeq)hierarchySyncing=false;}
+    if(sync!==hierarchySyncSeq)return;
+    if(currentPanel==='character'&&characterTab==='hierarchy'){if(hierarchyView.faction===game.factionId&&hierarchyView.tier===priorTier)hierarchyView.tier=game.hierarchyTier;void loadHierarchyRanking();}
   }
   function renderHierarchy(body){
     if(!hierarchyView)resetHierarchyView();
     const focused=document.activeElement;let restore=null;if(body.contains(focused)){if(focused.hasAttribute('data-hierarchy-faction'))restore='[data-hierarchy-faction="'+focused.dataset.hierarchyFaction+'"]';else if(focused.hasAttribute('data-hierarchy-tier'))restore='[aria-label="'+focused.getAttribute('aria-label')+'"]';else for(const attr of ['data-hierarchy-scope','data-hierarchy-tier-select','data-hierarchy-promote','data-hierarchy-retry','data-hierarchy-current'])if(focused.hasAttribute(attr))restore='['+attr+']';}
-    body.innerHTML=MareHierarchyUI.render({game,view:{...hierarchyView,busy:hierarchyPromoting},message:hierarchyMessage});if(restore)body.querySelector(restore)?.focus({preventScroll:true});
+    body.innerHTML=MareHierarchyUI.render({game,view:{...hierarchyView,busy:hierarchyPromoting,syncing:hierarchySyncing},message:hierarchyMessage});if(restore)body.querySelector(restore)?.focus({preventScroll:true});
   }
   async function promoteHierarchy(expectedTier=game.hierarchyTier){
-    if(hierarchyPromoting||expectedTier!==game.hierarchyTier||hierarchyView&&hierarchyView.faction!==game.factionId)return;
+    if(hierarchySyncing||hierarchyPromoting||expectedTier!==game.hierarchyTier||hierarchyView&&hierarchyView.faction!==game.factionId)return;
     const state=MareHierarchy.next(game.hierarchyTier,game.level);
     if(state.state!=='ready'){hierarchyMessage=state.message||'Nível necessário para esta promoção.';renderPanel();return;}
     const ownerId=game.hierarchyPlayerId,ownerFaction=game.factionId;hierarchyPromoting=true;hierarchyMutation++;renderPanel();
@@ -2020,7 +2021,7 @@ ${avatarExtra}
     finally{hierarchyPromoting=false;if(currentPanel==='character'&&characterTab==='hierarchy')renderPanel();}
   }
   function confirmHierarchy(){
-    if(hierarchyPromoting||hierarchyView?.faction!==game.factionId||hierarchyView.tier!==game.hierarchyTier)return;
+    if(hierarchySyncing||hierarchyPromoting||hierarchyView?.faction!==game.factionId||hierarchyView.tier!==game.hierarchyTier)return;
     const state=MareHierarchy.next(game.hierarchyTier,game.level);if(state.state!=='ready')return;
     const faction=game.factionId,old=game.hierarchyTier;
     showConfirmation('Confirmar promoção','Patamar '+old+' → Patamar '+state.target,()=>promoteHierarchy(old),'CONFIRMAR PROMOÇÃO',false);
