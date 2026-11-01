@@ -1,0 +1,59 @@
+name: Mapa e prisão HD — destinos e encontros
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'voyage-ui.js'
+      - 'voyage-hd.css'
+      - 'archipelago.js'
+      - 'prison-system.js'
+      - 'game.js'
+      - 'index.html'
+      - 'ui-preview.html'
+      - 'tools/build_pages.py'
+      - 'assets/ui/voyage-hd/**'
+      - 'tests/voyage*'
+      - 'tests/prison*'
+      - 'tests/impel*'
+      - '.github/workflows/voyage-hd.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  voyage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    env:
+      MARE_QA_DIR: /tmp/mare-voyage-hd
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar navegador
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+          mkdir -p "$MARE_QA_DIR"
+      - name: Catálogo, encontros e componentes
+        run: |
+          node --test tests/archipelago.test.cjs tests/alubarna.test.cjs tests/prison-system.test.cjs tests/prison-encounter.test.cjs tests/impel-down-live.test.cjs tests/impel-down-map.test.cjs tests/voyage-ui.test.cjs tests/modes-quick-menu.test.cjs tests/ui-system.test.cjs tests/performance-map-loading.test.cjs tests/performance-preparation.test.cjs tests/current-player-sprites.test.cjs tests/current-player-release.test.cjs
+          python tools/build_pages.py
+      - name: Jogo, falhas e pacote público
+        run: |
+          python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-voyage-http.log 2>&1 &
+          sleep 2
+          MARE_TEST_URL=http://127.0.0.1:8123/ node tests/impel_down_browser.cjs
+          MARE_TEST_URL=http://127.0.0.1:8123/ node tests/voyage_failures_browser.cjs
+          MARE_TEST_URL=http://127.0.0.1:8123/dist/ node tests/voyage_hd_browser.cjs
+      - name: Capturas reais
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mapa-prisao-hd
+          path: /tmp/mare-voyage-hd/
+          if-no-files-found: warn
+          retention-days: 14

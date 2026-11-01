@@ -56,3 +56,8 @@ Trocar uma região habilitada limpa a seleção e reconstrói sua lista. Alabast
 Capturas e resultados locais ficam em `docs/evidence-arquipelago/`, fora do Git. Os testes não acessam o save do usuário. Branch `feature/arquipelago-regioes-detalhes`, base `ab6bb23`. Rollback por reversão do commit, sem migração de save.
 
 Todos os comandos acima e a validação de sintaxe dos scripts JS passaram nesta entrega. Os outros scripts de personagens/combate/fusão foram adaptados ao novo fluxo, sem execução integral nesta tarefa.
+
+
+## HUD HD — 01/11/2026
+
+A apresentação atual e o catálogo efetivo dos 14 destinos estão documentados em [Mapa e prisão HD](MAPA-PRISAO-HD.md). East Blue e Alabasta têm mapas e paisagens próprios; Skypiea permanece sem destinos. As descrições históricas anteriores não substituem os dados de archipelago.js.
