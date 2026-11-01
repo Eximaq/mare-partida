@@ -7,3 +7,8 @@ O menu **Personagem → Hierarquia dos Mares** mostra símbolo, cargo, progresso
 No preview com `python server/app.py`, o navegador sincroniza ID, nome, facção, classe, retrato PNG 72×72, nível e poder em `POST /api/hierarchy/sync`. O servidor persiste o patamar e o título em SQLite, valida `POST /api/hierarchy/promote` e devolve `GET /api/hierarchy/state?player_id=...`. A consulta global inclui todas as facções e ordena por patamar, nível e poder em ordem decrescente, com ID como desempate final estável. Retratos antigos usam a prévia da facção até a próxima sincronização do jogador.
 
 O preview do GitHub Pages não executa Python. Nesse ambiente, o cargo fica no save local e o painel identifica o ranking como preview local, com apenas o jogador atual. O servidor existente ainda é uma demonstração em loopback sem autenticação ou autoridade sobre XP e poder; antes de usar esse ranking em multiplayer, nível, poder, retrato e identidade precisam ser calculados e validados pelo servidor de contas.
+
+
+## Atualização HD — 01/11/2026
+
+A janela atual permite consultar os 32 títulos e rankings das quatro facções, preservando promoções e a ordem oficial. As placas novas e a HUD compartilham MareHierarchy.art. Pages mostra indisponibilidade quando não há API. O histórico de preview local acima descreve a versão anterior. Consulte [Conquistas e Hierarquia HD](CONQUISTAS-HIERARQUIA-HD.md).

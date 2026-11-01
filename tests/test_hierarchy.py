@@ -55,5 +55,29 @@ class HierarchyTests(unittest.TestCase):
             self.store.sync('q', 'Marine', 'marine', 1, 50, 'sword', 'javascript:alert(1)')
 
 
+    def test_faction_filter_precedes_limit_and_keeps_stable_order(self):
+        for i in range(15):
+            self.store.sync(f'pirate{i:02}', f'Pirata {i}', 'pirate', 200, 999)
+        for faction in ('marine', 'revolutionary', 'government'):
+            for i in range(12):
+                self.store.sync(f'{faction}{i:02}', f'Teste {i}', faction, 20, i)
+            board = self.store.ranking(faction)['leaderboard']
+            self.assertEqual(len(board), 10)
+            self.assertEqual({p['faction'] for p in board}, {faction})
+            self.assertEqual(board[0]['power'], 11)
+        self.assertEqual([p['player_id'] for p in self.store.ranking('pirate')['leaderboard']],
+                         [f'pirate{i:02}' for i in range(10)])
+        self.assertEqual(self.store.state('marine00')['player']['faction'], 'marine')
+        with self.assertRaisesRegex(ValueError, 'Facção inválida'):
+            self.store.ranking('unknown')
+
+    def test_duplicate_confirmation_cannot_promote_twice(self):
+        self.store.sync('p', 'Teste', 'pirate', 200, 200)
+        self.assertEqual(self.store.promote('p', 1)['player']['tier'], 2)
+        with self.assertRaisesRegex(ValueError, 'cargo mudou'):
+            self.store.promote('p', 1)
+        self.assertEqual(self.store.state('p')['player']['tier'], 2)
+        self.assertEqual(self.store.ranking('marine')['leaderboard'], [])
+
 if __name__ == '__main__':
     unittest.main()

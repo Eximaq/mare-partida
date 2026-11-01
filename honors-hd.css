@@ -1,0 +1,250 @@
+/* Conquistas e Hierarquia: shared HD materials, independent windows and live text. */
+#app #panelOverlay.honors-hd-mode{padding:6px;--honors-heading:'Inventory Alegreya SC',Georgia,serif;--honors-body:'Alegreya Sans','Segoe UI',sans-serif}
+#app #panelOverlay.honors-hd-mode>.dialog{display:flex;flex-direction:column;width:min(1720px,calc(100vw - 12px));height:calc(100dvh - 12px);max-width:none;max-height:none;border:20px solid transparent;border-image:var(--rpg-hd-panel) 105 / 32px / 0 stretch;border-radius:0;background:var(--rpg-hd-wood) center/512px 256px;overflow:hidden;box-shadow:0 12px 60px #000a}
+#app #panelOverlay.honors-hd-mode .dialog-header{display:flex;align-items:center;gap:22px;min-height:124px;padding:12px 14px 14px 62px;flex:none;border:0;border-bottom:2px solid #9d713c;background:linear-gradient(90deg,#0002,#0002),url('assets/ui/honors-hd/header.png') center/cover;color:#ffe1a3}
+#app #panelOverlay.honors-hd-mode .dialog-header>div:first-child{flex:1;min-width:0;order:0}
+#app #panelOverlay.honors-hd-mode .dialog-header small{font:700 16px/1.2 var(--honors-heading);letter-spacing:1.8px;color:#d8b36b}
+#app #panelOverlay.honors-hd-mode #dialogTitle{font:700 clamp(32px,4.1vw,64px)/1.08 var(--honors-heading);color:#ffe3a5;text-shadow:0 2px #43260a,0 4px 4px #000;margin:4px 0 0;text-transform:uppercase}
+#app #panelOverlay.honors-hd-mode #honorsHeaderNote{order:1;max-width:360px;margin:0;padding:16px 22px;font:600 19px/1.25 var(--honors-body);color:#34210e;background:var(--rpg-hd-paper) center/100% 100%;border:1px solid #a2763c;box-shadow:0 2px 8px #0007;transform:rotate(-.5deg)}
+#app #panelOverlay.honors-hd-mode #closePanel{order:2;flex:none;align-self:flex-start;width:48px;height:48px;min-width:48px;min-height:48px;padding:0;background:none;color:#ffe3aa;font:32px/1 Georgia,serif;border:8px solid transparent;border-image:var(--rpg-hd-secondary) 25 30 fill / 8px / 0 stretch;box-shadow:none}
+#app #panelOverlay.honors-hd-mode .dialog-body{display:flex;flex:1;min-height:0;min-width:0;padding:14px 3px 1px;overflow:hidden;background:none}
+#app #panelOverlay.honors-hd-mode :is(h2,h3,p){margin:0}
+#app #panelOverlay.honors-hd-mode :is(button,select){font:700 17px/1.15 var(--honors-heading);color:#f6dfac}
+#app #panelOverlay.honors-hd-mode button{border:7px solid transparent;border-image:var(--rpg-hd-secondary) 25 30 fill / 8px / 0 stretch;border-radius:0;background:none;box-shadow:none;min-height:40px;padding:5px 11px;text-shadow:0 1px 2px #000}
+#app #panelOverlay.honors-hd-mode button:is(:hover,:focus-visible){filter:brightness(1.15)}
+#app #panelOverlay.honors-hd-mode button:focus-visible,#app #panelOverlay.honors-hd-mode select:focus-visible{outline:2px solid #ffdf8a;outline-offset:2px}
+#app #panelOverlay.honors-hd-mode button:disabled{filter:grayscale(1);opacity:.62;cursor:not-allowed}
+#app #panelOverlay.honors-hd-mode button[aria-pressed=true],#app #panelOverlay.honors-hd-mode .honors-action{border-image-source:var(--rpg-hd-button);color:#fff3ca}
+#app #panelOverlay.honors-hd-mode .honors-frame{border:12px solid transparent;border-image:var(--rpg-hd-plaque) 25 40 / 16px 19px / 0 stretch;background:linear-gradient(#06080ba8,#06080b88),var(--rpg-workshop-surface) center/512px;min-width:0;box-shadow:inset 0 0 22px #0005}
+#app #panelOverlay.honors-hd-mode .honors-message{font:16px/1.2 var(--honors-body);color:#eacb83;min-height:0}
+#app #panelOverlay.honors-hd-mode .honors-message:empty{display:none}
+#app #panelOverlay.honors-hd-mode #toastContainer{background:none;border:0;flex:none}
+#app #panelOverlay.honors-hd-mode .toast{background:var(--rpg-hd-wood) center/512px 256px;color:#ffedc4}
+.honors-icon{display:inline-block;width:64px;height:64px;flex:none;background:url('assets/ui/honors-hd/achievement-icons.png') var(--icon-x) var(--icon-y)/400% 200% no-repeat}
+#app #panelOverlay.honors-hd-mode .achievement-journal{display:flex;flex-direction:column;gap:12px;flex:1;min-width:0;min-height:0;font:18px/1.3 var(--honors-body);color:#efe0bf}
+#app #panelOverlay.honors-hd-mode .achievement-summary{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(220px,.65fr) minmax(0,1.2fr);gap:12px;flex:none;min-height:156px}
+#app #panelOverlay.honors-hd-mode .achievement-general{display:flex;align-items:center;gap:14px;padding:10px}
+#app #panelOverlay.honors-hd-mode .summary-icon{width:90px;height:90px}
+#app #panelOverlay.honors-hd-mode .achievement-general>div{flex:1;min-width:0}
+#app #panelOverlay.honors-hd-mode .achievement-general h2{font:700 27px/1.1 var(--honors-heading);color:#f6cf7d;margin-bottom:12px;text-transform:uppercase}
+#app #panelOverlay.honors-hd-mode .achievement-general p{margin:7px 0 0;font-size:19px}
+#app #panelOverlay.honors-hd-mode .achievement-general small{font-size:13px;color:#c6b99f}
+#app #panelOverlay.honors-hd-mode .achievement-budget{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:15px 8px;color:#38230f;border:10px solid transparent;border-image:var(--rpg-hd-plaque) 25 40 / 13px 14px / 0 stretch;background:var(--rpg-hd-paper) center/100% 100%;text-align:center}
+#app #panelOverlay.honors-hd-mode .achievement-budget>strong{font:700 42px/1 var(--honors-heading);color:#754307;text-shadow:0 1px #fff4cf}
+#app #panelOverlay.honors-hd-mode .achievement-budget b{font-size:18px;padding-top:6px;border-top:1px solid #94632e77;width:100%}
+#app #panelOverlay.honors-hd-mode .achievement-budget small{font-size:13px}
+#app #panelOverlay.honors-hd-mode .achievement-featured{display:flex;align-items:center;gap:12px;padding:10px}
+#app #panelOverlay.honors-hd-mode .achievement-featured>div{min-width:0;flex:1}
+#app #panelOverlay.honors-hd-mode .featured-icon{width:78px;height:78px}
+#app #panelOverlay.honors-hd-mode .achievement-featured small{display:block;font:700 17px/1.1 var(--honors-heading);color:#f4cd7e}
+#app #panelOverlay.honors-hd-mode .achievement-featured strong{display:block;font:700 23px/1.2 var(--honors-heading);margin:6px 0;color:#f5e2b5}
+#app #panelOverlay.honors-hd-mode .achievement-featured p{font-size:16px;margin-bottom:6px}
+#app #panelOverlay.honors-hd-mode .achievement-featured span:not(.honors-icon){display:block;font-size:14px;margin-top:4px;color:#d5c3a0}
+#app #panelOverlay.honors-hd-mode .achievement-categories{display:flex;flex:none;gap:7px;margin:0;padding:3px 2px;overflow-x:auto;max-width:100%}
+#app #panelOverlay.honors-hd-mode .achievement-categories button{display:flex;flex:1;align-items:center;justify-content:center;gap:8px;white-space:nowrap;min-height:72px;padding:5px 8px}
+#app #panelOverlay.honors-hd-mode .achievement-categories .honors-icon{width:40px;height:40px}
+#app #panelOverlay.honors-hd-mode .achievement-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-content:start;gap:15px 18px;min-height:0;overflow-y:auto;padding:3px 7px 8px 3px;scrollbar-color:#af7c30 #1c1511}
+#app #panelOverlay.honors-hd-mode .achievement-entry{display:grid;grid-template-columns:108px minmax(0,1fr) 140px;gap:15px;align-items:center;min-height:148px;padding:10px 12px;border:12px solid transparent;border-image:var(--rpg-hd-plaque) 25 40 / 16px 19px / 0 stretch;border-radius:0;background:var(--rpg-hd-paper) center/100% 100%;color:#281a0e;box-shadow:0 2px 5px #0006}
+#app #panelOverlay.honors-hd-mode .achievement-emblem{display:grid;place-items:center;width:108px;height:108px;border:7px solid transparent;border-image:var(--rpg-hd-secondary) 25 30 fill / 8px / 0 stretch;background:linear-gradient(#02050844,#02050844),var(--rpg-workshop-surface) center/256px}
+#app #panelOverlay.honors-hd-mode .achievement-emblem .honors-icon{width:92px;height:92px}
+#app #panelOverlay.honors-hd-mode .achievement-copy{min-width:0}
+#app #panelOverlay.honors-hd-mode .achievement-copy h3{font:700 26px/1.1 var(--honors-heading);color:#291806;overflow-wrap:anywhere}
+#app #panelOverlay.honors-hd-mode .achievement-copy p{font:19px/1.15 var(--honors-body);margin:5px 0 10px}
+#app #panelOverlay.honors-hd-mode .achievement-progress{height:17px;position:relative;border:2px solid #ae8b48;border-radius:5px;background:#14191e;box-shadow:inset 0 2px 4px #0009;overflow:hidden}
+#app #panelOverlay.honors-hd-mode .achievement-progress i{display:block;height:100%;background:linear-gradient(#7ce1f3,#19a6d0 60%,#267f9e);border-top:2px solid #b0edff80}
+#app #panelOverlay.honors-hd-mode [data-state=claimed] .achievement-progress i,#app #panelOverlay.honors-hd-mode [data-state=ready] .achievement-progress i{background:linear-gradient(#9cd84e,#5daa32 60%,#3a7f18)}
+#app #panelOverlay.honors-hd-mode .summary-bar{height:28px}
+#app #panelOverlay.honors-hd-mode .summary-bar i{background:linear-gradient(#9fb83c,#688f20)}
+#app #panelOverlay.honors-hd-mode .summary-bar strong{position:absolute;inset:0 8px 0 0;text-align:right;font:700 20px/24px var(--honors-body);color:white;text-shadow:0 1px #000}
+#app #panelOverlay.honors-hd-mode .achievement-count{display:block;font:700 20px/1.15 var(--honors-body);margin-top:5px}
+#app #panelOverlay.honors-hd-mode .achievement-reward{display:flex;flex-direction:column;align-items:stretch;gap:13px;text-align:center;min-width:0}
+#app #panelOverlay.honors-hd-mode .achievement-pt{align-self:flex-end;background:var(--rpg-hd-wood) center/256px;border:1px solid #9a6628;padding:5px 13px;font:700 23px/1 var(--honors-heading);color:#ffcf50;box-shadow:0 2px 3px #0004}
+#app #panelOverlay.honors-hd-mode .achievement-state{display:block;padding:13px 5px;border:7px solid transparent;border-image:var(--rpg-hd-secondary) 25 30 fill / 8px / 0 stretch;font:700 20px/1.1 var(--honors-heading);color:#f2e3c6}
+#app #panelOverlay.honors-hd-mode .achievement-state[data-state=claimed]{color:#b9e194}
+#app #panelOverlay.honors-hd-mode .achievement-state[data-state=unavailable]{color:#bdb5a8}
+#app #panelOverlay.honors-hd-mode .achievement-action button{width:100%;font-size:22px;min-height:52px}
+#app #panelOverlay.honors-hd-mode .hierarchy-panel{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(370px,1fr);gap:15px;flex:1;min-height:0;font:19px/1.3 var(--honors-body);color:#f1dfbb}
+#app #panelOverlay.honors-hd-mode .hierarchy-main{display:flex;flex-direction:column;gap:12px;min-width:0;min-height:0;overflow-y:auto;padding:2px 3px}
+#app #panelOverlay.honors-hd-mode .hierarchy-factions{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;flex:none}
+#app #panelOverlay.honors-hd-mode .hierarchy-factions button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:113px;font-size:22px;white-space:normal;padding:7px 4px}
+#app #panelOverlay.honors-hd-mode .hierarchy-factions button[aria-pressed=true]{outline:2px solid #f0c775;outline-offset:-5px}
+#app #panelOverlay.honors-hd-mode .hierarchy-official{width:60px;height:60px;object-fit:contain}
+#app #panelOverlay.honors-hd-mode .hierarchy-intro{display:flex;align-items:center;gap:20px;min-height:190px;flex:none;padding:12px 18px;background:linear-gradient(90deg,#07090cd9,#080a0e77 65%,#080a0e22),url('assets/ui/honors-hd/faction-banner.png') right center/cover}
+#app #panelOverlay.honors-hd-mode .hierarchy-intro>.hierarchy-official{width:150px;height:150px}
+#app #panelOverlay.honors-hd-mode .hierarchy-intro h2{font:700 clamp(27px,3vw,49px)/1.1 var(--honors-heading);color:#ffda91;text-transform:uppercase;text-shadow:0 2px 2px #000}
+#app #panelOverlay.honors-hd-mode .hierarchy-intro p{max-width:470px;font-size:21px;margin-top:9px;text-shadow:0 1px 3px #000}
+#app #panelOverlay.honors-hd-mode .hierarchy-promotion{display:flex;flex-direction:column;gap:13px;padding:10px 8px 6px;flex:1}
+#app #panelOverlay.honors-hd-mode .hierarchy-title-pair{display:grid;grid-template-columns:minmax(0,1fr) 26px minmax(0,1fr);align-items:center;gap:7px;text-align:center}
+#app #panelOverlay.honors-hd-mode .hierarchy-title-pair h3{font:700 23px/1.1 var(--honors-heading);color:#f9d287;margin:0 0 8px}
+#app #panelOverlay.honors-hd-mode .hierarchy-title-pair p{font-size:20px;margin-top:5px}
+.hierarchy-title-plate{display:flex;align-items:center;gap:5px;min-height:105px;padding:8px 16px 8px 5px;background:var(--rank-plaque) center/100% 100%;min-width:0;color:#fff0c8;text-shadow:0 1px 3px #120a03}
+.hierarchy-title-plate[data-faction=government]{color:#312818;text-shadow:0 1px #fff5d3}
+.rank-insignia{display:block;flex:none;width:88px;height:88px;background:var(--rank-sheet) var(--rank-x) var(--rank-y)/400% 200% no-repeat}
+.hierarchy-title-plate strong{font:700 clamp(18px,1.75vw,28px)/1.05 'Inventory Alegreya SC',Georgia,serif;overflow-wrap:anywhere;text-align:center;flex:1}
+#app #panelOverlay.honors-hd-mode .hierarchy-arrow{font:700 50px/1 Georgia,serif;color:#e6b657}
+#app #panelOverlay.honors-hd-mode .hierarchy-tier-nav{display:flex;align-items:end;justify-content:center;gap:7px;border-block:1px solid #ab804955;padding:8px 0}
+#app #panelOverlay.honors-hd-mode .hierarchy-tier-nav label{display:flex;flex-direction:column;gap:3px;color:#cdb784;font-size:13px;min-width:0;width:min(360px,70%)}
+#app #panelOverlay.honors-hd-mode select{width:100%;height:36px;background:linear-gradient(#0003,#0003),var(--rpg-workshop-surface) center/512px;border:1px solid #a68248;border-radius:2px;padding:3px 8px;color:#f8dfaa}
+#app #panelOverlay.honors-hd-mode option{background:#261e18;color:#f7e0af}
+#app #panelOverlay.honors-hd-mode .hierarchy-requirements{padding:4px 10px;display:flex;flex-direction:column;gap:9px}
+#app #panelOverlay.honors-hd-mode .hierarchy-requirements h3{font:700 23px/1.1 var(--honors-heading);color:#efd18c}
+#app #panelOverlay.honors-hd-mode .hierarchy-requirements p{font-size:20px}
+#app #panelOverlay.honors-hd-mode .hierarchy-requirements p>span{float:right;font-size:15px;color:#dbc48e}
+#app #panelOverlay.honors-hd-mode .hierarchy-progress{height:22px;border:2px solid #ac884c;border-radius:5px;background:#11151a;overflow:hidden}
+#app #panelOverlay.honors-hd-mode .hierarchy-progress i{display:block;height:100%;background:linear-gradient(#bcd244,#669c2b);border-top:2px solid #e3ee9366}
+#app #panelOverlay.honors-hd-mode .hierarchy-locked,#app #panelOverlay.honors-hd-mode .hierarchy-consultation{color:#d5b58a;font-size:17px}
+#app #panelOverlay.honors-hd-mode .promote{width:90%;align-self:center;margin-top:auto;min-height:60px;font-size:27px}
+#app #panelOverlay.honors-hd-mode .hierarchy-board{display:flex;flex-direction:column;padding:8px 5px;min-height:0}
+#app #panelOverlay.honors-hd-mode .hierarchy-board header{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+#app #panelOverlay.honors-hd-mode .hierarchy-board header h2{font:700 28px/1.1 var(--honors-heading);flex:1;text-transform:uppercase;color:#ffda91}
+#app #panelOverlay.honors-hd-mode .hierarchy-board header .hierarchy-official{width:62px;height:62px}
+#app #panelOverlay.honors-hd-mode .hierarchy-board header button{font-size:14px;min-height:32px;padding:3px 7px}
+#app #panelOverlay.honors-hd-mode .hierarchy-board-caption{display:flex;justify-content:space-between;font-size:13px;color:#cfbd99;padding:0 7px 7px}
+#app #panelOverlay.honors-hd-mode .hierarchy-ranking{display:flex;flex-direction:column;gap:0;flex:1;min-height:0;overflow-y:auto;margin:0;padding:0;list-style:none}
+#app #panelOverlay.honors-hd-mode .hierarchy-rank-row{display:grid;grid-template-columns:48px 58px minmax(0,1fr) auto;gap:9px;align-items:center;flex:none;min-height:72px;padding:6px 7px;border:1px solid #a5814944;border-radius:4px;background:linear-gradient(#03050666,#03050666),var(--rpg-workshop-surface) center/512px;color:#f6e4be}
+#app #panelOverlay.honors-hd-mode .hierarchy-rank-row.is-self{border-color:#d4a150;background:linear-gradient(#743217aa,#3e201688),var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.honors-hd-mode .hierarchy-place{display:grid;place-items:center;width:46px;height:46px;font:700 30px/1 var(--honors-heading);color:#efd5a0;text-shadow:0 2px 2px #000}
+#app #panelOverlay.honors-hd-mode .hierarchy-place.is-medal{background:url('assets/ui/honors-hd/medals.png') var(--medal-x) center/300% 100% no-repeat;color:#fff0b3}
+#app #panelOverlay.honors-hd-mode .hierarchy-portrait{width:58px;height:58px;border:1px solid #a88249;background:#151419;overflow:hidden;border-radius:5px;display:grid;place-items:center}
+#app #panelOverlay.honors-hd-mode .hierarchy-portrait img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+#app #panelOverlay.honors-hd-mode .hierarchy-portrait-empty{width:100%;height:100%;opacity:.65}
+#app #panelOverlay.honors-hd-mode .hierarchy-portrait-empty .hierarchy-official{width:100%;height:100%;image-rendering:auto}
+#app #panelOverlay.honors-hd-mode .hierarchy-row-copy{min-width:0;line-height:1.1}
+#app #panelOverlay.honors-hd-mode .hierarchy-row-copy strong{display:block;font:700 23px/1.05 var(--honors-body);overflow-wrap:anywhere}
+#app #panelOverlay.honors-hd-mode .hierarchy-row-copy small,#app #panelOverlay.honors-hd-mode .hierarchy-row-copy span{display:block;font:16px/1.1 var(--honors-body);color:#c5c6c2;overflow-wrap:anywhere}
+#app #panelOverlay.honors-hd-mode .hierarchy-row-power{color:#ffdc65;font:700 27px/1 var(--honors-body);font-variant-numeric:tabular-nums;text-align:right}
+#app #panelOverlay.honors-hd-mode .hierarchy-board-status{padding:25px 18px;text-align:center;color:#d6c09b;font:20px/1.3 var(--honors-body);margin:auto}
+#app #panelOverlay.honors-hd-mode .hierarchy-board-status strong{display:block;font:700 28px/1.2 var(--honors-heading);color:#f4d190;margin-bottom:10px}
+#app #panelOverlay.honors-hd-mode .hierarchy-board-status button{margin-top:15px}
+#app #panelOverlay.honors-hd-mode .hierarchy-service-note{font:12px/1.2 var(--honors-body);color:#b6a98e;padding-top:8px}
+.hierarchy-transition figure{background:var(--rpg-hd-wood) center/512px 256px;border:1px solid #a48243;height:auto;padding:9px;color:#e5d3a8;display:block}
+.hierarchy-transition .hierarchy-title-plate{width:100%;min-height:88px}
+.hierarchy-transition figcaption{text-align:center;margin-top:7px}
+@media(max-width:1280px){
+ #app #panelOverlay.honors-hd-mode .dialog-header{min-height:100px;padding:8px 8px 10px 24px;gap:14px}
+ #app #panelOverlay.honors-hd-mode #honorsHeaderNote{max-width:290px;font-size:16px;padding:10px 15px}
+ #app #panelOverlay.honors-hd-mode .achievement-summary{grid-template-columns:minmax(0,1fr) 210px minmax(0,1fr);min-height:132px;gap:8px}
+ #app #panelOverlay.honors-hd-mode .summary-icon{width:65px;height:65px}
+ #app #panelOverlay.honors-hd-mode .achievement-general{gap:8px;padding:5px}
+ #app #panelOverlay.honors-hd-mode .achievement-general h2{font-size:22px;margin-bottom:7px}
+ #app #panelOverlay.honors-hd-mode .achievement-general p{font-size:16px}
+ #app #panelOverlay.honors-hd-mode .achievement-featured{gap:6px;padding:5px}
+ #app #panelOverlay.honors-hd-mode .featured-icon{width:52px;height:52px}
+ #app #panelOverlay.honors-hd-mode .achievement-featured strong{font-size:20px}
+ #app #panelOverlay.honors-hd-mode .achievement-featured small{font-size:14px}
+ #app #panelOverlay.honors-hd-mode .achievement-categories button{font-size:15px;min-height:55px;gap:4px;padding:3px 5px}
+ #app #panelOverlay.honors-hd-mode .achievement-categories .honors-icon{width:30px;height:30px}
+ #app #panelOverlay.honors-hd-mode .achievement-entry{grid-template-columns:76px minmax(0,1fr) 112px;gap:10px;padding:7px;min-height:130px}
+ #app #panelOverlay.honors-hd-mode .achievement-emblem{width:76px;height:80px}
+ #app #panelOverlay.honors-hd-mode .achievement-emblem .honors-icon{width:66px;height:66px}
+ #app #panelOverlay.honors-hd-mode .achievement-copy h3{font-size:22px}
+ #app #panelOverlay.honors-hd-mode .achievement-copy p{font-size:16px}
+ #app #panelOverlay.honors-hd-mode .achievement-action button,#app #panelOverlay.honors-hd-mode .achievement-state{font-size:18px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-panel{grid-template-columns:minmax(0,1.5fr) minmax(350px,1fr);gap:10px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-factions button{font-size:18px;min-height:94px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-official{width:48px;height:48px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-intro{min-height:155px;gap:10px;padding:8px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-intro>.hierarchy-official{width:110px;height:110px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-intro p{font-size:18px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-title-pair h3{font-size:19px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-promotion{gap:8px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-title-pair .rank-insignia{width:60px;height:60px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-title-plate{min-height:85px;padding:8px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-requirements h3{font-size:20px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-requirements p{font-size:18px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-board header h2{font-size:22px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-rank-row{grid-template-columns:34px 44px minmax(0,1fr) auto;gap:7px;min-height:64px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-place{width:34px;height:40px;font-size:25px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-portrait{width:44px;height:48px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-row-copy strong{font-size:20px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-row-copy small,#app #panelOverlay.honors-hd-mode .hierarchy-row-copy span{font-size:14px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-row-power{font-size:22px}
+}
+@media(max-width:1024px){
+ #app #panelOverlay.honors-hd-mode .dialog-body{overflow-y:auto;display:block}
+ #app #panelOverlay.honors-hd-mode .achievement-journal{min-height:100%;gap:10px}
+ #app #panelOverlay.honors-hd-mode .achievement-summary{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ #app #panelOverlay.honors-hd-mode .achievement-featured{grid-column:1/-1;min-height:105px}
+ #app #panelOverlay.honors-hd-mode .achievement-list{overflow:visible;min-height:0}
+ #app #panelOverlay.honors-hd-mode .hierarchy-panel{grid-template-columns:1fr}
+ #app #panelOverlay.honors-hd-mode .hierarchy-main{overflow:visible}
+ #app #panelOverlay.honors-hd-mode .hierarchy-board{min-height:370px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-ranking{max-height:none;overflow:visible}
+ #app #panelOverlay.honors-hd-mode .hierarchy-promotion{min-height:365px}
+}
+@media(max-width:760px){
+ #app #panelOverlay.honors-hd-mode>.dialog{border-width:12px;border-image-width:22px}
+ #app #panelOverlay.honors-hd-mode .dialog-header{padding:10px 4px;gap:8px;min-height:80px}
+ #app #panelOverlay.honors-hd-mode .dialog-header small{font-size:11px;letter-spacing:1px}
+ #app #panelOverlay.honors-hd-mode #dialogTitle{font-size:clamp(26px,6vw,40px)}
+ #app #panelOverlay.honors-hd-mode #honorsHeaderNote{display:none}
+ #app #panelOverlay.honors-hd-mode .dialog-body{padding:9px 0 0}
+ #app #panelOverlay.honors-hd-mode .achievement-list{grid-template-columns:1fr;gap:10px;padding:2px}
+ #app #panelOverlay.honors-hd-mode .achievement-general{flex-direction:column;align-items:stretch;text-align:center}
+ #app #panelOverlay.honors-hd-mode .summary-icon{display:none}
+ #app #panelOverlay.honors-hd-mode .achievement-general h2{font-size:20px}
+ #app #panelOverlay.honors-hd-mode .achievement-budget{padding:12px 2px;gap:5px}
+ #app #panelOverlay.honors-hd-mode .achievement-budget strong{font-size:32px}
+ #app #panelOverlay.honors-hd-mode .achievement-budget span,#app #panelOverlay.honors-hd-mode .achievement-budget b{font-size:15px}
+ #app #panelOverlay.honors-hd-mode .achievement-featured{min-height:105px}
+ #app #panelOverlay.honors-hd-mode .achievement-categories button{flex:none;min-width:105px;min-height:50px}
+ #app #panelOverlay.honors-hd-mode .achievement-entry{grid-template-columns:62px minmax(0,1fr);gap:7px;border-width:9px;padding:6px}
+ #app #panelOverlay.honors-hd-mode .achievement-emblem{width:60px;height:68px}
+ #app #panelOverlay.honors-hd-mode .achievement-emblem .honors-icon{width:52px;height:52px}
+ #app #panelOverlay.honors-hd-mode .achievement-copy h3{font-size:22px}
+ #app #panelOverlay.honors-hd-mode .achievement-reward{grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;gap:9px}
+ #app #panelOverlay.honors-hd-mode .achievement-pt{align-self:center;font-size:20px}
+ #app #panelOverlay.honors-hd-mode .achievement-action{min-width:140px}
+ #app #panelOverlay.honors-hd-mode .achievement-state{padding:7px 10px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-factions{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-factions button{flex-direction:row;min-height:68px;font-size:18px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-factions .hierarchy-official{width:40px;height:40px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-intro{gap:10px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-intro>.hierarchy-official{width:65px;height:65px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-intro h2{font-size:28px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-intro p{font-size:17px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-title-pair{grid-template-columns:1fr;gap:3px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-arrow{font-size:32px;transform:rotate(90deg)}
+ #app #panelOverlay.honors-hd-mode .hierarchy-title-plate{max-width:370px;margin:auto}
+ #app #panelOverlay.honors-hd-mode .hierarchy-title-plate strong{font-size:24px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-requirements{padding:6px 3px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-requirements p>span{float:none;display:block}
+ #app #panelOverlay.honors-hd-mode .promote{font-size:23px;min-height:56px;width:100%}
+ #app #panelOverlay.honors-hd-mode .hierarchy-board{padding:4px;min-height:320px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-board header{gap:5px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-board header h2{font-size:23px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-board header .hierarchy-official{width:40px;height:40px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-rank-row{grid-template-columns:30px 40px minmax(0,1fr) auto;gap:5px;padding:6px 3px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-place{width:30px;height:36px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-portrait{width:40px;height:45px}
+ #app #panelOverlay.honors-hd-mode .hierarchy-row-power{font-size:21px;max-width:90px;overflow-wrap:anywhere}
+ .hierarchy-transition{grid-template-columns:1fr}
+ .hierarchy-transition>span{text-align:center;transform:rotate(90deg)}
+}
+
+#app #panelOverlay.honors-hd-mode .achievement-categories{flex-wrap:nowrap}
+#app #panelOverlay.honors-hd-mode .achievement-copy p{color:#33230f;text-shadow:none}
+#app #panelOverlay.honors-hd-mode .achievement-count{background:none;border:0;box-shadow:none;padding:0;color:#281a0e}
+#app #panelOverlay.honors-hd-mode .achievement-entry{height:auto;max-height:none;overflow:visible;align-self:stretch}
+#app #panelOverlay.honors-hd-mode .achievement-pt{white-space:nowrap}
+
+#app #panelOverlay.honors-hd-mode{--honors-dark:url('assets/ui/honors-hd/button-dark.png');--honors-gold:url('assets/ui/honors-hd/button-gold.png')}
+#app #panelOverlay.honors-hd-mode button{border-image:var(--honors-dark) 22 28 fill / 9px / 0 stretch;background:linear-gradient(#0004,#0004),var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.honors-hd-mode button[aria-pressed=true],#app #panelOverlay.honors-hd-mode .honors-action{border-image:var(--honors-gold) 18 28 fill / 9px / 0 stretch;background:linear-gradient(#b27c24aa,#72400faa),var(--rpg-hd-wood) center/512px 256px}
+#app #panelOverlay.honors-hd-mode .achievement-state{border-image:var(--honors-dark) 22 28 fill / 9px / 0 stretch;background:linear-gradient(#0004,#0004),var(--rpg-workshop-surface) center/512px;white-space:nowrap;font-size:19px}
+#app #panelOverlay.honors-hd-mode .achievement-emblem{border-image:var(--honors-dark) 22 28 fill / 8px / 0 stretch}
+#app #panelOverlay.honors-hd-mode .achievement-reward strong{margin-bottom:0}
+#app #panelOverlay.honors-hd-mode .achievement-entry{grid-template-rows:minmax(min-content,auto);min-height:158px}
+#app #panelOverlay.honors-hd-mode .achievement-categories button{font-size:16px;flex:1 0 auto;padding:4px 7px;gap:6px}
+#app #panelOverlay.honors-hd-mode .achievement-categories .honors-icon{width:34px;height:34px}
+#app #panelOverlay.honors-hd-mode .achievement-list{grid-auto-rows:minmax(min-content,auto)}
+
+#app #panelOverlay.honors-hd-mode #dialogBody select{background:linear-gradient(#0004,#0004),var(--rpg-workshop-surface) center/512px;color:#f7dfad}
+#app #panelOverlay.honors-hd-mode .hierarchy-ranking:empty{display:none}
+
+.hierarchy-title-plate{isolation:isolate;position:relative;background:none}
+.hierarchy-title-plate:before{content:'';position:absolute;left:10px;right:10px;top:50%;height:auto;aspect-ratio:5/1;transform:translateY(-50%);z-index:-2;border-radius:6px;background:linear-gradient(#691e2caa,#3c141daa),var(--rpg-hd-wood) center/512px 256px}
+.hierarchy-title-plate:after{content:'';position:absolute;inset:0;z-index:-1;background:var(--rank-plaque) center/100% auto no-repeat}
+.hierarchy-title-plate[data-faction=marine]:before{background:linear-gradient(#184578ba,#102a4dba),var(--rpg-hd-wood) center/512px 256px}
+.hierarchy-title-plate[data-faction=revolutionary]:before{background:linear-gradient(#215a3cba,#153821ba),var(--rpg-hd-wood) center/512px 256px}
+.hierarchy-title-plate[data-faction=government]:before{background:var(--rpg-hd-paper) center/100% 100%}

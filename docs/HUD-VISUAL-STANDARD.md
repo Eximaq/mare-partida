@@ -59,3 +59,8 @@ A tela de talentos usa a mesma madeira no cabeçalho e no rodapé; identidade e 
 ## Compêndio — 01/11/2026
 
 A composição do compêndio usa cabeçalho decorativo em toda a largura, tipos, ranks, galeria e detalhes, preservando os ícones oficiais. Os símbolos transparentes de Paramecia/Zoan/Logia ficam em assets/ui/compendium-hd/types-atlas.png e podem ser reutilizados. Origem, custo e regras: [COMPENDIO-HD.md](COMPENDIO-HD.md).
+
+
+## Conquistas e Hierarquia — 01/11/2026
+
+Família de 32 insígnias e quatro placas PixelLab compartilhada com a HUD, categorias com alfa e materiais de madeira/metal aprovados. Textos e dados são dinâmicos. [Contrato, mapeamento, custo e validação](CONQUISTAS-HIERARQUIA-HD.md).
