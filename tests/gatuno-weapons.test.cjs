@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),crypto=require('node:crypto');
 const F=require('../forge-system.js');
-const game=fs.readFileSync('game.js','utf8');
+const game=fs.readFileSync('item-catalog.js','utf8');
 const start=game.indexOf('// Append only: preserve save indices and reuse the 13 ATK');
 const defs=vm.runInNewContext('const itemDefs=[];'+game.slice(start,game.indexOf('\n  );',start)+6)+';itemDefs;');
 assert.deepEqual(Array.from(defs,d=>[d.name,d.rarity]),[['Adaga de Cristal','epic'],['Punhal de Netuno','legendary'],['Punhal Flamejante','legendary'],['Lâmina das Trevas','supreme']]);

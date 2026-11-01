@@ -22,7 +22,7 @@ assert.deepEqual(A.retaliate(100,50,{active:true}),{damage:30,reflected:30});
 for(const options of [{active:false},{active:true,physical:false},{active:true,direct:true}])assert.deepEqual(A.retaliate(100,50,options),{damage:50,reflected:0});
 assert.deepEqual(A.retaliate(100,0,{active:true}),{damage:0,reflected:0});
 // Item indices from old saves must not move when the sixth fruit is introduced.
-const source=fs.readFileSync(require.resolve('../game.js'),'utf8');
+const source=fs.readFileSync(require.resolve('../item-catalog.js'),'utf8');
 assert.ok(source.indexOf('MareAkuma.catalog.slice(0,5)')<source.indexOf("{name:'Katana da Maelstrom'"));
 assert.ok(source.indexOf('MareAkuma.catalog.slice(5)')>source.indexOf("{name:'Lâmina das Trevas'"));
 console.log('Supa: balance parity, independent HUD skills, physical scaling, circular range, mitigation, reflection and save indices passed');

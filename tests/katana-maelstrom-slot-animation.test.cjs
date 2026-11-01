@@ -6,7 +6,8 @@ const path=require('node:path');
 
 const root=path.resolve(__dirname,'..');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
-const def=game.split(/\r?\n/).find(line=>line.includes("name:'Katana da Maelstrom'"));
+const catalog=fs.readFileSync(path.join(root,'item-catalog.js'),'utf8');
+const def=catalog.split(/\r?\n/).find(line=>line.includes("name:'Katana da Maelstrom'"));
 assert.ok(def,'Katana da Maelstrom is registered');
 assert.ok(def.includes("rarity:'legendary',fixedRarity:true"),'Katana keeps the existing Legendary rarity');
 assert.ok(def.includes("icon_path:'assets/ui/items-pixellab/katana-de-maelstrom.png?v=20261022'"),'the static item icon remains available outside slots');

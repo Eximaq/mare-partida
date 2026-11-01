@@ -13,6 +13,15 @@
   background: var(--deep);
   color: var(--paper);
 }
+#online-lobby { max-width:1160px; margin:24px auto; padding:24px 32px; border:1px solid var(--line); background:var(--deep); }
+#online-lobby[hidden] { display:none; }
+.lobby-heading { display:flex; justify-content:space-between; align-items:center; gap:16px; }
+.lobby-heading h2 { margin:8px 0; }
+#lobby-canvas { display:block; width:100%; height:auto; image-rendering:pixelated; border:2px solid var(--brass); background:#102b35; }
+#lobby-canvas:focus-visible { outline:3px solid var(--paper); outline-offset:3px; }
+.lobby-services { display:flex; flex-wrap:wrap; gap:12px; margin-top:16px; }
+.lobby-services a { padding:10px; border:1px solid var(--line); color:var(--paper); }
+@media(max-width:600px){#online-lobby{padding:16px;margin:16px 12px}.lobby-heading{align-items:flex-start;flex-direction:column}}
 * {
   box-sizing: border-box;
 }

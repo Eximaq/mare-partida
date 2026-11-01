@@ -19,7 +19,8 @@ const gameplay=read('game.js');
 assert.match(gameplay,/MareUI\.inventoryGrid\(innerWidth\)/,'game rendering follows layout tokens');
 assert.match(gameplay,/MareUI\.inventoryPageAtResize\(/,'page count migration on resize');
 assert.match(gameplay,/inventoryUI\.pageSize!==MareUI\.inventoryGrid\(innerWidth\)\.pageSize/,'resize when modal is open');
-assert.match(gameplay,/BAG_CAPACITY=120/,'preserve inventory storage capacity');
+assert.match(read('item-catalog.js'),/BAG_CAPACITY=120/,'preserve inventory storage capacity in canonical catalog');
+assert.match(gameplay,/BAG_CAPACITY=catalog.capacity/,'game must consume the canonical capacity');
 
 const responsive=read('ui-responsive.css');
 assert.match(responsive, /\.op-grid\s*\{[\s\S]*?grid-template-columns:repeat\(var\(--bag-columns\),minmax\(0,1fr\)\)/,

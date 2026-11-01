@@ -2,9 +2,9 @@
 /* Diagnostic arena only: imports production formulae and animation timing, never edits a save. */
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict');
 const ROOT=path.resolve(__dirname,'..'),model=require('../character-system.js'),combat=require('../combat-animation.js');
-const source=fs.readFileSync(path.join(ROOT,'game.js'),'utf8'),box={MareCharacters:model};vm.createContext(box);
+const source=fs.readFileSync(path.join(ROOT,'game.js'),'utf8'),box={MareCharacters:model,MareAlubarna:require('../alubarna-world.js'),MareMonsterCatalog:require('../monster-catalog.js')};vm.createContext(box);
 vm.runInContext(source.slice(source.indexOf('  const classes ='),source.indexOf('  // Somente artes'))+';globalThis.data={classes,factions};',box);
-vm.runInContext(source.slice(source.indexOf('  const monsterTypes ='),source.indexOf('  const itemDefs ='))+';globalThis.enemies=monsterTypes;',box);
+vm.runInContext(source.slice(source.indexOf('  const monsterTypes ='),source.indexOf('  const catalog=MareItemCatalog.create'))+';globalThis.enemies=monsterTypes;',box);
 const {classes,factions}=box.data,enemies=box.enemies,animations=JSON.parse(fs.readFileSync(path.join(ROOT,'assets/classes/pirate-sword/metadata.json'),'utf8')).animations;
 const LEVELS=[1,5,10,20,30],HORIZON=180,DT=.05,REPEATS=12,GEAR={attack:6,defense:7,hp:24};
 const rng=seed=>()=>{seed=(Math.imul(1664525,seed)+1013904223)>>>0;return seed/4294967296;};
@@ -99,7 +99,9 @@ for(const level of LEVELS)for(const id of Object.keys(classes)){
   summary.skillDpsGainPct=round((summary.single.dps/summary.basic.dps-1)*100);
   assert.equal(model.spent(summary.profile),model.earned(level));assert(Object.values(summary.single).filter(v=>typeof v==='number').every(Number.isFinite));rows.push(summary);
 }
-const out=path.join(ROOT,'docs/balance-data');fs.mkdirSync(out,{recursive:true});
+const outputFlag=process.argv.indexOf('--out');
+if(outputFlag>=0&&!process.argv[outputFlag+1])throw Error('--out requires a directory');
+const out=outputFlag>=0?path.resolve(ROOT,process.argv[outputFlag+1]):path.join(ROOT,'docs/balance-data');fs.mkdirSync(out,{recursive:true});
 const proposal=[];
 for(const level of [20,30])for(const id of Object.keys(classes)){
   const before=rows.find(r=>r.id===id&&r.level===level).single,samples=Array.from({length:REPEATS},(_,seed)=>simulate(id,level,{seed:4100+seed,hpGrowth:.10}));

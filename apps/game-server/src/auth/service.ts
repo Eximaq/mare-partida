@@ -1,3 +1,4 @@
+import {getGameCatalog} from "../gameplay/catalog.js";
 import {readInventory,readItemCatalog} from "../characters/inventory.js";
 import {readFighter} from "../characters/fighter.js";
 import {readAttributes} from "../characters/attributes.js";
@@ -268,6 +269,9 @@ export class AuthService {
         },
       };
     });
+  }
+  async gameCatalog(token:string,id:string){
+    return this.withSession(token,"play",async(client,row)=>{await this.owned(client,row.account_id,id);return getGameCatalog();});
   }
   async characterState(token: string, id: string) {
     return this.withSession(token, "play", async (client, row) => {

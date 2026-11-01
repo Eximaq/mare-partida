@@ -43,7 +43,7 @@
     colliders,playerFootprint:{w:32,h:20},terrainWalkable,navigationGoals:paths,spawnZones:[],safeZones:[{...spawn,radius:140}],
     interactions:portals,navigationCell:32};
   const image=typeof Image!=='undefined'?new Image():null;
-  if(image)image.src='assets/lobby-map.png?v=20261022';
+  if(image){const file='assets/lobby-map.png?v=20261022',script=typeof document!=='undefined'?document.currentScript?.src:null;image.src=script?new URL(file,script).href:file;}
   function ground(ctx,camera,width,height){
     ctx.save();ctx.imageSmoothingEnabled=false;
     if(image?.complete&&image.naturalWidth){

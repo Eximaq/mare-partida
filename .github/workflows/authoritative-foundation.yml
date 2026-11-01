@@ -31,6 +31,7 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run build
       - run: npm run typecheck
+      - run: node tools/server-completeness.mts --audit
       - run: npm run test:foundation
       - name: PostgreSQL archive tools
         run: sudo apt-get update -qq && sudo apt-get install -y postgresql-client-18
@@ -75,6 +76,10 @@ jobs:
           import assert from 'node:assert/strict';
           import { existsSync } from 'node:fs';
           import pg from 'pg';
+          import { getGameCatalog } from './apps/game-server/dist/gameplay/catalog.js';
+          assert.equal(getGameCatalog().items.length, 103);
+          assert.equal(getGameCatalog().slots.length, 12);
+          assert.equal(getGameCatalog().rulesHash, '3f54745b49aa5fae5818c250330ec959d2301e1c973a2abd538c77f2f118ce6a');
           assert.notEqual(process.getuid(), 0);
           for (const path of ['/app/.env', '/app/.git', '/app/game.js', '/app/node_modules/typescript']) {
             assert.equal(existsSync(path), false, path);

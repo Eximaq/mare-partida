@@ -37,12 +37,10 @@ assert.equal(poses,1200);assert.equal(contacts,1440);assert.equal(viewCases,240)
 // Execute the catalog initialization: unrelated UI state must not affect equipment contracts.
 // Literal tuples audited against the original native96 integration (82e7082).
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
-const catalogStart=game.indexOf('  const itemDefs = ['),catalogEnd=game.indexOf('  const questDefs = [',catalogStart);
-assert(catalogStart>=0&&catalogEnd>catalogStart,'catalog initialization must be found');
-const definitions=require('node:vm').runInNewContext(game.slice(catalogStart,catalogEnd)+';itemDefs',{
- MareForge:require('../forge-system.js'),MarePrison:require('../prison-system.js'),
- MareHakiProgression:require('../haki-progression.js'),MareHaki:require('../haki-system.js'),MareAkuma:require('../akuma-system.js')
-});
+const definitions=require('../item-catalog.js').create({
+ forge:require('../forge-system.js'),prison:require('../prison-system.js'),
+ hakiProgression:require('../haki-progression.js'),haki:require('../haki-system.js'),akuma:require('../akuma-system.js')
+}).items;
 const expectedWeapons=[
  [0,"Espada de Ferro Salgado","weapon","sword",6,0,0,"common",false],
  [1,"Sabre de Coral","weapon","sword",11,0,0,"uncommon",false],

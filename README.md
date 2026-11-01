@@ -1,3 +1,11 @@
+**Servidor completo do jogo atual — objetivo ainda aberto:** [escopo integral, critérios de segurança e estado real](docs/architecture/FULL-SERVER-PARITY.md). O alpha anterior não equivale à migração completa.
+
+**Entrada direta online — em integração:** [login → jogo original, funções conectadas e diferenças de gameplay ainda abertas](docs/architecture/DIRECT-ONLINE-GAME.md).
+
+**Histórico da proposta de miniporto, substituída pela entrada direta:** [limites da tentativa anterior](docs/architecture/ONLINE-VISUAL-LOBBY.md).
+
+**Teste contínuo no Windows:** [iniciar, parar e preservar dados](docs/operations/CONTINUOUS-LOCAL-SERVER.md).
+
 [Haki e HUDs compactas: medidas, validação e encaixe dos 32 patamares](docs/HUD-DENSITY-HAKI.md).
 
 [Criação HD: classes, facções e harmonização das HUDs com geometria preservada](docs/CRIACAO-HARMONIZACAO-HD.md).

@@ -99,6 +99,8 @@ async function main() {
   };
   process.once("SIGINT", stop);
   process.once("SIGTERM", stop);
+  // Private parent IPC used by the Windows local supervisor; never an HTTP endpoint.
+  if(process.send){process.on('message',message=>{if(message==='local-stop')stop();});process.channel?.unref();}
 }
 main().catch(() => {
   console.error(
