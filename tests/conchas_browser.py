@@ -44,19 +44,20 @@ def travel(page):
     page.locator("#enterHunt").click()
     page.locator("[data-quick-mode=map]").click()
     page.locator("[data-island=conchas]").click()
-    # Prepare the selected destination while the clock still advances. Other
-    # regions intentionally remain unloaded during character creation.
+    # Inspection only loads the destination illustration and its current idle
+    # preview. Confirm the trip before waiting for the full combat map.
+    # Stop auto-hunt in the same task so loading cannot move the hero away
+    # from the entry before its position is inspected.
+    page.evaluate("""() => {
+        document.querySelector('[data-travel-area=swamp]').click();
+        if (__mareDiagnostics().autoPlay) document.querySelector('#autoToggle').click();
+    }""")
     page.wait_for_function(
         "MarePixelMapRenderer.stats().conchas.loaded && "
         "MarePixelMapRenderer.stats().conchas.loadedObjects===105 && "
         "['idle','walk','attack','hurt'].every(a=>MareSpriteCombatV2.status('helmeppo',a,'south')==='ready')"
     )
-    # Travel starts auto-hunt. Freeze animation time until the UI has disabled
-    # it, otherwise locator actionability waits move the hero before inspection.
     page.clock.pause_at(page.evaluate("new Date(Date.now() + 1000).toISOString()"))
-    page.locator("[data-travel-area=swamp]").dispatch_event("click")
-    if state(page)["autoPlay"]:
-        page.locator("#autoToggle").dispatch_event("click")
     page.clock.run_for(100)
 
 

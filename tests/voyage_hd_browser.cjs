@@ -13,6 +13,7 @@ for(const region of catalog.regions){
  for(const i of list){
   await page.locator('[data-island="'+i.id+'"]').click();
   await page.waitForFunction(()=>document.querySelector('.voyage-adversary .expedition-monster')?.dataset.state==='available');
+  if(i.id==='conchas')assert.equal(await page.evaluate(()=>MarePixelMapRenderer.stats().conchas.loaded),false,'inspection must not load the full combat map');
   assert.equal(await page.locator('#dungeonName').textContent(),i.name);
   assert.equal(await page.locator('.dungeon-range strong').textContent(),i.recommended[0]===i.recommended[1]?String(i.recommended[0]):i.recommended.join('–'));
   assert((await page.locator('.voyage-adversary').textContent()).includes(i.monster.name));

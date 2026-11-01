@@ -97,3 +97,5 @@ Nenhuma modificação de mapas de combate, economia, atributos de monstros, clas
 Skypiea ainda não possui destinos; chefes específicos da prisão e recompensas acima do andar 50 continuam a definir. Andares concluídos em saves antigos não têm histórico de inimigos. Não foi inventado conteúdo para preencher essas lacunas.
 
 Resultado local: 44 verificações Node aprovadas; os três ensaios de navegador (combate, falhas de arte e aceite do pacote estático) passaram. O workflow `.github/workflows/voyage-hd.yml` repete essas verificações no PR e publica as capturas como artefato, fora do histórico Git.
+
+A regressão completa `tests/conchas_browser.py` também passou em cinco resoluções (incluindo 320×568), com os 105 objetos, entrada ao sul, sprites de Helmeppo, percurso dos setores e compatibilidade do save. Sua espera pelos recursos completos foi movida para depois da confirmação da viagem; a inspeção permanece leve e possui uma asserção específica contra pré-carregamento do mapa completo.
