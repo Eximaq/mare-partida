@@ -163,11 +163,15 @@ test("command rate and history limits bound storage while preserving exact retry
     assert.ok(rejected && rejected.status === "rejected"); assert.equal(rejected.reason.code, "command_rate_limited");
     assert.deepEqual(await service.command(login.token, character.id, input), result);
     // Only this disposable fixture's clock columns are changed; no real account/provider clocks.
+    await assert.rejects(service.command(login.token, character.id, { ...input, requestId: randomUUID(), action: "journey.begin" }), { code: "command_rate_limited" });
     await pool.query("UPDATE mare_game.character_commands SET created_at=clock_timestamp()-interval '2 minutes'");
     await pool.query(`INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result,created_at)
       SELECT $1,gen_random_uuid(),repeat('b',64),$2::jsonb,clock_timestamp()-interval '2 minutes' FROM generate_series(1,9940)`,
       [character.id, JSON.stringify(result)]);
     await assert.rejects(service.command(login.token, character.id, { ...input, requestId: randomUUID() }), { code: "command_history_full" });
+    await assert.rejects(service.command(login.token, character.id, { ...input, requestId: randomUUID(), action: "journey.begin" }), { code: "command_history_full" });
+    assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.character_journey_ledger")).rows[0].n, 0);
+    assert.equal((await service.characterState(login.token, character.id)).version, 0);
     assert.deepEqual(await service.command(login.token, character.id, input), result);
     assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.character_commands")).rows[0].n, 10000);
   }));

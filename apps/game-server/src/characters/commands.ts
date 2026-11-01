@@ -3,6 +3,7 @@ import { characterCommandResultSchema, type CharacterCommand, type CharacterComm
 import { AuthFault } from "../auth/errors.js";
 import { digest } from "../auth/vault.js";
 import { readCharacterState } from "./state.js";
+import { beginJourney } from "./journey.js";
 
 // Caller holds the account and character locks after authenticating and checking ownership.
 export async function executeCharacterCommand(
@@ -25,7 +26,7 @@ export async function executeCharacterCommand(
     if (previous.request_hash !== hash) throw new AuthFault(409, "idempotency_conflict");
     return characterCommandResultSchema.parse(previous.result);
   }
-  const state = await readCharacterState(client, characterId);
+  let state = await readCharacterState(client, characterId);
   if (state.version !== input.expectedVersion) throw new AuthFault(409, "state_version_conflict");
   // Closed local protocol trial: keep receipts rather than silently re-enable old IDs.
   // Count under the same character lock; replicas cannot overshoot the budgets.
@@ -36,6 +37,10 @@ export async function executeCharacterCommand(
   )).rows[0]!;
   if (budget.total >= 10000) throw new AuthFault(503, "command_history_full");
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
+  if (input.action === "journey.begin") {
+    await beginJourney(client, characterId, input.requestId, state.version);
+    state = await readCharacterState(client, characterId);
+  }
   const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state });
   await client.query(
     "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)",
