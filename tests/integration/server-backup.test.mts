@@ -25,6 +25,10 @@ test("native archive restores every table and command receipt into a separate di
       control: { epoch: lease.epoch, token: lease.token },
     };
     const receipt = await service.command(session.token, c.id, command);
+    await pool.query('UPDATE mare_game.character_progression SET gold=60 WHERE character_id=$1',[c.id]);
+    await service.command(session.token,c.id,{...command,requestId:randomUUID(),action:'inventory.buy',expectedVersion:1,payload:{itemId:'training-weapon-v1',quantity:1}});
+    await service.command(session.token,c.id,{...command,requestId:randomUUID(),action:'equipment.equip',expectedVersion:2,payload:{itemId:'training-weapon-v1'}});
+
     const source = pool.options.connectionString!,
       url = new URL(source),
       name = "mare_restore_" + randomUUID().replaceAll("-", "");

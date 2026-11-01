@@ -83,4 +83,12 @@ Validação local executada em 01/11/2026:
 
 Provedor sintético local não substitui uma nova homologação real no Supabase.
 JWT900s e sessão24h/2h permanecem intactos. API/gateway de teste encerrados;
-PostgreSQL persistente preservado. Resultado Linux/Docker/CI será anexado após execução.
+PostgreSQL persistente preservado.
+
+CI Linux/Docker executado: [run41346356927](https://github.com/Eximaq/mare-partida/actions/runs/41346356927),
+com build/typecheck, foundation, integração PG99 cenários, imagem Node sem root,
+Compose, migrações repetíveis, grants e BFF habilitado sem chamadas ao provedor.
+`nginx -t` passou em container com certificado descartável. Isso não equivale a
+validar TLS, firewall, systemd ou recuperação na VPS final.
+O [PR196](https://github.com/Eximaq/mare-partida/pull/196) concentra a revisão e
+os checks do commit final.
