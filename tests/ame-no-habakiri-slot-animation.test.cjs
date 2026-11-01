@@ -6,7 +6,7 @@ const path=require('node:path');
 
 const root=path.resolve(__dirname,'..');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
-const def=game.split(/\r?\n/).find(line=>line.includes("name:'Meito: Ame no Habakiri'"));
+const def=fs.readFileSync(path.join(root,'item-catalog.js'),'utf8').split(/\r?\n/).find(line=>line.includes("name:'Meito: Ame no Habakiri'"));
 assert.ok(def,'Ame no Habakiri is registered');
 assert.ok(def.includes("rarity:'supreme'"),'Ame keeps the existing Supreme rarity');
 assert.ok(def.includes("icon_path:'assets/ui/items-pixellab/ame-no-habakiri.png?v=20261022'"),'the static item icon remains available outside slots');
