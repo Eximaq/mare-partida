@@ -2,18 +2,27 @@
 <html lang="pt-BR">
   <head>
     <meta charset="utf-8" />
+    <base href="/" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta name="theme-color" content="#091b23" />
     <title>Registro de bordo — Maré Partida</title>
-    <link rel="stylesheet" href="./account.css" />
-    <script type="module" src="./account.js"></script>
+    <link rel="stylesheet" href="/online/account.css" />
+    <script defer src="/online/lobby.js"></script>
+    <script type="module" src="/online/account.js"></script>
   </head>
   <body>
-    <a class="skip" href="#account">Pular para a conta</a>
+    <a class="skip" href="/online/#account">Pular para a conta</a>
     <header>
       <a class="brand" href="/">Maré Partida <span>Registro de bordo</span></a>
       <p id="environment">Ambiente de desenvolvimento</p>
     </header>
+    <section id="online-lobby" hidden aria-label="Porto das Correntes online">
+      <div class="lobby-heading"><div><span class="quiet">PORTO DAS CORRENTES</span><h2 id="lobby-name">Seu personagem</h2><p id="lobby-progress"></p></div><button id="leave-game" type="button">Voltar à conta</button></div>
+      <p id="lobby-status" role="status">Preparando o porto…</p>
+      <canvas id="lobby-canvas" width="960" height="540" tabindex="0" aria-label="Mapa do porto. Use as setas ou WASD para caminhar após assumir o controle."></canvas>
+      <nav aria-label="Serviços do porto" class="lobby-services"><a href="/online/#control">Assumir controle</a><a href="/online/#online-title">Caçadas e combate</a><a href="/online/#inventory-form">Mochila e mercador</a><a href="/online/#attribute-form">Atributos</a></nav>
+      <p class="quiet">Caminhada visual neste navegador; posição não é salva nem compartilhada. Outros jogadores ainda não aparecem. Os serviços abaixo usam o servidor.</p>
+    </section>
     <main>
       <aside>
         <div class="compass" aria-hidden="true">✦</div>
@@ -100,6 +109,8 @@
           <div id="character" hidden>
             <h3 id="character-name"></h3>
             <p id="character-details"></p>
+            <button class="primary" type="button" id="enter-game" disabled>Entrar no jogo</button>
+            <p class="quiet">Abra o Porto das Correntes com o personagem desta conta. Caçadas e equipamentos usam o progresso online.</p>
             <p id="control-state">Nenhum controle solicitado nesta aba.</p>
             <button type="button" id="control">Controlar nesta aba</button>
             <section class="online-progress" aria-labelledby="online-title">

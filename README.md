@@ -1,3 +1,5 @@
+**Entrada visual online:** [porto com identidade do servidor e limites da integração](docs/architecture/ONLINE-VISUAL-LOBBY.md).
+
 **Teste contínuo no Windows:** [iniciar, parar e preservar dados](docs/operations/CONTINUOUS-LOCAL-SERVER.md).
 
 [Haki e HUDs compactas: medidas, validação e encaixe dos 32 patamares](docs/HUD-DENSITY-HAKI.md).
