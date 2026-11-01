@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#091b23" />
+    <title>Registro de bordo — Maré Partida</title>
+    <link rel="stylesheet" href="/online/account.css" />
+    <script defer src="/online/lobby.js"></script>
+    <script type="module" src="/online/account.js"></script>
+  </head>
+  <body>
+    <a class="skip" href="/online/#account">Pular para a conta</a>
+    <header>
+      <a class="brand" href="/">Maré Partida <span>Registro de bordo</span></a>
+      <p id="environment">Ambiente de desenvolvimento</p>
+    </header>
+    <section id="online-lobby" hidden aria-label="Porto das Correntes online">
+      <div class="lobby-heading"><div><span class="quiet">PORTO DAS CORRENTES</span><h2 id="lobby-name">Seu personagem</h2><p id="lobby-progress"></p></div><button id="leave-game" type="button">Voltar à conta</button></div>
+      <p id="lobby-status" role="status">Preparando o porto…</p>
+      <canvas id="lobby-canvas" width="960" height="540" tabindex="0" aria-label="Mapa do porto. Use as setas ou WASD para caminhar após assumir o controle."></canvas>
+      <nav aria-label="Serviços do porto" class="lobby-services"><a href="/online/#control">Assumir controle</a><a href="/online/#online-title">Caçadas e combate</a><a href="/online/#inventory-form">Mochila e mercador</a><a href="/online/#attribute-form">Atributos</a></nav>
+      <p class="quiet">Caminhada visual neste navegador; posição não é salva nem compartilhada. Outros jogadores ainda não aparecem. Os serviços abaixo usam o servidor.</p>
+    </section>
+    <main>
+      <aside>
+        <div class="compass" aria-hidden="true">✦</div>
+        <h1>Seu nome.<br />Seu lugar nos mares.</h1>
+        <p>
+          Guarde sua identidade e escolha o personagem que acompanhará sua
+          jornada.
+        </p>
+        <div class="note">
+          <strong>Uma nova travessia</strong>
+          <p>
+            O personagem online começa do zero. Sua aventura salva neste
+            navegador continua na demonstração, sem alterações.
+          </p>
+          <a href="/">Abrir demonstração local</a>
+        </div>
+      </aside>
+      <section
+        id="account"
+        class="ledger"
+        aria-labelledby="panel-title"
+        tabindex="-1"
+      >
+        <h2 id="panel-title">Entrar na conta</h2>
+        <p id="status" role="status" aria-live="polite"></p>
+        <div id="signed-out">
+          <nav aria-label="Acesso à conta">
+            <button type="button" data-mode="login" aria-pressed="true">
+              Entrar</button
+            ><button type="button" data-mode="signup" aria-pressed="false">
+              Criar conta</button
+            ><button type="button" data-mode="recover" aria-pressed="false">
+              Recuperar acesso
+            </button>
+          </nav>
+          <form id="auth-form">
+            <label for="email">E-mail</label
+            ><input
+              id="email"
+              name="email"
+              type="email"
+              spellcheck="false"
+              autocomplete="username"
+              required
+              maxlength="254"
+            />
+            <div id="password-field">
+              <label for="password">Senha</label
+              ><input
+                id="password"
+                name="password"
+                type="password"
+                autocomplete="current-password"
+                minlength="12"
+                maxlength="128"
+                required
+              /><small>Use uma senha com pelo menos 12 caracteres.</small>
+            </div>
+            <button class="primary" id="auth-submit" type="submit">
+              Entrar
+            </button>
+          </form>
+          <p class="quiet">
+            A criação da conta exige confirmação pelo e-mail. Abra o link neste
+            mesmo navegador.
+          </p>
+        </div>
+        <form id="reset-form" hidden>
+          <p>
+            Escolha uma nova senha. Ao concluir, entre novamente na sua conta.
+          </p>
+          <label for="new-password">Nova senha</label
+          ><input
+            id="new-password"
+            name="new-password"
+            type="password"
+            autocomplete="new-password"
+            minlength="12"
+            maxlength="128"
+            required
+          /><button class="primary" type="submit">Salvar nova senha</button>
+        </form>
+        <div id="signed-in" hidden>
+          <div id="character" hidden>
+            <h3 id="character-name"></h3>
+            <p id="character-details"></p>
+            <button class="primary" type="button" id="enter-game" disabled>Entrar no jogo</button>
+            <p class="quiet">Abra o Porto das Correntes com o personagem desta conta. Caçadas e equipamentos usam o progresso online.</p>
+            <p id="control-state">Nenhum controle solicitado nesta aba.</p>
+            <button type="button" id="control">Controlar nesta aba</button>
+            <section class="online-progress" aria-labelledby="online-title">
+              <h4 id="online-title">Progresso online</h4>
+              <dl class="online-values">
+                <div><dt>Nível</dt><dd id="online-level">—</dd></div>
+                <div><dt>XP total</dt><dd id="online-xp">—</dd></div>
+                <div><dt>Ouro</dt><dd id="online-gold">—</dd></div>
+              </dl>
+              <p id="level-progress" role="status" aria-live="polite"></p>
+              <p id="level-points" class="quiet"></p>
+              <form id="attribute-form" aria-labelledby="attribute-title">
+                <h4 id="attribute-title">Distribuir pontos</h4>
+                <p id="attribute-budget" role="status" aria-live="polite"></p>
+                <p id="attribute-values" class="quiet"></p>
+                <p class="quiet">São pontos investidos, sem os atributos iniciais da classe. A distribuição é permanente nesta etapa. Os efeitos e equipamentos são aplicados ao iniciar o próximo encontro.</p>
+                <label for="attribute-kind">Atributo</label>
+                <select id="attribute-kind" name="attribute" disabled>
+                  <option value="strength">Força</option><option value="dexterity">Destreza</option>
+                  <option value="vitality">Vitalidade</option><option value="intelligence">Inteligência</option>
+                  <option value="spirit">Espírito</option>
+                </select>
+                <label for="attribute-count">Pontos a investir</label>
+                <input id="attribute-count" name="points" type="number" min="1" max="95" step="1" value="1" required disabled />
+                <p id="attribute-pending" class="quiet" role="status"></p>
+                <button type="submit" id="attribute-apply" disabled>Confirmar distribuição</button>
+              </form>
+              <details class="online-inventory" open>
+                <summary>Mochila e mercador do cais</summary>
+                <p id="inventory-values" role="status" aria-live="polite"></p>
+                <p id="equipment-values" class="quiet"></p>
+                <form id="inventory-form" aria-label="Mercador do cais">
+                  <label for="item-kind">Item</label>
+                  <select id="item-kind" name="itemId" disabled>
+                    <option value="training-weapon-v1">Instrumento de treino</option>
+                    <option value="dock-vest-v1">Colete do cais</option>
+                    <option value="dock-scrap-v1">Fragmento de metal</option>
+                  </select>
+                  <p id="item-quote" class="quiet"></p>
+                  <label for="item-count">Quantidade</label>
+                  <input type="number" id="item-count" name="quantity" min="1" max="100" step="1" value="1" required disabled />
+                  <div class="online-actions"><button type="submit" id="item-buy" disabled>Comprar</button><button type="button" id="item-sell" disabled>Vender</button><button type="button" id="item-equip" disabled>Equipar</button></div>
+                </form>
+                <div class="online-actions"><button type="button" id="weapon-remove" disabled>Desequipar instrumento</button><button type="button" id="armor-remove" disabled>Desequipar colete</button></div>
+                <p class="quiet">Cada vitória resgatada concede também um fragmento de metal. Desequipe antes de vender a última cópia. Tudo permanece separado da demonstração.</p>
+              </details>
+              <button type="button" id="command-resume" hidden disabled>Retomar pedido pendente</button>
+              <p id="fighter-preview" class="quiet"></p>
+              <p id="journey-state">Progresso ainda não confirmado.</p>
+              <p id="journey-message" class="quiet" role="status" aria-live="polite"></p>
+              <div class="online-actions">
+                <button type="button" id="journey-start" disabled>Iniciar jornada</button>
+                <button type="button" id="online-refresh">Atualizar progresso</button>
+              </div>
+              <h4>Primeira caçada · Ronda do cais</h4>
+              <p id="hunt-state" role="status" aria-live="polite">Caçada ainda não confirmada.</p>
+              <p id="hunt-reward" class="quiet"></p>
+              <div class="online-actions">
+                <button type="button" id="hunt-start" disabled>Iniciar caçada</button>
+                <button type="button" id="hunt-claim" disabled>Receber recompensa</button>
+              </div>
+              <h4>Encontros · Saqueador do cais</h4>
+              <p id="combat-state" role="status" aria-live="polite">Combate ainda não confirmado.</p>
+              <dl class="online-values">
+                <div><dt>Sua vida</dt><dd id="combat-player-hp">—</dd></div>
+                <div><dt>Vida inimiga</dt><dd id="combat-enemy-hp">—</dd></div>
+                <div><dt>Turno</dt><dd id="combat-turn">—</dd></div>
+              </dl>
+              <p id="fighter-active" class="quiet"></p>
+              <p id="combat-last" class="quiet"></p>
+              <p class="quiet">Prêmio único por encontro vencido: 30 XP e 12 de ouro. Novo encontro após resgate ou derrota e 60 segundos de descanso; até 10 inícios em 24 horas, com histórico preservado. Entre turnos, o encontro fica pausado; recarregar não recupera vida.</p>
+              <div class="online-actions">
+                <button type="button" id="combat-start" disabled>Enfrentar saqueador</button>
+                <button type="button" id="combat-attack" disabled>Atacar</button>
+                <button type="button" id="combat-claim" disabled>Receber prêmio do combate</button>
+              </div>
+            </section>
+          </div>
+          <form id="character-form">
+            <p>
+              Um personagem por conta. Escolha com calma: estas opções não
+              poderão ser alteradas nesta etapa.
+            </p>
+            <label for="name">Nome do personagem</label
+            ><input
+              id="name"
+              name="name"
+              required
+              maxlength="40"
+              autocomplete="off"
+            /><label for="class">Classe</label
+            ><select id="class" name="classId">
+              <option value="sword">Espadachim</option>
+              <option value="brawler">Lutador</option>
+              <option value="gunner">Atirador</option>
+              <option value="rogue">Gatuno</option>
+              <option value="cyborg">Ciborgue</option>
+              <option value="strategist">Estrategista</option>
+              <option value="healer">Curandeiro</option></select
+            ><label for="faction">Facção</label
+            ><select id="faction" name="factionId">
+              <option value="pirate">Pirata</option>
+              <option value="marine">Marinha</option>
+              <option value="revolutionary">Revolucionário</option>
+              <option value="government">Governo</option></select
+            ><button class="primary" type="submit">Criar personagem</button>
+          </form>
+          <p class="quiet">
+            A primeira caçada é uma missão temporizada, com recompensa única
+            registrada no servidor. Exploração e combate em mapa continuam na demonstração.
+          </p>
+          <div class="session-actions">
+            <button type="button" id="rotate">Renovar sessão</button
+            ><button type="button" id="logout">Sair deste dispositivo</button
+            ><button type="button" id="logout-all">
+              Sair de todos os dispositivos
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>Maré Partida · Contas de desenvolvimento</footer>
+  </body>
+</html>

@@ -98,6 +98,7 @@ test("one HTTPS origin serves only built files and forwards Secure cookies to th
     );
   assert.equal((await get("/")).body, "<h1>Isolated frontend</h1>");
   assert.equal((await get("/online/")).status, 200);
+  const gamePage=await get("/game");assert.equal(gamePage.status,200);assert.match(gamePage.body,/Isolated frontend/);assert.match(gamePage.body,/\/online\/game-session.js/);assert.match(gamePage.body,/\/online\/game-ui.js/);
   // An absolute request target must never override the private proxy destination.
   assert.equal(
     (
