@@ -5,3 +5,5 @@ export * from './schemas/character-state.js';
 export * from './schemas/character-command.js';
 export * from './schemas/combat.js';
 export * from './schemas/attributes.js';
+export * from './schemas/fighter.js';
+export * from './schemas/inventory.js';

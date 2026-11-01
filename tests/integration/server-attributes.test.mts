@@ -90,7 +90,7 @@ test("attribute migration preserves existing progression and receipts and starts
   await authDatabase(async({service,pool})=>{
     const f=await fixture(service,pool);const sync={...f.input(),action:"state.sync",payload:{}};await f.send(sync);
     const before=await service.characterState(f.session.token,f.character.id),receipts=(await pool.query("SELECT * FROM mare_game.character_commands")).rows;
-    assert.deepEqual(await applyMigrations(pool),["0010_attribute_allocation.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     assert.deepEqual(await service.characterState(f.session.token,f.character.id),before);assert.deepEqual((await pool.query("SELECT * FROM mare_game.character_commands")).rows,receipts);
     assert.deepEqual((await service.onlineState(f.session.token,f.character.id) as any).attributes,{catalogId:"online-attributes-v1",allocated:zero,earned:5,spent:0,available:5,lastRequestId:null});
     assert.equal((await f.send(f.input())).attributes.available,0);

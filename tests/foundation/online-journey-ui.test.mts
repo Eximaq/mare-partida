@@ -17,15 +17,15 @@ class Element {
 function page(storage = new Map<string,string>()) {
   const elements = new Map<string,Element>();
   const get = (selector: string) => { if (!elements.has(selector)) elements.set(selector,new Element()); return elements.get(selector)!; };
-  const model = { level:1, experience:"0", progression:undefined as any, attributes:undefined as any, started: false, hunt: "locked", combatStatus: "locked", canBegin: undefined as boolean|undefined, turn: 0, lastRequestId: null as string|null, attackReady: false, version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
+  const model = { level:1, experience:"0", progression:undefined as any, attributes:undefined as any, inventory:undefined as any,itemCatalog:undefined as any,combatPreview:undefined as any,confirm:true, started: false, hunt: "locked", combatStatus: "locked", canBegin: undefined as boolean|undefined, turn: 0, lastRequestId: null as string|null, attackReady: false, version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
     me: null as null | ((signal?: AbortSignal) => Promise<Response>), send: null as null | (() => Promise<Response>),
     control: null as null | (() => Promise<Response>) };
   const timers: Array<() => void> = [];
   const deadlines = new Map<number,()=>void>(); let timerId = 0;
-  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: model.level, experience: model.experience, gold: "9007199254740993" }, progression:model.progression,attributes:model.attributes, journey: { started: model.started }, hunt: { catalogId:"dock-patrol-v1",name:"Ronda do cais",durationSeconds:30,experience:"20",gold:"8",status:model.hunt,startedAt:null,readyAt:null,serverNow:new Date().toISOString() }, combat:{catalogId:"dock-raider-v1",enemyName:"Fixture enemy",status:model.combatStatus,canBegin:model.canBegin,turn:model.turn,playerHp:30,enemyHp:36,playerMaxHp:30,enemyMaxHp:36,attackReady:model.attackReady,lastRequestId:model.lastRequestId,nextAttackAt:null,lastAttack:null,experience:"30",gold:"12"} });
+  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: model.level, experience: model.experience, gold: "9007199254740993" }, progression:model.progression,attributes:model.attributes,inventory:model.inventory,itemCatalog:model.itemCatalog,combatPreview:model.combatPreview, journey: { started: model.started }, hunt: { catalogId:"dock-patrol-v1",name:"Ronda do cais",durationSeconds:30,experience:"20",gold:"8",status:model.hunt,startedAt:null,readyAt:null,serverNow:new Date().toISOString() }, combat:{catalogId:"dock-raider-v1",enemyName:"Fixture enemy",status:model.combatStatus,canBegin:model.canBegin,turn:model.turn,playerHp:30,enemyHp:36,playerMaxHp:30,enemyMaxHp:36,attackReady:model.attackReady,lastRequestId:model.lastRequestId,nextAttackAt:null,lastAttack:null,experience:"30",gold:"12"} });
   runInNewContext(source, {
     URL, AbortController, setTimeout(fn:()=>void) { deadlines.set(++timerId,fn); return timerId; },
-    clearTimeout(id:number) { deadlines.delete(id); }, crypto: { randomUUID }, confirm: () => true,
+    clearTimeout(id:number) { deadlines.delete(id); }, crypto: { randomUUID }, confirm: () => model.confirm,
     location: { href: "https://localhost:9443/online/" }, history: { replaceState() {} },
     document: { hidden: false, querySelector: get, querySelectorAll: () => [] },
     setInterval(fn: () => void) { timers.push(fn); },
@@ -254,4 +254,20 @@ test("attribute UI blocks forged budgets and invalid input, clears state on logo
   p.model.attributes=attributeFixture();p.click("#online-refresh");await settle();p.get("#attribute-kind").value="strength";p.get("#attribute-count").value="2";
   p.model.send=async()=>{p.model.attributes.lastRequestId=randomUUID();throw new TypeError("reply lost");};p.submit("#attribute-form");await settle();assert.equal(p.storage.size,1,"another allocation cannot confirm this intent");
   p.click("#logout");await settle();assert.equal(p.get("#attribute-apply").disabled,true);assert.equal(p.get("#attribute-budget").textContent,"");assert.equal(p.storage.size,0);
+});
+
+const inventoryFixture=()=>({catalogId:"online-items-v1",items:[],equipped:{weapon:null,armor:null},lastRequestId:null as string|null});
+const catalogFixture=[{itemId:"training-weapon-v1",name:"Instrumento de treino",slot:"weapon",buyPrice:"30",sellPrice:"10",attackBonus:2,hpBonus:0,armorBonus:0},{itemId:"dock-vest-v1",name:"Colete do cais",slot:"armor",buyPrice:"24",sellPrice:"8",attackBonus:0,hpBonus:8,armorBonus:1},{itemId:"dock-scrap-v1",name:"Fragmento de metal",slot:"material",buyPrice:"2",sellPrice:"1",attackBonus:0,hpBonus:0,armorBonus:0}];
+test("online inventory sends only the selected intent, cancellation spends nothing and uncertain trades replay after reload",async()=>{
+ const p=page();p.model.inventory=inventoryFixture();p.model.itemCatalog=catalogFixture;await settle();p.click("#control");await settle();
+ p.get("#item-kind").value="training-weapon-v1";p.get("#item-count").value="1";
+ p.model.confirm=false;p.submit("#inventory-form");await settle();assert.equal(p.model.requests.length,0);
+ p.model.confirm=true;p.model.send=async()=>{p.model.failRead=true;throw new TypeError("reply lost");};p.submit("#inventory-form");await settle();
+ assert.equal(p.model.requests.length,1);const original=p.model.requests[0];assert.equal(original.action,"inventory.buy");assert.deepEqual(original.payload,{itemId:"training-weapon-v1",quantity:1});
+ const restored=page(p.storage);restored.model.inventory=inventoryFixture();restored.model.itemCatalog=catalogFixture;await settle();assert.equal(restored.model.requests.length,0);
+ restored.click("#control");await settle();restored.click("#command-resume");await settle();assert.deepEqual(restored.model.requests[0],original);assert.equal(restored.storage.size,0);
+});
+test("online fighter display uses frozen encounter values independently of next encounter preview",async()=>{
+ const p=page();p.model.combatStatus="active";p.model.combatPreview={rulesetId:"online-combat-v2",classId:"sword",level:1,sourceVersion:0,allocated:{strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0},total:{strength:15,dexterity:14,vitality:9,intelligence:6,spirit:6},equipped:{weapon:null,armor:null},damageType:"physical",maxHp:38,attackMin:13,attackMax:17,armor:0,cooldownMs:1860};await settle();
+ assert.match(p.get("#fighter-preview").textContent,/38/);assert.match(p.get("#fighter-active").textContent,/30/);assert.equal(p.model.requests.length,0);
 });

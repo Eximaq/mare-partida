@@ -1,3 +1,4 @@
+import {mutateInventory,readInventory} from "./inventory.js";
 import type { PoolClient } from "pg";
 import { attributeKeys, characterCommandResultSchema, type CharacterCommand, type CharacterCommandResult } from "@mare/shared";
 import { AuthFault } from "../auth/errors.js";
@@ -21,7 +22,8 @@ export async function executeCharacterCommand(
   if (!controller.rowCount) throw new AuthFault(409, "control_conflict");
   // Authority is checked on every replay. Credentials are deliberately excluded from storage
   // and identity, so a newly authorized controller can reconcile a lost response.
-  const intent = input.action === "attributes.allocate" ? attributeKeys.map(k=>input.payload.allocation[k]) : input.payload;
+  const intent = input.action === "attributes.allocate" ? attributeKeys.map(k=>input.payload.allocation[k]) :
+    input.action === "inventory.buy" || input.action === "inventory.sell" ? [input.payload.itemId,input.payload.quantity] : input.payload;
   const hash = digest(JSON.stringify([input.action, input.expectedVersion, intent]));
   const previous = (await client.query<{ request_hash: string; result: unknown }>(
     "SELECT request_hash,result FROM mare_game.character_commands WHERE character_id=$1 AND request_id=$2",
@@ -33,14 +35,10 @@ export async function executeCharacterCommand(
   }
   let state = await readCharacterState(client, characterId);
   if (state.version !== input.expectedVersion) throw new AuthFault(409, "state_version_conflict");
-  // Closed local protocol trial: keep receipts rather than silently re-enable old IDs.
-  // Count under the same character lock; replicas cannot overshoot the budgets.
-  const budget = (await client.query<{ total: number; recent: number }>(
-    `SELECT count(*)::int AS total,
-      count(*) FILTER (WHERE created_at>clock_timestamp()-interval '60 seconds')::int AS recent
-      FROM mare_game.character_commands WHERE character_id=$1`, [characterId],
+  // Keep immutable receipts for replay; bound request rate, not a player's lifetime.
+  const budget = (await client.query<{recent:number}>(
+    "SELECT count(*)::int AS recent FROM mare_game.character_commands WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds'",[characterId]
   )).rows[0]!;
-  if (budget.total >= 10000) throw new AuthFault(503, "command_history_full");
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
   if (input.action === "journey.begin") {
     await beginJourney(client, characterId, input.requestId, state.version);
@@ -60,7 +58,10 @@ export async function executeCharacterCommand(
     attributes=await allocateAttributes(client,characterId,input.requestId,state,input.payload.allocation);
     state=await readCharacterState(client,characterId);
   }
-  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}) });
+  let inventory;
+  if(input.action==="inventory.buy"||input.action==="inventory.sell"||input.action==="equipment.equip"||input.action==="equipment.unequip") {inventory=await mutateInventory(client,characterId,input,state);state=await readCharacterState(client,characterId);}
+  if(input.action==="combat.claim") inventory=await readInventory(client,characterId);
+  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}), ...(inventory ? {inventory} : {}) });
   await client.query(
     "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)",
     [characterId, input.requestId, hash, JSON.stringify(result)],

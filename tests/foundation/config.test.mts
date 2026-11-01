@@ -18,3 +18,9 @@ test('configuration errors do not echo connection strings or passwords', () => {
   assert.throws(() => readConfig({ DATABASE_URL: 'https://runtime:private@example.com' }),
     (error: unknown) => error instanceof Error && !error.message.includes('private'));
 });
+
+test('production requires explicit loopback proxy and approved policy; untrusted IP lists fail closed',()=>{
+ const env={...environment,NODE_ENV:'production',HOST:'127.0.0.1',TRUSTED_PROXY_IP:'127.0.0.1',AUTH_ENABLED:'true',AUTH_PUBLIC_ORIGIN:'https://game.example.invalid',SESSION_ABSOLUTE_SECONDS:'86400',SESSION_IDLE_SECONDS:'7200'};
+ assert.equal(readConfig(env).trustedProxyIp,'127.0.0.1');
+ for(const patch of [{HOST:'0.0.0.0'},{TRUSTED_PROXY_IP:'*'},{TRUSTED_PROXY_IP:'127.0.0.1,::1'},{AUTH_ENABLED:'false'},{SESSION_IDLE_SECONDS:'86400'}])assert.throws(()=>readConfig({...env,...patch}));
+});

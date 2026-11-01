@@ -34,3 +34,20 @@ test("old immutable command receipts remain readable without a combat field",()=
   const receipt={requestId:"11111111-1111-4111-8111-111111111111",action:"state.sync",state:{characterId:"22222222-2222-4222-8222-222222222222",version:0,level:1,experience:"0",gold:"0"}};
   assert.deepEqual(characterCommandResultSchema.parse(receipt),receipt);
 });
+
+// Each expected baseline is hand-derived from the versioned primary/secondary rules.
+test("seven online classes derive bounded stats and allocated points affect only their intended formulas",async()=>{
+ const {deriveFighter}=await import("../../apps/game-server/src/characters/fighter.js");
+ const empty={strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0};
+ const state={characterId:"11111111-1111-4111-8111-111111111111",version:0,level:2,experience:"80",gold:"0"};
+ for(const [classId,hp,min,armor,cooldown,type] of [
+  ["sword",38,13,0,1860,"physical"],["brawler",46,12,1,1910,"physical"],["gunner",36,12,0,1850,"physical"],
+  ["rogue",38,12,0,1840,"physical"],["cyborg",54,13,1,1940,"physical"],["strategist",36,13,0,1920,"elemental"],["healer",40,13,0,1920,"elemental"]] as const) {
+   const f=deriveFighter(classId,state,empty);assert.equal(f.maxHp,hp);assert.equal(f.attackMin,min);assert.equal(f.attackMax,min+4);assert.equal(f.armor,armor);assert.equal(f.cooldownMs,cooldown);assert.equal(f.damageType,type);
+ }
+ const boosted=deriveFighter("sword",state,{...empty,strength:3,vitality:2});assert.equal(boosted.maxHp,42);assert.equal(boosted.attackMin,14);
+ const tank=deriveFighter("cyborg",{...state,level:20,experience:"18209"},{...empty,vitality:95});assert.equal(tank.maxHp,244);assert.equal(tank.armor,6);assert.equal(tank.attackMin,45);
+ const round=resolveCombatRound(244,36,45,11,tank);assert.deepEqual(round,{playerHp:244,enemyHp:0,playerDamage:36,enemyDamage:0,status:"won"});
+ const defended=resolveCombatRound(244,36,10,7,{...tank,attackMin:10,attackMax:14});assert.equal(defended.enemyDamage,1);assert.equal(defended.playerHp,243);
+ assert.throws(()=>deriveFighter("sword",state,{...empty,vitality:-1}));
+});

@@ -1,3 +1,4 @@
+import {requestMetrics} from "./metrics.js";
 import { once } from "node:events";
 import { readConfig } from "./config.js";
 import { createPool } from "./db/pool.js";
@@ -47,11 +48,15 @@ async function main() {
     : undefined;
   revocations?.unref();
   let stopping = false;
+  const metrics=requestMetrics();
+  const reporter=setInterval(()=>console.log(JSON.stringify(metrics.flush())),60000);reporter.unref();
   const server = createHttpServer({
+    onRequest:metrics.record,
     isReady: () => (stopping ? Promise.resolve(false) : isDatabaseReady(pool)),
     ...(auth && vault && service
       ? {
           handle: createAuthHandler({
+            ...(config.trustedProxyIp?{trustedProxyIp:config.trustedProxyIp}:{}),
             service,
             vault,
             origin: auth.origin,
@@ -79,6 +84,7 @@ async function main() {
     if (stopping) return;
     stopping = true;
     clearInterval(revocations);
+    clearInterval(reporter);
     const deadline = setTimeout(() => {
       server.closeAllConnections();
       process.exitCode = 1;

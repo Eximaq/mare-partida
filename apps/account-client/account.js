@@ -8,12 +8,39 @@ let viewRevision = 0, identityRevision = 0, identity = null;
 const PENDING_COMMAND = "mare-online-pending-v1";
 const attributeNames={strength:"Força",dexterity:"Destreza",vitality:"Vitalidade",intelligence:"Inteligência",spirit:"Espírito"};
 const attributeKeys=Object.keys(attributeNames);
+const itemNames={"training-weapon-v1":"Instrumento de treino","dock-vest-v1":"Colete do cais","dock-scrap-v1":"Fragmento de metal"};
+const inventoryAction=a=>a?.startsWith("inventory.")||a?.startsWith("equipment.");
+const payloadAction=a=>a==="attributes.allocate"||inventoryAction(a);
+function validIntent(action,payload){
+ if(!payload||typeof payload!=="object")return false;
+ const keys=Object.keys(payload).sort().join();
+ if(action==="attributes.allocate")return keys==="allocation"&&validAllocation(payload.allocation);
+ if(action==="inventory.buy"||action==="inventory.sell")return keys==="itemId,quantity"&&Object.hasOwn(itemNames,payload.itemId)&&Number.isInteger(payload.quantity)&&payload.quantity>=1&&payload.quantity<=100;
+ if(action==="equipment.equip")return keys==="itemId"&&["training-weapon-v1","dock-vest-v1"].includes(payload.itemId);
+ if(action==="equipment.unequip")return keys==="slot"&&["weapon","armor"].includes(payload.slot);
+ return false;
+}
+function validFighter(f){
+ const bounded=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
+ return !!f && f.rulesetId==="online-combat-v2" && ["sword","brawler","gunner","rogue","cyborg","strategist","healer"].includes(f.classId) &&
+  bounded(f.level,1,20)&&bounded(f.sourceVersion,0,Number.MAX_SAFE_INTEGER)&&bounded(f.maxHp,30,300)&&bounded(f.attackMin,10,60)&&f.attackMax===f.attackMin+4&&
+  bounded(f.armor,0,6)&&bounded(f.cooldownMs,500,2000)&&["physical","elemental"].includes(f.damageType)&&
+  attributeKeys.every(k=>bounded(f.total?.[k],0,112)&&pointValue(f.allocated?.[k]))&&
+  [null,"training-weapon-v1"].includes(f.equipped?.weapon)&&[null,"dock-vest-v1"].includes(f.equipped?.armor);
+}
 const pointValue=n=>Number.isSafeInteger(n)&&n>=0&&n<=95;
 function validAllocation(v) {
   return !!v && typeof v==="object" && Object.keys(v).sort().join()===attributeKeys.slice().sort().join() &&
     attributeKeys.every(k=>pointValue(v[k])) && attributeKeys.reduce((n,k)=>n+v[k],0)>0 && attributeKeys.reduce((n,k)=>n+v[k],0)<=95;
 }
 const messages = {
+  gold_insufficient: "Ouro insuficiente para esta compra.",
+  item_quantity_insufficient: "Você não possui essa quantidade do item.",
+  item_equipped: "Desequipe o item antes de vender a última cópia.",
+  item_already_equipped: "Esse item já está equipado.",
+  equipment_empty: "Esse espaço já está vazio.",
+  item_not_equippable: "Esse material não pode ser equipado.",
+  inventory_stack_full: "A pilha atingiu o limite. Venda parte dela antes de receber mais.",
   attribute_points_insufficient: "Os pontos disponíveis mudaram. Confira o saldo antes de distribuir.",
   authentication_required: "Sua sessão terminou. Entre novamente.",
   authentication_failed:
@@ -108,8 +135,8 @@ function restorePendingCommand(id) {
   try {
     const saved = JSON.parse(sessionStorage.getItem(PENDING_COMMAND) || "null");
     if (saved && (["characterId,expectedVersion,requestId", "action,characterId,expectedVersion,requestId", "action,characterId,expectedVersion,payload,requestId"].includes(Object.keys(saved).sort().join())) &&
-        (saved.action === undefined || ["hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate"].includes(saved.action)) &&
-        (saved.action === "attributes.allocate" ? saved.payload && Object.keys(saved.payload).join()==="allocation" && validAllocation(saved.payload.allocation) : saved.payload===undefined) &&
+        (saved.action === undefined || ["hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip"].includes(saved.action)) &&
+        (payloadAction(saved.action) ? validIntent(saved.action,saved.payload) : saved.payload===undefined) &&
         saved.characterId === id && typeof saved.requestId === "string" &&
         /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(saved.requestId) &&
         Number.isSafeInteger(saved.expectedVersion) && saved.expectedVersion >= 0) {
@@ -121,6 +148,7 @@ function restorePendingCommand(id) {
 function pendingAction() { return pendingCommand?.action || "journey.begin"; }
 function actionConfirmed(action) {
   if (!online) return false;
+  if (inventoryAction(action)) return !!pendingCommand && online.inventory?.lastRequestId===pendingCommand.requestId;
   if (action === "attributes.allocate") return !!pendingCommand && online.attributes?.lastRequestId===pendingCommand.requestId;
   if (action === "journey.begin") return online.journey.started;
   if (action === "hunt.begin") return ["active", "ready", "claimed"].includes(online.hunt?.status);
@@ -130,7 +158,8 @@ function actionConfirmed(action) {
 function canSend(action) {
   if (commandWorking || !active || !character || !online || !lease || (pendingCommand && pendingAction() !== action)) return false;
   // An uncertain repeated action must be replayable even if a later command ended the battle.
-  if (pendingCommand && (action.startsWith("combat.") || action==="attributes.allocate")) return true;
+  if (pendingCommand && (action.startsWith("combat.") || payloadAction(action))) return true;
+  if(inventoryAction(action)) return !!online.inventory && !!online.itemCatalog;
   if (action==="attributes.allocate") return !!online.attributes && online.attributes.available>0;
   if (action === "combat.begin") return online.combat?.canBegin ?? online.combat?.status === "available";
   if (action === "combat.attack") return online.combat?.status === "active" && online.combat.attackReady;
@@ -147,7 +176,7 @@ function renderOnline() {
     "Nível máximo deste piloto alcançado. Todo o XP continua preservado." :
     `Próximo nível: ${progression.xpIntoLevel} / ${progression.xpForNextLevel} XP — faltam ${progression.xpToNextLevel} XP.`;
   $("#level-points").textContent=progression ?
-    `Pontos de atributo conquistados: ${progression.earnedAttributePoints}. O combate deste piloto ainda mantém seus valores.` : "";
+    `Pontos de atributo conquistados: ${progression.earnedAttributePoints}. As mudanças valem para o próximo encontro.` : "";
   const attributes=online?.attributes;
   $("#attribute-budget").textContent=attributes ? `Disponíveis: ${attributes.available} · Investidos: ${attributes.spent} de ${attributes.earned} pontos conquistados.` : "";
   $("#attribute-values").textContent=attributes ? attributeKeys.map(k=>`${attributeNames[k]}: ${attributes.allocated[k]}`).join(" · ") : "";
@@ -158,6 +187,15 @@ function renderOnline() {
   $("#attribute-count").max=String(attributes?.available || 1);
   $("#attribute-pending").textContent=pendingCommand?.action==="attributes.allocate" ?
     "Distribuição a conferir: "+attributeKeys.filter(k=>pendingCommand.payload.allocation[k]>0).map(k=>`${attributeNames[k]} +${pendingCommand.payload.allocation[k]}`).join(", ") : "";
+  const inventory=online?.inventory;
+  $("#inventory-values").textContent=inventory ? inventory.items.length ? inventory.items.map(i=>`${itemNames[i.itemId]} × ${i.quantity}`).join(" · ") : "Sua mochila está vazia." : "";
+  $("#equipment-values").textContent=inventory ? `Instrumento: ${itemNames[inventory.equipped.weapon]||"nenhum"} · Colete: ${itemNames[inventory.equipped.armor]||"nenhum"}` : "";
+  const quoted=online?.itemCatalog?.find(i=>i.itemId===$("#item-kind").value);
+  $("#item-quote").textContent=quoted ? `Comprar: ${quoted.buyPrice} de ouro por unidade · Vender: ${quoted.sellPrice} · Bônus: ataque +${quoted.attackBonus}, vida +${quoted.hpBonus}, proteção +${quoted.armorBonus}.` : "";
+  for(const [selector,action] of [["#item-buy","inventory.buy"],["#item-sell","inventory.sell"],["#item-equip","equipment.equip"],["#weapon-remove","equipment.unequip"],["#armor-remove","equipment.unequip"]]) $(selector).disabled=!!pendingCommand||!canSend(action);
+  $("#item-kind").disabled=!!pendingCommand||!canSend("inventory.buy");$("#item-count").disabled=$("#item-kind").disabled;
+  $("#command-resume").hidden=!pendingCommand;$("#command-resume").disabled=!pendingCommand||!canSend(pendingAction());
+  $("#fighter-preview").textContent=online?.combatPreview ? `Próximo encontro: vida ${online.combatPreview.maxHp} · ataque ${online.combatPreview.attackMin}–${online.combatPreview.attackMax} · proteção ${online.combatPreview.armor} · recarga ${online.combatPreview.cooldownMs/1000}s.` : "";
   $("#journey-state").textContent = !online ? "Progresso ainda não confirmado." :
     online.journey.started ? "Jornada iniciada no servidor." : "Sua jornada online ainda não foi iniciada.";
   for (const [selector, action, label] of [["#journey-start","journey.begin","Iniciar jornada"],
@@ -179,18 +217,19 @@ function renderOnline() {
   $("#combat-state").textContent = !combat ? "Combate ainda não confirmado." : ({
     locked:"Conclua a Ronda do cais e receba a recompensa para liberar este encontro.",
     available:"Saqueador do cais — encontros com resultado e prêmio registrados no servidor.",
-    active:combat.attackReady ? "Seu ataque está pronto. O inimigo contra-ataca se sobreviver." : "Aguardando a recarga de 2 segundos no servidor…",
+    active:combat.attackReady ? "Seu ataque está pronto. O inimigo contra-ataca se sobreviver." : `Aguardando a recarga de ${(combat.fighter?.cooldownMs??2000)/1000} segundos no servidor…`,
     won:"Vitória confirmada. Receba o prêmio deste encontro.",
     lost:"Derrota confirmada. Este encontro terminou sem prêmio.",
     claimed:"Prêmio do combate recebido e registrado no servidor.",
   })[combat.status];
   if (combat && ["lost","claimed"].includes(combat.status)) {
-    $("#combat-state").textContent += combat.historyFull ? " Limite de 100 encontros deste piloto atingido." :
+    $("#combat-state").textContent += combat.historyFull ? " Limite técnico de encontros atingido; histórico preservado." :
       combat.startsRemaining === 0 ? " Limite de 10 inícios em 24 horas atingido. Atualize o progresso mais tarde." :
       combat.canBegin ? " Um novo encontro está disponível, com vida restaurada ao iniciar." :
       " Descanse 60 segundos após o encerramento e atualize o progresso para liberar outro encontro.";
   }
   const entered=combat && !["locked","available"].includes(combat.status);
+  $("#fighter-active").textContent=entered ? `Neste encontro: vida máxima ${combat.playerMaxHp} · ataque ${combat.fighter?.attackMin??10}–${combat.fighter?.attackMax??14} · proteção ${combat.fighter?.armor??0}. Atributos e equipamentos permanecem como estavam no início.` : "";
   $("#combat-player-hp").textContent=entered?`${combat.playerHp} / ${combat.playerMaxHp}`:"—";
   $("#combat-enemy-hp").textContent=entered?`${combat.enemyHp} / ${combat.enemyMaxHp}`:"—";
   $("#combat-turn").textContent=entered?String(combat.turn):"—";
@@ -210,10 +249,10 @@ async function loadOnline(revision, id) {
         ![result.hunt.gold,result.hunt.experience].every(v => typeof v === "string" && /^(0|[1-9][0-9]{0,18})$/.test(v))))
       throw new Error("Resposta de caçada inválida.");
     if (result.combat && (!["locked","available","active","won","lost","claimed"].includes(result.combat.status) ||
-        !Number.isInteger(result.combat.playerHp) || result.combat.playerHp < 0 || result.combat.playerHp > 30 ||
+        !Number.isInteger(result.combat.playerHp) || result.combat.playerHp < 0 || result.combat.playerHp > result.combat.playerMaxHp ||
         !Number.isInteger(result.combat.enemyHp) || result.combat.enemyHp < 0 || result.combat.enemyHp > 36 ||
         !Number.isInteger(result.combat.turn) || result.combat.turn < 0 || result.combat.turn > 4 ||
-        result.combat.playerMaxHp !== 30 || result.combat.enemyMaxHp !== 36 || typeof result.combat.attackReady !== "boolean"))
+        result.combat.playerMaxHp !== (result.combat.fighter?.maxHp??30) || (result.combat.fighter && !validFighter(result.combat.fighter)) || result.combat.enemyMaxHp !== 36 || typeof result.combat.attackReady !== "boolean"))
       throw new Error("Resposta de combate inválida.");
     if (result.progression) {
       const p=result.progression, amount=v=>typeof v==="string" && /^(0|[1-9][0-9]{0,18})$/.test(v) && BigInt(v)<=9223372036854775807n;
@@ -224,6 +263,17 @@ async function loadOnline(revision, id) {
             !amount(p.xpForNextLevel) || !amount(p.xpToNextLevel) || BigInt(p.xpToNextLevel)<=0n ||
             BigInt(p.xpIntoLevel)+BigInt(p.xpToNextLevel)!==BigInt(p.xpForNextLevel)))
         throw new Error("Resposta de nível inválida.");
+    }
+    if(result.combatPreview!==undefined && !validFighter(result.combatPreview))throw new Error("Resposta de personagem inválida.");
+    if(result.inventory!==undefined){
+      const inv=result.inventory,ids=Object.keys(itemNames);
+      if(!inv || inv.catalogId!=="online-items-v1" || !Array.isArray(inv.items) || inv.items.length>3 || new Set(inv.items.map(i=>i.itemId)).size!==inv.items.length ||
+        !inv.items.every(i=>ids.includes(i.itemId)&&Number.isInteger(i.quantity)&&i.quantity>0&&i.quantity<=100000) ||
+        ![null,"training-weapon-v1"].includes(inv.equipped?.weapon)||![null,"dock-vest-v1"].includes(inv.equipped?.armor)||
+        Object.values(inv.equipped).some(id=>id!==null&&!inv.items.some(i=>i.itemId===id)) ||
+        (inv.lastRequestId!==null&&(typeof inv.lastRequestId!=="string"||!/^[0-9a-f-]{36}$/i.test(inv.lastRequestId))) ||
+        !Array.isArray(result.itemCatalog)||result.itemCatalog.length!==3||new Set(result.itemCatalog.map(i=>i.itemId)).size!==3||
+        !result.itemCatalog.every(i=>ids.includes(i.itemId)&&[i.buyPrice,i.sellPrice].every(p=>typeof p==="string"&&/^[1-9][0-9]{0,5}$/.test(p))&&[i.attackBonus,i.hpBonus,i.armorBonus].every(n=>Number.isInteger(n)&&n>=0&&n<=16)))throw new Error("Resposta de inventário inválida.");
     }
     if(result.attributes!==undefined) {
       const a=result.attributes,allocated=a?.allocated;
@@ -253,7 +303,7 @@ async function sendOnlineAction(action, payload={}) {
   let refusal = "";
   commandWorking = true;
   if (!pendingCommand) {
-    pendingCommand = { characterId: id, requestId: crypto.randomUUID(), expectedVersion: online.state.version, ...(action === "journey.begin" ? {} : { action }), ...(action==="attributes.allocate" ? {payload} : {}) };
+    pendingCommand = { characterId: id, requestId: crypto.randomUUID(), expectedVersion: online.state.version, ...(action === "journey.begin" ? {} : { action }), ...(payloadAction(action) ? {payload} : {}) };
     try { sessionStorage.setItem(PENDING_COMMAND, JSON.stringify(pendingCommand)); } catch { /* current-tab memory remains usable */ }
   }
   renderOnline();
@@ -271,7 +321,7 @@ async function sendOnlineAction(action, payload={}) {
     if (error.code === "control_conflict") {
       lease = null; $("#control-state").textContent = "Controle encerrado nesta aba.";
     }
-    if (["attribute_points_insufficient", "combat_rest", "combat_reward_pending", "combat_daily_limit", "combat_history_full", "state_version_conflict", "journey_already_started", "hunt_already_started", "hunt_already_claimed", "hunt_not_started", "hunt_not_ready", "hunt_required", "combat_already_started", "combat_already_claimed", "combat_not_started", "combat_not_won", "combat_finished", "combat_cooldown", "idempotency_conflict", "invalid_request"].includes(error.code)) clearPendingCommand();
+    if (["gold_insufficient", "item_quantity_insufficient", "item_equipped", "item_already_equipped", "equipment_empty", "item_not_equippable", "inventory_stack_full", "attribute_points_insufficient", "combat_rest", "combat_reward_pending", "combat_daily_limit", "combat_history_full", "state_version_conflict", "journey_already_started", "hunt_already_started", "hunt_already_claimed", "hunt_not_started", "hunt_not_ready", "hunt_required", "combat_already_started", "combat_already_claimed", "combat_not_started", "combat_not_won", "combat_finished", "combat_cooldown", "idempotency_conflict", "invalid_request"].includes(error.code)) clearPendingCommand();
     // Transport/503 errors may follow a committed action. Reconcile with GET only.
   } finally {
     if (revision === identityRevision) {
@@ -284,6 +334,22 @@ async function sendOnlineAction(action, payload={}) {
     }
   }
 }
+async function submitInventory(action,slot){
+ if(!canSend(action)||pendingCommand)return;
+ const itemId=$("#item-kind").value,quantity=Number($("#item-count").value);
+ const payload=action==="equipment.unequip"?{slot}:action==="equipment.equip"?{itemId}:{itemId,quantity};
+ if(!validIntent(action,payload)){ $("#journey-message").textContent="Confira o item e a quantidade inteira de 1 a 100.";return; }
+ const label={"inventory.buy":"Comprar","inventory.sell":"Vender","equipment.equip":"Equipar","equipment.unequip":"Desequipar"}[action];
+ if(!confirm(`${label} ${action==="equipment.unequip"?(slot==="weapon"?"instrumento":"colete"):itemNames[itemId]+(action.startsWith("inventory.")?` × ${quantity}`:"")}? O servidor confirmará o saldo e a propriedade.`))return;
+ await sendOnlineAction(action,payload);
+}
+$("#inventory-form").addEventListener("submit",event=>{event.preventDefault();void submitInventory("inventory.buy");});
+$("#item-sell").addEventListener("click",()=>{void submitInventory("inventory.sell");});
+$("#item-equip").addEventListener("click",()=>{void submitInventory("equipment.equip");});
+$("#weapon-remove").addEventListener("click",()=>{void submitInventory("equipment.unequip","weapon");});
+$("#armor-remove").addEventListener("click",()=>{void submitInventory("equipment.unequip","armor");});
+$("#item-kind").addEventListener("change",renderOnline);
+$("#command-resume").addEventListener("click",()=>{if(pendingCommand)void sendOnlineAction(pendingAction());});
 $("#attribute-form").addEventListener("submit", event=>{
   event.preventDefault();
   if(!canSend("attributes.allocate")) return;

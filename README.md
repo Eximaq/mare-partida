@@ -34,11 +34,13 @@
 
 **Primeiro combate online — Etapa 3F:** [Saqueador do cais](docs/architecture/PHASE-3F-FIRST-COMBAT.md), encontro único por turnos com vida, RNG, recarga, resultado e prêmio persistidos pelo servidor. Painel local separado; combate em mapa e saves da demonstração preservados.
 
-**Encontros repetíveis — Etapa 3G:** [ciclo de novos encontros](docs/architecture/PHASE-3G-REPEATABLE-ENCOUNTERS.md), com descanso de 60 segundos, histórico por encontro e prêmio idempotente. Limites do piloto: 10 inícios em 24 horas e 100 encontros por personagem. [Avaliação inicial de VPS](docs/operations/INITIAL-VPS-ASSESSMENT.md).
+**Encontros repetíveis — Etapa 3G:** [ciclo de novos encontros](docs/architecture/PHASE-3G-REPEATABLE-ENCOUNTERS.md), com descanso de 60 segundos, histórico por encontro e prêmio idempotente. Mantidos 10 inícios em 24 horas; o pacote alpha removeu o limite de encontros por vida. [Avaliação inicial de VPS](docs/operations/INITIAL-VPS-ASSESSMENT.md).
 
-**Progressão online — Etapa 3H:** [níveis e pontos conquistados](docs/architecture/PHASE-3H-LEVEL-PROGRESSION.md), com catálogo versionado, evolução atômica por recompensa e preservação do XP acumulado. Distribuição de atributos implementada na Etapa 3I abaixo; efeitos no combate seguem pendentes.
+**Progressão online — Etapa 3H:** [níveis e pontos conquistados](docs/architecture/PHASE-3H-LEVEL-PROGRESSION.md), com catálogo versionado, evolução atômica por recompensa e preservação do XP acumulado. Distribuição de atributos implementada na Etapa 3I abaixo; efeitos no combate entregues no pacote alpha abaixo.
 
-Distribuição online de pontos: [Etapa 3I](docs/architecture/PHASE-3I-ATTRIBUTE-ALLOCATION.md), com saldo e histórico autoritativos; efeitos no combate ainda não habilitados.
+Distribuição online de pontos: [Etapa 3I](docs/architecture/PHASE-3I-ATTRIBUTE-ALLOCATION.md), com saldo e histórico autoritativos; efeitos no combate entregues no pacote alpha.
+
+**Alpha online consolidado:** [combate, inventário, equipamento, loja e ciclo repetível](docs/architecture/ONLINE-ALPHA-PACKAGE.md) · [runbook de hospedagem, backup e monitoramento](docs/architecture/ONLINE-ALPHA-HOSTING.md). Backend local validado; implantação e aceite na VPS permanecem separados da publicação estática.
 
 **Fase 2 aprovada em desenvolvimento:** [BFF, sessões e personagens](docs/architecture/PHASE-2-IMPLEMENTATION-REVIEW.md) · [preparação local e homologação](docs/operations/PHASE-2-DEVELOPMENT.md). Auth desabilitado por padrão; rodadas funcionais Supabase 1–3 registradas. [Matriz e aceite final da Etapa 2F](docs/operations/PHASE-2F-FINAL-ACCEPTANCE.md). Backend ainda sem implantação pública.
 

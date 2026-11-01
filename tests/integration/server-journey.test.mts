@@ -70,7 +70,7 @@ test("3B upgrade preserves characters, progress and receipts; ledger cannot pers
     const oldResult = await service.command(session.token, character.id, command);
     const tables = ["characters", "character_progression", "character_commands"];
     const before = await Promise.all(tables.map(table => pool.query(`SELECT * FROM mare_game.${table}`)));
-    assert.deepEqual(await applyMigrations(pool), ["0005_character_journey.sql", "0006_first_hunt.sql", "0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql"]);
+    assert.deepEqual(await applyMigrations(pool), ["0005_character_journey.sql", "0006_first_hunt.sql", "0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql"]);
     // 3H recognizes 456 existing XP as level 4 and advances the version once; all other fields/receipts stay intact.
     for (const [i, table] of tables.entries()) {
       const expected=before[i]!.rows.map(row=>table==="characters"?{...row,state_version:"10"}:table==="character_progression"?{...row,level:4}:row);

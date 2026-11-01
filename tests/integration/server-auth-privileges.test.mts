@@ -100,7 +100,12 @@ test("login, control and journey work with minimum grants, with narrow economic 
           "UPDATE mare_game.combat_encounters SET started_at=now()",
           "UPDATE mare_game.combat_encounters SET begin_request_id=gen_random_uuid()",
           "UPDATE mare_game.combat_encounters SET catalog_id='forged'",
-          "INSERT INTO mare_game.combat_encounters(character_id,begin_request_id,last_request_id,player_hp) VALUES(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),30)",
+          "UPDATE mare_game.combat_encounters SET fighter='{}'",
+          "UPDATE mare_game.item_catalog SET buy_price=1",
+          "DELETE FROM mare_game.inventory_ledger",
+          "UPDATE mare_game.inventory_ledger SET gold_delta=1",
+          "UPDATE mare_game.character_inventory SET character_id=gen_random_uuid()",
+          "UPDATE mare_game.character_equipment SET slot='armor'",
           "UPDATE mare_game.combat_rounds SET player_damage=10",
           "DELETE FROM mare_game.combat_rounds",
           "DELETE FROM mare_game.combat_rewards",
@@ -134,6 +139,14 @@ test("login, control and journey work with minimum grants, with narrow economic 
         const allocated=await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"attributes.allocate",expectedVersion:6,payload:{allocation:{strength:2,dexterity:0,vitality:3,intelligence:0,spirit:0}}});
         assert.equal(allocated.attributes!.available,0);assert.equal(allocated.attributes!.spent,5);
         assert.equal((await service.onlineState(login.token,character.id)).attributes.allocated.vitality,3);
+        await pool.query("UPDATE mare_game.character_progression SET gold=60 WHERE character_id=$1",[character.id]);
+        const bought=await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"inventory.buy",expectedVersion:7,payload:{itemId:"dock-vest-v1",quantity:1}});
+        assert.equal(bought.state.gold,"36");
+        const equipped=await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"equipment.equip",expectedVersion:8,payload:{itemId:"dock-vest-v1"}});
+        assert.equal(equipped.inventory!.equipped.armor,"dock-vest-v1");
+        await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"equipment.unequip",expectedVersion:9,payload:{slot:"armor"}});
+        const sold=await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"inventory.sell",expectedVersion:10,payload:{itemId:"dock-vest-v1",quantity:1}});
+        assert.equal(sold.state.gold,"44");
         await service.logout(login.token, "all");
         await service.drainRevocations();
       } finally {

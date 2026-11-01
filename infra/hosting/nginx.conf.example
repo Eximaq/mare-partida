@@ -1,0 +1,39 @@
+# Include in http{}. Replace example.invalid and certificate paths only on the VPS.
+# API binds 127.0.0.1:8787; do NOT put this backend directly behind another proxy.
+server {
+ listen 443 ssl;
+ server_name game.example.invalid;
+ ssl_certificate /etc/mare/tls/fullchain.pem;
+ ssl_certificate_key /etc/mare/tls/privkey.pem;
+ ssl_protocols TLSv1.2 TLSv1.3;
+ client_max_body_size 8k;
+ client_body_timeout 5s;
+ client_header_timeout 5s;
+ access_log off; # Callback queries contain one-use codes: never log URLs.
+ error_log /var/log/nginx/mare-error.log crit;
+ root /srv/mare/current/dist;
+ add_header X-Content-Type-Options nosniff always;
+ add_header Referrer-Policy no-referrer always;
+ location /v1/ {
+  proxy_pass http://127.0.0.1:8787;
+  proxy_set_header Host $host;
+  proxy_set_header X-Mare-Client-IP $remote_addr;
+  proxy_set_header X-Forwarded-For "";
+  proxy_set_header Forwarded "";
+  proxy_connect_timeout 2s;
+  proxy_read_timeout 15s;
+  proxy_next_upstream off;
+  proxy_cache off;
+ }
+ location /online/ {
+  alias /srv/mare/current/apps/account-client/;
+  index index.html;
+  add_header Cache-Control "no-store";
+  add_header X-Content-Type-Options nosniff always;
+  add_header Referrer-Policy no-referrer always;
+  add_header Content-Security-Policy "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; form-action 'self'; frame-ancestors 'none'; base-uri 'none'" always;
+ }
+ location /health/ { return 404; }
+ location ~ /\. { deny all; }
+ location / { try_files $uri $uri/ =404; }
+}
