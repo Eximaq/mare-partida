@@ -17,12 +17,12 @@ class Element {
 function page(storage = new Map<string,string>()) {
   const elements = new Map<string,Element>();
   const get = (selector: string) => { if (!elements.has(selector)) elements.set(selector,new Element()); return elements.get(selector)!; };
-  const model = { started: false, hunt: "locked", combatStatus: "locked", canBegin: undefined as boolean|undefined, turn: 0, lastRequestId: null as string|null, attackReady: false, version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
+  const model = { level:1, experience:"0", progression:undefined as any, started: false, hunt: "locked", combatStatus: "locked", canBegin: undefined as boolean|undefined, turn: 0, lastRequestId: null as string|null, attackReady: false, version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
     me: null as null | ((signal?: AbortSignal) => Promise<Response>), send: null as null | (() => Promise<Response>),
     control: null as null | (() => Promise<Response>) };
   const timers: Array<() => void> = [];
   const deadlines = new Map<number,()=>void>(); let timerId = 0;
-  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: 1, experience: "0", gold: "9007199254740993" }, journey: { started: model.started }, hunt: { catalogId:"dock-patrol-v1",name:"Ronda do cais",durationSeconds:30,experience:"20",gold:"8",status:model.hunt,startedAt:null,readyAt:null,serverNow:new Date().toISOString() }, combat:{catalogId:"dock-raider-v1",enemyName:"Fixture enemy",status:model.combatStatus,canBegin:model.canBegin,turn:model.turn,playerHp:30,enemyHp:36,playerMaxHp:30,enemyMaxHp:36,attackReady:model.attackReady,lastRequestId:model.lastRequestId,nextAttackAt:null,lastAttack:null,experience:"30",gold:"12"} });
+  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: model.level, experience: model.experience, gold: "9007199254740993" }, progression:model.progression, journey: { started: model.started }, hunt: { catalogId:"dock-patrol-v1",name:"Ronda do cais",durationSeconds:30,experience:"20",gold:"8",status:model.hunt,startedAt:null,readyAt:null,serverNow:new Date().toISOString() }, combat:{catalogId:"dock-raider-v1",enemyName:"Fixture enemy",status:model.combatStatus,canBegin:model.canBegin,turn:model.turn,playerHp:30,enemyHp:36,playerMaxHp:30,enemyMaxHp:36,attackReady:model.attackReady,lastRequestId:model.lastRequestId,nextAttackAt:null,lastAttack:null,experience:"30",gold:"12"} });
   runInNewContext(source, {
     URL, AbortController, setTimeout(fn:()=>void) { deadlines.set(++timerId,fn); return timerId; },
     clearTimeout(id:number) { deadlines.delete(id); }, crypto: { randomUUID }, confirm: () => true,
@@ -217,4 +217,17 @@ test("repeat encounter button obeys server eligibility without automatically sta
   p.click("#control");await settle();assert.equal(p.get("#combat-start").disabled,true);
   p.model.canBegin=true;p.click("#online-refresh");await settle();assert.equal(p.get("#combat-start").disabled,false);
   assert.equal(p.model.requests.length,0);p.click("#combat-start");await settle();assert.equal(p.model.requests[0].action,"combat.begin");
+});
+
+test("level panel displays server thresholds/earned points, preserves total XP and never allocates automatically",async()=>{
+  const p=page();p.model.level=2;p.model.experience="80";p.model.progression={catalogId:"online-levels-v1",maxLevel:20,earnedAttributePoints:5,xpIntoLevel:"0",xpForNextLevel:"105",xpToNextLevel:"105",atCap:false};await settle();
+  assert.equal(p.get("#online-level").textContent,"2");assert.equal(p.get("#online-xp").textContent,"80");
+  assert.match(p.get("#level-progress").textContent,/0 \/ 105/);assert.match(p.get("#level-points").textContent,/5/);assert.equal(p.model.requests.length,0);
+  p.model.level=20;p.model.experience="9223372036854775807";p.model.progression={...p.model.progression,earnedAttributePoints:95,xpIntoLevel:"9223372036854757598",xpForNextLevel:null,xpToNextLevel:null,atCap:true};
+  p.click("#online-refresh");await settle();assert.match(p.get("#level-progress").textContent,/máximo/);assert.equal(p.get("#online-xp").textContent,"9223372036854775807");
+  p.click("#logout");await settle();assert.equal(p.get("#level-points").textContent,"");
+});
+test("invalid level metadata blocks online commands instead of presenting forged points",async()=>{
+  const p=page();p.model.progression={catalogId:"online-levels-v1",maxLevel:20,earnedAttributePoints:999,xpIntoLevel:"0",xpForNextLevel:"80",xpToNextLevel:"80",atCap:false};await settle();
+  p.click("#control");await settle();assert.equal(p.get("#journey-start").disabled,true);assert.equal(p.model.requests.length,0);
 });

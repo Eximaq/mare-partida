@@ -6,16 +6,16 @@ import { join } from "node:path";
 import { applyMigrations } from "../../apps/game-server/src/db/migrations.js";
 import { AuthService } from "../../apps/game-server/src/auth/service.js";
 import { test } from "node:test";
-import { authDatabase } from "./auth-support.mjs";
+import { authDatabase,seedPreLevelHuntReward } from "./auth-support.mjs";
 
-async function fixture(service:any,pool:any,email="encounter@example.invalid") {
+async function fixture(service:any,pool:any,email="encounter@example.invalid",legacy=false) {
   const session=await service.login(email,"fixture");
   const character=await service.createCharacter(session.token,{name:"Encounters",classId:"sword",factionId:"pirate"});
   const lease=await service.acquireControl(session.token,character.id);
   const input=(action:"combat.begin"|"combat.attack"|"combat.claim"|"hunt.begin"|"hunt.claim"|"journey.begin",version:number)=>({requestId:randomUUID(),action,expectedVersion:version,control:{epoch:lease.epoch,token:lease.token},payload:{}});
   const send=(command:any)=>service.command(session.token,character.id,command);
   await send(input("journey.begin",0));await send(input("hunt.begin",1));
-  await pool.query("UPDATE mare_game.character_hunts SET begun_at=clock_timestamp()-interval '31 seconds'");await send(input("hunt.claim",2));
+  await pool.query("UPDATE mare_game.character_hunts SET begun_at=clock_timestamp()-interval '31 seconds'");if(legacy) await seedPreLevelHuntReward(pool,character.id); else await send(input("hunt.claim",2));
   return {session,character,input,send};
 }
 
@@ -113,7 +113,7 @@ test("3F upgrade preserves active, won, lost and claimed histories and never rec
     await copyFile(new URL(`../../apps/game-server/migrations/${name}`,import.meta.url),join(directory,name));
   await authDatabase(async({service,pool})=>{
     for(const phase of ["active","won","lost","claimed"]) {
-      const f=await fixture(service,pool,phase+"@example.invalid"),ids=[randomUUID(),randomUUID(),randomUUID()];
+      const f=await fixture(service,pool,phase+"@example.invalid",true),ids=[randomUUID(),randomUUID(),randomUUID()];
       for(const requestId of ids) await pool.query("INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,repeat('a',64),'{}')",[f.character.id,requestId]);
       const won=["won","claimed"].includes(phase),active=phase==="active";
       await pool.query("INSERT INTO mare_game.character_combats(character_id,begin_request_id,last_request_id,phase,player_hp,enemy_hp,turn) VALUES($1,$2,$3,$4,$5,$6,$7)",
@@ -126,7 +126,7 @@ test("3F upgrade preserves active, won, lost and claimed histories and never rec
     }
     const names=["characters","character_progression","character_commands","character_combats","character_combat_rounds","character_combat_rewards"];
     const before=await Promise.all(names.map(t=>pool.query(`SELECT to_jsonb(t) AS row FROM mare_game.${t} t ORDER BY to_jsonb(t)::text`)));
-    assert.deepEqual(await applyMigrations(pool),["0008_repeatable_encounters.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0008_repeatable_encounters.sql", "0009_level_progression.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     for(const [i,t] of names.entries()) assert.deepEqual((await pool.query(`SELECT to_jsonb(t) AS row FROM mare_game.${t} t ORDER BY to_jsonb(t)::text`)).rows,before[i]!.rows);
     for(const [old,current,extras] of [["character_combats","combat_encounters",["encounter_id","ordinal","closed_at"]],["character_combat_rounds","combat_rounds",["encounter_id"]],["character_combat_rewards","combat_rewards",["encounter_id"]]] as const) {
       const copied=await pool.query(`SELECT to_jsonb(t)-$1::text[] AS row FROM mare_game.${current} t ORDER BY (to_jsonb(t)-$1::text[])::text`,[extras]);

@@ -1,5 +1,8 @@
 # Etapa 3G — encontros repetíveis no servidor
 
+> Registro da 3G. A ausência de level-up descrita abaixo foi superada pela
+> [Etapa 3H](PHASE-3H-LEVEL-PROGRESSION.md); regras de encontros permanecem válidas.
+
 Base: main `1097218`, após PR #192. Incremento restrito ao servidor e painel online.
 Gameplay, HUD, mapas, Paper Doll, assets e saves da demonstração permanecem intactos.
 

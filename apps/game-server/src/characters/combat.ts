@@ -1,6 +1,7 @@
 import { randomInt } from "node:crypto";
 import type { PoolClient } from "pg";
 import { combatSnapshotSchema, type CharacterState } from "@mare/shared";
+import { advanceLevel } from "./progression.js";
 import { AuthFault } from "../auth/errors.js";
 import { resolveCombatRound } from "./combat-rules.js";
 
@@ -74,6 +75,7 @@ export async function mutateCombat(client:PoolClient,id:string,requestId:string,
     const credited=await client.query(`UPDATE mare_game.character_progression SET experience=experience+30,gold=gold+12
       WHERE character_id=$1 AND experience=$2 AND gold=$3 RETURNING character_id`,[id,state.experience,state.gold]);
     if(!credited.rowCount) throw new AuthFault(409,"state_version_conflict");
+    await advanceLevel(client,id,requestId,state);
     await client.query("UPDATE mare_game.combat_encounters SET phase='claimed',last_request_id=$2,closed_at=clock_timestamp() WHERE character_id=$1 AND encounter_id=$3",[id,requestId,combat.encounterId]);
   }
   return readCombat(client,id);

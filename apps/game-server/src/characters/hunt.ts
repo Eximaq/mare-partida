@@ -1,5 +1,6 @@
 import type { PoolClient } from "pg";
 import type { CharacterState } from "@mare/shared";
+import { advanceLevel } from "./progression.js";
 import { AuthFault } from "../auth/errors.js";
 
 // Versioned introductory contract: changing rewards requires a new hunt/migration.
@@ -47,5 +48,6 @@ export async function mutateHunt(client: PoolClient, id: string, requestId: stri
     const credited=await client.query(`UPDATE mare_game.character_progression SET experience=experience+20,gold=gold+8
       WHERE character_id=$1 AND experience=$2 AND gold=$3 RETURNING character_id`,[id,state.experience,state.gold]);
     if (!credited.rowCount) throw new AuthFault(409,"state_version_conflict");
+    await advanceLevel(client,id,requestId,state);
   }
 }

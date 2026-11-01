@@ -130,6 +130,12 @@ function renderOnline() {
   $("#online-level").textContent = online ? String(online.state.level) : "—";
   $("#online-xp").textContent = online ? online.state.experience : "—";
   $("#online-gold").textContent = online ? online.state.gold : "—";
+  const progression=online?.progression;
+  $("#level-progress").textContent=!progression ? "" : progression.atCap ?
+    "Nível máximo deste piloto alcançado. Todo o XP continua preservado." :
+    `Próximo nível: ${progression.xpIntoLevel} / ${progression.xpForNextLevel} XP — faltam ${progression.xpToNextLevel} XP.`;
+  $("#level-points").textContent=progression ?
+    `Pontos de atributo conquistados: ${progression.earnedAttributePoints}. A distribuição online será liberada em outra etapa; o combate atual mantém seus valores.` : "";
   $("#journey-state").textContent = !online ? "Progresso ainda não confirmado." :
     online.journey.started ? "Jornada iniciada no servidor." : "Sua jornada online ainda não foi iniciada.";
   for (const [selector, action, label] of [["#journey-start","journey.begin","Iniciar jornada"],
@@ -187,6 +193,16 @@ async function loadOnline(revision, id) {
         !Number.isInteger(result.combat.turn) || result.combat.turn < 0 || result.combat.turn > 4 ||
         result.combat.playerMaxHp !== 30 || result.combat.enemyMaxHp !== 36 || typeof result.combat.attackReady !== "boolean"))
       throw new Error("Resposta de combate inválida.");
+    if (result.progression) {
+      const p=result.progression, amount=v=>typeof v==="string" && /^(0|[1-9][0-9]{0,18})$/.test(v) && BigInt(v)<=9223372036854775807n;
+      if (p.catalogId!=="online-levels-v1" || p.maxLevel!==20 || result.state.level>20 ||
+          p.earnedAttributePoints!==(result.state.level-1)*5 || p.atCap!==(result.state.level===20) ||
+          !amount(p.xpIntoLevel) || BigInt(p.xpIntoLevel)>BigInt(result.state.experience) ||
+          (p.atCap ? p.xpForNextLevel!==null || p.xpToNextLevel!==null :
+            !amount(p.xpForNextLevel) || !amount(p.xpToNextLevel) || BigInt(p.xpToNextLevel)<=0n ||
+            BigInt(p.xpIntoLevel)+BigInt(p.xpToNextLevel)!==BigInt(p.xpForNextLevel)))
+        throw new Error("Resposta de nível inválida.");
+    }
     online = result;
     if (pendingCommand && actionConfirmed(pendingAction())) clearPendingCommand();
     $("#journey-message").textContent = pendingCommand ?
