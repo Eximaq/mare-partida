@@ -148,7 +148,6 @@
  #app #panelOverlay.honors-hd-mode .hierarchy-intro p{font-size:18px}
  #app #panelOverlay.honors-hd-mode .hierarchy-title-pair h3{font-size:19px}
  #app #panelOverlay.honors-hd-mode .hierarchy-promotion{gap:8px}
- #app #panelOverlay.honors-hd-mode .hierarchy-title-pair .rank-insignia{width:60px;height:60px}
  #app #panelOverlay.honors-hd-mode .hierarchy-title-plate{min-height:85px;padding:8px}
  #app #panelOverlay.honors-hd-mode .hierarchy-requirements h3{font-size:20px}
  #app #panelOverlay.honors-hd-mode .hierarchy-requirements p{font-size:18px}
@@ -248,3 +247,18 @@
 .hierarchy-title-plate[data-faction=marine]:before{background:linear-gradient(#184578ba,#102a4dba),var(--rpg-hd-wood) center/512px 256px}
 .hierarchy-title-plate[data-faction=revolutionary]:before{background:linear-gradient(#215a3cba,#153821ba),var(--rpg-hd-wood) center/512px 256px}
 .hierarchy-title-plate[data-faction=government]:before{background:var(--rpg-hd-paper) center/100% 100%}
+
+/* Native plaques are 480 × 96. Anchor each insignia to its actual art socket,
+   independent of text wrapping, viewport and flex padding. */
+.hierarchy-title-plate{--rank-socket-x:12.708333%;--rank-mark-size:14.583333%;--rank-text-left:24%;--rank-text-right:5%}
+.hierarchy-title-plate[data-faction=marine]{--rank-socket-x:13.645833%;--rank-mark-size:18.333333%;--rank-text-left:26%}
+.hierarchy-title-plate[data-faction=revolutionary]{--rank-socket-x:13.541667%;--rank-mark-size:15.416667%;--rank-text-left:26%}
+.hierarchy-title-plate[data-faction=government]{--rank-socket-x:17.1875%;--rank-mark-size:17.916667%;--rank-text-left:31%;--rank-text-right:8%}
+#app .hierarchy-title-plate>.rank-insignia{position:absolute;left:var(--rank-socket-x);top:50%;width:var(--rank-mark-size);height:auto;aspect-ratio:1;transform:translate(-50%,-50%);margin:0}
+#app .hierarchy-title-plate>strong{min-width:0}
+
+.hierarchy-title-plate,#app #panelOverlay.honors-hd-mode .hierarchy-title-plate{padding-left:var(--rank-text-left);padding-right:var(--rank-text-right)}
+
+/* Keep two-line titles inside the painted plate at every card width. */
+.hierarchy-title-plate{container-type:inline-size}
+#app .hierarchy-title-plate>strong,#app #panelOverlay.honors-hd-mode .hierarchy-title-plate>strong{font-size:clamp(16px,7.8cqw,26px);line-height:1.05}

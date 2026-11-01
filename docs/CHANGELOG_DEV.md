@@ -1,3 +1,7 @@
+## 01/11/2026 — Haki, compactação das HUDs e encaixes de patentes
+
+Controles ativos do Haki no topo; árvores conectadas e painel único de investimento. Forja com 38,6% menos área e prévia de atributos próxima. Revisão de 20 telas/estados e preservação das âncoras de chat/menus/barras. Encaixe proporcional dos símbolos dos 32 patamares nas quatro facções. Sem alteração de servidor, saves, economia ou combate. [Medidas, arquivos, testes, compatibilidade e pendências](HUD-DENSITY-HAKI.md). Branch `feature/haki-hud-density`, base inicial `02d409b`.
+
 ## 31/10/2026 — Refino do inventário e ícones HD (PR 172, em revisão)
 
 Reconstrução PixelLab Pro de 102 ícones e componentes dourados; tipografia local Alegreya SC/Sans, atributos legíveis, rótulos compactos sem sobreposição e ações Equipar/Bloquear/Vender diretamente/Forja. Mercado/Cofre ocultados. Custos: 390 gerações. Sem mudar saves ou sprites de combate. Dez entradas Node, testes de inventário em fonte/dist e HUD passaram; build Pages aprovado. [Fontes, arquivos, testes e limites](INVENTORY-HD-REFINEMENT.md).

@@ -765,3 +765,281 @@
 #app #panelOverlay.forge-hd-mode .forge-pearl-result-description>.forge-fusion-attribute{display:none}
 #app #panelOverlay.forge-hd-mode .forge-pearl-material-summary{padding-top:6px;gap:3px}
 #app #panelOverlay.forge-hd-mode .forge-pearl-result-cost .forge2-chance{margin:6px 0;padding:5px 0}
+
+/* HUD density v1 — explicit families, shared spacing, no global scale or type reduction.
+   Fixed gameplay anchors and their hitboxes are intentionally unchanged. */
+#app #panelOverlay.hud-density{
+ --hud-inset:10px;--hud-gap:8px;
+ --hud-window-width:1440px;--hud-window-height:880px;
+}
+#app #panelOverlay.hud-density.forge-hd-mode{--hud-window-width:1460px;--hud-window-height:820px}
+#app #panelOverlay.hud-density.inventory-mode{--hud-window-width:1460px;--hud-window-height:900px}
+#app #panelOverlay.hud-density.character-studio-mode{--hud-window-width:1340px;--hud-window-height:880px}
+#app #panelOverlay.hud-density.talents-hd-mode{--hud-window-width:1480px;--hud-window-height:900px}
+#app #panelOverlay.hud-density.honors-hd-mode{--hud-window-width:1440px;--hud-window-height:880px}
+#app #panelOverlay.hud-density.compendium-hd-mode{--hud-window-width:1480px;--hud-window-height:900px}
+#app #panelOverlay.hud-density.voyage-hd-mode{--hud-window-width:1480px;--hud-window-height:900px}
+#app #panelOverlay.hud-density.contracts-mode{--hud-window-width:1440px;--hud-window-height:880px}
+#app #panelOverlay.hud-density.captain-hd-mode{--hud-window-width:1320px;--hud-window-height:850px}
+@media(min-width:761px){
+ #app #panelOverlay.hud-density:is(.forge-hd-mode,.inventory-mode,.character-studio-mode,.talents-hd-mode,.honors-hd-mode,.compendium-hd-mode,.voyage-hd-mode,.contracts-mode,.captain-hd-mode)>.dialog{
+  width:min(var(--hud-window-width),calc(100vw - 24px));height:min(var(--hud-window-height),calc(100dvh - 24px));max-width:none;max-height:none;
+ }
+ #app #panelOverlay.hud-density:is(.forge-hd-mode,.character-studio-mode,.talents-hd-mode,.honors-hd-mode,.captain-hd-mode) .dialog-header{min-height:64px;padding-block:6px}
+ #app #panelOverlay.hud-density:is(.forge-hd-mode,.character-studio-mode,.talents-hd-mode,.honors-hd-mode,.captain-hd-mode) #dialogTitle{font-size:34px}
+ #app #panelOverlay.hud-density:is(.compendium-hd-mode,.voyage-hd-mode) .dialog-header{min-height:104px;padding-block:8px}
+ #app #panelOverlay.hud-density.compendium-hd-mode .dialog-header::before{width:52px;height:56px;top:20px}
+ #app #panelOverlay.hud-density.compendium-hd-mode .dialog-header{padding-left:76px}
+ #app #panelOverlay.hud-density.honors-hd-mode #honorsHeaderNote{padding:8px 12px;font-size:17px;max-width:320px}
+ #app #panelOverlay.hud-density.captain-hd-mode #dialogBody{padding:var(--hud-inset) 12px}
+}
+/* Forja — dense operation, independent readable inventory and proportional artwork. */
+#app #panelOverlay.hud-density.forge-hd-mode .forge-hd-workbench{grid-template-columns:minmax(0,1fr) 205px;gap:10px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-layout{grid-template-columns:248px minmax(0,1fr);gap:10px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-shell{gap:8px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-selection,
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-operation{padding:7px 8px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-selection{gap:5px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-tabs button,
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-subtabs button{min-height:44px;font-size:17px;padding:3px 5px;gap:6px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-selection h3{margin:0;padding:6px;font-size:20px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-filters{gap:6px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-catalog h4{margin:6px 0;padding-bottom:4px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-item-grid{gap:5px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-tile{height:76px;min-height:76px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-tile .item-icon{width:43px;height:43px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-item-head{grid-template-columns:62px minmax(0,1fr);gap:10px;padding:0 0 6px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-item-head>.item-icon{width:62px;height:62px;padding:3px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-item-head h3{font-size:24px;margin:0 0 3px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-current{margin:6px 0;padding:6px 0}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-current b{font-size:19px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-refinement{padding:7px 9px;margin:7px 0;gap:5px 12px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-refinement>strong{font-size:23px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-op-columns{grid-template-columns:minmax(240px,1fr) fit-content(420px);gap:10px;margin:8px 0;align-items:start}
+#app #panelOverlay.hud-density.forge-hd-mode :is(.forge2-costs,.forge2-preview){padding:8px}
+#app #panelOverlay.hud-density.forge-hd-mode :is(.forge2-costs,.forge2-preview) h4{margin:0 0 7px;font-size:18px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge-hd-cost-items{gap:6px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge-hd-cost{padding:5px;gap:3px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge-hd-cost>img{width:30px;height:30px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-preview{display:grid;grid-template-columns:minmax(120px,1fr) max-content 1ch max-content;gap:0 7px;width:fit-content;max-width:100%;align-items:center}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-preview h4{grid-column:1/-1}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-preview>div{display:contents}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-preview>div>*{padding-block:5px;border-bottom:1px solid #80673b55;line-height:1.15}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-preview>div>.forge-stat-label{grid-column:1;font-size:16px;min-width:0}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-preview>div>b{grid-column:2}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-preview>div>.forge-stat-arrow{grid-column:3;font-size:16px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-preview>div>em{grid-column:4;font-size:17px;text-align:right;color:#ffe39a}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-preview .forge-stat-message{grid-column:2/-1;max-width:18ch;white-space:normal}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-preview :is(b,em){font-variant-numeric:tabular-nums;white-space:nowrap}
+#app #panelOverlay.hud-density.forge-hd-mode :is(.forge2-chance,.forge2-risk){margin:6px 0;padding:6px 0}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-risk{padding-inline:8px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-action{width:fit-content;max-width:100%;min-height:44px;margin:8px auto;padding:4px 12px;gap:7px;font-size:18px;border-width:8px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-action img{width:27px;height:27px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-operation details{padding:6px 8px;margin-top:6px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-sockets{gap:8px;margin-bottom:8px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-socket{min-height:0;padding:6px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-socket>button:not(.forge2-action){min-height:108px;gap:5px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-socket :is(.item-icon,.forge-hd-plus){width:56px;height:56px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-extras{gap:5px;margin:8px 0}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-extras li{padding:6px 8px;font-size:17px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-reforge-lines .forge2-action{min-height:36px;margin:0;font-size:15px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-operation h4{margin-block:7px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-fusion-materials,
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-fusion-details{padding:8px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-fusion-tools{gap:6px;margin:8px 0}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-fusion-tools button{min-height:36px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge-hd-art>img{object-fit:cover;object-position:50% 12%}
+#app #panelOverlay.hud-density.forge-hd-mode .forge2-fusion-workspace{gap:8px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge-result-actions .forge2-action{min-height:44px}
+/* Families with informative cards: tighten whitespace without shrinking text. */
+#app #panelOverlay.hud-density.captain-hd-mode :is(.captain-profile,.captain-journal,.captain-settings){gap:var(--hud-gap)}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-tabs{gap:6px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-tabs button{min-height:44px;gap:8px;padding:4px 8px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-profile-banner{min-height:180px;padding:10px 14px;gap:14px;grid-template-columns:150px minmax(0,1fr) 200px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-profile-avatar{max-width:150px}
+#app #panelOverlay.hud-density.honors-hd-mode .honors-frame{padding:9px}
+#app #panelOverlay.hud-density.honors-hd-mode .achievement-journal{gap:8px}
+#app #panelOverlay.hud-density.talents-hd-mode .constellation-workspace{gap:var(--hud-gap)}
+#app #panelOverlay.hud-density.talents-hd-mode .talent-inspector{padding:10px}
+#app #panelOverlay.hud-density.talents-hd-mode .talent-total-bonus{padding:9px;margin:10px 0}
+#app #panelOverlay.hud-density.talents-hd-mode :is(.talent-detail-levels,.talent-requirements){padding:10px 0}
+#app #panelOverlay.hud-density.talents-hd-mode .talent-actions{gap:6px;padding-top:6px}
+#app #panelOverlay.hud-density.compendium-hd-mode .comp-top-row{padding:6px;gap:8px}
+#app #panelOverlay.hud-density.compendium-hd-mode .comp-type-tabs button{min-height:44px;gap:8px;font-size:18px}
+#app #panelOverlay.hud-density.voyage-hd-mode .expedition-panel{padding:9px}
+#app #panelOverlay.hud-density.voyage-hd-mode .voyage-region-tabs button{min-height:40px;padding:4px 12px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-character .studio-card{padding:8px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-character{gap:8px}
+#app #panelOverlay.hud-density #toastContainer{background:transparent;border:0;padding:4px 8px;flex:none}
+/* Maintain the established mobile stacking and touch targets. */
+@media(max-width:1180px) and (min-width:761px){
+ #app #panelOverlay.hud-density.forge-hd-mode .forge-hd-workbench{grid-template-columns:minmax(0,1fr) 165px}
+ #app #panelOverlay.hud-density.forge-hd-mode .forge2-layout{grid-template-columns:218px minmax(0,1fr)}
+ #app #panelOverlay.hud-density.forge-hd-mode .forge2-op-columns{grid-template-columns:minmax(0,1fr)}
+ #app #panelOverlay.hud-density.forge-hd-mode .forge2-preview{width:fit-content}
+}
+@media(max-width:1024px){
+ #app #panelOverlay.hud-density.forge-hd-mode .forge-hd-workbench{grid-template-columns:minmax(0,1fr)}
+ #app #panelOverlay.hud-density.forge-hd-mode .forge-hd-art{display:none}
+}
+@media(max-width:760px){
+ #app #panelOverlay.hud-density.forge-hd-mode .forge-hd-workbench,#app #panelOverlay.hud-density.forge-hd-mode .forge2-layout{display:block}
+ #app #panelOverlay.hud-density.forge-hd-mode .forge2-op-columns{grid-template-columns:minmax(0,1fr)}
+ #app #panelOverlay.hud-density.forge-hd-mode .forge2-preview{grid-template-columns:minmax(0,1fr) max-content 1ch max-content;gap:0 4px;width:100%}
+ #app #panelOverlay.hud-density.forge-hd-mode .forge2-preview>div>.forge-stat-label{font-size:15px;gap:4px}
+ #app #panelOverlay.hud-density.forge-hd-mode .forge2-tabs button{min-height:60px;font-size:13px}
+ #app #panelOverlay.hud-density.forge-hd-mode .forge2-action{min-height:44px}
+ #app #panelOverlay.hud-density.captain-hd-mode .captain-profile-banner{grid-template-columns:100px minmax(0,1fr);min-height:0}
+ #app #panelOverlay.hud-density.captain-hd-mode .captain-profile-avatar{max-width:100px}
+}
+
+/* Dense information rows within their existing family; normal type and controls remain. */
+#app #panelOverlay.hud-density.character-studio-mode .studio-character h3{margin-bottom:8px;padding-bottom:7px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-character h4{margin:10px 0 6px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-character .attribute-budget{padding:5px 10px;margin-bottom:8px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-character .allocation-presets{margin-bottom:8px;gap:6px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-attributes{gap:7px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-character .attribute-row{min-height:54px;padding:5px 7px;gap:6px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-allocation-status{min-height:24px;margin:8px 0}
+#app #panelOverlay.hud-density.character-studio-mode .studio-allocation-actions{gap:6px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-character .studio-allocation-actions button{min-height:40px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-derived-groups{gap:9px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-derived-groups h4{padding-bottom:5px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-character .derived-list>div{display:grid;grid-template-columns:minmax(0,1fr) max-content;max-width:330px;gap:14px;padding:5px 0}
+#app #panelOverlay.hud-density.character-studio-mode .studio-character .character-power{margin:7px 0;padding:5px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-skills{gap:6px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-skills article{padding:6px 4px;gap:7px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-portrait{height:180px}
+#app #panelOverlay.hud-density.character-studio-mode .studio-portrait canvas{height:175px;width:200px}
+#app #panelOverlay.hud-density.inventory-mode.pirate-hd .op-panel{padding:5px 3px}
+#app #panelOverlay.hud-density.inventory-mode.pirate-hd .hd-panel-heading{margin-bottom:6px;min-height:42px}
+#app #panelOverlay.hud-density.inventory-mode.pirate-hd .op-avatar-stage{height:215px}
+#app #panelOverlay.hud-density.inventory-mode.pirate-hd .op-character-summary{margin-top:7px}
+#app #panelOverlay.hud-density.inventory-mode.pirate-hd .op-detail-head{grid-template-columns:86px minmax(0,1fr);gap:9px}
+#app #panelOverlay.hud-density.inventory-mode.pirate-hd .op-detail-icon{width:86px;height:86px}
+#app #panelOverlay.hud-density.inventory-mode.pirate-hd .op-detail-head h3{font-size:26px}
+#app #panelOverlay.hud-density.inventory-mode.pirate-hd .op-item-actions .op-action{min-height:60px;height:auto;font-size:17px;padding:4px;gap:5px;grid-template-columns:25px minmax(0,1fr);line-height:1.1}
+#app #panelOverlay.hud-density.inventory-mode.pirate-hd .op-item-actions .op-action .inv-ui-icon{width:25px;height:25px}
+#app #panelOverlay.hud-density.inventory-mode.pirate-hd .op-item-actions .op-action-copy{white-space:normal;overflow-wrap:normal;line-height:1.1}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-section{padding:8px 10px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-section-head{margin-bottom:8px;padding-bottom:6px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-fact{padding:8px 10px;gap:10px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-equipment-card{min-height:110px;padding:8px;gap:10px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-news-item{min-height:170px;padding:15px 20px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-editorial{min-height:200px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-setting-heading{min-height:102px;gap:14px;padding:8px 14px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-setting-cards{gap:8px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-settings-detail{padding:12px 16px;gap:8px}
+#app #panelOverlay.hud-density.captain-hd-mode .captain-setting-line{padding:6px 0}
+#app #panelOverlay.hud-density.contracts-mode .contracts-board{grid-template-columns:minmax(0,1fr) 240px;gap:10px}
+#app #panelOverlay.hud-density.contracts-mode .contracts-main{gap:8px}
+#app #panelOverlay.hud-density.contracts-mode .contract-tab{min-height:48px;gap:8px}
+#app #panelOverlay.hud-density.contracts-mode .contracts-list{gap:8px}
+#app #panelOverlay.hud-density.contracts-mode .contract-card{padding:8px}
+#app #panelOverlay.hud-density.contracts-mode .contract-card-head{grid-template-columns:56px minmax(0,1fr);min-height:60px;gap:9px}
+#app #panelOverlay.hud-density.contracts-mode .contract-emblem{width:56px;height:56px}
+#app #panelOverlay.hud-density.contracts-mode .contract-emblem .contract-icon{width:49px;height:49px}
+#app #panelOverlay.hud-density.contracts-mode .contract-card-foot{margin-top:6px;padding-top:6px}
+#app #panelOverlay.hud-density.contracts-mode .contracts-footer{min-height:95px;padding:7px 10px;gap:9px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge-fusion-pearls .forge2-fusion-materials{padding:6px 8px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge-fusion-pearls .forge2-fusion-tools{position:absolute;top:4px;right:8px;margin:0}
+#app #panelOverlay.hud-density.forge-hd-mode .forge-fusion-pearls .forge-fusion-count{margin-right:130px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge-fusion-pearls .forge2-material-slots{margin:8px auto 22px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge-fusion-pearls .forge2-material-slot{min-height:54px}
+#app #panelOverlay.hud-density.forge-hd-mode .forge-fusion-pearls .forge2-fusion-arrow{height:20px}
+@media(max-width:760px){
+ #app #panelOverlay.hud-density.contracts-mode .contracts-board{grid-template-columns:minmax(0,1fr)}
+ #app #panelOverlay.hud-density.forge-hd-mode .forge-fusion-pearls .forge2-fusion-tools{position:static;margin-top:6px}
+ #app #panelOverlay.hud-density.forge-hd-mode .forge-fusion-pearls .forge-fusion-count{margin-right:0}
+}
+
+/* Creation keeps the three steps and alternating controls aligned. */
+#app #startOverlay.hud-density .creation-dialog{width:min(1440px,calc(100vw - 24px));height:min(900px,calc(100dvh - 24px));padding:12px 18px}
+#app #startOverlay.hud-density .creation-top{gap:12px;padding-bottom:8px}
+#app #startOverlay.hud-density .creation-top h1{font-size:40px}
+#app #startOverlay.hud-density .creation-progress{margin:6px 0 9px;padding:6px 8px}
+#app #startOverlay.hud-density :is(#factionStep,#classStep){gap:8px}
+#app #startOverlay.hud-density .creation-class-layout{gap:12px}
+#app #startOverlay.hud-density .class-choices{gap:5px}
+#app #startOverlay.hud-density .class-choice{flex:1 0 60px;min-height:60px;padding:5px 8px}
+#app #startOverlay.hud-density .creation-class-detail{padding:10px;gap:8px}
+#app #startOverlay.hud-density .creation-class-intro{min-height:190px}
+#app #startOverlay.hud-density .creation-special{min-height:96px;padding:6px}
+#app #startOverlay.hud-density .faction-choices{gap:9px}
+#app #startOverlay.hud-density .faction-details{min-height:100px;gap:4px;padding:5px 8px}
+#app #startOverlay.hud-density .creation-faction-summary{min-height:112px;gap:12px;padding:6px 12px}
+#app #startOverlay.hud-density .studio-appearance{gap:10px}
+#app #startOverlay.hud-density .studio-look-controls{padding:8px}
+#app #startOverlay.hud-density .studio-look-controls header{padding-bottom:6px;margin-bottom:6px}
+#app #startOverlay.hud-density .studio-appearance .appearance-fields{gap:4px}
+#app #startOverlay.hud-density .studio-appearance .appearance-field{padding:5px;gap:7px}
+#app #startOverlay.hud-density .studio-look-preview{padding:8px}
+#app #startOverlay.hud-density .creation-actions{gap:9px}
+@media(max-width:760px){
+ #app #startOverlay.hud-density .creation-dialog{width:calc(100vw - 8px);height:calc(100dvh - 8px);padding:8px}
+ #app #startOverlay.hud-density .creation-top h1{font-size:30px}
+ #app #startOverlay.hud-density .creation-class-layout{display:flex;flex-direction:column}
+ #app #startOverlay.hud-density .studio-appearance{grid-template-columns:minmax(0,1fr)}
+}
+
+#app #panelOverlay.hud-density.character-studio-mode .studio-allocation-actions{grid-template-columns:repeat(2,minmax(0,1fr))}
+#app #panelOverlay.hud-density.character-studio-mode #confirmAttributes{grid-column:1/-1}
+#app #startOverlay.hud-density .studio-look-controls h2{font-size:24px}
+#app #startOverlay.hud-density .studio-faction{width:42px;height:42px}
+#app #startOverlay.hud-density .studio-appearance .appearance-field:has(.appearance-swatches){row-gap:3px}
+#app #startOverlay.hud-density #appearanceStep>.creation-actions{margin-top:8px}
+#app #startOverlay.hud-density #appearanceStep>.creation-actions button{min-height:44px}
+@media(max-width:760px){#app #panelOverlay.hud-density.character-studio-mode .studio-allocation-actions{grid-template-columns:minmax(0,1fr)}}
+
+/* The inspector reserves space only while a talent is being inspected. */
+@media(min-width:1025px){
+ #app #panelOverlay.hud-density.talents-hd-mode .talent-hd-window:not(.has-selection) .constellation-workspace{grid-template-columns:minmax(185px,.5fr) minmax(0,2fr)}
+}
+@media(min-width:761px) and (max-width:1024px){
+ #app #panelOverlay.hud-density.talents-hd-mode .talent-hd-window:not(.has-selection) .constellation-workspace{grid-template-columns:minmax(0,1fr)}
+}
+@media(min-width:761px){
+ #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-main{gap:8px}
+ #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-factions button{min-height:92px;padding:4px;font-size:19px}
+ #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-intro{min-height:135px;padding:8px 12px;gap:12px}
+ #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-intro>.hierarchy-official{width:105px;height:105px}
+ #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-intro h2{font-size:34px}
+ #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-intro p{font-size:19px;margin-top:5px}
+ #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-promotion{gap:8px;padding:6px}
+ #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-title-pair h3{font-size:20px;margin-bottom:5px}
+ #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-title-pair p{font-size:18px;margin-top:3px}
+ #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-title-plate{min-height:80px}
+ #app #panelOverlay.hud-density.honors-hd-mode .hierarchy-requirements{gap:6px}
+ #app #panelOverlay.hud-density.honors-hd-mode .promote{min-height:44px;font-size:21px}
+}
+
+/* Utility windows keep their existing actions with content-sized presentation. */
+#app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt])>.dialog{width:min(1000px,calc(100vw - 24px));height:auto;max-height:calc(100dvh - 24px);border:12px solid transparent;border-image:var(--rpg-hd-panel) 105 / 22px / 0 stretch;background:var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.hud-density[data-ui-panel=shop]>.dialog{width:min(580px,calc(100vw - 24px))}
+#app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt]) .dialog-header{min-height:64px;padding:8px 12px;background:var(--rpg-hd-wood) center/512px 256px;border-bottom:1px solid #ae873d}
+#app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt]) #dialogTitle{font:700 28px/1.1 'Inventory Alegreya SC',Georgia,serif}
+#app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt]) #dialogBody{padding:12px;overflow:auto;font-size:16px}
+#app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt]) .dialog-button{min-height:44px;padding:7px 12px;background:var(--rpg-workshop-surface) center/512px;font-size:16px}
+#app #panelOverlay.hud-density[data-ui-panel=help] .help-copy{font:16px/1.4 'Alegreya Sans',sans-serif;max-width:none}
+#app #panelOverlay.hud-density[data-ui-panel=help] .help-copy :is(p,li){font:inherit;margin-block:7px}
+#app #panelOverlay.hud-density[data-ui-panel=help] .help-sections{gap:10px}
+#app #panelOverlay.hud-density[data-ui-panel=help] .help-sections>section{padding:10px 12px;background:var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.hud-density[data-ui-panel=help] .help-copy h3{font-size:20px;margin-bottom:7px}
+#app #panelOverlay.hud-density[data-ui-panel=shop] .item-detail{display:grid;grid-template-columns:72px minmax(0,1fr);gap:8px 12px;padding:12px;background:var(--rpg-workshop-surface) center/512px;font-size:16px}
+#app #panelOverlay.hud-density[data-ui-panel=shop] .item-detail>.item-icon{grid-column:1;grid-row:1/3}
+#app #panelOverlay.hud-density[data-ui-panel=shop] .item-detail>h3{grid-column:2;margin:0;font-size:24px}
+#app #panelOverlay.hud-density[data-ui-panel=shop] .item-detail>p{grid-column:2;margin:0;font-size:16px}
+#app #panelOverlay.hud-density[data-ui-panel=shop] .item-detail>.dialog-button{grid-column:1/-1;justify-self:start}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-route{font-size:16px;line-height:1.4;max-width:none;margin:0}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-route header{margin-bottom:8px;padding:0;gap:8px}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-route h2{font-size:26px;margin:0}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-sectors{gap:7px}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-sectors button{min-height:52px;padding:7px;font-size:16px;background:var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-sectors small{font-size:14px}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-boss-brief{padding:10px;background:var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.hud-density[data-ui-panel=hunt] .hunt-economy{font-size:14px;background:var(--rpg-workshop-surface) center/512px}
+@media(max-width:760px){
+ #app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt])>.dialog{width:calc(100vw - 8px);max-height:calc(100dvh - 8px)}
+ #app #panelOverlay.hud-density:is([data-ui-panel=help],[data-ui-panel=shop],[data-ui-panel=hunt]) #dialogBody{padding:8px}
+ #app #panelOverlay.hud-density[data-ui-panel=help] .help-sections{grid-template-columns:minmax(0,1fr)}
+}

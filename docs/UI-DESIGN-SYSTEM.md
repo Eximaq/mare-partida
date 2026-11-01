@@ -116,3 +116,8 @@ Validação: 122 testes Node passaram. `tests/notification_browser.cjs` verifica
 Limitação de regressão ampla: `tests/ui_ux2_browser.py` passou nas quatro dimensões desktop e parou no inventário a 393 px por overflow horizontal. A comparação com origin/main sem badges reproduziu exatamente clientWidth 371 / scrollWidth 1053; em paisagem 640 px, ambos tiveram 618 / 1053. Uma execução complementar conferiu as demais janelas, atributos/talentos/conquistas e navegação em 393, 360 e 320 px, passando essas três matrizes antes de reencontrar o mesmo problema do inventário em paisagem. Essa falha preexistente não foi corrigida nem teve sua asserção removida nesta atualização. Capturas/relatórios ficam em diretório temporário local, fora do Git.
 
 Sem mudança de schema/chaves de save, custos, recompensas ou regras de promoção. O pacote Pages inclui o novo módulo e a fonte; build/push/PR não significam merge ou deploy em produção.
+
+
+## Densidade por família — 01/11/2026
+
+As janelas usam a variante `hud-density`, com limites por família em `ui-screens.css`; Haki conserva seu stylesheet próprio. Reduzir espaço excedente por componente, sem escalar globalmente a interface ou diminuir assets. Nas HUDs fixas preservar as âncoras e testar geometria. Placas de hierarquia ancoram os símbolos ao encaixe da arte de cada facção, com tamanho relativo à largura da placa; não usar margens flex ou tamanho fixo para reposicioná-los. [Medições, validação e limites](HUD-DENSITY-HAKI.md).

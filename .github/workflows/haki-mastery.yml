@@ -2,7 +2,7 @@ name: Haki — domínio e arte
 on:
   pull_request:
     branches: [main]
-    paths: ['haki-*.js', 'haki-mastery.css', 'assets/haki/**', 'game.js', 'dev-tools.js', 'forge-system.js', 'item-art.js', 'index.html', 'ui-preview.html', 'tools/build_pages.py', 'tests/haki*', '.github/workflows/haki-mastery.yml']
+    paths: ['haki-*.js', 'haki-mastery.css', 'ui-screens.css', 'forge-ui.js', 'tests/hud_density_browser.cjs', 'honors-hd.css', 'tests/hierarchy_plate_browser.cjs', 'assets/haki/**', 'game.js', 'dev-tools.js', 'forge-system.js', 'item-art.js', 'index.html', 'ui-preview.html', 'tools/build_pages.py', 'tests/haki*', '.github/workflows/haki-mastery.yml']
   workflow_dispatch:
 permissions:
   contents: read
@@ -35,8 +35,19 @@ jobs:
         env:
           MARE_QA_DIR: ${{ runner.temp }}/haki-capturas
         run: python3 tests/run_honors_hd_browser.py tests/haki_mastery_browser.cjs --offline --dist
+      - name: Densidade das demais interfaces no pacote estático
+        env:
+          MARE_QA_DIR: ${{ runner.temp }}/hud-density
+        run: python3 tests/run_honors_hd_browser.py tests/hud_density_browser.cjs --offline --dist
+      - name: Encaixes dos 32 patamares
+        env:
+          MARE_QA_DIR: ${{ runner.temp }}/hierarchy-plates
+        run: python3 tests/run_honors_hd_browser.py tests/hierarchy_plate_browser.cjs --offline --dist
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: haki-capturas
-          path: ${{ runner.temp }}/haki-capturas
+          path: |
+            ${{ runner.temp }}/haki-capturas
+            ${{ runner.temp }}/hud-density
+            ${{ runner.temp }}/hierarchy-plates
