@@ -9,6 +9,9 @@ const hook='  window.__harmonyQA={get game(){return game},get session(){return s
  async function capture(old){
   const context=await b.newContext({viewport:{width:1672,height:941}}),p=await context.newPage(),records={};
   if(old)await p.route(process.env.MARE_TEST_URL,route=>route.fulfill({contentType:'text/html',body:previous('index.html')}));
+  // A historical HTML/game pair must use its matching Haki module contract.
+  // The old HTML predates haki-progression.js; mixing it with the new system prevents boot.
+  if(old)for(const file of ['haki-system.js','haki-ui.js','haki-art.js'])await p.route('**/'+file+'*',route=>route.fulfill({contentType:'application/javascript',body:previous(file)}));
   await p.route('**/game.js*',async route=>{const response=await route.fetch(),src=old?previous('game.js'):await response.text();await route.fulfill({response,body:src.replace('  window.__mareDiagnostics=',hook)});});
   await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.__harmonyQA);await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__harmonyQA.game);
   await p.evaluate(()=>{const g=__harmonyQA.game;g.level=43;g.stats.kills=2057;g.stats.damage=1365479;g.stats.boss=50;__harmonyQA.update();});

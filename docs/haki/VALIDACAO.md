@@ -11,6 +11,7 @@ Branch: `feature/haki-mastery-hd`. Base auditada: `68ea929`. Trabalho isolado do
 - Testes Python gerais: 161 aprovados, incluindo preservação de 7.285 quadros nativos de personagens.
 - Browser de Supa no pacote estático: aprovado, incluindo dano físico/mágico/direto, escudo e expiração.
 - Browser Haki: fluxo real do livro, investimento por confirmação, quotas/rollback, confirmação obsoleta, gate, reload, rota própria, H/J/K, estado temporário, porto, morte e migração antiga pendente.
+- Comparação de geometria da HUD existente: 82 estados × 14 superfícies, 9 viewports, sem diferenças. O comparador histórico carrega os módulos Haki da mesma revisão do HTML antigo; não mistura a dependência nova com uma tela que ainda não a declarava.
 - Matriz de viewport: 1920×1080, 1366×768, 1280×720, 1024×768, 393×852, 320×568 e 844×390. Sem overflow horizontal da janela e com fechamento acessível.
 - Capturas reais do compositor: masculino/feminino, quatro direções, três manifestações e Fênix. Esses mosaicos usam os renderizadores do jogo; não são mockups gerados.
 - Combate simulado com o relógio de teste do navegador: 42 abates no ensaio de 120 s e 21 no ensaio final de 60 s. Inventário/progresso e retorno foram exercitados sem fontes novas.
