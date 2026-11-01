@@ -6,5 +6,8 @@ GRANT SELECT, INSERT ON mare_game.characters TO mare_runtime;
 -- Phase 3A can initialize only server defaults and read state. No economic UPDATE/DELETE.
 GRANT SELECT ON mare_game.character_progression TO mare_runtime;
 GRANT INSERT (character_id) ON mare_game.character_progression TO mare_runtime;
+-- Immutable receipts; runtime cannot rewrite or purge replay protection.
+GRANT SELECT ON mare_game.character_commands TO mare_runtime;
+GRANT INSERT (character_id, request_id, request_hash, result) ON mare_game.character_commands TO mare_runtime;
 GRANT SELECT, INSERT, UPDATE, DELETE ON mare_game.app_sessions, mare_game.auth_flows,
     mare_game.character_control, mare_game.auth_rate_limits, mare_game.provider_revocations TO mare_runtime;

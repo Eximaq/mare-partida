@@ -46,6 +46,11 @@ test("login, persistence and controller transitions work with minimum grants, wi
           characterId: character.id, version: 0, level: 1, experience: "0", gold: "0",
         });
         await service.renewControl(login.token, character.id, control);
+        const command = { requestId: randomUUID(), action: "state.sync" as const, expectedVersion: 0,
+          control: { epoch: control.epoch, token: control.token }, payload: {} };
+        const accepted = await service.command(login.token, character.id, command);
+        assert.equal(accepted.state.gold, "0");
+        assert.deepEqual(await service.command(login.token, character.id, command), accepted);
         const restarted = new AuthService({
           pool: runtime,
           provider,
@@ -62,6 +67,9 @@ test("login, persistence and controller transitions work with minimum grants, wi
           "UPDATE mare_game.accounts SET subject='forged'",
           "UPDATE mare_game.characters SET state_version=1",
           "DELETE FROM mare_game.characters",
+          "UPDATE mare_game.character_commands SET result='{}'::jsonb",
+          "DELETE FROM mare_game.character_commands",
+          "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result,created_at) VALUES(gen_random_uuid(),gen_random_uuid(),repeat('a',64),'{}',now())",
           "UPDATE mare_game.character_progression SET gold=1",
           "DELETE FROM mare_game.character_progression",
           `INSERT INTO mare_game.character_progression(character_id,gold) VALUES('${character.id}',1)`,
