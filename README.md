@@ -1,4 +1,6 @@
-**Entrada visual online:** [porto com identidade do servidor e limites da integração](docs/architecture/ONLINE-VISUAL-LOBBY.md).
+**Entrada direta online — em integração:** [login → jogo original, funções conectadas e diferenças de gameplay ainda abertas](docs/architecture/DIRECT-ONLINE-GAME.md).
+
+**Histórico da proposta de miniporto, substituída pela entrada direta:** [limites da tentativa anterior](docs/architecture/ONLINE-VISUAL-LOBBY.md).
 
 **Teste contínuo no Windows:** [iniciar, parar e preservar dados](docs/operations/CONTINUOUS-LOCAL-SERVER.md).
 

@@ -12,7 +12,9 @@ Na área de trabalho, pasta **Maré Partida - Servidor Local**:
 
 1. Abra **Iniciar servidor.cmd**. Aguarde “Servidor iniciado” e feche a janela.
 2. Abra **Abrir jogo.url**. Use sua conta de teste já confirmada e a senha diretamente
-   na página. As quatro contas e três personagens anteriores estão preservados.
+   na página. O login leva direto a `/game`, com HUD/mapa originais. As quatro
+   contas e três personagens anteriores estão preservados. O gameplay online
+   ainda é limitado; ver `docs/architecture/DIRECT-ONLINE-GAME.md`.
 3. Para encerrar, abra **Parar servidor.cmd**. Aguarde a confirmação. Isso desliga
    Auth/API/HTTPS; PostgreSQL continua ativo para preservar o uso de outros trabalhos.
 4. **Status.cmd** informa o estado; **Backup.cmd** cria uma nova cópia consistente.

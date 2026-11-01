@@ -1,3 +1,5 @@
+> Histórico: este miniporto separado foi rejeitado pelo proprietário como fluxo do produto. A entrada atual é documentada em [DIRECT-ONLINE-GAME.md](DIRECT-ONLINE-GAME.md). Não promover esta proposta como jogo online completo.
+
 # Entrada visual do personagem online — primeira integração
 
 O painel `/online/` agora oferece **Entrar no jogo** depois de identificar o
