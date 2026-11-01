@@ -14,7 +14,7 @@ const messages = {
   control_conflict:
     "Outra aba ou dispositivo está controlando este personagem.",
   password_reset_unconfirmed:
-    "A resposta da troca de senha não pôde ser confirmada. Tente entrar com a nova senha; se necessário, solicite outra recuperação.",
+    "A resposta da troca de senha não pôde ser confirmada. A senha pode já ter sido alterada. Entre com a nova senha; não repita a troca.",
 };
 const status = (text) => {
   $("#status").textContent = text;
@@ -206,16 +206,36 @@ $("#rotate").addEventListener("click", () => {
     status("Sessão renovada. A validade máxima não foi estendida.");
   });
 });
+let resetPending = false,
+  resetConsumed = false;
+function finishReset(message) {
+  resetConsumed = true;
+  history.replaceState(null, "", "/online/");
+  showLogin();
+  selectMode("login");
+  status(message);
+  $("#email").focus();
+}
 $("#reset-form").addEventListener("submit", (event) => {
   event.preventDefault();
+  if (resetPending || resetConsumed) return;
+  resetPending = true;
   void busy(event.submitter, async () => {
     try {
       await api("/v1/auth/reset", { password: $("#new-password").value });
-      history.replaceState(null, "", "/online/");
-      showLogin();
-      status("Senha alterada. Entre novamente.");
+      finishReset("Senha alterada. Entre novamente.");
+    } catch (error) {
+      if (error.code === "authentication_required") {
+        finishReset(
+          "Esta recuperação terminou. Se você já salvou uma nova senha, entre com ela; não repita a troca.",
+        );
+      } else if (error.code === "password_reset_unconfirmed" || !error.code) {
+        // A lost reply can follow a committed password change. Never retry it.
+        finishReset(messages.password_reset_unconfirmed);
+      } else throw error;
     } finally {
       $("#new-password").value = "";
+      resetPending = false;
     }
   });
 });

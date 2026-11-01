@@ -8,7 +8,8 @@ login, persistência e logout no Opera; encerramento seguro confirmado. F03 apro
 em 01/11/2026: rotação ES256 real, caches aquecido/vazio, refresh natural e
 encerramento verificados. F04 aprovado em 01/11/2026: link recusado após 65 minutos
 e log remoto `email link has expired`. F05 hospedado aprovado em segurança e
-reconciliação, com ressalva de interface e aceite final ainda abertos; não há
+reconciliação; ressalva de interface corrigida com validação local posterior,
+aceite final ainda aberto; não há
 autorização de Fase 3.**
 Este documento concentra o status atual. Os relatos das rodadas 1–3 preservam
 seus resultados históricos e não autorizam novos envios ou operações externas.
@@ -41,9 +42,9 @@ nesta matriz e no relatório vinculado; o escopo histórico acima não os substi
 | F02 | Revogação iniciada fora do BFF | Aprovado: logout externo 204, refresh remoto recusado, sessão interna revogada e /v1/me 401 | Uma conta/uma sessão neste ensaio; detecção na próxima revalidação, sem promessa de invalidação instantânea do JWT |
 | F03 | Rotação real da assinatura JWT/JWKS | Aprovado: nova ES256/900 s, cache aquecido/vazio, JWT antigo válido, refresh natural e mesma identidade; ver [registro F03](PHASE-2F-F03-SIGNING-ROTATION.md) | Antiga ES256 preservada como Previous; não testada revogação de chave nem executado rollback; Auth false e serviços locais parados |
 | F04 | Expiração do token remoto de e-mail sem uso | Aprovado: único link de G aberto após 65 min; callback 400/otp_expired e log remoto GET /verify com `email link has expired` às 06:00:29Z de 01/11; [registro F04](PHASE-2F-F04-EMAIL-EXPIRY.md) | Sem novo envio/reset; dados preservados, Auth false/API/gateway parados; não testa a fronteira exata de 3600 s |
-| F05 | Resposta perdida durante reset hospedado | Aprovado em segurança/reconciliação sobre `5332f51`: um envio, PUT remoto 200/resposta descartada/BFF 503; sessões anteriores revogadas, retries 401, senha antiga recusada/nova aceita, persistência e logout; [resultado F05](PHASE-2F-F05-RESET-RESPONSE.md) | Ressalva UX: formulário permaneceu visível; texto inicial não capturado. Corrigir ou decidir explicitamente no aceite; sem alegar queda física de rede ou atomicidade |
+| F05 | Resposta perdida durante reset hospedado | Aprovado em segurança/reconciliação sobre `5332f51`: um envio, PUT remoto 200/resposta descartada/BFF 503; sessões anteriores revogadas, retries 401, senha antiga recusada/nova aceita, persistência e logout. UI corrigida posteriormente, 5/5 regressões e navegador com provedor simulado; [resultado F05](PHASE-2F-F05-RESET-RESPONSE.md) | Texto inicial hospedado não capturado; correção UI validada localmente, sem novo SMTP. Sem alegar queda física de rede ou atomicidade |
 | O01 | Operação antes de exposição pública | Pendente | Origem de produção, retenção/chaves, abuso, carga e backup/restauração; nenhuma publicação nesta fase |
-| G01 | Aceite final da Fase 2 | Aberto | Revisão do proprietário: F01–F05 e decisão sobre ressalva UX do F05; matriz sem falhas abertas ocultadas |
+| G01 | Aceite final da Fase 2 | Aberto | Revisão do proprietário: F01–F05, correção local da UX e limites da evidência; matriz sem falhas abertas ocultadas |
 
 Evidências de A06: [fundação e Docker/Linux](https://github.com/Eximaq/mare-partida/actions/runs/41263542593),
 [regressão integrada](https://github.com/Eximaq/mare-partida/actions/runs/41263542566),

@@ -2,7 +2,7 @@
 
 Preparação local autorizada em 01/11/2026, sobre `31a92ed`. **Ensaio hospedado
 autorizado e concluído em 01/11/2026, sobre `5332f51`: segurança e reconciliação
-aprovadas; ressalva de interface aberta abaixo.** F04 foi concluído antes deste
+aprovadas; ressalva de interface corrigida e validada localmente abaixo.** F04 foi concluído antes deste
 único novo envio para G. Não iniciar Fase 3, merge ou deploy. O aceite final da
 Fase 2 permanece com o proprietário.
 
@@ -126,10 +126,10 @@ gameplay, HUD, Paper Doll, mapas, assets, saves ou runtime versionado.
 **Observação real de UX:** após a resposta perdida, o formulário de definir senha
 permaneceu visível e permitiu novas submissões. As duas foram recusadas pelo
 backend; isso não demonstrou sessão ainda válida nem nova troca no provedor.
-Proposta de correção separada: consumir a tela de reset ao receber resultado
+Correção posterior autorizada: consumir a tela de reset ao receber resultado
 incerto/sessão inválida, apresentar acesso ao login e preservar a explicação sobre
-a senha possivelmente alterada, com regressão de interface. Não corrigido nesta
-janela; decisão pendente antes do aceite final da Fase 2.
+a senha possivelmente alterada, com regressão de interface. Não foi corrigido
+durante o ensaio hospedado; a implementação e validação posteriores constam abaixo.
 
 O descarte foi local, após resposta real de sucesso, e durou menos de um segundo;
 não foi uma queda física de rede ou o timeout de quatro segundos do ensaio local.
@@ -139,3 +139,32 @@ nesta janela; o logout remoto 204 e a revogação interna foram comprovados.
 Documentos são a única mudança versionada desta conclusão. Testes offline e
 evidências privadas permanecem ignorados; os resultados locais anteriores não
 são apresentados como nova execução da suíte completa nesta janela.
+
+## Correção posterior da interface, sem novo envio
+
+Sobre `dfec0d5`, a solicitação seguinte do proprietário autorizou corrigir a
+ressalva. `account.js` agora encerra o formulário e mostra o login ao receber
+`password_reset_unconfirmed`, `authentication_required` ou uma falha de transporte
+sem resultado conhecido. Remove o parâmetro recovery da URL, limpa a senha e
+preserva uma mensagem que não anuncia sucesso indevido. Uma guarda impede
+submissões concorrentes e novas submissões na mesma página após consumir o fluxo.
+Recusas de validação continuam permitindo corrigir a senha sem novo e-mail.
+
+Regressão em `tests/foundation/account-reset-ui.test.mts`: o código real do cliente
+foi executado com DOM mínimo e respostas controladas. Antes da mudança, quatro
+cenários falharam pelos motivos esperados (formulário aberto e dois pedidos
+concorrentes); depois, **5/5 passaram**, incluindo a validação recuperável.
+Typecheck, **21/21 integrações PostgreSQL** e `npm test` (**33/33 fundação**,
+**123/123 arquivos Node legados**) passaram. O harness separado
+`supa-browser.test.cjs` não integra essa contagem; a validação visual executada
+nesta correção é a fixture de recuperação descrita a seguir.
+
+Navegador integrado em HTTPS local com fixture explícita, sem banco ou provedor
+externo: um reset simulado 503 levou a “Entrar na conta”, manteve o aviso de senha
+possivelmente alterada e removeu o formulário de reset. Apenas um pedido de reset
+foi registrado. Dado de senha fictício; nenhuma conta ou senha real foi utilizada.
+A fixture foi encerrada e Auth permaneceu false. Contas, personagens e fila foram
+conferidos e preservados. Isso valida a UI localmente e **não constitui novo
+ensaio SMTP/Supabase**. O texto inicial do ensaio real permanece inconclusivo no
+registro histórico; a correção não reescreve essa evidência. Aceite final da Fase 2
+continua pendente, sem Fase 3, merge ou deploy.
