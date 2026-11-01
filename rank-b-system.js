@@ -3,7 +3,7 @@
  if(typeof module!=='undefined')require('./rank-b-data.js');
  const {rules,effects}=root.MareRankBData,images=new Map();
  const has=id=>Object.values(rules).some(r=>r.id===id),visible=(e,v)=>!!v&&e.x>=v.x&&e.y>=v.y&&e.x<=v.x+v.width&&e.y<=v.y+v.height;
- const reduction=(amount,{equipped,physical=true,hasHaki=false}={})=>equipped===rules.beta.id&&physical&&!hasHaki?amount*(1-rules.beta.physicalDamageReduction):amount;
+ const reduction=(amount,{equipped,physical=true,hasHaki=false}={})=>physical&&!hasHaki&&[rules.beta.id,'akuma_mera_mera','akuma_yami_yami','akuma_hie_hie'].includes(equipped)?amount*(1-rules.beta.physicalDamageReduction):amount;
  const rooted=(m,now)=>!!m&&m.betaRootUntil>now,stunned=(m,now)=>!!m&&m.hanaStunFrom<=now&&m.hanaStunUntil>now;
  const chokeLead=effects.choke.frames.slice(0,rules.hana.holdFrame-1).reduce((n,f)=>n+f.duration,0),chokeEnd=effects.choke.duration+rules.hana.holdDuration-effects.choke.frames[rules.hana.holdFrame-1].duration;
  function frame(kind,elapsed,loop=false){const fx=effects[kind];let t=Math.max(0,elapsed);if(kind==='choke'){if(t>=chokeEnd)return null;if(t>=chokeLead&&t<chokeLead+rules.hana.holdDuration)return fx.frames[rules.hana.holdFrame-1];if(t>=chokeLead+rules.hana.holdDuration)t-=rules.hana.holdDuration-fx.frames[rules.hana.holdFrame-1].duration;}else if(loop)t%=fx.duration;else if(t>=fx.duration)return null;for(const f of fx.frames){if(t<f.duration)return f;t-=f.duration;}return null;}

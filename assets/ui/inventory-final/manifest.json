@@ -1,0 +1,347 @@
+{
+  "date": "2026-10-31",
+  "scope": "Inventory UI components only. Existing item art and official faction emblems unchanged.",
+  "references": [
+    "approved inventory component reference supplied by owner",
+    "real implementation capture"
+  ],
+  "sources": [
+    {
+      "file": "controls-source.png",
+      "job": "4d0644ad-99e9-451c-8d8c-f87a04e78408",
+      "gallery": "47c39c2a-3d91-519b-af6f-f4260a359131",
+      "generations": 25,
+      "sha256": "a9d3878fd6343d7b7181961671cc9b31af66ebeb35a93a7072db014cdd6a13dd",
+      "url": "https://api.pixellab.ai/mcp/images/4d0644ad-99e9-451c-8d8c-f87a04e78408/download"
+    },
+    {
+      "file": "icons-source.png",
+      "job": "76e8334b-6c87-490d-87f9-5313e651ec69",
+      "gallery": "1fcb4e0a-80ac-5e65-9007-df007acd3a4a",
+      "generations": 25,
+      "sha256": "abf99ed0f81b3b8360a0bd5ca0bff9cbaf57737583de6ba529cb5651977a7ff0",
+      "url": "https://api.pixellab.ai/mcp/images/76e8334b-6c87-490d-87f9-5313e651ec69/download"
+    }
+  ],
+  "outputs": [
+    {
+      "file": "primary.png",
+      "source": "controls-source.png",
+      "crop": [
+        0,
+        3,
+        242,
+        129
+      ],
+      "use": "9-slice button or comparison plate",
+      "width": 242,
+      "height": 126,
+      "sha256": "511c5cdff93c955b8fa87e400b9bfd66e0d398f86ccfd0da981c512eb58a19a6",
+      "resampled": false
+    },
+    {
+      "file": "secondary.png",
+      "source": "controls-source.png",
+      "crop": [
+        272,
+        8,
+        512,
+        126
+      ],
+      "use": "9-slice button or comparison plate",
+      "width": 240,
+      "height": 118,
+      "sha256": "b87941499b99bc166989b95b78c17c62bb31e5c3e03ff7cf8ab1e2e20741084d",
+      "resampled": false
+    },
+    {
+      "file": "positive.png",
+      "source": "controls-source.png",
+      "crop": [
+        0,
+        161,
+        240,
+        280
+      ],
+      "use": "9-slice button or comparison plate",
+      "width": 240,
+      "height": 119,
+      "sha256": "a79199bf2520aab402d8c4ca9220b4c1a678e30ccb9a8bc2c94f11015a1434db",
+      "resampled": false
+    },
+    {
+      "file": "negative.png",
+      "source": "controls-source.png",
+      "crop": [
+        272,
+        161,
+        512,
+        280
+      ],
+      "use": "9-slice button or comparison plate",
+      "width": 240,
+      "height": 119,
+      "sha256": "dac1385d9bc1a4b01355f4e6003b99c4e933dc399a4dfc7b076b63c332a01cb7",
+      "resampled": false
+    },
+    {
+      "file": "icons/equipment.png",
+      "source": "icons-source.png",
+      "crop": [
+        25,
+        4,
+        103,
+        124
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 78,
+      "height": 120,
+      "sha256": "7f849553dddf4dcb090d3623bc0a2db9eff60795dee906dd744c076ae6742bc3",
+      "resampled": false
+    },
+    {
+      "file": "icons/eye.png",
+      "source": "icons-source.png",
+      "crop": [
+        137,
+        9,
+        247,
+        119
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 110,
+      "height": 110,
+      "sha256": "d5dcfddbfd686f0477965067953bd778fac14c8e8203abb7420611fe65319ef6",
+      "resampled": false
+    },
+    {
+      "file": "icons/shirt.png",
+      "source": "icons-source.png",
+      "crop": [
+        269,
+        10,
+        371,
+        118
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 102,
+      "height": 108,
+      "sha256": "4b556fd171c631d424fcee893151066eb736d75ecb9b49d407c539bc79234ca7",
+      "resampled": false
+    },
+    {
+      "file": "icons/bag.png",
+      "source": "icons-source.png",
+      "crop": [
+        393,
+        13,
+        503,
+        115
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 110,
+      "height": 102,
+      "sha256": "151b07082adc3473b96945afe50962c987f2f7e6e441f692a3fdadcedb4f4fbb",
+      "resampled": false
+    },
+    {
+      "file": "icons/power.png",
+      "source": "icons-source.png",
+      "crop": [
+        5,
+        132,
+        123,
+        251
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 118,
+      "height": 119,
+      "sha256": "85e17d4116545a7aab0c7f8bd610478b52df81f990f1e403e7eafb6a26a0c9ca",
+      "resampled": false
+    },
+    {
+      "file": "icons/heart.png",
+      "source": "icons-source.png",
+      "crop": [
+        138,
+        142,
+        246,
+        241
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 108,
+      "height": 99,
+      "sha256": "fb7d511768ac630b13a41fee9f618d9c17824ea59ecd8f55da70a7401ab0fcd8",
+      "resampled": false
+    },
+    {
+      "file": "icons/attack.png",
+      "source": "icons-source.png",
+      "crop": [
+        261,
+        133,
+        379,
+        251
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 118,
+      "height": 118,
+      "sha256": "6814925e4af1382cfdde2cfc058eb4f4de16c036ea95292104273cda95fcfdc9",
+      "resampled": false
+    },
+    {
+      "file": "icons/shield.png",
+      "source": "icons-source.png",
+      "crop": [
+        399,
+        131,
+        496,
+        252
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 97,
+      "height": 121,
+      "sha256": "5f6d9431148a468d4b71950c36c79248cd5bc91ae3cefa5cbf58830393f03308",
+      "resampled": false
+    },
+    {
+      "file": "icons/lock.png",
+      "source": "icons-source.png",
+      "crop": [
+        23,
+        261,
+        105,
+        379
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 82,
+      "height": 118,
+      "sha256": "647cc320a46d61efd5b9e469252421c27baa6496bbceec5f495a6b1693d68a39",
+      "resampled": false
+    },
+    {
+      "file": "icons/unlock.png",
+      "source": "icons-source.png",
+      "crop": [
+        151,
+        259,
+        233,
+        380
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 82,
+      "height": 121,
+      "sha256": "43daf035c9e9535ecdc8524d11c01914bcc4d3b1b08bd3f5db5d1c8a5c4833a0",
+      "resampled": false
+    },
+    {
+      "file": "icons/forge.png",
+      "source": "icons-source.png",
+      "crop": [
+        261,
+        261,
+        379,
+        379
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 118,
+      "height": 118,
+      "sha256": "1b1b7d7c9cde901da5b24fcdfca7e03de94931c70f123bfc71368fdba77cf27e",
+      "resampled": false
+    },
+    {
+      "file": "icons/anchor.png",
+      "source": "icons-source.png",
+      "crop": [
+        394,
+        260,
+        502,
+        382
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 108,
+      "height": 122,
+      "sha256": "85ccf812c46dfa24b3f6e8d02a6c97a3b809fd54c08561d67dfc9e6c254929a8",
+      "resampled": false
+    },
+    {
+      "file": "icons/up.png",
+      "source": "icons-source.png",
+      "crop": [
+        18,
+        392,
+        110,
+        504
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 92,
+      "height": 112,
+      "sha256": "782bca1a30f10c13ccfc3b67c045f86fa111a21ba69d5016b174898227a664e2",
+      "resampled": false
+    },
+    {
+      "file": "icons/down.png",
+      "source": "icons-source.png",
+      "crop": [
+        147,
+        392,
+        237,
+        504
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 90,
+      "height": 112,
+      "sha256": "ef737473402d7dd309f319c4dcc444afbacce7666b050e8316de971ae2795767",
+      "resampled": false
+    },
+    {
+      "file": "icons/equal.png",
+      "source": "icons-source.png",
+      "crop": [
+        266,
+        418,
+        374,
+        476
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 108,
+      "height": 58,
+      "sha256": "d1c7054e2337d26dc3f6ced15f8762f6628dbecf1c5d62dcba3dc954a655d22c",
+      "resampled": false
+    },
+    {
+      "file": "icons/search.png",
+      "source": "icons-source.png",
+      "crop": [
+        392,
+        392,
+        504,
+        504
+      ],
+      "use": "contain at 18-34 CSS pixels",
+      "width": 112,
+      "height": 112,
+      "sha256": "396f92e67a37a008e50e59dd9527d1d6fa4f6d15138f3d956333a220767f15e7",
+      "resampled": false
+    },
+    {
+      "file": "berry.png",
+      "source": "../character-hud/hd/berry-coins.png",
+      "crop": [
+        13,
+        171,
+        362,
+        533
+      ],
+      "use": "official supplied Berry coin, first animation frame",
+      "width": 349,
+      "height": 362,
+      "sha256": "a621ebd5e76179df01ca17d9442f984a0145a24e05575e4f72e17aabff0be1fd",
+      "resampled": false
+    }
+  ],
+  "totalGenerations": 50,
+  "balanceBefore": 256.68,
+  "balanceAfter": 206.68,
+  "export": "Exact RGBA crops only; no resizing. 9-slice plates and contain-scaled icons at runtime."
+}

@@ -37,10 +37,6 @@ def open_page(browser, seed=None, size=(1366, 768)):
     page.clock.install(time="2026-10-20T12:00:00Z")
     page.goto(URL)
     page.wait_for_function('typeof __mareDiagnostics==="function"')
-    page.wait_for_function(
-        "MarePixelMapRenderer.stats().conchas.loaded && "
-        "MarePixelMapRenderer.stats().conchas.loadedObjects===105"
-    )
     return context, page
 
 
@@ -48,12 +44,20 @@ def travel(page):
     page.locator("#enterHunt").click()
     page.locator("[data-quick-mode=map]").click()
     page.locator("[data-island=conchas]").click()
-    # Travel starts auto-hunt. Freeze animation time until the UI has disabled
-    # it, otherwise locator actionability waits move the hero before inspection.
+    # Inspection only loads the destination illustration and its current idle
+    # preview. Confirm the trip before waiting for the full combat map.
+    # Stop auto-hunt in the same task so loading cannot move the hero away
+    # from the entry before its position is inspected.
+    page.evaluate("""() => {
+        document.querySelector('[data-travel-area=swamp]').click();
+        if (__mareDiagnostics().autoPlay) document.querySelector('#autoToggle').click();
+    }""")
+    page.wait_for_function(
+        "MarePixelMapRenderer.stats().conchas.loaded && "
+        "MarePixelMapRenderer.stats().conchas.loadedObjects===105 && "
+        "['idle','walk','attack','hurt'].every(a=>MareSpriteCombatV2.status('helmeppo',a,'south')==='ready')"
+    )
     page.clock.pause_at(page.evaluate("new Date(Date.now() + 1000).toISOString()"))
-    page.locator("[data-travel-area=swamp]").dispatch_event("click")
-    if state(page)["autoPlay"]:
-        page.locator("#autoToggle").dispatch_event("click")
     page.clock.run_for(100)
 
 
@@ -84,7 +88,7 @@ def walk_sector(page, sector_id):
 
 
 with sync_playwright() as playwright:
-    browser = playwright.chromium.launch()
+    browser = playwright.chromium.launch(executable_path=os.environ.get("CHROME_PATH"))
     context, page = open_page(browser)
     page.locator("#characterName").fill("Nauta Conchas")
     page.locator("#nextToClass").click()
@@ -127,7 +131,7 @@ with sync_playwright() as playwright:
         assert page.evaluate("MarePixelWorldMaps.stats().conchas") == {
             "loaded": True, "colliders": page.evaluate("MarePixelWorldMaps.conchas.map.colliders.length"), "objects": 105, "loadedObjects": 105
         }
-        assert page.evaluate("MareNewIslandArt.sheets.helmeppo.attack.complete")
+        assert page.evaluate("MareSpriteCombatV2.status('helmeppo','attack','south')==='ready'")
         assert page.evaluate("MareNewIslandArt.layout({...__mareDiagnostics().mobs[0],attackAnim:.4}).action") == "attack"
         if size == (1366, 768):
             page.screenshot(path=str(OUT / "cidade-das-conchas.png"))

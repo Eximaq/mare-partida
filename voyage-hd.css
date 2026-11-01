@@ -1,0 +1,265 @@
+
+/* Illustrated expeditions. Shared wood/metal assets, live text and canonical sprites. */
+#app #panelOverlay.voyage-hd-mode{padding:8px;--exp-title:'Inventory Alegreya SC',Georgia,serif;--exp-body:'Alegreya Sans','Segoe UI',sans-serif}
+#app #panelOverlay.voyage-hd-mode>.dialog{display:flex;flex-direction:column;width:min(1840px,calc(100vw - 16px));height:calc(100dvh - 16px);max-width:none;max-height:none;overflow:hidden;border:18px solid transparent;border-image:var(--rpg-hd-panel) 105 / 29px / 0 stretch;border-radius:0;background:var(--rpg-hd-wood) center/512px 256px;box-shadow:0 12px 60px #000b;color:#f2dfb5}
+#app #panelOverlay.voyage-hd-mode .dialog-header{position:relative;display:flex;align-items:flex-start;gap:10px;flex:none;min-height:130px;padding:12px 18px 0;border:0;border-bottom:2px solid #ad7b36;background:linear-gradient(90deg,#09070466,transparent 65%),url('assets/ui/voyage-hd/header.png') center/100% auto no-repeat;color:#ffe0a0}
+#app #panelOverlay.voyage-hd-mode[data-ui-panel=prison] .dialog-header{min-height:120px;background:linear-gradient(90deg,#090704f0 20%,#09070470 70%),url('assets/ui/voyage-hd/prison.png') right 34%/cover}
+#app #panelOverlay.voyage-hd-mode .dialog-header>div:first-child{flex:1;min-width:0}
+#app #panelOverlay.voyage-hd-mode .dialog-header small{display:block;font:700 12px/1.1 var(--exp-title);color:#e4bb70;letter-spacing:1.8px}
+#app #panelOverlay.voyage-hd-mode #dialogTitle{margin:3px 0 10px;font:700 clamp(27px,2.8vw,46px)/1.05 var(--exp-title);text-transform:uppercase;color:#ffe4a6;text-shadow:0 2px 2px #000}
+#app #panelOverlay.voyage-hd-mode #closePanel{width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border:8px solid transparent;border-image:var(--rpg-hd-secondary) 25 30 fill / 8px / 0 stretch;background:none;box-shadow:none;font:30px/1 Georgia;color:#ffe1a4;z-index:2}
+#app #panelOverlay.voyage-hd-mode #expeditionBack{position:absolute;right:74px;top:14px;min-height:34px;padding:6px 13px;border:1px solid #b58b47;background:linear-gradient(#090a0bbc,#090a0bbc),var(--rpg-workshop-surface) center/512px;color:#f5dfac;font:700 14px/1.2 var(--exp-title);box-shadow:0 2px 5px #0008}
+#app #panelOverlay.voyage-hd-mode #expeditionSubtitle{margin:6px 0;font:18px/1.3 var(--exp-body);color:#eedec2}
+#app #panelOverlay.voyage-hd-mode .voyage-region-tabs{display:flex;gap:8px;margin:0;border:0;background:none;box-shadow:none;padding:0;width:auto}
+#app #panelOverlay.voyage-hd-mode .voyage-region-tabs button{display:flex;align-items:center;justify-content:center;gap:10px;min-width:150px;min-height:45px;margin:0;padding:6px 20px;border:8px solid transparent;border-image:var(--rpg-hd-secondary) 25 30 fill / 8px / 0 stretch;background:none;color:#e8d7b3;font:700 20px/1 var(--exp-title);box-shadow:none}
+#app #panelOverlay.voyage-hd-mode .voyage-region-tabs button[aria-selected=true]{border-image-source:var(--rpg-hd-button);color:#281607;text-shadow:0 1px #ffefb6}
+#app #panelOverlay.voyage-hd-mode .expedition-icon{width:28px;height:28px;object-fit:contain;flex:none;vertical-align:middle}
+#app #panelOverlay.voyage-hd-mode .dialog-body{display:flex;min-width:0;min-height:0;flex:1;padding:12px 3px 1px;overflow:hidden;background:none;font:16px/1.3 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode :is(h3,h4){font-family:var(--exp-title);color:#ffe0a0;text-shadow:0 1px 2px #000;margin:0 0 8px}
+#app #panelOverlay.voyage-hd-mode .expedition-panel{min-width:0;min-height:0;padding:16px;border:10px solid transparent;border-image:var(--rpg-hd-plaque) 25 40 / 12px 16px / 0 stretch;background:linear-gradient(#090a0bd9,#090a0bc9),var(--rpg-workshop-surface) center/512px;box-shadow:inset 0 0 20px #0007}
+#app #panelOverlay.voyage-hd-mode button{cursor:pointer}
+#app #panelOverlay.voyage-hd-mode button:disabled{cursor:default;opacity:.52}
+#app #panelOverlay.voyage-hd-mode button:focus-visible{outline:2px solid #fff1af;outline-offset:3px}
+#app #panelOverlay.voyage-hd-mode .expedition-primary{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;padding:7px 15px;border:10px solid transparent;border-image:var(--rpg-hd-button) 25 30 fill / 10px / 0 stretch;background:none;color:#2b1809;font:700 clamp(16px,1.4vw,22px)/1.05 var(--exp-title);text-transform:uppercase;text-shadow:0 1px #ffe2a0;box-shadow:none}
+#app #panelOverlay.voyage-hd-mode .dungeon-back{display:inline-flex;align-items:center;gap:5px;align-self:flex-start;width:auto;min-height:32px;padding:4px 10px;margin:0 0 10px;border:1px solid #9d783d;border-radius:2px;background:linear-gradient(#0005,#0005),var(--rpg-workshop-surface) center/512px;color:#eed7a5;font:700 15px/1.2 var(--exp-title);box-shadow:none}
+#app #panelOverlay.voyage-hd-mode .voyage-window{display:grid;grid-template-columns:minmax(0,2fr) minmax(320px,1fr);gap:12px;flex:1;min-height:0;width:100%;padding:0;background:none;overflow:hidden;align-items:stretch}
+#app #panelOverlay.voyage-hd-mode .voyage-map{position:relative;min-width:0;min-height:0;height:100%;padding:0;overflow:hidden;border:6px solid #835327;border-image:var(--rpg-hd-plaque) 25 40 / 9px 12px / 0 stretch;background:url('assets/ui/voyage-hd/east-blue.png') center/cover no-repeat;isolation:isolate}
+#app #panelOverlay.voyage-hd-mode [data-region=alabasta] .voyage-map{background-image:url('assets/ui/voyage-hd/alabasta.png')}
+#app #panelOverlay.voyage-hd-mode [data-region=skypiea] .voyage-map{background:linear-gradient(#54799177,#d8cbb388),url('assets/ui/character-studio/harbor.png') center/cover}
+#app #panelOverlay.voyage-hd-mode .voyage-region-plaque{position:absolute;z-index:2;left:4%;top:2%;width:56%;padding:10px 22px;border:8px solid transparent;border-image:var(--rpg-hd-plaque) 25 40 / 10px 14px / 0 stretch;background:var(--rpg-hd-paper) center/512px;color:#2b1c0e;box-shadow:0 3px 6px #0007;transform:rotate(-1deg)}
+#app #panelOverlay.voyage-hd-mode .voyage-region-plaque small{font:700 10px/1 var(--exp-title);letter-spacing:1.5px;color:#64421c;text-transform:uppercase}
+#app #panelOverlay.voyage-hd-mode .voyage-region-plaque h3{font:700 clamp(22px,2.6vw,39px)/1.1 var(--exp-title);text-transform:uppercase;color:#2b1c0e;text-shadow:none;margin:2px 0}
+#app #panelOverlay.voyage-hd-mode .voyage-region-plaque p{font:16px/1.1 var(--exp-body);margin:0;color:#3f2a11}
+#app #panelOverlay.voyage-hd-mode .archipelago-islands{display:block;position:absolute;inset:0;margin:0;padding:0;background:none;border:0;z-index:1}
+#app #panelOverlay.voyage-hd-mode .archipelago-island{position:absolute;left:var(--map-x);top:var(--map-y);transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:stretch;gap:0;width:29%;max-width:280px;height:auto;min-height:0;margin:0;padding:0;border:3px solid #b8873d;border-radius:9px;background:#0b1419;color:#fff3d6;box-shadow:0 3px 6px #0009;overflow:visible;text-align:center;outline:none}
+#app #panelOverlay.voyage-hd-mode .archipelago-island:before,#app #panelOverlay.voyage-hd-mode .archipelago-island:after{display:none}
+#app #panelOverlay.voyage-hd-mode .archipelago-island[aria-pressed=true]{border-color:#fff4b2;box-shadow:0 0 0 2px #cf8f27,0 0 17px 4px #ffd14e,0 3px 6px #0009}
+#app #panelOverlay.voyage-hd-mode .voyage-location{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;object-position:center;border-radius:5px 5px 0 0;image-rendering:auto;margin:0}
+#app #panelOverlay.voyage-hd-mode .archipelago-island-copy{display:flex;flex-direction:column;gap:1px;padding:5px 4px;background:linear-gradient(#0a1218ed,#0a1218ed),var(--rpg-workshop-surface) center/512px;border-top:1px solid #cda75d;border-radius:0 0 6px 6px}
+#app #panelOverlay.voyage-hd-mode .archipelago-island-copy strong{font:700 clamp(13px,1.2vw,20px)/1.05 var(--exp-title);color:#fff0cd;overflow-wrap:break-word}
+#app #panelOverlay.voyage-hd-mode .voyage-level{font:16px/1.1 var(--exp-body);color:#f3ddb5}
+#app #panelOverlay.voyage-hd-mode .voyage-order{position:absolute;left:-14px;top:-15px;width:35px;height:35px;border:2px solid #e9bd68;border-radius:50%;background:#101a20;box-shadow:0 0 0 2px #3b2413,0 2px 5px #0008;color:#fff0c4;font:700 24px/31px var(--exp-title)}
+#app #panelOverlay.voyage-hd-mode .voyage-card-state{position:absolute;bottom:-13px;left:10%;width:80%;background:#422b15;border:1px solid #c79d59;color:#ffe8b6;font:12px/1.2 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode .voyage-routes{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+#app #panelOverlay.voyage-hd-mode .voyage-routes polyline{fill:none;stroke:#fff1ba;stroke-width:.45;stroke-dasharray:1.3 1;stroke-linejoin:round}
+#app #panelOverlay.voyage-hd-mode .voyage-routes .route-shadow{stroke:#634718;stroke-width:1;stroke-dasharray:none}
+#app #panelOverlay.voyage-hd-mode .voyage-routes circle{fill:#ffe4a2;stroke:#473016;stroke-width:.3}
+#app #panelOverlay.voyage-hd-mode .voyage-map-legend{position:absolute;bottom:5px;left:5%;right:5%;text-align:center;padding:4px 8px;background:#1b1711d9;border:1px solid #c29854;border-radius:2px;color:#fff0c6;font:14px/1.1 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode .dungeon-details{display:flex;flex-direction:column;gap:6px;overflow:auto;height:100%;min-height:0;position:relative;text-align:left}
+#app #panelOverlay.voyage-hd-mode .dungeon-region-name{display:block;color:#d2c2a5;font:14px/1.2 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode #dungeonName{margin:0 0 2px;font:700 clamp(22px,1.8vw,30px)/1.05 var(--exp-title)}
+#app #panelOverlay.voyage-hd-mode .voyage-detail-location{flex:none;aspect-ratio:2.7;border:1px solid #c7a05a;border-radius:3px}
+#app #panelOverlay.voyage-hd-mode .dungeon-range{display:flex;justify-content:space-between;gap:10px;align-items:center;margin:2px 0;padding:7px 10px;border:1px solid #a77a35;background:#bd873827;color:#f4e0b6;font:16px/1.1 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode .voyage-adversary{display:flex;align-items:center;gap:10px;min-height:85px;border:1px solid #88734566;padding:4px 8px;background:#090a0b55}
+#app #panelOverlay.voyage-hd-mode .voyage-adversary>div:last-child{display:flex;flex-direction:column;gap:3px;flex:1}
+#app #panelOverlay.voyage-hd-mode .voyage-adversary strong{font:700 19px/1.15 var(--exp-title);color:#ffe2aa}
+#app #panelOverlay.voyage-hd-mode .voyage-adversary small{color:#d7c8ab;font:14px/1.1 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode .expedition-monster{position:relative;display:block;width:100%;height:100%;min-height:0;overflow:hidden;margin:0;background:none;border:0}
+#app #panelOverlay.voyage-hd-mode .expedition-monster canvas{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;display:block}
+#app #panelOverlay.voyage-hd-mode .expedition-art-status{display:none}
+#app #panelOverlay.voyage-hd-mode .expedition-monster:not([data-state=available]) .expedition-art-status{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;color:#e4d1ab;font:15px/1.2 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode .expedition-monster:not([data-state=available]) canvas{visibility:hidden}
+#app #panelOverlay.voyage-hd-mode .voyage-adversary .expedition-monster{width:100px;height:85px;flex:none}
+#app #panelOverlay.voyage-hd-mode .dungeon-description{font:16px/1.3 var(--exp-body);margin:0;color:#e8dcc7}
+#app #panelOverlay.voyage-hd-mode :is(.dungeon-facts,.prison-information dl){display:block;margin:4px 0;font:16px/1.2 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode :is(.dungeon-facts,.prison-information dl)>div{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid #a3875140}
+#app #panelOverlay.voyage-hd-mode dt{color:#d5c7ab}
+#app #panelOverlay.voyage-hd-mode dd{color:#ffe9b5;text-align:right;margin:0}
+#app #panelOverlay.voyage-hd-mode .dungeon-details h4{font-size:18px;margin:5px 0 0}
+#app #panelOverlay.voyage-hd-mode .dungeon-drops{list-style:none;padding:0;margin:0 0 8px;display:grid;gap:3px;color:#eedfc4;font:16px/1.1 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode .dungeon-drops li{display:flex;gap:8px;align-items:center}
+#app #panelOverlay.voyage-hd-mode .dungeon-drops img{width:24px;height:24px;object-fit:contain}
+#app #panelOverlay.voyage-hd-mode .dungeon-travel{margin-top:auto;flex:none}
+#app #panelOverlay.voyage-hd-mode .dungeon-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center}
+#app #panelOverlay.voyage-hd-mode .dungeon-placeholder>img{width:125px;height:125px;object-fit:contain;opacity:.85}
+#app #panelOverlay.voyage-hd-mode .dungeon-placeholder h3{font:700 30px/1.1 var(--exp-title);margin:0}
+#app #panelOverlay.voyage-hd-mode .dungeon-placeholder p{font:20px/1.4 var(--exp-body);margin:0;max-width:320px}
+#app #panelOverlay.voyage-hd-mode .voyage-empty{position:absolute;inset:30% 15%;text-align:center;color:#1f252b;background:#f7e2b9e0;border:2px solid #b58e49;padding:30px}
+#app #panelOverlay.voyage-hd-mode .voyage-empty span{font-size:70px}
+#app #panelOverlay.voyage-hd-mode .voyage-empty h3{color:#302312;text-shadow:none;font-size:30px}
+#app #panelOverlay.voyage-hd-mode .voyage-empty p{font-size:20px}
+#app #panelOverlay.voyage-hd-mode .voyage-image-error{display:grid;place-items:center;min-height:80px;color:#e6d2a9;background:#17130f;font:14px var(--exp-body)}
+/* Prison: floor rail, actual enemy stage, encounter details and four lower panels. */
+#app #panelOverlay.voyage-hd-mode .prison-window{display:grid;grid-template-columns:minmax(145px,.5fr) minmax(0,1.65fr) minmax(290px,1.15fr);grid-template-rows:minmax(260px,1.5fr) minmax(190px,1fr);gap:12px;flex:1;width:100%;min-width:0;min-height:0;padding:0;background:none;overflow:hidden}
+#app #panelOverlay.voyage-hd-mode .prison-floor-list{display:flex;flex-direction:column;gap:5px;padding:10px 8px;overflow:hidden}
+#app #panelOverlay.voyage-hd-mode .prison-floor-list h3{font-size:20px;text-align:center}
+#app #panelOverlay.voyage-hd-mode .prison-floor-list>small{text-align:center;color:#cabba0;font:13px/1.2 var(--exp-body);margin-bottom:4px}
+#app #panelOverlay.voyage-hd-mode .prison-floor-scroll{overflow:auto;min-height:0;display:grid;gap:5px;align-content:start;scrollbar-color:#a87932 #181512}
+#app #panelOverlay.voyage-hd-mode .prison-floor-scroll button{position:relative;display:grid;grid-template-columns:1fr auto;gap:1px 4px;width:100%;min-height:41px;padding:5px 9px;background:linear-gradient(#14100d70,#14100d70),var(--rpg-workshop-surface) center/512px;border:1px solid #826536;border-radius:3px;color:#eee0c4;font:700 17px/1.05 var(--exp-title);text-align:left;box-shadow:none}
+#app #panelOverlay.voyage-hd-mode .prison-floor-scroll button small{font:11px/1.05 var(--exp-body);color:#bca783}
+#app #panelOverlay.voyage-hd-mode .prison-floor-scroll button[data-status=completed]{color:#bdd4b4}
+#app #panelOverlay.voyage-hd-mode .prison-floor-scroll button[data-boss=true]{border-color:#bb8640}
+#app #panelOverlay.voyage-hd-mode .prison-floor-scroll button[aria-pressed=true]{background:linear-gradient(#9a671d7a,#9a671d7a),var(--rpg-workshop-surface) center/512px;border-color:#ffe09b;box-shadow:inset 0 0 9px #ffc65766;color:#ffe9b3}
+#app #panelOverlay.voyage-hd-mode .prison-stage-panel{display:flex;flex-direction:column;position:relative;min-width:0;min-height:0;overflow:hidden;padding:0;border:2px solid #ae813c;background:url('assets/ui/voyage-hd/prison.png') center/cover;border-radius:3px}
+#app #panelOverlay.voyage-hd-mode .prison-floor-selector{display:flex;justify-content:center;align-items:center;gap:25px;position:relative;z-index:1;padding:8px;background:linear-gradient(#030508e8,#03050838);text-align:center;border:0;margin:0}
+#app #panelOverlay.voyage-hd-mode .prison-floor-selector h3{font:700 clamp(24px,2.5vw,38px)/1.05 var(--exp-title);margin:0}
+#app #panelOverlay.voyage-hd-mode .prison-floor-selector small{font:16px/1.1 var(--exp-body);color:#f1d7a1}
+#app #panelOverlay.voyage-hd-mode .prison-floor-selector button{width:44px;min-height:40px;padding:3px;border:1px solid #c89953;background:linear-gradient(#0a090ab0,#0a090ab0),var(--rpg-workshop-surface) center/512px;color:#ffe0a4;box-shadow:none}
+#app #panelOverlay.voyage-hd-mode .prison-cell{position:relative;display:flex;flex-direction:column;min-height:0;flex:1;align-items:center;justify-content:flex-end}
+#app #panelOverlay.voyage-hd-mode .prison-hero-monster{position:absolute;inset:0 0 48px;height:auto;width:100%;filter:drop-shadow(0 8px 4px #0008)}
+#app #panelOverlay.voyage-hd-mode .prison-enemy-caption{z-index:1;flex:none;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;width:90%;min-height:42px;padding:5px;margin:0 auto 8px;background:#08090bda;border:1px solid #bd924d;color:#ffdfa1;text-align:center}
+#app #panelOverlay.voyage-hd-mode .prison-enemy-caption strong{font:700 clamp(17px,1.6vw,24px)/1 var(--exp-title)}
+#app #panelOverlay.voyage-hd-mode .prison-enemy-caption small{font:14px/1.1 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode .prison-information{display:flex;flex-direction:column;gap:8px;overflow:auto}
+#app #panelOverlay.voyage-hd-mode .prison-information h3{font-size:clamp(20px,1.7vw,28px)}
+#app #panelOverlay.voyage-hd-mode .prison-information p{font:17px/1.3 var(--exp-body);margin:0;color:#e5d7bd}
+#app #panelOverlay.voyage-hd-mode .prison-entry{display:flex;flex-direction:column;gap:8px;margin-top:auto}
+#app #panelOverlay.voyage-hd-mode .prison-entry small{font:14px/1.2 var(--exp-body);text-align:center;color:#d1c2a5}
+#app #panelOverlay.voyage-hd-mode .prison-unknown{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:#ffe2a4;text-align:center;padding:12px}
+#app #panelOverlay.voyage-hd-mode .prison-unknown strong{font:100px/1 var(--exp-title)}
+#app #panelOverlay.voyage-hd-mode .prison-bottom-panels{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr 1.2fr 1.6fr;gap:10px;min-width:0;min-height:0;margin:0;padding:0;overflow:hidden}
+#app #panelOverlay.voyage-hd-mode .prison-bottom-panels>section{overflow:auto;min-height:0;padding:10px}
+#app #panelOverlay.voyage-hd-mode .prison-bottom-panels h3{font:700 clamp(17px,1.4vw,23px)/1.1 var(--exp-title);border-bottom:1px solid #ae8b4840;padding-bottom:7px}
+#app #panelOverlay.voyage-hd-mode .prison-enemy-summary{text-align:center}
+#app #panelOverlay.voyage-hd-mode .prison-small-monster{height:90px;margin:0 auto 5px;background:url('assets/ui/voyage-hd/prison.png') center/cover;border:1px solid #806136}
+#app #panelOverlay.voyage-hd-mode .prison-bottom-panels strong{display:block;font:700 18px/1.2 var(--exp-title);color:#ffe2a8}
+#app #panelOverlay.voyage-hd-mode .prison-bottom-panels p{font:16px/1.25 var(--exp-body);color:#e3d6be;margin:7px 0}
+#app #panelOverlay.voyage-hd-mode .prison-first-clear>img{display:block;width:80px;height:75px;object-fit:contain;margin:0 auto 6px}
+#app #panelOverlay.voyage-hd-mode .prison-first-clear{text-align:center}
+#app #panelOverlay.voyage-hd-mode .prison-rules ul{padding-left:19px;margin:0;display:grid;gap:7px;font:16px/1.3 var(--exp-body);color:#e4d8c0}
+#app #panelOverlay.voyage-hd-mode .prison-rules details{margin-top:9px;color:#d6b477;font:15px/1.2 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode .prison-milestones>div{display:grid;gap:5px}
+#app #panelOverlay.voyage-hd-mode .prison-milestones article{display:grid;grid-template-columns:62px 34px 1fr;gap:7px;align-items:center;min-height:45px;padding:5px;border:1px solid #8e71454f;background:linear-gradient(#4a372229,#4a372229);font:14px/1.15 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode .prison-milestones article b{font:700 16px/1.1 var(--exp-title);color:#f0d5a4}
+#app #panelOverlay.voyage-hd-mode .prison-milestones article img{width:34px;height:34px;object-fit:contain}
+#app #panelOverlay.voyage-hd-mode .prison-milestones article small{display:block;color:#c1baa6;font:12px/1.15 var(--exp-body);margin-top:2px}
+#app #panelOverlay.voyage-hd-mode .prison-milestones article[data-status=claimed] small{color:#9fce90}
+#app #panelOverlay.voyage-hd-mode .prison-milestones article[data-status=pending] small{color:#ffd37b}
+#app #panelOverlay.voyage-hd-mode .prison-milestones article button{grid-column:2/-1;background:#4e351b;border:1px solid #cfaa63;color:#ffe8b2;min-height:30px;font:700 14px var(--exp-title)}
+#app #panelOverlay.voyage-hd-mode .prison-question{display:block;font:70px/1 var(--exp-title);color:#d8bb81}
+@media(max-height:850px) and (min-width:1051px){
+ #app #panelOverlay.voyage-hd-mode .dialog-header{min-height:110px;padding-top:8px}
+ #app #panelOverlay.voyage-hd-mode #dialogTitle{font-size:32px;margin-bottom:5px}
+ #app #panelOverlay.voyage-hd-mode .voyage-region-tabs button{min-height:37px;font-size:18px}
+ #app #panelOverlay.voyage-hd-mode .archipelago-island{width:26%;max-width:230px}
+ #app #panelOverlay.voyage-hd-mode .archipelago-island .voyage-location{aspect-ratio:2.2}
+ #app #panelOverlay.voyage-hd-mode .voyage-region-plaque{padding:4px 15px}
+ #app #panelOverlay.voyage-hd-mode .voyage-region-plaque h3{font-size:27px}
+ #app #panelOverlay.voyage-hd-mode .voyage-region-plaque p{font-size:14px}
+ #app #panelOverlay.voyage-hd-mode .dungeon-details{padding:10px;gap:4px}
+ #app #panelOverlay.voyage-hd-mode .dungeon-description{font-size:15px}
+ #app #panelOverlay.voyage-hd-mode .voyage-adversary{min-height:65px}
+ #app #panelOverlay.voyage-hd-mode .voyage-adversary .expedition-monster{height:65px;width:85px}
+ #app #panelOverlay.voyage-hd-mode .prison-window{grid-template-rows:minmax(270px,1.7fr) minmax(165px,1fr)}
+ #app #panelOverlay.voyage-hd-mode .prison-information{padding:9px}
+ #app #panelOverlay.voyage-hd-mode .prison-information dl>div{padding:5px 0}
+}
+@media(max-width:1050px){
+ #app #panelOverlay.voyage-hd-mode>.dialog{border-width:12px}
+ #app #panelOverlay.voyage-hd-mode .dialog-body{overflow:auto}
+ #app #panelOverlay.voyage-hd-mode .voyage-window{grid-template-columns:minmax(0,1.6fr) minmax(280px,1fr);min-height:650px;overflow:visible}
+ #app #panelOverlay.voyage-hd-mode .archipelago-island{width:34%}
+ #app #panelOverlay.voyage-hd-mode .archipelago-island .voyage-location{aspect-ratio:2}
+ #app #panelOverlay.voyage-hd-mode .archipelago-island-copy strong{font-size:14px}
+ #app #panelOverlay.voyage-hd-mode .voyage-level{font-size:14px}
+ #app #panelOverlay.voyage-hd-mode .voyage-region-plaque{width:80%;padding:4px 10px}
+ #app #panelOverlay.voyage-hd-mode .voyage-region-plaque h3{font-size:27px}
+ #app #panelOverlay.voyage-hd-mode .voyage-region-plaque p{font-size:14px}
+ #app #panelOverlay.voyage-hd-mode .prison-window{min-height:850px;grid-template-columns:140px minmax(0,1fr);grid-template-rows:400px auto;overflow:visible}
+ #app #panelOverlay.voyage-hd-mode .prison-information{grid-column:1/-1;grid-row:2}
+ #app #panelOverlay.voyage-hd-mode .prison-bottom-panels{grid-row:3;grid-template-columns:1fr 1fr;overflow:visible}
+ #app #panelOverlay.voyage-hd-mode .prison-bottom-panels>section{max-height:300px}
+}
+@media(max-width:700px){
+ #app #panelOverlay.voyage-hd-mode{padding:3px}
+ #app #panelOverlay.voyage-hd-mode>.dialog{width:calc(100vw - 6px);height:calc(100dvh - 6px);border-width:10px;border-image-width:17px}
+ #app #panelOverlay.voyage-hd-mode .dialog-header{padding:9px 5px 0;min-height:145px;background-size:auto 100%;background-position:right}
+ #app #panelOverlay.voyage-hd-mode #dialogTitle{font-size:24px;max-width:260px;margin-top:5px}
+ #app #panelOverlay.voyage-hd-mode .dialog-header small{font-size:10px;letter-spacing:1px}
+ #app #panelOverlay.voyage-hd-mode #closePanel{width:38px;height:38px;min-width:38px;min-height:38px}
+ #app #panelOverlay.voyage-hd-mode #expeditionBack{top:75px;right:12px;min-height:30px;font-size:12px;padding:3px 8px}
+ #app #panelOverlay.voyage-hd-mode .voyage-region-tabs{position:absolute;bottom:0;left:4px;right:4px;gap:3px}
+ #app #panelOverlay.voyage-hd-mode .voyage-region-tabs button{flex:1;min-width:0;padding:3px 7px;min-height:38px;font-size:16px;gap:4px}
+ #app #panelOverlay.voyage-hd-mode .voyage-region-tabs .expedition-icon{width:20px;height:20px}
+ #app #panelOverlay.voyage-hd-mode .dialog-body{padding-top:7px}
+ #app #panelOverlay.voyage-hd-mode .voyage-window{display:flex;flex-direction:column;min-height:0;overflow:visible}
+ #app #panelOverlay.voyage-hd-mode .voyage-map{flex:none;height:650px;min-height:650px;width:100%}
+ #app #panelOverlay.voyage-hd-mode .voyage-region-plaque{width:85%;left:5%;height:71px;padding:5px 10px}
+ #app #panelOverlay.voyage-hd-mode .archipelago-island{width:39%;border-width:2px}
+ #app #panelOverlay.voyage-hd-mode .voyage-order{width:28px;height:28px;left:-9px;top:-10px;font-size:20px;line-height:24px}
+ #app #panelOverlay.voyage-hd-mode .archipelago-island-copy strong{font-size:14px}
+ #app #panelOverlay.voyage-hd-mode .voyage-level{font-size:14px}
+ #app #panelOverlay.voyage-hd-mode .dungeon-details{flex:none;height:auto;overflow:visible;min-height:500px}
+ #app #panelOverlay.voyage-hd-mode .dungeon-placeholder{min-height:300px}
+ #app #panelOverlay.voyage-hd-mode .voyage-detail-location{aspect-ratio:2}
+ #app #panelOverlay.voyage-hd-mode[data-ui-panel=prison] .dialog-header{min-height:130px}
+ #app #panelOverlay.voyage-hd-mode #expeditionSubtitle{font-size:15px;max-width:260px}
+ #app #panelOverlay.voyage-hd-mode .prison-window{display:grid;grid-template-columns:95px minmax(0,1fr);grid-template-rows:310px auto auto;min-height:1050px;gap:7px}
+ #app #panelOverlay.voyage-hd-mode .prison-floor-list{padding:6px 3px;border-width:5px}
+ #app #panelOverlay.voyage-hd-mode .prison-floor-list h3{font-size:17px}
+ #app #panelOverlay.voyage-hd-mode .prison-floor-list>small{font-size:11px}
+ #app #panelOverlay.voyage-hd-mode .prison-floor-scroll button{padding:5px;font-size:14px}
+ #app #panelOverlay.voyage-hd-mode .prison-floor-scroll button small{font-size:10px}
+ #app #panelOverlay.voyage-hd-mode .prison-floor-selector{gap:8px;padding:6px}
+ #app #panelOverlay.voyage-hd-mode .prison-floor-selector h3{font-size:23px}
+ #app #panelOverlay.voyage-hd-mode .prison-floor-selector button{width:28px;min-height:32px}
+ #app #panelOverlay.voyage-hd-mode .prison-enemy-caption strong{font-size:15px}
+ #app #panelOverlay.voyage-hd-mode .prison-enemy-caption small{font-size:12px}
+ #app #panelOverlay.voyage-hd-mode .prison-bottom-panels{gap:7px}
+ #app #panelOverlay.voyage-hd-mode .prison-bottom-panels h3{font-size:17px}
+ #app #panelOverlay.voyage-hd-mode .prison-bottom-panels p,#app #panelOverlay.voyage-hd-mode .prison-rules ul{font-size:15px}
+ #app #panelOverlay.voyage-hd-mode .prison-milestones{grid-column:1/-1}
+}
+
+#app #panelOverlay.voyage-hd-mode .archipelago-island{width:27%;max-width:265px}
+#app #panelOverlay.voyage-hd-mode .archipelago-island .voyage-location{aspect-ratio:2.6}
+#app #panelOverlay.voyage-hd-mode .archipelago-island-copy{width:100%;text-align:center;box-sizing:border-box;align-items:center}
+#app #panelOverlay.voyage-hd-mode .archipelago-island-copy strong{width:100%;text-align:center}
+#app #panelOverlay.voyage-hd-mode .voyage-level{align-self:center;border:0;border-radius:0;background:none;padding:0;margin:0;line-height:1.1;width:auto;position:static}
+#app #panelOverlay.voyage-hd-mode .prison-bottom-panels{align-items:stretch}
+#app #panelOverlay.voyage-hd-mode .prison-bottom-panels>section{height:100%;margin:0;box-sizing:border-box}
+@media(max-height:850px) and (min-width:1051px){
+#app #panelOverlay.voyage-hd-mode .archipelago-island{width:26%;max-width:220px}
+#app #panelOverlay.voyage-hd-mode .archipelago-island .voyage-location{aspect-ratio:3}
+#app #panelOverlay.voyage-hd-mode .archipelago-island-copy{padding:3px}
+#app #panelOverlay.voyage-hd-mode .archipelago-island-copy strong{font-size:14px}
+#app #panelOverlay.voyage-hd-mode .voyage-level{font-size:14px}
+}
+@media(max-width:1050px){#app #panelOverlay.voyage-hd-mode .archipelago-island{width:34%}}
+@media(max-width:700px){#app #panelOverlay.voyage-hd-mode .archipelago-island{width:39%}}
+
+#app #panelOverlay.voyage-hd-mode .dialog-header{background:linear-gradient(90deg,#0a070333,transparent),url('assets/ui/voyage-hd/header.png') right center/auto 100% no-repeat,var(--rpg-hd-wood) center/512px 256px}
+#app #panelOverlay.voyage-hd-mode .voyage-region-plaque{box-sizing:border-box;height:90px;padding:5px 16px;border-width:6px}
+#app #panelOverlay.voyage-hd-mode .voyage-region-plaque h3{font-size:32px}
+#app #panelOverlay.voyage-hd-mode .voyage-region-plaque p{font-size:14px}
+#app #panelOverlay.voyage-hd-mode .voyage-region-plaque small{font-size:9px}
+@media(max-height:850px) and (min-width:1051px){#app #panelOverlay.voyage-hd-mode .voyage-region-plaque{height:78px;padding:4px 14px}#app #panelOverlay.voyage-hd-mode .voyage-region-plaque h3{font-size:26px}}
+@media(max-width:1050px){#app #panelOverlay.voyage-hd-mode .voyage-region-plaque{height:80px}#app #panelOverlay.voyage-hd-mode .voyage-region-plaque h3{font-size:27px}}
+
+#app #panelOverlay.voyage-hd-mode .voyage-region-icon{display:inline-block;width:38px;height:38px;flex:none;background-image:url('assets/ui/voyage-hd/region-icons.png');background-size:114px 38px;background-position:0 0;background-repeat:no-repeat}
+#app #panelOverlay.voyage-hd-mode .voyage-region-icon[data-icon=alabasta]{background-position:-38px 0}
+#app #panelOverlay.voyage-hd-mode .voyage-region-icon[data-icon=skypiea]{background-position:-76px 0}
+#app #panelOverlay.voyage-hd-mode [data-region=skypiea] .voyage-map{background:url('assets/ui/voyage-hd/skypiea.png') center/cover no-repeat}
+@media(max-width:700px){#app #panelOverlay.voyage-hd-mode .voyage-region-icon{width:26px;height:26px;background-size:78px 26px}#app #panelOverlay.voyage-hd-mode .voyage-region-icon[data-icon=alabasta]{background-position:-26px 0}#app #panelOverlay.voyage-hd-mode .voyage-region-icon[data-icon=skypiea]{background-position:-52px 0}}
+
+#app #panelOverlay.voyage-hd-mode .voyage-map{display:block;container-type:size}
+#app #panelOverlay.voyage-hd-mode .archipelago-island .voyage-location{height:9cqh;aspect-ratio:auto}
+#app #panelOverlay.voyage-hd-mode .voyage-region-plaque{height:80px}
+@media(max-height:850px) and (min-width:1051px){#app #panelOverlay.voyage-hd-mode .voyage-region-plaque{height:64px;padding:2px 12px;border-width:5px}#app #panelOverlay.voyage-hd-mode .voyage-region-plaque h3{font-size:24px}#app #panelOverlay.voyage-hd-mode .voyage-region-plaque p{font-size:12px}#app #panelOverlay.voyage-hd-mode .voyage-region-plaque small{font-size:8px}}
+
+#app #panelOverlay.voyage-hd-mode .dungeon-details{overflow:hidden;box-sizing:border-box}
+#app #panelOverlay.voyage-hd-mode .voyage-detail-scroll{display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;overflow:auto;padding-right:2px}
+#app #panelOverlay.voyage-hd-mode .dungeon-travel{margin-top:8px}
+#app #panelOverlay.voyage-hd-mode .voyage-adversary{flex:none}
+@media(max-width:700px){#app #panelOverlay.voyage-hd-mode .voyage-detail-scroll{overflow:visible;flex:none}}
+
+#app #panelOverlay.voyage-hd-mode .dungeon-drops .berry-coin{width:24px;height:24px;background:url('assets/ui/character-hud/hd/berry-coins.png') 0 -11px/144px 48px no-repeat;display:inline-block;flex:none}
+
+#app #panelOverlay.voyage-hd-mode #toastContainer{background:none;border:0}
+#app #panelOverlay.voyage-hd-mode #toastContainer .toast{background:linear-gradient(#08090bd9,#08090bd9),var(--rpg-workshop-surface) center/512px;color:#ffe2a8;border:1px solid #ad8243;border-image:none;font:15px/1.25 var(--exp-body)}
+#app #panelOverlay.voyage-hd-mode .prison-bottom-panels strong{white-space:normal;overflow-wrap:anywhere}
+@media(max-width:700px){#app #panelOverlay.voyage-hd-mode .dialog-header{min-height:185px}#app #panelOverlay.voyage-hd-mode #expeditionBack{top:85px}#app #panelOverlay.voyage-hd-mode .voyage-region-tabs{bottom:5px}#app #panelOverlay.voyage-hd-mode #expeditionSubtitle{max-width:190px}#app #panelOverlay.voyage-hd-mode[data-ui-panel=prison] #expeditionBack{top:auto;bottom:10px}}
+
+#app #panelOverlay.voyage-hd-mode .prison-information{overflow:hidden}
+#app #panelOverlay.voyage-hd-mode .prison-info-scroll{overflow:auto;min-height:0;flex:1;padding-right:2px}
+#app #panelOverlay.voyage-hd-mode .prison-entry{flex:none}
+#app #panelOverlay.voyage-hd-mode .prison-floor-scroll .expedition-icon{width:14px;height:14px}
+@media(max-width:700px){#app #panelOverlay.voyage-hd-mode .prison-info-scroll{flex:none;overflow:visible}}
+
+#app #panelOverlay.voyage-hd-mode .voyage-detail-scroll{gap:4px}
+#app #panelOverlay.voyage-hd-mode .dungeon-details .dungeon-back{min-height:28px;margin-bottom:3px}
+#app #panelOverlay.voyage-hd-mode .voyage-adversary{min-height:74px}
+#app #panelOverlay.voyage-hd-mode .voyage-adversary .expedition-monster{height:74px}
+#app #panelOverlay.voyage-hd-mode .dungeon-drops img{width:22px;height:22px}
+#app #panelOverlay.voyage-hd-mode .dungeon-facts>div{padding:6px 0}
+@media(max-height:850px) and (min-width:1051px){#app #panelOverlay.voyage-hd-mode .voyage-adversary{min-height:65px}#app #panelOverlay.voyage-hd-mode .voyage-adversary .expedition-monster{height:65px}}

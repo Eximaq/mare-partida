@@ -1,7 +1,7 @@
 'use strict';
 /* PixelLab sheets. Tori uses 64×64 frames; the other Zoans use 48×48. */
 ((root)=>{
-  const names={akuma_tori_albatroz:'tori',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko',akuma_ushi_giraffe:'ushi',akuma_inu_wolf:'wolf'};
+  const names={akuma_tori_albatroz:'tori',akuma_tori_phoenix:'phoenix',akuma_uma_uma:'uma',akuma_inu_dachshund:'inu',akuma_neko_leopard:'neko',akuma_ushi_giraffe:'ushi',akuma_inu_wolf:'wolf'};
   const directions={front:'south',back:'north',left:'west',right:'east'};
   // Bottommost opaque pixel in each original Inu frame, measured per direction.
   // The source strips have different transparent margins between idle and walk.

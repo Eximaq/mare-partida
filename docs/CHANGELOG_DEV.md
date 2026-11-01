@@ -1,3 +1,19 @@
+## 31/10/2026 — Refino do inventário e ícones HD (PR 172, em revisão)
+
+Reconstrução PixelLab Pro de 102 ícones e componentes dourados; tipografia local Alegreya SC/Sans, atributos legíveis, rótulos compactos sem sobreposição e ações Equipar/Bloquear/Vender diretamente/Forja. Mercado/Cofre ocultados. Custos: 390 gerações. Sem mudar saves ou sprites de combate. Dez entradas Node, testes de inventário em fonte/dist e HUD passaram; build Pages aprovado. [Fontes, arquivos, testes e limites](INVENTORY-HD-REFINEMENT.md).
+
+## 31/10/2026 — Yami e Mera Rank S
+
+- Duas frutas S append-only, três slots, auras passivas e seis habilidades integradas ao controlador avançado existente. PNG/JSON fornecidos preservados: 26 arquivos, 361 quadros.
+- Proporções aprovadas: tamanho/alcance Yami −40%; tamanho/contato Hibashira +40%. Âncoras das auras, desenho do pilar e contato de chão de Liberation revisados em navegador.
+- Regras, parâmetros iniciais, validação, compatibilidade e rollback em [RANK-S-YAMI-MERA.md](RANK-S-YAMI-MERA.md). Branch feature/rank-s-yami-mera, base c24f885. Evidências e dados de QA fora do repositório.
+
+## 31/10/2026 — HUD de personagem em pergaminho
+
+- Painel fornecido pelo proprietário integrado ao perfil compacto, com HP/energia/XP dinâmicos e cartaz expansível. Nome em Alabasta Pirate local; caracteres ausentes preservados pela fonte de apoio.
+- Bounty fixo em 0 e Em breve, independente das moedas. Retratos reutilizam o renderer existente; saves e regras de jogo preservados.
+- Validação responsiva, teclado, Haki, atributos, transição, reload e build documentados em [CHARACTER-PARCHMENT-HUD.md](CHARACTER-PARCHMENT-HUD.md).
+
 # 30/10/2026 — Sprites atuais: propriedade exclusiva, falhas e cache
 
 - Base f095720 (merge PR157), branch fix/current-player-sprite-ownership. Diagnóstico completo e regras vigentes em [SPRITES-ATUAIS-FONTE-UNICA.md](SPRITES-ATUAIS-FONTE-UNICA.md).
@@ -621,3 +637,46 @@ Validação final sobre e302c09: 84 suítes Node aprovadas; teste específico de
 - Nova folha final `ui-nautical-assets.css` nas duas entradas e no build; sem alterações em JavaScript de jogo, dados, handlers, fórmulas ou saves. Comparativo representativo único versionado; evidências completas ignoradas.
 - 145 testes Node passaram; seis suítes focadas, sintaxe raiz, build/URLs/bytes e diff check passaram. Navegador: 14 janelas em seis viewports, criação móvel, scroll, foco/tooltip, NPC, equipamento/trava/reload, aprimoramento, fusão/imbuir, 59 abates/2 chefes com barras reais e retorno. Moldura de vida estável entre 20,2% e 100%.
 - Limites: arraste automatizado inconclusivo também na base; seleção por clique/automática funcional. `supa-browser.test.cjs` sem módulo Node Playwright; não declarado aprovado. Aparelhos físicos/Safari/Firefox e benchmark formal não executados. Rollback e demais limites no relatório. Sem merge/deploy automático.
+
+
+## 30/10/2026 — Ope/Mero Rank A e HUD de três habilidades
+
+Base c4b7cf6, branch feature/rank-a-ope-mero. Seis habilidades e Shambles dinâmico integrados ao catálogo, combate, HUD e API opcional; assets originais preservados. Relatório de regras, parâmetros iniciais, regressões, fonte dos 158 quadros e rollback: [RANK-A-OPE-MERO.md](RANK-A-OPE-MERO.md). As prévias não reaproveitam o texto de ativação ROOM em outros golpes.
+
+
+## 31/10/2026 — Bari, Doku e Ito Rank A
+
+Base ab77811, branch feature/rank-a-bari-doku-ito. Nove habilidades integradas à HUD Rank A e ao serviço opcional, 294 quadros originais importados, barreiras com física, venenos cumulativos e controle estrito de Parasite. Regras, decisões iniciais, origem e validação: [RANK-A-BARI-DOKU-ITO.md](RANK-A-BARI-DOKU-ITO.md).
+
+## 31/10/2026 — Inventário pirata HD (revisão visual)
+
+Branch feature/inventory-pirate-hd, base 93368fd. Base .ui-hd opt-in sobre os tokens/componentes existentes, quatro peças PixelLab Pro (25 gerações), molduras por bordas, três painéis compactos e dados reais. Slots/abas/ações preservados; detalhes ativos/passivos estruturados; seleção incremental sem reconstruir a mochila; prévia native96 pronta após carregamento e sem aura de combate sobre os equipamentos. HUD principal preservada.
+
+Testes, custos/origem, arquivos, comparativos, limitações e sequência de telas em [INVENTORY-PIRATE-HD.md](INVENTORY-PIRATE-HD.md). Oito regressões Node pertinentes; inventário fonte/dist em nove viewports, feminino, reload, toque, atalhos, Equipar Melhores e poção; HUD em oito viewports e quatro facções/níveis 49–51; build/diff aprovados. Suite ampla 240/242 inicialmente, Supa browser passou isoladamente após resolver dependência/servidor. Falha sprite-south-hurt reproduzida na base anterior e registrada. Capturas/saves isolados fora do Git. Sem migração, exclusão de assets antigos ou mudança de balanceamento. Rollback pelos commits da branch. Arte aguarda avaliação do proprietário; sem merge automático.
+
+
+### 31/10/2026 — Refinamento final dos componentes do inventário
+
+Branch feature/inventory-final-components, base 7e24c47 (PR172 ainda em rascunho). Componentes PixelLab isolados, 16 ícones gráficos, quatro placas, moeda Berry oficial reutilizada; 50 gerações confirmadas. Cabeçalho compacto sem cenário, faixas de atributos, letras com sombras curtas e quatro ações 2×2. Comparação canônica em cópia do mesmo slot: maior verde, menor/igual vermelho; estados especiais explícitos, sem alterações do save na seleção. Zeros de atributos/+0 ocultos, penalidades mantidas; Forja com item/contexto preservado sem consumo ao abrir. 18 testes Node aprovados; inventário fonte/dist em nove tamanhos, layout em sete, comparação/Forja e persistência no Chrome; build/diff passaram. [Relatório](INVENTORY-FINAL-COMPONENTS.md). Capturas reais e saves controlados fora do Git. Sem novas artes de itens/personagens, migração ou merge automático.
+
+
+### 31/10/2026 — Talentos: artes descobertas, seleção alinhada e zoom mínimo 58%
+
+Branch fix/talent-icons-selection-zoom, base main 4788ca4. Intermediários/finais deixaram de receber moldura genérica com preenchimento; alvos comuns tiveram margem legada removida. Anel único alinhado no DOM para seleção/máximo/hover/foco, sem duplicação no Canvas. Limite 58%–180% compartilhado por botões, visão geral, roda, teclado e pinça; arraste sem seleção de texto. Sem alteração de passivos, investimentos ou saves e sem gerar arte nova. Dez resultados Node aprovados; Canvas nas sete classes/sete resoluções e roteiro visual na fonte/dist com toque e persistência passaram. Build e diff aprovados. Roteiro legado talents_browser.py não iniciou por Chromium ausente; não contado como aprovado. Detalhes e rollback em [TALENTOS.md](TALENTOS.md). Workflow específico adicionado; capturas/saves isolados fora do Git.
+
+
+### 31/10/2026 — Quadro de Contratos HD
+
+Branch feature/contracts-board-hd, base c03d607. Moldura única, duas colunas, arte aprovada da Nami à direita, 12 ícones PixelLab (35 gerações), Berry e materiais oficiais reutilizados. Por orientação expressa, os dez contratos atuais aparecem em Diários, mantendo progresso/resgate único; Semanal e Mensal estão vazias, sem calendário inventado. Progresso agregado conta contratos, e recompensa final permanece A DEFINIR, sem entrega. Apresentação incremental no painel compartilhado, sem novo motor de missões ou migração. Quinze resultados Node e contratos fonte/dist em nove resoluções passaram; regressão de inventário/HUD também aprovada. [Diagnóstico, recursos, testes, pendências e rollback](QUADRO-CONTRATOS-HD.md). Evidências e saves controlados fora do Git; merge depende do proprietário.
+
+
+## 31/10/2026 — Talentos HD
+
+Branch feature/talents-hd; base 003a90cf (PR #178). Três colunas, árvore compacta, bônus totais reais, cabeçalho de madeira e centralização óptica dos medalhões. Sistemas de talentos/combate e saves preservados. Uma arte de fundo PixelLab Pro, 25 gerações; ícones originais intactos. Testes Node, Chromium nas sete classes e sete resoluções, build Pages. Detalhes e rollback: [TALENTOS-HD.md](TALENTOS-HD.md).
+
+
+## 01/11/2026 — Compêndio HD de Akuma no Mi
+
+Branch feature/compendium-hd; base 022004b (PR #179). Cabeçalho em toda a largura, abas de tipos, ranks separados, galeria e detalhes com dados canônicos. Silhuetas individuais dos ícones HD, inclusive Zoan; classificação S Supremo, A/B Lendário, C/D Épico e E Raro compartilhada com inventário/tooltips. Registro permanente com proteção contra duplicação e falha local de salvamento; fórmula de bônus preservada e reutilizada. Uma decoração e três símbolos PixelLab, 31 gerações; nenhum ícone de fruta refeito. Acentuação de Rank A corrigida e descrições genéricas de três Rank S completadas sem alterar números. Testes Node, serviço Python, Chromium em oito resoluções e build Pages. Documentação, compatibilidade e rollback: [COMPENDIO-HD.md](COMPENDIO-HD.md).
+
+Regressão extra: Supa, Doru, Neko, Ushi e Lobo aprovados; Ryu mantém diferença preexistente de 1 px entre idle/walk frontal, reproduzida com a base e o teste originais. Nenhum sprite ou limite da asserção foi alterado.

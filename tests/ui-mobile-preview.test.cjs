@@ -13,12 +13,12 @@ assert.deepEqual(scripts(preview),scripts(production),'preview must execute the 
 // shared skin may also be enabled in production without invalidating QA.
 const themeLink=/<link rel="stylesheet" href="ui-art-direction\.css"/;
 if(themeLink.test(production)){
-  assert.match(production,/helm-portrait-ribbon/,'public theme must include the captain-log HUD');
+  assert.match(production,/parchment-profile/,'public theme must include the captain-log HUD');
 } else {
-  assert.doesNotMatch(production,/helm-portrait-ribbon/,'unapproved production layout must stay unchanged');
+  assert.doesNotMatch(production,/parchment-profile/,'unapproved production layout must stay unchanged');
 }
 assert.match(preview,/<link rel="stylesheet" href="ui-art-direction\.css"/);
-assert.match(preview,/helm-portrait-ribbon/);
+assert.match(preview,/parchment-profile/);
 assert.match(skin,/\.topbar/);
 assert.match(build,/web_files = \['index\.html', 'ui-preview\.html', 'ui-art-direction\.css'/);
 assert.match(build,/for page in \['index\.html', 'ui-preview\.html'\]:/);

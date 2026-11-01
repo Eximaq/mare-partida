@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "date": "2026-11-01",
+  "reference": "Compêndio de Frutas do Diabo.png",
+  "totalGenerations": 31,
+  "assets": [
+    {
+      "file": "header.png",
+      "width": 688,
+      "height": 256,
+      "transparent": false,
+      "model": "PixelLab AI Pro",
+      "jobId": "a41b2378-715f-420e-9de8-de4651bb2d63",
+      "assetId": "6e157e82-01da-5f31-ac02-8cf44dbb068a",
+      "generations": 25,
+      "prompt": "Masterpiece Ultra HD refined detailed pixel art decorative HEADER illustration for Kaizoku Idle premium pirate RPG fruit compendium. Wide horizontal 688x256 composition, ornate warm aged dark wood desk in a captain study. At the RIGHT: a glowing antique brass lantern with warm amber flame, several old leather-bound nautical books, an aged parchment chart with a small ORIGINAL neutral compass rose sketch (no copyrighted logos, no letters), and one large mysterious violet spiralled fantasy FRUIT with a curled golden stem resting on burgundy velvet cloth. Rich handmade polished dimensional shading, crisp fine pixel detail, controlled warm golden edge lighting and deep brown shadows. LEFT QUARTER should transition into very dark empty wood so the UI title can sit beside this illustration. Decorative still life only, no people, no scenery outside, no UI screenshot, NO TEXT, no letters, no numbers, no frames, no buttons, no extra fruit cards. Match a premium wooden and aged-gold nautical fantasy inventory interface. All decorative objects stay fully inside this wide header illustration.",
+      "sha256": "a0d3ea7e6c220f520d683f29d18b9c60c4cd051c8777ea973a6a5a357c8e3489"
+    },
+    {
+      "file": "types-atlas.png",
+      "width": 192,
+      "height": 64,
+      "transparent": true,
+      "model": "PixelLab AI Pro Flash",
+      "jobId": "8deb033c-2943-42a5-9c30-c394667faac1",
+      "assetId": "aaa42a72-4933-55e1-9068-fe89c7aea8ac",
+      "generations": 6,
+      "prompt": "Masterpiece HD refined pixel art UI icon strip for premium Kaizoku Idle pirate RPG. EXACT THREE separate isolated glyphs in a single horizontal row, canvas 192x64 divided into three 64x64 cells. Each glyph centered in its own cell with transparent padding and no overlap. LEFT cell centered x32: elegant COBALT BLUE SPIRAL swirl with a warm pale metallic edge, clear round spiral symbol for Paramecia. MIDDLE cell centered x96: a GOLDEN ANIMAL PAW print, one broad paw pad and four toe pads, clear silhouette for Zoan. RIGHT cell centered x160: a RED AND ORANGE FLAME with dark crimson shading and gold highlights, clear fire silhouette for Logia. Match three dimensional polished small game interface symbols: crisp clean pixel edges, precise controlled shading, premium artistic finish, readable at 24 to 36px. No circular medallions, no backing plates, no frames, no labels, no text, no scenery, no cards, true transparent background. Three separate glyphs only.",
+      "cells": {
+        "paramecia": [
+          0,
+          0,
+          64,
+          64
+        ],
+        "zoan": [
+          64,
+          0,
+          64,
+          64
+        ],
+        "logia": [
+          128,
+          0,
+          64,
+          64
+        ]
+      },
+      "sha256": "677dd5bdf3b2be7584f510b954af9b78b6ef01b108dde9b56e80d56587f43273"
+    }
+  ],
+  "reused": [
+    "assets/ui/items-hd/ (all 30 official fruit icons, resolved by MareItemArt)",
+    "assets/ui/forge-hd/workshop-surface.png",
+    "assets/ui/character-hud/hd/wood.png",
+    "assets/ui/inventory-hd/frame-v2.png",
+    "assets/ui/inventory-hd/heading-v2.png",
+    "assets/ui/inventory-final/primary.png",
+    "assets/ui/inventory-final/secondary.png",
+    "assets/ui/contracts-hd/monthly.png",
+    "assets/ui/character-studio/attributes/"
+  ],
+  "notes": "No fruit icons, Zoan transformations, skill icons or currency were regenerated. Native atlas cells are sampled with CSS. Individual fruit masks are cached from the official alpha channel; the masthead is decorative and spans its complete width with proportional cover."
+}

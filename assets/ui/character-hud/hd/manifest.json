@@ -1,0 +1,108 @@
+{
+  "generator": "PixelLab AI Pro + PixelLab Workbench",
+  "generationCost": 190,
+  "sourceReference": "Referência Final da HUD Pirata.png (owner supplied)",
+  "runtimeCalls": false,
+  "sourceResolutionPreserved": true,
+  "files": [
+    {
+      "file": "status.png",
+      "job": "4654b140-0950-427e-bac6-fd3520f12886",
+      "size": [
+        600,
+        400
+      ],
+      "cost": 25
+    },
+    {
+      "file": "poster.png",
+      "job": "f690ccda-a30d-4ed7-a9be-86e2ec0056c2",
+      "size": [
+        448,
+        600
+      ],
+      "cost": 25
+    },
+    {
+      "file": "wood.png",
+      "job": "8e772870-d539-4006-8dd0-ec8b3a294d53",
+      "size": [
+        512,
+        256
+      ],
+      "cost": 25
+    },
+    {
+      "file": "parchment.png",
+      "job": "b02b484a-c69d-4e33-a264-78dc29f08d7b",
+      "size": [
+        448,
+        600
+      ],
+      "cost": 25
+    },
+    {
+      "file": "berry-coins.png",
+      "source": "Sequência de Moedas Douradas DB.png — supplied by owner",
+      "size": [
+        2172,
+        724
+      ],
+      "cost": 0,
+      "method": "Original file copied unchanged; first of six cells shown statically through CSS background viewport",
+      "sha256": "597728b36501650999b4f5982d6f3bc10ac23cd9a93d72d81a94f5a2486f4aaf"
+    }
+  ],
+  "sample": {
+    "job": "9319e347-989f-49ca-a018-eb0490d6dd7c",
+    "cost": 15,
+    "status": "validated before expansion; replaced by base family"
+  },
+  "families": [
+    {
+      "name": "base",
+      "tiers": [
+        1,
+        2,
+        3
+      ],
+      "job": "84c26229-1f81-42f4-9b07-2762a697ac49",
+      "alignment": "26d1adb7-b41f-42c1-9247-38af70d86b83",
+      "split": "a6df1c9b-2393-4b58-9f57-377b8d820cd4"
+    },
+    {
+      "name": "command",
+      "tiers": [
+        4,
+        5
+      ],
+      "job": "b1d4e676-6bf9-46bc-b5c7-2bf889ed1b1d",
+      "split": "715c4ebf-be89-49ed-8050-5482aa7fb77c"
+    },
+    {
+      "name": "elite",
+      "tiers": [
+        6,
+        7,
+        8
+      ],
+      "job": "34f4af36-d6a1-41eb-b82b-5e4b6d3dbc93",
+      "split": "5f8eb511-13a3-4ef3-8b79-359e008f52f2"
+    }
+  ],
+  "frameExport": {
+    "size": [
+      480,
+      96
+    ],
+    "order": [
+      "pirate",
+      "revolutionary",
+      "marine",
+      "government"
+    ],
+    "method": "PixelLab split; GIF frames exported to PNG without resizing or repainting; decoded RGBA equality verified"
+  },
+  "emblems": "../../faction-emblems/source.json",
+  "hierarchy": "MareHierarchy.titles; no duplicated title catalog; ranks6–8 remain locked"
+}

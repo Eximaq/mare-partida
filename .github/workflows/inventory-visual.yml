@@ -16,6 +16,13 @@ on:
       - 'player-hub.js'
       - 'inventory-compact.css'
       - 'tests/inventory-layout-browser.py'
+      - 'tests/inventory-hd-browser.cjs'
+      - 'tests/item-art.test.cjs'
+      - 'item-art.js'
+      - 'assets/ui/items-hd/**'
+      - 'ui-components.css'
+      - 'ui-tokens.css'
+      - 'assets/ui/inventory-hd/**'
       - 'tests/hud_responsive_browser.py'
       - '.github/workflows/inventory-visual.yml'
   workflow_dispatch:
@@ -30,16 +37,23 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Preparar Chromium
         run: |
           python -m pip install playwright==1.63.0
           python -m playwright install --with-deps chromium
+          npm install --prefix /tmp/mare-inventory-node playwright@1.63.0
+          /tmp/mare-inventory-node/node_modules/.bin/playwright install chromium
       - name: Inventário desktop, tablet e mobile
         run: |
           python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-inventory-http.log 2>&1 &
           sleep 2
+          node --test tests/item-art.test.cjs
           python -X utf8 tests/inventory-layout-browser.py
           python -X utf8 tests/hud_responsive_browser.py
+          NODE_PATH=/tmp/mare-inventory-node/node_modules MARE_TEST_URL=http://127.0.0.1:8123/ MARE_QA_DIR=/tmp/mare-inventory-visual/hd node tests/inventory-hd-browser.cjs
       - name: Capturas e métricas de revisão
         if: always()
         uses: actions/upload-artifact@v4

@@ -1,0 +1,57 @@
+name: HUD de personagem — pergaminho e fonte
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'character-hud.js'
+      - 'assets/ui/character-hud/**'
+      - 'ui-hud.css'
+      - 'ui-responsive.css'
+      - 'ui-navigator.css'
+      - 'ui-system.js'
+      - 'game.js'
+      - 'index.html'
+      - 'ui-preview.html'
+      - 'tools/build_pages.py'
+      - 'tests/character_hud_browser.cjs'
+      - '.github/workflows/character-hud.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  characterHud:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Preparar navegador
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Contratos e publicação estática
+        run: |
+          node --check character-hud.js
+          node --check game.js
+          node --test tests/ui-system.test.cjs tests/ui-mobile-preview.test.cjs tests/inventory-compact.test.cjs tests/hud-zoom-xph.test.cjs tests/player-hub.test.cjs tests/character-hud-hierarchy.test.cjs tests/hierarchy.test.cjs
+          python3 tools/build_pages.py
+      - name: HUD em oito resoluções
+        env:
+          MARE_QA_DIR: ${{ runner.temp }}/character-hud
+          MARE_TEST_URL: http://127.0.0.1:8165/dist/
+        run: |
+          python3 -m http.server 8165 --bind 127.0.0.1 > /tmp/character-hud.log 2>&1 &
+          sleep 2
+          node tests/character_hud_browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: character-hud-capturas
+          path: ${{ runner.temp }}/character-hud/
+          if-no-files-found: warn
+          retention-days: 14

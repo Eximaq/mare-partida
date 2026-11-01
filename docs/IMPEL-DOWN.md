@@ -59,3 +59,8 @@ A execução atual de testes e o build estão registrados no changelog. Capturas
 Jogo estático/offline: não existe servidor remoto autoritativo para esta progressão. Chefes específicos e recompensas após50 aguardam definição. O crescimento composto até100 é intencional e pode tornar andares altos muito difíceis.
 
 Para reverter, retornar ao commit anterior da branch e manter backup do save; não apagar impelDown nem renumerar o catálogo. A versão anterior reconhece o mesmo progresso e ledger, mas volta a mostrar a prévia indisponível.
+
+
+## Prévia persistente e HUD HD — 01/11/2026
+
+A prévia agora prepara e salva somente o próximo encontro liberado, usando o mesmo resolvedor do combate. Identidade reaproveitada na entrada e após recarregar, sem reroll ao reabrir. Último encontro concluído preservado; inspeções antigas sem registro mostram desconhecimento. Falha de armazenamento bloqueia o início do encontro até salvar. Regras, combate e recompensas permanecem iguais. Detalhes, arte e validação em [Mapa e prisão HD](MAPA-PRISAO-HD.md).

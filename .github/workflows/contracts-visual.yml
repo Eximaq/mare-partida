@@ -1,0 +1,51 @@
+name: Contratos — apresentação e resgates
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'contracts-board.js'
+      - 'game.js'
+      - 'ui-screens.css'
+      - 'ui-components.css'
+      - 'ui-system.js'
+      - 'ui-navigator.css'
+      - 'index.html'
+      - 'ui-preview.html'
+      - 'assets/ui/contracts-hd/**'
+      - 'tests/contracts-*.cjs'
+      - 'tools/build_pages.py'
+      - '.github/workflows/contracts-visual.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar Chromium
+        run: |
+          npm install --prefix /tmp/mare-contracts-node playwright@1.63.0
+          /tmp/mare-contracts-node/node_modules/.bin/playwright install --with-deps chromium
+      - name: Validar quadro e pacote público
+        run: |
+          node --test tests/contracts-board.test.cjs tests/contracts-art.test.cjs tests/ui-system.test.cjs tests/ui-mobile-preview.test.cjs
+          python tools/build_pages.py
+          python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-contracts-http.log 2>&1 &
+          sleep 2
+          NODE_PATH=/tmp/mare-contracts-node/node_modules MARE_TEST_URL=http://127.0.0.1:8123/dist/ MARE_QA_DIR=/tmp/mare-contracts-visual node tests/contracts-board-browser.cjs
+      - name: Capturas reais
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: contratos-quadro-hd
+          path: /tmp/mare-contracts-visual/
+          if-no-files-found: warn
+          retention-days: 14

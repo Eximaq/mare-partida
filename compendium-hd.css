@@ -1,0 +1,127 @@
+/* Approved compendium shell. Shared wood, dark metal and gold; native item art is reused. */
+#app #panelOverlay.compendium-hd-mode{padding:8px;--comp-title:'Inventory Alegreya SC',Georgia,serif;--comp-body:'Alegreya Sans','Segoe UI',sans-serif}
+#app #panelOverlay.compendium-hd-mode>.dialog{display:flex;flex-direction:column;width:min(1840px,calc(100vw - 16px));height:calc(100dvh - 16px);max-width:none;max-height:none;border:20px solid transparent;border-image:var(--rpg-hd-panel) 105 / 30px / 0 stretch;border-radius:0;background:var(--rpg-hd-wood) center/512px 256px;overflow:hidden;box-shadow:0 15px 60px #000a}
+#app #panelOverlay.compendium-hd-mode .dialog-header{display:flex;align-items:center;gap:16px;position:relative;min-height:154px;flex:none;padding:15px 22px 17px 99px;border:0;border-bottom:1px solid #b48d48;background:linear-gradient(90deg,#0a080700 30%,#0a080700),url('assets/ui/compendium-hd/header.png') right center/auto 256px no-repeat,var(--rpg-hd-wood) center/512px 256px}
+#app #panelOverlay.compendium-hd-mode .dialog-header:before{content:'';position:absolute;left:12px;top:30px;width:75px;height:80px;background:url('assets/ui/character-menu/akuma.png') center/contain no-repeat}
+#app #panelOverlay.compendium-hd-mode .dialog-header>div:first-child{flex:1;min-width:0;text-shadow:0 2px 4px #000,1px 0 3px #000}
+#app #panelOverlay.compendium-hd-mode .dialog-header small{font:700 14px/1.1 var(--comp-body);color:#e7bd70;letter-spacing:.7px}
+#app #panelOverlay.compendium-hd-mode #dialogTitle{font:700 clamp(30px,2.7vw,46px)/1.1 var(--comp-title);text-transform:uppercase;margin:2px 0 4px;color:#ffe3ab}
+#app #panelOverlay.compendium-hd-mode .comp-heading-subtitle{font:17px/1.3 var(--comp-body);color:#e0d6bc;margin:0}
+#app #panelOverlay.compendium-hd-mode #closePanel{align-self:flex-start;flex:none;width:46px;height:46px;min-width:46px;min-height:46px;padding:0;background:none;color:#ffe3aa;font:30px/1 Georgia,serif;border:8px solid transparent;border-image:var(--rpg-hd-secondary) 25 30 fill / 8px / 0 stretch;box-shadow:none;position:relative;z-index:1}
+#app #panelOverlay.compendium-hd-mode .dialog-body{display:flex;flex:1;min-width:0;min-height:0;padding:0;overflow:hidden;background:none}
+#app #panelOverlay.compendium-hd-mode .compendium-hd{display:flex;flex-direction:column;flex:1;min-width:0;min-height:0;font:17px/1.3 var(--comp-body);color:#e8dfc6}
+#app #panelOverlay.compendium-hd-mode button:where(:not(#closePanel)){min-height:44px;border:7px solid transparent;border-image:var(--rpg-hd-secondary) 25 30 fill / 7px / 0 stretch;border-radius:0;box-shadow:none;background:none;color:#f5dfb0;font:700 18px/1.1 var(--comp-title);padding:4px 10px;letter-spacing:0}
+#app #panelOverlay.compendium-hd-mode button[aria-pressed=true]:not(.comp-fruit-card),#app #panelOverlay.compendium-hd-mode .comp-register-action button:not(:disabled){border-image-source:var(--rpg-hd-button);color:#fff1c4;text-shadow:0 1px 2px #5b3408}
+#app #panelOverlay.compendium-hd-mode button:disabled{opacity:.6;filter:grayscale(.85);cursor:not-allowed}
+#app #panelOverlay.compendium-hd-mode :is(button,input,select,summary):focus-visible{outline:2px solid #ffe5a2;outline-offset:2px}
+#app #panelOverlay.compendium-hd-mode .comp-top-row{display:flex;align-items:center;gap:12px;padding:8px 8px 11px;border-bottom:1px solid #ac803f;flex:none}
+#app #panelOverlay.compendium-hd-mode .comp-type-tabs{display:flex;gap:8px;flex:1;max-width:1060px;min-width:0}
+#app #panelOverlay.compendium-hd-mode .comp-type-tabs button{display:flex;justify-content:center;align-items:center;gap:17px;flex:1;font-size:21px;min-height:61px;text-transform:uppercase}
+#app #panelOverlay.compendium-hd-mode .comp-type-tabs img{width:36px;height:36px;object-fit:contain}
+#app #panelOverlay.compendium-hd-mode .comp-availability{display:flex;align-items:center;gap:9px;margin-left:auto;min-height:47px;font:700 17px/1.1 var(--comp-body)}
+#app #panelOverlay.compendium-hd-mode .comp-availability img{width:26px;height:26px;object-fit:contain}
+#app #panelOverlay.compendium-hd-mode .comp-rules{padding:12px 20px;margin:8px;border:1px solid #ac8344;background:linear-gradient(#080809bb,#080809bb),var(--rpg-workshop-surface) center/512px;max-height:175px;overflow:auto;flex:none}
+#app #panelOverlay.compendium-hd-mode .comp-rules[hidden]{display:none}
+#app #panelOverlay.compendium-hd-mode .comp-rules h3{margin:0 0 7px;color:#f4d99f;font:700 22px var(--comp-title)}
+#app #panelOverlay.compendium-hd-mode .comp-rules p{margin:5px 0;font:16px/1.3 var(--comp-body)}
+#app #panelOverlay.compendium-hd-mode .comp-workspace{display:grid;grid-template-columns:160px minmax(0,1fr) minmax(330px,385px);gap:11px;flex:1;min-width:0;min-height:0;padding:10px 4px 1px}
+#app #panelOverlay.compendium-hd-mode :is(.comp-ranks,.comp-gallery,.comp-details){min-width:0;min-height:0;border:12px solid transparent;border-image:var(--rpg-hd-plaque) 25 40 / 16px 18px / 0 stretch;box-shadow:inset 0 0 24px #0008;background:linear-gradient(#06090cba,#06090cba),var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.compendium-hd-mode .comp-ranks{padding:14px 6px;overflow:auto}
+#app #panelOverlay.compendium-hd-mode .comp-ranks h3{margin:0 0 10px;font:700 20px var(--comp-title);color:#f4d99f}
+#app #panelOverlay.compendium-hd-mode .comp-ranks>small{display:block;font:13px/1.4 var(--comp-body);color:#b6b6ab;text-align:center;margin-top:13px}
+#app #panelOverlay.compendium-hd-mode .comp-ranks .comp-all-ranks{width:100%;font:700 14px var(--comp-body);padding:3px;margin-bottom:7px}
+#app #panelOverlay.compendium-hd-mode [data-compendium-ranks]{display:grid;gap:8px}
+#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] button{display:grid;grid-template-columns:42px minmax(0,1fr);align-items:center;gap:0 4px;width:100%;padding:3px;min-height:72px;border:1px solid #ae8c59;border-image:none;border-radius:4px;background:linear-gradient(#04070b80,#04070b80),var(--rpg-workshop-surface) center/512px;box-shadow:inset 0 0 0 2px #0008}
+#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] button[aria-pressed=true]{border-color:#ffdfa0;box-shadow:0 0 0 2px #c58e37,inset 0 0 18px #b5853444;background:linear-gradient(#39251288,#23160b88),var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] .comp-rank-letter{grid-row:1/3}
+#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] strong{font:700 17px var(--comp-body);color:#f0dcaf}
+#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] small{font:15px var(--comp-body);text-align:right;color:#b9c0bc;padding-right:5px}
+#app #panelOverlay.compendium-hd-mode .comp-rank-letter{display:inline-flex;align-items:center;justify-content:center;font:700 46px/1 var(--comp-title);color:var(--fruit-rarity);text-shadow:0 2px 1px #000,1px 0 #000,-1px 0 #000,0 0 9px #000}
+#app #panelOverlay.compendium-hd-mode .comp-gallery{display:flex;flex-direction:column;padding:12px 7px 5px}
+#app #panelOverlay.compendium-hd-mode .comp-filters{display:grid;grid-template-columns:minmax(150px,1.65fr) minmax(110px,1fr) minmax(120px,1fr) 92px;gap:8px;align-items:center;flex:none}
+#app #panelOverlay.compendium-hd-mode :is(.comp-filters input,.comp-filters select){width:100%;min-width:0;min-height:45px;border:1px solid #9d865e;border-image:none;border-radius:3px;background:linear-gradient(#070b0dbb,#070b0dbb),var(--rpg-workshop-surface) center/512px;color:#f1dfb5;padding:8px;font:17px var(--comp-body);box-shadow:inset 0 1px 3px #0008}
+#app #panelOverlay.compendium-hd-mode .comp-filters option{background:#1e1916;color:#f1dfb5}
+#app #panelOverlay.compendium-hd-mode .comp-search{display:flex;align-items:center;position:relative;min-width:0}
+#app #panelOverlay.compendium-hd-mode .comp-search span{position:absolute;left:12px;top:3px;font:34px Georgia;color:#e1c58e;pointer-events:none}
+#app #panelOverlay.compendium-hd-mode .comp-search input{padding-left:42px}
+#app #panelOverlay.compendium-hd-mode .comp-search input::placeholder{color:#aeb3b0}
+#app #panelOverlay.compendium-hd-mode .comp-result-line{display:flex;align-items:center;justify-content:space-between;gap:7px;margin:6px 0;font:14px var(--comp-body);color:#b8c0ba;flex:none}
+#app #panelOverlay.compendium-hd-mode .comp-result-line button{min-height:28px;font:14px var(--comp-body);padding:2px 5px;border-width:5px;border-image-width:5px}
+#app #panelOverlay.compendium-hd-mode .comp-fruit-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:11px;align-content:start;overflow:auto;min-height:0;padding:4px 4px 10px;overscroll-behavior:contain}
+#app #panelOverlay.compendium-hd-mode button.comp-fruit-card{display:flex;flex-direction:column;position:relative;min-width:0;padding:0;min-height:0;overflow:hidden;border:2px solid var(--fruit-rarity);border-image:none;border-radius:8px;background:radial-gradient(ellipse at 50% 35%,#373a4555,transparent 70%),linear-gradient(#06080baa,#06080bcc),var(--rpg-workshop-surface) center/512px;box-shadow:inset 0 0 0 2px #15100a,0 1px 3px #000;transition:none;text-align:left}
+#app #panelOverlay.compendium-hd-mode .comp-fruit-card .comp-rank-letter{position:absolute;left:8px;top:2px;font-size:37px;z-index:1}
+#app #panelOverlay.compendium-hd-mode button.comp-fruit-card.is-selected{outline:2px solid #ffe8a2;outline-offset:2px;box-shadow:0 0 10px #f6cc6c99,inset 0 0 0 2px var(--fruit-rarity)}
+#app #panelOverlay.compendium-hd-mode .comp-fruit-art{display:block;position:relative;aspect-ratio:1.12;width:100%;min-width:0;background:radial-gradient(ellipse at 50% 60%,#717d8c25,transparent 65%)}
+#app #panelOverlay.compendium-hd-mode .comp-fruit-art canvas{display:block;width:100%;height:100%;object-fit:contain;background:transparent;filter:drop-shadow(0 4px 5px #0008)}
+#app #panelOverlay.compendium-hd-mode .is-silhouette canvas{filter:drop-shadow(0 0 4px #b2bdd077)}
+#app #panelOverlay.compendium-hd-mode .comp-question{position:absolute;left:0;right:0;top:40%;text-align:center;pointer-events:none;font:700 29px/1 var(--comp-body);color:#94a0a56b}
+#app #panelOverlay.compendium-hd-mode .comp-card-copy{display:block;flex:1;min-width:0;width:100%;border-top:1px solid #ad976244;background:#0005;padding:7px 6px 6px}
+#app #panelOverlay.compendium-hd-mode .comp-card-copy strong{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;height:2.35em;font:700 16px/1.15 var(--comp-body);color:#f2e2bd;margin:0 0 3px}
+#app #panelOverlay.compendium-hd-mode .comp-card-copy small{display:flex;align-items:center;gap:5px;min-width:0;font:14px/1.2 var(--comp-body);color:#aebbb7}
+#app #panelOverlay.compendium-hd-mode .comp-card-copy img{width:19px;height:19px;object-fit:contain}
+#app #panelOverlay.compendium-hd-mode .comp-registered-mark{margin-left:auto;color:#dfc289;font:700 13px var(--comp-body)}
+#app #panelOverlay.compendium-hd-mode .comp-art-error{position:absolute;left:0;right:0;top:30%;text-align:center;font:14px var(--comp-body);color:#d0b185}
+#app #panelOverlay.compendium-hd-mode .comp-no-results{grid-column:1/-1;text-align:center;padding:30px 12px}
+#app #panelOverlay.compendium-hd-mode .comp-no-results h3{font:700 25px var(--comp-title);color:#ffe0a1}
+#app #panelOverlay.compendium-hd-mode .comp-details{display:flex;flex-direction:column;padding:10px 9px 7px}
+#app #panelOverlay.compendium-hd-mode .comp-detail-scroll{overflow:auto;overscroll-behavior:contain;min-height:0;flex:1;padding:0 5px 10px}
+#app #panelOverlay.compendium-hd-mode .comp-detail-heading{display:flex;gap:15px;align-items:center}
+#app #panelOverlay.compendium-hd-mode .comp-detail-heading .comp-rank-letter{font-size:58px;min-width:45px}
+#app #panelOverlay.compendium-hd-mode .comp-detail-heading h2{font:700 25px/1.12 var(--comp-title);color:#ffe4ae;margin:0 0 6px;overflow-wrap:anywhere}
+#app #panelOverlay.compendium-hd-mode .comp-detail-heading small{display:flex;align-items:center;gap:6px;font:16px var(--comp-body);color:#d3c6ad;flex-wrap:wrap}
+#app #panelOverlay.compendium-hd-mode .comp-detail-heading img{width:21px;height:21px;object-fit:contain}
+#app #panelOverlay.compendium-hd-mode .comp-fruit-art.is-large{width:min(240px,90%);aspect-ratio:1;max-width:100%;margin:4px auto}
+#app #panelOverlay.compendium-hd-mode .comp-fruit-art.is-large .comp-question{font-size:40px}
+#app #panelOverlay.compendium-hd-mode .comp-description{font:18px/1.35 var(--comp-body);color:#c9d0c9;margin:6px 0 14px;padding-bottom:12px;border-bottom:1px solid #b38a4c}
+#app #panelOverlay.compendium-hd-mode .comp-details section h3{font:700 17px/1.2 var(--comp-title);color:#f1d69e;margin:12px 0 9px}
+#app #panelOverlay.compendium-hd-mode .comp-details dl{margin:0}
+#app #panelOverlay.compendium-hd-mode .comp-details dl>div{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px 2px;border-top:1px solid #a0875338;font:17px var(--comp-body)}
+#app #panelOverlay.compendium-hd-mode .comp-details dt{display:flex;align-items:center;gap:7px;color:#bcc1b6}
+#app #panelOverlay.compendium-hd-mode .comp-details dt img{width:27px;height:27px;object-fit:contain}
+#app #panelOverlay.compendium-hd-mode .comp-details dd{margin:0;text-align:right;color:#f1dfb1;font-weight:600}
+#app #panelOverlay.compendium-hd-mode .comp-bonus>small{display:block;font:14px/1.25 var(--comp-body);color:#b5b4a5;margin:5px 0 12px}
+#app #panelOverlay.compendium-hd-mode .comp-rate{display:block;font:14px/1.3 var(--comp-body);color:#b1b5a7;margin:13px 0 0}
+#app #panelOverlay.compendium-hd-mode .comp-own-effects{font:16px/1.35 var(--comp-body);color:#d6cfba;padding:10px 0;border-top:1px solid #b38a4c44;margin-top:10px}
+#app #panelOverlay.compendium-hd-mode .comp-own-effects summary{cursor:pointer;color:#e3c58a}
+#app #panelOverlay.compendium-hd-mode .comp-own-effects ul{padding-left:18px}
+#app #panelOverlay.compendium-hd-mode .comp-own-effects li p{font:15px/1.35 var(--comp-body);color:#bdc2b8;margin:3px 0 12px}
+#app #panelOverlay.compendium-hd-mode .comp-register-action{flex:none;border-top:1px solid #aa8345;padding-top:9px;background:none}
+#app #panelOverlay.compendium-hd-mode .comp-register-action button{width:100%;font-size:22px;min-height:50px}
+#app #panelOverlay.compendium-hd-mode .comp-register-action small{display:block;font:14px/1.2 var(--comp-body);color:#bfc1b6;text-align:center;margin-top:7px}
+#app #panelOverlay.compendium-hd-mode .comp-empty-details{text-align:center;padding:25px 10px}
+@media(min-width:1800px){#app #panelOverlay.compendium-hd-mode .comp-workspace{grid-template-columns:170px minmax(0,1fr) 410px}#app #panelOverlay.compendium-hd-mode .comp-fruit-card .comp-card-copy strong{font-size:18px}}
+@media(max-width:1450px){#app #panelOverlay.compendium-hd-mode .comp-workspace{grid-template-columns:137px minmax(0,1fr) 325px;gap:8px}#app #panelOverlay.compendium-hd-mode .comp-fruit-grid{gap:9px;grid-template-columns:repeat(4,minmax(0,1fr))}#app #panelOverlay.compendium-hd-mode .comp-filters{grid-template-columns:minmax(130px,1fr) minmax(100px,1fr)}#app #panelOverlay.compendium-hd-mode .comp-ranks{padding:10px 3px}#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] button{grid-template-columns:35px minmax(0,1fr)}#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] strong{font-size:16px}#app #panelOverlay.compendium-hd-mode .comp-rank-letter{font-size:40px}#app #panelOverlay.compendium-hd-mode .comp-fruit-art.is-large{width:190px}#app #panelOverlay.compendium-hd-mode .comp-type-tabs button{font-size:18px;gap:8px}#app #panelOverlay.compendium-hd-mode .comp-type-tabs img{width:29px;height:29px}#app #panelOverlay.compendium-hd-mode .comp-availability{font-size:15px;max-width:170px}#app #panelOverlay.compendium-hd-mode .dialog-header{min-height:133px}}
+@media(max-width:1180px){#app #panelOverlay.compendium-hd-mode .comp-workspace{grid-template-columns:115px minmax(0,1fr) 300px}#app #panelOverlay.compendium-hd-mode .comp-fruit-grid{grid-template-columns:repeat(3,minmax(0,1fr))}#app #panelOverlay.compendium-hd-mode .comp-details{padding:8px 3px}#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] button{grid-template-columns:30px minmax(0,1fr)}#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] strong{font-size:14px}#app #panelOverlay.compendium-hd-mode .comp-rank-letter{font-size:36px}}
+@media(max-width:1024px){#app #panelOverlay.compendium-hd-mode .dialog-header{padding-left:83px;min-height:122px;background-size:auto 210px,auto 210px,512px 256px}#app #panelOverlay.compendium-hd-mode .comp-workspace{grid-template-columns:115px minmax(0,1fr);grid-template-rows:480px auto;overflow:auto;align-content:start}#app #panelOverlay.compendium-hd-mode .comp-details{grid-column:1/-1;min-height:540px}#app #panelOverlay.compendium-hd-mode .comp-detail-scroll{max-height:650px}#app #panelOverlay.compendium-hd-mode .comp-fruit-grid{grid-template-columns:repeat(4,minmax(0,1fr))}#app #panelOverlay.compendium-hd-mode .comp-fruit-art.is-large{width:190px}#app #panelOverlay.compendium-hd-mode .comp-ranks>small{font-size:12px}#app #panelOverlay.compendium-hd-mode .comp-type-tabs button{font-size:16px;padding:3px;gap:4px}#app #panelOverlay.compendium-hd-mode .comp-type-tabs img{width:25px;height:25px}}
+@media(max-width:760px){#app #panelOverlay.compendium-hd-mode{padding:3px}#app #panelOverlay.compendium-hd-mode>.dialog{width:calc(100vw - 6px);height:calc(100dvh - 6px);border-width:12px;border-image-width:21px}#app #panelOverlay.compendium-hd-mode .dialog-header{padding:8px 4px 8px 55px;gap:6px;min-height:110px;background:linear-gradient(#110b0999,#110b0999),url('assets/ui/compendium-hd/header.png') right center/auto 210px no-repeat,var(--rpg-hd-wood) center/512px 256px}#app #panelOverlay.compendium-hd-mode .dialog-header:before{width:44px;height:50px;left:3px;top:24px}#app #panelOverlay.compendium-hd-mode #dialogTitle{font-size:26px}#app #panelOverlay.compendium-hd-mode .dialog-header small{font-size:11px}#app #panelOverlay.compendium-hd-mode .comp-heading-subtitle{font-size:14px}#app #panelOverlay.compendium-hd-mode #closePanel{width:36px;height:36px;min-width:36px;min-height:36px;font-size:22px}#app #panelOverlay.compendium-hd-mode .comp-top-row{flex-wrap:wrap;padding:6px 1px;gap:5px}#app #panelOverlay.compendium-hd-mode .comp-type-tabs{gap:3px;width:100%;flex:none}#app #panelOverlay.compendium-hd-mode .comp-type-tabs button{font:700 13px var(--comp-body);gap:3px;padding:2px;min-height:44px;border-width:5px;border-image-width:5px}#app #panelOverlay.compendium-hd-mode .comp-type-tabs img{width:20px;height:20px}#app #panelOverlay.compendium-hd-mode .comp-availability{margin:0 0 0 auto;max-width:none;min-height:32px;font-size:13px;border-width:5px;border-image-width:5px}#app #panelOverlay.compendium-hd-mode .comp-availability img{width:21px;height:21px}#app #panelOverlay.compendium-hd-mode .comp-workspace{display:flex;flex-direction:column;padding:6px 0 0;gap:8px;overflow:auto}#app #panelOverlay.compendium-hd-mode .comp-ranks{min-height:0;flex:none;padding:6px;border-width:8px}#app #panelOverlay.compendium-hd-mode .comp-ranks h3{font-size:17px;margin-bottom:5px}#app #panelOverlay.compendium-hd-mode .comp-ranks .comp-all-ranks{width:auto;min-height:30px;border-width:5px;border-image-width:5px;margin:0 0 5px}#app #panelOverlay.compendium-hd-mode [data-compendium-ranks]{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] button{min-height:55px;grid-template-columns:25px minmax(0,1fr);padding:1px;gap:1px}#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] strong{font-size:13px}#app #panelOverlay.compendium-hd-mode [data-compendium-ranks] small{font-size:12px}#app #panelOverlay.compendium-hd-mode .comp-ranks>small{margin:4px 0 0;font-size:12px}#app #panelOverlay.compendium-hd-mode .comp-ranks>small br{display:none}#app #panelOverlay.compendium-hd-mode .comp-gallery{min-height:620px;flex:none;border-width:8px;padding:8px 4px}#app #panelOverlay.compendium-hd-mode .comp-fruit-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;max-height:480px;padding:4px}#app #panelOverlay.compendium-hd-mode .comp-filters{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px}#app #panelOverlay.compendium-hd-mode .comp-search{grid-column:1/-1}#app #panelOverlay.compendium-hd-mode .comp-filters :is(input,select){min-height:39px;font-size:15px;padding:5px}#app #panelOverlay.compendium-hd-mode .comp-filters input{padding-left:35px}#app #panelOverlay.compendium-hd-mode .comp-search span{left:9px;top:0;font-size:30px}#app #panelOverlay.compendium-hd-mode .comp-filters [data-compendium-sort]{grid-column:1/-1}#app #panelOverlay.compendium-hd-mode .comp-result-line{font-size:12px}#app #panelOverlay.compendium-hd-mode .comp-result-line button{font-size:12px}#app #panelOverlay.compendium-hd-mode .comp-card-copy strong{font-size:15px}#app #panelOverlay.compendium-hd-mode .comp-card-copy small{font-size:12px}#app #panelOverlay.compendium-hd-mode .comp-details{flex:none;min-height:0;border-width:8px;padding:9px}#app #panelOverlay.compendium-hd-mode .comp-detail-scroll{max-height:none;overflow:visible;flex:none}#app #panelOverlay.compendium-hd-mode .comp-register-action{position:sticky;bottom:0;background:var(--rpg-workshop-surface) center/512px;padding:8px 2px}#app #panelOverlay.compendium-hd-mode .comp-detail-heading h2{font-size:24px}#app #panelOverlay.compendium-hd-mode .comp-rules{max-height:145px;font-size:14px}}
+
+/* Keep rows at their content size inside the scrolling gallery. */
+#app #panelOverlay.compendium-hd-mode .comp-fruit-grid{grid-auto-rows:max-content}
+#app #panelOverlay.compendium-hd-mode button.comp-fruit-card{display:grid;grid-template-rows:minmax(0,1fr) 72px;aspect-ratio:.76;height:auto;min-height:220px}
+#app #panelOverlay.compendium-hd-mode .comp-fruit-card .comp-fruit-art{height:100%;min-height:0;aspect-ratio:auto;overflow:hidden}
+#app #panelOverlay.compendium-hd-mode .comp-card-copy{height:72px;min-height:0;overflow:hidden}
+/* Owner request: the still life fills the complete masthead width. */
+#app #panelOverlay.compendium-hd-mode .dialog-header{background:linear-gradient(90deg,#140c09d9 0%,#140c0988 38%,#140c0922 65%,#140c0900),url('assets/ui/compendium-hd/header.png') right 48%/cover no-repeat}
+
+#app #panelOverlay.compendium-hd-mode button.comp-fruit-card{height:210px;min-height:210px;aspect-ratio:auto;grid-template-rows:minmax(0,1fr) 70px;justify-items:stretch}
+#app #panelOverlay.compendium-hd-mode .comp-card-copy{height:70px}
+#app #panelOverlay.compendium-hd-mode .comp-fruit-card .comp-fruit-art{width:100%;justify-self:stretch}
+@media(max-width:760px){#app #panelOverlay.compendium-hd-mode button.comp-fruit-card{height:205px;min-height:205px}}
+
+#app #panelOverlay.compendium-hd-mode .is-silhouette canvas{filter:drop-shadow(0 0 1px #b2bdd055)}
+
+#app #panelOverlay.compendium-hd-mode .toast-container{background:transparent;border-top:0;padding:4px 8px}
+#app #panelOverlay.compendium-hd-mode .comp-fruit-art.is-large{width:200px}
+
+@media(max-width:760px){#app #panelOverlay.compendium-hd-mode .comp-top-row{min-width:0}#app #panelOverlay.compendium-hd-mode .comp-type-tabs button{min-width:0;flex-direction:column;font-size:12px;line-height:1.05;padding:1px 0;gap:2px}#app #panelOverlay.compendium-hd-mode .comp-type-tabs img{width:18px;height:18px}#app #panelOverlay.compendium-hd-mode .comp-availability{max-width:100%}}
+
+/* Three native transparent PixelLab glyphs, sampled from one 192x64 strip. */
+#app #panelOverlay.compendium-hd-mode .comp-type-glyph{display:inline-block;flex:none;width:21px;height:21px;background:url('assets/ui/compendium-hd/types-atlas.png') 0 0/300% 100% no-repeat}
+#app #panelOverlay.compendium-hd-mode .comp-type-zoan{background-position:50% 0}
+#app #panelOverlay.compendium-hd-mode .comp-type-logia{background-position:100% 0}
+#app #panelOverlay.compendium-hd-mode .comp-type-tabs .comp-type-glyph{width:36px;height:36px}
+#app #panelOverlay.compendium-hd-mode .comp-card-copy .comp-type-glyph{width:19px;height:19px}
+#app #panelOverlay.compendium-hd-mode .dialog-header:before{background-image:url('assets/ui/contracts-hd/monthly.png')}
+@media(max-width:1450px){#app #panelOverlay.compendium-hd-mode .comp-type-tabs .comp-type-glyph{width:29px;height:29px}}
+@media(max-width:1024px){#app #panelOverlay.compendium-hd-mode .comp-type-tabs .comp-type-glyph{width:25px;height:25px}}
+@media(max-width:760px){#app #panelOverlay.compendium-hd-mode .comp-type-tabs .comp-type-glyph{width:18px;height:18px}}

@@ -1,8 +1,8 @@
 """Visual forge flows, actual atomic operations, isolated saves and responsive evidence."""
-import copy,json
+import copy,json,os,tempfile
 from playwright.sync_api import sync_playwright
 from polish_support import *
-OUT=ROOT/'docs/evidence-forge-refactor';OUT.mkdir(parents=True,exist_ok=True)
+OUT=Path(os.environ.get('MARE_FORGE_EVIDENCE',str(Path(tempfile.gettempdir())/'mare-forge-browser')));OUT.mkdir(parents=True,exist_ok=True)
 results=[];errors=[]
 def record(name):results.append(dict(test=name,passed=True));print(name+': passed',flush=True)
 def same(q,before):
@@ -30,7 +30,7 @@ def seeded(template):
             for j in range(11 if a=='for' and n==1 else 1):g['inventory'].append({'id':f'p-{a}-{n}-{j}','def':33+index,'pearlId':f'pearl_{a}_{n}','level':1,'plus':0,'locked':False})
     return g
 with sync_playwright() as p:
-    browser=p.chromium.launch(headless=True);c,q=page_for(browser,errors=errors);template=create(q);c.close()
+    browser=p.chromium.launch(headless=True,executable_path=os.environ.get("CHROME_PATH"));c,q=page_for(browser,errors=errors);template=create(q);c.close()
     for size in SIZES:
         suffix=f'{size[0]}x{size[1]}';seed=seeded(template);c,q=page_for(browser,seed,size,errors);original=saved(q)
         assert original['forgeVersion']==4

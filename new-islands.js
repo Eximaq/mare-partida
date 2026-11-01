@@ -59,15 +59,15 @@
   }
   const islands=Object.fromEntries(Object.keys(definitions).map(id=>[id,create(id)]));
   const images={};
-  if(typeof Image!=='undefined')for(const id of Object.keys(islands)){const image=new Image();image.src='assets/new-islands/'+id+'-map.png';images[id]=image;}
+  function prepare(id){if(!islands[id]||typeof Image==='undefined')return null;if(!images[id]){const image=new Image();image.src='assets/new-islands/'+id+'-map.png';images[id]=image;}return images[id];}
   function ground(ctx,id,camera,width,height){
-    const image=images[id],map=islands[id]?.map;if(!map)return;
+    const image=prepare(id),map=islands[id]?.map;if(!map)return;
     ctx.save();ctx.imageSmoothingEnabled=false;
     if(image?.complete&&image.naturalWidth){const x=Math.max(0,Math.floor(camera.x)),y=Math.max(0,Math.floor(camera.y)),w=Math.min(width+2,map.width-x),h=Math.min(height+2,map.height-y);if(w>0&&h>0)ctx.drawImage(image,x,y,w,h,x,y,w,h);}
     else{ctx.fillStyle=id==='rare'||id==='arlong'?'#116f85':id==='syrup'?'#4d823c':'#69442d';ctx.fillRect(camera.x,camera.y,width,height);}
     ctx.restore();
   }
   function environment(ctx,id,time){const p=islands[id]?.returnPoint;if(!p)return;ctx.save();ctx.strokeStyle='#ead8a4';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(p.x,p.y,28+Math.sin(time*2),12,0,0,Math.PI*2);ctx.stroke();ctx.font='bold 11px Trebuchet MS';ctx.textAlign='center';ctx.fillStyle='#fff2cf';ctx.fillText('Voltar ao porto',p.x,p.y+30);ctx.restore();}
-  root.MareNewIslands={...islands,ground,environment,images};
+  root.MareNewIslands={...islands,ground,environment,images,prepare};
   if(typeof module!=='undefined')module.exports=root.MareNewIslands;
 })(globalThis);

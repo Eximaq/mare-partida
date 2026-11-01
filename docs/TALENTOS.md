@@ -179,3 +179,39 @@ O proprietário rejeitou a escala de 32px por falta de legibilidade e aprovou a 
 - Janela ampla e cabeçalho compacto; detalhes só aparecem ao selecionar um nó. No móvel, a árvore mantém 96px e permite arraste, com detalhes em fluxo e rolagem. Ancoragem inicial no tronco é recalculada após mudanças de tamanho.
 - As conexões dos finais passam por uma junção que expressa o requisito “qualquer ponta válida”, sem cruzamentos de todas as pontas com todos os finais. Nenhuma regra, custo, talento ou investimento foi alterado.
 - Testes cobrem as sete classes, sete resoluções, toque, zoom, confirmação/recarga, falha de storage, saves antigos, tamanho 96px e 42 caminhos exclusivos.
+
+
+## Correção de sobreposição, seleção e zoom — 31/10/2026
+
+Branch fix/talent-icons-selection-zoom, base 4788ca4 (main após merge do PR173).
+
+Causas reproduzidas no Chrome:
+- O upgrade de botões excluía somente .talent-node. Os seis intermediários/finais recebiam .ui-button; a regra global de navegação aplicava border-image com fill, formando quadrados opacos sobre as artes do Canvas.
+- A margem vertical legada de 17px nos talentos comuns deslocava o alvo HTML em relação ao ícone. Canvas, outline do botão e disco interno podiam desenhar anéis ao mesmo tempo.
+- Visão geral calculava uma escala abaixo do limite aplicado aos outros controles; o limite anterior de 20% também permitia leitura muito reduzida.
+
+Correção:
+- Todos os nós da constelação ficam fora da conversão para botão comum. O alvo tem margem zero, fundo/border-image transparentes, sem disco legado nem pseudo-conector.
+- Um único pseudo-elemento circular do alvo representa máximo, seleção, hover e foco de teclado. O Canvas mantém artes, conexões e graduação, sem outro anel de seleção/máximo. Centros conferidos com tolerância de 0,1px no navegador.
+- Limite compartilhado 58%–180% para botões, roda, teclado, pinça, visão geral e restauração da visualização. O botão de diminuir fica desabilitado em 58%. O padrão 100% / 96px permanece.
+- Arrastar não seleciona os textos. Pan, foco, inspeção, prévia, confirmação, descarte e persistência continuam disponíveis.
+- Em telas onde a árvore não cabe inteira a 58%, usar arraste ou foco nos nós para navegar. Visão geral respeita o limite de legibilidade solicitado.
+
+Sem novas artes, uso de PixelLab, mudança de IDs, bônus, custos, ranks ou formato de save. Reversão pelo commit da correção; não é necessária migração.
+
+Arquivos: talent-ui.js, ui-system.js, ui-screens.css, testes de Canvas/visual e workflow .github/workflows/talents-visual.yml.
+
+Validação local:
+- 10 resultados Node aprovados em oito arquivos pertinentes: talentos, Canvas, conquistas/finais, UI, contratos, preview e componentes/comparação do inventário.
+- talent_canvas_browser.py passou: sete classes, sete resoluções, requisitos, prévia/clique/inspeção, máximo, confirmação, reload, descarte, saves herdados, alta densidade, toque e falha de armazenamento; zero erros de página.
+- talent_visual_browser.py passou na fonte e em dist: 21 alvos por classe, sete classes, cinco resoluções, alinhamento das artes/seleção, nós treinados, transparência, zoom por todos os cinco controles e ausência de mutação de save. Pinça usa eventos reais de entrada do Chrome.
+- Build Pages e verificação de sintaxe/diff passaram.
+- O roteiro legado talents_browser.py foi tentado, mas não iniciou: solicita o Chromium do Playwright ausente nesta máquina. O roteiro atual talent_canvas_browser.py foi executado no Chrome instalado, incluindo as verificações transacionais listadas acima. Não declarar o roteiro legado aprovado.
+- Capturas reais e saves controlados ficam fora do Git, em diretórios temporários. Prévia final: mare-talent-visual-fix/talents-fixed.png.
+
+Workflow novo executa regressão Node, roteiro Canvas na fonte e roteiro visual no pacote estático, com capturas como artefatos temporários do CI. Publicação da branch/PR não equivale a merge; aprovação permanece com o proprietário.
+
+
+## Interface HD — 31/10/2026
+
+A constelação agora usa três colunas, madeira compartilhada, medalhões centralizados e bônus totais canônicos, com zoom mínimo de 58%. Regras e saves preservados. Consulte [TALENTOS-HD.md](TALENTOS-HD.md) para arquitetura, arte, testes e limites de enquadramento.

@@ -9,6 +9,7 @@ OUT = ROOT / 'assets/sprites-combat-v2'
 
 def category(key, name):
     n = name.lower()
+    if key == 'phoenix' and 'tuck_the_wings_tightly_against' in n: return 'dash'
     if any(s in n for s in ['sofrer','jerk','flinch','flash_red','tense']): return 'hurt'
     if 'special' in n or 'especial' in n:
         return 'special-2' if key == 'ryu' and '2' in n else 'special'

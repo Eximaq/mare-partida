@@ -28,7 +28,7 @@
     getJournal();
     const tabs=[['all','Tudo'],['event','Eventos'],['update','Atualizações'],['notice','Avisos']];
     const items=journal.filter(x=>selectedJournal==='all'||x.type===selectedJournal);
-    return '<section class="captain-journal" data-captain-journal><p class="captain-lead">Avisos oficiais do Maré Partida, eventos e novidades do desenvolvimento.</p>'+
+    return '<section class="captain-journal" data-captain-journal><p class="captain-lead">Avisos oficiais do Kaizoku Idle, eventos e novidades do desenvolvimento.</p>'+
       '<nav class="captain-tabs" aria-label="Categorias do jornal">'+tabs.map(([id,name])=>button(name,id,selectedJournal).replace('data-captain-tab','data-journal-tab')).join('')+'</nav>'+
       '<div class="captain-news">'+(items.length?items.map(x=>'<article class="captain-news-item"><div class="captain-news-meta"><span class="captain-tag">'+escape(({event:'EVENTO',update:'ATUALIZAÇÃO',notice:'AVISO'})[x.type])+'</span><time>'+escape(x.date||'')+'</time></div><h3>'+escape(x.title)+'</h3><p>'+escape(x.summary||'')+'</p></article>').join(''):'<div class="captain-empty">'+(journalLoading?'Carregando avisos...':'Nenhuma publicação nesta categoria.')+'</div>')+'</div></section>';
   }
@@ -40,7 +40,7 @@
     if(profileTab==='overview')body+='<h3>CAÇADOR</h3><div class="captain-facts">'+field('Nível',g.level)+field('Classe',className)+field('Poder',fmt(s.power))+field('Tempo de jogo',clock(g.totalPlay))+field('Aventureiro desde',date(g.created))+field('Título','Aventureiro')+'</div>'+
       '<h3>POSIÇÃO NOS RANKINGS</h3><div class="captain-facts">'+field('Ranking de nível','Indisponível')+field('Ranking de poder','Indisponível')+'</div>'+
       '<p class="captain-muted">Os rankings requerem servidor e contas online, ainda não implementados.</p>'+
-      '<h3>COMBATE E PROGRESSO</h3><div class="captain-facts">'+field('Monstros derrotados',fmt(g.stats?.kills))+field('Dano causado',fmt(g.stats?.damage))+field('Dobrões recebidos',fmt(g.stats?.goldEarned))+field('Duelos PvP','Indisponível')+'</div>';
+      '<h3>COMBATE E PROGRESSO</h3><div class="captain-facts">'+field('Monstros derrotados',fmt(g.stats?.kills))+field('Dano causado',fmt(g.stats?.damage))+field('Berry recebidos',fmt(g.stats?.goldEarned))+field('Duelos PvP','Indisponível')+'</div>';
     if(profileTab==='gear')body+='<h3>EQUIPAMENTOS ATUAIS</h3><div class="captain-facts">'+(ctx.equipment?.length?ctx.equipment.map(x=>field(x.slot,x.name)).join(''):'<p>Nenhum equipamento selecionado.</p>')+'</div>';
     if(profileTab==='wall'||profileTab==='custom')body+='<div class="captain-empty">'+(profileTab==='wall'?'Mural público em desenvolvimento.':'Personalização pública do perfil em desenvolvimento.')+'</div>';
     return body+'</section>';
@@ -67,7 +67,7 @@
   function render(panel,snapshot){ctx=snapshot;if(panel==='journal')return journalHTML();if(panel==='myprofile')return profileHTML();if(panel==='settings')return settingsHTML();return '';}
   function hydrate(panel){
     if(panel==='myprofile'){
-      const src=document.getElementById('miniPortrait'),target=document.getElementById('captainProfilePortrait');
+      const src=document.getElementById('portrait'),target=document.getElementById('captainProfilePortrait');
       if(src&&target){const c=target.getContext('2d');c.imageSmoothingEnabled=false;c.clearRect(0,0,64,64);c.drawImage(src,0,0,64,64);}
     }
   }

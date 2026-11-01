@@ -4,7 +4,7 @@ const base=process.argv.find(a=>/^https?:/.test(a))||'http://127.0.0.1:8159/dist
 const option=name=>process.argv.find(a=>a.startsWith('--'+name+'='))?.split('=').slice(1).join('=');
 const out=option('evidence'),baseline=option('baseline'),compare=option('compare');
 const ids=['revolutionary','pirate','marine','government'],names=['EXÉRCITO REVOLUCIONÁRIO','PIRATA','MARINHA','GOVERNO MUNDIAL'];
-const bonuses=['Velocidade +8% · Crítico +5%','Ataque +10% · Dobrões +8%','HP +8% · Defesa +10%','Energia +10% · Recarga -8%'];
+const bonuses=['Velocidade +8% · Crítico +5%','Ataque +10% · Berry +8%','HP +8% · Defesa +10%','Energia +10% · Recarga -8%'];
 const mechanics={revolutionary:[1,1,1,1,1.08,.05,1],pirate:[1.10,1,1,1,1,0,1.08],marine:[1,1.10,1.08,1,1,0,1],government:[1,1,1,1.10,1,0,1]};
 const sizes=[[1920,1080],[1366,768],[1280,720],[780,900],[760,900],[393,852],[320,740],[852,393]];
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});try{

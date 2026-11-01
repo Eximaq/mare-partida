@@ -89,3 +89,72 @@
 .hud-notification-status{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap;border:0}
 
 .player-visual-status{position:absolute;top:calc(100% + 4px);left:8px;right:8px;padding:5px 8px;font-size:11px;line-height:1.35;color:var(--rpg-text,#eee3c8);background:#142e37;border:1px solid #ab8c53;pointer-events:none}.player-visual-status[data-state=failed]{border-color:#ce7971}
+
+/* Owner-supplied parchment status panel, isolated from the other navigator surfaces. */
+@font-face{font-family:'Alabasta Pirate';font-style:normal;font-weight:700;font-display:swap;src:url('assets/ui/character-hud/Alabasta_Pirate.ttf') format('truetype')}
+/* HD artwork is displayed proportionally; pixelated rendering is reserved for the native sprite. */
+#app .topbar.parchment-profile{width:300px;max-width:calc(100vw - 24px);padding:0;gap:2px;background:none;border:0;border-image:none;box-shadow:none;overflow:visible;color:#f7e3b6}
+#app .parchment-profile .parchment-status{position:relative;width:100%;aspect-ratio:3/2;background:url('assets/ui/character-hud/hd/status.png') center/contain no-repeat}
+#app .parchment-profile .hud-hierarchy{position:absolute;left:6%;top:8%;width:68%;height:24%;display:flex;align-items:center;justify-content:center}
+#hudRankArt{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
+#hudHierarchyTitle{position:relative;transform:translateY(2.5px);width:66%;text-align:center;color:#fff5da;font:700 14px/1.1 'Alegreya Sans',sans-serif;white-space:nowrap;text-shadow:0 1px 2px #000,1px 0 #302018;overflow:hidden}
+.hud-rank-order{position:absolute;bottom:-2px;left:calc(50% - 9px);min-width:18px;text-align:center;font:700 9px/12px var(--rpg-font);color:#f4d294;background:#302018;border:1px solid #ac8241;border-radius:50%}
+#hudFactionName{position:absolute;left:8%;top:33%;width:62%;text-align:center;font:600 10px/1 var(--rpg-font);color:#ebc98d;white-space:nowrap}
+#app .parchment-profile #characterPosterToggle{position:absolute;right:5%;top:6%;display:block;width:21%;aspect-ratio:1;height:auto;min-height:44px;padding:0;border:0;border-image:none;background:none;touch-action:manipulation}
+#hudFactionEmblem{display:block;width:100%;height:auto;object-fit:contain;filter:drop-shadow(0 2px 2px #0008)}
+#app .parchment-profile .parchment-meter{position:absolute;display:flex;align-items:center;isolation:isolate;left:9%;width:61%;height:11%;padding:0 5px;overflow:hidden;border:2px solid #cfa453;border-radius:3px;background:#200b10;color:#fff5dc;box-shadow:0 0 0 1px #1d100a,inset 0 0 0 1px #3c2110;font-variant-numeric:tabular-nums}
+#app .parchment-profile .parchment-hp{top:42%}
+#app .parchment-profile .parchment-energy{top:57%;background:#1d102c}
+#app .parchment-profile .parchment-xp{top:72%;background:#2d2107}
+#app .parchment-profile .parchment-meter .mini-meter{position:absolute;inset:1px;z-index:-1;display:block;width:calc(100% - 2px);height:calc(100% - 2px);background:none;border:0;overflow:hidden}
+#app .parchment-profile .parchment-meter .mini-meter i{display:block;height:100%;background:linear-gradient(#ff7a83,#d60d32 35%,#b30822 70%,#e63e48);box-shadow:inset 0 1px #ffb4a8,inset 0 -1px #650c1a;transition:none}
+#app .parchment-profile .parchment-meter .mini-meter i::after{content:none;animation:none}
+#app .parchment-profile .parchment-energy .mini-meter i{background:linear-gradient(#c4a0ff,#8841dd 35%,#6328aa 70%,#9e65d4);box-shadow:inset 0 1px #e8cfff,inset 0 -1px #30134d}
+#app .parchment-profile .parchment-xp .mini-meter i{background:linear-gradient(#fff0a3,#e3b634 35%,#b77b12 70%,#f0c74b);box-shadow:inset 0 1px #fff2aa,inset 0 -1px #624209}
+#app .parchment-profile .parchment-meter-label{font:700 11px/1 var(--rpg-font);flex:none;z-index:1;text-shadow:1px 1px #241321}
+#app .parchment-profile .parchment-meter>b{position:relative;z-index:1;flex:1;text-align:right;white-space:nowrap;font:700 10px/1 var(--rpg-font);text-shadow:1px 1px #241321,0 0 2px #241321}
+#app .parchment-profile :is(.profile-level,.profile-power){position:absolute;left:73%;width:20%;height:19%;display:flex;flex-direction:column;gap:2px;align-items:center;justify-content:center;min-width:0;margin:0;padding:2px;border:1px solid #bd965b;border-radius:3px;background:linear-gradient(100deg,#1d100bcf,#38251ce8,#1d100bd9);box-shadow:inset 0 0 0 1px #5b3c25,0 1px 2px #140c08;font-variant-numeric:tabular-nums}
+#app .parchment-profile .profile-level{top:41%}
+#app .parchment-profile .profile-power{top:64%}
+#app .parchment-profile :is(.profile-level,.profile-power)>span{color:#e2c492;font:500 10px/1 var(--rpg-font)}
+#app .parchment-profile :is(#miniLevel,#miniPower){position:static;display:block;width:100%;height:auto;padding:0;border:0;background:none;text-align:center;color:#ffe6b7;font:700 15px/1 var(--rpg-font);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .parchment-profile .profile-berry{position:absolute;left:9%;top:85%;width:84%;height:10%;display:flex;align-items:center;gap:5px;padding:0 5px;border:1px solid #b28a4b;border-radius:3px;background:#20110dd9;box-shadow:inset 0 0 0 1px #51351e;color:#e6c78b;font:600 10px/1 var(--rpg-font)}
+/* One original 362px cell, displayed without resampling the source file. */
+.berry-coin{flex:none;width:20px;height:20px;background:url('assets/ui/character-hud/hd/berry-coins.png') 0 -9px/120px 40px no-repeat}
+#app .parchment-profile #miniGold{position:static;display:block;flex:1;min-width:0;width:auto;height:auto;margin:0;padding:0;text-align:right;color:#f7d17d;background:none;font:700 12px/1 var(--rpg-font);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#app .parchment-profile #miniGold::before{content:none}
+#app .parchment-profile .parchment-tools{display:flex;justify-content:flex-end;margin:0 7px;min-height:22px}
+#app .parchment-profile #attributePointsHud{min-height:22px;padding:1px 4px;color:#f4daa4;background:#321d24;border:1px solid #ad8854;border-image:none;font:500 11px/1 var(--rpg-font);text-decoration:none}
+#app .parchment-profile :is(#miniWillpower,#miniTalentResource){width:calc(100% - 22px);margin:0 11px;padding:2px 4px;background:#321d24;height:18px}
+#app .topbar.parchment-profile.poster-expanded{z-index:calc(var(--rpg-z-popover) + 1)}
+#app .parchment-profile .character-poster{position:absolute;left:0;top:calc(100% + 4px);width:100%;max-height:calc(100dvh - var(--profile-bottom,244px) - 16px);overflow:auto;overscroll-behavior:contain;background:none;border:0;scrollbar-width:thin;scrollbar-color:#ad8854 #301c24}
+#app .parchment-profile .wanted-sheet{position:relative;width:100%;aspect-ratio:448/600;overflow:hidden}
+#app .parchment-profile .wanted-paper{position:absolute;inset:0;width:100%;height:auto;max-width:none;pointer-events:none}
+#app .parchment-profile .wanted-heading{position:absolute;left:13%;top:9%;width:74%;text-align:center;color:#30190d;display:flex;flex-direction:column}
+#app .parchment-profile .wanted-heading strong{font:900 39px/1 Georgia,serif;letter-spacing:-1px}
+#app .parchment-profile .wanted-heading span{font:700 17px/1.3 Georgia,serif}
+#app .parchment-profile #wantedPortrait{position:absolute;left:28%;top:34%;width:44%;height:auto;aspect-ratio:1;background:none;border:0;image-rendering:pixelated}
+#app .parchment-profile #wantedName{position:absolute;left:18%;top:70%;width:64%;height:9%;display:flex;align-items:center;justify-content:center;padding:2px 4px;overflow:hidden;color:#352012;text-align:center;text-shadow:none;font:700 26px/1 'Alabasta Pirate',serif;white-space:nowrap}
+#app .parchment-profile .wanted-bounty-label{position:absolute;left:17%;top:83%;width:66%;height:8%;display:flex;align-items:center;gap:6px;color:#352012;font:700 16px/1 Georgia,serif;white-space:nowrap}
+#app .parchment-profile #wantedBounty{flex:1;height:20px;border-bottom:1px solid #352012}
+#app .parchment-profile #characterPosterClose{display:block;width:calc(100% - 20px);min-height:38px;margin:4px 10px 10px;padding:6px;border:1px solid #ad8854;border-image:none;background:#38242b;color:#f5d59c;font:500 13px/1 var(--rpg-font);touch-action:manipulation}
+#app .parchment-profile :is(#characterPosterToggle,#characterPosterClose,#attributePointsHud):focus-visible{outline:2px solid #ffe7ac;outline-offset:2px}
+
+#app .parchment-profile .parchment-status::before{content:'';position:absolute;inset:7% 7%;z-index:-1;background:#302018 url('assets/ui/character-hud/hd/wood.png') center/cover}
+#app .parchment-profile .parchment-status{isolation:isolate}
+#app .parchment-profile .hud-hierarchy::before{content:'';position:absolute;inset:20% 9%;background:linear-gradient(#8f2535,#4b1124);z-index:-1}
+#app .parchment-profile .hud-hierarchy:has([data-faction=marine])::before{background:linear-gradient(#235480,#10263d)}
+#app .parchment-profile .hud-hierarchy:has([data-faction=revolutionary])::before{background:linear-gradient(#215b42,#103a29)}
+#app .parchment-profile .hud-hierarchy:has([data-faction=government])::before{background:linear-gradient(#eee4cc,#b8af9c)}
+#app .parchment-profile .hud-hierarchy:has([data-faction=government]) #hudHierarchyTitle{color:#302018;text-shadow:none}
+#app .parchment-profile .wanted-sheet::before{content:'';position:absolute;inset:8% 10%;background:#e3be7c url('assets/ui/character-hud/hd/parchment.png') center/cover}
+#app .parchment-profile #wantedPortrait{left:33%;top:30%;width:34%}
+#app .parchment-profile #wantedName{top:61.5%;height:9%;left:24%;width:52%}
+#app .parchment-profile .wanted-bounty-label{top:82%}
+
+#app .parchment-profile .hud-hierarchy{isolation:isolate}
+
+/* Joined wood-and-gold extension; the reserve is separate from Haki unlock. */
+#app .parchment-profile #miniWillpower{position:relative;isolation:isolate;width:88%;height:30px;margin:-13px 6% 0;padding:7px 6px 4px;border:1px solid #c6a164;border-top:0;border-radius:0 0 5px 5px;background:#302018 url('assets/ui/character-hud/hd/wood.png') center/cover;box-shadow:inset 0 0 0 1px #624323,0 2px 2px #120a09;font:600 10px/1 var(--rpg-font);gap:5px}
+#app .parchment-profile #miniWillpower .mini-meter{flex:1;min-width:0;height:10px;border:1px solid #b89556;background:#201326}
+#app .parchment-profile #miniWillpower b{font:700 10px/1 var(--rpg-font);white-space:nowrap;color:#f9e7c0}

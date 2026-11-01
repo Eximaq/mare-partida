@@ -26,7 +26,7 @@ assert(source.includes('MareWardrobe96.create'),'reuse the audited compositor');
 assert(source.includes('spec.width+1'),'retain the canonical mirror pivot');
 assert(source.includes("scene!=='lobby'"),'combat activation is outside this sprint');
 assert(source.includes('player?.zoanTransformed'),'transformed bodies must never use human layers');
-assert(source.includes('images.size>48')&&source.includes('bundles.size>2')&&source.includes('previews.size>8'),'bound native and composite caches');
+assert(source.includes('images.size>192')&&source.includes('imageBytes>64*1024*1024')&&source.includes('bundles.size>2')&&source.includes('previews.size>8'),'bound native and composite caches');
 assert(R.enabled('?paperDoll96=0'),'historical flags cannot activate an obsolete player renderer');
 assert.equal(require('../tools/paper-doll-96-v3/manifest.json').productionEnabled,false);
 assert.equal(catalog.productionEnabled,false);
