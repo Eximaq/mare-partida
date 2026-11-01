@@ -1,0 +1,234 @@
+{
+  "date": "2026-10-31",
+  "sources": [
+    {
+      "file": "pilot-source.png",
+      "job": "0b05e050-96fe-4caa-bf44-be10a2182566",
+      "gallery": "9ce0f6a7-74e2-58ca-a158-6286a2a56a56",
+      "generations": 10,
+      "sha256": "49ffc46dd2175d57777de8c8637e6d19951cb4c83c15e1c4d9154640db0a8465",
+      "prompt": "Masterpiece HD premium pirate RPG UI icon atlas ONLY, faithful to the approved reference's rich illustrated icons, precise clean edges, detailed warm gold outlines, gentle dimensional shading, highly legible at 56 to 72 screen pixels. Four DIFFERENT isolated icons, exactly a 2x2 grid of 128x128 cells on a 256x256 transparent canvas. Top left: a fierce dark red rocky volcanic crab with glowing ember shell for a defeat-fire-crabs contract. Top right: a pirate bandit tricorne with crossed steel cutlasses, no skull mascot identity, for defeating corsairs. Bottom left: a volcanic island with a small gold crown and crossed swords for an island boss contract. Bottom right: a beautiful golden sun medallion for the Daily tab. One centered graphic per cell, generous clear margins, equal apparent scale, no icon crosses a cell boundary. True alpha outside each object. These are small isolated UI components, not a screenshot. No words, letters, numbers, framing panels, coins, scenery, human characters or reward values."
+    },
+    {
+      "file": "family-source.png",
+      "job": "62b7743c-407e-42a0-9a94-1c9cbe637fd9",
+      "gallery": "f6f0f333-af61-555a-a383-27c22fd2254f",
+      "generations": 25,
+      "sha256": "e7d5acf4b3b6a16dbcba2a66b4eaddd6d2d1ee96cfdba17e64de40e3d548f90e",
+      "prompt": "Masterpiece HD illustrated pirate RPG interface icon atlas, same premium coherent style as the reference and approved pilot icons: warm aged gold outlines, polished metal, clean sharp contour, rich tiny details, gentle 3D lighting, transparent alpha. Exactly EIGHT DIFFERENT isolated UI icons in a precise 4 columns by 2 rows grid on a 512x288 transparent canvas, each cell 128x144. Row 1 left to right: (1) ornate small golden weekly desk calendar with blank parchment page and dark blue tabs, no letters or numerals; (2) beautiful gold nautical compass rose inside a delicate round ship wheel for monthly tab and header; (3) a rolled parchment checklist with a large emerald checkmark and a fine gold seal for category completion; (4) a luminous sculpted golden question-mark symbol alone, an abstract mystery placeholder, NOT an inventory item or treasure reward. Row 2 left to right: (5) a small detailed island map with red route dots and crossed silver cutlasses for patrol contracts; (6) a refined golden open-hand gift/present symbol with emerald checkmark for a claim reward action; (7) a green checkmark inside a gold seal for an already received reward; (8) a blue sapphire hexagonal experience badge with a gold five-point star, no letters, for XP reward. All icons centered with 8px clear margin from cell edges, consistent apparent size and quality at 24-64 screen pixels. No background panels, no rectangle framing individual icons, no text, no numbers, no coins, no characters, no scenery, no screenshot. Keep every asset fully inside its cell."
+    }
+  ],
+  "icons": [
+    {
+      "file": "crab.png",
+      "source": "pilot-source.png",
+      "job": "0b05e050-96fe-4caa-bf44-be10a2182566",
+      "crop": [
+        9,
+        12,
+        119,
+        118
+      ],
+      "width": 110,
+      "height": 106,
+      "sha256": "d4af0bcc97691d7d4a125e695a43c621622903f710c1e097cb2eec1c6dc857c5",
+      "resampled": false
+    },
+    {
+      "file": "corsair.png",
+      "source": "pilot-source.png",
+      "job": "0b05e050-96fe-4caa-bf44-be10a2182566",
+      "crop": [
+        136,
+        16,
+        248,
+        118
+      ],
+      "width": 112,
+      "height": 102,
+      "sha256": "4fc058dd22d71dba6859df0acd0098c264de67d0e4ff45e5d2de7f3f4b5645a3",
+      "resampled": false
+    },
+    {
+      "file": "boss.png",
+      "source": "pilot-source.png",
+      "job": "0b05e050-96fe-4caa-bf44-be10a2182566",
+      "crop": [
+        12,
+        139,
+        117,
+        246
+      ],
+      "width": 105,
+      "height": 107,
+      "sha256": "14855e580786a6ad03ca23b4702a75b9cf1106c354084f2d1ccf2ebb2cb3d60e",
+      "resampled": false
+    },
+    {
+      "file": "daily.png",
+      "source": "pilot-source.png",
+      "job": "0b05e050-96fe-4caa-bf44-be10a2182566",
+      "crop": [
+        136,
+        136,
+        248,
+        248
+      ],
+      "width": 112,
+      "height": 112,
+      "sha256": "5dfce8149dfd67f9175658c2fed2f3b60b7fbfae80793523d703b0f0bf8ce354",
+      "resampled": false
+    },
+    {
+      "file": "weekly.png",
+      "source": "family-source.png",
+      "job": "62b7743c-407e-42a0-9a94-1c9cbe637fd9",
+      "crop": [
+        0,
+        10,
+        110,
+        131
+      ],
+      "width": 110,
+      "height": 121,
+      "sha256": "66f9e4c8f9c0da277a3984922a5a5e50c670a062b12d71fa42b66c97d02966cb",
+      "resampled": false
+    },
+    {
+      "file": "monthly.png",
+      "source": "family-source.png",
+      "job": "62b7743c-407e-42a0-9a94-1c9cbe637fd9",
+      "crop": [
+        128,
+        9,
+        251,
+        134
+      ],
+      "width": 123,
+      "height": 125,
+      "sha256": "8cdbb13164a6848ead140aaa87bf05fa9195b1b6674ee0945a7b317d37dfa21f",
+      "resampled": false
+    },
+    {
+      "file": "progress.png",
+      "source": "family-source.png",
+      "job": "62b7743c-407e-42a0-9a94-1c9cbe637fd9",
+      "crop": [
+        269,
+        16,
+        376,
+        132
+      ],
+      "width": 107,
+      "height": 116,
+      "sha256": "b48222395d3dcc24a176e39e007a582ce4137e3b765d6c9ea3c720338f6f05d8",
+      "resampled": false
+    },
+    {
+      "file": "mystery.png",
+      "source": "family-source.png",
+      "job": "62b7743c-407e-42a0-9a94-1c9cbe637fd9",
+      "crop": [
+        417,
+        12,
+        498,
+        131
+      ],
+      "width": 81,
+      "height": 119,
+      "sha256": "d3cce2fe3198185f68056f10720fa71ca7322af5cffaf21a0a8547266c47a4ab",
+      "resampled": false
+    },
+    {
+      "file": "patrol.png",
+      "source": "family-source.png",
+      "job": "62b7743c-407e-42a0-9a94-1c9cbe637fd9",
+      "crop": [
+        0,
+        166,
+        110,
+        271
+      ],
+      "width": 110,
+      "height": 105,
+      "sha256": "19b380586bdacfc66c4765b222d2b762f07f3d8f44bfba0c1fb404b87c11a8fe",
+      "resampled": false
+    },
+    {
+      "file": "ready.png",
+      "source": "family-source.png",
+      "job": "62b7743c-407e-42a0-9a94-1c9cbe637fd9",
+      "crop": [
+        134,
+        163,
+        243,
+        272
+      ],
+      "width": 109,
+      "height": 109,
+      "sha256": "7a73a98754a2a55b650d2b62b7cab0245b3bee4dc2c289de02695bdfc63a1078",
+      "resampled": false
+    },
+    {
+      "file": "received.png",
+      "source": "family-source.png",
+      "job": "62b7743c-407e-42a0-9a94-1c9cbe637fd9",
+      "crop": [
+        268,
+        164,
+        378,
+        273
+      ],
+      "width": 110,
+      "height": 109,
+      "sha256": "3c2ccf45d25df5f1bee629e0973215cf285e393f1009c1343e66e642fd66aa5b",
+      "resampled": false
+    },
+    {
+      "file": "xp.png",
+      "source": "family-source.png",
+      "job": "62b7743c-407e-42a0-9a94-1c9cbe637fd9",
+      "crop": [
+        406,
+        161,
+        511,
+        273
+      ],
+      "width": 105,
+      "height": 112,
+      "sha256": "bc4f8f70dee78628c2a38c4dbd808de550da9ee1557d056ee06dccbee6412f29",
+      "resampled": false
+    }
+  ],
+  "generations": 35,
+  "balanceBefore": 206.68,
+  "balanceAfter": 171.68,
+  "illustration": {
+    "file": "nami-approved.png",
+    "source": "Owner supplied Quadro de Contratos Pirata.png",
+    "sourceSha256": "4eefbfa8f0cb1e46e1cd86891c9b6ce42f7944de12514e390d5a4ee10a5875b0",
+    "sha256": "9317a088405cc2b91a46539b9b393b242cb6e3df96d69517237e6f9601117701",
+    "crop": [
+      20,
+      107,
+      384,
+      921
+    ],
+    "width": 364,
+    "height": 814,
+    "resampled": false,
+    "mirrored": false
+  },
+  "reused": [
+    "assets/ui/inventory-hd/frame-v2.png",
+    "assets/ui/inventory-hd/heading-v2.png",
+    "assets/ui/inventory-final/primary.png",
+    "assets/ui/inventory-final/secondary.png",
+    "assets/ui/inventory-final/positive.png",
+    "assets/ui/inventory-final/berry.png",
+    "assets/ui/character-hud/hd/wood.png",
+    "assets/ui/character-hud/hd/parchment.png",
+    "assets/ui/inventory-hd/fonts/AlegreyaSC-Bold.ttf"
+  ],
+  "notes": "Pilot of four icons verified in the actual interface before expanding to eight more. Exact alpha crops only. Runtime labels and numbers are live text. Approved illustration reused on the right without redrawing."
+}
