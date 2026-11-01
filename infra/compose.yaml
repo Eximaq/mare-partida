@@ -1,0 +1,51 @@
+name: mare-auth-local
+services:
+  postgres:
+    image: postgres:18.6-bookworm
+    environment:
+      POSTGRES_USER: mare_admin
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: ${MARE_ADMIN_PASSWORD:?Set a unique local admin password}
+      MARE_OWNER_PASSWORD: ${MARE_OWNER_PASSWORD:?Set a unique local owner password}
+      MARE_RUNTIME_PASSWORD: ${MARE_RUNTIME_PASSWORD:?Set a unique local runtime password}
+    ports:
+      - "127.0.0.1:55433:5432"
+    volumes:
+      - mare_pgdata:/var/lib/postgresql
+      - ./postgres/init-roles.sh:/docker-entrypoint-initdb.d/001-roles.sh:ro
+      - ./postgres/grant-health.sql:/opt/mare/grant-health.sql:ro
+      - ./postgres/grant-auth.sql:/opt/mare/grant-auth.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mare_admin -d postgres"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  server:
+    profiles: ["server"]
+    build:
+      context: ..
+      dockerfile: infra/docker/game-server.Dockerfile
+    environment:
+      NODE_ENV: development
+      HOST: 0.0.0.0
+      PORT: 8787
+      DATABASE_URL: postgresql://mare_runtime:${MARE_RUNTIME_PASSWORD:?Required}@postgres:5432/mare_dev
+    ports:
+      - "127.0.0.1:8788:8787"
+    depends_on:
+      postgres:
+        condition: service_healthy
+  migrate:
+    profiles: ["tools"]
+    build:
+      context: ..
+      dockerfile: infra/docker/game-server.Dockerfile
+    environment:
+      NODE_ENV: development
+      MIGRATION_DATABASE_URL: postgresql://mare_owner:${MARE_OWNER_PASSWORD:?Required}@postgres:5432/mare_dev
+    command: ["node", "apps/game-server/dist/migrate-cli.js"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+volumes:
+  mare_pgdata:
