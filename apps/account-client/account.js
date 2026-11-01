@@ -167,7 +167,16 @@ function canSend(action) {
   return action === "journey.begin" ? !online.journey.started :
     online.journey.started && online.hunt?.status === (action === "hunt.begin" ? "available" : "ready");
 }
+let inLobby=false;
+function closeLobby(){inLobby=false;$("#online-lobby").hidden=true;globalThis.MareOnlineLobby?.clear();}
+$("#enter-game").addEventListener("click",()=>{void (async()=>{await refresh();if(!active||!character||!online)return;inLobby=true;renderOnline();globalThis.MareOnlineLobby?.enter();})();});
+$("#leave-game").addEventListener("click",()=>{closeLobby();});
 function renderOnline() {
+  $("#enter-game").disabled=!active||!character||!online||commandWorking;
+  if(!active||!character)closeLobby();
+  $("#online-lobby").hidden=!inLobby;
+  globalThis.MareOnlineLobby?.update(online&&character?{character,state:online.state,controlled:!!lease}:null);
+
   $("#online-level").textContent = online ? String(online.state.level) : "—";
   $("#online-xp").textContent = online ? online.state.experience : "—";
   $("#online-gold").textContent = online ? online.state.gold : "—";
@@ -291,7 +300,7 @@ async function loadOnline(revision, id) {
       "Assuma o controle nesta aba para iniciar. O progresso da demonstração permanece separado.";
   } catch (error) {
     if (revision !== viewRevision || !active || character?.id !== id) return;
-    online = null;
+    online = null;closeLobby();
     if (error.code === "authentication_required") { showLogin(); return; }
     $("#journey-message").textContent = "Não foi possível confirmar o progresso. Atualize quando a conexão voltar.";
   }
@@ -369,6 +378,7 @@ for (const [selector, action] of [["#combat-start","combat.begin"],["#combat-att
   $(selector).addEventListener("click", () => { void sendOnlineAction(action); });
 $("#online-refresh").addEventListener("click", () => { if (!commandWorking) void refresh(); });
 function showLogin() {
+  closeLobby();
   viewRevision++; identityRevision++; identity = null;
   online = null; commandWorking = false; clearPendingCommand();
   $("#control-state").textContent = "Nenhum controle solicitado nesta aba.";
@@ -390,7 +400,7 @@ async function refresh() {
     if (revision !== viewRevision) return;
     const nextIdentity = me.account.id + ":" + (me.character?.id || "");
     if (identity !== nextIdentity) {
-      if (identity !== null) clearPendingCommand();
+      if (identity !== null) {clearPendingCommand();closeLobby();}
       identityRevision++; identity = nextIdentity; lease = null; commandWorking = false;
       $("#control-state").textContent = "Nenhum controle solicitado nesta aba.";
     }
@@ -421,7 +431,7 @@ async function refresh() {
   } catch (error) {
     if (revision !== viewRevision) return;
     if (error.code === "authentication_required") showLogin();
-    else { status(error.code ? error.message : "Não foi possível acessar sua conta. Confira a conexão e atualize."); renderOnline(); }
+    else { closeLobby();status(error.code ? error.message : "Não foi possível acessar sua conta. Confira a conexão e atualize."); renderOnline(); }
   }
 }
 function selectMode(next) {
