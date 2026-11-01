@@ -34,6 +34,10 @@ const messages = {
   combat_already_started: "Este encontro já foi iniciado. Conferindo o combate…",
   combat_finished: "O encontro já terminou. Conferindo o resultado…",
   combat_not_won: "O prêmio exige uma vitória confirmada pelo servidor.",
+  combat_rest: "Descanse 60 segundos após o encerramento antes de iniciar outro encontro.",
+  combat_reward_pending: "Receba o prêmio da vitória anterior antes de iniciar outro encontro.",
+  combat_daily_limit: "Limite de 10 inícios em 24 horas atingido. Aguarde para iniciar outro encontro.",
+  combat_history_full: "Limite de 100 encontros deste piloto atingido. O histórico permanece preservado.",
   combat_already_claimed: "O prêmio já foi recebido. Conferindo o progresso…",
   password_reset_unconfirmed:
     "A resposta da troca de senha não pôde ser confirmada. A senha pode já ter sido alterada. Entre com a nova senha; não repita a troca.",
@@ -109,16 +113,14 @@ function actionConfirmed(action) {
   if (!online) return false;
   if (action === "journey.begin") return online.journey.started;
   if (action === "hunt.begin") return ["active", "ready", "claimed"].includes(online.hunt?.status);
-  if (action === "combat.begin") return ["active","won","lost","claimed"].includes(online.combat?.status);
-  if (action === "combat.claim") return online.combat?.status === "claimed";
-  if (action === "combat.attack") return !!pendingCommand && online.combat?.lastRequestId === pendingCommand.requestId;
+  if (action.startsWith("combat.")) return !!pendingCommand && online.combat?.lastRequestId === pendingCommand.requestId;
   return action === "hunt.claim" && online.hunt?.status === "claimed";
 }
 function canSend(action) {
   if (commandWorking || !active || !character || !online || !lease || (pendingCommand && pendingAction() !== action)) return false;
   // An uncertain repeated action must be replayable even if a later command ended the battle.
   if (pendingCommand && action.startsWith("combat.")) return true;
-  if (action === "combat.begin") return online.combat?.status === "available";
+  if (action === "combat.begin") return online.combat?.canBegin ?? online.combat?.status === "available";
   if (action === "combat.attack") return online.combat?.status === "active" && online.combat.attackReady;
   if (action === "combat.claim") return online.combat?.status === "won";
   return action === "journey.begin" ? !online.journey.started :
@@ -132,7 +134,7 @@ function renderOnline() {
     online.journey.started ? "Jornada iniciada no servidor." : "Sua jornada online ainda não foi iniciada.";
   for (const [selector, action, label] of [["#journey-start","journey.begin","Iniciar jornada"],
       ["#hunt-start","hunt.begin","Iniciar caçada"],["#hunt-claim","hunt.claim","Receber recompensa"],
-      ["#combat-start","combat.begin","Enfrentar saqueador"],["#combat-attack","combat.attack","Atacar"],["#combat-claim","combat.claim","Receber prêmio do combate"]]) {
+      ["#combat-start","combat.begin",online?.combat?.encounterNumber ? "Novo encontro" : "Enfrentar saqueador"],["#combat-attack","combat.attack","Atacar"],["#combat-claim","combat.claim","Receber prêmio do combate"]]) {
     $(selector).disabled = !canSend(action);
     $(selector).textContent = pendingCommand && pendingAction() === action ? (commandWorking ? "Conferindo…" : "Retomar solicitação") : label;
   }
@@ -148,12 +150,18 @@ function renderOnline() {
   const combat=online?.combat;
   $("#combat-state").textContent = !combat ? "Combate ainda não confirmado." : ({
     locked:"Conclua a Ronda do cais e receba a recompensa para liberar este encontro.",
-    available:"Saqueador do cais — encontro único deste piloto, com vitória ou derrota persistente.",
+    available:"Saqueador do cais — encontros com resultado e prêmio registrados no servidor.",
     active:combat.attackReady ? "Seu ataque está pronto. O inimigo contra-ataca se sobreviver." : "Aguardando a recarga de 2 segundos no servidor…",
     won:"Vitória confirmada. Receba o prêmio deste encontro.",
-    lost:"Derrota confirmada. O encontro terminou sem prêmio; novas tentativas ainda não estão disponíveis neste piloto.",
+    lost:"Derrota confirmada. Este encontro terminou sem prêmio.",
     claimed:"Prêmio do combate recebido e registrado no servidor.",
   })[combat.status];
+  if (combat && ["lost","claimed"].includes(combat.status)) {
+    $("#combat-state").textContent += combat.historyFull ? " Limite de 100 encontros deste piloto atingido." :
+      combat.startsRemaining === 0 ? " Limite de 10 inícios em 24 horas atingido. Atualize o progresso mais tarde." :
+      combat.canBegin ? " Um novo encontro está disponível, com vida restaurada ao iniciar." :
+      " Descanse 60 segundos após o encerramento e atualize o progresso para liberar outro encontro.";
+  }
   const entered=combat && !["locked","available"].includes(combat.status);
   $("#combat-player-hp").textContent=entered?`${combat.playerHp} / ${combat.playerMaxHp}`:"—";
   $("#combat-enemy-hp").textContent=entered?`${combat.enemyHp} / ${combat.enemyMaxHp}`:"—";
@@ -217,7 +225,7 @@ async function sendOnlineAction(action) {
     if (error.code === "control_conflict") {
       lease = null; $("#control-state").textContent = "Controle encerrado nesta aba.";
     }
-    if (["state_version_conflict", "journey_already_started", "hunt_already_started", "hunt_already_claimed", "hunt_not_started", "hunt_not_ready", "hunt_required", "combat_already_started", "combat_already_claimed", "combat_not_started", "combat_not_won", "combat_finished", "combat_cooldown", "idempotency_conflict", "invalid_request"].includes(error.code)) clearPendingCommand();
+    if (["combat_rest", "combat_reward_pending", "combat_daily_limit", "combat_history_full", "state_version_conflict", "journey_already_started", "hunt_already_started", "hunt_already_claimed", "hunt_not_started", "hunt_not_ready", "hunt_required", "combat_already_started", "combat_already_claimed", "combat_not_started", "combat_not_won", "combat_finished", "combat_cooldown", "idempotency_conflict", "invalid_request"].includes(error.code)) clearPendingCommand();
     // Transport/503 errors may follow a committed action. Reconcile with GET only.
   } finally {
     if (revision === identityRevision) {

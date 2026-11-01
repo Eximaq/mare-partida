@@ -18,6 +18,10 @@ test("login, control and journey work with minimum grants, with narrow economic 
         `CREATE ROLE "${role}" LOGIN PASSWORD '${password}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS`,
       );
       created = true;
+      // Simulate the column privileges already installed by 3F before upgrading.
+      await pool.query(`GRANT INSERT (character_id,begin_request_id,last_request_id), UPDATE (player_hp,enemy_hp,phase,turn,next_attack_at,last_request_id) ON mare_game.character_combats TO "${role}";
+        GRANT INSERT (character_id,request_id,turn,version_before,player_before,enemy_before,player_damage,enemy_damage) ON mare_game.character_combat_rounds TO "${role}";
+        GRANT INSERT (character_id,request_id,version_before,experience_before,gold_before) ON mare_game.character_combat_rewards TO "${role}"`);
       const grants = await readFile(
         new URL("../../infra/postgres/grant-auth.sql", import.meta.url),
         "utf8",
@@ -79,15 +83,19 @@ test("login, control and journey work with minimum grants, with narrow economic 
           "INSERT INTO mare_game.character_journey_ledger(character_id,request_id,version_before,event) VALUES(gen_random_uuid(),gen_random_uuid(),0,'forged')",
           "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result,created_at) VALUES(gen_random_uuid(),gen_random_uuid(),repeat('a',64),'{}',now())",
           "UPDATE mare_game.character_progression SET level=2",
-          "DELETE FROM mare_game.character_combats",
-          "UPDATE mare_game.character_combats SET started_at=now()",
-          "UPDATE mare_game.character_combats SET begin_request_id=gen_random_uuid()",
-          "UPDATE mare_game.character_combats SET catalog_id='forged'",
-          "INSERT INTO mare_game.character_combats(character_id,begin_request_id,last_request_id,player_hp) VALUES(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),30)",
-          "UPDATE mare_game.character_combat_rounds SET player_damage=10",
-          "DELETE FROM mare_game.character_combat_rounds",
-          "DELETE FROM mare_game.character_combat_rewards",
-          "UPDATE mare_game.character_combat_rewards SET gold_before=0",
+          "UPDATE mare_game.combat_encounters SET ordinal=2",
+          "UPDATE mare_game.combat_encounters SET encounter_id=gen_random_uuid()",
+          "SELECT * FROM mare_game.character_combats",
+          "UPDATE mare_game.character_combats SET player_hp=30",
+          "DELETE FROM mare_game.combat_encounters",
+          "UPDATE mare_game.combat_encounters SET started_at=now()",
+          "UPDATE mare_game.combat_encounters SET begin_request_id=gen_random_uuid()",
+          "UPDATE mare_game.combat_encounters SET catalog_id='forged'",
+          "INSERT INTO mare_game.combat_encounters(character_id,begin_request_id,last_request_id,player_hp) VALUES(gen_random_uuid(),gen_random_uuid(),gen_random_uuid(),30)",
+          "UPDATE mare_game.combat_rounds SET player_damage=10",
+          "DELETE FROM mare_game.combat_rounds",
+          "DELETE FROM mare_game.combat_rewards",
+          "UPDATE mare_game.combat_rewards SET gold_before=0",
           "UPDATE mare_game.character_hunts SET begun_at=now()",
           "UPDATE mare_game.character_hunts SET catalog_id='forged'",
           "DELETE FROM mare_game.character_hunts",
@@ -108,7 +116,7 @@ test("login, control and journey work with minimum grants, with narrow economic 
         assert.equal(reward.state.gold,"8"); assert.equal(reward.state.experience,"20");
         assert.equal((await service.onlineState(login.token,character.id)).hunt.status,"claimed");
         await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"combat.begin",expectedVersion:3});
-        await pool.query("UPDATE mare_game.character_combats SET enemy_hp=1,next_attack_at=clock_timestamp()-interval '1 second'");
+        await pool.query("UPDATE mare_game.combat_encounters SET enemy_hp=1,next_attack_at=clock_timestamp()-interval '1 second'");
         const won=await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"combat.attack",expectedVersion:4});
         assert.equal(won.combat!.status,"won");
         const prize=await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"combat.claim",expectedVersion:5});
