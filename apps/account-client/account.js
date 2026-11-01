@@ -3,9 +3,9 @@ let mode = "login",
   character = null,
   lease = null,
   active = false;
-let online = null, pendingJourney = null, journeyWorking = false;
+let online = null, pendingCommand = null, commandWorking = false;
 let viewRevision = 0, identityRevision = 0, identity = null;
-const PENDING_JOURNEY = "mare-online-pending-v1";
+const PENDING_COMMAND = "mare-online-pending-v1";
 const messages = {
   authentication_required: "Sua sessão terminou. Entre novamente.",
   authentication_failed:
@@ -21,6 +21,13 @@ const messages = {
   idempotency_conflict: "A solicitação não corresponde ao registro anterior. Confira o progresso.",
   command_rate_limited: "Aguarde um minuto antes de enviar outra solicitação.",
   command_history_full: "O limite deste ambiente de teste foi atingido.",
+  hunt_not_ready: "A caçada ainda está em andamento no servidor. Aguarde e atualize o progresso.",
+  hunt_not_started: "Inicie a caçada antes de receber a recompensa.",
+  hunt_already_started: "Esta caçada já foi iniciada. Conferindo o progresso…",
+  hunt_already_claimed: "A recompensa já foi recebida. Conferindo o progresso…",
+  journey_required: "Inicie a jornada antes da caçada.",
+  progression_limit: "O limite de progressão foi atingido; nenhuma recompensa foi aplicada.",
+  state_version_exhausted: "O limite de versão deste ambiente foi atingido.",
   password_reset_unconfirmed:
     "A resposta da troca de senha não pôde ser confirmada. A senha pode já ter sido alterada. Entre com a nova senha; não repita a troca.",
 };
@@ -72,22 +79,35 @@ async function onlineApi(path, data) {
   try { return await api(path, data, controller.signal); }
   finally { clearTimeout(timer); }
 }
-function clearPendingJourney() {
-  pendingJourney = null;
-  try { sessionStorage.removeItem(PENDING_JOURNEY); } catch { /* memory-only fallback */ }
+function clearPendingCommand() {
+  pendingCommand = null;
+  try { sessionStorage.removeItem(PENDING_COMMAND); } catch { /* memory-only fallback */ }
 }
-function restorePendingJourney(id) {
-  if (pendingJourney?.characterId === id) return;
+function restorePendingCommand(id) {
+  if (pendingCommand?.characterId === id) return;
   try {
-    const saved = JSON.parse(sessionStorage.getItem(PENDING_JOURNEY) || "null");
-    if (saved && Object.keys(saved).sort().join() === "characterId,expectedVersion,requestId" &&
+    const saved = JSON.parse(sessionStorage.getItem(PENDING_COMMAND) || "null");
+    if (saved && (["characterId,expectedVersion,requestId", "action,characterId,expectedVersion,requestId"].includes(Object.keys(saved).sort().join())) &&
+        (saved.action === undefined || ["hunt.begin", "hunt.claim"].includes(saved.action)) &&
         saved.characterId === id && typeof saved.requestId === "string" &&
         /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(saved.requestId) &&
         Number.isSafeInteger(saved.expectedVersion) && saved.expectedVersion >= 0) {
-      pendingJourney = saved; return;
+      pendingCommand = saved; return;
     }
   } catch { /* malformed or unavailable storage cannot authorize anything */ }
-  clearPendingJourney();
+  clearPendingCommand();
+}
+function pendingAction() { return pendingCommand?.action || "journey.begin"; }
+function actionConfirmed(action) {
+  if (!online) return false;
+  if (action === "journey.begin") return online.journey.started;
+  if (action === "hunt.begin") return ["active", "ready", "claimed"].includes(online.hunt?.status);
+  return action === "hunt.claim" && online.hunt?.status === "claimed";
+}
+function canSend(action) {
+  if (commandWorking || !active || !character || !online || !lease || (pendingCommand && pendingAction() !== action)) return false;
+  return action === "journey.begin" ? !online.journey.started :
+    online.journey.started && online.hunt?.status === (action === "hunt.begin" ? "available" : "ready");
 }
 function renderOnline() {
   $("#online-level").textContent = online ? String(online.state.level) : "—";
@@ -95,9 +115,21 @@ function renderOnline() {
   $("#online-gold").textContent = online ? online.state.gold : "—";
   $("#journey-state").textContent = !online ? "Progresso ainda não confirmado." :
     online.journey.started ? "Jornada iniciada no servidor." : "Sua jornada online ainda não foi iniciada.";
-  $("#journey-start").disabled = journeyWorking || !active || !character || !online || online.journey.started || !lease;
-  $("#journey-start").textContent = journeyWorking ? "Conferindo…" : pendingJourney ? "Retomar solicitação" : "Iniciar jornada";
-  $("#online-refresh").disabled = journeyWorking;
+  for (const [selector, action, label] of [["#journey-start","journey.begin","Iniciar jornada"],
+      ["#hunt-start","hunt.begin","Iniciar caçada"],["#hunt-claim","hunt.claim","Receber recompensa"]]) {
+    $(selector).disabled = !canSend(action);
+    $(selector).textContent = pendingCommand && pendingAction() === action ? (commandWorking ? "Conferindo…" : "Retomar solicitação") : label;
+  }
+  const hunt=online?.hunt;
+  $("#hunt-state").textContent = !hunt ? "Caçada ainda não confirmada." : ({
+    locked: "Inicie a jornada para liberar a primeira caçada.",
+    available: "Ronda do cais disponível — uma caçada introdutória por personagem.",
+    active: "Caçada em andamento no servidor. Atualize o progresso após o prazo para conferir.",
+    ready: "Caçada concluída. Assuma o controle e receba sua recompensa.",
+    claimed: "Recompensa recebida e registrada no servidor.",
+  })[hunt.status];
+  $("#hunt-reward").textContent = hunt ? `${hunt.durationSeconds} segundos · ${hunt.experience} XP · ${hunt.gold} de ouro` : "";
+  $("#online-refresh").disabled = commandWorking;
 }
 async function loadOnline(revision, id) {
   try {
@@ -107,11 +139,15 @@ async function loadOnline(revision, id) {
         !Number.isInteger(result.state.level) || result.state.level < 1 || typeof result.journey?.started !== "boolean" ||
         ![result.state.gold, result.state.experience].every(v => typeof v === "string" && /^(0|[1-9][0-9]{0,18})$/.test(v)))
       throw new Error("Resposta de progresso inválida.");
+    if (result.hunt && (!["locked","available","active","ready","claimed"].includes(result.hunt.status) ||
+        !Number.isSafeInteger(result.hunt.durationSeconds) || result.hunt.durationSeconds < 1 ||
+        ![result.hunt.gold,result.hunt.experience].every(v => typeof v === "string" && /^(0|[1-9][0-9]{0,18})$/.test(v))))
+      throw new Error("Resposta de caçada inválida.");
     online = result;
-    if (online.journey.started) clearPendingJourney();
-    $("#journey-message").textContent = pendingJourney ?
+    if (pendingCommand && actionConfirmed(pendingAction())) clearPendingCommand();
+    $("#journey-message").textContent = pendingCommand ?
       "Há uma solicitação sem resposta confirmada. Retome o controle e confira novamente, sem criar outro pedido." :
-      online.journey.started ? "Registro confirmado. Exploração e combate online ainda não estão disponíveis." :
+      online.journey.started ? "Registro confirmado. A primeira caçada é uma missão temporizada; combate em mapa ainda não está disponível online." :
       "Assuma o controle nesta aba para iniciar. O progresso da demonstração permanece separado.";
   } catch (error) {
     if (revision !== viewRevision || !active || character?.id !== id) return;
@@ -121,23 +157,23 @@ async function loadOnline(revision, id) {
   }
   renderOnline();
 }
-async function startJourney() {
-  if (journeyWorking || !active || !character || !online || online.journey.started || !lease) return;
+async function sendOnlineAction(action) {
+  if (!canSend(action)) return;
   const id = character.id, revision = identityRevision;
   let refusal = "";
-  journeyWorking = true;
-  if (!pendingJourney) {
-    pendingJourney = { characterId: id, requestId: crypto.randomUUID(), expectedVersion: online.state.version };
-    try { sessionStorage.setItem(PENDING_JOURNEY, JSON.stringify(pendingJourney)); } catch { /* current-tab memory remains usable */ }
+  commandWorking = true;
+  if (!pendingCommand) {
+    pendingCommand = { characterId: id, requestId: crypto.randomUUID(), expectedVersion: online.state.version, ...(action === "journey.begin" ? {} : { action }) };
+    try { sessionStorage.setItem(PENDING_COMMAND, JSON.stringify(pendingCommand)); } catch { /* current-tab memory remains usable */ }
   }
   renderOnline();
   try {
     await onlineApi(`/v1/characters/${id}/commands`, {
-      requestId: pendingJourney.requestId, action: "journey.begin", expectedVersion: pendingJourney.expectedVersion,
+      requestId: pendingCommand.requestId, action, expectedVersion: pendingCommand.expectedVersion,
       control: { epoch: lease.epoch, token: lease.token }, payload: {},
     });
     if (revision !== identityRevision) return;
-    clearPendingJourney();
+    clearPendingCommand();
   } catch (error) {
     if (revision !== identityRevision) return;
     if (error.code === "authentication_required") { showLogin(); return; }
@@ -145,24 +181,26 @@ async function startJourney() {
     if (error.code === "control_conflict") {
       lease = null; $("#control-state").textContent = "Controle encerrado nesta aba.";
     }
-    if (["state_version_conflict", "journey_already_started", "idempotency_conflict", "invalid_request"].includes(error.code)) clearPendingJourney();
+    if (["state_version_conflict", "journey_already_started", "hunt_already_started", "hunt_already_claimed", "hunt_not_started", "hunt_not_ready", "idempotency_conflict", "invalid_request"].includes(error.code)) clearPendingCommand();
     // Transport/503 errors may follow a committed action. Reconcile with GET only.
   } finally {
     if (revision === identityRevision) {
       await refresh();
       if (revision === identityRevision) {
-        journeyWorking = false;
-        if (refusal && online && !online.journey.started) $("#journey-message").textContent = refusal;
+        commandWorking = false;
+        if (refusal && online && !actionConfirmed(action)) $("#journey-message").textContent = refusal;
         renderOnline();
       }
     }
   }
 }
-$("#journey-start").addEventListener("click", () => { void startJourney(); });
-$("#online-refresh").addEventListener("click", () => { if (!journeyWorking) void refresh(); });
+$("#journey-start").addEventListener("click", () => { void sendOnlineAction("journey.begin"); });
+$("#hunt-start").addEventListener("click", () => { void sendOnlineAction("hunt.begin"); });
+$("#hunt-claim").addEventListener("click", () => { void sendOnlineAction("hunt.claim"); });
+$("#online-refresh").addEventListener("click", () => { if (!commandWorking) void refresh(); });
 function showLogin() {
   viewRevision++; identityRevision++; identity = null;
-  online = null; journeyWorking = false; clearPendingJourney();
+  online = null; commandWorking = false; clearPendingCommand();
   $("#control-state").textContent = "Nenhum controle solicitado nesta aba.";
   active = false;
   character = null;
@@ -181,8 +219,8 @@ async function refresh() {
     if (revision !== viewRevision) return;
     const nextIdentity = me.account.id + ":" + (me.character?.id || "");
     if (identity !== nextIdentity) {
-      if (identity !== null) clearPendingJourney();
-      identityRevision++; identity = nextIdentity; lease = null; journeyWorking = false;
+      if (identity !== null) clearPendingCommand();
+      identityRevision++; identity = nextIdentity; lease = null; commandWorking = false;
       $("#control-state").textContent = "Nenhum controle solicitado nesta aba.";
     }
     active = true;
@@ -206,7 +244,7 @@ async function refresh() {
       };
       $("#character-details").textContent =
         classes[character.classId] || "Personagem";
-      restorePendingJourney(character.id);
+      restorePendingCommand(character.id);
       await loadOnline(revision, character.id);
     }
   } catch (error) {

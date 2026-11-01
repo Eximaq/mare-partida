@@ -30,6 +30,8 @@
 
 **Servidor autoritativo — Fase 1 local:** [arquitetura e limites](docs/architecture/AUTHORITATIVE-FOUNDATION.md) · [execução, banco e testes](docs/operations/LOCAL-SERVER.md). Fundação independente; o jogo e os saves atuais permanecem no navegador.
 
+**Primeira caçada online — Etapa 3E:** [Ronda do cais](docs/architecture/PHASE-3E-FIRST-HUNT.md), missão temporizada e recompensa única no servidor, com painel HTTPS local. Demonstração e saves preservados; backend ainda sem exposição pública.
+
 **Fase 2 em desenvolvimento:** [BFF, sessões e personagens](docs/architecture/PHASE-2-IMPLEMENTATION-REVIEW.md) · [preparação local e homologação](docs/operations/PHASE-2-DEVELOPMENT.md). Auth desabilitado por padrão; rodadas funcionais Supabase 1–3 registradas. [Matriz e janela final da Etapa 2F](docs/operations/PHASE-2F-FINAL-ACCEPTANCE.md), ainda sem aceite final.
 
 **Sprint 3:** [Sua Aparência](docs/PERSONAGEM-APARENCIA-96.md): nova etapa após classe, gênero, cabelos/olhos e cores independentes, prévia em quatro direções e persistência.

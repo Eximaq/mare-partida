@@ -6,7 +6,7 @@ import pg from "pg";
 import { AuthService } from "../../apps/game-server/src/auth/service.js";
 import { authDatabase } from "./auth-support.mjs";
 
-test("login, control and journey work with minimum grants, without identity or economic UPDATE privileges", async () => {
+test("login, control and journey work with minimum grants, with narrow economic columns and immutable hunt ledgers", async () => {
   const role = "mare_test_role_" + randomUUID().replaceAll("-", "");
   assert.match(role, /^mare_test_role_[a-f0-9]{32}$/);
   const password = randomBytes(32).toString("hex");
@@ -78,13 +78,26 @@ test("login, control and journey work with minimum grants, without identity or e
           "INSERT INTO mare_game.character_journey_ledger(character_id,request_id,version_before,occurred_at) VALUES(gen_random_uuid(),gen_random_uuid(),0,now())",
           "INSERT INTO mare_game.character_journey_ledger(character_id,request_id,version_before,event) VALUES(gen_random_uuid(),gen_random_uuid(),0,'forged')",
           "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result,created_at) VALUES(gen_random_uuid(),gen_random_uuid(),repeat('a',64),'{}',now())",
-          "UPDATE mare_game.character_progression SET gold=1",
+          "UPDATE mare_game.character_progression SET level=2",
+          "UPDATE mare_game.character_hunts SET begun_at=now()",
+          "UPDATE mare_game.character_hunts SET catalog_id='forged'",
+          "DELETE FROM mare_game.character_hunts",
+          "UPDATE mare_game.character_hunt_rewards SET gold_before=0",
+          "DELETE FROM mare_game.character_hunt_rewards",
+          "INSERT INTO mare_game.character_hunts(character_id,request_id,version_before,begun_at) VALUES(gen_random_uuid(),gen_random_uuid(),0,now())",
+          "INSERT INTO mare_game.character_hunt_rewards(character_id,request_id,version_before,experience_before,gold_before,occurred_at) VALUES(gen_random_uuid(),gen_random_uuid(),0,0,0,now())",
           "DELETE FROM mare_game.character_progression",
           `INSERT INTO mare_game.character_progression(character_id,gold) VALUES('${character.id}',1)`,
           "CREATE SCHEMA forbidden",
           "SELECT * FROM pg_authid",
         ])
           await assert.rejects(runtime.query(sql), { code: "42501" });
+        await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"hunt.begin",expectedVersion:1});
+        // Only the owner of this disposable test database can advance the fixture timestamp.
+        await pool.query("UPDATE mare_game.character_hunts SET begun_at=clock_timestamp()-interval '31 seconds'");
+        const reward=await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"hunt.claim",expectedVersion:2});
+        assert.equal(reward.state.gold,"8"); assert.equal(reward.state.experience,"20");
+        assert.equal((await service.onlineState(login.token,character.id)).hunt.status,"claimed");
         await service.logout(login.token, "all");
         await service.drainRevocations();
       } finally {

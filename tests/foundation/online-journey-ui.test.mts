@@ -17,12 +17,12 @@ class Element {
 function page(storage = new Map<string,string>()) {
   const elements = new Map<string,Element>();
   const get = (selector: string) => { if (!elements.has(selector)) elements.set(selector,new Element()); return elements.get(selector)!; };
-  const model = { started: false, version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
+  const model = { started: false, hunt: "locked", version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
     me: null as null | ((signal?: AbortSignal) => Promise<Response>), send: null as null | (() => Promise<Response>),
     control: null as null | (() => Promise<Response>) };
   const timers: Array<() => void> = [];
   const deadlines = new Map<number,()=>void>(); let timerId = 0;
-  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: 1, experience: "0", gold: "9007199254740993" }, journey: { started: model.started } });
+  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: 1, experience: "0", gold: "9007199254740993" }, journey: { started: model.started }, hunt: { catalogId:"dock-patrol-v1",name:"Ronda do cais",durationSeconds:30,experience:"20",gold:"8",status:model.hunt,startedAt:null,readyAt:null,serverNow:new Date().toISOString() } });
   runInNewContext(source, {
     URL, AbortController, setTimeout(fn:()=>void) { deadlines.set(++timerId,fn); return timerId; },
     clearTimeout(id:number) { deadlines.delete(id); }, crypto: { randomUUID }, confirm: () => true,
@@ -44,7 +44,11 @@ function page(storage = new Map<string,string>()) {
       if (path.endsWith("/commands")) {
         model.requests.push(JSON.parse(options.body));
         if (model.send) return model.send();
-        model.started = true; model.version = 1;
+        const action=model.requests.at(-1).action;
+        if(action==="journey.begin") {model.started=true;model.hunt="available";}
+        if(action==="hunt.begin") model.hunt="active";
+        if(action==="hunt.claim") model.hunt="claimed";
+        model.version++;
         return Response.json({ requestId: model.requests.at(-1).requestId, action: "journey.begin", state: snapshot().state });
       }
       if (path === "/v1/auth/logout") return new Response(null,{status:204});
@@ -131,4 +135,34 @@ test("a stalled account read times out visibly and a later refresh recovers", as
   assert.match(p.get("#status").textContent,/conexão/);
   assert.equal(p.get("#journey-start").disabled,true);
   p.model.me=null; p.click("#online-refresh"); await settle(); assert.equal(p.get("#online-level").textContent,"1");
+});
+
+
+test("hunt UI requires confirmed server readiness and never sends rewards or local time",async()=>{
+  const p=page();await settle();p.click("#control");await settle();
+  assert.equal(p.get("#hunt-start").disabled,true);
+  p.click("#journey-start");await settle();assert.equal(p.get("#hunt-start").disabled,false);
+  p.click("#hunt-start");p.click("#hunt-start");await settle();
+  assert.equal(p.model.requests.length,2);assert.equal(p.model.requests[1].action,"hunt.begin");
+  assert.deepEqual(p.model.requests[1].payload,{});assert.equal(p.get("#hunt-claim").disabled,true);
+  p.click("#hunt-claim");await settle();assert.equal(p.model.requests.length,2);
+  p.model.hunt="ready";p.click("#online-refresh");await settle();
+  assert.equal(p.get("#hunt-claim").disabled,false);p.click("#hunt-claim");await settle();
+  assert.equal(p.model.requests[2].action,"hunt.claim");assert.deepEqual(p.model.requests[2].payload,{});
+  assert.equal(p.get("#hunt-claim").disabled,true);assert.match(p.get("#hunt-state").textContent,/recebida/);
+});
+
+for(const action of ["hunt.begin","hunt.claim"]) test(`lost ${action} survives reload with same ID; GET reconciles committed milestone`,async()=>{
+  const p=page();p.model.started=true;p.model.hunt=action==="hunt.begin"?"available":"ready";await settle();
+  p.click("#control");await settle();p.model.send=async()=>{throw new TypeError("offline");};
+  const button=action==="hunt.begin"?"#hunt-start":"#hunt-claim";
+  p.click(button);await settle();assert.equal(p.model.requests.length,1);
+  const original=p.model.requests[0], saved=JSON.parse(p.storage.get(key)!);
+  assert.deepEqual(Object.keys(saved).sort(),["action","characterId","expectedVersion","requestId"]);
+  assert.equal(saved.action,action);
+  const reload=page(p.storage);reload.model.started=true;reload.model.hunt=p.model.hunt;await settle();
+  assert.equal(reload.model.requests.length,0);reload.click("#control");await settle();
+  reload.model.send=async()=>{reload.model.hunt=action==="hunt.begin"?"active":"claimed";throw new TypeError("lost after commit");};
+  reload.click(button);await settle();assert.equal(reload.model.requests[0].requestId,original.requestId);
+  assert.equal(reload.model.requests[0].expectedVersion,original.expectedVersion);assert.equal(reload.storage.size,0);
 });

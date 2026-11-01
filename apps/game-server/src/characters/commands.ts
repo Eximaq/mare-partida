@@ -4,6 +4,7 @@ import { AuthFault } from "../auth/errors.js";
 import { digest } from "../auth/vault.js";
 import { readCharacterState } from "./state.js";
 import { beginJourney } from "./journey.js";
+import { mutateHunt } from "./hunt.js";
 
 // Caller holds the account and character locks after authenticating and checking ownership.
 export async function executeCharacterCommand(
@@ -39,6 +40,10 @@ export async function executeCharacterCommand(
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
   if (input.action === "journey.begin") {
     await beginJourney(client, characterId, input.requestId, state.version);
+    state = await readCharacterState(client, characterId);
+  }
+  if (input.action === "hunt.begin" || input.action === "hunt.claim") {
+    await mutateHunt(client, characterId, input.requestId, input.action, state);
     state = await readCharacterState(client, characterId);
   }
   const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state });
