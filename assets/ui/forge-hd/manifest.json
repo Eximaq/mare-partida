@@ -22,6 +22,18 @@
       "height": 1086,
       "sha256": "3a9b1bace73a32a7085114de43f953458d9f898b9820cb9ed2df10a1caf8fd03",
       "note": "Only right-side decorative workshop illustration cropped; no baked interface text or buttons included."
+    },
+    {
+      "file": "workshop-surface.png",
+      "provider": "PixelLab AI Pro",
+      "job": "4b9e68be-ad20-4b62-924c-cd837708266b",
+      "gallery": "9b73f539-bcb1-5889-8d4a-411f4c38dacb",
+      "width": 512,
+      "height": 512,
+      "generations": 25,
+      "sha256": "b5e3870f55f0e8e54fdc5a578e083337772a839873e46538be02efd23494a86c",
+      "url": "https://api.pixellab.ai/mcp/images/4b9e68be-ad20-4b62-924c-cd837708266b/download",
+      "prompt": "Masterpiece HD premium pirate blacksmith RPG interface BACKGROUND TEXTURE, 512x512 native, opaque. A quiet dark aged walnut and blackened navy steel surface, subtle horizontal handcrafted wood grain, worn forged metal patina, a few tiny inset bronze rivets only near the outer edges, extremely restrained nautical engraving near corners. Warm amber reflected forge light softly grazing the far edges, deep dark quiet center occupying 85 percent for readable live UI text and item cards. Fine refined detailed pixel art, crisp controlled texture, sophisticated low contrast dark brown charcoal midnight palette, no flat teal or green, no bright central details. Straight orthographic flat material surface, no perspective scene. No objects, no people, no anvil, no weapons, no icons, no frame, no letters, no numbers, no watermark. Designed to repeat subtly or be cropped at native size behind game UI panels, avoid obvious strong border so adjacent panels remain coherent. Match existing ornate aged-gold pirate forge interface, keep text legibility primary."
     }
   ],
   "outputs": [
@@ -94,6 +106,15 @@
       "height": 992,
       "sha256": "11568b1021ecc533dde8a011a1a20f4db52995c16e31c1fd926a30471a827a82",
       "resampled": false
+    },
+    {
+      "file": "workshop-surface.png",
+      "source": "4b9e68be-ad20-4b62-924c-cd837708266b",
+      "width": 512,
+      "height": 512,
+      "sha256": "b5e3870f55f0e8e54fdc5a578e083337772a839873e46538be02efd23494a86c",
+      "resampled": false,
+      "use": "Approved wood and dark metal surface for panels, search fields and filters; reusable standard for future UI art."
     }
   ],
   "reused": [
@@ -103,9 +124,23 @@
   ],
   "processing": "Exact crops only, source atlas preserved, no resampling or pixel repainting. Runtime CSS uses object-fit:contain and existing 9-slice frames.",
   "cost": {
-    "generations": 10,
+    "generations": 35,
     "balanceBefore": 171.68,
-    "balanceAfter": 161.68,
-    "creditsUSD": 0
+    "balanceAfter": 136.68,
+    "creditsUSD": 0,
+    "phases": [
+      {
+        "scope": "Initial four operation icons",
+        "generations": 10,
+        "balanceBefore": 171.68,
+        "balanceAfter": 161.68
+      },
+      {
+        "scope": "Fusion and wood/metal surface refinement",
+        "generations": 25,
+        "balanceBefore": 161.68,
+        "balanceAfter": 136.68
+      }
+    ]
   }
 }
