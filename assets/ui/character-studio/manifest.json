@@ -1,0 +1,339 @@
+{
+  "version": 1,
+  "project": "Kaizoku Idle",
+  "date": "2026-10-31",
+  "usage": "Character status, shared appearance creation/editor, class HUD skill icons",
+  "pixelLab": {
+    "generations": 50,
+    "jobs": [
+      {
+        "job": "7af38382-c68c-40b9-91f2-e35bed700505",
+        "gallery": "ef287753-650d-56b0-8757-9decfa4d398d",
+        "model": "Pro",
+        "size": [
+          512,
+          384
+        ],
+        "generations": 25,
+        "file": "skills-atlas.png",
+        "prompt": "Masterpiece HD refined pixel art fantasy pirate RPG SKILL ICON ATLAS, exactly 4 columns by 3 rows, twelve equal 128x128 cells, total512x384. Match the reference's premium painted pixel-art crescent energy skill icon: sharp strong silhouette, dimensional shading, luminous focal shape on dark navy near-black square tile, restrained thin aged-gold edges, no lettering. All cells unique, complete, evenly spaced with clean boundaries. Read in order LEFT TO RIGHT then TOP TO BOTTOM: (1) heavy bronze fist striking downward with anchor-shaped shockwave, melee impact; (2) glowing iron heart with a protective breath swirl, fighter endurance; (3) a single precise silver bullet and a golden crosshair, sniper shot; (4) a fan of three silver bullets with bright streaks, shrapnel burst; (5) a dark dagger stabbing a glowing weak point, rogue precision; (6) two curved daggers sweeping in a purple acrobatic spiral, dagger dance; (7) an amber mechanical pulse ring drawing three small bolts inward, cyborg taunt protocol; (8) a solid dark steel breastplate in a blue protective shell, active armor; (9) a concentrated orange fireball with curling flame, elemental focused fire; (10) cyan lightning striking through a swirling sea current, elemental area storm; (11) a luminous turquoise restorative wave cupping a small light, healer restoration; (12) a small golden lighthouse shining through a green-blue protective aura, healer blessing. NO extra icons, no character portraits, no text or numbers, no UI screenshots, no large frame. Maintain the exact reference visual family and legibility at 56px.",
+        "grid": [
+          4,
+          3
+        ],
+        "cell": [
+          128,
+          128
+        ],
+        "order": [
+          "brawler-1",
+          "brawler-2",
+          "gunner-1",
+          "gunner-2",
+          "rogue-1",
+          "rogue-2",
+          "cyborg-1",
+          "cyborg-2",
+          "strategist-1",
+          "strategist-2",
+          "healer-1",
+          "healer-2"
+        ]
+      },
+      {
+        "job": "a5196912-59de-47f9-bcd7-683bb7781402",
+        "gallery": "165c6b2c-3a77-5037-8dd6-22af628c707c",
+        "model": "Pro",
+        "size": [
+          600,
+          448
+        ],
+        "generations": 25,
+        "file": "harbor.png",
+        "prompt": "Masterpiece HD detailed refined pixel art BACKGROUND for Kaizoku Idle pirate RPG character customization. A beautiful quiet nautical harbor at sunset, wooden dock foreground, warm hanging lantern at far left, aged wood barrels and rope coils along far edges, tall sailing ships and masts in the distance across golden blue water, richly shaded amber sky. Front-facing game character stage, slightly elevated horizon at upper third. A clear empty unobstructed broad wood platform at lower center, where a separate live player sprite will stand. Center foreground has muted medium-dark wood and simple clean plank lines so any skin/hair color silhouette remains easy to see. Fine premium art, coherent lighting, aged dark wood and metal atmosphere, no blur, no excessive bright sparks. NO PEOPLE, NO CHARACTERS, no statue, no silhouette, NO text, NO letters, no UI, no logo, no embedded frame, no skull portrait. Do not draw the player; keep the central stage completely empty. 600x448 native illustration."
+      }
+    ]
+  },
+  "providedReferences": [
+    {
+      "file": "Imagem do ChatGPT 31 de out. de 2026, 22_44_37.png",
+      "sha256": "f2c238da2082b496df93801278bea9a483f94ea82d98c8fe411253c2c5f80374"
+    },
+    {
+      "file": "Imagem do ChatGPT 31 de out. de 2026, 22_44_48.png",
+      "sha256": "58faa23af8f330cc7a0d83272859be6796d9d939a5001fca445f9f6d1db38c24"
+    }
+  ],
+  "crops": {
+    "source": "Imagem do ChatGPT 31 de out. de 2026, 22_44_37.png",
+    "skills": {
+      "sword-1": [
+        81,
+        804,
+        152,
+        874
+      ],
+      "sword-2": [
+        81,
+        911,
+        152,
+        982
+      ]
+    },
+    "attributes": {
+      "strength": [
+        480,
+        416,
+        539,
+        470
+      ],
+      "dexterity": [
+        480,
+        495,
+        538,
+        552
+      ],
+      "vitality": [
+        480,
+        573,
+        539,
+        630
+      ],
+      "intelligence": [
+        480,
+        651,
+        539,
+        707
+      ],
+      "spirit": [
+        480,
+        731,
+        539,
+        787
+      ]
+    },
+    "controlSource": "Imagem do ChatGPT 31 de out. de 2026, 22_44_48.png",
+    "controls": {
+      "gender": [
+        78,
+        357,
+        145,
+        408
+      ],
+      "hairStyle": [
+        78,
+        435,
+        145,
+        487
+      ],
+      "hairColor": [
+        78,
+        530,
+        145,
+        588
+      ],
+      "eyeStyle": [
+        78,
+        612,
+        145,
+        660
+      ],
+      "eyeColor": [
+        78,
+        707,
+        145,
+        753
+      ],
+      "skinStyle": [
+        78,
+        789,
+        145,
+        837
+      ],
+      "skinColor": [
+        78,
+        869,
+        145,
+        916
+      ]
+    },
+    "coordinates": "left,top,right,bottom; exact crops, no file upscaling"
+  },
+  "sharedMaterials": [
+    "assets/ui/forge-hd/workshop-surface.png",
+    "assets/ui/inventory-hd/frame-v2.png",
+    "assets/ui/inventory-hd/heading-v2.png",
+    "assets/ui/inventory-final/primary.png",
+    "assets/ui/inventory-final/secondary.png"
+  ],
+  "files": [
+    {
+      "file": "attributes/dexterity.png",
+      "width": 58,
+      "height": 57,
+      "sha256": "d6e3708a1b877f896922ce521930dadd01a6feaae27d9f9b1fdd8ad4862b7ba7"
+    },
+    {
+      "file": "attributes/intelligence.png",
+      "width": 59,
+      "height": 56,
+      "sha256": "e2a86fff814440546189d99e26101337e86734c582fd608db21b21b9f9efcdf8"
+    },
+    {
+      "file": "attributes/spirit.png",
+      "width": 59,
+      "height": 56,
+      "sha256": "71a3cff03b54d241b7e97ea2302c2fb361853ee4ec47fcf86a8ebf8ee5b4c5e6"
+    },
+    {
+      "file": "attributes/strength.png",
+      "width": 59,
+      "height": 54,
+      "sha256": "2bfa9ec835a0d1982c35b14b9ca44d7c54890eb582d0010989bc31fb1c4b9857"
+    },
+    {
+      "file": "attributes/vitality.png",
+      "width": 59,
+      "height": 57,
+      "sha256": "e10c415fb67684c7876edb318738df59449469d0200d4b4a33249bcb04439e49"
+    },
+    {
+      "file": "controls/eyeColor.png",
+      "width": 67,
+      "height": 46,
+      "sha256": "9969f9388489cd35ae593ec2dca0ad0cca4a2a9d6ef731387a40cbe5f33b0ef4"
+    },
+    {
+      "file": "controls/eyeStyle.png",
+      "width": 67,
+      "height": 48,
+      "sha256": "82bf4bd76d29c1b9d93f1edf37e315750acd64a8ede3ccbc497ab945d657b16b"
+    },
+    {
+      "file": "controls/gender.png",
+      "width": 67,
+      "height": 51,
+      "sha256": "2fd335cd1bbffd0b1afca2cd41b535bb1f4c1d8bc8e1639da0b248e4fd9c93d7"
+    },
+    {
+      "file": "controls/hairColor.png",
+      "width": 67,
+      "height": 58,
+      "sha256": "e54ed76eade8aede49844302dbd110fd26ad0f3835c208169ee4d26d8c7a91b6"
+    },
+    {
+      "file": "controls/hairStyle.png",
+      "width": 67,
+      "height": 52,
+      "sha256": "42cc21d0961500ac11bbebd0d20bba12a69cd729c7f26bc8a6545fb6d26038bd"
+    },
+    {
+      "file": "controls/skinColor.png",
+      "width": 67,
+      "height": 47,
+      "sha256": "efed49549dcd6f72154cdb2235f5a79ff51ae74f6fff5be40bd62b88d7710307"
+    },
+    {
+      "file": "controls/skinStyle.png",
+      "width": 67,
+      "height": 48,
+      "sha256": "962a03c5233a62406be1495b2e03455167f8a5861888da2accdc7dbed8e76bb8"
+    },
+    {
+      "file": "harbor.png",
+      "width": 600,
+      "height": 448,
+      "sha256": "09bf2e2fd86b530f52e7fd004909ca00ab814e59284d75d1b40125e69b2cf023"
+    },
+    {
+      "file": "skills/brawler-1.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "531a2cf0a9b78ca95ff404cb620922ca604be0725991652831a2789bb5f3f8e5"
+    },
+    {
+      "file": "skills/brawler-2.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "2cfde1b2be894b7fd8eb0fd267acbabe326e8da16f72d857bfb9d0e17916bf4a"
+    },
+    {
+      "file": "skills/cyborg-1.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "279d5164eefdf9c651043f4f851e6a1ba7fcc440971b8bfbd04caa402e2418ae"
+    },
+    {
+      "file": "skills/cyborg-2.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "fc28d469fef056465c4d03af8917fe64ca5895254d04fb178b5bbe37d4c50691"
+    },
+    {
+      "file": "skills/gunner-1.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "1964ed55b46480918a7346d6d8ad9786e50e39965a8f589dcfac6ec0ea2b8517"
+    },
+    {
+      "file": "skills/gunner-2.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "d8d81797a8db3b0ee123b302e925bf853fb5cbffd55d3d9702caa570653a9c8c"
+    },
+    {
+      "file": "skills/healer-1.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "7c413536b0bc505005080b9a02c7c96ffde27533a89b7443b4d5f90fe6deaac1"
+    },
+    {
+      "file": "skills/healer-2.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "6069b8fabe54e07935a3ca757a454c7342168d486472cae684578fa9e4ccafdd"
+    },
+    {
+      "file": "skills/rogue-1.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "726aaea9bbb0ef893ccbc958d4f5f245c00fe313fc743574b09db62888905c15"
+    },
+    {
+      "file": "skills/rogue-2.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "7945eb6b6a07f78f1f92004c4fec214f440ba0e879dd8b57473b6335b4bb3bc0"
+    },
+    {
+      "file": "skills/strategist-1.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "97118377f0bf6d215d2386e321471da9b0c7c37b29c5a4f9cff8a412384fe8a8"
+    },
+    {
+      "file": "skills/strategist-2.png",
+      "width": 128,
+      "height": 128,
+      "sha256": "50596374fa856c81e65f29289714c9c3d92eaa071065ad741687bff53c6ed183"
+    },
+    {
+      "file": "skills/sword-1.png",
+      "width": 71,
+      "height": 70,
+      "sha256": "88a29263c8e3b1eca0734d57035c73a038cb9769a778ff2fcccbdf6ef282a8ee"
+    },
+    {
+      "file": "skills/sword-2.png",
+      "width": 71,
+      "height": 71,
+      "sha256": "17edd3540c9bc0dc6330fe43d0715ea6b28c30ca3f5b894b81cc1c4af9f779c1"
+    },
+    {
+      "file": "skills-atlas.png",
+      "width": 512,
+      "height": 384,
+      "sha256": "0ecf27f99e507f68acd3b070238767fb2362e55e901be6328e31c665f6ed734f"
+    }
+  ]
+}
