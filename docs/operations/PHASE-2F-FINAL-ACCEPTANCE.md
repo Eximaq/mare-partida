@@ -37,7 +37,7 @@ nesta matriz e no relatório vinculado; o escopo histórico acima não os substi
 | A03 | Sessões, refresh real/concorrente, controlador e logout | Rodada 1 aprovada | JWT 900 s, BFF 24 h/2 h mantidos; não foi aguardado todo o prazo de 24 h/2 h |
 | A04 | Propriedade e criação de personagem | 40 testes cruzados; primeira criação 201/409, um personagem; retries idênticos 201/201 | A/B/C e personagens preservados; sem escrita econômica |
 | A05 | Recuperação real pelo backend | Rodada 3: sessão restrita, reset, senha antiga/nova, invalidação interna e refresh recusado | Não cobre preenchimento da senha pela UI; ver F01 |
-| A06 | Integração, Node, PostgreSQL e Docker/Linux | Revalidação local: 33 fundação, 21 integrações PostgreSQL, 123 arquivos Node e typecheck aprovados. Regressão de disparo obstruído corrigida e incluída no CI; detalhes abaixo | Conferir checks do commit final no PR #162; aprovações anteriores não substituem essa execução |
+| A06 | Integração, Node, PostgreSQL e Docker/Linux | Revalidação local: 33 fundação, 21 integrações PostgreSQL, 123 arquivos Node e typecheck aprovados. CI de `208b635`: 18/20 checks aprovados, incluindo fundação, Docker/Linux e native96 | Dois testes legados da main corrigidos no PR #182; fechamento global do CI depende de integrar essa correção e executar novamente. Não confundir correção validada com check antigo aprovado |
 | F01 | Recuperação completa pela interface | Aprovado sobre `53bb628`: um envio G, PKCE 200/callback 303, reset 200, revogação 204, login/persistência 200 e logout 204/401 no Opera | Escopo revisado sem senha antiga/duas sessões prévias; histórico da Rodada 3 preservado. Erro antigo sem causa comprovada; ver relatório F01 |
 | F02 | Revogação iniciada fora do BFF | Aprovado: logout externo 204, refresh remoto recusado, sessão interna revogada e /v1/me 401 | Uma conta/uma sessão neste ensaio; detecção na próxima revalidação, sem promessa de invalidação instantânea do JWT |
 | F03 | Rotação real da assinatura JWT/JWKS | Aprovado: nova ES256/900 s, cache aquecido/vazio, JWT antigo válido, refresh natural e mesma identidade; ver [registro F03](PHASE-2F-F03-SIGNING-ROTATION.md) | Antiga ES256 preservada como Previous; não testada revogação de chave nem executado rollback; Auth false e serviços locais parados |
@@ -98,6 +98,42 @@ novo envio SMTP, reset, rotação ou alteração Supabase. O resultado final do 
 e seu SHA ficam registrados no PR, preservando as falhas anteriores. Auth deve
 permanecer false ao encerrar; a aprovação técnica não publica o backend nem
 inicia a Fase 3. Permanecem as condições operacionais O01 antes de exposição pública.
+
+## Compatibilidade com a main — testes de facção e Haki
+
+O CI de `208b635` terminou com **18 checks aprovados e dois reprovados**.
+`foundation`, `docker-smoke`, `otherWeapons96` (incluindo a nova regressão de
+disparo), inventário, Paper Doll e as demais suítes concluíram com sucesso.
+As duas reprovações restantes foram reproduzidas e tiveram a causa identificada:
+
+- `factionSelection` ainda exigia a palavra Dobrões; a main apresenta Berry,
+  conforme o refinamento aprovado da HUD, sem mudança do campo gold ou bônus.
+- `rankS` ativava os flags do livro em um personagem nível 1 e esperava Haki
+  visível; o contrato da HUD exige também `MareHaki.rules.level` (50).
+
+A correção está em `fd4d1cd`, [PR #182](https://github.com/Eximaq/mare-partida/pull/182),
+branch `fix/auth-acceptance-test-fixtures`, baseada em main `0897d9f`. Altera
+somente dois testes: nome esperado da moeda e preparação do nível, acrescentando
+a asserção de que o atalho continua oculto abaixo do mínimo. Não enfraquece a
+regra de produto, não muda gameplay e não remove asserções mecânicas.
+O teste Rank S não existe na ancestralidade de #162; copiá-lo modificado nessa
+branch produziria conflito add/add. A correção separada evita merge/rebase ou
+reescrita dos commits dos colaboradores sem autorização.
+
+Validação local com a main atual e o patch de disparo, em cópia isolada:
+quatro facções/emblemas, oito resoluções e persistência; seis habilidades, duas
+auras, cinco resoluções e reload, tanto estático quanto com API Python local e
+SQLite exclusiva do teste. Zero erros JavaScript/API. Sintaxe, diff-check e
+Gitleaks aprovados. O CI próprio de #182 verifica a main sem o patch de disparo;
+seu resultado final fica registrado no PR.
+
+**Dependência de integração, não falha de autenticação:** #162 permanece Draft
+e não deve ser declarado integralmente verde enquanto esses testes antigos
+continuarem no checkout do CI. Após aprovação e integração de #182 pelo
+proprietário, repetir os checks de #162 com a main atualizada. Nenhum merge,
+deploy, novo envio SMTP ou alteração Supabase foi feito para obter aprovação.
+O painel Cloudflare confirmou `skipped / No deployment available` para
+`5c1e14a` e `208b635`.
 
 ## F01 — ensaio parcial de 31/10/2026 e encerramento
 
