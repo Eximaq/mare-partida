@@ -46,10 +46,10 @@
       const titles=Object.hasOwn(MareHierarchy.titles,faction)?MareHierarchy.titles[faction]:null,valid=!!titles&&Number.isInteger(tier)&&tier>=1&&tier<=titles.length;
       const title=$('hudHierarchyTitle'),art=$('hudRankArt'),emblem=$('hudFactionEmblem');
       title.textContent=valid?MareHierarchy.title(faction,tier):'';title.title=title.textContent;
-      art.hidden=!valid;emblem.hidden=!titles;
+      art.hidden=!valid;emblem.hidden=!titles;const badge=$('hudRankInsignia');if(badge)badge.hidden=!valid;
       $('hudHierarchyTier').textContent=valid?String(tier):'';
       $('hudFactionName').textContent=({pirate:'Pirata',marine:'Marinha',revolutionary:'Exército Revolucionário',government:'Governo Mundial'})[faction]||'';
-      if(valid){art.setAttribute('src','assets/ui/character-hud/hd/'+faction+'-'+(tier<=3?'base':tier<=5?'command':'elite')+'.png');art.dataset.faction=faction;}
+      if(valid){const visual=MareHierarchy.art(faction,tier);art.setAttribute('src',visual.plaque);art.dataset.faction=faction;if(badge){badge.style.backgroundImage='url("'+visual.sheet+'")';badge.style.backgroundPosition=visual.x+'% '+visual.y+'%';badge.dataset.rankArt=visual.id;}}
       if(titles){emblem.setAttribute('src','assets/ui/faction-emblems/'+faction+'.png');emblem.setAttribute('alt',$('hudFactionName').textContent);}
       fitName();
     }

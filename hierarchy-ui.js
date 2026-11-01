@@ -1,34 +1,36 @@
 'use strict';
-/* HTML confiável da Hierarquia dos Mares; os dados do jogador são escapados. */
+/* Read-only faction consultation is separate from the character's persisted faction. */
 const MareHierarchyUI=(()=>{
-  const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const factionNames={pirate:'Pirata',marine:'Marinha',revolutionary:'Revolucionário',government:'Governo Mundial'};
-  const classNames={sword:'Espadachim',brawler:'Lutador',gunner:'Atirador',rogue:'Gatuno',cyborg:'Ciborgue',strategist:'Estrategista',healer:'Curandeiro'};
-  const portraitFolders={pirate:'pirata',marine:'marinheiro',revolutionary:'revolucionario',government:'governo_mundial'};
-  function portrait(player){
-    const saved=String(player.portrait||'');
-    return /^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/.test(saved)&&saved.length<=50000?saved:
-      `assets/factions/${portraitFolders[player.faction]||'pirata'}/preview.png`;
-  }
-  function render({game,factionName,accent,board,backend,message,power}){
-    const faction=game.factionId,tier=game.hierarchyTier,up=MareHierarchy.next(tier,game.level);
-    const nextTitle=up.target<=8?MareHierarchy.title(faction,up.target):'Patamar máximo';
-    const pct=Math.round(MareHierarchy.progress(tier,game.level)*100);
-    const podium=board.slice(0,3).map((p,i)=>`<li class="hierarchy-podium-card rank-${i+1}${p.player_id===game.hierarchyPlayerId?' is-self':''}">
-      <span class="hierarchy-podium-place">${i+1}º</span><div class="hierarchy-podium-portrait"><img src="${esc(portrait(p))}" alt="Retrato de ${esc(p.name)}" loading="lazy"></div>
-      <div class="hierarchy-podium-info"><small>${esc(MareHierarchy.title(p.faction,p.tier))} · ${esc(factionNames[p.faction]||p.faction)}</small><strong>${esc(p.name)}</strong><span>${esc(classNames[p.class_id]||'Aventureiro')} · Nv. ${Number(p.level)||1}</span></div>
-      <div class="hierarchy-podium-power"><small>PODER</small><strong>${Math.round(p.power).toLocaleString('pt-BR')}</strong></div></li>`).join('');
-    const rows=board.slice(3).map((p,i)=>`<li ${p.player_id===game.hierarchyPlayerId?'class="is-self"':''}><span class="hierarchy-place">${i+4}º</span><div><strong>${esc(p.name)}</strong><small><img src="${MareHierarchy.flag(p.faction)}" alt=""> ${esc(MareHierarchy.title(p.faction,p.tier))} · ${esc(factionNames[p.faction]||p.faction)}</small></div><span class="hierarchy-scores">Nv. ${p.level}<small>Poder ${Math.round(p.power).toLocaleString('pt-BR')}</small></span></li>`).join('');
-    return `<section class="hierarchy-panel" style="--hierarchy-accent:${esc(accent)}">
-      <header class="hierarchy-heading"><img class="hierarchy-flag" src="${MareHierarchy.flag(faction)}" alt="Símbolo de ${esc(factionName)}"><div><small>HIERARQUIA DOS MARES · ${esc(factionName)}</small><h2>${esc(MareHierarchy.title(faction,tier))}</h2><span>Patamar ${tier} · Nível ${game.level}</span></div><img class="hierarchy-current-art" src="${MareHierarchy.asset(faction,tier)}" alt="Arte do cargo atual"></header>
-      <div class="hierarchy-layout"><section class="hierarchy-player"><h3>Avançar de cargo</h3><div class="hierarchy-next"><div><small>ATUAL · PATAMAR ${tier}</small><img src="${MareHierarchy.asset(faction,tier)}" alt="${esc(MareHierarchy.title(faction,tier))}"></div><span aria-hidden="true">➜</span><div><small>PRÓXIMO · PATAMAR ${Math.min(up.target,8)}</small><img src="${MareHierarchy.asset(faction,Math.min(up.target,8))}" alt="${esc(nextTitle)}"></div></div>
-        <p class="hierarchy-requirement">${up.state==='max'?'Patamar máximo alcançado':`Requisito: nível ${MareHierarchy.levels[up.target-1]} · Seu nível: ${game.level}`}</p><div class="hierarchy-progress" role="progressbar" aria-valuenow="${pct}" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso até o próximo cargo"><span style="width:${pct}%"></span></div>
-        ${up.state==='locked'?`<p class="hierarchy-locked">${MareHierarchy.lockedMessage}</p>`:''}
-        <button type="button" class="dialog-button" data-hierarchy-promote ${up.state==='ready'?'':'disabled'}>AVANÇAR DE CARGO</button>
-        ${message?`<p class="hierarchy-feedback" role="status">${esc(message)}</p>`:''}</section>
-      <section class="hierarchy-board"><h3>Top 10 · Todos os Mares</h3><ol class="hierarchy-podium">${podium}</ol><ol class="hierarchy-ranking" start="4">${rows}</ol>${!backend?'<small>Preview local: o ranking global requer o servidor Python.</small>':''}</section></div></section>`;
-  }
-  function transition(faction,oldTier,newTier){return `<div class="hierarchy-transition"><figure><img src="${MareHierarchy.asset(faction,oldTier)}" alt="${esc(MareHierarchy.title(faction,oldTier))}"></figure><span aria-hidden="true">➜</span><figure><img src="${MareHierarchy.asset(faction,newTier)}" alt="${esc(MareHierarchy.title(faction,newTier))}"></figure></div>`;}
-  return {render,transition};
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const factions={pirate:{name:'Pirata',plural:'Piratas',color:'#af2635',description:'Liberdade acima de tudo. Piratas desafiam o mundo e buscam seus próprios sonhos nos mares intermináveis.'},marine:{name:'Marinha',plural:'Marinha',color:'#326da8',description:'Disciplina e justiça nos mares. A Marinha protege suas rotas e avança pelas patentes da força naval.'},revolutionary:{name:'Exército Revolucionário',plural:'Exército Revolucionário',color:'#368151',description:'Uma causa além das fronteiras. Revolucionários unem forças e desafiam os poderes que governam o mundo.'},government:{name:'Governo Mundial',plural:'Governo Mundial',color:'#e9e1cb',description:'Influência e autoridade nos oceanos. Os agentes do Governo Mundial ascendem em sua própria hierarquia.'}};
+ const classNames={sword:'Espadachim',brawler:'Lutador',gunner:'Atirador',rogue:'Gatuno',cyborg:'Ciborgue',strategist:'Estrategista',healer:'Curandeiro'};
+ const emblem=f=>`<img src="assets/ui/faction-emblems/${f}.png" alt="" class="hierarchy-official" loading="lazy">`;
+ function insignia(f,t,extra=''){const a=MareHierarchy.art(f,t);return `<span class="rank-insignia ${extra}" data-rank-art="${f}:${t}" style="--rank-sheet:url('${a.sheet}');--rank-x:${a.x}%;--rank-y:${a.y}%" aria-hidden="true"></span>`;}
+ function plate(f,t){const a=MareHierarchy.art(f,t);return `<div class="hierarchy-title-plate" data-faction="${f}" style="--rank-plaque:url('${a.plaque}')">${insignia(f,t)}<strong>${esc(MareHierarchy.title(f,t))}</strong></div>`;}
+ function portrait(p){const v=String(p.portrait||'');return /^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/.test(v)&&v.length<=50000?`<img src="${esc(v)}" alt="Retrato de ${esc(p.name)}" loading="lazy">`:`<span class="hierarchy-portrait-empty" title="Retrato ainda não sincronizado" aria-label="Retrato ainda não sincronizado">${emblem(Object.hasOwn(factions,p.faction)?p.faction:'pirate')}</span>`;}
+ function row(p,i,self){return `<li class="hierarchy-rank-row rank-${i+1} ${p.player_id===self?'is-self':''}"><span class="hierarchy-place ${i<3?'is-medal':''}" style="--medal-x:${i*50}%">${i+1}</span><div class="hierarchy-portrait">${portrait(p)}</div><div class="hierarchy-row-copy"><strong>${esc(p.name)}</strong><small>${esc(MareHierarchy.title(p.faction,p.tier))} · ${esc(factions[p.faction]?.name||'')}</small><span>${esc(classNames[p.class_id]||'Aventureiro')} · Nv. ${Number(p.level)||1}</span></div><strong class="hierarchy-row-power">${Math.round(Number(p.power)||0).toLocaleString('pt-BR')}</strong></li>`;}
+ function render({game,view={},message=''}){
+ const faction=Object.hasOwn(factions,view.faction)?view.faction:game.factionId,theme=factions[faction],own=faction===game.factionId,tier=Math.max(1,Math.min(8,view.tier||game.hierarchyTier)),actual=own&&tier===game.hierarchyTier,up=MareHierarchy.next(tier,game.level);
+ const goal=up.target<=8?MareHierarchy.levels[up.target-1]:null,base=MareHierarchy.levels[tier-1],pct=Math.round(MareHierarchy.progress(tier,game.level)*100);
+ const state=view.status||'idle',board=view.board||[];
+ const boardTitle=view.scope==='all'?'Todos os Mares':theme.plural;
+ return `<section class="hierarchy-panel" style="--hierarchy-accent:${theme.color}">
+ <div class="hierarchy-main"><nav class="hierarchy-factions" aria-label="Consultar facção">${Object.entries(factions).map(([id,f])=>`<button type="button" data-hierarchy-faction="${id}" aria-pressed="${id===faction}">${emblem(id)}<span>${esc(f.name)}</span></button>`).join('')}</nav>
+ <section class="hierarchy-intro honors-frame">${emblem(faction)}<div><h2>${esc(theme.name)}</h2><p>${esc(theme.description)}</p></div></section>
+ <section class="hierarchy-promotion honors-frame" data-consultation="${!actual}">
+ <div class="hierarchy-title-pair"><section><h3>${actual?'SEU TÍTULO ATUAL':'PATAMAR CONSULTADO'}</h3>${plate(faction,tier)}<p>Patamar ${tier}${actual?' · Nível '+game.level:''}</p></section><span class="hierarchy-arrow" aria-hidden="true">»</span><section><h3>${actual?'PRÓXIMO TÍTULO':'PRÓXIMO PATAMAR'}</h3>${up.target<=8?plate(faction,up.target):'<div class="hierarchy-maximum">Patamar máximo</div>'}<p>${up.target<=8?'Patamar '+up.target:'Todos os patamares consultados'}</p></section></div>
+ <nav class="hierarchy-tier-nav" aria-label="Consultar patamares"><button type="button" data-hierarchy-tier="${tier-1}" ${tier<=1?'disabled':''} aria-label="Patamar anterior">‹</button><label>Consultar patamar<select data-hierarchy-tier-select aria-label="Patamar de ${esc(theme.name)}">${MareHierarchy.titles[faction].map((t,i)=>`<option value="${i+1}" ${tier===i+1?'selected':''}>${i+1} · ${esc(t)}</option>`).join('')}</select></label><button type="button" data-hierarchy-tier="${tier+1}" ${tier>=8?'disabled':''} aria-label="Próximo patamar">›</button>${own&&!actual?'<button type="button" data-hierarchy-current>Seu título</button>':''}</nav>
+ <section class="hierarchy-requirements"><h3>${actual?'REQUISITOS PARA PROMOÇÃO':'REQUISITOS DO PATAMAR'}</h3>${actual&&goal?`<p><strong>Nível ${goal}</strong> · Seu nível: ${game.level}<span>${game.level>=goal?'Nível atendido':'Nível pendente'}</span></p><div class="hierarchy-progress" role="progressbar" aria-label="Progresso de nível para promoção" aria-valuemin="${base}" aria-valuemax="${goal}" aria-valuenow="${Math.max(base,Math.min(goal,game.level))}"><i style="width:${pct}%"></i></div>`:`<p>Nível mínimo declarado: <strong>${base}</strong> · Patamar ${tier}</p>`}
+ ${(actual?up.target:tier)>=6?`<p class="hierarchy-locked">${MareHierarchy.lockedMessage}</p>`:''}
+ ${!actual?`<p class="hierarchy-consultation">${own?'Consulta de patamar. Retorne ao seu título para promover.':'Apenas consulta. Sua facção permanece '+esc(factions[game.factionId].name)+'.'}</p>`:''}
+ </section><button type="button" class="honors-action promote" data-hierarchy-promote ${actual&&up.state==='ready'&&!view.busy?'':'disabled'}>${view.busy?'PROMOVENDO…':actual?(up.state==='max'?'PATAMAR MÁXIMO':'AVANÇAR DE CARGO'):'MODO DE CONSULTA'}</button><p class="honors-message" role="status">${esc(message)}</p>
+ </section></div>
+ <aside class="hierarchy-board honors-frame"><header>${emblem(faction)}<h2>TOP 10 — ${esc(boardTitle)}</h2><button type="button" data-hierarchy-scope="${view.scope==='all'?'faction':'all'}">${view.scope==='all'?'Ver facção':'Geral'}</button></header><div class="hierarchy-board-caption"><span>Classificação · Patamar, nível e poder</span><b>PODER</b></div>
+ <ol class="hierarchy-ranking" aria-label="Ranking: ${esc(boardTitle)}">${state==='ready'?board.slice(0,10).map((p,i)=>row(p,i,game.hierarchyPlayerId)).join(''):''}</ol>
+ ${state==='loading'?'<p class="hierarchy-board-status" role="status">Consultando o ranking…</p>':state==='error'?'<div class="hierarchy-board-status" role="status"><strong>Ranking indisponível</strong><p>Não foi possível consultar o serviço. Nenhuma posição global foi confirmada.</p><button type="button" data-hierarchy-retry>Tentar novamente</button></div>':state==='ready'&&!board.length?'<p class="hierarchy-board-status">Nenhum jogador registrado nesta facção.</p>':''}
+ <small class="hierarchy-service-note">Classificação fornecida pelo serviço de hierarquia disponível neste ambiente.</small></aside></section>`;
+ }
+ function transition(faction,oldTier,newTier){return `<div class="hierarchy-transition"><figure>${plate(faction,oldTier)}<figcaption>Patamar ${oldTier}</figcaption></figure><span aria-hidden="true">»</span><figure>${plate(faction,newTier)}<figcaption>Patamar ${newTier}</figcaption></figure></div>`;}
+ return {render,transition,insignia,plate,factions};
 })();
 if(typeof module!=='undefined')module.exports=MareHierarchyUI;
