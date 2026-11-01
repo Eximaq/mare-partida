@@ -4,6 +4,9 @@ on:
     branches: [main]
     paths:
       - 'talent-ui.js'
+      - 'talents-hd.css'
+      - 'assets/ui/talents-hd/**'
+      - 'tests/talent-hd.test.cjs'
       - 'talent-system.js'
       - 'ui-system.js'
       - 'ui-screens.css'
@@ -41,7 +44,7 @@ jobs:
           python -m playwright install --with-deps chromium
       - name: Validar talentos e pacote público
         run: |
-          node --test tests/talent-system.test.cjs tests/talent-canvas.test.cjs tests/achievements-ultimates.test.cjs tests/ui-system.test.cjs
+          node --test tests/talent-system.test.cjs tests/talent-canvas.test.cjs tests/talent-hd.test.cjs tests/achievements-ultimates.test.cjs tests/ui-system.test.cjs
           python tools/build_pages.py
           python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-talent-http.log 2>&1 &
           sleep 2

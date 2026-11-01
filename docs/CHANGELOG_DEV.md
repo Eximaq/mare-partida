@@ -668,3 +668,8 @@ Branch fix/talent-icons-selection-zoom, base main 4788ca4. Intermediários/finai
 ### 31/10/2026 — Quadro de Contratos HD
 
 Branch feature/contracts-board-hd, base c03d607. Moldura única, duas colunas, arte aprovada da Nami à direita, 12 ícones PixelLab (35 gerações), Berry e materiais oficiais reutilizados. Por orientação expressa, os dez contratos atuais aparecem em Diários, mantendo progresso/resgate único; Semanal e Mensal estão vazias, sem calendário inventado. Progresso agregado conta contratos, e recompensa final permanece A DEFINIR, sem entrega. Apresentação incremental no painel compartilhado, sem novo motor de missões ou migração. Quinze resultados Node e contratos fonte/dist em nove resoluções passaram; regressão de inventário/HUD também aprovada. [Diagnóstico, recursos, testes, pendências e rollback](QUADRO-CONTRATOS-HD.md). Evidências e saves controlados fora do Git; merge depende do proprietário.
+
+
+## 31/10/2026 — Talentos HD
+
+Branch feature/talents-hd; base 003a90cf (PR #178). Três colunas, árvore compacta, bônus totais reais, cabeçalho de madeira e centralização óptica dos medalhões. Sistemas de talentos/combate e saves preservados. Uma arte de fundo PixelLab Pro, 25 gerações; ícones originais intactos. Testes Node, Chromium nas sete classes e sete resoluções, build Pages. Detalhes e rollback: [TALENTOS-HD.md](TALENTOS-HD.md).
