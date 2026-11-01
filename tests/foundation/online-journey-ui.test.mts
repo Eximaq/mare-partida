@@ -17,12 +17,12 @@ class Element {
 function page(storage = new Map<string,string>()) {
   const elements = new Map<string,Element>();
   const get = (selector: string) => { if (!elements.has(selector)) elements.set(selector,new Element()); return elements.get(selector)!; };
-  const model = { started: false, hunt: "locked", version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
+  const model = { started: false, hunt: "locked", combatStatus: "locked", turn: 0, lastRequestId: null as string|null, attackReady: false, version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
     me: null as null | ((signal?: AbortSignal) => Promise<Response>), send: null as null | (() => Promise<Response>),
     control: null as null | (() => Promise<Response>) };
   const timers: Array<() => void> = [];
   const deadlines = new Map<number,()=>void>(); let timerId = 0;
-  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: 1, experience: "0", gold: "9007199254740993" }, journey: { started: model.started }, hunt: { catalogId:"dock-patrol-v1",name:"Ronda do cais",durationSeconds:30,experience:"20",gold:"8",status:model.hunt,startedAt:null,readyAt:null,serverNow:new Date().toISOString() } });
+  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: 1, experience: "0", gold: "9007199254740993" }, journey: { started: model.started }, hunt: { catalogId:"dock-patrol-v1",name:"Ronda do cais",durationSeconds:30,experience:"20",gold:"8",status:model.hunt,startedAt:null,readyAt:null,serverNow:new Date().toISOString() }, combat:{catalogId:"dock-raider-v1",enemyName:"Fixture enemy",status:model.combatStatus,turn:model.turn,playerHp:30,enemyHp:36,playerMaxHp:30,enemyMaxHp:36,attackReady:model.attackReady,lastRequestId:model.lastRequestId,nextAttackAt:null,lastAttack:null,experience:"30",gold:"12"} });
   runInNewContext(source, {
     URL, AbortController, setTimeout(fn:()=>void) { deadlines.set(++timerId,fn); return timerId; },
     clearTimeout(id:number) { deadlines.delete(id); }, crypto: { randomUUID }, confirm: () => true,
@@ -47,7 +47,11 @@ function page(storage = new Map<string,string>()) {
         const action=model.requests.at(-1).action;
         if(action==="journey.begin") {model.started=true;model.hunt="available";}
         if(action==="hunt.begin") model.hunt="active";
-        if(action==="hunt.claim") model.hunt="claimed";
+        if(action==="hunt.claim") {model.hunt="claimed";model.combatStatus="available";}
+        if(action==="combat.begin") model.combatStatus="active";
+        if(action==="combat.attack") {model.turn++;model.attackReady=false;}
+        if(action==="combat.claim") model.combatStatus="claimed";
+        if(action.startsWith("combat.")) model.lastRequestId=model.requests.at(-1).requestId;
         model.version++;
         return Response.json({ requestId: model.requests.at(-1).requestId, action: "journey.begin", state: snapshot().state });
       }
@@ -165,4 +169,38 @@ for(const action of ["hunt.begin","hunt.claim"]) test(`lost ${action} survives r
   reload.model.send=async()=>{reload.model.hunt=action==="hunt.begin"?"active":"claimed";throw new TypeError("lost after commit");};
   reload.click(button);await settle();assert.equal(reload.model.requests[0].requestId,original.requestId);
   assert.equal(reload.model.requests[0].expectedVersion,original.expectedVersion);assert.equal(reload.storage.size,0);
+});
+
+
+test("combat UI only attacks when server confirms cooldown and never sends HP, RNG or rewards",async()=>{
+  const p=page();p.model.started=true;p.model.hunt="claimed";p.model.combatStatus="available";await settle();
+  assert.equal(p.get("#combat-start").disabled,true);p.click("#control");await settle();
+  p.click("#combat-start");await settle();assert.equal(p.model.requests[0].action,"combat.begin");
+  assert.equal(p.get("#combat-attack").disabled,true);p.click("#combat-attack");await settle();assert.equal(p.model.requests.length,1);
+  p.model.attackReady=true;p.click("#online-refresh");await settle();p.click("#combat-attack");p.click("#combat-attack");await settle();
+  assert.equal(p.model.requests.length,2);assert.equal(p.model.requests[1].action,"combat.attack");assert.deepEqual(p.model.requests[1].payload,{});
+  p.model.combatStatus="lost";p.click("#online-refresh");await settle();
+  assert.equal(p.get("#combat-attack").disabled,true);assert.equal(p.get("#combat-claim").disabled,true);
+});
+
+test("uncertain attack survives another controller's later result; resume replays original ID even after battle ends",async()=>{
+  const p=page();p.model.started=true;p.model.hunt="claimed";p.model.combatStatus="active";p.model.attackReady=true;await settle();
+  p.click("#control");await settle();p.model.send=async()=>{throw new TypeError("lost reply");};
+  p.click("#combat-attack");await settle();const original=p.model.requests[0];
+  assert.equal(JSON.parse(p.storage.get(key)!).action,"combat.attack");
+  const reload=page(p.storage);reload.model.started=true;reload.model.hunt="claimed";reload.model.combatStatus="won";
+  reload.model.turn=3;reload.model.lastRequestId=randomUUID();await settle();
+  assert.ok(reload.storage.has(key),"another attack must not confirm this request");assert.equal(reload.model.requests.length,0);
+  reload.click("#control");await settle();assert.equal(reload.get("#combat-attack").disabled,false);
+  assert.equal(reload.get("#combat-claim").disabled,true);
+  reload.model.send=async()=>Response.json({requestId:original.requestId});
+  reload.click("#combat-attack");await settle();assert.equal(reload.model.requests[0].requestId,original.requestId);
+  assert.equal(reload.model.requests[0].expectedVersion,original.expectedVersion);assert.equal(reload.storage.size,0);
+  assert.equal(reload.get("#combat-claim").disabled,false);
+});
+
+test("a lost attack reply is reconciled only by its matching server request ID",async()=>{
+  const p=page();p.model.started=true;p.model.hunt="claimed";p.model.combatStatus="active";p.model.attackReady=true;await settle();
+  p.click("#control");await settle();p.model.send=async()=>{p.model.turn=1;p.model.lastRequestId=p.model.requests.at(-1).requestId;throw new TypeError("lost reply");};
+  p.click("#combat-attack");await settle();assert.equal(p.model.requests.length,1);assert.equal(p.storage.size,0);
 });

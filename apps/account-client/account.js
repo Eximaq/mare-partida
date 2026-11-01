@@ -28,6 +28,13 @@ const messages = {
   journey_required: "Inicie a jornada antes da caçada.",
   progression_limit: "O limite de progressão foi atingido; nenhuma recompensa foi aplicada.",
   state_version_exhausted: "O limite de versão deste ambiente foi atingido.",
+  hunt_required: "Conclua a primeira caçada e receba sua recompensa antes do combate.",
+  combat_cooldown: "O ataque ainda está em recarga no servidor. Aguarde a atualização.",
+  combat_not_started: "Inicie o encontro antes de atacar.",
+  combat_already_started: "Este encontro já foi iniciado. Conferindo o combate…",
+  combat_finished: "O encontro já terminou. Conferindo o resultado…",
+  combat_not_won: "O prêmio exige uma vitória confirmada pelo servidor.",
+  combat_already_claimed: "O prêmio já foi recebido. Conferindo o progresso…",
   password_reset_unconfirmed:
     "A resposta da troca de senha não pôde ser confirmada. A senha pode já ter sido alterada. Entre com a nova senha; não repita a troca.",
 };
@@ -88,7 +95,7 @@ function restorePendingCommand(id) {
   try {
     const saved = JSON.parse(sessionStorage.getItem(PENDING_COMMAND) || "null");
     if (saved && (["characterId,expectedVersion,requestId", "action,characterId,expectedVersion,requestId"].includes(Object.keys(saved).sort().join())) &&
-        (saved.action === undefined || ["hunt.begin", "hunt.claim"].includes(saved.action)) &&
+        (saved.action === undefined || ["hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim"].includes(saved.action)) &&
         saved.characterId === id && typeof saved.requestId === "string" &&
         /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(saved.requestId) &&
         Number.isSafeInteger(saved.expectedVersion) && saved.expectedVersion >= 0) {
@@ -102,10 +109,18 @@ function actionConfirmed(action) {
   if (!online) return false;
   if (action === "journey.begin") return online.journey.started;
   if (action === "hunt.begin") return ["active", "ready", "claimed"].includes(online.hunt?.status);
+  if (action === "combat.begin") return ["active","won","lost","claimed"].includes(online.combat?.status);
+  if (action === "combat.claim") return online.combat?.status === "claimed";
+  if (action === "combat.attack") return !!pendingCommand && online.combat?.lastRequestId === pendingCommand.requestId;
   return action === "hunt.claim" && online.hunt?.status === "claimed";
 }
 function canSend(action) {
   if (commandWorking || !active || !character || !online || !lease || (pendingCommand && pendingAction() !== action)) return false;
+  // An uncertain repeated action must be replayable even if a later command ended the battle.
+  if (pendingCommand && action.startsWith("combat.")) return true;
+  if (action === "combat.begin") return online.combat?.status === "available";
+  if (action === "combat.attack") return online.combat?.status === "active" && online.combat.attackReady;
+  if (action === "combat.claim") return online.combat?.status === "won";
   return action === "journey.begin" ? !online.journey.started :
     online.journey.started && online.hunt?.status === (action === "hunt.begin" ? "available" : "ready");
 }
@@ -116,7 +131,8 @@ function renderOnline() {
   $("#journey-state").textContent = !online ? "Progresso ainda não confirmado." :
     online.journey.started ? "Jornada iniciada no servidor." : "Sua jornada online ainda não foi iniciada.";
   for (const [selector, action, label] of [["#journey-start","journey.begin","Iniciar jornada"],
-      ["#hunt-start","hunt.begin","Iniciar caçada"],["#hunt-claim","hunt.claim","Receber recompensa"]]) {
+      ["#hunt-start","hunt.begin","Iniciar caçada"],["#hunt-claim","hunt.claim","Receber recompensa"],
+      ["#combat-start","combat.begin","Enfrentar saqueador"],["#combat-attack","combat.attack","Atacar"],["#combat-claim","combat.claim","Receber prêmio do combate"]]) {
     $(selector).disabled = !canSend(action);
     $(selector).textContent = pendingCommand && pendingAction() === action ? (commandWorking ? "Conferindo…" : "Retomar solicitação") : label;
   }
@@ -129,6 +145,20 @@ function renderOnline() {
     claimed: "Recompensa recebida e registrada no servidor.",
   })[hunt.status];
   $("#hunt-reward").textContent = hunt ? `${hunt.durationSeconds} segundos · ${hunt.experience} XP · ${hunt.gold} de ouro` : "";
+  const combat=online?.combat;
+  $("#combat-state").textContent = !combat ? "Combate ainda não confirmado." : ({
+    locked:"Conclua a Ronda do cais e receba a recompensa para liberar este encontro.",
+    available:"Saqueador do cais — encontro único deste piloto, com vitória ou derrota persistente.",
+    active:combat.attackReady ? "Seu ataque está pronto. O inimigo contra-ataca se sobreviver." : "Aguardando a recarga de 2 segundos no servidor…",
+    won:"Vitória confirmada. Receba o prêmio deste encontro.",
+    lost:"Derrota confirmada. O encontro terminou sem prêmio; novas tentativas ainda não estão disponíveis neste piloto.",
+    claimed:"Prêmio do combate recebido e registrado no servidor.",
+  })[combat.status];
+  const entered=combat && !["locked","available"].includes(combat.status);
+  $("#combat-player-hp").textContent=entered?`${combat.playerHp} / ${combat.playerMaxHp}`:"—";
+  $("#combat-enemy-hp").textContent=entered?`${combat.enemyHp} / ${combat.enemyMaxHp}`:"—";
+  $("#combat-turn").textContent=entered?String(combat.turn):"—";
+  $("#combat-last").textContent=combat?.lastAttack?`Último turno: ${combat.lastAttack.playerDamage} de dano causado; ${combat.lastAttack.enemyDamage} recebido.`:"";
   $("#online-refresh").disabled = commandWorking;
 }
 async function loadOnline(revision, id) {
@@ -143,6 +173,12 @@ async function loadOnline(revision, id) {
         !Number.isSafeInteger(result.hunt.durationSeconds) || result.hunt.durationSeconds < 1 ||
         ![result.hunt.gold,result.hunt.experience].every(v => typeof v === "string" && /^(0|[1-9][0-9]{0,18})$/.test(v))))
       throw new Error("Resposta de caçada inválida.");
+    if (result.combat && (!["locked","available","active","won","lost","claimed"].includes(result.combat.status) ||
+        !Number.isInteger(result.combat.playerHp) || result.combat.playerHp < 0 || result.combat.playerHp > 30 ||
+        !Number.isInteger(result.combat.enemyHp) || result.combat.enemyHp < 0 || result.combat.enemyHp > 36 ||
+        !Number.isInteger(result.combat.turn) || result.combat.turn < 0 || result.combat.turn > 4 ||
+        result.combat.playerMaxHp !== 30 || result.combat.enemyMaxHp !== 36 || typeof result.combat.attackReady !== "boolean"))
+      throw new Error("Resposta de combate inválida.");
     online = result;
     if (pendingCommand && actionConfirmed(pendingAction())) clearPendingCommand();
     $("#journey-message").textContent = pendingCommand ?
@@ -181,7 +217,7 @@ async function sendOnlineAction(action) {
     if (error.code === "control_conflict") {
       lease = null; $("#control-state").textContent = "Controle encerrado nesta aba.";
     }
-    if (["state_version_conflict", "journey_already_started", "hunt_already_started", "hunt_already_claimed", "hunt_not_started", "hunt_not_ready", "idempotency_conflict", "invalid_request"].includes(error.code)) clearPendingCommand();
+    if (["state_version_conflict", "journey_already_started", "hunt_already_started", "hunt_already_claimed", "hunt_not_started", "hunt_not_ready", "hunt_required", "combat_already_started", "combat_already_claimed", "combat_not_started", "combat_not_won", "combat_finished", "combat_cooldown", "idempotency_conflict", "invalid_request"].includes(error.code)) clearPendingCommand();
     // Transport/503 errors may follow a committed action. Reconcile with GET only.
   } finally {
     if (revision === identityRevision) {
@@ -197,6 +233,8 @@ async function sendOnlineAction(action) {
 $("#journey-start").addEventListener("click", () => { void sendOnlineAction("journey.begin"); });
 $("#hunt-start").addEventListener("click", () => { void sendOnlineAction("hunt.begin"); });
 $("#hunt-claim").addEventListener("click", () => { void sendOnlineAction("hunt.claim"); });
+for (const [selector, action] of [["#combat-start","combat.begin"],["#combat-attack","combat.attack"],["#combat-claim","combat.claim"]])
+  $(selector).addEventListener("click", () => { void sendOnlineAction(action); });
 $("#online-refresh").addEventListener("click", () => { if (!commandWorking) void refresh(); });
 function showLogin() {
   viewRevision++; identityRevision++; identity = null;
@@ -419,6 +457,13 @@ setInterval(() => {
     });
   }
 }, 30000);
+let combatPollRunning = false;
+setInterval(() => {
+  if (active && online?.combat?.status === "active" && !commandWorking && !combatPollRunning && !document.hidden) {
+    combatPollRunning = true;
+    void refresh().finally(() => { combatPollRunning = false; });
+  }
+}, 3000);
 if (new URL(location.href).searchParams.get("recovery") === "1") {
   $("#signed-out").hidden = true;
   $("#reset-form").hidden = false;

@@ -178,7 +178,7 @@ test("hunt migration is additive and repeatable, preserving old account, charact
     await pool.query("UPDATE mare_game.character_progression SET gold=9007199254740993,experience=567");
     const tables=["accounts","characters","character_progression","character_commands","character_journey_ledger"];
     const before=await Promise.all(tables.map(t=>pool.query(`SELECT * FROM mare_game.${t}`)));
-    assert.deepEqual(await applyMigrations(pool),["0006_first_hunt.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0006_first_hunt.sql", "0007_first_combat.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     for(const [i,t] of tables.entries()) assert.deepEqual((await pool.query(`SELECT * FROM mare_game.${t}`)).rows,before[i]!.rows);
     await f.send(f.input("hunt.begin",1));await mature(pool);
     const accepted=await f.send(f.input("hunt.claim",2));

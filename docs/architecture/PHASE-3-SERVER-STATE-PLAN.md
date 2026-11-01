@@ -53,7 +53,11 @@ a resposta não expõe o dono nem credenciais. Cache-Control continua no-store.
 5. **3E (primeira caçada):** [Ronda do cais](PHASE-3E-FIRST-HUNT.md), missão única
    de 30 segundos com 20 XP/8 ouro calculados e creditados no servidor. Ledger,
    versão, saldo e recibo atômicos; reconciliação no painel separado. Inventário,
-   RNG, level-up, caçadas repetíveis e combate em mapa ainda exigem contratos próprios.
+   level-up e caçadas repetíveis ainda exigem contratos próprios.
+6. **3F (primeiro combate):** [Saqueador do cais](PHASE-3F-FIRST-COMBAT.md), encontro
+   único por turnos com RNG, HP, recarga e prêmio calculados no backend; persistência
+   de vitória/derrota e replay de ataques. Combate em mapa e simulação offline ainda
+   não foram migrados.
 
 3B/3C definiram os comandos iniciais, retenção limitada ao piloto e reconciliação
 por requestId/versão; retenção para economia contínua permanece pendente. Origem pública,
