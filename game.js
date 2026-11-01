@@ -2235,7 +2235,7 @@ ${avatarExtra}
       if(!ONLINE_GAME.available||!ONLINE_GAME.controlled||ONLINE_GAME.pending){
         const note=document.createElement('p');note.className='online-state-note';note.setAttribute('role','status');
         note.textContent=!ONLINE_GAME.available?'Conexão interrompida. As ações estão pausadas.':ONLINE_GAME.pending?'Uma resposta ficou pendente. Confira antes de repetir a ação.':'Este personagem está sob controle de outra aba.';
-        const b=document.createElement('button');b.type='button';b.className='dialog-button';b.dataset.onlineAction=ONLINE_GAME.pending?'resume':'control';b.textContent=ONLINE_GAME.pending?'Conferir pedido pendente':'Assumir controle';b.disabled=!ONLINE_GAME.available||ONLINE_GAME.busy;note.append(b);body.prepend(note);
+        const b=document.createElement('button');b.type='button';b.className='dialog-button';b.dataset.onlineAction=ONLINE_GAME.controlled&&ONLINE_GAME.pending?'resume':'control';b.textContent=ONLINE_GAME.controlled&&ONLINE_GAME.pending?'Conferir pedido pendente':'Assumir controle';b.disabled=!ONLINE_GAME.available||ONLINE_GAME.busy;note.append(b);body.prepend(note);
       }
     }
   }

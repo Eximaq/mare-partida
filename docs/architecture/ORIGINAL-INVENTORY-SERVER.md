@@ -74,11 +74,15 @@ slots/classe, bag cheia, todas as operações da forja, custo/consumo, cura, ace
 entre contas, campos extras, rollback tardio e privilégios de uma role runtime.
 Não usa nem altera contas do Supabase hospedado.
 
-Validação local executada: build e typecheck, 90 testes de fundação, 116 integrações
+Validação local executada: build e typecheck, 92 testes de fundação, 116 integrações
 PostgreSQL/HTTP, 143 arquivos Node legados, build estático, três testes de portal e
 um de exportação Paper Doll aprovados. O navegador local automatizado está
 indisponível pela configuração da ferramenta; o teste de interface deste incremento
-será executado no CI, sem alegar homologação visual local ou com conta real.
+é acompanhado no CI, sem alegar homologação visual local ou com conta real.
+No commit 9c2e4b0, os 24 checks passaram: Chromium exercitou equipar botas,
+compra de poção, aprimoramento confirmado, reload e viewport de 760 px
+(run 41364039781); Linux/Docker executou Compose, 14 migrações, health checks,
+HTTPS e grants restritos, sem contactar Supabase (run 41364039896).
 
 `original-inventory-client.test.mts` verifica que os handlers originais enviam
 intenções e não executam mutações offline. `original-inventory-online-browser.cjs`

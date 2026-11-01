@@ -23,7 +23,8 @@
     );
   function project(base, data) {
     const o = data.online,
-      f = o.combat?.fighter ?? o.combatPreview;
+      frozen = ['active','won','lost'].includes(o.combat?.status),
+      f = frozen ? o.combat.fighter ?? o.combatPreview : o.combatPreview;
     if (!f || !Number.isInteger(f.maxHp) || f.maxHp < 1)
       throw new Error("invalid_server_state");
     return {
@@ -34,7 +35,7 @@
       level: o.state.level,
       xp: safe(o.progression.xpIntoLevel),
       gold: safe(o.state.gold),
-      hp: o.combat?.encounterId ? o.combat.playerHp : f.maxHp,
+      hp: frozen && o.combat?.encounterId ? o.combat.playerHp : f.maxHp,
       energy: 0,
       potions: 0,
       materials: 0,

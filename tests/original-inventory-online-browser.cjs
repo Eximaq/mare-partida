@@ -65,6 +65,9 @@ const wire={state:{characterId:character.id,version:1,level:1,experience:'0',gol
   await p.reload();await p.waitForFunction(()=>window.MareGameSession?.controlled&&!document.body.classList.contains('online-session-loading'));
   assert.equal(await p.locator('#potionCount').textContent(),'5');
   await p.setViewportSize({width:760,height:900});await p.keyboard.press('i');await p.waitForSelector('#invSearch');
+  await p.waitForFunction(()=>window.__mareDiagnostics?.().lobby96.state==='ready',null,{timeout:90000});
+  await p.waitForFunction(()=>{const c=document.getElementById('inventorySprite');return c&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0);},null,{timeout:90000});
+  await p.evaluate(()=>document.fonts.ready);
   await p.screenshot({path:path.join(out,'original-online-inventory.png')});
   assert.deepEqual(commands.map(c=>c.action),['items.equip','potions.buy','forge.execute']);assert.deepEqual(errors,[]);
   console.log('Original online HUD contract: native inventory/forge, strict intents, stock, equipment, busy recovery and reload passed. Provider is a UI fixture; PostgreSQL is tested separately.');

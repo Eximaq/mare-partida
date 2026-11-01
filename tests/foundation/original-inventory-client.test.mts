@@ -5,8 +5,31 @@ import { readFileSync } from "node:fs";
 import { runInNewContext } from "node:vm";
 const require = createRequire(import.meta.url);
 const { validIntent } = require("../../apps/account-client/game-session.js");
-const { project } = require("../../apps/account-client/game-ui.js");
+const { project, derived } = require("../../apps/account-client/game-ui.js");
 const source = readFileSync(new URL("../../game.js", import.meta.url), "utf8");
+
+test('a native menu offers control recovery before replay when both control and a response were lost',()=>{
+  const elements:any[]=[];
+  const element=()=>({dataset:{},classList:{toggle(){},add(){},remove(){}},remove(){},setAttribute(){},querySelector(){return null;},querySelectorAll(){return [];},append(){},prepend(){},parentElement:{querySelector(){return null;}}});
+  const dom=new Map(),session={data:{online:{originalInventory:{}}},available:true,controlled:false,busy:false,pending:{requestId:'retained'}};
+  const box:any={ONLINE_GAME:session,onlineUI:{close(){}},game:{gold:50},currentPanel:'shop',characterTab:null,itemIcon:()=>'',fmt:String,$:(id:string)=>{if(!dom.has(id))dom.set(id,element());return dom.get(id);},document:{querySelectorAll:()=>[],createElement:()=>{const e=element();elements.push(e);return e;}}};
+  for(const name of ['MareHakiUI','MarePlayerHub','MareVoyageUI','MareCompendium','MareTalentUI'])box[name]={unmount(){}};
+  const a=source.indexOf('  function renderPanel('),b=source.indexOf('  function devApply(',a);
+  runInNewContext(source.slice(a,b)+';globalThis.render=renderPanel;',box);
+  box.render();assert.equal(elements.at(-1).dataset.onlineAction,'control','an unauthorized replay button alone traps the player');
+  session.controlled=true;box.render();assert.equal(elements.at(-1).dataset.onlineAction,'resume');
+  assert.equal(session.pending.requestId,'retained','recovering control must retain the same request for replay');
+});
+
+test('equipment changes after a claimed encounter show the current fighter while active combat keeps its frozen HP',()=>{
+  const data:any={character:{name:'Online',classId:'sword',factionId:'pirate'},online:{state:{level:1,gold:'0'},progression:{xpIntoLevel:'0'},attributes:{allocated:{},available:0},combat:{status:'claimed',encounterId:'old',playerHp:20,fighter:{maxHp:60}},combatPreview:{maxHp:84}}};
+  const base={equipment:{},stats:{}};
+  assert.equal(project(base,data).hp,84,'claimed encounter HP must not override current equipment in the lobby');
+  assert.equal(derived({},data).maxHP,84);
+  data.online.combat.status='active';
+  assert.equal(project(base,data).hp,20);
+  assert.equal(derived({},data).maxHP,60,'active encounter remains bound to its starting equipment');
+});
 test('opening an online menu reaches the capability-aware renderer instead of the old alpha panel',()=>{
   const box:any={ONLINE_GAME:{data:{online:{originalInventory:{}}}},game:{},closeCharacterMenu(){},closeModesMenu(){},closeCaptainMenu(){},currentPanel:null,characterTab:null,$:()=>({classList:{remove(){}}})};
   box.renderPanel=()=>{box.view='original-capability-renderer';};box.onlineUI={open(){box.view='alpha-only';}};
