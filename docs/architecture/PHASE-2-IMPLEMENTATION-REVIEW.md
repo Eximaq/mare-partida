@@ -2,7 +2,7 @@
 
 Revisão local em 31/10/2026. Branch `feature/auth-sessions`, criada a partir da
 fundação aprovada `3addd2ae93c1d2862500ee0aea4ece9bff7fd217`. PR #160 permanece
-Draft, aberto e sem alterações. Última main consultada: `93368fd2ad6ef4151e37f3a40dad43717197b35d`.
+Draft, aberto e sem alterações. Última main consultada: `8550cfa760bbee08565e98a6f7e4ff6927ea1ea2`.
 A compatibilidade integrada é verificada pelo ref de PR e CI, sem merge na main.
 As adições concorrentes no topo do README e em `.gitattributes` foram conciliadas
 por commit normal na branch da Fase 2: preservam os links Rank A e regras de bytes
@@ -215,3 +215,40 @@ e a role runtime não altera identidade, atributos ou personagens existentes.
 Ver [ADR 0002](ADR-0002-BFF-SESSIONS.md),
 [operação e matriz real](../operations/PHASE-2-DEVELOPMENT.md) e
 [preparação manual Supabase](../operations/SUPABASE-DEVELOPMENT-SETUP.md).
+
+
+## Revalidação e contenção de publicação — 31/10/2026
+
+Build e TypeScript passaram novamente; fundação 28/28 e integração 19/19 com
+PostgreSQL real em bancos UUID descartáveis. O provedor destas regressões é
+simulado; nenhum cadastro, e-mail ou recuperação hospedada foi executado.
+
+A primeira execução de integração retornou `57P03`: o cluster local estava em
+recuperação automática de uma interrupção anterior. A porta aberta não significava
+readiness. Após `pg_isready` confirmar aceitação, a suíte completa passou. O log
+registrou aviso de compartilhamento de `server.log` e conclusão da recuperação;
+nenhuma proteção do Windows foi desabilitada. O launcher de 20 s não acompanhou
+o tempo de recuperação (~37 s); isso permanece uma limitação operacional do helper.
+Esta observação não equivale a teste planejado de desastre/restauração de backup.
+Contagem final somente leitura: quatro contas, três personagens, zero sessões
+ativas e zero revogações pendentes. Auth false, API/gateway não iniciados.
+
+A correção artística aprovada da Fênix está isolada no PR #177 (`b08d0b2`),
+baseado na main `8550cfa`: clipe nativo, regressão do desenho e navegador real.
+A suíte do jogo nessa branch passou 135/135. O teste herdado do Paper Doll foi
+corrigido após identificar uma variável de UI incluída indevidamente no hash;
+os contratos das 22 armas continuam verificados. Nada disso foi incorporado
+à branch de Auth. A CI integrada de #162 ainda depende da correção separada:
+a main continua sem hurt/south. Não declarar integração verde apenas porque
+os testes isolados de Auth passaram.
+
+O conflito concorrente do README foi conciliado em commit normal, preservando
+os quatro links de Forja/Contratos/Inventário presentes na main e os documentos
+do servidor. Nenhum merge, rebase, alteração de gameplay ou Fase 3 foi iniciado.
+
+O push inicial de #177 acionou um preview automático do portal estático na
+integração Cloudflare preexistente. Após autorização, somente `76cb9297` e seu
+alias foram excluídos, ambos com HTTP 404. Produção e outros previews preservados.
+As branches de Auth, fundação e correção da Fênix foram excluídas dos previews
+automáticos; novos commits desta tarefa usam também `[CF-Pages-Skip]`.
+O build observado executava `tools/build_portal.py`, sem publicar o backend.

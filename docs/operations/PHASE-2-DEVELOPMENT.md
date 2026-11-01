@@ -400,3 +400,24 @@ e-mail, dados pessoais, senhas ou tokens. Mocks/SDK com JWT local não substitue
 - Sem teste de carga, recuperação por restart PostgreSQL ou recuperação de desastre.
   A interrupção/restauração de rede foi testada sem reiniciar o serviço protegido.
 - Scripts de migração não apagam saves; não há migração de economia ou progressão.
+
+
+### Publicação de branches de desenvolvimento
+
+No projeto Cloudflare Pages do portal, manter previews em seleção personalizada:
+inclusão `*`, exclusões `feature/auth-sessions`, `refactor/authoritative-server`
+e `fix/phoenix-hurt-animation`. Essa configuração foi salva e conferida no painel
+em 31/10/2026. A produção continua vinculada a main, sem alteração nesta tarefa.
+Usar `[CF-Pages-Skip]` no começo dos commits desta atualização como proteção
+adicional, sem suprimir a CI do GitHub. Outras branches futuras exigem conferir
+as regras antes do push; não presumir que um Draft PR impeça deploy automático.
+
+As regras não apagam previews antigos. Somente o preview `76cb9297` foi excluído
+com autorização específica. Nenhum outro deployment ou projeto foi removido.
+Antes da integração de #162, revisar também a correção isolada #177; não iniciar
+Fase 3 nem publicar o BFF por consequência de um push de documentação.
+
+Antes das integrações locais, exigir `pg_isready` aceitando conexões; escutar na
+porta não basta. Nesta revalidação houve recuperação automática de interrupção
+anterior (~37 s), além do limite de 20 s do launcher. Não alterar segurança do
+Windows nem reinicializar/apagar o cluster para acelerar esse processo.

@@ -1,3 +1,11 @@
+[Forja HD: Aprimorar, Imbuir, Fusão e Reforja com mecânicas preservadas](docs/FORJA-HD.md).
+
+[Quadro de Contratos HD: duas colunas, Nami à direita e progresso real](docs/QUADRO-CONTRATOS-HD.md).
+
+[Inventário — refino visual e 102 ícones PixelLab HD, aguardando aprovação](docs/INVENTORY-HD-REFINEMENT.md).
+
+[Inventário pirata HD e componentes reutilizáveis — sprint em revisão visual](docs/INVENTORY-PIRATE-HD.md).
+
 [Padrão visual permanente das próximas HUDs](docs/HUD-VISUAL-STANDARD.md).
 
 [HUD HD: títulos da Hierarquia dos Mares, emblemas oficiais e cartaz com retrato native96](docs/HUD-HD-HIERARCHY.md).
@@ -14,7 +22,7 @@
 
 **Servidor autoritativo — Fase 1 local:** [arquitetura e limites](docs/architecture/AUTHORITATIVE-FOUNDATION.md) · [execução, banco e testes](docs/operations/LOCAL-SERVER.md). Fundação independente; o jogo e os saves atuais permanecem no navegador.
 
-**Fase 2 em desenvolvimento:** [BFF, sessões e personagens](docs/architecture/PHASE-2-IMPLEMENTATION-REVIEW.md) · [preparação local e homologação](docs/operations/PHASE-2-DEVELOPMENT.md). Auth desabilitado por padrão; homologação Supabase real pendente.
+**Fase 2 em desenvolvimento:** [BFF, sessões e personagens](docs/architecture/PHASE-2-IMPLEMENTATION-REVIEW.md) · [preparação local e homologação](docs/operations/PHASE-2-DEVELOPMENT.md). Auth desabilitado por padrão; rodadas funcionais Supabase 1–3 registradas, com limites e pendências na revisão.
 
 **Sprint 3:** [Sua Aparência](docs/PERSONAGEM-APARENCIA-96.md): nova etapa após classe, gênero, cabelos/olhos e cores independentes, prévia em quatro direções e persistência.
 
