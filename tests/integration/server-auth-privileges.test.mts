@@ -42,6 +42,9 @@ test("login, persistence and controller transitions work with minimum grants, wi
           factionId: "pirate",
         });
         const control = await service.acquireControl(login.token, character.id);
+        assert.deepEqual(await service.characterState(login.token, character.id), {
+          characterId: character.id, version: 0, level: 1, experience: "0", gold: "0",
+        });
         await service.renewControl(login.token, character.id, control);
         const restarted = new AuthService({
           pool: runtime,
@@ -54,10 +57,14 @@ test("login, persistence and controller transitions work with minimum grants, wi
           (await restarted.me(login.token)).character?.id,
           character.id,
         );
+        assert.equal((await restarted.characterState(login.token, character.id)).gold, "0");
         for (const sql of [
           "UPDATE mare_game.accounts SET subject='forged'",
           "UPDATE mare_game.characters SET state_version=1",
           "DELETE FROM mare_game.characters",
+          "UPDATE mare_game.character_progression SET gold=1",
+          "DELETE FROM mare_game.character_progression",
+          `INSERT INTO mare_game.character_progression(character_id,gold) VALUES('${character.id}',1)`,
           "CREATE SCHEMA forbidden",
           "SELECT * FROM pg_authid",
         ])

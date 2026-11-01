@@ -70,6 +70,7 @@ export async function authDatabase(
     provider: FakeProvider;
     vault: Vault;
   }) => Promise<void>,
+  migrationsDirectory?: string,
 ) {
   assert.ok(
     process.env.TEST_DATABASE_URL,
@@ -86,7 +87,7 @@ export async function authDatabase(
     created = true;
     url.pathname = "/" + name;
     pool = new pg.Pool({ connectionString: url.toString(), max: 12 });
-    await applyMigrations(pool);
+    await applyMigrations(pool, migrationsDirectory);
     const provider = new FakeProvider(),
       vault = new Vault(Buffer.alloc(32, 9));
     const service = new AuthService({

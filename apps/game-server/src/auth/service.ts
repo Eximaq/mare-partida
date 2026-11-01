@@ -10,6 +10,7 @@ import {
 } from "./provider.js";
 import { digest, opaque, Vault } from "./vault.js";
 import type { SessionPolicy } from "./config.js";
+import { initializeCharacterState, readCharacterState } from "../characters/state.js";
 type SessionRow = {
   id: string;
   account_id: string;
@@ -250,6 +251,12 @@ export class AuthService {
       };
     });
   }
+  async characterState(token: string, id: string) {
+    return this.withSession(token, "play", async (client, row) => {
+      await this.owned(client, row.account_id, id);
+      return readCharacterState(client, id);
+    });
+  }
   private async owned(
     client: PoolClient,
     account: string,
@@ -273,8 +280,8 @@ export class AuthService {
   }
   async createCharacter(token: string, input: CharacterCreate) {
     return this.withSession(token, "play", async (client, row) => {
-      await client.query(
-        `INSERT INTO mare_game.characters(id,account_id,name,class_id,faction_id) VALUES($1,$2,$3,$4,$5) ON CONFLICT(account_id) DO NOTHING`,
+      const created = await client.query(
+        `INSERT INTO mare_game.characters(id,account_id,name,class_id,faction_id) VALUES($1,$2,$3,$4,$5) ON CONFLICT(account_id) DO NOTHING RETURNING id`,
         [
           randomUUID(),
           row.account_id,
@@ -295,6 +302,7 @@ export class AuthService {
         character.factionId !== input.factionId
       )
         return new AuthFault(409, "character_exists");
+      if (created.rowCount) await initializeCharacterState(client, character.id);
       return character;
     });
   }

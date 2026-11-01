@@ -1,6 +1,12 @@
 # Fase 2 — revisão da implementação de desenvolvimento
 
-**Status atual:** `c8be42f`, oito checks CI aprovados, PR #162 Draft e sem conflitos
+**Atualização de fechamento, 01/11/2026:** Fase 2 homologada nos cenários da
+[matriz 2F](../operations/PHASE-2F-FINAL-ACCEPTANCE.md), PR #162 integrado em
+`5b88df6` após 22/22 checks. Publicação somente estática; backend não publicado.
+A próxima etapa está em [Fase 3 — estado](PHASE-3-SERVER-STATE-PLAN.md).
+Os status datados abaixo são históricos, não pendências atuais implícitas.
+
+**Status da revisão inicial:** `c8be42f`, oito checks CI aprovados, PR #162 Draft e sem conflitos
 com main `8550cfa`. [Etapa 2F](../operations/PHASE-2F-FINAL-ACCEPTANCE.md):
 preparação autorizada, execução externa e aceite final ainda pendentes. As
 seções cronológicas registram o estado observado em cada commit; não tratar
