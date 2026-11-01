@@ -46,3 +46,19 @@ canvas e mover com WASD/setas. Abrir os serviços e conferir que os mesmos dados
 persistem após recarregar. Sair da conta deve remover o porto e o personagem.
 Relatar tela de carregamento que não termina, arte ausente ou erro de console;
 não limpar dados do navegador para tentar corrigir.
+
+## Correção do mapa azul
+
+O primeiro ensaio do proprietário mostrou o personagem sobre o fallback azul.
+`lobby-world.js` e as máscaras de profundidade resolviam `assets/` relativamente
+à página `/online/`; o mapa era solicitado em `/online/assets/` (404). A tag base
+adicionada ao painel era incompatível com `base-uri none` e não corrigia a URL.
+Agora os renderizadores resolvem imagens relativamente ao próprio script, incluindo
+prefixos como `/mare-partida/`. A tag base foi removida e a CSP permaneceu intacta.
+O lobby aguarda `image.decode()` e apresenta falha explícita se a imagem não carregar.
+
+Regressões reproduziram os caminhos errados antes da correção. Após a mudança:
+75 foundation, oito testes de mapa/profundidade, typecheck, build Pages e três
+verificações do portal passaram. Recursos corrigidos entregues por HTTPS local.
+Aceite visual da correção continua pendente porque a ferramenta de navegador
+permanece desativada; o proprietário deve recarregar e abrir o lobby novamente.

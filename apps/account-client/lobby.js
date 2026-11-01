@@ -9,6 +9,7 @@
   async function prepare(){
     for(const [global,file] of [['MareWorld','world-system.js'],['MareLobbyMapData','lobby-map-data.js'],['MareLobby','lobby-world.js'],['MareWorldDepth','world-depth.js'],['MareHeadgear','headgear-visibility.js'],['MareCharacterAppearance','character-appearance.js'],['MarePaperDoll96Lobby','paper-doll-96-lobby.js']])if(!globalThis[global])await script(file);
     if(!doll){doll=MarePaperDoll96Lobby.create({baseURL:location.origin+'/'});nav=new MareWorld.Navigation(MareLobby.map,32);}
+    if(MareLobby.image?.decode)await MareLobby.image.decode();
     await doll.ready;
   }
   function update(next){

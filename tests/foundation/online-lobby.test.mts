@@ -13,3 +13,12 @@ test('visual lobby follows server identity, clears on logout and has no economic
  api.update({character:{id:'a',name:'Server Name',classId:'sword'},state:{level:2,experience:'80',gold:'3'},controlled:false});frames.shift()(1200);assert.equal(playerDraws.length,2,'a refreshed snapshot resumes rendering');
  api.clear();assert.equal(get('lobby-name').textContent,'');
 });
+
+test('failed map decoding reports a load failure and never starts a blue placeholder loop',async()=>{
+ let frames=0;const elements:any={};const get=(id:string)=>elements[id]??={textContent:'',getContext:()=>({clearRect(){}}),addEventListener(){},focus(){}};
+ const box:any={document:{getElementById:get},location:{origin:'https://localhost:9443'},addEventListener(){},requestAnimationFrame(){frames++;},
+ MareWorld:{Navigation:class{}},MareLobbyMapData:{},MareWorldDepth:{},MareHeadgear:{},MareCharacterAppearance:{},MareLobby:{image:{decode:async()=>{throw new Error('missing image');}}},MarePaperDoll96Lobby:{create:()=>({ready:Promise.resolve(),ensure:async()=>true})}};
+ runInNewContext(readFileSync(new URL('../../apps/account-client/lobby.js',import.meta.url),'utf8'),box);
+ box.MareOnlineLobby.update({character:{id:'a',name:'Fixture'},state:{level:1,experience:'0',gold:'0'}});await box.MareOnlineLobby.enter();
+ assert.equal(frames,0,'missing map must not start a render loop');assert.match(get('lobby-status').textContent,/Não foi possível carregar o porto/);
+});
