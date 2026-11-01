@@ -100,7 +100,7 @@ test("Phase 2 upgrade backfills clean state once without changing identities or 
     await pool.query("INSERT INTO mare_game.accounts(id,provider,subject) VALUES($1,'test','legacy-online')", [account]);
     await pool.query("INSERT INTO mare_game.characters(id,account_id,name,class_id,faction_id,state_version) VALUES($1,$2,'Preserved','healer','marine',7)", [character, account]);
     const before = (await pool.query("SELECT * FROM mare_game.characters")).rows;
-    assert.deepEqual(await applyMigrations(pool), ["0003_character_progression.sql", "0004_character_commands.sql"]);
+    assert.deepEqual(await applyMigrations(pool), ["0003_character_progression.sql", "0004_character_commands.sql", "0005_character_journey.sql"]);
     assert.deepEqual((await pool.query("SELECT * FROM mare_game.characters")).rows, before);
     assert.deepEqual((await pool.query("SELECT * FROM mare_game.character_progression")).rows,
       [{ character_id: character, level: 1, experience: "0", gold: "0" }]);

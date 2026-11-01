@@ -1,5 +1,9 @@
 # Etapa 3B — protocolo de comandos autorizado
 
+Registro do incremento 3B. A [Etapa 3C](PHASE-3C-JOURNEY-COMMAND.md) acrescenta
+journey.begin e a migração 0005; os contratos de autorização e replay abaixo
+permanecem. As afirmações de ação única descrevem o escopo original 3B.
+
 Base: main `fec86b7`, preservando o trabalho de criação/gameplay do PR #186.
 Este incremento prepara o transporte transacional; não migra combate, economia,
 inventário ou saves. Backend continua local, sem novo envio ou alteração no Supabase.

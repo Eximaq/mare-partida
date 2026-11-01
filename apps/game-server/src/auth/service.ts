@@ -275,6 +275,16 @@ export class AuthService {
       return executeCharacterCommand(client, id, row.id, input);
     });
   }
+  async onlineState(token: string, id: string) {
+    return this.withSession(token, "play", async (client, row) => {
+      await this.owned(client, row.account_id, id);
+      const state = await readCharacterState(client, id);
+      const journey = (await client.query<{ started: boolean }>(
+        "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started", [id],
+      )).rows[0]!;
+      return { state, journey };
+    });
+  }
   private async owned(
     client: PoolClient,
     account: string,

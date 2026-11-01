@@ -6,7 +6,7 @@ import pg from "pg";
 import { AuthService } from "../../apps/game-server/src/auth/service.js";
 import { authDatabase } from "./auth-support.mjs";
 
-test("login, persistence and controller transitions work with minimum grants, without identity or character UPDATE privileges", async () => {
+test("login, control and journey work with minimum grants, without identity or economic UPDATE privileges", async () => {
   const role = "mare_test_role_" + randomUUID().replaceAll("-", "");
   assert.match(role, /^mare_test_role_[a-f0-9]{32}$/);
   const password = randomBytes(32).toString("hex");
@@ -51,6 +51,9 @@ test("login, persistence and controller transitions work with minimum grants, wi
         const accepted = await service.command(login.token, character.id, command);
         assert.equal(accepted.state.gold, "0");
         assert.deepEqual(await service.command(login.token, character.id, command), accepted);
+        const started = await service.command(login.token, character.id, { ...command, requestId: randomUUID(), action: "journey.begin" });
+        assert.equal(started.state.version, 1);
+        assert.equal((await runtime.query("SELECT version_after FROM mare_game.character_journey_ledger")).rows[0].version_after, "1");
         const restarted = new AuthService({
           pool: runtime,
           provider,
@@ -65,10 +68,15 @@ test("login, persistence and controller transitions work with minimum grants, wi
         assert.equal((await restarted.characterState(login.token, character.id)).gold, "0");
         for (const sql of [
           "UPDATE mare_game.accounts SET subject='forged'",
-          "UPDATE mare_game.characters SET state_version=1",
+          "UPDATE mare_game.characters SET name='forged'",
+          "UPDATE mare_game.characters SET account_id=gen_random_uuid()",
           "DELETE FROM mare_game.characters",
           "UPDATE mare_game.character_commands SET result='{}'::jsonb",
           "DELETE FROM mare_game.character_commands",
+          "UPDATE mare_game.character_journey_ledger SET version_before=2",
+          "DELETE FROM mare_game.character_journey_ledger",
+          "INSERT INTO mare_game.character_journey_ledger(character_id,request_id,version_before,occurred_at) VALUES(gen_random_uuid(),gen_random_uuid(),0,now())",
+          "INSERT INTO mare_game.character_journey_ledger(character_id,request_id,version_before,event) VALUES(gen_random_uuid(),gen_random_uuid(),0,'forged')",
           "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result,created_at) VALUES(gen_random_uuid(),gen_random_uuid(),repeat('a',64),'{}',now())",
           "UPDATE mare_game.character_progression SET gold=1",
           "DELETE FROM mare_game.character_progression",

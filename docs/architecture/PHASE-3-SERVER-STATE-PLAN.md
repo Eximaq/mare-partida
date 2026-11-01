@@ -43,16 +43,17 @@ a resposta não expõe o dono nem credenciais. Cache-Control continua no-store.
    idempotência vinculada a personagem/operação/payload; repetição exata devolve
    resultado anterior e chave com payload diferente é conflito. Não conceder
    valores econômicos arbitrários como primeiro comando.
-3. **3C:** escolher uma ação pequena cuja pré-condição e resultado possam ser
-   calculados inteiramente pelo servidor. Implementar a mutação com ledger,
-   versionamento e rollback; testar concorrência, replay, troca de controlador,
-   desconexão, resposta perdida e tentativa de saldo/XP enviado pelo cliente.
-4. **3D:** integrar o modo online por funcionalidade, mantendo o modo demonstração
-   e seus saves isolados. Inventário, recompensas, RNG e combate exigem contratos
-   próprios; nenhum deles está migrado por esta entrega.
+3. **3C (implementada):** [journey.begin](PHASE-3C-JOURNEY-COMMAND.md), marco único
+   sem recompensa econômica, com ledger, versão, rollback e recibo na mesma
+   transação. Testes de concorrência, replay, controlador, perda de resposta e
+   rejeição de saldo/XP fornecido pelo cliente. Sem integração no gameplay local.
+4. **3D (primeiro fluxo implementado):** [painel online](PHASE-3D-ONLINE-PANEL.md),
+   consulta autorizada do marco, início de jornada e reconciliação por aba. Modo
+   demonstração e saves isolados. Inventário, recompensas, RNG e combate exigem
+   contratos próprios; nenhum deles está migrado por esta entrega.
 
-Decisões a fechar durante 3B/3C: primeiro comando, retenção de idempotência/ledger,
-limite de comandos e reconciliação de cliente desatualizado. Origem pública,
+3B/3C definiram os comandos iniciais, retenção limitada ao piloto e reconciliação
+por requestId/versão; retenção para economia contínua permanece pendente. Origem pública,
 proxy/abuso/carga e backup/restauração continuam requisitos operacionais antes
 de expor o backend; não são resolvidos pela publicação estática.
 

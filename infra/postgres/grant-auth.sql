@@ -3,6 +3,10 @@ GRANT USAGE ON SCHEMA mare_game TO mare_runtime;
 GRANT SELECT, INSERT ON mare_game.accounts TO mare_runtime;
 GRANT UPDATE (auth_epoch) ON mare_game.accounts TO mare_runtime;
 GRANT SELECT, INSERT ON mare_game.characters TO mare_runtime;
+-- Commands may advance the concurrency version, never rewrite identity or progression.
+GRANT UPDATE (state_version) ON mare_game.characters TO mare_runtime;
+GRANT SELECT ON mare_game.character_journey_ledger TO mare_runtime;
+GRANT INSERT (character_id, request_id, version_before) ON mare_game.character_journey_ledger TO mare_runtime;
 -- Phase 3A can initialize only server defaults and read state. No economic UPDATE/DELETE.
 GRANT SELECT ON mare_game.character_progression TO mare_runtime;
 GRANT INSERT (character_id) ON mare_game.character_progression TO mare_runtime;
