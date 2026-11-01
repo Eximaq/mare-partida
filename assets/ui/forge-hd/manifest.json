@@ -1,0 +1,111 @@
+{
+  "date": "2026-10-31",
+  "scope": "Forge presentation only; current item catalog and transaction model preserved.",
+  "sources": [
+    {
+      "file": "icons-source.png",
+      "provider": "PixelLab AI Pro",
+      "job": "a532b8bd-3225-4e51-ba5a-88f5050e49da",
+      "gallery": "b7605420-dc86-5013-b978-ef518dff1d96",
+      "width": 256,
+      "height": 256,
+      "generations": 10,
+      "sha256": "cf47589c67e1b8c19e8db239a38a5393d326965b1ea0038c07d1c7f8526ebfa2",
+      "url": "https://api.pixellab.ai/mcp/images/a532b8bd-3225-4e51-ba5a-88f5050e49da/download",
+      "prompt": "Masterpiece HD refined pirate forge RPG UI ICONS ONLY, matching approved workshop reference. Four DISTINCT isolated illustrated icons, precisely 2 columns x 2 rows in a transparent 256x256 atlas. Each cell 128x128. Top left: a detailed golden anvil with a small glowing orange forge spark, for equipment upgrade. Top right: an ornate gold socket ring holding a radiant sapphire pearl, for installing pearls. Bottom left: three beautiful gold curved arrows forming a circular fusion vortex around a small purple pearl, for fusion. Bottom right: two crossed artisanal blacksmith hammers in warm steel and gold, for rerolling bonus attributes. Clean polished silhouette, aged gold and dark steel, precise crisp edges, sophisticated dimensional shading, coherent lighting from upper left, extremely legible at 30-42 display pixels. Equal apparent sizes, objects fully within each cell with at least 6px clear margins. True alpha transparency. No words, lettering, numbers, coins, people, panels, frames or backgrounds. Do not generate a whole screen."
+    },
+    {
+      "id": "owner-approved-upgrade-reference",
+      "provider": "User-supplied approved reference",
+      "file": "Imagem do ChatGPT 31 de out. de 2026, 21_31_49-1.png",
+      "width": 1448,
+      "height": 1086,
+      "sha256": "3a9b1bace73a32a7085114de43f953458d9f898b9820cb9ed2df10a1caf8fd03",
+      "note": "Only right-side decorative workshop illustration cropped; no baked interface text or buttons included."
+    }
+  ],
+  "outputs": [
+    {
+      "file": "upgrade.png",
+      "source": "icons-source.png",
+      "crop": [
+        11,
+        16,
+        118,
+        114
+      ],
+      "width": 107,
+      "height": 98,
+      "sha256": "936bb65206ca008b4d08486a7ca4afa37a87f32b3dbdc9fe666395acd39c9cfc",
+      "resampled": false
+    },
+    {
+      "file": "imbue.png",
+      "source": "icons-source.png",
+      "crop": [
+        153,
+        20,
+        231,
+        108
+      ],
+      "width": 78,
+      "height": 88,
+      "sha256": "b799a867a5209a957b6bd9e5580ae75dd5a66b779754279ec657354a3d9aade3",
+      "resampled": false
+    },
+    {
+      "file": "fusion.png",
+      "source": "icons-source.png",
+      "crop": [
+        15,
+        136,
+        117,
+        246
+      ],
+      "width": 102,
+      "height": 110,
+      "sha256": "c7d75a15d604bb3eb34b6ba0b9f34968cc9036db76e467a31888d9d7f4a05227",
+      "resampled": false
+    },
+    {
+      "file": "reforge.png",
+      "source": "icons-source.png",
+      "crop": [
+        139,
+        139,
+        245,
+        243
+      ],
+      "width": 106,
+      "height": 104,
+      "sha256": "dbd6de496e651a2cb711953c1c8391d5908006eef287ec08109adf12cf324c27",
+      "resampled": false
+    },
+    {
+      "file": "kozaburo-approved.png",
+      "source": "owner-approved-upgrade-reference",
+      "crop": [
+        1084,
+        94,
+        1448,
+        1086
+      ],
+      "width": 364,
+      "height": 992,
+      "sha256": "11568b1021ecc533dde8a011a1a20f4db52995c16e31c1fd926a30471a827a82",
+      "resampled": false
+    }
+  ],
+  "reused": [
+    "assets/ui/inventory-final/manifest.json",
+    "assets/ui/items-hd/manifest.json",
+    "assets/ui/contracts-hd/manifest.json"
+  ],
+  "processing": "Exact crops only, source atlas preserved, no resampling or pixel repainting. Runtime CSS uses object-fit:contain and existing 9-slice frames.",
+  "cost": {
+    "generations": 10,
+    "balanceBefore": 171.68,
+    "balanceAfter": 161.68,
+    "creditsUSD": 0
+  }
+}
