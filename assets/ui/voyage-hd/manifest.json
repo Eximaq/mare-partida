@@ -1,0 +1,322 @@
+{
+  "generator": "PixelLab AI",
+  "date": "2026-11-01",
+  "purpose": "Archipelago and Impel Down HUD components; no generated monsters or reward items",
+  "direction": "Owner approved East Blue, Alabasta and Impel Down reference images; Masterpiece Ultra HD refined pixel art",
+  "notes": "Native PixelLab outputs preserved. No baked interface text. Decorative images are independent of canonical gameplay data.",
+  "assets": [
+    {
+      "id": "east-blue",
+      "job": "8911e57c-91e7-4a06-a68b-444a579557c2",
+      "size": [
+        600,
+        448
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.15,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "east-blue.png",
+      "sha256": "f8d3a66650c2d67e1e97c2d8297bef528e561395c3f8bb21c754f4b59dff6e4f"
+    },
+    {
+      "id": "alabasta",
+      "job": "25a37357-3f5f-4efe-9243-8f5f376b9852",
+      "size": [
+        600,
+        448
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.15,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "alabasta.png",
+      "sha256": "0dad379fdd2943ee4a4d8ab94e7bf7dbc650c0a4909acc6e0488673cfdab0101"
+    },
+    {
+      "id": "prison",
+      "job": "66816986-5e6f-4690-abd8-62093bb0e811",
+      "size": [
+        688,
+        384
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.15,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "prison.png",
+      "sha256": "c39442b2690f857956ad1b66b6c800518cdb48681fb2eb0d422a42d663905a7c"
+    },
+    {
+      "id": "header",
+      "job": "7f67089f-82db-4507-a72d-4d7c3e74548f",
+      "size": [
+        792,
+        168
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.15,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "header.png",
+      "sha256": "aa145665c75b434823d947c8551528bf6cea67241ad1a868279ded8a250892a2"
+    },
+    {
+      "id": "dawn",
+      "job": "851e618b-a142-4372-8b79-c912627668c2",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0,
+      "charged_generations": 10,
+      "alpha": false,
+      "file": "dawn.png",
+      "sha256": "3eae407d0ecf875f4c16f441931ccdbb7005a96fca80593927299b1631eaa846"
+    },
+    {
+      "id": "conchas",
+      "job": "ffdd04f9-a414-4702-aef2-f38c5f71c052",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "conchas.png",
+      "sha256": "2c9d003628f79dca3cad9baa1dfa4c6f6dfcbbbdf08f8debaccbfe4df7b39878"
+    },
+    {
+      "id": "orange-town",
+      "job": "a4b7fe24-5ce6-4f8d-8f7b-bc3a9fb10e90",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "orange-town.png",
+      "sha256": "c2afdfc43229e6550baf72f3971cd09450f175b04e9c3c56c87b48bb9887b37a"
+    },
+    {
+      "id": "animais-raros",
+      "job": "591a3f26-3bfa-4d6c-b984-9f9da7394de0",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "animais-raros.png",
+      "sha256": "e9173c4604a621768fd7f7b59b634c0f96678bc2f3c8bcf931670b387598a671"
+    },
+    {
+      "id": "syrup",
+      "job": "7aebf698-9d7a-40bf-9985-2426842c5d2e",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "syrup.png",
+      "sha256": "0a0de02524f5b8466bc92407fc83411a2fda1dd6fc81bfab48408ce66b014cd4"
+    },
+    {
+      "id": "baratie",
+      "job": "2a5dfd12-7aee-43a0-9376-11ff2b76649f",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "baratie.png",
+      "sha256": "ceb5de198b1379010b32cf3fc572efc9987bc7627b4c77cd270a6907620d722c"
+    },
+    {
+      "id": "arlong",
+      "job": "64fac800-74b0-4c85-96f0-0fc45ddbff11",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "arlong.png",
+      "sha256": "300a96d20f2144be2be564940df6da51d8d24cea2d3237bd575704263eab2f59"
+    },
+    {
+      "id": "loguetown",
+      "job": "181ddcb0-9a12-4d90-96e2-dcf3180696f1",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "loguetown.png",
+      "sha256": "3108c8c278d75ed62b3cb0843429bd4f80e40bc4659a950c7a82c29fec4bc9a8"
+    },
+    {
+      "id": "alabasta-desert",
+      "job": "147e7f63-8669-45a8-baa9-a372f4ef6e3b",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "alabasta-desert.png",
+      "sha256": "ddc92e6add293e17a96ee879c08f3ad9570f5f1e5f8ba7730e3c6dc3dba69057"
+    },
+    {
+      "id": "alubarna-01",
+      "job": "76652c0b-1b8e-4d18-982e-cb469142cb3a",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "alubarna-01.png",
+      "sha256": "d7829e6a938792d86b18ef285448f36aea09141cd1f623c64d0cf1dcb4d9f706"
+    },
+    {
+      "id": "alubarna-02",
+      "job": "f1cec25b-ae60-4c16-98da-2831500ffb7e",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "alubarna-02.png",
+      "sha256": "eaceadb0309a5e5127e85b5d4263573ffdf583a1221438dd0b6f124027b1f26f"
+    },
+    {
+      "id": "alubarna-03",
+      "job": "f9e30d96-260b-4341-888f-24ba20c65057",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "alubarna-03.png",
+      "sha256": "9b990a248332b570d26b6d17df3f5a577cd16f2e7b65573e149e98757b5688dc"
+    },
+    {
+      "id": "alubarna-04",
+      "job": "242a8040-a441-4090-a5c9-c93dc739e7b1",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "alubarna-04.png",
+      "sha256": "959612d16dfa10c251cbabccf834ec2caf66f25069e8e32f0cafb180834cd2f0"
+    },
+    {
+      "id": "alubarna-05",
+      "job": "a2c1f59d-f873-4306-a797-1062dedd9d01",
+      "size": [
+        320,
+        180
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.08,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "alubarna-05.png",
+      "sha256": "a9e73d1aff6c517fca3c07bab8f387087d28b1e42ecd8b890061e5ca64a7f963"
+    },
+    {
+      "id": "region-icons",
+      "job": "5b5bdc00-e5ce-434c-bac4-281cfb5ff10e",
+      "size": [
+        192,
+        64
+      ],
+      "model": "Pro Flash",
+      "status": "completed",
+      "charged_usd": 0,
+      "charged_generations": 6,
+      "alpha": true,
+      "file": "region-icons.png",
+      "sha256": "e1973ba78451984ac6f87160fab05deb2c1e51420d0f4627546c8ccbbf68af8a"
+    },
+    {
+      "id": "skypiea",
+      "job": "2645716a-942a-4478-a892-f937196dbd46",
+      "size": [
+        600,
+        448
+      ],
+      "model": "Pro",
+      "status": "completed",
+      "charged_usd": 0.15,
+      "charged_generations": 0,
+      "alpha": false,
+      "file": "skypiea.png",
+      "sha256": "5107dfe6a4afc397abe80df4d48f0b0109c8a90382cd51dc189d9d2ef6845d0e"
+    }
+  ],
+  "reused": [
+    "assets/ui/forge-hd/workshop-surface.png",
+    "assets/ui/inventory-hd/frame-v2.png",
+    "assets/ui/inventory-hd/heading-v2.png",
+    "assets/ui/inventory-final/primary.png",
+    "assets/ui/inventory-final/secondary.png",
+    "assets/ui/inventory-final/icons/",
+    "assets/ui/character-hud/hd/wood.png",
+    "assets/ui/character-hud/hd/parchment.png",
+    "assets/ui/character-hud/hd/berry-coins.png",
+    "assets/ui/items-hd/pearl-box-1.png",
+    "current monster renderers and caches"
+  ]
+}
