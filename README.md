@@ -32,6 +32,8 @@
 
 **Primeira caçada online — Etapa 3E:** [Ronda do cais](docs/architecture/PHASE-3E-FIRST-HUNT.md), missão temporizada e recompensa única no servidor, com painel HTTPS local. Demonstração e saves preservados; backend ainda sem exposição pública.
 
+**Primeiro combate online — Etapa 3F:** [Saqueador do cais](docs/architecture/PHASE-3F-FIRST-COMBAT.md), encontro único por turnos com vida, RNG, recarga, resultado e prêmio persistidos pelo servidor. Painel local separado; combate em mapa e saves da demonstração preservados.
+
 **Fase 2 em desenvolvimento:** [BFF, sessões e personagens](docs/architecture/PHASE-2-IMPLEMENTATION-REVIEW.md) · [preparação local e homologação](docs/operations/PHASE-2-DEVELOPMENT.md). Auth desabilitado por padrão; rodadas funcionais Supabase 1–3 registradas. [Matriz e janela final da Etapa 2F](docs/operations/PHASE-2F-FINAL-ACCEPTANCE.md), ainda sem aceite final.
 
 **Sprint 3:** [Sua Aparência](docs/PERSONAGEM-APARENCIA-96.md): nova etapa após classe, gênero, cabelos/olhos e cores independentes, prévia em quatro direções e persistência.

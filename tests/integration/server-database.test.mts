@@ -36,17 +36,17 @@ test('concurrent migrations commit once, are repeatable and make readiness true'
   await database(async (pool) => {
     assert.equal(await isDatabaseReady(pool), false);
     const applied = (await Promise.all([applyMigrations(pool), applyMigrations(pool)])).flat();
-    assert.deepEqual(applied, ['0001_foundation.sql','0002_auth_sessions.sql','0003_character_progression.sql','0004_character_commands.sql','0005_character_journey.sql','0006_first_hunt.sql']);
+    assert.deepEqual(applied, ['0001_foundation.sql','0002_auth_sessions.sql','0003_character_progression.sql','0004_character_commands.sql','0005_character_journey.sql','0006_first_hunt.sql','0007_first_combat.sql']);
     assert.deepEqual(await applyMigrations(pool), []);
     assert.equal(await isDatabaseReady(pool), true);
     const history = await pool.query('SELECT name FROM mare_meta.schema_migrations');
-    assert.deepEqual(history.rows, [{ name: '0001_foundation.sql' },{name:'0002_auth_sessions.sql'},{name:'0003_character_progression.sql'},{name:'0004_character_commands.sql'},{name:'0005_character_journey.sql'},{name:'0006_first_hunt.sql'}]);
+    assert.deepEqual(history.rows, [{ name: '0001_foundation.sql' },{name:'0002_auth_sessions.sql'},{name:'0003_character_progression.sql'},{name:'0004_character_commands.sql'},{name:'0005_character_journey.sql'},{name:'0006_first_hunt.sql'},{name:'0007_first_combat.sql'}]);
   });
 });
 
 test('identity and character constraints prevent duplicate ownership, orphans and invalid catalog IDs', async () => {
   await database(async (pool) => {
-    assert.deepEqual(await applyMigrations(pool), ['0001_foundation.sql','0002_auth_sessions.sql','0003_character_progression.sql','0004_character_commands.sql','0005_character_journey.sql','0006_first_hunt.sql']);
+    assert.deepEqual(await applyMigrations(pool), ['0001_foundation.sql','0002_auth_sessions.sql','0003_character_progression.sql','0004_character_commands.sql','0005_character_journey.sql','0006_first_hunt.sql','0007_first_combat.sql']);
     const account = randomUUID();
     await pool.query('INSERT INTO mare_game.accounts(id,provider,subject) VALUES($1,$2,$3)', [account, 'test', 'alice']);
     await assert.rejects(pool.query('INSERT INTO mare_game.accounts(id,provider,subject) VALUES($1,$2,$3)', [randomUUID(), 'test', 'alice']), { code: '23505' });
@@ -70,7 +70,7 @@ test('a failed migration rolls back its SQL and the complete migration ledger', 
 
 test('modified history fails closed; equivalent Windows line endings remain compatible', async () => {
   await database(async (pool) => {
-    assert.deepEqual(await applyMigrations(pool), ['0001_foundation.sql','0002_auth_sessions.sql','0003_character_progression.sql','0004_character_commands.sql','0005_character_journey.sql','0006_first_hunt.sql']);
+    assert.deepEqual(await applyMigrations(pool), ['0001_foundation.sql','0002_auth_sessions.sql','0003_character_progression.sql','0004_character_commands.sql','0005_character_journey.sql','0006_first_hunt.sql','0007_first_combat.sql']);
     const dir = await mkdtemp(join(tmpdir(), 'mare-migration-checksum-'));
     const source = await readFile(new URL('../../apps/game-server/migrations/0001_foundation.sql', import.meta.url), 'utf8');
     await writeFile(join(dir,'0002_auth_sessions.sql'),await readFile(new URL('../../apps/game-server/migrations/0002_auth_sessions.sql',import.meta.url),'utf8'));
@@ -78,6 +78,7 @@ test('modified history fails closed; equivalent Windows line endings remain comp
     await writeFile(join(dir,'0004_character_commands.sql'),await readFile(new URL('../../apps/game-server/migrations/0004_character_commands.sql',import.meta.url),'utf8'));
     await writeFile(join(dir,'0005_character_journey.sql'),await readFile(new URL('../../apps/game-server/migrations/0005_character_journey.sql',import.meta.url),'utf8'));
     await writeFile(join(dir,'0006_first_hunt.sql'),await readFile(new URL('../../apps/game-server/migrations/0006_first_hunt.sql',import.meta.url),'utf8'));
+    await writeFile(join(dir,'0007_first_combat.sql'),await readFile(new URL('../../apps/game-server/migrations/0007_first_combat.sql',import.meta.url),'utf8'));
     await writeFile(join(dir, '0001_foundation.sql'), source.replace(/\r?\n/g, '\r\n'));
     assert.deepEqual(await applyMigrations(pool, dir), []);
     await writeFile(join(dir, '0001_foundation.sql'), source + '\n-- unexpected change');

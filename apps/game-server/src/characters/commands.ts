@@ -5,6 +5,7 @@ import { digest } from "../auth/vault.js";
 import { readCharacterState } from "./state.js";
 import { beginJourney } from "./journey.js";
 import { mutateHunt } from "./hunt.js";
+import { mutateCombat } from "./combat.js";
 
 // Caller holds the account and character locks after authenticating and checking ownership.
 export async function executeCharacterCommand(
@@ -46,7 +47,12 @@ export async function executeCharacterCommand(
     await mutateHunt(client, characterId, input.requestId, input.action, state);
     state = await readCharacterState(client, characterId);
   }
-  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state });
+  let combat;
+  if (input.action === "combat.begin" || input.action === "combat.attack" || input.action === "combat.claim") {
+    combat = await mutateCombat(client, characterId, input.requestId, input.action, state);
+    state = await readCharacterState(client, characterId);
+  }
+  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(combat ? {combat} : {}) });
   await client.query(
     "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)",
     [characterId, input.requestId, hash, JSON.stringify(result)],

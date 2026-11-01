@@ -3,3 +3,4 @@ export type { ClientMessage, HealthResponse } from './types/messages.js';
 export * from './schemas/auth.js';
 export * from './schemas/character-state.js';
 export * from './schemas/character-command.js';
+export * from './schemas/combat.js';

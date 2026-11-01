@@ -122,6 +122,20 @@
                 <button type="button" id="hunt-start" disabled>Iniciar caçada</button>
                 <button type="button" id="hunt-claim" disabled>Receber recompensa</button>
               </div>
+              <h4>Primeiro combate · Saqueador do cais</h4>
+              <p id="combat-state" role="status" aria-live="polite">Combate ainda não confirmado.</p>
+              <dl class="online-values">
+                <div><dt>Sua vida</dt><dd id="combat-player-hp">—</dd></div>
+                <div><dt>Vida inimiga</dt><dd id="combat-enemy-hp">—</dd></div>
+                <div><dt>Turno</dt><dd id="combat-turn">—</dd></div>
+              </dl>
+              <p id="combat-last" class="quiet"></p>
+              <p class="quiet">Prêmio único por vitória: 30 XP e 12 de ouro. Entre turnos, o encontro fica pausado; recarregar não recupera vida.</p>
+              <div class="online-actions">
+                <button type="button" id="combat-start" disabled>Enfrentar saqueador</button>
+                <button type="button" id="combat-attack" disabled>Atacar</button>
+                <button type="button" id="combat-claim" disabled>Receber prêmio do combate</button>
+              </div>
             </section>
           </div>
           <form id="character-form">

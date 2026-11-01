@@ -70,7 +70,7 @@ test("3B upgrade preserves characters, progress and receipts; ledger cannot pers
     const oldResult = await service.command(session.token, character.id, command);
     const tables = ["characters", "character_progression", "character_commands"];
     const before = await Promise.all(tables.map(table => pool.query(`SELECT * FROM mare_game.${table}`)));
-    assert.deepEqual(await applyMigrations(pool), ["0005_character_journey.sql", "0006_first_hunt.sql"]);
+    assert.deepEqual(await applyMigrations(pool), ["0005_character_journey.sql", "0006_first_hunt.sql", "0007_first_combat.sql"]);
     for (const [i, table] of tables.entries()) assert.deepEqual((await pool.query(`SELECT * FROM mare_game.${table}`)).rows, before[i]!.rows);
     assert.deepEqual(await applyMigrations(pool), []);
     assert.deepEqual(await service.command(session.token, character.id, command), oldResult);
