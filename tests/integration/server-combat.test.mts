@@ -27,7 +27,7 @@ async function fixture(service: AuthService, pool: any, ready=true) {
   return {session,character,input,send};
 }
 // Only test-owner writes inside the disposable UUID database; never hosted provider data.
-const readyAttack=(pool:any)=>pool.query("UPDATE mare_game.character_combats SET next_attack_at=clock_timestamp()-interval '1 second'");
+const readyAttack=(pool:any)=>pool.query("UPDATE mare_game.combat_encounters SET next_attack_at=clock_timestamp()-interval '1 second'");
 
 test("combat HTTP accepts intentions only, enforces cooldown and credits a won encounter once",async()=>authDatabase(async({service,pool,vault})=>{
   const f=await fixture(service,pool);
@@ -40,9 +40,9 @@ test("combat HTTP accepts intentions only, enforces cooldown and credits a won e
     assert.equal(response.status,200,"combat.begin must be accepted after the hunt");
     const begun=await response.json();assert.equal(begun.state.version,4);assert.equal(begun.combat.playerHp,30);assert.equal(begun.combat.enemyHp,36);
     assert.deepEqual(await (await send(begin)).json(),begun);
-    const timing=(await pool.query("SELECT extract(epoch FROM next_attack_at-started_at)::float8 AS delay FROM mare_game.character_combats")).rows[0];
+    const timing=(await pool.query("SELECT extract(epoch FROM next_attack_at-started_at)::float8 AS delay FROM mare_game.combat_encounters")).rows[0];
     assert.ok(timing.delay>=2&&timing.delay<3);
-    await pool.query("UPDATE mare_game.character_combats SET next_attack_at=clock_timestamp()+interval '1 hour'");
+    await pool.query("UPDATE mare_game.combat_encounters SET next_attack_at=clock_timestamp()+interval '1 hour'");
     const attack=f.input("combat.attack",4);
     assert.deepEqual(await (await send(attack)).json(),{error:"combat_cooldown"});
     for(const field of ["damage","playerHp","enemyHp","reward","gold","experience","ownerId","accountId","characterId","roll","seed","turn","nextAttackAt"]) {
@@ -57,7 +57,7 @@ test("combat HTTP accepts intentions only, enforces cooldown and credits a won e
     const hit=await (await send(attack)).json();assert.equal(hit.combat.turn,1);assert.ok(hit.combat.enemyHp>=22&&hit.combat.enemyHp<=26);assert.ok(hit.combat.playerHp>=19&&hit.combat.playerHp<=23);
     assert.deepEqual(await (await send(attack)).json(),hit);
     // Fixture a lethal remaining HP, without replacing the runtime RNG or damage calculation.
-    await pool.query("UPDATE mare_game.character_combats SET enemy_hp=1");await readyAttack(pool);
+    await pool.query("UPDATE mare_game.combat_encounters SET enemy_hp=1");await readyAttack(pool);
     const win=await (await send(f.input("combat.attack",5))).json();assert.equal(win.combat.status,"won");assert.equal(win.combat.playerHp,hit.combat.playerHp);
     assert.equal(win.combat.lastAttack.enemyDamage,0);
     const claim=f.input("combat.claim",6), reward=await (await send(claim)).json();
@@ -65,7 +65,7 @@ test("combat HTTP accepts intentions only, enforces cooldown and credits a won e
     assert.deepEqual(await (await send(claim)).json(),reward);
     assert.deepEqual(await (await send({...claim,action:"combat.attack"})).json(),{error:"idempotency_conflict"});
     assert.deepEqual(await (await send(f.input("combat.claim",7))).json(),{error:"combat_already_claimed"});
-    assert.deepEqual(await (await send(f.input("combat.begin",7))).json(),{error:"combat_already_started"});
+    assert.deepEqual(await (await send(f.input("combat.begin",7))).json(),{error:"combat_rest"});
     await service.logout(f.session.token,"all");assert.equal((await send(claim)).status,401);
   } finally {server.closeAllConnections();await new Promise<void>(r=>server.close(()=>r()));}
 }));
@@ -78,15 +78,15 @@ test("combat requires completed hunt; defeat persists across reload/restart and 
   await assert.rejects(f.send(f.input("combat.begin",2)),{code:"hunt_required"});
   await pool.query("UPDATE mare_game.character_hunts SET begun_at=clock_timestamp()-interval '31 seconds'");await f.send(f.input("hunt.claim",2));await f.send(f.input("combat.begin",3));
   await assert.rejects(f.send(f.input("combat.claim",4)),{code:"combat_not_won"});
-  await pool.query("UPDATE mare_game.character_combats SET player_hp=1");await readyAttack(pool);
+  await pool.query("UPDATE mare_game.combat_encounters SET player_hp=1");await readyAttack(pool);
   const loss=await f.send(f.input("combat.attack",4));assert.equal(loss.combat!.status,"lost");assert.equal(loss.combat!.playerHp,0);
   const restarted=new AuthService({pool,provider,vault,origin:"https://localhost:9443",policy:{absoluteMs:3600000,idleMs:300000,recheckMs:60000}});
   assert.equal((await restarted.onlineState(f.session.token,f.character.id)).combat.status,"lost");
   await assert.rejects(f.send(f.input("combat.attack",5)),{code:"combat_finished"});
   await assert.rejects(f.send(f.input("combat.claim",5)),{code:"combat_not_won"});
-  await assert.rejects(f.send(f.input("combat.begin",5)),{code:"combat_already_started"});
+  await assert.rejects(f.send(f.input("combat.begin",5)),{code:"combat_rest"});
   assert.equal((await service.characterState(f.session.token,f.character.id)).gold,"8");
-  assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.character_combat_rewards")).rows[0].n,0);
+  assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.combat_rewards")).rows[0].n,0);
 }));
 
 for(const sameId of [true,false]) test(`concurrent combat attacks ${sameId?"replay":"conflict"} across instances without extra damage or RNG rerolls`,async()=>authDatabase(async({service,pool,provider,vault})=>{
@@ -97,26 +97,26 @@ for(const sameId of [true,false]) test(`concurrent combat attacks ${sameId?"repl
   const accepted=outcomes.filter(r=>r.status==="fulfilled");assert.equal(accepted.length,sameId?8:1);
   for(const result of outcomes) if(result.status==="rejected") assert.equal(result.reason.code,"state_version_conflict");else assert.deepEqual(result.value,accepted[0]!.value);
   const snapshot=await service.onlineState(f.session.token,f.character.id);assert.equal(snapshot.combat.turn,1);assert.equal(snapshot.state.version,5);
-  assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.character_combat_rounds")).rows[0].n,1);
+  assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.combat_rounds")).rows[0].n,1);
   const second=await service.login("combat@example.invalid","fixture"),lease=await service.acquireControl(second.token,f.character.id,command.control.epoch);
   await assert.rejects(f.send(command),{code:"control_conflict"});
   if(sameId) assert.deepEqual(await service.command(second.token,f.character.id,{...command,control:{epoch:lease.epoch,token:lease.token}}),accepted[0]!.value);
 }));
 
-for(const table of ["character_combat_rounds","character_commands"]) test(`failed ${table} write rolls back HP, cooldown, turn and version`,async()=>authDatabase(async({service,pool})=>{
+for(const table of ["combat_rounds","character_commands"]) test(`failed ${table} write rolls back HP, cooldown, turn and version`,async()=>authDatabase(async({service,pool})=>{
   const f=await fixture(service,pool);await f.send(f.input("combat.begin",3));await readyAttack(pool);
-  const before=(await pool.query("SELECT * FROM mare_game.character_combats")).rows;
+  const before=(await pool.query("SELECT * FROM mare_game.combat_encounters")).rows;
   await pool.query(`ALTER TABLE mare_game.${table} ADD CONSTRAINT fail_test_write CHECK(false) NOT VALID`);
   await assert.rejects(f.send(f.input("combat.attack",4)),{code:"23514"});
-  assert.deepEqual((await pool.query("SELECT * FROM mare_game.character_combats")).rows,before);
+  assert.deepEqual((await pool.query("SELECT * FROM mare_game.combat_encounters")).rows,before);
   assert.equal((await service.characterState(f.session.token,f.character.id)).version,4);
-  assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.character_combat_rounds")).rows[0].n,0);
+  assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.combat_rounds")).rows[0].n,0);
 }));
 
 
 async function wonFixture(service:AuthService,pool:any) {
   const f=await fixture(service,pool);await f.send(f.input("combat.begin",3));
-  await pool.query("UPDATE mare_game.character_combats SET enemy_hp=1");await readyAttack(pool);
+  await pool.query("UPDATE mare_game.combat_encounters SET enemy_hp=1");await readyAttack(pool);
   await f.send(f.input("combat.attack",4));return f;
 }
 for(const sameId of [true,false]) test(`concurrent victory claims with ${sameId?"same":"different"} IDs credit exactly once`,async()=>authDatabase(async({service,pool,provider,vault})=>{
@@ -126,17 +126,17 @@ for(const sameId of [true,false]) test(`concurrent victory claims with ${sameId?
   assert.equal(results.filter(r=>r.status==="fulfilled").length,sameId?8:1);
   for(const result of results) if(result.status==="rejected") assert.equal(result.reason.code,"state_version_conflict");
   assert.equal((await service.characterState(f.session.token,f.character.id)).gold,"20");
-  assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.character_combat_rewards")).rows[0].n,1);
+  assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.combat_rewards")).rows[0].n,1);
 }));
-for(const table of ["character_combat_rewards","character_commands"]) test(`failed combat credit in ${table} rolls back balances/phase/version while retaining accepted refresh`,async()=>authDatabase(async({service,pool,provider})=>{
+for(const table of ["combat_rewards","character_commands"]) test(`failed combat credit in ${table} rolls back balances/phase/version while retaining accepted refresh`,async()=>authDatabase(async({service,pool,provider})=>{
   const f=await wonFixture(service,pool),command=f.input("combat.claim",5);
-  const before=(await pool.query("SELECT * FROM mare_game.character_combats")).rows;
+  const before=(await pool.query("SELECT * FROM mare_game.combat_encounters")).rows;
   await pool.query(`ALTER TABLE mare_game.${table} ADD CONSTRAINT fail_test_write CHECK(false) NOT VALID`);
   await pool.query("UPDATE mare_game.app_sessions SET provider_valid_until=clock_timestamp()-interval '1 second'");
   await assert.rejects(f.send(command),{code:"23514"});assert.equal(provider.refreshes,1);
-  assert.deepEqual((await pool.query("SELECT * FROM mare_game.character_combats")).rows,before);
+  assert.deepEqual((await pool.query("SELECT * FROM mare_game.combat_encounters")).rows,before);
   const state=await service.characterState(f.session.token,f.character.id);assert.equal(state.version,5);assert.equal(state.experience,"20");assert.equal(state.gold,"8");
-  assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.character_combat_rewards")).rows[0].n,0);
+  assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.combat_rewards")).rows[0].n,0);
   await pool.query(`ALTER TABLE mare_game.${table} DROP CONSTRAINT fail_test_write`);assert.equal((await f.send(command)).state.gold,"20");
 }));
 
@@ -166,11 +166,11 @@ test("combat migration preserves the completed hunt, old receipts and existing b
     const f=await fixture(service,pool);
     const tables=["accounts","characters","character_progression","character_commands","character_hunts","character_hunt_rewards"];
     const before=await Promise.all(tables.map(t=>pool.query(`SELECT * FROM mare_game.${t}`)));
-    assert.deepEqual(await applyMigrations(pool),["0007_first_combat.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0007_first_combat.sql", "0008_repeatable_encounters.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     for(const [i,t] of tables.entries()) assert.deepEqual((await pool.query(`SELECT * FROM mare_game.${t}`)).rows,before[i]!.rows);
-    await assert.rejects(pool.query("INSERT INTO mare_game.character_combats(character_id,begin_request_id,last_request_id) VALUES($1,$2,$2)",[f.character.id,randomUUID()]),{code:"23503"});
+    await assert.rejects(pool.query("INSERT INTO mare_game.combat_encounters(character_id,begin_request_id,last_request_id) VALUES($1,$2,$2)",[f.character.id,randomUUID()]),{code:"23503"});
     await f.send(f.input("combat.begin",3));
-    await assert.rejects(pool.query("UPDATE mare_game.character_combats SET phase='won'"),{code:"23514"});
+    await assert.rejects(pool.query("UPDATE mare_game.combat_encounters SET phase='won'"),{code:"23514"});
   },directory);
 });
 
@@ -204,7 +204,7 @@ test("combat reward survives real socket loss after commit and restart without a
       const restarted = new AuthService({ pool, provider, vault, origin: "https://localhost:9443",
         policy: { absoluteMs: 3600000, idleMs: 300000, recheckMs: 60000 } });
       assert.deepEqual(await restarted.command(session.token, character.id, command), accepted);
-      assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.character_combat_rewards")).rows[0].n, 1);
+      assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.combat_rewards")).rows[0].n, 1);
       assert.equal((await pool.query("SELECT count(*)::int AS n FROM mare_game.character_commands")).rows[0].n, 6);
     } finally {
       proxy.closeAllConnections(); backend.closeAllConnections();

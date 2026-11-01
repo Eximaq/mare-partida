@@ -17,12 +17,12 @@ class Element {
 function page(storage = new Map<string,string>()) {
   const elements = new Map<string,Element>();
   const get = (selector: string) => { if (!elements.has(selector)) elements.set(selector,new Element()); return elements.get(selector)!; };
-  const model = { started: false, hunt: "locked", combatStatus: "locked", turn: 0, lastRequestId: null as string|null, attackReady: false, version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
+  const model = { started: false, hunt: "locked", combatStatus: "locked", canBegin: undefined as boolean|undefined, turn: 0, lastRequestId: null as string|null, attackReady: false, version: 0, characterId: id, failRead: false, controlFailure: false, requests: [] as any[],
     me: null as null | ((signal?: AbortSignal) => Promise<Response>), send: null as null | (() => Promise<Response>),
     control: null as null | (() => Promise<Response>) };
   const timers: Array<() => void> = [];
   const deadlines = new Map<number,()=>void>(); let timerId = 0;
-  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: 1, experience: "0", gold: "9007199254740993" }, journey: { started: model.started }, hunt: { catalogId:"dock-patrol-v1",name:"Ronda do cais",durationSeconds:30,experience:"20",gold:"8",status:model.hunt,startedAt:null,readyAt:null,serverNow:new Date().toISOString() }, combat:{catalogId:"dock-raider-v1",enemyName:"Fixture enemy",status:model.combatStatus,turn:model.turn,playerHp:30,enemyHp:36,playerMaxHp:30,enemyMaxHp:36,attackReady:model.attackReady,lastRequestId:model.lastRequestId,nextAttackAt:null,lastAttack:null,experience:"30",gold:"12"} });
+  const snapshot = () => ({ state: { characterId: model.characterId, version: model.version, level: 1, experience: "0", gold: "9007199254740993" }, journey: { started: model.started }, hunt: { catalogId:"dock-patrol-v1",name:"Ronda do cais",durationSeconds:30,experience:"20",gold:"8",status:model.hunt,startedAt:null,readyAt:null,serverNow:new Date().toISOString() }, combat:{catalogId:"dock-raider-v1",enemyName:"Fixture enemy",status:model.combatStatus,canBegin:model.canBegin,turn:model.turn,playerHp:30,enemyHp:36,playerMaxHp:30,enemyMaxHp:36,attackReady:model.attackReady,lastRequestId:model.lastRequestId,nextAttackAt:null,lastAttack:null,experience:"30",gold:"12"} });
   runInNewContext(source, {
     URL, AbortController, setTimeout(fn:()=>void) { deadlines.set(++timerId,fn); return timerId; },
     clearTimeout(id:number) { deadlines.delete(id); }, crypto: { randomUUID }, confirm: () => true,
@@ -203,4 +203,18 @@ test("a lost attack reply is reconciled only by its matching server request ID",
   const p=page();p.model.started=true;p.model.hunt="claimed";p.model.combatStatus="active";p.model.attackReady=true;await settle();
   p.click("#control");await settle();p.model.send=async()=>{p.model.turn=1;p.model.lastRequestId=p.model.requests.at(-1).requestId;throw new TypeError("lost reply");};
   p.click("#combat-attack");await settle();assert.equal(p.model.requests.length,1);assert.equal(p.storage.size,0);
+});
+
+for (const action of ["combat.begin","combat.claim"]) test(`a later encounter cannot confirm a pending ${action}`,async()=>{
+  const requestId=randomUUID(),storage=new Map([[key,JSON.stringify({characterId:id,requestId,expectedVersion:4,action})]]);
+  const p=page(storage);p.model.started=true;p.model.hunt="claimed";p.model.combatStatus="claimed";p.model.lastRequestId=randomUUID();await settle();
+  assert.ok(storage.has(key));assert.equal(p.model.requests.length,0);
+  p.click("#control");await settle();p.click(action==="combat.begin"?"#combat-start":"#combat-claim");await settle();
+  assert.equal(p.model.requests[0].requestId,requestId);assert.equal(storage.size,0);
+});
+test("repeat encounter button obeys server eligibility without automatically starting or restoring HP",async()=>{
+  const p=page();p.model.started=true;p.model.hunt="claimed";p.model.combatStatus="lost";p.model.canBegin=false;await settle();
+  p.click("#control");await settle();assert.equal(p.get("#combat-start").disabled,true);
+  p.model.canBegin=true;p.click("#online-refresh");await settle();assert.equal(p.get("#combat-start").disabled,false);
+  assert.equal(p.model.requests.length,0);p.click("#combat-start");await settle();assert.equal(p.model.requests[0].action,"combat.begin");
 });

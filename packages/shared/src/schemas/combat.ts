@@ -15,5 +15,12 @@ export const combatSnapshotSchema = z.strictObject({
   lastAttack: z.strictObject({ playerDamage: z.number().int().min(1).max(14), enemyDamage: z.number().int().min(0).max(11) }).nullable(),
   experience: z.literal("30"),
   gold: z.literal("12"),
+  // Optional only for immutable pre-3G receipts. Current reads always include these.
+  encounterId: z.uuid().nullable().optional(),
+  encounterNumber: z.number().int().min(0).max(100).optional(),
+  canBegin: z.boolean().optional(),
+  nextEncounterAt: z.iso.datetime().nullable().optional(),
+  startsRemaining: z.number().int().min(0).max(10).optional(),
+  historyFull: z.boolean().optional(),
 });
 export type CombatSnapshot = z.infer<typeof combatSnapshotSchema>;

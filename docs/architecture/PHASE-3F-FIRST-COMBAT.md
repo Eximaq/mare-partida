@@ -1,5 +1,8 @@
 # Etapa 3F — primeiro combate autoritativo
 
+> Registro histórico da 3F. A limitação de encontro único e os marcos de begin/claim
+> foram substituídos pela [Etapa 3G](PHASE-3G-REPEATABLE-ENCOUNTERS.md).
+
 Base: main `546dd11`, incluindo a atualização de Haki do colaborador. Incremento
 isolado em apps/game-server, shared, migração/grants e painel de contas. Nenhuma
 alteração no gameplay, HUD, mapas, assets, Paper Doll ou saves da demonstração.
