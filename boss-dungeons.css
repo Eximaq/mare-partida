@@ -77,5 +77,5 @@
  #app #panelOverlay.boss-dungeons-mode .boss-dungeon-card{flex:none;height:154px;min-height:154px}
  #app #panelOverlay.boss-dungeons-mode .boss-dungeon-details{overflow-y:auto;min-height:0}
 }
-#app #panelOverlay.boss-dungeons-mode .dungeon-selected-portrait{object-position:center 24%}
-#app #panelOverlay.boss-dungeons-mode .boss-dungeon-card>img{object-position:center 24%}
+#app #panelOverlay.boss-dungeons-mode .dungeon-selected-portrait{object-position:center top}
+#app #panelOverlay.boss-dungeons-mode .boss-dungeon-card>img{object-position:center top}
