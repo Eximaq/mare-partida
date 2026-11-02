@@ -113,7 +113,7 @@
   const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
   const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
   const rand = (min, max) => min + Math.random() * (max - min);
-  const fmt = (v) => Math.floor(v).toLocaleString('pt-BR');
+  const fmt = (()=>{const formatter=new Intl.NumberFormat('pt-BR');return v=>formatter.format(Math.floor(v));})();
   const escapeHTML = (value) => String(value).replace(/[&<>"']/g, (v) => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[v]));
   const {classes,factions}=MareCharacterCatalog.create({characters:MareCharacters});
   // Somente artes fornecidas pelo usuário: quatro visualizações de facção.
@@ -1521,24 +1521,28 @@
     stepCombatVfx(dt);
     for(const m of world.mobs){const t=Math.min(1,(performance.now()-m.onlineAt)/180);m.x=m.onlineFrom.x+(m.onlineTo.x-m.onlineFrom.x)*t;m.y=m.onlineFrom.y+(m.onlineTo.y-m.onlineFrom.y)*t;m.emberElapsed+=dt;m.attackAnim=Math.max(0,m.attackAnim-dt);m.hit=Math.max(0,m.hit-dt);}
   }
+  let onlineProjectionSnapshot=null;
   function syncOnlineGame(){
     if(!game||!session||!ONLINE_GAME.data)return;
-    const previousHp=game.hp;game=MareOnlineGameUI.project(game,ONLINE_GAME.data);applyOnlineEquipment();
-    syncOnlineWorld();
     const c=ONLINE_GAME.data.online.combat;
-    if(ONLINE_GAME.data.online.battle){syncOnlineBattle();}
-    else if(scene==='hunt'&&c.encounterId&&['active','won'].includes(c.status)&&(!ONLINE_GAME.data.online.world||c.worldMapId===ONLINE_GAME.data.online.world.mapId)){
-      let enemy=world.mobs[0];
-      if(onlineEncounterId!==c.encounterId||!enemy){
-        const point=c.enemyPosition||navigator().nearest({x:world.hero.x+110,y:world.hero.y})||{x:world.hero.x,y:world.hero.y+60};
-        enemy={...monsterTypes.bandit,id:c.encounterId,type:'bandit',name:c.enemyName,area:'beach',source:'online',level:1,x:point.x,y:point.y,anchorX:point.x,anchorY:point.y,maxHP:c.enemyMaxHp,hp:c.enemyHp,attack:0,defense:0,speed:0,attackSec:2,bob:0,alive:c.enemyHp>0,hit:0,attackAnim:0,moving:0,emberFacing:'south',emberElapsed:0,telegraph:null};
-        world.mobs=[enemy];onlineEncounterId=c.encounterId;
-      }else if(enemy.hp!==c.enemyHp){spawnVisual(enemy.x,enemy.y-70,'-'+(enemy.hp-c.enemyHp),'#e7cb87',15);world.hero.attackAnim=.25;}
-      enemy.hp=c.enemyHp;enemy.alive=c.enemyHp>0;world.target=enemy.alive?enemy:null;
-      if(game.hp<previousHp)spawnVisual(world.hero.x,world.hero.y-70,'-'+(previousHp-game.hp),'#ff9b94',15);
-      if(c.status!=='active')autoPlay=false;
-    }else{world.mobs=[];world.target=null;onlineEncounterId=null;}
-    updateUI();const inventoryStamp=JSON.stringify([ONLINE_GAME.data.online.state.version,ONLINE_GAME.busy,!!ONLINE_GAME.pending,ONLINE_GAME.controlled,ONLINE_GAME.available]);if(ONLINE_GAME.data.online.originalInventory&&onlineInventoryStamp!==inventoryStamp){onlineInventoryStamp=inventoryStamp;if(['inventory','forge','shop','character','contracts','prison','dungeons','akuma-reveal','haki','compendium'].includes(currentPanel))renderPanel();}
+    if(onlineProjectionSnapshot!==ONLINE_GAME.data){
+      const previousHp=game.hp;game=MareOnlineGameUI.project(game,ONLINE_GAME.data);applyOnlineEquipment();
+      syncOnlineWorld();
+      if(ONLINE_GAME.data.online.battle){syncOnlineBattle();}
+      else if(scene==='hunt'&&c.encounterId&&['active','won'].includes(c.status)&&(!ONLINE_GAME.data.online.world||c.worldMapId===ONLINE_GAME.data.online.world.mapId)){
+        let enemy=world.mobs[0];
+        if(onlineEncounterId!==c.encounterId||!enemy){
+          const point=c.enemyPosition||navigator().nearest({x:world.hero.x+110,y:world.hero.y})||{x:world.hero.x,y:world.hero.y+60};
+          enemy={...monsterTypes.bandit,id:c.encounterId,type:'bandit',name:c.enemyName,area:'beach',source:'online',level:1,x:point.x,y:point.y,anchorX:point.x,anchorY:point.y,maxHP:c.enemyMaxHp,hp:c.enemyHp,attack:0,defense:0,speed:0,attackSec:2,bob:0,alive:c.enemyHp>0,hit:0,attackAnim:0,moving:0,emberFacing:'south',emberElapsed:0,telegraph:null};
+          world.mobs=[enemy];onlineEncounterId=c.encounterId;
+        }else if(enemy.hp!==c.enemyHp){spawnVisual(enemy.x,enemy.y-70,'-'+(enemy.hp-c.enemyHp),'#e7cb87',15);world.hero.attackAnim=.25;}
+        enemy.hp=c.enemyHp;enemy.alive=c.enemyHp>0;world.target=enemy.alive?enemy:null;
+        if(game.hp<previousHp)spawnVisual(world.hero.x,world.hero.y-70,'-'+(previousHp-game.hp),'#ff9b94',15);
+        if(c.status!=='active')autoPlay=false;
+      }else{world.mobs=[];world.target=null;onlineEncounterId=null;}
+      updateUI();onlineProjectionSnapshot=ONLINE_GAME.data;
+    }
+    const inventoryStamp=JSON.stringify([ONLINE_GAME.data.online.state.version,ONLINE_GAME.busy,!!ONLINE_GAME.pending,ONLINE_GAME.controlled,ONLINE_GAME.available]);if(ONLINE_GAME.data.online.originalInventory&&onlineInventoryStamp!==inventoryStamp){onlineInventoryStamp=inventoryStamp;if(['inventory','forge','shop','character','contracts','prison','dungeons','akuma-reveal','haki','compendium'].includes(currentPanel))renderPanel();}
     $('goldAmount').textContent=BigInt(ONLINE_GAME.data.online.state.gold).toLocaleString('pt-BR');
     $('combatState').textContent=!ONLINE_GAME.available?'CONEXÃO INTERROMPIDA':!ONLINE_GAME.controlled?'SEM CONTROLE NESTA ABA':scene==='lobby'?'PORTO SEGURO':ONLINE_GAME.data.online.battle?(session.respawn>0?'RENASCENDO':autoPlay?'CAÇADA ONLINE':'CAÇADA PAUSADA'):c.status==='won'?'VITÓRIA':c.status==='lost'?'DERROTA':c.status==='claimed'?'PRÊMIO RECEBIDO':c.status==='active'?'COMBATE ONLINE':'EXPLORANDO';
     $('saveDot').title='Progresso confirmado pelo servidor';
@@ -2759,6 +2763,7 @@ ${avatarExtra}
     }
   }
   function drawNPC(n){
+      if(n.x+100<camera.x||n.x-100>camera.x+W||n.y+32<camera.y||n.y-150>camera.y+H)return;
       if(!globalThis.MareLobby)drawNPCProps(n);
       const img=npcArt[n.art],ready=img&&img.complete&&img.naturalWidth;
       const h=n.art==='ryuma'?72:76,w=Math.min(76,h*(ready?img.naturalWidth/img.naturalHeight:.68));
@@ -2777,7 +2782,12 @@ ${avatarExtra}
   }
   function drawTownActors(){
     if(lobbyDestination){ctx.strokeStyle='#e5c47bbb';ctx.lineWidth=2;ctx.beginPath();ctx.arc(lobbyDestination.x,lobbyDestination.y,9+Math.sin(world.time*7)*2,0,Math.PI*2);ctx.stroke();}
-    if(globalThis.MareLobby)for(const portal of MareLobby.portals){ctx.save();ctx.strokeStyle='#f0d089';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(portal.x,portal.y,26+Math.sin(world.time*2)*2,12,0,0,Math.PI*2);ctx.stroke();ctx.textAlign='center';ctx.font='800 10px Trebuchet MS';ctx.fillStyle='#fff1ca';ctx.fillText('MAPA DO MUNDO',portal.x,portal.y+27);ctx.restore();}
+    if(globalThis.MareLobby)for(const portal of MareLobby.portals){
+      // Keep the full label/ring margin at viewport edges. Offscreen canvas
+      // text/path calls still cost CPU even when the final pixels are clipped.
+      if(portal.x+96<camera.x||portal.x-96>camera.x+W||portal.y+40<camera.y||portal.y-40>camera.y+H)continue;
+      ctx.save();ctx.strokeStyle='#f0d089';ctx.lineWidth=2;ctx.beginPath();ctx.ellipse(portal.x,portal.y,26+Math.sin(world.time*2)*2,12,0,0,Math.PI*2);ctx.stroke();ctx.textAlign='center';ctx.font='800 10px Trebuchet MS';ctx.fillStyle='#fff1ca';ctx.fillText('MAPA DO MUNDO',portal.x,portal.y+27);ctx.restore();
+    }
   }
 
   // Construção procedural do mundo: todas as formas são desenhadas, sem assets externos.
@@ -3075,7 +3085,7 @@ ${avatarExtra}
   }
   function presentWorld(){
     const state=game?mapArtState():'ready',loading=$('worldLoading');
-    loading?.classList.toggle('hidden',state==='ready');if(loading){loading.dataset.state=state;loading.querySelector('span').textContent=state==='failed'?'Não foi possível carregar este mapa. Recarregue para tentar novamente.':'Preparando o mapa…';}
+    if(loading&&loading.dataset.state!==state){loading.classList.toggle('hidden',state==='ready');loading.dataset.state=state;loading.querySelector('span').textContent=state==='failed'?'Não foi possível carregar este mapa. Recarregue para tentar novamente.':'Preparando o mapa…';}
     if(state!=='ready'){ctx.fillStyle='#151217';ctx.fillRect(0,0,W,H);return;}
     drawWorld();drawPaperDollDiagnostics();
   }
@@ -3130,7 +3140,9 @@ ${avatarExtra}
     let state=lobby96.snapshot().visualState;
     const fruit=game?.zoanTransformed?equippedZoan():null;
     if(fruit){const key=MareSpriteCombatV2.fruits[fruit.id],pose=basicAttackPose();state=MareSpriteCombatV2.visualStatus(key,pose?'attack':world.hero.walking>0?'walk':'idle',pose?.direction||world.hero.direction);if(state==='missing')state='failed';}
-    const visible=!!game&&['loading','failed','degraded'].includes(state);node.classList.toggle('hidden',!visible);node.dataset.state=state;
+    const visible=!!game&&['loading','failed','degraded'].includes(state),stamp=state+':'+visible;
+    if(node.dataset.renderStamp===stamp)return;node.dataset.renderStamp=stamp;
+    node.classList.toggle('hidden',!visible);node.dataset.state=state;
     node.textContent=state==='failed'?'Visual indisponível. Recarregue a página.':state==='degraded'?'Há equipamento sem arte disponível.':'Carregando personagem…';
     $('wantedPortrait').setAttribute('aria-busy',String(visible&&state==='loading'));
   }

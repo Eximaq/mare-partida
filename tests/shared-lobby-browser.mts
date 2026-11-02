@@ -13,7 +13,7 @@ const out=process.env.MARE_QA_DIR||'tmp/shared-lobby-browser';await mkdir(out,{r
 await authDatabase(async f=>{
  const handler=createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9445',cookieSeconds:3600});
  const api=createHttpServer({isReady:async()=>true,handle:handler});api.listen(0,'127.0.0.1');await once(api,'listening');
- const gateway=createDevGateway({key:await readFile('infra/local/localhost.key','utf8'),cert:await readFile('infra/local/localhost.crt','utf8'),staticRoot:resolve('dist'),onlineRoot:resolve('apps/account-client'),upstream:new URL(`http://127.0.0.1:${(api.address() as any).port}`)});
+ const gateway=createDevGateway({key:await readFile('infra/local/localhost.key','utf8'),cert:await readFile('infra/local/localhost.crt','utf8'),staticRoot:resolve(process.env.MARE_QA_STATIC_ROOT||'dist'),onlineRoot:resolve('apps/account-client'),upstream:new URL(`http://127.0.0.1:${(api.address() as any).port}`)});
  let browser:any,context:any;const errors:string[]=[];
  try{
   gateway.listen(9445,'127.0.0.1');await once(gateway,'listening');browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});context=await browser.newContext({viewport:{width:1366,height:900}});const p=await context.newPage();p.on('dialog',async(d:any)=>{assert.equal(d.type(),'confirm');assert.match(d.message(),/Este personagem está sob controle/);await d.accept();});p.on('pageerror',(e:any)=>errors.push(e.stack||e.message));await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-final-acceptance'));
@@ -27,6 +27,15 @@ await authDatabase(async f=>{
   await q.waitForFunction(()=>globalThis.MareGameSession?.controlled&&globalThis.MareGameSession.data.online.battle);
   for(const page of [p,q])await page.waitForFunction(()=>globalThis.__mareDiagnostics?.().sharedLobby?.players.length===1,null,{timeout:15000});
   for(const page of [p,q])await page.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.draws>0,null,{timeout:90000});
+  // Hidden load/status labels must not churn DOM on every animation frame.
+  await p.waitForFunction(()=>document.querySelector('#playerVisualStatus')?.getAttribute('data-state')==='ready');
+  await p.evaluate(`(() => {
+    window.statusMutations=0;
+    window.statusObserver=new MutationObserver(records=>window.statusMutations+=records.length);
+    for(const id of ['worldLoading','playerVisualStatus'])window.statusObserver.observe(document.getElementById(id),{subtree:true,childList:true,characterData:true,attributes:true});
+  })()`);
+  await p.waitForTimeout(1200);
+  assert.equal(await p.evaluate('window.statusObserver.disconnect(); window.statusMutations'),0,'stable load labels do not rewrite DOM at frame rate');
   assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.characters')).rows[0].n,2);
   const before=await p.evaluate(()=>globalThis.__mareDiagnostics().sharedLobby.players[0]);
   await q.keyboard.down('ArrowRight');await q.waitForTimeout(1200);await q.keyboard.up('ArrowRight');
