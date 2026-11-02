@@ -1,37 +1,41 @@
-# Teste privado pelo Radmin VPN
+# Acesso direto pelo Radmin VPN
 
-O colaborador usa o mesmo backend do anfitrião, sem publicar o servidor na Internet. Pages continua sendo apenas a distribuição estática. Contas e personagens devem ser distintos para se verem no porto.
+Os dois jogadores abrem `https://<IP-RADMIN-DO-ANFITRIAO>:9444/online/` e entram com contas distintas. O jogo roda no navegador; não há ZIP do jogo, conector ou programa de encaminhamento no computador do colaborador. A proposta anterior de relay foi substituída antes do merge.
 
-## Transporte e limites
+## Segurança e arquitetura
 
-`navegador do amigo HTTPS localhost:9443 -> relay local 127.0.0.1:9443 -> interface Radmin do anfitrião:9444 -> gateway 127.0.0.1:9443`.
+O supervisor contínuo inicia um segundo listener HTTPS somente no IP da interface Radmin. O firewall permite apenas o IP exato do colaborador, na porta TCP 9444 e interface Radmin. O gateway recusa conexões TCP de qualquer endereço diferente do anfitrião ou colaborador e valida o Host HTTP esperado. Cabeçalhos encaminhados não provam identidade nem substituem esse filtro.
 
-O relay transporta bytes opacos; TLS termina somente no gateway existente. Cookie Secure/HttpOnly, CSRF, PKCE, origem e URLs de retorno permanecem iguais. Não há mudança no Supabase, DNS, gameplay, saves ou banco. API e PostgreSQL continuam em loopback.
+O backend e PostgreSQL permanecem em loopback. O gateway serve o jogo original e encaminha a API ao mesmo backend e banco já existentes. Não abre portas do roteador, não muda DNS e não publica o backend na Internet. Pages continua sendo apenas a distribuição estática.
 
-O listener do anfitrião aceita somente o IPv4 configurado do colaborador e usa exclusivamente a interface Radmin. O firewall acrescenta a mesma restrição de origem, destino, interface e porta. Não desativar firewall, antivírus ou validação TLS. Não abrir portas no roteador.
+O BFF usa uma única origem canônica privada. O supervisor a deriva dos IPs validados na configuração ignorada, mantendo ES256, sessões 24h/2h, cookies Secure/HttpOnly, CSRF e PKCE. A chave e credenciais existentes não são copiadas para o cliente. O arquivo .env continua com Auth desligado; a ativação permanece restrita ao processo supervisionado.
 
-Limites: 16 conexões por relay, buffers de 16 KiB, conexão upstream de no máximo três segundos e inatividade de 60 segundos. Conexões excedentes são fechadas. Transporte interrompido não altera estado persistido. Isso serve a um colaborador autorizado; não constitui hospedagem de produção ou teste de capacidade.
+O endereço antigo localhost redireciona apenas páginas GET/HEAD de entrada e jogo à origem privada. Não redireciona comandos POST nem transforma origens arbitrárias em origens autorizadas. Será necessário entrar novamente na origem privada; sessões e progresso não são importados do navegador antigo. Não há migração nem mudança de saves, personagens, gameplay ou assets.
 
-## Preparação no anfitrião
+## Configuração local
 
-Com servidor HTTPS contínuo e Radmin ativos, executar `powershell -NoProfile -File tools/radmin/Prepare.ps1 -PeerAddress <IPv4-do-amigo>`. O gerador cria uma pasta nova em `infra/local/`, ignorada pelo Git. Nenhum endereço real deve ser salvo em commits.
+Preservar uma cópia de `infra/local/continuous/settings.json`. Acrescentar `radmin: {host, peer, key, cert}` com dois IPv4 canônicos diferentes da interface Radmin (26.x.x.x) e caminhos locais dos arquivos TLS. Ausência de `radmin` mantém o modo localhost anterior. Wildcards, interfaces públicas, loopback como destino Radmin e certificados sem SAN do IP são rejeitados. O supervisor exige que o IP exista numa interface local e encerra seus próprios processos caso o listener falhe.
 
-Revisar `host/config.json`. Executar `host/Firewall.ps1` como administrador para criar a regra restrita; o script não substitui regra existente. Iniciar `host/Iniciar Radmin.cmd`, mantendo a janela aberta, ou iniciar o mesmo Host.ps1 em processo oculto controlado. `host/Parar Radmin.cmd` encerra apenas esse relay por identificador de instância, sem parar PostgreSQL ou matar processos alheios. Para retirar a regra, executar `Firewall.ps1 -Remove` como administrador.
+Preparar certificado de desenvolvimento com SAN do IP exato, uso serverAuth e chave privada exclusiva no anfitrião. Compartilhar somente o certificado público .cer; nunca .key, .env, banco ou arquivos de configuração privados. Conferir fingerprint e validade antes da distribuição. Renovação exige preparar e confiar no novo certificado; não desativar TLS para resolver expiração.
 
-Enviar manualmente somente `Mare-Partida-Amigo.zip` e conferir sua procedência com o colaborador. O pacote contém scripts, configuração privada e certificado PÚBLICO, nunca chave privada, credenciais, saves ou banco.
+O helper `tools/radmin/Firewall.ps1`, executado como administrador, cria a regra restrita. Ele lê `config.json` ao lado do script, com `server`, `peer` e `certificateSha256` (SHA256 hexadecimal do certificado público). Copiar os helpers Common.ps1/Firewall.ps1 para a pasta local ignorada antes de gerar essa configuração. Uma regra existente não é sobrescrita automaticamente. `Firewall.ps1 -Remove` remove somente a regra nomeada do jogo.
 
-## Computador do colaborador
+No Supabase de desenvolvimento, adicionar **somente após autorização** o callback exato `https://<IP>:9444/v1/auth/callback`, sem wildcard. Preservar o callback e Site URL antigos. Login com senha usa a origem configurada no BFF; confirmação/recuperação precisam do novo callback permitido. Não enviar mensagens nem cadastrar contas para conferir essa configuração.
 
-1. Entrar na mesma rede Radmin e extrair o ZIP inteiro.
-2. Executar `Jogar.cmd`; não é necessário instalar Node.
-3. Na primeira execução, conferir a impressão SHA256 com o anfitrião e consentir a importação do certificado público em `CurrentUser/Root`. Essa confiança abrange aplicativos desse usuário Windows; pode ser removida depois em `certmgr.msc`, conferindo o certificado exato. Não importar chaves privadas nem outros certificados.
-4. O cliente verifica o TLS normalmente e compara o certificado recebido ao empacotado antes de abrir o jogo. Entrar com sua própria conta já autorizada. Cadastro e envio de e-mails dependem de autorização separada.
-5. Manter a janela aberta durante o teste; Enter encerra o relay. Se houver bloqueio de arquivo baixado, conferir a procedência e desbloquear somente esse ZIP em Propriedades, sem desativar políticas globais.
+Reiniciar pelo supervisor após salvar as configurações. Os atalhos existentes Iniciar/Parar servidor continuam controlando API e ambos os listeners; PostgreSQL permanece preservado. Sem Radmin ativo, o modo privado falha fechado. Para voltar a localhost, parar o supervisor, restaurar as configurações anteriores e iniciar novamente; não apagar dados.
 
-O anfitrião precisa estar ligado, conectado e com o servidor ativo. O IP Radmin sozinho não prova a identidade da conta: login e autorização de personagem continuam obrigatórios. Reconfigurar o pacote se um IP ou o certificado mudar. Uma máquina com serviço próprio em localhost:9443 deve encerrar esse serviço antes; o relay não o substitui.
+## Colaborador: primeira utilização
 
-## Validação
+1. Conectar o Radmin na mesma rede do anfitrião.
+2. Receber somente o certificado público e conferir sua impressão digital com o anfitrião.
+3. Abrir o .cer, escolher Instalar Certificado → Usuário Atual → Colocar todos os certificados no repositório a seguir → Autoridades de Certificação Raiz Confiáveis. Confirmar somente o certificado conferido. Essa confiança vale para aplicativos do usuário Windows; não é uma desativação global da validação TLS.
+4. Abrir o endereço HTTPS privado no navegador e entrar com sua própria conta. Cadastro/envios de e-mail continuam sujeitos à autorização separada.
+5. Usar personagens diferentes no mesmo porto. Para encerrar, sair da conta e fechar a aba; nenhum conector precisa ficar aberto.
 
-Testes Windows: `tests/radmin-package.test.ps1` valida scripts e endereços canônicos. `tests/radmin-relay.test.ps1` cobre filtro de origem, bytes binários, limite de conexões, timeout e parada. `-TlsPort 9443` acrescenta uma requisição HTTPS real pelo relay com validação normal do certificado.
+Ao encerrar o uso desse ambiente, remover somente o certificado correspondente em certmgr.msc, após conferir sua impressão digital. Não instalar chave privada, ignorar avisos de certificados diferentes ou desativar antivírus/firewall. Hospedagem com domínio e certificado público confiável dispensa essa configuração de confiança no computador do jogador.
 
-Esses testes locais não comprovam conectividade no computador do colaborador. Aceite remoto pendente: iniciar pacote nesse computador, entrar com duas contas, encontrar-se no mesmo porto, observar movimento nos dois lados, fechar relay e verificar perda da conexão. Preservar personagens e saves ao encerrar.
+## Validação e limites
+
+Testes Node cobrem configuração privada, política preservada, rejeição de host adulterado, rejeição de peer incorreto mesmo com X-Forwarded-For forjado, arquivos privados inacessíveis, cookies seguros e redirecionamento canônico. Testes Windows validam sintaxe dos helpers e endereços canônicos. O servidor original continua com os mesmos limites de concorrência/timeout do gateway.
+
+Conectividade no computador do colaborador e encontro entre duas contas pela VPN exigem confirmação remota; testes locais não substituem essa evidência. O certificado de desenvolvimento precisa ser confiado nos dois computadores. Radmin e computador do anfitrião precisam permanecer ligados. Isso é um teste privado, não um serviço de produção nem uma garantia de capacidade de MMO.

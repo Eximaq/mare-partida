@@ -124,4 +124,15 @@ test("one HTTPS origin serves only built files and forwards Secure cookies to th
     (await get("/v1/me", { origin: "https://attacker.invalid" })).status,
     403,
   );
+  async function privateProbe(peers:string[],host:string,canonical=false){
+    const privateGateway=createDevGateway({key:cert.private,cert:cert.cert,staticRoot:dir,onlineRoot:dir,upstream:new URL(`http://127.0.0.1:${(upstream.address() as AddressInfo).port}`),...(canonical?{redirectOrigin:'https://26.1.2.3:9444'}:{access:{host:'26.1.2.3:9444',peers}})});
+    privateGateway.listen(0,'127.0.0.1');await once(privateGateway,'listening');
+    try{return await new Promise<{status:number;location:string|undefined}>((resolve,reject)=>{
+      const r=request({hostname:'127.0.0.1',port:(privateGateway.address() as AddressInfo).port,path:'/online/',servername:'localhost',ca:cert.cert,headers:{host,'x-forwarded-for':'26.4.5.6'}},res=>{res.resume();res.on('end',()=>resolve({status:res.statusCode!,location:res.headers.location}));});r.on('error',reject);r.end();
+    });}finally{privateGateway.closeAllConnections();await new Promise<void>(r=>privateGateway.close(()=>r()));}
+  }
+  assert.equal((await privateProbe(['127.0.0.1'],'26.1.2.3:9444')).status,200);
+  assert.equal((await privateProbe(['127.0.0.1'],'attacker.invalid')).status,421);
+  await assert.rejects(privateProbe(['26.4.5.6'],'26.1.2.3:9444'));
+  assert.deepEqual(await privateProbe([],'localhost:9443',true),{status:302,location:'https://26.1.2.3:9444/online/'});
 });

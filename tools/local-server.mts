@@ -6,6 +6,9 @@ import { parseEnv } from "node:util";
 import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 import { once } from "node:events";
+import { X509Certificate } from 'node:crypto';
+import { networkInterfaces } from 'node:os';
+import { readRadminAccess } from './local-server-policy.mts';
 import { createDevGateway } from "./dev-gateway.mts";
 import {
   localEnvironment,
@@ -16,6 +19,8 @@ const root = fileURLToPath(new URL("../", import.meta.url)),
 const lock = join(dir, "lock.json"),
   request = join(dir, "stop.json");
 const pause = (ms: number) => new Promise((r) => setTimeout(r, ms));
+async function settings(){return JSON.parse(await readFile(join(dir,'settings.json'),'utf8'));}
+async function publicUrl(){return (readRadminAccess((await settings()).radmin)?.origin ?? 'https://localhost:9443')+'/online/';}
 async function state() {
   try {
     return JSON.parse(await readFile(lock, "utf8"));
@@ -61,12 +66,14 @@ async function supervise() {
   await handle.close();
   let api: ReturnType<typeof fork> | undefined,
     gateway: ReturnType<typeof createDevGateway> | undefined,
+    privateGateway: ReturnType<typeof createDevGateway> | undefined,
     timer: NodeJS.Timeout | undefined;
   let stopping = false;
   const stop = async () => {
     if (stopping) return;
     stopping = true;
     clearInterval(timer);
+    if(privateGateway){privateGateway.closeAllConnections();await new Promise<void>(r=>privateGateway!.close(()=>r()));}
     if (gateway) {
       gateway.closeAllConnections();
       await new Promise<void>((r) => gateway!.close(() => r()));
@@ -86,9 +93,19 @@ async function supervise() {
   try {
     await free(8788);
     await free(9443);
+    const config=await settings();
+    const access=readRadminAccess(config.radmin);
+    let privateTls:{key:string;cert:string}|undefined;
+    if(access){
+      if(!Object.values(networkInterfaces()).flat().some(n=>n?.address===access.host&&!n.internal))throw Error('Radmin interface unavailable');
+      privateTls={key:await readFile(access.key,'utf8'),cert:await readFile(access.cert,'utf8')};
+      const certificate=new X509Certificate(privateTls.cert);
+      if(!certificate.checkIP(access.host)||Date.parse(certificate.validTo)<=Date.now())throw Error('Invalid private certificate');
+    }
     const env = localEnvironment(
       parseEnv(await readFile(join(root, ".env.server.local"), "utf8")),
       process.env,
+      config.radmin,
     );
     const { readConfig } = await import("../apps/game-server/dist/config.js");
     const { readAuthConfig } = await import(
@@ -96,9 +113,6 @@ async function supervise() {
     );
     readConfig(env);
     readAuthConfig(env);
-    const settings = JSON.parse(
-      await readFile(join(dir, "settings.json"), "utf8"),
-    );
     api = fork(join(root, "apps/game-server/dist/main.js"), [], {
       cwd: root,
       env,
@@ -111,21 +125,26 @@ async function supervise() {
     }
     if (!(await ready())) throw new Error("API/database not ready");
     gateway = createDevGateway({
-      key: await readFile(settings.key, "utf8"),
-      cert: await readFile(settings.cert, "utf8"),
+      key: await readFile(config.key, "utf8"),
+      cert: await readFile(config.cert, "utf8"),
       staticRoot: join(root, "dist"),
       onlineRoot: join(root, "apps/account-client"),
       upstream: new URL("http://127.0.0.1:8788"),
+      ...(access?{redirectOrigin:access.origin}:{}),
     });
     gateway.listen(9443, "127.0.0.1");
     await once(gateway, "listening");
+    if(access&&privateTls){
+      privateGateway=createDevGateway({...privateTls,staticRoot:join(root,'dist'),onlineRoot:join(root,'apps/account-client'),upstream:new URL('http://127.0.0.1:8788'),access:{host:new URL(access.origin).host,peers:access.peers}});
+      privateGateway.listen(9444,access.host);await once(privateGateway,'listening');
+    }
     await writeFile(lock, JSON.stringify({ ...current, phase: "running" }), {
       mode: 0o600,
     });
     console.log(
       JSON.stringify({
         event: "local_alpha_ready",
-        url: "https://localhost:9443/online/",
+        url: await publicUrl(),
       }),
     );
     timer = setInterval(() => {
@@ -156,7 +175,7 @@ async function main() {
   if (action === "status") {
     console.log(
       running && (await ready())
-        ? "Servidor local ativo: https://localhost:9443/online/"
+        ? "Servidor local ativo: "+await publicUrl()
         : "Servidor local parado ou indisponivel.",
     );
     return;
@@ -204,6 +223,7 @@ async function main() {
       env: localEnvironment(
         parseEnv(await readFile(join(root, ".env.server.local"), "utf8")),
         process.env,
+        (await settings()).radmin,
       ),
       detached: true,
       windowsHide: true,
@@ -215,7 +235,7 @@ async function main() {
   for (let i = 0; i < 180; i++) {
     const next = await state();
     if (next?.phase === "running" && (await ready())) {
-      console.log("Servidor iniciado: https://localhost:9443/online/");
+      console.log("Servidor iniciado: "+await publicUrl());
       return;
     }
     await pause(100);

@@ -31,7 +31,7 @@ Comandos: `npm run build`, `npm run typecheck`, `npm run test:foundation`, `npm 
 
 O Pages publica apenas arquivos estáticos. `localhost` no computador do colaborador aponta para a máquina dele; ele ainda não acessa o banco deste computador. A publicação deste incremento não expõe o backend.
 
-Caminho escolhido pelo proprietário: [Radmin VPN com transporte HTTPS privado](RADMIN-PRIVATE-TEST.md). Preserva localhost e dispensa mudanças no Supabase. Os passos abaixo permanecem como alternativa Tailscale não executada.
+Caminho escolhido pelo proprietário: [Radmin VPN com HTTPS direto](RADMIN-PRIVATE-TEST.md). Usa o IP privado no navegador, certificado próprio e callback adicional autorizado no Supabase de desenvolvimento. Os passos abaixo permanecem como alternativa Tailscale não executada.
 
 Alternativa proposta para teste privado pela Internet:
 

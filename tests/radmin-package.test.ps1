@@ -1,6 +1,6 @@
 $ErrorActionPreference='Stop'
 $root=Join-Path $PSScriptRoot '../tools/radmin'
-foreach($name in @('Common.ps1','Client.ps1','Host.ps1','Firewall.ps1','Prepare.ps1')){
+foreach($name in @('Common.ps1','Firewall.ps1')){
  if(-not(Test-Path "$root/$name")){throw "Missing $name"}
  $tokens=$null;$errors=$null
  $null=[Management.Automation.Language.Parser]::ParseFile((Resolve-Path "$root/$name"),[ref]$tokens,[ref]$errors)

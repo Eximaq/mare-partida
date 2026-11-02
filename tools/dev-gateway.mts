@@ -1,4 +1,5 @@
 import { createServer } from "node:https";
+import type { Socket } from "node:net";
 import { request as proxyRequest } from "node:http";
 import { createReadStream } from "node:fs";
 import { readFile, realpath, stat } from "node:fs/promises";
@@ -11,6 +12,8 @@ export function createDevGateway(options: {
   staticRoot: string;
   onlineRoot: string;
   upstream: URL;
+  access?: { host: string; peers: string[] };
+  redirectOrigin?: string;
 }) {
   if (
     options.upstream.protocol !== "http:" ||
@@ -36,6 +39,13 @@ export function createDevGateway(options: {
   const server = createServer(
     { key: options.key, cert: options.cert, maxHeaderSize: 8192 },
     (req, res) => {
+      if (options.access && (
+        !options.access.peers.includes(req.socket.remoteAddress ?? "") ||
+        req.headers.host !== options.access.host
+      )) {
+        res.writeHead(421, { Connection: "close" }).end("Unavailable");
+        return;
+      }
       res.setHeader("Referrer-Policy", "no-referrer");
       res.setHeader("X-Content-Type-Options", "nosniff");
       res.setHeader("Cache-Control", "no-store");
@@ -61,6 +71,11 @@ export function createDevGateway(options: {
         );
       } catch {
         fail(400);
+        return;
+      }
+      if (options.redirectOrigin && (req.method === "GET" || req.method === "HEAD") &&
+          (path.startsWith("/online/") || path === "/game")) {
+        res.writeHead(302, { Location: options.redirectOrigin + req.url }).end();
         return;
       }
       if (path.startsWith("/v1/") || path.startsWith("/health/")) {
@@ -150,6 +165,10 @@ export function createDevGateway(options: {
     },
   );
   server.requestTimeout = 10000;
+  if (options.access) server.on("connection", socket => {
+    if (!options.access!.peers.includes((socket as Socket).remoteAddress ?? ""))
+      socket.destroy();
+  });
   server.headersTimeout = 5000;
   server.maxConnections = 128;
   return server;
