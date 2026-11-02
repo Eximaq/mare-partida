@@ -61,4 +61,6 @@ Logs, galeria e capturas reais ficam em MARE_QA_DIR, fora do Git, sem saves reai
 
 Sem nova migração de saves, mudança de índices ou compensações. Segredos, evidências e saves locais não entram no Git. Reverter somente os commits desta sprint, preservando colaboradores e servidor; sem force-push.
 
+Revisão remota final: origin/main permanece em a533f92; #203 segue aberto em 5ddaba9e. Foi identificado o novo PR #204 (bb66546c), que também altera game.js e os pontos de entrada. Além dos comandos de inventário/Forja/atributos do #203, preservar as rotas world.move/world.stop/world.travel/world.return e as atualizações vindas da sessão online do #204. Não substituir comandos autoritativos por alterações locais nem produzir recebimentos antes da confirmação persistida. A compatibilidade final com essas branches abertas permanece pendente; a inspeção não equivale a um teste de integração.
+
 Próximo passo mínimo: após o merge do #203, atualizar a main, reconciliar os pontos online de Forja/inventário/atributos, repetir os testes afetados, conferir novos PRs/commits e então publicar o PR final. Essa integração ainda não está declarada concluída.
