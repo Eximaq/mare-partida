@@ -1,4 +1,5 @@
 import {readWorld,stopWorld} from '../characters/world.js';
+import {readContracts} from '../characters/contracts.js';
 import {readBattle,pauseBattle} from '../characters/battle.js';
 import {readOriginalInventory} from '../gameplay/inventory.js';
 import {getGameCatalog} from "../gameplay/catalog.js";
@@ -296,7 +297,7 @@ export class AuthService {
         "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started", [id],
       )).rows[0]!;
       const originalInventory=await readOriginalInventory(client,id);
-      return { state, battle:await readBattle(client,id), world:await readWorld(client,id), ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: await readFighter(client,id,state), attributes: await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      return { state, contracts:await readContracts(client,id), battle:await readBattle(client,id), world:await readWorld(client,id), ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: await readFighter(client,id,state), attributes: await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(

@@ -83,6 +83,8 @@ jobs:
           const world=createRequire(import.meta.url)('./world-catalog.cjs').load();
           assert.equal(world.maps.lobby.spawn.x,1504);
           const battle=createRequire(import.meta.url)('./world-battle.cjs');
+          const contracts=createRequire(import.meta.url)('./contract-system.js');
+          assert.equal(contracts.quests.length,10);
           assert.equal(battle.create('beach',{maxHP:200,maxEnergy:90},0,()=>.5).mobs.length,14);
           assert(world.navigation('dawn').walkable(872,1608));
           assert.equal(getGameCatalog().items.length, 109);
@@ -95,7 +97,7 @@ jobs:
           const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
           try {
             assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
-            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 17);
+            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 20);
             await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
           } finally { await pool.end(); }
@@ -138,6 +140,12 @@ jobs:
             await assert.rejects(pool.query('DELETE FROM mare_game.character_world'),{code:'42501'});
             await pool.query('SELECT character_id FROM mare_game.character_battles LIMIT 1');
             await pool.query('SELECT character_id FROM mare_game.world_battle_rewards LIMIT 1');
+            await pool.query('SELECT character_id FROM mare_game.contract_progress LIMIT 1');
+            await pool.query('SELECT character_id FROM mare_game.contract_claims LIMIT 1');
+            await assert.rejects(pool.query('DELETE FROM mare_game.contract_progress'),{code:'42501'});
+            await assert.rejects(pool.query('UPDATE mare_game.contract_progress SET character_id=character_id'),{code:'42501'});
+            await assert.rejects(pool.query('UPDATE mare_game.contract_claims SET gold_delta=gold_delta'),{code:'42501'});
+            await assert.rejects(pool.query('DELETE FROM mare_game.contract_claims'),{code:'42501'});
             await assert.rejects(pool.query('DELETE FROM mare_game.character_battles'),{code:'42501'});
             await assert.rejects(pool.query('UPDATE mare_game.character_battles SET character_id=character_id'),{code:'42501'});
             await assert.rejects(pool.query('UPDATE mare_game.world_battle_rewards SET gold_delta=gold_delta'),{code:'42501'});

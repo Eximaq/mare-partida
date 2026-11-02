@@ -1,4 +1,5 @@
 import {isWorldAction,mutateWorld} from './world.js';
+import {claimContract} from './contracts.js';
 import {isBattleAction,mutateBattle,readBattle} from './battle.js';
 import {isOriginalAction,mutateOriginalInventory} from '../gameplay/inventory.js';
 import {mutateInventory,readInventory} from "./inventory.js";
@@ -44,6 +45,7 @@ export async function executeCharacterCommand(
   )).rows[0]!;
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
   if(isBattleAction(input.action)){await mutateBattle(client,characterId,input,state);state=await readCharacterState(client,characterId);}
+  if(input.action==='contract.claim'){await claimContract(client,characterId,input.requestId,state,input.payload.contractId);state=await readCharacterState(client,characterId);}
   if(['journey.begin','hunt.begin','hunt.claim','combat.begin','combat.attack','combat.claim'].includes(input.action)&&await readBattle(client,characterId))throw new AuthFault(409,'battle_original_active');
   if (input.action === "journey.begin") {
     await beginJourney(client, characterId, input.requestId, state.version);

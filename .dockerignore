@@ -86,3 +86,5 @@
 !monster-catalog.js
 !combat-vfx-data.js
 !combat-vfx.js
+
+!contract-system.js

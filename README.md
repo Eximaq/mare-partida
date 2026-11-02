@@ -1,3 +1,5 @@
+**Contratos originais online:** [dez objetivos, contadores autoritativos e resgate único no quadro existente](docs/architecture/ORIGINAL-CONTRACTS-SERVER.md). Saves da demonstração preservados.
+
 **Posição e viagens online:** [mundo persistente, colisões e limites do incremento](docs/architecture/ORIGINAL-WORLD-SERVER.md). IA e combate original completo continuam em migração.
 
 **Servidor completo do jogo atual — objetivo ainda aberto:** [escopo integral, critérios de segurança e estado real](docs/architecture/FULL-SERVER-PARITY.md). O alpha anterior não equivale à migração completa.

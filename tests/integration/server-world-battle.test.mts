@@ -51,8 +51,9 @@ test('worker advances only authorized server time, serializes kills and atomical
  await pool.query("UPDATE mare_game.character_battles SET simulation=$2,tick_at=clock_timestamp()-interval '250 milliseconds' WHERE character_id=$1",[a.c.id,JSON.stringify(o.battle)]);
  await Promise.all([tick(),tick()]);const after=await a.read();
  assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.world_battle_rewards')).rows[0].n,1);
+ assert.equal(after.contracts.progress['dawn-patrol'],1,'concurrent worker retries cannot duplicate contract progress');
  assert(BigInt(after.state.experience)>BigInt(o.state.experience));assert(BigInt(after.state.gold)>BigInt(o.state.gold));
- const xp=after.state.experience;await tick();assert.equal((await a.read()).state.experience,xp);
+ const xp=after.state.experience;await tick();assert.equal((await a.read()).state.experience,xp);assert.equal((await a.read()).contracts.progress['dawn-patrol'],1);
  const snapshot=(await pool.query('SELECT simulation,tick_at FROM mare_game.character_battles')).rows;
  await a.read();await a.read();assert.deepEqual((await pool.query('SELECT simulation,tick_at FROM mare_game.character_battles')).rows,snapshot,'GET never advances simulation');
  await service.logout(a.login.token,'all');await tick();assert.deepEqual((await pool.query('SELECT simulation,tick_at FROM mare_game.character_battles')).rows,snapshot);
