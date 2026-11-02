@@ -68,3 +68,14 @@
 #app #panelOverlay.boss-dungeons-mode .dungeon-list-note{display:flex;align-items:center;gap:8px}
 #app #panelOverlay.boss-dungeons-mode .dungeon-list-note>img{width:84px;height:84px;object-fit:contain;flex:none}
 @media(max-width:650px){#app #panelOverlay.boss-dungeons-mode .dungeon-list-note{display:none}}
+
+/* Nine independent entries scroll without moving the selected portrait or action. */
+@media(min-width:651px){
+ #app #panelOverlay.boss-dungeons-mode #dialogBody{overflow:hidden}
+ #app #panelOverlay.boss-dungeons-mode .boss-dungeon-layout{height:100%;min-height:0}
+ #app #panelOverlay.boss-dungeons-mode .boss-dungeon-list{overflow-y:auto;min-height:0;scrollbar-gutter:stable}
+ #app #panelOverlay.boss-dungeons-mode .boss-dungeon-card{flex:none;height:154px;min-height:154px}
+ #app #panelOverlay.boss-dungeons-mode .boss-dungeon-details{overflow-y:auto;min-height:0}
+}
+#app #panelOverlay.boss-dungeons-mode .dungeon-selected-portrait{object-position:center 24%}
+#app #panelOverlay.boss-dungeons-mode .boss-dungeon-card>img{object-position:center 24%}

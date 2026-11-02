@@ -18,7 +18,7 @@ web_files = ['index.html', 'ui-preview.html', 'ui-art-direction.css', 'item-cata
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
              'forge-ui.js', 'game-tooltips.js', 'player-hub.js', 'hud-telemetry.js', 'notification-system.js', 'hierarchy-system.js', 'hierarchy-ui.js', 'combat-vfx-data.js', 'combat-vfx.js', 'item-art.js', 'contracts-board.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js', 'lobby-map-data.js', 'lobby-world.js', 'impel-down-world.js', 'alabasta-map-data.js', 'alabasta-world.js', 'alubarna-map-data.js', 'alubarna-world.js',
               'dawn-map-data.js', 'dawn-world.js', 'dawn-renderer.js', 'rare-world.js', 'rare-renderer.js', 'new-islands-data.js', 'new-islands-objects.js', 'new-islands.js', 'monster-catalog.js', 'new-islands-art.js', 'pixellab-world-maps-data.js', 'conchas-pixellab-data.js', 'conchas-structures.js', 'pixellab-world-maps.js', 'world-system.js', 'world-depth.js', 'orange-world.js', 'conchas-world.js', 'conchas-renderer.js', 'terrain-autotile.js', 'orange-terrain.js', 'orange-renderer.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-progression.js', 'haki-mastery.css', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'achievement-ui.js', 'honors-hd.css', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'talents-hd.css', 'compendium-ui.js', 'compendium-hd.css', 'voyage-ui.js', 'voyage-hd.css', 'dev-tools.js', 'hunt-system.js', 'monster-behavior.js']
-web_files += ['quest-dungeons-data.js','quest-dungeons-world.js','boss-dungeon-system.js','boss-dungeon-ui.js','save-writer.js','boss-dungeons.css']
+web_files += ['quest-dungeons-data.js','quest-dungeons-world.js','boss-dungeon-system.js','boss-dungeon-combat.js','dungeon-boss-art-data.js','boss-dungeon-ui.js','save-writer.js','boss-dungeons.css']
 web_files += ['rank-a-data.js', 'rank-a-expansion.js', 'rank-a-system.js', 'character-appearance.js', 'character-studio.js', 'character-studio.css', 'headgear-visibility.js', 'paper-doll-96-lobby.js', 'paper-doll-look-data.js', 'paper-doll-look.js', 'paper-doll-coverage.js', 'paper-doll-look.css', 'sprite-combat-v2-data.js', 'sprite-combat-v2.js', 'ui-navigator.css', 'character-hud.js', 'rank-s-data.js', 'rank-s-system.js']
 for f in web_files:
     if not (ROOT / f).is_file():
@@ -40,6 +40,7 @@ def version_asset(match):
         digest = hashlib.sha256(source.read_bytes())
         if relative == 'sprite-combat-v2.js':
             digest.update((ROOT / 'sprite-combat-v2-data.js').read_bytes())
+            digest.update((ROOT / 'dungeon-boss-art-data.js').read_bytes())
             for image in sorted((ROOT / 'assets/sprites-combat-v2').rglob('*.png')):
                 digest.update(image.relative_to(ROOT).as_posix().encode() + b'\0' + image.read_bytes())
         asset_versions[relative] = digest.hexdigest()[:16]

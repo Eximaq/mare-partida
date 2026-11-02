@@ -6,7 +6,7 @@
  const ranks=['E','D','C','B','A','S'],rarities={E:'rare',D:'epic',C:'epic',B:'legendary',A:'legendary',S:'supreme'};
  const fragments=Object.freeze(ranks.map(rank=>Object.freeze({id:'akuma_fragment_'+rank.toLowerCase(),materialId:'akuma_fragment_'+rank.toLowerCase(),rank,name:'Fragmento de Akuma no Mi · Rank '+rank,kind:'akuma-fragment',slot:'material',rarity:rarities[rank],fixedRarity:true,attack:0,defense:0,hp:0,symbol:'?',icon_path:'assets/quest-dungeons/akuma-fragment.png',description:'Fragmento de fruta misteriosa. Rank '+rank+'. Dez fragmentos Rank E formam uma Akuma aleatória Rank E. Outros ranks ainda não possuem receita.'})));
  // Berry is snapshotted from lifetime earned currency when an attempt starts.
- const catalog=Object.freeze([{id:'alvida',name:'Alvida',level:10,location:'Confronto da Capitã Pirata',temporaryMonster:'mr3'},{id:'morgan',name:'Morgan',level:20,location:'Confronto do Capitão da Marinha',temporaryMonster:'cocox'}].map(Object.freeze));
+ const catalog=Object.freeze([{"id":"alvida","name":"Alvida","level":10,"location":"Capitã Pirata","monster":"dungeon-alvida","portrait":"assets/ui/boss-dungeons/alvida-hd.png","rewardConfigured":true},{"id":"morgan","name":"Morgan","level":20,"location":"Quartel da Marinha","monster":"dungeon-morgan","portrait":"assets/ui/boss-dungeons/morgan-hd.png","rewardConfigured":true},{"id":"buggy","name":"Buggy","level":30,"location":"Capitão do Bando Buggy","monster":"dungeon-buggy","portrait":"assets/ui/boss-dungeons/portraits/buggy.jpg","rewardConfigured":false},{"id":"kuro","name":"Kuro","level":40,"location":"Capitão dos Gatos Negros","monster":"dungeon-kuro","portrait":"assets/ui/boss-dungeons/portraits/kuro.png","rewardConfigured":false},{"id":"krieg","name":"Don Krieg","level":50,"location":"Almirante da Frota Krieg","monster":"dungeon-krieg","portrait":"assets/ui/boss-dungeons/portraits/krieg.png","rewardConfigured":false},{"id":"arlong","name":"Arlong","level":60,"location":"Capitão dos Homens-Peixe","monster":"dungeon-arlong","portrait":"assets/ui/boss-dungeons/portraits/arlong.png","rewardConfigured":false},{"id":"smoker","name":"Smoker","level":70,"location":"Oficial da Marinha","monster":"dungeon-smoker","portrait":"assets/ui/boss-dungeons/portraits/smoker.png","rewardConfigured":false,"family":"logia","naturalProtection":null},{"id":"wapol","name":"Wapol","level":80,"location":"Rei de Drum","monster":"dungeon-wapol","portrait":"assets/ui/boss-dungeons/portraits/wapol.png","rewardConfigured":false},{"id":"crocodile","name":"Crocodile","level":90,"location":"Líder da Baroque Works","monster":"dungeon-crocodile","portrait":"assets/ui/boss-dungeons/portraits/crocodile.png","rewardConfigured":false,"family":"logia","naturalProtection":null}].map(Object.freeze));
  const byId=Object.fromEntries(catalog.map(d=>[d.id,d])),quantity=i=>Number.isSafeInteger(i?.quantity)&&i.quantity>0?i.quantity:1;
  const owner=(item,save)=>!item?.boundToCharacter||item.boundToCharacter===save.characterId;
  const bound=item=>typeof item?.boundToCharacter==='string'&&!!item.boundToCharacter;
@@ -18,15 +18,21 @@
   const s=migrate(original);if(state==='pending')return {ok:true,state:s,record:s.bossDungeons.records[id],resume:true};
   const record={phase:'running',runId,encounterId:runId+':enemy',ownerId:s.characterId,startedAt:now,berryReward:Math.floor(Math.max(0,Number(s.stats?.goldEarned)||0)/100)};s.bossDungeons.records[id]=record;s.bossDungeons.seq++;return {ok:true,state:s,record};
  }
- function reward(save,id,xpNeeded){const d=byId[id];return d?{xp:Math.round(xpNeeded(d.level)*(save.level<=d.level?.2:.1)),berry:Number.isSafeInteger(save.bossDungeons?.records[id]?.berryReward)?save.bossDungeons.records[id].berryReward:Math.floor(Math.max(0,Number(save.stats?.goldEarned)||0)/100),materialId:fragments[0].materialId,quantity:5,boundToCharacter:save.characterId}:null;}
+ function reward(save,id,xpNeeded){const d=byId[id];return d?.rewardConfigured?{xp:Math.round(xpNeeded(d.level)*(save.level<=d.level?.2:.1)),berry:Number.isSafeInteger(save.bossDungeons?.records[id]?.berryReward)?save.bossDungeons.records[id].berryReward:Math.floor(Math.max(0,Number(save.stats?.goldEarned)||0)/100),materialId:fragments[0].materialId,quantity:5,boundToCharacter:save.characterId}:null;}
  function defeat(original,id,identity,xpNeeded,now=Date.now()){
   const r=original.bossDungeons?.records[id];if(!r||r.phase!=='running'||r.ownerId!==original.characterId||r.runId!==identity?.runId||r.encounterId!==identity?.encounterId)return fail('O adversário não pertence a esta instância.');
   const s=migrate(original),next=s.bossDungeons.records[id];next.phase='pending';next.reward=reward(s,id,xpNeeded);next.defeatedAt=now;s.bossDungeons.seq++;return {ok:true,state:s,record:next};
+ }
+ function combatProfile(id,normalProfile){
+  const d=byId[id];if(!d)throw Error('Chefe desconhecido');
+  const base=normalProfile(d.level,'bandit');
+  return {...base,maxHP:Math.round(base.maxHP*2.5),attack:Math.round(base.attack*2.5),defense:Math.round(base.defense*2.5),magicDefense:Math.round((base.magicDefense??base.defense)*2.5),...(base.elementalAttack!==undefined?{elementalAttack:Math.round(base.elementalAttack*2.5)}:{}),xp:0,gold:[0,0]};
  }
  function materialDef(defs,id){return defs.findIndex(d=>d.kind==='akuma-fragment'&&d.materialId===id);}
  function claim(original,id,{runId,position,chest,defs,applyXP,commit,now=Date.now()}={}){
   const r=original.bossDungeons?.records[id];if(!r||r.phase!=='pending'||r.runId!==runId||r.ownerId!==original.characterId)return fail('Recompensa indisponível ou já recebida.');
   if(!position||!chest||Math.hypot(position.x-chest.x,position.y-chest.y)>chest.radius)return fail('Aproxime-se do baú no mapa.');
+  if(!r.reward)return fail('Vitória preservada. As recompensas desta masmorra ainda estão em definição.');
   const def=materialDef(defs,r.reward.materialId);if(def<0)return fail('Material indisponível no catálogo.');
   const stack=original.inventory.find(i=>i.materialId===r.reward.materialId&&i.boundToCharacter===original.characterId&&!i.locked&&quantity(i)+5<=MAX_STACK);
   if(!stack&&original.inventory.length>=CAPACITY)return fail('Recompensa pendente: libere um espaço na mochila.');
@@ -55,5 +61,5 @@
   return {ok:true,state:s,item,fruit:chosen};
  }
  function acknowledge(original,itemId,commit){if(original.bossDungeons?.reveal?.itemId!==itemId)return fail('Revelação já encerrada.');const s=migrate(original);s.bossDungeons.reveal=null;try{if(commit(s)!==true)return fail('Não foi possível salvar.');}catch{return fail('Não foi possível salvar.');}return {ok:true,state:s};}
- root.MareBossDungeons={VERSION,CAPACITY,MAX_STACK,catalog,byId,fragments,recipes,rarities,quantity,bound,owner,migrate,status,begin,reward,defeat,claim,count,craft,acknowledge};if(typeof module!=='undefined')module.exports=root.MareBossDungeons;
+ root.MareBossDungeons={VERSION,CAPACITY,MAX_STACK,catalog,byId,fragments,recipes,rarities,quantity,bound,owner,migrate,status,begin,combatProfile,reward,defeat,claim,count,craft,acknowledge};if(typeof module!=='undefined')module.exports=root.MareBossDungeons;
 })(globalThis);

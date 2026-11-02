@@ -4,7 +4,7 @@ const defs=[...S.fragments,{fruitId:'fruit-e-1'},{fruitId:'fruit-e-2'}],fruits=[
 const base=(level=10,id='character-1')=>S.migrate({characterId:id,level,xp:0,gold:0,inventory:[],equipment:{},stats:{goldEarned:50000,xpEarned:0}},id);
 const win=(g,id='alvida',run='run-a')=>{const start=S.begin(g,id,run);assert(start.ok);const r=S.defeat(start.state,id,{runId:run,encounterId:run+':enemy'},xp);assert(r.ok);return r.state;};
 const claim=(g,id='alvida',commit=()=>true)=>S.claim(g,id,{runId:g.bossDungeons.records[id].runId,position:{x:0,y:0},chest:{x:0,y:0,radius:90},defs,applyXP:(s,n)=>{s.xp+=n;s.stats.xpEarned+=n;},commit});
-test('only two configured dungeons, strict levels, six stable fragment types and official rarities',()=>{assert.equal(S.catalog.length,2);assert.equal(S.status(base(9),'alvida'),'locked');assert.equal(S.status(base(10),'alvida'),'available');assert.equal(S.status(base(19),'morgan'),'locked');assert.equal(S.status(base(20),'morgan'),'available');assert.equal(S.fragments.length,6);assert.deepEqual(S.fragments.map(f=>f.rarity),['rare','epic','epic','legendary','legendary','supreme']);assert.equal(new Set(S.fragments.map(f=>f.materialId)).size,6);});
+test('nine real dungeons, strict levels, six stable fragment types and official rarities',()=>{assert.equal(S.catalog.length,9);assert.equal(S.status(base(9),'alvida'),'locked');assert.equal(S.status(base(10),'alvida'),'available');assert.equal(S.status(base(19),'morgan'),'locked');assert.equal(S.status(base(20),'morgan'),'available');assert.equal(S.fragments.length,6);assert.deepEqual(S.fragments.map(f=>f.rarity),['rare','epic','epic','legendary','legendary','supreme']);assert.equal(new Set(S.fragments.map(f=>f.materialId)).size,6);});
 test('only the matching enemy and instance can unlock the chest; retry before victory is allowed',()=>{let g=S.begin(base(),'alvida','one').state;assert(!S.defeat(g,'alvida',{runId:'one',encounterId:'wrong'},xp).ok);assert(!S.defeat(g,'alvida',{runId:'two',encounterId:'one:enemy'},xp).ok);assert(!claim(g).ok);const again=S.begin(g,'alvida','two');assert(again.ok);assert.equal(again.record.encounterId,'two:enemy');assert(!S.defeat(again.state,'alvida',{runId:'one',encounterId:'one:enemy'},xp).ok);});
 test('XP uses fixed next-level bases and is snapshotted at victory',()=>{let at=win(base(10)),above=win(base(11));assert.equal(at.bossDungeons.records.alvida.reward.xp,Math.round(xp(10)*.2));assert.equal(above.bossDungeons.records.alvida.reward.xp,Math.round(xp(10)*.1));at.level=40;assert.equal(claim(at).reward.xp,Math.round(xp(10)*.2));assert.equal(win(base(20),'morgan').bossDungeons.records.morgan.reward.xp,Math.round(xp(20)*.2));});
 test('one atomic claim gives exactly five bound fragments, Berry and XP; replay never writes',()=>{let g=win(base()),writes=0,received=claim(g,'alvida',()=>{writes++;return true;});assert(received.ok);assert.equal(writes,1);assert.equal(S.count(received.state),5);assert.equal(received.state.gold,500);assert.equal(received.state.inventory[0].boundToCharacter,g.characterId);assert(!claim(received.state,'alvida',()=>{writes++;return true;}).ok);assert.equal(writes,1);assert.equal(g.inventory.length,0);assert.equal(g.gold,0);});
@@ -24,4 +24,17 @@ test('Berry uses 1 percent of lifetime earnings at entry, never current wallet o
  const pending=S.defeat(entered,'alvida',{runId:'snapshot',encounterId:'snapshot:enemy'},xp).state;
  assert.equal(pending.bossDungeons.records.alvida.reward.berry,1234);assert.equal(claim(pending).reward.berry,1234);
  const zero=base();zero.stats.goldEarned=0;assert.equal(S.reward(zero,'alvida',xp).berry,0);
+});
+
+test('nine profiles scale only common combat attributes once at their fixed level',()=>{
+ const H=require('../hunt-system.js');assert.deepEqual(S.catalog.map(d=>d.level),[10,20,30,40,50,60,70,80,90]);assert.equal(new Set(S.catalog.map(d=>d.monster)).size,9);
+ for(const d of S.catalog){const n=H.profileAtLevel(d.level),p=S.combatProfile(d.id,H.profileAtLevel);for(const k of ['maxHP','attack','defense'])assert.equal(p[k],Math.round(n[k]*2.5),d.name+' '+k);assert.equal(p.magicDefense,Math.round(n.defense*2.5));for(const k of ['level','speed','reach','attackSec','aggro'])assert.equal(p[k],n[k]);assert.equal(S.status(base(d.level-1),d.id),'locked');assert.equal(S.status(base(d.level),d.id),'available');}
+});
+test('unconfigured rewards preserve each victory and do not grant currency or fragments',()=>{
+ let g=base(90);for(const d of S.catalog.slice(2)){g=win(g,d.id,'run-'+d.id);assert.equal(S.reward(g,d.id,xp),null);assert.equal(g.bossDungeons.records[d.id].reward,null);const before=JSON.stringify(g);assert(!claim(g,d.id).ok);assert.equal(JSON.stringify(g),before);assert(S.begin(g,d.id,'new').resume);}
+ assert.equal(Object.keys(g.bossDungeons.records).length,7);assert.equal(g.inventory.length,0);assert.equal(g.gold,0);
+});
+test('existing pending/claimed records survive idempotent migration independently',()=>{
+ const g=claim(win(base())).state;g.bossDungeons.records.morgan={phase:'pending',ownerId:g.characterId,runId:'old',reward:{quantity:5}};
+ const migrated=S.migrate(S.migrate(g));assert.deepEqual(migrated,g);assert.equal(S.status(migrated,'alvida'),'claimed');assert.equal(S.status(migrated,'morgan'),'pending');assert.equal(S.status(migrated,'buggy'),'locked');
 });

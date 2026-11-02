@@ -1,3 +1,7 @@
+## 02/11/2026 — Nove chefes reais nas masmorras
+
+Integração dos nove personagens existentes na conta PixelLab atual, com Walking/Attack/Hurt, níveis 10–90, escala visual revisada e atributos comuns do próprio nível ×2,5. Alvida/Morgan preservam cinco fragmentos E, XP/Berry e resgate único; os sete seguintes registram vitória sem inventar recompensas. HUD vertical, retratos HD e carregamento somente do chefe em uso. Sem geração nem consumo de créditos. [Origem, IDs, proporções, tabela numérica, testes e limites online](NINE-DUNGEON-BOSSES.md). Branch feature/nine-dungeon-bosses, base 8362794.
+
 ## 01/11/2026 — Confirmações, menus, fragmentos e avisos compartilhados
 
 Fragmentos E–S corrigidos; resumos de consumo/resultado/risco; listas abertas no material aprovado; fila compacta de recebimentos com ícones reais. Preservação verificada de 82 estados × 14 superfícies da HUD. Branch feature/hud-shared-standardization integrada à main 4fd85f9 após o merge do #203. Operações online preservam autoridade, versão e replay do servidor; 98 testes de fundação e regressão Chromium online aprovados. [Auditoria, arquivos, testes e compatibilidade](HUD-SHARED-STANDARDIZATION.md).

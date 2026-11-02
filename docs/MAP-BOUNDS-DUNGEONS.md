@@ -70,9 +70,9 @@ Retratos HD de seleção Alvida/Morgan: ferramenta imagegen integrada do ChatGPT
 
 ### Pendências obrigatórias
 
-- CHEFES DEFINITIVOS: substituir Mr. 3/Cocox quando sprites e perfis reais forem fornecidos.
+- CHEFES DEFINITIVOS: concluído em 02/11/2026 para os nove chefes reais; ver [integração e validação](NINE-DUNGEON-BOSSES.md).
 - PARTY EM MASMORRAS: futura; nenhuma simulação de grupo ou divisão de recompensa nesta sprint.
-- MASMORRAS 30+: catálogo extensível; nenhuma entrada adicional habilitada.
+- MASMORRAS 30–90: sete entradas reais integradas; recompensas específicas aguardam definição, com vitória preservada sem concessão automática.
 - FRAGMENTOS: fontes gerais, pesos definitivos e receitas D–S aguardam orientação; nenhuma fonte adicional criada.
 - RECOMPENSAS: interpretação de XP continua provisória. Berry segue o adendo de 1% histórico na entrada; fórmula oculta na HUD.
 - MAPAS: proprietário poderá remover blocos artificiais após validar os limites; não foram removidos nesta sprint.

@@ -1,0 +1,54 @@
+name: Chefes das masmorras
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'boss-dungeon-*'
+      - 'boss-dungeons.css'
+      - 'dungeon-boss-art-data.js'
+      - 'sprite-combat-v2.js'
+      - 'hunt-system.js'
+      - 'game.js'
+      - 'index.html'
+      - 'ui-preview.html'
+      - 'assets/sprites-combat-v2/dungeon-*/**'
+      - 'assets/ui/boss-dungeons/**'
+      - 'tests/*dungeon*'
+      - 'tools/build_pages.py'
+      - '.github/workflows/dungeon-bosses.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dungeonBosses:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    env:
+      MARE_QA_DIR: /tmp/mare-dungeon-bosses
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Preparar navegador
+        run: |
+          npm install --no-save --package-lock=false playwright@1.56.1
+          npx playwright install --with-deps chromium
+      - name: Perfis, animações, recompensas e pacote
+        run: |
+          node --test tests/boss-dungeons.test.cjs tests/boss-dungeon-combat.test.cjs tests/sprite-combat-v2.test.cjs tests/current-player-sprites.test.cjs tests/ui-mobile-preview.test.cjs
+          python tools/build_pages.py
+      - name: Combate dos nove chefes e recuperação de recursos
+        run: python tests/run_honors_hd_browser.py tests/nine_dungeon_bosses_browser.cjs --dist --offline
+      - name: Regressão de baú e fragmentos
+        run: python tests/run_honors_hd_browser.py tests/boss_dungeons_browser.cjs --dist --offline
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nove-chefes-masmorras
+          path: /tmp/mare-dungeon-bosses/
+          if-no-files-found: warn
+          retention-days: 7
