@@ -19,8 +19,20 @@ const hook='  window.__harmonyQA={get game(){return game},get session(){return s
   // Combat/telemetry behavior has separate tests. Freeze simulation in this fixture only.
   await p.evaluate(()=>document.fonts.ready);
   async function rect(key){
-   await p.waitForTimeout(220);
-   records[key]=await p.evaluate(selectors=>Object.fromEntries(selectors.map(s=>{const e=document.querySelector(s),r=e.getBoundingClientRect(),c=getComputedStyle(e);return [s,{x:r.x,y:r.y,w:r.width,h:r.height,visible:c.display!=='none'&&c.visibility!=='hidden'&&r.width>0&&r.height>0}]})),selectors);
+   records[key]=await p.evaluate(async selectors=>{
+    await document.fonts.ready;
+    const nodes=selectors.map(s=>document.querySelector(s));
+    const snapshot=()=>Object.fromEntries(selectors.map((s,i)=>{const e=nodes[i],r=e.getBoundingClientRect(),c=getComputedStyle(e);return [s,{x:r.x,y:r.y,w:r.width,h:r.height,visible:c.display!=='none'&&c.visibility!=='hidden'&&r.width>0&&r.height>0}]}));
+    let previous='',stable=0;
+    for(let attempt=0;attempt<80;attempt++){
+     await new Promise(resolve=>setTimeout(resolve,50));
+     const value=snapshot(),serialized=JSON.stringify(value);
+     const animating=document.getAnimations().some(a=>a.playState==='running'&&a.effect?.getComputedTiming().iterations!==Infinity&&nodes.some(n=>a.effect?.target&&(n.contains(a.effect.target)||a.effect.target.contains(n))));
+     stable=serialized===previous&&!animating?stable+1:0;previous=serialized;
+     if(stable>=5)return value;
+    }
+    throw Error('HUD geometry did not settle');
+   },selectors);
   }
   for(const [w,h]of sizes){
    await p.setViewportSize({width:w,height:h});
