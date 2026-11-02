@@ -109,7 +109,10 @@ test('versioned migration backfills only existing server kills and upgrades only
    const engine=createRequire(import.meta.url)('../../world-battle.cjs');const sim=engine.create(null,{maxHP:100,maxEnergy:50},0,()=>.5);sim.hp=37;sim.rulesHash='562bfa13620d2bc08aebcc96590bfeee5fdd3ebab4be31832e28046c31de235f';
    await pool.query('INSERT INTO mare_game.character_battles(character_id,simulation,control_epoch) VALUES($1,$2,1),($3,$4,1)',[a.c.id,JSON.stringify(sim),b.c.id,JSON.stringify({...sim,rulesHash:'unknown'})]);
    for(let i=0;i<8;i++){const r=randomUUID();await pool.query("INSERT INTO mare_game.character_commands VALUES($1,$2,$3,$4)",[a.c.id,r,'0'.repeat(64),JSON.stringify({action:'battle.reward'})]);await pool.query('INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,0,0,$6)',[a.c.id,randomUUID(),r,'beach','crab',sim.rulesHash]);}
-   assert.deepEqual(await applyMigrations(pool),['0018_battle_profile_compatibility.sql','0019_original_contracts.sql']);assert.deepEqual(await applyMigrations(pool),[]);
+   for(const name of ['0018_battle_profile_compatibility.sql','0019_original_contracts.sql'])await copyFile(new URL(name,source),join(dir,name));
+   assert.deepEqual(await applyMigrations(pool,dir),['0018_battle_profile_compatibility.sql','0019_original_contracts.sql']);
+   assert.equal((await a.read()).battle.rulesHash,'e8c783982e814f1ea67b0ce8fa11e072c47c3a1f5746e77a9ca2de10a0eedce1');
+   assert.deepEqual(await applyMigrations(pool),['0020_restore_stable_battle_hash.sql']);assert.deepEqual(await applyMigrations(pool),[]);
    const after=await a.read();assert.deepEqual(after.state,before);assert.equal(after.contracts.progress.crab,6);assert.equal(after.contracts.progress['dawn-patrol'],8);assert.deepEqual(after.contracts.claimed,[]);
    assert.deepEqual(after.battle,{...sim,rulesHash:engine.rulesHash});assert.equal((await b.read()).battle.rulesHash,'unknown');assert.equal((await b.read()).contracts.progress.crab,0);
   },dir);

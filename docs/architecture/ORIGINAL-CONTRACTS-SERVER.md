@@ -1,6 +1,6 @@
 # Contratos originais no servidor
 
-Base `5f7f97f`, incluindo os chefes do PR #207. Os dez contratos existentes passam
+Base `e0b4443`, incluindo os chefes e correções dos PRs #207/#208. Os dez contratos existentes passam
 a funcionar pelo BFF/PostgreSQL e pelo quadro original, sem mudar objetivos,
 recompensas, arte ou saves da demonstração.
 
@@ -37,10 +37,14 @@ estão vazios; não existe reset por relógio ou recompensa final em 10/10.
 - `0019_original_contracts.sql`: cria contadores/resgates e reconstrói contadores
   dos spawns já pagos pelo servidor, limitados à meta. Não paga contratos nem importa
   saves durante a migração. Atualizar os grants depois de migrar.
+- `0020_restore_stable_battle_hash.sql`: o PR #208 restaurou a fonte/hash original
+  enquanto este bloco estava em revisão. A 0018 já aplicada permanece imutável;
+  a 0020 reconcilia apenas seu hash intermediário conhecido com o engine atual,
+  sem mudar o estado da batalha. Instalações antigas e intermediárias convergem.
 
 A instalação contínua recebeu backup e foi parada antes das migrações. A comparação
 das 30 tabelas anteriores confirmou preservação, normalizando apenas o hash
-explicitamente migrado: quatro contas, três personagens, 19 migrações e zero
+explicitamente migrado: quatro contas, três personagens, 20 migrações e zero
 resgates artificiais. PostgreSQL e o banco anterior foram preservados.
 
 ## Interface, testes e limites

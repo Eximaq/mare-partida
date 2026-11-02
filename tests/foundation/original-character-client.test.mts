@@ -29,8 +29,7 @@ test('higher-level attribute intentions remain bounded and reject injected autho
 test('new demo dungeon actions cannot write saves or rewards from online mode',async()=>{
  const box:any={ONLINE_GAME:{},game:{gold:10},localStorage:{setItem(){throw Error('Save touched');}}};
  for(const name of ['persistDungeonState','applyDungeonXP','enterBossDungeon','completeBossDungeonEnemy','persistBossVictory','claimDungeonChest','formDungeonAkuma']){
-  const prefix=name==='enterBossDungeon'?'  async function ':'  function ';
-  const a=source.indexOf(prefix+name+'('),rest=source.slice(a+prefix.length).search(/\n  (?:async )?function /),b=a+prefix.length+rest;assert(a>=0&&rest>=0&&b>a,name);
+  const match=new RegExp('  (?:async )?function '+name+'\\(').exec(source);assert(match);const a=match.index,next=source.slice(a+match[0].length).search(/  (?:async )?function /),b=a+match[0].length+next;assert(next>=0&&b>a);
   runInNewContext(source.slice(a,b)+';globalThis.run='+name,box);
   if(name==='persistDungeonState')assert.throws(()=>box.run({}),/online_action_unavailable/);else assert.equal(await box.run({}),false);
  }

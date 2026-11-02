@@ -16,7 +16,7 @@ test('contract intent contains only a canonical ID, never progress, ownership or
  }
  for(const contractId of ['weekly','__proto__','crab\u0000',"crab' OR 1=1",'CRAB'])assert(!characterCommandSchema.safeParse({...command,payload:{contractId}}).success);
 });
-test('PR207 common-island profiles match the audited PR204 balance before hash migration',()=>{
+test('current common-island profiles preserve the audited balance and stable PR208 rules hash',()=>{
  const h=require('../../hunt-system.js'),rows=[];
  for(const a of Object.keys(h.regions))for(const s of h.sectors(a))for(const t of Object.keys(h.archetypes))for(const roll of [0,.5,.999999]){
   // Boss profiles for islands with no boss were NaN before PR207 and are not spawnable.
@@ -24,7 +24,7 @@ test('PR207 common-island profiles match the audited PR204 balance before hash m
   try{rows.push([a,s.id,t,roll,h.profile(a,s.id,t,roll)]);}catch{}
  }
  assert.equal(rows.length,864);assert.equal(createHash('sha256').update(JSON.stringify(rows)).digest('hex'),'d4d1defa5c965a048f04e34c81fc22da4eb5613c50983123008cb95252a20065');
- assert.equal(require('../../world-battle.cjs').rulesHash,'e8c783982e814f1ea67b0ce8fa11e072c47c3a1f5746e77a9ca2de10a0eedce1');
+ assert.equal(require('../../world-battle.cjs').rulesHash,'562bfa13620d2bc08aebcc96590bfeee5fdd3ebab4be31832e28046c31de235f');
 });
 test('shared contracts preserve all ten original objectives, fixed rewards and once-only semantics',()=>{
  const c=require('../../contract-system.js');
