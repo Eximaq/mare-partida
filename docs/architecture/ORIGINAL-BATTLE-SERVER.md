@@ -73,6 +73,14 @@ alterar Supabase, DNS ou exposição de rede. A imagem Docker inclui os módulos
 puros necessários; Docker é verificado no CI Linux, quando a execução concluir,
 e não presumido a partir de build TypeScript.
 
+## Compatibilidade com a main
+
+A main recebeu a HUD compartilhada do PR #205 em `8362794` durante este bloco.
+O ajuste preserva esses arquivos e combina a viagem autoritativa com os avisos
+de contratos da demonstração em `game.js`, sem reescrever históricos nem fazer
+merge na main. As regressões de combate online, inventário/forja online e HUD
+compartilhada foram executadas novamente sobre a exportação estática.
+
 ## Aceite e limites
 
 Testes específicos: `tests/foundation/world-battle.test.mts`,
@@ -85,7 +93,7 @@ Os testes de navegador usam BFF simulado; os testes de transação usam PostgreS
 real descartável e provedor falso. Não equivalem a novo ensaio do Supabase.
 
 Validação local deste incremento: build e typecheck aprovados; 110 testes de
-fundação, 133 de integração PostgreSQL/HTTP e 145 arquivos Node legados passaram.
+fundação, 133 de integração PostgreSQL/HTTP e 146 arquivos Node legados passaram.
 Exportação Pages, quatro testes Python do portal/exportação e Chromium sobre
 `dist` passaram, incluindo desktop, viewport estreito, reload e save sentinela.
 O teste de isolamento reproduziu a interrupção indevida do lote antes da correção

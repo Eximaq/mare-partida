@@ -2,6 +2,7 @@
 /* Local pure transitions. Commit the entire resulting save once, before UI effects. */
 ((root)=>{
  const VERSION=1,CAPACITY=120,MAX_STACK=9999,clone=x=>JSON.parse(JSON.stringify(x));
+ const recipes=Object.freeze({E:Object.freeze({rank:'E',quantity:10,resultRank:'E',random:true,binding:'character'})});
  const ranks=['E','D','C','B','A','S'],rarities={E:'rare',D:'epic',C:'epic',B:'legendary',A:'legendary',S:'supreme'};
  const fragments=Object.freeze(ranks.map(rank=>Object.freeze({id:'akuma_fragment_'+rank.toLowerCase(),materialId:'akuma_fragment_'+rank.toLowerCase(),rank,name:'Fragmento de Akuma no Mi · Rank '+rank,kind:'akuma-fragment',slot:'material',rarity:rarities[rank],fixedRarity:true,attack:0,defense:0,hp:0,symbol:'?',icon_path:'assets/quest-dungeons/akuma-fragment.png',description:'Fragmento de fruta misteriosa. Rank '+rank+'. Dez fragmentos Rank E formam uma Akuma aleatória Rank E. Outros ranks ainda não possuem receita.'})));
  // Berry is snapshotted from lifetime earned currency when an attempt starts.
@@ -40,12 +41,12 @@
  function ownedFragments(save,rank='E'){return save.inventory.filter(i=>i.materialId==='akuma_fragment_'+rank.toLowerCase()&&i.boundToCharacter===save.characterId&&!i.locked);}
  const count=(s,rank='E')=>ownedFragments(s,rank).reduce((n,i)=>n+quantity(i),0);
  function craft(original,{expectedSeq,defs,catalog:fruits,random=Math.random,commit,now=Date.now(),chosenId=null}={}){
-  if(!original.characterId||expectedSeq!==original.bossDungeons?.seq)return fail('A seleção mudou. Atualize o inventário.');if(original.bossDungeons.reveal)return fail('Confira primeiro a fruta formada.');if(count(original)<10)return fail('São necessários 10 fragmentos Rank E desbloqueados deste personagem.');
+  if(!original.characterId||expectedSeq!==original.bossDungeons?.seq)return fail('A seleção mudou. Atualize o inventário.');if(original.bossDungeons.reveal)return fail('Confira primeiro a fruta formada.');if(count(original)<recipes.E.quantity)return fail('São necessários 10 fragmentos Rank E desbloqueados deste personagem.');
   const eligible=fruits.filter(f=>f.rank==='E'&&f.available!==false&&defs.some(d=>d.fruitId===f.id));if(!eligible.length)return fail('Não há frutas Rank E elegíveis.');
-  const stacks=ownedFragments(original);let needed=10,removed=0;for(const i of stacks){if(needed<=0)break;const used=Math.min(needed,quantity(i));needed-=used;if(used===quantity(i))removed++;}
+  const stacks=ownedFragments(original);let needed=recipes.E.quantity,removed=0;for(const i of stacks){if(needed<=0)break;const used=Math.min(needed,quantity(i));needed-=used;if(used===quantity(i))removed++;}
   if(original.inventory.length-removed+1>CAPACITY)return fail('Libere espaço para a fruta antes de formar.');
   let chosen;try{if(chosenId)chosen=eligible.find(f=>f.id===chosenId);else{const roll=random();if(!Number.isFinite(roll)||roll<0||roll>=1)throw Error();chosen=eligible[Math.floor(roll*eligible.length)];}if(!chosen)return fail('Fruta elegível inválida.');}catch{return fail('Não foi possível sortear. Nada foi consumido.');}
-  const s=migrate(original);needed=10;
+  const s=migrate(original);needed=recipes.E.quantity;
   for(const i of ownedFragments(s)){if(needed<=0)break;const used=Math.min(needed,quantity(i));needed-=used;i.quantity=quantity(i)-used;}
   s.inventory=s.inventory.filter(i=>i.quantity!==0);const id='formed-akuma:'+s.characterId+':'+expectedSeq,def=defs.findIndex(d=>d.fruitId===chosen.id);
   const item={id,def,type:'akuma_no_mi',fruitId:chosen.id,rank:'E',rarity:'rare',level:1,plus:0,locked:false,binding:'character',boundToCharacter:s.characterId,origin:'Formada com fragmentos vinculados Rank E',obtainedAt:now};
@@ -54,5 +55,5 @@
   return {ok:true,state:s,item,fruit:chosen};
  }
  function acknowledge(original,itemId,commit){if(original.bossDungeons?.reveal?.itemId!==itemId)return fail('Revelação já encerrada.');const s=migrate(original);s.bossDungeons.reveal=null;try{if(commit(s)!==true)return fail('Não foi possível salvar.');}catch{return fail('Não foi possível salvar.');}return {ok:true,state:s};}
- root.MareBossDungeons={VERSION,CAPACITY,MAX_STACK,catalog,byId,fragments,rarities,quantity,bound,owner,migrate,status,begin,reward,defeat,claim,count,craft,acknowledge};if(typeof module!=='undefined')module.exports=root.MareBossDungeons;
+ root.MareBossDungeons={VERSION,CAPACITY,MAX_STACK,catalog,byId,fragments,recipes,rarities,quantity,bound,owner,migrate,status,begin,reward,defeat,claim,count,craft,acknowledge};if(typeof module!=='undefined')module.exports=root.MareBossDungeons;
 })(globalThis);

@@ -33,7 +33,7 @@ assert.match(game,/canvas\.addEventListener\('wheel',/);
 assert.match(game,/document\.querySelector\('\.dashboard'\)\.appendChild\(tracker\)/,'XP/h is independent from the journal');
 assert.match(game,/session\.elapsed,xp:session\.xp/);
 assert.match(game,/tracker\.hidden=!telemetry\.active/,'XP/h hidden in lobby');
-assert.match(game,/if\(reward\.xp&&scene!=='hunt'\)/,'redundant XP popup removed only while hunting');
+assert.match(game,/if\(xp>0&&scene!=='hunt'\)/,'redundant XP popup removed only while hunting');
 assert.ok(css.includes('#huntXpTracker.hunt-xp-tracker'));
 assert.ok(css.includes('#worldCanvas {image-rendering:pixelated'));
 assert.ok(html.includes('src="hud-telemetry.js"')&&html.includes('href="hud-zoom-expedition.css"'));

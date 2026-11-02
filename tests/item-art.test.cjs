@@ -8,3 +8,4 @@ test('bound dungeon fragments use their existing native icon without changing le
  for(const fragment of fragments){const file=art.path(null,fragment);assert.equal(file,fragment.icon_path);const png=fs.readFileSync(path.join(__dirname,'..',file));assert.equal(png.subarray(1,4).toString(),'PNG');assert(png.readUInt32BE(16)>0&&png.readUInt32BE(20)>0);}
  assert.equal(art.path('unknown'),null);
 });
+test('all six fragment ranks resolve to the existing native asset without changing rarity or recipe',()=>{const d=require('../boss-dungeon-system.js');for(const f of d.fragments){assert.equal(art.path(f.id,f),f.icon_path);assert(fs.existsSync(path.join(__dirname,'..',art.path(f.id,f))));}assert.deepEqual(d.recipes.E,{rank:'E',quantity:10,resultRank:'E',random:true,binding:'character'});assert.deepEqual(Object.keys(d.recipes),['E']);});

@@ -30,11 +30,11 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  const beforeFail=await page.evaluate(()=>JSON.stringify(__hakiQA.game.haki.mastery));
  await page.evaluate(()=>{window.__realSet=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='mare-partida-save-v1')throw Error('QA quota');return __realSet.call(this,k,v)}});
  await invest('coating');assert.equal(await page.evaluate(()=>JSON.stringify(__hakiQA.game.haki.mastery)),beforeFail);assert.equal(await page.evaluate(()=>MareHakiProgression.quantity(__hakiQA.game,'armament',__hakiQA.defs)),99);
- await page.evaluate(()=>Storage.prototype.setItem=__realSet);
+ await page.evaluate(()=>Storage.prototype.setItem=__realSet);assert(await page.locator('.confirmation-overlay').isVisible());await page.locator('[data-confirm-cancel]').click();
  // A live stale confirmation must not spend after another validated investment.
  await page.locator('[data-haki-invest=coating]').click();
  await page.evaluate(()=>{const q=__hakiQA,r=MareHakiProgression.invest(q.game,'coating',q.game.haki.mastery.seq,q.defs,n=>{localStorage.setItem('mare-partida-save-v1',JSON.stringify(n));return true});q.game=r.state;});
- await page.locator('[data-confirm-accept]').click();assert.equal(await page.evaluate(()=>MareHakiProgression.rank(__hakiQA.game,'coating')),2);
+ await page.locator('[data-confirm-accept]').click();assert.equal(await page.evaluate(()=>MareHakiProgression.rank(__hakiQA.game,'coating')),2);assert(await page.locator('[data-confirm-accept]').isDisabled());await page.locator('[data-confirm-cancel]').click();
  await invest('coating');
  for(const b of ['armament','observation','conqueror']){
   const nodes=await page.evaluate(b=>MareHakiProgression.branches[b].map(n=>({id:n.id,max:n.max})),b);

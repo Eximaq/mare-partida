@@ -18,7 +18,7 @@ refreshFighter();
 (async()=>{
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});
  const out=process.env.MARE_QA_DIR||'tmp/original-online-inventory';fs.mkdirSync(out,{recursive:true});
- let activePage;
+ let activePage,rejectForge=false,slowForge=false,dropForge=false;const receipts=new Map();
  try{
   const context=await browser.newContext({viewport:{width:1366,height:768}}),p=await context.newPage(),errors=[],commands=[];
   activePage=p;p.setDefaultTimeout(30000);
@@ -33,6 +33,9 @@ refreshFighter();
    else if(pathname.endsWith('/control')||pathname.endsWith('/renew'))body={epoch:1,token:'x'.repeat(43)};
    else if(pathname.endsWith('/commands')){
     const input=request.postDataJSON();commands.push(input);
+    if(receipts.has(input.requestId)){assert.deepEqual(input,receipts.get(input.requestId));await route.fulfill({status:200,contentType:'application/json',body:'{}'});return;}
+    if(input.action==='forge.execute'&&rejectForge){rejectForge=false;await route.fulfill({status:409,contentType:'application/json',body:JSON.stringify({error:'forge_operation_rejected'})});return;}
+    if(input.action==='forge.execute'&&slowForge){slowForge=false;await new Promise(resolve=>setTimeout(resolve,300));}
     assert.equal(input.expectedVersion,wire.state.version);
     assert.deepEqual(Object.keys(input).sort(),['action','control','expectedVersion','payload','requestId']);
     if(input.action==='potions.buy'){assert.deepEqual(input.payload,{});wire.state.gold=String(BigInt(wire.state.gold)-35n);wire.originalInventory.potions++;}
@@ -47,7 +50,8 @@ refreshFighter();
      assert.deepEqual(input.payload,{allocation:{strength:1,dexterity:0,vitality:0,intelligence:0,spirit:0}});
      wire.attributes.allocated.strength++;wire.attributes.available--;
     }else throw Error('Unexpected UI intent '+input.action);
-    wire.state.version++;refreshFighter();body={};
+    wire.state.version++;refreshFighter();body={};receipts.set(input.requestId,input);
+    if(input.action==='forge.execute'&&dropForge){dropForge=false;await route.abort('failed');return;}
    }else throw Error('Unexpected local API path '+pathname);
    await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(body)});
   });
@@ -71,6 +75,28 @@ refreshFighter();
   assert.equal(wire.state.gold,'35');assert.equal(wire.originalInventory.materials,1);
   assert.equal(await p.locator('[data-forge-tab="imbue"]').isEnabled(),true);
   await p.screenshot({path:path.join(out,'original-online-forge.png')});
+  // Revalidation never sends a changed intention; failed responses keep the dialog.
+  wire.state.gold='5000';wire.originalInventory.materials=100;wire.state.version++;await p.evaluate(()=>MareGameSession.read());
+  await p.locator('[data-forge-action="upgrade"]').click();const beforeStale=commands.length;
+  wire.state.version++;await p.evaluate(()=>MareGameSession.read());await p.locator('[data-confirm-accept]').click();
+  assert.equal(commands.length,beforeStale);assert.match(await p.locator('.confirmation-card').innerText(),/dados foram atualizados/i);await p.locator('[data-confirm-cancel]').click();
+  await p.locator('[data-forge-action="upgrade"]').click();rejectForge=true;const beforeReject=JSON.stringify(wire);
+  await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>!MareGameSession.busy&&document.querySelector('[data-confirm-accept]')?.textContent!=='PROCESSANDO…');
+  assert.equal(JSON.stringify(wire),beforeReject);assert.equal(await p.locator('.confirmation-overlay').count(),1);
+  await p.screenshot({path:path.join(out,'online-confirmation-rejected.png')});await p.locator('[data-confirm-cancel]').click();
+  await p.locator('[data-forge-action="upgrade"]').click();slowForge=true;const beforeDouble=commands.length;
+  await p.locator('[data-confirm-accept]').evaluate(b=>{b.click();b.click();});
+  await p.waitForFunction(()=>!MareGameSession.busy&&MareGameSession.data.online.originalInventory.forgeSeq===2);
+  assert.equal(commands.length,beforeDouble+1);await p.waitForSelector('.confirmation-overlay',{state:'detached'});
+  // Server applied the next request, but its reply was lost. Resume the SAME request.
+  await p.locator('[data-forge-action="upgrade"]').click();dropForge=true;await p.locator('[data-confirm-accept]').click();
+  await p.waitForFunction(()=>!MareGameSession.busy&&!!MareGameSession.pending);
+  assert.equal(wire.originalInventory.forgeSeq,3);const uncertain=JSON.stringify(wire),retained=commands.at(-1).requestId;
+  assert.equal(await p.locator('[data-confirm-accept]').isDisabled(),true);
+  await p.screenshot({path:path.join(out,'online-confirmation-pending.png')});await p.locator('[data-confirm-cancel]').click();
+  await p.locator('[data-online-action="resume"]').click();await p.waitForFunction(()=>!MareGameSession.pending&&!MareGameSession.busy);
+  assert.equal(JSON.stringify(wire),uncertain);assert.equal(commands.at(-1).requestId,retained);
+  assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),null,'online actions must not create a demo save');
   await p.keyboard.press('Escape');await p.locator('#attributePointsHud').click();
   await p.waitForSelector('[data-attribute-add="strength"]');
   await p.locator('[data-attribute-add="strength"]').click();await p.locator('#confirmAttributes').click();
@@ -87,8 +113,8 @@ refreshFighter();
   await p.waitForFunction(()=>{const c=document.getElementById('inventorySprite');return c&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0);},null,{timeout:90000});
   await p.evaluate(()=>document.fonts.ready);
   await p.screenshot({path:path.join(out,'original-online-inventory.png')});
-  assert.deepEqual(commands.map(c=>c.action),['items.equip','potions.buy','forge.execute','attributes.allocate']);assert.deepEqual(errors,[]);
-  console.log('Original online HUD contract: native inventory/forge, strict intents, stock, equipment, busy recovery and reload passed. Provider is a UI fixture; PostgreSQL is tested separately.');
+  assert.deepEqual(commands.map(c=>c.action),['items.equip','potions.buy','forge.execute','forge.execute','forge.execute','forge.execute','forge.execute','attributes.allocate']);assert.deepEqual(errors,[]);
+  console.log('Original online HUD contract: native inventory/forge, strict intents, stock, equipment, stale confirmation, rejection, double click, same-request recovery and reload passed. Provider is a UI fixture; PostgreSQL is tested separately.');
   await context.close();
  }catch(error){if(activePage)await activePage.screenshot({path:path.join(out,'original-online-failure.png')}).catch(()=>{});throw error;}finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
