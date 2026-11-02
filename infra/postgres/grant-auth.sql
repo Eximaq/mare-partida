@@ -10,7 +10,7 @@ GRANT INSERT (character_id, request_id, version_before) ON mare_game.character_j
 -- Reward transactions may update XP/gold/level; catalog and level history stay immutable.
 GRANT SELECT ON mare_game.character_progression TO mare_runtime;
 GRANT INSERT (character_id) ON mare_game.character_progression TO mare_runtime;
-GRANT UPDATE (experience, gold, level) ON mare_game.character_progression TO mare_runtime;
+GRANT UPDATE (experience, gold, level, level_start_experience) ON mare_game.character_progression TO mare_runtime;
 GRANT SELECT ON mare_game.character_hunts, mare_game.character_hunt_rewards TO mare_runtime;
 GRANT INSERT (character_id, request_id, version_before) ON mare_game.character_hunts TO mare_runtime;
 GRANT INSERT (character_id, request_id, version_before, experience_before, gold_before) ON mare_game.character_hunt_rewards TO mare_runtime;
@@ -39,3 +39,8 @@ GRANT UPDATE (quantity) ON mare_game.character_inventory TO mare_runtime;
 GRANT INSERT (character_id,slot,item_id),DELETE ON mare_game.character_equipment TO mare_runtime;
 GRANT UPDATE (item_id) ON mare_game.character_equipment TO mare_runtime;
 GRANT INSERT (character_id,request_id,event,item_id,version_before,quantity_before,quantity_delta,gold_before,gold_delta,encounter_id,previous_item_id) ON mare_game.inventory_ledger TO mare_runtime;
+
+GRANT SELECT ON mare_game.game_inventory,mare_game.game_inventory_events TO mare_runtime;
+GRANT INSERT (character_id,inventory,equipment,materials,potions,forge_seq,forge_history,alpha_snapshot,initialized_request_id) ON mare_game.game_inventory TO mare_runtime;
+GRANT UPDATE (inventory,equipment,materials,potions,forge_seq,forge_history) ON mare_game.game_inventory TO mare_runtime;
+GRANT INSERT (character_id,request_id,version_before,action,rules_hash,before_hash,after_hash,gold_before,gold_delta,outcome) ON mare_game.game_inventory_events TO mare_runtime;

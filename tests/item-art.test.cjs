@@ -1,3 +1,10 @@
 const test=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const path=require('node:path');const art=require('../item-art.js');const manifest=require('../assets/ui/items-hd/manifest.json');
 test('HD art maps every catalog asset to native generated PNG with recorded provenance',()=>{assert.equal(art.keys.length,102);assert.equal(new Set(art.keys).size,102);for(const icon of manifest.icons){const f=path.join(__dirname,'../assets/ui/items-hd',icon.key+'.png');const b=fs.readFileSync(f);assert.equal(b.readUInt32BE(16),icon.width);assert.equal(b.readUInt32BE(20),icon.height);assert.equal(require('node:crypto').createHash('sha256').update(b).digest('hex'),icon.sha256);assert.equal(icon.padding,4);assert.deepEqual(icon.sourceCanvas,[128,128]);assert(icon.job&&icon.url.includes(icon.job));assert(art.path(icon.key));}assert.equal(art.path('unknown'),null);});
 test('HD lookup preserves append-only indices and contextual identifiers',()=>{assert.match(art.path(0),/\/0\.png/);assert.match(art.path(60,{fruitId:'akuma_gura_gura'}),/akuma_gura_gura\.png/);assert.match(art.path(44,{kind:'haki-book'}),/book\.png/);assert.match(art.path(39,{kind:'pearl-box',boxLevel:2}),/pearl-box-2\.png/);assert.match(art.path(80,{icon_path:'assets/ui/items-pixellab/ame-no-habakiri.png?v=old'}),/ame-no-habakiri\.png/);assert.match(art.path(33,{pearlId:'pearl_for_1'}),/pearl_for_1\.png/);});
+
+test('bound dungeon fragments use their existing native icon without changing legacy HD mappings',()=>{
+ const fragments=require('../boss-dungeon-system.js').fragments;
+ assert.equal(fragments.length,6);
+ for(const fragment of fragments){const file=art.path(null,fragment);assert.equal(file,fragment.icon_path);const png=fs.readFileSync(path.join(__dirname,'..',file));assert.equal(png.subarray(1,4).toString(),'PNG');assert(png.readUInt32BE(16)>0&&png.readUInt32BE(20)>0);}
+ assert.equal(art.path('unknown'),null);
+});

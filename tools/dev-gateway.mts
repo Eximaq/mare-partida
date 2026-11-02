@@ -108,7 +108,7 @@ export function createDevGateway(options: {
       const relative = online ? path.slice("/online/".length) : path.slice(1);
       const candidate = resolve(
         root,
-        relative + (path.endsWith("/") ? "index.html" : ""),
+        path === "/game" ? "index.html" : relative + (path.endsWith("/") ? "index.html" : ""),
       );
       const type = types[extname(candidate)];
       if (!candidate.startsWith(root + sep) || !type) {
@@ -135,6 +135,12 @@ export function createDevGateway(options: {
           );
         if (req.method === "HEAD") {
           res.end();
+          return;
+        }
+        if(path === "/game") {
+          const html=await readFile(canonicalFile,"utf8");
+          const boot='<script defer src="/online/game-session.js"></script><script defer src="/online/game-ui.js"></script><link rel="stylesheet" href="/online/game.css">';
+          res.end(html.includes('<head>')?html.replace('<head>','<head>'+boot):boot+html);
           return;
         }
         const stream = createReadStream(canonicalFile);

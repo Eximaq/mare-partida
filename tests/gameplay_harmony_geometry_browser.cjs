@@ -20,7 +20,15 @@ const hook='  window.__harmonyQA={get game(){return game},get session(){return s
    records[key]=await p.evaluate(selectors=>Object.fromEntries(selectors.map(s=>{const e=document.querySelector(s),r=e.getBoundingClientRect(),c=getComputedStyle(e);return [s,{x:r.x,y:r.y,w:r.width,h:r.height,visible:c.display!=='none'&&c.visibility!=='hidden'&&r.width>0&&r.height>0}]})),selectors);
   }
   for(const [w,h]of sizes){
-   await p.setViewportSize({width:w,height:h});await p.evaluate(()=>{__harmonyQA.toggle('chat',false);__harmonyQA.toggle('expedition',false);document.querySelector('#journeyHud').classList.remove('collapsed');});await rect(w+'x'+h+'/closed');
+   await p.setViewportSize({width:w,height:h});
+   // The production resize handler collapses this HUD when crossing760px. Let
+   // that event finish before preparing the same expanded fixture in both builds.
+   // Direct class removal before resize raced with the handler and inverted all
+   // subsequent measurements. Use the real toggle so aria/chevron stay coherent.
+   await p.evaluate(()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))));
+   await p.evaluate(()=>{__harmonyQA.toggle('chat',false);__harmonyQA.toggle('expedition',false);if(document.querySelector('#journeyHud').classList.contains('collapsed'))document.querySelector('#journeyToggle').click();});
+   await p.waitForFunction(()=>!document.querySelector('#journeyHud').classList.contains('collapsed')&&document.querySelector('#journeyToggle').getAttribute('aria-expanded')==='true');
+   await rect(w+'x'+h+'/closed');
    await p.evaluate(()=>__harmonyQA.toggle('chat',true));await rect(w+'x'+h+'/chat');
    if(!old&&w===1672)await p.screenshot({path:path.join(out,'gameplay-chat.png')});
    await p.evaluate(()=>__harmonyQA.toggle('chat',false));await p.evaluate(()=>__harmonyQA.toggle('expedition',true));await rect(w+'x'+h+'/expedition');
@@ -32,7 +40,9 @@ const hook='  window.__harmonyQA={get game(){return game},get session(){return s
     if(!old&&w===1672)await p.screenshot({path:path.join(out,'gameplay-'+id+'.png')});
     await p.locator('#'+id).click();
    }
-   await p.locator('#journeyToggle').click();await rect(w+'x'+h+'/journey-collapsed');await p.locator('#journeyToggle').click();
+   await p.locator('#journeyToggle').click();
+   await p.waitForFunction(()=>document.querySelector('#journeyHud').classList.contains('collapsed')&&document.querySelector('#journeyToggle').getAttribute('aria-expanded')==='false');
+   await rect(w+'x'+h+'/journey-collapsed');await p.locator('#journeyToggle').click();
   }
   await p.evaluate(()=>__harmonyQA.enter());
   for(const [w,h]of sizes){await p.setViewportSize({width:w,height:h});await rect(w+'x'+h+'/hunt-two-skills');}

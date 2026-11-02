@@ -43,7 +43,7 @@ test("attribute HTTP spends five earned points once, persists on reload, and rej
       {...command,payload:{...command.payload,earned:999}}, {...command,payload:{allocation:{...zero,strength:1,ownerId:randomUUID()}}},
       {...command,payload:{allocation:{...zero,strength:-1}}},{...command,payload:{allocation:{...zero,strength:1.5}}},
       {...command,payload:{allocation:{...zero,strength:"1"}}},{...command,payload:{allocation:zero}},
-      {...command,payload:{allocation:{...zero,strength:96}}},{...command,payload:{allocation:{strength:1}}}]) assert.equal((await send(value)).status,400);
+      {...command,payload:{allocation:{...zero,strength:2147483648}}},{...command,payload:{allocation:{strength:1}}}]) assert.equal((await send(value)).status,400);
     assert.equal((await send(f.input({...zero,strength:1},1))).status,409);
     assert.equal((await send(command,f.session.token,f.character.id,{origin:"https://elsewhere.invalid"})).status,403);
     assert.equal((await send(command,f.session.token,f.character.id,{"x-csrf-token":"forged"})).status,403);
@@ -90,7 +90,7 @@ test("attribute migration preserves existing progression and receipts and starts
   await authDatabase(async({service,pool})=>{
     const f=await fixture(service,pool);const sync={...f.input(),action:"state.sync",payload:{}};await f.send(sync);
     const before=await service.characterState(f.session.token,f.character.id),receipts=(await pool.query("SELECT * FROM mare_game.character_commands")).rows;
-    assert.deepEqual(await applyMigrations(pool),["0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql", "0014_original_inventory.sql", "0015_original_character.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     assert.deepEqual(await service.characterState(f.session.token,f.character.id),before);assert.deepEqual((await pool.query("SELECT * FROM mare_game.character_commands")).rows,receipts);
     assert.deepEqual((await service.onlineState(f.session.token,f.character.id) as any).attributes,{catalogId:"online-attributes-v1",allocated:zero,earned:5,spent:0,available:5,lastRequestId:null});
     assert.equal((await f.send(f.input())).attributes.available,0);
