@@ -1499,7 +1499,8 @@
       const w=ONLINE_GAME.data.online.world;
       presentation.update({...w,position:{x:m.x,y:m.y},path:[]},performance.now(),{buffered:true});
       const pose=presentation.sample(performance.now());
-      return Object.assign(old||{},{...MareOnlineGameUI.fruitTimeline(m,b.fruit?.time,world.time),x:pose.x,y:pose.y,source:m.source||'world',name:b.prison||b.dungeon?m.name:m.type==='boss'?MareHunt.get(b.area)?.boss:skin?.name||monsterTypes[m.type]?.name,skin:skin?.id,hit:0,onlinePresentation:presentation});
+      const visualClock=old?.alive===m.alive?old.emberElapsed:0;
+      return Object.assign(old||{},{...MareOnlineGameUI.fruitTimeline(m,b.fruit?.time,world.time),emberElapsed:visualClock||0,x:old?.alive===m.alive?old.x:pose.x,y:old?.alive===m.alive?old.y:pose.y,source:m.source||'world',name:b.prison||b.dungeon?m.name:m.type==='boss'?MareHunt.get(b.area)?.boss:skin?.name||monsterTypes[m.type]?.name,skin:skin?.id,hit:0,onlinePresentation:presentation});
     });
     world.target=world.mobs.find(m=>m.id===b.targetId&&m.alive&&!m.returning)||null;
     session.talents={...MareTalentCombat.create(),...(b.talents?structuredClone(b.talents):{}),ultimate:{...MareUltimates.start(),...(b.talents?.ultimate?structuredClone(b.talents.ultimate):{})}};
@@ -1525,7 +1526,7 @@
   function tickOnlineBattle(dt){
     stepBasicAttack(dt);
     stepCombatVfx(dt);
-    for(const m of world.mobs){const pose=m.onlinePresentation.sample(performance.now());m.x=pose.x;m.y=pose.y;m.emberElapsed+=dt;m.attackAnim=Math.max(0,m.attackAnim-dt);m.hit=Math.max(0,m.hit-dt);}
+    for(const m of world.mobs){const pose=m.onlinePresentation.sample(performance.now());MareOnlineGameUI.stepMonsterVisual(m,pose,dt,lastTime);}
   }
   let onlineProjectionSnapshot=null;
   function syncOnlineGame(){
@@ -3152,7 +3153,7 @@ ${avatarExtra}
     node.textContent=state==='failed'?'Visual indisponível. Recarregue a página.':state==='degraded'?'Há equipamento sem arte disponível.':'Carregando personagem…';
     $('wantedPortrait').setAttribute('aria-busy',String(visible&&state==='loading'));
   }
-  function frame(t){if(ONLINE_GAME&&!ONLINE_GAME.data){requestAnimationFrame(frame);return;}if(!lastTime)lastTime=t;const dt=Math.min(.25,Math.max(0,(t-lastTime)/1000));lastTime=t;if(game&&!document.hidden&&saveWriter.owner&&mapArtState()==='ready'){for(let remaining=dt;remaining>0;remaining-=.05)tick(Math.min(.05,remaining));renderUIClock+=dt;saveClock+=dt;if(renderUIClock>.27){renderUIClock=0;updateUI();}if(saveClock>(game.has_haki_unlocked?1:7)){saveClock=0;saveGame();}if(viewportMapId!==mapKey())resizeViewport();camera.update(combatFocus(),activeMap(),dt,false,world.hero);}presentWorld();drawVfxPanels();drawCreationAppearance(t/1000);updatePlayerVisualStatus();requestAnimationFrame(frame);}
+  function frame(t){onlineUI?.frame(t);if(ONLINE_GAME&&!ONLINE_GAME.data){requestAnimationFrame(frame);return;}if(!lastTime)lastTime=t;const dt=Math.min(.25,Math.max(0,(t-lastTime)/1000));lastTime=t;if(game&&!document.hidden&&saveWriter.owner&&mapArtState()==='ready'){for(let remaining=dt;remaining>0;remaining-=.05)tick(Math.min(.05,remaining));renderUIClock+=dt;saveClock+=dt;if(renderUIClock>.27){renderUIClock=0;updateUI();}if(saveClock>(game.has_haki_unlocked?1:7)){saveClock=0;saveGame();}if(viewportMapId!==mapKey())resizeViewport();camera.update(combatFocus(),activeMap(),dt,false,world.hero);}presentWorld();drawVfxPanels();drawCreationAppearance(t/1000);updatePlayerVisualStatus();requestAnimationFrame(frame);}
 
 
 const targetHud=document.createElement('div');

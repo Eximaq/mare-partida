@@ -12,3 +12,6 @@ body.online-session-loading::after { content:'Carregando seu personagem…';posi
 body.online-game #devLauncher { display:none!important; }
 
 .online-boot-error { position:fixed;inset:20%;padding:32px;display:grid;place-items:center;background:#102b35;color:#f2e5cb;border:2px solid #dfb779;z-index:100000; }
+
+#onlinePerformance { position:fixed;left:16px;top:260px;z-index:45;padding:6px 9px;border:1px solid #8d7750;border-radius:4px;background:rgba(8,28,36,.92);color:#f2e5cb;font:12px/1.4 system-ui,sans-serif;font-variant-numeric:tabular-nums;max-width:calc(100vw - 24px); }
+#onlinePerformance[data-stale="true"] { color:#ffb6a9;border-color:#c47c68; }

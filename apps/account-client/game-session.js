@@ -113,6 +113,7 @@
     storage,
     uuid = () => root.crypto.randomUUID(),
     now = () => Date.now(),
+    monotonic = () => root.performance.now(),
   }) {
     let data = null,
       control = null,
@@ -121,6 +122,7 @@
       available = false,
       renewing = null,
       readVersion = 0;
+    let networkSample=null;
     let csrfCache=null,csrfFlight=null,csrfGeneration=0;
     const clearCsrf=()=>{csrfGeneration++;csrfCache=null;csrfFlight=null;};
     function csrfToken(){
@@ -162,6 +164,7 @@
       if (!response.ok) {
         if(response.status===401||result.error==='csrf_rejected')clearCsrf();
         if (response.status === 401) {
+          networkSample = null;
           data = null;
           control = null;
           readVersion++;
@@ -199,10 +202,16 @@
       let me, online;
       try {
         me = snapshotOnly&&data?.character ? {character:data.character} : await api("/v1/me");
+        const started=monotonic();
         online = me.character
           ? await api(`/v1/characters/${me.character.id}/online-state`)
           : null;
         validate(me, online);
+        const completed=monotonic();
+        if(revision===readVersion){
+          const same=data?.character?.id===me.character?.id;
+          networkSample=online?{rttMs:Math.max(0,completed-started),at:completed,intervalMs:same&&networkSample?Math.max(0,completed-networkSample.at):null}:null;
+        }
       } catch (error) {
         available = false;
         notify();
@@ -277,6 +286,9 @@
     }
     return {
       enabled: true,
+      get network() {
+        return networkSample?{rttMs:networkSample.rttMs,ageMs:Math.max(0,monotonic()-networkSample.at),intervalMs:networkSample.intervalMs}:{rttMs:null,ageMs:null,intervalMs:null};
+      },
       get available() {
         return available;
       },
@@ -347,6 +359,7 @@
         readVersion++;
         control = null;
         data = null;
+        networkSample = null;
         discard();
         notify();
       },

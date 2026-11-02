@@ -93,6 +93,22 @@
       snapshot=next;received=now;return snap;
     }};
   }
+  // Local render diagnostics only: no timer or network request per frame.
+  function createFrameMeter(){
+    let frames=[];
+    return {reset(){frames=[];},frame(t){if(!Number.isFinite(t))return;frames.push(t);while(frames.length>2&&frames[1]<t-1000)frames.shift();},sample(){
+      if(frames.length<2)return {fps:null,maxFrameMs:null};
+      let max=0;for(let i=1;i<frames.length;i++)max=Math.max(max,frames[i]-frames[i-1]);
+      const span=frames.at(-1)-frames[0];return {fps:span>0?Math.round((frames.length-1)*1000/span):null,maxFrameMs:Math.round(max)};
+    }};
+  }
+  function stepMonsterVisual(m,pose,dt,frameId){
+    if(frameId===undefined||m.onlineVisualFrame!==frameId){m.onlineVisualFrame=frameId;m.onlineVisualOrigin={x:m.x,y:m.y};}
+    const dx=pose.x-m.onlineVisualOrigin.x,dy=pose.y-m.onlineVisualOrigin.y,moving=Math.hypot(dx,dy)>1e-8;
+    m.x=pose.x;m.y=pose.y;m.moving=moving?1:0;
+    if(moving&&!(m.attackAnim>0))m.emberFacing=Math.abs(dx)>Math.abs(dy)?(dx<0?'west':'east'):(dy<0?'north':'south');
+    m.emberElapsed=(m.emberElapsed||0)+dt;m.attackAnim=Math.max(0,m.attackAnim-dt);m.hit=Math.max(0,m.hit-dt);
+  }
   function fruitTimeline(value,epoch,time){
     if(!value)return null;const shift=time-(epoch||Date.now())/1000;
     const times=new Set(['started','until','last','time','impact','launch','launched','finished','ready','next']);
@@ -244,6 +260,18 @@
   };
   function mount(client, hooks) {
     const $ = (id) => document.getElementById(id);
+    const frameMeter=createFrameMeter(),meter=document.createElement('div');
+    meter.id='onlinePerformance';meter.setAttribute('aria-label','Conexão e desempenho');
+    meter.textContent='Ping HTTP: — · FPS: —';document.body.append(meter);
+    function renderPerformance(){
+      const n=client.network||{},f=frameMeter.sample(),ms=v=>Number.isFinite(v)?Math.round(v)+' ms':'—';
+      meter.textContent=(client.available?'Ping HTTP: '+ms(n.rttMs):'Sem conexão')+' · FPS: '+(document.hidden?'—':f.fps??'—')+' · Estado: '+ms(n.ageMs);
+      meter.title='Ping HTTP inclui rede e processamento do servidor. Estado é o tempo desde a última leitura válida, não o ping. Intervalo entre leituras: '+ms(n.intervalMs)+'. Maior intervalo entre frames: '+ms(f.maxFrameMs)+'. FPS baixo indica lentidão de renderização.';
+      meter.dataset.stale=String(!client.available||n.ageMs>5000);
+    }
+    const performanceTimer=setInterval(renderPerformance,1000);
+    const resetPerformance=()=>{frameMeter.reset();renderPerformance();};
+    document.addEventListener('visibilitychange',resetPerformance);
     let panel = null,
       section = null,
       error = "",
@@ -494,11 +522,14 @@
     };
     document.addEventListener("visibilitychange", resumePresence);
     root.addEventListener("pagehide", () => {
+      clearInterval(performanceTimer);meter.remove();
+      document.removeEventListener("visibilitychange",resetPerformance);
       clearInterval(poll);
       clearInterval(renewal);
       document.removeEventListener("visibilitychange", resumePresence);
     });
     return {
+      frame:t=>{if(!document.hidden)frameMeter.frame(t);},
       open,
       render,
       close() {
@@ -508,6 +539,6 @@
       run,
     };
   }
-  root.MareOnlineGameUI = { project, derived, mount, worldPosition, createWorldPresentation, fruitView, fruitTimeline, message:e=>labels[e.code]||"Não foi possível concluir. Confira a sessão e tente novamente." };
-  if (typeof module !== "undefined") module.exports = { project, derived, worldPosition, createWorldPresentation, fruitView, fruitTimeline };
+  root.MareOnlineGameUI = { project, derived, mount, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline, message:e=>labels[e.code]||"Não foi possível concluir. Confira a sessão e tente novamente." };
+  if (typeof module !== "undefined") module.exports = { project, derived, worldPosition, createWorldPresentation, createFrameMeter, stepMonsterVisual, fruitView, fruitTimeline };
 })(globalThis);
