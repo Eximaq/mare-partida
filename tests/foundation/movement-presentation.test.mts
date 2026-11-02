@@ -27,3 +27,9 @@ test('map changes and large discontinuities snap; repeated snapshots do not rest
  p.update(world(500,{mapId:'island'}),200);assert.equal(p.sample(200).x,500);
  p.update(world(1000,{mapId:'island'}),300);assert.equal(p.sample(300).x,1000);
 });
+test('a peer starting between polls is smoothed even when its first observed progress exceeds 128 pixels',()=>{
+ const p=createWorldPresentation();p.update(world(0,{path:[],speed:250}),0);
+ p.update(world(150,{speed:250}),750);
+ assert.equal(p.sample(750).x,0);
+ assert.equal(p.sample(950).x,200);
+});

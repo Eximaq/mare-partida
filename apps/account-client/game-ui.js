@@ -46,7 +46,10 @@
     return {sample,update(next,now){
       if(next===snapshot)return false;
       const previous=sample(now),target=worldPosition(next,0);
-      const snap=!previous||snapshot.mapId!==next.mapId||now-received>5000||Math.hypot(previous.x-target.x,previous.y-target.y)>128;
+      // A peer can start moving between polls. Allow that observed progress,
+      // while still snapping large teleports and never retaining stale offsets.
+      const limit=Math.min(512,Math.max(128,next.speed*Math.min(3,Math.max(0,now-received)/1000)+32));
+      const snap=!previous||snapshot.mapId!==next.mapId||now-received>5000||Math.hypot(previous.x-target.x,previous.y-target.y)>limit;
       offset=snap?{x:0,y:0}:{x:previous.x-target.x,y:previous.y-target.y};
       snapshot=next;received=now;return snap;
     }};
