@@ -84,3 +84,7 @@ GRANT SELECT ON mare_game.character_dungeons,mare_game.dungeon_victories,mare_ga
 GRANT INSERT(character_id,state),UPDATE(state) ON mare_game.character_dungeons TO mare_runtime;
 GRANT INSERT(character_id,dungeon_id,run_id,spawn_id,request_id,reward,rules_hash) ON mare_game.dungeon_victories TO mare_runtime;
 GRANT INSERT(character_id,dungeon_id,request_id,experience_delta,gold_delta) ON mare_game.dungeon_claims TO mare_runtime;
+
+GRANT SELECT ON mare_game.character_hierarchy,mare_game.hierarchy_promotions TO mare_runtime;
+GRANT INSERT(character_id,tier,power),UPDATE(tier,power) ON mare_game.character_hierarchy TO mare_runtime;
+GRANT INSERT(character_id,request_id,tier_before,tier_after,level,version_before) ON mare_game.hierarchy_promotions TO mare_runtime;

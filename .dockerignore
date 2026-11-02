@@ -99,3 +99,5 @@
 !boss-dungeon-combat.js
 !dungeon-timing.cjs
 !dungeon-boss-art-data.js
+
+!hierarchy-system.js

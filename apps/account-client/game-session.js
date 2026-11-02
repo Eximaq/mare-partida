@@ -30,6 +30,7 @@
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    if(action==='hierarchy.promote')return keys==='expectedTier'&&Number.isInteger(p.expectedTier)&&p.expectedTier>=1&&p.expectedTier<=5;
     if(action==='haki.unlock')return keys==='itemId'&&instanceId(p.itemId);
     if(action==='haki.toggle')return keys==='branch'&&['armament','observation'].includes(p.branch);
     if(action==='haki.configure')return keys==='branch,enabled'&&['armament','observation'].includes(p.branch)&&typeof p.enabled==='boolean';
