@@ -6,6 +6,7 @@ const path=require('node:path');
 
 const root=path.resolve(__dirname,'..');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
+const catalog=fs.readFileSync(path.join(root,'item-catalog.js'),'utf8');
 const styles=fs.readFileSync(path.join(root,'ui-nautical.css'),'utf8')+fs.readFileSync(path.join(root,'inventory-compact.css'),'utf8')+fs.readFileSync(path.join(root,'ui-screens.css'),'utf8');
 const weapons=[
   ['Katana da Maelstrom','legendary','katana-de-maelstrom.png','Uma katana lendária que carrega a fúria dos redemoinhos. Sua lâmina canaliza correntes de vento em movimentos circulares, transformando cada golpe em uma tempestade cortante.',[97,104]],
@@ -14,10 +15,10 @@ const weapons=[
   ['Meito: Ame no Habakiri','supreme','ame-no-habakiri.png','Uma espada lendária empunhada por Kozuki Oden, reconhecida entre as grandes Meito de Wano. Diz-se que sua lâmina é capaz de cortar os próprios céus, carregando o legado de um dos maiores samurais da história.',[112,117]]
 ];
 
-const priorCatalog=game.indexOf('itemDefs.push(...MareAkuma.catalog.slice(0,5).map');
-const firstNewWeapon=game.indexOf("name:'Katana da Maelstrom'");
+const priorCatalog=catalog.indexOf('itemDefs.push(...MareAkuma.catalog.slice(0,5).map');
+const firstNewWeapon=catalog.indexOf("name:'Katana da Maelstrom'");
 assert.ok(priorCatalog>=0&&firstNewWeapon>priorCatalog,'weapons are appended after existing save-indexed catalog entries');
-assert.ok(game.includes("type:'sword',attack:11,defense:0,hp:0"),'weapons reuse the existing 11-attack Espadachim baseline');
+assert.ok(catalog.includes("type:'sword',attack:11,defense:0,hp:0"),'weapons reuse the existing 11-attack Espadachim baseline');
 assert.ok(game.includes('if(def?.icon_path)return'), 'custom image paths render as item icons');
 assert.ok(game.includes('const description=def.description||('),'item descriptions reach tooltips');
 assert.ok(game.includes('item.rarity=def.fixedRarity?def.rarity:'),'fixed-rarity weapons retain their configured rarity');
@@ -29,7 +30,7 @@ assert.ok(styles.includes('.op-item-icon .item-icon.sword-weapon-art{width:40px;
 assert.ok(styles.includes('.op-slot-icon .item-icon.sword-weapon-art{width:36px;height:36px'),'equipped artwork uses the larger square fit');
 
 for(const [name,rarity,file,description,size] of weapons){
-  const definitionLine=game.split(/\r?\n/).find(line=>line.includes("name:'"+name+"'"));
+  const definitionLine=catalog.split(/\r?\n/).find(line=>line.includes("name:'"+name+"'"));
   assert.ok(definitionLine,name+' is registered');
   assert.ok(definitionLine.includes("slot:'weapon',type:'sword'"),name+' is exclusive to Espadachim');
   assert.ok(definitionLine.includes("rarity:'"+rarity+"',fixedRarity:true"),name+' keeps its requested rarity');

@@ -9,6 +9,8 @@ import {
 } from "@mare/shared";
 import { readAttributes } from "./attributes.js";
 import { AuthFault } from "../auth/errors.js";
+import {readOriginalInventory} from '../gameplay/inventory.js';
+import {deriveOriginalFighter} from '../gameplay/character.js';
 // Versioned online rules. Birth attributes match the existing seven demo classes.
 const classes = {
   sword: {
@@ -101,13 +103,15 @@ export async function readFighter(
   state: CharacterState,
 ) {
   const row = (
-    await client.query<{ class_id: keyof typeof classes }>(
-      "SELECT class_id FROM mare_game.characters WHERE id=$1",
+    await client.query<{ class_id: keyof typeof classes; faction_id:string }>(
+      "SELECT class_id,faction_id FROM mare_game.characters WHERE id=$1",
       [id],
     )
   ).rows[0];
   if (!row) throw new AuthFault(503, "character_state_unavailable");
   const attributes = await readAttributes(client, id, state);
+  const original=await readOriginalInventory(client,id);
+  if(original)return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,original);
   return deriveFighter(
     row.class_id,
     state,

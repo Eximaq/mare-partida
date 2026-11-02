@@ -3,7 +3,7 @@
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm');
 const C=require('../character-system.js'),H=require('../hunt-system.js');
 const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8'),box={MareCharacters:C};vm.createContext(box);
-vm.runInContext(source.slice(source.indexOf('  const classes ='),source.indexOf('  // Somente artes'))+';globalThis.data={classes,factions};',box);
+box.data=require('../character-catalog.js').create({characters:C});
 const rows=[];
 for(const [classId,c] of Object.entries(box.data.classes))for(const level of [1,5,10,11,15,20,21,25,30]){
  const role=C.roles[classId],attributes=C.empty(),budget=C.earned(level);attributes[role.primary]=Math.round(budget*.7);attributes[role.secondary]=budget-attributes[role.primary];

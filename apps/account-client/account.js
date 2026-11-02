@@ -22,16 +22,17 @@ function validIntent(action,payload){
 }
 function validFighter(f){
  const bounded=(v,min,max)=>Number.isSafeInteger(v)&&v>=min&&v<=max;
+ if(f?.rulesetId==='original-character-v1')return /^[a-f0-9]{64}$/.test(f.rulesHash)&&bounded(f.level,1,2147483647)&&bounded(f.sourceVersion,0,Number.MAX_SAFE_INTEGER)&&bounded(f.maxHp,30,2147483647)&&f.stats?.maxHP===f.maxHp&&f.attackMax>=f.attackMin&&bounded(f.cooldownMs,334,10000)&&attributeKeys.every(k=>pointValue(f.allocated?.[k])&&Number.isFinite(f.total?.[k])&&f.total[k]>=0);
  return !!f && f.rulesetId==="online-combat-v2" && ["sword","brawler","gunner","rogue","cyborg","strategist","healer"].includes(f.classId) &&
-  bounded(f.level,1,20)&&bounded(f.sourceVersion,0,Number.MAX_SAFE_INTEGER)&&bounded(f.maxHp,30,300)&&bounded(f.attackMin,10,60)&&f.attackMax===f.attackMin+4&&
+  bounded(f.level,1,2147483647)&&bounded(f.sourceVersion,0,Number.MAX_SAFE_INTEGER)&&bounded(f.maxHp,30,2147483647)&&bounded(f.attackMin,10,2147483643)&&f.attackMax===f.attackMin+4&&
   bounded(f.armor,0,6)&&bounded(f.cooldownMs,500,2000)&&["physical","elemental"].includes(f.damageType)&&
-  attributeKeys.every(k=>bounded(f.total?.[k],0,112)&&pointValue(f.allocated?.[k]))&&
+  attributeKeys.every(k=>bounded(f.total?.[k],0,2147483647)&&pointValue(f.allocated?.[k]))&&
   [null,"training-weapon-v1"].includes(f.equipped?.weapon)&&[null,"dock-vest-v1"].includes(f.equipped?.armor);
 }
-const pointValue=n=>Number.isSafeInteger(n)&&n>=0&&n<=95;
+const pointValue=n=>Number.isSafeInteger(n)&&n>=0&&n<=2147483647;
 function validAllocation(v) {
   return !!v && typeof v==="object" && Object.keys(v).sort().join()===attributeKeys.slice().sort().join() &&
-    attributeKeys.every(k=>pointValue(v[k])) && attributeKeys.reduce((n,k)=>n+v[k],0)>0 && attributeKeys.reduce((n,k)=>n+v[k],0)<=95;
+    attributeKeys.every(k=>pointValue(v[k])) && attributeKeys.reduce((n,k)=>n+v[k],0)>0 && attributeKeys.reduce((n,k)=>n+v[k],0)<=2147483647;
 }
 const messages = {
   gold_insufficient: "Ouro insuficiente para esta compra.",
@@ -167,7 +168,16 @@ function canSend(action) {
   return action === "journey.begin" ? !online.journey.started :
     online.journey.started && online.hunt?.status === (action === "hunt.begin" ? "available" : "ready");
 }
+let inLobby=false;
+function closeLobby(){inLobby=false;$("#online-lobby").hidden=true;globalThis.MareOnlineLobby?.clear();}
+$("#enter-game").addEventListener("click",()=>{void (async()=>{await refresh();if(!active||!character||!online)return;inLobby=true;renderOnline();globalThis.MareOnlineLobby?.enter();})();});
+$("#leave-game").addEventListener("click",()=>{closeLobby();});
 function renderOnline() {
+  $("#enter-game").disabled=!active||!character||!online||commandWorking;
+  if(!active||!character)closeLobby();
+  $("#online-lobby").hidden=!inLobby;
+  globalThis.MareOnlineLobby?.update(online&&character?{character,state:online.state,controlled:!!lease}:null);
+
   $("#online-level").textContent = online ? String(online.state.level) : "—";
   $("#online-xp").textContent = online ? online.state.experience : "—";
   $("#online-gold").textContent = online ? online.state.gold : "—";
@@ -256,12 +266,12 @@ async function loadOnline(revision, id) {
       throw new Error("Resposta de combate inválida.");
     if (result.progression) {
       const p=result.progression, amount=v=>typeof v==="string" && /^(0|[1-9][0-9]{0,18})$/.test(v) && BigInt(v)<=9223372036854775807n;
-      if (p.catalogId!=="online-levels-v1" || p.maxLevel!==20 || result.state.level>20 ||
-          p.earnedAttributePoints!==(result.state.level-1)*5 || p.atCap!==(result.state.level===20) ||
+      const original=p.catalogId==='original-levels-v1';
+      if ((original ? p.maxLevel!==null || p.atCap!==false : p.catalogId!=="online-levels-v1" || p.maxLevel!==20 || result.state.level>20 || p.atCap!==(result.state.level===20)) ||
+          p.earnedAttributePoints!==(result.state.level-1)*5 ||
           !amount(p.xpIntoLevel) || BigInt(p.xpIntoLevel)>BigInt(result.state.experience) ||
           (p.atCap ? p.xpForNextLevel!==null || p.xpToNextLevel!==null :
-            !amount(p.xpForNextLevel) || !amount(p.xpToNextLevel) || BigInt(p.xpToNextLevel)<=0n ||
-            BigInt(p.xpIntoLevel)+BigInt(p.xpToNextLevel)!==BigInt(p.xpForNextLevel)))
+            !amount(p.xpForNextLevel) || !amount(p.xpToNextLevel) || (original ? BigInt(p.xpToNextLevel)!==(BigInt(p.xpForNextLevel)>BigInt(p.xpIntoLevel)?BigInt(p.xpForNextLevel)-BigInt(p.xpIntoLevel):0n) : BigInt(p.xpToNextLevel)<=0n || BigInt(p.xpIntoLevel)+BigInt(p.xpToNextLevel)!==BigInt(p.xpForNextLevel))))
         throw new Error("Resposta de nível inválida.");
     }
     if(result.combatPreview!==undefined && !validFighter(result.combatPreview))throw new Error("Resposta de personagem inválida.");
@@ -291,7 +301,7 @@ async function loadOnline(revision, id) {
       "Assuma o controle nesta aba para iniciar. O progresso da demonstração permanece separado.";
   } catch (error) {
     if (revision !== viewRevision || !active || character?.id !== id) return;
-    online = null;
+    online = null;closeLobby();
     if (error.code === "authentication_required") { showLogin(); return; }
     $("#journey-message").textContent = "Não foi possível confirmar o progresso. Atualize quando a conexão voltar.";
   }
@@ -369,6 +379,7 @@ for (const [selector, action] of [["#combat-start","combat.begin"],["#combat-att
   $(selector).addEventListener("click", () => { void sendOnlineAction(action); });
 $("#online-refresh").addEventListener("click", () => { if (!commandWorking) void refresh(); });
 function showLogin() {
+  closeLobby();
   viewRevision++; identityRevision++; identity = null;
   online = null; commandWorking = false; clearPendingCommand();
   $("#control-state").textContent = "Nenhum controle solicitado nesta aba.";
@@ -390,7 +401,7 @@ async function refresh() {
     if (revision !== viewRevision) return;
     const nextIdentity = me.account.id + ":" + (me.character?.id || "");
     if (identity !== nextIdentity) {
-      if (identity !== null) clearPendingCommand();
+      if (identity !== null) {clearPendingCommand();closeLobby();}
       identityRevision++; identity = nextIdentity; lease = null; commandWorking = false;
       $("#control-state").textContent = "Nenhum controle solicitado nesta aba.";
     }
@@ -421,7 +432,7 @@ async function refresh() {
   } catch (error) {
     if (revision !== viewRevision) return;
     if (error.code === "authentication_required") showLogin();
-    else { status(error.code ? error.message : "Não foi possível acessar sua conta. Confira a conexão e atualize."); renderOnline(); }
+    else { closeLobby();status(error.code ? error.message : "Não foi possível acessar sua conta. Confira a conexão e atualize."); renderOnline(); }
   }
 }
 function selectMode(next) {

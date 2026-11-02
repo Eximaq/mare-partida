@@ -1,3 +1,4 @@
+import {readOriginalInventory,readOriginalGear,awardOriginalMaterial} from '../gameplay/inventory.js';
 import type { PoolClient } from "pg";
 import {
   inventorySnapshotSchema,
@@ -69,6 +70,7 @@ export async function readInventory(client: PoolClient, id: string) {
   });
 }
 export async function readGear(client: PoolClient, id: string) {
+  const original=await readOriginalGear(client,id);if(original)return original;
   const inventory = await readInventory(client, id),
     rows = (
       await client.query<Item>(
@@ -155,6 +157,7 @@ export async function awardCombatDrop(
   version: number,
   encounterId: string,
 ) {
+  if(await awardOriginalMaterial(client,id,requestId,version,encounterId))return;
   await record(
     client,
     id,
@@ -173,6 +176,7 @@ export async function mutateInventory(
   input: CharacterCommand,
   state: CharacterState,
 ) {
+  if(await readOriginalInventory(client,id))throw new AuthFault(409,'inventory_converted');
   const snapshot = await readInventory(client, id);
   let itemId: string,
     event: string,

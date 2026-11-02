@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const F=require('../forge-system.js'),C=require('../character-system.js');
 const source=fs.readFileSync(require.resolve('../game.js'),'utf8'),box={MareCharacters:C};vm.createContext(box);
-vm.runInContext(source.slice(source.indexOf('  const classes ='),source.indexOf('  // Somente artes'))+';globalThis.data={classes,factions}',box);
+box.data=require('../character-catalog.js').create({characters:C});
 const defs=[{name:'Teste',slot:'weapon',type:'sword',attack:10,defense:2,hp:20,rarity:'common'},...F.pearls.map(p=>({name:p.name,slot:'pearl',kind:'pearl',pearlId:p.id,rarity:p.rarity}))];
 const original={name:'Legacy',level:10,gold:100000,materials:5000,equipment:{weapon:{id:'weapon',def:0,level:10,plus:2,locked:false,custom:'preserved'}},inventory:[],stats:{kills:77},attributeVersion:2,attributes:C.empty()};
 let checks=0;function test(name,fn){fn();checks++;console.log(name+': passed');}

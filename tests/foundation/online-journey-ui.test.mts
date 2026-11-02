@@ -271,3 +271,15 @@ test("online fighter display uses frozen encounter values independently of next 
  const p=page();p.model.combatStatus="active";p.model.combatPreview={rulesetId:"online-combat-v2",classId:"sword",level:1,sourceVersion:0,allocated:{strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0},total:{strength:15,dexterity:14,vitality:9,intelligence:6,spirit:6},equipped:{weapon:null,armor:null},damageType:"physical",maxHp:38,attackMin:13,attackMax:17,armor:0,cooldownMs:1860};await settle();
  assert.match(p.get("#fighter-preview").textContent,/38/);assert.match(p.get("#fighter-active").textContent,/30/);assert.equal(p.model.requests.length,0);
 });
+
+test("enter game requires a fresh authorized character snapshot and logout removes the online lobby",async()=>{
+ const p=page();await settle();assert.equal(p.get('#enter-game').disabled,false);
+ p.click('#enter-game');await settle();assert.equal(p.get('#online-lobby').hidden,false);
+ assert.equal(p.model.requests.length,0,'entering the visual lobby must not issue an economic command');
+ p.click('#leave-game');assert.equal(p.get('#online-lobby').hidden,true);
+ p.click('#enter-game');await settle();p.click('#logout');await settle();assert.equal(p.get('#online-lobby').hidden,true);assert.equal(p.get('#enter-game').disabled,true);
+});
+test("an unavailable character snapshot fences the visual lobby and cannot fall back to demo state",async()=>{
+ const p=page();await settle();p.click('#enter-game');await settle();p.model.failRead=true;p.click('#online-refresh');await settle();
+ assert.equal(p.get('#enter-game').disabled,true);assert.equal(p.get('#online-lobby').hidden,true);
+});
