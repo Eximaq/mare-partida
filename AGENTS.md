@@ -56,7 +56,9 @@ Orientação explícita do proprietário: manter esta prioridade em todas as tar
 
 ## Colaboração e publicação
 - Trabalhar em `feature/...`, `fix/...` ou `docs/...` a partir de base atualizada; commit e push dos arquivos da tarefa; abrir PR para `main`.
-- O proprietário já autorizou commit/push de tarefas solicitadas. **Merge e lançamento em produção exigem instrução específica**; não confundir push, merge, build e deploy concluído.
+- Orientação do proprietário em 02/11/2026: concluir cada atualização solicitada e validada com commit, push, PR, merge normal para `main` e publicação estática no GitHub Pages. Não deixar PRs concluídos acumulados; encerrar propostas substituídas somente após conferir a preservação de suas alterações exclusivas, sem apagar branches por padrão. Uma restrição explícita posterior (como “sem merge”) prevalece.
+- Antes do merge, revisar o diff contra a `main` atual, executar os testes pertinentes e conferir os checks do commit exato. Resolver conflitos preservando os dois trabalhos e revalidar; não contornar checks, proteções ou revisão exigida. Depois, verificar o workflow de Pages e o site publicado. Commit, push, merge e deploy são estados distintos.
+- Essa autorização cobre o frontend estático existente. Hospedagem pública do backend, produção Supabase, DNS, contratação de serviços e envios de e-mail continuam sujeitos ao escopo e às autorizações específicas. Arte em avaliação e o PR #39 pausado não são liberados por esta regra.
 - Não adicionar saves, chaves, `.env`, arquivos temporários nem capturas de teste em massa.
 - Na entrega informar: arquivos alterados, comportamento validado, comandos e resultados, riscos ainda abertos, link do PR/commit, estado **verificado** da publicação. Não afirmar testes ou deploy não observados.
 
