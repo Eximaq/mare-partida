@@ -28,7 +28,7 @@ export async function storeBattle(client:PoolClient,id:string,b:any){
 export async function pauseBattle(client:PoolClient,id:string){
  // Older migration fixtures acquire leases before the opt-in domain exists.
  if(!(await client.query("SELECT to_regclass('mare_game.character_battles') present")).rows[0].present)return;
- const b=await readBattle(client,id);if(!b)return;engine.cancel(b);b.talents=null;await storeBattle(client,id,b);
+ const b=await readBattle(client,id);if(!b)return;engine.cancel(b);engine.resetHaki(b);b.talents=null;await storeBattle(client,id,b);
  await client.query('UPDATE mare_game.character_battles SET tick_at=clock_timestamp() WHERE character_id=$1',[id]);
 }
 export async function syncBattleWorld(client:PoolClient,id:string,area:string|null,now:number){
@@ -96,7 +96,7 @@ export async function tickWorldBattles(pool:Pool){
   const id=candidate.character_id,b=row.simulation,now:Date=row.now,elapsed=(now.getTime()-row.tick_at.getTime())/1000;
   if(elapsed<.1){await client.query('ROLLBACK');continue;}
   if(b.rulesHash!==engine.rulesHash)throw new AuthFault(503,'battle_rules_changed');
-  if(elapsed>2||row.control_epoch!==row.epoch){engine.cancel(b);b.talents=null;await storeBattle(client,id,b);
+  if(elapsed>2||row.control_epoch!==row.epoch){engine.cancel(b);engine.resetHaki(b);b.talents=null;await storeBattle(client,id,b);
    await client.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[id,now,row.epoch]);await client.query('COMMIT');continue;}
   const dt=Math.min(1,elapsed),start=new Date(now.getTime()-dt*1000),w=await readWorld(client,id,start);
   if(!w||w.area!==b.area)throw new AuthFault(503,'battle_world_mismatch');

@@ -49,6 +49,7 @@
       gold: safe(o.state.gold),
       hp: o.battle?.hp ?? (frozen && o.combat?.encounterId ? o.combat.playerHp : f.maxHp),
       energy: o.battle?.energy ?? 0,
+      ...(o.haki?{has_haki_unlocked:o.haki.state.unlocked,haki:structuredClone(o.haki.state)}:{}),
       ...(o.dungeons?{bossDungeons:structuredClone(o.dungeons)}:{}),
       ...(o.prison?{impelDown:structuredClone(o.prison)}:{}),
       claimed: [...(o.contracts?.claimed||[])],
@@ -120,6 +121,12 @@
     help: "Guia do Navegante",
   };
   const errors = {
+    haki_unlock_unavailable:'Confira o nível50 e um Livro da Vontade desbloqueado na mochila.',
+    haki_invest_unavailable:'Confira os pré-requisitos, a graduação e os fragmentos disponíveis.',
+    haki_unlearned:'Conclua o ramo antes de ativar a habilidade.',
+    haki_toggle_unavailable:'Ative um Haki aprendido durante uma expedição, com Vontade disponível.',
+    haki_cast_unavailable:'Confira a Vontade, o desbloqueio do Conquistador e sua recarga.',
+
     battle_target_missing:'Esse alvo não está mais disponível.',
     battle_skill_unavailable:'A habilidade precisa de energia, recarga e um alvo ao alcance.',
     battle_rules_changed:'As regras de combate foram atualizadas. Aguarde a atualização do servidor.',
@@ -343,6 +350,7 @@
         }
         if (client.data?.online.originalInventory && event.target.closest("#usePotion,#buyPotion"))return;
         if (client.data?.online.battle && event.target.closest('#skill1,#skill2'))return;
+        if (client.data?.online.haki && event.target.closest('#hakiKing'))return;
         if (
           event.target.closest(
             "#skill1,#skill2,#skill3,#usePotion,#buyPotion,#zoanTransform,#hakiKing,#changePath",

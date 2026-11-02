@@ -6,22 +6,31 @@ const dungeons=require('./boss-dungeon-system.js'),dungeonCombat=require('./boss
 require('./quest-dungeons-data.js');const dungeonMap=globalThis.MareQuestDungeonData;
 const prison=require('./prison-system.js'),prisonMap=require('./impel-down-world.js');
 const prisonCatalog=require('./monster-game-catalog.js').create({monsters:require('./monster-catalog.js'),city:require('./alubarna-world.js'),dungeons:require('./boss-dungeon-system.js')});
+const H=require('./haki-system.js');
 const talents=require('./talent-runtime.cjs'),{T,U,TC}=talents;
 const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
-const sources=['dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const sources=['haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
+function hakiGame(b){
+ b.haki??=H.migrate({}).haki;b.hakiRuntime??=H.start();
+ return {has_haki_unlocked:b.haki.unlocked,haki:b.haki};
+}
+function resetHaki(b){hakiGame(b);b.hakiRuntime=H.start();}
+function combatStats(b,c,rt){return H.stats(talents.stats(b,c,rt),hakiGame(b),b.hakiRuntime);}
+function hakiCast(b,c){return H.cast(hakiGame(b),b.hakiRuntime,c.hero,b.mobs,{alive:b.hp>0,inHunt:!!b.area,now:c.now,clear:(a,z)=>c.nav.projectileClear(a,z)});}
+function hakiToggle(b,id){return H.toggle(hakiGame(b),b.hakiRuntime,id,{alive:b.hp>0,inHunt:!!b.area});}
 function populate(b,now,rng,hero){
  if(!b.area||b.prison||b.dungeon)return;
  const ledger=b.hunts.areas[b.area];
  const slots=behavior.ready(b.area,b.mobs,ledger.respawns,now);
  if(hero&&hunt.bossReady(b,b.area,hero,now))slots.push(...behavior.ready(b.area,b.mobs,ledger.respawns,now,true));
  for(const s of slots){const p=hunt.profile(b.area,s.sector,s.type,.5);b.mobs=b.mobs.filter(m=>m.spawnId!==s.id);
-  b.mobs.push({...p,id:randomUUID(),spawnId:s.id,area:b.area,district:s.sector,type:s.type,x:s.x,y:s.y,anchorX:s.x,anchorY:s.y,hp:p.maxHP,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:rng()*Math.PI*2,patrolClock:0,telegraph:null,moving:0,attackAnim:0,emberElapsed:0,emberFacing:'south',slow:0});}
+  b.mobs.push({...p,source:'world',id:randomUUID(),spawnId:s.id,area:b.area,district:s.sector,type:s.type,x:s.x,y:s.y,anchorX:s.x,anchorY:s.y,hp:p.maxHP,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:rng()*Math.PI*2,patrolClock:0,telegraph:null,moving:0,attackAnim:0,emberElapsed:0,emberFacing:'south',slow:0});}
 }
 function create(area,stats,now,rng=Math.random){
  const b={version:1,rulesHash,area,hp:stats.maxHP,energy:stats.maxEnergy,auto:false,autoSkills:true,targetId:null,pending:null,projectiles:[],attackClock:0,cooldowns:[0,0],guard:0,blessing:0,respawn:0,mobs:[],hunts:hunt.migrate({}).hunts,talents:null,talentCooldowns:{},events:[],seq:0};
- populate(b,now,rng);return b;
+ hakiGame(b);populate(b,now,rng);return b;
 }
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 const live=m=>m?.alive&&!m.returning;
@@ -30,24 +39,24 @@ function face(a,p){const dx=p.x-a.x,dy=p.y-a.y;a.direction=Math.abs(dx)>Math.abs
 function move(a,goal,speed,dt,nav){const old={x:a.x,y:a.y},route=nav.path(a,goal);nav.follow(a,route,speed,dt);a.moving=distance(old,a)>.01?1:0;if(a.moving)face(a,{x:a.x+(a.x-old.x),y:a.y+(a.y-old.y)});}
 function target(b){return b.mobs.find(m=>m.id===b.targetId&&live(m));}
 function cancel(b){b.auto=false;b.targetId=null;b.pending=null;b.skillJob=null;b.projectiles=[];}
-function changeArea(b,area,now,rng){cancel(b);delete b.prison;delete b.dungeon;b.talents=null;b.area=area;b.mobs=[];populate(b,now,rng);}
+function changeArea(b,area,now,rng){cancel(b);resetHaki(b);delete b.prison;delete b.dungeon;b.talents=null;b.area=area;b.mobs=[];populate(b,now,rng);}
 function enterPrison(b,spec,stats,hero,{id=randomUUID(),stolen=0}={}){
  if(!prison.validFloor(spec.floor)||!Number.isFinite(spec.hp)||spec.hp<=0)throw Error('Invalid prison enemy');
- cancel(b);delete b.dungeon;b.talents=null;b.prison={floor:spec.floor,token:spec.token,spec:structuredClone(spec)};b.area='impel-down';b.auto=true;b.autoSkills=true;b.hp=stats.maxHP;b.respawn=0;b.attackClock=0;
+ cancel(b);resetHaki(b);delete b.dungeon;b.talents=null;b.prison={floor:spec.floor,token:spec.token,spec:structuredClone(spec)};b.area='impel-down';b.auto=true;b.autoSkills=true;b.hp=stats.maxHP;b.respawn=0;b.attackClock=0;
  const p=prisonMap.enemySpawn;
  b.mobs=[{...spec,id,source:'impel-down',prisonToken:spec.token,area:'impel-down',level:spec.floor,...p,anchorX:p.x,anchorY:p.y,maxHP:spec.hp,hp:spec.hp,attack:spec.atk,defense:spec.def,magicDefense:spec.def,aggro:prisonMap.map.width,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:0,slow:0,telegraph:null,emberElapsed:0,emberFacing:'west',attackAnim:0,moving:0,patrolClock:0,talentStolen:stolen}];
  Object.assign(hero,prisonMap.map.spawn);
 }
 function enterDungeon(b,id,record,stats,hero,{stolen=0}={}){
  const d=dungeons.byId[id];if(!d||!record?.spawnId)throw Error('Invalid dungeon encounter');
- cancel(b);delete b.prison;b.talents=null;b.dungeon={id,record:structuredClone(record)};b.area='quest-dungeons';b.auto=record.phase==='running';b.autoSkills=true;b.respawn=0;b.attackClock=0;b.mobs=[];
+ cancel(b);resetHaki(b);delete b.prison;b.talents=null;b.dungeon={id,record:structuredClone(record)};b.area='quest-dungeons';b.auto=record.phase==='running';b.autoSkills=true;b.respawn=0;b.attackClock=0;b.mobs=[];
  Object.assign(hero,dungeonMap.spawn);
  if(record.phase!=='running')return;
  const spec=prisonCatalog[d.monster],p=dungeonMap.enemySpawn;
  b.mobs=[{...spec,id:record.spawnId,type:d.monster,source:'boss-dungeon',dungeonId:id,dungeonRunId:record.runId,dungeonEncounterId:record.encounterId,area:'quest-dungeons',level:d.level,...p,anchorX:p.x,anchorY:p.y,maxHP:spec.hp,hp:spec.hp,attack:spec.atk,defense:spec.def,magicDefense:spec.magicDefense,aggro:dungeonMap.width,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:0,slow:0,telegraph:null,emberElapsed:0,emberFacing:'south',attackAnim:0,moving:0,patrolClock:0,talentStolen:stolen}];
 }
 function skill(b,index,c){
- const g=talents.game(b,c),stats=talents.stats(b,c,c.runtime),s=catalog.classes[c.classId]?.skills[index],cost=U.selected(g)==='archmage'?0:(s?.cost||0)*(1-(stats.energyEfficiency||0)),m=target(b),self=['guard','heal','blessing'].includes(s?.type);
+ const g=talents.game(b,c),stats=combatStats(b,c,c.runtime),s=catalog.classes[c.classId]?.skills[index],cost=U.selected(g)==='archmage'?0:(s?.cost||0)*(1-(stats.energyEfficiency||0)),m=target(b),self=['guard','heal','blessing'].includes(s?.type);
  if(!s||!b.area||b.hp<=0||b.skillJob||b.cooldowns[index]>0||b.energy<cost)return false;
  if(s.type==='heal'&&b.hp>=stats.maxHP&&!(U.selected(g)==='eternalBlessing'&&(b.talents?.combatRemaining>0||m))||s.type==='blessing'&&b.blessing>0)return false;
  if(!self&&(!m||distance(c.hero,m)>stats.range||!c.nav.projectileClear(c.hero,m)))return false;
@@ -57,7 +66,7 @@ function skill(b,index,c){
 function step(b,c){
  if(!Number.isFinite(c.dt)||c.dt<0||c.dt>1)throw new RangeError('Invalid battle step');
  if(b.rulesHash!==rulesHash)throw new Error('battle_rules_changed');
- const {hero,nav,classId}=c,kills=[],talentSteals=[];let potionsUsed=0,rt=talents.load(b),stats=talents.stats(b,c,rt),g=talents.game(b,c);
+ const {hero,nav,classId}=c,kills=[],talentSteals=[];let potionsUsed=0,rt=talents.load(b),stats=combatStats(b,c,rt),g=talents.game(b,c);
  const enemies=()=>b.mobs.filter(live);
  function heal(amount){if(b.hp<=0)return;const before=b.hp;b.hp=Math.min(stats.maxHP,b.hp+amount*(1+(stats.healingReceivedPercent||0)));if(b.area&&(rt.combatRemaining>0||target(b)))actions(U.heal(g,rt.ultimate,{amount,effective:b.hp-before,stats,hero,enemies:enemies(),clear}));}
  const rng=()=>{const n=c.rng();if(!Number.isFinite(n)||n<0||n>=1)throw new RangeError('Invalid RNG');return n;};
@@ -72,7 +81,7 @@ function step(b,c){
   kills.push({id:m.id,area:b.area,monster:structuredClone(m),reward:hunt.rewards(b.area,m,c.level||1,rng())});event(b,'kill',{id:m.id});
  };
  function land(m,raw,now,slow=0){
-  if(!live(m)||b.hp<=0||raw<=0)return 0;
+  if(!live(m)||b.hp<=0||raw<=0)return 0;H.touch(hakiGame(b),b.hakiRuntime);
   const amount=Math.min(m.hp,Math.max(1,Math.floor(raw)));behavior.hurt(m);m.hp-=amount;if(slow)m.slow=slow;
   event(b,'damage',{id:m.id,amount});if(m.hp<=0)kill(m,now);return amount;
  }
@@ -98,6 +107,7 @@ function step(b,c){
  }
  function hit(m,multiplier,damageType,at,area=false,slow=0,basic=false){
   if(!live(m)||b.hp<=0||distance(hero,m)>stats.range+(area?125:1)||!clear(hero,m))return;
+  H.touch(hakiGame(b),b.hakiRuntime);stats=combatStats(b,c,rt);if(b.hakiRuntime.active==='observation')b.hakiRuntime.eyeFX=.25;
   if(damageType==='physical'&&rng()>stats.accuracy){event(b,'miss',{id:m.id});return;}
   const magic=damageType==='elemental',prepared=TC.beforeHit(g,rt,{target:m,hero,stats,basic,magic,area:area||(basic&&U.selected(g)==='titan'),critical:rng()<stats.crit});
   const amount=prepared.trueAmount??characters.damage(prepared.critMultiplier?{...stats,critMultiplier:prepared.critMultiplier}:stats,prepared.armor,{type:damageType,multiplier:multiplier*prepared.multiplier,variance:.9+rng()*.22,critical:prepared.critical});
@@ -105,10 +115,10 @@ function step(b,c){
   if(projectile){const kind=classId==='strategist'?'mage':classId;b.projectiles.push(vfx.projectile(kind,hero,m.id,{damage:amount,slow,contact:meta}));event(b,'projectile',{id:m.id,kind,x:hero.x,y:hero.y});}
   else landed(m,amount,slow,meta);
  }
- function die(){b.hp=0;b.respawn=4.1;b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;for(const other of enemies())behavior.disengage(other);event(b,'death');}
+ function die(){resetHaki(b);b.hp=0;b.respawn=4.1;b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;for(const other of enemies())behavior.disengage(other);event(b,'death');}
  function damage(m,multiplier=1){
-  if(b.hp<=0)return;if(rng()<stats.evasion){event(b,'evade');return;}
-  const raw=characters.incoming(stats,m.attack*multiplier*(1-(stats.impactResistancePercent||0)),b.guard>0,.85+rng()*.25);
+  if(b.hp<=0)return;H.touch(hakiGame(b),b.hakiRuntime);stats=combatStats(b,c,rt);if(rng()<stats.evasion){b.hakiRuntime.eyeFX=.35;event(b,'evade');return;}
+  const raw=characters.incoming(stats,m.attack*multiplier*(m.hakiDebuff>0?.85:1)*(1-(stats.impactResistancePercent||0)),b.guard>0,.85+rng()*.25);
   const r=TC.receive(g,rt,{stats,amount:raw,physical:true,melee:m.reach<=60,source:m,random:rng,now});
   if(r.untargetable||r.invulnerable)return;
   b.energy=Math.max(0,b.energy-(r.energyUsed||0));
@@ -125,7 +135,7 @@ function step(b,c){
  }
  const type=characters.roles[classId].magic?'elemental':'physical';
  let left=c.dt,now=c.now-c.dt*1000;
- while(left>1e-9){const dt=Math.min(.05,left);left-=dt;now+=dt*1000;stats=talents.stats(b,c,rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
+ while(left>1e-9){const dt=Math.min(.05,left);left-=dt;now+=dt*1000;H.tick(hakiGame(b),b.hakiRuntime,dt,{alive:b.hp>0,inHunt:!!b.area});stats=combatStats(b,c,rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
   actions(TC.tick(rt,dt,enemies()));
   if(b.hp>0)actions(U.tick(g,rt.ultimate,dt,{hero,stats,inCombat:!!b.area&&(rt.combatRemaining>0||!!target(b)),inHunt:!!b.area,enemies:enemies(),clear,move:(m,dx,dy)=>{const p={x:m.x+dx,y:m.y+dy},n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/4));for(let i=1;i<=n;i++)if(!nav.walkable(m.x+dx*i/n,m.y+dy*i/n))return;if(clear(m,p))Object.assign(m,p);}}));
   b.cooldowns=b.cooldowns.map(n=>Math.max(0,n-dt));b.guard=Math.max(0,b.guard-dt);b.blessing=Math.max(0,b.blessing-dt);b.attackClock=Math.max(0,b.attackClock-dt);
@@ -166,7 +176,7 @@ function step(b,c){
   for(const p of b.projectiles){const t=b.mobs.find(m=>m.id===p.targetId);vfx.step(p,dt,{target:t,origin:p.origin||hero,clear,valid:()=>b.hp>0&&live(t),onHit:()=>p.secondary?land(t,p.damage,now,p.slow):landed(t,p.damage,p.slow,p.contact)});}
   b.projectiles=b.projectiles.filter(p=>p.phase!=='done');if(b.projectiles.length>1024)throw Error('battle_projectile_limit');
   for(const enemy of b.mobs.filter(m=>m.alive)){
-   enemy.slow=Math.max(0,enemy.slow-dt);enemy.emberElapsed+=dt;enemy.attackAnim=Math.max(0,enemy.attackAnim-dt);enemy.moving=0;
+   enemy.hakiDebuff=Math.max(0,(enemy.hakiDebuff||0)-dt);enemy.slow=Math.max(0,enemy.slow-dt);enemy.emberElapsed+=dt;enemy.attackAnim=Math.max(0,enemy.attackAnim-dt);enemy.moving=0;
    const intent=behavior.intent(enemy,hero,b.hp>0&&!rt.ultimate.hidden,!!(b.prison||b.dungeon)),speed=enemy.speed*(enemy.slow>0?.55:1)*(enemy.talentSlow?.remaining>0?1-enemy.talentSlow.percent:1);
    if(enemy.empRemaining>0||enemy.talentControl?.remaining>0||(enemy.source==='boss-dungeon'&&(b.hp<=0||rt.ultimate.hidden))){enemy.telegraph=null;if(enemy.dungeonAttack)dungeonCombat.cancel(enemy);continue;}
    if(intent==='idle'){const goal=behavior.patrol(enemy,dt,(a,z)=>{const n=Math.max(1,Math.ceil(distance(a,z)/4));for(let i=0;i<=n;i++)if(!nav.walkable(a.x+(z.x-a.x)*i/n,a.y+(z.y-a.y)*i/n))return false;return true;});if(goal)move(enemy,goal,speed*.45,dt,nav);continue;}
@@ -184,7 +194,7 @@ function step(b,c){
    if(distance(enemy,hero)>enemy.reach*.75&&distance(enemy,hero)<enemy.aggro)move(enemy,hero,speed*.65,dt,nav);
   }
  }
- stats=talents.stats(b,c,rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
+ stats=combatStats(b,c,rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
  talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};
 }
-module.exports={enterDungeon,enterPrison,prisonCatalog,create,step,skill,cancel,changeArea,rulesHash,catalog,hunt,talentStats:talents.stats};
+module.exports={hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,create,step,skill,cancel,changeArea,rulesHash,catalog,hunt,talentStats:talents.stats};

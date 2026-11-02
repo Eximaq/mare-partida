@@ -10,13 +10,14 @@ const rulesHash=createHash('sha256').update(JSON.stringify(catalog)).update(getG
   .update(readFileSync(new URL('../../../../character-system.js',import.meta.url),'utf8').replaceAll('\r\n','\n')).digest('hex');
 export const xpNeeded:(level:number)=>number=rules.xpNeeded;
 export const advanceOriginalLevel:(value:{level:number;start:bigint;experience:bigint})=>{level:number;start:bigint;levels:{level:number;start:bigint}[]}=rules.advance;
-export function deriveOriginalFighter(classId:string,factionId:string,state:CharacterState,allocated:AttributeValues,inventory:OriginalInventory,build?:TalentBuild,runtime?:any):Fighter {
+export function deriveOriginalFighter(classId:string,factionId:string,state:CharacterState,allocated:AttributeValues,inventory:OriginalInventory,build?:TalentBuild,runtime?:any,haki?:any):Fighter {
   const baseStats=characters.derive({classId,level:state.level,attributes:allocated},catalog.classes[classId],catalog.factions[factionId],forge.aggregate(inventory.equipment,getGameCatalog().items));
   const T=require('../../../../talent-system.js');
-  const stats=build&&T.spent(build)>0?T.applyStats(baseStats,{classId,talentBuilds:{[classId]:build}},runtime):baseStats;
+  const talentStats=build&&T.spent(build)>0?T.applyStats(baseStats,{classId,talentBuilds:{[classId]:build}},runtime):baseStats;
+  const stats=haki?require('../../../../haki-system.js').stats(talentStats,{has_haki_unlocked:haki.state.unlocked,haki:haki.state},haki.runtime):talentStats;
   const damageType=characters.roles[classId].magic?'elemental':'physical';
   return fighterSchema.parse({rulesetId:'original-character-v1',rulesHash,classId,factionId,level:state.level,sourceVersion:state.version,
-    allocated,total:stats.attributes,stats,...(build&&T.spent(build)>0?{baseStats}:{}),equipped:{weapon:null,armor:null},damageType,maxHp:stats.maxHP,
+    allocated,total:stats.attributes,stats,...(build&&T.spent(build)>0||haki?.state.unlocked?{baseStats}:{}),equipped:{weapon:null,armor:null},damageType,maxHp:stats.maxHP,
     attackMin:characters.damage(stats,0,{type:damageType,variance:.9}),attackMax:characters.damage(stats,0,{type:damageType,variance:1.12,critical:true}),
     armor:stats.defense,cooldownMs:Math.ceil(1000/stats.speed)});
 }

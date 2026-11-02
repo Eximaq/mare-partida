@@ -1,3 +1,5 @@
+**Haki online:** [livro, árvores, Vontade e efeitos sob autoridade do servidor](docs/architecture/ORIGINAL-HAKI-SERVER.md), preservando os requisitos e controles originais.
+
 **Masmorras online:** [nove chefes, baús únicos e fragmentos vinculados no servidor](docs/architecture/ORIGINAL-DUNGEONS-SERVER.md), com os painéis e mapas originais.
 
 **Impel Down online:** [andares, duelos, marcos e caixas no servidor](docs/architecture/ORIGINAL-PRISON-SERVER.md), com o mapa e diário originais.
