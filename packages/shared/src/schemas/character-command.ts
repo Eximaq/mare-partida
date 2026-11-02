@@ -1,3 +1,4 @@
+import {appearanceSchema,preferencePatchSchema} from './profile.js';
 import {hakiActions,hakiNodeSchema,hakiContinuousSchema} from './haki.js';
 import {dungeonActions,dungeonIdSchema} from './dungeons.js';
 import {prisonActions,prisonFloorSchema} from './prison.js';
@@ -9,7 +10,7 @@ import {battleActions,battleTargetSchema} from './battle.js';
 import {inventoryTradeSchema,inventorySnapshotSchema,equipmentItemSchema,equipmentSlotSchema} from "./inventory.js";
 import { z } from "zod";
 import {originalActionSchema,instanceIdSchema,originalSlotSchema,forgeOperationSchema} from './original-inventory.js';
-import { renewControlSchema } from "./auth.js";
+import { renewControlSchema,characterCreateSchema } from "./auth.js";
 import { characterStateSchema } from "./character-state.js";
 import { combatSnapshotSchema } from "./combat.js";
 
@@ -21,6 +22,9 @@ const commandEnvelope = {
   control: renewControlSchema,
 };
 export const characterCommandSchema = z.discriminatedUnion("action", [
+ z.strictObject({...commandEnvelope,action:z.literal('profile.appearance'),payload:z.strictObject({appearance:appearanceSchema})}),
+ z.strictObject({...commandEnvelope,action:z.literal('profile.preferences'),payload:preferencePatchSchema}),
+ z.strictObject({...commandEnvelope,action:z.literal('profile.identity'),payload:characterCreateSchema.extend({appearance:appearanceSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('fruit.cast'),payload:z.strictObject({key:z.enum(['1','2','3']),point:worldPointSchema.optional()})}),
  z.strictObject({...commandEnvelope,action:z.literal('fruit.transform'),payload:z.strictObject({enabled:z.boolean()})}),
  z.strictObject({...commandEnvelope,action:z.literal('fruit.move'),payload:worldPointSchema}),
@@ -59,7 +63,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move']),
+  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),
   inventory: inventorySnapshotSchema.optional(),

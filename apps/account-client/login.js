@@ -38,14 +38,8 @@
     return value;
   }
   async function enter() {
-    const me = await api("/v1/me");
-    if (me.character) {
-      location.replace("/game");
-      return;
-    }
-    $("login-view").hidden = true;
-    $("create-form").hidden = false;
-    $("panel-title").textContent = "Seu primeiro personagem";
+    await api("/v1/me");
+    location.replace("/game");
   }
   async function busy(event, operation) {
     event.preventDefault();

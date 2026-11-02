@@ -141,7 +141,7 @@ test('talent migrations preserve existing worlds and battle payloads, upgrade on
    const old={...before.battle,hp:13,talentCooldowns:{immortalUntil:9999999999999},rulesHash:'562bfa13620d2bc08aebcc96590bfeee5fdd3ebab4be31832e28046c31de235f'};
    await pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(old)]);
    await pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[b.c.id,JSON.stringify({...old,rulesHash:'unknown'})]);
-   assert.deepEqual(await applyMigrations(pool),['0021_original_talents.sql','0022_talent_battle_compatibility.sql','0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql']);assert.deepEqual(await applyMigrations(pool),[]);
+   assert.deepEqual(await applyMigrations(pool),['0021_original_talents.sql','0022_talent_battle_compatibility.sql','0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql']);assert.deepEqual(await applyMigrations(pool),[]);
    const after=await a.read();assert.deepEqual(after.battle,{...old,rulesHash:engine.rulesHash});assert.deepEqual(after.state,before.state);assert.deepEqual(after.originalInventory,before.originalInventory);assert.deepEqual(after.world.position,before.world.position);assert.equal(after.talents.spent,0);assert.equal((await b.read()).battle.rulesHash,'unknown');
    assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.character_talents')).rows[0].n,0);
   },dir);

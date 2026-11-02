@@ -73,7 +73,7 @@ test("login, control and journey work with minimum grants, with narrow economic 
         assert.equal((await restarted.characterState(login.token, character.id)).gold, "0");
         for (const sql of [
           "UPDATE mare_game.accounts SET subject='forged'",
-          "UPDATE mare_game.characters SET name='forged'",
+          "UPDATE mare_game.characters SET created_at=now()",
           "UPDATE mare_game.characters SET account_id=gen_random_uuid()",
           "DELETE FROM mare_game.characters",
           "UPDATE mare_game.character_commands SET result='{}'::jsonb",

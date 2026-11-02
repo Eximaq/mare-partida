@@ -1,3 +1,4 @@
+import {appearanceSchema} from './profile.js';
 import { z } from "zod";
 export const emailSchema = z
   .email()
@@ -15,6 +16,7 @@ export const logoutSchema = z.strictObject({
   scope: z.enum(["local", "all"]).default("local"),
 });
 export const characterCreateSchema = z.strictObject({
+  appearance: appearanceSchema.optional(),
   name: z
     .string()
     .transform((value) => value.normalize("NFC").trim())
