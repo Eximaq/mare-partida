@@ -14,7 +14,8 @@ limite de ouro roubado pelos talentos. Saves da demonstração permanecem separa
   Entrada e renascimento nas posições do mapa. Avanço após 850ms do relógio do
   servidor, com HP restaurado e energia/recargas preservadas entre andares.
 - Derrota mantém o mesmo andar e identidade. Vitória não concede XP, loot normal,
-  progresso de caçada regional, mortes globais ou contratos. Os andares habilitam
+  progresso de caçada regional ou contratos. Cada vitória soma um abate global,
+  como `persistImpelVictory` na demonstração. Os andares habilitam
   exclusivamente as conquistas de prisão correspondentes.
 - Marcos 5–50, de cinco em cinco: uma Caixa de Pérolas Nível1. Mochila cheia mantém
   o direito pendente. Nenhuma recompensa nova foi inventada após o andar50.
