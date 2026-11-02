@@ -1,0 +1,62 @@
+{
+  "provider": "OpenAI built-in imagegen and PixelLab AI",
+  "date": "2026-11-01",
+  "illustrations": [
+    {
+      "file": "morgan-hd.png",
+      "tool": "imagegen built-in",
+      "prompt": "High definition polished anime game illustration of Captain Morgan in a Marine courtyard, muscular blond man with steel jaw reading MÖWE, one coherent axe prosthesis, purple Marine coat, no UI, no text overlay. Wide illustrated backdrop with character at right and composition appropriate for selected boss portrait."
+    },
+    {
+      "file": "alvida-hd.png",
+      "tool": "imagegen built-in",
+      "prompt": "High definition polished anime game illustration of original heavyset Captain Alvida, curly black hair, pink checked shirt, white pirate hat, gold-trimmed coat, one coherent iron club correctly held, pirate ship harbor background, no UI or text overlays. Wide illustrated backdrop, character at right for selected boss portrait."
+    }
+  ],
+  "pixelLab": [
+    {
+      "file": "reward-chest.png",
+      "tool": "create_image_pro via website on newly connected account",
+      "galleryId": "1793577161828",
+      "size": [
+        256,
+        256
+      ],
+      "prompt": "Masterpiece Ultra HD refined pixel art inventory icon for Kaizoku Idle: ONE closed pirate treasure chest in three-quarter view, rich oxblood red lacquered wood, dark forged iron sides, thick polished antique gold bands, small gold skull latch, precise hinges and strong readable silhouette, carefully clustered crisp pixels, dramatic warm highlights and deep shadows. Centered isolated object fills 85 percent of square. True transparent alpha background. No scenery, no ground, no colored plate, no border, no text, no letters, no watermark, no particles, no glow outside silhouette. Premium cohesive nautical RPG HUD item art."
+    },
+    {
+      "file": "berry-reward.png",
+      "tool": "create_image_pro via direct authenticated MCP",
+      "size": [
+        128,
+        128
+      ],
+      "jobId": "fdcbd78b-471c-4874-838e-1b46a5c756dc",
+      "candidate": 0,
+      "prompt": "Masterpiece Ultra HD refined pixel art nautical RPG inventory icon for Kaizoku Idle: three shiny golden pirate coins in a compact small stack with one large coin leaning in front, embossed stylized Berry currency B emblem, detailed milled rim, bright gold and amber highlights, warm deep bronze shadows, strong clean silhouette, crisp carefully clustered pixels, premium polished game art, centered object fills 85 percent square. Isolated true transparent alpha background, no scenery, no colored plate, no border, no extra text, no particles, no soft glow."
+    },
+    {
+      "file": "xp-reward.png",
+      "tool": "create_image_pro via direct authenticated MCP",
+      "size": [
+        128,
+        128
+      ],
+      "jobId": "f8ca3e8d-3e97-4cbf-bdfb-81ebbbd3dd0f",
+      "candidate": 0,
+      "prompt": "Masterpiece Ultra HD refined pixel art nautical RPG inventory icon for Kaizoku Idle: one vivid emerald green eight-point experience crystal star in a small antique gold compass ornament, faceted luminous crystal core, rich teal shadows and pale green specular highlights, strong readable silhouette, elegant compact premium adventure reward icon, crisp carefully clustered pixels, centered object fills 85 percent square. Isolated true transparent alpha background, no scenery, no colored plate, no border, no letters, no text, no particles, no soft glow."
+    },
+    {
+      "file": "crossed-swords.png",
+      "tool": "create_image_pro via direct authenticated MCP",
+      "size": [
+        128,
+        128
+      ],
+      "jobId": "2b140f66-4b41-4baf-be8e-1ab2bf2d74db",
+      "candidate": 0,
+      "prompt": "Masterpiece Ultra HD refined pixel art nautical RPG interface icon for Kaizoku Idle: exactly TWO coherent short pirate cutlasses crossed in a symmetrical X, elegant silver blades and antique gold hilts, cutting edges pointing outward, correct single continuous blades and aligned grips, strong clean readable silhouette with bright metal highlights, deep blue steel shadows, crisp clustered pixels. Centered isolated icon fills 85 percent square. True transparent alpha background, no badge, no colored plate, no scenery, no text, no border, no extra weapons, no particles."
+    }
+  ],
+  "notes": "Standalone UI illustrations only. Existing combat monster sprites and native dungeon-map chest remain unchanged. No credentials or expiring URLs stored."
+}

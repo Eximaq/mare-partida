@@ -23,6 +23,6 @@ assert.equal(visited.size,stone.length,'Rendered paving must form one connected 
 const conchas=globalThis.MarePixelWorldMaps.conchas,conchasNav=new Navigation(conchas.map,24);
 assert.deepEqual(H.get('swamp').sectors.map(s=>[s.min,s.max]),[[8,8],[8,8],[8,8],[8,8]]);assert.equal(H.get('swamp').boss,null);
 for(const s of H.sectors('swamp',conchas.districts)){assert.equal(s.roles[0],'helmeppo');assert(conchasNav.path(conchas.map.spawn,s).length);}
-const cam=new Camera();for(const [w,h]of [[1920,1080],[1366,768],[393,852],[2560,1440]]){cam.width=w;cam.height=h;for(const pt of [O.spawn,...O.paths]){cam.update(pt,O.map,0,true);assert(cam.x>=0&&cam.y>=0);assert(cam.x<=Math.max(0,2048-w)&&cam.y<=Math.max(0,2048-h));}}
+const cam=new Camera();for(const [w,h]of [[1920,1080],[1366,768],[393,852],[2560,1440]]){cam.width=w;cam.height=h;for(const pt of [O.spawn,...O.paths]){cam.update(pt,O.map,0,true);for(const [position,extent,viewport] of [[cam.x,O.map.width,cam.width],[cam.y,O.map.height,cam.height]]){if(viewport<=extent)assert(position>=0&&position+viewport<=extent+.01);else{assert.equal(position,(extent-viewport)/2);assert(cam.masked,'finite finish outside native map');}}}}
 const html=fs.readFileSync('index.html','utf8');assert(html.indexOf('src="conchas-world.js"')<html.indexOf('src="world-system.js"'));assert(html.indexOf('src="orange-terrain.js"')<html.indexOf('src="conchas-renderer.js"'));
 console.log('Conchas legacy fallback and the PixelLab map selected for runtime both passed their navigation and compatibility checks.');

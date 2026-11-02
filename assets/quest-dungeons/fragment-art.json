@@ -1,0 +1,13 @@
+{
+  "provider": "PixelLab AI",
+  "model": "Pixen",
+  "jobId": "1dcc1f60-4d23-43be-abac-4429ffc7aa2e",
+  "assetId": "890e337f-cf81-590c-82c5-be3cc23d5546",
+  "nativeSize": [
+    128,
+    128
+  ],
+  "alpha": true,
+  "usage": "Shared mysterious devil-fruit fragment icon for ranks E through S; native pixels preserved.",
+  "ownerDirection": "Dark devil fruit with question mark and jigsaw piece; shared icon, rank shown by border and text."
+}

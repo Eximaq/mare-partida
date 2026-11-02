@@ -57,14 +57,102 @@
     maps.orange=MarePixelWorldMaps.orange.map;
     maps.loguetown=MarePixelWorldMaps.loguetown.map;
   }
+
+  // Visual existence is independent of walking/physics. A '.' is absent only in
+  // native terrain metadata; dark tiles, walls and water remain real content.
+  if(globalThis.MareQuestDungeonWorld)maps['quest-dungeons']=MareQuestDungeonWorld.map;
+  class Coverage {
+    constructor({rows=null,tile=64,x=0,y=0,width,height,version=1}={}){
+      this.tile=tile;this.x=x;this.y=y;this.version=version;this.rows=rows;
+      this.cols=rows?Math.max(...rows.map(r=>r.length)):Math.ceil(width/tile);
+      this.heightCells=rows?rows.length:Math.ceil(height/tile);this.runs=[];
+      this.bounds={x,y,w:width??this.cols*tile,h:height??this.heightCells*tile};
+      this.present=0;this.queries=0;this.builds=1;
+      if(!rows)return;
+      const stride=this.cols+1;this.prefix=new Uint32Array(stride*(rows.length+1));
+      let minX=this.cols,minY=rows.length,maxX=0,maxY=0;
+      for(let cy=0;cy<rows.length;cy++){
+        let run=-1;
+        for(let cx=0;cx<this.cols;cx++){
+          const cell=rows[cy][cx],exists=cell!==undefined&&cell!=='.'&&cell!==' ';
+          const k=(cy+1)*stride+cx+1;
+          this.prefix[k]=this.prefix[k-1]+this.prefix[k-stride]-this.prefix[k-stride-1]+Number(!exists);
+          if(exists){this.present++;minX=Math.min(minX,cx);minY=Math.min(minY,cy);maxX=Math.max(maxX,cx+1);maxY=Math.max(maxY,cy+1);if(run<0)run=cx;}
+          if(run>=0&&(!exists||cx===this.cols-1)){const end=exists?cx+1:cx;this.runs.push({x:x+run*tile,y:y+cy*tile,w:(end-run)*tile,h:tile});run=-1;}
+        }
+      }
+      if(this.present)this.bounds={x:x+minX*tile,y:y+minY*tile,w:(maxX-minX)*tile,h:(maxY-minY)*tile};
+    }
+    exists(x,y){if(!Number.isFinite(x)||!Number.isFinite(y))return false;const b=this.bounds;if(x<b.x||y<b.y||x>=b.x+b.w||y>=b.y+b.h)return false;if(!this.rows)return true;const c=this.rows[Math.floor((y-this.y)/this.tile)]?.[Math.floor((x-this.x)/this.tile)];return c!==undefined&&c!=='.'&&c!==' ';}
+    contains(x,y,w,h){
+      this.queries++;const b=this.bounds;if(![x,y,w,h].every(Number.isFinite)||w<=0||h<=0||x<b.x||y<b.y||x+w>b.x+b.w+.001||y+h>b.y+b.h+.001)return false;
+      if(!this.prefix)return true;
+      const x0=Math.floor((x-this.x)/this.tile),y0=Math.floor((y-this.y)/this.tile),x1=Math.ceil((x+w-this.x-.00001)/this.tile),y1=Math.ceil((y+h-this.y-.00001)/this.tile),s=this.cols+1,p=this.prefix;
+      return p[y1*s+x1]-p[y0*s+x1]-p[y1*s+x0]+p[y0*s+x0]===0;
+    }
+    clip(c,camera){
+      c.beginPath();if(!this.rows){const b=this.bounds;c.rect(b.x,b.y,b.w,b.h);}
+      else for(const r of this.runs)if(r.y+r.h>camera.y&&r.y<camera.y+camera.height&&r.x+r.w>camera.x&&r.x<camera.x+camera.width)c.rect(r.x,r.y,r.w,r.h);
+      c.clip();
+    }
+    snapshot(){return {version:this.version,bounds:{...this.bounds},cells:this.rows?this.present:this.cols*this.heightCells,runs:this.runs.length,queries:this.queries,builds:this.builds};}
+  }
+  const coverageCache=new WeakMap();
+  function coverageFor(map){
+    const spec=map.visualCoverage;let cached=coverageCache.get(map);if(cached&&cached.spec===spec&&cached.version===(spec?.version??1))return cached.index;
+    let rows=spec?.rows,tile=spec?.tile??64;
+    if(!spec&&maps[map.id]===map){const id=map.id;
+      rows=id==='lobby'?globalThis.MareLobbyMapData?.rows:id==='impel-down'?globalThis.MareImpel?.rows:id==='alabasta'?globalThis.MareAlabastaData?.rows:id.startsWith('alubarna-')?globalThis.MareAlubarnaData?.rows:globalThis.MareNewIslandData?.[id]?.rows;
+      if(globalThis.MarePixelWorldMaps?.[id])rows=MarePixelWorldMaps[id].data?.terrain??MarePixelWorldMaps[id].source?.terrain??globalThis.MarePixelWorldMapsData?.[id]?.terrain??(id==='conchas'?globalThis.MarePixelConchasData?.terrain:null);
+      // Dawn's native transparent offshore areas are intentionally completed with
+      // its original water tile INSIDE the finite export. This is not its walk mask.
+    }
+    const index=new Coverage({width:map.width,height:map.height,...spec,rows,tile});coverageCache.set(map,{spec,version:spec?.version??1,index});return index;
+  }
   class Camera {
-    constructor(){this.x=0;this.y=0;this.width=960;this.height=570;}
-    update(hero,map,dt=0,snap=false){
-      const tx=clamp(hero.x-this.width/2,0,Math.max(0,map.width-this.width));
-      const ty=clamp(hero.y-this.height/2,0,Math.max(0,map.height-this.height));
-      const a=snap?1:1-Math.exp(-9*dt);
-      this.x=clamp(this.x+(tx-this.x)*a,0,Math.max(0,map.width-this.width));
-      this.y=clamp(this.y+(ty-this.y)*a,0,Math.max(0,map.height-this.height));
+    constructor(){this.x=0;this.y=0;this.width=960;this.height=570;this.solves=0;this.masked=false;}
+    fitZoom(map,w,h,requested=1,anchor=map.spawn){
+      const b=coverageFor(map).bounds,min=Math.min(1.8,Math.max(requested,Math.ceil(Math.max(w/b.w,h/b.h)*100)/100));
+      if(!anchor)return min;
+      // At map entry/resize/manual zoom, try a modest zoom-in before using a
+      // finite edge finish for corridors that cannot fit the screen aspect ratio.
+      const probe=new Camera();for(let z=min;z<1.801;z=Math.min(1.8,Math.round((z+.1)*100)/100)){
+        probe.width=Math.max(1,Math.round(w/z));probe.height=Math.max(1,Math.round(h/z));probe.update(anchor,map,0,true);
+        if(!probe.masked||z>=1.8)return z;
+      }return 1.8;
+    }
+    update(focus,map,dt=0,snap=false,anchor=focus){
+      const coverage=coverageFor(map),b=coverage.bounds,w=this.width,h=this.height;
+      const axis=(value,start,size,view)=>size>=view?clamp(value,start,start+size-view):start+(size-view)/2;
+      const marginX=Math.min(32,w/4),marginY=Math.min(80,h/4);
+      const visible=(x,y)=>anchor.x>=x+marginX&&anchor.x<=x+w-marginX&&anchor.y>=y+marginY&&anchor.y<=y+h-12;
+      const keep=(v,a,size,near,far)=>clamp(v,a-size+far,a-near);
+      let tx=axis(focus.x-w/2,b.x,b.w,w),ty=axis(focus.y-h/2,b.y,b.h,h);
+      tx=axis(keep(tx,anchor.x,w,marginX,marginX),b.x,b.w,w);ty=axis(keep(ty,anchor.y,h,marginY,12),b.y,b.h,h);
+      // Only recompute the bounded candidate list when the actor changes cells,
+      // viewport/map/version changes, or the cached choice no longer contains it.
+      if(!coverage.contains(tx,ty,w,h)){
+        const key=[map.id,coverage.version,Math.floor(anchor.x/32),Math.floor(anchor.y/32),w,h].join(':');
+        if(this.solveKey!==key){
+          this.solveKey=key;this.solves++;this.choice=null;let score=Infinity;
+          const values=(desired,start,size,view,a,near,far)=>{
+            const lo=Math.max(start,a-view+far),hi=Math.min(start+size-view,a-near);if(lo>hi)return [];
+            const set=new Set([clamp(desired,lo,hi),lo,hi]);for(let n=Math.ceil(lo/coverage.tile)*coverage.tile;n<=hi;n+=coverage.tile)set.add(n);return [...set];
+          };
+          const xs=values(tx,b.x,b.w,w,anchor.x,marginX,marginX),ys=values(ty,b.y,b.h,h,anchor.y,marginY,12);
+          for(const y of ys)for(const x of xs){const d=(x-tx)**2+(y-ty)**2;if(d<score&&coverage.contains(x,y,w,h)){score=d;this.choice={x,y};}}
+        }
+        if(this.choice&&visible(this.choice.x,this.choice.y)){tx=this.choice.x;ty=this.choice.y;}
+      }
+      const a=snap?1:1-Math.exp(-9*Math.max(0,dt));let nx=axis(this.x+(tx-this.x)*a,b.x,b.w,w),ny=axis(this.y+(ty-this.y)*a,b.y,b.h,h);
+      // Interpolation must not cross a hole, nor leave the player off screen.
+      if(!visible(nx,ny)||coverage.contains(tx,ty,w,h)&&!coverage.contains(nx,ny,w,h)){nx=tx;ny=ty;}
+      this.x=nx;this.y=ny;this.masked=!coverage.contains(nx,ny,w,h);this.map=map;
+    }
+    begin(c,map){
+      // Finite viewport finish, never a navigable extension of the map.
+      c.fillStyle='#151217';c.fillRect(0,0,this.width,this.height);
+      c.save();c.translate(-Math.round(this.x),-Math.round(this.y));coverageFor(map).clip(c,this);
     }
     screenToWorld(x,y){return {x:x+Math.round(this.x),y:y+Math.round(this.y)};}
     worldToScreen(x,y){return {x:x-Math.round(this.x),y:y-Math.round(this.y)};}
@@ -90,12 +178,18 @@
   const sortDepth=items=>items.map((item,index)=>({item,index})).sort((a,b)=>(a.item.pivotY??a.item.y)-(b.item.pivotY??b.item.y)||a.index-b.index).map(({item})=>item);
   function cleanColliders(items=[]){const seen=new Set();return items.filter(o=>{if(!o||![o.x,o.y,o.w,o.h].every(Number.isFinite)||o.w<=0||o.h<=0)return false;const key=[o.x,o.y,o.w,o.h,o.isSolid!==false,o.blocksMovement!==false,blocksProjectile(o)].join(':');if(seen.has(key))return false;seen.add(key);return true;});}
   class Navigation {
-    constructor(map,cell=24,radius=10){
+    constructor(map,cell=24,radius=10,{defer=false}={}){
       this.map=map;map.colliders=cleanColliders(map.colliders);this.cell=cell;this.radius=radius;
       this.cols=Math.ceil(map.width/cell);this.rows=Math.ceil(map.height/cell);
       this.grid=new Uint8Array(this.cols*this.rows);
-      for(let y=0;y<this.rows;y++)for(let x=0;x<this.cols;x++)this.grid[y*this.cols+x]=this.walkable((x+.5)*cell,(y+.5)*cell)?1:0;
+      this.builtRows=0;this.buildCursor=0;this.ready=false;if(!defer)this.buildRows(this.rows);
     }
+    buildCells(count=24){
+      const end=Math.min(this.grid.length,this.buildCursor+Math.max(1,Math.floor(count)));
+      for(let i=this.buildCursor;i<end;i++){const y=Math.floor(i/this.cols),x=i%this.cols;this.grid[i]=this.walkable((x+.5)*this.cell,(y+.5)*this.cell)?1:0;}
+      this.buildCursor=end;this.builtRows=Math.floor(end/this.cols);this.ready=end===this.grid.length;return this.ready;
+    }
+    buildRows(count=1){return this.buildCells(Math.min(this.grid.length,(this.builtRows+Math.max(1,Math.floor(count)))*this.cols)-this.buildCursor);}
     walkable(x,y,r=this.radius){
       if(!Number.isFinite(x)||!Number.isFinite(y)||x<r||y<r||x>this.map.width-r||y>this.map.height-r)return false;
       if(this.map.terrainWalkable&&!this.map.terrainWalkable(x,y,r))return false;
@@ -186,5 +280,5 @@
       if(moved>0)entity.walking=.2;return moved;
     }
   }
-  globalThis.MareWorld={maps,Camera,Navigation,sortDepth,segmentRect,blocksProjectile,cleanColliders,occluded};
+  globalThis.MareWorld={maps,Camera,Coverage,coverageFor,Navigation,sortDepth,segmentRect,blocksProjectile,cleanColliders,occluded};
 })();

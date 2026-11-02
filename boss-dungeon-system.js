@@ -1,0 +1,58 @@
+'use strict';
+/* Local pure transitions. Commit the entire resulting save once, before UI effects. */
+((root)=>{
+ const VERSION=1,CAPACITY=120,MAX_STACK=9999,clone=x=>JSON.parse(JSON.stringify(x));
+ const ranks=['E','D','C','B','A','S'],rarities={E:'rare',D:'epic',C:'epic',B:'legendary',A:'legendary',S:'supreme'};
+ const fragments=Object.freeze(ranks.map(rank=>Object.freeze({id:'akuma_fragment_'+rank.toLowerCase(),materialId:'akuma_fragment_'+rank.toLowerCase(),rank,name:'Fragmento de Akuma no Mi · Rank '+rank,kind:'akuma-fragment',slot:'material',rarity:rarities[rank],fixedRarity:true,attack:0,defense:0,hp:0,symbol:'?',icon_path:'assets/quest-dungeons/akuma-fragment.png',description:'Fragmento de fruta misteriosa. Rank '+rank+'. Dez fragmentos Rank E formam uma Akuma aleatória Rank E. Outros ranks ainda não possuem receita.'})));
+ // Berry is snapshotted from lifetime earned currency when an attempt starts.
+ const catalog=Object.freeze([{id:'alvida',name:'Alvida',level:10,location:'Confronto da Capitã Pirata',temporaryMonster:'mr3'},{id:'morgan',name:'Morgan',level:20,location:'Confronto do Capitão da Marinha',temporaryMonster:'cocox'}].map(Object.freeze));
+ const byId=Object.fromEntries(catalog.map(d=>[d.id,d])),quantity=i=>Number.isSafeInteger(i?.quantity)&&i.quantity>0?i.quantity:1;
+ const owner=(item,save)=>!item?.boundToCharacter||item.boundToCharacter===save.characterId;
+ const bound=item=>typeof item?.boundToCharacter==='string'&&!!item.boundToCharacter;
+ function migrate(original,newId){const s=clone(original);s.characterId ||=newId||root.crypto?.randomUUID?.();if(!s.characterId)throw Error('Identidade persistente necessária');const old=s.bossDungeons||{};s.bossDungeons={version:VERSION,seq:Number.isSafeInteger(old.seq)?old.seq:0,records:{...(old.records||{})},reveal:old.reveal||null};return s;}
+ function status(save,id){const d=byId[id];if(!d)return 'unavailable';const r=save.bossDungeons?.records[id];if(r?.phase==='claimed')return 'claimed';if(r?.phase==='pending')return 'pending';if(save.level<d.level)return 'locked';return r?.phase==='running'?'running':'available';}
+ const fail=message=>({ok:false,message});
+ function begin(original,id,runId,now=Date.now()){
+  const d=byId[id];if(!d||!original.characterId||!runId)return fail('Masmorra inválida.');const state=status(original,id);if(state==='locked'||state==='claimed')return fail(state==='locked'?'Requer nível '+d.level+'.':'Esta masmorra já foi concluída.');
+  const s=migrate(original);if(state==='pending')return {ok:true,state:s,record:s.bossDungeons.records[id],resume:true};
+  const record={phase:'running',runId,encounterId:runId+':enemy',ownerId:s.characterId,startedAt:now,berryReward:Math.floor(Math.max(0,Number(s.stats?.goldEarned)||0)/100)};s.bossDungeons.records[id]=record;s.bossDungeons.seq++;return {ok:true,state:s,record};
+ }
+ function reward(save,id,xpNeeded){const d=byId[id];return d?{xp:Math.round(xpNeeded(d.level)*(save.level<=d.level?.2:.1)),berry:Number.isSafeInteger(save.bossDungeons?.records[id]?.berryReward)?save.bossDungeons.records[id].berryReward:Math.floor(Math.max(0,Number(save.stats?.goldEarned)||0)/100),materialId:fragments[0].materialId,quantity:5,boundToCharacter:save.characterId}:null;}
+ function defeat(original,id,identity,xpNeeded,now=Date.now()){
+  const r=original.bossDungeons?.records[id];if(!r||r.phase!=='running'||r.ownerId!==original.characterId||r.runId!==identity?.runId||r.encounterId!==identity?.encounterId)return fail('O adversário não pertence a esta instância.');
+  const s=migrate(original),next=s.bossDungeons.records[id];next.phase='pending';next.reward=reward(s,id,xpNeeded);next.defeatedAt=now;s.bossDungeons.seq++;return {ok:true,state:s,record:next};
+ }
+ function materialDef(defs,id){return defs.findIndex(d=>d.kind==='akuma-fragment'&&d.materialId===id);}
+ function claim(original,id,{runId,position,chest,defs,applyXP,commit,now=Date.now()}={}){
+  const r=original.bossDungeons?.records[id];if(!r||r.phase!=='pending'||r.runId!==runId||r.ownerId!==original.characterId)return fail('Recompensa indisponível ou já recebida.');
+  if(!position||!chest||Math.hypot(position.x-chest.x,position.y-chest.y)>chest.radius)return fail('Aproxime-se do baú no mapa.');
+  const def=materialDef(defs,r.reward.materialId);if(def<0)return fail('Material indisponível no catálogo.');
+  const stack=original.inventory.find(i=>i.materialId===r.reward.materialId&&i.boundToCharacter===original.characterId&&!i.locked&&quantity(i)+5<=MAX_STACK);
+  if(!stack&&original.inventory.length>=CAPACITY)return fail('Recompensa pendente: libere um espaço na mochila.');
+  const s=migrate(original),receipt='dungeon:'+s.characterId+':'+id;
+  if(stack){const target=s.inventory.find(i=>i.id===stack.id);target.quantity=quantity(target)+5;target.sources=[...new Set([...(target.sources||[]),receipt])];}
+  else s.inventory.push({id:receipt,def,materialId:r.reward.materialId,quantity:5,rank:'E',rarity:'rare',level:1,plus:0,locked:false,binding:'character',boundToCharacter:s.characterId,origin:'Masmorra de Chefes · '+byId[id].name,sources:[receipt],obtainedAt:now});
+  s.gold+=r.reward.berry;s.stats||={};s.stats.goldEarned=(s.stats.goldEarned||0)+r.reward.berry;applyXP(s,r.reward.xp);
+  Object.assign(s.bossDungeons.records[id],{phase:'claimed',claimedAt:now,receipt});s.bossDungeons.seq++;
+  try{if(commit(s)!==true)return fail('Não foi possível salvar. A recompensa continua pendente.');}catch{return fail('Não foi possível salvar. A recompensa continua pendente.');}
+  return {ok:true,state:s,reward:r.reward};
+ }
+ function ownedFragments(save,rank='E'){return save.inventory.filter(i=>i.materialId==='akuma_fragment_'+rank.toLowerCase()&&i.boundToCharacter===save.characterId&&!i.locked);}
+ const count=(s,rank='E')=>ownedFragments(s,rank).reduce((n,i)=>n+quantity(i),0);
+ function craft(original,{expectedSeq,defs,catalog:fruits,random=Math.random,commit,now=Date.now(),chosenId=null}={}){
+  if(!original.characterId||expectedSeq!==original.bossDungeons?.seq)return fail('A seleção mudou. Atualize o inventário.');if(original.bossDungeons.reveal)return fail('Confira primeiro a fruta formada.');if(count(original)<10)return fail('São necessários 10 fragmentos Rank E desbloqueados deste personagem.');
+  const eligible=fruits.filter(f=>f.rank==='E'&&f.available!==false&&defs.some(d=>d.fruitId===f.id));if(!eligible.length)return fail('Não há frutas Rank E elegíveis.');
+  const stacks=ownedFragments(original);let needed=10,removed=0;for(const i of stacks){if(needed<=0)break;const used=Math.min(needed,quantity(i));needed-=used;if(used===quantity(i))removed++;}
+  if(original.inventory.length-removed+1>CAPACITY)return fail('Libere espaço para a fruta antes de formar.');
+  let chosen;try{if(chosenId)chosen=eligible.find(f=>f.id===chosenId);else{const roll=random();if(!Number.isFinite(roll)||roll<0||roll>=1)throw Error();chosen=eligible[Math.floor(roll*eligible.length)];}if(!chosen)return fail('Fruta elegível inválida.');}catch{return fail('Não foi possível sortear. Nada foi consumido.');}
+  const s=migrate(original);needed=10;
+  for(const i of ownedFragments(s)){if(needed<=0)break;const used=Math.min(needed,quantity(i));needed-=used;i.quantity=quantity(i)-used;}
+  s.inventory=s.inventory.filter(i=>i.quantity!==0);const id='formed-akuma:'+s.characterId+':'+expectedSeq,def=defs.findIndex(d=>d.fruitId===chosen.id);
+  const item={id,def,type:'akuma_no_mi',fruitId:chosen.id,rank:'E',rarity:'rare',level:1,plus:0,locked:false,binding:'character',boundToCharacter:s.characterId,origin:'Formada com fragmentos vinculados Rank E',obtainedAt:now};
+  s.inventory.push(item);s.bossDungeons.seq++;s.bossDungeons.reveal={itemId:id,fruitId:chosen.id,rank:'E',boundToCharacter:s.characterId,createdAt:now};
+  try{if(commit(s)!==true)return {...fail('Não foi possível salvar. Nada foi consumido.'),chosenId:chosen.id};}catch{return {...fail('Não foi possível salvar. Nada foi consumido.'),chosenId:chosen.id};}
+  return {ok:true,state:s,item,fruit:chosen};
+ }
+ function acknowledge(original,itemId,commit){if(original.bossDungeons?.reveal?.itemId!==itemId)return fail('Revelação já encerrada.');const s=migrate(original);s.bossDungeons.reveal=null;try{if(commit(s)!==true)return fail('Não foi possível salvar.');}catch{return fail('Não foi possível salvar.');}return {ok:true,state:s};}
+ root.MareBossDungeons={VERSION,CAPACITY,MAX_STACK,catalog,byId,fragments,rarities,quantity,bound,owner,migrate,status,begin,reward,defeat,claim,count,craft,acknowledge};if(typeof module!=='undefined')module.exports=root.MareBossDungeons;
+})(globalThis);

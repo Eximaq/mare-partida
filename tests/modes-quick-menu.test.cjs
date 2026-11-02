@@ -8,8 +8,8 @@ const html=get('index.html'),js=get('game.js'),css=get('modes-menu.css'),build=g
 new vm.Script(js,{filename:'game.js'});
 assert.match(html,/id="modesMenuTrigger"[^>]*data-modes-menu-trigger[^>]*aria-haspopup="menu"[^>]*aria-expanded="false"/);
 assert.match(html,/id="modesQuickMenu"[^>]*class="character-quick-menu modes-quick-menu hidden"/);
-assert.equal((html.match(/data-quick-mode="/g)||[]).length,2,'no unsupported modes added');
-for(const mode of ['map','prison'])assert.ok(html.includes('data-quick-mode="'+mode+'"'),mode+' is directly accessible');
+assert.equal((html.match(/data-quick-mode="/g)||[]).length,3,'three implemented modes');
+for(const mode of ['map','prison','dungeons'])assert.ok(html.includes('data-quick-mode="'+mode+'"'),mode+' is directly accessible');
 assert.ok(html.includes('aria-keyshortcuts="M"'));
 assert.ok(html.includes('href="modes-menu.css"'));
 assert.match(js,/function toggleModesMenu\(\)/);
@@ -24,3 +24,5 @@ assert.match(js,/if\(navigation\.includes\(panel\)/,'existing voyage focus manag
 assert.ok(css.includes('#mainMenu .modes-quick-menu'));
 assert.ok(build.includes("'modes-menu.css'"));
 console.log('Menu Modos: direct map/prison actions, keyboard navigation, escape, focus, CSS and Pages build OK');
+
+assert.deepEqual([...html.matchAll(/data-quick-mode="([^"]+)"/g)].map(m=>m[1]),['map','prison','dungeons']);

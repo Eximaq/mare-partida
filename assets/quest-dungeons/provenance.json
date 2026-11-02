@@ -1,0 +1,31 @@
+{
+  "mapId": "8cf41b1c-df16-4a86-beb8-74ab6dc6d7f3",
+  "archiveSha256": "7975c02f6e8cecb8f7be2f35b9956df974d1fc9d2d92f691516559032b12676c",
+  "compositeSha256": "dbef178013dab0369ac9bea943a3b77558159bd4cbe6f831661fa1bda357bd33",
+  "dimensions": [
+    1856,
+    1664
+  ],
+  "objects": 44,
+  "uniqueSprites": 15,
+  "terrainSource": "PixelLab get_map (native terrain metadata)",
+  "artProcessing": "Native composite and object RGBA files copied byte-for-byte; only world origins normalized. No map generation, repaint or moved source objects.",
+  "chestSourcePixels": [
+    802,
+    -168
+  ],
+  "chestNormalizedBounds": {
+    "x": 930,
+    "y": 280,
+    "w": 64,
+    "h": 64
+  },
+  "sourceOriginPixels": [
+    -128,
+    -448
+  ],
+  "spawnSourceCell": [
+    12,
+    15
+  ]
+}
