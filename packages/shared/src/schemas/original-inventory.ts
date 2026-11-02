@@ -56,6 +56,7 @@ export const originalItemSchema = z.strictObject({
   forgeVersion: z.literal(4).optional(),
   pearlId: z.string().max(80).optional(),
   materialId: z.enum(['akuma_fragment_e','akuma_fragment_d','akuma_fragment_c','akuma_fragment_b','akuma_fragment_a','akuma_fragment_s']).optional(),
+  qty: z.number().int().min(1).max(99999).optional(),
   quantity: z.number().int().min(1).max(9999).optional(),
   rank: z.enum(['E','D','C','B','A','S']).optional(),
   binding: z.literal('character').optional(),

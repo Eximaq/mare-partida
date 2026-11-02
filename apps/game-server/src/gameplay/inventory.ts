@@ -51,6 +51,7 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
    after.inventory.unshift(make(chosen.i,r.gearLevel,rarity,battle.hunt.get(k.area).name));
   }
   if(random()<Math.min(1,r.potionChance*lootMultiplier))after.potions=Math.min(1000000000,after.potions+r.potions);
+  if(require('../../../../haki-system.js').drop({...k.monster,source:k.monster.source??'world'},random)&&after.inventory.length<120){const def=defs.findIndex(d=>d.kind==='haki-book');if(def<0)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(def,1,'epic',battle.hunt.get(k.area).name));}
   if(underworld&&k.monster.type!=='boss'&&after.inventory.length<120){
    const special=U.loot(g,random);
    if(special.box){const def=defs.findIndex(d=>d.kind==='pearl-box'&&d.boxLevel===1);if(def<0)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(def,1,String(defs[def]!.rarity??'common'),'Senhor do Submundo'));}
@@ -76,6 +77,7 @@ function valid(input: unknown,owner?:string): OriginalInventory {
   if (new Set(all.map((i) => i.id)).size !== all.length)
     throw new AuthFault(503, "original_inventory_unavailable");
   for(const item of all){
+    if(item.qty!==undefined&&defs[item.def]?.kind!=='haki-fragment')throw new AuthFault(503,'original_inventory_unavailable');
     if(owner&&item.boundToCharacter&&item.boundToCharacter!==owner)throw new AuthFault(503,'original_inventory_unavailable');
     const def=defs[item.def];
     if(def?.kind==='akuma-fragment'&&(!item.boundToCharacter||item.binding!=='character'||item.materialId!==def.materialId||item.rank!==def.rank||!item.quantity))throw new AuthFault(503,'original_inventory_unavailable');

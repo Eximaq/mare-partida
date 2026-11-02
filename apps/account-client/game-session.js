@@ -30,6 +30,11 @@
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    if(action==='haki.unlock')return keys==='itemId'&&instanceId(p.itemId);
+    if(action==='haki.toggle')return keys==='branch'&&['armament','observation'].includes(p.branch);
+    if(action==='haki.configure')return keys==='branch,enabled'&&['armament','observation'].includes(p.branch)&&typeof p.enabled==='boolean';
+    if(action==='haki.cast')return keys==='';
+    if(action==='haki.invest')return keys==='expectedSeq,nodeId'&&Number.isSafeInteger(p.expectedSeq)&&p.expectedSeq>=0&&['coating','hardening','guard','imbuement','emission','armament-final','perception','anticipation','intent','serenity','future','observation-final','presence','resolve','pressure','conqueror-final'].includes(p.nodeId);
     if(['dungeon.enter','dungeon.claim'].includes(action))return keys==='dungeonId'&&['alvida','morgan','buggy','kuro','krieg','arlong','smoker','wapol','crocodile'].includes(p.dungeonId);
     if(action==='dungeon.craft')return keys==='expectedSeq'&&Number.isSafeInteger(p.expectedSeq)&&p.expectedSeq>=0;
     if(action==='dungeon.acknowledge')return keys==='itemId'&&instanceId(p.itemId);
