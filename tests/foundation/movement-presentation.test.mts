@@ -33,3 +33,19 @@ test('a peer starting between polls is smoothed even when its first observed pro
  assert.equal(p.sample(750).x,0);
  assert.equal(p.sample(950).x,200);
 });
+test('combat samples keep moving across the polling interval instead of stopping after 200 ms',()=>{
+ const p=createWorldPresentation(),idle=(x:number)=>world(x,{path:[]}),options={buffered:true};
+ p.update(idle(0),0,options);const next=idle(75),copy=structuredClone(next);p.update(next,750,options);
+ assert.equal(p.sample(750).x,0);
+ assert.ok(p.sample(1250).x>p.sample(1050).x,'movement continues in the middle of a 750ms snapshot interval');
+ assert.ok(p.sample(1450).x<75,'do not rush to the endpoint then freeze');
+ assert.equal(p.sample(2000).x,75,'packet loss settles at the last authorized point');
+ assert.deepEqual(next,copy);
+});
+test('buffered combat handles jitter and a stop, while manual movement retains short correction',()=>{
+ const p=createWorldPresentation(),idle=(x:number)=>world(x,{path:[]});
+ p.update(idle(0),0,{buffered:true});p.update(idle(80),800,{buffered:true});
+ const before=p.sample(1500);p.update(idle(145),1500,{buffered:true});assert.ok(Math.abs(p.sample(1500).x-before.x)<1e-9);
+ p.update(idle(145),2400,{buffered:true});assert.equal(p.sample(4000).x,145);
+ p.update(idle(160),4100);assert.equal(p.sample(4300).x,160);
+});
