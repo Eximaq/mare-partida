@@ -3,6 +3,7 @@ import type {PoolClient} from 'pg';
 import {worldActions,worldSnapshotSchema,type CharacterCommand,type CharacterState,type WorldSnapshot} from '@mare/shared';
 import {AuthFault} from '../auth/errors.js';
 import {readFighter} from './fighter.js';
+import {syncBattleWorld,readBattle} from './battle.js';
 const require=createRequire(import.meta.url),catalog=require('../../../../world-catalog.cjs').load;
 type Point={x:number;y:number};
 type Row={rules_hash:string;map_id:string;area:string|null;x:number;y:number;path:Point[];speed:number;direction:WorldSnapshot['direction'];started_at:Date;motion_until:Date};
@@ -18,11 +19,12 @@ function snapshot(row:Row,now:Date):WorldSnapshot {
 export async function readWorld(client:PoolClient,id:string,now?:Date){const row=(await client.query<Row>(`SELECT w.*,least(w.motion_until,coalesce(c.expires_at,w.started_at),s.expires_at,s.idle_expires_at,s.revoked_at) AS motion_until
  FROM mare_game.character_world w LEFT JOIN mare_game.character_control c ON c.character_id=w.character_id
  LEFT JOIN mare_game.app_sessions s ON s.id=c.session_id WHERE w.character_id=$1`,[id])).rows[0];return row?snapshot(row,now??await clock(client)):null;}
-async function store(client:PoolClient,id:string,w:WorldSnapshot){
+export async function storeWorld(client:PoolClient,id:string,w:WorldSnapshot){
  await client.query(`INSERT INTO mare_game.character_world(character_id,rules_hash,map_id,area,x,y,path,speed,direction,started_at,motion_until)
  VALUES($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10,$11) ON CONFLICT(character_id) DO UPDATE
  SET rules_hash=EXCLUDED.rules_hash,map_id=EXCLUDED.map_id,area=EXCLUDED.area,x=EXCLUDED.x,y=EXCLUDED.y,path=EXCLUDED.path,speed=EXCLUDED.speed,direction=EXCLUDED.direction,started_at=EXCLUDED.started_at,motion_until=EXCLUDED.motion_until`,[id,w.rulesHash,w.mapId,w.area,w.position.x,w.position.y,JSON.stringify(w.path),w.speed,w.direction,w.serverNow,w.motionUntil]);
 }
+const store=storeWorld;
 // Called under the same character lock as lease takeover: old motion cannot resume.
 export async function stopWorld(client:PoolClient,id:string){
  // Lease acquisition also serves pre-world migration fixtures; no world exists then.
@@ -51,12 +53,14 @@ export async function mutateWorld(client:PoolClient,id:string,input:CharacterCom
  }else{w={...w!,path:[],serverNow:now.toISOString(),motionUntil:now.toISOString()};}
  if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
  await store(client,id,worldSnapshotSchema.parse(w));
+ if(input.action!=='world.initialize')await syncBattleWorld(client,id,w!.area,now.getTime());
  const updated=await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1 AND state_version=$2 RETURNING id',[id,state.version]);
  if(!updated.rowCount)throw new AuthFault(409,'state_version_conflict');
  return w!;
 }
 
 export async function enterPilotWorld(client:PoolClient,id:string){
+ if(await readBattle(client,id))throw new AuthFault(409,'battle_original_active');
  if(!await readWorld(client,id))return null;
  const now=await clock(client),rules=catalog(),nav=rules.navigation('dawn'),position={...nav.map.spawn};
  const enemy=nav.nearest({x:position.x+110,y:position.y});

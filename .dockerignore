@@ -80,3 +80,9 @@
 !quest-dungeons-world.js
 !world-system.js
 !archipelago.js
+!world-battle.cjs
+!hunt-system.js
+!monster-behavior.js
+!monster-catalog.js
+!combat-vfx-data.js
+!combat-vfx.js

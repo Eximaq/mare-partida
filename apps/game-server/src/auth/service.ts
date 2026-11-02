@@ -1,4 +1,5 @@
 import {readWorld,stopWorld} from '../characters/world.js';
+import {readBattle,pauseBattle} from '../characters/battle.js';
 import {readOriginalInventory} from '../gameplay/inventory.js';
 import {getGameCatalog} from "../gameplay/catalog.js";
 import {readInventory,readItemCatalog} from "../characters/inventory.js";
@@ -289,13 +290,13 @@ export class AuthService {
   }
   async onlineState(token: string, id: string) {
     return this.withSession(token, "play", async (client, row) => {
-      await this.owned(client, row.account_id, id);
+      await this.owned(client, row.account_id, id,true);
       const state = await readCharacterState(client, id);
       const journey = (await client.query<{ started: boolean }>(
         "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started", [id],
       )).rows[0]!;
       const originalInventory=await readOriginalInventory(client,id);
-      return { state, world:await readWorld(client,id), ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: await readFighter(client,id,state), attributes: await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      return { state, battle:await readBattle(client,id), world:await readWorld(client,id), ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: await readFighter(client,id,state), attributes: await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(
@@ -377,6 +378,7 @@ export class AuthService {
       )
         return new AuthFault(409, "control_conflict");
       await stopWorld(client,id);
+      await pauseBattle(client,id);
       const control = opaque();
       await client.query(
         `INSERT INTO mare_game.character_control(character_id,session_id,token_hash,epoch,expires_at)

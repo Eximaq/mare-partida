@@ -34,7 +34,7 @@
   }
   function project(base, data) {
     const o = data.online,
-      frozen = ['active','won','lost'].includes(o.combat?.status),
+      frozen = !o.battle&&['active','won','lost'].includes(o.combat?.status),
       f = frozen ? o.combat.fighter ?? o.combatPreview : o.combatPreview;
     if (!f || !Number.isInteger(f.maxHp) || f.maxHp < 1)
       throw new Error("invalid_server_state");
@@ -46,8 +46,8 @@
       level: o.state.level,
       xp: safe(o.progression.xpIntoLevel),
       gold: safe(o.state.gold),
-      hp: frozen && o.combat?.encounterId ? o.combat.playerHp : f.maxHp,
-      energy: 0,
+      hp: o.battle?.hp ?? (frozen && o.combat?.encounterId ? o.combat.playerHp : f.maxHp),
+      energy: o.battle?.energy ?? 0,
       potions: 0,
       materials: 0,
       inventory: [],
@@ -58,10 +58,11 @@
       attributePoints: o.attributes.available,
       stats: Object.fromEntries(Object.keys(base.stats).map((k) => [k, 0])),
       ...(o.originalInventory?structuredClone(o.originalInventory):{}),
+      ...(o.battle?{hunts:structuredClone(o.battle.hunts),stats:{...Object.fromEntries(Object.keys(base.stats).map(k=>[k,0])),kills:Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.kills,0),boss:Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.bosses,0)}}:{}),
     };
   }
   function derived(base, data) {
-    const f = ['active','won','lost'].includes(data.online.combat?.status)?data.online.combat.fighter??data.online.combatPreview:data.online.combatPreview;
+    const f = !data.online.battle&&['active','won','lost'].includes(data.online.combat?.status)?data.online.combat.fighter??data.online.combatPreview:data.online.combatPreview;
     if(f.rulesetId==='original-character-v1')return {...base,...structuredClone(f.stats),magicDefense:f.stats.defense};
     return {
       ...base,
@@ -93,6 +94,12 @@
     help: "Guia do Navegante",
   };
   const errors = {
+    battle_target_missing:'Esse alvo não está mais disponível.',
+    battle_skill_unavailable:'A habilidade precisa de energia, recarga e um alvo ao alcance.',
+    battle_rules_changed:'As regras de combate foram atualizadas. Aguarde a atualização do servidor.',
+    battle_original_active:'A caçada já usa os monstros da ilha. Escolha sua rota no mapa.',
+    battle_unavailable:'Entre em uma ilha e aguarde seu personagem renascer para caçar.',
+    battle_first_unavailable:'A primeira vitória ainda não pode ser resgatada.',
     world_destination_blocked:'Esse destino não tem passagem livre.',
     world_route_unavailable:'Não há uma rota livre até esse ponto.',
     world_level_required:'Seu nível ainda não permite viajar para essa ilha.',
@@ -198,6 +205,7 @@
         );
       }
       if (["modes", "map", "hunt", "contracts"].includes(panel)) {
+        if(o.battle)return head+'<p>Explore as ilhas pelo mapa e use a caçada na HUD. Os contratos serão integrados em outra etapa.</p>';
         const h = o.hunt,
           c = o.combat;
         return (
@@ -305,6 +313,7 @@
           return;
         }
         if (client.data?.online.originalInventory && event.target.closest("#usePotion,#buyPotion"))return;
+        if (client.data?.online.battle && event.target.closest('#skill1,#skill2'))return;
         if (
           event.target.closest(
             "#skill1,#skill2,#skill3,#usePotion,#buyPotion,#zoanTransform,#hakiKing,#changePath",
@@ -343,16 +352,19 @@
       if (!client.data) location.replace("/online/");
       render();
     });
+    let lastRead=0;
     const poll = setInterval(() => {
       if (document.hidden || reading || client.busy) return;
+      const now=Date.now(),period=client.data?.online.battle&&client.controlled?750:3000;
+      if(now-lastRead<period)return;lastRead=now;
       reading = true;
       void client
-        .read()
+        .read(true)
         .catch(message)
         .finally(() => {
           reading = false;
         });
-    }, 3000);
+    }, 250);
     const renewal = setInterval(() => {
       if (!document.hidden) void client.renew().catch(message);
     }, 30000);

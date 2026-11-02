@@ -1,4 +1,5 @@
 import {isWorldAction,mutateWorld} from './world.js';
+import {isBattleAction,mutateBattle,readBattle} from './battle.js';
 import {isOriginalAction,mutateOriginalInventory} from '../gameplay/inventory.js';
 import {mutateInventory,readInventory} from "./inventory.js";
 import type { PoolClient } from "pg";
@@ -39,9 +40,11 @@ export async function executeCharacterCommand(
   if (state.version !== input.expectedVersion) throw new AuthFault(409, "state_version_conflict");
   // Keep immutable receipts for replay; bound request rate, not a player's lifetime.
   const budget = (await client.query<{recent:number}>(
-    "SELECT count(*)::int AS recent FROM mare_game.character_commands WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds'",[characterId]
+    "SELECT count(*)::int AS recent FROM mare_game.character_commands WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds' AND result->>'action'<>'battle.reward'",[characterId]
   )).rows[0]!;
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
+  if(isBattleAction(input.action)){await mutateBattle(client,characterId,input,state);state=await readCharacterState(client,characterId);}
+  if(['journey.begin','hunt.begin','hunt.claim','combat.begin','combat.attack','combat.claim'].includes(input.action)&&await readBattle(client,characterId))throw new AuthFault(409,'battle_original_active');
   if (input.action === "journey.begin") {
     await beginJourney(client, characterId, input.requestId, state.version);
     state = await readCharacterState(client, characterId);

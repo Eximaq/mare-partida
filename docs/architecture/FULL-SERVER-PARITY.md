@@ -110,8 +110,10 @@ personagem existente foi apagado nesta correção de direção.
 
 As fórmulas básicas de classe/facção, equipamento/pérolas, progressão além do nível
 20 e painel original de atributos avançaram conforme
-`ORIGINAL-CHARACTER-SERVER.md`. Modificadores de talentos/frutas/Haki e o mundo de
-combate original continuam pendentes; o grupo de stats ainda é parcial.
+`ORIGINAL-CHARACTER-SERVER.md`. Modificadores de talentos/frutas/Haki continuam pendentes; o grupo de stats ainda
+é parcial. O núcleo de monstros e combate das ilhas avançou em
+[ORIGINAL-BATTLE-SERVER.md](ORIGINAL-BATTLE-SERVER.md), com worker, persistência e
+interface original; isso não encerra a paridade integral.
 
 ## Validação do primeiro incremento (catálogo)
 
@@ -139,3 +141,7 @@ O incremento [posição e viagens](ORIGINAL-WORLD-SERVER.md) persiste mapa e tra
 valida colisões/nível e projeta movimento pelo relógio PostgreSQL. O domínio mundo
 continua parcial: IA, combate original completo e instâncias especiais dependem
 dos próximos incrementos; nenhum deles é contado como entregue por este avanço.
+
+O incremento de [monstros e combate](ORIGINAL-BATTLE-SERVER.md) substitui a ronda
+na caçada original para personagens inicializados nesse domínio. IA, combate e
+habilidades permanecem parciais pelos limites descritos naquele documento.
