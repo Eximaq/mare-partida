@@ -1,6 +1,6 @@
 ## 01/11/2026 — Confirmações, menus, fragmentos e avisos compartilhados
 
-Fragmentos E–S corrigidos; resumos de consumo/resultado/risco; listas abertas no material aprovado; fila compacta de recebimentos com ícones reais. Preservação verificada de 82 estados × 14 superfícies da HUD. Base a533f92, branch feature/hud-shared-standardization. Integração final condicionada ao merge do PR #203, conforme decisão do proprietário. [Auditoria, arquivos, testes e compatibilidade](HUD-SHARED-STANDARDIZATION.md).
+Fragmentos E–S corrigidos; resumos de consumo/resultado/risco; listas abertas no material aprovado; fila compacta de recebimentos com ícones reais. Preservação verificada de 82 estados × 14 superfícies da HUD. Branch feature/hud-shared-standardization integrada à main 4fd85f9 após o merge do #203. Operações online preservam autoridade, versão e replay do servidor; 98 testes de fundação e regressão Chromium online aprovados. [Auditoria, arquivos, testes e compatibilidade](HUD-SHARED-STANDARDIZATION.md).
 
 ## 01/11/2026 — Haki, compactação das HUDs e encaixes de patentes
 
