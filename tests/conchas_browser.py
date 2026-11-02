@@ -112,7 +112,7 @@ with sync_playwright() as playwright:
         context, page = open_page(browser, high, size)
         travel(page)
         current = state(page)
-        assert current["map"] == {"id": "conchas", "width": 4480, "height": 3456}
+        assert {key: current["map"][key] for key in ("id", "width", "height")} == {"id": "conchas", "width": 4480, "height": 3456}, current["map"]
         # Source cells include the PixelLab origin offset. Check the declared
         # entry and its southern sector, then the actual hero position.
         entry = page.evaluate("""() => ({

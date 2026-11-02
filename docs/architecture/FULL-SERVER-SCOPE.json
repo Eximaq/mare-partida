@@ -1,6 +1,6 @@
 {
   "scope": "all-current-gameplay",
-  "baseline": "a533f92",
+  "baseline": "a533f926760057f2b3bcae253f613f469519c103",
   "completionRule": "Every current gameplay feature must be implemented with original rules, original UI integration and adversarial tests. A blocked button or isolated alpha substitute is not completion.",
   "features": [
     {"id":"identity","name":"Login, confirmation, recovery, sessions and character ownership","status":"implemented","sources":["apps/game-server/src/auth/service.ts","docs/operations/PHASE-2F-FINAL-ACCEPTANCE.md"]},

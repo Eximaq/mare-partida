@@ -61,4 +61,30 @@ também identificou o recibo pequeno demais para uma recompensa com o novo snaps
   além dos cenários de inventário/forja. A API desse teste de interface é simulada;
   os testes de transação usam PostgreSQL real, sem o provedor hospedado.
 
-Resultados finais e instalação local são registrados após a execução dos gates.
+Build/typecheck, 98 testes de fundação e 121 integrações PostgreSQL/HTTP passaram,
+incluindo dump/restore real. Build estático e os quatro testes de portal/exportação
+Paper Doll passaram. O navegador local automatizado permanece indisponível pela
+configuração da ferramenta; a validação Chromium/Docker ocorre no GitHub Actions.
+
+A instalação local recebeu backup antes da migração; os hashes dos dados de todas
+as 27 tabelas anteriores permaneceram iguais, excluindo apenas a coluna nova de
+origem do nível. Foram preservadas quatro contas/três personagens, com 15 migrações.
+Após reiniciar API/gateway, HTTPS foi validado com o certificado de localhost e o
+catálogo recusou acesso sem sessão (401). PostgreSQL permaneceu ligado.
+
+## Compatibilidade com o trabalho do colaborador
+
+Durante a entrega, a main avançou para `a533f92` com o PR#202. Seus ajustes de câmera,
+navegação, masmorras e proteção de gravação da demonstração foram preservados.
+Todos os assets permanecem idênticos à main. Os seis fragmentos foram acrescentados
+no fim do catálogo compartilhado (109 definições); um teste verifica o hash dos
+103 índices anteriores, sem rebalancear nem renumerar saves.
+
+Os comandos novos das masmorras da demonstração recusam execução online; o modo
+online não adquire o gravador dos saves locais. A autoridade de masmorras/fragmentos
+continua pendente e está explícita no manifesto (27 grupos). A inclusão das
+respectivas definições no catálogo não autoriza criação/uso de instâncias online.
+
+A revisão prossegue no Draft PR#203, branch `feature/server-character-parity`,
+com base na main atual e árvore consolidada. O Draft#201 e a branch anterior
+permanecem preservados. Não houve merge, force-push ou reescrita da main.

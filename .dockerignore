@@ -17,6 +17,9 @@
 !packages/shared/src/
 !packages/shared/src/**
 
+!boss-dungeon-system.js
+!character-catalog.js
+!character-system.js
 !item-catalog.js
 !forge-system.js
 !prison-system.js

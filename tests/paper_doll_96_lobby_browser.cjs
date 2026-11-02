@@ -1,3 +1,5 @@
+// RAF is paused by this harness: prepareMap advances the real deferred navigation
+// budget before drawing, without advancing gameplay or faking the map.
 /* Current default lobby, native pixel parity and save isolation. No fixture is written to the repository. */
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs/promises'),path=require('node:path');
@@ -5,7 +7,7 @@ const {chromium}=require('playwright');
 const base=process.argv.find(a=>/^https?:/.test(a))||'http://127.0.0.1:8157/dist/';
 const smoke=process.argv.includes('--smoke');
 const output=process.argv.find(a=>a.startsWith('--evidence='))?.slice(11);
-const hook=`window.__lobby96QA={get game(){return game},get runtime(){return lobby96},get hero(){return world.hero},save:saveGame,restore(value){game=JSON.parse(value)},draw(){presentWorld();drawVfxPanels()},panel(){openPanel('character');characterTab='appearance';renderPanel()},close:closePanel,enterHunt,returnLobby,stats:getDerived,step(dt){tick(dt);camera.update(combatFocus(),activeMap(),dt);presentWorld()},pixels(action,direction,frame){const c=document.createElement('canvas');c.width=c.height=512;const ok=lobby96.draw(c.getContext('2d'),game,{scene:'lobby',action,direction,time:frame/(action==='idle'?4:8)+.000001,x:256,y:400,scale:null,worldView:true});if(!ok)throw Error('96px frame unavailable');return c.toDataURL()},async profiles(){const old=game,failures=[];try{for(const classId of Object.keys(classes))for(const factionId of Object.keys(factions)){game={...old,classId,factionId};await lobby96.ensure(game);for(const dir of ['south','north','west','east'])for(const action of ['idle','walk']){const c=document.createElement('canvas');c.width=c.height=128;if(!lobby96.draw(c.getContext('2d'),game,{scene:'lobby',action,direction:dir,x:64,y:112}))failures.push({classId,factionId,dir,action});}}return failures;}finally{game=old;}}};`;
+const hook=`window.__lobby96QA={prepareMap(){lastTime=performance.now();return mapArtState()==='ready'},get game(){return game},get runtime(){return lobby96},get hero(){return world.hero},save:saveGame,restore(value){game=JSON.parse(value)},draw(){presentWorld();drawVfxPanels()},panel(){openPanel('character');characterTab='appearance';renderPanel()},close:closePanel,enterHunt,returnLobby,stats:getDerived,step(dt){tick(dt);camera.update(combatFocus(),activeMap(),dt);presentWorld()},pixels(action,direction,frame){const c=document.createElement('canvas');c.width=c.height=512;const ok=lobby96.draw(c.getContext('2d'),game,{scene:'lobby',action,direction,time:frame/(action==='idle'?4:8)+.000001,x:256,y:400,scale:null,worldView:true});if(!ok)throw Error('96px frame unavailable');return c.toDataURL()},async profiles(){const old=game,failures=[];try{for(const classId of Object.keys(classes))for(const factionId of Object.keys(factions)){game={...old,classId,factionId};await lobby96.ensure(game);for(const dir of ['south','north','west','east'])for(const action of ['idle','walk']){const c=document.createElement('canvas');c.width=c.height=128;if(!lobby96.draw(c.getContext('2d'),game,{scene:'lobby',action,direction:dir,x:64,y:112}))failures.push({classId,factionId,dir,action});}}return failures;}finally{game=old;}}};`;
 (async()=>{
  const browser=await chromium.launch({executablePath:process.env.CHROME_PATH,headless:true}),context=await browser.newContext({viewport:{width:1366,height:768}}),page=await context.newPage();
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
@@ -17,6 +19,7 @@ const hook=`window.__lobby96QA={get game(){return game},get runtime(){return lob
   await go(base+'?paperDoll96=1');await page.waitForFunction(()=>__mareDiagnostics().lobby96.state==='ready');
   await page.locator('#characterName').fill('Revisão96');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();
   assert(await page.evaluate(()=>__lobby96QA.runtime.ensure(__lobby96QA.game)));
+  await page.waitForFunction(()=>__lobby96QA.prepareMap());
   await page.evaluate(()=>__lobby96QA.draw());assert.equal(await page.evaluate(()=>__mareDiagnostics().lobby96.lastPose.action),'idle');
   const initial=await page.evaluate(()=>JSON.stringify(__lobby96QA.game)),saved=await page.evaluate(()=>localStorage.getItem('mare-partida-save-v1'));
   // The editor is a draft; only explicit confirmation can replace saved appearance.
@@ -67,7 +70,7 @@ const hook=`window.__lobby96QA={get game(){return game},get runtime(){return lob
   await page.evaluate(()=>__lobby96QA.close());
   // Zoans stay on their renderer; supported sword/rogue hunts use prepared96.
   assert.equal(await page.evaluate(()=>{const c=document.createElement('canvas');return __lobby96QA.runtime.draw(c.getContext('2d'),{...__lobby96QA.game,zoanTransformed:true},{scene:'lobby'});}),false);
-  await page.evaluate(()=>__lobby96QA.enterHunt());const count=await page.evaluate(()=>__mareDiagnostics().lobby96.draws);
+  await page.evaluate(()=>__lobby96QA.enterHunt());await page.waitForFunction(()=>__lobby96QA.prepareMap());const count=await page.evaluate(()=>__mareDiagnostics().lobby96.draws);
   await page.evaluate(()=>__lobby96QA.draw());assert(await page.evaluate(()=>__mareDiagnostics().lobby96.draws)>count,'sword/rogue combat uses the prepared96 renderer');
   await page.evaluate(()=>__lobby96QA.returnLobby());assert(await page.evaluate(()=>__lobby96QA.runtime.ensure(__lobby96QA.game)));await page.evaluate(()=>__lobby96QA.draw());
   const stats=await page.evaluate(()=>__mareDiagnostics().lobby96);assert(stats.images<=192&&stats.imageBytes<=64*1024*1024&&stats.bundles<=2&&stats.previews<=8&&stats.peakLoads<=6,JSON.stringify(stats));
@@ -78,6 +81,7 @@ const hook=`window.__lobby96QA={get game(){return game},get runtime(){return lob
   await context.route('**/tools/paper-doll-96-v3/manifest.json*',r=>r.fulfill({status:503,body:'{}'}));
   await go(base+'?paperDoll96=1');await page.waitForFunction(()=>__mareDiagnostics().lobby96.state==='failed');
   assert((await page.evaluate(()=>__mareDiagnostics().lobby96.errors)).length>0);
+  await page.waitForFunction(()=>__lobby96QA.prepareMap());
   await page.evaluate(()=>__lobby96QA.draw());assert.equal(await page.evaluate(()=>__mareDiagnostics().lobby96.draws),0);
   assert.equal(await page.evaluate(()=>__mareDiagnostics().paperDollReview.draws),0);
   await context.unroute('**/tools/paper-doll-96-v3/manifest.json*');
