@@ -28,10 +28,12 @@ Uma cópia do código para os dois desenvolvedores, sem ZIPs a cada mudança. A 
 ## Atualização diária
 
 - Ambos clonam o mesmo repositório uma vez: `git clone https://github.com/Eximaq/mare-partida.git`.
-- Antes de trabalhar: `git checkout main && git pull`.
-- Nova tarefa: `git checkout -b feature/nome-da-tarefa`.
-- Depois de testar: `git add . && git commit -m "descreva a mudança" && git push -u origin feature/nome-da-tarefa`.
-- No GitHub, abra um Pull Request para `main`; o outro desenvolvedor revisa. Faça merge depois dos testes.
+- Antes de trabalhar: confira `git status --short` e atualize as referências com `git fetch origin`. Preserve qualquer alteração local de outro desenvolvedor; use uma pasta isolada quando necessário.
+- Nova tarefa: com a árvore limpa, `git switch -c feature/nome-da-tarefa origin/main` (ou `fix/...`).
+- Depois de testar: adicione explicitamente apenas os arquivos da tarefa, crie o commit e faça `git push -u origin feature/nome-da-tarefa`.
+- Abra o Pull Request, revise o diff com a `main` atual e confira os checks do commit que será integrado. Resolva conflitos sem descartar o trabalho do colaborador e execute novamente as verificações afetadas.
+- Por orientação do proprietário em 02/11/2026, uma atualização validada deve terminar com merge normal e publicação no GitHub Pages, salvo restrição posterior explícita. Respeite revisões/proteções exigidas; não faça bypass. Confirme o workflow e abra o site publicado antes de declarar a entrega.
+- Encerre PRs substituídos após auditar as diferenças, registrando onde o trabalho foi preservado. Não apague branches por padrão e não integre arte ainda em avaliação. A consolidação atual está em [SERVER-DELIVERY-CONSOLIDATION.md](operations/SERVER-DELIVERY-CONSOLIDATION.md).
 - Nunca use `git push --force` para sobrescrever alterações do amigo.
 
 ## Prévia local
@@ -41,6 +43,7 @@ Use `python tools/dev_server.py` e abra a URL indicada, ou `python tools/build_p
 ## Limitações
 
 - GitHub Pages executa apenas o frontend estático; não hospeda servidor MMORPG em tempo real.
-- O jogo atual utiliza `localStorage`: saves são específicos de cada navegador/origem e não são sincronizados entre os dois desenvolvedores.
+- A demonstração estática utiliza `localStorage`: saves são específicos de cada navegador/origem. O modo online usa o backend e PostgreSQL; a instalação contínua permanece local e não torna o colaborador acessível pela Internet.
+- A publicação estática não autoriza hospedar o backend, alterar Supabase/DNS ou contratar serviços. Essas ações seguem seu escopo específico.
 - Source code e imagens de um repositório público ficam acessíveis a terceiros. Confira direitos de assets/personagens antes de publicar comercialmente.
 - Não publique tokens, contas, arquivos `.env`, backups do jogo, saves pessoais, arquivos locais de credenciais ou arquivos brutos grandes de evidências.
