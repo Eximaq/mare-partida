@@ -1526,7 +1526,7 @@
   function tickOnlineBattle(dt){
     stepBasicAttack(dt);
     stepCombatVfx(dt);
-    for(const m of world.mobs){const pose=m.onlinePresentation.sample(performance.now());MareOnlineGameUI.stepMonsterVisual(m,pose,dt);}
+    for(const m of world.mobs){const pose=m.onlinePresentation.sample(performance.now());MareOnlineGameUI.stepMonsterVisual(m,pose,dt,lastTime);}
   }
   let onlineProjectionSnapshot=null;
   function syncOnlineGame(){

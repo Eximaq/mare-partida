@@ -14,3 +14,10 @@ test('monster walking/facing follows drawn displacement, not a stale server anim
  m.moving=1;stepMonsterVisual(m,{x:2,y:0},.02);assert.equal(m.moving,0);
  m.attackAnim=.5;m.emberFacing='north';stepMonsterVisual(m,{x:1,y:0},.02);assert.equal(m.emberFacing,'north','attack facing stays authoritative');
 });
+
+test('a stalled frame with multiple simulation substeps keeps the drawn walking pose',()=>{
+ const m={x:0,y:0,moving:0,emberFacing:'south',emberElapsed:0,attackAnim:0,hit:0};
+ stepMonsterVisual(m,{x:2,y:0},.05,100);stepMonsterVisual(m,{x:2,y:0},.02,100);
+ assert.equal(m.moving,1,'later substep must not cancel movement already drawn in this frame');
+ stepMonsterVisual(m,{x:2,y:0},.02,120);assert.equal(m.moving,0);
+});
