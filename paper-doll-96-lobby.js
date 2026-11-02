@@ -67,7 +67,7 @@
     const frame=Number.isFinite(progress)?Math.floor(Math.max(0,Math.min(1,progress))*clip.frames):Math.floor(Math.max(0,time)*clip.fps);
     return clip.loop?frame%clip.frames:Math.min(clip.frames-1,frame);
   }
-  function create({search='',baseURL=root.location?.href,onChange=()=>{}}={}){
+  function create({search='',baseURL=root.location?.href,onChange=()=>{},sharedLobby=false}={}){
     const active=enabled(search),rehearsal=false,base=new URL('tools/paper-doll-96-v3/',baseURL);
     let state=active?'loading':'off',message='',previewMessage='',release=null,assetRevision=null,manifest,catalog,rigs,weaponCatalog,wardrobe,choices={},current={...defaults},draft={...defaults};
     let draws=0,lastPose=null,pending=null,preparing=null,wanted=null,bundles=new Map(),previews=new Map(),failed=new Set();
@@ -145,7 +145,10 @@
     function releaseBundle(bundle){for(const value of new Set(bundle?.values())){const strip=value?.strip;if(strip){strip.width=0;strip.height=0;}}}
     function ensure(player,{consumer='player-prepare'}={}){
       if(state!=='ready')return Promise.resolve(false);
-      const target=resolve(player);wanted=target;
+      const target=resolve(player);
+      // Public peers share a bounded idle/walk cache; do not cancel another peer while composing.
+      if(sharedLobby&&pending)return pending;
+      wanted=target;
       if(bundles.has(target.key))return Promise.resolve(true);
       if(failed.has(target.key))return Promise.resolve(false);
       if(pending)return pending;
@@ -153,7 +156,7 @@
         while(wanted&&!bundles.has(wanted.key)&&!failed.has(wanted.key)){
           const next=wanted,bundle=new Map();preparing={key:next.key,bundle};
           try{
-            for(const action of ['idle','walk',...(next.supported?[next.attack,'attack-unarmed']:[])].filter((v,i,a)=>a.indexOf(v)===i))for(const dir of ['south','north','east']){
+            for(const action of ['idle','walk',...(!sharedLobby&&next.supported?[next.attack,'attack-unarmed']:[])].filter((v,i,a)=>a.indexOf(v)===i))for(const dir of ['south','north','east']){
               if(wanted.key!==next.key)break;
               for(const hideHeadgear of [next.look.hideHeadgear]){
                 const stateLook={...next.look,hideHeadgear},key=clipKey(action,dir,stateLook);
@@ -163,7 +166,7 @@
               }
             }
             if(wanted.key!==next.key){releaseBundle(bundle);continue;}
-            bundles.set(next.key,bundle);while(bundles.size>2){const key=bundles.keys().next().value;releaseBundle(bundles.get(key));bundles.delete(key);}message='';onChange();
+            bundles.set(next.key,bundle);while(bundles.size>(sharedLobby?16:2)){const key=bundles.keys().next().value;releaseBundle(bundles.get(key));bundles.delete(key);}message='';if(sharedLobby)trimSourceImages();onChange();
           }catch(error){releaseBundle(bundle);failed.add(next.key);if(failed.size>8)failed.delete(failed.values().next().value);if(wanted?.key===next.key)report(error,{consumer});else diagnose(error,{consumer});}
         }
         return bundles.has(wanted?.key);

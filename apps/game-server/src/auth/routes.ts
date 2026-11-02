@@ -161,7 +161,10 @@ export function createAuthHandler(options: {
         reply(405, { error: "method_not_allowed" });
         return;
       }
-      await service.rateLimit("ip:" + ip, 300, 60);
+      // Gameplay polling and movement share an IP behind the local gateway/NAT.
+      // Reserve the original authentication budget instead of letting play traffic consume it.
+      const gameplay = path === "/v1/me" || path === "/v1/hierarchy/ranking" || path === "/v1/characters" || !!match || !!stateMatch || !!commandMatch;
+      await service.rateLimit((gameplay ? "game-ip:" : "ip:") + ip, gameplay ? 600 : 300, 60);
       const jar = cookies(request),
         session = jar.get(SESSION),
         preauth = jar.get(PREAUTH);

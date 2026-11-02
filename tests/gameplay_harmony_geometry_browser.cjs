@@ -12,12 +12,27 @@ const hook='  window.__harmonyQA={get game(){return game},get session(){return s
   // A historical HTML/game pair must use its matching Haki module contract.
   // The old HTML predates haki-progression.js; mixing it with the new system prevents boot.
   if(old)for(const file of ['haki-system.js','haki-ui.js','haki-art.js'])await p.route('**/'+file+'*',route=>route.fulfill({contentType:'application/javascript',body:previous(file)}));
-  await p.route('**/game.js*',async route=>{const response=await route.fetch(),src=old?previous('game.js'):await response.text();await route.fulfill({response,body:src.replace('  window.__mareDiagnostics=',hook)});});
-  await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.__harmonyQA);await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__harmonyQA.game);
-  await p.evaluate(()=>{const g=__harmonyQA.game;g.level=43;g.stats.kills=2057;g.stats.damage=1365479;g.stats.boss=50;__harmonyQA.update();});
+  await p.route('**/game.js*',async route=>{const response=await route.fetch(),src=old?previous('game.js'):await response.text();await route.fulfill({response,body:src.replace('function tick(dt){', 'function tick(dt){if(window.__harmonyFreeze)return;').replace('  window.__mareDiagnostics=',hook)});});
+  await p.goto(process.env.MARE_TEST_URL);await p.waitForLoadState('networkidle');await p.waitForFunction(()=>window.__harmonyQA);await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__harmonyQA.game);
+  await p.evaluate(()=>{window.__harmonyFreeze=true;const g=__harmonyQA.game;g.level=43;g.stats.kills=2057;g.stats.damage=1365479;g.stats.boss=50;__harmonyQA.update();});
+  // Geometry compares identical content, not two independently advancing hunts.
+  // Combat/telemetry behavior has separate tests. Freeze simulation in this fixture only.
+  await p.evaluate(()=>document.fonts.ready);
   async function rect(key){
-   await p.waitForTimeout(220);
-   records[key]=await p.evaluate(selectors=>Object.fromEntries(selectors.map(s=>{const e=document.querySelector(s),r=e.getBoundingClientRect(),c=getComputedStyle(e);return [s,{x:r.x,y:r.y,w:r.width,h:r.height,visible:c.display!=='none'&&c.visibility!=='hidden'&&r.width>0&&r.height>0}]})),selectors);
+   records[key]=await p.evaluate(async selectors=>{
+    await document.fonts.ready;
+    const nodes=selectors.map(s=>document.querySelector(s));
+    const snapshot=()=>Object.fromEntries(selectors.map((s,i)=>{const e=nodes[i],r=e.getBoundingClientRect(),c=getComputedStyle(e);return [s,{x:r.x,y:r.y,w:r.width,h:r.height,visible:c.display!=='none'&&c.visibility!=='hidden'&&r.width>0&&r.height>0}]}));
+    let previous='',stable=0;
+    for(let attempt=0;attempt<80;attempt++){
+     await new Promise(resolve=>setTimeout(resolve,50));
+     const value=snapshot(),serialized=JSON.stringify(value);
+     const animating=document.getAnimations().some(a=>a.playState==='running'&&a.effect?.getComputedTiming().iterations!==Infinity&&nodes.some(n=>a.effect?.target&&(n.contains(a.effect.target)||a.effect.target.contains(n))));
+     stable=serialized===previous&&!animating?stable+1:0;previous=serialized;
+     if(stable>=5)return value;
+    }
+    throw Error('HUD geometry did not settle');
+   },selectors);
   }
   for(const [w,h]of sizes){
    await p.setViewportSize({width:w,height:h});
@@ -46,7 +61,7 @@ const hook='  window.__harmonyQA={get game(){return game},get session(){return s
   }
   await p.evaluate(()=>__harmonyQA.enter());
   for(const [w,h]of sizes){await p.setViewportSize({width:w,height:h});await rect(w+'x'+h+'/hunt-two-skills');}
-  await p.evaluate(()=>{const q=__harmonyQA;const def=q.defs.find(x=>x.fruitId==='akuma_mera_mera');if(!def)throw Error('Mera fixture not found');q.game.equipment.akuma_no_mi=q.newItem(def);q.syncVfx();q.update();});
+  await p.evaluate(()=>{const q=__harmonyQA;q.session.elapsed=60;q.session.xp=1200;const def=q.defs.find(x=>x.fruitId==='akuma_mera_mera');if(!def)throw Error('Mera fixture not found');q.game.equipment.akuma_no_mi=q.newItem(def);q.syncVfx();q.update();});
   assert(await p.locator('#skill3').isVisible(),'Rank S third slot');
   for(const [w,h]of sizes){await p.setViewportSize({width:w,height:h});await rect(w+'x'+h+'/hunt-three-skills');}
   await p.evaluate(()=>__harmonyQA.pause());await rect('hunt-paused');
