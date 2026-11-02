@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'contracts-board.js'
+      - 'contract-system.js'
+      - 'apps/account-client/**'
       - 'game.js'
       - 'ui-screens.css'
       - 'ui-components.css'
@@ -41,11 +43,14 @@ jobs:
           python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-contracts-http.log 2>&1 &
           sleep 2
           NODE_PATH=/tmp/mare-contracts-node/node_modules MARE_TEST_URL=http://127.0.0.1:8123/dist/ MARE_QA_DIR=/tmp/mare-contracts-visual node tests/contracts-board-browser.cjs
+          NODE_PATH=/tmp/mare-contracts-node/node_modules MARE_TEST_URL=http://127.0.0.1:8123/dist/ MARE_QA_DIR=/tmp/mare-contracts-online node tests/contracts-online-browser.cjs
       - name: Capturas reais
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: contratos-quadro-hd
-          path: /tmp/mare-contracts-visual/
+          path: |
+            /tmp/mare-contracts-visual/
+            /tmp/mare-contracts-online/
           if-no-files-found: warn
           retention-days: 14

@@ -83,6 +83,8 @@ jobs:
           const world=createRequire(import.meta.url)('./world-catalog.cjs').load();
           assert.equal(world.maps.lobby.spawn.x,1504);
           const battle=createRequire(import.meta.url)('./world-battle.cjs');
+          const contracts=createRequire(import.meta.url)('./contract-system.js');
+          assert.equal(contracts.quests.length,10);
           assert.equal(battle.create('beach',{maxHP:200,maxEnergy:90},0,()=>.5).mobs.length,14);
           assert(world.navigation('dawn').walkable(872,1608));
           assert.equal(getGameCatalog().items.length, 109);

@@ -1,4 +1,5 @@
 import {worldPointSchema,worldActions,worldSnapshotSchema} from './world.js';
+import {contractIdSchema} from './contracts.js';
 import {battleActions,battleTargetSchema} from './battle.js';
 import {inventoryTradeSchema,inventorySnapshotSchema,equipmentItemSchema,equipmentSlotSchema} from "./inventory.js";
 import { z } from "zod";
@@ -36,10 +37,11 @@ export const characterCommandSchema = z.discriminatedUnion("action", [z.strictOb
  z.strictObject({...commandEnvelope,action:z.literal('battle.auto'),payload:z.strictObject({enabled:z.boolean()})}),
  z.strictObject({...commandEnvelope,action:z.literal('battle.target'),payload:z.strictObject({targetId:battleTargetSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('battle.skill'),payload:z.strictObject({index:z.number().int().min(0).max(1)})}),
+ z.strictObject({...commandEnvelope,action:z.literal('contract.claim'),payload:z.strictObject({contractId:contractIdSchema})}),
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...worldActions,...battleActions,'battle.reward']),
+  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...worldActions,...battleActions,'battle.reward','contract.claim']),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),
   inventory: inventorySnapshotSchema.optional(),

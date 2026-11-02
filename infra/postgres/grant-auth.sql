@@ -54,3 +54,8 @@ GRANT INSERT (character_id,simulation,control_epoch) ON mare_game.character_batt
 GRANT UPDATE (simulation,control_epoch,tick_at) ON mare_game.character_battles TO mare_runtime;
 GRANT SELECT ON mare_game.world_battle_rewards TO mare_runtime;
 GRANT INSERT (character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) ON mare_game.world_battle_rewards TO mare_runtime;
+
+GRANT SELECT ON mare_game.contract_progress,mare_game.contract_claims TO mare_runtime;
+GRANT INSERT (character_id,contract_id,progress) ON mare_game.contract_progress TO mare_runtime;
+GRANT UPDATE (progress) ON mare_game.contract_progress TO mare_runtime;
+GRANT INSERT (character_id,contract_id,request_id,version_before,experience_before,gold_before,experience_delta,gold_delta,rules_hash) ON mare_game.contract_claims TO mare_runtime;

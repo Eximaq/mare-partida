@@ -9,6 +9,7 @@ import {readCharacterState} from './state.js';
 import {advanceLevel} from './progression.js';
 import {readOriginalInventory,awardWorldLoot} from '../gameplay/inventory.js';
 import {digest} from '../auth/vault.js';
+import {recordContractKills} from './contracts.js';
 const require=createRequire(import.meta.url),engine=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
 const rng=()=>randomInt(0,0x100000000)/0x100000000;
 export const isBattleAction=(action:string)=>(battleActions as readonly string[]).includes(action);
@@ -106,6 +107,7 @@ export async function tickWorldBattles(pool:Pool){
    if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
    const requestId=randomUUID();await awardWorldLoot(client,id,requestId,state,result.kills,undefined,result.potionsUsed);
    for(const k of result.kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,k.reward.xp,Math.round(k.reward.gold*engine.catalog.factions[fighter.factionId].gold),engine.rulesHash]);
+   await recordContractKills(client,id,result.kills);
    await advanceLevel(client,id,requestId,state);await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
    const after=await readCharacterState(client,id);
    if(after.level>state.level){const next=await readFighter(client,id,after);b.hp=next.maxHp;if(next.rulesetId==='original-character-v1')b.energy=next.stats.maxEnergy;}
