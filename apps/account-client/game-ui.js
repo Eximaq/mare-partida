@@ -21,9 +21,20 @@
         ? BigInt(Number.MAX_SAFE_INTEGER)
         : BigInt(n),
     );
+  // Presentation extrapolates a server-approved polyline; it never posts its result.
+  function worldPosition(w, elapsedMs) {
+    const duration=Math.max(0,Date.parse(w.motionUntil)-Date.parse(w.serverNow));
+    let budget=w.speed*Math.max(0,Math.min(duration,Number.isFinite(elapsedMs)?elapsedMs:0))/1000;
+    let {x,y}=w.position,direction=w.direction,moving=false;
+    for(const p of w.path){const dx=p.x-x,dy=p.y-y,d=Math.hypot(dx,dy);if(!d)continue;if(budget<=0)break;
+      direction=Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'back':'front');const step=Math.min(d,budget);x+=dx/d*step;y+=dy/d*step;budget-=step;
+      moving=step<d;if(moving)break;
+    }
+    return {x,y,direction,moving:moving&&elapsedMs<duration};
+  }
   function project(base, data) {
     const o = data.online,
-      frozen = ['active','won','lost'].includes(o.combat?.status),
+      frozen = !o.battle&&['active','won','lost'].includes(o.combat?.status),
       f = frozen ? o.combat.fighter ?? o.combatPreview : o.combatPreview;
     if (!f || !Number.isInteger(f.maxHp) || f.maxHp < 1)
       throw new Error("invalid_server_state");
@@ -35,8 +46,8 @@
       level: o.state.level,
       xp: safe(o.progression.xpIntoLevel),
       gold: safe(o.state.gold),
-      hp: frozen && o.combat?.encounterId ? o.combat.playerHp : f.maxHp,
-      energy: 0,
+      hp: o.battle?.hp ?? (frozen && o.combat?.encounterId ? o.combat.playerHp : f.maxHp),
+      energy: o.battle?.energy ?? 0,
       potions: 0,
       materials: 0,
       inventory: [],
@@ -47,10 +58,11 @@
       attributePoints: o.attributes.available,
       stats: Object.fromEntries(Object.keys(base.stats).map((k) => [k, 0])),
       ...(o.originalInventory?structuredClone(o.originalInventory):{}),
+      ...(o.battle?{hunts:structuredClone(o.battle.hunts),stats:{...Object.fromEntries(Object.keys(base.stats).map(k=>[k,0])),kills:Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.kills,0),boss:Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.bosses,0)}}:{}),
     };
   }
   function derived(base, data) {
-    const f = ['active','won','lost'].includes(data.online.combat?.status)?data.online.combat.fighter??data.online.combatPreview:data.online.combatPreview;
+    const f = !data.online.battle&&['active','won','lost'].includes(data.online.combat?.status)?data.online.combat.fighter??data.online.combatPreview:data.online.combatPreview;
     if(f.rulesetId==='original-character-v1')return {...base,...structuredClone(f.stats),magicDefense:f.stats.defense};
     return {
       ...base,
@@ -82,6 +94,17 @@
     help: "Guia do Navegante",
   };
   const errors = {
+    battle_target_missing:'Esse alvo não está mais disponível.',
+    battle_skill_unavailable:'A habilidade precisa de energia, recarga e um alvo ao alcance.',
+    battle_rules_changed:'As regras de combate foram atualizadas. Aguarde a atualização do servidor.',
+    battle_original_active:'A caçada já usa os monstros da ilha. Escolha sua rota no mapa.',
+    battle_unavailable:'Entre em uma ilha e aguarde seu personagem renascer para caçar.',
+    battle_first_unavailable:'A primeira vitória ainda não pode ser resgatada.',
+    world_destination_blocked:'Esse destino não tem passagem livre.',
+    world_route_unavailable:'Não há uma rota livre até esse ponto.',
+    world_level_required:'Seu nível ainda não permite viajar para essa ilha.',
+    world_combat_pending:'Conclua o encontro e receba a recompensa antes de viajar.',
+    world_rules_changed:'O mapa foi atualizado. Aguarde a atualização do servidor.',
     control_required: "Assuma o controle deste personagem para agir.",
     control_conflict:
       "Outra aba está controlando seu personagem. Assuma o controle se quiser continuar aqui.",
@@ -90,6 +113,8 @@
     item_equipped: "Desequipe antes de vender a última unidade.",
     item_quantity_insufficient: "Quantidade insuficiente.",
     attribute_points_insufficient: "Pontos insuficientes.",
+    combat_out_of_range:'Aproxime-se do adversário para atacar.',
+    combat_line_blocked:'Há um obstáculo entre você e o adversário.',
     combat_cooldown: "Aguarde a recarga do ataque.",
     combat_rest: "Aguarde o descanso antes do próximo encontro.",
     combat_daily_limit: "O limite de encontros em 24 horas foi atingido.",
@@ -180,6 +205,7 @@
         );
       }
       if (["modes", "map", "hunt", "contracts"].includes(panel)) {
+        if(o.battle)return head+'<p>Explore as ilhas pelo mapa e use a caçada na HUD. Os contratos serão integrados em outra etapa.</p>';
         const h = o.hunt,
           c = o.combat;
         return (
@@ -287,6 +313,7 @@
           return;
         }
         if (client.data?.online.originalInventory && event.target.closest("#usePotion,#buyPotion"))return;
+        if (client.data?.online.battle && event.target.closest('#skill1,#skill2'))return;
         if (
           event.target.closest(
             "#skill1,#skill2,#skill3,#usePotion,#buyPotion,#zoanTransform,#hakiKing,#changePath",
@@ -325,16 +352,19 @@
       if (!client.data) location.replace("/online/");
       render();
     });
+    let lastRead=0;
     const poll = setInterval(() => {
       if (document.hidden || reading || client.busy) return;
+      const now=Date.now(),period=client.data?.online.battle&&client.controlled?750:3000;
+      if(now-lastRead<period)return;lastRead=now;
       reading = true;
       void client
-        .read()
+        .read(true)
         .catch(message)
         .finally(() => {
           reading = false;
         });
-    }, 3000);
+    }, 250);
     const renewal = setInterval(() => {
       if (!document.hidden) void client.renew().catch(message);
     }, 30000);
@@ -352,6 +382,6 @@
       run,
     };
   }
-  root.MareOnlineGameUI = { project, derived, mount };
-  if (typeof module !== "undefined") module.exports = { project, derived };
+  root.MareOnlineGameUI = { project, derived, mount, worldPosition };
+  if (typeof module !== "undefined") module.exports = { project, derived, worldPosition };
 })(globalThis);

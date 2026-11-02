@@ -89,8 +89,13 @@ with sync_playwright() as p:
  assert '0 PT' in q.locator('[data-talent-points]').inner_text()
  q.evaluate("()=>{window.realSet=Storage.prototype.setItem;Storage.prototype.setItem=function(k,v){if(k==='mare-partida-save-v1')throw Error('quota');return realSet.call(this,k,v)}}")
  confirm(q);assert not saved(q)['talentBuilds']['sword']['nodes']
+ # Failed persistence keeps the shared confirmation open for review/retry.
+ assert q.locator('.confirmation-overlay').is_visible()
+ q.get_by_text('A operação não foi concluída. Confira o aviso e revise os dados.',exact=True).wait_for()
  q.evaluate('()=>{Storage.prototype.setItem=window.realSet}')
- confirm(q);assert saved(q)['talentBuilds']['sword']['nodes']['sword-0-0']==1
+ q.locator('[data-confirm-accept]').click()
+ q.locator('.confirmation-overlay').wait_for(state='detached')
+ assert saved(q)['talentBuilds']['sword']['nodes']['sword-0-0']==1
  assert not errors,errors
  b.close()
 print(json.dumps({'seven_classes':True,'responsive_sizes':7,'common_HD':512,'special_HD':256,'display':96,'errors':errors,'screenshots':str(OUT)}))

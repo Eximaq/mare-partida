@@ -1,5 +1,5 @@
 """Window reflow, mobile inventory jumps and safe UI-only navigation."""
-import copy, json, os
+import copy, json, os, re
 from pathlib import Path
 from playwright.sync_api import sync_playwright
 from polish_support import page_for, create, fixture, saved
@@ -24,6 +24,14 @@ def open_panel(q,name):
         q.locator('#modesMenuTrigger').click()
         q.locator('[data-quick-mode='+name+']').click()
     else:q.locator('#mainMenu [data-panel='+name+']').click()
+
+def density(q,label):
+    trigger=q.get_by_role('combobox',name=re.compile(r'^Densidade da HUD:'))
+    trigger.scroll_into_view_if_needed()
+    # Flush the simulated scroll event before opening the scroll-sensitive menu.
+    q.clock.run_for(100)
+    trigger.click()
+    q.get_by_role('option',name=label,exact=True).click()
 
 with sync_playwright() as p:
     b=p.chromium.launch();errors=[]
@@ -66,11 +74,11 @@ with sync_playwright() as p:
             close.click()
         standard=q.locator('#mainMenu [data-panel=inventory]').bounding_box()['width']
         open_panel(q,'settings');q.locator('[data-settings-card=interface]').click()
-        q.get_by_role('combobox',name='Densidade da HUD',exact=True).select_option('compact')
+        density(q,'Compacta')
         q.locator('#closePanel').click()
         q.wait_for_function('(max)=>document.querySelector("#mainMenu [data-panel=inventory]").getBoundingClientRect().width<=max+1',arg=standard)
         open_panel(q,'settings')
-        q.get_by_role('combobox',name='Densidade da HUD',exact=True).select_option('standard')
+        density(q,'Padrão')
         q.locator('#closePanel').click()
         assert {k:saved(q).get(k) for k in KEYS}==before,'Presentation changed game progress'
         open_panel(q,'map');q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()

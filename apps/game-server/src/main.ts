@@ -9,6 +9,7 @@ import { Vault } from "./auth/vault.js";
 import { AuthService } from "./auth/service.js";
 import { createAuthHandler } from "./auth/routes.js";
 import { createHttpServer } from "./http.js";
+import {tickWorldBattles} from './characters/battle.js';
 
 async function main() {
   const config = readConfig(process.env);
@@ -48,6 +49,12 @@ async function main() {
     : undefined;
   revocations?.unref();
   let stopping = false;
+  let battleTick:Promise<unknown>|undefined;
+  const battles=service?setInterval(()=>{
+    if(stopping||battleTick)return;
+    battleTick=tickWorldBattles(pool).catch(()=>console.error(JSON.stringify({event:'world_battle_tick_failed'}))).finally(()=>{battleTick=undefined;});
+  },250):undefined;
+  battles?.unref();
   const metrics=requestMetrics();
   const reporter=setInterval(()=>console.log(JSON.stringify(metrics.flush())),60000);reporter.unref();
   const server = createHttpServer({
@@ -69,6 +76,7 @@ async function main() {
     server.listen(config.port, config.host);
     await once(server, "listening");
   } catch (error) {
+    clearInterval(battles);clearInterval(revocations);clearInterval(reporter);
     await pool.end();
     throw error;
   }
@@ -85,13 +93,14 @@ async function main() {
     stopping = true;
     clearInterval(revocations);
     clearInterval(reporter);
+    clearInterval(battles);
     const deadline = setTimeout(() => {
       server.closeAllConnections();
       process.exitCode = 1;
     }, 10000);
     deadline.unref();
     server.close(() => {
-      void pool.end().finally(() => {
+      void Promise.resolve(battleTick).then(()=>pool.end()).finally(() => {
         clearTimeout(deadline);
         console.log(JSON.stringify({ event: "stopped" }));
       });
