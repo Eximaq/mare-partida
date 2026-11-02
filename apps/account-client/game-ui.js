@@ -33,17 +33,18 @@
     return {x,y,direction,moving:moving&&elapsedMs<duration};
   }
   // Cosmetic correction only. Commands/collisions keep using worldPosition directly.
-  // Never extend the approved path or retain an offset beyond 200 ms.
+  // Manual correction is short; sampled combat spans its observed update cadence.
+  // Neither mode extends the approved path or extrapolates unseen combat positions.
   function createWorldPresentation() {
-    let snapshot=null,received=0,offset={x:0,y:0};
+    let snapshot=null,received=0,offset={x:0,y:0},duration=200;
     function sample(now){
       if(!snapshot)return null;
       const elapsed=Math.max(0,now-received),pose=worldPosition(snapshot,elapsed);
-      const weight=Math.max(0,1-elapsed/200);
+      const weight=Math.max(0,1-elapsed/duration);
       return {...pose,x:pose.x+offset.x*weight,y:pose.y+offset.y*weight,
         moving:pose.moving||(weight>0&&Math.hypot(offset.x,offset.y)>.1)};
     }
-    return {sample,update(next,now){
+    return {sample,update(next,now,{buffered=false}={}){
       if(next===snapshot)return false;
       const previous=sample(now),target=worldPosition(next,0);
       // A peer can start moving between polls. Allow that observed progress,
@@ -51,6 +52,7 @@
       const limit=Math.min(512,Math.max(128,next.speed*Math.min(3,Math.max(0,now-received)/1000)+32));
       const snap=!previous||snapshot.mapId!==next.mapId||now-received>5000||Math.hypot(previous.x-target.x,previous.y-target.y)>limit;
       offset=snap?{x:0,y:0}:{x:previous.x-target.x,y:previous.y-target.y};
+      duration=buffered?Math.max(250,Math.min(1250,now-received+100)):200;
       snapshot=next;received=now;return snap;
     }};
   }

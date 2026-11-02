@@ -1431,7 +1431,7 @@
     if(prison&&oldFloor!==prison.floor){prisonFloor=prison.floor;setAreaLabels();if(currentPanel==='prison')renderPanel();}
     if(onlineWorldFrame?.snapshot!==w){
       const presentation=onlineWorldFrame?.presentation||MareOnlineGameUI.createWorldPresentation(),received=performance.now();
-      const snap=presentation.update(w,received);
+      const snap=presentation.update(w,received,{buffered:!!ONLINE_GAME.data.online.battle?.auto&&!w.path.length});
       onlineWorldFrame={snapshot:w,received,presentation};
       if(snap){Object.assign(world.hero,w.position,{direction:w.direction});camera.update(world.hero,activeMap(),0,true);}
     }
@@ -1493,7 +1493,11 @@
     const previous=new Map(world.mobs.map(m=>[m.id,m]));
     world.mobs=b.mobs.map(m=>{
       const old=previous.get(m.id),skin=activeMap().id==='dawn'?MareEmber.skins.cesar:null;
-      const from=old?{x:old.x,y:old.y}:{x:m.x,y:m.y};return Object.assign(old||{},{...MareOnlineGameUI.fruitTimeline(m,b.fruit?.time,world.time),source:m.source||'world',name:b.prison||b.dungeon?m.name:m.type==='boss'?MareHunt.get(b.area)?.boss:skin?.name||monsterTypes[m.type]?.name,skin:skin?.id,hit:0,onlineFrom:from,onlineAt:performance.now(),onlineTo:{x:m.x,y:m.y}});
+      const presentation=old?.alive===m.alive&&old.onlinePresentation?old.onlinePresentation:MareOnlineGameUI.createWorldPresentation();
+      const w=ONLINE_GAME.data.online.world;
+      presentation.update({...w,position:{x:m.x,y:m.y},path:[]},performance.now(),{buffered:true});
+      const pose=presentation.sample(performance.now());
+      return Object.assign(old||{},{...MareOnlineGameUI.fruitTimeline(m,b.fruit?.time,world.time),x:pose.x,y:pose.y,source:m.source||'world',name:b.prison||b.dungeon?m.name:m.type==='boss'?MareHunt.get(b.area)?.boss:skin?.name||monsterTypes[m.type]?.name,skin:skin?.id,hit:0,onlinePresentation:presentation});
     });
     world.target=world.mobs.find(m=>m.id===b.targetId&&m.alive&&!m.returning)||null;
     session.talents={...MareTalentCombat.create(),...(b.talents?structuredClone(b.talents):{}),ultimate:{...MareUltimates.start(),...(b.talents?.ultimate?structuredClone(b.talents.ultimate):{})}};
@@ -1519,7 +1523,7 @@
   function tickOnlineBattle(dt){
     stepBasicAttack(dt);
     stepCombatVfx(dt);
-    for(const m of world.mobs){const t=Math.min(1,(performance.now()-m.onlineAt)/180);m.x=m.onlineFrom.x+(m.onlineTo.x-m.onlineFrom.x)*t;m.y=m.onlineFrom.y+(m.onlineTo.y-m.onlineFrom.y)*t;m.emberElapsed+=dt;m.attackAnim=Math.max(0,m.attackAnim-dt);m.hit=Math.max(0,m.hit-dt);}
+    for(const m of world.mobs){const pose=m.onlinePresentation.sample(performance.now());m.x=pose.x;m.y=pose.y;m.emberElapsed+=dt;m.attackAnim=Math.max(0,m.attackAnim-dt);m.hit=Math.max(0,m.hit-dt);}
   }
   let onlineProjectionSnapshot=null;
   function syncOnlineGame(){
