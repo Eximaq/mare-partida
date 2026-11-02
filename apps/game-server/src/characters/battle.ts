@@ -1,3 +1,4 @@
+import {completePrisonFloor,advancePrison} from './prison.js';
 import {observeServerAchievements} from './achievements.js';
 import {readTalents} from './talents.js';
 import {createRequire} from 'node:module';
@@ -100,6 +101,10 @@ export async function tickWorldBattles(pool:Pool){
   if(!w||w.area!==b.area)throw new AuthFault(503,'battle_world_mismatch');
   const state=await readCharacterState(client,id),fighter=await readFighter(client,id,state);
   if(fighter.rulesetId!=='original-character-v1')throw new AuthFault(503,'original_inventory_required');
+  if(await advancePrison(client,id,state,b,w,now)){
+   if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
+   const requestId=randomUUID();await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);await client.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4)',[id,requestId,digest('server-prison:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:await readCharacterState(client,id)})]);await client.query('UPDATE mare_game.character_battles SET tick_at=$2 WHERE character_id=$1',[id,now]);await client.query('COMMIT');continue;
+  }
   b.hp=Math.min(b.hp,fighter.maxHp);b.energy=Math.min(b.energy,fighter.stats.maxEnergy);
   const path=b.auto?[]:w.path.map(p=>({...p})),hero={...w.position,direction:w.direction};
   const started=(await client.query('SELECT started_at FROM mare_game.character_world WHERE character_id=$1',[id])).rows[0].started_at.getTime();
@@ -107,9 +112,14 @@ export async function tickWorldBattles(pool:Pool){
   const result=engine.step(b,{hero,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId,level:state.level,now:now.getTime(),dt,rng,manualPath:path,manualSpeed:w.speed,manualStart:started,potions:stock?.potions??0});
   if(result.kills.length||result.potionsUsed||result.talentSteals.length){
    if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
-   const requestId=randomUUID();await awardWorldLoot(client,id,requestId,state,result.kills,undefined,result.potionsUsed,{build:(await readTalents(client,id,state))?.build,steals:result.talentSteals});
-   for(const k of result.kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,k.reward.xp,Math.round(k.reward.gold*engine.catalog.factions[fighter.factionId].gold),engine.rulesHash]);
-   await recordContractKills(client,id,result.kills);
+   const requestId=randomUUID();
+   if(b.prison){
+    if(result.kills.length>1)throw new AuthFault(503,'prison_victory_invalid');
+    const grant=result.kills.length?await completePrisonFloor(client,id,requestId,b,result.kills[0],now):undefined;
+    await awardWorldLoot(client,id,requestId,state,[],undefined,result.potionsUsed,{build:(await readTalents(client,id,state))?.build,steals:result.talentSteals,grant,action:'prison.reward'});
+   }else await awardWorldLoot(client,id,requestId,state,result.kills,undefined,result.potionsUsed,{build:(await readTalents(client,id,state))?.build,steals:result.talentSteals});
+   if(!b.prison)for(const k of result.kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,k.reward.xp,Math.round(k.reward.gold*engine.catalog.factions[fighter.factionId].gold),engine.rulesHash]);
+   if(!b.prison)await recordContractKills(client,id,result.kills);
    await advanceLevel(client,id,requestId,state);await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
    const after=await readCharacterState(client,id);
    await observeServerAchievements(client,id,state,after,{kills:result.kills.length});

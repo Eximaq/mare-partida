@@ -24,7 +24,7 @@ const random = () => randomInt(0, 0x100000000) / 0x100000000;
 const maxGold = 9223372036854775807n;
 export const isOriginalAction = (action: string) =>
   originalActionSchema.options.includes(action as any);
-export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number}={}){
+export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number;grant?:OriginalItemInstance|undefined;action?:'prison.reward'|'prison.claim'}={}){
  const roll=passives.rng??(()=>randomInt(0,0x100000000)/0x100000000),random=()=>{const r=roll();if(!Number.isFinite(r)||r<0||r>=1)throw new RangeError('Invalid loot RNG');return r;};
  const before=await readOriginalInventory(client,id);if(!before)throw new AuthFault(409,'original_inventory_required');
  const after=structuredClone(before),identity=(await client.query('SELECT class_id,faction_id FROM mare_game.characters WHERE id=$1',[id])).rows[0];
@@ -57,10 +57,11 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
    if(special.legendary&&after.inventory.length<120){const eligible=defs.map((d,i)=>({d,i})).filter(({d})=>!d.kind&&d.type!=='akuma_no_mi'&&(d.slot!=='weapon'||d.type===identity.class_id)&&(!d.fixedRarity||d.rarity==='legendary'));const chosen=eligible[Math.floor(random()*eligible.length)];if(!chosen)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(chosen.i,r.gearLevel,'legendary','Senhor do Submundo'));}
   }
  }
+ if(passives.grant){if(after.inventory.length>=120)throw new AuthFault(409,'inventory_full');after.inventory.push(passives.grant);}
  if(BigInt(state.gold)+gold>maxGold||BigInt(state.experience)+xp>maxGold)throw new AuthFault(409,'progression_limit');
  await writeInventory(client,id,after);
  await client.query('UPDATE mare_game.character_progression SET gold=gold+$2,experience=experience+$3 WHERE character_id=$1',[id,gold.toString(),xp.toString()]);
- await event(client,id,requestId,state.version,first?'battle.first':'battle.reward',before,after,BigInt(state.gold),gold,{experience:xp.toString(),spawns:kills.map(k=>k.id),potionsUsed,firstArea:first?.area??null,talentSteals:passives.steals??[],underworld,rareChance});
+ await event(client,id,requestId,state.version,passives.action??(first?'battle.first':'battle.reward'),before,after,BigInt(state.gold),gold,{experience:xp.toString(),spawns:kills.map(k=>k.id),potionsUsed,firstArea:first?.area??null,domainItem:passives.grant?.id??null,talentSteals:passives.steals??[],underworld,rareChance});
  return {xp,gold};
 }
 function valid(input: unknown): OriginalInventory {
@@ -367,6 +368,11 @@ export async function mutateOriginalInventory(
         i.equipment[slot] = item;
         if (previous) i.inventory.push(previous);
       }
+    } else if (input.action === "items.open-box") {
+      const box=i.inventory.find(x=>x.id===input.payload.itemId);if(!box)throw new AuthFault(404,'item_not_found');
+      const result=require('../../../../prison-system.js').openBox(i,input.payload.itemId,defs,random,Date.now());
+      if(!result.ok)throw new AuthFault(409,box.locked?'item_protected':'box_unavailable');
+      i={...i,inventory:result.state.inventory};outcome={consumed:box.id,created:result.item.id};
     } else if (input.action === "items.unequip") {
       const slot = input.payload.slot,
         item = i.equipment[slot];

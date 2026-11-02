@@ -84,3 +84,7 @@ A atualização local foi executada com backup e API/gateway parados. Os hashes 
 23 migrações e zero resgates artificiais. HTTPS foi reiniciado e verificado com
 TLS válido e recusa 401 sem sessão. O navegador também detectou e cobriu a correção
 da revisão da prévia ao reabrir talentos após resgate ou reconexão.
+
+Atualização de Impel Down: as quatro metas de andares agora usam o progresso
+confirmado do servidor. São22 conquistas disponíveis/47 pontos, com nove metas
+ainda dependentes de outros domínios. Ver [prisão online](ORIGINAL-PRISON-SERVER.md).

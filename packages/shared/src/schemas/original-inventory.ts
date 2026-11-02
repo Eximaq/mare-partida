@@ -116,6 +116,7 @@ export const originalActionSchema = z.enum([
   "items.unequip",
   "items.lock",
   "items.sell",
+  "items.open-box",
   "potions.buy",
   "potions.use",
   "forge.execute",

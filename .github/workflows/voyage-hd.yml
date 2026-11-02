@@ -7,6 +7,8 @@ on:
       - 'voyage-hd.css'
       - 'archipelago.js'
       - 'prison-system.js'
+      - 'monster-game-catalog.js'
+      - 'apps/account-client/**'
       - 'game.js'
       - 'index.html'
       - 'ui-preview.html'
@@ -29,7 +31,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: '.node-version'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
@@ -46,6 +48,7 @@ jobs:
         run: |
           python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-voyage-http.log 2>&1 &
           sleep 2
+          MARE_TEST_URL=http://127.0.0.1:8123/ node tests/prison-online-browser.cjs
           MARE_TEST_URL=http://127.0.0.1:8123/ node tests/impel_down_browser.cjs
           MARE_TEST_URL=http://127.0.0.1:8123/ node tests/voyage_failures_browser.cjs
           MARE_TEST_URL=http://127.0.0.1:8123/dist/ node tests/voyage_hd_browser.cjs

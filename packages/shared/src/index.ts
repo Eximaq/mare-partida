@@ -16,3 +16,5 @@ export * from './schemas/contracts.js';
 export * from "./schemas/talents.js";
 
 export * from './schemas/achievements.js';
+
+export * from './schemas/prison.js';
