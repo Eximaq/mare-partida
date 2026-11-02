@@ -1,6 +1,8 @@
+**Impel Down online:** [andares, duelos, marcos e caixas no servidor](docs/architecture/ORIGINAL-PRISON-SERVER.md), com o mapa e diário originais.
+
 **Contratos originais online:** [dez objetivos, contadores autoritativos e resgate único no quadro existente](docs/architecture/ORIGINAL-CONTRACTS-SERVER.md). Saves da demonstração preservados.
 
-Talentos online: [árvores, efeitos e persistência autoritativa](docs/architecture/ORIGINAL-TALENTS-SERVER.md), com pontos por nível e interface original. Pontos de conquistas ainda dependem da migração desse sistema.
+Talentos online: [árvores, efeitos e persistência autoritativa](docs/architecture/ORIGINAL-TALENTS-SERVER.md), com pontos por nível e interface original. Pontos de [conquistas autoritativas](docs/architecture/ORIGINAL-ACHIEVEMENTS-SERVER.md) entram no mesmo orçamento.
 
 **Posição e viagens online:** [mundo persistente, colisões e limites do incremento](docs/architecture/ORIGINAL-WORLD-SERVER.md). IA e combate original completo continuam em migração.
 

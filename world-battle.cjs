@@ -2,13 +2,15 @@
 // Server-only simulation. The original catalogues remain the source of balance.
 const {randomUUID,createHash}=require('node:crypto'),fs=require('node:fs'),path=require('node:path');
 const hunt=require('./hunt-system.js'),behavior=require('./monster-behavior.js'),characters=require('./character-system.js');
+const prison=require('./prison-system.js'),prisonMap=require('./impel-down-world.js');
+const prisonCatalog=require('./monster-game-catalog.js').create({monsters:require('./monster-catalog.js'),city:require('./alubarna-world.js'),dungeons:require('./boss-dungeon-system.js')});
 const talents=require('./talent-runtime.cjs'),{T,U,TC}=talents;
 const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
-const sources=['hunt-system.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const sources=['prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 function populate(b,now,rng,hero){
- if(!b.area)return;
+ if(!b.area||b.prison)return;
  const ledger=b.hunts.areas[b.area];
  const slots=behavior.ready(b.area,b.mobs,ledger.respawns,now);
  if(hero&&hunt.bossReady(b,b.area,hero,now))slots.push(...behavior.ready(b.area,b.mobs,ledger.respawns,now,true));
@@ -26,7 +28,14 @@ function face(a,p){const dx=p.x-a.x,dy=p.y-a.y;a.direction=Math.abs(dx)>Math.abs
 function move(a,goal,speed,dt,nav){const old={x:a.x,y:a.y},route=nav.path(a,goal);nav.follow(a,route,speed,dt);a.moving=distance(old,a)>.01?1:0;if(a.moving)face(a,{x:a.x+(a.x-old.x),y:a.y+(a.y-old.y)});}
 function target(b){return b.mobs.find(m=>m.id===b.targetId&&live(m));}
 function cancel(b){b.auto=false;b.targetId=null;b.pending=null;b.skillJob=null;b.projectiles=[];}
-function changeArea(b,area,now,rng){cancel(b);b.talents=null;b.area=area;b.mobs=[];populate(b,now,rng);}
+function changeArea(b,area,now,rng){cancel(b);delete b.prison;b.talents=null;b.area=area;b.mobs=[];populate(b,now,rng);}
+function enterPrison(b,spec,stats,hero,{id=randomUUID(),stolen=0}={}){
+ if(!prison.validFloor(spec.floor)||!Number.isFinite(spec.hp)||spec.hp<=0)throw Error('Invalid prison enemy');
+ cancel(b);b.talents=null;b.prison={floor:spec.floor,token:spec.token,spec:structuredClone(spec)};b.area='impel-down';b.auto=true;b.autoSkills=true;b.hp=stats.maxHP;b.respawn=0;b.attackClock=0;
+ const p=prisonMap.enemySpawn;
+ b.mobs=[{...spec,id,source:'impel-down',prisonToken:spec.token,area:'impel-down',level:spec.floor,...p,anchorX:p.x,anchorY:p.y,maxHP:spec.hp,hp:spec.hp,attack:spec.atk,defense:spec.def,magicDefense:spec.def,aggro:prisonMap.map.width,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:0,slow:0,telegraph:null,emberElapsed:0,emberFacing:'west',attackAnim:0,moving:0,patrolClock:0,talentStolen:stolen}];
+ Object.assign(hero,prisonMap.map.spawn);
+}
 function skill(b,index,c){
  const g=talents.game(b,c),stats=talents.stats(b,c,c.runtime),s=catalog.classes[c.classId]?.skills[index],cost=U.selected(g)==='archmage'?0:(s?.cost||0)*(1-(stats.energyEfficiency||0)),m=target(b),self=['guard','heal','blessing'].includes(s?.type);
  if(!s||!b.area||b.hp<=0||b.skillJob||b.cooldowns[index]>0||b.energy<cost)return false;
@@ -45,6 +54,7 @@ function step(b,c){
  const clear=(a,z)=>nav.projectileClear(a,z);
  const kill=(m,now)=>{
   if(!m.alive)return;m.alive=false;m.hp=0;m.telegraph=null;
+  if(b.prison){kills.push({id:m.id,area:b.area,monster:structuredClone(m),reward:null,prisonFloor:b.prison.floor,prisonToken:b.prison.token});event(b,'kill',{id:m.id});return;}
   b.hunts=hunt.recordKill(b,b.area,m.type,now).state.hunts;
   b.hunts.areas[b.area].respawns[m.spawnId]=now+behavior.RESPAWN_MS;
   b.energy=Math.min(stats.maxEnergy,b.energy+TC.onKill(g,rt,stats));
@@ -108,7 +118,7 @@ function step(b,c){
   actions(TC.tick(rt,dt,enemies()));
   if(b.hp>0)actions(U.tick(g,rt.ultimate,dt,{hero,stats,inCombat:!!b.area&&(rt.combatRemaining>0||!!target(b)),inHunt:!!b.area,enemies:enemies(),clear,move:(m,dx,dy)=>{const p={x:m.x+dx,y:m.y+dy},n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/4));for(let i=1;i<=n;i++)if(!nav.walkable(m.x+dx*i/n,m.y+dy*i/n))return;if(clear(m,p))Object.assign(m,p);}}));
   b.cooldowns=b.cooldowns.map(n=>Math.max(0,n-dt));b.guard=Math.max(0,b.guard-dt);b.blessing=Math.max(0,b.blessing-dt);b.attackClock=Math.max(0,b.attackClock-dt);
-  if(b.hp<=0){b.respawn=Math.max(0,b.respawn-dt);if(b.respawn<=1e-8){b.hp=stats.maxHP;b.energy=stats.maxEnergy;Object.assign(hero,nav.map.spawn);b.targetId=null;event(b,'respawn');}}
+  if(b.hp<=0){b.respawn=Math.max(0,b.respawn-dt);if(b.respawn<=1e-8){b.hp=stats.maxHP;b.energy=stats.maxEnergy;if(b.prison){const m=b.mobs[0],auto=b.auto;enterPrison(b,b.prison.spec,stats,hero,{id:m.id,stolen:m.talentStolen||0});b.auto=auto;rt=talents.load(b);}else Object.assign(hero,nav.map.spawn);b.targetId=null;event(b,'respawn');}}
   else{heal(dt*((stats.healthRegen||0)+(b.area?0:1.9)+(b.blessing>0?stats.regenBuff:0)));b.energy=Math.min(stats.maxEnergy,b.energy+dt*stats.energyRegen);}
   populate(b,now,rng,hero);
   if(c.manualPath?.length&&b.hp>0&&now>=(c.manualStart||0))nav.follow(hero,c.manualPath,stats.moveSpeed,Math.min(dt,(now-(c.manualStart||0))/1000));
@@ -146,7 +156,7 @@ function step(b,c){
   b.projectiles=b.projectiles.filter(p=>p.phase!=='done');if(b.projectiles.length>1024)throw Error('battle_projectile_limit');
   for(const enemy of b.mobs.filter(m=>m.alive)){
    enemy.slow=Math.max(0,enemy.slow-dt);enemy.emberElapsed+=dt;enemy.attackAnim=Math.max(0,enemy.attackAnim-dt);enemy.moving=0;
-   const intent=behavior.intent(enemy,hero,b.hp>0&&!rt.ultimate.hidden),speed=enemy.speed*(enemy.slow>0?.55:1)*(enemy.talentSlow?.remaining>0?1-enemy.talentSlow.percent:1);
+   const intent=behavior.intent(enemy,hero,b.hp>0&&!rt.ultimate.hidden,!!b.prison),speed=enemy.speed*(enemy.slow>0?.55:1)*(enemy.talentSlow?.remaining>0?1-enemy.talentSlow.percent:1);
    if(enemy.empRemaining>0||enemy.talentControl?.remaining>0){enemy.telegraph=null;continue;}
    if(intent==='idle'){const goal=behavior.patrol(enemy,dt,(a,z)=>{const n=Math.max(1,Math.ceil(distance(a,z)/4));for(let i=0;i<=n;i++)if(!nav.walkable(a.x+(z.x-a.x)*i/n,a.y+(z.y-a.y)*i/n))return false;return true;});if(goal)move(enemy,goal,speed*.45,dt,nav);continue;}
    if(intent==='return'){const home={x:enemy.anchorX,y:enemy.anchorY};if(distance(enemy,home)<=8){Object.assign(enemy,home);behavior.home(enemy);}else move(enemy,home,speed,dt,nav);continue;}
@@ -159,4 +169,4 @@ function step(b,c){
  stats=talents.stats(b,c,rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
  talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};
 }
-module.exports={create,step,skill,cancel,changeArea,rulesHash,catalog,hunt,talentStats:talents.stats};
+module.exports={enterPrison,prisonCatalog,create,step,skill,cancel,changeArea,rulesHash,catalog,hunt,talentStats:talents.stats};

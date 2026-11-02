@@ -1,3 +1,4 @@
+import {prisonActions,prisonFloorSchema} from './prison.js';
 import {achievementIdSchema} from './achievements.js';
 import {talentBuildSchema} from './talents.js';
 import {worldPointSchema,worldActions,worldSnapshotSchema} from './world.js';
@@ -17,7 +18,7 @@ const commandEnvelope = {
   expectedVersion: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
   control: renewControlSchema,
 };
-export const characterCommandSchema = z.discriminatedUnion("action", [z.strictObject({...commandEnvelope,action:z.literal('achievement.claim'),payload:z.strictObject({achievementId:achievementIdSchema})}),z.strictObject({...commandEnvelope,action:z.literal('talents.commit'),payload:z.strictObject({build:talentBuildSchema})}),z.strictObject({...commandEnvelope,action:z.literal('talents.reset'),payload:z.strictObject({})}),z.strictObject({
+export const characterCommandSchema = z.discriminatedUnion("action", [z.strictObject({...commandEnvelope,action:z.enum(prisonActions),payload:z.strictObject({floor:prisonFloorSchema})}),z.strictObject({...commandEnvelope,action:z.literal('achievement.claim'),payload:z.strictObject({achievementId:achievementIdSchema})}),z.strictObject({...commandEnvelope,action:z.literal('talents.commit'),payload:z.strictObject({build:talentBuildSchema})}),z.strictObject({...commandEnvelope,action:z.literal('talents.reset'),payload:z.strictObject({})}),z.strictObject({
   requestId: z.uuid(),
   action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim"]),
   expectedVersion: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
@@ -28,7 +29,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [z.strictOb
  z.strictObject({...commandEnvelope,action:z.literal("equipment.equip"),payload:z.strictObject({itemId:equipmentItemSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal("equipment.unequip"),payload:z.strictObject({slot:equipmentSlotSchema})}),
  z.strictObject({...commandEnvelope,action:z.enum(['items.initialize','potions.buy','potions.use']),payload:z.strictObject({})}),
- z.strictObject({...commandEnvelope,action:z.enum(['items.equip','items.sell']),payload:z.strictObject({itemId:instanceIdSchema})}),
+ z.strictObject({...commandEnvelope,action:z.enum(['items.equip','items.sell','items.open-box']),payload:z.strictObject({itemId:instanceIdSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('items.unequip'),payload:z.strictObject({slot:originalSlotSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('items.lock'),payload:z.strictObject({itemId:instanceIdSchema,locked:z.boolean()})}),
  z.strictObject({...commandEnvelope,action:z.literal('forge.execute'),payload:z.strictObject({operation:forgeOperationSchema})}),
@@ -43,7 +44,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [z.strictOb
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...worldActions,...battleActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim']),
+  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...worldActions,...battleActions,...prisonActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim']),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),
   inventory: inventorySnapshotSchema.optional(),

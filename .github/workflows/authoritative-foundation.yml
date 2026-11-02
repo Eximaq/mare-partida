@@ -99,7 +99,7 @@ jobs:
           const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
           try {
             assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
-            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 23);
+            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 24);
             await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
           } finally { await pool.end(); }
@@ -147,6 +147,9 @@ jobs:
             await pool.query('SELECT character_id FROM mare_game.character_talents LIMIT 1');
             await pool.query('SELECT character_id FROM mare_game.achievement_progress LIMIT 1');
             await pool.query('SELECT character_id FROM mare_game.achievement_claims LIMIT 1');
+            await pool.query('SELECT character_id FROM mare_game.character_prison LIMIT 1');
+            await pool.query('SELECT character_id FROM mare_game.prison_floors LIMIT 1');
+            await assert.rejects(pool.query('DELETE FROM mare_game.prison_milestones'),{code:'42501'});
             await assert.rejects(pool.query('DELETE FROM mare_game.achievement_claims'),{code:'42501'});
             await pool.query('SELECT character_id FROM mare_game.battle_talent_steals LIMIT 1');
             await assert.rejects(pool.query('DELETE FROM mare_game.character_talent_events'),{code:'42501'});

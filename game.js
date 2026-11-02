@@ -41,7 +41,7 @@
   }
   let travelPath = [], pursuit = new WeakMap(), conchasRouteReplans = 0;
   const keys = new Set(), rejectedTargets = new Map();
-  const mapKey=()=>scene==='lobby'?'lobby':dungeonRun?'quest-dungeons':impelRun?'impel-down':MareAlubarna.worlds[game?.area]?game.area:game?.area==='alabasta'&&worldMaps.alabasta?'alabasta':game?.area==='rare'&&worldMaps.rare?'rare':game?.area==='syrup'&&worldMaps.syrup?'syrup':game?.area==='baratie'&&worldMaps.baratie?'baratie':game?.area==='arlong'&&worldMaps.arlong?'arlong':game?.area==='swamp'&&worldMaps.conchas?'conchas':game?.area==='orange'&&worldMaps.orange?'orange':game?.area==='loguetown'&&worldMaps.loguetown?'loguetown':game?.area==='beach'&&worldMaps.dawn?'dawn':game?.area==='beach'&&worldMaps.embers?'embers':'hunt';
+  const mapKey=()=>ONLINE_GAME?.data?.online.world?.mapId||(scene==='lobby'?'lobby':dungeonRun?'quest-dungeons':impelRun?'impel-down':MareAlubarna.worlds[game?.area]?game.area:game?.area==='alabasta'&&worldMaps.alabasta?'alabasta':game?.area==='rare'&&worldMaps.rare?'rare':game?.area==='syrup'&&worldMaps.syrup?'syrup':game?.area==='baratie'&&worldMaps.baratie?'baratie':game?.area==='arlong'&&worldMaps.arlong?'arlong':game?.area==='swamp'&&worldMaps.conchas?'conchas':game?.area==='orange'&&worldMaps.orange?'orange':game?.area==='loguetown'&&worldMaps.loguetown?'loguetown':game?.area==='beach'&&worldMaps.dawn?'dawn':game?.area==='beach'&&worldMaps.embers?'embers':'hunt');
   const activeMap = () => worldMaps[mapKey()];
   const navigator = () => navigationFor(mapKey());
   // Combat rays ignore floor/water and low scenery; movement retains feet collisions.
@@ -141,16 +141,7 @@
     arlong:{name:MareArchipelago.byArea('arlong').name,sub:'Alas do Parque Arlong',min:31,label:'RECOMENDADO · NV. 31–35',tint:'beach',mobs:['kuroobi','chew']},
     loguetown:{name:MareArchipelago.byArea('loguetown').name,sub:'Ruas de Loguetown',min:36,label:'RECOMENDADO · NV. 36–40',tint:'orange',mobs:['marinheiro']}
   };
-  const monsterTypes = {
-    crab: { name:'Carapaça Ígnea', hp:45, atk:7, def:3, xp:22, gold:[6,13], reach:43, speed:42, attackSec:2.15, color:'#dd846c', icon:'◇' },
-    bandit: { name:'Corsário de Brasa', hp:67, atk:10, def:5, xp:29, gold:[10,18], reach:51, speed:55, attackSec:1.95, color:'#e6b27d', icon:'⚔' },
-    spirit: { name:'Sentinela Cinzenta', hp:52, atk:12, def:3, xp:34, gold:[10,19], reach:135, speed:34, attackSec:2.6, color:'#85d8c8', icon:'✧' },
-    cesar: { name:'César', hp:211, atk:17, def:8, xp:70, gold:[22,35], reach:52, speed:55, attackSec:1.8, color:'#726770', icon:'◆' },
-    boss: { name:'Guardião da Caldeira', hp:350, atk:17, def:10, xp:145, gold:[100,140], reach:56, speed:33, attackSec:2.45, color:'#e9c27b', icon:'♛' },
-    cocox: { name:'Cocox', hp:620, atk:48, def:22, xp:140, gold:[45,70], reach:56, speed:82, attackSec:1.35, color:'#aaa797', icon:'◆' }
-  };
-  for(const id of ['sham','buchi','pearl','gin','kuroobi','chew','mr3','cabaji','marinheiro','helmeppo','bananawani',...MareAlubarna.specs.map(s=>s.type)]){const m=MareMonsterCatalog[id];monsterTypes[id]={name:m.name,hp:m.max_hp,atk:m.physical_attack,def:m.physical_defense,xp:Math.round(140*1.055**(m.level-18)),gold:[90,135],reach:m.reach,speed:m.move_speed,attackSec:m.attack_seconds,color:'#d8aa79',icon:'◆'};}
-  for(const d of MareBossDungeons.catalog){const p=MareBossDungeons.combatProfile(d.id);monsterTypes[d.monster]={name:d.name,hp:p.maxHP,atk:p.attack,def:p.defense,magicDefense:p.magicDefense,xp:0,gold:[0,0],speed:p.speed,reach:p.reach,attackSec:p.attackSec,boss:true,family:d.family||null,naturalProtection:d.naturalProtection??null,color:'#d8aa79',icon:'◆'};}
+  const monsterTypes=MareMonsterGameCatalog.create({monsters:MareMonsterCatalog,city:MareAlubarna,dungeons:MareBossDungeons});
   const catalog=MareItemCatalog.create({forge:MareForge,prison:MarePrison,haki:MareHaki,akuma:MareAkuma,hakiProgression:MareHakiProgression});
   const itemDefs=catalog.items,slotNames=catalog.slotNames,inventorySlotsLeft=catalog.inventorySlotsLeft,inventorySlotsRight=catalog.inventorySlotsRight,BAG_CAPACITY=catalog.capacity,healerWeaponIndex=catalog.healerWeaponIndex;
   const rarityNames = Object.fromEntries(Object.entries(MareForge.rarity).map(([id,r])=>[id,r.name]));
@@ -1039,6 +1030,7 @@
   }
 
   function enterImpelDown(floor){
+    if(ONLINE_GAME){void onlineWorldCommand('prison.enter',{floor},true);return;}
     if(impelRun||dungeonRun||!MarePrison.canEnter(game,floor))return;
     const prepared=ensurePrisonEncounter(floor);if(!prepared){toast('Não foi possível salvar o encontro. Tente novamente.','danger');return;}impelRun=MarePrison.createRun({floor,catalog:monsterTypes,prepared:game.impelDown.encounter});scene='hunt';autoPlay=true;autoSkills=true;lobbyDestination=null;lobbyAction=null;initializeSession();startImpelFloor();applySceneHudLayout();closePanel();updateUI();
   }
@@ -1067,6 +1059,7 @@
     game=result.state;if(result.reward)rewardNotice({item:game.inventory.find(i=>i.id==='impel-milestone-'+pending.floor),eventId:'milestone:'+game.characterId+':'+pending.floor});impelRun.pending=null;impelRun.transitionAt=world.time+.85;toast('Andar Concluído · '+pending.floor,'good');log('Impel Down · Andar '+pending.floor+' concluído.','good');if(result.rewardPending)toast('Caixa de marco pendente: libere espaço na mochila.');if(currentPanel==='prison')renderPanel();return true;
   }
   function claimImpelMilestone(floor){
+    if(ONLINE_GAME){void onlineItemCommand('prison.claim',{floor});return;}
     const result=MarePrison.claimMilestone(game,floor,itemDefs);if(!result.ok){toast(result.message,'danger');return;}
     try{localStorage.setItem(STORAGE_KEY,JSON.stringify(result.state));}catch{toast('Não foi possível salvar. A recompensa continua disponível.','danger');return;}
     game=result.state;renderPanel();updateUI();rewardNotice({item:game.inventory.find(i=>i.id==='impel-milestone-'+floor),eventId:'milestone:'+game.characterId+':'+floor});
@@ -1413,10 +1406,13 @@
   function syncOnlineWorld(){
     const w=ONLINE_GAME.data?.online.world;if(!w)return;
     const nextScene=w.mapId==='lobby'?'lobby':'hunt';
-    if(scene!==nextScene||(w.area&&game.area!==w.area)){
-      scene=nextScene;if(w.area)game.area=w.area;autoPlay=false;autoSkills=false;lobbyDestination=null;lobbyAction=null;travelPath=[];initializeSession();
-      if(w.area)prepareRegion(w.area);applySceneHudLayout();setAreaLabels();resizeViewport();
+    const prison=ONLINE_GAME.data.online.battle?.prison,oldFloor=impelRun?.currentFloor;
+    impelRun=prison?{currentFloor:prison.floor,enemy:MarePrison.resolveEncounter(prison.spec,monsterTypes),phase:prison.transitionAt?'cleared':'active'}:null;
+    if(scene!==nextScene||onlineWorldFrame?.snapshot.mapId!==w.mapId){
+      scene=nextScene;if(w.area&&!prison)game.area=w.area;autoPlay=false;autoSkills=false;lobbyDestination=null;lobbyAction=null;travelPath=[];initializeSession();
+      if(w.area&&!prison)prepareRegion(w.area);applySceneHudLayout();setAreaLabels();resizeViewport();
     }
+    if(prison&&oldFloor!==prison.floor){prisonFloor=prison.floor;setAreaLabels();if(currentPanel==='prison')renderPanel();}
     if(onlineWorldFrame?.snapshot!==w){onlineWorldFrame={snapshot:w,received:performance.now(),from:{x:world.hero.x,y:world.hero.y}};if(!ONLINE_GAME.data.online.battle?.auto)Object.assign(world.hero,w.position,{direction:w.direction});camera.update(world.hero,activeMap(),0,true);}
   }
   function requestWorldTravel(area){
@@ -1466,7 +1462,7 @@
     const previous=new Map(world.mobs.map(m=>[m.id,m]));
     world.mobs=b.mobs.map(m=>{
       const old=previous.get(m.id),skin=activeMap().id==='dawn'?MareEmber.skins.cesar:null;
-      const from=old?{x:old.x,y:old.y}:{x:m.x,y:m.y};return Object.assign(old||{},{...m,source:'world',name:m.type==='boss'?MareHunt.get(b.area)?.boss:skin?.name||monsterTypes[m.type]?.name,skin:skin?.id,hit:0,onlineFrom:from,onlineAt:performance.now(),onlineTo:{x:m.x,y:m.y}});
+      const from=old?{x:old.x,y:old.y}:{x:m.x,y:m.y};return Object.assign(old||{},{...m,source:m.source||'world',name:b.prison?m.name:m.type==='boss'?MareHunt.get(b.area)?.boss:skin?.name||monsterTypes[m.type]?.name,skin:skin?.id,hit:0,onlineFrom:from,onlineAt:performance.now(),onlineTo:{x:m.x,y:m.y}});
     });
     world.target=world.mobs.find(m=>m.id===b.targetId&&m.alive&&!m.returning)||null;
     session.talents={...MareTalentCombat.create(),...(b.talents?structuredClone(b.talents):{}),ultimate:{...MareUltimates.start(),...(b.talents?.ultimate?structuredClone(b.talents.ultimate):{})}};
@@ -1475,6 +1471,7 @@
     for(const e of b.events.filter(e=>e.seq>onlineBattleSeq)){
       const m=world.mobs.find(m=>m.id===e.id);
       if(e.type==='attack'&&m){faceCombatTarget(m);const clock=MareCombatAnimation.create({attack:{frames:4,fps:8,impact_frame:2,loop:false}});clock.play('attack',{direction:world.hero.direction,attackSpeed:getDerived().speed});session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};syncBasicAttackVisual();}
+      if(e.type==='kill'&&b.prison)toast('Andar Concluído · '+b.prison.floor,'good');
       if(e.type==='damage'&&m){spawnVisual(m.x,m.y-70,'-'+e.amount,'#e7cb87',15);m.hit=.2;}
       if(e.type==='projectile'&&m)launchCombatProjectile(e.kind,{x:e.x,y:e.y-27},m,()=>{});
       if(e.type==='talent'){world.fx.push({x:m?.x??world.hero.x,y:m?.y??world.hero.y,ring:1,life:.5,max:.5,color:'#e5c47f'});}
@@ -1506,7 +1503,7 @@
       if(game.hp<previousHp)spawnVisual(world.hero.x,world.hero.y-70,'-'+(previousHp-game.hp),'#ff9b94',15);
       if(c.status!=='active')autoPlay=false;
     }else{world.mobs=[];world.target=null;onlineEncounterId=null;}
-    updateUI();const inventoryStamp=JSON.stringify([ONLINE_GAME.data.online.state.version,ONLINE_GAME.busy,!!ONLINE_GAME.pending,ONLINE_GAME.controlled,ONLINE_GAME.available]);if(ONLINE_GAME.data.online.originalInventory&&onlineInventoryStamp!==inventoryStamp){onlineInventoryStamp=inventoryStamp;if(['inventory','forge','shop','character','contracts'].includes(currentPanel))renderPanel();}
+    updateUI();const inventoryStamp=JSON.stringify([ONLINE_GAME.data.online.state.version,ONLINE_GAME.busy,!!ONLINE_GAME.pending,ONLINE_GAME.controlled,ONLINE_GAME.available]);if(ONLINE_GAME.data.online.originalInventory&&onlineInventoryStamp!==inventoryStamp){onlineInventoryStamp=inventoryStamp;if(['inventory','forge','shop','character','contracts','prison'].includes(currentPanel))renderPanel();}
     $('goldAmount').textContent=BigInt(ONLINE_GAME.data.online.state.gold).toLocaleString('pt-BR');
     $('combatState').textContent=!ONLINE_GAME.available?'CONEXÃO INTERROMPIDA':!ONLINE_GAME.controlled?'SEM CONTROLE NESTA ABA':scene==='lobby'?'PORTO SEGURO':ONLINE_GAME.data.online.battle?(session.respawn>0?'RENASCENDO':autoPlay?'CAÇADA ONLINE':'CAÇADA PAUSADA'):c.status==='won'?'VITÓRIA':c.status==='lost'?'DERROTA':c.status==='claimed'?'PRÊMIO RECEBIDO':c.status==='active'?'COMBATE ONLINE':'EXPLORANDO';
     $('saveDot').title='Progresso confirmado pelo servidor';
@@ -1866,6 +1863,7 @@
     return `<div class="op-detail-wrap"><div class="op-detail-head"><div class="op-detail-icon rarity-${def.rarity}">${itemIcon(item.def,def.name)}</div><div><h3>${escapeHTML(def.name)}</h3><small>Consumível · <span class="op-quantity">Quantidade: 1</span></small></div></div><div class="op-detail-box"><p>Contém uma Pérola Nível ${def.boxLevel}. O atributo é sorteado entre Força, Destreza, Vitalidade, Inteligência e Espírito, com 20% de chance para cada tipo.</p><p>Abrir consome esta caixa e entrega exatamente uma pérola do mesmo nível.</p></div><p class="op-sell-line">Origem: ${escapeHTML(item.origin||'Impel Down')}.</p><button type="button" class="op-action primary" data-open-pearl-box="${escapeHTML(item.id)}" ${item.locked?'disabled':''}>ABRIR CAIXA</button><button type="button" class="op-action secondary" data-inv-lock="${escapeHTML(item.id)}">${item.locked?'DESBLOQUEAR':'BLOQUEAR'}</button>${item.locked?'<p>Desbloqueie a caixa antes de abrir.</p>':''}</div>`;
   }
   function openPearlBox(id){
+    if(ONLINE_GAME)return onlineItemCommand('items.open-box',{itemId:id});
     const result=MarePrison.openBox(game,id,itemDefs);
     if(!result.ok){toast(result.message,'danger');return false;}
     const nextState=MareForge.migrate(result.state,itemDefs);
@@ -2364,6 +2362,7 @@ ${avatarExtra}
   function ensurePrisonEncounter(floor){
     const existing=MarePrison.resolveEncounter(game.impelDown.encounter,monsterTypes);
     if(existing?.floor===floor)return existing;
+    if(ONLINE_GAME)return null;
     const result=prisonPreparedDraft?.enemy?.floor===floor&&floor===game.impelDown.cleared+1?prisonPreparedDraft:MarePrison.prepareEncounter(game,floor,monsterTypes);
     if(!result.ok)return null;
     // Retry the same unsaved identity; never replace current inventory/progression with an old snapshot.
@@ -2384,7 +2383,7 @@ ${avatarExtra}
     const list=body.querySelector('.prison-floor-scroll'),button=list?.querySelector('[aria-pressed=true]');
     if(button)list.scrollTop=Math.max(0,button.offsetTop-list.offsetTop-list.clientHeight*.35);
   }
-  function renderPanel(){if(ONLINE_GAME){if(ONLINE_GAME.data?.online.originalInventory&&(['inventory','forge','shop'].includes(currentPanel)||(ONLINE_GAME.data.online.world&&['modes','map'].includes(currentPanel))||(ONLINE_GAME.data.online.battle&&currentPanel==='hunt')||(ONLINE_GAME.data.online.contracts&&currentPanel==='contracts')||(currentPanel==='character'&&((characterTab==='status'&&ONLINE_GAME.data.online.combatPreview?.rulesetId==='original-character-v1')||(characterTab==='talents'&&ONLINE_GAME.data.online.talents)||(characterTab==='achievements'&&ONLINE_GAME.data.online.achievements))))){onlineUI?.close();}else{onlineUI?.open(currentPanel,characterTab);return;}}if(!currentPanel||!game)return;MareHakiUI.unmount();$('panelOverlay').classList.toggle('haki-mastery-mode',currentPanel==='haki');MarePlayerHub.unmount();$('panelOverlay').classList.toggle('captain-hd-mode',['journal','myprofile','settings'].includes(currentPanel));$('panelOverlay').dataset.uiPanel=currentPanel;$('panelOverlay').classList.toggle('honors-hd-mode',currentPanel==='character'&&['achievements','hierarchy'].includes(characterTab));$('panelOverlay').classList.toggle('achievements-hd-mode',currentPanel==='character'&&characterTab==='achievements');$('panelOverlay').classList.toggle('hierarchy-hd-mode',currentPanel==='character'&&characterTab==='hierarchy');if(!['achievements','hierarchy'].includes(characterTab)||currentPanel!=='character')$('honorsHeaderNote')?.remove();const body=$('dialogBody');$('panelOverlay').classList.toggle('boss-dungeons-mode',['dungeons','akuma-reveal'].includes(currentPanel));$('panelOverlay').classList.toggle('akuma-reveal-mode',currentPanel==='akuma-reveal');MareVoyageUI.unmount();$('panelOverlay').classList.toggle('voyage-hd-mode',['map','prison'].includes(currentPanel));if(!['map','prison'].includes(currentPanel)){$('expeditionBack')?.remove();$('expeditionSubtitle')?.remove();}const isCompendium=currentPanel==='character'&&characterTab==='akuma';$('panelOverlay').classList.toggle('compendium-hd-mode',isCompendium);MareCompendium.unmount();const isTalents=currentPanel==='character'&&characterTab==='talents';$('panelOverlay').classList.toggle('talents-hd-mode',isTalents);if(!isTalents)MareTalentUI.unmount();$('panelOverlay').classList.toggle('forge-hd-mode',currentPanel==='forge');if(currentPanel!=='character')$('panelOverlay').classList.remove('character-studio-mode');$('panelOverlay').classList.toggle('contracts-mode',currentPanel==='contracts');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');$('panelOverlay').classList.toggle('voyage-mode',['map','prison'].includes(currentPanel));$('panelOverlay').classList.toggle('modes-mode',currentPanel==='modes');if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode','pirate-hd');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={haki:'Haki',journal:'Jornal do Morgan',myprofile:'Meu Perfil',settings:'Configurações',hunt:'Rota da caçada',dev:'Laboratório DEV',inventory:'Inventário',forge:'Forja das Correntes',character:'Personagem',modes:'Modos de jogo',prison:'Impel Down',dungeons:'Masmorra de Chefes','akuma-reveal':'Akuma formada',map:'Mapa do Arquipélago',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;const forgeBrand=$('dialogTitle').parentElement.querySelector('small');if(forgeBrand){if(currentPanel==='forge'){forgeBrand.dataset.originalBrand ||= forgeBrand.textContent;forgeBrand.textContent='KAIZOKU IDLE';}else if(forgeBrand.dataset.originalBrand)forgeBrand.textContent=forgeBrand.dataset.originalBrand;}if(currentPanel!=='map')$('voyageRegionTabs')?.remove();body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel||(b.dataset.panel==='modes'&&['map','prison'].includes(currentPanel)))));
+  function renderPanel(){if(ONLINE_GAME){if(ONLINE_GAME.data?.online.originalInventory&&(['inventory','forge','shop'].includes(currentPanel)||(ONLINE_GAME.data.online.world&&['modes','map'].includes(currentPanel))||(ONLINE_GAME.data.online.battle&&currentPanel==='hunt')||(ONLINE_GAME.data.online.contracts&&currentPanel==='contracts')||(ONLINE_GAME.data.online.prison&&currentPanel==='prison')||(currentPanel==='character'&&((characterTab==='status'&&ONLINE_GAME.data.online.combatPreview?.rulesetId==='original-character-v1')||(characterTab==='talents'&&ONLINE_GAME.data.online.talents)||(characterTab==='achievements'&&ONLINE_GAME.data.online.achievements))))){onlineUI?.close();}else{onlineUI?.open(currentPanel,characterTab);return;}}if(!currentPanel||!game)return;MareHakiUI.unmount();$('panelOverlay').classList.toggle('haki-mastery-mode',currentPanel==='haki');MarePlayerHub.unmount();$('panelOverlay').classList.toggle('captain-hd-mode',['journal','myprofile','settings'].includes(currentPanel));$('panelOverlay').dataset.uiPanel=currentPanel;$('panelOverlay').classList.toggle('honors-hd-mode',currentPanel==='character'&&['achievements','hierarchy'].includes(characterTab));$('panelOverlay').classList.toggle('achievements-hd-mode',currentPanel==='character'&&characterTab==='achievements');$('panelOverlay').classList.toggle('hierarchy-hd-mode',currentPanel==='character'&&characterTab==='hierarchy');if(!['achievements','hierarchy'].includes(characterTab)||currentPanel!=='character')$('honorsHeaderNote')?.remove();const body=$('dialogBody');$('panelOverlay').classList.toggle('boss-dungeons-mode',['dungeons','akuma-reveal'].includes(currentPanel));$('panelOverlay').classList.toggle('akuma-reveal-mode',currentPanel==='akuma-reveal');MareVoyageUI.unmount();$('panelOverlay').classList.toggle('voyage-hd-mode',['map','prison'].includes(currentPanel));if(!['map','prison'].includes(currentPanel)){$('expeditionBack')?.remove();$('expeditionSubtitle')?.remove();}const isCompendium=currentPanel==='character'&&characterTab==='akuma';$('panelOverlay').classList.toggle('compendium-hd-mode',isCompendium);MareCompendium.unmount();const isTalents=currentPanel==='character'&&characterTab==='talents';$('panelOverlay').classList.toggle('talents-hd-mode',isTalents);if(!isTalents)MareTalentUI.unmount();$('panelOverlay').classList.toggle('forge-hd-mode',currentPanel==='forge');if(currentPanel!=='character')$('panelOverlay').classList.remove('character-studio-mode');$('panelOverlay').classList.toggle('contracts-mode',currentPanel==='contracts');$('panelOverlay').classList.toggle('character-mode',currentPanel==='character');$('panelOverlay').classList.toggle('voyage-mode',['map','prison'].includes(currentPanel));$('panelOverlay').classList.toggle('modes-mode',currentPanel==='modes');if(currentPanel!=='inventory'){$('panelOverlay').classList.remove('inventory-mode','pirate-hd');$('inventoryHeadMeta')?.classList.add('hidden');}const titles={haki:'Haki',journal:'Jornal do Morgan',myprofile:'Meu Perfil',settings:'Configurações',hunt:'Rota da caçada',dev:'Laboratório DEV',inventory:'Inventário',forge:'Forja das Correntes',character:'Personagem',modes:'Modos de jogo',prison:'Impel Down',dungeons:'Masmorra de Chefes','akuma-reveal':'Akuma formada',map:'Mapa do Arquipélago',contracts:'Quadro de Contratos',shop:'Mercador do Porto',help:'Guia do Navegante'};$('dialogTitle').textContent=titles[currentPanel]||currentPanel;const forgeBrand=$('dialogTitle').parentElement.querySelector('small');if(forgeBrand){if(currentPanel==='forge'){forgeBrand.dataset.originalBrand ||= forgeBrand.textContent;forgeBrand.textContent='KAIZOKU IDLE';}else if(forgeBrand.dataset.originalBrand)forgeBrand.textContent=forgeBrand.dataset.originalBrand;}if(currentPanel!=='map')$('voyageRegionTabs')?.remove();body.dataset.view=currentPanel;document.querySelectorAll('.bottom-nav [data-panel]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.panel===currentPanel||(b.dataset.panel==='modes'&&['map','prison'].includes(currentPanel)))));
     if(['journal','myprofile','settings'].includes(currentPanel)){
       gameTooltip.hide();
       const g=game,s=getDerived(),className=classes[game.classId]?.name||game.classId;
@@ -2423,7 +2422,7 @@ ${avatarExtra}
     }
     if(ONLINE_GAME?.data?.online.originalInventory){
       const blocked=!ONLINE_GAME.available||!ONLINE_GAME.controlled||ONLINE_GAME.busy||!!ONLINE_GAME.pending;
-      if(blocked)for(const b of body.querySelectorAll('[data-equip],[data-unequip],[data-sell],[data-inv-lock],[data-auto-equip],[data-buy-potion],[data-forge-action],[data-forge],[data-inv-use-potion],[data-attribute-add],#confirmAttributes,[data-claim],[data-talent-add],[data-talent-confirm],[data-talent-reset],[data-achievement-claim]'))b.disabled=true;
+      if(blocked)for(const b of body.querySelectorAll('[data-equip],[data-unequip],[data-sell],[data-inv-lock],[data-auto-equip],[data-buy-potion],[data-forge-action],[data-forge],[data-inv-use-potion],[data-attribute-add],#confirmAttributes,[data-claim],[data-talent-add],[data-talent-confirm],[data-talent-reset],[data-achievement-claim],[data-prison-prepare],[data-prison-enter],[data-prison-claim],[data-open-pearl-box]'))b.disabled=true;
       if(!ONLINE_GAME.available||!ONLINE_GAME.controlled||ONLINE_GAME.pending){
         const note=document.createElement('p');note.className='online-state-note';note.setAttribute('role','status');
         note.textContent=!ONLINE_GAME.available?'Conexão interrompida. As ações estão pausadas.':ONLINE_GAME.pending?'Uma resposta ficou pendente. Confira antes de repetir a ação.':'Este personagem está sob controle de outra aba.';
@@ -2552,7 +2551,7 @@ ${avatarExtra}
     else trigger.focus({preventScroll:true});
   }
   function openPanel(panel,characterSection=null){
-    if(ONLINE_GAME){if(!game)return;closeCharacterMenu();closeModesMenu();closeCaptainMenu();if(panel==='character'){attributeDraft=MareCharacters.empty();talentDraft=null;selectedTalent=null;talentMessage='';talentDraftSeq=game.talentSeq;}currentPanel=panel;characterTab=characterSection||(panel==='character'?'status':null);$('panelOverlay').classList.remove('hidden');renderPanel();return;}
+    if(ONLINE_GAME){if(!game)return;closeCharacterMenu();closeModesMenu();closeCaptainMenu();if(panel==='character'){attributeDraft=MareCharacters.empty();talentDraft=null;selectedTalent=null;talentMessage='';talentDraftSeq=game.talentSeq;}currentPanel=panel;characterTab=characterSection||(panel==='character'?'status':null);if(panel==='prison')prisonFloor=Math.min(100,game.impelDown.cleared+1);$('panelOverlay').classList.remove('hidden');renderPanel();if(panel==='prison'&&!impelRun&&MarePrison.canEnter(game,prisonFloor)&&!game.impelDown.encounter&&!ONLINE_GAME.busy&&!ONLINE_GAME.pending)void onlineItemCommand('prison.prepare',{floor:prisonFloor});return;}
     if(panel==='character'&&characterSection==='haki')panel='haki';
     if(panel==='haki'&&!game?.has_haki_unlocked){showHakiRequirements();return;}
     if(!game)return;
@@ -3365,7 +3364,7 @@ function applySceneHudLayout(){
     b=e.target.closest('[data-form-akuma]');if(b&&!b.disabled){const seq=Number(b.dataset.formAkuma);showConfirmation('Formar Akuma Rank E','Confira os materiais vinculados deste personagem.',()=>formDungeonAkuma(seq),'FORMAR AKUMA',false,()=>MareOperationSummary.formation(game,seq,itemDefs,MareAkuma.catalog));return;}
     b=e.target.closest('[data-akuma-reveal-open]');if(b){openPanel('akuma-reveal');return;}
     b=e.target.closest('[data-akuma-reveal-continue]');if(b){const r=MareBossDungeons.acknowledge(game,b.dataset.akumaRevealContinue,persistDungeonState);if(r.ok){game=r.state;openPanel('inventory');}else toast(r.message,'danger');return;}
-    if(e.target.closest('[data-prison-prepare]')){if(impelRun?.preparationPending)startImpelFloor();else ensurePrisonEncounter(prisonFloor);renderPanel();return;}
+    if(e.target.closest('[data-prison-prepare]')){if(ONLINE_GAME){void onlineItemCommand('prison.prepare',{floor:prisonFloor});return;}if(impelRun?.preparationPending)startImpelFloor();else ensurePrisonEncounter(prisonFloor);renderPanel();return;}
     b=e.target.closest('[data-prison-floor]');if(b&&currentPanel==='prison'&&!b.disabled){const f=Number(b.dataset.prisonFloor);if(MarePrison.canInspect(game,f)){prisonFloor=f;renderPanel();$('dialogBody').querySelector('[data-prison-floor="'+f+'"]')?.focus({preventScroll:true});}return;}
     if(e.target.closest('[data-prison-continue]')){if(currentPanel==='prison'&&impelRun)closePanel();return;}
     if(e.target.closest('[data-prison-enter]')){enterImpelDown(prisonFloor);return;}
@@ -3388,7 +3387,7 @@ function applySceneHudLayout(){
     b=e.target.closest('[data-import]');if(b){let input=$('saveImport');input.addEventListener('change',()=>{if(input.files[0])importSave(input.files[0]);},{once:true});input.click();return;}
     b=e.target.closest('[data-reset]');if(b){showConfirmation('Recomeçar aventura?','Seu personagem salvo neste navegador será apagado. Exporte o save pela Ajuda antes de continuar.',()=>{localStorage.removeItem(STORAGE_KEY);suppressSave=true;location.reload();});return;}
   });
-  $('dialogBody').addEventListener('change',e=>{const key=e.target.dataset.prisonOption;if(currentPanel!=='prison'||!['autoAdvance','pauseBeforeBoss'].includes(key))return;const next=MarePrison.migrate(game);next.impelDown.options[key]=e.target.checked;try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;}catch{e.target.checked=game.impelDown.options[key];toast('Não foi possível salvar a preferência.','danger');}});
+  $('dialogBody').addEventListener('change',e=>{if(ONLINE_GAME)return;const key=e.target.dataset.prisonOption;if(currentPanel!=='prison'||!['autoAdvance','pauseBeforeBoss'].includes(key))return;const next=MarePrison.migrate(game);next.impelDown.options[key]=e.target.checked;try{localStorage.setItem(STORAGE_KEY,JSON.stringify(next));game=next;}catch{e.target.checked=game.impelDown.options[key];toast('Não foi possível salvar a preferência.','danger');}});
   $('dialogBody').addEventListener('error',e=>{if(e.target.matches('[data-monster-preview]')){const frame=e.target.closest('.dungeon-monster');frame.dataset.state='unavailable';frame.innerHTML=monsterUnavailable();}},true);
   let fusionDragToken='';
   $('dialogBody').addEventListener('dragstart',e=>{const fruit=e.target.closest('[data-fruit-drag]');if(fruit){e.dataTransfer.setData('application/x-mare-fruit',fruit.dataset.fruitDrag);e.dataTransfer.effectAllowed='move';return;}const tile=e.target.closest('[data-fusion-drag]');if(!tile)return;fusionDragToken=tile.dataset.fusionDrag;e.dataTransfer.setData('application/x-mare-fusion',fusionDragToken);e.dataTransfer.effectAllowed='copy';});

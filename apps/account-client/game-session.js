@@ -30,6 +30,7 @@
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    if(['prison.prepare','prison.enter','prison.claim'].includes(action))return keys==='floor'&&Number.isInteger(p.floor)&&p.floor>=1&&p.floor<=100;
     if(action==='talents.reset')return keys==='';
     if(action==='talents.commit'){
       const b=p.build;return keys==='build'&&b&&typeof b==='object'&&!Array.isArray(b)&&Object.keys(b).sort().join()==='keystone,nodes,ultimate'&&b.nodes&&typeof b.nodes==='object'&&!Array.isArray(b.nodes)&&Object.keys(b.nodes).length<=15&&Object.entries(b.nodes).every(([id,n])=>/^(sword|brawler|gunner|rogue|cyborg|strategist|healer)-[0-2]-[0-4]$/.test(id)&&Number.isInteger(n)&&n>=0&&n<=10)&&[b.keystone,b.ultimate].every(v=>v===null||typeof v==='string'&&/^[a-zA-Z]{1,32}$/.test(v));
@@ -44,7 +45,7 @@
     if(action==='world.move')return keys==='x,y'&&['x','y'].every(k=>Number.isFinite(p[k])&&p[k]>=0&&p[k]<=100000);
     if(action==='world.travel')return keys==='islandId'&&typeof p.islandId==='string'&&/^[a-z0-9-]{1,40}$/.test(p.islandId);
     if(['items.initialize','potions.buy','potions.use'].includes(action))return keys==='';
-    if(['items.equip','items.sell'].includes(action))return keys==='itemId'&&instanceId(p.itemId);
+    if(['items.equip','items.sell','items.open-box'].includes(action))return keys==='itemId'&&instanceId(p.itemId);
     if(action==='items.lock')return keys==='itemId,locked'&&instanceId(p.itemId)&&typeof p.locked==='boolean';
     if(action==='items.unequip')return keys==='slot'&&originalSlots.includes(p.slot);
     if(action==='forge.execute')return keys==='operation'&&validForge(p.operation);

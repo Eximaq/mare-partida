@@ -74,3 +74,8 @@ GRANT INSERT(character_id,kills,coins,peak_power) ON mare_game.achievement_progr
 GRANT UPDATE(kills,coins,peak_power) ON mare_game.achievement_progress TO mare_runtime;
 GRANT INSERT(character_id,island_id) ON mare_game.achievement_visits TO mare_runtime;
 GRANT INSERT(character_id,achievement_id,request_id,points,progress,version_before,rules_hash) ON mare_game.achievement_claims TO mare_runtime;
+
+GRANT SELECT ON mare_game.character_prison,mare_game.prison_floors,mare_game.prison_milestones TO mare_runtime;
+GRANT INSERT(character_id,state),UPDATE(state) ON mare_game.character_prison TO mare_runtime;
+GRANT INSERT(character_id,floor,spawn_id,request_id,monster,rules_hash) ON mare_game.prison_floors TO mare_runtime;
+GRANT INSERT(character_id,floor,request_id,item_id) ON mare_game.prison_milestones TO mare_runtime;

@@ -48,6 +48,7 @@
       gold: safe(o.state.gold),
       hp: o.battle?.hp ?? (frozen && o.combat?.encounterId ? o.combat.playerHp : f.maxHp),
       energy: o.battle?.energy ?? 0,
+      ...(o.prison?{impelDown:structuredClone(o.prison)}:{}),
       claimed: [...(o.contracts?.claimed||[])],
       talentVersion:2,talentSeq:o.talents?.revision||0,talentBuilds:{[data.character.classId]:structuredClone(o.talents?.build||{nodes:{},keystone:null,ultimate:null})},
       talentCooldowns:structuredClone(o.battle?.talentCooldowns||{}),achievements:{version:1,claimed:[...(o.achievements?.claimed||[])],records:structuredClone(o.achievements?.records||{})},onlineAchievements:o.achievements?structuredClone(o.achievements):null,
@@ -85,6 +86,10 @@
     };
   }
   const labels = {
+    prison_floor_locked:'Somente o próximo andar pode ser iniciado.',
+    prison_already_active:'Você já está em uma expedição de Impel Down.',
+    prison_milestone_unavailable:'Este marco ainda não está disponível ou já foi resgatado.',
+    box_unavailable:'Esta caixa não pode ser aberta.',
     achievement_incomplete:'A meta desta conquista ainda não foi alcançada.',
     achievement_unavailable:'Esta conquista depende de um sistema ainda indisponível online.',
     achievement_already_claimed:'A recompensa desta conquista já foi resgatada.',

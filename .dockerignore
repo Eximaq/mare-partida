@@ -84,6 +84,7 @@
 !hunt-system.js
 !monster-behavior.js
 !monster-catalog.js
+!monster-game-catalog.js
 !combat-vfx-data.js
 !combat-vfx.js
 
