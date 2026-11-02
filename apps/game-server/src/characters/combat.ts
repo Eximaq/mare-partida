@@ -6,6 +6,7 @@ import {readFighter} from "./fighter.js";
 import { advanceLevel } from "./progression.js";
 import { AuthFault } from "../auth/errors.js";
 import { resolveCombatRound } from "./combat-rules.js";
+import {resolveOriginalRound} from '../gameplay/character.js';
 
 export async function readCombat(client: PoolClient,id:string) {
   const row=(await client.query<{
@@ -66,7 +67,9 @@ export async function mutateCombat(client:PoolClient,id:string,requestId:string,
       [id,requestId,(combat.encounterNumber??0)+1,JSON.stringify(fighter),fighter.maxHp,fighter.cooldownMs]);
   } else if(action==="combat.attack") {
     // RNG is generated after replay/authorization/version/cooldown checks; never supplied by clients.
-    const round=resolveCombatRound(combat.playerHp,combat.enemyHp,randomInt(combat.fighter?.attackMin??10,(combat.fighter?.attackMax??14)+1),randomInt(7,12),combat.fighter);
+    const round=combat.fighter?.rulesetId==='original-character-v1'
+      ?resolveOriginalRound(combat.playerHp,combat.enemyHp,combat.fighter,()=>randomInt(0,0x100000000)/0x100000000)
+      :resolveCombatRound(combat.playerHp,combat.enemyHp,randomInt(combat.fighter?.attackMin??10,(combat.fighter?.attackMax??14)+1),randomInt(7,12),combat.fighter);
     await client.query(`INSERT INTO mare_game.combat_rounds
       (character_id,request_id,turn,version_before,player_before,enemy_before,player_damage,enemy_damage,encounter_id)
       VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)`,[id,requestId,combat.turn+1,state.version,combat.playerHp,combat.enemyHp,round.playerDamage,round.enemyDamage,combat.encounterId]);

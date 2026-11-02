@@ -4,7 +4,7 @@ const vm=require('node:vm');
 const model=require('../character-system.js');
 const source=fs.readFileSync(require.resolve('../game.js'),'utf8');
 const context={MareCharacters:model};vm.createContext(context);
-vm.runInContext(source.slice(source.indexOf('  const classes ='),source.indexOf('  // Somente artes'))+'\nglobalThis.data={classes,factions};',context);
+context.data=require('../character-catalog.js').create({characters:model});
 const {classes,factions}=context.data,gear={attack:8,defense:4,hp:17};
 let checks=0;
 function test(name,fn){fn();checks++;console.log(name+': passed');}

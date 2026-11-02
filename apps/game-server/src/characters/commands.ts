@@ -1,3 +1,4 @@
+import {isOriginalAction,mutateOriginalInventory} from '../gameplay/inventory.js';
 import {mutateInventory,readInventory} from "./inventory.js";
 import type { PoolClient } from "pg";
 import { attributeKeys, characterCommandResultSchema, type CharacterCommand, type CharacterCommandResult } from "@mare/shared";
@@ -48,6 +49,7 @@ export async function executeCharacterCommand(
     await mutateHunt(client, characterId, input.requestId, input.action, state);
     state = await readCharacterState(client, characterId);
   }
+  if(isOriginalAction(input.action)){await mutateOriginalInventory(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   let combat;
   if (input.action === "combat.begin" || input.action === "combat.attack" || input.action === "combat.claim") {
     combat = await mutateCombat(client, characterId, input.requestId, input.action, state);

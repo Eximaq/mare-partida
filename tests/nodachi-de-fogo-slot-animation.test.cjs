@@ -6,7 +6,7 @@ const path=require('node:path');
 
 const root=path.resolve(__dirname,'..');
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
-const def=game.split(/\r?\n/).find(line=>line.includes("name:'Nodachi de Fogo'"));
+const def=fs.readFileSync(path.join(root,'item-catalog.js'),'utf8').split(/\r?\n/).find(line=>line.includes("name:'Nodachi de Fogo'"));
 assert.ok(def,'Nodachi de Fogo is registered');
 assert.ok(def.includes("rarity:'legendary',fixedRarity:true"),'Nodachi de Fogo uses its upgraded Legendary rank');
 assert.ok(def.includes("icon_path:'assets/ui/items-pixellab/nodachi-de-fogo.png?v=20261022'"),'the existing item art remains available as a static fallback');

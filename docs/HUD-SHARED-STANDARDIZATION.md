@@ -2,9 +2,9 @@
 
 ## Estado e base
 
-Branch feature/hud-shared-standardization, base a533f92 (PR #202 incorporado), em worktree isolado. Receitas, chances, valores, progressão, catálogos e IDs dos saves são preservados.
+Branch feature/hud-shared-standardization, iniciada em a533f92 (PR #202), em worktree isolado. Após o merge do #203, integrada à main 4fd85f9. Receitas, chances, valores, progressão, catálogos e IDs dos saves são preservados.
 
-A integração final aguarda o merge do PR #203, conforme decisão expressa do proprietário. Esse PR altera os mesmos fluxos para usar autoridade no servidor. Não substituir seus comandos por execução local nem integrar antecipadamente branches ainda em revisão.
+A integração com o PR #203 foi concluída após seu merge, conforme a ordem escolhida pelo proprietário. Forja, equipamento, compras, vendas e atributos online preservam os comandos do servidor. Execução local, RNG e gravação de saves da demonstração não são utilizados nesses comandos online. Branches ainda em revisão não foram incorporadas.
 
 ## Auditoria e implementação
 
@@ -34,12 +34,13 @@ Filtros abertos; menus de navegação; tooltip de itens/materiais; Canal do Port
 ## Validação
 
 - Node: 146/146 arquivos passaram; sistemas existentes e novos testes de concordância com preços canônicos, transferências, risco, vínculo, IDs distintos, PT por nó, escapes, deduplicação e rajada de 1.000 recibos com memória limitada e totais preservados.
-- Typecheck aprovado; 67/67 testes de fundação do servidor passaram, sem mudanças de protocolos/backend.
+- Typecheck aprovado; 98/98 testes de fundação do servidor passaram, sem mudanças de protocolos/backend.
 - tests/hud-standardization-browser.cjs: Chrome real e personagem isolado. Seis ranks; cancelamento; execução de cada tipo de Forja; falha de fusão; gravação recusada; saldo alterado; mochila cheia; clique repetido; Enter de abertura; backdrop/Escape; operação lenta; graduação/livro/caixa; talentos; formação/revelação; menus; recebimentos; falha controlada de imagem. Sete resoluções, tanto na entrada de desenvolvimento quanto no build estático; compras/vendas e promoção de hierarquia executadas e canceladas.
-- tests/gameplay_harmony_geometry_browser.cjs comparado com a base desta sprint: 82 estados × 14 superfícies em nove viewports, sem diferenças externas.
+- tests/gameplay_harmony_geometry_browser.cjs comparado novamente com a main 4fd85f9: 82 estados × 14 superfícies em nove viewports, sem diferenças externas.
 - tests/gameplay_harmony_controls_browser.cjs: menus exclusivos, anotações locais, teclado, atalhos, limiar das taxas e estados reais.
 - tests/forge-hd-browser.cjs: quatro abas em nove resoluções; ações alcançáveis, nomes longos, inventário vazio, campos texturizados e prévia sem RNG.
 - tests/haki_mastery_browser.cjs em modo FAST: livro, bloqueios, investimentos, falha de gravação, revisão obsoleta, progressão persistida, controles, transformações, quatro direções e sete resoluções. Confirmações que permanecem abertas após falha/revisão obsoleta são canceladas explicitamente pelo teste.
+- tests/original-inventory-online-browser.cjs após a integração: HUD nativa, equipamento, compra, atributos, payload estrito da Forja, cancelamento/revisão obsoleta, recusa 409, clique duplo, resposta perdida e replay do mesmo requestId sem novo débito, reload e ausência de save local. API simulada; não equivale a teste PostgreSQL ou homologação com conta real.
 - tests/boss_dungeons_browser.cjs passou: dois confrontos, dez fragmentos, resgates únicos, revelação persistida, segunda aba somente leitura e oito painéis compatíveis.
 - Teste em dispositivo touch simulado: ações principais com altura mínima de 44 px e sem erros; confirmação rolável por teclado.
 - python tools/build_pages.py inclui os novos módulos e acabamento com caminhos relativos. ui-preview.html conserva paridade dos scripts.
@@ -61,6 +62,8 @@ Logs, galeria e capturas reais ficam em MARE_QA_DIR, fora do Git, sem saves reai
 
 Sem nova migração de saves, mudança de índices ou compensações. Segredos, evidências e saves locais não entram no Git. Reverter somente os commits desta sprint, preservando colaboradores e servidor; sem force-push.
 
-Revisão remota final: origin/main permanece em a533f92; #203 segue aberto em 5ddaba9e. Foi identificado o novo PR #204 (bb66546c), que também altera game.js e os pontos de entrada. Além dos comandos de inventário/Forja/atributos do #203, preservar as rotas world.move/world.stop/world.travel/world.return e as atualizações vindas da sessão online do #204. Não substituir comandos autoritativos por alterações locais nem produzir recebimentos antes da confirmação persistida. A compatibilidade final com essas branches abertas permanece pendente; a inspeção não equivale a um teste de integração.
+Revisão remota: #203 incorporado pela main em 4fd85f9. Seus catálogos extraídos, payloads estritos, controle, versão e recuperação de pedidos foram preservados. Conflitos de game.js, entradas HTML, build e testes foram conciliados. A Forja agora devolve o resultado booleano também online, mantendo a confirmação aberta após recusa. O resumo considera versão, conexão, controle e pedido pendente. Avisos de compra/venda/fusão online só são emitidos após o comando confirmado, nunca por polling ou carregamento de snapshots.
 
-Próximo passo mínimo: após o merge do #203, atualizar a main, reconciliar os pontos online de Forja/inventário/atributos, repetir os testes afetados, conferir novos PRs/commits e então publicar o PR final. Essa integração ainda não está declarada concluída.
+O PR #204 (bb66546c) permanece separado: altera posição e viagens, além de pontos comuns em game.js/entradas. Foi inspecionado; não foram incorporados comandos de branches ainda abertas. Após sua incorporação, preservar world.move/world.stop/world.travel/world.return e repetir a regressão online. A presente integração não declara paridade integral do servidor nem homologação de domínios ainda não migrados.
+
+Próximo passo: revisão e merge do PR desta sprint pelo proprietário. Não houve merge automático ou deploy de backend.
