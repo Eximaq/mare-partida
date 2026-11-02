@@ -2,9 +2,10 @@
 // Server-only simulation. The original catalogues remain the source of balance.
 const {randomUUID,createHash}=require('node:crypto'),fs=require('node:fs'),path=require('node:path');
 const hunt=require('./hunt-system.js'),behavior=require('./monster-behavior.js'),characters=require('./character-system.js');
+const talents=require('./talent-runtime.cjs'),{T,U,TC}=talents;
 const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
-const sources=['hunt-system.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs'];
+const sources=['hunt-system.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 function populate(b,now,rng,hero){
  if(!b.area)return;
@@ -15,7 +16,7 @@ function populate(b,now,rng,hero){
   b.mobs.push({...p,id:randomUUID(),spawnId:s.id,area:b.area,district:s.sector,type:s.type,x:s.x,y:s.y,anchorX:s.x,anchorY:s.y,hp:p.maxHP,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:rng()*Math.PI*2,patrolClock:0,telegraph:null,moving:0,attackAnim:0,emberElapsed:0,emberFacing:'south',slow:0});}
 }
 function create(area,stats,now,rng=Math.random){
- const b={version:1,rulesHash,area,hp:stats.maxHP,energy:stats.maxEnergy,auto:false,autoSkills:true,targetId:null,pending:null,projectiles:[],attackClock:0,cooldowns:[0,0],guard:0,blessing:0,respawn:0,mobs:[],hunts:hunt.migrate({}).hunts,events:[],seq:0};
+ const b={version:1,rulesHash,area,hp:stats.maxHP,energy:stats.maxEnergy,auto:false,autoSkills:true,targetId:null,pending:null,projectiles:[],attackClock:0,cooldowns:[0,0],guard:0,blessing:0,respawn:0,mobs:[],hunts:hunt.migrate({}).hunts,talents:null,talentCooldowns:{},events:[],seq:0};
  populate(b,now,rng);return b;
 }
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
@@ -25,62 +26,100 @@ function face(a,p){const dx=p.x-a.x,dy=p.y-a.y;a.direction=Math.abs(dx)>Math.abs
 function move(a,goal,speed,dt,nav){const old={x:a.x,y:a.y},route=nav.path(a,goal);nav.follow(a,route,speed,dt);a.moving=distance(old,a)>.01?1:0;if(a.moving)face(a,{x:a.x+(a.x-old.x),y:a.y+(a.y-old.y)});}
 function target(b){return b.mobs.find(m=>m.id===b.targetId&&live(m));}
 function cancel(b){b.auto=false;b.targetId=null;b.pending=null;b.skillJob=null;b.projectiles=[];}
-function changeArea(b,area,now,rng){cancel(b);b.area=area;b.mobs=[];populate(b,now,rng);}
+function changeArea(b,area,now,rng){cancel(b);b.talents=null;b.area=area;b.mobs=[];populate(b,now,rng);}
 function skill(b,index,c){
- const s=catalog.classes[c.classId]?.skills[index],m=target(b),self=['guard','heal','blessing'].includes(s?.type);
- if(!s||!b.area||b.hp<=0||b.skillJob||b.cooldowns[index]>0||b.energy<s.cost)return false;
- if(s.type==='heal'&&b.hp>=c.stats.maxHP||s.type==='blessing'&&b.blessing>0)return false;
- if(!self&&(!m||distance(c.hero,m)>c.stats.range||!c.nav.projectileClear(c.hero,m)))return false;
- b.energy-=s.cost;b.cooldowns[index]=s.cd*(c.factionId==='government'?.92:1);
+ const g=talents.game(b,c),stats=talents.stats(b,c,c.runtime),s=catalog.classes[c.classId]?.skills[index],cost=U.selected(g)==='archmage'?0:(s?.cost||0)*(1-(stats.energyEfficiency||0)),m=target(b),self=['guard','heal','blessing'].includes(s?.type);
+ if(!s||!b.area||b.hp<=0||b.skillJob||b.cooldowns[index]>0||b.energy<cost)return false;
+ if(s.type==='heal'&&b.hp>=stats.maxHP&&!(U.selected(g)==='eternalBlessing'&&(b.talents?.combatRemaining>0||m))||s.type==='blessing'&&b.blessing>0)return false;
+ if(!self&&(!m||distance(c.hero,m)>stats.range||!c.nav.projectileClear(c.hero,m)))return false;
+ b.energy-=cost;b.cooldowns[index]=s.cd*(c.factionId==='government'?.92:1);
  b.skillJob={index,targetId:m?.id??null};event(b,'skill',{index});return true;
 }
 function step(b,c){
  if(!Number.isFinite(c.dt)||c.dt<0||c.dt>1)throw new RangeError('Invalid battle step');
  if(b.rulesHash!==rulesHash)throw new Error('battle_rules_changed');
- const {hero,nav,stats,classId}=c,kills=[];let potionsUsed=0;
- const heal=amount=>{if(b.hp>0)b.hp=Math.min(stats.maxHP,b.hp+amount*(1+(stats.healingReceivedPercent||0)));};
+ const {hero,nav,classId}=c,kills=[],talentSteals=[];let potionsUsed=0,rt=talents.load(b),stats=talents.stats(b,c,rt),g=talents.game(b,c);
+ const enemies=()=>b.mobs.filter(live);
+ function heal(amount){if(b.hp<=0)return;const before=b.hp;b.hp=Math.min(stats.maxHP,b.hp+amount*(1+(stats.healingReceivedPercent||0)));if(b.area&&(rt.combatRemaining>0||target(b)))actions(U.heal(g,rt.ultimate,{amount,effective:b.hp-before,stats,hero,enemies:enemies(),clear}));}
  const rng=()=>{const n=c.rng();if(!Number.isFinite(n)||n<0||n>=1)throw new RangeError('Invalid RNG');return n;};
  const clear=(a,z)=>nav.projectileClear(a,z);
  const kill=(m,now)=>{
   if(!m.alive)return;m.alive=false;m.hp=0;m.telegraph=null;
   b.hunts=hunt.recordKill(b,b.area,m.type,now).state.hunts;
   b.hunts.areas[b.area].respawns[m.spawnId]=now+behavior.RESPAWN_MS;
+  b.energy=Math.min(stats.maxEnergy,b.energy+TC.onKill(g,rt,stats));
   kills.push({id:m.id,area:b.area,monster:structuredClone(m),reward:hunt.rewards(b.area,m,c.level||1,rng())});event(b,'kill',{id:m.id});
  };
  function land(m,raw,now,slow=0){
-  if(!live(m)||b.hp<=0)return;
-  const amount=Math.min(m.hp,raw);behavior.hurt(m);m.hp-=amount;if(slow)m.slow=slow;
-  event(b,'damage',{id:m.id,amount});if(m.hp<=0)kill(m,now);
+  if(!live(m)||b.hp<=0||raw<=0)return 0;
+  const amount=Math.min(m.hp,Math.max(1,Math.floor(raw)));behavior.hurt(m);m.hp-=amount;if(slow)m.slow=slow;
+  event(b,'damage',{id:m.id,amount});if(m.hp<=0)kill(m,now);return amount;
  }
- function hit(m,multiplier,damageType,now,area=false,slow=0){
+ function contact(passive,m){if(passive.heal>0)heal(passive.heal);if(passive.gold>0)talentSteals.push({spawnId:m.id,amount:passive.gold});}
+ function actions(list){
+  for(const action of list){
+   if(action.delay>0){rt.ultimate.delayed.push(action);continue;}
+   if(action.selfBurn){b.hp=Math.max(0,b.hp-action.selfBurn);if(!b.hp)die();continue;}
+   if(action.visualOnly){event(b,'talent',{id:action.target.id,kind:action.kind});continue;}
+   if(!live(action.target)||b.hp<=0)continue;
+   if(!clear(action.from||hero,action.target))continue;
+   const amount=['artillery','empathy'].includes(action.kind)?characters.damage({...stats,elemental:action.amount},action.target.empRemaining>0?0:(action.target.magicDefense??action.target.defense),{type:'elemental'}):action.amount;
+   if(action.from){b.projectiles.push(vfx.projectile('gunner',action.from,action.target.id,{damage:amount,secondary:true,origin:action.from}));continue;}
+   const actual=land(action.target,amount,now);
+   if(action.kind==='clone')contact(TC.afterHit(g,rt,{target:action.target,...action.contact,damage:actual,contactScale:.5,fromClone:true,random:rng}),action.target);
+  }
+ }
+ function landed(m,amount,slow,meta){
+  const actual=land(m,amount,now,slow);if(!actual||!meta)return;
+  const hitStats=meta.stats,passive=TC.afterHit(g,rt,{target:m,...meta,damage:actual,random:rng});contact(passive,m);
+  actions(U.after(g,rt.ultimate,{target:m,hero,...meta,damage:actual,enemies:enemies(),clear,random:rng}));
+  if(passive.pierce)for(const other of TC.piercingTargets(hero,m,enemies(),hitStats.range+125))if(clear(m,other))b.projectiles.push(vfx.projectile('gunner',m,other.id,{damage:actual*.5,secondary:true,origin:{x:m.x,y:m.y}}));
+ }
+ function hit(m,multiplier,damageType,at,area=false,slow=0,basic=false){
   if(!live(m)||b.hp<=0||distance(hero,m)>stats.range+(area?125:1)||!clear(hero,m))return;
   if(damageType==='physical'&&rng()>stats.accuracy){event(b,'miss',{id:m.id});return;}
-  const armor=damageType==='elemental'?(m.magicDefense??m.defense):m.defense;
-  const amount=characters.damage(stats,armor,{type:damageType,multiplier,variance:.9+rng()*.22,critical:rng()<stats.crit});
-  if(['gunner','cyborg','strategist','healer'].includes(classId)){const kind=classId==='strategist'?'mage':classId;b.projectiles.push(vfx.projectile(kind,hero,m.id,{damage:amount,slow}));event(b,'projectile',{id:m.id,kind,x:hero.x,y:hero.y});}
-  else land(m,amount,now,slow);
+  const magic=damageType==='elemental',prepared=TC.beforeHit(g,rt,{target:m,hero,stats,basic,magic,area:area||(basic&&U.selected(g)==='titan'),critical:rng()<stats.crit});
+  const amount=prepared.trueAmount??characters.damage(prepared.critMultiplier?{...stats,critMultiplier:prepared.critMultiplier}:stats,prepared.armor,{type:damageType,multiplier:multiplier*prepared.multiplier,variance:.9+rng()*.22,critical:prepared.critical});
+  const projectile=['gunner','cyborg','strategist','healer'].includes(classId),meta={stats,basic,magic,critical:prepared.critical,projectile:projectile||U.selected(g)==='spatial'};
+  if(projectile){const kind=classId==='strategist'?'mage':classId;b.projectiles.push(vfx.projectile(kind,hero,m.id,{damage:amount,slow,contact:meta}));event(b,'projectile',{id:m.id,kind,x:hero.x,y:hero.y});}
+  else landed(m,amount,slow,meta);
  }
+ function die(){b.hp=0;b.respawn=4.1;b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;for(const other of enemies())behavior.disengage(other);event(b,'death');}
  function damage(m,multiplier=1){
   if(b.hp<=0)return;if(rng()<stats.evasion){event(b,'evade');return;}
-  const amount=Math.min(b.hp,characters.incoming(stats,m.attack*multiplier,b.guard>0,.85+rng()*.25));b.hp-=amount;event(b,'hurt',{amount});
-  if(b.hp<=0){b.hp=0;b.respawn=4.1;b.pending=null;b.projectiles=[];b.skillJob=null;if(c.manualPath)c.manualPath.length=0;for(const other of b.mobs.filter(m=>m.alive))behavior.disengage(other);event(b,'death');}
+  const raw=characters.incoming(stats,m.attack*multiplier*(1-(stats.impactResistancePercent||0)),b.guard>0,.85+rng()*.25);
+  const r=TC.receive(g,rt,{stats,amount:raw,physical:true,melee:m.reach<=60,source:m,random:rng,now});
+  if(r.untargetable||r.invulnerable)return;
+  b.energy=Math.max(0,b.energy-(r.energyUsed||0));
+  if(r.parry){if(live(m)&&distance(hero,m)<=stats.range&&clear(hero,m))land(m,characters.damage(stats,m.defense*(1-stats.penetration)),now);return;}
+  const before=b.hp;b.hp=r.shieldTriggered||r.trigger==='immortal'?1:Math.max(0,b.hp-r.damage);event(b,'hurt',{amount:before-b.hp});
+  if(r.shieldTriggered)b.talentCooldowns.energyShieldUntil=now+U.internalCooldown(g,90000);
+  if(r.reflect&&live(m)&&clear(hero,m))land(m,r.reflect,now);
+  if(r.trigger==='immortal')b.talentCooldowns.immortalUntil=now+600000;
+  if(r.trigger==='guardianAngel'){b.talentCooldowns.guardianUntil=now+600000;b.hp=stats.maxHP;b.energy=stats.maxEnergy;for(const m of enemies().filter(m=>talents.visible(hero,nav.map,m)))m.talentControl={type:'stun',remaining:2};}
+  if(r.trigger==='emp'){b.talentCooldowns.empUntil=now+45000;for(const m of enemies().filter(m=>talents.visible(hero,nav.map,m)))m.empRemaining=10;}
+  if(r.trigger||r.shieldTriggered)event(b,'talent',{kind:r.trigger||'energyShield'});
+  if(r.explode&&b.hp>0)for(const other of enemies())if(distance(hero,other)<=120&&clear(hero,other))land(other,characters.damage({...stats,elemental:stats.attack},(other.empRemaining>0?0:(other.magicDefense??other.defense))*(1-stats.magicPen),{type:'elemental',multiplier:.6}),now);
+  if(b.hp<=0)die();
  }
  const type=characters.roles[classId].magic?'elemental':'physical';
  let left=c.dt,now=c.now-c.dt*1000;
- while(left>1e-9){const dt=Math.min(.05,left);left-=dt;now+=dt*1000;
+ while(left>1e-9){const dt=Math.min(.05,left);left-=dt;now+=dt*1000;stats=talents.stats(b,c,rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
+  actions(TC.tick(rt,dt,enemies()));
+  if(b.hp>0)actions(U.tick(g,rt.ultimate,dt,{hero,stats,inCombat:!!b.area&&(rt.combatRemaining>0||!!target(b)),inHunt:!!b.area,enemies:enemies(),clear,move:(m,dx,dy)=>{const p={x:m.x+dx,y:m.y+dy},n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/4));for(let i=1;i<=n;i++)if(!nav.walkable(m.x+dx*i/n,m.y+dy*i/n))return;if(clear(m,p))Object.assign(m,p);}}));
   b.cooldowns=b.cooldowns.map(n=>Math.max(0,n-dt));b.guard=Math.max(0,b.guard-dt);b.blessing=Math.max(0,b.blessing-dt);b.attackClock=Math.max(0,b.attackClock-dt);
   if(b.hp<=0){b.respawn=Math.max(0,b.respawn-dt);if(b.respawn<=1e-8){b.hp=stats.maxHP;b.energy=stats.maxEnergy;Object.assign(hero,nav.map.spawn);b.targetId=null;event(b,'respawn');}}
   else{heal(dt*((stats.healthRegen||0)+(b.area?0:1.9)+(b.blessing>0?stats.regenBuff:0)));b.energy=Math.min(stats.maxEnergy,b.energy+dt*stats.energyRegen);}
   populate(b,now,rng,hero);
-  if(c.manualPath?.length&&b.hp>0&&now>=(c.manualStart||0))nav.follow(hero,c.manualPath,c.manualSpeed,Math.min(dt,(now-(c.manualStart||0))/1000));
+  if(c.manualPath?.length&&b.hp>0&&now>=(c.manualStart||0))nav.follow(hero,c.manualPath,stats.moveSpeed,Math.min(dt,(now-(c.manualStart||0))/1000));
   let m=target(b);
   if(b.auto&&b.hp>0&&b.area){
    if(b.hp<stats.maxHP*.4&&potionsUsed<(c.potions||0)){heal(Math.round(stats.maxHP*.44));potionsUsed++;event(b,'potion');}
    if(!m){m=b.mobs.filter(live).sort((a,z)=>distance(hero,a)-distance(hero,z))[0];b.targetId=m?.id??null;}
    if(b.autoSkills)for(const [index,s] of catalog.classes[classId].skills.entries()){
-    const support=s.type==='heal'?b.hp<stats.maxHP*.7:s.type==='guard'?b.hp<stats.maxHP*(classId==='cyborg'?.85:.75)&&b.guard<=0:s.type==='blessing'?b.hp<stats.maxHP*.85&&b.guard<=0:false;
+    const support=s.type==='heal'?(b.hp<stats.maxHP*.7||U.selected(g)==='eternalBlessing'&&(rt.combatRemaining>0||m)):s.type==='guard'?b.hp<stats.maxHP*(classId==='cyborg'?.85:.75)&&b.guard<=0:s.type==='blessing'?b.hp<stats.maxHP*.85&&b.guard<=0:false;
     const offensive=!['heal','guard','blessing'].includes(s.type)&&m&&distance(hero,m)<=stats.range&&b.attackClock<=0&&(s.type!=='area'||b.mobs.filter(other=>live(other)&&distance(m,other)<125).length>=2);
-    if(support||offensive)skill(b,index,{...c,hero,nav});
+    if(support||offensive)skill(b,index,{...c,hero,nav,stats,baseStats:c.baseStats||c.stats,runtime:rt});
    }
    const warnings=b.mobs.filter(live).map(m=>m.telegraph).filter(Boolean),danger=warnings.some(w=>hunt.danger(w,hero));
    if(danger){let goal;for(const r of [90,170,240]){for(let i=0;i<16;i++){const a=i*Math.PI/8,p={x:hero.x+Math.cos(a)*r,y:hero.y+Math.sin(a)*r};if(nav.walkable(p.x,p.y)&&!warnings.some(w=>hunt.danger(w,p))){goal=p;break;}}if(goal)break;}if(goal)move(hero,goal,stats.huntSpeed,dt,nav);}
@@ -92,7 +131,7 @@ function step(b,c){
   }
   if(b.pending){b.pending.remaining-=dt;if(b.pending.remaining<=0){const p=b.pending;b.pending=null;const t=b.mobs.find(m=>m.id===p.targetId);
    if(live(t)&&b.hp>0&&distance(hero,t)<=stats.range+1&&clear(hero,t)){
-    hit(t,1,type,now);
+    hit(t,1,type,now,false,0,true);
    }
   }}
   if(b.skillJob&&b.hp>0){const job=b.skillJob;b.skillJob=null;const s=catalog.classes[classId].skills[job.index],t=b.mobs.find(m=>m.id===job.targetId);
@@ -103,11 +142,12 @@ function step(b,c){
    if(s.type==='area'&&live(t))for(const other of b.mobs.filter(live))if(distance(t,other)<125)hit(other,s.multiplier||1.55,s.damageType||type,now,true,s.element==='lightning'?4.5:0);
    if(s.type==='taunt'){b.guard=Math.max(b.guard,4);for(const other of b.mobs.filter(live))hit(other,s.multiplier,type,now,true);}
   }
-  for(const p of b.projectiles){const t=b.mobs.find(m=>m.id===p.targetId);vfx.step(p,dt,{target:t,origin:hero,clear,valid:()=>b.hp>0&&live(t),onHit:()=>land(t,p.damage,now,p.slow)});}
-  b.projectiles=b.projectiles.filter(p=>p.phase!=='done').slice(-128);
+  for(const p of b.projectiles){const t=b.mobs.find(m=>m.id===p.targetId);vfx.step(p,dt,{target:t,origin:p.origin||hero,clear,valid:()=>b.hp>0&&live(t),onHit:()=>p.secondary?land(t,p.damage,now,p.slow):landed(t,p.damage,p.slow,p.contact)});}
+  b.projectiles=b.projectiles.filter(p=>p.phase!=='done');if(b.projectiles.length>1024)throw Error('battle_projectile_limit');
   for(const enemy of b.mobs.filter(m=>m.alive)){
    enemy.slow=Math.max(0,enemy.slow-dt);enemy.emberElapsed+=dt;enemy.attackAnim=Math.max(0,enemy.attackAnim-dt);enemy.moving=0;
-   const intent=behavior.intent(enemy,hero,b.hp>0),speed=enemy.speed*(enemy.slow>0?.55:1);
+   const intent=behavior.intent(enemy,hero,b.hp>0&&!rt.ultimate.hidden),speed=enemy.speed*(enemy.slow>0?.55:1)*(enemy.talentSlow?.remaining>0?1-enemy.talentSlow.percent:1);
+   if(enemy.empRemaining>0||enemy.talentControl?.remaining>0){enemy.telegraph=null;continue;}
    if(intent==='idle'){const goal=behavior.patrol(enemy,dt,(a,z)=>{const n=Math.max(1,Math.ceil(distance(a,z)/4));for(let i=0;i<=n;i++)if(!nav.walkable(a.x+(z.x-a.x)*i/n,a.y+(z.y-a.y)*i/n))return false;return true;});if(goal)move(enemy,goal,speed*.45,dt,nav);continue;}
    if(intent==='return'){const home={x:enemy.anchorX,y:enemy.anchorY};if(distance(enemy,home)<=8){Object.assign(enemy,home);behavior.home(enemy);}else move(enemy,home,speed,dt,nav);continue;}
    if(enemy.telegraph){const result=hunt.stepWarning(enemy,dt,hero,{clear:clear(enemy,hero)});if(result?.hit)damage(enemy,result.multiplier);continue;}
@@ -116,6 +156,7 @@ function step(b,c){
    if(distance(enemy,hero)>enemy.reach*.75&&distance(enemy,hero)<enemy.aggro)move(enemy,hero,speed*.65,dt,nav);
   }
  }
- return {kills,hero,potionsUsed};
+ stats=talents.stats(b,c,rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
+ talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};
 }
-module.exports={create,step,skill,cancel,changeArea,rulesHash,catalog,hunt};
+module.exports={create,step,skill,cancel,changeArea,rulesHash,catalog,hunt,talentStats:talents.stats};

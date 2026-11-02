@@ -59,3 +59,12 @@ GRANT SELECT ON mare_game.contract_progress,mare_game.contract_claims TO mare_ru
 GRANT INSERT (character_id,contract_id,progress) ON mare_game.contract_progress TO mare_runtime;
 GRANT UPDATE (progress) ON mare_game.contract_progress TO mare_runtime;
 GRANT INSERT (character_id,contract_id,request_id,version_before,experience_before,gold_before,experience_delta,gold_delta,rules_hash) ON mare_game.contract_claims TO mare_runtime;
+
+GRANT SELECT ON mare_game.character_talents,mare_game.character_talent_events TO mare_runtime;
+GRANT INSERT(character_id,build,revision) ON mare_game.character_talents TO mare_runtime;
+GRANT UPDATE(build,revision) ON mare_game.character_talents TO mare_runtime;
+GRANT INSERT(character_id,request_id,action,revision_before,build_before,build_after,earned,rules_hash) ON mare_game.character_talent_events TO mare_runtime;
+
+GRANT SELECT ON mare_game.battle_talent_steals TO mare_runtime;
+GRANT INSERT(character_id,spawn_id,total) ON mare_game.battle_talent_steals TO mare_runtime;
+GRANT UPDATE(total) ON mare_game.battle_talent_steals TO mare_runtime;

@@ -36,7 +36,7 @@
     const o = data.online,
       frozen = !o.battle&&['active','won','lost'].includes(o.combat?.status),
       f = frozen ? o.combat.fighter ?? o.combatPreview : o.combatPreview;
-    if (!f || !Number.isInteger(f.maxHp) || f.maxHp < 1)
+    if (!f || !Number.isFinite(f.maxHp) || f.maxHp < 1)
       throw new Error("invalid_server_state");
     return {
       ...base,
@@ -49,6 +49,8 @@
       hp: o.battle?.hp ?? (frozen && o.combat?.encounterId ? o.combat.playerHp : f.maxHp),
       energy: o.battle?.energy ?? 0,
       claimed: [...(o.contracts?.claimed||[])],
+      talentVersion:2,talentSeq:o.talents?.revision||0,talentBuilds:{[data.character.classId]:structuredClone(o.talents?.build||{nodes:{},keystone:null,ultimate:null})},
+      talentCooldowns:structuredClone(o.battle?.talentCooldowns||{}),achievements:{...(base.achievements||{}),claimed:[]},
       potions: 0,
       materials: 0,
       inventory: [],
@@ -83,6 +85,10 @@
     };
   }
   const labels = {
+    talent_build_invalid:'A árvore não atende aos pontos ou requisitos confirmados pelo servidor.',
+    talent_build_unchanged:'Essa árvore já está vazia ou não contém novos investimentos.',
+    talent_reset_port_only:'Retorne ao porto para redefinir seus talentos.',
+    talents_unavailable:'Os talentos estão temporariamente indisponíveis.',
     inventory: "Inventário",
     shop: "Mercador do Porto",
     character: "Personagem",

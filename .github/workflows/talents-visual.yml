@@ -8,6 +8,10 @@ on:
       - 'assets/ui/talents-hd/**'
       - 'tests/talent-hd.test.cjs'
       - 'talent-system.js'
+      - 'talent-combat.js'
+      - 'ultimate-system.js'
+      - 'apps/account-client/**'
+      - 'tests/talents-online-browser.cjs'
       - 'ui-system.js'
       - 'ui-screens.css'
       - 'ui-components.css'
@@ -34,12 +38,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: .node-version
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
       - name: Preparar Chromium
         run: |
+          npm install --no-save --package-lock=false --ignore-scripts playwright@1.63.0
           python -m pip install playwright==1.63.0
           python -m playwright install --with-deps chromium
       - name: Validar talentos e pacote público
@@ -48,6 +53,7 @@ jobs:
           python tools/build_pages.py
           python -m http.server 8123 --bind 127.0.0.1 > /tmp/mare-talent-http.log 2>&1 &
           sleep 2
+          MARE_TEST_URL=http://127.0.0.1:8123/ MARE_QA_DIR=/tmp/mare-talent-visual/online node tests/talents-online-browser.cjs
           MARE_TEST_URL=http://127.0.0.1:8123/ python -X utf8 tests/talent_canvas_browser.py
           MARE_TEST_URL=http://127.0.0.1:8123/dist/ python -X utf8 tests/talent_visual_browser.py
       - name: Capturas da árvore

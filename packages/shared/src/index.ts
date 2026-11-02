@@ -12,3 +12,5 @@ export * from './schemas/original-inventory.js';
 
 export * from './schemas/world.js';
 export * from './schemas/contracts.js';
+
+export * from "./schemas/talents.js";

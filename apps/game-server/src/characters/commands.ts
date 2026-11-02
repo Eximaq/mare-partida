@@ -1,3 +1,4 @@
+import {mutateTalents} from './talents.js';
 import {isWorldAction,mutateWorld} from './world.js';
 import {claimContract} from './contracts.js';
 import {isBattleAction,mutateBattle,readBattle} from './battle.js';
@@ -44,6 +45,7 @@ export async function executeCharacterCommand(
     "SELECT count(*)::int AS recent FROM mare_game.character_commands WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds' AND result->>'action'<>'battle.reward'",[characterId]
   )).rows[0]!;
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
+  if(input.action==='talents.commit'||input.action==='talents.reset'){await mutateTalents(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(isBattleAction(input.action)){await mutateBattle(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==='contract.claim'){await claimContract(client,characterId,input.requestId,state,input.payload.contractId);state=await readCharacterState(client,characterId);}
   if(['journey.begin','hunt.begin','hunt.claim','combat.begin','combat.attack','combat.claim'].includes(input.action)&&await readBattle(client,characterId))throw new AuthFault(409,'battle_original_active');
