@@ -34,9 +34,15 @@ await authDatabase(async f=>{
   await p.screenshot({path:resolve(out,'two-players-original-port.png')});console.log('two isolated accounts visible; authoritative movement rendered');
   // Expire only a disposable fixture lease: reproduce returning from a suspended tab.
   const returningId=await p.evaluate(()=>globalThis.MareGameSession.data.character.id);
+  const controlRoute=/\/v1\/characters\/[^/]+\/control(?:\/renew)?$/;
+  let resumeRenewal!:()=>void;
+  const pausedRenewal=new Promise<void>(resolve=>{resumeRenewal=resolve;});
+  await p.route(controlRoute,async(r:any)=>{await pausedRenewal;await r.continue();});
   await f.pool.query("UPDATE mare_game.character_control SET expires_at=clock_timestamp()-interval '1 second' WHERE character_id=$1",[returningId]);
   await q.evaluate(()=>globalThis.MareGameSession.read(true));
-  assert.equal(await q.evaluate(()=>globalThis.__mareDiagnostics().sharedLobby.players.length),0);
+  // A concurrent polling read can supersede the explicit read; await the rendered state.
+  await q.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===0,null,{timeout:15000});
+  resumeRenewal();await p.unroute(controlRoute);
   await p.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));
   await q.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===1,null,{timeout:15000});
   console.log('returning tab recovers expired control and mutual presence without takeover');
