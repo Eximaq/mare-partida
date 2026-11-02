@@ -1524,10 +1524,10 @@
   let onlineProjectionSnapshot=null;
   function syncOnlineGame(){
     if(!game||!session||!ONLINE_GAME.data)return;
+    const c=ONLINE_GAME.data.online.combat;
     if(onlineProjectionSnapshot!==ONLINE_GAME.data){
       const previousHp=game.hp;game=MareOnlineGameUI.project(game,ONLINE_GAME.data);applyOnlineEquipment();
       syncOnlineWorld();
-      const c=ONLINE_GAME.data.online.combat;
       if(ONLINE_GAME.data.online.battle){syncOnlineBattle();}
       else if(scene==='hunt'&&c.encounterId&&['active','won'].includes(c.status)&&(!ONLINE_GAME.data.online.world||c.worldMapId===ONLINE_GAME.data.online.world.mapId)){
         let enemy=world.mobs[0];

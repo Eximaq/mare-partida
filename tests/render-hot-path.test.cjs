@@ -45,4 +45,6 @@ test('busy/control notifications retain status without reprojecting unchanged se
  assert.equal(projections,1);assert.equal(updates,1);
  c.ONLINE_GAME.available=false;vm.runInContext('syncOnlineGame()',c);assert.equal(nodes.combatState.textContent,'CONEXÃO INTERROMPIDA');
  c.ONLINE_GAME.data={...c.ONLINE_GAME.data};vm.runInContext('syncOnlineGame()',c);assert.equal(projections,2);
+  c.scene='hunt';c.ONLINE_GAME.available=true;c.ONLINE_GAME.data.online.battle=null;c.ONLINE_GAME.data.online.combat.status='lost';
+  vm.runInContext('syncOnlineGame()',c);assert.equal(nodes.combatState.textContent,'DERROTA');
 });
