@@ -5,11 +5,15 @@ import { mkdtemp } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import pg from "pg";
+import {AuthService} from "../../apps/game-server/src/auth/service.js";
+import {characterCommandSchema} from "@mare/shared";
+import {createRequire} from "node:module";
+const require=createRequire(import.meta.url),T=require("../../talent-system.js"),A=require("../../character-appearance.js");
 import { authDatabase } from "./auth-support.mjs";
 import { pgArchive } from "../../tools/pg-archive.mjs";
 import { isDatabaseReady } from "../../apps/game-server/src/db/migrations.js";
 test("native archive restores every table and command receipt into a separate disposable database", async () =>
-  authDatabase(async ({ pool, service }) => {
+  authDatabase(async ({ pool, service, provider, vault }) => {
     const session = await service.login("archive@example.invalid", "fixture");
     const c = await service.createCharacter(session.token, {
         name: "Archive",
@@ -25,9 +29,21 @@ test("native archive restores every table and command receipt into a separate di
       control: { epoch: lease.epoch, token: lease.token },
     };
     const receipt = await service.command(session.token, c.id, command);
-    await pool.query('UPDATE mare_game.character_progression SET gold=60 WHERE character_id=$1',[c.id]);
+    await pool.query('UPDATE mare_game.character_progression SET gold=100 WHERE character_id=$1',[c.id]);
     await service.command(session.token,c.id,{...command,requestId:randomUUID(),action:'inventory.buy',expectedVersion:1,payload:{itemId:'training-weapon-v1',quantity:1}});
     await service.command(session.token,c.id,{...command,requestId:randomUUID(),action:'equipment.equip',expectedVersion:2,payload:{itemId:'training-weapon-v1'}});
+
+    // Migrate the existing alpha character into every original persistent aggregate.
+    const read=()=>service.onlineState(session.token,c.id),
+      input=async(action:string,payload:any={})=>characterCommandSchema.parse({...command,requestId:randomUUID(),expectedVersion:(await read()).state.version,action,payload}),
+      send=async(action:string,payload:any={})=>service.command(session.token,c.id,await input(action,payload));
+    await send('items.initialize');await send('world.initialize');await send('battle.start');
+    await send('profile.appearance',{appearance:{...A.defaults,hairColor:'blue'}});
+    await send('profile.preferences',{hideHeadgear:true,hideItems:true,healThreshold:.8});
+    await send('talents.commit',{build:{...T.empty(),nodes:{[T.nodes('sword')[0].id]:1}}});
+    const purchase=await input('potions.buy'),purchaseReceipt=await service.command(session.token,c.id,purchase);
+    const original=await read();assert(original.profile&&original.talents&&original.battle&&original.world&&original.originalInventory);
+    assert.equal(original.talents.spent,1);assert.equal(original.profile.appearance.hairColor,'blue');
 
     const source = pool.options.connectionString!,
       url = new URL(source),
@@ -56,6 +72,12 @@ test("native archive restores every table and command receipt into a separate di
           (await pool.query(sql)).rows,
         );
       }
+      // A new process/service reads the restored state and resolves an already committed
+      // request without charging again; all immutable receipts remain intact.
+      const restarted=new AuthService({pool:restored,provider,vault,policy:{absoluteMs:3600000,idleMs:300000,recheckMs:60000},origin:'https://localhost:9443'});
+      assert.deepEqual(await restarted.command(session.token,c.id,purchase),purchaseReceipt);
+      const recovered=await restarted.onlineState(session.token,c.id);
+      for(const key of ['state','originalInventory','profile','talents','battle','achievements','hierarchy','fruits','haki','prison','dungeons'] as const)assert.deepEqual(recovered[key],original[key],key);
       assert.deepEqual(
         (
           await restored.query(

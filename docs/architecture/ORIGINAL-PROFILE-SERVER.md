@@ -1,5 +1,7 @@
 # Perfil e criação originais no servidor
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 O login abre `/game` também para contas sem personagem. O mesmo assistente de
 facção, classe e aparência da demonstração cria o personagem online. Nome,
 classe, facção e escolhas cosméticas passam por contratos estritos; identidade de

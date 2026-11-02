@@ -1,3 +1,5 @@
+**Servidor do gameplay atual:** [aceite integrado, cobertura e limites de operação](docs/architecture/FINAL-SERVER-ACCEPTANCE.md). Login abre o jogo original; o backend local determina progresso, inventário, combate e recompensas. Pages publica somente o cliente estático.
+
 **Personagem online:** [criação original, perfil, aparência e troca de classe persistidos](docs/architecture/ORIGINAL-PROFILE-SERVER.md).
 
 **Frutas online:** [compêndio possuído, 30 frutas, habilidades e transformações autoritativas](docs/architecture/ORIGINAL-FRUITS-SERVER.md).
@@ -14,13 +16,13 @@
 
 Talentos online: [árvores, efeitos e persistência autoritativa](docs/architecture/ORIGINAL-TALENTS-SERVER.md), com pontos por nível e interface original. Pontos de [conquistas autoritativas](docs/architecture/ORIGINAL-ACHIEVEMENTS-SERVER.md) entram no mesmo orçamento.
 
-**Posição e viagens online:** [mundo persistente, colisões e limites do incremento](docs/architecture/ORIGINAL-WORLD-SERVER.md). IA e combate original completo continuam em migração.
+**Posição e viagens online:** [mundo persistente, colisões e limites do incremento](docs/architecture/ORIGINAL-WORLD-SERVER.md). IA e combate estão integrados; veja o aceite consolidado acima.
 
-**Servidor completo do jogo atual — objetivo ainda aberto:** [escopo integral, critérios de segurança e estado real](docs/architecture/FULL-SERVER-PARITY.md). O alpha anterior não equivale à migração completa.
+**Escopo do servidor do jogo atual:** [escopo integral, critérios de segurança e estado real](docs/architecture/FULL-SERVER-PARITY.md). O alpha anterior não equivale à migração completa.
 
-**Inventário e forja originais conectados:** [comandos, conversão preservada, testes e limites](docs/architecture/ORIGINAL-INVENTORY-SERVER.md). Equipamentos, vendas, poções e operações de forja com persistência autoritativa; combate completo e demais sistemas ainda em migração.
+**Inventário e forja originais conectados:** [comandos, conversão preservada, testes e limites](docs/architecture/ORIGINAL-INVENTORY-SERVER.md). Equipamentos, vendas, poções e operações de forja com persistência autoritativa; demais sistemas e verificação integrada documentados no aceite acima.
 
-**Entrada direta online — em integração:** [login → jogo original, funções conectadas e diferenças de gameplay ainda abertas](docs/architecture/DIRECT-ONLINE-GAME.md).
+**Entrada direta online:** [login → jogo original e histórico da integração](docs/architecture/DIRECT-ONLINE-GAME.md).
 
 **Histórico da proposta de miniporto, substituída pela entrada direta:** [limites da tentativa anterior](docs/architecture/ONLINE-VISUAL-LOBBY.md).
 

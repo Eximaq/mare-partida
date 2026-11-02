@@ -186,7 +186,13 @@
     let panel = null,
       section = null,
       error = "",
-      reading = false;
+      reading = false,
+      redirecting = false;
+    const redirectToLogin = () => {
+      if (redirecting) return;
+      redirecting = true;
+      location.replace("/online/");
+    };
     const button = (text, action, disabled = false, extra = "") =>
       `<button type="button" class="dialog-button" data-online-action="${action}" ${disabled ? "disabled" : ""} ${extra}>${text}</button>`;
     const locked = () =>
@@ -322,7 +328,7 @@
       }
       if (action === "logout") {
         await client.logout();
-        location.replace("/online/");
+        redirectToLogin();
         return;
       }
       if (action === "resume") return client.resume();
@@ -402,12 +408,12 @@
     );
     client.subscribe(() => {
       hooks.sync();
-      if (!client.data) location.replace("/online/");
+      if (!client.data) redirectToLogin();
       render();
     });
     let lastRead=0;
     const poll = setInterval(() => {
-      if (document.hidden || reading || client.busy) return;
+      if (redirecting || document.hidden || reading || client.busy) return;
       const now=Date.now(),period=client.data?.online.battle&&client.controlled?750:3000;
       if(now-lastRead<period)return;lastRead=now;
       reading = true;
@@ -419,7 +425,7 @@
         });
     }, 250);
     const renewal = setInterval(() => {
-      if (!document.hidden) void client.renew().catch(message);
+      if (!redirecting && !document.hidden) void client.renew().catch(message);
     }, 30000);
     root.addEventListener("pagehide", () => {
       clearInterval(poll);

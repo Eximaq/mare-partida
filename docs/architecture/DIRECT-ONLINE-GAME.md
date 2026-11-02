@@ -1,4 +1,9 @@
-# Entrada direta no jogo — integração em andamento
+# Entrada direta no jogo — histórico da integração
+
+
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
+Atual: cadastro/login em `/online/`, criação original em três passos e gameplay em `/game`. A migração posterior conectou todos os domínios existentes do inventário de escopo.
 
 ## Fluxo corrigido
 

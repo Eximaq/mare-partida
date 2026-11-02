@@ -13,8 +13,8 @@ Na área de trabalho, pasta **Maré Partida - Servidor Local**:
 1. Abra **Iniciar servidor.cmd**. Aguarde “Servidor iniciado” e feche a janela.
 2. Abra **Abrir jogo.url**. Use sua conta de teste já confirmada e a senha diretamente
    na página. O login leva direto a `/game`, com HUD/mapa originais. As quatro
-   contas e três personagens anteriores estão preservados. O gameplay online
-   ainda é limitado; ver `docs/architecture/DIRECT-ONLINE-GAME.md`.
+   contas e três personagens anteriores estão preservados. O gameplay existente foi conectado ao servidor; ver
+   `docs/architecture/FINAL-SERVER-ACCEPTANCE.md`.
 3. Para encerrar, abra **Parar servidor.cmd**. Aguarde a confirmação. Isso desliga
    Auth/API/HTTPS; PostgreSQL continua ativo para preservar o uso de outros trabalhos.
 4. **Status.cmd** informa o estado; **Backup.cmd** cria uma nova cópia consistente.
@@ -90,3 +90,13 @@ backup por cima do banco atual. Recuperação deve ocorrer em um banco novo.
 
 O monitor detectou cerca de4% de disco livre neste PC. Não houve remoção de arquivos;
 liberar espaço com revisão do proprietário antes de acumular backups/artefatos.
+
+## Atualização consolidada de02/11/2026
+
+Instalação com30 migrações. Backup consistente criado antes da0030;49 tabelas
+anteriores comparadas, dados idênticos após normalizar somente o hash conhecido
+da navegação. Quatro contas/três personagens preservados. Início, HTTPS com CA
+local, recursos do jogo200 e catálogo401 sem sessão confirmados. Auth/API/gateway
+parados ao encerrar a validação; PostgreSQL mantido. Use os mesmos atalhos acima.
+Assets e saves da demonstração preservados. O teste de restauração agora compara
+os agregados originais e repete uma compra após reinício sem cobrar novamente.

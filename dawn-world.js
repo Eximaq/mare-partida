@@ -16,8 +16,8 @@
       if(tx<ty){x+=ix;tx+=dtX;}else if(ty<tx){y+=iy;ty+=dtY;}else{if(!sample((x+ix+.5)*size,(y+.5)*size)||!sample((x+.5)*size,(y+iy+.5)*size))return false;x+=ix;y+=iy;tx+=dtX;ty+=dtY;}
     }return false;
   }
-  function segmentBlocked(a,b,r){
-    if(colliders.some(c=>{if(c.isSolid===false||c.blocksMovement===false)return false;let lo=0,hi=1;for(const [v,d,min,max]of [[a.x,b.x-a.x,c.x-r-.05,c.x+c.w+r+.05],[a.y,b.y-a.y,c.y-r-.05,c.y+c.h+r+.05]]){if(Math.abs(d)<1e-12){if(v<min||v>max)return false;}else{let u=(min-v)/d,w=(max-v)/d;if(u>w)[u,w]=[w,u];lo=Math.max(lo,u);hi=Math.min(hi,w);if(lo>hi)return false;}}return true;}))return true;
+  function segmentBlocked(a,b,r,candidates=colliders){
+    if(candidates.some(c=>{if(c.isSolid===false||c.blocksMovement===false)return false;let lo=0,hi=1;for(const [v,d,min,max]of [[a.x,b.x-a.x,c.x-r-.05,c.x+c.w+r+.05],[a.y,b.y-a.y,c.y-r-.05,c.y+c.h+r+.05]]){if(Math.abs(d)<1e-12){if(v<min||v>max)return false;}else{let u=(min-v)/d,w=(max-v)/d;if(u>w)[u,w]=[w,u];lo=Math.max(lo,u);hi=Math.min(hi,w);if(lo>hi)return false;}}return true;}))return true;
     return [[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].some(([x,y])=>!maskLine(a,b,x,y));
   }
   function free(x,y,r=10){return ground(x,y,r)&&!colliders.some(c=>c.isSolid!==false&&c.blocksMovement!==false&&x+r>c.x&&x-r<c.x+c.w&&y+r>c.y&&y-r<c.y+c.h);}

@@ -1,5 +1,7 @@
 # Conquistas originais e pontos de talentos no servidor
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 Base: main `9c90f4e` (talentos originais, PR #210). O Diário de Conquistas original
 continua dentro do jogo. Não há importação de progresso nem alteração dos saves
 da demonstração, arte, mapas, HUD ou Paper Doll.

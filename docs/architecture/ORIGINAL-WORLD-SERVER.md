@@ -1,5 +1,7 @@
 # Posição e viagens autoritativas — incremento do mundo
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 O jogo original recebe posição e trajeto do backend. O navegador envia apenas o
 ponto desejado ou o ID da ilha; não pode fornecer velocidade, tempo transcorrido,
 spawn, caminho, dono, dano ou resultado econômico. A demonstração mantém seu

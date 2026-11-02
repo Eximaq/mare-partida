@@ -1,5 +1,7 @@
 # Inventário original, economia e forja no servidor
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 Incremento da paridade integral, em revisão no PR #201. Reutiliza o catálogo e
 `forge-system.js` originais, incluindo preços, chances, custos e limites. O
 inventário, o mercador e a forja usam seus painéis existentes em `game.js`.

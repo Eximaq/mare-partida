@@ -1,5 +1,7 @@
 # Talentos originais no servidor
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 Base: main `9ebbfff` (contratos originais, PR #209). Este incremento mantém a
 árvore e as regras compartilhadas das sete classes: 105 nós comuns, 21 escolhas
 intermediárias e 21 finais. A demonstração mantém seus saves e sua progressão.

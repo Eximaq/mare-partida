@@ -1,5 +1,7 @@
 # Impel Down com autoridade do servidor
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 O jogo online usa o diário, mapa, monstros, HUD e mochila originais. O backend
 prepara e persiste a identidade do próximo adversário, conduz o duelo e registra
 a vitória. Recarregar, sair e retornar não sorteia outro inimigo nem reinicia o
