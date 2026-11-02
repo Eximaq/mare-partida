@@ -197,7 +197,7 @@ test("native forge dialog projects its shared UI fields into the strict operatio
     source.slice(a, b) + ";globalThis.run=runForgeOperation;",
     box,
   );
-  await box.run({
+  const accepted = await box.run({
     type: "upgrade",
     itemId: "server-instance",
     expectedSeq: 0,
@@ -208,6 +208,7 @@ test("native forge dialog projects its shared UI fields into the strict operatio
     itemIds: [],
     slot: "weapon",
   });
+  assert.equal(accepted,false,"a rejected online action must keep its confirmation open");
   assert.deepEqual(JSON.parse(JSON.stringify(sent)), {
     operation: { type: "upgrade", expectedSeq: 0, itemId: "server-instance" },
   });
