@@ -8,6 +8,7 @@ import {
   type OriginalItemInstance,
   type CharacterState,
   type CharacterCommand,
+  type TalentBuild,
 } from "@mare/shared";
 import { getGameCatalog } from "./catalog.js";
 import { AuthFault } from "../auth/errors.js";
@@ -23,12 +24,18 @@ const random = () => randomInt(0, 0x100000000) / 0x100000000;
 const maxGold = 9223372036854775807n;
 export const isOriginalAction = (action: string) =>
   originalActionSchema.options.includes(action as any);
-export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0){
+export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number}={}){
+ const roll=passives.rng??(()=>randomInt(0,0x100000000)/0x100000000),random=()=>{const r=roll();if(!Number.isFinite(r)||r<0||r>=1)throw new RangeError('Invalid loot RNG');return r;};
  const before=await readOriginalInventory(client,id);if(!before)throw new AuthFault(409,'original_inventory_required');
  const after=structuredClone(before),identity=(await client.query('SELECT class_id,faction_id FROM mare_game.characters WHERE id=$1',[id])).rows[0];
+ const T=require('../../../../talent-system.js'),U=require('../../../../ultimate-system.js'),g={classId:identity.class_id,talentBuilds:{[identity.class_id]:passives.build||T.empty()}},underworld=U.selected(g)==='underworld',lootMultiplier=underworld?2:1,rareChance=Math.min(.5,(T.bonuses(g).rareChance||0)+(T.keystone(g)==='lightHands'?.2:0));
  const battle=require('../../../../world-battle.cjs');let xp=0n,gold=BigInt(first?.gold??0);
  if(!Number.isSafeInteger(potionsUsed)||potionsUsed<0||potionsUsed>after.potions)throw new AuthFault(503,'potion_stock_conflict');after.potions-=potionsUsed;
  const make=(def:number,level:number,rarity:string,origin:string)=>forge.normalizeItem({id:randomUUID(),def,level,rarity,plus:0,locked:false,obtainedAt:Date.now(),origin},defs,random);
+ for(const steal of passives.steals??[]){
+  if(T.keystone(g)!=='lightHands'||!Number.isInteger(steal.amount)||steal.amount<1||steal.amount>6)throw new AuthFault(503,'invalid_talent_reward');
+  await client.query('INSERT INTO mare_game.battle_talent_steals(character_id,spawn_id,total) VALUES($1,$2,$3) ON CONFLICT(character_id,spawn_id) DO UPDATE SET total=mare_game.battle_talent_steals.total+EXCLUDED.total',[id,steal.spawnId,steal.amount]);gold+=BigInt(steal.amount);
+ }
  if(first){
   if(after.inventory.length>=120)throw new AuthFault(409,'inventory_full');
   const def=({sword:0,brawler:2,gunner:4,rogue:12,cyborg:14,strategist:16,healer:31} as Record<string,number>)[identity.class_id]!;
@@ -36,19 +43,24 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
  }
  for(const k of kills){
   const r=k.reward;xp+=BigInt(r.xp);gold+=BigInt(Math.round(r.gold*battle.catalog.factions[identity.faction_id].gold));
-  if(random()<r.materialChance)after.materials=Math.min(1000000000,after.materials+r.materials);
-  if(random()<r.gearChance&&after.inventory.length<120){
-   const rarity=battle.hunt.rarity(k.area,k.monster.type==='boss'||require('../../../../monster-catalog.js')[k.monster.type]?.boss===true,random());
+  if(random()<Math.min(1,r.materialChance*lootMultiplier))after.materials=Math.min(1000000000,after.materials+r.materials);
+  if(random()<Math.min(1,r.gearChance*lootMultiplier)&&after.inventory.length<120){
+   const rarity=battle.hunt.rarity(k.area,k.monster.type==='boss'||require('../../../../monster-catalog.js')[k.monster.type]?.boss===true,random(),rareChance);
    const eligible=defs.map((d,i)=>({d,i})).filter(({d})=>!d.kind&&d.type!=='akuma_no_mi'&&(d.slot!=='weapon'||d.type===identity.class_id)&&(!d.fixedRarity||d.rarity===rarity&&d.rarity!=='supreme'));
    const chosen=eligible[Math.floor(random()*eligible.length)];if(!chosen)throw new AuthFault(503,'loot_catalog_unavailable');
    after.inventory.unshift(make(chosen.i,r.gearLevel,rarity,battle.hunt.get(k.area).name));
   }
-  if(random()<r.potionChance)after.potions=Math.min(1000000000,after.potions+r.potions);
+  if(random()<Math.min(1,r.potionChance*lootMultiplier))after.potions=Math.min(1000000000,after.potions+r.potions);
+  if(underworld&&k.monster.type!=='boss'&&after.inventory.length<120){
+   const special=U.loot(g,random);
+   if(special.box){const def=defs.findIndex(d=>d.kind==='pearl-box'&&d.boxLevel===1);if(def<0)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(def,1,String(defs[def]!.rarity??'common'),'Senhor do Submundo'));}
+   if(special.legendary&&after.inventory.length<120){const eligible=defs.map((d,i)=>({d,i})).filter(({d})=>!d.kind&&d.type!=='akuma_no_mi'&&(d.slot!=='weapon'||d.type===identity.class_id)&&(!d.fixedRarity||d.rarity==='legendary'));const chosen=eligible[Math.floor(random()*eligible.length)];if(!chosen)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(chosen.i,r.gearLevel,'legendary','Senhor do Submundo'));}
+  }
  }
  if(BigInt(state.gold)+gold>maxGold||BigInt(state.experience)+xp>maxGold)throw new AuthFault(409,'progression_limit');
  await writeInventory(client,id,after);
  await client.query('UPDATE mare_game.character_progression SET gold=gold+$2,experience=experience+$3 WHERE character_id=$1',[id,gold.toString(),xp.toString()]);
- await event(client,id,requestId,state.version,first?'battle.first':'battle.reward',before,after,BigInt(state.gold),gold,{experience:xp.toString(),spawns:kills.map(k=>k.id),potionsUsed,firstArea:first?.area??null});
+ await event(client,id,requestId,state.version,first?'battle.first':'battle.reward',before,after,BigInt(state.gold),gold,{experience:xp.toString(),spawns:kills.map(k=>k.id),potionsUsed,firstArea:first?.area??null,talentSteals:passives.steals??[],underworld,rareChance});
  return {xp,gold};
 }
 function valid(input: unknown): OriginalInventory {

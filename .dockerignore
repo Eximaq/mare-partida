@@ -88,3 +88,9 @@
 !combat-vfx.js
 
 !contract-system.js
+
+!talent-runtime.cjs
+!talent-system.js
+!talent-combat.js
+!ultimate-system.js
+!achievement-system.js

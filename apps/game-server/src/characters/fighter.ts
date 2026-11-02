@@ -1,3 +1,7 @@
+import {createRequire} from 'node:module';
+import {readBattle} from './battle.js';
+const require=createRequire(import.meta.url);
+import {readTalents} from './talents.js';
 import { readGear } from "./inventory.js";
 import type { PoolClient } from "pg";
 import {
@@ -111,7 +115,7 @@ export async function readFighter(
   if (!row) throw new AuthFault(503, "character_state_unavailable");
   const attributes = await readAttributes(client, id, state);
   const original=await readOriginalInventory(client,id);
-  if(original)return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,original);
+  if(original){const talents=await readTalents(client,id,state),b=talents?await readBattle(client,id):null;return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,original,talents?.build,b?require('../../../../talent-runtime.cjs').load(b):undefined); }
   return deriveFighter(
     row.class_id,
     state,

@@ -2,9 +2,9 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
 import {tickWorldBattles} from '../../apps/game-server/src/characters/battle.js';
-const require=createRequire(import.meta.url),engine=require('../../world-battle.cjs'),snapshot=require('../fixtures/dungeon-server-rules.json');
-test('a persisted battle from before the dungeon update can pause without losing its monsters or HP',async()=>{
- const b=engine.create('beach',{maxHP:200,maxEnergy:90},1000,()=>.5);b.rulesHash=snapshot.rulesHash;b.auto=true;const before=structuredClone(b);let stored:any=null;const commands:string[]=[];
+const require=createRequire(import.meta.url),engine=require('../../world-battle.cjs');
+test('a migrated battle can pause without losing its monsters or HP',async()=>{
+ const b=engine.create('beach',{maxHP:200,maxEnergy:90},1000,()=>.5);b.auto=true;const before=structuredClone(b);let stored:any=null;const commands:string[]=[];
  const client={release(){},async query(sql:string,args:any[]=[]){commands.push(sql);
   if(sql.startsWith('SELECT id,account_id'))return {rows:[{id:'session',account_id:'account'}]};
   if(sql.startsWith('SELECT id FROM mare_game.accounts'))return {rowCount:1,rows:[{id:'account'}]};

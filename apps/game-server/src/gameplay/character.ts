@@ -1,7 +1,7 @@
 import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
-import {fighterSchema,type CharacterState,type AttributeValues,type OriginalInventory,type Fighter} from '@mare/shared';
+import {fighterSchema,type CharacterState,type AttributeValues,type OriginalInventory,type Fighter,type TalentBuild} from '@mare/shared';
 import {getGameCatalog} from './catalog.js';
 const require=createRequire(import.meta.url),characters=require('../../../../character-system.js');
 const rules=require('../../../../character-catalog.js'),forge=require('../../../../forge-system.js');
@@ -10,11 +10,13 @@ const rulesHash=createHash('sha256').update(JSON.stringify(catalog)).update(getG
   .update(readFileSync(new URL('../../../../character-system.js',import.meta.url),'utf8').replaceAll('\r\n','\n')).digest('hex');
 export const xpNeeded:(level:number)=>number=rules.xpNeeded;
 export const advanceOriginalLevel:(value:{level:number;start:bigint;experience:bigint})=>{level:number;start:bigint;levels:{level:number;start:bigint}[]}=rules.advance;
-export function deriveOriginalFighter(classId:string,factionId:string,state:CharacterState,allocated:AttributeValues,inventory:OriginalInventory):Fighter {
-  const stats=characters.derive({classId,level:state.level,attributes:allocated},catalog.classes[classId],catalog.factions[factionId],forge.aggregate(inventory.equipment,getGameCatalog().items));
+export function deriveOriginalFighter(classId:string,factionId:string,state:CharacterState,allocated:AttributeValues,inventory:OriginalInventory,build?:TalentBuild,runtime?:any):Fighter {
+  const baseStats=characters.derive({classId,level:state.level,attributes:allocated},catalog.classes[classId],catalog.factions[factionId],forge.aggregate(inventory.equipment,getGameCatalog().items));
+  const T=require('../../../../talent-system.js');
+  const stats=build&&T.spent(build)>0?T.applyStats(baseStats,{classId,talentBuilds:{[classId]:build}},runtime):baseStats;
   const damageType=characters.roles[classId].magic?'elemental':'physical';
   return fighterSchema.parse({rulesetId:'original-character-v1',rulesHash,classId,factionId,level:state.level,sourceVersion:state.version,
-    allocated,total:stats.attributes,stats,equipped:{weapon:null,armor:null},damageType,maxHp:stats.maxHP,
+    allocated,total:stats.attributes,stats,...(build&&T.spent(build)>0?{baseStats}:{}),equipped:{weapon:null,armor:null},damageType,maxHp:stats.maxHP,
     attackMin:characters.damage(stats,0,{type:damageType,variance:.9}),attackMax:characters.damage(stats,0,{type:damageType,variance:1.12,critical:true}),
     armor:stats.defense,cooldownMs:Math.ceil(1000/stats.speed)});
 }
