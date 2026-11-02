@@ -31,7 +31,9 @@ Comandos: `npm run build`, `npm run typecheck`, `npm run test:foundation`, `npm 
 
 O Pages publica apenas arquivos estáticos. `localhost` no computador do colaborador aponta para a máquina dele; ele ainda não acessa o banco deste computador. A publicação deste incremento não expõe o backend.
 
-Caminho proposto para teste privado pela Internet:
+Caminho escolhido pelo proprietário: [Radmin VPN com transporte HTTPS privado](RADMIN-PRIVATE-TEST.md). Preserva localhost e dispensa mudanças no Supabase. Os passos abaixo permanecem como alternativa Tailscale não executada.
+
+Alternativa proposta para teste privado pela Internet:
 
 1. Instalar e autenticar Tailscale nos dois computadores, escolhendo um plano gratuito somente se o projeto for elegível; não contratar serviços.
 2. Permitir exclusivamente o colaborador e a porta HTTPS do jogo nas regras da rede privada, sem acesso a PostgreSQL, terminal ou outros serviços do computador.
