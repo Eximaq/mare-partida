@@ -22,7 +22,7 @@ body .toast-container>.toast.acquisition{display:flex;align-items:center;gap:8px
 /* Auxiliary surfaces share material and type; gameplay anchors remain in their owners. */
 body :is(.game-tooltip,.ui-tooltip,.menu-tooltip,.npc-tooltip){background:linear-gradient(#090b12d1,#090b12e8),var(--rpg-workshop-surface) center/512px 512px;border:1px solid #bb8a42;border-image:none;color:#f0dfbd;font-family:var(--rpg-ui-reading);box-shadow:0 5px 20px #000a}.game-tip-item-icon{float:left;margin:0 8px 5px 0}.game-tip-item-icon .ui-art{width:38px;height:38px}.game-tip-quantity{font-size:14px;margin:4px 0}.game-tooltip .game-tip-name{font-family:var(--rpg-ui-heading)}
 #app :is(#floatingChat,#floatingExpedition,#journeyHud,#huntXpTracker){font-family:var(--rpg-ui-reading)}
-#app :is(#floatingChat,#floatingExpedition,#journeyHud,#huntXpTracker) :is(button,.floating-title,.section-heading,.journey-heading){font-family:var(--rpg-ui-heading)}
+#app :is(#floatingChat,#floatingExpedition,#journeyHud,#huntXpTracker) :is(.floating-title,.section-heading,.journey-heading){font-family:var(--rpg-ui-heading)}
 #app :is(#characterQuickMenu,#modesQuickMenu,#captainQuickMenu) :is(button,[role=menuitem]),#app .world-command button,#app #chatCornerToggle{font-family:var(--rpg-ui-reading)}
 #app :is(#floatingChat,#floatingExpedition,#journeyHud,#huntXpTracker) button:disabled{opacity:1;color:#a49c8d;filter:grayscale(.8);cursor:not-allowed}
 #app :is(#floatingChat,#floatingExpedition,#journeyHud) button[aria-busy=true]{cursor:wait;filter:saturate(.5)}
@@ -30,3 +30,9 @@ body :is(.game-tooltip,.ui-tooltip,.menu-tooltip,.npc-tooltip){background:linear
 #app #huntXpTracker :is(.hunt-xp-label,.hunt-xp-stats,.hunt-xp-rate){background-image:linear-gradient(#090b1299,#090b12bb),var(--rpg-workshop-surface);background-size:auto,512px}
 #app #panelOverlay .ui-card{background-image:linear-gradient(#090b12c9,#090b12e3),var(--rpg-workshop-surface);background-size:auto,512px}
 #app :is(input[type=checkbox],input[type=radio]){accent-color:#d6a64d}
+
+@media(pointer:coarse){body .confirmation-overlay .confirmation-card footer button,body .ui-select .ui-select-trigger,body .ui-select-option{min-height:var(--rpg-touch-target)}}
+
+#app #panelOverlay button.ui-button:disabled{opacity:1;color:#c7c1b4;filter:grayscale(.85) brightness(.8);cursor:not-allowed}body .ui-notice[data-tone=error],body .toast-container>.toast.danger{border-color:#cb8062;color:#ffd5bf}body .toast-container>.toast.good{border-color:#78a589;color:#d5edda}
+
+#app #panelOverlay .op-detail-icon,#app .ui-slot{background-image:linear-gradient(#08091288,#080912a8),var(--rpg-workshop-surface);background-position:center;background-size:auto,512px 512px}

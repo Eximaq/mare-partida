@@ -1,3 +1,7 @@
+## 01/11/2026 — Confirmações, menus, fragmentos e avisos compartilhados
+
+Fragmentos E–S corrigidos; resumos de consumo/resultado/risco; listas abertas no material aprovado; fila compacta de recebimentos com ícones reais. Preservação verificada de 82 estados × 14 superfícies da HUD. Base a533f92, branch feature/hud-shared-standardization. Integração final condicionada ao merge do PR #203, conforme decisão do proprietário. [Auditoria, arquivos, testes e compatibilidade](HUD-SHARED-STANDARDIZATION.md).
+
 ## 01/11/2026 — Haki, compactação das HUDs e encaixes de patentes
 
 Controles ativos do Haki no topo; árvores conectadas e painel único de investimento. Forja com 38,6% menos área e prévia de atributos próxima. Revisão de 20 telas/estados e preservação das âncoras de chat/menus/barras. Encaixe proporcional dos símbolos dos 32 patamares nas quatro facções. Sem alteração de servidor, saves, economia ou combate. [Medidas, arquivos, testes, compatibilidade e pendências](HUD-DENSITY-HAKI.md). Branch `feature/haki-hud-density`, base inicial `02d409b`.
