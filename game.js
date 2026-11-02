@@ -3025,7 +3025,7 @@ ${avatarExtra}
     if(sharedLobbyFrame?.snapshot!==snapshot){
       const previous=new Map(sharedLobbyFrame?.players.map(p=>[p.id,p.presentation])||[]),received=performance.now();
       sharedLobbyFrame={snapshot,received,players:snapshot.players.slice(0,16).map(p=>{
-        const presentation=previous.get(p.id)||MareOnlineGameUI.createWorldPresentation();presentation.update(p.world,received);
+        const presentation=previous.get(p.id)||MareOnlineGameUI.createWorldPresentation({walk:true,route:(from,to)=>navigator().path(from,to)});presentation.update(p.world,received);
         return {...p,presentation};
       })};
     }
