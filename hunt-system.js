@@ -31,15 +31,11 @@
   const get=area=>regions[area]||null;
   function sectors(area,anchors=[]){return get(area)?.sectors.map(s=>({...s,...(anchors.find(a=>a.id===s.id)?{x:anchors.find(a=>a.id===s.id).x,y:anchors.find(a=>a.id===s.id).y}:{})}))||[];}
   function sectorAt(area,point,anchors=[]){return sectors(area,anchors).reduce((best,s)=>!best||Math.hypot(s.x-point.x,s.y-point.y)<Math.hypot(best.x-point.x,best.y-point.y)?s:best,null);}
-  function profileAtLevel(level,type='bandit'){
-    const a=archetypes[type];if(!a||!Number.isInteger(level)||level<1)throw Error('Perfil inválido');
-    return {level,maxHP:Math.round((70+level*22)*(1+level*.035)*a.hp),attack:Math.round((6+level*2.2)*a.attack),defense:Math.round((2+level*1.15)*a.defense),speed:a.speed,reach:a.reach,attackSec:a.attackSec,aggro:a.aggro,xp:type==='boss'?level*35:Math.round((14+level*6)*(type==='crab'?1.1:type==='spirit'?1.12:1)),gold:type==='boss'?[level*12,level*17]:[4+level*2,8+level*3]};
-  }
   function profile(area,sectorId,type,roll=.5){
     const region=get(area),a=archetypes[type],s=region?.sectors.find(s=>s.id===sectorId);if(!s||!a)throw Error('Encontro desconhecido');
     const level=type==='boss'?region.bossLevel:s.min+Math.min(s.max-s.min,Math.floor(Math.max(0,Math.min(.999999,roll))*(s.max-s.min+1)));
     if(monsterCatalog[type]){const m=monsterCatalog[type];if(m.area!==area)throw Error('Monstro fora da ilha');return {level:m.level,maxHP:m.max_hp,attack:m.physical_attack,defense:m.physical_defense,magicDefense:m.magic_defense,speed:m.move_speed,reach:m.reach,attackSec:m.attack_seconds,aggro:m.aggro_radius,xp:Math.round(140*1.055**(m.level-18)),gold:[Math.round(45*1.055**(m.level-18)),Math.round(70*1.055**(m.level-18))]};}
-    return profileAtLevel(level,type);
+    return {level,maxHP:Math.round((70+level*22)*(1+level*.035)*a.hp),attack:Math.round((6+level*2.2)*a.attack),defense:Math.round((2+level*1.15)*a.defense),speed:a.speed,reach:a.reach,attackSec:a.attackSec,aggro:a.aggro,xp:type==='boss'?level*35:Math.round((14+level*6)*(type==='crab'?1.1:type==='spirit'?1.12:1)),gold:type==='boss'?[level*12,level*17]:[4+level*2,8+level*3]};
   }
   function migrate(g){const old=g.hunts?.areas||{};return {...g,hunts:{version:VERSION,areas:Object.fromEntries(Object.keys(regions).map(id=>{const a=old[id]||{};return [id,{kills:int(a.kills),bosses:int(a.bosses),firstRewardClaimed:a.firstRewardClaimed===true,bossReadyAt:int(a.bossReadyAt),respawns:Object.fromEntries(Object.entries(a.respawns&&typeof a.respawns==='object'&&!Array.isArray(a.respawns)?a.respawns:{}).filter(([key,value])=>key.startsWith(id+'-')&&Number.isSafeInteger(value)&&value>=0))}];}))}};}
   function recordKill(g,area,type,now=Date.now()){const state=migrate(g),a=state.hunts.areas[area];if(!a)return {state,first:false};a.kills++;const first=type==='boss'&&a.bosses===0;if(type==='boss'){a.bosses++;a.bossReadyAt=now+get(area).respawn*1000;}return {state,first};}
@@ -58,5 +54,5 @@
   }
   function danger(w,p,padding=10){if(!w)return false;if(w.shape==='circle')return Math.hypot(p.x-w.x,p.y-w.y)<=w.radius+padding;const dx=w.to.x-w.x,dy=w.to.y-w.y,t=Math.max(0,Math.min(1,((p.x-w.x)*dx+(p.y-w.y)*dy)/(dx*dx+dy*dy)));return Math.hypot(p.x-w.x-t*dx,p.y-w.y-t*dy)<=w.width/2+padding;}
   function stepWarning(m,dt,hero,{blocked=false,clear=true}={}){const w=m.telegraph;if(!w)return null;if(blocked){m.telegraph=null;return null;}w.remaining=Math.max(0,w.remaining-dt);if(w.remaining>0)return null;m.telegraph=null;return {hit:clear&&danger(w,hero),multiplier:w.multiplier,warning:w};}
-  const api={VERSION,regions,archetypes,get,sectors,sectorAt,profile,profileAtLevel,migrate,recordKill,bossReady,rewards,rarity,claimFirst,beginWarning,danger,stepWarning};root.MareHunt=api;if(typeof module!=='undefined')module.exports=api;
+  const api={VERSION,regions,archetypes,get,sectors,sectorAt,profile,migrate,recordKill,bossReady,rewards,rarity,claimFirst,beginWarning,danger,stepWarning};root.MareHunt=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
