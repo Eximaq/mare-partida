@@ -1,3 +1,4 @@
+import {readProfile} from './profile.js';
 import {completeDungeonVictory} from './dungeons.js';
 import {completePrisonFloor,advancePrison} from './prison.js';
 import {observeServerAchievements} from './achievements.js';
@@ -110,7 +111,7 @@ export async function tickWorldBattles(pool:Pool){
   const path=b.auto?[]:w.path.map(p=>({...p})),hero={...w.position,direction:w.direction};
   const started=(await client.query('SELECT started_at FROM mare_game.character_world WHERE character_id=$1',[id])).rows[0].started_at.getTime();
   const stock=await readOriginalInventory(client,id);
-  const result=engine.step(b,{hero,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId,level:state.level,now:now.getTime(),dt,rng,manualPath:path,manualSpeed:w.speed,manualStart:started,potions:stock?.potions??0});
+  const result=engine.step(b,{preferences:(await readProfile(client,id))?.preferences,hero,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId,level:state.level,now:now.getTime(),dt,rng,manualPath:path,manualSpeed:w.speed,manualStart:started,potions:stock?.potions??0});
   if(result.kills.length||result.potionsUsed||result.talentSteals.length){
    if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
    const requestId=randomUUID();

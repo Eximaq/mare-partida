@@ -48,9 +48,10 @@
     return {
       ...base,
       characterId:data.character.id,onlineFruits:!!o.fruits,akumaCompendium:[...(o.fruits?.registered||[])],zoanTransformed:!!o.battle?.fruit?.transformed,fruitCooldowns:{...o.battle?.fruit?.cooldowns},
-      name: data.character.name,
-      classId: data.character.classId,
-      factionId: data.character.factionId,
+      name:o.profile?.identity.name??data.character.name,
+      classId:o.profile?.identity.classId??data.character.classId,
+      factionId:o.profile?.identity.factionId??data.character.factionId,
+      ...(o.profile?{appearance96:structuredClone(o.profile.appearance),preferences:structuredClone(o.profile.preferences),created:Date.parse(o.profile.createdAt),totalPlay:o.battle?.metrics?.seconds??0,onlineMetrics:!!o.battle?.metrics}:{}),
       level: o.state.level,
       xp: safe(o.progression.xpIntoLevel),
       gold: safe(o.state.gold),
@@ -73,7 +74,7 @@
       attributePoints: o.attributes.available,
       stats: Object.fromEntries(Object.keys(base.stats).map((k) => [k, 0])),
       ...(o.originalInventory?structuredClone(o.originalInventory):{}),
-      ...(o.battle?{hunts:structuredClone(o.battle.hunts),stats:{...Object.fromEntries(Object.keys(base.stats).map(k=>[k,0])),goldEarned:o.dungeonGoldEarned||0,kills:Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.kills,0),boss:Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.bosses,0)}}:{}),
+      ...(o.battle?{hunts:structuredClone(o.battle.hunts),stats:{...Object.fromEntries(Object.keys(base.stats).map(k=>[k,0])),damage:o.battle.metrics?.damage??0,goldEarned:o.dungeonGoldEarned||0,kills:o.achievements?.kills??Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.kills,0),boss:Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.bosses,0)}}:{}),
     };
   }
   function derived(base, data) {
@@ -97,6 +98,7 @@
     };
   }
   const labels = {
+    profile_port_only:'Volte ao porto para editar seu personagem.',profile_unavailable:'O perfil está temporariamente indisponível.',
     fruit_cast_unavailable:'Confira sua fruta equipada, energia, recarga e alvo.',fruit_transform_unavailable:'A transformação exige uma fruta Zoan equipada.',fruit_required:'Você precisa possuir essa fruta para registrá-la.',fruit_already_registered:'Essa fruta já está registrada.',fruit_move_unavailable:'O Gênio não pode alcançar esse destino.',
     dungeon_level_required:'Seu nível ainda não permite esta masmorra.',
     dungeon_already_claimed:'Esta masmorra já foi concluída.',
@@ -364,6 +366,7 @@
         if (client.data?.online.battle && event.target.closest('#skill1,#skill2'))return;
         if (client.data?.online.haki && event.target.closest('#hakiKing'))return;
         if (client.data?.online.fruits && event.target.closest('#skill3,#zoanTransform'))return;
+        if(client.data?.online.profile&&event.target.closest('#changePath'))return;
         if (
           event.target.closest(
             "#skill1,#skill2,#skill3,#usePotion,#buyPotion,#zoanTransform,#hakiKing,#changePath",
@@ -432,6 +435,6 @@
       run,
     };
   }
-  root.MareOnlineGameUI = { project, derived, mount, worldPosition, fruitView, fruitTimeline };
+  root.MareOnlineGameUI = { project, derived, mount, worldPosition, fruitView, fruitTimeline, message:e=>labels[e.code]||"Não foi possível concluir. Confira a sessão e tente novamente." };
   if (typeof module !== "undefined") module.exports = { project, derived, worldPosition, fruitView, fruitTimeline };
 })(globalThis);

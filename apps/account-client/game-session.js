@@ -30,6 +30,11 @@
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    if(action==='profile.appearance'||action==='profile.identity'){
+      const a=p.appearance,appearanceOK=a&&typeof a==='object'&&!Array.isArray(a)&&Object.keys(a).sort().join()==='eyeColor,eyeStyle,gender,hairColor,hairStyle,skinColor,skinStyle,version'&&a.version===1&&Object.entries(a).every(([k,v])=>k==='version'||typeof v==='string'&&/^[a-z-]{1,30}$/.test(v));
+      return !!appearanceOK&&(action==='profile.appearance'?keys==='appearance':keys==='appearance,classId,factionId,name'&&classes.includes(p.classId)&&['pirate','marine','revolutionary','government'].includes(p.factionId)&&typeof p.name==='string'&&p.name.length>=1&&p.name.length<=40);
+    }
+    if(action==='profile.preferences')return Object.keys(p).length>0&&Object.entries(p).every(([k,v])=>k==='healThreshold'?Number.isFinite(v)&&v>=.25&&v<=.9:['hideItems','hideHeadgear'].includes(k)&&typeof v==='boolean');
     if(action==='fruit.register')return keys==='itemId'&&typeof p.itemId==='string'&&p.itemId.length>0&&p.itemId.length<=80;
     if(action==='fruit.transform')return keys==='enabled'&&typeof p.enabled==='boolean';
     if(action==='fruit.move')return keys==='x,y'&&['x','y'].every(k=>Number.isFinite(p[k])&&p[k]>=0&&p[k]<=100000);
@@ -276,6 +281,7 @@
       api,
       read,
       load: read,
+      async createCharacter(payload){await api("/v1/characters",payload);await read();},
       acquire,
       async command(action, payload = {}) {
         if (!validIntent(action, payload)) throw fault("invalid_intent");

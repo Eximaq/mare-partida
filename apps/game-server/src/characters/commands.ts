@@ -1,3 +1,4 @@
+import {mutateProfile} from './profile.js';
 import {registerFruit,mutateFruit} from './fruits.js';
 import {promoteHierarchy} from './hierarchy.js';
 import {isHakiAction,mutateHaki} from './haki.js';
@@ -52,6 +53,7 @@ export async function executeCharacterCommand(
   )).rows[0]!;
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
   const before=state,powerBefore=input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);
+  if(input.action.startsWith('profile.')){await mutateProfile(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(['fruit.cast','fruit.transform','fruit.move'].includes(input.action)){await mutateFruit(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==='fruit.register'){await registerFruit(client,characterId,input.requestId,state,input.payload.itemId);state=await readCharacterState(client,characterId);}
   if(input.action==='hierarchy.promote'){await promoteHierarchy(client,characterId,input.requestId,state,input.payload.expectedTier);state=await readCharacterState(client,characterId);}

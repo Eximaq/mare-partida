@@ -91,3 +91,8 @@ GRANT INSERT(character_id,request_id,tier_before,tier_after,level,version_before
 
 GRANT SELECT ON mare_game.fruit_registrations TO mare_runtime;
 GRANT INSERT(character_id,fruit_id,item_id,request_id,version_before) ON mare_game.fruit_registrations TO mare_runtime;
+
+GRANT SELECT ON mare_game.character_profile,mare_game.profile_events TO mare_runtime;
+GRANT INSERT(character_id,appearance,preferences,class_builds,starter_classes),UPDATE(appearance,preferences,class_builds,starter_classes) ON mare_game.character_profile TO mare_runtime;
+GRANT INSERT(character_id,request_id,action,version_before,before_state,after_state) ON mare_game.profile_events TO mare_runtime;
+GRANT UPDATE(name,class_id,faction_id) ON mare_game.characters TO mare_runtime;

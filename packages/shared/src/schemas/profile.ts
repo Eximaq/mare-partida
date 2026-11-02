@@ -1,0 +1,5 @@
+import {z} from 'zod';
+export const appearanceSchema=z.strictObject({version:z.literal(1),gender:z.enum(['masculino','feminino']),hairStyle:z.enum(['original','none','hair-cropped','hair-spiky','hair-swept','hair-bob','hair-wavy','hair-braided','hair-ponytail','hair-curly','hair-long','hair-undercut','hair-topknot','hair-afro']),hairColor:z.enum(['black','brown','blonde','auburn','silver','blue','violet','pink','green','white']),eyeStyle:z.enum(['original','face-calm','face-resolute','face-almond','face-focused']),eyeColor:z.enum(['blue','brown','green','gray','amber','violet']),skinStyle:z.literal('natural'),skinColor:z.enum(['porcelain','light','warm','olive','copper','brown','dark','ebony'])});
+export const preferencesSchema=z.strictObject({hideItems:z.boolean(),hideHeadgear:z.boolean(),healThreshold:z.number().finite().min(.25).max(.9)});
+export const preferencePatchSchema=preferencesSchema.partial().refine(v=>Object.keys(v).length>0);
+export type Appearance= z.infer<typeof appearanceSchema>;

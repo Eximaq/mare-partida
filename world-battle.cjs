@@ -67,6 +67,7 @@ function step(b,c){
  if(!Number.isFinite(c.dt)||c.dt<0||c.dt>1)throw new RangeError('Invalid battle step');
  if(b.rulesHash!==rulesHash)throw new Error('battle_rules_changed');
  const {hero,nav,classId}=c,kills=[],talentSteals=[];let potionsUsed=0,rt=talents.load(b),stats=combatStats(b,c,rt),g=talents.game(b,c);
+ b.metrics??={seconds:0,damage:0};b.metrics.seconds=Math.min(Number.MAX_SAFE_INTEGER,b.metrics.seconds+c.dt);
  const enemies=()=>b.mobs.filter(live);
  function heal(amount,ignoreEfficiency=false){if(b.hp<=0)return;const before=b.hp;b.hp=Math.min(stats.maxHP,b.hp+amount*(ignoreEfficiency?1:1+(stats.healingReceivedPercent||0)));if(b.area&&(rt.combatRemaining>0||target(b)))actions(U.heal(g,rt.ultimate,{amount,effective:b.hp-before,stats,hero,enemies:enemies(),clear}));}
  const rng=()=>{const n=c.rng();if(!Number.isFinite(n)||n<0||n>=1)throw new RangeError('Invalid RNG');return n;};
@@ -86,7 +87,7 @@ function step(b,c){
   if(m.rankSFreezeUntil>now/1000){raw+=m.rankSFreezePower||0;m.rankSFreezeUntil=0;m.rankAStunUntil=0;m.rankSIceSlowUntil=now/1000+3;m.rankSIceHeavyAttackUntil=now/1000+3;}
   const amount=Math.min(m.hp,Math.max(1,Math.floor(raw)));behavior.hurt(m);m.hp-=amount;if(slow)m.slow=slow;
   if(stats.fruitLifesteal||b.fruit?.effects.wolfUntil>now/1000)b.hp=Math.min(stats.maxHP,b.hp+amount*((stats.fruitLifesteal||0)+(b.fruit.effects.wolfUntil>now/1000?globalThis.MareWolf.rules.lifesteal:0)));
-  event(b,'damage',{id:m.id,amount});if(m.hp<=0)kill(m,now);return amount;
+  b.metrics.damage=Math.min(Number.MAX_SAFE_INTEGER,b.metrics.damage+amount);event(b,'damage',{id:m.id,amount});if(m.hp<=0)kill(m,now);return amount;
  }
  function contact(passive,m){if(passive.heal>0)heal(passive.heal);if(passive.gold>0)talentSteals.push({spawnId:m.id,amount:passive.gold});}
  function actions(list){
@@ -157,7 +158,7 @@ function step(b,c){
    if(b.hp<stats.maxHP*.4&&potionsUsed<(c.potions||0)){heal(Math.round(stats.maxHP*.44));potionsUsed++;event(b,'potion');}
    if(!m){m=b.mobs.filter(live).sort((a,z)=>distance(hero,a)-distance(hero,z))[0];b.targetId=m?.id??null;}
    if(b.autoSkills)for(const [index,s] of catalog.classes[classId].skills.entries()){
-    const support=s.type==='heal'?(b.hp<stats.maxHP*.7||U.selected(g)==='eternalBlessing'&&(rt.combatRemaining>0||m)):s.type==='guard'?b.hp<stats.maxHP*(classId==='cyborg'?.85:.75)&&b.guard<=0:s.type==='blessing'?b.hp<stats.maxHP*.85&&b.guard<=0:false;
+    const support=s.type==='heal'?(b.hp<stats.maxHP*Math.max(.25,Math.min(.9,c.preferences?.healThreshold??.7))||U.selected(g)==='eternalBlessing'&&(rt.combatRemaining>0||m)):s.type==='guard'?b.hp<stats.maxHP*(classId==='cyborg'?.85:.75)&&b.guard<=0:s.type==='blessing'?b.hp<stats.maxHP*.85&&b.guard<=0:false;
     const offensive=!['heal','guard','blessing'].includes(s.type)&&m&&distance(hero,m)<=stats.range&&b.attackClock<=0&&(s.type!=='area'||b.mobs.filter(other=>live(other)&&distance(m,other)<125).length>=2);
     if(support||offensive)skill(b,index,{...c,hero,nav,stats,baseStats:c.baseStats||c.stats,runtime:rt,automatic:true});
    }

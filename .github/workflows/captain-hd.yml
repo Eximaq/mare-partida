@@ -12,6 +12,8 @@ on:
       - 'assets/ui/captain-hd/**'
       - 'tools/build_pages.py'
       - 'tests/*captain*'
+      - 'tests/profile-online-browser.cjs'
+      - 'apps/account-client/**'
       - 'tests/player-hub.test.cjs'
       - 'tests/run_honors_hd_browser.py'
       - '.github/workflows/captain-hd.yml'
@@ -42,6 +44,8 @@ jobs:
           python tools/build_pages.py
       - name: Navegador, controles e responsividade em dist
         run: python tests/run_honors_hd_browser.py tests/captain_hd_browser.cjs --dist --offline
+      - name: Original online profile and creation
+        run: python tests/run_honors_hd_browser.py tests/profile-online-browser.cjs --dist --offline
       - name: Capturas reais
         if: always()
         uses: actions/upload-artifact@v4

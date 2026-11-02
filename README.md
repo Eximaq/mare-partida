@@ -1,3 +1,5 @@
+**Personagem online:** [criação original, perfil, aparência e troca de classe persistidos](docs/architecture/ORIGINAL-PROFILE-SERVER.md).
+
 **Frutas online:** [compêndio possuído, 30 frutas, habilidades e transformações autoritativas](docs/architecture/ORIGINAL-FRUITS-SERVER.md).
 
 **Hierarquia online:** [promoções e ranking derivados do servidor, no painel original](docs/architecture/ORIGINAL-HIERARCHY-SERVER.md).

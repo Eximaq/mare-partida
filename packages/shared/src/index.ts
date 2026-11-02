@@ -22,3 +22,5 @@ export * from './schemas/prison.js';
 export * from './schemas/dungeons.js';
 
 export * from './schemas/haki.js';
+
+export * from './schemas/profile.js';

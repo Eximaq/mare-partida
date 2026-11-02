@@ -1,3 +1,4 @@
+import {initializeProfile,readProfile} from '../characters/profile.js';
 import {readFruits} from '../characters/fruits.js';
 import {readHierarchy,hierarchyRanking} from '../characters/hierarchy.js';
 import {readHaki} from '../characters/haki.js';
@@ -306,7 +307,7 @@ export class AuthService {
       )).rows[0]!;
       const originalInventory=await readOriginalInventory(client,id);
       const dungeons=await readDungeons(client,id);
-      return { state, fruits:await readFruits(client,id), hierarchy:await readHierarchy(client,id,state), haki:await readHaki(client,id),dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison:await readPrison(client,id), achievements:await readAchievements(client,id,state), talents:await readTalents(client,id,state), contracts:await readContracts(client,id), battle:await readBattle(client,id), world:await readWorld(client,id), ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: await readFighter(client,id,state), attributes: await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      return { state, profile:await readProfile(client,id), fruits:await readFruits(client,id), hierarchy:await readHierarchy(client,id,state), haki:await readHaki(client,id),dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison:await readPrison(client,id), achievements:await readAchievements(client,id,state), talents:await readTalents(client,id,state), contracts:await readContracts(client,id), battle:await readBattle(client,id), world:await readWorld(client,id), ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: await readFighter(client,id,state), attributes: await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(
@@ -322,7 +323,7 @@ export class AuthService {
       )
     ).rows[0];
     if (!character) throw new AuthFault(404, "character_not_found");
-    // Character identity is immutable to runtime. Serialize lease changes without granting character UPDATE.
+    // Ownership is immutable to runtime. Serialize commands and lease changes.
     if (lock)
       await client.query(
         "SELECT pg_advisory_xact_lock(hashtextextended($1,1296126533))",
@@ -354,7 +355,7 @@ export class AuthService {
         character.factionId !== input.factionId
       )
         return new AuthFault(409, "character_exists");
-      if (created.rowCount) await initializeCharacterState(client, character.id);
+      if (created.rowCount) {await initializeCharacterState(client, character.id);await initializeProfile(client,character.id,input.appearance);}
       return character;
     });
   }
