@@ -49,6 +49,7 @@
       gold: safe(o.state.gold),
       hp: o.battle?.hp ?? (frozen && o.combat?.encounterId ? o.combat.playerHp : f.maxHp),
       energy: o.battle?.energy ?? 0,
+      hierarchyPlayerId:data.character.id,hierarchyFaction:data.character.factionId,hierarchyTier:o.hierarchy?.tier||1,
       ...(o.haki?{has_haki_unlocked:o.haki.state.unlocked,haki:structuredClone(o.haki.state)}:{}),
       ...(o.dungeons?{bossDungeons:structuredClone(o.dungeons)}:{}),
       ...(o.prison?{impelDown:structuredClone(o.prison)}:{}),
@@ -121,6 +122,9 @@
     help: "Guia do Navegante",
   };
   const errors = {
+    hierarchy_tier_conflict:'O cargo mudou. Consulte novamente antes de promover.',
+    hierarchy_level_required:'Alcance o nível necessário para a próxima promoção.',
+    hierarchy_locked:'Esta ascensão requer itens especiais ainda não descobertos nos mares.',
     haki_unlock_unavailable:'Confira o nível50 e um Livro da Vontade desbloqueado na mochila.',
     haki_invest_unavailable:'Confira os pré-requisitos, a graduação e os fragmentos disponíveis.',
     haki_unlearned:'Conclua o ramo antes de ativar a habilidade.',

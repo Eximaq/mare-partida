@@ -1,3 +1,5 @@
+import {permanentCharacterPower} from './power.js';
+import {refreshHierarchyPower} from './hierarchy.js';
 import {readHaki} from './haki.js';
 import {readPrison} from './prison.js';
 import {createRequire} from 'node:module';
@@ -5,9 +7,6 @@ import {createHash} from 'node:crypto';
 import type {PoolClient} from 'pg';
 import {achievementsSnapshotSchema,type CharacterState} from '@mare/shared';
 import {AuthFault} from '../auth/errors.js';
-import {readOriginalInventory} from '../gameplay/inventory.js';
-import {deriveOriginalFighter} from '../gameplay/character.js';
-import {readAttributes} from './attributes.js';
 import {readTalents} from './talents.js';
 const require=createRequire(import.meta.url),A=require('../../../../achievement-system.js');
 const rulesHash=createHash('sha256').update(JSON.stringify(A.catalog)).digest('hex');
@@ -21,11 +20,7 @@ export async function achievementBonus(client:PoolClient,id:string){
 // No combat runtime: temporary shields, blessings and previews never increase permanent BP.
 export async function permanentAchievementPower(client:PoolClient,id:string,state:CharacterState){
  if(!await available(client))return 0;
- const inventory=await readOriginalInventory(client,id);if(!inventory)return 0;
- const identity=(await client.query('SELECT class_id,faction_id FROM mare_game.characters WHERE id=$1',[id])).rows[0];
- const attributes=await readAttributes(client,id,state),talents=await readTalents(client,id,state);
- const f=deriveOriginalFighter(identity.class_id,identity.faction_id,state,attributes.allocated,inventory,talents?.build);
- return f.rulesetId==='original-character-v1'?Math.min(100000,Math.floor(f.stats.power)):0;
+ return Math.min(100000,await permanentCharacterPower(client,id,state));
 }
 export async function readAchievements(client:PoolClient,id:string,state:CharacterState){
  if(!await available(client))return null;
@@ -44,7 +39,9 @@ export async function observeServerAchievements(client:PoolClient,id:string,befo
  if(!await available(client))return;
  const kills=options.kills??0;if(!Number.isSafeInteger(kills)||kills<0)throw new AuthFault(503,'invalid_achievement_event');
  const delta=BigInt(after.gold)-BigInt(before.gold),gain=delta>0n?Number(delta>1000000n?1000000n:delta):0;
- const power=Math.max(options.powerBefore??0,await permanentAchievementPower(client,id,after));
+ const currentPower=await permanentCharacterPower(client,id,after);
+ await refreshHierarchyPower(client,id,currentPower);
+ const power=Math.max(options.powerBefore??0,Math.min(100000,currentPower));
  await client.query(`INSERT INTO mare_game.achievement_progress(character_id,kills,coins,peak_power) VALUES($1,LEAST(10000,$2::int),LEAST(1000000,$3::int+$4::int),$5)
  ON CONFLICT(character_id) DO UPDATE SET kills=LEAST(10000,mare_game.achievement_progress.kills+$2),
  coins=LEAST(1000000,GREATEST(mare_game.achievement_progress.coins,$3)+$4),peak_power=GREATEST(mare_game.achievement_progress.peak_power,$5)`,[id,Math.min(10000,kills),cappedGold(before.gold),gain,power]);

@@ -1,3 +1,5 @@
+**Hierarquia online:** [promoções e ranking derivados do servidor, no painel original](docs/architecture/ORIGINAL-HIERARCHY-SERVER.md).
+
 **Haki online:** [livro, árvores, Vontade e efeitos sob autoridade do servidor](docs/architecture/ORIGINAL-HAKI-SERVER.md), preservando os requisitos e controles originais.
 
 **Masmorras online:** [nove chefes, baús únicos e fragmentos vinculados no servidor](docs/architecture/ORIGINAL-DUNGEONS-SERVER.md), com os painéis e mapas originais.

@@ -142,6 +142,7 @@ export function createAuthHandler(options: {
         "/v1/auth/logout",
         "/v1/auth/rotate",
         "/v1/me",
+        "/v1/hierarchy/ranking",
         "/v1/characters",
       ];
       if (!known.includes(path) && !match && !stateMatch && !commandMatch) {
@@ -152,7 +153,7 @@ export function createAuthHandler(options: {
       const get =
         path === "/v1/auth/csrf" ||
         path === "/v1/auth/callback" ||
-        path === "/v1/me" ||
+        path === "/v1/me" || path === "/v1/hierarchy/ranking" ||
         (!!match && !match[2]) || !!stateMatch;
       if (request.method !== (get ? "GET" : "POST")) {
         request.resume();
@@ -206,6 +207,11 @@ export function createAuthHandler(options: {
       if (get) {
         request.resume();
         if (!session) throw unauthorized();
+        if(path === "/v1/hierarchy/ranking") {
+          if(request.headers["transfer-encoding"] || Number(request.headers["content-length"]??0)!==0 || [...url.searchParams.keys()].some(k=>k!=="faction") || url.searchParams.getAll("faction").length>1)throw new AuthFault(400,"invalid_request");
+          const faction=url.searchParams.has("faction")?parse(z.enum(["pirate","marine","revolutionary","government"]),url.searchParams.get("faction")):null;
+          reply(200,await service.hierarchyRanking(session,faction));return;
+        }
         if (stateMatch) {
           if (url.search || request.headers["transfer-encoding"] || Number(request.headers["content-length"] ?? 0) !== 0)
             throw new AuthFault(400, "invalid_request");

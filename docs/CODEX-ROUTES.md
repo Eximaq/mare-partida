@@ -87,3 +87,5 @@ Não dependa de contexto de conversa anterior. Uma nova sessão consegue se orie
 - Atualize este índice somente quando rotas de código/teste mudarem.
 - Prefira vincular uma documentação específica a duplicar trechos enormes aqui.
 - Não transfira datas, níveis e nomes históricos como fatos atuais sem verificar o código.
+
+- Hierarquia online: `docs/architecture/ORIGINAL-HIERARCHY-SERVER.md`; `characters/hierarchy.ts`, `characters/power.ts`, `hierarchy-system.js`; regressões `server-hierarchy.test.mts`, `hierarchy-online-browser.cjs`.
