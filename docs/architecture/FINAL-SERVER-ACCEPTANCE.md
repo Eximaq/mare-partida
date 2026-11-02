@@ -78,14 +78,14 @@ na transação: exatamente um item foi concedido e um recibo foi persistido.
 
 ## Migração e preservação
 
-A migração0030 atualiza somente o hash conhecido das regras de navegação. Conteúdo
+A sequência0030–0031 atualiza somente o hash conhecido das regras de navegação. Conteúdo
 geométrico e dados do personagem permanecem iguais; versão desconhecida continua
 recusada. O teste aplica a SQL duas vezes e compara todas as tabelas. A migração29
 já publicada não foi reescrita. Fazer backup antes de atualizar a instalação local,
 com API/gateway parados; não reiniciar o cluster PostgreSQL compartilhado.
 
-Na instalação contínua, backup e migração0030 foram executados:49 tabelas anteriores
-com dados idênticos, quatro contas/três personagens e30 migrações. Início e HTTPS
+Na instalação contínua, backup e migrações foram executados:49 tabelas anteriores
+com dados idênticos, quatro contas/três personagens e31 migrações. Início e HTTPS
 verificados; recursos200, catálogo privado401. Auth/API/gateway parados no encerramento.
 
 Capturas, dumps, envs e logs detalhados ficam ignorados. Não publicar identificadores
@@ -126,7 +126,7 @@ crescimento e espaço do disco. Os resultados não são garantia de invulnerabil
 
 ## Registro final de validação
 
-Build e typecheck aprovados;181 testes de fundação e147/147 arquivos Node legados
+Build e typecheck aprovados;182 testes de fundação e147/147 arquivos Node legados
 aprovados. PostgreSQL executou210 casos:209 passaram e o novo cenário de hash
 incorreto foi inicialmente impedido pelo CHECK do próprio banco. A fixture foi
 corrigida para um hash desconhecido de formato válido; o cenário passou no reteste.
@@ -143,3 +143,22 @@ O perfil foi mesclado no PR#217 depois de25 checks aprovados, incluindo Docker/L
 GitHub Pages run41415331244 concluiu com sucesso e o game.js público foi comparado
 ao commit69b4cf6. A consolidação seguinte mantém a publicação estática separada do
 backend local. Merge e publicação somente após os checks da respectiva revisão.
+
+### Regressão encontrada no CI de carga
+
+A primeira revisão do PR#218 falhou no lote de12 mundos: um destino aleatório de
+patrulha junto à parede não tinha aresta de entrada válida. O A* percorria todo o
+mapa repetidamente (25127 verificações, cerca de1,5s por tentativa local), estourando
+o limite de transação sob carga. A correção não aumenta timeouts: testa as oito
+arestas possíveis de entrada antes da busca. Se nenhuma existe, o resultado vazio
+é o mesmo do algoritmo original; destinos conectados continuam usando o solver
+original. Um teste de regressão falhou antes/passou depois e o lote PostgreSQL
+agora força esse destino nas12 instâncias, eliminando a dependência de sorte.
+
+A migração0030 já aplicada permanece imutável. A0031 promove somente seu hash
+conhecido para a versão corrigida; histórico desconhecido continua recusado.
+
+Após a correção:182 fundação,3 testes de aceite PostgreSQL e6 de migração/backup
+aprovados, além de nova execução HTTPS ponta a ponta aprovada. Ensaio de500
+sequências de quatro passos: máximo103ms local. O lote com12 destinos problemáticos
+forçados passou (máximo718ms, média476ms), mantendo os prazos do banco.

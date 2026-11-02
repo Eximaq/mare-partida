@@ -18,3 +18,9 @@ test('indexed and original navigation produce identical battle state under deter
   assert.deepEqual(b,copy);assert.deepEqual(hero,other);
  }
 });
+
+test('isolated patrol endpoint is rejected without searching the entire reachable map on each substep',()=>{
+ const nav=world.navigation('dawn'),start={x:1488,y:1648},end={x:1509.7901182151293,y:1594.6806719081092};
+ let calls=0;const clear=nav.clear;nav.clear=function(...args:any[]){calls++;return clear.apply(this,args);};
+ try{assert.equal(nav.path(start,end).length,0);assert(calls<=12,'unreachable final edge must be detected locally; checks='+calls);}finally{nav.clear=clear;}
+});

@@ -93,7 +93,7 @@ liberar espaço com revisão do proprietário antes de acumular backups/artefato
 
 ## Atualização consolidada de02/11/2026
 
-Instalação com30 migrações. Backup consistente criado antes da0030;49 tabelas
+Instalação com31 migrações. Backups consistentes criados antes de0030/0031;49 tabelas
 anteriores comparadas, dados idênticos após normalizar somente o hash conhecido
 da navegação. Quatro contas/três personagens preservados. Início, HTTPS com CA
 local, recursos do jogo200 e catálogo401 sem sessão confirmados. Auth/API/gateway

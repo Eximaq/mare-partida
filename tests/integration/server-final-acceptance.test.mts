@@ -28,7 +28,7 @@ test('every command rejects injected authority, foreign character, absent CSRF a
  }finally{server.closeAllConnections();await new Promise<void>(r=>server.close(()=>r()));}
 }));
 test('twelve original worlds advance together without starvation, double reward or expired-controller progress',async()=>authDatabase(async f=>{
- const actors=[];for(let i=0;i<12;i++){const a=await actor(f,['sword','brawler','gunner','rogue','cyborg','strategist','healer'][i%7]);await a.send('world.travel',{islandId:'dawn'});actors.push(a);}
+ const actors=[];for(let i=0;i<12;i++){const a=await actor(f,['sword','brawler','gunner','rogue','cyborg','strategist','healer'][i%7]);await a.send('world.travel',{islandId:'dawn'});const b=(await a.read()).battle,m=b.mobs.find((m:any)=>m.spawnId==='beach-corsarios-1');assert(m);m.patrolTarget={x:1509.7901182151293,y:1594.6806719081092};m.patrolClock=8;await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(b)]);actors.push(a);}
  const times=[];for(let i=0;i<4;i++){
   await f.pool.query("UPDATE mare_game.character_battles SET tick_at=clock_timestamp()-interval '300 milliseconds'");const start=performance.now();assert.equal(await tickWorldBattles(f.pool),12);times.push(Math.round(performance.now()-start));
  }
@@ -43,7 +43,7 @@ test('navigation upgrade changes only the known hash, preserves all rows and fai
  await f.pool.query('UPDATE mare_game.character_world SET rules_hash=$2 WHERE character_id=$1',[b.c.id,'f'.repeat(64)]);
  const tables=(await f.pool.query("SELECT tablename FROM pg_tables WHERE schemaname='mare_game' ORDER BY tablename")).rows.map(r=>r.tablename);
  const snapshot=async()=>{const out:Record<string,unknown>={};for(const t of tables){assert.match(t,/^[a-z_]+$/);out[t]=(await f.pool.query(`SELECT to_jsonb(t) row FROM mare_game.${t} t ORDER BY to_jsonb(t)::text`)).rows.map(r=>t==='character_world'?{...r.row,rules_hash:r.row.character_id===a.c.id?'known':r.row.rules_hash}:r.row);}return out;};
- const before=await snapshot(),sql=await readFile(new URL('../../apps/game-server/migrations/0030_navigation_broadphase.sql',import.meta.url),'utf8');
+ const before=await snapshot(),sql=(await Promise.all(['0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql'].map(name=>readFile(new URL('../../apps/game-server/migrations/'+name,import.meta.url),'utf8')))).join('\n');
  await f.pool.query(sql);await f.pool.query(sql);assert.deepEqual(await snapshot(),before);
  assert.equal((await f.pool.query('SELECT rules_hash FROM mare_game.character_world WHERE character_id=$1',[a.c.id])).rows[0].rules_hash,current);
  await a.read();await assert.rejects(b.read(),{code:'world_rules_changed'});
