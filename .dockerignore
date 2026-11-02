@@ -95,3 +95,7 @@
 !talent-combat.js
 !ultimate-system.js
 !achievement-system.js
+
+!boss-dungeon-combat.js
+!dungeon-timing.cjs
+!dungeon-boss-art-data.js

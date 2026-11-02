@@ -40,6 +40,7 @@
       throw new Error("invalid_server_state");
     return {
       ...base,
+      characterId:data.character.id,
       name: data.character.name,
       classId: data.character.classId,
       factionId: data.character.factionId,
@@ -48,6 +49,7 @@
       gold: safe(o.state.gold),
       hp: o.battle?.hp ?? (frozen && o.combat?.encounterId ? o.combat.playerHp : f.maxHp),
       energy: o.battle?.energy ?? 0,
+      ...(o.dungeons?{bossDungeons:structuredClone(o.dungeons)}:{}),
       ...(o.prison?{impelDown:structuredClone(o.prison)}:{}),
       claimed: [...(o.contracts?.claimed||[])],
       talentVersion:2,talentSeq:o.talents?.revision||0,talentBuilds:{[data.character.classId]:structuredClone(o.talents?.build||{nodes:{},keystone:null,ultimate:null})},
@@ -62,7 +64,7 @@
       attributePoints: o.attributes.available,
       stats: Object.fromEntries(Object.keys(base.stats).map((k) => [k, 0])),
       ...(o.originalInventory?structuredClone(o.originalInventory):{}),
-      ...(o.battle?{hunts:structuredClone(o.battle.hunts),stats:{...Object.fromEntries(Object.keys(base.stats).map(k=>[k,0])),kills:Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.kills,0),boss:Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.bosses,0)}}:{}),
+      ...(o.battle?{hunts:structuredClone(o.battle.hunts),stats:{...Object.fromEntries(Object.keys(base.stats).map(k=>[k,0])),goldEarned:o.dungeonGoldEarned||0,kills:Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.kills,0),boss:Object.values(o.battle.hunts.areas).reduce((n,a)=>n+a.bosses,0)}}:{}),
     };
   }
   function derived(base, data) {
@@ -86,6 +88,15 @@
     };
   }
   const labels = {
+    dungeon_level_required:'Seu nível ainda não permite esta masmorra.',
+    dungeon_already_claimed:'Esta masmorra já foi concluída.',
+    dungeon_reward_unavailable:'A recompensa está indisponível ou já foi recebida.',
+    dungeon_chest_out_of_range:'Aproxime-se do baú desta masmorra para receber.',
+    dungeon_inventory_full:'Libere espaço na mochila. A recompensa permanece pendente.',
+    dungeon_craft_unavailable:'Confira os dez fragmentos desbloqueados e o espaço na mochila.',
+    dungeon_reveal_unavailable:'Esta revelação já foi encerrada.',
+    character_dead:'Aguarde seu personagem retornar para iniciar outra tentativa.',
+
     prison_floor_locked:'Somente o próximo andar pode ser iniciado.',
     prison_already_active:'Você já está em uma expedição de Impel Down.',
     prison_milestone_unavailable:'Este marco ainda não está disponível ou já foi resgatado.',
