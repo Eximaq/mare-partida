@@ -32,6 +32,38 @@ await authDatabase(async f=>{
   await q.keyboard.down('ArrowRight');await q.waitForTimeout(1200);await q.keyboard.up('ArrowRight');
   await p.waitForFunction((x:number)=>Math.abs(globalThis.__mareDiagnostics().sharedLobby.players[0].x-x)>20,before.x);
   await p.screenshot({path:resolve(out,'two-players-original-port.png')});console.log('two isolated accounts visible; authoritative movement rendered');
+  // Reproduce the original stutter with real requests delayed by 100 ms.
+  // Frame-normalized checks distinguish a position jump from a busy CI renderer.
+  await q.waitForTimeout(1000);
+  for(const page of [p,q]){
+    await page.route('**/v1/**',async(r:any)=>{await new Promise(resolve=>setTimeout(resolve,100));await r.continue();});
+    await page.evaluate(`(() => {
+      window.movementFrames=[]; window.captureMovement=true;
+      function sample(t){
+        if(!window.captureMovement)return;
+        const d=window.__mareDiagnostics(),peer=d.sharedLobby.players[0];
+        window.movementFrames.push({t,x:d.hero.x,y:d.hero.y,cx:d.camera.x,cy:d.camera.y,peer:peer?{x:peer.x,y:peer.y}:null});
+        requestAnimationFrame(sample);
+      }
+      requestAnimationFrame(sample);
+    })()`);
+  }
+  await q.keyboard.down('ArrowRight');await q.waitForTimeout(4000);await q.keyboard.up('ArrowRight');await q.waitForTimeout(1400);
+  for(const [page,remote] of [[p,true],[q,false]] as const){
+    const frames=await page.evaluate('window.captureMovement=false; window.movementFrames');
+    const steps=frames.slice(1).flatMap((b:any,i:number)=>{
+      const a=frames[i],dt=b.t-a.t,from=remote?a.peer:a,to=remote?b.peer:b;
+      return dt>0&&dt<=50&&from&&to?[{speed:Math.hypot(to.x-from.x,to.y-from.y)/dt,camera:Math.hypot(b.cx-a.cx,b.cy-a.cy)/dt}]:[];
+    });
+    assert.ok(steps.length>50,'enough regular frames to evaluate motion');
+    const positions=frames.map((f:any)=>remote?f.peer?.x:f.x).filter(Number.isFinite);
+    assert.ok(Math.max(...positions)-Math.min(...positions)>30,'walking must really occur');
+    const speed=Math.max(...steps.map((s:any)=>s.speed)),camera=Math.max(...steps.map((s:any)=>s.camera));
+    console.log(JSON.stringify({movement:remote?'remote':'own',addedRequestDelayMs:100,maxPixelsPerMs:speed,maxCameraPixelsPerMs:camera}));
+    assert.ok(speed<1,'no snapshot-sized jump in a regular animation frame');
+    assert.ok(camera<1,'camera follows without a hard snapshot reset');
+    await page.unroute('**/v1/**');
+  }
   // Expire only a disposable fixture lease: reproduce returning from a suspended tab.
   const returningId=await p.evaluate(()=>globalThis.MareGameSession.data.character.id);
   const controlRoute=/\/v1\/characters\/[^/]+\/control(?:\/renew)?$/;
@@ -56,6 +88,11 @@ await authDatabase(async f=>{
   let limited=0;for(const page of [p,q])page.on('response',(r:any)=>{if(r.status()===429)limited++;});
   for(let turn=0;turn<22;turn++){const key=turn%2?'ArrowLeft':'ArrowRight',old=turn%2?'ArrowRight':'ArrowLeft';for(const page of [p,q]){await page.keyboard.up(old);await page.keyboard.down(key);}await p.waitForTimeout(3000);}
   for(const page of [p,q]){await page.keyboard.up('ArrowLeft');await page.keyboard.up('ArrowRight');}
+  // Let keyup reach the game loop, then await the confirmed stop before travel.
+  for(const page of [p,q]){
+    await page.evaluate('new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))');
+    await page.waitForFunction(()=>globalThis.MareGameSession.available&&!globalThis.MareGameSession.busy&&!globalThis.MareGameSession.pending&&globalThis.MareGameSession.data.online.world.path.length===0);
+  }
   console.log('sustained two-player rate-limit responses',limited);assert.equal(limited,0,'normal two-player walking must fit the shared gateway budget');
   await q.waitForFunction(()=>globalThis.MareGameSession.available&&!globalThis.MareGameSession.busy&&!globalThis.MareGameSession.pending);
   console.log('travel start');await q.evaluate(()=>globalThis.MareGameSession.command('world.travel',{islandId:'dawn'}));

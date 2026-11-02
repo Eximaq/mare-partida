@@ -32,6 +32,25 @@
     }
     return {x,y,direction,moving:moving&&elapsedMs<duration};
   }
+  // Cosmetic correction only. Commands/collisions keep using worldPosition directly.
+  // Never extend the approved path or retain an offset beyond 200 ms.
+  function createWorldPresentation() {
+    let snapshot=null,received=0,offset={x:0,y:0};
+    function sample(now){
+      if(!snapshot)return null;
+      const elapsed=Math.max(0,now-received),pose=worldPosition(snapshot,elapsed);
+      const weight=Math.max(0,1-elapsed/200);
+      return {...pose,x:pose.x+offset.x*weight,y:pose.y+offset.y*weight,
+        moving:pose.moving||(weight>0&&Math.hypot(offset.x,offset.y)>.1)};
+    }
+    return {sample,update(next,now){
+      if(next===snapshot)return false;
+      const previous=sample(now),target=worldPosition(next,0);
+      const snap=!previous||snapshot.mapId!==next.mapId||now-received>5000||Math.hypot(previous.x-target.x,previous.y-target.y)>128;
+      offset=snap?{x:0,y:0}:{x:previous.x-target.x,y:previous.y-target.y};
+      snapshot=next;received=now;return snap;
+    }};
+  }
   function fruitTimeline(value,epoch,time){
     if(!value)return null;const shift=time-(epoch||Date.now())/1000;
     const times=new Set(['started','until','last','time','impact','launch','launched','finished','ready','next']);
@@ -447,6 +466,6 @@
       run,
     };
   }
-  root.MareOnlineGameUI = { project, derived, mount, worldPosition, fruitView, fruitTimeline, message:e=>labels[e.code]||"Não foi possível concluir. Confira a sessão e tente novamente." };
-  if (typeof module !== "undefined") module.exports = { project, derived, worldPosition, fruitView, fruitTimeline };
+  root.MareOnlineGameUI = { project, derived, mount, worldPosition, createWorldPresentation, fruitView, fruitTimeline, message:e=>labels[e.code]||"Não foi possível concluir. Confira a sessão e tente novamente." };
+  if (typeof module !== "undefined") module.exports = { project, derived, worldPosition, createWorldPresentation, fruitView, fruitTimeline };
 })(globalThis);

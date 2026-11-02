@@ -112,6 +112,7 @@
     fetch,
     storage,
     uuid = () => root.crypto.randomUUID(),
+    now = () => Date.now(),
   }) {
     let data = null,
       control = null,
@@ -120,6 +121,18 @@
       available = false,
       renewing = null,
       readVersion = 0;
+    let csrfCache=null,csrfFlight=null,csrfGeneration=0;
+    const clearCsrf=()=>{csrfGeneration++;csrfCache=null;csrfFlight=null;};
+    function csrfToken(){
+      if(csrfCache&&now()<csrfCache.until)return Promise.resolve(csrfCache.token);
+      if(csrfFlight)return csrfFlight;
+      const generation=csrfGeneration;
+      const flight=api('/v1/auth/csrf').then(result=>{
+        if(generation!==csrfGeneration)throw fault('session_changed');
+        csrfCache={token:result.csrfToken,until:now()+30000};return result.csrfToken;
+      }).finally(()=>{if(csrfFlight===flight)csrfFlight=null;});
+      csrfFlight=flight;return flight;
+    }
     const listeners = new Set();
     const notify = () => {
       for (const fn of listeners) fn();
@@ -133,9 +146,9 @@
       const headers = {},
         options = { cache: "no-store", signal: AbortSignal.timeout(10000) };
       if (payload !== undefined) {
-        const csrf = await api("/v1/auth/csrf");
+        const csrf = await csrfToken();
         headers["content-type"] = "application/json";
-        headers["x-csrf-token"] = csrf.csrfToken;
+        headers["x-csrf-token"] = csrf;
         Object.assign(options, {
           method: "POST",
           headers,
@@ -144,7 +157,10 @@
       }
       const response = await fetch(path, options),
         result = response.status === 204 ? {} : await response.json();
+      // Cookie changes invalidate the binding, including an uncertain reset.
+      if(payload!==undefined&&path.startsWith('/v1/auth/'))clearCsrf();
       if (!response.ok) {
+        if(response.status===401||result.error==='csrf_rejected')clearCsrf();
         if (response.status === 401) {
           data = null;
           control = null;
@@ -194,6 +210,7 @@
       }
       if (revision !== readVersion) return;
       if (data?.character?.id !== me.character?.id) {
+        clearCsrf();
         control = null;
         pending = null;
       }
@@ -247,11 +264,11 @@
           control: { epoch: control.epoch, token: control.token },
         });
         discard();
-        await read();
+        await read(intent.action!=='profile.identity');
       } catch (error) {
         if (error.status && error.status < 500) discard();
         if (error.code === "control_conflict") control = null;
-        await read().catch(() => {});
+        await read(intent.action!=='profile.identity').catch(() => {});
         throw error;
       } finally {
         busy = false;

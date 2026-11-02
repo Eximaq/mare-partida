@@ -20,6 +20,8 @@ Não há migração nova nem alteração das migrações aplicadas. Bancos anter
 
 ## Validação
 
+A [correção de sincronização visual](ONLINE-MOVEMENT-SMOOTHING.md) suaviza snapshots e câmera, reduz consultas redundantes e acrescenta regressão de movimento com atraso de rede, preservando a autoridade do servidor.
+
 - PostgreSQL isolado: presença, isolamento, viagem/retorno, logout, concessão expirada, validação do provedor expirada, revogação por epoch, privacidade e limite do roster.
 - IDs obtidos no roster não autorizam acesso ao estado, comando nem controle de outra conta.
 - Navegador HTTPS real com dois contextos isolados, Node e PostgreSQL reais: criação original, dois personagens visíveis no porto original, caminhada refletida no outro navegador, viagem/retorno, logout e save offline preservado.
