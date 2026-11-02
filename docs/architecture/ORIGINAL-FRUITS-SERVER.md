@@ -1,5 +1,7 @@
 # Frutas originais sob autoridade do servidor
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 O inventário persistido escolhe a fruta; o navegador envia somente a intenção.
 Os 30 itens e seus módulos de regras originais são reutilizados, sem renumerar o
 catálogo, editar sprites ou importar saves. A demonstração mantém seu fluxo atual.

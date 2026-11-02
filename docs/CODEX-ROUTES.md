@@ -1,5 +1,7 @@
 # CODEX-ROUTES — índice de consulta sob demanda
 
+- Aceite do servidor atual: `docs/architecture/FINAL-SERVER-ACCEPTANCE.md`; manifesto executável `FULL-SERVER-SCOPE.json`; instalação local `docs/operations/CONTINUOUS-LOCAL-SERVER.md`.
+
 Este índice é **mapa de navegação**, não descrição confiável do estado atual. Confirme caminhos, exports e regras no código da branch antes de implementar. Use somente a(s) rota(s) correspondentes à solicitação.
 
 | Tarefa | Código a localizar primeiro | Documentos e testes a procurar | Atenção |

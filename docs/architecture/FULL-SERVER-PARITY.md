@@ -5,6 +5,10 @@ devem funcionar com autoridade do servidor, preservando as interfaces/gameplay.
 As entregas anteriores de alpha não cumprem esse objetivo. A entrada direta no
 jogo corrigiu navegação, não completou a migração dos sistemas.
 
+## Estado consolidado
+
+Ver [FINAL-SERVER-ACCEPTANCE.md](FINAL-SERVER-ACCEPTANCE.md) para a matriz atual, o ensaio HTTPS com backend/banco reais e a validação de restauração. O restante deste documento preserva a direção original e os critérios de aceite.
+
 ## Aceite obrigatório
 
 Uma função só fica concluída quando mantém suas regras e UI atuais, executa a

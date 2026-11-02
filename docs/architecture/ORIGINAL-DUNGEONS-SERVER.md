@@ -1,5 +1,7 @@
 # Masmorras com autoridade do servidor
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 As nove masmorras usam os mapas, sprites, animações, diário, mochila e revelação
 originais. O cliente solicita entrada, resgate ou formação; não informa vitória,
 dano, recompensas, identidade, relógio nem resultados aleatórios. Saves da

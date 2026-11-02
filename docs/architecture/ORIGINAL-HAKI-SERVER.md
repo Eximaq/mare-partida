@@ -1,5 +1,7 @@
 # Haki original no servidor
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 O modo online reutiliza `haki-system.js` e `haki-progression.js`, a mochila, as
 árvores e os controles H/J/K existentes. O backend determina desbloqueio, custos,
 Vontade, efeitos e recargas. Nenhum save da demonstração é lido ou alterado.

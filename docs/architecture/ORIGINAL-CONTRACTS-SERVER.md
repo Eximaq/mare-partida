@@ -1,5 +1,7 @@
 # Contratos originais no servidor
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 Base `e0b4443`, incluindo os chefes e correções dos PRs #207/#208. Os dez contratos existentes passam
 a funcionar pelo BFF/PostgreSQL e pelo quadro original, sem mudar objetivos,
 recompensas, arte ou saves da demonstração.

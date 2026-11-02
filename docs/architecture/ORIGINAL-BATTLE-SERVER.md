@@ -1,5 +1,7 @@
 # Monstros e combate original no servidor
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 Incremento do PR #204, sobre a posição autoritativa da migração 0016. Não conclui
 a paridade integral do jogo. Nenhum save da demonstração é importado, alterado ou
 apagado. As contas, personagens e recibos anteriores permanecem intactos.

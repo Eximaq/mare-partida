@@ -1,5 +1,7 @@
 # Personagem original no servidor
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 Este incremento migra as fórmulas básicas das sete classes e quatro facções,
 equipamentos, atributos extras e percentuais de pérolas para o backend. O catálogo
 foi extraído de `game.js` sem rebalanceamento; navegador e servidor usam

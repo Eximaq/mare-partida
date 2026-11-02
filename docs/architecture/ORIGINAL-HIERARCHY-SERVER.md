@@ -1,5 +1,7 @@
 # Hierarquia e ranking autoritativos
 
+> Estado consolidado posterior: [aceite integrado do servidor atual](FINAL-SERVER-ACCEPTANCE.md). As pendências e contagens abaixo registram o momento de cada incremento, não o estado atual agregado.
+
 O modo online usa os títulos e requisitos de `hierarchy-system.js` no servidor e
 mantém o painel original, com consulta das quatro facções e32 títulos. O modo de
 demonstração e seus saves não são importados nem modificados.
