@@ -11,6 +11,8 @@ import {
 } from "@mare/shared";
 import { getGameCatalog } from "./catalog.js";
 import { AuthFault } from "../auth/errors.js";
+import {readBattle,storeBattle} from '../characters/battle.js';
+import {readFighter} from '../characters/fighter.js';
 const require = createRequire(import.meta.url),
   forge = require("../../../../forge-system.js");
 const catalog = getGameCatalog(),
@@ -21,6 +23,34 @@ const random = () => randomInt(0, 0x100000000) / 0x100000000;
 const maxGold = 9223372036854775807n;
 export const isOriginalAction = (action: string) =>
   originalActionSchema.options.includes(action as any);
+export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0){
+ const before=await readOriginalInventory(client,id);if(!before)throw new AuthFault(409,'original_inventory_required');
+ const after=structuredClone(before),identity=(await client.query('SELECT class_id,faction_id FROM mare_game.characters WHERE id=$1',[id])).rows[0];
+ const battle=require('../../../../world-battle.cjs');let xp=0n,gold=BigInt(first?.gold??0);
+ if(!Number.isSafeInteger(potionsUsed)||potionsUsed<0||potionsUsed>after.potions)throw new AuthFault(503,'potion_stock_conflict');after.potions-=potionsUsed;
+ const make=(def:number,level:number,rarity:string,origin:string)=>forge.normalizeItem({id:randomUUID(),def,level,rarity,plus:0,locked:false,obtainedAt:Date.now(),origin},defs,random);
+ if(first){
+  if(after.inventory.length>=120)throw new AuthFault(409,'inventory_full');
+  const def=({sword:0,brawler:2,gunner:4,rogue:12,cyborg:14,strategist:16,healer:31} as Record<string,number>)[identity.class_id]!;
+  after.inventory.unshift(make(def,first.level,first.rarity,'Primeira vitória · '+battle.hunt.get(first.area).name));
+ }
+ for(const k of kills){
+  const r=k.reward;xp+=BigInt(r.xp);gold+=BigInt(Math.round(r.gold*battle.catalog.factions[identity.faction_id].gold));
+  if(random()<r.materialChance)after.materials=Math.min(1000000000,after.materials+r.materials);
+  if(random()<r.gearChance&&after.inventory.length<120){
+   const rarity=battle.hunt.rarity(k.area,k.monster.type==='boss'||require('../../../../monster-catalog.js')[k.monster.type]?.boss===true,random());
+   const eligible=defs.map((d,i)=>({d,i})).filter(({d})=>!d.kind&&d.type!=='akuma_no_mi'&&(d.slot!=='weapon'||d.type===identity.class_id)&&(!d.fixedRarity||d.rarity===rarity&&d.rarity!=='supreme'));
+   const chosen=eligible[Math.floor(random()*eligible.length)];if(!chosen)throw new AuthFault(503,'loot_catalog_unavailable');
+   after.inventory.unshift(make(chosen.i,r.gearLevel,rarity,battle.hunt.get(k.area).name));
+  }
+  if(random()<r.potionChance)after.potions=Math.min(1000000000,after.potions+r.potions);
+ }
+ if(BigInt(state.gold)+gold>maxGold||BigInt(state.experience)+xp>maxGold)throw new AuthFault(409,'progression_limit');
+ await writeInventory(client,id,after);
+ await client.query('UPDATE mare_game.character_progression SET gold=gold+$2,experience=experience+$3 WHERE character_id=$1',[id,gold.toString(),xp.toString()]);
+ await event(client,id,requestId,state.version,first?'battle.first':'battle.reward',before,after,BigInt(state.gold),gold,{experience:xp.toString(),spawns:kills.map(k=>k.id),potionsUsed,firstArea:first?.area??null});
+ return {xp,gold};
+}
 function valid(input: unknown): OriginalInventory {
   const parsed = originalInventorySchema.safeParse(input);
   if (!parsed.success)
@@ -274,7 +304,8 @@ export async function mutateOriginalInventory(
     "items.unequip",
     "forge.execute",
   ].includes(input.action);
-  if (changesGear && combat?.phase === "active")
+  const battle=await readBattle(client,id);
+  if (changesGear && (combat?.phase === "active"||battle&&(battle.auto||battle.pending||battle.skillJob||battle.mobs.some((m:any)=>m.alive&&m.engaged))))
     throw new AuthFault(409, "equipment_during_combat");
   if (input.action === "items.initialize") {
     if (i) throw new AuthFault(409, "inventory_already_initialized");
@@ -338,6 +369,12 @@ export async function mutateOriginalInventory(
       i.potions++;
     } else if (input.action === "potions.use") {
       if (i.potions === 0) throw new AuthFault(409, "potion_insufficient");
+      if(battle){
+       const fighter=await readFighter(client,id,state);
+       if(battle.hp<=0||battle.hp>=fighter.maxHp)throw new AuthFault(409,'potion_not_needed');
+       const hp=battle.hp;battle.hp=Math.min(fighter.maxHp,battle.hp+Math.round(fighter.maxHp*.44)*(1+(fighter.rulesetId==='original-character-v1'?fighter.stats.healingReceivedPercent:0)));
+       await storeBattle(client,id,battle);i.potions--;outcome={healed:battle.hp-hp};
+      }else{
       if (
         combat?.phase !== "active" ||
         combat.player_hp <= 0 ||
@@ -354,6 +391,7 @@ export async function mutateOriginalInventory(
       );
       i.potions--;
       outcome = { healed: hp - combat.player_hp };
+      }
     } else if (input.action === "forge.execute") {
       if (BigInt(state.gold) > BigInt(Number.MAX_SAFE_INTEGER))
         throw new AuthFault(409, "original_currency_limit");

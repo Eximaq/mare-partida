@@ -1,3 +1,5 @@
+**Posição e viagens online:** [mundo persistente, colisões e limites do incremento](docs/architecture/ORIGINAL-WORLD-SERVER.md). IA e combate original completo continuam em migração.
+
 **Servidor completo do jogo atual — objetivo ainda aberto:** [escopo integral, critérios de segurança e estado real](docs/architecture/FULL-SERVER-PARITY.md). O alpha anterior não equivale à migração completa.
 
 **Inventário e forja originais conectados:** [comandos, conversão preservada, testes e limites](docs/architecture/ORIGINAL-INVENTORY-SERVER.md). Equipamentos, vendas, poções e operações de forja com persistência autoritativa; combate completo e demais sistemas ainda em migração.

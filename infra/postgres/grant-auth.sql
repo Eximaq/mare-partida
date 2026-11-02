@@ -44,3 +44,13 @@ GRANT SELECT ON mare_game.game_inventory,mare_game.game_inventory_events TO mare
 GRANT INSERT (character_id,inventory,equipment,materials,potions,forge_seq,forge_history,alpha_snapshot,initialized_request_id) ON mare_game.game_inventory TO mare_runtime;
 GRANT UPDATE (inventory,equipment,materials,potions,forge_seq,forge_history) ON mare_game.game_inventory TO mare_runtime;
 GRANT INSERT (character_id,request_id,version_before,action,rules_hash,before_hash,after_hash,gold_before,gold_delta,outcome) ON mare_game.game_inventory_events TO mare_runtime;
+
+GRANT SELECT,INSERT ON mare_game.character_world TO mare_runtime;
+GRANT UPDATE (rules_hash,map_id,area,x,y,path,speed,direction,started_at,motion_until) ON mare_game.character_world TO mare_runtime;
+
+GRANT INSERT(world_map_id,enemy_x,enemy_y) ON mare_game.combat_encounters TO mare_runtime;
+GRANT SELECT ON mare_game.character_battles TO mare_runtime;
+GRANT INSERT (character_id,simulation,control_epoch) ON mare_game.character_battles TO mare_runtime;
+GRANT UPDATE (simulation,control_epoch,tick_at) ON mare_game.character_battles TO mare_runtime;
+GRANT SELECT ON mare_game.world_battle_rewards TO mare_runtime;
+GRANT INSERT (character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) ON mare_game.world_battle_rewards TO mare_runtime;

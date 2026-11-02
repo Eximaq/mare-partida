@@ -1,3 +1,4 @@
+import {enterPilotWorld,requirePilotReach} from './world.js';
 import {awardCombatDrop} from "./inventory.js";
 import { randomInt } from "node:crypto";
 import type { PoolClient } from "pg";
@@ -10,7 +11,7 @@ import {resolveOriginalRound} from '../gameplay/character.js';
 
 export async function readCombat(client: PoolClient,id:string) {
   const row=(await client.query<{
-    fighter:Fighter|null;player_max_hp:number|null;eligible:boolean;phase:string|null;player_hp:number|null;enemy_hp:number|null;turn:number|null;
+    world_map_id:string|null;enemy_x:number|null;enemy_y:number|null;fighter:Fighter|null;player_max_hp:number|null;eligible:boolean;phase:string|null;player_hp:number|null;enemy_hp:number|null;turn:number|null;
     ready:boolean;next_attack_at:Date|null;last_request_id:string|null;player_damage:number|null;enemy_damage:number|null;
     encounter_id:string|null;ordinal:number|null;recent:number;rest_ready:boolean;next_encounter_at:Date|null;
   }>(`WITH budget AS (
@@ -18,13 +19,13 @@ export async function readCombat(client: PoolClient,id:string) {
       FROM mare_game.combat_encounters WHERE character_id=$1 AND started_at>clock_timestamp()-interval '24 hours'
     ), latest AS (SELECT * FROM mare_game.combat_encounters WHERE character_id=$1 ORDER BY ordinal DESC LIMIT 1)
     SELECT EXISTS(SELECT 1 FROM mare_game.character_hunt_rewards WHERE character_id=$1) AS eligible,
-    b.fighter,b.player_max_hp,b.phase,b.player_hp,b.enemy_hp,b.turn,b.last_request_id,b.next_attack_at,b.encounter_id,b.ordinal,q.recent,
+    b.world_map_id,b.enemy_x,b.enemy_y,b.fighter,b.player_max_hp,b.phase,b.player_hp,b.enemy_hp,b.turn,b.last_request_id,b.next_attack_at,b.encounter_id,b.ordinal,q.recent,
     coalesce(b.closed_at+interval '60 seconds'<=clock_timestamp(),false) AS rest_ready,
     greatest(b.closed_at+interval '60 seconds',CASE WHEN q.recent>=10 THEN q.oldest_recent+interval '24 hours' END) AS next_encounter_at,
     coalesce(b.phase='active' AND b.next_attack_at<=clock_timestamp(),false) AS ready,
     r.player_damage,r.enemy_damage FROM budget q LEFT JOIN latest b ON true
     LEFT JOIN mare_game.combat_rounds r ON r.character_id=$1 AND r.encounter_id=b.encounter_id AND r.turn=b.turn`,[id])).rows[0]!;
-  return combatSnapshotSchema.parse({catalogId:"dock-raider-v1",enemyName:"Saqueador do cais",
+  return combatSnapshotSchema.parse({...row.world_map_id?{worldMapId:row.world_map_id,enemyPosition:{x:row.enemy_x,y:row.enemy_y}}:{},catalogId:"dock-raider-v1",enemyName:"Saqueador do cais",
     status:row.phase ?? (row.eligible?"available":"locked"),playerHp:row.player_hp??30,playerMaxHp:row.player_max_hp??30,fighter:row.fighter,
     enemyHp:row.enemy_hp??36,enemyMaxHp:36,turn:row.turn??0,attackReady:row.ready,
     nextAttackAt:row.next_attack_at?.toISOString()??null,lastRequestId:row.last_request_id,
@@ -49,6 +50,7 @@ export async function mutateCombat(client:PoolClient,id:string,requestId:string,
     if(combat.status==="locked"||combat.status==="available") throw new AuthFault(409,"combat_not_started");
     if(action==="combat.attack") {
       if(combat.status!=="active") throw new AuthFault(409,"combat_finished");
+      await requirePilotReach(client,id,combat);
       if(!combat.attackReady) throw new AuthFault(409,"combat_cooldown");
     } else {
       if(combat.status==="claimed") throw new AuthFault(409,"combat_already_claimed");
@@ -62,9 +64,10 @@ export async function mutateCombat(client:PoolClient,id:string,requestId:string,
   if(!updated.rowCount) throw new AuthFault(409,"state_version_conflict");
   if(action==="combat.begin") {
     const fighter=await readFighter(client,id,state);
-    await client.query(`INSERT INTO mare_game.combat_encounters(character_id,begin_request_id,last_request_id,ordinal,fighter,player_hp,next_attack_at)
-      VALUES($1,$2,$2,$3,$4::jsonb,$5,clock_timestamp()+$6::int*interval '1 millisecond')`,
-      [id,requestId,(combat.encounterNumber??0)+1,JSON.stringify(fighter),fighter.maxHp,fighter.cooldownMs]);
+    const location=await enterPilotWorld(client,id);
+    await client.query(`INSERT INTO mare_game.combat_encounters(character_id,begin_request_id,last_request_id,ordinal,fighter,player_hp,next_attack_at,world_map_id,enemy_x,enemy_y)
+      VALUES($1,$2,$2,$3,$4::jsonb,$5,clock_timestamp()+$6::int*interval '1 millisecond',$7,$8,$9)`,
+      [id,requestId,(combat.encounterNumber??0)+1,JSON.stringify(fighter),fighter.maxHp,fighter.cooldownMs,location?.mapId??null,location?.x??null,location?.y??null]);
   } else if(action==="combat.attack") {
     // RNG is generated after replay/authorization/version/cooldown checks; never supplied by clients.
     const round=combat.fighter?.rulesetId==='original-character-v1'

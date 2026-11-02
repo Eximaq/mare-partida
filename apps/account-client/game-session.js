@@ -30,6 +30,13 @@
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    if(['battle.start','battle.first'].includes(action))return keys==='';
+    if(action==='battle.auto')return keys==='enabled'&&typeof p.enabled==='boolean';
+    if(action==='battle.target')return keys==='targetId'&&(p.targetId===null||typeof p.targetId==='string'&&/^[a-f0-9-]{36}$/.test(p.targetId));
+    if(action==='battle.skill')return keys==='index'&&Number.isInteger(p.index)&&p.index>=0&&p.index<=1;
+    if(['world.initialize','world.stop','world.return'].includes(action))return keys==='';
+    if(action==='world.move')return keys==='x,y'&&['x','y'].every(k=>Number.isFinite(p[k])&&p[k]>=0&&p[k]<=100000);
+    if(action==='world.travel')return keys==='islandId'&&typeof p.islandId==='string'&&/^[a-z0-9-]{1,40}$/.test(p.islandId);
     if(['items.initialize','potions.buy','potions.use'].includes(action))return keys==='';
     if(['items.equip','items.sell'].includes(action))return keys==='itemId'&&instanceId(p.itemId);
     if(action==='items.lock')return keys==='itemId,locked'&&instanceId(p.itemId)&&typeof p.locked==='boolean';
@@ -145,11 +152,11 @@
       )
         throw fault("invalid_server_state");
     }
-    async function read() {
+    async function read(snapshotOnly=false) {
       const revision = ++readVersion;
       let me, online;
       try {
-        me = await api("/v1/me");
+        me = snapshotOnly&&data?.character ? {character:data.character} : await api("/v1/me");
         online = me.character
           ? await api(`/v1/characters/${me.character.id}/online-state`)
           : null;

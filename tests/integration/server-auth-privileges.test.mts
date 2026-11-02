@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { test } from "node:test";
 import pg from "pg";
 import { AuthService } from "../../apps/game-server/src/auth/service.js";
+import {tickWorldBattles} from '../../apps/game-server/src/characters/battle.js';
 import { authDatabase } from "./auth-support.mjs";
 
 test("login, control and journey work with minimum grants, with narrow economic columns and immutable hunt ledgers", async () => {
@@ -147,6 +148,12 @@ test("login, control and journey work with minimum grants, with narrow economic 
         await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"equipment.unequip",expectedVersion:9,payload:{slot:"armor"}});
         const sold=await service.command(login.token,character.id,{...command,requestId:randomUUID(),action:"inventory.sell",expectedVersion:10,payload:{itemId:"dock-vest-v1",quantity:1}});
         assert.equal(sold.state.gold,"44");
+        const intent=async(action:any,payload={})=>service.command(login.token,character.id,{requestId:randomUUID(),action,payload,expectedVersion:(await service.onlineState(login.token,character.id)).state.version,control} as any);
+        await intent('items.initialize');await intent('world.initialize');await intent('battle.start');await intent('world.travel',{islandId:'dawn'});
+        const current=await service.onlineState(login.token,character.id);assert.equal(current.battle.mobs.length,14);
+        await pool.query("UPDATE mare_game.character_battles SET tick_at=clock_timestamp()-interval '250 milliseconds' WHERE character_id=$1",[character.id]);
+        await tickWorldBattles(runtime);
+        for(const sql of ['DELETE FROM mare_game.character_battles','UPDATE mare_game.character_battles SET character_id=gen_random_uuid()','DELETE FROM mare_game.world_battle_rewards','UPDATE mare_game.world_battle_rewards SET gold_delta=100'])await assert.rejects(runtime.query(sql),{code:'42501'});
         await service.logout(login.token, "all");
         await service.drainRevocations();
       } finally {
