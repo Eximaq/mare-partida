@@ -191,7 +191,9 @@ jobs:
             assert.equal((await pool.query('UPDATE mare_game.character_progression SET level=level WHERE false')).rowCount,0);
             await assert.rejects(pool.query('UPDATE mare_game.character_progression SET character_id=character_id'),{code:'42501'});
             await assert.rejects(pool.query('UPDATE mare_game.character_level_ledger SET experience_total=experience_total'),{code:'42501'});
-            await assert.rejects(pool.query('UPDATE mare_game.characters SET name=name'),{code:'42501'});
+            assert.equal((await pool.query('UPDATE mare_game.characters SET name=name WHERE false')).rowCount,0);
+            await assert.rejects(pool.query('UPDATE mare_game.characters SET account_id=account_id'),{code:'42501'});
+            await assert.rejects(pool.query('UPDATE mare_game.characters SET id=id'),{code:'42501'});
             await assert.rejects(pool.query('UPDATE mare_game.accounts SET subject=subject'),{code:'42501'});
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'),{code:'42501'});
           } finally { await pool.end(); }
