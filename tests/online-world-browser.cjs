@@ -61,12 +61,12 @@ arrive('lobby',null);
   await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
   assert.equal(await p.locator('#panelOverlay').isHidden(),true);assert(commands.some(c=>c.action==='world.travel'));
   await p.locator('#huntRoute').click();await p.waitForSelector('[data-online-action="journey.begin"]');await p.keyboard.press('Escape');
-  await p.waitForFunction(()=>__mareDiagnostics().lobby96.state==='ready',null,{timeout:90000});await p.evaluate(()=>document.fonts.ready);
+  await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.evaluate(()=>document.fonts.ready);
   await p.screenshot({path:path.join(out,'online-world-dawn.png')});
   wire.combat={...wire.combat,status:'lost',encounterId:'22222222-2222-4222-8222-222222222222',enemyName:'Saqueador',enemyHp:10,enemyMaxHp:36,worldMapId:'dawn',enemyPosition:{x:982,y:1608}};
   await p.reload();await p.waitForFunction(()=>window.__mareDiagnostics?.().map.id==='dawn');assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-byte-for-byte');assert.equal(await p.evaluate(()=>__mareDiagnostics().alive),0,'historical defeated encounter must not respawn as a live enemy');
   await p.locator('#returnLobby').click();await p.waitForFunction(()=>__mareDiagnostics().map.id==='lobby');
-  await p.setViewportSize({width:393,height:852});await p.waitForFunction(()=>__mareDiagnostics().map.navigation.ready&&__mareDiagnostics().lobby96.state==='ready',null,{timeout:90000});await p.evaluate(()=>document.fonts.ready);await p.screenshot({path:path.join(out,'online-world-mobile.png')});
+  await p.setViewportSize({width:393,height:852});await p.waitForFunction(()=>__mareDiagnostics().map.navigation.ready&&__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.evaluate(()=>document.fonts.ready);await p.screenshot({path:path.join(out,'online-world-mobile.png')});
   assert.deepEqual(errors,[]);console.log('Original online world: keyboard intent, server route, original voyage panel, travel, reload, return and demo isolation passed.');
  }catch(error){await p.screenshot({path:path.join(out,'failure.png')}).catch(()=>{});console.error({pageErrors:errors,dialog:await p.locator('#dialogBody').innerText().catch(()=>''),commands:commands.map(v=>v.action)});throw error;}finally{await context.close();await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});

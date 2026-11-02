@@ -75,4 +75,6 @@ Validação local concluída: build/typecheck,101 testes de fundação,127 integ
 PostgreSQL/HTTP,145 arquivos Node legados e4 testes Python de exportação/portal.
 Os dois ensaios Chromium de mundo e inventário/forja passaram sobre `dist/`.
 HTTPS local reiniciado e certificado validado; endpoint protegido recusou chamada
-sem sessão com401. Docker/Linux é verificado separadamente no CI deste PR.
+sem sessão com401. Docker/Linux passou no CI do runtime365dde3 (run41372250961): imagem completa,
+Compose, migrações, health checks, HTTPS e privilégios mínimos. Não foi executado
+Docker neste Windows.
