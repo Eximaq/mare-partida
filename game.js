@@ -1417,6 +1417,10 @@
     }
     if(onlineWorldFrame?.snapshot!==w){onlineWorldFrame={snapshot:w,received:performance.now(),from:{x:world.hero.x,y:world.hero.y}};if(!ONLINE_GAME.data.online.battle?.auto)Object.assign(world.hero,w.position,{direction:w.direction});camera.update(world.hero,activeMap(),0,true);}
   }
+  function requestWorldTravel(area){
+    if(!ONLINE_GAME){worldChange(area);return;}
+    const island=MareArchipelago.byArea(area);if(ONLINE_GAME.data?.online.world&&island)void onlineWorldCommand('world.travel',{islandId:island.id},true);else openPanel('modes');
+  }
   function tickOnlineWorld(){
     if(!onlineWorldFrame)return;
     const pose=MareOnlineGameUI.worldPosition(onlineWorldFrame.snapshot,performance.now()-onlineWorldFrame.received);
@@ -1784,7 +1788,7 @@
     for(const type of ({syrup:['sham','buchi'],baratie:['pearl','gin'],arlong:['chew','kuroobi'],orange:['mr3','cabaji'],loguetown:['marinheiro'],conchas:['helmeppo'],alabasta:['bananawani']})[id]||[])MareNewIslandArt.prepare(type);
     MareWorldDepth.regions(id);
   }
-  function worldChange(area){if(ONLINE_GAME){const island=MareArchipelago.byArea(area);if(ONLINE_GAME.data?.online.world&&island)void onlineWorldCommand('world.travel',{islandId:island.id},true);else openPanel('modes');return;}if(!zones[area])return;if(game.level<zones[area].min){toast('Você precisa alcançar o nível '+zones[area].min+'.','danger');return;}game.area=area;const island=MareArchipelago.byArea(area);if(island)game=MareAchievements.record(game,'islandVisited',island.id);game.hp=getDerived().maxHP;game.energy=getDerived().maxEnergy;enterHunt();toast('Você navegou até '+zones[area].name+'.','good');log('Nova região: '+zones[area].name,'good');saveGame();}
+  function worldChange(area){if(ONLINE_GAME){openPanel('modes');return;}if(!zones[area])return;if(game.level<zones[area].min){toast('Você precisa alcançar o nível '+zones[area].min+'.','danger');return;}game.area=area;const island=MareArchipelago.byArea(area);if(island)game=MareAchievements.record(game,'islandVisited',island.id);game.hp=getDerived().maxHP;game.energy=getDerived().maxEnergy;enterHunt();toast('Você navegou até '+zones[area].name+'.','good');log('Nova região: '+zones[area].name,'good');saveGame();}
   function claimQuest(id){let q=questDefs.find(q=>q.id===id);if(!q||game.claimed.includes(id)||questProgress(q)<q.target)return;game.claimed.push(id);game.gold+=q.gold;gainXP(q.xp);session.gold+=q.gold;game.stats.goldEarned+=q.gold;log('Recompensa do contrato: '+q.title,'gold');if(saveGame())rewardNotice({gold:q.gold,xp:q.xp,eventId:'contract:'+game.characterId+':'+id});updateUI();}
   function getInventoryItem(id){return game.inventory.find(i=>i.id===id)||Object.values(game.equipment).find(i=>i?.id===id)||null;}
   function hasEquipped(item){return Object.values(game.equipment).some(i=>i?.id===item?.id);}
@@ -3348,7 +3352,7 @@ function applySceneHudLayout(){
     b=e.target.closest('[data-voyage-region]');if(b){selectVoyageRegion(b.dataset.voyageRegion);return;}
     b=e.target.closest('[data-island]');if(b){const island=MareArchipelago.get(b.dataset.island);if(island&&island.region===voyageUI.region){voyageUI.selected=island.id;renderPanel();const card=$('dialogBody').querySelector('[data-island="'+island.id+'"]');if(matchMedia('(max-width:760px)').matches)$('dungeonName')?.focus();else card?.focus({preventScroll:true});}return;}
     b=e.target.closest('[data-voyage-back]');if(b){const previous=voyageUI.selected;voyageUI.selected=null;renderPanel();$('dialogBody').querySelector('[data-island="'+previous+'"]')?.focus();return;}
-    b=e.target.closest('[data-travel-island]');if(b){const island=MareArchipelago.get(b.dataset.travelIsland);if(currentPanel==='map'&&!b.disabled&&island&&island.id===voyageUI.selected&&MareArchipelago.canTravel(island.id,game.level)){b.disabled=true;worldChange(island.area);}return;}
+    b=e.target.closest('[data-travel-island]');if(b){const island=MareArchipelago.get(b.dataset.travelIsland);if(currentPanel==='map'&&!b.disabled&&island&&island.id===voyageUI.selected&&MareArchipelago.canTravel(island.id,game.level)){b.disabled=true;requestWorldTravel(island.area);}return;}
 
     b=e.target.closest('[data-haki-node]');if(b){hakiSelected=b.dataset.hakiNode;renderPanel();return;}
     b=e.target.closest('[data-haki-invest]');if(b&&!b.disabled&&!hakiInvesting){const id=b.dataset.hakiInvest,seq=Number(b.dataset.hakiSeq),node=MareHakiProgression.byId[id];showConfirmation('Confirmar graduação','Confira a graduação e os fragmentos deste ramo.',()=>{if(hakiInvesting)return;hakiInvesting=true;try{const r=MareHakiProgression.invest(game,id,seq,itemDefs,next=>{if(node.final)Object.assign(next,MareAchievements.record(next,'hakiUnlocked',node.branch));localStorage.setItem(STORAGE_KEY,JSON.stringify(next));return true;});if(r.ok){game=r.state;toast(r.message,'good');}else toast(r.message,'danger');renderPanel();updateUI();return r.ok;}finally{hakiInvesting=false;}},'INVESTIR',false,()=>MareOperationSummary.haki(game,id,seq,itemDefs));return;}
