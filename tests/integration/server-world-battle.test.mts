@@ -82,3 +82,14 @@ test('one invalid battle rolls back without starving another account in the work
  assert.deepEqual(after.find(r=>r.character_id===a.c.id),before.find(r=>r.character_id===a.c.id),'invalid battle must remain unchanged');
  assert(after.find(r=>r.character_id===b.c.id).tick_at>before.find(r=>r.character_id===b.c.id).tick_at,'another account must still advance');
 }));
+
+
+test('world advertises chase speed during auto and restores walking speed for manual input',async()=>authDatabase(async({service,pool})=>{
+ const a=await actor(service);await a.send(await a.input('battle.start'));await a.send(await a.input('world.travel',{islandId:'dawn'}));
+ await a.send(await a.input('battle.auto',{enabled:true}));
+ await pool.query("UPDATE mare_game.character_battles SET tick_at=clock_timestamp()-interval '250 milliseconds' WHERE character_id=$1",[a.c.id]);
+ await battle.tickWorldBattles(pool);const auto=await a.read();
+ assert.equal(auto.world.speed,auto.combatPreview.stats.huntSpeed,'presentation must receive the actual authoritative chase speed');
+ const w=auto.world;await a.send(await a.input('world.move',w.position));const manual=await a.read();
+ assert.equal(manual.battle.auto,false);assert.equal(manual.world.speed,manual.combatPreview.stats.moveSpeed);
+}));

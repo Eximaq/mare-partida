@@ -35,7 +35,8 @@
   // Cosmetic correction only. Commands/collisions keep using worldPosition directly.
   // Manual correction is short; sampled combat spans its observed update cadence.
   // Neither mode extends the approved path or extrapolates unseen combat positions.
-  function createWorldPresentation() {
+  function createWorldPresentation({walk=false,route}={}) {
+    if(walk)return createWalkingPresentation(route);
     let snapshot=null,received=0,offset={x:0,y:0},duration=200;
     function sample(now){
       if(!snapshot)return null;
@@ -53,6 +54,42 @@
       const snap=!previous||snapshot.mapId!==next.mapId||now-received>5000||Math.hypot(previous.x-target.x,previous.y-target.y)>limit;
       offset=snap?{x:0,y:0}:{x:previous.x-target.x,y:previous.y-target.y};
       duration=buffered?Math.max(250,Math.min(1250,now-received+100)):200;
+      snapshot=next;received=now;return snap;
+    }};
+  }
+  // Walking may remain behind a late server sample, but must never sprint to catch
+  // it. Bridge only through the same collision map, then follow the approved path.
+  function createWalkingPresentation(route=(from,to)=>[{x:to.x,y:to.y}]) {
+    let snapshot=null,received=0,state=null;
+    const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+    const length=(from,points)=>{let n=0;for(const p of points){n+=distance(from,p);from=p;}return n;};
+    function sample(now){
+      if(!state)return null;
+      const elapsed=Math.max(0,now-received),dt=Math.max(0,Math.min(100,now-state.last));state.last=Math.max(state.last,now);
+      const lease=Math.max(0,Date.parse(snapshot.motionUntil)-Date.parse(snapshot.serverNow));
+      const bridge=state.buffered?state.bridge*Math.min(1,elapsed/state.duration):state.bridge;
+      const allowed=bridge+Math.min(state.pathLength,snapshot.speed*Math.min(elapsed,lease)/1000);
+      let budget=Math.max(0,Math.min(snapshot.speed*dt/1000,allowed-state.travel)),moved=0;
+      while(budget>1e-9&&state.points.length){
+        const p=state.points[0],dx=p.x-state.x,dy=p.y-state.y,d=Math.hypot(dx,dy);
+        if(d<1e-8){state.points.shift();continue;}
+        const step=Math.min(d,budget);state.x+=dx/d*step;state.y+=dy/d*step;state.travel+=step;budget-=step;moved+=step;
+        state.direction=Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'back':'front');
+        if(step>=d-1e-8){state.x=p.x;state.y=p.y;state.points.shift();}
+      }
+      if(dt>0)state.moving=moved>1e-8;
+      return {x:state.x,y:state.y,direction:state.direction,moving:state.moving};
+    }
+    return {sample,update(next,now,{buffered=false,reset=false}={}){
+      if(next===snapshot&&!reset)return false;
+      const previous=sample(now),snap=!previous||snapshot.mapId!==next.mapId||reset;
+      const origin=snap?next.position:previous;
+      const bridge=distance(origin,next.position)<1e-8?[]:route(origin,next.position);
+      const connected=distance(origin,next.position)<1e-8||(bridge.length&&distance(bridge.at(-1),next.position)<1e-6);
+      const points=connected?[...bridge,...next.path].map(p=>({x:p.x,y:p.y})):[];
+      state={x:origin.x,y:origin.y,direction:next.direction,moving:false,last:now,points,travel:0,
+        bridge:connected?length(origin,bridge):0,pathLength:connected?length(next.position,next.path):0,
+        buffered:buffered&&!next.path.length,duration:Math.max(250,Math.min(1250,now-received+100))};
       snapshot=next;received=now;return snap;
     }};
   }
