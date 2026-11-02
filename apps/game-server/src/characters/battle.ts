@@ -133,7 +133,7 @@ export async function tickWorldBattles(pool:Pool){
    await client.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)',[id,requestId,digest('server-battle:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:after})]);
   }
   const remaining=!b.auto&&b.hp>0?path:[];
-  await storeWorld(client,id,{...w,position:{x:hero.x,y:hero.y},direction:hero.direction,path:remaining,serverNow:now.toISOString(),speed:engine.combatStats(b,{stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId}).moveSpeed,motionUntil:remaining.length?new Date(Math.max(now.getTime(),Date.parse(w.motionUntil))).toISOString():now.toISOString()});
+  await storeWorld(client,id,{...w,position:{x:hero.x,y:hero.y},direction:hero.direction,path:remaining,serverNow:now.toISOString(),speed:engine.combatStats(b,{stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId})[b.auto?'huntSpeed':'moveSpeed'],motionUntil:remaining.length?new Date(Math.max(now.getTime(),Date.parse(w.motionUntil))).toISOString():now.toISOString()});
   await storeBattle(client,id,b);await client.query('UPDATE mare_game.character_battles SET tick_at=$2 WHERE character_id=$1',[id,now]);
   await client.query('COMMIT');
  }catch{await client.query('ROLLBACK');failed++;}finally{client.release();}}

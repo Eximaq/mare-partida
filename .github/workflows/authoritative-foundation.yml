@@ -246,10 +246,14 @@ jobs:
           certutil -A -d "sql:$HOME/.pki/nssdb" -n mare-local-test -t 'C,,' -i "$RUNNER_TEMP/mare-ca.crt"
       - name: Two isolated accounts in original port, real HTTPS API and PostgreSQL
         run: NODE_PATH="$RUNNER_TEMP/mare-browser/node_modules" node --import tsx tests/shared-lobby-browser.mts
+      - name: Distant mouse routes and chase stay within server speed
+        run: NODE_PATH="$RUNNER_TEMP/mare-browser/node_modules" node --import tsx tests/online-walking-browser.mts
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
           name: shared-lobby-browser-failure
-          path: tmp/shared-lobby-browser/
+          path: |
+            tmp/shared-lobby-browser/
+            tmp/online-walking/
           retention-days: 3
           if-no-files-found: ignore

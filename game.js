@@ -1430,9 +1430,11 @@
     }
     if(prison&&oldFloor!==prison.floor){prisonFloor=prison.floor;setAreaLabels();if(currentPanel==='prison')renderPanel();}
     if(onlineWorldFrame?.snapshot!==w){
-      const presentation=onlineWorldFrame?.presentation||MareOnlineGameUI.createWorldPresentation(),received=performance.now();
-      const snap=presentation.update(w,received,{buffered:!!ONLINE_GAME.data.online.battle?.auto&&!w.path.length});
-      onlineWorldFrame={snapshot:w,received,presentation};
+      const battle=ONLINE_GAME.data.online.battle,effects=battle?.fruit?.effects,special=!!(effects?.action||effects?.dash);
+      const presentation=onlineWorldFrame?.special===special?onlineWorldFrame.presentation:MareOnlineGameUI.createWorldPresentation({walk:!special,route:(from,to)=>navigator().path(from,to)}),received=performance.now();
+      const respawn=onlineBattleSeq!==null&&battle?.events.some(e=>e.seq>onlineBattleSeq&&e.type==='respawn');
+      const snap=presentation.update(w,received,{buffered:!!battle?.auto&&!w.path.length,reset:!!respawn});
+      onlineWorldFrame={snapshot:w,received,presentation,special};
       if(snap){Object.assign(world.hero,w.position,{direction:w.direction});camera.update(world.hero,activeMap(),0,true);}
     }
   }

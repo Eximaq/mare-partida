@@ -1,0 +1,73 @@
+// Isolated PostgreSQL and real battle worker; fixture identity only, no hosted accounts.
+import {tickWorldBattles} from '../apps/game-server/src/characters/battle.js';
+import assert from 'node:assert/strict';
+import {once} from 'node:events';
+import {readFile,mkdir} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {createRequire} from 'node:module';
+import {authDatabase} from './integration/auth-support.mjs';
+import {createHttpServer} from '../apps/game-server/src/http.js';
+import {createAuthHandler} from '../apps/game-server/src/auth/routes.js';
+import {createDevGateway} from '../tools/dev-gateway.mjs';
+declare global {var MareGameSession:any;var __mareDiagnostics:any;}
+const require=createRequire(import.meta.url),{chromium}=require('playwright');
+const out=process.env.MARE_QA_DIR||'tmp/online-walking';await mkdir(out,{recursive:true});
+await authDatabase(async f=>{
+ const handler=createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9445',cookieSeconds:3600});
+ const api=createHttpServer({isReady:async()=>true,handle:handler});api.listen(0,'127.0.0.1');await once(api,'listening');
+ const gateway=createDevGateway({key:await readFile('infra/local/localhost.key','utf8'),cert:await readFile('infra/local/localhost.crt','utf8'),staticRoot:resolve(process.env.MARE_QA_STATIC_ROOT||'dist'),onlineRoot:resolve('apps/account-client'),upstream:new URL(`http://127.0.0.1:${(api.address() as any).port}`)});
+ let worker:any,flight:any;let browser:any,context:any;const errors:string[]=[];
+ try{
+  gateway.listen(9445,'127.0.0.1');await once(gateway,'listening');browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});context=await browser.newContext({viewport:{width:1366,height:900}});const p=await context.newPage();p.on('dialog',async(d:any)=>{assert.equal(d.type(),'confirm');assert.match(d.message(),/Este personagem está sob controle/);await d.accept();});p.on('pageerror',(e:any)=>errors.push(e.stack||e.message));await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-final-acceptance'));
+  await p.route(/^https?:\/\/(?!localhost:9445\/)/,(r:any)=>r.abort());
+  await p.goto('https://localhost:9445/online/');await p.locator('#email').fill('acceptance@example.invalid');await p.locator('#password').fill('Fixture password only 123');await p.locator('#login-submit').click();await p.locator('#characterName').fill('Navegante');await p.locator('#nextToClass').click();await p.locator('#classStep [data-class=sword]').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();
+  await p.waitForFunction(()=>globalThis.MareGameSession?.data?.online?.battle&&globalThis.__mareDiagnostics?.().map.navigation.ready);await p.waitForFunction(()=>globalThis.__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});
+
+
+  worker=setInterval(()=>{if(!flight)flight=tickWorldBattles(f.pool).catch(()=>{errors.push('worker_failed');}).finally(()=>flight=null);},250);
+  await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
+  await p.evaluate(()=>MareGameSession.command('world.travel',{islandId:'dawn'}));
+  await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
+  await p.waitForTimeout(2000);
+  const captures=[];
+  for(const mapId of ['lobby','dawn']){
+   await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
+   await p.evaluate(id=>MareGameSession.command(id==='lobby'?'world.return':'world.travel',id==='lobby'?{}:{islandId:'dawn'}),mapId);
+   await p.waitForFunction(id=>__mareDiagnostics().map.id===id&&__mareDiagnostics().map.navigation.ready,mapId);
+   await p.waitForTimeout(1000);
+   const screen=await p.evaluate(()=>{const d=__mareDiagnostics(),r=document.querySelector('#worldCanvas').getBoundingClientRect();return {x:d.hero.x,y:d.hero.y,camera:d.camera,rect:{x:r.x,y:r.y,width:r.width,height:r.height}};});
+   const nav=require('../world-catalog.cjs').load().navigation(mapId);
+   let target:any;
+   for(const [dx,dy] of [[0,-280],[300,0],[-300,0],[0,280],[200,-250],[220,-120],[-200,-140],[140,150]]){
+    const q={x:screen.x+dx,y:screen.y+dy};if(!nav.walkable(q.x,q.y)||!nav.path(screen,q).length)continue;
+    const free=await p.evaluate(q=>{const d=__mareDiagnostics(),c=d.camera,r=document.querySelector('#worldCanvas').getBoundingClientRect(),x=r.x+(q.x-Math.round(c.x))*r.width/c.width,y=r.y+(q.y-Math.round(c.y))*r.height/c.height;return document.elementFromPoint(x,y)?.id==='worldCanvas'&&!d.mobs.some(m=>Math.hypot(m.x-q.x,m.y-30-q.y)<55)&&(d.scene!=='lobby'||!d.npcs.some(n=>Math.hypot(n.x-q.x,n.y-30-q.y)<55));},q);
+    if(free){target=q;break;}
+   }
+   assert(target);
+   await p.route('**/v1/**',async(r:any)=>{try{await new Promise(resolve=>setTimeout(resolve,250));await r.continue();}catch{errors.push('delayed_request_failed');}});
+   await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:performance.now(),x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
+   const canvas=await p.locator('#worldCanvas').boundingBox();
+   await p.mouse.click(canvas.x+(target.x-Math.round(screen.camera.x))*canvas.width/screen.camera.width,canvas.y+(target.y-Math.round(screen.camera.y))*canvas.height/screen.camera.height);
+   await p.waitForTimeout(5000);
+   captures.push({kind:'click',mapId,target,frames:await p.evaluate('window.captureMotion=false;window.motion')});
+   await p.unroute('**/v1/**');
+  }
+  await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
+  await p.evaluate(()=>MareGameSession.command('battle.auto',{enabled:true}));
+  await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:performance.now(),x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
+  await p.waitForTimeout(18000);captures.push({kind:'auto',frames:await p.evaluate('window.captureMotion=false;window.motion')});
+  for(const run of captures){
+   const frames=run.frames;let travel=0,maxWindowSpeed=0,windows=0;
+   for(let i=1;i<frames.length;i++){
+    const a=frames[i-1],b=frames[i],dt=b.t-a.t,d=Math.hypot(b.x-a.x,b.y-a.y),speed=Math.max(a.world.speed,b.world.speed);
+    travel+=d;assert.ok(d<=speed*dt/1000+3,run.kind+' must not jump or exceed the walking budget');
+    let distance=0,limit=0;
+    for(let j=i;j>0&&b.t-frames[j-1].t<=350;j--){const x=frames[j-1],y=frames[j];distance+=Math.hypot(y.x-x.x,y.y-x.y);limit+=Math.max(x.world.speed,y.world.speed)*(y.t-x.t)/1000;if(b.t-x.t>=300){windows++;assert.ok(distance<=limit+3,run.kind+' must not sprint to catch up');maxWindowSpeed=Math.max(maxWindowSpeed,distance*1000/(b.t-x.t));break;}}
+   }
+   assert.ok(travel>50,run.kind+' must actually move');assert.ok(windows>20,'enough measured windows for a speed assertion');
+   if(run.kind==='click'){const end=frames.at(-1);assert.ok(Math.hypot(end.x-run.target.x,end.y-run.target.y)<2,'distant click must eventually arrive by walking');}
+   console.log(JSON.stringify({kind:run.kind,map:run.mapId,maxWindowSpeed,passed:true}));
+  }
+  assert.deepEqual(errors,[]);assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');await p.screenshot({path:resolve(out,'combat.png')});console.log('Mouse routes in lobby/dawn and automatic chase passed with real backend/worker; demo preserved.');
+ }catch(error){await context?.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw error;}finally{clearInterval(worker);await flight;await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
+});
