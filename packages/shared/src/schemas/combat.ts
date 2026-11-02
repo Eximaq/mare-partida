@@ -1,7 +1,10 @@
+import {worldPointSchema} from './world.js';
 import { z } from "zod";
 import {fighterSchema} from "./fighter.js";
 
 export const combatSnapshotSchema = z.strictObject({
+  worldMapId:z.literal('dawn').optional(),
+  enemyPosition:worldPointSchema.optional(),
   catalogId: z.literal("dock-raider-v1"),
   enemyName: z.string().max(80),
   status: z.enum(["locked", "available", "active", "won", "lost", "claimed"]),

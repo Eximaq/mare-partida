@@ -126,9 +126,10 @@ test("3F upgrade preserves active, won, lost and claimed histories and never rec
     }
     const names=["characters","character_progression","character_commands","character_combats","character_combat_rounds","character_combat_rewards"];
     const before=await Promise.all(names.map(t=>pool.query(`SELECT to_jsonb(t) AS row FROM mare_game.${t} t ORDER BY to_jsonb(t)::text`)));
-    assert.deepEqual(await applyMigrations(pool),["0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql", "0014_original_inventory.sql", "0015_original_character.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql", "0014_original_inventory.sql", "0015_original_character.sql", "0016_original_world.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     for(const [i,t] of names.entries()) assert.deepEqual((await pool.query(`SELECT to_jsonb(t) AS row FROM mare_game.${t} t ORDER BY to_jsonb(t)::text`)).rows,t==="character_progression"?before[i]!.rows.map(r=>({row:{...r.row,level_start_experience:0}})):before[i]!.rows);
-    for(const [old,current,extras] of [["character_combats","combat_encounters",["encounter_id","ordinal","closed_at","fighter","player_max_hp"]],["character_combat_rounds","combat_rounds",["encounter_id"]],["character_combat_rewards","combat_rewards",["encounter_id"]]] as const) {
+    assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.combat_encounters WHERE world_map_id IS NOT NULL OR enemy_x IS NOT NULL OR enemy_y IS NOT NULL")).rows[0].n,0);
+    for(const [old,current,extras] of [["character_combats","combat_encounters",["encounter_id","ordinal","closed_at","fighter","player_max_hp","world_map_id","enemy_x","enemy_y"]],["character_combat_rounds","combat_rounds",["encounter_id"]],["character_combat_rewards","combat_rewards",["encounter_id"]]] as const) {
       const copied=await pool.query(`SELECT to_jsonb(t)-$1::text[] AS row FROM mare_game.${current} t ORDER BY (to_jsonb(t)-$1::text[])::text`,[extras]);
       assert.deepEqual(copied.rows,before[names.indexOf(old)]!.rows);
     }

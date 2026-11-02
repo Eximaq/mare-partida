@@ -8,3 +8,5 @@ export * from './schemas/attributes.js';
 export * from './schemas/fighter.js';
 export * from './schemas/inventory.js';
 export * from './schemas/original-inventory.js';
+
+export * from './schemas/world.js';

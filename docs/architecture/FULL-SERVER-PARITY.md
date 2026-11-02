@@ -134,3 +134,8 @@ combate original continuam pendentes; o grupo de stats ainda é parcial.
   local ignorado usando `--out`; nenhuma proposta de balanceamento foi aplicada.
 - O gate integral retorna `ready:false` (3/26 grupos implementados). Essa contagem
   é acompanhamento de escopo, não uma estimativa percentual do esforço restante.
+
+O incremento [posição e viagens](ORIGINAL-WORLD-SERVER.md) persiste mapa e trajeto,
+valida colisões/nível e projeta movimento pelo relógio PostgreSQL. O domínio mundo
+continua parcial: IA, combate original completo e instâncias especiais dependem
+dos próximos incrementos; nenhum deles é contado como entregue por este avanço.

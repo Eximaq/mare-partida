@@ -13,7 +13,7 @@
     {"id":"potions","name":"Potion purchase/use, original healing and auto-use restrictions","status":"partial","sources":["docs/architecture/ORIGINAL-INVENTORY-SERVER.md","apps/game-server/src/gameplay/inventory.ts","game.js"]},
     {"id":"forge","name":"Upgrade, reforge, imbue/remove, pearl and equipment fusion, complete original forge UI","status":"partial","sources":["docs/architecture/ORIGINAL-INVENTORY-SERVER.md","apps/game-server/src/gameplay/inventory.ts","forge-system.js","forge-ui.js"]},
     {"id":"loot","name":"Server-generated rarity, affixes, sockets, loot and unique rewards using original rules","status":"partial","sources":["forge-system.js","hunt-system.js","game.js"]},
-    {"id":"world","name":"Original areas, level gates, navigation, collisions, movement and travel authority","status":"pending","sources":["world-system.js","archipelago.js","game.js"]},
+    {"id":"world","name":"Original areas, level gates, navigation, collisions, movement and travel authority","status":"partial","sources":["docs/architecture/ORIGINAL-WORLD-SERVER.md","world-catalog.cjs","apps/game-server/src/characters/world.ts","world-system.js","archipelago.js","game.js"]},
     {"id":"ai","name":"Original monster spawn, patrol, aggro, leash, respawn and bosses","status":"pending","sources":["monster-behavior.js","monster-catalog.js","hunt-system.js"]},
     {"id":"combat","name":"Original combat loop, range/LOS, hit timing, HP/energy, cooldowns, auto hunt, defeat and recovery","status":"partial","sources":["game.js","combat-animation.js","character-system.js"]},
     {"id":"class-skills","name":"All original class skills, support, guards and combat effects","status":"pending","sources":["game.js","character-system.js"]},

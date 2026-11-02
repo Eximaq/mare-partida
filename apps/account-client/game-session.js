@@ -30,6 +30,9 @@
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    if(['world.initialize','world.stop','world.return'].includes(action))return keys==='';
+    if(action==='world.move')return keys==='x,y'&&['x','y'].every(k=>Number.isFinite(p[k])&&p[k]>=0&&p[k]<=100000);
+    if(action==='world.travel')return keys==='islandId'&&typeof p.islandId==='string'&&/^[a-z0-9-]{1,40}$/.test(p.islandId);
     if(['items.initialize','potions.buy','potions.use'].includes(action))return keys==='';
     if(['items.equip','items.sell'].includes(action))return keys==='itemId'&&instanceId(p.itemId);
     if(action==='items.lock')return keys==='itemId,locked'&&instanceId(p.itemId)&&typeof p.locked==='boolean';

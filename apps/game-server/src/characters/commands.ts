@@ -1,3 +1,4 @@
+import {isWorldAction,mutateWorld} from './world.js';
 import {isOriginalAction,mutateOriginalInventory} from '../gameplay/inventory.js';
 import {mutateInventory,readInventory} from "./inventory.js";
 import type { PoolClient } from "pg";
@@ -50,6 +51,8 @@ export async function executeCharacterCommand(
     state = await readCharacterState(client, characterId);
   }
   if(isOriginalAction(input.action)){await mutateOriginalInventory(client,characterId,input,state);state=await readCharacterState(client,characterId);}
+  let world;
+  if(isWorldAction(input.action)){world=await mutateWorld(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   let combat;
   if (input.action === "combat.begin" || input.action === "combat.attack" || input.action === "combat.claim") {
     combat = await mutateCombat(client, characterId, input.requestId, input.action, state);
@@ -63,7 +66,7 @@ export async function executeCharacterCommand(
   let inventory;
   if(input.action==="inventory.buy"||input.action==="inventory.sell"||input.action==="equipment.equip"||input.action==="equipment.unequip") {inventory=await mutateInventory(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==="combat.claim") inventory=await readInventory(client,characterId);
-  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}), ...(inventory ? {inventory} : {}) });
+  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(world ? {world} : {}), ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}), ...(inventory ? {inventory} : {}) });
   await client.query(
     "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)",
     [characterId, input.requestId, hash, JSON.stringify(result)],

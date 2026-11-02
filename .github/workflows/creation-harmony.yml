@@ -12,6 +12,7 @@ on:
       - 'tests/*creation*'
       - 'tests/*harmony*'
       - 'tests/original-inventory-online-browser.cjs'
+      - 'tests/online-world-browser.cjs'
       - 'apps/account-client/game-*.js'
       - '.github/workflows/creation-harmony.yml'
   workflow_dispatch:
@@ -51,6 +52,8 @@ jobs:
         run: python tests/run_honors_hd_browser.py tests/gameplay_harmony_geometry_browser.cjs --dist --offline
       - name: Original inventory and forge online UI contract (no hosted provider)
         run: python tests/run_honors_hd_browser.py tests/original-inventory-online-browser.cjs --dist --offline
+      - name: Original online world and travel UI contract
+        run: python tests/run_honors_hd_browser.py tests/online-world-browser.cjs --dist --offline
       - uses: actions/upload-artifact@v4
         if: always()
         with:

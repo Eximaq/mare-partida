@@ -21,6 +21,17 @@
         ? BigInt(Number.MAX_SAFE_INTEGER)
         : BigInt(n),
     );
+  // Presentation extrapolates a server-approved polyline; it never posts its result.
+  function worldPosition(w, elapsedMs) {
+    const duration=Math.max(0,Date.parse(w.motionUntil)-Date.parse(w.serverNow));
+    let budget=w.speed*Math.max(0,Math.min(duration,Number.isFinite(elapsedMs)?elapsedMs:0))/1000;
+    let {x,y}=w.position,direction=w.direction,moving=false;
+    for(const p of w.path){const dx=p.x-x,dy=p.y-y,d=Math.hypot(dx,dy);if(!d)continue;if(budget<=0)break;
+      direction=Math.abs(dx)>Math.abs(dy)?(dx<0?'left':'right'):(dy<0?'back':'front');const step=Math.min(d,budget);x+=dx/d*step;y+=dy/d*step;budget-=step;
+      moving=step<d;if(moving)break;
+    }
+    return {x,y,direction,moving:moving&&elapsedMs<duration};
+  }
   function project(base, data) {
     const o = data.online,
       frozen = ['active','won','lost'].includes(o.combat?.status),
@@ -82,6 +93,11 @@
     help: "Guia do Navegante",
   };
   const errors = {
+    world_destination_blocked:'Esse destino não tem passagem livre.',
+    world_route_unavailable:'Não há uma rota livre até esse ponto.',
+    world_level_required:'Seu nível ainda não permite viajar para essa ilha.',
+    world_combat_pending:'Conclua o encontro e receba a recompensa antes de viajar.',
+    world_rules_changed:'O mapa foi atualizado. Aguarde a atualização do servidor.',
     control_required: "Assuma o controle deste personagem para agir.",
     control_conflict:
       "Outra aba está controlando seu personagem. Assuma o controle se quiser continuar aqui.",
@@ -90,6 +106,8 @@
     item_equipped: "Desequipe antes de vender a última unidade.",
     item_quantity_insufficient: "Quantidade insuficiente.",
     attribute_points_insufficient: "Pontos insuficientes.",
+    combat_out_of_range:'Aproxime-se do adversário para atacar.',
+    combat_line_blocked:'Há um obstáculo entre você e o adversário.',
     combat_cooldown: "Aguarde a recarga do ataque.",
     combat_rest: "Aguarde o descanso antes do próximo encontro.",
     combat_daily_limit: "O limite de encontros em 24 horas foi atingido.",
@@ -352,6 +370,6 @@
       run,
     };
   }
-  root.MareOnlineGameUI = { project, derived, mount };
-  if (typeof module !== "undefined") module.exports = { project, derived };
+  root.MareOnlineGameUI = { project, derived, mount, worldPosition };
+  if (typeof module !== "undefined") module.exports = { project, derived, worldPosition };
 })(globalThis);
