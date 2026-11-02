@@ -62,6 +62,9 @@ const D=require('../boss-dungeon-system.js'),chest=maps.maps['quest-dungeons'].i
    await p.screenshot({path:path.join(out,'dungeons-arena-'+id+'.png')});await p.reload();await p.waitForFunction(()=>window.MareGameSession?.controlled&&__mareDiagnostics().map.id==='quest-dungeons'&&MareQuestDungeonWorld.state()==='ready');assert.equal(sent.filter(v=>v.action==='dungeon.enter'&&v.payload.dungeonId===id).length,1);
    const r=D.defeat(base(),id,wire.battle.dungeon.record,n=>Math.round(80*Math.pow(n,1.5)));assert(r.ok);wire.dungeons=r.state.bossDungeons;wire.battle.dungeon.record=r.record;wire.battle.mobs=[];wire.battle.auto=false;wire.world.position={x:chest.x,y:chest.y+56};wire.state.version++;
    await p.evaluate(()=>MareGameSession.read());await p.waitForFunction(y=>Math.abs(__mareDiagnostics().hero.y-y)<1,chest.y+56);
+   // A snapshot teleports the fixture hero; the original camera follows smoothly.
+   // Wait for its rendered transform to settle before choosing a screen point.
+   await p.evaluate(()=>new Promise(resolve=>{let last='',stable=0;function frame(){const c=__mareDiagnostics().camera,key=[Math.round(c.x),Math.round(c.y),c.width,c.height].join(':');stable=key===last?stable+1:0;last=key;if(stable>=8)resolve();else requestAnimationFrame(frame);}requestAnimationFrame(frame);}));
    const point=await p.evaluate(c=>{const d=__mareDiagnostics(),r=document.querySelector('canvas#worldCanvas').getBoundingClientRect();return {x:r.x+(c.x-Math.round(d.camera.x))*r.width/d.camera.width,y:r.y+(c.y-Math.round(d.camera.y))*r.height/d.camera.height};},{x:chest.bounds.x+chest.bounds.w/2,y:chest.bounds.y+chest.bounds.h/2});
    await p.mouse.click(point.x,point.y);await p.waitForFunction(id=>MareGameSession.data.online.dungeons.records[id].phase==='claimed'&&!MareGameSession.busy,id);
    await p.locator('#returnLobby').click();await p.waitForFunction(()=>MareGameSession.data.online.world.mapId==='lobby'&&!MareGameSession.busy);
