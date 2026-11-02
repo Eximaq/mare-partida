@@ -50,7 +50,7 @@
       energy: o.battle?.energy ?? 0,
       claimed: [...(o.contracts?.claimed||[])],
       talentVersion:2,talentSeq:o.talents?.revision||0,talentBuilds:{[data.character.classId]:structuredClone(o.talents?.build||{nodes:{},keystone:null,ultimate:null})},
-      talentCooldowns:structuredClone(o.battle?.talentCooldowns||{}),achievements:{...(base.achievements||{}),claimed:[]},
+      talentCooldowns:structuredClone(o.battle?.talentCooldowns||{}),achievements:{version:1,claimed:[...(o.achievements?.claimed||[])],records:structuredClone(o.achievements?.records||{})},onlineAchievements:o.achievements?structuredClone(o.achievements):null,
       potions: 0,
       materials: 0,
       inventory: [],
@@ -85,6 +85,9 @@
     };
   }
   const labels = {
+    achievement_incomplete:'A meta desta conquista ainda não foi alcançada.',
+    achievement_unavailable:'Esta conquista depende de um sistema ainda indisponível online.',
+    achievement_already_claimed:'A recompensa desta conquista já foi resgatada.',
     talent_build_invalid:'A árvore não atende aos pontos ou requisitos confirmados pelo servidor.',
     talent_build_unchanged:'Essa árvore já está vazia ou não contém novos investimentos.',
     talent_reset_port_only:'Retorne ao porto para redefinir seus talentos.',

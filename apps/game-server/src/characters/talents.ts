@@ -1,3 +1,4 @@
+import {achievementBonus} from './achievements.js';
 import {readFighter} from './fighter.js';
 import {createRequire} from 'node:module';
 import {createHash} from 'node:crypto';
@@ -12,8 +13,8 @@ export const talentRulesHash=createHash('sha256').update(['talent-system.js','ta
 export async function readTalents(client:PoolClient,id:string,state:CharacterState){
  if(!(await client.query("SELECT to_regclass('mare_game.character_talents') present")).rows[0].present)return null;
  const row=(await client.query('SELECT build,revision FROM mare_game.character_talents WHERE character_id=$1',[id])).rows[0];
- const build=talentBuildSchema.parse(row?.build??T.empty()),spent=T.spent(build),earned=state.level;
- // Achievement points require a future server-owned claim ledger, never browser saves.
+ const build=talentBuildSchema.parse(row?.build??T.empty()),spent=T.spent(build),earned=state.level+await achievementBonus(client,id);
+ // Additional points come only from immutable server achievement claims.
  return talentSnapshotSchema.parse({rulesetId:'original-talents-v1',revision:Number(row?.revision??0),earned,spent,available:earned-spent,build});
 }
 export async function mutateTalents(client:PoolClient,id:string,input:CharacterCommand,state:CharacterState){

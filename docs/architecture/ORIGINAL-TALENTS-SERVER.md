@@ -7,8 +7,9 @@ intermediárias e 21 finais. A demonstração mantém seus saves e sua progress�
 ## Autoridade e contratos
 
 O snapshot autenticado inclui `talents`: build, revisão, pontos ganhos, gastos e
-disponíveis. Ler não grava nem concede pontos. Neste bloco, o orçamento é o nível
-persistido; pontos de conquistas dependerão do ledger autoritativo de conquistas.
+disponíveis. Ler não grava nem concede pontos. Desde o bloco de conquistas, o
+orçamento é nível persistido mais a soma dos resgates únicos do servidor; ver
+[conquistas autoritativas](ORIGINAL-ACHIEVEMENTS-SERVER.md).
 Não se importam conquistas, árvores, XP ou moeda do navegador.
 
 `talents.commit` recebe somente `{build:{nodes,keystone,ultimate}}`.
@@ -84,10 +85,9 @@ A autenticação das fixtures é simulada; estes testes não enviam e-mails ou a
 Supabase. A operação continua local em HTTPS. GitHub Pages publica somente a
 versão estática; não hospeda PostgreSQL ou o backend.
 
-O objetivo integral do servidor continua incompleto. Conquistas e seus pontos,
-frutas/Haki, Impel Down, masmorras e demais itens do manifesto mantêm seus próprios
-critérios de migração. Talentos está marcado parcial no manifesto enquanto o
-orçamento adicional por conquistas não for autoritativo.
+O objetivo integral do servidor continua incompleto. Frutas/Haki, Impel Down,
+masmorras e demais itens do manifesto mantêm seus próprios critérios de migração.
+O orçamento adicional de talentos já vem dos resgates autoritativos de conquistas.
 
 A atualização local foi aplicada com backup e os serviços parados. A comparação
 sanitizada das 32 tabelas anteriores confirmou dados idênticos, normalizando

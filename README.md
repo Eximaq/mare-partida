@@ -386,3 +386,5 @@ Extraia o ZIP e abra o `index.html` no Chrome, Edge ou Opera. Não há necessida
 
 ## Haki — árvores de domínio (01/11/2026)
 Página própria, Armamento/Observação completos para desenvolver Conquistador, três materiais exclusivos e investimentos persistidos. Ativos e Vontade preservados; novas artes PixelLab negras/carmesim. Custos provisórios, fontes dos fragmentos ainda ausentes e política de migração do antigo Rei pendente do proprietário. [Arquitetura e controles](docs/haki/DOMINIO.md) · [Pendências obrigatórias](docs/haki/PENDENCIAS_HAKI.md).
+
+Conquistas e pontos adicionais no servidor: [contratos, migração e limites](docs/architecture/ORIGINAL-ACHIEVEMENTS-SERVER.md).

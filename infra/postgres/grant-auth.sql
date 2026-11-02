@@ -68,3 +68,9 @@ GRANT INSERT(character_id,request_id,action,revision_before,build_before,build_a
 GRANT SELECT ON mare_game.battle_talent_steals TO mare_runtime;
 GRANT INSERT(character_id,spawn_id,total) ON mare_game.battle_talent_steals TO mare_runtime;
 GRANT UPDATE(total) ON mare_game.battle_talent_steals TO mare_runtime;
+
+GRANT SELECT ON mare_game.achievement_progress,mare_game.achievement_visits,mare_game.achievement_claims TO mare_runtime;
+GRANT INSERT(character_id,kills,coins,peak_power) ON mare_game.achievement_progress TO mare_runtime;
+GRANT UPDATE(kills,coins,peak_power) ON mare_game.achievement_progress TO mare_runtime;
+GRANT INSERT(character_id,island_id) ON mare_game.achievement_visits TO mare_runtime;
+GRANT INSERT(character_id,achievement_id,request_id,points,progress,version_before,rules_hash) ON mare_game.achievement_claims TO mare_runtime;
