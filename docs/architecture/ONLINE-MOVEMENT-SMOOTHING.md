@@ -24,3 +24,26 @@ O frame mediano ficou entre 16,7 e 18 ms nos ensaios. Os números são mediçõe
 Os testes de fundação cobrem continuidade, convergência, parada, limite do caminho, mudança de mapa, imutabilidade, cache CSRF, revogação do cache, ausência de replay automático e atualização de identidade. O teste HTTPS de lobby acrescenta 100 ms às requisições e mede deslocamento por tempo de frame, tanto no herói quanto no colega. Exige movimento real e ausência de saltos abruptos em frames regulares; mantém os cenários de duas contas, retorno de aba, 66 segundos de caminhada, viagem, logout e preservação da demonstração.
 
 Comandos: `npm run test:foundation`, `npm run test:legacy`, `npm run typecheck`, `npm run build`, `python tools/build_pages.py` e `node --env-file-if-exists=.env.test.local --import tsx tests/shared-lobby-browser.mts`, com Playwright e certificado local confiável. Os dados brutos e a gravação do usuário ficam fora do Git.
+
+## Pausas de renderização em CPU limitada
+
+O teste de caminhada contínua não abrangia todo o problema percebido no computador remoto. Um novo perfil alterna direção a cada 400 ms, com paradas de 200 ms, por 20 ciclos, e repete com CPU do navegador limitada em 4x. Usa o mesmo backend descartável e nenhuma conta hospedada.
+
+O perfil identificou custo de desenho de portal/NPCs fora do viewport, formatação numérica repetida, reescrita de mensagens de carregamento a cada frame e reprojeção da HUD em notificações de `busy` sem novo estado. A correção:
+
+- Descarta somente desenho inteiramente fora da tela, preservando margens de rótulos e os dados de interação/colisão.
+- Reutiliza o formatador numérico português, mantendo o mesmo arredondamento.
+- Atualiza mensagens de carregamento, erro e acessibilidade quando seu estado muda.
+- Projeta novamente o estado do jogo somente quando recebe novos dados. Controle, indisponibilidade e botões pendentes continuam atualizados mesmo sem novo snapshot.
+
+Medição no Edge com CPU limitada em 4x, excluindo os primeiros 500 ms e os últimos 100 ms da captura para remover o custo de início/encerramento do profiler:
+
+| Medida | Antes | Depois |
+|---|---:|---:|
+| Tempo de frame p95 | 51,6 ms | 18,6 ms |
+| Maior intervalo entre frames nessa janela | 124,1 ms | 53,6 ms |
+| Intervalos acima de 50 ms | 27 | 3 |
+
+São ensaios locais de aproximadamente 12 segundos, com a mesma sequência de entrada; não medem o computador ou a conexão do colaborador. Ainda houve pausas isoladas. A CPU simulada não substitui validação no equipamento remoto, e a latência entre entrada e confirmação do servidor permanece distinta do tempo de renderização. Nenhuma dessas otimizações transfere autoridade ao cliente ou muda saves, aparência, recompensas ou a política de sessão.
+
+`tests/render-hot-path.test.cjs` cobre descarte fora da tela, bordas visíveis, formatação, transições de mensagens e notificações sem dados novos. O teste HTTPS de lobby também observa o DOM e exige que mensagens estáveis não sejam reescritas a cada frame. `MARE_QA_STATIC_ROOT` permite servir o build descartável nesses testes, preservando a instalação contínua durante a validação.
