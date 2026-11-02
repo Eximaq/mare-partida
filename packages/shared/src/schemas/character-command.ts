@@ -21,6 +21,10 @@ const commandEnvelope = {
   control: renewControlSchema,
 };
 export const characterCommandSchema = z.discriminatedUnion("action", [
+ z.strictObject({...commandEnvelope,action:z.literal('fruit.cast'),payload:z.strictObject({key:z.enum(['1','2','3']),point:worldPointSchema.optional()})}),
+ z.strictObject({...commandEnvelope,action:z.literal('fruit.transform'),payload:z.strictObject({enabled:z.boolean()})}),
+ z.strictObject({...commandEnvelope,action:z.literal('fruit.move'),payload:worldPointSchema}),
+ z.strictObject({...commandEnvelope,action:z.literal("fruit.register"),payload:z.strictObject({itemId:instanceIdSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal("hierarchy.promote"),payload:z.strictObject({expectedTier:z.number().int().min(1).max(5)})}),
  z.strictObject({...commandEnvelope,action:z.literal('haki.unlock'),payload:z.strictObject({itemId:instanceIdSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('haki.invest'),payload:z.strictObject({nodeId:hakiNodeSchema,expectedSeq:z.number().int().min(0).max(Number.MAX_SAFE_INTEGER)})}),
@@ -55,7 +59,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote']),
+  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move']),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),
   inventory: inventorySnapshotSchema.optional(),

@@ -59,7 +59,7 @@ export async function mutateBattle(client:PoolClient,id:string,input:CharacterCo
    if(input.payload.targetId&&!target)throw new AuthFault(404,'battle_target_missing');
    engine.cancel(b);b.targetId=target?.id??null;b.auto=!!target;
   }else if(input.action==='battle.skill'){
-   if(!engine.skill(b,input.payload.index,{hero:w.position,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId}))throw new AuthFault(409,'battle_skill_unavailable');
+   if(!engine.skill(b,input.payload.index,{hero:w.position,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId}))throw new AuthFault(409,'battle_skill_unavailable');
   }else if(input.action==='battle.first'){
    const area=b.hunts.areas[b.area],region=engine.hunt.get(b.area);
    if(!area?.bosses||area.firstRewardClaimed||!region?.firstRarity)throw new AuthFault(409,'battle_first_unavailable');
@@ -110,7 +110,7 @@ export async function tickWorldBattles(pool:Pool){
   const path=b.auto?[]:w.path.map(p=>({...p})),hero={...w.position,direction:w.direction};
   const started=(await client.query('SELECT started_at FROM mare_game.character_world WHERE character_id=$1',[id])).rows[0].started_at.getTime();
   const stock=await readOriginalInventory(client,id);
-  const result=engine.step(b,{hero,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId,level:state.level,now:now.getTime(),dt,rng,manualPath:path,manualSpeed:w.speed,manualStart:started,potions:stock?.potions??0});
+  const result=engine.step(b,{hero,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId,level:state.level,now:now.getTime(),dt,rng,manualPath:path,manualSpeed:w.speed,manualStart:started,potions:stock?.potions??0});
   if(result.kills.length||result.potionsUsed||result.talentSteals.length){
    if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
    const requestId=randomUUID();
@@ -132,7 +132,7 @@ export async function tickWorldBattles(pool:Pool){
    await client.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)',[id,requestId,digest('server-battle:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:after})]);
   }
   const remaining=!b.auto&&b.hp>0?path:[];
-  await storeWorld(client,id,{...w,position:{x:hero.x,y:hero.y},direction:hero.direction,path:remaining,serverNow:now.toISOString(),speed:engine.talentStats(b,{stats:fighter.stats,baseStats:fighter.baseStats,build:(await readTalents(client,id,state))?.build,classId:fighter.classId}).moveSpeed,motionUntil:remaining.length?new Date(Math.max(now.getTime(),Date.parse(w.motionUntil))).toISOString():now.toISOString()});
+  await storeWorld(client,id,{...w,position:{x:hero.x,y:hero.y},direction:hero.direction,path:remaining,serverNow:now.toISOString(),speed:engine.combatStats(b,{stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId}).moveSpeed,motionUntil:remaining.length?new Date(Math.max(now.getTime(),Date.parse(w.motionUntil))).toISOString():now.toISOString()});
   await storeBattle(client,id,b);await client.query('UPDATE mare_game.character_battles SET tick_at=$2 WHERE character_id=$1',[id,now]);
   await client.query('COMMIT');
  }catch{await client.query('ROLLBACK');failed++;}finally{client.release();}}

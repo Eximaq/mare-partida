@@ -32,6 +32,13 @@
     }
     return {x,y,direction,moving:moving&&elapsedMs<duration};
   }
+  function fruitTimeline(value,epoch,time){
+    if(!value)return null;const shift=time-(epoch||Date.now())/1000;
+    const times=new Set(['started','until','last','time','impact','launch','launched','finished','ready','next']);
+    const walk=(v,key='')=>{if(typeof v==='number')return v>1e8&&v<1e11&&(times.has(key)||key.endsWith('Until'))?v+shift:v;if(!v||typeof v!=='object')return v;if(v.serverSet)return new Set(v.serverSet.map(x=>walk(x)));if(v.serverMap)return new Map(v.serverMap.map(x=>[x[0],walk(x[1],'last')]));if(Array.isArray(v))return v.map(x=>walk(x));return Object.fromEntries(Object.entries(v).map(([k,x])=>[k,walk(x,k)]));};
+    return walk(value);
+  }
+  function fruitView(b,time){const f=b?.fruit;return f?{...fruitTimeline(f,f.time,time),cooldowns:{...f.cooldowns}}:null;}
   function project(base, data) {
     const o = data.online,
       frozen = !o.battle&&['active','won','lost'].includes(o.combat?.status),
@@ -40,7 +47,7 @@
       throw new Error("invalid_server_state");
     return {
       ...base,
-      characterId:data.character.id,
+      characterId:data.character.id,onlineFruits:!!o.fruits,akumaCompendium:[...(o.fruits?.registered||[])],zoanTransformed:!!o.battle?.fruit?.transformed,fruitCooldowns:{...o.battle?.fruit?.cooldowns},
       name: data.character.name,
       classId: data.character.classId,
       factionId: data.character.factionId,
@@ -90,6 +97,7 @@
     };
   }
   const labels = {
+    fruit_cast_unavailable:'Confira sua fruta equipada, energia, recarga e alvo.',fruit_transform_unavailable:'A transformação exige uma fruta Zoan equipada.',fruit_required:'Você precisa possuir essa fruta para registrá-la.',fruit_already_registered:'Essa fruta já está registrada.',fruit_move_unavailable:'O Gênio não pode alcançar esse destino.',
     dungeon_level_required:'Seu nível ainda não permite esta masmorra.',
     dungeon_already_claimed:'Esta masmorra já foi concluída.',
     dungeon_reward_unavailable:'A recompensa está indisponível ou já foi recebida.',
@@ -355,6 +363,7 @@
         if (client.data?.online.originalInventory && event.target.closest("#usePotion,#buyPotion"))return;
         if (client.data?.online.battle && event.target.closest('#skill1,#skill2'))return;
         if (client.data?.online.haki && event.target.closest('#hakiKing'))return;
+        if (client.data?.online.fruits && event.target.closest('#skill3,#zoanTransform'))return;
         if (
           event.target.closest(
             "#skill1,#skill2,#skill3,#usePotion,#buyPotion,#zoanTransform,#hakiKing,#changePath",
@@ -423,6 +432,6 @@
       run,
     };
   }
-  root.MareOnlineGameUI = { project, derived, mount, worldPosition };
-  if (typeof module !== "undefined") module.exports = { project, derived, worldPosition };
+  root.MareOnlineGameUI = { project, derived, mount, worldPosition, fruitView, fruitTimeline };
+  if (typeof module !== "undefined") module.exports = { project, derived, worldPosition, fruitView, fruitTimeline };
 })(globalThis);

@@ -80,6 +80,7 @@ function valid(input: unknown,owner?:string): OriginalInventory {
     if(item.qty!==undefined&&defs[item.def]?.kind!=='haki-fragment')throw new AuthFault(503,'original_inventory_unavailable');
     if(owner&&item.boundToCharacter&&item.boundToCharacter!==owner)throw new AuthFault(503,'original_inventory_unavailable');
     const def=defs[item.def];
+    if((item.type==='akuma_no_mi'||item.fruitId!==undefined)&&(def?.type!=='akuma_no_mi'||item.fruitId!==def.fruitId))throw new AuthFault(503,'original_inventory_unavailable');
     if(def?.kind==='akuma-fragment'&&(!item.boundToCharacter||item.binding!=='character'||item.materialId!==def.materialId||item.rank!==def.rank||!item.quantity))throw new AuthFault(503,'original_inventory_unavailable');
   }
   for (const [slot, item] of Object.entries(v.equipment))
@@ -359,7 +360,7 @@ export async function mutateOriginalInventory(
       } else {
         if (!i.inventory.some((x) => x.id === item.id))
           throw new AuthFault(409, "item_already_equipped");
-        if (!forge.isGear(item, defs))
+        if (!forge.isGear(item, defs)&&def.type!=='akuma_no_mi')
           throw new AuthFault(409, "item_not_equippable");
         const cls = (
           await client.query(

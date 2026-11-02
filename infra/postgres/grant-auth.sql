@@ -88,3 +88,6 @@ GRANT INSERT(character_id,dungeon_id,request_id,experience_delta,gold_delta) ON 
 GRANT SELECT ON mare_game.character_hierarchy,mare_game.hierarchy_promotions TO mare_runtime;
 GRANT INSERT(character_id,tier,power),UPDATE(tier,power) ON mare_game.character_hierarchy TO mare_runtime;
 GRANT INSERT(character_id,request_id,tier_before,tier_after,level,version_before) ON mare_game.hierarchy_promotions TO mare_runtime;
+
+GRANT SELECT ON mare_game.fruit_registrations TO mare_runtime;
+GRANT INSERT(character_id,fruit_id,item_id,request_id,version_before) ON mare_game.fruit_registrations TO mare_runtime;

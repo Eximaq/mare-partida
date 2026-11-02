@@ -1,3 +1,4 @@
+import {registerFruit,mutateFruit} from './fruits.js';
 import {promoteHierarchy} from './hierarchy.js';
 import {isHakiAction,mutateHaki} from './haki.js';
 import {isDungeonAction,mutateDungeon} from './dungeons.js';
@@ -51,6 +52,8 @@ export async function executeCharacterCommand(
   )).rows[0]!;
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
   const before=state,powerBefore=input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);
+  if(['fruit.cast','fruit.transform','fruit.move'].includes(input.action)){await mutateFruit(client,characterId,input,state);state=await readCharacterState(client,characterId);}
+  if(input.action==='fruit.register'){await registerFruit(client,characterId,input.requestId,state,input.payload.itemId);state=await readCharacterState(client,characterId);}
   if(input.action==='hierarchy.promote'){await promoteHierarchy(client,characterId,input.requestId,state,input.payload.expectedTier);state=await readCharacterState(client,characterId);}
   if(isHakiAction(input.action)){await mutateHaki(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   else if(isDungeonAction(input.action)){await mutateDungeon(client,characterId,input,state);state=await readCharacterState(client,characterId);}

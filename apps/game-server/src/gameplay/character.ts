@@ -10,14 +10,17 @@ const rulesHash=createHash('sha256').update(JSON.stringify(catalog)).update(getG
   .update(readFileSync(new URL('../../../../character-system.js',import.meta.url),'utf8').replaceAll('\r\n','\n')).digest('hex');
 export const xpNeeded:(level:number)=>number=rules.xpNeeded;
 export const advanceOriginalLevel:(value:{level:number;start:bigint;experience:bigint})=>{level:number;start:bigint;levels:{level:number;start:bigint}[]}=rules.advance;
-export function deriveOriginalFighter(classId:string,factionId:string,state:CharacterState,allocated:AttributeValues,inventory:OriginalInventory,build?:TalentBuild,runtime?:any,haki?:any):Fighter {
-  const baseStats=characters.derive({classId,level:state.level,attributes:allocated},catalog.classes[classId],catalog.factions[factionId],forge.aggregate(inventory.equipment,getGameCatalog().items));
+export function deriveOriginalFighter(classId:string,factionId:string,state:CharacterState,allocated:AttributeValues,inventory:OriginalInventory,build?:TalentBuild,runtime?:any,haki?:any,fruits?:{registered:string[]} | null,battle?:any):Fighter {
+  const A=require('../../../../akuma-system.js'),P=require('../../../../akuma-passives.js'),fruitId=A.itemData(inventory.equipment.akuma_no_mi,getGameCatalog().items)?.id;
+  const gear=A.applyGear(forge.aggregate(inventory.equipment,getGameCatalog().items),inventory.equipment.akuma_no_mi,getGameCatalog().items);gear.akumaRegistered=fruits?.registered.length||0;
+  const baseStats=characters.derive({classId,level:state.level,attributes:allocated},catalog.classes[classId],catalog.factions[factionId],gear);
   const T=require('../../../../talent-system.js');
   const talentStats=build&&T.spent(build)>0?T.applyStats(baseStats,{classId,talentBuilds:{[classId]:build}},runtime):baseStats;
-  const stats=haki?require('../../../../haki-system.js').stats(talentStats,{has_haki_unlocked:haki.state.unlocked,haki:haki.state},haki.runtime):talentStats;
+  const hakiStats=haki?require('../../../../haki-system.js').stats(talentStats,{has_haki_unlocked:haki.state.unlocked,haki:haki.state},haki.runtime):talentStats;
+  const stats=battle?require('../../../../fruit-runtime.cjs').stats(structuredClone(battle),{fruitId,classId,now:Date.now()},hakiStats):P.apply(hakiStats,fruitId,{magic:!!characters.roles[classId].magic,healer:classId==='healer'});
   const damageType=characters.roles[classId].magic?'elemental':'physical';
   return fighterSchema.parse({rulesetId:'original-character-v1',rulesHash,classId,factionId,level:state.level,sourceVersion:state.version,
-    allocated,total:stats.attributes,stats,...(build&&T.spent(build)>0||haki?.state.unlocked?{baseStats}:{}),equipped:{weapon:null,armor:null},damageType,maxHp:stats.maxHP,
+    allocated,total:stats.attributes,...(fruitId?{fruitId}:{}),stats,...(build&&T.spent(build)>0||haki?.state.unlocked||fruitId?{baseStats}:{}),equipped:{weapon:null,armor:null},damageType,maxHp:stats.maxHP,
     attackMin:characters.damage(stats,0,{type:damageType,variance:.9}),attackMax:characters.damage(stats,0,{type:damageType,variance:1.12,critical:true}),
     armor:stats.defense,cooldownMs:Math.ceil(1000/stats.speed)});
 }

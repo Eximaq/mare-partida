@@ -1,3 +1,4 @@
+import {readFruits} from './fruits.js';
 import {permanentCharacterPower} from './power.js';
 import {refreshHierarchyPower} from './hierarchy.js';
 import {readHaki} from './haki.js';
@@ -28,10 +29,10 @@ export async function readAchievements(client:PoolClient,id:string,state:Charact
  const claimed=(await client.query('SELECT achievement_id FROM mare_game.achievement_claims WHERE character_id=$1 ORDER BY achievement_id',[id])).rows.map(r=>r.achievement_id);
  const islands=(await client.query('SELECT island_id FROM mare_game.achievement_visits WHERE character_id=$1 ORDER BY island_id',[id])).rows.map(r=>r.island_id);
  const records={coins:Math.max(row?.coins??0,cappedGold(state.gold)),peakPower:Math.max(row?.peak_power??0,await permanentAchievementPower(client,id,state)),islands};
- const prison=await readPrison(client,id),haki=await readHaki(client,id);
+ const prison=await readPrison(client,id),haki=await readHaki(client,id),fruits=await readFruits(client,id);
  const learned=haki?require('../../../../haki-system.js').progression.ids.filter((branch:string)=>require('../../../../haki-system.js').progression.learned({has_haki_unlocked:haki.state.unlocked,haki:haki.state},branch)):[];
- const kills=row?.kills??0,g={level:state.level,stats:{kills},achievements:{claimed,records:{...records,haki:learned}},impelDown:prison??{cleared:0}};
- return achievementsSnapshotSchema.parse({rulesetId:'original-achievements-v1',claimed,bonus:A.bonus(g),kills,records,entries:A.list(g,{...flags,prison:!!prison,haki:!!haki})});
+ const kills=row?.kills??0,g={level:state.level,stats:{kills},achievements:{claimed,records:{...records,haki:learned,fruits:fruits?.registered||[]}},impelDown:prison??{cleared:0}};
+ return achievementsSnapshotSchema.parse({rulesetId:'original-achievements-v1',claimed,bonus:A.bonus(g),kills,records,entries:A.list(g,{...flags,prison:!!prison,haki:!!haki,fruit:!!fruits})});
 }
 // Called only inside an authorized command or worker transaction, after its mutation.
 // Replay returns before this hook; failure rolls counters back with the economy/receipt.
