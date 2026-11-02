@@ -1429,7 +1429,12 @@
       if(w.area&&!prison&&!dungeon)prepareRegion(w.area);applySceneHudLayout();setAreaLabels();resizeViewport();
     }
     if(prison&&oldFloor!==prison.floor){prisonFloor=prison.floor;setAreaLabels();if(currentPanel==='prison')renderPanel();}
-    if(onlineWorldFrame?.snapshot!==w){onlineWorldFrame={snapshot:w,received:performance.now(),from:{x:world.hero.x,y:world.hero.y}};if(!ONLINE_GAME.data.online.battle?.auto)Object.assign(world.hero,w.position,{direction:w.direction});camera.update(world.hero,activeMap(),0,true);}
+    if(onlineWorldFrame?.snapshot!==w){
+      const presentation=onlineWorldFrame?.presentation||MareOnlineGameUI.createWorldPresentation(),received=performance.now();
+      const snap=presentation.update(w,received);
+      onlineWorldFrame={snapshot:w,received,presentation};
+      if(snap){Object.assign(world.hero,w.position,{direction:w.direction});camera.update(world.hero,activeMap(),0,true);}
+    }
   }
   function requestWorldTravel(area){
     if(!ONLINE_GAME){worldChange(area);return;}
@@ -1438,9 +1443,9 @@
   function tickOnlineWorld(){
     if(!onlineWorldFrame)return;
     const pose=MareOnlineGameUI.worldPosition(onlineWorldFrame.snapshot,performance.now()-onlineWorldFrame.received);
-    if(ONLINE_GAME.data.online.battle?.auto&&!onlineWorldFrame.snapshot.path.length){const t=Math.min(1,(performance.now()-onlineWorldFrame.received)/180),from=onlineWorldFrame.from;pose.x=from.x+(pose.x-from.x)*t;pose.y=from.y+(pose.y-from.y)*t;pose.moving=t<1&&Math.hypot(pose.x-from.x,pose.y-from.y)>.1;}
-    Object.assign(world.hero,{x:pose.x,y:pose.y,direction:pose.direction,walking:pose.moving?.2:0});
-    if(pose.direction==='left')world.hero.facing=-1;if(pose.direction==='right')world.hero.facing=1;
+    const visual=onlineWorldFrame.presentation.sample(performance.now());
+    Object.assign(world.hero,{x:visual.x,y:visual.y,direction:visual.direction,walking:visual.moving?.2:0});
+    if(visual.direction==='left')world.hero.facing=-1;if(visual.direction==='right')world.hero.facing=1;
     if(!ONLINE_GAME.controlled){keys.clear();lobbyAction=null;return;}
     const dx=currentPanel?0:Number(keys.has('d')||keys.has('arrowright'))-Number(keys.has('a')||keys.has('arrowleft'));
     const dy=currentPanel?0:Number(keys.has('s')||keys.has('arrowdown'))-Number(keys.has('w')||keys.has('arrowup'));
@@ -3001,10 +3006,16 @@ ${avatarExtra}
   function sharedLobbyPlayers(){
     const snapshot=ONLINE_GAME?.data?.online?.lobby;
     if(!ONLINE_GAME?.available||scene!=='lobby'||!snapshot){sharedLobbyFrame=null;return [];}
-    if(sharedLobbyFrame?.snapshot!==snapshot){sharedLobbyFrame={snapshot,received:performance.now(),players:snapshot.players.slice(0,16).map(p=>({...p}))};}
+    if(sharedLobbyFrame?.snapshot!==snapshot){
+      const previous=new Map(sharedLobbyFrame?.players.map(p=>[p.id,p.presentation])||[]),received=performance.now();
+      sharedLobbyFrame={snapshot,received,players:snapshot.players.slice(0,16).map(p=>{
+        const presentation=previous.get(p.id)||MareOnlineGameUI.createWorldPresentation();presentation.update(p.world,received);
+        return {...p,presentation};
+      })};
+    }
     const elapsed=performance.now()-sharedLobbyFrame.received;
     if(elapsed>5000)return []; // Never keep ghosts indefinitely after connection loss.
-    for(const peer of sharedLobbyFrame.players)Object.assign(peer,MareOnlineGameUI.worldPosition(peer.world,elapsed),{visualHeight:96,visualWidth:96});
+    for(const peer of sharedLobbyFrame.players)Object.assign(peer,peer.presentation.sample(performance.now()),{visualHeight:96,visualWidth:96});
     return sharedLobbyFrame.players;
   }
   function drawSharedLobbyPlayer(peer){

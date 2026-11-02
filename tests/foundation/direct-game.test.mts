@@ -93,6 +93,37 @@ test("game session owns identity and economic commands; it stores only intent an
   assert.equal(f.storage.size, 0);
 });
 
+test('commands reuse identity and short-lived memory CSRF instead of serial redundant reads',async()=>{
+ const f=fixture();await f.client.load();await f.client.acquire();
+ await f.client.command('world.move',{x:100,y:100});await f.client.command('world.stop',{});
+ assert.equal(f.requests.filter(r=>r.path==='/v1/me').length,1);
+ assert.equal(f.requests.filter(r=>r.path==='/v1/auth/csrf').length,1);
+ assert.equal(f.requests.filter(r=>r.path.endsWith('/online-state')).length,3);
+ assert.equal(f.storage.size,0);
+});
+
+test('CSRF cache is single-flight, expires, clears on rejection/logout and never retries mutations',async()=>{
+ let time=0,csrfReads=0,posts=0,status=200;
+ const c=createSession({now:()=>time,storage:{removeItem(){},getItem(){return null;}},fetch:async(path:string)=>{
+  if(path==='/v1/auth/csrf'){csrfReads++;return Response.json({csrfToken:'fixture'});}
+  posts++;return status===200?Response.json({}):Response.json({error:status===403?'csrf_rejected':'session_expired'},{status});
+ }});
+ await Promise.all([c.api('/test',{}),c.api('/test',{})]);assert.equal(csrfReads,1);
+ time=30001;await c.api('/test',{});assert.equal(csrfReads,2);
+ status=403;await assert.rejects(c.api('/test',{}));assert.equal(posts,4);
+ status=200;await c.api('/test',{});assert.equal(csrfReads,3);
+ status=401;await assert.rejects(c.api('/test',{}));status=200;
+ await c.api('/test',{});assert.equal(csrfReads,4);
+ await c.logout();await c.api('/test',{});assert.equal(csrfReads,5);
+ await c.api('/v1/auth/rotate',{});await c.api('/test',{});assert.equal(csrfReads,6);
+});
+
+test('identity changes still refresh the character metadata used by talents and faction UI',async()=>{
+ const f=fixture();await f.client.load();await f.client.acquire();
+ await f.client.command('profile.identity',{name:'Fixture',classId:'brawler',factionId:'marine',appearance:{version:1,gender:'male',eyeColor:'black',eyeStyle:'default',hairColor:'black',hairStyle:'short',skinColor:'light',skinStyle:'default'}});
+ assert.equal(f.requests.filter(r=>r.path==='/v1/me').length,2);
+});
+
 test('expired controller resumes without takeover and concurrent renewal shares one attempt',async()=>{
  const f=fixture();await f.client.load();await f.client.acquire();f.controlStatus(409);
  await Promise.all([f.client.renew(),f.client.renew()]);
