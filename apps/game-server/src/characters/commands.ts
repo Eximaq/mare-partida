@@ -1,3 +1,4 @@
+import {claimAchievement,observeServerAchievements,permanentAchievementPower} from './achievements.js';
 import {mutateTalents} from './talents.js';
 import {isWorldAction,mutateWorld} from './world.js';
 import {claimContract} from './contracts.js';
@@ -45,6 +46,8 @@ export async function executeCharacterCommand(
     "SELECT count(*)::int AS recent FROM mare_game.character_commands WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds' AND result->>'action'<>'battle.reward'",[characterId]
   )).rows[0]!;
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
+  const before=state,powerBefore=input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);
+  if(input.action==='achievement.claim'){await claimAchievement(client,characterId,input.requestId,state,input.payload.achievementId);state=await readCharacterState(client,characterId);}
   if(input.action==='talents.commit'||input.action==='talents.reset'){await mutateTalents(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(isBattleAction(input.action)){await mutateBattle(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==='contract.claim'){await claimContract(client,characterId,input.requestId,state,input.payload.contractId);state=await readCharacterState(client,characterId);}
@@ -73,6 +76,7 @@ export async function executeCharacterCommand(
   let inventory;
   if(input.action==="inventory.buy"||input.action==="inventory.sell"||input.action==="equipment.equip"||input.action==="equipment.unequip") {inventory=await mutateInventory(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==="combat.claim") inventory=await readInventory(client,characterId);
+  if(input.action!=='state.sync')await observeServerAchievements(client,characterId,before,state,{powerBefore,...(input.action==='world.travel'?{island:input.payload.islandId}:{}),...(input.action==='combat.claim'?{kills:1}:{})});
   const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(world ? {world} : {}), ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}), ...(inventory ? {inventory} : {}) });
   await client.query(
     "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)",

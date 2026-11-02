@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - 'achievement*.js'
+      - 'apps/account-client/**'
+      - 'tests/achievements-online-browser.cjs'
       - 'hierarchy*.js'
       - 'character-hud.js'
       - 'honors-hd.css'
@@ -32,13 +34,13 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: .node-version
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
       - name: Preparar Chromium
         run: |
-          npm install --no-save --package-lock=false playwright@1.56.1
+          npm install --ignore-scripts --no-save --package-lock=false playwright@1.56.1
           npx playwright install --with-deps chromium
           mkdir -p "$MARE_QA_DIR"
       - name: Regras, componentes e pacote estático
@@ -48,6 +50,7 @@ jobs:
           python tools/build_pages.py
       - name: Navegador e serviço temporário
         run: |
+          python tests/run_honors_hd_browser.py tests/achievements-online-browser.cjs --offline
           python tests/run_honors_hd_browser.py tests/honors_hd_browser.cjs --dist
           python tests/run_honors_hd_browser.py tests/honors_offline_browser.cjs --dist --offline
           python tests/run_honors_hd_browser.py tests/honors_cache_browser.cjs --dist --offline

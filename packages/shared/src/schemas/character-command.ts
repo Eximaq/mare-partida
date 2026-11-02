@@ -1,3 +1,4 @@
+import {achievementIdSchema} from './achievements.js';
 import {talentBuildSchema} from './talents.js';
 import {worldPointSchema,worldActions,worldSnapshotSchema} from './world.js';
 import {contractIdSchema} from './contracts.js';
@@ -16,7 +17,7 @@ const commandEnvelope = {
   expectedVersion: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
   control: renewControlSchema,
 };
-export const characterCommandSchema = z.discriminatedUnion("action", [z.strictObject({...commandEnvelope,action:z.literal('talents.commit'),payload:z.strictObject({build:talentBuildSchema})}),z.strictObject({...commandEnvelope,action:z.literal('talents.reset'),payload:z.strictObject({})}),z.strictObject({
+export const characterCommandSchema = z.discriminatedUnion("action", [z.strictObject({...commandEnvelope,action:z.literal('achievement.claim'),payload:z.strictObject({achievementId:achievementIdSchema})}),z.strictObject({...commandEnvelope,action:z.literal('talents.commit'),payload:z.strictObject({build:talentBuildSchema})}),z.strictObject({...commandEnvelope,action:z.literal('talents.reset'),payload:z.strictObject({})}),z.strictObject({
   requestId: z.uuid(),
   action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim"]),
   expectedVersion: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
@@ -42,7 +43,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [z.strictOb
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...worldActions,...battleActions,'battle.reward','contract.claim','talents.commit','talents.reset']),
+  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...worldActions,...battleActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim']),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),
   inventory: inventorySnapshotSchema.optional(),

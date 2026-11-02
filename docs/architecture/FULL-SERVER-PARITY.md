@@ -110,7 +110,8 @@ personagem existente foi apagado nesta correção de direção.
 
 As fórmulas básicas de classe/facção, equipamento/pérolas, progressão além do nível
 20 e painel original de atributos avançaram conforme
-`ORIGINAL-CHARACTER-SERVER.md`. Modificadores de talentos/frutas/Haki continuam pendentes; o grupo de stats ainda
+`ORIGINAL-CHARACTER-SERVER.md`. Talentos e pontos de conquistas foram integrados conforme os documentos próprios;
+modificadores de frutas/Haki continuam pendentes, portanto o grupo de stats ainda
 é parcial. O núcleo de monstros e combate das ilhas avançou em
 [ORIGINAL-BATTLE-SERVER.md](ORIGINAL-BATTLE-SERVER.md), com worker, persistência e
 interface original; isso não encerra a paridade integral.
