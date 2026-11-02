@@ -39,6 +39,11 @@ await authDatabase(async f=>{
   await p.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===0);
   await p.unroute('**/online-state');await p.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===1);
   await q.waitForFunction(()=>globalThis.MareGameSession.available&&!globalThis.MareGameSession.busy&&!globalThis.MareGameSession.pending);
+  let limited=0;for(const page of [p,q])page.on('response',(r:any)=>{if(r.status()===429)limited++;});
+  for(let turn=0;turn<22;turn++){const key=turn%2?'ArrowLeft':'ArrowRight',old=turn%2?'ArrowRight':'ArrowLeft';for(const page of [p,q]){await page.keyboard.up(old);await page.keyboard.down(key);}await p.waitForTimeout(3000);}
+  for(const page of [p,q]){await page.keyboard.up('ArrowLeft');await page.keyboard.up('ArrowRight');}
+  console.log('sustained two-player rate-limit responses',limited);assert.equal(limited,0,'normal two-player walking must fit the shared gateway budget');
+  await q.waitForFunction(()=>globalThis.MareGameSession.available&&!globalThis.MareGameSession.busy&&!globalThis.MareGameSession.pending);
   console.log('travel start');await q.evaluate(()=>globalThis.MareGameSession.command('world.travel',{islandId:'dawn'}));
   await p.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===0);
   console.log('return start');await q.waitForFunction(()=>globalThis.MareGameSession.available&&!globalThis.MareGameSession.busy&&!globalThis.MareGameSession.pending);await q.evaluate(()=>globalThis.MareGameSession.command('world.return',{}));

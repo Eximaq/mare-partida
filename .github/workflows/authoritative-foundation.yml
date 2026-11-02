@@ -230,9 +230,26 @@ jobs:
           npm install --prefix "$RUNNER_TEMP/mare-browser" playwright@1.56.1
           "$RUNNER_TEMP/mare-browser/node_modules/.bin/playwright" install --with-deps chromium
           sudo apt-get install -y libnss3-tools
-          node --import tsx tools/create-dev-certificate.mts
+          mkdir -p infra/local
+          openssl req -x509 -newkey rsa:2048 -sha256 -nodes -days 2 -subj /CN=Mare-CI-Disposable-CA -addext 'basicConstraints=critical,CA:TRUE' -addext 'keyUsage=critical,keyCertSign,cRLSign' -keyout "$RUNNER_TEMP/mare-ca.key" -out "$RUNNER_TEMP/mare-ca.crt" 2>/dev/null
+          openssl req -new -newkey rsa:2048 -nodes -subj /CN=localhost -keyout infra/local/localhost.key -out "$RUNNER_TEMP/mare-local.csr" 2>/dev/null
+          cat > "$RUNNER_TEMP/mare-local.ext" <<'CERT'
+          basicConstraints=critical,CA:FALSE
+          keyUsage=critical,digitalSignature,keyEncipherment
+          extendedKeyUsage=serverAuth
+          subjectAltName=DNS:localhost,IP:127.0.0.1
+          CERT
+          openssl x509 -req -in "$RUNNER_TEMP/mare-local.csr" -CA "$RUNNER_TEMP/mare-ca.crt" -CAkey "$RUNNER_TEMP/mare-ca.key" -CAcreateserial -days 1 -sha256 -extfile "$RUNNER_TEMP/mare-local.ext" -out infra/local/localhost.crt 2>/dev/null
+          openssl verify -CAfile "$RUNNER_TEMP/mare-ca.crt" infra/local/localhost.crt
           mkdir -p "$HOME/.pki/nssdb"
           certutil -N -d "sql:$HOME/.pki/nssdb" --empty-password
-          certutil -A -d "sql:$HOME/.pki/nssdb" -n mare-local-test -t 'C,,' -i infra/local/localhost.crt
+          certutil -A -d "sql:$HOME/.pki/nssdb" -n mare-local-test -t 'C,,' -i "$RUNNER_TEMP/mare-ca.crt"
       - name: Two isolated accounts in original port, real HTTPS API and PostgreSQL
         run: NODE_PATH="$RUNNER_TEMP/mare-browser/node_modules" node --import tsx tests/shared-lobby-browser.mts
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: shared-lobby-browser-failure
+          path: tmp/shared-lobby-browser/
+          retention-days: 3
+          if-no-files-found: ignore
