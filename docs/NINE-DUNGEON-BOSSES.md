@@ -1,6 +1,6 @@
 # Nove chefes reais — Quest Dungeons
 
-Atualização de 02/11/2026. Branch: feature/nine-dungeon-bosses. Base validada: 8362794 (PR #205).
+Atualização de 02/11/2026. Branch: feature/nine-dungeon-bosses. Base inicial: 8362794 (PR #205). Integração posterior: fa2b0ce, incluindo PRs #204 e #206.
 
 ## Origem e registros
 
@@ -24,7 +24,7 @@ As alturas são independentes dos atributos. Na revisão do proprietário, Alvid
 
 ## Atributos
 
-hunt-system.js expõe profileAtLevel: a mesma fórmula já usada nos inimigos comuns. combatProfile usa bandit como referência comum no nível fixo do chefe, multiplica HP/ATQ/DEF/defesa mágica por 2,5 uma vez e arredonda com Math.round. Defesa mágica comum usa a defesa física como referência, conforme o fallback existente. A referência não define ataque elemental separado; nenhum valor novo foi inventado.
+tools/update_dungeon_profiles.cjs executa a função oficial MareHunt.profile em um processo Node isolado, usando bandit no nível fixo de cada chefe, e registra os resultados no catálogo. Nenhuma fórmula é duplicada e hunt-system.js permanece idêntico à main para preservar a assinatura dos combates autoritativos. Os testes recalculam esses valores pela função oficial. combatProfile usa essa referência comum, multiplica HP/ATQ/DEF/defesa mágica por 2,5 uma vez e arredonda com Math.round. Defesa mágica comum usa a defesa física como referência, conforme o fallback existente. A referência não define ataque elemental separado; nenhum valor novo foi inventado.
 
 | Chefe | Nv. | HP normal → chefe | ATQ normal → chefe | DEF física/mágica normal → chefe |
 | --- | ---: | --- | --- | --- |
@@ -60,16 +60,17 @@ Smoker/Crocodile possuem família temática Logia no catálogo. Não havia prote
 
 ## Validação
 
-- Suíte Node completa: 314 verificações passaram; uma falhou porque ui-preview.html não incluía os novos scripts. Entrada corrigida e teste específico reexecutado com sucesso. Mais a verificação posterior dos nove manifests e proporções.
+- npm test na base integrada: 111/111 testes de fundação e 147/147 arquivos Node legados aprovados. npm run build e npm run typecheck aprovados. A regressão de isolamento online foi adaptada para executar e aguardar também a função de entrada agora assíncrona, mantendo a proibição de escrever saves/recompensas.
 - Testes de masmorra/combate: atributos, 36 direções/contact frames, evento único, interrupção, nível, migração, recompensas indefinidas, baú, limites/rota nativa e persistência.
 - Navegador Chromium 1366×768: nove chefes caminhando/atacando/sofrendo dano, 36 ataques direcionais, morte, resgate indefinido sem concessão, carregamento sob demanda; sem exceções JS ou diagnóstico de recurso faltante. Capturas individuais e animação comparativa ficam fora do Git.
 - Regressão existente de masmorras no navegador: dois resgates únicos, dez fragmentos, formação de Akuma E, reload pendente, segunda aba somente leitura e oito painéis compatíveis.
 - python tools/build_pages.py: aprovado; rotas relativas e arquivos estáticos preservados. O mesmo teste completo dos nove chefes passou também em dist. Recuperação após download interrompido, tentativa sem mutação em falha e vitória pendente sem atlas foram conferidas no navegador.
+- Retratos reancorados pelo topo nos cards e no painel após revisão do proprietário, preservando os rostos nos nove enquadramentos, sem editar ou recomprimir as ilustrações.
 - Workflow dungeon-bosses.yml repete os testes de regras e os dois ensaios de navegador no pacote publicado.
 
 ## Compatibilidade e pendências
 
-main remoto conferido em 02/11/2026: permanece em 8362794. PR #204 (autoridade de mundo/combate) continua aberto; não foi incorporado ou sobrescrito. Nenhum arquivo do servidor ou schema foi alterado. As guardas ONLINE_GAME das masmorras continuam bloqueando transações locais na sessão online; esta sprint não anuncia masmorras online disponíveis. Após integrar o servidor, será necessário portar os nove registros para a autoridade correspondente e repetir os testes dessa sessão.
+Durante a conferência final em 02/11/2026, os PRs #204 e #206 entraram na main (fa2b0ce). Foram integrados por merge normal, preservando os dois trabalhos. A atualização isolada desta sprint não altera arquivos do servidor ou schemas. Um teste de recuperação reproduziu battle_tick_failed quando a extração da fórmula alterava o hash do motor; preservar hunt-system.js e usar referências geradas pela função oficial eliminou a incompatibilidade. O teste agora confirma pausa e persistência de uma batalha anterior sem perda de HP ou monstros. As guardas ONLINE_GAME das masmorras continuam bloqueando transações locais na sessão online; esta sprint não anuncia masmorras online disponíveis. O contrato online de monstros, dano autoritativo, intenções de habilidades, reload e viewport estreito passou em Chromium com BFF simulado. Um primeiro ensaio com o servidor HTTP Python local perdeu conexões de arquivos; a repetição no servidor estático Node passou. Não houve teste de um novo serviço PostgreSQL/Supabase nesta sprint. Para habilitar estas masmorras online, ainda será necessário portar os nove registros para a autoridade correspondente e repetir os testes dessa sessão.
 
 Pendências: recompensas Nv.30–90, eventual proteção natural Logia, habilidades individuais ainda não especificadas, party e masmorras acima do Nv.90. Não são bloqueios artísticos: os nove chefes possuem os assets atuais integrados.
 
