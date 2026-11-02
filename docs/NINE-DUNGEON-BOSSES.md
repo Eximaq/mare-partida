@@ -60,6 +60,8 @@ Smoker/Crocodile possuem família temática Logia no catálogo. Não havia prote
 
 ## Validação
 
+- Auditoria Python: 161/161 testes aprovados; 8.206 frames nativos conferidos por hash RGBA em 35 personagens, incluindo os nove chefes. O teste aceita os dois formatos de proveniência e mantém a conferência dos 26 personagens anteriores.
+
 - npm test na base integrada: 111/111 testes de fundação e 147/147 arquivos Node legados aprovados. npm run build e npm run typecheck aprovados. A regressão de isolamento online foi adaptada para executar e aguardar também a função de entrada agora assíncrona, mantendo a proibição de escrever saves/recompensas.
 - Testes de masmorra/combate: atributos, 36 direções/contact frames, evento único, interrupção, nível, migração, recompensas indefinidas, baú, limites/rota nativa e persistência.
 - Navegador Chromium 1366×768: nove chefes caminhando/atacando/sofrendo dano, 36 ataques direcionais, morte, resgate indefinido sem concessão, carregamento sob demanda; sem exceções JS ou diagnóstico de recurso faltante. Capturas individuais e animação comparativa ficam fora do Git.
@@ -69,6 +71,8 @@ Smoker/Crocodile possuem família temática Logia no catálogo. Não havia prote
 - Workflow dungeon-bosses.yml repete os testes de regras e os dois ensaios de navegador no pacote publicado.
 
 ## Compatibilidade e pendências
+
+O PR #207 foi mesclado no commit original d0f3fb6 antes da conclusão desta conferência. O enquadramento dos retratos, a compatibilidade com batalhas anteriores do servidor e a atualização do teste de artes seguem no PR corretivo da branch fix/dungeon-server-compat-portraits.
 
 Durante a conferência final em 02/11/2026, os PRs #204 e #206 entraram na main (fa2b0ce). Foram integrados por merge normal, preservando os dois trabalhos. A atualização isolada desta sprint não altera arquivos do servidor ou schemas. Um teste de recuperação reproduziu battle_tick_failed quando a extração da fórmula alterava o hash do motor; preservar hunt-system.js e usar referências geradas pela função oficial eliminou a incompatibilidade. O teste agora confirma pausa e persistência de uma batalha anterior sem perda de HP ou monstros. As guardas ONLINE_GAME das masmorras continuam bloqueando transações locais na sessão online; esta sprint não anuncia masmorras online disponíveis. O contrato online de monstros, dano autoritativo, intenções de habilidades, reload e viewport estreito passou em Chromium com BFF simulado. Um primeiro ensaio com o servidor HTTP Python local perdeu conexões de arquivos; a repetição no servidor estático Node passou. Não houve teste de um novo serviço PostgreSQL/Supabase nesta sprint. Para habilitar estas masmorras online, ainda será necessário portar os nove registros para a autoridade correspondente e repetir os testes dessa sessão.
 
