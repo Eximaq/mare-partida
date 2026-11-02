@@ -40,7 +40,7 @@ const game=fs.readFileSync(path.join(root,'game.js'),'utf8');
 const catalogStart=game.indexOf('  const itemDefs = ['),catalogEnd=game.indexOf('  const questDefs = [',catalogStart);
 assert(catalogStart>=0&&catalogEnd>catalogStart,'catalog initialization must be found');
 const definitions=require('node:vm').runInNewContext(game.slice(catalogStart,catalogEnd)+';itemDefs',{
- MareForge:require('../forge-system.js'),MarePrison:require('../prison-system.js'),
+ MareBossDungeons:require('../boss-dungeon-system.js'),MareForge:require('../forge-system.js'),MarePrison:require('../prison-system.js'),
  MareHakiProgression:require('../haki-progression.js'),MareHaki:require('../haki-system.js'),MareAkuma:require('../akuma-system.js')
 });
 const expectedWeapons=[

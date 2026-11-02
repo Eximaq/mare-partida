@@ -22,7 +22,7 @@ test('a small map gets finite cropping rather than moving the player or inventin
  camera.update(hero,map,.016,true);assert(camera.masked);assert.deepEqual(hero,{x:64,y:64});const p=camera.worldToScreen(hero.x,hero.y);assert.equal(p.x,750);assert.equal(p.y,450);assert.equal(camera.fitZoom(map,1500,900,.8),1.8);
 });
 test('all registered maps use their native coverage, with finite caches and bounded edge searches',()=>{
- assert.equal(Object.keys(maps).length,18);
+ assert.equal(Object.keys(maps).length,19);
  for(const [id,map]of Object.entries(maps)){
   const camera=new Camera(),coverage=coverageFor(map);assert(coverage.exists(map.spawn.x,map.spawn.y),id+' spawn has visual content');
   for(const [sw,sh]of [[360,800],[960,570],[1920,1080],[3440,1440]])for(const zoom of [.8,1,1.8]){
@@ -41,3 +41,5 @@ test('deferred navigation agrees with the complete grid and does not build other
  assert.equal(b.builtRows,0);assert.equal(b.ready,false);b.buildRows(2);assert.equal(b.builtRows,2);while(!b.ready)b.buildRows(4);assert.deepEqual(b.grid,a.grid);
  assert.deepEqual(b.path(map.spawn,map.spawn),a.path(map.spawn,map.spawn));
 });
+
+test('partial cell slices preserve complete navigation and never expose unbuilt rows as ready',()=>{const map=maps['quest-dungeons'],a=new ctx.MareWorld.Navigation(map,16),b=new ctx.MareWorld.Navigation(map,16,10,{defer:true});b.buildCells(24);assert.equal(b.buildCursor,24);assert.equal(b.builtRows,0);assert(!b.ready);while(!b.ready)b.buildCells(24);assert.deepEqual(b.grid,a.grid);assert.equal(b.builtRows,b.rows);});

@@ -1,3 +1,5 @@
+[Limites finitos dos mapas, Masmorra de Chefes e fragmentos vinculados: implementação, validação e pendências](docs/MAP-BOUNDS-DUNGEONS.md).
+
 [Haki e HUDs compactas: medidas, validação e encaixe dos 32 patamares](docs/HUD-DENSITY-HAKI.md).
 
 [Criação HD: classes, facções e harmonização das HUDs com geometria preservada](docs/CRIACAO-HARMONIZACAO-HD.md).

@@ -60,6 +60,7 @@
 
   // Visual existence is independent of walking/physics. A '.' is absent only in
   // native terrain metadata; dark tiles, walls and water remain real content.
+  if(globalThis.MareQuestDungeonWorld)maps['quest-dungeons']=MareQuestDungeonWorld.map;
   class Coverage {
     constructor({rows=null,tile=64,x=0,y=0,width,height,version=1}={}){
       this.tile=tile;this.x=x;this.y=y;this.version=version;this.rows=rows;
@@ -100,7 +101,7 @@
   function coverageFor(map){
     const spec=map.visualCoverage;let cached=coverageCache.get(map);if(cached&&cached.spec===spec&&cached.version===(spec?.version??1))return cached.index;
     let rows=spec?.rows,tile=spec?.tile??64;
-    if(!spec){const id=map.id;
+    if(!spec&&maps[map.id]===map){const id=map.id;
       rows=id==='lobby'?globalThis.MareLobbyMapData?.rows:id==='impel-down'?globalThis.MareImpel?.rows:id==='alabasta'?globalThis.MareAlabastaData?.rows:id.startsWith('alubarna-')?globalThis.MareAlubarnaData?.rows:globalThis.MareNewIslandData?.[id]?.rows;
       if(globalThis.MarePixelWorldMaps?.[id])rows=MarePixelWorldMaps[id].data?.terrain??MarePixelWorldMaps[id].source?.terrain??globalThis.MarePixelWorldMapsData?.[id]?.terrain??(id==='conchas'?globalThis.MarePixelConchasData?.terrain:null);
       // Dawn's native transparent offshore areas are intentionally completed with
@@ -110,7 +111,16 @@
   }
   class Camera {
     constructor(){this.x=0;this.y=0;this.width=960;this.height=570;this.solves=0;this.masked=false;}
-    fitZoom(map,w,h,requested=1){const b=coverageFor(map).bounds;return Math.min(1.8,Math.max(requested,Math.ceil(Math.max(w/b.w,h/b.h)*100)/100));}
+    fitZoom(map,w,h,requested=1,anchor=map.spawn){
+      const b=coverageFor(map).bounds,min=Math.min(1.8,Math.max(requested,Math.ceil(Math.max(w/b.w,h/b.h)*100)/100));
+      if(!anchor)return min;
+      // At map entry/resize/manual zoom, try a modest zoom-in before using a
+      // finite edge finish for corridors that cannot fit the screen aspect ratio.
+      const probe=new Camera();for(let z=min;z<1.801;z=Math.min(1.8,Math.round((z+.1)*100)/100)){
+        probe.width=Math.max(1,Math.round(w/z));probe.height=Math.max(1,Math.round(h/z));probe.update(anchor,map,0,true);
+        if(!probe.masked||z>=1.8)return z;
+      }return 1.8;
+    }
     update(focus,map,dt=0,snap=false,anchor=focus){
       const coverage=coverageFor(map),b=coverage.bounds,w=this.width,h=this.height;
       const axis=(value,start,size,view)=>size>=view?clamp(value,start,start+size-view):start+(size-view)/2;
@@ -172,13 +182,14 @@
       this.map=map;map.colliders=cleanColliders(map.colliders);this.cell=cell;this.radius=radius;
       this.cols=Math.ceil(map.width/cell);this.rows=Math.ceil(map.height/cell);
       this.grid=new Uint8Array(this.cols*this.rows);
-      this.builtRows=0;this.ready=false;if(!defer)this.buildRows(this.rows);
+      this.builtRows=0;this.buildCursor=0;this.ready=false;if(!defer)this.buildRows(this.rows);
     }
-    buildRows(count=1){
-      const end=Math.min(this.rows,this.builtRows+Math.max(1,count));
-      for(let y=this.builtRows;y<end;y++)for(let x=0;x<this.cols;x++)this.grid[y*this.cols+x]=this.walkable((x+.5)*this.cell,(y+.5)*this.cell)?1:0;
-      this.builtRows=end;this.ready=end===this.rows;return this.ready;
+    buildCells(count=24){
+      const end=Math.min(this.grid.length,this.buildCursor+Math.max(1,Math.floor(count)));
+      for(let i=this.buildCursor;i<end;i++){const y=Math.floor(i/this.cols),x=i%this.cols;this.grid[i]=this.walkable((x+.5)*this.cell,(y+.5)*this.cell)?1:0;}
+      this.buildCursor=end;this.builtRows=Math.floor(end/this.cols);this.ready=end===this.grid.length;return this.ready;
     }
+    buildRows(count=1){return this.buildCells(Math.min(this.grid.length,(this.builtRows+Math.max(1,Math.floor(count)))*this.cols)-this.buildCursor);}
     walkable(x,y,r=this.radius){
       if(!Number.isFinite(x)||!Number.isFinite(y)||x<r||y<r||x>this.map.width-r||y>this.map.height-r)return false;
       if(this.map.terrainWalkable&&!this.map.terrainWalkable(x,y,r))return false;

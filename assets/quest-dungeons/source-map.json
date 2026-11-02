@@ -1,0 +1,119 @@
+{
+  "version": "1.0.0",
+  "name": "Quest Dungeons",
+  "exportDate": "2026-11-01T22:38:50.977667Z",
+  "engine": "pixellab-map-editor",
+  "mapConfig": {
+    "tileSize": 64,
+    "dimensions": {
+      "width": 29,
+      "height": 26,
+      "pixelWidth": 1856,
+      "pixelHeight": 1664
+    },
+    "boundingBox": {
+      "maxX": 26,
+      "maxY": 18,
+      "minX": -2,
+      "minY": -7
+    }
+  },
+  "terrains": [
+    {
+      "id": 1,
+      "name": "Masterpiece, HD ultra-detailed 16-bit pixel art RPG tileset, top-down 2D perspective, seamless lower terrain floor, rocky dungeon ground, varied rough stone textures, cracked earth, scattered pebbles and small rocks, dark grey and deep brown color palette, flat surface for walking, flawless rendering, crisp pixels, seamless repeating texture tile, no characters, 1:1 square asset.",
+      "color": "#6b7280",
+      "baseTileId": "365e8abb-3198-4acc-a3dd-5c137460e617",
+      "walkable": null
+    },
+    {
+      "id": 2,
+      "name": "Masterpiece, HD ultra-detailed 16-bit pixel art RPG tileset, top-down 2D perspective, rocky dungeon upper terrain and walls, vertical stone cliff faces, flat elevated rocky tops, stalagmites, deep shadows at the base, dark grey and deep brown cavern stone color palette, clear edge transitions and corners, flawless rendering, crisp pixels, grid layout texture sheet, no characters, 1:1 square asset.",
+      "color": "#6b7280",
+      "baseTileId": "b4c0779a-10cf-4c72-b489-173d7f6e47cd",
+      "walkable": null
+    },
+    {
+      "id": 3,
+      "name": "Masterpiece, HD ultra-detailed 16-bit pixel art RPG tileset, top-down 2D perspective, seamless lower terrain floor, rocky dungeon ground, varied rough stone textures, cracked earth, scattered pebbles and small rocks, dark grey and deep brown color palette, flat surface for walking, flawless rendering, crisp pixels, seamless repeating texture tile, no characters, 1:1 square asset. ↔ Masterpiece, HD ultra-detailed 16-bit pixel art RPG tileset, top-down 2D perspective, rocky dungeon upper terrain and walls, vertical stone cliff faces, flat elevated rocky tops, stalagmites, deep shadows at the base, dark grey and deep brown cavern stone color palette, clear edge transitions and corners, flawless rendering, crisp pixels, grid layout texture sheet, no characters, 1:1 square asset.",
+      "color": "#5b616d",
+      "baseTileId": "transition-cc748702-6443-4a0b-b9b1-c0c90761a8f9",
+      "walkable": null
+    },
+    {
+      "id": 4,
+      "name": "Create a bright, glowing lava that keeps bursting with bubbles of fire",
+      "color": "#dc2626",
+      "baseTileId": "ef378888-9e8d-4bfe-9117-6bc2660cc4d0",
+      "walkable": null
+    },
+    {
+      "id": 5,
+      "name": "Black stone floor, typical of macabre, abandoned prisons",
+      "color": "#9ca3af",
+      "baseTileId": "8dad0521-8282-42bc-9a7b-23c84c5d3a2e",
+      "walkable": null
+    },
+    {
+      "id": 6,
+      "name": "AN EXPANSE OF BLACK STONE FLOORING FEATURING SEVERAL BRICKS TYPICAL OF A PRISON",
+      "color": "#9ca3af",
+      "baseTileId": "1e4ff6c9-4969-4fc3-834c-dd2d627ae438",
+      "walkable": null
+    },
+    {
+      "id": 7,
+      "name": "Black stone floor, typical of macabre, abandoned prisons ↔ AN EXPANSE OF BLACK STONE FLOORING FEATURING SEVERAL BRICKS TYPICAL OF A PRISON",
+      "color": "#858b95",
+      "baseTileId": "transition-66b58196-a558-4b8a-8f24-22adde85b1ee",
+      "walkable": null
+    }
+  ],
+  "tilesets": [
+    {
+      "id": "cc748702-6443-4a0b-b9b1-c0c90761a8f9",
+      "filename": "Masterpiece, HD ultra-detailed 16-bit pixel art RPG tileset, top-down 2D perspective, seaml-7fc7624c.png",
+      "lowerTerrain": "Masterpiece, HD ultra-detailed 16-bit pixel art RPG tileset, top-down 2D perspective, seamless lower terrain floor, rocky dungeon ground, varied rough stone textures, cracked earth, scattered pebbles and small rocks, dark grey and deep brown color palette, flat surface for walking, flawless rendering, crisp pixels, seamless repeating texture tile, no characters, 1:1 square asset.",
+      "upperTerrain": "Masterpiece, HD ultra-detailed 16-bit pixel art RPG tileset, top-down 2D perspective, rocky dungeon upper terrain and walls, vertical stone cliff faces, flat elevated rocky tops, stalagmites, deep shadows at the base, dark grey and deep brown cavern stone color palette, clear edge transitions and corners, flawless rendering, crisp pixels, grid layout texture sheet, no characters, 1:1 square asset.",
+      "lowerTerrainId": 1,
+      "upperTerrainId": 2,
+      "transitionSize": 1,
+      "transitionDescription": "Masterpiece, HD ultra-detailed 16-bit pixel art RPG tileset, top-down 2D perspective, terrain transition tiles, cliff edges and rocky borders connecting lower ground to upper elevation, stone stairs, rough rocky ramps, deep shadows at the cliff base blending smoothly into flat ground, dark grey and deep brown cavern stone color palette, grid layout texture sheet, crisp pixels, flawless rendering, no characters, 1:1 square asset.",
+      "tileSize": 64,
+      "gridLayout": "4x8",
+      "wangIndexMapping": "transition",
+      "view": "high top-down"
+    },
+    {
+      "id": "38be782e-8cdc-4614-bcac-871a98682cca",
+      "filename": "Create a bright, glowing lava that keeps bursting with bubbles of fire-Black stone floor, t-f1e0230a.png",
+      "lowerTerrain": "Create a bright, glowing lava that keeps bursting with bubbles of fire",
+      "upperTerrain": "Black stone floor, typical of macabre, abandoned prisons",
+      "lowerTerrainId": 4,
+      "upperTerrainId": 5,
+      "transitionSize": 0.1,
+      "transitionDescription": "",
+      "tileSize": 64,
+      "gridLayout": "4x4",
+      "wangIndexMapping": "standard",
+      "view": "high top-down"
+    },
+    {
+      "id": "66b58196-a558-4b8a-8f24-22adde85b1ee",
+      "filename": "Black stone floor, typical of macabre, abandoned prisons-AN EXPANSE OF BLACK STONE FLOORING-97f17316.png",
+      "lowerTerrain": "Black stone floor, typical of macabre, abandoned prisons",
+      "upperTerrain": "AN EXPANSE OF BLACK STONE FLOORING FEATURING SEVERAL BRICKS TYPICAL OF A PRISON",
+      "lowerTerrainId": 5,
+      "upperTerrainId": 6,
+      "transitionSize": 1,
+      "transitionDescription": "VARIOUS CAGES AND CELLS FROM GRUESOME PRISONS",
+      "tileSize": 64,
+      "gridLayout": "4x8",
+      "wangIndexMapping": "transition",
+      "view": "high top-down"
+    }
+  ],
+  "overlays": [],
+  "background": null,
+  "mapId": "8cf41b1c-df16-4a86-beb8-74ab6dc6d7f3"
+}

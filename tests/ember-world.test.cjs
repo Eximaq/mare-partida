@@ -35,7 +35,7 @@ test('Eight building entrances have streets; scenery stands on coherent terrain'
  for(const rect of E.map.colliders)assert(!nav.walkable(rect.x+rect.w/2,rect.y+rect.h/2),rect.id);
 });
 test('Camera clamps desktop/mobile, including a viewport wider than map',()=>{
- for(const [width,height] of [[1920,1080],[1366,768],[1280,720],[393,852],[2560,1440]]){const camera=new Camera();Object.assign(camera,{width,height});for(const goal of E.paths){camera.update(goal,E.map,1,true);assert(camera.x>=0&&camera.y>=0);assert(camera.x<=Math.max(0,2048-width));assert(camera.y<=Math.max(0,2048-height));assert.deepEqual(camera.screenToWorld(...Object.values(camera.worldToScreen(goal.x,goal.y))),{x:goal.x,y:goal.y});}}
+ for(const [width,height] of [[1920,1080],[1366,768],[1280,720],[393,852],[2560,1440]]){const camera=new Camera();Object.assign(camera,{width,height});for(const goal of E.paths){camera.update(goal,E.map,1,true);for(const [position,extent,viewport] of [[camera.x,E.map.width,camera.width],[camera.y,E.map.height,camera.height]]){if(viewport<=extent)assert(position>=0&&position+viewport<=extent+.01);else{assert.equal(position,(extent-viewport)/2);assert(camera.masked,'finite finish outside native map');}}assert.deepEqual(camera.screenToWorld(...Object.values(camera.worldToScreen(goal.x,goal.y))),{x:goal.x,y:goal.y});}}
 });
 test('Original art retained: 48px monsters, native64 terrain, unchanged prop atlas',()=>{
  const manifest=JSON.parse(fs.readFileSync(path.join(__dirname,'../assets/ruinas-brasas/manifest.json')));assert(manifest.ready);assert.equal(Object.keys(manifest.monsters).length,5);assert(manifest.monsters.cesar,'César asset included');
