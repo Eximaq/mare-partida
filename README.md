@@ -1,3 +1,5 @@
+**Lobby compartilhado:** [presença segura no porto original e acesso do colaborador](docs/architecture/SHARED-LOBBY.md). Dois jogadores no mesmo backend veem aparência e movimento um do outro; acesso pela Internet requer a rede privada descrita no documento.
+
 **Servidor do gameplay atual:** [aceite integrado, cobertura e limites de operação](docs/architecture/FINAL-SERVER-ACCEPTANCE.md). Login abre o jogo original; o backend local determina progresso, inventário, combate e recompensas. Pages publica somente o cliente estático.
 
 **Personagem online:** [criação original, perfil, aparência e troca de classe persistidos](docs/architecture/ORIGINAL-PROFILE-SERVER.md).
