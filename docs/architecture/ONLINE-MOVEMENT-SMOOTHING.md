@@ -72,3 +72,22 @@ Primeiro estado, troca de mapa e evento explícito de respawn reposicionam a apr
 Os quatro novos testes de fundação falharam antes da correção: limite de velocidade com confirmação atrasada, clique distante sem teleporte, percurso em torno de obstáculo e cadência irregular/retorno de frame. A integração PostgreSQL verifica que a perseguição anuncia sua velocidade correta e que o comando manual restaura a velocidade de caminhada. `tests/online-walking-browser.mts` acrescenta um worker real, cliques de mouse no lobby e na ilha, 250 ms de atraso artificial por requisição durante os cliques, chegada ao destino e perseguição automática. Mede deslocamento por frame e em janelas de pelo menos 300 ms, com tolerância de três pixels para agendamento do navegador; exige movimento real e preservação do save da demonstração. Usa banco descartável e provedor fictício, sem e-mails ou contas hospedadas.
 
 A regressão HTTPS de duas contas também reproduziu salto no colega remoto com a apresentação anterior. O mesmo modo de caminhada limitada passa a ser aplicado por ID no roster do lobby, mantendo o limite de jogadores, a remoção de presenças obsoletas e a recuperação de controle existentes.
+
+
+## Animação das caçadas e medidor de conexão — 02/11/2026
+
+O ensaio local com worker real reproduziu um defeito independente do ping: a posição do monstro era interpolada, mas `moving`, direção e relógio da animação eram substituídos diretamente pelo snapshot. Assim, um monstro podia deslizar com sprite parado; seu relógio também voltava para trás ao receber o próximo estado. Em 18 segundos do ensaio anterior foram observadas 3.015 amostras de deslocamento sem passos entre 10.188 amostras de deslocamento e 54 regressões do relógio. São observações de entidades por frame, não duração nem quantidade de jogadores.
+
+A apresentação agora conserva o relógio local entre snapshots da mesma entidade viva, reiniciando em mudança de vida/instância. A animação de caminhada e sua orientação acompanham o deslocamento efetivamente desenhado; ataques mantêm sua orientação recebida. A posição desenhada anterior é preservada até o tick visual, para que o último trecho antes da parada também anime os passos. Não altera IA, velocidade, dano, recompensas, caminhos, mortes ou colisões do servidor.
+
+O indicador online exibe:
+
+- **Ping HTTP:** duração da última leitura válida de `online-state`, incluindo rede, processamento, transferência e interpretação da resposta. Não é ICMP nem latência unidirecional. Reutiliza as requisições existentes; não cria endpoint, ping periódico ou persistência de métricas.
+- **FPS:** frames da animação principal por segundo, em uma janela móvel de aproximadamente um segundo. Não conta subpassos da simulação. A janela reinicia ao ocultar/retomar a aba.
+- **Estado:** tempo decorrido desde a última leitura válida. Esse número cresce entre polls e não deve ser interpretado como ping. O tooltip informa também intervalo entre leituras e maior intervalo entre frames. Falhas exibem “Sem conexão”; leituras com mais de cinco segundos recebem destaque.
+
+A interface atualiza o texto uma vez por segundo. Métricas são somente números em memória, sem cookies, tokens, IDs ou dados pessoais; logout/401 limpam a amostra. O relógio é monotônico. Respostas inválidas, falhas e leituras ultrapassadas não viram amostras novas.
+
+Validação: 202 testes de fundação; teste HTTPS em navegador com PostgreSQL e worker reais, identidades fictícias e banco descartável. O cenário cobre cliques distantes no lobby e Dawn, perseguição automática, 250 ms acrescentados por requisição, ping que reconhece esse atraso, perda/recuperação da conexão e save da demonstração intacto. O ensaio corrigido exige zero deslocamentos sem animação e zero regressões do relógio dos monstros observados. Teste de contrato visual cobre combate, habilidades, HP autoritativo, reload e viewport móvel.
+
+Limite: caçadas ainda usam leituras com alvo de 750 ms, sujeitas a duração das requisições, comandos em curso e agendamento; eventos de ataque são exibidos ao chegar e posições recebem interpolação. Isso pode produzir defasagem visual mesmo com ping baixo. Esta correção não afirma eliminar toda irregularidade nem mede a conexão Radmin do colaborador. Os valores visíveis permitem separar renderização lenta, atraso HTTP e atraso entre estados antes de uma mudança maior no protocolo de combate.

@@ -5,10 +5,10 @@ import { randomUUID } from "node:crypto";
 const require = createRequire(import.meta.url);
 const { createSession } = require("../../apps/account-client/game-session.js");
 const id = "11111111-1111-4111-8111-111111111111";
-function fixture() {
+function fixture(options:any={}) {
   let version = 0,
     fail = false;
-  let renewalStatus=200, acquisitionStatus=200;
+  let renewalStatus=200, acquisitionStatus=200, stateStatus=200;
   const requests: any[] = [],
     storage = new Map();
   const snapshot = () => ({
@@ -31,6 +31,7 @@ function fixture() {
     itemCatalog: [],
   });
   const client = createSession({
+    ...options,
     uuid: randomUUID,
     storage: {
       getItem: (k: string) => storage.get(k),
@@ -51,7 +52,7 @@ function fixture() {
         });
       if (path === "/v1/auth/csrf")
         return Response.json({ csrfToken: "fixture" });
-      if (path.endsWith("/online-state")) return Response.json(snapshot());
+      if (path.endsWith("/online-state")) return stateStatus===200?Response.json(snapshot()):Response.json({error:"unavailable"},{status:stateStatus});
       if(path.endsWith('/control/renew'))return renewalStatus===200?Response.json({epoch:1}):Response.json({error:renewalStatus===409?'control_conflict':'unavailable'},{status:renewalStatus});
       if (path.endsWith("/control"))
         return acquisitionStatus===200?Response.json({ epoch: 1, token: "x".repeat(43) }):Response.json({error:'control_conflict'},{status:409});
@@ -69,6 +70,7 @@ function fixture() {
     client,
     requests,
     storage,
+    stateStatus:(status:number)=>{stateStatus=status;},
     controlStatus:(renewal:number,acquisition=200)=>{renewalStatus=renewal;acquisitionStatus=acquisition;},
     fail: () => {
       fail = true;
@@ -241,4 +243,16 @@ test("game projection removes offline starter rewards and uses only server HP, X
   assert.equal(g.stats.kills, 0);
   assert.equal(base.gold, 120);
   assert.equal(derived({ maxHP: 999 }, data).maxHP, 38);
+});
+
+
+test('network meter times existing state reads, ages failed reads and clears on logout',async()=>{
+ let clock=0;const f=fixture({monotonic:()=>clock+=25});
+ assert.deepEqual(f.client.network,{rttMs:null,ageMs:null,intervalMs:null});
+ await f.client.load();assert.equal(f.client.network.rttMs,25);
+ assert.equal(f.requests.length,2,'meter sends no requests');
+ clock+=750;await f.client.read(true);assert.ok(f.client.network.intervalMs>=750);
+ const measured=f.client.network;measured.rttMs=999;assert.equal(f.client.network.rttMs,25,'read-only copy');
+ clock+=6000;f.stateStatus(503);await assert.rejects(f.client.read(true));assert.equal(f.client.available,false);assert.ok(f.client.network.ageMs>=6000);assert.equal(f.client.network.rttMs,25);
+ await f.client.logout();assert.deepEqual(f.client.network,{rttMs:null,ageMs:null,intervalMs:null});
 });
