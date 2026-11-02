@@ -427,9 +427,15 @@
     const renewal = setInterval(() => {
       if (!redirecting && !document.hidden) void client.renew().catch(message);
     }, 30000);
+    const resumePresence = () => {
+      if (!redirecting && !document.hidden)
+        void client.read(true).then(() => client.renew()).then(() => client.read(true)).catch(message);
+    };
+    document.addEventListener("visibilitychange", resumePresence);
     root.addEventListener("pagehide", () => {
       clearInterval(poll);
       clearInterval(renewal);
+      document.removeEventListener("visibilitychange", resumePresence);
     });
     return {
       open,

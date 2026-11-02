@@ -1,4 +1,4 @@
-**Lobby compartilhado:** [presença segura no porto original e acesso do colaborador](docs/architecture/SHARED-LOBBY.md). Dois jogadores no mesmo backend veem aparência e movimento um do outro; acesso pela Internet requer a rede privada descrita no documento.
+**Lobby compartilhado:** [presença segura no porto original e acesso do colaborador](docs/architecture/SHARED-LOBBY.md). Dois jogadores no mesmo backend veem aparência e movimento um do outro; [teste privado pelo Radmin VPN](docs/architecture/RADMIN-PRIVATE-TEST.md), direto no navegador, com HTTPS e acesso limitado ao colaborador.
 
 **Servidor do gameplay atual:** [aceite integrado, cobertura e limites de operação](docs/architecture/FINAL-SERVER-ACCEPTANCE.md). Login abre o jogo original; o backend local determina progresso, inventário, combate e recompensas. Pages publica somente o cliente estático.
 

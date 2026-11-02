@@ -1,0 +1,17 @@
+name: Radmin private configuration
+on:
+  pull_request:
+    paths: ['tools/radmin/**', 'tests/radmin-*.ps1', '.github/workflows/radmin-private.yml']
+  push:
+    branches: [main]
+    paths: ['tools/radmin/**', 'tests/radmin-*.ps1', '.github/workflows/radmin-private.yml']
+permissions:
+  contents: read
+jobs:
+  windows-configuration:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate configuration and PowerShell syntax
+        shell: powershell
+        run: ./tests/radmin-package.test.ps1
