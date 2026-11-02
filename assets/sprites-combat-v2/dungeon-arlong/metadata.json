@@ -1,0 +1,1361 @@
+{
+  "id": "ceb733b5-99c9-4c84-ab66-7f673c6d0c93",
+  "name": "Arlong",
+  "monster": true,
+  "dungeonBoss": true,
+  "worldHeight": 120,
+  "legacyHeight": 120,
+  "world_scale": 1,
+  "clips": {
+    "idle": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/idle-south.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            22,
+            3,
+            74,
+            91
+          ]
+        ],
+        "anchor": [
+          48.0,
+          91
+        ],
+        "source_animation": "idle"
+      },
+      "south-east": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/idle-south-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            26,
+            3,
+            69,
+            93
+          ]
+        ],
+        "anchor": [
+          48.0,
+          93
+        ],
+        "source_animation": "idle"
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/idle-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            30,
+            2,
+            73,
+            93
+          ]
+        ],
+        "anchor": [
+          48.0,
+          93
+        ],
+        "source_animation": "idle"
+      },
+      "north-east": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/idle-north-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            27,
+            2,
+            72,
+            89
+          ]
+        ],
+        "anchor": [
+          48.0,
+          89
+        ],
+        "source_animation": "idle"
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/idle-north.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            22,
+            4,
+            74,
+            88
+          ]
+        ],
+        "anchor": [
+          48.0,
+          88
+        ],
+        "source_animation": "idle"
+      },
+      "north-west": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/idle-north-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            24,
+            2,
+            69,
+            89
+          ]
+        ],
+        "anchor": [
+          48.0,
+          89
+        ],
+        "source_animation": "idle"
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/idle-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            23,
+            2,
+            66,
+            93
+          ]
+        ],
+        "anchor": [
+          48.0,
+          93
+        ],
+        "source_animation": "idle"
+      },
+      "south-west": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/idle-south-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            27,
+            3,
+            70,
+            93
+          ]
+        ],
+        "anchor": [
+          48.0,
+          93
+        ],
+        "source_animation": "idle"
+      }
+    },
+    "walk": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/walk-south.png",
+        "size": 128,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            38,
+            19,
+            90,
+            107
+          ],
+          [
+            37,
+            18,
+            90,
+            104
+          ],
+          [
+            35,
+            18,
+            91,
+            101
+          ],
+          [
+            39,
+            20,
+            93,
+            107
+          ],
+          [
+            40,
+            22,
+            94,
+            111
+          ],
+          [
+            39,
+            20,
+            94,
+            107
+          ],
+          [
+            37,
+            18,
+            93,
+            101
+          ],
+          [
+            35,
+            20,
+            89,
+            107
+          ],
+          [
+            34,
+            22,
+            87,
+            111
+          ]
+        ],
+        "anchor": [
+          64.0,
+          107
+        ],
+        "source_animation": "Shift_weight_forward_while_lifting_the_right_knee"
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/walk-north.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            36,
+            18,
+            88,
+            102
+          ],
+          [
+            10,
+            18,
+            86,
+            106
+          ],
+          [
+            32,
+            18,
+            83,
+            105
+          ],
+          [
+            31,
+            10,
+            102,
+            106
+          ],
+          [
+            35,
+            18,
+            85,
+            106
+          ],
+          [
+            37,
+            18,
+            87,
+            105
+          ],
+          [
+            38,
+            18,
+            88,
+            102
+          ],
+          [
+            39,
+            18,
+            102,
+            123
+          ],
+          [
+            37,
+            18,
+            87,
+            106
+          ]
+        ],
+        "anchor": [
+          62.0,
+          102
+        ],
+        "source_animation": "Shift_weight_forward_while_lifting_the_right_knee"
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/walk-west.png",
+        "size": 132,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            41,
+            20,
+            84,
+            111
+          ],
+          [
+            37,
+            21,
+            81,
+            110
+          ],
+          [
+            32,
+            24,
+            82,
+            107
+          ],
+          [
+            23,
+            26,
+            87,
+            106
+          ],
+          [
+            28,
+            24,
+            86,
+            104
+          ],
+          [
+            28,
+            22,
+            77,
+            101
+          ],
+          [
+            29,
+            20,
+            72,
+            103
+          ],
+          [
+            28,
+            23,
+            78,
+            110
+          ],
+          [
+            21,
+            26,
+            86,
+            115
+          ]
+        ],
+        "anchor": [
+          66.0,
+          111
+        ],
+        "source_animation": "Shift_weight_forward_while_lifting_the_right_knee"
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/walk-east.png",
+        "size": 132,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            48,
+            20,
+            91,
+            111
+          ],
+          [
+            51,
+            21,
+            95,
+            110
+          ],
+          [
+            50,
+            24,
+            100,
+            107
+          ],
+          [
+            45,
+            26,
+            109,
+            106
+          ],
+          [
+            46,
+            24,
+            104,
+            104
+          ],
+          [
+            55,
+            22,
+            104,
+            101
+          ],
+          [
+            60,
+            20,
+            103,
+            103
+          ],
+          [
+            54,
+            23,
+            104,
+            110
+          ],
+          [
+            46,
+            26,
+            111,
+            115
+          ]
+        ],
+        "anchor": [
+          66.0,
+          111
+        ],
+        "source_animation": "Shift_weight_forward_while_lifting_the_right_knee"
+      }
+    },
+    "attack": {
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/attack-north.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            36,
+            18,
+            88,
+            102
+          ],
+          [
+            35,
+            19,
+            87,
+            103
+          ],
+          [
+            35,
+            20,
+            85,
+            103
+          ],
+          [
+            35,
+            20,
+            84,
+            103
+          ],
+          [
+            37,
+            18,
+            86,
+            102
+          ],
+          [
+            36,
+            18,
+            84,
+            102
+          ],
+          [
+            36,
+            18,
+            84,
+            102
+          ],
+          [
+            36,
+            18,
+            84,
+            102
+          ],
+          [
+            36,
+            18,
+            84,
+            102
+          ]
+        ],
+        "anchor": [
+          62.0,
+          102
+        ],
+        "source_animation": "The_right_hand_draws_back_to_the_hip_then_thrusts",
+        "impact_frame": 4
+      },
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/attack-south.png",
+        "size": 128,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            38,
+            19,
+            90,
+            107
+          ],
+          [
+            36,
+            19,
+            91,
+            107
+          ],
+          [
+            37,
+            19,
+            90,
+            107
+          ],
+          [
+            37,
+            19,
+            90,
+            107
+          ],
+          [
+            43,
+            22,
+            91,
+            109
+          ],
+          [
+            43,
+            21,
+            90,
+            109
+          ],
+          [
+            43,
+            20,
+            89,
+            109
+          ],
+          [
+            43,
+            20,
+            89,
+            109
+          ],
+          [
+            43,
+            20,
+            89,
+            109
+          ]
+        ],
+        "anchor": [
+          64.0,
+          107
+        ],
+        "source_animation": "The_right_hand_draws_back_to_the_hip_then_thrusts",
+        "impact_frame": 4
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/attack-east.png",
+        "size": 132,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            48,
+            20,
+            91,
+            111
+          ],
+          [
+            41,
+            21,
+            89,
+            111
+          ],
+          [
+            35,
+            22,
+            90,
+            111
+          ],
+          [
+            54,
+            24,
+            128,
+            111
+          ],
+          [
+            56,
+            24,
+            125,
+            111
+          ],
+          [
+            57,
+            23,
+            122,
+            111
+          ],
+          [
+            58,
+            22,
+            112,
+            111
+          ],
+          [
+            53,
+            21,
+            94,
+            111
+          ],
+          [
+            48,
+            20,
+            91,
+            111
+          ]
+        ],
+        "anchor": [
+          66.0,
+          111
+        ],
+        "source_animation": "The_right_hand_draws_back_to_the_hip_then_thrusts",
+        "impact_frame": 3
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/attack-west.png",
+        "size": 132,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            41,
+            20,
+            84,
+            111
+          ],
+          [
+            43,
+            21,
+            91,
+            111
+          ],
+          [
+            42,
+            22,
+            97,
+            111
+          ],
+          [
+            4,
+            24,
+            78,
+            111
+          ],
+          [
+            7,
+            24,
+            76,
+            111
+          ],
+          [
+            10,
+            23,
+            75,
+            111
+          ],
+          [
+            20,
+            22,
+            74,
+            111
+          ],
+          [
+            38,
+            21,
+            79,
+            111
+          ],
+          [
+            41,
+            20,
+            84,
+            111
+          ]
+        ],
+        "anchor": [
+          66.0,
+          111
+        ],
+        "source_animation": "The_right_hand_draws_back_to_the_hip_then_thrusts",
+        "impact_frame": 3
+      }
+    },
+    "hurt": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-arlong/hurt-south.png",
+        "size": 128,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            38,
+            19,
+            90,
+            107
+          ],
+          [
+            38,
+            19,
+            90,
+            107
+          ],
+          [
+            39,
+            19,
+            95,
+            107
+          ],
+          [
+            36,
+            19,
+            94,
+            107
+          ],
+          [
+            34,
+            20,
+            93,
+            107
+          ],
+          [
+            33,
+            20,
+            87,
+            107
+          ],
+          [
+            34,
+            20,
+            88,
+            107
+          ],
+          [
+            35,
+            20,
+            89,
+            107
+          ],
+          [
+            37,
+            19,
+            90,
+            107
+          ]
+        ],
+        "anchor": [
+          64.0,
+          107
+        ],
+        "source_animation": "Flash_red_in_a_sudden_wince_from_damage_staggering",
+        "playback_start": 0,
+        "playback_frames": 4,
+        "playback_seconds": 0.18
+      }
+    }
+  },
+  "provenance": {
+    "id": "ceb733b5-99c9-4c84-ab66-7f673c6d0c93",
+    "name": "Arlong",
+    "source": "Existing owner PixelLab character export",
+    "archive_sha256": "eb75fafc0ceadf6f68f444e96c8797b31e9f9163f43bb137de0372fc1ad7b941",
+    "clips": {
+      "idle": {
+        "south": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "eabb6c9118c8806f47c14d1a5ad524dbf6389f6bfb96845746b85fb674adeb45"
+          ]
+        },
+        "south-east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "4286aa805d9c5c6a345290c81e9cb3ece8614e98b12f1f8a6eb786466c315b36"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "8be11aae723e2099e348a121c2c292b268d0c0b5fa04a6918782f04598034ba9"
+          ]
+        },
+        "north-east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "82f852c24f831b1a2a0f850d8e40c3afda08e481d824f1dd41a3f1a492694662"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "60edd58337a9c306c9d5dc9b0fbec6fc67d5af1a9251f0d022bc7553327f0402"
+          ]
+        },
+        "north-west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "c45bac3a8b5e91ff1e55437419538dd77fcb4c6f8d7b7edce464f11f0d83c4cf"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "39ee7c5ca2967358c3d8b4a983028e4b1c17a0dd2850bb08deb03e4b7534a406"
+          ]
+        },
+        "south-west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "73a97d0983c5312868b1700d3625934f738ca3a9d160daa441edd647155d2413"
+          ]
+        }
+      },
+      "walk": {
+        "south": {
+          "source_sizes": [
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ]
+          ],
+          "rgba_sha256": [
+            "3ea6090a39606167429c0d855108c21982bc6a9ae3b306ad9529e778b4a10755",
+            "b9612561a50bdb2462116e84123c1bd418eef7a34c5e6fe35a8accfc12b0b150",
+            "83d81b4ce5e294042767f9f356dc996cca1156080084aaafd6bc5ceee115d667",
+            "112608d8a168f9cbf66a6507b6d39cf12e01e0286ff0bdbce57a63974b72bc88",
+            "c0193a495cefb105b42690fd84365f25fa885494d0aea6dfc634b15d6c2b8904",
+            "b22a0164ce0924413f50e931fea9e0c9caf3cdaa93e3eaeabe2e840bf149388e",
+            "e1787437b3e7f6dec9035b46875bd2cf4ece31a2f2a80924d80690e652f2e8b1",
+            "48d980d2750924f12f6de07b1fc77268c560a35311ad14554ff828b9cd02599c",
+            "48a2227a01cf120f5f0330749e515d4adca3d650da3b3987b7998af69fe147b7"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "0ac4f53d3a5326e15039c58344aaaf35cd67a14438d8b286261b908009839dfa",
+            "ecc927d33020da16f6461a37989b48303b081b1d8726d5bbe7456b3a9f6a2d60",
+            "4700c909493e5cb398e981f86f5bebb6fd1c4daeb56e036acd8ec04b59a12b78",
+            "da416fb51039d72f6b051b2c3e4910aa87ca4b86cb758275bd643c3937e8867b",
+            "7ca456e5787e003dbabd6c083fbbcf9d5901552b10f09eb3b9748b8d21faddbb",
+            "0e6d818392f0ea2bd9f873468f6af2fee264b5e49855bbae98d46881407b3338",
+            "a202e57ff5522738bc6c2c63fe2db0a18694fdf547fb8b3d715842438c85c812",
+            "f339dd227b95c78384fe534e1be0ffd00e835e1fad3b4cca0e385bcc335dfe11",
+            "14b179a42cbeaa6082b73b5dcdd957217ba9e0e5b53404e8190472469c4c178b"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ]
+          ],
+          "rgba_sha256": [
+            "c9229230ece50a9cf705ddf87f9d52a1eab1056df7f33a24fe96ebf8b584a604",
+            "407db2378d34989743a54b44149dd4d70c9b78830470f333884e7b923f180b71",
+            "acea64b2d36a01a2e4497629505ebe00ad60e2f6c9a7ad5ac140ef9572d4bd94",
+            "8af6c035e962c57066e0a3202108c9cf947254c0b9b65d827983b661659f4c7a",
+            "a903c0e23bab3929edf6aebf2c1d91fe9a28961c82bebe3aa58490b621b3d977",
+            "244963e597c837024404abd28e3ef887956770c25a10cf037ade9f3723fb52fd",
+            "807c552ad5e0c8ade1aaa4db4ba880a638fa0e92a87052b8c04f521dcd1ec593",
+            "3d0e9127acd3daadb9aa968014ac48881652e46c76743a730859601597180ce9",
+            "9ea81686ea87fa9b43179d2459e3bbe599b3e9dc006cc8ced212ad182b11a297"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ]
+          ],
+          "rgba_sha256": [
+            "9c4364fc7ee0ed9dcd1f9ad78e6c780d27eb6eaf504a1d8a2023e47e3bd72990",
+            "4964be0b00025791030b204b089906deb41ec89c87df8d2c211defc1c2e8b35f",
+            "792234fdbdc6fe839abdb436b904f209cd4f1b0b181796efc6302ece7610dde1",
+            "9fb6ef0da5734570f9455124a56e1ff62517375b513f9f1db989bd83621a407e",
+            "7036ecf313c10c0680c13f11e541b0e400033e59f66f8fc8a04d7cb6cad362a9",
+            "016102634d595204bc89f88a140a0c84d2fcf5063923b2ba3c7219aacda779f9",
+            "8622c64b445a8c8c964c39220f872cb339cf8375a13039ae3f67e5533afa9c5d",
+            "75498d779fe0790384ed9bce507c8c8917d0d0c9b0bb0b6cb1a197878892ce12",
+            "8104032204520bf0234a37a64aa382a6e64ff737994c732cc14d26bb9f3c54a6"
+          ]
+        }
+      },
+      "attack": {
+        "north": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "0ac4f53d3a5326e15039c58344aaaf35cd67a14438d8b286261b908009839dfa",
+            "dcb2cab0c12904d9510ff5fe82596813750df47ebb6c694ab14bbbbb8bc1c36d",
+            "32a7640f431cafae6fb0ad55fa4050b59f70189d54fbd0cccb9ddb7796790b2d",
+            "c70462fa1c39df752794324ab2a0b9ba086bd55f6294c4b024a253c389e60d05",
+            "f64e9f64b335e02205d55417961d4917dcdc3ca3c38281c23d44227b5a530961",
+            "eb84fa8aa8ebe2a3fd02878bd95f6088791f65f1573728e91c7d645aa736c2c7",
+            "b91cc98966675c894bdc29a7a1bc2f3bad8727214310981ff63826d167d52d7d",
+            "7abb85e5f65f5035b9284e03fbf0f2462db891501387f7ff57f2b2c301c387c8",
+            "1ad15f1a758a3ff48af564abd685149a641de06f268285a97a5e817f54498a6f"
+          ]
+        },
+        "south": {
+          "source_sizes": [
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ]
+          ],
+          "rgba_sha256": [
+            "3ea6090a39606167429c0d855108c21982bc6a9ae3b306ad9529e778b4a10755",
+            "6f3ab98dd59a4b7eb25b6b561911bb9dbf48b84300c84de1e686a4c20c1e47ef",
+            "0cabd347f65fdb82cde1107338f677e302da665fdfae81a28567b2ec1ffc5107",
+            "949c8a1a7c2e4d9c04a78cdf7f4f13c06f8b0c91ce5a21fccd23d8d9a9ec5e48",
+            "0f08fa37848355220902b885a2ef4898d5089f2ea972745cb4475ee172850d0e",
+            "ca3a2db23bb34f20b7f28082c1599640f9a6d78d516cdb2cab43ca2dbfd0b687",
+            "bcf22b35cdf07506b34985fd910f0de108ecd5b90da2e4b77aea250d66b702b1",
+            "e66af1115cc3b4b61d3a52678e3df61f144af5a4edd0471ffa02b40d22fbb16e",
+            "27204a655d6213be2e6482af1140287de9ed8a9da513e1f81097ceb562c61c75"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ]
+          ],
+          "rgba_sha256": [
+            "9c4364fc7ee0ed9dcd1f9ad78e6c780d27eb6eaf504a1d8a2023e47e3bd72990",
+            "7d3c64f55564821f1196bc20d98884986eae9cf51596272372bbb9cdda178e23",
+            "7343ba6abd0f728224a0452ff8d9cc282aa5f134741664dc73efb24d7b91c467",
+            "81c8ba3f6ef11fbdbe261531ba6a577343bf7f108f2cdc6cd237bbf1200f675d",
+            "df5e30b9936c36aa4a8480dcc933cf783e63580b14f85638c9a61f9f16a9dc6f",
+            "468462086646d62a767791439a08c5c25287e33ddc2da020ee88a1b0aee4a31c",
+            "89e25f5e6b22c9512b53858990387fd3c39116b01e15678d0daec81da8ffe542",
+            "fc1eead123e17313f7b28317aba21983214b560303fd0288dae5fb37e51ee673",
+            "518aed5f433e2554551c85ce41d000129dc5973e515c9ebfdecd07fc07a9ad5a"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ],
+            [
+              132,
+              132
+            ]
+          ],
+          "rgba_sha256": [
+            "c9229230ece50a9cf705ddf87f9d52a1eab1056df7f33a24fe96ebf8b584a604",
+            "07945dd8604f962f47be90c68c2f58110c6a7dd1b65f2931dd185dadfd2c3255",
+            "1a4016b1198a89edf4c0856fab671ff37e2c0029b04514107fc52958c42cac3c",
+            "57c094a27b7b981538c2d8b333604d4bc38c401e1d5042e94e18c5d697adc2a1",
+            "6239750be5ba4bfa6ea62c24b01cf301b435bfbe0a1fb4ad295bf4790bde9b53",
+            "09a3e832b5d3780e9332fc45da574dbbb1dc71e0a257743e0d1a690364544bd5",
+            "ef58d70465f9d967aa57ed3431df087fadfe98ccc9af08226fc8d381e617bf93",
+            "898533e1f1d39e782c674f6c0367679ba60143308cd32aa76eec5367c2cea230",
+            "62b4370ad000da4b5efc4d3c73f214e19a9fa85302bceb3eac66920e08d4df81"
+          ]
+        }
+      },
+      "hurt": {
+        "south": {
+          "source_sizes": [
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ]
+          ],
+          "rgba_sha256": [
+            "3ea6090a39606167429c0d855108c21982bc6a9ae3b306ad9529e778b4a10755",
+            "b9ca4ce8ce0efae088c52e260c32ee8ef6b00ba2785b0d56d6222b92d01006d6",
+            "198642d98756c2798e70fb60b9e1ed1491f2086d837b5eef25c07ebf23723ce4",
+            "4a9a3ce7bc8bb5088133818e6ba3116c278207ec8bbb05bb9809d61fdb86825e",
+            "5c8ad9aae0710907457eaf012235fbd42e78f7c2581a7560a3df35283fa8e952",
+            "165332049e31b6e214005c088e545ff71725ea876c8254d0f0a423a1268efc67",
+            "9f7ade5fd5a676b2c049fcfa7024310290c886ed0d480e50074da38e9d2fc27f",
+            "00636cfeae75ce9250c0eb850e862113b794757380d2190732e924f30ef58237",
+            "ab0f1903174da9ee3e5122e7df67a5c2cab799a13c11b375690919936dea2343"
+          ]
+        }
+      }
+    }
+  }
+}

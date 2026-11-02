@@ -1,0 +1,125 @@
+{
+  "source": "Existing owner PixelLab animations, retrieved 2026-11-01",
+  "resampling": false,
+  "characters": [
+    {
+      "key": "dungeon-alvida",
+      "character_id": "efe38a49-b281-47eb-8c09-30d425d03291",
+      "name": "Alvida",
+      "archive_sha256": "348dfa6a3778f45a89f0ad8267c5f655588f5e6278eea93a71ecfd5354268286",
+      "world_height": 84
+    },
+    {
+      "key": "dungeon-morgan",
+      "character_id": "dfe782a0-01a4-45f3-8c65-bbe16abc5830",
+      "name": "Morgan",
+      "archive_sha256": "771a4b1ab37a9249111f1c4877a34c8683dfc5afef445a67f2c05ae680655f10",
+      "world_height": 114
+    },
+    {
+      "key": "dungeon-buggy",
+      "character_id": "1b32c37b-8aa6-4139-b948-f832eadd55f6",
+      "name": "Buggy",
+      "archive_sha256": "1959678fe59a8d7faceee45436b13e94e7ccd216365f04f6874f52f18c05f7e4",
+      "world_height": 108
+    },
+    {
+      "key": "dungeon-kuro",
+      "character_id": "ad4bc800-098b-4065-8017-ec46c784fc7d",
+      "name": "Kuro",
+      "archive_sha256": "01874550989eaccc60d627ed7513cc42c8b8224d2fb0bcd5101b105637a9dcf5",
+      "world_height": 102
+    },
+    {
+      "key": "dungeon-krieg",
+      "character_id": "19bcb138-d9d4-432c-aa53-fb384db28bd4",
+      "name": "Don Krieg",
+      "archive_sha256": "fc2ff2d17562a7f798eef0103619dbc4162e5010b3d2dcf4d428f890bf8b03b8",
+      "world_height": 116
+    },
+    {
+      "key": "dungeon-arlong",
+      "character_id": "ceb733b5-99c9-4c84-ab66-7f673c6d0c93",
+      "name": "Arlong",
+      "archive_sha256": "eb75fafc0ceadf6f68f444e96c8797b31e9f9163f43bb137de0372fc1ad7b941",
+      "world_height": 120
+    },
+    {
+      "key": "dungeon-smoker",
+      "character_id": "b262f653-ac04-4988-93ac-8b4b29886fa8",
+      "name": "Smoker",
+      "archive_sha256": "7e8d69fe041e8154ffa31e232c87a87971c8a5ff0948167acc07b0d91eb8101b",
+      "world_height": 112
+    },
+    {
+      "key": "dungeon-wapol",
+      "character_id": "f208acb0-982c-4d65-9567-39c27e7f43e7",
+      "name": "Wapol",
+      "archive_sha256": "95ec1b2a7177005292316cd12b7b853d29a335bf34b9ca971b5231dd10d2e866",
+      "world_height": 116
+    },
+    {
+      "key": "dungeon-crocodile",
+      "character_id": "bac38f19-0860-44ac-ae07-7e81e9f541aa",
+      "name": "Crocodile",
+      "archive_sha256": "5d8269f64dce5cf30df56b0a6398474a829e86fd900c2f67ec81004a01ae5c49",
+      "world_height": 114
+    }
+  ],
+  "portraits": [
+    {
+      "boss_id": "alvida",
+      "path": "assets/ui/boss-dungeons/alvida-hd.png",
+      "source": "Existing approved owner illustration",
+      "sha256": "c135b50c271d90a761e18959d08959616050c78798fad56f058c960fb5977402"
+    },
+    {
+      "boss_id": "morgan",
+      "path": "assets/ui/boss-dungeons/morgan-hd.png",
+      "source": "Existing approved owner illustration",
+      "sha256": "a669a0f07056a78e7e8680731cddc36983f10fb8026600ffbaebfc9e3093143e"
+    },
+    {
+      "boss_id": "buggy",
+      "path": "assets/ui/boss-dungeons/portraits/buggy.jpg",
+      "source": "Owner-provided HD portrait",
+      "sha256": "f1b2cfe15f5e2b07c2d1bafb0ade1dcba1ce88faa543d63119aeccc25936b410"
+    },
+    {
+      "boss_id": "kuro",
+      "path": "assets/ui/boss-dungeons/portraits/kuro.png",
+      "source": "Owner-provided HD portrait",
+      "sha256": "534dfa1f845f7560cea3ccdeba936054b798bc2a6dcd888b307e714f653f9b67"
+    },
+    {
+      "boss_id": "krieg",
+      "path": "assets/ui/boss-dungeons/portraits/krieg.png",
+      "source": "Owner-provided HD portrait",
+      "sha256": "63f7ee5b4d3dfa82f0d8d40cf5ee7692096ae7fc52c716617f9420770ef4a5c7"
+    },
+    {
+      "boss_id": "arlong",
+      "path": "assets/ui/boss-dungeons/portraits/arlong.png",
+      "source": "Owner-provided HD portrait",
+      "sha256": "846957452d310a5919c1c190b2036c8f7fb7932448cf102740294f4121261c9a"
+    },
+    {
+      "boss_id": "smoker",
+      "path": "assets/ui/boss-dungeons/portraits/smoker.png",
+      "source": "Owner-provided HD portrait",
+      "sha256": "61fa0d96da86f3d0c046c1a922aefed731295ab6f79310b87679102795b84f63"
+    },
+    {
+      "boss_id": "wapol",
+      "path": "assets/ui/boss-dungeons/portraits/wapol.png",
+      "source": "Owner-provided HD portrait",
+      "sha256": "1ff9f897b98eaeb3a013fd6413b86bf60fe087ecbd14df74c708f6f0def3ccff"
+    },
+    {
+      "boss_id": "crocodile",
+      "path": "assets/ui/boss-dungeons/portraits/crocodile.png",
+      "source": "Owner-provided HD portrait",
+      "sha256": "efb0f7326faa96aa6ca83c4f5ec346230ee5da39ab89b59583489f1f0a46fb5b"
+    }
+  ]
+}

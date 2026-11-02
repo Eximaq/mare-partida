@@ -1,0 +1,1339 @@
+{
+  "id": "f208acb0-982c-4d65-9567-39c27e7f43e7",
+  "name": "Wapol",
+  "monster": true,
+  "dungeonBoss": true,
+  "worldHeight": 116,
+  "legacyHeight": 116,
+  "world_scale": 1,
+  "clips": {
+    "idle": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/idle-south.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            13,
+            8,
+            83,
+            89
+          ]
+        ],
+        "anchor": [
+          48.0,
+          89
+        ],
+        "source_animation": "idle"
+      },
+      "south-east": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/idle-south-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            18,
+            6,
+            75,
+            89
+          ]
+        ],
+        "anchor": [
+          48.0,
+          89
+        ],
+        "source_animation": "idle"
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/idle-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            22,
+            5,
+            69,
+            89
+          ]
+        ],
+        "anchor": [
+          48.0,
+          89
+        ],
+        "source_animation": "idle"
+      },
+      "north-east": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/idle-north-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            20,
+            6,
+            74,
+            88
+          ]
+        ],
+        "anchor": [
+          48.0,
+          88
+        ],
+        "source_animation": "idle"
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/idle-north.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            16,
+            7,
+            79,
+            88
+          ]
+        ],
+        "anchor": [
+          48.0,
+          88
+        ],
+        "source_animation": "idle"
+      },
+      "north-west": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/idle-north-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            21,
+            6,
+            75,
+            88
+          ]
+        ],
+        "anchor": [
+          48.0,
+          88
+        ],
+        "source_animation": "idle"
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/idle-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            27,
+            5,
+            74,
+            89
+          ]
+        ],
+        "anchor": [
+          48.0,
+          89
+        ],
+        "source_animation": "idle"
+      },
+      "south-west": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/idle-south-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            21,
+            7,
+            78,
+            89
+          ]
+        ],
+        "anchor": [
+          48.0,
+          89
+        ],
+        "source_animation": "idle"
+      }
+    },
+    "walk": {
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/walk-west.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            41,
+            19,
+            88,
+            103
+          ],
+          [
+            43,
+            18,
+            90,
+            103
+          ],
+          [
+            42,
+            18,
+            91,
+            103
+          ],
+          [
+            40,
+            19,
+            92,
+            103
+          ],
+          [
+            34,
+            20,
+            92,
+            103
+          ],
+          [
+            34,
+            21,
+            92,
+            103
+          ],
+          [
+            37,
+            20,
+            92,
+            103
+          ],
+          [
+            35,
+            19,
+            92,
+            103
+          ],
+          [
+            34,
+            18,
+            92,
+            101
+          ]
+        ],
+        "anchor": [
+          62.0,
+          103
+        ],
+        "source_animation": "Shift_the_weight_forward_by_thrusting_the_stomach"
+      },
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/walk-south.png",
+        "size": 116,
+        "frames": 8,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            22,
+            19,
+            92,
+            99
+          ],
+          [
+            20,
+            18,
+            90,
+            99
+          ],
+          [
+            20,
+            17,
+            90,
+            99
+          ],
+          [
+            21,
+            17,
+            91,
+            99
+          ],
+          [
+            22,
+            18,
+            92,
+            99
+          ],
+          [
+            24,
+            19,
+            94,
+            99
+          ],
+          [
+            25,
+            18,
+            95,
+            99
+          ],
+          [
+            25,
+            17,
+            95,
+            99
+          ]
+        ],
+        "anchor": [
+          58.0,
+          99
+        ],
+        "source_animation": "Shift_the_weight_forward_by_thrusting_the_stomach"
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/walk-east.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            36,
+            19,
+            83,
+            103
+          ],
+          [
+            34,
+            18,
+            81,
+            103
+          ],
+          [
+            33,
+            18,
+            82,
+            103
+          ],
+          [
+            32,
+            19,
+            84,
+            103
+          ],
+          [
+            32,
+            20,
+            90,
+            103
+          ],
+          [
+            32,
+            21,
+            90,
+            103
+          ],
+          [
+            32,
+            20,
+            87,
+            103
+          ],
+          [
+            32,
+            19,
+            89,
+            103
+          ],
+          [
+            32,
+            18,
+            90,
+            101
+          ]
+        ],
+        "anchor": [
+          62.0,
+          103
+        ],
+        "source_animation": "Shift_the_weight_forward_by_thrusting_the_stomach"
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/walk-north.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            26,
+            17,
+            89,
+            98
+          ],
+          [
+            27,
+            17,
+            90,
+            99
+          ],
+          [
+            28,
+            18,
+            88,
+            100
+          ],
+          [
+            27,
+            18,
+            87,
+            100
+          ],
+          [
+            26,
+            17,
+            87,
+            100
+          ],
+          [
+            26,
+            17,
+            89,
+            98
+          ],
+          [
+            25,
+            17,
+            87,
+            99
+          ],
+          [
+            27,
+            18,
+            87,
+            100
+          ],
+          [
+            28,
+            17,
+            88,
+            100
+          ]
+        ],
+        "anchor": [
+          58.0,
+          98
+        ],
+        "source_animation": "Shift_the_weight_forward_by_thrusting_the_stomach"
+      }
+    },
+    "attack": {
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/attack-east.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            36,
+            19,
+            83,
+            103
+          ],
+          [
+            34,
+            19,
+            88,
+            103
+          ],
+          [
+            37,
+            19,
+            88,
+            103
+          ],
+          [
+            39,
+            21,
+            88,
+            103
+          ],
+          [
+            38,
+            20,
+            86,
+            103
+          ],
+          [
+            36,
+            19,
+            83,
+            103
+          ],
+          [
+            36,
+            19,
+            83,
+            103
+          ],
+          [
+            36,
+            19,
+            83,
+            103
+          ],
+          [
+            34,
+            19,
+            87,
+            103
+          ]
+        ],
+        "anchor": [
+          62.0,
+          103
+        ],
+        "source_animation": "The_jaw_drops_open_to_reveal_a_massive_gaping_maw",
+        "impact_frame": 4
+      },
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/attack-south.png",
+        "size": 116,
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            23,
+            17,
+            93,
+            99
+          ],
+          [
+            24,
+            16,
+            92,
+            99
+          ],
+          [
+            24,
+            15,
+            92,
+            99
+          ],
+          [
+            23,
+            18,
+            93,
+            99
+          ],
+          [
+            23,
+            18,
+            93,
+            99
+          ],
+          [
+            23,
+            18,
+            93,
+            99
+          ],
+          [
+            23,
+            18,
+            93,
+            99
+          ],
+          [
+            23,
+            17,
+            93,
+            99
+          ]
+        ],
+        "anchor": [
+          58.0,
+          99
+        ],
+        "source_animation": "The_jaw_drops_open_to_reveal_a_massive_gaping_maw",
+        "impact_frame": 4
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/attack-north.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            26,
+            17,
+            89,
+            98
+          ],
+          [
+            26,
+            17,
+            88,
+            98
+          ],
+          [
+            27,
+            18,
+            86,
+            98
+          ],
+          [
+            27,
+            16,
+            86,
+            98
+          ],
+          [
+            27,
+            16,
+            86,
+            98
+          ],
+          [
+            26,
+            17,
+            88,
+            98
+          ],
+          [
+            26,
+            19,
+            89,
+            98
+          ],
+          [
+            26,
+            18,
+            89,
+            98
+          ],
+          [
+            26,
+            17,
+            89,
+            98
+          ]
+        ],
+        "anchor": [
+          58.0,
+          98
+        ],
+        "source_animation": "The_jaw_drops_open_to_reveal_a_massive_gaping_maw",
+        "impact_frame": 4
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/attack-west.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            41,
+            19,
+            88,
+            103
+          ],
+          [
+            36,
+            19,
+            90,
+            103
+          ],
+          [
+            36,
+            19,
+            87,
+            103
+          ],
+          [
+            36,
+            21,
+            85,
+            103
+          ],
+          [
+            38,
+            20,
+            86,
+            103
+          ],
+          [
+            41,
+            19,
+            88,
+            103
+          ],
+          [
+            41,
+            19,
+            88,
+            103
+          ],
+          [
+            41,
+            19,
+            88,
+            103
+          ],
+          [
+            37,
+            19,
+            90,
+            103
+          ]
+        ],
+        "anchor": [
+          62.0,
+          103
+        ],
+        "source_animation": "The_jaw_drops_open_to_reveal_a_massive_gaping_maw",
+        "impact_frame": 4
+      }
+    },
+    "hurt": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-wapol/hurt-south.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            23,
+            18,
+            93,
+            99
+          ],
+          [
+            23,
+            23,
+            93,
+            99
+          ],
+          [
+            25,
+            22,
+            91,
+            99
+          ],
+          [
+            26,
+            22,
+            90,
+            99
+          ],
+          [
+            25,
+            22,
+            91,
+            99
+          ],
+          [
+            21,
+            20,
+            95,
+            99
+          ],
+          [
+            22,
+            18,
+            94,
+            99
+          ],
+          [
+            23,
+            18,
+            93,
+            99
+          ],
+          [
+            23,
+            18,
+            93,
+            99
+          ]
+        ],
+        "anchor": [
+          58.0,
+          99
+        ],
+        "source_animation": "Jolt_backward_from_an_impact_flinching_with_arms_p",
+        "playback_start": 0,
+        "playback_frames": 4,
+        "playback_seconds": 0.18
+      }
+    }
+  },
+  "provenance": {
+    "id": "f208acb0-982c-4d65-9567-39c27e7f43e7",
+    "name": "Wapol",
+    "source": "Existing owner PixelLab character export",
+    "archive_sha256": "95ec1b2a7177005292316cd12b7b853d29a335bf34b9ca971b5231dd10d2e866",
+    "clips": {
+      "idle": {
+        "south": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "2bdddb584d1e973066eb8fb41e20674ce3195f4e695990cc348733ccc1ff5d7a"
+          ]
+        },
+        "south-east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "a465621a6186f19e0a29c38b2a1ae113fbd288bbfa65c6961a05b25784aae4b3"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "355a354ba6761e91607f3c280a4d6c6e36d2bc2b4b5b2eeb8b6b6327c7e04a81"
+          ]
+        },
+        "north-east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "8ca3753a278d68ff5a93a39ec7b37ce2e99e10262ebd811e13b07ff96fdbc4bf"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "a1c3ab1aea8f5dedd287b4aa2bcf4f8334b7392d1c113e9345b5e03148f19c76"
+          ]
+        },
+        "north-west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "716aa40df3fe35c07c4265cba78fee7c92fbd4c87a31e99c598dc10aed67810d"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "6ddb1497899519ae1a49729b24f53c82a257c39eb96fa6e16e3dc8dc3d5800d1"
+          ]
+        },
+        "south-west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "9246d2d00a80e856c80b77535ee7a25961d3d9bda08e615f0aa65f1dd0f103b7"
+          ]
+        }
+      },
+      "walk": {
+        "west": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "046f931cfccf255dfff6f0f997daa468fe8fefd87ca22d1150941095fd277d01",
+            "83d8f52953918653128a4a762b57f684df40231ccf28d56bf3db66a7672425ef",
+            "59cc892078e75b9734cb8b4f7c36b0cfe97b395a978f7e09047242060669c7d4",
+            "006a4c9a9f1509e62afffdeb65409b961f9303ecdcd288fb443a0fd7e1c94879",
+            "3417ff54e807d0f38a5f5941fc040b52c7089c1f87470286ef8e47b896b66e76",
+            "bd5e61128ae238fee148ed21c9f4c15af3b32ea0781a882f5e5468c712ddd648",
+            "0898debf3cb0bd033e162ceb8159dd21434800eeda1602cef37baff661f9cdc0",
+            "dce602bb5e2a9efe147d4ccc56333dcf5869d85063923b74bed6fa4da33c44d7",
+            "f4d0de28d413fc13456e6c97f1ba0bc86d6babdf4dcfad5b6ea5b698669f3ccc"
+          ]
+        },
+        "south": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "5c5c6fab7ffba0baae6a0958ecd9b636cc071ab6721d3854c90d5643ca4b4fb3",
+            "0c9fc8154be752a1c601ecad5c15c67a7e1e3058bd860c48c5e5a4c79d2cf2ad",
+            "6ef3d5fb1c36ab6b465f167fa7b1f4d4181f832564918f67eec0dfb86b631d64",
+            "9d077e1933562b78075aed41068a7eb29a3d05915caf23eef9313af6ad863a30",
+            "1219fcd819907bbd0d479097e81dba27bf3dc8562a55078a782564098a3c433c",
+            "2b627834fd47b3ae0617214f5b4c8485b8836844ef287107da393a8aa3cb9fed",
+            "bbd0a0d7aead2b83d68c76f26100338b2683466b98985f7010705d27f371989b",
+            "674ea8905a2afc76e88bfd416c76aee59742f53339f39a83f290a6a03a8faf82"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "72165e8286c82d7055c824d76b748ebdae147be3079d4e3eb27fa2baa9ceda51",
+            "985d235240ddf78e1298a1942bd41672bd683f01ce2eb861e25eb0de0d756c60",
+            "80ac50e037bfa55fc0a5b6e1a792cc44b5363590a47ae0b2e0486ad074a273ff",
+            "dca469f69a33e732ac562e77a2ee4ba916a0d10b1ca66d5395077380c90ab9bc",
+            "ea16a7b2aef44bc99e112da278dcea0909801905fe7564a09fd608c35445f360",
+            "8a96b5061c179542988a1745f19cf91eb0f8c3e3237307b3baab311e8281aac8",
+            "098b5dfca35a833aee7ca50ae4eb6ce25bece2fbee81daa44789b89f66b3416b",
+            "65c73212be23cdfabd2d4f84d886bfc384fbdf01dd3fae7e04665e05041688f8",
+            "ca284a46d8db465e8d18e8e2f89a68be73d5312152f458c515ac79a8158cc8a5"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "5c640e07bc78b6ba8435ce07b7f67ca607db4ecffcde3607b855ac235dba58ee",
+            "fc06551a5cb124ab1fc06890ff29dbba5c53d348e71962276c63bbc68d4b59fc",
+            "a65408a90bb72114998c268022c9b65aa2e7bf2f8364cc65e381560db907e863",
+            "f63230c6755439f20031b168c5a5c9cd6b4f6ad663927bb92d74ad955ecbc91a",
+            "4cfd78bb4a35786af168438230feb3908ccb5ae638f92422e5e6f30741848277",
+            "3d57fb6429bc2e1e0b6ec723d8ab9ce45775ecd9475d2602f11bb6ff9b97a1e6",
+            "757ae45180db19fceb7c5221c584e8b83d54d5fdf47b4f76779dbc13b94b5f49",
+            "319521198b05fc4b6ba6238c1b7404f4ca642b7a24c387159e4c10d635ad61d5",
+            "a0f391316c574568b57d6f00fba13f233802ad0c770f9225913a53f2bea82fae"
+          ]
+        }
+      },
+      "attack": {
+        "east": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "72165e8286c82d7055c824d76b748ebdae147be3079d4e3eb27fa2baa9ceda51",
+            "c58b94bf88d76b7aac8d47de76612271b1c821e7d65abc9bae305e86acd1fa6c",
+            "eb3469999fb2300fedaf6b9c29b0e136fadc8e993edd4432d25f696c6c70e3fe",
+            "98bbaae870b45054b70697945d41fc43d78c3ecfc500a64f9c6a77dc0be555a7",
+            "08474e057eeb348ebe352fcb999a7678fb1e7ed5c17340bbe376df9f55d88130",
+            "e169c8f3669e2a4b3b963eb860ba053ccab7affbe72c0975145f28e4294a1275",
+            "d4e4735bc71d6a8d51c78381a83c837f791e76e7cd4661aa130c297894473ac3",
+            "aba15d0098def281fcd792d36d248cc49fc823af7f392907c0969796709cdd49",
+            "9cbd18c7d04d9c12dcc10da79fbdbfe0cb67e3b8d8a46f42e7a0f667b634e9eb"
+          ]
+        },
+        "south": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "e2c7d284a6b6eab800883b7fd7660383a79590f62af1888f25c2719d0679931b",
+            "8dfea3485cd7b0c20a70479ec867ee01f338a7673a726dc6d56a269753ce1c06",
+            "99d1f1f481aa007ee1b3a5a8dd87148c69d8ef04fc7bbb1bd9df5629255e7e0c",
+            "322dffc6ac7ab1559a4af2cfae3867509158e29dec1fbf389e9173344bf247d7",
+            "ddba27a64c7c69f30dd546c06909bfeb07eddd4498f83afe6cebe21a2ecdd98c",
+            "ddba27a64c7c69f30dd546c06909bfeb07eddd4498f83afe6cebe21a2ecdd98c",
+            "fe9c7d1875ae53c882dbc1bbb67789f5ee0d2e30b7012d2ff4e9a3a5b0c2da85",
+            "ae8073b1dbc45a1a9cd7031c2d5a6f114b17b761e261352783352ba626f7e28e"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "5c640e07bc78b6ba8435ce07b7f67ca607db4ecffcde3607b855ac235dba58ee",
+            "e32d3d99a64c995581be2c0ff6a352e15b9807da2bc075751d8fbf6863d64e80",
+            "71fb370e8d7608e17a650a99a421d0c8dfd754305647828430fd07435c93eb3d",
+            "6da9f47d51884a83c9484a28a7f04cc953764951db0f38b856b3ef9b49f18fe2",
+            "4774d97b20d9150a84592e2aaee52b077f0b1b6ded6ccac0218554f693eb3eb9",
+            "57762c33f5cae7ecfd778f1adf927ab33c7c447b8570314056221435442dc90e",
+            "d18ad1962a4b3697dff5ba233c996927e46809361df3f63cf83d036e35fad671",
+            "b25adde3cfae33327e63aa18316285b6ebdfd8509b69faab731a415ba0b6edd2",
+            "811198c77c9f5dde227722b0200024297aa119d799744ea469620ce8ee7e1b9f"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "046f931cfccf255dfff6f0f997daa468fe8fefd87ca22d1150941095fd277d01",
+            "186af56a8bd54a92b3baaa1eb604502037b0a6d2f2551b9f5698a7e464e9b42d",
+            "5c04ba9085c28263db7fd29b9781b6a14ac30291102570c55ce71481291f4882",
+            "c751e8699471c84944782b506ffc81968cc29562dbda1f2f26aacfe3ecde9348",
+            "7dde4e07b4617f34c45f0f25031cc705c529bb753de50f979cfc26cbb9ecba87",
+            "40d558a8e1884eb6af9986dddefc2bfa296b067007ba46f524a9a8fa42ff2a77",
+            "d14a152cf982cee564fcf4d8eb1953440655d0458a858275b0c2607db3ba65ab",
+            "def80ce0580a86ebae3db2bdced169edd7105215f2d772c1b335a14f1905ffbd",
+            "b6df772dccbb81b53d4c6638c043a02a02b71c39c9af7605185d22c21d025a54"
+          ]
+        }
+      },
+      "hurt": {
+        "south": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "6a5965c02fe4f856d093de60259f53e22a5688e0d4bd264d564a876388ec3126",
+            "1238e8c7778ec17347adb14dacb8b873ed821ba0be4c184d27eb906892c4bf2d",
+            "bcfb891da309073bf67789eb3c1230462cc605de154291a4e5499a1ae127b74f",
+            "f9cd3d86d2e1bedb6f3bbae1a73015919378babf75043c1b1855431308f1cb08",
+            "b8b939ade78a71a35b33f59ee913ea0a0a5b87977908293411510773719cccf0",
+            "30672caa21a2661bacf99f354563a026417c77c499416961ad1eb1e3c1f776ab",
+            "4f378e4b666ea22a69fd11f02e66111a1629304366e3f2c054308e63d25f5f75",
+            "6f17f0ff9a16616fe441a948d6af3827a92049dd1360c1a8ab1c9685d55624ef",
+            "a20eeb9383b159058125e22a7a4117239371f978c8a95c551150679211516bcc"
+          ]
+        }
+      }
+    }
+  }
+}

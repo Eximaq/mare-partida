@@ -1,0 +1,1350 @@
+{
+  "id": "19bcb138-d9d4-432c-aa53-fb384db28bd4",
+  "name": "Don Krieg",
+  "monster": true,
+  "dungeonBoss": true,
+  "worldHeight": 116,
+  "legacyHeight": 116,
+  "world_scale": 1,
+  "clips": {
+    "idle": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/idle-south.png",
+        "size": 84,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            9,
+            2,
+            75,
+            83
+          ]
+        ],
+        "anchor": [
+          42.0,
+          83
+        ],
+        "source_animation": "idle"
+      },
+      "south-east": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/idle-south-east.png",
+        "size": 84,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            13,
+            1,
+            69,
+            83
+          ]
+        ],
+        "anchor": [
+          42.0,
+          83
+        ],
+        "source_animation": "idle"
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/idle-east.png",
+        "size": 84,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            16,
+            1,
+            58,
+            83
+          ]
+        ],
+        "anchor": [
+          42.0,
+          83
+        ],
+        "source_animation": "idle"
+      },
+      "north-east": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/idle-north-east.png",
+        "size": 84,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            14,
+            1,
+            68,
+            82
+          ]
+        ],
+        "anchor": [
+          42.0,
+          82
+        ],
+        "source_animation": "idle"
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/idle-north.png",
+        "size": 84,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            10,
+            1,
+            73,
+            82
+          ]
+        ],
+        "anchor": [
+          42.0,
+          82
+        ],
+        "source_animation": "idle"
+      },
+      "north-west": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/idle-north-west.png",
+        "size": 84,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            15,
+            1,
+            69,
+            82
+          ]
+        ],
+        "anchor": [
+          42.0,
+          82
+        ],
+        "source_animation": "idle"
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/idle-west.png",
+        "size": 84,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            26,
+            1,
+            68,
+            83
+          ]
+        ],
+        "anchor": [
+          42.0,
+          83
+        ],
+        "source_animation": "idle"
+      },
+      "south-west": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/idle-south-west.png",
+        "size": 84,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            15,
+            1,
+            72,
+            83
+          ]
+        ],
+        "anchor": [
+          42.0,
+          83
+        ],
+        "source_animation": "idle"
+      }
+    },
+    "walk": {
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/walk-west.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            42,
+            17,
+            84,
+            99
+          ],
+          [
+            39,
+            18,
+            86,
+            99
+          ],
+          [
+            32,
+            19,
+            88,
+            99
+          ],
+          [
+            26,
+            20,
+            90,
+            99
+          ],
+          [
+            33,
+            19,
+            91,
+            97
+          ],
+          [
+            41,
+            17,
+            91,
+            94
+          ],
+          [
+            36,
+            18,
+            89,
+            95
+          ],
+          [
+            29,
+            19,
+            89,
+            97
+          ],
+          [
+            25,
+            20,
+            89,
+            99
+          ]
+        ],
+        "anchor": [
+          58.0,
+          99
+        ],
+        "source_animation": "Shift_weight_to_the_right_leg_and_lift_the_left_kn"
+      },
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/walk-south.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            25,
+            18,
+            91,
+            99
+          ],
+          [
+            24,
+            18,
+            89,
+            99
+          ],
+          [
+            22,
+            16,
+            86,
+            95
+          ],
+          [
+            20,
+            15,
+            85,
+            92
+          ],
+          [
+            18,
+            18,
+            85,
+            102
+          ],
+          [
+            19,
+            18,
+            90,
+            99
+          ],
+          [
+            27,
+            16,
+            91,
+            95
+          ],
+          [
+            31,
+            15,
+            96,
+            92
+          ],
+          [
+            31,
+            18,
+            98,
+            102
+          ]
+        ],
+        "anchor": [
+          58.0,
+          99
+        ],
+        "source_animation": "Shift_weight_to_the_right_leg_and_lift_the_left_kn"
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/walk-north.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            26,
+            17,
+            89,
+            98
+          ],
+          [
+            24,
+            15,
+            86,
+            101
+          ],
+          [
+            27,
+            15,
+            82,
+            102
+          ],
+          [
+            25,
+            15,
+            82,
+            103
+          ],
+          [
+            25,
+            17,
+            85,
+            104
+          ],
+          [
+            28,
+            15,
+            89,
+            98
+          ],
+          [
+            31,
+            15,
+            88,
+            101
+          ],
+          [
+            33,
+            15,
+            90,
+            103
+          ],
+          [
+            31,
+            17,
+            90,
+            104
+          ]
+        ],
+        "anchor": [
+          58.0,
+          98
+        ],
+        "source_animation": "Shift_weight_to_the_right_leg_and_lift_the_left_kn"
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/walk-east.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            32,
+            17,
+            74,
+            99
+          ],
+          [
+            30,
+            18,
+            77,
+            99
+          ],
+          [
+            28,
+            19,
+            84,
+            99
+          ],
+          [
+            26,
+            20,
+            90,
+            99
+          ],
+          [
+            25,
+            19,
+            83,
+            97
+          ],
+          [
+            25,
+            17,
+            75,
+            94
+          ],
+          [
+            27,
+            18,
+            80,
+            95
+          ],
+          [
+            27,
+            19,
+            87,
+            97
+          ],
+          [
+            27,
+            20,
+            91,
+            99
+          ]
+        ],
+        "anchor": [
+          58.0,
+          99
+        ],
+        "source_animation": "Shift_weight_to_the_right_leg_and_lift_the_left_kn"
+      }
+    },
+    "attack": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/attack-south.png",
+        "size": 116,
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            20,
+            6,
+            96,
+            99
+          ],
+          [
+            20,
+            4,
+            97,
+            99
+          ],
+          [
+            20,
+            4,
+            98,
+            99
+          ],
+          [
+            20,
+            19,
+            93,
+            111
+          ],
+          [
+            19,
+            19,
+            98,
+            116
+          ],
+          [
+            21,
+            19,
+            100,
+            116
+          ],
+          [
+            23,
+            19,
+            102,
+            116
+          ],
+          [
+            24,
+            18,
+            95,
+            110
+          ]
+        ],
+        "anchor": [
+          58.0,
+          99
+        ],
+        "source_animation": "The_right_hand_draws_the_spear_back_to_the_hip_as",
+        "impact_frame": 3
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/attack-west.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            42,
+            17,
+            84,
+            99
+          ],
+          [
+            34,
+            17,
+            88,
+            99
+          ],
+          [
+            31,
+            17,
+            103,
+            99
+          ],
+          [
+            31,
+            17,
+            105,
+            99
+          ],
+          [
+            31,
+            17,
+            105,
+            99
+          ],
+          [
+            11,
+            17,
+            85,
+            99
+          ],
+          [
+            12,
+            17,
+            84,
+            99
+          ],
+          [
+            11,
+            17,
+            82,
+            99
+          ],
+          [
+            16,
+            17,
+            84,
+            99
+          ]
+        ],
+        "anchor": [
+          58.0,
+          99
+        ],
+        "source_animation": "The_right_hand_draws_the_spear_back_to_the_hip_as",
+        "impact_frame": 5
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/attack-east.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            32,
+            17,
+            74,
+            99
+          ],
+          [
+            28,
+            17,
+            82,
+            99
+          ],
+          [
+            13,
+            17,
+            85,
+            99
+          ],
+          [
+            11,
+            17,
+            85,
+            99
+          ],
+          [
+            11,
+            17,
+            85,
+            99
+          ],
+          [
+            31,
+            17,
+            105,
+            99
+          ],
+          [
+            32,
+            17,
+            104,
+            99
+          ],
+          [
+            34,
+            17,
+            105,
+            99
+          ],
+          [
+            32,
+            17,
+            100,
+            99
+          ]
+        ],
+        "anchor": [
+          58.0,
+          99
+        ],
+        "source_animation": "The_right_hand_draws_the_spear_back_to_the_hip_as",
+        "impact_frame": 5
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/attack-north.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            26,
+            17,
+            89,
+            98
+          ],
+          [
+            22,
+            17,
+            101,
+            98
+          ],
+          [
+            19,
+            17,
+            100,
+            98
+          ],
+          [
+            19,
+            17,
+            99,
+            98
+          ],
+          [
+            19,
+            17,
+            99,
+            98
+          ],
+          [
+            16,
+            17,
+            103,
+            98
+          ],
+          [
+            18,
+            13,
+            103,
+            98
+          ],
+          [
+            19,
+            12,
+            105,
+            102
+          ],
+          [
+            19,
+            13,
+            94,
+            103
+          ]
+        ],
+        "anchor": [
+          58.0,
+          98
+        ],
+        "source_animation": "The_right_hand_draws_the_spear_back_to_the_hip_as",
+        "impact_frame": 5
+      }
+    },
+    "hurt": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-krieg/hurt-south.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            25,
+            18,
+            91,
+            99
+          ],
+          [
+            27,
+            19,
+            93,
+            99
+          ],
+          [
+            25,
+            18,
+            92,
+            99
+          ],
+          [
+            18,
+            17,
+            98,
+            99
+          ],
+          [
+            15,
+            17,
+            100,
+            99
+          ],
+          [
+            23,
+            17,
+            102,
+            99
+          ],
+          [
+            23,
+            17,
+            89,
+            99
+          ],
+          [
+            24,
+            18,
+            90,
+            99
+          ],
+          [
+            25,
+            18,
+            91,
+            99
+          ]
+        ],
+        "anchor": [
+          58.0,
+          99
+        ],
+        "source_animation": "Tense_the_body_sharply_as_a_sudden_impact_strikes",
+        "playback_start": 0,
+        "playback_frames": 4,
+        "playback_seconds": 0.18
+      }
+    }
+  },
+  "provenance": {
+    "id": "19bcb138-d9d4-432c-aa53-fb384db28bd4",
+    "name": "Don Krieg",
+    "source": "Existing owner PixelLab character export",
+    "archive_sha256": "fc2ff2d17562a7f798eef0103619dbc4162e5010b3d2dcf4d428f890bf8b03b8",
+    "clips": {
+      "idle": {
+        "south": {
+          "source_sizes": [
+            [
+              84,
+              84
+            ]
+          ],
+          "rgba_sha256": [
+            "fadc86e58c5b0aa23fb3a81b607e3178b43f019ba3ee2beb85aaee8b8870b053"
+          ]
+        },
+        "south-east": {
+          "source_sizes": [
+            [
+              84,
+              84
+            ]
+          ],
+          "rgba_sha256": [
+            "41f6744b770f531cdca01af832096f41d5a40e3ef65cf34a865d604101ac5327"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              84,
+              84
+            ]
+          ],
+          "rgba_sha256": [
+            "4164937d9cc82ebb647ec71e8d03a064cf5a5f87836c7735e7bd1a53b2b9dae0"
+          ]
+        },
+        "north-east": {
+          "source_sizes": [
+            [
+              84,
+              84
+            ]
+          ],
+          "rgba_sha256": [
+            "0ff8689121b1103610611cef3f317a522f086c0bcc79a630476dfccbb8c21ed4"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              84,
+              84
+            ]
+          ],
+          "rgba_sha256": [
+            "ff8114241a739b4310d66bf20576ec961b9e07e58522781dbb0bf7740fea9a02"
+          ]
+        },
+        "north-west": {
+          "source_sizes": [
+            [
+              84,
+              84
+            ]
+          ],
+          "rgba_sha256": [
+            "cb28d2230a439ab66e8a0cfa03c4b56aa1ca087471937dc59b45dbdca09708ee"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              84,
+              84
+            ]
+          ],
+          "rgba_sha256": [
+            "d770fa98af452e7f3b6e9ce47f899d016152c46858bb1bd08440ca474a459f2b"
+          ]
+        },
+        "south-west": {
+          "source_sizes": [
+            [
+              84,
+              84
+            ]
+          ],
+          "rgba_sha256": [
+            "31e1e802512a9846699bf4452f03f91fcf16607c50f34c245b2aa7cd3ad445d8"
+          ]
+        }
+      },
+      "walk": {
+        "west": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "8c2b8e195ee19add7a2695645167903621a126a192aa95381c19ef2c9984358e",
+            "6b2b6e6d767021516b7d2cd64950c51eeaa2d35411eba2aba4b309f5a9f3a57a",
+            "fa4ff78b4ba8cb9ad959e6686177ade07851c1099fcc920d640c50cb4c8c5b22",
+            "32de877ccafbc44edb5f2798ebad35df330afc89bb42b67452da92316501ca65",
+            "0aae9dacd6031829e796a7c6602ac226e86483c7c526ad97d54e2375e60f61f7",
+            "93906267cfbf7fc82e2017da49e6cee8545ff8b8e18af7e5426adaf418ca5fd7",
+            "a63dbb8cd236d979ed04af61698ffaaabc0cbb86622d77875a6db819c11c8df2",
+            "1fc65eb310a8f41e81e91f31a2e8e7668e527143c4203af84f8658b53bd5133e",
+            "b1644371ec60b884729897cfac746b819718ecdf2b197c923fb623a953fd09e4"
+          ]
+        },
+        "south": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "27128709749cf5be5cb95a72a6fb537a2df42edcadfbe94237e4366642adfde9",
+            "89c232824b532bded64d600820b84041e0a59cc356e7b45aa1e5cf345f8f6069",
+            "841e13ee39cf196a8c7a865301e63985744362e62f35d89321a291d45a38c596",
+            "6b67c76e39d408f74f328a62a6f2ae3345ec273edfb964c5691f53d8205dd511",
+            "79ebb8114f3c99e38d363d02e9f9537b844b0444381136af0f42184f20489b02",
+            "2c67a9e7b271b2d182b855d6ebfdfab2f7340c6d1ec8b184f2a53911d3952f4e",
+            "30a2d8f401901ae7da061d98267689ca451d48aef0befc76c3636fa686a2ff8b",
+            "8617a5116b26ea8031b12cea302ea156d7197bfb42fc7761cc3e69b1cad6a89e",
+            "11aa2988c934cedbbd96a5cf38643fdbaa5c5379da1ef3e1707026c83957f5ce"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "91aab34ff4a438924221e43310b87817c4819f197c5c07b607455eabefd5e131",
+            "178c32c52f5ebbb6a6ac7f760ffc118cc40bad202bafd2b2207640001f9258b2",
+            "c8c674ead9b1e8ff67ca419136b1f246dd345249214bebaab47153d3585557f5",
+            "ab09c76ba0b98190a903243b1527a730b391b83a1af203c83061b3205c805e35",
+            "f439adffb596c0cf7612914e5b2fbceb7f8cd96fb7966e7f4f41310c4280fb66",
+            "54cbcf77178e7bb2ee95714ffabb9f6dbaccfb71c86f1faa837874ed58bcead1",
+            "ec823ff80e2304d256d5e2e496a6b6af6f9f156a6139583e14bca02ce46d43bb",
+            "edc6e24497f47eb00c26bee8505ca8d60e7ae05147b5731854d1441248750004",
+            "059fb9220923b07611feb8a661bfcec00986323c1c3af84fd9a7a35b308e9cb1"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "a0000345d03255e371bc98fdab8962bcc5cfb8cd2f9ffa52c05b36c707b680bb",
+            "f7844d76c6302c34ba4778481c63f733a652604f2e864a9574f4f99d40b8ec90",
+            "0af4ccba4823e8a8df0099c146b022805e58793c70877183245951ca48ec9916",
+            "e4105ac5589543247b3bb29c3466bf1853f38dbb8ce2041210096660c6fcd0c2",
+            "aeff1827da1c6aa94cd31ce19db1ed718680bbfe4cb483fcdf59ac1d3eff944f",
+            "ff135a4417554bae23650a2bb3a209bb4f355df904c21fb362b15eb2588b53f0",
+            "495dea75857eb4f27d006ca207104200987e63fbe19212ed049aeb8a74610a0a",
+            "b8eaf59e431f32c1108362d97e0f5ebda830f8bcc48f26f5cc29ad780606bcfa",
+            "1cd3707809534e1640b6157fa8592b06d76bebe1f42298ea0eb4adcd1e31a7b9"
+          ]
+        }
+      },
+      "attack": {
+        "south": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "aa38cd2f875b2e1dabf8e4535f9dbbdf3307c76a2a17856d3de7c9e6afd60fbb",
+            "0e0dd745ffe24840a379c786c50fc00dee2d04f44121e6f2ea9ecb99d5debafd",
+            "1f9b6058e34c048ef57ecc8a62d4252f98a17fc3ec6726b2d2ffa03fe0e2b790",
+            "32c7f4686f39fc6d67738a649a343dee757565d0d0da5e21e6891ab56f8c3c69",
+            "2b9b0be8c0222d5145473dbbffb78b8fd6fb3a5618125ef3c0d49b3c4060920a",
+            "7ea09e310402cc874df30fd5d7fa0400fa360f1f4bb17f334862050dd68ec353",
+            "0661447596f03c9d2a7c7c5b66c3917aff0ff795b64683ceb34736e99ae16baa",
+            "126c880395776043b85ef8b7f833a37312c54806dd4e8eade2101afbdb2bb856"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "8c2b8e195ee19add7a2695645167903621a126a192aa95381c19ef2c9984358e",
+            "5b94f0bcfea19162a1c5adb306bce88387cf8623d6f1b1e8baede8f02e8d672b",
+            "083b4a110c6fb4b3a76beba47ca7fbe5ad67032c48c9f42128d639224ef5ed31",
+            "f0814d9c6f2868ace057a6a0f534d991cab4c533de453b464a4eff2b15accbe4",
+            "d4ff5f7ab0f1375d4ec72c31b74ecfd8b1ba753275f79e0a2792c494006407ef",
+            "5679e76c250c7592b41cd1b0d7a095c91b609cb670656cdd48b355c1d9c41fa6",
+            "8e05e428833dd0a91bc7a2c000f88ee069ed0c5b13cd4a0839302d71025cda9f",
+            "0aa97cbba265e3798f082ffebf3b9e3d0a3e0b650b3073b3a98893436f5586b7",
+            "432f18cdaf65ff3fbb9a38cf18e1cb5478438001c561f0a29daf02d8cd4e0ed3"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "a0000345d03255e371bc98fdab8962bcc5cfb8cd2f9ffa52c05b36c707b680bb",
+            "f58741f39f486047791621698fc76b0a3d46b8f93dca9a601a89018193892bf1",
+            "cc929d96aba363947ffd7c1d6ba687ca1c7018b0f1e224b2771aab40e4fd407a",
+            "70fa3fbe2adadd91446ed2a935dd224e602c27b2f75e39950052aa53373a60d9",
+            "beda0af9f0438a9e096925aaa4917f1e68a84ff2b9fa9bb12d003fb00c27d31c",
+            "d7af37c8488696488a19e0c5bba5b617174d4f9a4ba91e42cf5a2a91050e5e95",
+            "3ed39f07aa442f94bfbdbfc74f4546d55d9c97e66d0e21e73215e528d0126ed8",
+            "402ba9f139c466729dc15eab9932a1d95e399d741239968af059dd7cb1fd1da2",
+            "f89263faf14e90054c0c87266e9b167f4f994fb117fb6a843ccd1426e0cd7488"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "91aab34ff4a438924221e43310b87817c4819f197c5c07b607455eabefd5e131",
+            "1954d6b07fb5e4b9c8a852e59ba95471f76b3f889abb31751506b5541b6a36d2",
+            "af4d7ae97b0a1d2ebad18686f29c3f809b8caa527041e12acdd02dd5109215cc",
+            "e1a3d02a29ee4f8220500461a691e05ed6bed583acf2ce86cd9e681e0d0e6348",
+            "18525955995898bd5febdd9ba0e756f1240c2781eec6a2331f5deb1c57d6aee5",
+            "9291c17355a4b46f1cfea9945aaaea8eea7a8f450df0fbb218633308aa09e9b0",
+            "aa32f12a8f01f37dcb49f509663f70d7950019020383be19aa10ae02751322b4",
+            "c975238f6b4cda4b0d35692abd50b16dee2c99e7a2fb10ba1d0a211b9606528f",
+            "05e1ed61b15cf299a7c531123321a70bb391a2903f8ebc13566dc29832c55f19"
+          ]
+        }
+      },
+      "hurt": {
+        "south": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "27128709749cf5be5cb95a72a6fb537a2df42edcadfbe94237e4366642adfde9",
+            "746db98f0a9fef29b0d5cdf9d8f8cd00dcc524649cf408c472122337203a579b",
+            "7951f2621a001b7798956f63f2d7c7169001c0004e63f2ae7e8aa8869c79b5df",
+            "562cecdc83801955988e534b1439d73fa7ce315d16343a8388dcf8b70b854d83",
+            "ef1e234933e36b57168a302581169c4d33940ef273c0b46439bdb9a2e9c77f3b",
+            "4ecdfd7c50da3804e748148a216debe24f9acb845ee9e30558f78f05eb9522c0",
+            "6a6a2ac3d8ab6c01f982cebd83c5a87f09a3ce9d28840e7d7405ea709b8fbf1d",
+            "795056356247bc612e020ed554dc50e4ca71511fec76695b37e2a1b07aa43329",
+            "6448df80d30700c4d2505a5115bf0e87137f8479e503aefcb74d08e4f92b6593"
+          ]
+        }
+      }
+    }
+  }
+}

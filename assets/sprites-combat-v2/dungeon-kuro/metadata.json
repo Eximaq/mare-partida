@@ -1,0 +1,1317 @@
+{
+  "id": "ad4bc800-098b-4065-8017-ec46c784fc7d",
+  "name": "Kuro",
+  "monster": true,
+  "dungeonBoss": true,
+  "worldHeight": 102,
+  "legacyHeight": 102,
+  "world_scale": 1,
+  "clips": {
+    "idle": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/idle-south.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            14,
+            5,
+            82,
+            90
+          ]
+        ],
+        "anchor": [
+          48.0,
+          90
+        ],
+        "source_animation": "idle"
+      },
+      "south-east": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/idle-south-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            18,
+            5,
+            79,
+            91
+          ]
+        ],
+        "anchor": [
+          48.0,
+          91
+        ],
+        "source_animation": "idle"
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/idle-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            20,
+            4,
+            73,
+            91
+          ]
+        ],
+        "anchor": [
+          48.0,
+          91
+        ],
+        "source_animation": "idle"
+      },
+      "north-east": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/idle-north-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            23,
+            4,
+            84,
+            89
+          ]
+        ],
+        "anchor": [
+          48.0,
+          89
+        ],
+        "source_animation": "idle"
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/idle-north.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            14,
+            4,
+            82,
+            88
+          ]
+        ],
+        "anchor": [
+          48.0,
+          88
+        ],
+        "source_animation": "idle"
+      },
+      "north-west": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/idle-north-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            12,
+            4,
+            73,
+            89
+          ]
+        ],
+        "anchor": [
+          48.0,
+          89
+        ],
+        "source_animation": "idle"
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/idle-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            23,
+            4,
+            76,
+            91
+          ]
+        ],
+        "anchor": [
+          48.0,
+          91
+        ],
+        "source_animation": "idle"
+      },
+      "south-west": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/idle-south-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            17,
+            5,
+            78,
+            91
+          ]
+        ],
+        "anchor": [
+          48.0,
+          91
+        ],
+        "source_animation": "idle"
+      }
+    },
+    "walk": {
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/walk-north.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            28,
+            18,
+            96,
+            102
+          ],
+          [
+            30,
+            19,
+            98,
+            104
+          ],
+          [
+            28,
+            20,
+            98,
+            105
+          ],
+          [
+            30,
+            20,
+            95,
+            107
+          ],
+          [
+            26,
+            19,
+            91,
+            104
+          ],
+          [
+            24,
+            18,
+            91,
+            100
+          ],
+          [
+            25,
+            18,
+            93,
+            100
+          ],
+          [
+            28,
+            18,
+            96,
+            102
+          ],
+          [
+            28,
+            18,
+            96,
+            102
+          ]
+        ],
+        "anchor": [
+          62.0,
+          102
+        ],
+        "source_animation": "Step_forward_with_the_right_foot_while_swinging_th"
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/walk-west.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            37,
+            18,
+            90,
+            105
+          ],
+          [
+            42,
+            17,
+            83,
+            105
+          ],
+          [
+            41,
+            17,
+            72,
+            104
+          ],
+          [
+            35,
+            18,
+            75,
+            103
+          ],
+          [
+            35,
+            20,
+            78,
+            102
+          ],
+          [
+            38,
+            19,
+            77,
+            103
+          ],
+          [
+            40,
+            18,
+            75,
+            104
+          ],
+          [
+            42,
+            17,
+            83,
+            105
+          ],
+          [
+            37,
+            18,
+            90,
+            105
+          ]
+        ],
+        "anchor": [
+          62.0,
+          105
+        ],
+        "source_animation": "Step_forward_with_the_right_foot_while_swinging_th"
+      },
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/walk-south.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            28,
+            19,
+            96,
+            104
+          ],
+          [
+            28,
+            19,
+            96,
+            104
+          ],
+          [
+            28,
+            19,
+            93,
+            104
+          ],
+          [
+            28,
+            19,
+            90,
+            105
+          ],
+          [
+            28,
+            19,
+            91,
+            105
+          ],
+          [
+            28,
+            19,
+            95,
+            104
+          ],
+          [
+            33,
+            19,
+            96,
+            104
+          ],
+          [
+            32,
+            19,
+            96,
+            104
+          ],
+          [
+            28,
+            19,
+            96,
+            104
+          ]
+        ],
+        "anchor": [
+          62.0,
+          104
+        ],
+        "source_animation": "Step_forward_with_the_right_foot_while_swinging_th"
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/walk-east.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            34,
+            18,
+            87,
+            105
+          ],
+          [
+            41,
+            17,
+            82,
+            105
+          ],
+          [
+            52,
+            17,
+            83,
+            104
+          ],
+          [
+            49,
+            18,
+            89,
+            103
+          ],
+          [
+            46,
+            20,
+            89,
+            102
+          ],
+          [
+            47,
+            19,
+            86,
+            103
+          ],
+          [
+            49,
+            18,
+            84,
+            104
+          ],
+          [
+            41,
+            17,
+            82,
+            105
+          ],
+          [
+            34,
+            18,
+            87,
+            105
+          ]
+        ],
+        "anchor": [
+          62.0,
+          105
+        ],
+        "source_animation": "Step_forward_with_the_right_foot_while_swinging_th"
+      }
+    },
+    "attack": {
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/attack-west.png",
+        "size": 124,
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            46,
+            18,
+            110,
+            105
+          ],
+          [
+            46,
+            18,
+            110,
+            105
+          ],
+          [
+            14,
+            18,
+            79,
+            105
+          ],
+          [
+            14,
+            18,
+            70,
+            105
+          ],
+          [
+            25,
+            18,
+            70,
+            105
+          ],
+          [
+            37,
+            18,
+            90,
+            105
+          ],
+          [
+            37,
+            18,
+            90,
+            105
+          ],
+          [
+            45,
+            18,
+            87,
+            105
+          ]
+        ],
+        "anchor": [
+          62.0,
+          105
+        ],
+        "source_animation": "Both_hands_draw_back_to_the_waist_then_thrust_forw",
+        "impact_frame": 2
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/attack-north.png",
+        "size": 124,
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            40,
+            19,
+            84,
+            102
+          ],
+          [
+            38,
+            21,
+            86,
+            102
+          ],
+          [
+            38,
+            21,
+            86,
+            102
+          ],
+          [
+            32,
+            19,
+            92,
+            102
+          ],
+          [
+            28,
+            18,
+            96,
+            102
+          ],
+          [
+            28,
+            18,
+            96,
+            102
+          ],
+          [
+            28,
+            18,
+            96,
+            102
+          ],
+          [
+            42,
+            19,
+            82,
+            102
+          ]
+        ],
+        "anchor": [
+          62.0,
+          102
+        ],
+        "source_animation": "Both_hands_draw_back_to_the_waist_then_thrust_forw",
+        "impact_frame": 2
+      },
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/attack-south.png",
+        "size": 124,
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            34,
+            21,
+            90,
+            104
+          ],
+          [
+            33,
+            21,
+            91,
+            104
+          ],
+          [
+            41,
+            19,
+            83,
+            104
+          ],
+          [
+            41,
+            19,
+            83,
+            104
+          ],
+          [
+            34,
+            19,
+            90,
+            104
+          ],
+          [
+            28,
+            19,
+            96,
+            104
+          ],
+          [
+            28,
+            19,
+            96,
+            104
+          ],
+          [
+            28,
+            19,
+            96,
+            104
+          ]
+        ],
+        "anchor": [
+          62.0,
+          104
+        ],
+        "source_animation": "Both_hands_draw_back_to_the_waist_then_thrust_forw",
+        "impact_frame": 2
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/attack-east.png",
+        "size": 124,
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            14,
+            18,
+            78,
+            105
+          ],
+          [
+            14,
+            18,
+            78,
+            105
+          ],
+          [
+            45,
+            18,
+            110,
+            105
+          ],
+          [
+            54,
+            18,
+            110,
+            105
+          ],
+          [
+            54,
+            18,
+            99,
+            105
+          ],
+          [
+            34,
+            18,
+            87,
+            105
+          ],
+          [
+            34,
+            18,
+            87,
+            105
+          ],
+          [
+            37,
+            18,
+            79,
+            105
+          ]
+        ],
+        "anchor": [
+          62.0,
+          105
+        ],
+        "source_animation": "Both_hands_draw_back_to_the_waist_then_thrust_forw",
+        "impact_frame": 2
+      }
+    },
+    "hurt": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-kuro/hurt-south.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            28,
+            19,
+            96,
+            104
+          ],
+          [
+            28,
+            19,
+            96,
+            104
+          ],
+          [
+            23,
+            21,
+            101,
+            104
+          ],
+          [
+            20,
+            21,
+            104,
+            104
+          ],
+          [
+            21,
+            21,
+            103,
+            104
+          ],
+          [
+            22,
+            21,
+            102,
+            104
+          ],
+          [
+            22,
+            20,
+            101,
+            104
+          ],
+          [
+            23,
+            20,
+            101,
+            104
+          ],
+          [
+            24,
+            20,
+            100,
+            104
+          ]
+        ],
+        "anchor": [
+          62.0,
+          104
+        ],
+        "source_animation": "React_with_a_sharp_jolt_of_impact_flinching_the_up",
+        "playback_start": 0,
+        "playback_frames": 4,
+        "playback_seconds": 0.18
+      }
+    }
+  },
+  "provenance": {
+    "id": "ad4bc800-098b-4065-8017-ec46c784fc7d",
+    "name": "Kuro",
+    "source": "Existing owner PixelLab character export",
+    "archive_sha256": "01874550989eaccc60d627ed7513cc42c8b8224d2fb0bcd5101b105637a9dcf5",
+    "clips": {
+      "idle": {
+        "south": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "ebc74bdf105bc29204a9718ff2f89ae336028aad7e29c6e831823b9e6d1acc17"
+          ]
+        },
+        "south-east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "ce367f26aaf15dfa4de0bd10e8ba80c48d1a1f323052088b30afa2c2c73511d4"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "9946117094cdd312b930787cbdc9974e525dbf7a60361a1b507115d7d2cbc865"
+          ]
+        },
+        "north-east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "6f6ea8dbf61c826a8cfb3c9a5ee427fb8502a0c2c15ddd9f940cceb81addeaf7"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "1cba5f1b8bcfd0ba914218f073d2ec2177e41df3b22a213c67708e7af64b18ba"
+          ]
+        },
+        "north-west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "4e19b7f4060d8be38f66cd50a6d6b6522bc0f289f10d0f0bb74cb316d245c00b"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "e6072cc021ce794d9902115de16a80e3097ee0c8f7a093eecc01d3ae0d5ba958"
+          ]
+        },
+        "south-west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "a0e0a5fa63f436053c3a79deccd743a735215e8b70c85c164468940657e1e87a"
+          ]
+        }
+      },
+      "walk": {
+        "north": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "a23295a4693239d218b354b7a7080a1fbbcd1e716982e35ac9722a1cfb58ad31",
+            "c8ef90fd5fd1ba991848504fc3c87d290f0c6f7369aeed569f486ae7b9840337",
+            "c26c69efac1957657c56005e44a3740a7acfc9523e84eb35e92c89ee518fedb1",
+            "a7926486dd1c5fc7e86a3eb773ad6be7096e3795551712a9a0319e886c840464",
+            "fa95cbf274e6d988772ceb7bd59d10b2f13cc5b80664064a19c5aaf6a1e72e07",
+            "5ed3b6965981e68acee399c613a51d6902cdc7d084a7436ed626c1b54a3e9a48",
+            "554a5f61034076f9bb4c4eb7573c5ff8b75d583bee9d6b56faaf9c0a1a6dcfaf",
+            "f81a4fb17d6f5bd02e8d35ad6d49f9cba3de976ca001180bfacb3266de3dc510",
+            "3ac8a086858db9ff8aee47e2de6bb8edfdec01374fc1ef2dcffbd09dca14fc62"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "c135f5a7e5c3afc9ac6bad7f35d1709a6ed475babc39f9932ea8ae6e306e388f",
+            "bddcd654849366c5c7cdb538031b8b7ce861c38e2862313af9aba95890a07fe0",
+            "9fe8a19964865c572efd840788963b3ce08ba7594742309e24caa1d3f6132895",
+            "7822976a84a83f650c4526bbb0b155593bd8e2816ebc80937bffc638c1425f22",
+            "e04fc3086d0d071a0f15c7c9d869a03aa3c040091d14d88eb20417e1423f58b1",
+            "98d792a94cd1b07ecb549e52b6fdeced14280a8004c2b27b5961c2091b791f7c",
+            "89666d2b31272dd4fb762b02fd0f31c126d35dfc87eb3b2ee68e8057e08f1b76",
+            "21e3a755efa1aad7971f8515423d35753fdc5d86b5d8a42b242c82370f4f4766",
+            "0fa2e378035db2e6d40429a12b71df40d039361d3d26b5a7945244074a2278a9"
+          ]
+        },
+        "south": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "fddd7dbd57e8d0769d2b9502aac1eb62f7a0a24a58e89f88b00ab6746ba3d19e",
+            "f469e74f17437990aee28f77b6e585f2e335d191d6da367b8a60357f8db1eb6c",
+            "4bf9f83f5ce022a7348c6def192ab087dbd7aa0945bc1bb2ab271d1d11fc4a67",
+            "5b2b325d4aeb46f61cfa022dc7cee45a980773ee9d2badf17c8164db6ef838af",
+            "431c28616a2968721b92990edec3317a3626957afcd70fbe0576efad2e5e656f",
+            "27c22a8608e9e9cdb3b5b6007c236e51e2cb65c3df5896094f18f9244bb1aad1",
+            "597776cea3f1ba721d55f0f6e321dc7eb56ffb540e4bf3c7dbc68ac627ed59f0",
+            "ebacb7693e57a1537b59ea3859688263e7c2bd477a77e8b4dfb5253ad4e63567",
+            "578c3540c107b8c3b5a420b916cd538b73cc2cafa13f8ac8aecd1f3ffcc46b66"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "5e079459805d58e6cef5cc92a68b5c9b37032169c9f3dfab56ec314471a61a59",
+            "fd61837c1acab67ed5eba8f159090258b42973f75598bc702bd547ffdaed77a8",
+            "6abf64e85c38ce0ff1bf9cb4b33a178ce06f47e46d0a211d41740a329d712d3e",
+            "b481ede7d965c906f6777dd0d77daadf6079f9d77d018b42064e9026fcd60758",
+            "123f5c6541b812e7e6fd058a48d826290410fb6f55cc12132d1e8924fa945058",
+            "31bf0656bc1f58f9bc01dde27781f43391658cb09eadc43209d16c5f00091948",
+            "72945b45925fd386043b233dc70ac419e2c7eae551a0866db1a6ec4e3758ea58",
+            "fdfecf1d160828b8969bf5b30c2f0a9f33525dbf5dddf0ea08f4ab14864c502c",
+            "4277e2302d195b203f2ba01d24fe505f0923d3b8f7d1cabc1d394f7704b3e267"
+          ]
+        }
+      },
+      "attack": {
+        "west": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "dc09af55a163a38f66883bc51e44f9fefd0f18ab35748afc4278ae4bf429d5ed",
+            "fb8ae9df1be0e153cd2bf0e8b3d544939ee96bcacbd187134596758f058a01d3",
+            "8b57766c40201185d0e0f2938d4354e9d89b7ecd49ddf78c48f15e6af37696ed",
+            "c93e3411062ff2333c5207b9c27b67d1e63db7202a841d1577ab0d6196709165",
+            "b988fcfb56a4621f1f77a286f98fa709a563281e30bf3d68fbd1c135d8cb8d52",
+            "91da6e710f279f31d88866be689213320980e9b784490712bf9ef419a3c0e0d3",
+            "92c9311b318460ca9c968c0bd52d76a27a55c0ccddeec9af27d3dae64816973e",
+            "d40e65ed67aeb28696d4e258f952611bf663614d2ebeaac0bd509ca274a178d6"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "1ae800c059c39e3e92a701e9e1f935fc7a87702cf6431fd6d4a7e8dde01ea714",
+            "c3b848c3b73f8bf005daeacccef82dd6403f735850fd3b4e0017205fd06cb840",
+            "a7d9e140e4490c6655269771c534116c30d38140c6ffc28401473455acfbef83",
+            "ac0e67e1da11a9363522616c253c79dccb4a002f4e5b93b54857bedb17cefbb1",
+            "4c6a7fee7ec0ef4cf92841132d9fb20d8fbc7c743e0beb8fedf6651b332420cb",
+            "d0eece394afbd6961064cc6a39bb7e913594d02bf103192bbb68cb3e6b185c35",
+            "d0eece394afbd6961064cc6a39bb7e913594d02bf103192bbb68cb3e6b185c35",
+            "811607c9de2de207a32e01dde566e77e92f67e9af8c16fb413dd387d2d593f23"
+          ]
+        },
+        "south": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "7772bed58544b72807e3cd8ea9076d8d4c465708805705fcdafd07c16ee389ff",
+            "217e1d260645f88b7c3e16f3aeda9978a96a50002b333cf399d4aaefc47291cf",
+            "d0c66843bd64ebe1564a15ed063c7bf5c57a82d1342ebc041a8b4a859d3b4aec",
+            "e084222f83ee837b7a9b1ea13e441c0abc7090bf5616231f4cad1b07f4de1556",
+            "f8406c6e49ac0928c2e6d2181bf21c348359101e6c08e2da2708c997a2184b1e",
+            "c2d5044caa3215658c2c2b45145f2509c61c9f91a2a381895e5dc376764d4ab8",
+            "99672dc38b87a651cccc42212561ef049d538e92aaa6a8630418972551c6d508",
+            "efea465a3a2bbd91e15fcb5021164380a5a36f2b83d33e4b83d26d3932d6903a"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "d787d4e179983b3fb81b5846b29de110f3038363bbd0c289c8d7beb370bbe889",
+            "a19540143f7f0486e0b221ef8956aaf16ef142c802110dff5edfb51b2a6a78fc",
+            "382ab534d562dd731bedd8fb1d289b4e66fafa4180a319464a3cb32db888b371",
+            "b3bf29eecc4b6d98ad085cc7b83178f440f3525dcf40a497e4c8de208a07a90c",
+            "18076e1df9c03c0346bcd16d9dfdf3ba7ca5a38abc3dacf51bc844a4dbbc578c",
+            "2ac82123ef7c06af95c2a40b8e80779bcbbb96b763773dc893d7845afecd51f4",
+            "27464f380e024bc20ec2a1c93f59c5b9c8932d8b7f5894d2c7a1b5d68c9235ff",
+            "76321d4cc42f38dbe8cdb2c69368813b78b508da79ffe79dce0362858be0969f"
+          ]
+        }
+      },
+      "hurt": {
+        "south": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "fddd7dbd57e8d0769d2b9502aac1eb62f7a0a24a58e89f88b00ab6746ba3d19e",
+            "84f879730ae3ad70e92c5ac7b491647613570abc5873c5f3cd633f377c09bb5b",
+            "32bbc095360931a4eb2b89904e1ecf187efa3a372ac1ec4fae289742b5e3123a",
+            "16e39fca729c8df67aa3feb0fef396710fbd08a66ccb4e159f54e9666cdff931",
+            "236738ee7fc7a9b1d9a8a68e7d1af88412945724eaf844cb63572a1d8d29fe04",
+            "c7e82f699eb3b8b77276a8d6209bb911ce87b7986670a842383a541856cf5404",
+            "3af1c23958534ed1e5bc5fa5ee1f254b41362722d6391552005e7f5b96823dfd",
+            "5e8f4c2f63fe7b200f32a52d50205360f41833d774bc934e05da9a2eb126fbac",
+            "3fe31258e4039fedb481f111e68d85022c74e2a5eb74a67f7c4c505d3662c7da"
+          ]
+        }
+      }
+    }
+  }
+}

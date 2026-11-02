@@ -1,0 +1,1317 @@
+{
+  "id": "dfe782a0-01a4-45f3-8c65-bbe16abc5830",
+  "name": "Morgan",
+  "monster": true,
+  "dungeonBoss": true,
+  "worldHeight": 114,
+  "legacyHeight": 114,
+  "world_scale": 1,
+  "clips": {
+    "idle": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/idle-south.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            10,
+            9,
+            83,
+            91
+          ]
+        ],
+        "anchor": [
+          48.0,
+          91
+        ],
+        "source_animation": "idle"
+      },
+      "south-east": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/idle-south-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            16,
+            9,
+            77,
+            92
+          ]
+        ],
+        "anchor": [
+          48.0,
+          92
+        ],
+        "source_animation": "idle"
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/idle-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            24,
+            7,
+            66,
+            90
+          ]
+        ],
+        "anchor": [
+          48.0,
+          90
+        ],
+        "source_animation": "idle"
+      },
+      "north-east": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/idle-north-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            22,
+            8,
+            85,
+            88
+          ]
+        ],
+        "anchor": [
+          48.0,
+          88
+        ],
+        "source_animation": "idle"
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/idle-north.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            18,
+            7,
+            86,
+            88
+          ]
+        ],
+        "anchor": [
+          48.0,
+          88
+        ],
+        "source_animation": "idle"
+      },
+      "north-west": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/idle-north-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            21,
+            8,
+            74,
+            88
+          ]
+        ],
+        "anchor": [
+          48.0,
+          88
+        ],
+        "source_animation": "idle"
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/idle-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            29,
+            7,
+            74,
+            90
+          ]
+        ],
+        "anchor": [
+          48.0,
+          90
+        ],
+        "source_animation": "idle"
+      },
+      "south-west": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/idle-south-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            11,
+            9,
+            84,
+            92
+          ]
+        ],
+        "anchor": [
+          48.0,
+          92
+        ],
+        "source_animation": "idle"
+      }
+    },
+    "walk": {
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/walk-east.png",
+        "size": 120,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            36,
+            19,
+            78,
+            102
+          ],
+          [
+            37,
+            18,
+            81,
+            101
+          ],
+          [
+            36,
+            18,
+            86,
+            99
+          ],
+          [
+            36,
+            19,
+            88,
+            98
+          ],
+          [
+            38,
+            19,
+            84,
+            98
+          ],
+          [
+            39,
+            19,
+            82,
+            97
+          ],
+          [
+            41,
+            18,
+            81,
+            99
+          ],
+          [
+            39,
+            18,
+            80,
+            101
+          ],
+          [
+            35,
+            19,
+            81,
+            103
+          ]
+        ],
+        "anchor": [
+          60.0,
+          102
+        ],
+        "source_animation": "Walking"
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/walk-north.png",
+        "size": 116,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            28,
+            17,
+            96,
+            98
+          ],
+          [
+            27,
+            17,
+            95,
+            99
+          ],
+          [
+            25,
+            16,
+            93,
+            99
+          ],
+          [
+            24,
+            16,
+            93,
+            100
+          ],
+          [
+            25,
+            16,
+            93,
+            101
+          ],
+          [
+            26,
+            17,
+            94,
+            100
+          ],
+          [
+            28,
+            17,
+            96,
+            99
+          ],
+          [
+            29,
+            16,
+            98,
+            99
+          ],
+          [
+            30,
+            16,
+            98,
+            100
+          ]
+        ],
+        "anchor": [
+          58.0,
+          98
+        ],
+        "source_animation": "Walking"
+      },
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/walk-south.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            24,
+            23,
+            97,
+            105
+          ],
+          [
+            29,
+            22,
+            92,
+            102
+          ],
+          [
+            28,
+            20,
+            91,
+            103
+          ],
+          [
+            27,
+            21,
+            90,
+            107
+          ],
+          [
+            29,
+            20,
+            91,
+            105
+          ],
+          [
+            29,
+            20,
+            94,
+            102
+          ],
+          [
+            26,
+            20,
+            97,
+            103
+          ],
+          [
+            24,
+            21,
+            99,
+            107
+          ],
+          [
+            24,
+            20,
+            96,
+            105
+          ]
+        ],
+        "anchor": [
+          62.0,
+          105
+        ],
+        "source_animation": "Walking"
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/walk-west.png",
+        "size": 120,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            42,
+            19,
+            84,
+            102
+          ],
+          [
+            39,
+            18,
+            83,
+            101
+          ],
+          [
+            34,
+            18,
+            84,
+            99
+          ],
+          [
+            32,
+            19,
+            84,
+            98
+          ],
+          [
+            36,
+            19,
+            82,
+            98
+          ],
+          [
+            38,
+            19,
+            81,
+            97
+          ],
+          [
+            39,
+            18,
+            79,
+            99
+          ],
+          [
+            40,
+            18,
+            81,
+            101
+          ],
+          [
+            39,
+            19,
+            85,
+            103
+          ]
+        ],
+        "anchor": [
+          60.0,
+          102
+        ],
+        "source_animation": "Walking"
+      }
+    },
+    "attack": {
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/attack-east.png",
+        "size": 120,
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            22,
+            19,
+            79,
+            102
+          ],
+          [
+            21,
+            19,
+            80,
+            102
+          ],
+          [
+            21,
+            19,
+            81,
+            102
+          ],
+          [
+            21,
+            19,
+            81,
+            102
+          ],
+          [
+            29,
+            19,
+            103,
+            102
+          ],
+          [
+            42,
+            19,
+            102,
+            102
+          ],
+          [
+            41,
+            19,
+            99,
+            102
+          ],
+          [
+            40,
+            19,
+            83,
+            102
+          ]
+        ],
+        "anchor": [
+          60.0,
+          102
+        ],
+        "source_animation": "Attack",
+        "impact_frame": 4
+      },
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/attack-south.png",
+        "size": 124,
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            25,
+            21,
+            99,
+            103
+          ],
+          [
+            25,
+            21,
+            97,
+            103
+          ],
+          [
+            25,
+            21,
+            96,
+            103
+          ],
+          [
+            26,
+            21,
+            96,
+            103
+          ],
+          [
+            29,
+            23,
+            93,
+            115
+          ],
+          [
+            36,
+            22,
+            93,
+            116
+          ],
+          [
+            38,
+            22,
+            93,
+            105
+          ],
+          [
+            30,
+            21,
+            94,
+            103
+          ]
+        ],
+        "anchor": [
+          62.0,
+          103
+        ],
+        "source_animation": "Attack",
+        "impact_frame": 4
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/attack-north.png",
+        "size": 116,
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            30,
+            17,
+            102,
+            102
+          ],
+          [
+            15,
+            18,
+            80,
+            100
+          ],
+          [
+            14,
+            18,
+            78,
+            98
+          ],
+          [
+            13,
+            18,
+            78,
+            98
+          ],
+          [
+            24,
+            18,
+            78,
+            98
+          ],
+          [
+            21,
+            12,
+            101,
+            101
+          ],
+          [
+            25,
+            17,
+            92,
+            98
+          ],
+          [
+            28,
+            17,
+            96,
+            98
+          ]
+        ],
+        "anchor": [
+          58.0,
+          102
+        ],
+        "source_animation": "Attack",
+        "impact_frame": 5
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/attack-west.png",
+        "size": 120,
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            41,
+            19,
+            98,
+            102
+          ],
+          [
+            40,
+            19,
+            99,
+            102
+          ],
+          [
+            39,
+            19,
+            99,
+            102
+          ],
+          [
+            39,
+            19,
+            99,
+            102
+          ],
+          [
+            17,
+            19,
+            91,
+            102
+          ],
+          [
+            18,
+            19,
+            78,
+            102
+          ],
+          [
+            21,
+            19,
+            79,
+            102
+          ],
+          [
+            37,
+            19,
+            80,
+            102
+          ]
+        ],
+        "anchor": [
+          60.0,
+          102
+        ],
+        "source_animation": "Attack",
+        "impact_frame": 4
+      }
+    },
+    "hurt": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-morgan/hurt-south.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            24,
+            23,
+            97,
+            105
+          ],
+          [
+            23,
+            20,
+            95,
+            105
+          ],
+          [
+            22,
+            18,
+            92,
+            105
+          ],
+          [
+            22,
+            18,
+            93,
+            105
+          ],
+          [
+            23,
+            18,
+            94,
+            105
+          ],
+          [
+            24,
+            20,
+            96,
+            105
+          ],
+          [
+            24,
+            23,
+            97,
+            105
+          ],
+          [
+            25,
+            23,
+            98,
+            105
+          ],
+          [
+            26,
+            23,
+            99,
+            105
+          ]
+        ],
+        "anchor": [
+          62.0,
+          105
+        ],
+        "source_animation": "Jerk_upper_body_sharply_backward_in_a_flinch._Tens",
+        "playback_start": 0,
+        "playback_frames": 4,
+        "playback_seconds": 0.18
+      }
+    }
+  },
+  "provenance": {
+    "id": "dfe782a0-01a4-45f3-8c65-bbe16abc5830",
+    "name": "Morgan",
+    "source": "Existing owner PixelLab character export",
+    "archive_sha256": "771a4b1ab37a9249111f1c4877a34c8683dfc5afef445a67f2c05ae680655f10",
+    "clips": {
+      "idle": {
+        "south": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "02bc4e281ff43221d0420326e9b5cf635b361612193063228f2a6e2384e2b248"
+          ]
+        },
+        "south-east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "024ed87144fa9ccdefbf7e58509ee36d033a7c3dc934b6dabf9f9c46c2aedbe8"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "afff66d4336c29c8a91ebcc6349aa5fe9285cb2822537926b6bf0637654c369f"
+          ]
+        },
+        "north-east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "41696dd0ad3c192414e9807a347d2a0ffd74694d690679766bd4f75c1fb3a41f"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "a7dd6dc126531842094842301cfdbfa3cbc4cd9f9b96729dd43aaf87d4934b79"
+          ]
+        },
+        "north-west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "ab92fc7998aac47d39acfc3b2d048ca1e75e5dceec4763e0d2018b27b57f30db"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "08509c308510656c5c41d6494b689693be97f68dbe914abcef71721a0e72d34b"
+          ]
+        },
+        "south-west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "1b96df1c47e629e367f53af583a624e1eb2f03b447d436acfcfdf71c5367b181"
+          ]
+        }
+      },
+      "walk": {
+        "east": {
+          "source_sizes": [
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ]
+          ],
+          "rgba_sha256": [
+            "f2fe1c8ad76576cb15191a99c2c61ff535a20a50a1e51708e51640334e7efd2e",
+            "aaa649453b63e34702d841ec18f54b87ca99229b78a1577fa633553c14153eac",
+            "371c7801ad398dff81082a082947262e4811474156ce51fb40f2dde06ec23601",
+            "b3013504fe0d5eddbef4832358cbf12ae475a7d8514dec8d3371c6eb4b0c63b6",
+            "b84360474ac90b6c143dbf6131052f5362f4fb6d06213a15c80b7bd758cff848",
+            "9526fa744bc81ee7b326394c8e781a4dcabfbf260b44641f26e694ff7c444f99",
+            "e311aca8fecd43e4f32d2e7f5f3b062c835656b2d9d721cdc01b203f98d03f44",
+            "dafddefcfe62821d781976d564e2a74d1ac1176f8bd0da421067b6b134f4c04d",
+            "bc4add6afa563b54156f9809e466ee8dbea2763df61e60b3300b9ba10da065fe"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "f8693158c203952b425d30d00f3065d511e173348ecc9ddc6784591b397f0ee4",
+            "1424e5b458a92863f229c8919a1b5a44a28cad7afa21371908a3394091b34ffb",
+            "c93783c493613b472754ac7f0230e83993451b244864a33be8d45f46e6d760d7",
+            "43e13577afd779cd458b9fa9bfa6854e464a2f3c1d728e8ceedbab8060c52ffb",
+            "f387f633f800763857fd32e85d995489bda277f2b6bc670d6d58bdfea96243a0",
+            "6d1da9c81ec1e4c57216e2bba1f4912372756c949608e624fc6f4617bbd6111e",
+            "dd0b9d41002156a5561bd3890fb0c1b88b477be97a96d1f7da30ce04da087794",
+            "fe974a61dff8b3f6a8cb6904ece5ff19879b3c96ea3723f321883d3ee14e298e",
+            "b7b84083d0570c68332ba2f241b2b9081a402d2bedc96e01978e40a7a72f9977"
+          ]
+        },
+        "south": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "eeaf14bdfb8c18a142bb8c5b55d852102685fce355c291050f289fded2d04ed4",
+            "f2166bde347167c126caefc42110baf3bdb4bf4d05e71fffc700f3b3c90e9886",
+            "4dfb360e613ba67ff952aa71be9ce88215829feb5e622becfdf73374eda1b088",
+            "4776bb4207e3bdab83adfb0827aa792e8a8d35f039fdce9530aca6ae08e3ce73",
+            "10c9bbb7740d0e9f7bf42bc0a3c62a032ae113287bd2e398ec7837ff3c0a9efb",
+            "cf0faa3cd4c39384fc34239c4b15a44face6e328b095c1938d4f84fe3c7db057",
+            "064178867844974f71d44bc3f86448f66886c2bb1e6a787f6991ae9937d18062",
+            "75bb272aaaefbcf78a9fe80e80d1f3393b2109f18f27b4b1e8e7975450e9495d",
+            "ed29e96d8ec8b1dc40dd102939f2ad53a0b7802dd7b4723aa63ec3beae3dfc42"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ]
+          ],
+          "rgba_sha256": [
+            "7e7b71448772c439af5a02d56910be4a02dda4598225e562a9648650920a571a",
+            "8fe760c36f625b0b664250bbdac7611c344521b66fd00a861320ad446a215e9e",
+            "c299ec36abb553c24e86e3c8e6bbbcb4745026f6ebbfbbeba55af1d7448602ec",
+            "a1172473e14d3295d1a34adf4aecc27788c00085c76ab295984682820a831c27",
+            "822f438c1fd06ed34d02ca16aced71c0102bf6fa276684fca3011b2aed64f455",
+            "9fc7b538b98470dd03aa4b71135f4c4051d4683e7b454074d5811aca73e574a8",
+            "ac4cf6d18743039022dcecf55207ae117f57b9696234d06d202d461eabc864d6",
+            "f35d57a08d8436de48a0694cbdf90850e2e7f7546906deb1c7ce28e942cca4bb",
+            "3018fa207ec3a630d9d40066bdedbb3b5622f08010d2c6dafa3d4fa9735696b5"
+          ]
+        }
+      },
+      "attack": {
+        "east": {
+          "source_sizes": [
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ]
+          ],
+          "rgba_sha256": [
+            "97d7d03670df6ef170282d8638cf04f28d1a921f5a08aaf5c8c330261654c7e1",
+            "921dcfa5ce7a00e7564bbf79f3ece02201f70ea5991975d57260979ba1705058",
+            "3fadc24379b102b8910fb6a945c12b30f10720c812bc09ad6fad167d1914798c",
+            "e1a37698f8499c314f76fec33080ca1d1ae3fe485403caff8d4b859da64baf1d",
+            "52d5670b06d9db4491193d312cdc9fd98ebc349609da479ccd98c0c656d1f18e",
+            "a96df822b665d66c070152e03618d908acc702746172af2e0521bbd07a27c0e6",
+            "8f706bb98e3f228ea437da1a2d8c049ffce99727cb85d1edb08a024046b452b7",
+            "d72a4aefb82adc2bea34338d51ecab978a4da5d86acb62a3a05f1909cd307a86"
+          ]
+        },
+        "south": {
+          "source_sizes": [
+            [
+              124,
+              116
+            ],
+            [
+              124,
+              116
+            ],
+            [
+              124,
+              116
+            ],
+            [
+              124,
+              116
+            ],
+            [
+              124,
+              116
+            ],
+            [
+              124,
+              116
+            ],
+            [
+              124,
+              116
+            ],
+            [
+              124,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "3ceb519e06ef39a0f68d868eae0df22ecd66518c3a808379d302e82522bd515f",
+            "43cae1ad655a87fc6be897ad6db23570c9d9406619f4c0d9256d50792898cd18",
+            "eb1b28800c0c8756db804fec5c341462f9dff307b6efe1ef6d0f30e2b81b0dc8",
+            "1538e3238f074f331d7bd7a83c51168afd575aabdeb348662bd223caaaed4149",
+            "304ca4e6752b54e2177077d1906015117d7ea9ee086411ca31a6223f544abc8f",
+            "57be1a5509c6e885ca306cdce1cbb4ce0a8b6fb4e7fdfb5581e1cb2120945483",
+            "6b231aab6e4d700c2436be75368d56b99fc10f06315754b641cf42621f0a766d",
+            "34382eb95a1aff870d2b9d07bcc6c67dd4e1466b0c00bcc9c5292c78d610ed1c"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ],
+            [
+              116,
+              116
+            ]
+          ],
+          "rgba_sha256": [
+            "499389c1e3f34db56947bb97d96c4c2b8b14a3e981f4fed7625f0433d81ec5b4",
+            "ca425598e712799c75335c2a190d329813bfe4535e3d58e8976a4f1c64c8ed31",
+            "b7e04a8c563fbf1e2f788bf4fdd1c7f23b08911279744933c7fefe5836602684",
+            "f75911b225b00ba19294db74b730ccf18963ac6e5f0614237f7dd7d724b99006",
+            "dbffbb97042572b3aaf5d02709c046f4997a65a0729397d8e346569dc8a209cb",
+            "32d1c9db49efdf743f6f925fbb2280f3dc1144e29416ee99ecf84f172cf499d8",
+            "38a4b2db2944fb9768f386677425cf929e12a1188ed603451d777ad74405d8b9",
+            "964d024938845bee9e967578a28b3da06fe58fc488daabde2c1df025721af711"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ],
+            [
+              120,
+              120
+            ]
+          ],
+          "rgba_sha256": [
+            "9cb2612522785d6a7c6ac4f15b068674b98fe8ecab42fe1efc3611220c3df9b8",
+            "b89dd980b2d02ab02a65d73f804bcfac0c81ae4bda13f26b205a530432548cde",
+            "70f3256b86d776e6c571c7ceb99a0c77e1949ad44e1d107a18abb7f7d8554708",
+            "519e0b1b23e7475541783abb2005373676a58a0ee88ec4c5ced1ec89dc0faab9",
+            "86cac71df0a0b3e938910e4e0f6e893671d97abe89c6238bea8c72a00a0d1917",
+            "3b3bd8fb55cd30e014e2e17c66a5e594c815bb6b1198d88151247dac3d5104c0",
+            "2adecc9a042b8b0837db38a80eef3d893dae07978003fdcff6ce391a85638b24",
+            "c69a3ac643cd5e8b7941b4dfe96b65fe79ae048e2c1077cd5577b64fcfc03f27"
+          ]
+        }
+      },
+      "hurt": {
+        "south": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "eeaf14bdfb8c18a142bb8c5b55d852102685fce355c291050f289fded2d04ed4",
+            "628e2c56ace7b4b046759d3eeb8b6542209f540c9df37c53ad441ae83e51a329",
+            "a7bff2d1b5a6f1662538bae68e81dacc83f67e68e41b2f1bf45dea9789e4126f",
+            "3a28cba9952796575b928f8d33f660629f4c4d89926f85a95c64971b1575d16c",
+            "9a82ec36d200e38f24ac549a19203c78d27d1c1dd96d96a5d7ec77b4d5eddbe8",
+            "7c338ddea0c28963dca30fc157cf433a76d59481d0233267e200b7447205fad2",
+            "cab68dc4904b3404c6fe33e112728111584acb4a10c500c74180e88866b2e17c",
+            "8a309d84ffabf0a4587cb0956c576bc4f0c2c5a994b6e8a62b438c5031f1a3e3",
+            "a7960e18500b907cf482516d52f356ec4a0550b78b2c8d1fb435d4cb2134bb9e"
+          ]
+        }
+      }
+    }
+  }
+}

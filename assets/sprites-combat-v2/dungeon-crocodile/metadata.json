@@ -1,0 +1,2054 @@
+{
+  "id": "bac38f19-0860-44ac-ae07-7e81e9f541aa",
+  "name": "Crocodile",
+  "monster": true,
+  "dungeonBoss": true,
+  "worldHeight": 114,
+  "legacyHeight": 114,
+  "world_scale": 1,
+  "clips": {
+    "idle": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/idle-south.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            14,
+            8,
+            86,
+            92
+          ]
+        ],
+        "anchor": [
+          48.0,
+          92
+        ],
+        "source_animation": "idle"
+      },
+      "south-east": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/idle-south-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            13,
+            8,
+            78,
+            93
+          ]
+        ],
+        "anchor": [
+          48.0,
+          93
+        ],
+        "source_animation": "idle"
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/idle-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            24,
+            6,
+            74,
+            93
+          ]
+        ],
+        "anchor": [
+          48.0,
+          93
+        ],
+        "source_animation": "idle"
+      },
+      "north-east": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/idle-north-east.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            18,
+            5,
+            74,
+            90
+          ]
+        ],
+        "anchor": [
+          48.0,
+          90
+        ],
+        "source_animation": "idle"
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/idle-north.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            16,
+            5,
+            83,
+            89
+          ]
+        ],
+        "anchor": [
+          48.0,
+          89
+        ],
+        "source_animation": "idle"
+      },
+      "north-west": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/idle-north-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            19,
+            5,
+            82,
+            90
+          ]
+        ],
+        "anchor": [
+          48.0,
+          90
+        ],
+        "source_animation": "idle"
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/idle-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            27,
+            6,
+            76,
+            93
+          ]
+        ],
+        "anchor": [
+          48.0,
+          93
+        ],
+        "source_animation": "idle"
+      },
+      "south-west": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/idle-south-west.png",
+        "size": 96,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            29,
+            8,
+            87,
+            93
+          ]
+        ],
+        "anchor": [
+          48.0,
+          93
+        ],
+        "source_animation": "idle"
+      }
+    },
+    "walk": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/walk-south.png",
+        "size": 124,
+        "frames": 17,
+        "fps": 24,
+        "loop": true,
+        "bounds": [
+          [
+            28,
+            22,
+            100,
+            106
+          ],
+          [
+            28,
+            20,
+            100,
+            104
+          ],
+          [
+            29,
+            19,
+            101,
+            101
+          ],
+          [
+            30,
+            20,
+            100,
+            102
+          ],
+          [
+            30,
+            21,
+            99,
+            107
+          ],
+          [
+            29,
+            22,
+            98,
+            107
+          ],
+          [
+            28,
+            20,
+            98,
+            105
+          ],
+          [
+            27,
+            19,
+            98,
+            102
+          ],
+          [
+            28,
+            20,
+            98,
+            102
+          ],
+          [
+            29,
+            21,
+            98,
+            107
+          ],
+          [
+            29,
+            22,
+            98,
+            107
+          ],
+          [
+            29,
+            20,
+            99,
+            105
+          ],
+          [
+            29,
+            19,
+            100,
+            102
+          ],
+          [
+            30,
+            20,
+            100,
+            102
+          ],
+          [
+            30,
+            21,
+            99,
+            107
+          ],
+          [
+            29,
+            22,
+            98,
+            107
+          ],
+          [
+            28,
+            20,
+            98,
+            105
+          ]
+        ],
+        "anchor": [
+          62.0,
+          106
+        ],
+        "source_animation": "Lift_the_right_knee_high_and_step_forward_with_a_s"
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/walk-north.png",
+        "size": 124,
+        "frames": 17,
+        "fps": 24,
+        "loop": true,
+        "bounds": [
+          [
+            30,
+            19,
+            97,
+            103
+          ],
+          [
+            30,
+            18,
+            96,
+            104
+          ],
+          [
+            32,
+            16,
+            94,
+            105
+          ],
+          [
+            33,
+            16,
+            93,
+            107
+          ],
+          [
+            33,
+            18,
+            92,
+            108
+          ],
+          [
+            33,
+            19,
+            93,
+            108
+          ],
+          [
+            32,
+            17,
+            93,
+            103
+          ],
+          [
+            31,
+            16,
+            92,
+            106
+          ],
+          [
+            32,
+            18,
+            92,
+            108
+          ],
+          [
+            32,
+            19,
+            92,
+            108
+          ],
+          [
+            31,
+            18,
+            92,
+            106
+          ],
+          [
+            32,
+            16,
+            94,
+            104
+          ],
+          [
+            33,
+            16,
+            93,
+            107
+          ],
+          [
+            33,
+            18,
+            92,
+            108
+          ],
+          [
+            33,
+            19,
+            93,
+            108
+          ],
+          [
+            32,
+            17,
+            93,
+            103
+          ],
+          [
+            31,
+            16,
+            92,
+            106
+          ]
+        ],
+        "anchor": [
+          62.0,
+          103
+        ],
+        "source_animation": "Lift_the_right_knee_high_and_step_forward_with_a_s"
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/walk-east.png",
+        "size": 128,
+        "frames": 17,
+        "fps": 24,
+        "loop": true,
+        "bounds": [
+          [
+            40,
+            22,
+            90,
+            109
+          ],
+          [
+            41,
+            20,
+            90,
+            107
+          ],
+          [
+            40,
+            21,
+            97,
+            105
+          ],
+          [
+            41,
+            22,
+            96,
+            103
+          ],
+          [
+            39,
+            23,
+            91,
+            103
+          ],
+          [
+            44,
+            22,
+            90,
+            101
+          ],
+          [
+            46,
+            21,
+            90,
+            104
+          ],
+          [
+            47,
+            20,
+            89,
+            108
+          ],
+          [
+            39,
+            21,
+            93,
+            109
+          ],
+          [
+            34,
+            22,
+            94,
+            112
+          ],
+          [
+            35,
+            23,
+            93,
+            111
+          ],
+          [
+            40,
+            22,
+            90,
+            109
+          ],
+          [
+            41,
+            20,
+            90,
+            107
+          ],
+          [
+            40,
+            21,
+            97,
+            105
+          ],
+          [
+            41,
+            22,
+            96,
+            103
+          ],
+          [
+            39,
+            23,
+            91,
+            103
+          ],
+          [
+            44,
+            22,
+            90,
+            101
+          ]
+        ],
+        "anchor": [
+          64.0,
+          109
+        ],
+        "source_animation": "Lift_the_right_knee_high_and_step_forward_with_a_s"
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/walk-west.png",
+        "size": 128,
+        "frames": 17,
+        "fps": 24,
+        "loop": true,
+        "bounds": [
+          [
+            38,
+            22,
+            88,
+            109
+          ],
+          [
+            38,
+            20,
+            87,
+            107
+          ],
+          [
+            31,
+            21,
+            88,
+            105
+          ],
+          [
+            32,
+            22,
+            87,
+            103
+          ],
+          [
+            37,
+            23,
+            89,
+            103
+          ],
+          [
+            38,
+            22,
+            84,
+            101
+          ],
+          [
+            38,
+            21,
+            82,
+            104
+          ],
+          [
+            39,
+            20,
+            81,
+            108
+          ],
+          [
+            35,
+            21,
+            89,
+            109
+          ],
+          [
+            34,
+            22,
+            94,
+            112
+          ],
+          [
+            35,
+            23,
+            93,
+            111
+          ],
+          [
+            38,
+            22,
+            88,
+            109
+          ],
+          [
+            38,
+            20,
+            87,
+            107
+          ],
+          [
+            31,
+            21,
+            88,
+            105
+          ],
+          [
+            32,
+            22,
+            87,
+            103
+          ],
+          [
+            37,
+            23,
+            89,
+            103
+          ],
+          [
+            38,
+            22,
+            84,
+            101
+          ]
+        ],
+        "anchor": [
+          64.0,
+          109
+        ],
+        "source_animation": "Lift_the_right_knee_high_and_step_forward_with_a_s"
+      }
+    },
+    "attack": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/attack-south.png",
+        "size": 124,
+        "frames": 17,
+        "fps": 24,
+        "loop": false,
+        "bounds": [
+          [
+            28,
+            22,
+            100,
+            106
+          ],
+          [
+            30,
+            21,
+            98,
+            106
+          ],
+          [
+            33,
+            19,
+            95,
+            106
+          ],
+          [
+            36,
+            17,
+            92,
+            106
+          ],
+          [
+            36,
+            17,
+            92,
+            106
+          ],
+          [
+            36,
+            17,
+            92,
+            106
+          ],
+          [
+            32,
+            17,
+            95,
+            106
+          ],
+          [
+            26,
+            17,
+            102,
+            106
+          ],
+          [
+            21,
+            17,
+            106,
+            106
+          ],
+          [
+            19,
+            17,
+            108,
+            106
+          ],
+          [
+            18,
+            17,
+            108,
+            108
+          ],
+          [
+            17,
+            17,
+            110,
+            108
+          ],
+          [
+            16,
+            17,
+            110,
+            108
+          ],
+          [
+            18,
+            22,
+            98,
+            108
+          ],
+          [
+            28,
+            22,
+            100,
+            106
+          ],
+          [
+            28,
+            22,
+            100,
+            106
+          ],
+          [
+            28,
+            22,
+            100,
+            106
+          ]
+        ],
+        "anchor": [
+          62.0,
+          106
+        ],
+        "source_animation": "Extend_both_arms_forward_to_release_a_dense_swirli",
+        "impact_frame": 7
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/attack-north.png",
+        "size": 124,
+        "frames": 17,
+        "fps": 24,
+        "loop": false,
+        "bounds": [
+          [
+            30,
+            19,
+            97,
+            103
+          ],
+          [
+            25,
+            20,
+            103,
+            103
+          ],
+          [
+            23,
+            21,
+            104,
+            103
+          ],
+          [
+            19,
+            21,
+            106,
+            103
+          ],
+          [
+            15,
+            21,
+            109,
+            103
+          ],
+          [
+            12,
+            21,
+            112,
+            103
+          ],
+          [
+            9,
+            21,
+            115,
+            103
+          ],
+          [
+            7,
+            21,
+            117,
+            103
+          ],
+          [
+            5,
+            22,
+            119,
+            103
+          ],
+          [
+            4,
+            22,
+            120,
+            103
+          ],
+          [
+            4,
+            22,
+            120,
+            103
+          ],
+          [
+            4,
+            22,
+            120,
+            103
+          ],
+          [
+            5,
+            22,
+            119,
+            103
+          ],
+          [
+            5,
+            22,
+            120,
+            103
+          ],
+          [
+            5,
+            21,
+            119,
+            103
+          ],
+          [
+            31,
+            20,
+            96,
+            103
+          ],
+          [
+            30,
+            19,
+            97,
+            103
+          ]
+        ],
+        "anchor": [
+          62.0,
+          103
+        ],
+        "source_animation": "Extend_both_arms_forward_to_release_a_dense_swirli",
+        "impact_frame": 7
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/attack-west.png",
+        "size": 128,
+        "frames": 17,
+        "fps": 24,
+        "loop": false,
+        "bounds": [
+          [
+            38,
+            22,
+            88,
+            109
+          ],
+          [
+            38,
+            22,
+            86,
+            109
+          ],
+          [
+            36,
+            21,
+            89,
+            109
+          ],
+          [
+            20,
+            20,
+            92,
+            109
+          ],
+          [
+            19,
+            20,
+            94,
+            109
+          ],
+          [
+            15,
+            20,
+            94,
+            109
+          ],
+          [
+            13,
+            20,
+            93,
+            109
+          ],
+          [
+            11,
+            20,
+            91,
+            109
+          ],
+          [
+            10,
+            20,
+            89,
+            109
+          ],
+          [
+            11,
+            19,
+            88,
+            109
+          ],
+          [
+            12,
+            18,
+            90,
+            109
+          ],
+          [
+            13,
+            16,
+            92,
+            109
+          ],
+          [
+            15,
+            16,
+            92,
+            109
+          ],
+          [
+            26,
+            21,
+            92,
+            109
+          ],
+          [
+            38,
+            22,
+            88,
+            109
+          ],
+          [
+            38,
+            22,
+            85,
+            109
+          ],
+          [
+            38,
+            22,
+            88,
+            109
+          ]
+        ],
+        "anchor": [
+          64.0,
+          109
+        ],
+        "source_animation": "Extend_both_arms_forward_to_release_a_dense_swirli",
+        "impact_frame": 7
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/attack-east.png",
+        "size": 128,
+        "frames": 17,
+        "fps": 24,
+        "loop": false,
+        "bounds": [
+          [
+            40,
+            22,
+            90,
+            109
+          ],
+          [
+            42,
+            22,
+            90,
+            109
+          ],
+          [
+            39,
+            21,
+            92,
+            109
+          ],
+          [
+            36,
+            20,
+            108,
+            109
+          ],
+          [
+            34,
+            20,
+            109,
+            109
+          ],
+          [
+            34,
+            20,
+            113,
+            109
+          ],
+          [
+            35,
+            20,
+            115,
+            109
+          ],
+          [
+            37,
+            20,
+            117,
+            109
+          ],
+          [
+            39,
+            20,
+            118,
+            109
+          ],
+          [
+            40,
+            19,
+            117,
+            109
+          ],
+          [
+            38,
+            18,
+            116,
+            109
+          ],
+          [
+            36,
+            16,
+            115,
+            109
+          ],
+          [
+            36,
+            16,
+            113,
+            109
+          ],
+          [
+            36,
+            21,
+            102,
+            109
+          ],
+          [
+            40,
+            22,
+            90,
+            109
+          ],
+          [
+            43,
+            22,
+            90,
+            109
+          ],
+          [
+            40,
+            22,
+            90,
+            109
+          ]
+        ],
+        "anchor": [
+          64.0,
+          109
+        ],
+        "source_animation": "Extend_both_arms_forward_to_release_a_dense_swirli",
+        "impact_frame": 7
+      }
+    },
+    "hurt": {
+      "south": {
+        "image": "assets/sprites-combat-v2/dungeon-crocodile/hurt-south.png",
+        "size": 124,
+        "frames": 8,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            24,
+            21,
+            104,
+            106
+          ],
+          [
+            19,
+            21,
+            105,
+            106
+          ],
+          [
+            14,
+            17,
+            108,
+            106
+          ],
+          [
+            13,
+            15,
+            110,
+            106
+          ],
+          [
+            11,
+            13,
+            111,
+            106
+          ],
+          [
+            28,
+            22,
+            100,
+            106
+          ],
+          [
+            29,
+            22,
+            99,
+            106
+          ],
+          [
+            19,
+            24,
+            105,
+            110
+          ]
+        ],
+        "anchor": [
+          62.0,
+          106
+        ],
+        "source_animation": "The_body_flinches_as_a_massive_swirling_cloud_of_g",
+        "playback_start": 0,
+        "playback_frames": 4,
+        "playback_seconds": 0.18
+      }
+    }
+  },
+  "provenance": {
+    "id": "bac38f19-0860-44ac-ae07-7e81e9f541aa",
+    "name": "Crocodile",
+    "source": "Existing owner PixelLab character export",
+    "archive_sha256": "5d8269f64dce5cf30df56b0a6398474a829e86fd900c2f67ec81004a01ae5c49",
+    "clips": {
+      "idle": {
+        "south": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "8d156eef529f64296e4ae1c5063fdd0a412fe03864623467af5bffc3ecfcf69b"
+          ]
+        },
+        "south-east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "6a0c6a8b90a2bb187f0f19b98261a8a287d44e093b83110f5760e25b9e05fef4"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "095d05955e3205622aaba24506262e527651b51239e968c6ba711d9c5bffc3fd"
+          ]
+        },
+        "north-east": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "fac083b2a6e79de8d61cd73516394ad67f0ec4353ff7c5b8dfe985ba2e4d3161"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "86d29180d8bf79205dfde1b6b4f8d9a3172c263bedff923b4d6cb168920221f0"
+          ]
+        },
+        "north-west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "b67274712734e4e2534af96bf588058fe0a3b8a4f5ce57a6dbbe4f89a24366c8"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "02458d98d425662e8b60c6af7740c6fa00bfa1c74419bead36f5ac5db0932cd9"
+          ]
+        },
+        "south-west": {
+          "source_sizes": [
+            [
+              96,
+              96
+            ]
+          ],
+          "rgba_sha256": [
+            "3425cdcc31c9c2b3a687876e0c13962cc68163d0d1806b4dcda066a8b279fc07"
+          ]
+        }
+      },
+      "walk": {
+        "south": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "4b66da290880393b832b61228dec20d45bba6d43c6eea1aaddf9265619af6ba7",
+            "a07c8892637cfe87a1ed010617e91b743a61f5d69bb9bb4b5b783c839959bfce",
+            "e1b48f28022648722b6d09ff3b490b967dd0e4d5fb6960a83ee1e67ad9a48e44",
+            "7ccdf7cb4f33d9d61d2871ab77be35321206b176e7066abb51a26a9c252fba2a",
+            "9066e29caed8c67c97f8ac77f5de20ab14b5808075befb3a5f28feb234369995",
+            "f3d971bd3cdd772a41a8dff5fabf69ce53fd9d12a5037b6e7b809524946058a6",
+            "c32779ea229b3847bea25855fd29b73551218d3cb25d263fb872b623411a0432",
+            "f393d333a9bcde455f5d6e6dbcc65e7c17fa0e24fc8923283cc4e60bdebb8ace",
+            "44d4f72f8d72fc6040b3798846bd3ec9d68c0f8107dc0a11d1981d2e4f1372aa",
+            "470c081cece84136a001e99d5af2353bb29336807712ecc1756c5a5ebde55035",
+            "494dba4d1bc750ccfbe6cfeea75db77d567a4f0b23b49a416a7d295137ff6296",
+            "b5ea1e37bc834f80f946eeac338c87aff794c3873663e3d636b35caa72b812d2",
+            "83f15e512829ec60416ae0d50706cd5f82a4e45c535c8cd8436493a4219cfc80",
+            "cc757336a995131347a44a4a2ddb084ffcb36928ab0bb3bfa7292ebaab8671e7",
+            "849103e2a0a2cb21f9a4d446bc6e106a07e91c9697ec71b673c8b21cc3d07fa8",
+            "64ed6ffbcb09c380a54cf1ff4d71b0420468a76b7c18877cbae06988ca532783",
+            "5c14b8f27fc5f729b1b2ce1621c3c600f1172044b426afa802aa2f5ac6638e8f"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "f4add79803d5c6de500f28ea6748468a7b3cbf19c02e5de33f4b1b5af7ffbeaf",
+            "d4461fff5b9c2700f720168c7d29134aa819cfb8de7805b5c55e421cd7ed74dc",
+            "c8b60286a51c017d3ce818fdd34f0143fa35fcbab5bc5a8e4be4d63649f68e64",
+            "4a1539f2e2704ca6ac675edb93168fd75fdb7644647d1e58ad7ddd22d22b2e52",
+            "db88a6cb260b5d95599bad846694c4bbbf65e720d99a651fb5837b0c5a0571ee",
+            "ba690c47547a5928aab1e643bef2c950d229a0bb89511e652e356ff3c05ff95c",
+            "11b5c2490f2a3f02d5172d11a060175ccc1cc829f4121892dfd462d4a589b63f",
+            "151f5036242bca4b3f38a29c571845261befe78a323cf3ce4413f5363e52665c",
+            "52c097e1e0bf49954b4e466958ca097414c3e1dd768a86c408f3bf780c69d451",
+            "c0e4bfe8eaad4eb1eba8a9002a80efa8c7d05718382d638f55b4581a0d118d03",
+            "3af2cc58639ab7520812afbafe248a20aa0870fbba07ffcb73304e2a8da516af",
+            "99bfffc40efadc2033213caee99fa11795d6bb0935603e60fe66da972fcb1def",
+            "fa6033bfb859ff28e40c28608a140edfcc9088b20a64372e922d2e62c1ea409b",
+            "c0836f457a519819aeb58cbebef15d2e671e98b915ba31dbcc3b0841792afd91",
+            "5506d283549ec4a43f96911e83db053a8b4aeb7ed4ca424eef469c51e522635a",
+            "3be79392afcd23dea58347d093f7df67b507c54665ac3fb82788a63fc9359e60",
+            "a34dcb2386d731d49575b15f4a9732d081cd584fd6d3042c4ca9eddb5f952f4a"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ]
+          ],
+          "rgba_sha256": [
+            "1180d38ca45b95a06d208045035b7bc922fa87092aed5e52221aa4ac6e4f4925",
+            "9e58b7d9ea066ce60b2d64a3421f6ed1630fd0d02a7c415b81bfd416fe8d0611",
+            "d778e84e942b51a07790cfbf1ba37fd6c83e3283d41494d84b21d7ce56e78890",
+            "1d1682ad71f0b7820b8d03bda6c8652316432a53f3830129f7b7e8c3abd1a70c",
+            "52b6329b8219059b7048d49c0049385a3385e54d12f117a2f9c7aeb7fed546dd",
+            "72b828bc09ec89d7e087b238aac3cf26c061a57b327c824faa80598bbc3359b3",
+            "4deda316535ef6ce68ec8ec400f55f651bc3209512d3668cf68cfe1037f4aa76",
+            "18d54a8d7b6b5bebbd09a469eaff6728ae38597775c547b77dd5e4bf88d095f2",
+            "35bdbb0d78b3d1245ba57d7dd6c59d027a3a992cdb6e841c513bd2215efbd7f2",
+            "d3043b374045475d871a6d242fc78f0dfda4a963e311b99edf11c12e51947473",
+            "6d0d2401ed40dedf4f30dd8042f595ade47837743feb0f92470916a2d2bf0c55",
+            "51c70deae0f9b8189f8c646ed080457f0186b894d6d9c1108b45827d42b61526",
+            "4dc0635be759662249707d558a2c6248546f2cf960c098bbd5f10bc10878ff2e",
+            "b6402ef6215209b1695a249bc5dc866eac9de5142e5494eae63215f39e7e1377",
+            "8b1411f3c4909a42293627bd404da4f59413125a895a214f1b029a78586d1aaa",
+            "bf047f83e1c19e2b8cb70bef65aa35d76c4d2383046429658f7394851fcb85d5",
+            "96472e4892d185cd5562422d614cd8e6666418a294dfc2c0b08e9b44c9a9ddf6"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ]
+          ],
+          "rgba_sha256": [
+            "b88c860ae67f7815282f25d85962877b44fb3425f68b810eabdba75da0651610",
+            "6293d8ed81c23e3bbcadd39e5de0bc899ff52de1ed705757198a069e726152f2",
+            "17ee169151b91bdf2feface20c8e1b42ee06f688b5ea000518f9ada9b88f9d76",
+            "9c6bd4bd1517ec28b756a58477f6f0178b8bddc32e5f6884c6100f23a0c5a876",
+            "92d4f8a484825c604951de167395f52a7d7b771a47da1e47ca1cb2b4e2cf2510",
+            "c2613c8f455c74c1735bf128f1a00002cb385f8c469ac4147ca76e04640ac02d",
+            "dd470de7a5ffc585b7faba7b9d8c1ccf67d64287879c9e1c6d194cb2ab243f6a",
+            "1fc45ccc90669521d9bc23925f5aa1787d7453e03b362fa0b7a959dd37843745",
+            "e83c39c35a13f14b1f8897a959297341e415e082146772e6173a4a0d1d51f540",
+            "f9370fa123620baf9d80a9910e9675ce45175c858f9b2c418ac7a00152a2e5ee",
+            "75287f6822b48f7dd2e6596cd04e38c3db3b3248fc8b65bd5fe4d18d23cdb81a",
+            "23b847a24937b8a80cf068085dcf5dbfa737cb31ab6ee8de8ae9e9221aad3544",
+            "6f57ffd28eac8c7d58b85c76a63885de84ae56e16b1d2f79b48e70fd4fe7a043",
+            "5db26e0e45a8e7d3c484661d9846ddb630e64ea2c6b27fbced1904e593b4d816",
+            "0754bc1e0ae6b53cd6bbdf4a11d046bddd5ffc6db4a61037f93229dc04a45330",
+            "ebc4ba55ee085354faaefa5e1c12802890b06e8d2bb1def712c3ac095ca457b1",
+            "d2d2053beb251bb48c65491a6095f40747b5d507302244e5be8da39476c7f3d9"
+          ]
+        }
+      },
+      "attack": {
+        "south": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "4b66da290880393b832b61228dec20d45bba6d43c6eea1aaddf9265619af6ba7",
+            "7ee5da2ec46158d64a83be77fdaeffea8337557dfd25d244b1515d3f6f82f7c4",
+            "c56ec182ee53031e6cbfbf20e1ceaab7472183c8896a9e38b347c128fa66d7b4",
+            "ccbd50040774c6333d82c9999f0daa3997272938977e003982a61b42e2da1962",
+            "63e3a9a1ed8efee96e42a726bf78c34f2b2eea2b0b7fd9be609954a021d55e80",
+            "66485fb2be691c87ca8693641cbefc59aa941fa171b8d36265f1de0d9ec723a9",
+            "37f03e4d6148b8f437ca4fb509a703201d08a91c21b841f1dc6f403699d730cc",
+            "3c5db2307738be641fee4924c3e52e06099176a0fc0a31ee565f6c0b7639b7b4",
+            "813a2cae0af41ed708a86d2ac58b20bdd0afa1265c3940a288e69a2b0ae2e97e",
+            "55e16818dc619b4a7c6f7def8a4012ad166b624dc24a31ef6917243a805cab2a",
+            "280ce6a265b82cadc2ab9c6ab8853a3a967c57087e5ecaee9efb6d91134b2be3",
+            "273dad5523c81795190e86d9a05254828d73d6d18a53c9f24b8097ac7a4e0fc3",
+            "aff9a4291813fe3e204a910c64e08acff4a1d25817ad6bf4ded27f5c0de6947e",
+            "ac8198c531bc069144231589599cdc5fdad14238ca72de76a6dd3d50aff7c19b",
+            "b6b09596bc4a3f61b8cfc52fe7311cf7a75e554f08135eb0dc0b5deeeba33f89",
+            "b6b09596bc4a3f61b8cfc52fe7311cf7a75e554f08135eb0dc0b5deeeba33f89",
+            "b6b09596bc4a3f61b8cfc52fe7311cf7a75e554f08135eb0dc0b5deeeba33f89"
+          ]
+        },
+        "north": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "f4add79803d5c6de500f28ea6748468a7b3cbf19c02e5de33f4b1b5af7ffbeaf",
+            "f2275df5e940594e9c6dfbccdf60e96d88f0c65abbf888589493337eeafe9568",
+            "d763dc76df2a64902baa738537aa37574b6ceb5d2dd7a3a50f39bb9ce2289c3a",
+            "fd8be2ac1c4c133b849214c305b22f5560e7435a7f72d51838cc78277044d950",
+            "0907cd42419afd597221bca323a3a3eb8a96ed0a345d593026882368cd8ee845",
+            "b506baa25ffb5055598f06696309356d872c3aaf702fc4a81a59ded245e9bfc5",
+            "1e810e070cc87b666b7749171d9a3874c1474e27e1b1a3dc9ce812b96f470ad9",
+            "4e1e43a3775a534ffbae2c345fc180d983ebcfc7d9f57d5c8499d045fbb5e489",
+            "24eda8537b1aa5666008aa33c8283f06b21177c2be6f3dd0cd77f1ff0dfd4db4",
+            "3852d10ee5dd544448db0ada01a13f94ffd8d6ef878cb6685ea3a48b90a33e0a",
+            "90b0b0b16cee68b801ff31876fae943d47742708b3fa1e20d9393abaa4586b7b",
+            "adf1d00120570d561838f5bca63929009860b6de123c594ac924d2ff8eea2cb3",
+            "4d6adbb9d80ce894b3f46029a4d25899e589b916b62fd2fd41b2c733849c3588",
+            "a7a48e5ecef3ed2f8269cbce23bd1cc7131e76a8113a9970ffafa8d92d59a762",
+            "5dcae123d01ad115cb1784fe5d34b86cb83f11d6469506a4835247b889c00141",
+            "db965e5144fd84d8620279b44a7ff77daf8e17850875c3562bbb0aefe99e3036",
+            "1febfacbccd98e5f1c02541757ce9567369ab02c2e2cf352fd61097982c6960f"
+          ]
+        },
+        "west": {
+          "source_sizes": [
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ]
+          ],
+          "rgba_sha256": [
+            "b88c860ae67f7815282f25d85962877b44fb3425f68b810eabdba75da0651610",
+            "0af50ebd03218557d1b9d7b72ac465cfcfdee59bf39969ecd5c09049ccb61af1",
+            "77db807caf34c78c91e8fb32129b0a39c1f37edcd1880f89dfd53923d57946d3",
+            "4badb574525aa304b14975aba91380d43e7ec75010286fd8e8006cf32b819134",
+            "c333ad1ccd17b1c35250fd2436a8a9720d0d68076f629447736d9fad8bc37f34",
+            "4fe0cdf4c1024f7c7a3d32c9e1ddd5745906b54d7f7174e8773690789a4fde19",
+            "c911d3b9fcccacf79118b30cbe65ec2bcffdfc6e05129a658bc0ee0fa312cc51",
+            "d3272eacc1ad7e3116b04e7740fad6905df6fa32e6ae71f773cce243deb9aaf0",
+            "890d701bd4ffd63867481c1484b1fce6a42446d1bc1b4a210c36d0b610631f86",
+            "6f12e443dc0f236e59645cb70943706d78df15baf128a0bbe4c41743adb227b4",
+            "55483f751a601c035613ffca4f6c3694d2ffd42e3c796f436a68d9311a2c98e5",
+            "69e602b9b73724bb6500b537f447f9ef54c692d00718578f5ff6e8b234bf9bf6",
+            "25c3d14f0dd2e2e00367a8e022ee710cebec524b0a6bd90d4fba7492d7757237",
+            "704b086dab83c6a162f9616f66dfe0ee498772371185b105f667f818010cf0e7",
+            "55463fef273e0e490f80c1711d7a3950f30144a39b5bb493715eafb2577845ab",
+            "8206d0d24ce8720a9add54f2f0d732be7941826578065cdedceef147185e1098",
+            "95ce5b7748c140f3336ab7254b9cfb1bbb14f3361b94fbc81f6187494eaa1cad"
+          ]
+        },
+        "east": {
+          "source_sizes": [
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ],
+            [
+              128,
+              128
+            ]
+          ],
+          "rgba_sha256": [
+            "1180d38ca45b95a06d208045035b7bc922fa87092aed5e52221aa4ac6e4f4925",
+            "9c85b30da67369c739fdb98cc2d19ef5a9d95a934669ebc1b3f0286081f34c29",
+            "2d3dcd951f21dac62c816d15ff01c23e2e9bf24bd61cba403d1114b145f82cb4",
+            "d7f3622570d62e4ed532fea173d7a83db2590f357d6a5317e3b0f8f503b4c774",
+            "885488b1b97081f6c7a58ce6d4ff0fcbb191cbcb8d7117089f233b8bc541dcf1",
+            "5dace19e14a9545fff01132c912d090408db4b4fb9a969de9c9dac198fa1028e",
+            "e0f7ef7fa8fb585ce024c7884ec86ac807fc65ac7acaca43fb5ed85009ecece7",
+            "750afeeb4cb17b828cde1b70fc20c48ec0a64ce93b1ba05bc81eaf95cf220ba1",
+            "a65e61d02c927aed44a9301601b88552b374ebcb5c836e39a8528668a133850a",
+            "d1a47f87966cdbcc37e02ae6d564b1ab07f1e7056e8d5feb1fa54d9e9cd0fa2e",
+            "e48be0d7d2369964a53374e8728538564a11775e97d29fe631645d87f8714603",
+            "bda710d876f6a9da884c34d48630ae3137ae9183fa1661477ad67e1fe70b047e",
+            "24ad693045b04629f42510c834d7b007abae53700e1fc07d1dc2755d9fee7cba",
+            "a94eda32e0d34cab070082ce8e7a362a8ebb200c5e91e6e2cea3719d624e1185",
+            "435628fdeab3a677ed573f0b9000c290677c9636f87fcf591a800414173a9cd7",
+            "a0e787ab15c02415e22402738647ca508be1ef536f6ba981a0530ca60038a61d",
+            "28e530f7a45a9b500e4182a3311cf1dbf82a79d62a49058782113d9d41893391"
+          ]
+        }
+      },
+      "hurt": {
+        "south": {
+          "source_sizes": [
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ],
+            [
+              124,
+              124
+            ]
+          ],
+          "rgba_sha256": [
+            "397cab7b5936efea17aaa3bdb5cca6c6e7e6c397eff2823103365b9de5c9b490",
+            "abadcfefed1dab039ec51a9bb55a1eb948f3f6518cb8ef332a78680a6104c59a",
+            "6270ed7e9962e8d25c6c046374621f2ff703c7871a47a44f2b6f1223360cb962",
+            "83f566e407b99444f4e75b27a3250d399725b171ab1d953a04c4ccd9f5f98283",
+            "f60218ee767f7b30b853d49b9e87c7da3a82fe13efef583e4b473cea7ec5b60a",
+            "e0d993fd6d27526e0353cef92c99c906807bd26ac5cccf4cf0ca654a080146ef",
+            "ee0b74c588f0efe9cc79b7cf5906cb640274b55b7795db0c42c3701cb7142a16",
+            "df394c95eef320e78f54ae75875fcdee1670600e8364b9c23033431e7b953229"
+          ]
+        }
+      }
+    }
+  }
+}
