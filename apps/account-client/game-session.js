@@ -30,6 +30,10 @@
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    if(action==='fruit.register')return keys==='itemId'&&typeof p.itemId==='string'&&p.itemId.length>0&&p.itemId.length<=80;
+    if(action==='fruit.transform')return keys==='enabled'&&typeof p.enabled==='boolean';
+    if(action==='fruit.move')return keys==='x,y'&&['x','y'].every(k=>Number.isFinite(p[k])&&p[k]>=0&&p[k]<=100000);
+    if(action==='fruit.cast')return (keys==='key'||keys==='key,point')&&['1','2','3'].includes(p.key)&&(!p.point||Object.keys(p.point).sort().join(',')==='x,y'&&['x','y'].every(k=>Number.isFinite(p.point[k])&&p.point[k]>=0&&p.point[k]<=100000));
     if(action==='hierarchy.promote')return keys==='expectedTier'&&Number.isInteger(p.expectedTier)&&p.expectedTier>=1&&p.expectedTier<=5;
     if(action==='haki.unlock')return keys==='itemId'&&instanceId(p.itemId);
     if(action==='haki.toggle')return keys==='branch'&&['armament','observation'].includes(p.branch);

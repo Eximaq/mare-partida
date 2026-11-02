@@ -18,6 +18,7 @@
     const possessed=equipped||(game?.inventory||[]).some(i=>i.fruitId===f.id);
     // Every catalog entry is currently available in the existing demonstration.
     const available=!!root.MareAkuma.byId(f.id),space=possessed||(game?.inventory||[]).length<capacity;
+    if(game.onlineFruits)return {registered,equipped,possessed,available,eligible:available&&possessed&&!registered,label:registered?'REGISTRADA':possessed?'REGISTRAR FRUTA':'FRUTA NÃO POSSUÍDA',reason:registered?'Registro permanente, mesmo sem uma cópia na mochila.':possessed?'Registra a fruta que você possui. O item permanece com você.':'Obtenha esta fruta no jogo para registrá-la.'};
     return {registered,equipped,possessed,available,eligible:available&&!registered&&space,
       label:registered?'REGISTRADA':!available?'INDISPONÍVEL':!space?'MOCHILA CHEIA':'REGISTRAR FRUTA',
       reason:registered?'Registro permanente, mesmo sem uma cópia na mochila.':!available?'Fruta ainda indisponível no catálogo atual.':!space?'Libere um espaço na mochila.':'O registro atual concede uma cópia quando você ainda não possui a fruta. Não há custo de Berry.'};

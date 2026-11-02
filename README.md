@@ -1,3 +1,5 @@
+**Frutas online:** [compêndio possuído, 30 frutas, habilidades e transformações autoritativas](docs/architecture/ORIGINAL-FRUITS-SERVER.md).
+
 **Hierarquia online:** [promoções e ranking derivados do servidor, no painel original](docs/architecture/ORIGINAL-HIERARCHY-SERVER.md).
 
 **Haki online:** [livro, árvores, Vontade e efeitos sob autoridade do servidor](docs/architecture/ORIGINAL-HAKI-SERVER.md), preservando os requisitos e controles originais.

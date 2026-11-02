@@ -101,3 +101,9 @@
 !dungeon-boss-art-data.js
 
 !hierarchy-system.js
+
+!fruit-runtime.cjs
+!fruit-lower-runtime.cjs
+!fruit-summon-runtime.cjs
+
+!zoan-art.js

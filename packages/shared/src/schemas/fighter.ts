@@ -35,6 +35,7 @@ export const originalCharacterStatsSchema=z.strictObject({
   range:scalar,accuracy:z.number().min(0).max(1),healing:scalar,healingReceivedPercent:scalar,impactResistancePercent:scalar,
   energyRegen:scalar,healthRegen:scalar,protection:z.number().min(0).max(.8),mitigation:z.number().min(0).max(1),
   critMultiplier:scalar.optional(),penetration:scalar.optional(),magicPen:scalar.optional(),lifesteal:scalar.optional(),energyEfficiency:scalar.optional(),aoeBonus:scalar.optional(),rareChance:scalar.optional(),
+  fruitLifesteal:scalar.optional(),damageReflection:scalar.optional(),cooldownReduction:scalar.optional(),fruitSpecialAttack:scalar.optional(),
   regenBuff:scalar,moveSpeed:scalar,huntSpeed:scalar,power:scalar,
 });
 export const originalFighterSchema=z.strictObject({
@@ -42,7 +43,7 @@ export const originalFighterSchema=z.strictObject({
   classId:characterCreateSchema.shape.classId,factionId:characterCreateSchema.shape.factionId,
   level:z.number().int().min(1).max(2147483647),sourceVersion:z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
   equipped:inventorySnapshotSchema.shape.equipped,allocated:attributeValuesSchema,total:totals,
-  stats:originalCharacterStatsSchema,baseStats:originalCharacterStatsSchema.optional(),damageType:z.enum(["physical","elemental"]),
+  fruitId:z.string().regex(/^akuma_[a-z_]{1,50}$/).optional(),stats:originalCharacterStatsSchema,baseStats:originalCharacterStatsSchema.optional(),damageType:z.enum(["physical","elemental"]),
   maxHp:z.number().min(30).max(2147483647),attackMin:scalar,attackMax:scalar,armor:scalar,
   cooldownMs:z.number().int().min(167).max(10000),
 }).refine(v=>v.maxHp===v.stats.maxHP&&v.attackMax>=v.attackMin);

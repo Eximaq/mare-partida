@@ -52,6 +52,7 @@ jobs:
         run: |
           python tests/run_honors_hd_browser.py tests/achievements-online-browser.cjs --offline
           python tests/run_honors_hd_browser.py tests/hierarchy-online-browser.cjs --dist --offline
+          python tests/run_honors_hd_browser.py tests/fruit-online-browser.cjs --dist --offline
           python tests/run_honors_hd_browser.py tests/honors_hd_browser.cjs --dist
           python tests/run_honors_hd_browser.py tests/honors_offline_browser.cjs --dist --offline
           python tests/run_honors_hd_browser.py tests/honors_cache_browser.cjs --dist --offline

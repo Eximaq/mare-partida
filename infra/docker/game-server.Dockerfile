@@ -22,7 +22,7 @@ COPY boss-dungeon-system.js character-catalog.js character-system.js item-catalo
 COPY world-catalog.cjs island-world.js lobby-map-data.js lobby-world.js impel-down-world.js alabasta-map-data.js alabasta-world.js alubarna-map-data.js alubarna-world.js ember-world.js orange-world.js conchas-world.js dawn-map-data.js dawn-world.js rare-world.js new-islands-data.js new-islands-objects.js new-islands.js pixellab-world-maps-data.js conchas-pixellab-data.js conchas-structures.js pixellab-world-maps.js quest-dungeons-data.js quest-dungeons-world.js world-system.js archipelago.js ./
 COPY boss-dungeon-combat.js dungeon-timing.cjs dungeon-boss-art-data.js ./
 USER node
-COPY hierarchy-system.js talent-runtime.cjs talent-system.js talent-combat.js ultimate-system.js achievement-system.js contract-system.js world-battle.cjs hunt-system.js monster-behavior.js monster-catalog.js monster-game-catalog.js combat-vfx-data.js combat-vfx.js ./
+COPY zoan-art.js fruit-runtime.cjs fruit-lower-runtime.cjs fruit-summon-runtime.cjs hierarchy-system.js talent-runtime.cjs talent-system.js talent-combat.js ultimate-system.js achievement-system.js contract-system.js world-battle.cjs hunt-system.js monster-behavior.js monster-catalog.js monster-game-catalog.js combat-vfx-data.js combat-vfx.js ./
 EXPOSE 8787
 HEALTHCHECK --interval=15s --timeout=3s CMD node -e "fetch('http://127.0.0.1:8787/health/ready').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 CMD ["node", "apps/game-server/dist/main.js"]

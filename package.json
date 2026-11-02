@@ -14,7 +14,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "npm run test:foundation && npm run test:legacy",
     "test:foundation": "node --import tsx --test tests/foundation/*.test.mts",
-    "test:integration": "node --env-file-if-exists=.env.test.local --import tsx --test tests/integration/server*.test.mts",
+    "test:integration": "node --env-file-if-exists=.env.test.local --import tsx --test --test-concurrency=1 tests/integration/server*.test.mts",
     "test:legacy": "node tools/run_node_tests.cjs",
     "dev:server": "node --env-file-if-exists=.env.server.local --import tsx apps/game-server/src/main.ts",
     "dev:certificate": "node --import tsx tools/create-dev-certificate.mts",
