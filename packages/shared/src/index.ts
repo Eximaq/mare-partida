@@ -18,3 +18,5 @@ export * from "./schemas/talents.js";
 export * from './schemas/achievements.js';
 
 export * from './schemas/prison.js';
+
+export * from './schemas/dungeons.js';

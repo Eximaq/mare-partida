@@ -29,7 +29,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version-file: '.node-version'
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
@@ -43,6 +43,8 @@ jobs:
           python tools/build_pages.py
       - name: Combate dos nove chefes e recuperação de recursos
         run: python tests/run_honors_hd_browser.py tests/nine_dungeon_bosses_browser.cjs --dist --offline
+      - name: Masmorras online na interface original
+        run: python tests/run_honors_hd_browser.py tests/dungeons-online-browser.cjs --offline
       - name: Regressão de baú e fragmentos
         run: python tests/run_honors_hd_browser.py tests/boss_dungeons_browser.cjs --dist --offline
       - uses: actions/upload-artifact@v4

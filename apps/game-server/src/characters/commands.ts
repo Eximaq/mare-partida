@@ -1,3 +1,4 @@
+import {isDungeonAction,mutateDungeon} from './dungeons.js';
 import {isPrisonAction,mutatePrison} from './prison.js';
 import {claimAchievement,observeServerAchievements,permanentAchievementPower} from './achievements.js';
 import {mutateTalents} from './talents.js';
@@ -48,6 +49,7 @@ export async function executeCharacterCommand(
   )).rows[0]!;
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
   const before=state,powerBefore=input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);
+  if(isDungeonAction(input.action)){await mutateDungeon(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(isPrisonAction(input.action)){await mutatePrison(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==='achievement.claim'){await claimAchievement(client,characterId,input.requestId,state,input.payload.achievementId);state=await readCharacterState(client,characterId);}
   if(input.action==='talents.commit'||input.action==='talents.reset'){await mutateTalents(client,characterId,input,state);state=await readCharacterState(client,characterId);}

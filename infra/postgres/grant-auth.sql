@@ -79,3 +79,8 @@ GRANT SELECT ON mare_game.character_prison,mare_game.prison_floors,mare_game.pri
 GRANT INSERT(character_id,state),UPDATE(state) ON mare_game.character_prison TO mare_runtime;
 GRANT INSERT(character_id,floor,spawn_id,request_id,monster,rules_hash) ON mare_game.prison_floors TO mare_runtime;
 GRANT INSERT(character_id,floor,request_id,item_id) ON mare_game.prison_milestones TO mare_runtime;
+
+GRANT SELECT ON mare_game.character_dungeons,mare_game.dungeon_victories,mare_game.dungeon_claims TO mare_runtime;
+GRANT INSERT(character_id,state),UPDATE(state) ON mare_game.character_dungeons TO mare_runtime;
+GRANT INSERT(character_id,dungeon_id,run_id,spawn_id,request_id,reward,rules_hash) ON mare_game.dungeon_victories TO mare_runtime;
+GRANT INSERT(character_id,dungeon_id,request_id,experience_delta,gold_delta) ON mare_game.dungeon_claims TO mare_runtime;

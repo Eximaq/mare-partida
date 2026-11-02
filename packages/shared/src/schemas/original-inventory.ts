@@ -17,12 +17,12 @@ export const instanceIdSchema = z
   .string()
   .min(1)
   .max(80)
-  .regex(/^[a-zA-Z0-9-]+$/);
+  .regex(/^[a-zA-Z0-9:-]+$/);
 const count = z.number().int().min(0).max(1000000000);
 const stat = z.number().finite().min(0).max(1000000);
 export const originalItemSchema = z.strictObject({
   id: instanceIdSchema,
-  def: z.number().int().min(0).max(102),
+  def: z.number().int().min(0).max(108),
   level: z.number().int().min(1).max(100),
   plus: z.number().int().min(0).max(20),
   locked: z.boolean(),
@@ -55,6 +55,14 @@ export const originalItemSchema = z.strictObject({
   reforgeAttempts: count.optional(),
   forgeVersion: z.literal(4).optional(),
   pearlId: z.string().max(80).optional(),
+  materialId: z.enum(['akuma_fragment_e','akuma_fragment_d','akuma_fragment_c','akuma_fragment_b','akuma_fragment_a','akuma_fragment_s']).optional(),
+  quantity: z.number().int().min(1).max(9999).optional(),
+  rank: z.enum(['E','D','C','B','A','S']).optional(),
+  binding: z.literal('character').optional(),
+  boundToCharacter: z.uuid().optional(),
+  sources: z.array(z.string().max(80)).max(9).optional(),
+  type: z.literal('akuma_no_mi').optional(),
+  fruitId: z.string().regex(/^[a-z0-9_]{1,60}$/).optional(),
   origin: z.string().max(120).optional(),
 });
 const equipment = z.strictObject(

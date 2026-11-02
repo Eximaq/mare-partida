@@ -24,7 +24,7 @@ const random = () => randomInt(0, 0x100000000) / 0x100000000;
 const maxGold = 9223372036854775807n;
 export const isOriginalAction = (action: string) =>
   originalActionSchema.options.includes(action as any);
-export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number;grant?:OriginalItemInstance|undefined;action?:'prison.reward'|'prison.claim'}={}){
+export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number;grant?:OriginalItemInstance|undefined;action?:'prison.reward'|'prison.claim'|'dungeon.battle'}={}){
  const roll=passives.rng??(()=>randomInt(0,0x100000000)/0x100000000),random=()=>{const r=roll();if(!Number.isFinite(r)||r<0||r>=1)throw new RangeError('Invalid loot RNG');return r;};
  const before=await readOriginalInventory(client,id);if(!before)throw new AuthFault(409,'original_inventory_required');
  const after=structuredClone(before),identity=(await client.query('SELECT class_id,faction_id FROM mare_game.characters WHERE id=$1',[id])).rows[0];
@@ -64,7 +64,7 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
  await event(client,id,requestId,state.version,passives.action??(first?'battle.first':'battle.reward'),before,after,BigInt(state.gold),gold,{experience:xp.toString(),spawns:kills.map(k=>k.id),potionsUsed,firstArea:first?.area??null,domainItem:passives.grant?.id??null,talentSteals:passives.steals??[],underworld,rareChance});
  return {xp,gold};
 }
-function valid(input: unknown): OriginalInventory {
+function valid(input: unknown,owner?:string): OriginalInventory {
   const parsed = originalInventorySchema.safeParse(input);
   if (!parsed.success)
     throw new AuthFault(503, "original_inventory_unavailable");
@@ -75,6 +75,11 @@ function valid(input: unknown): OriginalInventory {
     ] as OriginalItemInstance[];
   if (new Set(all.map((i) => i.id)).size !== all.length)
     throw new AuthFault(503, "original_inventory_unavailable");
+  for(const item of all){
+    if(owner&&item.boundToCharacter&&item.boundToCharacter!==owner)throw new AuthFault(503,'original_inventory_unavailable');
+    const def=defs[item.def];
+    if(def?.kind==='akuma-fragment'&&(!item.boundToCharacter||item.binding!=='character'||item.materialId!==def.materialId||item.rank!==def.rank||!item.quantity))throw new AuthFault(503,'original_inventory_unavailable');
+  }
   for (const [slot, item] of Object.entries(v.equipment))
     if (item && defs[item.def]?.slot !== slot)
       throw new AuthFault(503, "original_inventory_unavailable");
@@ -100,7 +105,7 @@ export async function readOriginalInventory(
         forgeVersion: 4,
         forgeSeq: Number(row.forge_seq),
         forgeHistory: row.forge_history,
-      })
+      },id)
     : undefined;
 }
 export async function readOriginalGear(client: PoolClient, id: string) {
@@ -116,12 +121,12 @@ export async function readOriginalGear(client: PoolClient, id: string) {
     armor: gear.defense,
   };
 }
-async function writeInventory(
+export async function writeInventory(
   client: PoolClient,
   id: string,
   i: OriginalInventory,
 ) {
-  valid(i);
+  valid(i,id);
   await client.query(
     "UPDATE mare_game.game_inventory SET inventory=$2::jsonb,equipment=$3::jsonb,materials=$4,potions=$5,forge_seq=$6,forge_history=$7::jsonb WHERE character_id=$1",
     [
@@ -135,7 +140,7 @@ async function writeInventory(
     ],
   );
 }
-async function event(
+export async function event(
   client: PoolClient,
   id: string,
   requestId: string,
@@ -343,7 +348,7 @@ export async function mutateOriginalInventory(
         if (!i.inventory.some((x) => x.id === item.id))
           throw new AuthFault(409, "item_equipped");
         if (
-          item.locked ||
+          item.locked || item.boundToCharacter ||
           ["pearl-box", "haki-fragment"].includes(String(def.kind))
         )
           throw new AuthFault(409, "item_protected");

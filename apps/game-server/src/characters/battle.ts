@@ -1,3 +1,4 @@
+import {completeDungeonVictory} from './dungeons.js';
 import {completePrisonFloor,advancePrison} from './prison.js';
 import {observeServerAchievements} from './achievements.js';
 import {readTalents} from './talents.js';
@@ -113,16 +114,20 @@ export async function tickWorldBattles(pool:Pool){
   if(result.kills.length||result.potionsUsed||result.talentSteals.length){
    if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
    const requestId=randomUUID();
-   if(b.prison){
+   if(b.dungeon){
+    if(result.kills.length>1)throw new AuthFault(503,'dungeon_victory_invalid');
+    if(result.kills.length)await completeDungeonVictory(client,id,requestId,state,b,result.kills[0],now);
+    await awardWorldLoot(client,id,requestId,state,[],undefined,result.potionsUsed,{build:(await readTalents(client,id,state))?.build,steals:result.talentSteals,action:'dungeon.battle'});
+   }else if(b.prison){
     if(result.kills.length>1)throw new AuthFault(503,'prison_victory_invalid');
     const grant=result.kills.length?await completePrisonFloor(client,id,requestId,b,result.kills[0],now):undefined;
     await awardWorldLoot(client,id,requestId,state,[],undefined,result.potionsUsed,{build:(await readTalents(client,id,state))?.build,steals:result.talentSteals,grant,action:'prison.reward'});
    }else await awardWorldLoot(client,id,requestId,state,result.kills,undefined,result.potionsUsed,{build:(await readTalents(client,id,state))?.build,steals:result.talentSteals});
-   if(!b.prison)for(const k of result.kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,k.reward.xp,Math.round(k.reward.gold*engine.catalog.factions[fighter.factionId].gold),engine.rulesHash]);
-   if(!b.prison)await recordContractKills(client,id,result.kills);
+   if(!b.prison&&!b.dungeon)for(const k of result.kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,k.reward.xp,Math.round(k.reward.gold*engine.catalog.factions[fighter.factionId].gold),engine.rulesHash]);
+   if(!b.prison&&!b.dungeon)await recordContractKills(client,id,result.kills);
    await advanceLevel(client,id,requestId,state);await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
    const after=await readCharacterState(client,id);
-   await observeServerAchievements(client,id,state,after,{kills:b.prison?0:result.kills.length});
+   await observeServerAchievements(client,id,state,after,{kills:b.dungeon?0:result.kills.length});
    if(after.level>state.level){await storeBattle(client,id,b);const next=await readFighter(client,id,after);b.hp=next.maxHp;if(next.rulesetId==='original-character-v1')b.energy=next.stats.maxEnergy;}
    await client.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)',[id,requestId,digest('server-battle:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:after})]);
   }

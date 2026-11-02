@@ -26,9 +26,9 @@ test('higher-level attribute intentions remain bounded and reject injected autho
  assert.equal(validIntent('attributes.allocate',{allocation:{...allocation,strength:2147483648}}),false);
 });
 
-test('new demo dungeon actions cannot write saves or rewards from online mode',async()=>{
+test('legacy local dungeon commit paths remain blocked from online mode',async()=>{
  const box:any={ONLINE_GAME:{},game:{gold:10},localStorage:{setItem(){throw Error('Save touched');}}};
- for(const name of ['persistDungeonState','applyDungeonXP','enterBossDungeon','completeBossDungeonEnemy','persistBossVictory','claimDungeonChest','formDungeonAkuma']){
+ for(const name of ['persistDungeonState','applyDungeonXP','completeBossDungeonEnemy','persistBossVictory']){
   const match=new RegExp('  (?:async )?function '+name+'\\(').exec(source);assert(match);const a=match.index,next=source.slice(a+match[0].length).search(/  (?:async )?function /),b=a+match[0].length+next;assert(next>=0&&b>a);
   runInNewContext(source.slice(a,b)+';globalThis.run='+name,box);
   if(name==='persistDungeonState')assert.throws(()=>box.run({}),/online_action_unavailable/);else assert.equal(await box.run({}),false);
