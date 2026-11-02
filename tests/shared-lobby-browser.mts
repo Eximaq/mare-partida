@@ -32,6 +32,14 @@ await authDatabase(async f=>{
   await q.keyboard.down('ArrowRight');await q.waitForTimeout(1200);await q.keyboard.up('ArrowRight');
   await p.waitForFunction((x:number)=>Math.abs(globalThis.__mareDiagnostics().sharedLobby.players[0].x-x)>20,before.x);
   await p.screenshot({path:resolve(out,'two-players-original-port.png')});console.log('two isolated accounts visible; authoritative movement rendered');
+  // Expire only a disposable fixture lease: reproduce returning from a suspended tab.
+  const returningId=await p.evaluate(()=>globalThis.MareGameSession.data.character.id);
+  await f.pool.query("UPDATE mare_game.character_control SET expires_at=clock_timestamp()-interval '1 second' WHERE character_id=$1",[returningId]);
+  await q.evaluate(()=>globalThis.MareGameSession.read(true));
+  assert.equal(await q.evaluate(()=>globalThis.__mareDiagnostics().sharedLobby.players.length),0);
+  await p.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));
+  await q.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===1,null,{timeout:15000});
+  console.log('returning tab recovers expired control and mutual presence without takeover');
   await q.waitForFunction(()=>globalThis.MareGameSession.available&&!globalThis.MareGameSession.busy&&!globalThis.MareGameSession.pending);
   await q.evaluate(()=>globalThis.MareGameSession.command('profile.appearance',{appearance:{...globalThis.MareGameSession.data.online.profile.appearance,hairColor:'green'}}));
   await p.waitForFunction(()=>globalThis.MareGameSession.data.online.lobby.players[0]?.appearance96.hairColor==='green');

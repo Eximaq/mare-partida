@@ -118,6 +118,7 @@
       pending = null,
       busy = false,
       available = false,
+      renewing = null,
       readVersion = 0;
     const listeners = new Set();
     const notify = () => {
@@ -303,18 +304,26 @@
         if (!pending) throw fault("no_pending_command");
         return send(pending);
       },
-      async renew() {
-        if (!control || !data?.character) return;
-        try {
-          await api(`/v1/characters/${data.character.id}/control/renew`, {
-            epoch: control.epoch,
-            token: control.token,
-          });
-        } catch (error) {
-          control = null;
-          notify();
-          throw error;
-        }
+      renew() {
+        if (renewing) return renewing;
+        if (!available || !data?.character) return Promise.resolve();
+        renewing = (async () => {
+          const current = control;
+          if (!current) return acquire();
+          try {
+            await api(`/v1/characters/${data.character.id}/control/renew`, {
+              epoch: current.epoch, token: current.token,
+            });
+          } catch (error) {
+            if (control !== current || error.code !== "control_conflict") throw error;
+            control = null;
+            notify();
+            // No expectedEpoch: the server may grant only a free/expired lease.
+            // A live controller on another tab/device must never be displaced.
+            return acquire();
+          }
+        })().finally(() => { renewing = null; });
+        return renewing;
       },
       async logout() {
         await api("/v1/auth/logout", { scope: "local" });

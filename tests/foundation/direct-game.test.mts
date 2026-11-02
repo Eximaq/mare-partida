@@ -8,6 +8,7 @@ const id = "11111111-1111-4111-8111-111111111111";
 function fixture() {
   let version = 0,
     fail = false;
+  let renewalStatus=200, acquisitionStatus=200;
   const requests: any[] = [],
     storage = new Map();
   const snapshot = () => ({
@@ -51,8 +52,9 @@ function fixture() {
       if (path === "/v1/auth/csrf")
         return Response.json({ csrfToken: "fixture" });
       if (path.endsWith("/online-state")) return Response.json(snapshot());
+      if(path.endsWith('/control/renew'))return renewalStatus===200?Response.json({epoch:1}):Response.json({error:renewalStatus===409?'control_conflict':'unavailable'},{status:renewalStatus});
       if (path.endsWith("/control"))
-        return Response.json({ epoch: 1, token: "x".repeat(43) });
+        return acquisitionStatus===200?Response.json({ epoch: 1, token: "x".repeat(43) }):Response.json({error:'control_conflict'},{status:409});
       if (path.endsWith("/commands")) {
         if (fail) throw new Error("lost reply");
         version++;
@@ -67,6 +69,7 @@ function fixture() {
     client,
     requests,
     storage,
+    controlStatus:(renewal:number,acquisition=200)=>{renewalStatus=renewal;acquisitionStatus=acquisition;},
     fail: () => {
       fail = true;
     },
@@ -88,6 +91,23 @@ test("game session owns identity and economic commands; it stores only intent an
   assert.equal(body.expectedVersion, 0);
   assert.equal(body.payload.accountId, undefined);
   assert.equal(f.storage.size, 0);
+});
+
+test('expired controller resumes without takeover and concurrent renewal shares one attempt',async()=>{
+ const f=fixture();await f.client.load();await f.client.acquire();f.controlStatus(409);
+ await Promise.all([f.client.renew(),f.client.renew()]);
+ assert.equal(f.client.controlled,true);
+ assert.equal(f.requests.filter(r=>r.path.endsWith('/control/renew')).length,1);
+ const claims=f.requests.filter(r=>r.path.endsWith('/control'));
+ assert.equal(claims.length,2);assert.deepEqual(JSON.parse(claims[1].body),{});
+});
+test('resumption never displaces a valid controller and transient errors retain the renewal handle',async()=>{
+ const f=fixture();await f.client.load();await f.client.acquire();f.controlStatus(503);
+ await assert.rejects(f.client.renew());assert.equal(f.client.controlled,true);
+ assert.equal(f.requests.filter(r=>r.path.endsWith('/control')).length,1);
+ f.controlStatus(409,409);await assert.rejects(f.client.renew());assert.equal(f.client.controlled,false);
+ f.controlStatus(200,200);await f.client.renew();assert.equal(f.client.controlled,true);
+ assert.ok(f.requests.filter(r=>r.path.endsWith('/control')).every(r=>JSON.stringify(JSON.parse(r.body))==='{}'));
 });
 test("uncertain mutation requires explicit same-ID replay and never auto-posts during reload", async () => {
   const f = fixture();

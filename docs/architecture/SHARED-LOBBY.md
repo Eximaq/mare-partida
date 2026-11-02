@@ -12,6 +12,8 @@ A consulta é limitada e ordenada. Só inclui personagens no porto com controlad
 
 O cliente acompanha o caminho aprovado, sem devolver coordenadas calculadas ao servidor. Atualiza pelo polling existente (~750 ms com controle). Limpa presenças após cinco segundos sem snapshot válido. Logout e viagem removem o personagem no próximo snapshot. Fechar uma aba sem logout pode manter sua presença até vencer a concessão de controle existente (no máximo 120 segundos). Não alteramos as políticas de autenticação.
 
+Retomar uma aba suspensa renova a presença imediatamente. Se sua concessão venceu, o cliente solicita uma concessão livre, sem `expectedEpoch`: não assume um controlador ativo de outra aba/dispositivo. Renovação concorrente é agrupada numa única tentativa; falha transitória preserva o identificador local para tentar renovar depois. Esse caminho corrige a visibilidade unilateral observada no teste remoto: a conta continuava autenticada, mas seu controle havia expirado e ela deixava de aparecer para o colega. O prazo do servidor e a exclusividade permanecem intactos.
+
 A ordenação por profundidade e a oclusão usam o mapa original. O cache público é separado do personagem local, limitado a 16 aparências e compõe somente repouso/caminhada. Jogadores remotos não alteram colisões, NPCs, combate ou recompensas. Acima do limite, a lista é truncada; este incremento não representa um teste de capacidade de MMO.
 
 Não há migração nova nem alteração das migrações aplicadas. Bancos anteriores à migração de perfil retornam lista vazia durante os testes de atualização. Saves, assets PNG e dados dos personagens existentes permanecem preservados.
