@@ -42,12 +42,12 @@ async function sharedKill(f:any,all:any[]){
 }
 test('real shared worker conserves XP for two, three and four; one death and one personal loot owner',async()=>authDatabase(async f=>{
  for(const size of [2,3,4]){
-  const all=[];for(let n=0;n<size;n++)all.push(await actor(f));const a=all[0];await a.doit('party.create');for(const w of all.slice(1))await join(a,w);await activity(a,all);
+  const all:Awaited<ReturnType<typeof actor>>[]=[];for(let n=0;n<size;n++)all.push(await actor(f));const a=all[0]!;await a.doit('party.create');for(const w of all.slice(1))await join(a,w);await activity(a,all);
   const before=await Promise.all(all.map(w=>w.read())),{instance,m}=await sharedKill(f,all),views=await Promise.all(all.map(w=>w.read()));
   const grants=(await f.pool.query('SELECT character_id,amount FROM mare_game.party_experience WHERE instance_id=$1 AND spawn_id=$2',[instance,m.id])).rows;
   assert.equal(grants.length,size);const values=grants.map((r:any)=>Number(r.amount));assert(Math.max(...values)-Math.min(...values)<=1);
   assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.party_deaths WHERE instance_id=$1',[instance])).rows[0].n,1);
-  for(let n=0;n<size;n++){assert.equal(BigInt(views[n].state.experience)-BigInt(before[n].state.experience),BigInt(grants.find((g:any)=>g.character_id===all[n].c.id).amount));assert.equal(views[n].battle.mobs.find((x:any)=>x.id===m.id).alive,false);}
+  for(let n=0;n<size;n++){assert.equal(BigInt(views[n].state.experience)-BigInt(before[n].state.experience),BigInt(grants.find((g:any)=>g.character_id===all[n]!.c.id).amount));assert.equal(views[n].battle.mobs.find((x:any)=>x.id===m.id).alive,false);}
   assert.equal(views.filter((v:any,n:number)=>BigInt(v.state.gold)>BigInt(before[n].state.gold)).length,1);
   await f.pool.query("UPDATE mare_game.party_instances SET tick_at=clock_timestamp()-interval '150 milliseconds' WHERE id=$1",[instance]);await tickPartyBattles(f.pool);
   assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.party_deaths WHERE instance_id=$1',[instance])).rows[0].n,1);
@@ -55,7 +55,7 @@ test('real shared worker conserves XP for two, three and four; one death and one
 }));
 
 test('shared dungeon keeps one scaled boss and each eligible character owns a once-only chest',async()=>authDatabase(async f=>{
- const all=[await actor(f),await actor(f)],a=all[0],b=all[1];
+ const all:[Awaited<ReturnType<typeof actor>>,Awaited<ReturnType<typeof actor>>]=[await actor(f),await actor(f)],a=all[0],b=all[1];
  for(const w of all)await f.pool.query('UPDATE mare_game.character_progression SET level=20,gold=10000 WHERE character_id=$1',[w.c.id]);
  await a.doit('party.create');await join(a,b);await activity(a,all,'dungeon','alvida');
  const initial=await a.read(),require=createRequire(import.meta.url),base=require('../../world-battle.cjs').prisonCatalog['dungeon-alvida'];
@@ -85,7 +85,7 @@ test('explicit leader survives removing someone else; disconnected actors cannot
  assert.equal((await b.read()).party.group.members.length,2);
 }));
 test('simultaneous acceptance of the last place admits one; restarting entry cannot duplicate the instance',async()=>authDatabase(async f=>{
- const all=[];for(let i=0;i<5;i++)all.push(await actor(f));const [a,b,c,d,e]=all;await a.doit('party.create');await join(a,b);await join(a,c);
+ const [a,b,c,d,e]=await Promise.all([actor(f),actor(f),actor(f),actor(f),actor(f)] as const);await a.doit('party.create');await join(a,b);await join(a,c);
  for(const w of [d,e])await a.doit('party.invite',{name:w.name});
  const intents=await Promise.all([d,e].map(async w=>w.input('party.respond',{inviteId:(await w.read()).party.invites.find((i:any)=>i.status==='pending').id,accept:true})));
  const accepted=await Promise.allSettled([d.send(intents[0]),e.send(intents[1])]);assert.equal(accepted.filter(r=>r.status==='fulfilled').length,1);assert.equal((await a.read()).party.group.members.length,4);
@@ -103,10 +103,10 @@ test('XP is shared before each recipients original overlevel modifier; offline m
  await f.service.acquireControl(b.login.token,b.c.id);const returned=await b.read();assert.equal(returned.battle.partyInstanceId,instance);assert.equal(returned.party.group.members.length,2);
 }));
 test('failed XP ledger rolls back the shared death, rewards and every participant together',async()=>authDatabase(async f=>{
- const all=[await actor(f),await actor(f)],a=all[0];await a.doit('party.create');await join(a,all[1]);await activity(a,all);const before=await Promise.all(all.map(w=>w.read()));
+ const all:[Awaited<ReturnType<typeof actor>>,Awaited<ReturnType<typeof actor>>]=[await actor(f),await actor(f)],a=all[0];await a.doit('party.create');await join(a,all[1]);await activity(a,all);const before=await Promise.all(all.map(w=>w.read()));
  await f.pool.query("CREATE FUNCTION mare_game.reject_party_xp() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture failure'; END $$; CREATE TRIGGER reject_party_xp BEFORE INSERT ON mare_game.party_experience FOR EACH ROW EXECUTE FUNCTION mare_game.reject_party_xp()");
  await assert.rejects(sharedKill(f,all),/party_tick_failed/);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.party_deaths')).rows[0].n,0);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.party_experience')).rows[0].n,0);
- for(let i=0;i<all.length;i++){const after=await all[i].read();assert.deepEqual(after.state,before[i].state);assert.deepEqual(after.originalInventory,before[i].originalInventory);}
+ for(let i=0;i<all.length;i++){const after=await all[i]!.read();assert.deepEqual(after.state,before[i].state);assert.deepEqual(after.originalInventory,before[i].originalInventory);}
 }));
 test('least-privilege runtime can run a Party but cannot rewrite its death or XP ledger',async()=>authDatabase(async f=>{
  const {readFile}=await import('node:fs/promises'),pg=(await import('pg')).default,{AuthService}=await import('../../apps/game-server/src/auth/service.js'),role='party_'+randomUUID().replaceAll('-',''),password=randomUUID();let pool:any;
