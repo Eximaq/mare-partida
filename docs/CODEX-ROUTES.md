@@ -1,6 +1,7 @@
 # CODEX-ROUTES — índice de consulta sob demanda
 
 - Aceite do servidor atual: `docs/architecture/FINAL-SERVER-ACCEPTANCE.md`; manifesto executável `FULL-SERVER-SCOPE.json`; instalação local `docs/operations/CONTINUOUS-LOCAL-SERVER.md`.
+- Apresentação e capacidade atuais: `docs/architecture/AUTHORIZED-PRESENTATION-SIMULATION.md`; `auth/service.ts`, `characters/battle.ts`, `party-worker.ts`, `simulation-worker.ts`, `tick-lane.ts`, `tools/load/`; regressões `server-presentation-snapshot`, `server-combat-reads`, `server-capacity-runtime`. Não confundir ensaios curtos/fixture com certificação de 3.000.
 
 Este índice é **mapa de navegação**, não descrição confiável do estado atual. Confirme caminhos, exports e regras no código da branch antes de implementar. Use somente a(s) rota(s) correspondentes à solicitação.
 

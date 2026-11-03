@@ -1,4 +1,5 @@
 import {readCombatInputs} from '../characters/combat-inputs.js';
+import {presentationParty,presence,refreshPartyLeader} from '../characters/party.js';
 import {readPartyMotion} from '../characters/party.js';
 import {readParty} from '../characters/party.js';
 import {lockParty} from '../characters/party-store.js';
@@ -303,22 +304,65 @@ export class AuthService {
     });
   }
   async hierarchyRanking(token:string,faction:string|null){return this.withSession(token,"play",client=>hierarchyRanking(client,faction));}
-  /** Compact presentation snapshot under the same authorization/lock boundary as full state. */
+  /** Only presentation is MVCC. Commands and provider refresh retain their locks. */
+  private async presentation<T>(token:string,id:string,run:(client:PoolClient)=>Promise<T>):Promise<T>{
+    const hash=digest(token);
+    const access=async(client:Pick<PoolClient,'query'>,provider=true)=>{
+      const row=(await client.query(`SELECT s.id,s.account_id,s.provider_valid_until,clock_timestamp() now,
+        EXISTS(SELECT 1 FROM mare_game.characters WHERE id=$2 AND account_id=s.account_id) owned
+        FROM mare_game.app_sessions s JOIN mare_game.accounts a ON a.id=s.account_id AND a.auth_epoch=s.account_epoch
+        WHERE s.token_hash=$1 AND s.kind='play' AND s.revoked_at IS NULL
+        AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp()`,[hash,id])).rows[0];
+      if(!row||provider&&row.provider_valid_until<=row.now)throw unauthorized();
+      if(!row.owned)throw new AuthFault(404,'character_not_found');
+      return row;
+    };
+    const initial=await access(this.options.pool,false);
+    if(initial.provider_valid_until<=initial.now){
+      // Refresh tokens still rotate exactly once under the existing session lock.
+      await this.withSession(token,'play',(client,row)=>this.owned(client,row.account_id,id));
+    }else{
+      // Best-effort idle heartbeat: do not queue behind a simulation/refresh lock.
+      // Expiry is never bypassed; the snapshot and final check use the stored TTL.
+      await this.options.pool.query(`WITH heartbeat AS (
+        SELECT s.id FROM mare_game.app_sessions s JOIN mare_game.accounts a ON a.id=s.account_id AND a.auth_epoch=s.account_epoch
+        WHERE s.token_hash=$1 AND s.kind='play' AND s.revoked_at IS NULL AND s.expires_at>clock_timestamp()
+        AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp() FOR UPDATE OF s SKIP LOCKED)
+        UPDATE mare_game.app_sessions s SET idle_expires_at=LEAST(expires_at,clock_timestamp()+$2::bigint*interval '1 millisecond')
+        FROM heartbeat WHERE s.id=heartbeat.id`,[hash,this.options.policy.idleMs]);
+    }
+    const pulse=await this.options.pool.connect();let staleParty:string|undefined;
+    try{staleParty=await presentationParty(pulse,id);}finally{pulse.release();}
+    if(staleParty)await this.withSession(token,'play',async(client,row)=>{
+      await this.owned(client,row.account_id,id);const group=await lockParty(client,id);
+      if(group)await refreshPartyLeader(client,group,await presence(client,group));
+    });
+    const client=await this.options.pool.connect();
+    try{
+      await client.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+      await client.query("SET LOCAL statement_timeout='3s'; SET LOCAL idle_in_transaction_session_timeout='10s'");
+      await access(client);
+      const result=await run(client);
+      await client.query('COMMIT');
+      // A fresh READ COMMITTED statement, not the old snapshot: discard a response
+      // if logout/recovery/rotation/expiry committed while it was being projected.
+      await access(client);
+      return result;
+    }catch(error){await client.query('ROLLBACK');throw error;}finally{client.release();}
+  }
+  /** Compact, owner-only presentation from one committed database snapshot. */
   async onlineFrame(token:string,id:string){
-    return this.withSession(token,'play',async(client,row)=>{
-      await this.owned(client,row.account_id,id,true);await lockParty(client,id);
-      const state=await readCharacterState(client,id),partyMotion=await readPartyMotion(client,id);
+    return this.presentation(token,id,async(client)=>{
+      const state=await readCharacterState(client,id),partyMotion=await readPartyMotion(client,id,true);
       const world=await readWorld(client,id),battle=await readBattle(client,id),lobby=await readLobby(client,id,world);
       const timing=(await client.query("SELECT clock_timestamp() now,tick_at FROM mare_game.character_battles WHERE character_id=$1",[id])).rows[0];
       return {protocol:2,characterId:id,version:state.version,serverNow:(timing?.now??new Date()).toISOString(),simulationAgeMs:timing?Math.max(0,timing.now.getTime()-timing.tick_at.getTime()):null,world,battle,lobby,partyMotion};
     });
   }
   async onlineState(token: string, id: string) {
-    return this.withSession(token, "play", async (client, row) => {
-      await this.owned(client, row.account_id, id,true);
+    return this.presentation(token,id,async (client) => {
       const state = await readCharacterState(client, id);
-      await lockParty(client,id);
-      const party=await readParty(client,id);
+      const party=await readParty(client,id,true);
       const journey = (await client.query<{ started: boolean }>(
         "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started", [id],
       )).rows[0]!;
@@ -331,7 +375,7 @@ export class AuthService {
       const world=await readWorld(client,id),lobby=await readLobby(client,id,world);
       const battle=await readBattle(client,id),haki=battle?hakiView(battle):null,prison=await readPrison(client,id);
       const fruits=inputs?.fruits??await readFruits(client,id),talents=inputs?.talents??await readTalents(client,id,state),power=inputs?.permanentPower();
-      return { sync:{protocol:2}, state, party, profile, fruits, hierarchy:await readHierarchy(client,id,state,power), haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements:await readAchievements(client,id,state,{power,prison,haki,fruits}), talents, contracts:await readContracts(client,id), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: inputs?.inventory?inputs.fighter(battle):await readFighter(client,id,state), attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      return { sync:{protocol:2}, state, party, profile, fruits, hierarchy:await readHierarchy(client,id,state,power,true), haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements:await readAchievements(client,id,state,{power,prison,haki,fruits}), talents, contracts:await readContracts(client,id), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: inputs?.inventory?inputs.fighter(battle):await readFighter(client,id,state), attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(

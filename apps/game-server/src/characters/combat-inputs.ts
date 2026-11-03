@@ -10,8 +10,9 @@ import {readProfile} from './profile.js';
 import {originalInventoryView} from '../gameplay/inventory.js';
 import {deriveOriginalFighter} from '../gameplay/character.js';
 const runtime=createRequire(import.meta.url)('../../../../talent-runtime.cjs');
-/** Current-schema, server-internal inputs. Caller must hold the existing character/
- * Party authorization locks. No cache survives this call, transaction or tick.
+/** Current-schema, server-internal inputs. Mutations hold the character/Party
+ * locks; presentation uses an authorized, read-only consistent snapshot.
+ * No cache survives this call, transaction or tick.
  * Batch size is bounded by the four-member roster, never supplied by a route. */
 export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
  const unique=[...new Set(ids)];if(unique.length>4)throw new RangeError('combat_batch_too_large');
@@ -33,7 +34,7 @@ export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
   const state=characterStateSchema.parse({characterId:row.id,version:row.version,level:row.level,experience:row.experience,gold:row.gold});
   const attributes=attributeView(row.allocated,row.last_request_id,state),inventory=originalInventoryView(row.inventory,row.id);
   const talents=talentView(row,state,row.bonus),fruits=fruitView(row.registered);
-  // Preserve lazy initialization only for historical rows without a profile.
+  // Historical rows use the original profile defaults without a presentation write.
   const fallback=row.preferences?null:await readProfile(c,row.id);
   const preferences=preferencesSchema.parse(row.preferences??fallback?.preferences),appearance=appearanceSchema.parse(row.appearance??fallback?.appearance);
   result.set(row.id,{state,attributes,inventory,talents,fruits,preferences,appearance,permanentPower:()=>{if(!inventory)return 0;const f=deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,inventory,talents.build,undefined,undefined,fruits);return f.rulesetId==='original-character-v1'?Math.min(1000000000,Math.max(0,Math.floor(f.stats.power))):0;},fighter:(battle:any)=>{if(!inventory)throw new AuthFault(503,'original_inventory_required');return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,inventory,talents.build,battle?runtime.load(battle):undefined,battle?hakiView(battle):undefined,fruits,battle);}});

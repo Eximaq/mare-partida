@@ -4,6 +4,7 @@ import pg from "pg";
 import { applyMigrations } from "../../apps/game-server/src/db/migrations.js";
 import { AuthService } from "../../apps/game-server/src/auth/service.js";
 import { Vault } from "../../apps/game-server/src/auth/vault.js";
+import {createPool} from '../../apps/game-server/src/db/pool.js';
 import type {
   AuthProvider,
   ProviderSession,
@@ -71,6 +72,7 @@ export async function authDatabase(
     vault: Vault;
   }) => Promise<void>,
   migrationsDirectory?: string,
+  runtimePool = false,
 ) {
   assert.ok(
     process.env.TEST_DATABASE_URL,
@@ -86,7 +88,7 @@ export async function authDatabase(
     await admin.query(`CREATE DATABASE "${name}"`);
     created = true;
     url.pathname = "/" + name;
-    pool = new pg.Pool({ connectionString: url.toString(), max: 12 });
+    pool = runtimePool ? createPool(url.toString()) : new pg.Pool({ connectionString: url.toString(), max: 12 });
     await applyMigrations(pool, migrationsDirectory);
     const provider = new FakeProvider(),
       vault = new Vault(Buffer.alloc(32, 9));

@@ -29,18 +29,24 @@ export async function readBattle(client:PoolClient,id:string){
  return b;
 }
 /** Batched current-schema personal state with the one canonical room projection.
- * Internal only: membership/ownership/locks must already have been established. */
-export async function readBattleRows(client:PoolClient,ids:readonly string[]){
- const rows=(await client.query(`SELECT b.character_id,b.simulation,b.control_epoch,w.started_at,r.simulation->'mobs' shared_mobs
+ * Internal only: caller establishes locks for mutation or an authorized MVCC snapshot. */
+export async function readBattleRows(client:PoolClient,ids:readonly string[],options:{room?:any;motionOnly?:boolean}={}){
+ const rows=(await client.query(`SELECT b.character_id,${options.motionOnly?"b.simulation-'mobs'||jsonb_build_object('mobs','[]'::jsonb)":'b.simulation'} simulation,b.control_epoch,w.started_at
  FROM mare_game.character_battles b LEFT JOIN mare_game.character_world w ON w.character_id=b.character_id
- LEFT JOIN mare_game.party_instances r ON r.id=(b.simulation->>'partyInstanceId')::uuid AND r.ended_at IS NULL
  WHERE b.character_id=ANY($1::uuid[])`,[ids])).rows;
- for(const row of rows)if(row.shared_mobs)row.simulation.mobs=row.shared_mobs;
+ if(!options.motionOnly){
+  const rooms=new Map<string,any[]>();if(options.room)rooms.set(options.room.id,options.room.mobs);
+  const missing=[...new Set<string>(rows.map(r=>r.simulation.partyInstanceId).filter(id=>id&&!rooms.has(id)))];
+  if(missing.length)for(const r of (await client.query("SELECT id,simulation->'mobs' mobs FROM mare_game.party_instances WHERE id=ANY($1::uuid[]) AND ended_at IS NULL",[missing])).rows)rooms.set(r.id,r.mobs);
+  // Keep personal reset/cancel side effects isolated until the engine explicitly
+  // attaches each participant to the canonical timeline, as before batching.
+  for(const row of rows){const mobs=rooms.get(row.simulation.partyInstanceId);if(mobs)row.simulation.mobs=structuredClone(mobs);}
+ }
  return new Map(rows.map(row=>[row.character_id,row]));
 }
 export async function storeBattle(client:PoolClient,id:string,b:any,canonical=true){
  if(canonical&&b.partyInstanceId){const r=await partyRoom(client,b.partyInstanceId);if(r){r.simulation.mobs=b.mobs;await storeRoom(client,r.simulation);}}
- await client.query('UPDATE mare_game.character_battles SET simulation=$2::jsonb WHERE character_id=$1',[id,JSON.stringify(b)]);
+ await client.query('UPDATE mare_game.character_battles SET simulation=$2::jsonb WHERE character_id=$1',[id,JSON.stringify(b.partyInstanceId?{...b,mobs:[]}:b)]);
 }
 export async function pauseBattle(client:PoolClient,id:string){
  // Older migration fixtures acquire leases before the opt-in domain exists.
@@ -91,13 +97,13 @@ export async function mutateBattle(client:PoolClient,id:string,input:CharacterCo
 
 // Bounded worker; no tokens, provider calls or session keep-alive. Lock order is
 // session -> account -> character, identical to authenticated commands/logout.
-export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition,maxBatchMs=Infinity){
- const shard=partition(assignment),budget=simulationBudget(maxBatchMs);let failed=0;
+export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition,maxBatchMs=Infinity,overdue=false){
+ const shard=partition(assignment),budget=simulationBudget(maxBatchMs),minAgeMs=overdue?500:100;let failed=0;
  const candidates=(await pool.query(`SELECT b.character_id,c.session_id FROM mare_game.character_battles b
   JOIN mare_game.character_control c ON c.character_id=b.character_id JOIN mare_game.app_sessions s ON s.id=c.session_id
   JOIN mare_game.accounts a ON a.id=s.account_id WHERE c.expires_at>clock_timestamp() AND s.kind='play' AND s.revoked_at IS NULL
   AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp()
-  AND mod(hashtextextended(b.character_id::text,34001)&2147483647,$2::bigint)=$1::bigint AND NOT (b.simulation ? 'partyInstanceId') AND s.account_epoch=a.auth_epoch AND b.tick_at<clock_timestamp()-interval '100 milliseconds' ORDER BY b.tick_at LIMIT 32`,[shard.index,shard.count])).rows;
+  AND mod(hashtextextended(b.character_id::text,34001)&2147483647,$2::bigint)=$1::bigint AND NOT (b.simulation ? 'partyInstanceId') AND s.account_epoch=a.auth_epoch AND b.tick_at<clock_timestamp()-$3::int*interval '1 millisecond' ORDER BY b.tick_at LIMIT 32`,[shard.index,shard.count,minAgeMs])).rows;
  for(const candidate of candidates){if(budget.exhausted())break;const client=await pool.connect();try{
   await client.query('BEGIN');await client.query("SET LOCAL statement_timeout='3000ms'; SET LOCAL lock_timeout='100ms'; SET LOCAL idle_in_transaction_session_timeout='5s'");
   const session=(await client.query('SELECT id,account_id FROM mare_game.app_sessions WHERE id=$1 FOR UPDATE SKIP LOCKED',[candidate.session_id])).rows[0];
@@ -112,7 +118,7 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
   if(!row){await client.query('ROLLBACK');continue;}
   const id=candidate.character_id,b=row.simulation,now:Date=row.now,elapsed=(now.getTime()-row.tick_at.getTime())/1000;
   if(b.partyInstanceId){await client.query('ROLLBACK');continue;}
-   if(elapsed<.1){await client.query('ROLLBACK');continue;}
+   if(elapsed<minAgeMs/1000){await client.query('ROLLBACK');continue;}
   if(b.rulesHash!==engine.rulesHash)throw new AuthFault(503,'battle_rules_changed');
   if(elapsed>2||row.control_epoch!==row.epoch){engine.cancel(b);engine.resetHaki(b);b.talents=null;await storeBattle(client,id,b);
    await client.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[id,now,row.epoch]);await client.query('COMMIT');budget.commit();continue;}

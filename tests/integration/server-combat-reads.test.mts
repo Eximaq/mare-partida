@@ -1,5 +1,6 @@
 import {test} from 'node:test';
 import pg from 'pg';
+import {Worker} from 'node:worker_threads';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
 import {authDatabase} from './auth-support.mjs';
@@ -29,6 +30,38 @@ async function party(f:any){
  await a.command('party.prepare',{kind:'hunt',destination:'dawn'});const nonce=(await a.read()).party.group.preparation.nonce;
  for(const u of all)await u.command('party.ready',{nonce,ready:true});await a.command('party.start',{nonce});return all;
 }
+
+test('Party monsters persist once while every member keeps the canonical presentation',async()=>authDatabase(async f=>{
+ const all=await party(f),views=await Promise.all(all.map(a=>a.read())),room=(await f.pool.query('SELECT simulation FROM mare_game.party_instances WHERE id=$1',[views[0].battle.partyInstanceId])).rows[0].simulation;
+ assert(room.mobs.length>0);for(const view of views)assert.deepEqual(view.battle.mobs,room.mobs);
+ const rows=(await f.pool.query('SELECT simulation FROM mare_game.character_battles')).rows;
+ console.log(JSON.stringify({personalBytes:rows.reduce((n,r)=>n+Buffer.byteLength(JSON.stringify(r.simulation)),0),canonicalMonsterBytes:Buffer.byteLength(JSON.stringify(room.mobs))}));
+ for(const row of rows)assert.equal(row.simulation.mobs.length,0,'personal rows must not duplicate the canonical monster timeline');
+}));
+
+for(const primary of ['solo','party'] as const)test(`an idle ${primary} worker helps overdue opposite-domain work and obeys revocation`,async()=>authDatabase(async f=>{
+ const a=primary==='solo'?(await party(f))[0]!:await actor(f);
+ await f.pool.query("UPDATE mare_game.character_battles SET tick_at=clock_timestamp()-interval '650 milliseconds'");await f.pool.query("UPDATE mare_game.party_instances SET tick_at=clock_timestamp()-interval '650 milliseconds'");
+ const before=(await f.pool.query('SELECT tick_at FROM mare_game.character_battles WHERE character_id=$1',[a.c.id])).rows[0].tick_at;
+ const worker=new Worker(new URL('../../apps/game-server/dist/simulation-worker.js',import.meta.url),{workerData:{databaseUrl:f.pool.options.connectionString,kind:primary,index:0,count:1},execArgv:[],env:{NODE_ENV:'test',SystemRoot:process.env.SystemRoot??''},resourceLimits:{maxOldGenerationSizeMb:256,stackSizeMb:4}});
+ worker.on('error',()=>{});
+ try{
+  let progressed=false;
+  for(let i=0;i<60;i++){const row=(await f.pool.query('SELECT tick_at FROM mare_game.character_battles WHERE character_id=$1',[a.c.id])).rows[0];if(row.tick_at>before){progressed=true;break;}await new Promise(r=>setTimeout(r,50));}
+  assert.equal(progressed,true,'idle reserved CPU must help overdue work');
+  await f.service.logout(a.s.token,'all');await new Promise(r=>setTimeout(r,200));
+  const stopped=(await f.pool.query('SELECT tick_at FROM mare_game.character_battles WHERE character_id=$1',[a.c.id])).rows[0].tick_at;
+  await new Promise(r=>setTimeout(r,650));assert.equal((await f.pool.query('SELECT tick_at FROM mare_game.character_battles WHERE character_id=$1',[a.c.id])).rows[0].tick_at.getTime(),stopped.getTime());
+ }finally{if(worker.threadId!==-1){const end=new Promise(r=>worker.once('exit',r)),timeout=setTimeout(()=>{void worker.terminate();},8000);worker.postMessage('stop');await end;clearTimeout(timeout);}}
+}));
+
+test('cooperation leaves recent work to its primary lane',async()=>authDatabase(async f=>{
+ const a=(await party(f))[0]!,id=(await a.read()).battle.partyInstanceId;
+ await f.pool.query("UPDATE mare_game.party_instances SET tick_at=clock_timestamp()-interval '200 milliseconds' WHERE id=$1",[id]);
+ const before=(await f.pool.query('SELECT tick_at FROM mare_game.party_instances WHERE id=$1',[id])).rows[0].tick_at;
+ await tickPartyBattles(f.pool,undefined,200,true);
+ assert.equal((await f.pool.query('SELECT tick_at FROM mare_game.party_instances WHERE id=$1',[id])).rows[0].tick_at.getTime(),before.getTime());
+}));
 test('solo tick stays within 22 database round trips without changing balances',async()=>authDatabase(async f=>{
  const a=await actor(f);await a.command('world.travel',{islandId:'dawn'});const before=await a.read();
  await f.pool.query("UPDATE mare_game.character_battles SET tick_at=clock_timestamp()-interval '250 milliseconds'");
