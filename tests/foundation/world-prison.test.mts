@@ -25,5 +25,5 @@ test('prison respawn restores the same encounter and server spawn without reroll
 
 
 test('shared duel catalog preserves all 31 original enemy definitions byte-for-byte',()=>{
- const {createHash}=require('node:crypto');assert.equal(Object.keys(E.prisonCatalog).length,31);assert.equal(createHash('sha256').update(JSON.stringify(E.prisonCatalog)).digest('hex'),'8400c8d1722d5e8bdbee35e50e897c979149e6a6957b0c3b646f7e5f6dc99bca');
+ const {createHash}=require('node:crypto'),original=Object.fromEntries(Object.entries(E.prisonCatalog).filter(([id])=>id!=='satori'));assert.equal(Object.keys(E.prisonCatalog).length,32);assert.equal(Object.keys(original).length,31);assert.equal(createHash('sha256').update(JSON.stringify(original)).digest('hex'),'8400c8d1722d5e8bdbee35e50e897c979149e6a6957b0c3b646f7e5f6dc99bca');
 });
