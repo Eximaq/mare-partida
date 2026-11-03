@@ -2,7 +2,7 @@ import {test} from 'node:test';import assert from 'node:assert/strict';import {r
 import {authDatabase} from './auth-support.mjs';import {applyMigrations} from '../../apps/game-server/src/db/migrations.js';
 const world=createRequire(import.meta.url)('../../world-catalog.cjs').load();
 test('mask acceleration upgrade preserves all state and only promotes the audited world hash once',async()=>{
- const directory=resolve('infra/local/capacity/migrations-'+randomUUID());await mkdir(directory);
+ const directory=resolve('infra/local/capacity/migrations-'+randomUUID());await mkdir(directory,{recursive:true});
  for(const name of await readdir('apps/game-server/migrations'))if(/^\d{4}_.+\.sql$/.test(name)&&name.slice(0,4)<='0033')await copyFile(join('apps/game-server/migrations',name),join(directory,name));
  await authDatabase(async f=>{
   const ids:string[]=[];for(let i=0;i<2;i++){const s=await f.service.login(randomUUID()+'@example.invalid','fixture'),c=await f.service.createCharacter(s.token,{name:'Upgrade '+i,classId:'sword',factionId:'pirate'}),lease=await f.service.acquireControl(s.token,c.id);await f.service.command(s.token,c.id,{requestId:randomUUID(),expectedVersion:0,control:lease,action:'world.initialize',payload:{}});ids.push(c.id);}
