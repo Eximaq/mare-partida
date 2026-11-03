@@ -1,3 +1,7 @@
+## 03/11/2026 — Ilha dos Anjos, Satori e ambiente
+
+Skypiea 75–80 integrada com o mapa existente, Satori normal Nv.77 e Walking/Attack nas quatro direções. Nuvens decorativas móveis, transponíveis e à frente; buracos sob elas preenchidos com upperTerrain nativo. Pool leve de vento azul e poeira dourada em Alabasta. Paisagem da HUD gerada no ChatGPT. 14 testes Node, Chrome e build estático aprovados. [Fontes, arquivos, validação e limites](SKYPIEA.md).
+
 ## 02/11/2026 — Nove chefes reais nas masmorras
 
 Integração dos nove personagens existentes na conta PixelLab atual, com Walking/Attack/Hurt, níveis 10–90, escala visual revisada e atributos comuns do próprio nível ×2,5. Alvida/Morgan preservam cinco fragmentos E, XP/Berry e resgate único; os sete seguintes registram vitória sem inventar recompensas. HUD vertical, retratos HD e carregamento somente do chefe em uso. Sem geração nem consumo de créditos. [Origem, IDs, proporções, tabela numérica, testes e limites online](NINE-DUNGEON-BOSSES.md). Branch feature/nine-dungeon-bosses, base inicial 8362794; PRs #204/#206 integrados em fa2b0ce, com assinatura do motor autoritativo preservada e teste de recuperação de batalha antiga.

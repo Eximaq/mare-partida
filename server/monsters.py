@@ -14,7 +14,7 @@ WORLD_LEVEL_BANDS = {
     "rare": (16, 20), "syrup": (21, 25), "baratie": (26, 30),
     "arlong": (31, 35), "loguetown": (36, 40), "alabasta": (40, 50),
     "alubarna-01": (50, 55), "alubarna-02": (55, 60), "alubarna-03": (60, 65),
-    "alubarna-04": (65, 70), "alubarna-05": (70, 75),
+    "alubarna-04": (65, 70), "alubarna-05": (70, 75), "skypiea-01": (75, 80),
 }
 
 

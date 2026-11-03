@@ -1,7 +1,7 @@
 // Trusted, versioned map sources only. No browser, network, saves or user code.
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),{createHash}=require('node:crypto');
-const scripts=["island-world.js", "lobby-map-data.js", "lobby-world.js", "impel-down-world.js", "alabasta-map-data.js", "alabasta-world.js", "alubarna-map-data.js", "alubarna-world.js", "ember-world.js", "orange-world.js", "conchas-world.js", "dawn-map-data.js", "dawn-world.js", "rare-world.js", "new-islands-data.js", "new-islands-objects.js", "new-islands.js", "pixellab-world-maps-data.js", "conchas-pixellab-data.js", "conchas-structures.js", "pixellab-world-maps.js", "quest-dungeons-data.js", "quest-dungeons-world.js", "world-system.js", "archipelago.js"];
+const scripts=["island-world.js", "lobby-map-data.js", "lobby-world.js", "impel-down-world.js", "alabasta-map-data.js", "alabasta-world.js", "alubarna-map-data.js", "alubarna-world.js", "ember-world.js", "orange-world.js", "conchas-world.js", "dawn-map-data.js", "dawn-world.js", "rare-world.js", "new-islands-data.js", "new-islands-objects.js", "new-islands.js", "pixellab-world-maps-data.js", "conchas-pixellab-data.js", "conchas-structures.js", "pixellab-world-maps.js", "quest-dungeons-data.js", "quest-dungeons-world.js", "skypiea-map-data.js", "skypiea-world.js", "world-system.js", "archipelago.js"];
 const {indexedNavigation}=require('./server-navigation.cjs');
 let loaded;
 function load(){if(loaded)return loaded;const c=vm.createContext({atob,Math}),hash=createHash('sha256');for(const file of scripts){const source=fs.readFileSync(path.join(__dirname,file),'utf8').replaceAll('\r\n','\n');hash.update(file).update(source);vm.runInContext(source,c,{filename:file,timeout:3000});}

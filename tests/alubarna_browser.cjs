@@ -12,7 +12,7 @@ const expected={puppu:110,merry:120,valentine:135,doublefinger:150,mr1:170};
  const openMap=async()=>{await page.locator('#mainMenu [data-panel=modes]').click();await page.locator('[data-quick-mode=map]').click();};
  await openMap();await page.locator('[data-voyage-region=alabasta]').click();assert.equal(await page.locator('[data-island]').count(),6);
  await page.locator('[data-island=alubarna-01]').click();assert(await page.locator('[data-travel-area=alubarna-01]').isDisabled(),'level gate visible in actual UI');
- await page.locator('[data-voyage-region=skypiea]').click();assert.equal(await page.locator('[data-island]').count(),0);assert((await page.locator('.voyage-empty').innerText()).includes('em breve'));
+ await page.locator('[data-voyage-region=skypiea]').click();assert.equal(await page.locator('[data-island]').count(),1);assert(await page.locator('[data-island=skypiea-01]').count());
  const out=process.env.MARE_QA_DIR||path.join(__dirname,'../docs/evidence-alubarna');fs.mkdirSync(out,{recursive:true});await page.screenshot({path:path.join(out,'skypiea.png')});await page.locator('#closePanel').click();
  await page.evaluate(()=>{const q=__alubarnaQA;q.game.level=80;q.game.attributes.strength=50000;q.game.attributes.vitality=10000;});
  await page.waitForFunction(()=>MareAlubarna.image.complete&&MareAlubarna.image.naturalWidth===6592);

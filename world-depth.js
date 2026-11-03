@@ -8,7 +8,8 @@
  function maskedOverlay(p,source){const im=images.get(p.assetId);if(!im?.complete||!im.naturalWidth)return null;if(overlays.has(p))return overlays.get(p);const canvas=document.createElement('canvas');canvas.width=Math.ceil(p.w);canvas.height=Math.ceil(p.h);const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.drawImage(source,p.x,p.y,p.w,p.h,0,0,p.w,p.h);c.globalCompositeOperation='destination-in';c.drawImage(im,0,0,p.w,p.h);overlays.set(p,canvas);if(overlays.size>64)overlays.delete(overlays.keys().next().value);return canvas;}
 
  function regions(id){if(cache.has(id))return cache.get(id);let items=[];
-  if(id==='lobby'&&root.MareLobby){items=root.MareLobby.depthObjects.map(p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,base:p.pivotY,tall:p.h>72,type:'lobby',assetId:p.assetId}));}
+  if(id==='skypiea-01'&&root.MareSkypiea)items=root.MareSkypiea.props.filter(p=>!p.cloud).map(p=>({...p,type:'sky',tall:p.h>96}));
+  else if(id==='lobby'&&root.MareLobby){items=root.MareLobby.depthObjects.map(p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,base:p.pivotY,tall:p.h>72,type:'lobby',assetId:p.assetId}));}
   else if(root.MareAlubarna?.worlds[id])items=root.MareAlubarna.props.filter(p=>p.h>40).map(p=>({...p,tall:p.h>96,type:'alubarna'}));
   else if(id==='alabasta'&&root.MareAlabasta)items=root.MareAlabasta.props.filter(p=>p.h>40).map(p=>({id:p.id,x:p.x,y:p.y,w:p.w,h:p.h,base:p.base,tall:p.h>96,type:'alabasta',assetId:p.assetId}));
   else if(id==='dawn'&&root.MareDawn)items=root.MareDawn.props.map(p=>({id:p.id,x:p.bounds.x,y:p.bounds.y,w:p.bounds.width,h:p.bounds.height,base:p.y,tall:['house','tree'].includes(p.kind),type:'dawn',prop:p}));
@@ -17,7 +18,7 @@
   else if(root.MareNewIslands?.[id]){const world=root.MareNewIslands[id],source=root.MareNewIslandObjects[id];items=source.placements.map(([assetIndex,x,y,w,h],i)=>{const pt=world.sourceCell(x,y),tree=source.assets[assetIndex]==='21d6c94c-29cb-440d-87d7-f2e6e54fb923';return {id:id+'-'+i,x:pt.x-w*32,y:pt.y+32-h*64,w:w*64,h:h*64,base:pt.y+32,tall:h>1.5,tree,type:'island',mapId:id,assetId:source.assets[assetIndex]};});}
   const seen=new Set();items=items.filter(p=>{if(![p.x,p.y,p.w,p.h,p.base].every(Number.isFinite)||p.w<=0||p.h<=0)return false;const key=[p.type,p.x,p.y,p.w,p.h,p.base].join(':');if(seen.has(key))return false;seen.add(key);return true;});cache.set(id,items);prepare(items);return items;
  }
- function draw(ctx,p,actors){if(!actors.some(a=>root.MareWorld.occluded(a,[{...p,tall:true}],a.visualHeight||120,a.visualWidth||64)))return false;
+ function draw(ctx,p,actors){if(p.type==='sky'){if(actors.some(a=>root.MareWorld.occluded(a,[{...p,tall:true}],a.visualHeight||120,a.visualWidth||64)))root.MareSkypiea.drawProp(ctx,p);return true;}if(!actors.some(a=>root.MareWorld.occluded(a,[{...p,tall:true}],a.visualHeight||120,a.visualWidth||64)))return false;
   if(p.type==='dawn'){root.MareDawnRenderer.prop(ctx,p.prop,actors);return true;}
   if(p.type==='ember'){root.MareEmberRenderer.prop(ctx,p.prop);return true;}
   const image=p.type==='alubarna'?root.MareAlubarna.image:p.type==='alabasta'?root.MareAlabasta.image:p.type==='lobby'?root.MareLobby.image:p.type==='pixel'?root.MarePixelWorldMaps.imageCache[p.mapId==='conchas'?'conchasForeground':p.mapId]:root.MareNewIslands.images[p.mapId];
