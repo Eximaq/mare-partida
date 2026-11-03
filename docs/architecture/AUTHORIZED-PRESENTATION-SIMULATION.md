@@ -59,19 +59,13 @@ Não é uma promessa de redução percentual para inventários/salas reais.
 
 ## Agenda e recursos
 
-Agenda nominal de 250ms, lote com orçamento suave de 200ms e uma transação inteira
-por vez. Se um lote ultrapassa seu intervalo, o worker cede ao event loop e faz
-uma seleção nova, em vez de desperdiçar outro intervalo inteiro. Não há fila de
-ticks atrasados. A proteção de gap/offline superior a dois segundos permanece.
+O runtime mantém o agendamento anterior de 250ms, o orçamento suave de 200ms
+e a execução serial por partição. A seleção imediata após um lote atrasado foi
+retirada após os ensaios comparativos. A proteção de gap/offline permanece.
 
-Os workers atendem apenas às suas partições solo ou Party. A idade da sala é
-revalidada depois dos locks. Cada sala é persistida em uma transação com os
-mesmos locks e fencing para proteger simulação e recompensas contra duplicação.
-
-Cada worker tem uma conexão: a lane é serial e não utiliza uma segunda conexão
-em paralelo. API mantém máximo10. Padrão2solo+1Party: máximo13; perfil2+2:14;
-perfil4+2:16. Mais workers não garantem mais capacidade. Overrides locais são
-explícitos em `.env.server.local`, limitados pelo validador existente.
+Os workers atendem às partições solo ou Party. A idade da sala é revalidada
+depois dos locks. Cada sala é persistida em uma transação com os mesmos locks
+e fencing para proteger simulação e recompensas contra duplicação.
 
 ## Runtime e validade do ensaio
 
@@ -136,3 +130,18 @@ funcional. Precisam passar os degraus de carga, reconexão/comandos econômicos 
 além de ensaio em host de homologação com gerador separado. Gargalos remanescentes
 devem ser tratados na projeção/transporte e no custo durável por ator/sala; não
 retirar autorização, locks, ledger, fsync ou limites para forçar aprovação.
+
+### Repetição com 50 conexões e perfil 2+2
+
+| Revisão e perfil | Janela | HTTP200 | Descartes | p95 HTTP | p95 simulação | Auto ativo | Resultado |
+|---|---:|---:|---:|---:|---:|---:|---|
+| Base 7122822, solo | 60s | 4.000 | 0 | 49ms | 725ms | 50/50 | Passou |
+| Candidata 6566ca0, solo | 60s | 4.000 | 0 | 547ms | 1169ms | 7/50 | Reprovado |
+| Candidata 6566ca0, Party | 120s | 7.994 | 6 | 591ms | 643ms | 50/50 | Reprovado |
+| Candidata a4d3b01, solo | 60s | 4.000 | 0 | 73ms | 854ms | 50/50 | Passou |
+| Candidata a4d3b01, Party | 60s | 4.000 | 0 | 232ms | 1163ms | 42/50 | Reprovado |
+
+O mesmo host, Node e pool foram usados na comparação. RNG, distribuição das
+partições e carga do host variam entre execuções. A repetição com o agendamento
+anterior passou no solo e ainda registrou oito paradas em Party. O PR fica aberto
+e a atualização da instalação aguarda a validação de carga.
