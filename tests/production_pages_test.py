@@ -4,6 +4,10 @@ from pathlib import Path
 ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'dist'
 class ProductionPages(unittest.TestCase):
+    def test_inventory_rarity_frames_are_published_unchanged(self):
+        for rarity in ['common','uncommon','rare','epic','legendary','supreme']:
+            relative=Path('assets/ui/inventory-slots')/(rarity+'.png')
+            self.assertEqual((ROOT/relative).read_bytes(),(OUT/relative).read_bytes())
     def test_current_html_dependencies(self):
         for name in ['index.html','ui-preview.html']:
             text=(OUT/name).read_text(encoding='utf-8')
