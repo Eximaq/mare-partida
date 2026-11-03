@@ -10,12 +10,12 @@ test('light frame is owner-only, versioned, no-store and cannot write economic f
  const c=await f.service.createCharacter(a.token,{name:'Frame',classId:'sword',factionId:'pirate'}),lease=await f.service.acquireControl(a.token,c.id);
  const cmd=async(action:any,payload:any={})=>{const s=await f.service.characterState(a.token,c.id);await f.service.command(a.token,c.id,{requestId:randomUUID(),expectedVersion:s.version,control:lease,action,payload});};
  for(const action of ['items.initialize','world.initialize','battle.start'])await cmd(action);
- const full=await f.service.onlineState(a.token,c.id);assert.equal((full as any).sync?.protocol,1);
+ const full=await f.service.onlineState(a.token,c.id);assert.equal((full as any).sync?.protocol,2);
  const api=createHttpServer({isReady:async()=>true,handle:createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9443',cookieSeconds:3600})});api.listen(0,'127.0.0.1');await once(api,'listening');
  const base=`http://127.0.0.1:${(api.address() as any).port}`,path=`/v1/characters/${c.id}/frame`,get=(token=a.token,suffix='')=>fetch(base+path+suffix,{headers:{cookie:`__Host-mare_session=${token}`}});
  try{
   const r=await get();assert.equal(r.status,200);assert.equal(r.headers.get('cache-control'),'no-store');assert.match(r.headers.get('server-timing')||'',/^app;dur=/);
-  const frame=await r.json();assert.equal(frame.protocol,1);assert.equal(frame.characterId,c.id);assert.equal(frame.version,full.state.version);assert.equal(frame.world.mapId,full.world!.mapId);assert.equal(frame.battle.seq,full.battle.seq);assert.ok(Number.isFinite(Date.parse(frame.serverNow)));assert.ok(frame.simulationAgeMs>=0);
+  const frame=await r.json();assert.equal(frame.protocol,2);assert.equal(frame.characterId,c.id);assert.equal(frame.version,full.state.version);assert.equal(frame.world.mapId,full.world!.mapId);assert.equal(frame.battle.seq,full.battle.seq);assert.ok(Number.isFinite(Date.parse(frame.serverNow)));assert.ok(frame.simulationAgeMs>=0);
   for(const field of ['accountId','ownerId','inventory','originalInventory','gold','token'])assert.equal(frame[field],undefined);
   assert.ok(JSON.stringify(frame).length<JSON.stringify(full).length*.8,'frame omits expensive static projections');
   assert.equal((await get(b.token)).status,404);

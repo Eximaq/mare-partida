@@ -32,7 +32,7 @@ test('party acceptance, capacity, consent and same authoritative instance for 2/
 async function activity(a:any,all:any[],kind='hunt',destination='dawn'){
  await a.doit('party.prepare',{kind,destination});const nonce=(await a.read()).party.group.preparation.nonce;
  for(const w of all)await w.doit('party.ready',{nonce,ready:true});await a.doit('party.start',{nonce});
- for(const w of all){const full=await w.read(),frame=await (w as any).frame();assert.equal(frame.version,full.state.version);assert.deepEqual(frame.battle.mobs,full.battle.mobs);assert.deepEqual(frame.party.group.activity,full.party.group.activity);}
+ for(const w of all){const full=await w.read(),frame=await (w as any).frame();assert.equal(frame.version,full.state.version);assert.deepEqual(frame.battle.mobs,full.battle.mobs);assert.deepEqual(frame.partyMotion.group.activity,full.party.group.activity);}
 
 }
 async function sharedKill(f:any,all:any[]){

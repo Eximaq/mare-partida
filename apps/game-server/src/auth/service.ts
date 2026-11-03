@@ -1,3 +1,4 @@
+import {readPartyMotion} from '../characters/party.js';
 import {readParty} from '../characters/party.js';
 import {lockParty} from '../characters/party-store.js';
 import {readLobby} from '../characters/lobby.js';
@@ -305,10 +306,10 @@ export class AuthService {
   async onlineFrame(token:string,id:string){
     return this.withSession(token,'play',async(client,row)=>{
       await this.owned(client,row.account_id,id,true);await lockParty(client,id);
-      const state=await readCharacterState(client,id),party=await readParty(client,id);
+      const state=await readCharacterState(client,id),partyMotion=await readPartyMotion(client,id);
       const world=await readWorld(client,id),battle=await readBattle(client,id),lobby=await readLobby(client,id,world);
       const timing=(await client.query("SELECT clock_timestamp() now,tick_at FROM mare_game.character_battles WHERE character_id=$1",[id])).rows[0];
-      return {protocol:1,characterId:id,version:state.version,serverNow:(timing?.now??new Date()).toISOString(),simulationAgeMs:timing?Math.max(0,timing.now.getTime()-timing.tick_at.getTime()):null,world,battle,lobby,party};
+      return {protocol:2,characterId:id,version:state.version,serverNow:(timing?.now??new Date()).toISOString(),simulationAgeMs:timing?Math.max(0,timing.now.getTime()-timing.tick_at.getTime()):null,world,battle,lobby,partyMotion};
     });
   }
   async onlineState(token: string, id: string) {
@@ -323,7 +324,7 @@ export class AuthService {
       const originalInventory=await readOriginalInventory(client,id);
       const dungeons=await readDungeons(client,id);
       const world=await readWorld(client,id),lobby=await readLobby(client,id,world);
-      return { sync:{protocol:1}, state, party, profile:await readProfile(client,id), fruits:await readFruits(client,id), hierarchy:await readHierarchy(client,id,state), haki:await readHaki(client,id),dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison:await readPrison(client,id), achievements:await readAchievements(client,id,state), talents:await readTalents(client,id,state), contracts:await readContracts(client,id), battle:await readBattle(client,id), world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: await readFighter(client,id,state), attributes: await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      return { sync:{protocol:2}, state, party, profile:await readProfile(client,id), fruits:await readFruits(client,id), hierarchy:await readHierarchy(client,id,state), haki:await readHaki(client,id),dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison:await readPrison(client,id), achievements:await readAchievements(client,id,state), talents:await readTalents(client,id,state), contracts:await readContracts(client,id), battle:await readBattle(client,id), world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: await readFighter(client,id,state), attributes: await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(

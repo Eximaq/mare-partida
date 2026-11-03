@@ -1,5 +1,4 @@
-import {createTickLane} from './tick-lane.js';
-import {tickPartyBattles} from './characters/party-worker.js';
+import {createSimulationPool,simulationSettings} from './simulation-pool.js';
 import {requestMetrics} from "./metrics.js";
 import { once } from "node:events";
 import { readConfig } from "./config.js";
@@ -11,7 +10,6 @@ import { Vault } from "./auth/vault.js";
 import { AuthService } from "./auth/service.js";
 import { createAuthHandler } from "./auth/routes.js";
 import { createHttpServer } from "./http.js";
-import {tickWorldBattles} from './characters/battle.js';
 
 async function main() {
   const config = readConfig(process.env);
@@ -51,18 +49,15 @@ async function main() {
     : undefined;
   revocations?.unref();
   let stopping = false;
-  const soloLane=createTickLane('solo',()=>tickWorldBattles(pool));
-  const partyLane=createTickLane('party',()=>tickPartyBattles(pool));
-  const battles=service?setInterval(()=>{if(!stopping){soloLane.tick();partyLane.tick();}},250):undefined;
-  battles?.unref();
+  const simulations=service?createSimulationPool({databaseUrl:config.databaseUrl,counts:simulationSettings(process.env)}):undefined;
   const metrics=requestMetrics();
   const reporter=setInterval(()=>{
     console.log(JSON.stringify(metrics.flush()));
-    if(service){console.log(JSON.stringify(soloLane.flush()));console.log(JSON.stringify(partyLane.flush()));}
+    if(simulations)console.log(JSON.stringify(simulations.report()));
   },60000);reporter.unref();
   const server = createHttpServer({
     onRequest:metrics.record,
-    isReady: () => (stopping ? Promise.resolve(false) : isDatabaseReady(pool)),
+    isReady: () => ((stopping||simulations&&!simulations.healthy()) ? Promise.resolve(false) : isDatabaseReady(pool)),
     ...(auth && vault && service
       ? {
           handle: createAuthHandler({
@@ -76,10 +71,11 @@ async function main() {
       : {}),
   });
   try {
+    await simulations?.start();
     server.listen(config.port, config.host);
     await once(server, "listening");
   } catch (error) {
-    clearInterval(battles);clearInterval(revocations);clearInterval(reporter);
+    clearInterval(revocations);clearInterval(reporter);await simulations?.stop();
     await pool.end();
     throw error;
   }
@@ -96,14 +92,14 @@ async function main() {
     stopping = true;
     clearInterval(revocations);
     clearInterval(reporter);
-    clearInterval(battles);
+    const simulationStopped=simulations?.stop();
     const deadline = setTimeout(() => {
       server.closeAllConnections();
       process.exitCode = 1;
     }, 10000);
     deadline.unref();
     server.close(() => {
-      void Promise.all([soloLane.stop(),partyLane.stop()]).then(()=>pool.end()).finally(() => {
+      void Promise.resolve(simulationStopped).then(()=>pool.end()).finally(() => {
         clearTimeout(deadline);
         console.log(JSON.stringify({ event: "stopped" }));
       });

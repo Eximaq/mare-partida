@@ -4,7 +4,7 @@ import { fork } from "node:child_process";
 import { createServer, type AddressInfo } from "node:net";
 import { once } from "node:events";
 import { authDatabase } from "./auth-support.mjs";
-test("private Windows parent IPC shuts down the actual API gracefully while PostgreSQL and characters persist", async () =>
+for(const auth of [false,true])test(`private parent IPC shuts down actual API and workers with auth=${auth} while PostgreSQL persists`, async () =>
   authDatabase(async ({ pool, service }) => {
     const login = await service.login("shutdown@example.invalid", "fixture");
     const c = await service.createCharacter(login.token, {
@@ -25,14 +25,16 @@ test("private Windows parent IPC shuts down the actual API gracefully while Post
         HOST: "127.0.0.1",
         PORT: String(port),
         DATABASE_URL: pool.options.connectionString!,
-        AUTH_ENABLED: "false",
+        AUTH_ENABLED: String(auth),
+        AUTH_PUBLIC_ORIGIN:'https://localhost:9443',SUPABASE_URL:'https://fixture-not-hosted.supabase.co',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_fixture_no_network',AUTH_ENCRYPTION_KEY:Buffer.alloc(32,9).toString('base64'),SESSION_ABSOLUTE_SECONDS:'86400',SESSION_IDLE_SECONDS:'7200',PROVIDER_RECHECK_SECONDS:'900',
+        SIMULATION_SOLO_WORKERS:'1',SIMULATION_PARTY_WORKERS:'1',
       },
       stdio: ["ignore", "ignore", "ignore", "ipc"],
     });
     const exit = once(child, "exit");
     try {
       let ready = false;
-      for (let i = 0; i < 100; i++) {
+      for (let i = 0; i < (auth?600:100); i++) {
         try {
           ready = (
             await fetch(`http://127.0.0.1:${port}/health/ready`, {

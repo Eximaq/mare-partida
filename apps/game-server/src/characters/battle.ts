@@ -1,3 +1,4 @@
+import {partition,type SimulationPartition} from '../simulation-partition.js';
 import {partyRoom,storeRoom} from './party-store.js';
 import {readProfile} from './profile.js';
 import {completeDungeonVictory} from './dungeons.js';
@@ -79,13 +80,13 @@ export async function mutateBattle(client:PoolClient,id:string,input:CharacterCo
 
 // Bounded worker; no tokens, provider calls or session keep-alive. Lock order is
 // session -> account -> character, identical to authenticated commands/logout.
-export async function tickWorldBattles(pool:Pool){
- let failed=0;
+export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition){
+ const shard=partition(assignment);let failed=0;
  const candidates=(await pool.query(`SELECT b.character_id,c.session_id FROM mare_game.character_battles b
   JOIN mare_game.character_control c ON c.character_id=b.character_id JOIN mare_game.app_sessions s ON s.id=c.session_id
   JOIN mare_game.accounts a ON a.id=s.account_id WHERE c.expires_at>clock_timestamp() AND s.kind='play' AND s.revoked_at IS NULL
   AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp()
-  AND NOT (b.simulation ? 'partyInstanceId') AND s.account_epoch=a.auth_epoch AND b.tick_at<clock_timestamp()-interval '100 milliseconds' ORDER BY b.tick_at LIMIT 32`)).rows;
+  AND mod(hashtextextended(b.character_id::text,34001)&2147483647,$2::bigint)=$1::bigint AND NOT (b.simulation ? 'partyInstanceId') AND s.account_epoch=a.auth_epoch AND b.tick_at<clock_timestamp()-interval '100 milliseconds' ORDER BY b.tick_at LIMIT 32`,[shard.index,shard.count])).rows;
  for(const candidate of candidates){const client=await pool.connect();try{
   await client.query('BEGIN');await client.query("SET LOCAL statement_timeout='3000ms'; SET LOCAL lock_timeout='100ms'; SET LOCAL idle_in_transaction_session_timeout='5s'");
   const session=(await client.query('SELECT id,account_id FROM mare_game.app_sessions WHERE id=$1 FOR UPDATE SKIP LOCKED',[candidate.session_id])).rows[0];

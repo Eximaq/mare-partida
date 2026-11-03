@@ -1,8 +1,8 @@
 import pg from 'pg';
 
-export function createPool(connectionString: string) {
+export function createPool(connectionString: string, max=10) {
   const pool = new pg.Pool({
-    connectionString, max: 10, connectionTimeoutMillis: 2000,
+    connectionString, max, connectionTimeoutMillis: 2000,
     idleTimeoutMillis: 10000, statement_timeout: 5000, query_timeout: 6000,
     application_name: 'mare-foundation',
   });

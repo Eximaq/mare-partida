@@ -1,3 +1,5 @@
+**Workers de simulação:** [partições, recuperação, compatibilidade e resultados de carga](docs/architecture/SIMULATION-WORKERS.md).
+
 **Sincronização e capacidade:** [protocolo compacto, compatibilidade Party e ensaios para a meta de 3.000 jogadores](docs/architecture/SYNC-CAPACITY.md). Capacidade ainda não certificada.
 
 **Manutenção do repositório:** [auditoria, reduções comprovadas e recursos preservados](docs/maintenance/REPOSITORY-AUDIT-2026-11-02.md). `python tools/build_pages.py` exporta o jogo atual; para bancadas históricas isoladas, usar `python tools/build_pages.py --include-reviews`.

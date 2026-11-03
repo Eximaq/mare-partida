@@ -118,6 +118,14 @@
       attributes.reduce((sum, k) => sum + p.allocation[k], 0) <= 2147483647
     );
   }
+  function mergePartyMotion(full,motion){
+    if(!motion)return full?null:full;
+    if(!full||!!full.group!==!!motion.group)return null;
+    if(!motion.group)return full;
+    const a=full.group,b=motion.group,ids=v=>v.members.map(m=>m.id).sort().join(',');
+    if(a.id!==b.id||!Array.isArray(b.members)||ids(a)!==ids(b))return null;
+    return {...full,group:{...a,...b,members:b.members.map(m=>({...a.members.find(old=>old.id===m.id),...m}))}};
+  }
   function createSession({
     fetch,
     storage,
@@ -257,18 +265,19 @@
     }
     let frameFlight=null;
     async function readFrame(){
-      if(data?.online?.sync?.protocol!==1)return read(true);
+      if(![1,2].includes(data?.online?.sync?.protocol))return read(true);
       if(frameFlight)return frameFlight;
       const flight=(async()=>{
         const original=data,revision=++readVersion,started=monotonic();
         try{
           const f=await api(`/v1/characters/${original.character.id}/frame`),completed=monotonic();
           if(revision!==readVersion||data!==original)return;
-          if(f.protocol!==1||f.characterId!==original.character.id||!Number.isSafeInteger(f.version)||f.version<0||!Number.isFinite(Date.parse(f.serverNow))||!('world' in f)||!('battle' in f)||!('lobby' in f)||!('party' in f))throw fault('invalid_server_state');
+          if(![1,2].includes(f.protocol)||f.protocol!==original.online.sync.protocol||f.characterId!==original.character.id||!Number.isSafeInteger(f.version)||f.version<0||!Number.isFinite(Date.parse(f.serverNow))||!('world' in f)||!('battle' in f)||!('lobby' in f)||!(f.protocol===2?'partyMotion' in f:'party' in f))throw fault('invalid_server_state');
           // Economy, equipment, skills and derived stats change only through full state.
-          if(f.version!==original.online.state.version)return read(true);
+          const party=f.protocol===2?mergePartyMotion(original.online.party,f.partyMotion):f.party;
+          if(f.version!==original.online.state.version||(f.protocol===2&&!party))return read(true);
           networkSample={rttMs:Math.max(0,completed-started),at:completed,intervalMs:networkSample?Math.max(0,completed-networkSample.at):null};
-          data={character:original.character,online:{...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party:f.party}};
+          data={character:original.character,online:{...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party}};
           available=true;notify();return data;
         }catch(error){if(revision===readVersion){available=false;notify();}throw error;}
       })().finally(()=>{if(frameFlight===flight)frameFlight=null;});
@@ -395,9 +404,9 @@
       },
     };
   }
-  root.MareGameSessionFactory = { createSession, validIntent };
+  root.MareGameSessionFactory = { createSession, validIntent, mergePartyMotion };
   if (typeof module !== "undefined")
-    module.exports = { createSession, validIntent };
+    module.exports = { createSession, validIntent, mergePartyMotion };
   if (typeof document !== "undefined") {
     root.MareGameSession = createSession({
       fetch: root.fetch.bind(root),

@@ -268,3 +268,12 @@ test('compact reads preserve static state, fall back on changed version and igno
  const changed=fixture({frameSupport:true,framePatch:{version:99}});await changed.client.load();await changed.client.readFrame();assert.equal(changed.requests.filter(r=>r.path.endsWith('/online-state')).length,2);
  const old=fixture();await old.client.load();await old.client.readFrame();assert.equal(old.requests.filter(r=>r.path.endsWith('/frame')).length,0,'older server remains supported');
 });
+
+test('Party motion preserves public metadata and requires full refresh on roster changes',()=>{
+ const {mergePartyMotion}=require('../../apps/account-client/game-session.js');
+ const full={group:{id:'g',leaderId:'a',members:[{id:'a',name:'Captain',maxHp:100,appearance96:{hair:'fixture'}}]},invites:[{id:'invitation'}]};
+ const merged=mergePartyMotion(full,{group:{id:'g',leaderId:'a',members:[{id:'a',hp:80,connected:true,world:null}],activity:null}});
+ assert.equal(merged.group.members[0].hp,80);assert.equal(merged.group.members[0].name,'Captain');assert.equal(merged.invites,full.invites);assert.equal((full.group.members[0] as any).hp,undefined);
+ assert.equal(mergePartyMotion(full,{group:{id:'g',members:[{id:'other'}]}}),null);
+ assert.equal(mergePartyMotion(full,{group:null}),null);
+});

@@ -1,5 +1,5 @@
 // Isolated PostgreSQL and real battle worker; fixture identity only, no hosted accounts.
-import {tickWorldBattles} from '../apps/game-server/src/characters/battle.js';
+import {createSimulationPool} from '../apps/game-server/src/simulation-pool.js';
 import assert from 'node:assert/strict';
 import {once} from 'node:events';
 import {readFile,mkdir} from 'node:fs/promises';
@@ -16,7 +16,7 @@ await authDatabase(async f=>{
  const handler=createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9445',cookieSeconds:3600});
  const api=createHttpServer({isReady:async()=>true,handle:handler});api.listen(0,'127.0.0.1');await once(api,'listening');
  const gateway=createDevGateway({key:await readFile('infra/local/localhost.key','utf8'),cert:await readFile('infra/local/localhost.crt','utf8'),staticRoot:resolve(process.env.MARE_QA_STATIC_ROOT||'dist'),onlineRoot:resolve('apps/account-client'),upstream:new URL(`http://127.0.0.1:${(api.address() as any).port}`)});
- let worker:any,flight:any;let browser:any,context:any;const errors:string[]=[];
+ let simulations:any;let browser:any,context:any;const errors:string[]=[];
  try{
   gateway.listen(9445,'127.0.0.1');await once(gateway,'listening');browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});context=await browser.newContext({viewport:{width:1366,height:900}});const p=await context.newPage();p.on('dialog',async(d:any)=>{assert.equal(d.type(),'confirm');assert.match(d.message(),/Este personagem está sob controle/);await d.accept();});p.on('pageerror',(e:any)=>errors.push(e.stack||e.message));await context.addInitScript(()=>localStorage.setItem('mare-partida-save-v1','preserve-demo-final-acceptance'));
   await p.route(/^https?:\/\/(?!localhost:9445\/)/,(r:any)=>r.abort());
@@ -24,13 +24,14 @@ await authDatabase(async f=>{
   await p.waitForFunction(()=>globalThis.MareGameSession?.data?.online?.battle&&globalThis.__mareDiagnostics?.().map.navigation.ready);await p.waitForFunction(()=>globalThis.__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});
 
 
-  worker=setInterval(()=>{if(!flight)flight=tickWorldBattles(f.pool).catch(()=>{errors.push('worker_failed');}).finally(()=>flight=null);},250);
+  simulations=createSimulationPool({databaseUrl:f.pool.options.connectionString!,counts:{solo:2,party:1},workerUrl:new URL('../apps/game-server/dist/simulation-worker.js',import.meta.url)});await simulations.start();
   await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
   await p.evaluate(()=>MareGameSession.command('world.travel',{islandId:'dawn'}));
   await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
   await p.waitForTimeout(2000);
   await p.waitForFunction(()=>/Ping HTTP: \d+ ms.*FPS: \d+/.test(document.querySelector('#onlinePerformance')?.textContent||''));
   await p.evaluate(()=>{const original=globalThis.MareEmberRenderer.monster;globalThis.monsterProbe=[];globalThis.MareEmberRenderer.monster=function(ctx,m,...args){if(m.alive)globalThis.monsterProbe.push({id:m.id,x:m.x,y:m.y,moving:m.moving,phase:m.emberElapsed});return original.call(this,ctx,m,...args);};});
+  assert.equal(await p.evaluate(()=>Number.isFinite(__mareDiagnostics().onlineSampledAt)),true,'motion probes need the time associated with the drawn pose');
   let compactReads=0;p.on('response',r=>{if(r.url().endsWith('/frame')&&r.status()===200)compactReads++;});
   const captures=[];
   for(const mapId of ['lobby','dawn']){
@@ -48,7 +49,7 @@ await authDatabase(async f=>{
    }
    assert(target);
    await p.route('**/v1/**',async(r:any)=>{try{await new Promise(resolve=>setTimeout(resolve,250));await r.continue();}catch{errors.push('delayed_request_failed');}});
-   await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:performance.now(),x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
+   await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
    const canvas=await p.locator('#worldCanvas').boundingBox();
    await p.mouse.click(canvas.x+(target.x-Math.round(screen.camera.x))*canvas.width/screen.camera.width,canvas.y+(target.y-Math.round(screen.camera.y))*canvas.height/screen.camera.height);
    await p.waitForTimeout(5000);
@@ -60,7 +61,7 @@ await authDatabase(async f=>{
   }
   await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
   await p.evaluate(()=>MareGameSession.command('battle.auto',{enabled:true}));
-  await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:performance.now(),x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
+  await p.evaluate(`window.motion=[];window.captureMotion=true;function capture(t){if(!window.captureMotion)return;const d=__mareDiagnostics(),s=MareGameSession.data.online;window.motion.push({t:d.onlineSampledAt,x:d.hero.x,y:d.hero.y,world:s.world,auto:s.battle.auto,stats:{manual:d.stats.moveSpeed,auto:d.stats.huntSpeed}});requestAnimationFrame(capture)}requestAnimationFrame(capture);`);
   await p.waitForTimeout(18000);captures.push({kind:'auto',frames:await p.evaluate('window.captureMotion=false;window.motion')});
   for(const run of captures){
    const frames=run.frames;let travel=0,maxWindowSpeed=0,windows=0;
@@ -80,8 +81,8 @@ await authDatabase(async f=>{
   for(const v of samples){const prev=last.get(v.id);if(prev){if(v.phase<prev.phase-.01)rewinds++;if(Math.hypot(v.x-prev.x,v.y-prev.y)>.01){moves++;if(!v.moving)sliding++;}}last.set(v.id,v);}
   console.log(JSON.stringify({monsterFrames:samples.length,moves,sliding,phaseRewinds:rewinds}));
   assert.ok(moves>100,'real monster movement observed');assert.equal(sliding,0,'moving monsters animate their steps');assert.equal(rewinds,0,'walk animation clock never rewinds on snapshots');
-  await p.route('**/online-state',(r:any)=>r.abort());await p.evaluate(()=>MareGameSession.read(true).catch(()=>{}));await p.waitForTimeout(1100);assert.match(await p.locator('#onlinePerformance').innerText(),/Sem conexão/);await p.unroute('**/online-state');await p.evaluate(()=>MareGameSession.read(true));await p.waitForTimeout(1100);assert.match(await p.locator('#onlinePerformance').innerText(),/Ping HTTP:/);
+  const disconnected=/\/(?:online-state|frame)$/;await p.route(disconnected,(r:any)=>r.abort());await p.evaluate(()=>MareGameSession.read(true).catch(()=>{}));await p.waitForTimeout(1100);assert.match(await p.locator('#onlinePerformance').innerText(),/Sem conexão/);await p.unroute(disconnected);await p.evaluate(()=>MareGameSession.read(true));await p.waitForTimeout(1100);assert.match(await p.locator('#onlinePerformance').innerText(),/Ping HTTP:/);
   assert.ok(compactReads>5,'current server advertises compact frames, renderer consumes them');
   assert.deepEqual(errors,[]);assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');await p.screenshot({path:resolve(out,'combat.png')});console.log('Mouse routes in lobby/dawn and automatic chase passed with real backend/worker; demo preserved.');
- }catch(error){await context?.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw error;}finally{clearInterval(worker);await flight;await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
+ }catch(error){await context?.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw error;}finally{await simulations?.stop();await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
 });
