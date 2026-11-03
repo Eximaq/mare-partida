@@ -10,7 +10,7 @@ const H=require('./haki-system.js'),fruits=require('./fruit-runtime.cjs'),zoan=r
 const talents=require('./talent-runtime.cjs'),{T,U,TC}=talents;
 const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
-const sources=['zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const sources=['zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 function hakiGame(b){
  b.haki??=H.migrate({}).haki;b.hakiRuntime??=H.start();
@@ -120,7 +120,7 @@ function step(b,c){
   if(projectile){const kind=classId==='strategist'?'mage':classId;b.projectiles.push(vfx.projectile(kind,hero,m.id,{damage:amount,slow,contact:meta}));event(b,'projectile',{id:m.id,kind,x:hero.x,y:hero.y});}
   else landed(m,amount,slow,meta);
  }
- function die(){resetHaki(b);b.hp=0;b.respawn=4.1;b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;for(const other of enemies())behavior.disengage(other);event(b,'death');}
+ function die(){resetHaki(b);b.hp=0;b.respawn=4.1;b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;if(!c.shared)for(const other of enemies())behavior.disengage(other);event(b,'death');}
  function damage(m,multiplier=1,warning){
   if(warning?.groundTrap&&b.fruit?.id==='akuma_tori_albatroz'&&b.fruit.transformed&&b.fruit.effects.altitudeUntil>now/1000||b.fruit?.id==='akuma_bomu_bomu'&&warning?.damageType==='explosion')return;const physical=m.type!=='spirit';
   if(b.hp<=0)return;const genie=b.fruit?.effects.genie;if(genie){fruits.genieDamage(genie,now/1000,m.attack*multiplier,physical);if(genie.hp<=0)delete b.fruit.effects.genie;return;}H.touch(hakiGame(b),b.hakiRuntime);stats=combatStats(b,c,rt);if(rng()<stats.evasion){b.hakiRuntime.eyeFX=.35;event(b,'evade');return;}
@@ -145,12 +145,12 @@ function step(b,c){
  let left=c.dt,now=c.now-c.dt*1000;
  while(left>1e-9){const dt=Math.min(.05,left);left-=dt;now+=dt*1000;H.tick(hakiGame(b),b.hakiRuntime,dt,{alive:b.hp>0,inHunt:!!b.area});stats=combatStats(b,{...c,now},rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
   fruits.tick(b,{...c,stats,now},dt,{hit:(m,amount)=>land(m,amount,now),heal:(amount)=>heal(amount,true),effect:data=>event(b,'fruit',data)});
-  actions(TC.tick(rt,dt,enemies()));
+  actions(TC.tick(rt,dt,c.shared?enemies().filter(c.shared.owns):enemies()));
   if(b.hp>0)actions(U.tick(g,rt.ultimate,dt,{hero,stats,inCombat:!!b.area&&(rt.combatRemaining>0||!!target(b)),inHunt:!!b.area,enemies:enemies(),clear,move:(m,dx,dy)=>{const p={x:m.x+dx,y:m.y+dy},n=Math.max(1,Math.ceil(Math.hypot(dx,dy)/4));for(let i=1;i<=n;i++)if(!nav.walkable(m.x+dx*i/n,m.y+dy*i/n))return;if(clear(m,p))Object.assign(m,p);}}));
   b.cooldowns=b.cooldowns.map(n=>Math.max(0,n-dt));b.guard=Math.max(0,b.guard-dt);b.blessing=Math.max(0,b.blessing-dt);b.attackClock=Math.max(0,b.attackClock-dt);
-  if(b.hp<=0){b.respawn=Math.max(0,b.respawn-dt);if(b.respawn<=1e-8){b.hp=stats.maxHP;b.energy=stats.maxEnergy;if(b.prison){const m=b.mobs[0],auto=b.auto;enterPrison(b,b.prison.spec,stats,hero,{id:m.id,stolen:m.talentStolen||0});b.auto=auto;rt=talents.load(b);}else if(b.dungeon){const m=b.mobs[0],auto=b.auto;enterDungeon(b,b.dungeon.id,b.dungeon.record,stats,hero,{stolen:m?.talentStolen||0});b.auto=auto;rt=talents.load(b);}else Object.assign(hero,nav.map.spawn);b.targetId=null;event(b,'respawn');}}
+  if(b.hp<=0){b.respawn=Math.max(0,b.respawn-dt);if(b.respawn<=1e-8){b.hp=stats.maxHP;b.energy=stats.maxEnergy;if(c.shared){Object.assign(hero,nav.map.spawn);}else if(b.prison){const m=b.mobs[0],auto=b.auto;enterPrison(b,b.prison.spec,stats,hero,{id:m.id,stolen:m.talentStolen||0});b.auto=auto;rt=talents.load(b);}else if(b.dungeon){const m=b.mobs[0],auto=b.auto;enterDungeon(b,b.dungeon.id,b.dungeon.record,stats,hero,{stolen:m?.talentStolen||0});b.auto=auto;rt=talents.load(b);}else Object.assign(hero,nav.map.spawn);b.targetId=null;event(b,'respawn');}}
   else{heal(dt*((stats.healthRegen||0)+(b.area?0:1.9)+(b.blessing>0?stats.regenBuff:0)));b.energy=Math.min(stats.maxEnergy,b.energy+dt*stats.energyRegen);}
-  populate(b,now,rng,hero);
+  if(!c.shared)populate(b,now,rng,hero);
   if(!b.fruit?.effects.genie&&!b.fruit?.effects.action&&!b.fruit?.effects.dash&&c.manualPath?.length&&b.hp>0&&now>=(c.manualStart||0))nav.follow(hero,c.manualPath,stats.moveSpeed,Math.min(dt,(now-(c.manualStart||0))/1000));
   const fruitBusy=!!(b.fruit?.effects.action||b.fruit?.effects.dash||b.fruit?.effects.jikiCharge||b.fruit?.effects.genie);if(fruitBusy){b.pending=null;b.skillJob=null;}
   let m=target(b);
@@ -186,6 +186,7 @@ function step(b,c){
   for(const p of b.projectiles){const t=b.mobs.find(m=>m.id===p.targetId);vfx.step(p,dt,{target:t,origin:p.origin||hero,clear,valid:()=>b.hp>0&&live(t),onHit:()=>p.secondary?land(t,p.damage,now,p.slow):landed(t,p.damage,p.slow,p.contact)});}
   b.projectiles=b.projectiles.filter(p=>p.phase!=='done');if(b.projectiles.length>1024)throw Error('battle_projectile_limit');
   for(const enemy of b.mobs.filter(m=>m.alive)){
+    if(c.shared&&!c.shared.owns(enemy))continue;
    const focus=b.fruit?.effects.genie||hero;
    enemy.hakiDebuff=Math.max(0,(enemy.hakiDebuff||0)-dt);enemy.slow=Math.max(0,enemy.slow-dt);enemy.emberElapsed+=dt;enemy.attackAnim=Math.max(0,enemy.attackAnim-dt);enemy.moving=0;
    const rooted=enemy.doruRootUntil>now/1000||enemy.betaRootUntil>now/1000;
@@ -209,4 +210,4 @@ function step(b,c){
  stats=combatStats(b,{...c,now},rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
  talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};
 }
-module.exports={fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,create,step,skill,cancel,changeArea,rulesHash,catalog,hunt,talentStats:talents.stats};
+module.exports={populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,create,step,skill,cancel,changeArea,rulesHash,catalog,hunt,talentStats:talents.stats};

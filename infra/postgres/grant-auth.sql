@@ -1,3 +1,6 @@
+GRANT SELECT,INSERT,UPDATE ON mare_game.parties,mare_game.party_members,mare_game.party_invites,mare_game.party_instances TO mare_runtime;
+GRANT DELETE ON mare_game.party_members TO mare_runtime;
+GRANT SELECT,INSERT ON mare_game.party_deaths,mare_game.party_experience TO mare_runtime;
 -- Run as migration owner, only on the isolated Phase 2 game database.
 GRANT USAGE ON SCHEMA mare_game TO mare_runtime;
 GRANT SELECT, INSERT ON mare_game.accounts TO mare_runtime;

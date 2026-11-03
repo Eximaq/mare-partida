@@ -1,3 +1,4 @@
+import {tickPartyBattles} from './characters/party-worker.js';
 import {requestMetrics} from "./metrics.js";
 import { once } from "node:events";
 import { readConfig } from "./config.js";
@@ -52,7 +53,7 @@ async function main() {
   let battleTick:Promise<unknown>|undefined;
   const battles=service?setInterval(()=>{
     if(stopping||battleTick)return;
-    battleTick=tickWorldBattles(pool).catch(()=>console.error(JSON.stringify({event:'world_battle_tick_failed'}))).finally(()=>{battleTick=undefined;});
+    battleTick=tickWorldBattles(pool).then(()=>tickPartyBattles(pool)).catch(()=>console.error(JSON.stringify({event:'world_battle_tick_failed'}))).finally(()=>{battleTick=undefined;});
   },250):undefined;
   battles?.unref();
   const metrics=requestMetrics();

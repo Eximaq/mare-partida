@@ -24,3 +24,5 @@ export * from './schemas/dungeons.js';
 export * from './schemas/haki.js';
 
 export * from './schemas/profile.js';
+
+export * from './schemas/party.js';
