@@ -3,7 +3,7 @@
  const data=root.MareSkypieaData||(typeof module!=='undefined'?require('./skypiea-map-data.js'):null);if(!data)return;
  const {width,height,rows,colliders,spawn,districts,slots,props}=data;
  const terrain=(x,y)=>rows[Math.floor(y/64)]?.[Math.floor(x/64)]||'.';
- const terrainWalkable=(x,y)=>[[0,0],[-16,-20],[16,-20],[-16,0],[16,0]].every(([dx,dy])=>terrain(x+dx,y+dy)==='s');
+ const terrainWalkable=(x,y)=>[[0,0],[-16,-20],[16,-20],[-16,0],[16,0]].every(([dx,dy])=>'sc'.includes(terrain(x+dx,y+dy)));
  const returnPoint={id:'return',...spawn,radius:40};
  const map={id:'skypiea-01',width,height,origin:{x:0,y:0},spawn,colliders,terrainWalkable,playerFootprint:{w:32,h:20},navigationCell:32,navigationGoals:districts,spawnZones:districts.map(d=>({id:d.id,x:d.x-120,y:d.y-120,w:240,h:240})),safeZones:[{...spawn,radius:120}],interactions:[returnPoint],returnPoint,visualCoverage:{rows,tile:64}};
  let image=null;const images=new Map();
