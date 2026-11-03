@@ -20,7 +20,7 @@ const expected=[
 
 assert.deepEqual(manifest.rarities.map(({id,label,referenceHex})=>[id,label,referenceHex]),expected);
 assert.match(read('index.html'),/<link rel="stylesheet" href="ui-screens\.css" \/>/,'rarity frames use the inventory screen stylesheet');
-assert.match(builder,/shutil\.copytree\(ROOT\/folder, OUT\/folder\)/,'Pages copies the new frame PNGs with assets');
+assert.match(builder,/shutil\.copytree\(ROOT\/folder, OUT\/folder, ignore=ignored\)/,'Pages copies the new frame PNGs with assets');
 assert.match(game,/rarity:itemRarity\(item\)/,'inventory entries use existing item rarity metadata');
 assert.match(game,/class="op-item rarity-\$\{entry\.rarity\}/,'occupied item slots receive the metadata rarity class');
 assert.match(game,/class="op-item empty" aria-hidden="true"/,'empty slots stay neutral and have no rarity class');

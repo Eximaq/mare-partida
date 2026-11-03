@@ -24,3 +24,12 @@ test('isolated patrol endpoint is rejected without searching the entire reachabl
  let calls=0;const clear=nav.clear;nav.clear=function(...args:any[]){calls++;return clear.apply(this,args);};
  try{assert.equal(nav.path(start,end).length,0);assert(calls<=12,'unreachable final edge must be detected locally; checks='+calls);}finally{nav.clear=clear;}
 });
+
+test('static exact collision queries reuse bounded results without rounding nearby coordinates',()=>{
+ const {indexedNavigation}=require('../../server-navigation.cjs');let points=0,segments=0;
+ class Base{map:any;rows=0;radius=10;constructor(map:any){this.map=map;}buildRows(){}walkable(x:number,_y:number){points++;return x>1;}clear(_a:any,b:any){segments++;return b.x>1;}projectileClear(){return true;}}
+ const nav=indexedNavigation(Base,{width:100,height:100,colliders:[]});
+ for(let i=0;i<10;i++){assert.equal(nav.walkable(1.000001,2),true);assert.equal(nav.clear({x:0,y:0},{x:1.000001,y:2}),true);}
+ assert.equal(points,1);assert.equal(segments,1);assert.equal(nav.walkable(.999999,2),false);assert.equal(nav.clear({x:0,y:0},{x:.999999,y:2}),false);
+ for(let i=0;i<20000;i++)nav.walkable(2+i/10000,2);assert.ok(nav.walkMemo.size<=4096);assert.ok(nav.clearMemo.size<=8192);
+});

@@ -2,7 +2,7 @@
 'use strict';
 function indexedNavigation(Base,map,cell=24,radius=10){
  class Indexed extends Base{
-  constructor(){super({...map},cell,radius,{defer:true});this.buckets=new Map();this.full=this.map.colliders;this.tile=128;
+  constructor(){super({...map},cell,radius,{defer:true});this.buckets=new Map();this.full=this.map.colliders;this.tile=128;this.walkMemo=new Map();this.clearMemo=new Map();
    for(const o of this.full)for(let y=Math.floor(o.y/this.tile);y<=Math.floor((o.y+o.h)/this.tile);y++)for(let x=Math.floor(o.x/this.tile);x<=Math.floor((o.x+o.w)/this.tile);x++){const key=x+':'+y,items=this.buckets.get(key)||[];items.push(o);this.buckets.set(key,items);}
    if(map.segmentBlocked)this.map.segmentBlocked=(a,b,r)=>map.segmentBlocked(a,b,r,this.candidates(a,b,r+.1));
    this.buildRows(this.rows);
@@ -36,8 +36,10 @@ function indexedNavigation(Base,map,cell=24,radius=10){
    }
    return super.path(start,requested);
   }
-  walkable(x,y,r=this.radius){return this.scoped({x,y},{x,y},r,()=>super.walkable(x,y,r));}
-  clear(a,b){return this.scoped(a,b,this.radius,()=>super.clear(a,b));}
+  memo(cache,key,limit,run){if(cache.has(key))return cache.get(key);const value=run();if(cache.size>=limit)cache.delete(cache.keys().next().value);cache.set(key,value);return value;}
+  // Static geometry only; exact numeric keys, no rounding and bounded per-map memory.
+  walkable(x,y,r=this.radius){const run=()=>this.scoped({x,y},{x,y},r,()=>super.walkable(x,y,r));return [x,y,r].every(Number.isFinite)?this.memo(this.walkMemo,[x,y,r].join(','),4096,run):run();}
+  clear(a,b){const run=()=>this.scoped(a,b,this.radius,()=>super.clear(a,b));return [a.x,a.y,b.x,b.y].every(Number.isFinite)?this.memo(this.clearMemo,[a.x,a.y,b.x,b.y].join(','),8192,run):run();}
   projectileClear(a,b){return this.scoped(a,b,0,()=>super.projectileClear(a,b));}
  }
  return new Indexed();

@@ -1,0 +1,2 @@
+import {test} from 'node:test';import assert from 'node:assert/strict';import {requestMetrics} from '../../apps/game-server/src/metrics.js';
+test('bounded latency histogram reports percentiles and resets without identifiers',()=>{const m=requestMetrics();for(let i=0;i<95;i++)m.record(200,20);for(let i=0;i<5;i++)m.record(503,400);const r=m.flush();assert.equal(r.requests,100);assert.equal(r.errors,5);assert.equal(r.p95Ms,25);assert.equal(r.p99Ms,500);assert.equal(m.flush().requests,0);});
