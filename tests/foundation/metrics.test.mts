@@ -12,7 +12,7 @@ test("operational windows aggregate errors and throttling without identifiers, a
     errors: 1,
     limited: 1,
     meanMs: 20,
-    maxMs: 30,
+    maxMs: 30,p50Ms:25,p95Ms:50,p99Ms:50,
   });
   assert.deepEqual(m.flush(), {
     event: "http_window",
@@ -20,6 +20,6 @@ test("operational windows aggregate errors and throttling without identifiers, a
     errors: 0,
     limited: 0,
     meanMs: 0,
-    maxMs: 0,
+    maxMs: 0,p50Ms:0,p95Ms:0,p99Ms:0,
   });
 });

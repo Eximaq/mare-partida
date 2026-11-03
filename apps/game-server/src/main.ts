@@ -1,3 +1,4 @@
+import {createTickLane} from './tick-lane.js';
 import {tickPartyBattles} from './characters/party-worker.js';
 import {requestMetrics} from "./metrics.js";
 import { once } from "node:events";
@@ -50,14 +51,15 @@ async function main() {
     : undefined;
   revocations?.unref();
   let stopping = false;
-  let battleTick:Promise<unknown>|undefined;
-  const battles=service?setInterval(()=>{
-    if(stopping||battleTick)return;
-    battleTick=tickWorldBattles(pool).then(()=>tickPartyBattles(pool)).catch(()=>console.error(JSON.stringify({event:'world_battle_tick_failed'}))).finally(()=>{battleTick=undefined;});
-  },250):undefined;
+  const soloLane=createTickLane('solo',()=>tickWorldBattles(pool));
+  const partyLane=createTickLane('party',()=>tickPartyBattles(pool));
+  const battles=service?setInterval(()=>{if(!stopping){soloLane.tick();partyLane.tick();}},250):undefined;
   battles?.unref();
   const metrics=requestMetrics();
-  const reporter=setInterval(()=>console.log(JSON.stringify(metrics.flush())),60000);reporter.unref();
+  const reporter=setInterval(()=>{
+    console.log(JSON.stringify(metrics.flush()));
+    if(service){console.log(JSON.stringify(soloLane.flush()));console.log(JSON.stringify(partyLane.flush()));}
+  },60000);reporter.unref();
   const server = createHttpServer({
     onRequest:metrics.record,
     isReady: () => (stopping ? Promise.resolve(false) : isDatabaseReady(pool)),
@@ -101,7 +103,7 @@ async function main() {
     }, 10000);
     deadline.unref();
     server.close(() => {
-      void Promise.resolve(battleTick).then(()=>pool.end()).finally(() => {
+      void Promise.all([soloLane.stop(),partyLane.stop()]).then(()=>pool.end()).finally(() => {
         clearTimeout(deadline);
         console.log(JSON.stringify({ event: "stopped" }));
       });

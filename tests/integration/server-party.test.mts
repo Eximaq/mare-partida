@@ -8,7 +8,7 @@ async function actor(f:any){
  const login=await f.service.login(randomUUID()+'@example.invalid','fixture'),name='Party '+randomUUID().slice(0,8),c=await f.service.createCharacter(login.token,{name,classId:'sword',factionId:'pirate'}),lease=await f.service.acquireControl(login.token,c.id);
  const read=()=>f.service.onlineState(login.token,c.id),input=async(action:string,payload:any={})=>({requestId:randomUUID(),expectedVersion:(await read()).state.version,action,payload,control:{epoch:lease.epoch,token:lease.token}}),send=(v:any)=>f.service.command(login.token,c.id,v),doit=async(a:string,p:any={})=>send(await input(a,p));
  for(const action of ['items.initialize','world.initialize','battle.start'])await doit(action);
- return {c,name,login,lease,read,input,send,doit};
+ return {c,name,login,lease,read,input,send,doit,frame:()=>f.service.onlineFrame(login.token,c.id)};
 }
 async function join(a:any,b:any){await a.doit('party.invite',{name:b.name});const invite=(await b.read()).party.invites.find((i:any)=>i.status==='pending');await b.doit('party.respond',{inviteId:invite.id,accept:true});}
 test('party acceptance, capacity, consent and same authoritative instance for 2/3/4 real sessions',async()=>authDatabase(async f=>{
@@ -32,6 +32,8 @@ test('party acceptance, capacity, consent and same authoritative instance for 2/
 async function activity(a:any,all:any[],kind='hunt',destination='dawn'){
  await a.doit('party.prepare',{kind,destination});const nonce=(await a.read()).party.group.preparation.nonce;
  for(const w of all)await w.doit('party.ready',{nonce,ready:true});await a.doit('party.start',{nonce});
+ for(const w of all){const full=await w.read(),frame=await (w as any).frame();assert.equal(frame.version,full.state.version);assert.deepEqual(frame.battle.mobs,full.battle.mobs);assert.deepEqual(frame.party.group.activity,full.party.group.activity);}
+
 }
 async function sharedKill(f:any,all:any[]){
  const before=await all[0].read(),instance=before.battle.partyInstanceId,row=(await f.pool.query('SELECT simulation FROM mare_game.party_instances WHERE id=$1',[instance])).rows[0],room=row.simulation,m=room.mobs.find((m:any)=>m.alive);

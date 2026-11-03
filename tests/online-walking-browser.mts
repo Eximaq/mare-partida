@@ -31,6 +31,7 @@ await authDatabase(async f=>{
   await p.waitForTimeout(2000);
   await p.waitForFunction(()=>/Ping HTTP: \d+ ms.*FPS: \d+/.test(document.querySelector('#onlinePerformance')?.textContent||''));
   await p.evaluate(()=>{const original=globalThis.MareEmberRenderer.monster;globalThis.monsterProbe=[];globalThis.MareEmberRenderer.monster=function(ctx,m,...args){if(m.alive)globalThis.monsterProbe.push({id:m.id,x:m.x,y:m.y,moving:m.moving,phase:m.emberElapsed});return original.call(this,ctx,m,...args);};});
+  let compactReads=0;p.on('response',r=>{if(r.url().endsWith('/frame')&&r.status()===200)compactReads++;});
   const captures=[];
   for(const mapId of ['lobby','dawn']){
    await p.waitForFunction(()=>!MareGameSession.busy&&!MareGameSession.pending);
@@ -65,7 +66,9 @@ await authDatabase(async f=>{
    const frames=run.frames;let travel=0,maxWindowSpeed=0,windows=0;
    for(let i=1;i<frames.length;i++){
     const a=frames[i-1],b=frames[i],dt=b.t-a.t,d=Math.hypot(b.x-a.x,b.y-a.y),speed=Math.max(a.world.speed,b.world.speed);
-    travel+=d;assert.ok(d<=speed*dt/1000+3,run.kind+' must not jump or exceed the walking budget');
+    // Snapshot callbacks may advance presentation between RAF probes. Individual deltas use
+    // the existing 100ms resumed-frame cap; sustained velocity is checked below at 300ms.
+    travel+=d;assert.ok(d<=speed*Math.max(dt,100)/1000+3,run.kind+' must not teleport beyond a bounded render step');
     let distance=0,limit=0;
     for(let j=i;j>0&&b.t-frames[j-1].t<=350;j--){const x=frames[j-1],y=frames[j];distance+=Math.hypot(y.x-x.x,y.y-x.y);limit+=Math.max(x.world.speed,y.world.speed)*(y.t-x.t)/1000;if(b.t-x.t>=300){windows++;assert.ok(distance<=limit+3,run.kind+' must not sprint to catch up');maxWindowSpeed=Math.max(maxWindowSpeed,distance*1000/(b.t-x.t));break;}}
    }
@@ -78,6 +81,7 @@ await authDatabase(async f=>{
   console.log(JSON.stringify({monsterFrames:samples.length,moves,sliding,phaseRewinds:rewinds}));
   assert.ok(moves>100,'real monster movement observed');assert.equal(sliding,0,'moving monsters animate their steps');assert.equal(rewinds,0,'walk animation clock never rewinds on snapshots');
   await p.route('**/online-state',(r:any)=>r.abort());await p.evaluate(()=>MareGameSession.read(true).catch(()=>{}));await p.waitForTimeout(1100);assert.match(await p.locator('#onlinePerformance').innerText(),/Sem conexão/);await p.unroute('**/online-state');await p.evaluate(()=>MareGameSession.read(true));await p.waitForTimeout(1100);assert.match(await p.locator('#onlinePerformance').innerText(),/Ping HTTP:/);
+  assert.ok(compactReads>5,'current server advertises compact frames, renderer consumes them');
   assert.deepEqual(errors,[]);assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');await p.screenshot({path:resolve(out,'combat.png')});console.log('Mouse routes in lobby/dawn and automatic chase passed with real backend/worker; demo preserved.');
  }catch(error){await context?.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw error;}finally{clearInterval(worker);await flight;await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
 });

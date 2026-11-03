@@ -118,6 +118,7 @@ export function createAuthHandler(options: {
     const reply = (status: number, data?: unknown) => {
       if (!response.destroyed)
         response
+          .setHeader("Server-Timing", `app;dur=${Math.max(0,Date.now()-started)}`)
           .writeHead(status)
           .end(data === undefined ? "" : JSON.stringify(data));
     };
@@ -130,7 +131,7 @@ export function createAuthHandler(options: {
         /^\/v1\/characters\/([0-9a-f-]{36})(?:\/(control)(?:\/(renew))?)?$/.exec(
           path,
         );
-      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/(state|online-state|game-catalog)$/.exec(path);
+      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/(state|online-state|game-catalog|frame)$/.exec(path);
       const commandMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/commands$/.exec(path);
       const known = [
         "/v1/auth/csrf",
@@ -219,7 +220,7 @@ export function createAuthHandler(options: {
           if (url.search || request.headers["transfer-encoding"] || Number(request.headers["content-length"] ?? 0) !== 0)
             throw new AuthFault(400, "invalid_request");
           const id = parse(z.uuid(), stateMatch[1]);
-          reply(200, stateMatch[2] === "game-catalog" ? await service.gameCatalog(session,id) : stateMatch[2] === "online-state" ? await service.onlineState(session, id) : await service.characterState(session, id));
+          reply(200, stateMatch[2] === "game-catalog" ? await service.gameCatalog(session,id) : stateMatch[2] === "frame" ? await service.onlineFrame(session,id) : stateMatch[2] === "online-state" ? await service.onlineState(session, id) : await service.characterState(session, id));
           return;
         }
         if (path === "/v1/me") {

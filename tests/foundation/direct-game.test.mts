@@ -12,6 +12,7 @@ function fixture(options:any={}) {
   const requests: any[] = [],
     storage = new Map();
   const snapshot = () => ({
+    ...(options.frameSupport?{sync:{protocol:1}}:{}),
     state: { characterId: id, version, level: 1, experience: "20", gold: "8" },
     progression: { xpIntoLevel: "20", xpForNextLevel: "80" },
     journey: { started: true },
@@ -53,6 +54,7 @@ function fixture(options:any={}) {
       if (path === "/v1/auth/csrf")
         return Response.json({ csrfToken: "fixture" });
       if (path.endsWith("/online-state")) return stateStatus===200?Response.json(snapshot()):Response.json({error:"unavailable"},{status:stateStatus});
+      if(path.endsWith('/frame'))return Response.json({protocol:1,characterId:id,version,serverNow:new Date().toISOString(),simulationAgeMs:40,world:null,battle:null,lobby:{players:[]},party:{group:null,invites:[]},...(options.framePatch||{})});
       if(path.endsWith('/control/renew'))return renewalStatus===200?Response.json({epoch:1}):Response.json({error:renewalStatus===409?'control_conflict':'unavailable'},{status:renewalStatus});
       if (path.endsWith("/control"))
         return acquisitionStatus===200?Response.json({ epoch: 1, token: "x".repeat(43) }):Response.json({error:'control_conflict'},{status:409});
@@ -255,4 +257,14 @@ test('network meter times existing state reads, ages failed reads and clears on 
  const measured=f.client.network;measured.rttMs=999;assert.equal(f.client.network.rttMs,25,'read-only copy');
  clock+=6000;f.stateStatus(503);await assert.rejects(f.client.read(true));assert.equal(f.client.available,false);assert.ok(f.client.network.ageMs>=6000);assert.equal(f.client.network.rttMs,25);
  await f.client.logout();assert.deepEqual(f.client.network,{rttMs:null,ageMs:null,intervalMs:null});
+});
+
+
+test('compact reads preserve static state, fall back on changed version and ignore forged identity',async()=>{
+ const f=fixture({frameSupport:true});await f.client.load();const inventory=f.client.data.online.inventory;
+ await f.client.readFrame();assert.equal(f.client.data.online.inventory,inventory);assert.equal(f.requests.filter(r=>r.path.endsWith('/online-state')).length,1);
+ await f.client.acquire();await f.client.command('world.stop');await f.client.readFrame();assert.equal(f.client.data.online.state.version,1);
+ const bad=fixture({frameSupport:true,framePatch:{characterId:'forged'}});await bad.client.load();await assert.rejects(bad.client.readFrame(),{code:'invalid_server_state'});assert.equal(bad.client.available,false);
+ const changed=fixture({frameSupport:true,framePatch:{version:99}});await changed.client.load();await changed.client.readFrame();assert.equal(changed.requests.filter(r=>r.path.endsWith('/online-state')).length,2);
+ const old=fixture();await old.client.load();await old.client.readFrame();assert.equal(old.requests.filter(r=>r.path.endsWith('/frame')).length,0,'older server remains supported');
 });

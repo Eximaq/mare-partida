@@ -503,14 +503,14 @@
       if (!client.data) redirectToLogin();
       render();
     });
-    let lastRead=0;
+    let lastRead=0,lastFullRead=0;
     const poll = setInterval(() => {
       if (redirecting || document.hidden || reading || client.busy) return;
       const now=Date.now(),period=client.data?.online.battle&&client.controlled?750:3000;
       if(now-lastRead<period)return;lastRead=now;
       reading = true;
-      void client
-        .read(true)
+      const full=now-lastFullRead>=3000||!client.readFrame;if(full)lastFullRead=now;
+      void (full?client.read(true):client.readFrame())
         .catch(message)
         .finally(() => {
           reading = false;
