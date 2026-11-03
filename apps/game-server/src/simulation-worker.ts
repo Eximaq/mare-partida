@@ -10,13 +10,7 @@ const {databaseUrl,kind,index,count}=workerData;
 if(typeof databaseUrl!=='string'||!['solo','party'].includes(kind))throw Error('Invalid private worker configuration');
 // A lane issues one transaction at a time; a second connection cannot add work.
 const shard=partition({index,count}),pool=createPool(databaseUrl,1);
-const primary=kind==='solo'?tickWorldBattles:tickPartyBattles,secondary=kind==='solo'?tickPartyBattles:tickWorldBattles;
-const lane=createTickLane(kind,async()=>{
- const start=performance.now(),selected=await primary(pool,shard,200),remaining=200-(performance.now()-start);
- // Home partitions retain priority. An idle slot may help the oldest opposite-
- // domain work after 500ms, with the same locks, fencing and remaining budget.
- if(selected===0&&remaining>=1)await secondary(pool,undefined,remaining,true);
-});
+const lane=createTickLane(kind,()=>kind==='solo'?tickWorldBattles(pool,shard,200):tickPartyBattles(pool,shard,200));
 let stopped=false;
 const heartbeat=setInterval(()=>parentPort!.postMessage({type:'heartbeat'}),1000);
 const report=setInterval(()=>parentPort!.postMessage({type:'metrics',value:lane.flush()}),10000);

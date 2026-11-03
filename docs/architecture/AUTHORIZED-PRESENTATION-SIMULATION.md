@@ -64,10 +64,9 @@ por vez. Se um lote ultrapassa seu intervalo, o worker cede ao event loop e faz
 uma seleção nova, em vez de desperdiçar outro intervalo inteiro. Não há fila de
 ticks atrasados. A proteção de gap/offline superior a dois segundos permanece.
 
-Partições principais têm prioridade. Quando sua seleção está vazia, um worker
-pode ajudar o outro domínio somente com atividade atrasada em pelo menos 500ms,
-dentro do orçamento restante. A idade é revalidada depois dos locks. Os mesmos
-locks e fencing impedem simulação/recompensa duplicada; nenhuma sala é partida.
+Os workers atendem apenas às suas partições solo ou Party. A idade da sala é
+revalidada depois dos locks. Cada sala é persistida em uma transação com os
+mesmos locks e fencing para proteger simulação e recompensas contra duplicação.
 
 Cada worker tem uma conexão: a lane é serial e não utiliza uma segunda conexão
 em paralelo. API mantém máximo10. Padrão2solo+1Party: máximo13; perfil2+2:14;
@@ -109,17 +108,21 @@ p95 HTTP abaixo de 500ms e p95 da idade da simulação abaixo de 1000ms.
 | Solo50, 2+2 antes da cooperação | 60s | 3.999 | 0 | 38ms | 770ms | 50/50 | Passou |
 | Party50, 2+2 antes da cooperação | 60s | 4.000 | 0 | 371ms | 812ms | 50/50 | Passou |
 | Party50, 2+2 com cooperação | 120s | 7.999 | 1 | 303ms | 538ms | 50/50 | Reprovado |
+| Party50, 2+2 com cooperação | 60s | 3.848 | 152 | 1682ms | 641ms | 37/50 | Reprovado |
 | Solo100, 4+2 sem cooperação | 30s | 3.821 | 179 | 835ms | 1156ms | 95/100 | Reprovado |
 | Solo100, 4+2 com cooperação | 30s | 3.054 | 945 | 1289ms | 866ms | 99/100 | Reprovado |
 
-A cooperação reduziu o atraso observado da simulação no ensaio de 100, com mais
-fila e descartes na API. A janela de 120s registrou p99 HTTP de 1060ms. Os degraus
-de 300, 1.000 e 3.000 ficam condicionados à aprovação dos anteriores.
+A cooperação reduziu o atraso observado da simulação no ensaio de 100 e aumentou
+a fila e os descartes na API. A repetição com 50 em Party registrou 13 combates
+interrompidos. Esses resultados motivaram retirar a cooperação do runtime. Os
+degraus de 300, 1.000 e 3.000 dependem da aprovação dos anteriores.
 
 Typecheck, 223 testes de fundação, 151 arquivos legados e seis verificações Pages
 passaram. A suíte PostgreSQL teve 261 sucessos e uma falha por ausência de `PG_BIN`
 no ambiente Windows. O teste de restauração nativa passou ao apontar para as
 ferramentas instaladas do PostgreSQL 18.6.
+Após retirar a cooperação, build, typecheck e 25 regressões focadas em Party,
+combate, agendamento e workers passaram.
 
 Antes de atualizar a instalação: parar API/HTTPS, criar backup nativo, restaurá-lo
 em outro banco isolado e comparar todas as tabelas. Não há migration nova.
