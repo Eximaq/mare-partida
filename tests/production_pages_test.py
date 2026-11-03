@@ -24,6 +24,12 @@ class ProductionPages(unittest.TestCase):
         for name in ["contracts-hd/family-source.png","forge-hd/icons-source.png","inventory-final/icons-source.png","inventory-hd/source-kit.png"]:
             self.assertTrue((ROOT/"assets/ui"/name).is_file(),name)
             self.assertFalse((OUT/"assets/ui"/name).exists(),name)
+    def test_inventory_rarity_frames_are_published_unchanged(self):
+        folder=Path('assets/ui/inventory-slots')
+        manifest=json.loads((ROOT/folder/'manifest.json').read_text(encoding='utf-8'))
+        for rarity in manifest['rarities']:
+            name=rarity['id']+'.png'
+            self.assertEqual((OUT/folder/name).read_bytes(),(ROOT/folder/name).read_bytes(),name)
     def test_default_is_current_game_only(self):
         for name in ['paper-doll-review.js','paper-doll-assets.js','tools/paper-doll-inspector/index.html','pixellab-pip-generations/paper-doll-basic-sword-20261021/preview.html']:
             self.assertFalse((OUT/name).exists(),name)

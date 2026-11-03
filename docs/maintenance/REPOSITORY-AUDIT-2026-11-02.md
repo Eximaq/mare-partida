@@ -42,6 +42,8 @@ O inventário reproduzível tools/audit_repository.py gera JSON/CSV com caminho,
 
 ## Métricas antes/depois
 
+Fotografia da medição no commit 964bd60; a correção posterior dos testes e este registro não alteram os assets nem o pacote de produção.
+
 | Indicador | Antes | Depois |
 |---|---:|---:|
 | Arquivos versionados | 7957 | 7956 |
@@ -61,7 +63,7 @@ Tempo local é uma amostra, não benchmark controlado: houve outra medição de 
 
 - npm test: 204 testes foundation e 151/151 arquivos Node legados aprovados. Party, saves, inventário, forja, Haki, frutas, Zoans, mapas, masmorras, talentos, contratos e compositor atual cobertos nas respectivas suítes. O harness separado supa-browser não é contado como executado.
 - npm run build e npm run typecheck aprovados.
-- Build normal e --include-reviews aprovados; cinco testes novos conferem dependências HTML, bytes de todos os recursos native96, HUD/fonte atuais e ausência de fontes/previews antigas no pacote normal. Bancadas completas confirmadas no modo opcional.
+- Build normal e --include-reviews aprovados; seis testes novos conferem dependências HTML, bytes de todos os recursos native96, HUD/fonte atuais, molduras de raridade e ausência de fontes/previews antigas no pacote normal. Bancadas completas confirmadas no modo opcional.
 - Navegador real: ownership dos sprites (quatro flags antigas, PNG ausente/corrompido, carga atrasada e recuperação): zero requests de corpos antigos e zero erros.
 - Criação: sete classes, 42 especiais, quatro facções, nove resoluções, navegação, confirmação e reload.
 - Inventário: 12 slots, abas, filtros, seleção, equipar/remover, ocultação de capacete, vazio/cheio, paginação, nove resoluções e HUDs de quatro facções.
