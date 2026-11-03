@@ -4,7 +4,7 @@ const path=require('node:path');
 const a=require('../archipelago.js');
 const names=['Ilha Dawn','Cidade das Conchas','Orange Town','Ilha dos Animais Raros','Vila Syrup','Baratie','Parque Arlong','Loguetown'];
 assert.deepEqual(a.list('east-blue').map(i=>i.name),names);
-assert.equal(new Set(a.islands.map(i=>i.id)).size,14);
+assert.equal(new Set(a.islands.map(i=>i.id)).size,15);
 a.list('east-blue').forEach((i,n)=>{
   assert.deepEqual(i.recommended,i.id==='conchas'?[8,8]:[n*5+1,n*5+5]);
   assert.equal(i.order,n+1);

@@ -9,6 +9,7 @@
  const range=r=>r[0]===r[1]?String(r[0]):r.join('–');
  const coords={
   'east-blue':[[24,27],[70,27],[29,47],[74,47],[24,67],[69,67],[31,87],[75,87]],
+  skypiea:[[50,50]],
   alabasta:[[25,28],[69,28],[33,54],[75,54],[27,80],[69,80]]
  };
  const names={'east-blue':'Mares infinitos, grandes aventuras.',alabasta:'Areias, intrigas e um reino em crise.',skypiea:'Além das nuvens, novos horizontes.'};

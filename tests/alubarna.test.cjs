@@ -3,7 +3,7 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const specs=[['alubarna-01',50,55,'puppu',53,110],['alubarna-02',55,60,'valentine',58,135],['alubarna-03',60,65,'merry',63,120],['alubarna-04',65,70,'doublefinger',68,150],['alubarna-05',70,75,'mr1',75,170]];
 test('five Alubarna destinations and Skypiea preserve old regions and enforce entry levels',()=>{
  const A=require('../archipelago.js');for(const [id,min,max,,level]of specs){const i=A.get(id);assert(i,id+' must exist');assert.equal(i.region,'alabasta');assert.equal(i.area,id);assert.deepEqual(i.recommended,[min,max]);assert(!A.canTravel(id,min-1));assert(A.canTravel(id,min));assert(A.canTravel(id,100));assert(i.monster.role.includes(String(level)));}
- assert.equal(A.byArea('alabasta').id,'alabasta-desert');assert.equal(A.list('east-blue').length,8);assert.equal(A.regions.find(r=>r.id==='skypiea')?.locked,false);assert.deepEqual(A.list('skypiea'),[]);
+ assert.equal(A.byArea('alabasta').id,'alabasta-desert');assert.equal(A.list('east-blue').length,8);assert.equal(A.regions.find(r=>r.id==='skypiea')?.locked,false);assert.deepEqual(A.list('skypiea').map(i=>i.id),['skypiea-01']);
 });
 test('fixed monster levels and independent progress survive migration',()=>{
  const H=require('../hunt-system.js'),M=require('../monster-catalog.js'),B=require('../monster-behavior.js');for(const [id,min,max,type,level]of specs){assert.equal(M[type]?.area,id);assert.equal(M[type]?.level,level);const r=H.get(id);assert(r);assert.equal(r.min,min);assert.equal(r.max,max);for(const s of r.sectors){assert.deepEqual(s.roles,[type]);assert.equal(H.profile(id,s.id,type,0).level,level);assert.deepEqual(H.profile(id,s.id,type,0),H.profile(id,s.id,type,.99));}assert(B.slots(id).length>=6);}

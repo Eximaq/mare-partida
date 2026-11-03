@@ -1,0 +1,1661 @@
+{
+  "id": "ea69180d-a29c-4297-9ca3-8a0b7e34d88c",
+  "name": "Satori",
+  "source": "Existing owner PixelLab export",
+  "archive_sha256": "1cf5f279e76f43766b07efbf3c5d45b1adcde65431167c1d2fc2d69ef816e979",
+  "clips": {
+    "idle": {
+      "south": {
+        "image": "assets/sprites-combat-v2/satori/idle-south.png",
+        "size": 88,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            4,
+            2,
+            84,
+            86
+          ]
+        ],
+        "source_sizes": [
+          [
+            88,
+            88
+          ]
+        ],
+        "rgba_sha256": [
+          "c3cae9bb1c4109b7682b92dae21edab85cbb25cf4f69d8fda12abfb67da451ad"
+        ],
+        "source_animation": "idle",
+        "anchor": [
+          44.0,
+          86
+        ]
+      },
+      "south-east": {
+        "image": "assets/sprites-combat-v2/satori/idle-south-east.png",
+        "size": 88,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            3,
+            2,
+            80,
+            87
+          ]
+        ],
+        "source_sizes": [
+          [
+            88,
+            88
+          ]
+        ],
+        "rgba_sha256": [
+          "9f65748fc9485cc317fcf4aa9856775428d156acdcf595a4d118d65fd9630607"
+        ],
+        "source_animation": "idle",
+        "anchor": [
+          44.0,
+          87
+        ]
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/satori/idle-east.png",
+        "size": 88,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            7,
+            2,
+            75,
+            87
+          ]
+        ],
+        "source_sizes": [
+          [
+            88,
+            88
+          ]
+        ],
+        "rgba_sha256": [
+          "5f82e03cbb68faf2b909ce5f7e3157149e34b29e4af230908c3a1c29dd73d7c7"
+        ],
+        "source_animation": "idle",
+        "anchor": [
+          44.0,
+          87
+        ]
+      },
+      "north-east": {
+        "image": "assets/sprites-combat-v2/satori/idle-north-east.png",
+        "size": 88,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            3,
+            2,
+            77,
+            87
+          ]
+        ],
+        "source_sizes": [
+          [
+            88,
+            88
+          ]
+        ],
+        "rgba_sha256": [
+          "f5f9e330844d464f533df7c62676026c8c14238b1dd421be550f7a2529803616"
+        ],
+        "source_animation": "idle",
+        "anchor": [
+          44.0,
+          87
+        ]
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/satori/idle-north.png",
+        "size": 88,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            6,
+            2,
+            82,
+            86
+          ]
+        ],
+        "source_sizes": [
+          [
+            88,
+            88
+          ]
+        ],
+        "rgba_sha256": [
+          "164a3ebf1b10f1478f3e1014d9f443d4d2787a4b467fce0370d88c6e0f21a124"
+        ],
+        "source_animation": "idle",
+        "anchor": [
+          44.0,
+          86
+        ]
+      },
+      "north-west": {
+        "image": "assets/sprites-combat-v2/satori/idle-north-west.png",
+        "size": 88,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            11,
+            2,
+            85,
+            87
+          ]
+        ],
+        "source_sizes": [
+          [
+            88,
+            88
+          ]
+        ],
+        "rgba_sha256": [
+          "3b75ebaf35103d921b1532159132f6b721d64b1aae78dbb142d34b974495b3c1"
+        ],
+        "source_animation": "idle",
+        "anchor": [
+          44.0,
+          87
+        ]
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/satori/idle-west.png",
+        "size": 88,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            13,
+            2,
+            81,
+            87
+          ]
+        ],
+        "source_sizes": [
+          [
+            88,
+            88
+          ]
+        ],
+        "rgba_sha256": [
+          "6d7e5e522fe0495be71edfdfa189e8fc8393eef0e8ffb28dce9f166ad96763c2"
+        ],
+        "source_animation": "idle",
+        "anchor": [
+          44.0,
+          87
+        ]
+      },
+      "south-west": {
+        "image": "assets/sprites-combat-v2/satori/idle-south-west.png",
+        "size": 88,
+        "frames": 1,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            8,
+            2,
+            85,
+            87
+          ]
+        ],
+        "source_sizes": [
+          [
+            88,
+            88
+          ]
+        ],
+        "rgba_sha256": [
+          "430673ae69a643b7e1c96c920c19459704106d2d0babb2660f00cf27fffb2414"
+        ],
+        "source_animation": "idle",
+        "anchor": [
+          44.0,
+          87
+        ]
+      }
+    },
+    "attack": {
+      "south": {
+        "image": "assets/sprites-combat-v2/satori/attack-south.png",
+        "size": 204,
+        "frames": 17,
+        "fps": 24,
+        "loop": false,
+        "bounds": [
+          [
+            62,
+            60,
+            142,
+            144
+          ],
+          [
+            62,
+            60,
+            142,
+            144
+          ],
+          [
+            52,
+            59,
+            152,
+            144
+          ],
+          [
+            63,
+            48,
+            141,
+            144
+          ],
+          [
+            60,
+            37,
+            147,
+            144
+          ],
+          [
+            55,
+            27,
+            152,
+            144
+          ],
+          [
+            53,
+            24,
+            153,
+            144
+          ],
+          [
+            63,
+            62,
+            141,
+            144
+          ],
+          [
+            57,
+            62,
+            148,
+            144
+          ],
+          [
+            48,
+            62,
+            158,
+            151
+          ],
+          [
+            45,
+            62,
+            162,
+            157
+          ],
+          [
+            37,
+            62,
+            170,
+            162
+          ],
+          [
+            20,
+            62,
+            187,
+            174
+          ],
+          [
+            18,
+            62,
+            189,
+            176
+          ],
+          [
+            18,
+            62,
+            190,
+            178
+          ],
+          [
+            18,
+            62,
+            189,
+            179
+          ],
+          [
+            18,
+            62,
+            188,
+            179
+          ]
+        ],
+        "source_sizes": [
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ],
+          [
+            204,
+            176
+          ]
+        ],
+        "rgba_sha256": [
+          "458991648e3ee70a10dc58653a9d0721e84b2f15722d87e25675bbbb36cf6016",
+          "382040f4ea3b256317e9985426abb3fc7ce96c2f9ab7527d6bee6f06935a75f0",
+          "c4904c175170bd8454911298e4bb2d6ad3e825c53b8d38fea73ed981fac55959",
+          "a20975e8d160cde08b875fa2dc92ee00381f92ac8868701cebe81f120234f303",
+          "9367ea494d9650854e515a1b13220f765633331dc9eaa21352f9add181978c7f",
+          "ae16a28f2547ebf781fa50196db0c6a395756cb11d2041c5b06473e61c144026",
+          "ce3119b602af70cd9a9a433431357245b9244dcba805fa7ef8157e877aee149a",
+          "b2b0de1cf583675491b101cb6c6f8904f0848baa808f8abf3fd1f7857d527228",
+          "4680715d47cd57d8ca51bbd5fd7d0af124006e4b9fe7256f48da93c977e677aa",
+          "852ff96eac85caadfa4c222573e16381dfea811ed550511f00b3f07eebd257e9",
+          "c58d07121d64de8edef572257d1f3b5c68f7002b5444e0b3e44dd12caf769817",
+          "8dbfa3541fcf65c1411c0453acdcf0e475e488010582f897ece5658a3c1cd978",
+          "7e71f149e9d8fd9a93e8ec2fd8df4467b021fdd599f45c74ab7d1a20fefa3001",
+          "41903839b1a101e15c0e276cf2fe213b782bd7e3b27415ac39dcb0f40518ccda",
+          "4ccd96c265796bbba497531aea859fadf6f1f69fa5b885be1319e47a9a78ffe1",
+          "2700742577ec907bb2993cd7ae207bba86978ec5cc74a90852a592b4c38b5f94",
+          "f848d1e5e638a8201ce8ac25f01f59f7123afd8125f1552ef1c398d080f6f63a"
+        ],
+        "source_animation": "Raise_both_hands_overhead_to_conjure_light_blue_sp",
+        "anchor": [
+          102.0,
+          144
+        ],
+        "impact_frame": 8
+      },
+      "west": {
+        "image": "assets/sprites-combat-v2/satori/attack-west.png",
+        "size": 148,
+        "frames": 17,
+        "fps": 24,
+        "loop": false,
+        "bounds": [
+          [
+            78,
+            31,
+            146,
+            116
+          ],
+          [
+            77,
+            31,
+            146,
+            116
+          ],
+          [
+            73,
+            31,
+            147,
+            116
+          ],
+          [
+            79,
+            31,
+            147,
+            116
+          ],
+          [
+            79,
+            31,
+            148,
+            116
+          ],
+          [
+            79,
+            30,
+            148,
+            116
+          ],
+          [
+            79,
+            31,
+            148,
+            116
+          ],
+          [
+            79,
+            30,
+            148,
+            116
+          ],
+          [
+            79,
+            31,
+            148,
+            116
+          ],
+          [
+            25,
+            33,
+            138,
+            116
+          ],
+          [
+            7,
+            33,
+            139,
+            116
+          ],
+          [
+            0,
+            33,
+            141,
+            116
+          ],
+          [
+            0,
+            32,
+            143,
+            117
+          ],
+          [
+            0,
+            31,
+            145,
+            120
+          ],
+          [
+            0,
+            31,
+            146,
+            121
+          ],
+          [
+            4,
+            31,
+            146,
+            121
+          ],
+          [
+            78,
+            31,
+            146,
+            116
+          ]
+        ],
+        "source_sizes": [
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ]
+        ],
+        "rgba_sha256": [
+          "ef1028d0f0188b4f65cc8ec4c12e2e7a88e99040ed9948a5680758a54dd6bfec",
+          "0161b0e2e94acb02e4a8f82e42901d3fdfe43648b0a098bf479243a0ef06f025",
+          "8ea079b66d55aaa89829aaad5461861ba5bf0a64c4d1863d2601337e89d63251",
+          "8cb4702f21d9f1af37f5ef5487cc9dc9ec231f8108eb5ee4734046cc50a79ed4",
+          "21146f830f565cdbbcd41ae9576be96c19ed595070e44da668e10658685d738c",
+          "fcc58f22b30dac63b2218837975a72d0390f3c1d0a50ad7b991a6505693da627",
+          "0980d317681d2460fa032e8d4e7fa31f2e06e2f26c3e0dc91f110a3a19b8e6d3",
+          "9ea247ab3990ab161270f92429953a7632a7d42024808204ded33abe0c714576",
+          "107bc714d4fcec22e2fdb6d8d72e5fca8c99fb6937cbbe6b1758d932c3b0dbaa",
+          "f19b748d15a4572ac20b6b6bdb4eb99e8d40dc566cbb59059fa994671db31653",
+          "c38566458753b5a929a5e0efeb801c39039bd39773804ef765d12e0a9eb36e99",
+          "f3538a1cf0ccd1ae1109ad08fb434168d17025d814a225d3f9e91d2294c1b4a4",
+          "b9ac831cecf8837a41b10ad106fe7a0a835b40ba1b944c57033d2a3e9d5e1c66",
+          "2023cbe8aebdb4a1ece567d216b9b13d4617d053f433dee3081ab1662beb76d9",
+          "1b7813ce9ccb5fc7062a768ca71d3a786ebfed83dde92598a3b9151c4b51ea83",
+          "d923fb7c2e6ab44374d7f900dc7a1043d177322b4a4a7c138435733925361f5a",
+          "3c2e279c44aa970f6af9d7082c076fcd2d79c5ea6d7ef482392fddc83f0ee92b"
+        ],
+        "source_animation": "Raise_both_hands_overhead_to_conjure_light_blue_sp",
+        "anchor": [
+          74.0,
+          116
+        ],
+        "impact_frame": 8
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/satori/attack-east.png",
+        "size": 148,
+        "frames": 17,
+        "fps": 24,
+        "loop": false,
+        "bounds": [
+          [
+            2,
+            31,
+            70,
+            116
+          ],
+          [
+            2,
+            31,
+            71,
+            116
+          ],
+          [
+            1,
+            31,
+            75,
+            116
+          ],
+          [
+            1,
+            31,
+            69,
+            116
+          ],
+          [
+            0,
+            31,
+            69,
+            116
+          ],
+          [
+            0,
+            30,
+            69,
+            116
+          ],
+          [
+            0,
+            31,
+            69,
+            116
+          ],
+          [
+            0,
+            30,
+            69,
+            116
+          ],
+          [
+            0,
+            31,
+            69,
+            116
+          ],
+          [
+            10,
+            33,
+            123,
+            116
+          ],
+          [
+            9,
+            33,
+            141,
+            116
+          ],
+          [
+            7,
+            33,
+            148,
+            116
+          ],
+          [
+            5,
+            32,
+            148,
+            117
+          ],
+          [
+            3,
+            31,
+            148,
+            120
+          ],
+          [
+            2,
+            31,
+            148,
+            121
+          ],
+          [
+            2,
+            31,
+            144,
+            121
+          ],
+          [
+            2,
+            31,
+            70,
+            116
+          ]
+        ],
+        "source_sizes": [
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ],
+          [
+            148,
+            104
+          ]
+        ],
+        "rgba_sha256": [
+          "a9adb8504b4869d7223b8a92fd93527027fcfc3e577d9641e4eae2b36541dbe4",
+          "7d4346ba91d8e00fd0e4461827e6ea1036abb61efe1fb73c8037d1cb28982b34",
+          "1843c7d1bcc7fa437221df1d301a8d2e3d0644cd5e6ea26b899306f8dc2f7227",
+          "fd0540d4aadb4c886460a8c66b92b9df037ac7724707002c563535b4347b999d",
+          "99cf69436cf59276ec049ce789e3c8f1f177f09e46305ee67c80053608cc9f7e",
+          "184ebe66ee565da7b1c2564ccf5e59e7d9741dc3e370ec5c4862c1c4213f8ae6",
+          "4ea4f7edfeb23953325b9a97cb613e8e53869cce1e10d452e5335753f7418e72",
+          "22ab6cc44f2fdaa200e01e8f7eb623bea3061ecb535b25c795da1a8b96f04bc7",
+          "f8efb642a61dae481a0a5e428372e5b47b89a315e0e0a72d49b588df745fc6f7",
+          "c863ba7604be13892657ba1e9f8cfa78a67ef0fa8641eabfad7de5ad61e7caf2",
+          "252e6f6621dcf05c0493e17acf1dabcb6f365be20ac14aa15208c4ff66547e42",
+          "0c80bd55691f43c3efd7a7553609a2d19413b5de80940dcb422e8f867a72f376",
+          "aab5b9d7da145b7638fdb481e2d7b31ad106e28abe9acf9a078481ad2095a859",
+          "d49f88568f9a4544d1bad75d5e700e0444e02dd408e4a2ed3b7b334d46f8b79d",
+          "2fa44c7d79fc1e3854e794babb1798f15f556d0bdb5271b2a98d3e265508a2b2",
+          "a0d2dec8aaa7b831e585250c2703e6d1d46d2571ce3e60d6ebbb14cac0cc01a9",
+          "c04d83b048c89aadc05ddf7443fead480fb006c5dbc8fe730ee10442f89b557c"
+        ],
+        "source_animation": "Raise_both_hands_overhead_to_conjure_light_blue_sp",
+        "anchor": [
+          74.0,
+          116
+        ],
+        "impact_frame": 8
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/satori/attack-north.png",
+        "size": 120,
+        "frames": 17,
+        "fps": 24,
+        "loop": false,
+        "bounds": [
+          [
+            22,
+            18,
+            98,
+            102
+          ],
+          [
+            22,
+            18,
+            98,
+            102
+          ],
+          [
+            15,
+            18,
+            105,
+            102
+          ],
+          [
+            25,
+            18,
+            95,
+            102
+          ],
+          [
+            25,
+            18,
+            95,
+            102
+          ],
+          [
+            25,
+            18,
+            95,
+            102
+          ],
+          [
+            25,
+            18,
+            95,
+            102
+          ],
+          [
+            25,
+            18,
+            95,
+            102
+          ],
+          [
+            26,
+            20,
+            94,
+            102
+          ],
+          [
+            14,
+            18,
+            106,
+            102
+          ],
+          [
+            14,
+            16,
+            106,
+            102
+          ],
+          [
+            14,
+            14,
+            106,
+            102
+          ],
+          [
+            14,
+            14,
+            106,
+            102
+          ],
+          [
+            14,
+            14,
+            106,
+            102
+          ],
+          [
+            14,
+            14,
+            106,
+            102
+          ],
+          [
+            14,
+            14,
+            106,
+            102
+          ],
+          [
+            14,
+            18,
+            106,
+            102
+          ]
+        ],
+        "source_sizes": [
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ]
+        ],
+        "rgba_sha256": [
+          "f118d703d30cefddeaa6997b34bcc7551175b70de7b88508c70041c27f6304a8",
+          "dfe98c6d1e4aeb7b7d1d103fe89090cf8591a2b15e0d70666d68141cd84857fd",
+          "1c1490df1f4c6706e98766e57cb296e79c13e84523473a0907807cb0e8855f17",
+          "7269a3bf7062d24ce741e72c42dfb8430382e279a1834c5389130c176f9eebea",
+          "b34ea69e4861f3433fd72208d43d50252b84ea9924306fd9e6f9de7dceadb3c8",
+          "46b459f9ceae1129d4d961f8731560ee47daa0a531703397493445f9c8d382f7",
+          "3047f5a9f66dde186497fb883ecaba651ffd921e19f119bd8222d1c952fb0bef",
+          "a1250c5e7cd0993096f735cef982bb684a5370936268b7f7f54736d5132451b0",
+          "f0df085b31658fec24248eabc56e95f56bfddd3313cd24740da72ae9d962a145",
+          "d5cec748cd078d94d936c3cfedb793e71c4f45312f9459fde611dfeed4b8bdf5",
+          "d9bdb7ce5ba09652691ca262b787f53e7666ebac9b6a69e6f209e1c659023bc6",
+          "eb911579c6d4556fb7a16869fb26e560578c9292f76120fe87943930c3b9a3f9",
+          "39519c42ffea4142162f791b62f90c97dd7bbf6713b40fac4486e5e9ef558eb2",
+          "ce969f20af413286981cba5d61823aef24a2757393477801538725bd38ab7514",
+          "6d4a3f494e1a3d5e6a7f5830d6cfe5f76068eb183f7242a6771affc0d038bafa",
+          "cfaafbf0f1bf3d455e51241850ca27536d5fd3bc26bf411dcf0b637fa8f52794",
+          "d6235a9f63eba4eebb6c2161f5d864f0cce301b741eebad70f227eacd4aa8fed"
+        ],
+        "source_animation": "Raise_both_hands_overhead_to_conjure_light_blue_sp",
+        "anchor": [
+          60.0,
+          102
+        ],
+        "impact_frame": 8
+      }
+    },
+    "walk": {
+      "west": {
+        "image": "assets/sprites-combat-v2/satori/walk-west.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            31,
+            20,
+            99,
+            105
+          ],
+          [
+            31,
+            19,
+            97,
+            105
+          ],
+          [
+            29,
+            20,
+            96,
+            105
+          ],
+          [
+            25,
+            22,
+            96,
+            105
+          ],
+          [
+            30,
+            22,
+            97,
+            105
+          ],
+          [
+            30,
+            20,
+            98,
+            105
+          ],
+          [
+            30,
+            19,
+            99,
+            104
+          ],
+          [
+            26,
+            20,
+            100,
+            104
+          ],
+          [
+            22,
+            22,
+            100,
+            105
+          ]
+        ],
+        "source_sizes": [
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ]
+        ],
+        "rgba_sha256": [
+          "a8ed11187decbe870eb8cf95e60b1fa0b72b043d3749eeedc26e2ebaaeb0917b",
+          "98efca55e507f996e9154fdcc30e2778b11935e19710b1869f46408cb4ed6b13",
+          "a14e172e0de64fb05e9c048835b55973663e4618b981cc67da140908e7b31a12",
+          "4e3240c2a1bbdeffdce23c7a57545763914a687bc799cc08128592d91ae7541b",
+          "72d21fa4b1c943589d386c3f5f34604a45e16623473f9295edb9fd65c423c6b1",
+          "60ad58962d4135cf67d8694136d2a2818a1400305ad243846e3ffb83dd0eea21",
+          "5f568162557c259e0ffaac20b531d5c5ef9478a6b1838d78c853980a11989d23",
+          "d293e3ad26936eef03cac166575628e61b69e747e78da81759f3b9c464748c09",
+          "e85f8bf60e1322329790f0469b3b1175ed9fc3e25f651ca58965d6c85a330061"
+        ],
+        "source_animation": "Shift_the_weight_heavily_from_side_to_side_while_l",
+        "anchor": [
+          62.0,
+          105
+        ]
+      },
+      "north": {
+        "image": "assets/sprites-combat-v2/satori/walk-north.png",
+        "size": 120,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            22,
+            18,
+            98,
+            102
+          ],
+          [
+            25,
+            19,
+            99,
+            103
+          ],
+          [
+            28,
+            19,
+            101,
+            103
+          ],
+          [
+            27,
+            17,
+            100,
+            103
+          ],
+          [
+            24,
+            17,
+            97,
+            103
+          ],
+          [
+            20,
+            19,
+            96,
+            102
+          ],
+          [
+            20,
+            19,
+            94,
+            103
+          ],
+          [
+            19,
+            17,
+            92,
+            103
+          ],
+          [
+            22,
+            17,
+            95,
+            103
+          ]
+        ],
+        "source_sizes": [
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ]
+        ],
+        "rgba_sha256": [
+          "f118d703d30cefddeaa6997b34bcc7551175b70de7b88508c70041c27f6304a8",
+          "8710f532c0eaf955ec621ef64d2b74e47f0470f5cf7814875b5ae52d9d25b1dd",
+          "18906efa9becfbc35fd83e3711e514dec47bc8bfa2bfc9273cad8e3ac5f95505",
+          "58ebe3f06cc123dd1bc422006730502fadd54b96c56120d359916293388a8abd",
+          "e76539d85066e4eeacf228eb2968565d50b534eb60445780cbea48452e74fd3d",
+          "22b6fe1253d6ec57fdc65478cd40309507b60bb74c9a11a8497b00d480616158",
+          "ed6706673ff9dedf44fb37eecdb10376b6a021d32267d327536d93523733a386",
+          "7ad4b5f4d519804264744109a014faa95f5a253ee36decb1d44bdd1987ed73fb",
+          "c849d8dbd32f51dadede9ac63591b76a931b74f3c95b8561693c9f32645e5acc"
+        ],
+        "source_animation": "Shift_the_weight_heavily_from_side_to_side_while_l",
+        "anchor": [
+          60.0,
+          102
+        ]
+      },
+      "south": {
+        "image": "assets/sprites-combat-v2/satori/walk-south.png",
+        "size": 120,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            20,
+            18,
+            100,
+            102
+          ],
+          [
+            18,
+            16,
+            98,
+            102
+          ],
+          [
+            14,
+            20,
+            96,
+            106
+          ],
+          [
+            14,
+            20,
+            96,
+            105
+          ],
+          [
+            17,
+            18,
+            96,
+            102
+          ],
+          [
+            21,
+            16,
+            102,
+            102
+          ],
+          [
+            24,
+            20,
+            106,
+            106
+          ],
+          [
+            24,
+            20,
+            106,
+            105
+          ],
+          [
+            23,
+            18,
+            102,
+            102
+          ]
+        ],
+        "source_sizes": [
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ]
+        ],
+        "rgba_sha256": [
+          "ace02040af061246e0cf49b98b0b8d3ad7748a2b1331eb6806131e100514b4a4",
+          "72c4047b895d002641786e5958a294553f9f9a5335e00c086d10e63ac3810ad4",
+          "6e9e172f61f7ce46d84e88504c31e320a896077ab9ea1696978a16162af21944",
+          "89e071a1a6c2f61b9363c1e35f3c7ce8a95438706f06010af91a208b89effc43",
+          "02ebf5d6d809758af4c4908d6f2a6d4bca317d25c0934851457a8815c9f017cc",
+          "adc207d29633591df4514aa8b99a7889c8c9d32ab44b5dd2c5fc25647829af20",
+          "4c4c5a86fd220a62fa734a336851b32e4aa03b31ac0c7803fb81ad260439f995",
+          "f87fb076efb35302a2569fd28dad609cb3e2e13af2a522311b4d5772722ffdd6",
+          "9705a20f3a509d5570a4195da2ca00476c440aab084453c703f8c69fc5d61509"
+        ],
+        "source_animation": "Shift_the_weight_heavily_from_side_to_side_while_l",
+        "anchor": [
+          60.0,
+          102
+        ]
+      },
+      "east": {
+        "image": "assets/sprites-combat-v2/satori/walk-east.png",
+        "size": 124,
+        "frames": 9,
+        "fps": 12,
+        "loop": true,
+        "bounds": [
+          [
+            25,
+            20,
+            93,
+            105
+          ],
+          [
+            27,
+            19,
+            93,
+            105
+          ],
+          [
+            28,
+            20,
+            95,
+            105
+          ],
+          [
+            28,
+            22,
+            99,
+            105
+          ],
+          [
+            27,
+            22,
+            94,
+            105
+          ],
+          [
+            26,
+            20,
+            94,
+            105
+          ],
+          [
+            25,
+            19,
+            94,
+            104
+          ],
+          [
+            24,
+            20,
+            98,
+            104
+          ],
+          [
+            24,
+            22,
+            102,
+            105
+          ]
+        ],
+        "source_sizes": [
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ],
+          [
+            124,
+            124
+          ]
+        ],
+        "rgba_sha256": [
+          "e5790095406230c3d32b26f45fad29a849daff447efbe67d17c564ed398b569a",
+          "065a6be524fbb30d919ab8eb344b99cd5c5bd460ed44884f3e94c9434acb94cf",
+          "1207d6e71e5c57419d3a4bd3093e12c688be81c21dbfe092a20f7e86765987db",
+          "17927d9e3ca3300c734693d549138b04981f7154c2cc86831dfc52542eba4b70",
+          "e1d88567e1aa7cf17a21417309bf5d54cb4b2df0d0dc4b747e0b7002966dce56",
+          "ede7e9bb65835ac3bb44f7c825bd45299cb5392ef81368d005da0d5244b9e92b",
+          "d300566f6906a4b8862f783dfad01836d7608462fa1c888335ab51090c472370",
+          "a5169ddb9a8ed8b95edc6ccd97c440b87f1371bbf8ffe618572256f7392ce500",
+          "ecc869c3b3100b7aa0573d03f2ca5926f0617adf2e49cc0c7867e335dd584b25"
+        ],
+        "source_animation": "Shift_the_weight_heavily_from_side_to_side_while_l",
+        "anchor": [
+          62.0,
+          105
+        ]
+      }
+    },
+    "hurt": {
+      "south": {
+        "image": "assets/sprites-combat-v2/satori/hurt-south.png",
+        "size": 120,
+        "frames": 9,
+        "fps": 12,
+        "loop": false,
+        "bounds": [
+          [
+            20,
+            18,
+            100,
+            102
+          ],
+          [
+            25,
+            17,
+            95,
+            102
+          ],
+          [
+            25,
+            18,
+            95,
+            102
+          ],
+          [
+            25,
+            18,
+            95,
+            102
+          ],
+          [
+            25,
+            18,
+            95,
+            102
+          ],
+          [
+            25,
+            18,
+            95,
+            102
+          ],
+          [
+            24,
+            17,
+            96,
+            102
+          ],
+          [
+            22,
+            18,
+            98,
+            102
+          ],
+          [
+            21,
+            18,
+            99,
+            102
+          ]
+        ],
+        "source_sizes": [
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ],
+          [
+            120,
+            120
+          ]
+        ],
+        "rgba_sha256": [
+          "ace02040af061246e0cf49b98b0b8d3ad7748a2b1331eb6806131e100514b4a4",
+          "2d5c1ba96efe9f6aa93891427cc1d9df051b94a4f05f991081c06c3951a51869",
+          "75a13fb80a567f2db6522063d396378c4a2af52dfd54a6de27171ac51ef26d66",
+          "916db09d1b43d88f0274db798224f6a16c78d6e758e8aa34a50531685b23f6fd",
+          "21ad07e1d40d5caed0ae57c6c5cd87984db6bd21ac2cd30c279b58a16b0c5d50",
+          "da1e1869e485340f34f81078ef42c8651ab958556bf7baee1edaebfbe998e3bb",
+          "95c51ccd1e09126d9c8f64f122aa20b8760f4cd282b1e3465257fb49dbb46064",
+          "cbd9274252ee299f7d1dbd2550b1f1943ba67ffaacbea9ba9cc8f8f48ef3a60b",
+          "720e4b3b3fde0e931fd7b40597fa3e732a2a7c0d5fe08966cf1aebf1f729c1a9"
+        ],
+        "source_animation": "Clench_both_fists_tightly_against_the_chest_as_the",
+        "anchor": [
+          60.0,
+          102
+        ]
+      }
+    }
+  },
+  "fps_source": "Not provided by export; playback FPS configured locally",
+  "monster": true,
+  "worldHeight": 120,
+  "world_scale": 1
+}

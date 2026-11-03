@@ -317,5 +317,19 @@
     "behavior": "reactive_homebound",
     "sprite_id": "a51c5540-cb66-47ad-971d-a9f6d9f314d3",
     "boss": false
+  },
+  "satori": {
+    "id": "satori",
+    "name": "Satori",
+    "level": 77,
+    "area": "skypiea-01",
+    "base_id": "cocox",
+    "move_speed": 76,
+    "attack_seconds": 1.6,
+    "aggro_radius": 390,
+    "reach": 70,
+    "behavior": "reactive_homebound",
+    "sprite_id": "ea69180d-a29c-4297-9ca3-8a0b7e34d88c",
+    "boss": false
   }
 }

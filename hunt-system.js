@@ -7,7 +7,9 @@
   const pixelMaps=root.MarePixelWorldMaps||(typeof module!=='undefined'?(require('./pixellab-world-maps-data.js'),require('./pixellab-world-maps.js')):null);
   const alabasta=root.MareAlabasta||(typeof module!=='undefined'?require('./alabasta-world.js'):null);
   const alubarna=root.MareAlubarna||(typeof module!=='undefined'?require('./alubarna-world.js'):null);
+  const sky=root.MareSkypiea||(typeof module!=='undefined'?require('./skypiea-world.js'):null);
   const regions={
+    ...(sky?{'skypiea-01':{name:'Ilha dos Anjos',min:75,max:80,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:sky.districts.map(d=>({...d,min:77,max:77,roles:['satori']}))}}:{}),
     alabasta:{name:'Deserto de Alabasta',min:40,max:50,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:alabasta.districts.map(d=>({...d,min:45,max:45,roles:['bananawani']}))},
     rare:{name:'Ilha dos Animais Raros',min:16,max:20,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.rare.districts.map(d=>({...d,min:18,max:18,roles:['cocox']}))},
     syrup:{name:'Vila Syrup',min:21,max:25,boss:null,bossLevel:null,firstGold:0,firstRarity:null,respawn:0,sectors:newIslands.syrup.districts.map((d,i)=>({...d,min:23,max:23,roles:i%2?['buchi','sham']:['sham','buchi']}))},
