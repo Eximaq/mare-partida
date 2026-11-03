@@ -183,6 +183,7 @@
         if(response.status===401||result.error==='csrf_rejected')clearCsrf();
         if (response.status === 401) {
           networkSample = null;
+          available = false;
           data = null;
           control = null;
           readVersion++;
@@ -231,8 +232,10 @@
           networkSample=online?{rttMs:Math.max(0,completed-started),at:completed,intervalMs:same&&networkSample?Math.max(0,completed-networkSample.at):null}:null;
         }
       } catch (error) {
-        available = false;
-        notify();
+        if (revision === readVersion) {
+          available = false;
+          notify();
+        }
         throw error;
       }
       if (revision !== readVersion) return;
