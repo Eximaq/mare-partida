@@ -1,0 +1,81 @@
+/* Shared wood, dark metal and brass; deliberately compact like the existing menus. */
+#panelOverlay.party-mode .dialog{width:min(1020px,calc(100vw - 24px));max-height:calc(100dvh - 28px)}
+#panelOverlay.party-mode .dialog-header{background:var(--rpg-planks);border-bottom:1px solid var(--rpg-brass)}
+#panelOverlay.party-mode .dialog-body{padding:12px;background:var(--rpg-planks)}
+.party-layout{display:grid;grid-template-columns:1.12fr 1fr;gap:12px;color:var(--rpg-text);font:14px/1.4 var(--rpg-font)}
+.party-layout section{min-width:0}.party-roster,.party-activities{padding:12px;border:1px solid var(--rpg-brass);background:linear-gradient(#0c0b10bc,#0c0b10bc),var(--rpg-planks);box-shadow:inset 0 0 0 2px #e4c07414}
+.party-layout h3{font-family:Georgia,serif;color:#ffe2a1;margin:3px 0 10px;text-shadow:0 2px 2px #000}.party-section{font-size:17px;border-bottom:1px solid #96764970;padding-bottom:7px}.party-muted,.party-layout small{color:#c9bc9f}
+.party-summary{display:flex;align-items:center;gap:12px;padding:8px 0 14px}.party-summary div{flex:1}.party-summary h3{font-size:21px;margin:0}.party-summary>b{font-size:21px;color:#efcd79}.party-summary>span{font-size:12px}
+.party-member{display:flex;align-items:center;gap:8px;min-height:78px;padding:7px 5px;border-bottom:1px solid #95713b68;background:#08090d40}.party-faction{width:32px;height:32px;object-fit:contain}.party-member canvas{width:45px;height:58px;object-fit:contain}.party-member-info{flex:1;min-width:0}.party-member strong{display:block;font-size:15px;overflow-wrap:anywhere}.party-member small{display:block;font-size:11px}.party-member strong small{display:inline;font-weight:400}.party-life{height:6px;background:#200d11;border:1px solid #b18e58;border-radius:4px;overflow:hidden;margin:4px 0}.party-life i{display:block;height:100%;background:linear-gradient(#96d77b,#36834a)}.party-status{font-size:10px;text-align:right;color:#a3df9d;max-width:74px}.party-offline{opacity:.6}.party-offline .party-status{color:#d5b487}
+.party-layout input:not([type=radio]),.party-layout select{width:100%;height:36px;margin:4px 0 8px;padding:6px 9px;background:linear-gradient(#111016c9,#111016c9),var(--rpg-planks);color:#eee1bf;border:1px solid #97743d;border-radius:3px;font:inherit;min-width:0}.party-layout select option{background:#241c18}.party-layout input[type=radio]{accent-color:#d8a93f}.party-layout label{font-size:12px;color:#e8cf9c}.party-layout button,#partyCompact button{padding:7px 10px;min-height:34px;border:1px solid #b58b4b;border-radius:3px;color:#ffe2a1;background:linear-gradient(#11101890,#11101890),var(--rpg-planks);font-weight:700;cursor:pointer;box-shadow:inset 0 1px #ffe4a42a}.party-layout button:hover:not(:disabled){border-color:#ffe59d;filter:brightness(1.15)}.party-layout button:disabled{opacity:.4;cursor:default}.party-layout .party-primary{width:100%;margin:10px 0;background:linear-gradient(#b8862980,#76421090),var(--rpg-planks);color:#fff2ca;min-height:40px}.party-command-row{display:flex;align-items:end;gap:6px;margin-top:10px}.party-command-row label{flex:1}.party-command-row select{margin-bottom:0}.party-command-row button{font-size:11px}.party-leave{margin:10px 0;color:#ecb0a0!important}.party-invite-form{border-top:1px solid #95713b68;padding-top:10px}.party-invite-form>div{display:flex;gap:6px;align-items:baseline}.party-invite-form input{flex:1}.party-invitations{margin-top:10px}.party-invite{display:flex;gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid #95713b50}.party-invite>div{flex:1}.party-invite small{display:block;font-size:11px}.party-invite button{font-size:11px}.party-activity-choice{display:flex;align-items:center;gap:9px;padding:10px;border:1px solid #a77b3d;margin:8px 0;background:#0a090d55}.party-activity-choice small{display:block;font-size:11px;margin-top:3px}.party-activity-choice b{font:700 18px Georgia,serif}.party-individual{display:flex;gap:12px;align-items:center;padding:12px;margin:8px 0;background:#aaa1;border:1px solid #706454;color:#aaa}.party-individual small{display:block;font-size:11px}.party-preparation{border:1px solid #ddb660;padding:10px;margin-top:12px;background:#94651c24}.party-preparation p,.party-rules p{font-size:12px;color:#ccbea4}.party-preparation button{margin:4px 0}.party-rules{margin-top:14px;border-top:1px solid #95713b60;padding-top:10px}.party-rules h3{font-size:16px}.party-empty{padding:20px 5px;text-align:center}.party-empty h3{font-size:24px}
+#partyCompact{position:fixed;right:var(--rpg-edge,12px);bottom:calc(var(--journey-reserved-bottom,102px) + var(--party-tracker-height,0px) + 18px);width:min(280px,calc(100vw - 24px));z-index:var(--rpg-z-hud,10);border:1px solid var(--rpg-brass);background:linear-gradient(#110e14e8,#110e14e8),var(--rpg-planks);color:var(--rpg-text);box-shadow:0 5px 15px #0008;pointer-events:auto;font-family:var(--rpg-font)}
+#partyCompact[hidden],#partyCompact [hidden]{display:none!important}#partyCompact .party-compact-title{width:100%;display:flex;align-items:center;gap:7px;background:var(--rpg-planks);border:0;border-bottom:1px solid #a57e3c77;border-radius:0;padding:5px 8px;font-size:12px}#partyCompact .party-compact-title img{width:24px;height:24px}#partyCompact .party-compact-title span{margin-left:auto}#partyCompact .party-compact-members{max-height:290px;overflow:auto;padding:2px 6px 6px}#partyCompact .party-member{min-height:47px;padding:4px 0;gap:5px}#partyCompact .party-faction{width:22px;height:22px}#partyCompact canvas{width:28px;height:37px}#partyCompact .party-member strong{font-size:11px}#partyCompact .party-member small{font-size:9px}#partyCompact .party-status{font-size:9px}#partyCompact .party-life{height:4px;margin:3px 0}#partyCompact [data-party-open]{width:100%;font-size:10px;padding:4px;min-height:26px}
+#mainMenu #socialMenuTrigger{position:relative;width:40px;height:40px;padding:4px;display:grid;place-items:center;border:1px solid #a4814b;background:var(--rpg-planks)}#socialMenuTrigger>img{width:28px;height:28px;object-fit:contain}.party-invite-badge{position:absolute;top:-5px;right:-4px;background:#ac3438;color:white;min-width:17px;border-radius:4px;font:700 11px sans-serif}#socialQuickMenu button{cursor:pointer}
+@media(max-width:760px){.party-layout{grid-template-columns:1fr;font-size:13px;gap:8px}.party-roster,.party-activities{padding:9px}#panelOverlay.party-mode .dialog-body{padding:7px}#mainMenu #socialMenuTrigger{width:32px;height:32px}#socialMenuTrigger>img{width:25px;height:25px}#partyCompact{width:220px}.party-command-row{flex-wrap:wrap}.party-layout button{min-height:40px}.party-member canvas{width:35px;height:47px}}
+@media(max-height:650px){#partyCompact .party-compact-members{max-height:130px}}
+
+#panelOverlay.party-mode,#partyCompact{--rpg-planks:var(--rpg-workshop-surface,url('assets/ui/forge-hd/workshop-surface.png'));--rpg-surface:#191519}
+#panelOverlay.party-mode .dialog-header,#panelOverlay.party-mode .dialog-body{background-image:var(--rpg-planks);background-size:512px 512px}
+#panelOverlay.party-mode .party-roster,#panelOverlay.party-mode .party-activities{background:linear-gradient(#0c0a10a8,#0c0a10c9),var(--rpg-planks) center/512px 512px}
+#panelOverlay.party-mode .party-layout button,#panelOverlay.party-mode .ui-select-trigger{background:linear-gradient(#100c14aa,#100c14bb),var(--rpg-planks) center/512px 512px;color:#ffe4aa;border-color:#ba914e}
+#panelOverlay.party-mode .party-layout .party-primary{background:#a56a13 var(--rpg-hd-button) center/100% 100%;color:#fff0b5;min-height:42px}
+#panelOverlay.party-mode .party-layout input:not([type=radio]){background:linear-gradient(#100c14ad,#100c14c9),var(--rpg-planks) center/512px 512px}
+#panelOverlay.party-mode .party-member strong{font-size:15px}#panelOverlay.party-mode .party-member small{font-size:11px}#panelOverlay.party-mode .party-layout h3{font-family:var(--rpg-ui-heading,Georgia),serif;font-size:18px}#panelOverlay.party-mode .party-summary h3{font-size:23px}#panelOverlay.party-mode .party-status{font-size:11px}
+#partyCompact{background:linear-gradient(#100d13d9,#100d13e8),var(--rpg-planks) center/512px 512px}#partyCompact .party-compact-title{background:var(--rpg-planks) center/512px 512px}
+
+#app #panelOverlay.party-mode .party-layout button,#app #panelOverlay.party-mode .close-button{border:6px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 fill /7px;background:none;border-radius:0;color:#ffe8b4;box-shadow:none;font:700 15px/1.2 var(--rpg-ui-heading,Georgia);padding:6px 9px}
+#app #panelOverlay.party-mode .party-layout .party-primary{border-image:var(--rpg-hd-button) 25 30 fill /8px;color:#fff1bd;font-size:17px}
+#app #panelOverlay.party-mode .party-layout input:not([type=radio]){border:1px solid #b58b45;border-image:none;background:linear-gradient(#080912b3,#080912d1),var(--rpg-workshop-surface) center/512px;color:#f0dfb8}
+#app #socialQuickMenu{background:linear-gradient(#080a0ce8,#080a0cf0),var(--rpg-workshop-surface) center/512px}
+#app #partyCompact button{background:linear-gradient(#080a0cb0,#080a0cd0),var(--rpg-workshop-surface) center/512px;border-image:none}
+
+/* Image-led destination picker. Native artwork stays separate from live text. */
+#panelOverlay.party-mode .dialog{width:min(1160px,calc(100vw - 24px))}
+#panelOverlay.party-mode .party-layout{grid-template-columns:minmax(0,.92fr) minmax(0,1.18fr);gap:14px;font:14px/1.45 'Segoe UI',sans-serif}
+#panelOverlay.party-mode .party-layout h3{font-family:Georgia,serif;letter-spacing:.015em;font-variant:normal;text-transform:none}
+#panelOverlay.party-mode .party-section{font-size:19px;padding:3px 0 9px}
+#panelOverlay.party-mode .party-summary{padding-bottom:12px}
+#panelOverlay.party-mode .party-summary h3{font-size:25px}
+#panelOverlay.party-mode .party-member{min-height:85px;padding:8px 3px}
+#panelOverlay.party-mode .party-member strong{font:700 16px/1.35 Georgia,serif;color:#fff0c5}
+#panelOverlay.party-mode .party-member small{font:12px/1.5 'Segoe UI',sans-serif}
+#app #panelOverlay.party-mode .party-layout button{font:700 14px/1.25 Georgia,serif;letter-spacing:.01em;text-shadow:0 1px 2px #000}
+#app #panelOverlay.party-mode .party-layout button:focus-visible{outline:2px solid #ffe4a0;outline-offset:3px}
+#app #panelOverlay.party-mode .party-layout button:disabled{filter:grayscale(.65);opacity:.62}
+.party-destination-tabs,.party-region-tabs{display:flex;gap:6px;margin-bottom:9px}
+#app #panelOverlay.party-mode .party-destination-tabs button{flex:1;display:flex;align-items:center;justify-content:center;gap:7px;min-height:46px;font-size:15px}
+.party-destination-tabs img{width:25px;height:25px;object-fit:contain}
+#app #panelOverlay.party-mode .party-region-tabs button{flex:1;min-height:32px;padding:4px;font-size:12px}
+#app #panelOverlay.party-mode .party-layout button[aria-pressed=true]:not(.party-destination-card){border-image:var(--rpg-hd-button) 25 30 fill /8px;color:#fff0bb}
+.party-destination-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:236px;overflow-y:auto;padding:3px 5px 6px 2px;scrollbar-width:thin;scrollbar-color:#b6904b #151013;overscroll-behavior:contain}
+#app #panelOverlay.party-mode .party-layout .party-destination-card{position:relative;display:block;min-width:0;padding:0;border:1px solid #a48348;border-image:none;background:#160f0d;box-shadow:inset 0 0 0 1px #000a;overflow:hidden;text-align:left;border-radius:3px;min-height:107px}
+#app #panelOverlay.party-mode .party-layout .party-destination-card[aria-pressed=true]{border:2px solid #ffcf64;box-shadow:0 0 7px #d99a4059}
+.party-destination-card>img{display:block;width:100%;height:66px;object-fit:cover;object-position:center 25%;image-rendering:auto}
+#panelOverlay.party-mode .party-destination-copy{display:block;padding:5px 9px;background:linear-gradient(#110b0bdb,#110b0bf5),var(--rpg-workshop-surface) center/512px}
+#panelOverlay.party-mode .party-destination-copy strong{display:block;color:#fff0ca;font:700 14px/1.3 Georgia,serif}
+#panelOverlay.party-mode .party-destination-copy small{font:11px/1.4 'Segoe UI',sans-serif;color:#d9bb82}
+.party-card-check{position:absolute;right:5px;top:4px;color:#fff0ae;font:bold 17px Georgia;text-shadow:0 1px 3px #000}
+.party-destination-preview{position:relative;height:164px;margin:10px 0 7px;overflow:hidden;border:1px solid #bf9653;border-radius:2px;background:#100d0b}
+.party-destination-preview>img{width:100%;height:100%;object-fit:cover;object-position:center 25%;image-rendering:auto}
+.party-destination-preview>div{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:end;padding:12px;background:linear-gradient(90deg,#090609d9,transparent 85%),linear-gradient(0deg,#07060be8,transparent 85%);text-shadow:0 1px 3px #000}
+#panelOverlay.party-mode .party-destination-preview h3{font:700 25px/1.1 Georgia,serif;margin:4px 0}
+#panelOverlay.party-mode .party-destination-preview small{font:600 9px 'Segoe UI';letter-spacing:.13em;color:#e3bb6d}
+.party-destination-preview p{margin:2px 0 4px;font-size:12px;color:#efe0c1}.party-destination-preview b{font:700 11px 'Segoe UI';color:#e9bd66}
+.party-prepare-action p{margin:9px 0 0;font-size:12px;text-align:center;color:#e1c99f}
+#panelOverlay.party-mode .party-preparation{margin-top:10px;padding:10px;background:linear-gradient(#1d130fb3,#1d130fd9),var(--rpg-workshop-surface);border-color:#c19a53}
+#panelOverlay.party-mode .party-preparation h3{margin:5px 0;font-size:21px}.party-preparation>button{width:100%}
+#panelOverlay.party-mode .party-individual{padding:6px 9px;gap:9px;margin:8px 0 0;background:linear-gradient(#100c10ba,#100c10ba),var(--rpg-workshop-surface);color:#dfccaa}
+.party-individual>img{width:48px;height:32px;object-fit:cover;border:1px solid #8b7148}.party-individual>span:nth-child(2){flex:1}.party-individual b{font:700 13px Georgia}.party-individual small{font-size:11px}
+.party-coming-soon{grid-column:1/-1;min-height:100px;display:grid;place-items:center;color:#dcc59d}
+@media(max-width:760px){#panelOverlay.party-mode .party-layout{grid-template-columns:1fr;gap:10px}.party-destination-preview{height:150px}#panelOverlay.party-mode .party-member{min-height:68px}.party-destination-grid{max-height:240px}}
+
+#app #panelOverlay.party-mode .party-layout button:not(.party-destination-card){border-image:url('assets/ui/social/button-frame.png') 22 24 /7px;background:linear-gradient(#170e0bd9,#170e0bf0),var(--rpg-workshop-surface) center/512px}
+#app #panelOverlay.party-mode .party-layout .party-primary,#app #panelOverlay.party-mode .party-layout button[aria-pressed=true]:not(.party-destination-card){background:linear-gradient(#a96b1abf,#6c3609df),var(--rpg-workshop-surface) center/512px;color:#fff2bf;box-shadow:inset 0 0 12px #e9ae3430}
+
+#app #panelOverlay.party-mode .party-layout button.party-primary{background:linear-gradient(#bb7911d9,#693105ef),var(--rpg-workshop-surface) center/512px;color:#fff3c8;box-shadow:inset 0 0 10px #edb33633}
+#app #panelOverlay.party-mode #dialogTitle{font:700 28px/1.15 Georgia,serif;letter-spacing:.025em;text-shadow:0 2px 3px #000}
+#app #panelOverlay.party-mode .party-layout h3{font-family:Georgia,serif}
+
+#panelOverlay.party-mode [data-kind=dungeon]>img{object-position:center top}
+
+#app #panelOverlay.party-mode{z-index:var(--rpg-z-modal,100)}

@@ -1,0 +1,26 @@
+{
+  "generator": "PixelLab AI Pro",
+  "direction": "Masterpiece HD, approved dark wood and gold HUD",
+  "assets": [
+    {
+      "file": "party.png",
+      "job": "7b7527f5-ed07-46a5-8b6f-8424550b776d",
+      "gallery": "15994e36-5379-50c3-8918-e59425f334eb",
+      "size": [
+        64,
+        64
+      ],
+      "charged_generations": 10
+    },
+    {
+      "file": "button-frame.png",
+      "job": "0f377e16-e149-4c46-94c1-3e037681c950",
+      "gallery": "66969bda-5efd-596a-a46c-d8bc3e3454f8",
+      "size": [
+        320,
+        80
+      ],
+      "charged_generations": 10
+    }
+  ]
+}
