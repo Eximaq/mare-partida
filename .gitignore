@@ -50,3 +50,7 @@ Thumbs.db
 /packages/*/dist/
 *.tsbuildinfo
 /infra/local/
+
+# Disposable local validation environments and repository-audit output
+/.party-test-runtime/
+/.maintenance-local/

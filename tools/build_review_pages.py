@@ -439,5 +439,3 @@ def copy_review_pages(ROOT, OUT):
     for name in sorted({'review-pack.json'} | pack_sources(trousers_pack)):
         shutil.copy2(ROOT/trousers_review/name, OUT/trousers_review/name)
     shutil.copy2(ROOT/'docs/HANDOFF-CALCAS-PAPER-DOLL.md', OUT/'docs/HANDOFF-CALCAS-PAPER-DOLL.md')
-
-
