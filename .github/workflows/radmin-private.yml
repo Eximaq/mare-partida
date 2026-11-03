@@ -7,6 +7,11 @@ on:
     paths: ['tools/radmin/**', 'tests/radmin-*.ps1', '.github/workflows/radmin-private.yml']
 permissions:
   contents: read
+# New PR revisions supersede older runs; main/deploy jobs are never interrupted.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   windows-configuration:
     runs-on: windows-latest

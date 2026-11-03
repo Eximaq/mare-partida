@@ -13,6 +13,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+# New PR revisions supersede older runs; main/deploy jobs are never interrupted.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   screenshots:
     # Playwright 1.56.1 supports Ubuntu 24; ubuntu-latest now selects 26.
@@ -25,6 +30,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: chromium-${{ runner.os }}-playwright-1.56.1
       - name: Preparar navegador
         run: |
           npm install --no-save --package-lock=false playwright@1.56.1

@@ -40,3 +40,5 @@ Navegador Chromium: oito viewports (1920×1080, 1366×768, 1280×720, 1024×768,
 Testes comprovados em vermelho/verde: divulgação inexistente, nome cortado no celular, transição sem recolhimento, cartaz abaixo da navegação e botão de rotas encoberto na tela de 320px. O CI detectou a última regressão nos testes Dawn/Conchas; o ajuste foi verificado no navegador da HUD e nesses consumidores. As capturas atuais e bancos de teste ficam fora do repositório na pasta privada Sprint-Character-HUD. Captura adicional em execução normal: hud-live-expanded.png, 31/10/2026. Limite: validação de navegador em Chromium; não houve teste físico em todos os aparelhos.
 
 Pendência deliberada: sistema de Bounty. Próximo escopo opcional: somente quando houver regras de produto para recompensa, conectar esse campo mantendo-o separado das moedas.
+
+Manutenção de 02/11/2026: os sete PNGs da primeira HUD foram retirados após substituição definitiva pela arte HD. Fonte, hashes e origem permanecem registrados; ver [inventário da remoção](maintenance/REMOVED-HUD-2026-11-02.md).
