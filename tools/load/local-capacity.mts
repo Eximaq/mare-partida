@@ -10,7 +10,9 @@ import {createAuthHandler} from '../../apps/game-server/src/auth/routes.js';
 import {tickWorldBattles} from '../../apps/game-server/src/characters/battle.js';
 import {tickPartyBattles} from '../../apps/game-server/src/characters/party-worker.js';
 import {createTickLane} from '../../apps/game-server/src/tick-lane.js';
+import {createSimulationPool,simulationSettings} from '../../apps/game-server/src/simulation-pool.js';
 const readInt=(key:string,fallback:number,min:number,max:number)=>{const n=Number(process.env[key]??fallback);assert.ok(Number.isInteger(n)&&n>=min&&n<=max,key);return n;};
+const threaded=process.env.MARE_LOAD_SIMULATION==='workers';
 const clients=readInt('MARE_LOAD_CLIENTS',12,1,3000),seconds=readInt('MARE_LOAD_SECONDS',20,10,600),mode=process.env.MARE_LOAD_MODE??'mixed';
 assert.ok(['full','mixed','party'].includes(mode));assert.ok(!process.env.MARE_LOAD_TARGET,'External targets are not supported');
 const sleep=(n:number)=>new Promise(r=>setTimeout(r,Math.max(0,n)));
@@ -37,11 +39,14 @@ await authDatabase(async f=>{
  const handler=createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9443',cookieSeconds:3600,trustedProxyIp:'127.0.0.1'}),server=createHttpServer({isReady:async()=>true,handle:handler});
  server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${(server.address() as any).port}`;
  const solo=createTickLane('solo',()=>tickWorldBattles(f.pool)),party=createTickLane('party',()=>tickPartyBattles(f.pool));
- const timer=setInterval(()=>{solo.tick();party.tick();},250),delay=monitorEventLoopDelay({resolution:20});delay.enable();
+ const workers=threaded?createSimulationPool({databaseUrl:f.pool.options.connectionString!,counts:simulationSettings(process.env),workerUrl:new URL('../../apps/game-server/dist/simulation-worker.js',import.meta.url)}):undefined;
+ await workers?.start();await f.pool.query('UPDATE mare_game.character_battles SET tick_at=clock_timestamp()');
+ const timer=setInterval(()=>{if(!workers){solo.tick();party.tick();}},250),delay=monitorEventLoopDelay({resolution:20});delay.enable();
  const times:number[]=[],bytes:number[]=[],app:number[]=[],ages:number[]=[],statuses:Record<string,number>={};let dropped=0,inflight=0,requests=0,maxPoolWait=0,stop=false;const flights=new Set<Promise<void>>();
  const cpu=process.cpuUsage(),start=performance.now(),end=start+seconds*1000,next=users.map((_,i)=>start+i*750/clients),rounds=users.map(()=>0);
  try{
   while(performance.now()<end&&!stop){
+   if(workers&&!workers.healthy()){stop=true;break;}
    const now=performance.now();maxPoolWait=Math.max(maxPoolWait,f.pool.waitingCount);
    for(let i=0;i<users.length;i++)if(now>=next[i]!){
     next[i]!+=750;if(now-next[i]!>750){dropped+=Math.floor((now-next[i]!)/750);next[i]=now+750;}
@@ -55,11 +60,11 @@ await authDatabase(async f=>{
    }
    await sleep(10);
   }
-  await Promise.all(flights);clearInterval(timer);await Promise.all([solo.stop(),party.stop()]);
+  await Promise.all(flights);const workerStatus=workers?.report();clearInterval(timer);await Promise.all([solo.stop(),party.stop(),workers?.stop()]);
   const elapsed=performance.now()-start,cpuUsed=process.cpuUsage(cpu);
   const bad=(await f.pool.query('SELECT count(*)::int n FROM mare_game.character_progression WHERE gold<0 OR experience<0')).rows[0].n;assert.equal(bad,0);
-  const report={profile:mode,clients,durationSeconds:Math.round(elapsed/1000),requests,statuses,dropped,throughput:Math.round(requests*1000/elapsed),httpMs:{p50:Math.round(percentile(times,.5)),p95:Math.round(percentile(times,.95)),p99:Math.round(percentile(times,.99)),max:Math.round(Math.max(0,...times))},appP95Ms:Math.round(percentile(app,.95)),meanBytes:Math.round(bytes.reduce((n,b)=>n+b,0)/(bytes.length||1)),simulationAgeP95Ms:Math.round(percentile(ages,.95)),eventLoopP99Ms:Math.round(delay.percentile(99)/1e6),cpuCorePercent:Math.round((cpuUsed.user+cpuUsed.system)/elapsed/10),rssMiB:Math.round(process.memoryUsage().rss/1048576),maxPoolWait,solo:solo.flush(),party:party.flush(),invariants:{nonnegativeProgress:bad===0},passed:!stop&&dropped===0&&Object.keys(statuses).every(k=>k==='200')&&percentile(times,.95)<500&&percentile(ages,.95)<1000};
+  const report={simulation:threaded?'workers':'inline',workerStatus,profile:mode,clients,durationSeconds:Math.round(elapsed/1000),requests,statuses,dropped,throughput:Math.round(requests*1000/elapsed),httpMs:{p50:Math.round(percentile(times,.5)),p95:Math.round(percentile(times,.95)),p99:Math.round(percentile(times,.99)),max:Math.round(Math.max(0,...times))},appP95Ms:Math.round(percentile(app,.95)),meanBytes:Math.round(bytes.reduce((n,b)=>n+b,0)/(bytes.length||1)),simulationAgeP95Ms:Math.round(percentile(ages,.95)),eventLoopP99Ms:Math.round(delay.percentile(99)/1e6),cpuCorePercent:Math.round((cpuUsed.user+cpuUsed.system)/elapsed/10),rssMiB:Math.round(process.memoryUsage().rss/1048576),maxPoolWait,solo:solo.flush(),party:party.flush(),invariants:{nonnegativeProgress:bad===0},passed:!stop&&(!workerStatus||workerStatus.restarts===0)&&dropped===0&&Object.keys(statuses).every(k=>k==='200')&&percentile(times,.95)<500&&percentile(ages,.95)<1000};
   if(process.env.MARE_LOAD_REPORT){assert.match(process.env.MARE_LOAD_REPORT,/^(tmp|infra[\\/]local)[\\/][\w\\/.-]+\.json$/);await writeFile(process.env.MARE_LOAD_REPORT,JSON.stringify(report,null,2));}console.log(JSON.stringify(report));
   if(!report.passed)process.exitCode=2;
- }finally{clearInterval(timer);await Promise.all(flights);await Promise.all([solo.stop(),party.stop()]);delay.disable();server.closeAllConnections();await new Promise<void>(r=>server.close(()=>r()));}
+ }finally{clearInterval(timer);await Promise.all(flights);await Promise.all([solo.stop(),party.stop(),workers?.stop()]);delay.disable();server.closeAllConnections();await new Promise<void>(r=>server.close(()=>r()));}
 });

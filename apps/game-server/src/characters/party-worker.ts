@@ -1,3 +1,4 @@
+import {partition,type SimulationPartition} from '../simulation-partition.js';
 import type {Pool} from 'pg';
 import {randomInt,randomUUID} from 'node:crypto';
 import {createRequire} from 'node:module';
@@ -18,8 +19,9 @@ import {digest} from '../auth/vault.js';
 const require=createRequire(import.meta.url),P=require('../../../../party-rules.cjs'),S=require('../../../../party-battle.cjs'),E=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
 const rng=()=>randomInt(0,0x100000000)/0x100000000;
 /** One bounded transaction and one canonical monster timeline per instance. */
-export async function tickPartyBattles(pool:Pool){
- const candidates=(await pool.query("SELECT id,party_id FROM mare_game.party_instances WHERE ended_at IS NULL AND tick_at<clock_timestamp()-interval '100 milliseconds' ORDER BY tick_at LIMIT 16")).rows;
+export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition){
+ const shard=partition(assignment);
+ const candidates=(await pool.query("SELECT id,party_id FROM mare_game.party_instances WHERE mod(hashtextextended(id::text,34001)&2147483647,$2::bigint)=$1::bigint AND ended_at IS NULL AND tick_at<clock_timestamp()-interval '100 milliseconds' ORDER BY tick_at LIMIT 16",[shard.index,shard.count])).rows;
  let failed=0;
  for(const candidate of candidates){const c=await pool.connect();try{
   await c.query('BEGIN');await c.query("SET LOCAL statement_timeout='5000ms'; SET LOCAL lock_timeout='100ms'");

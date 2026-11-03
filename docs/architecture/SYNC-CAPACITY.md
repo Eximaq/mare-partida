@@ -52,3 +52,8 @@ A matriz de homologação deverá subir 50 →100 →300 →1000 →3000 somente
 ## Atualização da instalação contínua
 
 Este PR inclui as migrations 0032 do colaborador e 0033 deste incremento na cadeia. Antes de usar o novo backend no banco de jogo: backup nativo validado, parada graciosa da API, migração com a role existente de migração, grants atuais de runtime, build e reinício. Preservar banco, saves e personagens. Pages entrega o cliente estático e não executa a migração. Não misturar só arquivos soltos de versões diferentes. O cliente novo ainda pode operar com backend anterior sem o protocolo compacto; isso não instala Party em banco antigo.
+
+
+## Continuação
+
+O incremento seguinte implementa [workers de simulação e protocolo 2 de Party](SIMULATION-WORKERS.md). O contrato protocolo 1 e os resultados acima registram a primeira entrega; os resultados e limites atuais estão no documento seguinte.
