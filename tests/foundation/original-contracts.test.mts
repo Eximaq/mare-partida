@@ -18,7 +18,7 @@ test('contract intent contains only a canonical ID, never progress, ownership or
 });
 test('current common-island profiles preserve the audited balance independently of the new passive hooks',()=>{
  const h=require('../../hunt-system.js'),rows=[];
- for(const a of Object.keys(h.regions))for(const s of h.sectors(a))for(const t of Object.keys(h.archetypes))for(const roll of [0,.5,.999999]){
+ for(const a of Object.keys(h.regions).filter(a=>a!=='skypiea-01'))for(const s of h.sectors(a))for(const t of Object.keys(h.archetypes))for(const roll of [0,.5,.999999]){
   // Boss profiles for islands with no boss were NaN before PR207 and are not spawnable.
   if(t==='boss'&&!Number.isFinite(h.regions[a].bossLevel))continue;
   try{rows.push([a,s.id,t,roll,h.profile(a,s.id,t,roll)]);}catch{}

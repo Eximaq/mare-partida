@@ -43,7 +43,7 @@ test('navigation upgrade changes only the known hash, preserves all rows and fai
  await f.pool.query('UPDATE mare_game.character_world SET rules_hash=$2 WHERE character_id=$1',[b.c.id,'f'.repeat(64)]);
  const tables=(await f.pool.query("SELECT tablename FROM pg_tables WHERE schemaname='mare_game' ORDER BY tablename")).rows.map(r=>r.tablename);
  const snapshot=async()=>{const out:Record<string,unknown>={};for(const t of tables){assert.match(t,/^[a-z_]+$/);out[t]=(await f.pool.query(`SELECT to_jsonb(t) row FROM mare_game.${t} t ORDER BY to_jsonb(t)::text`)).rows.map(r=>t==='character_world'?{...r.row,rules_hash:r.row.character_id===a.c.id?'known':r.row.rules_hash}:r.row);}return out;};
- const before=await snapshot(),sql=(await Promise.all(['0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql'].map(name=>readFile(new URL('../../apps/game-server/migrations/'+name,import.meta.url),'utf8')))).join('\n');
+ const before=await snapshot(),sql=(await Promise.all(['0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql'].map(name=>readFile(new URL('../../apps/game-server/migrations/'+name,import.meta.url),'utf8')))).join('\n');
  await f.pool.query(sql);await f.pool.query(sql);assert.deepEqual(await snapshot(),before);
  assert.equal((await f.pool.query('SELECT rules_hash FROM mare_game.character_world WHERE character_id=$1',[a.c.id])).rows[0].rules_hash,current);
  await a.read();await assert.rejects(b.read(),{code:'world_rules_changed'});

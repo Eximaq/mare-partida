@@ -229,7 +229,7 @@
 #app #panelOverlay.voyage-hd-mode .voyage-region-icon{display:inline-block;width:38px;height:38px;flex:none;background-image:url('assets/ui/voyage-hd/region-icons.png');background-size:114px 38px;background-position:0 0;background-repeat:no-repeat}
 #app #panelOverlay.voyage-hd-mode .voyage-region-icon[data-icon=alabasta]{background-position:-38px 0}
 #app #panelOverlay.voyage-hd-mode .voyage-region-icon[data-icon=skypiea]{background-position:-76px 0}
-#app #panelOverlay.voyage-hd-mode [data-region=skypiea] .voyage-map{background:url('assets/ui/voyage-hd/skypiea.png') center/cover no-repeat}
+#app #panelOverlay.voyage-hd-mode [data-region=skypiea] .voyage-map{background:url('assets/ui/voyage-hd/skypiea-01.png') center/cover no-repeat}
 @media(max-width:700px){#app #panelOverlay.voyage-hd-mode .voyage-region-icon{width:26px;height:26px;background-size:78px 26px}#app #panelOverlay.voyage-hd-mode .voyage-region-icon[data-icon=alabasta]{background-position:-26px 0}#app #panelOverlay.voyage-hd-mode .voyage-region-icon[data-icon=skypiea]{background-position:-52px 0}}
 
 #app #panelOverlay.voyage-hd-mode .voyage-map{display:block;container-type:size}
