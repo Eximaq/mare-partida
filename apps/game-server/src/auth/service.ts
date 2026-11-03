@@ -353,7 +353,7 @@ export class AuthService {
   /** Compact, owner-only presentation from one committed database snapshot. */
   async onlineFrame(token:string,id:string){
     return this.presentation(token,id,async(client)=>{
-      const state=await readCharacterState(client,id),partyMotion=await readPartyMotion(client,id,true);
+      const state=await readCharacterState(client,id),partyMotion=await readPartyMotion(client,id);
       const world=await readWorld(client,id),battle=await readBattle(client,id),lobby=await readLobby(client,id,world);
       const timing=(await client.query("SELECT clock_timestamp() now,tick_at FROM mare_game.character_battles WHERE character_id=$1",[id])).rows[0];
       return {protocol:2,characterId:id,version:state.version,serverNow:(timing?.now??new Date()).toISOString(),simulationAgeMs:timing?Math.max(0,timing.now.getTime()-timing.tick_at.getTime()):null,world,battle,lobby,partyMotion};
@@ -362,7 +362,7 @@ export class AuthService {
   async onlineState(token: string, id: string) {
     return this.presentation(token,id,async (client) => {
       const state = await readCharacterState(client, id);
-      const party=await readParty(client,id,true);
+      const party=await readParty(client,id);
       const journey = (await client.query<{ started: boolean }>(
         "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started", [id],
       )).rows[0]!;

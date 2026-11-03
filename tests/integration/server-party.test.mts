@@ -1,4 +1,5 @@
 import {tickPartyBattles} from '../../apps/game-server/src/characters/party-worker.js';
+import {lockPeer,presence,readPartyMotion} from '../../apps/game-server/src/characters/party.js';
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
@@ -11,6 +12,37 @@ async function actor(f:any){
  return {c,name,login,lease,read,input,send,doit,frame:()=>f.service.onlineFrame(login.token,c.id)};
 }
 async function join(a:any,b:any){await a.doit('party.invite',{name:b.name});const invite=(await b.read()).party.invites.find((i:any)=>i.status==='pending');await b.doit('party.respond',{inviteId:invite.id,accept:true});}
+test('Party peer locks use one query and reject contention at every fence',async()=>authDatabase(async f=>{
+ const a=await actor(f);
+ await a.doit('party.create');
+ const partyId=(await a.read()).party.group.id;
+ const holder=await f.pool.connect(),worker=await f.pool.connect();
+ try{
+  const peer=(await presence(worker,partyId))[0];
+  assert.ok(peer.session_id);
+  const fences=[
+   ['SELECT id FROM mare_game.app_sessions WHERE id=$1 FOR UPDATE',peer.session_id],
+   ['SELECT id FROM mare_game.accounts WHERE id=$1 FOR UPDATE',peer.account_id],
+   ['SELECT pg_advisory_xact_lock(hashtextextended($1,1296126533))',peer.character_id],
+  ];
+  for(const [sql,id] of fences){
+   await holder.query('BEGIN');
+   await holder.query(sql,[id]);
+   await worker.query('BEGIN');
+   await assert.rejects(lockPeer(worker,peer),{code:'party_member_busy'});
+   await worker.query('ROLLBACK');
+   await holder.query('ROLLBACK');
+  }
+  await worker.query('BEGIN');
+  let calls=0;
+  const client={query:(sql:string,values:unknown[])=>{calls++;return worker.query(sql,values);}};
+  await lockPeer(client as typeof worker,peer);
+  assert.equal(calls,1);
+ }finally{
+  await worker.query('ROLLBACK');await holder.query('ROLLBACK');
+  worker.release();holder.release();
+ }
+}));
 test('party acceptance, capacity, consent and same authoritative instance for 2/3/4 real sessions',async()=>authDatabase(async f=>{
  const a=await actor(f),b=await actor(f),c=await actor(f),d=await actor(f),e=await actor(f);
  await a.doit('party.create');await assert.rejects(a.doit('party.invite',{name:a.name}),{code:'party_self_invite'});
@@ -35,6 +67,20 @@ async function activity(a:any,all:any[],kind='hunt',destination='dawn'){
  for(const w of all){const full=await w.read(),frame=await (w as any).frame();assert.equal(frame.version,full.state.version);assert.deepEqual(frame.battle.mobs,full.battle.mobs);assert.deepEqual(frame.partyMotion.group.activity,full.party.group.activity);}
 
 }
+test('Party motion reads compact activity and roster in five snapshot queries',async()=>authDatabase(async f=>{
+ const a=await actor(f),b=await actor(f);
+ await a.doit('party.create');await join(a,b);await activity(a,[a,b]);
+ const expected=await a.frame(),db=await f.pool.connect();
+ try{
+  await db.query('BEGIN ISOLATION LEVEL REPEATABLE READ READ ONLY');
+  let calls=0;
+  const client={query:(sql:string,values:unknown[])=>{calls++;return db.query(sql,values);}};
+  const motion=await readPartyMotion(client as typeof db,a.c.id);
+  assert.deepEqual(motion?.group?.activity,expected.partyMotion.group.activity);
+  assert.equal(motion?.group?.members.length,2);
+  assert.equal(calls,5);
+ }finally{await db.query('ROLLBACK');db.release();}
+}));
 async function sharedKill(f:any,all:any[]){
  const before=await all[0].read(),instance=before.battle.partyInstanceId,row=(await f.pool.query('SELECT simulation FROM mare_game.party_instances WHERE id=$1',[instance])).rows[0],room=row.simulation,m=room.mobs.find((m:any)=>m.alive);
  Object.assign(m,{hp:1,defense:0,attackClock:999,engaged:false});

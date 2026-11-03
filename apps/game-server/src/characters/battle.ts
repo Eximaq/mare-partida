@@ -44,9 +44,11 @@ export async function readBattleRows(client:PoolClient,ids:readonly string[],opt
  }
  return new Map(rows.map(row=>[row.character_id,row]));
 }
-export async function storeBattle(client:PoolClient,id:string,b:any,canonical=true){
+export async function storeBattle(client:PoolClient,id:string,b:any,canonical=true,tick?:{at:Date;epoch:number|string}){
  if(canonical&&b.partyInstanceId){const r=await partyRoom(client,b.partyInstanceId);if(r){r.simulation.mobs=b.mobs;await storeRoom(client,r.simulation);}}
- await client.query('UPDATE mare_game.character_battles SET simulation=$2::jsonb WHERE character_id=$1',[id,JSON.stringify(b.partyInstanceId?{...b,mobs:[]}:b)]);
+ const simulation=JSON.stringify(b.partyInstanceId?{...b,mobs:[]}:b);
+ if(tick)await client.query('UPDATE mare_game.character_battles SET simulation=$2::jsonb,tick_at=$3,control_epoch=$4 WHERE character_id=$1',[id,simulation,tick.at,tick.epoch]);
+ else await client.query('UPDATE mare_game.character_battles SET simulation=$2::jsonb WHERE character_id=$1',[id,simulation]);
 }
 export async function pauseBattle(client:PoolClient,id:string){
  // Older migration fixtures acquire leases before the opt-in domain exists.

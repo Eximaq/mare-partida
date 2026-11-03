@@ -145,3 +145,112 @@ O mesmo host, Node e pool foram usados na comparação. RNG, distribuição das
 partições e carga do host variam entre execuções. A repetição com o agendamento
 anterior passou no solo e ainda registrou oito paradas em Party. O PR fica aberto
 e a atualização da instalação aguarda a validação de carga.
+## Diagnóstico de Party após integração de Skypiea
+
+A base GitHub era `25cd9d055ccc80ed0cdee4d6a206e462ca65f6c6`. O PR integrou
+essa revisão no merge `78b8baf`. As migrações aditivas 0035 e 0036, o catálogo,
+os dados de terreno e colisão, os sprites e o código de navegação do mapa foram
+preservados. As fixtures de carga usam Dawn. Elas exercitam as migrações e o
+runtime atualizado, com cobertura de Skypiea separada da carga.
+
+Ensaios sequenciais com Node 24.22.2, API compilada, pool 10 e dois workers por
+lane. PostgreSQL isolado na porta 55433. Cada cliente solicita uma projeção a
+cada 750 ms, com uma resposta completa a cada quatro solicitações. O perfil de
+50 Party cria 12 salas completas e mantém dois personagens fora das salas.
+O PostgreSQL persistente e os provedores externos ficaram fora do ensaio.
+
+| Base integrada, sem instrumentação | HTTP 200 | Descartes | HTTP p50/p95/p99/máx. | Idade p95 | Auto | Pico de fila do pool |
+|---|---:|---:|---|---:|---:|---:|
+| 50 solo, 60 s | 4.000 | 0 | 22/524/877/1067 ms | 1365 ms | 20/50 | 58 |
+| 50 Party, 60 s | 3.982 | 18 | 248/1100/1524/1749 ms | 1224 ms | 34/50 | 86 |
+| 100 solo, 30 s | 3.787 | 212 | 292/1073/1277/1374 ms | 1798 ms | 15/100 | 86 |
+
+A instrumentação amostrou o tempo decorrido no cliente PostgreSQL e em fases
+do runtime. Ela introduz overhead, portanto os critérios de carga usam as
+execuções sem instrumentação. Abaixo, valores em ms no formato
+p50/p95/p99/máximo. As duas linhas de transação representam partições distintas.
+
+| Operação | Party 50 | Solo 100 |
+|---|---|---|
+| Acesso/revalidação de sessão | 3/96/211/553 | 4/192/244/732 |
+| Aquisição de conexão, frame | 15/167/295/495 | 122/220/280/732 |
+| Aquisição de conexão, full | 19/163/344/550 | 130/238/389/700 |
+| Projeção (consultas e montagem) | 46/227/327/563 | 27/136/176/349 |
+| Frame, ponta a ponta no serviço | 156/723/899/1049 | 591/875/1104/1201 |
+| Full, ponta a ponta no serviço | 343/859/1037/1166 | 738/990/1188/1302 |
+| Locks de pares + presença, Party 0 | 9/14/21/48 | — |
+| Locks de pares + presença, Party 1 | 10/14/21/51 | — |
+| Leitura e preparação, Party 0 | 10/15/20/110 | — |
+| Leitura e preparação, Party 1 | 11/15/23/122 | — |
+| Motor IA/combate/navegação, Party 0 | 27/81/149/236 | — |
+| Motor IA/combate/navegação, Party 1 | 12/47/109/341 | — |
+| Persistência e recompensas, Party 0 | 19/88/117/147 | — |
+| Persistência e recompensas, Party 1 | 17/76/100/164 | — |
+| Escrita da sala, Party 0 | 2/3/7/9 | — |
+| Escrita da sala, Party 1 | 2/3/6/17 | — |
+| Transação, Party 0 | 73/166/270/362 | — |
+| Transação, Party 1 | 54/131/221/450 | — |
+
+No Party instrumentado, 15 atores passaram pelo cancelamento de intervalo de
+2,116–2,345 s e sete pela condição de presença desconectada. As sete ocorreram
+em ticks com 0,126–0,649 s de intervalo. O predicado de presença não foi
+decomposto nessa amostra. Presença envelhecida na preparação é uma hipótese,
+não uma conclusão. Em solo, todas as 29 paradas de 50 e as 88 de 100 foram
+pela proteção de intervalo. Não houve morte, mudança de epoch observada como
+causa de cancelamento ou reinício de worker nas três amostras instrumentadas.
+
+No Party, o p95 do pool dos próprios workers ficou abaixo de 0,11 ms após
+aquecimento, e apenas seis consultas com SKIP LOCKED retornaram sem a linha
+esperada em mais de 11 mil tentativas. Esses números não isolam toda espera
+interna do PostgreSQL. O tempo de engine/persistência, combinado com lotes
+longos e intervalos perdidos, explica o atraso imediatamente anterior às
+paradas por gap. No solo de 100, a fila da API chegou a 86 com pool 10 e o
+worker continuou com p95 de aquisição abaixo de 0,1 ms. O custo de projeção
+não pode ser inferido apenas do ping. A aplicação executou p95 de 24/54
+consultas no frame/full em Party e 18/44 no solo de 100.
+
+Nas amostras de base, o p99 do event loop da API ficou em 31–34 ms, o RSS
+em 540–658 MiB e o processo consumiu 1,94–2,42 núcleos equivalentes. O payload
+médio ficou entre 16.481 e 29.987 bytes. API, gerador e PostgreSQL compartilham
+o host. Faltam CPU do PostgreSQL e perfis separados de IA, navegação e geração
+de carga para atribuir todo o custo. Partições processam o tick mais antigo
+primeiro dentro da própria fila. Essa ordenação não garante o limite de dois
+segundos sob sobrecarga nem equilibra custos de salas entre partições.
+### Correções e primeira comparação
+
+A aquisição do lock de cada par passou de três consultas para uma. A sessão
+continua sendo bloqueada antes da conta, e o advisory lock do personagem só
+é tentado depois das duas verificações. A presença continua revalidada após
+o bloqueio de todos os pares. Os updates do estado pessoal e da sala incluem
+o tick no mesmo comando, dentro da mesma transação com os ledgers.
+
+A leitura seguinte também consolidou associação, líder e metadados da
+atividade. Os metadados da sala são projetados sem transportar a lista de
+monstros. A projeção de movimento do grupo ativo faz cinco consultas dentro
+do snapshot autorizado. O teste anterior ao patch falhou ao executar a leitura
+pela interface antiga em transação read-only. Depois, a projeção respeitou a
+transação, o contrato da atividade e o limite de consultas. A regressão dos
+locks falhou antes com três consultas e passou com uma, após exercitar as três
+formas de contenção.
+
+| Primeira correção, antes da projeção compacta | HTTP 200 | Descartes | HTTP p50/p95/p99/máx. | Idade p95 | Auto |
+|---|---:|---:|---|---:|---:|
+| 50 solo, 60 s | 4.000 | 0 | 17/194/709/828 ms | 1280 ms | 49/50 |
+| 50 Party, 60 s | 3.984 | 16 | 226/1255/1527/1680 ms | 1478 ms | 27/50 |
+| 100 solo, 30 s | 3.771 | 225 | 350/1012/1403/1638 ms | 1783 ms | 17/100 |
+| 100 Party, 31 s | 2.537 | 1463 | 1072/1842/2088/2277 ms | 1852 ms | 21/100 |
+
+A redução determinística de consultas foi confirmada. As janelas curtas
+acima reprovaram e não demonstram ganho sustentado de capacidade. A primeira
+linha do teste Party 100 é da candidata, sem amostra comparável da base para
+esse perfil. Foram aprovados 38 testes focados de Party, combate e snapshots,
+incluindo rollback do ledger, compartilhamento de XP, idempotência de entrada,
+autorização, revogação concorrente e privilégios mínimos. A ferramenta de carga
+mede progresso não negativo e contagem de recibos, sem certificar sozinha
+replay e consistência econômica sob carga.
+
+A rodada do GitHub em `78b8baf` passou em foundation, Docker e testes gerais.
+O navegador confirmou movimento próprio/remoto, recuperação da aba suspensa e
+zero 429 na caminhada, mas retornou control_required ao tentar viajar. Esse
+resultado é um bloqueio de aceite adicional. As mudanças do PR não alteram o
+mapa, engine, balanceamento, prazos ou número de conexões do runtime.

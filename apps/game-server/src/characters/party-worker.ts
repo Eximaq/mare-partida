@@ -83,9 +83,9 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
     a.b.partyXpReceived=(a.b.partyXpReceived??0)+(rewards.get(a.id)??0);
    }
    await storeWorld(c,a.id,{...a.w,position:{x:a.hero.x,y:a.hero.y},direction:a.hero.direction,path:a.b.hp>0&&!a.b.auto?a.manualPath:[],speed:E.combatStats(a.b,a)[a.b.auto?'huntSpeed':'moveSpeed'],serverNow:new Date(now).toISOString(),motionUntil:new Date(Math.max(now,Date.parse(a.w.motionUntil))).toISOString()});
-   a.b.mobs=room.mobs;await storeBattle(c,a.id,a.b,false);await c.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[a.id,row.now,a.epoch]);
+   a.b.mobs=room.mobs;await storeBattle(c,a.id,a.b,false,{at:row.now,epoch:a.epoch});
   }
-  await storeRoom(c,room);await c.query('UPDATE mare_game.party_instances SET tick_at=$2 WHERE id=$1',[room.id,row.now]);await c.query('COMMIT');budget.commit();
+  await storeRoom(c,room,row.now);await c.query('COMMIT');budget.commit();
  }catch(error){await c.query('ROLLBACK');if((error as any).code!=='party_member_busy')failed++;}finally{c.release();}}
  if(failed)throw Error('party_tick_failed');return candidates.length;
 }

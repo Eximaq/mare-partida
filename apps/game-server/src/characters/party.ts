@@ -17,8 +17,16 @@ export async function presence(c:PoolClient,party:string){return (await c.query(
  FROM mare_game.party_members m JOIN mare_game.characters ch ON ch.id=m.character_id
  LEFT JOIN mare_game.character_control cc ON cc.character_id=ch.id LEFT JOIN mare_game.app_sessions s ON s.id=cc.session_id LEFT JOIN mare_game.accounts a ON a.id=ch.account_id WHERE m.party_id=$1 ORDER BY m.joined_at,m.character_id`,[party])).rows;}
 export async function lockPeer(c:PoolClient,m:any){
- if(m.session_id&&!(await c.query('SELECT id FROM mare_game.app_sessions WHERE id=$1 FOR UPDATE SKIP LOCKED',[m.session_id])).rowCount)throw new AuthFault(409,'party_member_busy');
- if(!(await c.query('SELECT id FROM mare_game.accounts WHERE id=$1 FOR UPDATE SKIP LOCKED',[m.account_id])).rowCount||!(await c.query('SELECT pg_try_advisory_xact_lock(hashtextextended($1,1296126533)) locked',[m.character_id])).rows[0].locked)throw new AuthFault(409,'party_member_busy');
+ const {locked}=(await c.query(`WITH session_lock AS MATERIALIZED (
+  SELECT id FROM mare_game.app_sessions WHERE id=$1::uuid FOR UPDATE SKIP LOCKED
+ ), account_lock AS MATERIALIZED (
+  SELECT id FROM mare_game.accounts WHERE id=$2 AND ($1::uuid IS NULL OR EXISTS(SELECT 1 FROM session_lock))
+  FOR UPDATE SKIP LOCKED
+ )
+ SELECT CASE WHEN EXISTS(SELECT 1 FROM account_lock)
+ THEN pg_try_advisory_xact_lock(hashtextextended($3,1296126533)) ELSE false END locked`,
+ [m.session_id??null,m.account_id,m.character_id])).rows[0];
+ if(!locked)throw new AuthFault(409,'party_member_busy');
 }
 async function assertDestination(c:PoolClient,m:any,p:any){
  const s=await readCharacterState(c,m.character_id),b=await readBattle(c,m.character_id),w=await readWorld(c,m.character_id);
@@ -123,28 +131,35 @@ export async function presentationParty(c:PoolClient,id:string){
  JOIN mare_game.party_members leader ON leader.party_id=p.id AND leader.character_id=p.leader_id
  WHERE leader.last_seen<clock_timestamp()-$2::bigint*interval '1 millisecond'`,[id,P.policy.reconnectMs])).rows[0]?.id as string|undefined;
 }
-/** Dynamic public member fields only; static appearance/stats remain in the full projection. */
-export async function readPartyMotion(c:PoolClient,id:string,presentation=false){
+async function readPartyGroup(c:PoolClient,id:string){
+ return (await c.query(`SELECT p.id,p.leader_id,p.preparation,i.id instance_id,
+ i.simulation->>'kind' kind,i.simulation->>'destination' destination,i.simulation->'density' density
+ FROM mare_game.party_members m JOIN mare_game.parties p ON p.id=m.party_id
+ LEFT JOIN mare_game.party_instances i ON i.party_id=p.id AND i.ended_at IS NULL
+ WHERE m.character_id=$1`,[id])).rows[0];
+}
+function partyGroupView(g:any,members:any[]){
+ return {id:g.id,leaderId:g.leader_id,preparation:g.preparation?.expires>Date.now()?g.preparation:null,members,
+ activity:g.instance_id?{id:g.instance_id,kind:g.kind,destination:g.destination,density:g.density??1}:null};
+}
+/** Dynamic public member fields from the caller's authorized snapshot. */
+export async function readPartyMotion(c:PoolClient,id:string){
  if(!await partyAvailable(c))return null;
- const group=await membership(c,id);if(!presentation)await touchPartyPresence(c,id);if(!group)return {group:null};
- const roster=await presence(c,group);if(!presentation)await refreshPartyLeader(c,group,roster);
- const g=(await c.query('SELECT id,leader_id,preparation FROM mare_game.parties WHERE id=$1',[group])).rows[0],members=[];
+ const g=await readPartyGroup(c,id);if(!g)return {group:null};
+ const roster=await presence(c,g.id),members=[];
  const ids=roster.map(m=>m.character_id),battles=await readBattleRows(c,ids,{motionOnly:true}),worlds=await readWorlds(c,ids);
  for(const m of roster){
   const b=battles.get(m.character_id)?.simulation,w=worlds.get(m.character_id)??null;
   members.push({id:m.character_id,hp:Math.max(0,b?.hp??0),connected:m.connected===true,ready:g.preparation?.ready[m.character_id]===true,world:w,action:b?.pending||b?.skillJob?'attack':'idle',instanceId:b?.partyInstanceId??null,zoanTransformed:b?.fruit?.transformed===true,haki:b?.haki?{active:b.haki.active,eyeFX:b.haki.eyeFX,kingFX:b.haki.kingFX}:null});
  }
- const instance=(await c.query('SELECT id,simulation FROM mare_game.party_instances WHERE party_id=$1 AND ended_at IS NULL',[group])).rows[0];
- return {group:{id:g.id,leaderId:g.leader_id,preparation:g.preparation?.expires>Date.now()?g.preparation:null,members,activity:instance?{id:instance.id,kind:instance.simulation.kind,destination:instance.simulation.destination,density:instance.simulation.density??1}:null}};
+ return {group:partyGroupView(g,members)};
 }
-export async function readParty(c:PoolClient,id:string,presentation=false){
+export async function readParty(c:PoolClient,id:string){
  if(!await partyAvailable(c))return null;
- const group=await membership(c,id);
- if(!presentation)await touchPartyPresence(c,id);
+ const g=await readPartyGroup(c,id);
  const invites=(await c.query(`SELECT i.id,i.party_id,i.target_id,i.sender_id,i.expires_at,i.status,ch.name sender,t.name target,lead.name leader_name,(SELECT count(*)::int FROM mare_game.party_members WHERE party_id=i.party_id) members FROM mare_game.party_invites i JOIN mare_game.characters ch ON ch.id=i.sender_id JOIN mare_game.characters t ON t.id=i.target_id JOIN mare_game.parties party ON party.id=i.party_id JOIN mare_game.characters lead ON lead.id=party.leader_id WHERE (i.target_id=$1 OR i.sender_id=$1) AND i.expires_at>clock_timestamp()-interval '60 seconds' ORDER BY i.created_at DESC LIMIT 16`,[id])).rows.map(x=>({...x,status:x.status==='pending'&&new Date(x.expires_at).getTime()<Date.now()?'expired':x.status}));
- if(!group)return {group:null,invites};
- const roster=await presence(c,group);if(!presentation)await refreshPartyLeader(c,group,roster);
- const g=(await c.query('SELECT id,leader_id,preparation FROM mare_game.parties WHERE id=$1',[group])).rows[0],members=[];
+ if(!g)return {group:null,invites};
+ const roster=await presence(c,g.id),members=[];
  const ids=roster.map(m=>m.character_id),inputs=await readCombatInputs(c,ids),battles=await readBattleRows(c,ids),worlds=await readWorlds(c,ids);
  for(const m of roster){
   const input=inputs.get(m.character_id)!,{state}=input,b=battles.get(m.character_id)?.simulation,w=worlds.get(m.character_id)??null;
@@ -152,6 +167,5 @@ export async function readParty(c:PoolClient,id:string,presentation=false){
   const equipment:any={};if(!visual?.preferences.hideItems)for(const slot of ['weapon','head','coat','cloak','gloves','legs','boots'] as const){const item=visual?.equipment[slot];if(item)equipment[slot]={def:item.def};}
   members.push({id:m.character_id,name:m.name,classId:m.class_id,factionId:m.faction_id,level:state.level,power:f.rulesetId==='original-character-v1'?f.stats.power:0,hp:Math.max(0,Math.min(b?.hp??f.maxHp,f.maxHp)),maxHp:f.maxHp,connected:m.connected===true,ready:g.preparation?.ready[m.character_id]===true,world:w,appearance96:visual?.appearance,hideHeadgear:!!visual?.preferences.hideHeadgear,equipment,action:b?.pending||b?.skillJob?'attack':'idle',instanceId:b?.partyInstanceId??null,fruitId:f.rulesetId==='original-character-v1'?f.fruitId:null,zoanTransformed:b?.fruit?.transformed===true,haki:b?.haki?{active:b.haki.active,eyeFX:b.haki.eyeFX,kingFX:b.haki.kingFX}:null});
  }
- const instance=(await c.query('SELECT id,simulation FROM mare_game.party_instances WHERE party_id=$1 AND ended_at IS NULL',[group])).rows[0];
- return {group:{id:g.id,leaderId:g.leader_id,preparation:g.preparation?.expires>Date.now()?g.preparation:null,members,activity:instance?{id:instance.id,kind:instance.simulation.kind,destination:instance.simulation.destination,density:instance.simulation.density??1}:null},invites};
+ return {group:partyGroupView(g,members),invites};
 }
