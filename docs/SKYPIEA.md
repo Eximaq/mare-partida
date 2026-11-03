@@ -30,3 +30,5 @@ As checagens do PR identificaram consumidores adicionais do catálogo. tools/aud
 A migração aditiva 0035_skypiea_catalog.sql promove somente as assinaturas auditadas da versão anterior para as atuais, sem tocar nos demais campos das partidas ou personagens. Identificações desconhecidas continuam bloqueadas. As listas de versões esperadas dos testes de migração incluem a nova etapa, sem reescrever migrações históricas.
 
 Atualização solicitada pelo proprietário: substituição pelo export Skypeia_1-export (1).zip, 2752 × 2752, com caminho de ruínas e 26 nuvens móveis preservadas. Partículas ampliadas para 56 em Skypiea e 48 em Alabasta: pontos luminosos contornados e traços de vento mais claros, sem ocupar a HUD. Conferência visual rápida; sem nova rodada extensa de testes, conforme solicitado.
+
+Entrega após o merge do PR #234: atualização isolada em nova branch. A migração 0035 mesclada foi preservada integralmente; a nova 0036 promove apenas a identificação conhecida do mapa anterior para o novo export. Sem nova bateria extensa de testes, conforme solicitação do proprietário.
