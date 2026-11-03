@@ -16,9 +16,14 @@ function snapshot(row:Row,now:Date):WorldSnapshot {
  if(now>=row.motion_until)path.length=0;
  return worldSnapshotSchema.parse({rulesetId:'original-world-v1',rulesHash:rules.rulesHash,mapId:row.map_id,area:row.area,position:{x:actor.x,y:actor.y},path,speed:row.speed,direction:actor.direction,serverNow:now.toISOString(),motionUntil:row.motion_until.toISOString()});
 }
-export async function readWorld(client:PoolClient,id:string,now?:Date){const row=(await client.query<Row>(`SELECT w.*,least(w.motion_until,coalesce(c.expires_at,w.started_at),s.expires_at,s.idle_expires_at,s.revoked_at) AS motion_until
+export async function readWorlds(client:PoolClient,ids:readonly string[],now?:Date){
+ const result=new Map<string,WorldSnapshot>();if(!ids.length)return result;
+ const rows=(await client.query<Row&{character_id:string;sampled_at:Date}>(`SELECT w.*,clock_timestamp() sampled_at,least(w.motion_until,coalesce(c.expires_at,w.started_at),s.expires_at,s.idle_expires_at,s.revoked_at) AS motion_until
  FROM mare_game.character_world w LEFT JOIN mare_game.character_control c ON c.character_id=w.character_id
- LEFT JOIN mare_game.app_sessions s ON s.id=c.session_id WHERE w.character_id=$1`,[id])).rows[0];return row?snapshot(row,now??await clock(client)):null;}
+ LEFT JOIN mare_game.app_sessions s ON s.id=c.session_id WHERE w.character_id=ANY($1::uuid[])`,[ids])).rows;
+ for(const row of rows)result.set(row.character_id,snapshot(row,now??row.sampled_at));return result;
+}
+export async function readWorld(client:PoolClient,id:string,now?:Date){return (await readWorlds(client,[id],now)).get(id)??null;}
 export async function storeWorld(client:PoolClient,id:string,w:WorldSnapshot){
  await client.query(`INSERT INTO mare_game.character_world(character_id,rules_hash,map_id,area,x,y,path,speed,direction,started_at,motion_until)
  VALUES($1,$2,$3,$4,$5,$6,$7::jsonb,$8,$9,$10,$11) ON CONFLICT(character_id) DO UPDATE

@@ -1,6 +1,6 @@
 import {partition,type SimulationPartition} from '../simulation-partition.js';
 import {partyRoom,storeRoom} from './party-store.js';
-import {readProfile} from './profile.js';
+import {readCombatInputs} from './combat-inputs.js';
 import {completeDungeonVictory} from './dungeons.js';
 import {completePrisonFloor,advancePrison} from './prison.js';
 import {observeServerAchievements} from './achievements.js';
@@ -14,7 +14,7 @@ import {readWorld,storeWorld} from './world.js';
 import {readFighter} from './fighter.js';
 import {readCharacterState} from './state.js';
 import {advanceLevel} from './progression.js';
-import {readOriginalInventory,awardWorldLoot} from '../gameplay/inventory.js';
+import {awardWorldLoot} from '../gameplay/inventory.js';
 import {digest} from '../auth/vault.js';
 import {recordContractKills} from './contracts.js';
 const require=createRequire(import.meta.url),engine=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
@@ -26,6 +26,16 @@ export async function readBattle(client:PoolClient,id:string){
  const b=row?.simulation??null;
  if(b?.partyInstanceId){const r=await partyRoom(client,b.partyInstanceId);if(r)b.mobs=r.simulation.mobs;}
  return b;
+}
+/** Batched current-schema personal state with the one canonical room projection.
+ * Internal only: membership/ownership/locks must already have been established. */
+export async function readBattleRows(client:PoolClient,ids:readonly string[]){
+ const rows=(await client.query(`SELECT b.character_id,b.simulation,b.control_epoch,w.started_at,r.simulation->'mobs' shared_mobs
+ FROM mare_game.character_battles b LEFT JOIN mare_game.character_world w ON w.character_id=b.character_id
+ LEFT JOIN mare_game.party_instances r ON r.id=(b.simulation->>'partyInstanceId')::uuid AND r.ended_at IS NULL
+ WHERE b.character_id=ANY($1::uuid[])`,[ids])).rows;
+ for(const row of rows)if(row.shared_mobs)row.simulation.mobs=row.shared_mobs;
+ return new Map(rows.map(row=>[row.character_id,row]));
 }
 export async function storeBattle(client:PoolClient,id:string,b:any,canonical=true){
  if(canonical&&b.partyInstanceId){const r=await partyRoom(client,b.partyInstanceId);if(r){r.simulation.mobs=b.mobs;await storeRoom(client,r.simulation);}}
@@ -107,7 +117,7 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
    await client.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[id,now,row.epoch]);await client.query('COMMIT');continue;}
   const dt=Math.min(1,elapsed),start=new Date(now.getTime()-dt*1000),w=await readWorld(client,id,start);
   if(!w||w.area!==b.area)throw new AuthFault(503,'battle_world_mismatch');
-  const state=await readCharacterState(client,id),fighter=await readFighter(client,id,state);
+  const inputs=(await readCombatInputs(client,[id])).get(id)!,{state}=inputs,fighter=inputs.fighter(b);
   if(fighter.rulesetId!=='original-character-v1')throw new AuthFault(503,'original_inventory_required');
   if(await advancePrison(client,id,state,b,w,now)){
    if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
@@ -116,20 +126,20 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
   b.hp=Math.min(b.hp,fighter.maxHp);b.energy=Math.min(b.energy,fighter.stats.maxEnergy);
   const path=b.auto?[]:w.path.map(p=>({...p})),hero={...w.position,direction:w.direction};
   const started=(await client.query('SELECT started_at FROM mare_game.character_world WHERE character_id=$1',[id])).rows[0].started_at.getTime();
-  const stock=await readOriginalInventory(client,id);
-  const result=engine.step(b,{preferences:(await readProfile(client,id))?.preferences,hero,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId,level:state.level,now:now.getTime(),dt,rng,manualPath:path,manualSpeed:w.speed,manualStart:started,potions:stock?.potions??0});
+  const stock=inputs.inventory;
+  const result=engine.step(b,{preferences:inputs.preferences,hero,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:inputs.talents.build,classId:fighter.classId,factionId:fighter.factionId,level:state.level,now:now.getTime(),dt,rng,manualPath:path,manualSpeed:w.speed,manualStart:started,potions:stock?.potions??0});
   if(result.kills.length||result.potionsUsed||result.talentSteals.length){
    if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
    const requestId=randomUUID();
    if(b.dungeon){
     if(result.kills.length>1)throw new AuthFault(503,'dungeon_victory_invalid');
     if(result.kills.length)await completeDungeonVictory(client,id,requestId,state,b,result.kills[0],now);
-    await awardWorldLoot(client,id,requestId,state,[],undefined,result.potionsUsed,{build:(await readTalents(client,id,state))?.build,steals:result.talentSteals,action:'dungeon.battle'});
+    await awardWorldLoot(client,id,requestId,state,[],undefined,result.potionsUsed,{build:inputs.talents.build,steals:result.talentSteals,action:'dungeon.battle'});
    }else if(b.prison){
     if(result.kills.length>1)throw new AuthFault(503,'prison_victory_invalid');
     const grant=result.kills.length?await completePrisonFloor(client,id,requestId,b,result.kills[0],now):undefined;
-    await awardWorldLoot(client,id,requestId,state,[],undefined,result.potionsUsed,{build:(await readTalents(client,id,state))?.build,steals:result.talentSteals,grant,action:'prison.reward'});
-   }else await awardWorldLoot(client,id,requestId,state,result.kills,undefined,result.potionsUsed,{build:(await readTalents(client,id,state))?.build,steals:result.talentSteals});
+    await awardWorldLoot(client,id,requestId,state,[],undefined,result.potionsUsed,{build:inputs.talents.build,steals:result.talentSteals,grant,action:'prison.reward'});
+   }else await awardWorldLoot(client,id,requestId,state,result.kills,undefined,result.potionsUsed,{build:inputs.talents.build,steals:result.talentSteals});
    if(!b.prison&&!b.dungeon)for(const k of result.kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,k.reward.xp,Math.round(k.reward.gold*engine.catalog.factions[fighter.factionId].gold),engine.rulesHash]);
    if(!b.prison&&!b.dungeon)await recordContractKills(client,id,result.kills);
    await advanceLevel(client,id,requestId,state);await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
@@ -139,7 +149,7 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
    await client.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)',[id,requestId,digest('server-battle:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:after})]);
   }
   const remaining=!b.auto&&b.hp>0?path:[];
-  await storeWorld(client,id,{...w,position:{x:hero.x,y:hero.y},direction:hero.direction,path:remaining,serverNow:now.toISOString(),speed:engine.combatStats(b,{stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId})[b.auto?'huntSpeed':'moveSpeed'],motionUntil:remaining.length?new Date(Math.max(now.getTime(),Date.parse(w.motionUntil))).toISOString():now.toISOString()});
+  await storeWorld(client,id,{...w,position:{x:hero.x,y:hero.y},direction:hero.direction,path:remaining,serverNow:now.toISOString(),speed:engine.combatStats(b,{stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:inputs.talents.build,classId:fighter.classId})[b.auto?'huntSpeed':'moveSpeed'],motionUntil:remaining.length?new Date(Math.max(now.getTime(),Date.parse(w.motionUntil))).toISOString():now.toISOString()});
   await storeBattle(client,id,b);await client.query('UPDATE mare_game.character_battles SET tick_at=$2 WHERE character_id=$1',[id,now]);
   await client.query('COMMIT');
  }catch{await client.query('ROLLBACK');failed++;}finally{client.release();}}

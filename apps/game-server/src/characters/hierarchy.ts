@@ -9,9 +9,9 @@ export async function refreshHierarchyPower(client:PoolClient,id:string,power:nu
  if(!await available(client))return;
  await client.query('INSERT INTO mare_game.character_hierarchy(character_id,power) VALUES($1,$2) ON CONFLICT(character_id) DO UPDATE SET power=EXCLUDED.power WHERE mare_game.character_hierarchy.power<>EXCLUDED.power',[id,power]);
 }
-export async function readHierarchy(client:PoolClient,id:string,state:CharacterState){
+export async function readHierarchy(client:PoolClient,id:string,state:CharacterState,power?:number){
  if(!await available(client))return null;
- await refreshHierarchyPower(client,id,await permanentCharacterPower(client,id,state));
+ await refreshHierarchyPower(client,id,power??await permanentCharacterPower(client,id,state));
  const r=(await client.query('SELECT h.tier,h.power,c.faction_id FROM mare_game.character_hierarchy h JOIN mare_game.characters c ON c.id=h.character_id WHERE h.character_id=$1',[id])).rows[0];
  return {rulesetId:'original-hierarchy-v1',tier:r.tier,title:H.title(r.faction_id,r.tier),power:r.power,next:H.next(r.tier,state.level)};
 }

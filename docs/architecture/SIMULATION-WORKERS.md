@@ -49,3 +49,7 @@ Testes incluem partições disjuntas com PostgreSQL, comportamento original para
 ## Operação
 
 Não requer nova migration ou role. Compilar API/worker juntos, validar backup pelo procedimento existente e reiniciar pelo supervisor local. A API deve ser parada antes de trocar o JS compilado; não iniciar outro supervisor sobre a mesma instalação. Readiness confirma o banco e o heartbeat dos workers. O teste de carga permanece sempre no banco descartável, nunca no endereço Radmin dos jogadores.
+
+## Continuação das consultas
+
+O incremento seguinte está em [leituras transacionais de combate](COMBAT-DATABASE-READS.md), com contagem antes/depois e ensaios atualizados. Os números acima permanecem como histórico do primeiro worker; não representam o código posterior.

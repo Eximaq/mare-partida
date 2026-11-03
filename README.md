@@ -1,3 +1,5 @@
+**Consultas de combate:** [leituras em lote, autorização preservada e limites atuais de carga](docs/architecture/COMBAT-DATABASE-READS.md).
+
 **Workers de simulação:** [partições, recuperação, compatibilidade e resultados de carga](docs/architecture/SIMULATION-WORKERS.md).
 
 **Sincronização e capacidade:** [protocolo compacto, compatibilidade Party e ensaios para a meta de 3.000 jogadores](docs/architecture/SYNC-CAPACITY.md). Capacidade ainda não certificada.

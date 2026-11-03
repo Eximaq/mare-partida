@@ -98,6 +98,10 @@ export async function readOriginalInventory(
       [id],
     )
   ).rows[0];
+  return originalInventoryView(row,id);
+}
+// Shared validation for both ordinary reads and transaction-local batch reads.
+export function originalInventoryView(row:any,id:string){
   return row
     ? valid({
         catalogId: catalog.catalogId,

@@ -4,13 +4,11 @@ import {randomInt,randomUUID} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {presence,lockPeer,leavePartyActivity,refreshPartyLeader} from './party.js';
 import {storeRoom} from './party-store.js';
-import {readBattle,storeBattle} from './battle.js';
+import {readBattleRows,storeBattle} from './battle.js';
 import {readCharacterState} from './state.js';
-import {readFighter} from './fighter.js';
-import {readWorld,storeWorld} from './world.js';
-import {readProfile} from './profile.js';
-import {readTalents} from './talents.js';
-import {readOriginalInventory,awardWorldLoot} from '../gameplay/inventory.js';
+import {readWorlds,storeWorld} from './world.js';
+import {readCombatInputs} from './combat-inputs.js';
+import {awardWorldLoot} from '../gameplay/inventory.js';
 import {completeDungeonVictory} from './dungeons.js';
 import {advanceLevel} from './progression.js';
 import {recordContractKills} from './contracts.js';
@@ -27,22 +25,27 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
   await c.query('BEGIN');await c.query("SET LOCAL statement_timeout='5000ms'; SET LOCAL lock_timeout='100ms'");
   if(!(await c.query('SELECT id FROM mare_game.parties WHERE id=$1 FOR UPDATE SKIP LOCKED',[candidate.party_id])).rowCount){await c.query('ROLLBACK');continue;}
   const row=(await c.query('SELECT *,clock_timestamp() now FROM mare_game.party_instances WHERE id=$1 AND ended_at IS NULL FOR UPDATE SKIP LOCKED',[candidate.id])).rows[0];if(!row){await c.query('ROLLBACK');continue;}
-  const roster=await presence(c,candidate.party_id);
+  let roster=await presence(c,candidate.party_id);
   for(const m of roster.slice().sort((a,b)=>a.character_id.localeCompare(b.character_id)))await lockPeer(c,m);
+  // Revalidate provider/session/epoch after acquiring every peer lock.
+  roster=await presence(c,candidate.party_id);
   const room=row.simulation,now=row.now.getTime(),elapsed=(now-row.tick_at.getTime())/1000,actors:any[]=[];let attached=0;
    await refreshPartyLeader(c,candidate.party_id,roster,now);
+  const ids=roster.map(m=>m.character_id),battles=await readBattleRows(c,ids);
+  const connected=roster.filter(m=>m.connected&&battles.get(m.character_id)?.simulation.partyInstanceId===room.id).map(m=>m.character_id);
+  const inputs=await readCombatInputs(c,connected),worlds=await readWorlds(c,connected,new Date(now-Math.min(elapsed,1)*1000));
   for(const m of roster){
-   const b=await readBattle(c,m.character_id);if(!b||b.partyInstanceId!==room.id)continue;
-   if(!m.connected){if(now-new Date(m.last_seen).getTime()>P.policy.reconnectMs)await leavePartyActivity(c,m.character_id);else{attached++;E.cancel(b);await storeBattle(c,m.character_id,b);}continue;}
-   attached++;const state=await readCharacterState(c,m.character_id),f=await readFighter(c,m.character_id,state),w=await readWorld(c,m.character_id,new Date(now-Math.min(elapsed,1)*1000));
+   const personal=battles.get(m.character_id),b=personal?.simulation;if(!b||b.partyInstanceId!==room.id)continue;
+   if(!m.connected){if(now-new Date(m.last_seen).getTime()>P.policy.reconnectMs)await leavePartyActivity(c,m.character_id);else{attached++;E.cancel(b);await storeBattle(c,m.character_id,b,false);}continue;}
+   attached++;const input=inputs.get(m.character_id)!,{state}=input,f=input.fighter(b),w=worlds.get(m.character_id);
    if(f.rulesetId!=='original-character-v1'||!w||w.mapId!==room.mapId)throw Error('party_world_mismatch');
    b.hp=Math.min(b.hp,f.maxHp);b.energy=Math.min(b.energy,f.stats.maxEnergy);
     if(b.rulesHash!==E.rulesHash)throw Error('party_rules_changed');
     if(elapsed>2){E.cancel(b);E.resetHaki(b);}
-   const epoch=(await c.query('SELECT control_epoch FROM mare_game.character_battles WHERE character_id=$1',[m.character_id])).rows[0].control_epoch;
+   const epoch=personal!.control_epoch;
    if(Number(epoch)!==Number(m.epoch)){E.cancel(b);E.resetHaki(b);}
-   const inventory=await readOriginalInventory(c,m.character_id),build=(await readTalents(c,m.character_id,state))?.build;
-   actors.push({id:m.character_id,connected:true,lastSeen:new Date(m.last_seen).getTime(),instanceId:room.id,b,state,f,w,hero:{...w.position,direction:w.direction},stats:f.stats,baseStats:f.baseStats,fruitId:f.fruitId,build,classId:f.classId,factionId:f.factionId,level:state.level,preferences:(await readProfile(c,m.character_id))?.preferences,potions:inventory?.potions??0,manualPath:b.auto?[]:w.path.map((p:any)=>({...p})),manualSpeed:w.speed,manualStart:(await c.query('SELECT started_at FROM mare_game.character_world WHERE character_id=$1',[m.character_id])).rows[0].started_at.getTime(),epoch:Number(m.epoch)});
+   const inventory=input.inventory,build=input.talents.build;
+   actors.push({id:m.character_id,connected:true,lastSeen:new Date(m.last_seen).getTime(),instanceId:room.id,b,state,f,w,hero:{...w.position,direction:w.direction},stats:f.stats,baseStats:f.baseStats,fruitId:f.fruitId,build,classId:f.classId,factionId:f.factionId,level:state.level,preferences:input.preferences,potions:inventory?.potions??0,manualPath:b.auto?[]:w.path.map((p:any)=>({...p})),manualSpeed:w.speed,manualStart:personal!.started_at.getTime(),epoch:Number(m.epoch)});
   }
   if(!attached){await c.query('UPDATE mare_game.party_instances SET ended_at=$2 WHERE id=$1',[room.id,row.now]);await c.query('COMMIT');continue;}
    // Never catch up offline time. Reconnection resumes the same wounded enemies.
@@ -73,12 +76,12 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
     if(kills.length)await recordContractKills(c,a.id,kills);
     if(a.state.version>=Number.MAX_SAFE_INTEGER)throw Error('state_version_exhausted');
      await advanceLevel(c,a.id,requestId,a.state);await c.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[a.id]);
-    const after=await readCharacterState(c,a.id);if(after.level>a.state.level){await storeBattle(c,a.id,a.b);const next=await readFighter(c,a.id,after);a.b.hp=next.maxHp;if(next.rulesetId==='original-character-v1')a.b.energy=next.stats.maxEnergy;}await observeServerAchievements(c,a.id,a.state,after,{kills:kills.length});
+    const after=await readCharacterState(c,a.id);if(after.level>a.state.level){const next=(await readCombatInputs(c,[a.id])).get(a.id)!.fighter(a.b);a.b.hp=next.maxHp;if(next.rulesetId==='original-character-v1')a.b.energy=next.stats.maxEnergy;}await observeServerAchievements(c,a.id,a.state,after,{kills:kills.length});
     await c.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4)',[a.id,requestId,digest('server-party:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:after})]);
     a.b.partyXpReceived=(a.b.partyXpReceived??0)+(rewards.get(a.id)??0);
    }
    await storeWorld(c,a.id,{...a.w,position:{x:a.hero.x,y:a.hero.y},direction:a.hero.direction,path:a.b.hp>0&&!a.b.auto?a.manualPath:[],speed:E.combatStats(a.b,a)[a.b.auto?'huntSpeed':'moveSpeed'],serverNow:new Date(now).toISOString(),motionUntil:new Date(Math.max(now,Date.parse(a.w.motionUntil))).toISOString()});
-   a.b.mobs=room.mobs;await storeBattle(c,a.id,a.b);await c.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[a.id,row.now,a.epoch]);
+   a.b.mobs=room.mobs;await storeBattle(c,a.id,a.b,false);await c.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[a.id,row.now,a.epoch]);
   }
   await storeRoom(c,room);await c.query('UPDATE mare_game.party_instances SET tick_at=$2 WHERE id=$1',[room.id,row.now]);await c.query('COMMIT');
  }catch(error){await c.query('ROLLBACK');if((error as any).code!=='party_member_busy')failed++;}finally{c.release();}}

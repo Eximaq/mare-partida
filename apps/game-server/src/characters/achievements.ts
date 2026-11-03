@@ -23,13 +23,15 @@ export async function permanentAchievementPower(client:PoolClient,id:string,stat
  if(!await available(client))return 0;
  return Math.min(100000,await permanentCharacterPower(client,id,state));
 }
-export async function readAchievements(client:PoolClient,id:string,state:CharacterState){
+// Optional projections are created only by the authenticated full-state read;
+// command/reward paths continue loading fresh inputs after every mutation.
+export async function readAchievements(client:PoolClient,id:string,state:CharacterState,view:{power?:number|undefined;prison?:Awaited<ReturnType<typeof readPrison>>;haki?:Awaited<ReturnType<typeof readHaki>>;fruits?:Awaited<ReturnType<typeof readFruits>>}={}){
  if(!await available(client))return null;
  const row=(await client.query('SELECT kills,coins,peak_power FROM mare_game.achievement_progress WHERE character_id=$1',[id])).rows[0];
  const claimed=(await client.query('SELECT achievement_id FROM mare_game.achievement_claims WHERE character_id=$1 ORDER BY achievement_id',[id])).rows.map(r=>r.achievement_id);
  const islands=(await client.query('SELECT island_id FROM mare_game.achievement_visits WHERE character_id=$1 ORDER BY island_id',[id])).rows.map(r=>r.island_id);
- const records={coins:Math.max(row?.coins??0,cappedGold(state.gold)),peakPower:Math.max(row?.peak_power??0,await permanentAchievementPower(client,id,state)),islands};
- const prison=await readPrison(client,id),haki=await readHaki(client,id),fruits=await readFruits(client,id);
+ const records={coins:Math.max(row?.coins??0,cappedGold(state.gold)),peakPower:Math.max(row?.peak_power??0,Math.min(100000,view.power??await permanentAchievementPower(client,id,state))),islands};
+ const prison=view.prison!==undefined?view.prison:await readPrison(client,id),haki=view.haki!==undefined?view.haki:await readHaki(client,id),fruits=view.fruits!==undefined?view.fruits:await readFruits(client,id);
  const learned=haki?require('../../../../haki-system.js').progression.ids.filter((branch:string)=>require('../../../../haki-system.js').progression.learned({has_haki_unlocked:haki.state.unlocked,haki:haki.state},branch)):[];
  const kills=row?.kills??0,g={level:state.level,stats:{kills},achievements:{claimed,records:{...records,haki:learned,fruits:fruits?.registered||[]}},impelDown:prison??{cleared:0}};
  return achievementsSnapshotSchema.parse({rulesetId:'original-achievements-v1',claimed,bonus:A.bonus(g),kills,records,entries:A.list(g,{...flags,prison:!!prison,haki:!!haki,fruit:!!fruits})});
