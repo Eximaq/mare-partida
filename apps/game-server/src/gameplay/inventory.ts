@@ -24,12 +24,12 @@ const random = () => randomInt(0, 0x100000000) / 0x100000000;
 const maxGold = 9223372036854775807n;
 export const isOriginalAction = (action: string) =>
   originalActionSchema.options.includes(action as any);
-export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number;grant?:OriginalItemInstance|undefined;action?:'prison.reward'|'prison.claim'|'dungeon.battle'}={}){
+export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{xpGrant?:number;build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number;grant?:OriginalItemInstance|undefined;action?:'prison.reward'|'prison.claim'|'dungeon.battle'}={}){
  const roll=passives.rng??(()=>randomInt(0,0x100000000)/0x100000000),random=()=>{const r=roll();if(!Number.isFinite(r)||r<0||r>=1)throw new RangeError('Invalid loot RNG');return r;};
  const before=await readOriginalInventory(client,id);if(!before)throw new AuthFault(409,'original_inventory_required');
  const after=structuredClone(before),identity=(await client.query('SELECT class_id,faction_id FROM mare_game.characters WHERE id=$1',[id])).rows[0];
  const T=require('../../../../talent-system.js'),U=require('../../../../ultimate-system.js'),g={classId:identity.class_id,talentBuilds:{[identity.class_id]:passives.build||T.empty()}},underworld=U.selected(g)==='underworld',lootMultiplier=underworld?2:1,rareChance=Math.min(.5,(T.bonuses(g).rareChance||0)+(T.keystone(g)==='lightHands'?.2:0));
- const battle=require('../../../../world-battle.cjs');let xp=0n,gold=BigInt(first?.gold??0);
+ const battle=require('../../../../world-battle.cjs');if(passives.xpGrant!==undefined&&(!Number.isSafeInteger(passives.xpGrant)||passives.xpGrant<0))throw new AuthFault(503,'party_xp_invalid');let xp=BigInt(passives.xpGrant??0),gold=BigInt(first?.gold??0);
  if(!Number.isSafeInteger(potionsUsed)||potionsUsed<0||potionsUsed>after.potions)throw new AuthFault(503,'potion_stock_conflict');after.potions-=potionsUsed;
  const make=(def:number,level:number,rarity:string,origin:string)=>forge.normalizeItem({id:randomUUID(),def,level,rarity,plus:0,locked:false,obtainedAt:Date.now(),origin},defs,random);
  for(const steal of passives.steals??[]){

@@ -175,6 +175,9 @@
     };
   }
   const labels = {
+    party_prison_individual:'Impel Down é uma atividade individual. Saia da Party para participar.',
+    party_not_joined:'Você não está em uma Party.',party_already_joined:'Este personagem já participa de uma Party.',party_full:'O grupo já tem quatro membros.',party_leader_required:'Esta ação é exclusiva do líder.',party_self_invite:'Você não pode convidar a si mesmo.',party_player_unavailable:'Não encontrei um único personagem online com esse nome.',party_invite_missing:'Este convite não está disponível.',party_invite_expired:'Este convite expirou.',party_activity_active:'A atividade já começou. Aguarde o grupo encerrar.',party_member_busy:'Um membro está terminando outra ação. Tente novamente.',party_member_unavailable:'Todos precisam estar conectados, vivos e disponíveis.',party_member_in_dungeon:'Um membro precisa retornar da masmorra antes da preparação.',party_destination_locked:'O destino exige um nível que nem todos os membros possuem.',party_dungeon_already_completed:'Um membro já concluiu essa masmorra ou tem um baú pendente.',party_preparation_expired:'A preparação expirou. O líder pode preparar novamente.',party_not_ready:'Todos os membros precisam confirmar prontidão.',party_collective_navigation_required:'Use SOCIAL → Grupo para viajar juntos, ou saia da Party para voltar ao porto.',
+
     profile_port_only:'Volte ao porto para editar seu personagem.',profile_unavailable:'O perfil está temporariamente indisponível.',
     fruit_cast_unavailable:'Confira sua fruta equipada, energia, recarga e alvo.',fruit_transform_unavailable:'A transformação exige uma fruta Zoan equipada.',fruit_required:'Você precisa possuir essa fruta para registrá-la.',fruit_already_registered:'Essa fruta já está registrada.',fruit_move_unavailable:'O Gênio não pode alcançar esse destino.',
     dungeon_level_required:'Seu nível ainda não permite esta masmorra.',

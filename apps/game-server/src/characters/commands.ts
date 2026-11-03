@@ -1,3 +1,5 @@
+import {isPartyAction,mutateParty} from './party.js';
+import {lockParty} from './party-store.js';
 import {mutateProfile} from './profile.js';
 import {registerFruit,mutateFruit} from './fruits.js';
 import {promoteHierarchy} from './hierarchy.js';
@@ -32,6 +34,7 @@ export async function executeCharacterCommand(
     [characterId, sessionId, digest(input.control.token), input.control.epoch],
   );
   if (!controller.rowCount) throw new AuthFault(409, "control_conflict");
+  const party=await lockParty(client,characterId);
   // Authority is checked on every replay. Credentials are deliberately excluded from storage
   // and identity, so a newly authorized controller can reconcile a lost response.
   const intent = input.action === "attributes.allocate" ? attributeKeys.map(k=>input.payload.allocation[k]) :
@@ -52,6 +55,12 @@ export async function executeCharacterCommand(
     "SELECT count(*)::int AS recent FROM mare_game.character_commands WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds' AND result->>'action'<>'battle.reward'",[characterId]
   )).rows[0]!;
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
+  if(party&&['prison.prepare','prison.enter'].includes(input.action))throw new AuthFault(409,'party_prison_individual');
+  if(party&&['world.travel','world.return','dungeon.enter'].includes(input.action)){
+   const b=await readBattle(client,characterId);if(b?.partyInstanceId||input.action==='dungeon.enter')throw new AuthFault(409,'party_collective_navigation_required');
+  }
+  if(isPartyAction(input.action))await mutateParty(client,characterId,input,state);
+  state=await readCharacterState(client,characterId);
   const before=state,powerBefore=input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);
   if(input.action.startsWith('profile.')){await mutateProfile(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(['fruit.cast','fruit.transform','fruit.move'].includes(input.action)){await mutateFruit(client,characterId,input,state);state=await readCharacterState(client,characterId);}

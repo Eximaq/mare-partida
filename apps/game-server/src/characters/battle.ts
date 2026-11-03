@@ -1,3 +1,4 @@
+import {partyRoom,storeRoom} from './party-store.js';
 import {readProfile} from './profile.js';
 import {completeDungeonVictory} from './dungeons.js';
 import {completePrisonFloor,advancePrison} from './prison.js';
@@ -21,15 +22,18 @@ export const isBattleAction=(action:string)=>(battleActions as readonly string[]
 export async function readBattle(client:PoolClient,id:string){
  if(!(await client.query("SELECT to_regclass('mare_game.character_battles') present")).rows[0].present)return null;
  const row=(await client.query('SELECT simulation FROM mare_game.character_battles WHERE character_id=$1',[id])).rows[0];
- return row?.simulation??null;
+ const b=row?.simulation??null;
+ if(b?.partyInstanceId){const r=await partyRoom(client,b.partyInstanceId);if(r)b.mobs=r.simulation.mobs;}
+ return b;
 }
-export async function storeBattle(client:PoolClient,id:string,b:any){
+export async function storeBattle(client:PoolClient,id:string,b:any,canonical=true){
+ if(canonical&&b.partyInstanceId){const r=await partyRoom(client,b.partyInstanceId);if(r){r.simulation.mobs=b.mobs;await storeRoom(client,r.simulation);}}
  await client.query('UPDATE mare_game.character_battles SET simulation=$2::jsonb WHERE character_id=$1',[id,JSON.stringify(b)]);
 }
 export async function pauseBattle(client:PoolClient,id:string){
  // Older migration fixtures acquire leases before the opt-in domain exists.
  if(!(await client.query("SELECT to_regclass('mare_game.character_battles') present")).rows[0].present)return;
- const b=await readBattle(client,id);if(!b)return;engine.cancel(b);engine.resetHaki(b);b.talents=null;await storeBattle(client,id,b);
+ const b=await readBattle(client,id);if(!b)return;engine.cancel(b);engine.resetHaki(b);b.talents=null;await storeBattle(client,id,b,false);
  await client.query('UPDATE mare_game.character_battles SET tick_at=clock_timestamp() WHERE character_id=$1',[id]);
 }
 export async function syncBattleWorld(client:PoolClient,id:string,area:string|null,now:number){
@@ -81,7 +85,7 @@ export async function tickWorldBattles(pool:Pool){
   JOIN mare_game.character_control c ON c.character_id=b.character_id JOIN mare_game.app_sessions s ON s.id=c.session_id
   JOIN mare_game.accounts a ON a.id=s.account_id WHERE c.expires_at>clock_timestamp() AND s.kind='play' AND s.revoked_at IS NULL
   AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp()
-  AND s.account_epoch=a.auth_epoch AND b.tick_at<clock_timestamp()-interval '100 milliseconds' ORDER BY b.tick_at LIMIT 32`)).rows;
+  AND NOT (b.simulation ? 'partyInstanceId') AND s.account_epoch=a.auth_epoch AND b.tick_at<clock_timestamp()-interval '100 milliseconds' ORDER BY b.tick_at LIMIT 32`)).rows;
  for(const candidate of candidates){const client=await pool.connect();try{
   await client.query('BEGIN');await client.query("SET LOCAL statement_timeout='3000ms'; SET LOCAL lock_timeout='100ms'; SET LOCAL idle_in_transaction_session_timeout='5s'");
   const session=(await client.query('SELECT id,account_id FROM mare_game.app_sessions WHERE id=$1 FOR UPDATE SKIP LOCKED',[candidate.session_id])).rows[0];
@@ -95,7 +99,8 @@ export async function tickWorldBattles(pool:Pool){
    AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp() AND s.account_epoch=a.auth_epoch`,[candidate.character_id,session.id])).rows[0];
   if(!row){await client.query('ROLLBACK');continue;}
   const id=candidate.character_id,b=row.simulation,now:Date=row.now,elapsed=(now.getTime()-row.tick_at.getTime())/1000;
-  if(elapsed<.1){await client.query('ROLLBACK');continue;}
+  if(b.partyInstanceId){await client.query('ROLLBACK');continue;}
+   if(elapsed<.1){await client.query('ROLLBACK');continue;}
   if(b.rulesHash!==engine.rulesHash)throw new AuthFault(503,'battle_rules_changed');
   if(elapsed>2||row.control_epoch!==row.epoch){engine.cancel(b);engine.resetHaki(b);b.talents=null;await storeBattle(client,id,b);
    await client.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[id,now,row.epoch]);await client.query('COMMIT');continue;}

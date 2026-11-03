@@ -30,6 +30,16 @@
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    if(action.startsWith('party.')){
+      const uuid=v=>typeof v==='string'&&/^[0-9a-f-]{36}$/.test(v);
+      if(['party.create','party.leave'].includes(action))return keys==='';
+      if(action==='party.invite')return keys==='name'&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=40;
+      if(action==='party.respond')return keys==='accept,inviteId'&&uuid(p.inviteId)&&typeof p.accept==='boolean';
+      if(['party.promote','party.kick'].includes(action))return keys==='memberId'&&uuid(p.memberId);
+      if(action==='party.prepare')return keys==='destination,kind'&&['hunt','dungeon'].includes(p.kind)&&typeof p.destination==='string'&&/^[a-z0-9-]{1,40}$/.test(p.destination);
+      if(action==='party.ready')return keys==='nonce,ready'&&uuid(p.nonce)&&typeof p.ready==='boolean';
+      if(action==='party.start')return keys==='nonce'&&uuid(p.nonce);return false;
+    }
     if(action==='profile.appearance'||action==='profile.identity'){
       const a=p.appearance,appearanceOK=a&&typeof a==='object'&&!Array.isArray(a)&&Object.keys(a).sort().join()==='eyeColor,eyeStyle,gender,hairColor,hairStyle,skinColor,skinStyle,version'&&a.version===1&&Object.entries(a).every(([k,v])=>k==='version'||typeof v==='string'&&/^[a-z-]{1,30}$/.test(v));
       return !!appearanceOK&&(action==='profile.appearance'?keys==='appearance':keys==='appearance,classId,factionId,name'&&classes.includes(p.classId)&&['pirate','marine','revolutionary','government'].includes(p.factionId)&&typeof p.name==='string'&&p.name.length>=1&&p.name.length<=40);

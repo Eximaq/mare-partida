@@ -29,7 +29,7 @@ vm.createContext(sandbox);
 vm.runInContext(read('sprite-combat-v2-data.js'), sandbox);
 vm.runInContext(read('sprite-combat-v2.js'), sandbox);
 const source = read('game.js');
-const start = source.indexOf('  function drawUpdatedZoan(');
+const start = source.indexOf('  function zoanVisualScale(');
 const end = source.indexOf('  function drawPlayerSpriteBase(', start);
 assert.ok(start >= 0 && end > start, 'exercise the current production draw function');
 vm.runInContext(source.slice(start, end), sandbox);
