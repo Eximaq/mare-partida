@@ -20,7 +20,8 @@
   add('haki','conqueror',[['O Escolhido',1,3]],'haki');
   add('haki','hakiMastery',[['Domínio Supremo',3,5]],'haki');
   add('exploration','islands',[['Navegador Iniciante',5,1]]);
-  add('exploration','fastTravel',[['Cartógrafo',travelIds.length,2]],'fastTravel');
+  // Keep the persisted/SQL achievement target stable when a new map is added.
+  add('exploration','fastTravel',[['Cartógrafo',14,2]],'fastTravel');
   add('exploration','bounties',[['Caçador de Recompensas',10,3]],'bounty');
   const unique=a=>[...new Set(Array.isArray(a)?a.filter(v=>typeof v==='string'&&v.length>0&&v.length<=100):[])];
   function migrate(g){

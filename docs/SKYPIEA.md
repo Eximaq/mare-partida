@@ -22,3 +22,7 @@ Com Python, Pillow e NumPy: execute tools/import_skypiea.py passando o ZIP origi
 - python tools/build_pages.py: concluído com caminhos relativos.
 
 O catálogo confiável de mapas do servidor reconhece o destino e a navegação foi testada isoladamente. Não foi realizada sessão multiplayer contra o servidor do colaborador.
+
+## Compatibilidade de integração
+
+As checagens do PR identificaram consumidores adicionais do catálogo. tools/audit_maps.cjs e o pacote Docker passaram a incluir os dois módulos de Skypiea. Os testes de preservação continuam verificando os hashes dos perfis/monstros anteriores, separados da nova adição. A meta persistida de Cartógrafo permanece em 14, compatível com a migração SQL existente, em vez de crescer implicitamente ao adicionar uma ilha. Mais 11 testes de monstros/navegação, 14 verificações foundation e o arquivo de conquistas/passivas foram aprovados localmente. Docker real depende do CI; não foi executado neste PC.
