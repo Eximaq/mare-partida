@@ -109,6 +109,7 @@
 !zoan-art.js
 !character-appearance.js
 !server-navigation.cjs
+!server-terrain-mask.cjs
 
 !party-rules.cjs
 !party-battle.cjs

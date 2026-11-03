@@ -88,6 +88,10 @@ await authDatabase(async f=>{
   // itself with a bound, rather than assuming both complete in a fixed 1100ms.
   await p.waitForFunction(()=>MareGameSession.available&&/Ping HTTP:/.test(document.querySelector('#onlinePerformance')?.textContent||''),null,{timeout:10000});
   assert.ok(compactReads>5,'current server advertises compact frames, renderer consumes them');
-  assert.deepEqual(errors,[]);assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');await p.screenshot({path:resolve(out,'combat.png')});console.log('Mouse routes in lobby/dawn and automatic chase passed with real backend/worker; demo preserved.');
+  assert.deepEqual(errors,[]);assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');await p.screenshot({path:resolve(out,'combat.png')});
+  await p.setViewportSize({width:640,height:900});
+  await p.waitForFunction(()=>MareGameSession.available&&Number.isFinite(__mareDiagnostics().hero.x),null,{timeout:10000});
+  await p.screenshot({path:resolve(out,'combat-narrow.png')});assert.deepEqual(errors,[]);
+  console.log('Mouse routes in lobby/dawn and automatic chase passed with real backend/worker in desktop/narrow viewports; demo preserved.');
  }catch(error){await context?.pages()[0]?.screenshot({path:resolve(out,'failure.png')}).catch(()=>{});throw error;}finally{await simulations?.stop();await context?.close();await browser?.close();gateway.closeAllConnections();api.closeAllConnections();await Promise.all([new Promise<void>(r=>gateway.close(()=>r())),new Promise<void>(r=>api.close(()=>r()))]);}
 });
