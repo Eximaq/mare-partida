@@ -6,6 +6,11 @@ on:
     branches: [main]
 permissions:
   contents: read
+# New PR revisions supersede older runs; main/deploy jobs are never interrupted.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   testes:
     runs-on: ubuntu-latest
@@ -35,5 +40,6 @@ jobs:
         run: |
           python3 tests/paper_doll_pages_test.py
           python3 tools/build_pages.py
+          python3 tests/production_pages_test.py
           python3 tests/portal_build_test.py
           python3 tools/build_portal.py

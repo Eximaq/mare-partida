@@ -18,6 +18,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+# New PR revisions supersede older runs; main/deploy jobs are never interrupted.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   conchas:
     runs-on: ubuntu-latest
@@ -27,6 +32,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: chromium-${{ runner.os }}-playwright-1.63.0
       - name: Preparar Chromium e build
         run: |
           python -m pip install playwright==1.63.0

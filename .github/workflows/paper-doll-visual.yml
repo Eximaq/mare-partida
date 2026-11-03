@@ -10,6 +10,7 @@ on:
       - 'assets/paper-doll/**'
       - 'tools/paper-doll-inspector/**'
       - 'tools/build_pages.py'
+      - 'tools/build_review_pages.py'
       - 'tools/prepare_paper_doll_inputs.py'
       - 'tools/package_paper_doll_manual.py'
       - 'tests/paper_doll_inputs_test.py'
@@ -122,6 +123,11 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+# New PR revisions supersede older runs; main/deploy jobs are never interrupted.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 jobs:
   paper-doll:
     runs-on: ubuntu-latest
@@ -133,6 +139,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
+      - name: Cache Chromium
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: chromium-${{ runner.os }}-playwright-1.63.0
       - name: Preparar navegador e pacote
         run: |
           python -m pip install playwright==1.63.0 Pillow==13.0.0
@@ -170,7 +181,7 @@ jobs:
           python pixellab-pip-generations/paper-doll-hair-continuity-20261022/assemble_review.py
           python pixellab-pip-generations/paper-doll-navy-starter-20261023/assemble_review.py
           python tests/paper_doll_inputs_test.py
-          python tools/build_pages.py
+          python tools/build_pages.py --include-reviews
       # Root-game tests that required legacy84 are archived. Current ownership,
       # locomotion and combat are enforced by paper-doll-96-lobby.yml.
       - name: Conferir bancadas históricas isoladas
