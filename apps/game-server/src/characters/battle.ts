@@ -1,4 +1,5 @@
 import {partition,type SimulationPartition} from '../simulation-partition.js';
+import {simulationBudget} from '../simulation-budget.js';
 import {partyRoom,storeRoom} from './party-store.js';
 import {readCombatInputs} from './combat-inputs.js';
 import {completeDungeonVictory} from './dungeons.js';
@@ -90,14 +91,14 @@ export async function mutateBattle(client:PoolClient,id:string,input:CharacterCo
 
 // Bounded worker; no tokens, provider calls or session keep-alive. Lock order is
 // session -> account -> character, identical to authenticated commands/logout.
-export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition){
- const shard=partition(assignment);let failed=0;
+export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition,maxBatchMs=Infinity){
+ const shard=partition(assignment),budget=simulationBudget(maxBatchMs);let failed=0;
  const candidates=(await pool.query(`SELECT b.character_id,c.session_id FROM mare_game.character_battles b
   JOIN mare_game.character_control c ON c.character_id=b.character_id JOIN mare_game.app_sessions s ON s.id=c.session_id
   JOIN mare_game.accounts a ON a.id=s.account_id WHERE c.expires_at>clock_timestamp() AND s.kind='play' AND s.revoked_at IS NULL
   AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp()
   AND mod(hashtextextended(b.character_id::text,34001)&2147483647,$2::bigint)=$1::bigint AND NOT (b.simulation ? 'partyInstanceId') AND s.account_epoch=a.auth_epoch AND b.tick_at<clock_timestamp()-interval '100 milliseconds' ORDER BY b.tick_at LIMIT 32`,[shard.index,shard.count])).rows;
- for(const candidate of candidates){const client=await pool.connect();try{
+ for(const candidate of candidates){if(budget.exhausted())break;const client=await pool.connect();try{
   await client.query('BEGIN');await client.query("SET LOCAL statement_timeout='3000ms'; SET LOCAL lock_timeout='100ms'; SET LOCAL idle_in_transaction_session_timeout='5s'");
   const session=(await client.query('SELECT id,account_id FROM mare_game.app_sessions WHERE id=$1 FOR UPDATE SKIP LOCKED',[candidate.session_id])).rows[0];
   if(!session){await client.query('ROLLBACK');continue;}
@@ -114,14 +115,14 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
    if(elapsed<.1){await client.query('ROLLBACK');continue;}
   if(b.rulesHash!==engine.rulesHash)throw new AuthFault(503,'battle_rules_changed');
   if(elapsed>2||row.control_epoch!==row.epoch){engine.cancel(b);engine.resetHaki(b);b.talents=null;await storeBattle(client,id,b);
-   await client.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[id,now,row.epoch]);await client.query('COMMIT');continue;}
+   await client.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[id,now,row.epoch]);await client.query('COMMIT');budget.commit();continue;}
   const dt=Math.min(1,elapsed),start=new Date(now.getTime()-dt*1000),w=await readWorld(client,id,start);
   if(!w||w.area!==b.area)throw new AuthFault(503,'battle_world_mismatch');
   const inputs=(await readCombatInputs(client,[id])).get(id)!,{state}=inputs,fighter=inputs.fighter(b);
   if(fighter.rulesetId!=='original-character-v1')throw new AuthFault(503,'original_inventory_required');
   if(await advancePrison(client,id,state,b,w,now)){
    if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
-   const requestId=randomUUID();await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);await client.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4)',[id,requestId,digest('server-prison:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:await readCharacterState(client,id)})]);await client.query('UPDATE mare_game.character_battles SET tick_at=$2 WHERE character_id=$1',[id,now]);await client.query('COMMIT');continue;
+   const requestId=randomUUID();await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);await client.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4)',[id,requestId,digest('server-prison:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:await readCharacterState(client,id)})]);await client.query('UPDATE mare_game.character_battles SET tick_at=$2 WHERE character_id=$1',[id,now]);await client.query('COMMIT');budget.commit();continue;
   }
   b.hp=Math.min(b.hp,fighter.maxHp);b.energy=Math.min(b.energy,fighter.stats.maxEnergy);
   const path=b.auto?[]:w.path.map(p=>({...p})),hero={...w.position,direction:w.direction};
@@ -152,6 +153,7 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
   await storeWorld(client,id,{...w,position:{x:hero.x,y:hero.y},direction:hero.direction,path:remaining,serverNow:now.toISOString(),speed:engine.combatStats(b,{stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:inputs.talents.build,classId:fighter.classId})[b.auto?'huntSpeed':'moveSpeed'],motionUntil:remaining.length?new Date(Math.max(now.getTime(),Date.parse(w.motionUntil))).toISOString():now.toISOString()});
   await storeBattle(client,id,b);await client.query('UPDATE mare_game.character_battles SET tick_at=$2 WHERE character_id=$1',[id,now]);
   await client.query('COMMIT');
+  budget.commit();
  }catch{await client.query('ROLLBACK');failed++;}finally{client.release();}}
  // Report an unhealthy batch after independent transactions have had their turn.
  if(failed)throw new AuthFault(503,'battle_tick_failed');

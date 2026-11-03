@@ -33,3 +33,50 @@ test('static exact collision queries reuse bounded results without rounding near
  assert.equal(points,1);assert.equal(segments,1);assert.equal(nav.walkable(.999999,2),false);assert.equal(nav.clear({x:0,y:0},{x:.999999,y:2}),false);
  for(let i=0;i<20000;i++)nav.walkable(2+i/10000,2);assert.ok(nav.walkMemo.size<=4096);assert.ok(nav.clearMemo.size<=8192);
 });
+test('open static mask regions avoid repeated terrain sampling without changing blocked geometry',()=>{
+ const {indexedNavigation}=require('../../server-navigation.cjs'),Base=world.originalNavigation('lobby').constructor;
+ let terrainCalls=0,segmentCalls=0;const cols=50,rows=50,step=2,bytes=Buffer.alloc(Math.ceil(cols*rows/8),255);
+ const hole=30*cols+30;bytes[hole>>3]=bytes[hole>>3]!&~(1<<(hole&7));
+ const sample=(x:number,y:number)=>{const cx=Math.floor(x/step),cy=Math.floor(y/step),i=cy*cols+cx;return cx>=0&&cy>=0&&cx<cols&&cy<rows&&!!(bytes[i>>3]!&(1<<(i&7)));};
+ const map={id:'fixture-mask',width:100,height:100,colliders:[{x:80,y:10,w:4,h:30}],terrainWalkable:(x:number,y:number,r=0)=>{terrainCalls++;return [[0,0],[-r,-r],[r,-r],[-r,r],[r,r],[0,-r],[0,r],[-r,0],[r,0]].every(([dx,dy])=>sample(x+dx!,y+dy!));},segmentBlocked:()=>{segmentCalls++;return false;}};
+ const fast=indexedNavigation(Base,map,4,1,{terrainMask:{cols,rows,step,bits:bytes.toString('base64')}}),original=new Base({...map},4,1);
+ terrainCalls=segmentCalls=0;
+ for(let i=0;i<200;i++){const a={x:10+i*.001,y:10},b={x:50+i*.001,y:10};assert.equal(fast.clear(a,b),true);}
+ assert.equal(terrainCalls,0,'proven-open rectangles should need no per-point terrain samples');assert.equal(segmentCalls,0,'proven-open rectangles should need no repeated mask traversal');
+ let seed=9;const rng=()=>((seed=(seed*1664525+1013904223)>>>0)/2**32);
+ for(let i=0;i<1000;i++){const a={x:rng()*100,y:rng()*100},b={x:rng()*100,y:rng()*100};assert.equal(fast.clear(a,b),original.clear(a,b));assert.equal(fast.walkable(a.x,a.y),original.walkable(a.x,a.y));}
+ assert.equal(fast.walkable(61,61),false);assert.equal(fast.clear({x:70,y:20},{x:90,y:20}),false);
+});
+
+test('negative grid-boundary segments retain the original exact mask traversal decision',()=>{
+ const fast=world.navigation('dawn'),original=world.originalNavigation('dawn');
+ const a={x:1488,y:1648},b={x:1496,y:1640};
+ assert.equal(original.clear(a,b),false);assert.equal(fast.clear(a,b),false);
+ assert.equal(JSON.stringify(fast.path(a,b)),JSON.stringify(original.path(a,b)));
+ for(const dx of [-1e-10,0,1e-10])for(const dy of [-1e-10,0,1e-10]){
+  const p={x:b.x+dx,y:b.y+dy};assert.equal(fast.clear(a,p),original.clear(a,p));
+ }
+});
+test('disconnected static regions are rejected before repeated whole-map searches',()=>{
+ const {indexedNavigation}=require('../../server-navigation.cjs'),Base=world.originalNavigation('lobby').constructor;
+ const nav=indexedNavigation(Base,{width:512,height:256,colliders:[{x:248,y:0,w:16,h:256}]},8,2);
+ let checks=0;const clear=nav.clear;nav.clear=function(...args:any[]){checks++;return clear.apply(this,args);};
+ assert.equal(nav.path({x:32,y:128},{x:480,y:128}).length,0);assert.ok(checks<=12,'disconnected regions need no A* flood; checks='+checks);
+});
+test('directed grid-edge verdicts survive dynamic-query churn without rerunning exact predicates',()=>{
+ const {indexedNavigation}=require('../../server-navigation.cjs'),Base=world.originalNavigation('lobby').constructor;let checks=0;
+ const map={width:64,height:64,colliders:[{x:7,y:0,w:2,h:8}],segmentBlocked:()=>{checks++;return false;}},nav=indexedNavigation(Base,map,8,1);
+ const open=[{x:4,y:20},{x:12,y:20}],blocked=[{x:4,y:4},{x:12,y:4}];
+ assert.equal(nav.clear(...open),true);assert.equal(nav.clear(...blocked),false);
+ for(let i=1;i<8300;i++)nav.clear({x:4+i*.0001,y:40},{x:20+i*.0001,y:40});
+ const before=checks;assert.equal(nav.clear(...open),true);assert.equal(nav.clear(...blocked),false);
+ assert.equal(checks,before,'static graph edges must not be evicted by moving actors');
+});
+
+test('a walkable start in a blocked grid-center cell can still join its neighboring component',()=>{
+ const {indexedNavigation}=require('../../server-navigation.cjs'),Base=world.originalNavigation('lobby').constructor;
+ const map={width:96,height:96,colliders:[{x:28,y:0,w:3,h:72}]},fast=indexedNavigation(Base,map,8,1),original=new Base({...map},8,1);
+ const a={x:26,y:20},b={x:36,y:20},cell=Math.floor(a.y/8)*12+Math.floor(a.x/8);
+ assert.equal(fast.walkable(a.x,a.y),true);assert.equal(fast.grid[cell],0);
+ const route=fast.path(a,b);assert.ok(route.length>1);assert.equal(JSON.stringify(route),JSON.stringify(original.path(a,b)));
+});

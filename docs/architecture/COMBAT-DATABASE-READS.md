@@ -1,5 +1,7 @@
 # Leituras transacionais de combate — 03/11/2026
 
+Continuação: [ciclos de simulação e navegação](SIMULATION-CYCLE-BUDGET.md). As medições abaixo registram o incremento #230; resultados posteriores ficam separados nesse documento.
+
 ## Escopo
 
 Continuação de #229 sobre main `a898279`. Reduz viagens ao PostgreSQL e duração das transações de caçadas e Parties. Mantém os workers 2 solo + 1 Party, pools, timeouts, simulação, hashes, balanceamento e protocolo 2 existentes. Não adiciona índices, migrations, grants, dependências, acesso administrativo ou serviços externos.

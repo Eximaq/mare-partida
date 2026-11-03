@@ -1,3 +1,5 @@
+**Ciclos de simulação:** [navegação conservadora, orçamento por lote e ensaios de 50/100 jogadores](docs/architecture/SIMULATION-CYCLE-BUDGET.md). Resultados separados para solo e Party; capacidade de 3.000 ainda não certificada.
+
 **Consultas de combate:** [leituras em lote, autorização preservada e limites atuais de carga](docs/architecture/COMBAT-DATABASE-READS.md).
 
 **Workers de simulação:** [partições, recuperação, compatibilidade e resultados de carga](docs/architecture/SIMULATION-WORKERS.md).
