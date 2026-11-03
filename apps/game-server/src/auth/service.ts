@@ -1,3 +1,4 @@
+import {readCombatInputs} from '../characters/combat-inputs.js';
 import {readPartyMotion} from '../characters/party.js';
 import {readParty} from '../characters/party.js';
 import {lockParty} from '../characters/party-store.js';
@@ -5,7 +6,7 @@ import {readLobby} from '../characters/lobby.js';
 import {initializeProfile,readProfile} from '../characters/profile.js';
 import {readFruits} from '../characters/fruits.js';
 import {readHierarchy,hierarchyRanking} from '../characters/hierarchy.js';
-import {readHaki} from '../characters/haki.js';
+import {hakiView} from '../characters/haki.js';
 import {readDungeons,lifetimeGold} from '../characters/dungeons.js';
 import {readPrison} from '../characters/prison.js';
 import {readAchievements} from '../characters/achievements.js';
@@ -321,10 +322,16 @@ export class AuthService {
       const journey = (await client.query<{ started: boolean }>(
         "SELECT EXISTS(SELECT 1 FROM mare_game.character_journey_ledger WHERE character_id=$1) AS started", [id],
       )).rows[0]!;
-      const originalInventory=await readOriginalInventory(client,id);
+      const profile=await readProfile(client,id);
+      // Profile is introduced after every input table. Earlier migration fixtures
+      // retain the ordinary readers; the live schema batches only under its locks.
+      const inputs=profile?(await readCombatInputs(client,[id])).get(id):undefined;
+      const originalInventory=inputs?inputs.inventory:await readOriginalInventory(client,id);
       const dungeons=await readDungeons(client,id);
       const world=await readWorld(client,id),lobby=await readLobby(client,id,world);
-      return { sync:{protocol:2}, state, party, profile:await readProfile(client,id), fruits:await readFruits(client,id), hierarchy:await readHierarchy(client,id,state), haki:await readHaki(client,id),dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison:await readPrison(client,id), achievements:await readAchievements(client,id,state), talents:await readTalents(client,id,state), contracts:await readContracts(client,id), battle:await readBattle(client,id), world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: await readFighter(client,id,state), attributes: await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      const battle=await readBattle(client,id),haki=battle?hakiView(battle):null,prison=await readPrison(client,id);
+      const fruits=inputs?.fruits??await readFruits(client,id),talents=inputs?.talents??await readTalents(client,id,state),power=inputs?.permanentPower();
+      return { sync:{protocol:2}, state, party, profile, fruits, hierarchy:await readHierarchy(client,id,state,power), haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements:await readAchievements(client,id,state,{power,prison,haki,fruits}), talents, contracts:await readContracts(client,id), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview: inputs?.inventory?inputs.fighter(battle):await readFighter(client,id,state), attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(

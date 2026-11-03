@@ -13,7 +13,10 @@ export const talentRulesHash=createHash('sha256').update(['talent-system.js','ta
 export async function readTalents(client:PoolClient,id:string,state:CharacterState){
  if(!(await client.query("SELECT to_regclass('mare_game.character_talents') present")).rows[0].present)return null;
  const row=(await client.query('SELECT build,revision FROM mare_game.character_talents WHERE character_id=$1',[id])).rows[0];
- const build=talentBuildSchema.parse(row?.build??T.empty()),spent=T.spent(build),earned=state.level+await achievementBonus(client,id);
+ return talentView(row,state,await achievementBonus(client,id));
+}
+export function talentView(row:any,state:CharacterState,bonus:number){
+ const build=talentBuildSchema.parse(row?.build??T.empty()),spent=T.spent(build),earned=state.level+bonus;
  // Additional points come only from immutable server achievement claims.
  return talentSnapshotSchema.parse({rulesetId:'original-talents-v1',revision:Number(row?.revision??0),earned,spent,available:earned-spent,build});
 }

@@ -1,11 +1,12 @@
+import {readCombatInputs} from './combat-inputs.js';
 import type {PoolClient} from 'pg';
 import {randomUUID} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {partyActions,type CharacterCommand,type CharacterState} from '@mare/shared';
 import {AuthFault} from '../auth/errors.js';
 import {membership,lockParty,partyAvailable} from './party-store.js';
-import {readBattle,storeBattle} from './battle.js';
-import {readWorld,mutateWorld} from './world.js';
+import {readBattleRows,readBattle,storeBattle} from './battle.js';
+import {readWorlds,readWorld,mutateWorld} from './world.js';
 import {readFighter} from './fighter.js';
 import {readCharacterState} from './state.js';
 import {mutateDungeon,readDungeons} from './dungeons.js';
@@ -119,8 +120,9 @@ export async function readPartyMotion(c:PoolClient,id:string){
  const group=await membership(c,id);await touchPartyPresence(c,id);if(!group)return {group:null};
  const roster=await presence(c,group);await refreshPartyLeader(c,group,roster);
  const g=(await c.query('SELECT id,leader_id,preparation FROM mare_game.parties WHERE id=$1',[group])).rows[0],members=[];
+ const ids=roster.map(m=>m.character_id),battles=await readBattleRows(c,ids),worlds=await readWorlds(c,ids);
  for(const m of roster){
-  const b=await readBattle(c,m.character_id),w=await readWorld(c,m.character_id);
+  const b=battles.get(m.character_id)?.simulation,w=worlds.get(m.character_id)??null;
   members.push({id:m.character_id,hp:Math.max(0,b?.hp??0),connected:m.connected===true,ready:g.preparation?.ready[m.character_id]===true,world:w,action:b?.pending||b?.skillJob?'attack':'idle',instanceId:b?.partyInstanceId??null,zoanTransformed:b?.fruit?.transformed===true,haki:b?.haki?{active:b.haki.active,eyeFX:b.haki.eyeFX,kingFX:b.haki.kingFX}:null});
  }
  const instance=(await c.query('SELECT id,simulation FROM mare_game.party_instances WHERE party_id=$1 AND ended_at IS NULL',[group])).rows[0];
@@ -132,11 +134,13 @@ export async function readParty(c:PoolClient,id:string){
  await touchPartyPresence(c,id);
  const invites=(await c.query(`SELECT i.id,i.party_id,i.target_id,i.sender_id,i.expires_at,i.status,ch.name sender,t.name target,lead.name leader_name,(SELECT count(*)::int FROM mare_game.party_members WHERE party_id=i.party_id) members FROM mare_game.party_invites i JOIN mare_game.characters ch ON ch.id=i.sender_id JOIN mare_game.characters t ON t.id=i.target_id JOIN mare_game.parties party ON party.id=i.party_id JOIN mare_game.characters lead ON lead.id=party.leader_id WHERE (i.target_id=$1 OR i.sender_id=$1) AND i.expires_at>clock_timestamp()-interval '60 seconds' ORDER BY i.created_at DESC LIMIT 16`,[id])).rows.map(x=>({...x,status:x.status==='pending'&&new Date(x.expires_at).getTime()<Date.now()?'expired':x.status}));
  if(!group)return {group:null,invites};
-  await refreshPartyLeader(c,group,await presence(c,group));
+ const roster=await presence(c,group);await refreshPartyLeader(c,group,roster);
  const g=(await c.query('SELECT id,leader_id,preparation FROM mare_game.parties WHERE id=$1',[group])).rows[0],members=[];
- for(const m of await presence(c,group)){
-  const state=await readCharacterState(c,m.character_id),f=await readFighter(c,m.character_id,state),b=await readBattle(c,m.character_id),w=await readWorld(c,m.character_id),visual=(await c.query('SELECT p.appearance,p.preferences,i.equipment FROM mare_game.character_profile p JOIN mare_game.game_inventory i USING(character_id) WHERE p.character_id=$1',[m.character_id])).rows[0];
-  const equipment:any={};if(!visual?.preferences.hideItems)for(const slot of ['weapon','head','coat','cloak','gloves','legs','boots']){const item=visual?.equipment[slot];if(item)equipment[slot]={def:item.def};}
+ const ids=roster.map(m=>m.character_id),inputs=await readCombatInputs(c,ids),battles=await readBattleRows(c,ids),worlds=await readWorlds(c,ids);
+ for(const m of roster){
+  const input=inputs.get(m.character_id)!,{state}=input,b=battles.get(m.character_id)?.simulation,w=worlds.get(m.character_id)??null;
+  const f=input.inventory?input.fighter(b):await readFighter(c,m.character_id,state),visual=input.inventory?{appearance:input.appearance,preferences:input.preferences,equipment:input.inventory.equipment}:null;
+  const equipment:any={};if(!visual?.preferences.hideItems)for(const slot of ['weapon','head','coat','cloak','gloves','legs','boots'] as const){const item=visual?.equipment[slot];if(item)equipment[slot]={def:item.def};}
   members.push({id:m.character_id,name:m.name,classId:m.class_id,factionId:m.faction_id,level:state.level,power:f.rulesetId==='original-character-v1'?f.stats.power:0,hp:Math.max(0,Math.min(b?.hp??f.maxHp,f.maxHp)),maxHp:f.maxHp,connected:m.connected===true,ready:g.preparation?.ready[m.character_id]===true,world:w,appearance96:visual?.appearance,hideHeadgear:!!visual?.preferences.hideHeadgear,equipment,action:b?.pending||b?.skillJob?'attack':'idle',instanceId:b?.partyInstanceId??null,fruitId:f.rulesetId==='original-character-v1'?f.fruitId:null,zoanTransformed:b?.fruit?.transformed===true,haki:b?.haki?{active:b.haki.active,eyeFX:b.haki.eyeFX,kingFX:b.haki.kingFX}:null});
  }
  const instance=(await c.query('SELECT id,simulation FROM mare_game.party_instances WHERE party_id=$1 AND ended_at IS NULL',[group])).rows[0];

@@ -27,6 +27,9 @@ export async function mutateFruit(client:PoolClient,id:string,input:CharacterCom
 export async function readFruits(client:PoolClient,id:string){
  if(!(await client.query("SELECT to_regclass('mare_game.fruit_registrations') present")).rows[0].present)return null;
  const registered=(await client.query('SELECT fruit_id FROM mare_game.fruit_registrations WHERE character_id=$1 ORDER BY fruit_id',[id])).rows.map(r=>r.fruit_id);
+ return fruitView(registered);
+}
+export function fruitView(registered:string[]){
  if(registered.length>30||registered.some(v=>!A.byId(v)))throw new AuthFault(503,'fruit_state_unavailable');
  return {rulesetId:'original-fruits-v1',registered};
 }
