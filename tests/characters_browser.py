@@ -124,7 +124,7 @@ with sync_playwright() as p:
     record('healer_real_heal_buff_cooldown','Configured 80% threshold persists; injured solo healer restores HP, spends energy, activates real protection and respects cooldown.')
     context.close()
     full={**healer,'hp':9999}
-    context,page=new_page(full);page.clock.run_for(50);page.locator('#enterHunt').click();page.locator('[data-mode=map]').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click();page.locator('#skill1').click();page.clock.run_for(50)
+    context,page=new_page(full);page.clock.run_for(50);page.locator('#enterHunt').click();page.locator('[data-mode=map]').click();page.locator('[data-island][data-current=true]').click();page.locator('[data-travel-area]').click();page.locator('#classSkill1').click();page.clock.run_for(50)
     assert diag(page)['skillUses'][0]==0 and diag(page)['cooldowns'][0]==0
     record('healer_no_wasted_full_health_heal','Full-health heal does not consume energy or start cooldown.')
     context.close()

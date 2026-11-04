@@ -172,5 +172,5 @@
 .action-row{flex-wrap:wrap;align-items:flex-end;gap:5px}
 .skill-group{display:flex;flex-direction:column;gap:2px;flex:none}
 .skill-group>small{font:700 9px/11px var(--rpg-font);letter-spacing:.07em;color:#e5c18a;text-align:center}
-.skill-group>div{display:flex;gap:4px}.skill-group.hidden{display:none}
+.skill-group>div{display:flex;gap:3px}.skill-group.hidden{display:none}
 .skill-group .skill-button:disabled{opacity:.55}

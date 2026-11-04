@@ -22,7 +22,7 @@ def measurements(q):
     }).map(([key,s])=>{const e=document.querySelector(s),r=e.getBoundingClientRect();return [key,{x:r.x,y:r.y,width:r.width,height:r.height,area:r.width*r.height,visible:!!e.getClientRects().length&&getComputedStyle(e).visibility!=='hidden'}]}))''')
 
 with sync_playwright() as p:
-    b=p.chromium.launch();c=b.new_context(viewport=dict(width=1920,height=1080));errors=[]
+    b=p.chromium.launch(executable_path=os.environ.get('CHROME_PATH'));c=b.new_context(viewport=dict(width=1920,height=1080));errors=[]
     c.route('**/__dev_version',lambda r:r.fulfill(body='stable'))
     def bridge(route):
         r=route.fetch();body=r.text().replace('  window.__mareDiagnostics=',HOOK)
@@ -120,13 +120,13 @@ with sync_playwright() as p:
         if q.locator('#autoToggle').get_attribute('aria-pressed')=='true':
             q.locator('#autoToggle').click()
         q.evaluate('__compactQA.session.cooldowns[1]=0;__compactQA.game.energy=__compactQA.stats().maxEnergy;__compactQA.refresh()')
-        q.locator('#skill2').click()
+        q.locator('#classSkill2').click()
         for _ in range(20):
             q.clock.run_for(100)
-            if 'is-cooling' in q.locator('#skill2').get_attribute('class'):break
+            if 'is-cooling' in q.locator('#classSkill2').get_attribute('class'):break
         assert q.evaluate('__compactQA.session.cooldowns[1]')>0
-        assert 'is-cooling' in q.locator('#skill2').get_attribute('class')
-        assert q.locator('#cooldown2').inner_text().endswith('s')
+        assert 'is-cooling' in q.locator('#classSkill2').get_attribute('class')
+        assert q.locator('#classCooldown2').inner_text().endswith('s')
     assert not errors,errors
     print(json.dumps({'phase':phase,'measurements':results,'errors':errors}))
     c.close();b.close()

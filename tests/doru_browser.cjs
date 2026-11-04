@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
-const bridge=`  window.__doruQA={paused:false,enterHunt,returnLobby,useFruitSkill,saveGame,get game(){return game},get world(){return world},get session(){return session},get defs(){return itemDefs},nav:navigator,stopAuto(){autoPlay=false;autoSkills=false},center(){camera.update(world.hero,activeMap(),0,true)},step(dt){world.time+=dt;stepDoruProjectiles(dt);updateUI()},runTick(dt){this.paused=false;tick(dt);this.paused=true;}};\n  window.__mareDiagnostics=`;
+const bridge=`  window.__doruQA={paused:false,enterHunt,returnLobby,useFruitSkill:performFruitSkill,saveGame,get game(){return game},get world(){return world},get session(){return session},get defs(){return itemDefs},nav:navigator,stopAuto(){autoPlay=false;autoSkills=false},center(){camera.update(world.hero,activeMap(),0,true)},step(dt){world.time+=dt;stepDoruProjectiles(dt);updateUI()},runTick(dt){this.paused=false;tick(dt);this.paused=true;}};\n  window.__mareDiagnostics=`;
 (async()=>{
  const browser=await chromium.launch({headless:true,...(process.env.CHROME_PATH?{executablePath:process.env.CHROME_PATH}:{})});
  try{

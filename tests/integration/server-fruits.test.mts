@@ -37,6 +37,8 @@ test('fruit intents persist once, reject authority fields and award one worker k
  const o=await a.read(),m=o.battle.mobs[0];o.battle.mobs=[m];m.hp=1;m.patrolClock=100;o.battle.energy=100;await f.pool.query('UPDATE mare_game.character_world SET x=$2,y=$3 WHERE character_id=$1',[a.c.id,m.x-25,m.y]);await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(o.battle)]);
  const input=await a.input('fruit.cast',{key:'1'});assert(characterCommandSchema.safeParse(input).success);for(const extra of ['damage','fruitId','accountId','now','energy','cooldown'])assert(!characterCommandSchema.safeParse({...input,payload:{...input.payload,[extra]:100}}).success);
  await assert.rejects(f.service.command(b.login.token,a.c.id,input as any),{code:'character_not_found'});const receipt=await a.send(input);assert.deepEqual(await a.send(input),receipt);assert.equal((await a.read()).battle.energy,80);assert.equal((await a.read()).state.experience,'0');
+ // Wait for the accepted human punch to reach its release frame before ticking its native effect.
+ assert((await a.read()).battle.fruit.job);await new Promise(resolve=>setTimeout(resolve,300));
  await f.pool.query("UPDATE mare_game.character_battles SET tick_at=clock_timestamp()-interval '250 milliseconds' WHERE character_id=$1",[a.c.id]);await Promise.all([tickWorldBattles(f.pool),tickWorldBattles(f.pool)]);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.world_battle_rewards WHERE character_id=$1',[a.c.id])).rows[0].n,1);
  await assert.rejects(a.doit('fruit.cast',{key:'1'}),{code:'fruit_cast_unavailable'});await a.doit('world.return');const after=await a.read();assert(after.battle.fruit.cooldowns['akuma_supa_supa:1']>Date.now());
 }));
