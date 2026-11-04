@@ -63,6 +63,11 @@ with sync_playwright() as p:
         assert q.locator('#floatingExpedition').is_visible()
         assert q.locator('.journey-content').is_visible()
         assert q.locator('#journeyToggle').get_attribute('aria-expanded')=='true'
+        q.locator('#journeyAction').click()
+        assert q.locator('#panelOverlay').is_visible()
+        assert q.locator('#floatingExpedition').is_hidden(),'Contract window replaces the expedition context'
+        q.keyboard.press('Escape')
+        q.locator('#journeyToggle').click()
         q.keyboard.press('Escape')
         assert q.locator('#floatingExpedition').is_hidden()
         assert q.locator('#journeyToggle').evaluate('e=>e===document.activeElement')
@@ -116,7 +121,9 @@ with sync_playwright() as p:
             q.locator('#autoToggle').click()
         q.evaluate('__compactQA.session.cooldowns[1]=0;__compactQA.game.energy=__compactQA.stats().maxEnergy;__compactQA.refresh()')
         q.locator('#skill2').click()
-        q.clock.run_for(250)
+        for _ in range(20):
+            q.clock.run_for(100)
+            if 'is-cooling' in q.locator('#skill2').get_attribute('class'):break
         assert q.evaluate('__compactQA.session.cooldowns[1]')>0
         assert 'is-cooling' in q.locator('#skill2').get_attribute('class')
         assert q.locator('#cooldown2').inner_text().endswith('s')

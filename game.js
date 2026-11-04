@@ -3311,6 +3311,8 @@ function applySceneHudLayout(){
 }
 
   expeditionMini.addEventListener('click',()=>toggleFloating('expedition'));
+  // Hand off to the requested window; closing it must reveal the playfield.
+  floating.expedition.addEventListener('click',e=>{if(e.target.closest('[data-panel],#huntRoute'))toggleFloating('expedition',false);},true);
   $('chatCornerToggle').addEventListener('click',()=>toggleFloating('chat'));
   document.querySelectorAll('[data-hud]').forEach(btn=>btn.addEventListener('click',()=>btn.dataset.hud==='status'?openPanel('character'):toggleFloating(btn.dataset.hud)));
   document.addEventListener('click',e=>{const b=e.target.closest('[data-close-window]');if(b)toggleFloating(b.dataset.closeWindow,false);});
