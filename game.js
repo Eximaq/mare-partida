@@ -1185,15 +1185,16 @@
     const key=MareSpriteCombatV2.fruits[equippedZoan()?.id],height=MareSpriteCombatV2Data[key]?.world_header_height;
     return height?Math.max(logical,Math.ceil(height*(MareUltimates.selected(game)==='titan'?1.35:1))):logical;
   }
-  function emitCombatVfx(kind,actor){
+  function emitCombatVfx(kind,actor,visual={}){
     if(!kind||!MareCombatVfx.data.effects[kind])return;
     session.combatHits ||= [];if(kind==='heal'&&session.combatHits.some(f=>f.kind===kind&&f.actor===actor&&world.time-f.started<.15))return;
-    const point=combatChest(actor),start=MareCombatVfx.impactStart(kind);session.combatHits.push({kind,actor,x:point.x,y:point.y,started:world.time,start,rate:kind==='heal'?1:MareCombatVfx.data.impactPlaybackRate});if(session.combatHits.length>96)session.combatHits.shift();
+    const point=combatChest(actor),start=MareCombatVfx.impactStart(kind),weaponStyle=visual.source==='class'&&!game.zoanTransformed?MareClassWeaponVfx.style(itemDefs[game.equipment.weapon?.def]):null;session.combatHits.push({kind,actor,x:point.x,y:point.y,started:world.time,start,weaponStyle,rate:kind==='heal'?1:MareCombatVfx.data.impactPlaybackRate});if(session.combatHits.length>96)session.combatHits.shift();
   }
   function launchCombatProjectile(kind,origin,target,onHit){
     const active=session,area=game.area,identity=basicAttackIdentity(),equippedFruitId=game.equipment?.akuma_no_mi?.fruitId||null,reach=getDerived().range+125;
     const p=MareCombatVfx.projectile(kind,origin,target.id,{target,commit:onHit,session:active,area,identity,equippedFruitId,born:world.time,releaseId:origin.releaseId??null,originOffset:{x:origin.x-world.hero.x,y:origin.y-world.hero.y}});if(kind==='cyborg'){const point=combatChest(target);p.x=point.x;p.y=point.y;}
     if(combatVfxBackend&&akumaBackend){const point=combatChest(target);p.launchReady=false;p.receipt=akumaRequest('vfx-launch',{instance:area,kind,x:origin.x,y:origin.y,target:{...point,id:target.id},reach}).then(r=>{p.launchReady=true;p.age=0;p.born=world.time;return r.token;});p.receipt.catch(()=>{if(p.phase!=='impact')p.phase='done';});}
+    p.weaponStyle=!game.zoanTransformed?MareClassWeaponVfx.style(itemDefs[game.equipment.weapon?.def]):null;
     active.combatProjectiles ||= [];active.combatProjectiles.push(p);if(active.combatProjectiles.length>64){active.combatProjectiles[0].phase='done';active.combatProjectiles.shift();}return p;
   }
   function combatBeamOrigin(p){return p.mode==='beam'?{x:world.hero.x+p.originOffset.x,y:world.hero.y+p.originOffset.y}:p.origin;}
@@ -1226,8 +1227,8 @@
     const box=combatHudBox(actor,width,name);ctx.save();ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#03171c';ctx.strokeText(name,actor.x,box.nameY);ctx.fillStyle='#effcf5';ctx.fillText(name,actor.x,box.nameY);px(ctx,actor.x-width/2,box.barY,width,7,'#001819');px(ctx,actor.x-width/2+1,box.barY+1,(width-2)*Math.max(0,Math.min(1,hp/Math.max(1,maxHP))),5,color);if(world.target===actor){ctx.strokeStyle='#d9b777';ctx.lineWidth=2;ctx.strokeRect(actor.x-width/2-3,box.barY-3,width+6,13);}ctx.restore();
   }
   function drawCombatVfx(){
-    for(const p of session.combatProjectiles||[])MareCombatVfx.drawProjectile(ctx,p,{origin:combatBeamOrigin(p)});
-    for(const f of session.combatHits||[]){const point=f.actor?combatChest(f.actor):f;MareCombatVfx.draw(ctx,f.kind,point.x,point.y,Math.min((world.time-f.started)*1000*(f.rate||1),MareCombatVfx.data.effects[f.kind].frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0)-.001),{width:f.kind==='explosion'?96:f.kind==='heal'?Math.min(120,combatActorHeight(f.actor)+16):64,start:f.start||0});}
+    for(const p of session.combatProjectiles||[])if(!MareClassWeaponVfx.projectile(ctx,p,{origin:combatBeamOrigin(p)}))MareCombatVfx.drawProjectile(ctx,p,{origin:combatBeamOrigin(p)});
+    for(const f of session.combatHits||[]){const point=f.actor?combatChest(f.actor):f,elapsed=Math.min((world.time-f.started)*1000*(f.rate||1),MareCombatVfx.data.effects[f.kind].frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0)-.001),options={width:f.kind==='explosion'?96:f.kind==='heal'?Math.min(120,combatActorHeight(f.actor)+16):64,start:f.start||0};if(!MareClassWeaponVfx.hit(ctx,f.weaponStyle,f.kind,point.x,point.y,elapsed,options))MareCombatVfx.draw(ctx,f.kind,point.x,point.y,elapsed,options);}
     if(game.hp>0&&session.respawn<=0)MareCombatVfx.drawStatuses(ctx,combatHudBox(world.hero,60,game.name),combatStatus(world.hero),world.time);
     for(const actor of livingMobs())MareCombatVfx.drawStatuses(ctx,combatHudBox(actor,actor.type==='boss'?88:65,monsterName(actor)+' · Nv.'+actor.level),combatStatus(actor),world.time);
     if(hoyaActive())MareCombatVfx.drawStatuses(ctx,combatHudBox(session.genie,64,'Gênio'),combatStatus(session.genie),world.time);
@@ -1244,7 +1245,7 @@
     if(dx)world.hero.facing=dx<0?-1:1;
   }
   function chooseTarget(){let monsters=livingMobs().filter(m=>(rejectedTargets.get(m.id)||0)<=world.time);if(!monsters.length)return null;return monsters.reduce((best,cur)=>!best||distance(world.hero,cur)<distance(world.hero,best)?cur:best,null);}
-  function outputDamage(m,amount,crit=false,visual={}){if(!m||!m.alive||m.returning||amount<=0)return 0;MareMonsterBehavior.hurt(m);MareHaki.touch(game,session.haki);if(m.rankSFreezeUntil>world.time){amount+=m.rankSFreezePower||0;m.rankSFreezeUntil=0;m.rankAStunUntil=0;m.rankSIceSlowUntil=world.time+3;m.rankSIceHeavyAttackUntil=world.time+3;}const damage=Math.min(m.hp,Math.max(1,Math.floor(amount)));m.hp=Math.max(0,m.hp-damage);MareSpriteCombatV2.hurt(m,damage,world.time,{protected:m.hp<=0||!!m.telegraph});m.hit=.25;game.stats.damage+=damage;const fruitVisual=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs);emitCombatVfx(MareCombatVfx.classify({fruitId:fruitVisual?.id,name:fruitVisual?.skills?.[0]?.name||'',damageType:fruitVisual?.family==='logia'?'magic':undefined,...visual}),m);spawnVisual(m.x+rand(-8,8),m.y-40,String(damage),crit?'#ffcd73':'#fff5e4',crit?22:15);if(((getDerived().fruitLifesteal||0)>0||wolfAuraActive())&&!session.wolfLeechResolving){session.wolfLeechResolving=true;try{session.healingDone+=restoreHero(damage*((getDerived().fruitLifesteal||0)+(wolfAuraActive()?MareWolf.rules.lifesteal:0)),{ignoreEfficiency:true});}finally{session.wolfLeechResolving=false;}}if(m.hp<=0)killMob(m);return damage;}
+  function outputDamage(m,amount,crit=false,visual={}){if(!m||!m.alive||m.returning||amount<=0)return 0;MareMonsterBehavior.hurt(m);MareHaki.touch(game,session.haki);if(m.rankSFreezeUntil>world.time){amount+=m.rankSFreezePower||0;m.rankSFreezeUntil=0;m.rankAStunUntil=0;m.rankSIceSlowUntil=world.time+3;m.rankSIceHeavyAttackUntil=world.time+3;}const damage=Math.min(m.hp,Math.max(1,Math.floor(amount)));m.hp=Math.max(0,m.hp-damage);MareSpriteCombatV2.hurt(m,damage,world.time,{protected:m.hp<=0||!!m.telegraph});m.hit=.25;game.stats.damage+=damage;const fruitVisual=MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs);emitCombatVfx(MareCombatVfx.classify({fruitId:fruitVisual?.id,name:fruitVisual?.skills?.[0]?.name||'',damageType:fruitVisual?.family==='logia'?'magic':undefined,...visual}),m,visual);spawnVisual(m.x+rand(-8,8),m.y-40,String(damage),crit?'#ffcd73':'#fff5e4',crit?22:15);if(((getDerived().fruitLifesteal||0)>0||wolfAuraActive())&&!session.wolfLeechResolving){session.wolfLeechResolving=true;try{session.healingDone+=restoreHero(damage*((getDerived().fruitLifesteal||0)+(wolfAuraActive()?MareWolf.rules.lifesteal:0)),{ignoreEfficiency:true});}finally{session.wolfLeechResolving=false;}}if(m.hp<=0)killMob(m);return damage;}
   function basicAttackIdentity(){return game?.zoanTransformed&&equippedZoan()?equippedZoan().id:game?.classId+':'+game?.factionId;}
   function basicAttackPose(){const a=session?.basicAttack;return a?.clock.locked()?a.clock.snapshot():null;}
   function cancelBasicAttack(){if(session?.basicAttack)session.basicAttack.clock.reset();if(session)session.basicAttack=null;if(world?.hero)world.hero.attackAnim=0;}
@@ -1560,7 +1561,7 @@
       if(e.type==='fruit'){if(e.kind==='jiki-impact')session.jikiFx.push({kind:e.projectile==='mass'?'blast':'rocket',x:e.x,y:e.y-24,angle:e.angle,started:world.time});if(e.kind==='bomu-impact')session.expansionFx.push({kind:e.key==='1'?'breath':'bomb',x:e.x,y:e.y-24,started:world.time});if(e.kind==='horu-heal')emitCombatVfx('heal',world.hero);if(e.fruitId==='akuma_supa_supa'&&e.key==='1'){const duration=MareSupaArt.animations.slash.duration/1000;world.fx.push({x:e.x,y:e.y-32,supaVfx:'slash',startedAt:Date.now(),life:duration,max:duration});}if(e.fruitId==='akuma_beta_beta'&&e.key==='1')session.rankBBursts.push({x:e.x,y:e.y,started:world.time});if(['akuma_uma_uma','akuma_inu_dachshund','akuma_tori_albatroz'].includes(e.fruitId))world.fx.push({x:e.x,y:e.y,zoanVfx:e.fruitId,followHero:true,life:e.fruitId==='akuma_tori_albatroz'?5:.75,max:e.fruitId==='akuma_tori_albatroz'?5:.75});}
       if(e.type==='kill'&&b.dungeon)toast('Vitória! Aproxime-se do baú para receber.','good');
       if(e.type==='kill'&&b.prison)toast('Andar Concluído · '+b.prison.floor,'good');
-      if(e.type==='damage'&&m){spawnVisual(m.x,m.y-70,'-'+e.amount,'#e7cb87',15);m.hit=.2;}
+      if(e.type==='damage'&&m){spawnVisual(m.x,m.y-70,'-'+e.amount,'#e7cb87',15);m.hit=.2;if(game.classId==='brawler'&&!game.zoanTransformed&&!game.equipment.akuma_no_mi&&!e.fruitId)emitCombatVfx('punch',m,{source:'class'});}
       if(e.type==='projectile'&&m)launchCombatProjectile(e.kind,{x:e.x,y:e.y-27},m,()=>{});
       if(e.type==='talent'){world.fx.push({x:m?.x??world.hero.x,y:m?.y??world.hero.y,ring:1,life:.5,max:.5,color:'#e5c47f'});}
       if(e.type==='hurt'){spawnVisual(world.hero.x,world.hero.y-70,'-'+Math.round(e.amount),'#ff9b94',15);world.hero.hit=.2;}
@@ -2157,8 +2158,10 @@ ${avatarExtra}
   }
   function inventoryHeading(title){return '<h3 class="hd-panel-heading">'+inventoryIcon('anchor')+'<span>'+escapeHTML(title)+'</span></h3>';}
   function inventoryItemStatRows(item){
-    const a=itemStats(item),rows=MareUI.inventoryNumericRows([{key:'attack',name:'Ataque',icon:'attack',value:a.attack},{key:'defense',name:'Defesa',icon:'shield',value:a.defense},{key:'hp',name:'Vida',icon:'heart',value:a.hp},{key:'power',name:'Poder',icon:'power',value:itemPower(item)}]);
-    return rows.length?'<div class="op-item-stats" role="list">'+rows.map(r=>'<div class="op-stat-row" role="listitem" data-item-stat="'+r.key+'">'+inventoryIcon(r.icon)+'<span>'+r.name+'</span><b>'+ (Number.isFinite(r.value)?fmt(r.value):'<span title="Informação indisponível">—</span>')+'</b></div>').join('')+'</div>':'';
+    const a=itemStats(item),intrinsic=itemBase(item).attributes?Object.entries(a.attributes).filter(([,value])=>value>0).map(([key,value])=>({key,name:MareForge.names[key],icon:key==='vitality'?'heart':'attack',value})):[];
+    if(itemBase(item).attributes&&a.crit>0)intrinsic.push({key:'crit',name:'Chance crítica',icon:'attack',value:a.crit*100,percent:true});
+    const rows=MareUI.inventoryNumericRows([{key:'attack',name:'Ataque',icon:'attack',value:a.attack},{key:'defense',name:'Defesa',icon:'shield',value:a.defense},{key:'hp',name:'Vida',icon:'heart',value:a.hp},{key:'power',name:'Poder',icon:'power',value:itemPower(item)},...intrinsic]);
+    return rows.length?'<div class="op-item-stats" role="list">'+rows.map(r=>'<div class="op-stat-row" role="listitem" data-item-stat="'+r.key+'">'+inventoryIcon(r.icon)+'<span>'+r.name+'</span><b>'+ (Number.isFinite(r.value)?r.percent?r.value.toLocaleString('pt-BR',{maximumFractionDigits:2})+'%':fmt(r.value):'<span title="Informação indisponível">—</span>')+'</b></div>').join('')+'</div>':'';
   }
   function inventoryComparisonData(item){
     if(!item||!MareForge.isGear(item,itemDefs))return null;

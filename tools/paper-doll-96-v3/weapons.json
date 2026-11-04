@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": "weapons96-pixellab-pro-v4-e8cc8f370a",
+  "revision": "weapons96-hd-8c33bb0d169b",
   "referenceHeight": 96,
   "reviewOnly": true,
   "source": "Owner artwork and current inventory icons; inventory files preserved",
@@ -784,8 +784,41 @@
             "nativeSha256": "e9a06aaa208c22ea7d0c673d1bba88b07f81040d39498a701164bc2bcf2dd3b8",
             "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
           }
+        },
+        "southCarry": {
+          "source": "assets/weapon-item-4-south-carry.png",
+          "sha256": "67f40913d420de4b83712d2f171ee348acfe6e014d103b7c6abedf6e30ea76f2",
+          "grip": {
+            "x": 93,
+            "y": 74
+          },
+          "tip": {
+            "x": 7,
+            "y": 64
+          },
+          "axisAngle": -1.5707963267948966,
+          "bounds": {
+            "x0": 4,
+            "y0": 53,
+            "x1": 123,
+            "y1": 84
+          },
+          "materialScale": 0.6333333333333333,
+          "renderDensity": 3,
+          "visibleHeight": 76,
+          "edgeSide": 0,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "a9961ce5-3438-484d-86c9-a26154ad1444",
+            "assetId": "bd9feb23-f8cf-523a-a1cd-64cbd33b94f1",
+            "candidate": 1,
+            "operation": "South carry profile requested by owner",
+            "processing": "Top generated variant isolated and padded transparently; original source pixels preserved"
+          }
         }
-      }
+      },
+      "renderDensity": 3
     },
     {
       "id": "weapon-14",
@@ -1076,8 +1109,41 @@
             "nativeSha256": "1617b3000435b40acae97b44d088bbfbcd399773687ef0ca5731dd944756ff3c",
             "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
           }
+        },
+        "southCarry": {
+          "source": "assets/weapon-item-5-south-carry.png",
+          "sha256": "6b8a20f45047d33e99586bd0f8b777ce09bc0254a28ce84b24135b5537f0c1dc",
+          "grip": {
+            "x": 103,
+            "y": 84
+          },
+          "tip": {
+            "x": 10,
+            "y": 44
+          },
+          "axisAngle": -1.5707963267948966,
+          "bounds": {
+            "x0": 4,
+            "y0": 18,
+            "x1": 124,
+            "y1": 113
+          },
+          "materialScale": 0.18181818181818182,
+          "renderDensity": 3,
+          "visibleHeight": 22,
+          "edgeSide": 0,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "f1a425f4-acfc-4fff-964d-b134db254fb8",
+            "assetId": "479b971f-b020-55e7-b418-ac01d355c725",
+            "candidate": 1,
+            "operation": "South carry profile requested by owner",
+            "processing": "Selected generated profile pixels preserved; no source resize or palette reduction"
+          }
         }
-      }
+      },
+      "renderDensity": 3
     },
     {
       "id": "weapon-15",
@@ -1377,6 +1443,1929 @@
         },
         "nativeSha256": "daca236c1f9a04b595e6dd02eda4a31611ca8e8704ec42230db92bdc06b16b94",
         "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
+      }
+    },
+    {
+      "id": "weapon-109",
+      "itemId": 109,
+      "name": "Manoplas do Coral Negro",
+      "category": "unarmed",
+      "source": "assets/weapon-item-109.png",
+      "reference": "assets/ui/items-hd/manoplas-do-coral-negro.png",
+      "referenceSha256": "49408b287e7ad03bc72f5ad4c7ed1aa0cebe86362746e6663a9ccff6ccb0b314",
+      "sha256": "51a68cf90c65a91c6ac8c9ac03b5852d1592d10d056dcac0430ec4129189d047",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 84,
+        "y": 65
+      },
+      "tip": {
+        "x": 109,
+        "y": 65
+      },
+      "visibleHeight": 23,
+      "bounds": {
+        "x0": 14,
+        "y0": 32,
+        "x1": 113,
+        "y1": 97
+      },
+      "edgeSide": 0,
+      "paired": true,
+      "effect": null,
+      "attachment": {
+        "kind": "gauntlet",
+        "palmInward": true,
+        "coverPalm": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "55eeba35-f899-4482-bcd8-66d1de857ecf",
+        "assetId": "63f76de3-5e5b-5ce8-8e4b-ad630309e466",
+        "candidate": 2,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "51a68cf90c65a91c6ac8c9ac03b5852d1592d10d056dcac0430ec4129189d047",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "materialScale": 0.23,
+      "renderDensity": 3,
+      "views": {
+        "north": {
+          "source": "assets/weapon-item-109-north.png",
+          "sha256": "128bac470732a42f877abe56717113b285b697a8173953cd71e81f44caca5d1f",
+          "grip": {
+            "x": 82,
+            "y": 65
+          },
+          "tip": {
+            "x": 106,
+            "y": 65
+          },
+          "axisAngle": 1.5707963267948966,
+          "bounds": {
+            "x0": 14,
+            "y0": 32,
+            "x1": 113,
+            "y1": 97
+          },
+          "materialScale": 0.23,
+          "renderDensity": 3,
+          "visibleHeight": 23,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "700524e3-b8c5-4a79-ac08-01c1ec6d229e",
+            "assetId": "c237f247-26a9-5753-816e-3d5bcd82dc51",
+            "candidate": 0,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "128bac470732a42f877abe56717113b285b697a8173953cd71e81f44caca5d1f",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-110",
+      "itemId": 110,
+      "name": "Punhos do Dragão Carmesim",
+      "category": "unarmed",
+      "source": "assets/weapon-item-110.png",
+      "reference": "assets/ui/items-hd/punhos-do-dragao-carmesim.png",
+      "referenceSha256": "a224f83c82e8dbdb6a488f2ee25550c6b8f4409bf06c655c9c39ac94ccfa033e",
+      "sha256": "c89136a3457f7cd67a6717b6d0e5ff496c504545bd713fbc7d89e1c80efcb791",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 91,
+        "y": 71
+      },
+      "tip": {
+        "x": 114,
+        "y": 71
+      },
+      "visibleHeight": 23,
+      "bounds": {
+        "x0": 17,
+        "y0": 31,
+        "x1": 121,
+        "y1": 91
+      },
+      "edgeSide": 0,
+      "paired": true,
+      "effect": null,
+      "attachment": {
+        "kind": "gauntlet",
+        "palmInward": true,
+        "coverPalm": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "f970fc9b-8b3d-436a-9e10-9dcf63cfec1e",
+        "assetId": "a431c15a-34ce-5c80-a212-a6aa0a7319ee",
+        "candidate": 1,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "c89136a3457f7cd67a6717b6d0e5ff496c504545bd713fbc7d89e1c80efcb791",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "materialScale": 0.21904761904761905,
+      "renderDensity": 3,
+      "armour": {
+        "source": "assets/weapon-item-110-armour.png",
+        "sha256": "1f54f08ab9abc218a01e32f7081f2031b337bf57d9be6389bb200a866c96aaaa",
+        "shoulder": {
+          "x": 27,
+          "y": 58
+        },
+        "elbow": {
+          "x": 66,
+          "y": 64
+        },
+        "wrist": {
+          "x": 110,
+          "y": 64
+        },
+        "generation": {
+          "tool": "pixellab",
+          "model": "pro",
+          "jobId": "f7251440-2d8c-473b-af35-d28e8662d717",
+          "assetId": "464de4b3-893e-554d-beb1-c08a6c58a476",
+          "candidate": 2
+        }
+      },
+      "views": {
+        "north": {
+          "source": "assets/weapon-item-110-north.png",
+          "sha256": "8191beda88efbc9306c99b1bc0fa45e490918f6f0432d7cfb86d19e463ea40d4",
+          "grip": {
+            "x": 88,
+            "y": 67
+          },
+          "tip": {
+            "x": 112,
+            "y": 67
+          },
+          "axisAngle": 1.5707963267948966,
+          "bounds": {
+            "x0": 17,
+            "y0": 34,
+            "x1": 121,
+            "y1": 91
+          },
+          "materialScale": 0.21904761904761905,
+          "renderDensity": 3,
+          "visibleHeight": 23,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "700524e3-b8c5-4a79-ac08-01c1ec6d229e",
+            "assetId": "c237f247-26a9-5753-816e-3d5bcd82dc51",
+            "candidate": 1,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "8191beda88efbc9306c99b1bc0fa45e490918f6f0432d7cfb86d19e463ea40d4",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-111",
+      "itemId": 111,
+      "name": "Luva do Abalo Sísmico",
+      "category": "unarmed",
+      "source": "assets/weapon-item-111.png",
+      "reference": "assets/ui/items-hd/luva-do-abalo-sismico.png",
+      "referenceSha256": "68d2274c21f3cd248172842d0999b9161adc8d8e06b2883ace46e30f3d556b71",
+      "sha256": "68d2274c21f3cd248172842d0999b9161adc8d8e06b2883ace46e30f3d556b71",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 88,
+        "y": 65
+      },
+      "tip": {
+        "x": 114,
+        "y": 65
+      },
+      "visibleHeight": 23,
+      "bounds": {
+        "x0": 6,
+        "y0": 30,
+        "x1": 121,
+        "y1": 95
+      },
+      "edgeSide": 0,
+      "paired": true,
+      "effect": null,
+      "attachment": {
+        "kind": "gauntlet",
+        "palmInward": true,
+        "coverPalm": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "c671c7db-797c-4754-9012-d20789700de7",
+        "assetId": "9a724596-7544-5ae7-9f1a-9670665fc0d0",
+        "candidate": 2,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "68d2274c21f3cd248172842d0999b9161adc8d8e06b2883ace46e30f3d556b71",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "materialScale": 0.19827586206896552,
+      "renderDensity": 3,
+      "views": {
+        "north": {
+          "source": "assets/weapon-item-111-north.png",
+          "sha256": "af10fab45d69afeda39293b65c614a46d96e93567df9bb03278e9258b68cd039",
+          "grip": {
+            "x": 88,
+            "y": 66
+          },
+          "tip": {
+            "x": 112,
+            "y": 66
+          },
+          "axisAngle": 1.5707963267948966,
+          "bounds": {
+            "x0": 6,
+            "y0": 30,
+            "x1": 121,
+            "y1": 95
+          },
+          "materialScale": 0.19827586206896552,
+          "renderDensity": 3,
+          "visibleHeight": 23,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "700524e3-b8c5-4a79-ac08-01c1ec6d229e",
+            "assetId": "c237f247-26a9-5753-816e-3d5bcd82dc51",
+            "candidate": 2,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "af10fab45d69afeda39293b65c614a46d96e93567df9bb03278e9258b68cd039",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-112",
+      "itemId": 112,
+      "name": "Manoplas da Ruptura dos Mares",
+      "category": "unarmed",
+      "source": "assets/weapon-item-112.png",
+      "reference": "assets/ui/items-hd/manoplas-da-ruptura-dos-mares.png",
+      "referenceSha256": "69ec2e6da2c9353ad525122651f63179dc93851f5f9da7943dca0099932e8b15",
+      "sha256": "5399e85b01754375b35fc12d4d426c46d76663a7b5d2fe2350e1f4b8d29a02e4",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 88,
+        "y": 64
+      },
+      "tip": {
+        "x": 109,
+        "y": 64
+      },
+      "visibleHeight": 20,
+      "bounds": {
+        "x0": 14,
+        "y0": 37,
+        "x1": 114,
+        "y1": 94
+      },
+      "edgeSide": 0,
+      "paired": true,
+      "effect": null,
+      "attachment": {
+        "kind": "gauntlet",
+        "palmInward": true,
+        "coverPalm": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "d0b3f36a-b42b-4316-a02c-e050313fea4e",
+        "assetId": "9ca400bc-a2a5-599b-96ef-7fa888317446",
+        "candidate": 0,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "5399e85b01754375b35fc12d4d426c46d76663a7b5d2fe2350e1f4b8d29a02e4",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "materialScale": 0.19801980198019803,
+      "renderDensity": 3,
+      "views": {
+        "north": {
+          "source": "assets/weapon-item-112-north.png",
+          "sha256": "98739abf2e8475627cebb7b740629375c2e8ad2d82037f4b6b311c8870a2494d",
+          "grip": {
+            "x": 89,
+            "y": 65
+          },
+          "tip": {
+            "x": 111,
+            "y": 65
+          },
+          "axisAngle": 1.5707963267948966,
+          "bounds": {
+            "x0": 14,
+            "y0": 37,
+            "x1": 114,
+            "y1": 94
+          },
+          "materialScale": 0.19801980198019803,
+          "renderDensity": 3,
+          "visibleHeight": 20,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "700524e3-b8c5-4a79-ac08-01c1ec6d229e",
+            "assetId": "c237f247-26a9-5753-816e-3d5bcd82dc51",
+            "candidate": 3,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "98739abf2e8475627cebb7b740629375c2e8ad2d82037f4b6b311c8870a2494d",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-113",
+      "itemId": 113,
+      "name": "Mosquete do Vento Cortante",
+      "category": "firearm",
+      "source": "assets/weapon-item-113.png",
+      "reference": "assets/ui/items-hd/mosquete-do-vento-cortante.png",
+      "referenceSha256": "2985a0fab334da070f9dd5329baaccf601cf00728493a305f607e94deec2e9f4",
+      "sha256": "0c75e371a474d180b50226c6dde7af044662046f6a26e11e5ff5def54d0c9051",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 47,
+        "y": 67
+      },
+      "tip": {
+        "x": 121,
+        "y": 62
+      },
+      "visibleHeight": 56,
+      "bounds": {
+        "x0": 3,
+        "y0": 49,
+        "x1": 124,
+        "y1": 81
+      },
+      "edgeSide": 0,
+      "paired": false,
+      "effect": null,
+      "attachment": {
+        "kind": "rifle",
+        "carryUpright": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "61b81f57-571e-42e0-a67b-a6b0ab283363",
+        "assetId": "78b37286-227a-5c47-8cd9-22b35208616f",
+        "candidate": 0,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "0c75e371a474d180b50226c6dde7af044662046f6a26e11e5ff5def54d0c9051",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "views": {
+        "south": {
+          "source": "assets/weapon-item-113-south.png",
+          "sha256": "cb91c8982b865a97d367f30a7f15034db43031df26c8ab0e31a358429338ecce",
+          "grip": {
+            "x": 64,
+            "y": 77
+          },
+          "tip": {
+            "x": 64,
+            "y": 18
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 53,
+            "y0": 10,
+            "x1": 72,
+            "y1": 109
+          },
+          "materialScale": 0.34,
+          "renderDensity": 3,
+          "visibleHeight": 34,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "61b81f57-571e-42e0-a67b-a6b0ab283363",
+            "assetId": "78b37286-227a-5c47-8cd9-22b35208616f",
+            "candidate": 1,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "cb91c8982b865a97d367f30a7f15034db43031df26c8ab0e31a358429338ecce",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        },
+        "north": {
+          "source": "assets/weapon-item-113-north.png",
+          "sha256": "0b5a2a522503396c508452746e38eaa29c3c73f2b1993dadc79d85d1da591ab5",
+          "grip": {
+            "x": 64,
+            "y": 78
+          },
+          "tip": {
+            "x": 64,
+            "y": 14
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 56,
+            "y0": 11,
+            "x1": 73,
+            "y1": 117
+          },
+          "materialScale": 0.3177570093457944,
+          "renderDensity": 3,
+          "visibleHeight": 34,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "61b81f57-571e-42e0-a67b-a6b0ab283363",
+            "assetId": "78b37286-227a-5c47-8cd9-22b35208616f",
+            "candidate": 2,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "0b5a2a522503396c508452746e38eaa29c3c73f2b1993dadc79d85d1da591ab5",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        },
+        "southCarry": {
+          "source": "assets/weapon-item-113-south-carry.png",
+          "sha256": "0e2a0c63b8b3be2689674da16378660574d7f1217c8bf950bf604c4499f527c6",
+          "grip": {
+            "x": 90,
+            "y": 68
+          },
+          "tip": {
+            "x": 6,
+            "y": 60
+          },
+          "axisAngle": -1.5707963267948966,
+          "bounds": {
+            "x0": 3,
+            "y0": 48,
+            "x1": 124,
+            "y1": 80
+          },
+          "materialScale": 0.6229508196721312,
+          "renderDensity": 3,
+          "visibleHeight": 76,
+          "edgeSide": 0,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "f7a15c6d-9e78-4f16-88ee-0ac01903ba65",
+            "assetId": "849d0c70-2d2e-5de5-803c-f4711592c6c0",
+            "candidate": 1,
+            "operation": "South carry profile requested by owner",
+            "processing": "Generated profile mirrored horizontally; source pixels preserved"
+          }
+        }
+      },
+      "materialScale": 0.45901639344262296,
+      "renderDensity": 3
+    },
+    {
+      "id": "weapon-114",
+      "itemId": 114,
+      "name": "Pistolas Gêmeas do Corsário",
+      "category": "firearm",
+      "source": "assets/weapon-item-114.png",
+      "reference": "assets/ui/items-hd/pistolas-gemeas-do-corsario.png",
+      "referenceSha256": "17322dd9a263d71eb434fe7249f5389805e62858fbffd3df6b7babe5c8ff338e",
+      "sha256": "89ea18ee5c506df3e4a07b9d25aaa21a40e3d255fc515ce2d1ece76105649895",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 29,
+        "y": 63
+      },
+      "tip": {
+        "x": 115,
+        "y": 43
+      },
+      "visibleHeight": 31,
+      "bounds": {
+        "x0": 8,
+        "y0": 24,
+        "x1": 119,
+        "y1": 79
+      },
+      "edgeSide": 0,
+      "paired": true,
+      "effect": null,
+      "attachment": {
+        "kind": "pistol",
+        "carryOutward": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "materialScale": 0.2767857142857143,
+      "renderDensity": 3,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "4a158c20-7226-4e8a-b30a-0b4590fb1ec0",
+        "assetId": "01f3e3a5-07d6-5a92-98a0-2b115ed49fe5",
+        "candidate": 0,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "89ea18ee5c506df3e4a07b9d25aaa21a40e3d255fc515ce2d1ece76105649895",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "views": {
+        "south": {
+          "source": "assets/weapon-item-114-south.png",
+          "sha256": "f3bf941bf42c4396f53d8a7ab028bca51ebca6d073f2bd3c53b733090bd19797",
+          "grip": {
+            "x": 65,
+            "y": 78
+          },
+          "tip": {
+            "x": 65,
+            "y": 21
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 48,
+            "y0": 10,
+            "x1": 79,
+            "y1": 116
+          },
+          "materialScale": 0.205607476635514,
+          "renderDensity": 3,
+          "visibleHeight": 22,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "75a3e0fa-3b78-43cc-b94b-2f43411a1d90",
+            "assetId": "cd298369-8305-5e54-b696-f7e3de6e7380",
+            "candidate": 2,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "f3bf941bf42c4396f53d8a7ab028bca51ebca6d073f2bd3c53b733090bd19797",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        },
+        "north": {
+          "source": "assets/weapon-item-114-north.png",
+          "sha256": "9bd5d0c1c464859b5b54ed099cd2eed64e4c6a1d6044287f460a0a5de5e215a8",
+          "grip": {
+            "x": 65,
+            "y": 80
+          },
+          "tip": {
+            "x": 65,
+            "y": 24
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 47,
+            "y0": 11,
+            "x1": 74,
+            "y1": 118
+          },
+          "materialScale": 0.2037037037037037,
+          "renderDensity": 3,
+          "visibleHeight": 22,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "4fb7f035-70a5-4617-a64b-f3203308b19f",
+            "assetId": "7c6df645-e99e-5a41-8b5b-e0c57d1f7985",
+            "candidate": 1,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "9bd5d0c1c464859b5b54ed099cd2eed64e4c6a1d6044287f460a0a5de5e215a8",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        },
+        "southCarry": {
+          "source": "assets/weapon-item-114-south-carry.png",
+          "sha256": "bf71179ea09f5d0b43894d4637d7696f0526eca44ee2cd5ada11ba462998d417",
+          "grip": {
+            "x": 103,
+            "y": 83
+          },
+          "tip": {
+            "x": 11,
+            "y": 48
+          },
+          "axisAngle": -1.5707963267948966,
+          "bounds": {
+            "x0": 8,
+            "y0": 25,
+            "x1": 119,
+            "y1": 100
+          },
+          "materialScale": 0.19642857142857142,
+          "renderDensity": 3,
+          "visibleHeight": 22,
+          "edgeSide": 0,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "d641ea6b-d428-494f-948c-0eb4f972a63a",
+            "assetId": "36dfb8d9-1926-5444-b03c-a0b2fbe456ab",
+            "candidate": 3,
+            "operation": "South carry profile requested by owner",
+            "processing": "Selected generated profile pixels preserved; no source resize or palette reduction"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-115",
+      "itemId": 115,
+      "name": "Rifle do Horizonte da Grand Line",
+      "category": "firearm",
+      "source": "assets/weapon-item-115.png",
+      "reference": "assets/ui/items-hd/rifle-do-horizonte-da-grand-line.png",
+      "referenceSha256": "c4d4cf901c5c2b88d4fd5538322644379e2302f5f19e034cb1cec9ab2c4d3349",
+      "sha256": "9529a5cfcef3e791070ee986bb0a3ed883c80501586ff8e6e191799c984084c7",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 42,
+        "y": 71
+      },
+      "tip": {
+        "x": 119,
+        "y": 63
+      },
+      "visibleHeight": 56,
+      "bounds": {
+        "x0": 5,
+        "y0": 49,
+        "x1": 122,
+        "y1": 82
+      },
+      "edgeSide": 0,
+      "paired": false,
+      "effect": null,
+      "attachment": {
+        "kind": "rifle",
+        "carryUpright": true,
+        "carryOutward": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "materialScale": 0.4745762711864407,
+      "renderDensity": 3,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "5846d5f5-da9f-4d10-b2b7-e9b814450f6d",
+        "assetId": "5b240111-2c83-58c1-8f7a-221061839b27",
+        "candidate": 3,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 64
+        },
+        "nativeSha256": "51d4ffee19aaf98b5a345ba33b4e53ba2870634f32719730aa608f1e45eff5f3",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "views": {
+        "south": {
+          "source": "assets/weapon-item-115-south.png",
+          "sha256": "73b4abd55f05a1e0b49062333a3d7e4376d402afb86a40de495015d75fd9dee8",
+          "grip": {
+            "x": 64,
+            "y": 79
+          },
+          "tip": {
+            "x": 64,
+            "y": 23
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 50,
+            "y0": 13,
+            "x1": 75,
+            "y1": 115
+          },
+          "materialScale": 0.32038834951456313,
+          "renderDensity": 3,
+          "visibleHeight": 33,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "eae272ff-89e9-4df8-93e4-e0d2b2d48857",
+            "assetId": "efcae9c9-dfab-576a-82d3-44c951056cdd",
+            "candidate": 0,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "73b4abd55f05a1e0b49062333a3d7e4376d402afb86a40de495015d75fd9dee8",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        },
+        "north": {
+          "source": "assets/weapon-item-115-north.png",
+          "sha256": "c3dc4c7c513c29e6537738d828078fc0fc3495f3b56a45217b80c0dfa886d2b1",
+          "grip": {
+            "x": 64,
+            "y": 78
+          },
+          "tip": {
+            "x": 64,
+            "y": 12
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 56,
+            "y0": 3,
+            "x1": 74,
+            "y1": 125
+          },
+          "materialScale": 0.2682926829268293,
+          "renderDensity": 3,
+          "visibleHeight": 33,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "22b0f8d6-b0ac-49fa-b9bb-32424a6aec8f",
+            "assetId": "df9a3ace-0507-59c7-b8a9-fec1ca60f699",
+            "candidate": 3,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "c3dc4c7c513c29e6537738d828078fc0fc3495f3b56a45217b80c0dfa886d2b1",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        },
+        "southCarry": {
+          "source": "assets/weapon-item-115-south-carry.png",
+          "sha256": "c864ae76c4512a89a524425a57f1bf607ead567528c15dbc6fff7e18ab5e8b51",
+          "grip": {
+            "x": 91,
+            "y": 72
+          },
+          "tip": {
+            "x": 7,
+            "y": 61
+          },
+          "axisAngle": -1.5707963267948966,
+          "bounds": {
+            "x0": 4,
+            "y0": 49,
+            "x1": 124,
+            "y1": 81
+          },
+          "materialScale": 0.628099173553719,
+          "renderDensity": 3,
+          "visibleHeight": 76,
+          "edgeSide": 0,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "84679254-01fb-4e2b-ac20-f3a67ce096c1",
+            "assetId": "b7cc5666-c357-5cfc-8a31-ab55fa8e7e71",
+            "candidate": 1,
+            "operation": "South carry profile requested by owner",
+            "processing": "Selected generated profile pixels preserved; no source resize or palette reduction"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-116",
+      "itemId": 116,
+      "name": "Arcabuz do Juízo Celestial",
+      "category": "firearm",
+      "source": "assets/weapon-item-116.png",
+      "reference": "assets/ui/items-hd/arcabuz-do-juizo-celestial.png",
+      "referenceSha256": "0ff7a725345c243517791de0349a6458dcd2cda17394add08d54d786e8bf6ec0",
+      "sha256": "01c9861860c98c8df32c77bc565843ae16a3570e3867ac8c9e0b33d8b3820eae",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 41,
+        "y": 71
+      },
+      "tip": {
+        "x": 120,
+        "y": 61
+      },
+      "visibleHeight": 54,
+      "bounds": {
+        "x0": 5,
+        "y0": 49,
+        "x1": 122,
+        "y1": 82
+      },
+      "edgeSide": 0,
+      "paired": false,
+      "effect": null,
+      "attachment": {
+        "kind": "rifle",
+        "carryUpright": true,
+        "carryOutward": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "materialScale": 0.4576271186440678,
+      "renderDensity": 3,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "6a8f38c7-f76e-4b06-a7fa-e7874f899dba",
+        "assetId": "ca2252f2-943d-5e11-9304-9cc290611d88",
+        "candidate": 3,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "01c9861860c98c8df32c77bc565843ae16a3570e3867ac8c9e0b33d8b3820eae",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "views": {
+        "south": {
+          "source": "assets/weapon-item-116-south.png",
+          "sha256": "f45dcc4eabaa90254bb96a99c16c5208e4c63e138c2e27e9d352035f1ec28d76",
+          "grip": {
+            "x": 64,
+            "y": 82
+          },
+          "tip": {
+            "x": 64,
+            "y": 20
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 50,
+            "y0": 9,
+            "x1": 77,
+            "y1": 117
+          },
+          "materialScale": 0.30275229357798167,
+          "renderDensity": 3,
+          "visibleHeight": 33,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "604b735f-b747-46ba-8316-488d66b9005c",
+            "assetId": "96223622-ebef-5d01-b65d-a2fcbd39545c",
+            "candidate": 2,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "f45dcc4eabaa90254bb96a99c16c5208e4c63e138c2e27e9d352035f1ec28d76",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        },
+        "north": {
+          "source": "assets/weapon-item-116-north.png",
+          "sha256": "026eeb8b5e40f19ac6e4d640df05539f6a5d003e583fcc80436475476516d3a7",
+          "grip": {
+            "x": 64,
+            "y": 78
+          },
+          "tip": {
+            "x": 64,
+            "y": 24
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 50,
+            "y0": 17,
+            "x1": 78,
+            "y1": 119
+          },
+          "materialScale": 0.32038834951456313,
+          "renderDensity": 3,
+          "visibleHeight": 33,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "3a79939e-ec95-4a04-89d8-f4e9f0bfa20c",
+            "assetId": "7b683843-0087-5536-9678-c43ac30d0a80",
+            "candidate": 0,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "026eeb8b5e40f19ac6e4d640df05539f6a5d003e583fcc80436475476516d3a7",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        },
+        "southCarry": {
+          "source": "assets/weapon-item-116-south-carry.png",
+          "sha256": "f9e34532b3f60eb9d5ae68c00fc9c54ccbfb57fe48f05a138beaf1a64f87c72e",
+          "grip": {
+            "x": 97,
+            "y": 76
+          },
+          "tip": {
+            "x": 7,
+            "y": 63
+          },
+          "axisAngle": -1.5707963267948966,
+          "bounds": {
+            "x0": 4,
+            "y0": 53,
+            "x1": 123,
+            "y1": 85
+          },
+          "materialScale": 0.6333333333333333,
+          "renderDensity": 3,
+          "visibleHeight": 76,
+          "edgeSide": 0,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "309dfb71-792f-4632-94cc-9f7ae5f73962",
+            "assetId": "159d9890-7c5a-5bf8-aca1-683452f29f5f",
+            "candidate": 1,
+            "operation": "South carry profile requested by owner",
+            "processing": "Selected generated profile pixels preserved; no source resize or palette reduction"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-117",
+      "itemId": 117,
+      "name": "Braço Mecânico de Ferro Salgado",
+      "category": "tech",
+      "source": "assets/weapon-item-117.png",
+      "reference": "assets/ui/items-hd/braco-mecanico-de-ferro-salgado.png",
+      "referenceSha256": "f0b266371e928fa9d04f1fa697d3ffe153d3128eadae63783e9d6e86dd914d7e",
+      "sha256": "c387c738b67598fb9f9eb4317fbbc9dc0fd7665d967a767791b935c21cbd9b3a",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 98,
+        "y": 64
+      },
+      "tip": {
+        "x": 113,
+        "y": 64
+      },
+      "visibleHeight": 23,
+      "bounds": {
+        "x0": 10,
+        "y0": 27,
+        "x1": 118,
+        "y1": 84
+      },
+      "edgeSide": 0,
+      "paired": false,
+      "effect": null,
+      "attachment": {
+        "kind": "gauntlet",
+        "coverPalm": true,
+        "palmInward": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "materialScale": 0.21100917431192662,
+      "renderDensity": 3,
+      "attackAction": "attack-unarmed",
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "b18752ac-9df2-495a-a0ce-24536eadf4e7",
+        "assetId": "1c67e247-9a98-5265-872a-d7646a88f72d",
+        "candidate": 2,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "c387c738b67598fb9f9eb4317fbbc9dc0fd7665d967a767791b935c21cbd9b3a",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "views": {
+        "north": {
+          "source": "assets/weapon-item-117-north.png",
+          "sha256": "8d3dd26bac00d28ef9d43507128c8207f146fb83c631a3d8214711f8c915ebae",
+          "grip": {
+            "x": 98,
+            "y": 64
+          },
+          "tip": {
+            "x": 113,
+            "y": 64
+          },
+          "axisAngle": 1.5707963267948966,
+          "bounds": {
+            "x0": 10,
+            "y0": 27,
+            "x1": 118,
+            "y1": 84
+          },
+          "materialScale": 0.21100917431192662,
+          "renderDensity": 3,
+          "visibleHeight": 23,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "f50d4893-b564-4932-b384-f4ce8712a7f3",
+            "assetId": "ec98b730-be7d-5f0e-976a-aefedf4dcb42",
+            "candidate": 0,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "8d3dd26bac00d28ef9d43507128c8207f146fb83c631a3d8214711f8c915ebae",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        }
+      },
+      "armour": {
+        "source": "assets/weapon-item-117-armour.png",
+        "sha256": "c387c738b67598fb9f9eb4317fbbc9dc0fd7665d967a767791b935c21cbd9b3a",
+        "shoulder": {
+          "x": 28,
+          "y": 57
+        },
+        "elbow": {
+          "x": 65,
+          "y": 60
+        },
+        "wrist": {
+          "x": 98,
+          "y": 64
+        },
+        "generation": {
+          "tool": "pixellab",
+          "model": "pro",
+          "jobId": "b18752ac-9df2-495a-a0ce-24536eadf4e7",
+          "assetId": "1c67e247-9a98-5265-872a-d7646a88f72d",
+          "candidate": 2,
+          "nativeCanvas": {
+            "width": 128,
+            "height": 128
+          },
+          "nativeSha256": "c387c738b67598fb9f9eb4317fbbc9dc0fd7665d967a767791b935c21cbd9b3a",
+          "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+        }
+      }
+    },
+    {
+      "id": "weapon-118",
+      "itemId": 118,
+      "name": "Canhão de Luz Pacifista",
+      "category": "tech",
+      "source": "assets/weapon-item-118.png",
+      "reference": "assets/ui/items-hd/canhao-de-luz-pacifista.png",
+      "referenceSha256": "78a1d49ac7d728dd4a0c03547bc18a35a9125a6071fc8f1ca568db578cb3158e",
+      "sha256": "8d59f3982dbf32eb36d28796999dc92a46854edef9114de43d70423c4c27a57f",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 77,
+        "y": 71
+      },
+      "tip": {
+        "x": 117,
+        "y": 67
+      },
+      "visibleHeight": 28,
+      "bounds": {
+        "x0": 6,
+        "y0": 45,
+        "x1": 121,
+        "y1": 97
+      },
+      "edgeSide": 0,
+      "paired": false,
+      "effect": null,
+      "attachment": {
+        "kind": "wrist-cannon",
+        "coverPalm": true,
+        "palmInward": false
+      },
+      "axisAngle": 1.5707963267948966,
+      "materialScale": 0.2413793103448276,
+      "renderDensity": 3,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "683d3e0f-cc78-430d-b2ac-6271a9a0378a",
+        "assetId": "925d108d-42dd-5e42-906f-4ce2e905c09a",
+        "candidate": 0,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 96
+        },
+        "nativeSha256": "99eb1a3bbf515207c9500a13ff7ea49a37a4e372a2304e454c98861719fbbbc0",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "views": {
+        "south": {
+          "source": "assets/weapon-item-118-south.png",
+          "sha256": "5da9e10e8285d6242dbcefff30a269fa6cd2210e9b00ac45c72d213612289073",
+          "grip": {
+            "x": 64,
+            "y": 82
+          },
+          "tip": {
+            "x": 64,
+            "y": 24
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 30,
+            "y0": 3,
+            "x1": 97,
+            "y1": 125
+          },
+          "materialScale": 0.17886178861788618,
+          "renderDensity": 3,
+          "visibleHeight": 22,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "d6953f6d-c458-46da-9a71-3f0b10c1014a",
+            "assetId": "aca10b2a-da97-5e25-bad3-6eb7de228a44",
+            "candidate": 1,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "5da9e10e8285d6242dbcefff30a269fa6cd2210e9b00ac45c72d213612289073",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        },
+        "north": {
+          "source": "assets/weapon-item-118-north.png",
+          "sha256": "1fe61e0ce39f190fee2f733c498b21f46666b179f6f84dc5ac92c3df00a04222",
+          "grip": {
+            "x": 64,
+            "y": 84
+          },
+          "tip": {
+            "x": 64,
+            "y": 24
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 41,
+            "y0": 16,
+            "x1": 86,
+            "y1": 123
+          },
+          "materialScale": 0.2037037037037037,
+          "renderDensity": 3,
+          "visibleHeight": 22,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "dbc536f9-3c91-4401-afed-aed7ff574330",
+            "assetId": "f184396a-a9e8-569c-8c00-45d1ec361526",
+            "candidate": 0,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "1fe61e0ce39f190fee2f733c498b21f46666b179f6f84dc5ac92c3df00a04222",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-119",
+      "itemId": 119,
+      "name": "Punho Hidráulico do Colosso",
+      "category": "tech",
+      "paired": false,
+      "effect": null,
+      "edgeSide": 0,
+      "reference": "assets/ui/items-hd/punho-hidraulico-do-colosso.png",
+      "referenceSha256": "fab674ac0ac4703eb41f22825962f3f52252d7155ba9752a8a2db0ec70a80de2",
+      "iconGeneration": {
+        "tool": "pixellab",
+        "galleryId": "624f460e-a01c-4553-acb1-ae9ea503fcca"
+      },
+      "attachment": {
+        "kind": "gauntlet",
+        "coverPalm": true,
+        "palmInward": true
+      },
+      "source": "assets/weapon-item-119.png",
+      "sha256": "d7043632f5a96b9c943a1c8cba92f3b86fd5162490ee79ced0f07016c0963495",
+      "grip": {
+        "x": 100,
+        "y": 64
+      },
+      "tip": {
+        "x": 116,
+        "y": 64
+      },
+      "axisAngle": 1.5707963267948966,
+      "visibleHeight": 26,
+      "materialScale": 0.22413793103448276,
+      "renderDensity": 3,
+      "bounds": {
+        "x0": 6,
+        "y0": 50,
+        "x1": 121,
+        "y1": 89
+      },
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "bd7ac167-334c-422f-8f73-8c3c94496657",
+        "assetId": "26900edd-56ad-547d-b8ea-2044bc994e98",
+        "candidate": 1,
+        "processing": "Source pixels preserved; isolated variant and transparent padding only"
+      },
+      "attackAction": "attack-unarmed",
+      "views": {
+        "north": {
+          "source": "assets/weapon-item-119-north.png",
+          "sha256": "ab8d87c758c42355ae782869f3852078314b6ffeebf22e1f175ce07ea8a00cae",
+          "grip": {
+            "x": 101,
+            "y": 67
+          },
+          "tip": {
+            "x": 117,
+            "y": 68
+          },
+          "axisAngle": 1.5707963267948966,
+          "visibleHeight": 26,
+          "materialScale": 0.2184873949579832,
+          "renderDensity": 3,
+          "bounds": {
+            "x0": 4,
+            "y0": 48,
+            "x1": 122,
+            "y1": 95
+          },
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "415e261e-edf0-43f9-a3bb-192bd6a65386",
+            "assetId": "43c5323e-4c6b-513d-bcae-fe5960e61df6",
+            "candidate": 3,
+            "processing": "Source pixels preserved; isolated variant and transparent padding only"
+          }
+        }
+      },
+      "armour": {
+        "source": "assets/weapon-item-119-armour.png",
+        "sha256": "d7043632f5a96b9c943a1c8cba92f3b86fd5162490ee79ced0f07016c0963495",
+        "shoulder": {
+          "x": 22,
+          "y": 64
+        },
+        "elbow": {
+          "x": 62,
+          "y": 64
+        },
+        "wrist": {
+          "x": 100,
+          "y": 64
+        },
+        "generation": {
+          "tool": "pixellab",
+          "model": "pro",
+          "jobId": "bd7ac167-334c-422f-8f73-8c3c94496657",
+          "assetId": "26900edd-56ad-547d-b8ea-2044bc994e98",
+          "candidate": 1,
+          "processing": "Source pixels preserved; isolated variant and transparent padding only"
+        }
+      },
+      "frame": {
+        "width": 128,
+        "height": 128
+      }
+    },
+    {
+      "id": "weapon-120",
+      "itemId": 120,
+      "name": "Arsenal Final: Protocolo Serafim",
+      "category": "tech",
+      "paired": false,
+      "effect": null,
+      "edgeSide": 0,
+      "reference": "assets/ui/items-hd/arsenal-final-protocolo-serafim.png",
+      "referenceSha256": "87343c1795da6737a6c5b663eb6d8116faf95881e8d168c2141402c25ddf234a",
+      "iconGeneration": {
+        "tool": "pixellab",
+        "galleryId": "6a2fac09-ad3a-48a3-9755-3dc9296f746b"
+      },
+      "attachment": {
+        "kind": "wrist-cannon",
+        "coverPalm": true,
+        "palmInward": false,
+        "poseReference": {
+          "body": "feminino",
+          "directions": [
+            "south",
+            "north"
+          ]
+        }
+      },
+      "source": "assets/weapon-item-120.png",
+      "sha256": "640f9acba4207c7bad15d5f569fc9d56588f40f8ababb70bcd604d6fad1eaef6",
+      "grip": {
+        "x": 70,
+        "y": 65
+      },
+      "tip": {
+        "x": 111,
+        "y": 65
+      },
+      "axisAngle": 1.5707963267948966,
+      "visibleHeight": 30,
+      "materialScale": 0.28846153846153844,
+      "renderDensity": 3,
+      "bounds": {
+        "x0": 12,
+        "y0": 38,
+        "x1": 115,
+        "y1": 91
+      },
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "7f4132d4-7a61-40cd-a3ba-2164743d1676",
+        "assetId": "7fa59b15-bdfe-5d8f-8aee-5ec5f297ce9b",
+        "candidate": 1,
+        "processing": "Straight compact forearm cannon regenerated to remove bent upper-arm geometry; source pixels preserved"
+      },
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "views": {
+        "south": {
+          "source": "assets/weapon-item-120-south.png",
+          "sha256": "fe484f60053c5e04bf164e5b41f13a5ae4d8aba5b210bef150d4de3a468ede53",
+          "grip": {
+            "x": 64,
+            "y": 84
+          },
+          "tip": {
+            "x": 64,
+            "y": 24
+          },
+          "axisAngle": 0,
+          "visibleHeight": 24,
+          "materialScale": 0.21052631578947367,
+          "renderDensity": 3,
+          "bounds": {
+            "x0": 36,
+            "y0": 8,
+            "x1": 91,
+            "y1": 121
+          },
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "10658643-55ab-4903-b6c6-36faa6a8469b",
+            "assetId": "8cba55d6-8140-56f5-aa47-11d4d86d6d43",
+            "candidate": 1,
+            "processing": "Front or rear view of the regenerated straight compact Serafim; source pixels preserved"
+          }
+        },
+        "north": {
+          "source": "assets/weapon-item-120-north.png",
+          "sha256": "076876813ae9e718d7d1852a3c28996bf140aa283124fc7836f75e692a2fffbf",
+          "grip": {
+            "x": 64,
+            "y": 84
+          },
+          "tip": {
+            "x": 64,
+            "y": 24
+          },
+          "axisAngle": 0,
+          "visibleHeight": 24,
+          "materialScale": 0.21052631578947367,
+          "renderDensity": 3,
+          "bounds": {
+            "x0": 33,
+            "y0": 7,
+            "x1": 100,
+            "y1": 120
+          },
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "61d226fc-9f23-4c3d-b52b-ab1244f39c54",
+            "assetId": "a3b25fe0-5ea7-59da-9d9f-4956ae958a7e",
+            "candidate": 3,
+            "processing": "Front or rear view of the regenerated straight compact Serafim; source pixels preserved"
+          }
+        }
+      },
+      "armour": {
+        "source": "assets/weapon-item-120-armour.png",
+        "sha256": "31d54d725254ea9869f7265ce08a10b9961e50488c9ab071de779ecb160c3235",
+        "shoulder": {
+          "x": 22,
+          "y": 64
+        },
+        "elbow": {
+          "x": 62,
+          "y": 64
+        },
+        "wrist": {
+          "x": 102,
+          "y": 64
+        },
+        "coverage": "full-arm",
+        "generation": {
+          "tool": "pixellab",
+          "model": "pro",
+          "jobId": "f1de0e49-c545-47d9-9df1-c8fd8f904c17",
+          "assetId": "72ee55c6-d634-517c-832d-35ea87b4286f",
+          "candidate": 2,
+          "processing": "Full connected shoulder-elbow-wrist sleeve, source pixels retained; rig and anatomy masks fit both bodies"
+        },
+        "sleevePadding": 1,
+        "crossScale": 3.5
+      }
+    },
+    {
+      "id": "weapon-121",
+      "itemId": 121,
+      "name": "Cetro das Monções",
+      "category": "focus",
+      "paired": false,
+      "effect": null,
+      "edgeSide": 0,
+      "reference": "assets/ui/items-hd/cetro-das-moncoes.png",
+      "referenceSha256": "4f5d03f56a67c6157758e814a79dd16ecf9c8005f17cc95bd28d1c88b21baa3f",
+      "iconGeneration": {
+        "tool": "pixellab",
+        "galleryId": "c0b7d903-b97e-4c75-aa22-e5d2daa92f4c"
+      },
+      "attachment": {
+        "kind": "staff"
+      },
+      "source": "assets/weapon-item-121.png",
+      "sha256": "b58febcddc6f442337e9ef6ef84f02f5bd09d299903346bf7f11ec54aa638b1d",
+      "grip": {
+        "x": 64,
+        "y": 86
+      },
+      "tip": {
+        "x": 64,
+        "y": 31
+      },
+      "axisAngle": 0,
+      "visibleHeight": 60,
+      "materialScale": 0.5128205128205128,
+      "renderDensity": 3,
+      "bounds": {
+        "x0": 44,
+        "y0": 7,
+        "x1": 83,
+        "y1": 123
+      },
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "5c809c4c-a772-4539-87a9-81a1c7970b25",
+        "assetId": "24a81306-b60c-57b4-9991-4bcb6752a639",
+        "candidate": 3,
+        "processing": "Source pixels preserved; logical fit without palette reduction",
+        "pixelRepair": {
+          "tool": "pixellab-pixelart-workbench",
+          "imageId": "e1f559a7-254b-4845-873b-8102e67a42ed",
+          "changedPixels": 1,
+          "reason": "Connect central gem mount to frame"
+        }
+      },
+      "frame": {
+        "width": 128,
+        "height": 128
+      }
+    },
+    {
+      "id": "weapon-122",
+      "itemId": 122,
+      "name": "Orbe do Trovão de Skypiea",
+      "category": "focus",
+      "paired": false,
+      "effect": null,
+      "edgeSide": 0,
+      "reference": "assets/ui/items-hd/orbe-do-trovao-de-skypiea.png",
+      "referenceSha256": "2297e15f4ef0debc5e1a055b4b4c53c4d1ca57178f45436f115361b78134f3a3",
+      "iconGeneration": {
+        "tool": "pixellab",
+        "galleryId": "f5742b48-5a39-44d5-90ee-6ef88036f434"
+      },
+      "attachment": {
+        "kind": "focus"
+      },
+      "source": "assets/weapon-item-122.png",
+      "sha256": "cb28bcd9336cec6c0e81da49a906c10b2b080fe9b06247bebe2f4d4b7b064a24",
+      "grip": {
+        "x": 64,
+        "y": 89
+      },
+      "tip": {
+        "x": 64,
+        "y": 30
+      },
+      "axisAngle": 0,
+      "visibleHeight": 22,
+      "materialScale": 0.2037037037037037,
+      "renderDensity": 3,
+      "bounds": {
+        "x0": 17,
+        "y0": 10,
+        "x1": 110,
+        "y1": 117
+      },
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "02101711-6df8-4ae1-afa9-e5a265afee26",
+        "assetId": "5deb1b12-2373-5ea6-a09f-d9dc1ad9ba2a",
+        "candidate": 2,
+        "processing": "Source pixels preserved; logical fit without palette reduction"
+      },
+      "frame": {
+        "width": 128,
+        "height": 128
+      }
+    },
+    {
+      "id": "weapon-123",
+      "itemId": 123,
+      "name": "Cajado da Tempestade Carmesim",
+      "category": "focus",
+      "paired": false,
+      "effect": null,
+      "edgeSide": 0,
+      "reference": "assets/ui/items-hd/cajado-da-tempestade-carmesim.png",
+      "referenceSha256": "04593ba8dfdb24b1dfad95d10c6cde9a1198fe8605ee7e2777fadea4a1ea1bb9",
+      "iconGeneration": {
+        "tool": "pixellab",
+        "galleryId": "fb30140c-1135-471c-9693-0891899268bc"
+      },
+      "attachment": {
+        "kind": "staff"
+      },
+      "source": "assets/weapon-item-123.png",
+      "sha256": "fb9348efcc05e666dbf78b893be4ef673d145b31ea4f17ebd7103db207b2ff63",
+      "grip": {
+        "x": 64,
+        "y": 86
+      },
+      "tip": {
+        "x": 64,
+        "y": 31
+      },
+      "axisAngle": 0,
+      "visibleHeight": 62,
+      "materialScale": 0.5688073394495413,
+      "renderDensity": 3,
+      "bounds": {
+        "x0": 48,
+        "y0": 11,
+        "x1": 80,
+        "y1": 119
+      },
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "6883b766-619c-438f-accf-702c7b07f431",
+        "assetId": "e1da5fdb-515d-58f6-8066-297b738e80be",
+        "candidate": 3,
+        "processing": "Source pixels preserved; logical fit without palette reduction"
+      },
+      "frame": {
+        "width": 128,
+        "height": 128
+      }
+    },
+    {
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "id": "weapon-124",
+      "itemId": 124,
+      "name": "Cetro da Calamidade dos Quatro Mares",
+      "category": "focus",
+      "paired": false,
+      "effect": null,
+      "edgeSide": 0,
+      "reference": "assets/ui/items-hd/cetro-da-calamidade-dos-quatro-mares.png",
+      "referenceSha256": "60632bf6f270ec5ff814c3473604e18772d2ac3fa733608c481f10040a2538c1",
+      "iconGeneration": {
+        "tool": "pixellab",
+        "galleryId": "10fd462b-fbff-4587-9178-65040797ee31"
+      },
+      "attachment": {
+        "kind": "staff"
+      },
+      "source": "assets/weapon-item-124.png",
+      "sha256": "8177482ef06285059fad3773956280f35568b6f97b3e141451ee0a5aa1cd3e31",
+      "grip": {
+        "x": 66,
+        "y": 86
+      },
+      "tip": {
+        "x": 64,
+        "y": 29
+      },
+      "axisAngle": 0,
+      "visibleHeight": 65,
+      "materialScale": 0.5803571428571429,
+      "renderDensity": 3,
+      "bounds": {
+        "x0": 48,
+        "y0": 11,
+        "x1": 89,
+        "y1": 122
+      },
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "c8809da7-7210-494f-b442-571ea8679115",
+        "assetId": "3cf156fc-b967-59c5-aafe-c5ab7f36330b",
+        "candidate": 0,
+        "processing": "PixelLab edit of the complete upright Crimson staff; new four-element crown and shaft retained as one object"
+      }
+    },
+    {
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "id": "weapon-125",
+      "itemId": 125,
+      "name": "Bastão Medicinal de Drum",
+      "category": "focus",
+      "paired": false,
+      "effect": null,
+      "edgeSide": 0,
+      "reference": "assets/ui/items-hd/bastao-medicinal-de-drum.png",
+      "referenceSha256": "ae2100f039fa79f1dcfb4bdd41995d16fdb0673b8c41e7ae45a6b17b8f290b16",
+      "iconGeneration": {
+        "tool": "pixellab",
+        "galleryId": "57cd8659-5945-4cc6-be14-b864d2fa179c"
+      },
+      "attachment": {
+        "kind": "staff"
+      },
+      "source": "assets/weapon-item-125.png",
+      "sha256": "077edcb2c13f606671d46d468426eee59251eeb187de7643dc0db36dd44c7cb5",
+      "grip": {
+        "x": 64,
+        "y": 85
+      },
+      "tip": {
+        "x": 64,
+        "y": 29
+      },
+      "axisAngle": 0,
+      "visibleHeight": 57,
+      "materialScale": 0.5428571428571428,
+      "renderDensity": 3,
+      "bounds": {
+        "x0": 49,
+        "y0": 12,
+        "x1": 78,
+        "y1": 116
+      },
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "11129af9-5382-46f1-9287-2782442d90c4",
+        "assetId": "cd902317-6a1c-51df-9070-6fc153e55260",
+        "candidate": 1,
+        "processing": "Source pixels preserved; logical fit without palette reduction"
+      }
+    },
+    {
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "id": "weapon-126",
+      "itemId": 126,
+      "name": "Báculo das Flores de Sakura",
+      "category": "focus",
+      "paired": false,
+      "effect": null,
+      "edgeSide": 0,
+      "reference": "assets/ui/items-hd/baculo-das-flores-de-sakura.png",
+      "referenceSha256": "e2988f448892b83d39837017634992358aef206c6e17d320a399203ca505c0f1",
+      "iconGeneration": {
+        "tool": "pixellab",
+        "galleryId": "93e53f0d-ead3-4948-8598-05124bb06711"
+      },
+      "attachment": {
+        "kind": "staff"
+      },
+      "source": "assets/weapon-item-126.png",
+      "sha256": "e398c6b5fa8858b8109896d94e6dee542a50b58ff43dd8984d7549d10934af6c",
+      "grip": {
+        "x": 64,
+        "y": 86
+      },
+      "tip": {
+        "x": 64,
+        "y": 31
+      },
+      "axisAngle": 0,
+      "visibleHeight": 62,
+      "materialScale": 0.5344827586206896,
+      "renderDensity": 3,
+      "bounds": {
+        "x0": 46,
+        "y0": 9,
+        "x1": 81,
+        "y1": 124
+      },
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "efdd1d29-fd33-40be-9283-9f828aae8a19",
+        "assetId": "8682eb89-ecb3-546e-af33-a87a13d6aef8",
+        "candidate": 2,
+        "processing": "Source pixels preserved; logical fit without palette reduction"
+      }
+    },
+    {
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "id": "weapon-127",
+      "itemId": 127,
+      "name": "Cajado das Marés Restauradoras",
+      "category": "focus",
+      "paired": false,
+      "effect": null,
+      "edgeSide": 0,
+      "reference": "assets/ui/items-hd/cajado-das-mares-restauradoras.png",
+      "referenceSha256": "b53be54dc894dbcb4535c3b937e2b7c1567eb01ac83cf96c26c01009127d3ebc",
+      "iconGeneration": {
+        "tool": "pixellab",
+        "galleryId": "777fc556-df40-44ed-8b16-10e213ef5f3d"
+      },
+      "attachment": {
+        "kind": "staff"
+      },
+      "source": "assets/weapon-item-127.png",
+      "sha256": "3af153d2330d87554d3f7194e36be7770e323d5901fee242baa52af56ffc8090",
+      "grip": {
+        "x": 64,
+        "y": 86
+      },
+      "tip": {
+        "x": 64,
+        "y": 31
+      },
+      "axisAngle": 0,
+      "visibleHeight": 62,
+      "materialScale": 0.5254237288135594,
+      "renderDensity": 3,
+      "bounds": {
+        "x0": 45,
+        "y0": 6,
+        "x1": 83,
+        "y1": 123
+      },
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "7c8ff838-18f4-462d-8582-9eef4db0632c",
+        "assetId": "e2cbdc15-41ab-54d7-80ef-31825391acb2",
+        "candidate": 0,
+        "processing": "Source pixels preserved; logical fit without palette reduction",
+        "pixelRepair": {
+          "tool": "pixellab-pixelart-workbench",
+          "imageId": "9a9ed818-d440-4202-bd5e-fe27cba60a3c",
+          "changedPixels": 10,
+          "reason": "Remove isolated scraps outside staff silhouette"
+        }
+      }
+    },
+    {
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "id": "weapon-128",
+      "itemId": 128,
+      "name": "Báculo do Milagre dos Mil Mares",
+      "category": "focus",
+      "paired": false,
+      "effect": null,
+      "edgeSide": 0,
+      "reference": "assets/ui/items-hd/baculo-do-milagre-dos-mil-mares.png",
+      "referenceSha256": "62f8a0a9e9643efe5db18805ae22dee4afea1ede212c3df3bc06c3861af81d4b",
+      "iconGeneration": {
+        "tool": "pixellab",
+        "galleryId": "a4e82fc0-3e9f-46a1-b992-e26d644c7b90"
+      },
+      "attachment": {
+        "kind": "staff"
+      },
+      "source": "assets/weapon-item-128.png",
+      "sha256": "06fb9b4379a223fe1a1d4cd8b82e23a1b55cb2499cf8de5aa54cf034756fe913",
+      "grip": {
+        "x": 64,
+        "y": 86
+      },
+      "tip": {
+        "x": 64,
+        "y": 31
+      },
+      "axisAngle": 0,
+      "visibleHeight": 65,
+      "materialScale": 0.5508474576271186,
+      "renderDensity": 3,
+      "bounds": {
+        "x0": 44,
+        "y0": 5,
+        "x1": 83,
+        "y1": 122
+      },
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "a830cfca-3b46-4108-af9a-2a8da54d8445",
+        "assetId": "c4e9dd3b-ecfb-56fc-8128-4ca23c1daf9d",
+        "candidate": 3,
+        "processing": "Source pixels preserved; logical fit without palette reduction"
       }
     }
   ],

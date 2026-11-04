@@ -72,6 +72,425 @@
   itemDefs.push(...MareAkuma.catalog.slice(5).map(fruitItemDef));
   itemDefs.push(...MareHakiProgression.fragments); // Append only: preserve all existing save indices.
   itemDefs.push(...BossDungeons.fragments); // Added by main#202; previous103 identities remain unchanged.
+  // Class armaments, batch 1. Append only: definitions 0..108 retain their identities.
+  // Rarity and level multipliers stay in MareForge; these are unmultiplied bases.
+  itemDefs.push(
+    {name:'Manoplas do Coral Negro',slot:'weapon',type:'brawler',attack:11,defense:2,hp:4,symbol:'✦',rarity:'epic',fixedRarity:true,attributes:{strength:3,vitality:2,dexterity:1},extraPool:['strength','vitality','dexterity','hp','crit','energy'],weaponVisual:'coral-impact',description:'Coral negro talhado em manoplas de combate. Reforça força e vitalidade, com impactos secos e fragmentos de coral.',icon_path:'assets/ui/items-hd/manoplas-do-coral-negro.png?v=class-batch1'},
+    {name:'Punhos do Dragão Carmesim',slot:'weapon',type:'brawler',attack:11,defense:2,hp:4,symbol:'✦',rarity:'legendary',fixedRarity:true,attributes:{strength:4,vitality:2,dexterity:1},extraPool:['strength','vitality','dexterity','hp','crit','energy'],weaponVisual:'dragon-impact',description:'Punhos carmesins gravados com escamas douradas. Favorecem força e golpes de impacto com assinatura rubra.',icon_path:'assets/ui/items-hd/punhos-do-dragao-carmesim.png?v=class-batch1'},
+    {name:'Luva do Abalo Sísmico',slot:'weapon',type:'brawler',attack:10,defense:4,hp:6,symbol:'✦',rarity:'legendary',fixedRarity:true,attributes:{strength:3,vitality:4,dexterity:1},extraPool:['strength','vitality','dexterity','hp','crit','energy'],weaponVisual:'seismic-impact',description:'Luva de combate em aço naval articulado, com núcleo de pressão e punho fechado. Especializadas em vitalidade e defesa, descarregam ondas concêntricas no impacto.',icon_path:'assets/ui/items-hd/luva-do-abalo-sismico.png?v=class-batch1'},
+    {name:'Manoplas da Ruptura dos Mares',slot:'weapon',type:'brawler',attack:11,defense:3,hp:6,symbol:'✦',rarity:'supreme',fixedRarity:true,attributes:{strength:4,vitality:3,dexterity:1},extraPool:['strength','vitality','dexterity','hp','crit','energy'],weaponVisual:'rupture-impact',description:'Manoplas supremas de metal negro e ouro. Fissuras rubras acompanham golpes pesados, unindo força e resistência.',icon_path:'assets/ui/items-hd/manoplas-da-ruptura-dos-mares.png?v=class-batch1'},
+    {name:'Mosquete do Vento Cortante',slot:'weapon',type:'gunner',attack:12,defense:0,hp:0,symbol:'◎',rarity:'epic',fixedRarity:true,attributes:{dexterity:3,strength:1},crit:.003,extraPool:['dexterity','strength','crit','energy','hp','vitality'],weaponVisual:'wind-shot',description:'Mosquete de madeira escura, aço e mecanismos dourados. Destreza favorece precisão e crítico; o disparo deixa um rastro de vento cortante.',icon_path:'assets/ui/items-hd/mosquete-do-vento-cortante.png?v=class-batch1'}
+  );
+  // Class armaments, batch 2. Append after the five previously reviewed items.
+  itemDefs.push(...[
+  {
+    "name": "Pistolas Gêmeas do Corsário",
+    "slot": "weapon",
+    "type": "gunner",
+    "attack": 12,
+    "defense": 0,
+    "hp": 0,
+    "symbol": "◎",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "dexterity": 4,
+      "strength": 1
+    },
+    "extraPool": [
+      "dexterity",
+      "strength",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "corsair-shot",
+    "description": "Pistolas de madeira escura e latão gravado. O par preserva a cadência existente, com destreza, força e crítico.",
+    "icon_path": "assets/ui/items-hd/pistolas-gemeas-do-corsario.png?v=class-batch2",
+    "crit": 0.004
+  },
+  {
+    "name": "Rifle do Horizonte da Grand Line",
+    "slot": "weapon",
+    "type": "gunner",
+    "attack": 13,
+    "defense": 0,
+    "hp": 0,
+    "symbol": "◎",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "dexterity": 4,
+      "strength": 2
+    },
+    "extraPool": [
+      "dexterity",
+      "strength",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "horizon-shot",
+    "description": "Rifle de precisão em aço azulado e madeira nobre, com bússola dourada e mira alinhada. Favorece destreza e crítico.",
+    "icon_path": "assets/ui/items-hd/rifle-do-horizonte-da-grand-line.png?v=class-batch2",
+    "crit": 0.004
+  },
+  {
+    "name": "Arcabuz do Juízo Celestial",
+    "slot": "weapon",
+    "type": "gunner",
+    "attack": 14,
+    "defense": 0,
+    "hp": 0,
+    "symbol": "◎",
+    "rarity": "supreme",
+    "fixedRarity": true,
+    "attributes": {
+      "dexterity": 4,
+      "strength": 2
+    },
+    "extraPool": [
+      "dexterity",
+      "strength",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "celestial-shot",
+    "description": "Arcabuz supremo branco e dourado. Seu mecanismo luminoso marca os disparos sem alterar os tempos de combate.",
+    "icon_path": "assets/ui/items-hd/arcabuz-do-juizo-celestial.png?v=class-batch2",
+    "crit": 0.004
+  },
+  {
+    "name": "Braço Mecânico de Ferro Salgado",
+    "slot": "weapon",
+    "type": "cyborg",
+    "attack": 9,
+    "defense": 5,
+    "hp": 10,
+    "symbol": "✦",
+    "rarity": "epic",
+    "fixedRarity": true,
+    "attributes": {
+      "vitality": 3,
+      "strength": 2,
+      "dexterity": 1
+    },
+    "extraPool": [
+      "vitality",
+      "strength",
+      "dexterity",
+      "hp",
+      "energy",
+      "crit"
+    ],
+    "weaponVisual": "iron-impact",
+    "description": "Braço articulado de aço naval com juntas de bronze. Reforça vitalidade e força, acompanhando os golpes da animação existente.",
+    "icon_path": "assets/ui/items-hd/braco-mecanico-de-ferro-salgado.png?v=class-batch2"
+  },
+  {
+    "name": "Canhão de Luz Pacifista",
+    "slot": "weapon",
+    "type": "cyborg",
+    "attack": 10,
+    "defense": 4,
+    "hp": 9,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "vitality": 4,
+      "strength": 3,
+      "dexterity": 1
+    },
+    "extraPool": [
+      "vitality",
+      "strength",
+      "dexterity",
+      "hp",
+      "energy",
+      "crit"
+    ],
+    "weaponVisual": "pacifista-shot",
+    "description": "Canhão compacto de antebraço em metal branco, ouro e núcleo ciano. Une resistência e força à assinatura luminosa dos disparos.",
+    "icon_path": "assets/ui/items-hd/canhao-de-luz-pacifista.png?v=class-batch2"
+  }
+]);
+  // Premium class armaments, batch 3; append-only identity.
+  itemDefs.push(...[
+  {
+    "name": "Punho Hidráulico do Colosso",
+    "slot": "weapon",
+    "type": "cyborg",
+    "attack": 11,
+    "defense": 5,
+    "hp": 12,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "vitality": 4,
+      "strength": 3,
+      "dexterity": 1
+    },
+    "extraPool": [
+      "vitality",
+      "strength",
+      "dexterity",
+      "hp",
+      "energy",
+      "crit"
+    ],
+    "weaponVisual": "hydraulic-impact",
+    "description": "Punho Hidráulico do Colosso. Equipamento de engenharia naval, com mecanismos articulados.",
+    "icon_path": "assets/ui/items-hd/punho-hidraulico-do-colosso.png?v=class-batch3"
+  },
+  {
+    "name": "Arsenal Final: Protocolo Serafim",
+    "slot": "weapon",
+    "type": "cyborg",
+    "attack": 12,
+    "defense": 6,
+    "hp": 14,
+    "symbol": "✦",
+    "rarity": "supreme",
+    "fixedRarity": true,
+    "attributes": {
+      "vitality": 4,
+      "strength": 3,
+      "dexterity": 1
+    },
+    "extraPool": [
+      "vitality",
+      "strength",
+      "dexterity",
+      "hp",
+      "energy",
+      "crit"
+    ],
+    "weaponVisual": "seraphim-shot",
+    "description": "Arsenal Final: Protocolo Serafim. Equipamento de engenharia naval, com mecanismos articulados.",
+    "icon_path": "assets/ui/items-hd/arsenal-final-protocolo-serafim.png?v=class-batch3"
+  },
+  {
+    "name": "Cetro das Monções",
+    "slot": "weapon",
+    "type": "strategist",
+    "attack": 9,
+    "defense": 1,
+    "hp": 4,
+    "symbol": "✦",
+    "rarity": "epic",
+    "fixedRarity": true,
+    "attributes": {
+      "intelligence": 3,
+      "spirit": 2
+    },
+    "extraPool": [
+      "intelligence",
+      "spirit",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "monsoon-shot",
+    "description": "Cetro das Monções. Equipamento de controle elemental, com cristal e metais refinados.",
+    "icon_path": "assets/ui/items-hd/cetro-das-moncoes.png?v=class-batch3"
+  },
+  {
+    "name": "Orbe do Trovão de Skypiea",
+    "slot": "weapon",
+    "type": "strategist",
+    "attack": 10,
+    "defense": 2,
+    "hp": 6,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "intelligence": 4,
+      "spirit": 2
+    },
+    "extraPool": [
+      "intelligence",
+      "spirit",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "thunder-shot",
+    "description": "Orbe do Trovão de Skypiea. Equipamento de controle elemental, com cristal e metais refinados.",
+    "icon_path": "assets/ui/items-hd/orbe-do-trovao-de-skypiea.png?v=class-batch3"
+  },
+  {
+    "name": "Cajado da Tempestade Carmesim",
+    "slot": "weapon",
+    "type": "strategist",
+    "attack": 11,
+    "defense": 1,
+    "hp": 4,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "intelligence": 4,
+      "spirit": 3
+    },
+    "extraPool": [
+      "intelligence",
+      "spirit",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "crimson-shot",
+    "description": "Cajado da Tempestade Carmesim. Equipamento de controle elemental, com cristal e metais refinados.",
+    "icon_path": "assets/ui/items-hd/cajado-da-tempestade-carmesim.png?v=class-batch3"
+  }
+]);
+  // Premium class armaments, batch 4; append-only identity.
+  itemDefs.push(...[
+  {
+    "name": "Cetro da Calamidade dos Quatro Mares",
+    "slot": "weapon",
+    "type": "strategist",
+    "attack": 12,
+    "defense": 3,
+    "hp": 8,
+    "symbol": "✦",
+    "rarity": "supreme",
+    "fixedRarity": true,
+    "attributes": {
+      "intelligence": 4,
+      "spirit": 3
+    },
+    "extraPool": [
+      "intelligence",
+      "spirit",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "calamity-shot",
+    "description": "Cetro da Calamidade dos Quatro Mares. Equipamento de controle elemental, com cristal e metais refinados.",
+    "icon_path": "assets/ui/items-hd/cetro-da-calamidade-dos-quatro-mares.png?v=class-batch4"
+  },
+  {
+    "name": "Bastão Medicinal de Drum",
+    "slot": "weapon",
+    "type": "healer",
+    "attack": 8,
+    "defense": 2,
+    "hp": 8,
+    "symbol": "✦",
+    "rarity": "epic",
+    "fixedRarity": true,
+    "attributes": {
+      "spirit": 3,
+      "intelligence": 2,
+      "vitality": 1
+    },
+    "extraPool": [
+      "spirit",
+      "intelligence",
+      "energy",
+      "hp",
+      "vitality",
+      "crit"
+    ],
+    "weaponVisual": "drum-shot",
+    "description": "Bastão Medicinal de Drum. Equipamento de restauração, com foco de energia e ornamentos navais.",
+    "icon_path": "assets/ui/items-hd/bastao-medicinal-de-drum.png?v=class-batch4"
+  },
+  {
+    "name": "Báculo das Flores de Sakura",
+    "slot": "weapon",
+    "type": "healer",
+    "attack": 9,
+    "defense": 3,
+    "hp": 10,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "spirit": 4,
+      "intelligence": 2,
+      "vitality": 1
+    },
+    "extraPool": [
+      "spirit",
+      "intelligence",
+      "energy",
+      "hp",
+      "vitality",
+      "crit"
+    ],
+    "weaponVisual": "sakura-shot",
+    "description": "Báculo das Flores de Sakura. Equipamento de restauração, com foco de energia e ornamentos navais.",
+    "icon_path": "assets/ui/items-hd/baculo-das-flores-de-sakura.png?v=class-batch4"
+  },
+  {
+    "name": "Cajado das Marés Restauradoras",
+    "slot": "weapon",
+    "type": "healer",
+    "attack": 10,
+    "defense": 3,
+    "hp": 12,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "spirit": 4,
+      "intelligence": 3,
+      "vitality": 1
+    },
+    "extraPool": [
+      "spirit",
+      "intelligence",
+      "energy",
+      "hp",
+      "vitality",
+      "crit"
+    ],
+    "weaponVisual": "tides-shot",
+    "description": "Cajado das Marés Restauradoras. Equipamento de restauração, com foco de energia e ornamentos navais.",
+    "icon_path": "assets/ui/items-hd/cajado-das-mares-restauradoras.png?v=class-batch4"
+  },
+  {
+    "name": "Báculo do Milagre dos Mil Mares",
+    "slot": "weapon",
+    "type": "healer",
+    "attack": 11,
+    "defense": 4,
+    "hp": 14,
+    "symbol": "✦",
+    "rarity": "supreme",
+    "fixedRarity": true,
+    "attributes": {
+      "spirit": 4,
+      "intelligence": 3,
+      "vitality": 2
+    },
+    "extraPool": [
+      "spirit",
+      "intelligence",
+      "energy",
+      "hp",
+      "vitality",
+      "crit"
+    ],
+    "weaponVisual": "miracle-shot",
+    "description": "Báculo do Milagre dos Mil Mares. Equipamento de restauração, com foco de energia e ornamentos navais.",
+    "icon_path": "assets/ui/items-hd/baculo-do-milagre-dos-mil-mares.png?v=class-batch4"
+  }
+]);
   return {items:itemDefs,slotNames,inventorySlotsLeft,inventorySlotsRight,capacity:BAG_CAPACITY,healerWeaponIndex};
  }
  const api={create};root.MareItemCatalog=api;if(typeof module!=='undefined')module.exports=api;

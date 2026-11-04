@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 import { createHash } from "node:crypto";
 import { getGameCatalog } from "../../apps/game-server/src/gameplay/catalog.js";
 const require = createRequire(import.meta.url);
-test("server and original browser rules expose all 109 definitions in the exact original order", () => {
+test("server and original browser rules expose 109 preserved definitions plus twenty class armaments in the exact original order", () => {
   const { create } = require("../../item-catalog.js");
   const forge = require("../../forge-system.js"),
     prison = require("../../prison-system.js"),
@@ -29,9 +29,9 @@ test("server and original browser rules expose all 109 definitions in the exact 
     "baseline captured before extraction; changing order or values requires an explicit rules migration",
   );
   const server = getGameCatalog();
-  assert.equal(server.items.length, 109);
-  assert.equal(server.rulesHash,'bb24314816adc23eca9f632f7eaa9d3a597eb26154f7eebb2f3cbb7a7619ea5b');
-  assert.deepEqual(c.items.slice(103),require('../../boss-dungeon-system.js').fragments);
+  assert.equal(server.items.length, 129);
+  assert.equal(server.rulesHash,'826287f53acc16e54b1839f466c6983e8434533c838476dbee5dee2b09fc6020');
+  assert.deepEqual(c.items.slice(103,109),require('../../boss-dungeon-system.js').fragments);
   assert.equal(server.items.filter((i) => i.type === "akuma_no_mi").length, 30);
   assert.equal(server.slots.length, 12);
   assert.equal(server.capacity, 120);

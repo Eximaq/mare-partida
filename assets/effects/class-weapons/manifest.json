@@ -1,0 +1,98 @@
+{
+  "121": {
+    "source": "assets/effects/class-weapons/projectile-121.png",
+    "sha256": "df8faf39b4cf9cbdd63564c96d546c96d86d0f5468a5b5989744acb621e2c40f",
+    "generation": {
+      "tool": "pixellab",
+      "model": "pro",
+      "jobId": "4b1fa3f8-9c53-4207-b4a9-6d4a6f5002f6",
+      "assetId": "83505ece-1c4d-592e-85af-c584bb300e54",
+      "quadrant": 0,
+      "processing": "Exact 128px quadrant crop; source pixels and alpha preserved"
+    }
+  },
+  "122": {
+    "source": "assets/effects/class-weapons/projectile-122.png",
+    "sha256": "3f41391ec2a56bc10827844d0dd23ab80a6b66c8ec5c104f27d20cfa3c240dea",
+    "generation": {
+      "tool": "pixellab",
+      "model": "pro",
+      "jobId": "4b1fa3f8-9c53-4207-b4a9-6d4a6f5002f6",
+      "assetId": "83505ece-1c4d-592e-85af-c584bb300e54",
+      "quadrant": 1,
+      "processing": "Exact 128px quadrant crop; source pixels and alpha preserved"
+    }
+  },
+  "123": {
+    "source": "assets/effects/class-weapons/projectile-123.png",
+    "sha256": "f430af4acbb0855d019f16cad5528e054ae440b7094dea693c32a069adf1da29",
+    "generation": {
+      "tool": "pixellab",
+      "model": "pro",
+      "jobId": "4b1fa3f8-9c53-4207-b4a9-6d4a6f5002f6",
+      "assetId": "83505ece-1c4d-592e-85af-c584bb300e54",
+      "quadrant": 2,
+      "processing": "Exact 128px quadrant crop; source pixels and alpha preserved"
+    }
+  },
+  "124": {
+    "source": "assets/effects/class-weapons/projectile-124.png",
+    "sha256": "e409c85de4db704246360072ffea62b74fda6c491de0fa1e61ffb298ebadea38",
+    "generation": {
+      "tool": "pixellab",
+      "model": "pro",
+      "jobId": "4b1fa3f8-9c53-4207-b4a9-6d4a6f5002f6",
+      "assetId": "83505ece-1c4d-592e-85af-c584bb300e54",
+      "quadrant": 3,
+      "processing": "Exact 128px quadrant crop; source pixels and alpha preserved"
+    }
+  },
+  "125": {
+    "source": "assets/effects/class-weapons/projectile-125.png",
+    "sha256": "bcf0e2a7082817d971cb3e9388fc840a5420d8e5bc7cfb5054e1934414a7ac99",
+    "generation": {
+      "tool": "pixellab",
+      "model": "pro",
+      "jobId": "c03892d4-6c7c-43e6-8793-a5e25f23fe02",
+      "assetId": "c8759824-9c04-59a5-87e2-2af31381ace4",
+      "quadrant": 0,
+      "processing": "Exact 128px quadrant crop; source pixels and alpha preserved"
+    }
+  },
+  "126": {
+    "source": "assets/effects/class-weapons/projectile-126.png",
+    "sha256": "4a8c84b9f9f38332d4465937b6136546e9430795ff81563298c27e968f857bc5",
+    "generation": {
+      "tool": "pixellab",
+      "model": "pro",
+      "jobId": "c03892d4-6c7c-43e6-8793-a5e25f23fe02",
+      "assetId": "c8759824-9c04-59a5-87e2-2af31381ace4",
+      "quadrant": 1,
+      "processing": "Exact 128px quadrant crop; source pixels and alpha preserved"
+    }
+  },
+  "127": {
+    "source": "assets/effects/class-weapons/projectile-127.png",
+    "sha256": "4e8bad9fc56ac46fcbedac7e07bcd75fb7b58565d96dfc3c9957c784c530d241",
+    "generation": {
+      "tool": "pixellab",
+      "model": "pro",
+      "jobId": "c03892d4-6c7c-43e6-8793-a5e25f23fe02",
+      "assetId": "c8759824-9c04-59a5-87e2-2af31381ace4",
+      "quadrant": 2,
+      "processing": "Exact 128px quadrant crop; source pixels and alpha preserved"
+    }
+  },
+  "128": {
+    "source": "assets/effects/class-weapons/projectile-128.png",
+    "sha256": "593e31ddf06760dd49b189c24c34502c41b37d5d6c63ac2990fe12f1cd9edf5f",
+    "generation": {
+      "tool": "pixellab",
+      "model": "pro",
+      "jobId": "c03892d4-6c7c-43e6-8793-a5e25f23fe02",
+      "assetId": "c8759824-9c04-59a5-87e2-2af31381ace4",
+      "quadrant": 3,
+      "processing": "Exact 128px quadrant crop; source pixels and alpha preserved"
+    }
+  }
+}
