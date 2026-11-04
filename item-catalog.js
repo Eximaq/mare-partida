@@ -219,6 +219,278 @@
     "icon_path": "assets/ui/items-hd/canhao-de-luz-pacifista.png?v=class-batch2"
   }
 ]);
+  // Premium class armaments, batch 3; append-only identity.
+  itemDefs.push(...[
+  {
+    "name": "Punho Hidráulico do Colosso",
+    "slot": "weapon",
+    "type": "cyborg",
+    "attack": 11,
+    "defense": 5,
+    "hp": 12,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "vitality": 4,
+      "strength": 3,
+      "dexterity": 1
+    },
+    "extraPool": [
+      "vitality",
+      "strength",
+      "dexterity",
+      "hp",
+      "energy",
+      "crit"
+    ],
+    "weaponVisual": "hydraulic-impact",
+    "description": "Punho Hidráulico do Colosso. Equipamento de engenharia naval, com mecanismos articulados.",
+    "icon_path": "assets/ui/items-hd/punho-hidraulico-do-colosso.png?v=class-batch3"
+  },
+  {
+    "name": "Arsenal Final: Protocolo Serafim",
+    "slot": "weapon",
+    "type": "cyborg",
+    "attack": 12,
+    "defense": 6,
+    "hp": 14,
+    "symbol": "✦",
+    "rarity": "supreme",
+    "fixedRarity": true,
+    "attributes": {
+      "vitality": 4,
+      "strength": 3,
+      "dexterity": 1
+    },
+    "extraPool": [
+      "vitality",
+      "strength",
+      "dexterity",
+      "hp",
+      "energy",
+      "crit"
+    ],
+    "weaponVisual": "seraphim-shot",
+    "description": "Arsenal Final: Protocolo Serafim. Equipamento de engenharia naval, com mecanismos articulados.",
+    "icon_path": "assets/ui/items-hd/arsenal-final-protocolo-serafim.png?v=class-batch3"
+  },
+  {
+    "name": "Cetro das Monções",
+    "slot": "weapon",
+    "type": "strategist",
+    "attack": 9,
+    "defense": 1,
+    "hp": 4,
+    "symbol": "✦",
+    "rarity": "epic",
+    "fixedRarity": true,
+    "attributes": {
+      "intelligence": 3,
+      "spirit": 2
+    },
+    "extraPool": [
+      "intelligence",
+      "spirit",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "monsoon-shot",
+    "description": "Cetro das Monções. Equipamento de controle elemental, com cristal e metais refinados.",
+    "icon_path": "assets/ui/items-hd/cetro-das-moncoes.png?v=class-batch3"
+  },
+  {
+    "name": "Orbe do Trovão de Skypiea",
+    "slot": "weapon",
+    "type": "strategist",
+    "attack": 10,
+    "defense": 2,
+    "hp": 6,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "intelligence": 4,
+      "spirit": 2
+    },
+    "extraPool": [
+      "intelligence",
+      "spirit",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "thunder-shot",
+    "description": "Orbe do Trovão de Skypiea. Equipamento de controle elemental, com cristal e metais refinados.",
+    "icon_path": "assets/ui/items-hd/orbe-do-trovao-de-skypiea.png?v=class-batch3"
+  },
+  {
+    "name": "Cajado da Tempestade Carmesim",
+    "slot": "weapon",
+    "type": "strategist",
+    "attack": 11,
+    "defense": 1,
+    "hp": 4,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "intelligence": 4,
+      "spirit": 3
+    },
+    "extraPool": [
+      "intelligence",
+      "spirit",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "crimson-shot",
+    "description": "Cajado da Tempestade Carmesim. Equipamento de controle elemental, com cristal e metais refinados.",
+    "icon_path": "assets/ui/items-hd/cajado-da-tempestade-carmesim.png?v=class-batch3"
+  }
+]);
+  // Premium class armaments, batch 4; append-only identity.
+  itemDefs.push(...[
+  {
+    "name": "Cetro da Calamidade dos Quatro Mares",
+    "slot": "weapon",
+    "type": "strategist",
+    "attack": 12,
+    "defense": 3,
+    "hp": 8,
+    "symbol": "✦",
+    "rarity": "supreme",
+    "fixedRarity": true,
+    "attributes": {
+      "intelligence": 4,
+      "spirit": 3
+    },
+    "extraPool": [
+      "intelligence",
+      "spirit",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "calamity-shot",
+    "description": "Cetro da Calamidade dos Quatro Mares. Equipamento de controle elemental, com cristal e metais refinados.",
+    "icon_path": "assets/ui/items-hd/cetro-da-calamidade-dos-quatro-mares.png?v=class-batch4"
+  },
+  {
+    "name": "Bastão Medicinal de Drum",
+    "slot": "weapon",
+    "type": "healer",
+    "attack": 8,
+    "defense": 2,
+    "hp": 8,
+    "symbol": "✦",
+    "rarity": "epic",
+    "fixedRarity": true,
+    "attributes": {
+      "spirit": 3,
+      "intelligence": 2,
+      "vitality": 1
+    },
+    "extraPool": [
+      "spirit",
+      "intelligence",
+      "energy",
+      "hp",
+      "vitality",
+      "crit"
+    ],
+    "weaponVisual": "drum-shot",
+    "description": "Bastão Medicinal de Drum. Equipamento de restauração, com foco de energia e ornamentos navais.",
+    "icon_path": "assets/ui/items-hd/bastao-medicinal-de-drum.png?v=class-batch4"
+  },
+  {
+    "name": "Báculo das Flores de Sakura",
+    "slot": "weapon",
+    "type": "healer",
+    "attack": 9,
+    "defense": 3,
+    "hp": 10,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "spirit": 4,
+      "intelligence": 2,
+      "vitality": 1
+    },
+    "extraPool": [
+      "spirit",
+      "intelligence",
+      "energy",
+      "hp",
+      "vitality",
+      "crit"
+    ],
+    "weaponVisual": "sakura-shot",
+    "description": "Báculo das Flores de Sakura. Equipamento de restauração, com foco de energia e ornamentos navais.",
+    "icon_path": "assets/ui/items-hd/baculo-das-flores-de-sakura.png?v=class-batch4"
+  },
+  {
+    "name": "Cajado das Marés Restauradoras",
+    "slot": "weapon",
+    "type": "healer",
+    "attack": 10,
+    "defense": 3,
+    "hp": 12,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "spirit": 4,
+      "intelligence": 3,
+      "vitality": 1
+    },
+    "extraPool": [
+      "spirit",
+      "intelligence",
+      "energy",
+      "hp",
+      "vitality",
+      "crit"
+    ],
+    "weaponVisual": "tides-shot",
+    "description": "Cajado das Marés Restauradoras. Equipamento de restauração, com foco de energia e ornamentos navais.",
+    "icon_path": "assets/ui/items-hd/cajado-das-mares-restauradoras.png?v=class-batch4"
+  },
+  {
+    "name": "Báculo do Milagre dos Mil Mares",
+    "slot": "weapon",
+    "type": "healer",
+    "attack": 11,
+    "defense": 4,
+    "hp": 14,
+    "symbol": "✦",
+    "rarity": "supreme",
+    "fixedRarity": true,
+    "attributes": {
+      "spirit": 4,
+      "intelligence": 3,
+      "vitality": 2
+    },
+    "extraPool": [
+      "spirit",
+      "intelligence",
+      "energy",
+      "hp",
+      "vitality",
+      "crit"
+    ],
+    "weaponVisual": "miracle-shot",
+    "description": "Báculo do Milagre dos Mil Mares. Equipamento de restauração, com foco de energia e ornamentos navais.",
+    "icon_path": "assets/ui/items-hd/baculo-do-milagre-dos-mil-mares.png?v=class-batch4"
+  }
+]);
   return {items:itemDefs,slotNames,inventorySlotsLeft,inventorySlotsRight,capacity:BAG_CAPACITY,healerWeaponIndex};
  }
  const api={create};root.MareItemCatalog=api;if(typeof module!=='undefined')module.exports=api;

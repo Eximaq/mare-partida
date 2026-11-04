@@ -54,6 +54,11 @@
       const replaced={headBase:!!catalog.originalHeads?.[body]?.[dir],face:look.face==='none'||!!descriptor('face',look.face)||!!catalog.originalFaces?.[body]?.[dir],hair:look.hair==='none'||hidesHair(look)||!!descriptor('hair',look.hair)||!!catalog.originalHairs?.[body]?.[dir],top:look.baseOutfitHidden||!!descriptor('torso',look.torso),pants:look.pants==='none'||!!descriptor('pants',look.pants)};
       return Object.entries(selected.layers).filter(([slot])=>!replaced[slot]).map(([,file])=>file);
     }
+    function idleArms(selected){
+      const clip=options.manifest?.bodies[selected.body]?.clips.idle[selected.direction];
+      if(!clip)throw Error('Missing native idle arm reference');
+      return {...selected,action:'idle',clip,layers:clip.layers,key:[selected.body,'idle',selected.direction].join(':')};
+    }
     function requiredFiles(selected,look,hidden=null) {
       look=headLook(look,hidden||[]);const inspectable=hidden===null;
       const files=choices(look).filter(p=>p.slot!=='hair'||inspectable||!hidesHair(look)).flatMap(p=>[p.style.layers[selected.body][selected.direction],...Object.values(p.style.parts?.[selected.body]?.[selected.direction]||{}),p.style.animations?.[selected.body]?.[selected.action]?.file].filter(Boolean));
@@ -65,6 +70,7 @@
       if(catalog.nativeOwnership?.atlases?.[selected.body]?.[selected.action])files.push(catalog.nativeOwnership.atlases[selected.body][selected.action].file);
       if(weapons?.descriptor(look.weapon,selected.direction,selected.action))files.push(weapons.descriptor(look.weapon,selected.direction,selected.action).source);
       if(weapons?.descriptor(look.weapon)?.armour)files.push(weapons.descriptor(look.weapon).armour.source);
+      if(weapons?.armPose(selected,0,look)){const idle=idleArms(selected),base={...look,weapon:'original'};files.push(...Object.values(idle.layers),...requiredFiles(idle,base,hidden));}
       return [...new Set(files)];
     }
     async function prepare(selected,look,hidden=null){return new Map(await Promise.all(requiredFiles(selected,look,hidden).map(async file=>[file,await load(file)])));}
@@ -198,12 +204,12 @@
         const mask=fromPixels(coveredFeet,spec.width,spec.height);
         for(const c of [originalFrame,pieces.pants?.full].filter(Boolean)){const cx=c.getContext('2d');cx.save();cx.globalCompositeOperation='destination-out';cx.drawImage(mask,0,0);cx.restore();}
       }
-      const carryPose=weapons?.carryPose(selected,fi,look);let carryArms=null,carryMask=null;
+      const referencePose=weapons?.armPose(selected,fi,look),carryPose=weapons?.carryPose(selected,fi,look)||referencePose;let carryArms=null,carryMask=null,torsoUnderArms=null;
       if(carryPose){
         // Retarget only the existing dressed arms. The body, face, legs and
         // current equipment retain their original art and animation frames.
         const source=canvas(spec.width,spec.height);draw(source.getContext('2d'),images,selected,fi,spec,hidden,{...look,weapon:'original'});
-        const pixels=source.getContext('2d').getImageData(0,0,spec.width,spec.height).data,at=points=>Object.fromEntries(points.map(j=>[j.label,{x:j.x*128+padding,y:j.y*128+padding}])),from=at(pose),to=at(carryPose),parts=[];
+        let pixels=source.getContext('2d').getImageData(0,0,spec.width,spec.height).data;const at=points=>Object.fromEntries(points.map(j=>[j.label,{x:j.x*128+padding,y:j.y*128+padding}])),from=at(pose),to=at(carryPose),parts=[];
         const center=from.NECK.x,neck=from.NECK.y,mask=new Uint8ClampedArray(pixels.length);
         const bones=['LEFT','RIGHT'].flatMap(side=>[['SHOULDER','ELBOW'],['ELBOW','ARM']].map(([a,b])=>({side,a:from[side+' '+a],b:from[side+' '+b],c:to[side+' '+a],d:to[side+' '+b],pixels:new Uint8ClampedArray(pixels.length)})));
         for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){
@@ -222,6 +228,27 @@
           const nearest=bones.map(b=>({b,d:MareMotion96.distanceToSegment({x,y},b.a,b.b)})).sort((a,b)=>a.d-b.d)[0];if(nearest.d>6.5)continue;
           nearest.b.pixels.set(pixels.subarray(i,i+4),i);mask[i+3]=255;
         }
+        if(referencePose){
+          // Fully visible native idle arms supply the texture. The old tech
+          // pose folds both wrists over the chest and hides half the forearms;
+          // stretching those occluded fragments would create broken limbs.
+          const idle=idleArms(selected),base=canvas(128,128);draw(base.getContext('2d'),images,idle,0,{width:128,height:128},hidden,{...look,weapon:'original'});
+          const padded=canvas(spec.width,spec.height);padded.getContext('2d').drawImage(base,padding,padding);pixels=padded.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
+          const idlePose=at(rigs.clips[selected.body].idle[selected.direction].poses[0]),a=catalog.nativeOwnership.atlases[selected.body].idle,atlas=canvas(128,128),ax=atlas.getContext('2d'),n=a.directions.indexOf(selected.direction)*a.framesPerDirection;
+          ax.drawImage(images.get(a.file),n%a.columns*a.cell,Math.floor(n/a.columns)*a.cell,a.cell,a.cell,0,0,128,128);const owner=MareTorso96.unpack(ax.getImageData(0,0,128,128).data);
+          for(const bone of bones){const names=bone===bones.find(b=>b.side===bone.side)?['SHOULDER','ELBOW']:['ELBOW','ARM'];bone.a=idlePose[bone.side+' '+names[0]];bone.b=idlePose[bone.side+' '+names[1]];bone.pixels.fill(0);}
+          const picked=new Uint8Array(spec.width*spec.height),neck=idlePose.NECK.y,center=idlePose.NECK.x;
+          for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){
+            const i=(y*spec.width+x)*4,xx=x-padding,yy=y-padding;if(xx<0||yy<0||xx>=128||yy>=128||!pixels[i+3]||y<neck-1)continue;
+            const p=yy*128+xx,near=bones.map(b=>({b,d:MareMotion96.distanceToSegment({x,y},b.a,b.b)})).sort((a,b)=>a.d-b.d)[0];
+            if(owner.arms[p]||owner.hands[p]||y<neck+10&&Math.abs(x-center)>9&&near.d<4.5){near.b.pixels.set(pixels.subarray(i,i+4),i);picked[y*spec.width+x]=1;}
+          }
+          for(let y=1;y<spec.height-1;y++)for(let x=1;x<spec.width-1;x++){
+            const p=y*spec.width+x,i=p*4;if(picked[p]||!pixels[i+3]||y<neck-1||Math.abs(x-center)<=10)continue;
+            if(![-1,0,1].some(dy=>[-1,0,1].some(dx=>picked[(y+dy)*spec.width+x+dx])))continue;
+            const near=bones.map(b=>({b,d:MareMotion96.distanceToSegment({x,y},b.a,b.b)})).sort((a,b)=>a.d-b.d)[0];if(near.d<=6.5)near.b.pixels.set(pixels.subarray(i,i+4),i);
+          }
+        }
         carryMask=fromPixels(mask,spec.width,spec.height);carryArms=canvas(spec.width,spec.height);
         for(const side of ['RIGHT','LEFT']){
           const [upper,lower]=bones.filter(b=>b.side===side),arm=new Uint8ClampedArray(pixels.length);let x0=spec.width,y0=spec.height,x1=0,y1=0;
@@ -233,6 +260,14 @@
         }
         for(const part of parts)carryArms.getContext('2d').drawImage(part,0,0);
         for(const target of [originalFrame,pieces.torso?.full,pieces.pants?.full].filter(Boolean)){const cx=target.getContext('2d');cx.save();cx.globalCompositeOperation='destination-out';cx.drawImage(carryMask,0,0);cx.restore();}
+        if(referencePose){
+          // A raised old hand may have covered the chest. Recover the actual
+          // selected garment (or bare torso) under that hand, not empty pixels.
+          const g=MareTorso96.geometry(pose),cloth=new Uint8Array(spec.width*spec.height);
+          for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){const p=y*spec.width+x;if(!mask[p*4+3])continue;const q=g.axis.at(x-padding,y-padding),t=q.along/g.axis.length;if(t>.08&&t<.97&&Math.abs(q.across)<MareTorso96.radius(g,t)-1)cloth[p]=1;}
+          const style=descriptor('torso',look.torso),file=style?.layers[selected.body][selected.direction],source=file?texture(images.get(file),file,'torso',null).pixels:restPixels;
+          if(source){torsoUnderArms=fromPixels(api.fitTorsoToBody(source,torsoBodyPixels,rest,pose,padding,spec.width,spec.height,foregroundPixels,{cloth}).full,spec.width,spec.height);originalFrame.getContext('2d').drawImage(torsoUnderArms,0,0);if(pieces.torso)pieces.torso.full.getContext('2d').drawImage(torsoUnderArms,0,0);}
+        }
       }
       ctx.clearRect(0,0,spec.width,spec.height);
       const calibration=catalog.headCalibration?.[selected.direction]||{};
@@ -345,23 +380,17 @@
       }
       if(pieces.gloves)for(const side of behind)visibleArm(pieces.gloves[side]);
       if(!carryPose&&pieces.gloves)for(const side of inFront)visibleArm(pieces.gloves[side]);
-      if(carryArms)ctx.drawImage(carryArms,0,0);
+      if(carryArms)visibleArm(carryArms);
       if(!carryPose)weapons?.drawGrips(ctx,weaponPlan,'front',gripSkin,gripGlove);
-      // South carry: draw the authored firearm after the native palm, gloves
-      // and gripping fingers. Shooting keeps its existing grip/depth order.
+      // The weapon wins over palm, glove and fingers in South and in side
+      // focus attacks. Keep this shared rule independent of the item ID.
       weapons?.draw(ctx,images,weaponPlan.filter(e=>e.frontOfHand),'front');
-      if(carryArms){
-        // The hand at screen-right closes over the long gun's trigger grip.
-        // Reuse its dressed native pixels, including the selected glove/skin.
-        const hand=carryPose.find(j=>j.label==='LEFT ARM'),cx=hand.x*128+padding,cy=hand.y*128+padding,pixels=carryArms.getContext('2d').getImageData(0,0,spec.width,spec.height);
-        for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++)if(Math.hypot(x+.5-cx,y+.5-cy)>4.6)pixels.data[(y*spec.width+x)*4+3]=0;
-        ctx.drawImage(fromPixels(pixels.data,spec.width,spec.height),0,0);
-      }
       let wornBody=neutralPixels,wornHands=ownership.hands;
       if(weaponPlan.some(e=>e.depth==='back'&&['gauntlet','wrist-cannon'].includes(e.model.attachment?.kind))){
         // Use the actual dressed silhouette, including hair/helmet/cloth that
         // extends outside the neutral body. The weapon-free recursion stops here.
         const occluder=canvas(spec.width,spec.height);draw(occluder.getContext('2d'),images,selected,fi,spec,hidden,{...look,weapon:'original'});
+        if(carryArms){const cx=occluder.getContext('2d');cx.globalCompositeOperation='destination-out';cx.drawImage(carryMask,0,0);cx.globalCompositeOperation='source-over';if(torsoUnderArms)cx.drawImage(torsoUnderArms,0,0);const arms=canvas(spec.width,spec.height),ax=arms.getContext('2d');ax.drawImage(carryArms,0,0);if(selected.direction==='north'&&pieces.cloak){ax.globalCompositeOperation='destination-out';ax.drawImage(pieces.cloak.full,0,0);}cx.drawImage(arms,0,0);}
         wornBody=occluder.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
         // The torso ownership atlas deliberately excludes palms inside the head
         // region. A raised native hand can still be visible there. Recover only
@@ -373,6 +402,12 @@
           if(nativeHand[i+3]&&[0,1,2,3].every(k=>nativeHand[i+k]===wornBody[i+k]))wornHands[p]=1;
         }
       }
+      if(referencePose&&carryArms){
+        // Ownership follows the retargeted native arms, including real gloves.
+        // Do not recover or repaint palms at the previous animation sockets.
+        const pixels=carryArms.getContext('2d').getImageData(0,0,spec.width,spec.height).data;wornHands=new Uint8Array(ownership.hands.length);
+        for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){const p=y*spec.width+x,i=p*4;if(pixels[i+3]&&weaponPlan.some(e=>Math.hypot(x-e.x,y-e.y)<=6.3))wornHands[p]=1;}
+      }
       const covered=weaponPlan.filter(e=>e.model.attachment?.coverPalm),armourMask=ownership.arms.slice();
       if(covered.length){
         // Some old far palms live in the body strip, outside the hand atlas.
@@ -380,7 +415,7 @@
         // the inspection skin pass. A hair/cloth pixel in front must still win.
         wornHands=wornHands.slice();const actual=ctx.getImageData(0,0,ctx.canvas.width,ctx.canvas.height),transform=ctx.getTransform();
         for(const entry of covered){
-          const j=pose.find(p=>p.label===entry.side+' ARM'),e=pose.find(p=>p.label===entry.side+' ELBOW'),s=pose.find(p=>p.label===entry.side+' SHOULDER');
+          const wornPose=carryPose||pose,j=wornPose.find(p=>p.label===entry.side+' ARM'),e=wornPose.find(p=>p.label===entry.side+' ELBOW'),s=wornPose.find(p=>p.label===entry.side+' SHOULDER');
           const a={x:s.x*128+padding,y:s.y*128+padding},b={x:e.x*128+padding,y:e.y*128+padding},c={x:j.x*128+padding,y:j.y*128+padding};
           for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){
             const p=y*spec.width+x,i=p*4,near=Math.hypot(x-entry.x,y-entry.y)<=6.3;

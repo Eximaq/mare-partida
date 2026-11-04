@@ -31,7 +31,7 @@
   const map = await new Promise((resolve, reject) => {
     const img = new Image(); img.onload = () => resolve(img); img.onerror = reject; img.src = '../../assets/lobby-map.png';
   });
-  const wardrobe = MareWardrobe96.create(catalog, appearanceRigs, image, {weapons:weaponCatalog});
+  const wardrobe = MareWardrobe96.create(catalog, appearanceRigs, image, {weapons:weaponCatalog,manifest});
   const controlNames={hair:'Cabelo',face:'Rosto',skin:'Pele',hairColor:'Cor do cabelo',torso:'Torso',weapon:'Arma',pants:'Calças',boots:'Calçados',gloves:'Luvas',cloak:'Capa',head:'Cabeça'};
   for(const [slot,label] of Object.entries(controlNames)){
     const wrapper=document.createElement('label');wrapper.textContent=label+' ';const select=document.createElement('select');select.id='look-'+slot;select.dataset.look=slot;

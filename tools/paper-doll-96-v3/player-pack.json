@@ -3,11 +3,11 @@
   "productionEnabled": true,
   "ownerApprovedOn": "2026-10-30",
   "manifestRevision": "structural-occlusion-v10-2",
-  "weaponRevision": "weapons96-hd-batch1-d03f45c3d7",
+  "weaponRevision": "weapons96-hd-2672f34f5015",
   "source": "Existing native96 materials and authored animations; owner authorised default use in Sprint2.",
   "headgearPolicy": "../../headgear-visibility.js",
   "renderer": "native96",
-  "assetRevision": "native96-1db188f70568892e",
+  "assetRevision": "native96-140e85ce1f8e0a7f",
   "resources": {
     "assets/appearance3-face-almond-feminino-east.png": [
       128,
@@ -3941,7 +3941,63 @@
       128,
       128
     ],
+    "assets/weapon-item-119-armour.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-119-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-119.png": [
+      128,
+      128
+    ],
     "assets/weapon-item-12.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-120-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-120-south.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-120.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-121.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-122.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-123.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-124.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-125.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-126.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-127.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-128.png": [
       128,
       128
     ],

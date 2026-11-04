@@ -146,3 +146,33 @@ wardrobe.js, motion.js, weapons.json, player-pack.json, PNGs dos materiais e
 ícones, testes específicos e contratos de catálogo compartilhado. Capturas
 comparativas ficam fora do Git. O proprietário aprovou seguir com os próximos
 armamentos e projéteis após esta revisão.
+
+## Lotes 3 e 4 — materiais e projéteis, 04/11/2026
+
+Os IDs 119–128 completam os vinte armamentos: Colosso, Serafim, Monções,
+Trovão, Carmesim, Calamidade, Drum, Sakura, Marés e Milagre. Permanecem
+intactas as primeiras 119 definições; cada uma das cinco classes recebe
+um Épico, dois Lendários e um Supremo. Ícones e materiais PixelLab Pro;
+fontes, candidatos e hashes em weapons.json. Oito projéteis de magia/suporte
+gerados no PixelLab, separados sem alterar pixels ou alfa, com origem em
+assets/effects/class-weapons/manifest.json. Os novos estilos acompanham o
+projétil atual e preservam um hit por ataque.
+
+O Serafim foi substituído por canhão reto e compacto, com vistas frontal e
+traseira próprias. A referência feminina orienta somente os braços masculinos
+em North/South; a textura vem de braços nativos completos. Cabeça, corpo e
+pernas masculinos não são substituídos. O peitoral exposto pelo novo gesto
+é recomposto com o material equipado, sem apagar a arte original.
+
+A revisão também recuperou a coroa completa do Cetro da Calamidade. O gerador
+de release agora sincroniza as versões do manifesto e das armas, além dos
+hashes, evitando rejeição do conjunto atual no carregamento.
+
+Validação deste ponto de recuperação: 26 testes Node, 2 do catálogo
+compartilhado, 20 combates no cliente original e 6 na distribuição estática,
+retorno desarmado e emissores nativos: passaram. Chrome: 960 frames de cobertura,
+40 espelhos, 1.332 composições com e sem as duas luvas existentes, sem falhas
+nas regiões verificadas. PostgreSQL/multiplayer real não executados.
+
+Após este ponto o proprietário solicitou consolidar a política dinâmica de
+camadas e cobrir o braço inteiro do Serafim; esse é o incremento seguinte.

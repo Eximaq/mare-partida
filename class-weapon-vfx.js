@@ -12,9 +12,20 @@
   'horizon-shot':{color:'#95d8ff',shape:'tracer'},
   'celestial-shot':{color:'#fff1bb',shape:'tracer'},
   'iron-impact':{color:'#b8becb',shape:'shards'},
-  'pacifista-shot':{color:'#8cf7ff',shape:'beam'}
+  'pacifista-shot':{color:'#8cf7ff',shape:'beam'},
+  'hydraulic-impact':{color:'#d9b16a',shape:'rings'},
+  'seraphim-shot':{color:'#e7fcff',shape:'beam'},
+  'monsoon-shot':{color:'#a4eced',shape:'wind',asset:121},
+  'thunder-shot':{color:'#80bcff',shape:'rings',asset:122},
+  'crimson-shot':{color:'#ed626e',shape:'crescent',asset:123},
+  'calamity-shot':{color:'#eac67b',shape:'rings',asset:124},
+  'drum-shot':{color:'#97e5b0',shape:'rings',asset:125},
+  'sakura-shot':{color:'#f2addb',shape:'crescent',asset:126},
+  'tides-shot':{color:'#7cdbeb',shape:'wind',asset:127},
+  'miracle-shot':{color:'#f9e5ad',shape:'rings',asset:128}
  });
- const cache=new Map();
+ const cache=new Map(),missiles=new Map();
+ if(typeof Image!=='undefined')for(const theme of Object.values(themes))if(theme.asset){const image=new Image();image.src='assets/effects/class-weapons/projectile-'+theme.asset+'.png';missiles.set(theme.asset,image);}
  const style=definition=>Object.hasOwn(themes,definition?.weaponVisual)?definition.weaponVisual:null;
  function hit(ctx,key,kind,x,y,elapsed,options={}){
   const theme=themes[key],vfx=root.MareCombatVfx,index=vfx.frame(kind,elapsed,options);
@@ -39,8 +50,13 @@
   ctx.restore();return true;
  }
  function projectile(ctx,p,options={}){
-  const theme=themes[p.weaponStyle],beam=p.kind==='cyborg'&&['iron-impact','pacifista-shot'].includes(p.weaponStyle),bullet=p.kind==='gunner'&&['wind-shot','corsair-shot','horizon-shot','celestial-shot'].includes(p.weaponStyle);
-  if(!theme||!beam&&!bullet)return false;
+  const theme=themes[p.weaponStyle],beam=p.kind==='cyborg'&&['iron-impact','pacifista-shot','hydraulic-impact','seraphim-shot'].includes(p.weaponStyle),bullet=p.kind==='gunner'&&['wind-shot','corsair-shot','horizon-shot','celestial-shot'].includes(p.weaponStyle),magic=theme?.asset&&['mage','healer'].includes(p.kind);
+  if(!theme||!beam&&!bullet&&!magic)return false;
+  if(magic&&p.phase!=='impact'&&p.phase!=='done'){
+   const image=missiles.get(theme.asset);if(!image?.complete||!image.naturalWidth)return false;
+   // Generated material follows the existing projectile, not a second entity.
+   ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(p.x,p.y);ctx.rotate(p.angle);const size=p.weaponStyle==='calamity-shot'||p.weaponStyle==='miracle-shot'?40:34;ctx.drawImage(image,-size/2,-size/2,size,size);ctx.restore();return true;
+  }
   if(p.phase==='impact')return hit(ctx,p.weaponStyle,p.kind,p.x,p.y,p.elapsed,{start:root.MareCombatVfx.impactStart(p.kind),width:64});
   if(p.phase==='done')return true;
   if(beam){

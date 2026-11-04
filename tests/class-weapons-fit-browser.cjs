@@ -10,7 +10,7 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
   const result=await page.evaluate(async()=>{
    const q=__review96v3,skin=new Set(MareAppearance96.skins.light.ramp.slice(1).map(hex=>hex.toLowerCase())),failures=[];let frames=0,coveredPixels=0;
    const colour=(p,i)=>'#'+[0,1,2].map(k=>p[i+k].toString(16).padStart(2,'0')).join('');
-   for(const body of ['masculino','feminino'])for(const [action,ids]of [['idle',[109,110,111,112,117,118]],['walk',[109,110,111,112,117,118]],['attack-unarmed',[109,110,111,112,117]],['attack-tech',[118]]])for(const direction of ['south','north','east']){
+   for(const body of ['masculino','feminino'])for(const [action,ids]of [['idle',[109,110,111,112,117,118,119,120]],['walk',[109,110,111,112,117,118,119,120]],['attack-unarmed',[109,110,111,112,117,119]],['attack-tech',[118,120]]])for(const direction of ['south','north','east']){
     const selected=q.selection(body,action,direction),spec=MareMotion96.clipSpec(q.manifest,selected.clip),look={hair:'hair-swept',face:'face-calm',skin:'light',hairColor:'brown',torso:'item-6',pants:'item-21',boots:'item-8',gloves:'original',inspectionBareHands:true};
     const images=new Map(await Promise.all(Object.values(selected.layers).map(async f=>[f,await q.image(f)])));
     for(const id of ids)for(const [k,v]of await q.wardrobe.prepare(selected,{...look,weapon:'weapon-'+id}))images.set(k,v);
@@ -23,7 +23,7 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
       for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){
        const p=y*spec.width+x,i=((y*3+1)*spec.width*3+x*3+1)*4;if(!bare[i+3]||!skin.has(colour(bare,i))||![0,1,2,3].every(k=>bare[i+k]===headless[i+k]))continue;
        const hand=entries.some(e=>{const dx=x-e.x,dy=y-e.y;return Math.hypot(dx,dy)<=5.6&&dx*Math.cos(e.handAngle)+dy*Math.sin(e.handAngle)>=-4;});
-       const pose=q.appearanceRigs.clips[body][action][direction].poses[f],joint=side=>Object.fromEntries(pose.filter(j=>j.label.startsWith(side+' ')).map(j=>[j.label.slice(side.length+1),{x:j.x*128+(spec.width-128)/2,y:j.y*128+(spec.height-128)/2}])),armDistance=side=>{const j=joint(side);return Math.min(MareMotion96.distanceToSegment({x,y},j.SHOULDER,j.ELBOW),MareMotion96.distanceToSegment({x,y},j.ELBOW,j.ARM));},mechanicalArm=id===117&&owned.arms[p]&&armDistance('RIGHT')<=armDistance('LEFT');
+       const pose=q.appearanceRigs.clips[body][action][direction].poses[f],joint=side=>Object.fromEntries(pose.filter(j=>j.label.startsWith(side+' ')).map(j=>[j.label.slice(side.length+1),{x:j.x*128+(spec.width-128)/2,y:j.y*128+(spec.height-128)/2}])),armDistance=side=>{const j=joint(side);return Math.min(MareMotion96.distanceToSegment({x,y},j.SHOULDER,j.ELBOW),MareMotion96.distanceToSegment({x,y},j.ELBOW,j.ARM));},mechanicalArm=[117,119].includes(id)&&owned.arms[p]&&armDistance('RIGHT')<=armDistance('LEFT');
        if(!hand&&!(id===110&&owned.arms[p])&&!mechanicalArm)continue;
        // Compare exact native skin colours, not broad gold/red thresholds.
        coveredPixels++;if([0,1,2,3].every(k=>bare[i+k]===equipped[i+k])){leaks++;if(pixels.length<6)pixels.push({x,y});}
@@ -46,18 +46,18 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
       const a=equipped.getContext('2d'),b=only.getContext('2d');a.scale(3,3);b.scale(3,3);a.imageSmoothingEnabled=b.imageSmoothingEnabled=false;
       q.wardrobe.draw(a,images,selected,f,spec,[],{...look,weapon:'weapon-'+id});weapons.draw(b,images,weapons.plan(selected,f,spec,{weapon:'weapon-'+id},owner),'front');
       const actual=a.getImageData(0,0,equipped.width,equipped.height).data,expected=b.getImageData(0,0,only.width,only.height).data;
-      const carry=weapons.carryPose(selected,f,{weapon:'weapon-'+id}),hand=carry?.find(j=>j.label==='LEFT ARM'),pad=(spec.width-128)/2;
-      for(let i=0;i<expected.length;i+=4)if(expected[i+3]===255){const x=Math.floor((i/4%only.width)/3)+.5,y=Math.floor(Math.floor(i/4/only.width)/3)+.5,overGrip=hand&&Math.hypot(x-hand.x*128-pad,y-hand.y*128-pad)<=4.6;if(!overGrip&&![0,1,2,3].every(k=>actual[i+k]===expected[i+k]))throw Error('South carry weapon hidden outside approved grip: '+[id,body,action,f,i/4]);southWeaponPixels++;}southCarryFrames++;
+
+      for(let i=0;i<expected.length;i+=4)if(expected[i+3]===255){if(![0,1,2,3].every(k=>actual[i+k]===expected[i+k]))throw Error('South carry weapon hidden by hand or glove: '+[id,body,action,f,i/4]);southWeaponPixels++;}southCarryFrames++;
      }
     }
    }
    // West is a pixel-exact mirror of the full East composite, including armour.
-   let mirrors=0;for(const body of ['masculino','feminino'])for(let id=109;id<=118;id++){
+   let mirrors=0;for(const body of ['masculino','feminino'])for(let id=109;id<=128;id++){
     const look={weapon:'weapon-'+id,torso:'item-6',skin:'light',inspectionBareHands:true},east=await q.render(body,'walk','east',4,[],look),west=await q.render(body,'walk','west',4,[],look),a=east.getContext('2d').getImageData(0,0,east.width,east.height).data,b=west.getContext('2d').getImageData(0,0,west.width,west.height).data,d=east.mareDensity;
     for(let y=0;y<east.height;y++)for(let x=d;x<east.width;x++){const i=(y*east.width+x)*4,j=(y*east.width+east.width+d-1-x)*4;for(let k=0;k<4;k++)if(a[i+k]!==b[j+k])throw Error('West mirror differs');}mirrors++;
    }
    return {frames,coveredPixels,mirrors,southCarryFrames,southWeaponPixels,failures};
   });
-  assert.deepEqual(errors,[]);assert.deepEqual(result.failures,[],'native hand/arm skin remains uncovered');assert.equal(result.frames,720);assert.equal(result.mirrors,20);assert.equal(result.southCarryFrames,144);console.log(JSON.stringify(result));
+  assert.deepEqual(errors,[]);assert.deepEqual(result.failures,[],'native hand/arm skin remains uncovered');assert.equal(result.frames,960);assert.equal(result.mirrors,40);assert.equal(result.southCarryFrames,144);console.log(JSON.stringify(result));
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exitCode=1;});
