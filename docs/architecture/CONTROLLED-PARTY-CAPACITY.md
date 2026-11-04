@@ -1,5 +1,8 @@
 # Comparação controlada 6/6 e 8/4 — PR #232
 
+Continuação posterior: [espera entre salas e concorrência limitada](ROOM-QUEUE-CONCURRENCY.md).
+Os resultados abaixo registram a revisão `633ddef` e permanecem como baseline.
+
 **Parecer: REPROVADO para capacidade.** O gargalo de resolução de `Math`
 foi corrigido; os cancelamentos por atraso da fila permanecem.
 

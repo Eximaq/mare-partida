@@ -4,6 +4,8 @@
 
 **Comparação 6/6 e 8/4:** [comparação controlada, custo da VM e aceite de capacidade](docs/architecture/CONTROLLED-PARTY-CAPACITY.md). Uma correção de CPU não equivale à aprovação da fila de simulação.
 
+**Fila de salas:** [concorrência limitada às conexões existentes e regressão PostgreSQL](docs/architecture/ROOM-QUEUE-CONCURRENCY.md). Resultados funcionais e de capacidade são avaliados separadamente.
+
 **Ciclos de simulação:** [navegação conservadora, orçamento por lote e ensaios de 50/100 jogadores](docs/architecture/SIMULATION-CYCLE-BUDGET.md). Resultados separados para solo e Party; capacidade de 3.000 ainda não certificada.
 
 **Consultas de combate:** [leituras em lote, autorização preservada e limites atuais de carga](docs/architecture/COMBAT-DATABASE-READS.md).

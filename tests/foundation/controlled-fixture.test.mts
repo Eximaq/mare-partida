@@ -2,6 +2,27 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {spawnSync} from 'node:child_process';
 
+test('concurrent room transactions retain independent loot and UUID streams across awaits',()=>{
+ const fixture=new URL('../../tools/load/controlled-fixture.mjs',import.meta.url).href;
+ const pgUrl=new URL('../../node_modules/pg/lib/index.js',import.meta.url).href;
+ const workerCode=`
+  import {parentPort,workerData} from 'node:worker_threads';import crypto from 'node:crypto';
+  const pg=(await import(${JSON.stringify(pgUrl)})).default;
+  // Characterize the fixture's query/async boundary without opening sockets.
+  pg.Client.prototype.query=async()=>({rows:[]});await import(${JSON.stringify(fixture)});
+  const ids=['11111111-1111-4111-8111-111111111111','22222222-2222-4222-8222-222222222222'];
+  async function room(id){const c=new pg.Client();await c.query('BEGIN');await c.query('SELECT *,clock_timestamp() now FROM mare_game.party_instances WHERE id=$1',[id]);
+   const values=[];for(let i=0;i<3;i++){await new Promise(r=>setTimeout(r,id===ids[0]?3:1));values.push(crypto.randomInt(0,1000000),crypto.randomUUID());}
+   await c.query('COMMIT');return values;}
+  const values=workerData.concurrent?await Promise.all(ids.map(room)):[await room(ids[0]),await room(ids[1])];parentPort.postMessage(values);
+ `;
+ const source=`import {Worker} from 'node:worker_threads';const out=[];
+  for(const concurrent of [false,true]){const w=new Worker(new URL('data:text/javascript,'+encodeURIComponent(${JSON.stringify(workerCode)})),{workerData:{concurrent,databaseUrl:'postgresql://fixture@127.0.0.1:55433/mare_test_'+ 'a'.repeat(32),kind:'party',index:0,capacityLayout:'6/6',capacityRooms:Array(12).fill('fixture')}});out.push(await new Promise((resolve,reject)=>{w.once('message',resolve);w.once('error',reject);}));}
+  console.log(JSON.stringify(out));`;
+ const result=spawnSync(process.execPath,['--input-type=module','-e',source],{encoding:'utf8',timeout:15000,windowsHide:true});
+ assert.equal(result.status,0,result.stderr);const [serial,concurrent]=JSON.parse(result.stdout.trim());assert.deepEqual(concurrent,serial);
+});
+
 test('controlled fixture command UUIDs cannot collide between setup and simulation workers',()=>{
  const fixture=new URL('../../tools/load/controlled-fixture.mjs',import.meta.url).href;
  const source=`
