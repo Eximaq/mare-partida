@@ -1,0 +1,4 @@
+'use strict';const test=require('node:test'),assert=require('node:assert/strict'),T=require('../game-tooltips.js');
+const a={name:'LV. 100 Armadura',gear:true,level:100,rarity:'supreme',rarityName:'Supremo',potential:76,stats:{defense:67,attributes:{strength:40}},power:2052},b={...a,name:'LV. 100 Casaco',rarity:'legendary',potential:29,stats:{defense:45,energy:184},power:742};
+test('both compared items show real potential with no duplicate level or narrative',()=>{const html=T.itemHTML(a,b);assert(html.includes('Potencial 76%'));assert(html.includes('Potencial 29%'));assert(!html.includes(' · LV 100'));assert(html.includes('LV. 100 Armadura'));assert(html.includes('aria-valuenow="76"'));});
+test('comparison includes losses for attributes present only on equipped item',()=>{const html=T.itemHTML(a,b);assert(html.includes('−184'));assert(html.includes('+40'));assert(html.includes('+1310'));});

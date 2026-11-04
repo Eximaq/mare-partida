@@ -23,7 +23,7 @@
     {name:'Compasso de Tempestade',slot:'weapon',type:'strategist',attack:8,defense:0,hp:0,symbol:'❖',rarity:'common'},
     {name:'Orbe das Correntes',slot:'weapon',type:'strategist',attack:14,defense:1,hp:0,symbol:'◇',rarity:'rare'}
   ];
-  const slotNames = {head:'CABEÇA',necklace:'COLAR',coat:'TORSO',legs:'PERNEIRAS',boots:'PÉS',weapon:'ARMA PRINCIPAL',cloak:'CAPA',gloves:'MÃOS',ring:'ANEL',belt:'CINTO',charm:'ACESSÓRIO',akuma_no_mi:'AKUMA NO MI'};
+  const slotNames = {head:'CABEÇA',necklace:'COLAR',coat:'PEITORAL',legs:'CALÇA',boots:'PÉS',weapon:'ARMA PRINCIPAL',cloak:'CAPA',gloves:'MÃOS',ring:'ANEL',belt:'CINTO',charm:'ACESSÓRIO',akuma_no_mi:'AKUMA NO MI'};
   const inventorySlotsLeft=['head','necklace','coat','legs','boots'];
   const inventorySlotsRight=['weapon','cloak','gloves','ring','belt','charm','akuma_no_mi'];
   const BAG_CAPACITY=120;
@@ -1222,6 +1222,7 @@
     "equipmentSet": "Vestes do Imperador do Horizonte Final"
   }
 ]);
+  itemDefs.push(MareForge.weaponFragment); // Append only: index 185.
   return {items:itemDefs,slotNames,inventorySlotsLeft,inventorySlotsRight,capacity:BAG_CAPACITY,healerWeaponIndex};
  }
  const api={create};root.MareItemCatalog=api;if(typeof module!=='undefined')module.exports=api;

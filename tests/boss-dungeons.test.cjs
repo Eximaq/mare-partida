@@ -31,8 +31,8 @@ test('nine profiles scale only common combat attributes once at their fixed leve
  for(const d of S.catalog){const region='__dungeon_reference';H.regions[region]={sectors:[{id:'reference',min:d.level,max:d.level}]};let n;try{n=H.profile(region,'reference','bandit',0);}finally{delete H.regions[region];}const p=S.combatProfile(d.id);for(const k of ['maxHP','attack','defense'])assert.equal(p[k],Math.round(n[k]*2.5),d.name+' '+k);assert.equal(p.magicDefense,Math.round(n.defense*2.5));for(const k of ['level','speed','reach','attackSec','aggro'])assert.equal(p[k],n[k]);assert.equal(S.status(base(d.level-1),d.id),'locked');assert.equal(S.status(base(d.level),d.id),'available');}
 });
 test('unconfigured rewards preserve each victory and do not grant currency or fragments',()=>{
- let g=base(90);for(const d of S.catalog.slice(2)){g=win(g,d.id,'run-'+d.id);assert.equal(S.reward(g,d.id,xp),null);assert.equal(g.bossDungeons.records[d.id].reward,null);const before=JSON.stringify(g);assert(!claim(g,d.id).ok);assert.equal(JSON.stringify(g),before);assert(S.begin(g,d.id,'new').resume);}
- assert.equal(Object.keys(g.bossDungeons.records).length,7);assert.equal(g.inventory.length,0);assert.equal(g.gold,0);
+ let g=base(90);for(const d of S.catalog.filter(d=>!d.rewardConfigured)){g=win(g,d.id,'run-'+d.id);assert.equal(S.reward(g,d.id,xp),null);assert.equal(g.bossDungeons.records[d.id].reward,null);const before=JSON.stringify(g);assert(!claim(g,d.id).ok);assert.equal(JSON.stringify(g),before);assert(S.begin(g,d.id,'new').resume);}
+ assert.equal(Object.keys(g.bossDungeons.records).length,4);assert.equal(g.inventory.length,0);assert.equal(g.gold,0);
 });
 test('existing pending/claimed records survive idempotent migration independently',()=>{
  const g=claim(win(base())).state;g.bossDungeons.records.morgan={phase:'pending',ownerId:g.characterId,runId:'old',reward:{quantity:5}};

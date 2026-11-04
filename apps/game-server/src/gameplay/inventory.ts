@@ -31,7 +31,7 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
  const T=require('../../../../talent-system.js'),U=require('../../../../ultimate-system.js'),g={classId:identity.class_id,talentBuilds:{[identity.class_id]:passives.build||T.empty()}},underworld=U.selected(g)==='underworld',lootMultiplier=underworld?2:1,rareChance=Math.min(.5,(T.bonuses(g).rareChance||0)+(T.keystone(g)==='lightHands'?.2:0));
  const battle=require('../../../../world-battle.cjs');if(passives.xpGrant!==undefined&&(!Number.isSafeInteger(passives.xpGrant)||passives.xpGrant<0))throw new AuthFault(503,'party_xp_invalid');let xp=BigInt(passives.xpGrant??0),gold=BigInt(first?.gold??0);
  if(!Number.isSafeInteger(potionsUsed)||potionsUsed<0||potionsUsed>after.potions)throw new AuthFault(503,'potion_stock_conflict');after.potions-=potionsUsed;
- const make=(def:number,level:number,rarity:string,origin:string)=>forge.normalizeItem({id:randomUUID(),def,level,rarity,plus:0,locked:false,obtainedAt:Date.now(),origin},defs,random);
+ const make=(def:number,level:number,rarity:string,origin:string)=>forge.generateItem({id:randomUUID(),def,level,rarity,plus:0,locked:false,obtainedAt:Date.now(),origin},defs,random);
  for(const steal of passives.steals??[]){
   if(T.keystone(g)!=='lightHands'||!Number.isInteger(steal.amount)||steal.amount<1||steal.amount>6)throw new AuthFault(503,'invalid_talent_reward');
   await client.query('INSERT INTO mare_game.battle_talent_steals(character_id,spawn_id,total) VALUES($1,$2,$3) ON CONFLICT(character_id,spawn_id) DO UPDATE SET total=mare_game.battle_talent_steals.total+EXCLUDED.total',[id,steal.spawnId,steal.amount]);gold+=BigInt(steal.amount);
@@ -44,18 +44,12 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
  for(const k of kills){
   const r=k.reward;xp+=BigInt(r.xp);gold+=BigInt(Math.round(r.gold*battle.catalog.factions[identity.faction_id].gold));
   if(random()<Math.min(1,r.materialChance*lootMultiplier))after.materials=Math.min(1000000000,after.materials+r.materials);
-  if(random()<Math.min(1,r.gearChance*lootMultiplier)&&after.inventory.length<120){
-   const rarity=battle.hunt.rarity(k.area,k.monster.type==='boss'||require('../../../../monster-catalog.js')[k.monster.type]?.boss===true,random(),rareChance);
-   const eligible=defs.map((d,i)=>({d,i})).filter(({d})=>!d.kind&&d.type!=='akuma_no_mi'&&(d.slot!=='weapon'||d.type===identity.class_id)&&(!d.fixedRarity||d.rarity===rarity&&d.rarity!=='supreme'));
-   const chosen=eligible[Math.floor(random()*eligible.length)];if(!chosen)throw new AuthFault(503,'loot_catalog_unavailable');
-   after.inventory.unshift(make(chosen.i,r.gearLevel,rarity,battle.hunt.get(k.area).name));
-  }
+  if(after.inventory.length<120){const plan=forge.normalLoot(defs,state.level,battle.hunt.get(k.area),random);if(plan){const item=make(plan.def,plan.level,plan.rarity,battle.hunt.get(k.area).name);item.generation.source='map:'+k.area;after.inventory.unshift(item);}}
   if(random()<Math.min(1,r.potionChance*lootMultiplier))after.potions=Math.min(1000000000,after.potions+r.potions);
   if(require('../../../../haki-system.js').drop({...k.monster,source:k.monster.source??'world'},random)&&after.inventory.length<120){const def=defs.findIndex(d=>d.kind==='haki-book');if(def<0)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(def,1,'epic',battle.hunt.get(k.area).name));}
   if(underworld&&k.monster.type!=='boss'&&after.inventory.length<120){
    const special=U.loot(g,random);
    if(special.box){const def=defs.findIndex(d=>d.kind==='pearl-box'&&d.boxLevel===1);if(def<0)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(def,1,String(defs[def]!.rarity??'common'),'Senhor do Submundo'));}
-   if(special.legendary&&after.inventory.length<120){const eligible=defs.map((d,i)=>({d,i})).filter(({d})=>!d.kind&&d.type!=='akuma_no_mi'&&(d.slot!=='weapon'||d.type===identity.class_id)&&(!d.fixedRarity||d.rarity==='legendary'));const chosen=eligible[Math.floor(random()*eligible.length)];if(!chosen)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(chosen.i,r.gearLevel,'legendary','Senhor do Submundo'));}
   }
  }
  if(passives.grant){if(after.inventory.length>=120)throw new AuthFault(409,'inventory_full');after.inventory.push(passives.grant);}
@@ -81,6 +75,7 @@ function valid(input: unknown,owner?:string): OriginalInventory {
     if(owner&&item.boundToCharacter&&item.boundToCharacter!==owner)throw new AuthFault(503,'original_inventory_unavailable');
     const def=defs[item.def];
     if((item.type==='akuma_no_mi'||item.fruitId!==undefined)&&(def?.type!=='akuma_no_mi'||item.fruitId!==def.fruitId))throw new AuthFault(503,'original_inventory_unavailable');
+    if(def?.kind==='weapon-fragment'&&(item.materialId!==def.materialId||!item.quantity||!item.boundToCharacter||item.binding!=='character'))throw new AuthFault(503,'original_inventory_unavailable');
     if(def?.kind==='akuma-fragment'&&(!item.boundToCharacter||item.binding!=='character'||item.materialId!==def.materialId||item.rank!==def.rank||!item.quantity))throw new AuthFault(503,'original_inventory_unavailable');
   }
   for (const [slot, item] of Object.entries(v.equipment))
@@ -109,7 +104,7 @@ export function originalInventoryView(row:any,id:string){
         equipment: row.equipment,
         materials: row.materials,
         potions: row.potions,
-        forgeVersion: 4,
+        forgeVersion: 5,
         forgeSeq: Number(row.forge_seq),
         forgeHistory: row.forge_history,
       },id)
@@ -177,7 +172,7 @@ export async function event(
   );
 }
 function newGear(def: number) {
-  return forge.normalizeItem(
+  return forge.generateItem(
     {
       id: randomUUID(),
       def,
@@ -236,7 +231,7 @@ async function initialize(
     ) as OriginalInventory["equipment"],
     materials: 3,
     potions: 4,
-    forgeVersion: 4,
+    forgeVersion: 5,
     forgeSeq: 0,
     forgeHistory: [],
   };
@@ -429,6 +424,7 @@ export async function mutateOriginalInventory(
         {
           ...i,
           gold: Number(state.gold),
+          characterId:id,level:state.level,
           classId: (
             await client.query(
               "SELECT class_id FROM mare_game.characters WHERE id=$1",
@@ -442,7 +438,7 @@ export async function mutateOriginalInventory(
         Date.now(),
       );
       if (!result.ok) throw new AuthFault(409, "forge_operation_rejected");
-      const { gold, classId, ...next } = result.state;
+      const { gold, classId, characterId, level, ...next } = result.state;
       i = valid(next);
       delta = BigInt(gold) - BigInt(state.gold);
       outcome = result.result;

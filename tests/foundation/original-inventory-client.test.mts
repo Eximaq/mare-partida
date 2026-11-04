@@ -142,7 +142,7 @@ test("original online buttons submit intentions without running offline gold, it
     ["equipItem", "unequip"],
     ["unequip", "sellItem"],
     ["sellItem", "forgeCost"],
-    ["runForgeOperation", "extraListHtml"],
+    ["performForgeOperation", "extraListHtml"],
   ]) {
     const start = source.search(
       new RegExp("  (?:async )?function " + name + "\\("),
@@ -159,7 +159,7 @@ test("original online buttons submit intentions without running offline gold, it
     await box.action(
       name === "unequip"
         ? "boots"
-        : name === "runForgeOperation"
+        : name === "performForgeOperation"
           ? { type: "upgrade", itemId: "server-instance", expectedSeq: 0 }
           : "server-instance",
     );
@@ -191,10 +191,10 @@ test("native forge dialog projects its shared UI fields into the strict operatio
       return false;
     },
   };
-  const a = source.indexOf("  function runForgeOperation("),
+  const a = source.indexOf("  function performForgeOperation("),
     b = source.indexOf("  function extraListHtml(", a);
   runInNewContext(
-    source.slice(a, b) + ";globalThis.run=runForgeOperation;",
+    source.slice(a, b) + ";globalThis.run=performForgeOperation;",
     box,
   );
   const accepted = await box.run({
