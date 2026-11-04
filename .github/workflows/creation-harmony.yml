@@ -7,6 +7,7 @@ on:
       - 'gameplay-harmony.css'
       - 'hud-nautical.css'
       - 'tests/hud_nautical_browser.py'
+      - 'tests/hud_compact_browser.py'
       - 'assets/ui/hud-nautical-v2/**'
       - 'game.js'
       - 'index.html'
@@ -66,11 +67,13 @@ jobs:
       - name: Composição náutica e controles em telas atuais
         env:
           MARE_TEST_URL: http://127.0.0.1:8172/dist/
+          HUD_COMPACT_EVIDENCE: /tmp/mare-creation-harmony/compact
           HUD_EVIDENCE: /tmp/mare-creation-harmony/nautical
         run: |
           python -m http.server 8172 --bind 127.0.0.1 > /tmp/nautical-hud.log 2>&1 &
           sleep 2
           python tests/hud_nautical_browser.py
+          python tests/hud_compact_browser.py
       - name: Original inventory and forge online UI contract (no hosted provider)
         run: python tests/run_honors_hd_browser.py tests/original-inventory-online-browser.cjs --dist --offline
       - name: Original online world and travel UI contract

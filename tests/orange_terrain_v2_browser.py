@@ -30,6 +30,7 @@ with sync_playwright() as p:
             q.locator('#terrain-inspection').screenshot(path=str(dest/(name+'-2x.png')))
     q.locator('#terrain-inspection').evaluate('e=>e.remove()')
     for sector in ['rua','praca','picadeiro']:
+        if q.locator('#journeyToggle').get_attribute('aria-expanded')=='false':q.locator('#journeyToggle').click()
         q.locator('#huntRoute').click();q.locator('[data-hunt-sector='+sector+']').click()
         for _ in range(80):
             q.clock.run_for(250)

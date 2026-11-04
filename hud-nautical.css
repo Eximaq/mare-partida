@@ -4,8 +4,9 @@
   --brass-400:#edc77c; --brass-500:#bc8840; --ivory-100:#fff1d2;
   --hud-surface:linear-gradient(115deg,#103442,#04131d 75%);
   --hud-text:var(--ivory-100); --hud-muted:#c0ced0; --hud-line:#c295505e;
-  --hud-edge:24px; --hud-profile:360px; --hud-side:340px; --hud-chat:360px;
+  --hud-edge:24px; --hud-profile:320px; --hud-side:260px; --hud-chat:360px;
   --hud-heading:Georgia,'Times New Roman',serif; --hud-body:'Alegreya Sans',sans-serif;
+  --hud-frame-space:8px; --hud-frame-width:14px; --hud-panel-padding:8px; --hud-slot:46px;
   --hud-rope:url('assets/ui/hud-nautical-v2/rope-frame.png');
   --hud-rail:url('assets/ui/hud-nautical-v2/rail-frame.png');
 }
@@ -14,32 +15,32 @@
   box-sizing:border-box; image-rendering:auto;
 }
 /* The generated rope is nine-sliced, so neither its strands nor corners stretch. */
-#app.hud-nautical .nautical-profile,#app.hud-nautical #floatingChat,#app.hud-nautical #journeyHud,#app.hud-nautical .action-panel {
-  background:var(--hud-surface); background-clip:border-box; border:20px solid transparent;
-  border-image:var(--hud-rope) 150 / 25px / 3px stretch;
-  border-radius:18px; box-shadow:0 5px 12px #00101955; overflow:visible;
+#app.hud-nautical .nautical-profile,#app.hud-nautical #floatingChat,#app.hud-nautical #floatingExpedition,#app.hud-nautical .action-panel {
+  background:var(--hud-surface); background-clip:border-box; border:var(--hud-frame-space) solid transparent;
+  border-image:var(--hud-rope) 150 / var(--hud-frame-width) / 2px stretch;
+  border-radius:10px; box-shadow:0 5px 12px #00101955; overflow:visible;
 }
 #app.hud-nautical .topbar.nautical-profile {
   inset:max(var(--hud-edge),env(safe-area-inset-top)) auto auto max(var(--hud-edge),env(safe-area-inset-left));
   width:var(--hud-profile); height:auto; min-height:0; max-height:none; margin:0;
-  padding:0; display:flex; flex-direction:column; gap:10px; transform:none;
+  padding:var(--hud-panel-padding); display:flex; flex-direction:column; gap:4px; transform:none;
 }
 #app.hud-nautical .nautical-profile::before,#app.hud-nautical .nautical-profile::after {content:none}
-#app.hud-nautical .nautical-profile .hud-captain {display:grid; grid-template-columns:76px minmax(0,1fr) 46px; gap:10px; align-items:center; min-height:84px}
-#app.hud-nautical .nautical-profile #characterPosterToggle {position:relative; inset:auto; width:76px; height:80px; min-height:0; padding:0; margin:0; border:0; border-image:none; background:none; box-shadow:none; transform:none; overflow:visible}
-#app.hud-nautical .nautical-profile #hudFactionEmblem {position:static; width:88px; height:88px; max-width:none; margin-left:-6px; object-fit:contain; image-rendering:auto; filter:drop-shadow(0 2px 2px #0008)}
-#app.hud-nautical .nautical-profile .hud-identity {min-width:0; display:flex; flex-direction:column; gap:4px}
-#app.hud-nautical .nautical-profile #hudHierarchyTitle {position:static; display:block; width:auto; height:auto; padding:0; margin:0; color:var(--hud-text); font:700 21px/1.12 var(--hud-heading); white-space:normal; overflow:visible; text-overflow:clip; text-align:left; letter-spacing:-.35px}
-#app.hud-nautical .nautical-profile #hudFactionName {position:static; width:auto; height:auto; text-align:left; font:400 15px/1.15 var(--hud-body); color:var(--hud-muted); white-space:normal}
+#app.hud-nautical .nautical-profile .hud-captain {display:grid; grid-template-columns:56px minmax(0,1fr) 40px; gap:8px; align-items:center; min-height:60px}
+#app.hud-nautical .nautical-profile #characterPosterToggle {position:relative; inset:auto; width:56px; height:56px; min-height:0; padding:0; margin:0; border:0; border-image:none; background:none; box-shadow:none; transform:none; overflow:visible}
+#app.hud-nautical .nautical-profile #hudFactionEmblem {position:static; width:56px; height:56px; max-width:none; margin-left:0; object-fit:contain; image-rendering:auto; filter:drop-shadow(0 2px 2px #0008)}
+#app.hud-nautical .nautical-profile .hud-identity {min-width:0; display:flex; flex-direction:column; gap:2px}
+#app.hud-nautical .nautical-profile #hudHierarchyTitle {position:static; display:block; width:auto; height:auto; padding:0; margin:0; color:var(--hud-text); font:600 14px/1.15 var(--hud-body); white-space:normal; overflow:visible; text-overflow:clip; text-align:left; letter-spacing:0}
+#app.hud-nautical .nautical-profile #hudFactionName {position:static; width:auto; height:auto; text-align:left; font:400 13px/1.15 var(--hud-body); color:var(--hud-muted); white-space:normal}
 #app.hud-nautical .nautical-profile .profile-power {position:static; width:auto; height:auto; display:flex; flex-direction:row; align-items:baseline; gap:8px; justify-content:flex-start; margin:0; padding:0; background:none; border:0}
 #app.hud-nautical .nautical-profile .profile-power>span {display:inline; font:500 14px/1.2 var(--hud-body); color:var(--hud-text)}
-#app.hud-nautical .nautical-profile #miniPower {min-width:48px; font:700 18px/1.2 var(--hud-body); color:var(--brass-400)}
-#app.hud-nautical .nautical-profile .profile-level {position:static; align-self:start; display:flex; flex-direction:column; justify-content:center; align-items:center; width:46px; height:64px; margin:0; padding:5px 2px 10px; background:linear-gradient(#163d4d,#061a27); border:1px solid var(--brass-500); border-image:none; border-radius:4px 4px 18px 18px; box-shadow:inset 0 0 0 2px #061822,0 2px 3px #0008; color:var(--hud-text)}
+#app.hud-nautical .nautical-profile #miniPower {min-width:48px; font:700 16px/1.2 var(--hud-body); color:var(--brass-400)}
+#app.hud-nautical .nautical-profile .profile-level {position:static; align-self:start; display:flex; flex-direction:column; justify-content:center; align-items:center; width:40px; height:48px; margin:0; padding:4px 2px; background:linear-gradient(#163d4d,#061a27); border:1px solid var(--brass-500); border-image:none; border-radius:4px 4px 18px 18px; box-shadow:inset 0 0 0 2px #061822,0 2px 3px #0008; color:var(--hud-text)}
 #app.hud-nautical .nautical-profile .profile-level>span {font:600 13px/1 var(--hud-body)}
-#app.hud-nautical .nautical-profile #miniLevel {width:100%; text-align:center; position:static; font:700 26px/1.2 var(--hud-body); color:var(--hud-text)}
-#app.hud-nautical .nautical-profile .hud-vitals {display:grid; gap:7px}
-#app.hud-nautical .nautical-profile .parchment-meter {position:relative; inset:auto; display:flex; align-items:center; justify-content:space-between; width:100%; height:25px; margin:0; padding:0 10px; isolation:isolate; overflow:hidden; border:1px solid var(--brass-400); border-image:none; border-radius:8px; background:#040d16; box-shadow:inset 0 2px 3px #000a}
-#app.hud-nautical .nautical-profile .parchment-meter .mini-meter {position:absolute; inset:2px; z-index:-1; width:auto; height:auto; margin:0; padding:0; border:0; border-radius:5px; overflow:hidden; background:none}
+#app.hud-nautical .nautical-profile #miniLevel {width:100%; text-align:center; position:static; font:700 22px/1.2 var(--hud-body); color:var(--hud-text)}
+#app.hud-nautical .nautical-profile .hud-vitals {display:grid; gap:4px}
+#app.hud-nautical .nautical-profile .parchment-meter {position:relative; inset:auto; display:flex; align-items:center; justify-content:space-between; width:100%; height:18px; margin:0; padding:0 6px; isolation:isolate; overflow:hidden; border:1px solid var(--brass-400); border-image:none; border-radius:4px; background:#040d16; box-shadow:inset 0 2px 3px #000a}
+#app.hud-nautical .nautical-profile .parchment-meter .mini-meter {position:absolute; inset:1px; z-index:-1; width:auto; height:auto; margin:0; padding:0; border:0; border-radius:5px; overflow:hidden; background:none}
 #app.hud-nautical .nautical-profile .parchment-meter .mini-meter i {height:100%; display:block; background:linear-gradient(#fd4775,#c6073d 55%,#770f2a); box-shadow:inset 0 1px 1px #fff9}
 #app.hud-nautical .nautical-profile .parchment-energy .mini-meter i {background:linear-gradient(#bc76ff,#7c2eda 55%,#401385)}
 #app.hud-nautical .nautical-profile .parchment-xp .mini-meter i {background:linear-gradient(#ffe69b,#cc942c 55%,#875e18)}
@@ -48,20 +49,24 @@
 #app.hud-nautical .nautical-profile .parchment-hp .parchment-meter-label::before {content:'♥'}
 #app.hud-nautical .nautical-profile .parchment-energy .parchment-meter-label::before {content:'ϟ'}
 #app.hud-nautical .nautical-profile .parchment-xp .parchment-meter-label::before {content:'★'}
-#app.hud-nautical .nautical-profile .hud-resources {display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; padding-top:9px; border-top:1px solid var(--hud-line)}
-#app.hud-nautical .nautical-profile .profile-berry {background:none; border:0; position:static; display:flex; flex:1; align-items:center; gap:6px; width:auto; height:24px; padding:0; margin:0; color:var(--hud-text); font:500 14px/1 var(--hud-body)}
+#app.hud-nautical .nautical-profile .hud-resources {display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; padding-top:4px; border-top:1px solid var(--hud-line)}
+#app.hud-nautical .nautical-profile .profile-berry {background:none; border:0; position:static; display:flex; flex:1; align-items:center; gap:6px; width:auto; height:22px; padding:0; margin:0; color:var(--hud-text); font:500 14px/1 var(--hud-body)}
 #app.hud-nautical .nautical-profile .berry-coin {width:20px; height:20px; flex:none}
 #app.hud-nautical .nautical-profile #miniGold {position:static; margin-left:auto; color:var(--brass-400); font:700 16px/1 var(--hud-body)}
-#app.hud-nautical .nautical-profile #miniWillpower {display:flex; position:relative; inset:auto; flex:1; gap:8px; width:auto; height:24px; margin:0; padding:0 0 0 10px; background:none; border:0; border-left:1px solid var(--hud-line); overflow:visible}
+#app.hud-nautical .nautical-profile #miniWillpower {display:flex; position:relative; inset:auto; flex:1; gap:8px; width:auto; height:22px; margin:0; padding:0 0 0 10px; background:none; border:0; border-left:1px solid var(--hud-line); overflow:visible}
 #app.hud-nautical .nautical-profile #miniWillpower::after {content:none}
 #app.hud-nautical .nautical-profile #miniWillpower .mini-meter {display:none; inset:auto 0 -4px 10px; height:2px; width:auto; opacity:.8}
 #app.hud-nautical .nautical-profile #miniWillpower :is(b,span:first-child) {font:500 14px/1 var(--hud-body); color:var(--hud-text)}
 #app.hud-nautical .nautical-profile #miniTalentResource {width:100%; margin:0; height:22px; border-radius:4px}
 #app.hud-nautical .nautical-profile #miniTalentResource :is(b,span:first-child) {font-size:14px}
-#app.hud-nautical .nautical-profile .hud-attributes {position:absolute; left:-14px; top:64px; padding:0; width:44px; height:44px}
+#app.hud-nautical .nautical-profile .hud-attributes {position:absolute; left:-8px; top:40px; padding:0; width:44px; height:44px}
 #app.hud-nautical .nautical-profile #attributePointsHud {width:44px; height:44px; min-height:44px; padding:0; border:0; border-image:none; background:none; font-size:0; box-shadow:none; color:var(--hud-text)}
 #app.hud-nautical .nautical-profile #attributePointsHud::after {content:'+'; display:grid; place-items:center; width:24px; height:24px; margin:auto; border:1px solid var(--brass-400); border-radius:50%; background:#163747; font:700 21px/1 var(--hud-body)}
 #app.hud-nautical .nautical-profile #attributePointsHud.has-points::after {background:#795011; color:#fff1c6}
+#app.hud-nautical .nautical-profile #hudPlayerName {display:block; color:var(--hud-text); font:700 20px/1.1 var(--hud-heading); overflow-wrap:anywhere}
+#app.hud-nautical .nautical-profile .hud-meta {display:flex; align-items:baseline; justify-content:space-between; gap:8px; min-height:20px}
+#app.hud-nautical .nautical-profile #hudClassName {font:400 14px/1.2 var(--hud-body); color:var(--hud-muted); text-align:right}
+#app.hud-nautical .nautical-profile :is(#miniLevel,#miniPower,#miniHPText,#miniEnergyText,#miniXPText,#miniGold,#willpowerText) {font-variant-numeric:tabular-nums}
 /* Rails use the central strip of the original transparent illustration. */
 #app.hud-nautical #mainMenu,#app.hud-nautical .location-heading,#app.hud-nautical .world-command button {border:0; border-image:none; border-radius:12px; background:var(--hud-surface); box-shadow:0 4px 10px #00101955}
 #app.hud-nautical #mainMenu::before,#app.hud-nautical .location-heading::before,#app.hud-nautical .world-command button::before {content:''; position:absolute; display:block; width:auto; height:auto; inset:-3px; transform:none; background:var(--hud-rail) center/100% 260% no-repeat; pointer-events:none; z-index:1}
@@ -71,6 +76,7 @@
 #app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger):is(:hover,[aria-expanded=true]) {background:linear-gradient(transparent,#bd8b3e40); box-shadow:inset 0 -2px var(--brass-400)}
 #app.hud-nautical #mainMenu :is(.character-menu-anchor,.social-menu-anchor,.captain-menu-anchor) {flex:none; width:auto; position:static}
 #app.hud-nautical #mainMenu .menu-tooltip {font-size:14px; background:#071e2b; color:var(--hud-text); border:1px solid var(--brass-500)}
+#app.hud-nautical #mainMenu .character-quick-menu {top:calc(100% + 8px); bottom:auto; max-height:calc(100dvh - var(--menu-bottom) - 24px)}
 #app.hud-nautical #hudUtilities {position:fixed; inset:var(--hud-edge) auto auto 50%; transform:translateX(-50%); width:440px; max-width:none; gap:8px; align-items:center; margin:0; padding:0}
 #app.hud-nautical .location-heading {position:relative; display:flex; flex-wrap:wrap; justify-content:flex-start; align-content:center; gap:3px 16px; width:100%; max-width:none; min-height:64px; padding:10px 24px 10px 72px; margin:0}
 #app.hud-nautical .location-heading::after {content:''; position:absolute; left:-10px; top:-4px; width:72px; height:72px; border:2px solid var(--brass-500); border-radius:50%; background:#092734 url('icones_menu_pirata/png/48/mapa.png') center/48px no-repeat; box-shadow:inset 0 0 0 4px #041722,0 3px 6px #0008; z-index:2}
@@ -88,7 +94,7 @@
 #app.hud-nautical #huntXpTracker .hunt-xp-metrics {font:400 13px/1.2 var(--hud-body)}
 #app.hud-nautical #huntXpTracker .hunt-xp-level {font:400 12px/1.2 var(--hud-body); color:var(--hud-muted)}
 /* Three independent bottom anchors leave the playfield clear. */
-#app.hud-nautical #floatingChat {inset:auto auto var(--hud-edge) var(--hud-edge); width:var(--hud-chat); height:260px; max-height:calc(100dvh - var(--profile-bottom) - 40px); margin:0; padding:0}
+#app.hud-nautical #floatingChat {inset:auto auto var(--hud-edge) var(--hud-edge); width:var(--hud-chat); height:244px; max-height:calc(100dvh - var(--profile-bottom) - 40px); margin:0; padding:var(--hud-panel-padding)}
 #app.hud-nautical #floatingChat .floating-title {min-height:42px; padding:0 0 6px; background:none; border:0; border-bottom:1px solid var(--hud-line); font:700 20px/1.2 var(--hud-heading)}
 #app.hud-nautical #floatingChat .floating-title button {width:36px; height:36px; min-height:36px; border:1px solid var(--hud-line); background:#102e3d; color:var(--hud-text)}
 #app.hud-nautical #floatingChat .chat-tabs {padding:8px 0; gap:8px; border:0}
@@ -103,51 +109,62 @@
 #app.hud-nautical #floatingChat .chat-compose button {width:40px; height:40px; min-height:40px; border:1px solid var(--brass-400); border-image:none; border-radius:5px; background:linear-gradient(#9c752d,#4d3211); color:#fff2d3; font-size:22px}
 #app.hud-nautical #chatCornerToggle {inset:auto auto var(--hud-edge) var(--hud-edge); min-height:44px; padding:8px 14px; border:1px solid var(--brass-500); border-radius:6px; background:var(--hud-surface); font:600 16px/1 var(--hud-body)}
 body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
-#app.hud-nautical #journeyHud {inset:auto var(--hud-edge) calc(var(--hud-edge) + 80px) auto; width:var(--hud-side); padding:0; height:auto; max-height:calc(100dvh - 240px)}
-#app.hud-nautical #journeyHud .journey-heading {height:40px; min-height:40px; padding:0 0 8px; gap:8px; background:none; border:0; border-bottom:1px solid var(--hud-line); font:700 21px/1.2 var(--hud-heading); color:var(--hud-text); text-transform:none}
-#app.hud-nautical #journeyHud .journey-heading::before {content:''; width:28px; height:28px; background:url('icones_menu_pirata/png/48/contratos.png') center/contain no-repeat}
-#app.hud-nautical #journeyHud .journey-heading>span:first-child {flex:1; font:700 21px/1.2 var(--hud-heading)}
-#app.hud-nautical #journeyHud .journey-content {padding:10px 0 0; background:none}
-#app.hud-nautical #journeyHud .journey-content>small {font-size:14px; color:var(--hud-muted)}
-#app.hud-nautical #journeyHud .journey-content>strong {font:700 18px/1.35 var(--hud-body); color:var(--hud-text); margin-top:3px}
-#app.hud-nautical #journeyHud .journey-track {height:10px; margin:10px 0 8px; padding:2px; border:1px solid #b8c6c5; border-radius:8px; background:#061922}
-#app.hud-nautical #journeyHud .journey-track i {display:block; border-radius:6px; background:linear-gradient(#ffdf87,#d29937)}
-#app.hud-nautical #journeyHud .journey-footer {gap:8px; font-size:14px; background:none; color:var(--hud-text)}
-#app.hud-nautical #journeyHud .journey-footer button {height:36px; min-height:36px; padding:6px 12px; border:1px solid var(--brass-500); border-image:none; border-radius:5px; background:#112d3c; color:var(--hud-text); font-size:14px}
-#app.hud-nautical #journeyHud .journey-controls {padding:8px 0 0; gap:8px; background:none}
-#app.hud-nautical #journeyHud :is(.auto-button,#expeditionMini) {height:36px; min-height:36px; background:#102c3b; border:1px solid var(--hud-line); border-radius:4px; color:var(--hud-text); font-size:14px}
+/* One contextual expedition window; the HUD retains only its launcher and hunt pause. */
+#app.hud-nautical #journeyHud {inset:auto var(--hud-edge) calc(var(--hud-edge) + 60px) auto; display:flex; gap:8px; width:auto; height:44px; max-height:none; padding:0; border:0; border-image:none; background:none; box-shadow:none; overflow:visible}
+#app.hud-nautical #journeyHud .journey-heading {display:flex; align-items:center; gap:8px; width:auto; height:44px; min-height:44px; padding:8px 12px; border:1px solid var(--brass-500); border-radius:5px; background:var(--hud-surface); color:var(--hud-text); font:600 16px/1 var(--hud-body); text-transform:none}
+#app.hud-nautical #journeyHud .journey-heading::before {content:''; width:20px; height:20px; background:url('icones_menu_pirata/png/48/contratos.png') center/contain no-repeat}
+#app.hud-nautical #journeyHud .journey-heading>span:first-child {font:inherit}
+#app.hud-nautical #journeyHud .journey-chevron {font:600 12px/1 var(--hud-body); color:var(--hud-muted)}
+#app.hud-nautical #journeyHud .journey-reward {color:var(--brass-400); font-size:12px}
+#app.hud-nautical #journeyHud .journey-controls {display:flex; gap:8px; padding:0; background:none}
+#app.hud-nautical #journeyHud .auto-button {height:44px; min-height:44px; padding:8px 12px; border:1px solid var(--brass-500); border-radius:5px; background:var(--hud-surface); color:var(--hud-text); font-size:14px}
 #app.hud-nautical #journeyHud .auto-button small {font-size:14px}
+#app.hud-nautical #floatingExpedition {inset:96px var(--hud-edge) auto auto; width:380px; max-width:calc(100vw - 24px); max-height:calc(100dvh - 120px); padding:12px; overflow:auto; z-index:70; color:var(--hud-text); overscroll-behavior:contain}
+#app.hud-nautical #floatingExpedition .floating-title {position:sticky; top:-12px; z-index:2; background:var(--navy-900); font:700 20px/1.2 var(--hud-heading); color:var(--hud-text); padding:8px 0; border-bottom:1px solid var(--hud-line)}
+#app.hud-nautical #floatingExpedition [data-close-window] {width:44px; height:44px; min-height:44px}
+#app.hud-nautical #floatingExpedition :is(.panel-block,.section-heading,.expedition-badge,.expedition-grid>div,.quest,.quest-list,.quest-title,.rate-line,.loot-list,.side-footer) {background:none; border-image:none; color:var(--hud-text)}
+#app.hud-nautical #floatingExpedition .panel-block {padding:12px 0; border:0; border-bottom:1px solid var(--hud-line)}
+#app.hud-nautical #floatingExpedition .section-heading {font:600 14px/1.3 var(--hud-body); letter-spacing:0; padding:0 0 8px}
+#app.hud-nautical #floatingExpedition :is(.quest-title,.quest-desc,.rate-line,.empty-note,.loot-list) {font:400 14px/1.4 var(--hud-body)}
+#app.hud-nautical #floatingExpedition :is(.expedition-grid small,.expedition-badge small,.micro-light,.rate-footnote,.quest-title b,.expedition-since) {font:500 12px/1.4 var(--hud-body); color:var(--hud-muted)}
+#app.hud-nautical #floatingExpedition :is(.expedition-grid b,.expedition-badge strong,.rate-line b) {font:700 16px/1.3 var(--hud-body); color:var(--hud-text)}
+#app.hud-nautical #floatingExpedition .quest {padding:12px 0}
+#app.hud-nautical #floatingExpedition .journey-content {display:block; padding:12px 0; border-bottom:1px solid var(--hud-line); background:none}
+#app.hud-nautical #floatingExpedition .journey-content>small {font-size:14px; color:var(--hud-muted)}
+#app.hud-nautical #floatingExpedition .journey-content>strong {display:block; font:700 18px/1.35 var(--hud-body); color:var(--hud-text); margin-top:4px}
+#app.hud-nautical #floatingExpedition .journey-track {height:8px; margin:12px 0; padding:1px; border:1px solid #b8c6c5; border-radius:4px; background:#061922}
+#app.hud-nautical #floatingExpedition .journey-track i {display:block; height:100%; border-radius:2px; background:linear-gradient(#ffdf87,#d29937)}
+#app.hud-nautical #floatingExpedition .journey-footer {display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-size:14px; color:var(--hud-text)}
+#app.hud-nautical #floatingExpedition .journey-footer button {height:44px; min-height:44px; padding:8px 12px; border:1px solid var(--brass-500); border-image:none; border-radius:5px; background:#112d3c; color:var(--hud-text); font-size:14px}
+#app.hud-nautical #modesQuickMenu #expeditionMini {position:static; display:flex; width:100%; height:auto; margin:0; transform:none; border-radius:4px}
+#app.hud-nautical #journeyToggle:is(:hover,[aria-expanded=true]) {background:#244653; border-color:var(--brass-400)}
 #app.hud-nautical .world-command {inset:auto var(--hud-edge) var(--hud-edge) auto; width:var(--hud-side); margin:0; padding:0; display:flex}
-#app.hud-nautical .world-command button {position:relative; width:100%; max-width:none; height:64px; min-height:64px; padding:10px 24px; font:700 22px/1.1 var(--hud-heading); color:#ffe5a3; text-align:center}
+#app.hud-nautical .world-command button {position:relative; width:100%; max-width:none; height:48px; min-height:48px; padding:8px 16px; font:700 19px/1.1 var(--hud-heading); color:#ffe5a3; text-align:center}
 #app.hud-nautical .world-command button::after {content:'»'; padding-left:12px; font-size:28px; color:var(--brass-400)}
-#app.hud-nautical .action-panel {inset:auto auto var(--hud-edge) 50%; width:max-content; max-width:calc(100vw - var(--hud-chat) - var(--hud-side) - 96px); height:auto; padding:0 2px; margin:0; transform:translateX(-50%); border-width:18px; border-image-width:24px; border-radius:16px}
-#app.hud-nautical .action-panel::before {content:''; display:block; position:absolute; inset:-72px auto auto 50%; width:72px; height:72px; transform:translateX(-50%); background:url('assets/ui/hud-nautical-v2/helm-crest.png') center/contain no-repeat; z-index:-1; pointer-events:none}
+#app.hud-nautical .action-panel {inset:auto auto var(--hud-edge) 50%; width:max-content; max-width:calc(100vw - var(--hud-chat) - var(--hud-side) - 96px); height:auto; padding:4px; margin:0; transform:translateX(-50%); border-radius:10px}
+#app.hud-nautical .action-panel::before {content:''; display:block; position:absolute; inset:-52px auto auto 50%; width:52px; height:52px; transform:translateX(-50%); background:url('assets/ui/hud-nautical-v2/helm-crest.png') center/contain no-repeat; z-index:-1; pointer-events:none}
 #app.hud-nautical .action-panel::after {content:none}
-#app.hud-nautical .action-panel .action-row {display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; gap:8px; padding:0; margin:0; background:none}
-#app.hud-nautical .action-panel :is(.skill-button,#hakiQuickCast button,.shop-potion) {position:relative; width:56px; height:58px; min-height:58px; padding:5px; margin:0; border:1px solid var(--brass-400); border-image:none; border-radius:7px; background:linear-gradient(#123444,#041622); box-shadow:inset 0 0 0 2px #04121c,0 2px 3px #0007; color:var(--hud-text)}
+#app.hud-nautical .action-panel .action-row {display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; gap:6px; padding:0; margin:0; background:none}
+#app.hud-nautical .action-panel :is(.skill-button,#hakiQuickCast button,.shop-potion) {position:relative; width:var(--hud-slot); height:48px; min-height:48px; padding:4px; margin:0; border:1px solid var(--brass-400); border-image:none; border-radius:7px; background:linear-gradient(#123444,#041622); box-shadow:inset 0 0 0 2px #04121c,0 2px 3px #0007; color:var(--hud-text)}
 #app.hud-nautical .action-panel .skill-icon {width:auto; height:auto; background:none; border:0; border-image:none; font-size:30px}
-#app.hud-nautical .action-panel :is(.skill-icon img,#hakiQuickCast button img) {width:36px; height:36px; image-rendering:auto; object-fit:contain}
+#app.hud-nautical .action-panel :is(.skill-icon img,#hakiQuickCast button img) {width:32px; height:32px; image-rendering:auto; object-fit:contain}
 #app.hud-nautical .action-panel :is(.keycap,.haki-quick kbd) {left:-2px; top:-3px; padding:1px 4px; border:1px solid var(--brass-500); border-radius:4px; background:#071c28; color:#ffe4a3; font:700 13px/1.15 var(--hud-body)}
 #app.hud-nautical .action-panel .potion-count {font:700 14px/1 var(--hud-body); right:4px; bottom:4px; color:var(--hud-text)}
-#app.hud-nautical .action-panel .shop-potion {width:64px; gap:5px; font-size:13px}
-#app.hud-nautical .action-panel .shop-potion small {font-size:15px}
-#app.hud-nautical .action-panel #hakiQuickCast {gap:8px; padding-left:8px; margin:0; border-left:1px solid var(--hud-line)}
+#app.hud-nautical .action-panel .shop-potion {gap:4px; font-size:12px}
+#app.hud-nautical .action-panel .shop-potion small {font-size:14px}
+#app.hud-nautical .action-panel #hakiQuickCast {gap:6px; padding-left:6px; margin:0; border-left:1px solid var(--hud-line)}
 #app.hud-nautical .action-panel:has(#hakiQuickCast:not(.hidden)) .action-row {flex-wrap:wrap}
 #app.hud-nautical .action-panel #devLauncher {top:auto; bottom:calc(100% + 12px); font-size:12px; padding:3px 7px; height:24px}
 #app.hud-nautical .world-hint {bottom:calc(var(--rpg-action-height) + var(--hud-edge) + 36px); font-size:14px; background:#041722a6; padding:4px 10px; border-radius:4px}
-#app.hud-nautical :where(.nautical-profile,#mainMenu,#floatingChat,#journeyHud,.action-panel,.world-command) :is(button,input):focus-visible {outline:2px solid #fff0a6; outline-offset:3px}
-#app.hud-nautical :where(.nautical-profile,#mainMenu,#floatingChat,#journeyHud,.action-panel,.world-command) button {touch-action:manipulation}
+#app.hud-nautical :where(.nautical-profile,#mainMenu,#floatingChat,#journeyHud,#floatingExpedition,.action-panel,.world-command) :is(button,input):focus-visible {outline:2px solid #fff0a6; outline-offset:3px}
+#app.hud-nautical :where(.nautical-profile,#mainMenu,#floatingChat,#journeyHud,#floatingExpedition,.action-panel,.world-command) button {touch-action:manipulation}
 @media(max-width:1399px) {
-  :root {--hud-edge:16px; --hud-profile:336px; --hud-chat:320px; --hud-side:304px}
+  :root {--hud-edge:16px; --hud-profile:320px; --hud-chat:320px; --hud-side:260px}
   #app.hud-nautical #hudUtilities {width:360px}
   #app.hud-nautical .location-heading {padding-right:14px; padding-left:62px}
   #app.hud-nautical .location-heading #locationName {font-size:20px}
   #app.hud-nautical #mainMenu {padding:8px 10px}
   #app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) {width:44px}
-  #app.hud-nautical .nautical-profile .hud-captain {grid-template-columns:68px minmax(0,1fr) 42px; gap:8px}
-  #app.hud-nautical .nautical-profile #characterPosterToggle {width:68px}
-  #app.hud-nautical .nautical-profile #hudFactionEmblem {width:80px; height:80px}
-  #app.hud-nautical .nautical-profile .profile-level {width:42px}
   #app.hud-nautical .action-panel {max-width:calc(100vw - var(--hud-chat) - var(--hud-side) - 72px)}
 }
 @media(max-width:1150px) {
@@ -159,13 +176,7 @@ body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
   #app.hud-nautical .world-hint {display:none}
 }
 @media(max-width:760px) {
-  :root {--hud-edge:12px; --hud-profile:calc(100vw - 24px); --hud-chat:calc(100vw - 24px); --hud-side:220px}
-  #app.hud-nautical .topbar.nautical-profile {border-width:16px; border-image-width:22px; gap:8px}
-  #app.hud-nautical .nautical-profile .hud-captain {grid-template-columns:68px minmax(0,1fr) 44px; min-height:74px}
-  #app.hud-nautical .nautical-profile #characterPosterToggle {height:74px}
-  #app.hud-nautical .nautical-profile .hud-vitals {gap:6px}
-  #app.hud-nautical .nautical-profile .parchment-meter {height:23px}
-  #app.hud-nautical .nautical-profile .hud-resources {padding-top:6px}
+  :root {--hud-edge:12px; --hud-profile:min(320px,calc(100vw - 24px)); --hud-chat:calc(100vw - 24px); --hud-side:220px}
   #app.hud-nautical #mainMenu {top:calc(var(--profile-bottom) + 12px); left:12px; right:12px; width:auto; height:60px; justify-content:space-evenly; padding:6px}
   #app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) {width:44px; height:48px; padding:6px}
   #app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) img {width:30px; height:30px}
@@ -175,20 +186,18 @@ body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
   #app.hud-nautical .location-heading #locationName {font-size:18px}
   #app.hud-nautical .location-heading #worldClock {font-size:13px}
   #app.hud-nautical .mare-music-dock {display:none}
-  #app.hud-nautical .action-panel {max-width:calc(100vw - 24px); border-width:14px; border-image-width:20px; padding:0 2px}
+  #app.hud-nautical .action-panel {max-width:calc(100vw - 24px)}
   #app.hud-nautical .action-panel .action-row {gap:8px; flex-wrap:wrap}
-  #app.hud-nautical .action-panel :is(.skill-button,#hakiQuickCast button) {width:48px; height:50px; min-height:50px}
-  #app.hud-nautical .action-panel .shop-potion {height:50px; min-height:50px; width:60px}
+  #app.hud-nautical .action-panel :is(.skill-button,#hakiQuickCast button,.shop-potion) {width:48px; height:48px; min-height:48px}
   #app.hud-nautical .action-panel :is(.skill-icon img,#hakiQuickCast button img) {width:32px; height:32px}
-  #app.hud-nautical .action-panel::before {width:58px; height:58px; top:-40px}
-  #app.hud-nautical #journeyHud {width:220px; border-width:12px; border-image-width:18px; bottom:calc(var(--hud-edge) + var(--rpg-action-height) + 88px); max-height:calc(100dvh - var(--profile-bottom) - 210px); overflow-y:auto}
-  #app.hud-nautical #journeyHud .journey-heading {height:36px; min-height:36px; font-size:18px; padding-bottom:0; border:0}
+  #app.hud-nautical .action-panel::before {width:48px; height:48px; top:-40px}
+  #app.hud-nautical #journeyHud {bottom:calc(var(--hud-edge) + var(--rpg-action-height) + 84px)}
 
   #app.hud-nautical .world-command {width:220px; bottom:calc(var(--hud-edge) + var(--rpg-action-height) + 24px)}
-  #app.hud-nautical .world-command button {height:52px; min-height:52px; font-size:18px; padding:8px 12px}
+  #app.hud-nautical .world-command button {height:52px; min-height:52px; font-size:16px; padding:8px 12px}
   #app.hud-nautical #chatCornerToggle {bottom:calc(var(--hud-edge) + var(--rpg-action-height) + 24px); min-height:52px; width:112px; font-size:15px; padding:8px}
   #app.hud-nautical #chatCornerToggle kbd {display:none}
-  #app.hud-nautical #floatingChat {bottom:calc(var(--hud-edge) + var(--rpg-action-height) + 24px); height:260px; max-height:calc(100dvh - var(--profile-bottom) - var(--rpg-action-height) - 40px); border-width:16px}
+  #app.hud-nautical #floatingChat {bottom:calc(var(--hud-edge) + var(--rpg-action-height) + 24px); height:260px; max-height:calc(100dvh - var(--profile-bottom) - var(--rpg-action-height) - 40px)}
   #app.hud-nautical #floatingChat .floating-title button {width:44px; height:44px; min-height:44px}
   #app.hud-nautical #floatingChat .chat-tabs button {height:44px; min-height:44px}
   #app.hud-nautical #floatingChat .chat-compose :is(input,button) {height:44px; min-height:44px}
@@ -201,32 +210,26 @@ body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
 }
 @media(max-height:500px) and (min-width:761px) {
   :root {--hud-edge:10px; --hud-profile:300px; --hud-side:240px}
-  #app.hud-nautical .topbar.nautical-profile {border-width:14px; border-image-width:20px; gap:7px}
-  #app.hud-nautical .nautical-profile .hud-captain {min-height:70px; grid-template-columns:60px minmax(0,1fr) 40px; gap:7px}
-  #app.hud-nautical .nautical-profile #characterPosterToggle {width:60px; height:70px}
-  #app.hud-nautical .nautical-profile #hudFactionEmblem {width:72px; height:72px}
-  #app.hud-nautical .nautical-profile #hudHierarchyTitle {font-size:20px}
-  #app.hud-nautical .nautical-profile .parchment-meter {height:23px}
   #app.hud-nautical #hudUtilities {top:84px; width:340px}
   #app.hud-nautical .mare-music-dock {display:none}
-  #app.hud-nautical #journeyHud {bottom:88px; border-width:12px; border-image-width:18px; max-height:calc(100dvh - 170px); overflow-y:auto}
-  #app.hud-nautical #journeyHud.collapsed .journey-content {display:none}
-  #app.hud-nautical:has(#journeyHud:not(.collapsed)) #hudUtilities {visibility:hidden}
+  #app.hud-nautical #journeyHud {bottom:156px}
   #app.hud-nautical #targetHud {left:320px; top:84px; transform:none; width:164px}
-  #app.hud-nautical #huntXpTracker.hunt-xp-tracker {top:calc(var(--profile-bottom) + 12px); left:10px; right:auto; width:300px}
+  #app.hud-nautical #huntXpTracker.hunt-xp-tracker {top:calc(var(--profile-bottom) + 12px); left:10px; right:auto; width:300px; padding:6px 10px; gap:2px}
   body.chat-open #app.hud-nautical #huntXpTracker {visibility:hidden}
   #app.hud-nautical #targetHud .target-hud-name {font-size:16px}
   #app.hud-nautical #targetHud :is(.target-hud-top,.target-hud-meta) {font-size:12px}
-  #app.hud-nautical .world-command {bottom:12px}
+  #app.hud-nautical .world-command {bottom:88px; width:240px}
   #app.hud-nautical .world-command button {font-size:18px; height:56px; min-height:56px}
-  #app.hud-nautical .action-panel {left:320px; transform:none; bottom:12px; border-width:12px; border-image-width:18px; max-width:calc(100vw - 580px)}
+  #app.hud-nautical .action-panel {left:320px; transform:none; bottom:12px; max-width:calc(100vw - 580px)}
   #app.hud-nautical .action-panel .action-row {gap:6px; flex-wrap:wrap}
-  #app.hud-nautical .action-panel :is(.skill-button,#hakiQuickCast button,.shop-potion) {width:44px; height:46px; min-height:46px}
-  #app.hud-nautical .action-panel .shop-potion {width:54px}
+  #app.hud-nautical .action-panel :is(.skill-button,#hakiQuickCast button,.shop-potion) {width:48px; height:48px; min-height:48px}
   #app.hud-nautical .action-panel :is(.skill-icon img,#hakiQuickCast button img) {width:30px; height:30px}
   #app.hud-nautical #floatingChat {bottom:12px; width:300px; max-height:calc(100dvh - 90px); height:260px}
   #app.hud-nautical #chatCornerToggle {bottom:12px}
   body.chat-open #app.hud-nautical .topbar {visibility:hidden}
+}
+@media(max-width:760px), (max-height:500px) {
+  #app.hud-nautical #floatingExpedition {inset:12px 12px auto auto; max-height:calc(100dvh - 24px)}
 }
 @media(prefers-reduced-motion:reduce) {
   #app.hud-nautical .nautical-profile .mini-meter i {transition:none}

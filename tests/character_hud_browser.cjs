@@ -39,7 +39,7 @@ const hook="  window.__hudQA={get game(){return game},get world(){return world},
  for(const [faction,titles]of Object.entries(canonical.titles))for(let i=0;i<titles.length;i++){
   await p.evaluate(({faction,tier})=>{__hudQA.game.factionId=faction;__hudQA.game.hierarchyTier=tier;__hudQA.game.hierarchyFaction=faction;__hudQA.refresh()},{faction,tier:i+1});
   assert.equal(await p.locator('#hudHierarchyTitle').innerText(),titles[i]);
-  assert(await p.locator('#hudHierarchyTitle').evaluate(e=>parseFloat(getComputedStyle(e).fontSize)>=20),'rank remains readable');
+  assert(await p.locator('#hudHierarchyTitle').evaluate(e=>parseFloat(getComputedStyle(e).fontSize)>=14),'secondary rank remains readable');
   if(i===0||i===4)await p.screenshot({path:path.join(out,'hud-'+faction+'-tier-'+(i+1)+'.png')});
   assert(await p.locator('#hudHierarchyTitle').evaluate(e=>e.scrollWidth<=e.clientWidth+1),'title fits '+titles[i]);
   await p.waitForFunction(()=>document.getElementById('hudRankArt').complete&&document.getElementById('hudRankArt').naturalWidth>0);

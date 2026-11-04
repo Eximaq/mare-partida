@@ -53,7 +53,7 @@ with sync_playwright() as p:
       const profile=rect('.topbar'), emblem=rect('#characterPosterToggle'), title=rect('#hudHierarchyTitle'), hp=rect('#miniHPText').width;
       const meter=document.querySelector('#miniHP').closest('[role=meter]');
       return {leftEmblem:emblem.right<=title.left+2, wideVitals:meter.getBoundingClientRect().width/profile.width>.8,
-        readableTitle:parseFloat(getComputedStyle(document.querySelector('#hudHierarchyTitle')).fontSize)>=20,
+        readableTitle:parseFloat(getComputedStyle(document.querySelector('#hudPlayerName')).fontSize)>=20,
         readableValue:parseFloat(getComputedStyle(document.querySelector('#miniHPText')).fontSize)>=14};
     }''')
     assert all(geometry.values()), geometry
@@ -78,7 +78,7 @@ with sync_playwright() as p:
             page.clock.run_for(100)
             assert page.locator('.journey-content').is_visible(), 'landscape diary must expand'
             results.append(check_layout(page,'landscape-diary-expanded'))
-            page.locator('#journeyToggle').click()
+            page.locator('#floatingExpedition [data-close-window]').click()
     # Presentation fixture: simultaneous third skill, transformation and Haki.
     # Their gameplay rules are covered by the existing Zoan/Haki suites.
     for width,height in [(1366,768),(390,844),(844,390)]:
