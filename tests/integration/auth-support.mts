@@ -11,6 +11,10 @@ import type {
 } from "../../apps/game-server/src/auth/provider.js";
 
 export class FakeProvider implements AuthProvider {
+  readonly tokenLifetimeMs: number;
+  constructor(tokenLifetimeMs = 60000) {
+    this.tokenLifetimeMs = tokenLifetimeMs;
+  }
   refreshes = 0;
   resets = 0;
   logouts = 0;
@@ -29,7 +33,7 @@ export class FakeProvider implements AuthProvider {
       providerSessionId: randomUUID(),
       accessToken: "access-fixture",
       refreshToken: "fixture-" + randomUUID(),
-      expiresAt: Date.now() + 60000,
+      expiresAt: Date.now() + this.tokenLifetimeMs,
     };
     this.sessions.set(session.refreshToken, session);
     return session;
@@ -42,7 +46,7 @@ export class FakeProvider implements AuthProvider {
     assert.ok(session, "Known fixture refresh token");
     return {
       ...session,
-      expiresAt: Date.now() + 60000,
+      expiresAt: Date.now() + this.tokenLifetimeMs,
     };
   }
   async start(
@@ -90,13 +94,17 @@ export async function authDatabase(
     url.pathname = "/" + name;
     pool = runtimePool ? createPool(url.toString()) : new pg.Pool({ connectionString: url.toString(), max: 12 });
     await applyMigrations(pool, migrationsDirectory);
-    const provider = new FakeProvider(),
+    // The load runner mirrors the supported deployment policy. Functional
+    // fixtures keep short expiry to exercise provider refresh and revocation.
+    const provider = new FakeProvider(runtimePool ? 900000 : 60000),
       vault = new Vault(Buffer.alloc(32, 9));
     const service = new AuthService({
       pool,
       provider,
       vault,
-      policy: { absoluteMs: 3600000, idleMs: 300000, recheckMs: 60000 },
+      policy: runtimePool
+        ? { absoluteMs: 86400000, idleMs: 7200000, recheckMs: 900000 }
+        : { absoluteMs: 3600000, idleMs: 300000, recheckMs: 60000 },
       origin: "https://localhost:9443",
     });
     await run({ pool, provider, vault, service });

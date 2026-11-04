@@ -122,8 +122,8 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
   if(b.partyInstanceId){await client.query('ROLLBACK');continue;}
    if(elapsed<.1){await client.query('ROLLBACK');continue;}
   if(b.rulesHash!==engine.rulesHash)throw new AuthFault(503,'battle_rules_changed');
-  if(elapsed>2||row.control_epoch!==row.epoch){engine.cancel(b);engine.resetHaki(b);b.talents=null;await storeBattle(client,id,b);
-   await client.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[id,now,row.epoch]);await client.query('COMMIT');budget.commit();continue;}
+  if(elapsed>2||row.control_epoch!==row.epoch){engine.cancel(b);engine.resetHaki(b);b.talents=null;
+   await storeBattle(client,id,b,false,{at:now,epoch:row.epoch});await client.query('COMMIT');budget.commit();continue;}
   const dt=Math.min(1,elapsed),start=new Date(now.getTime()-dt*1000),w=await readWorld(client,id,start);
   if(!w||w.area!==b.area)throw new AuthFault(503,'battle_world_mismatch');
   const inputs=(await readCombatInputs(client,[id])).get(id)!,{state}=inputs,fighter=inputs.fighter(b);
@@ -159,7 +159,7 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
   }
   const remaining=!b.auto&&b.hp>0?path:[];
   await storeWorld(client,id,{...w,position:{x:hero.x,y:hero.y},direction:hero.direction,path:remaining,serverNow:now.toISOString(),speed:engine.combatStats(b,{stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:inputs.talents.build,classId:fighter.classId})[b.auto?'huntSpeed':'moveSpeed'],motionUntil:remaining.length?new Date(Math.max(now.getTime(),Date.parse(w.motionUntil))).toISOString():now.toISOString()});
-  await storeBattle(client,id,b);await client.query('UPDATE mare_game.character_battles SET tick_at=$2 WHERE character_id=$1',[id,now]);
+  await storeBattle(client,id,b,false,{at:now,epoch:row.control_epoch});
   await client.query('COMMIT');
   budget.commit();
  }catch{await client.query('ROLLBACK');failed++;}finally{client.release();}}

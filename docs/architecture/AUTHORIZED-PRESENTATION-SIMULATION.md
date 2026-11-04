@@ -254,3 +254,153 @@ O navegador confirmou movimento próprio/remoto, recuperação da aba suspensa e
 zero 429 na caminhada, mas retornou control_required ao tentar viajar. Esse
 resultado é um bloqueio de aceite adicional. As mudanças do PR não alteram o
 mapa, engine, balanceamento, prazos ou número de conexões do runtime.
+## Interrupções Idle e fidelidade do gerador
+
+Base de código `2e0ebef` sobre `25cd9d0`. A instalação privada `7122822`
+permaneceu disponível durante a investigação. Os ensaios usaram Node 24.22.2,
+runtime compilado, pool 10 e partições 2+2. Somente fixtures em PostgreSQL
+loopback 55433. Alterações de diagnóstico no JavaScript compilado foram
+temporárias e não entram no artefato do servidor.
+
+O gerador anterior aceitava 50 no perfil Party e criava 12 salas. Dois
+personagens ficavam fora da formação. Ele também prolongava leases por SQL,
+emitia novas leituras para o mesmo ator enquanto havia uma em andamento e
+podia deixar de contabilizar slots perdidos no final. O gerador atual exige
+grupos completos, registra a distribuição por partição, contabiliza slots
+perdidos e usa HTTP para o preparo de presença e a renovação do lease com
+CSRF a cada 30 s. O intervalo nominal de leitura é 750 ms, com snapshot
+completo a cada 3 s. O cliente real verifica esses prazos num timer de
+250 ms. A bancada usa slots escalonados para medir a demanda prevista e
+registra como perdido o slot que o cliente ocupado não emitiria. Comandos
+de criação e habilitação de auto ocorrem no preparo. A janela mede combate
+auto e renovação, sem simular compras ou navegação manual.
+
+### Primeiras amostras instrumentadas
+
+Nestas duas amostras a fixture ainda usava revalidação de 60 s, prazo usado
+pelos testes funcionais para exercitar refresh. Isso difere dos 900 s
+configurados para o jogo. A fixture de carga passou a espelhar JWT de 900 s,
+sessão de 24 h e inatividade de 2 h, sem modificar a configuração do servidor.
+O provedor segue simulado e o lease continua com a duração real, renovado
+pela rota da aplicação. Este cenário mede uma janela de 10 min iniciada com
+sessões novas. Uma janela que cruza a expiração de 900 s precisa de um teste
+separado, com refresh ativo e sem depender de fornecedor hospedado.
+
+| Amostra, 65 s | HTTP 200 | Slots perdidos | p95 HTTP | p95 idade | Auto no fim |
+|---|---:|---:|---:|---:|---:|
+| 50 solo | 4.333 | 1 no scheduler | 422 ms | 1379 ms | 32/50 |
+| 48 em 12 Parties | 4.053 | 107 com leitura anterior pendente | 639 ms | 1471 ms | 24/48 |
+
+Em Solo, as 18 interrupções ocorreram com sessão, lease e epoch válidos.
+O primeiro grupo teve intervalo de 2,025–2,204 s. No primeiro ator observado
+pelo cliente, o tempo até a leitura do cancelamento foi 14,337 s da janela.
+No primeiro grupo causal, 1,997–2,197 s já haviam passado antes de selecionar
+o lote. A conexão levou menos de 0,05 ms e a fase até a revalidação dos locks
+levou cerca de 3–4,3 ms. A janela anterior de 0–10 s teve 666 leituras, p95 de
+398 ms, zero slots perdidos e fila máxima de 19. A janela de 10–20 s teve p95
+de 512 ms e fila de 28. O atraso predominante ocorreu antes de o worker
+pegar a conexão para o ator. Isso exclui a espera no pool daquele worker
+como causa imediata.
+
+Em Party, 12 cancelamentos ocorreram com presença e epoch válidos. Na
+primeira sala, havia 1,962 s entre o tick persistido e a seleção do lote,
+e mais 135 ms até o tick efetivo. A conexão levou 0,044 ms. O primeiro
+cancelamento foi visto no cliente a 2,217 s da janela. Outros 12 tiveram
+presença recente, lease válido, sessão play sem revogação, prazos absoluto
+e de inatividade válidos e epoch da conta correto, com prazo de validação
+do provedor expirado. Esse caso surgiu com o provedor de teste de 60 s e
+a leitura concorrendo com o refresh. O resultado não atribui à mesma causa
+as interrupções dos ensaios antigos que estendiam a validade via SQL.
+
+Party 48 teve p95 da fase de motor de 95–102 ms por partição, p95 de
+persistência de 91–94 ms e p95 de COMMIT de 2,4–3,2 ms. As transações
+inteiras chegaram a 420–747 ms. Uma amostra de 15,07 s do PostgreSQL
+descartável somou 24,03 s de CPU, cerca de 1,59 núcleos equivalentes.
+A janela Party completa consumiu 2,33 núcleos equivalentes no processo
+Node, incluindo gerador, API e workers. Houve 96 renovações HTTP bem
+sucedidas em Party e 100 em Solo. Fila máxima do pool da API 36 e 33.
+Os 107 slots Party já estavam bloqueados no cliente sintético pela leitura
+em andamento. O limite global do gerador não foi atingido.
+
+Para separar recursos numa próxima bancada, o serviço deve rodar numa
+máquina de teste com PostgreSQL isolado, um hostname de teste e certificado
+válido. Um segundo host executa somente o gerador contra a origem HTTPS
+restrita, com contas sintéticas e sem Supabase hospedado. O endpoint de carga
+deve ser autorizado separadamente. Nenhuma mudança em firewall, Radmin, DNS
+ou portas foi feita nesta investigação.
+
+A regra de dois segundos segue intacta. Qualquer proposta para separar
+atraso interno de ausência real deve provar continuidade de sessão, epoch e
+lease no intervalo, definir um teto de trabalho sem progresso retroativo
+e preservar o cancelamento quando faltar evidência de presença.
+### Party 52 com política de produção na fixture
+
+Em 65 s, 52 atores formaram 13 salas completas. Foram 104 renovações de lease
+por HTTP sem falhas. Dos 4.507 slots previstos, 73 ficaram bloqueados por uma
+leitura anterior. HTTP p95 590 ms, idade p95 1279 ms, 36 de 52 combates
+ativos ao final. As 16 paradas vieram do limite de dois segundos e ocorreram
+com presença e epoch válidos. Nenhuma repetiu a expiração de provedor da
+fixture de 60 s. A primeira sala tinha idade de 1,853 s ao selecionar o lote
+e de 2,017 s ao ler o tick. A aquisição de conexão levou 0,060 ms e a fase
+de locks 12,4 ms. O último tick antecedia a seleção do lote em quase todo
+o intervalo observado.
+
+A instrumentação registrou 250.774 chamadas de pathfinding nas duas
+partições Party. O p95 foi 0,27 ms por chamada e os máximos foram 112 e
+161 ms. As chamadas somaram 17,7 s de tempo decorrido, incluídos nos 31,7 s
+dos passos individuais de combate. Não é uma medição de CPU exclusiva.
+Os maiores COMMITs foram 244 e 284 ms, com p95 de 1,36 e 1,83 ms.
+Isso permite priorizar a cauda de navegação e a duração da transação,
+com análise separada da fila de leituras da API. Ainda não vincula cada
+atraso a uma operação específica de uma sala anterior na mesma partição.
+### Repetições de 60 s sem instrumentação
+
+| Cenário | Distribuição | HTTP 200 | Slots perdidos | HTTP p95 | Idade p95 | Auto final |
+|---|---|---:|---:|---:|---:|---:|
+| Party 48, runtime base | 8 / 4 salas | 3808 | 32 | 530 ms | 1554 ms | 16/48 |
+| Solo 50, runtime base | 29 / 21 atores | 4000 | 0 | 86 ms | 1182 ms | 38/50 |
+| Solo 50, uma gravação de tick | 32 / 18 atores | 4000 | 0 | 115 ms | 1258 ms | 40/50 |
+
+A mudança no tick Solo reutiliza a gravação existente de estado e tick de
+Party. Mantém o epoch atual no avanço normal e o epoch revalidado no ramo
+de cancelamento. O teste com trigger do banco descartável contou duas
+gravações antes e uma depois, com avanço de tick e epoch preservado.
+Passaram 11 testes de integração de combate e orçamento, com rollback,
+bloqueio de progresso offline e recompensa única sob concorrência. O smoke
+compilado de quatro membros verificou renovação HTTP e zero slots perdidos.
+
+Os perfis Solo acima usam as mesmas frequências, política, pools e número
+de workers. A distribuição aleatória difere. A comparação confirma menos
+gravações por tick, sem demonstrar ganho de capacidade nem eliminar as
+interrupções. Party 48 teve a primeira parada observada em 2,113 s.
+O pico de oito salas na mesma partição é evidência de distribuição
+desigual nesse ensaio. Seu efeito isolado ainda precisa de um controle
+com o mesmo conjunto de atores/salas. Ambas as configurações de Solo
+e a de Party reprovaram em janelas curtas. Os dois testes de 10 min
+anteriores permanecem reprovados. O próximo aceite sustentado depende
+de corrigir as interrupções reproduzidas, sem aumentar a carga.
+
+Parecer desta rodada **REPROVADO para atualizar o servidor privado**.
+### Decomposição complementar de 35 s
+
+| Fase instrumentada, p95 | Solo 50 | Party 48 |
+|---|---:|---:|
+| Projeção na API | 65,80 ms | 184,65 ms |
+| Atualização de presença | 4,05 ms | 7,82 ms |
+| Serialização JSON da resposta | 0,25 ms | 0,44 ms |
+| Leitura e preparação no worker | 7,35–7,63 ms | 14,40–15,04 ms |
+| Motor no worker | 28,44–31,71 ms | 82,31–89,17 ms |
+| Persistência antes de COMMIT | 26,36–26,46 ms | 85,77–95,79 ms |
+| COMMIT | 1,21–1,30 ms | 1,51–1,66 ms |
+| Transação do worker | 54,96–58,63 ms | 161,28–171,62 ms |
+
+A janela Party teve seis salas por partição e ainda cancelou 20 combates
+por intervalo entre ticks. A janela Solo teve 28/22 atores e seis
+cancelamentos pelo mesmo motivo. Isso reproduz o problema com a política
+de produção na fixture e mostra que o desequilíbrio não é necessário
+para produzir a falha. Aproximadamente 11% das chamadas de pathfinding
+Party repetiram coordenadas exatas numa janela de 4.096 pares. Elas
+representaram 1,18 s dos 9,54 s medidos nessa fase. A repetição medida
+não justifica sozinha introduzir cache de rotas. A prioridade é correlacionar
+os lotes anteriores com a espera de cada ator e separar recursos para medir
+se os picos persistem quando o gerador deixa de compartilhar CPU com a API.
