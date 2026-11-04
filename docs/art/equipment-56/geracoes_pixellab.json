@@ -1,0 +1,890 @@
+{
+  "schema": "kaizoku-equipment56-pixellab-v1",
+  "icons": 56,
+  "wearablePieces": 40,
+  "bodyCombinations": 80,
+  "inventoryOnly": 16,
+  "initialGenerations": 933.65,
+  "chargedGenerations": 770,
+  "remainingGenerations": 163.65,
+  "jobs": [
+    {
+      "jobId": "01b846a0-9e1b-4fca-b66a-550840595187",
+      "assetId": "167b7260-bf18-5fc7-b0c1-6d10440d62f9",
+      "kind": "icons",
+      "items": [
+        129,
+        130,
+        131,
+        132
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256 canvas, 2x2 grid, each cell 128x128, no dividers or frames. Reproduce each labelled original reference faithfully as a SEPARATE inventory icon in its specified cell, not variations. TOP LEFT: Chapéu do Corsário. Tricórnio azul de debrum dourado, âncora frontal, pluma branca e faixa vermelha. Exactly preserve this reference silhouette, colours, materials and ornament. TOP RIGHT: Casaco das Marés. Casaco curto azul-marinho, gola e punhos creme, camisa clara e fivela central. Exactly preserve this reference silhouette, colours, materials and ornament. BOTTOM LEFT: Luvas do Navegante. Couro castanho, punhos largos e fivelas de latão. Exactly preserve this reference silhouette, colours, materials and ornament. BOTTOM RIGHT: Cinto do Corsário das Marés. Correia marrom com âncora em fivela redonda, bolsa e argola lateral. Exactly preserve this reference silhouette, colours, materials and ornament. Masterpiece high-definition refined native pixel art, sharp ink outlines, controlled top-left illumination, rich material shading, as polished as the approved weapon style. Keep the WHOLE piece centered inside its cell with at least 8px transparent margin; paired gloves or boots stay together as ONE icon. Preserve all major details. No character, skin, labels, lettering, rarity borders, ground shadow or scenery. True alpha background, no black/white/green plate. No bloom outside the silhouette. Each original image is mandatory design reference; do not invent or simplify to generic gear.",
+      "referenceFiles": [
+        "01_raro_corsario_das_mares/cabeca.png",
+        "01_raro_corsario_das_mares/torso.png",
+        "01_raro_corsario_das_mares/maos.png",
+        "01_raro_corsario_das_mares/cinto.png"
+      ]
+    },
+    {
+      "jobId": "d00c35e1-f964-4361-aa31-7a58c882212c",
+      "assetId": "dc7ed956-a885-55fe-b37c-cc914e8ecb03",
+      "kind": "icons",
+      "items": [
+        133,
+        134,
+        135
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256 canvas, 2x2 grid, each cell 128x128, no dividers or frames. Reproduce each labelled original reference faithfully as a SEPARATE inventory icon in its specified cell, not variations. TOP LEFT: Calças do Convés. Calças escuras com bordado dourado e faixa vermelha caída de lado. Exactly preserve this reference silhouette, colours, materials and ornament. TOP RIGHT: Botas do Corsário. Botas de couro marrom com tiras douradas e losangos azuis no cano. Exactly preserve this reference silhouette, colours, materials and ornament. BOTTOM LEFT: Capa do Corsário das Marés. Capa azul, gola de pele clara, âncora e bordas douradas. Exactly preserve this reference silhouette, colours, materials and ornament.BOTTOM RIGHT must be completely transparent and empty. Masterpiece high-definition refined native pixel art, sharp ink outlines, controlled top-left illumination, rich material shading, as polished as the approved weapon style. Keep the WHOLE piece centered inside its cell with at least 8px transparent margin; paired gloves or boots stay together as ONE icon. Preserve all major details. No character, skin, labels, lettering, rarity borders, ground shadow or scenery. True alpha background, no black/white/green plate. No bloom outside the silhouette. Each original image is mandatory design reference; do not invent or simplify to generic gear.",
+      "referenceFiles": [
+        "01_raro_corsario_das_mares/perneiras.png",
+        "01_raro_corsario_das_mares/pes.png",
+        "01_raro_corsario_das_mares/capa.png"
+      ]
+    },
+    {
+      "jobId": "e5264219-8d16-46b0-a619-cc20ddd8cdf0",
+      "assetId": "e5973e35-07de-5e99-a335-2d15923d9f25",
+      "kind": "wearable",
+      "items": [
+        130
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable material, ONLY Casaco das Marés from the supplied coat reference. The input sheet contains the actual game bodies: 3 columns SOUTH front, NORTH back, EAST right profile; row 1 MALE, row 2 FEMALE. Each cell is 96 wide by 128 high. DO NOT move, resize, beautify, replace or change the pose/anatomy/pixel grid/pivot of any of the six base characters. Dress the measured shoulders, torso, upper arms and forearms of EACH actual body in the same navy-blue corsair coat, cream fur collar and cuffs, cream inner shirt, fine brass-gold embroidery, anchors, integrated waist buckle. Full sleeves end exactly at each native wrist, hands remain bare. The female coat must faithfully reproduce all of the same details with its OWN female shoulders, waist and cuffs; never reuse or stretch the male. Preserve the coat silhouette and materials in the item reference. Back view must be coherent navy fabric with gold ornament; profile must stay true right-facing. Maintain each row/cell registration exactly. Output ONLY the coat garment with alpha elsewhere: omit skin, head, hair, hands, underwear, legs, feet and all base character pixels, no cape or detached belt. No character anatomy baked in. Native 1 pixel grid, same body size, refined Masterpiece HD pixel-art fabric and gold details readable at native scale, no antialiasing or halos. Do not replace long sleeves with a vest. Preserve the garment centre at the base guide's exact anchors.",
+      "referenceFiles": [
+        "01_raro_corsario_das_mares/torso.png"
+      ]
+    },
+    {
+      "jobId": "463d8362-f400-4e51-8857-968c3ef89624",
+      "assetId": "f6da32fc-d840-5cef-b1f9-6655f23de73d",
+      "kind": "wearable",
+      "items": [
+        129
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle isolated native wearable sheet for Chapéu do Corsário. Mandatory exact design source: Tricórnio azul de debrum dourado, âncora frontal, pluma branca e faixa vermelha.. Draw ONLY the navy tricorn hat: gold trim and central brass anchor, white feather, red bandana tails. Fit each actual skull with separate male/female placement, include back and true right profile. Do not draw hair, face, ears, neck or skin. The brim must sit naturally on the forehead without covering the eyes. No clothing elsewhere. Input is the REAL 288x256 base guide: 3 columns SOUTH/front, NORTH/back, EAST/right profile; top row MALE, bottom row FEMALE. Each cell 96x128. Preserve all six exact cell positions, native 1px grid, body scale, pivots and poses. The female variant must reproduce the SAME design in full detail fitted to its own actual anatomy, never stretched from the male. Remove every base character pixel; output ONLY this garment with true alpha everywhere else, no face, hair, skin, underwear, character, text, border, ground shadow or background. Maintain native placement from the guide; no centering each piece inside a cell or changes of scale. Refined Masterpiece HD pixel art, crisp contours, no external halos, top-left light, rich material shading adapted to native size. Use reference colours and ornaments faithfully, do not invent a different generic design.",
+      "referenceFiles": [
+        "01_raro_corsario_das_mares/cabeca.png"
+      ]
+    },
+    {
+      "jobId": "a4e4be49-71f6-452f-8923-7e21a2cfdc37",
+      "assetId": "46394659-54be-54e1-929c-fae6dfd0afbd",
+      "kind": "wearable",
+      "items": [
+        131
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle isolated native wearable sheet for Luvas do Navegante. Mandatory exact design source: Couro castanho, punhos largos e fivelas de latão.. Draw ONLY both leather gloves, brown with broad brass-buckled cuffs. Fit the actual LEFT and RIGHT wrists and native hands on each body. Fingers and palms must follow the native hand pose. The cuff covers the wrist junction and meets a long coat sleeve; no ungloved skin at the seam. No forearm-length gauntlet or detached floating hand. Do not draw arms or flesh. Input is the REAL 288x256 base guide: 3 columns SOUTH/front, NORTH/back, EAST/right profile; top row MALE, bottom row FEMALE. Each cell 96x128. Preserve all six exact cell positions, native 1px grid, body scale, pivots and poses. The female variant must reproduce the SAME design in full detail fitted to its own actual anatomy, never stretched from the male. Remove every base character pixel; output ONLY this garment with true alpha everywhere else, no face, hair, skin, underwear, character, text, border, ground shadow or background. Maintain native placement from the guide; no centering each piece inside a cell or changes of scale. Refined Masterpiece HD pixel art, crisp contours, no external halos, top-left light, rich material shading adapted to native size. Use reference colours and ornaments faithfully, do not invent a different generic design.",
+      "referenceFiles": [
+        "01_raro_corsario_das_mares/maos.png"
+      ]
+    },
+    {
+      "jobId": "c2ff1eb3-4942-44f5-b43e-cbae55ee32b0",
+      "assetId": "89f5f7f9-709b-54d6-81b8-5c92d11f8e1c",
+      "kind": "wearable",
+      "items": [
+        133
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle isolated native wearable sheet for Calças do Convés. Mandatory exact design source: Calças escuras com bordado dourado e faixa vermelha caída de lado.. Draw ONLY the navy corsair trousers, gold embroidery and RED cloth sash sewn into the trousers. Preserve the sash as part of THIS pants item; no separately equipped belt. Fit hips and each thigh/knee independently on each actual body, including full back and right profile. Hem meets the upper boot cuff around knee/lower-leg with a small overlap. Do not draw bare legs or feet or boots. No coat or hat. Input is the REAL 288x256 base guide: 3 columns SOUTH/front, NORTH/back, EAST/right profile; top row MALE, bottom row FEMALE. Each cell 96x128. Preserve all six exact cell positions, native 1px grid, body scale, pivots and poses. The female variant must reproduce the SAME design in full detail fitted to its own actual anatomy, never stretched from the male. Remove every base character pixel; output ONLY this garment with true alpha everywhere else, no face, hair, skin, underwear, character, text, border, ground shadow or background. Maintain native placement from the guide; no centering each piece inside a cell or changes of scale. Refined Masterpiece HD pixel art, crisp contours, no external halos, top-left light, rich material shading adapted to native size. Use reference colours and ornaments faithfully, do not invent a different generic design.",
+      "referenceFiles": [
+        "01_raro_corsario_das_mares/perneiras.png"
+      ]
+    },
+    {
+      "jobId": "01641c0d-377d-4867-a166-9c78144f49a4",
+      "assetId": "b5e1116d-3022-5929-b7cf-686912ee7e40",
+      "kind": "wearable",
+      "items": [
+        134
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle isolated native wearable sheet for Botas do Corsário. Mandatory exact design source: Botas de couro marrom com tiras douradas e losangos azuis no cano.. Draw ONLY the PAIR of brown leather corsair boots, brass-gold straps and BLUE diamond gems on the upper cuffs, as in the item. Fit both actual lower legs and feet on each body; cuffs meet trousers around the knees/lower-leg with overlap and soles follow the exact native feet. Full enclosed toes. Do not draw legs, skin, pants or hands. Input is the REAL 288x256 base guide: 3 columns SOUTH/front, NORTH/back, EAST/right profile; top row MALE, bottom row FEMALE. Each cell 96x128. Preserve all six exact cell positions, native 1px grid, body scale, pivots and poses. The female variant must reproduce the SAME design in full detail fitted to its own actual anatomy, never stretched from the male. Remove every base character pixel; output ONLY this garment with true alpha everywhere else, no face, hair, skin, underwear, character, text, border, ground shadow or background. Maintain native placement from the guide; no centering each piece inside a cell or changes of scale. Refined Masterpiece HD pixel art, crisp contours, no external halos, top-left light, rich material shading adapted to native size. Use reference colours and ornaments faithfully, do not invent a different generic design.",
+      "referenceFiles": [
+        "01_raro_corsario_das_mares/pes.png"
+      ]
+    },
+    {
+      "jobId": "e57ad536-7624-4a7d-8392-4c274aaf3dec",
+      "assetId": "2406d639-6104-5f8d-b9d6-898337dbe60a",
+      "kind": "icons",
+      "items": [
+        136,
+        137,
+        138,
+        139
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Capuz das Dunas. Turbante claro em camadas, com faixa vermelha e joia azul frontal. Exact mandatory design in reference 1. TOP RIGHT: Túnica do Peregrino. Túnica creme bordada, lenço vermelho volumoso e pequenos ornamentos coloridos. Exact mandatory design in reference 2. BOTTOM LEFT: Luvas de Areia. Luvas marrons com placas de ouro e gemas azuis nas costas das mãos. Exact mandatory design in reference 3. BOTTOM RIGHT: Cinto do Peregrino de Alabasta. Fivela dourada com pedra azul, tecido claro e pendentes coloridos. Exact mandatory design in reference 4.  Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "02_raro_peregrino_de_alabasta/cabeca.png",
+        "02_raro_peregrino_de_alabasta/torso.png",
+        "02_raro_peregrino_de_alabasta/maos.png",
+        "02_raro_peregrino_de_alabasta/cinto.png"
+      ]
+    },
+    {
+      "jobId": "04f9b4f7-c132-4e86-b7f8-aff541500999",
+      "assetId": "3df9e2db-31eb-58a1-aa90-31e3d96120a1",
+      "kind": "icons",
+      "items": [
+        140,
+        141,
+        142
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Calças do Deserto. Calças claras e amplas, faixa vermelha lateral e ornamentos dourados. Exact mandatory design in reference 1. TOP RIGHT: Botas do Oásis. Calçado aberto nos dedos, tiras castanhas e cano com joia azul. Exact mandatory design in reference 2. BOTTOM LEFT: Capa do Peregrino de Alabasta. Tecido claro com bordado dourado e pano vermelho cruzado sobre os ombros. Exact mandatory design in reference 3. BOTTOM RIGHT entirely alpha empty. Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "02_raro_peregrino_de_alabasta/perneiras.png",
+        "02_raro_peregrino_de_alabasta/pes.png",
+        "02_raro_peregrino_de_alabasta/capa.png"
+      ]
+    },
+    {
+      "jobId": "98df63ef-8acd-4771-bf4c-e3c2442562ef",
+      "assetId": "5c3e0d0c-ffb9-57d6-98bc-4eb369abd4ab",
+      "kind": "wearable",
+      "items": [
+        136
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Capuz das Dunas. Mandatory EXACT piece reference: Turbante claro em camadas, com faixa vermelha e joia azul frontal. Draw ONLY the headwear, fit exact native skull/forehead; include coherent rear and true right profile. Brim must not hide eyes. No head, hair, face, ears, neck or skin. Remove body, not hat ornaments. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "02_raro_peregrino_de_alabasta/cabeca.png"
+      ]
+    },
+    {
+      "jobId": "2b23ec9e-bfcb-4c47-8571-1a20e8b4fad4",
+      "assetId": "efc930f4-fc19-5e3c-998d-0ab4d66c2ff9",
+      "kind": "wearable",
+      "items": [
+        137
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Túnica do Peregrino. Mandatory EXACT piece reference: Túnica creme bordada, lenço vermelho volumoso e pequenos ornamentos coloridos. Dress ONLY the torso garment from the reference on the six real bodies. Preserve the reference cut, collar, sleeves, shirt/panels, waist embroidery and hanging garment hem; do not invent an extra cape. Sleeves if present end at the native wrist; hands remain unpainted. Female has the SAME details with her own shoulders, waist and sleeve fit. Do not turn a robe/coat into generic vest. Export ONLY garment; all body pixels alpha. If a fitting mannequin is unavoidable, its body must be flat exact MAGENTA #FF00FF (never white, cream, flesh or shaded), which is NOT garment material. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "02_raro_peregrino_de_alabasta/torso.png"
+      ]
+    },
+    {
+      "jobId": "129214b5-2e79-4316-9f5d-ac894360e332",
+      "assetId": "051e052c-f9ab-5bb2-bf94-b4e302faccb4",
+      "kind": "wearable",
+      "items": [
+        138
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Luvas de Areia. Mandatory EXACT piece reference: Luvas marrons com placas de ouro e gemas azuis nas costas das mãos. Draw ONLY both matching gloves/bracers following reference shape/material. Fit LEFT and RIGHT actual wrists/hands separately, keep native palm/fist orientation, knuckles outward and palms inward. Cuffs meet sleeves without gaps; do not draw a detached replacement hand. Preserve any legitimate exposed fingers in reference. No skin, forearms or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "02_raro_peregrino_de_alabasta/maos.png"
+      ]
+    },
+    {
+      "jobId": "b8a8d993-342e-449e-a355-b1a801ae30d2",
+      "assetId": "58b15c44-a247-5ed9-8d22-7b3552c02269",
+      "kind": "wearable",
+      "items": [
+        140
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Calças do Deserto. Mandatory EXACT piece reference: Calças claras e amplas, faixa vermelha lateral e ornamentos dourados. Draw ONLY trousers/skirt/leg garment and ornaments SEWN into that piece in the reference. Preserve integrated sash but no separately equipped belt. Fit own hips, thighs and knees separately. Leg hems meet upper boot cuffs with a small overlap. No torso, legs, skin, feet or boots. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "02_raro_peregrino_de_alabasta/perneiras.png"
+      ]
+    },
+    {
+      "jobId": "8d4a8512-5cbc-4a71-8143-d2e30a8f7847",
+      "assetId": "5e874841-54b6-57aa-a3c3-b81652df8ba7",
+      "kind": "wearable",
+      "items": [
+        141
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Botas do Oásis. Mandatory EXACT piece reference: Calçado aberto nos dedos, tiras castanhas e cano com joia azul. Draw ONLY BOTH reference footwear. Fit actual lower legs/ankles/feet independently; soles follow the native feet and boot cuffs overlap trouser hem. Preserve open toes for sandals/open footwear; DO NOT invent closed boots if reference is a sandal. No skin, legs, trousers, hands or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "02_raro_peregrino_de_alabasta/pes.png"
+      ]
+    },
+    {
+      "jobId": "1d3cccc1-9140-4171-9888-276e19f10440",
+      "assetId": "b6019c88-446c-5a72-97bb-5f4b5348d715",
+      "kind": "icons",
+      "items": [
+        143,
+        144,
+        145,
+        146
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Chapéu do Navegador Arcano. Chapéu azul de aba larga, lentes douradas e pluma branca. Excluir os pequenos traços soltos acima da copa. Exact mandatory design in reference 1. TOP RIGHT: Manto das Correntes Celestes. Manto azul de gola alta e mangas abertas, detalhes dourados e instrumento de navegação no peito. Peça de torso. Exact mandatory design in reference 2. BOTTOM LEFT: Luvas do Cartógrafo Elemental. Luvas azuis longas, punhos dourados e marcas pequenas em ouro. Exact mandatory design in reference 3. BOTTOM RIGHT: Cinto do Navegador Arcano. Correia marrom com instrumento circular dourado, frascos e pingente vermelho. Exact mandatory design in reference 4.  Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "03_raro_navegador_arcano/cabeca.png",
+        "03_raro_navegador_arcano/torso.png",
+        "03_raro_navegador_arcano/maos.png",
+        "03_raro_navegador_arcano/cinto.png"
+      ]
+    },
+    {
+      "jobId": "b0962cd7-abb9-46b4-a80e-dcb2cec2afd2",
+      "assetId": "8cabdae8-20b2-51f1-bf4f-38d7cfb48347",
+      "kind": "icons",
+      "items": [
+        147,
+        148,
+        149
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Calças do Observador dos Ventos. Calças escuras com bordados e instrumento circular dourado preso à lateral. Exact mandatory design in reference 1. TOP RIGHT: Botas de Maré Serena. Botas escuras com faixas azuis, ouro e pedra azul no cano. Exact mandatory design in reference 2. BOTTOM LEFT: Capa do Navegador Arcano. Capa azul com estrela náutica dourada, pequenas estrelas e debrum em ouro. Exact mandatory design in reference 3. BOTTOM RIGHT entirely alpha empty. Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "03_raro_navegador_arcano/perneiras.png",
+        "03_raro_navegador_arcano/pes.png",
+        "03_raro_navegador_arcano/capa.png"
+      ]
+    },
+    {
+      "jobId": "4c4ac95e-97fc-4606-9c16-323ee2284f04",
+      "assetId": "5c34b559-7498-5237-9996-2ad46e6cdcaf",
+      "kind": "wearable",
+      "items": [
+        143
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Chapéu do Navegador Arcano. Mandatory EXACT piece reference: Chapéu azul de aba larga, lentes douradas e pluma branca. Excluir os pequenos traços soltos acima da copa. Draw ONLY the headwear, fit exact native skull/forehead; include coherent rear and true right profile. Brim must not hide eyes. No head, hair, face, ears, neck or skin. Remove body, not hat ornaments. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "03_raro_navegador_arcano/cabeca.png"
+      ]
+    },
+    {
+      "jobId": "afc0ebf3-e67e-42ac-b832-635d5ca10688",
+      "assetId": "f81a9f81-8bc1-533a-affe-8bcc64db68ef",
+      "kind": "wearable",
+      "items": [
+        144
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Manto das Correntes Celestes. Mandatory EXACT piece reference: Manto azul de gola alta e mangas abertas, detalhes dourados e instrumento de navegação no peito. Peça de torso. Dress ONLY the torso garment from the reference on the six real bodies. Preserve the reference cut, collar, sleeves, shirt/panels, waist embroidery and hanging garment hem; do not invent an extra cape. Sleeves if present end at the native wrist; hands remain unpainted. Female has the SAME details with her own shoulders, waist and sleeve fit. Do not turn a robe/coat into generic vest. Export ONLY garment; all body pixels alpha. If a fitting mannequin is unavoidable, its body must be flat exact MAGENTA #FF00FF (never white, cream, flesh or shaded), which is NOT garment material. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "03_raro_navegador_arcano/torso.png"
+      ]
+    },
+    {
+      "jobId": "07a766b8-f640-4a8c-8b6f-30039cb3ec78",
+      "assetId": "72e5320a-3827-541a-888a-8b88034cd200",
+      "kind": "wearable",
+      "items": [
+        145
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Luvas do Cartógrafo Elemental. Mandatory EXACT piece reference: Luvas azuis longas, punhos dourados e marcas pequenas em ouro. Draw ONLY both matching gloves/bracers following reference shape/material. Fit LEFT and RIGHT actual wrists/hands separately, keep native palm/fist orientation, knuckles outward and palms inward. Cuffs meet sleeves without gaps; do not draw a detached replacement hand. Preserve any legitimate exposed fingers in reference. No skin, forearms or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "03_raro_navegador_arcano/maos.png"
+      ]
+    },
+    {
+      "jobId": "517df10d-e3c7-4449-808f-cc7f241161a6",
+      "assetId": "f849dbd6-32f9-549d-8586-f2ea959af7cd",
+      "kind": "wearable",
+      "items": [
+        147
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Calças do Observador dos Ventos. Mandatory EXACT piece reference: Calças escuras com bordados e instrumento circular dourado preso à lateral. Draw ONLY trousers/skirt/leg garment and ornaments SEWN into that piece in the reference. Preserve integrated sash but no separately equipped belt. Fit own hips, thighs and knees separately. Leg hems meet upper boot cuffs with a small overlap. No torso, legs, skin, feet or boots. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "03_raro_navegador_arcano/perneiras.png"
+      ]
+    },
+    {
+      "jobId": "8cdfaf86-afeb-4352-a04b-b96ee1b6a80d",
+      "assetId": "a74a12b5-787c-57d4-bc07-293a160cb606",
+      "kind": "wearable",
+      "items": [
+        148
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Botas de Maré Serena. Mandatory EXACT piece reference: Botas escuras com faixas azuis, ouro e pedra azul no cano. Draw ONLY BOTH reference footwear. Fit actual lower legs/ankles/feet independently; soles follow the native feet and boot cuffs overlap trouser hem. Preserve open toes for sandals/open footwear; DO NOT invent closed boots if reference is a sandal. No skin, legs, trousers, hands or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "03_raro_navegador_arcano/pes.png"
+      ]
+    },
+    {
+      "jobId": "f22203ca-1c3b-492b-aa89-04bb76ef2478",
+      "assetId": "ed0239e5-430b-51b6-b75c-b3bea0a6087f",
+      "kind": "repair",
+      "items": [
+        148
+      ],
+      "variant": "feminino",
+      "cost": 10,
+      "prompt": "ONLY FEMALE Botas de Maré Serena for Kaizoku Idle. Actual 3 female game bases, 3 columns SOUTH/front,NORTH/back,EAST/right, EACH96x128. Add reference BLUE and GOLD BOOTS to each body's actual feet. IMPORTANT NATIVE SIZE: EACH boot 10-12 pixels wide and 18-22 pixels high, covering native foot and lower calf from y92 to y112. Both boots at native anatomical ankles, NOT tiny miniatures and NOT large inventory icons. Preserve diamond blue jewels and gold trim, dark-blue leather, sole and buckles of exact reference. Keep every native body pixel/pose/position/scale/pivot, separate female anatomy. Output only the fitted boots, true alpha elsewhere, remove all base body/skin/hair. Crisp Ultra HD Masterpiece native pixel art, purposeful highlights, no antialiasing, no scene, no text, no border.",
+      "referenceFiles": [
+        "03_raro_navegador_arcano/pes.png"
+      ]
+    },
+    {
+      "jobId": "a4c6186d-74bd-4c45-a76f-eb491dfe3709",
+      "assetId": "ec6423f6-308a-5405-adf1-6662cc26a58a",
+      "kind": "icons",
+      "items": [
+        150,
+        151,
+        152,
+        153
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Chapéu Carmesim. Tricórnio escarlate com âncora dourada, pluma branca e amarra vermelha. Exact mandatory design in reference 1. TOP RIGHT: Sobretudo do Almirante. Sobretudo vermelho de gola alta, dragonas com franjas e fecho dourado sobre centro escuro. Exact mandatory design in reference 2. BOTTOM LEFT: Manoplas da Autoridade. Luvas escuras com placas douradas e gema rubra em losango. Exact mandatory design in reference 3. BOTTOM RIGHT: Cinto do Almirante Carmesim. Correia vermelha com fivela de caveira dourada, bolsa e tasséis. Exact mandatory design in reference 4.  Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "04_epico_almirante_carmesim/cabeca.png",
+        "04_epico_almirante_carmesim/torso.png",
+        "04_epico_almirante_carmesim/maos.png",
+        "04_epico_almirante_carmesim/cinto.png"
+      ]
+    },
+    {
+      "jobId": "14e5d260-02ce-487f-bf76-c4a24d33be4b",
+      "assetId": "7c6389e9-e438-52ca-ad76-bfccb0aea97c",
+      "kind": "icons",
+      "items": [
+        154,
+        155,
+        156
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Calças de Comando. Calças escuras com painéis escarlates, cordão e barras douradas. Exact mandatory design in reference 1. TOP RIGHT: Botas Imperiais. Botas escuras com bordas e tiras vermelhas e douradas, pedra rubra no cano. Exact mandatory design in reference 2. BOTTOM LEFT: Capa do Almirante Carmesim. Capa escarlate de gola clara, debrum dourado e broche vermelho. Exact mandatory design in reference 3. BOTTOM RIGHT entirely alpha empty. Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "04_epico_almirante_carmesim/perneiras.png",
+        "04_epico_almirante_carmesim/pes.png",
+        "04_epico_almirante_carmesim/capa.png"
+      ]
+    },
+    {
+      "jobId": "da343043-5c24-49f0-a152-a865c2554d6d",
+      "assetId": "cbba1004-8ee2-519d-b08d-cf2cea591c1a",
+      "kind": "wearable",
+      "items": [
+        150
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Chapéu Carmesim. Mandatory EXACT piece reference: Tricórnio escarlate com âncora dourada, pluma branca e amarra vermelha. Draw ONLY the headwear, fit exact native skull/forehead; include coherent rear and true right profile. Brim must not hide eyes. No head, hair, face, ears, neck or skin. Remove body, not hat ornaments. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "04_epico_almirante_carmesim/cabeca.png"
+      ]
+    },
+    {
+      "jobId": "ad5aedb8-9b87-49e4-ba45-1ac6fa3eeaff",
+      "assetId": "e9529c39-028c-54cc-9665-c479fc10cf83",
+      "kind": "wearable",
+      "items": [
+        151
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Sobretudo do Almirante. Mandatory EXACT piece reference: Sobretudo vermelho de gola alta, dragonas com franjas e fecho dourado sobre centro escuro. Dress ONLY the torso garment from the reference on the six real bodies. Preserve the reference cut, collar, sleeves, shirt/panels, waist embroidery and hanging garment hem; do not invent an extra cape. Sleeves if present end at the native wrist; hands remain unpainted. Female has the SAME details with her own shoulders, waist and sleeve fit. Do not turn a robe/coat into generic vest. Export ONLY garment; all body pixels alpha. If a fitting mannequin is unavoidable, its body must be flat exact MAGENTA #FF00FF (never white, cream, flesh or shaded), which is NOT garment material. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "04_epico_almirante_carmesim/torso.png"
+      ]
+    },
+    {
+      "jobId": "b62c69c0-13d8-478c-9f12-32e1acc14047",
+      "assetId": "64feefc2-1774-53f7-b862-4db1a9e110a3",
+      "kind": "wearable",
+      "items": [
+        152
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Manoplas da Autoridade. Mandatory EXACT piece reference: Luvas escuras com placas douradas e gema rubra em losango. Draw ONLY both matching gloves/bracers following reference shape/material. Fit LEFT and RIGHT actual wrists/hands separately, keep native palm/fist orientation, knuckles outward and palms inward. Cuffs meet sleeves without gaps; do not draw a detached replacement hand. Preserve any legitimate exposed fingers in reference. No skin, forearms or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "04_epico_almirante_carmesim/maos.png"
+      ]
+    },
+    {
+      "jobId": "c788f1b1-8e0f-4196-8ab2-c2f1e9d60462",
+      "assetId": "47c1e4fd-0a1a-57d5-b353-2d1f57cfb201",
+      "kind": "wearable",
+      "items": [
+        154
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Calças de Comando. Mandatory EXACT piece reference: Calças escuras com painéis escarlates, cordão e barras douradas. Draw ONLY trousers/skirt/leg garment and ornaments SEWN into that piece in the reference. Preserve integrated sash but no separately equipped belt. Fit own hips, thighs and knees separately. Leg hems meet upper boot cuffs with a small overlap. No torso, legs, skin, feet or boots. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "04_epico_almirante_carmesim/perneiras.png"
+      ]
+    },
+    {
+      "jobId": "a62d5b69-21c0-48c9-b3e3-65d7d3fc29bc",
+      "assetId": "a46eea84-450b-5467-96c2-31eac4e9bd58",
+      "kind": "wearable",
+      "items": [
+        155
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Botas Imperiais. Mandatory EXACT piece reference: Botas escuras com bordas e tiras vermelhas e douradas, pedra rubra no cano. Draw ONLY BOTH reference footwear. Fit actual lower legs/ankles/feet independently; soles follow the native feet and boot cuffs overlap trouser hem. Preserve open toes for sandals/open footwear; DO NOT invent closed boots if reference is a sandal. No skin, legs, trousers, hands or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "04_epico_almirante_carmesim/pes.png"
+      ]
+    },
+    {
+      "jobId": "a9a8d937-1b0c-4eb8-bf73-5f3b5fb7aa2d",
+      "assetId": "a92c0268-16a3-55ab-97f2-fdd190005c0c",
+      "kind": "icons",
+      "items": [
+        157,
+        158,
+        159,
+        160
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Diadema da Tormenta. Diadema dourado de pedra azul com plumas prateadas abertas para os lados. Exact mandatory design in reference 1. TOP RIGHT: Manto das Tempestades. Peça de torso azul, gola alta, ombros claros e desenhos de relâmpago. Exact mandatory design in reference 2. BOTTOM LEFT: Braçadeiras do Trovão. Luvas azuis com linhas de raio claras e placas em losango. Exact mandatory design in reference 3. BOTTOM RIGHT: Cinto do Arauto das Tempestades. Fivela azul com raio dourado, pedras e gotas pendentes. Exact mandatory design in reference 4.  Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "05_epico_arauto_das_tempestades/cabeca.png",
+        "05_epico_arauto_das_tempestades/torso.png",
+        "05_epico_arauto_das_tempestades/maos.png",
+        "05_epico_arauto_das_tempestades/cinto.png"
+      ]
+    },
+    {
+      "jobId": "c209a4ba-ac18-4105-b352-a4709335bee2",
+      "assetId": "5a83ec97-5bff-5627-bfcd-4ca0896e85ba",
+      "kind": "icons",
+      "items": [
+        161,
+        162,
+        163
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Calças da Monção. Calças escuras com raios azul-claros ao longo das pernas e cordões dourados. Exact mandatory design in reference 1. TOP RIGHT: Botas do Vendaval. Botas azul-escuras com gemas e marcas de relâmpago em azul-gelo. Exact mandatory design in reference 2. BOTTOM LEFT: Capa do Arauto das Tempestades. Capa azul e branca com gola clara, motivo de raio e fecho dourado. Exact mandatory design in reference 3. BOTTOM RIGHT entirely alpha empty. Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "05_epico_arauto_das_tempestades/perneiras.png",
+        "05_epico_arauto_das_tempestades/pes.png",
+        "05_epico_arauto_das_tempestades/capa.png"
+      ]
+    },
+    {
+      "jobId": "2a2ebc55-e654-4e60-9e70-2b8002bed5da",
+      "assetId": "37edff50-6998-5eee-9818-6580edff6a2f",
+      "kind": "wearable",
+      "items": [
+        157
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Diadema da Tormenta. Mandatory EXACT piece reference: Diadema dourado de pedra azul com plumas prateadas abertas para os lados. Draw ONLY the headwear, fit exact native skull/forehead; include coherent rear and true right profile. Brim must not hide eyes. No head, hair, face, ears, neck or skin. Remove body, not hat ornaments. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "05_epico_arauto_das_tempestades/cabeca.png"
+      ]
+    },
+    {
+      "jobId": "a90b3d72-d3ad-47c3-ab1d-a137a2c07b40",
+      "assetId": "90d6a5c6-2329-5327-a5d6-0fda14b71268",
+      "kind": "wearable",
+      "items": [
+        158
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Manto das Tempestades. Mandatory EXACT piece reference: Peça de torso azul, gola alta, ombros claros e desenhos de relâmpago. Dress ONLY the torso garment from the reference on the six real bodies. Preserve the reference cut, collar, sleeves, shirt/panels, waist embroidery and hanging garment hem; do not invent an extra cape. Sleeves if present end at the native wrist; hands remain unpainted. Female has the SAME details with her own shoulders, waist and sleeve fit. Do not turn a robe/coat into generic vest. Export ONLY garment; all body pixels alpha. If a fitting mannequin is unavoidable, its body must be flat exact MAGENTA #FF00FF (never white, cream, flesh or shaded), which is NOT garment material. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "05_epico_arauto_das_tempestades/torso.png"
+      ]
+    },
+    {
+      "jobId": "db3b2020-43c0-43fe-a219-fd1d11721bab",
+      "assetId": "8049419f-5dc5-5ce6-b6b3-d192f38687a6",
+      "kind": "wearable",
+      "items": [
+        159
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Braçadeiras do Trovão. Mandatory EXACT piece reference: Luvas azuis com linhas de raio claras e placas em losango. Draw ONLY both matching gloves/bracers following reference shape/material. Fit LEFT and RIGHT actual wrists/hands separately, keep native palm/fist orientation, knuckles outward and palms inward. Cuffs meet sleeves without gaps; do not draw a detached replacement hand. Preserve any legitimate exposed fingers in reference. No skin, forearms or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "05_epico_arauto_das_tempestades/maos.png"
+      ]
+    },
+    {
+      "jobId": "6799775c-fcc0-4f79-b2a6-18b5c3bf5c0b",
+      "assetId": "aa03c0d2-913e-54f0-bc54-993ec4285399",
+      "kind": "wearable",
+      "items": [
+        161
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Calças da Monção. Mandatory EXACT piece reference: Calças escuras com raios azul-claros ao longo das pernas e cordões dourados. Draw ONLY trousers/skirt/leg garment and ornaments SEWN into that piece in the reference. Preserve integrated sash but no separately equipped belt. Fit own hips, thighs and knees separately. Leg hems meet upper boot cuffs with a small overlap. No torso, legs, skin, feet or boots. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "05_epico_arauto_das_tempestades/perneiras.png"
+      ]
+    },
+    {
+      "jobId": "f29f4980-8b0e-4c08-911f-a39c6c0fe42e",
+      "assetId": "efb88d3e-4729-5a81-a8f0-c524a744e98e",
+      "kind": "wearable",
+      "items": [
+        162
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Botas do Vendaval. Mandatory EXACT piece reference: Botas azul-escuras com gemas e marcas de relâmpago em azul-gelo. Draw ONLY BOTH reference footwear. Fit actual lower legs/ankles/feet independently; soles follow the native feet and boot cuffs overlap trouser hem. Preserve open toes for sandals/open footwear; DO NOT invent closed boots if reference is a sandal. No skin, legs, trousers, hands or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "05_epico_arauto_das_tempestades/pes.png"
+      ]
+    },
+    {
+      "jobId": "81d36baf-6bdb-4f87-afc9-2e16bcf8ec77",
+      "assetId": "03e8bbd9-bff1-5703-8baf-f2385128a13e",
+      "kind": "icons",
+      "items": [
+        164,
+        165,
+        166,
+        167
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Tiara da Maré Sagrada. Tiara de concha dourada aberta com gotas azuis nas laterais. Exact mandatory design in reference 1. TOP RIGHT: Vestes do Santuário Oceânico. Torso claro de gola e ombros trabalhados, broche de concha e painéis azuis e dourados. Exact mandatory design in reference 2. BOTTOM LEFT: Manoplas da Cura Profunda. Luvas brancas com punhos dourados e conchas no dorso. Exact mandatory design in reference 3. BOTTOM RIGHT: Cinto da Maré Sagrada. Concha dourada central, faixa azul e gotas azuis pendentes. Exact mandatory design in reference 4.  Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "06_epico_mare_sagrada/cabeca.png",
+        "06_epico_mare_sagrada/torso.png",
+        "06_epico_mare_sagrada/maos.png",
+        "06_epico_mare_sagrada/cinto.png"
+      ]
+    },
+    {
+      "jobId": "f4d69ca0-629e-4f0f-b62e-0ebc67fe9673",
+      "assetId": "69a6d578-5c2e-5f53-b5a1-88202f1cecb9",
+      "kind": "icons",
+      "items": [
+        168,
+        169,
+        170
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Saia/Pernas do Rito Marinho. Peça branca drapeada com painéis azuis, bordados dourados e amarração ornamental. Exact mandatory design in reference 1. TOP RIGHT: Sandálias da Ressurgência. Sandálias claras de cano curto, tiras azuis e douradas, dedos à vista. Exact mandatory design in reference 2. BOTTOM LEFT: Capa da Maré Sagrada. Capa branca e azul, gola clara, concha central e bordados dourados. Exact mandatory design in reference 3. BOTTOM RIGHT entirely alpha empty. Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "06_epico_mare_sagrada/perneiras.png",
+        "06_epico_mare_sagrada/pes.png",
+        "06_epico_mare_sagrada/capa.png"
+      ]
+    },
+    {
+      "jobId": "aafcf10d-1f6f-4873-b71d-852178fbbc55",
+      "assetId": "c4082be1-2980-5dcf-964a-4697973eafc4",
+      "kind": "wearable",
+      "items": [
+        164
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Tiara da Maré Sagrada. Mandatory EXACT piece reference: Tiara de concha dourada aberta com gotas azuis nas laterais. Draw ONLY the headwear, fit exact native skull/forehead; include coherent rear and true right profile. Brim must not hide eyes. No head, hair, face, ears, neck or skin. Remove body, not hat ornaments. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "06_epico_mare_sagrada/cabeca.png"
+      ]
+    },
+    {
+      "jobId": "1dbc1497-e8e6-4670-9064-4f4dcdedc288",
+      "assetId": "4020f12c-7730-54f1-97ed-dce477291d26",
+      "kind": "wearable",
+      "items": [
+        165
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Vestes do Santuário Oceânico. Mandatory EXACT piece reference: Torso claro de gola e ombros trabalhados, broche de concha e painéis azuis e dourados. Dress ONLY the torso garment from the reference on the six real bodies. Preserve the reference cut, collar, sleeves, shirt/panels, waist embroidery and hanging garment hem; do not invent an extra cape. Sleeves if present end at the native wrist; hands remain unpainted. Female has the SAME details with her own shoulders, waist and sleeve fit. Do not turn a robe/coat into generic vest. Export ONLY garment; all body pixels alpha. If a fitting mannequin is unavoidable, its body must be flat exact MAGENTA #FF00FF (never white, cream, flesh or shaded), which is NOT garment material. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "06_epico_mare_sagrada/torso.png"
+      ]
+    },
+    {
+      "jobId": "1eeec4c6-a17a-4fc8-860a-0d50f9434cc2",
+      "assetId": "ee8e9223-ce21-5904-ab6a-a3e1f085722f",
+      "kind": "wearable",
+      "items": [
+        166
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Manoplas da Cura Profunda. Mandatory EXACT piece reference: Luvas brancas com punhos dourados e conchas no dorso. Draw ONLY both matching gloves/bracers following reference shape/material. Fit LEFT and RIGHT actual wrists/hands separately, keep native palm/fist orientation, knuckles outward and palms inward. Cuffs meet sleeves without gaps; do not draw a detached replacement hand. Preserve any legitimate exposed fingers in reference. No skin, forearms or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "06_epico_mare_sagrada/maos.png"
+      ]
+    },
+    {
+      "jobId": "25e030af-eb58-458c-a7c0-404fa40e85cc",
+      "assetId": "058c1da6-8826-536d-bb1c-e59cc1477313",
+      "kind": "wearable",
+      "items": [
+        168
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Saia/Pernas do Rito Marinho. Mandatory EXACT piece reference: Peça branca drapeada com painéis azuis, bordados dourados e amarração ornamental. Draw ONLY trousers/skirt/leg garment and ornaments SEWN into that piece in the reference. Preserve integrated sash but no separately equipped belt. Fit own hips, thighs and knees separately. Leg hems meet upper boot cuffs with a small overlap. No torso, legs, skin, feet or boots. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "06_epico_mare_sagrada/perneiras.png"
+      ]
+    },
+    {
+      "jobId": "8d3327c0-5fd6-49b1-85b3-d71dde30a3e7",
+      "assetId": "33c6ee3b-b1aa-5b0b-a045-9a3dac585ebd",
+      "kind": "wearable",
+      "items": [
+        169
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Sandálias da Ressurgência. Mandatory EXACT piece reference: Sandálias claras de cano curto, tiras azuis e douradas, dedos à vista. Draw ONLY BOTH reference footwear. Fit actual lower legs/ankles/feet independently; soles follow the native feet and boot cuffs overlap trouser hem. Preserve open toes for sandals/open footwear; DO NOT invent closed boots if reference is a sandal. No skin, legs, trousers, hands or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "06_epico_mare_sagrada/pes.png"
+      ]
+    },
+    {
+      "jobId": "b1412c62-5006-4e8f-a212-26bbeb750af5",
+      "assetId": "a22697df-9a68-59fd-9367-292dfb7e3d97",
+      "kind": "icons",
+      "items": [
+        171,
+        172,
+        173,
+        174
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Tricórnio do Soberano. Tricórnio escuro com pequena coroa dourada e pluma púrpura. Exact mandatory design in reference 1. TOP RIGHT: Casaco da Grand Line. Casaco negro e púrpura com ombros claros, detalhes dourados e joia no peito. Exact mandatory design in reference 2. BOTTOM LEFT: Manoplas Reais. Luvas escuras com placas douradas ornamentadas e gemas rubras. Exact mandatory design in reference 3. BOTTOM RIGHT: Cinto do Soberano da Grand Line. Cinto púrpura de grande fivela de caveira dourada, bolsa e pendentes vermelhos. Exact mandatory design in reference 4.  Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "07_lendario_soberano_grand_line/cabeca.png",
+        "07_lendario_soberano_grand_line/torso.png",
+        "07_lendario_soberano_grand_line/maos.png",
+        "07_lendario_soberano_grand_line/cinto.png"
+      ]
+    },
+    {
+      "jobId": "fb55886e-fbd6-4fa0-95bc-f3993b01c902",
+      "assetId": "972f95f6-d119-523c-9ce2-bb64493d989e",
+      "kind": "icons",
+      "items": [
+        175,
+        176,
+        177
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Calças do Conquistador. Calças escuras com sobressaia púrpura, cordões e bordados dourados. Exact mandatory design in reference 1. TOP RIGHT: Botas da Supremacia. Botas negras com gemas magenta e tiras douradas. Exact mandatory design in reference 2. BOTTOM LEFT: Capa do Soberano da Grand Line. Capa púrpura com gola clara, caveira central e arabescos dourados. Exact mandatory design in reference 3. BOTTOM RIGHT entirely alpha empty. Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "07_lendario_soberano_grand_line/perneiras.png",
+        "07_lendario_soberano_grand_line/pes.png",
+        "07_lendario_soberano_grand_line/capa.png"
+      ]
+    },
+    {
+      "jobId": "80864e10-6c0f-4c9b-9377-7502f46b16d0",
+      "assetId": "6eafb1ab-cbaa-529e-a880-ce5c66a8e7bc",
+      "kind": "wearable",
+      "items": [
+        171
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Tricórnio do Soberano. Mandatory EXACT piece reference: Tricórnio escuro com pequena coroa dourada e pluma púrpura. Draw ONLY the headwear, fit exact native skull/forehead; include coherent rear and true right profile. Brim must not hide eyes. No head, hair, face, ears, neck or skin. Remove body, not hat ornaments. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "07_lendario_soberano_grand_line/cabeca.png"
+      ]
+    },
+    {
+      "jobId": "ee611d0d-1d3b-42a5-ae7c-7a30bbd87b3c",
+      "assetId": "1985a700-dffb-58a2-b871-db8507b0ec6c",
+      "kind": "wearable",
+      "items": [
+        172
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Casaco da Grand Line. Mandatory EXACT piece reference: Casaco negro e púrpura com ombros claros, detalhes dourados e joia no peito. Dress ONLY the torso garment from the reference on the six real bodies. Preserve the reference cut, collar, sleeves, shirt/panels, waist embroidery and hanging garment hem; do not invent an extra cape. Sleeves if present end at the native wrist; hands remain unpainted. Female has the SAME details with her own shoulders, waist and sleeve fit. Do not turn a robe/coat into generic vest. Export ONLY garment; all body pixels alpha. If a fitting mannequin is unavoidable, its body must be flat exact MAGENTA #FF00FF (never white, cream, flesh or shaded), which is NOT garment material. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "07_lendario_soberano_grand_line/torso.png"
+      ]
+    },
+    {
+      "jobId": "1eb04d8f-854e-417f-b49d-e9c37ea314e0",
+      "assetId": "0e033ab2-b25f-53e2-b3a8-62c2076541b4",
+      "kind": "wearable",
+      "items": [
+        173
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Manoplas Reais. Mandatory EXACT piece reference: Luvas escuras com placas douradas ornamentadas e gemas rubras. Draw ONLY both matching gloves/bracers following reference shape/material. Fit LEFT and RIGHT actual wrists/hands separately, keep native palm/fist orientation, knuckles outward and palms inward. Cuffs meet sleeves without gaps; do not draw a detached replacement hand. Preserve any legitimate exposed fingers in reference. No skin, forearms or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "07_lendario_soberano_grand_line/maos.png"
+      ]
+    },
+    {
+      "jobId": "f9eec5b7-e06d-4af9-8470-0e1a7cde8541",
+      "assetId": "27c4ccc9-3186-5311-a271-952c4f556156",
+      "kind": "wearable",
+      "items": [
+        175
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Calças do Conquistador. Mandatory EXACT piece reference: Calças escuras com sobressaia púrpura, cordões e bordados dourados. Draw ONLY trousers/skirt/leg garment and ornaments SEWN into that piece in the reference. Preserve integrated sash but no separately equipped belt. Fit own hips, thighs and knees separately. Leg hems meet upper boot cuffs with a small overlap. No torso, legs, skin, feet or boots. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "07_lendario_soberano_grand_line/perneiras.png"
+      ]
+    },
+    {
+      "jobId": "f70bbbc0-10a5-464b-8499-42ba2433985f",
+      "assetId": "0dd841cd-0c5c-51c8-b867-44a530f8e534",
+      "kind": "wearable",
+      "items": [
+        176
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Botas da Supremacia. Mandatory EXACT piece reference: Botas negras com gemas magenta e tiras douradas. Draw ONLY BOTH reference footwear. Fit actual lower legs/ankles/feet independently; soles follow the native feet and boot cuffs overlap trouser hem. Preserve open toes for sandals/open footwear; DO NOT invent closed boots if reference is a sandal. No skin, legs, trousers, hands or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "07_lendario_soberano_grand_line/pes.png"
+      ]
+    },
+    {
+      "jobId": "7a5db7b6-8e54-41c5-9e9f-186db98050e9",
+      "assetId": "b7f6192a-b2dd-52ab-b553-8222e829f0ed",
+      "kind": "icons",
+      "items": [
+        178,
+        179,
+        180,
+        181
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Coroa do Horizonte Final. Coroa dourada de joia vermelha, sobre plumas pretas e rubras. Exact mandatory design in reference 1. TOP RIGHT: Armadura do Imperador. Armadura escura, dragonas douradas, painéis vermelhos e chamas nas bordas. Exact mandatory design in reference 2. BOTTOM LEFT: Manoplas da Vontade Absoluta. Manoplas negras de placas douradas com formas de chama ao redor dos punhos. Exact mandatory design in reference 3. BOTTOM RIGHT: Cinto do Horizonte Final. Cinto dourado e vermelho com caveira ornamentada de espinhos e pano rubro. Exact mandatory design in reference 4.  Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "08_supremo_horizonte_final/cabeca.png",
+        "08_supremo_horizonte_final/torso.png",
+        "08_supremo_horizonte_final/maos.png",
+        "08_supremo_horizonte_final/cinto.png"
+      ]
+    },
+    {
+      "jobId": "87f90d8c-cf66-47f0-8cd0-d46fee41db16",
+      "assetId": "494a7231-538a-5e60-868d-b0b2d23cd51b",
+      "kind": "icons",
+      "items": [
+        182,
+        183,
+        184
+      ],
+      "variant": null,
+      "cost": 10,
+      "prompt": "Kaizoku Idle production inventory atlas. EXACT 256x256, 2x2 cells each 128x128, no dividers/frames. FOUR DIFFERENT ITEMS, not random alternatives. TOP LEFT: Calças do Trono dos Mares. Calças escuras com painéis rubros de chamas, franjas e cordões dourados. Exact mandatory design in reference 1. TOP RIGHT: Botas do Horizonte Eterno. Botas escuras de bordas vermelho-douradas e gemas em losango. Exact mandatory design in reference 2. BOTTOM LEFT: Capa do Horizonte Final. Capa negra e vermelha com extremidades em chama e caveira dourada na gola. Exact mandatory design in reference 3. BOTTOM RIGHT entirely alpha empty. Ultra HD Masterpiece refined pixel art as polished as the approved weapon style. Each WHOLE item centered with 8px margin in its own cell; paired gloves or boots form ONE icon. Preserve reference silhouette, details, colours, fine materials, gemstones and ornaments; no simplification to generic gear. No people, flesh, faces, labels, text, rarity border, square plate, ground shadow, scenery or bloom outside silhouette. True alpha transparency. Complete pieces, no cropping.",
+      "referenceFiles": [
+        "08_supremo_horizonte_final/perneiras.png",
+        "08_supremo_horizonte_final/pes.png",
+        "08_supremo_horizonte_final/capa.png"
+      ]
+    },
+    {
+      "jobId": "58aed5e9-3242-4cf5-bfb8-fc68e491f2d4",
+      "assetId": "20b216f9-a19e-56c0-a6cb-081c7ba1f534",
+      "kind": "wearable",
+      "items": [
+        178
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Coroa do Horizonte Final. Mandatory EXACT piece reference: Coroa dourada de joia vermelha, sobre plumas pretas e rubras. Draw ONLY the headwear, fit exact native skull/forehead; include coherent rear and true right profile. Brim must not hide eyes. No head, hair, face, ears, neck or skin. Remove body, not hat ornaments. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "08_supremo_horizonte_final/cabeca.png"
+      ]
+    },
+    {
+      "jobId": "656da5e6-cc94-4c2b-8d76-6ccedd3d19fe",
+      "assetId": "a7357b58-f6a8-5a4b-896d-cd3663f2aa58",
+      "kind": "wearable",
+      "items": [
+        179
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Armadura do Imperador. Mandatory EXACT piece reference: Armadura escura, dragonas douradas, painéis vermelhos e chamas nas bordas. Dress ONLY the torso garment from the reference on the six real bodies. Preserve the reference cut, collar, sleeves, shirt/panels, waist embroidery and hanging garment hem; do not invent an extra cape. Sleeves if present end at the native wrist; hands remain unpainted. Female has the SAME details with her own shoulders, waist and sleeve fit. Do not turn a robe/coat into generic vest. Export ONLY garment; all body pixels alpha. If a fitting mannequin is unavoidable, its body must be flat exact MAGENTA #FF00FF (never white, cream, flesh or shaded), which is NOT garment material. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "08_supremo_horizonte_final/torso.png"
+      ]
+    },
+    {
+      "jobId": "5d51efa4-bab0-460a-ba26-8dcd3e560b52",
+      "assetId": "a68bb848-ac6d-5e8f-9bba-886df160068f",
+      "kind": "wearable",
+      "items": [
+        180
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Manoplas da Vontade Absoluta. Mandatory EXACT piece reference: Manoplas negras de placas douradas com formas de chama ao redor dos punhos. Draw ONLY both matching gloves/bracers following reference shape/material. Fit LEFT and RIGHT actual wrists/hands separately, keep native palm/fist orientation, knuckles outward and palms inward. Cuffs meet sleeves without gaps; do not draw a detached replacement hand. Preserve any legitimate exposed fingers in reference. No skin, forearms or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "08_supremo_horizonte_final/maos.png"
+      ]
+    },
+    {
+      "jobId": "a5e77c2f-e1b6-415a-be89-bb3acb789f56",
+      "assetId": "7bdfef5b-5431-514d-810d-7310384d9d67",
+      "kind": "wearable",
+      "items": [
+        182
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Calças do Trono dos Mares. Mandatory EXACT piece reference: Calças escuras com painéis rubros de chamas, franjas e cordões dourados. Draw ONLY trousers/skirt/leg garment and ornaments SEWN into that piece in the reference. Preserve integrated sash but no separately equipped belt. Fit own hips, thighs and knees separately. Leg hems meet upper boot cuffs with a small overlap. No torso, legs, skin, feet or boots. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "08_supremo_horizonte_final/perneiras.png"
+      ]
+    },
+    {
+      "jobId": "e7938df0-b930-46d8-a802-941e2482ce60",
+      "assetId": "b81d1b90-0891-5aca-9a2c-ce52d417c802",
+      "kind": "wearable",
+      "items": [
+        183
+      ],
+      "variant": null,
+      "cost": 15,
+      "prompt": "Kaizoku Idle native wearable sheet for Botas do Horizonte Eterno. Mandatory EXACT piece reference: Botas escuras de bordas vermelho-douradas e gemas em losango. Draw ONLY BOTH reference footwear. Fit actual lower legs/ankles/feet independently; soles follow the native feet and boot cuffs overlap trouser hem. Preserve open toes for sandals/open footwear; DO NOT invent closed boots if reference is a sandal. No skin, legs, trousers, hands or body. Input guide has SIX ACTUAL GAME BASES in EXACT 3 columns SOUTH front / NORTH back / EAST right-facing profile, top row MALE, bottom row FEMALE. Each cell96x128, whole288x256. Keep every cell/pixel anchor/body size/pivot/native anatomy and pose. Do not move or center garments inside cells. The female must reproduce the SAME reference with its own female fit, never reuse or stretch the male. Native1pixel grid, refined Ultra HD Masterpiece materials, crisp outlines, rich purposeful shading and recognizable fine ornaments at native scale. Export only the required piece with true alpha elsewhere. No character anatomy baked in, no other gear, label, text, background, frame, shadow or halos. Respect reference colours and silhouette; no generic redesign. Glass/white/gold fabric is part of item and must be retained.",
+      "referenceFiles": [
+        "08_supremo_horizonte_final/pes.png"
+      ]
+    }
+  ]
+}

@@ -92,6 +92,19 @@
       if(t<.9&&Math.abs(q.across)<pose.shoulder+2)continue;
       out.set(source.subarray(from,from+4),i);
     }
+    // Inverse projection can separate a subpixel hem edge into tiny islands.
+    // Cull only detached islands; the main robe and connected ornaments remain.
+    const visited=new Uint8Array(width*height);
+    for(let p=0;p<visited.length;p++){
+      if(visited[p]||!out[p*4+3])continue;
+      const group=[p];visited[p]=1;
+      for(let k=0;k<group.length;k++)for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
+        const x=group[k]%width+dx,y=Math.floor(group[k]/width)+dy,n=y*width+x;
+        if(x<0||y<0||x>=width||y>=height||visited[n]||!out[n*4+3])continue;
+        visited[n]=1;group.push(n);
+      }
+      if(group.length<5)for(const n of group)out.fill(0,n*4,n*4+4);
+    }
     const result={full:out,LEFT:new Uint8ClampedArray(body.length),RIGHT:new Uint8ClampedArray(body.length)};
     const bones=[];
     for(const side of ['LEFT','RIGHT'])for(const [part,from,to] of [['upper',' SHOULDER',' ELBOW'],['lower',' ELBOW',' ARM']]){const material=panels[side+part],pixels=[];if(material)for(let i=0;i<material.length;i+=4)if(material[i+3])pixels.push(i/4);bones.push({side,part,material,pixels,r:surface.axis(rest.j[side+from],rest.j[side+to]),p:surface.axis(pose.j[side+from],pose.j[side+to])});}

@@ -195,7 +195,7 @@
     for(const p of target.pixels){const limits=bounds[p.bone.key];if(!limits||!Number.isFinite(limits.lo))continue;
       const f=p.along/p.bone.length;
       let lo=limits.lo,hi=limits.hi;
-      if(slot==='boots'){lo=design.cuffStart??.62;hi=2.0;}
+      if(slot==='boots'){lo=design.cuffStart??.62;hi=design.preserveTexture&&!design.openToes?2.6:2.0;}
       if(slot==='pants'&&design.kneePlate&&p.bone.part==='lower'){lo=0;hi=1.1;}
       if(slot==='gloves'){lo=design.cuffStart??.6;hi=design.fingerCoverage==='fingerless'?1.30:1.9;}
       if(f<lo-.03||f>hi+.04)continue;

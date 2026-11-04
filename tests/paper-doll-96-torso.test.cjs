@@ -11,7 +11,7 @@ const { cleanHeadwear } = require('../tools/paper_doll_96_headwear.cjs');
 const catalog = require(path.join(root, 'appearance-catalog.json'));
 const rig = require(path.join(root, 'appearance-rig.json'));
 assert.ok(catalog.equipmentSlots.includes('torso'));
-assert.deepEqual(catalog.styles.filter(s => s.kind === 'torso').map(s => [s.itemId, s.equipmentSlot]), [[6, 'coat'], [7, 'coat']]);
+assert.deepEqual(catalog.styles.filter(s => s.kind === 'torso').map(s => [s.itemId, s.equipmentSlot]), [[6, 'coat'], [7, 'coat'],...Array.from({length:8},(_,i)=>[130+i*7,'coat'])]);
 assert.equal(catalog.styles.find(s => s.itemId === 19).hairOcclusion, 'all');
 assert.equal(catalog.nativeOwnership.schema,'mare-native-ownership-v9');
 assert.equal(new Set(Object.values(catalog.nativeOwnership.atlases).flatMap(a=>Object.values(a).map(v=>v.file))).size,16);
@@ -19,8 +19,8 @@ for(const body of ['masculino','feminino'])for(const [action,atlas]of Object.ent
  const png=fs.readFileSync(path.join(root,atlas.file));assert.equal(png.readUInt32BE(16),atlas.cell*atlas.columns);assert.equal(png.readUInt32BE(20),atlas.cell*atlas.rows);
  assert.equal(atlas.framesPerDirection,action==='static'?1:action==='idle'?4:8);
 }
-for(const style of catalog.styles.filter(s=>s.kind==='torso'))for(const body of ['masculino','feminino'])assert.equal(style.animations[body].static.framesPerDirection,1);
-for(const style of catalog.styles.filter(s=>s.kind==='torso'))for(const body of ['masculino','feminino'])for(const action of ['idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus','attack-tech']){
+for(const style of catalog.styles.filter(s=>s.kind==='torso'&&s.nativeFit!=='registered-panels-v1'))for(const body of ['masculino','feminino'])assert.equal(style.animations[body].static.framesPerDirection,1);
+for(const style of catalog.styles.filter(s=>s.kind==='torso'&&s.nativeFit!=='registered-panels-v1'))for(const body of ['masculino','feminino'])for(const action of ['idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus','attack-tech']){
   const atlas=style.animations[body][action],png=fs.readFileSync(path.join(root,atlas.file));
   assert.equal(atlas.framesPerDirection,action==='idle'?4:8);
   assert.deepEqual(atlas.directions,['south','north','west','east']);
