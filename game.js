@@ -3271,19 +3271,29 @@ $('gameFrame').appendChild(targetHud);
   $('socialMenuTrigger').addEventListener('click',e=>{e.stopPropagation();const open=$('socialQuickMenu').classList.contains('hidden');closeCharacterMenu();closeModesMenu();closeCaptainMenu();$('socialQuickMenu').classList.toggle('hidden',!open);e.currentTarget.setAttribute('aria-expanded',String(open));if(open)$('socialQuickMenu').querySelector('button').focus();});
   document.addEventListener('click',e=>{if(!socialAnchor.contains(e.target)){$('socialQuickMenu').classList.add('hidden');$('socialMenuTrigger').setAttribute('aria-expanded','false');}if(e.target.closest('[data-party-open]')){$('socialQuickMenu').classList.add('hidden');$('socialMenuTrigger').setAttribute('aria-expanded','false');openPanel('party');}if(e.target.closest('[data-party-collapse]')){partyCollapsed=!partyCollapsed;partyCompactStamp=null;updatePartyUI();}const choice=e.target.closest('[data-party-kind],[data-party-region],[data-party-destination]');if(choice&&!choice.disabled&&currentPanel==='party'){if(choice.dataset.partyKind)partyDestination.kind=choice.dataset.partyKind;if(choice.dataset.partyRegion){partyDestination.region=choice.dataset.partyRegion;const first=MareArchipelago.islands.find(i=>i.region===partyDestination.region);if(first)partyDestination.huntId=first.id;}if(choice.dataset.partyDestination){partyDestination.kind=choice.dataset.kind;partyDestination[choice.dataset.kind==='hunt'?'huntId':'dungeonId']=choice.dataset.partyDestination;}const scroll=$('dialogBody').querySelector('.party-destination-grid')?.scrollTop||0;renderPartyPanel();const grid=$('dialogBody').querySelector('.party-destination-grid');if(grid)grid.scrollTop=scroll;const focus=$('dialogBody').querySelector('[data-party-destination="'+choice.dataset.partyDestination+'"], [data-party-kind="'+choice.dataset.partyKind+'"], [data-party-region="'+choice.dataset.partyRegion+'"]');focus?.focus({preventScroll:true});}const b=e.target.closest('[data-party-action],[data-party-respond]');if(b&&!b.disabled)void handlePartyAction(b);});
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){$('socialQuickMenu').classList.add('hidden');$('socialMenuTrigger').setAttribute('aria-expanded','false');}});
-  $('journeyToggle').addEventListener('click',()=>{const collapsed=journey.classList.toggle('collapsed');$('journeyToggle').setAttribute('aria-expanded',String(!collapsed));journey.querySelector('.journey-chevron').textContent=collapsed?'+':'−';});
+  $('journeyToggle').addEventListener('click',()=>toggleFloating('expedition'));
+  let expeditionReturnFocus=null;
 
   function syncExpeditionMini(){
     const open=floating.expedition.classList.contains('hud-open');
     expeditionMini.classList.toggle('open',open);
-    expeditionMini.classList.toggle('hidden',scene!=='hunt');
+    expeditionMini.setAttribute('aria-expanded',String(open));
+    $('journeyToggle').setAttribute('aria-expanded',String(open));
+    $('journeyToggle').classList.toggle('selected',open);
     const lbl=expeditionMini.querySelector('.mini-label');
-    if(lbl) lbl.textContent = scene!=='hunt' ? 'No porto' : (autoPlay ? 'Caçada ativa' : 'Caçada pausada');
+    if(lbl)lbl.textContent='Expedição';
   }
 
   function toggleFloating(kind,force){let el=floating[kind];if(!el)return;const open=force===undefined?!el.classList.contains('hud-open'):!!force;
     if(open&&innerWidth<=760)for(const other of Object.keys(floating))if(other!==kind)toggleFloating(other,false);
+    const wasOpen=el.classList.contains('hud-open');
+    if(kind==='expedition'&&open&&!wasOpen){
+      expeditionReturnFocus=document.activeElement?.closest('#modesQuickMenu')?$('modesMenuTrigger'):document.activeElement;
+      closeCharacterMenu();closeModesMenu();closeCaptainMenu();
+    }
     el.classList.toggle('hud-open',open);
+    if(kind==='expedition'&&open&&!wasOpen)el.querySelector('[data-close-window]').focus({preventScroll:true});
+    if(kind==='expedition'&&!open&&wasOpen&&el.contains(document.activeElement))expeditionReturnFocus?.focus({preventScroll:true});
     document.querySelectorAll('[data-hud]').forEach(btn=>{if(btn.dataset.hud===kind){btn.classList.toggle('selected',open);btn.setAttribute('aria-expanded',String(open));}});
     syncExpeditionMini();
     const chatButton=$('chatCornerToggle');if(chatButton)chatButton.classList.toggle('is-open',floating.chat.classList.contains('hud-open'));
@@ -3317,7 +3327,7 @@ function applySceneHudLayout(){
     $('miniEnergyText').textContent=fmt(game.energy)+' / '+fmt(s.maxEnergy);
     $('miniXPText').textContent=fmt(game.xp)+' / '+fmt(xpNeeded(game.level));
     $('miniXP').style.width=(100*clamp(game.xp/xpNeeded(game.level),0,1)).toFixed(1)+'%';
-    window.MareCharacterHUD?.update({name:game.name,factionId:game.factionId,hierarchyTier:game.hierarchyTier,hp:game.hp,maxHP:s.maxHP,energy:game.energy,maxEnergy:s.maxEnergy,xp:game.xp,neededXP:xpNeeded(game.level)});
+    window.MareCharacterHUD?.update({name:game.name,className:classes[game.classId].name,factionId:game.factionId,hierarchyTier:game.hierarchyTier,hp:game.hp,maxHP:s.maxHP,energy:game.energy,maxEnergy:s.maxEnergy,xp:game.xp,neededXP:xpNeeded(game.level)});
     if(dungeonRun){$('journeyTitle').textContent=MareBossDungeons.byId[dungeonRun.id].name;$('journeyChapter').textContent='Masmorra de Chefes';$('journeyProgress').textContent=MareBossDungeons.status(game,dungeonRun.id)==='pending'?'Baú disponível':'Derrote o adversário';$('journeyFill').style.width=MareBossDungeons.status(game,dungeonRun.id)==='pending'?'100%':'0%';const a=$('journeyAction');a.textContent='Ver masmorra';a.dataset.panel='dungeons';delete a.dataset.claim;return;}if(impelRun){$('journeyTitle').textContent='Andar '+impelRun.currentFloor+(MarePrison.isBossFloor(impelRun.currentFloor)?' · Chefe':'');$('journeyChapter').textContent='Impel Down';$('journeyProgress').textContent=game.impelDown.cleared+' / 100 concluídos';$('journeyFill').style.width=game.impelDown.cleared+'%';const a=$('journeyAction');a.textContent=impelRun.pending?'Salvar conclusão':'Ver andares';a.dataset.panel='prison';delete a.dataset.claim;return;}
     const quest=questDefs.find(q=>!game.claimed.includes(q.id)&&(scene!=='hunt'||!['orange','swamp','beach','rare'].includes(game.area)||q.area===game.area));
     $('journeyTitle').textContent=quest?quest.title:'Contratos concluídos';
