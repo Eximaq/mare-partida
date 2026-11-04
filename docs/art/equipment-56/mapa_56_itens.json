@@ -3750,25 +3750,29 @@
             "LEFTupper": "assets/custom-item-165-masculino-south-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-south-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-south-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-south-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-south-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-south-drape.png"
           },
           "north": {
             "LEFTupper": "assets/custom-item-165-masculino-north-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-north-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-north-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-north-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-north-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-north-drape.png"
           },
           "east": {
             "LEFTupper": "assets/custom-item-165-masculino-east-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-east-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-east-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-east-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-east-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-east-drape.png"
           },
           "west": {
             "LEFTupper": "assets/custom-item-165-masculino-west-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-west-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-west-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-west-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-west-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-west-drape.png"
           }
         },
         "nativeFrames": {
@@ -3810,25 +3814,29 @@
             "LEFTupper": "assets/custom-item-165-feminino-south-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-south-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-south-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-south-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-south-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-south-drape.png"
           },
           "north": {
             "LEFTupper": "assets/custom-item-165-feminino-north-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-north-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-north-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-north-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-north-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-north-drape.png"
           },
           "east": {
             "LEFTupper": "assets/custom-item-165-feminino-east-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-east-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-east-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-east-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-east-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-east-drape.png"
           },
           "west": {
             "LEFTupper": "assets/custom-item-165-feminino-west-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-west-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-west-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-west-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-west-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-west-drape.png"
           }
         },
         "nativeFrames": {

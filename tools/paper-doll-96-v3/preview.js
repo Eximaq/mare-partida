@@ -6,7 +6,7 @@
   const response = await fetch('manifest.json', {cache:'no-store'});
   if (!response.ok) throw Error('Não foi possível carregar o pacote.');
   const manifest = await response.json();
-  const [catalog, appearanceRigs, weaponCatalog] = await Promise.all(['appearance-catalog.json','appearance-rig.json','weapons.json'].map(async file => { const r=await fetch(file, {cache:'no-store'}); if(!r.ok) throw Error('Catálogo de aparência indisponível.'); return r.json(); }));
+  const [catalog, appearanceRigs, weaponCatalog, release] = await Promise.all(['appearance-catalog.json','appearance-rig.json','weapons.json','player-pack.json'].map(async file => { const r=await fetch(file, {cache:'no-store'}); if(!r.ok) throw Error('Catálogo de aparência indisponível.'); return r.json(); }));
   window.MareLayers96.validate(manifest);
   const loaded = new Map(), inflight = new Map(), composites = new Map();
   let protectedFiles = new Set(), active = null, version = 0;
@@ -24,14 +24,15 @@
       const img = new Image();
       img.onload = () => { loaded.set(url, img); inflight.delete(url); trimImages(); resolve(img); };
       img.onerror = () => { inflight.delete(url); reject(Error('Imagem ausente: ' + url)); };
-      img.src = url + (url.includes('?') ? '&' : '?') + 'revision=' + encodeURIComponent((manifest.visualRevision || 'base')+'-'+weaponCatalog.revision);
+      img.src = url + (url.includes('?') ? '&' : '?') + 'revision=' + encodeURIComponent(release.assetRevision);
     });
     inflight.set(url, promise); return promise;
   }
   const map = await new Promise((resolve, reject) => {
     const img = new Image(); img.onload = () => resolve(img); img.onerror = reject; img.src = '../../assets/lobby-map.png';
   });
-  const wardrobe = MareWardrobe96.create(catalog, appearanceRigs, image, {weapons:weaponCatalog,manifest});
+  const wardrobe = MareWardrobe96.create(catalog, appearanceRigs, image, {weapons:weaponCatalog,manifest,allowHeadAdjustment:true});
+  let headEditor=null;
   const controlNames={hair:'Cabelo',face:'Rosto',skin:'Pele',hairColor:'Cor do cabelo',torso:'Torso',weapon:'Arma',pants:'Calças',boots:'Calçados',gloves:'Luvas',cloak:'Capa',head:'Cabeça'};
   for(const [slot,label] of Object.entries(controlNames)){
     const wrapper=document.createElement('label');wrapper.textContent=label+' ';const select=document.createElement('select');select.id='look-'+slot;select.dataset.look=slot;
@@ -43,6 +44,7 @@
   const lookValues=()=>{
     const look=Object.fromEntries([...document.querySelectorAll('[data-look]')].map(el=>[el.dataset.look,el.value]));
     if($('inspect-grip').checked&&look.weapon!=='original'){look.gloves='original';look.inspectionBareHands=true;}
+    if(headEditor)look.headAdjustment=headEditor.override();
     return look;
   };
   let playing = true, epoch = performance.now(), frame = 0;
@@ -104,7 +106,7 @@
     if (layers) {
       const hidden = [...document.querySelectorAll('[data-layer]')].filter(el => !el.checked).map(el => el.dataset.layer);
       const tile = compose(active, frame, hidden);
-      const shown=tile.mareSpec||spec;if(detail.width!==shown.width*2||detail.height!==shown.height*2){detail.width=shown.width*2;detail.height=shown.height*2;dc.imageSmoothingEnabled=false;}actor(ctx, tile, shown); dc.drawImage(tile, 0, 0, detail.width, detail.height);
+      const shown=tile.mareSpec||spec;if(detail.width!==shown.width*2||detail.height!==shown.height*2){detail.width=shown.width*2;detail.height=shown.height*2;dc.imageSmoothingEnabled=false;}actor(ctx, tile, shown); dc.drawImage(tile, 0, 0, detail.width, detail.height);headEditor?.draw(tile);
       $('status').textContent = clip ? '96 px · ' + clip.frames + ' frames reais · ' + clip.fps + ' FPS · frame ' + (frame + 1) + ' · animação em avaliação'
         : '96 px · pose estática · corpo, rosto, cabelo e roupas independentes';
     } else $('status').textContent = 'Este movimento/direção ainda não foi produzido.';
@@ -118,6 +120,8 @@
     if (token !== version) return;
     frame = 0; epoch = performance.now(); active = next; draw(epoch);
   }
+  function updateFit(){composites.clear();if(active){active.look=lookValues();draw(performance.now());}}
+  headEditor=MareHeadgearEditor.mount({catalog,onChange:updateFit});
   function showError(error) { $('status').textContent = error.message; console.error(error); }
   for(const el of document.querySelectorAll('[data-look]'))el.addEventListener('change',()=>{if(el.dataset.look==='weapon'&&$('action').value.startsWith('attack-')){const weapon=weaponCatalog.items.find(w=>w.id===el.value);if(weapon)$('action').value=weapon.attackAction||'attack-'+weapon.category;}refresh().catch(showError);});
   $('inspect-grip').addEventListener('change',()=>refresh().catch(showError));
@@ -130,6 +134,6 @@
   });
   function tick(now) { try{draw(now);}catch(error){active=null;showError(error);}requestAnimationFrame(tick); }
   await refresh(); requestAnimationFrame(tick);
-  window.__review96v3 = { manifest, catalog, appearanceRigs, weaponCatalog, wardrobe, loaded, selection, render, image, draw, get frame() { return frame; },
+  window.__review96v3 = { headEditor, manifest, catalog, appearanceRigs, weaponCatalog, wardrobe, loaded, selection, render, image, draw, get frame() { return frame; },
     get playing() { return playing; }, get cacheSize() { return composites.size; }, get imageCacheSize() { return loaded.size; } };
 })().catch(error => { document.getElementById('status').textContent = error.message; console.error(error); });

@@ -3,7 +3,7 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
 (async()=>{const browser=await chromium.launch({headless:true,executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH});try{
  const page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto((process.argv[2]||'http://127.0.0.1:8175/')+'tools/paper-doll-96-v3/');await page.waitForFunction(()=>window.__review96v3);
  const result=await page.evaluate(async()=>{
-  const q=__review96v3,W=MareWeapons96.create(q.weaponCatalog,q.appearanceRigs);let outfits=0,bootPixels=0,glovePixels=0,hiddenHair=0,restoredHair=0,seraphimFrames=0,sleeveExpandedPixels=0;
+  const q=__review96v3,W=MareWeapons96.create(q.weaponCatalog,q.appearanceRigs);let outfits=0,bootPixels=0,glovePixels=0,hiddenHair=0,partialHair=0,restoredHair=0,seraphimFrames=0,sleeveExpandedPixels=0;
   const read=c=>c.getContext('2d').getImageData(0,0,c.width,c.height).data,same=(a,b,i)=>[0,1,2,3].every(k=>a[i+k]===b[i+k]);
   for(const body of ['masculino','feminino'])for(const direction of ['south','north','east'])for(const action of ['idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-tech','attack-focus']){
    const selected=q.selection(body,action,direction),spec=MareMotion96.clipSpec(q.manifest,selected.clip),frame=action==='idle'?0:4,images=new Map(await Promise.all(Object.values(selected.layers).map(async f=>[f,await q.image(f)])));
@@ -12,7 +12,8 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
    for(const [torso,pants,boots,gloves,cloak,head]of [['item-6','item-21','item-8','item-25','item-23','item-18'],['item-7','item-22','item-9','item-26','item-24','item-19']]){
     const look={...base,torso,pants,boots,gloves,cloak,head},full=await render(look),withoutBoots=await render({...look,boots:'none'}),bootBase=await render({...base,boots}),bare=await render(base),gloveBase=await render({...base,gloves}),withoutGloves=await render({...look,gloves:'none'}),otherHair=await render({...look,hair:'hair-long',hairColor:'blue'});
     for(let i=0;i<full.length;i+=4){if(!same(bootBase,bare,i)&&bootBase[i+3]&&same(withoutBoots,bare,i)){assertPixel(full,bootBase,i,'boots over pants');bootPixels++;}if(!same(gloveBase,bare,i)&&gloveBase[i+3]&&!headAt(i)&&same(withoutGloves,bare,i)){assertPixel(full,gloveBase,i,'gloves over sleeve');glovePixels++;}}
-    if(!full.every((v,i)=>v===otherHair[i]))throw Error('Visible helmet leaked hairstyle '+[body,direction,action,head]);hiddenHair++;
+    if(head==='item-19'){if(!full.every((v,i)=>v===otherHair[i]))throw Error('Closed helmet leaked hairstyle '+[body,direction,action,head]);hiddenHair++;}
+    else{const bald=await render({...look,hair:'none'});if(otherHair.every((v,i)=>v===bald[i]))throw Error('Partial bandana removed the visible hair '+[body,direction,action,head]);partialHair++;}
     const hidden=await render({...look,hideHeadgear:true}),removed=await render({...look,head:'none'});if(!hidden.every((v,i)=>v===removed[i]))throw Error('Headgear toggle did not restore hair');restoredHair++;outfits++;
     function headAt(i){const y=Math.floor(i/4/spec.width),neck=q.appearanceRigs.clips[body][action][direction].poses[frame].find(j=>j.label==='NECK');return y<neck.y*128+(spec.width-128)/2+3;}
     function assertPixel(a,b,i,kind){if(!same(a,b,i))throw Error(kind+' '+JSON.stringify({body,direction,action,torso,frame,pixel:i/4}));}
@@ -33,6 +34,6 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
    let narrow;try{armour.sleevePadding=0;armour.crossScale=5.5;narrow=render();}finally{armour.sleevePadding=padding;armour.crossScale=crossScale;}
    const full=render();let expanded=0;for(let i=3;i<full.length;i+=4)if(full[i]&&!narrow[i])expanded++;if(!expanded)throw Error('Serafim sleeve did not expand '+body+'/'+direction);sleeveExpandedPixels+=expanded;
   }
-  return{outfits,bootPixels,glovePixels,hiddenHair,restoredHair,seraphimFrames,sleeveExpandedPixels};
- });assert.deepEqual(errors,[]);assert(result.bootPixels>0&&result.glovePixels>0);assert.equal(result.outfits,96);assert.equal(result.seraphimFrames,120);console.log(JSON.stringify(result));
+  return{outfits,bootPixels,glovePixels,hiddenHair,partialHair,restoredHair,seraphimFrames,sleeveExpandedPixels};
+ });assert.deepEqual(errors,[]);assert(result.bootPixels>0&&result.glovePixels>0);assert.equal(result.outfits,96);assert.equal(result.hiddenHair,48);assert.equal(result.partialHair,48);assert.equal(result.seraphimFrames,120);console.log(JSON.stringify(result));
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});

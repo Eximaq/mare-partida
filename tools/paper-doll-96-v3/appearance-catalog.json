@@ -778,6 +778,22 @@
         "jobId": "23e2db22-ead2-40ba-b45e-9f644b6ee100",
         "assetId": "e12398fa-553c-590d-a84f-8ff97cdf3e8d",
         "revision": "canonical-native-v7"
+      },
+      "hairHideMode": "partial",
+      "hairOcclusion": "crown",
+      "hairlineY": {
+        "masculino": {
+          "south": 37,
+          "north": 35,
+          "east": 37,
+          "west": 37
+        },
+        "feminino": {
+          "south": 37,
+          "north": 36,
+          "east": 36,
+          "west": 36
+        }
       }
     },
     {
@@ -808,7 +824,8 @@
         "jobId": "cb089c4b-6c31-4fd3-b9f6-e1620acf84a8",
         "assetId": "f00b6973-6357-5f57-8e44-6e482e3d949d",
         "revision": "canonical-native-v7"
-      }
+      },
+      "hairHideMode": "full"
     },
     {
       "id": "item-21",
@@ -3472,7 +3489,49 @@
         }
       },
       "sourceReference": "01_raro_corsario_das_mares/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "crown",
+      "headRegistration": {
+        "masculino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 7,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 6,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        },
+        "feminino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 8,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 6,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        }
+      },
       "materialPalette": [
         [
           52,
@@ -3515,6 +3574,11 @@
           51
         ],
         [
+          209,
+          38,
+          20
+        ],
+        [
           4,
           1,
           1
@@ -3530,9 +3594,14 @@
           5
         ],
         [
-          209,
-          38,
-          20
+          6,
+          2,
+          1
+        ],
+        [
+          114,
+          22,
+          21
         ],
         [
           172,
@@ -3545,34 +3614,9 @@
           86
         ],
         [
-          114,
-          22,
-          21
-        ],
-        [
           159,
           149,
           160
-        ],
-        [
-          1,
-          1,
-          2
-        ],
-        [
-          45,
-          59,
-          98
-        ],
-        [
-          34,
-          32,
-          60
-        ],
-        [
-          192,
-          189,
-          193
         ],
         [
           163,
@@ -3580,9 +3624,39 @@
           18
         ],
         [
+          103,
+          66,
+          49
+        ],
+        [
+          1,
+          1,
+          2
+        ],
+        [
           1,
           1,
           0
+        ],
+        [
+          45,
+          59,
+          98
+        ],
+        [
+          173,
+          84,
+          49
+        ],
+        [
+          192,
+          189,
+          193
+        ],
+        [
+          34,
+          32,
+          60
         ],
         [
           120,
@@ -3600,6 +3674,11 @@
           101
         ],
         [
+          183,
+          117,
+          59
+        ],
+        [
           54,
           41,
           49
@@ -3615,19 +3694,29 @@
           75
         ],
         [
+          241,
+          91,
+          36
+        ],
+        [
+          125,
+          80,
+          59
+        ],
+        [
           19,
           16,
           24
         ],
         [
-          68,
-          10,
-          13
-        ],
-        [
           2,
           0,
           0
+        ],
+        [
+          68,
+          10,
+          13
         ],
         [
           4,
@@ -3662,7 +3751,24 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-renderer-and-game-browser"
+        "method": "native-head-aperture-all-face-styles-and-game-browser",
+        "headFit": "head-aperture-v1",
+        "validatedFrames": 3840
+      },
+      "hairHideMode": "partial",
+      "hairlineY": {
+        "masculino": {
+          "south": 37,
+          "north": 35,
+          "east": 37,
+          "west": 37
+        },
+        "feminino": {
+          "south": 37,
+          "north": 36,
+          "east": 36,
+          "west": 36
+        }
       }
     },
     {
@@ -4989,6 +5095,48 @@
       },
       "sourceReference": "02_raro_peregrino_de_alabasta/cabeca.png",
       "hairOcclusion": "all",
+      "headRegistration": {
+        "masculino": {
+          "south": {
+            "version": "head-aperture-v2",
+            "lift": 0,
+            "aperture": "source-hood-restored",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "canonical-face",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v2",
+            "lift": 0,
+            "aperture": "source-hood-restored",
+            "rearBand": false
+          }
+        },
+        "feminino": {
+          "south": {
+            "version": "head-aperture-v2",
+            "lift": 0,
+            "aperture": "source-hood-restored",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "canonical-face",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v2",
+            "lift": 0,
+            "aperture": "source-hood-restored",
+            "rearBand": false
+          }
+        }
+      },
       "materialPalette": [
         [
           10,
@@ -5011,24 +5159,9 @@
           154
         ],
         [
-          254,
-          241,
-          205
-        ],
-        [
-          254,
-          230,
-          182
-        ],
-        [
           255,
           248,
           225
-        ],
-        [
-          253,
-          220,
-          169
         ],
         [
           222,
@@ -5036,14 +5169,9 @@
           129
         ],
         [
-          255,
-          247,
-          217
-        ],
-        [
-          243,
-          195,
-          144
+          254,
+          241,
+          205
         ],
         [
           211,
@@ -5052,13 +5180,13 @@
         ],
         [
           254,
-          236,
-          193
+          230,
+          182
         ],
         [
-          233,
-          186,
-          138
+          253,
+          220,
+          169
         ],
         [
           159,
@@ -5066,9 +5194,19 @@
           84
         ],
         [
-          69,
-          34,
-          21
+          233,
+          186,
+          138
+        ],
+        [
+          254,
+          236,
+          193
+        ],
+        [
+          243,
+          195,
+          144
         ],
         [
           196,
@@ -5076,14 +5214,19 @@
           111
         ],
         [
+          255,
+          247,
+          217
+        ],
+        [
+          69,
+          34,
+          21
+        ],
+        [
           179,
           134,
           99
-        ],
-        [
-          205,
-          34,
-          20
         ],
         [
           106,
@@ -5091,29 +5234,14 @@
           45
         ],
         [
-          84,
-          48,
-          29
-        ],
-        [
           101,
           39,
           14
         ],
         [
-          46,
-          19,
-          12
-        ],
-        [
-          173,
-          29,
-          20
-        ],
-        [
-          135,
-          95,
-          69
+          84,
+          48,
+          29
         ],
         [
           246,
@@ -5121,19 +5249,24 @@
           15
         ],
         [
+          135,
+          95,
+          69
+        ],
+        [
           144,
           81,
           43
         ],
         [
-          252,
-          221,
-          35
+          205,
+          34,
+          20
         ],
         [
-          31,
-          50,
-          72
+          46,
+          19,
+          12
         ],
         [
           9,
@@ -5146,14 +5279,19 @@
           104
         ],
         [
-          141,
-          24,
-          19
+          31,
+          50,
+          72
         ],
         [
           253,
           240,
           149
+        ],
+        [
+          252,
+          221,
+          35
         ],
         [
           253,
@@ -5164,11 +5302,6 @@
           248,
           183,
           11
-        ],
-        [
-          78,
-          24,
-          12
         ],
         [
           27,
@@ -5189,6 +5322,11 @@
           0,
           79,
           216
+        ],
+        [
+          141,
+          24,
+          19
         ],
         [
           7,
@@ -5218,8 +5356,12 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-renderer-and-game-browser"
-      }
+        "method": "owner-directional-calibration-and-manual-editor",
+        "headFit": "head-aperture-v1",
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
+      },
+      "hairHideMode": "full"
     },
     {
       "generation": {
@@ -6350,7 +6492,49 @@
         }
       },
       "sourceReference": "03_raro_navegador_arcano/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "crown",
+      "headRegistration": {
+        "masculino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 10,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 6,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        },
+        "feminino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 11,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 6,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        }
+      },
       "materialPalette": [
         [
           22,
@@ -6655,7 +6839,24 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-renderer-and-game-browser"
+        "method": "native-head-aperture-all-face-styles-and-game-browser",
+        "headFit": "head-aperture-v1",
+        "validatedFrames": 3840
+      },
+      "hairHideMode": "partial",
+      "hairlineY": {
+        "masculino": {
+          "south": 37,
+          "north": 35,
+          "east": 37,
+          "west": 37
+        },
+        "feminino": {
+          "south": 37,
+          "north": 36,
+          "east": 36,
+          "west": 36
+        }
       }
     },
     {
@@ -7791,7 +7992,49 @@
         }
       },
       "sourceReference": "04_epico_almirante_carmesim/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "crown",
+      "headRegistration": {
+        "masculino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 9,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 5,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        },
+        "feminino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 11,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 4,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        }
+      },
       "materialPalette": [
         [
           16,
@@ -8026,7 +8269,25 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-renderer-and-game-browser"
+        "method": "owner-directional-calibration-and-manual-editor",
+        "headFit": "head-aperture-v1",
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
+      },
+      "hairHideMode": "partial",
+      "hairlineY": {
+        "masculino": {
+          "south": 37,
+          "north": 35,
+          "east": 37,
+          "west": 37
+        },
+        "feminino": {
+          "south": 37,
+          "north": 36,
+          "east": 36,
+          "west": 36
+        }
       }
     },
     {
@@ -9142,7 +9403,49 @@
         }
       },
       "sourceReference": "05_epico_arauto_das_tempestades/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "none",
+      "headRegistration": {
+        "masculino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 3,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        },
+        "feminino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 4,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        }
+      },
       "materialPalette": [
         [
           251,
@@ -9407,8 +9710,12 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-renderer-and-game-browser"
-      }
+        "method": "owner-directional-calibration-and-manual-editor",
+        "headFit": "head-aperture-v1",
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
+      },
+      "hairHideMode": "none"
     },
     {
       "generation": {
@@ -10658,7 +10965,49 @@
         }
       },
       "sourceReference": "06_epico_mare_sagrada/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "none",
+      "headRegistration": {
+        "masculino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 3,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": true
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 5,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        },
+        "feminino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 4,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": true
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        }
+      },
       "materialPalette": [
         [
           245,
@@ -10758,8 +11107,12 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-renderer-and-game-browser"
-      }
+        "method": "owner-directional-calibration-and-manual-editor",
+        "headFit": "head-aperture-v1",
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
+      },
+      "hairHideMode": "none"
     },
     {
       "generation": {
@@ -10804,25 +11157,29 @@
             "LEFTupper": "assets/custom-item-165-masculino-south-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-south-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-south-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-south-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-south-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-south-drape.png"
           },
           "north": {
             "LEFTupper": "assets/custom-item-165-masculino-north-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-north-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-north-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-north-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-north-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-north-drape.png"
           },
           "east": {
             "LEFTupper": "assets/custom-item-165-masculino-east-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-east-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-east-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-east-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-east-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-east-drape.png"
           },
           "west": {
             "LEFTupper": "assets/custom-item-165-masculino-west-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-west-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-west-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-west-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-west-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-west-drape.png"
           }
         },
         "feminino": {
@@ -10830,25 +11187,29 @@
             "LEFTupper": "assets/custom-item-165-feminino-south-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-south-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-south-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-south-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-south-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-south-drape.png"
           },
           "north": {
             "LEFTupper": "assets/custom-item-165-feminino-north-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-north-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-north-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-north-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-north-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-north-drape.png"
           },
           "east": {
             "LEFTupper": "assets/custom-item-165-feminino-east-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-east-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-east-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-east-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-east-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-east-drape.png"
           },
           "west": {
             "LEFTupper": "assets/custom-item-165-feminino-west-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-west-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-west-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-west-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-west-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-west-drape.png"
           }
         }
       },
@@ -11047,8 +11408,9 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-renderer-and-game-browser"
-      }
+        "method": "authored-sleeve-registration-and-native-animation-review"
+      },
+      "sleeveRegistration": "oceanic-authored-bones-v1"
     },
     {
       "generation": {
@@ -11875,7 +12237,49 @@
         }
       },
       "sourceReference": "07_lendario_soberano_grand_line/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "crown",
+      "headRegistration": {
+        "masculino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 10,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 10,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        },
+        "feminino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 7,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 5,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        }
+      },
       "materialPalette": [
         [
           45,
@@ -11990,7 +12394,25 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-renderer-and-game-browser"
+        "method": "owner-directional-calibration-and-manual-editor",
+        "headFit": "head-aperture-v1",
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
+      },
+      "hairHideMode": "partial",
+      "hairlineY": {
+        "masculino": {
+          "south": 37,
+          "north": 35,
+          "east": 37,
+          "west": 37
+        },
+        "feminino": {
+          "south": 37,
+          "north": 36,
+          "east": 36,
+          "west": 36
+        }
       }
     },
     {
@@ -13221,7 +13643,49 @@
         }
       },
       "sourceReference": "08_supremo_horizonte_final/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "none",
+      "headRegistration": {
+        "masculino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 8,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 4,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        },
+        "feminino": {
+          "south": {
+            "version": "head-aperture-v1",
+            "lift": 10,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "north": {
+            "version": "head-aperture-v1",
+            "lift": 0,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          },
+          "east": {
+            "version": "head-aperture-v1",
+            "lift": 3,
+            "aperture": "all-eye-styles",
+            "rearBand": false
+          }
+        }
+      },
       "materialPalette": [
         [
           55,
@@ -13421,8 +13885,12 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-renderer-and-game-browser"
-      }
+        "method": "owner-directional-calibration-and-manual-editor",
+        "headFit": "head-aperture-v1",
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
+      },
+      "hairHideMode": "none"
     },
     {
       "generation": {
@@ -18834,5 +19302,280 @@
         ]
       ]
     }
+  },
+  "headAdjustmentRevision": "headfit-275560707850",
+  "headAdjustments": {
+    "item-150": {
+      "masculino": {
+        "east": {
+          "x": -8,
+          "y": 3,
+          "scale": 100
+        },
+        "north": {
+          "x": -3,
+          "y": -4,
+          "scale": 108
+        },
+        "south": {
+          "x": 0,
+          "y": 3,
+          "scale": 100
+        }
+      },
+      "feminino": {
+        "east": {
+          "x": -7,
+          "y": 1,
+          "scale": 100
+        },
+        "south": {
+          "x": 2,
+          "y": 6,
+          "scale": 100
+        },
+        "north": {
+          "x": -4,
+          "y": -5,
+          "scale": 120
+        }
+      }
+    },
+    "item-157": {
+      "masculino": {
+        "south": {
+          "x": -2,
+          "y": 2,
+          "scale": 100
+        },
+        "north": {
+          "x": -4,
+          "y": 7,
+          "scale": 121
+        },
+        "east": {
+          "x": -6,
+          "y": 4,
+          "scale": 100
+        }
+      },
+      "feminino": {
+        "east": {
+          "x": -3,
+          "y": 4,
+          "scale": 100
+        },
+        "south": {
+          "x": 0,
+          "y": 2,
+          "scale": 100
+        },
+        "north": {
+          "x": -1,
+          "y": 6,
+          "scale": 116
+        }
+      }
+    },
+    "item-164": {
+      "masculino": {
+        "east": {
+          "x": -2,
+          "y": 7,
+          "scale": 80
+        },
+        "south": {
+          "x": -1,
+          "y": 2,
+          "scale": 80
+        },
+        "north": {
+          "x": -1,
+          "y": 0,
+          "scale": 88
+        }
+      },
+      "feminino": {
+        "east": {
+          "x": -1,
+          "y": 3,
+          "scale": 79
+        },
+        "south": {
+          "x": 0,
+          "y": 3,
+          "scale": 80
+        },
+        "north": {
+          "x": 0,
+          "y": -1,
+          "scale": 83
+        }
+      }
+    },
+    "item-171": {
+      "masculino": {
+        "north": {
+          "x": -4,
+          "y": -5,
+          "scale": 100
+        },
+        "east": {
+          "x": -5,
+          "y": 0,
+          "scale": 100
+        },
+        "south": {
+          "x": 0,
+          "y": 1,
+          "scale": 100
+        }
+      },
+      "feminino": {
+        "north": {
+          "x": -4,
+          "y": -7,
+          "scale": 109
+        },
+        "east": {
+          "x": -2,
+          "y": -2,
+          "scale": 104
+        },
+        "south": {
+          "x": 3,
+          "y": 0,
+          "scale": 100
+        }
+      }
+    },
+    "item-178": {
+      "masculino": {
+        "north": {
+          "x": -9,
+          "y": -4,
+          "scale": 113
+        },
+        "east": {
+          "x": -9,
+          "y": 3,
+          "scale": 100
+        },
+        "south": {
+          "x": 2,
+          "y": 2,
+          "scale": 100
+        }
+      },
+      "feminino": {
+        "north": {
+          "x": -12,
+          "y": -6,
+          "scale": 118
+        },
+        "east": {
+          "x": -9,
+          "y": 1,
+          "scale": 100
+        },
+        "south": {
+          "x": 4,
+          "y": 4,
+          "scale": 100
+        }
+      }
+    },
+    "item-129": {
+      "feminino": {
+        "north": {
+          "x": 0,
+          "y": -9,
+          "scale": 100
+        },
+        "east": {
+          "x": 0,
+          "y": -1,
+          "scale": 100
+        }
+      },
+      "masculino": {
+        "north": {
+          "x": 0,
+          "y": -11,
+          "scale": 100
+        },
+        "east": {
+          "x": 0,
+          "y": -1,
+          "scale": 100
+        }
+      }
+    },
+    "item-18": {
+      "masculino": {
+        "east": {
+          "x": 1,
+          "y": 0,
+          "scale": 100
+        }
+      }
+    },
+    "item-136": {
+      "feminino": {
+        "east": {
+          "x": -4,
+          "y": 2,
+          "scale": 100
+        },
+        "south": {
+          "x": -1,
+          "y": -4,
+          "scale": 100
+        },
+        "north": {
+          "x": 0,
+          "y": -3,
+          "scale": 100
+        }
+      },
+      "masculino": {
+        "south": {
+          "x": -1,
+          "y": -4,
+          "scale": 100
+        },
+        "east": {
+          "x": -4,
+          "y": 2,
+          "scale": 100
+        }
+      }
+    },
+    "item-143": {
+      "feminino": {
+        "south": {
+          "x": 0,
+          "y": 1,
+          "scale": 100
+        },
+        "north": {
+          "x": -1,
+          "y": -2,
+          "scale": 100
+        }
+      },
+      "masculino": {
+        "north": {
+          "x": -1,
+          "y": -1,
+          "scale": 100
+        }
+      }
+    }
+  },
+  "headAdjustmentSource": {
+    "format": "mare-headgear-fit-v1",
+    "baseRevision": "headfit-owner-pass-2",
+    "geometryHash": "2755607078503f9ecf4428c78b1c6303d61ce4f9a95ca5602fa4df038b7c9128"
   }
 }

@@ -100,7 +100,7 @@
       for(const slot of ['hair','face','pants'])if(look[slot]==='none'||descriptor(slot,look[slot]))visibleHidden.push(slot);
       const skin=api.skins[look.skin]?.ramp;
       const headStyle=hidden.includes('head')?null:descriptor('head',look.head);
-      const hideHair=window.MareHeadgear.resolve(headStyle?.itemId,{model:headStyle}).hideHair;
+      const headState=window.MareHeadgear.resolve(headStyle?.itemId,{model:headStyle}),hideHair=headState.hideHair;
       if(hideHair)visibleHidden.push('hair');
       if(look.baseOutfitHidden&&!descriptor('torso',look.torso))visibleHidden.push('top');
       if(descriptor('torso',look.torso))visibleHidden.push('top');
@@ -146,11 +146,12 @@
         const file=p.style.layers[selected.body][selected.direction],image=images.get(file);
         const palette=p.slot==='hair'?(look.hairColor&&look.hairColor!=='brown'?api.hairs[look.hairColor]?.ramp:null):null;
         const data=texture(image,file,p.slot==='face'?'face':'hair',palette,p.slot==='face'?(p.style.faceColorProtection?.[selected.body]?.[selected.direction]||catalog.faceColorProtection?.[selected.body]?.[selected.direction]||[]):[],p.style.eyeIris?.[selected.body]?.[selected.direction]||[],p.slot==='face'?look.eyeColor:null).pixels;
+        const headFit=p.slot==='head'?api.headAdjustment(options.allowHeadAdjustment&&look.headAdjustment?look.headAdjustment:catalog.headAdjustments?.[p.style.id]?.[selected.body]?.[selected.direction]):null;
         const box={x0:32,y0:60,x1:96,y1:113};
         const sourceParts=Object.fromEntries(Object.entries(p.style.parts?.[selected.body]?.[selected.direction]||{}).map(([name,file])=>[name,texture(images.get(file),file,p.slot,null).pixels]));
         const atlas=p.style.animations?.[selected.body]?.[selected.action];
         const torsoPiece=()=>{
-          if(!atlas)return api.fitTorsoToBody(data,torsoBodyPixels,rest,pose,padding,spec.width,spec.height,foregroundPixels,ownership,p.style.nativeFit==='registered-panels-v1'?sourceParts:null);
+          if(!atlas)return api.fitTorsoToBody(data,torsoBodyPixels,rest,pose,padding,spec.width,spec.height,sourceParts?.DRAPE?handSurface:foregroundPixels,ownership,p.style.nativeFit==='registered-panels-v1'?sourceParts:null);
           const index=atlas.directions.indexOf(selected.direction)*atlas.framesPerDirection+fi;
           const atlasImage=images.get(atlas.file);
           if(index<0||fi>=atlas.framesPerDirection||atlas.cell!==spec.width||atlasImage.width!==atlas.columns*atlas.cell||atlasImage.height!==atlas.rows*atlas.cell)throw Error('Invalid torso animation');
@@ -158,7 +159,7 @@
           cx.drawImage(atlasImage,index%atlas.columns*atlas.cell,Math.floor(index/atlas.columns)*atlas.cell,atlas.cell,atlas.cell,0,0,spec.width,spec.height);
           return {full:cx.getImageData(0,0,spec.width,spec.height).data};
         };
-        const attached=fitted([file,selected.key,fi,palette?.join(',')||'',p.slot==='face'?look.eyeColor:'',atlas?.file||'surface'].join(':'),()=>p.slot==='torso'?torsoPiece():p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,handOwnership:ownership.hands,material:p.style.nativeMaterial}):api.attach(data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
+        const attached=fitted([file,selected.key,fi,palette?.join(',')||'',p.slot==='face'?look.eyeColor:'',atlas?.file||'surface',JSON.stringify(headFit)].join(':'),()=>p.slot==='torso'?torsoPiece():p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,handOwnership:ownership.hands,material:p.style.nativeMaterial}):api.attach(headFit?api.adjustHead(data,headFit,rest):data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
         if(p.slot==='boots'){
           coveredFeet=p.style.nativeMaterial?new Uint8ClampedArray(neutralPixels.length):api.bootCoverage(neutralPixels,rest,pose,padding,spec.width,spec.height,sourceParts);
           if(p.style.nativeMaterial)for(let i=3;i<coveredFeet.length;i+=4)if(attached.LEFT[i]||attached.RIGHT[i])coveredFeet[i]=255;
@@ -271,8 +272,8 @@
       }
       ctx.clearRect(0,0,spec.width,spec.height);
       const calibration=catalog.headCalibration?.[selected.direction]||{};
-      if(headStyle?.hairOcclusion==='crown'&&pieces.hair){const c=pieces.hair.full,d=c.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
-        pieces.hair.full=fromPixels(api.clipHairCrown(d,rest,socket,padding,spec.width,spec.height,headStyle.hairlineY||34,calibration.hairX||0,calibration.hairY||0),spec.width,spec.height);}
+      if(headState.hairHideMode==='partial'&&pieces.hair){const c=pieces.hair.full,d=c.getContext('2d').getImageData(0,0,spec.width,spec.height).data,fit=api.headAdjustment(options.allowHeadAdjustment&&look.headAdjustment?look.headAdjustment:catalog.headAdjustments?.[headStyle.id]?.[selected.body]?.[selected.direction]),center=rest.find(j=>j.label==='NECK').y*128-20,line=headStyle.hairlineY?.[selected.body]?.[selected.direction]??rest.find(j=>j.label==='NOSE').y*128-3,hairline=center+(line-center)*fit.scale/100+fit.y;
+        pieces.hair.full=fromPixels(api.clipHairCrown(d,rest,socket,padding,spec.width,spec.height,hairline,calibration.hairX||0,calibration.hairY||0),spec.width,spec.height);}
       const hairPass=render=>render();
       const full=slot=>{if(pieces[slot]?.full){const render=()=>ctx.drawImage(pieces[slot].full,slot==='hair'?(calibration.hairX||0):0,slot==='hair'?(calibration.hairY||0):0);if(slot==='hair')hairPass(render);else render();}};
       const original=slot=>{

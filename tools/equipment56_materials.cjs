@@ -21,7 +21,10 @@ function register(data,pose,slot,guide,options={}){
  if(slot==='head'){
   if(options.rearTiara){const tones=new Set();for(let y=41;y<66;y++)for(let x=54;x<75;x++){const i=(y*SIZE+x)*4,r=data[i],g=data[i+1],b=data[i+2];if(data[i+3]&&r>b*1.3&&g/r>.35&&g/r<.88)tones.add(r+','+g+','+b);}data=new Uint8ClampedArray(data);for(let p=0;p<SIZE*SIZE;p++){const i=p*4;if(p/SIZE>=41||tones.has(Array.from(data.subarray(i,i+3)).join(',')))data.fill(0,i,i+4);}data=clean(data);}
   const whiteBody=options.whiteHead?999:0;
-  if(options.whiteHead){data=new Uint8ClampedArray(data);for(let i=0;i<data.length;i+=4)if(Math.min(...data.subarray(i,i+3))>=225)data.fill(0,i,i+4);}
+  if(options.whiteHead){
+   const matte=new Uint8Array(SIZE*SIZE);for(let p=0;p<matte.length;p++)if(data[p*4+3]&&Math.min(...data.subarray(p*4,p*4+3))>=225)matte[p]=1;
+   data=new Uint8ClampedArray(data);for(let p=0;p<matte.length;p++){const i=p*4,c=data.subarray(i,i+3);let edge=false;if(Math.max(...c)-Math.min(...c)<25)for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++){const x=p%SIZE+dx,y=(p>>7)+dy;if(x>=0&&y>=0&&x<SIZE&&y<SIZE&&matte[y*SIZE+x])edge=true;}if(matte[p]||edge)data.fill(0,i,i+4);}
+  }
   if(!options.bodyIncluded){const box=bounds(data),type=options.headType||'hat',width=type==='hood'?34:type==='diadem'?31:43,height=type==='hood'?43:type==='diadem'?Math.min(24,Math.round(width*box.height/box.width)):Math.min(31,Math.max(25,Math.round(width*box.height/box.width))),end=type==='hood'?j.NECK.y+10:type==='diadem'?j.NOSE.y-3:j.NOSE.y+3;return {full:clean(moveScale(data,{x0:Math.round(j.NECK.x-width/2),y0:Math.round(end-height),width,height}),2),parts:null};}
   // Exact native-body colours are excluded only inside the anatomical head;
   // gold/cream/feathers outside that mask are never treated as skin.

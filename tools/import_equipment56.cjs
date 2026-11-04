@@ -3,6 +3,9 @@
 // credits are consumed by rerunning this importer.
 const fs=require('node:fs/promises'),path=require('node:path');
 const {register,palette}=require('./equipment56_materials.cjs');
+const headFit=require('./equipment56_headfit.cjs');
+const oceanicSleeves=require('./equipment56_oceanic_sleeves.cjs');
+const headgear=require('../headgear-visibility.js');
 async function main(){
  const root=path.resolve(__dirname,'..'),input=path.resolve(process.argv[2]),sharp=require(path.resolve(process.argv[3])),set=Number(process.argv[4]||0);
  const exists=async f=>fs.stat(f).then(()=>true,()=>false),source=async name=>{const direct=path.join(input,name);return await exists(direct)?direct:path.join(input,'generations',name);};
@@ -18,7 +21,10 @@ async function main(){
   await sharp(await source(sheet)).extract({left:cell%2*128,top:Math.floor(cell/2)*128,width:128,height:128}).png().toFile(path.join(root,`assets/ui/items-hd/equipment-${row.id}.png`));
   if(!row.visivel)continue;
   const prior=catalog.styles.find(s=>s.id==='item-'+row.id),style={generation:prior?.generation,id:'item-'+row.id,itemId:row.id,kind:kind[row.slotJogo],name:row.nome,reviewed:false,equipmentSlot:row.slotJogo,nativeFit:'registered-panels-v1',layers:{},parts:{},sourceReference:row.arquivo};
-  if(style.kind==='head')style.hairOcclusion='all';
+  if(style.kind==='head'){
+   const state=headgear.resolve(row.id);style.hairHideMode=state.hairHideMode;style.hairOcclusion=state.hairOcclusion;
+   if(state.hairHideMode==='partial')style.hairlineY=prior?.hairlineY||Object.fromEntries(bodies.map(body=>[body,Object.fromEntries(['south','north','east','west'].map(dir=>[dir,Math.round(rig.rests[body][dir].find(j=>j.label==='NOSE').y*128-3)]))]));
+  }
   if(style.kind==='gloves')style.fingerCoverage='full';
   let colours=[];
   for(let b=0;b<2;b++){
@@ -28,13 +34,12 @@ async function main(){
     const guideFile=path.join(input,'base-'+body+'-'+dir+'.png'),guide=await exists(guideFile)?await sharp(guideFile).ensureAlpha().raw().toBuffer():await sharp(path.join(input,'native-base-guide.png')).extract({left:d*96,top:b*128,width:96,height:128}).extend({left:16,right:16,top:0,bottom:0,background:{r:0,g:0,b:0,alpha:0}}).ensureAlpha().raw().toBuffer();
     const bodyIncluded=style.kind==='torso' ? !(row.id===165||row.id===158&&b===0) : style.kind==='head' ? row.id===129||[171,178].includes(row.id)&&b===1 : style.kind==='pants' ? row.id===182||row.id===168&&b===1 : [138,145,155,159,162,173,180,183].includes(row.id)||row.id===148&&b===1;
     const material=register(new Uint8ClampedArray(sheet),rig.rests[body][dir],style.kind,new Uint8ClampedArray(guide),{bodyIncluded,headlessTorso:row.id===158&&b===0,whiteHead:row.id===171&&b===1,pantsCrop:row.id===140&&b===1?42:0,headlessPants:row.id===168&&b===1,matte:row.id===130?'white':'skin',normalizeBodyHead:[171,178].includes(row.id),rearTiara:row.id===164&&dir==='north',longTorso:/Manto|Vestes/.test(row.nome),headType:row.id===136?'hood':[157,164].includes(row.id)?'diadem':'hat'});
-    // One source-cell registration: the generated Corsair rear female hat was
-    // six native pixels below her crown. All frames share this same binding.
-    if(row.id===129&&body==='feminino'&&dir==='north'){const shifted=new Uint8ClampedArray(material.full.length);shifted.set(material.full.subarray(6*128*4));material.full=shifted;}
-    if(style.kind==='head'&&![136,157,164].includes(row.id)&&dir!=='north'){
-     const iris=catalog.styles.find(s=>s.id==='face-calm').eyeIris[body][dir];
-     let lift=0;for(;lift<10;lift++)if(!iris.some(([p])=>material.full[(p+lift*128)*4+3]))break;
-     if(lift){const shifted=new Uint8ClampedArray(material.full.length);shifted.set(material.full.subarray(lift*128*4));material.full=shifted;}
+    if(row.id===165){Object.assign(material,oceanicSleeves.fit(material.full,rig.rests[body][dir],body,dir));style.sleeveRegistration='oceanic-authored-bones-v1';}
+    if(style.kind==='head'){
+     const read=async file=>new Uint8ClampedArray(await sharp(path.join(root,'tools/paper-doll-96-v3',file)).ensureAlpha().raw().toBuffer());
+     const head=await read(catalog.originalHeads[body][dir]),faces=await Promise.all(catalog.styles.filter(s=>s.kind==='face').map(s=>read(s.layers[body][dir])));
+     const fitted=headFit.fit({id:row.id,body,direction:dir,source:new Uint8ClampedArray(sheet),registered:material.full,head,faces});
+     material.full=fitted.pixels;(style.headRegistration??={})[body]??={};style.headRegistration[body][dir]=fitted.registration;
     }
     if(!colours.length)colours=palette(material.full);
     const file=`assets/custom-item-${row.id}-${body}-${dir}.png`;await png(material.full,file);style.layers[body][dir]=file;style.parts[body][dir]={};
