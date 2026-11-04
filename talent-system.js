@@ -1,11 +1,12 @@
 'use strict';
-/* Data-driven passive trees. Budgets are derived, never awarded twice on reload. */
+/* Data-driven passive trees. Future points come only from claimed achievements; legacy balances are frozen. */
 ((root)=>{
   const U=root.MareUltimates||(typeof require==='function'?require('./ultimate-system.js'):null),A=root.MareAchievements||(typeof require==='function'?require('./achievement-system.js'):null);
-  const VERSION=2,MAX_RANK=10,KEYSTONE_COST=1,KEYSTONE_GATE=10,ULTIMATE_COST=3,ULTIMATE_GATE=50;
+  const VERSION=3,MAX_RANK=10,KEYSTONE_COST=1,KEYSTONE_GATE=10,ULTIMATE_COST=3,ULTIMATE_GATE=50;
   const clone=x=>JSON.parse(JSON.stringify(x)),integer=n=>Number.isSafeInteger(n)&&n>=0?n:0;
   const earned=level=>integer(level),empty=()=>({nodes:{},keystone:null,ultimate:null});
-  const totalEarned=g=>earned(g.level)+(A?.bonus(g)||0);
+  // A frozen migration allowance preserves old balances without granting future level PT.
+  const totalEarned=g=>integer(g.talentLegacyBudget??(g.talentVersion===VERSION?0:g.level))+(A?.bonus(g)||0);
   const statNames={physical:'Dano físico',elemental:'Dano mágico',penetration:'Penetração física',magicPen:'Penetração mágica',maxHP:'Vida máxima',hpPct:'Vida máxima',defense:'Defesa',defPct:'Defesa',mitigation:'Redução de dano',lifesteal:'Roubo de vida',crit:'Chance crítica',critDamage:'Dano crítico',speed:'Velocidade de ataque',evasion:'Esquiva',moveSpeed:'Movimento',accuracy:'Precisão',range:'Alcance',energyRegen:'Regeneração de energia',healthRegen:'Regeneração de vida',maxEnergy:'Energia máxima',energyPct:'Energia máxima',energyEfficiency:'Eficiência de energia',aoe:'Dano em área',rareChance:'Chance de raros',healing:'Potência de cura',healingPct:'Potência de cura',shieldBonus:'Eficiência de proteção'};
   const percent=new Set(['penetration','magicPen','hpPct','defPct','mitigation','lifesteal','crit','critDamage','speed','evasion','accuracy','energyPct','energyEfficiency','aoe','rareChance','healingPct','shieldBonus']);
   const effects={
@@ -68,7 +69,12 @@
     return result;
   }
   function migrate(original){
-    const save=A.migrate(clone(original)),budget=totalEarned(save),old=[1,VERSION].includes(save.talentVersion)?save.talentBuilds||{}:{};
+    const save=A.migrate(clone(original)),old=[1,2,VERSION].includes(save.talentVersion)?save.talentBuilds||{}:{};
+    if(save.talentVersion!==VERSION){
+      const claims=A?.bonus(save)||0,invested=Math.max(0,...Object.entries(old).filter(([id,b])=>!validate(id,b,Infinity,b)).map(([,b])=>spent(b)));
+      save.talentLegacyBudget=Math.max(integer(save.talentLegacyBudget??save.level),invested-claims);
+    }
+    save.talentLegacyBudget=integer(save.talentLegacyBudget);const budget=totalEarned(save);
     save.talentVersion=VERSION;save.talentSeq=integer(save.talentSeq);
     save.talentBuilds=Object.fromEntries(Object.keys(trees).map(id=>[id,normalize(id,old[id],budget)]));
     save.talentCooldowns=Object.fromEntries(['energyShieldUntil','immortalUntil','guardianUntil','empUntil'].map(id=>[id,Number.isFinite(Number(save.talentCooldowns?.[id]))?Math.max(0,Number(save.talentCooldowns?.[id])):0]));return save;

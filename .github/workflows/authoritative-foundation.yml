@@ -104,7 +104,7 @@ jobs:
           const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
           try {
             assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
-            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 36);
+            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 38);
             await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
           } finally { await pool.end(); }
@@ -150,6 +150,8 @@ jobs:
             await pool.query('SELECT character_id FROM mare_game.contract_progress LIMIT 1');
             await pool.query('SELECT character_id FROM mare_game.contract_claims LIMIT 1');
             await pool.query('SELECT character_id FROM mare_game.character_talents LIMIT 1');
+            await pool.query('SELECT character_id FROM mare_game.talent_legacy_allowances LIMIT 1');
+            await assert.rejects(pool.query('UPDATE mare_game.talent_legacy_allowances SET budget=budget'),{code:'42501'});
             await pool.query('SELECT character_id FROM mare_game.achievement_progress LIMIT 1');
             await pool.query('SELECT character_id FROM mare_game.achievement_claims LIMIT 1');
             await pool.query('SELECT character_id FROM mare_game.character_prison LIMIT 1');
@@ -258,6 +260,12 @@ jobs:
         run: NODE_PATH="$RUNNER_TEMP/mare-browser/node_modules" node --import tsx tests/shared-lobby-browser.mts
       - name: Distant mouse routes and chase stay within server speed
         run: NODE_PATH="$RUNNER_TEMP/mare-browser/node_modules" node --import tsx tests/online-walking-browser.mts
+      - name: Human fruit casting, independent skill slots and stationary ranged attack
+        run: |
+          python -m http.server 8181 --bind 127.0.0.1 >"$RUNNER_TEMP/combat-preview.log" 2>&1 &
+          preview=$!
+          trap 'kill "$preview"' EXIT
+          NODE_PATH="$RUNNER_TEMP/mare-browser/node_modules" node tests/combat-targeted-browser.cjs
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

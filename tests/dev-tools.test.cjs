@@ -11,8 +11,11 @@ assert(!D.execute(g,{type:'level',level:100},{...ctx,active:false}).ok);
 assert(!D.execute({...g,devSandbox:false},{type:'level',level:100},ctx).ok);
 for(const level of [0,201,1.5,NaN])assert(!D.execute(g,{type:'level',level},ctx).ok);
 assert.equal(JSON.stringify(g),original);
+// Raising a sandbox level must not manufacture PT. Final-build fixtures model a funded legacy save.
+assert(!D.execute(g,{type:'build',keystone:T.getTree('sword').keystones[0].id,ultimate:T.getTree('sword').ultimates[0].id},ctx).ok);
+const funded=T.migrate({...g,level:80,talentVersion:2,talentLegacyBudget:undefined});
 for(const cls of Object.keys(T.trees)){
- let next=D.execute(g,{type:'class',classId:cls},ctx);assert(next.ok);assert.equal(next.state.classId,cls);
+ let next=D.execute(funded,{type:'class',classId:cls},ctx);assert(next.ok);assert.equal(next.state.classId,cls);
  const tree=T.getTree(cls);
  for(const u of tree.ultimates){next=D.execute(next.state,{type:'build',keystone:tree.keystones[0].id,ultimate:u.id},ctx);assert(next.ok);assert.equal(T.buildFor(next.state).ultimate,u.id);assert(!T.validate(cls,T.buildFor(next.state),T.totalEarned(next.state)));}
 }

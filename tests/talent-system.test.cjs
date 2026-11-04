@@ -10,7 +10,7 @@ test('Seven independent trees have three branches, ordered tiers and 21 unique k
   tree.keystones.forEach(k=>unique.add(k.id));tree.branches.forEach(b=>b.nodes.forEach((n,i)=>assert.equal(n.tier,i)));
  }assert.equal(unique.size,21);
 });
-test('One PT per level including level one, deterministic migration, no save or item loss',()=>{
+test('Legacy level allowance freezes once, deterministic migration, no save or item loss',()=>{
  for(const level of [1,2,30,100]){const g=make('sword',level);assert.equal(T.available(g),level);assert.deepEqual(T.migrate(g),g);assert.equal(g.inventory[0].id,'kept');assert.equal(g.gold,300);}
 });
 test('Third branch, missing prerequisites, overdraft, malformed ranks and second keystone are rejected',()=>{

@@ -149,7 +149,7 @@ body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
 #app.hud-nautical .world-command {inset:auto var(--hud-edge) var(--hud-edge) auto; width:var(--hud-side); margin:0; padding:0; display:flex}
 #app.hud-nautical .world-command button {position:relative; width:100%; max-width:none; height:48px; min-height:48px; padding:8px 16px; font:700 19px/1.1 var(--hud-heading); color:#ffe5a3; text-align:center}
 #app.hud-nautical .world-command button::after {content:'»'; padding-left:12px; font-size:28px; color:var(--brass-400)}
-#app.hud-nautical .action-panel {inset:auto auto var(--hud-edge) 50%; width:max-content; max-width:calc(100vw - var(--hud-chat) - var(--hud-side) - 96px); height:auto; padding:4px; margin:0; transform:translateX(-50%); border-radius:10px}
+#app.hud-nautical .action-panel {inset:auto auto var(--hud-edge) 50%; width:max-content; max-width:calc(100vw - var(--hud-chat) - var(--hud-side) - 96px); height:auto; padding:1px; margin:0; transform:translateX(-50%); border-radius:10px}
 #app.hud-nautical .action-panel::before {content:''; display:block; position:absolute; inset:-52px auto auto 50%; width:52px; height:52px; transform:translateX(-50%); background:url('assets/ui/hud-nautical-v2/helm-crest.png') center/contain no-repeat; z-index:-1; pointer-events:none}
 #app.hud-nautical .action-panel::after {content:none}
 #app.hud-nautical .action-panel .action-row {display:flex; flex-wrap:nowrap; justify-content:center; align-items:center; gap:6px; padding:0; margin:0; background:none}

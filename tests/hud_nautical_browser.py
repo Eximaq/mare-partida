@@ -39,7 +39,7 @@ def check_layout(page, label):
     return dict(state=label, **result)
 
 with sync_playwright() as p:
-    browser = p.chromium.launch()
+    browser = p.chromium.launch(executable_path=os.environ.get('CHROME_PATH'))
     context, page = page_for(browser, size=(1600, 900))
     seed = fixture(create(page))
     seed.update(level=53, gold=229378, has_haki_unlocked=True, hp=99999, energy=99999)
@@ -96,12 +96,15 @@ with sync_playwright() as p:
     page.locator('[data-island=dawn]').click()
     page.locator('[data-travel-area=beach]').click()
     page.clock.run_for(500)
+    # Initial map assets/navigation may finish after the first half-second on a cold runner.
+    page.locator('#targetHud').wait_for(state='visible')
+    page.clock.pause_at(page.evaluate('Date.now()+1'))
     if page.locator('#floatingChat').is_visible():
         page.locator('#floatingChat [data-close-window]').click()
     for width,height in [(1600,900),(1366,768),(1024,768),(768,1024),(390,844),(844,390)]:
         page.set_viewport_size(dict(width=width,height=height))
-        page.clock.run_for(300)
-        assert page.locator('#targetHud').is_visible()
+        # Compare responsive geometry at the same live combat frame, without killing the target between sizes.
+        assert page.locator('#targetHud').is_visible(), page.evaluate('()=>{const d=__mareDiagnostics();return {scene:d.scene,auto:d.autoPlay,map:d.map,hp:d.hp,mobs:d.alive}}')
         assert page.locator('#huntXpTracker').is_visible()
         results.append(check_layout(page,f'combat-{width}'))
         page.screenshot(path=str(OUT / f'combat-{width}.png'))

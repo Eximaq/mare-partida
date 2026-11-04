@@ -34,7 +34,7 @@ test('Future features stay locked; domain hooks deduplicate real discoveries and
 });
 test('Version-one builds and cooldowns survive; new advanced investments require the intermediate bridge',()=>{
  const g=make();g.talentVersion=1;g.talentBuilds.sword={nodes:{'sword-0-0':5,'sword-0-1':5,'sword-0-2':5},keystone:null};g.talentCooldowns.energyShieldUntil=12345;
- const next=T.migrate(g);assert.equal(next.talentVersion,2);assert.equal(next.talentBuilds.sword.nodes['sword-0-2'],5);assert.equal(next.talentCooldowns.energyShieldUntil,12345);
+ const next=T.migrate(g);assert.equal(next.talentVersion,T.VERSION);assert.equal(next.talentBuilds.sword.nodes['sword-0-2'],5);assert.equal(next.talentCooldowns.energyShieldUntil,12345);
  assert(!T.invest(next,T.buildFor(next),'sword-0-2').ok);const bridge=T.invest(next,T.buildFor(next),'wear');assert(bridge.ok);assert(T.invest(next,bridge.build,'sword-0-2').ok);
  const fresh=make();assert(!T.invest(fresh,{nodes:{'sword-0-0':5,'sword-0-1':5},keystone:null},'sword-0-2').ok);
 });

@@ -13,12 +13,12 @@ function fixture(id:string){
 }
 test('server fruit passives apply exactly once, while transformed basics use physical melee',()=>{
  for(const fruit of A.catalog){const f=fixture(fruit.id);assert.equal(f.E.combatStats(f.b,f.context()).physical,f.stats.physical,fruit.id);}
- const f=fixture('akuma_inu_dachshund');assert(f.E.fruitTransform(f.b,true,f.context()));assert.equal(f.E.combatStats(f.b,f.context()).range,65);assert(f.cast('3'));const hp=f.m.hp;f.step();assert(f.m.hp<hp);assert(!f.cast('3'));
+ const f=fixture('akuma_inu_dachshund');assert(f.E.fruitTransform(f.b,true,f.context()));assert.equal(f.E.combatStats(f.b,f.context()).range,65);assert(f.cast('3'));const hp=f.m.hp;f.step(.5);assert(f.m.hp<hp);assert(!f.cast('3'));
 });
 test('fruit cast reserves server energy and cooldown, never deals damage outside worker; state survives JSON roundtrips',()=>{
  const f=fixture('akuma_mera_mera'),cost=A.activeSkill('akuma_mera_mera','1').cost;f.b.energy=1000;const hp=f.m.hp;
  assert(f.cast('1'));assert.equal(f.m.hp,hp);assert.equal(f.b.energy,1000-cost);assert(!f.cast('1'));assert(!f.cast('4'));
- let count=0;for(let i=0;i<60;i++){f.step();const raw=JSON.parse(JSON.stringify(f.b));Object.assign(f.b,raw);count=f.b.events.filter((x:any)=>x.type==='damage').length;}
+ let count=0;for(let i=0;i<60;i++){f.step(.5);const raw=JSON.parse(JSON.stringify(f.b));Object.assign(f.b,raw);count=f.b.events.filter((x:any)=>x.type==='damage').length;}
  assert(f.b.mobs[0].hp<hp);assert(count>=1);const cd=structuredClone(f.b.fruit.cooldowns);f.E.resetFruit(f.b);assert.deepEqual(f.b.fruit.cooldowns,cd);
 });
 test('all advanced fruit timelines accept only original valid intents and persist bounded runtime',()=>{
@@ -28,7 +28,7 @@ test('all advanced fruit timelines accept only original valid intents and persis
 });
 test('server refuses fruit casts without range, energy, equipped fruit, or live character and preserves cooldown across switches',()=>{
  const f=fixture('akuma_mera_mera');f.b.energy=0;assert(!f.cast('1'));f.b.energy=1000;f.hero.x-=1000;assert(!f.cast('1'));f.hero.x+=1000;f.nav.projectileClear=()=>false;assert(!f.cast('1'));f.nav.projectileClear=()=>true;assert(f.cast('1'));
- f.step();const saved=structuredClone(f.b.fruit.cooldowns);f.E.combatStats(f.b,{...f.context(),fruitId:null});f.E.combatStats(f.b,f.context());assert.deepEqual(f.b.fruit.cooldowns,saved);assert(!f.cast('1'));
+ f.step(.5);const saved=structuredClone(f.b.fruit.cooldowns);f.E.combatStats(f.b,{...f.context(),fruitId:null});f.E.combatStats(f.b,f.context());assert.deepEqual(f.b.fruit.cooldowns,saved);assert(!f.cast('1'));
  f.b.hp=0;assert(!f.cast('2'));assert(!f.E.fruitTransform(f.b,true,f.context()));
 });
 test('rank D and C retain their original casts, timelines, buffs and bounded serialized effects',()=>{
@@ -37,24 +37,24 @@ test('rank D and C retain their original casts, timelines, buffs and bounded ser
  }
 });
 test('Mato mark grants exactly the original number of free casts; Ushi and Wolf preserve their timed defenses',()=>{
- const f=fixture('akuma_mato_mato');f.b.energy=1000;assert(f.cast('2'));f.step();const cost=A.activeSkill('akuma_mato_mato','1').cost;
- for(let i=0;i<require('../../rank-c-system.js').rules.mato.charges;i++){const e=f.b.energy;assert(f.cast('1'));assert.equal(f.b.energy,e);f.step();}
+ const f=fixture('akuma_mato_mato');f.b.energy=1000;assert(f.cast('2'));f.step(.5);const cost=A.activeSkill('akuma_mato_mato','1').cost;
+ for(let i=0;i<require('../../rank-c-system.js').rules.mato.charges;i++){const e=f.b.energy;assert(f.cast('1'));assert.equal(f.b.energy,e);f.step(.5);}
  const e=f.b.energy;assert(!f.cast('1'));assert.equal(f.b.energy,e);assert(cost>0);
 });
 test('all Rank B skills use server state; Jiki release measures server time and Hoya cancellation preserves recast',()=>{
  for(const fruit of A.catalog.filter((x:any)=>x.rank==='B'))for(const skill of fruit.skills){const f=fixture(fruit.id);f.b.energy=1000;
-  if(fruit.id==='akuma_hoya_hoya'&&skill.key==='2'){assert(f.cast('1'));f.step();}assert(f.cast(skill.key),fruit.id+':'+skill.key);for(let i=0;i<40;i++){f.step(.2);Object.assign(f.b,JSON.parse(JSON.stringify(f.b)));}assert(Number.isFinite(f.b.hp));
+  if(fruit.id==='akuma_hoya_hoya'&&skill.key==='2'){assert(f.cast('1'));f.step(.5);}assert(f.cast(skill.key),fruit.id+':'+skill.key);for(let i=0;i<40;i++){f.step(.2);Object.assign(f.b,JSON.parse(JSON.stringify(f.b)));}assert(Number.isFinite(f.b.hp));
  }
- const j=fixture('akuma_jiki_jiki');j.b.energy=1000;assert(j.cast('1'));j.step();for(let i=0;i<10;i++)j.step(.2);const e=j.b.energy;assert(j.cast('1'));assert.equal(j.b.energy,e);j.step();assert(!j.b.fruit.effects.jikiCharge);assert(!j.cast('1'));
- const h=fixture('akuma_hoya_hoya');h.b.energy=1000;assert(h.cast('1'));h.step();assert(h.b.fruit.effects.genie);const cds=structuredClone(h.b.fruit.cooldowns);assert(h.cast('1'));h.step();assert(!h.b.fruit.effects.genie);assert.deepEqual(h.b.fruit.cooldowns,cds);
+ const j=fixture('akuma_jiki_jiki');j.b.energy=1000;assert(j.cast('1'));j.step(.5);for(let i=0;i<10;i++)j.step(.2);const e=j.b.energy;assert(j.cast('1'));assert.equal(j.b.energy,e);j.step(.5);assert(!j.b.fruit.effects.jikiCharge);assert(!j.cast('1'));
+ const h=fixture('akuma_hoya_hoya');h.b.energy=1000;assert(h.cast('1'));h.step(.5);assert(h.b.fruit.effects.genie);const cds=structuredClone(h.b.fruit.cooldowns);assert(h.cast('1'));h.step(.5);assert(!h.b.fruit.effects.genie);assert.deepEqual(h.b.fruit.cooldowns,cds);
 });
 test('Phoenix passive restores health and energy only after ten seconds actually simulated',()=>{
  const f=fixture('akuma_tori_phoenix');f.b.hp=20;f.b.energy=0;const initial=f.b.hp;
  for(let i=0;i<99;i++)f.step(.1);const before=f.b.hp;assert(before>initial);f.step(.11);assert(f.b.hp-before>=f.stats.maxHP*.1);assert(f.b.energy>=f.stats.maxEnergy*.1);
 });
 test('Kuku rejects old corpses, while two original food pickups survive independently',()=>{
- const f=fixture('akuma_kuku_kuku');f.m.alive=false;f.m.hp=0;assert(!f.cast('1'));f.m.corpseUntil=f.context().now+12000;assert(f.cast('1'));f.step();assert.equal(f.b.fruit.effects.food.length,1);
- for(let i=0;i<76;i++)f.step(.2);f.b.mobs.push({...f.m,id:'second',fruitConsumed:false,corpseUntil:f.context().now+12000,x:f.hero.x+80});assert(f.cast('1'));f.step();assert.equal(f.b.fruit.effects.food.length,2);
+ const f=fixture('akuma_kuku_kuku');f.m.alive=false;f.m.hp=0;assert(!f.cast('1'));f.m.corpseUntil=f.context().now+12000;assert(f.cast('1'));f.step(.5);assert.equal(f.b.fruit.effects.food.length,1);
+ for(let i=0;i<76;i++)f.step(.2);f.b.mobs.push({...f.m,id:'second',fruitConsumed:false,corpseUntil:f.context().now+12000,x:f.hero.x+80});assert(f.cast('1'));f.step(.5);assert.equal(f.b.fruit.effects.food.length,2);
 });
 test('Zoan basics preserve the original impact frame instead of a generic half-cycle',()=>{
  const f=fixture('akuma_tori_albatroz');f.E.fruitTransform(f.b,true,f.context());f.b.auto=true;f.b.targetId=f.m.id;f.step(.05);assert(Math.abs(f.b.pending.remaining-(1/f.stats.speed*4/9-.05))<1e-6);
@@ -68,7 +68,7 @@ test('Wolf charge follows server-validated steering while walls stop the charge'
 });
 test('fruit percentage heals preserve original efficiency-independent amount',()=>{
  const F=require('../../fruit-runtime.cjs'),f=fixture('akuma_horu_horu');f.b.energy=1000;assert(f.cast('2'));let heal:any;
- F.tick(f.b,{...f.context(),stats:{...f.stats,healingReceivedPercent:.5}},.05,{hit(){},heal:(amount:number,ignore:boolean)=>{heal={amount,ignore};}});
+ F.tick(f.b,{...f.context(),now:f.context().now+250,stats:{...f.stats,healingReceivedPercent:.5}},.05,{hit(){},heal:(amount:number,ignore:boolean)=>{heal={amount,ignore};}});
  assert.equal(heal.amount,f.stats.maxHP*.2);assert.equal(heal.ignore,true);
 });
 

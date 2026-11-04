@@ -167,3 +167,10 @@
 .hud-hierarchy:has([data-faction=marine]):before{background:#153858}
 .hud-hierarchy:has([data-faction=revolutionary]):before{background:#1b412c}
 .hud-hierarchy:has([data-faction=government]):before{background:#e2d7b9}
+
+/* Stable class/fruit groups with independent cooldown slots. */
+.action-row{flex-wrap:wrap;align-items:flex-end;gap:5px}
+.skill-group{display:flex;flex-direction:column;gap:2px;flex:none}
+.skill-group>small{font:700 9px/11px var(--rpg-font);letter-spacing:.07em;color:#e5c18a;text-align:center}
+.skill-group>div{display:flex;gap:3px}.skill-group.hidden{display:none}
+.skill-group .skill-button:disabled{opacity:.55}

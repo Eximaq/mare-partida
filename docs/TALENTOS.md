@@ -4,7 +4,7 @@
 
 O botão Personagem e o atalho P abrem uma seleção entre Personagem, Talentos e Conquistas. A primeira aba mantém atributos e o acesso ao inventário/equipamentos. A segunda mostra uma constelação da classe ativa, com tronco inato, três ramos, cinco tiers, três intermediários e três finais. A terceira abre o Diário de Conquistas. Os nós são passivos; não ocupam a barra de habilidades.
 
-- O orçamento total é nível + PT das conquistas resgatadas: nível 1 tem 1 PT; cada nível seguinte acrescenta 1 PT. As conquistas somam PT apenas quando resgatadas. Atributos continuam separados, com 5 pontos por nível a partir do 2.
+- Novos PT vêm somente de conquistas resgatadas. Personagens novos começam com zero PT. Na primeira migração, o orçamento legado é congelado sem atribuir uma origem inexistente ao saldo; níveis futuros e resets não o ampliam. Atributos continuam separados, com 5 pontos por nível a partir do 2.
 - Cada nó comum aceita até 10 pontos. Um tier exige 5 pontos no nó anterior do mesmo ramo.
 - Só dois ramos podem ter investimentos. O primeiro ponto no terceiro é recusado, tanto na interface quanto na validação do modelo.
 - Após 10 PT comuns, o núcleo libera um intermediário por 1 PT. Novos investimentos nos tiers 3–5 também exigem esse intermediário, além de cinco pontos no nó anterior.

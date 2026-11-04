@@ -27,7 +27,7 @@ function step(room,actors,{nav,now,dt,rng,populate=true}){
  while(left>1e-9){const slice=Math.min(.05,left);left-=slice;clock+=slice*1000;
   const owners=new Map();for(const m of room.mobs.filter(m=>m.alive)){let focus=(m.dungeonAttack||m.telegraph)&&active.find(a=>a.id===m.partyTargetId&&a.b.hp>0);focus??=active.filter(a=>a.b.hp>0).sort((a,b)=>distance(a.hero,m)-distance(b.hero,m)||a.id.localeCompare(b.id))[0]||active[0];if(focus){m.partyTargetId=focus.id;owners.set(m.id,focus.id);}}
   for(const [i,a] of active.entries()){
-   a.b.mobs=room.mobs;const result=E.step(a.b,{...a,nav,hero:a.hero,now:clock,dt:slice,rng,potions:Math.max(0,(a.potions||0)-results[i].potionsUsed),shared:{owns:m=>owners.get(m.id)===a.id}});
+   a.b.mobs=room.mobs;const result=E.step(a.b,{...a,nav,hero:a.hero,now:clock,dt:slice,rng,potions:Math.max(0,(a.potions||0)-results[i].potionsUsed),allies:active.filter(other=>other.id!==a.id&&other.b.hp>0).map(other=>({...other,stats:E.combatStats(other.b,other)})),shared:{owns:m=>owners.get(m.id)===a.id}});
    results[i].kills.push(...result.kills);results[i].potionsUsed+=result.potionsUsed;results[i].talentSteals.push(...result.talentSteals);
    for(const k of result.kills){k.killerId=a.id;if(room.kind==='hunt'){room.respawns??={};room.respawns[k.monster.spawnId]=clock+behavior.RESPAWN_MS;room.hunts=E.hunt.recordKill({hunts:room.hunts},room.area,k.monster.type,clock).state.hunts;room.hunts.areas[room.area].respawns[k.monster.spawnId]=clock+behavior.RESPAWN_MS;}}
   }

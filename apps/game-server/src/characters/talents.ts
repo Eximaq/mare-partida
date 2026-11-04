@@ -12,12 +12,14 @@ const require=createRequire(import.meta.url),T=require('../../../../talent-syste
 export const talentRulesHash=createHash('sha256').update(['talent-system.js','talent-combat.js','ultimate-system.js'].map(f=>readFileSync(new URL('../../../../'+f,import.meta.url),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 export async function readTalents(client:PoolClient,id:string,state:CharacterState){
  if(!(await client.query("SELECT to_regclass('mare_game.character_talents') present")).rows[0].present)return null;
- const row=(await client.query('SELECT build,revision FROM mare_game.character_talents WHERE character_id=$1',[id])).rows[0];
+ // Historical-schema reads are used while rehearsing migrations. Startup readiness requires all migrations.
+ const migrated=!!(await client.query("SELECT to_regclass('mare_game.talent_legacy_allowances') present")).rows[0].present;
+ const row=(await client.query(migrated?'SELECT t.build,t.revision,COALESCE(a.budget,0) legacy_budget FROM (SELECT $1::uuid id) c LEFT JOIN mare_game.character_talents t ON t.character_id=c.id LEFT JOIN mare_game.talent_legacy_allowances a ON a.character_id=c.id':'SELECT build,revision,$2::int legacy_budget FROM mare_game.character_talents WHERE character_id=$1',migrated?[id]:[id,state.level])).rows[0]??(migrated?undefined:{legacy_budget:state.level});
  return talentView(row,state,await achievementBonus(client,id));
 }
-export function talentView(row:any,state:CharacterState,bonus:number){
- const build=talentBuildSchema.parse(row?.build??T.empty()),spent=T.spent(build),earned=state.level+bonus;
- // Additional points come only from immutable server achievement claims.
+export function talentView(row:any,_state:CharacterState,bonus:number){
+ const build=talentBuildSchema.parse(row?.build??T.empty()),spent=T.spent(build),earned=Number(row?.legacy_budget??0)+bonus;
+ // New points come only from immutable server achievement claims.
  return talentSnapshotSchema.parse({rulesetId:'original-talents-v1',revision:Number(row?.revision??0),earned,spent,available:earned-spent,build});
 }
 export async function mutateTalents(client:PoolClient,id:string,input:CharacterCommand,state:CharacterState){
