@@ -154,7 +154,7 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
    if(!b.prison&&!b.dungeon)await recordContractKills(client,id,result.kills);
    await advanceLevel(client,id,requestId,state);await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
    const after=await readCharacterState(client,id);
-   await observeServerAchievements(client,id,state,after,{kills:b.dungeon?0:result.kills.length});
+   await observeServerAchievements(client,id,state,after,{kills:b.dungeon?0:result.kills.length,currentCombatSchema:true});
    if(after.level>state.level){await storeBattle(client,id,b);const next=await readFighter(client,id,after);b.hp=next.maxHp;if(next.rulesetId==='original-character-v1')b.energy=next.stats.maxEnergy;}
    await client.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)',[id,requestId,digest('server-battle:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:after})]);
   }
