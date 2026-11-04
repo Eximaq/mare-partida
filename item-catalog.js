@@ -81,6 +81,144 @@
     {name:'Manoplas da Ruptura dos Mares',slot:'weapon',type:'brawler',attack:11,defense:3,hp:6,symbol:'✦',rarity:'supreme',fixedRarity:true,attributes:{strength:4,vitality:3,dexterity:1},extraPool:['strength','vitality','dexterity','hp','crit','energy'],weaponVisual:'rupture-impact',description:'Manoplas supremas de metal negro e ouro. Fissuras rubras acompanham golpes pesados, unindo força e resistência.',icon_path:'assets/ui/items-hd/manoplas-da-ruptura-dos-mares.png?v=class-batch1'},
     {name:'Mosquete do Vento Cortante',slot:'weapon',type:'gunner',attack:12,defense:0,hp:0,symbol:'◎',rarity:'epic',fixedRarity:true,attributes:{dexterity:3,strength:1},crit:.003,extraPool:['dexterity','strength','crit','energy','hp','vitality'],weaponVisual:'wind-shot',description:'Mosquete de madeira escura, aço e mecanismos dourados. Destreza favorece precisão e crítico; o disparo deixa um rastro de vento cortante.',icon_path:'assets/ui/items-hd/mosquete-do-vento-cortante.png?v=class-batch1'}
   );
+  // Class armaments, batch 2. Append after the five previously reviewed items.
+  itemDefs.push(...[
+  {
+    "name": "Pistolas Gêmeas do Corsário",
+    "slot": "weapon",
+    "type": "gunner",
+    "attack": 12,
+    "defense": 0,
+    "hp": 0,
+    "symbol": "◎",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "dexterity": 4,
+      "strength": 1
+    },
+    "extraPool": [
+      "dexterity",
+      "strength",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "corsair-shot",
+    "description": "Pistolas de madeira escura e latão gravado. O par preserva a cadência existente, com destreza, força e crítico.",
+    "icon_path": "assets/ui/items-hd/pistolas-gemeas-do-corsario.png?v=class-batch2",
+    "crit": 0.004
+  },
+  {
+    "name": "Rifle do Horizonte da Grand Line",
+    "slot": "weapon",
+    "type": "gunner",
+    "attack": 13,
+    "defense": 0,
+    "hp": 0,
+    "symbol": "◎",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "dexterity": 4,
+      "strength": 2
+    },
+    "extraPool": [
+      "dexterity",
+      "strength",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "horizon-shot",
+    "description": "Rifle de precisão em aço azulado e madeira nobre, com bússola dourada e mira alinhada. Favorece destreza e crítico.",
+    "icon_path": "assets/ui/items-hd/rifle-do-horizonte-da-grand-line.png?v=class-batch2",
+    "crit": 0.004
+  },
+  {
+    "name": "Arcabuz do Juízo Celestial",
+    "slot": "weapon",
+    "type": "gunner",
+    "attack": 14,
+    "defense": 0,
+    "hp": 0,
+    "symbol": "◎",
+    "rarity": "supreme",
+    "fixedRarity": true,
+    "attributes": {
+      "dexterity": 4,
+      "strength": 2
+    },
+    "extraPool": [
+      "dexterity",
+      "strength",
+      "crit",
+      "energy",
+      "hp",
+      "vitality"
+    ],
+    "weaponVisual": "celestial-shot",
+    "description": "Arcabuz supremo branco e dourado. Seu mecanismo luminoso marca os disparos sem alterar os tempos de combate.",
+    "icon_path": "assets/ui/items-hd/arcabuz-do-juizo-celestial.png?v=class-batch2",
+    "crit": 0.004
+  },
+  {
+    "name": "Braço Mecânico de Ferro Salgado",
+    "slot": "weapon",
+    "type": "cyborg",
+    "attack": 9,
+    "defense": 5,
+    "hp": 10,
+    "symbol": "✦",
+    "rarity": "epic",
+    "fixedRarity": true,
+    "attributes": {
+      "vitality": 3,
+      "strength": 2,
+      "dexterity": 1
+    },
+    "extraPool": [
+      "vitality",
+      "strength",
+      "dexterity",
+      "hp",
+      "energy",
+      "crit"
+    ],
+    "weaponVisual": "iron-impact",
+    "description": "Braço articulado de aço naval com juntas de bronze. Reforça vitalidade e força, acompanhando os golpes da animação existente.",
+    "icon_path": "assets/ui/items-hd/braco-mecanico-de-ferro-salgado.png?v=class-batch2"
+  },
+  {
+    "name": "Canhão de Luz Pacifista",
+    "slot": "weapon",
+    "type": "cyborg",
+    "attack": 10,
+    "defense": 4,
+    "hp": 9,
+    "symbol": "✦",
+    "rarity": "legendary",
+    "fixedRarity": true,
+    "attributes": {
+      "vitality": 4,
+      "strength": 3,
+      "dexterity": 1
+    },
+    "extraPool": [
+      "vitality",
+      "strength",
+      "dexterity",
+      "hp",
+      "energy",
+      "crit"
+    ],
+    "weaponVisual": "pacifista-shot",
+    "description": "Canhão compacto de antebraço em metal branco, ouro e núcleo ciano. Une resistência e força à assinatura luminosa dos disparos.",
+    "icon_path": "assets/ui/items-hd/canhao-de-luz-pacifista.png?v=class-batch2"
+  }
+]);
   return {items:itemDefs,slotNames,inventorySlotsLeft,inventorySlotsRight,capacity:BAG_CAPACITY,healerWeaponIndex};
  }
  const api={create};root.MareItemCatalog=api;if(typeof module!=='undefined')module.exports=api;

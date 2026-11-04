@@ -108,5 +108,5 @@
     const frame = clip?.frame || pack.frame, pivot = clip?.pivot || pack.pivot;
     return { width: frame.width, height: frame.height, pivot, scale: 96 / pack.referenceHeight };
   }
-  return { headTransform, socketTransform, torsoTransform, clothMesh, affineMesh, rasterMesh, distanceToSegment, clipSpec };
+  return { headTransform, socketTransform, boneTransform, torsoTransform, clothMesh, affineMesh, rasterMesh, distanceToSegment, clipSpec };
 });

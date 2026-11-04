@@ -12,7 +12,7 @@ for(const item of items){
  assert.equal(hash(fs.readFileSync(path.join(root,item.reference))),item.referenceSha256,'preserve existing inventory art');
  assert.equal(item.paired,[2,3].includes(item.itemId));
  for(const material of [item,...Object.values(item.views||{})]){const png=fs.readFileSync(path.join(base,material.source));assert.equal(hash(png),material.sha256);assert.equal(png.readUInt32BE(16),128);assert.equal(png.readUInt32BE(20),128);assert.equal(material.generation.tool,'pixellab');assert.equal(material.generation.model,'pro');assert(Number.isFinite(material.axisAngle));}
- if([4,5,15].includes(item.itemId))assert.deepEqual(Object.keys(item.views),['south','north'],'authored front/back firearm views');
+ if([4,5,15].includes(item.itemId))assert.deepEqual(Object.keys(item.views),item.itemId===15?['south','north']:['south','north','southCarry'],'authored front/back and approved South carry views');
 }
 assert.equal(items.find(w=>w.itemId===14).attackAction,'attack-unarmed','steel gauntlet punches instead of inheriting rifle pose');
 for(const id of [16,32])assert(items.find(w=>w.itemId===id).generation.design,'final sprite derived from redesigned PixelLab artwork');
@@ -21,19 +21,19 @@ for(const body of ['masculino','feminino'])for(const item of items)for(const act
  const clip=manifest.bodies[body].clips[action][direction],size=clip.frame?.width||128,spec={width:size,height:size},selected={body,action,direction,clip},look={weapon:item.id},pad=renderer.padding(selected,spec,look);
  assert(pad.x>=0&&pad.top>=0&&pad.bottom>=0);assert(pad.x<=84&&pad.top<=84&&pad.bottom<=84);
  for(let f=0;f<clip.frames;f++){
-  const plan=renderer.plan(selected,f,spec,look);assert.equal(plan.length,item.paired?2:1);poses++;
-  const points=Object.fromEntries(rigs.clips[body][action][direction].poses[f].map(j=>[j.label,j]));
+  const plan=renderer.plan(selected,f,spec,look),carry=renderer.carryPose(selected,f,look),southCarry=direction==='south'&&['idle','walk'].includes(action)&&!!item.views?.southCarry;assert.equal(plan.length,item.paired||southCarry&&item.attachment.kind==='pistol'?2:1);poses++;
+  const points=Object.fromEntries((carry||rigs.clips[body][action][direction].poses[f]).map(j=>[j.label,j]));
   for(const entry of plan){
-   const socket=W.contact(points[entry.side+' ARM'],null,size,size,(size-128)/2,points[entry.side+' ELBOW']);assert.equal(entry.x,socket.x);assert.equal(entry.y,socket.y);assert(Number.isFinite(entry.angle));
+   const wrist=points[entry.side+' ARM'],socket=carry?{x:Math.round(wrist.x*128+(size-128)/2),y:Math.round(wrist.y*128+(size-128)/2)}:W.contact(wrist,null,size,size,(size-128)/2,points[entry.side+' ELBOW']);assert.equal(entry.x,socket.x);assert.equal(entry.y,socket.y);assert(Number.isFinite(entry.angle));
    assert.equal(entry.depth,direction==='north'||direction==='east'&&entry.side==='LEFT'?'back':'front');
    const atGrip=renderer.point(entry,entry.model.grip);assert.equal(atGrip.x,entry.x);assert.equal(atGrip.y,entry.y);const tip=renderer.point(entry);assert(Number.isFinite(tip.x)&&Number.isFinite(tip.y));
-   if(item.views?.[direction]){assert.equal(entry.model.source,item.views[direction].source);viewCases++;}
+   if(item.views?.[direction]){assert.equal(entry.model.source,item.views[southCarry?'southCarry':direction].source);viewCases++;}
    if(['focus','book'].includes(item.attachment.kind)){assert(Math.abs(entry.angle)<=.3);assert.equal(entry.side,body==='masculino'&&direction!=='north'?'LEFT':'RIGHT','follow authored casting hand');}if(item.attachment.kind==='staff'){assert(Math.abs(entry.angle)<=.5);assert.equal(entry.side,direction==='south'&&body==='masculino'?'RIGHT':'LEFT','free frontal hand or far profile hand keeps the face clear');}
    contacts++;
   }
  }
 }
-assert.equal(poses,1200);assert.equal(contacts,1440);assert.equal(viewCases,240);
+assert.equal(poses,1200);assert.equal(contacts,1464);assert.equal(viewCases,264);
 // Execute the catalog initialization: unrelated UI state must not affect equipment contracts.
 // Literal tuples audited against the original native96 integration (82e7082).
 const game=fs.readFileSync(path.join(root,'game.js'),'utf8');

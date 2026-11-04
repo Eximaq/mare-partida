@@ -3,11 +3,11 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),fs=requir
 const F=require('../forge-system.js'),C=require('../item-catalog.js').create({forge:F,prison:require('../prison-system.js'),haki:require('../haki-system.js'),akuma:require('../akuma-system.js'),hakiProgression:require('../haki-progression.js')}),W=require('../tools/paper-doll-96-v3/weapons.js'),catalog=require('../tools/paper-doll-96-v3/weapons.json'),rigs=require('../tools/paper-doll-96-v3/appearance-rig.json'),manifest=require('../tools/paper-doll-96-v3/manifest.json');
 const expected=['Manoplas do Coral Negro','Punhos do Dragão Carmesim','Luva do Abalo Sísmico','Manoplas da Ruptura dos Mares','Mosquete do Vento Cortante'];
 test('five class armaments append after all 109 preserved definitions',()=>{
- assert.equal(C.items.length,114);assert.deepEqual(C.items.slice(109).map(d=>d.name),expected);
+ assert(C.items.length>=114);assert.deepEqual(C.items.slice(109,114).map(d=>d.name),expected);
  const summary={items:C.items.slice(0,109),slots:[...C.inventorySlotsLeft,...C.inventorySlotsRight],capacity:C.capacity,healerWeaponIndex:C.healerWeaponIndex};
  assert.equal(crypto.createHash('sha256').update(JSON.stringify(summary)).digest('hex'),'bb24314816adc23eca9f632f7eaa9d3a597eb26154f7eebb2f3cbb7a7619ea5b');
- assert.deepEqual(C.items.slice(109).map(d=>d.rarity),['epic','legendary','legendary','supreme','epic']);
- assert(C.items.slice(109).every(d=>d.fixedRarity));
+ assert.deepEqual(C.items.slice(109,114).map(d=>d.rarity),['epic','legendary','legendary','supreme','epic']);
+ assert(C.items.slice(109,114).every(d=>d.fixedRarity));
 });
 test('intrinsic attributes follow class, rarity and level once; rerolls preserve them',()=>{
  const bare=id=>F.normalizeItem({id:'armament-'+id,def:id,rarity:C.items[id].rarity,level:1,plus:0,extras:[]},C.items);
@@ -28,7 +28,7 @@ test('intrinsic attributes follow class, rarity and level once; rerolls preserve
 });
 test('PixelLab sources, 3x density, grip sockets, side mirroring and all animation plans',()=>{
  assert(W.validate(catalog));const renderer=W.create(catalog,rigs);let poses=0;
- for(const item of catalog.items.filter(w=>w.itemId>=109)){
+ for(const item of catalog.items.filter(w=>w.itemId>=109&&w.itemId<114)){
   assert.equal(item.name,C.items[item.itemId].name);assert.equal(item.generation.tool,'pixellab');assert.equal(item.generation.model,'pro');assert.equal(item.renderDensity,3);assert(item.materialScale>0&&item.materialScale<1);assert.equal(item.effect,null);
   for(const m of [item,...Object.values(item.views||{})]){const file=fs.readFileSync(path.join(__dirname,'../tools/paper-doll-96-v3',m.source));assert.equal(crypto.createHash('sha256').update(file).digest('hex'),m.sha256);assert.equal(file.readUInt32BE(16),128);assert.equal(file.readUInt32BE(20),128);}
   if(item.itemId<113){assert(item.attachment.palmInward&&item.attachment.coverPalm);assert(item.views.north);assert.notEqual(item.views.north.sha256,item.sha256,'North has an authored reverse surface');}

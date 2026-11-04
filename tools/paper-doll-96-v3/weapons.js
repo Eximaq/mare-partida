@@ -8,7 +8,7 @@
       if(!Number.isSafeInteger(item.itemId)||ids.has(item.itemId)||item.id!=='weapon-'+item.itemId||!['sword','daggers','unarmed','firearm','tech','focus'].includes(item.category)||!/^assets\/weapon-item-\d+\.png$/.test(item.source)||item.frame?.width!==128||item.frame?.height!==128||![item.grip?.x,item.grip?.y].every(n=>Number.isInteger(n)&&n>=0&&n<128)||![-1,0,1].includes(item.edgeSide)||item.visibleHeight<5||item.visibleHeight>96)throw Error('Invalid weapon material');
       if(item.effect&&!(item.itemId===70&&item.effect==='gold-sheen'||item.itemId===74&&item.effect==='violet-pulse'))throw Error('Effects allowed only on Ame no Habakiri and Lamina das Trevas');ids.add(item.itemId);
       if(item.attachment&&!['gauntlet','wrist-cannon','rifle','pistol','focus','staff','book'].includes(item.attachment.kind))throw Error('Invalid weapon attachment');
-      if(item.views)for(const [direction,view]of Object.entries(item.views)){if(!['south','north'].includes(direction)||!/^assets\/weapon-item-\d+-(south|north)\.png$/.test(view.source)||![view.grip?.x,view.grip?.y].every(Number.isInteger))throw Error('Invalid weapon view');}
+      if(item.views)for(const [direction,view]of Object.entries(item.views)){if(!['south','north','southCarry'].includes(direction)||!/^assets\/weapon-item-\d+-(south|north|south-carry)\.png$/.test(view.source)||![view.grip?.x,view.grip?.y].every(Number.isInteger))throw Error('Invalid weapon view');}
       if(item.axisAngle!==undefined&&(!Number.isFinite(item.axisAngle)||Math.abs(item.axisAngle)>Math.PI))throw Error('Invalid native weapon axis');
       if(item.materialScale!==undefined&&(!Number.isFinite(item.materialScale)||item.materialScale<=0||item.materialScale>1))throw Error('Invalid HD weapon scale');
       if(item.renderDensity!==undefined&&![1,2,3].includes(item.renderDensity))throw Error('Invalid HD weapon density');
@@ -39,29 +39,43 @@
   }
   function create(catalog,rigs){
     validate(catalog);const materials=new Map(),rotated=new Map();
-    const descriptor=(id,direction)=>{const item=catalog.items.find(item=>item.id===id);return item?.views?.[direction]?{...item,...item.views[direction],view:direction}:item;};
+    const descriptor=(id,direction,action)=>{const item=catalog.items.find(item=>item.id===id),view=direction==='south'&&['idle','walk'].includes(action)&&item?.views?.southCarry?'southCarry':direction;return item?.views?.[view]?{...item,...item.views[view],view}:item;};
+    function carryPose(selected,frame,look){
+      const model=descriptor(look.weapon,selected.direction,selected.action);if(model?.view!=='southCarry'||model.attachment.kind!=='rifle')return null;
+      const clip=rigs.clips[selected.body][selected.action][selected.direction],native=clip.poses[frame],rest=rigs.clips[selected.body].idle.south.poses[0],neck=native.find(j=>j.label==='NECK'),rn=rest.find(j=>j.label==='NECK');
+      const x=neck.x*128,y=neck.y*128,pose=native.map(j=>({...j}));
+      for(const j of pose){const side=j.label.split(' ')[0];if(!['LEFT','RIGHT'].includes(side))continue;
+        if(j.label.endsWith('SHOULDER')){const source=rest.find(p=>p.label===j.label);j.x=source.x+neck.x-rn.x;j.y=source.y+neck.y-rn.y;}
+        if(j.label.endsWith('ELBOW')){j.x=(x+(side==='LEFT'?19:-14))/128;j.y=(y+13)/128;}
+        if(j.label.endsWith('ARM')){j.x=(x+(side==='LEFT'?14:-18))/128;j.y=(y+20)/128;}
+      }return pose;
+    }
     const worn=entry=>['gauntlet','wrist-cannon'].includes(entry.model.attachment?.kind);
     function plan(selected,frame,spec,look,ownership=null){
-      const model=descriptor(look.weapon,selected.direction);if(!model)return [];
-      const clip=rigs.clips[selected.body]?.[selected.action]?.[selected.direction],pose=clip?.poses[frame]||rigs.rests[selected.body][selected.direction],rest=clip?.rest||rigs.rests[selected.body][selected.direction];
+      const model=descriptor(look.weapon,selected.direction,selected.action);if(!model)return [];
+      const clip=rigs.clips[selected.body]?.[selected.action]?.[selected.direction],carry=carryPose(selected,frame,look),pose=carry||clip?.poses[frame]||rigs.rests[selected.body][selected.direction],rest=clip?.rest||rigs.rests[selected.body][selected.direction];
       const p=Object.fromEntries(pose.map(j=>[j.label,j])),r=Object.fromEntries(rest.map(j=>[j.label,j])),padding=(spec.width-128)/2;
       // The authored masculine north sword gesture raises LEFT. Keep that
       // hand for the entire directional family, including locomotion.
       const kind=model.attachment?.kind,focus=['focus','staff','book'].includes(kind);
-      const primary=kind==='staff'?(selected.direction==='south'&&selected.body==='masculino'?'RIGHT':'LEFT'):focus?(selected.body==='masculino'&&selected.direction!=='north'?'LEFT':'RIGHT'):(selected.body==='masculino'&&selected.direction==='north'&&model.category==='sword'?'LEFT':'RIGHT');
-      return (model.paired?['LEFT','RIGHT']:[primary]).map(side=>{
-        const anchor=contact(p[side+' ARM'],ownership?.hands,spec.width,spec.height,padding,p[side+' ELBOW']);
+      const primary=carry?'LEFT':kind==='staff'?(selected.direction==='south'&&selected.body==='masculino'?'RIGHT':'LEFT'):focus?(selected.body==='masculino'&&selected.direction!=='north'?'LEFT':'RIGHT'):(selected.body==='masculino'&&selected.direction==='north'&&model.category==='sword'?'LEFT':'RIGHT');
+      const paired=model.paired||model.view==='southCarry'&&kind==='pistol';
+      return (paired?['LEFT','RIGHT']:[primary]).map(side=>{
+        const anchor=carry?{x:Math.round(p[side+' ARM'].x*128+padding),y:Math.round(p[side+' ARM'].y*128+padding)}:contact(p[side+' ARM'],ownership?.hands,spec.width,spec.height,padding,p[side+' ELBOW']);
         const handAngle=Math.atan2(p[side+' ARM'].y-p[side+' ELBOW'].y,p[side+' ARM'].x-p[side+' ELBOW'].x);
         let angle=orientation(r,p,side,selected.direction,selected.action,frame);
         if(['gauntlet','wrist-cannon'].includes(kind))angle=handAngle+Math.PI/2;
         else if(['rifle','pistol'].includes(kind))angle=model.view?0:handAngle+Math.PI/2;
         if(model.attachment?.carryUpright&&!selected.action.startsWith('attack-'))angle=selected.direction==='east'?.85:side==='RIGHT'?-.32:.32;
+        if(model.attachment?.carryOutward&&model.view&&!selected.action.startsWith('attack-'))angle=(side==='RIGHT'?-1:1)*(selected.direction==='north'?-1:1)*.35;
         else if(focus){const restAngle=Math.atan2(r[side+' ARM'].y-r[side+' ELBOW'].y,r[side+' ARM'].x-r[side+' ELBOW'].x);angle=Math.max(-.3,Math.min(.3,wrap(handAngle-restAngle)*.12));if(kind==='staff'){const carry=selected.direction==='north'?-.3:selected.direction==='east'?.4:selected.body==='masculino'?-.4:.4;angle=carry+Math.max(-.06,Math.min(.06,wrap(handAngle-restAngle)*.025));}}
         const center={x:(p['LEFT HIP'].x+p['RIGHT HIP'].x)*64+padding,y:(p.NECK.y+(p['LEFT HIP'].y+p['RIGHT HIP'].y)/2)*64+padding};
         const outward=selected.direction==='east'?{x:1,y:(anchor.y-center.y)/64}:{x:anchor.x-center.x,y:anchor.y-center.y};
         if(Math.hypot(outward.x,outward.y)<2&&selected.direction!=='east')outward.x=(side==='RIGHT')===(selected.direction==='south')?-1:1;
         const edgeDot=model.edgeSide*(Math.cos(angle)*outward.x+Math.sin(angle)*outward.y),flip=model.edgeSide!==0?edgeDot<0:model.attachment?.palmInward?(Math.cos(angle)*outward.x+Math.sin(angle)*outward.y)>0:kind==='gauntlet'&&side==='LEFT';
-        return {model,side,...anchor,angle,handAngle,flip,outward,edgeDot:model.edgeSide===0?null:Math.abs(edgeDot),depth:selected.direction==='north'||selected.direction==='east'&&side==='LEFT'?'back':'front',phase:frame%4};
+        const frontOfHand=selected.direction==='south'&&['idle','walk'].includes(selected.action)&&['rifle','pistol'].includes(kind);
+        if(model.view==='southCarry'){angle=carry?-Math.PI/2:side==='RIGHT'?-Math.PI*5/6:Math.PI*5/6;}
+        return {model,side,...anchor,angle,handAngle,flip:model.view==='southCarry'?kind==='pistol'&&side==='LEFT':flip,outward,frontOfHand,carry:!!carry,edgeDot:model.edgeSide===0?null:Math.abs(edgeDot),depth:selected.direction==='north'||selected.direction==='east'&&side==='LEFT'?'back':'front',phase:frame%4};
       });
     }
     function point(entry,sourcePoint=entry.model.tip){
@@ -121,11 +135,16 @@
         const m=entry.model.armour,side=entry.side;
         return [['SHOULDER','ELBOW','shoulder','elbow'],['ELBOW','ARM','elbow','wrist']].map(([a,b,c,e])=>({entry,to:axis(points[side+' '+a],points[side+' '+b]),from:axis(m[c],m[e]),pixels:material(images.get(m.source),m)}));
       });
+      const otherBones=['LEFT','RIGHT'].filter(side=>!armoured.some(e=>e.side===side)).flatMap(side=>[axis(points[side+' SHOULDER'],points[side+' ELBOW']),axis(points[side+' ELBOW'],points[side+' ARM'])]);
       const width=spec.width*d,height=spec.height*d,out=new Uint8ClampedArray(width*height*4);
       for(let y=0;y<height;y++)for(let x=0;x<width;x++){
         const xx=x/d,yy=y/d,p=Math.floor(yy)*spec.width+Math.floor(xx);if(!occlusion.arms[p]&&!occlusion.hands[p]||occlusion.head?.[p*4+3]&&yy<occlusion.headLine&&!occlusion.hands[p])continue;
         let closest=null;
         for(const bone of bones){const a=bone.to,dx=xx-a.a.x,dy=yy-a.a.y,along=dx*a.co+dy*a.si,across=-dx*a.si+dy*a.co,clamped=Math.max(0,Math.min(a.length,along)),distance=Math.hypot(across,along-clamped);if(!closest||distance<closest.distance)closest={bone,distance,along:clamped,across};}
+        // Limb ownership belongs to the native pixel, not each HD subpixel.
+        // Otherwise a crossed-arm seam can leave a fraction of skin exposed.
+        const nativeDistance=a=>{const dx=Math.floor(xx)-a.a.x,dy=Math.floor(yy)-a.a.y,along=dx*a.co+dy*a.si,across=-dx*a.si+dy*a.co;return Math.hypot(across,along-Math.max(0,Math.min(a.length,along)));};
+        if(otherBones.length){const ownDistance=Math.min(...bones.map(b=>nativeDistance(b.to)));if(otherBones.some(a=>nativeDistance(a)<ownDistance))continue;}
         const {bone,along,across}=closest,a=bone.from,t=along/bone.to.length,side=bone.entry.flip?-1:1,sx=Math.round(a.a.x+a.co*a.length*t-a.si*across*5.5*side),sy=Math.round(a.a.y+a.si*a.length*t+a.co*across*5.5*side);
         let sample=-1,best=Infinity;
         // Sample the authored armour, including its elbow hinge. Fill only
@@ -159,7 +178,7 @@
         ctx.drawImage(c,x0,y0,c.width/d,c.height/d);
       }
     }
-    return {descriptor,plan,padding,draw,drawGrips,drawArmour,drawWorn,point,get cacheSize(){return rotated.size;}};
+    return {descriptor,carryPose,plan,padding,draw,drawGrips,drawArmour,drawWorn,point,get cacheSize(){return rotated.size;}};
   }
   return {validate,orientation,contact,create};
 });

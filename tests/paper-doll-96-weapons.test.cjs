@@ -27,7 +27,8 @@ for(const body of ['masculino','feminino'])for(const item of catalog.items)for(c
 }
 const mask=new Uint8Array(128*128);mask[75*128+47]=1;assert.deepEqual(W.contact({x:45/128,y:75/128},mask,128,128,0),{x:47,y:75,distance:4,visible:true});assert.equal(W.contact({x:.5,y:.5},mask,128,128,0).visible,false,'occluded hands do not borrow another limb');
 const wardrobe=fs.readFileSync(path.join(base,'wardrobe.js'),'utf8');assert(wardrobe.indexOf("weaponPlan,'back'")<wardrobe.indexOf('ctx.drawImage(originalFrame,0,0);'));
-assert(wardrobe.indexOf("weaponPlan,'front'")<wardrobe.indexOf('visibleArm(frontHands);'),'hands/gloves must cover the grip');
+assert(wardrobe.indexOf("weaponPlan.filter(e=>!e.frontOfHand),'front'")<wardrobe.indexOf('visibleArm(frontHands);'),'hands/gloves must cover the legacy blade grip');
+assert(wardrobe.indexOf("weaponPlan.filter(e=>e.frontOfHand),'front'")>wardrobe.indexOf("drawGrips(ctx,weaponPlan,'front'"),'South firearm carry must cover the hand');
 const runtime=fs.readFileSync(path.join(root,'paper-doll-96-lobby.js'),'utf8');assert(runtime.includes('progress/hit*.5'));assert(runtime.includes("key:[body,action,direction].join(':')"),'attachment caches must distinguish animation families');assert(runtime.includes('weaponPadding'));
 assert(wardrobe.includes("drawGrips(ctx,weaponPlan,'back'"));assert(wardrobe.includes("drawGrips(ctx,weaponPlan,'front'"));
 assert.equal(manifest.productionEnabled,false);console.log(JSON.stringify({weaponMaterials:12,effects:[70,74],poses,contacts,originalsUnchanged:true}));

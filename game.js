@@ -1227,7 +1227,7 @@
     const box=combatHudBox(actor,width,name);ctx.save();ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#03171c';ctx.strokeText(name,actor.x,box.nameY);ctx.fillStyle='#effcf5';ctx.fillText(name,actor.x,box.nameY);px(ctx,actor.x-width/2,box.barY,width,7,'#001819');px(ctx,actor.x-width/2+1,box.barY+1,(width-2)*Math.max(0,Math.min(1,hp/Math.max(1,maxHP))),5,color);if(world.target===actor){ctx.strokeStyle='#d9b777';ctx.lineWidth=2;ctx.strokeRect(actor.x-width/2-3,box.barY-3,width+6,13);}ctx.restore();
   }
   function drawCombatVfx(){
-    for(const p of session.combatProjectiles||[])if(!MareClassWeaponVfx.projectile(ctx,p))MareCombatVfx.drawProjectile(ctx,p,{origin:combatBeamOrigin(p)});
+    for(const p of session.combatProjectiles||[])if(!MareClassWeaponVfx.projectile(ctx,p,{origin:combatBeamOrigin(p)}))MareCombatVfx.drawProjectile(ctx,p,{origin:combatBeamOrigin(p)});
     for(const f of session.combatHits||[]){const point=f.actor?combatChest(f.actor):f,elapsed=Math.min((world.time-f.started)*1000*(f.rate||1),MareCombatVfx.data.effects[f.kind].frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0)-.001),options={width:f.kind==='explosion'?96:f.kind==='heal'?Math.min(120,combatActorHeight(f.actor)+16):64,start:f.start||0};if(!MareClassWeaponVfx.hit(ctx,f.weaponStyle,f.kind,point.x,point.y,elapsed,options))MareCombatVfx.draw(ctx,f.kind,point.x,point.y,elapsed,options);}
     if(game.hp>0&&session.respawn<=0)MareCombatVfx.drawStatuses(ctx,combatHudBox(world.hero,60,game.name),combatStatus(world.hero),world.time);
     for(const actor of livingMobs())MareCombatVfx.drawStatuses(ctx,combatHudBox(actor,actor.type==='boss'?88:65,monsterName(actor)+' · Nv.'+actor.level),combatStatus(actor),world.time);
@@ -2158,8 +2158,10 @@ ${avatarExtra}
   }
   function inventoryHeading(title){return '<h3 class="hd-panel-heading">'+inventoryIcon('anchor')+'<span>'+escapeHTML(title)+'</span></h3>';}
   function inventoryItemStatRows(item){
-    const a=itemStats(item),intrinsic=itemBase(item).attributes?Object.entries(a.attributes).filter(([,value])=>value>0).map(([key,value])=>({key,name:MareForge.names[key],icon:key==='vitality'?'heart':'attack',value})):[],rows=MareUI.inventoryNumericRows([{key:'attack',name:'Ataque',icon:'attack',value:a.attack},{key:'defense',name:'Defesa',icon:'shield',value:a.defense},{key:'hp',name:'Vida',icon:'heart',value:a.hp},{key:'power',name:'Poder',icon:'power',value:itemPower(item)},...intrinsic]);
-    return rows.length?'<div class="op-item-stats" role="list">'+rows.map(r=>'<div class="op-stat-row" role="listitem" data-item-stat="'+r.key+'">'+inventoryIcon(r.icon)+'<span>'+r.name+'</span><b>'+ (Number.isFinite(r.value)?fmt(r.value):'<span title="Informação indisponível">—</span>')+'</b></div>').join('')+'</div>':'';
+    const a=itemStats(item),intrinsic=itemBase(item).attributes?Object.entries(a.attributes).filter(([,value])=>value>0).map(([key,value])=>({key,name:MareForge.names[key],icon:key==='vitality'?'heart':'attack',value})):[];
+    if(itemBase(item).attributes&&a.crit>0)intrinsic.push({key:'crit',name:'Chance crítica',icon:'attack',value:a.crit*100,percent:true});
+    const rows=MareUI.inventoryNumericRows([{key:'attack',name:'Ataque',icon:'attack',value:a.attack},{key:'defense',name:'Defesa',icon:'shield',value:a.defense},{key:'hp',name:'Vida',icon:'heart',value:a.hp},{key:'power',name:'Poder',icon:'power',value:itemPower(item)},...intrinsic]);
+    return rows.length?'<div class="op-item-stats" role="list">'+rows.map(r=>'<div class="op-stat-row" role="listitem" data-item-stat="'+r.key+'">'+inventoryIcon(r.icon)+'<span>'+r.name+'</span><b>'+ (Number.isFinite(r.value)?r.percent?r.value.toLocaleString('pt-BR',{maximumFractionDigits:2})+'%':fmt(r.value):'<span title="Informação indisponível">—</span>')+'</b></div>').join('')+'</div>':'';
   }
   function inventoryComparisonData(item){
     if(!item||!MareForge.isGear(item,itemDefs))return null;

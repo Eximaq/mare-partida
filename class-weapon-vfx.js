@@ -7,7 +7,12 @@
   'dragon-impact':{color:'#ec6059',shape:'crescent'},
   'seismic-impact':{color:'#82d8e3',shape:'rings'},
   'rupture-impact':{color:'#ff4d62',shape:'fissures'},
-  'wind-shot':{color:'#bbf0ff',shape:'wind'}
+  'wind-shot':{color:'#bbf0ff',shape:'wind'},
+  'corsair-shot':{color:'#ffd184',shape:'tracer'},
+  'horizon-shot':{color:'#95d8ff',shape:'tracer'},
+  'celestial-shot':{color:'#fff1bb',shape:'tracer'},
+  'iron-impact':{color:'#b8becb',shape:'shards'},
+  'pacifista-shot':{color:'#8cf7ff',shape:'beam'}
  });
  const cache=new Map();
  const style=definition=>Object.hasOwn(themes,definition?.weaponVisual)?definition.weaponVisual:null;
@@ -33,11 +38,20 @@
   }
   ctx.restore();return true;
  }
- function projectile(ctx,p){
-  if(p.weaponStyle!=='wind-shot'||p.kind!=='gunner')return false;
+ function projectile(ctx,p,options={}){
+  const theme=themes[p.weaponStyle],beam=p.kind==='cyborg'&&['iron-impact','pacifista-shot'].includes(p.weaponStyle),bullet=p.kind==='gunner'&&['wind-shot','corsair-shot','horizon-shot','celestial-shot'].includes(p.weaponStyle);
+  if(!theme||!beam&&!bullet)return false;
   if(p.phase==='impact')return hit(ctx,p.weaponStyle,p.kind,p.x,p.y,p.elapsed,{start:root.MareCombatVfx.impactStart(p.kind),width:64});
   if(p.phase==='done')return true;
+  if(beam){
+   const origin=options.origin||p.origin;ctx.save();ctx.lineCap='round';
+   for(const [width,color,alpha]of [[8,theme.color,.3],[4,theme.color,.8],[1.5,'#f3fdff',1]]){ctx.strokeStyle=color;ctx.lineWidth=width;ctx.globalAlpha=alpha;ctx.beginPath();ctx.moveTo(origin.x,origin.y);ctx.lineTo(p.x,p.y);ctx.stroke();}
+   ctx.restore();return true;
+  }
   ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.angle);ctx.lineCap='round';ctx.lineWidth=2;
+  if(p.weaponStyle!=='wind-shot'){
+   ctx.strokeStyle=theme.color;ctx.beginPath();ctx.moveTo(-24,0);ctx.lineTo(8,0);ctx.stroke();ctx.fillStyle=p.weaponStyle==='celestial-shot'?'#fffbe6':'#f2fcff';ctx.fillRect(4,-1,7,2);ctx.restore();return true;
+  }
   // Three moving air filaments reuse the projectile's existing position/clock.
   for(let i=0;i<3;i++){
    const phase=p.age*18+i*2,y=(i-1)*5;ctx.globalAlpha=.65-i*.12;ctx.strokeStyle=i?'#91dbea':'#edfcff';
