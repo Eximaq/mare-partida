@@ -593,7 +593,5 @@
 @media(max-width:360px){#app .topbar.parchment-profile{width:270px}}
 @media(max-height:500px) and (orientation:landscape){#app .topbar.parchment-profile{width:260px}#app .parchment-profile .character-poster{max-height:calc(100dvh - var(--profile-bottom,200px) - 12px)}}
 
-/* A taller character card must not push expanded hunt routes behind the bottom menu.
-   Mobile journey starts 60px below the profile; reserve another 144px for navigation. */
-@media(max-width:760px) and (min-height:501px){#app:has(.parchment-profile) #journeyHud{max-height:calc(100dvh - var(--profile-bottom,212px) - 204px);overflow-y:auto;overscroll-behavior:contain}}
+/* Gameplay HUD reservations (including expanded routes) live in gameplay-harmony.css. */
 @media(max-width:760px){body.chat-open #app:has(.parchment-profile) #hudUtilities{visibility:hidden}}

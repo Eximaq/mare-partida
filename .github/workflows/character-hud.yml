@@ -8,6 +8,7 @@ on:
       - 'ui-hud.css'
       - 'ui-responsive.css'
       - 'ui-navigator.css'
+      - 'gameplay-harmony.css'
       - 'ui-system.js'
       - 'game.js'
       - 'index.html'

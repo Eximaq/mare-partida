@@ -25,8 +25,7 @@ const read=f=>fs.readFileSync(path.join(__dirname,'..',f),'utf8');
 for(const f of ['game.js','creation-selection.js'])new vm.Script(read(f));
 assert(read('game.js').includes('MareCharacterStudio.appearance({value:creationAppearanceDraft'));
 assert(read('gameplay-harmony.css').includes('var(--rpg-workshop-surface)'));
-for(const property of ['width','height','padding','margin','inset','top','bottom','left','right','display','font-size','font-family']){
- const lines=read('gameplay-harmony.css').split('\n').filter(l=>!l.includes('::after'));
- assert(!lines.some(l=>new RegExp('(?:[;{])\\s*'+property+'\\s*:').test(l)),'gameplay finish must not alter '+property);
-}
-console.log('Creation HD: seven canonical classes, 42 existing specials, real birth attributes, escaped presentation and geometric style scope passed');
+// The November HUD audit explicitly changes layout and typography. Usable bounds,
+// touch targets and collisions are exercised by hud_reference_browser.py; the old
+// prohibition on geometry belonged to the earlier materials-only request.
+console.log('Creation HD: seven canonical classes, 42 existing specials, real birth attributes and escaped presentation passed');

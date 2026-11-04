@@ -1,3 +1,7 @@
+## 04/11/2026 — Auditoria e composição da HUD de gameplay
+
+Perfil, navegação, localização, chat, hotbar, contratos e exploração compartilham superfície marinha e moldura PNG dourada por 9-slice. Texto e alvos maiores, layout por espaço disponível e correção da rota sob o menu em 320×568. Assets existentes reutilizados, sem geração ou alteração de lógica, saves e servidor. [Auditoria A–G, medidas, decisões artísticas, testes e limites](HUD-REFERENCE-AUDIT.md). Branch `feature/hud-reference-audit`, base `25cd9d05`; entrega por PR, sem merge automático.
+
 ## 03/11/2026 — Ilha dos Anjos, Satori e ambiente
 
 Skypiea 75–80 integrada com o mapa existente, Satori normal Nv.77 e Walking/Attack nas quatro direções. Nuvens decorativas móveis, transponíveis e à frente; buracos sob elas preenchidos com upperTerrain nativo. Pool leve de vento azul e poeira dourada em Alabasta. Paisagem da HUD gerada no ChatGPT. 14 testes Node, Chrome e build estático aprovados. [Fontes, arquivos, validação e limites](SKYPIEA.md).

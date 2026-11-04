@@ -13,6 +13,7 @@ for name,version in links:
  digest=hashlib.sha256((ROOT/'dist'/name).read_bytes())
  if name=='sprite-combat-v2.js':
   digest.update((ROOT/'dist/sprite-combat-v2-data.js').read_bytes())
+  digest.update((ROOT/'dist/dungeon-boss-art-data.js').read_bytes())
   for image in sorted((ROOT/'dist/assets/sprites-combat-v2').rglob('*.png')):
    digest.update(image.relative_to(ROOT/'dist').as_posix().encode()+b'\0'+image.read_bytes())
  assert version==digest.hexdigest()[:16],name
@@ -35,8 +36,8 @@ try:
   errors=[];c=b.new_context(viewport=dict(width=393,height=852),is_mobile=True,has_touch=True,device_scale_factor=2)
   c.add_init_script('if(!sessionStorage.seeded){localStorage.setItem('+json.dumps(KEY)+','+json.dumps(json.dumps(template))+');sessionStorage.seeded="1"}')
   q=c.new_page();q.on('pageerror',lambda e:errors.append(str(e)));q.goto(f'http://127.0.0.1:{server.server_port}/?v=ruinas64');q.wait_for_load_state('networkidle');q.evaluate('MareEmberRenderer.boot')
-  before=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.wait_for_timeout(300)
-  d=q.evaluate('__mareDiagnostics()');assert d['map']==dict(id='dawn',width=3584,height=2560);assert all(m['skin'] for m in d['mobs']);assert q.evaluate('MareEmberRenderer.stats().monsters')==len(json.loads((ROOT/'assets/ruinas-brasas/manifest.json').read_text(encoding='utf-8'))['monsters'])
+  before=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area]').click();q.wait_for_function('__mareDiagnostics().map.id==="dawn"')
+  d=q.evaluate('__mareDiagnostics()');assert {k:d['map'][k] for k in ['id','width','height']}==dict(id='dawn',width=3584,height=2560);assert all(m['skin'] for m in d['mobs']);assert q.evaluate('MareEmberRenderer.stats().monsters')==len(json.loads((ROOT/'assets/ruinas-brasas/manifest.json').read_text(encoding='utf-8'))['monsters'])
   q.screenshot(path=str(out/'mobile-new-map.png'));q.reload();q.wait_for_load_state('networkidle')
   after=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
   for key in ['name','classId','factionId','inventory','equipment']:assert before[key]==after[key],key
