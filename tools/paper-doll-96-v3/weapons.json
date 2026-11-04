@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": "weapons96-hd-2672f34f5015",
+  "revision": "weapons96-hd-833c52f92c25",
   "referenceHeight": 96,
   "reviewOnly": true,
   "source": "Owner artwork and current inventory icons; inventory files preserved",
@@ -2927,6 +2927,33 @@
             "processing": "Front or rear view of the regenerated straight compact Serafim; source pixels preserved"
           }
         }
+      },
+      "armour": {
+        "source": "assets/weapon-item-120-armour.png",
+        "sha256": "31d54d725254ea9869f7265ce08a10b9961e50488c9ab071de779ecb160c3235",
+        "shoulder": {
+          "x": 22,
+          "y": 64
+        },
+        "elbow": {
+          "x": 62,
+          "y": 64
+        },
+        "wrist": {
+          "x": 102,
+          "y": 64
+        },
+        "coverage": "full-arm",
+        "generation": {
+          "tool": "pixellab",
+          "model": "pro",
+          "jobId": "f1de0e49-c545-47d9-9df1-c8fd8f904c17",
+          "assetId": "72ee55c6-d634-517c-832d-35ea87b4286f",
+          "candidate": 2,
+          "processing": "Full connected shoulder-elbow-wrist sleeve, source pixels retained; rig and anatomy masks fit both bodies"
+        },
+        "sleevePadding": 1,
+        "crossScale": 3.5
       }
     },
     {

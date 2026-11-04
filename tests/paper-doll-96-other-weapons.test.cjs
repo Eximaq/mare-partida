@@ -25,7 +25,7 @@ for(const body of ['masculino','feminino'])for(const item of items)for(const act
   const points=Object.fromEntries((carry||rigs.clips[body][action][direction].poses[f]).map(j=>[j.label,j]));
   for(const entry of plan){
    const wrist=points[entry.side+' ARM'],socket=carry?{x:Math.round(wrist.x*128+(size-128)/2),y:Math.round(wrist.y*128+(size-128)/2)}:W.contact(wrist,null,size,size,(size-128)/2,points[entry.side+' ELBOW']);assert.equal(entry.x,socket.x);assert.equal(entry.y,socket.y);assert(Number.isFinite(entry.angle));
-   assert.equal(entry.depth,!entry.frontOfHand&&(direction==='north'||direction==='east'&&entry.side==='LEFT')?'back':'front');
+   assert.equal(entry.depth,points[entry.side+' ARM'].z_index<points.NECK.z_index?'back':'front');
    const atGrip=renderer.point(entry,entry.model.grip);assert.equal(atGrip.x,entry.x);assert.equal(atGrip.y,entry.y);const tip=renderer.point(entry);assert(Number.isFinite(tip.x)&&Number.isFinite(tip.y));
    if(item.views?.[direction]){assert.equal(entry.model.source,item.views[southCarry?'southCarry':direction].source);viewCases++;}
    if(['focus','book'].includes(item.attachment.kind)){assert(Math.abs(entry.angle)<=.3);assert.equal(entry.side,body==='masculino'&&direction!=='north'?'LEFT':'RIGHT','follow authored casting hand');}if(item.attachment.kind==='staff'){assert(Math.abs(entry.angle)<=.5);assert.equal(entry.side,direction==='south'&&body==='masculino'?'RIGHT':'LEFT','free frontal hand or far profile hand keeps the face clear');}

@@ -1,13 +1,14 @@
 /* Shared cosmetic policy. Never owns equipment, combat stats or storage. */
 (function(root){
   'use strict';
-  const policies=Object.freeze({18:Object.freeze({hairOcclusion:'none'}),19:Object.freeze({hairOcclusion:'all'})});
+  const policies=Object.freeze({18:Object.freeze({hairOcclusion:'all'}),19:Object.freeze({hairOcclusion:'all'})});
   const hidden=player=>player?.preferences?.hideHeadgear===true;
   function resolve(item,{hidden=false,model=null}={}){
     const id=typeof item==='object'?item?.def:item,equipped=id!==null&&id!==undefined&&id!=='original'&&id!=='none';
     const visible=equipped&&!hidden;
-    const policy=model?.hairOcclusion??(typeof model?.hideHair==='boolean'?(model.hideHair?'all':'none'):policies[id]?.hairOcclusion??'none');
-    const hairOcclusion=visible&&['none','all','crown'].includes(policy)?policy:'none';
+    // A visible head item always owns the whole hair slot. Hiding it only
+    // changes composition; the selected hairstyle and colours are untouched.
+    const hairOcclusion=visible?'all':'none';
     return {equipped,visible,hidden:hidden===true,hairOcclusion,hideHair:hairOcclusion==='all'};
   }
   function withPreference(player,value){

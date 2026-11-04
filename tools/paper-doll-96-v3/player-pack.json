@@ -3,11 +3,11 @@
   "productionEnabled": true,
   "ownerApprovedOn": "2026-10-30",
   "manifestRevision": "structural-occlusion-v10-2",
-  "weaponRevision": "weapons96-hd-2672f34f5015",
+  "weaponRevision": "weapons96-hd-833c52f92c25",
   "source": "Existing native96 materials and authored animations; owner authorised default use in Sprint2.",
   "headgearPolicy": "../../headgear-visibility.js",
   "renderer": "native96",
-  "assetRevision": "native96-140e85ce1f8e0a7f",
+  "assetRevision": "native96-f692433adaabe921",
   "resources": {
     "assets/appearance3-face-almond-feminino-east.png": [
       128,
@@ -3954,6 +3954,10 @@
       128
     ],
     "assets/weapon-item-12.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-120-armour.png": [
       128,
       128
     ],

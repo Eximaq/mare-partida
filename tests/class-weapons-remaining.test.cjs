@@ -24,7 +24,7 @@ test('South and side focus attacks prioritize every weapon over hands and gloves
  for(const m of catalog.items)for(const body of ['masculino','feminino'])for(const action of ['idle','walk',m.attackAction||'attack-'+m.category])for(const direction of ['south','north','east']){
   const clip=manifest.bodies[body].clips[action][direction],size=clip.frame?.width||128;
   for(let f=0;f<clip.frames;f++)for(const e of renderer.plan({body,action,direction,clip},f,{width:size,height:size},{weapon:m.id})){
-   const front=direction==='south'||action==='attack-focus'&&direction==='east';assert.equal(e.frontOfHand,front);if(front)assert.equal(e.depth,'front');assert(Number.isFinite(renderer.point(e).x));assert.deepEqual(renderer.point(e,e.model.grip),{x:e.x,y:e.y});frames++;
+   const front=direction==='south'||action==='attack-focus'&&direction==='east';assert.equal(e.frontOfHand,front);const pose=Object.fromEntries((renderer.armPose({body,action,direction,clip},f,{weapon:m.id})||renderer.carryPose({body,action,direction,clip},f,{weapon:m.id})||rigs.clips[body][action][direction].poses[f]).map(j=>[j.label,j]));assert.equal(e.depth,pose[e.side+' ARM'].z_index<pose.NECK.z_index?'back':'front');assert(Number.isFinite(renderer.point(e).x));assert.deepEqual(renderer.point(e,e.model.grip),{x:e.x,y:e.y});frames++;
   }
  }assert(frames>5000);
 });

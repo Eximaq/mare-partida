@@ -293,7 +293,8 @@
         }else ctx.drawImage(image,fi*spec.width,0,spec.width,spec.height,slot==='hair'?(calibration.hairX||0):0,slot==='hair'?(calibration.hairY||0):0,spec.width,spec.height);
       };
       const arms=['LEFT','RIGHT'].sort((a,b)=>(pose.find(j=>j.label===a+' ARM').z_index||0)-(pose.find(j=>j.label===b+' ARM').z_index||0));
-      const behind=selected.direction==='north'?arms:selected.direction==='south'?[]:arms.slice(0,1);
+      const depthPose=Object.fromEntries((carryPose||pose).map(j=>[j.label,j]));
+      const behind=arms.filter(side=>MareWeapons96.composition.depth({pose:depthPose,side,direction:selected.direction,action:selected.action,frame:fi})==='back');
       const headPixels=pieces.headBase?.full.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
       const inFront=arms.filter(side=>!behind.includes(side));
       for(const gloveSlot of ['hands','gloves'])if(pieces[gloveSlot]&&behind.length){
@@ -325,25 +326,21 @@
       const weaponPlan=weapons?.plan(selected,fi,spec,look,ownership)||[];
       const gripSkin=(api.skins[look.skin]||api.skins.light).ramp;
       const gripStyle=descriptor('gloves',look.gloves),gripGlove=gripStyle?.nativeMaterial?{coverage:gripStyle.fingerCoverage,ramp:gripStyle.nativeMaterial.ramp.map(c=>'#'+c.map(v=>v.toString(16).padStart(2,'0')).join(''))}:null;
-      weapons?.draw(ctx,images,weaponPlan,'back');
       weapons?.drawGrips(ctx,weaponPlan,'back',gripSkin,gripGlove);
       if(selected.direction!=='north')full('cloak');
       ctx.drawImage(originalFrame,0,0);
       if(pieces.hands)for(const side of behind)ctx.drawImage(pieces.hands[side],0,0);
       for(const side of behind)if(foreground[side])ctx.drawImage(foreground[side],0,0);
       if(pieces.gloves)for(const side of behind)ctx.drawImage(pieces.gloves[side],0,0);
-      original('pants');full('pants');
-      if(pieces.boots)for(const side of ['LEFT','RIGHT'].sort((a,b)=>(pose.find(j=>j.label===a+' LEG').z_index||0)-(pose.find(j=>j.label===b+' LEG').z_index||0)))ctx.drawImage(pieces.boots[side],0,0);
-      original('top');full('torso');
-      if(selected.direction==='north')full('cloak');
-      else if(pieces.cloak){
-        const neck=pose.find(j=>j.label==='NECK').y*128+padding;
-        ctx.save();ctx.beginPath();ctx.rect(0,0,spec.width,Math.round(neck+3));ctx.clip();full('cloak');ctx.restore();
-      }
-      original('headBase');full('headBase');
-      original('face');full('face');
-      if(!hideHair){hairPass(()=>original('hair'));full('hair');}full('head');
-      weapons?.draw(ctx,images,weaponPlan.filter(e=>!e.frontOfHand),'front');
+      MareWeapons96.composition.paint([
+        {slot:'headBase',draw(){original('headBase');full('headBase');}},
+        {slot:'face',draw(){original('face');full('face');}},
+        {slot:'hair',draw(){if(!hideHair){hairPass(()=>original('hair'));full('hair');}}},
+        {slot:'pants',draw(){original('pants');full('pants');}},
+        {slot:'torso',draw(){original('top');full('torso');}},
+        {slot:'cloakFront',draw(){if(selected.direction==='north')full('cloak');else if(pieces.cloak){const neck=pose.find(j=>j.label==='NECK').y*128+padding;ctx.save();ctx.beginPath();ctx.rect(0,0,spec.width,Math.round(neck+3));ctx.clip();full('cloak');ctx.restore();}}},
+        {slot:'boots',draw(){if(pieces.boots)for(const side of ['LEFT','RIGHT'].sort((a,b)=>(pose.find(j=>j.label===a+' LEG').z_index||0)-(pose.find(j=>j.label===b+' LEG').z_index||0)))ctx.drawImage(pieces.boots[side],0,0);}}
+      ]);
       if(!carryPose&&pieces.hands)for(const side of inFront)ctx.drawImage(pieces.hands[side],0,0);
       if(!carryPose)for(const side of inFront)if(foreground[side])ctx.drawImage(foreground[side],0,0);
       // Bare native palms/forearms are independent of every garment. Restore
@@ -382,11 +379,11 @@
       if(!carryPose&&pieces.gloves)for(const side of inFront)visibleArm(pieces.gloves[side]);
       if(carryArms)visibleArm(carryArms);
       if(!carryPose)weapons?.drawGrips(ctx,weaponPlan,'front',gripSkin,gripGlove);
-      // The weapon wins over palm, glove and fingers in South and in side
-      // focus attacks. Keep this shared rule independent of the item ID.
-      weapons?.draw(ctx,images,weaponPlan.filter(e=>e.frontOfHand),'front');
+      // The helmet is the last garment; resolved weapons use anatomical
+      // depth masks after every garment and native hand has been composed.
+      full('head');
       let wornBody=neutralPixels,wornHands=ownership.hands;
-      if(weaponPlan.some(e=>e.depth==='back'&&['gauntlet','wrist-cannon'].includes(e.model.attachment?.kind))){
+      if(weaponPlan.some(e=>e.depth==='back')){
         // Use the actual dressed silhouette, including hair/helmet/cloth that
         // extends outside the neutral body. The weapon-free recursion stops here.
         const occluder=canvas(spec.width,spec.height);draw(occluder.getContext('2d'),images,selected,fi,spec,hidden,{...look,weapon:'original'});
@@ -408,7 +405,8 @@
         const pixels=carryArms.getContext('2d').getImageData(0,0,spec.width,spec.height).data;wornHands=new Uint8Array(ownership.hands.length);
         for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){const p=y*spec.width+x,i=p*4;if(pixels[i+3]&&weaponPlan.some(e=>Math.hypot(x-e.x,y-e.y)<=6.3))wornHands[p]=1;}
       }
-      const covered=weaponPlan.filter(e=>e.model.attachment?.coverPalm),armourMask=ownership.arms.slice();
+      const covered=weaponPlan.filter(e=>e.model.attachment?.coverPalm),armourMask=referencePose?new Uint8Array(ownership.arms.length):ownership.arms.slice();
+      if(referencePose&&carryArms){const pixels=carryArms.getContext('2d').getImageData(0,0,spec.width,spec.height).data;for(let p=0;p<armourMask.length;p++)if(pixels[p*4+3])armourMask[p]=1;}
       if(covered.length){
         // Some old far palms live in the body strip, outside the hand atlas.
         // Recover their exact visible pixels near the measured wrist, including
@@ -427,8 +425,25 @@
           }
         }
       }
+      for(const entry of weaponPlan.filter(e=>e.model.armour?.coverage==='full-arm')){
+        // An authored full sleeve also owns the short garment sleeve around
+        // this shoulder. Use the occupied silhouette and articulated limb,
+        // never a rectangle or a skin-colour key.
+        const points=Object.fromEntries((carryPose||pose).map(j=>[j.label,{x:j.x*128+padding,y:j.y*128+padding}])),side=entry.side,other=side==='LEFT'?'RIGHT':'LEFT',a=points[side+' SHOULDER'],b=points[side+' ELBOW'],c=points[side+' ARM'],actual=ctx.getImageData(0,0,ctx.canvas.width,ctx.canvas.height),t=ctx.getTransform();
+        for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){
+          const p=y*spec.width+x,i=p*4,own=Math.min(MareMotion96.distanceToSegment({x,y},a,b),MareMotion96.distanceToSegment({x,y},b,c)),far=Math.min(MareMotion96.distanceToSegment({x,y},points[other+' SHOULDER'],points[other+' ELBOW']),MareMotion96.distanceToSegment({x,y},points[other+' ELBOW'],points[other+' ARM']));
+          if(own>4.6||far<own||y<a.y-1||headPixels?.[i+3]&&y<pose.find(j=>j.label==='NECK').y*128+padding+3)continue;
+          const xx=Math.floor((x+.5)*t.a+t.e),yy=Math.floor((y+.5)*t.d+t.f),o=(yy*actual.width+xx)*4;
+          // Garment seams can introduce occupied limb pixels outside the
+          // neutral atlas. This sleeve owns that articulated silhouette too.
+          if(actual.data[o+3])armourMask[p]=1;
+        }
+      }
       const occlusion={body:wornBody,hands:wornHands,arms:armourMask,head:headPixels,headLine:pose.find(j=>j.label==='NECK').y*128+padding+3,cloak:selected.direction==='north'?pieces.cloak?.full:null};
-      weapons?.drawArmour(ctx,images,weaponPlan,spec,pose,occlusion);
+      occlusion.visibleHand=(entry,x,y)=>{const p=y*spec.width+x;if(!wornHands[p])return false;const own=(carryPose||pose).find(j=>j.label===entry.side+' ARM'),other=(carryPose||pose).find(j=>j.label===(entry.side==='LEFT'?'RIGHT':'LEFT')+' ARM');return Math.hypot(x-own.x*128-padding,y-own.y*128-padding)<=Math.hypot(x-other.x*128-padding,y-other.y*128-padding);};
+      weapons?.drawArmour(ctx,images,weaponPlan,spec,carryPose||pose,occlusion);
+      weapons?.drawResolved(ctx,images,weaponPlan,spec,occlusion);
+      weapons?.drawFingers(ctx,weaponPlan,spec,occlusion,gripSkin,gripGlove);
       weapons?.drawWorn(ctx,images,weaponPlan,spec,occlusion);
       return weaponPlan.map(entry=>({side:entry.side,point:weapons.point(entry),itemId:entry.model.itemId}));
     }

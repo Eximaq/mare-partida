@@ -176,3 +176,82 @@ nas regiões verificadas. PostgreSQL/multiplayer real não executados.
 
 Após este ponto o proprietário solicitou consolidar a política dinâmica de
 camadas e cobrir o braço inteiro do Serafim; esse é o incremento seguinte.
+
+## Camadas dinâmicas e braço completo do Serafim — 04/11/2026
+
+A correção posterior do proprietário substitui a prioridade absoluta 100 da
+arma. `MareWeapons96.composition` centraliza a ordem dos trajes: pele 10,
+rosto/olhos 20, cabelo 30, calças 40, torso 50, capa frontal 55, cinto 60,
+botas 70, luvas 80 e cabeça 90. A capa traseira precede o corpo. Cintos sem
+sprite continuam sem uma camada artificial. A ordem independe do carregamento.
+
+A profundidade da arma é resolvida pela mão e pelo frame: usa o z anatômico
+da pose e permite uma `depthTrack[action][direction][side]` explícita para
+transições que novos materiais exijam. A máscara traseira vem da silhueta
+real já vestida, incluindo cabeça, roupa e capa; a mão empunhadora é distinguida
+da outra mão. A arma dianteira prevalece sobre roupas. Os dedos fechados podem
+ocluir o cabo quando não houver exceção explícita. Não há prioridade universal
+da arma sobre o corpo, nem mudança na profundidade do cenário.
+
+Exceções preservadas: em South e Attack-Focus lateral a arma prevalece sobre
+a mão/luva, sem promover uma mão traseira acima do torso. O fuzil South parado
+e andando mantém o porte aprovado, com cano à esquerda, coronha à direita e
+os mesmos pontos relativos das duas mãos. Isso substitui a antiga exceção da
+mão sobre o gatilho descrita no histórico do lote 2; a postura não mudou.
+Oeste continua usando o espelho da composição Leste completa já adotado pelos
+assets nativos; nenhuma arma isolada troca de mão no compositor.
+
+Todos os itens visíveis de cabeça, inclusive chapéus, suprimem o cabelo inteiro.
+Ocultar ou retirar a cabeça restaura penteado e cor sem alterar equipamento,
+atributos ou personalização persistida. Os atalhos de conjuração e a exclusão
+de camadas humanas nas formas Zoan continuam no adaptador compartilhado.
+As animações humanas existentes são idle, walk e seis famílias de ataque;
+esta fase não inventa clipes Hurt/Cast ausentes.
+
+Serafim 120: nova manga metálica articulada PixelLab Pro, job
+`f1de0e49-c545-47d9-9df1-c8fd8f904c17`, galeria
+`72ee55c6-d634-517c-832d-35ea87b4286f`, candidato 2. A cobertura segue
+ombro, cotovelo e punho no braço equipado de ambos os corpos, incluindo
+as junções da manga fora do atlas neutro. Mantém as vistas próprias do canhão
+e a referência feminina de braços para o masculino North/South. Fontes de
+roupa e corpo são preservadas; recortes e sobreposições ocorrem em memória.
+Na revisão seguinte, a manga ganhou um pixel lógico de espessura e uma faixa
+mais larga da textura branca/dourada, preenchendo as laterais escuras. A
+expansão segue a máscara do braço, sem engordar o corpo ou a mão livre.
+
+Validação: matriz Chrome de 96 conjuntos (duas bases, oito estados e três
+direções nativas), 10.928 pixels de botas, 8.270 de luvas, 96 ocultações e 96
+restaurações de cabelo passaram. Serafim: 120 frames sem pele exposta na
+região auditada do braço equipado. A composição espelhada Oeste é verificada
+pela suíte de encaixe. Matriz de armas: 1.332 composições / 4.547.934 pixels,
+72 materiais, sem falhas nas regiões auditadas. Seis combates estáticos
+(120/124/128 × dois corpos) passaram com emissão, impacto e recuperação
+nativos; retorno desarmado sem erros JavaScript.
+
+Capturas reais do compositor: sete famílias com conjunto completo nas quatro
+direções; sequência de oito frames do Serafim e do fuzil South; comparação
+antes/depois com o commit anterior. Evidências ficam fora do Git. Não são
+imagens geradas por IA como prova. O build Pages inclui 1.026 recursos nativos.
+PostgreSQL/multiplayer real e medição prolongada de FPS não foram executados.
+
+Novas roupas reutilizam a mesma política e máscaras; precisam respeitar o
+contrato de alfa, regiões anatômicas, pivôs e animações nativas. Uma arte nova
+com anatomia ou âncoras incorretas ainda exige validação, não uma nova variante
+para cada combinação de roupas. Não há promessa de aprovação automática de
+assets futuros que ainda não existem. Para desfazer esta fase, reverter seu
+commit sem reverter os materiais/projéteis do checkpoint anterior.
+
+Encerramento: 39 testes Node pertinentes e 2 do catálogo compartilhado passaram.
+A última revisão preservou os 960 frames auditados de encaixe, 40 espelhos e
+144 frames do porte South, sem falhas. A manga expandida do Serafim acrescentou
+1.086 subpixels opacos nas quatro amostras North/South dos dois corpos.
+Após o build final, os demais nove itens dos lotes 3/4 passaram em 18 combates
+estáticos (dois corpos), com emissão, impacto, recuperação e retorno desarmado,
+sem erros JavaScript. Main permaneceu em 25cd9d05; o novo PR 237 de HUD não
+altera arquivos desta entrega. Não foi integrado preventivamente um PR aberto.
+
+Decisão do proprietário ao finalizar: suspender os ajustes do Protocolo Serafim
+por enquanto. O estado atual e suas fontes ficam preservados para retomada;
+não há aprovação artística final desse item. Os demais armamentos, projéteis
+e a política compartilhada de composição seguem nesta entrega. Nenhuma
+compensação, exclusão de item de save ou mudança de aquisição foi solicitada.
