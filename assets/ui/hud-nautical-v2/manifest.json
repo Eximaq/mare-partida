@@ -1,0 +1,38 @@
+{
+  "generator": "OpenAI built-in image_gen",
+  "generated": "2026-11-04",
+  "calls": 3,
+  "purpose": "Original HUD decorations; supplied screenshot guided composition only. No screenshot pixels were copied.",
+  "transparency": true,
+  "processing": "Original generated PNG files copied unchanged. CSS nine-slice or background positioning only.",
+  "billing": "No API key or PixelLab credits used by this workflow; monetary cost not reported by tool.",
+  "assets": [
+    {
+      "file": "rope-frame.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 998662,
+      "sha256": "140896aba56275346fbda6f34d500d1897d099003aead483d41f8db6abad6b67",
+      "generationBrief": "Standalone square transparent nine-slice frame. Golden twisted hemp rope perimeter, small brass corner bindings, thin brass inner rails, midnight navy enamel only within frame material. Empty alpha center and outside. Premium hand-painted modern pirate RPG, straight consistent edges, readable at 20px final border width. No wood, text, icons or backdrop."
+    },
+    {
+      "file": "rail-frame.png",
+      "width": 2172,
+      "height": 724,
+      "mode": "RGBA",
+      "bytes": 388410,
+      "sha256": "4c05b4548774ca1da7af1878d24fdd07e0e3d2282cd12ddf86387f97791ccb5b",
+      "generationBrief": "Standalone very wide transparent horizontal UI rail frame. Dark navy enamel surround, warm brass double rim, chamfered ends with small golden hemp rope lashings only on end caps. Long slender straight rails; transparent central opening and outside. Premium illustrated modern pirate adventure RPG. No text, symbols, wood, characters or extra objects."
+    },
+    {
+      "file": "helm-crest.png",
+      "width": 1254,
+      "height": 1254,
+      "mode": "RGBA",
+      "bytes": 1284956,
+      "sha256": "2088fc12719a3bf5b56b40d5f3afecc6a1e22f7a0c7976650f6bcbc75b5a0009",
+      "generationBrief": "Standalone transparent nautical crest: front-facing symmetric antique brass eight-spoke ship wheel, navy hub, small brass anchor hanging below and restrained golden rope loop around lower arc. Crisp illustrated silhouette designed for 64 CSS pixels. Transparent spaces between spokes. No text, flags, skull, characters or background."
+    }
+  ]
+}

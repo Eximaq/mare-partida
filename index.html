@@ -164,35 +164,38 @@
   <link rel="stylesheet" href="boss-dungeons.css">
   <link rel="stylesheet" href="ui-finishing.css">
   <link rel="stylesheet" href="party.css">
+  <link rel="stylesheet" href="hud-nautical.css">
 </head>
 <body>
   <div class="ambient-noise" aria-hidden="true"></div>
-  <div id="app" class="app-shell">
+  <div id="app" class="app-shell hud-nautical">
     <section id="factionInspection" class="faction-inspection hidden" aria-label="Mostruário dos sprites de facção">
       <strong>Mostruário das facções</strong><span>Prévia visual · sem aliados de combate</span>
       <div><button type="button" data-faction-action="idle">Idle</button><button type="button" data-faction-action="walk">Caminhada</button>
       <select id="factionInspectionDirection" aria-label="Direção dos sprites"><option value="south">Frente</option><option value="north">Costas</option><option value="west">Esquerda</option><option value="east">Direita</option></select>
       <button type="button" id="closeFactionPreview" aria-label="Fechar mostruário">×</button></div>
     </section>
-    <header class="topbar parchment-profile" aria-label="Perfil do aventureiro">
+    <header class="topbar nautical-profile" aria-label="Perfil do aventureiro">
       <span id="playerVisualStatus" class="player-visual-status hidden" role="status"></span>
-      <div class="parchment-status">
-        <div class="hud-hierarchy">
-          <img id="hudRankArt" width="480" height="96" alt="" hidden>
-          <span id="hudRankInsignia" aria-hidden="true" hidden></span>
-          <strong id="hudHierarchyTitle"></strong>
-          <span class="hud-rank-order" aria-label="Patamar"><span id="hudHierarchyTier"></span></span>
-        </div>
-        <span id="hudFactionName"></span>
+      <div class="hud-captain">
         <button type="button" id="characterPosterToggle" aria-controls="characterPoster" aria-expanded="false" aria-label="Expandir cartaz do personagem" title="Expandir cartaz do personagem"><img id="hudFactionEmblem" width="912" height="912" alt="" hidden></button>
+        <div class="hud-identity">
+          <strong id="hudHierarchyTitle"></strong>
+          <span id="hudFactionName"></span>
+          <div class="profile-power"><span>Poder</span><strong id="miniPower">0</strong></div>
+        </div>
+        <div class="profile-level"><span>Nv.</span><strong id="miniLevel">1</strong></div>
+      </div>
+      <div class="hud-rank-metadata" hidden aria-hidden="true"><img id="hudRankArt" alt="" hidden><span id="hudRankInsignia" hidden></span><span id="hudHierarchyTier"></span></div>
+      <div class="hud-vitals">
         <div class="parchment-meter parchment-hp" role="meter" aria-label="Vida" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="mini-meter"><i id="miniHP"></i></span><span class="parchment-meter-label">HP</span><b id="miniHPText">100 / 100</b></div>
         <div class="parchment-meter parchment-energy" role="meter" aria-label="Energia" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="mini-meter"><i id="miniEnergy"></i></span><span class="parchment-meter-label">EN</span><b id="miniEnergyText">70 / 70</b></div>
         <div class="parchment-meter parchment-xp" role="meter" aria-label="Experiência" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="mini-meter"><i id="miniXP"></i></span><span class="parchment-meter-label">XP</span><b id="miniXPText">0 / 80</b></div>
-        <div class="profile-level"><span>Nível</span><strong id="miniLevel">1</strong></div>
-        <div class="profile-power"><span>Poder</span><strong id="miniPower">0</strong></div>
-        <div class="profile-berry"><span class="berry-coin" aria-hidden="true"></span><span>Berry</span><strong id="miniGold" title="Berry">0</strong></div>
       </div>
+      <div class="hud-resources">
+        <div class="profile-berry"><span class="berry-coin" aria-hidden="true"></span><span>Berry</span><strong id="miniGold" title="Berry">0</strong></div>
       <div id="miniWillpower" class="profile-resource haki-will hidden" role="meter" aria-label="Força de Vontade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span>Vontade</span><span class="mini-meter"><i id="willpowerFill"></i></span><b id="willpowerText">100 / 100</b></div>
+      </div>
       <div id="miniTalentResource" class="profile-resource talent-resource hidden"><span id="miniTalentLabel">Vigor</span><span class="mini-meter"><i id="miniTalentFill"></i></span><b id="miniTalentText"></b></div>
       <div id="hakiQuickCast" class="haki-quick hidden" role="group" aria-label="Atalhos de Haki">
         <button type="button" data-haki-toggle="armament" aria-label="Haki do Armamento (H)" aria-keyshortcuts="H" aria-pressed="false"><img class="haki-icon" src="assets/haki/mastery/armament.png" width="32" height="32" alt=""><kbd>H</kbd><span class="haki-quick-state" aria-hidden="true"></span></button>
@@ -200,7 +203,7 @@
         <button type="button" id="hakiKing" aria-label="Haki do Rei (K)" aria-keyshortcuts="K"><img class="haki-icon" src="assets/haki/mastery/conqueror.png" width="32" height="32" alt=""><kbd>K</kbd><span class="haki-cooldown-sweep" aria-hidden="true"></span><span class="haki-quick-state" aria-hidden="true"></span></button>
         <span id="hakiQuickStatus" class="haki-quick-caption">Haki pronto</span>
       </div>
-      <div class="parchment-tools"><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div>
+      <div class="hud-attributes"><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div>
       <section id="characterPoster" class="character-poster" hidden aria-label="Cartaz do personagem">
         <div class="wanted-sheet">
           <img class="wanted-paper" src="assets/ui/character-hud/hd/poster.png" width="448" height="600" alt="Cartaz de procurado em pergaminho" draggable="false">
