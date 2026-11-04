@@ -18,12 +18,13 @@ A política é por **slot**, antes da seleção/carregamento da textura e novame
 
 Arquivos principais: item-catalog.js, item-art.js, appearance-catalog.json, player-pack.json, paper-doll-96-lobby.js, wardrobe.js, torso.js, surface.js e weapons.js. Importação reproduzível: tools/import_equipment56.cjs e tools/equipment56_materials.cjs. Fontes autorais em pixellab-pip-generations/equipment-56; não entram no pacote estático. Importação: node tools/import_equipment56.cjs pixellab-pip-generations/equipment-56 CAMINHO_DO_MODULO_SHARP INDICE_DO_CONJUNTO (0–7). A reimportação dos 1.088 recursos entregues foi conferida por hash, com resultados idênticos. Uma reimportação marca os encaixes como não revisados até repetir a validação. As capturas e os saves de teste também ficam fora da distribuição e do Git.
 
-O catálogo do servidor lê a mesma fonte: 185 definições, hash 86937408e6991af54b9f511e16968cf94efda18f438bfdcf39e43d1a41f2290b. Atualizar cliente e processo do servidor a partir da mesma revisão. Não há alteração de esquema de banco. Não houve sessão multiplayer com PostgreSQL remoto nesta validação.
+O catálogo do servidor lê a mesma fonte: 185 definições, hash 86937408e6991af54b9f511e16968cf94efda18f438bfdcf39e43d1a41f2290b. Atualizar cliente e processo do servidor a partir da mesma revisão. Não há alteração de esquema de banco. Não houve sessão multiplayer com PostgreSQL remoto nesta validação. O smoke do contêiner do servidor passou no CI com o novo tamanho e hash do catálogo.
 
 ## Validação executada
 
 - 19 testes Node de catálogo, arte, composição, lobby, torso, aparência e armas anteriores; 2 testes TypeScript do catálogo autoritativo.
 - Chrome: 3.840 quadros de conjuntos completos, 960 de peças isoladas, 192 de misturas, nas duas bases/quatro direções; idle, caminhada e seis famílias de ataque.
+- Inventário no Chrome: 12 slots, filtros, equipar/retirar, venda/bloqueio, poções, mochila cheia/vazia, paginação, persistência, nove resoluções e quatro facções nos níveis 49/50/51. A amostra mantém frutas explicitamente, sem depender dos últimos itens do catálogo.
 - 64 comparações de ocultar capacete/restaurar cabelo; 144 comparações de pele sob botas fechadas e 192 sob luvas, usando a anatomia do membro: nenhuma fresta detectada.
 - Jogo real em contexto isolado: 32 estados de prévia, 16 estados de mapa e 16 recargas de save; cintos/capas novos e antigos comparados equipados, retirados e em conjunto. Diferença **zero pixels na região do avatar**. Barras de atributos podem variar porque os itens continuam concedendo atributos.
 - Pranchas dos oito conjuntos incluem referências, ícones, masculino/feminino e quatro direções em repouso/caminhada/ataque. GIFs contêm ciclos completos de caminhada e ataque. Evidências fora do repositório.
