@@ -146,6 +146,7 @@
         const file=p.style.layers[selected.body][selected.direction],image=images.get(file);
         const palette=p.slot==='hair'?(look.hairColor&&look.hairColor!=='brown'?api.hairs[look.hairColor]?.ramp:null):null;
         const data=texture(image,file,p.slot==='face'?'face':'hair',palette,p.slot==='face'?(p.style.faceColorProtection?.[selected.body]?.[selected.direction]||catalog.faceColorProtection?.[selected.body]?.[selected.direction]||[]):[],p.style.eyeIris?.[selected.body]?.[selected.direction]||[],p.slot==='face'?look.eyeColor:null).pixels;
+        const headFit=p.slot==='head'?api.headAdjustment(options.allowHeadAdjustment&&look.headAdjustment?look.headAdjustment:catalog.headAdjustments?.[p.style.id]?.[selected.body]?.[selected.direction]):null;
         const box={x0:32,y0:60,x1:96,y1:113};
         const sourceParts=Object.fromEntries(Object.entries(p.style.parts?.[selected.body]?.[selected.direction]||{}).map(([name,file])=>[name,texture(images.get(file),file,p.slot,null).pixels]));
         const atlas=p.style.animations?.[selected.body]?.[selected.action];
@@ -158,7 +159,7 @@
           cx.drawImage(atlasImage,index%atlas.columns*atlas.cell,Math.floor(index/atlas.columns)*atlas.cell,atlas.cell,atlas.cell,0,0,spec.width,spec.height);
           return {full:cx.getImageData(0,0,spec.width,spec.height).data};
         };
-        const attached=fitted([file,selected.key,fi,palette?.join(',')||'',p.slot==='face'?look.eyeColor:'',atlas?.file||'surface'].join(':'),()=>p.slot==='torso'?torsoPiece():p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,handOwnership:ownership.hands,material:p.style.nativeMaterial}):api.attach(data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
+        const attached=fitted([file,selected.key,fi,palette?.join(',')||'',p.slot==='face'?look.eyeColor:'',atlas?.file||'surface',JSON.stringify(headFit)].join(':'),()=>p.slot==='torso'?torsoPiece():p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,handOwnership:ownership.hands,material:p.style.nativeMaterial}):api.attach(headFit?api.adjustHead(data,headFit,rest):data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
         if(p.slot==='boots'){
           coveredFeet=p.style.nativeMaterial?new Uint8ClampedArray(neutralPixels.length):api.bootCoverage(neutralPixels,rest,pose,padding,spec.width,spec.height,sourceParts);
           if(p.style.nativeMaterial)for(let i=3;i<coveredFeet.length;i+=4)if(attached.LEFT[i]||attached.RIGHT[i])coveredFeet[i]=255;

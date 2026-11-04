@@ -129,6 +129,39 @@
       if(nativeY<hairline)out.fill(0,i,i+4);
     }return out;
   }
+  function headAdjustment(value={}) {
+    if(!value||typeof value!=='object'||Array.isArray(value))throw Error('Ajuste de cabeça inválido.');
+    const out={x:value.x??0,y:value.y??0,scale:value.scale??100};
+    if(Object.keys(value).some(k=>!['x','y','scale'].includes(k)))throw Error('Ajuste de cabeça inválido.');
+    for(const [key,min,max]of [['x',-32,32],['y',-32,32],['scale',75,125]])if(!Number.isInteger(out[key])||out[key]<min||out[key]>max)throw Error('Valor de encaixe fora do limite: '+key);
+    return out;
+  }
+  function headAdjustmentSet(value,styles) {
+    if(!value||typeof value!=='object'||Array.isArray(value))throw Error('Arquivo de ajustes inválido.');
+    const allowed=new Set(styles.filter(s=>s.kind==='head').map(s=>s.id)),out={};
+    for(const [id,bodies]of Object.entries(value)){
+      if(!allowed.has(id)||!bodies||typeof bodies!=='object'||Array.isArray(bodies))throw Error('Peça de cabeça desconhecida: '+id);
+      out[id]={};for(const [body,directions]of Object.entries(bodies)){
+        if(!['masculino','feminino'].includes(body)||!directions||typeof directions!=='object'||Array.isArray(directions))throw Error('Corpo inválido.');
+        out[id][body]={};for(const [direction,fit]of Object.entries(directions)){
+          if(!['south','north','east'].includes(direction))throw Error('Direção inválida; Oeste usa o espelho de Leste.');
+          out[id][body][direction]=headAdjustment(fit);
+        }
+      }
+    }
+    return out;
+  }
+  function adjustHead(source,fit,rest) {
+    fit=headAdjustment(fit);if(!fit.x&&!fit.y&&fit.scale===100)return source;
+    const out=new Uint8ClampedArray(source.length),neck=rest.find(j=>j.label==='NECK'),cx=neck.x*128,cy=neck.y*128-20,s=fit.scale/100;
+    // One inverse nearest-neighbour pass around the crown. No holes from
+    // forward splatting and no fractional pixel motion during animation.
+    for(let y=0;y<128;y++)for(let x=0;x<128;x++){
+      const sx=Math.floor(cx+(x+.5-cx-fit.x)/s),sy=Math.floor(cy+(y+.5-cy-fit.y)/s);
+      if(sx>=0&&sy>=0&&sx<128&&sy<128)out.set(source.subarray((sy*128+sx)*4,(sy*128+sx+1)*4),(y*128+x)*4);
+    }
+    return out;
+  }
   function attach(source, slot, rest, pose, socket, padding, width, height, box) {
     if (['boots', 'gloves'].includes(slot)) return pair(source, slot, rest, pose, padding, width, height);
     if (slot === 'pants') return { full: trousers(source, rest, pose, padding, width, height) };
@@ -254,5 +287,5 @@
     }
     return out;
   }
-  return { skins, hairs, recolor, materialMask, isSkin, opaqueMesh, shoulderTransform, clipToHead, clipHairCrown, attach, pair, fitPairToBody, bootCoverage, trousers, fitTrousersToBody, fitTorsoToBody:torso.fit, closeTopCoverage, trouserMesh, catalogItem };
+  return { headAdjustment, headAdjustmentSet, adjustHead, skins, hairs, recolor, materialMask, isSkin, opaqueMesh, shoulderTransform, clipToHead, clipHairCrown, attach, pair, fitPairToBody, bootCoverage, trousers, fitTrousersToBody, fitTorsoToBody:torso.fit, closeTopCoverage, trouserMesh, catalogItem };
 });

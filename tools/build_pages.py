@@ -101,7 +101,7 @@ shutil.copy2(ROOT/'docs/PAPER-DOLL-96-FIT-CONTRACT.md', OUT/'docs/PAPER-DOLL-96-
 review96 = Path('tools/paper-doll-96-v3')
 review96_pack = json.loads((ROOT/review96/'manifest.json').read_text(encoding='utf-8'))
 assert review96_pack['productionEnabled'] is False
-review96_files = {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}
+review96_files = {'index.html', 'preview.css', 'preview.js', 'headgear-editor.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}
 appearance96_pack = json.loads((ROOT/review96/'appearance-catalog.json').read_text(encoding='utf-8'))
 assert appearance96_pack['productionEnabled'] is False
 for animations in appearance96_pack.get('nativeOwnership', {}).get('atlases', {}).values():
@@ -133,7 +133,7 @@ for body in review96_pack['bodies'].values():
             assert clip.get('modular') is True
             review96_files.update(clip['layers'].values())
 for name in sorted(review96_files):
-    if name not in {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}:
+    if name not in {'index.html', 'preview.css', 'preview.js', 'headgear-editor.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}:
         if not re.fullmatch(r'assets/[a-z0-9-]+\.png', name):
             raise ValueError('Unsafe 96px review asset')
     target = OUT/review96/name

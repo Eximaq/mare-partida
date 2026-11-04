@@ -5066,9 +5066,9 @@
       "headRegistration": {
         "masculino": {
           "south": {
-            "version": "head-aperture-v1",
+            "version": "head-aperture-v2",
             "lift": 0,
-            "aperture": "canonical-face",
+            "aperture": "source-hood-restored",
             "rearBand": false
           },
           "north": {
@@ -5078,17 +5078,17 @@
             "rearBand": false
           },
           "east": {
-            "version": "head-aperture-v1",
+            "version": "head-aperture-v2",
             "lift": 0,
-            "aperture": "canonical-face",
+            "aperture": "source-hood-restored",
             "rearBand": false
           }
         },
         "feminino": {
           "south": {
-            "version": "head-aperture-v1",
+            "version": "head-aperture-v2",
             "lift": 0,
-            "aperture": "canonical-face",
+            "aperture": "source-hood-restored",
             "rearBand": false
           },
           "north": {
@@ -5098,9 +5098,9 @@
             "rearBand": false
           },
           "east": {
-            "version": "head-aperture-v1",
+            "version": "head-aperture-v2",
             "lift": 0,
-            "aperture": "canonical-face",
+            "aperture": "source-hood-restored",
             "rearBand": false
           }
         }
@@ -5324,9 +5324,10 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-head-aperture-all-face-styles-and-game-browser",
+        "method": "owner-directional-calibration-and-manual-editor",
         "headFit": "head-aperture-v1",
-        "validatedFrames": 3840
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
       }
     },
     {
@@ -8220,9 +8221,10 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-head-aperture-all-face-styles-and-game-browser",
+        "method": "owner-directional-calibration-and-manual-editor",
         "headFit": "head-aperture-v1",
-        "validatedFrames": 3840
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
       }
     },
     {
@@ -9645,9 +9647,10 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-head-aperture-all-face-styles-and-game-browser",
+        "method": "owner-directional-calibration-and-manual-editor",
         "headFit": "head-aperture-v1",
-        "validatedFrames": 3840
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
       }
     },
     {
@@ -11040,9 +11043,10 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-head-aperture-all-face-styles-and-game-browser",
+        "method": "owner-directional-calibration-and-manual-editor",
         "headFit": "head-aperture-v1",
-        "validatedFrames": 3840
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
       }
     },
     {
@@ -12316,9 +12320,10 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-head-aperture-all-face-styles-and-game-browser",
+        "method": "owner-directional-calibration-and-manual-editor",
         "headFit": "head-aperture-v1",
-        "validatedFrames": 3840
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
       }
     },
     {
@@ -13791,9 +13796,10 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-head-aperture-all-face-styles-and-game-browser",
+        "method": "owner-directional-calibration-and-manual-editor",
         "headFit": "head-aperture-v1",
-        "validatedFrames": 3840
+        "validatedFrames": 3840,
+        "manualFitRevision": "headfit-owner-pass-2"
       }
     },
     {
@@ -19205,6 +19211,134 @@
           4
         ]
       ]
+    }
+  },
+  "headAdjustmentRevision": "headfit-owner-pass-2",
+  "headAdjustments": {
+    "item-150": {
+      "masculino": {
+        "east": {
+          "x": -3,
+          "y": 2,
+          "scale": 100
+        },
+        "north": {
+          "x": 0,
+          "y": -2,
+          "scale": 100
+        }
+      },
+      "feminino": {
+        "east": {
+          "x": -2,
+          "y": 0,
+          "scale": 100
+        },
+        "south": {
+          "x": 1,
+          "y": 2,
+          "scale": 100
+        },
+        "north": {
+          "x": 0,
+          "y": -2,
+          "scale": 100
+        }
+      }
+    },
+    "item-157": {
+      "masculino": {
+        "south": {
+          "x": -2,
+          "y": 0,
+          "scale": 100
+        },
+        "north": {
+          "x": -3,
+          "y": 0,
+          "scale": 100
+        },
+        "east": {
+          "x": -3,
+          "y": 0,
+          "scale": 100
+        }
+      },
+      "feminino": {
+        "east": {
+          "x": -3,
+          "y": 0,
+          "scale": 100
+        }
+      }
+    },
+    "item-164": {
+      "masculino": {
+        "east": {
+          "x": -3,
+          "y": 7,
+          "scale": 100
+        }
+      },
+      "feminino": {
+        "east": {
+          "x": 1,
+          "y": 5,
+          "scale": 100
+        }
+      }
+    },
+    "item-171": {
+      "masculino": {
+        "north": {
+          "x": -3,
+          "y": 0,
+          "scale": 100
+        },
+        "east": {
+          "x": -2,
+          "y": 0,
+          "scale": 100
+        }
+      },
+      "feminino": {
+        "north": {
+          "x": -3,
+          "y": 0,
+          "scale": 100
+        },
+        "east": {
+          "x": -2,
+          "y": -1,
+          "scale": 100
+        }
+      }
+    },
+    "item-178": {
+      "masculino": {
+        "north": {
+          "x": -8,
+          "y": 2,
+          "scale": 115
+        },
+        "east": {
+          "x": -3,
+          "y": 0,
+          "scale": 100
+        }
+      },
+      "feminino": {
+        "north": {
+          "x": -10,
+          "y": -1,
+          "scale": 115
+        },
+        "east": {
+          "x": -3,
+          "y": 0,
+          "scale": 100
+        }
+      }
     }
   }
 }

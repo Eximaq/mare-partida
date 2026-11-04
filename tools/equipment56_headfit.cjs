@@ -44,6 +44,8 @@ function rearTiara(source,body){
  return out;
 }
 function fit({id,body,direction,source,registered,head,faces}){
+ // Owner requested the original hood opening in the front and side views.
+ if(id===136&&direction!=='north')return {pixels:new Uint8ClampedArray(registered),registration:{version:'head-aperture-v2',lift:0,aperture:'source-hood-restored',rearBand:false}};
  let pixels=cleanIslands(id===129?corsair(source,direction):id===164&&direction==='north'?rearTiara(source,body):registered);
  const mask=faceMask(faces),hood=id===136;let lift=0;
  if(direction!=='north'&&!hood){

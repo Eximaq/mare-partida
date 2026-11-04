@@ -54,3 +54,39 @@ Importação: `tools/import_equipment56.cjs`, `tools/equipment56_materials.cjs` 
 Validação: 17 testes Node relacionados; Chrome, 480 poses dos modelos anteriores e 3.840 quadros dos oito novos, 64.112 comparações de pixels de olhos e 64 restaurações de cabelo; quatro direções, dois corpos, repouso, caminhada e seis famílias de ataque. Capturas de inspeção e evidências permanecem fora do Git. A revisão das mangas de Vestes do Santuário Oceânico foi solicitada separadamente e aguarda a validação do proprietário sobre estes capacetes.
 
 A distribuição estática também foi conferida no Chrome: 32 estados de prévia, 16 estados reais no mapa e 16 recargas de save. Cintos/capas continuam com diferença zero na região do avatar.
+
+## Revisão do proprietário e editor manual — 04/11/2026
+
+Esta revisão substitui os encaixes da seção anterior nos casos abaixo. O item 136 mantém o Norte e retorna **exatamente aos PNGs anteriores** em Sul/Leste/Oeste dos dois corpos, por orientação do proprietário. Sua abertura original fica explicitamente fora da asserção de olhos desobstruídos; o teste confere os arquivos restaurados por hash.
+
+Os deslocamentos ficam em `appearance-catalog.json > headAdjustments`, separados por item, corpo e direção. X negativo move para a esquerda; Y positivo desce; tamanho é uma porcentagem com amostragem de pixels inteiros. Oeste acompanha o espelho de Leste. Não há mudança de pose do corpo ou arma, nem ajuste automático que desfaça a orientação manual.
+
+| Item | Corpo | Vista | X | Y | Tamanho |
+|---|---|---|---:|---:|---:|
+|150|Masculino|Leste|−3|+2|100%|
+|150|Feminino|Leste|−2|0|100%|
+|150|Feminino|Sul|+1|+2|100%|
+|150|Ambos|Norte|0|−2|100%|
+|157|Masculino|Sul|−2|0|100%|
+|157|Masculino|Norte|−3|0|100%|
+|157|Ambos|Leste|−3|0|100%|
+|164|Masculino|Leste|−3|+7|100%|
+|164|Feminino|Leste|+1|+5|100%|
+|171|Ambos|Norte|−3|0|100%|
+|171|Masculino|Leste|−2|0|100%|
+|171|Feminino|Leste|−2|−1|100%|
+|178|Masculino|Norte|−8|+2|115%|
+|178|Feminino|Norte|−10|−1|115%|
+|178|Ambos|Leste|−3|0|100%|
+
+### Uso da bancada
+
+Abra `tools/paper-doll-96-v3/` por HTTP. O painel **Ajuste manual · peças de cabeça** permite escolher os dez modelos existentes, corpo, direção e movimento; arrastar a peça, mover de um em um pixel, ajustar tamanho, pausar ou inspecionar cada quadro. O rosto/corpo continuam usando os mesmos pixels e o mesmo compositor do jogo.
+
+**Salvar rascunho** conserva os ajustes apenas nesta bancada, na chave local `mare-head-fit-editor-v1`; não lê nem modifica saves do jogo. **Exportar para integração** baixa `kaizoku-encaixes-cabeca.json`. Envie esse arquivo para integrar os valores no jogo publicado. Importar aceita somente itens de cabeça, corpos/direções válidos e a mesma revisão artística; Oeste é editado como espelho. Um arquivo antigo permanece disponível para conciliação e não sobrescreve silenciosamente a revisão nova. Restaurar esta vista e descartar rascunho recuperam os valores publicados.
+
+Integração do arquivo: `node tools/apply_headgear_adjustments.cjs CAMINHO_DO_JSON`. O comando valida e atualiza somente as calibrações do catálogo; em seguida executar `python tools/player96_release.py --write` e `python tools/build_pages.py`, validar e publicar pelo fluxo normal. A opção de ajuste temporário do compositor está habilitada exclusivamente na bancada. No jogo os valores vêm do catálogo versionado.
+
+Nenhuma geração ou crédito PixelLab utilizado nesta revisão. As Vestes do Santuário Oceânico continuam pendentes da validação destes capacetes.
+
+Validação desta revisão: 21 testes Node aprovados; distribuição estática no Chrome com 480 poses legadas e 3.840 quadros novos, 56.098 comparações de olhos, 64 restaurações de cabelo e 480 quadros do capuz original separados da asserção facial. Os nove controles funcionais do editor passaram também na distribuição estática (prévia, arraste, corpos independentes, espelho, salvar/recarregar, exportar/importar, rejeição de revisão antiga e preservação de save/catálogo). No jogo: 32 estados de prévia, 16 estados no mapa e 16 recargas sem diferença visual de cintos/capas. A instabilidade inicial do servidor HTTP local foi resolvida reiniciando apenas a prévia de teste; as verificações foram repetidas com sucesso.
