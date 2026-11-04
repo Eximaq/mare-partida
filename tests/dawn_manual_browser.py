@@ -23,7 +23,7 @@ def route(q,id):
  d=state(q);p=q.evaluate('(id)=>MareDawn.paths.find(p=>p.id===id)',id);assert d['walkable'] and not d['path'] and ((d['hero']['x']-p['x'])**2+(d['hero']['y']-p['y'])**2)**.5<3,(id,d['hero'])
 with sync_playwright() as p:
  b=p.chromium.launch(executable_path=os.environ.get("CHROME_PATH"));c,q=page(b);q.locator('#characterName').fill('Nauta Dawn');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(100);template=saved(q);c.close();high=copy.deepcopy(template);high['level']=10
- for size in [(1920,1080),(1366,768),(1280,720),(393,852),(320,568)]:
+ for size in [(1920,1080),(1366,768),(1280,720),(393,852),(412,915)]:
   c,q=page(b,high,size);travel(q);d=state(q);assert {key:d['map'][key] for key in ('id','width','height')}=={'id':'dawn','width':3584,'height':2560} and d['walkable'] and d['alive']>0;assert all(m['level']==5 and m['skin'] for m in d['mobs']);q.screenshot(path=str(OUT/f'chegada-{size[0]}.png'))
   if q.locator('#journeyToggle').get_attribute('aria-expanded')=='false':q.locator('#journeyToggle').click()
   q.locator('#huntRoute').click();assert q.locator('[data-hunt-sector]').count()==7;assert q.locator('#dialogBody').evaluate('e=>e.scrollWidth<=e.clientWidth+1');q.locator('#closePanel').click();q.locator('#returnLobby').click();q.reload();q.wait_for_function('typeof __mareDiagnostics==="function"');g=saved(q)

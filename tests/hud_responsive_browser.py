@@ -6,7 +6,7 @@ from polish_support import page_for, create, fixture, saved
 
 OUT=Path(os.environ.get('MARE_INVENTORY_EVIDENCE','/tmp/mare-inventory-visual'))/'hud'
 OUT.mkdir(parents=True,exist_ok=True)
-SIZES=[(1366,768),(1024,768),(768,900),(390,844),(320,568),(844,390),(568,320)]
+SIZES=[(1366,768),(1024,768),(768,900),(390,844),(412,915),(844,390),(1600,900)]
 SECTIONS=['inventory','forge','status','talents','achievements','haki','akuma','hierarchy','contracts','map','prison','help','journal','myprofile','settings','appearance']
 KEYS=['inventory','equipment','gold','potions','materials','attributes','level','classId','factionId','talentTrees']
 

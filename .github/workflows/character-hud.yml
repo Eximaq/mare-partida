@@ -1,9 +1,11 @@
-name: HUD de personagem — pergaminho e fonte
+name: HUD de personagem — composição náutica
 on:
   pull_request:
     branches: [main]
     paths:
       - 'character-hud.js'
+      - 'hud-nautical.css'
+      - 'assets/ui/hud-nautical-v2/**'
       - 'assets/ui/character-hud/**'
       - 'ui-hud.css'
       - 'ui-responsive.css'

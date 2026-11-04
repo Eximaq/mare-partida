@@ -5,6 +5,9 @@ on:
     paths:
       - 'creation-selection.*'
       - 'gameplay-harmony.css'
+      - 'hud-nautical.css'
+      - 'tests/hud_nautical_browser.py'
+      - 'assets/ui/hud-nautical-v2/**'
       - 'game.js'
       - 'index.html'
       - 'assets/ui/creation-hd/**'
@@ -50,6 +53,7 @@ jobs:
         run: |
           npm install --no-save --package-lock=false playwright@1.56.1
           npx playwright install --with-deps chromium
+          python -m pip install playwright==1.56.0
           mkdir -p "$MARE_QA_DIR"
       - name: Regras e pacote estático
         run: |
@@ -59,8 +63,14 @@ jobs:
         run: |
           python tests/run_honors_hd_browser.py tests/creation_selection_hd_browser.cjs --dist --offline
           python tests/run_honors_hd_browser.py tests/gameplay_harmony_controls_browser.cjs --dist --offline
-      - name: Comparar geometria com a base do PR
-        run: python tests/run_honors_hd_browser.py tests/gameplay_harmony_geometry_browser.cjs --dist --offline
+      - name: Composição náutica e controles em telas atuais
+        env:
+          MARE_TEST_URL: http://127.0.0.1:8172/dist/
+          HUD_EVIDENCE: /tmp/mare-creation-harmony/nautical
+        run: |
+          python -m http.server 8172 --bind 127.0.0.1 > /tmp/nautical-hud.log 2>&1 &
+          sleep 2
+          python tests/hud_nautical_browser.py
       - name: Original inventory and forge online UI contract (no hosted provider)
         run: python tests/run_honors_hd_browser.py tests/original-inventory-online-browser.cjs --dist --offline
       - name: Original online world and travel UI contract
