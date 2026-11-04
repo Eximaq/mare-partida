@@ -1,0 +1,32 @@
+{
+  "source": "Owner-supplied pirate HUD reference sheet, 2026-11-04",
+  "generation": "Built-in ImageGen edit, transparent background",
+  "scope": "Status HUD only",
+  "files": {
+    "frame.png": {
+      "bytes": 1889501,
+      "sha256": "9d5d5d876443cd6bf3ec848d6a74ef4561dd7fcfebdcd4f3bb4712fe327275f6",
+      "width": 1254,
+      "height": 1254,
+      "nineSlice": 190
+    },
+    "ornaments.png": {
+      "bytes": 1319367,
+      "sha256": "3d2ea93623d4153f1ca1c262e053140303faf2fee3d3274130ddeae6913955a0",
+      "width": 1774,
+      "height": 887,
+      "columns": 4,
+      "rows": 2,
+      "order": [
+        "portrait ring",
+        "level shield",
+        "attribute plus",
+        "pirate crest",
+        "HP",
+        "EN",
+        "XP",
+        "Berry"
+      ]
+    }
+  }
+}
