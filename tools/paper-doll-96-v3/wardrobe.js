@@ -29,7 +29,7 @@
       for(const style of catalog.styles.filter(s=>s.kind==='torso'))if(!style.materialPalette?.length)throw Error('Missing torso material palette: '+style.id);
       for(const body of Object.keys(catalog.fitBases))for(const action of ['static','idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus','attack-tech']){
         if(!catalog.nativeOwnership.atlases?.[body]?.[action])throw Error('Incomplete anatomy mask: '+body+'/'+action);
-        for(const style of catalog.styles.filter(s=>s.kind==='torso'))if(!style.animations?.[body]?.[action])throw Error('Incomplete torso animation: '+style.id+'/'+body+'/'+action);
+        for(const style of catalog.styles.filter(s=>s.kind==='torso'&&s.nativeFit!=='registered-panels-v1'))if(!style.animations?.[body]?.[action])throw Error('Incomplete torso animation: '+style.id+'/'+body+'/'+action);
       }
     }
     if(/^native-surface-v[67]$/.test(catalog.fitVersion))for(const style of catalog.styles){
@@ -42,7 +42,7 @@
       if(attachments.has(key)){const value=attachments.get(key);attachments.delete(key);attachments.set(key,value);return value;}
       const value=build();attachments.set(key,value);if(attachments.size>96)attachments.delete(attachments.keys().next().value);return value;
     }
-    const descriptor=(slot,id)=>catalog.styles.find(s=>s.id===id&&s.kind===slot);
+    const descriptor=(slot,id)=>MareWeapons96.composition.rendersSlot(slot)?catalog.styles.find(s=>s.id===id&&s.kind===slot):undefined;
     function headLook(look,hidden=[]){
       const model=descriptor('head',look.head),state=window.MareHeadgear.resolve(model?.itemId,{model,hidden:look.hideHeadgear===true||hidden.includes('head')});
       return state.visible?look:{...look,head:'original'};
@@ -150,7 +150,7 @@
         const sourceParts=Object.fromEntries(Object.entries(p.style.parts?.[selected.body]?.[selected.direction]||{}).map(([name,file])=>[name,texture(images.get(file),file,p.slot,null).pixels]));
         const atlas=p.style.animations?.[selected.body]?.[selected.action];
         const torsoPiece=()=>{
-          if(!atlas)return api.fitTorsoToBody(data,torsoBodyPixels,rest,pose,padding,spec.width,spec.height,foregroundPixels,ownership);
+          if(!atlas)return api.fitTorsoToBody(data,torsoBodyPixels,rest,pose,padding,spec.width,spec.height,foregroundPixels,ownership,p.style.nativeFit==='registered-panels-v1'?sourceParts:null);
           const index=atlas.directions.indexOf(selected.direction)*atlas.framesPerDirection+fi;
           const atlasImage=images.get(atlas.file);
           if(index<0||fi>=atlas.framesPerDirection||atlas.cell!==spec.width||atlasImage.width!==atlas.columns*atlas.cell||atlasImage.height!==atlas.rows*atlas.cell)throw Error('Invalid torso animation');
@@ -375,6 +375,7 @@
         }
         inspectedPalms=palms;visibleArm(fromPixels(palms,spec.width,spec.height));
       }
+      if(!carryPose&&pieces.torso?.LEFT)for(const side of [...behind,...inFront])visibleArm(pieces.torso[side]);
       if(pieces.gloves)for(const side of behind)visibleArm(pieces.gloves[side]);
       if(!carryPose&&pieces.gloves)for(const side of inFront)visibleArm(pieces.gloves[side]);
       if(carryArms)visibleArm(carryArms);

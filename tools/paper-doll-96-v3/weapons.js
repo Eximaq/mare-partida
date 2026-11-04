@@ -6,7 +6,10 @@
   // priorities apply within an anatomical plane, never to the world renderer.
   const priorities=Object.freeze({cloakBack:0,body:10,headBase:10,face:20,hair:30,pants:40,torso:50,cloakFront:55,belt:60,boots:70,gloves:80,head:90});
   const composition=Object.freeze({priorities,
-    paint(passes){for(const pass of [...passes].sort((a,b)=>priorities[a.slot]-priorities[b.slot]))pass.draw();},
+    // These inventory slots retain their mechanics and saved identities, but
+    // never request or draw an avatar layer. Torso garments remain visible.
+    rendersSlot(slot){return !['belt','cloak','cloakFront'].includes(slot);},
+    paint(passes){for(const pass of [...passes].filter(p=>this.rendersSlot(p.slot)).sort((a,b)=>priorities[a.slot]-priorities[b.slot]))pass.draw();},
     depth({model,pose,side,direction,action,frame}){
       const rule=model?.depthTrack?.[action]?.[direction]?.[side],explicit=Array.isArray(rule)?rule[frame]:rule;
       if(explicit)return explicit;

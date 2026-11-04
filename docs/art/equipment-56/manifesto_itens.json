@@ -1,0 +1,954 @@
+[
+  {
+    "arquivo": "01_raro_corsario_das_mares/cabeca.png",
+    "conjunto": "Traje do Corsário das Marés",
+    "raridade": "Raro",
+    "slot": "Cabeça",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      40,
+      0,
+      263,
+      135
+    ],
+    "pixel_alpha_nonzero": 5106
+  },
+  {
+    "arquivo": "01_raro_corsario_das_mares/torso.png",
+    "conjunto": "Traje do Corsário das Marés",
+    "raridade": "Raro",
+    "slot": "Torso",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      281,
+      0,
+      514,
+      132
+    ],
+    "pixel_alpha_nonzero": 5468
+  },
+  {
+    "arquivo": "01_raro_corsario_das_mares/maos.png",
+    "conjunto": "Traje do Corsário das Marés",
+    "raridade": "Raro",
+    "slot": "Mãos",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      553,
+      8,
+      720,
+      134
+    ],
+    "pixel_alpha_nonzero": 6453
+  },
+  {
+    "arquivo": "01_raro_corsario_das_mares/cinto.png",
+    "conjunto": "Traje do Corsário das Marés",
+    "raridade": "Raro",
+    "slot": "Cinto",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      758,
+      30,
+      923,
+      126
+    ],
+    "pixel_alpha_nonzero": 5515
+  },
+  {
+    "arquivo": "01_raro_corsario_das_mares/perneiras.png",
+    "conjunto": "Traje do Corsário das Marés",
+    "raridade": "Raro",
+    "slot": "Perneiras",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      973,
+      0,
+      1128,
+      135
+    ],
+    "pixel_alpha_nonzero": 9495
+  },
+  {
+    "arquivo": "01_raro_corsario_das_mares/pes.png",
+    "conjunto": "Traje do Corsário das Marés",
+    "raridade": "Raro",
+    "slot": "Pés",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1155,
+      15,
+      1311,
+      133
+    ],
+    "pixel_alpha_nonzero": 7796
+  },
+  {
+    "arquivo": "01_raro_corsario_das_mares/capa.png",
+    "conjunto": "Traje do Corsário das Marés",
+    "raridade": "Raro",
+    "slot": "Capa",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1338,
+      1,
+      1532,
+      135
+    ],
+    "pixel_alpha_nonzero": 6413
+  },
+  {
+    "arquivo": "02_raro_peregrino_de_alabasta/cabeca.png",
+    "conjunto": "Vestes do Peregrino de Alabasta",
+    "raridade": "Raro",
+    "slot": "Cabeça",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      35,
+      135,
+      239,
+      273
+    ],
+    "pixel_alpha_nonzero": 6110
+  },
+  {
+    "arquivo": "02_raro_peregrino_de_alabasta/torso.png",
+    "conjunto": "Vestes do Peregrino de Alabasta",
+    "raridade": "Raro",
+    "slot": "Torso",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      287,
+      136,
+      511,
+      273
+    ],
+    "pixel_alpha_nonzero": 6057
+  },
+  {
+    "arquivo": "02_raro_peregrino_de_alabasta/maos.png",
+    "conjunto": "Vestes do Peregrino de Alabasta",
+    "raridade": "Raro",
+    "slot": "Mãos",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      546,
+      149,
+      715,
+      272
+    ],
+    "pixel_alpha_nonzero": 6338
+  },
+  {
+    "arquivo": "02_raro_peregrino_de_alabasta/cinto.png",
+    "conjunto": "Vestes do Peregrino de Alabasta",
+    "raridade": "Raro",
+    "slot": "Cinto",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      757,
+      160,
+      930,
+      271
+    ],
+    "pixel_alpha_nonzero": 5733
+  },
+  {
+    "arquivo": "02_raro_peregrino_de_alabasta/perneiras.png",
+    "conjunto": "Vestes do Peregrino de Alabasta",
+    "raridade": "Raro",
+    "slot": "Perneiras",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      970,
+      139,
+      1151,
+      273
+    ],
+    "pixel_alpha_nonzero": 7095
+  },
+  {
+    "arquivo": "02_raro_peregrino_de_alabasta/pes.png",
+    "conjunto": "Vestes do Peregrino de Alabasta",
+    "raridade": "Raro",
+    "slot": "Pés",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1151,
+      154,
+      1311,
+      272
+    ],
+    "pixel_alpha_nonzero": 7700
+  },
+  {
+    "arquivo": "02_raro_peregrino_de_alabasta/capa.png",
+    "conjunto": "Vestes do Peregrino de Alabasta",
+    "raridade": "Raro",
+    "slot": "Capa",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1342,
+      135,
+      1535,
+      273
+    ],
+    "pixel_alpha_nonzero": 6827
+  },
+  {
+    "arquivo": "03_raro_navegador_arcano/cabeca.png",
+    "conjunto": "Conjunto do Navegador Arcano",
+    "raridade": "Raro",
+    "slot": "Cabeça",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      18,
+      273,
+      263,
+      401
+    ],
+    "pixel_alpha_nonzero": 4681
+  },
+  {
+    "arquivo": "03_raro_navegador_arcano/torso.png",
+    "conjunto": "Conjunto do Navegador Arcano",
+    "raridade": "Raro",
+    "slot": "Torso",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      290,
+      273,
+      522,
+      401
+    ],
+    "pixel_alpha_nonzero": 5253
+  },
+  {
+    "arquivo": "03_raro_navegador_arcano/maos.png",
+    "conjunto": "Conjunto do Navegador Arcano",
+    "raridade": "Raro",
+    "slot": "Mãos",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      553,
+      286,
+      723,
+      394
+    ],
+    "pixel_alpha_nonzero": 5732
+  },
+  {
+    "arquivo": "03_raro_navegador_arcano/cinto.png",
+    "conjunto": "Conjunto do Navegador Arcano",
+    "raridade": "Raro",
+    "slot": "Cinto",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      755,
+      295,
+      930,
+      397
+    ],
+    "pixel_alpha_nonzero": 6243
+  },
+  {
+    "arquivo": "03_raro_navegador_arcano/perneiras.png",
+    "conjunto": "Conjunto do Navegador Arcano",
+    "raridade": "Raro",
+    "slot": "Perneiras",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      972,
+      282,
+      1151,
+      400
+    ],
+    "pixel_alpha_nonzero": 6111
+  },
+  {
+    "arquivo": "03_raro_navegador_arcano/pes.png",
+    "conjunto": "Conjunto do Navegador Arcano",
+    "raridade": "Raro",
+    "slot": "Pés",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1151,
+      290,
+      1312,
+      399
+    ],
+    "pixel_alpha_nonzero": 6897
+  },
+  {
+    "arquivo": "03_raro_navegador_arcano/capa.png",
+    "conjunto": "Conjunto do Navegador Arcano",
+    "raridade": "Raro",
+    "slot": "Capa",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1332,
+      273,
+      1530,
+      401
+    ],
+    "pixel_alpha_nonzero": 5820
+  },
+  {
+    "arquivo": "04_epico_almirante_carmesim/cabeca.png",
+    "conjunto": "Regalia do Almirante Carmesim",
+    "raridade": "Épico",
+    "slot": "Cabeça",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      21,
+      401,
+      272,
+      526
+    ],
+    "pixel_alpha_nonzero": 4518
+  },
+  {
+    "arquivo": "04_epico_almirante_carmesim/torso.png",
+    "conjunto": "Regalia do Almirante Carmesim",
+    "raridade": "Épico",
+    "slot": "Torso",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      277,
+      401,
+      528,
+      526
+    ],
+    "pixel_alpha_nonzero": 4959
+  },
+  {
+    "arquivo": "04_epico_almirante_carmesim/maos.png",
+    "conjunto": "Regalia do Almirante Carmesim",
+    "raridade": "Épico",
+    "slot": "Mãos",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      556,
+      403,
+      719,
+      526
+    ],
+    "pixel_alpha_nonzero": 6895
+  },
+  {
+    "arquivo": "04_epico_almirante_carmesim/cinto.png",
+    "conjunto": "Regalia do Almirante Carmesim",
+    "raridade": "Épico",
+    "slot": "Cinto",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      755,
+      420,
+      933,
+      526
+    ],
+    "pixel_alpha_nonzero": 6217
+  },
+  {
+    "arquivo": "04_epico_almirante_carmesim/perneiras.png",
+    "conjunto": "Regalia do Almirante Carmesim",
+    "raridade": "Épico",
+    "slot": "Perneiras",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      963,
+      403,
+      1151,
+      526
+    ],
+    "pixel_alpha_nonzero": 6142
+  },
+  {
+    "arquivo": "04_epico_almirante_carmesim/pes.png",
+    "conjunto": "Regalia do Almirante Carmesim",
+    "raridade": "Épico",
+    "slot": "Pés",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1151,
+      410,
+      1309,
+      526
+    ],
+    "pixel_alpha_nonzero": 7841
+  },
+  {
+    "arquivo": "04_epico_almirante_carmesim/capa.png",
+    "conjunto": "Regalia do Almirante Carmesim",
+    "raridade": "Épico",
+    "slot": "Capa",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1325,
+      401,
+      1535,
+      526
+    ],
+    "pixel_alpha_nonzero": 5668
+  },
+  {
+    "arquivo": "05_epico_arauto_das_tempestades/cabeca.png",
+    "conjunto": "Vestimenta do Arauto das Tempestades",
+    "raridade": "Épico",
+    "slot": "Cabeça",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      21,
+      526,
+      273,
+      653
+    ],
+    "pixel_alpha_nonzero": 3992
+  },
+  {
+    "arquivo": "05_epico_arauto_das_tempestades/torso.png",
+    "conjunto": "Vestimenta do Arauto das Tempestades",
+    "raridade": "Épico",
+    "slot": "Torso",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      273,
+      526,
+      533,
+      653
+    ],
+    "pixel_alpha_nonzero": 5080
+  },
+  {
+    "arquivo": "05_epico_arauto_das_tempestades/maos.png",
+    "conjunto": "Vestimenta do Arauto das Tempestades",
+    "raridade": "Épico",
+    "slot": "Mãos",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      557,
+      526,
+      717,
+      645
+    ],
+    "pixel_alpha_nonzero": 6411
+  },
+  {
+    "arquivo": "05_epico_arauto_das_tempestades/cinto.png",
+    "conjunto": "Vestimenta do Arauto das Tempestades",
+    "raridade": "Épico",
+    "slot": "Cinto",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      743,
+      526,
+      935,
+      647
+    ],
+    "pixel_alpha_nonzero": 4753
+  },
+  {
+    "arquivo": "05_epico_arauto_das_tempestades/perneiras.png",
+    "conjunto": "Vestimenta do Arauto das Tempestades",
+    "raridade": "Épico",
+    "slot": "Perneiras",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      971,
+      526,
+      1151,
+      653
+    ],
+    "pixel_alpha_nonzero": 5786
+  },
+  {
+    "arquivo": "05_epico_arauto_das_tempestades/pes.png",
+    "conjunto": "Vestimenta do Arauto das Tempestades",
+    "raridade": "Épico",
+    "slot": "Pés",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1151,
+      526,
+      1311,
+      652
+    ],
+    "pixel_alpha_nonzero": 7269
+  },
+  {
+    "arquivo": "05_epico_arauto_das_tempestades/capa.png",
+    "conjunto": "Vestimenta do Arauto das Tempestades",
+    "raridade": "Épico",
+    "slot": "Capa",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1324,
+      526,
+      1529,
+      653
+    ],
+    "pixel_alpha_nonzero": 6011
+  },
+  {
+    "arquivo": "06_epico_mare_sagrada/cabeca.png",
+    "conjunto": "Paramentos da Maré Sagrada",
+    "raridade": "Épico",
+    "slot": "Cabeça",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      31,
+      653,
+      243,
+      775
+    ],
+    "pixel_alpha_nonzero": 3751
+  },
+  {
+    "arquivo": "06_epico_mare_sagrada/torso.png",
+    "conjunto": "Paramentos da Maré Sagrada",
+    "raridade": "Épico",
+    "slot": "Torso",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      283,
+      653,
+      512,
+      775
+    ],
+    "pixel_alpha_nonzero": 5334
+  },
+  {
+    "arquivo": "06_epico_mare_sagrada/maos.png",
+    "conjunto": "Paramentos da Maré Sagrada",
+    "raridade": "Épico",
+    "slot": "Mãos",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      547,
+      654,
+      719,
+      775
+    ],
+    "pixel_alpha_nonzero": 5106
+  },
+  {
+    "arquivo": "06_epico_mare_sagrada/cinto.png",
+    "conjunto": "Paramentos da Maré Sagrada",
+    "raridade": "Épico",
+    "slot": "Cinto",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      756,
+      669,
+      934,
+      755
+    ],
+    "pixel_alpha_nonzero": 4714
+  },
+  {
+    "arquivo": "06_epico_mare_sagrada/perneiras.png",
+    "conjunto": "Paramentos da Maré Sagrada",
+    "raridade": "Épico",
+    "slot": "Perneiras",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      967,
+      653,
+      1135,
+      775
+    ],
+    "pixel_alpha_nonzero": 7661
+  },
+  {
+    "arquivo": "06_epico_mare_sagrada/pes.png",
+    "conjunto": "Paramentos da Maré Sagrada",
+    "raridade": "Épico",
+    "slot": "Pés",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1158,
+      668,
+      1312,
+      763
+    ],
+    "pixel_alpha_nonzero": 6332
+  },
+  {
+    "arquivo": "06_epico_mare_sagrada/capa.png",
+    "conjunto": "Paramentos da Maré Sagrada",
+    "raridade": "Épico",
+    "slot": "Capa",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1330,
+      653,
+      1535,
+      775
+    ],
+    "pixel_alpha_nonzero": 5654
+  },
+  {
+    "arquivo": "07_lendario_soberano_grand_line/cabeca.png",
+    "conjunto": "Regalia do Soberano da Grand Line",
+    "raridade": "Lendário",
+    "slot": "Cabeça",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      22,
+      775,
+      262,
+      895
+    ],
+    "pixel_alpha_nonzero": 4739
+  },
+  {
+    "arquivo": "07_lendario_soberano_grand_line/torso.png",
+    "conjunto": "Regalia do Soberano da Grand Line",
+    "raridade": "Lendário",
+    "slot": "Torso",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      281,
+      775,
+      521,
+      895
+    ],
+    "pixel_alpha_nonzero": 5170
+  },
+  {
+    "arquivo": "07_lendario_soberano_grand_line/maos.png",
+    "conjunto": "Regalia do Soberano da Grand Line",
+    "raridade": "Lendário",
+    "slot": "Mãos",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      555,
+      775,
+      721,
+      895
+    ],
+    "pixel_alpha_nonzero": 6032
+  },
+  {
+    "arquivo": "07_lendario_soberano_grand_line/cinto.png",
+    "conjunto": "Regalia do Soberano da Grand Line",
+    "raridade": "Lendário",
+    "slot": "Cinto",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      760,
+      786,
+      932,
+      886
+    ],
+    "pixel_alpha_nonzero": 6317
+  },
+  {
+    "arquivo": "07_lendario_soberano_grand_line/perneiras.png",
+    "conjunto": "Regalia do Soberano da Grand Line",
+    "raridade": "Lendário",
+    "slot": "Perneiras",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      966,
+      775,
+      1133,
+      895
+    ],
+    "pixel_alpha_nonzero": 7892
+  },
+  {
+    "arquivo": "07_lendario_soberano_grand_line/pes.png",
+    "conjunto": "Regalia do Soberano da Grand Line",
+    "raridade": "Lendário",
+    "slot": "Pés",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1159,
+      776,
+      1313,
+      890
+    ],
+    "pixel_alpha_nonzero": 7792
+  },
+  {
+    "arquivo": "07_lendario_soberano_grand_line/capa.png",
+    "conjunto": "Regalia do Soberano da Grand Line",
+    "raridade": "Lendário",
+    "slot": "Capa",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1322,
+      775,
+      1536,
+      895
+    ],
+    "pixel_alpha_nonzero": 5443
+  },
+  {
+    "arquivo": "08_supremo_horizonte_final/cabeca.png",
+    "conjunto": "Vestes do Imperador do Horizonte Final",
+    "raridade": "Supremo",
+    "slot": "Cabeça",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      26,
+      895,
+      273,
+      1024
+    ],
+    "pixel_alpha_nonzero": 4791
+  },
+  {
+    "arquivo": "08_supremo_horizonte_final/torso.png",
+    "conjunto": "Vestes do Imperador do Horizonte Final",
+    "raridade": "Supremo",
+    "slot": "Torso",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      273,
+      895,
+      530,
+      1024
+    ],
+    "pixel_alpha_nonzero": 5151
+  },
+  {
+    "arquivo": "08_supremo_horizonte_final/maos.png",
+    "conjunto": "Vestes do Imperador do Horizonte Final",
+    "raridade": "Supremo",
+    "slot": "Mãos",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      542,
+      895,
+      724,
+      1020
+    ],
+    "pixel_alpha_nonzero": 6248
+  },
+  {
+    "arquivo": "08_supremo_horizonte_final/cinto.png",
+    "conjunto": "Vestes do Imperador do Horizonte Final",
+    "raridade": "Supremo",
+    "slot": "Cinto",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      751,
+      913,
+      959,
+      1024
+    ],
+    "pixel_alpha_nonzero": 4878
+  },
+  {
+    "arquivo": "08_supremo_horizonte_final/perneiras.png",
+    "conjunto": "Vestes do Imperador do Horizonte Final",
+    "raridade": "Supremo",
+    "slot": "Perneiras",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      959,
+      895,
+      1139,
+      1024
+    ],
+    "pixel_alpha_nonzero": 7912
+  },
+  {
+    "arquivo": "08_supremo_horizonte_final/pes.png",
+    "conjunto": "Vestes do Imperador do Horizonte Final",
+    "raridade": "Supremo",
+    "slot": "Pés",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1153,
+      900,
+      1314,
+      1023
+    ],
+    "pixel_alpha_nonzero": 7823
+  },
+  {
+    "arquivo": "08_supremo_horizonte_final/capa.png",
+    "conjunto": "Vestes do Imperador do Horizonte Final",
+    "raridade": "Supremo",
+    "slot": "Capa",
+    "pixels": [
+      128,
+      128
+    ],
+    "bbox_source": [
+      1324,
+      895,
+      1532,
+      1022
+    ],
+    "pixel_alpha_nonzero": 6179
+  }
+]

@@ -6,12 +6,12 @@ assert(R.enabled('?paperDoll96=1'));assert(R.enabled(''));for(const s of ['?dev=
 assert.deepEqual(R.slots,{coat:'torso',legs:'pants',boots:'boots',gloves:'gloves',cloak:'cloak',head:'head'});
 const player={classId:'sword',factionId:'pirate',gold:900,inventory:[{id:'kept'}],equipment:{coat:{def:6},legs:{def:22},boots:{def:9},gloves:{def:26},cloak:{def:24},head:{def:19},weapon:{def:0}}};
 const before=JSON.stringify(player),look={...R.defaults},resolved=R.outfit(catalog,player,look);
-for(const [slot,kind]of Object.entries(R.slots))assert.equal(resolved.look[kind],'item-'+player.equipment[slot].def);
+for(const [slot,kind]of Object.entries(R.slots))assert.equal(resolved.look[kind],slot==='cloak'?'original':'item-'+player.equipment[slot].def);
 assert.equal(resolved.missing.length,0);assert.equal(JSON.stringify(player),before);
 const none=R.outfit(catalog,player,{...look,kit:'none'});for(const kind of Object.values(R.slots))assert.equal(none.look[kind],'original');
 for(const kit of ['sample-a','sample-b']){
  const r=R.outfit(catalog,player,{...look,kit});assert.equal(r.missing.length,0);
- for(const kind of Object.values(R.slots))assert(catalog.styles.some(s=>s.kind===kind&&s.id===r.look[kind]));
+ for(const kind of Object.values(R.slots))if(kind==='cloak')assert.equal(r.look[kind],'original');else assert(catalog.styles.some(s=>s.kind===kind&&s.id===r.look[kind]));
  assert.equal(JSON.stringify(player),before,'a rehearsal must never grant or equip items');
 }
 const missing=R.outfit(catalog,{equipment:{coat:{def:999},head:{def:0},boots:{def:'9'}}},look);

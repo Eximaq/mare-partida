@@ -7,7 +7,7 @@
   "source": "Existing native96 materials and authored animations; owner authorised default use in Sprint2.",
   "headgearPolicy": "../../headgear-visibility.js",
   "renderer": "native96",
-  "assetRevision": "native96-5494f3063dc2378b",
+  "assetRevision": "native96-267d7eee3b4236d4",
   "resources": {
     "assets/appearance3-face-almond-feminino-east.png": [
       128,
@@ -649,6 +649,4006 @@
       128,
       128
     ],
+    "assets/custom-item-129-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-129-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-129-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-129-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-129-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-129-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-129-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-129-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-130-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-131-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-133-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-134-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-136-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-136-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-136-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-136-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-136-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-136-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-136-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-136-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-137-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-138-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-140-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-141-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-143-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-143-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-143-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-143-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-143-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-143-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-143-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-143-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-144-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-145-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-147-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-148-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-150-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-150-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-150-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-150-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-150-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-150-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-150-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-150-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-151-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-152-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-154-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-155-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-157-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-157-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-157-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-157-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-157-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-157-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-157-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-157-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-158-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-159-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-161-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-162-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-164-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-164-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-164-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-164-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-164-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-164-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-164-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-164-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-165-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-166-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-168-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-169-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-171-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-171-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-171-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-171-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-171-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-171-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-171-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-171-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-172-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-173-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-175-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-176-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-178-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-178-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-178-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-178-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-178-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-178-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-178-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-178-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-179-masculino-west.png": [
+      128,
+      128
+    ],
     "assets/custom-item-18-feminino-east.png": [
       128,
       128
@@ -678,6 +4678,358 @@
       128
     ],
     "assets/custom-item-18-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-180-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-east-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-east-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-east-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-east-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-north-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-north-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-north-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-north-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-south-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-south-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-south-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-south-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-west-leftlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-west-leftupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-west-rightlower.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-west-rightupper.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-182-masculino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-feminino-west.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-east-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-east-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-east.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-north-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-north-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-north.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-south-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-south-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-south.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-west-left.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-west-right.png": [
+      128,
+      128
+    ],
+    "assets/custom-item-183-masculino-west.png": [
       128,
       128
     ],

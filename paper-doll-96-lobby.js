@@ -3,6 +3,7 @@
   'use strict';
   const Headgear=root.MareHeadgear||(typeof module!=='undefined'&&module.exports?require('./headgear-visibility.js'):null);
   const Cosmetics=root.MareCharacterAppearance||(typeof module!=='undefined'&&module.exports?require('./character-appearance.js'):null);
+  const Equipment=typeof module!=='undefined'&&module.exports?require('./tools/paper-doll-96-v3/weapons.js'):null;
   const defaults=Object.freeze({body:'masculino',hair:'original',face:'original',skin:'original',hairColor:'brown',kit:'equipped'});
   const slots=Object.freeze({coat:'torso',legs:'pants',boots:'boots',gloves:'gloves',cloak:'cloak',head:'head'});
   const actions=['idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus','attack-tech'];
@@ -51,6 +52,7 @@
     for(const kind of Object.values(slots))value[kind]='original';
     const kits={'sample-a':{coat:6,legs:21,boots:8,gloves:25,cloak:23,head:18},'sample-b':{coat:7,legs:22,boots:9,gloves:26,cloak:24,head:19}};
     for(const [slot,kind]of Object.entries(slots)){
+      if(!(root.MareWeapons96||Equipment).composition.rendersSlot(slot))continue;
       const def=look.kit==='equipped'?player?.equipment?.[slot]?.def:kits[look.kit]?.[slot];
       if(def===undefined||def===null)continue;
       const item=catalog.styles.find(s=>s.kind===kind&&s.itemId===def);
