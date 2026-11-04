@@ -287,7 +287,7 @@
         "y": 31
       },
       "visibleHeight": 66,
-      "edgeSide": -1,
+      "edgeSide": 1,
       "bounds": {
         "x0": 34,
         "y0": 31,

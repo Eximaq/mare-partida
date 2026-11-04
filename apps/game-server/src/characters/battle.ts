@@ -50,7 +50,7 @@ export async function pauseBattle(client:PoolClient,id:string){
 }
 export async function syncBattleWorld(client:PoolClient,id:string,area:string|null,now:number){
  const b=await readBattle(client,id);if(!b)return;
- if(b.area!==area)engine.changeArea(b,area,now,rng);else engine.cancel(b);
+ if(b.area!==area)engine.changeArea(b,area,now,rng);else b.auto=false;
  // Manual movement cancels player intent, never rewinds the monsters' clock.
  await storeBattle(client,id,b);
 }
@@ -70,13 +70,15 @@ export async function mutateBattle(client:PoolClient,id:string,input:CharacterCo
   if(b.rulesHash!==engine.rulesHash)throw new AuthFault(503,'battle_rules_changed');
   if(input.action==='battle.auto'){
    if(input.payload.enabled&&(!b.area||b.hp<=0))throw new AuthFault(409,'battle_unavailable');
-   if(!input.payload.enabled)engine.cancel(b);else b.auto=true;
+   if(!input.payload.enabled)b.auto=false;else b.auto=true;
   }else if(input.action==='battle.target'){
    const target=b.mobs.find((m:any)=>m.id===input.payload.targetId&&m.alive&&!m.returning);
    if(input.payload.targetId&&!target)throw new AuthFault(404,'battle_target_missing');
-   engine.cancel(b);b.targetId=target?.id??null;b.auto=!!target;
+   b.targetId=target?.id??null;b.auto=!!target;
   }else if(input.action==='battle.skill'){
-   if(!engine.skill(b,input.payload.index,{hero:w.position,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId}))throw new AuthFault(409,'battle_skill_unavailable');
+   const actor={...w.position,direction:w.direction};
+   if(!engine.skill(b,input.payload.index,{hero:actor,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:(await readTalents(client,id,state))?.build,classId:fighter.classId,factionId:fighter.factionId,now:Date.parse(w.serverNow)}))throw new AuthFault(409,'battle_skill_unavailable');
+   await storeWorld(client,id,{...w,direction:actor.direction,path:[],motionUntil:w.serverNow});
   }else if(input.action==='battle.first'){
    const area=b.hunts.areas[b.area],region=engine.hunt.get(b.area);
    if(!area?.bosses||area.firstRewardClaimed||!region?.firstRarity)throw new AuthFault(409,'battle_first_unavailable');

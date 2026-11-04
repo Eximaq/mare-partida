@@ -37,9 +37,9 @@ test('achievement claims add talent points once, survive replay and reset withou
  const before=await a.read();assert.equal(before.achievements.entries.length,31);assert.equal(before.achievements.entries.filter((x:any)=>x.enabled).length,29);assert.equal(before.achievements.entries.filter((x:any)=>x.enabled).reduce((n:number,x:any)=>n+x.points,0),67);assert.equal(before.achievements.bonus,0);
  assert(before.achievements.entries.find((x:any)=>x.id==='level-0').ready);
  const request=await a.input('achievement.claim',{achievementId:'level-0'});const results=await Promise.all([a.send(request),a.send(request)]);assert.deepEqual(results[0],results[1]);
- const after=await a.read();assert.equal(after.achievements.bonus,1);assert.equal(after.talents.earned,6);assert.equal(after.talents.revision,before.talents.revision+1);assert.equal(after.state.gold,before.state.gold);assert.equal(after.state.experience,before.state.experience);
+ const after=await a.read();assert.equal(after.achievements.bonus,1);assert.equal(after.talents.earned,1);assert.equal(after.talents.revision,before.talents.revision+1);assert.equal(after.state.gold,before.state.gold);assert.equal(after.state.experience,before.state.experience);
  await assert.rejects(a.doit('achievement.claim',{achievementId:'level-0'}),{code:'achievement_already_claimed'});
- await a.doit('talents.commit',{build:{nodes:{'sword-0-0':6},keystone:null,ultimate:null}});await a.doit('talents.reset');assert.equal((await a.read()).talents.available,6);assert.deepEqual(await a.send(request),results[0]);
+ await a.doit('talents.commit',{build:{nodes:{'sword-0-0':1},keystone:null,ultimate:null}});await a.doit('talents.reset');assert.equal((await a.read()).talents.available,1);assert.deepEqual(await a.send(request),results[0]);
  assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.achievement_claims')).rows[0].n,1);
 }));
 
@@ -81,7 +81,7 @@ test('visits use successful canonical travel, count unique destinations and cann
 }));
 
 test('peak power uses committed permanent stats, ignores temporary blessing and survives lowering equipment',async()=>authDatabase(async({service,pool})=>{
- const a=await actor(service,'healer');await pool.query('UPDATE mare_game.character_progression SET level=100 WHERE character_id=$1',[a.c.id]);await a.doit('attributes.allocate',{allocation:{strength:0,dexterity:0,vitality:0,intelligence:495,spirit:0}});
+ const a=await actor(service,'healer');await pool.query('INSERT INTO mare_game.talent_legacy_allowances(character_id,budget) VALUES($1,100)',[a.c.id]);await pool.query('UPDATE mare_game.character_progression SET level=100 WHERE character_id=$1',[a.c.id]);await a.doit('attributes.allocate',{allocation:{strength:0,dexterity:0,vitality:0,intelligence:495,spirit:0}});
  await a.doit('talents.commit',{build:{nodes:Object.fromEntries([0,1,2,3,4].map(i=>['healer-0-'+i,10])),keystone:'chain',ultimate:'eternalBlessing'}});
  const before=await a.read(),require=createRequire(import.meta.url),runtime=require('../../talent-runtime.cjs'),b=before.battle,rt=runtime.load(b);rt.ultimate.holyHP=5000;rt.ultimate.holyAttack=1000;runtime.save(b,rt);
  await pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(b)]);
@@ -135,7 +135,7 @@ test('migration reconstructs only authoritative receipts, visits and wealth with
    await a.doit('items.sell',{itemId:(await a.read()).originalInventory.inventory[0].id});await pool.query("INSERT INTO mare_game.contract_progress(character_id,contract_id,progress) VALUES($1,'bandit',5)",[a.c.id]);await a.doit('contract.claim',{contractId:'bandit'});
    await pool.query('UPDATE mare_game.character_progression SET gold=0 WHERE character_id=$1',[a.c.id]);const before=await a.read();
    const income=(await pool.query('SELECT COALESCE(sum(GREATEST(0,gold_delta)),0)::int n FROM mare_game.game_inventory_events WHERE character_id=$1',[a.c.id])).rows[0].n+125;
-   assert.deepEqual(await applyMigrations(pool),['0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql']);assert.deepEqual(await applyMigrations(pool),[]);const after=await a.read();assert.deepEqual(after.state,before.state);assert.deepEqual(after.originalInventory,before.originalInventory);assert.deepEqual(after.battle,before.battle);assert.deepEqual(after.talents,before.talents);
+   assert.deepEqual(await applyMigrations(pool),['0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql']);assert.deepEqual(await applyMigrations(pool),[]);const after=await a.read();assert.deepEqual(after.state,before.state);assert.deepEqual(after.originalInventory,before.originalInventory);assert.deepEqual(after.battle,before.battle);assert.deepEqual(after.talents,before.talents);
    assert.deepEqual(after.achievements.records.islands,['animais-raros','dawn','orange-town']);assert.equal(after.achievements.records.coins,income);assert.equal(after.achievements.bonus,0);assert.equal(after.achievements.claimed.length,0);
   },dir);
  }finally{assert.equal(dirname(resolve(dir)),resolve(tmpdir()));assert(resolve(dir).startsWith(join(resolve(tmpdir()),'mare-achievement-migrations-')));await rm(dir,{recursive:true,force:true});}

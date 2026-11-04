@@ -74,12 +74,12 @@ test('class skill costs and cooldowns are authoritative; healing and projectiles
 test('ranged skills travel before impact and a released projectile can hit beyond initial cast range',()=>{
  const f=fixture('gunner');f.hero.x=f.m.x-180;f.b.targetId=f.m.id;const hp=f.m.hp;
  assert(f.engine.skill(f.b,0,{hero:f.hero,nav:f.nav,stats:f.stats,classId:'gunner',factionId:'pirate'}));
- f.step(.05);assert.equal(f.m.hp,hp);assert(f.b.projectiles.length);
+ for(let n=0;n<30&&!f.b.projectiles.length;n++)f.step(.05);assert.equal(f.m.hp,hp);assert(f.b.projectiles.length);
  // Original projectile follows its released target; range is checked at release.
  f.hero.x-=50;for(let i=0;i<10;i++)f.step(.05);assert(f.m.hp<hp);
 });
 
 test('healer preference controls automatic healing and profile metrics are server-observed',()=>{
- const run=(healThreshold:number)=>{const f=fixture('healer');f.b.auto=true;f.b.autoSkills=true;f.b.hp=f.stats.maxHP*.6;f.b.mobs=[];f.engine.step(f.b,{hero:f.hero,nav:f.nav,stats:f.stats,classId:'healer',factionId:'pirate',now:1100,dt:.1,rng:()=>.5,preferences:{healThreshold}});return f;};
- const low=run(.25),high=run(.9);assert.equal(low.b.cooldowns[0],0);assert(high.b.cooldowns[0]>0);assert(high.b.hp>low.b.hp);assert.equal(high.b.metrics.seconds,.1);assert.equal(high.b.metrics.damage,0);
+ const run=(healThreshold:number)=>{const f=fixture('healer');f.b.auto=true;f.b.autoSkills=true;f.b.hp=f.stats.maxHP*.6;f.b.mobs=[];f.engine.step(f.b,{hero:f.hero,nav:f.nav,stats:f.stats,classId:'healer',factionId:'pirate',now:2000,dt:1,rng:()=>.5,preferences:{healThreshold}});return f;};
+ const low=run(.25),high=run(.9);assert.equal(low.b.cooldowns[0],0);assert(high.b.cooldowns[0]>0);assert(high.b.hp>low.b.hp);assert(Math.abs(high.b.metrics.seconds-1)<1e-9);assert.equal(high.b.metrics.damage,0);
 });

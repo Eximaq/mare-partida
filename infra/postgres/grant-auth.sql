@@ -99,3 +99,6 @@ GRANT SELECT ON mare_game.character_profile,mare_game.profile_events TO mare_run
 GRANT INSERT(character_id,appearance,preferences,class_builds,starter_classes),UPDATE(appearance,preferences,class_builds,starter_classes) ON mare_game.character_profile TO mare_runtime;
 GRANT INSERT(character_id,request_id,action,version_before,before_state,after_state) ON mare_game.profile_events TO mare_runtime;
 GRANT UPDATE(name,class_id,faction_id) ON mare_game.characters TO mare_runtime;
+
+-- Immutable migration allowance: gameplay may read, never grant or modify it.
+GRANT SELECT ON mare_game.talent_legacy_allowances TO mare_runtime;

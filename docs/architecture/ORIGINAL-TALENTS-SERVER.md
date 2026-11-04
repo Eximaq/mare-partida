@@ -10,7 +10,7 @@ intermediárias e 21 finais. A demonstração mantém seus saves e sua progress�
 
 O snapshot autenticado inclui `talents`: build, revisão, pontos ganhos, gastos e
 disponíveis. Ler não grava nem concede pontos. Desde o bloco de conquistas, o
-orçamento é nível persistido mais a soma dos resgates únicos do servidor; ver
+orçamento é a reserva legada congelada pela migração 0037 mais a soma dos resgates únicos do servidor; personagens novos não recebem reserva. Níveis futuros não concedem PT; ver
 [conquistas autoritativas](ORIGINAL-ACHIEVEMENTS-SERVER.md).
 Não se importam conquistas, árvores, XP ou moeda do navegador.
 
