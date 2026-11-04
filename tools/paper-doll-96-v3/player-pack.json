@@ -3,11 +3,11 @@
   "productionEnabled": true,
   "ownerApprovedOn": "2026-10-30",
   "manifestRevision": "structural-occlusion-v10-2",
-  "weaponRevision": "weapons96-pixellab-pro-v4-e8cc8f370a",
+  "weaponRevision": "weapons96-hd-8c33bb0d169b",
   "source": "Existing native96 materials and authored animations; owner authorised default use in Sprint2.",
   "headgearPolicy": "../../headgear-visibility.js",
   "renderer": "native96",
-  "assetRevision": "native96-a27ac32c8caaaf42",
+  "assetRevision": "native96-5494f3063dc2378b",
   "resources": {
     "assets/appearance3-face-almond-feminino-east.png": [
       128,
@@ -3817,7 +3817,191 @@
       128,
       128
     ],
+    "assets/weapon-item-109-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-109.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-110-armour.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-110-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-110.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-111-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-111.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-112-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-112.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-113-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-113-south-carry.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-113-south.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-113.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-114-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-114-south-carry.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-114-south.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-114.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-115-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-115-south-carry.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-115-south.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-115.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-116-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-116-south-carry.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-116-south.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-116.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-117-armour.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-117-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-117.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-118-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-118-south.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-118.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-119-armour.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-119-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-119.png": [
+      128,
+      128
+    ],
     "assets/weapon-item-12.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-120-armour.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-120-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-120-south.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-120.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-121.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-122.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-123.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-124.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-125.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-126.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-127.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-128.png": [
       128,
       128
     ],
@@ -3869,6 +4053,10 @@
       128,
       128
     ],
+    "assets/weapon-item-4-south-carry.png": [
+      128,
+      128
+    ],
     "assets/weapon-item-4-south.png": [
       128,
       128
@@ -3878,6 +4066,10 @@
       128
     ],
     "assets/weapon-item-5-north.png": [
+      128,
+      128
+    ],
+    "assets/weapon-item-5-south-carry.png": [
       128,
       128
     ],

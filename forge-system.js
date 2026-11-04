@@ -21,7 +21,7 @@
   function extraRange(level,r){const f=Math.sqrt(rarity[r].mult);return {min:Math.ceil((.8+level*.14)*f),max:Math.ceil((2+level*.30)*f)};}
   function rollExtras(item,def,random){
     const r=rarity[item.rarity],bounds=extraRange(item.level,item.rarity);
-    const pool=[...keys,'hp','energy','crit'].filter(k=>!(def.slot==='weapon'&&(def.type==='strategist'||def.type==='healer'?k==='strength':k==='intelligence')));
+    const pool=[...(def.extraPool||[...keys,'hp','energy','crit'])].filter(k=>!(def.slot==='weapon'&&(def.type==='strategist'||def.type==='healer'?k==='strength':k==='intelligence')));
     return Array.from({length:r.extras},()=>{const stat=pool.splice(range(0,pool.length-1,random),1)[0];let value=range(bounds.min,bounds.max,random);if(stat==='hp')value*=8;if(stat==='energy')value*=4;if(stat==='crit')value=Math.min(.04,value*.0015);return {stat,value};});
   }
   function normalizeItem(original,defs,random=null){
@@ -48,6 +48,9 @@
     const zero={attack:0,defense:0,hp:0,energy:0,crit:0,attributes:Object.fromEntries(keys.map(k=>[k,0]))};if(!isGear(item,defs))return zero;
     const d=defs[item.def]||{},r=rarity[item.rarity||d.rarity]||rarity.common,b=item.baseStats||d,m=1+Math.min(20,Math.max(0,(item.level||1)-1))*.09,plus=int(item.plus);
     const result={...zero,attack:Math.round(((b.attack||0)*r.mult+plus*3)*m),defense:Math.round(((b.defense||0)*r.mult+plus*2)*m),hp:Math.round(((b.hp||0)*r.mult+plus*10)*m)};
+    // Intrinsic class attributes are separate from rerollable extras and saved baseStats.
+    for(const key of keys)result.attributes[key]=Math.round((d.attributes?.[key]||0)*r.mult*m);
+    result.crit=(d.crit||0)*r.mult;
     for(const extra of item.extras||[]){if(!Number.isFinite(extra.value)||extra.value<0)continue;if(keys.includes(extra.stat))result.attributes[extra.stat]+=extra.value;else if(['hp','energy','crit'].includes(extra.stat))result[extra.stat]+=extra.value;}
     return result;
   }
@@ -83,7 +86,7 @@
   }
   function rollLine(item,def,index,random){
     const occupied=new Set(item.extras.filter((_,i)=>i!==index).map(x=>x.stat));
-    const pool=[...keys,'hp','energy','crit'].filter(k=>!occupied.has(k)&&!(def.slot==='weapon'&&(def.type==='strategist'||def.type==='healer'?k==='strength':k==='intelligence')));
+    const pool=[...(def.extraPool||[...keys,'hp','energy','crit'])].filter(k=>!occupied.has(k)&&!(def.slot==='weapon'&&(def.type==='strategist'||def.type==='healer'?k==='strength':k==='intelligence')));
     const stat=pool[range(0,pool.length-1,random)],bounds=extraRange(item.level,item.rarity);let value=range(bounds.min,bounds.max,random);
     if(stat==='hp')value*=8;if(stat==='energy')value*=4;if(stat==='crit')value=Math.min(.04,value*.0015);return {stat,value};
   }

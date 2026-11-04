@@ -1,13 +1,13 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
 const H=require('../headgear-visibility.js'),R=require('../paper-doll-96-lobby.js');
-assert.equal(H.resolve(19).hideHair,true);assert.equal(H.resolve(18).hideHair,false);
+assert.equal(H.resolve(19).hideHair,true);assert.equal(H.resolve(18).hideHair,true);
 for(const item of [null,undefined,'original','none'])assert.equal(H.resolve(item).visible,false);
 assert.equal(H.resolve(19,{hidden:true}).hideHair,false);
 assert.equal(H.resolve(999,{model:{hideHair:true}}).hideHair,true);
 assert.equal(H.resolve(999,{model:{hairOcclusion:'all'}}).hideHair,true);
-assert.equal(H.resolve(19,{model:{hairOcclusion:'none'}}).hideHair,false);
-assert.equal(H.resolve(999,{model:{hairOcclusion:'crown'}}).hairOcclusion,'crown');
+assert.equal(H.resolve(19,{model:{hairOcclusion:'none'}}).hideHair,true);
+assert.equal(H.resolve(999,{model:{hairOcclusion:'crown'}}).hairOcclusion,'all');
 const player={equipment:{head:{id:'kept',def:19,plus:7,rarity:'epic'}},inventory:[{id:'bag'}],preferences:{hideItems:true},hp:41};
 const before=JSON.stringify(player),next=H.withPreference(player,true);
 assert.equal(JSON.stringify(player),before);assert.equal(next.equipment,player.equipment);assert.equal(next.inventory,player.inventory);assert.equal(next.hp,player.hp);
@@ -27,4 +27,4 @@ const headPiece={...structuredClone(legacyPack.pieces.find(p=>p.slot==='hair')),
 const legacyPlayer={classId:'sword',factionId:'pirate',equipment:{head:{def:19}}};
 assert(Legacy.appearance(legacyPack,legacyPlayer,{production:true}).hidden.includes('hair'),'archived compositor retains its isolated headgear contract');
 const legacyHidden=Legacy.appearance(legacyPack,H.withPreference(legacyPlayer,true),{production:true});assert(!legacyHidden.hidden.includes('hair'));assert.equal(legacyHidden.pieces.head,undefined);
-console.log('Headgear: configurable hair policy, immutable preference, accessible button, release/default and DEV isolation passed.');
+console.log('Headgear: full hair suppression for any visible head item, immutable preference, accessible button, release/default and DEV isolation passed.');

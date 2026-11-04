@@ -31,8 +31,10 @@ def expected_release():
     if release.get('id') != 'native-player96-v1' or release.get('productionEnabled') is not True:
         raise ValueError('Owner-approved native release is required')
     paths = set()
+    models = {}
     for name in DATA:
-        paths.update(references(json.loads((BASE / name).read_text(encoding='utf-8'))))
+        models[name] = json.loads((BASE / name).read_text(encoding='utf-8'))
+        paths.update(references(models[name]))
     resources = {}
     sources = {name: BASE / name for name in DATA + MODULES}
     sources.update({'root/' + name: ROOT / name for name in ROOT_MODULES})
@@ -50,7 +52,9 @@ def expected_release():
     for name, file in sorted(sources.items()):
         digest.update(name.encode() + b'\0' + fingerprint_content(name, file.read_bytes()) + b'\0')
     release.pop('fallbackQuery', None)
-    release.update(renderer='native96', assetRevision='native96-' + digest.hexdigest()[:16], resources=resources)
+    release.update(renderer='native96', assetRevision='native96-' + digest.hexdigest()[:16],
+                   manifestRevision=models['manifest.json']['visualRevision'],
+                   weaponRevision=models['weapons.json']['revision'], resources=resources)
     return release
 
 

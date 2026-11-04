@@ -33,6 +33,10 @@ on:
       - 'tests/paper_doll_96_lobby_browser.cjs'
       - 'tests/paper-doll-96-weapons.test.cjs'
       - 'tests/paper-doll-96-other-weapons.test.cjs'
+      - 'tests/class-weapons-*.cjs'
+      - 'tests/class-weapon-layer-browser.cjs'
+      - 'tests/equipment-*.cjs'
+      - 'tests/firearm-south-carry.test.cjs'
       - 'tests/paper_doll_96_weapons_browser.cjs'
       - 'tests/ranged_autohunt_browser.cjs'
       - 'tools/paper_doll_96_weapon_materials.cjs'
@@ -134,6 +138,10 @@ jobs:
       - name: Auditar armas e combate real
         run: |
           node tests/paper-doll-96-other-weapons.test.cjs
+          node --test tests/class-weapons-batch-1.test.cjs tests/class-weapons-batch-2.test.cjs tests/class-weapons-remaining.test.cjs tests/firearm-south-carry.test.cjs tests/equipment-composition-policy.test.cjs
+          node tests/class-weapons-fit-browser.cjs http://127.0.0.1:8157/
+          node tests/class-weapon-layer-browser.cjs http://127.0.0.1:8157/
+          node tests/equipment-occlusion-browser.cjs http://127.0.0.1:8157/
           node tests/ranged_autohunt_browser.cjs http://127.0.0.1:8157/dist/ --evidence="$RUNNER_TEMP/other-weapons96/ranged"
           node tests/paper_doll_96_weapons_browser.cjs http://127.0.0.1:8157/dist/ --other-classes --default-player --evidence="$RUNNER_TEMP/other-weapons96"
       - uses: actions/upload-artifact@v4
