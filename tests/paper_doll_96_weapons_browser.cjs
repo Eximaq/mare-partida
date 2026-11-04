@@ -7,6 +7,8 @@ const origin=process.argv.find(a=>/^https?:/.test(a))||'http://127.0.0.1:8157/';
 const materialsOnly=process.argv.includes('--materials-only'),combatOnly=process.argv.includes('--combat-only'),otherClasses=process.argv.includes('--other-classes');
 const output=process.argv.find(a=>a.startsWith('--evidence='))?.slice(11);
 const defaultPlayer=process.argv.includes('--default-player');
+const selectedIds=process.argv.find(a=>a.startsWith('--items='))?.slice(8).split(',').map(Number);
+if(selectedIds)assert(selectedIds.length>0&&selectedIds.every(Number.isSafeInteger),'explicit item IDs');
 // Stable inputs make a CI failure reproducible; use --seed=N to explore another hunt.
 const seed=Number(process.argv.find(a=>a.startsWith('--seed='))?.slice(7)??1);
 assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32');
@@ -84,15 +86,15 @@ assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32'
  await game.goto(new URL(defaultPlayer?'':'?paperDoll96=1',origin).href,{waitUntil:'networkidle'});await game.waitForFunction(()=>window.__weaponQA&&__mareDiagnostics().lobby96.state==='ready');
  await game.locator('#characterName').fill('Armas96');await game.locator('#nextToClass').click();await game.locator('#nextToAppearance').click();await game.locator('#createCharacter').click();await game.locator('[data-confirm-accept]').click();await game.evaluate(()=>{__weaponQA.enterHunt();__weaponQA.pause();});await game.waitForFunction(()=>__weaponQA.prepareMap());
  let fights=0,kills=0;const results=[];
- const ids=otherClasses?[2,3,4,5,14,15,16,17,31,32]:[0,1,12,13,67,68,69,70,71,72,73,74];
+ const ids=selectedIds||(otherClasses?[2,3,4,5,14,15,16,17,31,32]:[0,1,12,13,67,68,69,70,71,72,73,74]);
  for(const body of ['masculino','feminino'])for(const id of ids){
   const equipped=await game.evaluate(async({body,id})=>{const result=__weaponQA.equip(id),r=__weaponQA.r;if(!r.snapshot().rehearsal)__weaponQA.g.appearance96={...MareCharacterAppearance.read(__weaponQA.g),gender:body};r.setDraft('body',body);r.setDraft('kit','sample-b');r.apply(__weaponQA.g);if(!await r.ensure(__weaponQA.g))throw Error('Equipment composition failed: '+JSON.stringify(r.snapshot()));return result;},{body,id});assert.equal(equipped.equipped,id);
   const result=await game.evaluate(()=>__weaponQA.fight());assert(result.damage>0);assert(result.hits.length>0);assert(result.hits.every(h=>(result.ranged||h.frame===4)&&h.weapon==='weapon-'+id),JSON.stringify({body,id,result}));if(result.ranged){assert(result.releases.length>0,'projectile or beam emitted');for(const release of result.releases){assert.equal(release.frame,4,'release pose');if(otherClasses){assert(release.expected,'native96 emitter');assert(Math.abs(release.origin.x-release.expected.x)<.001&&Math.abs(release.origin.y-release.expected.y)<.001,'emission matches composed weapon');}}}assert(result.frames.includes(0)&&result.frames.includes(7),'show windup and recovery');results.push({body,id,damage:result.damage,hits:result.hits,releases:result.releases});fights++;console.log('weapons-combat:'+body+':'+id);
  }
- for(const id of otherClasses?[4,15]:[70,74]){await game.evaluate(async id=>{__weaponQA.equip(id);await __weaponQA.r.ensure(__weaponQA.g);},id);for(let i=0;i<10;i++){const result=await game.evaluate(()=>__weaponQA.fight(true));kills+=result.kills;}}
- assert.equal(kills,20);
+ for(const id of selectedIds?[]:otherClasses?[4,15]:[70,74]){await game.evaluate(async id=>{__weaponQA.equip(id);await __weaponQA.r.ensure(__weaponQA.g);},id);for(let i=0;i<10;i++){const result=await game.evaluate(()=>__weaponQA.fight(true));kills+=result.kills;}}
+ assert.equal(kills,selectedIds?0:20);
  await game.evaluate(async()=>{__weaponQA.unequip();await __weaponQA.r.ensure(__weaponQA.g);});const unarmed=await game.evaluate(()=>__weaponQA.fight());assert(unarmed.hits.every(h=>h.action==='attack-unarmed'));
- const natural=[];if(otherClasses){
+ const natural=[];if(otherClasses&&!selectedIds){
   // Respawn uses wall dates; advance those with the accelerated simulation.
   let naturalTime=Date.now();await game.clock.setFixedTime(naturalTime);
   for(const id of [2,4,14,16,31]){

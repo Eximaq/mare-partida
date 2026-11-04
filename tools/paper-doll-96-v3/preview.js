@@ -62,10 +62,10 @@
     const spec = motion.clipSpec(manifest, selected.clip);
     const key = [selected.key, JSON.stringify(selected.look), fi, ...hidden].join(':');
     if (composites.has(key)) return composites.get(key);
-    const tile = document.createElement('canvas'); const pad=wardrobe.weaponPadding(selected,spec,selected.look);tile.width = spec.width+pad.x*2; tile.height = spec.height+pad.top+pad.bottom;tile.mareSpec={...spec,width:tile.width,height:tile.height,pivot:{x:spec.pivot.x+pad.x,y:spec.pivot.y+pad.top}};const tc=tile.getContext('2d');tc.translate(pad.x,pad.top);
+    const tile = document.createElement('canvas'); const pad=wardrobe.weaponPadding(selected,spec,selected.look),density=weaponCatalog.items.find(w=>w.id===selected.look.weapon)?.renderDensity||1;tile.mareSpec={...spec,width:spec.width+pad.x*2,height:spec.height+pad.top+pad.bottom,pivot:{x:spec.pivot.x+pad.x,y:spec.pivot.y+pad.top}};tile.width=tile.mareSpec.width*density;tile.height=tile.mareSpec.height*density;tile.mareDensity=density;const tc=tile.getContext('2d');tc.imageSmoothingEnabled=false;tc.scale(density,density);tc.translate(pad.x,pad.top);
     if(Object.keys(selected.look).length)wardrobe.draw(tc,selected.images||loaded,selected,fi,spec,hidden,selected.look);
     else MareLayers96.draw(tc, selected.images||loaded, selected.layers, fi, spec, hidden);
-    tc.setTransform(1,0,0,1,0,0);if(selected.flipX){const copy=document.createElement('canvas');copy.width=tile.width;copy.height=tile.height;copy.getContext('2d').drawImage(tile,0,0);const cx=tile.getContext('2d');cx.clearRect(0,0,tile.width,tile.height);cx.save();cx.imageSmoothingEnabled=false;cx.setTransform(-1,0,0,1,tile.width+1,0);cx.drawImage(copy,0,0);cx.restore();}
+    tc.setTransform(1,0,0,1,0,0);if(selected.flipX){const copy=document.createElement('canvas');copy.width=tile.width;copy.height=tile.height;copy.getContext('2d').drawImage(tile,0,0);const cx=tile.getContext('2d');cx.clearRect(0,0,tile.width,tile.height);cx.save();cx.imageSmoothingEnabled=false;cx.setTransform(-1,0,0,1,tile.width+density,0);cx.drawImage(copy,0,0);cx.restore();}
     composites.set(key, tile);
     if (composites.size > 64) composites.delete(composites.keys().next().value);
     return tile;
@@ -78,7 +78,7 @@
     return compose(selected, fi, hidden);
   }
   function actor(ctx, img, spec, x = 300, feet = 260) {
-    ctx.drawImage(img, 0, 0, spec.width, spec.height,
+    ctx.drawImage(img, 0, 0, img.width, img.height,
       x - spec.pivot.x * spec.scale, feet - spec.pivot.y * spec.scale, spec.width * spec.scale, spec.height * spec.scale);
   }
   function background(canvas) {

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": "weapons96-pixellab-pro-v4-e8cc8f370a",
+  "revision": "weapons96-hd-batch1-dd885738eb",
   "referenceHeight": 96,
   "reviewOnly": true,
   "source": "Owner artwork and current inventory icons; inventory files preserved",
@@ -172,7 +172,7 @@
     {
       "id": "weapon-13",
       "itemId": 13,
-      "name": "Lâminas Acrobáticas",
+      "name": "LÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢minas AcrobÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡ticas",
       "category": "daggers",
       "source": "assets/weapon-item-13.png",
       "reference": "assets/ui/items-pixellab/13.png",
@@ -566,7 +566,7 @@
     {
       "id": "weapon-74",
       "itemId": 74,
-      "name": "Lâmina das Trevas",
+      "name": "LÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢mina das Trevas",
       "category": "daggers",
       "source": "assets/weapon-item-74.png",
       "reference": "assets/ui/items-pixellab/lamina-das-trevas.png",
@@ -665,7 +665,7 @@
     {
       "id": "weapon-4",
       "itemId": 4,
-      "name": "Mosquete de Convés",
+      "name": "Mosquete de ConvÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©s",
       "category": "firearm",
       "source": "assets/weapon-item-4.png",
       "reference": "assets/ui/items-pixellab/4.png",
@@ -790,7 +790,7 @@
     {
       "id": "weapon-14",
       "itemId": 14,
-      "name": "Manopla de Aço",
+      "name": "Manopla de AÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â§o",
       "category": "tech",
       "source": "assets/weapon-item-14.png",
       "reference": "assets/ui/items-pixellab/14.png",
@@ -949,7 +949,7 @@
     {
       "id": "weapon-5",
       "itemId": 5,
-      "name": "Mosquete dos Faróis",
+      "name": "Mosquete dos FarÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â³is",
       "category": "firearm",
       "source": "assets/weapon-item-5.png",
       "reference": "assets/ui/items-pixellab/5.png",
@@ -1082,7 +1082,7 @@
     {
       "id": "weapon-15",
       "itemId": 15,
-      "name": "Canhão de Pulso",
+      "name": "CanhÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â£o de Pulso",
       "category": "tech",
       "source": "assets/weapon-item-15.png",
       "reference": "assets/ui/items-pixellab/15.png",
@@ -1326,7 +1326,7 @@
     {
       "id": "weapon-32",
       "itemId": 32,
-      "name": "Relicário da Maré Viva",
+      "name": "RelicÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¡rio da MarÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â© Viva",
       "category": "focus",
       "source": "assets/weapon-item-32.png",
       "reference": "assets/ui/items-pixellab/32.png",
@@ -1378,6 +1378,513 @@
         "nativeSha256": "daca236c1f9a04b595e6dd02eda4a31611ca8e8704ec42230db92bdc06b16b94",
         "processing": "transparent padding only; no resize, palette reduction or geometry reconstruction"
       }
+    },
+    {
+      "id": "weapon-109",
+      "itemId": 109,
+      "name": "Manoplas do Coral Negro",
+      "category": "unarmed",
+      "source": "assets/weapon-item-109.png",
+      "reference": "assets/ui/items-hd/manoplas-do-coral-negro.png",
+      "referenceSha256": "49408b287e7ad03bc72f5ad4c7ed1aa0cebe86362746e6663a9ccff6ccb0b314",
+      "sha256": "51a68cf90c65a91c6ac8c9ac03b5852d1592d10d056dcac0430ec4129189d047",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 84,
+        "y": 65
+      },
+      "tip": {
+        "x": 109,
+        "y": 65
+      },
+      "visibleHeight": 23,
+      "bounds": {
+        "x0": 14,
+        "y0": 32,
+        "x1": 113,
+        "y1": 97
+      },
+      "edgeSide": 0,
+      "paired": true,
+      "effect": null,
+      "attachment": {
+        "kind": "gauntlet",
+        "palmInward": true,
+        "coverPalm": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "55eeba35-f899-4482-bcd8-66d1de857ecf",
+        "assetId": "63f76de3-5e5b-5ce8-8e4b-ad630309e466",
+        "candidate": 2,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "51a68cf90c65a91c6ac8c9ac03b5852d1592d10d056dcac0430ec4129189d047",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "materialScale": 0.23,
+      "renderDensity": 3,
+      "views": {
+        "north": {
+          "source": "assets/weapon-item-109-north.png",
+          "sha256": "128bac470732a42f877abe56717113b285b697a8173953cd71e81f44caca5d1f",
+          "grip": {
+            "x": 82,
+            "y": 65
+          },
+          "tip": {
+            "x": 106,
+            "y": 65
+          },
+          "axisAngle": 1.5707963267948966,
+          "bounds": {
+            "x0": 14,
+            "y0": 32,
+            "x1": 113,
+            "y1": 97
+          },
+          "materialScale": 0.23,
+          "renderDensity": 3,
+          "visibleHeight": 23,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "700524e3-b8c5-4a79-ac08-01c1ec6d229e",
+            "assetId": "c237f247-26a9-5753-816e-3d5bcd82dc51",
+            "candidate": 0,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "128bac470732a42f877abe56717113b285b697a8173953cd71e81f44caca5d1f",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-110",
+      "itemId": 110,
+      "name": "Punhos do Dragão Carmesim",
+      "category": "unarmed",
+      "source": "assets/weapon-item-110.png",
+      "reference": "assets/ui/items-hd/punhos-do-dragao-carmesim.png",
+      "referenceSha256": "a224f83c82e8dbdb6a488f2ee25550c6b8f4409bf06c655c9c39ac94ccfa033e",
+      "sha256": "c89136a3457f7cd67a6717b6d0e5ff496c504545bd713fbc7d89e1c80efcb791",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 91,
+        "y": 71
+      },
+      "tip": {
+        "x": 114,
+        "y": 71
+      },
+      "visibleHeight": 23,
+      "bounds": {
+        "x0": 17,
+        "y0": 31,
+        "x1": 121,
+        "y1": 91
+      },
+      "edgeSide": 0,
+      "paired": true,
+      "effect": null,
+      "attachment": {
+        "kind": "gauntlet",
+        "palmInward": true,
+        "coverPalm": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "f970fc9b-8b3d-436a-9e10-9dcf63cfec1e",
+        "assetId": "a431c15a-34ce-5c80-a212-a6aa0a7319ee",
+        "candidate": 1,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "c89136a3457f7cd67a6717b6d0e5ff496c504545bd713fbc7d89e1c80efcb791",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "materialScale": 0.21904761904761905,
+      "renderDensity": 3,
+      "armour": {
+        "source": "assets/weapon-item-110-armour.png",
+        "sha256": "1f54f08ab9abc218a01e32f7081f2031b337bf57d9be6389bb200a866c96aaaa",
+        "shoulder": {
+          "x": 27,
+          "y": 58
+        },
+        "elbow": {
+          "x": 66,
+          "y": 64
+        },
+        "wrist": {
+          "x": 110,
+          "y": 64
+        },
+        "generation": {
+          "tool": "pixellab",
+          "model": "pro",
+          "jobId": "f7251440-2d8c-473b-af35-d28e8662d717",
+          "assetId": "464de4b3-893e-554d-beb1-c08a6c58a476",
+          "candidate": 2
+        }
+      },
+      "views": {
+        "north": {
+          "source": "assets/weapon-item-110-north.png",
+          "sha256": "8191beda88efbc9306c99b1bc0fa45e490918f6f0432d7cfb86d19e463ea40d4",
+          "grip": {
+            "x": 88,
+            "y": 67
+          },
+          "tip": {
+            "x": 112,
+            "y": 67
+          },
+          "axisAngle": 1.5707963267948966,
+          "bounds": {
+            "x0": 17,
+            "y0": 34,
+            "x1": 121,
+            "y1": 91
+          },
+          "materialScale": 0.21904761904761905,
+          "renderDensity": 3,
+          "visibleHeight": 23,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "700524e3-b8c5-4a79-ac08-01c1ec6d229e",
+            "assetId": "c237f247-26a9-5753-816e-3d5bcd82dc51",
+            "candidate": 1,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "8191beda88efbc9306c99b1bc0fa45e490918f6f0432d7cfb86d19e463ea40d4",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-111",
+      "itemId": 111,
+      "name": "Luva do Abalo Sísmico",
+      "category": "unarmed",
+      "source": "assets/weapon-item-111.png",
+      "reference": "assets/ui/items-hd/luva-do-abalo-sismico.png",
+      "referenceSha256": "68d2274c21f3cd248172842d0999b9161adc8d8e06b2883ace46e30f3d556b71",
+      "sha256": "68d2274c21f3cd248172842d0999b9161adc8d8e06b2883ace46e30f3d556b71",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 88,
+        "y": 65
+      },
+      "tip": {
+        "x": 114,
+        "y": 65
+      },
+      "visibleHeight": 23,
+      "bounds": {
+        "x0": 6,
+        "y0": 30,
+        "x1": 121,
+        "y1": 95
+      },
+      "edgeSide": 0,
+      "paired": true,
+      "effect": null,
+      "attachment": {
+        "kind": "gauntlet",
+        "palmInward": true,
+        "coverPalm": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "c671c7db-797c-4754-9012-d20789700de7",
+        "assetId": "9a724596-7544-5ae7-9f1a-9670665fc0d0",
+        "candidate": 2,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "68d2274c21f3cd248172842d0999b9161adc8d8e06b2883ace46e30f3d556b71",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "materialScale": 0.19827586206896552,
+      "renderDensity": 3,
+      "views": {
+        "north": {
+          "source": "assets/weapon-item-111-north.png",
+          "sha256": "af10fab45d69afeda39293b65c614a46d96e93567df9bb03278e9258b68cd039",
+          "grip": {
+            "x": 88,
+            "y": 66
+          },
+          "tip": {
+            "x": 112,
+            "y": 66
+          },
+          "axisAngle": 1.5707963267948966,
+          "bounds": {
+            "x0": 6,
+            "y0": 30,
+            "x1": 121,
+            "y1": 95
+          },
+          "materialScale": 0.19827586206896552,
+          "renderDensity": 3,
+          "visibleHeight": 23,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "700524e3-b8c5-4a79-ac08-01c1ec6d229e",
+            "assetId": "c237f247-26a9-5753-816e-3d5bcd82dc51",
+            "candidate": 2,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "af10fab45d69afeda39293b65c614a46d96e93567df9bb03278e9258b68cd039",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-112",
+      "itemId": 112,
+      "name": "Manoplas da Ruptura dos Mares",
+      "category": "unarmed",
+      "source": "assets/weapon-item-112.png",
+      "reference": "assets/ui/items-hd/manoplas-da-ruptura-dos-mares.png",
+      "referenceSha256": "69ec2e6da2c9353ad525122651f63179dc93851f5f9da7943dca0099932e8b15",
+      "sha256": "5399e85b01754375b35fc12d4d426c46d76663a7b5d2fe2350e1f4b8d29a02e4",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 88,
+        "y": 64
+      },
+      "tip": {
+        "x": 109,
+        "y": 64
+      },
+      "visibleHeight": 20,
+      "bounds": {
+        "x0": 14,
+        "y0": 37,
+        "x1": 114,
+        "y1": 94
+      },
+      "edgeSide": 0,
+      "paired": true,
+      "effect": null,
+      "attachment": {
+        "kind": "gauntlet",
+        "palmInward": true,
+        "coverPalm": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "d0b3f36a-b42b-4316-a02c-e050313fea4e",
+        "assetId": "9ca400bc-a2a5-599b-96ef-7fa888317446",
+        "candidate": 0,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "5399e85b01754375b35fc12d4d426c46d76663a7b5d2fe2350e1f4b8d29a02e4",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "materialScale": 0.19801980198019803,
+      "renderDensity": 3,
+      "views": {
+        "north": {
+          "source": "assets/weapon-item-112-north.png",
+          "sha256": "98739abf2e8475627cebb7b740629375c2e8ad2d82037f4b6b311c8870a2494d",
+          "grip": {
+            "x": 89,
+            "y": 65
+          },
+          "tip": {
+            "x": 111,
+            "y": 65
+          },
+          "axisAngle": 1.5707963267948966,
+          "bounds": {
+            "x0": 14,
+            "y0": 37,
+            "x1": 114,
+            "y1": 94
+          },
+          "materialScale": 0.19801980198019803,
+          "renderDensity": 3,
+          "visibleHeight": 20,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "700524e3-b8c5-4a79-ac08-01c1ec6d229e",
+            "assetId": "c237f247-26a9-5753-816e-3d5bcd82dc51",
+            "candidate": 3,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "98739abf2e8475627cebb7b740629375c2e8ad2d82037f4b6b311c8870a2494d",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        }
+      }
+    },
+    {
+      "id": "weapon-113",
+      "itemId": 113,
+      "name": "Mosquete do Vento Cortante",
+      "category": "firearm",
+      "source": "assets/weapon-item-113.png",
+      "reference": "assets/ui/items-hd/mosquete-do-vento-cortante.png",
+      "referenceSha256": "2985a0fab334da070f9dd5329baaccf601cf00728493a305f607e94deec2e9f4",
+      "sha256": "0c75e371a474d180b50226c6dde7af044662046f6a26e11e5ff5def54d0c9051",
+      "frame": {
+        "width": 128,
+        "height": 128
+      },
+      "grip": {
+        "x": 47,
+        "y": 67
+      },
+      "tip": {
+        "x": 121,
+        "y": 62
+      },
+      "visibleHeight": 56,
+      "bounds": {
+        "x0": 3,
+        "y0": 49,
+        "x1": 124,
+        "y1": 81
+      },
+      "edgeSide": 0,
+      "paired": false,
+      "effect": null,
+      "attachment": {
+        "kind": "rifle",
+        "carryUpright": true
+      },
+      "axisAngle": 1.5707963267948966,
+      "generation": {
+        "tool": "pixellab",
+        "model": "pro",
+        "jobId": "61b81f57-571e-42e0-a67b-a6b0ab283363",
+        "assetId": "78b37286-227a-5c47-8cd9-22b35208616f",
+        "candidate": 0,
+        "nativeCanvas": {
+          "width": 128,
+          "height": 128
+        },
+        "nativeSha256": "0c75e371a474d180b50226c6dde7af044662046f6a26e11e5ff5def54d0c9051",
+        "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+      },
+      "views": {
+        "south": {
+          "source": "assets/weapon-item-113-south.png",
+          "sha256": "cb91c8982b865a97d367f30a7f15034db43031df26c8ab0e31a358429338ecce",
+          "grip": {
+            "x": 64,
+            "y": 77
+          },
+          "tip": {
+            "x": 64,
+            "y": 18
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 53,
+            "y0": 10,
+            "x1": 72,
+            "y1": 109
+          },
+          "materialScale": 0.34,
+          "renderDensity": 3,
+          "visibleHeight": 34,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "61b81f57-571e-42e0-a67b-a6b0ab283363",
+            "assetId": "78b37286-227a-5c47-8cd9-22b35208616f",
+            "candidate": 1,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "cb91c8982b865a97d367f30a7f15034db43031df26c8ab0e31a358429338ecce",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        },
+        "north": {
+          "source": "assets/weapon-item-113-north.png",
+          "sha256": "0b5a2a522503396c508452746e38eaa29c3c73f2b1993dadc79d85d1da591ab5",
+          "grip": {
+            "x": 64,
+            "y": 78
+          },
+          "tip": {
+            "x": 64,
+            "y": 14
+          },
+          "axisAngle": 0,
+          "bounds": {
+            "x0": 56,
+            "y0": 11,
+            "x1": 73,
+            "y1": 117
+          },
+          "materialScale": 0.3177570093457944,
+          "renderDensity": 3,
+          "visibleHeight": 34,
+          "generation": {
+            "tool": "pixellab",
+            "model": "pro",
+            "jobId": "61b81f57-571e-42e0-a67b-a6b0ab283363",
+            "assetId": "78b37286-227a-5c47-8cd9-22b35208616f",
+            "candidate": 2,
+            "nativeCanvas": {
+              "width": 128,
+              "height": 128
+            },
+            "nativeSha256": "0b5a2a522503396c508452746e38eaa29c3c73f2b1993dadc79d85d1da591ab5",
+            "processing": "Source pixels preserved; logical hand fit with 3x composition, no colour downsampling"
+          }
+        }
+      },
+      "materialScale": 0.45901639344262296,
+      "renderDensity": 3
     }
   ],
   "fitRevision": 4

@@ -64,6 +64,7 @@
       if(catalog.headFit!=='canonical-neck-v7'&&catalog.originalHands?.[selected.body]?.[selected.direction])files.push(catalog.originalHands[selected.body][selected.direction]);
       if(catalog.nativeOwnership?.atlases?.[selected.body]?.[selected.action])files.push(catalog.nativeOwnership.atlases[selected.body][selected.action].file);
       if(weapons?.descriptor(look.weapon,selected.direction))files.push(weapons.descriptor(look.weapon,selected.direction).source);
+      if(weapons?.descriptor(look.weapon)?.armour)files.push(weapons.descriptor(look.weapon).armour.source);
       return [...new Set(files)];
     }
     async function prepare(selected,look,hidden=null){return new Map(await Promise.all(requiredFiles(selected,look,hidden).map(async file=>[file,await load(file)])));}
@@ -287,6 +288,7 @@
         cx.globalCompositeOperation='destination-out';cx.drawImage(pieces.cloak.full,0,0);ctx.drawImage(c,0,0);
       };
       visibleArm(frontHands);
+      let inspectedPalms=null;
       if(look.inspectionBareHands){
         // Some native far-hand strips contain the old brown leather mitten.
         // Repaint only those occupied palm pixels, retaining the native contour,
@@ -302,7 +304,7 @@
             const shade=r<65?1:r<105?2:r<145?3:4;palms.set([...ramp[shade],255],i);
           }
         }
-        visibleArm(fromPixels(palms,spec.width,spec.height));
+        inspectedPalms=palms;visibleArm(fromPixels(palms,spec.width,spec.height));
       }
       if(pieces.gloves)for(const side of behind)visibleArm(pieces.gloves[side]);
       if(pieces.gloves)for(const side of inFront)visibleArm(pieces.gloves[side]);
@@ -323,7 +325,28 @@
           if(nativeHand[i+3]&&[0,1,2,3].every(k=>nativeHand[i+k]===wornBody[i+k]))wornHands[p]=1;
         }
       }
-      weapons?.drawWorn(ctx,images,weaponPlan,spec,{body:wornBody,hands:wornHands,head:headPixels,cloak:selected.direction==='north'?pieces.cloak?.full:null});
+      const covered=weaponPlan.filter(e=>e.model.attachment?.coverPalm),armourMask=ownership.arms.slice();
+      if(covered.length){
+        // Some old far palms live in the body strip, outside the hand atlas.
+        // Recover their exact visible pixels near the measured wrist, including
+        // the inspection skin pass. A hair/cloth pixel in front must still win.
+        wornHands=wornHands.slice();const actual=ctx.getImageData(0,0,ctx.canvas.width,ctx.canvas.height),transform=ctx.getTransform();
+        for(const entry of covered){
+          const j=pose.find(p=>p.label===entry.side+' ARM'),e=pose.find(p=>p.label===entry.side+' ELBOW'),s=pose.find(p=>p.label===entry.side+' SHOULDER');
+          const a={x:s.x*128+padding,y:s.y*128+padding},b={x:e.x*128+padding,y:e.y*128+padding},c={x:j.x*128+padding,y:j.y*128+padding};
+          for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){
+            const p=y*spec.width+x,i=p*4,near=Math.hypot(x-entry.x,y-entry.y)<=6.3;
+            if(!near&&!entry.model.armour||!neutralPixels[i+3])continue;
+            if(!near&&(!api.isSkin(neutralPixels[i],neutralPixels[i+1],neutralPixels[i+2])||Math.min(MareMotion96.distanceToSegment({x,y},a,b),MareMotion96.distanceToSegment({x,y},b,c))>5))continue;
+            const expected=inspectedPalms?.[i+3]?inspectedPalms:bare,xx=Math.round((x+.5)*transform.a+transform.e),yy=Math.round((y+.5)*transform.d+transform.f),o=(yy*actual.width+xx)*4;
+            if(![0,1,2,3].every(k=>expected[i+k]===actual.data[o+k]))continue;
+            if(near)wornHands[p]=1;if(entry.model.armour)armourMask[p]=1;
+          }
+        }
+      }
+      const occlusion={body:wornBody,hands:wornHands,arms:armourMask,head:headPixels,headLine:pose.find(j=>j.label==='NECK').y*128+padding+3,cloak:selected.direction==='north'?pieces.cloak?.full:null};
+      weapons?.drawArmour(ctx,images,weaponPlan,spec,pose,occlusion);
+      weapons?.drawWorn(ctx,images,weaponPlan,spec,occlusion);
       return weaponPlan.map(entry=>({side:entry.side,point:weapons.point(entry),itemId:entry.model.itemId}));
     }
     return {prepare,requiredFiles,nativeFiles,draw,weaponPadding:(selected,spec,look)=>weapons?.descriptor(look.weapon)?weapons.padding(selected,spec,look):{x:0,top:0,bottom:0},weaponPlan:(selected,frame,spec,look,owner)=>weapons?.plan(selected,frame,spec,look,owner)||[],get skinCacheBytes(){return skinCacheBytes;},get weaponCacheSize(){return weapons?.cacheSize||0;},get cacheSize(){return textures.size;},get attachmentCacheSize(){return attachments.size;}};

@@ -10,6 +10,9 @@
       if(item.attachment&&!['gauntlet','wrist-cannon','rifle','pistol','focus','staff','book'].includes(item.attachment.kind))throw Error('Invalid weapon attachment');
       if(item.views)for(const [direction,view]of Object.entries(item.views)){if(!['south','north'].includes(direction)||!/^assets\/weapon-item-\d+-(south|north)\.png$/.test(view.source)||![view.grip?.x,view.grip?.y].every(Number.isInteger))throw Error('Invalid weapon view');}
       if(item.axisAngle!==undefined&&(!Number.isFinite(item.axisAngle)||Math.abs(item.axisAngle)>Math.PI))throw Error('Invalid native weapon axis');
+      if(item.materialScale!==undefined&&(!Number.isFinite(item.materialScale)||item.materialScale<=0||item.materialScale>1))throw Error('Invalid HD weapon scale');
+      if(item.renderDensity!==undefined&&![1,2,3].includes(item.renderDensity))throw Error('Invalid HD weapon density');
+      if(item.armour&&(!/^assets\/weapon-item-\d+-armour\.png$/.test(item.armour.source)||['shoulder','elbow','wrist'].some(j=>![item.armour[j]?.x,item.armour[j]?.y].every(n=>Number.isInteger(n)&&n>=0&&n<128))))throw Error('Invalid articulated armour');
     }return true;
   }
   function orientation(rest,pose,side,direction,action,frame){
@@ -52,23 +55,24 @@
         let angle=orientation(r,p,side,selected.direction,selected.action,frame);
         if(['gauntlet','wrist-cannon'].includes(kind))angle=handAngle+Math.PI/2;
         else if(['rifle','pistol'].includes(kind))angle=model.view?0:handAngle+Math.PI/2;
+        if(model.attachment?.carryUpright&&!selected.action.startsWith('attack-'))angle=selected.direction==='east'?.85:side==='RIGHT'?-.32:.32;
         else if(focus){const restAngle=Math.atan2(r[side+' ARM'].y-r[side+' ELBOW'].y,r[side+' ARM'].x-r[side+' ELBOW'].x);angle=Math.max(-.3,Math.min(.3,wrap(handAngle-restAngle)*.12));if(kind==='staff'){const carry=selected.direction==='north'?-.3:selected.direction==='east'?.4:selected.body==='masculino'?-.4:.4;angle=carry+Math.max(-.06,Math.min(.06,wrap(handAngle-restAngle)*.025));}}
         const center={x:(p['LEFT HIP'].x+p['RIGHT HIP'].x)*64+padding,y:(p.NECK.y+(p['LEFT HIP'].y+p['RIGHT HIP'].y)/2)*64+padding};
         const outward=selected.direction==='east'?{x:1,y:(anchor.y-center.y)/64}:{x:anchor.x-center.x,y:anchor.y-center.y};
         if(Math.hypot(outward.x,outward.y)<2&&selected.direction!=='east')outward.x=(side==='RIGHT')===(selected.direction==='south')?-1:1;
-        const edgeDot=model.edgeSide*(Math.cos(angle)*outward.x+Math.sin(angle)*outward.y),flip=model.edgeSide!==0?edgeDot<0:kind==='gauntlet'&&side==='LEFT';
+        const edgeDot=model.edgeSide*(Math.cos(angle)*outward.x+Math.sin(angle)*outward.y),flip=model.edgeSide!==0?edgeDot<0:model.attachment?.palmInward?(Math.cos(angle)*outward.x+Math.sin(angle)*outward.y)>0:kind==='gauntlet'&&side==='LEFT';
         return {model,side,...anchor,angle,handAngle,flip,outward,edgeDot:model.edgeSide===0?null:Math.abs(edgeDot),depth:selected.direction==='north'||selected.direction==='east'&&side==='LEFT'?'back':'front',phase:frame%4};
       });
     }
     function point(entry,sourcePoint=entry.model.tip){
-      const dx=sourcePoint.x-entry.model.grip.x,dy=sourcePoint.y-entry.model.grip.y,native=entry.model.axisAngle||0,nc=Math.cos(native),ns=Math.sin(native),u=(dx*nc+dy*ns)*(entry.flip?-1:1),v=-dx*ns+dy*nc,co=Math.cos(entry.angle),si=Math.sin(entry.angle);
+      const scale=entry.model.materialScale||1,dx=(sourcePoint.x-entry.model.grip.x)*scale,dy=(sourcePoint.y-entry.model.grip.y)*scale,native=entry.model.axisAngle||0,nc=Math.cos(native),ns=Math.sin(native),u=(dx*nc+dy*ns)*(entry.flip?-1:1),v=-dx*ns+dy*nc,co=Math.cos(entry.angle),si=Math.sin(entry.angle);
       return {x:entry.x+u*co-v*si,y:entry.y+u*si+v*co};
     }
     function geometry(entry){
       const {model,angle}=entry,co=Math.cos(angle),si=Math.sin(angle),box=model.bounds||{x0:32,y0:96-model.visibleHeight,x1:96,y1:96};
       const native=model.axisAngle||0,nc=Math.cos(native),ns=Math.sin(native);
       const points=[[box.x0,box.y0],[box.x1+1,box.y0],[box.x0,box.y1+1],[box.x1+1,box.y1+1]].map(([x,y])=>{
-        const dx=x-model.grip.x,dy=y-model.grip.y,u=(dx*nc+dy*ns)*(entry.flip?-1:1),v=-dx*ns+dy*nc;
+        const scale=model.materialScale||1,dx=(x-model.grip.x)*scale,dy=(y-model.grip.y)*scale,u=(dx*nc+dy*ns)*(entry.flip?-1:1),v=-dx*ns+dy*nc;
         return {x:u*co-v*si,y:u*si+v*co};
       });
       return {x0:Math.floor(Math.min(...points.map(p=>p.x)))-1,y0:Math.floor(Math.min(...points.map(p=>p.y)))-1,x1:Math.ceil(Math.max(...points.map(p=>p.x)))+1,y1:Math.ceil(Math.max(...points.map(p=>p.y)))+1};
@@ -85,16 +89,16 @@
     }
     function sprite(image,entry){
       const {model,phase}=entry,key=[model.id,model.source,entry.angle.toFixed(5),entry.flip,model.effect?phase:0].join(':');if(rotated.has(key))return rotated.get(key);
-      const b=geometry(entry),width=b.x1-b.x0,height=b.y1-b.y0,src=material(image,model),out=new Uint8ClampedArray(width*height*4),co=Math.cos(entry.angle),si=Math.sin(entry.angle),nc=Math.cos(model.axisAngle||0),ns=Math.sin(model.axisAngle||0);
+      const density=model.renderDensity||1,scale=model.materialScale||1,b=geometry(entry),width=(b.x1-b.x0)*density,height=(b.y1-b.y0)*density,src=material(image,model),out=new Uint8ClampedArray(width*height*4),co=Math.cos(entry.angle),si=Math.sin(entry.angle),nc=Math.cos(model.axisAngle||0),ns=Math.sin(model.axisAngle||0);
       for(let y=0;y<height;y++)for(let x=0;x<width;x++){
-        const dx=x+b.x0,dy=y+b.y0,u=(entry.flip?-1:1)*(dx*co+dy*si),v=-dx*si+dy*co,sx=Math.round(model.grip.x+u*nc-v*ns),sy=Math.round(model.grip.y+u*ns+v*nc);if(sx<0||sy<0||sx>=128||sy>=128)continue;
+        const dx=x/density+b.x0,dy=y/density+b.y0,u=(entry.flip?-1:1)*(dx*co+dy*si)/scale,v=(-dx*si+dy*co)/scale,sx=Math.round(model.grip.x+u*nc-v*ns),sy=Math.round(model.grip.y+u*ns+v*nc);if(sx<0||sy<0||sx>=128||sy>=128)continue;
         const i=(sy*128+sx)*4,o=(y*width+x)*4;if(src[i+3]<128)continue;out.set(src.subarray(i,i+4),o);
         if(model.effect==='gold-sheen'&&v<-4&&((Math.round(v)+phase*7)%24+24)%24<2&&Math.max(src[i],src[i+1],src[i+2])>135)out.set([255,239,172,255],o);
         if(model.effect==='violet-pulse'&&src[i+2]>75&&src[i+2]>src[i+1]*1.4){const k=[1,1.12,1.25,1.12][phase];out[o]=Math.min(255,Math.round(out[o]*k));out[o+2]=Math.min(255,Math.round(out[o+2]*k));}
       }
-      const c=document.createElement('canvas');c.width=width;c.height=height;c.getContext('2d').putImageData(new ImageData(out,width,height),0,0);const value={canvas:c,x:b.x0,y:b.y0};rotated.set(key,value);while(rotated.size>256)rotated.delete(rotated.keys().next().value);return value;
+      const c=document.createElement('canvas');c.width=width;c.height=height;c.getContext('2d').putImageData(new ImageData(out,width,height),0,0);const value={canvas:c,x:b.x0,y:b.y0,density};rotated.set(key,value);while(rotated.size>256)rotated.delete(rotated.keys().next().value);return value;
     }
-    function draw(ctx,images,entries,depth){for(const entry of entries.filter(p=>p.depth===depth&&(!worn(p)||depth==='back'))){const image=images.get(entry.model.source);if(!image)throw Error('Weapon not loaded');const value=sprite(image,entry);ctx.drawImage(value.canvas,entry.x+value.x,entry.y+value.y);}}
+    function draw(ctx,images,entries,depth){for(const entry of entries.filter(p=>p.depth===depth&&(!worn(p)||depth==='back'))){const image=images.get(entry.model.source);if(!image)throw Error('Weapon not loaded');const value=sprite(image,entry);ctx.drawImage(value.canvas,entry.x+value.x,entry.y+value.y,value.canvas.width/value.density,value.canvas.height/value.density);}}
     function drawGrips(ctx,entries,depth,skin,glove){
       // Closed-fist variant, authored at the final grid. Keep the native arm,
       // replace only the five-pixel palm around its distal socket. The hilt is
@@ -109,15 +113,53 @@
         }
       }
     }
+    function drawArmour(ctx,images,entries,spec,pose,occlusion){
+      const armoured=entries.filter(e=>e.model.armour);if(!armoured.length)return;
+      const d=armoured[0].model.renderDensity||1,pad=(spec.width-128)/2,points=Object.fromEntries(pose.map(j=>[j.label,{x:j.x*128+pad,y:j.y*128+pad}]));
+      const axis=(a,b)=>{const dx=b.x-a.x,dy=b.y-a.y,length=Math.hypot(dx,dy)||1;return {a,b,length,co:dx/length,si:dy/length};};
+      const bones=armoured.flatMap(entry=>{
+        const m=entry.model.armour,side=entry.side;
+        return [['SHOULDER','ELBOW','shoulder','elbow'],['ELBOW','ARM','elbow','wrist']].map(([a,b,c,e])=>({entry,to:axis(points[side+' '+a],points[side+' '+b]),from:axis(m[c],m[e]),pixels:material(images.get(m.source),m)}));
+      });
+      const width=spec.width*d,height=spec.height*d,out=new Uint8ClampedArray(width*height*4);
+      for(let y=0;y<height;y++)for(let x=0;x<width;x++){
+        const xx=x/d,yy=y/d,p=Math.floor(yy)*spec.width+Math.floor(xx);if(!occlusion.arms[p]&&!occlusion.hands[p]||occlusion.head?.[p*4+3]&&yy<occlusion.headLine&&!occlusion.hands[p])continue;
+        let closest=null;
+        for(const bone of bones){const a=bone.to,dx=xx-a.a.x,dy=yy-a.a.y,along=dx*a.co+dy*a.si,across=-dx*a.si+dy*a.co,clamped=Math.max(0,Math.min(a.length,along)),distance=Math.hypot(across,along-clamped);if(!closest||distance<closest.distance)closest={bone,distance,along:clamped,across};}
+        const {bone,along,across}=closest,a=bone.from,t=along/bone.to.length,side=bone.entry.flip?-1:1,sx=Math.round(a.a.x+a.co*a.length*t-a.si*across*5.5*side),sy=Math.round(a.a.y+a.si*a.length*t+a.co*across*5.5*side);
+        let sample=-1,best=Infinity;
+        // Sample the authored armour, including its elbow hinge. Fill only
+        // occupied native limb pixels; never grow a rectangular sleeve.
+        for(let oy=-12;oy<=12;oy++)for(let ox=-12;ox<=12;ox++){const tx=sx+ox,ty=sy+oy,i=(ty*128+tx)*4,distance=ox*ox+oy*oy;if(tx<0||ty<0||tx>=128||ty>=128||distance>=best||bone.pixels[i+3]<128)continue;sample=i;best=distance;if(!distance)break;}
+        if(sample<0)for(let i=0;i<bone.pixels.length;i+=4){if(bone.pixels[i+3]<128)continue;const distance=(i/4%128-sx)**2+(Math.floor(i/512)-sy)**2;if(distance<best){best=distance;sample=i;}}
+        if(sample>=0)out.set(bone.pixels.subarray(sample,sample+4),(y*width+x)*4);
+      }
+      const c=document.createElement('canvas');c.width=width;c.height=height;const cx=c.getContext('2d');cx.putImageData(new ImageData(out,width,height),0,0);
+      if(occlusion.cloak){cx.globalCompositeOperation='destination-out';cx.drawImage(occlusion.cloak,0,0,width,height);}
+      ctx.drawImage(c,0,0,spec.width,spec.height);
+    }
     function drawWorn(ctx,images,entries,spec,occlusion=null){
       const ordered=entries.filter(worn).sort((a,b)=>(a.depth==='front')-(b.depth==='front'));
       for(const entry of ordered){
-        const value=sprite(images.get(entry.model.source),entry),x0=Math.min(0,entry.x+value.x),y0=Math.min(0,entry.y+value.y),c=document.createElement('canvas');c.width=Math.max(spec.width,entry.x+value.x+value.canvas.width)-x0;c.height=Math.max(spec.height,entry.y+value.y+value.canvas.height)-y0;const cx=c.getContext('2d');cx.drawImage(value.canvas,entry.x+value.x-x0,entry.y+value.y-y0);
-        if(occlusion&&entry.depth==='back'){const pixels=cx.getImageData(0,0,c.width,c.height);for(let p=0;p<occlusion.hands.length;p++){const i=p*4,j=((Math.floor(p/spec.width)-y0)*c.width+p%spec.width-x0)*4;if((occlusion.body[i+3]||occlusion.head?.[i+3])&&!occlusion.hands[p])pixels.data[j+3]=0;}cx.putImageData(pixels,0,0);if(occlusion.cloak){cx.globalCompositeOperation='destination-out';cx.drawImage(occlusion.cloak,-x0,-y0);}}
-        ctx.drawImage(c,x0,y0);
+        const value=sprite(images.get(entry.model.source),entry),d=value.density,x0=Math.min(0,entry.x+value.x),y0=Math.min(0,entry.y+value.y),c=document.createElement('canvas');c.width=(Math.max(spec.width,entry.x+value.x+value.canvas.width/d)-x0)*d;c.height=(Math.max(spec.height,entry.y+value.y+value.canvas.height/d)-y0)*d;const cx=c.getContext('2d');cx.imageSmoothingEnabled=false;cx.drawImage(value.canvas,(entry.x+value.x-x0)*d,(entry.y+value.y-y0)*d);
+        if(entry.model.attachment?.coverPalm&&occlusion){
+          // Extend the same authored armour material only over the occupied
+          // native palm. No skin-colour keying, rectangle, or forearm repaint.
+          const pixels=cx.getImageData(0,0,c.width,c.height),before=new Uint8ClampedArray(pixels.data),co=Math.cos(entry.handAngle),si=Math.sin(entry.handAngle);
+          for(let yy=Math.max(0,entry.y-6);yy<Math.min(spec.height,entry.y+7);yy++)for(let xx=Math.max(0,entry.x-6);xx<Math.min(spec.width,entry.x+7);xx++){
+            const p=yy*spec.width+xx,dx=xx-entry.x,dy=yy-entry.y;if(!occlusion.hands[p]||Math.hypot(dx,dy)>5.6||dx*co+dy*si< -4)continue;
+            for(let sy=0;sy<d;sy++)for(let sx=0;sx<d;sx++){
+              const x=Math.round((xx-x0)*d+sx),y=Math.round((yy-y0)*d+sy),i=(y*c.width+x)*4;if(x<0||y<0||x>=c.width||y>=c.height||before[i+3])continue;
+              let best=-1,distance=Infinity;for(let oy=-4*d;oy<=4*d;oy++)for(let ox=-4*d;ox<=4*d;ox++){const tx=x+ox,ty=y+oy,j=(ty*c.width+tx)*4,q=ox*ox+oy*oy;if(tx<0||ty<0||tx>=c.width||ty>=c.height||!before[j+3]||q>=distance)continue;best=j;distance=q;}
+              if(best>=0)pixels.data.set(before.subarray(best,best+4),i);
+            }
+          }cx.putImageData(pixels,0,0);
+        }
+        if(occlusion&&entry.depth==='back'){const pixels=cx.getImageData(0,0,c.width,c.height);for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){const xx=Math.floor(x/d+x0),yy=Math.floor(y/d+y0);if(xx<0||yy<0||xx>=spec.width||yy>=spec.height)continue;const p=yy*spec.width+xx,i=p*4,j=(y*c.width+x)*4;if((occlusion.body[i+3]||occlusion.head?.[i+3])&&!occlusion.hands[p])pixels.data[j+3]=0;}cx.putImageData(pixels,0,0);if(occlusion.cloak){cx.globalCompositeOperation='destination-out';cx.drawImage(occlusion.cloak,-x0*d,-y0*d,spec.width*d,spec.height*d);}}
+        ctx.drawImage(c,x0,y0,c.width/d,c.height/d);
       }
     }
-    return {descriptor,plan,padding,draw,drawGrips,drawWorn,point,get cacheSize(){return rotated.size;}};
+    return {descriptor,plan,padding,draw,drawGrips,drawArmour,drawWorn,point,get cacheSize(){return rotated.size;}};
   }
   return {validate,orientation,contact,create};
 });

@@ -72,6 +72,15 @@
   itemDefs.push(...MareAkuma.catalog.slice(5).map(fruitItemDef));
   itemDefs.push(...MareHakiProgression.fragments); // Append only: preserve all existing save indices.
   itemDefs.push(...BossDungeons.fragments); // Added by main#202; previous103 identities remain unchanged.
+  // Class armaments, batch 1. Append only: definitions 0..108 retain their identities.
+  // Rarity and level multipliers stay in MareForge; these are unmultiplied bases.
+  itemDefs.push(
+    {name:'Manoplas do Coral Negro',slot:'weapon',type:'brawler',attack:11,defense:2,hp:4,symbol:'✦',rarity:'epic',fixedRarity:true,attributes:{strength:3,vitality:2,dexterity:1},extraPool:['strength','vitality','dexterity','hp','crit','energy'],weaponVisual:'coral-impact',description:'Coral negro talhado em manoplas de combate. Reforça força e vitalidade, com impactos secos e fragmentos de coral.',icon_path:'assets/ui/items-hd/manoplas-do-coral-negro.png?v=class-batch1'},
+    {name:'Punhos do Dragão Carmesim',slot:'weapon',type:'brawler',attack:11,defense:2,hp:4,symbol:'✦',rarity:'legendary',fixedRarity:true,attributes:{strength:4,vitality:2,dexterity:1},extraPool:['strength','vitality','dexterity','hp','crit','energy'],weaponVisual:'dragon-impact',description:'Punhos carmesins gravados com escamas douradas. Favorecem força e golpes de impacto com assinatura rubra.',icon_path:'assets/ui/items-hd/punhos-do-dragao-carmesim.png?v=class-batch1'},
+    {name:'Luva do Abalo Sísmico',slot:'weapon',type:'brawler',attack:10,defense:4,hp:6,symbol:'✦',rarity:'legendary',fixedRarity:true,attributes:{strength:3,vitality:4,dexterity:1},extraPool:['strength','vitality','dexterity','hp','crit','energy'],weaponVisual:'seismic-impact',description:'Luva de combate em aço naval articulado, com núcleo de pressão e punho fechado. Especializadas em vitalidade e defesa, descarregam ondas concêntricas no impacto.',icon_path:'assets/ui/items-hd/luva-do-abalo-sismico.png?v=class-batch1'},
+    {name:'Manoplas da Ruptura dos Mares',slot:'weapon',type:'brawler',attack:11,defense:3,hp:6,symbol:'✦',rarity:'supreme',fixedRarity:true,attributes:{strength:4,vitality:3,dexterity:1},extraPool:['strength','vitality','dexterity','hp','crit','energy'],weaponVisual:'rupture-impact',description:'Manoplas supremas de metal negro e ouro. Fissuras rubras acompanham golpes pesados, unindo força e resistência.',icon_path:'assets/ui/items-hd/manoplas-da-ruptura-dos-mares.png?v=class-batch1'},
+    {name:'Mosquete do Vento Cortante',slot:'weapon',type:'gunner',attack:12,defense:0,hp:0,symbol:'◎',rarity:'epic',fixedRarity:true,attributes:{dexterity:3,strength:1},crit:.003,extraPool:['dexterity','strength','crit','energy','hp','vitality'],weaponVisual:'wind-shot',description:'Mosquete de madeira escura, aço e mecanismos dourados. Destreza favorece precisão e crítico; o disparo deixa um rastro de vento cortante.',icon_path:'assets/ui/items-hd/mosquete-do-vento-cortante.png?v=class-batch1'}
+  );
   return {items:itemDefs,slotNames,inventorySlotsLeft,inventorySlotsRight,capacity:BAG_CAPACITY,healerWeaponIndex};
  }
  const api={create};root.MareItemCatalog=api;if(typeof module!=='undefined')module.exports=api;
