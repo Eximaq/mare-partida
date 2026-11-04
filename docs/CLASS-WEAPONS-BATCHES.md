@@ -255,3 +255,49 @@ por enquanto. O estado atual e suas fontes ficam preservados para retomada;
 não há aprovação artística final desse item. Os demais armamentos, projéteis
 e a política compartilhada de composição seguem nesta entrega. Nenhuma
 compensação, exclusão de item de save ou mudança de aquisição foi solicitada.
+
+
+## Compatibilidade da entrega e correção de fragmentos — 04/11/2026
+
+A validação do GitHub identificou contratos antigos que ainda pressupunham
+um catálogo de 109 itens, ausência do Satori e prioridade fixa das mãos.
+O smoke do contêiner passa a conferir as 129 definições e seu hash oficial;
+o teste de sprites reconhece o Satori já integrado em main, sem alterar
+seus recursos. A prévia móvel carrega o mesmo emissor de armas do cliente.
+Os vinte ícones HD agora são reconhecidos pelo seletor compartilhado de
+arte do inventário. Nenhuma regra do servidor ou do combate foi alterada.
+
+O teste de capacetes segue a ocultação integral do cabelo também com bandana.
+As inspeções antigas em uma amostra por pixel continuam para materiais 1×;
+as armas HD usam as matrizes próprias 3× de encaixe, prioridade e vestuário,
+agora obrigatórias no mesmo workflow. A verificação de todos os materiais e
+rotações permanece ativa em sua densidade real. A cobertura das manoplas
+considera a propriedade de cada braço quando os punhos se cruzam: a manopla
+traseira não pode pintar por cima do antebraço dianteiro.
+
+A máscara traseira das lâminas permite somente os dedos fechados sobre o
+cabo, preservando o antebraço dianteiro. Na rasterização HD, fragmentos
+mínimos causados pela rotação são removidos do resultado em cache; detalhes
+substanciais separados por até um pixel lógico recebem uma ponte da própria
+cor adjacente. As fontes não são alteradas por esse tratamento em memória.
+
+Dois reparos pontuais foram feitos no PixelLab pixelart_workbench:
+- Monções 121: um pixel dourado liga o suporte à gema central; imagem
+  e1f559a7-254b-4845-873b-8102e67a42ed.
+- Marés 127: dez pixels dispersos fora da arma foram removidos; imagem
+  9a9ed818-d440-4202-bd5e-fe27cba60a3c.
+
+Canvas, alfa e demais pixels foram preservados. Os reparos e hashes estão
+registrados em weapons.json. O Serafim não recebeu novos ajustes nesta fase.
+
+Revalidação: 41 testes Node, 2 do catálogo compartilhado, 960 frames de encaixe,
+40 espelhos, 144 frames de porte South e 4.714 rotações de 60 materiais
+passaram. A suíte Python validou 8.327 frames nativos em 36 personagens.
+Build Pages e release nativo foram regenerados. Evidências locais não entram
+no commit. A suspensão artística do Serafim permanece conforme decisão acima.
+
+Na distribuição estática final, a regressão dos materiais anteriores passou
+em 1.920 composições, 640 espelhos e 40.758 testemunhas de cobertura de
+palmas; o detector negativo de arma sobre o rosto manteve 184 testemunhas.
+Quatro combates (121/127 × dois corpos) confirmaram os materiais reparados,
+emissão/impacto e retorno desarmado sem erros JavaScript.

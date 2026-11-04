@@ -128,6 +128,27 @@
       const c=document.createElement('canvas');c.width=c.height=128;c.getContext('2d').drawImage(image,0,0);
       const pixels=c.getContext('2d').getImageData(0,0,128,128).data;materials.set(model.source,pixels);return pixels;
     }
+    function cleanRotation(pixels,width,height){
+      // Nearest-neighbour rotation can detach a few subpixels from a thin
+      // outline. Remove only tiny disconnected raster scraps; source PNGs and
+      // substantial separate shapes remain untouched. This runs once per cache.
+      const seen=new Uint8Array(width*height),parts=[];
+      for(let p=0;p<seen.length;p++)if(pixels[p*4+3]&&!seen[p]){
+        const part=[p];seen[p]=1;
+        for(let n=0;n<part.length;n++){const at=part[n],x=at%width,y=Math.floor(at/width);for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){const xx=x+dx,yy=y+dy,k=yy*width+xx;if(xx>=0&&yy>=0&&xx<width&&yy<height&&!seen[k]&&pixels[k*4+3]){seen[k]=1;part.push(k);}}}
+        parts.push(part);
+      }
+      parts.sort((a,b)=>b.length-a.length);const limit=Math.max(2,Math.floor((parts[0]?.length||0)*.01)),joined=new Uint8Array(width*height);
+      for(const p of parts[0]||[])joined[p]=1;
+      for(const part of parts.slice(1)){
+        if(part.length<=limit){for(const p of part)pixels.fill(0,p*4,p*4+4);continue;}
+        // Keep substantial details: close only a subpixel raster gap, using
+        // the adjacent original colour instead of deleting the detail.
+        let bridge=null;
+        for(const p of part){const x=p%width,y=Math.floor(p/width);for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++){const xx=x+dx,yy=y+dy,k=yy*width+xx,distance=dx*dx+dy*dy;if(xx<0||yy<0||xx>=width||yy>=height||!joined[k]||distance>9||bridge&&distance>=bridge.distance)continue;bridge={p,x,y,dx,dy,distance};}}
+        if(bridge){const {p,x,y,dx,dy}=bridge,steps=Math.max(Math.abs(dx),Math.abs(dy));for(let i=1;i<steps;i++){const k=(y+Math.round(dy*i/steps))*width+x+Math.round(dx*i/steps);if(!pixels[k*4+3])pixels.set(pixels.subarray(p*4,p*4+4),k*4);joined[k]=1;}for(const p of part)joined[p]=1;}
+      }
+    }
     function sprite(image,entry){
       const {model,phase}=entry,key=[model.id,model.source,entry.angle.toFixed(5),entry.flip,model.effect?phase:0].join(':');if(rotated.has(key))return rotated.get(key);
       const density=model.renderDensity||1,scale=model.materialScale||1,b=geometry(entry),width=(b.x1-b.x0)*density,height=(b.y1-b.y0)*density,src=material(image,model),out=new Uint8ClampedArray(width*height*4),co=Math.cos(entry.angle),si=Math.sin(entry.angle),nc=Math.cos(model.axisAngle||0),ns=Math.sin(model.axisAngle||0);
@@ -137,6 +158,7 @@
         if(model.effect==='gold-sheen'&&v<-4&&((Math.round(v)+phase*7)%24+24)%24<2&&Math.max(src[i],src[i+1],src[i+2])>135)out.set([255,239,172,255],o);
         if(model.effect==='violet-pulse'&&src[i+2]>75&&src[i+2]>src[i+1]*1.4){const k=[1,1.12,1.25,1.12][phase];out[o]=Math.min(255,Math.round(out[o]*k));out[o+2]=Math.min(255,Math.round(out[o+2]*k));}
       }
+      if(density>1)cleanRotation(out,width,height);
       const c=document.createElement('canvas');c.width=width;c.height=height;c.getContext('2d').putImageData(new ImageData(out,width,height),0,0);const value={canvas:c,x:b.x0,y:b.y0,density};rotated.set(key,value);while(rotated.size>256)rotated.delete(rotated.keys().next().value);return value;
     }
     function draw(ctx,images,entries,depth){for(const entry of entries.filter(p=>p.depth===depth&&(!worn(p)||depth==='back'))){const image=images.get(entry.model.source);if(!image)throw Error('Weapon not loaded');const value=sprite(image,entry);ctx.drawImage(value.canvas,entry.x+value.x,entry.y+value.y,value.canvas.width/value.density,value.canvas.height/value.density);}}
@@ -156,15 +178,15 @@
         const x=entry.x+value.x,y=entry.y+value.y;maskBack(c,x,y,d,spec,occlusion,entry);ctx.drawImage(c,x,y,c.width/d,c.height/d);
       }
     }
+    const closedGrip=['.111.','12341','12341','.1321','..11.'];
+    function gripPixel(entry,x,y){const co=Math.cos(entry.handAngle),si=Math.sin(entry.handAngle),dx=x-entry.x,dy=y-entry.y,sx=Math.round(dx*co+dy*si)+2,sy=Math.round(-dx*si+dy*co)+2;return {index:Number(closedGrip[sy]?.[sx])||0,sx};}
     function drawGrips(ctx,entries,depth,skin,glove){
       // Closed-fist variant, authored at the final grid. Keep the native arm,
       // replace only the five-pixel palm around its distal socket. The hilt is
       // behind the curled fingers; the guard and pommel remain outside the fist.
-      const shape=['.111.','12341','12341','.1321','..11.'];
       for(const e of entries.filter(p=>p.depth===depth&&!worn(p))){
-        const co=Math.cos(e.handAngle),si=Math.sin(e.handAngle);
         for(let y=-3;y<=3;y++)for(let x=-3;x<=3;x++){
-          const sx=Math.round(x*co+y*si)+2,sy=Math.round(-x*si+y*co)+2,index=Number(shape[sy]?.[sx]);if(!index)continue;
+          const {sx,index}=gripPixel(e,e.x+x,e.y+y);if(!index)continue;
           const covered=glove&&(glove.coverage==='full'||sx<2),ramp=covered?glove.ramp:skin;
           ctx.fillStyle=ramp[index-1];ctx.fillRect(e.x+x,e.y+y,1,1);
         }
@@ -235,7 +257,7 @@
         ctx.drawImage(c,x0,y0,c.width/d,c.height/d);
       }
     }
-    return {descriptor,carryPose,armPose,plan,padding,draw,drawResolved,drawGrips,drawFingers,drawArmour,drawWorn,point,get cacheSize(){return rotated.size;}};
+    return {descriptor,carryPose,armPose,plan,padding,draw,drawResolved,drawGrips,drawFingers,drawArmour,drawWorn,point,gripContains:(entry,x,y)=>!!gripPixel(entry,x,y).index,get cacheSize(){return rotated.size;}};
   }
   return {validate,orientation,contact,composition,create};
 });

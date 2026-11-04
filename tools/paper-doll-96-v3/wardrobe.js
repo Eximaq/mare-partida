@@ -440,7 +440,7 @@
         }
       }
       const occlusion={body:wornBody,hands:wornHands,arms:armourMask,head:headPixels,headLine:pose.find(j=>j.label==='NECK').y*128+padding+3,cloak:selected.direction==='north'?pieces.cloak?.full:null};
-      occlusion.visibleHand=(entry,x,y)=>{const p=y*spec.width+x;if(!wornHands[p])return false;const own=(carryPose||pose).find(j=>j.label===entry.side+' ARM'),other=(carryPose||pose).find(j=>j.label===(entry.side==='LEFT'?'RIGHT':'LEFT')+' ARM');return Math.hypot(x-own.x*128-padding,y-own.y*128-padding)<=Math.hypot(x-other.x*128-padding,y-other.y*128-padding);};
+      occlusion.visibleHand=(entry,x,y)=>{const p=y*spec.width+x;if(!wornHands[p])return false;if(!['gauntlet','wrist-cannon'].includes(entry.model.attachment?.kind)&&!entry.frontOfHand&&!weapons.gripContains(entry,x,y))return false;const own=(carryPose||pose).find(j=>j.label===entry.side+' ARM'),other=(carryPose||pose).find(j=>j.label===(entry.side==='LEFT'?'RIGHT':'LEFT')+' ARM');return Math.hypot(x-own.x*128-padding,y-own.y*128-padding)<=Math.hypot(x-other.x*128-padding,y-other.y*128-padding);};
       weapons?.drawArmour(ctx,images,weaponPlan,spec,carryPose||pose,occlusion);
       weapons?.drawResolved(ctx,images,weaponPlan,spec,occlusion);
       weapons?.drawFingers(ctx,weaponPlan,spec,occlusion,gripSkin,gripGlove);

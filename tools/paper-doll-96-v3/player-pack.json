@@ -3,11 +3,11 @@
   "productionEnabled": true,
   "ownerApprovedOn": "2026-10-30",
   "manifestRevision": "structural-occlusion-v10-2",
-  "weaponRevision": "weapons96-hd-833c52f92c25",
+  "weaponRevision": "weapons96-hd-8c33bb0d169b",
   "source": "Existing native96 materials and authored animations; owner authorised default use in Sprint2.",
   "headgearPolicy": "../../headgear-visibility.js",
   "renderer": "native96",
-  "assetRevision": "native96-f692433adaabe921",
+  "assetRevision": "native96-5494f3063dc2378b",
   "resources": {
     "assets/appearance3-face-almond-feminino-east.png": [
       128,

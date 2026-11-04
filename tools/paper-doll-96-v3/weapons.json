@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "revision": "weapons96-hd-833c52f92c25",
+  "revision": "weapons96-hd-8c33bb0d169b",
   "referenceHeight": 96,
   "reviewOnly": true,
   "source": "Owner artwork and current inventory icons; inventory files preserved",
@@ -2974,7 +2974,7 @@
         "kind": "staff"
       },
       "source": "assets/weapon-item-121.png",
-      "sha256": "8555a0c2d17fbb8474993d8ea8a2398d4b176710d811bde881392d3b9da50352",
+      "sha256": "b58febcddc6f442337e9ef6ef84f02f5bd09d299903346bf7f11ec54aa638b1d",
       "grip": {
         "x": 64,
         "y": 86
@@ -2999,7 +2999,13 @@
         "jobId": "5c809c4c-a772-4539-87a9-81a1c7970b25",
         "assetId": "24a81306-b60c-57b4-9991-4bcb6752a639",
         "candidate": 3,
-        "processing": "Source pixels preserved; logical fit without palette reduction"
+        "processing": "Source pixels preserved; logical fit without palette reduction",
+        "pixelRepair": {
+          "tool": "pixellab-pixelart-workbench",
+          "imageId": "e1f559a7-254b-4845-873b-8102e67a42ed",
+          "changedPixels": 1,
+          "reason": "Connect central gem mount to frame"
+        }
       },
       "frame": {
         "width": 128,
@@ -3278,7 +3284,7 @@
         "kind": "staff"
       },
       "source": "assets/weapon-item-127.png",
-      "sha256": "a68a17fd5eee00d8053795829c728514bae4e19427fa4effb1f5f2f23a709ffe",
+      "sha256": "3af153d2330d87554d3f7194e36be7770e323d5901fee242baa52af56ffc8090",
       "grip": {
         "x": 64,
         "y": 86
@@ -3303,7 +3309,13 @@
         "jobId": "7c8ff838-18f4-462d-8582-9eef4db0632c",
         "assetId": "e2cbdc15-41ab-54d7-80ef-31825391acb2",
         "candidate": 0,
-        "processing": "Source pixels preserved; logical fit without palette reduction"
+        "processing": "Source pixels preserved; logical fit without palette reduction",
+        "pixelRepair": {
+          "tool": "pixellab-pixelart-workbench",
+          "imageId": "9a9ed818-d440-4202-bd5e-fe27cba60a3c",
+          "changedPixels": 10,
+          "reason": "Remove isolated scraps outside staff silhouette"
+        }
       }
     },
     {

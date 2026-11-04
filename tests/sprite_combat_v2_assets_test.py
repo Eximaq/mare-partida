@@ -9,7 +9,8 @@ class NativeFrames(unittest.TestCase):
         files=list((ROOT/'assets/sprites-combat-v2').glob('*/metadata.json'))
         dungeon_names={'dungeon-'+name for name in ('alvida','morgan','buggy','kuro','krieg','arlong','smoker','wapol','crocodile')}
         self.assertEqual({path.parent.name for path in files if path.parent.name.startswith('dungeon-')},dungeon_names)
-        self.assertEqual(sum(not path.parent.name.startswith('dungeon-') for path in files),26)
+        self.assertEqual(sum(not path.parent.name.startswith('dungeon-') for path in files),27)
+        self.assertIn('satori',{path.parent.name for path in files})
         count=0
         for path in files:
             entry=json.loads(path.read_text(encoding='utf8'))
@@ -26,6 +27,9 @@ class NativeFrames(unittest.TestCase):
                         self.assertEqual(hashlib.sha256(pixels).hexdigest(),digest,(path.parent.name,action,direction,i))
                         count+=1
                     if action=='hurt':
+                        self.assertFalse(clip['loop'])
+                        self.assertGreater(clip['fps'],0)
+                    if action=='hurt' and 'playback_frames' in clip:
                         self.assertLessEqual(clip['playback_start']+clip['playback_frames'],clip['frames'])
                         self.assertGreaterEqual(clip['playback_seconds'],.12)
                         self.assertLessEqual(clip['playback_seconds'],.22)
