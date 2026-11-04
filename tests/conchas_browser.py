@@ -108,7 +108,7 @@ with sync_playwright() as playwright:
 
     high = copy.deepcopy(template)
     high["level"] = 20
-    for size in [(1920, 1080), (1366, 768), (1280, 720), (393, 852), (320, 568)]:
+    for size in [(1920, 1080), (1366, 768), (1280, 720), (393, 852), (412, 915)]:
         context, page = open_page(browser, high, size)
         travel(page)
         current = state(page)

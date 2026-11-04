@@ -81,3 +81,11 @@ CI: os jobs rankA/rankS encontraram a inconsistência preexistente de
 mas a própria base `25cd9d05` já contém 27 arquivos de metadados nessa categoria.
 Esta revisão não altera os sprites nem esse contrato; a pendência está registrada
 no PR, sem declarar que o CI completo está verde.
+
+## Aprovação e preparação da publicação
+
+O proprietário aprovou merge e publicação. A branch foi integrada à `main`
+`d1e05694`, preservando os novos materiais e armas. Essa atualização da base já
+corrige a contagem histórica de sprites: a validação de 8.327 frames em 36
+personagens passou. Conchas passa a testar 412×915 no lugar de 320×568, conforme
+o escopo de telas aprovado, mantendo as verificações de mapa, rotas e saves.
