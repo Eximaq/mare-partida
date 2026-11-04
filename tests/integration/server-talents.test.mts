@@ -83,15 +83,17 @@ test('the real worker applies an earned poison build and persists its damage acr
  assert(after.battle.mobs[0].hp<hp);assert.equal(after.battle.talents.procs.poison,1);
 }));
 
-test('server loot applies underworld chances, special boxes and a six-gold cap per real spawn atomically',async()=>authDatabase(async({service,pool})=>{
+test('server loot preserves special boxes and the six-gold cap without overriding fixed gear rarity',async()=>authDatabase(async({service,pool})=>{
  const a=await actor(service,'rogue'),before=await a.read(),spawnId=randomUUID(),client=await pool.connect();
  const reward={xp:2,gold:3,materials:1,materialChance:1,potions:1,potionChance:1,gearChance:1,gearLevel:1};
  try{
   await client.query('BEGIN');const requestId=randomUUID();
   await awardWorldLoot(client,a.c.id,requestId,before.state,[{id:spawnId,area:'beach',monster:{type:'bandit'},reward}],undefined,0,{build:build({},'lightHands','underworld'),steals:[{spawnId,amount:6}],rng:()=>0});
   await client.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4)',[a.c.id,requestId,'0'.repeat(64),JSON.stringify({action:'battle.reward'})]);await client.query('COMMIT');
-  const after=await a.read();assert.equal(BigInt(after.state.gold)-BigInt(before.state.gold),9n);assert.equal(after.originalInventory.inventory.length-before.originalInventory.inventory.length,3);
-  assert(after.originalInventory.inventory.some((i:any)=>i.origin==='Senhor do Submundo'&&i.rarity==='legendary'));
+  const after=await a.read();assert.equal(BigInt(after.state.gold)-BigInt(before.state.gold),9n);assert.equal(after.originalInventory.inventory.length-before.originalInventory.inventory.length,2);
+  assert(!after.originalInventory.inventory.some((i:any)=>i.origin==='Senhor do Submundo'&&i.rarity==='legendary'));
+  assert(after.originalInventory.inventory.some((i:any)=>i.generation?.source==='map:beach'&&i.rarity==='common'&&i.potential===0));
+  assert(after.originalInventory.inventory.some((i:any)=>i.origin==='Senhor do Submundo'));
   assert.equal((await pool.query('SELECT total FROM mare_game.battle_talent_steals WHERE character_id=$1 AND spawn_id=$2',[a.c.id,spawnId])).rows[0].total,6);
   await client.query('BEGIN');await assert.rejects(awardWorldLoot(client,a.c.id,randomUUID(),after.state,[],undefined,0,{build:build({},'lightHands'),steals:[{spawnId,amount:1}]}));await client.query('ROLLBACK');assert.deepEqual((await a.read()).state,after.state);
  }finally{await client.query('ROLLBACK');client.release();}

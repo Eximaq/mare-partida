@@ -10,3 +10,8 @@ CHECK(jsonb_typeof(state)='object' AND octet_length(state::text)<=32768
 AND state ? 'version' AND state->>'version' IN ('1','2','3') AND state ? 'seq'
 AND (state->>'seq')::bigint BETWEEN 0 AND 9007199254740991
 AND state ? 'records' AND jsonb_typeof(state->'records')='object');
+
+-- The five configured chests share the same immutable, one-claim ledger.
+ALTER TABLE mare_game.dungeon_claims DROP CONSTRAINT dungeon_claims_dungeon_id_check;
+ALTER TABLE mare_game.dungeon_claims ADD CONSTRAINT dungeon_claims_dungeon_id_check
+CHECK(dungeon_id IN ('alvida','morgan','buggy','kuro','krieg'));
