@@ -62,7 +62,7 @@ def inspect(q, name):
     assert q.evaluate('document.documentElement.scrollWidth<=innerWidth')
     for s in ['#miniHPText','#miniEnergyText','#miniXPText','#miniGold']:
         assert q.locator(s).evaluate('e=>e.scrollWidth<=e.clientWidth+1'),('clipped resource',s,w)
-    for s in ['#mainMenu [data-panel]','.action-panel .skill-button','#journeyToggle','#enterHunt','#returnLobby']:
+    for s in ['#mainMenu :is([data-panel],#socialMenuTrigger)','.action-panel .skill-button','#journeyToggle','#enterHunt','#returnLobby']:
         for e in q.locator(s).all():
             if e.is_visible():
                 r=e.bounding_box();assert min(r['width'],r['height'])>=44,(s,r)

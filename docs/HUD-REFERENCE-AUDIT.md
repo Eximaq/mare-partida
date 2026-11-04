@@ -94,6 +94,10 @@ A reserva antiga de altura de `#journeyHud` foi removida de `ui-responsive.css`:
 
 O CI identificou uma segunda colisão entre XP/h e navegação em 320×568. A composição compacta preserva ambos, sem reduzir alvos. Uma regra tardia de `party.css` que encolhia os oito controles foi retirada; a rolagem e as dimensões agora pertencem à camada compartilhada. `tests/hud_responsive_browser.py` avança o relógio simulado antes de verificar o badge inicial, evitando ler a fixture antes de sua atualização.
 
+O teste de alcance do menu passa a rolar cada controle para a área visível antes de exigir bounds e cliques reais, acrescentando a exigência de 44×44 px. A antiga expectativa de oito controles simultâneos em 320 px foi substituída pela navegação horizontal prevista no design.
+
+O botão Social é criado sem `data-panel`; seu ID foi incluído explicitamente nas regras compartilhadas e nas verificações de alvo mínimo, eliminando a antiga dimensão móvel de 32×36 px.
+
 `tests/hud_reference_browser.py` exercita bounds, colisões, fontes, toque mínimo, recursos, chat, cartaz, seis menus, viagem, Haki e preservação dos dados. `tests/character_hud_browser.cjs` continua cobrindo títulos, barras reais, extremos, retratos, teclado/toque e reload; o fechamento do chat usa seu X visível. A verificação de tamanho legível dos títulos foi acrescentada.
 
 O antigo teste de harmonização proibia qualquer mudança de largura/posição: era o contrato da tarefa anterior, apenas de materiais. Esse contrato é explicitamente substituído pelo pedido atual de refatoração. `creation-selection.test.cjs` mantém todas as verificações funcionais da criação. O workflow de criação passa a executar a nova matriz real em vez de exigir coordenadas idênticas à base do PR. O teste histórico de comparação permanece no repositório para reproduzir a entrega anterior.
@@ -119,11 +123,12 @@ Validação local concluída em 04/11/2026:
 | `python tests/run_honors_hd_browser.py tests/character_hud_browser.cjs --offline` | Oito resoluções até **320×568**, 32 títulos, barras 0/25/100%, ouro extremo, aparências, cartaz, rota, teclado, toque, movimento reduzido e reload: aprovado. |
 | `python tests/run_honors_hd_browser.py tests/gameplay_harmony_controls_browser.cjs --dist --offline` | Menus exclusivos, notas locais, proteção ao digitar, L, XP/h, atividade/pausa e minimizar: aprovado. |
 | `python tests/hud_responsive_browser.py` | **16 painéis × sete resoluções**, incluindo 320×568 e 568×320; foco, teclado, navegação, densidade, saltos do inventário, caçada e progresso preservados: aprovado. |
+| Harness com `main-menu-reachability-browser.cjs` e `inventory-hd-browser.cjs` | Cliques nos quatro menus expansíveis em cinco larguras, alvos ≥44 px; inventário em nove formatos, 12 slots, filtros, abas, seleção, equipar/remover, visibilidade de elmo e paginação: aprovado. |
 | Harness acima com `original-inventory-online-browser.cjs`, `online-world-browser.cjs` e `online-battle-browser.cjs` | Três regressões aprovadas no pacote: inventário/forja, movimento/viagem e combate/rota/mobile. Provider simulado; não representa teste PostgreSQL de ponta a ponta. |
 | `python tests/pages_cache_browser.py` | **156 recursos versionados**, script obsoleto não requisitado, viagem Dawn e save preservado, sem erros JS. |
 | Sintaxe do teste CJS e `git diff --check` | Aprovados. |
 
-Resoluções da matriz principal: **1920×1080, 1600×900, 1366×768, 1280×720, 1024×768, 844×390 e 390×844**. Foram inspecionadas capturas renderizadas de desktop, tablet, celular vertical/horizontal, chat e hotbar completa. `after/` contém o jogo empacotado; `optional/` contém as variações de frutas; `controls/` contém os extremos de personagem. Galeria local: `docs/evidence-hud-reference/index.html`.
+Resoluções da matriz principal: **1920×1080, 1600×900, 1366×768, 1280×720, 1024×768, 844×390 e 390×844**. Foram inspecionadas capturas renderizadas de desktop, tablet, celular vertical/horizontal, chat e hotbar completa. `after/` contém os estados exercitados; `final/` atualiza as sete vistas do porto com o último acabamento do Social; `optional/` contém as variações de frutas; `controls/` contém os extremos de personagem. Galeria local: `docs/evidence-hud-reference/index.html`.
 
 O workflow de criação executa a matriz nova e os contratos online existentes; o workflow de personagem passa a reagir também a `gameplay-harmony.css`. README e changelog apontam para este relatório. O build e o push não equivalem a merge ou deploy; a entrega permanece em PR para revisão.
 

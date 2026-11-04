@@ -9,7 +9,9 @@ const assert=require('node:assert/strict'),{chromium}=require('playwright');
  for(const width of [320,360,380,390,760]){
   await page.setViewportSize({width,height:844});
   for(const id of ['socialMenuTrigger','characterMenuTrigger','modesMenuTrigger','captainMenuTrigger']){
-   const button=page.locator('#'+id),r=await button.boundingBox();assert(r&&r.x>=0&&r.x+r.width<=width+.1,JSON.stringify({id,width,r}));
+   // Narrow HUDs scroll the rail instead of shrinking eight touch targets.
+   const button=page.locator('#'+id);await button.scrollIntoViewIfNeeded();
+   const r=await button.boundingBox();assert(r&&r.x>=0&&r.x+r.width<=width+.1&&r.width>=44&&r.height>=44,JSON.stringify({id,width,r}));
    await button.click();assert.equal(await button.getAttribute('aria-expanded'),'true');await button.click();assert.equal(await button.getAttribute('aria-expanded'),'false');
   }
  }
