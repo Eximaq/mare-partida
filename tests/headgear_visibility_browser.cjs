@@ -23,6 +23,7 @@ const out=process.argv.find(s=>s.startsWith('--evidence='))?.slice(11),gameOnly=
    }
    return {counts,issues};
   });assert.deepEqual(audit.issues,[]);assert(audit.counts.poses>=416);assert.equal(audit.counts.bandanaHairIndependence,audit.counts.poses);console.log(JSON.stringify({audit}));
+  const nativeFit=await require('./headgear_native_fit_browser.cjs')(p);assert.deepEqual(nativeFit.issues,[],'headgear must preserve the complete selected eyes in every native pose');assert.equal(nativeFit.counts.frames,3840);assert.equal(nativeFit.counts.restoredHair,64);console.log(JSON.stringify({nativeFit}));if(out)await fs.writeFile(path.join(out,'native-fit.json'),JSON.stringify(nativeFit,null,2));
   if(out){await fs.writeFile(path.join(out,'audit.json'),JSON.stringify(audit,null,2));const captures=await p.evaluate(async()=>{const q=__review96v3,rows=[];for(const body of ['masculino','feminino'])for(const dir of ['south','north','east','west'])for(const state of ['bare','visible','hidden','bandana']){const look={hair:'hair-wavy',face:'face-calm',skin:'light',hairColor:'brown',head:state==='bandana'?'item-18':state==='bare'?'original':'item-19',hideHeadgear:state==='hidden',torso:'item-6',pants:'item-21',boots:'item-8',cloak:'item-23'};const c=await q.render(body,'walk',dir,3,[],look);rows.push({name:[body,dir,state].join('-'),data:c.toDataURL()});}return rows;});for(const c of captures)await fs.writeFile(path.join(out,c.name+'.png'),Buffer.from(c.data.split(',')[1],'base64'));}
   await p.close();
  }

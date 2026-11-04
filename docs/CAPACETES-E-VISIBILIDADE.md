@@ -42,3 +42,15 @@ Sprites, rostos, cabelos, máscaras e animações atuais foram reutilizados sem 
 - Regressões de lobby, armas, composição estrutural, personagem anterior e publicação complementam a validação. Resultados executados ficam no changelog; capturas e logs em massa ficam fora do Git e nos artifacts de CI.
 
 Para um futuro chapéu, reutilizar as camadas e o socket da cabeça, declarar sua política e repetir a comparação visível/oculto/sem item em todas as poses. Somente produzir novas variantes no PixelLab se a arte atual não atender ao encaixe.
+
+## Correção de encaixe — 04/11/2026
+
+Os oito equipamentos de cabeça do lote 56 usam o registro offline `head-aperture-v1`. O encaixe considera os pixels completos dos oito modelos de olhos (incluindo contornos e uma margem), em vez de proteger somente a íris. Cada corpo e direção mantém seu próprio registro; Oeste espelha Leste do mesmo corpo. A animação continua usando a translação inteira compartilhada da cabeça, sem ajuste de posição por quadro.
+
+O Corsário conserva a aba traseira opaca, sem o recorte indevido da máscara facial. O capuz abre sobre a silhueta real do rosto e mantém as dobras laterais e o lenço inferior. A tiara traseira conserva a faixa dourada, sem o manequim preenchido. O tricórnio feminino remove também o halo do manequim branco antes de medir o chapéu. Não foram alterados ícones, IDs, atributos, roupas, armas, saves ou os modelos anteriores 18/19.
+
+Importação: `tools/import_equipment56.cjs`, `tools/equipment56_materials.cjs` e `tools/equipment56_headfit.cjs`. Nenhuma nova geração ou cobrança PixelLab. A ocultação permanece por `preferences.hideHeadgear` e restaura o penteado/cor escolhidos.
+
+Validação: 17 testes Node relacionados; Chrome, 480 poses dos modelos anteriores e 3.840 quadros dos oito novos, 64.112 comparações de pixels de olhos e 64 restaurações de cabelo; quatro direções, dois corpos, repouso, caminhada e seis famílias de ataque. Capturas de inspeção e evidências permanecem fora do Git. A revisão das mangas de Vestes do Santuário Oceânico foi solicitada separadamente e aguarda a validação do proprietário sobre estes capacetes.
+
+A distribuição estática também foi conferida no Chrome: 32 estados de prévia, 16 estados reais no mapa e 16 recargas de save. Cintos/capas continuam com diferença zero na região do avatar.

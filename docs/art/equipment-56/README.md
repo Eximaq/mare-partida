@@ -35,3 +35,7 @@ O catálogo do servidor lê a mesma fonte: 185 definições, hash 86937408e6991a
 57 trabalhos concluídos: 16 folhas de ícones, 40 folhas vestíveis e uma correção feminina. **770 gerações cobradas**, de 933,65 disponíveis; **163,65 restantes** ao concluir o lote. Recibos e prompts em [geracoes_pixellab.json](geracoes_pixellab.json). Nenhuma geração pendente ou parada por créditos. Reexecutar a importação offline não consome gerações.
 
 Rollback: reverter os commits desta branch; nenhum ID anterior foi renumerado e nenhum save foi migrado destrutivamente. O trabalho visual anteriormente suspenso do Protocolo Serafim permanece fora deste escopo.
+
+## Ajuste posterior dos capacetes
+
+O registro de cabeça passou de proteção somente da íris para abertura de todos os modelos de olhos; recortes do Corsário, capuz, tiara e halo do tricórnio foram corrigidos sem novas gerações. Ver [encaixe e validação](../../CAPACETES-E-VISIBILIDADE.md#correção-de-encaixe--04112026). As roupas e os demais itens desta entrega permanecem na revisão anterior.
