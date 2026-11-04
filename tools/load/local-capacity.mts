@@ -79,7 +79,8 @@ await authDatabase(async f=>{
  await f.pool.query('UPDATE mare_game.party_instances SET tick_at=clock_timestamp()');
  timer=setInterval(()=>{if(!workers){solo.tick();party.tick();}},250);delay.enable();
  const times:number[]=[],bytes:number[]=[],app:number[]=[],ages:number[]=[],statuses:Record<string,number>={};let dropped=0,inflight=0,requests=0,maxPoolWait=0,stop=false;
- const cpu=process.cpuUsage(),start=performance.now(),end=start+seconds*1000,next=users.map((_,i)=>start+i*750/clients);
+ const startedAt=new Date().toISOString(),cpu=process.cpuUsage(),start=performance.now(),end=start+seconds*1000,next=users.map((_,i)=>start+i*750/clients);
+ const requestFailures={timeout:0,network:0,invalidResponse:0};
  for(const [i,u] of users.entries())u.nextRenew=start+30000+i*750/clients;
  let schedulerMissed=0,readBusy=0,queueFull=0,renewals=0,renewalFailures=0;
  const transitions:any[]=[],windows:any[]=[];let windowAt=start,windowRequests=0,windowDrops=0,windowPeak=0,windowTimes:number[]=[];
@@ -105,9 +106,9 @@ await authDatabase(async f=>{
     const full=mode==='full'||now-u.lastFull>=3000,path=full?'online-state':'frame';
     if(full)u.lastFull=now;
     u.reading=true;inflight++;requests++;
-    const flight=(async()=>{const t=performance.now();try{
-     const r=await fetch(`${base}/v1/characters/${u.c.id}/${path}`,{headers:headers(u,i),signal:AbortSignal.timeout(6000)}),body=await r.text();
-     statuses[r.status]=(statuses[r.status]??0)+1;times.push(performance.now()-t);bytes.push(Buffer.byteLength(body));const ms=Number(r.headers.get('server-timing')?.match(/dur=([\d.]+)/)?.[1]);if(Number.isFinite(ms))app.push(ms);
+    const flight=(async()=>{const t=performance.now(),signal=AbortSignal.timeout(6000);let received=false;try{
+     const r=await fetch(`${base}/v1/characters/${u.c.id}/${path}`,{headers:headers(u,i),signal}),body=await r.text();
+     received=true;statuses[r.status]=(statuses[r.status]??0)+1;times.push(performance.now()-t);bytes.push(Buffer.byteLength(body));const ms=Number(r.headers.get('server-timing')?.match(/dur=([\d.]+)/)?.[1]);if(Number.isFinite(ms))app.push(ms);
      windowTimes.push(times.at(-1)!);
      if(r.ok){
       const value=JSON.parse(body);assert.equal(value.characterId??value.state.characterId,u.c.id);
@@ -116,7 +117,7 @@ await authDatabase(async f=>{
        u.stopped=true;transitions.push({actor:i+1,room:mode==='party'?Math.floor(i/4)+1:null,atMs:Math.round(performance.now()-start),alive:value.battle.hp>0,poolWait:f.pool.waitingCount,httpInFlight:inflight});
       }
      }else if(r.status>=500)stop=true;
-    }catch{statuses.network=(statuses.network??0)+1;stop=true;}finally{u.reading=false;inflight--;}})();flights.add(flight);void flight.finally(()=>flights.delete(flight));
+    }catch(error){const kind=received?'invalidResponse':signal.aborted&&signal.reason?.name==='TimeoutError'?'timeout':'network';requestFailures[kind]++;statuses[kind]=(statuses[kind]??0)+1;stop=true;}finally{u.reading=false;inflight--;}})();flights.add(flight);void flight.finally(()=>flights.delete(flight));
    }
    await sleep(10);
   }
@@ -142,7 +143,9 @@ await authDatabase(async f=>{
     developmentLoader:process.execArgv.some(v=>/tsx|--(?:import|loader)/.test(v))},
    activity,simulation:threaded?'workers':'inline',workerStatus,profile:mode,clients,
    parties:mode==='party'?clients/4:0,partitionLoad,providerFixtureLifetimeMs:f.provider.tokenLifetimeMs,
-   durationSeconds:Math.round(elapsed/1000),requests,statuses,dropped,
+   startedAt,endedAt:new Date().toISOString(),processId:process.pid,
+   durationSeconds:Math.round(elapsed/1000),requests,statuses,dropped,requestFailures,
+   readSlots:{planned:plannedPolls,issued:requests,blockedByPrevious:readBusy,missedByScheduler:schedulerMissed,rejectedByCapacity:queueFull,unattemptedAfterAbort:aborted},
    dropReasons:{schedulerMissed,readBusy,queueFull,aborted},renewals,renewalFailures,transitions,windows,
    throughput:Math.round(requests*1000/elapsed),
    httpMs:{p50:Math.round(percentile(times,.5)),p95:Math.round(percentile(times,.95)),

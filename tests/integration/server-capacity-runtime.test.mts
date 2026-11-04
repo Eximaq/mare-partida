@@ -19,4 +19,7 @@ test('capacity command measures a complete Party with real HTTP lease renewals a
  assert.deepEqual(report.partitionLoad,[{lane:'party',shard:0,total:1}]);assert.equal(report.providerFixtureLifetimeMs,900000);
  assert.deepEqual(report.dropReasons,{schedulerMissed:0,readBusy:0,queueFull:0,aborted:0});
  assert.deepEqual(report.transitions,[]);assert.ok(report.windows.length>=3);
+ assert.deepEqual(report.requestFailures,{timeout:0,network:0,invalidResponse:0});
+ assert.equal(report.readSlots.planned,report.readSlots.issued);
+ assert.ok(Date.parse(report.endedAt)-Date.parse(report.startedAt)>=32000);
 });
