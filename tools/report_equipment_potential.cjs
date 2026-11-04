@@ -34,9 +34,9 @@ function markdown(report){
   ...report.series.map(r=>`| ${r.name} | ${r.gaps.map(g=>`+${num(g.delta)} (${num(g.contributionPercent)}%)`).join(' | ')} |`),
   '', '## Limites da leitura',
   '', '- O percentual acima usa a contribuição do peitoral, não o Poder total do personagem. O JSON também fornece o aumento percentual do personagem.',
-  '- São amostras controladas. Outra classe, distribuição de extras ou equipamento adicional pode mudar o ganho. Potencial aumenta o orçamento real; não equivale a um multiplicador linear de Poder.',
+  '- São amostras controladas. Outra classe, distribuição de extras ou equipamento adicional pode mudar o ganho. Potencial aumenta as bases em 1,5% por ponto, além do orçamento de extras e de uma reserva de Vida que elimina empates de arredondamento. Refino e pérolas continuam separados.',
   '- A fórmula de Poder existente não contabiliza todos os efeitos de combate com o mesmo peso. Velocidade de ataque e dano crítico continuam afetando o combate pelas regras próprias.',
-  '- Nesta amostra, o Casaco das Marés Raro fica abaixo do Casaco da Bruma Incomum. O cadastro atual tem bases diferentes (DEF 4 / Vida 17 contra DEF 7 / Vida 27). Essa inversão está exposta para avaliação; não foi corrigida silenciosamente.',
+  '- Pisos compartilhados por slot/classe corrigem bases antigas que invertiam raridades. Cada patamar nativo possui bases no mínimo 50% acima do teto de bases anterior; os básicos fundidos ficam entre os dois patamares, preservando a vantagem nativa na mesma raridade.',
   '', 'Reproduzir: `node tools/report_equipment_potential.cjs sword 50`. Acrescente `--json` para incluir os atributos reais e ambos os percentuais.', ''].join('\n');
 }
 module.exports={compare,markdown};

@@ -3,6 +3,7 @@
 ## Regras entregues
 
 - Equipamentos novos usam geração v1: nível, origem, raridade nativa/atual, potencial inteiro 0–100 e orçamento real de atributos persistidos. Refinamento e pérolas permanecem separados. O nome exibe `LV. N` com a raridade da peça. Rótulos visuais: Peitoral e Calça; slots internos preservados.
+- Crescimento obrigatório: cada ponto de potencial aumenta as bases em 1,5%, além dos extras e de uma reserva de Vida de `5 × potencial × multiplicador de raridade`, eliminando empates por arredondamento. Pisos por slot/classe ficam 50% acima do teto de bases da raridade anterior; todas as cinco bases de atributos acompanham a qualidade. Básicos fundidos usam o piso intermediário de 20% e continuam abaixo dos nativos equivalentes. A fórmula oficial de Poder permanece intacta. Itens legados sem potencial não são recalculados.
 - Potencial inicial revisável: peso `exp(-0,06 × potencial)` entre 0 e 100. Probabilidades teóricas: ≥80 = 0,5909%; ≥90 = 0,2187%; ≥95 = 0,1014%; 100 = 0,01447%. Sem reroll de migração ou reforja.
 - Drop normal: uma única chance de 20%, seguida de 60/25/10/5 para Comum/Incomum/Raro/Épico. Chances finais: 12/5/2/1%. Sem filtro de classe, Lendários ou Supremos. Nível do jogador limitado à faixa real do mapa. Recursos, caixas e poções mantêm regras próprias.
 - Fusão de básicos mantém o modelo e a origem Comum, inclusive ao mudar a raridade. Crescimento intrínseco usa 35% do excedente do multiplicador de raridade e orçamento proporcional, abaixo dos nativos equivalentes. Custos e restrições preservados; Lendário não vira Supremo.
@@ -16,7 +17,7 @@
 
 Itens legados recebem apenas identificação de geração v0, sem potencial inventado ou alteração dos valores efetivos. IDs antigos 0–184 permanecem; o fragmento foi acrescentado em 185. A migração 0039 aceita estados de masmorra v1/v2/v3 e promove somente a assinatura anterior auditada de combate, preservando ações e estados. Não editar migrações históricas nem restaurar um binário anterior sobre esses dados sem conciliar sua assinatura/schema.
 
-As diferenças reais de poder estão em [EQUIPMENT-POTENTIAL-COMPARISON.md](EQUIPMENT-POTENTIAL-COMPARISON.md): seis raridades, cinco gaps por raridade, amostra controlada reproduzível. Há uma inversão prévia de bases entre o Casaco da Bruma Incomum e o Casaco das Marés Raro; exposta para decisão de balanceamento, sem ajuste silencioso.
+As diferenças reais de poder estão em [EQUIPMENT-POTENTIAL-COMPARISON.md](EQUIPMENT-POTENTIAL-COMPARISON.md): seis raridades, cinco gaps por raridade, amostra controlada reproduzível. A inversão anterior entre Incomum e Raro foi corrigida pelos pisos compartilhados. Testes percorrem todos os 101 potenciais e comparam raridades/modelos nas sete classes, nos níveis 1, 50 e 100.
 
 ## Arte
 

@@ -26,7 +26,7 @@
   }
 
   // Generation v1: persistent quality, separate from refinement and pearls.
-  const generationRules=Object.freeze({version:1,lambda:.06,normalGearChance:.20,basicFusionGrowth:.35,synthesisLevel:'character-level',chestLevel:'catalog'});
+  const generationRules=Object.freeze({version:1,lambda:.06,normalGearChance:.20,basicFusionGrowth:.35,potentialGrowth:.015,potentialHpStep:5,nativeRankGrowth:1.5,basicRankGrowth:1.2,synthesisLevel:'character-level',chestLevel:'catalog'});
   function potentialProbabilities(lambda=generationRules.lambda){if(!Number.isFinite(lambda)||lambda<0)throw Error('Curva inválida');const p=Array.from({length:101},(_,i)=>Math.exp(-lambda*i)),sum=p.reduce((a,b)=>a+b,0);return p.map(n=>n/sum);}
   function rollPotential(random=Math.random){let n=draw(random);const p=potentialProbabilities();for(let i=0;i<100;i++){n-=p[i];if(n<0)return i;}return 100;}
   function lootLevel(level,region){if(!region||!Number.isInteger(region.min)||!Number.isInteger(region.max)||region.min>region.max)throw Error('Faixa do mapa inválida');return Math.min(region.max,Math.max(region.min,Math.max(1,int(level))));}
@@ -66,12 +66,26 @@
     const g=clone(original);g.inventory=(g.inventory||[]).map(item=>normalizeItem(item,defs));g.equipment=Object.fromEntries(Object.entries(g.equipment||{}).map(([slot,item])=>[slot,item?normalizeItem(item,defs):null]));
     g.forgeVersion=VERSION;g.forgeSeq=int(g.forgeSeq);g.forgeHistory=Array.isArray(g.forgeHistory)?g.forgeHistory.slice(-12):[];return g;
   }
+  // Component-wise rarity floors prevent an older catalogue model from reversing rank strength.
+  const qualityCache=new WeakMap(),coreKeys=['attack','defense','hp',...keys];
+  function qualityFloors(defs,def,rank,basic){
+    let groups=qualityCache.get(defs);if(!groups){groups=new Map();qualityCache.set(defs,groups);}
+    const group=def.slot==='weapon'?'weapon:'+def.type:def.slot;
+    if(!groups.has(group)){
+      const tiers=[],order=Object.keys(rarity);let previous=Object.fromEntries(coreKeys.map(k=>[k,0]));
+      for(const name of order){const entries=defs.filter(d=>!d.kind&&d.type!=='akuma_no_mi'&&(d.slot==='weapon'?'weapon:'+d.type:d.slot)===group&&d.rarity===name),floor=Object.fromEntries(coreKeys.map(k=>[k,Math.max(previous[k]*generationRules.nativeRankGrowth,keys.includes(k)?rarity[name].extras:0)])),maximum={...floor};
+        for(const d of entries)for(const k of coreKeys)maximum[k]=Math.max(maximum[k],(d.attributes?.[k]||d[k]||0)*rarity[name].mult);
+        tiers.push({floor,previous:{...previous},maximum});previous=maximum;
+      }groups.set(group,tiers);
+    }
+    const tier=groups.get(group)[Object.keys(rarity).indexOf(rank)];return basic?Object.fromEntries(coreKeys.map(k=>[k,tier.previous[k]*generationRules.basicRankGrowth])):tier.floor;
+  }
   function itemStats(item,defs){
     const zero={attack:0,defense:0,hp:0,energy:0,crit:0,attackSpeedPercent:0,critDamage:0,attributes:Object.fromEntries(keys.map(k=>[k,0]))};if(!isGear(item,defs))return zero;
-    const d=defs[item.def]||{},r=rarity[item.rarity||d.rarity]||rarity.common,b=item.baseStats||d,m=1+(item.generation?.version===1?Math.max(0,(item.level||1)-1):Math.min(20,Math.max(0,(item.level||1)-1)))*.09,plus=int(item.plus);
-    const result={...zero,attack:Math.round(((b.attack||0)*(item.generation?.baseMultiplier??r.mult)+plus*3)*m),defense:Math.round(((b.defense||0)*(item.generation?.baseMultiplier??r.mult)+plus*2)*m),hp:Math.round(((b.hp||0)*(item.generation?.baseMultiplier??r.mult)+plus*10)*m)};
+    const d=defs[item.def]||{},r=rarity[item.rarity||d.rarity]||rarity.common,quality=item.generation?.version===1,p=quality?Math.max(0,Math.min(100,item.potential||0)):0,q=1+p*generationRules.potentialGrowth,floor=quality?qualityFloors(defs,d,item.rarity,item.generation.family==='basic'&&item.rarity!=='common'):null,b=item.baseStats||d,core=k=>Math.max((keys.includes(k)?(item.baseAttributes||d.attributes)?.[k]:b[k])||0,0)*(item.generation?.baseMultiplier??r.mult),basis=k=>quality?Math.max(core(k),floor[k])*q:core(k),m=1+(item.generation?.version===1?Math.max(0,(item.level||1)-1):Math.min(20,Math.max(0,(item.level||1)-1)))*.09,plus=int(item.plus);
+    const result={...zero,attack:Math.round((basis('attack')+plus*3)*m),defense:Math.round((basis('defense')+plus*2)*m),hp:Math.round((basis('hp')+plus*10)*m+(quality?p*generationRules.potentialHpStep*r.mult:0))};
     // Intrinsic class attributes are separate from rerollable extras and saved baseStats.
-    for(const key of keys)result.attributes[key]=Math.round(((item.baseAttributes||d.attributes)?.[key]||0)*(item.generation?.baseMultiplier??r.mult)*m);
+    for(const key of keys)result.attributes[key]=quality?Number((basis(key)*m).toFixed(6)):Math.round(basis(key)*m);
     result.crit=(d.crit||0)*r.mult;
     for(const extra of item.extras||[]){if(!Number.isFinite(extra.value)||extra.value<0)continue;if(keys.includes(extra.stat))result.attributes[extra.stat]+=extra.value;else if(['hp','energy','crit','attackSpeedPercent','critDamage'].includes(extra.stat))result[extra.stat]+=extra.value;}
     return result;
