@@ -38,8 +38,10 @@ async function activity(a:any,all:any[],kind='hunt',destination='dawn'){
 async function sharedKill(f:any,all:any[]){
  const before=await all[0].read(),instance=before.battle.partyInstanceId,row=(await f.pool.query('SELECT simulation FROM mare_game.party_instances WHERE id=$1',[instance])).rows[0],room=row.simulation,m=room.mobs.find((m:any)=>m.alive);
  Object.assign(m,{hp:1,defense:0,attackClock:999,engaged:false});
- await f.pool.query("UPDATE mare_game.party_instances SET simulation=$2,tick_at=clock_timestamp()-interval '150 milliseconds' WHERE id=$1",[instance,JSON.stringify(room)]);
+ await f.pool.query("UPDATE mare_game.party_instances SET simulation=$2 WHERE id=$1",[instance,JSON.stringify(room)]);
  for(const w of all){const o=await w.read();o.battle.auto=false;o.battle.autoSkills=false;o.battle.pending={targetId:m.id,remaining:0};await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[w.c.id,JSON.stringify(o.battle)]);await f.pool.query("UPDATE mare_game.character_world SET x=$2,y=$3,path='[]',speed=0 WHERE character_id=$1",[w.c.id,m.x-20,m.y]);}
+ // Start the elapsed window after fixture setup; slow CI setup must not trigger reconnect cancellation.
+ await f.pool.query("UPDATE mare_game.party_instances SET tick_at=clock_timestamp()-interval '150 milliseconds' WHERE id=$1",[instance]);
  await tickPartyBattles(f.pool);return {instance,m};
 }
 test('real shared worker conserves XP for two, three and four; one death and one personal loot owner',async()=>authDatabase(async f=>{

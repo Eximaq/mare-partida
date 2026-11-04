@@ -37,6 +37,8 @@ with sync_playwright() as p:
   seed=copy.deepcopy(template);seed.update(level=100,classId=cls)
   c,q=page_for(b,seed);q.on('pageerror',lambda e:errors.append(str(e)));tree(q)
   check_targets(q)
+  # Freeze idle regeneration/autosave while inspecting an uncommitted talent draft.
+  q.clock.pause_at(q.evaluate("Date.now()+100"))
   before=saved(q)
   q.locator('[data-tree-zoom=fit]').click();assert scale(q)>=58
   check_targets(q)
@@ -48,6 +50,7 @@ with sync_playwright() as p:
   c.close()
  # All controls must clamp, including fit on a small viewport and wheel/keyboard.
  c,q=page_for(b,{**template,'level':100},touch=True);q.on('pageerror',lambda e:errors.append(str(e)));tree(q)
+ q.clock.pause_at(q.evaluate("Date.now()+100"))
  before=saved(q);vp=q.locator('.constellation-viewport')
  q.locator('[data-tree-zoom=fit]').click();assert scale(q)==58
  assert q.locator('[data-tree-zoom=out]').is_disabled()

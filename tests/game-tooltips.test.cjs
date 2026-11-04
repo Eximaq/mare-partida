@@ -23,3 +23,5 @@ console.log('Game tooltips OK');
 
 const help=Tooltip.helpHTML({title:'<img>',description:'Força <script> +25%'});
 assert(help.includes('&lt;script&gt;'));assert(!help.includes('<script>'));assert(help.includes('Força'));
+
+const roundedQuality=Tooltip.itemHTML({...hovered,stats:{strength:23.44,crit:.041}});assert(roundedQuality.includes('+24'));assert(roundedQuality.includes('+5%'));assert(!roundedQuality.includes('23.44'));

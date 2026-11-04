@@ -22,7 +22,7 @@ const count = z.number().int().min(0).max(1000000000);
 const stat = z.number().finite().min(0).max(1000000);
 export const originalItemSchema = z.strictObject({
   id: instanceIdSchema,
-  def: z.number().int().min(0).max(108),
+  def: z.number().int().min(0).max(185),
   level: z.number().int().min(1).max(100),
   plus: z.number().int().min(0).max(20),
   locked: z.boolean(),
@@ -30,6 +30,9 @@ export const originalItemSchema = z.strictObject({
   rarity: z
     .enum(["common", "uncommon", "rare", "epic", "legendary", "supreme"])
     .optional(),
+  potential: z.number().int().min(0).max(100).nullable().optional(),
+  generation: z.strictObject({version:z.union([z.literal(0),z.literal(1)]),family:z.enum(['basic','native','legacy']),nativeRarity:z.string().max(16).nullable(),source:z.string().max(100),baseMultiplier:stat.optional(),extraBudget:count.optional(),minBudget:count.optional(),maxBudget:count.optional()}).optional(),
+  baseAttributes: z.strictObject({strength:stat,dexterity:stat,vitality:stat,intelligence:stat,spirit:stat}).optional(),
   baseStats: z
     .strictObject({ attack: stat, defense: stat, hp: stat })
     .optional(),
@@ -45,17 +48,20 @@ export const originalItemSchema = z.strictObject({
           "hp",
           "energy",
           "crit",
+          "attackSpeedPercent",
+          "critDamage",
         ]),
         value: stat,
+        points: count.optional(),
       }),
     )
     .max(8)
     .optional(),
   sockets: z.array(z.string().max(80).nullable()).max(5).optional(),
   reforgeAttempts: count.optional(),
-  forgeVersion: z.literal(4).optional(),
+  forgeVersion: z.union([z.literal(4),z.literal(5)]).optional(),
   pearlId: z.string().max(80).optional(),
-  materialId: z.enum(['akuma_fragment_e','akuma_fragment_d','akuma_fragment_c','akuma_fragment_b','akuma_fragment_a','akuma_fragment_s']).optional(),
+  materialId: z.enum(['akuma_fragment_e','akuma_fragment_d','akuma_fragment_c','akuma_fragment_b','akuma_fragment_a','akuma_fragment_s','epic_weapon_fragment']).optional(),
   qty: z.number().int().min(1).max(99999).optional(),
   quantity: z.number().int().min(1).max(9999).optional(),
   rank: z.enum(['E','D','C','B','A','S']).optional(),
@@ -80,7 +86,7 @@ export const originalInventorySchema = z.strictObject({
   equipment,
   potions: count,
   materials: count,
-  forgeVersion: z.literal(4),
+  forgeVersion: z.union([z.literal(4),z.literal(5)]),
   forgeSeq: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),
   forgeHistory: z.array(z.record(z.string(), z.unknown())).max(12),
 });
@@ -93,6 +99,7 @@ const five = z
   .length(5)
   .refine((a) => new Set(a).size === 5);
 export const forgeOperationSchema = z.discriminatedUnion("type", [
+  z.strictObject({...revision,type:z.literal("formEpicWeapon")}),
   z.strictObject({ ...item, type: z.literal("upgrade") }),
   z.strictObject({
     ...item,

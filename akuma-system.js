@@ -106,6 +106,17 @@
     const enabled=active&&physical&&!direct&&original>0&&received>0;
     return {damage:enabled?received*(1-supaRules.mitigation):received,reflected:enabled?original*supaRules.reflect:0};
   }
-  root.MareAkuma={ranks,rankRarities,rarityFor,familyFor,slotsPerRank,AkumaNoMiData,catalog,byId,isZoan,isFruit,registered,slotsForRank,passiveCount,register,migrate,itemData,bonusStats,applyGear,activeSkill,activeSkills,cooldownKey,supaRules,supaTargets,retaliate};
+  const offenseRules=Object.freeze({version:1,secondaryContribution:.35,minimumCastMargin:.10});
+  // attack is an alias of the class's normal attack, not a third independent base.
+  function offensiveStats(stats,totalMultiplier=1){
+    if(stats.fruitOffenseVersion===offenseRules.version)return stats;
+    const value=n=>Number.isFinite(n)?Math.max(0,n):0;
+    const physical=value(stats.physical??stats.attack),elemental=value(stats.elemental),normal=value(stats.attack??Math.max(physical,elemental));
+    if(!(totalMultiplier>0&&Number.isFinite(totalMultiplier)))throw Error('Coeficiente ofensivo inválido');
+    const base=Math.max(Math.max(physical,elemental)+Math.min(physical,elemental)*offenseRules.secondaryContribution,normal*(1+offenseRules.minimumCastMargin)/totalMultiplier);
+    return {...stats,attack:base,physical:base,elemental:base,fruitOffenseVersion:offenseRules.version};
+  }
+  const castCoefficient=id=>id==='akuma_inu_dachshund'?.85:id==='akuma_uma_uma'?.55:1;
+  root.MareAkuma={offenseRules,offensiveStats,castCoefficient,ranks,rankRarities,rarityFor,familyFor,slotsPerRank,AkumaNoMiData,catalog,byId,isZoan,isFruit,registered,slotsForRank,passiveCount,register,migrate,itemData,bonusStats,applyGear,activeSkill,activeSkills,cooldownKey,supaRules,supaTargets,retaliate};
   if(typeof module!=='undefined')module.exports=root.MareAkuma;
 })(globalThis);

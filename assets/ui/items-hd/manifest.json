@@ -1,7 +1,7 @@
 {
   "version": "20261031-refine",
   "tool": "PixelLab AI edit_image (Pro)",
-  "generationCost": 340,
+  "generationCost": 350,
   "initialBatches": 26,
   "repairBatches": 8,
   "processing": "AI reconstruction on 128x128 canvases; alpha-bounds crop and 4px transparent padding only; no bitmap resizing in delivered PNGs",
@@ -2249,6 +2249,26 @@
       "job": "8b629e17-b860-4e0a-96f3-fc2140c20859",
       "index": 0,
       "url": "https://api.pixellab.ai/mcp/images/8b629e17-b860-4e0a-96f3-fc2140c20859/download?index=0"
+    },
+    {
+      "key": "epic-weapon-fragment",
+      "path": "assets/ui/items-hd/epic-weapon-fragment.png",
+      "width": 128,
+      "height": 128,
+      "tool": "PixelLab AI create_image_pro",
+      "jobId": "5f08dc8c-0a5e-49dc-9027-6d92cd13890a",
+      "assetId": "37916e8f-0496-54ff-ab01-8afd3b4f2338",
+      "candidate": 3,
+      "chargedGenerations": 10,
+      "processing": "Original RGBA, no resize or edits",
+      "sourceCanvas": [
+        128,
+        128
+      ],
+      "padding": 0,
+      "sha256": "e568e0030bddc3e68183cee530cc71c29cbb6b01b2ac222e64bf8b72fe5b0acf",
+      "job": "5f08dc8c-0a5e-49dc-9027-6d92cd13890a",
+      "url": "https://api.pixellab.ai/mcp/images/5f08dc8c-0a5e-49dc-9027-6d92cd13890a/download?index=3"
     }
   ]
 }

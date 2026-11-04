@@ -31,7 +31,7 @@ function move(nav,m,dx,dy){const from={x:m.x,y:m.y},n=Math.max(1,Math.ceil(Math.
 function armor(m,magic,now){return (magic?1:R.defenseFactor(m,now))*(m.rankSDefenseUntil>now?.2:1)*(m.rankSPhoenixDefenseUntil>now?.5:1)*(m.kobuDebuffUntil>now*1000?.8:1)*(m.empRemaining>0?0:(magic?(m.magicDefense??m.defense):m.defense)*(m.hakiDebuff>0?.85:1)*(m.zoanDefenseUntil>now?.95:1));}
 function context(b,c,key,hooks={}){
  const f=state(b,c),now=c.now/1000,hero=c.hero,nav=c.nav;
- return {fruit:f.id,key:String(key),now,epoch:c.now,hero,target:b.mobs.find(m=>m.id===b.targetId&&live(m)),enemies:b.mobs,stats:c.stats,
+ return {fruit:f.id,key:String(key),now,epoch:c.now,hero,target:b.mobs.find(m=>m.id===b.targetId&&live(m)),enemies:b.mobs,stats:A.offensiveStats(c.stats,A.castCoefficient(f.id)),
   manualPath:c.manualPath,point:c.point,classId:c.classId,map:nav.map,haki:b.hakiRuntime?.active,armor:(m,magic)=>armor(m,magic,now),scaleHp:n=>{b.hp*=n;},view:{x:Math.max(0,Math.min(hero.x-480,nav.map.width-960)),y:Math.max(0,Math.min(hero.y-285,nav.map.height-570)),width:960,height:570},
   clear:(a,z)=>nav.projectileClear(a,z),walkable:p=>nav.walkable(p.x,p.y),path:(a,z)=>nav.path(a,z),move:(m,dx,dy)=>move(nav,m,dx,dy),
   damage:(m,power,mult,magic,pen,absolute)=>R.damage({...m,defense:armor(m,false,now),magicDefense:armor(m,true,now)},power,mult,magic,pen,absolute),
@@ -77,14 +77,14 @@ function tick(b,c,dt,hooks){
    else if(f.id==='akuma_beri_beri'){f.effects.invulnerableUntil=now+1.5;for(const m of b.mobs.filter(m=>live(m)&&distance(m,c.hero)<=130)){const d=Math.max(1,distance(m,c.hero));ctx.move(m,(m.x-c.hero.x)*65/d,(m.y-c.hero.y)*65/d);}}
    else if(f.id==='akuma_tori_albatroz')f.effects.altitudeUntil=now+5;
    else if(f.id==='akuma_uma_uma'){const [dx,dy]=R.direction(c.hero);f.effects.dash={dx,dy,remaining:256,hit:false};}
-   else if(f.id==='akuma_inu_dachshund'){const m=b.mobs.filter(m=>live(m)&&distance(m,c.hero)<=130&&ctx.clear(c.hero,m)).sort((a,z)=>distance(a,c.hero)-distance(z,c.hero))[0];if(m){const d=Math.max(1,distance(m,c.hero));ctx.move(c.hero,(m.x-c.hero.x)/d*Math.max(0,d-35),(m.y-c.hero.y)/d*Math.max(0,d-35));m.zoanSlowUntil=m.zoanDefenseUntil=now+3;hooks.hit(m,C.damage(c.stats,armor(m,false,now),{type:'physical',multiplier:.85}));}}
+   else if(f.id==='akuma_inu_dachshund'){const m=b.mobs.filter(m=>live(m)&&distance(m,c.hero)<=130&&ctx.clear(c.hero,m)).sort((a,z)=>distance(a,c.hero)-distance(z,c.hero))[0];if(m){const d=Math.max(1,distance(m,c.hero));ctx.move(c.hero,(m.x-c.hero.x)/d*Math.max(0,d-35),(m.y-c.hero.y)/d*Math.max(0,d-35));m.zoanSlowUntil=m.zoanDefenseUntil=now+3;hooks.hit(m,C.damage(ctx.stats,armor(m,false,now),{type:'physical',multiplier:.85}));}}
   }
  }
  if(R.has(f.id))R.step(rt,ctx);else {L.tick(f,ctx,dt);G.tick(f,ctx,dt);}
  f.effects.food=(f.effects.food||[]).filter(food=>{if(food.ready<=now&&distance(food,c.hero)<25){hooks.heal(c.stats.maxHP*.15,true);return false;}return true;});
  if(f.id==='akuma_tori_phoenix'){f.effects.phoenixElapsed=(f.effects.phoenixElapsed||0)+dt;if(f.effects.phoenixElapsed>=10){f.effects.phoenixElapsed-=10;b.hp=Math.min(c.stats.maxHP,b.hp+c.stats.maxHP*.1);b.energy=Math.min(c.stats.maxEnergy,b.energy+c.stats.maxEnergy*.1);}}
  const dash=f.effects.dash;if(dash){const amount=Math.min(dash.remaining,800*dt),moved=ctx.move(c.hero,dash.dx*amount,dash.dy*amount);dash.remaining-=amount;
-  if(!dash.hit){const m=b.mobs.find(m=>live(m)&&distance(m,c.hero)<45&&ctx.clear(c.hero,m));if(m){dash.hit=true;hooks.hit(m,C.damage(c.stats,armor(m,false,now),{type:'physical',multiplier:.55}));ctx.move(m,dash.dx*45,dash.dy*45);}}
+  if(!dash.hit){const m=b.mobs.find(m=>live(m)&&distance(m,c.hero)<45&&ctx.clear(c.hero,m));if(m){dash.hit=true;hooks.hit(m,C.damage(ctx.stats,armor(m,false,now),{type:'physical',multiplier:.55}));ctx.move(m,dash.dx*45,dash.dy*45);}}
   if(dash.remaining<=0||moved<amount-.1)delete f.effects.dash;
  }
  f.advanced=encode(rt);if(JSON.stringify(f).length>250000)throw Error('fruit_runtime_limit');

@@ -16,7 +16,7 @@ export const isDungeonAction=(a:string)=>(dungeonActions as readonly string[]).i
 export async function readDungeons(client:PoolClient,id:string){
  if(!(await client.query("SELECT to_regclass('mare_game.character_dungeons') present")).rows[0].present)return null;
  const row=(await client.query('SELECT state FROM mare_game.character_dungeons WHERE character_id=$1',[id])).rows[0];
- const state=dungeonStateSchema.parse(row?.state??D.migrate({characterId:id}).bossDungeons);
+ const state=dungeonStateSchema.parse(D.migrate({characterId:id,bossDungeons:row?.state}).bossDungeons);
  if(Object.values(state.records).some(r=>r?.ownerId!==id||r.reward&&r.reward.boundToCharacter!==id)||state.reveal&&state.reveal.boundToCharacter!==id)throw new AuthFault(503,'dungeon_state_unavailable');
  return state;
 }
@@ -68,7 +68,8 @@ export async function mutateDungeon(client:PoolClient,id:string,input:CharacterC
   if(!result.ok)throw new AuthFault(409,'dungeon_inventory_full');
   await inventoryChange(client,id,input,state,stock,{...stock,inventory:result.state.inventory},r.reward.berry,r.reward.xp);
   await client.query('INSERT INTO mare_game.dungeon_claims(character_id,dungeon_id,request_id,experience_delta,gold_delta) VALUES($1,$2,$3,$4,$5)',[id,dungeonId,input.requestId,r.reward.xp,r.reward.berry]);
-  b.dungeon.record=result.state.bossDungeons.records[dungeonId];await storeBattle(client,id,b);
+  // Claim, delivery and relocation share this command's SQL transaction.
+  E.changeArea(b,null,now.getTime(),rng);const port=maps().maps.lobby.spawn;Object.assign(w,{mapId:'lobby',area:null,position:{...port},path:[],speed:0,direction:'front',serverNow:now.toISOString(),motionUntil:now.toISOString()});await storeWorld(client,id,w);await storeBattle(client,id,b);
  }else if(input.action==='dungeon.craft'){
   result=D.craft(base,{expectedSeq:input.payload.expectedSeq,defs:getGameCatalog().items,catalog:require('../../../../akuma-system.js').catalog,random:rng,commit:()=>true,now:now.getTime()});
   if(!result.ok)throw new AuthFault(409,'dungeon_craft_unavailable');

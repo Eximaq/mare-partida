@@ -22,3 +22,5 @@
 .game-tip-compendium .game-tip-name{font:700 23px/1.15 "Inventory Alegreya SC",Georgia,serif}
 .game-tip-compendium .game-tip-meta{font-size:12px}
 .game-tip-compendium .game-tip-description{font-size:16px}
+
+.equipment-potential{position:relative;isolation:isolate;height:17px;min-width:100px;margin:5px 0;background:#17131b;border:1px solid #706048;border-radius:2px;overflow:hidden;font-size:10px;color:#fff3d8}.equipment-potential>span{position:absolute;inset:0 auto 0 0;background:linear-gradient(90deg,#3e4872,#9365bc);z-index:-1}.equipment-potential>b{display:block;padding:0 6px;line-height:15px;text-shadow:0 1px 2px #000}.equipment-legacy{display:block;color:#b7aa94;margin:4px 0}

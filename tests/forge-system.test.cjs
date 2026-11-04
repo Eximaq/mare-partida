@@ -14,7 +14,7 @@ test('25 real pearls, exact attributes/levels/percentages and stable canonical I
 });
 test('All 1000 rarity outcomes match boundaries and never drop Supreme',()=>{
  const counts={};for(let roll=1;roll<=1000;roll++){const r=F.rarityFromRoll(roll);counts[r]=(counts[r]||0)+1;}
- assert.deepEqual(counts,{legendary:5,epic:120,rare:150,uncommon:225,common:500});assert.throws(()=>F.rarityFromRoll(0));assert.throws(()=>F.rarityFromRoll(1001));
+ assert.deepEqual(counts,{common:600,uncommon:250,rare:100,epic:50});assert.throws(()=>F.rarityFromRoll(0));assert.throws(()=>F.rarityFromRoll(1001));
 });
 test('All six rarities apply base multiplier once, keep refinement additive, unique scalable extras and sockets',()=>{
  for(const [id,r] of Object.entries(F.rarity)){
@@ -31,7 +31,7 @@ test('Fixed-rarity upgrade migrates existing Nodachi copies to Legendary and pre
  const nodachiDefs=[{name:'Nodachi de Fogo',slot:'weapon',type:'sword',attack:11,defense:0,hp:0,rarity:'legendary',fixedRarity:true}],oldExtras=[{stat:'strength',value:1},{stat:'dexterity',value:2},{stat:'vitality',value:3},{stat:'intelligence',value:4}];
  const old={name:'Saved item',level:5,gold:100,materials:50,equipment:{weapon:{id:'old-nodachi',def:0,level:5,plus:2,locked:false,rarity:'epic',baseStats:{attack:11,defense:0,hp:0},extras:structuredClone(oldExtras),sockets:[null,null,null]}},inventory:[],stats:{kills:3}};
  const upgraded=F.migrate(old,nodachiDefs),item=upgraded.equipment.weapon;
- assert.equal(F.VERSION,4);assert.equal(item.rarity,'legendary');assert.equal(item.extras.length,F.rarity.legendary.extras);assert.deepEqual(item.extras.slice(0,4),oldExtras);assert.equal(item.sockets.length,F.rarity.legendary.sockets);assert.deepEqual(F.migrate(upgraded,nodachiDefs),upgraded);assert.deepEqual(old.equipment.weapon.extras,oldExtras);
+ assert.equal(F.VERSION,5);assert.equal(item.rarity,'legendary');assert.equal(item.extras.length,F.rarity.legendary.extras);assert.deepEqual(item.extras.slice(0,4),oldExtras);assert.equal(item.sockets.length,F.rarity.legendary.sockets);assert.deepEqual(F.migrate(upgraded,nodachiDefs),upgraded);assert.deepEqual(old.equipment.weapon.extras,oldExtras);
 });
 test('Upgrade guarantees +1 through +5, supports +20, scales costs and rejects stale commands',()=>{
  for(const plus of Array.from({length:20},(_,i)=>i)){
