@@ -11,8 +11,15 @@ test('capacity command measures a complete Party with real HTTP lease renewals a
  let output='';child.stdout.on('data',v=>output+=v);child.stderr.resume();
  const timeout=setTimeout(()=>child.kill(),90000);
  const code=await new Promise<number|null>(resolve=>child.once('exit',resolve));clearTimeout(timeout);
- assert.equal(code,0,'isolated capacity smoke must finish successfully');
- const report=JSON.parse(output.trim().split(/\r?\n/).filter(line=>line.startsWith('{')).at(-1)!);
+ const line=output.trim().split(/\r?\n/).filter(line=>line.startsWith('{')).at(-1);
+ const report=line?JSON.parse(line):undefined;
+ // Keep failure diagnostics limited to aggregate fixture metrics: no sessions,
+ // actor identifiers, raw child output or environment variables in CI logs.
+ const diagnosis=report?{activity:report.activity,statuses:report.statuses,dropReasons:report.dropReasons,
+  renewalFailures:report.renewalFailures,httpMs:report.httpMs,simulationAgeP95Ms:report.simulationAgeP95Ms,
+  unexpectedExits:report.workerStatus?.unexpectedExits}: {reportMissing:true};
+ assert.equal(code,0,'isolated capacity smoke must finish successfully: '+JSON.stringify(diagnosis));
+ assert.ok(report,'capacity runner must emit its aggregate report');
  assert.equal(report.runtime?.api,'compiled');assert.equal(report.runtime?.apiPoolMax,10);assert.equal(report.runtime?.node,process.version);assert.equal(report.runtime?.developmentLoader,false);
  assert.equal(report.clients,4);assert.equal(report.activity.auto,4);assert.equal(report.passed,true);
  assert.equal(report.parties,1);assert.equal(report.renewals,4);assert.equal(report.renewalFailures,0);

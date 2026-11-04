@@ -252,3 +252,16 @@ slots perdidos/erros, p95 HTTP <500 ms e idade <1000 ms. Não aumentar para
 O [plano privado para dois computadores](PRIVATE-LOAD-GENERATOR-PLAN.md)
 está preparado, mas sua execução e as alterações de rede dependem de
 autorização específica.
+
+## Registro de validação do diagnóstico
+
+Na primeira CI de `5ebb94e`, testes essenciais, Docker/Linux e navegador
+passaram. O job foundation falhou no smoke de quatro contas: o subprocesso
+terminou com código 2, mas o teste não exibiu os contadores que motivaram a
+reprovação. Esse resultado não foi classificado como problema do hardware
+local nem descartado como flake sem evidência.
+
+O teste passou a mostrar somente métricas agregadas do subprocesso ao falhar,
+mantendo todas as asserções e limites. A execução local passou novamente e
+o typecheck passou. Uma repetição verde não determina retroativamente a causa
+da primeira falha; o novo diagnóstico permite investigar uma recorrência.
