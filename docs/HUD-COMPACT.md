@@ -74,3 +74,9 @@ Revisão pelas Web Interface Guidelines: controles nativos, foco visível, retor
 Limites: testes Chromium em desktop com viewports móveis; não substituem teste físico em iOS/Safari. O chat validado é o canal local de sistema/anotações existente; não foi criada nem alterada uma rede de mensagens. Demais janelas mantêm sua arquitetura e acabamento.
 
 - Validação ampliada: 16 janelas em sete resoluções, atalhos de inventário e dados preservados (hud_responsive_browser.py). Corrigida a regra antiga que abria submenus para fora da tela no modo retrato; agora a altura disponível deriva do limite inferior real do menu.
+
+## Integração e limite de teste histórico
+
+Dawn (cinco resoluções, sete rotas, chefe, resgate e rollback), Conchas (cinco resoluções e rotas) e navegação online foram validados após fechar a expedição ao abrir rotas/contratos. Os testes agora abrem explicitamente a janela contextual antes de acessar a rota.
+
+O ensaio histórico `orange_browser.py` falha na expectativa de bloqueio de um personagem nível 20. A mesma expectativa existe na main anterior à HUD; `archipelago.js` já define acesso no nível 11 e `hunt-system.js` faixa 11–15, sem chefe. Nenhum desses arquivos mudou neste PR. Não se alterou gameplay para satisfazer uma fixture antiga. A navegação atual de Orange Town foi verificada separadamente no nível 15, em 1366×768, 390×844 e 844×390: viagem, abertura contextual das rotas e retorno ao porto passaram, sem erros de página. Atualizar as expectativas históricas de progressão/chefe fica fora desta refatoração.

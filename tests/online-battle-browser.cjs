@@ -73,7 +73,7 @@ const engine=require('../world-battle.cjs');wire.battle=engine.create('beach',wi
   assert(late.mob-middle.mob>1,'monster must keep moving after the first 180ms');
   assert(late.hero<=wire.world.position.x&&late.mob<=wire.battle.mobs[0].x,'visuals never extrapolate past confirmed combat points');
   assert.equal(wire.battle.mobs[0].hp,hp-12,'smoothing cannot apply local damage');
-  await p.locator('#huntRoute').click();await p.waitForSelector('[data-hunt-sector]');assert.equal(await p.locator('[data-online-action="journey.begin"]').count(),0);await p.keyboard.press('Escape');
+  await p.locator('#journeyToggle').click();await p.locator('#huntRoute').click();await p.waitForSelector('[data-hunt-sector]');assert.equal(await p.locator('[data-online-action="journey.begin"]').count(),0);await p.keyboard.press('Escape');
   await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.screenshot({path:path.join(out,'original-online-monsters.png')});
   await p.reload();await p.waitForFunction(()=>window.__mareDiagnostics?.().alive===14);assert.equal(await p.evaluate(()=>__mareDiagnostics().hp),77);
   await p.setViewportSize({width:393,height:852});await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.screenshot({path:path.join(out,'original-online-monsters-mobile.png')});
