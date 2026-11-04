@@ -7,6 +7,8 @@
   --hud-edge:24px; --hud-profile:320px; --hud-side:260px; --hud-chat:360px;
   --hud-heading:Georgia,'Times New Roman',serif; --hud-body:'Alegreya Sans',sans-serif;
   --hud-frame-space:8px; --hud-frame-width:14px; --hud-panel-padding:8px; --hud-slot:46px;
+  --status-frame:url('assets/ui/hud-status-reference/frame.png');
+  --status-ornaments:url('assets/ui/hud-status-reference/ornaments.png');
   --hud-rope:url('assets/ui/hud-nautical-v2/rope-frame.png');
   --hud-rail:url('assets/ui/hud-nautical-v2/rail-frame.png');
 }
@@ -24,34 +26,40 @@
   inset:max(var(--hud-edge),env(safe-area-inset-top)) auto auto max(var(--hud-edge),env(safe-area-inset-left));
   width:var(--hud-profile); height:auto; min-height:0; max-height:none; margin:0;
   padding:var(--hud-panel-padding); display:flex; flex-direction:column; gap:4px; transform:none;
+  background:none; border-image:var(--status-frame) 190 fill / 24px / 0 stretch; border-radius:8px;
 }
 #app.hud-nautical .nautical-profile::before,#app.hud-nautical .nautical-profile::after {content:none}
 #app.hud-nautical .nautical-profile .hud-captain {display:grid; grid-template-columns:56px minmax(0,1fr) 40px; gap:8px; align-items:center; min-height:60px}
-#app.hud-nautical .nautical-profile #characterPosterToggle {position:relative; inset:auto; width:56px; height:56px; min-height:0; padding:0; margin:0; border:0; border-image:none; background:none; box-shadow:none; transform:none; overflow:visible}
-#app.hud-nautical .nautical-profile #hudFactionEmblem {position:static; width:56px; height:56px; max-width:none; margin-left:0; object-fit:contain; image-rendering:auto; filter:drop-shadow(0 2px 2px #0008)}
+#app.hud-nautical .nautical-profile #characterPosterToggle {position:relative; inset:auto; width:56px; height:56px; min-height:0; padding:0; margin:0; border:0; border-image:none; background:none; box-shadow:none; transform:none; overflow:visible; background:var(--status-ornaments) 0 0 / 400% 200% no-repeat}
+#app.hud-nautical .nautical-profile #hudFactionEmblem {position:static; width:42px; height:42px; max-width:none; margin:7px; object-fit:contain; image-rendering:auto; filter:drop-shadow(0 2px 2px #0008)}
 #app.hud-nautical .nautical-profile .hud-identity {min-width:0; display:flex; flex-direction:column; gap:2px}
 #app.hud-nautical .nautical-profile #hudHierarchyTitle {position:static; display:block; width:auto; height:auto; padding:0; margin:0; color:var(--hud-text); font:600 14px/1.15 var(--hud-body); white-space:normal; overflow:visible; text-overflow:clip; text-align:left; letter-spacing:0}
 #app.hud-nautical .nautical-profile #hudFactionName {position:static; width:auto; height:auto; text-align:left; font:400 13px/1.15 var(--hud-body); color:var(--hud-muted); white-space:normal}
 #app.hud-nautical .nautical-profile .profile-power {position:static; width:auto; height:auto; display:flex; flex-direction:row; align-items:baseline; gap:8px; justify-content:flex-start; margin:0; padding:0; background:none; border:0}
 #app.hud-nautical .nautical-profile .profile-power>span {display:inline; font:500 14px/1.2 var(--hud-body); color:var(--hud-text)}
 #app.hud-nautical .nautical-profile #miniPower {min-width:48px; font:700 16px/1.2 var(--hud-body); color:var(--brass-400)}
-#app.hud-nautical .nautical-profile .profile-level {position:static; align-self:start; display:flex; flex-direction:column; justify-content:center; align-items:center; width:40px; height:48px; margin:0; padding:4px 2px; background:linear-gradient(#163d4d,#061a27); border:1px solid var(--brass-500); border-image:none; border-radius:4px 4px 18px 18px; box-shadow:inset 0 0 0 2px #061822,0 2px 3px #0008; color:var(--hud-text)}
+#app.hud-nautical .nautical-profile .profile-level {position:relative; isolation:isolate; align-self:start; display:flex; flex-direction:column; justify-content:center; align-items:center; width:40px; height:60px; margin:0; padding:12px 0 2px; background:none; border:0; border-image:none; border-radius:0; box-shadow:none; color:var(--hud-text)}
+#app.hud-nautical .nautical-profile .profile-level::before {content:''; position:absolute; z-index:-1; width:68px; height:68px; top:-5px; left:50%; transform:translateX(-50%); background:var(--status-ornaments) 33.333333% 0 / 400% 200% no-repeat; pointer-events:none}
+#app.hud-nautical .nautical-profile #characterPosterToggle:has(img[src$="/pirate.png"]) {background:none}
+#app.hud-nautical .nautical-profile #characterPosterToggle:has(img[src$="/pirate.png"])::before {content:''; position:absolute; inset:-6px; background:var(--status-ornaments) 100% 0 / 400% 200% no-repeat; pointer-events:none}
+#app.hud-nautical .nautical-profile #characterPosterToggle img[src$="/pirate.png"] {opacity:0}
+
 #app.hud-nautical .nautical-profile .profile-level>span {font:600 13px/1 var(--hud-body)}
 #app.hud-nautical .nautical-profile #miniLevel {width:100%; text-align:center; position:static; font:700 22px/1.2 var(--hud-body); color:var(--hud-text)}
 #app.hud-nautical .nautical-profile .hud-vitals {display:grid; gap:4px}
-#app.hud-nautical .nautical-profile .parchment-meter {position:relative; inset:auto; display:flex; align-items:center; justify-content:space-between; width:100%; height:18px; margin:0; padding:0 6px; isolation:isolate; overflow:hidden; border:1px solid var(--brass-400); border-image:none; border-radius:4px; background:#040d16; box-shadow:inset 0 2px 3px #000a}
-#app.hud-nautical .nautical-profile .parchment-meter .mini-meter {position:absolute; inset:1px; z-index:-1; width:auto; height:auto; margin:0; padding:0; border:0; border-radius:5px; overflow:hidden; background:none}
-#app.hud-nautical .nautical-profile .parchment-meter .mini-meter i {height:100%; display:block; background:linear-gradient(#fd4775,#c6073d 55%,#770f2a); box-shadow:inset 0 1px 1px #fff9}
-#app.hud-nautical .nautical-profile .parchment-energy .mini-meter i {background:linear-gradient(#bc76ff,#7c2eda 55%,#401385)}
+#app.hud-nautical .nautical-profile .parchment-meter {position:relative; inset:auto; display:flex; align-items:center; justify-content:space-between; width:100%; height:18px; margin:0; padding:0 8px 0 27px; isolation:isolate; overflow:visible; border:1px solid #b68032; border-image:none; border-radius:12px; background:#03151d; box-shadow:inset 0 1px #f5d795,0 1px 1px #000a}
+#app.hud-nautical .nautical-profile .parchment-meter .mini-meter {position:absolute; inset:2px 3px 2px 14px; z-index:-1; width:auto; height:auto; margin:0; padding:0; border:0; border-radius:9px; overflow:hidden; background:none}
+#app.hud-nautical .nautical-profile .parchment-meter .mini-meter i {height:100%; display:block; background:linear-gradient(#ff7598,#d60748 28%,#a30030 74%,#600c27); box-shadow:inset 0 1px 1px #fff9}
+#app.hud-nautical .nautical-profile .parchment-energy .mini-meter i {background:linear-gradient(#c188ff,#7426dd 28%,#4813a7 74%,#2c1265)}
 #app.hud-nautical .nautical-profile .parchment-xp .mini-meter i {background:linear-gradient(#ffe69b,#cc942c 55%,#875e18)}
 #app.hud-nautical .nautical-profile .parchment-meter :is(.parchment-meter-label,#miniHPText,#miniEnergyText,#miniXPText) {position:static; inset:auto; width:auto; max-width:none; padding:0; font:700 14px/1 var(--hud-body); color:#fff8e7; text-align:left; flex:none; text-shadow:0 1px 2px #000,0 0 3px #000; white-space:nowrap}
-#app.hud-nautical .nautical-profile .parchment-meter-label::before {display:inline-block; width:20px; font-size:16px; color:#fff3c2}
-#app.hud-nautical .nautical-profile .parchment-hp .parchment-meter-label::before {content:'♥'}
-#app.hud-nautical .nautical-profile .parchment-energy .parchment-meter-label::before {content:'ϟ'}
-#app.hud-nautical .nautical-profile .parchment-xp .parchment-meter-label::before {content:'★'}
+#app.hud-nautical .nautical-profile .parchment-meter-label::before {content:''; position:absolute; left:-4px; top:50%; transform:translateY(-50%); width:26px; height:26px; background:var(--status-ornaments) 0 100% / 400% 200% no-repeat; pointer-events:none}
+#app.hud-nautical .nautical-profile .parchment-energy .parchment-meter-label::before {background-position:33.333333% 100%}
+#app.hud-nautical .nautical-profile .parchment-xp .parchment-meter-label::before {background-position:66.666667% 100%}
 #app.hud-nautical .nautical-profile .hud-resources {display:flex; flex-wrap:wrap; align-items:center; gap:6px 12px; padding-top:4px; border-top:1px solid var(--hud-line)}
 #app.hud-nautical .nautical-profile .profile-berry {background:none; border:0; position:static; display:flex; flex:1; align-items:center; gap:6px; width:auto; height:22px; padding:0; margin:0; color:var(--hud-text); font:500 14px/1 var(--hud-body)}
-#app.hud-nautical .nautical-profile .berry-coin {width:20px; height:20px; flex:none}
+#app.hud-nautical .nautical-profile .berry-coin {width:24px; height:24px; flex:none; border:0; box-shadow:none; border-radius:0; background:var(--status-ornaments) 100% 100% / 400% 200% no-repeat}
+#app.hud-nautical .nautical-profile .berry-coin::before,#app.hud-nautical .nautical-profile .berry-coin::after {content:none}
 #app.hud-nautical .nautical-profile #miniGold {position:static; margin-left:auto; color:var(--brass-400); font:700 16px/1 var(--hud-body)}
 #app.hud-nautical .nautical-profile #miniWillpower {display:flex; position:relative; inset:auto; flex:1; gap:8px; width:auto; height:22px; margin:0; padding:0 0 0 10px; background:none; border:0; border-left:1px solid var(--hud-line); overflow:visible}
 #app.hud-nautical .nautical-profile #miniWillpower::after {content:none}
@@ -61,8 +69,8 @@
 #app.hud-nautical .nautical-profile #miniTalentResource :is(b,span:first-child) {font-size:14px}
 #app.hud-nautical .nautical-profile .hud-attributes {position:absolute; left:-8px; top:40px; padding:0; width:44px; height:44px}
 #app.hud-nautical .nautical-profile #attributePointsHud {width:44px; height:44px; min-height:44px; padding:0; border:0; border-image:none; background:none; font-size:0; box-shadow:none; color:var(--hud-text)}
-#app.hud-nautical .nautical-profile #attributePointsHud::after {content:'+'; display:grid; place-items:center; width:24px; height:24px; margin:auto; border:1px solid var(--brass-400); border-radius:50%; background:#163747; font:700 21px/1 var(--hud-body)}
-#app.hud-nautical .nautical-profile #attributePointsHud.has-points::after {background:#795011; color:#fff1c6}
+#app.hud-nautical .nautical-profile #attributePointsHud::after {content:''; display:block; width:32px; height:32px; margin:auto; border:0; background:var(--status-ornaments) 66.666667% 0 / 400% 200% no-repeat; filter:drop-shadow(0 1px 1px #0008)}
+#app.hud-nautical .nautical-profile #attributePointsHud.has-points::after {filter:drop-shadow(0 0 3px #edc77c)}
 #app.hud-nautical .nautical-profile #hudPlayerName {display:block; color:var(--hud-text); font:700 20px/1.1 var(--hud-heading); overflow-wrap:anywhere}
 #app.hud-nautical .nautical-profile .hud-meta {display:flex; align-items:baseline; justify-content:space-between; gap:8px; min-height:20px}
 #app.hud-nautical .nautical-profile #hudClassName {font:400 14px/1.2 var(--hud-body); color:var(--hud-muted); text-align:right}
