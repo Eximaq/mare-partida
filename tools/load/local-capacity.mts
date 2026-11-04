@@ -4,6 +4,7 @@ import {once} from 'node:events';
 import {randomUUID} from 'node:crypto';
 import {monitorEventLoopDelay} from 'node:perf_hooks';
 import {writeFile} from 'node:fs/promises';
+import {Worker} from 'node:worker_threads';
 import {authDatabase} from '../../tests/integration/auth-support.mjs';
 import {createHttpServer} from '../../apps/game-server/src/http.js';
 import {createAuthHandler} from '../../apps/game-server/src/auth/routes.js';
@@ -42,7 +43,10 @@ await authDatabase(async f=>{
  const handler=createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9443',cookieSeconds:3600,trustedProxyIp:'127.0.0.1'}),server=createHttpServer({isReady:async()=>true,handle:handler});
  const solo=createTickLane('solo',()=>tickWorldBattles(f.pool)),party=createTickLane('party',()=>tickPartyBattles(f.pool));
  const counts=threaded?simulationSettings(process.env):{solo:1,party:1};
- const partitionLoad=(await f.pool.query(`
+ const fixture=(globalThis as any).capacityFixture;
+ const controlled=await fixture?.prepare(f.pool);
+ if(process.env.MARE_LOAD_EXPECTED_HASH){assert.ok(controlled,'Expected hash requires controlled fixture');assert.equal(controlled.initialStateHash,process.env.MARE_LOAD_EXPECTED_HASH,'Controlled initial state changed');}
+ const partitionLoad=fixture?fixture.partitions():(await f.pool.query(`
   SELECT 'solo' lane,mod(hashtextextended(character_id::text,34001)&2147483647,$1::bigint)::int shard,count(*)::int total
   FROM mare_game.character_battles WHERE NOT (simulation ? 'partyInstanceId') GROUP BY shard
   UNION ALL
@@ -50,7 +54,7 @@ await authDatabase(async f=>{
   FROM mare_game.party_instances WHERE ended_at IS NULL GROUP BY 2
   ORDER BY lane,shard`,[counts.solo,counts.party])).rows;
  assert.equal(partitionLoad.reduce((sum,row)=>sum+row.total,0),mode==='party'?clients/4:clients,'unexpected fixture partition membership');
- const workers=threaded?createSimulationPool({databaseUrl:f.pool.options.connectionString!,counts,workerUrl:new URL('../../apps/game-server/dist/simulation-worker.js',import.meta.url)}):undefined;
+ const workers=threaded?createSimulationPool({databaseUrl:f.pool.options.connectionString!,counts,workerUrl:fixture?.workerUrl??new URL('../../apps/game-server/dist/simulation-worker.js',import.meta.url),...(fixture?{spawn:(url:URL,options:any)=>{const worker=new Worker(url,fixture.workerOptions(options));worker.on('message',fixture.workerEvent);return worker;}}:{})}):undefined;
  let timer:NodeJS.Timeout|undefined;
  const delay=monitorEventLoopDelay({resolution:20}),flights=new Set<Promise<void>>();
  server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${(server.address() as any).port}`;
@@ -90,6 +94,7 @@ await authDatabase(async f=>{
    windowPeak=Math.max(windowPeak,f.pool.waitingCount);
    if(now-windowAt>=10000){
     windows.push({second:Math.round((now-start)/1000),requests:requests-windowRequests,dropped:dropped-windowDrops,poolWaitPeak:windowPeak,httpP95Ms:Math.round(percentile(windowTimes,.95))});
+    if(process.env.MARE_LOAD_PROGRESS==='1')console.log(JSON.stringify({event:'capacity_window',...windows.at(-1),interrupted:transitions.length}));
     windowAt=now;windowRequests=requests;windowDrops=dropped;windowPeak=0;windowTimes=[];
    }
    for(let i=0;i<users.length;i++){
@@ -141,8 +146,8 @@ await authDatabase(async f=>{
    runtime:{node:process.version,apiPoolMax:f.pool.options.max,
     api:f.service instanceof CompiledAuthService?'compiled':'source',
     developmentLoader:process.execArgv.some(v=>/tsx|--(?:import|loader)/.test(v))},
-   activity,simulation:threaded?'workers':'inline',workerStatus,profile:mode,clients,
-   parties:mode==='party'?clients/4:0,partitionLoad,providerFixtureLifetimeMs:f.provider.tokenLifetimeMs,
+   activity,simulation:threaded?'workers':'inline',workerStatus,fixtureIntegrity:fixture?.integrity(),profile:mode,clients,
+   parties:mode==='party'?clients/4:0,partitionLoad,controlled,providerFixtureLifetimeMs:f.provider.tokenLifetimeMs,
    startedAt,endedAt:new Date().toISOString(),processId:process.pid,
    durationSeconds:Math.round(elapsed/1000),requests,statuses,dropped,requestFailures,
    readSlots:{planned:plannedPolls,issued:requests,blockedByPrevious:readBusy,missedByScheduler:schedulerMissed,rejectedByCapacity:queueFull,unattemptedAfterAbort:aborted},
@@ -157,7 +162,7 @@ await authDatabase(async f=>{
    cpuCorePercent:Math.round((cpuUsed.user+cpuUsed.system)/elapsed/10),
    rssMiB:Math.round(process.memoryUsage().rss/1048576),maxPoolWait,
    solo:solo.flush(),party:party.flush(),invariants:{nonnegativeProgress:bad===0},
-   passed:!stop&&activity.auto===clients&&transitions.length===0&&renewalFailures===0&&
+   passed:!stop&&(!fixture||fixture.integrity().valid)&&activity.auto===clients&&transitions.length===0&&renewalFailures===0&&
     (!workerStatus||workerStatus.restarts===0)&&dropped===0&&Object.keys(statuses).every(k=>k==='200')&&
     percentile(times,.95)<500&&percentile(ages,.95)<1000,
   };

@@ -9,6 +9,10 @@ combates, com oferta completa, respostas HTTP 200 e SSD rápido. Não há
 evidência suficiente para quantificar quanto uma troca de PC resolveria.
 Não foi aplicada nova otimização de combate ou scheduler nesta rodada.
 
+Continuação autorizada: [comparação controlada 6/6–8/4 e correção do custo
+de resolução da VM](CONTROLLED-PARTY-CAPACITY.md). Os resultados deste
+diagnóstico permanecem históricos, sem alteração da instalação privada.
+
 ## Ambiente e preservação
 
 - Ryzen 5 4500, 6 núcleos/12 processadores lógicos; 15,87 GiB de RAM visível.

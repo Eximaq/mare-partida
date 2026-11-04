@@ -2,6 +2,8 @@
 
 **Hardware e contenção:** [diagnóstico do PC, filas e interrupções](docs/architecture/HOST-CONTENTION-DIAGNOSIS.md) e [plano privado para separar o gerador](docs/architecture/PRIVATE-LOAD-GENERATOR-PLAN.md). Capacidade continua reprovada; instalação privada preservada.
 
+**Comparação 6/6 e 8/4:** [comparação controlada, custo da VM e aceite de capacidade](docs/architecture/CONTROLLED-PARTY-CAPACITY.md). Uma correção de CPU não equivale à aprovação da fila de simulação.
+
 **Ciclos de simulação:** [navegação conservadora, orçamento por lote e ensaios de 50/100 jogadores](docs/architecture/SIMULATION-CYCLE-BUDGET.md). Resultados separados para solo e Party; capacidade de 3.000 ainda não certificada.
 
 **Consultas de combate:** [leituras em lote, autorização preservada e limites atuais de carga](docs/architecture/COMBAT-DATABASE-READS.md).

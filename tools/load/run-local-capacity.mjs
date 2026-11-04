@@ -14,6 +14,15 @@ await readFile(join(root,'apps/game-server/dist/auth/service.js'));
 await mkdir(temp,{recursive:true});
 const dir=await mkdtemp(join(temp,'capacity-runtime-'));
 try{
+ let fixture;
+ if(process.env.MARE_LOAD_LAYOUT){
+  assert.equal(process.env.MARE_LOAD_MODE,'party');assert.equal(process.env.MARE_LOAD_CLIENTS,'48');
+  assert.equal(process.env.MARE_LOAD_SIMULATION,'workers');assert.equal(process.env.SIMULATION_PARTY_WORKERS,'2');
+  fixture=(await import('./controlled-fixture.mjs')).fixture;
+  const worker=join(dir,'controlled-worker.mjs');
+  await writeFile(worker,`import ${JSON.stringify(new URL('./controlled-fixture.mjs',import.meta.url).href)};\nawait import(${JSON.stringify(pathToFileURL(join(root,'apps/game-server/dist/simulation-worker.js')).href)});`);
+  globalThis.capacityFixture={...fixture,workerUrl:pathToFileURL(worker)};
+ }
  const support=join(dir,'support.mjs'),runner=join(dir,'runner.mjs'),compiled=pathToFileURL(join(root,'apps/game-server/dist/')).href;
  for(const [source,target] of [['tests/integration/auth-support.mts',support],['tools/load/local-capacity.mts',runner]]){
   let code=stripTypeScriptTypes(await readFile(join(root,source),'utf8'));
