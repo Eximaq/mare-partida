@@ -2,13 +2,14 @@
 const assert=require('node:assert/strict'),fs=require('node:fs/promises');
 module.exports=async page=>{
  const catalog=await page.evaluate(()=>JSON.stringify(__review96v3.catalog));
+ const published=JSON.parse(catalog).headAdjustments['item-150'],initial=published.masculino.east;
  await page.evaluate(()=>localStorage.setItem('mare-partida-save-v1','isolated-save-sentinel'));
  const choose=async(id,body,dir)=>{await page.selectOption('#fit-item',id);await page.selectOption('#fit-body',body);await page.selectOption('#fit-direction',dir);};
  await choose('item-150','masculino','east');await page.selectOption('#fit-action','idle');
  await page.waitForFunction(()=>document.querySelector('#status').textContent.includes('frames reais'));
  if(await page.evaluate(()=>__review96v3.playing))await page.click('#fit-play');
  await page.locator('#fit-frame').fill('0');await page.locator('#fit-frame').dispatchEvent('input');
- assert.equal(await page.inputValue('#fit-x'),'-3');assert.equal(await page.inputValue('#fit-y'),'2');
+ assert.equal(await page.inputValue('#fit-x'),String(initial.x));assert.equal(await page.inputValue('#fit-y'),String(initial.y));
  const before=await page.locator('#fit-canvas').evaluate(c=>c.toDataURL());
  await page.locator('#fit-x').fill('-5');await page.locator('#fit-x').dispatchEvent('input');
  const changed=await page.locator('#fit-canvas').evaluate(c=>c.toDataURL());assert.notEqual(changed,before,'live fit must invalidate the composed preview');
@@ -16,15 +17,15 @@ module.exports=async page=>{
  await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();await page.mouse.move(box.x+box.width/2+zoom/scale,box.y+box.height/2);await page.mouse.up();
  assert.equal(await page.inputValue('#fit-x'),'-4','dragging one displayed pixel moves only the headgear');
  await page.selectOption('#fit-direction','west');assert.equal(await page.inputValue('#fit-x'),'4','west mirrors the east binding');
- await page.selectOption('#fit-body','feminino');assert.equal(await page.inputValue('#fit-x'),'2','female fit remains independent');
+ await page.selectOption('#fit-body','feminino');assert.equal(await page.inputValue('#fit-x'),String(-published.feminino.east.x),'female fit remains independent');
  await choose('item-150','masculino','east');await page.click('#fit-save');
  const downloadPromise=page.waitForEvent('download');await page.click('#fit-export');const download=await downloadPromise,exported=JSON.parse(await fs.readFile(await download.path(),'utf8'));
  assert.equal(exported.adjustments['item-150'].masculino.east.x,-4);assert.equal(exported.format,'mare-headgear-fit-v1');
- await page.click('#fit-reset');assert.equal(await page.inputValue('#fit-x'),'-3');
+ await page.click('#fit-reset');assert.equal(await page.inputValue('#fit-x'),String(initial.x));
  await page.setInputFiles('#fit-import',{name:'fit.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(exported))});await page.waitForFunction(()=>document.querySelector('#fit-status').textContent.includes('Arquivo carregado'));assert.equal(await page.inputValue('#fit-x'),'-4');
  await page.setInputFiles('#fit-import',{name:'stale.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({...exported,baseRevision:'stale'}))});await page.waitForFunction(()=>document.querySelector('#fit-status').textContent.includes('outra revisão'));assert.equal(await page.inputValue('#fit-x'),'-4');
  await page.click('#fit-save');await page.reload();await page.waitForFunction(()=>window.__review96v3);await choose('item-150','masculino','east');assert.equal(await page.inputValue('#fit-x'),'-4');
  assert.equal(await page.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'isolated-save-sentinel');assert.equal(await page.evaluate(()=>JSON.stringify(__review96v3.catalog)),catalog,'draft cannot mutate the published catalog');
- await page.click('#fit-discard');assert.equal(await page.inputValue('#fit-x'),'-3');
+ await page.click('#fit-discard');assert.equal(await page.inputValue('#fit-x'),String(initial.x));
  return {livePreview:true,drag:true,independentBodies:true,westMirror:true,saveReload:true,exportImport:true,staleFileRejected:true,gameSaveUnchanged:true,catalogUnchanged:true};
 };

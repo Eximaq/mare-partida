@@ -56,7 +56,7 @@
   function fit(source, body, restPoints, posePoints, padding, width, height, handSurface, ownedMask, panels) {
     if (source.length !== 128 * 128 * 4 || body.length !== width * height * 4) throw Error('Invalid torso material');
     const rest = geometry(restPoints), pose = geometry(posePoints), out = new Uint8ClampedArray(body.length);
-    const owned=ownedMask||ownership(body,posePoints,padding,width,height,handSurface);
+    const owned=ownedMask||ownership(body,posePoints,padding,width,height,handSurface),drape=panels?.DRAPE||source;
     const sourcePixels=[];for(let i=0;i<source.length;i+=4)if(source[i+3]>=128)sourcePixels.push(i/4);
     const sample = (x, y) => {
       const xx = Math.round(x), yy = Math.round(y);
@@ -77,7 +77,7 @@
       const hem=panels&&body[i+3]&&t>1&&t<1.65&&!owned.hands[y*width+x]&&!owned.arms[y*width+x];
       if (!owned.cloth[y*width+x]&&!shoulderCoverage&&!hem) continue;
       const p = rest.axis.point(t * rest.axis.length, q.across * radius(rest, t) / radius(pose, t));
-      if(hem){const sx=Math.round(p.x),sy=Math.round(p.y),from=(sy*128+sx)*4;if(sx>=0&&sx<128&&sy>=0&&sy<128&&source[from+3])out.set(source.subarray(from,from+4),i);continue;}
+      if(hem){const sx=Math.round(p.x),sy=Math.round(p.y),from=(sy*128+sx)*4;if(sx>=0&&sx<128&&sy>=0&&sy<128&&drape[from+3])out.set(drape.subarray(from,from+4),i);continue;}
       const from = sample(p.x, p.y);
       if (from >= 0) { out.set(source.subarray(from, from + 4), i); out[i + 3] = 255; }
     }
@@ -87,10 +87,10 @@
     for(let y=0;y<height;y++)for(let x=0;x<width;x++){
       const xx=x-padding,yy=y-padding,q=pose.axis.at(xx,yy),t=q.along/pose.axis.length;if(t<.1||t>2.5)continue;
       const p=rest.axis.point(t*rest.axis.length,q.across*Math.max(8,radius(rest,Math.min(t,1)))/Math.max(8,radius(pose,Math.min(t,1)))),sx=Math.round(p.x),sy=Math.round(p.y),from=(sy*128+sx)*4,i=(y*width+x)*4;
-      if(sx<0||sx>=128||sy<0||sy>=128||!source[from+3]||out[i+3])continue;
+      if(sx<0||sx>=128||sy<0||sy>=128||!drape[from+3]||out[i+3])continue;
       if(owned.hands[y*width+x]||owned.arms[y*width+x])continue;
       if(t<.9&&Math.abs(q.across)<pose.shoulder+2)continue;
-      out.set(source.subarray(from,from+4),i);
+      out.set(drape.subarray(from,from+4),i);
     }
     // Inverse projection can separate a subpixel hem edge into tiny islands.
     // Cull only detached islands; the main robe and connected ornaments remain.
@@ -103,14 +103,20 @@
         if(x<0||y<0||x>=width||y>=height||visited[n]||!out[n*4+3])continue;
         visited[n]=1;group.push(n);
       }
-      if(group.length<5)for(const n of group)out.fill(0,n*4,n*4+4);
+      // An explicitly separated drape cannot leave a floating sleeve/tassel.
+      // Keep large hems connected to the body; size alone is not an anchor.
+      if(group.length<5||panels.DRAPE&&!group.some(n=>body[n*4+3]))for(const n of group)out.fill(0,n*4,n*4+4);
     }
     const result={full:out,LEFT:new Uint8ClampedArray(body.length),RIGHT:new Uint8ClampedArray(body.length)};
     const bones=[];
     for(const side of ['LEFT','RIGHT'])for(const [part,from,to] of [['upper',' SHOULDER',' ELBOW'],['lower',' ELBOW',' ARM']]){const material=panels[side+part],pixels=[];if(material)for(let i=0;i<material.length;i+=4)if(material[i+3])pixels.push(i/4);bones.push({side,part,material,pixels,r:surface.axis(rest.j[side+from],rest.j[side+to]),p:surface.axis(pose.j[side+from],pose.j[side+to])});}
     for(let y=0;y<height;y++)for(let x=0;x<width;x++){
-      const n=y*width+x,i=n*4;if(!body[i+3]||!owned.arms[n]&&!owned.cloth[n]&&!owned.hands[n])continue;
-      const xx=x-padding,yy=y-padding,candidates=bones.map(b=>{const q=b.p.at(xx,yy);return {b,q,d:Math.hypot(q.across,q.along-Math.max(0,Math.min(b.p.length,q.along)))};}).sort((a,b)=>a.d-b.d),{b,q,d}=candidates[0];
+      const n=y*width+x,i=n*4,occupied=body[i+3]||panels.DRAPE&&handSurface?.[i+3];if(!occupied||!panels.DRAPE&&!owned.arms[n]&&!owned.cloth[n]&&!owned.hands[n])continue;
+      const xx=x-padding,yy=y-padding,candidates=bones.map(b=>{const q=b.p.at(xx,yy);return {b,q,d:Math.hypot(q.across,q.along-Math.max(0,Math.min(b.p.length,q.along)))};}).sort((a,b)=>a.d-b.d);
+      // At bent elbows, the nearest segment cap can be outside its material.
+      // The registered sleeve must use the next valid arm segment instead.
+      const hit=panels.DRAPE?candidates.find(({b,q,d})=>b.material&&d<=5.5&&q.along>=-2&&q.along<=b.p.length+(b.part==='upper'?1:0)&&!(b.part==='lower'&&q.along>b.p.length*.97)):candidates[0];
+      if(!hit)continue;const {b,q,d}=hit;
       if(!b.material||d>5.5||q.along< -2||q.along>b.p.length+(b.part==='upper'?1:0))continue;
       if(b.part==='lower'&&q.along>b.p.length*.97)continue;
       const back=bones.every(v=>pose.j[v.side+' ARM'].z<pose.j.NECK.z);

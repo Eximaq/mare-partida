@@ -778,6 +778,22 @@
         "jobId": "23e2db22-ead2-40ba-b45e-9f644b6ee100",
         "assetId": "e12398fa-553c-590d-a84f-8ff97cdf3e8d",
         "revision": "canonical-native-v7"
+      },
+      "hairHideMode": "partial",
+      "hairOcclusion": "crown",
+      "hairlineY": {
+        "masculino": {
+          "south": 37,
+          "north": 35,
+          "east": 37,
+          "west": 37
+        },
+        "feminino": {
+          "south": 37,
+          "north": 36,
+          "east": 36,
+          "west": 36
+        }
       }
     },
     {
@@ -808,7 +824,8 @@
         "jobId": "cb089c4b-6c31-4fd3-b9f6-e1620acf84a8",
         "assetId": "f00b6973-6357-5f57-8e44-6e482e3d949d",
         "revision": "canonical-native-v7"
-      }
+      },
+      "hairHideMode": "full"
     },
     {
       "id": "item-21",
@@ -3472,7 +3489,7 @@
         }
       },
       "sourceReference": "01_raro_corsario_das_mares/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "crown",
       "headRegistration": {
         "masculino": {
           "south": {
@@ -3737,6 +3754,21 @@
         "method": "native-head-aperture-all-face-styles-and-game-browser",
         "headFit": "head-aperture-v1",
         "validatedFrames": 3840
+      },
+      "hairHideMode": "partial",
+      "hairlineY": {
+        "masculino": {
+          "south": 37,
+          "north": 35,
+          "east": 37,
+          "west": 37
+        },
+        "feminino": {
+          "south": 37,
+          "north": 36,
+          "east": 36,
+          "west": 36
+        }
       }
     },
     {
@@ -5328,7 +5360,8 @@
         "headFit": "head-aperture-v1",
         "validatedFrames": 3840,
         "manualFitRevision": "headfit-owner-pass-2"
-      }
+      },
+      "hairHideMode": "full"
     },
     {
       "generation": {
@@ -6459,7 +6492,7 @@
         }
       },
       "sourceReference": "03_raro_navegador_arcano/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "crown",
       "headRegistration": {
         "masculino": {
           "south": {
@@ -6809,6 +6842,21 @@
         "method": "native-head-aperture-all-face-styles-and-game-browser",
         "headFit": "head-aperture-v1",
         "validatedFrames": 3840
+      },
+      "hairHideMode": "partial",
+      "hairlineY": {
+        "masculino": {
+          "south": 37,
+          "north": 35,
+          "east": 37,
+          "west": 37
+        },
+        "feminino": {
+          "south": 37,
+          "north": 36,
+          "east": 36,
+          "west": 36
+        }
       }
     },
     {
@@ -7944,7 +7992,7 @@
         }
       },
       "sourceReference": "04_epico_almirante_carmesim/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "crown",
       "headRegistration": {
         "masculino": {
           "south": {
@@ -8225,6 +8273,21 @@
         "headFit": "head-aperture-v1",
         "validatedFrames": 3840,
         "manualFitRevision": "headfit-owner-pass-2"
+      },
+      "hairHideMode": "partial",
+      "hairlineY": {
+        "masculino": {
+          "south": 37,
+          "north": 35,
+          "east": 37,
+          "west": 37
+        },
+        "feminino": {
+          "south": 37,
+          "north": 36,
+          "east": 36,
+          "west": 36
+        }
       }
     },
     {
@@ -9340,7 +9403,7 @@
         }
       },
       "sourceReference": "05_epico_arauto_das_tempestades/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "none",
       "headRegistration": {
         "masculino": {
           "south": {
@@ -9651,7 +9714,8 @@
         "headFit": "head-aperture-v1",
         "validatedFrames": 3840,
         "manualFitRevision": "headfit-owner-pass-2"
-      }
+      },
+      "hairHideMode": "none"
     },
     {
       "generation": {
@@ -10901,7 +10965,7 @@
         }
       },
       "sourceReference": "06_epico_mare_sagrada/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "none",
       "headRegistration": {
         "masculino": {
           "south": {
@@ -11047,7 +11111,8 @@
         "headFit": "head-aperture-v1",
         "validatedFrames": 3840,
         "manualFitRevision": "headfit-owner-pass-2"
-      }
+      },
+      "hairHideMode": "none"
     },
     {
       "generation": {
@@ -11092,25 +11157,29 @@
             "LEFTupper": "assets/custom-item-165-masculino-south-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-south-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-south-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-south-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-south-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-south-drape.png"
           },
           "north": {
             "LEFTupper": "assets/custom-item-165-masculino-north-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-north-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-north-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-north-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-north-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-north-drape.png"
           },
           "east": {
             "LEFTupper": "assets/custom-item-165-masculino-east-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-east-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-east-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-east-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-east-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-east-drape.png"
           },
           "west": {
             "LEFTupper": "assets/custom-item-165-masculino-west-leftupper.png",
             "LEFTlower": "assets/custom-item-165-masculino-west-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-masculino-west-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-masculino-west-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-masculino-west-rightlower.png",
+            "DRAPE": "assets/custom-item-165-masculino-west-drape.png"
           }
         },
         "feminino": {
@@ -11118,25 +11187,29 @@
             "LEFTupper": "assets/custom-item-165-feminino-south-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-south-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-south-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-south-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-south-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-south-drape.png"
           },
           "north": {
             "LEFTupper": "assets/custom-item-165-feminino-north-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-north-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-north-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-north-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-north-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-north-drape.png"
           },
           "east": {
             "LEFTupper": "assets/custom-item-165-feminino-east-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-east-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-east-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-east-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-east-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-east-drape.png"
           },
           "west": {
             "LEFTupper": "assets/custom-item-165-feminino-west-leftupper.png",
             "LEFTlower": "assets/custom-item-165-feminino-west-leftlower.png",
             "RIGHTupper": "assets/custom-item-165-feminino-west-rightupper.png",
-            "RIGHTlower": "assets/custom-item-165-feminino-west-rightlower.png"
+            "RIGHTlower": "assets/custom-item-165-feminino-west-rightlower.png",
+            "DRAPE": "assets/custom-item-165-feminino-west-drape.png"
           }
         }
       },
@@ -11335,8 +11408,9 @@
           "attack-focus",
           "attack-tech"
         ],
-        "method": "native-renderer-and-game-browser"
-      }
+        "method": "authored-sleeve-registration-and-native-animation-review"
+      },
+      "sleeveRegistration": "oceanic-authored-bones-v1"
     },
     {
       "generation": {
@@ -12163,7 +12237,7 @@
         }
       },
       "sourceReference": "07_lendario_soberano_grand_line/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "crown",
       "headRegistration": {
         "masculino": {
           "south": {
@@ -12324,6 +12398,21 @@
         "headFit": "head-aperture-v1",
         "validatedFrames": 3840,
         "manualFitRevision": "headfit-owner-pass-2"
+      },
+      "hairHideMode": "partial",
+      "hairlineY": {
+        "masculino": {
+          "south": 37,
+          "north": 35,
+          "east": 37,
+          "west": 37
+        },
+        "feminino": {
+          "south": 37,
+          "north": 36,
+          "east": 36,
+          "west": 36
+        }
       }
     },
     {
@@ -13554,7 +13643,7 @@
         }
       },
       "sourceReference": "08_supremo_horizonte_final/cabeca.png",
-      "hairOcclusion": "all",
+      "hairOcclusion": "none",
       "headRegistration": {
         "masculino": {
           "south": {
@@ -13800,7 +13889,8 @@
         "headFit": "head-aperture-v1",
         "validatedFrames": 3840,
         "manualFitRevision": "headfit-owner-pass-2"
-      }
+      },
+      "hairHideMode": "none"
     },
     {
       "generation": {
@@ -19213,36 +19303,41 @@
       ]
     }
   },
-  "headAdjustmentRevision": "headfit-owner-pass-2",
+  "headAdjustmentRevision": "headfit-275560707850",
   "headAdjustments": {
     "item-150": {
       "masculino": {
         "east": {
-          "x": -3,
-          "y": 2,
+          "x": -8,
+          "y": 3,
           "scale": 100
         },
         "north": {
+          "x": -3,
+          "y": -4,
+          "scale": 108
+        },
+        "south": {
           "x": 0,
-          "y": -2,
+          "y": 3,
           "scale": 100
         }
       },
       "feminino": {
         "east": {
-          "x": -2,
-          "y": 0,
+          "x": -7,
+          "y": 1,
           "scale": 100
         },
         "south": {
-          "x": 1,
-          "y": 2,
+          "x": 2,
+          "y": 6,
           "scale": 100
         },
         "north": {
-          "x": 0,
-          "y": -2,
-          "scale": 100
+          "x": -4,
+          "y": -5,
+          "scale": 120
         }
       }
     },
@@ -19250,66 +19345,106 @@
       "masculino": {
         "south": {
           "x": -2,
-          "y": 0,
+          "y": 2,
           "scale": 100
         },
         "north": {
-          "x": -3,
-          "y": 0,
-          "scale": 100
+          "x": -4,
+          "y": 7,
+          "scale": 121
         },
         "east": {
-          "x": -3,
-          "y": 0,
+          "x": -6,
+          "y": 4,
           "scale": 100
         }
       },
       "feminino": {
         "east": {
           "x": -3,
-          "y": 0,
+          "y": 4,
           "scale": 100
+        },
+        "south": {
+          "x": 0,
+          "y": 2,
+          "scale": 100
+        },
+        "north": {
+          "x": -1,
+          "y": 6,
+          "scale": 116
         }
       }
     },
     "item-164": {
       "masculino": {
         "east": {
-          "x": -3,
+          "x": -2,
           "y": 7,
-          "scale": 100
+          "scale": 80
+        },
+        "south": {
+          "x": -1,
+          "y": 2,
+          "scale": 80
+        },
+        "north": {
+          "x": -1,
+          "y": 0,
+          "scale": 88
         }
       },
       "feminino": {
         "east": {
-          "x": 1,
-          "y": 5,
-          "scale": 100
+          "x": -1,
+          "y": 3,
+          "scale": 79
+        },
+        "south": {
+          "x": 0,
+          "y": 3,
+          "scale": 80
+        },
+        "north": {
+          "x": 0,
+          "y": -1,
+          "scale": 83
         }
       }
     },
     "item-171": {
       "masculino": {
         "north": {
-          "x": -3,
-          "y": 0,
+          "x": -4,
+          "y": -5,
           "scale": 100
         },
         "east": {
-          "x": -2,
+          "x": -5,
           "y": 0,
+          "scale": 100
+        },
+        "south": {
+          "x": 0,
+          "y": 1,
           "scale": 100
         }
       },
       "feminino": {
         "north": {
-          "x": -3,
-          "y": 0,
-          "scale": 100
+          "x": -4,
+          "y": -7,
+          "scale": 109
         },
         "east": {
           "x": -2,
-          "y": -1,
+          "y": -2,
+          "scale": 104
+        },
+        "south": {
+          "x": 3,
+          "y": 0,
           "scale": 100
         }
       }
@@ -19317,28 +19452,130 @@
     "item-178": {
       "masculino": {
         "north": {
-          "x": -8,
-          "y": 2,
-          "scale": 115
+          "x": -9,
+          "y": -4,
+          "scale": 113
         },
         "east": {
-          "x": -3,
-          "y": 0,
+          "x": -9,
+          "y": 3,
+          "scale": 100
+        },
+        "south": {
+          "x": 2,
+          "y": 2,
           "scale": 100
         }
       },
       "feminino": {
         "north": {
-          "x": -10,
-          "y": -1,
-          "scale": 115
+          "x": -12,
+          "y": -6,
+          "scale": 118
         },
         "east": {
-          "x": -3,
+          "x": -9,
+          "y": 1,
+          "scale": 100
+        },
+        "south": {
+          "x": 4,
+          "y": 4,
+          "scale": 100
+        }
+      }
+    },
+    "item-129": {
+      "feminino": {
+        "north": {
+          "x": 0,
+          "y": -9,
+          "scale": 100
+        },
+        "east": {
+          "x": 0,
+          "y": -1,
+          "scale": 100
+        }
+      },
+      "masculino": {
+        "north": {
+          "x": 0,
+          "y": -11,
+          "scale": 100
+        },
+        "east": {
+          "x": 0,
+          "y": -1,
+          "scale": 100
+        }
+      }
+    },
+    "item-18": {
+      "masculino": {
+        "east": {
+          "x": 1,
           "y": 0,
           "scale": 100
         }
       }
+    },
+    "item-136": {
+      "feminino": {
+        "east": {
+          "x": -4,
+          "y": 2,
+          "scale": 100
+        },
+        "south": {
+          "x": -1,
+          "y": -4,
+          "scale": 100
+        },
+        "north": {
+          "x": 0,
+          "y": -3,
+          "scale": 100
+        }
+      },
+      "masculino": {
+        "south": {
+          "x": -1,
+          "y": -4,
+          "scale": 100
+        },
+        "east": {
+          "x": -4,
+          "y": 2,
+          "scale": 100
+        }
+      }
+    },
+    "item-143": {
+      "feminino": {
+        "south": {
+          "x": 0,
+          "y": 1,
+          "scale": 100
+        },
+        "north": {
+          "x": -1,
+          "y": -2,
+          "scale": 100
+        }
+      },
+      "masculino": {
+        "north": {
+          "x": -1,
+          "y": -1,
+          "scale": 100
+        }
+      }
     }
+  },
+  "headAdjustmentSource": {
+    "format": "mare-headgear-fit-v1",
+    "baseRevision": "headfit-owner-pass-2",
+    "geometryHash": "2755607078503f9ecf4428c78b1c6303d61ce4f9a95ca5602fa4df038b7c9128"
   }
 }

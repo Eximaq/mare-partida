@@ -39,3 +39,11 @@ Rollback: reverter os commits desta branch; nenhum ID anterior foi renumerado e 
 ## Ajuste posterior dos capacetes
 
 O registro de cabeça passou de proteção somente da íris para abertura de todos os modelos de olhos; recortes do Corsário, capuz, tiara e halo do tricórnio foram corrigidos sem novas gerações. Ver [encaixe e validação](../../CAPACETES-E-VISIBILIDADE.md#correção-de-encaixe--04112026). As roupas e os demais itens desta entrega permanecem na revisão anterior.
+
+## Correção local das Vestes do Santuário Oceânico — 04/11/2026
+
+O item 165 tinha mangas autorais afastadas dos ossos da base. A amostragem sobre esses ossos lia o contorno escuro em vez do tecido branco. A receita `tools/equipment56_oceanic_sleeves.cjs` registra cada manga da mesma variante nos ombros, cotovelos e punhos reais; o painel `DRAPE` separa a barra/corpo das cópias estáticas das mangas. O compositor rejeita fragmentos desse painel que não tenham contato com a anatomia, preservando barras conectadas. As outras roupas continuam sem esse painel e conservam sua montagem.
+
+48 recursos do item foram preparados offline a partir da geração original (oito vistas completas, 32 painéis de braço e oito painéis de caimento); os ícones e os demais itens permanecem intactos. Os 36 painéis de Sul/Norte/Leste foram reproduzidos diretamente da fonte com igualdade de pixels, e Oeste deriva do mesmo espelho. Nenhuma nova geração ou cobrança. O mapa de recursos do item foi atualizado. Validação no compositor compartilhado: 480 quadros, 43.213 pixels internos de braço conferidos, sem frestas de pele ou componentes de roupa soltos. O proprietário autorizou a entrega em PR após a conclusão.
+
+A regressão das mangas integra `tests/equipment-56-browser.cjs` e percorre todas as oito famílias nativas, nos dois corpos e quatro direções, mantendo livres os centros reais das palmas. No jogo estático, as prévias, o mapa e a recarga dos dois corpos preservaram diferença zero de pixels ao trocar cintos e capas. Build estático concluído.

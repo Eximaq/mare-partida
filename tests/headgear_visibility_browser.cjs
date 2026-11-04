@@ -8,7 +8,7 @@ const out=process.argv.find(s=>s.startsWith('--evidence='))?.slice(11),gameOnly=
  const errors=[];if(out)await fs.mkdir(out,{recursive:true});
  if(!gameOnly){const p=await browser.newPage();p.on('pageerror',e=>errors.push(e.message));p.on('console',m=>{if(m.text().startsWith('headgear-progress:'))console.log(m.text());});
   await p.goto(new URL('tools/paper-doll-96-v3/',origin).href);await p.waitForFunction(()=>window.__review96v3);
-  const audit=await p.evaluate(async()=>{const q=__review96v3,issues=[],counts={poses:0,helmetHairIndependence:0,hiddenMatchesUnequipped:0,bandanaHairIndependence:0},read=c=>c.getContext('2d').getImageData(0,0,c.width,c.height).data;
+  const audit=await p.evaluate(async()=>{const q=__review96v3,issues=[],counts={poses:0,helmetHairIndependence:0,hiddenMatchesUnequipped:0,bandanaHairPreserved:0},read=c=>c.getContext('2d').getImageData(0,0,c.width,c.height).data;
    const same=(a,b)=>a.width===b.width&&a.height===b.height&&read(a).every((v,i)=>v===readCached(b)[i]);let lastCanvas,lastPixels;function readCached(c){if(lastCanvas!==c){lastCanvas=c;lastPixels=read(c);}return lastPixels;}
    for(const body of ['masculino','feminino'])for(const action of Object.keys(q.manifest.bodies[body].clips))for(const dir of ['south','north','east','west']){
     const clip=q.manifest.bodies[body].clips[action][dir];if(!clip)continue;
@@ -17,14 +17,15 @@ const out=process.argv.find(s=>s.startsWith('--evidence='))?.slice(11),gameOnly=
      const render=l=>q.render(body,action,dir,frame,[],l),visible=await render(look),other=await render({...look,hair:'hair-long',hairColor:'pink'}),hidden=await render({...look,hideHeadgear:true}),bare=await render({...look,head:'original'});
      if(!same(visible,other))issues.push({kind:'hair-through-helmet',body,action,dir,frame});else counts.helmetHairIndependence++;
      if(!same(hidden,bare))issues.push({kind:'hidden-not-restored',body,action,dir,frame});else counts.hiddenMatchesUnequipped++;
-     const bandana=await render({...look,head:'item-18'}),bandanaBald=await render({...look,head:'item-18',hair:'none'});if(!same(bandana,bandanaBald))issues.push({kind:'hair-through-bandana',body,action,dir,frame});else counts.bandanaHairIndependence++;
+     const bandana=await render({...look,head:'item-18',hair:'hair-long'}),bandanaBald=await render({...look,head:'item-18',hair:'none'});if(same(bandana,bandanaBald))issues.push({kind:'missing-bandana-hair',body,action,dir,frame});else counts.bandanaHairPreserved++;
      counts.poses++;if(counts.poses%80===0)console.log('headgear-progress:'+counts.poses);if(issues.length>10)return {counts,issues};
     }
    }
    return {counts,issues};
-  });assert.deepEqual(audit.issues,[]);assert(audit.counts.poses>=416);assert.equal(audit.counts.bandanaHairIndependence,audit.counts.poses);console.log(JSON.stringify({audit}));
+  });assert.deepEqual(audit.issues,[]);assert(audit.counts.poses>=416);assert.equal(audit.counts.bandanaHairPreserved,audit.counts.poses);console.log(JSON.stringify({audit}));
   const nativeFit=await require('./headgear_native_fit_browser.cjs')(p);assert.deepEqual(nativeFit.issues,[],'headgear must preserve the selected eyes; the restored original hood is pinned separately');assert.equal(nativeFit.counts.frames,3840);assert.equal(nativeFit.counts.restoredHair,64);assert.equal(nativeFit.counts.restoredHoodFrames,480);console.log(JSON.stringify({nativeFit}));if(out)await fs.writeFile(path.join(out,'native-fit.json'),JSON.stringify(nativeFit,null,2));
   const editor=await require('./headgear_editor_browser.cjs')(p);console.log(JSON.stringify({editor}));
+  const hairCoverage=await require('./headgear_hair_coverage_browser.cjs')(p);assert.deepEqual(hairCoverage.issues,[]);console.log(JSON.stringify({hairCoverage}));
   if(out){await fs.writeFile(path.join(out,'audit.json'),JSON.stringify(audit,null,2));const captures=await p.evaluate(async()=>{const q=__review96v3,rows=[];for(const body of ['masculino','feminino'])for(const dir of ['south','north','east','west'])for(const state of ['bare','visible','hidden','bandana']){const look={hair:'hair-wavy',face:'face-calm',skin:'light',hairColor:'brown',head:state==='bandana'?'item-18':state==='bare'?'original':'item-19',hideHeadgear:state==='hidden',torso:'item-6',pants:'item-21',boots:'item-8',cloak:'item-23'};const c=await q.render(body,'walk',dir,3,[],look);rows.push({name:[body,dir,state].join('-'),data:c.toDataURL()});}return rows;});for(const c of captures)await fs.writeFile(path.join(out,c.name+'.png'),Buffer.from(c.data.split(',')[1],'base64'));}
   await p.close();
  }

@@ -31,5 +31,6 @@ const {chromium}=require('playwright'),assert=require('node:assert/strict'),fs=r
   }
   return {counts,closedBootSkinLeaks:leaks,closedGloveSkinLeaks:gloveLeaks};
  });
+ const oceanic=await require('./oceanic_sleeves_browser.cjs')(p);assert.deepEqual(oceanic.issues,[],'oceanic sleeves must cover native arm cores and retain no floating cloth');console.log(JSON.stringify({oceanic}));
  assert.deepEqual(errors,[]);console.log(JSON.stringify(report));if(process.env.EQUIPMENT56_REPORT)await fs.writeFile(process.env.EQUIPMENT56_REPORT,JSON.stringify(report,null,2));assert.deepEqual(report.closedBootSkinLeaks,[]);assert.deepEqual(report.closedGloveSkinLeaks,[]);
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
