@@ -44,6 +44,7 @@
 !hoya-system.js
 !hoya-data.js
 !combat-animation.js
+!combat-action-policy.js
 !jiki-system.js
 !jiki-data.js
 !ryu-system.js

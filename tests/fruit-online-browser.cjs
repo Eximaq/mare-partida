@@ -55,10 +55,11 @@ arrive('dawn','beach');wire.battle.area='beach';
  await p.locator('#closePanel').click();await p.setViewportSize({width:1366,height:900});
  for(const f of A.catalog)for(const skill of A.activeSkills(f.id)){
   const def=catalog.items.findIndex(d=>d.fruitId===f.id);original.equipment.akuma_no_mi={id:'server-fruit',def,type:'akuma_no_mi',fruitId:f.id,level:1,plus:0,rarity:A.rarityFor(f),locked:false};refreshFighter();
-  const base=wire.combatPreview.stats,now=Date.now(),b=engine.create('beach',base,now,()=>.5),hero={...wire.world.position,direction:'right'},m=b.mobs[0];Object.assign(m,{x:hero.x+20,y:hero.y,anchorX:hero.x+20,anchorY:hero.y,hp:100000,maxHP:100000,speed:0,attack:0});b.mobs=[m];b.targetId=m.id;b.energy=1000;b.autoSkills=false;
+  const base=wire.combatPreview.stats;let now=Date.now();const b=engine.create('beach',base,now,()=>.5),hero={...wire.world.position,direction:'right'},m=b.mobs[0];Object.assign(m,{x:hero.x+20,y:hero.y,anchorX:hero.x+20,anchorY:hero.y,hp:100000,maxHP:100000,speed:0,attack:0});b.mobs=[m];b.targetId=m.id;b.energy=1000;b.autoSkills=false;
   const c={hero,nav:maps.navigation('dawn'),stats:base,baseStats:base,fruitId:f.id,classId:'sword',factionId:'pirate',now,rng:()=>.5};if(A.isZoan(f))engine.fruitTransform(b,true,c);
   if(f.id==='akuma_kuku_kuku'){m.alive=false;m.hp=0;m.corpseUntil=now+12000;}
-  if(f.id==='akuma_hoya_hoya'&&skill.key==='2'){assert(engine.fruitCast(b,'1',c));engine.step(b,{...c,now:now+50,dt:.05});}
+  if(f.id==='akuma_hoya_hoya'&&skill.key==='2'){assert(engine.fruitCast(b,'1',c));now+=600;engine.step(b,{...c,now,dt:.05});}
+  // Human casts have a real wind-up; dependent skills wait for the confirmed release/recovery.
   assert(engine.fruitCast(b,skill.key,{...c,now:now+51}),f.id+skill.key);engine.step(b,{...c,now:now+101,dt:.05});wire.battle=b;
   await p.evaluate(()=>MareGameSession.load());await p.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));assert.deepEqual(errors,[],f.id+skill.key);
  }

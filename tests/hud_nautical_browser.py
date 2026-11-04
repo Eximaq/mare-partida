@@ -39,7 +39,7 @@ def check_layout(page, label):
     return dict(state=label, **result)
 
 with sync_playwright() as p:
-    browser = p.chromium.launch()
+    browser = p.chromium.launch(executable_path=os.environ.get('CHROME_PATH'))
     context, page = page_for(browser, size=(1600, 900))
     seed = fixture(create(page))
     seed.update(level=53, gold=229378, has_haki_unlocked=True, hp=99999, energy=99999)
