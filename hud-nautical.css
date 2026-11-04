@@ -15,7 +15,7 @@
 }
 /* The generated rope is nine-sliced, so neither its strands nor corners stretch. */
 #app.hud-nautical .nautical-profile,#app.hud-nautical #floatingChat,#app.hud-nautical #journeyHud,#app.hud-nautical .action-panel {
-  background:var(--hud-surface); background-clip:padding-box; border:20px solid transparent;
+  background:var(--hud-surface); background-clip:border-box; border:20px solid transparent;
   border-image:var(--hud-rope) 150 / 25px / 3px stretch;
   border-radius:18px; box-shadow:0 5px 12px #00101955; overflow:visible;
 }
@@ -183,7 +183,7 @@ body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
   #app.hud-nautical .action-panel::before {width:58px; height:58px; top:-40px}
   #app.hud-nautical #journeyHud {width:220px; border-width:12px; border-image-width:18px; bottom:calc(var(--hud-edge) + var(--rpg-action-height) + 88px); max-height:calc(100dvh - var(--profile-bottom) - 210px); overflow-y:auto}
   #app.hud-nautical #journeyHud .journey-heading {height:36px; min-height:36px; font-size:18px; padding-bottom:0; border:0}
-  #app.hud-nautical #journeyHud.collapsed .journey-controls {display:none}
+
   #app.hud-nautical .world-command {width:220px; bottom:calc(var(--hud-edge) + var(--rpg-action-height) + 24px)}
   #app.hud-nautical .world-command button {height:52px; min-height:52px; font-size:18px; padding:8px 12px}
   #app.hud-nautical #chatCornerToggle {bottom:calc(var(--hud-edge) + var(--rpg-action-height) + 24px); min-height:52px; width:112px; font-size:15px; padding:8px}
@@ -197,6 +197,7 @@ body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
   #app.hud-nautical #huntXpTracker.hunt-xp-tracker {top:calc(var(--profile-bottom) + 150px); left:auto; right:12px; width:calc((100vw - 36px)/2)}
   #app.hud-nautical #targetHud .target-hud-top {font-size:12px}
   #app.hud-nautical #huntXpTracker .hunt-xp-top {display:flex; flex-wrap:wrap; gap:2px}
+  #app.hud-nautical #huntXpTracker .hunt-xp-level {display:none}
 }
 @media(max-height:500px) and (min-width:761px) {
   :root {--hud-edge:10px; --hud-profile:300px; --hud-side:240px}
@@ -209,7 +210,7 @@ body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
   #app.hud-nautical #hudUtilities {top:84px; width:340px}
   #app.hud-nautical .mare-music-dock {display:none}
   #app.hud-nautical #journeyHud {bottom:88px; border-width:12px; border-image-width:18px; max-height:calc(100dvh - 170px); overflow-y:auto}
-  #app.hud-nautical #journeyHud.collapsed .journey-content,#app.hud-nautical #journeyHud.collapsed .journey-controls {display:none}
+  #app.hud-nautical #journeyHud.collapsed .journey-content {display:none}
   #app.hud-nautical:has(#journeyHud:not(.collapsed)) #hudUtilities {visibility:hidden}
   #app.hud-nautical #targetHud {left:320px; top:84px; transform:none; width:164px}
   #app.hud-nautical #huntXpTracker.hunt-xp-tracker {top:calc(var(--profile-bottom) + 12px); left:10px; right:auto; width:300px}

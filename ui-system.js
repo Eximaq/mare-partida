@@ -83,6 +83,8 @@
     document.getElementById('journeyToggle').querySelector('span:not(.journey-chevron)').textContent='Expedição';
     const chat=document.getElementById('floatingChat'),log=document.getElementById('gameLog');
     chat.querySelector('.floating-title>span').textContent='Canal do Porto';
+    const xpHeading=document.querySelector('#huntXpTracker .hunt-xp-top span');
+    if(xpHeading){xpHeading.textContent='XP/h';xpHeading.title='Experiência por hora';}
     const tabBar=document.createElement('nav');tabBar.className='chat-tabs';tabBar.setAttribute('aria-label','Mensagens locais');
     tabBar.innerHTML='<button type="button" data-chat-channel="all" aria-pressed="true">Sistema</button><button type="button" data-chat-channel="notes" aria-pressed="false">Anotações</button>';
     chat.querySelector('.floating-title').after(tabBar);

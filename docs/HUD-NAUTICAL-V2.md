@@ -70,3 +70,14 @@ legado passaram. Também passaram os 21 estados da composição no pacote `dist`
 a regressão de personagem em oito resoluções, os controles, a navegação dos
 menus e as 16 janelas em sete resoluções. O build estático foi gerado. Esta
 validação funcional não substitui a aprovação visual do proprietário.
+
+O teste de Dawn também passou após preservar os comandos de caça no diário
+recolhido: cinco resoluções atuais, sete rotas, pausa/retomada, chefe, recompensa,
+recarga e fidelidade dos pixels do mapa. Em smartphones, a linha redundante de
+próximo nível do XP/h fica oculta; a barra XP do perfil continua mostrando o valor.
+
+CI: os jobs rankA/rankS encontraram a inconsistência preexistente de
+`tests/sprite_combat_v2_assets_test.py:12`: espera 26 conjuntos não-dungeon,
+mas a própria base `25cd9d05` já contém 27 arquivos de metadados nessa categoria.
+Esta revisão não altera os sprites nem esse contrato; a pendência está registrada
+no PR, sem declarar que o CI completo está verde.
