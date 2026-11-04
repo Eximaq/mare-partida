@@ -80,9 +80,4 @@
 
 #app #panelOverlay.party-mode{z-index:var(--rpg-z-modal,100)}
 
-/* Eight existing menu controls must remain reachable on narrow phones. */
-@media(max-width:380px){
- #app #mainMenu>:is(button,.character-menu-anchor){flex:1 1 0;min-width:0;width:auto}
- #app #mainMenu .character-menu-anchor>[data-panel],#app #mainMenu #socialMenuTrigger{width:100%;padding:4px}
- #app #mainMenu>[data-panel]{padding:4px}
-}
+/* Narrow menu geometry is owned by gameplay-harmony.css, including Social. */

@@ -40,6 +40,7 @@ with sync_playwright() as p:
     results=[]
     for w,h in SIZES:
         c,q=page_for(b,copy.deepcopy(seed),(w,h),errors)
+        q.clock.run_for(1000)
         before={k:saved(q).get(k) for k in KEYS}
         trigger=q.locator('#characterMenuTrigger');menu=q.locator('#characterQuickMenu')
         assert q.locator('#characterMenuBrowse').count()==0,'no secondary arrow control'

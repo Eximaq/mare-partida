@@ -66,7 +66,9 @@ jobs:
       - name: Validar HUD responsiva, legibilidade e controles
         # This redesign intentionally changes geometry; compare usable bounds,
         # overlaps and real interactions rather than requiring the old coordinates.
-        run: python tests/hud_reference_browser.py --serve-dist
+        run: |
+          python tests/hud_reference_browser.py --serve-dist
+          python tests/hud_reference_browser.py --serve-dist --slots-only --sizes 320x568,568x320 --phase short
       - name: Original inventory and forge online UI contract (no hosted provider)
         run: python tests/run_honors_hd_browser.py tests/original-inventory-online-browser.cjs --dist --offline
       - name: Original online world and travel UI contract

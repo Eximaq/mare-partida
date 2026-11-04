@@ -70,6 +70,7 @@ Medição final no mesmo viewport **1600×900**, em CSS px: perfil **320×262** 
 - Estados: hover com realce contido, pressionado e selecionado via estado real, foco 2 px, disabled preservado. Nenhuma animação decorativa nova. Redução de movimento respeitada.
 - UI usa interpolação normal para arte HD; sprites e ícones pixelados conservam `image-rendering:pixelated`. O canvas do mundo não foi alterado.
 - Desktop usa três zonas superiores/inferiores. Tablet desloca localização abaixo do menu. Celular usa menu acima da hotbar e informações em duas colunas; chat aberto ocupa a área de leitura e recolhe visualmente os widgets concorrentes. Abaixo de 375 px, navegação tem rolagem horizontal acessível, sem encolher os botões.
+- Em celulares de até 760×700, a facção e o atalho de pontos cedem espaço no perfil; continuam disponíveis em Personagem. XP/h mostra a taxa, preservando o XP acumulado na barra do perfil. Em 568×320, menu e hotbar rolam horizontalmente com alvos de 44 px, e o canal usa seu ícone e nome acessível. O lançador DEV é recolhido nesses formatos; F8 permanece disponível.
 
 ## D. Plano de assets e custo
 
@@ -90,6 +91,8 @@ Medição final no mesmo viewport **1600×900**, em CSS px: perfil **320×262** 
 `gameplay-harmony.css` passa de camada apenas de materiais a proprietária da composição de gameplay. Substitui as regras anteriores no próprio arquivo, sem adicionar mais uma folha. Não adiciona `!important`, framework, dependência de produção, handler, endpoint, campo de save ou modificação de combate. Os CSS históricos continuam necessários a telas legadas e não foram apagados globalmente.
 
 A reserva antiga de altura de `#journeyHud` foi removida de `ui-responsive.css`: seu seletor com `:has(.parchment-profile)` prevalecia sobre a nova regra e colocava a rota atrás da navegação em 320×568. O cálculo agora considera a altura real da hotbar, inclusive com Haki. O teste de cache também foi atualizado para incluir `dungeon-boss-art-data.js`, já usado pelo empacotador antes desta tarefa, escolher Dawn desde o porto e aceitar os diagnósticos adicionais de navegação sem afrouxar a verificação de mapa/dimensões.
+
+O CI identificou uma segunda colisão entre XP/h e navegação em 320×568. A composição compacta preserva ambos, sem reduzir alvos. Uma regra tardia de `party.css` que encolhia os oito controles foi retirada; a rolagem e as dimensões agora pertencem à camada compartilhada. `tests/hud_responsive_browser.py` avança o relógio simulado antes de verificar o badge inicial, evitando ler a fixture antes de sua atualização.
 
 `tests/hud_reference_browser.py` exercita bounds, colisões, fontes, toque mínimo, recursos, chat, cartaz, seis menus, viagem, Haki e preservação dos dados. `tests/character_hud_browser.cjs` continua cobrindo títulos, barras reais, extremos, retratos, teclado/toque e reload; o fechamento do chat usa seu X visível. A verificação de tamanho legível dos títulos foi acrescentada.
 
@@ -112,8 +115,10 @@ Validação local concluída em 04/11/2026:
 | `python tests/production_pages_test.py` | **6 testes** aprovados, dependências e recursos publicados preservados. |
 | `python tests/hud_reference_browser.py --serve-dist` | Sete resoluções, lobby/chat/caçada, seis menus por resolução, Haki H/J, retorno/reload, texto e valores, bounds e colisões: aprovado; erros JS vazios. Inclui Mera e Uma em sete tamanhos. |
 | `python tests/hud_reference_browser.py --serve-dist --slots-only --phase optional` | Mera, Uma e Fênix: **21 estados**, incluindo três habilidades + transformação + Haki, aprovados. A matriz combinada cobre **42 estados distintos** da HUD. |
+| Matriz adicional com `--sizes 320x568,568x320 --phase short-final` | **12 estados** adicionais de lobby, chat, caçada e frutas aprovados; **54 estados distintos** no total. |
 | `python tests/run_honors_hd_browser.py tests/character_hud_browser.cjs --offline` | Oito resoluções até **320×568**, 32 títulos, barras 0/25/100%, ouro extremo, aparências, cartaz, rota, teclado, toque, movimento reduzido e reload: aprovado. |
 | `python tests/run_honors_hd_browser.py tests/gameplay_harmony_controls_browser.cjs --dist --offline` | Menus exclusivos, notas locais, proteção ao digitar, L, XP/h, atividade/pausa e minimizar: aprovado. |
+| `python tests/hud_responsive_browser.py` | **16 painéis × sete resoluções**, incluindo 320×568 e 568×320; foco, teclado, navegação, densidade, saltos do inventário, caçada e progresso preservados: aprovado. |
 | Harness acima com `original-inventory-online-browser.cjs`, `online-world-browser.cjs` e `online-battle-browser.cjs` | Três regressões aprovadas no pacote: inventário/forja, movimento/viagem e combate/rota/mobile. Provider simulado; não representa teste PostgreSQL de ponta a ponta. |
 | `python tests/pages_cache_browser.py` | **156 recursos versionados**, script obsoleto não requisitado, viagem Dawn e save preservado, sem erros JS. |
 | Sintaxe do teste CJS e `git diff --check` | Aprovados. |
