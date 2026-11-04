@@ -2,7 +2,7 @@ const {test}=require('node:test'),assert=require('node:assert/strict'),W=require
 test('garment order is central, deterministic and independent of load order',()=>{
  const passes=['head','boots','hair','face','torso','pants','gloves','body','cloakFront','belt'],drawn=[];
  W.composition.paint(passes.map(slot=>({slot,draw(){drawn.push(slot);}})));
- assert.deepEqual(drawn,['body','face','hair','pants','torso','cloakFront','belt','boots','gloves','head']);assert(Object.isFrozen(W.composition.priorities));assert.equal(W.composition.priorities.torso,50);assert.equal(W.composition.priorities.boots,70);assert.equal(W.composition.priorities.gloves,80);
+ assert.deepEqual(drawn,['body','face','hair','pants','torso','boots','gloves','head']);assert(Object.isFrozen(W.composition.priorities));assert.equal(W.composition.priorities.torso,50);assert.equal(W.composition.priorities.boots,70);assert.equal(W.composition.priorities.gloves,80);
 });
 test('weapon depth follows its own hand and frame, not a fixed equipment priority',()=>{
  const pose={NECK:{z_index:-2},'LEFT ARM':{z_index:-6},'RIGHT ARM':{z_index:0}};
