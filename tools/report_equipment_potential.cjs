@@ -19,7 +19,7 @@ function compare(classId='sword',level=50){
   return {rarity,name:F.rarity[rarity].name,def,item:defs[def].name,samples,gaps};
  })};
 }
-const num=n=>n.toLocaleString('pt-BR',{maximumFractionDigits:2});
+const num=n=>Math.ceil(n).toLocaleString('pt-BR');
 function markdown(report){
  return ['# Comparação controlada de potencial',
   '',`Classe: ${catalog.classes[report.classId].name} · nível ${report.level} · facção Pirata. Poder sem equipamento: ${num(report.naked)}.`,
@@ -33,10 +33,10 @@ function markdown(report){
   '|---|---:|---:|---:|---:|---:|',
   ...report.series.map(r=>`| ${r.name} | ${r.gaps.map(g=>`+${num(g.delta)} (${num(g.contributionPercent)}%)`).join(' | ')} |`),
   '', '## Limites da leitura',
-  '', '- O percentual acima usa a contribuição do peitoral, não o Poder total do personagem. O JSON também fornece o aumento percentual do personagem.',
+  '', '- Percentuais exibidos são arredondados para cima. Usam a contribuição do peitoral, não o Poder total do personagem. O JSON fornece os percentuais exatos da peça e do personagem.',
   '- São amostras controladas. Outra classe, distribuição de extras ou equipamento adicional pode mudar o ganho. Potencial aumenta as bases em 1,5% por ponto, além do orçamento de extras e de uma reserva de Vida que elimina empates de arredondamento. Refino e pérolas continuam separados.',
   '- A fórmula de Poder existente não contabiliza todos os efeitos de combate com o mesmo peso. Velocidade de ataque e dano crítico continuam afetando o combate pelas regras próprias.',
-  '- Pisos compartilhados por slot/classe corrigem bases antigas que invertiam raridades. Cada patamar nativo possui bases no mínimo 50% acima do teto de bases anterior; os básicos fundidos ficam entre os dois patamares, preservando a vantagem nativa na mesma raridade.',
+  '- Pisos compartilhados por slot/classe corrigem bases antigas que invertiam raridades. Cada patamar nativo possui bases no mínimo 60% acima do teto de bases anterior; os básicos fundidos ficam entre os dois patamares, preservando a vantagem nativa na mesma raridade.',
   '', 'Reproduzir: `node tools/report_equipment_potential.cjs sword 50`. Acrescente `--json` para incluir os atributos reais e ambos os percentuais.', ''].join('\n');
 }
 module.exports={compare,markdown};

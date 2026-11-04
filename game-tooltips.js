@@ -4,7 +4,7 @@
   const labels={attackSpeedPercent:'Velocidade de ataque',critDamage:'Dano crítico',...root.MareAkumaPassives?.labels,attack:'Ataque',defense:'Defesa',hp:'Vida',energy:'Energia',crit:'Crítico',strength:'Força',dexterity:'Destreza',vitality:'Vitalidade',intelligence:'Inteligência',spirit:'Espírito',bonus_attack:'Ataque',bonus_defense:'Defesa',bonus_hp:'Vida',bonus_max_hp:'Vida máxima',bonus_energy:'Energia',bonus_crit:'Crítico',bonus_strength:'Força',bonus_dexterity:'Destreza',bonus_vitality:'Vitalidade',bonus_intelligence:'Inteligência',bonus_spirit:'Espírito',healing_received_percent:'Cura recebida',max_hp_percent:'Vida máxima',impact_resistance_percent:'Resistência a impacto',move_speed_percent:'Velocidade',evasion_percent:'Esquiva',physical_defense_percent:'Defesa física'};
   const escape=value=>String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
   const percent=key=>key==='attackSpeedPercent'||key==='critDamage'||key==='crit'||key==='bonus_crit'||key.endsWith('_percent')||(key in (root.MareAkumaPassives?.labels||{})&&root.MareAkumaPassives.percent(key));
-  const display=(key,value)=>`${Number.isInteger(value)?value:Number(value.toFixed(2))}${percent(key)?'%':''}`;
+  const display=(key,value)=>`${Math.ceil(value)}${percent(key)?'%':''}`;
   function filterCleanStats(stats){
     const flat={...stats,...(stats?.attributes||{})};delete flat.attributes;
     return Object.fromEntries(Object.entries(flat).filter(([key,value])=>labels[key]&&typeof value==='number'&&Number.isFinite(value)&&value!==0).map(([key,value])=>[key,percent(key)?value*100:value]));
