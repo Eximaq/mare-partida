@@ -105,12 +105,12 @@ await authDatabase(async f=>{
   console.log('sustained two-player rate-limit responses',limited);assert.equal(limited,0,'normal two-player walking must fit the shared gateway budget');
   // Inspect readiness and dispatch in the same browser turn, just like a UI action.
   // A separate evaluate allows a final keyup/stop to take the slot between calls.
-  const travel=(outbound:boolean)=>q.waitForFunction(async (outbound:boolean)=>{
+  const travel=(outbound:boolean)=>q.waitForFunction((outbound:boolean)=>{
     const session=globalThis.MareGameSession;
     if(!session.available||!session.controlled||session.busy||session.pending||session.data.online.world.path.length)return false;
-    if(outbound)await session.command('world.travel',{islandId:'dawn'});
-    else await session.command('world.return',{});
-    return true;
+    // Return false synchronously while polling. A Promise resolving to false is already truthy.
+    const command=outbound?session.command('world.travel',{islandId:'dawn'}):session.command('world.return',{});
+    return command.then(()=>true);
   },outbound,{timeout:35000});
   console.log('travel start');await travel(true);
   await p.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===0);
