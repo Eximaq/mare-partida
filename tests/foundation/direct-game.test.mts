@@ -106,6 +106,19 @@ test('commands reuse identity and short-lived memory CSRF instead of serial redu
  assert.equal(f.storage.size,0);
 });
 
+test('a second intent during reconciliation cannot leave an unsent command for replay',async()=>{
+ const f=fixture();await f.client.load();await f.client.acquire();
+ let second:Promise<unknown>|undefined;
+ const off=f.client.subscribe(()=>{
+  if(f.client.busy&&!f.client.pending&&!second)
+   second=f.client.command('world.travel',{islandId:'dawn'}).catch((error:any)=>error.code);
+ });
+ try{await f.client.command('world.stop',{});}finally{off();}
+ assert.ok(second);assert.equal(await second,'pending_command');
+ assert.equal(f.storage.size,0);assert.equal(f.client.pending,null);
+ assert.equal(f.requests.filter(r=>r.path.endsWith('/commands')).length,1);
+});
+
 test('CSRF cache is single-flight, expires, clears on rejection/logout and never retries mutations',async()=>{
  let time=0,csrfReads=0,posts=0,status=200;
  const c=createSession({now:()=>time,storage:{removeItem(){},getItem(){return null;}},fetch:async(path:string)=>{

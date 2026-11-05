@@ -357,7 +357,7 @@
       acquire,
       async command(action, payload = {}) {
         if (!validIntent(action, payload)) throw fault("invalid_intent");
-        if (pending) throw fault("pending_command");
+        if (pending || busy) throw fault("pending_command");
         if (!available || !control || !data?.character)
           throw fault("control_required");
         const intent = {
