@@ -6,7 +6,7 @@ import {dungeonActions,dungeonStateSchema,type CharacterCommand,type CharacterSt
 import {AuthFault} from '../auth/errors.js';
 import {readOriginalInventory,writeInventory,event} from '../gameplay/inventory.js';
 import {getGameCatalog} from '../gameplay/catalog.js';
-import {xpNeeded} from '../gameplay/character.js';
+import {legacyXpNeeded} from '../gameplay/character.js';
 import {advanceLevel} from './progression.js';
 import {readBattle,storeBattle} from './battle.js';
 import {readWorld,storeWorld} from './world.js';
@@ -86,7 +86,7 @@ export async function mutateDungeon(client:PoolClient,id:string,input:CharacterC
 export async function completeDungeonVictory(client:PoolClient,id:string,requestId:string,state:CharacterState,b:any,kill:any,now:Date){
  const p=await readDungeons(client,id),r=p?.records[kill.dungeonId as keyof typeof p.records];
  if(!p||!r||!b.dungeon||b.dungeon.id!==kill.dungeonId||r.spawnId!==kill.id||r.runId!==kill.runId||r.encounterId!==kill.encounterId)throw new AuthFault(503,'dungeon_victory_invalid');
- const result=D.defeat({characterId:id,level:state.level,bossDungeons:p},kill.dungeonId,{runId:kill.runId,encounterId:kill.encounterId},xpNeeded,now.getTime());
+ const result=D.defeat({characterId:id,level:state.level,bossDungeons:p},kill.dungeonId,{runId:kill.runId,encounterId:kill.encounterId},legacyXpNeeded,now.getTime());
  if(!result.ok)throw new AuthFault(503,'dungeon_victory_invalid');
  await client.query('INSERT INTO mare_game.dungeon_victories(character_id,dungeon_id,run_id,spawn_id,request_id,reward,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7)',[id,kill.dungeonId,kill.runId,kill.id,requestId,result.record.reward===null?null:JSON.stringify(result.record.reward),E.rulesHash]);
  await save(client,id,result.state.bossDungeons);b.dungeon.record=result.record;

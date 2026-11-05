@@ -6,7 +6,7 @@ const names=['Ilha Dawn','Cidade das Conchas','Orange Town','Ilha dos Animais Ra
 assert.deepEqual(a.list('east-blue').map(i=>i.name),names);
 assert.equal(new Set(a.islands.map(i=>i.id)).size,15);
 a.list('east-blue').forEach((i,n)=>{
-  assert.deepEqual(i.recommended,i.id==='conchas'?[8,8]:[n*5+1,n*5+5]);
+  assert.deepEqual(i.recommended,i.id==='conchas'?[5,10]:[n*5+1,n*5+5]);
   assert.equal(i.order,n+1);
   assert.equal(a.get(i.id),i);
   assert(Object.isFrozen(i));
@@ -21,8 +21,8 @@ assert.equal(a.byArea('beach').id,'dawn');
 assert.equal(a.byArea('swamp').id,'conchas');
 assert.equal(a.canTravel('dawn',1),true);
 assert.equal(a.canTravel('dawn',80),true);
-assert.equal(a.canTravel('conchas',5),false);
-assert.equal(a.canTravel('conchas',7),false);
+assert.equal(a.canTravel('conchas',4),false);
+assert.equal(a.canTravel('conchas',5),true);
 assert.equal(a.canTravel('conchas',8),true);
 for(const level of [undefined,null,NaN,Infinity,'10',-1,0])assert.equal(a.canTravel('dawn',level),false);
 assert.equal(a.canTravel('missing',80),false);

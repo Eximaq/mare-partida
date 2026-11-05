@@ -15,9 +15,9 @@
     const states=meta[monster.type];if(!states)return null;
     const direction=monster.emberFacing||'south',row=rows[direction]??0,action=monster.attackAnim>0?'attack':monster.moving>0?'walk':'idle',a=states[action];
     const renderSize=MONSTER_RENDER_SIZE[monster.type]||DEFAULT_MONSTER_RENDER_SIZE;
-    const scale=legacyMonsterTypes.has(monster.type)?LEGACY_MONSTER_SCALE:renderSize/a.size;
+    const scale=(legacyMonsterTypes.has(monster.type)?LEGACY_MONSTER_SCALE:renderSize/a.size)*(root.MareSpriteCombatV2?.monsterScale(monster.type)??1);
     return {row,action,a,scale,top:Math.round(monster.y+3-a.feet[row]*scale),width:Math.round(a.size*scale)};
   }
-  function monster(ctx,m,time){prepare(m.type);const box=layout(m);if(!box)return false;const {row,action,a,scale,top,width}=box,img=sheets[m.type]?.[action];if(!img?.complete||!img.naturalWidth)return false;const frame=action==='attack'?Math.min(a.frames-1,Math.max(0,Math.floor(((a.duration||.58)-m.attackAnim)*a.frames/(a.duration||.58)))):action==='walk'?Math.floor(time*a.fps+m.bob)%a.frames:0;ctx.save();ctx.imageSmoothingEnabled=false;if(m.hit>0)ctx.filter='brightness(1.5)';ctx.drawImage(img,frame*a.size,row*a.size,a.size,a.size,Math.round(m.x-width/2),top,width,width);ctx.restore();return true;}
+  function monster(ctx,m,time){prepare(m.type);const box=layout(m);if(!box)return false;const {row,action,a,scale,top,width}=box,img=sheets[m.type]?.[action];if(!img?.complete||!img.naturalWidth)return false;const frame=action==='attack'?Math.min(a.frames-1,Math.max(0,Math.floor((1-m.attackAnim/root.MareCharacters.monsterAttackVisualDuration(m.type))*a.frames))):action==='walk'?Math.floor(time*a.fps*root.MareCharacters.monsterBalance.moveSpeed+m.bob)%a.frames:0;ctx.save();ctx.imageSmoothingEnabled=false;if(m.hit>0)ctx.filter='brightness(1.5)';ctx.drawImage(img,frame*a.size,row*a.size,a.size,a.size,Math.round(m.x-width/2),top,width,width);ctx.restore();return true;}
   root.MareNewIslandArt={monster,layout,prepare,meta,sheets,DEFAULT_MONSTER_RENDER_SIZE,DEFAULT_MONSTER_SCALE,LEGACY_MONSTER_SCALE};
 })(globalThis);

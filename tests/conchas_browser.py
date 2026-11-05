@@ -89,7 +89,7 @@ def walk_sector(page, sector_id):
 with sync_playwright() as playwright:
     browser = playwright.chromium.launch(executable_path=os.environ.get("CHROME_PATH"))
     context, page = open_page(browser)
-    page.locator("#characterName").fill("Nauta Conchas")
+    page.locator("#characterName").fill("Nauta Concha")
     page.locator("#nextToClass").click()
     page.locator('#nextToAppearance').click();page.locator("#createCharacter").click();page.locator('[data-confirm-accept]').click()
     page.clock.run_for(100)
@@ -97,7 +97,7 @@ with sync_playwright() as playwright:
     context.close()
 
     low = copy.deepcopy(template)
-    low["level"] = 7
+    low["level"] = 4
     context, page = open_page(browser, low)
     page.locator(".location-heading").click()
     page.locator("[data-island=conchas]").click()

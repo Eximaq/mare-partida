@@ -21,12 +21,12 @@ test('every authored common monster gets deterministic points and the new attack
   const profile=E.hunt.profile(area,slot.sector,slot.type,0),base=raw[slot.type];
   assert.deepEqual(profile,E.hunt.profile(area,slot.sector,slot.type,.999));
   assert.equal(profile.attributePoints,3*C.earned(base.level));
-  assert.equal(profile.attackSec,base.attack_seconds/1.5);
-  assert.equal(profile.speed,base.move_speed);
+  assert.equal(profile.attackSec,base.attack_seconds/2.25);
+  assert.equal(profile.speed,base.move_speed*2);
   assert.equal(profile.accuracy,1);
-  assert.equal(profile.defense,Math.round((base.physical_defense+.24*profile.attributes.defense)*1.3));
-  assert.equal(profile.magicDefense,base.magic_defense);
-  assert.equal(E.hunt.rewards(area,{...profile,type:slot.type,district:slot.sector},profile.level).xp,Math.round(profile.xp/10));
+  assert.equal(profile.defense,Math.round(Math.round((base.physical_defense+.24*profile.attributes.defense)*1.3)*1.2));
+  assert.equal(profile.magicDefense,Math.round(base.magic_defense*1.2));
+  assert.equal(E.hunt.rewards(area,{...profile,type:slot.type,district:slot.sector},profile.level).xp,Math.round(Math.round(profile.xp/10)*E.hunt.xpByMap(area)));
  }
 });
 test('shared contracts preserve original IDs, fixed rewards and migrated once-only objectives',()=>{
@@ -53,7 +53,8 @@ test('daily objectives are stable, validate kill sources and require the sequent
  const kill={area:'beach',monster:{type:'cesar'},berry:berry.target};
  combat.current=combat.target-1;D.applyDaily(d,kill);assert.equal(fallback.current,0);assert(!D.dailyComplete(d));
  for(let i=0;i<fallback.target;i++)D.applyDaily(d,kill);assert(D.dailyComplete(d));
- const p=make(true);assert.equal(p.objectives[2].floor,1);
+ const p=make(true);assert.equal(p.objectives[2].id,'daily-reinforcement');
+ p.objectives[2]={id:'daily-prison',floor:1,target:1,current:0};
  D.applyDaily(p,{prisonFloor:2});assert.equal(p.objectives[2].current,0);
  D.applyDaily(p,{prisonFloor:1});assert.equal(p.objectives[2].current,1);
  const client=require('../../apps/account-client/game-session.js');

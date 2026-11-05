@@ -16,7 +16,7 @@ with sync_playwright() as p:
  q.goto(BASE+'?paperDoll96=0',wait_until='networkidle');q.wait_for_function('window.__mareDiagnostics')
  q.wait_for_function('__mareDiagnostics().paperDollReview.state!=="loading"')
  assert q.evaluate('__mareDiagnostics().paperDollReview.production') is True,'Normal adventure must load an approved production pack without DEV query'
- q.locator('#characterName').fill('Marujo modular');q.locator('#nextToClass').click()
+ q.locator('#characterName').fill('Marujo QA');q.locator('#nextToClass').click()
  q.locator('#nextToAppearance').click();q.locator('#creation-hairStyle').select_option('none')
  q.screenshot(path=str(OUT/'creation-desktop.png'),full_page=True);q.set_viewport_size({'width':393,'height':852});assert q.evaluate('document.documentElement.scrollWidth<=innerWidth');q.locator('#appearanceStep').scroll_into_view_if_needed();q.screenshot(path=str(OUT/'creation-mobile.png'),full_page=True);q.set_viewport_size({'width':1366,'height':900});q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(100);q.clock.pause_at(q.evaluate('Date.now()+100'))
  assert q.evaluate('(__playerQA.draw(),__mareDiagnostics().paperDollReview.lastPose.animationId)')=='idle'

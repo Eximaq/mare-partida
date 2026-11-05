@@ -10,7 +10,7 @@ import {battleActions,battleTargetSchema} from './battle.js';
 import {inventoryTradeSchema,inventorySnapshotSchema,equipmentItemSchema,equipmentSlotSchema} from "./inventory.js";
 import { z } from "zod";
 import {originalActionSchema,instanceIdSchema,originalSlotSchema,forgeOperationSchema} from './original-inventory.js';
-import { renewControlSchema,characterCreateSchema } from "./auth.js";
+import { renewControlSchema,characterIdentitySchema } from "./auth.js";
 import { characterStateSchema } from "./character-state.js";
 import { combatSnapshotSchema } from "./combat.js";
 
@@ -32,7 +32,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
  z.strictObject({...commandEnvelope,action:z.literal('party.start'),payload:z.strictObject({nonce:z.uuid()})}),
  z.strictObject({...commandEnvelope,action:z.literal('profile.appearance'),payload:z.strictObject({appearance:appearanceSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('profile.preferences'),payload:preferencePatchSchema}),
- z.strictObject({...commandEnvelope,action:z.literal('profile.identity'),payload:characterCreateSchema.extend({appearance:appearanceSchema})}),
+ z.strictObject({...commandEnvelope,action:z.literal('profile.identity'),payload:characterIdentitySchema.extend({appearance:appearanceSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('fruit.cast'),payload:z.strictObject({key:z.enum(['1','2','3']),point:worldPointSchema.optional()})}),
  z.strictObject({...commandEnvelope,action:z.literal('fruit.transform'),payload:z.strictObject({enabled:z.boolean()})}),
  z.strictObject({...commandEnvelope,action:z.literal('fruit.move'),payload:worldPointSchema}),

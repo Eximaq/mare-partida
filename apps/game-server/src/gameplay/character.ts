@@ -9,11 +9,12 @@ const catalog=rules.create({characters});
 const rulesHash=createHash('sha256').update(JSON.stringify(catalog)).update(getGameCatalog().rulesHash)
   .update(readFileSync(new URL('../../../../character-system.js',import.meta.url),'utf8').replaceAll('\r\n','\n')).digest('hex');
 export const xpNeeded:(level:number)=>number=rules.xpNeeded;
+export const legacyXpNeeded:(level:number)=>number=rules.legacyXpNeeded;
 export const advanceOriginalLevel:(value:{level:number;start:bigint;experience:bigint})=>{level:number;start:bigint;levels:{level:number;start:bigint}[]}=rules.advance;
-export function deriveOriginalFighter(classId:string,factionId:string,state:CharacterState,allocated:AttributeValues,inventory:OriginalInventory,build?:TalentBuild,runtime?:any,haki?:any,fruits?:{registered:string[]} | null,battle?:any):Fighter {
+export function deriveOriginalFighter(classId:string,factionId:string,state:CharacterState,allocated:AttributeValues,inventory:OriginalInventory,build?:TalentBuild,runtime?:any,haki?:any,fruits?:{registered:string[]} | null,battle?:any,legacyCadence=false):Fighter {
   const A=require('../../../../akuma-system.js'),P=require('../../../../akuma-passives.js'),fruitId=A.itemData(inventory.equipment.akuma_no_mi,getGameCatalog().items)?.id;
   const gear=A.applyGear(forge.aggregate(inventory.equipment,getGameCatalog().items),inventory.equipment.akuma_no_mi,getGameCatalog().items);gear.akumaRegistered=fruits?.registered.length||0;
-  const baseStats=characters.derive({classId,level:state.level,attributes:allocated},catalog.classes[classId],catalog.factions[factionId],gear);
+  const baseStats=characters.derive({classId,level:state.level,attributes:allocated},catalog.classes[classId],catalog.factions[factionId],gear,{legacyCadence});
   const T=require('../../../../talent-system.js');
   const talentStats=build&&T.spent(build)>0?T.applyStats(baseStats,{classId,talentBuilds:{[classId]:build}},runtime):baseStats;
   const hakiStats=haki?require('../../../../haki-system.js').stats(talentStats,{has_haki_unlocked:haki.state.unlocked,haki:haki.state},haki.runtime):talentStats;
@@ -30,7 +31,7 @@ export function resolveOriginalRound(playerHp:number,enemyHp:number,fighter:Extr
   if(!Number.isInteger(playerHp)||playerHp<1||playerHp>fighter.maxHp||!Number.isInteger(enemyHp)||enemyHp<1||enemyHp>36)throw new RangeError('Invalid round');
   const playerDamage=Math.min(enemyHp,characters.damage(fighter.stats,0,{type:fighter.damageType,variance:.9+roll()*.22,critical:roll()<fighter.stats.crit}));
   const enemyAfter=enemyHp-playerDamage;
-  const enemyDamage=enemyAfter===0?0:Math.min(playerHp,characters.incoming(fighter.stats,7+Math.floor(roll()*5),false,.85+roll()*.25));
+  const enemyDamage=enemyAfter===0?0:Math.min(playerHp,characters.incoming(fighter.stats,7+Math.floor(roll()*5),false,.85+roll()*.25,{monster:true}));
   const playerAfter=playerHp-enemyDamage;
   return {playerHp:playerAfter,enemyHp:enemyAfter,playerDamage,enemyDamage,status:enemyAfter===0?'won' as const:playerAfter===0?'lost' as const:'active' as const};
 }

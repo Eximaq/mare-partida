@@ -15,7 +15,7 @@ export const emptySchema = z.strictObject({});
 export const logoutSchema = z.strictObject({
   scope: z.enum(["local", "all"]).default("local"),
 });
-export const characterCreateSchema = z.strictObject({
+export const characterIdentitySchema = z.strictObject({
   appearance: appearanceSchema.optional(),
   name: z
     .string()
@@ -37,6 +37,11 @@ export const characterCreateSchema = z.strictObject({
     "healer",
   ]),
   factionId: z.enum(["revolutionary", "pirate", "marine", "government"]),
+});
+const nameSegmenter = new Intl.Segmenter('pt-BR',{granularity:'grapheme'});
+export const visibleNameLength=(name:string)=>[...nameSegmenter.segment(name.normalize('NFC'))].length;
+export const characterCreateSchema = characterIdentitySchema.extend({
+  name:characterIdentitySchema.shape.name.refine(name=>visibleNameLength(name)<=12,'Use até 12 caracteres no nome.'),
 });
 export const controlSchema = z.strictObject({
   expectedEpoch: z

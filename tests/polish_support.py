@@ -12,7 +12,7 @@ def page_for(browser,seed=None,size=(1366,768),errors=None):
     q.clock.install();q.goto(os.environ.get('MARE_TEST_URL','http://127.0.0.1:8123/'));q.wait_for_load_state('networkidle');q.wait_for_function('typeof __mareDiagnostics==="function"');return c,q
 def saved(q):return json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
 def create(q):
-    q.locator('#characterName').fill('Nauta Polimento');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(100)
+    q.locator('#characterName').fill('Nauta QA');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(100)
     return saved(q)
 def fixture(template):
     g=copy.deepcopy(template);g.update(level=10,gold=5000,materials=100,potions=6,hp=120,energy=80)

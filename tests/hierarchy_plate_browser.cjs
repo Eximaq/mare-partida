@@ -7,7 +7,7 @@ const slots={pirate:[61,70],marine:[65.5,88],revolutionary:[65,74],government:[8
  const source=fs.readFileSync(path.join(__dirname,'../game.js'),'utf8');
  await p.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source.replace('  window.__mareDiagnostics=','  window.__plateQA={get game(){return game},open:openPanel,close:closePanel,hide:()=>gameTooltip.hide()};window.__mareDiagnostics=')}));
  await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.__plateQA&&window.__mareDiagnostics().lobby96.state==='ready'&&typeof MareCombatVfx!=='undefined');
- await p.locator('#characterName').fill('Nauta dos Mares');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__plateQA.game);
+ await p.locator('#characterName').fill('Nauta Mares');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__plateQA.game);
  await p.evaluate(()=>__plateQA.open('character','hierarchy'));await p.evaluate(()=>document.fonts.ready);
  const original=await p.evaluate(()=>JSON.stringify({f:__plateQA.game.factionId,t:__plateQA.game.hierarchyTier})),records=[];
  for(const width of [1920,1366,1280,1024,393,320]){

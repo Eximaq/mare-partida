@@ -47,8 +47,9 @@
     const attack=(m.attackAnim||0)>0,moving=(m.moving||0)>0;
     const key=attack?'attack':moving?'run':'idle';
     const sourceSize=attack?68:moving?80:48,frames=attack?9:moving?4:1;
-    const dest=Math.round(sourceSize*2.25),top=Math.round(m.y+4-feet[key][row]*2.25);
-    return {row,key,sourceSize,frames,dest,top,halfWidth:Math.max(55,Math.min(75,Math.round(dest*.44)))};
+    const factor=globalThis.MareSpriteCombatV2?.monsterScale('cocox')??1,scale=2.25*factor;
+    const dest=Math.round(sourceSize*scale),top=Math.round(m.y+4-feet[key][row]*scale);
+    return {row,key,sourceSize,frames,dest,top,halfWidth:Math.round(Math.max(55,Math.min(75,Math.round(dest*.44/factor)))*factor)};
   }
   function cocoxHitTest(m,x,y){
     const box=cocoxLayout(m);
@@ -62,7 +63,7 @@
     const box=cocoxLayout(m);
     if(!box||!ready(box.key))return false;
     const {key,frames,sourceSize,row,dest,top}=box;
-    const frame=key==='attack'?Math.min(8,Math.max(0,Math.floor((.58-m.attackAnim)*15))):key==='run'?Math.floor(time*8+m.bob)%4:0;
+    const frame=key==='attack'?Math.min(8,Math.max(0,Math.floor((1-m.attackAnim/root.MareCharacters.monsterAttackVisualDuration(m.type))*frames))):key==='run'?Math.floor(time*8*root.MareCharacters.monsterBalance.moveSpeed+m.bob)%4:0;
     ctx.save();ctx.imageSmoothingEnabled=false;if(m.hit>0)ctx.filter='brightness(1.5)';
     ctx.drawImage(images[key],Math.max(0,Math.min(frames-1,frame))*sourceSize,row*sourceSize,sourceSize,sourceSize,Math.round(m.x-dest/2),top,dest,dest);
     ctx.restore();return true;

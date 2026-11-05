@@ -44,7 +44,7 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
  }
  for(const k of kills){
   const r=k.reward;xp+=BigInt(r.xp);gold+=BigInt(Math.round(r.gold*battle.catalog.factions[identity.faction_id].gold));
-  if(random()<Math.min(1,r.materialChance*lootMultiplier))after.materials=Math.min(1000000000,after.materials+r.materials);
+  if(random()<battle.hunt.materialDropChance(r,lootMultiplier))after.materials=Math.min(1000000000,after.materials+r.materials);
   if(after.inventory.length<120){const plan=forge.normalLoot(defs,state.level,battle.hunt.get(k.area),random);if(plan){const item=make(plan.def,plan.level,plan.rarity,battle.hunt.get(k.area).name);item.generation.source='map:'+k.area;after.inventory.unshift(item);}}
   if(random()<Math.min(1,r.potionChance*lootMultiplier))after.potions=Math.min(1000000000,after.potions+r.potions);
   if(require('../../../../haki-system.js').drop({...k.monster,source:k.monster.source??'world'},random)&&after.inventory.length<120){const def=defs.findIndex(d=>d.kind==='haki-book');if(def<0)throw new AuthFault(503,'loot_catalog_unavailable');after.inventory.unshift(make(def,1,'epic',battle.hunt.get(k.area).name));}

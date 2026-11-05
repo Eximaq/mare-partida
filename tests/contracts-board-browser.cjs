@@ -6,7 +6,7 @@ p.on('pageerror',e=>errors.push(e.message));p.on('response',r=>{if(r.status()===
 await p.route('**/api/akuma/catalog',r=>r.fulfill({status:404,body:'{}'}));await p.route('**/__dev_version',r=>r.fulfill({body:'stable'}));
 await p.route('**/game.js*',async r=>{const a=await r.fetch();await r.fulfill({response:a,body:(await a.text()).replace('  window.__mareDiagnostics=','  window.__contractsQA={get game(){return game},defs:questDefs,openPanel,refresh:updateUI,claim:claimQuest};\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')})});
 await p.goto(process.env.MARE_TEST_URL||'http://127.0.0.1:8123/');await p.waitForFunction(()=>window.__contractsQA&&__mareDiagnostics().lobby96.state==='ready',null,{timeout:90000});
-await p.locator('#characterName').fill('Nauta de Contratos');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();
+await p.locator('#characterName').fill('Contratos QA');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();
 await p.evaluate(()=>{const q=__contractsQA,g=q.game;g.level=20;g.stats.crab=3;g.stats.bandit=5;g.stats.boss=1;g.claimed=['boss'];g.hunts.areas.beach.kills=3;g.hunts.areas.beach.bosses=1;q.openPanel('contracts')});
 await p.evaluate(()=>document.fonts.ready);await p.waitForFunction(()=>[...document.querySelectorAll('#panelOverlay img')].every(i=>i.complete&&i.naturalWidth));
 assert.equal(await p.locator('[data-contract-id]').count(),10);assert.equal(await p.locator('[data-contract-total]').innerText(),'3 / 10');

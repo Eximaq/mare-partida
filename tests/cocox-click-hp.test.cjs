@@ -8,6 +8,7 @@ const game=fs.readFileSync(path.join(__dirname,'..','game.js'),'utf8');
 new vm.Script(renderer,{filename:'rare-renderer.js'});
 new vm.Script(game,{filename:'game.js'});
 const sandbox={
+  MareCharacters:require('../character-system.js'),
   MareRare:{TILE:64,returnPoint:{x:0,y:0}},
   Image:class {constructor(){this.complete=true;this.naturalWidth=100;this.src='';}}
 };

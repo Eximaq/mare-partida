@@ -107,6 +107,7 @@ export async function readFighter(
   client: PoolClient,
   id: string,
   state: CharacterState,
+  {legacyCadence=false}={},
 ) {
   const row = (
     await client.query<{ class_id: keyof typeof classes; faction_id:string }>(
@@ -117,7 +118,7 @@ export async function readFighter(
   if (!row) throw new AuthFault(503, "character_state_unavailable");
   const attributes = await readAttributes(client, id, state);
   const original=await readOriginalInventory(client,id);
-  if(original){const talents=await readTalents(client,id,state),b=talents?await readBattle(client,id):null;return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,original,talents?.build,b?require('../../../../talent-runtime.cjs').load(b):undefined,b?hakiView(b):undefined,await readFruits(client,id),b); }
+  if(original){const talents=await readTalents(client,id,state),b=talents?await readBattle(client,id):null;return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,original,talents?.build,b?require('../../../../talent-runtime.cjs').load(b):undefined,b?hakiView(b):undefined,await readFruits(client,id),b,legacyCadence); }
   return deriveFighter(
     row.class_id,
     state,
