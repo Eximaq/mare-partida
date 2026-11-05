@@ -1,6 +1,8 @@
 import {readCombatInputs} from '../characters/combat-inputs.js';
 import {readPartyMotion} from '../characters/party.js';
 import {readParty} from '../characters/party.js';
+import {readCrew,readCrewIdentity,readCrewRankings} from '../characters/crew.js';
+import {readProfession} from '../characters/crew-professions.js';
 import {lockParty} from '../characters/party-store.js';
 import {readLobby} from '../characters/lobby.js';
 import {initializeProfile,readProfile} from '../characters/profile.js';
@@ -303,6 +305,14 @@ export class AuthService {
     });
   }
   async hierarchyRanking(token:string,faction:string|null){return this.withSession(token,"play",client=>hierarchyRanking(client,faction));}
+  async crewState(token:string,id:string,search:string,identityOnly=false){
+    return this.withSession(token,"play",async(client,row)=>{
+      await this.owned(client,row.account_id,id,!identityOnly);
+      if(identityOnly)return {identity:await readCrewIdentity(client,id)};
+      return {crew:await readCrew(client,id,search),profession:await readProfession(client,id)};
+    });
+  }
+  async crewRanking(token:string){return this.withSession(token,"play",async client=>({leaderboard:await readCrewRankings(client)}));}
   /** Compact presentation snapshot under the same authorization/lock boundary as full state. */
   async onlineFrame(token:string,id:string){
     return this.withSession(token,'play',async(client,row)=>{

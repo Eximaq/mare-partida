@@ -13,6 +13,9 @@ import {awardWorldLoot} from '../gameplay/inventory.js';
 import {completeDungeonVictory} from './dungeons.js';
 import {advanceLevel} from './progression.js';
 import {recordContractKills,recordDailyProgress,boostXp} from './contracts.js';
+import {creditCrewActivities,crewHuntEvents,type CrewActivity} from './crew-activity.js';
+import {crewCombatXp,crewMonsterBerry} from './crew-config.js';
+import {creditProfessionKills} from './crew-professions.js';
 import {observeServerAchievements} from './achievements.js';
 import {digest} from '../auth/vault.js';
 const require=createRequire(import.meta.url),P=require('../../../../party-rules.cjs'),S=require('../../../../party-battle.cjs'),E=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
@@ -50,22 +53,25 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
    const epoch=personal!.control_epoch;
    if(Number(epoch)!==Number(m.epoch)){E.cancel(b);E.resetHaki(b);}
    const inventory=input.inventory,build=input.talents.build;
-   actors.push({id:m.character_id,connected:true,lastSeen:new Date(m.last_seen).getTime(),instanceId:room.id,b,state,f,w,hero:{...w.position,direction:w.direction},stats:f.stats,baseStats:f.baseStats,fruitId:f.fruitId,build,classId:f.classId,factionId:f.factionId,level:state.level,preferences:input.preferences,potions:inventory?.potions??0,manualPath:b.auto?[]:w.path.map((p:any)=>({...p})),manualSpeed:w.speed,manualStart:personal!.started_at.getTime(),epoch:Number(m.epoch)});
+   actors.push({id:m.character_id,connected:true,lastSeen:new Date(m.last_seen).getTime(),instanceId:room.id,b,state,f,w,hero:{...w.position,direction:w.direction},stats:f.stats,baseStats:f.baseStats,fruitId:f.fruitId,build,classId:f.classId,factionId:f.factionId,level:state.level,preferences:input.preferences,potions:inventory?.potions??0,crewBenefits:input.crewBenefits,potionHealingBonus:input.crewBenefits.doctor,manualPath:b.auto?[]:w.path.map((p:any)=>({...p})),manualSpeed:w.speed,manualStart:personal!.started_at.getTime(),epoch:Number(m.epoch)});
   }
   if(!attached){await c.query('UPDATE mare_game.party_instances SET ended_at=$2 WHERE id=$1',[room.id,row.now]);await c.query('COMMIT');budget.commit();continue;}
    // Never catch up offline time. Reconnection resumes the same wounded enemies.
   const results=S.step(room,actors,{nav:maps().navigation(room.mapId),now,dt:elapsed>2?0:Math.min(1,elapsed),rng});
   const rewards=new Map<string,number>(),victories:any[]=[];
+  const crewActivities:CrewActivity[]=[];
+  const activityTime=new Date(now);
   for(const result of results)for(const k of result.kills){
    const inserted=await c.query('INSERT INTO mare_game.party_deaths(instance_id,spawn_id,killer_id) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING spawn_id',[room.id,k.id,result.id]);
    if(!inserted.rowCount)throw Error('party_duplicate_death');
    room.seq++;
    if(room.kind==='dungeon')victories.push(k);
    else{
+    crewActivities.push(...crewHuntEvents(result.id,[k],activityTime));
     const ids=P.eligible(actors.map(a=>({...a,hp:a.b.hp,x:a.hero.x,y:a.hero.y})),{instanceId:room.id,x:k.monster.x,y:k.monster.y},now).map((a:any)=>a.id);
     if(ids.length){
       const base=E.hunt.rewards(k.area,k.monster,k.monster.level??1,.5).xp,shares=P.shares(base,ids,room.seq%ids.length);
-      for(const id of ids){const actor=actors.find(a=>a.id===id),personal=E.hunt.rewards(k.area,k.monster,actor.state.level,.5).xp,grant=base>0?Math.round(shares[id]*personal/base):0;
+      for(const id of ids){const actor=actors.find(a=>a.id===id),personal=E.hunt.rewards(k.area,k.monster,actor.state.level,.5).xp,grant=crewCombatXp(base>0?Math.round(shares[id]*personal/base):0,actor.crewBenefits.command);
        rewards.set(id,(rewards.get(id)??0)+grant);
        await c.query('INSERT INTO mare_game.party_experience(instance_id,spawn_id,character_id,base_amount,amount,request_id) VALUES($1,$2,$3,$4,$5,$6)',[room.id,k.id,id,shares[id],(await boostXp(c,id,BigInt(grant))).toString(),actor.requestId??=randomUUID()]);
       }
@@ -75,12 +81,18 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
   for(const a of actors){
    const result=results.find((r:any)=>r.id===a.id),requestId=a.requestId??randomUUID(),kills=room.kind==='hunt'?result.kills:[];
    const victory=room.kind==='dungeon'&&a.b.hp>0&&victories[0];
-   if(victory){const r=a.b.dungeon.record;await completeDungeonVictory(c,a.id,requestId,a.state,a.b,{...victory,runId:r.runId,encounterId:r.encounterId},new Date(now));E.cancel(a.b);}
+   if(victory){
+    const r=a.b.dungeon.record;
+    await completeDungeonVictory(c,a.id,requestId,a.state,a.b,{...victory,runId:r.runId,encounterId:r.encounterId},activityTime);
+    crewActivities.push({characterId:a.id,kind:'bosses',eventId:victory.id,occurredAt:activityTime});
+    E.cancel(a.b);
+   }
    if(kills.length||rewards.has(a.id)||victory||result.potionsUsed||result.talentSteals.length){
-    const awarded=await awardWorldLoot(c,a.id,requestId,a.state,kills.map((k:any)=>({...k,reward:{...k.reward,xp:0}})),undefined,result.potionsUsed,{xpGrant:rewards.get(a.id)??0,build:a.build,steals:result.talentSteals,...(room.kind==='dungeon'?{action:'dungeon.battle' as const}:{})});
+    const awarded=await awardWorldLoot(c,a.id,requestId,a.state,kills.map((k:any)=>({...k,reward:{...k.reward,xp:0}})),undefined,result.potionsUsed,{xpGrant:rewards.get(a.id)??0,monsterBerryBonus:a.crewBenefits.navigator,build:a.build,steals:result.talentSteals,...(room.kind==='dungeon'?{action:'dungeon.battle' as const}:{})});
     if(kills.length){
      await recordContractKills(c,a.id,kills);
-     await recordDailyProgress(c,a.id,kills.map((k:any)=>({...k,berry:Math.round(k.reward.gold*E.catalog.factions[a.factionId].gold)})));
+     await creditProfessionKills(c,a.id,kills,activityTime);
+     await recordDailyProgress(c,a.id,kills.map((k:any)=>({...k,berry:crewMonsterBerry(k.reward.gold,E.catalog.factions[a.factionId].gold,a.crewBenefits.navigator)})));
     }
     if(a.state.version>=Number.MAX_SAFE_INTEGER)throw Error('state_version_exhausted');
      await advanceLevel(c,a.id,requestId,a.state);await c.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[a.id]);
@@ -91,6 +103,7 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
    await storeWorld(c,a.id,{...a.w,position:{x:a.hero.x,y:a.hero.y},direction:a.hero.direction,path:a.b.hp>0&&!a.b.auto?a.manualPath:[],speed:E.combatStats(a.b,a)[a.b.auto?'huntSpeed':'moveSpeed'],serverNow:new Date(now).toISOString(),motionUntil:new Date(Math.max(now,Date.parse(a.w.motionUntil))).toISOString()});
    a.b.mobs=room.mobs;await storeBattle(c,a.id,a.b,false);await c.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[a.id,row.now,a.epoch]);
   }
+  await creditCrewActivities(c,crewActivities);
   await storeRoom(c,room);await c.query('UPDATE mare_game.party_instances SET tick_at=$2 WHERE id=$1',[room.id,row.now]);await c.query('COMMIT');budget.commit();
  }catch(error){await c.query('ROLLBACK');if((error as any).code!=='party_member_busy')failed++;}finally{c.release();}}
  if(failed)throw Error('party_tick_failed');return candidates.length;

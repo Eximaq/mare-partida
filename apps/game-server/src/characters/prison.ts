@@ -8,6 +8,7 @@ import {getGameCatalog} from '../gameplay/catalog.js';
 import {readBattle,storeBattle} from './battle.js';
 import {readWorld,storeWorld} from './world.js';
 import {readFighter} from './fighter.js';
+import {creditProfessionPrison} from './crew-professions.js';
 const require=createRequire(import.meta.url),P=require('../../../../prison-system.js'),E=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
 const rng=()=>randomInt(0,0x100000000)/0x100000000;
 export const isPrisonAction=(action:string)=>(prisonActions as readonly string[]).includes(action);
@@ -60,6 +61,7 @@ export async function completePrisonFloor(client:PoolClient,id:string,requestId:
  if(!p||!stock||!p.encounter||p.encounter.spawnId!==kill.id||p.encounter.token!==kill.prisonToken||kill.prisonFloor!==p.cleared+1||b.prison.floor!==kill.prisonFloor)throw new AuthFault(503,'prison_victory_invalid');
  const result=P.completeFloor({...stock,impelDown:p},kill.prisonFloor,true,getGameCatalog().items);if(!result.ok)throw new AuthFault(503,'prison_victory_invalid');
  await client.query('INSERT INTO mare_game.prison_floors(character_id,floor,spawn_id,request_id,monster,rules_hash) VALUES($1,$2,$3,$4,$5,$6)',[id,kill.prisonFloor,kill.id,requestId,kill.monster.type,E.rulesHash]);
+ await creditProfessionPrison(client,id,kill.id,kill.prisonFloor,now);
  const grant=grantItem(result.state,kill.prisonFloor,now.getTime());if(grant)await milestone(client,id,requestId,kill.prisonFloor);
  await save(client,id,result.state.impelDown);b.prison.transitionAt=now.getTime()+850;return grant;
 }

@@ -103,3 +103,22 @@ GRANT UPDATE(name,class_id,faction_id) ON mare_game.characters TO mare_runtime;
 
 -- Immutable migration allowance: gameplay may read, never grant or modify it.
 GRANT SELECT ON mare_game.talent_legacy_allowances TO mare_runtime;
+
+-- Crew membership and finances are separate from temporary party state.
+GRANT SELECT ON mare_game.crews,mare_game.crew_members,mare_game.crew_entry_blocks,mare_game.crew_requests,
+  mare_game.crew_ledger,mare_game.crew_missions,mare_game.crew_activity_events TO mare_runtime;
+GRANT INSERT(id,name,name_key,tag,flag,captain_id,policy,min_level),UPDATE(captain_id,policy,min_level,xp,treasury,facilities,dissolved_at) ON mare_game.crews TO mare_runtime;
+GRANT INSERT(character_id,crew_id,role,joined_at),UPDATE(role),DELETE ON mare_game.crew_members TO mare_runtime;
+GRANT INSERT(character_id,until_at),UPDATE(until_at) ON mare_game.crew_entry_blocks TO mare_runtime;
+GRANT INSERT(id,crew_id,character_id,sender_id,kind,expires_at),UPDATE(status) ON mare_game.crew_requests TO mare_runtime;
+GRANT INSERT(crew_id,character_id,request_id,kind,amount,facility,created_at) ON mare_game.crew_ledger TO mare_runtime;
+GRANT INSERT(id,crew_id,cycle,kind,capacity,target,reward_xp),UPDATE(progress,completed_at) ON mare_game.crew_missions TO mare_runtime;
+GRANT INSERT(crew_id,character_id,kind,event_id,mission_id) ON mare_game.crew_activity_events TO mare_runtime;
+
+-- The runtime may award profession XP, but it cannot change a profession or rewrite history.
+GRANT SELECT ON mare_game.character_professions,mare_game.profession_weeks,mare_game.profession_events,mare_game.profession_xp TO mare_runtime;
+GRANT INSERT (character_id,profession) ON mare_game.character_professions TO mare_runtime;
+GRANT UPDATE (experience) ON mare_game.character_professions TO mare_runtime;
+GRANT INSERT (character_id,week_start,issued_at,spec), UPDATE (progress,material_count) ON mare_game.profession_weeks TO mare_runtime;
+GRANT INSERT (character_id,week_start,kind,event_id) ON mare_game.profession_events TO mare_runtime;
+GRANT INSERT (character_id,week_start,objective,amount) ON mare_game.profession_xp TO mare_runtime;
