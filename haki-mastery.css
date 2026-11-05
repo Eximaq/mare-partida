@@ -1,111 +1,481 @@
-/* Compact mastery composition. Presentation only; catalogue, costs and saves stay in their own modules. */
-#app #panelOverlay.haki-mastery-mode .dialog{width:min(1300px,calc(100vw - 24px));height:min(850px,calc(100dvh - 24px));max-width:none;max-height:none;display:flex;flex-direction:column;padding:10px;border:13px solid transparent;border-image:url('assets/ui/inventory-hd/frame-v2.png') 46 /21px;background:linear-gradient(#09070799,#09070799),var(--rpg-hd-wood) center/650px}
-#app #panelOverlay.haki-mastery-mode .dialog-header{flex:none;min-height:58px;margin:0;padding:4px 8px 8px;border-bottom:1px solid #ae8449;background:linear-gradient(#08090e99,#08090e99),var(--rpg-workshop-surface) center/512px}
-#app #panelOverlay.haki-mastery-mode #dialogTitle{font:700 32px/1.05 'Inventory Alegreya SC',Georgia,serif;color:#ffe2a7}
-#app #panelOverlay.haki-mastery-mode #dialogBody{flex:1;min-height:0;padding:8px 0 0;overflow:auto}
-#app #panelOverlay.haki-mastery-mode .haki-mastery{font:16px/1.25 'Alegreya Sans',sans-serif;color:#ddd5c3;display:flex;flex-direction:column;gap:8px}
-#app #panelOverlay.haki-mastery-mode .haki-mastery :is(h2,h3){font-family:'Inventory Alegreya SC',Georgia,serif;color:#f2d493;margin:0}
-#app #panelOverlay.haki-mastery-mode .haki-icon{width:48px;height:48px;object-fit:contain;flex:none;background:none;border:0;image-rendering:auto}
-#app #panelOverlay.haki-mastery-mode .haki-disciplines{display:grid;grid-template-columns:repeat(3,minmax(0,1fr)) minmax(190px,.9fr);gap:8px;margin:0}
-#app #panelOverlay.haki-mastery-mode :is(.haki-disciplines article,.haki-reserve,.hm-detail){border:6px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 /7px;background:linear-gradient(#080609a8,#080609bc),var(--rpg-workshop-surface) center/512px;min-width:0}
-#app #panelOverlay.haki-mastery-mode .haki-disciplines article{padding:5px 8px;display:grid;gap:4px}
-#app #panelOverlay.haki-mastery-mode .haki-disciplines article>header{display:flex;align-items:center;gap:6px;min-width:0}
-#app #panelOverlay.haki-mastery-mode .haki-disciplines h3{font-size:19px}
-#app #panelOverlay.haki-mastery-mode .haki-disciplines article>header>div{flex:1;min-width:0}
-#app #panelOverlay.haki-mastery-mode .haki-disciplines small{font-size:14px}
-#app #panelOverlay.haki-mastery-mode .haki-disciplines article.haki-active{border-image-source:url('assets/ui/honors-hd/button-gold.png')}
-#app #panelOverlay.haki-mastery-mode .hm-active-actions{display:flex;gap:12px;align-items:center}
-#app #panelOverlay.haki-mastery-mode .hm-active-actions label{display:flex;align-items:center;gap:5px;font-size:15px;cursor:pointer;min-height:32px}
-#app #panelOverlay.haki-mastery-mode .hm-active-actions input{width:18px;height:18px;min-height:0;accent-color:#d7a549}
-#app #panelOverlay.haki-mastery-mode .hm-control-reason{font-size:13px;color:#d6c3a4;min-height:16px}
-#app #panelOverlay.haki-mastery-mode .hm-control-info{position:relative;flex:none}
-#app #panelOverlay.haki-mastery-mode .hm-control-info>summary{display:grid;place-items:center;width:28px;height:28px;border:1px solid #bc9456;border-radius:50%;color:#ffd991;font:700 17px Georgia;cursor:pointer;list-style:none}
-#app #panelOverlay.haki-mastery-mode .hm-control-info>div{position:absolute;right:0;top:32px;width:240px;max-width:calc(100vw - 70px);padding:12px;border:1px solid #c49b57;background:#151015;box-shadow:0 6px 18px #000c;z-index:2;font-size:16px}
-#app #panelOverlay.haki-mastery-mode .hm-control-info p{margin:6px 0}
-#app #panelOverlay.haki-mastery-mode .haki-reserve{display:flex;flex-direction:column;justify-content:center;gap:8px;padding:10px}
-#app #panelOverlay.haki-mastery-mode .haki-reserve>header{display:flex;justify-content:space-between;gap:8px}
-#app #panelOverlay.haki-mastery-mode .haki-reserve i{display:block;height:12px;border:1px solid #91754d;background:#09080a;overflow:hidden}
-#app #panelOverlay.haki-mastery-mode .haki-reserve em{display:block;height:100%;background:linear-gradient(0deg,#7b142d,#e74256);box-shadow:0 0 6px #c71e3f}
-#app #panelOverlay.haki-mastery-mode .haki-reserve small{font-size:14px;color:#c6bba8}
-#app #panelOverlay.haki-mastery-mode .hm-layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:10px;align-items:start}
-#app #panelOverlay.haki-mastery-mode .hm-tree{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:8px;border:1px solid #866137;background:radial-gradient(ellipse at center,#4b101c33,transparent 70%),linear-gradient(#08060999,#080609bb),var(--rpg-workshop-surface) center/512px;min-width:0}
-#app #panelOverlay.haki-mastery-mode .hm-branch{min-width:0}
-#app #panelOverlay.haki-mastery-mode .hm-branch>header{display:grid;gap:2px;text-align:center;padding:0 0 8px;margin-bottom:8px;border-bottom:1px solid #725438}
-#app #panelOverlay.haki-mastery-mode .hm-branch h2{font-size:21px}
-#app #panelOverlay.haki-mastery-mode .hm-branch>header>small{font-size:13px;color:#c8b89c}
-#app #panelOverlay.haki-mastery-mode .hm-fragment{display:flex;align-items:center;justify-content:center;gap:6px;font-size:14px}
-#app #panelOverlay.haki-mastery-mode .hm-fragment .haki-icon{width:28px;height:28px}
-#app #panelOverlay.haki-mastery-mode .hm-nodes{display:flex;flex-direction:column;gap:10px;position:relative;margin:0 auto;max-width:190px}
-#app #panelOverlay.haki-mastery-mode .hm-node{position:relative;display:flex;align-items:center;gap:7px;min-width:0;min-height:58px;width:100%;padding:4px 7px;text-align:left;border:1px solid #765338;border-radius:5px;background:linear-gradient(#100d11cc,#100d11dd),var(--rpg-workshop-surface) center/512px;color:#e7d8bc;cursor:pointer}
-#app #panelOverlay.haki-mastery-mode .hm-node span{display:grid;gap:3px;min-width:0}
-#app #panelOverlay.haki-mastery-mode .hm-node strong{font:700 16px/1.05 'Inventory Alegreya SC',serif;overflow-wrap:anywhere}
-#app #panelOverlay.haki-mastery-mode .hm-node small{font:700 15px/1.1 'Alegreya Sans',sans-serif;color:#e7d8bc}
-#app #panelOverlay.haki-mastery-mode .hm-node.locked .haki-icon{filter:grayscale(1);opacity:.55}
-#app #panelOverlay.haki-mastery-mode .hm-node.complete{border-color:#d8b260}
-#app #panelOverlay.haki-mastery-mode .hm-node.partial{border-color:#c77959}
-#app #panelOverlay.haki-mastery-mode .hm-node.ready{border-color:#de934c}
-#app #panelOverlay.haki-mastery-mode .hm-node[aria-pressed=true]{outline:2px solid #f4ca76;outline-offset:1px;background:linear-gradient(#64271d55,#35171b77),var(--rpg-workshop-surface) center/512px}
-#app #panelOverlay.haki-mastery-mode .hm-node.hm-final{min-height:66px;border-radius:8px;box-shadow:inset 0 0 12px #a3182422}
-#app #panelOverlay.haki-mastery-mode .hm-final .haki-icon{width:56px;height:56px}
-#app #panelOverlay.haki-mastery-mode .hm-gate{position:relative;display:grid;text-align:center;gap:4px;padding:9px 5px;border:1px solid #9e7945;margin-top:24px;background:#0e0a0cbb;font-size:13px;color:#e6ca90}
-#app #panelOverlay.haki-mastery-mode .hm-foundation{margin:12px 0 0;text-align:center;font-size:13px;color:#c8b89c}
-#app #panelOverlay.haki-mastery-mode .hm-detail{padding:10px}
-#app #panelOverlay.haki-mastery-mode .hm-detail>header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-#app #panelOverlay.haki-mastery-mode .hm-detail>header small{display:block;font-size:14px}
-#app #panelOverlay.haki-mastery-mode .hm-detail h3{font-size:18px}
-#app #panelOverlay.haki-mastery-mode .hm-effect{padding:8px 0;border-block-start:1px solid #755536}
-#app #panelOverlay.haki-mastery-mode .hm-effect ul{padding:0;list-style:none;margin:6px 0 0}
-#app #panelOverlay.haki-mastery-mode .hm-effect li{display:flex;gap:10px;justify-content:space-between;font-size:15px}
-#app #panelOverlay.haki-mastery-mode .hm-effect li b{white-space:nowrap;color:#f1d69c}
-#app #panelOverlay.haki-mastery-mode .hm-requirements{border-top:1px solid #755536;padding:8px 0}
-#app #panelOverlay.haki-mastery-mode .hm-requirements p{margin:4px 0;font-size:15px}
-#app #panelOverlay.haki-mastery-mode .hm-cost{display:grid;gap:3px;margin:6px 0 10px;padding:7px;border:1px solid #80633e;color:#f3d49a}
-#app #panelOverlay.haki-mastery-mode .hm-cost span{font-size:14px}
-#app #panelOverlay.haki-mastery-mode .hm-feedback{font-size:14px;margin:7px 0;color:#dfc9a3}
-#app #panelOverlay.haki-mastery-mode .hm-training-note{margin-top:10px;font-size:14px}
-#app #panelOverlay.haki-mastery-mode .hm-training-note summary{min-height:32px;cursor:pointer;color:#e5c78d}
-#app #panelOverlay.haki-mastery-mode .hm-training-note p{margin:6px 0}
-#app #panelOverlay.haki-mastery-mode .hm-migration{padding:7px 10px;border:1px solid #a58752;background:#5c3d153d;color:#e8c990;margin:0;font-size:14px}
-#app #panelOverlay.haki-mastery-mode .haki-mastery button:not(.hm-node){border:5px solid transparent;border-image:url('assets/ui/honors-hd/button-dark.png') 22 28 /6px;background:linear-gradient(#0c090ba8,#0c090ba8),var(--rpg-workshop-surface) center/512px;border-radius:0;color:#f5dfad;padding:4px 8px;min-height:34px;font:700 16px/1.2 'Inventory Alegreya SC',Georgia,serif;cursor:pointer}
-#app #panelOverlay.haki-mastery-mode .haki-mastery button:not(.hm-node):not(:disabled):hover{border-image-source:url('assets/ui/honors-hd/button-gold.png')}
-#app #panelOverlay.haki-mastery-mode .haki-mastery button:disabled{opacity:.55;cursor:not-allowed}
-#app #panelOverlay.haki-mastery-mode .haki-mastery :is(button,summary,input):focus-visible{outline:2px solid #ffda89;outline-offset:2px}
-@media(max-width:1100px){
- #app #panelOverlay.haki-mastery-mode .hm-layout{grid-template-columns:minmax(0,1fr) 250px}
- #app #panelOverlay.haki-mastery-mode .hm-tree{gap:8px;padding:6px}
- #app #panelOverlay.haki-mastery-mode .hm-node{flex-direction:column;text-align:center;min-height:90px;gap:3px;padding:4px}
- #app #panelOverlay.haki-mastery-mode .hm-node strong{font-size:15px}
- #app #panelOverlay.haki-mastery-mode .hm-node .haki-icon{width:44px;height:44px}
- #app #panelOverlay.haki-mastery-mode .hm-fragment span{display:none}
- #app #panelOverlay.haki-mastery-mode .haki-disciplines{grid-template-columns:repeat(2,minmax(0,1fr))}
+#app #panelOverlay.haki-mastery-mode {
+  --hm-accent: #ffd17a;
+  --hm-ink: #f4eddf;
+  --hm-muted: #aabec8;
+  --hm-line: #a883505e;
+  --hm-rope: url('assets/ui/hud-nautical-v2/rope-frame.png');
+  --hm-tab: url('assets/ui/inventory-reference/tab.png');
+  --hm-tab-active: url('assets/ui/inventory-reference/tab-active.png');
+  --hm-font: 'Barlow Semi Condensed', 'Alegreya Sans', sans-serif;
+  background: #031218a8;
+  backdrop-filter: blur(3px);
+
+  & :is(.hm-armament, [data-haki-kind=armament]) { --hm-accent: #ff947f; }
+  & :is(.hm-observation, [data-haki-kind=observation]) { --hm-accent: #69dfef; }
+  & :is(.hm-conqueror, [data-haki-kind=conqueror]) { --hm-accent: #d3a5ff; }
+  & .haki-reserve { --hm-accent: #74eed1; }
+
+  & > .dialog {
+    display: flex;
+    flex-direction: column;
+    width: min(1120px, 92vw);
+    height: min(650px, 90dvh);
+    max-width: none;
+    max-height: none;
+    padding: 0;
+    border: 8px solid transparent;
+    border-image: var(--hm-rope) 150 / 8px round;
+    border-radius: 16px;
+    background: #091721;
+    background-clip: padding-box;
+    box-shadow: 0 18px 58px #000c;
+  }
+
+  & .dialog-header {
+    flex: none;
+    min-height: 52px;
+    margin: 0;
+    padding: 4px 9px 4px 12px;
+    border: 0;
+    border-bottom: 1px solid var(--hm-line);
+    background: linear-gradient(105deg, #15333e, #0a1d29 54%, #08151e);
+  }
+  & .dialog-header > div {
+    display: grid;
+    grid-template-columns: 39px auto;
+    align-items: center;
+    column-gap: 9px;
+  }
+  & .dialog-header > div::before {
+    content: "";
+    grid-row: span 2;
+    width: 39px;
+    height: 39px;
+    background: url('assets/ui/hud-nautical-v2/helm-crest.png') center / contain no-repeat;
+  }
+  & .dialog-header small {
+    color: #ddb77a;
+    font: 700 10px/1 var(--hm-font);
+    letter-spacing: .13em;
+  }
+  & #dialogTitle {
+    margin: 0;
+    color: #ffe7b2;
+    font: 700 27px/1 Georgia, serif;
+    text-transform: uppercase;
+  }
+  & #dialogBody {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    padding: 8px;
+    overflow: hidden;
+  }
+  & .haki-mastery {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 7px;
+    min-width: 0;
+    min-height: 0;
+    color: var(--hm-ink);
+    font: 500 15px/1.2 var(--hm-font);
+    font-variant-numeric: tabular-nums;
+  }
+  & .haki-mastery :is(h2,h3) { margin: 0; }
+  & .haki-icon, & .hm-will-icon {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    flex: none;
+    border: 0;
+    background: none;
+    image-rendering: auto;
+  }
+
+  & #closePanel,
+  & .hm-active-actions button,
+  & :is([data-haki-invest], [data-haki-show-details], [data-haki-back-tree]) {
+    min-height: 30px;
+    padding: 3px 10px;
+    border: 4px solid transparent;
+    border-image: var(--hm-tab) 12 fill / 4px stretch;
+    border-radius: 6px;
+    background: none;
+    color: #ffebbf;
+    font: 700 14px/1 var(--hm-font);
+    text-shadow: 0 1px 2px #000;
+    cursor: pointer;
+    transition: box-shadow .16s, color .16s;
+  }
+  & #closePanel { width: 36px; min-width: 36px; height: 36px; padding: 0; font-size: 23px; }
+  & [data-haki-invest]:enabled { border-image-source: var(--hm-tab-active); }
+  & #closePanel:is(:hover,:focus-visible),
+  & .hm-active-actions button:enabled:is(:hover,:focus-visible),
+  & :is([data-haki-invest], [data-haki-show-details], [data-haki-back-tree]):enabled:is(:hover,:focus-visible) {
+    border-image-source: var(--hm-tab-active);
+    color: #fff5d7;
+    box-shadow: 0 0 11px #ffb94b66, inset 0 0 8px #ffcf6355;
+  }
+  & .haki-mastery :is(button,summary,input):focus-visible,
+  & #closePanel:focus-visible {
+    outline: 2px solid #ffe3a1;
+    outline-offset: 2px;
+  }
+  & .haki-mastery button:disabled { opacity: .6; cursor: default; }
+
+  & .haki-disciplines {
+    display: grid;
+    flex: none;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 7px;
+    margin: 0;
+  }
+  & .haki-disciplines > article, & :is(.haki-reserve, .hm-detail, .hm-tree-scroll) {
+    min-width: 0;
+    border: 1px solid var(--hm-line);
+    border-radius: 9px;
+    background: linear-gradient(150deg, #122c38, #081822 72%);
+    box-shadow: inset 0 0 0 2px #050d145e;
+  }
+  & :is(.haki-disciplines > article, .haki-reserve) {
+    padding: 7px 9px;
+    border-top-color: color-mix(in srgb, var(--hm-accent) 58%, #283944);
+    background: radial-gradient(ellipse at 23% 0%, color-mix(in srgb, var(--hm-accent) 19%, transparent), transparent 75%),
+      linear-gradient(150deg, #102733, #091923 72%);
+  }
+  & .haki-disciplines > article { display: grid; align-content: start; gap: 4px; }
+  & .haki-disciplines article > header, & .haki-reserve > header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  & .haki-disciplines article > header > div { flex: 1; min-width: 0; }
+  & .haki-disciplines h3 { color: var(--hm-accent); font: 700 17px/1.05 var(--hm-font); }
+  & .haki-disciplines small, & .hm-control-reason { color: var(--hm-muted); font-size: 12px; }
+  & .hm-control-reason { min-height: 1em; }
+  & .haki-disciplines article.haki-active {
+    border-color: var(--hm-accent);
+    box-shadow: inset 0 0 16px color-mix(in srgb, var(--hm-accent) 28%, transparent);
+  }
+  & .hm-active-actions { display: flex; align-items: center; gap: 8px; }
+  & .hm-active-actions label { display: flex; align-items: center; gap: 4px; cursor: pointer; }
+  & .hm-active-actions input { width: 16px; height: 16px; min-height: 0; margin: 0; accent-color: var(--hm-accent); }
+  & .hm-control-info { position: relative; flex: none; }
+  & .hm-control-info > summary {
+    display: grid;
+    place-items: center;
+    width: 25px;
+    height: 25px;
+    border: 1px solid var(--hm-line);
+    border-radius: 50%;
+    color: var(--hm-accent);
+    background: #071a25;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+  }
+  & .hm-control-info > summary::-webkit-details-marker { display: none; }
+  & .hm-control-info[open] > summary { border-color: var(--hm-accent); }
+  & .hm-control-info > div {
+    position: absolute;
+    z-index: 3;
+    top: calc(100% + 4px);
+    right: 0;
+    width: 228px;
+    padding: 9px 11px;
+    border: 1px solid var(--hm-accent);
+    border-radius: 8px;
+    background: #0b202c;
+    box-shadow: 0 6px 18px #000c;
+  }
+  & .hm-control-info p { margin: 5px 0; }
+  & .haki-reserve { display: flex; flex-direction: column; justify-content: center; gap: 7px; }
+  & .haki-reserve > header { justify-content: space-between; flex-wrap: wrap; }
+  & .haki-reserve strong { display: flex; align-items: center; gap: 4px; }
+  & .haki-reserve b { color: var(--hm-accent); font-size: 20px; white-space: nowrap; }
+  & .hm-will-icon { width: 23px; height: 23px; }
+  & .haki-reserve i {
+    display: block;
+    height: 9px;
+    overflow: hidden;
+    border: 1px solid #3c736e;
+    border-radius: 8px;
+    background: #06141b;
+  }
+  & .haki-reserve em {
+    position: relative;
+    display: block;
+    height: 100%;
+    overflow: hidden;
+    border-radius: inherit;
+    background: linear-gradient(0deg, #178b88, #8af9dd);
+  }
+  & .haki-reserve em::after {
+    position: absolute;
+    inset: 0;
+    content: "";
+    background: linear-gradient(108deg, transparent 36%, #e2fff8aa 50%, transparent 64%);
+    animation: hm-will-shimmer 5s ease-in-out infinite;
+  }
+
+  & .hm-layout {
+    display: grid;
+    flex: 1;
+    min-height: 0;
+    grid-template-columns: minmax(0, 1fr) clamp(218px, 24vw, 262px);
+    gap: 7px;
+  }
+  & :is(.hm-tree-scroll, .hm-detail) {
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #aa8750 #081620;
+  }
+  & .hm-tree-scroll {
+    border: 5px solid transparent;
+    border-image: var(--hm-rope) 150 / 5px round;
+    background: linear-gradient(180deg, #071824d9 8%, #081b2d9e 50%, #06151ebd),
+      url('assets/ui/talents-hd/open-sea.jpg') center 57% / cover no-repeat;
+    background-clip: padding-box;
+  }
+  & :is(.hm-tree-toolbar, [data-haki-back-tree]) { display: none; }
+  & .hm-tree {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    padding: 9px;
+  }
+  & .hm-links { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: -1; overflow: visible; }
+  & .hm-links > path { fill: none; stroke: var(--hm-accent); stroke-opacity: .44; stroke-width: 1.5; }
+  & .hm-links > path.complete { stroke-opacity: .92; stroke-width: 2; }
+  & .hm-branch { min-width: 0; }
+  & .hm-branch > header {
+    display: grid;
+    gap: 2px;
+    margin: 0 0 7px;
+    padding: 5px 1px 6px;
+    border-bottom: 1px solid color-mix(in srgb, var(--hm-accent) 35%, transparent);
+    border-radius: 7px 7px 0 0;
+    background: radial-gradient(ellipse at 50% 100%, color-mix(in srgb, var(--hm-accent) 17%, transparent), transparent 78%);
+    text-align: center;
+  }
+  & .hm-branch h2 { color: var(--hm-accent); font: 700 18px/1.1 var(--hm-font); }
+  & .hm-branch > header > small { color: var(--hm-muted); font-size: 12px; }
+  & .hm-fragment {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    justify-self: center;
+    gap: 4px;
+    min-height: 25px;
+    padding: 0 7px 0 3px;
+    border: 1px solid color-mix(in srgb, var(--hm-accent) 38%, transparent);
+    border-radius: 20px;
+    background: #071824;
+    color: var(--hm-ink);
+    font-size: 12px;
+    white-space: nowrap;
+  }
+  & .hm-fragment .haki-icon {
+    width: 23px;
+    height: 23px;
+    filter: drop-shadow(0 0 5px color-mix(in srgb, var(--hm-accent) 75%, transparent));
+  }
+  & .hm-fragment b { color: var(--hm-accent); font-size: 15px; }
+  & .hm-fragment-sparks {
+    position: absolute;
+    z-index: -1;
+    inset: 0 auto 0 3px;
+    width: 23px;
+    pointer-events: none;
+  }
+  & .hm-fragment-sparks i {
+    --hm-dx: -18px;
+    --hm-dy: -13px;
+    --hm-delay: -1s;
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    width: 4px;
+    height: 4px;
+    border-radius: 1px;
+    background: var(--hm-accent);
+    box-shadow: 0 0 5px var(--hm-accent);
+    opacity: 0;
+    animation: hm-fragment-drift 3s var(--hm-delay) ease-out infinite;
+  }
+  & .hm-fragment-sparks i:nth-child(2) { --hm-dx: 12px; --hm-dy: -16px; --hm-delay: -1.7s; }
+  & .hm-fragment-sparks i:nth-child(3) { --hm-dx: -11px; --hm-dy: 14px; --hm-delay: -2.4s; }
+  & .hm-fragment-sparks i:nth-child(4) { --hm-dx: 16px; --hm-dy: 10px; --hm-delay: -.3s; }
+
+  & .hm-nodes { display: grid; gap: 7px; max-width: 192px; margin: 0 auto; }
+  & .hm-node {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    min-width: 0;
+    min-height: 43px;
+    width: 100%;
+    padding: 3px 7px;
+    border: 1px solid color-mix(in srgb, var(--hm-accent) 36%, #263c4a);
+    border-radius: 7px;
+    background: linear-gradient(112deg, #132b39, #091b28);
+    color: var(--hm-ink);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color .16s, box-shadow .16s, background-color .16s;
+  }
+  & .hm-node span { display: grid; gap: 1px; min-width: 0; }
+  & .hm-node strong { font: 700 15px/1.03 var(--hm-font); overflow-wrap: anywhere; }
+  & .hm-node small { color: var(--hm-muted); font: 700 13px/1 var(--hm-font); }
+  & .hm-node.locked .haki-icon { filter: grayscale(.42); opacity: .78; }
+  & .hm-node.hm-final { box-shadow: inset 0 0 12px color-mix(in srgb, var(--hm-accent) 17%, transparent); }
+  & .hm-node:is(.ready,.partial,.complete) { border-color: color-mix(in srgb, var(--hm-accent) 75%, #162632); }
+  & .hm-node:is(.ready,.partial,.complete) small { color: var(--hm-accent); }
+  & .hm-node[aria-pressed=true], & .hm-node:is(:hover,:focus-visible) {
+    border-color: var(--hm-accent);
+    background: linear-gradient(112deg, color-mix(in srgb, var(--hm-accent) 25%, #0e2534), #0b1c29);
+    box-shadow: 0 0 10px color-mix(in srgb, var(--hm-accent) 40%, transparent);
+  }
+  & .hm-node[aria-pressed=true] { outline: 1px solid var(--hm-accent); outline-offset: 1px; }
+  & .hm-gate {
+    display: grid;
+    gap: 3px;
+    max-width: 232px;
+    margin: 15px auto 0;
+    padding: 8px 3px;
+    border: 1px solid color-mix(in srgb, var(--hm-accent) 55%, #102536);
+    border-radius: 7px;
+    background: #102233;
+    color: var(--hm-muted);
+    text-align: center;
+    font-size: 12px;
+  }
+  & .hm-gate b { color: var(--hm-accent); }
+  & .hm-foundation { margin: 7px 0 0; color: var(--hm-muted); text-align: center; font-size: 12px; }
+
+  & .hm-detail {
+    padding: 9px 11px;
+    border: 5px solid transparent;
+    border-image: var(--hm-rope) 150 / 5px round;
+    background-clip: padding-box;
+  }
+  & .hm-detail > header { display: flex; align-items: center; gap: 8px; margin-bottom: 7px; }
+  & .hm-detail > header .haki-icon { width: 43px; height: 43px; }
+  & .hm-detail > header small { color: var(--hm-accent); }
+  & .hm-detail h3 { color: #ffdfab; font-size: 16px; line-height: 1.12; }
+  & .hm-detail > header h3 { color: var(--hm-ink); font-size: 20px; }
+  & .hm-detail > header b { color: var(--hm-muted); }
+  & :is(.hm-effect, .hm-requirements) { padding: 7px 0; border-top: 1px solid var(--hm-line); }
+  & .hm-effect ul { margin: 4px 0 0; padding: 0; list-style: none; }
+  & .hm-effect li { display: flex; justify-content: space-between; gap: 7px; }
+  & .hm-effect li b { color: var(--hm-accent); white-space: nowrap; }
+  & .hm-requirements p { margin: 3px 0 0; }
+  & .hm-cost {
+    display: grid;
+    gap: 3px;
+    margin: 2px 0 7px;
+    padding: 6px 8px;
+    border: 1px solid color-mix(in srgb, var(--hm-accent) 46%, #142836);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--hm-accent) 9%, #091c28);
+  }
+  & .hm-cost b { color: var(--hm-accent); }
+  & .hm-cost span, & .hm-feedback { color: var(--hm-muted); font-size: 14px; }
+  & [data-haki-invest] { width: 100%; min-height: 34px; }
+  & .hm-feedback { margin: 6px 0; }
+  & .hm-training-note { margin-top: 6px; font-size: 14px; }
+  & .hm-training-note summary { min-height: 28px; padding-block: 5px; color: #ebce94; cursor: pointer; }
+  & .hm-training-note p { margin: 3px 0 7px; }
+  & .hm-migration {
+    flex: none;
+    margin: 0;
+    padding: 5px 8px;
+    border: 1px solid var(--hm-line);
+    border-radius: 6px;
+    background: #322819;
+    color: #ffe0a3;
+    font-size: 13px;
+  }
+
+  @media (max-width: 1100px) {
+    & .hm-control-info > div {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      right: auto;
+      width: min(290px, calc(100vw - 44px));
+      transform: translate(-50%, -50%);
+    }
+  }
+  @media (max-width: 760px) {
+    & > .dialog {
+      width: min(550px, calc(100vw - 20px));
+      height: min(730px, calc(100dvh - 24px));
+      border-width: 6px;
+      border-image-width: 6px;
+    }
+    & #dialogBody { padding: 6px; }
+    & .haki-disciplines { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; }
+    & .haki-disciplines :is(article, .haki-reserve) { padding: 5px 6px; }
+    & .haki-disciplines article > header { gap: 4px; }
+    & .haki-disciplines h3 { font-size: 15px; }
+    & .haki-disciplines article .haki-icon { width: 24px; height: 24px; }
+    & .haki-disciplines small, & .hm-control-reason { font-size: 11px; }
+    & .haki-reserve b { font-size: 17px; }
+    & .hm-layout { grid-template: minmax(0, 1fr) / minmax(0, 1fr); }
+    & :is(.hm-tree-scroll, .hm-detail) { grid-area: 1 / 1; }
+    & .hm-detail { display: none; }
+    & .show-detail .hm-detail { display: block; }
+    & .show-detail .hm-tree-scroll { visibility: hidden; }
+    & .hm-tree-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 3px 5px;
+      border-bottom: 1px solid var(--hm-line);
+      color: #ffdfab;
+      font-weight: 700;
+    }
+    & [data-haki-back-tree] { display: inline-block; margin: 0 0 8px; }
+    & [data-haki-invest] { min-height: 44px; }
+    & .hm-tree { padding: 6px 3px; gap: 4px; }
+    & .hm-branch h2 { font-size: clamp(13px, 4.05vw, 17px); }
+    & .hm-node { min-height: 44px; padding: 3px; gap: 2px; }
+    & .hm-node .haki-icon { width: 20px; height: 20px; }
+    & .hm-node strong { font-size: 12.5px; letter-spacing: -.2px; }
+    & .hm-node small, & .hm-gate, & .hm-foundation { font-size: 11px; }
+    & .hm-gate { margin-top: 10px; padding-block: 5px; }
+    & .hm-fragment { padding-right: 4px; gap: 2px; font-size: 11px; }
+  }
+  @media (max-height: 500px) {
+    & > .dialog { height: calc(100dvh - 16px); }
+    & .dialog-header { min-height: 44px; }
+    & .hm-control-reason { min-height: 0; }
+  }
 }
-@media(max-width:760px){
- #app #panelOverlay.haki-mastery-mode .dialog{width:calc(100vw - 8px);height:calc(100dvh - 8px);padding:6px;border-width:8px}
- #app #panelOverlay.haki-mastery-mode .hm-layout{display:flex;flex-direction:column}
- #app #panelOverlay.haki-mastery-mode .hm-layout>*{width:100%;box-sizing:border-box}
- #app #panelOverlay.haki-mastery-mode .hm-tree{gap:5px;padding:5px}
- #app #panelOverlay.haki-mastery-mode .hm-branch h2{font-size:16px;overflow-wrap:anywhere}
- #app #panelOverlay.haki-mastery-mode .hm-node .haki-icon{width:40px;height:40px}
- #app #panelOverlay.haki-mastery-mode .hm-node strong{font-size:14px}
- #app #panelOverlay.haki-mastery-mode .hm-branch>header>small{font-size:12px}
- #app #panelOverlay.haki-mastery-mode .haki-disciplines{gap:5px}
- #app #panelOverlay.haki-mastery-mode .haki-disciplines article{padding:4px}
- #app #panelOverlay.haki-mastery-mode .haki-disciplines h3{font-size:17px}
- #app #panelOverlay.haki-mastery-mode .haki-disciplines article .haki-icon{width:34px;height:34px}
- #app #panelOverlay.haki-mastery-mode .hm-active-actions{gap:6px;flex-wrap:wrap}
- #app #panelOverlay.haki-mastery-mode .hm-gate{font-size:12px;overflow-wrap:anywhere}
- #app #panelOverlay.haki-mastery-mode .hm-control-info>div{position:fixed;left:20px;right:20px;top:100px;width:auto;max-width:none}
- #app #panelOverlay.haki-mastery-mode .hm-detail{padding:8px}
+
+@keyframes hm-fragment-drift {
+  0%, 12% { transform: translate(0, 0) scale(.4) rotate(25deg); opacity: 0; }
+  29% { opacity: 1; }
+  74%, 100% { transform: translate(var(--hm-dx), var(--hm-dy)) scale(.65) rotate(115deg); opacity: 0; }
 }
 
-#app #panelOverlay.haki-mastery-mode .hm-tree{position:relative;isolation:isolate}
-#app #panelOverlay.haki-mastery-mode .hm-links{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;overflow:visible}
-#app #panelOverlay.haki-mastery-mode .hm-links>path{fill:none;stroke:#87633d;stroke-width:1.5}
-#app #panelOverlay.haki-mastery-mode .hm-links>path.complete{stroke:#f0be58;stroke-width:2}
+@keyframes hm-will-shimmer {
+  0%, 20% { transform: translateX(-100%); }
+  75%, 100% { transform: translateX(100%); }
+}
 
-@media(max-width:480px){#app #panelOverlay.haki-mastery-mode .haki-disciplines{grid-template-columns:minmax(0,1fr)}#app #panelOverlay.haki-mastery-mode .haki-disciplines article>header>div{min-width:0}#app #panelOverlay.haki-mastery-mode .haki-disciplines h3{overflow-wrap:anywhere}}
-
-@media(max-width:760px){#app #panelOverlay.haki-mastery-mode .haki-disciplines article>header{display:grid;grid-template-columns:34px minmax(0,1fr) 28px}#app #panelOverlay.haki-mastery-mode .hm-control-info[open]{display:contents}#app #panelOverlay.haki-mastery-mode .hm-control-info[open]>summary{grid-column:3;grid-row:1}#app #panelOverlay.haki-mastery-mode .hm-control-info[open]>div{position:static;grid-column:1/-1;width:auto;max-width:100%;margin:5px 0;font-size:16px}}
-
-#app #panelOverlay.haki-mastery-mode .haki-reserve>header>strong{display:flex;align-items:center;gap:5px}
-#app #panelOverlay.haki-mastery-mode .hm-will-icon{width:24px;height:24px;object-fit:contain}
+@media (prefers-reduced-motion: reduce) {
+  #app #panelOverlay.haki-mastery-mode .hm-fragment-sparks i,
+  #app #panelOverlay.haki-mastery-mode .haki-reserve em::after { animation: none; }
+}
+html[data-mare-motion=reduced] #app #panelOverlay.haki-mastery-mode .hm-fragment-sparks i,
+html[data-mare-motion=reduced] #app #panelOverlay.haki-mastery-mode .haki-reserve em::after { animation: none; }

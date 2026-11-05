@@ -14,12 +14,12 @@
   const pr=P().progress(g,b),f=P().fragments.find(f=>f.branch===b);
   // Catalogue dependencies stay unchanged. All branches read from foundations at
   // the bottom toward the final mastery at the top, like the Talent tree.
-  return `<section class="hm-branch hm-${b}" aria-label="Árvore de ${P().names[b]}"><header><h2>${P().names[b]}</h2><small>${pr.current}/${pr.total} graduações</small><div class="hm-fragment" title="${E(f.name)}">${icon('fragment-'+b)}<b data-haki-balance="${b}">${P().quantity(g,b,defs,{includeLocked:true})}</b><span>fragmentos</span></div></header><div class="hm-nodes">${[...P().branches[b]].reverse().map(n=>nodeButton(g,n,selected,defs)).join('')}</div>${b==='conqueror'?`<div class="hm-gate" data-haki-gate><b>PORTÃO DE DESPERTAR · ${P().gate(g)?'LIBERADO':'BLOQUEADO'}</b><span>Armamento completo: ${P().complete(g,'armament')?'sim':'não'}</span><span>Observação completa: ${P().complete(g,'observation')?'sim':'não'}</span></div>`:'<p class="hm-foundation">↑ Dos fundamentos ao domínio</p>'}</section>`;
+  return `<section class="hm-branch hm-${b}" aria-label="Árvore de ${P().names[b]}"><header><h2>${P().names[b]}</h2><small>${pr.current}/${pr.total} graduações</small><div class="hm-fragment" title="${E(f.name)}"><span class="hm-fragment-sparks" aria-hidden="true"><i></i><i></i><i></i><i></i></span>${icon('fragment-'+b)}<b data-haki-balance="${b}">${P().quantity(g,b,defs,{includeLocked:true})}</b><span>fragmentos</span></div></header><div class="hm-nodes">${[...P().branches[b]].reverse().map(n=>nodeButton(g,n,selected,defs)).join('')}</div>${b==='conqueror'?`<div class="hm-gate" data-haki-gate><b>PORTÃO DE DESPERTAR · ${P().gate(g)?'LIBERADO':'BLOQUEADO'}</b><span>Armamento completo: ${P().complete(g,'armament')?'sim':'não'}</span><span>Observação completa: ${P().complete(g,'observation')?'sim':'não'}</span></div>`:'<p class="hm-foundation">↑ Dos fundamentos ao domínio</p>'}</section>`;
  }
  function detail(g,n,defs){
   const rank=P().rank(g,n.id),cost=P().cost(g,n),error=P().error(g,n.id,defs);
   const requirement=n.requires.length?n.requires.map(d=>E(P().byId[d.id].name)+' '+P().rank(g,d.id)+'/'+d.rank).join(' · '):'Acesso ao Haki';
-  return `<section class="hm-detail" aria-label="Detalhes do nó selecionado"><header>${icon(n.icon)}<div><small>${P().names[n.branch]}</small><h3>${E(n.name)}</h3><b>${rank}/${n.max}</b></div></header><div class="hm-effect"><h3>Benefício atual do nó</h3><ul>${n.final?'<li>'+ (P().learned(g,n.branch)?'Habilidade desbloqueada':'Habilidade ainda bloqueada')+'</li>':effectRows(n,rank)}</ul></div>${rank<n.max?`<div class="hm-effect"><h3>Próxima graduação</h3><ul>${n.final?'<li>Desbloqueia o ativo final.</li>':effectRows(n,rank+1)}</ul></div><p class="hm-cost"><b>${cost} ${cost===1?'fragmento':'fragmentos'}</b><span>${E(P().names[n.branch])} · ${P().quantity(g,n.branch,defs)} disponíveis</span></p>`:'<p class="hm-max">Graduação máxima alcançada.</p>'}<div class="hm-requirements"><h3>Requisitos</h3><p>${requirement}</p>${n.branch==='conqueror'?'<p>Armamento e Observação integralmente completos.</p>':''}</div>${MareUI.button({label:rank===n.max?'NÓ CONCLUÍDO':'CONFIRMAR INVESTIMENTO',variant:'primary',disabled:!!error,attributes:{'data-haki-invest':n.id,'data-haki-seq':g.haki.mastery.seq,...(error?{disabled:true}:{})}})}<p class="hm-feedback" role="status">${E(error||'Confirme para consumir os materiais.')}</p><details class="hm-training-note"><summary>Sobre os efeitos e fragmentos</summary><p>Os benefícios dos nós atuam somente enquanto o Haki correspondente estiver ativo. Apenas um Haki contínuo por vez.</p><p>Custos de investimento provisórios. Quests, fases, quantidades e chances de obtenção dos fragmentos aguardam definição.</p></details></section>`;
+  return `<section class="hm-detail hm-${n.branch}" aria-label="Detalhes do nó selecionado"><button type="button" data-haki-back-tree>← Voltar à árvore</button><header>${icon(n.icon)}<div><small>${P().names[n.branch]}</small><h3>${E(n.name)}</h3><b>${rank}/${n.max}</b></div></header><div class="hm-effect"><h3>Benefício atual do nó</h3><ul>${n.final?'<li>'+ (P().learned(g,n.branch)?'Habilidade desbloqueada':'Habilidade ainda bloqueada')+'</li>':effectRows(n,rank)}</ul></div>${rank<n.max?`<div class="hm-effect"><h3>Próxima graduação</h3><ul>${n.final?'<li>Desbloqueia o ativo final.</li>':effectRows(n,rank+1)}</ul></div><p class="hm-cost"><b>${cost} ${cost===1?'fragmento':'fragmentos'}</b><span>${E(P().names[n.branch])} · ${P().quantity(g,n.branch,defs)} disponíveis</span></p>`:'<p class="hm-max">Graduação máxima alcançada.</p>'}<div class="hm-requirements"><h3>Requisitos</h3><p>${requirement}</p>${n.branch==='conqueror'?'<p>Armamento e Observação integralmente completos.</p>':''}</div>${MareUI.button({label:rank===n.max?'NÓ CONCLUÍDO':'CONFIRMAR INVESTIMENTO',variant:'primary',disabled:!!error,attributes:{'data-haki-invest':n.id,'data-haki-seq':g.haki.mastery.seq,...(error?{disabled:true}:{})}})}<p class="hm-feedback" role="status">${E(error||'Confirme para consumir os materiais.')}</p><details class="hm-training-note"><summary>Sobre os efeitos e fragmentos</summary><p>Os benefícios dos nós atuam somente enquanto o Haki correspondente estiver ativo. Apenas um Haki contínuo por vez.</p><p>Custos de investimento provisórios. Quests, fases, quantidades e chances de obtenção dos fragmentos aguardam definição.</p></details></section>`;
  }
  function active(g,rt,b){
   const d=MareHaki.catalog.find(x=>x.id===b),king=b==='conqueror';
@@ -27,13 +27,27 @@
  }
  function render(g,rt,options={}){
   const {defs=[],selected='coating'}=options,n=P().byId[selected]||P().nodes[0],held=P().held(g);
-  return `<section class="haki-mastery"><section class="haki-disciplines" aria-label="Habilidades ativas finais">${P().ids.map(b=>active(g,rt,b)).join('')}<div class="haki-reserve" role="meter" aria-label="Vontade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.floor(g.haki.current)}"><header><strong><img class="hm-will-icon" src="assets/ui/character-studio/attributes/spirit.png" alt="">Vontade</strong><b data-haki-current>${Math.floor(g.haki.current)} / 100</b></header><i><em data-haki-fill style="width:${g.haki.current}%"></em></i><small data-haki-status></small></div></section>${held?'<p class="hm-migration" role="status">Migração preparada. Compensação e tratamento do Rei aguardam definição do proprietário; acesso anterior preservado temporariamente.</p>':''}<div class="hm-layout"><div class="hm-tree" aria-label="Árvores de domínio de Haki">${branch(g,'armament',n.id,defs)}${branch(g,'conqueror',n.id,defs)}${branch(g,'observation',n.id,defs)}</div>${detail(g,n,defs)}</div></section>`;
+  const showDetail=root.document?.querySelector('#dialogBody .haki-mastery.show-detail');
+  return `<section class="haki-mastery${showDetail?' show-detail':''}"><section class="haki-disciplines" aria-label="Habilidades ativas finais">${P().ids.map(b=>active(g,rt,b)).join('')}<div class="haki-reserve" role="meter" aria-label="Vontade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.floor(g.haki.current)}"><header><strong><img class="hm-will-icon" src="assets/ui/character-studio/attributes/spirit.png" alt="">Vontade</strong><b data-haki-current>${Math.floor(g.haki.current)} / 100</b></header><i><em data-haki-fill style="width:${g.haki.current}%"></em></i><small data-haki-status></small></div></section>${held?'<p class="hm-migration" role="status">Migração preparada. Compensação e tratamento do Rei aguardam definição do proprietário; acesso anterior preservado temporariamente.</p>':''}<div class="hm-layout"><div class="hm-tree-scroll"><div class="hm-tree-toolbar"><span>Árvore de domínio</span><button type="button" data-haki-show-details>Detalhes →</button></div><div class="hm-tree" aria-label="Árvores de domínio de Haki">${branch(g,'armament',n.id,defs)}${branch(g,'conqueror',n.id,defs)}${branch(g,'observation',n.id,defs)}</div></div>${detail(g,n,defs)}</div></section>`;
  }
 
  let graph=null,observer=null;
  function unmount(){observer?.disconnect();observer=null;graph=null;}
  function connect(body){
   const tree=body.querySelector('.hm-tree');if(!tree||graph===tree)return;unmount();graph=tree;
+  const shell=tree.closest('.haki-mastery'),back=shell.querySelector('[data-haki-back-tree]');
+  const compact=()=>matchMedia('(max-width:760px)').matches;
+  tree.addEventListener('click',event=>{
+   if(compact()&&event.target.closest('[data-haki-node]'))shell.classList.add('show-detail');
+  });
+  shell.querySelector('[data-haki-show-details]').addEventListener('click',()=>{
+   shell.classList.add('show-detail');back.focus({preventScroll:true});
+  });
+  back.addEventListener('click',()=>{
+   shell.classList.remove('show-detail');
+   tree.querySelector('[data-haki-node][aria-pressed=true]')?.focus();
+  });
+  if(compact()&&shell.classList.contains('show-detail'))back.focus({preventScroll:true});
   const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.classList.add('hm-links');svg.setAttribute('aria-hidden','true');tree.prepend(svg);
   const draw=()=>{
    if(!tree.isConnected){unmount();return;}
@@ -43,15 +57,15 @@
    for(const target of tree.querySelectorAll('[data-haki-node]')){
     const n=P().byId[target.dataset.hakiNode],to=point(target);
     for(const dep of n.requires){const source=tree.querySelector('[data-haki-node="'+dep.id+'"]');if(!source)continue;const from=point(source);
-     paths+='<path class="'+(source.classList.contains('complete')?'complete':'')+'" d="M '+(from.x+from.w/2)+' '+from.y+' L '+(to.x+to.w/2)+' '+(to.y+to.h)+'" marker-end="url(#hm-arrow)"/>';
+     paths+='<path class="hm-'+n.branch+' '+(source.classList.contains('complete')?'complete':'')+'" d="M '+(from.x+from.w/2)+' '+from.y+' L '+(to.x+to.w/2)+' '+(to.y+to.h)+'" marker-end="url(#hm-arrow)"/>';
     }
    }
    const gate=point(tree.querySelector('[data-haki-gate]'));
    for(const [b,left] of [['armament',true],['observation',false]]){
     const end=tree.querySelector('[data-haki-node="'+b+'-final"]'),from=point(end),x=left?from.x+from.w:from.x,gx=left?gate.x:gate.x+gate.w,mid=(x+gx)/2,y=from.y+from.h/2,gy=gate.y+gate.h/2;
-    paths+='<path class="'+(end.classList.contains('complete')?'complete':'')+'" d="M '+x+' '+y+' C '+mid+' '+y+', '+mid+' '+gy+', '+gx+' '+gy+'" marker-end="url(#hm-arrow)"/>';
+    paths+='<path class="hm-'+b+' '+(end.classList.contains('complete')?'complete':'')+'" d="M '+x+' '+y+' C '+mid+' '+y+', '+mid+' '+gy+', '+gx+' '+gy+'" marker-end="url(#hm-arrow)"/>';
    }
-   const root=point(tree.querySelector('[data-haki-node=presence]'));paths+='<path d="M '+(gate.x+gate.w/2)+' '+gate.y+' L '+(root.x+root.w/2)+' '+(root.y+root.h)+'" marker-end="url(#hm-arrow)"/>';
+   const root=point(tree.querySelector('[data-haki-node=presence]'));paths+='<path class="hm-conqueror" d="M '+(gate.x+gate.w/2)+' '+gate.y+' L '+(root.x+root.w/2)+' '+(root.y+root.h)+'" marker-end="url(#hm-arrow)"/>';
    svg.innerHTML=paths;
   };
   observer=new ResizeObserver(draw);observer.observe(tree);
