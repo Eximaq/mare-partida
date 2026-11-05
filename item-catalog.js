@@ -1223,6 +1223,8 @@
   }
 ]);
   itemDefs.push(MareForge.weaponFragment); // Append only: index 185.
+  const contracts=root.MareContracts||(typeof require==='function'?require('./contract-system.js'):null);
+  if(contracts)itemDefs.push(contracts.boost);
   return {items:itemDefs,slotNames,inventorySlotsLeft,inventorySlotsRight,capacity:BAG_CAPACITY,healerWeaponIndex};
  }
  const api={create};root.MareItemCatalog=api;if(typeof module!=='undefined')module.exports=api;

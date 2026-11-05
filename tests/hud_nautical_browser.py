@@ -110,7 +110,11 @@ with sync_playwright() as p:
         # Compare responsive geometry at the same live combat frame, without killing the target between sizes.
         # Native resize and ResizeObserver can finish after set_viewport_size returns.
         # Wait for the channel anchor while the combat clock stays paused.
-        channel_top=page.locator('#chatCornerToggle').evaluate("el => el.getBoundingClientRect().top + 'px'")
+        channel_top=page.evaluate("""() => {
+            window.dispatchEvent(new Event('resize'));
+            const anchor = document.querySelector('#floatingChat.hud-open') || document.getElementById('chatCornerToggle');
+            return anchor.getBoundingClientRect().top + 'px';
+        }""")
         expect(page.locator('html')).to_have_css('--channel-top',channel_top)
         assert page.locator('#targetHud').is_visible(), page.evaluate('()=>{const d=__mareDiagnostics();return {scene:d.scene,auto:d.autoPlay,map:d.map,hp:d.hp,mobs:d.alive}}')
         assert page.locator('#huntXpTracker').is_visible()

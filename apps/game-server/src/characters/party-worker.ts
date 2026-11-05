@@ -12,7 +12,7 @@ import {readCombatInputs} from './combat-inputs.js';
 import {awardWorldLoot} from '../gameplay/inventory.js';
 import {completeDungeonVictory} from './dungeons.js';
 import {advanceLevel} from './progression.js';
-import {recordContractKills} from './contracts.js';
+import {recordContractKills,recordDailyProgress,boostXp} from './contracts.js';
 import {observeServerAchievements} from './achievements.js';
 import {digest} from '../auth/vault.js';
 const require=createRequire(import.meta.url),P=require('../../../../party-rules.cjs'),S=require('../../../../party-battle.cjs'),E=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
@@ -41,6 +41,10 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
    attached++;const input=inputs.get(m.character_id)!,{state}=input,f=input.fighter(b),w=worlds.get(m.character_id);
    if(f.rulesetId!=='original-character-v1'||!w||w.mapId!==room.mapId)throw Error('party_world_mismatch');
    b.hp=Math.min(b.hp,f.maxHp);b.energy=Math.min(b.energy,f.stats.maxEnergy);
+    if(room.mobs.some((m:any)=>m.balanceVersion!==1)){
+     const projected=new Map(b.mobs.map((m:any)=>[m.id,m]));
+     room.mobs=room.mobs.map((m:any)=>projected.get(m.id)??m);
+    }
     if(b.rulesHash!==E.rulesHash)throw Error('party_rules_changed');
     if(elapsed>2){E.cancel(b);E.resetHaki(b);}
    const epoch=personal!.control_epoch;
@@ -63,7 +67,7 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
       const base=E.hunt.rewards(k.area,k.monster,k.monster.level??1,.5).xp,shares=P.shares(base,ids,room.seq%ids.length);
       for(const id of ids){const actor=actors.find(a=>a.id===id),personal=E.hunt.rewards(k.area,k.monster,actor.state.level,.5).xp,grant=Math.round(shares[id]*personal/base);
        rewards.set(id,(rewards.get(id)??0)+grant);
-       await c.query('INSERT INTO mare_game.party_experience(instance_id,spawn_id,character_id,base_amount,amount,request_id) VALUES($1,$2,$3,$4,$5,$6)',[room.id,k.id,id,shares[id],grant,actor.requestId??=randomUUID()]);
+       await c.query('INSERT INTO mare_game.party_experience(instance_id,spawn_id,character_id,base_amount,amount,request_id) VALUES($1,$2,$3,$4,$5,$6)',[room.id,k.id,id,shares[id],(await boostXp(c,id,BigInt(grant))).toString(),actor.requestId??=randomUUID()]);
       }
      }
    }
@@ -73,13 +77,16 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
    const victory=room.kind==='dungeon'&&a.b.hp>0&&victories[0];
    if(victory){const r=a.b.dungeon.record;await completeDungeonVictory(c,a.id,requestId,a.state,a.b,{...victory,runId:r.runId,encounterId:r.encounterId},new Date(now));E.cancel(a.b);}
    if(kills.length||rewards.has(a.id)||victory||result.potionsUsed||result.talentSteals.length){
-    await awardWorldLoot(c,a.id,requestId,a.state,kills.map((k:any)=>({...k,reward:{...k.reward,xp:0}})),undefined,result.potionsUsed,{xpGrant:rewards.get(a.id)??0,build:a.build,steals:result.talentSteals,...(room.kind==='dungeon'?{action:'dungeon.battle' as const}:{})});
-    if(kills.length)await recordContractKills(c,a.id,kills);
+    const awarded=await awardWorldLoot(c,a.id,requestId,a.state,kills.map((k:any)=>({...k,reward:{...k.reward,xp:0}})),undefined,result.potionsUsed,{xpGrant:rewards.get(a.id)??0,build:a.build,steals:result.talentSteals,...(room.kind==='dungeon'?{action:'dungeon.battle' as const}:{})});
+    if(kills.length){
+     await recordContractKills(c,a.id,kills);
+     await recordDailyProgress(c,a.id,kills.map((k:any)=>({...k,berry:Math.round(k.reward.gold*E.catalog.factions[a.factionId].gold)})));
+    }
     if(a.state.version>=Number.MAX_SAFE_INTEGER)throw Error('state_version_exhausted');
      await advanceLevel(c,a.id,requestId,a.state);await c.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[a.id]);
     const after=await readCharacterState(c,a.id);if(after.level>a.state.level){const next=(await readCombatInputs(c,[a.id])).get(a.id)!.fighter(a.b);a.b.hp=next.maxHp;if(next.rulesetId==='original-character-v1')a.b.energy=next.stats.maxEnergy;}await observeServerAchievements(c,a.id,a.state,after,{kills:kills.length});
     await c.query('INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4)',[a.id,requestId,digest('server-party:'+requestId),JSON.stringify({requestId,action:'battle.reward',state:after})]);
-    a.b.partyXpReceived=(a.b.partyXpReceived??0)+(rewards.get(a.id)??0);
+    a.b.partyXpReceived=(a.b.partyXpReceived??0)+Number(awarded.xp);
    }
    await storeWorld(c,a.id,{...a.w,position:{x:a.hero.x,y:a.hero.y},direction:a.hero.direction,path:a.b.hp>0&&!a.b.auto?a.manualPath:[],speed:E.combatStats(a.b,a)[a.b.auto?'huntSpeed':'moveSpeed'],serverNow:new Date(now).toISOString(),motionUntil:new Date(Math.max(now,Date.parse(a.w.motionUntil))).toISOString()});
    a.b.mobs=room.mobs;await storeBattle(c,a.id,a.b,false);await c.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[a.id,row.now,a.epoch]);

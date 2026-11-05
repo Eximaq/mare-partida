@@ -22,14 +22,14 @@
     const armor=(target.empRemaining>0?0:(magic?(target.magicDefense??target.defense):target.defense)*(target.hakiDebuff>0?.85:1))*(1-(magic?stats.magicPen:stats.penetration))*(1-wear)*(basic&&U.selected(g)==='titan'?.8:1);
     return {multiplier,critical,armor,trueAmount,critMultiplier:final.critMultiplier};
   }
-  function afterHit(g,rt,{target,stats,basic,magic,projectile,critical,damage,contactScale=1,fromClone=false,random=Math.random}){
+  function afterHit(g,rt,{target,stats,basic,magic,projectile,critical,damage,offensiveDamage=damage,contactScale=1,fromClone=false,random=Math.random}){
     const k=key(g),result={heal:damage*Math.max(0,(stats.lifesteal||0)-(stats.fruitLifesteal||0)),gold:0,pierce:false,notice:''};
     if(k==='fury'&&g.hp<stats.maxHP*.3)result.heal+=damage*.12;if(U.selected(g)==='immortal'&&rt.ultimate.immortal>0)result.heal+=damage*.6;
     if(basic&&k==='concussion'&&random()<.15){target.talentControl={type:'stun',remaining:1};result.notice='ATORDOADO';proc(rt,k);}
     if(basic&&k==='wear'){target.talentWear={stacks:Math.min(5,(target.talentWear?.remaining>0?target.talentWear.stacks:0)+1),remaining:5};proc(rt,k);}
     if(k==='poison'){const prop=fromClone?'clonePoison':'talentPoison';target[prop]={power:stats.physical*.2*contactScale,remaining:4,clock:target[prop]?.clock||0};result.notice='VENENO';proc(rt,k);}
     if(magic&&k==='freeze'){target.talentSlow={percent:.25,remaining:3};proc(rt,k);}
-    if(magic&&k==='echo'&&random()<.2){rt.queue.push({target,amount:damage*.5,delay:.18,kind:'echo'});proc(rt,k);}
+    if(magic&&k==='echo'&&random()<.2){rt.queue.push({target,amount:offensiveDamage*.5,delay:.18,kind:'echo'});proc(rt,k);}
     if(projectile&&k==='pierce'&&random()<.3){result.pierce=true;proc(rt,k);}
     if(critical&&k==='lightHands'&&(target.talentStolen||0)<6&&random()<.15){result.gold=Math.min(6-(target.talentStolen||0),2*contactScale);target.talentStolen=(target.talentStolen||0)+result.gold;proc(rt,k);}
     return result;

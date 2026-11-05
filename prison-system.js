@@ -11,13 +11,15 @@
     attack:0,defense:0,hp:0,symbol:'▣'
   })));
   function multiplier(floor){if(!validFloor(floor))throw Error('Andar inválido');return Math.pow(1.30,floor-1);}
+  const characters=root.MareCharacters||(typeof module!=='undefined'?require('./character-system.js'):null);
   function scaleMonster(base,floor){
     const result={...base},factor=multiplier(floor);
     for(const key of ['hp','atk','def']){
       if(!Number.isFinite(base[key])||base[key]<0)throw Error('Atributo inválido');
       result[key]=base[key]===0?0:Math.max(1,Math.round(base[key]*factor));
     }
-    return result;
+    const p=characters.monsterProfile({level:floor,maxHP:result.hp,attack:result.atk,defense:result.def,attackSec:base.attackSec??2.1},{bossMultiplier:base.prisonElite?2.5:1});
+    return {...result,hp:p.maxHP,atk:p.attack,def:p.defense,magicDefense:p.magicDefense,attackSec:p.attackSec,accuracy:p.accuracy,attributePoints:p.attributePoints};
   }
   const rewardFor=floor=>milestones.includes(floor)?{kind:'pearl-box',level:1,quantity:1}:null;
   const isBossFloor=floor=>validFloor(floor)&&floor%5===0;
@@ -32,7 +34,9 @@
   function resolveEncounter(identity,catalog){
     if(!identity||!validFloor(identity.floor)||typeof identity.token!=='string'||!/^impel-[a-z0-9-]{1,100}$/.test(identity.token))return null;
     const {floor,type,token}=identity;
-    const base=isBossFloor(floor)?(type==='boss'?spawnImpelDownBoss(floor,catalog):null):commonPool(catalog).find(m=>m.type===type);
+    const pool=commonPool(catalog);
+    const base=isBossFloor(floor)?spawnImpelDownBoss(floor,catalog):pool.find(m=>m.type===type)||(['crab','bandit','spirit'].includes(type)?pool.find(m=>m.type==='cesar'):null);
+    if(isBossFloor(floor)&&type!=='boss'&&type!==base?.type)return null;
     return base?{...scaleMonster(base,floor),floor,token}:null;
   }
   function rollEncounter(floor,catalog,random=Math.random,spawnBoss=f=>spawnImpelDownBoss(f,catalog),serial=1){
@@ -60,8 +64,8 @@
   function commonPool(catalog){return Object.entries(catalog).filter(([id,m])=>id!=='boss'&&!m.boss&&['hp','atk','def'].every(k=>Number.isFinite(m[k])&&m[k]>=0)&&m.hp>0).map(([type,m])=>({...m,type}));}
   function spawnImpelDownBoss(floor,catalog){
     if(!validFloor(floor))throw Error('Andar inválido');
-    const pool=commonPool(catalog),base=catalog.boss||pool[0];if(!base)return null;
-    return {...base,type:'boss',name:'Guardião Provisório de Impel Down',hp:Math.max(base.hp,...pool.map(m=>m.hp))*2,atk:Math.ceil(Math.max(base.atk,...pool.map(m=>m.atk))*1.5),def:Math.ceil(Math.max(base.def,...pool.map(m=>m.def))*1.5),placeholder:true};
+    const base=commonPool(catalog).sort((a,b)=>Math.abs((a.level??1)-floor)-Math.abs((b.level??1)-floor)||a.type.localeCompare(b.type))[0];
+    return base?{...base,boss:true,prisonElite:true}:null;
   }
   function createRun({floor=1,catalog,random=Math.random,spawnBoss=f=>spawnImpelDownBoss(f,catalog),prepared=null}={}){
     if(!validFloor(floor))throw Error('Andar inválido');

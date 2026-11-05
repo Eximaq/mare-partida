@@ -226,6 +226,7 @@
     battle_rules_changed:'As regras de combate foram atualizadas. Aguarde a atualização do servidor.',
     battle_original_active:'A caçada já usa os monstros da ilha. Escolha sua rota no mapa.',
     battle_unavailable:'Entre em uma ilha e aguarde seu personagem renascer para caçar.',
+    xp_boost_active:'Já há um Boost de XP ativo neste personagem.',
     contract_incomplete:'O objetivo deste contrato ainda não foi concluído.',
     contract_already_claimed:'A recompensa deste contrato já foi recebida.',
     contracts_unavailable:'Os contratos estão temporariamente indisponíveis.',

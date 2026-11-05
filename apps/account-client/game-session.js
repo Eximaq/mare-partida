@@ -64,7 +64,7 @@
       const b=p.build;return keys==='build'&&b&&typeof b==='object'&&!Array.isArray(b)&&Object.keys(b).sort().join()==='keystone,nodes,ultimate'&&b.nodes&&typeof b.nodes==='object'&&!Array.isArray(b.nodes)&&Object.keys(b.nodes).length<=15&&Object.entries(b.nodes).every(([id,n])=>/^(sword|brawler|gunner|rogue|cyborg|strategist|healer)-[0-2]-[0-4]$/.test(id)&&Number.isInteger(n)&&n>=0&&n<=10)&&[b.keystone,b.ultimate].every(v=>v===null||typeof v==='string'&&/^[a-zA-Z]{1,32}$/.test(v));
     }
     if(action==='achievement.claim')return keys==='achievementId'&&["kills-0", "kills-1", "kills-2", "kills-3", "floors-0", "floors-1", "floors-2", "floors-3", "coins-0", "coins-1", "coins-2", "level-0", "level-1", "level-2", "level-3", "level-4", "power-0", "power-1", "power-2", "power-3", "power-4", "fruits-0", "fruits-1", "awakenings-0", "observation-0", "armament-0", "conqueror-0", "hakiMastery-0", "islands-0", "fastTravel-0", "bounties-0"].includes(p.achievementId);
-    if(action==='contract.claim')return keys==='contractId'&&['crab','bandit','boss','dawn-patrol','dawn-clear','conchas-patrol','conchas-clear','orange-patrol','orange-clear','rare-patrol'].includes(p.contractId);
+    if(action==='contract.claim')return keys==='contractId'&&['crab','bandit','boss','dawn-patrol','dawn-clear','conchas-patrol','conchas-clear','orange-patrol','orange-clear','rare-patrol','daily-reward'].includes(p.contractId);
     if(['battle.start','battle.first'].includes(action))return keys==='';
     if(action==='battle.auto')return keys==='enabled'&&typeof p.enabled==='boolean';
     if(action==='battle.target')return keys==='targetId'&&(p.targetId===null||typeof p.targetId==='string'&&/^[a-f0-9-]{36}$/.test(p.targetId));
@@ -73,7 +73,7 @@
     if(action==='world.move')return keys==='x,y'&&['x','y'].every(k=>Number.isFinite(p[k])&&p[k]>=0&&p[k]<=100000);
     if(action==='world.travel')return keys==='islandId'&&typeof p.islandId==='string'&&/^[a-z0-9-]{1,40}$/.test(p.islandId);
     if(['items.initialize','potions.buy','potions.use'].includes(action))return keys==='';
-    if(['items.equip','items.sell','items.open-box'].includes(action))return keys==='itemId'&&instanceId(p.itemId);
+    if(['items.equip','items.sell','items.open-box','items.use-xp-boost'].includes(action))return keys==='itemId'&&instanceId(p.itemId);
     if(action==='items.lock')return keys==='itemId,locked'&&instanceId(p.itemId)&&typeof p.locked==='boolean';
     if(action==='items.unequip')return keys==='slot'&&originalSlots.includes(p.slot);
     if(action==='forge.execute')return keys==='operation'&&validForge(p.operation);
@@ -278,7 +278,8 @@
           if(![1,2].includes(f.protocol)||f.protocol!==original.online.sync.protocol||f.characterId!==original.character.id||!Number.isSafeInteger(f.version)||f.version<0||!Number.isFinite(Date.parse(f.serverNow))||!('world' in f)||!('battle' in f)||!('lobby' in f)||!(f.protocol===2?'partyMotion' in f:'party' in f))throw fault('invalid_server_state');
           // Economy, equipment, skills and derived stats change only through full state.
           const party=f.protocol===2?mergePartyMotion(original.online.party,f.partyMotion):f.party;
-          if(f.version!==original.online.state.version||(f.protocol===2&&!party))return read(true);
+          const daily=original.online.contracts?.daily;
+          if(f.version!==original.online.state.version||(f.protocol===2&&!party)||(daily&&Date.parse(f.serverNow)>=daily.endsAt))return read(true);
           networkSample={rttMs:Math.max(0,completed-started),at:completed,intervalMs:networkSample?Math.max(0,completed-networkSample.at):null};
           data={character:original.character,online:{...original.online,world:f.world,battle:f.battle,lobby:f.lobby,party}};
           available=true;notify();return data;

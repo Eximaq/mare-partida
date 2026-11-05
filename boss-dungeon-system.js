@@ -27,7 +27,8 @@
  function combatProfile(id){
   const d=byId[id];if(!d)throw Error('Chefe desconhecido');
   const base=d.normalCombat;
-  return {...base,maxHP:Math.round(base.maxHP*2.5),attack:Math.round(base.attack*2.5),defense:Math.round(base.defense*2.5),magicDefense:Math.round((base.magicDefense??base.defense)*2.5),...(base.elementalAttack!==undefined?{elementalAttack:Math.round(base.elementalAttack*2.5)}:{}),xp:0,gold:[0,0]};
+  const characters=root.MareCharacters||(typeof module!=='undefined'?require('./character-system.js'):null);
+  return {...characters.monsterProfile(base,{bossMultiplier:2.5}),xp:0,gold:[0,0]};
  }
  function materialDef(defs,id){return defs.findIndex(d=>['akuma-fragment','weapon-fragment'].includes(d.kind)&&d.materialId===id);}
  function claim(original,id,{runId,position,chest,defs,applyXP,commit,now=Date.now()}={}){

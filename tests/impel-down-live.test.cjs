@@ -1,9 +1,9 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),P=require('../prison-system.js');
 const catalog={bandit:{name:'Corsário',hp:100,atk:20,def:10,boss:false},spirit:{name:'Sentinela',hp:200,atk:30,def:20},boss:{name:'Guardião',hp:350,atk:50,def:30,boss:true}};
-test('live prison starts at full base power and compounds 30 percent per floor',()=>{
+test('live prison preserves base values and applies the floor and global curves',()=>{
  assert.equal(P.multiplier(1),1);assert.equal(P.multiplier(2),1.3);assert.ok(Math.abs(P.multiplier(3)-1.69)<1e-12);
- assert.deepEqual(P.scaleMonster(catalog.bandit,2),{...catalog.bandit,hp:130,atk:26,def:13});assert.equal(catalog.bandit.hp,100);
+ const scaled=P.scaleMonster(catalog.bandit,2);assert.deepEqual([scaled.hp,scaled.atk,scaled.def,scaled.attributePoints],[150,28,19,15]);assert.equal(catalog.bandit.hp,100);
  for(let f=1;f<=100;f++)assert.ok(Number.isFinite(P.multiplier(f)));
  assert.equal(P.available,true);
 });
@@ -16,7 +16,7 @@ test('normal floors draw exactly one existing common and every fifth floor uses 
  }
  assert.equal(draws,8);assert.deepEqual(bosses,[5,10]);assert.equal(catalog.spirit.hp,200);
 });
-test('the placeholder boss is stronger than the common pool and keeps an existing sprite id',()=>{
+test('the elite uses an existing sprite and receives its boss multiplier once',()=>{
  assert.equal(typeof P.spawnImpelDownBoss,'function');const boss=P.spawnImpelDownBoss(5,catalog);
- assert.equal(boss.type,'boss');assert.ok(boss.hp>200&&boss.atk>30&&boss.def>20);assert.equal(boss.placeholder,true);
+ assert.equal(boss.type,'bandit');assert.equal(boss.prisonElite,true);assert(P.scaleMonster(boss,5).hp>P.scaleMonster(catalog.bandit,5).hp);
 });

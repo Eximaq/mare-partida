@@ -17,7 +17,7 @@ import {readCharacterState} from './state.js';
 import {advanceLevel} from './progression.js';
 import {awardWorldLoot} from '../gameplay/inventory.js';
 import {digest} from '../auth/vault.js';
-import {recordContractKills} from './contracts.js';
+import {recordContractKills,recordDailyProgress,boostXp} from './contracts.js';
 const require=createRequire(import.meta.url),engine=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
 const rng=()=>randomInt(0,0x100000000)/0x100000000;
 export const isBattleAction=(action:string)=>(battleActions as readonly string[]).includes(action);
@@ -26,6 +26,7 @@ export async function readBattle(client:PoolClient,id:string){
  const row=(await client.query('SELECT simulation FROM mare_game.character_battles WHERE character_id=$1',[id])).rows[0];
  const b=row?.simulation??null;
  if(b?.partyInstanceId){const r=await partyRoom(client,b.partyInstanceId);if(r)b.mobs=r.simulation.mobs;}
+ engine.upgradeBalance(b);
  return b;
 }
 /** Batched current-schema personal state with the one canonical room projection.
@@ -35,7 +36,7 @@ export async function readBattleRows(client:PoolClient,ids:readonly string[]){
  FROM mare_game.character_battles b LEFT JOIN mare_game.character_world w ON w.character_id=b.character_id
  LEFT JOIN mare_game.party_instances r ON r.id=(b.simulation->>'partyInstanceId')::uuid AND r.ended_at IS NULL
  WHERE b.character_id=ANY($1::uuid[])`,[ids])).rows;
- for(const row of rows)if(row.shared_mobs)row.simulation.mobs=row.shared_mobs;
+ for(const row of rows){if(row.shared_mobs)row.simulation.mobs=row.shared_mobs;engine.upgradeBalance(row.simulation);}
  return new Map(rows.map(row=>[row.character_id,row]));
 }
 export async function storeBattle(client:PoolClient,id:string,b:any,canonical=true){
@@ -45,7 +46,7 @@ export async function storeBattle(client:PoolClient,id:string,b:any,canonical=tr
 export async function pauseBattle(client:PoolClient,id:string){
  // Older migration fixtures acquire leases before the opt-in domain exists.
  if(!(await client.query("SELECT to_regclass('mare_game.character_battles') present")).rows[0].present)return;
- const b=await readBattle(client,id);if(!b)return;engine.cancel(b);engine.resetHaki(b);b.talents=null;await storeBattle(client,id,b,false);
+ const b=await readBattle(client,id);if(!b)return;engine.cancel(b);engine.resetHaki(b);if(!b.partyInstanceId)for(const m of b.mobs)if(m.engaged||m.returning||m.partyTargetId||m.telegraph)engine.disengage(m);b.talents=null;await storeBattle(client,id,b,false);
  await client.query('UPDATE mare_game.character_battles SET tick_at=clock_timestamp() WHERE character_id=$1',[id]);
 }
 export async function syncBattleWorld(client:PoolClient,id:string,area:string|null,now:number){
@@ -114,9 +115,10 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
   if(!row){await client.query('ROLLBACK');continue;}
   const id=candidate.character_id,b=row.simulation,now:Date=row.now,elapsed=(now.getTime()-row.tick_at.getTime())/1000;
   if(b.partyInstanceId){await client.query('ROLLBACK');continue;}
+  engine.upgradeBalance(b);
    if(elapsed<.1){await client.query('ROLLBACK');continue;}
   if(b.rulesHash!==engine.rulesHash)throw new AuthFault(503,'battle_rules_changed');
-  if(elapsed>2||row.control_epoch!==row.epoch){engine.cancel(b);engine.resetHaki(b);b.talents=null;await storeBattle(client,id,b);
+  if(elapsed>2||row.control_epoch!==row.epoch){engine.cancel(b);engine.resetHaki(b);for(const m of b.mobs)if(m.engaged||m.returning||m.partyTargetId||m.telegraph)engine.disengage(m);b.talents=null;await storeBattle(client,id,b);
    await client.query('UPDATE mare_game.character_battles SET tick_at=$2,control_epoch=$3 WHERE character_id=$1',[id,now,row.epoch]);await client.query('COMMIT');budget.commit();continue;}
   const dt=Math.min(1,elapsed),start=new Date(now.getTime()-dt*1000),w=await readWorld(client,id,start);
   if(!w||w.area!==b.area)throw new AuthFault(503,'battle_world_mismatch');
@@ -134,6 +136,7 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
   if(result.kills.length||result.potionsUsed||result.talentSteals.length){
    if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
    const requestId=randomUUID();
+   if(!b.dungeon)await recordDailyProgress(client,id,result.kills.map((k:any)=>({...k,berry:k.reward?Math.round(k.reward.gold*engine.catalog.factions[fighter.factionId].gold):0})));
    if(b.dungeon){
     if(result.kills.length>1)throw new AuthFault(503,'dungeon_victory_invalid');
     if(result.kills.length)await completeDungeonVictory(client,id,requestId,state,b,result.kills[0],now);
@@ -143,7 +146,7 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
     const grant=result.kills.length?await completePrisonFloor(client,id,requestId,b,result.kills[0],now):undefined;
     await awardWorldLoot(client,id,requestId,state,[],undefined,result.potionsUsed,{build:inputs.talents.build,steals:result.talentSteals,grant,action:'prison.reward'});
    }else await awardWorldLoot(client,id,requestId,state,result.kills,undefined,result.potionsUsed,{build:inputs.talents.build,steals:result.talentSteals});
-   if(!b.prison&&!b.dungeon)for(const k of result.kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,k.reward.xp,Math.round(k.reward.gold*engine.catalog.factions[fighter.factionId].gold),engine.rulesHash]);
+   if(!b.prison&&!b.dungeon)for(const k of result.kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,(await boostXp(client,id,BigInt(k.reward.xp))).toString(),Math.round(k.reward.gold*engine.catalog.factions[fighter.factionId].gold),engine.rulesHash]);
    if(!b.prison&&!b.dungeon)await recordContractKills(client,id,result.kills);
    await advanceLevel(client,id,requestId,state);await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
    const after=await readCharacterState(client,id);

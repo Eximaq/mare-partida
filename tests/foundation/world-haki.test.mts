@@ -18,12 +18,12 @@ test('authoritative Haki touch activates learned auto once, drains, exhausts and
  for(let i=0;i<5;i++)f.step(.05);assert.equal(f.b.haki.current,0);assert.equal(f.b.hakiRuntime.active,null);f.hit();assert.equal(f.b.hakiRuntime.active,null);
  f.b.mobs=[];for(let i=0;i<7;i++)f.step(1);assert(f.b.haki.current>0);assert.equal(f.b.hakiRuntime.inCombat,false);
 });
-test('Haki stats apply once, obey learned gates and original caps, and observation activates before an incoming evade roll',()=>{
+test('Haki stats apply once, obey learned gates and original caps, and observation activates before a valid monster hit',()=>{
  const f=fixture();learned(f);f.b.hakiRuntime=H.start();f.b.hakiRuntime.active='armament';
  const stats=engine.combatStats(f.b,f.context);assert.equal(stats.penetration,.15);assert.equal(stats.defense,0);f.stats.defense=10;assert.equal(engine.combatStats(f.b,f.context).defense,11);
  f.b.hakiRuntime.active='observation';f.stats.evasion=.7;assert.equal(engine.combatStats(f.b,f.context).evasion,.6);assert.equal(engine.combatStats(f.b,f.context).accuracy,1);
  f.b.haki.mastery.completedVersions={};assert.equal(engine.combatStats(f.b,f.context).evasion,.45);
- f.b.haki.mastery.completedVersions={observation:1};f.b.haki.auto='observation';f.b.hakiRuntime=H.start();f.stats.evasion=0;Object.assign(f.b.mobs[0],{attackClock:0,engaged:true,reach:100});f.context.rng=()=>.1;const before=f.b.hp;f.step();assert.equal(f.b.hp,before);assert.equal(f.b.hakiRuntime.active,'observation');
+ f.b.haki.mastery.completedVersions={observation:1};f.b.haki.auto='observation';f.b.hakiRuntime=H.start();f.stats.evasion=0;Object.assign(f.b.mobs[0],{attackClock:0,engaged:true,reach:100});f.context.rng=()=>.1;const before=f.b.hp;f.step();assert(f.b.hp<before);assert.equal(f.b.hakiRuntime.active,'observation');
 });
 test('king uses server time and LOS, debuffs bosses without stacking, and survives JSON, travel and death',()=>{
  const f=fixture();learned(f);const m=f.b.mobs[0];Object.assign(m,{type:'boss',boss:true});f.b.mobs.push({...structuredClone(m),id:'blocked',x:m.x+10},{...structuredClone(m),id:'normal',type:'bandit',boss:false,x:m.x+20});f.nav.projectileClear=(_a:any,z:any)=>z.id!=='blocked';

@@ -53,10 +53,10 @@ test('neutral monsters do not attack; basic hit waits for impact, checks range a
  f.hero.x=f.m.x-30;f.b.auto=true;f.m.hp=1;let rewards:any[]=[];for(let i=0;i<12;i++)rewards.push(...f.step().kills);
  assert.equal(rewards.length,1);assert.equal(f.m.alive,false);assert.equal(f.b.hunts.areas.beach.kills,1);
  for(let i=0;i<10;i++)assert.equal(f.step().kills.length,0);
- assert(f.b.hunts.areas.beach.respawns[f.m.spawnId]>30000);
+ assert(f.b.hunts.areas.beach.respawns[f.m.spawnId]>=20000);
 });
-test('AI leash, return immunity, death and respawn preserve authored timing',()=>{
- const f=fixture();f.m.engaged=true;f.hero.x=f.m.anchorX+400;f.step();assert(f.m.returning||!f.m.engaged);
+test('pursuit has no leash and disengaging preserves position and wounds',()=>{
+ const f=fixture();f.m.engaged=true;f.hero.x=f.m.anchorX+400;f.step();assert(f.m.engaged&&!f.m.returning);assert(f.m.x>f.m.anchorX);f.m.hp--;const before={x:f.m.x,hp:f.m.hp};f.engine.disengage(f.m);assert.deepEqual({x:f.m.x,hp:f.m.hp},before);
  f.b.hp=0;f.b.respawn=4.1;for(let i=0;i<40;i++)f.step();assert.equal(f.b.hp,0);f.step(.2);assert.equal(f.b.hp,f.stats.maxHP);assert.equal(f.hero.x,872);
  assert.throws(()=>f.engine.step(f.b,{hero:f.hero,nav:f.nav,stats:f.stats,classId:'sword',now:9999,dt:60,rng:()=>.5}),/step/);
 });
@@ -82,4 +82,13 @@ test('ranged skills travel before impact and a released projectile can hit beyon
 test('healer preference controls automatic healing and profile metrics are server-observed',()=>{
  const run=(healThreshold:number)=>{const f=fixture('healer');f.b.auto=true;f.b.autoSkills=true;f.b.hp=f.stats.maxHP*.6;f.b.mobs=[];f.engine.step(f.b,{hero:f.hero,nav:f.nav,stats:f.stats,classId:'healer',factionId:'pirate',now:2000,dt:1,rng:()=>.5,preferences:{healThreshold}});return f;};
  const low=run(.25),high=run(.9);assert.equal(low.b.cooldowns[0],0);assert(high.b.cooldowns[0]>0);assert(high.b.hp>low.b.hp);assert(Math.abs(high.b.metrics.seconds-1)<1e-9);assert.equal(high.b.metrics.damage,0);
+});
+
+test('the previous deployed rules migrate once without moving wounded monsters',()=>{
+ const f=fixture(),m=f.m;m.hp=Math.floor(m.maxHP/2);const ratio=m.hp/m.maxHP,x=m.x;
+ f.b.rulesHash='c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46';delete m.balanceVersion;
+ f.engine.upgradeBalance(f.b);assert.equal(f.b.rulesHash,f.engine.rulesHash);assert.equal(m.x,x);
+ assert.equal(m.hp,Math.ceil(m.maxHP*ratio));assert.equal(m.balanceVersion,1);
+ const saved=structuredClone(f.b);f.engine.upgradeBalance(f.b);assert.deepEqual(f.b,saved);
+ f.b.rulesHash='unknown';f.engine.upgradeBalance(f.b);assert.equal(f.b.rulesHash,'unknown');
 });

@@ -8,10 +8,11 @@ test('mask acceleration upgrade preserves all state and only promotes the audite
   const ids:string[]=[];for(let i=0;i<2;i++){const s=await f.service.login(randomUUID()+'@example.invalid','fixture'),c=await f.service.createCharacter(s.token,{name:'Upgrade '+i,classId:'sword',factionId:'pirate'}),lease=await f.service.acquireControl(s.token,c.id);await f.service.command(s.token,c.id,{requestId:randomUUID(),expectedVersion:0,control:lease,action:'world.initialize',payload:{}});ids.push(c.id);}
   await f.pool.query('UPDATE mare_game.character_world SET rules_hash=$2 WHERE character_id=$1',[ids[0],'2a2da1585a641e586ade3e544c858a3e630af3f93691fd00a84e7434bb7ce27c']);
   await f.pool.query('UPDATE mare_game.character_world SET rules_hash=$2 WHERE character_id=$1',[ids[1],'a'.repeat(64)]);
-  const read=async()=>({worlds:(await f.pool.query('SELECT character_id,x,y,path,speed,direction,started_at,motion_until FROM mare_game.character_world ORDER BY character_id')).rows,characters:(await f.pool.query('SELECT * FROM mare_game.characters ORDER BY id')).rows,progression:(await f.pool.query('SELECT * FROM mare_game.character_progression ORDER BY character_id')).rows});
+  const read=async()=>({worlds:(await f.pool.query('SELECT character_id,x,y,path,speed,direction,started_at,motion_until FROM mare_game.character_world ORDER BY character_id')).rows,characters:(await f.pool.query('SELECT * FROM mare_game.characters ORDER BY id')).rows,progression:(await f.pool.query('SELECT character_id,level,experience,gold,level_start_experience FROM mare_game.character_progression ORDER BY character_id')).rows});
   const before=await read();await applyMigrations(f.pool);
   const hashes=(await f.pool.query('SELECT character_id,rules_hash FROM mare_game.character_world')).rows;
   assert.equal(hashes.find(r=>r.character_id===ids[0]).rules_hash,world.rulesHash);assert.equal(hashes.find(r=>r.character_id===ids[1]).rules_hash,'a'.repeat(64));assert.deepEqual(await read(),before);
+  assert.equal((await f.pool.query("SELECT count(*)::int n FROM mare_game.character_progression WHERE xp_boost_until IS NOT NULL")).rows[0].n,0);
   await applyMigrations(f.pool);assert.deepEqual(await read(),before);
  },directory);
 });

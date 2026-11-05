@@ -4,7 +4,7 @@ import { createRequire } from "node:module";
 import { createHash } from "node:crypto";
 import { getGameCatalog } from "../../apps/game-server/src/gameplay/catalog.js";
 const require = createRequire(import.meta.url);
-test("server and original browser rules expose 109 preserved definitions plus twenty class armaments and 56 garments, and one appended weapon fragment in the exact original order", () => {
+test("server and original browser rules expose 109 preserved definitions plus twenty class armaments and 56 garments, and appended weapon fragment and XP boost in the exact original order", () => {
   const { create } = require("../../item-catalog.js");
   const forge = require("../../forge-system.js"),
     prison = require("../../prison-system.js"),
@@ -29,8 +29,9 @@ test("server and original browser rules expose 109 preserved definitions plus tw
     "baseline captured before extraction; changing order or values requires an explicit rules migration",
   );
   const server = getGameCatalog();
-  assert.equal(server.items.length, 186);
-  assert.equal(server.rulesHash,'1951b4cd6a6a4adbb941eef87f1ffdf36c4a3be6faa1897d09fb54b5c5d673e4');
+  assert.equal(server.items.length, 187);
+  assert.equal(server.items.at(-1)?.kind,"xp-boost");
+  assert.equal(server.rulesHash,'b1981b18a1634fee07a0c0ae53ce1a13b32d9e4b91fbc05dde6e421c34c09325');
   assert.deepEqual(c.items.slice(103,109),require('../../boss-dungeon-system.js').fragments);
   assert.equal(server.items.filter((i) => i.type === "akuma_no_mi").length, 30);
   assert.equal(server.slots.length, 12);

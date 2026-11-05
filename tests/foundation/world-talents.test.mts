@@ -5,7 +5,7 @@ import {createRequire} from 'node:module';
 const require=createRequire(import.meta.url),engine=require('../../world-battle.cjs'),C=require('../../character-system.js');
 function fixture(classId='sword',keystone:string|null=null,ultimate:string|null=null){
  const stats={...C.derive({classId,level:1,attributes:C.empty()},engine.catalog.classes[classId],engine.catalog.factions.pirate,{attack:0,defense:0,hp:0}),physical:100,elemental:100,attack:100,maxHP:1000,maxEnergy:1000,healthRegen:0,energyRegen:0,accuracy:1,crit:0,evasion:0,defense:0,speed:1,range:180};
- let b=engine.create('beach',stats,1000,()=>.5);const m=b.mobs[0];Object.assign(m,{type:'bandit',maxHP:10000,hp:10000,defense:0,magicDefense:0,attack:100,attackClock:999,patrolClock:999});b.mobs=[m];b.autoSkills=false;
+ let b=engine.create('beach',stats,1000,()=>.5);const m=b.mobs[0];Object.assign(m,{type:'cesar',maxHP:10000,hp:10000,defense:0,magicDefense:0,attack:100,attackClock:999,patrolClock:999});b.mobs=[m];b.autoSkills=false;
  const hero={x:m.x-30,y:m.y,direction:'right'},nav={map:{width:4000,height:4000,spawn:{...hero}},walkable:(_x?:number,_y?:number)=>true,projectileClear:(_a:any,_z:any)=>true,path:(_:any,p:any)=>[{...p}],follow(a:any,p:any[],speed:number,dt:number){if(!p.length)return;const v=p[0],d=Math.hypot(v.x-a.x,v.y-a.y),n=Math.min(d,speed*dt);if(d){a.x+=(v.x-a.x)/d*n;a.y+=(v.y-a.y)/d*n;}if(n===d)p.shift();}};
  let now=1000;const context={hero,nav,stats,baseStats:stats,classId,factionId:'pirate',level:100,build:{nodes:{},keystone,ultimate},rng:()=>0};
  const step=(dt=.05)=>engine.step(b,{...context,now:now+=dt*1000,dt});
@@ -14,7 +14,7 @@ function fixture(classId='sword',keystone:string|null=null,ultimate:string|null=
 }
 test('server poison survives a JSON/worker reload and secondary ticks do not recursively proc',()=>{
  const f=fixture('rogue','poison');f.hit();assert.equal(f.b.mobs[0].talentPoison?.power,20);
- const hp=f.b.mobs[0].hp;f.reload();f.step(1);assert.equal(hp-f.b.mobs[0].hp,20);assert.equal(f.b.talents.procs.poison,1);
+ const hp=f.b.mobs[0].hp;f.reload();f.step(1);assert.equal(hp-f.b.mobs[0].hp,10);assert.equal(f.b.talents.procs.poison,1);
 });
 test('server energy efficiency and archmage affect actual skill cost without bypassing cooldown',()=>{
  const f=fixture('strategist',null,'archmage');f.b.targetId=f.b.mobs[0].id;f.b.energy=0;
@@ -22,7 +22,7 @@ test('server energy efficiency and archmage affect actual skill cost without byp
 });
 test('server asura persists delayed hits on the live target and cannot recursively make ghosts',()=>{
  const f=fixture('sword',null,'asura');f.hit();const hp=f.b.mobs[0].hp;f.reload();f.step(.3);
- assert.equal(hp-f.b.mobs[0].hp,54);assert.equal(f.b.talents.ultimate.delayed.length,0);assert.equal(f.b.talents.ultimate.procs.attacks,1);
+ assert.equal(hp-f.b.mobs[0].hp,26);assert.equal(f.b.talents.ultimate.delayed.length,0);assert.equal(f.b.talents.ultimate.procs.attacks,1);
 });
 test('server energy shield and immortal keep absolute cooldowns after death, reload and scene change',()=>{
  for(const [classId,keystone,ultimate,field,delay] of [['cyborg','energyShield',null,'energyShieldUntil',90000],['brawler',null,'immortal','immortalUntil',600000]] as const){
@@ -47,41 +47,41 @@ test('spatial and titan secondary kills obey walls and have one ordinary kill re
 test('intermediate hit hooks preserve stun, wear, combos, critical first shot, backstab and slows',()=>{
  const stun=fixture('brawler','concussion');stun.hit();assert.equal(stun.b.mobs[0].talentControl.type,'stun');
  const wear=fixture('sword','wear');wear.b.mobs[0].defense=100;for(let i=0;i<6;i++)wear.hit();assert.equal(wear.b.mobs[0].talentWear.stacks,5);assert.equal(wear.b.mobs[0].defense,100);
- const combo=fixture('brawler','growing');combo.hit();assert.equal(combo.b.mobs[0].hp,9907);for(let i=0;i<10;i++)combo.hit();assert.equal(combo.b.talents.combo,8);
- const focus=fixture('gunner','focus');focus.hit();assert.equal(focus.b.mobs[0].hp,9852);focus.hit();assert.equal(focus.b.mobs[0].hp,9762);
- const back=fixture('rogue','backstab');back.b.mobs[0].emberFacing='east';back.hit();assert.equal(back.b.mobs[0].hp,9850);back.hit();assert.equal(back.b.mobs[0].hp,9760);
+ const combo=fixture('brawler','growing');combo.hit();assert.equal(combo.b.mobs[0].hp,9954);for(let i=0;i<10;i++)combo.hit();assert.equal(combo.b.talents.combo,8);
+ const focus=fixture('gunner','focus');focus.hit();assert.equal(focus.b.mobs[0].hp,9926);focus.hit();assert.equal(focus.b.mobs[0].hp,9881);
+ const back=fixture('rogue','backstab');back.b.mobs[0].emberFacing='east';back.hit();assert.equal(back.b.mobs[0].hp,9925);back.hit();assert.equal(back.b.mobs[0].hp,9880);
  const freeze=fixture('strategist','freeze');freeze.hit();assert.equal(freeze.b.mobs[0].talentSlow.percent,.25);assert(freeze.b.mobs[0].talentSlow.remaining>2);
- const long=fixture('gunner','longshot');long.hero.x=long.b.mobs[0].x-180;long.hit();assert.equal(long.b.mobs[0].hp,9883);
+ const long=fixture('gunner','longshot');long.hero.x=long.b.mobs[0].x-180;long.hit();assert.equal(long.b.mobs[0].hp,9942);
 });
 test('intermediate kill, defense, healing and secondary projectile hooks use authoritative combat state',()=>{
  const blood=fixture('sword','bloodlust');blood.b.mobs[0].hp=1;blood.hit();assert.equal(engine.talentStats(blood.b,blood.context).speed,1.2);
  const siphon=fixture('strategist','siphon');siphon.b.energy=20;siphon.b.mobs[0].hp=1;siphon.hit();assert.equal(siphon.b.energy,120);
- const fury=fixture('brawler','fury');fury.b.hp=200;fury.hit();assert.equal(fury.b.hp,210.8);
- const parry=fixture('sword','parry');Object.assign(parry.b.mobs[0],{engaged:true,attackClock:0,reach:60});parry.step();assert.equal(parry.b.hp,1000);assert.equal(parry.b.mobs[0].hp,9900);
+ const fury=fixture('brawler','fury');fury.b.hp=200;fury.hit();assert.equal(fury.b.hp,205.4);
+ const parry=fixture('sword','parry');Object.assign(parry.b.mobs[0],{engaged:true,attackClock:0,reach:60});parry.step();assert.equal(parry.b.hp,1000);assert.equal(parry.b.mobs[0].hp,9950);
  const armor=fixture('cyborg','adaptive');armor.stats.defense=100;Object.assign(armor.b.mobs[0],{engaged:true,attackClock:0,reach:60});armor.step();assert.equal(engine.talentStats(armor.b,armor.context).defense,103);
- const blast=fixture('cyborg','unstable');Object.assign(blast.b.mobs[0],{engaged:true,attackClock:0,reach:60});blast.step();assert.equal(blast.b.mobs[0].hp,9940);
+ const blast=fixture('cyborg','unstable');Object.assign(blast.b.mobs[0],{engaged:true,attackClock:0,reach:60});blast.step();assert.equal(blast.b.mobs[0].hp,9970);
  const aura=fixture('healer','rejuvenation');aura.stats.healthRegen=10;aura.stats.energyRegen=10;aura.b.hp=500;aura.b.energy=500;aura.step(1);assert(Math.abs(aura.b.hp-512)<1e-8);assert(Math.abs(aura.b.energy-512)<1e-8);
- const pierce=fixture('gunner','pierce'),m=pierce.b.mobs[0];pierce.b.mobs.push({...structuredClone(m),id:'second',spawnId:'second',x:m.x+40});pierce.hit();assert.equal(pierce.b.mobs[1].hp,9955);
- const echo=fixture('strategist','echo');echo.hit();echo.reload();echo.step(.5);assert.equal(echo.b.mobs[0].hp,9865);assert.equal(echo.b.talents.procs.echo,1);
+ const pierce=fixture('gunner','pierce'),m=pierce.b.mobs[0];pierce.b.mobs.push({...structuredClone(m),id:'second',spawnId:'second',x:m.x+40});pierce.hit();assert.equal(pierce.b.mobs[1].hp,9978);
+ const echo=fixture('strategist','echo');echo.hit();echo.reload();echo.step(.5);assert.equal(echo.b.mobs[0].hp,9933);assert.equal(echo.b.talents.procs.echo,1);
 });
 test('ultimate attacks implement execution, artillery, marks and half-strength clones without recursive procs',()=>{
- const execute=fixture('sword',null,'execution');execute.b.pending={targetId:execute.b.mobs[0].id,remaining:0};assert.equal(execute.step().kills.length,1);
- const boss=fixture('sword',null,'execution');boss.b.mobs[0].type='boss';boss.hit();assert.equal(boss.b.mobs[0].hp,8910);
- const artillery=fixture('gunner',null,'artillery');for(let i=0;i<5;i++)artillery.hit();assert.equal(artillery.b.mobs[0].hp,9150);
- const marks=fixture('rogue',null,'assassinMark');marks.stats.crit=1;for(let i=0;i<5;i++)marks.hit();assert.equal(marks.b.mobs[0].hp,8060);assert.equal(marks.b.mobs[0].assassinMarks,0);
- const clone=fixture('rogue','poison','shadowClone');clone.hit();clone.step(.3);assert.equal(clone.b.mobs[0].hp,9865);assert.equal(clone.b.mobs[0].clonePoison.power,10);assert.equal(clone.b.talents.ultimate.delayed.length,0);
+ const execute=fixture('sword',null,'execution');execute.b.pending={targetId:execute.b.mobs[0].id,remaining:0};const before=execute.b.mobs[0].hp;assert.equal(execute.step().kills.length,0);assert(execute.b.mobs[0].hp<before);
+ const boss=fixture('sword',null,'execution');boss.b.mobs[0].type='boss';boss.hit();assert.equal(boss.b.mobs[0].hp,9455);
+ const artillery=fixture('gunner',null,'artillery');for(let i=0;i<5;i++)artillery.hit();assert.equal(artillery.b.mobs[0].hp,9575);
+ const marks=fixture('rogue',null,'assassinMark');marks.stats.crit=1;for(let i=0;i<5;i++)marks.hit();assert.equal(marks.b.mobs[0].hp,9030);assert.equal(marks.b.mobs[0].assassinMarks,0);
+ const clone=fixture('rogue','poison','shadowClone');clone.hit();clone.step(.3);assert.equal(clone.b.mobs[0].hp,9933);assert.equal(clone.b.mobs[0].clonePoison.power,10);assert.equal(clone.b.talents.ultimate.delayed.length,0);
 });
 test('ultimate defensive hooks use persistent server clocks, bounded vision and real resource consumption',()=>{
- const skin=fixture('brawler',null,'armamentSkin');Object.assign(skin.b.mobs[0],{engaged:true,attackClock:0,reach:60});skin.step();assert.equal(skin.b.hp,1000);assert.equal(skin.b.talents.ultimate.vigor,165);assert.equal(skin.b.mobs[0].hp,9979);
+ const skin=fixture('brawler',null,'armamentSkin');Object.assign(skin.b.mobs[0],{engaged:true,attackClock:0,reach:60});skin.step();assert.equal(skin.b.hp,1000);assert.equal(skin.b.talents.ultimate.vigor,165);assert.equal(skin.b.mobs[0].hp,9990);
  const guardian=fixture('healer',null,'guardianAngel');guardian.b.hp=2;guardian.b.energy=0;Object.assign(guardian.b.mobs[0],{engaged:true,attackClock:0,reach:60,attack:100000});guardian.step();assert.equal(guardian.b.hp,1000);assert.equal(guardian.b.energy,1000);assert.equal(guardian.b.talentCooldowns.guardianUntil,601050);
  const emp=fixture('cyborg',null,'emp');emp.b.hp=550;Object.assign(emp.b.mobs[0],{engaged:true,attackClock:0,reach:60});emp.b.mobs.push({...structuredClone(emp.b.mobs[0]),id:'far',x:100000,attackClock:999});emp.step();assert.equal(emp.b.mobs[0].empRemaining,10);assert(!emp.b.mobs[1].empRemaining);assert.equal(emp.b.talentCooldowns.empUntil,46050);
  const mage=fixture('strategist',null,'archmage');mage.b.energy=40;Object.assign(mage.b.mobs[0],{engaged:true,attackClock:0,reach:60});mage.step();assert.equal(mage.b.energy,0);assert.equal(mage.b.hp,955);
  const over=fixture('cyborg',null,'overclock');over.hit();const hpBefore=over.b.hp;over.step(1);assert(Math.abs(hpBefore-over.b.hp-10)<1e-7);assert.equal(engine.talentStats(over.b,over.context).speed,2);
 });
 test('camouflage, orbital fire, cataclysm and singularity survive snapshots and respect server geometry',()=>{
- const hidden=fixture('gunner',null,'camouflage');hidden.step(.05);hidden.step(1);hidden.step(1);assert(hidden.b.talents.ultimate.hidden);hidden.hit();assert.equal(hidden.b.mobs[0].hp,9730);assert.equal(hidden.b.talents.ultimate.hidden,false);
- const orbital=fixture('cyborg',null,'orbital');orbital.hit();const hp=orbital.b.mobs[0].hp;orbital.reload();orbital.step(1);assert.equal(hp-orbital.b.mobs[0].hp,35);assert.equal(engine.talentStats(orbital.b,orbital.context).speed,.5);
- const burn=fixture('strategist',null,'cataclysm');burn.hit();assert.equal(burn.b.mobs[0].ultimateBurn.power,30);const before=burn.b.mobs[0].hp;burn.step(1);assert.equal(before-burn.b.mobs[0].hp,30);
+ const hidden=fixture('gunner',null,'camouflage');hidden.step(.05);hidden.step(1);hidden.step(1);assert(hidden.b.talents.ultimate.hidden);hidden.hit();assert.equal(hidden.b.mobs[0].hp,9865);assert.equal(hidden.b.talents.ultimate.hidden,false);
+ const orbital=fixture('cyborg',null,'orbital');orbital.hit();const hp=orbital.b.mobs[0].hp;orbital.reload();orbital.step(1);assert.equal(hp-orbital.b.mobs[0].hp,17);assert.equal(engine.talentStats(orbital.b,orbital.context).speed,.5);
+ const burn=fixture('strategist',null,'cataclysm');burn.hit();assert.equal(burn.b.mobs[0].ultimateBurn.power,30);const before=burn.b.mobs[0].hp;burn.step(1);assert.equal(before-burn.b.mobs[0].hp,15);
  const gravity=fixture('strategist',null,'singularity');gravity.stats.crit=1;const m=gravity.b.mobs[0];gravity.b.mobs.push({...structuredClone(m),id:'pulled',x:m.x+100});gravity.hit();const x=gravity.b.mobs[1].x;gravity.reload();gravity.step(.2);assert(gravity.b.mobs[1].x<x);
 });
 test('healer finals have solo effects without creating party recipients; no overheal budget survives combat end',()=>{

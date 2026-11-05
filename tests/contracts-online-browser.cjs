@@ -34,6 +34,7 @@ const contracts=require('../contract-system.js');wire.contracts={rulesetId:contr
    else if(url.pathname.endsWith('/control')||url.pathname.endsWith('/renew'))body={epoch:1,token:'x'.repeat(43)};
    else if(url.pathname.endsWith('/commands')){
     const v=route.request().postDataJSON();sent.push(v);assert.equal(v.action,'contract.claim');assert.deepEqual(Object.keys(v.payload),['contractId']);
+    if(v.payload.contractId==='daily-reward'){assert(contracts.dailyComplete(wire.contracts.daily));wire.contracts.daily.claimed=true;wire.state.version++;return route.fulfill({status:200,contentType:'application/json',body:JSON.stringify({})});}
     const q=contracts.quests.find(q=>q.id===v.payload.contractId);assert(q);
     if(!receipts.has(v.requestId)){
      assert.equal(v.expectedVersion,wire.state.version);assert.equal(wire.contracts.progress[q.id],q.target);assert(!wire.contracts.claimed.includes(q.id));
@@ -56,9 +57,14 @@ const contracts=require('../contract-system.js');wire.contracts={rulesetId:contr
   const lostRequest=sent.at(-1).requestId;await p.reload();await p.waitForFunction(()=>window.MareGameSession?.controlled&&window.__mareDiagnostics?.().map.navigation.ready);await p.keyboard.press('c');
   await p.locator('[data-online-action="resume"]').click();await p.waitForFunction(()=>!MareGameSession.pending&&!MareGameSession.busy);
   assert.equal(sent.at(-1).requestId,lostRequest);assert.equal(wire.state.gold,'330');assert.equal(receipts.size,2);assert.equal(await p.locator('[data-contract-id="bandit"]').getAttribute('data-state'),'claimed');
+  wire.contracts.daily={cycle:contracts.day(Date.now()),endsAt:Date.now()+3600000,claimed:false,objectives:[{id:'daily-combat',title:'Caçada do Dia',desc:'Derrote César.',target:2,current:2},{id:'daily-berry',title:'Tesouros da Jornada',desc:'Obtenha Berry de monstros.',target:50,current:50},{id:'daily-reinforcement',title:'Reforços da Caçada',desc:'Derrote mais um César.',target:1,current:1}]};wire.state.version++;
+  await p.evaluate(()=>MareGameSession.read(true));await p.waitForSelector('[data-contract-id="daily-reinforcement"]');
+  const boost=p.locator('.contracts-final img');assert.equal(await boost.evaluate(i=>i.decode().then(()=>i.naturalWidth)),128);
+  await p.locator('[data-claim="daily-reward"]').click();await p.waitForFunction(()=>MareGameSession.data.online.contracts.daily?.claimed&&!MareGameSession.busy);
+  assert.equal(await p.locator('[data-claim="daily-reward"]').count(),0);
   await p.evaluate(()=>document.fonts.ready);await p.screenshot({path:path.join(out,'contracts-online-desktop.png')});
   await p.setViewportSize({width:393,height:852});await p.screenshot({path:path.join(out,'contracts-online-mobile.png')});
   assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-contracts');assert.deepEqual(errors,[]);
-  console.log('Original contracts UI: ten objectives, server counters, single rewards, lost-response replay after reload, mobile and demo save isolation passed.');
+  console.log('Original contracts UI: legacy objectives, new daily cycle and PixelLab icon, server counters, single rewards, lost-response replay after reload, mobile and demo save isolation passed.');
  }catch(e){await p.screenshot({path:path.join(out,'failure.png')}).catch(()=>{});console.error({pageErrors:errors,actions:sent.map(v=>v.action)});throw e;}finally{await context.close();await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1});

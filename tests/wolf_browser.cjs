@@ -25,7 +25,7 @@ const bridge=`  window.__wolfQA={paused:false,enterHunt,returnLobby,useFruitSkil
     const from={x,y},to={x:x+dx*240,y:y+dy*240},side={x:to.x-dy*64,y:to.y+dx*64};if(nav.walkable(x,y)&&nav.clear(from,to)&&nav.clear(from,side)&&nav.clear(from,{x:x-dy*32,y:y+dx*32})){origin=from;v={dx,dy};break;}
    }
    if(!origin)throw Error('No open charge segment');Object.assign(q.world.hero,origin);q.center();window.wolfOrigin=origin;window.wolfVector=v;
-   const mob=(id,d,side)=>({id,type:'bandit',district:__mareDiagnostics().hunt.sector.id,alive:true,hp:10000,maxHP:10000,defense:0,level:8,area:q.game.area,x:origin.x+v.dx*d-v.dy*side,y:origin.y+v.dy*d+v.dx*side,anchorX:origin.x,anchorY:origin.y,attack:0,attackClock:999,patrolClock:999,bob:0,speed:0,aggro:300,emberFacing:'south'});
+   const mob=(id,d,side)=>({id,type:'cesar',district:__mareDiagnostics().hunt.sector.id,alive:true,hp:10000,maxHP:10000,defense:0,level:8,area:q.game.area,x:origin.x+v.dx*d-v.dy*side,y:origin.y+v.dy*d+v.dx*side,anchorX:origin.x,anchorY:origin.y,attack:0,attackClock:999,patrolClock:999,bob:0,speed:0,aggro:300,emberFacing:'south'});
    q.world.mobs=[mob('selected',160,0),mob('nearby',164,48)];q.world.target=q.world.mobs[0];return {attack:q.stats().physical,speed:q.stats().speed,power:q.stats().power,def:q.game.equipment.akuma_no_mi.def};
   });assert.equal(setup.def,79);
   const walks=await page.evaluate(()=>{

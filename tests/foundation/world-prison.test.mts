@@ -1,7 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createRequire} from 'node:module';
-const require=createRequire(import.meta.url),E=require('../../world-battle.cjs'),P=require('../../prison-system.js'),C=require('../../character-system.js'),M={crab:{name:'Carapaça',hp:45,atk:7,def:3,reach:43,speed:42,attackSec:2.15},boss:{name:'Guardião',hp:350,atk:17,def:10,reach:56,speed:33,attackSec:2.45}},maps=require('../../world-catalog.cjs').load();
+const require=createRequire(import.meta.url),E=require('../../world-battle.cjs'),P=require('../../prison-system.js'),C=require('../../character-system.js'),M=E.prisonCatalog,maps=require('../../world-catalog.cjs').load();
 function setup(floor=1){
  const stats={...C.derive({classId:'sword',level:1,attributes:C.empty()},E.catalog.classes.sword,E.catalog.factions.pirate,{attack:0,defense:0,hp:0}),maxHP:1000,maxEnergy:100,accuracy:1,crit:0,evasion:0,healthRegen:0,energyRegen:0};
  const b=E.create(null,stats,1000,()=>0),spec=P.rollEncounter(floor,M,()=>0),hero={...maps.maps['impel-down'].spawn},nav=maps.navigation('impel-down');
@@ -10,7 +10,7 @@ function setup(floor=1){
  return {b,spec,hero,stats,step};
 }
 test('prison uses exactly one original scaled monster and preserves energy, cooldowns and regional hunts',()=>{
- for(const floor of [1,5,50,100]){const f=setup(floor),m=f.b.mobs[0];assert.equal(f.b.mobs.length,1);assert.equal(m.hp,f.spec.hp);assert.equal(m.attack,f.spec.atk);assert.equal(m.defense,f.spec.def);assert.equal(f.b.area,'impel-down');assert.equal(f.b.energy,42);assert.deepEqual(f.b.cooldowns,[7,9]);assert.equal(f.b.talentCooldowns.immortalUntil,90000);assert.equal(m.type,floor%5===0?'boss':f.spec.type);}
+ for(const floor of [1,5,50,100]){const f=setup(floor),m=f.b.mobs[0];assert.equal(f.b.mobs.length,1);assert.equal(m.hp,f.spec.hp);assert.equal(m.attack,f.spec.atk);assert.equal(m.defense,f.spec.def);assert.equal(f.b.area,'impel-down');assert.equal(f.b.energy,42);assert.deepEqual(f.b.cooldowns,[7,9]);assert.equal(f.b.talentCooldowns.immortalUntil,90000);assert.equal(m.type,f.spec.type);assert.equal(!!m.prisonElite,floor%5===0);}
 });
 test('prison enemy approaches without provocation and remains aggressive beyond ordinary leash',()=>{
  const f=setup(),x=f.b.mobs[0].x;f.b.auto=false;f.step(1);assert(f.b.mobs[0].x<x);assert(f.b.mobs[0].engaged);assert(!f.b.mobs[0].returning);f.step(1);assert(f.b.mobs[0].x<x);
@@ -24,6 +24,9 @@ test('prison respawn restores the same encounter and server spawn without reroll
 });
 
 
-test('shared duel catalog preserves all 31 original enemy definitions byte-for-byte',()=>{
- const {createHash}=require('node:crypto'),original=Object.fromEntries(Object.entries(E.prisonCatalog).filter(([id])=>id!=='satori'));assert.equal(Object.keys(E.prisonCatalog).length,32);assert.equal(Object.keys(original).length,31);assert.equal(createHash('sha256').update(JSON.stringify(original)).digest('hex'),'8400c8d1722d5e8bdbee35e50e897c979149e6a6957b0c3b646f7e5f6dc99bca');
+test('the duel catalog preserves official enemies and omits all retired identities',()=>{
+ assert.equal(Object.keys(E.prisonCatalog).length,28);
+ for(const id of ['crab','bandit','spirit','boss'])assert.equal(E.prisonCatalog[id],undefined);
+ assert.equal(P.resolveEncounter({floor:1,type:'crab',token:'impel-1-crab-1'},M).type,'cesar');
+ assert(P.resolveEncounter({floor:5,type:'boss',token:'impel-5-boss-1'},M).prisonElite);
 });

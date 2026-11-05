@@ -93,7 +93,21 @@
       return {id:recipient.id,amount:recipient.hp-before};
     });
   }
-  const api={attributes,birth,keys,empty,earned,spent,migrate,commit,roles,configure,compendiumMultiplier,derive,damage,incoming,healRecipients};
+  const monsterBalance=Object.freeze({attackSpeed:1.5,accuracy:1,attributeBudget:3,defense:1.3,xp:.1,playerDamage:.5,gearChance:.12,respawnSpeed:1.5});
+  function monsterProfile(base,{role='balanced',bossMultiplier=1,bossStats={}}={}){
+    const points=earned(base.level)*monsterBalance.attributeBudget;
+    const weights={balanced:[.35,.30],tank:[.50,.20],offense:[.25,.50]}[role];
+    const vitality=Math.floor(points*weights[0]),strength=Math.floor(points*weights[1]),defensePoints=points-vitality-strength;
+    return {...base,attributePoints:points,attributes:{vitality,strength,defense:defensePoints},
+      maxHP:Math.round((base.maxHP+vitality*4)*(bossStats.hp??bossMultiplier)),
+      attack:Math.round((base.attack+strength*.45)*(bossStats.attack??bossMultiplier)),
+      defense:Math.round((base.defense+defensePoints*.24)*(bossStats.defense??bossMultiplier)*monsterBalance.defense),
+      magicDefense:Math.round((base.magicDefense??base.defense)*(bossStats.defense??bossMultiplier)),
+      attackSec:base.attackSec/monsterBalance.attackSpeed,accuracy:monsterBalance.accuracy};
+  }
+  const monsterXP=xp=>Math.max(0,Math.round(xp*monsterBalance.xp));
+  const monsterDamage=amount=>Math.max(1,Math.floor(amount*monsterBalance.playerDamage));
+  const api={monsterBalance,monsterProfile,monsterXP,monsterDamage,attributes,birth,keys,empty,earned,spent,migrate,commit,roles,configure,compendiumMultiplier,derive,damage,incoming,healRecipients};
   globalThis.MareCharacters=api;
   if(typeof module!=='undefined')module.exports=api;
 })();

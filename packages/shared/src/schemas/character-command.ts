@@ -5,7 +5,7 @@ import {prisonActions,prisonFloorSchema} from './prison.js';
 import {achievementIdSchema} from './achievements.js';
 import {talentBuildSchema} from './talents.js';
 import {worldPointSchema,worldActions,worldSnapshotSchema} from './world.js';
-import {contractIdSchema} from './contracts.js';
+import {contractClaimIdSchema} from './contracts.js';
 import {battleActions,battleTargetSchema} from './battle.js';
 import {inventoryTradeSchema,inventorySnapshotSchema,equipmentItemSchema,equipmentSlotSchema} from "./inventory.js";
 import { z } from "zod";
@@ -56,7 +56,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
  z.strictObject({...commandEnvelope,action:z.literal("equipment.equip"),payload:z.strictObject({itemId:equipmentItemSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal("equipment.unequip"),payload:z.strictObject({slot:equipmentSlotSchema})}),
  z.strictObject({...commandEnvelope,action:z.enum(['items.initialize','potions.buy','potions.use']),payload:z.strictObject({})}),
- z.strictObject({...commandEnvelope,action:z.enum(['items.equip','items.sell','items.open-box']),payload:z.strictObject({itemId:instanceIdSchema})}),
+ z.strictObject({...commandEnvelope,action:z.enum(['items.equip','items.sell','items.open-box','items.use-xp-boost']),payload:z.strictObject({itemId:instanceIdSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('items.unequip'),payload:z.strictObject({slot:originalSlotSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('items.lock'),payload:z.strictObject({itemId:instanceIdSchema,locked:z.boolean()})}),
  z.strictObject({...commandEnvelope,action:z.literal('forge.execute'),payload:z.strictObject({operation:forgeOperationSchema})}),
@@ -67,7 +67,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
  z.strictObject({...commandEnvelope,action:z.literal('battle.auto'),payload:z.strictObject({enabled:z.boolean()})}),
  z.strictObject({...commandEnvelope,action:z.literal('battle.target'),payload:z.strictObject({targetId:battleTargetSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('battle.skill'),payload:z.strictObject({index:z.number().int().min(0).max(1)})}),
- z.strictObject({...commandEnvelope,action:z.literal('contract.claim'),payload:z.strictObject({contractId:contractIdSchema})}),
+ z.strictObject({...commandEnvelope,action:z.literal('contract.claim'),payload:z.strictObject({contractId:contractClaimIdSchema})}),
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
