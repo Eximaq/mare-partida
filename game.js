@@ -3638,7 +3638,7 @@ function applySceneHudLayout(){
   $('returnLobby').addEventListener('click',returnLobby);
   $('navLobby').addEventListener('click',()=>{if(scene!=='lobby')returnLobby();});
   $('navHunt').addEventListener('click',()=>openPanel('modes'));
-  $('chatForm').addEventListener('submit',e=>{e.preventDefault();let msg=$('chatInput').value.trim();if(!msg)return;log('Anotação local: '+msg);$('chatInput').value='';});
+  $('chatForm').addEventListener('submit',e=>{e.preventDefault();let msg=$('chatInput').value.trim();if(!msg)return;log('Anotação local: '+msg,'local-note');$('chatInput').value='';});
   // Controles de inventário: preservam o foco ao filtrar a mochila.
   $('dialogBody').addEventListener('input',e=>{
     if(e.target.id!=='invSearch'||currentPanel!=='inventory')return;
