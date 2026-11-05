@@ -1,3 +1,4 @@
+import {boostXp} from '../characters/contracts.js';
 import { createRequire } from "node:module";
 import { randomInt, randomUUID, createHash } from "node:crypto";
 import type { PoolClient } from "pg";
@@ -53,6 +54,7 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
   }
  }
  if(passives.grant){if(after.inventory.length>=120)throw new AuthFault(409,'inventory_full');after.inventory.push(passives.grant);}
+ xp=await boostXp(client,id,xp);
  if(BigInt(state.gold)+gold>maxGold||BigInt(state.experience)+xp>maxGold)throw new AuthFault(409,'progression_limit');
  await writeInventory(client,id,after);
  await client.query('UPDATE mare_game.character_progression SET gold=gold+$2,experience=experience+$3 WHERE character_id=$1',[id,gold.toString(),xp.toString()]);
@@ -76,6 +78,7 @@ function valid(input: unknown,owner?:string): OriginalInventory {
     const def=defs[item.def];
     if((item.type==='akuma_no_mi'||item.fruitId!==undefined)&&(def?.type!=='akuma_no_mi'||item.fruitId!==def.fruitId))throw new AuthFault(503,'original_inventory_unavailable');
     if(def?.kind==='weapon-fragment'&&(item.materialId!==def.materialId||!item.quantity||!item.boundToCharacter||item.binding!=='character'))throw new AuthFault(503,'original_inventory_unavailable');
+    if(def?.kind==='xp-boost'&&(!item.boundToCharacter||item.binding!=='character'||item.quantity!==undefined))throw new AuthFault(503,'original_inventory_unavailable');
     if(def?.kind==='akuma-fragment'&&(!item.boundToCharacter||item.binding!=='character'||item.materialId!==def.materialId||item.rank!==def.rank||!item.quantity))throw new AuthFault(503,'original_inventory_unavailable');
   }
   for (const [slot, item] of Object.entries(v.equipment))
@@ -375,6 +378,19 @@ export async function mutateOriginalInventory(
         i.equipment[slot] = item;
         if (previous) i.inventory.push(previous);
       }
+    } else if (input.action === "items.use-xp-boost") {
+      const item=i.inventory.find(x=>x.id===input.payload.itemId);
+      if(!item||defs[item.def]?.kind!=='xp-boost'||item.locked||item.boundToCharacter!==id)
+        throw new AuthFault(409,'item_protected');
+      const available=await client.query("SELECT to_regclass('mare_game.contract_daily_cycles') present");
+      if(!available.rows[0].present)throw new AuthFault(503,'contracts_unavailable');
+      const updated=await client.query(
+        "UPDATE mare_game.character_progression SET xp_boost_until=statement_timestamp()+interval '1 hour' WHERE character_id=$1 AND (xp_boost_until IS NULL OR xp_boost_until<=statement_timestamp()) RETURNING xp_boost_until",
+        [id],
+      );
+      if(!updated.rowCount)throw new AuthFault(409,'xp_boost_active');
+      i.inventory=i.inventory.filter(x=>x.id!==item.id);
+      outcome={xpBoostUntil:updated.rows[0].xp_boost_until};
     } else if (input.action === "items.open-box") {
       const box=i.inventory.find(x=>x.id===input.payload.itemId);if(!box)throw new AuthFault(404,'item_not_found');
       const result=require('../../../../prison-system.js').openBox(i,input.payload.itemId,defs,random,Date.now());

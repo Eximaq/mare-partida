@@ -26,13 +26,13 @@ test('all current commons retain their equal intervals and boss previews never d
  }
  const g=save();g.impelDown.cleared=4;
  const r=P.prepareEncounter(g,5,catalog,()=>{throw Error('boss is deterministic');});
- assert(r.ok);assert.equal(r.enemy.type,'boss');assert.equal(r.enemy.placeholder,true);
+ assert(r.ok);assert.equal(r.enemy.type,'a');assert.equal(r.enemy.prisonElite,true);
  assert.deepEqual(P.resolveEncounter(r.state.impelDown.encounter,catalog),r.enemy);
 });
 test('locked, completed, terminal, malformed and unconfigured encounters stay honest',()=>{
  for(const f of [0,2,5,101])assert.equal(P.prepareEncounter(save(),f,catalog).ok,false);
  const g=save();g.impelDown.cleared=100;assert.equal(P.prepareEncounter(g,100,catalog).ok,false);
- for(const identity of [null,{floor:1,type:'boss',token:'impel-x'},{floor:5,type:'a',token:'impel-x'},{floor:1,type:'missing',token:'impel-x'},{floor:1,type:'a',token:'<bad>'}])assert.equal(P.resolveEncounter(identity,catalog),null);
+ for(const identity of [null,{floor:1,type:'boss',token:'impel-x'},{floor:5,type:'b',token:'impel-x'},{floor:1,type:'missing',token:'impel-x'},{floor:1,type:'a',token:'<bad>'}])assert.equal(P.resolveEncounter(identity,catalog),null);
  assert.equal(P.floorDetails(1,catalog).monsters.length,0);
  assert.equal(P.prepareEncounter(save(),1,{}).ok,false);
  for(const roll of [-1,1,NaN,Infinity])assert.equal(P.prepareEncounter(save(),1,catalog,()=>roll).ok,false);

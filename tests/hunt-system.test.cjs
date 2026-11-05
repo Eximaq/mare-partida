@@ -23,7 +23,7 @@ for(const [area,region] of Object.entries(H.regions).filter(([,region])=>!!regio
  const s=region.sectors.at(-1);assert(!H.bossReady(g,area,s,1000,anchors));
  let current=g;for(let i=0;i<12;i++)current=H.recordKill(current,area,'bandit',1000).state;
  assert(H.bossReady(current,area,s,1000,anchors));assert(!H.bossReady(current,area,{x:0,y:0},1000,anchors));
- const killed=H.recordKill(current,area,'boss',1000);assert(killed.first);assert(!H.bossReady(killed.state,area,s,90999,anchors));assert(H.bossReady(killed.state,area,s,91000,anchors));
+ const killed=H.recordKill(current,area,'boss',1000);assert(killed.first);assert(!H.bossReady(killed.state,area,s,60999,anchors));assert(H.bossReady(killed.state,area,s,61000,anchors));
  const before=JSON.stringify(killed.state),full={...killed.state,inventory:Array(120).fill({id:'full'})};assert(!H.claimFirst(full,area,{id:'reward'}).ok);assert.equal(JSON.stringify(killed.state),before);
  const claim=H.claimFirst(killed.state,area,{id:'reward'});assert(claim.ok);assert.equal(claim.state.gold,killed.state.gold+region.firstGold);assert(!H.claimFirst(claim.state,area,{id:'again'}).ok);assert(!H.recordKill(killed.state,area,'boss').first);
 }

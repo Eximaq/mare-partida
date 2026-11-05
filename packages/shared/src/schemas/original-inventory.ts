@@ -133,6 +133,7 @@ export const originalActionSchema = z.enum([
   "items.lock",
   "items.sell",
   "items.open-box",
+  "items.use-xp-boost",
   "potions.buy",
   "potions.use",
   "forge.execute",

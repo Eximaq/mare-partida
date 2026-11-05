@@ -26,7 +26,7 @@
   }
 
   // Generation v1: persistent quality, separate from refinement and pearls.
-  const generationRules=Object.freeze({version:1,lambda:.06,normalGearChance:.20,basicFusionGrowth:.35,potentialGrowth:.015,potentialHpStep:5,nativeRankGrowth:1.6,basicRankGrowth:1.2,synthesisLevel:'character-level',chestLevel:'catalog'});
+  const generationRules=Object.freeze({version:1,lambda:.06,normalGearChance:(root.MareCharacters||(typeof module!=='undefined'?require('./character-system.js'):null))?.monsterBalance.gearChance??.12,basicFusionGrowth:.35,potentialGrowth:.015,potentialHpStep:5,nativeRankGrowth:1.6,basicRankGrowth:1.2,synthesisLevel:'character-level',chestLevel:'catalog'});
   function potentialProbabilities(lambda=generationRules.lambda){if(!Number.isFinite(lambda)||lambda<0)throw Error('Curva inválida');const p=Array.from({length:101},(_,i)=>Math.exp(-lambda*i)),sum=p.reduce((a,b)=>a+b,0);return p.map(n=>n/sum);}
   function rollPotential(random=Math.random){let n=draw(random);const p=potentialProbabilities();for(let i=0;i<100;i++){n-=p[i];if(n<0)return i;}return 100;}
   function lootLevel(level,region){if(!region||!Number.isInteger(region.min)||!Number.isInteger(region.max)||region.min>region.max)throw Error('Faixa do mapa inválida');return Math.min(region.max,Math.max(region.min,Math.max(1,int(level))));}

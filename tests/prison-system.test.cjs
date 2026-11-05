@@ -9,8 +9,8 @@ function test(name,run){run();tests++;console.log(name+': passed');}
 test('All 100 floors, compounded power scaling',()=>{
  for(let f=1;f<=100;f++)assert.equal(P.multiplier(f),1.30**(f-1));
  for(const f of [0,101,1.5,NaN,'1',undefined])assert.throws(()=>P.multiplier(f));
- const base={hp:100,atk:20,def:10,speed:5,xp:12};assert.deepEqual(P.scaleMonster(base,1),{hp:100,atk:20,def:10,speed:5,xp:12});
- assert.deepEqual(P.scaleMonster(base,100),{hp:Math.round(100*1.30**99),atk:Math.round(20*1.30**99),def:Math.round(10*1.30**99),speed:5,xp:12});assert.equal(base.hp,100);
+ const base={hp:100,atk:20,def:10,speed:5,xp:12};const first=P.scaleMonster(base,1);assert.deepEqual([first.hp,first.atk,first.def,first.speed,first.xp],[100,20,13,5,12]);
+ const last=P.scaleMonster(base,100);assert(last.hp>100*1.30**99);assert.equal(last.attributePoints,1485);assert.equal(last.speed,5);assert.equal(base.hp,100);
  assert.throws(()=>P.scaleMonster({hp:-1,atk:2,def:3},1));
 });
 test('Explicitly disabled system rejects entrance, victories and reward claims',()=>{
@@ -82,7 +82,7 @@ test('Phase presentation exposes final monster data without balancing factors',(
  const catalog={bandit:{name:'Corsário',hp:67,atk:10,def:5},spirit:{name:'Sentinela',hp:52,atk:12,def:3},boss:{name:'Guardião',hp:350,atk:17,def:10}};
  const first=P.floorDetails(1,catalog,P.prepareEncounter({impelDown:{cleared:0}},1,catalog,()=>0).state.impelDown.encounter);assert.equal(first.waves,1);assert.equal(first.total,1);assert.equal(first.monsters[0].hp,67);assert.equal(first.monsters[0].attack,10);
  assert(first.monsters.every(m=>m.level===1&&m.quantity>0));assert.equal(P.floorDetails(10,catalog,P.prepareEncounter({impelDown:{cleared:9}},10,catalog).state.impelDown.encounter).boss,true);
- assert.equal(P.floorDetails(10,catalog,P.prepareEncounter({impelDown:{cleared:9}},10,catalog).state.impelDown.encounter).monsters[0].id,'boss');assert(!/multiplier|factor|scale/.test(JSON.stringify(first)));assert.equal(catalog.bandit.hp,67);
+ assert.equal(P.floorDetails(10,catalog,P.prepareEncounter({impelDown:{cleared:9}},10,catalog).state.impelDown.encounter).monsters[0].id,'bandit');assert(!/multiplier|factor|scale/.test(JSON.stringify(first)));assert.equal(catalog.bandit.hp,67);
  assert.equal(P.floorDetails(1,{}).monsters.length,0);
 });
 test('Ascent preferences persist and determine the next action only when available',()=>{

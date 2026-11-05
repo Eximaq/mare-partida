@@ -1,3 +1,4 @@
+import {boostXp} from './contracts.js';
 import {createRequire} from 'node:module';
 import {randomInt,randomUUID} from 'node:crypto';
 import type {PoolClient} from 'pg';
@@ -33,9 +34,12 @@ export async function lifetimeGold(client:PoolClient,id:string,current:string,pr
 }
 async function inventoryChange(client:PoolClient,id:string,input:CharacterCommand,state:CharacterState,before:OriginalInventory,after:OriginalInventory,gold=0,xp=0){
  if(!Number.isSafeInteger(gold)||gold<0||!Number.isSafeInteger(xp)||xp<0||BigInt(state.gold)+BigInt(gold)>max||BigInt(state.experience)+BigInt(xp)>max)throw new AuthFault(409,'progression_limit');
+ xp=Number(await boostXp(client,id,BigInt(xp)));
+ if(!Number.isSafeInteger(xp)||BigInt(state.experience)+BigInt(xp)>max)throw new AuthFault(409,'progression_limit');
  await writeInventory(client,id,after);await client.query('UPDATE mare_game.character_progression SET gold=gold+$2,experience=experience+$3 WHERE character_id=$1',[id,String(gold),String(xp)]);
  await event(client,id,input.requestId,state.version,input.action,before,after,BigInt(state.gold),BigInt(gold),{experience:String(xp)});
  await advanceLevel(client,id,input.requestId,state);
+ return xp;
 }
 export async function mutateDungeon(client:PoolClient,id:string,input:CharacterCommand,state:CharacterState){
  if(!isDungeonAction(input.action))return;
@@ -66,8 +70,8 @@ export async function mutateDungeon(client:PoolClient,id:string,input:CharacterC
   if(!b.dungeon||b.dungeon.id!==dungeonId||b.dungeon.record.runId!==r.runId||w.mapId!=='quest-dungeons'||b.hp<=0||Math.hypot(w.position.x-chest.x,w.position.y-chest.y)>chest.radius)throw new AuthFault(409,'dungeon_chest_out_of_range');
   result=D.claim(base,dungeonId,{runId:r.runId,position:w.position,chest,defs:getGameCatalog().items,applyXP:()=>{},commit:()=>true,now:now.getTime()});
   if(!result.ok)throw new AuthFault(409,'dungeon_inventory_full');
-  await inventoryChange(client,id,input,state,stock,{...stock,inventory:result.state.inventory},r.reward.berry,r.reward.xp);
-  await client.query('INSERT INTO mare_game.dungeon_claims(character_id,dungeon_id,request_id,experience_delta,gold_delta) VALUES($1,$2,$3,$4,$5)',[id,dungeonId,input.requestId,r.reward.xp,r.reward.berry]);
+  const xp=await inventoryChange(client,id,input,state,stock,{...stock,inventory:result.state.inventory},r.reward.berry,r.reward.xp);
+  await client.query('INSERT INTO mare_game.dungeon_claims(character_id,dungeon_id,request_id,experience_delta,gold_delta) VALUES($1,$2,$3,$4,$5)',[id,dungeonId,input.requestId,xp,r.reward.berry]);
   // Claim, delivery and relocation share this command's SQL transaction.
   E.changeArea(b,null,now.getTime(),rng);const port=maps().maps.lobby.spawn;Object.assign(w,{mapId:'lobby',area:null,position:{...port},path:[],speed:0,direction:'front',serverNow:now.toISOString(),motionUntil:now.toISOString()});await storeWorld(client,id,w);await storeBattle(client,id,b);
  }else if(input.action==='dungeon.craft'){

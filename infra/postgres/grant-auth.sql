@@ -13,7 +13,7 @@ GRANT INSERT (character_id, request_id, version_before) ON mare_game.character_j
 -- Reward transactions may update XP/gold/level; catalog and level history stay immutable.
 GRANT SELECT ON mare_game.character_progression TO mare_runtime;
 GRANT INSERT (character_id) ON mare_game.character_progression TO mare_runtime;
-GRANT UPDATE (experience, gold, level, level_start_experience) ON mare_game.character_progression TO mare_runtime;
+GRANT UPDATE (experience, gold, level, level_start_experience, xp_boost_until) ON mare_game.character_progression TO mare_runtime;
 GRANT SELECT ON mare_game.character_hunts, mare_game.character_hunt_rewards TO mare_runtime;
 GRANT INSERT (character_id, request_id, version_before) ON mare_game.character_hunts TO mare_runtime;
 GRANT INSERT (character_id, request_id, version_before, experience_before, gold_before) ON mare_game.character_hunt_rewards TO mare_runtime;
@@ -58,7 +58,8 @@ GRANT UPDATE (simulation,control_epoch,tick_at) ON mare_game.character_battles T
 GRANT SELECT ON mare_game.world_battle_rewards TO mare_runtime;
 GRANT INSERT (character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) ON mare_game.world_battle_rewards TO mare_runtime;
 
-GRANT SELECT ON mare_game.contract_progress,mare_game.contract_claims TO mare_runtime;
+GRANT SELECT ON mare_game.contract_progress,mare_game.contract_claims,mare_game.contract_daily_cycles TO mare_runtime;
+GRANT INSERT (character_id,cycle,state), UPDATE (state) ON mare_game.contract_daily_cycles TO mare_runtime;
 GRANT INSERT (character_id,contract_id,progress) ON mare_game.contract_progress TO mare_runtime;
 GRANT UPDATE (progress) ON mare_game.contract_progress TO mare_runtime;
 GRANT INSERT (character_id,contract_id,request_id,version_before,experience_before,gold_before,experience_delta,gold_delta,rules_hash) ON mare_game.contract_claims TO mare_runtime;

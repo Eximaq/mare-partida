@@ -13,6 +13,31 @@ require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
 const Policy=require('./combat-action-policy.js');
 const sources=['combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
+const priorBalanceHashes=new Set(['c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46','33f5c37bd55b0dc9a052d31c9e7d68f760bb31122337fb1da73058050083fa6a']);
+function upgradeBalance(b){
+ if(!b||!priorBalanceHashes.has(b.rulesHash))return;
+ const prisonSpec=b.prison&&prison.resolveEncounter(b.prison.spec,prisonCatalog);
+ if(prisonSpec)b.prison.spec=prisonSpec;
+ for(const m of b.mobs){
+  if(m.balanceVersion===1)continue;
+  if(m.source==='world'){
+   const area=m.area||b.area,sector=hunt.get(area)?.sectors.find(s=>s.id===m.district);
+   if(!sector)continue;
+   if(['crab','bandit','spirit'].includes(m.type))m.type=sector.roles[0];
+   const profile=hunt.profile(area,sector.id,m.type);
+   m.hp=m.alive?Math.min(profile.maxHP,Math.ceil(profile.maxHP*m.hp/Math.max(1,m.maxHP))):0;
+   Object.assign(m,profile);
+  }else{
+   const spec=prisonSpec||prisonCatalog[m.type];
+   if(!spec)continue;
+   m.hp=m.alive?Math.min(spec.hp,Math.ceil(spec.hp*m.hp/Math.max(1,m.maxHP))):0;
+   Object.assign(m,{type:spec.type??m.type,maxHP:spec.hp,attack:spec.atk,defense:spec.def,magicDefense:spec.magicDefense,attackSec:spec.attackSec,accuracy:spec.accuracy,attributePoints:spec.attributePoints});
+  }
+  if(m.returning)behavior.disengage(m);
+  m.balanceVersion=1;
+ }
+ b.rulesHash=rulesHash;
+}
 function hakiGame(b){
  b.haki??=H.migrate({}).haki;b.hakiRuntime??=H.start();
  return {has_haki_unlocked:b.haki.unlocked,haki:b.haki};
@@ -28,7 +53,7 @@ function populate(b,now,rng,hero){
  const slots=behavior.ready(b.area,b.mobs,ledger.respawns,now);
  if(hero&&hunt.bossReady(b,b.area,hero,now))slots.push(...behavior.ready(b.area,b.mobs,ledger.respawns,now,true));
  for(const s of slots){const p=hunt.profile(b.area,s.sector,s.type,.5);b.mobs=b.mobs.filter(m=>m.spawnId!==s.id||!m.alive&&!m.fruitConsumed&&m.corpseUntil>now);
-  b.mobs.push({...p,source:'world',id:randomUUID(),spawnId:s.id,area:b.area,district:s.sector,type:s.type,x:s.x,y:s.y,anchorX:s.x,anchorY:s.y,hp:p.maxHP,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:rng()*Math.PI*2,patrolClock:0,telegraph:null,moving:0,attackAnim:0,emberElapsed:0,emberFacing:'south',slow:0});}
+  b.mobs.push({...p,source:'world',balanceVersion:1,id:randomUUID(),spawnId:s.id,area:b.area,district:s.sector,type:s.type,x:s.x,y:s.y,anchorX:s.x,anchorY:s.y,hp:p.maxHP,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:rng()*Math.PI*2,patrolClock:0,telegraph:null,moving:0,attackAnim:0,emberElapsed:0,emberFacing:'south',slow:0});}
 }
 function create(area,stats,now,rng=Math.random){
  const b={version:1,rulesHash,area,hp:stats.maxHP,energy:stats.maxEnergy,auto:false,autoSkills:true,targetId:null,pending:null,projectiles:[],attackClock:0,cooldowns:[0,0],guard:0,blessing:0,respawn:0,mobs:[],hunts:hunt.migrate({}).hunts,talents:null,talentCooldowns:{},events:[],seq:0};
@@ -40,13 +65,13 @@ function event(b,type,data={}){b.events.push({seq:++b.seq,type,...data});b.event
 function face(a,p){const dx=p.x-a.x,dy=p.y-a.y;a.direction=Math.abs(dx)>Math.abs(dy)?dx<0?'left':'right':dy<0?'back':'front';a.emberFacing={left:'west',right:'east',front:'south',back:'north'}[a.direction];}
 function move(a,goal,speed,dt,nav){const old={x:a.x,y:a.y},route=nav.path(a,goal);nav.follow(a,route,speed,dt);a.moving=distance(old,a)>.01?1:0;if(a.moving)face(a,{x:a.x+(a.x-old.x),y:a.y+(a.y-old.y)});}
 function target(b){return b.mobs.find(m=>m.id===b.targetId&&live(m));}
-function cancel(b){b.actionLockUntil=0;fruits.reset(b);b.auto=false;b.targetId=null;b.pending=null;b.skillJob=null;b.projectiles=[];}
+function cancel(b){b.actionLockUntil=0;fruits.reset(b);b.auto=false;b.targetId=null;b.unreachableUntil={};b.autoRoute=null;b.pending=null;b.skillJob=null;b.projectiles=[];}
 function changeArea(b,area,now,rng){cancel(b);resetHaki(b);delete b.prison;delete b.dungeon;b.talents=null;b.area=area;b.mobs=[];populate(b,now,rng);}
 function enterPrison(b,spec,stats,hero,{id=randomUUID(),stolen=0}={}){
  if(!prison.validFloor(spec.floor)||!Number.isFinite(spec.hp)||spec.hp<=0)throw Error('Invalid prison enemy');
  cancel(b);resetHaki(b);delete b.dungeon;b.talents=null;b.prison={floor:spec.floor,token:spec.token,spec:structuredClone(spec)};b.area='impel-down';b.auto=true;b.autoSkills=true;b.hp=stats.maxHP;b.respawn=0;b.attackClock=0;
  const p=prisonMap.enemySpawn;
- b.mobs=[{...spec,id,source:'impel-down',prisonToken:spec.token,area:'impel-down',level:spec.floor,...p,anchorX:p.x,anchorY:p.y,maxHP:spec.hp,hp:spec.hp,attack:spec.atk,defense:spec.def,magicDefense:spec.def,aggro:prisonMap.map.width,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:0,slow:0,telegraph:null,emberElapsed:0,emberFacing:'west',attackAnim:0,moving:0,patrolClock:0,talentStolen:stolen}];
+ b.mobs=[{...spec,id,source:'impel-down',balanceVersion:1,prisonToken:spec.token,area:'impel-down',level:spec.floor,...p,anchorX:p.x,anchorY:p.y,maxHP:spec.hp,hp:spec.hp,attack:spec.atk,defense:spec.def,magicDefense:spec.magicDefense??spec.def,aggro:prisonMap.map.width,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:0,slow:0,telegraph:null,emberElapsed:0,emberFacing:'west',attackAnim:0,moving:0,patrolClock:0,talentStolen:stolen}];
  Object.assign(hero,prisonMap.map.spawn);
 }
 function enterDungeon(b,id,record,stats,hero,{stolen=0}={}){
@@ -55,7 +80,7 @@ function enterDungeon(b,id,record,stats,hero,{stolen=0}={}){
  Object.assign(hero,dungeonMap.spawn);
  if(record.phase!=='running')return;
  const spec=prisonCatalog[d.monster],p=dungeonMap.enemySpawn;
- b.mobs=[{...spec,id:record.spawnId,type:d.monster,source:'boss-dungeon',dungeonId:id,dungeonRunId:record.runId,dungeonEncounterId:record.encounterId,area:'quest-dungeons',level:d.level,...p,anchorX:p.x,anchorY:p.y,maxHP:spec.hp,hp:spec.hp,attack:spec.atk,defense:spec.def,magicDefense:spec.magicDefense,aggro:dungeonMap.width,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:0,slow:0,telegraph:null,emberElapsed:0,emberFacing:'south',attackAnim:0,moving:0,patrolClock:0,talentStolen:stolen}];
+ b.mobs=[{...spec,id:record.spawnId,type:d.monster,source:'boss-dungeon',balanceVersion:1,dungeonId:id,dungeonRunId:record.runId,dungeonEncounterId:record.encounterId,area:'quest-dungeons',level:d.level,...p,anchorX:p.x,anchorY:p.y,maxHP:spec.hp,hp:spec.hp,attack:spec.atk,defense:spec.def,magicDefense:spec.magicDefense,aggro:dungeonMap.width,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:0,slow:0,telegraph:null,emberElapsed:0,emberFacing:'south',attackAnim:0,moving:0,patrolClock:0,talentStolen:stolen}];
 }
 function skill(b,index,c){
  const g=talents.game(b,c),stats=combatStats(b,c,c.runtime),s=catalog.classes[c.classId]?.skills[index],cost=U.selected(g)==='archmage'?0:(s?.cost||0)*(1-(stats.energyEfficiency||0)),m=target(b),self=['guard','heal','blessing'].includes(s?.type);
@@ -108,7 +133,7 @@ function step(b,c){
  function land(m,raw,now,slow=0){
   if(!live(m)||b.hp<=0||raw<=0)return 0;H.touch(hakiGame(b),b.hakiRuntime);
   if(m.rankSFreezeUntil>now/1000){raw+=m.rankSFreezePower||0;m.rankSFreezeUntil=0;m.rankAStunUntil=0;m.rankSIceSlowUntil=now/1000+3;m.rankSIceHeavyAttackUntil=now/1000+3;}
-  const amount=Math.min(m.hp,Math.max(1,Math.floor(raw)));behavior.hurt(m);m.hp-=amount;if(slow)m.slow=slow;
+  const amount=Math.min(m.hp,characters.monsterDamage(raw));behavior.hurt(m);if(c.shared&&!m.partyTargetId)m.partyTargetId=c.shared.actorId;m.hp-=amount;if(slow)m.slow=slow;
   if(stats.fruitLifesteal||b.fruit?.effects.wolfUntil>now/1000)b.hp=Math.min(stats.maxHP,b.hp+amount*((stats.fruitLifesteal||0)+(b.fruit.effects.wolfUntil>now/1000?globalThis.MareWolf.rules.lifesteal:0)));
   b.metrics.damage=Math.min(Number.MAX_SAFE_INTEGER,b.metrics.damage+amount);event(b,'damage',{id:m.id,amount});if(m.hp<=0)kill(m,now);return amount;
  }
@@ -127,10 +152,11 @@ function step(b,c){
   }
  }
  function landed(m,amount,slow,meta){
+  const offensiveDamage=m?Math.min(amount,m.hp/characters.monsterBalance.playerDamage):0;
   const actual=land(m,amount,now,slow);if(!actual||!meta)return;
-  const hitStats=meta.stats,passive=TC.afterHit(g,rt,{target:m,...meta,damage:actual,random:rng});contact(passive,m);
-  actions(U.after(g,rt.ultimate,{target:m,hero,...meta,damage:actual,enemies:enemies(),clear,random:rng}));
-  if(passive.pierce)for(const other of TC.piercingTargets(hero,m,enemies(),hitStats.range+125))if(clear(m,other))b.projectiles.push(vfx.projectile('gunner',m,other.id,{damage:actual*.5,secondary:true,origin:{x:m.x,y:m.y}}));
+  const hitStats=meta.stats,passive=TC.afterHit(g,rt,{target:m,...meta,damage:actual,offensiveDamage,random:rng});contact(passive,m);
+  actions(U.after(g,rt.ultimate,{target:m,hero,...meta,damage:offensiveDamage,enemies:enemies(),clear,random:rng}));
+  if(passive.pierce)for(const other of TC.piercingTargets(hero,m,enemies(),hitStats.range+125))if(clear(m,other))b.projectiles.push(vfx.projectile('gunner',m,other.id,{damage:offensiveDamage*.5,secondary:true,origin:{x:m.x,y:m.y}}));
  }
  function hit(m,multiplier,damageType,at,area=false,slow=0,basic=false){
   if(!live(m)||b.hp<=0||distance(hero,m)>stats.range+(area?125:1)||!clear(hero,m))return;
@@ -143,10 +169,10 @@ function step(b,c){
   if(projectile){const kind=classId==='strategist'?'mage':classId;b.projectiles.push(vfx.projectile(kind,hero,m.id,{damage:amount,slow,contact:meta}));event(b,'projectile',{id:m.id,kind,x:hero.x,y:hero.y});}
   else landed(m,amount,slow,meta);
  }
- function die(){resetHaki(b);b.hp=0;b.respawn=4.1;b.actionLockUntil=0;fruits.reset(b);b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;if(!c.shared)for(const other of enemies())behavior.disengage(other);event(b,'death');}
+ function die(){b.autoRoute=null;resetHaki(b);b.hp=0;b.respawn=4.1;b.actionLockUntil=0;fruits.reset(b);b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;if(!c.shared)for(const other of enemies())behavior.disengage(other);event(b,'death');}
  function damage(m,multiplier=1,warning){
   if(warning?.groundTrap&&b.fruit?.id==='akuma_tori_albatroz'&&b.fruit.transformed&&b.fruit.effects.altitudeUntil>now/1000||b.fruit?.id==='akuma_bomu_bomu'&&warning?.damageType==='explosion')return;const physical=m.type!=='spirit';
-  if(b.hp<=0)return;const genie=b.fruit?.effects.genie;if(genie){fruits.genieDamage(genie,now/1000,m.attack*multiplier,physical);if(genie.hp<=0)delete b.fruit.effects.genie;return;}H.touch(hakiGame(b),b.hakiRuntime);stats=combatStats(b,c,rt);if(rng()<stats.evasion){b.hakiRuntime.eyeFX=.35;event(b,'evade');return;}
+  if(b.hp<=0)return;const genie=b.fruit?.effects.genie;if(genie){fruits.genieDamage(genie,now/1000,m.attack*multiplier,physical);if(genie.hp<=0)delete b.fruit.effects.genie;return;}H.touch(hakiGame(b),b.hakiRuntime);stats=combatStats(b,c,rt);
   const raw=characters.incoming(physical?stats:{...stats,defense:stats.magicDefense??stats.defense},m.attack*multiplier*(m.kobuDebuffUntil>now?.8:1)*(m.hakiDebuff>0?.85:1)*(physical?1-(stats.impactResistancePercent||0):1),b.guard>0,.85+rng()*.25);
   const fruitReaction=fruits.incoming(b,{...c,stats,now},m,raw,m.attack*multiplier,physical);if(!fruitReaction.damage)return;
   const r=TC.receive(g,rt,{stats,amount:fruitReaction.damage,physical,melee:m.reach<=60,source:m,random:rng,now});
@@ -182,11 +208,18 @@ function step(b,c){
    }
   if(b.auto&&b.hp>0&&b.area&&!fruitBusy){
    if(b.hp<stats.maxHP*.4&&potionsUsed<(c.potions||0)){heal(Math.round(stats.maxHP*.44));potionsUsed++;event(b,'potion');}
-   if(!m){m=b.mobs.filter(live).sort((a,z)=>distance(hero,a)-distance(hero,z))[0];b.targetId=m?.id??null;}
+   if(!m){m=b.mobs.filter(m=>live(m)&&!(b.unreachableUntil?.[m.id]>now)).sort((a,z)=>distance(hero,a)-distance(hero,z))[0];b.targetId=m?.id??null;}
    const actionLocked=!!(b.pending||b.skillJob||b.fruit?.job||(b.actionLockUntil||0)>now);
    const warnings=b.mobs.filter(live).map(m=>m.telegraph).filter(Boolean),danger=warnings.some(w=>hunt.danger(w,hero));
    if(!actionLocked&&danger){let goal;for(const r of [90,170,240]){for(let i=0;i<16;i++){const a=i*Math.PI/8,p={x:hero.x+Math.cos(a)*r,y:hero.y+Math.sin(a)*r};if(nav.walkable(p.x,p.y)&&!warnings.some(w=>hunt.danger(w,p))){goal=p;break;}}if(goal)break;}if(goal)move(hero,goal,stats.huntSpeed,dt,nav);}
-   else if(m&&!actionLocked&&(distance(hero,m)>stats.range-8||!clear(hero,m)))move(hero,m,stats.huntSpeed,dt,nav);
+   else if(m&&!actionLocked&&(distance(hero,m)>stats.range-8||!clear(hero,m))){
+    if(b.autoRoute?.target!==m.id||distance(b.autoRoute.goal,m)>20||!b.autoRoute.path.length)b.autoRoute={target:m.id,goal:{x:m.x,y:m.y},path:nav.path(hero,m)};
+    const {path}=b.autoRoute,previous={x:hero.x,y:hero.y};
+    if(path.length)nav.follow(hero,path,stats.huntSpeed,dt);
+    hero.moving=distance(previous,hero)>.01?1:0;
+    if(hero.moving)face(hero,{x:hero.x*2-previous.x,y:hero.y*2-previous.y});
+    else{b.autoRoute=null;b.unreachableUntil??={};for(const id of Object.keys(b.unreachableUntil))if(b.unreachableUntil[id]<=now)delete b.unreachableUntil[id];b.unreachableUntil[m.id]=now+5000;b.targetId=null;m=null;}
+   }
    else if(m&&!actionLocked&&!b.fruit?.transformed&&['gunner','strategist','healer'].includes(classId)&&distance(hero,m)>0&&distance(hero,m)<stats.range*.45){const d=distance(hero,m),goal={x:hero.x+(hero.x-m.x)/d*stats.huntSpeed*dt,y:hero.y+(hero.y-m.y)/d*stats.huntSpeed*dt};if(nav.walkable(goal.x,goal.y)&&clear(goal,m))move(hero,goal,stats.huntSpeed,dt,nav);}
    if(m&&!actionLocked&&b.attackClock<=0&&distance(hero,m)<=stats.range&&clear(hero,m)){
     const duration=Math.max(.15,1/stats.speed);face(hero,m);const clip=b.fruit?.transformed?zoan.attackTiming(b.fruit.id,hero.direction):null,ratio=clip?(clip.hitFrameRatio??(clip.impact_frame??Math.floor(clip.frames*.45))/clip.frames):.5;b.pending={targetId:m.id,remaining:duration*ratio};b.actionLockUntil=now+duration*1000;hero.moving=0;b.attackClock=duration;event(b,'attack',{id:m.id,duration});
@@ -207,7 +240,13 @@ function step(b,c){
    if(s.type==='blessing'){b.guard=8;b.blessing=8;}
    if(s.type==='strike')hit(t,s.multiplier,s.damageType||type,now);
    if(s.type==='area'&&live(t))for(const other of b.mobs.filter(live))if(distance(t,other)<125)hit(other,s.multiplier||1.55,s.damageType||type,now,true,s.element==='lightning'?4.5:0);
-   if(s.type==='taunt'){b.guard=Math.max(b.guard,4);for(const other of b.mobs.filter(live))hit(other,s.multiplier,type,now,true);}
+   if(s.type==='taunt'){b.guard=Math.max(b.guard,4);for(const other of b.mobs.filter(live))if(distance(hero,other)<=stats.range+125&&clear(hero,other)){
+    if(c.shared){
+     other.partyTaunt={targetId:c.shared.actorId,priorId:other.partyTaunt?.priorId??other.partyTargetId,until:now+5000};
+     if(other.partyTargetId!==c.shared.actorId){other.telegraph=null;if(other.dungeonAttack)dungeonCombat.cancel(other);}
+    }
+    hit(other,s.multiplier,type,now,true);
+   }}
   }
   for(const p of b.projectiles){const t=b.mobs.find(m=>m.id===p.targetId);vfx.step(p,dt,{target:t,origin:p.origin||hero,clear,valid:()=>b.hp>0&&live(t),onHit:()=>p.secondary?land(t,p.damage,now,p.slow):landed(t,p.damage,p.slow,p.contact)});}
   b.projectiles=b.projectiles.filter(p=>p.phase!=='done');if(b.projectiles.length>1024)throw Error('battle_projectile_limit');
@@ -216,10 +255,9 @@ function step(b,c){
    const focus=b.fruit?.effects.genie||hero;
    enemy.hakiDebuff=Math.max(0,(enemy.hakiDebuff||0)-dt);enemy.slow=Math.max(0,enemy.slow-dt);enemy.emberElapsed+=dt;enemy.attackAnim=Math.max(0,enemy.attackAnim-dt);enemy.moving=0;
    const rooted=enemy.doruRootUntil>now/1000||enemy.betaRootUntil>now/1000;
-   const intent=behavior.intent(enemy,focus,b.hp>0&&!rt.ultimate.hidden,!!(b.prison||b.dungeon)),speed=(rooted?0:enemy.speed)*fruits.R.slowFactor(enemy,now/1000)*(enemy.zoanSlowUntil>now/1000?.7:1)*(enemy.slow>0?.55:1)*(enemy.talentSlow?.remaining>0?1-enemy.talentSlow.percent:1);
+   const intent=behavior.intent(enemy,focus,b.hp>0,!!(b.prison||b.dungeon)),speed=(rooted?0:enemy.speed)*fruits.R.slowFactor(enemy,now/1000)*(enemy.zoanSlowUntil>now/1000?.7:1)*(enemy.slow>0?.55:1)*(enemy.talentSlow?.remaining>0?1-enemy.talentSlow.percent:1);
    if(enemy.bisonStunUntil>now/1000||enemy.ryuStunUntil>now/1000||globalThis.MareRankB.stunned(enemy,now/1000)||fruits.R.stunned(enemy,now/1000)||fruits.R.attackBlocked(enemy,now/1000)||fruits.R.dragged(enemy,now/1000)||enemy.empRemaining>0||enemy.talentControl?.remaining>0||(enemy.source==='boss-dungeon'&&(b.hp<=0||rt.ultimate.hidden))){enemy.telegraph=null;if(enemy.dungeonAttack)dungeonCombat.cancel(enemy);continue;}
-   if(intent==='idle'){const goal=behavior.patrol(enemy,dt,(a,z)=>{const n=Math.max(1,Math.ceil(distance(a,z)/4));for(let i=0;i<=n;i++)if(!nav.walkable(a.x+(z.x-a.x)*i/n,a.y+(z.y-a.y)*i/n))return false;return true;});if(goal)move(enemy,goal,speed*.45,dt,nav);continue;}
-   if(intent==='return'){const home={x:enemy.anchorX,y:enemy.anchorY};if(distance(enemy,home)<=8){Object.assign(enemy,home);behavior.home(enemy);}else move(enemy,home,speed,dt,nav);continue;}
+   if(intent==='idle'||rt.ultimate.hidden){enemy.telegraph=null;continue;}
    if(enemy.source==='boss-dungeon'){
     enemy.attackClock-=dt*(enemy.rankSIceHeavyAttackUntil>now/1000?.5:enemy.rankSIceAttackUntil>now/1000?.6:1);
     if(enemy.dungeonAttack){dungeonCombat.step(enemy,dt,{valid:t=>t==='hero'&&b.hp>0&&distance(enemy,focus)<=enemy.reach+10&&clear(enemy,focus),hit:()=>damage(enemy)});continue;}
@@ -230,10 +268,10 @@ function step(b,c){
    if(enemy.telegraph){const result=hunt.stepWarning(enemy,dt,focus,{clear:clear(enemy,focus)});if(result?.hit)damage(enemy,result.multiplier,result.warning);continue;}
    enemy.attackClock-=dt*(enemy.rankSIceHeavyAttackUntil>now/1000?.5:enemy.rankSIceAttackUntil>now/1000?.6:1);
    if(enemy.attackClock<=0){if(distance(enemy,focus)<=enemy.reach+10&&clear(enemy,focus)){face(enemy,focus);enemy.attackAnim=enemy.type==='bananawani'?.9:.58;enemy.telegraph=hunt.beginWarning(enemy,focus);enemy.attackCount++;if(!enemy.telegraph)damage(enemy);enemy.attackClock=enemy.attackSec;}else enemy.attackClock=.3;}
-   if(distance(enemy,focus)>enemy.reach*.75&&distance(enemy,focus)<enemy.aggro)move(enemy,focus,speed*.65,dt,nav);
+   if(distance(enemy,focus)>enemy.reach*.75||!clear(enemy,focus))move(enemy,focus,speed*.65,dt,nav);
   }
  }
  stats=combatStats(b,{...c,now},rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
  talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};
 }
-module.exports={populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,create,step,skill,cancel,changeArea,rulesHash,catalog,hunt,talentStats:talents.stats};
+module.exports={populate,fruitCast:(b,key,c)=>fruits.cast(b,key,{...c,stats:combatStats(b,c)}),fruitTransform:fruits.transform,resetFruit:fruits.reset,hakiGame,resetHaki,hakiCast,hakiToggle,combatStats,enterDungeon,enterPrison,prisonCatalog,create,step,skill,cancel,changeArea,upgradeBalance,disengage:behavior.disengage,rulesHash,catalog,hunt,talentStats:talents.stats};

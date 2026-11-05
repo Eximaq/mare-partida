@@ -62,9 +62,9 @@ assert.equal(hunt.get('swamp').sectors.length,4);
 for(const sector of hunt.get('swamp').sectors){
   const profile=hunt.profile('swamp',sector.id,'helmeppo',0);
   assert.equal(profile.level,8);
-  assert.equal(profile.maxHP,255);
-  assert.equal(profile.attack,20);
-  assert.equal(profile.defense,9);
+  assert.equal(profile.maxHP,399);
+  assert.equal(profile.attack,34);
+  assert.equal(profile.defense,24);
   assert.equal(profile.magicDefense,6);
 }
 assert.deepEqual(pngSize('assets/world-maps/conchas/projection.png'),{width:4480,height:3456});

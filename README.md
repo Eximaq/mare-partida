@@ -26,7 +26,7 @@
 
 **Impel Down online:** [andares, duelos, marcos e caixas no servidor](docs/architecture/ORIGINAL-PRISON-SERVER.md), com o mapa e diário originais.
 
-**Contratos originais online:** [dez objetivos, contadores autoritativos e resgate único no quadro existente](docs/architecture/ORIGINAL-CONTRACTS-SERVER.md). Saves da demonstração preservados.
+**Contratos originais online:** [dez objetivos, contadores autoritativos e resgate único no quadro existente](docs/architecture/ORIGINAL-CONTRACTS-SERVER.md). Saves da demonstração preservados. A atualização de [monstros e missões diárias](docs/REBALANCEAMENTO-MONSTROS.md) acrescenta ciclos e Boost de XP ao mesmo quadro.
 
 Talentos online: [árvores, efeitos e persistência autoritativa](docs/architecture/ORIGINAL-TALENTS-SERVER.md), com novos PT exclusivamente por conquistas resgatadas, orçamento legado congelado e interface original. Pontos de [conquistas autoritativas](docs/architecture/ORIGINAL-ACHIEVEMENTS-SERVER.md) entram no mesmo orçamento.
 
