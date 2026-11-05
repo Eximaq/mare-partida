@@ -1,14 +1,15 @@
 /* Shared cosmetic policy. Never owns equipment, combat stats or storage. */
 (function(root){
   'use strict';
-  const policies=Object.freeze({18:Object.freeze({hairOcclusion:'none'}),19:Object.freeze({hairOcclusion:'all'})});
+  const modes={18:'partial',19:'full',129:'partial',136:'full',143:'partial',150:'partial',157:'none',164:'none',171:'partial',178:'none'};
+  const policies=Object.freeze(Object.fromEntries(Object.entries(modes).map(([id,hairHideMode])=>[id,Object.freeze({hairHideMode,hairOcclusion:hairHideMode==='full'?'all':hairHideMode==='partial'?'crown':'none'})])));
   const hidden=player=>player?.preferences?.hideHeadgear===true;
   function resolve(item,{hidden=false,model=null}={}){
     const id=typeof item==='object'?item?.def:item,equipped=id!==null&&id!==undefined&&id!=='original'&&id!=='none';
     const visible=equipped&&!hidden;
-    const policy=model?.hairOcclusion??(typeof model?.hideHair==='boolean'?(model.hideHair?'all':'none'):policies[id]?.hairOcclusion??'none');
-    const hairOcclusion=visible&&['none','all','crown'].includes(policy)?policy:'none';
-    return {equipped,visible,hidden:hidden===true,hairOcclusion,hideHair:hairOcclusion==='all'};
+    const legacy={all:'full',crown:'partial',none:'none'},requested=model?.hairHideMode||legacy[model?.hairOcclusion]||(model?.hideHair===true?'full':null)||policies[id]?.hairHideMode||'full';
+    const hairHideMode=visible?(['none','partial','full'].includes(requested)?requested:'full'):'none',hairOcclusion=hairHideMode==='full'?'all':hairHideMode==='partial'?'crown':'none';
+    return {equipped,visible,hidden:hidden===true,hairHideMode,hairOcclusion,hideHair:hairHideMode==='full'};
   }
   function withPreference(player,value){
     if(!player||typeof value!=='boolean')return null;

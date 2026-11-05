@@ -26,7 +26,7 @@ test('profile creation and cosmetics survive reload without changing economy, ow
  const req=await a.input('profile.preferences',{hideItems:false});await assert.rejects(f.service.command(b.login.token,a.c.id,req),{code:'character_not_found'});await f.service.acquireControl(a.login.token,a.c.id,a.lease.epoch);await assert.rejects(a.send(req),{code:'control_conflict'});
 }));
 test('profile identity restores independent class builds and never farms starter weapons, heals or clears cooldowns',async()=>authDatabase(async f=>{
- const a=await actor(f),node=T.nodes('sword')[0].id,build={...T.empty(),nodes:{[node]:1}};await a.doit('talents.commit',{build});
+ const a=await actor(f);await f.pool.query('INSERT INTO mare_game.talent_legacy_allowances(character_id,budget) VALUES($1,1)',[a.c.id]);const node=T.nodes('sword')[0].id,build={...T.empty(),nodes:{[node]:1}};await a.doit('talents.commit',{build});
  const before=await a.read(),b=before.battle;b.hp=9;b.energy=3;b.cooldowns=[10,20];b.talentCooldowns={shield:Date.now()+60000};await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(b)]);
  const edit=(classId:string)=>a.doit('profile.identity',{name:'Marinheiro',classId,factionId:'marine',appearance:A.defaults});
  await edit('healer');let now=await a.read();assert.equal(now.profile.identity.classId,'healer');assert.equal(now.originalInventory.equipment.weapon.def,31);assert.equal(now.talents.spent,0);assert.equal(now.battle.hp,9);assert.equal(now.battle.energy,3);assert.deepEqual(now.battle.cooldowns,[10,20]);assert.deepEqual(now.battle.talentCooldowns,b.talentCooldowns);

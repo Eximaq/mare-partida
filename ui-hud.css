@@ -126,19 +126,19 @@
 #app .parchment-profile .parchment-tools{display:flex;justify-content:flex-end;margin:0 7px;min-height:22px}
 #app .parchment-profile #attributePointsHud{min-height:22px;padding:1px 4px;color:#f4daa4;background:#321d24;border:1px solid #ad8854;border-image:none;font:500 11px/1 var(--rpg-font);text-decoration:none}
 #app .parchment-profile :is(#miniWillpower,#miniTalentResource){width:calc(100% - 22px);margin:0 11px;padding:2px 4px;background:#321d24;height:18px}
-#app .topbar.parchment-profile.poster-expanded{z-index:calc(var(--rpg-z-popover) + 1)}
-#app .parchment-profile .character-poster{position:absolute;left:0;top:calc(100% + 4px);width:100%;max-height:calc(100dvh - var(--profile-bottom,244px) - 16px);overflow:auto;overscroll-behavior:contain;background:none;border:0;scrollbar-width:thin;scrollbar-color:#ad8854 #301c24}
-#app .parchment-profile .wanted-sheet{position:relative;width:100%;aspect-ratio:448/600;overflow:hidden}
-#app .parchment-profile .wanted-paper{position:absolute;inset:0;width:100%;height:auto;max-width:none;pointer-events:none}
-#app .parchment-profile .wanted-heading{position:absolute;left:13%;top:9%;width:74%;text-align:center;color:#30190d;display:flex;flex-direction:column}
-#app .parchment-profile .wanted-heading strong{font:900 39px/1 Georgia,serif;letter-spacing:-1px}
-#app .parchment-profile .wanted-heading span{font:700 17px/1.3 Georgia,serif}
-#app .parchment-profile #wantedPortrait{position:absolute;left:28%;top:34%;width:44%;height:auto;aspect-ratio:1;background:none;border:0;image-rendering:pixelated}
-#app .parchment-profile #wantedName{position:absolute;left:18%;top:70%;width:64%;height:9%;display:flex;align-items:center;justify-content:center;padding:2px 4px;overflow:hidden;color:#352012;text-align:center;text-shadow:none;font:700 26px/1 'Alabasta Pirate',serif;white-space:nowrap}
-#app .parchment-profile .wanted-bounty-label{position:absolute;left:17%;top:83%;width:66%;height:8%;display:flex;align-items:center;gap:6px;color:#352012;font:700 16px/1 Georgia,serif;white-space:nowrap}
-#app .parchment-profile #wantedBounty{flex:1;height:20px;border-bottom:1px solid #352012}
-#app .parchment-profile #characterPosterClose{display:block;width:calc(100% - 20px);min-height:38px;margin:4px 10px 10px;padding:6px;border:1px solid #ad8854;border-image:none;background:#38242b;color:#f5d59c;font:500 13px/1 var(--rpg-font);touch-action:manipulation}
-#app .parchment-profile :is(#characterPosterToggle,#characterPosterClose,#attributePointsHud):focus-visible{outline:2px solid #ffe7ac;outline-offset:2px}
+#app .topbar.topbar.poster-expanded{z-index:calc(var(--rpg-z-popover) + 1)}
+#app .topbar .character-poster{position:absolute;left:0;top:calc(100% + 4px);width:100%;max-height:calc(100dvh - var(--profile-bottom,244px) - 16px);overflow:auto;overscroll-behavior:contain;background:none;border:0;scrollbar-width:thin;scrollbar-color:#ad8854 #301c24}
+#app .topbar .wanted-sheet{position:relative;width:100%;aspect-ratio:448/600;overflow:hidden}
+#app .topbar .wanted-paper{position:absolute;inset:0;width:100%;height:auto;max-width:none;pointer-events:none}
+#app .topbar .wanted-heading{position:absolute;left:13%;top:9%;width:74%;text-align:center;color:#30190d;display:flex;flex-direction:column}
+#app .topbar .wanted-heading strong{font:900 39px/1 Georgia,serif;letter-spacing:-1px}
+#app .topbar .wanted-heading span{font:700 17px/1.3 Georgia,serif}
+#app .topbar #wantedPortrait{position:absolute;left:28%;top:34%;width:44%;height:auto;aspect-ratio:1;background:none;border:0;image-rendering:pixelated}
+#app .topbar #wantedName{position:absolute;left:18%;top:70%;width:64%;height:9%;display:flex;align-items:center;justify-content:center;padding:2px 4px;overflow:hidden;color:#352012;text-align:center;text-shadow:none;font:700 26px/1 'Alabasta Pirate',serif;white-space:nowrap}
+#app .topbar .wanted-bounty-label{position:absolute;left:17%;top:83%;width:66%;height:8%;display:flex;align-items:center;gap:6px;color:#352012;font:700 16px/1 Georgia,serif;white-space:nowrap}
+#app .topbar #wantedBounty{flex:1;height:20px;border-bottom:1px solid #352012}
+#app .topbar #characterPosterClose{display:block;width:calc(100% - 20px);min-height:38px;margin:4px 10px 10px;padding:6px;border:1px solid #ad8854;border-image:none;background:#38242b;color:#f5d59c;font:500 13px/1 var(--rpg-font);touch-action:manipulation}
+#app .topbar :is(#characterPosterToggle,#characterPosterClose,#attributePointsHud):focus-visible{outline:2px solid #ffe7ac;outline-offset:2px}
 
 #app .parchment-profile .parchment-status::before{content:'';position:absolute;inset:7% 7%;z-index:-1;background:#302018 url('assets/ui/character-hud/hd/wood.png') center/cover}
 #app .parchment-profile .parchment-status{isolation:isolate}
@@ -147,10 +147,10 @@
 #app .parchment-profile .hud-hierarchy:has([data-faction=revolutionary])::before{background:linear-gradient(#215b42,#103a29)}
 #app .parchment-profile .hud-hierarchy:has([data-faction=government])::before{background:linear-gradient(#eee4cc,#b8af9c)}
 #app .parchment-profile .hud-hierarchy:has([data-faction=government]) #hudHierarchyTitle{color:#302018;text-shadow:none}
-#app .parchment-profile .wanted-sheet::before{content:'';position:absolute;inset:8% 10%;background:#e3be7c url('assets/ui/character-hud/hd/parchment.png') center/cover}
-#app .parchment-profile #wantedPortrait{left:33%;top:30%;width:34%}
-#app .parchment-profile #wantedName{top:61.5%;height:9%;left:24%;width:52%}
-#app .parchment-profile .wanted-bounty-label{top:82%}
+#app .topbar .wanted-sheet::before{content:'';position:absolute;inset:8% 10%;background:#e3be7c url('assets/ui/character-hud/hd/parchment.png') center/cover}
+#app .topbar #wantedPortrait{left:33%;top:30%;width:34%}
+#app .topbar #wantedName{top:61.5%;height:9%;left:24%;width:52%}
+#app .topbar .wanted-bounty-label{top:82%}
 
 #app .parchment-profile .hud-hierarchy{isolation:isolate}
 
@@ -167,3 +167,10 @@
 .hud-hierarchy:has([data-faction=marine]):before{background:#153858}
 .hud-hierarchy:has([data-faction=revolutionary]):before{background:#1b412c}
 .hud-hierarchy:has([data-faction=government]):before{background:#e2d7b9}
+
+/* Stable class/fruit groups with independent cooldown slots. */
+.action-row{flex-wrap:wrap;align-items:flex-end;gap:5px}
+.skill-group{display:flex;flex-direction:column;gap:2px;flex:none}
+.skill-group>small{font:700 9px/11px var(--rpg-font);letter-spacing:.07em;color:#e5c18a;text-align:center}
+.skill-group>div{display:flex;gap:3px}.skill-group.hidden{display:none}
+.skill-group .skill-button:disabled{opacity:.55}

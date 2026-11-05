@@ -17,10 +17,10 @@ OUT = ROOT / 'dist'
 if OUT.exists():
     shutil.rmtree(OUT)
 OUT.mkdir(parents=True)
-web_files = ['index.html', 'ui-preview.html', 'ui-art-direction.css', 'item-catalog.js', 'journal-feed.json', 'ui-tokens.css', 'ui-components.css', 'ui-finishing.css', 'ui-nautical-assets.css', 'ui-hud.css', 'hud-zoom-expedition.css', 'ui-screens.css', 'ui-responsive.css', 'ui-system.js', 'operation-summary.js', 'acquisition-notices.js', 'game-tooltips.css', 'player-hub.css', 'creation-selection.css', 'creation-selection.js', 'gameplay-harmony.css', 'captain-hd.css', 'hierarchy.css', 'styles.css', 'ui-nautical.css', 'audio-system.css', 'character-menu.css', 'modes-menu.css', 'inventory-compact.css',
-             'character-system.js', 'character-catalog.js', 'akuma-passives.js','rank-c-data.js','rank-c-system.js','rank-c-expansion-data.js','rank-c-expansion.js','rank-b-data.js','rank-b-system.js','hoya-data.js','hoya-system.js','jiki-data.js','jiki-system.js','ryu-data.js','ryu-system.js','akuma-system.js', 'neko-system.js', 'ushi-rules.js', 'ushi-art-data.js', 'ushi-system.js', 'doru-data.js', 'doru-system.js', 'wolf-data.js', 'wolf-system.js', 'supa-art.js', 'zoan-art.js', 'zoan-transition-data.js', 'zoan-transition.js', 'combat-animation.js', 'combat-registry.js', 'combat-assets.js', 'paper-doll.js', 'paper-doll-assets.js', 'paper-doll-review.js',
+web_files = ['index.html', 'ui-preview.html', 'ui-art-direction.css', 'item-catalog.js', 'journal-feed.json', 'ui-tokens.css', 'ui-components.css', 'ui-finishing.css', 'ui-nautical-assets.css', 'ui-hud.css', 'hud-zoom-expedition.css', 'ui-screens.css', 'ui-responsive.css', 'ui-system.js', 'operation-summary.js', 'acquisition-notices.js', 'game-tooltips.css', 'player-hub.css', 'creation-selection.css', 'creation-selection.js', 'gameplay-harmony.css', 'hud-nautical.css', 'captain-hd.css', 'hierarchy.css', 'styles.css', 'ui-nautical.css', 'audio-system.css', 'character-menu.css', 'modes-menu.css', 'inventory-compact.css',
+             'character-system.js', 'character-catalog.js', 'akuma-passives.js','rank-c-data.js','rank-c-system.js','rank-c-expansion-data.js','rank-c-expansion.js','rank-b-data.js','rank-b-system.js','hoya-data.js','hoya-system.js','jiki-data.js','jiki-system.js','ryu-data.js','ryu-system.js','combat-action-policy.js', 'akuma-system.js', 'neko-system.js', 'ushi-rules.js', 'ushi-art-data.js', 'ushi-system.js', 'doru-data.js', 'doru-system.js', 'wolf-data.js', 'wolf-system.js', 'supa-art.js', 'zoan-art.js', 'zoan-transition-data.js', 'zoan-transition.js', 'combat-animation.js', 'combat-registry.js', 'combat-assets.js', 'paper-doll.js', 'paper-doll-assets.js', 'paper-doll-review.js',
              'faction-assets.js', 'faction-sprites.js', 'forge-system.js',
-             'forge-ui.js', 'game-tooltips.js', 'player-hub.js', 'hud-telemetry.js', 'notification-system.js', 'hierarchy-system.js', 'hierarchy-ui.js', 'combat-vfx-data.js', 'combat-vfx.js', 'item-art.js', 'contract-system.js', 'contracts-board.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js', 'lobby-map-data.js', 'lobby-world.js', 'impel-down-world.js', 'alabasta-map-data.js', 'alabasta-world.js', 'alubarna-map-data.js', 'alubarna-world.js', 'skypiea-map-data.js', 'skypiea-world.js', 'ambient-weather.js',
+             'forge-ui.js', 'game-tooltips.js', 'player-hub.js', 'hud-telemetry.js', 'notification-system.js', 'hierarchy-system.js', 'hierarchy-ui.js', 'combat-vfx-data.js', 'combat-vfx.js', 'class-weapon-vfx.js', 'item-art.js', 'contract-system.js', 'contracts-board.js', 'game.js', 'audio-system.js', 'island-assets.js', 'island-world.js', 'lobby-map-data.js', 'lobby-world.js', 'impel-down-world.js', 'alabasta-map-data.js', 'alabasta-world.js', 'alubarna-map-data.js', 'alubarna-world.js', 'skypiea-map-data.js', 'skypiea-world.js', 'ambient-weather.js',
               'dawn-map-data.js', 'dawn-world.js', 'dawn-renderer.js', 'rare-world.js', 'rare-renderer.js', 'new-islands-data.js', 'new-islands-objects.js', 'new-islands.js', 'monster-catalog.js', 'monster-game-catalog.js', 'new-islands-art.js', 'pixellab-world-maps-data.js', 'conchas-pixellab-data.js', 'conchas-structures.js', 'pixellab-world-maps.js', 'world-system.js', 'world-depth.js', 'orange-world.js', 'conchas-world.js', 'conchas-renderer.js', 'terrain-autotile.js', 'orange-terrain.js', 'orange-renderer.js', 'ember-world.js', 'ember-renderer.js', 'archipelago.js', 'prison-system.js', 'haki-progression.js', 'haki-mastery.css', 'haki-system.js', 'haki-ui.js', 'haki-art.js', 'achievement-system.js', 'achievement-ui.js', 'honors-hd.css', 'ultimate-system.js', 'talent-system.js', 'talent-combat.js', 'talent-ui.js', 'talents-hd.css', 'compendium-ui.js', 'compendium-hd.css', 'voyage-ui.js', 'voyage-hd.css', 'dev-tools.js', 'hunt-system.js', 'monster-behavior.js']
 web_files += ['party-ui.js','party.css']
 web_files += ['quest-dungeons-data.js','quest-dungeons-world.js','boss-dungeon-system.js','boss-dungeon-combat.js','dungeon-boss-art-data.js','boss-dungeon-ui.js','save-writer.js','boss-dungeons.css']
@@ -101,7 +101,7 @@ shutil.copy2(ROOT/'docs/PAPER-DOLL-96-FIT-CONTRACT.md', OUT/'docs/PAPER-DOLL-96-
 review96 = Path('tools/paper-doll-96-v3')
 review96_pack = json.loads((ROOT/review96/'manifest.json').read_text(encoding='utf-8'))
 assert review96_pack['productionEnabled'] is False
-review96_files = {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}
+review96_files = {'index.html', 'preview.css', 'preview.js', 'headgear-editor.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}
 appearance96_pack = json.loads((ROOT/review96/'appearance-catalog.json').read_text(encoding='utf-8'))
 assert appearance96_pack['productionEnabled'] is False
 for animations in appearance96_pack.get('nativeOwnership', {}).get('atlases', {}).values():
@@ -123,6 +123,7 @@ weapon96_pack = json.loads((ROOT/review96/'weapons.json').read_text(encoding='ut
 assert weapon96_pack['reviewOnly'] is True
 review96_files.update(item['source'] for item in weapon96_pack['items'])
 review96_files.update(view['source'] for item in weapon96_pack['items'] for view in item.get('views', {}).values())
+review96_files.update(item['armour']['source'] for item in weapon96_pack['items'] if item.get('armour'))
 for body in review96_pack['bodies'].values():
     review96_files.update(body['references'].values())
     for layers in body.get('layers', {}).values():
@@ -132,7 +133,7 @@ for body in review96_pack['bodies'].values():
             assert clip.get('modular') is True
             review96_files.update(clip['layers'].values())
 for name in sorted(review96_files):
-    if name not in {'index.html', 'preview.css', 'preview.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}:
+    if name not in {'index.html', 'preview.css', 'preview.js', 'headgear-editor.js', 'rig.js', 'layers.js', 'motion.js', 'surface.js', 'torso.js', 'fit-template.json', 'appearance.js', 'wardrobe.js', 'appearance-catalog.json', 'appearance-rig.json', 'manifest.json', 'gallery-items.json', 'weapons.js', 'weapons.json', 'player-pack.json'}:
         if not re.fullmatch(r'assets/[a-z0-9-]+\.png', name):
             raise ValueError('Unsafe 96px review asset')
     target = OUT/review96/name

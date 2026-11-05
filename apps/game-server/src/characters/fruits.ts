@@ -2,7 +2,7 @@ import {createRequire} from 'node:module';
 import type {PoolClient} from 'pg';
 import type {CharacterState,CharacterCommand} from '@mare/shared';
 import {readBattle,storeBattle} from './battle.js';
-import {readWorld} from './world.js';
+import {readWorld,storeWorld} from './world.js';
 import {readFighter} from './fighter.js';
 import {readTalents} from './talents.js';
 import {AuthFault} from '../auth/errors.js';
@@ -22,6 +22,7 @@ export async function mutateFruit(client:PoolClient,id:string,input:CharacterCom
   const g=b.fruit?.effects?.genie;if(!g||g.hp<=0||g.until<=now/1000||b.hp<=0||fighter.fruitId!=='akuma_hoya_hoya'||!nav.walkable(input.payload.x,input.payload.y))throw new AuthFault(409,'fruit_move_unavailable');
   const route=nav.path(g,input.payload);if(!route.length&&Math.hypot(g.x-input.payload.x,g.y-input.payload.y)>1)throw new AuthFault(409,'fruit_move_unavailable');g.path=route;b.targetId=null;
  }
+ if(b.fruit?.job){await storeWorld(client,id,{...w,direction:c.hero.direction as typeof w.direction,path:[],motionUntil:w.serverNow});}
  await storeBattle(client,id,b);await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
 }
 export async function readFruits(client:PoolClient,id:string){

@@ -29,8 +29,8 @@ const fs = require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'../tools/paper-doll-96-v3');
 const catalog=JSON.parse(fs.readFileSync(path.join(root,'appearance-catalog.json')));
 assert.equal(catalog.productionEnabled,false);
-assert.equal(catalog.styles.length,32);
-assert.deepEqual(catalog.styles.filter(s=>s.itemId!==undefined).map(s=>s.itemId).sort((a,b)=>a-b),[6,7,8,9,18,19,21,22,23,24,25,26]);
+assert.equal(catalog.styles.length,72);
+assert.deepEqual(catalog.styles.filter(s=>s.itemId!==undefined).map(s=>s.itemId).sort((a,b)=>a-b),[6,7,8,9,18,19,21,22,23,24,25,26,...Array.from({length:56},(_,i)=>129+i).filter(id=>![3,6].includes((id-129)%7))]);
 for(const style of catalog.styles)for(const body of ['masculino','feminino'])for(const direction of ['south','north','west','east']){
   const file=style.layers[body][direction];assert.match(file,/^assets\/[a-z0-9-]+\.png$/);
   const png=fs.readFileSync(path.join(root,file));assert.equal(png.readUInt32BE(16),128);assert.equal(png.readUInt32BE(20),128);
@@ -54,7 +54,7 @@ const fitted=appearance.fitTrousersToBody(fabric,neutral,rest,rest,16,160,160);
 assert.equal(fitted[(100*160+78)*4+3],255,'trousers cover the actual neutral body');
 assert.deepEqual(Array.from(fitted.slice((100*160+78)*4,(100*160+78)*4+3)),[25,40,75]);
 assert.equal(fitted[0],0,'fitting must not extend outside the real body');
-console.log('96px wardrobe: 32 models, 12 existing item IDs, 416 measured poses, clean original faces and silhouette coverage passed');
+console.log('96px wardrobe: 72 models, 52 existing item IDs, 416 measured poses, clean original faces and silhouette coverage passed');
 
 assert.deepEqual(catalog.coverage.generatedPosesPending,[]);
 assert.equal(catalog.styles.find(s=>s.id==='item-19').hairOcclusion,'all');

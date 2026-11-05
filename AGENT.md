@@ -81,7 +81,7 @@ Facção define identidade visual, contexto, reputação e eventuais passivos le
 ### 3.4 Talentos passivos implementados
 
 - Acesso por Personagem → Talentos; preservar Personagem, Talentos, Conquistas e HAKI. A árvore é uma constelação com zoom/arraste e linhas de dependência, sem retornar ao grid de cards.
-- 1 PT por nível, inclusive nível 1, mais recompensas únicas resgatadas no Diário de Conquistas; separado dos cinco pontos de atributos por nível a partir do 2.
+- Novos PT somente no resgate de Conquistas. A migração congela o orçamento legado uma vez; evolução de nível e redefinição não concedem novos PT. Os cinco pontos de atributos por nível a partir do 2 permanecem separados.
 - Sete árvores independentes, três ramos por classe, máximo dois investidos; cinco tiers com dez graduações por nó e requisito de cinco pontos no nó anterior.
 - Três exclusivos por classe, escolha única por build, custo de 1 PT e requisito de 10 PT comuns. Não transformar esses passivos em botões ativos.
 - Tiers avançados novos exigem a ponte intermediária. Um final por classe, custo 3 PT, exige 50 PT comuns, intermediário e 5 pontos em um último tier. Preservar ranks v1 herdados sem dar finais grátis.

@@ -16,6 +16,24 @@ export async function presence(c:PoolClient,party:string){return (await c.query(
  (m.last_seen>clock_timestamp()-interval '10 seconds' AND cc.expires_at>clock_timestamp() AND s.kind='play' AND s.revoked_at IS NULL AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp() AND s.account_epoch=a.auth_epoch) AS connected
  FROM mare_game.party_members m JOIN mare_game.characters ch ON ch.id=m.character_id
  LEFT JOIN mare_game.character_control cc ON cc.character_id=ch.id LEFT JOIN mare_game.app_sessions s ON s.id=cc.session_id LEFT JOIN mare_game.accounts a ON a.id=ch.account_id WHERE m.party_id=$1 ORDER BY m.joined_at,m.character_id`,[party])).rows;}
+/** Eligibility at cast time. The Party worker checks range, health and presence again at impact. */
+export async function readHealingAllies(c:PoolClient,id:string,instanceId:string,mapId:string,now:Date){
+ const partyId=await membership(c,id);
+ if(!partyId)return [];
+ const peers=(await presence(c,partyId)).filter(m=>m.character_id!==id&&m.connected).map(m=>m.character_id);
+ if(!peers.length)return [];
+ const battles=await readBattleRows(c,peers,{motionOnly:true}),worlds=await readWorlds(c,peers,now);
+ const eligible=peers.filter(peer=>{
+  const b=battles.get(peer)?.simulation;
+  return b?.partyInstanceId===instanceId&&b.hp>0&&worlds.get(peer)?.mapId===mapId;
+ });
+ const inputs=await readCombatInputs(c,eligible);
+ return eligible.map(peer=>{
+  const b=battles.get(peer)!.simulation;
+  const maxHP=inputs.get(peer)!.fighter(b).maxHp;
+  return {b:{hp:b.hp},hero:worlds.get(peer)!.position,stats:{maxHP}};
+ });
+}
 export async function lockPeer(c:PoolClient,m:any){
  const {locked}=(await c.query(`WITH session_lock AS MATERIALIZED (
   SELECT id FROM mare_game.app_sessions WHERE id=$1::uuid FOR UPDATE SKIP LOCKED

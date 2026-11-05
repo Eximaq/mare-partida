@@ -75,23 +75,40 @@
     const powerLabel=document.querySelector('.profile-power>span');powerLabel.textContent='Poder';powerLabel.title='Poder de combate';
     action.append(document.getElementById('hakiQuickCast'));
     const controls=document.createElement('div');controls.className='journey-controls';
-    controls.append(document.getElementById('autoToggle'),document.getElementById('expeditionMini'));
+    controls.append(document.getElementById('autoToggle'));
+    const expedition=document.getElementById('floatingExpedition'),summary=journey.querySelector('.journey-content'),entry=document.getElementById('expeditionMini');
+    summary.classList.add('journey-summary');expedition.querySelector('.floating-title').after(summary);
+    expedition.setAttribute('role','dialog');expedition.setAttribute('aria-modal','false');
+    const expeditionTitle=expedition.querySelector('.floating-title>span');expeditionTitle.id='expeditionWindowTitle';expeditionTitle.textContent='Expedição';expedition.setAttribute('aria-labelledby',expeditionTitle.id);
+    entry.classList.remove('hidden');entry.setAttribute('role','menuitem');entry.setAttribute('aria-controls','floatingExpedition');
+    entry.querySelector('.mini-dot').outerHTML='<img src="icones_menu_pirata/png/48/contratos.png" width="24" height="24" alt="">';
+    document.getElementById('modesQuickMenu').append(entry);
     journey.querySelector('.journey-heading').after(controls);
-    journey.querySelector('.journey-footer').append(document.getElementById('huntRoute'));
+    expedition.querySelector('.journey-footer').append(document.getElementById('huntRoute'));
     document.querySelector('#usePotion .skill-icon').innerHTML='<img src="assets/ui/items-pixellab/potion.png?v=20261020" alt="" draggable="false">';
+    document.getElementById('journeyToggle').firstChild.textContent='';
     document.getElementById('journeyToggle').querySelector('span:not(.journey-chevron)').textContent='Expedição';
+    const launcher=document.getElementById('journeyToggle');launcher.setAttribute('aria-controls','floatingExpedition');launcher.setAttribute('aria-expanded','false');launcher.querySelector('.journey-chevron').textContent='O';
+    const reward=document.createElement('span');reward.className='journey-reward';reward.textContent='◆';reward.hidden=true;reward.setAttribute('aria-hidden','true');launcher.append(reward);
+    const rewardObserver=new MutationObserver(()=>{
+      const ready=document.getElementById('journeyAction').hasAttribute('data-claim')||document.getElementById('journeyProgress').textContent==='Baú disponível';
+      reward.hidden=!ready;launcher.setAttribute('aria-label',ready?'Expedição: recompensa disponível (O)':'Expedição (O)');
+    });
+    rewardObserver.observe(summary,{childList:true,subtree:true,attributes:true,attributeFilter:['data-claim']});
     const chat=document.getElementById('floatingChat'),log=document.getElementById('gameLog');
+    chat.querySelector('.floating-title>span').textContent='Canal do Porto';
+    const xpHeading=document.querySelector('#huntXpTracker .hunt-xp-top span');
+    if(xpHeading){xpHeading.textContent='XP/h';xpHeading.title='Experiência por hora';}
     const tabBar=document.createElement('nav');tabBar.className='chat-tabs';tabBar.setAttribute('aria-label','Mensagens locais');
     tabBar.innerHTML='<button type="button" data-chat-channel="all" aria-pressed="true">Sistema</button><button type="button" data-chat-channel="notes" aria-pressed="false">Anotações</button>';
     chat.querySelector('.floating-title').after(tabBar);
-    let channel='all',unread=0,wasMobile=null;
+    let channel='all',unread=0;
     function filter(){for(const line of log.children)line.hidden=channel==='notes'&&!line.textContent.includes('Anotação local:');}
     tabBar.addEventListener('click',e=>{const b=e.target.closest('[data-chat-channel]');if(!b)return;channel=b.dataset.chatChannel;tabBar.querySelectorAll('button').forEach(t=>t.setAttribute('aria-pressed',String(t===b)));filter();});
     function measure(){
       const r=document.querySelector('.topbar').getBoundingClientRect(),a=document.querySelector('.action-panel').getBoundingClientRect(),m=document.getElementById('mainMenu').getBoundingClientRect();
       const style=document.documentElement.style;style.setProperty('--profile-bottom',Math.ceil(r.bottom)+'px');style.setProperty('--rpg-action-height',Math.ceil(a.height)+'px');style.setProperty('--menu-bottom',Math.ceil(m.bottom)+'px');style.setProperty('--journey-height',Math.ceil(journey.getBoundingClientRect().height)+'px');style.setProperty('--utilities-bottom',Math.ceil(utilities.getBoundingClientRect().bottom)+'px');style.setProperty('--target-height',Math.ceil(document.getElementById('targetHud').getBoundingClientRect().height)+'px');
       style.setProperty('--profile-right',Math.ceil(r.right)+'px');style.setProperty('--menu-left',Math.floor(m.left)+'px');style.setProperty('--journey-reserved-bottom',Math.ceil(innerHeight-journey.getBoundingClientRect().top)+'px');
-      const mobile=innerWidth<=760;if(mobile!==wasMobile){journey.classList.toggle('collapsed',mobile);document.getElementById('journeyToggle').setAttribute('aria-expanded',String(!mobile));journey.querySelector('.journey-chevron').textContent=mobile?'+':'−';wasMobile=mobile;}
     }
     const resize=new ResizeObserver(measure);for(const el of [document.querySelector('.topbar'),document.querySelector('.action-panel'),document.getElementById('mainMenu'),journey,utilities,document.getElementById('targetHud')])resize.observe(el);
     addEventListener('resize',measure,{passive:true});

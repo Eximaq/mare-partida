@@ -51,7 +51,7 @@ const engine=require('../world-battle.cjs');wire.battle=engine.create('beach',wi
   assert.equal(await p.evaluate(()=>__mareDiagnostics().alive),14,'original mobs must be drawn from the server snapshot');
   const hp=wire.battle.mobs[0].hp;await p.locator('#autoToggle').click();await p.waitForFunction(()=>__mareDiagnostics().autoPlay);
   assert(commands.some(v=>v.action==='battle.auto'));await p.waitForTimeout(800);assert.equal(wire.battle.mobs[0].hp,hp,'browser cannot deal local damage');
-  await p.locator('#skill1').click();await p.waitForFunction(()=>MareGameSession.data.online.battle.cooldowns[0]===7);assert(commands.some(v=>v.action==='battle.skill'));
+  await p.locator('#classSkill1').click();await p.waitForFunction(()=>MareGameSession.data.online.battle.cooldowns[0]===7);assert(commands.some(v=>v.action==='battle.skill'));
   wire.battle.hp=77;wire.battle.mobs[0].hp-=12;wire.battle.events=[{seq:1,type:'damage',id:wire.battle.mobs[0].id,amount:12}];wire.battle.seq=1;
   await p.waitForFunction(()=>__mareDiagnostics().hp===77);assert.equal(await p.evaluate(()=>__mareDiagnostics().mobs[0].hp),hp-12);
   // Deliver one new combat sample, then hold later replies to measure the
@@ -73,7 +73,7 @@ const engine=require('../world-battle.cjs');wire.battle=engine.create('beach',wi
   assert(late.mob-middle.mob>1,'monster must keep moving after the first 180ms');
   assert(late.hero<=wire.world.position.x&&late.mob<=wire.battle.mobs[0].x,'visuals never extrapolate past confirmed combat points');
   assert.equal(wire.battle.mobs[0].hp,hp-12,'smoothing cannot apply local damage');
-  await p.locator('#huntRoute').click();await p.waitForSelector('[data-hunt-sector]');assert.equal(await p.locator('[data-online-action="journey.begin"]').count(),0);await p.keyboard.press('Escape');
+  await p.locator('#journeyToggle').click();await p.locator('#huntRoute').click();await p.waitForSelector('[data-hunt-sector]');assert.equal(await p.locator('[data-online-action="journey.begin"]').count(),0);await p.keyboard.press('Escape');
   await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.screenshot({path:path.join(out,'original-online-monsters.png')});
   await p.reload();await p.waitForFunction(()=>window.__mareDiagnostics?.().alive===14);assert.equal(await p.evaluate(()=>__mareDiagnostics().hp),77);
   await p.setViewportSize({width:393,height:852});await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.screenshot({path:path.join(out,'original-online-monsters-mobile.png')});

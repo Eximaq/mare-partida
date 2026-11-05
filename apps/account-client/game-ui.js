@@ -139,7 +139,7 @@
       ...(o.dungeons?{bossDungeons:structuredClone(o.dungeons)}:{}),
       ...(o.prison?{impelDown:structuredClone(o.prison)}:{}),
       claimed: [...(o.contracts?.claimed||[])],
-      talentVersion:2,talentSeq:o.talents?.revision||0,talentBuilds:{[data.character.classId]:structuredClone(o.talents?.build||{nodes:{},keystone:null,ultimate:null})},
+      talentVersion:3,talentLegacyBudget:Math.max(0,(o.talents?.earned||0)-(globalThis.MareAchievements?.bonus({achievements:o.achievements})||0)),talentSeq:o.talents?.revision||0,talentBuilds:{[data.character.classId]:structuredClone(o.talents?.build||{nodes:{},keystone:null,ultimate:null})},
       talentCooldowns:structuredClone(o.battle?.talentCooldowns||{}),achievements:{version:1,claimed:[...(o.achievements?.claimed||[])],records:structuredClone(o.achievements?.records||{})},onlineAchievements:o.achievements?structuredClone(o.achievements):null,
       potions: 0,
       materials: 0,

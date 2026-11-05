@@ -177,11 +177,25 @@
       for(let y=0;y<128;y++)for(let x=0;x<128;x++){const i=(y*128+x)*4;if(data[i+3]<128)continue;const q=b.at(x,y);lo=Math.min(lo,q.along/b.length);hi=Math.max(hi,q.along/b.length);across=Math.max(across,Math.abs(q.across));}
       bounds[b.key]={lo,hi,across};
     }
+    // Registered PixelLab panels retain their own ornaments and colour clusters.
+    // Geometry still comes from the native silhouette, including a closed fist.
+    const textured=(p)=>{
+      const b=rest.list.find(v=>v.key===p.bone.key),material=sourceParts?.[p.bone.key]||sourceParts?.[p.bone.side]||source;
+      let q=b?b.point(p.f*b.length,p.across):{x:p.x,y:p.y};
+      if(!b){const rhip={x:(rest.j['LEFT HIP'].x+rest.j['RIGHT HIP'].x)/2,y:(rest.j['LEFT HIP'].y+rest.j['RIGHT HIP'].y)/2},ra=axis(rest.j.NECK,rhip),pa=axis(target.rig.j.NECK,target.hip),v=pa.at(p.x,p.y);q=ra.point(v.along*ra.length/pa.length,v.across);}
+      let index=-1,best=Infinity;
+      for(let dy=-5;dy<=5;dy++)for(let dx=-5;dx<=5;dx++){
+        const x=Math.round(q.x)+dx,y=Math.round(q.y)+dy,d=dx*dx+dy*dy,i=(y*128+x)*4;
+        if(x<0||x>=128||y<0||y>=128||d>=best||material[i+3]<128)continue;best=d;index=i;
+      }
+      if(design.openToes&&p.f>1.25){const x=Math.round(q.x),y=Math.round(q.y);if(x<0||x>=128||y<0||y>=128||!material[(y*128+x)*4+3])return null;}
+      return index<0?ramp[2]:Array.from(material.subarray(index,index+3));
+    };
     const samples=[];
     for(const p of target.pixels){const limits=bounds[p.bone.key];if(!limits||!Number.isFinite(limits.lo))continue;
       const f=p.along/p.bone.length;
       let lo=limits.lo,hi=limits.hi;
-      if(slot==='boots'){lo=design.cuffStart??.62;hi=2.0;}
+      if(slot==='boots'){lo=design.cuffStart??.62;hi=design.preserveTexture&&!design.openToes?2.6:2.0;}
       if(slot==='pants'&&design.kneePlate&&p.bone.part==='lower'){lo=0;hi=1.1;}
       if(slot==='gloves'){lo=design.cuffStart??.6;hi=design.fingerCoverage==='fingerless'?1.30:1.9;}
       if(f<lo-.03||f>hi+.04)continue;
@@ -207,6 +221,7 @@
       }
     }
     for(const p of samples){const nativeLight=.2126*body[p.i]+.7152*body[p.i+1]+.0722*body[p.i+2];let shade=nativeLight<65?0:nativeLight<130?1:nativeLight<185?2:nativeLight<225?3:4;
+      if(design.preserveTexture){const colour=textured(p);if(colour)p.data.set([...colour,255],p.i);else p.data.fill(0,p.i,p.i+4);continue;}
       const x=p.i/4%width,y=Math.floor(p.i/4/width),boundary=[[1,0],[-1,0],[0,1],[0,-1]].some(([dx,dy])=>{const xx=x+dx,yy=y+dy;return xx<0||xx>=width||yy<0||yy>=height||!p.data[(yy*width+xx)*4+3];});
       // Preserve the silhouette ink, use broad shade clusters inside the piece.
       if(boundary)shade=Math.min(shade,1);else shade=Math.max(2,Math.min(3,shade));
@@ -242,7 +257,8 @@
         const xx=x-padding,yy=y-padding,candidates=target.rig.list.map(b=>({b,d:Math.hypot(xx-b.b.x,yy-b.b.y),q:b.at(xx,yy)})).filter(a=>a.d<=6.5&&a.q.along>=a.b.length*.65).sort((a,b)=>a.d-b.d);
         if(!candidates.length)continue;const to=out[candidates[0].b.side];if(to[i+3])continue;
         const light=.2126*body[i]+.7152*body[i+1]+.0722*body[i+2],shade=Math.max(body[i],body[i+1],body[i+2])<65?0:light<160?2:3;
-        to.set([...ramp[shade],255],i);
+        const c=candidates[0],colour=design.preserveTexture?textured({bone:c.b,f:c.q.along/c.b.length,across:c.q.across,x:xx,y:yy}):ramp[shade];
+        if(colour)to.set([...colour,255],i);
       }
     }
     return out;

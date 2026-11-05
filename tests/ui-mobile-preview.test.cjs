@@ -9,16 +9,13 @@ const skin=read('ui-art-direction.css');
 const build=read('tools/build_pages.py');
 const scripts=doc=>[...doc.matchAll(/<script\b[^>]+src="([^"]+)"/g)].map(m=>m[1]);
 assert.deepEqual(scripts(preview),scripts(production),'preview must execute the same scripts as production');
-// The preview was originally a separate visual proposal. Once approved, the
-// shared skin may also be enabled in production without invalidating QA.
-const themeLink=/<link rel="stylesheet" href="ui-art-direction\.css"/;
-if(themeLink.test(production)){
-  assert.match(production,/parchment-profile/,'public theme must include the captain-log HUD');
-} else {
-  assert.doesNotMatch(production,/parchment-profile/,'unapproved production layout must stay unchanged');
+// Production and review entry points must share the current HUD owner.
+for(const doc of [production,preview]){
+  assert.match(doc,/nautical-profile/);
+  assert.match(doc,/<link rel="stylesheet" href="hud-nautical\.css"/);
+  assert.match(doc,/class="hud-vitals"/);
 }
-assert.match(preview,/<link rel="stylesheet" href="ui-art-direction\.css"/);
-assert.match(preview,/parchment-profile/);
+assert.match(build,/'hud-nautical\.css'/);
 assert.match(skin,/\.topbar/);
 assert.match(build,/web_files = \['index\.html', 'ui-preview\.html', 'ui-art-direction\.css'/);
 assert.match(build,/for page in \['index\.html', 'ui-preview\.html'\]:/);

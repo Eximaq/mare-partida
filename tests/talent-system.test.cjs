@@ -10,7 +10,7 @@ test('Seven independent trees have three branches, ordered tiers and 21 unique k
   tree.keystones.forEach(k=>unique.add(k.id));tree.branches.forEach(b=>b.nodes.forEach((n,i)=>assert.equal(n.tier,i)));
  }assert.equal(unique.size,21);
 });
-test('One PT per level including level one, deterministic migration, no save or item loss',()=>{
+test('Legacy level allowance freezes once, deterministic migration, no save or item loss',()=>{
  for(const level of [1,2,30,100]){const g=make('sword',level);assert.equal(T.available(g),level);assert.deepEqual(T.migrate(g),g);assert.equal(g.inventory[0].id,'kept');assert.equal(g.gold,300);}
 });
 test('Third branch, missing prerequisites, overdraft, malformed ranks and second keystone are rejected',()=>{
@@ -53,7 +53,7 @@ test('Gunner: distance scales, piercing selects only enemies behind and full-hea
 });
 test('Rogue: poison ticks exactly four times and refreshes, theft caps, rare chance keeps ordinary rarity types, rear hit only once',()=>{
  let g=withKey('rogue','poison'),rt=C.create(),m=target();after(g,rt,m);let damage=0;for(let i=0;i<80;i++)damage+=C.tick(rt,.05,[m]).reduce((s,a)=>s+a.amount,0);assert.equal(damage,80);
- g=withKey('rogue','lightHands');m=target();let gold=0;for(let i=0;i<10;i++)gold+=after(g,rt,m,{critical:true}).gold;assert.equal(gold,6);assert.equal(C.rarity(()=>.3,0),'uncommon');assert.equal(C.rarity(()=>.3,.2),'rare');
+ g=withKey('rogue','lightHands');m=target();let gold=0;for(let i=0;i<10;i++)gold+=after(g,rt,m,{critical:true}).gold;assert.equal(gold,6);assert.equal(C.rarity(()=>.3,0),'common');assert.equal(C.rarity(()=>.3,.2),'common');
  g=withKey('rogue','backstab');rt=C.create();m=target();assert.equal(hit(g,rt,m).trueAmount,150);assert.equal(hit(g,rt,m).trueAmount,null);assert.equal(hit(g,rt,target(2),{hero:{x:80,y:0}}).trueAmount,null);
 });
 test('Cyborg: lethal shield and persistent cooldown, absorption, explosion chance and adaptive combat lifetime',()=>{

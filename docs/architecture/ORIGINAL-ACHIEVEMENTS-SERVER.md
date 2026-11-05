@@ -22,7 +22,7 @@ requisições e controle exclusivo são verificados pelo backend. Não são acei
 contadores, pontos, moedas, dano, relógios, accountId ou ownerId do cliente.
 
 O nível e os eventos persistidos determinam a elegibilidade. O orçamento de
-talentos é `nível + soma dos resgates únicos`; o reset devolve os investimentos
+talentos é `reserva legada congelada + soma dos resgates únicos`; o reset devolve os investimentos
 sem perder esse bônus. Resgatar não altera XP, ouro, inventário, build ou recargas.
 Atualiza a revisão de talentos para invalidar prévias feitas com orçamento antigo.
 Resgate, revisão, versão e recibo são uma única transação. Repetir o mesmo requestId

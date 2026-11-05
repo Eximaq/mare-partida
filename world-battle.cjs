@@ -10,7 +10,8 @@ const H=require('./haki-system.js'),fruits=require('./fruit-runtime.cjs'),zoan=r
 const talents=require('./talent-runtime.cjs'),{T,U,TC}=talents;
 const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
-const sources=['zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const Policy=require('./combat-action-policy.js');
+const sources=['combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 function hakiGame(b){
  b.haki??=H.migrate({}).haki;b.hakiRuntime??=H.start();
@@ -23,9 +24,10 @@ function hakiToggle(b,id){return H.toggle(hakiGame(b),b.hakiRuntime,id,{alive:b.
 function populate(b,now,rng,hero){
  if(!b.area||b.prison||b.dungeon)return;
  const ledger=b.hunts.areas[b.area];
+ b.mobs=b.mobs.filter(m=>m.alive||m.corpseUntil>now);
  const slots=behavior.ready(b.area,b.mobs,ledger.respawns,now);
  if(hero&&hunt.bossReady(b,b.area,hero,now))slots.push(...behavior.ready(b.area,b.mobs,ledger.respawns,now,true));
- for(const s of slots){const p=hunt.profile(b.area,s.sector,s.type,.5);b.mobs=b.mobs.filter(m=>m.spawnId!==s.id);
+ for(const s of slots){const p=hunt.profile(b.area,s.sector,s.type,.5);b.mobs=b.mobs.filter(m=>m.spawnId!==s.id||!m.alive&&!m.fruitConsumed&&m.corpseUntil>now);
   b.mobs.push({...p,source:'world',id:randomUUID(),spawnId:s.id,area:b.area,district:s.sector,type:s.type,x:s.x,y:s.y,anchorX:s.x,anchorY:s.y,hp:p.maxHP,alive:true,engaged:false,returning:false,attackClock:1,attackCount:0,bob:rng()*Math.PI*2,patrolClock:0,telegraph:null,moving:0,attackAnim:0,emberElapsed:0,emberFacing:'south',slow:0});}
 }
 function create(area,stats,now,rng=Math.random){
@@ -33,12 +35,12 @@ function create(area,stats,now,rng=Math.random){
  hakiGame(b);populate(b,now,rng);return b;
 }
 const distance=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
-const live=m=>m?.alive&&!m.returning;
+const live=m=>m?.alive&&m.hp>0&&!m.returning;
 function event(b,type,data={}){b.events.push({seq:++b.seq,type,...data});b.events=b.events.slice(-24);}
 function face(a,p){const dx=p.x-a.x,dy=p.y-a.y;a.direction=Math.abs(dx)>Math.abs(dy)?dx<0?'left':'right':dy<0?'back':'front';a.emberFacing={left:'west',right:'east',front:'south',back:'north'}[a.direction];}
 function move(a,goal,speed,dt,nav){const old={x:a.x,y:a.y},route=nav.path(a,goal);nav.follow(a,route,speed,dt);a.moving=distance(old,a)>.01?1:0;if(a.moving)face(a,{x:a.x+(a.x-old.x),y:a.y+(a.y-old.y)});}
 function target(b){return b.mobs.find(m=>m.id===b.targetId&&live(m));}
-function cancel(b){b.auto=false;b.targetId=null;b.pending=null;b.skillJob=null;b.projectiles=[];}
+function cancel(b){b.actionLockUntil=0;fruits.reset(b);b.auto=false;b.targetId=null;b.pending=null;b.skillJob=null;b.projectiles=[];}
 function changeArea(b,area,now,rng){cancel(b);resetHaki(b);delete b.prison;delete b.dungeon;b.talents=null;b.area=area;b.mobs=[];populate(b,now,rng);}
 function enterPrison(b,spec,stats,hero,{id=randomUUID(),stolen=0}={}){
  if(!prison.validFloor(spec.floor)||!Number.isFinite(spec.hp)||spec.hp<=0)throw Error('Invalid prison enemy');
@@ -57,11 +59,32 @@ function enterDungeon(b,id,record,stats,hero,{stolen=0}={}){
 }
 function skill(b,index,c){
  const g=talents.game(b,c),stats=combatStats(b,c,c.runtime),s=catalog.classes[c.classId]?.skills[index],cost=U.selected(g)==='archmage'?0:(s?.cost||0)*(1-(stats.energyEfficiency||0)),m=target(b),self=['guard','heal','blessing'].includes(s?.type);
- if(!c.automatic&&fruits.A.activeSkill(c.fruitId,String(index+1))||b.fruit?.effects.genie||b.fruit?.effects.jikiCharge||b.fruit?.transformed&&['akuma_neko_leopard','akuma_ushi_giraffe','akuma_inu_wolf','akuma_ryu_ryu'].includes(c.fruitId)||!s||!b.area||b.hp<=0||b.skillJob||b.cooldowns[index]>0||b.energy<cost)return false;
- if(s.type==='heal'&&b.hp>=stats.maxHP&&!(U.selected(g)==='eternalBlessing'&&(b.talents?.combatRemaining>0||m))||s.type==='blessing'&&b.blessing>0)return false;
+ if(b.pending||(b.actionLockUntil||0)>(c.now??0)||b.fruit?.effects.genie||b.fruit?.effects.jikiCharge||b.fruit?.transformed||!s||!b.area||b.hp<=0||c.hero.talentControl?.remaining>0||b.skillJob||b.cooldowns[index]>0||b.energy<cost)return false;
+ const ally=(c.allies||[]).filter(a=>a.b.hp>0&&a.b.hp<a.stats.maxHP&&distance(c.hero,a.hero)<=180&&c.nav.projectileClear(c.hero,a.hero)).sort((a,z)=>a.b.hp/a.stats.maxHP-z.b.hp/z.stats.maxHP)[0];
+ if(s.type==='heal'&&!ally&&b.hp>=stats.maxHP&&!(U.selected(g)==='eternalBlessing'&&(b.talents?.combatRemaining>0||m))||s.type==='blessing'&&b.blessing>0)return false;
  if(!self&&(!m||distance(c.hero,m)>stats.range||!c.nav.projectileClear(c.hero,m)))return false;
  b.energy-=cost;b.cooldowns[index]=s.cd*(c.factionId==='government'?.92:1);
- b.skillJob={index,targetId:m?.id??null};event(b,'skill',{index});return true;
+ const duration=Math.max(.2,1/stats.speed);if(m&&!self)face(c.hero,m);c.hero.moving=0;
+ b.actionLockUntil=(c.now??0)+duration*1000;b.skillJob={index,targetId:m?.id??null,remaining:duration*.5};event(b,'skill',{index,duration,id:m?.id});return true;
+}
+function autoSkill(b,c,g,m){
+ const f=fruits.state(b,c),e=f.effects,rt=fruits.decode(f.advanced),time=c.now/1000,jobs=[...(rt?.jobs||[]),...(rt?.expansion?.jobs||[]),...(rt?.rankS?.jobs||[])],active={};
+ for(const name of ['supa','horu','horuSpeed','ushi','wolf','bison'])active[name]=e[name+'Until']>time;
+ active.genie=globalThis.MareHoya.active(e.genie,time);active.genieBuff=e.genie?.buffUntil>time;active.jikiCharge=!!e.jikiCharge;
+ active.room=fruits.R.roomActive(rt,time);active.dome=fruits.R.domeActive(rt,time);
+ for(const kind of ['redPoison','blackHole','pillar','guraBuff','phoenixTotem'])active[kind]=jobs.some(j=>j.kind===kind);
+ for(const [key,name]of [['1','revolution'],['2','deposition']])active[name]=e.flags?.some(v=>v.key===key&&v.until>c.now);
+ const allies=(c.allies||[]).filter(a=>a.b.hp>0).map(a=>({x:a.hero.x,y:a.hero.y,hp:a.b.hp,maxHP:a.stats.maxHP,alive:true}));
+ active.holyShield=(b.talents?.ultimate?.holyHP||0)>0;
+ const state={hp:b.hp,maxHP:c.stats.maxHP,hero:c.hero,target:m,enemies:b.mobs,allies,active,controlled:c.hero.talentControl?.remaining>0,healThreshold:c.preferences?.healThreshold,foodAvailable:b.mobs.some(v=>!v.alive&&!v.fruitConsumed&&v.corpseUntil>c.now),clear:(a,z)=>c.nav.projectileClear(a,z)};
+ const candidates=catalog.classes[c.classId].skills.map((s,index)=>({source:'class',index,meta:{shape:s.type==='area'?'circle':null,radius:125,minTargets:s.type==='area'?2:1,hybrid:s.type==='heal'&&U.selected(g)==='eternalBlessing',kind:s.type==='heal'?'heal':s.type==='guard'?'protection':s.type==='blessing'?'buff':'damage',range:c.stats.range,active:['guard','blessing'].includes(s.type)?'classProtection':null},ready:b.cooldowns[index]<=0&&b.energy>=(U.selected(g)==='archmage'?0:(s.cost||0)*(1-(c.stats.energyEfficiency||0)))}));
+ state.active.classProtection=b.guard>0||b.blessing>0;
+ for(const s of fruits.A.activeSkills(f.id)){const cd=fruits.R.has(f.id)?fruits.R.cooldownKey(f.id,s.key,rt,time):fruits.A.cooldownKey(f.id,s.key),meta=Policy.fruitMeta(f.id,s.key);if(f.id==='akuma_ope_ope'&&s.key==='1'&&active.room)Object.assign(meta,{kind:'damage',active:null});const current=fruits.R.has(f.id)?fruits.R.skill(f.id,s.key,rt,time):s,free=f.id===globalThis.MareRankC.rules.mato.id&&s.key==='1'&&globalThis.MareRankC.marked(m,c.now)&&m?.matoCharges>0;candidates.push({source:'fruit',key:s.key,meta,ready:(free||(f.cooldowns[cd]||0)<=c.now)&&b.energy>=(free?0:current?.cost||0)});}
+ for(const item of Policy.choose(candidates,state)){
+  if(item.source==='class'){if(skill(b,item.index,{...c,automatic:true}))return true;}
+  else if(fruits.cast(b,item.key,{...c,automatic:true}))return true;
+ }
+ return false;
 }
 function step(b,c){
  if(!Number.isFinite(c.dt)||c.dt<0||c.dt>1)throw new RangeError('Invalid battle step');
@@ -120,7 +143,7 @@ function step(b,c){
   if(projectile){const kind=classId==='strategist'?'mage':classId;b.projectiles.push(vfx.projectile(kind,hero,m.id,{damage:amount,slow,contact:meta}));event(b,'projectile',{id:m.id,kind,x:hero.x,y:hero.y});}
   else landed(m,amount,slow,meta);
  }
- function die(){resetHaki(b);b.hp=0;b.respawn=4.1;b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;if(!c.shared)for(const other of enemies())behavior.disengage(other);event(b,'death');}
+ function die(){resetHaki(b);b.hp=0;b.respawn=4.1;b.actionLockUntil=0;fruits.reset(b);b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;if(!c.shared)for(const other of enemies())behavior.disengage(other);event(b,'death');}
  function damage(m,multiplier=1,warning){
   if(warning?.groundTrap&&b.fruit?.id==='akuma_tori_albatroz'&&b.fruit.transformed&&b.fruit.effects.altitudeUntil>now/1000||b.fruit?.id==='akuma_bomu_bomu'&&warning?.damageType==='explosion')return;const physical=m.type!=='spirit';
   if(b.hp<=0)return;const genie=b.fruit?.effects.genie;if(genie){fruits.genieDamage(genie,now/1000,m.attack*multiplier,physical);if(genie.hp<=0)delete b.fruit.effects.genie;return;}H.touch(hakiGame(b),b.hakiRuntime);stats=combatStats(b,c,rt);if(rng()<stats.evasion){b.hakiRuntime.eyeFX=.35;event(b,'evade');return;}
@@ -151,23 +174,22 @@ function step(b,c){
   if(b.hp<=0){b.respawn=Math.max(0,b.respawn-dt);if(b.respawn<=1e-8){b.hp=stats.maxHP;b.energy=stats.maxEnergy;if(c.shared){Object.assign(hero,nav.map.spawn);}else if(b.prison){const m=b.mobs[0],auto=b.auto;enterPrison(b,b.prison.spec,stats,hero,{id:m.id,stolen:m.talentStolen||0});b.auto=auto;rt=talents.load(b);}else if(b.dungeon){const m=b.mobs[0],auto=b.auto;enterDungeon(b,b.dungeon.id,b.dungeon.record,stats,hero,{stolen:m?.talentStolen||0});b.auto=auto;rt=talents.load(b);}else Object.assign(hero,nav.map.spawn);b.targetId=null;event(b,'respawn');}}
   else{heal(dt*((stats.healthRegen||0)+(b.area?0:1.9)+(b.blessing>0?stats.regenBuff:0)));b.energy=Math.min(stats.maxEnergy,b.energy+dt*stats.energyRegen);}
   if(!c.shared)populate(b,now,rng,hero);
-  if(!b.fruit?.effects.genie&&!b.fruit?.effects.action&&!b.fruit?.effects.dash&&c.manualPath?.length&&b.hp>0&&now>=(c.manualStart||0))nav.follow(hero,c.manualPath,stats.moveSpeed,Math.min(dt,(now-(c.manualStart||0))/1000));
-  const fruitBusy=!!(b.fruit?.effects.action||b.fruit?.effects.dash||b.fruit?.effects.jikiCharge||b.fruit?.effects.genie);if(fruitBusy){b.pending=null;b.skillJob=null;}
+  if(!b.pending&&!b.skillJob&&(b.actionLockUntil||0)<=now&&!b.fruit?.job&&!b.fruit?.effects.genie&&!b.fruit?.effects.action&&!b.fruit?.effects.dash&&c.manualPath?.length&&b.hp>0&&now>=(c.manualStart||0))nav.follow(hero,c.manualPath,stats.moveSpeed,Math.min(dt,(now-(c.manualStart||0))/1000));
+  const fruitBusy=!!(b.fruit?.job||b.fruit?.effects.action||b.fruit?.effects.dash||b.fruit?.effects.jikiCharge||b.fruit?.effects.genie);if(fruitBusy){b.pending=null;b.skillJob=null;}
   let m=target(b);
+  if(b.auto&&b.hp>0&&b.area&&!b.fruit?.effects.action&&!b.fruit?.effects.dash&&!b.fruit?.effects.jikiCharge&&b.autoSkills&&!b.pending&&!b.skillJob&&(b.actionLockUntil||0)<=now&&now>=(b.nextSkillDecision||0)){
+    b.nextSkillDecision=now+250;autoSkill(b,{...c,now,hero,nav,stats,runtime:rt},g,m);
+   }
   if(b.auto&&b.hp>0&&b.area&&!fruitBusy){
    if(b.hp<stats.maxHP*.4&&potionsUsed<(c.potions||0)){heal(Math.round(stats.maxHP*.44));potionsUsed++;event(b,'potion');}
    if(!m){m=b.mobs.filter(live).sort((a,z)=>distance(hero,a)-distance(hero,z))[0];b.targetId=m?.id??null;}
-   if(b.autoSkills)for(const [index,s] of catalog.classes[classId].skills.entries()){
-    const support=s.type==='heal'?(b.hp<stats.maxHP*Math.max(.25,Math.min(.9,c.preferences?.healThreshold??.7))||U.selected(g)==='eternalBlessing'&&(rt.combatRemaining>0||m)):s.type==='guard'?b.hp<stats.maxHP*(classId==='cyborg'?.85:.75)&&b.guard<=0:s.type==='blessing'?b.hp<stats.maxHP*.85&&b.guard<=0:false;
-    const offensive=!['heal','guard','blessing'].includes(s.type)&&m&&distance(hero,m)<=stats.range&&b.attackClock<=0&&(s.type!=='area'||b.mobs.filter(other=>live(other)&&distance(m,other)<125).length>=2);
-    if(support||offensive)skill(b,index,{...c,hero,nav,stats,baseStats:c.baseStats||c.stats,runtime:rt,automatic:true});
-   }
+   const actionLocked=!!(b.pending||b.skillJob||b.fruit?.job||(b.actionLockUntil||0)>now);
    const warnings=b.mobs.filter(live).map(m=>m.telegraph).filter(Boolean),danger=warnings.some(w=>hunt.danger(w,hero));
-   if(danger){let goal;for(const r of [90,170,240]){for(let i=0;i<16;i++){const a=i*Math.PI/8,p={x:hero.x+Math.cos(a)*r,y:hero.y+Math.sin(a)*r};if(nav.walkable(p.x,p.y)&&!warnings.some(w=>hunt.danger(w,p))){goal=p;break;}}if(goal)break;}if(goal)move(hero,goal,stats.huntSpeed,dt,nav);}
-   else if(m&&!b.pending&&(distance(hero,m)>stats.range-8||!clear(hero,m)))move(hero,m,stats.huntSpeed,dt,nav);
-   else if(m&&!b.pending&&!b.fruit?.transformed&&['gunner','strategist','healer'].includes(classId)&&distance(hero,m)>0&&distance(hero,m)<stats.range*.45){const d=distance(hero,m),goal={x:hero.x+(hero.x-m.x)/d*stats.huntSpeed*dt,y:hero.y+(hero.y-m.y)/d*stats.huntSpeed*dt};if(nav.walkable(goal.x,goal.y)&&clear(goal,m))move(hero,goal,stats.huntSpeed,dt,nav);}
-   if(m&&!b.pending&&b.attackClock<=0&&distance(hero,m)<=stats.range&&clear(hero,m)){
-    const duration=Math.max(.15,1/stats.speed);face(hero,m);const clip=b.fruit?.transformed?zoan.attackTiming(b.fruit.id,hero.direction):null,ratio=clip?(clip.hitFrameRatio??(clip.impact_frame??Math.floor(clip.frames*.45))/clip.frames):.5;b.pending={targetId:m.id,remaining:duration*ratio};b.attackClock=duration;event(b,'attack',{id:m.id,duration});
+   if(!actionLocked&&danger){let goal;for(const r of [90,170,240]){for(let i=0;i<16;i++){const a=i*Math.PI/8,p={x:hero.x+Math.cos(a)*r,y:hero.y+Math.sin(a)*r};if(nav.walkable(p.x,p.y)&&!warnings.some(w=>hunt.danger(w,p))){goal=p;break;}}if(goal)break;}if(goal)move(hero,goal,stats.huntSpeed,dt,nav);}
+   else if(m&&!actionLocked&&(distance(hero,m)>stats.range-8||!clear(hero,m)))move(hero,m,stats.huntSpeed,dt,nav);
+   else if(m&&!actionLocked&&!b.fruit?.transformed&&['gunner','strategist','healer'].includes(classId)&&distance(hero,m)>0&&distance(hero,m)<stats.range*.45){const d=distance(hero,m),goal={x:hero.x+(hero.x-m.x)/d*stats.huntSpeed*dt,y:hero.y+(hero.y-m.y)/d*stats.huntSpeed*dt};if(nav.walkable(goal.x,goal.y)&&clear(goal,m))move(hero,goal,stats.huntSpeed,dt,nav);}
+   if(m&&!actionLocked&&b.attackClock<=0&&distance(hero,m)<=stats.range&&clear(hero,m)){
+    const duration=Math.max(.15,1/stats.speed);face(hero,m);const clip=b.fruit?.transformed?zoan.attackTiming(b.fruit.id,hero.direction):null,ratio=clip?(clip.hitFrameRatio??(clip.impact_frame??Math.floor(clip.frames*.45))/clip.frames):.5;b.pending={targetId:m.id,remaining:duration*ratio};b.actionLockUntil=now+duration*1000;hero.moving=0;b.attackClock=duration;event(b,'attack',{id:m.id,duration});
    }
   }
   if(b.pending){b.pending.remaining-=dt;if(b.pending.remaining<=0){const p=b.pending;b.pending=null;const t=b.mobs.find(m=>m.id===p.targetId);
@@ -175,9 +197,13 @@ function step(b,c){
     hit(t,1,b.fruit?.transformed?'physical':type,now,false,0,true);
    }
   }}
-  if(b.skillJob&&b.hp>0){const job=b.skillJob;b.skillJob=null;const s=catalog.classes[classId].skills[job.index],t=b.mobs.find(m=>m.id===job.targetId);
+  if(b.skillJob)b.skillJob.remaining=(b.skillJob.remaining||0)-dt;
+  if(b.skillJob&&b.skillJob.remaining<=0&&b.hp>0){const job=b.skillJob;b.skillJob=null;const s=catalog.classes[classId].skills[job.index],t=b.mobs.find(m=>m.id===job.targetId);
    if(s.type==='guard'){b.guard=7;heal(Math.round(stats.maxHP*(classId==='cyborg'?.12:.18)+stats.healing*.25));}
-   if(s.type==='heal')heal(stats.healing);
+   if(s.type==='heal'){
+    const ally=(c.allies||[]).filter(a=>a.b.hp>0&&a.b.hp<a.stats.maxHP&&distance(hero,a.hero)<=180&&clear(hero,a.hero)).sort((a,z)=>a.b.hp/a.stats.maxHP-z.b.hp/z.stats.maxHP)[0];
+    if(ally&&ally.b.hp/ally.stats.maxHP<b.hp/stats.maxHP)ally.b.hp=Math.min(ally.stats.maxHP,ally.b.hp+stats.healing);else heal(stats.healing);
+   }
    if(s.type==='blessing'){b.guard=8;b.blessing=8;}
    if(s.type==='strike')hit(t,s.multiplier,s.damageType||type,now);
    if(s.type==='area'&&live(t))for(const other of b.mobs.filter(live))if(distance(t,other)<125)hit(other,s.multiplier||1.55,s.damageType||type,now,true,s.element==='lightning'?4.5:0);

@@ -63,7 +63,7 @@
     const dx=first.x-hero.x,dy=first.y-hero.y,len=Math.hypot(dx,dy);if(!len)return [];
     return enemies.filter(m=>m!==first&&m.alive&&m.hp>0).map(m=>({m,along:((m.x-hero.x)*dx+(m.y-hero.y)*dy)/len,offset:Math.abs((m.x-hero.x)*dy-(m.y-hero.y)*dx)/len})).filter(v=>v.along>len&&v.along<=maxDistance&&v.offset<=22).sort((a,b)=>a.along-b.along).slice(0,2).map(v=>v.m);
   }
-  function rarity(random,boost=0){const roll=Math.floor(random()*1000)+1,b=Math.max(0,Math.min(1,boost));return roll<=Math.ceil(5*(1+b))?'legendary':roll<=Math.ceil(125*(1+b))?'epic':roll<=Math.ceil(275*(1+b))?'rare':roll<=500?'uncommon':'common';}
+  function rarity(random,boost=0){const roll=random();if(!Number.isFinite(roll)||roll<0||roll>=1)throw Error('RNG inválido');return roll<.60?'common':roll<.85?'uncommon':roll<.95?'rare':'epic';}
   function chainHeal(g,recipients,target,effective){
     if(key(g)!=='chain'||effective<=0)return [];
     const allies=recipients.filter(a=>a.id!==target.id&&a.alive!==false&&a.hp>0&&distance(a,target)<=180&&a.hp<a.maxHP);

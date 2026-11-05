@@ -52,7 +52,7 @@
    // Phoenix Flame animates at the caster's position; the character does not dash forward.
    if(j.kind==='phoenixEnergy'){const travel=Math.min(1,age/j.duration),movingTarget=c.enemies.find(m=>m.id===j.targetId);j.x=j.origin.x+((movingTarget?.x??j.origin.x)-j.origin.x)*travel;j.y=j.origin.y+((movingTarget?.y??j.origin.y)-j.origin.y)*travel;while(j.next<=5&&age+EPS>=j.next*j.duration/5){const m=c.enemies.find(m=>m.id===j.targetId);if(live(m))emit(c,j,m,1.1,'energy:'+j.next);j.next++;if(j.next===6&&live(m))m.rankSHealDebuffUntil=t+5;}}else if(age>=j.duration*.7&&!j.hit){j.hit=true;const m=c.enemies.find(m=>m.id===j.targetId);if(live(m)){emit(c,j,m,4,'impact');m.rankSHealDebuffUntil=t+5;m.rankSPhoenixDefenseUntil=t+5;}}
   }else if(j.kind==='phoenixTotem'){
-   while(j.next<=7&&age+EPS>=j.next){j.next++;if(dist(c.hero,j.origin)<=320)c.heal?.(.15);}
+   while(j.next<=7&&age+EPS>=j.next){j.next++;if(c.healArea)c.healArea(j.origin,320,.15);else if(dist(c.hero,j.origin)<=320)c.heal?.(.15);}
   }else if(j.kind==='vortex'){
    if(age+EPS>=vortexImpact&&!j.hit){j.hit=true;for(const m of c.enemies)if(live(m)&&dist(c.hero,m)<=rules.yami.vortex.radius&&c.clear(c.hero,m)){emit(c,j,m,4,'initial');m.rankSSilenceUntil=Math.max(m.rankSSilenceUntil||0,t+5);m.rankSPullUntil=t+.18;if(m.akumaFruitId)m.telegraph=null;j.pulls.push({id:m.id,started:t,until:t+.18});}}
    for(const p of j.pulls){const m=c.enemies.find(m=>m.id===p.id);if(!live(m)||t-dt>=p.until-EPS)continue;const from=Math.max(t-dt,p.started),remain=Math.max(EPS,p.until-from),fraction=Math.min(1,Math.max(0,Math.min(t,p.until)-from)/remain);c.move?.(m,(c.hero.x-m.x)*fraction,(c.hero.y-m.y)*fraction);}

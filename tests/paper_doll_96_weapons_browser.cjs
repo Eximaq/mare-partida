@@ -7,6 +7,8 @@ const origin=process.argv.find(a=>/^https?:/.test(a))||'http://127.0.0.1:8157/';
 const materialsOnly=process.argv.includes('--materials-only'),combatOnly=process.argv.includes('--combat-only'),otherClasses=process.argv.includes('--other-classes');
 const output=process.argv.find(a=>a.startsWith('--evidence='))?.slice(11);
 const defaultPlayer=process.argv.includes('--default-player');
+const selectedIds=process.argv.find(a=>a.startsWith('--items='))?.slice(8).split(',').map(Number);
+if(selectedIds)assert(selectedIds.length>0&&selectedIds.every(Number.isSafeInteger),'explicit item IDs');
 // Stable inputs make a CI failure reproducible; use --seed=N to explore another hunt.
 const seed=Number(process.argv.find(a=>a.startsWith('--seed='))?.slice(7)??1);
 assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32');
@@ -26,10 +28,13 @@ assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32'
    const renderer=MareWeapons96.create(q.weaponCatalog,q.appearanceRigs),orientations=new Map();
    for(const model of models)for(let degrees=0;degrees<360;degrees+=15)orientations.set(model.source+':'+degrees+':false',{model,angle:degrees*Math.PI/180,flip:false});
    for(const body of ['masculino','feminino'])for(const action of ['idle','walk',item.attackAction||'attack-'+item.category])for(const dir of ['south','north','east']){const selected=q.selection(body,action,dir),spec=MareMotion96.clipSpec(q.manifest,selected.clip);for(let f=0;f<selected.clip.frames;f++)for(const entry of renderer.plan(selected,f,spec,{weapon:item.id}))orientations.set(entry.model.source+':'+entry.angle.toFixed(8)+':'+entry.flip,entry);}
-   for(const entry of orientations.values()){const rotated=document.createElement('canvas');rotated.width=rotated.height=224;const e={...entry,x:112,y:112,phase:0,depth:'front'},cx=rotated.getContext('2d');if(['gauntlet','wrist-cannon'].includes(e.model.attachment?.kind))renderer.drawWorn(cx,images,[e],{width:224,height:224});else renderer.draw(cx,images,[e],'front');const parts=componentSizes(read(rotated),224,224);if(parts.length!==1)issues.push({kind:'rotation-fragments',id:item.itemId,view:entry.model.view,angle:entry.angle,flip:entry.flip,parts});counts.rotations++;}
+   for(const entry of orientations.values()){const rotated=document.createElement('canvas');rotated.width=rotated.height=224*(entry.model.renderDensity||1);const e={...entry,x:112,y:112,phase:0,depth:'front'},cx=rotated.getContext('2d');cx.scale(entry.model.renderDensity||1,entry.model.renderDensity||1);if(['gauntlet','wrist-cannon'].includes(e.model.attachment?.kind))renderer.drawWorn(cx,images,[e],{width:224,height:224});else renderer.draw(cx,images,[e],'front');const parts=componentSizes(read(rotated),rotated.width,rotated.height);if(parts.length!==1)issues.push({kind:'rotation-fragments',id:item.itemId,view:entry.model.view,angle:entry.angle,flip:entry.flip,parts});counts.rotations++;}
   }
   if(materialsOnly)return {counts,issues};
-  for(const body of ['masculino','feminino'])for(const item of items)for(const action of ['idle','walk',(item.attackAction||'attack-'+item.category)])for(const dir of ['south','north','east']){
+  // HD materials use the dedicated 3x pixel, fit and garment suites; this
+  // legacy ownership audit below indexes one sample per native body pixel.
+  const nativeItems=items.filter(item=>(item.renderDensity||1)===1);counts.hdMaterials=items.length-nativeItems.length;
+  for(const body of ['masculino','feminino'])for(const item of nativeItems)for(const action of ['idle','walk',(item.attackAction||'attack-'+item.category)])for(const dir of ['south','north','east']){
    const selected=q.selection(body,action,dir),spec=MareMotion96.clipSpec(q.manifest,selected.clip),atlas=q.catalog.nativeOwnership.atlases[body][action],atlasImage=await q.image(atlas.file);
    for(let frame=0;frame<selected.clip.frames;frame++){
     const ownerCanvas=document.createElement('canvas');ownerCanvas.width=ownerCanvas.height=spec.width;const index=atlas.directions.indexOf(dir)*atlas.framesPerDirection+frame;
@@ -44,24 +49,28 @@ assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32'
      const mask=document.createElement('canvas');mask.width=armed.width;mask.height=armed.height;const mx=mask.getContext('2d');mx.translate(dx,dy);
      const renderer=MareWeapons96.create(q.weaponCatalog,q.appearanceRigs),entries=renderer.plan(selected,frame,spec,look,ownership),images=new Map(await Promise.all([...new Set(entries.map(e=>e.model.source))].map(async file=>[file,await q.image(file)])));
      const visibleHands=ownership.hands.slice(),ramp=MareAppearance96.skins[look.skin]?.ramp,limb=ramp?MareAppearance96.recolor(nativeLimb,MareAppearance96.materialMask(nativeLimb,'skin'),ramp):nativeLimb;
-     if(['gauntlet','wrist-cannon'].includes(item.attachment?.kind))for(const entry of entries.filter(e=>e.depth==='back'))for(let y=Math.max(0,entry.y-8);y<Math.min(spec.height,entry.y+9);y++)for(let x=Math.max(0,entry.x-8);x<Math.min(spec.width,entry.x+9);x++){const i=(y*spec.width+x)*4;if(limb[i+3]&&same(limb,b,i))visibleHands[y*spec.width+x]=1;}
+     for(const entry of entries.filter(e=>e.depth==='back'))for(let y=Math.max(0,entry.y-8);y<Math.min(spec.height,entry.y+9);y++)for(let x=Math.max(0,entry.x-8);x<Math.min(spec.width,entry.x+9);x++){const i=(y*spec.width+x)*4;if(limb[i+3]&&same(limb,b,i))visibleHands[y*spec.width+x]=1;}
      renderer.draw(mx,images,entries,'back');renderer.draw(mx,images,entries,'front');renderer.drawWorn(mx,images,entries,spec);renderer.drawGrips(mx,entries,'back',['#fff','#fff','#fff','#fff']);
-     const gripMask=document.createElement('canvas');gripMask.width=armed.width;gripMask.height=armed.height;const gx=gripMask.getContext('2d');gx.translate(dx,dy);renderer.drawGrips(gx,entries,'front',['#fff','#fff','#fff','#fff']);renderer.drawWorn(gx,images,entries,spec);const g=read(gripMask);mx.drawImage(gripMask,-dx,-dy);const w=read(mask);
+     const gripMask=document.createElement('canvas');gripMask.width=armed.width;gripMask.height=armed.height;const gx=gripMask.getContext('2d');gx.translate(dx,dy);renderer.drawGrips(gx,entries,'back',['#fff','#fff','#fff','#fff']);renderer.drawGrips(gx,entries,'front',['#fff','#fff','#fff','#fff']);renderer.drawWorn(gx,images,entries,spec);const g=read(gripMask);mx.drawImage(gripMask,-dx,-dy);const w=read(mask),frontCanvas=document.createElement('canvas');frontCanvas.width=armed.width;frontCanvas.height=armed.height;const fx=frontCanvas.getContext('2d');fx.translate(dx,dy);renderer.draw(fx,images,entries,'front');renderer.drawWorn(fx,images,entries.filter(e=>e.depth==='front'),spec);const front=read(frontCanvas);
+     // A rear gauntlet must not cover the nearer forearm where the two hands cross.
+     const pose=q.appearanceRigs.clips[body][action][dir].poses[frame],pad=(spec.width-128)/2;
+     const armDistance=(side,x,y)=>{const point=label=>{const j=pose.find(j=>j.label===side+' '+label);return {x:j.x*128+pad,y:j.y*128+pad};};return Math.min(MareMotion96.distanceToSegment({x,y},point('SHOULDER'),point('ELBOW')),MareMotion96.distanceToSegment({x,y},point('ELBOW'),point('ARM')));};
+     const armourCoverage=entries.filter(e=>['gauntlet','wrist-cannon'].includes(e.model.attachment?.kind)).map(entry=>{const c=document.createElement('canvas');c.width=armed.width;c.height=armed.height;const cx=c.getContext('2d');cx.translate(dx,dy);renderer.drawWorn(cx,images,[entry],spec);return {entry,pixels:read(c)};});
      for(const entry of entries)if(entry.model.edgeSide){const sign=entry.model.edgeSide*(entry.flip?-1:1),dot=sign*(Math.cos(entry.angle)*entry.outward.x+Math.sin(entry.angle)*entry.outward.y);if(dot<-.00001)issues.push({kind:'edge-inward',body,id:item.itemId,action,dir,frame});counts.edgeDirections++;}
      for(let y=0;y<armed.height;y++)for(let x=0;x<armed.width;x++)if((x<2||y<2||x>=armed.width-2||y>=armed.height-2)&&a[(y*armed.width+x)*4+3])issues.push({kind:'clipped',body,id:item.itemId,action,dir,frame,x,y});
      for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){
       const i=(y*spec.width+x)*4,j=((y+dy)*armed.width+x+dx)*4;
       if(!w[j+3]){counts.outsideWeapon++;if(!same(b,a,i,j))issues.push({kind:'body-changed-outside-weapon',body,id:item.itemId,action,dir,frame,x,y});}
-      if(otherClasses&&!kit&&['gauntlet','wrist-cannon'].includes(item.attachment?.kind)&&visibleHands[y*spec.width+x]&&g[j+3]&&b[i+3]===255){const ramps=MareAppearance96.skins.light.ramp.map(hex=>hex.slice(1).match(/../g).map(v=>parseInt(v,16)));if(ramps.some(c=>c.every((v,k)=>v===b[i+k]))&&!same(b,g,i,j)){counts.armourSkinWitnesses=(counts.armourSkinWitnesses||0)+1;if(same(b,a,i,j))issues.push({kind:'armour-not-covering-visible-palm',body,id:item.itemId,action,dir,frame,x,y});}}
-      if(ownership.hands[y*spec.width+x]&&b[i+3]===255&&!g[j+3]){counts.handPixels++;if(!same(b,a,i,j))issues.push({kind:'grip-over-hand',body,id:item.itemId,action,dir,frame,x,y});}
+      if(otherClasses&&!kit&&['gauntlet','wrist-cannon'].includes(item.attachment?.kind)&&visibleHands[y*spec.width+x]&&armourCoverage.some(({entry:e,pixels})=>pixels[j+3]&&armDistance(e.side,x,y)<=armDistance(e.side==='LEFT'?'RIGHT':'LEFT',x,y))&&g[j+3]&&b[i+3]===255){const ramps=MareAppearance96.skins.light.ramp.map(hex=>hex.slice(1).match(/../g).map(v=>parseInt(v,16)));if(ramps.some(c=>c.every((v,k)=>v===b[i+k]))&&!same(b,g,i,j)){counts.armourSkinWitnesses=(counts.armourSkinWitnesses||0)+1;if(same(b,a,i,j))issues.push({kind:'armour-not-covering-visible-palm',body,id:item.itemId,action,dir,frame,x,y});}}
+      if(!entries.some(e=>e.frontOfHand)&&!front[j+3]&&ownership.hands[y*spec.width+x]&&b[i+3]===255&&!g[j+3]){counts.handPixels++;if(!same(b,a,i,j))issues.push({kind:'grip-over-hand',body,id:item.itemId,action,dir,frame,x,y});}
       if(item.attachment?.kind==='staff'){const neck=q.appearanceRigs.clips[body][action][dir].poses[frame].find(j=>j.label==='NECK'),px=(spec.width-128)/2;if(Math.abs(x-(neck.x*128+px))<=8&&y>=neck.y*128+px-22&&y<=neck.y*128+px-5&&b[i+3]===255&&!same(b,a,i,j))issues.push({kind:'staff-over-face',body,action,dir,frame,x,y});}
-      if(dir==='north'&&b[i+3]===255&&!(['gauntlet','wrist-cannon'].includes(item.attachment?.kind)&&visibleHands[y*spec.width+x])){counts.northOpaque++;if(!same(b,a,i,j))issues.push({kind:'north-weapon-over-body',body,id:item.itemId,action,dir,frame,x,y});}
+      if(dir==='north'&&b[i+3]===255&&!visibleHands[y*spec.width+x]){counts.northOpaque++;if(!same(b,a,i,j))issues.push({kind:'north-weapon-over-body',body,id:item.itemId,action,dir,frame,x,y});}
      }
      if(dir==='east'){
       const west=await q.render(body,action,'west',frame,[],look),d=read(west);if(west.width!==armed.width||west.height!==armed.height)issues.push({kind:'mirror-size'});
       else for(let y=0;y<armed.height;y++)for(let x=1;x<armed.width;x++)if(!same(a,d,(y*armed.width+x)*4,(y*armed.width+armed.width-x)*4))issues.push({kind:'mirror-pixel',body,id:item.itemId,action,frame,x,y});counts.mirrors++;
      }
-     counts.compositions++;if(counts.compositions%240===0)console.log('weapons-progress:'+counts.compositions+'/'+(items.length*240));if(issues.length>100)return {counts,issues:issues.slice(0,100)};
+     counts.compositions++;if(counts.compositions%240===0)console.log('weapons-progress:'+counts.compositions+'/'+(nativeItems.length*240));if(issues.length>100)return {counts,issues:issues.slice(0,100)};
     }
    }
   }
@@ -84,15 +93,15 @@ assert(Number.isInteger(seed)&&seed>=0&&seed<=0xffffffff,'seed must be a uint32'
  await game.goto(new URL(defaultPlayer?'':'?paperDoll96=1',origin).href,{waitUntil:'networkidle'});await game.waitForFunction(()=>window.__weaponQA&&__mareDiagnostics().lobby96.state==='ready');
  await game.locator('#characterName').fill('Armas96');await game.locator('#nextToClass').click();await game.locator('#nextToAppearance').click();await game.locator('#createCharacter').click();await game.locator('[data-confirm-accept]').click();await game.evaluate(()=>{__weaponQA.enterHunt();__weaponQA.pause();});await game.waitForFunction(()=>__weaponQA.prepareMap());
  let fights=0,kills=0;const results=[];
- const ids=otherClasses?[2,3,4,5,14,15,16,17,31,32]:[0,1,12,13,67,68,69,70,71,72,73,74];
+ const ids=selectedIds||(otherClasses?[2,3,4,5,14,15,16,17,31,32]:[0,1,12,13,67,68,69,70,71,72,73,74]);
  for(const body of ['masculino','feminino'])for(const id of ids){
   const equipped=await game.evaluate(async({body,id})=>{const result=__weaponQA.equip(id),r=__weaponQA.r;if(!r.snapshot().rehearsal)__weaponQA.g.appearance96={...MareCharacterAppearance.read(__weaponQA.g),gender:body};r.setDraft('body',body);r.setDraft('kit','sample-b');r.apply(__weaponQA.g);if(!await r.ensure(__weaponQA.g))throw Error('Equipment composition failed: '+JSON.stringify(r.snapshot()));return result;},{body,id});assert.equal(equipped.equipped,id);
   const result=await game.evaluate(()=>__weaponQA.fight());assert(result.damage>0);assert(result.hits.length>0);assert(result.hits.every(h=>(result.ranged||h.frame===4)&&h.weapon==='weapon-'+id),JSON.stringify({body,id,result}));if(result.ranged){assert(result.releases.length>0,'projectile or beam emitted');for(const release of result.releases){assert.equal(release.frame,4,'release pose');if(otherClasses){assert(release.expected,'native96 emitter');assert(Math.abs(release.origin.x-release.expected.x)<.001&&Math.abs(release.origin.y-release.expected.y)<.001,'emission matches composed weapon');}}}assert(result.frames.includes(0)&&result.frames.includes(7),'show windup and recovery');results.push({body,id,damage:result.damage,hits:result.hits,releases:result.releases});fights++;console.log('weapons-combat:'+body+':'+id);
  }
- for(const id of otherClasses?[4,15]:[70,74]){await game.evaluate(async id=>{__weaponQA.equip(id);await __weaponQA.r.ensure(__weaponQA.g);},id);for(let i=0;i<10;i++){const result=await game.evaluate(()=>__weaponQA.fight(true));kills+=result.kills;}}
- assert.equal(kills,20);
+ for(const id of selectedIds?[]:otherClasses?[4,15]:[70,74]){await game.evaluate(async id=>{__weaponQA.equip(id);await __weaponQA.r.ensure(__weaponQA.g);},id);for(let i=0;i<10;i++){const result=await game.evaluate(()=>__weaponQA.fight(true));kills+=result.kills;}}
+ assert.equal(kills,selectedIds?0:20);
  await game.evaluate(async()=>{__weaponQA.unequip();await __weaponQA.r.ensure(__weaponQA.g);});const unarmed=await game.evaluate(()=>__weaponQA.fight());assert(unarmed.hits.every(h=>h.action==='attack-unarmed'));
- const natural=[];if(otherClasses){
+ const natural=[];if(otherClasses&&!selectedIds){
   // Respawn uses wall dates; advance those with the accelerated simulation.
   let naturalTime=Date.now();await game.clock.setFixedTime(naturalTime);
   for(const id of [2,4,14,16,31]){

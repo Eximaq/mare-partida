@@ -40,6 +40,7 @@ test("native archive restores every table and command receipt into a separate di
     await send('items.initialize');await send('world.initialize');await send('battle.start');
     await send('profile.appearance',{appearance:{...A.defaults,hairColor:'blue'}});
     await send('profile.preferences',{hideHeadgear:true,hideItems:true,healThreshold:.8});
+    await pool.query('INSERT INTO mare_game.talent_legacy_allowances(character_id,budget) VALUES($1,1)',[c.id]);
     await send('talents.commit',{build:{...T.empty(),nodes:{[T.nodes('sword')[0].id]:1}}});
     const purchase=await input('potions.buy'),purchaseReceipt=await service.command(session.token,c.id,purchase);
     const original=await read();assert(original.profile&&original.talents&&original.battle&&original.world&&original.originalInventory);

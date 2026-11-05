@@ -77,7 +77,7 @@ await auditSymbols('.attribute-row>.studio-icon,.studio-derived-groups h4 img');
   const images=await p.locator('.studio-skills img').evaluateAll(imgs=>imgs.map(img=>({src:img.getAttribute('src'),width:img.naturalWidth})));
   assert.equal(images.length,2);
   assert(images.every(img=>img.src.includes('/'+id+'-')));
-  assert.equal(await p.locator('#skill1Icon img').getAttribute('src'),'assets/ui/character-studio/skills/'+id+'-1.png');
+  assert.equal(await p.locator('#classSkill1Icon img').getAttribute('src'),'assets/ui/character-studio/skills/'+id+'-1.png');
   assert.equal(await p.locator('#skill2Icon img').getAttribute('src'),'assets/ui/character-studio/skills/'+id+'-2.png');
   assert.equal(await p.locator('[data-derived=maxHP]').count(),1);
   assert.equal(await p.locator('#healThreshold').count(),id==='healer'?1:0);

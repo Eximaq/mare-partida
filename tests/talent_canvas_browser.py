@@ -25,6 +25,10 @@ with sync_playwright() as p:
  def checked(seed=None):
   c,q=page_for(b,seed);q.on('pageerror',lambda e:errors.append(e.stack));return c,q
  c,q=checked();template=create(q);c.close()
+ # This visual fixture represents an existing save with a frozen one-point reserve.
+ # Fresh characters start at zero; changing level alone must not mint talent points.
+ template.update(talentVersion=2)
+ template.pop('talentLegacyBudget',None)
  for cls in ['brawler','sword','gunner','rogue','cyborg','strategist','healer']:
   seed=copy.deepcopy(template);seed.update(level=30,classId=cls)
   c,q=checked(seed);tree(q)

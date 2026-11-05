@@ -53,7 +53,7 @@ export async function mutateProfile(client:PoolClient,id:string,input:CharacterC
    if(!after.starter_classes.includes(input.payload.classId)){
     after.starter_classes.push(input.payload.classId);
     if(!weapon){const def=({sword:0,brawler:2,gunner:4,rogue:12,cyborg:14,strategist:16,healer:31} as Record<string,number>)[input.payload.classId]!;
-     weapon=forge.normalizeItem({id:randomUUID(),def,level:1,plus:0,rarity:'common',locked:false,obtainedAt:Date.now(),origin:'Equipamento inicial da classe'},defs,()=>randomInt(0,0x100000000)/0x100000000);}
+     weapon=forge.generateItem({id:randomUUID(),def,level:1,plus:0,rarity:'common',locked:false,obtainedAt:Date.now(),origin:'Equipamento inicial da classe'},defs,()=>randomInt(0,0x100000000)/0x100000000);}
    }
    if(next.equipment.weapon){if(next.inventory.length>=120)throw new AuthFault(409,'inventory_full');next.inventory.push(next.equipment.weapon);}
    next.equipment.weapon=weapon;

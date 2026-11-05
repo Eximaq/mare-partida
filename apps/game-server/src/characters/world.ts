@@ -49,6 +49,7 @@ export async function mutateWorld(client:PoolClient,id:string,input:CharacterCom
   if(!nav.walkable(position.x,position.y))throw new AuthFault(503,'world_spawn_blocked');
   w={rulesetId:'original-world-v1',rulesHash:rules.rulesHash,mapId,area:island?.area??null,position,path:[],speed:0,direction:'front',serverNow:now.toISOString(),motionUntil:now.toISOString()};
  }else if(input.action==='world.move'){
+  const battle=await readBattle(client,id);if(battle&&(battle.pending||battle.skillJob||battle.fruit?.job||(battle.actionLockUntil||0)>now.getTime()))throw new AuthFault(409,'battle_action_locked');
   const nav=rules.navigation(w!.mapId),goal=input.payload;if(!nav.walkable(goal.x,goal.y))throw new AuthFault(409,'world_destination_blocked');
   const path:Point[]=nav.path(w!.position,goal);if(!path.length||path.length>128)throw new AuthFault(409,'world_route_unavailable');
   const fighter=await readFighter(client,id,state);const speed=fighter.rulesetId==='original-character-v1'?fighter.stats.moveSpeed:150;

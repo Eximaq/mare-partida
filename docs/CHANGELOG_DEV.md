@@ -1,3 +1,7 @@
+## 04/11/2026 — 56 equipamentos PixelLab e camadas por slot
+
+Branch feature/equipment-56-native, base f4cfbbe1 (PR238 preservado). 56 itens append-only (129–184), 56 ícones transparentes 128×128 e 80 encaixes nativos M/F. Cintos e capas perdem somente a contribuição visual, inclusive antigos; mantos de torso permanecem visíveis. 19 testes Node, 2 TypeScript, 4.992 quadros no Chrome e comparações com zero pixels de diferença na região do avatar antes/depois de equipar e recarregar. Pacote estático validado. [Arquivos, regras, custo PixelLab e limites da validação](art/equipment-56/README.md).
+
 ## 03/11/2026 — Ilha dos Anjos, Satori e ambiente
 
 Skypiea 75–80 integrada com o mapa existente, Satori normal Nv.77 e Walking/Attack nas quatro direções. Nuvens decorativas móveis, transponíveis e à frente; buracos sob elas preenchidos com upperTerrain nativo. Pool leve de vento azul e poeira dourada em Alabasta. Paisagem da HUD gerada no ChatGPT. 14 testes Node, Chrome e build estático aprovados. [Fontes, arquivos, validação e limites](SKYPIEA.md).

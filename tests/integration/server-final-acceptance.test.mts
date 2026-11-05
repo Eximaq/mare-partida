@@ -32,7 +32,7 @@ test('twelve original worlds advance together without starvation, double reward 
  const times=[];for(let i=0;i<4;i++){
   await f.pool.query("UPDATE mare_game.character_battles SET tick_at=clock_timestamp()-interval '300 milliseconds'");const start=performance.now();assert.equal(await tickWorldBattles(f.pool),12);times.push(Math.round(performance.now()-start));
  }
- for(const a of actors){const o=await a.read();assert(o.battle.metrics.seconds>=1.2);assert.equal(o.battle.mobs.length,14);assert.equal(o.state.gold,'120');}
+ for(const a of actors){const o=await a.read();assert(o.battle.metrics.seconds>=1.2-1e-9,JSON.stringify({seconds:o.battle.metrics.seconds,times}));assert.equal(o.battle.mobs.length,14);assert.equal(o.state.gold,'120');}
  await Promise.all(actors.map(a=>f.service.logout(a.login.token,'all')));const before=(await f.pool.query('SELECT character_id,simulation FROM mare_game.character_battles ORDER BY character_id')).rows;assert.equal(await tickWorldBattles(f.pool),0);assert.deepEqual((await f.pool.query('SELECT character_id,simulation FROM mare_game.character_battles ORDER BY character_id')).rows,before);
  console.log(JSON.stringify({worlds:12,monsters:168,batches:4,maxBatchMs:Math.max(...times),averageBatchMs:Math.round(times.reduce((a,b)=>a+b,0)/times.length)}));
 }));

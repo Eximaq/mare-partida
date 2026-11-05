@@ -29,7 +29,7 @@
       for(const style of catalog.styles.filter(s=>s.kind==='torso'))if(!style.materialPalette?.length)throw Error('Missing torso material palette: '+style.id);
       for(const body of Object.keys(catalog.fitBases))for(const action of ['static','idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus','attack-tech']){
         if(!catalog.nativeOwnership.atlases?.[body]?.[action])throw Error('Incomplete anatomy mask: '+body+'/'+action);
-        for(const style of catalog.styles.filter(s=>s.kind==='torso'))if(!style.animations?.[body]?.[action])throw Error('Incomplete torso animation: '+style.id+'/'+body+'/'+action);
+        for(const style of catalog.styles.filter(s=>s.kind==='torso'&&s.nativeFit!=='registered-panels-v1'))if(!style.animations?.[body]?.[action])throw Error('Incomplete torso animation: '+style.id+'/'+body+'/'+action);
       }
     }
     if(/^native-surface-v[67]$/.test(catalog.fitVersion))for(const style of catalog.styles){
@@ -42,7 +42,7 @@
       if(attachments.has(key)){const value=attachments.get(key);attachments.delete(key);attachments.set(key,value);return value;}
       const value=build();attachments.set(key,value);if(attachments.size>96)attachments.delete(attachments.keys().next().value);return value;
     }
-    const descriptor=(slot,id)=>catalog.styles.find(s=>s.id===id&&s.kind===slot);
+    const descriptor=(slot,id)=>MareWeapons96.composition.rendersSlot(slot)?catalog.styles.find(s=>s.id===id&&s.kind===slot):undefined;
     function headLook(look,hidden=[]){
       const model=descriptor('head',look.head),state=window.MareHeadgear.resolve(model?.itemId,{model,hidden:look.hideHeadgear===true||hidden.includes('head')});
       return state.visible?look:{...look,head:'original'};
@@ -54,6 +54,11 @@
       const replaced={headBase:!!catalog.originalHeads?.[body]?.[dir],face:look.face==='none'||!!descriptor('face',look.face)||!!catalog.originalFaces?.[body]?.[dir],hair:look.hair==='none'||hidesHair(look)||!!descriptor('hair',look.hair)||!!catalog.originalHairs?.[body]?.[dir],top:look.baseOutfitHidden||!!descriptor('torso',look.torso),pants:look.pants==='none'||!!descriptor('pants',look.pants)};
       return Object.entries(selected.layers).filter(([slot])=>!replaced[slot]).map(([,file])=>file);
     }
+    function idleArms(selected){
+      const clip=options.manifest?.bodies[selected.body]?.clips.idle[selected.direction];
+      if(!clip)throw Error('Missing native idle arm reference');
+      return {...selected,action:'idle',clip,layers:clip.layers,key:[selected.body,'idle',selected.direction].join(':')};
+    }
     function requiredFiles(selected,look,hidden=null) {
       look=headLook(look,hidden||[]);const inspectable=hidden===null;
       const files=choices(look).filter(p=>p.slot!=='hair'||inspectable||!hidesHair(look)).flatMap(p=>[p.style.layers[selected.body][selected.direction],...Object.values(p.style.parts?.[selected.body]?.[selected.direction]||{}),p.style.animations?.[selected.body]?.[selected.action]?.file].filter(Boolean));
@@ -63,7 +68,9 @@
       if(catalog.originalHeads?.[selected.body]?.[selected.direction])files.push(catalog.originalHeads[selected.body][selected.direction]);
       if(catalog.headFit!=='canonical-neck-v7'&&catalog.originalHands?.[selected.body]?.[selected.direction])files.push(catalog.originalHands[selected.body][selected.direction]);
       if(catalog.nativeOwnership?.atlases?.[selected.body]?.[selected.action])files.push(catalog.nativeOwnership.atlases[selected.body][selected.action].file);
-      if(weapons?.descriptor(look.weapon,selected.direction))files.push(weapons.descriptor(look.weapon,selected.direction).source);
+      if(weapons?.descriptor(look.weapon,selected.direction,selected.action))files.push(weapons.descriptor(look.weapon,selected.direction,selected.action).source);
+      if(weapons?.descriptor(look.weapon)?.armour)files.push(weapons.descriptor(look.weapon).armour.source);
+      if(weapons?.armPose(selected,0,look)){const idle=idleArms(selected),base={...look,weapon:'original'};files.push(...Object.values(idle.layers),...requiredFiles(idle,base,hidden));}
       return [...new Set(files)];
     }
     async function prepare(selected,look,hidden=null){return new Map(await Promise.all(requiredFiles(selected,look,hidden).map(async file=>[file,await load(file)])));}
@@ -93,7 +100,7 @@
       for(const slot of ['hair','face','pants'])if(look[slot]==='none'||descriptor(slot,look[slot]))visibleHidden.push(slot);
       const skin=api.skins[look.skin]?.ramp;
       const headStyle=hidden.includes('head')?null:descriptor('head',look.head);
-      const hideHair=window.MareHeadgear.resolve(headStyle?.itemId,{model:headStyle}).hideHair;
+      const headState=window.MareHeadgear.resolve(headStyle?.itemId,{model:headStyle}),hideHair=headState.hideHair;
       if(hideHair)visibleHidden.push('hair');
       if(look.baseOutfitHidden&&!descriptor('torso',look.torso))visibleHidden.push('top');
       if(descriptor('torso',look.torso))visibleHidden.push('top');
@@ -139,11 +146,12 @@
         const file=p.style.layers[selected.body][selected.direction],image=images.get(file);
         const palette=p.slot==='hair'?(look.hairColor&&look.hairColor!=='brown'?api.hairs[look.hairColor]?.ramp:null):null;
         const data=texture(image,file,p.slot==='face'?'face':'hair',palette,p.slot==='face'?(p.style.faceColorProtection?.[selected.body]?.[selected.direction]||catalog.faceColorProtection?.[selected.body]?.[selected.direction]||[]):[],p.style.eyeIris?.[selected.body]?.[selected.direction]||[],p.slot==='face'?look.eyeColor:null).pixels;
+        const headFit=p.slot==='head'?api.headAdjustment(options.allowHeadAdjustment&&look.headAdjustment?look.headAdjustment:catalog.headAdjustments?.[p.style.id]?.[selected.body]?.[selected.direction]):null;
         const box={x0:32,y0:60,x1:96,y1:113};
         const sourceParts=Object.fromEntries(Object.entries(p.style.parts?.[selected.body]?.[selected.direction]||{}).map(([name,file])=>[name,texture(images.get(file),file,p.slot,null).pixels]));
         const atlas=p.style.animations?.[selected.body]?.[selected.action];
         const torsoPiece=()=>{
-          if(!atlas)return api.fitTorsoToBody(data,torsoBodyPixels,rest,pose,padding,spec.width,spec.height,foregroundPixels,ownership);
+          if(!atlas)return api.fitTorsoToBody(data,torsoBodyPixels,rest,pose,padding,spec.width,spec.height,sourceParts?.DRAPE?handSurface:foregroundPixels,ownership,p.style.nativeFit==='registered-panels-v1'?sourceParts:null);
           const index=atlas.directions.indexOf(selected.direction)*atlas.framesPerDirection+fi;
           const atlasImage=images.get(atlas.file);
           if(index<0||fi>=atlas.framesPerDirection||atlas.cell!==spec.width||atlasImage.width!==atlas.columns*atlas.cell||atlasImage.height!==atlas.rows*atlas.cell)throw Error('Invalid torso animation');
@@ -151,7 +159,7 @@
           cx.drawImage(atlasImage,index%atlas.columns*atlas.cell,Math.floor(index/atlas.columns)*atlas.cell,atlas.cell,atlas.cell,0,0,spec.width,spec.height);
           return {full:cx.getImageData(0,0,spec.width,spec.height).data};
         };
-        const attached=fitted([file,selected.key,fi,palette?.join(',')||'',p.slot==='face'?look.eyeColor:'',atlas?.file||'surface'].join(':'),()=>p.slot==='torso'?torsoPiece():p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,handOwnership:ownership.hands,material:p.style.nativeMaterial}):api.attach(data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
+        const attached=fitted([file,selected.key,fi,palette?.join(',')||'',p.slot==='face'?look.eyeColor:'',atlas?.file||'surface',JSON.stringify(headFit)].join(':'),()=>p.slot==='torso'?torsoPiece():p.slot==='pants'?{full:api.fitTrousersToBody(data,neutralPixels,rest,pose,padding,spec.width,spec.height,restPixels,sourceParts,{material:p.style.nativeMaterial})}:['boots','gloves'].includes(p.slot)?api.fitPairToBody(data,p.slot,rest,pose,padding,spec.width,spec.height,neutralPixels,restPixels,sourceParts,{coverHand:p.style.fingerCoverage==='full',handSurface,handOwnership:ownership.hands,material:p.style.nativeMaterial}):api.attach(headFit?api.adjustHead(data,headFit,rest):data,p.slot,rest,pose,socket,padding,spec.width,spec.height,box));
         if(p.slot==='boots'){
           coveredFeet=p.style.nativeMaterial?new Uint8ClampedArray(neutralPixels.length):api.bootCoverage(neutralPixels,rest,pose,padding,spec.width,spec.height,sourceParts);
           if(p.style.nativeMaterial)for(let i=3;i<coveredFeet.length;i+=4)if(attached.LEFT[i]||attached.RIGHT[i])coveredFeet[i]=255;
@@ -197,10 +205,75 @@
         const mask=fromPixels(coveredFeet,spec.width,spec.height);
         for(const c of [originalFrame,pieces.pants?.full].filter(Boolean)){const cx=c.getContext('2d');cx.save();cx.globalCompositeOperation='destination-out';cx.drawImage(mask,0,0);cx.restore();}
       }
+      const referencePose=weapons?.armPose(selected,fi,look),carryPose=weapons?.carryPose(selected,fi,look)||referencePose;let carryArms=null,carryMask=null,torsoUnderArms=null;
+      if(carryPose){
+        // Retarget only the existing dressed arms. The body, face, legs and
+        // current equipment retain their original art and animation frames.
+        const source=canvas(spec.width,spec.height);draw(source.getContext('2d'),images,selected,fi,spec,hidden,{...look,weapon:'original'});
+        let pixels=source.getContext('2d').getImageData(0,0,spec.width,spec.height).data;const at=points=>Object.fromEntries(points.map(j=>[j.label,{x:j.x*128+padding,y:j.y*128+padding}])),from=at(pose),to=at(carryPose),parts=[];
+        const center=from.NECK.x,neck=from.NECK.y,mask=new Uint8ClampedArray(pixels.length);
+        const bones=['LEFT','RIGHT'].flatMap(side=>[['SHOULDER','ELBOW'],['ELBOW','ARM']].map(([a,b])=>({side,a:from[side+' '+a],b:from[side+' '+b],c:to[side+' '+a],d:to[side+' '+b],pixels:new Uint8ClampedArray(pixels.length)})));
+        for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){
+          const p=y*spec.width+x,i=p*4;if(!pixels[i+3]||y<neck-1)continue;
+          const nearest=bones.map(b=>({b,d:MareMotion96.distanceToSegment({x,y},b.a,b.b)})).sort((a,b)=>a.d-b.d)[0];
+          const sleeve=y<neck+10&&Math.abs(x-center)>9&&nearest.d<4.5;
+          if(!ownership.arms[p]&&!ownership.hands[p]&&!sleeve)continue;
+          nearest.b.pixels.set(pixels.subarray(i,i+4),i);mask[i+3]=255;
+        }
+        // Keep the native outer outline with its arm. The ownership atlas owns
+        // skin and the inner contour, but may leave a one-pixel outer stroke.
+        const core=mask.slice();
+        for(let y=1;y<spec.height-1;y++)for(let x=1;x<spec.width-1;x++){
+          const i=(y*spec.width+x)*4;if(core[i+3]||!pixels[i+3]||y<neck-1||Math.abs(x-center)<=10)continue;
+          if(![-1,0,1].some(dy=>[-1,0,1].some(dx=>core[((y+dy)*spec.width+x+dx)*4+3])))continue;
+          const nearest=bones.map(b=>({b,d:MareMotion96.distanceToSegment({x,y},b.a,b.b)})).sort((a,b)=>a.d-b.d)[0];if(nearest.d>6.5)continue;
+          nearest.b.pixels.set(pixels.subarray(i,i+4),i);mask[i+3]=255;
+        }
+        if(referencePose){
+          // Fully visible native idle arms supply the texture. The old tech
+          // pose folds both wrists over the chest and hides half the forearms;
+          // stretching those occluded fragments would create broken limbs.
+          const idle=idleArms(selected),base=canvas(128,128);draw(base.getContext('2d'),images,idle,0,{width:128,height:128},hidden,{...look,weapon:'original'});
+          const padded=canvas(spec.width,spec.height);padded.getContext('2d').drawImage(base,padding,padding);pixels=padded.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
+          const idlePose=at(rigs.clips[selected.body].idle[selected.direction].poses[0]),a=catalog.nativeOwnership.atlases[selected.body].idle,atlas=canvas(128,128),ax=atlas.getContext('2d'),n=a.directions.indexOf(selected.direction)*a.framesPerDirection;
+          ax.drawImage(images.get(a.file),n%a.columns*a.cell,Math.floor(n/a.columns)*a.cell,a.cell,a.cell,0,0,128,128);const owner=MareTorso96.unpack(ax.getImageData(0,0,128,128).data);
+          for(const bone of bones){const names=bone===bones.find(b=>b.side===bone.side)?['SHOULDER','ELBOW']:['ELBOW','ARM'];bone.a=idlePose[bone.side+' '+names[0]];bone.b=idlePose[bone.side+' '+names[1]];bone.pixels.fill(0);}
+          const picked=new Uint8Array(spec.width*spec.height),neck=idlePose.NECK.y,center=idlePose.NECK.x;
+          for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){
+            const i=(y*spec.width+x)*4,xx=x-padding,yy=y-padding;if(xx<0||yy<0||xx>=128||yy>=128||!pixels[i+3]||y<neck-1)continue;
+            const p=yy*128+xx,near=bones.map(b=>({b,d:MareMotion96.distanceToSegment({x,y},b.a,b.b)})).sort((a,b)=>a.d-b.d)[0];
+            if(owner.arms[p]||owner.hands[p]||y<neck+10&&Math.abs(x-center)>9&&near.d<4.5){near.b.pixels.set(pixels.subarray(i,i+4),i);picked[y*spec.width+x]=1;}
+          }
+          for(let y=1;y<spec.height-1;y++)for(let x=1;x<spec.width-1;x++){
+            const p=y*spec.width+x,i=p*4;if(picked[p]||!pixels[i+3]||y<neck-1||Math.abs(x-center)<=10)continue;
+            if(![-1,0,1].some(dy=>[-1,0,1].some(dx=>picked[(y+dy)*spec.width+x+dx])))continue;
+            const near=bones.map(b=>({b,d:MareMotion96.distanceToSegment({x,y},b.a,b.b)})).sort((a,b)=>a.d-b.d)[0];if(near.d<=6.5)near.b.pixels.set(pixels.subarray(i,i+4),i);
+          }
+        }
+        carryMask=fromPixels(mask,spec.width,spec.height);carryArms=canvas(spec.width,spec.height);
+        for(const side of ['RIGHT','LEFT']){
+          const [upper,lower]=bones.filter(b=>b.side===side),arm=new Uint8ClampedArray(pixels.length);let x0=spec.width,y0=spec.height,x1=0,y1=0;
+          for(let p=0;p<arm.length;p+=4){const src=upper.pixels[p+3]?upper.pixels:lower.pixels;if(!src[p+3])continue;arm.set(src.subarray(p,p+4),p);const x=p/4%spec.width,y=Math.floor(p/4/spec.width);x0=Math.min(x0,x);x1=Math.max(x1,x+1);y0=Math.min(y0,y);y1=Math.max(y1,y+1);}
+          const u=MareMotion96.boneTransform(upper.a,upper.b,upper.c,upper.d,0),l=MareMotion96.boneTransform(lower.a,lower.b,lower.c,lower.d,0),map=p=>{const du=MareMotion96.distanceToSegment(p,upper.a,upper.b),dl=MareMotion96.distanceToSegment(p,lower.a,lower.b),weight=Math.pow(du+.1,4)/(Math.pow(du+.1,4)+Math.pow(dl+.1,4)),a=u(p),b=l(p);return{x:a.x*(1-weight)+b.x*weight,y:a.y*(1-weight)+b.y*weight};},mesh=[];
+          // A continuous elbow mesh keeps the native skin/sleeve contour joined.
+          for(let y=y0;y<y1;y+=2)for(let x=x0;x<x1;x+=2){const q=[{x,y},{x:Math.min(x+2,x1),y},{x:Math.min(x+2,x1),y:Math.min(y+2,y1)},{x,y:Math.min(y+2,y1)}].map(source=>({source,target:map(source)}));mesh.push([q[0],q[1],q[2]],[q[0],q[2],q[3]]);}
+          parts.push(fromPixels(MareMotion96.rasterMesh(arm,spec.width,spec.height,mesh,spec.width,spec.height),spec.width,spec.height));
+        }
+        for(const part of parts)carryArms.getContext('2d').drawImage(part,0,0);
+        for(const target of [originalFrame,pieces.torso?.full,pieces.pants?.full].filter(Boolean)){const cx=target.getContext('2d');cx.save();cx.globalCompositeOperation='destination-out';cx.drawImage(carryMask,0,0);cx.restore();}
+        if(referencePose){
+          // A raised old hand may have covered the chest. Recover the actual
+          // selected garment (or bare torso) under that hand, not empty pixels.
+          const g=MareTorso96.geometry(pose),cloth=new Uint8Array(spec.width*spec.height);
+          for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){const p=y*spec.width+x;if(!mask[p*4+3])continue;const q=g.axis.at(x-padding,y-padding),t=q.along/g.axis.length;if(t>.08&&t<.97&&Math.abs(q.across)<MareTorso96.radius(g,t)-1)cloth[p]=1;}
+          const style=descriptor('torso',look.torso),file=style?.layers[selected.body][selected.direction],source=file?texture(images.get(file),file,'torso',null).pixels:restPixels;
+          if(source){torsoUnderArms=fromPixels(api.fitTorsoToBody(source,torsoBodyPixels,rest,pose,padding,spec.width,spec.height,foregroundPixels,{cloth}).full,spec.width,spec.height);originalFrame.getContext('2d').drawImage(torsoUnderArms,0,0);if(pieces.torso)pieces.torso.full.getContext('2d').drawImage(torsoUnderArms,0,0);}
+        }
+      }
       ctx.clearRect(0,0,spec.width,spec.height);
       const calibration=catalog.headCalibration?.[selected.direction]||{};
-      if(headStyle?.hairOcclusion==='crown'&&pieces.hair){const c=pieces.hair.full,d=c.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
-        pieces.hair.full=fromPixels(api.clipHairCrown(d,rest,socket,padding,spec.width,spec.height,headStyle.hairlineY||34,calibration.hairX||0,calibration.hairY||0),spec.width,spec.height);}
+      if(headState.hairHideMode==='partial'&&pieces.hair){const c=pieces.hair.full,d=c.getContext('2d').getImageData(0,0,spec.width,spec.height).data,fit=api.headAdjustment(options.allowHeadAdjustment&&look.headAdjustment?look.headAdjustment:catalog.headAdjustments?.[headStyle.id]?.[selected.body]?.[selected.direction]),center=rest.find(j=>j.label==='NECK').y*128-20,line=headStyle.hairlineY?.[selected.body]?.[selected.direction]??rest.find(j=>j.label==='NOSE').y*128-3,hairline=center+(line-center)*fit.scale/100+fit.y;
+        pieces.hair.full=fromPixels(api.clipHairCrown(d,rest,socket,padding,spec.width,spec.height,hairline,calibration.hairX||0,calibration.hairY||0),spec.width,spec.height);}
       const hairPass=render=>render();
       const full=slot=>{if(pieces[slot]?.full){const render=()=>ctx.drawImage(pieces[slot].full,slot==='hair'?(calibration.hairX||0):0,slot==='hair'?(calibration.hairY||0):0);if(slot==='hair')hairPass(render);else render();}};
       const original=slot=>{
@@ -209,6 +282,7 @@
         if(slot==='top'&&descriptor('torso',look.torso))return;
         if(slot==='hair'&&hideHair)return;
         const file=selected.layers[slot],image=file&&map.get(file);if(!image)return;
+        if(carryMask&&['top','pants'].includes(slot)){const c=canvas(spec.width,spec.height),cx=c.getContext('2d');cx.drawImage(image,fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);cx.globalCompositeOperation='destination-out';cx.drawImage(carryMask,0,0);ctx.drawImage(c,0,0);return;}
         if(slot==='top'&&selected.body==='feminino'&&selected.clip&&!/^native-underwear-v[89]$/.test(catalog.baseClothingFit)){
           const c=canvas(spec.width,spec.height),cx=c.getContext('2d');cx.drawImage(image,fi*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);
           const d=cx.getImageData(0,0,c.width,c.height).data;
@@ -220,7 +294,8 @@
         }else ctx.drawImage(image,fi*spec.width,0,spec.width,spec.height,slot==='hair'?(calibration.hairX||0):0,slot==='hair'?(calibration.hairY||0):0,spec.width,spec.height);
       };
       const arms=['LEFT','RIGHT'].sort((a,b)=>(pose.find(j=>j.label===a+' ARM').z_index||0)-(pose.find(j=>j.label===b+' ARM').z_index||0));
-      const behind=selected.direction==='north'?arms:selected.direction==='south'?[]:arms.slice(0,1);
+      const depthPose=Object.fromEntries((carryPose||pose).map(j=>[j.label,j]));
+      const behind=arms.filter(side=>MareWeapons96.composition.depth({pose:depthPose,side,direction:selected.direction,action:selected.action,frame:fi})==='back');
       const headPixels=pieces.headBase?.full.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
       const inFront=arms.filter(side=>!behind.includes(side));
       for(const gloveSlot of ['hands','gloves'])if(pieces[gloveSlot]&&behind.length){
@@ -252,27 +327,23 @@
       const weaponPlan=weapons?.plan(selected,fi,spec,look,ownership)||[];
       const gripSkin=(api.skins[look.skin]||api.skins.light).ramp;
       const gripStyle=descriptor('gloves',look.gloves),gripGlove=gripStyle?.nativeMaterial?{coverage:gripStyle.fingerCoverage,ramp:gripStyle.nativeMaterial.ramp.map(c=>'#'+c.map(v=>v.toString(16).padStart(2,'0')).join(''))}:null;
-      weapons?.draw(ctx,images,weaponPlan,'back');
       weapons?.drawGrips(ctx,weaponPlan,'back',gripSkin,gripGlove);
       if(selected.direction!=='north')full('cloak');
       ctx.drawImage(originalFrame,0,0);
       if(pieces.hands)for(const side of behind)ctx.drawImage(pieces.hands[side],0,0);
       for(const side of behind)if(foreground[side])ctx.drawImage(foreground[side],0,0);
       if(pieces.gloves)for(const side of behind)ctx.drawImage(pieces.gloves[side],0,0);
-      original('pants');full('pants');
-      if(pieces.boots)for(const side of ['LEFT','RIGHT'].sort((a,b)=>(pose.find(j=>j.label===a+' LEG').z_index||0)-(pose.find(j=>j.label===b+' LEG').z_index||0)))ctx.drawImage(pieces.boots[side],0,0);
-      original('top');full('torso');
-      if(selected.direction==='north')full('cloak');
-      else if(pieces.cloak){
-        const neck=pose.find(j=>j.label==='NECK').y*128+padding;
-        ctx.save();ctx.beginPath();ctx.rect(0,0,spec.width,Math.round(neck+3));ctx.clip();full('cloak');ctx.restore();
-      }
-      original('headBase');full('headBase');
-      original('face');full('face');
-      if(!hideHair){hairPass(()=>original('hair'));full('hair');}full('head');
-      weapons?.draw(ctx,images,weaponPlan,'front');
-      if(pieces.hands)for(const side of inFront)ctx.drawImage(pieces.hands[side],0,0);
-      for(const side of inFront)if(foreground[side])ctx.drawImage(foreground[side],0,0);
+      MareWeapons96.composition.paint([
+        {slot:'headBase',draw(){original('headBase');full('headBase');}},
+        {slot:'face',draw(){original('face');full('face');}},
+        {slot:'hair',draw(){if(!hideHair){hairPass(()=>original('hair'));full('hair');}}},
+        {slot:'pants',draw(){original('pants');full('pants');}},
+        {slot:'torso',draw(){original('top');full('torso');}},
+        {slot:'cloakFront',draw(){if(selected.direction==='north')full('cloak');else if(pieces.cloak){const neck=pose.find(j=>j.label==='NECK').y*128+padding;ctx.save();ctx.beginPath();ctx.rect(0,0,spec.width,Math.round(neck+3));ctx.clip();full('cloak');ctx.restore();}}},
+        {slot:'boots',draw(){if(pieces.boots)for(const side of ['LEFT','RIGHT'].sort((a,b)=>(pose.find(j=>j.label===a+' LEG').z_index||0)-(pose.find(j=>j.label===b+' LEG').z_index||0)))ctx.drawImage(pieces.boots[side],0,0);}}
+      ]);
+      if(!carryPose&&pieces.hands)for(const side of inFront)ctx.drawImage(pieces.hands[side],0,0);
+      if(!carryPose)for(const side of inFront)if(foreground[side])ctx.drawImage(foreground[side],0,0);
       // Bare native palms/forearms are independent of every garment. Restore
       // their exact pixels before gloves, including static poses without strips.
       const restored=new Uint8ClampedArray(torsoBodyPixels.length),skinRamp=api.skins[look.skin]?.ramp;
@@ -286,8 +357,9 @@
         const c=canvas(spec.width,spec.height),cx=c.getContext('2d');cx.drawImage(image,0,0);
         cx.globalCompositeOperation='destination-out';cx.drawImage(pieces.cloak.full,0,0);ctx.drawImage(c,0,0);
       };
-      visibleArm(frontHands);
-      if(look.inspectionBareHands){
+      if(!carryPose)visibleArm(frontHands);
+      let inspectedPalms=null;
+      if(look.inspectionBareHands&&!carryPose){
         // Some native far-hand strips contain the old brown leather mitten.
         // Repaint only those occupied palm pixels, retaining the native contour,
         // outline and pose. Do not touch sleeves, forearms, cloth or the weapon.
@@ -302,16 +374,22 @@
             const shade=r<65?1:r<105?2:r<145?3:4;palms.set([...ramp[shade],255],i);
           }
         }
-        visibleArm(fromPixels(palms,spec.width,spec.height));
+        inspectedPalms=palms;visibleArm(fromPixels(palms,spec.width,spec.height));
       }
+      if(!carryPose&&pieces.torso?.LEFT)for(const side of [...behind,...inFront])visibleArm(pieces.torso[side]);
       if(pieces.gloves)for(const side of behind)visibleArm(pieces.gloves[side]);
-      if(pieces.gloves)for(const side of inFront)visibleArm(pieces.gloves[side]);
-      weapons?.drawGrips(ctx,weaponPlan,'front',gripSkin,gripGlove);
+      if(!carryPose&&pieces.gloves)for(const side of inFront)visibleArm(pieces.gloves[side]);
+      if(carryArms)visibleArm(carryArms);
+      if(!carryPose)weapons?.drawGrips(ctx,weaponPlan,'front',gripSkin,gripGlove);
+      // The helmet is the last garment; resolved weapons use anatomical
+      // depth masks after every garment and native hand has been composed.
+      full('head');
       let wornBody=neutralPixels,wornHands=ownership.hands;
-      if(weaponPlan.some(e=>e.depth==='back'&&['gauntlet','wrist-cannon'].includes(e.model.attachment?.kind))){
+      if(weaponPlan.some(e=>e.depth==='back')){
         // Use the actual dressed silhouette, including hair/helmet/cloth that
         // extends outside the neutral body. The weapon-free recursion stops here.
         const occluder=canvas(spec.width,spec.height);draw(occluder.getContext('2d'),images,selected,fi,spec,hidden,{...look,weapon:'original'});
+        if(carryArms){const cx=occluder.getContext('2d');cx.globalCompositeOperation='destination-out';cx.drawImage(carryMask,0,0);cx.globalCompositeOperation='source-over';if(torsoUnderArms)cx.drawImage(torsoUnderArms,0,0);const arms=canvas(spec.width,spec.height),ax=arms.getContext('2d');ax.drawImage(carryArms,0,0);if(selected.direction==='north'&&pieces.cloak){ax.globalCompositeOperation='destination-out';ax.drawImage(pieces.cloak.full,0,0);}cx.drawImage(arms,0,0);}
         wornBody=occluder.getContext('2d').getImageData(0,0,spec.width,spec.height).data;
         // The torso ownership atlas deliberately excludes palms inside the head
         // region. A raised native hand can still be visible there. Recover only
@@ -323,7 +401,52 @@
           if(nativeHand[i+3]&&[0,1,2,3].every(k=>nativeHand[i+k]===wornBody[i+k]))wornHands[p]=1;
         }
       }
-      weapons?.drawWorn(ctx,images,weaponPlan,spec,{body:wornBody,hands:wornHands,head:headPixels,cloak:selected.direction==='north'?pieces.cloak?.full:null});
+      if(referencePose&&carryArms){
+        // Ownership follows the retargeted native arms, including real gloves.
+        // Do not recover or repaint palms at the previous animation sockets.
+        const pixels=carryArms.getContext('2d').getImageData(0,0,spec.width,spec.height).data;wornHands=new Uint8Array(ownership.hands.length);
+        for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){const p=y*spec.width+x,i=p*4;if(pixels[i+3]&&weaponPlan.some(e=>Math.hypot(x-e.x,y-e.y)<=6.3))wornHands[p]=1;}
+      }
+      const covered=weaponPlan.filter(e=>e.model.attachment?.coverPalm),armourMask=referencePose?new Uint8Array(ownership.arms.length):ownership.arms.slice();
+      if(referencePose&&carryArms){const pixels=carryArms.getContext('2d').getImageData(0,0,spec.width,spec.height).data;for(let p=0;p<armourMask.length;p++)if(pixels[p*4+3])armourMask[p]=1;}
+      if(covered.length){
+        // Some old far palms live in the body strip, outside the hand atlas.
+        // Recover their exact visible pixels near the measured wrist, including
+        // the inspection skin pass. A hair/cloth pixel in front must still win.
+        wornHands=wornHands.slice();const actual=ctx.getImageData(0,0,ctx.canvas.width,ctx.canvas.height),transform=ctx.getTransform();
+        for(const entry of covered){
+          const wornPose=carryPose||pose,j=wornPose.find(p=>p.label===entry.side+' ARM'),e=wornPose.find(p=>p.label===entry.side+' ELBOW'),s=wornPose.find(p=>p.label===entry.side+' SHOULDER');
+          const a={x:s.x*128+padding,y:s.y*128+padding},b={x:e.x*128+padding,y:e.y*128+padding},c={x:j.x*128+padding,y:j.y*128+padding};
+          for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){
+            const p=y*spec.width+x,i=p*4,near=Math.hypot(x-entry.x,y-entry.y)<=6.3;
+            if(!near&&!entry.model.armour||!neutralPixels[i+3])continue;
+            if(!near&&(!api.isSkin(neutralPixels[i],neutralPixels[i+1],neutralPixels[i+2])||Math.min(MareMotion96.distanceToSegment({x,y},a,b),MareMotion96.distanceToSegment({x,y},b,c))>5))continue;
+            const expected=inspectedPalms?.[i+3]?inspectedPalms:bare,xx=Math.round((x+.5)*transform.a+transform.e),yy=Math.round((y+.5)*transform.d+transform.f),o=(yy*actual.width+xx)*4;
+            if(![0,1,2,3].every(k=>expected[i+k]===actual.data[o+k]))continue;
+            if(near)wornHands[p]=1;if(entry.model.armour)armourMask[p]=1;
+          }
+        }
+      }
+      for(const entry of weaponPlan.filter(e=>e.model.armour?.coverage==='full-arm')){
+        // An authored full sleeve also owns the short garment sleeve around
+        // this shoulder. Use the occupied silhouette and articulated limb,
+        // never a rectangle or a skin-colour key.
+        const points=Object.fromEntries((carryPose||pose).map(j=>[j.label,{x:j.x*128+padding,y:j.y*128+padding}])),side=entry.side,other=side==='LEFT'?'RIGHT':'LEFT',a=points[side+' SHOULDER'],b=points[side+' ELBOW'],c=points[side+' ARM'],actual=ctx.getImageData(0,0,ctx.canvas.width,ctx.canvas.height),t=ctx.getTransform();
+        for(let y=0;y<spec.height;y++)for(let x=0;x<spec.width;x++){
+          const p=y*spec.width+x,i=p*4,own=Math.min(MareMotion96.distanceToSegment({x,y},a,b),MareMotion96.distanceToSegment({x,y},b,c)),far=Math.min(MareMotion96.distanceToSegment({x,y},points[other+' SHOULDER'],points[other+' ELBOW']),MareMotion96.distanceToSegment({x,y},points[other+' ELBOW'],points[other+' ARM']));
+          if(own>4.6||far<own||y<a.y-1||headPixels?.[i+3]&&y<pose.find(j=>j.label==='NECK').y*128+padding+3)continue;
+          const xx=Math.floor((x+.5)*t.a+t.e),yy=Math.floor((y+.5)*t.d+t.f),o=(yy*actual.width+xx)*4;
+          // Garment seams can introduce occupied limb pixels outside the
+          // neutral atlas. This sleeve owns that articulated silhouette too.
+          if(actual.data[o+3])armourMask[p]=1;
+        }
+      }
+      const occlusion={body:wornBody,hands:wornHands,arms:armourMask,head:headPixels,headLine:pose.find(j=>j.label==='NECK').y*128+padding+3,cloak:selected.direction==='north'?pieces.cloak?.full:null};
+      occlusion.visibleHand=(entry,x,y)=>{const p=y*spec.width+x;if(!wornHands[p])return false;if(!['gauntlet','wrist-cannon'].includes(entry.model.attachment?.kind)&&!entry.frontOfHand&&!weapons.gripContains(entry,x,y))return false;const own=(carryPose||pose).find(j=>j.label===entry.side+' ARM'),other=(carryPose||pose).find(j=>j.label===(entry.side==='LEFT'?'RIGHT':'LEFT')+' ARM');return Math.hypot(x-own.x*128-padding,y-own.y*128-padding)<=Math.hypot(x-other.x*128-padding,y-other.y*128-padding);};
+      weapons?.drawArmour(ctx,images,weaponPlan,spec,carryPose||pose,occlusion);
+      weapons?.drawResolved(ctx,images,weaponPlan,spec,occlusion);
+      weapons?.drawFingers(ctx,weaponPlan,spec,occlusion,gripSkin,gripGlove);
+      weapons?.drawWorn(ctx,images,weaponPlan,spec,occlusion);
       return weaponPlan.map(entry=>({side:entry.side,point:weapons.point(entry),itemId:entry.model.itemId}));
     }
     return {prepare,requiredFiles,nativeFiles,draw,weaponPadding:(selected,spec,look)=>weapons?.descriptor(look.weapon)?weapons.padding(selected,spec,look):{x:0,top:0,bottom:0},weaponPlan:(selected,frame,spec,look,owner)=>weapons?.plan(selected,frame,spec,look,owner)||[],get skinCacheBytes(){return skinCacheBytes;},get weaponCacheSize(){return weapons?.cacheSize||0;},get cacheSize(){return textures.size;},get attachmentCacheSize(){return attachments.size;}};

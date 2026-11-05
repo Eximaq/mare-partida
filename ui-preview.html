@@ -90,6 +90,7 @@
   <script src="rank-a-data.js"></script>
   <script src="rank-a-expansion.js"></script>
   <script src="rank-a-system.js"></script>
+  <script defer src="combat-action-policy.js"></script>
   <script defer src="akuma-system.js"></script>
   <script defer src="supa-art.js"></script>
   <script defer src="zoan-art.js"></script>
@@ -130,6 +131,7 @@
   <script defer src="hierarchy-system.js"></script>
   <script defer src="hierarchy-ui.js"></script>
   <script defer src="combat-vfx-data.js"></script>
+  <script defer src="class-weapon-vfx.js?v=class-batch1"></script>
   <script defer src="combat-vfx.js"></script>
   <script defer src="notification-system.js"></script>
   <script defer src="character-hud.js"></script>
@@ -163,35 +165,39 @@
   <link rel="stylesheet" href="boss-dungeons.css">
   <link rel="stylesheet" href="ui-finishing.css">
 <link rel="stylesheet" href="party.css">
+  <link rel="stylesheet" href="hud-nautical.css">
 </head>
 <body>
   <div class="ambient-noise" aria-hidden="true"></div>
-  <div id="app" class="app-shell">
+  <div id="app" class="app-shell hud-nautical">
     <section id="factionInspection" class="faction-inspection hidden" aria-label="Mostruário dos sprites de facção">
       <strong>Mostruário das facções</strong><span>Prévia visual · sem aliados de combate</span>
       <div><button type="button" data-faction-action="idle">Idle</button><button type="button" data-faction-action="walk">Caminhada</button>
       <select id="factionInspectionDirection" aria-label="Direção dos sprites"><option value="south">Frente</option><option value="north">Costas</option><option value="west">Esquerda</option><option value="east">Direita</option></select>
       <button type="button" id="closeFactionPreview" aria-label="Fechar mostruário">×</button></div>
     </section>
-    <header class="topbar parchment-profile" aria-label="Perfil do aventureiro">
+    <header class="topbar nautical-profile" aria-label="Perfil do aventureiro">
       <span id="playerVisualStatus" class="player-visual-status hidden" role="status"></span>
-      <div class="parchment-status">
-        <div class="hud-hierarchy">
-          <img id="hudRankArt" width="480" height="96" alt="" hidden>
-          <span id="hudRankInsignia" aria-hidden="true" hidden></span>
-          <strong id="hudHierarchyTitle"></strong>
-          <span class="hud-rank-order" aria-label="Patamar"><span id="hudHierarchyTier"></span></span>
-        </div>
-        <span id="hudFactionName"></span>
+      <div class="hud-captain">
         <button type="button" id="characterPosterToggle" aria-controls="characterPoster" aria-expanded="false" aria-label="Expandir cartaz do personagem" title="Expandir cartaz do personagem"><img id="hudFactionEmblem" width="912" height="912" alt="" hidden></button>
+        <div class="hud-identity">
+          <strong id="hudPlayerName"></strong>
+          <strong id="hudHierarchyTitle"></strong>
+          <span id="hudFactionName"></span>
+        </div>
+        <div class="profile-level"><span>Nv.</span><strong id="miniLevel">1</strong></div>
+      </div>
+      <div class="hud-meta"><div class="profile-power"><span>Poder</span><strong id="miniPower">0</strong></div><span id="hudClassName"></span></div>
+      <div class="hud-rank-metadata" hidden aria-hidden="true"><img id="hudRankArt" alt="" hidden><span id="hudRankInsignia" hidden></span><span id="hudHierarchyTier"></span></div>
+      <div class="hud-vitals">
         <div class="parchment-meter parchment-hp" role="meter" aria-label="Vida" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="mini-meter"><i id="miniHP"></i></span><span class="parchment-meter-label">HP</span><b id="miniHPText">100 / 100</b></div>
         <div class="parchment-meter parchment-energy" role="meter" aria-label="Energia" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span class="mini-meter"><i id="miniEnergy"></i></span><span class="parchment-meter-label">EN</span><b id="miniEnergyText">70 / 70</b></div>
         <div class="parchment-meter parchment-xp" role="meter" aria-label="Experiência" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><span class="mini-meter"><i id="miniXP"></i></span><span class="parchment-meter-label">XP</span><b id="miniXPText">0 / 80</b></div>
-        <div class="profile-level"><span>Nível</span><strong id="miniLevel">1</strong></div>
-        <div class="profile-power"><span>Poder</span><strong id="miniPower">0</strong></div>
-        <div class="profile-berry"><span class="berry-coin" aria-hidden="true"></span><span>Berry</span><strong id="miniGold" title="Berry">0</strong></div>
       </div>
+      <div class="hud-resources">
+        <div class="profile-berry"><span class="berry-coin" aria-hidden="true"></span><span>Berry</span><strong id="miniGold" title="Berry">0</strong></div>
       <div id="miniWillpower" class="profile-resource haki-will hidden" role="meter" aria-label="Força de Vontade" aria-valuemin="0" aria-valuemax="100" aria-valuenow="100"><span>Vontade</span><span class="mini-meter"><i id="willpowerFill"></i></span><b id="willpowerText">100 / 100</b></div>
+      </div>
       <div id="miniTalentResource" class="profile-resource talent-resource hidden"><span id="miniTalentLabel">Vigor</span><span class="mini-meter"><i id="miniTalentFill"></i></span><b id="miniTalentText"></b></div>
       <div id="hakiQuickCast" class="haki-quick hidden" role="group" aria-label="Atalhos de Haki">
         <button type="button" data-haki-toggle="armament" aria-label="Haki do Armamento (H)" aria-keyshortcuts="H" aria-pressed="false"><img class="haki-icon" src="assets/haki/mastery/armament.png" width="32" height="32" alt=""><kbd>H</kbd><span class="haki-quick-state" aria-hidden="true"></span></button>
@@ -199,7 +205,7 @@
         <button type="button" id="hakiKing" aria-label="Haki do Rei (K)" aria-keyshortcuts="K"><img class="haki-icon" src="assets/haki/mastery/conqueror.png" width="32" height="32" alt=""><kbd>K</kbd><span class="haki-cooldown-sweep" aria-hidden="true"></span><span class="haki-quick-state" aria-hidden="true"></span></button>
         <span id="hakiQuickStatus" class="haki-quick-caption">Haki pronto</span>
       </div>
-      <div class="parchment-tools"><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div>
+      <div class="hud-attributes"><button type="button" id="attributePointsHud" data-panel="character" title="Distribuir atributos">0 pontos</button></div>
       <section id="characterPoster" class="character-poster" hidden aria-label="Cartaz do personagem">
         <div class="wanted-sheet">
           <img class="wanted-paper" src="assets/ui/character-hud/hd/poster.png" width="448" height="600" alt="Cartaz de procurado em pergaminho" draggable="false">
@@ -247,13 +253,16 @@
         <nav id="mainMenu" class="bottom-nav" aria-label="Menu principal"><button type="button" data-panel="inventory" aria-label="Inventário" aria-keyshortcuts="I"><img src="icones_menu_pirata/png/48/inventario.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Inventário (I)</span></button><button type="button" data-panel="forge" aria-label="Forja" aria-keyshortcuts="F"><img src="icones_menu_pirata/png/48/forja.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Forja (F)</span></button><div class="character-menu-anchor"><button type="button" id="characterMenuTrigger" data-notification="character" data-panel="character" data-character-menu-trigger aria-label="Personagem" aria-keyshortcuts="P" aria-haspopup="menu" aria-expanded="false" aria-controls="characterQuickMenu"><img src="icones_menu_pirata/png/48/personagem.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Personagem (P)</span></button><div id="characterQuickMenu" class="character-quick-menu hidden" role="menu" aria-label="Seções do personagem"><button type="button" role="menuitem" data-character-section="status" data-notification="status"><img src="icones_menu_pirata/png/48/personagem.png" alt=""><span>Personagem<small>Status e atributos</small></span></button><button type="button" role="menuitem" data-character-section="talents" data-notification="talents"><img src="assets/ui/character-menu/talents.png" alt="" draggable="false"><span>Talentos<small>Árvore de habilidades</small></span></button><button type="button" role="menuitem" data-character-section="achievements" data-notification="achievements"><img src="assets/ui/character-menu/achievements.png" alt="" draggable="false"><span>Conquistas<small>Feitos e recompensas</small></span></button><button type="button" role="menuitem" data-character-section="haki"><img src="assets/haki/mastery/armament.png" alt=""><span>Haki<small id="characterMenuHakiHint">Requisitos de despertar</small></span></button><button type="button" role="menuitem" data-character-section="akuma"><img src="assets/ui/character-menu/akuma.png" alt="" draggable="false"><span>Akuma no Mi<small>Compêndio de frutas</small></span></button><button type="button" role="menuitem" data-character-section="hierarchy" data-notification="hierarchy"><img src="assets/ui/hierarchy/pirate-flag.png" alt="" draggable="false"><span>Hierarquia dos Mares<small>Cargos e ranking global</small></span></button></div></div><div class="character-menu-anchor modes-menu-anchor"><button type="button" id="modesMenuTrigger" data-panel="modes" data-modes-menu-trigger aria-label="Abrir menu Modos de Jogo" aria-keyshortcuts="M" aria-haspopup="menu" aria-expanded="false" aria-controls="modesQuickMenu"><img src="icones_menu_pirata/png/48/mapa.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Modos de jogo (M)</span></button><div id="modesQuickMenu" class="character-quick-menu modes-quick-menu hidden" role="menu" aria-label="Modos de Jogo"><button type="button" role="menuitem" data-quick-mode="map"><img src="icones_menu_pirata/png/48/mapa.png" alt=""><span>Mapa do Arquipélago<small>Ilhas e expedições</small></span></button><button type="button" role="menuitem" data-quick-mode="prison"><img src="assets/ui/modes/impel-down.svg" alt=""><span>Impel Down<small>100 andares · Duelo por andar</small></span></button></div></div><button type="button" data-panel="contracts" aria-label="Contratos" aria-keyshortcuts="C"><img src="icones_menu_pirata/png/48/contratos.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Contratos (C)</span></button><button type="button" data-panel="help" aria-label="Ajuda"><img src="icones_menu_pirata/png/48/ajuda.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Ajuda</span></button><div class="character-menu-anchor captain-menu-anchor"><button type="button" id="captainMenuTrigger" data-panel="captain" data-captain-menu-trigger aria-label="Abrir Central do Navegante" aria-haspopup="menu" aria-expanded="false" aria-controls="captainQuickMenu"><img src="icones_menu_pirata/png/48/configuracoes.png" alt="" draggable="false"><span class="menu-tooltip" role="tooltip">Configurações</span></button><div id="captainQuickMenu" class="character-quick-menu captain-quick-menu hidden" role="menu" aria-label="Central do Navegante"><button type="button" role="menuitem" data-captain-section="journal"><span class="character-section-glyph" aria-hidden="true">▤</span><span>Jornal<small>Eventos e anúncios</small></span></button><button type="button" role="menuitem" data-captain-section="myprofile"><img src="icones_menu_pirata/png/48/personagem.png" alt="" draggable="false"><span>Meu Perfil<small>Estatísticas e progresso</small></span></button><button type="button" role="menuitem" data-captain-section="settings"><img src="icones_menu_pirata/png/48/configuracoes.png" alt="" draggable="false"><span>Configurações<small>Áudio, gráficos e interface</small></span></button></div></div></nav>
       <div class="action-panel" role="toolbar" aria-label="Habilidades e consumíveis">
         <button id="devLauncher" data-dev-open type="button" title="Laboratório temporário (F8)" aria-label="Abrir laboratório DEV (F8)">DEV</button>
-          <div class="action-heading"><span>HABILIDADES E COMANDOS</span><span>TECLAS <b>1</b> · <b>2</b> · <b>3</b> · <b>T</b> · <b>Q</b></span></div>
+          <div class="action-heading"><span>HABILIDADES E COMANDOS</span><span>TECLAS <b>1–3</b> AKUMA · <b>4–5</b> CLASSE · <b>T</b> · <b>Q</b></span></div>
           <div class="action-row">
-            <button class="skill-button" id="skill1" title="Habilidade 1"><span class="skill-icon skill-teal" id="skill1Icon">✦</span><span class="keycap">1</span><span class="skill-cooldown" id="cooldown1"></span></button>
+            <div class="skill-group" id="classSkillGroup" aria-label="Habilidades de classe"><small>CLASSE</small><div>
+<button class="skill-button" id="classSkill1" data-class-skill="0" aria-keyshortcuts="4"><span class="skill-icon" id="classSkill1Icon"></span><span class="keycap">4</span><span class="skill-cooldown" id="classCooldown1"></span></button><button class="skill-button" id="classSkill2" data-class-skill="1" aria-keyshortcuts="5"><span class="skill-icon" id="classSkill2Icon"></span><span class="keycap">5</span><span class="skill-cooldown" id="classCooldown2"></span></button>
+</div></div><div class="skill-group" id="fruitSkillGroup" aria-label="Habilidades de Akuma no Mi"><small>AKUMA</small><div>
+<button class="skill-button" id="skill1" title="Habilidade 1"><span class="skill-icon skill-teal" id="skill1Icon">✦</span><span class="keycap">1</span><span class="skill-cooldown" id="cooldown1"></span></button>
             <button class="skill-button" id="skill2" title="Habilidade 2"><span class="skill-icon skill-gold" id="skill2Icon">✺</span><span class="keycap">2</span><span class="skill-cooldown" id="cooldown2"></span></button>
              <button class="skill-button hidden" id="skill3" title="Habilidade Zoan" aria-keyshortcuts="3"><span class="skill-icon" id="skill3Icon"></span><span class="keycap">3</span><span class="skill-cooldown" id="cooldown3"></span></button>
              <button class="skill-button zoan-toggle hidden" id="zoanTransform" title="Transformar (T)" aria-keyshortcuts="T" aria-pressed="false"><span class="skill-icon" id="zoanTransformIcon"></span><span class="keycap">T</span></button>
-            <div class="hotbar-divider"></div>
+            </div></div><div class="hotbar-divider"></div>
             <button class="skill-button potion-button" id="usePotion" title="Usar poção (Q)"><span class="skill-icon">♥</span><span class="keycap">Q</span><span class="potion-count" id="potionCount">3</span></button>
             <button class="shop-potion" id="buyPotion" title="Comprar poção por 35 Berry">+ POÇÃO <small>35 ✦</small></button>
             <div class="hotbar-divider"></div>

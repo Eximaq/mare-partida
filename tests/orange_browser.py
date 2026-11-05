@@ -37,6 +37,7 @@ with sync_playwright() as p:
     c,q=page(b,ready);q.locator('#devLauncher').click();q.locator('[data-dev-enter]').click();q.wait_for_url('**/?dev=1');q.wait_for_function('window.__mareDiagnostics?.().dev.active')
     q.locator('#devLauncher').click();q.locator('[data-dev-option=godMode]').check();q.locator('[data-dev-travel=orange]').click()
     if state(q)['autoPlay']:q.locator('#autoToggle').click()
+    if q.locator('#journeyToggle').get_attribute('aria-expanded')=='false':q.locator('#journeyToggle').click()
     q.locator('#huntRoute').click();q.locator('[data-hunt-sector=picadeiro]').click()
     for _ in range(60):
         q.clock.run_for(1000)
@@ -51,6 +52,7 @@ with sync_playwright() as p:
         q.clock.run_for(1000)
         if state(q)['hunt']['progress']['areas']['orange']['bosses']>0:break
     assert state(q)['hunt']['progress']['areas']['orange']['bosses']>0,state(q)
+    if q.locator('#journeyToggle').get_attribute('aria-expanded')=='false':q.locator('#journeyToggle').click()
     q.locator('#huntRoute').click();button=q.locator('[data-hunt-first=orange]');assert button.is_enabled()
     q.evaluate("()=>{window.originalSet=Storage.prototype.setItem;Storage.prototype.setItem=function(){throw Error('quota')}}")
     button.click();assert not state(q)['hunt']['progress']['areas']['orange']['firstRewardClaimed']

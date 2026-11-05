@@ -8,7 +8,9 @@ def d(q):return q.evaluate('__mareDiagnostics()')
 def travel(q,island='dawn'):
     q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island='+island+']').click();q.locator('[data-travel-area]').click()
     if d(q)['autoPlay']:q.locator('#autoToggle').click()
-def route(q):q.locator('#huntRoute').click()
+def route(q):
+ if q.locator('#journeyToggle').get_attribute('aria-expanded')=='false':q.locator('#journeyToggle').click()
+ q.locator('#huntRoute').click()
 with sync_playwright() as p:
     b=p.chromium.launch(headless=True);errors=[];c,q=page_for(b,errors=errors);template=create(q);assert 'hunts' in saved(q);c.close()
     for size in [(1920,1080),(1366,768),(1280,720),(393,852),(320,740)]:

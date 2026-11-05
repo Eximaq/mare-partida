@@ -86,9 +86,9 @@ test('camouflage, orbital fire, cataclysm and singularity survive snapshots and 
 });
 test('healer finals have solo effects without creating party recipients; no overheal budget survives combat end',()=>{
  const blessing=fixture('healer',null,'eternalBlessing');blessing.b.targetId=blessing.b.mobs[0].id;
- const healIndex=engine.catalog.classes.healer.skills.findIndex((s:any)=>s.type==='heal');assert(engine.skill(blessing.b,healIndex,blessing.context));blessing.step();assert(blessing.b.talents.ultimate.holyHP>0);assert(engine.talentStats(blessing.b,blessing.context).maxHP>1000);
+ const healIndex=engine.catalog.classes.healer.skills.findIndex((s:any)=>s.type==='heal');assert(engine.skill(blessing.b,healIndex,blessing.context));blessing.step(.6);assert(blessing.b.talents.ultimate.holyHP>0);assert(engine.talentStats(blessing.b,blessing.context).maxHP>1000);
  blessing.b.hp=engine.talentStats(blessing.b,blessing.context).maxHP;blessing.b.targetId=null;blessing.step();assert.equal(blessing.b.talents.ultimate.holyHP,0);assert.equal(blessing.b.hp,1000);
- const empathy=fixture('healer',null,'empathy');empathy.b.hp=500;Object.assign(empathy.b.mobs[0],{engaged:true,attackClock:0,reach:60});empathy.step();const population=empathy.b.mobs.length;assert(engine.skill(empathy.b,healIndex,empathy.context));empathy.step();assert(empathy.b.mobs[0].hp<10000);assert.equal(empathy.b.mobs.length,population);
+ const empathy=fixture('healer',null,'empathy');empathy.b.hp=500;Object.assign(empathy.b.mobs[0],{engaged:true,attackClock:0,reach:60});empathy.step();const population=empathy.b.mobs.length;assert(engine.skill(empathy.b,healIndex,empathy.context));empathy.step(.6);assert(empathy.b.mobs[0].hp<10000);assert.equal(empathy.b.mobs.length,population);
 });
 test('ricochet continues over time after JSON reload while secondary hits never create new chains',()=>{
  const f=fixture('gunner',null,'ricochet'),m=f.b.mobs[0];f.b.mobs.push({...structuredClone(m),id:'second',spawnId:'second',x:m.x+60});f.hit();f.step(1);const total=f.b.mobs.reduce((n:number,m:any)=>n+m.hp,0);f.reload();f.step(1);

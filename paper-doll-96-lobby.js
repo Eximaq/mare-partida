@@ -3,6 +3,7 @@
   'use strict';
   const Headgear=root.MareHeadgear||(typeof module!=='undefined'&&module.exports?require('./headgear-visibility.js'):null);
   const Cosmetics=root.MareCharacterAppearance||(typeof module!=='undefined'&&module.exports?require('./character-appearance.js'):null);
+  const Equipment=typeof module!=='undefined'&&module.exports?require('./tools/paper-doll-96-v3/weapons.js'):null;
   const defaults=Object.freeze({body:'masculino',hair:'original',face:'original',skin:'original',hairColor:'brown',kit:'equipped'});
   const slots=Object.freeze({coat:'torso',legs:'pants',boots:'boots',gloves:'gloves',cloak:'cloak',head:'head'});
   const actions=['idle','walk','attack-sword','attack-unarmed','attack-firearm','attack-daggers','attack-focus','attack-tech'];
@@ -51,6 +52,7 @@
     for(const kind of Object.values(slots))value[kind]='original';
     const kits={'sample-a':{coat:6,legs:21,boots:8,gloves:25,cloak:23,head:18},'sample-b':{coat:7,legs:22,boots:9,gloves:26,cloak:24,head:19}};
     for(const [slot,kind]of Object.entries(slots)){
+      if(!(root.MareWeapons96||Equipment).composition.rendersSlot(slot))continue;
       const def=look.kit==='equipped'?player?.equipment?.[slot]?.def:kits[look.kit]?.[slot];
       if(def===undefined||def===null)continue;
       const item=catalog.styles.find(s=>s.kind===kind&&s.itemId===def);
@@ -117,7 +119,7 @@
         for(const s of catalog.styles)if(s.kind==='hair'||s.kind==='face')choices[s.kind][s.id]=s.name;
         for(const [id,p]of Object.entries(root.MareAppearance96.skins))choices.skin[id]=p.name;
         for(const [id,p]of Object.entries(root.MareAppearance96.hairs))choices.hairColor[id]=p.name;
-        wardrobe=root.MareWardrobe96.create(catalog,rigs,image,{weapons:weaponCatalog});state='ready';onChange();
+        wardrobe=root.MareWardrobe96.create(catalog,rigs,image,{weapons:weaponCatalog,manifest});state='ready';onChange();
       }catch(error){state='failed';report(error,{consumer:'player-init',asset:'player-pack.json'});}return snapshot();
     })():Promise.resolve(snapshot());
     function resolve(player,look=current,production=true){look=appearanceLook(player,production?defaults:look,production);const value=outfit(catalog,player,look,{production}),category=weaponCatalog.classes[player?.classId]||null,model=weaponCatalog.items.find(w=>w.itemId===player?.equipment?.weapon?.def&&w.category===category);value.look.weapon=model?.id||'original';if(player?.equipment?.weapon&&!model)value.missing.push({slot:'weapon',def:player.equipment.weapon.def});const supported=!!category;for(const m of value.missing)diagnose(failure('Equipamento sem arte atual: '+m.def,{component:'equipment-resolver',asset:'item:'+m.def,slot:m.slot,code:'unmapped-equipment'}));return {...value,body:look.body,category,attack:model?.attackAction||'attack-'+category,supported,key:JSON.stringify([look.body,{...value.look,hideHeadgear:value.look.head==='original'?false:value.look.hideHeadgear},supported?category:null])};}
@@ -127,13 +129,16 @@
       const files=[...new Set([...wardrobe.nativeFiles(sel,look),...wardrobe.requiredFiles(sel,look,[])])];
       const loaded=new Map(await Promise.all(files.map(async file=>[file,await image(file,{consumer,body,action,direction})])));
       const pad=wardrobe.weaponPadding(sel,spec,look),renderSpec={...spec,width:spec.width+pad.x*2,height:spec.height+pad.top+pad.bottom,pivot:{x:spec.pivot.x+pad.x,y:spec.pivot.y+pad.top}};
-      const strip=Object.assign(document.createElement('canvas'),{width:renderSpec.width*sel.clip.frames,height:renderSpec.height}),ctx=strip.getContext('2d'),emissions=[];
-      const tile=Object.assign(document.createElement('canvas'),{width:renderSpec.width,height:renderSpec.height}),tc=tile.getContext('2d');tc.translate(pad.x,pad.top);
+      // Preserve HD weapon pixels through composition. Anatomy and sockets stay
+      // in their original logical coordinates; only the cached raster is denser.
+      const density=weaponCatalog.items.find(w=>w.id===look.weapon)?.renderDensity||1;
+      const strip=Object.assign(document.createElement('canvas'),{width:renderSpec.width*sel.clip.frames*density,height:renderSpec.height*density}),ctx=strip.getContext('2d'),emissions=[];
+      const tile=Object.assign(document.createElement('canvas'),{width:renderSpec.width*density,height:renderSpec.height*density}),tc=tile.getContext('2d');tc.imageSmoothingEnabled=false;tc.scale(density,density);tc.translate(pad.x,pad.top);
       for(let frame=0;frame<sel.clip.frames;frame++){
         if(cancel())return null;
-        tc.clearRect(-pad.x,-pad.top,tile.width,tile.height);emissions.push(wardrobe.draw(tc,loaded,sel,frame,spec,[],look));ctx.drawImage(tile,frame*renderSpec.width,0);await pause();
+        tc.clearRect(-pad.x,-pad.top,renderSpec.width,renderSpec.height);emissions.push(wardrobe.draw(tc,loaded,sel,frame,spec,[],look));ctx.drawImage(tile,frame*renderSpec.width*density,0);await pause();
       }
-      return {strip,spec:renderSpec,nativeSpec:spec,clip:sel.clip,emissions};
+      return {strip,spec:renderSpec,nativeSpec:spec,clip:sel.clip,emissions,density};
     }
     function trimSourceImages(){
       // Ready animation strips own their pixels. Keep small fittings warm instead of retaining every source atlas during combat.
@@ -177,7 +182,7 @@
       const {spec,strip}=value;ctx.save();ctx.imageSmoothingEnabled=false;
       ctx.translate(Math.round(x),Math.round(y));ctx.scale(scale,scale);ctx.translate(-spec.pivot.x,-spec.pivot.y);
       if(direction==='west'){ctx.translate(spec.width+1,0);ctx.scale(-1,1);}
-      ctx.drawImage(strip,frame*spec.width,0,spec.width,spec.height,0,0,spec.width,spec.height);ctx.restore();
+      const density=value.density||1;ctx.drawImage(strip,frame*spec.width*density,0,spec.width*density,spec.height*density,0,0,spec.width,spec.height);ctx.restore();
     }
     function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world'}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;

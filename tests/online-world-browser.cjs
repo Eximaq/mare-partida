@@ -60,7 +60,7 @@ arrive('lobby',null);
   await p.locator('[data-travel-island="dawn"]').click();
   await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
   assert.equal(await p.locator('#panelOverlay').isHidden(),true);assert(commands.some(c=>c.action==='world.travel'));
-  await p.locator('#huntRoute').click();await p.waitForSelector('[data-online-action="journey.begin"]');await p.keyboard.press('Escape');
+  await p.locator('#journeyToggle').click();await p.locator('#huntRoute').click();await p.waitForSelector('[data-online-action="journey.begin"]');await p.keyboard.press('Escape');
   await p.waitForFunction(()=>__mareDiagnostics().lobby96.visualState==='ready',null,{timeout:90000});await p.evaluate(()=>document.fonts.ready);
   await p.screenshot({path:path.join(out,'online-world-dawn.png')});
   wire.combat={...wire.combat,status:'lost',encounterId:'22222222-2222-4222-8222-222222222222',enemyName:'Saqueador',enemyHp:10,enemyMaxHp:36,worldMapId:'dawn',enemyPosition:{x:982,y:1608}};

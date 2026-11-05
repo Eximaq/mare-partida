@@ -10,7 +10,8 @@ await p.locator('#nextToClass').click();
 await p.locator('#nextToAppearance').click();
 await p.locator('#createCharacter').click();
 await p.locator('[data-confirm-accept]').click();
-await p.evaluate(()=>{let q=__invQA,g=q.game;g.level=200;g.inventory=q.defs.filter(x=>x.type==='akuma_no_mi'||x.slot).slice(-65).map(x=>q.newItem(x,20));let fruit=q.defs.find(x=>x.fruitId==='akuma_gura_gura');g.equipment.akuma_no_mi=q.newItem(fruit);q.openPanel('inventory');q.select(g.equipment.akuma_no_mi.id)});
+// Seed both categories explicitly: appended garments must not evict every fruit from the fixture.
+await p.evaluate(()=>{let q=__invQA,g=q.game;g.level=200;g.inventory=q.defs.filter(x=>x.type==='akuma_no_mi').slice(0,16).concat(q.defs.filter(x=>x.slot&&x.type!=='akuma_no_mi').slice(-49)).map(x=>q.newItem(x,20));let fruit=q.defs.find(x=>x.fruitId==='akuma_gura_gura');g.equipment.akuma_no_mi=q.newItem(fruit);q.openPanel('inventory');q.select(g.equipment.akuma_no_mi.id)});
 await p.waitForFunction(()=>{const c=document.getElementById('inventorySprite');return c&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0)},{},{timeout:90000});
 await p.evaluate(()=>__invQA.renderPanel());
 await p.mouse.move(0,0);
@@ -48,7 +49,7 @@ await p.evaluate(()=>{__invQA.game.hp=1;__invQA.game.potions=4;__invQA.select('v
 await p.evaluate(()=>{const q=__invQA;q.game.inventory=[];q.game.potions=q.game.materials=0;q.renderPanel()});assert.equal(await p.locator('[data-item]').count(),0);assert.match(await p.locator('.op-page-count').innerText(),/0.+0 de 0/);
 await p.evaluate(()=>{const q=__invQA;q.game.inventory=Array.from({length:120},(_,n)=>q.newItem(q.defs[n%q.defs.length],20));q.ui.page=0;q.renderPanel()});assert.equal(await p.locator('.op-bag-capacity b').innerText(),'120 / 120');assert(await p.locator('[data-inv-page="1"]').first().isEnabled());
 await p.locator('[data-inv-page="1"]').first().click();assert.equal(await p.evaluate(()=>__invQA.ui.page),1);
-await p.evaluate(()=>{let q=__invQA;q.ui.page=0;q.ui.sort='recent';q.game.inventory=q.defs.filter(x=>x.slot).slice(-65).map(x=>q.newItem(x,20));q.game.name='Capitão de Nome Bastante Comprido';q.renderPanel();q.select(q.game.equipment.akuma_no_mi.id)});
+await p.evaluate(()=>{let q=__invQA;q.ui.page=0;q.ui.sort='recent';q.game.inventory=q.defs.filter(x=>x.type==='akuma_no_mi').slice(0,16).concat(q.defs.filter(x=>x.slot&&x.type!=='akuma_no_mi').slice(-49)).map(x=>q.newItem(x,20));q.game.name='Capitão de Nome Bastante Comprido';q.renderPanel();q.select(q.game.equipment.akuma_no_mi.id)});
 for(const [width,height] of [[1920,1080],[1672,941],[1366,768],[1280,720],[1024,768],[393,852],[360,800],[320,568],[844,390]]){await p.setViewportSize({width,height});
 await p.evaluate(()=>__invQA.renderPanel());
 await p.mouse.move(0,0);const overflow=await p.locator('.op-body-grid').evaluate(e=>({width:e.clientWidth,scroll:e.scrollWidth}));assert(overflow.scroll<=overflow.width+1,'horizontal overflow '+width+': '+JSON.stringify(overflow));const close=await p.locator('.op-close').boundingBox();assert(close.y>=0&&close.y+close.height<=height,'close remains visible');

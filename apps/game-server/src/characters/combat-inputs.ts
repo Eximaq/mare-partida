@@ -18,7 +18,7 @@ export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
  const unique=[...new Set(ids)];if(unique.length>4)throw new RangeError('combat_batch_too_large');
  const result=new Map<string,CombatInputs>();if(!unique.length)return result;
  const rows=(await c.query(`SELECT ch.id,ch.class_id,ch.faction_id,ch.state_version::float8 version,
- p.level,p.experience::text,p.gold::text,to_jsonb(i) inventory,t.build,t.revision,pr.appearance,pr.preferences,
+ p.level,p.experience::text,p.gold::text,to_jsonb(i) inventory,t.build,t.revision,coalesce(a.budget,0) legacy_budget,pr.appearance,pr.preferences,
  (SELECT jsonb_build_object('strength',coalesce(sum(strength),0),'dexterity',coalesce(sum(dexterity),0),
  'vitality',coalesce(sum(vitality),0),'intelligence',coalesce(sum(intelligence),0),'spirit',coalesce(sum(spirit),0))
  FROM mare_game.character_attribute_ledger WHERE character_id=ch.id) allocated,
@@ -28,6 +28,7 @@ export async function readCombatInputs(c:PoolClient,ids:readonly string[]){
  FROM mare_game.characters ch JOIN mare_game.character_progression p ON p.character_id=ch.id
  LEFT JOIN mare_game.game_inventory i ON i.character_id=ch.id
  LEFT JOIN mare_game.character_talents t ON t.character_id=ch.id
+ LEFT JOIN mare_game.talent_legacy_allowances a ON a.character_id=ch.id
  LEFT JOIN mare_game.character_profile pr ON pr.character_id=ch.id
  WHERE ch.id=ANY($1::uuid[])`,[unique])).rows;
  for(const row of rows){

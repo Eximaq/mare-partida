@@ -88,6 +88,7 @@ test("client economic intents allow original actions and reject client-supplied 
     ["items.sell", { itemId: "server-instance" }],
     ["potions.buy", {}],
     ["potions.use", {}],
+    ["forge.execute", { operation: { type: "formEpicWeapon", expectedSeq: 0 } }],
     [
       "forge.execute",
       {
@@ -104,6 +105,10 @@ test("client economic intents allow original actions and reject client-supplied 
     ["potions.buy", { price: 0 }],
     ["items.equip", { itemId: "x", attack: 999 }],
     ["items.sell", { itemId: "x", ownerId: "other" }],
+    ["forge.execute", { operation: { type: "formEpicWeapon", expectedSeq: 0, potential: 100 } }],
+    ["forge.execute", { operation: { type: "formEpicWeapon", expectedSeq: 0, itemId: "chosen-weapon" } }],
+    ["forge.execute", { operation: { type: "constructor", expectedSeq: 0 } }],
+    ["forge.execute", { operation: { type: ["formEpicWeapon"], expectedSeq: 0 } }],
     [
       "forge.execute",
       {
@@ -142,7 +147,7 @@ test("original online buttons submit intentions without running offline gold, it
     ["equipItem", "unequip"],
     ["unequip", "sellItem"],
     ["sellItem", "forgeCost"],
-    ["runForgeOperation", "extraListHtml"],
+    ["performForgeOperation", "extraListHtml"],
   ]) {
     const start = source.search(
       new RegExp("  (?:async )?function " + name + "\\("),
@@ -159,7 +164,7 @@ test("original online buttons submit intentions without running offline gold, it
     await box.action(
       name === "unequip"
         ? "boots"
-        : name === "runForgeOperation"
+        : name === "performForgeOperation"
           ? { type: "upgrade", itemId: "server-instance", expectedSeq: 0 }
           : "server-instance",
     );
@@ -191,10 +196,10 @@ test("native forge dialog projects its shared UI fields into the strict operatio
       return false;
     },
   };
-  const a = source.indexOf("  function runForgeOperation("),
+  const a = source.indexOf("  function performForgeOperation("),
     b = source.indexOf("  function extraListHtml(", a);
   runInNewContext(
-    source.slice(a, b) + ";globalThis.run=runForgeOperation;",
+    source.slice(a, b) + ";globalThis.run=performForgeOperation;",
     box,
   );
   const accepted = await box.run({

@@ -38,7 +38,7 @@
 
 **Contratos originais online:** [dez objetivos, contadores autoritativos e resgate único no quadro existente](docs/architecture/ORIGINAL-CONTRACTS-SERVER.md). Saves da demonstração preservados.
 
-Talentos online: [árvores, efeitos e persistência autoritativa](docs/architecture/ORIGINAL-TALENTS-SERVER.md), com pontos por nível e interface original. Pontos de [conquistas autoritativas](docs/architecture/ORIGINAL-ACHIEVEMENTS-SERVER.md) entram no mesmo orçamento.
+Talentos online: [árvores, efeitos e persistência autoritativa](docs/architecture/ORIGINAL-TALENTS-SERVER.md), com novos PT exclusivamente por conquistas resgatadas, orçamento legado congelado e interface original. Pontos de [conquistas autoritativas](docs/architecture/ORIGINAL-ACHIEVEMENTS-SERVER.md) entram no mesmo orçamento.
 
 **Posição e viagens online:** [mundo persistente, colisões e limites do incremento](docs/architecture/ORIGINAL-WORLD-SERVER.md). IA e combate estão integrados; veja o aceite consolidado acima.
 
@@ -242,13 +242,13 @@ Lógica, HUD, três spritesheets do PixelLab Workbench e quatro ícones Pro **na
 
 **Personagem → Talentos** agora abre uma constelação conectada, com zoom/arraste, tronco central, rotas que acendem, ponte intermediária e três opções finais por classe. Mantidos dois ramos simultâneos e um intermediário; o final também tem escolha única e exige 50 PT comuns, um intermediário e cinco pontos em um último tier, custando 3 PT.
 
-A nova aba **Conquistas** reúne 31 marcos, resgate único e progresso persistente: abates, riqueza, níveis, BP, exploração e a estrutura futura de Impel Down, frutas, Haki e Bounty Bosses. O orçamento combina 1 PT por nível com os pontos resgatados; sistemas futuros ficam Em breve. Os 21 finais entram no combate, com recursos de HUD, escudos, revive, clone, ricochetes e campos de dano/controle. Senhor do Submundo é a exceção explícita para caixas Nv.1 nas caçadas.
+A nova aba **Conquistas** reúne 31 marcos, resgate único e progresso persistente: abates, riqueza, níveis, BP, exploração e a estrutura futura de Impel Down, frutas, Haki e Bounty Bosses. O orçamento preserva o saldo legado e cresce somente pelos pontos de conquistas resgatadas; sistemas futuros ficam Em breve. Os 21 finais entram no combate, com recursos de HUD, escudos, revive, clone, ricochetes e campos de dano/controle. Senhor do Submundo é a exceção explícita para caixas Nv.1 nas caçadas.
 
 Migração v2 preserva as builds atuais. Efeitos de grupo usam contratos para aliados reais; o jogo permanece solo. [Regras, valores, disponibilidade e testes](docs/TALENTOS.md).
 
 ## Histórico — Árvores de Talentos
 
-O menu **Personagem** agora abre a seleção **Personagem / Talentos**. Cada uma das sete classes tem três ramos com cinco tiers, limite de dois ramos investidos e três talentos exclusivos dos quais apenas um pode ser escolhido. O jogador recebe 1 PT por nível, incluindo o primeiro, separado dos pontos de atributos.
+O menu **Personagem** agora abre a seleção **Personagem / Talentos**. Cada uma das sete classes tem três ramos com cinco tiers, limite de dois ramos investidos e três talentos exclusivos dos quais apenas um pode ser escolhido. Novos PT são concedidos somente pelo resgate de conquistas, separados dos pontos de atributos. Saldos legados ficam congelados na migração.
 
 Investimentos usam prévia e confirmação, persistem por classe e podem ser redefinidos gratuitamente no porto. Os bônus e exclusivos entram nos gatilhos de combate, sem botões de ativação. Saves antigos recebem o orçamento correspondente ao nível sem perder equipamentos ou progresso. O jogo permanece solo: efeitos sobre outros aliados dependem de uma futura integração de grupos reais; a aura já beneficia o próprio suporte.
 
