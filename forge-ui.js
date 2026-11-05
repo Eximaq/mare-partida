@@ -62,13 +62,19 @@
     let operation='',left=gearSelection,comparison='';
     if(ui.tab==='upgrade'&&item){const c=F.upgradeCost(item),max=item.plus>=F.refinement.max;
       const chance=Math.round(F.upgradeChance(item)*100);
-      const coral=definition.name==='Sabre de Coral';
       comparison=preview({...item,plus:max?item.plus:item.plus+1});
       operation=`<div class="forge-upgrade-summary">${header}
         <div class="forge2-refinement">
           <strong>+${item.plus} → ${max?'Máximo':`+${item.plus+1}`}</strong>
-          <div class="forge-anvil-stage ${coral?'is-coral':''}" aria-hidden="true">
-            ${coral?'':icon(item.def,'')}
+          <div class="forge-anvil-stage" aria-hidden="true">
+            <div class="forge-fire forge-fire-left"></div>
+            <div class="forge-fire forge-fire-right"></div>
+            <img class="forge-bench-art" src="assets/ui/forge-reference/forge-bench.png" alt="" draggable="false">
+            <div class="forge-fire forge-fire-coals"></div>
+            <div class="forge-bench-item">${icon(item.def,'')}</div>
+            <div class="forge-embers">
+              ${Array.from({length:10},()=>'<i></i>').join('')}
+            </div>
           </div>
           <small>Até +5 garantido · Limite +20</small>
         </div>

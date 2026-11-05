@@ -4,7 +4,7 @@ await p.route('**/api/akuma/catalog',r=>r.fulfill({status:404,body:'{}'}));await
 await p.route('**/game.js*',async r=>{const a=await r.fetch(),source=await a.text();await r.fulfill({response:a,body:source.replace('  window.__mareDiagnostics=','  window.__forgeQA={get game(){return game},get ui(){return forgeUI},defs:itemDefs,newItem,openPanel,refresh:updateUI,render:renderPanel,save:saveGame};\n  window.__mareDiagnostics=').replaceAll('requestAnimationFrame(frame)','window.__testFrame=frame')})});
 await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.__forgeQA&&__mareDiagnostics().lobby96.state==='ready',null,{timeout:90000});
 await p.locator('#characterName').fill('Nauta da Forja');await p.locator('#nextToClass').click();await p.locator('#nextToAppearance').click();await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>window.__forgeQA?.game);
-await p.evaluate(()=>{const q=__forgeQA,g=q.game;const priorRandom=Math.random;let artSeed=731;Math.random=()=>((artSeed=(artSeed*1664525+1013904223)>>>0)/4294967296);g.level=30;g.gold=100000;g.materials=1000;const d=q.defs.find(d=>d.slot==='weapon'&&d.type==='sword'),weapon=q.newItem(d,4,false,'epic');weapon.sockets=['pearl_int_1',null,null];g.equipment.weapon=weapon;const head=q.defs.find(d=>d.slot==='head');g.equipment.head=q.newItem(head,3,false,'uncommon');g.equipment.head.plus=2;g.inventory=q.defs.filter(d=>d.slot&&d.type!=='akuma_no_mi'&&!d.kind).slice(0,8).map((d,i)=>q.newItem(d,i+1,false,'common'));for(const pd of q.defs.filter(d=>d.kind==='pearl'))for(let n=0;n<(pd.pearlId.endsWith('_1')?7:1);n++)g.inventory.push(q.newItem(pd));Math.random=priorRandom;q.ui.itemId=weapon.id;q.openPanel('forge')});
+await p.evaluate(()=>{const q=__forgeQA,g=q.game;const priorRandom=Math.random;let artSeed=731;Math.random=()=>((artSeed=(artSeed*1664525+1013904223)>>>0)/4294967296);g.level=30;g.gold=100000;g.materials=1000;const d=q.defs.find(d=>d.slot==='weapon'&&d.type==='sword'),weapon=q.newItem(d,4,false,'epic');weapon.sockets=['pearl_int_1',null,null];g.equipment.weapon=weapon;const head=q.defs.find(d=>d.name==='Capacete do Corsário');g.equipment.head=q.newItem(head,3,false,'uncommon');g.equipment.head.plus=2;g.inventory=q.defs.filter(d=>d.slot&&d.type!=='akuma_no_mi'&&!d.kind).slice(0,8).map((d,i)=>q.newItem(d,i+1,false,'common'));for(const pd of q.defs.filter(d=>d.kind==='pearl'))for(let n=0;n<(pd.pearlId.endsWith('_1')?7:1);n++)g.inventory.push(q.newItem(pd));Math.random=priorRandom;q.ui.itemId=weapon.id;q.openPanel('forge')});
 await p.evaluate(()=>document.fonts.ready);await p.waitForFunction(()=>[...document.querySelectorAll('#dialogBody img')].every(i=>i.complete&&i.naturalWidth));
 
 const out=process.env.MARE_FORGE_EVIDENCE||path.join(os.tmpdir(),'mare-forge-hd');await fs.mkdir(out,{recursive:true});
@@ -35,6 +35,22 @@ for(const [width,height] of [[1920,1080],[1672,940],[1448,1086],[1366,768],[1280
    assert.ok(comparison.x>=operation.x+operation.width,'Comparison stays to the right of the upgrade');
    await p.locator('.forge2-operation-content').evaluate(e=>e.scrollTop=0);
    await p.screenshot({path:path.join(out,'upgrade-desktop.png')});
+   const chosen=await p.evaluate(()=>({head:__forgeQA.game.equipment.head.id,weapon:__forgeQA.game.equipment.weapon.id}));
+   const stage=p.locator('.forge-anvil-stage');
+   const artwork=await stage.locator('.forge-bench-art').getAttribute('src');
+   const weaponArt=await stage.locator('.forge-bench-item .item-icon').getAttribute('src');
+   await p.locator('[data-forge-item="'+chosen.head+'"]').click();
+   assert.equal(await stage.locator('.forge-bench-art').getAttribute('src'),artwork);
+   assert.notEqual(await stage.locator('.forge-bench-item .item-icon').getAttribute('src'),weaponArt);
+   assert.ok(await stage.evaluate(e=>e.getAnimations({subtree:true}).some(a=>a.playState==='running')));
+   assert.equal(await p.locator('.forge-chance-meter').evaluate(e=>e.value),100);
+   await p.waitForFunction(()=>[...document.querySelectorAll('.forge-anvil-stage img')].every(i=>i.complete&&i.naturalWidth));
+   await p.screenshot({path:path.join(out,'upgrade-helmet.png')});
+   await p.emulateMedia({reducedMotion:'reduce'});
+   await p.waitForFunction(()=>document.querySelector('.forge-anvil-stage').getAnimations({subtree:true}).length===0);
+   await p.emulateMedia({reducedMotion:'no-preference'});
+   await p.locator('[data-forge-item="'+chosen.weapon+'"]').click();
+
   }
   if(width===390&&tab==='reforge')await p.screenshot({path:path.join(out,'mobile-reforge.png')});
  }
