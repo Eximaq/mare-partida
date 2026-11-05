@@ -1219,16 +1219,17 @@
     const key=MareSpriteCombatV2.fruits[equippedZoan()?.id],height=MareSpriteCombatV2Data[key]?.world_header_height;
     return height?Math.max(logical,Math.ceil(height*(MareUltimates.selected(game)==='titan'?1.35:1))):logical;
   }
+  function classSkillEffect(skill){return MareCombatVfx.data.classSkills?.[game.classId]?.[classes[game.classId].skills.indexOf(skill)];}
   function emitCombatVfx(kind,actor,visual={}){
     if(!kind||!MareCombatVfx.data.effects[kind])return;
     session.combatHits ||= [];if(kind==='heal'&&session.combatHits.some(f=>f.kind===kind&&f.actor===actor&&world.time-f.started<.15))return;
-    const point=combatChest(actor),start=MareCombatVfx.impactStart(kind),weaponStyle=visual.source==='class'&&!game.zoanTransformed?MareClassWeaponVfx.style(itemDefs[game.equipment.weapon?.def]):null;session.combatHits.push({kind,actor,x:point.x,y:point.y,started:world.time,start,weaponStyle,rate:kind==='heal'?1:MareCombatVfx.data.impactPlaybackRate});if(session.combatHits.length>96)session.combatHits.shift();
+    const point=MareCombatVfx.data.effects[kind].rangeBound?{x:actor.x,y:actor.y}:combatChest(actor),start=MareCombatVfx.impactStart(kind),weaponStyle=visual.source==='class'&&!game.zoanTransformed&&!MareCombatVfx.data.effects[kind].fixedPalette?MareClassWeaponVfx.style(itemDefs[game.equipment.weapon?.def]):null;session.combatHits.push({kind,actor,radius:MareCombatVfx.data.effects[kind].rangeBound?getDerived().range+125:undefined,x:point.x,y:point.y,started:world.time,start,weaponStyle,rate:MareCombatVfx.data.effects[kind].playbackRate??(kind==='heal'?1:MareCombatVfx.data.impactPlaybackRate)});if(session.combatHits.length>96)session.combatHits.shift();
   }
   function launchCombatProjectile(kind,origin,target,onHit){
     const active=session,area=game.area,identity=basicAttackIdentity(),equippedFruitId=game.equipment?.akuma_no_mi?.fruitId||null,reach=getDerived().range+125;
     const p=MareCombatVfx.projectile(kind,origin,target.id,{target,commit:onHit,session:active,area,identity,equippedFruitId,born:world.time,releaseId:origin.releaseId??null,originOffset:{x:origin.x-world.hero.x,y:origin.y-world.hero.y}});if(kind==='cyborg'){const point=combatChest(target);p.x=point.x;p.y=point.y;}
-    if(combatVfxBackend&&akumaBackend){const point=combatChest(target);p.launchReady=false;p.receipt=akumaRequest('vfx-launch',{instance:area,kind,x:origin.x,y:origin.y,target:{...point,id:target.id},reach}).then(r=>{p.launchReady=true;p.age=0;p.born=world.time;return r.token;});p.receipt.catch(()=>{if(p.phase!=='impact')p.phase='done';});}
-    p.weaponStyle=!game.zoanTransformed?MareClassWeaponVfx.style(itemDefs[game.equipment.weapon?.def]):null;
+    if(combatVfxBackend&&akumaBackend){const point=combatChest(target);p.launchReady=false;p.receipt=akumaRequest('vfx-launch',{instance:area,kind:kind==='disparoPreciso'?'gunner':kind==='chamaConcentrada'?'mage':kind,x:origin.x,y:origin.y,target:{...point,id:target.id},reach}).then(r=>{p.launchReady=true;p.age=0;p.born=world.time;return r.token;});p.receipt.catch(()=>{if(p.phase!=='impact')p.phase='done';});}
+    p.weaponStyle=!game.zoanTransformed&&!MareCombatVfx.data.effects[kind].fixedPalette?MareClassWeaponVfx.style(itemDefs[game.equipment.weapon?.def]):null;
     active.combatProjectiles ||= [];active.combatProjectiles.push(p);if(active.combatProjectiles.length>64){active.combatProjectiles[0].phase='done';active.combatProjectiles.shift();}return p;
   }
   function combatBeamOrigin(p){return p.mode==='beam'?{x:world.hero.x+p.originOffset.x,y:world.hero.y+p.originOffset.y}:p.origin;}
@@ -1243,7 +1244,7 @@
     return combatLine({x:origin.x,y:origin.y+24},{x:point.x,y:point.y+24});
   }
   function stepCombatVfx(dt){
-    session.combatHits=(session.combatHits||[]).filter(f=>(world.time-f.started)*1000*(f.rate||1)<MareCombatVfx.data.effects[f.kind].frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0)+(f.kind==='heal'?0:83));
+    session.combatHits=(session.combatHits||[]).filter(f=>(world.time-f.started)*1000<(MareCombatVfx.data.effects[f.kind].activeSeconds?MareCombatVfx.data.effects[f.kind].activeSeconds*1000+MareCombatVfx.data.effects[f.kind].frames.slice(MareCombatVfx.data.effects[f.kind].loopFrames).reduce((s,v)=>s+v.duration,0):MareCombatVfx.data.effects[f.kind].frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0)/(f.rate||1))+(MareCombatVfx.data.effects[f.kind].impactTailMs??(f.kind==='heal'?0:83)));
     for(const p of session.combatProjectiles||[]){const valid=()=>session===p.session&&game.area===p.area&&scene==='hunt'&&game.hp>0&&session.respawn<=0&&basicAttackIdentity()===p.identity&&(game.equipment?.akuma_no_mi?.fruitId||null)===p.equippedFruitId&&(world.mobs.includes(p.target)||p.target.alive===false);if(p.phase!=='impact'&&!valid()){p.phase='done';continue;}if(p.phase!=='impact'&&p.target.alive===false){MareCombatVfx.finishImpact(p,combatChest(p.target));p.launchReady=true;continue;}if(p.launchReady===false){p.age+=dt;if(p.age>MareCombatVfx.data.maxFlight)p.phase='done';continue;}MareCombatVfx.step(p,p.born===world.time?0:dt,{
       target:combatChest(p.target),origin:combatBeamOrigin(p),valid,
       clear:(a,b)=>combatLine({x:a.x,y:a.y+24},{x:b.x,y:b.y+24}),
@@ -1260,9 +1261,20 @@
   function drawCombatHeader(actor,name,hp,maxHP,width=60,color='#5ed09c'){
     const box=combatHudBox(actor,width,name);ctx.save();ctx.textAlign='center';ctx.font='bold 13px Trebuchet MS';ctx.lineWidth=3;ctx.strokeStyle='#03171c';ctx.strokeText(name,actor.x,box.nameY);ctx.fillStyle='#effcf5';ctx.fillText(name,actor.x,box.nameY);px(ctx,actor.x-width/2,box.barY,width,7,'#001819');px(ctx,actor.x-width/2+1,box.barY+1,(width-2)*Math.max(0,Math.min(1,hp/Math.max(1,maxHP))),5,color);if(world.target===actor){ctx.strokeStyle='#d9b777';ctx.lineWidth=2;ctx.strokeRect(actor.x-width/2-3,box.barY-3,width+6,13);}ctx.restore();
   }
-  function drawCombatVfx(){
-    for(const p of session.combatProjectiles||[])if(!MareClassWeaponVfx.projectile(ctx,p,{origin:combatBeamOrigin(p)}))MareCombatVfx.drawProjectile(ctx,p,{origin:combatBeamOrigin(p)});
-    for(const f of session.combatHits||[]){const point=f.actor?combatChest(f.actor):f,elapsed=Math.min((world.time-f.started)*1000*(f.rate||1),MareCombatVfx.data.effects[f.kind].frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0)-.001),options={width:f.kind==='explosion'?96:f.kind==='heal'?Math.min(120,combatActorHeight(f.actor)+16):64,start:f.start||0};if(!MareClassWeaponVfx.hit(ctx,f.weaponStyle,f.kind,point.x,point.y,elapsed,options))MareCombatVfx.draw(ctx,f.kind,point.x,point.y,elapsed,options);}
+  function drawCombatVfx(layer='front'){
+    if(layer==='front')for(const p of session.combatProjectiles||[])if(!MareClassWeaponVfx.projectile(ctx,p,{origin:combatBeamOrigin(p)}))MareCombatVfx.drawProjectile(ctx,p,{origin:combatBeamOrigin(p)});
+    for(const f of session.combatHits||[]){
+      const effect=MareCombatVfx.data.effects[f.kind];if((effect.layer||'front')!==layer)continue;const bodyHeight=effect.bodyScale&&f.actor?combatVisualHeight(f.actor):0;
+      // The uploaded origin is off-centre; wrap the visible body rather than its chest or HUD.
+      const point=effect.rangeBound?{x:f.x,y:f.y}:bodyHeight?{x:f.actor.x,y:f.actor.y-bodyHeight/2}:f.actor?combatChest(f.actor):f;
+      let elapsed=Math.min((world.time-f.started)*1000*(f.rate||1),effect.frames.slice(f.start||0).reduce((sum,frame)=>sum+frame.duration,0)-.001),options={width:effect.rangeBound?f.radius*2:bodyHeight?bodyHeight*effect.bodyScale:effect.worldWidth??(f.kind==='explosion'?96:f.kind==='heal'?Math.min(120,combatActorHeight(f.actor)+16):64),start:f.start||0};
+      if(effect.activeSeconds){const age=(world.time-f.started)*1000;if(age<effect.activeSeconds*1000){elapsed=age;options.loop=true;options.end=effect.loopFrames-1;}else{elapsed=age-effect.activeSeconds*1000;options.start=effect.loopFrames;}}
+      point.x+=(effect.offsetX||0);
+      if(effect.rangeBound){ctx.save();ctx.beginPath();ctx.arc(f.x,f.y,f.radius,0,Math.PI*2);ctx.clip();}
+      if(!MareClassWeaponVfx.hit(ctx,f.weaponStyle,f.kind,point.x,point.y,elapsed,options))MareCombatVfx.draw(ctx,f.kind,point.x,point.y,elapsed,options);
+      if(effect.rangeBound)ctx.restore();
+    }
+    if(layer!=='front')return;
     if(game.hp>0&&session.respawn<=0)MareCombatVfx.drawStatuses(ctx,combatHudBox(world.hero,60,game.name),combatStatus(world.hero),world.time);
     for(const actor of livingMobs())MareCombatVfx.drawStatuses(ctx,combatHudBox(actor,actor.type==='boss'?88:65,monsterName(actor)+' · Nv.'+actor.level),combatStatus(actor),world.time);
     if(hoyaActive())MareCombatVfx.drawStatuses(ctx,combatHudBox(session.genie,64,'Gênio'),combatStatus(session.genie),world.time);
@@ -1338,7 +1350,7 @@
     const land=()=>{
     if(!m.alive||m.isUntargetable||m.isInvulnerable)return 0;
     if(skill?.element==='lightning')m.slow=4.5;
-    const actual=outputDamage(m,isRyuForm()&&type==='physical'?MareRyu.mitigate(raw,m,MareHaki.eligibleOffensive(game,session.haki)):raw,crit,{source:'class',classId:game.classId,category:zoan?MareCombatVfx.classify({fruitId:equippedZoan()?.id}):null,exclusive:!zoan&&!!MareCombatVfx.data.flightEnds[MareCombatVfx.data.classHits[game.classId]]});
+    const actual=outputDamage(m,isRyuForm()&&type==='physical'?MareRyu.mitigate(raw,m,MareHaki.eligibleOffensive(game,session.haki)):raw,crit,{source:'class',classId:game.classId,category:!zoan&&skill&&['impactoAncora','pontoFraco','corteMare'].includes(classSkillEffect(skill))?classSkillEffect(skill):zoan?MareCombatVfx.classify({fruitId:equippedZoan()?.id}):null,exclusive:!zoan&&!!MareCombatVfx.data.flightEnds[MareCombatVfx.data.classHits[game.classId]]});
     const passive=MareTalentCombat.afterHit(game,rt,{target:m,stats:s,basic:!skill,magic:type==='elemental',projectile:['gunner','cyborg','strategist','healer'].includes(game.classId),critical:crit,damage:actual});
     applyTalentContact(passive,m);
     applyUltimateActions(MareUltimates.after(game,rt.ultimate,{target:m,hero:world.hero,stats:s,damage:actual,basic:!skill,magic:type==='elemental',critical:crit,projectile:['gunner','cyborg','strategist','healer'].includes(game.classId)||ultimate==='spatial',enemies:livingMobs(),clear:(a,b)=>combatLine(a,b)}));
@@ -1350,7 +1362,7 @@
     };
     if(!zoan&&MareCombatVfx.data.flightEnds[MareCombatVfx.data.classHits[game.classId]]){
       const muzzle=!skill?(lobby96.projectileOrigin(game,world.hero,classCombatController()?.snapshot()||basicAttackPose()||{},horuBuffActive()?MareRankC.rules.horu.scale:1)):null;
-      launchCombatProjectile(MareCombatVfx.data.classHits[game.classId],{x:muzzle?.x??world.hero.x+world.hero.facing*13,y:muzzle?.y??world.hero.y-27,releaseId:muzzle?.releaseId??null},m,land);
+      launchCombatProjectile(MareCombatVfx.data.effects[classSkillEffect(skill)]?.flightOnly?classSkillEffect(skill):MareCombatVfx.data.classHits[game.classId],{x:muzzle?.x??world.hero.x+world.hero.facing*13,y:muzzle?.y??world.hero.y-27,releaseId:muzzle?.releaseId??null},m,land);
     }else land();
     return true;
   }
@@ -1370,11 +1382,11 @@
       if(action.from)launchCombatProjectile(MareCombatVfx.data.classHits[game.classId] in MareCombatVfx.data.flightEnds?MareCombatVfx.data.classHits[game.classId]:'mage',{x:action.from.x,y:action.from.y-24},action.target,hit);else hit();
     }
   }
-  function restoreHero(amount,{quiet=false,ignoreEfficiency=false}={}){
+  function restoreHero(amount,{quiet=false,ignoreEfficiency=false,effect='heal'}={}){
     if(game.hp<=0||session.respawn>0)return 0;
     const recipient={id:'hero',x:world.hero.x,y:world.hero.y,hp:game.hp,maxHP:getDerived().maxHP};
     const healed=MareCharacters.healRecipients([recipient],amount*(ignoreEfficiency?1:1+(getDerived().healingReceivedPercent||0)))[0].amount;game.hp=recipient.hp;
-    if(healed>0&&!quiet)emitCombatVfx('heal',world.hero);
+    if(healed>0&&!quiet)emitCombatVfx(effect,world.hero);
     if(healed>0&&!quiet)spawnVisual(world.hero.x,world.hero.y-59,'+'+Math.round(healed),'#88e0b3',17);
     if(scene==='hunt'&&(session.talents.combatRemaining>0||world.target?.alive))applyUltimateActions(MareUltimates.heal(game,session.talents.ultimate,{amount,effective:healed,stats:getDerived(),hero:world.hero,enemies:livingMobs(),clear:(a,b)=>combatLine(a,b)}));
     return healed;
@@ -1383,7 +1395,7 @@
     if(actionLocked()||hoyaActive()||session.jikiCharge)return false;
     if(classSkillReason())return false;
     if(scene!=='hunt'||!game||!session||world.hero.talentControl?.remaining>0||session.respawn>0)return false;
-    const controller=classCombatController();if(controller?.locked())return false;
+    const controller=classCombatController();if(controller?.locked()||game.classId==='brawler'&&i===0&&basicAttackPose())return false;
     const skill=classes[game.classId].skills[i];if(!skill)return false;
     const m=world.target?.alive?world.target:chooseTarget(),d=getDerived();
     const self=['guard','heal','blessing'].includes(skill.type);
@@ -1394,30 +1406,36 @@
     const impact=()=>{
       if(scene!=='hunt'||game.hp<=0||session.respawn>0)return;
       if(skill.type==='strike')heroAttack(m,skill.multiplier,skill,false,true);
-      if(skill.type==='guard'){session.guard=7;restoreHero(Math.round(d.maxHP*(game.classId==='cyborg'?.12:.18)+d.healing*.25));}
-      if(skill.type==='heal'){const healed=restoreHero(d.healing);session.healingDone=(session.healingDone||0)+healed;const self={id:'hero',x:world.hero.x,y:world.hero.y,hp:game.hp,maxHP:d.maxHP};MareTalentCombat.chainHeal(game,[self],self,healed);}
-      if(skill.type==='blessing'){session.guard=8;session.blessing=8;world.fx.push({x:world.hero.x,y:world.hero.y,ring:1,life:.7,max:.7,color:'#8ce0b5'});}
+      if(skill.type==='guard'){session.guard=7;const effect=classSkillEffect(skill)||'heal',healed=restoreHero(Math.round(d.maxHP*(game.classId==='cyborg'?.12:.18)+d.healing*.25),{effect});if(effect!=='heal'&&!healed)emitCombatVfx(effect,world.hero);}
+      if(skill.type==='heal'){const healed=restoreHero(d.healing,{effect:classSkillEffect(skill)||'heal'});session.healingDone=(session.healingDone||0)+healed;const self={id:'hero',x:world.hero.x,y:world.hero.y,hp:game.hp,maxHP:d.maxHP};MareTalentCombat.chainHeal(game,[self],self,healed);}
+      if(skill.type==='blessing'){session.guard=8;session.blessing=8;emitCombatVfx(classSkillEffect(skill)||'heal',world.hero);}
       if(skill.type==='taunt'){
         session.guard=Math.max(session.guard,4);
         for(const other of livingMobs().filter(other=>distance(world.hero,other)<=d.range+125&&combatLine(world.hero,other))){
           other.taunt={targetId:'hero',remaining:5};heroAttack(other,skill.multiplier,skill,true,true);
         }
-        world.fx.push({x:world.hero.x,y:world.hero.y,ring:1,life:.5,max:.5,color:'#e7bb81'});
+        const effect=classSkillEffect(skill);if(effect)emitCombatVfx(effect,world.hero);
       }
       if(skill.type==='area'){
         for(const other of livingMobs().filter(other=>distance(m,other)<125))heroAttack(other,skill.multiplier||1.55,skill,true,true);
-        world.fx.push({x:m.x,y:m.y,ring:1,life:.42,max:.42,color:skill.element==='lightning'?'#dac2ff':classes[game.classId].color});
+        const effect=classSkillEffect(skill);if(effect)emitCombatVfx(effect,game.classId==='rogue'?world.hero:m);
       }
     };
     if(controller){
-      const action=classCombat.action(game,'skill-'+(i+1));
+      const action=classCombat.basicAction(game,world.hero);
       if(!self)faceCombatTarget(m);
       if(!controller.play(action,{direction:world.hero.direction,onImpact:impact}))return false;
       world.hero.walking=0;
+    }else if(!self||skill.type==='heal'){
+      faceCombatTarget(m);
+      const clock=MareCombatAnimation.create({attack:{frames:4,fps:8,impact_frame:2,loop:false}});
+      clock.play('attack',{direction:skill.element==='lightning'?'south':world.hero.direction,onImpact:impact});
+      session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};
+      world.hero.walking=0;syncBasicAttackVisual();
     }
     game.energy-=energyCost;session.skillEnergySpent+=energyCost;session.cooldowns[i]=MareAkumaPassives.cooldown(skill.cd,MareAkuma.itemData(game.equipment?.akuma_no_mi,itemDefs)?.id)*(game.factionId==='government'?.92:1);
     session.skillUses=session.skillUses||[0,0];session.skillUses[i]++;
-    if(!controller)impact();
+    if(!controller&&self&&skill.type!=='heal')impact();
     return true;
   }
   function useAutoSkills(stats){
@@ -1600,11 +1618,13 @@
       if(e.type==='fruit'){if(e.kind==='jiki-impact')session.jikiFx.push({kind:e.projectile==='mass'?'blast':'rocket',x:e.x,y:e.y-24,angle:e.angle,started:world.time});if(e.kind==='bomu-impact')session.expansionFx.push({kind:e.key==='1'?'breath':'bomb',x:e.x,y:e.y-24,started:world.time});if(e.kind==='horu-heal')emitCombatVfx('heal',world.hero);if(e.fruitId==='akuma_supa_supa'&&e.key==='1'){const duration=MareSupaArt.animations.slash.duration/1000;world.fx.push({x:e.x,y:e.y-32,supaVfx:'slash',startedAt:Date.now(),life:duration,max:duration});}if(e.fruitId==='akuma_beta_beta'&&e.key==='1')session.rankBBursts.push({x:e.x,y:e.y,started:world.time});if(['akuma_uma_uma','akuma_inu_dachshund','akuma_tori_albatroz'].includes(e.fruitId))world.fx.push({x:e.x,y:e.y,zoanVfx:e.fruitId,followHero:true,life:e.fruitId==='akuma_tori_albatroz'?5:.75,max:e.fruitId==='akuma_tori_albatroz'?5:.75});}
       if(e.type==='kill'&&b.dungeon)toast('Vitória! Aproxime-se do baú para receber.','good');
       if(e.type==='kill'&&b.prison)toast('Andar Concluído · '+b.prison.floor,'good');
-      if(e.type==='damage'&&m){spawnVisual(m.x,m.y-70,'-'+e.amount,'#e7cb87',15);m.hit=.2;if(game.classId==='brawler'&&!game.zoanTransformed&&!game.equipment.akuma_no_mi&&!e.fruitId)emitCombatVfx('punch',m,{source:'class'});}
-      if(e.type==='projectile'&&m)launchCombatProjectile(e.kind,{x:e.x,y:e.y-27},m,()=>{});
+      if(e.type==='damage'&&m){spawnVisual(m.x,m.y-70,'-'+e.amount,'#e7cb87',15);m.hit=.2;const anchor=session.brawlerAnchor?.id===m.id&&world.time<=session.brawlerAnchor.until&&!e.fruitId;if(game.classId==='brawler'&&!game.zoanTransformed&&!e.fruitId&&(anchor||!game.equipment.akuma_no_mi))emitCombatVfx(anchor?'impactoAncora':'punch',m,{source:'class'});if(anchor){const clock=session.basicAttack?.clock,pose=clock?.snapshot();if(pose?.locked&&pose.progress<pose.hitFrameRatio){clock.step(pose.duration*pose.hitFrameRatio-pose.elapsed,{inCombat:true,direction:world.hero.direction});syncBasicAttackVisual();}session.brawlerAnchor=null;}}
+      if((e.type==='miss'&&e.id===session.brawlerAnchor?.id)||e.type==='attack')session.brawlerAnchor=null;
+      if(e.type==='projectile'&&m)launchCombatProjectile(session.classSkillVisual?.until>=world.time&&MareCombatVfx.data.effects[session.classSkillVisual.kind]?.flightOnly?session.classSkillVisual.kind:e.kind,{x:e.x,y:e.y-27},m,()=>{});
       if(e.type==='talent'){world.fx.push({x:m?.x??world.hero.x,y:m?.y??world.hero.y,ring:1,life:.5,max:.5,color:'#e5c47f'});}
+      if(e.type==='damage'&&m&&!e.fruitId&&session.classSkillVisual?.until>=world.time&&['pontoFraco','corteMare','arcoHorizonte','dancaAdagas','rajadaEstilhacos','tempestadeCorrentes','protocoloProvocacao'].includes(session.classSkillVisual.kind)){const kind=session.classSkillVisual.kind;emitCombatVfx(kind,['dancaAdagas','protocoloProvocacao'].includes(kind)?world.hero:m,{source:'class'});session.classSkillVisual=null;}
       if(e.type==='hurt'){spawnVisual(world.hero.x,world.hero.y-70,'-'+Math.round(e.amount),'#ff9b94',15);world.hero.hit=.2;}
-      if(e.type==='skill'){const skill=classes[game.classId].skills[e.index];if(!['heal','guard','blessing'].includes(skill.type)&&m){faceCombatTarget(m);const clock=MareCombatAnimation.create({attack:{frames:4,fps:8,impact_frame:2,loop:false}});clock.play('attack',{direction:world.hero.direction,attackSpeed:getDerived().speed});session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};syncBasicAttackVisual();}world.fx.push({x:world.hero.x,y:world.hero.y,ring:1,life:.5,max:.5,color:classes[game.classId].color});if(['heal','guard','blessing'].includes(skill.type))emitCombatVfx('heal',world.hero);}
+      if(e.type==='skill'){const skill=classes[game.classId].skills[e.index];session.classSkillVisual={kind:classSkillEffect(skill),id:e.id,until:world.time+2};if(game.classId==='brawler'&&e.index===0)session.brawlerAnchor={id:e.id,until:world.time+(e.duration||1)+.5};if(!['heal','guard','blessing'].includes(skill.type)&&m){faceCombatTarget(m);const clock=MareCombatAnimation.create({attack:{frames:4,fps:8,impact_frame:2,loop:false}});clock.play('attack',{direction:world.hero.direction,attackSpeed:getDerived().speed});session.basicAttack={clock,identity:basicAttackIdentity(),area:game.area};syncBasicAttackVisual();}const ironBreath=!!classSkillEffect(skill);if(!ironBreath)world.fx.push({x:world.hero.x,y:world.hero.y,ring:1,life:.5,max:.5,color:classes[game.classId].color});if(['heal','guard','blessing'].includes(skill.type))emitCombatVfx(classSkillEffect(skill)||'heal',world.hero);}
     }
     onlineBattleSeq=b.seq;
     if(currentPanel==='hunt')renderPanel();
@@ -3217,7 +3237,7 @@ ${avatarExtra}
     if(state!=='ready'){ctx.fillStyle='#151217';ctx.fillRect(0,0,W,H);return;}
     drawWorld();drawPaperDollDiagnostics();
   }
-  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}camera.begin(ctx,activeMap());drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'back',world.hero);drawEntityLayer();drawDungeonChestLabel();
+  function drawWorld(){if(!game){ctx.fillStyle='#123740';ctx.fillRect(0,0,W,H);return;}camera.begin(ctx,activeMap());drawBackground();drawHuntWarnings();drawTalentFields();if(scene==='lobby')drawTownActors();if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'back',world.hero);drawCombatVfx('back');drawEntityLayer();drawDungeonChestLabel();
     if(session.rankA)MareRankA.draw(ctx,session.rankA,world.time,world.mobs,'front',world.hero);
     drawRankB();
     drawExpansion();

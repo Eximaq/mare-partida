@@ -51,6 +51,7 @@
   }
  }
  function drawProjectile(c,p,{origin=p.origin}={}){
+   if(data.effects[p.kind]?.flightOnly&&p.phase==='impact')return false;
   if(p.phase==='done')return false;const end=data.flightEnds[p.kind];
   if(p.mode==='beam'){
    const box=beamGeometry(p,origin);if(box.width>0){c.save();if(p.phase==='impact')c.globalAlpha*=Math.max(0,1-p.elapsed/impactDuration(p));draw(c,data.beamEffects?.[p.kind]||p.kind,box.x,box.y,p.age*1000,{width:box.width,height:64,angle:box.angle,end:end-1,loop:true});c.restore();}
