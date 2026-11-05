@@ -86,7 +86,7 @@ assert.equal(await page.evaluate(()=>__impelQA.run.enemy.type),'cesar');
 await page.evaluate(()=>{const q=__impelQA;q.exit();q.game.impelDown.cleared=4;delete q.game.impelDown.encounter;});
 await page.keyboard.press('m');await page.locator('[data-quick-mode=prison]').click();
 await page.waitForFunction(()=>document.querySelector('.prison-hero-monster')?.dataset.state==='available');
-assert.equal(await page.evaluate(()=>__impelQA.game.impelDown.encounter.type),'boss');
+assert.equal(await page.evaluate(()=>__impelQA.game.impelDown.encounter.type),'cesar');
 assert(await page.locator('[data-prison-floor="6"]').isDisabled());
 await page.screenshot({path:process.env.MARE_QA_DIR+'/prison-boss.png'});
 await page.locator('[data-prison-floor="1"]').click();assert(await page.locator('[data-prison-enter]').isDisabled());

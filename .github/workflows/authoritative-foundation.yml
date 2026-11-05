@@ -96,7 +96,7 @@ jobs:
           assert(world.navigation('dawn').walkable(872,1608));
           assert.equal(getGameCatalog().items.length, 187);
           assert.equal(getGameCatalog().slots.length, 12);
-          assert.equal(getGameCatalog().rulesHash, '1951b4cd6a6a4adbb941eef87f1ffdf36c4a3be6faa1897d09fb54b5c5d673e4');
+          assert.equal(getGameCatalog().rulesHash, 'b1981b18a1634fee07a0c0ae53ce1a13b32d9e4b91fbc05dde6e421c34c09325');
           assert.notEqual(process.getuid(), 0);
           for (const path of ['/app/.env', '/app/.git', '/app/game.js', '/app/node_modules/typescript']) {
             assert.equal(existsSync(path), false, path);
@@ -104,7 +104,7 @@ jobs:
           const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
           try {
             assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
-            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 39);
+            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 40);
             await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
           } finally { await pool.end(); }
