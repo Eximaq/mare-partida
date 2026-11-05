@@ -69,3 +69,9 @@ Custo deste refinamento: **25 gerações**, saldo 161,68 → 136,68. Total das d
 - Transações reais em três resoluções passaram novamente: confirmações, cancelamento, custos, sucesso/falha, bloqueios, refinamento e reload.
 - Auditoria em nove resoluções e cenário de pérolas em oito: todos os campos usam a textura aprovada, sem overflow horizontal; prévia lateral, números base corretos, renderização sem RNG, navegação sem consumo, bônus/chance reais, grid/lista e botões acessíveis.
 - Capturas finais de resultado vazio, equipamento pronto e pérolas prontas foram mantidas fora do Git.
+
+## Visual aprovado da Forja das Correntes
+
+A janela usa a moldura náutica do inventário e os recortes de brasão, bigorna, Sabre de Coral e ferreiro do protótipo aprovado em 05/11/2026. Os recortes ficam em `assets/ui/forge-reference/`. O palco da bigorna exibe o ícone da peça selecionada quando o item difere do Sabre de Coral.
+
+Equipamentos, operação e comparação ocupam três colunas no desktop. Em celulares, os painéis seguem em sequência e a ilustração decorativa sai da área de trabalho. Custos, chance, atributos, estoque, confirmação e histórico vêm do sistema da forja.

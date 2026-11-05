@@ -102,7 +102,7 @@ const panels=[['haki'],['forge'],['inventory'],['character','status'],['characte
    await p.mouse.move(1,1);await capture('forge-'+(tab==='fusion'?'pearls':tab)+'.png');
   }
   await p.evaluate(()=>{__densityQA.ui.tab='upgrade';__densityQA.open('forge')});
-  const gaps=await p.locator('.forge2-preview>div').evaluateAll(es=>es.map(e=>{const a=e.querySelector('.forge-stat-label'),b=e.querySelector('b');return b.getBoundingClientRect().x-a.getBoundingClientRect().right}));
+  const gaps=await p.locator('.forge2-preview>div:has(.forge-stat-label)').evaluateAll(es=>es.map(e=>{const a=e.querySelector('.forge-stat-label'),b=e.querySelector('b');return b.getBoundingClientRect().x-a.getBoundingClientRect().right}));
   assert(gaps.every(n=>n<50&&n>=0),JSON.stringify(gaps));
   assert((await p.locator('.forge2-preview').boundingBox()).width<450);
   await p.evaluate(()=>{const q=__densityQA;q.game.name='Nome longo de teste';q.game.gold=999999999;q.game.materials=999999;q.defs[q.game.equipment.weapon.def].name='Espada Cerimonial das Correntes dos Mares Distantes';q.open('forge')});

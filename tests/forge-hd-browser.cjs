@@ -17,17 +17,25 @@ for(const [width,height] of [[1920,1080],[1672,940],[1448,1086],[1366,768],[1280
   await p.locator('[data-forge-tab="'+tab+'"]').click();
   if(tab==='imbue'){await p.locator('[data-forge-socket="1"]').click();await p.locator('[data-forge-pearl]').nth(15).click()}
   await p.evaluate(()=>document.fonts.ready);await p.waitForFunction(()=>[...document.querySelectorAll('#dialogBody img')].every(i=>i.complete&&i.naturalWidth));
-  assert.equal(await p.locator('.dialog-header small').innerText(),'KAIZOKU IDLE');
+  assert.equal(await p.locator('#dialogTitle').textContent(),'Forja das Correntes');
+  assert.ok(await p.locator('.dialog-header small').isHidden());
   assert.ok(!/Maré Partida/i.test(await p.locator('#panelOverlay').innerText()));
   assert.equal(await p.locator('[data-forge-tab][aria-selected=true]').count(),1);
   const overflow=await p.locator('.forge2-operation-content').evaluate(e=>e.scrollWidth-e.clientWidth);assert.ok(overflow<=2,JSON.stringify({width,height,tab,overflow}));
-  const fields=await p.locator('#dialogBody input,#dialogBody select').evaluateAll(xs=>xs.map(e=>getComputedStyle(e).backgroundImage));assert.ok(fields.every(x=>x.includes('workshop-surface.png')),'All forge fields must use approved surface');
+  const fields=await p.locator('#dialogBody input,#dialogBody .ui-select-trigger').evaluateAll(xs=>xs.map(e=>getComputedStyle(e).backgroundColor));assert.ok(fields.every(x=>x==='rgb(7, 28, 37)'),'Forge fields use the approved petrol-blue surface');
   const legacy=await p.locator('#dialogBody img.item-icon').evaluateAll(xs=>xs.filter(i=>!i.getAttribute('src').includes('items-hd/')).map(i=>i.getAttribute('src')));assert.deepEqual(legacy,[]);
   for(const sel of ['.forge2-tabs','.forge2-operation']){
    const rect=await p.locator(sel).boundingBox();assert.ok(rect.x>=0&&rect.x+rect.width<=width+1,JSON.stringify({width,height,tab,sel,rect}));
   }
   const action=p.locator('.forge2-operation-content [data-forge-action]').last();await action.scrollIntoViewIfNeeded();const rect=await action.boundingBox();assert.ok(rect.y>=0&&rect.y+rect.height<=height+1,JSON.stringify({width,height,tab,rect}));
   if(tab==='imbue'){await p.locator('.forge2-imbue-preview summary').click();assert.ok(await p.locator('.forge2-imbue-preview .forge2-preview').isVisible());await p.locator('.forge2-imbue-preview summary').click()}
+  if(width===1672&&tab==='upgrade'){
+   const comparison=await p.locator('.forge-reference-sidebar .forge2-preview').boundingBox();
+   const operation=await p.locator('.forge2-operation').boundingBox();
+   assert.ok(comparison.x>=operation.x+operation.width,'Comparison stays to the right of the upgrade');
+   await p.locator('.forge2-operation-content').evaluate(e=>e.scrollTop=0);
+   await p.screenshot({path:path.join(out,'upgrade-desktop.png')});
+  }
   if(width===390&&tab==='reforge')await p.screenshot({path:path.join(out,'mobile-reforge.png')});
  }
  console.log(width+'x'+height+': four tabs, HD images, reachable actions, no horizontal overflow');

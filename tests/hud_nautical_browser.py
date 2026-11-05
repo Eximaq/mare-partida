@@ -1,7 +1,7 @@
 """HUD composition acceptance in the running game; no production save is read."""
 import os, json
 from pathlib import Path
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import expect, sync_playwright
 from polish_support import page_for, create, fixture
 
 OUT = Path(os.environ.get('HUD_EVIDENCE', 'tmp/hud-nautical-v2'))
@@ -108,6 +108,10 @@ with sync_playwright() as p:
     for width,height in [(1600,900),(1366,768),(1024,768),(768,1024),(390,844),(844,390)]:
         page.set_viewport_size(dict(width=width,height=height))
         # Compare responsive geometry at the same live combat frame, without killing the target between sizes.
+        # Native resize and ResizeObserver can finish after set_viewport_size returns.
+        # Wait for the channel anchor while the combat clock stays paused.
+        channel_top=page.locator('#chatCornerToggle').evaluate("el => el.getBoundingClientRect().top + 'px'")
+        expect(page.locator('html')).to_have_css('--channel-top',channel_top)
         assert page.locator('#targetHud').is_visible(), page.evaluate('()=>{const d=__mareDiagnostics();return {scene:d.scene,auto:d.autoPlay,map:d.map,hp:d.hp,mobs:d.alive}}')
         assert page.locator('#huntXpTracker').is_visible()
         results.append(check_layout(page,f'combat-{width}'))
