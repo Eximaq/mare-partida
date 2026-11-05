@@ -18,6 +18,9 @@ import {advanceLevel} from './progression.js';
 import {awardWorldLoot} from '../gameplay/inventory.js';
 import {digest} from '../auth/vault.js';
 import {recordContractKills,recordDailyProgress,boostXp} from './contracts.js';
+import {creditCrewActivities,crewHuntEvents} from './crew-activity.js';
+import {crewCombatXp,crewMonsterBerry} from './crew-config.js';
+import {creditProfessionKills} from './crew-professions.js';
 const require=createRequire(import.meta.url),engine=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
 const rng=()=>randomInt(0,0x100000000)/0x100000000;
 export const isBattleAction=(action:string)=>(battleActions as readonly string[]).includes(action);
@@ -132,22 +135,37 @@ export async function tickWorldBattles(pool:Pool,assignment?:SimulationPartition
   const path=b.auto?[]:w.path.map(p=>({...p})),hero={...w.position,direction:w.direction};
   const started=(await client.query('SELECT started_at FROM mare_game.character_world WHERE character_id=$1',[id])).rows[0].started_at.getTime();
   const stock=inputs.inventory;
-  const result=engine.step(b,{preferences:inputs.preferences,hero,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:inputs.talents.build,classId:fighter.classId,factionId:fighter.factionId,level:state.level,now:now.getTime(),dt,rng,manualPath:path,manualSpeed:w.speed,manualStart:started,potions:stock?.potions??0});
+  const result=engine.step(b,{preferences:inputs.preferences,hero,nav:maps().navigation(w.mapId),stats:fighter.stats,baseStats:fighter.baseStats,fruitId:fighter.fruitId,build:inputs.talents.build,classId:fighter.classId,factionId:fighter.factionId,level:state.level,now:now.getTime(),dt,rng,manualPath:path,manualSpeed:w.speed,manualStart:started,potions:stock?.potions??0,potionHealingBonus:inputs.crewBenefits.doctor});
   if(result.kills.length||result.potionsUsed||result.talentSteals.length){
    if(state.version>=Number.MAX_SAFE_INTEGER)throw new AuthFault(503,'state_version_exhausted');
    const requestId=randomUUID();
-   if(!b.dungeon)await recordDailyProgress(client,id,result.kills.map((k:any)=>({...k,berry:k.reward?Math.round(k.reward.gold*engine.catalog.factions[fighter.factionId].gold):0})));
    if(b.dungeon){
     if(result.kills.length>1)throw new AuthFault(503,'dungeon_victory_invalid');
-    if(result.kills.length)await completeDungeonVictory(client,id,requestId,state,b,result.kills[0],now);
+    if(result.kills.length){
+     const kill=result.kills[0];
+     await completeDungeonVictory(client,id,requestId,state,b,kill,now);
+     await creditCrewActivities(client,[{characterId:id,kind:'bosses',eventId:kill.id,occurredAt:now}]);
+    }
     await awardWorldLoot(client,id,requestId,state,[],undefined,result.potionsUsed,{build:inputs.talents.build,steals:result.talentSteals,action:'dungeon.battle'});
    }else if(b.prison){
     if(result.kills.length>1)throw new AuthFault(503,'prison_victory_invalid');
+    await recordDailyProgress(client,id,result.kills.map((k:any)=>({...k,berry:0})));
     const grant=result.kills.length?await completePrisonFloor(client,id,requestId,b,result.kills[0],now):undefined;
     await awardWorldLoot(client,id,requestId,state,[],undefined,result.potionsUsed,{build:inputs.talents.build,steals:result.talentSteals,grant,action:'prison.reward'});
-   }else await awardWorldLoot(client,id,requestId,state,result.kills,undefined,result.potionsUsed,{build:inputs.talents.build,steals:result.talentSteals});
-   if(!b.prison&&!b.dungeon)for(const k of result.kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,(await boostXp(client,id,BigInt(k.reward.xp))).toString(),Math.round(k.reward.gold*engine.catalog.factions[fighter.factionId].gold),engine.rulesHash]);
-   if(!b.prison&&!b.dungeon)await recordContractKills(client,id,result.kills);
+   }else{
+    const benefits=inputs.crewBenefits;
+    const factionMultiplier=engine.catalog.factions[fighter.factionId].gold;
+    const kills=result.kills.map((k:any)=>({...k,reward:{...k.reward,xp:crewCombatXp(k.reward.xp,benefits.command)},
+      berry:crewMonsterBerry(k.reward.gold,factionMultiplier,benefits.navigator)}));
+    await awardWorldLoot(client,id,requestId,state,kills,undefined,result.potionsUsed,{build:inputs.talents.build,steals:result.talentSteals,monsterBerryBonus:benefits.navigator});
+    for(const k of kills)await client.query(`INSERT INTO mare_game.world_battle_rewards(character_id,spawn_id,request_id,area,monster,experience_delta,gold_delta,rules_hash) VALUES($1,$2,$3,$4,$5,$6,$7,$8)`,[id,k.id,requestId,k.area,k.monster.type,(await boostXp(client,id,BigInt(k.reward.xp))).toString(),k.berry,engine.rulesHash]);
+    if(kills.length){
+     await recordContractKills(client,id,kills);
+     await recordDailyProgress(client,id,kills);
+     await creditProfessionKills(client,id,kills,now);
+     await creditCrewActivities(client,crewHuntEvents(id,kills,now));
+    }
+   }
    await advanceLevel(client,id,requestId,state);await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
    const after=await readCharacterState(client,id);
    await observeServerAchievements(client,id,state,after,{kills:b.dungeon?0:result.kills.length});

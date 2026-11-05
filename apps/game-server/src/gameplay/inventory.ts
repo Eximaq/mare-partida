@@ -1,4 +1,5 @@
 import {boostXp} from '../characters/contracts.js';
+import {crewMonsterBerry} from '../characters/crew-config.js';
 import { createRequire } from "node:module";
 import { randomInt, randomUUID, createHash } from "node:crypto";
 import type { PoolClient } from "pg";
@@ -15,6 +16,7 @@ import { getGameCatalog } from "./catalog.js";
 import { AuthFault } from "../auth/errors.js";
 import {readBattle,storeBattle} from '../characters/battle.js';
 import {readFighter} from '../characters/fighter.js';
+import {readCharacterCrewBenefits} from '../characters/crew-benefits.js';
 const require = createRequire(import.meta.url),
   forge = require("../../../../forge-system.js");
 const catalog = getGameCatalog(),
@@ -25,7 +27,7 @@ const random = () => randomInt(0, 0x100000000) / 0x100000000;
 const maxGold = 9223372036854775807n;
 export const isOriginalAction = (action: string) =>
   originalActionSchema.options.includes(action as any);
-export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{xpGrant?:number;build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number;grant?:OriginalItemInstance|undefined;action?:'prison.reward'|'prison.claim'|'dungeon.battle'}={}){
+export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{xpGrant?:number;monsterBerryBonus?:number;build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number;grant?:OriginalItemInstance|undefined;action?:'prison.reward'|'prison.claim'|'dungeon.battle'}={}){
  const roll=passives.rng??(()=>randomInt(0,0x100000000)/0x100000000),random=()=>{const r=roll();if(!Number.isFinite(r)||r<0||r>=1)throw new RangeError('Invalid loot RNG');return r;};
  const before=await readOriginalInventory(client,id);if(!before)throw new AuthFault(409,'original_inventory_required');
  const after=structuredClone(before),identity=(await client.query('SELECT class_id,faction_id FROM mare_game.characters WHERE id=$1',[id])).rows[0];
@@ -43,7 +45,7 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
   after.inventory.unshift(make(def,first.level,first.rarity,'Primeira vitória · '+battle.hunt.get(first.area).name));
  }
  for(const k of kills){
-  const r=k.reward;xp+=BigInt(r.xp);gold+=BigInt(Math.round(r.gold*battle.catalog.factions[identity.faction_id].gold));
+  const r=k.reward;xp+=BigInt(r.xp);gold+=BigInt(crewMonsterBerry(r.gold,battle.catalog.factions[identity.faction_id].gold,passives.monsterBerryBonus));
   if(random()<battle.hunt.materialDropChance(r,lootMultiplier))after.materials=Math.min(1000000000,after.materials+r.materials);
   if(after.inventory.length<120){const plan=forge.normalLoot(defs,state.level,battle.hunt.get(k.area),random);if(plan){const item=make(plan.def,plan.level,plan.rarity,battle.hunt.get(k.area).name);item.generation.source='map:'+k.area;after.inventory.unshift(item);}}
   if(random()<Math.min(1,r.potionChance*lootMultiplier))after.potions=Math.min(1000000000,after.potions+r.potions);
@@ -413,7 +415,8 @@ export async function mutateOriginalInventory(
       if(battle){
        const fighter=await readFighter(client,id,state);
        if(battle.hp<=0||battle.hp>=fighter.maxHp)throw new AuthFault(409,'potion_not_needed');
-       const hp=battle.hp;battle.hp=Math.min(fighter.maxHp,battle.hp+Math.round(fighter.maxHp*.44)*(1+(fighter.rulesetId==='original-character-v1'?fighter.stats.healingReceivedPercent:0)));
+       const bonus=(await readCharacterCrewBenefits(client,id)).doctor;
+       const hp=battle.hp;battle.hp=Math.min(fighter.maxHp,battle.hp+Math.round(fighter.maxHp*.44)*(1+(fighter.rulesetId==='original-character-v1'?fighter.stats.healingReceivedPercent:0))*(1+bonus));
        await storeBattle(client,id,battle);i.potions--;outcome={healed:battle.hp-hp};
       }else{
       if (

@@ -30,6 +30,24 @@
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    if(action.startsWith('crew.')){
+      const uuid=v=>typeof v==='string'&&/^[0-9a-f-]{36}$/.test(v);
+      const whole=(v,max)=>Number.isSafeInteger(v)&&v>=1&&v<=max;
+      const policy=['open','approval'].includes(p.policy)&&whole(p.minLevel,1000);
+      if(action==='crew.create')return keys==='flag,minLevel,name,policy,tag'&&policy&&typeof p.name==='string'&&p.name.trim().length>=3&&p.name.length<=96&&typeof p.tag==='string'&&/^[a-z0-9]{2,6}$/i.test(p.tag.trim())&&typeof p.flag==='string'&&/^[0-9a-f]{1024}$/.test(p.flag);
+      if(action==='crew.join'||action==='crew.apply')return keys==='crewId'&&uuid(p.crewId);
+      if(action==='crew.invite')return keys==='name'&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=40;
+      if(action==='crew.respond')return keys==='accept,requestId'&&uuid(p.requestId)&&typeof p.accept==='boolean';
+      if(action==='crew.recruitment')return keys==='minLevel,policy'&&policy;
+      if(action==='crew.role')return keys==='memberId,role'&&uuid(p.memberId)&&['officer','member'].includes(p.role);
+      if(action==='crew.transfer'||action==='crew.kick')return keys==='memberId'&&uuid(p.memberId);
+      if(action==='crew.leave')return keys==='';
+      if(action==='crew.dissolve')return keys==='confirmed'&&p.confirmed===true;
+      if(action==='crew.donate')return keys==='amount'&&whole(p.amount,Number.MAX_SAFE_INTEGER);
+      if(action==='crew.upgrade')return keys==='expectedLevel,facility'&&whole(p.expectedLevel,5)&&['hull','infirmary','galley','command','workshop','navigation','warehouse'].includes(p.facility);
+      if(action==='crew.profession')return keys==='profession'&&['doctor','command','cook','carpenter','navigator'].includes(p.profession);
+      return false;
+    }
     if(action.startsWith('party.')){
       const uuid=v=>typeof v==='string'&&/^[0-9a-f-]{36}$/.test(v);
       if(['party.create','party.leave'].includes(action))return keys==='';

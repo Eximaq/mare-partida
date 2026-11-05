@@ -17,6 +17,7 @@ import { readAttributes } from "./attributes.js";
 import { AuthFault } from "../auth/errors.js";
 import {readOriginalInventory} from '../gameplay/inventory.js';
 import {deriveOriginalFighter} from '../gameplay/character.js';
+import {readCharacterCrewBenefits} from './crew-benefits.js';
 // Versioned online rules. Birth attributes match the existing seven demo classes.
 const classes = {
   sword: {
@@ -118,7 +119,7 @@ export async function readFighter(
   if (!row) throw new AuthFault(503, "character_state_unavailable");
   const attributes = await readAttributes(client, id, state);
   const original=await readOriginalInventory(client,id);
-  if(original){const talents=await readTalents(client,id,state),b=talents?await readBattle(client,id):null;return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,original,talents?.build,b?require('../../../../talent-runtime.cjs').load(b):undefined,b?hakiView(b):undefined,await readFruits(client,id),b,legacyCadence); }
+  if(original){const talents=await readTalents(client,id,state),b=talents?await readBattle(client,id):null;return deriveOriginalFighter(row.class_id,row.faction_id,state,attributes.allocated,original,talents?.build,b?require('../../../../talent-runtime.cjs').load(b):undefined,b?hakiView(b):undefined,await readFruits(client,id),b,legacyCadence,(await readCharacterCrewBenefits(client,id)).cook); }
   return deriveFighter(
     row.class_id,
     state,

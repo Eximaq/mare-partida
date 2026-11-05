@@ -2,6 +2,7 @@ import {createRequire} from 'node:module';
 import type {PoolClient} from 'pg';
 import type {CharacterState} from '@mare/shared';
 import {AuthFault} from '../auth/errors.js';
+import {crewAvailable} from './crew-store.js';
 import {permanentCharacterPower} from './power.js';
 const H=createRequire(import.meta.url)('../../../../hierarchy-system.js');
 async function available(client:PoolClient){return !!(await client.query("SELECT to_regclass('mare_game.character_hierarchy') present")).rows[0].present;}
@@ -27,8 +28,10 @@ export async function promoteHierarchy(client:PoolClient,id:string,requestId:str
 }
 export async function hierarchyRanking(client:PoolClient,faction:string|null){
  if(!await available(client))throw new AuthFault(503,'hierarchy_unavailable');
- const rows=(await client.query(`SELECT c.id player_id,c.name,c.class_id,c.faction_id faction,p.level,COALESCE(h.tier,1) tier,COALESCE(h.power,0) power
+ const crews=await crewAvailable(client);
+ const rows=(await client.query(`SELECT c.id player_id,c.name,c.class_id,c.faction_id faction,p.level,COALESCE(h.tier,1) tier,COALESCE(h.power,0) power${crews?',g.tag crew_tag,g.flag crew_flag':''}
  FROM mare_game.characters c JOIN mare_game.character_progression p ON p.character_id=c.id LEFT JOIN mare_game.character_hierarchy h ON h.character_id=c.id
+ ${crews?'LEFT JOIN mare_game.crew_members m ON m.character_id=c.id LEFT JOIN mare_game.crews g ON g.id=m.crew_id AND g.dissolved_at IS NULL':''}
  WHERE ($1::text IS NULL OR c.faction_id=$1) ORDER BY COALESCE(h.tier,1) DESC,p.level DESC,COALESCE(h.power,0) DESC,c.id LIMIT 10`,[faction])).rows;
- return {faction,leaderboard:rows.map(r=>({...r,rank_title:H.title(r.faction,r.tier),portrait:''}))};
+ return {faction,leaderboard:rows.map(({crew_tag,crew_flag,...r})=>({...r,...(crew_tag?{crew:{tag:crew_tag,flag:crew_flag}}:{}),rank_title:H.title(r.faction,r.tier),portrait:''}))};
 }

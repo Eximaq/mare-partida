@@ -22,7 +22,20 @@ const commandEnvelope = {
   control: renewControlSchema,
 };
 import {partyActions} from './party.js';
+import {crewActions,crewCreatePayload,crewFacilities,crewProfessions,crewRecruitmentPayload} from './crew.js';
 export const characterCommandSchema = z.discriminatedUnion("action", [
+ z.strictObject({...commandEnvelope,action:z.literal('crew.create'),payload:crewCreatePayload}),
+ z.strictObject({...commandEnvelope,action:z.enum(['crew.join','crew.apply']),payload:z.strictObject({crewId:z.uuid()})}),
+ z.strictObject({...commandEnvelope,action:z.literal('crew.invite'),payload:z.strictObject({name:z.string().trim().min(1).max(40)})}),
+ z.strictObject({...commandEnvelope,action:z.literal('crew.respond'),payload:z.strictObject({requestId:z.uuid(),accept:z.boolean()})}),
+ z.strictObject({...commandEnvelope,action:z.literal('crew.recruitment'),payload:crewRecruitmentPayload}),
+ z.strictObject({...commandEnvelope,action:z.literal('crew.role'),payload:z.strictObject({memberId:z.uuid(),role:z.enum(['officer','member'])})}),
+ z.strictObject({...commandEnvelope,action:z.enum(['crew.transfer','crew.kick']),payload:z.strictObject({memberId:z.uuid()})}),
+ z.strictObject({...commandEnvelope,action:z.literal('crew.leave'),payload:z.strictObject({})}),
+ z.strictObject({...commandEnvelope,action:z.literal('crew.dissolve'),payload:z.strictObject({confirmed:z.literal(true)})}),
+ z.strictObject({...commandEnvelope,action:z.literal('crew.donate'),payload:z.strictObject({amount:z.number().int().min(1).max(Number.MAX_SAFE_INTEGER)})}),
+ z.strictObject({...commandEnvelope,action:z.literal('crew.upgrade'),payload:z.strictObject({facility:z.enum(crewFacilities),expectedLevel:z.number().int().min(1).max(5)})}),
+ z.strictObject({...commandEnvelope,action:z.literal('crew.profession'),payload:z.strictObject({profession:z.enum(crewProfessions)})}),
  z.strictObject({...commandEnvelope,action:z.enum(['party.create','party.leave']),payload:z.strictObject({})}),
  z.strictObject({...commandEnvelope,action:z.literal('party.invite'),payload:z.strictObject({name:z.string().trim().min(1).max(40)})}),
  z.strictObject({...commandEnvelope,action:z.literal('party.respond'),payload:z.strictObject({inviteId:z.uuid(),accept:z.boolean()})}),
@@ -71,7 +84,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
+  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),
   inventory: inventorySnapshotSchema.optional(),

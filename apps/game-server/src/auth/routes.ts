@@ -131,7 +131,7 @@ export function createAuthHandler(options: {
         /^\/v1\/characters\/([0-9a-f-]{36})(?:\/(control)(?:\/(renew))?)?$/.exec(
           path,
         );
-      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/(state|online-state|game-catalog|frame)$/.exec(path);
+      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/(state|online-state|game-catalog|frame|crew)$/.exec(path);
       const commandMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/commands$/.exec(path);
       const known = [
         "/v1/auth/csrf",
@@ -144,6 +144,7 @@ export function createAuthHandler(options: {
         "/v1/auth/rotate",
         "/v1/me",
         "/v1/hierarchy/ranking",
+        "/v1/crews/ranking",
         "/v1/characters",
       ];
       if (!known.includes(path) && !match && !stateMatch && !commandMatch) {
@@ -154,7 +155,7 @@ export function createAuthHandler(options: {
       const get =
         path === "/v1/auth/csrf" ||
         path === "/v1/auth/callback" ||
-        path === "/v1/me" || path === "/v1/hierarchy/ranking" ||
+        path === "/v1/me" || path === "/v1/hierarchy/ranking" || path === "/v1/crews/ranking" ||
         (!!match && !match[2]) || !!stateMatch;
       if (request.method !== (get ? "GET" : "POST")) {
         request.resume();
@@ -164,7 +165,7 @@ export function createAuthHandler(options: {
       }
       // Gameplay polling and movement share an IP behind the local gateway/NAT.
       // Reserve the original authentication budget instead of letting play traffic consume it.
-      const gameplay = path === "/v1/me" || path === "/v1/hierarchy/ranking" || path === "/v1/characters" || !!match || !!stateMatch || !!commandMatch;
+      const gameplay = path === "/v1/me" || path === "/v1/hierarchy/ranking" || path === "/v1/crews/ranking" || path === "/v1/characters" || !!match || !!stateMatch || !!commandMatch;
       await service.rateLimit((gameplay ? "game-ip:" : "ip:") + ip, gameplay ? 600 : 300, 60);
       const jar = cookies(request),
         session = jar.get(SESSION),
@@ -215,6 +216,16 @@ export function createAuthHandler(options: {
           if(request.headers["transfer-encoding"] || Number(request.headers["content-length"]??0)!==0 || [...url.searchParams.keys()].some(k=>k!=="faction") || url.searchParams.getAll("faction").length>1)throw new AuthFault(400,"invalid_request");
           const faction=url.searchParams.has("faction")?parse(z.enum(["pirate","marine","revolutionary","government"]),url.searchParams.get("faction")):null;
           reply(200,await service.hierarchyRanking(session,faction));return;
+        }
+        if(path==="/v1/crews/ranking" || stateMatch?.[2]==='crew'){
+          if(request.headers["transfer-encoding"] || Number(request.headers["content-length"]??0)!==0)throw new AuthFault(400,"invalid_request");
+          if(path==="/v1/crews/ranking"){
+            if(url.search)throw new AuthFault(400,"invalid_request");
+            reply(200,await service.crewRanking(session));return;
+          }
+          const q=url.searchParams.get('q')??'',view=url.searchParams.get('view');
+          if(!stateMatch||q.length>96||(view!==null&&view!=='identity')||(view!==null&&url.searchParams.has('q'))||[...url.searchParams.keys()].some(k=>k!=='q'&&k!=='view')||url.searchParams.getAll('q').length>1||url.searchParams.getAll('view').length>1)throw new AuthFault(400,"invalid_request");
+          reply(200,await service.crewState(session,parse(z.uuid(),stateMatch[1]),q,view==='identity'));return;
         }
         if (stateMatch) {
           if (url.search || request.headers["transfer-encoding"] || Number(request.headers["content-length"] ?? 0) !== 0)

@@ -1,4 +1,5 @@
 import {readCombatInputs} from './combat-inputs.js';
+import {readCrewIdentities} from './crew-store.js';
 import type {PoolClient} from 'pg';
 import {randomUUID} from 'node:crypto';
 import {createRequire} from 'node:module';
@@ -137,11 +138,12 @@ export async function readParty(c:PoolClient,id:string){
  const roster=await presence(c,group);await refreshPartyLeader(c,group,roster);
  const g=(await c.query('SELECT id,leader_id,preparation FROM mare_game.parties WHERE id=$1',[group])).rows[0],members=[];
  const ids=roster.map(m=>m.character_id),inputs=await readCombatInputs(c,ids),battles=await readBattleRows(c,ids),worlds=await readWorlds(c,ids);
+ const identities=await readCrewIdentities(c,ids);
  for(const m of roster){
   const input=inputs.get(m.character_id)!,{state}=input,b=battles.get(m.character_id)?.simulation,w=worlds.get(m.character_id)??null;
   const f=input.inventory?input.fighter(b):await readFighter(c,m.character_id,state),visual=input.inventory?{appearance:input.appearance,preferences:input.preferences,equipment:input.inventory.equipment}:null;
   const equipment:any={};if(!visual?.preferences.hideItems)for(const slot of ['weapon','head','coat','cloak','gloves','legs','boots'] as const){const item=visual?.equipment[slot];if(item)equipment[slot]={def:item.def};}
-  members.push({id:m.character_id,name:m.name,classId:m.class_id,factionId:m.faction_id,level:state.level,power:f.rulesetId==='original-character-v1'?f.stats.power:0,hp:Math.max(0,Math.min(b?.hp??f.maxHp,f.maxHp)),maxHp:f.maxHp,connected:m.connected===true,ready:g.preparation?.ready[m.character_id]===true,world:w,appearance96:visual?.appearance,hideHeadgear:!!visual?.preferences.hideHeadgear,equipment,action:b?.pending||b?.skillJob?'attack':'idle',instanceId:b?.partyInstanceId??null,fruitId:f.rulesetId==='original-character-v1'?f.fruitId:null,zoanTransformed:b?.fruit?.transformed===true,haki:b?.haki?{active:b.haki.active,eyeFX:b.haki.eyeFX,kingFX:b.haki.kingFX}:null});
+  members.push({id:m.character_id,name:m.name,crewIdentity:identities.get(m.character_id)??null,classId:m.class_id,factionId:m.faction_id,level:state.level,power:f.rulesetId==='original-character-v1'?f.stats.power:0,hp:Math.max(0,Math.min(b?.hp??f.maxHp,f.maxHp)),maxHp:f.maxHp,connected:m.connected===true,ready:g.preparation?.ready[m.character_id]===true,world:w,appearance96:visual?.appearance,hideHeadgear:!!visual?.preferences.hideHeadgear,equipment,action:b?.pending||b?.skillJob?'attack':'idle',instanceId:b?.partyInstanceId??null,fruitId:f.rulesetId==='original-character-v1'?f.fruitId:null,zoanTransformed:b?.fruit?.transformed===true,haki:b?.haki?{active:b.haki.active,eyeFX:b.haki.eyeFX,kingFX:b.haki.kingFX}:null});
  }
  const instance=(await c.query('SELECT id,simulation FROM mare_game.party_instances WHERE party_id=$1 AND ended_at IS NULL',[group])).rows[0];
  return {group:{id:g.id,leaderId:g.leader_id,preparation:g.preparation?.expires>Date.now()?g.preparation:null,members,activity:instance?{id:instance.id,kind:instance.simulation.kind,destination:instance.simulation.destination,density:instance.simulation.density??1}:null},invites};

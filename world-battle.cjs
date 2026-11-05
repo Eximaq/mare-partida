@@ -15,7 +15,7 @@ const sources=['combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 const balanceVersion=characters.monsterBalance.version;
 const previousBalanceHash='6ec1642796a685e114cdc27e528bc2f9ff82cc18123f6dce68e639ee6bc890a8';
-const priorBalanceHashes=new Set([previousBalanceHash,'c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46','33f5c37bd55b0dc9a052d31c9e7d68f760bb31122337fb1da73058050083fa6a']);
+const priorBalanceHashes=new Set([previousBalanceHash,'c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46','33f5c37bd55b0dc9a052d31c9e7d68f760bb31122337fb1da73058050083fa6a','063ad6d7e40b3146f8542e122e64cff8078b7eb61c49b0722d7e32044be2b461']);
 function upgradeBalance(b){
  if(!b||!priorBalanceHashes.has(b.rulesHash))return;
  const prisonSpec=b.prison&&prison.resolveEncounter(b.prison.spec,prisonCatalog);
@@ -210,7 +210,7 @@ function step(b,c){
     b.nextSkillDecision=now+250;autoSkill(b,{...c,now,hero,nav,stats,runtime:rt},g,m);
    }
   if(b.auto&&b.hp>0&&b.area&&!fruitBusy){
-   if(b.hp<stats.maxHP*.4&&potionsUsed<(c.potions||0)){heal(Math.round(stats.maxHP*.44));potionsUsed++;event(b,'potion');}
+   if(b.hp<stats.maxHP*.4&&potionsUsed<(c.potions||0)){heal(Math.round(stats.maxHP*.44)*(1+(c.potionHealingBonus||0)));potionsUsed++;event(b,'potion');}
    if(!m){m=b.mobs.filter(m=>live(m)&&!(b.unreachableUntil?.[m.id]>now)).sort((a,z)=>distance(hero,a)-distance(hero,z))[0];b.targetId=m?.id??null;}
    const actionLocked=!!(b.pending||b.skillJob||b.fruit?.job||(b.actionLockUntil||0)>now);
    const warnings=b.mobs.filter(live).map(m=>m.telegraph).filter(Boolean),danger=warnings.some(w=>hunt.danger(w,hero));

@@ -1,4 +1,6 @@
 import {isPartyAction,mutateParty} from './party.js';
+import {executeCrew} from './crew.js';
+import {chooseProfession} from './crew-professions.js';
 import {lockParty} from './party-store.js';
 import {mutateProfile} from './profile.js';
 import {registerFruit,mutateFruit} from './fruits.js';
@@ -60,6 +62,15 @@ export async function executeCharacterCommand(
    const b=await readBattle(client,characterId);if(b?.partyInstanceId||input.action==='dungeon.enter')throw new AuthFault(409,'party_collective_navigation_required');
   }
   if(isPartyAction(input.action))await mutateParty(client,characterId,input,state);
+  switch(input.action){
+    case 'crew.create': case 'crew.join': case 'crew.apply': case 'crew.invite': case 'crew.respond':
+    case 'crew.recruitment': case 'crew.role': case 'crew.transfer': case 'crew.kick': case 'crew.leave':
+    case 'crew.dissolve': case 'crew.donate': case 'crew.upgrade':
+      await executeCrew(client,characterId,input,state);break;
+    case 'crew.profession':
+      await chooseProfession(client,characterId,input.payload.profession);
+      await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[characterId]);break;
+  }
   state=await readCharacterState(client,characterId);
   const before=state,powerBefore=input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);
   if(input.action.startsWith('profile.')){await mutateProfile(client,characterId,input,state);state=await readCharacterState(client,characterId);}
