@@ -11,6 +11,23 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await page.evaluate(()=>{const q=__honorsQA,g=q.game;g.level=43;g.stats.kills=2040;g.stats.goldEarned=100000;g.impelDown.cleared=8;q.update();});await page.evaluate(()=>__honorsQA.sync());
  const open=async s=>page.evaluate(s=>__honorsQA.open('character',s),s);
  await open('achievements');await page.evaluate(()=>document.fonts.ready);
+ const dialog=await page.locator('#panelOverlay .dialog').boundingBox();
+ assert(dialog.width<=1120&&dialog.height<=650,'achievements window is compact');
+ const featured=page.locator('.achievement-featured');
+ assert(await featured.evaluate(async e=>{
+  const style=getComputedStyle(e,'::before'),asset=new Image();
+  asset.src=style.backgroundImage.match(/url\("([^"]+)"\)/)[1];
+  await asset.decode();
+  const font=await document.fonts.load('700 23px "Barlow Semi Condensed"','1 PT');
+  return asset.naturalWidth===1080&&style.animationName==='achievement-sea'&&font.some(face=>face.status==='loaded');
+ }));
+ const reward=page.locator('[data-achievement-claim=kills-0]');
+ assert((await reward.evaluate(e=>getComputedStyle(e).borderImageSource)).includes('tab-active.png'));
+ await reward.hover();
+ await page.waitForFunction(()=>getComputedStyle(document.querySelector('[data-achievement-claim=kills-0]')).filter==='brightness(1.22)');
+ await page.emulateMedia({reducedMotion:'reduce'});
+ assert.equal(await featured.evaluate(e=>getComputedStyle(e,'::before').animationName),'none');
+ await page.emulateMedia({reducedMotion:'no-preference'});
  const global=await page.locator('[data-achievement-total]').textContent(),points=await page.locator('[data-achievement-points]').textContent();
  assert.equal(points,'0 PT');
  for(const cat of await page.locator('[data-achievement-category]').evaluateAll(es=>es.map(e=>e.dataset.achievementCategory))){await page.locator('[data-achievement-category="'+cat+'"]').click();assert.equal(await page.locator('[data-achievement-total]').textContent(),global);}
@@ -64,6 +81,11 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
    const layout=await page.evaluate(()=>{const b=document.querySelector('#dialogBody'),p=document.querySelector('.dialog'),r=document.querySelector('#closePanel').getBoundingClientRect();const rect=e=>e.getBoundingClientRect();
     const clips=[...b.querySelectorAll('.achievement-entry')].filter(e=>[...e.children].some(c=>rect(c).bottom>rect(e).bottom+1||rect(c).right>rect(e).right+1)).map(e=>e.dataset.achievementId);
     return {overflow:b.scrollWidth>b.clientWidth+2,close:r.right>innerWidth||r.bottom>innerHeight,broken:[...document.querySelectorAll('img')].filter(i=>i.complete&&!i.naturalWidth).map(i=>i.src),clips};});
+   if(s==='achievements'){
+    assert(await page.locator('#dialogBody').evaluate(e=>e.scrollHeight<=e.clientHeight+1),'only the list scrolls at '+width);
+    assert(await page.locator('.achievement-list').evaluate(e=>e.clientHeight>80&&e.scrollWidth<=e.clientWidth+1),'readable achievement list at '+width);
+    assert(await page.locator('.achievement-categories').evaluate(e=>e.scrollWidth<=e.clientWidth+1),'filters fit at '+width);
+   }
    assert(!layout.overflow,s+' overflow at '+width);assert(!layout.close);assert.deepEqual(layout.broken,[]);assert.deepEqual(layout.clips,[],s+' card clips at '+width);
    await page.screenshot({path:process.env.MARE_QA_DIR+'/'+s+'-'+width+'.png'});
   }
