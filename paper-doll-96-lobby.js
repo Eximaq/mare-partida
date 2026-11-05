@@ -24,7 +24,7 @@
 
   const directionOf=value=>({front:'south',back:'north',left:'west',right:'east'})[value]||value;
   const enabled=()=>true;
-  const clipKey=(action,dir,look)=>action+':'+dir+':'+(look.hideHeadgear?'hidden':'visible');
+  const clipKey=(action,dir,look,weaponless=false)=>action+':'+dir+':'+(look.hideHeadgear?'hidden':'visible')+(weaponless?':weaponless':'');
   const safeFile=file=>typeof file==='string'&&/^assets\/[a-z0-9-]+\.png$/.test(file);
   function assetReferences(value,out=new Set()){
     if(typeof value==='string'&&safeFile(value))out.add(value);
@@ -163,11 +163,12 @@
           try{
             for(const action of ['idle','walk',...(!sharedLobby&&next.supported?[next.attack,'attack-unarmed']:[])].filter((v,i,a)=>a.indexOf(v)===i))for(const dir of ['south','north','east']){
               if(wanted.key!==next.key)break;
-              for(const hideHeadgear of [next.look.hideHeadgear]){
-                const stateLook={...next.look,hideHeadgear},key=clipKey(action,dir,stateLook);
-
+              // Fruit punches use a prepared weaponless strip in the equipped bundle.
+              // Do not change wardrobe identity or reload it for a short cast.
+              for(const weaponless of action==='attack-unarmed'&&next.look.weapon!=='original'?[true,false]:[false]){
+                const stateLook={...next.look,...(weaponless?{weapon:'original'}:{})},key=clipKey(action,dir,stateLook,weaponless);
                 const value=await compose(next.body,action,dir,stateLook,()=>wanted.key!==next.key,consumer);
-                if(value){bundle.set(key,value);if(next.look.head==='original')bundle.set(clipKey(action,dir,{hideHeadgear:!hideHeadgear}),value);}
+                if(value){bundle.set(key,value);if(next.look.head==='original')bundle.set(clipKey(action,dir,{...stateLook,hideHeadgear:!stateLook.hideHeadgear},weaponless),value);}
               }
             }
             if(wanted.key!==next.key){releaseBundle(bundle);continue;}
@@ -184,20 +185,21 @@
       if(direction==='west'){ctx.translate(spec.width+1,0);ctx.scale(-1,1);}
       const density=value.density||1;ctx.drawImage(strip,frame*spec.width*density,0,spec.width*density,spec.height*density,0,0,spec.width,spec.height);ctx.restore();
     }
-    function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world'}={}){
+    function draw(ctx,player,{scene,action='idle',direction='south',time=0,progress=null,timing=null,x=0,y=0,scale=null,worldView=false,consumer='world',weaponless=false}={}){
       direction=directionOf(direction);if(worldView)lastPose=null;
       if(!active||state!=='ready'||player?.zoanTransformed||!['south','north','east','west'].includes(direction))return false;
       const value=resolve(player);if(scene!=='lobby'&&!(scene==='hunt'&&value.supported))return false;
       if(scene==='hunt'&&!pending&&!previewPending&&bundles.has(value.key))trimSourceImages();
       const requested=action;
-      if(['combat-idle','guard','hurt','death'].includes(action))action='idle';
+      if(weaponless)action='attack-unarmed';
+      else if(['combat-idle','guard','hurt','death'].includes(action))action='idle';
       else if(['attack','skill','skill-1','skill-2','combo','cast','heal','reload','dodge'].includes(action))action=player?.equipment?.weapon?value.attack:'attack-unarmed';
       if(!actions.includes(action)||!value.supported){diagnose(failure('Ação atual indisponível',{component:consumer,asset:player?.classId,action,direction,code:'unsupported-current-action'}));return false;}
-      ensure(player,{consumer});const bundle=bundleFor(value.key),clip=bundle?.get(clipKey(action,direction==='west'?'east':direction,value.look));if(!clip)return false;
+      ensure(player,{consumer});const bareHands=weaponless&&value.look.weapon!=='original',bundle=bundleFor(value.key),clip=bundle?.get(clipKey(action,direction==='west'?'east':direction,value.look,bareHands));if(!clip)return false;
       const hit=Math.max(.001,Math.min(.999,timing?.hitFrameRatio??.5));
       const p=Number.isFinite(progress)&&!clip.clip.loop?(progress<=hit?progress/hit*.5:.5+(progress-hit)/(1-hit)*.5):null;
       const frame=frameAt(clip.clip,time,p);paint(ctx,clip,direction,frame,x,y,scale===null?1:scale*46/96);draws++;
-      if(worldView)lastPose={consumer,assetRevision,body:value.body,action,requestedAction:requested,direction,frame,progress:p,weapon:value.look.weapon,scale:1,pivot:{x,y},missing:value.missing};return true;
+      if(worldView)lastPose={consumer,assetRevision,body:value.body,action,requestedAction:requested,direction,frame,progress:p,weapon:weaponless?'original':value.look.weapon,scale:1,pivot:{x,y},missing:value.missing};return true;
     }
     function valid(look){return Object.keys(defaults).every(key=>Object.hasOwn(choices[key]||{},look?.[key]));}
     function setDraft(key,value){if(Object.hasOwn(choices[key]||{},value)){draft={...draft,[key]:value};return true;}return false;}

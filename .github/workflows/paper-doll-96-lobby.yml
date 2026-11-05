@@ -20,6 +20,7 @@ on:
       - 'tests/player96_release_test.py'
       - 'tests/current-player-*.test.cjs'
       - 'tests/player_sprite_ownership_browser.cjs'
+      - 'tests/akuma-player-visibility-browser.cjs'
       - 'game.js'
       - 'headgear-visibility.js'
       - 'inventory-compact.css'
@@ -79,6 +80,7 @@ jobs:
           python tests/player96_release_test.py
           node --test tests/current-player-release.test.cjs tests/current-player-sprites.test.cjs
           node tests/player_sprite_ownership_browser.cjs http://127.0.0.1:8157/dist/ --evidence="$RUNNER_TEMP/lobby96/ownership"
+          MARE_TEST_URL=http://127.0.0.1:8157/dist/ MARE_EVIDENCE_DIR="$RUNNER_TEMP/lobby96/akuma" node tests/akuma-player-visibility-browser.cjs
           node tests/paper-doll-96-lobby.test.cjs
           node tests/paper_doll_96_lobby_browser.cjs http://127.0.0.1:8157/dist/ --evidence="$RUNNER_TEMP/lobby96"
       - uses: actions/upload-artifact@v4

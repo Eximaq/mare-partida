@@ -64,3 +64,11 @@ O workflow `paper-doll-96-lobby.yml` valida os contratos e a propriedade exclusi
 Saves, inventário e atributos não são migrados destrutivamente. Saves sem `appearance96` recebem os mesmos defaults compatíveis e preservam a indicação antiga de cabelo raspado. Rascunhos não persistem antes de confirmar. Itens futuros sem arte atual precisam receber mapeamento válido: são diagnosticados e não ganham equipamento fictício. Esta sprint não produz essa arte.
 
 Rollback: reverter o commit desta sprint por PR; não fazer reset de save nem force-push. Isso restaura a política anterior e, portanto, também seus fallbacks conhecidos. Não declarar ausência absoluta de defeitos artísticos: o escopo é eliminar a mistura entre gerações e validar as animações existentes.
+
+## Correção de visibilidade durante habilidades humanas de Akuma — 04/11/2026
+
+O gesto de conjuração sem arma agora é preparado dentro do mesmo bundle da aparência equipada. `game.js` solicita a variante `weaponless` ao compositor, sem retirar a arma do objeto visual nem trocar a chave do guarda-roupa. Antes, a troca temporária para `weapon:null` iniciava outra composição assíncrona e deixava o corpo transparente durante a skill; o teste reproduziu retorno `false` e zero pixels no primeiro quadro.
+
+O sprite permanece native96 e usa as roupas, cabeça e cosméticos atuais. O ataque normal mantém a arma, inclusive manoplas; ao terminar a conjuração, a pose equipada já está disponível. A regra atende tanto o relógio local quanto a pose recebida de `castVisual` online. Saves, dano, recargas, custos, transformações Zoan e a ocultação intencional da Beri não mudam.
+
+Validação: `tests/akuma-player-visibility-browser.cjs` executou 56 conjurações, 448 quadros inspecionados, sete classes, dois corpos e quatro direções. Verificou pixels visíveis em todos os quadros, arma oculta apenas na pose da skill, restauração da arma, nenhuma recomposição/carregamento de fontes durante a conjuração e ausência de erros JavaScript. A pose online foi exercitada no mesmo adaptador visual, sem conectar a uma conta ou banco remoto. O workflow native96 repete essa regressão no pacote estático.
