@@ -432,9 +432,93 @@ body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
 #app.hud-nautical .action-panel .skill-icon {width:auto; height:auto; background:none; border:0; border-image:none; font-size:30px}
 #app.hud-nautical .action-panel :is(.skill-icon img,#hakiQuickCast button img) {width:32px; height:32px; image-rendering:auto; object-fit:contain}
 #app.hud-nautical .action-panel :is(.keycap,.haki-quick kbd) {left:-2px; top:-3px; padding:1px 4px; border:1px solid var(--brass-500); border-radius:4px; background:#071c28; color:#ffe4a3; font:700 13px/1.15 var(--hud-body)}
-#app.hud-nautical .action-panel .potion-count {font:700 14px/1 var(--hud-body); right:4px; bottom:4px; color:var(--hud-text)}
-#app.hud-nautical .action-panel .shop-potion {gap:4px; font-size:12px}
-#app.hud-nautical .action-panel .shop-potion small {font-size:14px}
+#app.hud-nautical .action-panel #usePotion.potion-button {
+  --potion-slot:url('assets/ui/hud-potions/slot.png');
+  width:48px;
+  padding:0;
+  overflow:visible;
+  border:0;
+  border-image:none;
+  background:var(--potion-slot) center / 100% 100% no-repeat;
+  box-shadow:none;
+  backdrop-filter:none;
+}
+#app.hud-nautical .action-panel #usePotion:enabled {
+  opacity:1;
+  cursor:pointer;
+}
+#app.hud-nautical #usePotion .skill-icon {
+  position:absolute;
+  top:4px;
+  left:50%;
+  transform:translateX(-50%);
+}
+#app.hud-nautical .action-panel #usePotion .skill-icon img {
+  display:block;
+  width:22px;
+  height:30px;
+  object-fit:fill;
+  filter:none;
+  /* Follow the silhouette above the sample counter on the reference sheet. */
+  clip-path:polygon(29% 4%,72% 2%,77% 13%,86% 20%,82% 29%,72% 34%,76% 42%,94% 54%,100% 69%,94% 81%,75% 83%,56% 83%,45% 97%,31% 96%,13% 88%,2% 76%,1% 58%,14% 48%,29% 38%,29% 32%,18% 24%,18% 18%,30% 15%);
+}
+#app.hud-nautical #usePotion .keycap {
+  top:-2px;
+  left:-2px;
+  width:18px;
+  height:19px;
+  padding:0;
+  border:0;
+  border-image:none;
+  background:url('assets/ui/hud-potions/key-q.png') center / contain no-repeat;
+  box-shadow:none;
+  font-size:0;
+}
+#app.hud-nautical #usePotion .potion-count {
+  right:4px;
+  bottom:3px;
+  padding:0 2px;
+  border-radius:3px;
+  background:#061823;
+  color:#fff5df;
+  font:700 15px/1 var(--hud-body);
+  font-variant-numeric:tabular-nums;
+}
+#app.hud-nautical .action-panel #buyPotion.shop-potion {
+  --potion-shop:url('assets/ui/hud-potions/buy.png');
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:3px;
+  width:60px;
+  height:48px;
+  padding:3px 4px;
+  border:0 solid transparent;
+  border-image:var(--potion-shop) 22 23 fill / 8px 8px stretch;
+  background:none;
+  box-shadow:none;
+  backdrop-filter:none;
+  color:#fff2d6;
+  font:700 13px/1 var(--hud-body);
+  white-space:nowrap;
+}
+#app.hud-nautical #buyPotion small {
+  display:flex;
+  align-items:center;
+  gap:3px;
+  margin:0;
+  color:#ffda88;
+  font:700 15px/1 var(--hud-body);
+  font-variant-numeric:tabular-nums;
+}
+#app.hud-nautical #buyPotion small img {width:12px; height:12px; object-fit:contain}
+@media (hover:hover) {
+  #app.hud-nautical .action-panel #usePotion.potion-button:hover {--potion-slot:url('assets/ui/hud-potions/slot-hover.png')}
+  #app.hud-nautical .action-panel #buyPotion.shop-potion:hover {--potion-shop:url('assets/ui/hud-potions/buy-hover.png')}
+}
+#app.hud-nautical .action-panel #usePotion.potion-button:is(:active,:focus-visible) {--potion-slot:url('assets/ui/hud-potions/slot-press.png')}
+#app.hud-nautical .action-panel #buyPotion.shop-potion:is(:active,:focus-visible) {--potion-shop:url('assets/ui/hud-potions/buy-press.png')}
 #app.hud-nautical .action-panel #hakiQuickCast {gap:6px; padding-left:6px; margin:0; border-left:1px solid var(--hud-line)}
 #app.hud-nautical .action-panel:has(#hakiQuickCast:not(.hidden)) .action-row {flex-wrap:wrap}
 #app.hud-nautical .action-panel #devLauncher {top:auto; bottom:calc(100% + 12px); font-size:12px; padding:3px 7px; height:24px}

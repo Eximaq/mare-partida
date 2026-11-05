@@ -92,3 +92,7 @@ As dez peças transparentes fornecidas pelo proprietário em 04/11/2026 compõem
 ### Menu principal
 
 A moldura azul e dourada e os oito ícones vêm da folha transparente de menu fornecida pelo proprietário em 04/11/2026. Cada imagem em `assets/ui/nav-menu/` contém três células de 56 px para repouso, destaque e seleção. As áreas de toque têm pelo menos 44 px. Os avisos de personagem e os convites de grupo exibem os contadores do jogo.
+
+### Poções da barra de ações
+
+O frasco, a tecla Q, os encaixes, as bordas de compra e o símbolo do preço vêm da folha de referência fornecida pelo proprietário. Os recortes em `assets/ui/hud-potions/` deixam o estoque e o preço como texto HTML. A poção tem destaque dourado ao passar o ponteiro e azul ao pressionar ou focar pelo teclado.
