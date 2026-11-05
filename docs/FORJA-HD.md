@@ -78,4 +78,6 @@ Equipamentos, operação e comparação ocupam três colunas no desktop. Em celu
 
 ## Bancada animada
 
-O cenário de aprimoramento usa uma bigorna independente da peça e apresenta a arte real de cada equipamento. A bancada e o fogo foram gerados com ImageGen e exportados com transparência para `assets/ui/forge-reference/`. Chamas laterais, brasas e faíscas são animadas no CSS e respeitam a preferência de movimento reduzido. O medidor neon mantém o percentual informado pelo sistema de aprimoramento.
+O cenário de aprimoramento usa uma bigorna independente da peça e apresenta a arte real de cada equipamento. A bancada e o fogo foram gerados com ImageGen e exportados com transparência para `assets/ui/forge-reference/`. A chama central e as faíscas são animadas no CSS e respeitam a preferência de movimento reduzido. O medidor neon mantém o percentual informado pelo sistema de aprimoramento.
+
+A janela tem limite de 1360 × 790 px no desktop. O aprimoramento concentra a área de rolagem no catálogo e omite os blocos de crescimento e últimas tentativas.

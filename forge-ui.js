@@ -67,13 +67,17 @@
         <div class="forge2-refinement">
           <strong>+${item.plus} → ${max?'Máximo':`+${item.plus+1}`}</strong>
           <div class="forge-anvil-stage" aria-hidden="true">
-            <div class="forge-fire forge-fire-left"></div>
-            <div class="forge-fire forge-fire-right"></div>
             <img class="forge-bench-art" src="assets/ui/forge-reference/forge-bench.png" alt="" draggable="false">
             <div class="forge-fire forge-fire-coals"></div>
             <div class="forge-bench-item">${icon(item.def,'')}</div>
             <div class="forge-embers">
-              ${Array.from({length:10},()=>'<i></i>').join('')}
+              ${Array.from({length:20},(_,n)=>{
+                const start=42+(n*7)%17;
+                const drift=(n*19)%91-45;
+                const rise=54+(n*13)%58;
+                const delay=(n*131)%2600;
+                return `<i style="--start:${start}%;--drift:${drift}px;--rise:-${rise}px;--delay:-${delay}ms"></i>`;
+              }).join('')}
             </div>
           </div>
           <small>Até +5 garantido · Limite +20</small>
@@ -81,8 +85,8 @@
         ${costs(c)}
         <div class="forge2-chance"><span>Chance de sucesso</span><strong>${max?'Máximo':chance+'%'}</strong></div>
         ${max?'':`<progress class="forge-chance-meter" max="100" value="${chance}" aria-label="Chance de sucesso"></progress>`}
-        <p class="forge2-risk ${!max&&chance===100?'is-guaranteed':''}">${max?'Limite de aprimoramento atingido.':chance===100?'✓ Aprimoramento garantido':'Na falha, os custos são consumidos. A peça e o refinamento são preservados.'}</p>
-        ${action('upgrade','APRIMORAR EQUIPAMENTO',item.locked?'Desbloqueie este equipamento no inventário.':max?'Limite +20 atingido.':unavailable(c))}</div><details class="forge2-growth"><summary>Crescimento por nível de refinamento</summary><table><thead><tr><th>Refino</th><th>Ataque</th><th>Defesa</th><th>Vida</th><th>Chance</th></tr></thead><tbody>${Array.from({length:21},(_,plus)=>{const s=F.itemStats({...item,plus},defs);return `<tr><td>+${plus}</td><td>${s.attack}</td><td>${s.defense}</td><td>${s.hp}</td><td>${plus?Math.round(F.upgradeChance({plus:plus-1})*100)+'%':'—'}</td></tr>`;}).join('')}</tbody></table></details><details><summary>Últimas tentativas</summary><ul class="forge2-history">${(game.forgeHistory||[]).filter(x=>x.type==='upgrade'&&x.itemId===item.id).reverse().map(x=>`<li class="${x.success?'success':'failure'}">#${x.seq} · ${E(x.message)} · ${fmt(x.cost.gold)} Berry</li>`).join('')||'<li>Nenhuma tentativa nesta peça.</li>'}</ul></details>`;
+        ${!max&&chance<100?'<p class="forge2-risk">Na falha, os custos são consumidos. A peça e o refinamento são preservados.</p>':''}
+        ${action('upgrade','APRIMORAR EQUIPAMENTO',item.locked?'Desbloqueie este equipamento no inventário.':max?'Limite +20 atingido.':unavailable(c))}</div>`;
     }
     if(ui.tab==='imbue'&&item){const chosen=game.inventory.find(i=>i.id===ui.pearlItemId&&!i.locked),p=F.pearlOf(chosen,defs),free=Number.isInteger(ui.socket)&&ui.socket>=0&&ui.socket<r.sockets&&item.sockets[ui.socket]===null;
       operation=`${header}<h4>Encaixes: ${item.sockets.filter(Boolean).length} ocupados / ${item.sockets.length} totais</h4><div class="forge2-sockets">${item.sockets.map((id,i)=>{const p=F.pearlById[id],fee=p?F.removalCost(item,p):0;return `<section class="forge2-socket ${i===ui.socket?'selected':''}"><button type="button" data-forge-socket="${i}" aria-pressed="${i===ui.socket}">${p?icon(id,p.name):emptySlot}<span>Socket ${i+1}<b>${p?E(p.name):'Vazio'}</b></span></button>${p?action('remove','REMOVER · '+fmt(fee)+' Berry',item.locked?'Equipamento bloqueado':game.inventory.length>=120?'Mochila cheia':game.gold<fee?'Berry insuficientes':'',`data-forge-remove="${i}"`):''}</section>`;}).join('')||'<p class="forge2-empty-note">Comum não possui sockets. Selecione Incomum ou superior.</p>'}</div><div class="forge2-op-columns"><div><h4>Pérolas disponíveis</h4>${pearlGrid()}${p?`<p>${E(p.name)} · +${p.level*2}% ${F.names[p.attribute]}</p>`:''}${action('imbue','INSTALAR PÉROLA',item.locked?'Equipamento bloqueado':!free?'Selecione um socket livre':!p?'Selecione uma pérola':'')}<small>Instalação gratuita. Consome uma pérola.</small></div>${free&&p?'<details class="forge2-imbue-preview"><summary>Prévia dos atributos e Poder</summary>'+preview({...item,sockets:item.sockets.map((id,i)=>i===ui.socket?p.id:id)})+'</details>':''}</div>`;
