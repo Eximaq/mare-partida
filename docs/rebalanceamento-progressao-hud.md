@@ -1,6 +1,6 @@
 # Rebalanceamento de progressão e HUD
 
-Base auditada: `9a5d551e` (após #259); branch atualizada com 6ba64950 (#261). Os multiplicadores abaixo partem dos valores vigentes nessa revisão.
+Base auditada: `9a5d551e` (após #259); branch atualizada com 3081134e (#263). Os multiplicadores abaixo partem dos valores vigentes nessa revisão.
 
 | Regra | Antes | Sprint |
 |---|---|---|

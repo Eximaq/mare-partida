@@ -15,7 +15,7 @@ const panels=[['haki'],['forge'],['inventory'],['character','status'],['characte
  if(before)for(const file of ['ui-screens.css','index.html','haki-ui.js','haki-mastery.css','forge-ui.js'])await p.route('**/'+file+'*',r=>r.fulfill({contentType:file.endsWith('.css')?'text/css':file.endsWith('.html')?'text/html':'application/javascript',body:old(file)}));
  await p.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source.replace('  window.__mareDiagnostics=',hook).replaceAll('requestAnimationFrame(frame)','(window.__densityPause?window.__testFrame=frame:requestAnimationFrame(frame))')}));
  await p.goto(process.env.MARE_TEST_URL);await p.waitForFunction(()=>window.__densityQA&&window.__mareDiagnostics().lobby96.state==='ready');
- await p.locator('#characterName').fill('Nauta das Correntes');
+ await p.locator('#characterName').fill('Correntes QA');
  async function capture(file){await p.mouse.move(1,1);await p.evaluate(()=>__densityQA.hideTips());await p.screenshot({path:path.join(out,file)});}
  const records=[],sizes=[[1920,1080],[1366,768],[1280,720],[1024,768],[393,852],[360,800],[320,568],[844,390]];
  async function measure(name,selector,width,height){

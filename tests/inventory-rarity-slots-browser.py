@@ -18,7 +18,7 @@ with sync_playwright() as p:
     page.on('pageerror',lambda error:errors.append(str(error)))
     page.goto(PREVIEW);page.wait_for_load_state('networkidle')
     page.wait_for_function('typeof __mareDiagnostics==="function"')
-    page.locator('#characterName').fill('Teste Molduras')
+    page.locator('#characterName').fill('Molduras QA')
     page.locator('#nextToClass').click();page.locator('#nextToAppearance').click();page.locator('#createCharacter').click();page.locator('[data-confirm-accept]').click()
     page.wait_for_timeout(400)
     save=copy.deepcopy(page.evaluate("JSON.parse(localStorage.getItem('mare-partida-save-v1'))"))

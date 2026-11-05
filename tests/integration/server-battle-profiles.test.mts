@@ -15,7 +15,7 @@ async function fixture(service: any, pool: any, classId = "sword") {
     "fixture",
   );
   const character = await service.createCharacter(session.token, {
-    name: "Battle Profile",
+    name: "Perfil QA",
     classId,
     factionId: "pirate",
   });

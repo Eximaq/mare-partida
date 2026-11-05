@@ -3521,7 +3521,7 @@ function applySceneHudLayout(){
   function validateCreationName(){
     if(editingCharacter&&$('characterName').value===game?.name)return true;
     const name=creationName(),length=syncNameCount(),limit=editingCharacter?40:12;
-    $('creationError').textContent=length<3||length>limit?'Use um nome de 3 a '+limit+' caracteres.':!/^[\p{L}\p{N}][\p{L}\p{M}\p{N} '\-]*$/u.test(name)?'Use letras, números, espaços, apóstrofos ou hífens.':'';
+    $('creationError').textContent=length<3||length>limit?'Use um nome de 3 a '+limit+' caracteres.':'';
     return !$('creationError').textContent;
   }
   $('characterName').addEventListener('input',validateCreationName);

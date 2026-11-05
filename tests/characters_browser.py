@@ -29,7 +29,7 @@ with sync_playwright() as p:
     for cls in ['sword','brawler','gunner','rogue','cyborg','strategist','healer']:
         context,page=new_page()
         assert page.locator('[data-faction]').count()==4
-        page.locator('#characterName').fill('Navegante '+cls[:5])
+        page.locator('#characterName').fill('Nauta '+cls[:5])
         page.locator('#nextToClass').click();page.locator('[data-class="'+cls+'"]').click();page.locator('#nextToAppearance').click();page.locator('#createCharacter').click();page.locator('[data-confirm-accept]').click()
         page.clock.run_for(150)
         first=diag(page);assert first['classId']==cls and first['attributePoints']==0 and first['talentPoints']==1

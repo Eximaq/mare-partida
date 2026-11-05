@@ -17,7 +17,7 @@ with sync_playwright() as p:
         panel(q,'inventory');q.locator('#invCategory').select_option('consumables');q.locator('[data-item=virtual-potion]').click();q.locator('[data-panel=shop]').click();q.screenshot(path=str(out/f'shop-{suffix}.png'));close(q)
         panel(q,'help');q.locator('[data-reset]').click();q.screenshot(path=str(out/f'confirmation-{suffix}.png'));q.locator('[data-confirm-cancel]').click();close(q)
         q.locator('.location-heading').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.clock.run_for(1200);q.screenshot(path=str(out/f'hunt-{suffix}.png'));c.close()
-        c,q=page_for(b,size=size,errors=errors);q.locator('#characterName').fill('Nauta Polimento');q.screenshot(path=str(out/f'factions-{suffix}.png'));q.locator('#nextToClass').click();q.screenshot(path=str(out/f'classes-{suffix}.png'));c.close()
+        c,q=page_for(b,size=size,errors=errors);q.locator('#characterName').fill('Nauta QA');q.screenshot(path=str(out/f'factions-{suffix}.png'));q.locator('#nextToClass').click();q.screenshot(path=str(out/f'classes-{suffix}.png'));c.close()
     assert not errors,errors;b.close()
 (out/'capture-result.json').write_text(json.dumps({'phase':phase,'sizes':SIZES,'screenshots':len(list(out.glob('*.png'))),'javascript_errors':errors},indent=2))
 print(f'{phase}: captured {len(list(out.glob("*.png")))} actual screenshots; no JS errors',flush=True)

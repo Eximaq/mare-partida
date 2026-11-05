@@ -30,7 +30,7 @@ const profiles=Object.entries(engine.hunt.regions).flatMap(([area,region]:[strin
 async function dailyAvailable(client:PoolClient){
  return !!(await client.query("SELECT to_regclass('mare_game.contract_daily_cycles') present")).rows[0].present;
 }
-type DailyInputs={state:CharacterState};
+type DailyInputs={state:CharacterState;legacyFighter?:()=>Awaited<ReturnType<typeof readFighter>>};
 async function dailyState(client:PoolClient,id:string,inputs?:DailyInputs){
  if(!await dailyAvailable(client))return null;
  const clock=(await client.query(`SELECT floor(extract(epoch FROM transaction_timestamp())*1000)::bigint now,
@@ -43,7 +43,7 @@ async function dailyState(client:PoolClient,id:string,inputs?:DailyInputs){
  const cycle=contracts.day(Number(clock.now));
  let row=clock.state?{state:clock.state}:null;
  if(!row){
-  const state=inputs?.state??await readCharacterState(client,id),fighter=await readFighter(client,id,state,{legacyCadence:true});
+  const state=inputs?.state??await readCharacterState(client,id),fighter=inputs?.legacyFighter?.()??await readFighter(client,id,state,{legacyCadence:true});
   if(fighter.rulesetId!=='original-character-v1')return null;
   const stats=fighter.stats;
   const seed=createHash('sha256').update(id+':'+cycle).digest().readUInt32BE();

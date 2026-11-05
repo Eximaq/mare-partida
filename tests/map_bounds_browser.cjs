@@ -11,7 +11,7 @@ source=source.replace('  window.__mareDiagnostics=',"  window.__boundsQA={paused
  await page.route('**/game.js*',r=>r.fulfill({contentType:'application/javascript',body:source}));
  await page.goto(process.env.MARE_TEST_URL,{waitUntil:'domcontentloaded'});await page.waitForFunction(()=>!!window.__boundsQA);
  await page.evaluate(()=>{window.__navSlices=[];const build=MareWorld.Navigation.prototype.buildCells;MareWorld.Navigation.prototype.buildCells=function(...args){const t=performance.now(),result=build.apply(this,args);__navSlices.push(performance.now()-t);return result;};});
- await page.locator('#characterName').fill('Map Bounds QA');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.waitForFunction(()=>!!__boundsQA.game);
+ await page.locator('#characterName').fill('Map Bounds');await page.locator('#nextToClass').click();await page.locator('#nextToAppearance').click();await page.locator('#createCharacter').click();await page.locator('[data-confirm-accept]').click();await page.waitForFunction(()=>!!__boundsQA.game);
  await page.waitForFunction(()=>__boundsQA.state()==='ready');assert.equal(await page.evaluate(()=>__mareDiagnostics().map.navigation.cached),1,'unused maps do not build navigation at startup');
  const ids=await page.evaluate(()=>Object.keys(MareWorld.maps));assert.equal(ids.length,19);const visits=[];
  for(const id of ids){
