@@ -6,7 +6,7 @@ from polish_support import page_for,create,saved,KEY
 OUT=Path(tempfile.gettempdir())/'mare-haki-quickcast';OUT.mkdir(exist_ok=True)
 def d(q):return q.evaluate('__mareDiagnostics()')
 def travel(q):
-    q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area]').click()
+    q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area]').click()
     if d(q)['autoPlay']:q.locator('#autoToggle').click()
 with sync_playwright() as p:
     b=p.chromium.launch(headless=True);errors=[];c,q=page_for(b,errors=errors);template=create(q)

@@ -56,7 +56,7 @@ arrive('lobby',null);
   // Physical keyboard drives the shipped input path, not a test-only command.
   await p.keyboard.down('w');await p.waitForFunction(()=>__mareDiagnostics().hero.y<1558);await p.keyboard.up('w');
   await p.waitForFunction(()=>!MareGameSession.busy);assert(commands.some(c=>c.action==='world.move'));assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-byte-for-byte');
-  await p.locator('#enterHunt').click();await p.waitForSelector('[data-island="dawn"]');await p.locator('[data-island="dawn"]').click();
+  await p.locator('.location-heading').click();await p.waitForSelector('[data-island="dawn"]');await p.locator('[data-island="dawn"]').click();
   await p.locator('[data-travel-island="dawn"]').click();
   await p.waitForFunction(()=>__mareDiagnostics().map.id==='dawn'&&__mareDiagnostics().map.navigation.ready);
   assert.equal(await p.locator('#panelOverlay').isHidden(),true);assert(commands.some(c=>c.action==='world.travel'));

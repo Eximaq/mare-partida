@@ -35,7 +35,7 @@ try:
   errors=[];c=b.new_context(viewport=dict(width=393,height=852),is_mobile=True,has_touch=True,device_scale_factor=2)
   c.add_init_script('if(!sessionStorage.seeded){localStorage.setItem('+json.dumps(KEY)+','+json.dumps(json.dumps(template))+');sessionStorage.seeded="1"}')
   q=c.new_page();q.on('pageerror',lambda e:errors.append(str(e)));q.goto(f'http://127.0.0.1:{server.server_port}/?v=ruinas64');q.wait_for_load_state('networkidle');q.evaluate('MareEmberRenderer.boot')
-  before=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.wait_for_timeout(300)
+  before=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));q.locator('.location-heading').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click();q.wait_for_timeout(300)
   d=q.evaluate('__mareDiagnostics()');assert d['map']==dict(id='dawn',width=3584,height=2560);assert all(m['skin'] for m in d['mobs']);assert q.evaluate('MareEmberRenderer.stats().monsters')==len(json.loads((ROOT/'assets/ruinas-brasas/manifest.json').read_text(encoding='utf-8'))['monsters'])
   q.screenshot(path=str(out/'mobile-new-map.png'));q.reload();q.wait_for_load_state('networkidle')
   after=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
