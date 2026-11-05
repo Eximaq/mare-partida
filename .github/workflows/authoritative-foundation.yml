@@ -104,7 +104,7 @@ jobs:
           const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
           try {
             assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
-            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 43);
+            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 46);
             await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
           } finally { await pool.end(); }
@@ -266,6 +266,7 @@ jobs:
           preview=$!
           trap 'kill "$preview"' EXIT
           NODE_PATH="$RUNNER_TEMP/mare-browser/node_modules" node tests/combat-targeted-browser.cjs
+          NODE_PATH="$RUNNER_TEMP/mare-browser/node_modules" MARE_TEST_URL=http://127.0.0.1:8181/ MARE_QA_DIR=tmp/social-online node tests/social-online-browser.cjs
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
@@ -273,5 +274,6 @@ jobs:
           path: |
             tmp/shared-lobby-browser/
             tmp/online-walking/
+            tmp/social-online/
           retention-days: 3
           if-no-files-found: ignore
