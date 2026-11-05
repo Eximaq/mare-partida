@@ -16,7 +16,7 @@ def diag(q):return q.evaluate('__mareDiagnostics()')
 def saved(q):return json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
 def game(q):q.goto(URL,wait_until='domcontentloaded');q.wait_for_function('typeof __mareDiagnostics==="function"');q.evaluate('Promise.all([MareDawnRenderer.boot,MareEmberRenderer.boot])')
 def travel(q):
- q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
 with sync_playwright() as p:
  b=p.chromium.launch()
  for size in [(1366,900),(393,852)]:

@@ -59,6 +59,7 @@ with sync_playwright() as p:
         assert q.locator('#floatingExpedition').is_hidden(), 'Expedition starts closed'
         assert q.locator('.journey-content').is_hidden(), 'Objectives must not occupy the permanent HUD'
         assert q.locator('#journeyHud').bounding_box()['height']<=48,'Only a compact launcher remains'
+        assert q.get_by_role('button', name='Explorar os mares').count()==0
         q.locator('#journeyToggle').click()
         assert q.locator('#floatingExpedition').is_visible()
         assert q.locator('.journey-content').is_visible()

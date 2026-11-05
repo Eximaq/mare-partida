@@ -66,7 +66,7 @@ with sync_playwright() as p:
  q.evaluate('urls=>Promise.all(urls.map(url=>MareFactionSprites.image(url).decode()))',list(files))
  assert q.evaluate('__mareDiagnostics().paperDoll.compositions')==0,'Attack-only candidate must not replace Idle'
  baseline=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
- q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.clock.run_for(300)
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.clock.run_for(300)
  for direction in ['south','north','west','east']:
   result=q.evaluate('d=>__paperDollCombatFixture.attack(d)',direction);assert result['accepted'],direction
   q.clock.run_for(180);assert q.evaluate('__mareDiagnostics().damage')==result['damage'],'Damage before original impact frame'
@@ -81,7 +81,7 @@ with sync_playwright() as p:
  c.close()
  haki=copy.deepcopy(baseline);haki.update(level=50,hp=99999,has_haki_unlocked=True,haki={'current':100,'unlocked':True})
  c,q=context(browser,haki);q.on('pageerror',lambda e:errors.append(str(e)));q.goto(BASE);q.wait_for_function('typeof __mareDiagnostics==="function"')
- q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.clock.run_for(300)
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.clock.run_for(300)
  q.evaluate('urls=>Promise.all(urls.map(url=>MareFactionSprites.image(url).decode()))',list(files));q.keyboard.press('h');result=q.evaluate('__paperDollCombatFixture.attack("east")');assert result['accepted'];q.clock.run_for(1000);q.evaluate('__paperDollCombatFixture.restoreRandom()')
  assert q.evaluate('__mareDiagnostics().haki.active')=='armament' and q.evaluate('__mareDiagnostics().haki.current')<100
  assert q.evaluate('__mareDiagnostics().paperDoll.compositions')>0;c.close()

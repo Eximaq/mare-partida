@@ -14,7 +14,7 @@ def add(q,id,n=1):
  select(q,id)
  for _ in range(n):q.locator('[data-talent-add]').click()
 def travel(q,id='conchas'):
- q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island='+id+']').click();q.locator('[data-travel-area]').click()
+ q.locator('.location-heading').click();q.locator('[data-island='+id+']').click();q.locator('[data-travel-area]').click()
 def claimed(q):return saved(q)['achievements']['claimed']
 with sync_playwright() as p:
  b=p.chromium.launch();errors=[];c,q=page_for(b,errors=errors);template=create(q);c.close()

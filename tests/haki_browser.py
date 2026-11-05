@@ -8,7 +8,7 @@ def diag(q):return q.evaluate('__mareDiagnostics()')
 def char(q):q.locator('.bottom-nav [data-panel=character]').click()
 def haki(q):char(q);q.locator('#characterTabs [data-character-tab=haki]').click(force=True)
 def travel(q):
- q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area]').click()
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area]').click()
 def book(q):
  q.locator('.bottom-nav [data-panel=inventory]').click();q.locator('[data-item=will-book-test]').click();q.wait_for_function("(()=>{const i=document.querySelector('.op-detail-wrap .haki-icon');return i&&i.complete&&i.naturalWidth===32&&i.naturalHeight===32})()");q.locator('[data-use-haki-book]').click()
 with sync_playwright() as p:

@@ -130,7 +130,7 @@ with sync_playwright() as p:
  q.locator('#closePanel').click()
  q.clock.run_for(200);assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready'
  normal=q.evaluate('localStorage.getItem("mare-partida-save-v1")')
- q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.evaluate('__completeTest.stop()')
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.evaluate('__completeTest.stop()')
  if CLASS in CLASSES:
   q.clock.pause_at(q.evaluate('Date.now()+100'))
   for direction,key in [('east','d'),('west','a'),('south','s'),('north','w')]:

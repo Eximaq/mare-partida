@@ -16,7 +16,7 @@ def page(browser,seed=None):
  # Freeze before loading: screenshots and CI speed must not advance combat or RNG.
  q=c.new_page();q.on('pageerror',lambda e:errors.append(str(e)));q.clock.install(time=1792500000000);q.clock.pause_at(1792500000000);q.goto(URL,wait_until='networkidle');assert q.evaluate('typeof __mareDiagnostics==="function"');q.evaluate('Promise.all([MareDawnRenderer.boot,MareEmberRenderer.boot])');return c,q
 def travel(q):
- q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
 def state(q):return q.evaluate('__mareDiagnostics()')
 with sync_playwright() as p:
  b=p.chromium.launch();c,q=page(b);q.locator('#characterName').fill('Animacoes isoladas');q.locator('#nextToClass').click();q.locator('#nextToAppearance').click();q.locator('#createCharacter').click();q.locator('[data-confirm-accept]').click();q.clock.run_for(100);template=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'));c.close();rows=[]

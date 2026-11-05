@@ -83,7 +83,7 @@ O ensaio histórico `orange_browser.py` falha na expectativa de bloqueio de um p
 
 ### Faixa de localização
 
-A placa, a bússola e o nó em `assets/ui/location-banner/` são sprites da folha RGBA fornecida pelo proprietário em 04/11/2026. Os recortes preservam os pixels originais. O calendário vetorial acompanha a cor do relógio. O nome da área e a hora são os campos atualizados pelo jogo. A faixa abre o mapa pelo mesmo comando do menu, por clique, toque ou teclado.
+A placa fica logo acima do Canal do Porto, alinhada à borda esquerda da janela aberta ou do botão recolhido. Ela mostra o nome da área e uma bússola de 16 px. A moldura de 1 px acompanha o texto. O botão tem pelo menos 44 px de altura para abrir o mapa por toque, clique ou teclado.
 
 ### Canal do Porto
 
@@ -96,3 +96,7 @@ A moldura azul e dourada e os oito ícones vêm da folha transparente de menu fo
 ### Poções da barra de ações
 
 O frasco, a tecla Q, os encaixes, as bordas de compra e o símbolo do preço vêm da folha de referência fornecida pelo proprietário. Os recortes em `assets/ui/hud-potions/` deixam o estoque e o preço como texto HTML. A poção tem destaque dourado ao passar o ponteiro e azul ao pressionar ou focar pelo teclado.
+
+### Expedição
+
+A placa no canto inferior direito e a tecla O abrem os contratos e as estatísticas. As seis peças em `assets/ui/hud-expedition/` vêm das imagens fornecidas pelo proprietário. A placa de localização abre o mapa para viajar e o botão Voltar ao porto aparece durante a caçada.

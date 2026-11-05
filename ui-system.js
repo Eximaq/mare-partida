@@ -71,7 +71,7 @@
     const utilities=document.createElement('div');utilities.id='hudUtilities';app.append(utilities);
     // All fixed HUD surfaces share one stacking context, independent of canvas wrappers.
     for(const el of [document.getElementById('mainMenu'),document.querySelector('.action-panel'),document.getElementById('floatingChat'),journey,document.querySelector('.world-command'),document.getElementById('targetHud'),document.getElementById('floatingExpedition'),document.getElementById('floatingStatus')])if(el)app.append(el);
-    const location=document.querySelector('.location-heading');if(location)utilities.append(location);
+    const location=document.querySelector('.location-heading');if(location)app.append(location);
     const powerLabel=document.querySelector('.profile-power>span');powerLabel.textContent='Poder';powerLabel.title='Poder de combate';
     action.append(document.getElementById('hakiQuickCast'));
     const controls=document.createElement('div');controls.className='journey-controls';
@@ -81,13 +81,13 @@
     expedition.setAttribute('role','dialog');expedition.setAttribute('aria-modal','false');
     const expeditionTitle=expedition.querySelector('.floating-title>span');expeditionTitle.id='expeditionWindowTitle';expeditionTitle.textContent='Expedição';expedition.setAttribute('aria-labelledby',expeditionTitle.id);
     entry.classList.remove('hidden');entry.setAttribute('role','menuitem');entry.setAttribute('aria-controls','floatingExpedition');
-    entry.querySelector('.mini-dot').outerHTML='<img src="icones_menu_pirata/png/48/contratos.png" width="24" height="24" alt="">';
+    entry.querySelector('.mini-dot').outerHTML='<img src="assets/ui/hud-expedition/contract.png" width="24" height="24" alt="">';
     document.getElementById('modesQuickMenu').append(entry);
     journey.querySelector('.journey-heading').after(controls);
     expedition.querySelector('.journey-footer').append(document.getElementById('huntRoute'));
     document.getElementById('journeyToggle').firstChild.textContent='';
     document.getElementById('journeyToggle').querySelector('span:not(.journey-chevron)').textContent='Expedição';
-    const launcher=document.getElementById('journeyToggle');launcher.setAttribute('aria-controls','floatingExpedition');launcher.setAttribute('aria-expanded','false');launcher.querySelector('.journey-chevron').textContent='O';
+    const launcher=document.getElementById('journeyToggle');launcher.setAttribute('aria-keyshortcuts','O');launcher.setAttribute('aria-controls','floatingExpedition');launcher.setAttribute('aria-expanded','false');launcher.querySelector('.journey-chevron').textContent='O';
     const reward=document.createElement('span');reward.className='journey-reward';reward.textContent='◆';reward.hidden=true;reward.setAttribute('aria-hidden','true');launcher.append(reward);
     const rewardObserver=new MutationObserver(()=>{
       const ready=document.getElementById('journeyAction').hasAttribute('data-claim')||document.getElementById('journeyProgress').textContent==='Baú disponível';
@@ -114,12 +114,17 @@
       }
     },true);
     tabBar.addEventListener('click',e=>{const b=e.target.closest('[data-chat-channel]');if(!b)return;channel=b.dataset.chatChannel;tabBar.querySelectorAll('button').forEach(t=>t.setAttribute('aria-pressed',String(t===b)));filter();});
+    const chatToggle=document.getElementById('chatCornerToggle');
     function measure(){
       const r=document.querySelector('.topbar').getBoundingClientRect(),a=document.querySelector('.action-panel').getBoundingClientRect(),m=document.getElementById('mainMenu').getBoundingClientRect();
       const style=document.documentElement.style;style.setProperty('--profile-bottom',Math.ceil(r.bottom)+'px');style.setProperty('--rpg-action-height',Math.ceil(a.height)+'px');style.setProperty('--menu-bottom',Math.ceil(m.bottom)+'px');style.setProperty('--journey-height',Math.ceil(journey.getBoundingClientRect().height)+'px');style.setProperty('--utilities-bottom',Math.ceil(utilities.getBoundingClientRect().bottom)+'px');style.setProperty('--target-height',Math.ceil(document.getElementById('targetHud').getBoundingClientRect().height)+'px');
+      // Anchor the map to whichever port channel control is on screen.
+      const channel=(chat.classList.contains('hud-open')?chat:chatToggle).getBoundingClientRect();
+      style.setProperty('--channel-top',channel.top+'px');
+      style.setProperty('--channel-left',channel.left+'px');
       style.setProperty('--profile-right',Math.ceil(r.right)+'px');style.setProperty('--menu-left',Math.floor(m.left)+'px');style.setProperty('--journey-reserved-bottom',Math.ceil(innerHeight-journey.getBoundingClientRect().top)+'px');
     }
-    const resize=new ResizeObserver(measure);for(const el of [document.querySelector('.topbar'),document.querySelector('.action-panel'),document.getElementById('mainMenu'),journey,utilities,document.getElementById('targetHud')])resize.observe(el);
+    const resize=new ResizeObserver(measure);for(const el of [document.querySelector('.topbar'),document.querySelector('.action-panel'),document.getElementById('mainMenu'),journey,utilities,chat,chatToggle,document.getElementById('targetHud')])resize.observe(el);
     addEventListener('resize',measure,{passive:true});
     const observer=new MutationObserver(records=>{
       const dock=document.getElementById('mareMusicDock');if(dock&&dock.parentElement!==utilities)utilities.append(dock);

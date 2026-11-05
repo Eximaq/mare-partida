@@ -62,7 +62,7 @@ with sync_playwright() as p:
    q.locator('.bottom-nav [data-panel=inventory]').click();q.locator('[data-inv-slot='+slot+']').click();q.locator('[data-unequip='+slot+']').click();q.locator('[data-close-panel]').click()
  q.clock.run_for(200);assert q.evaluate('__mareDiagnostics().paperDollReview.draws')>0
  normal=q.evaluate('localStorage.getItem("mare-partida-save-v1")')
- q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.evaluate('__unarmedTest.stop()')
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.evaluate('__unarmedTest.stop()')
  coverage=q.evaluate("fetch('pixellab-pip-generations/paper-doll-unarmed-combat-20261024/review-pack.json').then(r=>r.json()).then(p=>p.coverage['attack-unarmed'])")
  rows=[]
  for d in ['south','west','east','north']:
