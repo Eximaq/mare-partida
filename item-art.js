@@ -5,7 +5,7 @@
  const equipmentKeys=Array.from({length:56},(_,n)=>"equipment-"+(129+n));
  const appendedKeys=['epic-weapon-fragment'];const available=new Set([...keys,...equipmentKeys,...appendedKeys]);
  function path(key,def){
- if(['haki-fragment','akuma-fragment'].includes(def?.kind))return def.icon_path;
+ if(['haki-fragment','akuma-fragment','xp-boost'].includes(def?.kind))return def.icon_path;
  const source=def?.fruitId||(def?.kind==='haki-book'?'book':def?.kind==='pearl-box'?'pearl-box-'+def.boxLevel:def?.pearlId||def?.icon_path?.split('?')[0].split('/').pop().replace(/\.png$/,'')||String(key));
  return available.has(source)?'assets/ui/items-hd/'+source+'.png?v=20261031-refine':null;
  }

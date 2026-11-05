@@ -94,7 +94,7 @@ jobs:
           assert.equal(talents.T.nodes('sword').length,15);
           assert.equal(battle.create('beach',{maxHP:200,maxEnergy:90},0,()=>.5).mobs.length,14);
           assert(world.navigation('dawn').walkable(872,1608));
-          assert.equal(getGameCatalog().items.length, 186);
+          assert.equal(getGameCatalog().items.length, 187);
           assert.equal(getGameCatalog().slots.length, 12);
           assert.equal(getGameCatalog().rulesHash, '1951b4cd6a6a4adbb941eef87f1ffdf36c4a3be6faa1897d09fb54b5c5d673e4');
           assert.notEqual(process.getuid(), 0);

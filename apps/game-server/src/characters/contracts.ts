@@ -9,6 +9,7 @@ import {AuthFault} from '../auth/errors.js';
 import {advanceLevel} from './progression.js';
 import {readCharacterState} from './state.js';
 import {readFighter} from './fighter.js';
+import type {readPrison} from './prison.js';
 const require=createRequire(import.meta.url);
 export const contracts=require('../../../../contract-system.js');
 const rulesHash=createHash('sha256').update(JSON.stringify(contracts.quests)).digest('hex');
@@ -31,19 +32,22 @@ const profiles=Object.entries(engine.hunt.regions).flatMap(([area,region]:[strin
 async function dailyAvailable(client:PoolClient){
  return !!(await client.query("SELECT to_regclass('mare_game.contract_daily_cycles') present")).rows[0].present;
 }
-async function dailyState(client:PoolClient,id:string){
+type DailyInputs={state:CharacterState;fighter:Awaited<ReturnType<typeof readFighter>>;prison:Awaited<ReturnType<typeof readPrison>>};
+async function dailyState(client:PoolClient,id:string,inputs?:DailyInputs){
  if(!await dailyAvailable(client))return null;
  const clock=(await client.query(`SELECT floor(extract(epoch FROM transaction_timestamp())*1000)::bigint now,
-   p.level,c.faction_id,COALESCE(extract(epoch FROM p.xp_boost_until)*1000,0)::bigint boost
-   FROM mare_game.character_progression p JOIN mare_game.characters c ON c.id=p.character_id WHERE p.character_id=$1`,[id])).rows[0];
+   p.level,c.faction_id,COALESCE(extract(epoch FROM p.xp_boost_until)*1000,0)::bigint boost,d.state
+   FROM mare_game.character_progression p JOIN mare_game.characters c ON c.id=p.character_id
+   LEFT JOIN mare_game.contract_daily_cycles d ON d.character_id=p.character_id
+    AND d.cycle=floor(extract(epoch FROM transaction_timestamp())/86400)::int
+   WHERE p.character_id=$1`,[id])).rows[0];
  if(!clock)return null;
  const cycle=contracts.day(Number(clock.now));
- const get=()=>client.query('SELECT state FROM mare_game.contract_daily_cycles WHERE character_id=$1 AND cycle=$2',[id,cycle]);
- let row=(await get()).rows[0];
+ let row=clock.state?{state:clock.state}:null;
  if(!row){
-  const state=await readCharacterState(client,id),fighter=await readFighter(client,id,state);
+  const state=inputs?.state??await readCharacterState(client,id),fighter=inputs?.fighter??await readFighter(client,id,state);
   if(fighter.rulesetId!=='original-character-v1')return null;
-  const prison=(await client.query('SELECT state FROM mare_game.character_prison WHERE character_id=$1',[id])).rows[0]?.state;
+  const prison=inputs?inputs.prison:(await client.query('SELECT state FROM mare_game.character_prison WHERE character_id=$1',[id])).rows[0]?.state;
   const cleared=prison?.cleared??0,floor=cleared+1;
   const prepared=impel.resolveEncounter(prison?.encounter,engine.prisonCatalog);
   const candidates=!impel.validFloor(floor)?[]:prepared?.floor===floor?[prepared]:
@@ -58,9 +62,10 @@ async function dailyState(client:PoolClient,id:string){
   });
   const seed=createHash('sha256').update(id+':'+cycle).digest().readUInt32BE();
   const daily=contracts.daily({cycle,level:clock.level,cleared,seed,profiles,stats,prisonEligible,goldFactor:engine.catalog.factions[clock.faction_id].gold});
-  await client.query('INSERT INTO mare_game.contract_daily_cycles(character_id,cycle,state) VALUES($1,$2,$3) ON CONFLICT DO NOTHING',[id,cycle,JSON.stringify(daily)]);
-  row=(await get()).rows[0];
+  row=(await client.query('INSERT INTO mare_game.contract_daily_cycles(character_id,cycle,state) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING state',[id,cycle,JSON.stringify(daily)])).rows[0]
+   ??(await client.query('SELECT state FROM mare_game.contract_daily_cycles WHERE character_id=$1 AND cycle=$2',[id,cycle])).rows[0];
  }
+ if(!row)throw new AuthFault(503,'contract_unavailable');
  return {daily:row.state,xpBoostUntil:Number(clock.boost)};
 }
 export async function recordDailyProgress(client:PoolClient,id:string,kills:any[]){
@@ -89,12 +94,13 @@ async function claimDaily(client:PoolClient,id:string){
  await client.query('UPDATE mare_game.contract_daily_cycles SET state=$3 WHERE character_id=$1 AND cycle=$2',[id,entry.daily.cycle,JSON.stringify(entry.daily)]);
  await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
 }
-export async function readContracts(client:PoolClient,id:string){
+export async function readContracts(client:PoolClient,id:string,inputs?:DailyInputs){
  // Historical migration fixtures do not yet have this domain. New daily cycles are initialized on first access.
  if(!await available(client))return null;
- const rows=(await client.query('SELECT contract_id,progress FROM mare_game.contract_progress WHERE character_id=$1',[id])).rows;
- const claimed=(await client.query('SELECT contract_id FROM mare_game.contract_claims WHERE character_id=$1 ORDER BY contract_id',[id])).rows;
- return contractsSnapshotSchema.parse({rulesetId:contracts.rulesetId,progress:Object.fromEntries(contracts.quests.map((q:any)=>[q.id,rows.find(r=>r.contract_id===q.id)?.progress??0])),claimed:claimed.map(r=>r.contract_id),...await dailyState(client,id)});
+ const {progress,claimed}=(await client.query(`SELECT
+   COALESCE((SELECT jsonb_object_agg(contract_id,progress) FROM mare_game.contract_progress WHERE character_id=$1),'{}') progress,
+   ARRAY(SELECT contract_id FROM mare_game.contract_claims WHERE character_id=$1 ORDER BY contract_id) claimed`,[id])).rows[0];
+ return contractsSnapshotSchema.parse({rulesetId:contracts.rulesetId,progress:Object.fromEntries(contracts.quests.map((q:any)=>[q.id,progress[q.id]??0])),claimed,...await dailyState(client,id,inputs)});
 }
 // Caller owns the character lock; inserts the unique spawn receipt in the same transaction.
 export async function recordContractKills(client:PoolClient,id:string,kills:any[]){
