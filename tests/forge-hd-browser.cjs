@@ -38,6 +38,24 @@ for(const [width,height] of [[1920,1080],[1672,940],[1448,1086],[1366,768],[1280
    const operation=await p.locator('.forge2-operation').boundingBox();
    assert.ok(comparison.x>=operation.x+operation.width,'Comparison stays to the right of the upgrade');
    await p.locator('.forge2-operation-content').evaluate(e=>e.scrollTop=0);
+   const framePairs=[
+    ['#panelOverlay > .dialog','window'],
+    ['.forge2-selection','equipment'],
+    ['.forge2-operation','upgrade'],
+    ['.forge-reference-sidebar','comparison-panel'],
+    ['.forge-hd-art','smith'],
+   ];
+   for(const [selector,frame] of framePairs){
+    const result=await p.locator(selector).evaluate(async e=>{
+     const css=getComputedStyle(e), url=css.borderImageSource.slice(5,-2);
+     const image=new Image();image.src=url;await image.decode();
+     const box=e.getBoundingClientRect();
+     return {url,imageWidth:image.naturalWidth,imageHeight:image.naturalHeight,width:Math.round(box.width),height:Math.round(box.height)};
+    });
+    assert.ok(result.url.includes('/forge-reference/frames/'+frame+'.png'),JSON.stringify(result));
+    assert.equal(result.imageWidth,result.width*2);
+    assert.equal(result.imageHeight,result.height*2);
+   }
    await p.screenshot({path:path.join(out,'upgrade-desktop.png')});
    const chosen=await p.evaluate(()=>({head:__forgeQA.game.equipment.head.id,weapon:__forgeQA.game.equipment.weapon.id}));
    const stage=p.locator('.forge-anvil-stage');

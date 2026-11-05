@@ -5,13 +5,10 @@
   --forge-ink:#051a24;
   --forge-ivory:#fff0cc;
   --forge-line:#a98646;
-  --forge-panel:url('assets/ui/inventory-reference/bag-frame.png');
-  --forge-button:url('assets/ui/inventory-reference/tab.png');
-  --forge-active:url('assets/ui/inventory-reference/tab-active.png');
 
   & > .dialog {
     border:10px solid transparent;
-    border-image:url('assets/ui/inventory-reference/rope-frame.png') 34 / 14px stretch;
+    border-image:url('assets/ui/forge-reference/frames/window.png') 28 / 14px stretch;
     background:radial-gradient(ellipse at 48% 0,#0b2937,var(--forge-ink) 65%);
     color:var(--forge-ivory);
   }
@@ -43,7 +40,7 @@
     min-width:42px;
     height:42px;
     min-height:42px;
-    border-image:var(--forge-button) 10 fill / 5px stretch;
+    border-image:url('assets/ui/forge-reference/frames/close.png') 10 fill / 5px stretch;
     background:none;
   }
   & .dialog-body {padding:7px 5px 5px}
@@ -57,7 +54,6 @@
   & .forge2-selection, & .forge2-operation, & .forge-reference-sidebar {
     background:radial-gradient(ellipse at 40% 0,#0a2532,var(--forge-ink) 70%);
     border:8px solid transparent;
-    border-image:var(--forge-panel) 24 / 11px stretch;
     color:var(--forge-ivory);
     box-shadow:none;
     scrollbar-color:#9d8148 #071922;
@@ -73,18 +69,18 @@
     padding:5px;
     overflow:auto;
   }
-  & .forge-hd-art {display:block;flex:1 0 0;background:none;border:1px solid var(--forge-line);border-radius:5px}
+  & .forge-hd-art {display:block;flex:1 0 0;padding:5px;background:none;border:1px solid var(--forge-line);border-radius:5px}
   & .forge-hd-art > img {height:100%;object-fit:cover;object-position:50% 42%}
   & .has-preview .forge-hd-art {min-height:180px}
   & .forge2-tabs button, & .forge2-subtabs button, & .forge2-pagination button,
   & .forge2-grid-meta button, & .forge2-fusion-tools button {
-    border-image:var(--forge-button) 10 fill / 6px stretch;
+    border-image:url('assets/ui/forge-reference/frames/tab.png') 12 fill / 6px stretch;
     color:var(--forge-ivory);
     box-shadow:none;
   }
   & .forge2-tabs button {min-height:44px;font-size:clamp(16px,1.5vw,23px);border-width:6px}
   & .forge2-tabs button.active, & .forge2-subtabs button.active, & .forge2-action {
-    border-image:var(--forge-active) 12 fill / 8px stretch;
+    border-image:url('assets/ui/forge-reference/frames/tab-active.png') 12 fill / 6px stretch;
     color:var(--forge-ivory);
   }
   & .forge2-selection h3 {
@@ -281,6 +277,51 @@
   & .forge2-preview > .forge-preview-labels {color:#dccdab;font-size:14px;text-align:right}
   & .forge2-preview > div > em {color:#b5e987}
   & .forge2-preview > div > * {padding-block:8px}
+
+  /* Frames drawn at 2× the measured desktop boxes. Each corner has a fixed CSS size. */
+  & .forge2-selection {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/equipment.png') 20 / 10px stretch}
+  & [data-forge-view=upgrade] .forge2-operation {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/upgrade.png') 20 / 10px stretch}
+  & .forge2-operation {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/operation.png') 20 / 10px stretch}
+  & .forge-reference-sidebar.has-preview {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/comparison-panel.png') 20 / 10px stretch}
+  & .forge-reference-sidebar {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/portrait-panel.png') 20 / 10px stretch}
+  & .has-preview .forge-hd-art {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/smith.png') 14 / 7px stretch}
+  & .forge-hd-art {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/smith-tall.png') 14 / 7px stretch}
+  & .forge-hd-cost {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/resource-card.png') 8 / 4px stretch}
+  & [data-forge-view]:not([data-forge-view=upgrade]) .forge2-costs {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/cost-panel.png') 12 / 6px stretch}
+  & .forge2-socket {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/socket.png') 12 / 6px stretch}
+  & .forge2-imbue-preview {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/imbue-preview.png') 12 / 6px stretch}
+  & .forge-fusion-equipment .forge2-fusion-materials {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/fusion-inputs.png') 12 / 6px stretch}
+  & .forge-fusion-equipment .forge2-fusion-details {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/fusion-result.png') 12 / 6px stretch}
+  & .forge-fusion-pearls .forge2-fusion-materials {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/fusion-pearl-inputs.png') 12 / 6px stretch}
+  & .forge-fusion-pearls .forge2-fusion-details {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/fusion-pearl-result.png') 12 / 6px stretch}
+  & .forge-fusion-equipment .forge-fusion-result-stage {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/result-stage.png') 8 / 4px stretch}
+  & .forge-fusion-stat-preview {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/fusion-stats.png') 8 / 4px stretch}
+  & .forge-fusion-about {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/fusion-info.png') 8 / 4px stretch}
+  & .forge2-material-slot {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/material-slot.png') 8 / 4px stretch}
+  & .forge2-item-head > .item-icon {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/item-preview.png') 8 / 4px stretch}
+  & .forge2-pearl {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/pearl-slot.png') 8 / 4px stretch}
+  & .forge2-fusion-pearl-grid .forge2-pearl {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/pearl-catalog.png') 8 / 4px stretch}
+  & .forge2-shell .forge2-search input {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/search.png') 8 / 4px stretch}
+  & .forge2-shell .forge2-filters :is(input,.ui-select-trigger), & .forge2-shell .forge2-field .ui-select-trigger {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/filter.png') 8 / 4px stretch}
+  & .forge2-subtabs button {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/subtab.png') 12 fill / 6px stretch}
+  & .forge2-subtabs button.active {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/subtab-active.png') 12 fill / 6px stretch}
+  & .forge2-action[data-forge-action=upgrade] {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/upgrade-action.png') 14 fill / 7px stretch}
+  & .forge2-action {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/action.png') 12 fill / 6px stretch}
+  & .forge2-pagination button {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/pager.png') 10 fill / 5px stretch}
+  & .forge2-grid-meta button {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/list-toggle.png') 8 fill / 4px stretch}
+  & .forge2-fusion-tools button {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/fusion-tool.png') 10 fill / 5px stretch}
+  & .forge2-extras li {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/extra.png') 8 / 4px stretch}
+  & .forge2-empty-note {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/warning.png') 8 / 4px stretch}
+  & .forge2-risk {border-color:transparent;border-image:url('assets/ui/forge-reference/frames/risk.png') 8 / 4px stretch}
+  & .forge2-tile::before {
+    content:"";
+    position:absolute;
+    inset:1px;
+    border:2px solid transparent;
+    border-image:url('assets/ui/forge-reference/frames/item-slot.png') 6 / 3px stretch;
+    opacity:.7;
+    pointer-events:none;
+  }
 
   @media(min-width:761px) {
     & [data-forge-view=upgrade] .forge2-item-head {
