@@ -22,6 +22,7 @@ const now=new Date(),endAt=new Date(+now+86400000);
 const equipment=Object.fromEntries([...items.inventorySlotsLeft,...items.inventorySlotsRight].map(key=>[key,null]));
 const stats=classes.derive({classId:'sword',level:75,attributes:allocated},catalog.classes.sword,catalog.factions.pirate,forge.aggregate(equipment,items.items));
 const wire={
+  crewAvailable:true,
   state:{characterId:character.id,version:1,level:75,experience:'80',gold:'1240500'},
   inventory:{items:[],equipped:{weapon:null,armor:null}},itemCatalog:[],
   originalInventory:{catalogId:'original-game-v1',inventory:[],equipment,potions:4,materials:3,forgeVersion:4,forgeSeq:0,forgeHistory:[]},

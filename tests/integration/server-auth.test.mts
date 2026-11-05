@@ -125,7 +125,7 @@ test("accounts are provider-derived, characters are unique and another account c
     assert.equal(
       (
         await pool.query(
-          "SELECT count(*)::int AS n FROM information_schema.columns WHERE table_schema='mare_game' AND table_name<>'character_progression' AND NOT(table_name='game_inventory' AND column_name='inventory') AND column_name IN ('gold','experience','xp','inventory')",
+          "SELECT count(*)::int AS n FROM information_schema.columns WHERE table_schema='mare_game' AND table_name<>'character_progression' AND (table_name,column_name) NOT IN (('game_inventory','inventory'),('crews','xp'),('character_professions','experience')) AND column_name IN ('gold','experience','xp','inventory')",
         )
       ).rows[0].n,
       0,

@@ -32,6 +32,7 @@
   const crewAsset=(name,stage)=>'assets/ui/crew/'+name+'-'+stage+'.png';
   const crewArt=Object.fromEntries(['infirmary','galley','command','workshop','navigation','warehouse','bunks'].map(name=>[name,{1:crewAsset(name,1),2:crewAsset(name,2)}]));
   crewArt.hull=Object.fromEntries([[55,6],[39.4,2.5],[37,1],[35.7,7],[32.4,9]].map(([flagX,flagY],i)=>[i+1,{src:crewAsset('hull',i+1),flagX,flagY}]));
+  function crewAvailable(){return ONLINE_GAME?.data?.online?.crewAvailable===true;}
   function crewRoute(){return '/v1/characters/'+encodeURIComponent(ONLINE_GAME.data.character.id)+'/crew';}
   function updateCrewIdentity(identity){
     if(JSON.stringify(crewIdentity)===JSON.stringify(identity))return;
@@ -42,7 +43,7 @@
     if(currentPanel==='myprofile')renderPanel();
   }
   function observeCrewIdentity(){
-    if(!ONLINE_GAME?.available||crewIdentityPending||Date.now()<crewIdentityDue||document.hidden)return;
+    if(!ONLINE_GAME?.available||!crewAvailable()||crewIdentityPending||Date.now()<crewIdentityDue||document.hidden)return;
     crewIdentityPending=true;crewIdentityDue=Date.now()+20000;
     const revision=crewIdentityRevision;
     ONLINE_GAME.api(crewRoute()+'?view=identity').then(({identity})=>{if(revision===crewIdentityRevision)updateCrewIdentity(identity??null);}).catch(()=>{}).finally(()=>{crewIdentityPending=false;});
@@ -51,7 +52,7 @@
     const overlay=$('panelOverlay'),body=$('dialogBody');
     overlay.classList.add('crew-mode');overlay.dataset.uiPanel='crew';body.dataset.view='crew';$('dialogTitle').textContent='Tripulação';
     crewController||=MareCrewUI.create({body,art:crewArt,
-      available:()=>!!ONLINE_GAME?.available,
+      available:()=>!!ONLINE_GAME?.available&&crewAvailable(),
       selfId:()=>ONLINE_GAME?.data?.character?.id,
       read:query=>ONLINE_GAME.api(crewRoute()+(query?'?q='+encodeURIComponent(query):'')),
       command:async(action,payload)=>{const result=await ONLINE_GAME.command(action,payload);syncOnlineGame();return result;},
@@ -1258,7 +1259,7 @@
   }
   function renderContractsPanel(body){
     body.innerHTML=MareContractsBoard.render(contractsBoardData());
-    if(!ONLINE_GAME)return;
+    if(!crewAvailable())return;
     const board=body.querySelector('[data-contract-board]'),tabs=board.querySelector('.contracts-tabs'),professional=contractPeriod==='professional';
     const tab=document.createElement('button');tab.type='button';tab.className='contract-tab ui-button';tab.dataset.contractPeriod='professional';tab.setAttribute('aria-pressed',String(professional));tab.innerHTML='<img class="contract-icon" src="assets/ui/contracts-hd/weekly.png" alt=""><span>PROFISSIONAIS</span>';tabs.append(tab);
     if(professional){
@@ -2493,7 +2494,7 @@ ${avatarExtra}
     if(!hierarchyView)resetHierarchyView();
     const focused=document.activeElement;let restore=null;if(body.contains(focused)){if(focused.hasAttribute('data-hierarchy-crews'))restore='[data-hierarchy-crews]';else if(focused.hasAttribute('data-hierarchy-faction'))restore='[data-hierarchy-faction="'+focused.dataset.hierarchyFaction+'"]';else if(focused.hasAttribute('data-hierarchy-tier'))restore='[aria-label="'+focused.getAttribute('aria-label')+'"]';else for(const attr of ['data-hierarchy-scope','data-hierarchy-tier-select','data-hierarchy-promote','data-hierarchy-retry','data-hierarchy-current'])if(focused.hasAttribute(attr))restore='['+attr+']';}
     body.innerHTML=MareHierarchyUI.render({game,view:{...hierarchyView,...(hierarchyView.scope==='crews'?{scope:'all',board:[],status:'loading'}:{}),busy:hierarchyPromoting||!!(ONLINE_GAME&&(!ONLINE_GAME.controlled||ONLINE_GAME.busy||ONLINE_GAME.pending)),syncing:hierarchySyncing},message:hierarchyMessage});
-    if(ONLINE_GAME){
+    if(crewAvailable()){
       const panel=body.querySelector('.hierarchy-board'),active=hierarchyView.scope==='crews';
       if(panel){
         const button=document.createElement('button');button.type='button';button.dataset.hierarchyCrews='';button.setAttribute('aria-pressed',String(active));button.textContent=active?'Ver jogadores':'Tripulações';panel.querySelector('header').append(button);
