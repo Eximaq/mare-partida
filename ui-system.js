@@ -71,7 +71,7 @@
     const utilities=document.createElement('div');utilities.id='hudUtilities';app.append(utilities);
     // All fixed HUD surfaces share one stacking context, independent of canvas wrappers.
     for(const el of [document.getElementById('mainMenu'),document.querySelector('.action-panel'),document.getElementById('floatingChat'),journey,document.querySelector('.world-command'),document.getElementById('targetHud'),document.getElementById('floatingExpedition'),document.getElementById('floatingStatus')])if(el)app.append(el);
-    const location=document.querySelector('.location-heading');if(location)utilities.append(location);
+    const location=document.querySelector('.location-heading');if(location)app.append(location);
     const powerLabel=document.querySelector('.profile-power>span');powerLabel.textContent='Poder';powerLabel.title='Poder de combate';
     action.append(document.getElementById('hakiQuickCast'));
     const controls=document.createElement('div');controls.className='journey-controls';
@@ -114,12 +114,17 @@
       }
     },true);
     tabBar.addEventListener('click',e=>{const b=e.target.closest('[data-chat-channel]');if(!b)return;channel=b.dataset.chatChannel;tabBar.querySelectorAll('button').forEach(t=>t.setAttribute('aria-pressed',String(t===b)));filter();});
+    const chatToggle=document.getElementById('chatCornerToggle');
     function measure(){
       const r=document.querySelector('.topbar').getBoundingClientRect(),a=document.querySelector('.action-panel').getBoundingClientRect(),m=document.getElementById('mainMenu').getBoundingClientRect();
       const style=document.documentElement.style;style.setProperty('--profile-bottom',Math.ceil(r.bottom)+'px');style.setProperty('--rpg-action-height',Math.ceil(a.height)+'px');style.setProperty('--menu-bottom',Math.ceil(m.bottom)+'px');style.setProperty('--journey-height',Math.ceil(journey.getBoundingClientRect().height)+'px');style.setProperty('--utilities-bottom',Math.ceil(utilities.getBoundingClientRect().bottom)+'px');style.setProperty('--target-height',Math.ceil(document.getElementById('targetHud').getBoundingClientRect().height)+'px');
+      // Anchor the map to whichever port channel control is on screen.
+      const channel=(chat.classList.contains('hud-open')?chat:chatToggle).getBoundingClientRect();
+      style.setProperty('--channel-top',channel.top+'px');
+      style.setProperty('--channel-left',channel.left+'px');
       style.setProperty('--profile-right',Math.ceil(r.right)+'px');style.setProperty('--menu-left',Math.floor(m.left)+'px');style.setProperty('--journey-reserved-bottom',Math.ceil(innerHeight-journey.getBoundingClientRect().top)+'px');
     }
-    const resize=new ResizeObserver(measure);for(const el of [document.querySelector('.topbar'),document.querySelector('.action-panel'),document.getElementById('mainMenu'),journey,utilities,document.getElementById('targetHud')])resize.observe(el);
+    const resize=new ResizeObserver(measure);for(const el of [document.querySelector('.topbar'),document.querySelector('.action-panel'),document.getElementById('mainMenu'),journey,utilities,chat,chatToggle,document.getElementById('targetHud')])resize.observe(el);
     addEventListener('resize',measure,{passive:true});
     const observer=new MutationObserver(records=>{
       const dock=document.getElementById('mareMusicDock');if(dock&&dock.parentElement!==utilities)utilities.append(dock);
