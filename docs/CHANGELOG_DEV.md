@@ -1,3 +1,12 @@
+## 04/11/2026 — Personagem visível ao conjurar Akuma no Mi
+
+- Branch `fix/akuma-player-visibility`, base `47d41506` (PR244 integrado).
+- Corrigida troca temporária de guarda-roupa em `game.js`/`paper-doll-96-lobby.js`: a pose sem arma é pré-composta no bundle equipado e selecionada sem mutar inventário ou aparência.
+- Atualizada a revisão native96 em `tools/paper-doll-96-v3/player-pack.json`; sem novos assets ou gerações.
+- Regressão de navegador: 56 casts, 448 quadros, M/F, quatro direções, sete classes, pose online, zero pixels ausentes e zero recargas de fontes durante o cast. Antes da correção, o primeiro quadro retornava zero pixels.
+- Node: 38 testes pertinentes aprovados, além dos contratos lobby96 e demais armas. Build Pages e integridade da release aprovados. Captura local fora do repositório: `mare-akuma-visibility-evidence/akuma-cast-visible.png`.
+- Saves, regras de combate, efeitos, Beri e Zoans preservados. Sem teste em servidor remoto; adapter visual online validado isoladamente. Rollback: reverter este commit por PR.
+
 ## 04/11/2026 — 56 equipamentos PixelLab e camadas por slot
 
 Branch feature/equipment-56-native, base f4cfbbe1 (PR238 preservado). 56 itens append-only (129–184), 56 ícones transparentes 128×128 e 80 encaixes nativos M/F. Cintos e capas perdem somente a contribuição visual, inclusive antigos; mantos de torso permanecem visíveis. 19 testes Node, 2 TypeScript, 4.992 quadros no Chrome e comparações com zero pixels de diferença na região do avatar antes/depois de equipar e recarregar. Pacote estático validado. [Arquivos, regras, custo PixelLab e limites da validação](art/equipment-56/README.md).

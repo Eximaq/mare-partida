@@ -3002,8 +3002,8 @@ ${avatarExtra}
   function drawCrate(x,y){px(ctx,x-13,y-17,30,26,'#634e38');px(ctx,x-10,y-13,24,20,'#9f8158');px(ctx,x-10,y-12,24,3,'#c29b66');px(ctx,x-2,y-13,3,20,'#5f4938');px(ctx,x-10,y+3,24,3,'#614b36');}
   function drawRuin(x,y){px(ctx,x-10,y-18,23,24,'#52635c');px(ctx,x-12,y-25,27,9,'#859385');px(ctx,x-8,y-19,5,25,'#98a18a');px(ctx,x+8,y-19,5,25,'#3e594d');px(ctx,x-18,y+6,39,9,'#53695e');}
   function drawPaperDoll(c,x,y,action,direction,time,scale=null,progress=null,timing=null,worldView=false){
-    const unarmed=!!fruitPunchPose(),visual=unarmed?{...game,equipment:{...game.equipment,weapon:null}}:game;
-    return lobby96.draw(c,visual,{scene,action:unarmed?'attack-unarmed':action,direction,time,progress,timing,x,y,scale,worldView,consumer:worldView?'world':c.canvas.id||'preview'});
+    const unarmed=!!fruitPunchPose();
+    return lobby96.draw(c,game,{scene,action:unarmed?'attack-unarmed':action,direction,time,progress,timing,x,y,scale,worldView,weaponless:unarmed,consumer:worldView?'world':c.canvas.id||'preview'});
   }
   function drawPlayerSprite(c,x,y){if(c===ctx&&horuBuffActive()){c.save();c.translate(x,y);c.scale(MareRankC.rules.horu.scale,MareRankC.rules.horu.scale);const ok=drawPlayerSpriteBase(c,0,0);c.restore();return ok;}return drawPlayerSpriteBase(c,x,y);}
   function zoanVisualScale(key){return key==='tori'?104/64:['uma','inu'].includes(key)?74/48:key==='neko'?MareNeko.visuals.worldScale:key==='ushi'?MareUshi.visuals.worldScale:key==='wolf'?MareWolf.visuals.worldScale:key==='bison'?MareRankCExpansion.rules.bison.visuals.worldSize/64:1;}
