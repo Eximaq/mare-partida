@@ -85,7 +85,6 @@
     document.getElementById('modesQuickMenu').append(entry);
     journey.querySelector('.journey-heading').after(controls);
     expedition.querySelector('.journey-footer').append(document.getElementById('huntRoute'));
-    document.querySelector('#usePotion .skill-icon').innerHTML='<img src="assets/ui/items-pixellab/potion.png?v=20261020" alt="" draggable="false">';
     document.getElementById('journeyToggle').firstChild.textContent='';
     document.getElementById('journeyToggle').querySelector('span:not(.journey-chevron)').textContent='Expedição';
     const launcher=document.getElementById('journeyToggle');launcher.setAttribute('aria-controls','floatingExpedition');launcher.setAttribute('aria-expanded','false');launcher.querySelector('.journey-chevron').textContent='O';

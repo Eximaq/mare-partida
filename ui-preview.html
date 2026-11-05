@@ -266,8 +266,15 @@
              <button class="skill-button hidden" id="skill3" title="Habilidade Zoan" aria-keyshortcuts="3"><span class="skill-icon" id="skill3Icon"></span><span class="keycap">3</span><span class="skill-cooldown" id="cooldown3"></span></button>
              <button class="skill-button zoan-toggle hidden" id="zoanTransform" title="Transformar (T)" aria-keyshortcuts="T" aria-pressed="false"><span class="skill-icon" id="zoanTransformIcon"></span><span class="keycap">T</span></button>
             </div></div><div class="hotbar-divider"></div>
-            <button class="skill-button potion-button" id="usePotion" title="Usar poção (Q)"><span class="skill-icon">♥</span><span class="keycap">Q</span><span class="potion-count" id="potionCount">3</span></button>
-            <button class="shop-potion" id="buyPotion" title="Comprar poção por 35 Berry">+ POÇÃO <small>35 ✦</small></button>
+            <button type="button" class="skill-button potion-button" id="usePotion" title="Usar poção (Q)" aria-label="Usar poção de vida" aria-keyshortcuts="Q" aria-describedby="potionCount">
+              <span class="skill-icon"><img src="assets/ui/hud-potions/bottle.png" alt="" draggable="false"></span>
+              <span class="keycap" aria-hidden="true">Q</span>
+              <span class="potion-count" id="potionCount">3</span>
+            </button>
+            <button type="button" class="shop-potion" id="buyPotion" title="Comprar poção por 35 Berry" aria-label="Comprar uma poção por 35 Berry">
+              <span>+ POÇÃO</span>
+              <small>35 <img src="assets/ui/hud-potions/berry-mark.png" alt="" draggable="false"></small>
+            </button>
             <div class="hotbar-divider"></div>
             <button id="autoToggle" class="auto-button active"><span class="auto-orb">●</span><span><strong>AUTO-CAÇADA</strong><small id="autoLabel">ATIVADA</small></span><span class="toggle-pill"><i></i></span></button>
           </div>
