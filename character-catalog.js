@@ -23,11 +23,28 @@ function create({characters}){
   characters.configure(classes);
   return {classes,factions};
 }
-function xpNeeded(level){
+function legacyXpNeeded(level){
   if(!Number.isSafeInteger(level)||level<1||level>2147483647)throw new RangeError('Invalid level');
   const value=Math.round(80+25*Math.pow(level-1,1.55));
   if(!Number.isSafeInteger(value))throw new RangeError('XP precision limit');
   return value;
+}
+const xpCurveVersion=2, xpCurve=[0,80];
+function xpNeeded(level){
+  if(!Number.isSafeInteger(level)||level<1||level>1000000)throw new RangeError('XP precision limit');
+  for(let n=xpCurve.length;n<=level;n++){
+    const old=legacyXpNeeded(n-1), growth=(legacyXpNeeded(n)-old)/old;
+    const cost=xpCurve[n-1]*(1+2*growth);
+    if(!Number.isSafeInteger(Math.round(cost)))throw new RangeError('XP precision limit');
+    xpCurve.push(cost);
+  }
+  return Math.round(xpCurve[level]);
+}
+function migrateXP(save){
+  if(save.xpCurveVersion===xpCurveVersion)return save;
+  const before=legacyXpNeeded(save.level),after=xpNeeded(save.level),xp=Math.max(0,Math.trunc(Number(save.xp)||0));
+  const scaled=Math.round(xp*after/before);
+  return {...save,xpCurveVersion,xp:xp<before?Math.min(after-1,scaled):scaled};
 }
 function advance({level,start,experience}){
   if(typeof start!=='bigint'||typeof experience!=='bigint'||start<0n||experience<start||experience>9223372036854775807n)throw new RangeError('Invalid experience');
@@ -39,5 +56,5 @@ function advance({level,start,experience}){
   }
   return {level,start,levels};
 }
-const api={create,xpNeeded,advance};root.MareCharacterCatalog=api;if(typeof module!=='undefined')module.exports=api;
+const api={create,xpNeeded,legacyXpNeeded,migrateXP,xpCurveVersion,advance};root.MareCharacterCatalog=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

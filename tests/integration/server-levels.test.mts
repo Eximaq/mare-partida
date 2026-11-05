@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import {randomUUID} from "node:crypto";
+import {createRequire} from "node:module";
 import {mkdtemp,copyFile,readdir} from "node:fs/promises";
 import {tmpdir} from "node:os";
 import {join} from "node:path";
@@ -7,6 +8,8 @@ import {applyMigrations} from "../../apps/game-server/src/db/migrations.js";
 import {AuthService} from "../../apps/game-server/src/auth/service.js";
 import {test} from "node:test";
 import {authDatabase} from "./auth-support.mjs";
+
+const {xpNeeded}=createRequire(import.meta.url)("../../character-catalog.js");
 
 async function fixture(service:any,pool:any,initialXp=0) {
   const session=await service.login("levels@example.invalid","fixture");
@@ -31,7 +34,7 @@ test("two victories reach level two atomically and replay never grants a second 
   assert.equal(result.state.experience,"80");assert.equal(result.state.level,2);assert.equal(result.state.gold,"32");
   assert.deepEqual(await f.send(claim),result);
   const snapshot:any=await service.onlineState(f.session.token,f.character.id);
-  assert.deepEqual(snapshot.progression,{catalogId:"original-levels-v1",maxLevel:null,earnedAttributePoints:5,xpIntoLevel:"0",xpForNextLevel:"105",xpToNextLevel:"105",atCap:false});
+  assert.deepEqual(snapshot.progression,{catalogId:"original-levels-v1",maxLevel:null,earnedAttributePoints:5,xpIntoLevel:"0",xpForNextLevel:"130",xpToNextLevel:"130",atCap:false});
   assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.character_level_ledger")).rows[0].n,1);
   assert.equal(snapshot.combat.playerHp,38,"level advancement does not change combat HP");
 }));
@@ -72,7 +75,7 @@ test("catalog follows the existing curve; exact thresholds and bounded advanceme
   await pool.query("UPDATE mare_game.character_progression SET level=20,level_start_experience=18209,experience=9223372036854775777");
   const paid=await f.send(f.input("combat.claim",5));assert.equal(paid.state.experience,"9223372036854775807");assert.equal(paid.state.level,40);
   const read=await service.onlineState(f.session.token,f.character.id);assert.equal(read.progression.atCap,false);assert.equal(read.progression.xpToNextLevel,"0");assert.equal(read.progression.earnedAttributePoints,195);
-  let start=18209n;for(let level=20;level<40;level++)start+=BigInt(Math.round(80+25*Math.pow(level-1,1.55)));
+  let start=18209n;for(let level=20;level<40;level++)start+=BigInt(xpNeeded(level));
   assert.equal(read.progression.xpIntoLevel,(9223372036854775807n-start).toString());assert.equal((await pool.query("SELECT count(*)::int n FROM mare_game.character_level_ledger")).rows[0].n,20);
 }));
 
@@ -94,7 +97,7 @@ test("3G upgrade preserves XP/gold/receipts, backfills each earned level once an
       const receipt=await service.command(session.token,character.id,command);fixtures.push({session,character,command,receipt,xp,level});
     }
     const receipts=(await pool.query("SELECT * FROM mare_game.character_commands ORDER BY request_id")).rows;
-    assert.deepEqual(await applyMigrations(pool),["0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql", "0014_original_inventory.sql", "0015_original_character.sql", "0016_original_world.sql", "0017_original_battles.sql", "0018_battle_profile_compatibility.sql", "0019_original_contracts.sql", "0020_restore_stable_battle_hash.sql", "0021_original_talents.sql", "0022_talent_battle_compatibility.sql", "0023_original_achievements.sql", "0024_original_prison.sql", "0025_original_dungeons.sql", "0026_original_haki.sql", "0027_original_hierarchy.sql", "0028_original_fruits.sql", "0029_original_profile.sql", "0030_navigation_broadphase.sql", "0031_navigation_terminal_edges.sql","0032_parties.sql","0033_navigation_memo.sql","0034_navigation_open_mask.sql","0035_skypiea_catalog.sql","0036_skypiea_map_refresh.sql","0037_achievement_only_talent_points.sql","0038_combat_action_compatibility.sql","0039_equipment_potential_compatibility.sql","0040_daily_contracts.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql", "0014_original_inventory.sql", "0015_original_character.sql", "0016_original_world.sql", "0017_original_battles.sql", "0018_battle_profile_compatibility.sql", "0019_original_contracts.sql", "0020_restore_stable_battle_hash.sql", "0021_original_talents.sql", "0022_talent_battle_compatibility.sql", "0023_original_achievements.sql", "0024_original_prison.sql", "0025_original_dungeons.sql", "0026_original_haki.sql", "0027_original_hierarchy.sql", "0028_original_fruits.sql", "0029_original_profile.sql", "0030_navigation_broadphase.sql", "0031_navigation_terminal_edges.sql","0032_parties.sql","0033_navigation_memo.sql","0034_navigation_open_mask.sql","0035_skypiea_catalog.sql","0036_skypiea_map_refresh.sql","0037_achievement_only_talent_points.sql","0038_combat_action_compatibility.sql","0039_equipment_potential_compatibility.sql","0040_daily_contracts.sql", "0041_progression_hud_balance.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     assert.deepEqual((await pool.query("SELECT * FROM mare_game.character_commands ORDER BY request_id")).rows,receipts);
     for(const f of fixtures) {
       const state=await service.characterState(f.session.token,f.character.id);assert.equal(state.level,f.level);assert.equal(state.experience,f.xp);assert.equal(state.gold,"12");assert.equal(state.version,f.level>1?1:0);

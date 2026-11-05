@@ -18,8 +18,8 @@ test('server fruit passives apply exactly once, while transformed basics use phy
 test('fruit cast reserves server energy and cooldown, never deals damage outside worker; state survives JSON roundtrips',()=>{
  const f=fixture('akuma_mera_mera'),cost=A.activeSkill('akuma_mera_mera','1').cost;f.b.energy=1000;const hp=f.m.hp;
  assert(f.cast('1'));assert.equal(f.m.hp,hp);assert.equal(f.b.energy,1000-cost);assert(!f.cast('1'));assert(!f.cast('4'));
- let count=0;for(let i=0;i<60;i++){f.step(.5);const raw=JSON.parse(JSON.stringify(f.b));Object.assign(f.b,raw);count=f.b.events.filter((x:any)=>x.type==='damage').length;}
- assert(f.b.mobs[0].hp<hp);assert(count>=1);const cd=structuredClone(f.b.fruit.cooldowns);f.E.resetFruit(f.b);assert.deepEqual(f.b.fruit.cooldowns,cd);
+ let sawDamage=false;for(let i=0;i<60;i++){f.step(.5);const raw=JSON.parse(JSON.stringify(f.b));Object.assign(f.b,raw);sawDamage ||= f.b.events.some((x:any)=>x.type==='damage');}
+ assert(f.b.mobs[0].hp<hp);assert(sawDamage);const cd=structuredClone(f.b.fruit.cooldowns);f.E.resetFruit(f.b);assert.deepEqual(f.b.fruit.cooldowns,cd);
 });
 test('all advanced fruit timelines accept only original valid intents and persist bounded runtime',()=>{
  for(const fruit of A.catalog.filter((x:any)=>['A','S'].includes(x.rank)))for(const skill of fruit.skills){const f=fixture(fruit.id);f.b.energy=1000;

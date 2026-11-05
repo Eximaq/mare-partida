@@ -5,8 +5,9 @@
  const label=n=>count(n)>99?'99+':count(n)>0?String(count(n)):'';
  const order=['status','talents','hierarchy','achievements'];
  function derive(input={}){
-  const sections={status:count(input.attributes),talents:count(input.talents),hierarchy:input.canBePromoted===true?1:0,achievements:Array.isArray(input.unclaimedAchievements)?input.unclaimedAchievements.length:0};
-  return Object.freeze({...sections,character:Math.min(Number.MAX_SAFE_INTEGER,Object.values(sections).reduce((a,b)=>a+b,0))});
+  const sections={status:count(input.attributes),talents:count(input.talents),hierarchy:input.canBePromoted===true?1:0,achievements:Array.isArray(input.unclaimedAchievements)?new Set(input.unclaimedAchievements).size:0};
+  const {forge=0,contracts=0,prison=0,dungeons=0,hunt=0}=input;
+  return Object.freeze({...sections,character:Math.min(Number.MAX_SAFE_INTEGER,Object.values(sections).reduce((a,b)=>a+b,0)),forge:count(forge),contracts:count(contracts),prison:count(prison),dungeons:count(dungeons),hunt:count(hunt),modes:count(prison)+count(dungeons)});
  }
  function create(){
   let state=derive();const observers=new Set();

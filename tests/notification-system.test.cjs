@@ -4,7 +4,7 @@ test('pending actions aggregate and select the first actionable character sectio
  const file=path.join(__dirname,'../notification-system.js');assert.ok(fs.existsSync(file),'notification manager is not implemented');
  const N=require(file),m=N.create();
  m.update({attributes:5,talents:2,canBePromoted:true,unclaimedAchievements:['level-0','kills-0']});
- assert.deepEqual(m.state,{status:5,talents:2,hierarchy:1,achievements:2,character:10});assert.equal(m.focus(),'status');
+ assert.deepEqual(m.state,{status:5,talents:2,hierarchy:1,achievements:2,character:10,forge:0,contracts:0,prison:0,dungeons:0,hunt:0,modes:0});assert.equal(m.focus(),'status');
  m.update({talents:2,canBePromoted:true,unclaimedAchievements:['level-0']});assert.equal(m.focus(),'talents');
  m.update({canBePromoted:true,unclaimedAchievements:['level-0']});assert.equal(m.focus(),'hierarchy');
  m.update({unclaimedAchievements:['level-0']});assert.equal(m.focus(),'achievements');

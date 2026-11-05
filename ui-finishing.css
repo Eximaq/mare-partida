@@ -16,6 +16,16 @@ body .confirmation-overlay .confirmation-card .ui-button,.ui-select-trigger,.ui-
 body .confirmation-overlay .confirmation-card{border-image:var(--rpg-hd-panel) 28 / 6px;background:linear-gradient(#090b12b8,#090b12d9),var(--rpg-workshop-surface) center/512px 512px;}
 
 /* Receipt area stays anchored by the existing HUD layout. */
+body #lootNotices{position:fixed;inset:auto;top:50%;right:max(12px,var(--rpg-edge,12px));translate:0 -50%;width:min(246px,calc(100vw - 32px));max-width:none;height:42px;overflow:hidden;pointer-events:none;z-index:var(--rpg-z-toast);visibility:hidden}
+body #lootNotices[data-visible]{visibility:visible}
+body:has(:is(#panelOverlay,#startOverlay,.confirmation-overlay,.ui-modal):not(.hidden):not([hidden])) #lootNotices{visibility:hidden}
+body #lootNotices .toast.acquisition{width:100%;height:40px;min-width:0;box-sizing:border-box}
+body #lootNotices strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body #lootNotices .toast.acquisition>div{min-width:0}
+[data-notification]{position:relative}
+[data-notification]>.hud-notification-badge:not([hidden]){position:absolute;inset:3px 3px auto auto;min-width:16px;border:1px solid #b88142;border-radius:4px;background:#72263a;color:#fff4d4;padding:1px 3px;font:700 10px/1.2 system-ui;pointer-events:none}
+#characterNameCount{color:#e6c891;font-size:.84rem;justify-self:end;white-space:nowrap}
+#characterName[aria-invalid=true]+#characterNameCount{color:#ffaf98}
 body .toast-container>.toast,body .ui-notice,body .ui-empty{background:linear-gradient(#090b12cb,#090b12eb),var(--rpg-workshop-surface) center/512px 512px;border:1px solid #ad8245;border-image:none;box-shadow:0 3px 12px #0007;color:#f0dfbd;font:15px/1.2 var(--rpg-ui-reading)}
 body .toast-container>.toast.acquisition{display:flex;align-items:center;gap:8px;padding:7px 10px;min-height:40px;text-align:left;animation:none}body .toast-container>.toast.acquisition:not(:last-child){display:flex}.toast.acquisition .ui-art{width:26px;height:26px}.toast.acquisition>div{min-width:0}.toast.acquisition strong{font-size:15px;font-weight:700;overflow-wrap:anywhere}.toast.acquisition small{display:block;font-size:12px;color:#c8bea9}.toast.acquisition.reward-rare{border-left:3px solid #65a7d6}.toast.acquisition.reward-epic{border-left:3px solid #b182db}.toast.acquisition.reward-legendary{border-left:3px solid #e7c64c}.toast.acquisition.reward-supreme{border-left:3px solid #e66c62}body .dialog>.toast-container,body .confirmation-card>.toast-container,body .ui-window>.toast-container{background:none;max-height:150px;padding:4px 8px}
 

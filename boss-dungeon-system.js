@@ -28,7 +28,7 @@
   const d=byId[id];if(!d)throw Error('Chefe desconhecido');
   const base=d.normalCombat;
   const characters=root.MareCharacters||(typeof module!=='undefined'?require('./character-system.js'):null);
-  return {...characters.monsterProfile(base,{bossMultiplier:2.5}),xp:0,gold:[0,0]};
+  return {...characters.monsterProfile(base,{bossMultiplier:characters.monsterBalance.dungeonAttributes}),xp:0,gold:[0,0]};
  }
  function materialDef(defs,id){return defs.findIndex(d=>['akuma-fragment','weapon-fragment'].includes(d.kind)&&d.materialId===id);}
  function claim(original,id,{runId,position,chest,defs,applyXP,commit,now=Date.now()}={}){

@@ -10,7 +10,7 @@
     slot:'consumable',rarity:['common','uncommon','rare'][level-1],
     attack:0,defense:0,hp:0,symbol:'▣'
   })));
-  function multiplier(floor){if(!validFloor(floor))throw Error('Andar inválido');return Math.pow(1.30,floor-1);}
+  function multiplier(floor){if(!validFloor(floor))throw Error('Andar inválido');return Math.pow(characters.monsterBalance.prisonFloorGrowth,floor-1);}
   const characters=root.MareCharacters||(typeof module!=='undefined'?require('./character-system.js'):null);
   function scaleMonster(base,floor){
     const result={...base},factor=multiplier(floor);
@@ -18,8 +18,8 @@
       if(!Number.isFinite(base[key])||base[key]<0)throw Error('Atributo inválido');
       result[key]=base[key]===0?0:Math.max(1,Math.round(base[key]*factor));
     }
-    const p=characters.monsterProfile({level:floor,maxHP:result.hp,attack:result.atk,defense:result.def,attackSec:base.attackSec??2.1},{bossMultiplier:base.prisonElite?2.5:1});
-    return {...result,hp:p.maxHP,atk:p.attack,def:p.defense,magicDefense:p.magicDefense,attackSec:p.attackSec,accuracy:p.accuracy,attributePoints:p.attributePoints};
+    const p=characters.monsterProfile({level:floor,maxHP:result.hp,attack:result.atk,defense:result.def,speed:base.speed,attackSec:base.attackSec??2.1},{bossMultiplier:base.prisonElite?2.5:1});
+    return {...result,hp:p.maxHP,atk:p.attack,def:p.defense,magicDefense:p.magicDefense,speed:p.speed,attackSec:p.attackSec,accuracy:p.accuracy,attributePoints:p.attributePoints};
   }
   const rewardFor=floor=>milestones.includes(floor)?{kind:'pearl-box',level:1,quantity:1}:null;
   const isBossFloor=floor=>validFloor(floor)&&floor%5===0;

@@ -75,15 +75,18 @@
   c.save();c.imageSmoothingEnabled=false;if(flash)c.filter='brightness(1.5)';
   c.drawImage(im,frame*clip.size,0,clip.size,clip.size,Math.round(x-size/2),Math.round(y-foot*factor),size,size);c.restore();return true;
  }
+ const monsterScales=Object.freeze({marinheiro:.70,helmeppo:1.30,cocox:.80,merry:.80,doublefinger:.70,mr1:.70});
+ const monsterScale=type=>monsterScales[type]??1;
+ const monsterHeight=type=>{const e=data()[type];return e?.monster?e.worldHeight*(e.world_scale??1)*monsterScale(type):null;};
  function monster(c,m,now){
   const entry=data()[m.type];if(!entry||!entry.monster)return false;
   const reaction=m.alive!==false?hurtProgress(m,now):null,attacking=m.attackAnim>0;
   const action=reaction!==null?'hurt':attacking?'attack':m.moving>0?'walk':'idle';
-  const duration=m.type==='bananawani'?.9:.58;
+  const duration=root.MareCharacters.monsterAttackVisualDuration(m.type);
   // Legacy mobs apply damage immediately. Begin at contact; never defer their damage.
   const clip=resolve(m.type,action,m.emberFacing||'south').clip;
   const progress=reaction??(entry.dungeonBoss?(m.dungeonAttack?m.dungeonAttack.elapsed/m.dungeonAttack.duration:null):(attacking?(clip.impact_frame??0)/clip.frames+(1-m.attackAnim/duration)*(1-(clip.impact_frame??0)/clip.frames):null));
-  return draw(c,m.type,m.x,m.y+3,{action,direction:m.emberFacing||'south',time:now+(m.bob||0),progress,height:entry.worldHeight*(entry.world_scale??1),flash:reaction!==null&&!resolve(m.type,'hurt',m.emberFacing||'south').requested});
+  return draw(c,m.type,m.x,m.y+3,{action,direction:m.emberFacing||'south',time:(action==='walk'?now*root.MareCharacters.monsterBalance.moveSpeed:now)+(m.bob||0),progress,height:monsterHeight(m.type),flash:reaction!==null&&!resolve(m.type,'hurt',m.emberFacing||'south').requested});
  }
  function install(){
   // PR177 native Hurt backport; keep catalog contributions from main conflict-free.
@@ -106,6 +109,6 @@
   if(root.MareRareRenderer){const old=root.MareRareRenderer.monster;root.MareRareRenderer.monster=(c,m,t)=>m.type==='cocox'&&data().cocox?monster(c,m,t):old(c,m,t);}
   if(root.MareHoya){const system=root.MareHoya,old=system.drawActor,oldPreload=system.preload;system.drawActor=(c,g,t)=>{if(!data().hoya)return old(c,g,t);const p=g.clock.snapshot(),reaction=hurtProgress(g,t);return draw(c,'hoya',g.x,g.y,{action:reaction!==null?'hurt':p.locked?'attack':g.walking>0?'walk':'idle',direction:g.direction,time:t,progress:reaction??(p.locked?p.progress:null),hitRatio:p.hitFrameRatio,height:data().hoya.worldHeight*g.scale*(data().hoya.world_scale??1)});};system.preload=()=>{preload('hoya');oldPreload({actors:false});};}
  }
- root.MareSpriteCombatV2={hurt,hurtProgress,resolve,draw,monster,status,visualStatus(key,action,direction){const p=lastDraw.get(key);return status(key,p?.action||action,p?.direction||direction);},preload,prepare,frameAt,install,fruits,HURT_SECONDS,reportMissing,diagnostics:()=>[...errors.values()]};
+ root.MareSpriteCombatV2={hurt,hurtProgress,resolve,draw,monster,monsterScale,monsterHeight,status,visualStatus(key,action,direction){const p=lastDraw.get(key);return status(key,p?.action||action,p?.direction||direction);},preload,prepare,frameAt,install,fruits,HURT_SECONDS,reportMissing,diagnostics:()=>[...errors.values()]};
  install();
 })(globalThis);

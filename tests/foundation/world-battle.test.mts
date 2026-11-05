@@ -88,7 +88,7 @@ test('the previous deployed rules migrate once without moving wounded monsters',
  const f=fixture(),m=f.m;m.hp=Math.floor(m.maxHP/2);const ratio=m.hp/m.maxHP,x=m.x;
  f.b.rulesHash='c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46';delete m.balanceVersion;
  f.engine.upgradeBalance(f.b);assert.equal(f.b.rulesHash,f.engine.rulesHash);assert.equal(m.x,x);
- assert.equal(m.hp,Math.ceil(m.maxHP*ratio));assert.equal(m.balanceVersion,1);
+ assert.equal(m.hp,Math.ceil(m.maxHP*ratio));assert.equal(m.balanceVersion,2);
  const saved=structuredClone(f.b);f.engine.upgradeBalance(f.b);assert.deepEqual(f.b,saved);
  f.b.rulesHash='unknown';f.engine.upgradeBalance(f.b);assert.equal(f.b.rulesHash,'unknown');
 });

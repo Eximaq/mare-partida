@@ -135,6 +135,18 @@
     });
     observer.observe(app,{childList:true,subtree:true,attributes:true,attributeFilter:['class']});measure();
   }
+  const lootHud=':is(.topbar,.hud-launcher,.location-heading,.action-panel,#mainMenu,.character-quick-menu,.floating-window,.floating-chat,#chatCornerToggle,#targetHud,.utility-tray,#expeditionMini,#huntXpTracker,#journeyHud,.party-compact,#worldLoading,#toastContainer,.boss-banner,.world-hint,.world-command,#npcTooltip,#devLauncher)';
+  function lootSpace(lane){
+    if(topModal()||document.hidden)return false;
+    const a=lane.getBoundingClientRect();
+    if(a.left<0||a.top<0||a.bottom>innerHeight||a.right>innerWidth||!a.width)return false;
+    for(const el of document.querySelectorAll(lootHud)){
+      if(!el.getClientRects().length||getComputedStyle(el).visibility==='hidden')continue;
+      const b=el.getBoundingClientRect();
+      if(b.width&&b.height&&a.left<b.right+6&&a.right>b.left-6&&a.top<b.bottom+6&&a.bottom>b.top-6)return false;
+    }
+    return true;
+  }
   let observedTop=null,noticeRoot=null;
   function syncModals(){
     if(activeSelect&&!activeSelect.select.isConnected)closeSelect();
@@ -182,7 +194,7 @@
     const delta=afterPower-beforePower;
     return {state:delta>0?'better':delta<0?'worse':'equal',delta};
   };
-  root.MareUI={escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,art,inspectImages,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals,inventoryGrid,inventoryPageAtResize,inventoryNumericRows,inventoryPowerState};
+  root.MareUI={lootSpace,escape,button,card,notice,empty,tabs,slot,window:windowHTML,createWindow,open,close,destroy,confirmation,art,inspectImages,rememberFocus,restoreFocus,bindModal,upgrade,mountHUD,syncModals,inventoryGrid,inventoryPageAtResize,inventoryNumericRows,inventoryPowerState};
   if(typeof document!=='undefined')document.readyState==='loading'?document.addEventListener('DOMContentLoaded',boot,{once:true}):boot();
   if(typeof module!=='undefined')module.exports=root.MareUI;
 })(globalThis);

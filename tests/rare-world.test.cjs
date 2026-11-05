@@ -14,8 +14,8 @@ for(const d of I.rare.districts){assert(nav.path(I.rare.spawn,d).length);assert.
 assert.equal(H.bossReady(H.migrate({}), 'rare',I.rare.districts.at(-1)),false);
 const db=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/monsters.json'),'utf8')).cocox;
 const c=H.profile('rare','mata-fechada','cocox');
-assert(c.maxHP>db.max_hp);assert(c.attack>db.physical_attack);assert(c.defense>db.physical_defense);assert.equal(c.magicDefense,db.magic_defense);
-assert.equal(c.speed,db.move_speed);assert.equal(c.attackSec,db.attack_seconds/1.5);assert.equal(c.aggro,db.aggro_radius);
+assert(c.maxHP>db.max_hp);assert(c.attack>db.physical_attack);assert(c.defense>db.physical_defense);assert.equal(c.magicDefense,10);
+assert.equal(c.speed,db.move_speed*2);assert.equal(c.attackSec,db.attack_seconds/2.25);assert.equal(c.aggro,db.aggro_radius);
 for(const [name,size] of [['grass',64],['grass-alt',64],['sand',64]]){
   const b=fs.readFileSync(path.join(__dirname,`../assets/rare-animals/${name}.png`));assert.equal(b.readUInt32BE(16),size);assert.equal(b.readUInt32BE(20),size);
 }

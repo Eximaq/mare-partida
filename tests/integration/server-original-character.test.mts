@@ -29,10 +29,11 @@ test('all original classes and factions derive current server-owned equipment wi
 }));
 test('server XP crosses the old level20 ceiling and grants points once without importing any client progress',async()=>authDatabase(async({service,pool})=>{
  const a=await actor(service);await a.send(a.input('journey.begin',0));await a.send(a.input('hunt.begin',1));
- await pool.query('UPDATE mare_game.character_progression SET level=20,level_start_experience=18209,experience=$1 WHERE character_id=$2',[String(20688-20),a.character.id]);
+ const threshold=18209+rules.xpNeeded(20);
+ await pool.query('UPDATE mare_game.character_progression SET level=20,level_start_experience=18209,experience=$1 WHERE character_id=$2',[String(threshold-20),a.character.id]);
  await pool.query("UPDATE mare_game.character_hunts SET begun_at=clock_timestamp()-interval '31 seconds' WHERE character_id=$1",[a.character.id]);
  const request=a.input('hunt.claim',2),paid=await a.send(request);
- assert.equal(paid.state.level,21);assert.equal(paid.state.experience,'20688');
+ assert.equal(paid.state.level,21);assert.equal(paid.state.experience,String(threshold));
  assert.deepEqual(await a.send(request),paid);
  const before:any=await a.read();assert.equal(before.progression.catalogId,'original-levels-v1');assert.equal(before.progression.maxLevel,null);
  assert.equal(before.progression.xpIntoLevel,'0');assert.equal(before.attributes.earned,100);

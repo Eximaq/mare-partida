@@ -41,9 +41,9 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
    attached++;const input=inputs.get(m.character_id)!,{state}=input,f=input.fighter(b),w=worlds.get(m.character_id);
    if(f.rulesetId!=='original-character-v1'||!w||w.mapId!==room.mapId)throw Error('party_world_mismatch');
    b.hp=Math.min(b.hp,f.maxHp);b.energy=Math.min(b.energy,f.stats.maxEnergy);
-    if(room.mobs.some((m:any)=>m.balanceVersion!==1)){
-     const projected=new Map(b.mobs.map((m:any)=>[m.id,m]));
-     room.mobs=room.mobs.map((m:any)=>projected.get(m.id)??m);
+    if(room.mobs.some((m:any)=>m.balanceVersion!==E.balanceVersion)){
+     // The shared room, rather than a personal snapshot, owns current monster HP and clocks.
+     E.upgradeBalance({mobs:room.mobs,area:room.area,rulesHash:E.previousBalanceHash});
     }
     if(b.rulesHash!==E.rulesHash)throw Error('party_rules_changed');
     if(elapsed>2){E.cancel(b);E.resetHaki(b);}
@@ -65,7 +65,7 @@ export async function tickPartyBattles(pool:Pool,assignment?:SimulationPartition
     const ids=P.eligible(actors.map(a=>({...a,hp:a.b.hp,x:a.hero.x,y:a.hero.y})),{instanceId:room.id,x:k.monster.x,y:k.monster.y},now).map((a:any)=>a.id);
     if(ids.length){
       const base=E.hunt.rewards(k.area,k.monster,k.monster.level??1,.5).xp,shares=P.shares(base,ids,room.seq%ids.length);
-      for(const id of ids){const actor=actors.find(a=>a.id===id),personal=E.hunt.rewards(k.area,k.monster,actor.state.level,.5).xp,grant=Math.round(shares[id]*personal/base);
+      for(const id of ids){const actor=actors.find(a=>a.id===id),personal=E.hunt.rewards(k.area,k.monster,actor.state.level,.5).xp,grant=base>0?Math.round(shares[id]*personal/base):0;
        rewards.set(id,(rewards.get(id)??0)+grant);
        await c.query('INSERT INTO mare_game.party_experience(instance_id,spawn_id,character_id,base_amount,amount,request_id) VALUES($1,$2,$3,$4,$5,$6)',[room.id,k.id,id,shares[id],(await boostXp(c,id,BigInt(grant))).toString(),actor.requestId??=randomUUID()]);
       }

@@ -3,7 +3,7 @@
 (() => {
   const attributes={
     strength:{name:'Força',short:'FOR',description:'Dano físico, principalmente em golpes corpo a corpo.'},
-    dexterity:{name:'Destreza',short:'DES',description:'Precisão, ataques, crítico, esquiva e mobilidade.'},
+    dexterity:{name:'Destreza',short:'DES',description:'Precisão, crítico, esquiva e mobilidade. A cadência recebe 70% do bônus de Destreza no Gatuno, 40% no Atirador e nenhum nas demais classes.'},
     vitality:{name:'Vitalidade',short:'VIT',description:'Vida máxima e defesa; maior eficiência no Ciborgue.'},
     intelligence:{name:'Inteligência',short:'INT',description:'Dano elemental e potência de cura.'},
     spirit:{name:'Espírito',short:'ESP',description:'Energia, regeneração, cura e proteção.'}
@@ -57,7 +57,7 @@
     return classes;
   }
   const compendiumMultiplier=count=>1+Math.max(0,Number(count)||0)*.001;
-  function derive(g,c,f,gear){
+  function derive(g,c,f,gear,{legacyCadence=false}={}){
     const r=roles[g.classId],lvl=g.level-1;
     const compendiumBonus=compendiumMultiplier(gear.akumaRegistered);
     const preAttributes=Object.fromEntries(keys.map(k=>[k,((birth[g.classId]||birth.sword)[k]+integer(g.attributes?.[k]))*(k==='strength'?compendiumBonus:1)+Math.max(0,Number(gear.attributes?.[k])||0)]));
@@ -68,7 +68,7 @@
     const defense=Math.round((c.defense+lvl*c.defenseStep+gear.defense+V*(g.classId==='cyborg'?1.05:.55)+S*.08)*f.defense*(1+(gear.physicalDefensePercent||0)));
     const maxHP=Math.round(((c.baseHP+lvl*c.hpStep+V*(g.classId==='cyborg'?12:8))*compendiumBonus+gear.hp)*f.hp*(1+(gear.maxHpPercent||0)));
     const maxEnergy=Math.round((c.energy+lvl*c.energyStep+E*4+I*.5+(gear.energy||0))*f.energy);
-    const speed=Math.min(3,(c.speed+Math.min(.5,lvl*.009)+D*.006)*f.speed*(1+(gear.attackSpeedPercent||0)));
+    const speed=Math.min(3,(c.speed+Math.min(.5,lvl*.009)+D*.006*(legacyCadence?1:dexterityCadence[g.classId]??0))*f.speed*(1+(gear.attackSpeedPercent||0)));
     const crit=cap(c.crit+f.crit+lvl*.001+D*.0015+(gear.crit||0),0,.5),evasion=cap((g.classId==='rogue'?.12:0)+D*.0015+(gear.evasionPercent||0),0,.35);
     const healing=Math.round(12+I*1.1+E*2.3+lvl*.8);
     const attack=r.magic?elemental:physical;
@@ -83,8 +83,10 @@
     const raw=(type==='elemental'?stats.elemental:stats.physical)*multiplier*variance-armor*(type==='elemental'?.15:.30);
     return Math.max(1,Math.floor(Math.max(1,raw)*(critical?(stats.critMultiplier||1.65):1)));
   }
-  function incoming(stats,amount,guard=false,variance=1){
-    return Math.max(1,Math.floor(amount*100/(100+stats.defense*3)*(1-stats.mitigation)*(guard?1-stats.protection:1)*variance));
+  const dexterityCadence=Object.freeze({rogue:.70,gunner:.40});
+  const pveDefenseEfficiency=1; // Taxa de redução ainda não definida.
+  function incoming(stats,amount,guard=false,variance=1,{monster=false}={}){
+    return Math.max(1,Math.floor(amount*100/(100+stats.defense*(monster?pveDefenseEfficiency:1)*3)*(1-stats.mitigation)*(guard?1-stats.protection:1)*variance));
   }
   // Real recipients only. An eventual party can pass actual allies through the same contract.
   function healRecipients(recipients,amount){
@@ -93,21 +95,24 @@
       return {id:recipient.id,amount:recipient.hp-before};
     });
   }
-  const monsterBalance=Object.freeze({attackSpeed:1.5,accuracy:1,attributeBudget:3,defense:1.3,xp:.1,playerDamage:.5,gearChance:.12,respawnSpeed:1.5});
-  function monsterProfile(base,{role='balanced',bossMultiplier=1,bossStats={}}={}){
+  const monsterBalance=Object.freeze({version:2,attackSpeed:1.5*1.5,moveSpeed:2,hp:1.5,attack:1.3,defenseAdjustment:1.2,saltedIronChance:.2,worldXpGrowth:1.15,prisonFloorGrowth:1.075,dungeonAttributes:7.5,accuracy:1,attributeBudget:3,defense:1.3,xp:.1,playerDamage:.5,gearChance:.12,respawnSpeed:1.5});
+  function monsterProfile(base,{role='balanced',bossMultiplier=1,bossStats={},legacy=false}={}){
     const points=earned(base.level)*monsterBalance.attributeBudget;
     const weights={balanced:[.35,.30],tank:[.50,.20],offense:[.25,.50]}[role];
     const vitality=Math.floor(points*weights[0]),strength=Math.floor(points*weights[1]),defensePoints=points-vitality-strength;
+    const scaled=(baseValue,factor,regional=1)=>legacy?Math.round(baseValue*regional*bossMultiplier):Math.round(Math.round(baseValue*regional)*factor*bossMultiplier);
     return {...base,attributePoints:points,attributes:{vitality,strength,defense:defensePoints},
-      maxHP:Math.round((base.maxHP+vitality*4)*(bossStats.hp??bossMultiplier)),
-      attack:Math.round((base.attack+strength*.45)*(bossStats.attack??bossMultiplier)),
-      defense:Math.round((base.defense+defensePoints*.24)*(bossStats.defense??bossMultiplier)*monsterBalance.defense),
-      magicDefense:Math.round((base.magicDefense??base.defense)*(bossStats.defense??bossMultiplier)),
-      attackSec:base.attackSec/monsterBalance.attackSpeed,accuracy:monsterBalance.accuracy};
+      maxHP:scaled(base.maxHP+vitality*4,monsterBalance.hp,bossStats.hp),
+      attack:scaled(base.attack+strength*.45,monsterBalance.attack,bossStats.attack),
+      defense:scaled((base.defense+defensePoints*.24)*monsterBalance.defense,monsterBalance.defenseAdjustment,bossStats.defense),
+      magicDefense:scaled(base.magicDefense??base.defense,monsterBalance.defenseAdjustment,bossStats.defense),
+      ...(base.speed===undefined?{}:{speed:base.speed*(legacy?1:monsterBalance.moveSpeed)}),
+      attackSec:base.attackSec/(legacy?1.5:monsterBalance.attackSpeed),accuracy:monsterBalance.accuracy};
   }
+  const monsterAttackVisualDuration=type=>(type==='bananawani'?.9:.58)/(monsterBalance.attackSpeed/1.5);
   const monsterXP=xp=>Math.max(0,Math.round(xp*monsterBalance.xp));
   const monsterDamage=amount=>Math.max(1,Math.floor(amount*monsterBalance.playerDamage));
-  const api={monsterBalance,monsterProfile,monsterXP,monsterDamage,attributes,birth,keys,empty,earned,spent,migrate,commit,roles,configure,compendiumMultiplier,derive,damage,incoming,healRecipients};
+  const api={monsterBalance,dexterityCadence,pveDefenseEfficiency,monsterProfile,monsterAttackVisualDuration,monsterXP,monsterDamage,attributes,birth,keys,empty,earned,spent,migrate,commit,roles,configure,compendiumMultiplier,derive,damage,incoming,healRecipients};
   globalThis.MareCharacters=api;
   if(typeof module!=='undefined')module.exports=api;
 })();

@@ -9,7 +9,6 @@ import {AuthFault} from '../auth/errors.js';
 import {advanceLevel} from './progression.js';
 import {readCharacterState} from './state.js';
 import {readFighter} from './fighter.js';
-import type {readPrison} from './prison.js';
 const require=createRequire(import.meta.url);
 export const contracts=require('../../../../contract-system.js');
 const rulesHash=createHash('sha256').update(JSON.stringify(contracts.quests)).digest('hex');
@@ -19,20 +18,19 @@ async function available(client:PoolClient){
 }
 const engine=require('../../../../world-battle.cjs');
 const behavior=require('../../../../monster-behavior.js');
-const impel=require('../../../../prison-system.js');
 const profiles=Object.entries(engine.hunt.regions).flatMap(([area,region]:[string,any])=>{
  const slots=behavior.slots(area).filter((slot:any)=>!slot.boss);
  return [...new Set<string>(slots.map((slot:any)=>slot.type))].map(type=>{
   const group=slots.filter((slot:any)=>slot.type===type),first=group[0];
   const nearest=group.map((a:any)=>Math.min(...(group.length>1?group:slots).filter((b:any)=>a!==b).map((b:any)=>Math.hypot(a.x-b.x,a.y-b.y))));
   const travel=nearest.length&&nearest.every(Number.isFinite)?nearest.reduce((a:number,b:number)=>a+b,0)/nearest.length*1.25:200;
-  return {...engine.hunt.profile(area,first.sector,type),type,area,entry:region.min,region:region.name,name:engine.prisonCatalog[type].name,slots:group.length,travel,respawnSeconds:behavior.RESPAWN_MS/1000};
+  return {...engine.hunt.profile(area,first.sector,type,.5,{legacy:true}),type,area,entry:region.min,region:region.name,name:engine.prisonCatalog[type].name,slots:group.length,travel,respawnSeconds:behavior.RESPAWN_MS/1000};
  });
 });
 async function dailyAvailable(client:PoolClient){
  return !!(await client.query("SELECT to_regclass('mare_game.contract_daily_cycles') present")).rows[0].present;
 }
-type DailyInputs={state:CharacterState;fighter:Awaited<ReturnType<typeof readFighter>>;prison:Awaited<ReturnType<typeof readPrison>>};
+type DailyInputs={state:CharacterState};
 async function dailyState(client:PoolClient,id:string,inputs?:DailyInputs){
  if(!await dailyAvailable(client))return null;
  const clock=(await client.query(`SELECT floor(extract(epoch FROM transaction_timestamp())*1000)::bigint now,
@@ -45,23 +43,11 @@ async function dailyState(client:PoolClient,id:string,inputs?:DailyInputs){
  const cycle=contracts.day(Number(clock.now));
  let row=clock.state?{state:clock.state}:null;
  if(!row){
-  const state=inputs?.state??await readCharacterState(client,id),fighter=inputs?.fighter??await readFighter(client,id,state);
+  const state=inputs?.state??await readCharacterState(client,id),fighter=await readFighter(client,id,state,{legacyCadence:true});
   if(fighter.rulesetId!=='original-character-v1')return null;
-  const prison=inputs?inputs.prison:(await client.query('SELECT state FROM mare_game.character_prison WHERE character_id=$1',[id])).rows[0]?.state;
-  const cleared=prison?.cleared??0,floor=cleared+1;
-  const prepared=impel.resolveEncounter(prison?.encounter,engine.prisonCatalog);
-  const candidates=!impel.validFloor(floor)?[]:prepared?.floor===floor?[prepared]:
-   (impel.isBossFloor(floor)?[impel.spawnImpelDownBoss(floor,engine.prisonCatalog)].filter(Boolean):impel.commonPool(engine.prisonCatalog)).map((m:any)=>impel.scaleMonster(m,floor));
   const stats=fighter.stats;
-  const prisonEligible=candidates.length>0&&candidates.every((m:any)=>{
-   const magic=stats.attack===stats.elemental&&stats.attack!==stats.physical;
-   const hit=Math.max(1,(stats.attack-(magic?m.magicDefense*.15:m.def*.30))*.5);
-   const seconds=m.hp/(hit*Math.max(.1,stats.speed));
-   const incoming=m.atk*100/(100+stats.defense*3)/m.attackSec;
-   return seconds<=900&&seconds*Math.max(0,incoming-stats.healthRegen)<stats.maxHP*2;
-  });
   const seed=createHash('sha256').update(id+':'+cycle).digest().readUInt32BE();
-  const daily=contracts.daily({cycle,level:clock.level,cleared,seed,profiles,stats,prisonEligible,goldFactor:engine.catalog.factions[clock.faction_id].gold});
+  const daily=contracts.daily({cycle,level:clock.level,seed,profiles,stats,goldFactor:engine.catalog.factions[clock.faction_id].gold});
   row=(await client.query('INSERT INTO mare_game.contract_daily_cycles(character_id,cycle,state) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING state',[id,cycle,JSON.stringify(daily)])).rows[0]
    ??(await client.query('SELECT state FROM mare_game.contract_daily_cycles WHERE character_id=$1 AND cycle=$2',[id,cycle])).rows[0];
  }
