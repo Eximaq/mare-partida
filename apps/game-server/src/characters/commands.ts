@@ -1,3 +1,6 @@
+import {executeSocialContact,type SocialContactCommand} from './social-contacts.js';
+import {executeSocialMail} from './mail.js';
+import {mutateTrade,cancelBlockedTrade} from './trade.js';
 import {isPartyAction,mutateParty} from './party.js';
 import {executeCrew} from './crew.js';
 import {chooseProfession} from './crew-professions.js';
@@ -36,12 +39,13 @@ export async function executeCharacterCommand(
     [characterId, sessionId, digest(input.control.token), input.control.epoch],
   );
   if (!controller.rowCount) throw new AuthFault(409, "control_conflict");
-  const party=await lockParty(client,characterId);
+  const social = /^(friend|contact|message|mail|trade)\./.test(input.action);
+  const party=social?null:await lockParty(client,characterId);
   // Authority is checked on every replay. Credentials are deliberately excluded from storage
   // and identity, so a newly authorized controller can reconcile a lost response.
   const intent = input.action === "attributes.allocate" ? attributeKeys.map(k=>input.payload.allocation[k]) :
     input.action === "inventory.buy" || input.action === "inventory.sell" ? [input.payload.itemId,input.payload.quantity] : input.payload;
-  const hash = digest(JSON.stringify([input.action, input.expectedVersion, intent]));
+  const hash = digest(JSON.stringify([input.action, social ? null : input.expectedVersion, intent]));
   const previous = (await client.query<{ request_hash: string; result: unknown }>(
     "SELECT request_hash,result FROM mare_game.character_commands WHERE character_id=$1 AND request_id=$2",
     [characterId, input.requestId],
@@ -51,15 +55,24 @@ export async function executeCharacterCommand(
     return characterCommandResultSchema.parse(previous.result);
   }
   let state = await readCharacterState(client, characterId);
-  if (state.version !== input.expectedVersion) throw new AuthFault(409, "state_version_conflict");
+  if (!social && state.version !== input.expectedVersion) throw new AuthFault(409, "state_version_conflict");
   // Keep immutable receipts for replay; bound request rate, not a player's lifetime.
   const budget = (await client.query<{recent:number}>(
-    "SELECT count(*)::int AS recent FROM mare_game.character_commands WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds' AND result->>'action'<>'battle.reward'",[characterId]
+    "SELECT count(*)::int AS recent FROM mare_game.character_commands WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds' AND result->>'action'<>'battle.reward' AND ((result->>'action') ~ '^(friend|contact|message|mail|trade)[.]')=$2",[characterId,social]
   )).rows[0]!;
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
   if(party&&['prison.prepare','prison.enter'].includes(input.action))throw new AuthFault(409,'party_prison_individual');
   if(party&&['world.travel','world.return','dungeon.enter'].includes(input.action)){
    const b=await readBattle(client,characterId);if(b?.partyInstanceId||input.action==='dungeon.enter')throw new AuthFault(409,'party_collective_navigation_required');
+  }
+  let mail;
+  if(social){
+    if(input.action.startsWith('mail.'))mail=await executeSocialMail(client,characterId,input,state);
+    else if(input.action.startsWith('trade.'))await mutateTrade(client,characterId,input as Extract<CharacterCommand,{action:`trade.${string}`}>);
+    else{
+      await executeSocialContact(client,characterId,input as SocialContactCommand);
+      if(input.action==='contact.block'&&input.payload.blocked)await cancelBlockedTrade(client,characterId,input.payload.targetId.toLowerCase());
+    }
   }
   if(isPartyAction(input.action))await mutateParty(client,characterId,input,state);
   switch(input.action){
@@ -72,7 +85,7 @@ export async function executeCharacterCommand(
       await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[characterId]);break;
   }
   state=await readCharacterState(client,characterId);
-  const before=state,powerBefore=input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);
+  const before=state,powerBefore=social||input.action==='state.sync'?0:await permanentAchievementPower(client,characterId,state);
   if(input.action.startsWith('profile.')){await mutateProfile(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(['fruit.cast','fruit.transform','fruit.move'].includes(input.action)){await mutateFruit(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==='fruit.register'){await registerFruit(client,characterId,input.requestId,state,input.payload.itemId);state=await readCharacterState(client,characterId);}
@@ -109,8 +122,8 @@ export async function executeCharacterCommand(
   let inventory;
   if(input.action==="inventory.buy"||input.action==="inventory.sell"||input.action==="equipment.equip"||input.action==="equipment.unequip") {inventory=await mutateInventory(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==="combat.claim") inventory=await readInventory(client,characterId);
-  if(input.action!=='state.sync')await observeServerAchievements(client,characterId,before,state,{powerBefore,...(input.action==='world.travel'?{island:input.payload.islandId}:{}),...(input.action==='combat.claim'?{kills:1}:{})});
-  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(world ? {world} : {}), ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}), ...(inventory ? {inventory} : {}) });
+  if(!social&&input.action!=='state.sync')await observeServerAchievements(client,characterId,before,state,{powerBefore,...(input.action==='world.travel'?{island:input.payload.islandId}:{}),...(input.action==='combat.claim'?{kills:1}:{})});
+  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(mail ? {mail} : {}), ...(world ? {world} : {}), ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}), ...(inventory ? {inventory} : {}) });
   await client.query(
     "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)",
     [characterId, input.requestId, hash, JSON.stringify(result)],

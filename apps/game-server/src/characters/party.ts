@@ -5,6 +5,7 @@ import {randomUUID} from 'node:crypto';
 import {createRequire} from 'node:module';
 import {partyActions,type CharacterCommand,type CharacterState} from '@mare/shared';
 import {AuthFault} from '../auth/errors.js';
+import {assertSocialContactAllowed,isSocialCharacterOnline} from './social-contacts.js';
 import {membership,lockParty,partyAvailable} from './party-store.js';
 import {readBattleRows,readBattle,storeBattle} from './battle.js';
 import {readWorlds,readWorld,mutateWorld} from './world.js';
@@ -59,6 +60,7 @@ export async function mutateParty(c:PoolClient,id:string,input:CharacterCommand,
   await c.query('SELECT id FROM mare_game.parties WHERE id=$1 FOR UPDATE',[invite.party_id]);
   const fresh=(await c.query("SELECT * FROM mare_game.party_invites WHERE id=$1 AND status='pending' AND expires_at>clock_timestamp() FOR UPDATE",[invite.id])).rows[0];if(!fresh)throw new AuthFault(409,'party_invite_expired');
   if(p.accept){
+   await assertSocialContactAllowed(c,invite.sender_id,id);
    if(party||await membership(c,id))throw new AuthFault(409,'party_already_joined');
    const roster=await presence(c,invite.party_id),g=(await c.query('SELECT * FROM mare_game.parties WHERE id=$1',[invite.party_id])).rows[0];
    if(!g||g.closed_at||roster.length>=P.policy.capacity)throw new AuthFault(409,'party_full');
@@ -73,8 +75,11 @@ export async function mutateParty(c:PoolClient,id:string,input:CharacterCommand,
   if(!['party.leave','party.ready'].includes(input.action)&&!leader)throw new AuthFault(403,'party_leader_required');
   if(input.action==='party.invite'){
    if(active)throw new AuthFault(409,'party_activity_active');if(roster.length>=4)throw new AuthFault(409,'party_full');
-   const target=(await c.query(`SELECT ch.id FROM mare_game.characters ch JOIN mare_game.character_control cc ON cc.character_id=ch.id JOIN mare_game.app_sessions s ON s.id=cc.session_id JOIN mare_game.accounts a ON a.id=ch.account_id WHERE lower(ch.name)=lower($1) AND cc.expires_at>clock_timestamp() AND s.revoked_at IS NULL AND s.kind='play' AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp() AND s.account_epoch=a.auth_epoch ORDER BY ch.id LIMIT 2`,[p.name])).rows;
+   const target=(await c.query(`SELECT ch.id FROM mare_game.characters ch JOIN mare_game.character_control cc ON cc.character_id=ch.id JOIN mare_game.app_sessions s ON s.id=cc.session_id JOIN mare_game.accounts a ON a.id=ch.account_id WHERE ${p.targetId?'ch.id=$1':'lower(ch.name)=lower($1)'} AND cc.expires_at>clock_timestamp() AND s.revoked_at IS NULL AND s.kind='play' AND s.expires_at>clock_timestamp() AND s.idle_expires_at>clock_timestamp() AND s.provider_valid_until>clock_timestamp() AND s.account_epoch=a.auth_epoch ORDER BY ch.id LIMIT 2`,[p.targetId??p.name])).rows;
    if(target.length!==1)throw new AuthFault(404,'party_player_unavailable');const to=target[0].id;if(to===id)throw new AuthFault(409,'party_self_invite');if(await membership(c,to))throw new AuthFault(409,'party_already_joined');
+   await assertSocialContactAllowed(c,id,to);
+   if(p.targetId&&!await isSocialCharacterOnline(c,to))throw new AuthFault(404,'party_player_unavailable');
+   const b=await readBattle(c,to);if(b?.prison||b?.dungeon)throw new AuthFault(409,'party_member_unavailable');
    await c.query("UPDATE mare_game.party_invites SET status='expired' WHERE party_id=$1 AND target_id=$2 AND expires_at<=clock_timestamp() AND status='pending'",[party.id,to]);
    await c.query("INSERT INTO mare_game.party_invites(id,party_id,sender_id,target_id,expires_at) VALUES($1,$2,$3,$4,clock_timestamp()+interval '60 seconds') ON CONFLICT(party_id,target_id) WHERE status='pending' DO NOTHING",[randomUUID(),party.id,id,to]);
   }else if(input.action==='party.leave'||input.action==='party.kick'){

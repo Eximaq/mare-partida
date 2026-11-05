@@ -122,3 +122,22 @@ GRANT UPDATE (experience) ON mare_game.character_professions TO mare_runtime;
 GRANT INSERT (character_id,week_start,issued_at,spec), UPDATE (progress,material_count) ON mare_game.profession_weeks TO mare_runtime;
 GRANT INSERT (character_id,week_start,kind,event_id) ON mare_game.profession_events TO mare_runtime;
 GRANT INSERT (character_id,week_start,objective,amount) ON mare_game.profession_xp TO mare_runtime;
+
+-- Official letters retain immutable reward identity and attachment contents.
+GRANT SELECT ON mare_game.social_mail TO mare_runtime;
+GRANT INSERT (character_id,source,source_id,reward_id,title,message,attachments), UPDATE (read_at,claimed_at,claimed_request_id,archived_at) ON mare_game.social_mail TO mare_runtime;
+
+-- Social projections read public character data and persist actions through the authenticated server.
+GRANT SELECT ON mare_game.social_friend_requests,mare_game.social_contact_blocks,mare_game.social_presence,
+  mare_game.social_conversations,mare_game.social_private_messages TO mare_runtime;
+GRANT INSERT(id,sender_id,target_id),UPDATE(status) ON mare_game.social_friend_requests TO mare_runtime;
+GRANT INSERT(blocker_id,target_id),DELETE ON mare_game.social_contact_blocks TO mare_runtime;
+GRANT INSERT(character_id,control_epoch,last_seen),UPDATE(control_epoch,last_seen) ON mare_game.social_presence TO mare_runtime;
+GRANT INSERT(character_low,character_high),UPDATE(low_read_through,high_read_through) ON mare_game.social_conversations TO mare_runtime;
+GRANT INSERT(character_low,character_high,sender_id,request_id,body) ON mare_game.social_private_messages TO mare_runtime;
+
+-- Trade keeps live reservations separate from inventory and stores participant receipts.
+GRANT SELECT ON mare_game.social_trades,mare_game.social_trade_members,mare_game.social_trade_reservations TO mare_runtime;
+GRANT INSERT(id,initiator_id,target_id,expires_at),UPDATE(status,offer_version,initiator_locked,target_locked,initiator_confirmed,target_confirmed,expires_at,ended_at,receipt) ON mare_game.social_trades TO mare_runtime;
+GRANT INSERT(character_id,trade_id),DELETE ON mare_game.social_trade_members TO mare_runtime;
+GRANT INSERT(character_id,item_id,trade_id,quantity,item),UPDATE(quantity),DELETE ON mare_game.social_trade_reservations TO mare_runtime;

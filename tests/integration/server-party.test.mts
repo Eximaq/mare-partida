@@ -68,9 +68,15 @@ test('shared dungeon keeps one scaled boss and each eligible character owns a on
  for(const w of all)assert.equal((await w.read()).dungeons.records.alvida.phase,'pending');
  const map=require('../../world-catalog.cjs').load().maps['quest-dungeons'],chest=map.interactions[0];
  for(const w of all)await f.pool.query('UPDATE mare_game.character_world SET x=$2,y=$3 WHERE character_id=$1',[w.c.id,chest.x,chest.y+40]);
- await a.doit('dungeon.claim',{dungeonId:'alvida'});assert.equal((await b.read()).dungeons.records.alvida.phase,'pending');
+ await a.doit('dungeon.claim',{dungeonId:'alvida'});assert.equal((await a.read()).battle.partyInstanceId,undefined);
+ assert.equal((await b.read()).battle.partyInstanceId,instance);assert.equal((await b.read()).dungeons.records.alvida.phase,'pending');
+ await f.pool.query("UPDATE mare_game.party_instances SET tick_at=clock_timestamp()-interval '150 milliseconds' WHERE id=$1",[instance]);await tickPartyBattles(f.pool);
  await b.doit('dungeon.claim',{dungeonId:'alvida'});
- for(const w of all){const o=await w.read();assert.equal(o.originalInventory.inventory.find((i:any)=>i.materialId==='akuma_fragment_e').quantity,5);await assert.rejects(w.doit('dungeon.claim',{dungeonId:'alvida'}),{code:'dungeon_reward_unavailable'});}
+ const letters=[];
+ for(const w of all){const o=await w.read();assert(!o.originalInventory.inventory.some((i:any)=>i.materialId==='akuma_fragment_e'));
+  const mailId=o.dungeons.records.alvida.mailId;assert(mailId);letters.push(mailId);await w.doit('mail.claim',{mailId});
+  assert.equal((await w.read()).originalInventory.inventory.find((i:any)=>i.materialId==='akuma_fragment_e').quantity,5);await assert.rejects(w.doit('dungeon.claim',{dungeonId:'alvida'}),{code:'dungeon_reward_unavailable'});}
+ assert.notEqual(letters[0],letters[1]);
  assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.party_deaths WHERE instance_id=$1',[instance])).rows[0].n,1);
 }));
 

@@ -63,6 +63,15 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
  await event(client,id,requestId,state.version,passives.action??(first?'battle.first':'battle.reward'),before,after,BigInt(state.gold),gold,{experience:xp.toString(),spawns:kills.map(k=>k.id),potionsUsed,firstArea:first?.area??null,domainItem:passives.grant?.id??null,talentSteals:passives.steals??[],underworld,rareChance});
  return {xp,gold};
 }
+export function validateInventoryItem(item:OriginalItemInstance,owner?:string){
+  if(item.qty!==undefined&&defs[item.def]?.kind!=='haki-fragment')throw new AuthFault(503,'original_inventory_unavailable');
+  if(owner&&item.boundToCharacter&&item.boundToCharacter!==owner)throw new AuthFault(503,'original_inventory_unavailable');
+  const def=defs[item.def];
+  if((item.type==='akuma_no_mi'||item.fruitId!==undefined)&&(def?.type!=='akuma_no_mi'||item.fruitId!==def.fruitId))throw new AuthFault(503,'original_inventory_unavailable');
+  if(def?.kind==='weapon-fragment'&&(item.materialId!==def.materialId||!item.quantity||!item.boundToCharacter||item.binding!=='character'))throw new AuthFault(503,'original_inventory_unavailable');
+  if(def?.kind==='xp-boost'&&(!item.boundToCharacter||item.binding!=='character'||item.quantity!==undefined))throw new AuthFault(503,'original_inventory_unavailable');
+  if(def?.kind==='akuma-fragment'&&(!item.boundToCharacter||item.binding!=='character'||item.materialId!==def.materialId||item.rank!==def.rank||!item.quantity))throw new AuthFault(503,'original_inventory_unavailable');
+}
 function valid(input: unknown,owner?:string): OriginalInventory {
   const parsed = originalInventorySchema.safeParse(input);
   if (!parsed.success)
@@ -74,15 +83,7 @@ function valid(input: unknown,owner?:string): OriginalInventory {
     ] as OriginalItemInstance[];
   if (new Set(all.map((i) => i.id)).size !== all.length)
     throw new AuthFault(503, "original_inventory_unavailable");
-  for(const item of all){
-    if(item.qty!==undefined&&defs[item.def]?.kind!=='haki-fragment')throw new AuthFault(503,'original_inventory_unavailable');
-    if(owner&&item.boundToCharacter&&item.boundToCharacter!==owner)throw new AuthFault(503,'original_inventory_unavailable');
-    const def=defs[item.def];
-    if((item.type==='akuma_no_mi'||item.fruitId!==undefined)&&(def?.type!=='akuma_no_mi'||item.fruitId!==def.fruitId))throw new AuthFault(503,'original_inventory_unavailable');
-    if(def?.kind==='weapon-fragment'&&(item.materialId!==def.materialId||!item.quantity||!item.boundToCharacter||item.binding!=='character'))throw new AuthFault(503,'original_inventory_unavailable');
-    if(def?.kind==='xp-boost'&&(!item.boundToCharacter||item.binding!=='character'||item.quantity!==undefined))throw new AuthFault(503,'original_inventory_unavailable');
-    if(def?.kind==='akuma-fragment'&&(!item.boundToCharacter||item.binding!=='character'||item.materialId!==def.materialId||item.rank!==def.rank||!item.quantity))throw new AuthFault(503,'original_inventory_unavailable');
-  }
+  for(const item of all)validateInventoryItem(item,owner);
   for (const [slot, item] of Object.entries(v.equipment))
     if (item && defs[item.def]?.slot !== slot)
       throw new AuthFault(503, "original_inventory_unavailable");
@@ -134,18 +135,24 @@ export async function writeInventory(
   i: OriginalInventory,
 ) {
   valid(i,id);
-  await client.query(
-    "UPDATE mare_game.game_inventory SET inventory=$2::jsonb,equipment=$3::jsonb,materials=$4,potions=$5,forge_seq=$6,forge_history=$7::jsonb WHERE character_id=$1",
-    [
-      id,
-      JSON.stringify(i.inventory),
-      JSON.stringify(i.equipment),
-      i.materials,
-      i.potions,
-      i.forgeSeq,
-      JSON.stringify(i.forgeHistory),
-    ],
-  );
+  try {
+    await client.query(
+      "UPDATE mare_game.game_inventory SET inventory=$2::jsonb,equipment=$3::jsonb,materials=$4,potions=$5,forge_seq=$6,forge_history=$7::jsonb WHERE character_id=$1",
+      [
+        id,
+        JSON.stringify(i.inventory),
+        JSON.stringify(i.equipment),
+        i.materials,
+        i.potions,
+        i.forgeSeq,
+        JSON.stringify(i.forgeHistory),
+      ],
+    );
+  } catch (error) {
+    if ((error as {constraint?:string})?.constraint === "social_trade_inventory_reserved")
+      throw new AuthFault(409, "trade_item_reserved");
+    throw error;
+  }
 }
 export async function event(
   client: PoolClient,

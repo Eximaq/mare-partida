@@ -1,6 +1,7 @@
 import {randomUUID} from 'node:crypto';
 import type {PoolClient} from 'pg';
 import {AuthFault} from '../auth/errors.js';
+import {assertSocialContactAllowed} from './social-contacts.js';
 import {crewCapacity,crewFacilities,crewLevel,crewPolicy,crewProject,seaWar,type CrewFacility} from './crew-config.js';
 import {creditCrewDonation,ensureCrewMissions,readCrewMissions} from './crew-activity.js';
 import {creditProfessionDonation,professionLevel,readCrewProfessionBenefits} from './crew-professions.js';
@@ -16,7 +17,7 @@ type CrewCommand = {
 } & (
   | {action:'crew.create';payload:{name:string;tag:string;flag:string;policy:CrewRecruitment;minLevel:number}}
   | {action:'crew.join'|'crew.apply';payload:{crewId:string}}
-  | {action:'crew.invite';payload:{name:string}}
+  | {action:'crew.invite';payload:{name:string}|{targetId:string}}
   | {action:'crew.respond';payload:{requestId:string;accept:boolean}}
   | {action:'crew.recruitment';payload:{policy:CrewRecruitment;minLevel:number}}
   | {action:'crew.role';payload:{memberId:string;role:'officer'|'member'}}
@@ -27,7 +28,7 @@ type CrewCommand = {
   | {action:'crew.upgrade';payload:{facility:CrewFacility;expectedLevel:number}}
 );
 type CrewRequest={
-  id:string;crew_id:string;character_id:string;kind:'application'|'invitation';
+  id:string;crew_id:string;character_id:string;sender_id:string;kind:'application'|'invitation';
   status:'pending'|'accepted'|'declined'|'cancelled'|'expired';expires_at:Date;
 };
 type MemberViewRow={
@@ -148,7 +149,10 @@ async function resolveRequest(client:PoolClient,id:string,requestId:string,accep
     SELECT * FROM mare_game.crew_requests
     WHERE id=$1 AND status='pending' AND expires_at>clock_timestamp()`,[requestId])).rows[0];
   if(!request)throw new AuthFault(409,'crew_request_expired');
-  if(accept)await addMember(client,crew,request.character_id,request.id);
+  if(accept){
+    if(request.kind==='invitation')await assertSocialContactAllowed(client,request.sender_id,id);
+    await addMember(client,crew,request.character_id,request.id);
+  }
   else await client.query("UPDATE mare_game.crew_requests SET status='declined' WHERE id=$1",[request.id]);
 }
 
@@ -231,13 +235,18 @@ export async function executeCrew(client:PoolClient,id:string,input:CrewCommand,
       switch(input.action) {
         case 'crew.invite': {
           assertOfficer(role);
+          const payload=input.payload,byId='targetId' in payload;
           const candidates=(await client.query<{id:string}>(
-            'SELECT id FROM mare_game.characters WHERE lower(name)=lower($1) ORDER BY id LIMIT 2',[input.payload.name])).rows;
+            byId?'SELECT id FROM mare_game.characters WHERE id=$1':
+              'SELECT id FROM mare_game.characters WHERE lower(name)=lower($1) ORDER BY id LIMIT 2',
+            [byId?payload.targetId:payload.name])).rows;
           const target=candidates[0]?.id;
           if(candidates.length!==1||!target)throw new AuthFault(404,'crew_character_missing');
           if(target===id)throw new AuthFault(409,'crew_self_invite');
           await lockEntry(client,target);
-          if(await crewMember(client,target))throw new AuthFault(409,'crew_already_joined');
+          await assertSocialContactAllowed(client,id,target);
+          if(byId)await enforceEntry(client,target);
+          else if(await crewMember(client,target))throw new AuthFault(409,'crew_already_joined');
           await checkEligibility(client,crew,target);
           await sendRequest(client,crew,target,id,'invitation');
           break;

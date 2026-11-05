@@ -1,3 +1,7 @@
+import {heartbeatSocialPresence,readPrivateMessages,readSocialContacts,readSocialContactBadge} from '../characters/social-contacts.js';
+import {readSocialMail,readSocialMailCount} from '../characters/mail.js';
+import {reapExpiredTrades,readTrade,readSocialTradeCount} from '../characters/trade.js';
+
 import {readCombatInputs} from '../characters/combat-inputs.js';
 import {readPartyMotion} from '../characters/party.js';
 import {readParty} from '../characters/party.js';
@@ -38,6 +42,11 @@ import { executeCharacterCommand } from "../characters/commands.js";
 import { readHunt } from "../characters/hunt.js";
 import { readLevelProgression } from "../characters/progression.js";
 import { readCombat } from "../characters/combat.js";
+async function hasSocial(client:PoolClient){
+  return (await client.query(`SELECT to_regclass('mare_game.social_friend_requests') IS NOT NULL AND to_regclass('mare_game.social_mail') IS NOT NULL AND to_regclass('mare_game.social_trades') IS NOT NULL AS enabled`)).rows[0]?.enabled===true;
+}
+type SocialRead={view:'badge'|'contacts'|'messages'|'mail'|'trade';search?:string|undefined;targetId?:string|undefined;before?:string|undefined;after?:string|undefined;tab?:'pending'|'claimed'|undefined;history?:{at:string;id:string}|undefined};
+
 type SessionRow = {
   id: string;
   account_id: string;
@@ -305,6 +314,20 @@ export class AuthService {
     });
   }
   async hierarchyRanking(token:string,faction:string|null){return this.withSession(token,"play",client=>hierarchyRanking(client,faction));}
+  async socialState(token:string,id:string,query:SocialRead){
+    return this.withSession(token,'play',async(client,row)=>{
+      await this.owned(client,row.account_id,id);
+      if(!await hasSocial(client))throw new AuthFault(503,'social_unavailable');
+      if(query.view==='badge'){
+        await heartbeatSocialPresence(client,id,row.id);
+        return {...await readSocialContactBadge(client,id),...await readSocialMailCount(client,id),tradeInvites:await readSocialTradeCount(client,id)};
+      }
+      if(query.view==='contacts')return readSocialContacts(client,id,{search:query.search??''});
+      if(query.view==='messages')return readPrivateMessages(client,id,query.targetId!,{...(query.before?{before:query.before}:{}),...(query.after?{after:query.after}:{})});
+      if(query.view==='mail')return readSocialMail(client,id,query.tab,query.before);
+      return readTrade(client,id,query.history);
+    });
+  }
   async crewState(token:string,id:string,search:string,identityOnly=false){
     return this.withSession(token,"play",async(client,row)=>{
       await this.owned(client,row.account_id,id,!identityOnly);
@@ -342,7 +365,7 @@ export class AuthService {
       const battle=await readBattle(client,id),haki=battle?hakiView(battle):null,prison=await readPrison(client,id);
       const fruits=inputs?.fruits??await readFruits(client,id),talents=inputs?.talents??await readTalents(client,id,state),power=inputs?.permanentPower();
       const combatPreview=inputs?.inventory?inputs.fighter(battle):await readFighter(client,id,state);
-      return { sync:{protocol:2}, ...(inputs?.crewAvailable?{crewAvailable:true}:{}), state, party, profile, fruits, hierarchy:await readHierarchy(client,id,state,power), haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements:await readAchievements(client,id,state,{power,prison,haki,fruits}), talents, contracts:await readContracts(client,id,{state,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      return { sync:{protocol:2}, ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...(await hasSocial(client)?{socialAvailable:true}:{}), state, party, profile, fruits, hierarchy:await readHierarchy(client,id,state,power), haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements:await readAchievements(client,id,state,{power,prison,haki,fruits}), talents, contracts:await readContracts(client,id,{state,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(
@@ -634,5 +657,6 @@ export class AuthService {
       WHERE id IN (SELECT s.id FROM mare_game.app_sessions s JOIN mare_game.accounts a ON a.id=s.account_id
       WHERE token_ciphertext<>'' AND (revoked_at IS NOT NULL OR expires_at<now() OR idle_expires_at<now()
       OR account_epoch<>a.auth_epoch) LIMIT 1000 FOR UPDATE OF s SKIP LOCKED)`);
+    await reapExpiredTrades(this.options.pool);
   }
 }
