@@ -27,6 +27,10 @@ for(const [width,height] of [[1920,1080],[1672,940],[1448,1086],[1366,768],[1280
   for(const sel of ['.forge2-tabs','.forge2-operation']){
    const rect=await p.locator(sel).boundingBox();assert.ok(rect.x>=0&&rect.x+rect.width<=width+1,JSON.stringify({width,height,tab,sel,rect}));
   }
+  if(tab==='upgrade'&&width>=1280){
+   const vertical=await p.locator('.forge2-operation-content').evaluate(e=>e.scrollHeight-e.clientHeight);
+   assert.ok(vertical<=2,JSON.stringify({width,height,vertical}));
+  }
   const action=p.locator('.forge2-operation-content [data-forge-action]').last();await action.scrollIntoViewIfNeeded();const rect=await action.boundingBox();assert.ok(rect.y>=0&&rect.y+rect.height<=height+1,JSON.stringify({width,height,tab,rect}));
   if(tab==='imbue'){await p.locator('.forge2-imbue-preview summary').click();assert.ok(await p.locator('.forge2-imbue-preview .forge2-preview').isVisible());await p.locator('.forge2-imbue-preview summary').click()}
   if(width===1672&&tab==='upgrade'){
@@ -37,6 +41,10 @@ for(const [width,height] of [[1920,1080],[1672,940],[1448,1086],[1366,768],[1280
    await p.screenshot({path:path.join(out,'upgrade-desktop.png')});
    const chosen=await p.evaluate(()=>({head:__forgeQA.game.equipment.head.id,weapon:__forgeQA.game.equipment.weapon.id}));
    const stage=p.locator('.forge-anvil-stage');
+   assert.equal(await stage.locator('.forge-fire').count(),1);
+   assert.equal(await stage.locator('.forge-embers i').count(),20);
+   assert.equal(await p.locator('.forge2-operation-content details').count(),0);
+
    const artwork=await stage.locator('.forge-bench-art').getAttribute('src');
    const weaponArt=await stage.locator('.forge-bench-item .item-icon').getAttribute('src');
    await p.locator('[data-forge-item="'+chosen.head+'"]').click();
