@@ -134,3 +134,9 @@ Capturas e relatórios de QA permanecem fora do repositório. Nenhum save pessoa
 - python tests/run_honors_hd_browser.py tests/honors_cache_browser.cjs --dist --offline
 
 Playwright/Chromium devem estar instalados. NODE_PATH, CHROME_PATH e MARE_QA_DIR podem ser definidos pelo ambiente. O runner cria e remove seu próprio banco temporário; não acessa a base pessoal do usuário.
+
+## Diário náutico — 05/11/2026
+
+Conquistas usa a moldura de corda, as placas de latão e as fontes Georgia e Barlow Semi Condensed de Talentos. A janela tem até 1.120 × 650 px no desktop. O resumo e as categorias ficam acima da lista, que concentra a rolagem. Em celulares, os cards ocupam uma coluna e os filtros se distribuem em três. Os emblemas do atlas original foram preservados.
+
+O destaque reutiliza `assets/ui/talents-hd/open-sea.jpg` com movimento CSS restrito ao fundo. A animação respeita o ajuste de movimento reduzido do jogo e a preferência do sistema. O progresso geral continua considerando as conquistas elegíveis. O painel conserva a mesma lógica de resgate, atualização e persistência.
