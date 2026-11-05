@@ -1,6 +1,6 @@
 # Personagem e Aparência HD — 31/10/2026
 
-A sprint adapta a tela de Personagem e reutiliza uma única apresentação da aparência na criação (Etapa 03) e na edição posterior. O padrão continua sendo madeira e metal escuro da Forja, molduras douradas, botões HD, títulos Alegreya SC e nome em Alabasta Pirate.
+A sprint adapta a tela de Personagem e reutiliza uma única apresentação da aparência na criação (Etapa 03) e na edição posterior. A criação e a edição de aparência usam o padrão de madeira e metal escuro da Forja. A tela de atributos usa a composição náutica descrita abaixo.
 
 ## Integração
 
@@ -67,3 +67,9 @@ Os seletores alternantes agora têm o mesmo início e fim em todas as linhas, ta
 A faixa das três etapas foi unificada em uma superfície contínua de madeira/metal, com conectores, números circulares, ícones isolados e indicação acessível da etapa atual. As três etapas permanecem alinhadas e sem sobreposição em desktop e celular; o teste confere também que são três elementos irmãos e dois conectores.
 
 Os símbolos isolados usam a revisão de URL `alpha-native-v1` para invalidar os PNGs opacos que já possam estar no cache. A assinatura do compositor foi regenerada após a atualização do módulo de campos.
+
+## Status náutico — 05/11/2026
+
+A janela de Personagem usa três colunas no desktop, duas em tablets e uma em smartphones em retrato. O cabeçalho fica fixo e o corpo oferece uma única rolagem quando a tela é baixa. As molduras reutilizam a corda da HUD em nove fatias para preservar os cantos e repetir a textura nas arestas. Ícones de navegação, títulos e placas reaproveitam a arte do Inventário.
+
+`assets/ui/character-studio/sunset-dock.jpg` (900 × 600, ImageGen `exec-a2c936cc-8f35-4c71-9375-69f20f0de708`) deriva do cenário do protótipo aprovado. A arte do cais fica atrás do canvas do personagem real. O brilho da lanterna, reflexos do mar, bandeirola e partículas têm animações CSS independentes, com redução de movimento pelo sistema ou pela preferência do jogo. A composição dos equipamentos usa o renderizador existente.

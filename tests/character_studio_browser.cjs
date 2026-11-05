@@ -50,7 +50,20 @@ const out=process.env.STUDIO_EVIDENCE||'tmp/character-hd';
  const sharedCreation=await p.locator('.studio-appearance').evaluate(e=>[...e.querySelectorAll('[data-appearance]')].map(n=>n.dataset.appearance));
  await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__studioQA.player);
  await p.evaluate(()=>{__studioQA.level(6);__studioQA.openPanel('character','status');});
- await p.waitForTimeout(300);
+ const dock=p.locator('.studio-dock');
+ await dock.evaluate(async e=>{
+  const src=getComputedStyle(e).backgroundImage.match(/url\("([^"]+)"\)/)?.[1];
+  if(!src)throw new Error('Arte do cais ausente');
+  const art=new Image();art.src=src;await art.decode();
+ });
+ await p.waitForFunction(()=>[...document.querySelectorAll('.studio-dock > [aria-hidden]')].every(e=>e.getAnimations().length===1));
+ await p.emulateMedia({reducedMotion:'reduce'});
+ assert.equal(await dock.evaluate(e=>e.getAnimations({subtree:true}).length),0);
+ await p.emulateMedia({reducedMotion:'no-preference'});
+ await p.evaluate(()=>document.documentElement.dataset.mareMotion='reduced');
+ assert.equal(await dock.evaluate(e=>e.getAnimations({subtree:true}).length),0);
+ await p.evaluate(()=>delete document.documentElement.dataset.mareMotion);
+ await p.waitForFunction(()=>{const c=document.querySelector('#characterSprite');return c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0);});
 await auditSymbols('.attribute-row>.studio-icon,.studio-derived-groups h4 img');await p.screenshot({path:path.join(out,'character-unspent.png')});
  const before=await p.evaluate(()=>({attrs:{...__studioQA.player.attributes},stats:__studioQA.getDerived()}));
  await p.locator('[data-attribute-quantity="5"]').click();await p.locator('[data-attribute-add=strength]').click();
@@ -70,7 +83,7 @@ await auditSymbols('.attribute-row>.studio-icon,.studio-derived-groups h4 img');
  await p.screenshot({path:path.join(out,'character-help.png')});
  await p.keyboard.press('Escape');assert(!(await p.locator('#gameTooltip').isVisible()));assert(await p.locator('#panelOverlay').isVisible());
  await p.locator('.character-derived .studio-help').first().click();assert(await p.locator('#gameTooltip').isVisible());
- await p.locator('.studio-subnav span').click();assert(!(await p.locator('#gameTooltip').isVisible()));
+ await p.locator('#dialogTitle').click();assert(!(await p.locator('#gameTooltip').isVisible()));
  for(const id of ['sword','brawler','gunner','rogue','cyborg','strategist','healer']){
   await p.evaluate(id=>__studioQA.class(id),id);
   await p.waitForFunction(()=>[...document.querySelectorAll('.studio-skills img')].every(img=>img.complete&&img.naturalWidth>0));
@@ -78,16 +91,19 @@ await auditSymbols('.attribute-row>.studio-icon,.studio-derived-groups h4 img');
   assert.equal(images.length,2);
   assert(images.every(img=>img.src.includes('/'+id+'-')));
   assert.equal(await p.locator('#classSkill1Icon img').getAttribute('src'),'assets/ui/character-studio/skills/'+id+'-1.png');
-  assert.equal(await p.locator('#skill2Icon img').getAttribute('src'),'assets/ui/character-studio/skills/'+id+'-2.png');
+  assert.equal(await p.locator('#classSkill2Icon img').getAttribute('src'),'assets/ui/character-studio/skills/'+id+'-2.png');
   assert.equal(await p.locator('[data-derived=maxHP]').count(),1);
   assert.equal(await p.locator('#healThreshold').count(),id==='healer'?1:0);
   await p.screenshot({path:path.join(out,'character-'+id+'.png')});
  }
  await p.evaluate(()=>__studioQA.class('sword'));
- for(const [width,height]of [[1920,1080],[1448,1086],[1366,768],[1280,720],[393,852],[320,568],[852,393]]){
+ for(const [width,height]of [[1920,1080],[1586,992],[1024,768],[1366,768],[1280,720],[393,852],[320,568],[852,393]]){
   await p.setViewportSize({width,height});
   assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   assert(await p.locator('#dialogBody').evaluate(e=>e.scrollWidth<=e.clientWidth+1),'status horizontal overflow '+width);
+  const cards=await p.locator('.studio-card').evaluateAll(els=>els.map(e=>e.getBoundingClientRect().top));
+  if(width>=1280)assert(cards.every(y=>y===cards[0]),'three aligned desktop columns '+width);
+  if(width===1586||width===393){await p.locator('#dialogBody').evaluate(e=>e.scrollTop=0);await p.screenshot({path:path.join(out,'personagem-'+width+'.png')});}
   await p.locator('#cancelAttributes').scrollIntoViewIfNeeded();assert(await p.locator('#cancelAttributes').isVisible());
   if(width===1366||width===393)await p.screenshot({path:path.join(out,'character-'+width+'.png')});
  }
@@ -117,6 +133,6 @@ await auditSymbols('.studio-control-icon');await checkSelectorAlignment();
   if(width===393)await p.screenshot({path:path.join(out,'appearance-editor-mobile.png')});
  }
  assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);
- console.log('Character studio: 4 factions, 7 classes and HUD icons, transactional allocation, keyboard/click help, shared appearance, 4 directions, persistence and 7 viewports passed');
+ console.log('Character studio: 4 factions, 7 classes and HUD icons, transactional allocation, keyboard/click help, shared appearance, 4 directions, persistence and 8 viewports and reduced motion passed');
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exit(1)});
