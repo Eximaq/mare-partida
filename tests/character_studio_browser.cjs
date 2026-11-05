@@ -50,6 +50,14 @@ const out=process.env.STUDIO_EVIDENCE||'tmp/character-hd';
  const sharedCreation=await p.locator('.studio-appearance').evaluate(e=>[...e.querySelectorAll('[data-appearance]')].map(n=>n.dataset.appearance));
  await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));await p.locator('#createCharacter').click();await p.locator('[data-confirm-accept]').click();await p.waitForFunction(()=>__studioQA.player);
  await p.evaluate(()=>{__studioQA.level(6);__studioQA.openPanel('character','status');});
+ const typography=await p.locator('#characterPower').evaluate(async e=>{
+  const style=getComputedStyle(e);
+  const faces=await document.fonts.load('700 32px "Barlow Semi Condensed"','7.201');
+  return {family:style.fontFamily,numbers:style.fontVariantNumeric,loaded:faces.some(face=>face.status==='loaded')};
+ });
+ assert.match(typography.family,/^"?Barlow Semi Condensed/);
+ assert.match(typography.numbers,/tabular-nums/);
+ assert(typography.loaded,'local webfont loaded for combat power');
  const dock=p.locator('.studio-dock');
  await dock.evaluate(async e=>{
   const src=getComputedStyle(e).backgroundImage.match(/url\("([^"]+)"\)/)?.[1];
