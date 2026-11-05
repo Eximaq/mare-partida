@@ -6,6 +6,8 @@
 
 ## 0. Missão e princípio inegociável
 
+Para mudanças em Tripulações, profissões ou ranking coletivo, consulte [Tripulações e pendências](docs/TRIPULACOES.md) antes de alterar as regras.
+
 ### Ferramenta temporária de testes
 
 O laboratório DEV (F8 ou botão DEV) usa `?dev=1` e chave separada `mare-partida-dev-save-v1`; nunca promover esse save para a aventura normal. `dev-tools.js` contém `ENABLED` para desativação posterior. Preservar o isolamento e as validações normais; não liberar sistemas futuros pelo laboratório. Ver `docs/DEV-TOOLS.md`.

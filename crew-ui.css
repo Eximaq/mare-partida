@@ -1,0 +1,334 @@
+/* Crew panels share the forge material and existing HUD typography. */
+#app .crew-mode .dialog {
+  width: min(1100px, calc(100vw - 28px));
+  max-height: calc(100dvh - 32px);
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(#0b1720e8, #07121bf2), var(--rpg-workshop-surface) center/512px;
+  border: 3px double #c29448;
+  border-image: var(--rpg-hd-panel) 28 / 9px stretch;
+  box-shadow: 0 16px 56px #020409dc, inset 0 0 0 2px #362514;
+}
+#app .crew-mode .dialog-header {
+  min-height: 52px;
+  background: linear-gradient(#120b0766,#0c080bd9), var(--rpg-hd-wood) center/384px;
+  border-bottom: 1px solid #b78445;
+}
+#app .crew-mode #dialogTitle {
+  color: #ffe1a1;
+  font: 700 clamp(21px, 3vw, 30px)/1.05 var(--rpg-ui-heading, Georgia, serif);
+}
+#app .crew-mode #dialogTitle::before {
+  content: '';
+  display: inline-block;
+  width: 27px;
+  height: 27px;
+  margin-right: 8px;
+  vertical-align: -.12em;
+  background: url('assets/ui/inventory-final/icons/anchor.png') center/contain no-repeat;
+}
+#app .crew-mode #dialogBody {
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+}
+.crew-window, .crew-contracts, .crew-rank-list {
+  --crew-border: #a98243;
+  --crew-ink: #f5e5c3;
+  --crew-muted: #c9c2ae;
+  --crew-accent: #ffd78a;
+  color: var(--crew-ink);
+  font: 15px/1.3 var(--rpg-ui-reading, 'Segoe UI', sans-serif);
+}
+.crew-window {
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: #a7844a #0b161e;
+  max-height: calc(100dvh - 114px);
+  padding: 10px;
+}
+.crew-window :is(h2,h3,h4,p,figure), .crew-contracts :is(h3,p,figure) { margin: 0; }
+.crew-window :is(h2,h3,h4), .crew-contracts h3 {
+  font-family: var(--rpg-ui-heading, Georgia, serif);
+  color: var(--crew-accent);
+  overflow-wrap: anywhere;
+}
+.crew-window h2 { font-size: clamp(18px, 2vw, 23px); }
+.crew-window h3, .crew-contracts h3 {
+  font-size: 17px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #9d783e70;
+}
+.crew-window h4 { font-size: 15px; }
+.crew-window small, .crew-contracts small, .crew-rank-list small {
+  color: var(--crew-muted);
+  font-size: 13px;
+}
+.crew-panel-inner, .crew-card, .crew-contracts, .crew-overview-side, .crew-directory, .crew-member-list {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+}
+.crew-layout {
+  display: grid;
+  grid-template-columns: 164px minmax(0, 1fr);
+  align-items: start;
+  gap: 9px;
+}
+.crew-layout[data-overview="true"] { grid-template-columns: 164px minmax(0, 1fr) minmax(215px, .6fr); }
+.crew-nav {
+  position: sticky;
+  top: 0;
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  background: linear-gradient(#091621f0,#0c1b25f9), var(--rpg-workshop-surface) center/420px;
+  border: 1px solid #9b723b;
+  padding: 5px;
+}
+.crew-window :is(button,input,select) { font: inherit; }
+.crew-window :is(button,input,select,canvas):focus-visible {
+  outline: 2px solid #ffe18e;
+  outline-offset: 2px;
+}
+.crew-window button {
+  min-height: 33px;
+  border: 1px solid #a77e43;
+  border-radius: 4px;
+  color: #f4e5c4;
+  background: linear-gradient(#192b38,#0d1924);
+  padding: 4px 8px;
+  cursor: pointer;
+  line-height: 1.14;
+}
+.crew-window button:hover:not(:disabled) { border-color: #ffe2a0; }
+.crew-window button:disabled { opacity: .55; cursor: not-allowed; }
+.crew-window[aria-busy="true"] button { cursor: wait; }
+#app #panelOverlay.crew-mode .crew-window button.crew-primary,
+#app #panelOverlay.crew-mode .crew-nav button[aria-pressed="true"] {
+  background: #6e4a20 var(--rpg-hd-button) center/100% 100%;
+  color: #fff0c8;
+  border-color: #e7ba70;
+  box-shadow: inset 0 0 0 1px #bb853b80;
+}
+.crew-window button.crew-danger { color: #ffcab8; border-color: #af6d5b; }
+.crew-nav button {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 18px 1fr;
+  text-align: left;
+  gap: 5px;
+  min-width: 0;
+}
+.crew-nav button span { color: #e2b96c; font-size: 17px; }
+.crew-card, .crew-banner {
+  border: 1px solid #a98243;
+  border-radius: 5px;
+  background: linear-gradient(#122632e8,#091620f2), var(--rpg-workshop-surface) center/500px;
+  box-shadow: inset 0 0 0 1px #cfaa6840;
+  padding: 9px;
+}
+.crew-card > :is(p,small), .crew-row small, .crew-member small { overflow-wrap: anywhere; }
+.crew-banner {
+  display: grid;
+  grid-template-columns: 66px minmax(0, 1fr) auto;
+  gap: 9px;
+  align-items: center;
+}
+.crew-banner > .crew-flag {
+  width: 66px;
+  height: 66px;
+  border: 1px solid #b78f4c;
+  border-radius: 4px;
+  background: #0a1722;
+}
+.crew-banner h2 { margin-block: 2px; }
+.crew-banner > b { padding: 7px; background: #08141ce8; border: 1px solid #9a733c; border-radius: 4px; color: #ffe3a3; white-space: nowrap; }
+.crew-banner > b small { display: block; }
+.crew-flag { object-fit: contain; image-rendering: pixelated; vertical-align: middle; flex: none; }
+.crew-flag-empty { display: inline-grid; place-items: center; color: #e0bb75; }
+.crew-identity { display: inline-flex; align-items: center; gap: 4px; max-width: 100%; overflow-wrap: anywhere; }
+.crew-identity .crew-flag { width: 18px; height: 18px; }
+.crew-identity .crew-tag { color: #eac984; white-space: nowrap; }
+.crew-hud-identity:not([hidden]) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 27px;
+  padding: 3px 8px;
+  border: 1px solid #ae8243;
+  border-radius: 4px;
+  background: linear-gradient(#0e202bdc,#09151ef7), var(--rpg-workshop-surface) center/320px;
+  color: #f7e5b9;
+  font: 700 13px/1.1 var(--rpg-ui-reading, 'Segoe UI', sans-serif);
+}
+.crew-hierarchy-ranking { min-width: 0; overflow-wrap: anywhere; }
+.crew-hierarchy-ranking > .crew-button { margin: 5px 10px; }
+#app #panelOverlay.contracts-mode .contracts-tabs:has([data-contract-period="professional"]) {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+}
+#app #panelOverlay.contracts-mode .contracts-tabs:has([data-contract-period="professional"]) .contract-tab {
+  min-width: 0;
+  padding-inline: 4px;
+}
+@media (max-width: 920px) {
+  #app #panelOverlay.contracts-mode .contracts-tabs:has([data-contract-period="professional"]) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.crew-vessel { position: relative; overflow: hidden; width: 100%; max-width: 600px; justify-self: center; border: 1px solid #a98243; border-radius: 4px; background: radial-gradient(ellipse at 68% 20%,#2c566c,#102938 65%,#102631); }
+.crew-vessel svg { width: 100%; height: auto; display: block; aspect-ratio: 500/224; }
+.crew-vessel-scene { position: relative; display: none; width: min(100% - 12px, 400px); margin: 6px auto; }
+.crew-vessel[data-stage="2"] .crew-vessel-scene { width: min(100% - 12px, 420px); }
+.crew-vessel[data-stage="3"] .crew-vessel-scene { width: min(100% - 12px, 440px); }
+.crew-vessel[data-stage="4"] .crew-vessel-scene { width: min(100% - 12px, 455px); }
+.crew-vessel[data-stage="5"] .crew-vessel-scene { width: min(100% - 12px, 475px); }
+.crew-vessel-art { width: 100%; height: auto; image-rendering: pixelated; vertical-align: bottom; }
+.crew-vessel-flag { position: absolute; left: 57.5%; top: 11.1%; display: inline-flex; width: 5.2%; aspect-ratio: 1; }
+.crew-vessel-art-flag { left: var(--crew-flag-x); top: var(--crew-flag-y); width: 8%; border: 1px solid #a37942; border-radius: 1px; background: #11151c; }
+.crew-vessel:has(.crew-vessel-art:not([hidden])) :is(svg,.crew-vessel-fallback-flag) { display: none; }
+.crew-vessel:has(.crew-vessel-art:not([hidden])) .crew-vessel-scene { display: block; }
+.crew-vessel-flag .crew-flag { width: 100%; height: 100%; }
+.crew-vessel figcaption { position: absolute; right: 6px; bottom: 6px; border: 1px solid #a47c46; padding: 3px 7px; color: #ffe3a3; background: #0a1820ee; font-size: 13px; }
+.crew-facilities { display: grid; grid-template-columns: repeat(7,minmax(0,1fr)); gap: 4px; }
+.crew-facilities .crew-facility {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  min-height: 72px;
+  padding: 3px 2px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+.crew-facility[aria-pressed="true"] { border-color: #f4ca74; background: linear-gradient(#4e391e,#142333); }
+.crew-facility > span { font-size: 20px; color: #e0bc74; }
+.crew-facility img { width: 100%; max-height: 40px; object-fit: contain; image-rendering: pixelated; }
+.crew-facility img:not([hidden]) + span { display: none; }
+.crew-facility[data-level="3"] img { filter: brightness(1.08); }
+.crew-facility[data-level="4"] img { filter: brightness(1.14) saturate(1.13); }
+.crew-facility[data-level="5"] img { filter: brightness(1.2) saturate(1.24) drop-shadow(0 0 3px #ffbd5c); }
+.crew-facility-detail { display: flex; flex-wrap: wrap; gap: 6px 10px; justify-content: space-between; align-items: center; padding: 6px; border: 1px solid #8e713c6e; background: #08131d99; }
+.crew-facility-detail > div { flex: 1 1 235px; min-width: 0; }
+.crew-facility-detail strong { color: #f5d18b; }
+.crew-ship-preview summary { cursor: pointer; color: #edcf91; }
+.crew-ship-preview .crew-vessel { margin-top: 5px; }
+.crew-cabin-comparison { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 5px; }
+.crew-cabin-comparison figure { min-width: 112px; border: 1px solid #a87f46; padding: 6px; text-align: center; background: #0d202b; }
+.crew-cabin-comparison figcaption { font-size: 13px; }
+.crew-cabin-comparison figure[data-level="3"] img { filter: brightness(1.08); }
+.crew-cabin-comparison figure[data-level="4"] img { filter: brightness(1.14) saturate(1.13); }
+.crew-cabin-comparison figure[data-level="5"] img { filter: brightness(1.2) saturate(1.24) drop-shadow(0 0 3px #ffbd5c); }
+.crew-next-cabin { width: 108px; height: 94px; object-fit: contain; image-rendering: pixelated; }
+.crew-progress { display: flex; gap: 5px; align-items: center; min-width: 0; }
+.crew-progress small { white-space: nowrap; }
+.crew-progress progress {
+  appearance: none;
+  width: 100%;
+  height: 8px;
+  border: 1px solid #aa8649;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #07121a;
+}
+.crew-progress progress::-webkit-progress-bar { background: #07121a; }
+.crew-progress progress::-webkit-progress-value { background: linear-gradient(#f0c86d,#ab6c25); }
+.crew-progress progress::-moz-progress-bar { background: linear-gradient(#f0c86d,#ab6c25); }
+.crew-mission, .crew-objective, .crew-future {
+  display: grid;
+  gap: 3px;
+  padding: 6px;
+  border: 1px solid #84704d77;
+  border-radius: 4px;
+  background: #0a1924be;
+}
+.crew-objective { grid-template-columns: 24px minmax(0,1fr) auto; }
+.crew-objective :is(p,strong,small), .crew-mission :is(strong,small), .crew-cycle { overflow-wrap: anywhere; }
+.crew-objective-icon { width: 24px; height: 24px; display: grid; place-items: center; color: #ebc483; }
+.crew-objective-icon img { width: 100%; height: 100%; object-fit: contain; }
+.crew-objective-xp { white-space: nowrap; align-self: start; }
+.crew-objective[data-completed="true"] .crew-objective-xp { color: #b7deb0; }
+.crew-overview-side .crew-objective { grid-template-columns: 21px minmax(0,1fr); }
+.crew-overview-side .crew-objective-xp { grid-column: 2; }
+.crew-cycle { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 5px; font-size: 13px; }
+.crew-future { color: #c6c6bb; }
+.crew-future span, .crew-mission span { font-size: 13px; }
+.crew-row, .crew-member, .crew-directory-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 9px;
+  padding: 6px;
+  border: 1px solid #9b784867;
+  border-radius: 4px;
+  background: #0b1823ba;
+}
+.crew-directory-card > div, .crew-rank-list .crew-row > div { flex: 1; min-width: 0; }
+.crew-row :is(strong,small), .crew-member :is(strong,small), .crew-directory-card :is(strong,small) { display: block; overflow-wrap: anywhere; }
+.crew-row-actions { display: flex; flex-wrap: wrap; gap: 5px; }
+.crew-treasury-balance { display: flex; align-items: center; gap: 6px; color: #ffe0a1; font-size: 21px; }
+.crew-treasury-balance img { width: 32px; height: 32px; object-fit: contain; }
+.crew-form, .crew-form label { display: grid; gap: 5px; }
+.crew-form label { min-width: 0; color: #f3dcb0; }
+.crew-form :is(input,select) {
+  width: 100%;
+  min-height: 33px;
+  border: 1px solid #977442;
+  border-radius: 3px;
+  padding: 4px 7px;
+  color: #fff2d4;
+  background: #0a1924;
+}
+.crew-inline-form { display: flex; flex-wrap: wrap; align-items: end; }
+.crew-inline-form label { flex: 1 1 110px; }
+.crew-create-fields { display: grid; grid-template-columns: minmax(0,1fr) 110px minmax(0,1fr) 110px; gap: 7px; }
+.crew-choices { display: grid; grid-template-columns: repeat(auto-fit,minmax(145px,1fr)); gap: 5px; }
+.crew-choices article { display: grid; align-content: start; gap: 4px; padding: 7px; background: #091925; border: 1px solid #88673c; border-radius: 4px; }
+.crew-choices p, .crew-muted { color: #d3cbb5; }
+.crew-note { color: #ffdda0; background: #6a452c55; padding: 5px 7px; border-left: 2px solid #d7a76a; }
+.crew-contracts small.crew-note { display: block; margin-top: 3px; color: #ffdda0; }
+.crew-rank-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 5px; }
+.crew-rank-list .crew-row > b { white-space: nowrap; color: #ffd78a; }
+.crew-flag-editor { display: grid; gap: 6px; margin-block: 6px; }
+.crew-editor-main { display: grid; grid-template-columns: minmax(0,270px) minmax(0,1fr); gap: 8px; align-items: start; }
+.crew-flag-grid { position: relative; aspect-ratio: 1; border: 1px solid #a98243; background: #162532; }
+.crew-flag-grid::after { content: ''; position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(#b2a7842b 1px,transparent 1px),linear-gradient(90deg,#b2a7842b 1px,transparent 1px); background-size: calc(100% / 32) calc(100% / 32); }
+.crew-flag-grid canvas { width: 100%; height: 100%; display: block; image-rendering: pixelated; touch-action: none; }
+.crew-flag-grid i { display: none; position: absolute; z-index: 1; width: calc(100% / 32); height: calc(100% / 32); left: calc(var(--cursor-x) * 100% / 32); top: calc(var(--cursor-y) * 100% / 32); pointer-events: none; border: 1px solid #fff; box-shadow: 0 0 0 1px #000; }
+.crew-flag-grid:focus-within i { display: block; }
+.crew-editor-side { display: grid; gap: 7px; align-content: start; }
+.crew-edit-buttons, .crew-palette { display: flex; flex-wrap: wrap; gap: 4px; }
+.crew-window .crew-palette button { width: 26px; min-height: 26px; padding: 0; background: var(--ink); }
+.crew-editor-side button[aria-pressed="true"] { outline: 2px solid #ffe197; outline-offset: 1px; }
+.crew-flag-preview { display: flex; align-items: center; gap: 6px; }
+.crew-flag-preview canvas { width: 32px; height: 32px; border: 1px solid #a98243; background: #0c1823; image-rendering: pixelated; }
+.crew-visually-hidden { position: absolute; overflow: hidden; clip-path: inset(50%); width: 1px; height: 1px; white-space: nowrap; }
+@media (max-width: 940px) {
+  .crew-layout[data-overview="true"] { grid-template-columns: 150px minmax(0,1fr); }
+  .crew-overview-side { grid-column: 2; grid-template-columns: 1fr 2fr; }
+}
+@media (max-width: 640px) {
+  #app .crew-mode .dialog { width: calc(100vw - 12px); }
+  .crew-window { padding: 5px; }
+  .crew-layout, .crew-layout[data-overview="true"] { grid-template-columns: minmax(0,1fr); }
+  .crew-nav { z-index: 1; display: flex; overflow-x: auto; overscroll-behavior-x: contain; }
+  .crew-nav button { min-width: max-content; }
+  .crew-overview-side { grid-column: auto; grid-template-columns: minmax(0,1fr); }
+  .crew-facilities { grid-template-columns: repeat(4,minmax(0,1fr)); }
+  .crew-create-fields { grid-template-columns: minmax(0,1fr) minmax(84px,.5fr); }
+  .crew-editor-main { grid-template-columns: minmax(0,1fr); }
+  .crew-flag-grid { width: min(100%,250px); }
+  .crew-banner { grid-template-columns: 46px minmax(0,1fr) auto; }
+  .crew-banner > .crew-flag { width: 46px; height: 46px; }
+  .crew-member, .crew-directory-card { flex-wrap: wrap; }
+  .crew-rank-list .crew-row { flex-wrap: wrap; }
+}
+@media (pointer: coarse) {
+  .crew-window button { min-height: var(--rpg-touch-target,44px); }
+  .crew-window .crew-palette button { min-height: 36px; width: 36px; }
+}
