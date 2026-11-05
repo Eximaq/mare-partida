@@ -83,7 +83,7 @@ O ensaio histórico `orange_browser.py` falha na expectativa de bloqueio de um p
 
 ### Faixa de localização
 
-A placa mostra o nome da área e uma bússola de 16 px. A moldura de 1 px acompanha o texto. O botão tem pelo menos 44 px de altura para abrir o mapa por toque, clique ou teclado.
+A placa fica logo acima do Canal do Porto, alinhada à borda esquerda da janela aberta ou do botão recolhido. Ela mostra o nome da área e uma bússola de 16 px. A moldura de 1 px acompanha o texto. O botão tem pelo menos 44 px de altura para abrir o mapa por toque, clique ou teclado.
 
 ### Canal do Porto
 

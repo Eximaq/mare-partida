@@ -14,6 +14,10 @@ def check_layout(page, label):
         .filter(({e})=>e&&e.getClientRects().length&&getComputedStyle(e).visibility!=='hidden')
         .map(({selector,e})=>({selector,...e.getBoundingClientRect().toJSON()}));
       const failures=[];
+      const location=document.querySelector('.location-heading').getBoundingClientRect();
+      const channel=document.querySelector(document.body.classList.contains('chat-open')?'#floatingChat':'#chatCornerToggle').getBoundingClientRect();
+      if(Math.abs(location.left-channel.left)>1||Math.abs(location.bottom-channel.top)>1)
+        failures.push(['channel alignment',location.toJSON(),channel.toJSON()]);
       for(const r of surfaces) if(r.x<-.5||r.y<-.5||r.right>innerWidth+.5||r.bottom>innerHeight+.5) failures.push(['bounds',r]);
       for(let i=0;i<surfaces.length;i++)for(let j=i+1;j<surfaces.length;j++){
         const a=surfaces[i],b=surfaces[j];
