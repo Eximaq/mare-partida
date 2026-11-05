@@ -101,12 +101,43 @@ await auditSymbols('.attribute-row>.studio-icon,.studio-derived-groups h4 img');
   await p.setViewportSize({width,height});
   assert(await p.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
   assert(await p.locator('#dialogBody').evaluate(e=>e.scrollWidth<=e.clientWidth+1),'status horizontal overflow '+width);
-  const cards=await p.locator('.studio-card').evaluateAll(els=>els.map(e=>e.getBoundingClientRect().top));
-  if(width>=1280)assert(cards.every(y=>y===cards[0]),'three aligned desktop columns '+width);
-  if(width===1586||width===393){await p.locator('#dialogBody').evaluate(e=>e.scrollTop=0);await p.screenshot({path:path.join(out,'personagem-'+width+'.png')});}
+  const body=p.locator('#dialogBody');
+  const noScroll=async label=>assert(await body.evaluate(e=>e.scrollHeight<=e.clientHeight+1),label);
+  if(width>1050){
+   const dialog=await p.locator('#panelOverlay .dialog').boundingBox();
+   assert(dialog.width<=1120 && dialog.width<=width*.89,'compact desktop width '+width);
+   assert(dialog.height<=650 && dialog.height<=height*.89,'compact desktop height '+height+' (got '+dialog.height+')');
+   const cards=await p.locator('.studio-card').evaluateAll(els=>els.map(e=>e.getBoundingClientRect().top));
+   assert(cards.every(y=>y===cards[0]),'three aligned desktop columns '+width);
+   await noScroll('all desktop status panels fit at '+width);
+  }else{
+   const switcher=p.locator('.studio-panel-switch');
+   assert(await switcher.isVisible());
+   for(const [tab,card] of [['identity','identity'],['allocation','allocation'],['combat','derived']]){
+    await switcher.locator('label[for=studio-view-'+tab+']').click();
+    assert(await p.locator('.character-'+card).isVisible());
+    assert.equal(await p.locator('.studio-card:visible').count(),1);
+    if(width===393||width===1024)await noScroll(tab+' fits at '+width);
+   }
+   await switcher.locator('label[for=studio-view-allocation]').click();
+  }
+  if(width===1586||width===393){await body.evaluate(e=>e.scrollTop=0);await p.screenshot({path:path.join(out,'personagem-'+width+'.png')});}
   await p.locator('#cancelAttributes').scrollIntoViewIfNeeded();assert(await p.locator('#cancelAttributes').isVisible());
   if(width===1366||width===393)await p.screenshot({path:path.join(out,'character-'+width+'.png')});
  }
+ await p.setViewportSize({width:393,height:852});
+ await p.evaluate(()=>{__studioQA.level(8);__studioQA.class('healer');});
+ await p.locator('.studio-panel-switch label[for=studio-view-allocation]').click();
+ await p.locator('[data-attribute-add=spirit]').click();
+ assert(await p.locator('#studio-view-allocation').isChecked(),'attribute redraw keeps the open section');
+ assert(await p.locator('#healThreshold').isVisible());
+ assert(await p.locator('#dialogBody').evaluate(e=>e.scrollHeight<=e.clientHeight+1),'healer allocation and preferences fit');
+ await p.locator('.studio-panel-switch label[for=studio-view-combat]').click();
+ assert(await p.locator('[data-derived=regenBuff]').isVisible());
+ assert(await p.locator('#dialogBody').evaluate(e=>e.scrollHeight<=e.clientHeight+1),'extra healer statistics fit');
+ await p.locator('#studio-view-combat').focus();
+ await p.keyboard.press('ArrowLeft');
+ assert(await p.locator('#studio-view-allocation').isChecked(),'keyboard can switch sections');
  await p.setViewportSize({width:1448,height:1086});
  await p.evaluate(()=>__studioQA.openPanel('character','appearance'));
  assert.deepEqual(await p.locator('.studio-appearance').evaluate(e=>[...e.querySelectorAll('[data-appearance]')].map(n=>n.dataset.appearance)),sharedCreation);
@@ -119,8 +150,10 @@ await auditSymbols('.studio-control-icon');await checkSelectorAlignment();
  assert.equal(await p.evaluate(()=>JSON.stringify(__studioQA.player.appearance96)),cosmeticsBefore);
  for(const dir of ['north','south','east','west']){
   await p.locator('[data-appearance-direction='+dir+']').click();
-  await p.waitForFunction(()=>document.querySelector('#profileAppearanceState').textContent.includes('Prévia atualizada'));
-  assert((await p.locator('[data-appearance-direction='+dir+']').evaluate(e=>getComputedStyle(e).borderImageSource)).includes('primary.png'),'selected direction must have its gold active artwork');
+  await p.waitForFunction(dir=>{
+   const selected=document.querySelector('#profileAppearance [data-appearance-direction="'+dir+'"][aria-pressed=true]');
+   return selected&&getComputedStyle(selected).borderImageSource.includes('primary.png')&&document.querySelector('#profileAppearanceState').textContent.includes('Prévia atualizada');
+  },dir);
   assert(await p.locator('#profileAppearanceCanvas').evaluate(c=>c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0)));
  }
  await p.screenshot({path:path.join(out,'appearance-editor.png')});

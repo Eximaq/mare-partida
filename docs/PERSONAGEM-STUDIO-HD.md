@@ -70,6 +70,6 @@ Os símbolos isolados usam a revisão de URL `alpha-native-v1` para invalidar os
 
 ## Status náutico — 05/11/2026
 
-A janela de Personagem usa três colunas no desktop, duas em tablets e uma em smartphones em retrato. O cabeçalho fica fixo e o corpo oferece uma única rolagem quando a tela é baixa. As molduras reutilizam a corda da HUD em nove fatias para preservar os cantos e repetir a textura nas arestas. Ícones de navegação, títulos e placas reaproveitam a arte do Inventário.
+A janela de Personagem tem largura de até 1.120 px e exibe os três painéis juntos a partir de 1.051 px de viewport. Em telas estreitas, Aventureiro, Atributos e Combate têm acesso direto por um seletor nativo que preserva a seção durante a distribuição de pontos. O cabeçalho fica fixo e a rolagem do corpo só entra quando a altura disponível não comporta a seção. As molduras reutilizam a corda da HUD em nove fatias para preservar os cantos e repetir a textura nas arestas. Ícones de navegação, títulos e placas reaproveitam a arte do Inventário.
 
 `assets/ui/character-studio/sunset-dock.jpg` (900 × 600, ImageGen `exec-a2c936cc-8f35-4c71-9375-69f20f0de708`) deriva do cenário do protótipo aprovado. A arte do cais fica atrás do canvas do personagem real. O brilho da lanterna, reflexos do mar, bandeirola e partículas têm animações CSS independentes, com redução de movimento pelo sistema ou pela preferência do jogo. A composição dos equipamentos usa o renderizador existente.
