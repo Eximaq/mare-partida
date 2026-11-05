@@ -14,7 +14,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  assert.equal(await page.evaluate(()=>MareHakiProgression.held(__hakiQA.game)),false);
  await page.evaluate(()=>{const q=__hakiQA,P=MareHakiProgression;for(const b of P.ids)q.game=P.addFragments(q.game,b,100,q.defs,d=>q.make(d));q.save();q.open('haki');});
 
- await page.evaluate(()=>__hakiQA.open('inventory'));await page.locator('[data-inv-category=materials]').click();
+ await page.evaluate(()=>__hakiQA.open('inventory'));await page.locator('#invCategory').selectOption('materials');
  const materialIds=await page.evaluate(()=>__hakiQA.game.inventory.filter(i=>__hakiQA.defs[i.def]?.kind==='haki-fragment').map(i=>i.id));
  assert.equal(materialIds.length,3);
  for(const id of materialIds){assert((await page.locator('[data-item="'+id+'"]').textContent()).includes('100'));await page.locator('[data-item="'+id+'"]').click();assert((await page.locator('.op-detail-wrap').textContent()).includes('Material · Quantidade: 100'));assert.equal(await page.locator('.op-detail-wrap [data-equip]').count(),0);}

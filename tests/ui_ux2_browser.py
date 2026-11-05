@@ -33,7 +33,7 @@ def open_surface(q,name):
     elif name in ['map','prison']:
         q.locator('#modesMenuTrigger').click();q.locator('[data-quick-mode='+name+']').click()
     elif name=='shop':
-        q.locator('#mainMenu [data-panel=inventory]').click();q.locator('[data-inv-category=consumables]').click();q.locator('[data-item=virtual-potion]').click();q.locator('[data-panel=shop]').click()
+        q.locator('#mainMenu [data-panel=inventory]').click();q.locator('#invCategory').select_option('consumables');q.locator('[data-item=virtual-potion]').click();q.locator('[data-panel=shop]').click()
     else:q.locator('#mainMenu [data-panel='+name+']').click()
     loaded(q)
 def safe_fields(g):return {k:g.get(k) for k in ['inventory','equipment','gold','materials','potions','attributes','level','xp','claimed','hunts','talents','talentTrees']}

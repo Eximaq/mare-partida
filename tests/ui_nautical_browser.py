@@ -69,7 +69,7 @@ with sync_playwright() as p:
         # Real item actions still work after replacing the icon markup.
         panel(q,'inventory');q.locator('[data-item="gallery-1"]').click();q.locator('[data-equip="gallery-1"]').click();assert saved(q)['equipment']['weapon']['def']==1
         q.locator('[data-inv-lock="gallery-1"]').click();assert saved(q)['equipment']['weapon']['locked'];q.locator('[data-inv-lock="gallery-1"]').click()
-        q.locator('[data-inv-category=consumables]').click();q.locator('[data-item=virtual-potion]').click();potions=saved(q)['potions'];q.locator('[data-inv-use-potion]').click();assert saved(q)['potions']==potions-1
+        q.locator('#invCategory').select_option('consumables');q.locator('[data-item=virtual-potion]').click();potions=saved(q)['potions'];q.locator('[data-inv-use-potion]').click();assert saved(q)['potions']==potions-1
         q.locator('[data-panel=shop]').filter(has_text='COMPRAR MAIS').click();q.screenshot(path=str(OUT/f'shop-{w}x{h}.png'));gold=saved(q)['gold'];q.locator('[data-buy-potion]').click();assert saved(q)['gold']==gold-35;close(q)
         panel(q,'forge');plus=saved(q)['equipment']['weapon']['plus'];q.locator('[data-forge=weapon]').click();q.locator('[data-confirm-accept]').click();assert saved(q)['equipment']['weapon']['plus']==plus+1;close(q)
         panel(q,'help');before=saved(q);q.locator('[data-reset]').click();q.screenshot(path=str(OUT/f'confirmation-{w}x{h}.png'));q.locator('[data-confirm-cancel]').click();after=saved(q)

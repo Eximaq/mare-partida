@@ -2158,7 +2158,7 @@
     const overlay=$('panelOverlay');overlay.classList.add('inventory-mode','pirate-hd');
     const headMeta=$('inventoryHeadMeta');if(headMeta)headMeta.classList.add('hidden');
     const stats=getDerived();const f=factions[game.factionId]||factions.pirate;
-    const filterCategories=[['all','TUDO'],['weapons','ARMAS'],['armor','ARMADURAS'],['fruits','AKUMA NO MI'],['consumables','CONSUMÍVEIS'],['materials','MATERIAIS'],['pearls','PÉROLAS']];
+    const filterCategories=[['all','Categorias'],['weapons','ARMAS'],['armor','ARMADURAS'],['fruits','AKUMA NO MI'],['consumables','CONSUMÍVEIS'],['materials','MATERIAIS'],['pearls','PÉROLAS']];
     const all=inventoryEntries();const pages=Math.max(1,Math.ceil(all.length/BAG_PER_PAGE));inventoryUI.page=Math.min(inventoryUI.page,pages-1);
     const shown=all.slice(inventoryUI.page*BAG_PER_PAGE,(inventoryUI.page+1)*BAG_PER_PAGE);
     const slots=shown.map(entry=>{
@@ -2171,7 +2171,7 @@
     const avatarExtra=tab==='visual'?`<div class="op-avatar-note"><strong>${escapeHTML(f.name)}</strong><p>${escapeHTML(f.desc)}</p></div>`:tab==='style'?`<div class="op-avatar-note"><strong>ESTILO</strong><p>${escapeHTML(classes[game.classId].skills[0].name)} · ${escapeHTML(classes[game.classId].skills[1].name)}</p></div>`:'';
     body.innerHTML=`<div class="op-inventory-shell ui-hd">
       <div class="op-topbar">
-        <div class="op-title-banner"><img class="op-jolly" src="assets/ui/faction-emblems/${escapeHTML(factions[game.factionId]?game.factionId:'pirate')}.png" alt=""><strong>INVENTÁRIO</strong></div>
+        <div class="op-title-banner"><h2><img src="assets/ui/inventory-reference/title.png" alt="Inventário"></h2></div>
 
         <div class="op-top-actions"><kbd>[I]</kbd><button type="button" class="op-close" data-close-panel aria-label="Fechar inventário">${inventoryIcon('close')}</button></div>
         <nav class="op-section-nav" aria-label="Seções do inventário"><a href="#inventory-equipment">Equipamentos</a><a href="#inventory-bag">Mochila</a><a href="#inventory-detail">Detalhes</a></nav>
@@ -2183,7 +2183,7 @@
             <div class="op-equip-side left">${left}</div>
             <div class="op-avatar-column">
               <div class="op-avatar-stage"><canvas id="inventorySprite" width="180" height="220" aria-label="Visual atual do personagem"></canvas>${MareHeadgear.button(game)}</div>
-              <div class="op-avatar-meta"><strong>${escapeHTML(game.name)}</strong><span>Nível ${game.level}</span><span>Classe: ${escapeHTML(classes[game.classId].name.replace(' / ',' · '))}</span></div>
+              <div class="op-avatar-meta"><strong><img src="assets/ui/faction-emblems/${escapeHTML(factions[game.factionId]?game.factionId:'pirate')}.png" alt="${escapeHTML(f.name)}"> ${escapeHTML(game.name)}</strong><span>Nível ${game.level}</span><span>Classe: ${escapeHTML(classes[game.classId].name.replace(' / ',' · '))}</span></div>
 ${avatarExtra}
             </div>
             <div class="op-equip-side right">${right}</div>
@@ -2196,11 +2196,10 @@ ${avatarExtra}
           <label class="op-hide-check"><input type="checkbox" id="invHideProfile" ${game.preferences?.hideItems?'checked':''}><span>Ocultar itens no perfil</span></label>
         </section>
         <section id="inventory-bag" tabindex="-1" class="hd-frame op-panel op-bag-panel">
-          <div class="op-panel-head"><div class="op-head-left">${inventoryIcon('bag')}<h3>MOCHILA</h3></div><div class="op-bag-capacity">${inventoryIcon('bag')}<b>${game.inventory.length} / ${BAG_CAPACITY}</b></div><button type="button" class="op-best-btn" data-auto-equip>${inventoryIcon('power')}<span>EQUIPAR MELHORES</span></button></div>
-          <div class="op-tool-row"><label class="op-search">${inventoryIcon('search')}<input id="invSearch" type="search" aria-label="Buscar item pelo nome" placeholder="Buscar pelo nome..." value="${escapeHTML(inventoryUI.query)}" autocomplete="off"></label><select id="invSort" aria-label="Ordenação"><option value="recent" ${inventoryUI.sort==='recent'?'selected':''}>Recentes</option><option value="rarity" ${inventoryUI.sort==='rarity'?'selected':''}>Raridade</option><option value="power" ${inventoryUI.sort==='power'?'selected':''}>Maior poder</option><option value="name" ${inventoryUI.sort==='name'?'selected':''}>Nome (A–Z)</option></select><select id="invRarity" aria-label="Filtro de raridade">${[['all','Todas'],['common','Comum'],['uncommon','Incomum'],['rare','Raro'],['epic','Épico'],['legendary','Lendário'],['supreme','Supremo']].map(([v,l])=>`<option value="${v}" ${inventoryUI.rarity===v?'selected':''}>${l}</option>`).join('')}</select></div>
-          <div class="op-category-tabs">${filterCategories.map(([id,label])=>`<button type="button" data-inv-category="${id}" class="${inventoryUI.category===id?'active':''}">${label}</button>`).join('')}</div>
+          <div class="op-panel-head"><div class="op-head-left">${inventoryIcon('bag')}<h3>MOCHILA</h3></div><select id="invRarity" aria-label="Filtro de raridade">${[['all','Todas'],['common','Comum'],['uncommon','Incomum'],['rare','Raro'],['epic','Épico'],['legendary','Lendário'],['supreme','Supremo']].map(([v,l])=>`<option value="${v}" ${inventoryUI.rarity===v?'selected':''}>${l}</option>`).join('')}</select><button type="button" class="op-best-btn" data-auto-equip>${inventoryIcon('power')}<span>EQUIPAR MELHORES</span></button></div>
+          <div class="op-tool-row"><label class="op-search">${inventoryIcon('search')}<input id="invSearch" type="search" aria-label="Buscar item pelo nome" placeholder="Buscar por item…" value="${escapeHTML(inventoryUI.query)}" autocomplete="off"></label><select id="invCategory" aria-label="Categorias">${filterCategories.map(([id,label])=>`<option value="${id}" ${inventoryUI.category===id?'selected':''}>${label}</option>`).join('')}</select><select id="invSort" aria-label="Ordenação"><option value="recent" ${inventoryUI.sort==='recent'?'selected':''}>Recentes</option><option value="rarity" ${inventoryUI.sort==='rarity'?'selected':''}>Raridade</option><option value="power" ${inventoryUI.sort==='power'?'selected':''}>Maior poder</option><option value="name" ${inventoryUI.sort==='name'?'selected':''}>Nome (A–Z)</option></select></div>
           <div class="op-grid-wrap"><div class="op-grid">${slots}</div></div>
-          <div class="op-pagination"><span class="op-page-count">${all.length?inventoryUI.page*BAG_PER_PAGE+1:0}–${Math.min((inventoryUI.page+1)*BAG_PER_PAGE,all.length)} de ${all.length}</span><button type="button" data-inv-page="${inventoryUI.page-1}" ${inventoryUI.page===0?'disabled':''} aria-label="Página anterior">${inventoryIcon('previous')}</button>${Array.from({length:pages},(_,n)=>`<button type="button" data-inv-page="${n}" class="${n===inventoryUI.page?'active':''}">${n+1}</button>`).join('')}<button type="button" data-inv-page="${inventoryUI.page+1}" ${inventoryUI.page===pages-1?'disabled':''} aria-label="Próxima página">${inventoryIcon('next')}</button></div>
+          <div class="op-pagination"><div class="op-bag-capacity">${inventoryIcon('bag')}<b>${game.inventory.length} / ${BAG_CAPACITY}</b></div><span class="op-page-count">${all.length?inventoryUI.page*BAG_PER_PAGE+1:0}–${Math.min((inventoryUI.page+1)*BAG_PER_PAGE,all.length)} de ${all.length}</span><button type="button" data-inv-page="${inventoryUI.page-1}" ${inventoryUI.page===0?'disabled':''} aria-label="Página anterior">${inventoryIcon('previous')}</button>${Array.from({length:pages},(_,n)=>`<button type="button" data-inv-page="${n}" class="${n===inventoryUI.page?'active':''}">${n+1}</button>`).join('')}<button type="button" data-inv-page="${inventoryUI.page+1}" ${inventoryUI.page===pages-1?'disabled':''} aria-label="Próxima página">${inventoryIcon('next')}</button></div>
         </section>
         <section id="inventory-detail" tabindex="-1" class="hd-frame op-panel op-detail-panel">${inventoryHeading('DETALHES DO ITEM')}${detail}</section>
       </div>
@@ -2229,16 +2228,18 @@ ${avatarExtra}
     if(currentPanel==='inventory'&&inventoryUI.pageSize!==MareUI.inventoryGrid(innerWidth).pageSize)renderPanel();
   },{passive:true});
   function inventoryIcon(name){
-    if(name==='close')return '<svg class="inv-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="m7 8 18 18M25 8 7 26" fill="none" stroke="#593514" stroke-width="5"/><path d="m7 6 18 18M25 6 7 24" fill="none" stroke="#f5d38a" stroke-width="3"/></svg>';
+    if(name==='close')return '<img class="inv-ui-icon" src="assets/ui/inventory-reference/close.png" alt="" draggable="false">';
     if(name==='previous'||name==='next'){const d=name==='previous'?'m20 7-9 9 9 9':'m12 7 9 9-9 9';return '<svg class="inv-ui-icon" viewBox="0 0 32 32" aria-hidden="true"><path d="'+d+'" fill="none" stroke="#f5d38a" stroke-width="3" stroke-linejoin="round"/></svg>';}
     if(!/^[a-z-]+$/.test(name))return '';
-    const files={equip:'attack',remove:'down',previous:'up',next:'up'};
+    const reference={equipment:'equipment',eye:'eye',shirt:'shirt',bag:'bag',lock:'lock',power:'power',heart:'heart',attack:'attack',equip:'attack',shield:'shield',anchor:'anchor',search:'search',forge:'hammer',strength:'strength',spirit:'spirit'};
+    if(reference[name])return '<img class="inv-ui-icon inv-ui-'+name+'" src="assets/ui/inventory-reference/'+reference[name]+'.png" alt="" draggable="false">';
+    const files={remove:'down'};
     const file=name==='berry'?'berry.png':'icons/'+(files[name]||name)+'.png';
     return '<img class="inv-ui-icon inv-ui-'+name+'" src="assets/ui/inventory-final/'+file+'" alt="" draggable="false">';
   }
   function inventoryHeading(title){return '<h3 class="hd-panel-heading">'+inventoryIcon('anchor')+'<span>'+escapeHTML(title)+'</span></h3>';}
   function inventoryItemStatRows(item){
-    const a=itemStats(item),intrinsic=Object.entries(a.attributes).filter(([,value])=>value>0).map(([key,value])=>({key,name:MareForge.names[key],icon:key==='vitality'?'heart':'attack',value}));
+    const a=itemStats(item),intrinsic=Object.entries(a.attributes).filter(([,value])=>value>0).map(([key,value])=>({key,name:MareForge.names[key],icon:({vitality:'heart',strength:'strength',spirit:'spirit'})[key]||'attack',value}));
     if(a.crit>0)intrinsic.push({key:'crit',name:'Chance crítica',icon:'attack',value:a.crit*100,percent:true});
     for(const key of ['energy','attackSpeedPercent','critDamage'])if(a[key]>0)intrinsic.push({key,name:MareForge.names[key],icon:'attack',value:a[key]*(key==='energy'?1:100),percent:key!=='energy'});
     const rows=MareUI.inventoryNumericRows([{key:'attack',name:'Ataque',icon:'attack',value:a.attack},{key:'defense',name:'Defesa',icon:'shield',value:a.defense},{key:'hp',name:'Vida',icon:'heart',value:a.hp},{key:'power',name:'Poder',icon:'power',value:itemPower(item)},...intrinsic]);
@@ -2263,7 +2264,7 @@ ${avatarExtra}
   function inventoryGearActions(item){
     const def=itemBase(item),eq=hasEquipped(item),compatible=isWeaponCompatible(item),id=escapeHTML(item.id),saleDisabled=eq||item.locked||MareBossDungeons.bound(item);
     const primary=eq?'<button type="button" class="op-action primary" data-unequip="'+def.slot+'" '+(game.inventory.length>=BAG_CAPACITY?'disabled title="Mochila cheia"':'')+'>'+inventoryIcon('remove')+'<span class="op-action-copy">RETIRAR</span></button>':'<button type="button" class="op-action primary" data-equip="'+id+'" '+(compatible?'':'disabled')+'>'+inventoryIcon('equip')+'<span class="op-action-copy">'+(compatible?'EQUIPAR':'INCOMPATÍVEL')+'</span></button>';
-    return '<div class="op-item-actions">'+primary+'<button type="button" class="op-action secondary" data-inv-lock="'+id+'" aria-pressed="'+Boolean(item.locked)+'">'+inventoryIcon(item.locked?'unlock':'lock')+'<span class="op-action-copy">'+(item.locked?'DESBLOQUEAR':'BLOQUEAR')+'</span></button><button type="button" class="op-action secondary" data-sell="'+id+'" '+(saleDisabled?'disabled title="'+(MareBossDungeons.bound(item)?'Item vinculado ao personagem':eq?'Retire o item antes de vender':'Desbloqueie o item para vender')+'"':'')+'>'+inventoryIcon('berry')+'<span class="op-action-copy"><strong>VENDER DIRETAMENTE</strong><small>'+fmt(sellPrice(item))+' Berry</small></span></button><button type="button" class="op-action secondary" data-inventory-forge="'+id+'">'+inventoryIcon('forge')+'<span class="op-action-copy">FORJA</span></button></div>';
+    return '<div class="op-item-actions">'+primary+'<button type="button" class="op-action secondary" data-inv-lock="'+id+'" aria-pressed="'+Boolean(item.locked)+'">'+inventoryIcon(item.locked?'unlock':'lock')+'<span class="op-action-copy">'+(item.locked?'DESBLOQUEAR':'BLOQUEAR')+'</span></button><button type="button" class="op-action secondary" data-sell="'+id+'" '+(saleDisabled?'disabled title="'+(MareBossDungeons.bound(item)?'Item vinculado ao personagem':eq?'Retire o item antes de vender':'Desbloqueie o item para vender')+'"':'')+'>'+inventoryIcon('berry')+'<span class="op-action-copy"><strong>VENDER</strong><small>'+fmt(sellPrice(item))+' Berry</small></span></button><button type="button" class="op-action secondary" data-inventory-forge="'+id+'">'+inventoryIcon('forge')+'<span class="op-action-copy">FORJA</span></button></div>';
   }
   function inventoryDetail(sel){
     if(!sel)return `<div class="op-detail-wrap op-detail-empty"><div class="op-detail-icon empty">${inventoryIcon('search')}</div><div><h3>Nenhum item selecionado</h3><small>Escolha um item da mochila ou um slot equipado.</small></div><p>Use os filtros centrais para localizar armas, armaduras, consumíveis e materiais.</p></div>`;
@@ -2288,7 +2289,7 @@ ${avatarExtra}
     const item=sel.item,def=itemBase(item),a=itemStats(item),eq=hasEquipped(item),price=sellPrice(item),compatible=isWeaponCompatible(item);
     const category = ({weapon:'Arma',head:'Armadura',necklace:'Acessório',coat:'Armadura',legs:'Armadura',boots:'Armadura',cloak:'Visual',gloves:'Armadura',ring:'Acessório',belt:'Acessório',charm:'Acessório'})[def.slot]||'Item';
     const comparison='<section id="invPowerComparison" class="op-comparison" role="status" aria-live="polite" aria-atomic="true"></section>';
-    return `<div class="op-detail-wrap"><div class="op-detail-head"><div class="op-detail-icon rarity-${itemRarity(item)}">${itemIcon(item.def,def.name)}</div><div><h3 style="color:${MareForge.rarity[itemRarity(item)].color}">${escapeHTML(MareForge.gearName(item,itemDefs))}</h3><small>${rarityNames[itemRarity(item)]} · ${category}${item.generation?.family==='basic'?' · Básico':''} · <span class="op-quantity">Quantidade: 1</span></small></div></div>${MareTooltips.potentialHTML({...item,gear:true})}<div class="op-detail-box">${inventoryItemStatRows(item)}</div>${forgeItemDetails(item)}${comparison}<div class="op-origin-row"><div><span>Valor de venda</span><b>${fmt(price)}</b></div><div><span>Origem</span><b>${escapeHTML(item.origin||'Espólio de aventura')}</b></div></div>${inventoryGearActions(item)}</div>`;
+    return `<div class="op-detail-wrap"><div class="op-detail-head"><div class="op-detail-icon rarity-${itemRarity(item)}">${itemIcon(item.def,def.name)}</div><div><h3>${escapeHTML(MareForge.gearName(item,itemDefs))}</h3><small>${rarityNames[itemRarity(item)]} · ${category}${item.generation?.family==='basic'?' · Básico':''} · <span class="op-quantity">Quantidade: 1</span></small></div></div>${MareTooltips.potentialHTML({...item,gear:true})}<div class="op-detail-box">${inventoryItemStatRows(item)}</div>${forgeItemDetails(item)}${comparison}<div class="op-origin-row"><div><span>Valor de venda</span><b>${fmt(price)}</b></div><div><span>Origem</span><b>${escapeHTML(item.origin||'Espólio de aventura')}</b></div></div>${inventoryGearActions(item)}</div>`;
   }
   async function equipBest(){
     if(ONLINE_GAME){
@@ -3552,7 +3553,6 @@ function applySceneHudLayout(){
     if(e.target.closest('#confirmAttributes')){confirmAttributes();return;}
     if(e.target.closest('#resetAttributeDraft')){attributeDraft=MareCharacters.empty();allocationMessage='';renderPanel();return;}
     b=e.target.closest('[data-inv-tab]');if(b){inventoryUI.tab=b.dataset.invTab;renderPanel();return;}
-    b=e.target.closest('[data-inv-category]');if(b){inventoryUI.category=b.dataset.invCategory;inventoryUI.page=0;renderPanel();return;}
     b=e.target.closest('[data-inv-page]');if(b&&!b.disabled){inventoryUI.page=Number(b.dataset.invPage);renderPanel();return;}
     b=e.target.closest('[data-inv-slot]');if(b){const it=game.equipment[b.dataset.invSlot];selectInventoryItem(it?.id||null);return;}
     b=e.target.closest('[data-auto-equip]');if(b){equipBest();return;}
@@ -3669,6 +3669,7 @@ function applySceneHudLayout(){
   $('dialogBody').addEventListener('change',e=>{
     if(currentPanel==='character'&&e.target.id==='healThreshold'){if(ONLINE_GAME){void onlineItemCommand('profile.preferences',{healThreshold:Number(e.target.value)});return;}game.preferences.healThreshold=clamp(Number(e.target.value),.25,.90);saveGame();return;}
     if(currentPanel!=='inventory')return;
+    if(e.target.id==='invCategory'){inventoryUI.category=e.target.value;inventoryUI.page=0;renderPanel();}
     if(e.target.id==='invSort'){inventoryUI.sort=e.target.value;inventoryUI.page=0;renderPanel();}
     if(e.target.id==='invRarity'){inventoryUI.rarity=e.target.value;inventoryUI.page=0;renderPanel();}
     if(e.target.id==='invHideProfile'){if(ONLINE_GAME){void onlineItemCommand('profile.preferences',{hideItems:e.target.checked});return;}game.preferences=game.preferences||{};game.preferences.hideItems=e.target.checked;saveGame();renderPanel();}
