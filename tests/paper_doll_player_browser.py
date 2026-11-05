@@ -56,7 +56,7 @@ with sync_playwright() as p:
  migrated=q.evaluate('JSON.parse(JSON.stringify(__playerQA.game))')
  for key in ['equipment','inventory','gold','classId','factionId','level','xp']:assert migrated[key]==legacy[key],key
  assert q.evaluate('MarePaperDollLook.read(__playerQA.game)')=={'version':1,'hair':'short-black','outfit':'navy'}
- q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.evaluate('__playerQA.pause()')
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.evaluate('__playerQA.pause()')
  fights={}
  for cls in ['sword','brawler','gunner','rogue','cyborg','strategist','healer']:
   result=q.evaluate('(cls)=>__playerQA.fight(cls)',cls);assert result['damage']>0,(cls,result);assert all(result['frames']),(cls,result);assert any(x and x.startswith('attack-') for x in result['poses']),(cls,result);fights[cls]=result
@@ -69,7 +69,7 @@ with sync_playwright() as p:
  perf_context=b.new_context(viewport={'width':1366,'height':900});perf_context.add_init_script('localStorage.setItem("mare-partida-save-v1",'+json.dumps(normal)+')')
  perf_context.route('**/api/**',lambda r:r.fulfill(status=404,body='{}'));perf_context.route('**/__dev_version',lambda r:r.fulfill(body='stable'))
  perf=perf_context.new_page();perf.goto(BASE+'?paperDoll96=0',wait_until='networkidle');perf.wait_for_function('window.__mareDiagnostics?.().paperDollReview.state==="ready"')
- perf.locator('#enterHunt').click();perf.locator('[data-quick-mode=map]').click();perf.locator('[data-island=dawn]').click();perf.locator('[data-travel-area=beach]').click()
+ perf.locator('.location-heading').click();perf.locator('[data-island=dawn]').click();perf.locator('[data-travel-area=beach]').click()
  metrics=perf.evaluate("""async()=>{const samples=[],end=performance.now()+1800;let last=performance.now();await new Promise(resolve=>{function frame(t){samples.push(t-last);last=t;if(t<end)requestAnimationFrame(frame);else resolve()}requestAnimationFrame(frame)});const sorted=samples.filter(x=>x>0).sort((a,b)=>a-b);return {frames:sorted.length,p95:sorted[Math.floor(sorted.length*.95)],renderer:__mareDiagnostics().paperDollReview};}""")
  assert metrics['frames']>=30 and metrics['p95']<100,metrics;assert metrics['renderer']['cacheEntries']<=96 and metrics['renderer']['cacheBytes']<=4*1024*1024
  (OUT/'performance.json').write_text(json.dumps(metrics,indent=2),encoding='utf-8');perf.screenshot(path=str(OUT/'normal-combat-live.png'));perf_context.close();b.close()

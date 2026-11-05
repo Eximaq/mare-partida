@@ -94,7 +94,7 @@ with sync_playwright() as p:
  q.screenshot(path=str(OUT/'world-modular-review-idle.png'))
  baseline=json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
  assert not any(('paper' in key.lower() or 'appearance' in key.lower()) and key!='paperDollLook' for key in baseline)
- q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
  q.clock.run_for(12000);state=q.evaluate('__paperDollWorldReview');diag=q.evaluate('__mareDiagnostics()')
  attack_dirs=coverage('attack-sword')
  if attack_dirs:
@@ -125,7 +125,7 @@ with sync_playwright() as p:
  # Haki must still activate/drain while real modular Idle is being drawn.
  haki=copy.deepcopy(baseline);haki.update(level=50,hp=99999,has_haki_unlocked=True,haki={'current':100,'unlocked':True})
  c,q=context(browser,haki);q.on('pageerror',lambda e:errors.append(str(e)));q.goto(BASE,wait_until='domcontentloaded');q.wait_for_function('typeof __mareDiagnostics==="function"')
- q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click()
  if q.evaluate('__mareDiagnostics().autoPlay'):q.locator('#autoToggle').click()
  q.wait_for_function('__mareDiagnostics().paperDoll.compositions>0');q.keyboard.press('h');q.clock.run_for(1000)
  assert q.evaluate('__mareDiagnostics().haki.active')=='armament' and q.evaluate('__mareDiagnostics().haki.current')<100

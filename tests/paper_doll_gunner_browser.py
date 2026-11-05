@@ -53,7 +53,7 @@ with sync_playwright() as p:
    q.locator('.bottom-nav [data-panel=inventory]').click();q.locator('[data-inv-slot='+slot+']').click();q.locator('[data-unequip='+slot+']').click();q.locator('[data-close-panel]').click()
  q.clock.run_for(200);assert q.evaluate('__mareDiagnostics().paperDollReview.state')=='ready'
  normal=q.evaluate('localStorage.getItem("mare-partida-save-v1")')
- q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.evaluate('__gunnerTest.stop()')
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.evaluate('__gunnerTest.stop()')
  coverage=q.evaluate("fetch('pixellab-pip-generations/paper-doll-gunner-20261025/review-pack.json').then(r=>r.json()).then(p=>p.coverage['attack-firearm'])")
  rows=[]
  for d in ['south','west','east','north']:

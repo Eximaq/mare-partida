@@ -96,3 +96,7 @@ A moldura azul e dourada e os oito ícones vêm da folha transparente de menu fo
 ### Poções da barra de ações
 
 O frasco, a tecla Q, os encaixes, as bordas de compra e o símbolo do preço vêm da folha de referência fornecida pelo proprietário. Os recortes em `assets/ui/hud-potions/` deixam o estoque e o preço como texto HTML. A poção tem destaque dourado ao passar o ponteiro e azul ao pressionar ou focar pelo teclado.
+
+### Expedição
+
+A placa no canto inferior direito e a tecla O abrem os contratos e as estatísticas. As seis peças em `assets/ui/hud-expedition/` vêm das imagens fornecidas pelo proprietário. A placa de localização abre o mapa para viajar e o botão Voltar ao porto aparece durante a caçada.

@@ -1160,7 +1160,7 @@
   }
   function activateNPC(npc){lobbyAction=null;if(npc.kind==='dungeon-chest'){claimDungeonChest();return;}if(npc.kind==='return'){returnLobby();return;}if(npc.kind==='hunt')openPanel('modes');else openPanel(npc.kind);}
   function setAreaLabels(){let inLobby=scene==='lobby';let z=inLobby?{name:'Porto das Correntes',sub:'Refúgio dos Navegantes',label:'ÁREA SEGURA · CIDADE'}:dungeonRun?{name:'Masmorra · '+MareBossDungeons.byId[dungeonRun.id].name,sub:'Quest Dungeons',label:'CONCLUSÃO ÚNICA'}:impelRun?{name:'Impel Down',sub:'Andar '+impelRun.currentFloor,label:'DUELO · ANDAR '+impelRun.currentFloor}:zones[game.area];$('locationName').textContent=z.name;$('mapTitle').textContent=z.name.toUpperCase();$('overlayArea').textContent=z.sub.toUpperCase();$('sceneEyebrow').textContent=inLobby?'PORTO PRINCIPAL':'REGIÃO DE CAÇA';$('dangerRating').textContent=z.label;
-    $('enterHunt').classList.toggle('hidden',!inLobby);$('returnLobby').classList.toggle('hidden',inLobby);$('navLobby').classList.toggle('active',inLobby);$('navHunt').classList.toggle('active',!inLobby);
+    $('returnLobby').classList.toggle('hidden',inLobby);$('navLobby').classList.toggle('active',inLobby);$('navHunt').classList.toggle('active',!inLobby);
     $('sceneInfo').textContent=inLobby?'ÁREA SEGURA · CLIQUE PARA CAMINHAR':'COMBATE AUTOMÁTICO ATIVO';$('worldHint').textContent=inLobby?'Clique para caminhar · WASD / setas · Clique nos NPCs para interagir':'Clique no chão para caminhar · Monstro: retomar caçada · WASD / setas';document.body.classList.toggle('scene-lobby',inLobby);document.body.classList.toggle('scene-hunt',!inLobby);}
 
   function monsterName(m){return m?.name||monsterTypes[m?.type]?.name||'';}
@@ -3634,7 +3634,6 @@ function applySceneHudLayout(){
   $('dialogBody').addEventListener('change',e=>{if(e.target.matches('[data-forge-filter]')){forgeUI.filters[e.target.dataset.forgeFilter]=e.target.value;forgeUI.page=0;renderPanel();}if(e.target.matches('[data-forge-pearl-filter]')){forgeUI.pearlFilters[e.target.dataset.forgePearlFilter]=e.target.value;renderPanel();}if(e.target.id==='forgeOutputSlot'){forgeUI.outputSlot=e.target.value;renderPanel();}});
   $('dialogBody').addEventListener('input',e=>{if(['forgeSearch','forgePearlSearch'].includes(e.target.id)){const id=e.target.id,pos=e.target.selectionStart;(id==='forgeSearch'?forgeUI.filters:forgeUI.pearlFilters).search=e.target.value;forgeUI.page=0;renderPanel();const input=$(id);input.focus();input.setSelectionRange(pos,pos);}});
   $('changePath').addEventListener('click',()=>{if(game)openCreation(true);});
-  $('enterHunt').addEventListener('click',e=>{e.stopPropagation();if(ONLINE_GAME?.data?.online.world)enterHunt();else openPanel('modes');});
   $('returnLobby').addEventListener('click',returnLobby);
   $('navLobby').addEventListener('click',()=>{if(scene!=='lobby')returnLobby();});
   $('navHunt').addEventListener('click',()=>openPanel('modes'));

@@ -17,7 +17,7 @@ def add(q,node,n=1):
     for _ in range(n):q.locator('[data-talent-add]').click()
 def confirm(q):q.locator('[data-talent-confirm]').click();q.locator('[data-confirm-accept]').click()
 def travel(q):
-    q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click()
+    q.locator('.location-heading').click();q.locator('[data-island][data-current=true]').click();q.locator('[data-travel-area]').click()
 with sync_playwright() as p:
     b=p.chromium.launch(headless=True);errors=[]
     c,q=page_for(b,errors=errors);template=create(q);assert diag(q)['talentPoints']==1;c.close()

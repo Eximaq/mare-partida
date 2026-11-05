@@ -41,8 +41,7 @@ def open_page(browser, seed=None, size=(1366, 768)):
 
 
 def travel(page):
-    page.locator("#enterHunt").click()
-    page.locator("[data-quick-mode=map]").click()
+    page.locator(".location-heading").click()
     page.locator("[data-island=conchas]").click()
     # Inspection only loads the destination illustration and its current idle
     # preview. Confirm the trip before waiting for the full combat map.
@@ -100,8 +99,7 @@ with sync_playwright() as playwright:
     low = copy.deepcopy(template)
     low["level"] = 7
     context, page = open_page(browser, low)
-    page.locator("#enterHunt").click()
-    page.locator("[data-quick-mode=map]").click()
+    page.locator(".location-heading").click()
     page.locator("[data-island=conchas]").click()
     assert page.locator("[data-travel-area=swamp]").is_disabled()
     context.close()

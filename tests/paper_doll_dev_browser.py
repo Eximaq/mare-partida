@@ -37,7 +37,7 @@ with sync_playwright() as p:
  q.locator('.bottom-nav [data-panel=inventory]').click();q.locator('[data-inv-slot=weapon]').click();q.locator('[data-unequip=weapon]').click();q.locator('[data-close-panel]').click();q.clock.run_for(300)
  assert saved()['equipment']['weapon'] is None and state()['lastReason'] is None
  for key in ['w','a','s','d']:q.keyboard.down(key);q.clock.run_for(600);q.keyboard.up(key);q.clock.run_for(200)
- q.locator('#enterHunt').click();q.locator('[data-quick-mode=map]').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.clock.run_for(24000)
+ q.locator('.location-heading').click();q.locator('[data-island=dawn]').click();q.locator('[data-travel-area=beach]').click();q.clock.run_for(24000)
  assert q.evaluate('__mareDiagnostics().damage')>0 and state()['draws']>before
  assert state()['cacheEntries']<=96 and state()['cacheBytes']<=4*1024*1024
  q.screenshot(path=str(OUT/'combat-1366.png'))

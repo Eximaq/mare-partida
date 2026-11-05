@@ -6,7 +6,7 @@ from polish_support import page_for,create,saved,KEY
 OUT=Path(tempfile.gettempdir())/'mare-hunt-qa';OUT.mkdir(exist_ok=True)
 def d(q):return q.evaluate('__mareDiagnostics()')
 def travel(q,island='dawn'):
-    q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island='+island+']').click();q.locator('[data-travel-area]').click()
+    q.locator('.location-heading').click();q.locator('[data-island='+island+']').click();q.locator('[data-travel-area]').click()
     if d(q)['autoPlay']:q.locator('#autoToggle').click()
 def route(q):
  if q.locator('#journeyToggle').get_attribute('aria-expanded')=='false':q.locator('#journeyToggle').click()
@@ -22,7 +22,7 @@ with sync_playwright() as p:
         q.locator('[data-hunt-sector=corsarios]').click();assert d(q)['path'];assert not d(q)['autoPlay'];q.clock.run_for(2500);assert d(q)['walkable'];c.close()
     print('Dawn safe arrival, route walking and mobile UI: passed',flush=True)
     low=copy.deepcopy(template);low['level']=10
-    c,q=page_for(b,low,errors=errors);q.locator('#enterHunt').click();q.locator('[data-mode=map]').click();q.locator('[data-island=conchas]').click();assert q.locator('[data-travel-area]').is_disabled();c.close()
+    c,q=page_for(b,low,errors=errors);q.locator('.location-heading').click();q.locator('[data-island=conchas]').click();assert q.locator('[data-travel-area]').is_disabled();c.close()
     high=copy.deepcopy(template);high.update(level=80,hp=99999)
     c,q=page_for(b,high,errors=errors);travel(q,'conchas');assert all(11<=m['level']<=13 for m in d(q)['mobs'])
     route(q);assert q.locator('[data-hunt-sector]').count()==4;q.locator('#closePanel').click();q.locator('#returnLobby').click();q.reload();q.wait_for_load_state('networkidle');assert saved(q)['level']==80;c.close()

@@ -81,13 +81,13 @@
     expedition.setAttribute('role','dialog');expedition.setAttribute('aria-modal','false');
     const expeditionTitle=expedition.querySelector('.floating-title>span');expeditionTitle.id='expeditionWindowTitle';expeditionTitle.textContent='Expedição';expedition.setAttribute('aria-labelledby',expeditionTitle.id);
     entry.classList.remove('hidden');entry.setAttribute('role','menuitem');entry.setAttribute('aria-controls','floatingExpedition');
-    entry.querySelector('.mini-dot').outerHTML='<img src="icones_menu_pirata/png/48/contratos.png" width="24" height="24" alt="">';
+    entry.querySelector('.mini-dot').outerHTML='<img src="assets/ui/hud-expedition/contract.png" width="24" height="24" alt="">';
     document.getElementById('modesQuickMenu').append(entry);
     journey.querySelector('.journey-heading').after(controls);
     expedition.querySelector('.journey-footer').append(document.getElementById('huntRoute'));
     document.getElementById('journeyToggle').firstChild.textContent='';
     document.getElementById('journeyToggle').querySelector('span:not(.journey-chevron)').textContent='Expedição';
-    const launcher=document.getElementById('journeyToggle');launcher.setAttribute('aria-controls','floatingExpedition');launcher.setAttribute('aria-expanded','false');launcher.querySelector('.journey-chevron').textContent='O';
+    const launcher=document.getElementById('journeyToggle');launcher.setAttribute('aria-keyshortcuts','O');launcher.setAttribute('aria-controls','floatingExpedition');launcher.setAttribute('aria-expanded','false');launcher.querySelector('.journey-chevron').textContent='O';
     const reward=document.createElement('span');reward.className='journey-reward';reward.textContent='◆';reward.hidden=true;reward.setAttribute('aria-hidden','true');launcher.append(reward);
     const rewardObserver=new MutationObserver(()=>{
       const ready=document.getElementById('journeyAction').hasAttribute('data-claim')||document.getElementById('journeyProgress').textContent==='Baú disponível';

@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process'),{chromium}=require('playwright');
 const sizes=[[1672,941],[1920,1080],[1366,768],[1280,720],[1024,768],[760,900],[393,852],[320,568],[844,390]];
-const selectors=['#mainMenu','.action-panel','#floatingChat','#floatingExpedition','#journeyHud','#chatCornerToggle','#enterHunt','#returnLobby','#huntRoute','#expeditionMini','#huntXpTracker','#characterQuickMenu','#modesQuickMenu','#captainQuickMenu'];
+const selectors=['#mainMenu','.action-panel','#floatingChat','#floatingExpedition','#journeyHud','#chatCornerToggle','#returnLobby','#huntRoute','#expeditionMini','#huntXpTracker','#characterQuickMenu','#modesQuickMenu','#captainQuickMenu'];
 const base=process.env.MARE_HARMONY_BASE||'d87f40d';
 const previous=file=>cp.execFileSync('git',['show',base+':'+file],{encoding:'utf8'});
 const hook='  window.__harmonyQA={get game(){return game},get session(){return session},get world(){return world},toggle:toggleFloating,update:updateUI,enter:enterHunt,leave:returnLobby,log,defs:itemDefs,newItem,syncVfx:syncFruitVfx,pause(){autoPlay=false;updateUI();}};window.__mareDiagnostics=';
