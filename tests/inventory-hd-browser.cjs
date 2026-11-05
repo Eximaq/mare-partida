@@ -25,8 +25,8 @@ await p.locator('#invSearch').fill('');
 await p.locator('#invSort').selectOption('name');assert.equal(await p.locator('#invSort').inputValue(),'name');
 await p.locator('#invRarity').selectOption('epic');assert(await p.locator('[data-item]').count()>0);
 await p.locator('#invRarity').selectOption('all');
-await p.locator('[data-inv-category="fruits"]').click();assert((await p.locator('[data-item]').count())>0);
-await p.locator('[data-inv-category="all"]').click();
+await p.locator('#invCategory').selectOption('fruits');assert((await p.locator('[data-item]').count())>0);
+await p.locator('#invCategory').selectOption('all');
 const head=await p.evaluate(()=>{const q=__invQA,d=q.defs.find(x=>x.name==='Capacete do Corsário'),i=q.newItem(d,25);q.game.inventory.push(i);q.select(i.id);return i.id});
 await p.locator('[data-equip="'+head+'"]').click();assert.equal(await p.evaluate(()=>__invQA.game.equipment.head.id),head);assert.equal(await p.locator('[data-unequip="head"]').count(),1);assert.equal(await p.locator('[data-equip]').count(),0);
 // Exercise the requested contextual actions on a disposable gear item.

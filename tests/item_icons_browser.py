@@ -28,7 +28,7 @@ with sync_playwright() as p:
         assert all(r['width']==r['height']==32 for r in rows)
         assert q.locator('#dialogBody').evaluate('(e)=>e.scrollWidth<=e.clientWidth+1')
         q.screenshot(path=str(OUT/f'inventory-{size[0]}.png'))
-        q.locator('[data-inv-category=consumables]').click();q.locator('[data-item=icon-61]').click();loaded(q)
+        q.locator('#invCategory').select_option('consumables');q.locator('[data-item=icon-61]').click();loaded(q)
         assert q.locator('#dialogBody .haki-icon').get_attribute('src').startswith('assets/ui/items-pixellab/book.png')
         q.keyboard.press('Escape');q.locator('#mainMenu [data-panel=forge]').click();loaded(q)
         q.locator('[data-forge-tab=imbue]').click();rows=loaded(q)

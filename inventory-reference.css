@@ -1,0 +1,145 @@
+/* The supplied artwork frames the live controls. Occupied slots retain their rarity colors. */
+#app #panelOverlay.inventory-mode.pirate-hd {
+  --bag-frame: url('assets/ui/inventory-reference/bag-frame.png');
+  --detail-frame: url('assets/ui/inventory-reference/detail-frame.png');
+  --slot-rim: url('assets/ui/inventory-reference/slot-rim.png');
+  --tab: url('assets/ui/inventory-reference/tab.png');
+  --tab-active: url('assets/ui/inventory-reference/tab-active.png');
+  --field: url('assets/ui/inventory-reference/field.png');
+  --plaque: url('assets/ui/inventory-reference/plaque.png');
+  --ink: #071922;
+  --ivory: #f5ebd4;
+  --gold: #ffda85;
+  --line: #8d744448;
+  color-scheme: dark;
+
+  & > .dialog, & .op-inventory-shell, & .op-body-grid {
+    background: transparent;
+    box-shadow: none;
+  }
+  & .op-body-grid {gap:10px; padding:0}
+  & .op-panel {
+    background:linear-gradient(155deg,#122a32,#06151d 70%);
+    border:12px solid transparent; border-image:var(--bag-frame) 24 / 16px stretch;
+    padding:8px; color:var(--ivory); scrollbar-color:#8d784d #091820;
+  }
+  & .op-topbar {padding:0 10px; min-height:64px; gap:4px; background:var(--ink); border:0}
+  & .op-title-banner, & .op-title-banner h2 {padding:0; margin:0; border:0; background:none; box-shadow:none}
+  & .op-title-banner img {width:auto; height:78px; display:block}
+  & .op-close {width:44px; height:44px; background:none; border:0; box-shadow:none}
+  & .op-close img {width:34px; height:34px}
+  & .op-character-panel > .hd-panel-heading {display:none}
+  & .hd-panel-heading, & .op-panel-head, & .op-detail-box h4 {
+    min-height:40px; padding:4px 9px; margin:0 0 8px;
+    border:6px solid transparent; border-image:var(--plaque) 13 32 fill / 7px 16px stretch;
+    background:none; font:700 20px/1.12 var(--rpg-hd-heading); color:var(--ivory);
+  }
+  & .op-head-left h3 {font-size:21px}
+  & .op-panel-head .inv-ui-icon, & .hd-panel-heading .inv-ui-icon {width:24px; height:24px}
+  & .op-tabs {gap:4px; margin-bottom:8px}
+  & .op-tabs button, & .op-pagination button, & .op-best-btn,
+  & .op-action, & .op-item-actions .op-action.secondary, & .op-item-actions .op-action.primary {
+    background:none; border:5px solid transparent; border-image:var(--tab) 10 fill / 6px stretch;
+    padding:4px 6px; color:var(--ivory); box-shadow:none;
+  }
+  & .op-tabs button.active, & .op-pagination button.active {
+    border-image:var(--tab-active) 12 fill / 7px stretch; color:#fff5dc; outline:0; filter:none;
+  }
+  & .op-tabs button {min-height:40px; font:700 15px/1 var(--rpg-font)}
+  & .op-avatar-stage {border:3px solid #8f713d; border-radius:5px; background:#08212e url('assets/ui/inventory-reference/avatar-chart.png') center/cover}
+  & .op-avatar-meta strong {border:7px solid transparent; border-image:url('assets/ui/inventory-reference/nameplate.png') 12 16 fill / 8px 10px; padding:0 2px; background:none; box-shadow:none}
+  & .op-avatar-meta strong img {width:18px; height:18px; object-fit:contain; vertical-align:middle}
+  & .op-avatar-meta span {color:#e2d9bd}
+  & .op-character-summary, & .op-fruit-equipped {border:1px solid var(--line); background:#08171ee6; border-radius:4px; padding:4px 8px}
+  & .op-stats-list div, & .op-power-banner {background:transparent; border:0; border-bottom:1px solid var(--line); margin:0; box-shadow:none}
+  & .op-stats-list div:last-child {border:0}
+  & .op-stats-list .inv-ui-icon, & .op-power-banner .inv-ui-icon {width:23px; height:23px}
+  & .op-tool-row {gap:6px; margin:0 0 8px}
+  & .op-tool-row select, & .op-tool-row .op-search {
+    background:#081c25; border:5px solid transparent; border-image:var(--field) 12 fill / 6px stretch;
+    color:var(--ivory); box-shadow:none;
+  }
+  & .op-search input {color:var(--ivory); background:transparent}
+  & .op-search input::placeholder {color:#c2c4bc}
+  & .op-grid-wrap {padding:4px; border:9px solid transparent; border-image:var(--bag-frame) 24 / 12px stretch; background:#071a22; box-shadow:none; border-radius:4px}
+  & .op-grid {background:none}
+  & .op-grid > .op-item.empty, & .op-equip-slot:not(.filled), & .op-detail-icon {
+    background:linear-gradient(135deg,#102831,#07151c);
+    border:5px solid transparent; border-image:var(--slot-rim) 12 / 7px stretch; box-shadow:none;
+  }
+  & .op-equip-slot:not(.filled) .empty-slot-mark {display:inline-block; width:24px; height:24px; font-size:0; background:var(--slot-symbol) center/contain no-repeat}
+  & [data-inv-slot=head] {--slot-symbol:url('assets/ui/inventory-reference/head.png')}
+  & [data-inv-slot=necklace] {--slot-symbol:url('assets/ui/inventory-reference/necklace.png')}
+  & [data-inv-slot=coat] {--slot-symbol:url('assets/ui/inventory-reference/coat.png')}
+  & [data-inv-slot=legs] {--slot-symbol:url('assets/ui/inventory-reference/legs.png')}
+  & [data-inv-slot=boots] {--slot-symbol:url('assets/ui/inventory-reference/boots.png')}
+  & [data-inv-slot=weapon] {--slot-symbol:url('assets/ui/inventory-reference/weapon.png')}
+  & [data-inv-slot=ring] {--slot-symbol:url('assets/ui/inventory-reference/ring.png')}
+  & .op-bag-capacity {margin:0}
+  & .op-pagination {column-gap:5px; row-gap:3px}
+  & .op-page-count {font-size:13px}
+  & .op-detail-panel {border-image:var(--detail-frame) 16 / 12px stretch}
+  & .op-detail-wrap, & .op-detail-box, & .op-detail-content, & .op-detail-box p, & .op-detail-head small,
+  & .op-skill-row strong, & .op-effect-list b, & .op-stat-row b, & .op-comparison-deltas {color:var(--ivory)}
+  & .op-detail-head h3, & .op-skill-row strong {color:var(--gold)}
+  & .op-detail-head small, & .op-skill-row small {color:#ced5c9}
+  & .op-detail-head {border-color:var(--line)}
+  & .op-detail-box h4 {margin-top:12px; font-size:16px}
+  & .op-stat-row {background:#091c25; color:var(--ivory); border:0; border-bottom:1px solid var(--line); border-radius:0; box-shadow:none}
+  & .op-stat-row .inv-ui-icon {width:22px; height:22px}
+  & .op-comparison-plate {background-color:var(--ink)}
+  & .op-item-actions .op-action[data-sell] {border-image:url('assets/ui/inventory-reference/sell.png') 10 fill / 6px stretch}
+  & .op-item-actions .op-action[data-inventory-forge] {border-image:url('assets/ui/inventory-reference/forge.png') 10 fill / 6px stretch}
+  & .op-item-actions .op-action {min-height:48px; height:auto; font-size:16px}
+  & .op-item-actions .op-action .inv-ui-icon {width:24px; height:24px}
+  & .op-detail-actions {border-color:var(--line); padding-top:8px}
+  & button:focus-visible, & select:focus-visible, & input:focus-visible {outline:2px solid #fff2b8; outline-offset:1px}
+
+  & .op-panel-head {display:grid; grid-template-columns:minmax(0,1fr) minmax(70px,.7fr) auto; gap:5px; padding:3px}
+  & .op-panel-head .op-best-btn {width:auto; max-width:none; min-height:42px}
+  & .op-panel-head .ui-select, & .op-tool-row .ui-select {min-width:0}
+  & .ui-select-trigger {
+    min-width:0; min-height:42px; font:600 15px/1.1 var(--rpg-font); color:var(--ivory);
+    border:5px solid transparent; border-image:var(--field) 12 fill / 5px stretch;
+    padding-inline:6px 18px; background:none; box-shadow:none;
+  }
+  & .op-tool-row {grid-template-columns:minmax(0,1fr) minmax(94px,.38fr) minmax(88px,.35fr)}
+  & .op-comparison:not([data-state=better],[data-state=worse],[data-state=equal]) .op-comparison-plate {border-image:var(--tab) 10 fill / 5px stretch}
+  & .op-forge-details, & .op-effect-list > div, & .op-origin-row > div {
+    background:#0d232b; color:var(--ivory); border:1px solid var(--line); box-shadow:none;
+  }
+  & .op-origin-row :is(span,b), & .op-detail-box blockquote {color:#d2cbb9}
+  & .op-detail-head:has(.op-detail-icon[class*="rarity-"]) h3 {color:var(--gold)}
+  & .op-detail-head:has(.rarity-rare) small {color:#89d9ff}
+  & .op-detail-head:has(.rarity-epic) small {color:#dab0ff}
+  & .op-detail-head:has(.rarity-supreme) small {color:#ffa5ab}
+  & .op-detail-head:has(.rarity-uncommon) small {color:#97e3b2}
+  & .op-detail-head:has(.rarity-legendary) small {color:#ffce79}
+  & .op-topbar {position:relative; justify-content:center}
+  & .op-top-actions {position:absolute; right:6px; top:4px}
+  & .op-top-actions kbd {display:none}
+  & .op-panel {border-image-width:20px}
+  & .op-character-panel {border-image:url('assets/ui/inventory-reference/rope-frame.png') 34 / 18px stretch}
+  @media(min-width:1101px) {
+    & .op-inventory-shell {display:grid; grid-template-columns:minmax(285px,1.03fr) minmax(375px,1.55fr) minmax(270px,.99fr); grid-template-rows:88px minmax(0,1fr); gap:0 10px}
+    & .op-topbar {grid-area:1/1; z-index:1; align-self:stretch; border:7px solid transparent; border-image:var(--bag-frame) 24 / 12px stretch; padding-inline:10px; flex-wrap:nowrap}
+    & .op-body-grid {grid-area:1/1/3/4; grid-template-columns:subgrid; grid-template-rows:subgrid; column-gap:10px; row-gap:0; pointer-events:none}
+    & .op-body-grid > section {pointer-events:auto}
+    & .op-character-panel {grid-area:2/1/3/2}
+    & .op-bag-panel {grid-area:1/2/3/3}
+    & .op-detail-panel {grid-area:1/3/3/4}
+  }
+  @media(max-width:760px) {
+    & .op-title-banner img {height:54px}
+    & .op-panel {padding:6px}
+    & .op-section-nav {margin-bottom:5px}
+    & .op-section-nav a {min-height:44px}
+    & .op-tabs button, & .op-tool-row select, & .op-tool-row .op-search {min-height:44px}
+    & .op-panel-head {grid-template-columns:1fr 1fr}
+    & .op-panel-head .op-best-btn {grid-column:1/-1}
+    & .op-tool-row {grid-template-columns:1fr 1fr}
+    & .op-pagination {display:flex; align-items:center; flex-wrap:wrap}
+    & .op-pagination .op-bag-capacity {flex:0 0 auto; width:auto; margin:0}
+    & .op-pagination .op-page-count {width:auto; flex:1}
+  }
+}

@@ -11,7 +11,7 @@ await p.locator('#nextToAppearance').click();
 await p.locator('#createCharacter').click();
 await p.locator('[data-confirm-accept]').click();
 
-const ids=await p.evaluate(()=>{const q=__invQA,g=q.game;g.level=200;g.gold=0;g.materials=7;const d=q.defs.find(d=>d.slot==='coat');const make=(id,defense)=>({...q.newItem(d,1),id,plus:0,rarity:'common',baseStats:{attack:0,defense,hp:0},extras:[],sockets:[]});g.equipment.coat=make('reference',20);g.inventory=[make('better',60),make('worse',1),make('equal',20),make('negative',-5)];q.openPanel('inventory');return g.inventory.map(i=>i.id)});
+const ids=await p.evaluate(()=>{const q=__invQA,g=q.game;g.level=200;g.gold=0;g.materials=7;const d=q.defs.find(d=>d.slot==='coat');const make=(id,defense)=>({def:q.defs.indexOf(d),id,level:1,plus:0,rarity:'common',baseStats:{attack:0,defense,hp:0},extras:[],sockets:[]});g.equipment.coat=make('reference',20);g.inventory=[make('better',60),make('worse',1),make('equal',20),make('negative',-5)];q.openPanel('inventory');return g.inventory.map(i=>i.id)});
 await p.waitForFunction(()=>{const c=document.getElementById('inventorySprite');return c&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0)},null,{timeout:90000});
 const canonical=await p.evaluate(()=>JSON.stringify(__invQA.game)),storage=await p.evaluate(()=>JSON.stringify(localStorage));
 for(const [id,state,title] of [['better','better','MAIOR PODER QUE O EQUIPADO'],['worse','worse','MENOR PODER QUE O EQUIPADO'],['equal','equal','MESMO PODER QUE O EQUIPADO']]){
@@ -30,7 +30,8 @@ for(const [id,state,title] of [['better','better','MAIOR PODER QUE O EQUIPADO'],
  await p.screenshot({path:out+'/comparison-'+state+'.png'});
 }
 await p.evaluate(()=>__invQA.selectOnly('negative'));
-assert.match(await p.locator('[data-item-stat="defense"]').innerText(),/-5/);
+// Forge clamps negative base defense to zero; zero-valued rows are hidden.
+assert.equal(await p.locator('[data-item-stat="defense"]').count(),0);
 await p.evaluate(()=>{__invQA.game.inventory.find(i=>i.id==='negative').plus=2;__invQA.renderPanel()});
 assert.match(await p.locator('[data-item="negative"] .op-item-refine').innerText(),/\+2/);
 await p.evaluate(()=>{__invQA.game.inventory.find(i=>i.id==='negative').plus=0;__invQA.selectOnly('better');window.__cmpNode=document.querySelector('#invPowerComparison');window.__bagNode=document.querySelector('.op-grid');__invQA.game.equipment.coat.baseStats.defense=60;__invQA.refresh()});

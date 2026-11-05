@@ -63,3 +63,7 @@ Esta rodada é a regressão pertinente à sprint, não uma declaração de que t
 ## Persistência e reversão
 
 Sem migração de schema, exclusão de assets antigos ou alteração de economia. Fontes e componentes anteriores continuam disponíveis. Reversão pelos commits separados desta branch; saves não precisam de conversão. Revisar as capturas antes de autorizar merge. Próximo escopo somente após avaliação do proprietário.
+
+## Adaptação da prancha de referência de 05/11/2026
+
+A arte de execução está em `assets/ui/inventory-reference/`. Os recortes separam brasão, cantoneiras, cordas, placas, carta náutica do retrato, faixa de nome, encaixes e ícones. Molduras e controles usam nove fatias para preservar os cantos em larguras diferentes. A mochila tem seleção de categoria, raridade e ordem, com capacidade e paginação no rodapé. A ficha mantém os atributos e as ações do item selecionado. O emblema junto ao nome indica a facção real do personagem.

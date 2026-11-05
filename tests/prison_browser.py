@@ -9,7 +9,7 @@ def diag(q):return q.evaluate('__mareDiagnostics()')
 def prison(q):panel(q,'prison')
 
 def openbox(q,id):
- q.locator('[data-inv-category=consumables]').click();q.locator(f'[data-item="{id}"]').click();q.locator(f'[data-open-pearl-box="{id}"]').click()
+ q.locator('#invCategory').select_option('consumables');q.locator(f'[data-item="{id}"]').click();q.locator(f'[data-open-pearl-box="{id}"]').click()
 with sync_playwright() as p:
  b=p.chromium.launch(headless=True);c,q=page_for(b,errors=errors);q.clock.run_for(300);template=create(q);c.close()
  for size in SIZES+[(393,852),(320,568)]:
@@ -55,7 +55,7 @@ with sync_playwright() as p:
  assert len(after['inventory'])==3 and not any(i['id']=='box1' for i in after['inventory']);pearl=next(i for i in after['inventory'] if i['id']=='pearl-from-box1');assert pearl['pearlId']=='pearl_int_1'
  assert next(i for i in after['inventory'] if i['id']=='legacy')==next(i for i in before['inventory'] if i['id']=='legacy')
  for k in ['equipment','gold','materials','attributes','impelDown']:assert after[k]==before[k]
- q.screenshot(path=str(OUT/'box-opened.png'));q.locator('[data-inv-category=consumables]').click();q.locator('[data-item=box2]').click();assert q.locator('[data-open-pearl-box]').is_disabled()
+ q.screenshot(path=str(OUT/'box-opened.png'));q.locator('#invCategory').select_option('consumables');q.locator('[data-item=box2]').click();assert q.locator('[data-open-pearl-box]').is_disabled()
  q.locator('[data-inv-lock=box2]').click();openbox(q,'box2');q.locator('[data-confirm-accept]').click();assert next(i for i in saved(q)['inventory'] if i['id']=='pearl-from-box2')['pearlId']=='pearl_int_2'
  expected_inventory=copy.deepcopy(saved(q)['inventory']);q.reload();q.wait_for_load_state('networkidle');assert saved(q)['inventory']==expected_inventory;assert len([i for i in saved(q)['inventory'] if i.get('pearlId')])==3
  record('boxes_cancel_unlock_consume_same_level_and_reload');c.close()

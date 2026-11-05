@@ -165,7 +165,10 @@ with sync_playwright() as p:
     for width,height,columns in SIZES:
         c,q=page_for(browser,copy.deepcopy(data),(width,height))
         keys=('inventory','equipment','gold','materials','potions','attributes','classId','factionId')
-        before={key:saved(q).get(key) for key in keys}
+        # Persist the loaded legacy fixture before comparing UI-only interactions.
+        q.evaluate("window.dispatchEvent(new Event('beforeunload'))")
+        initial=saved(q)
+        before={key:initial.get(key) for key in keys}
         q.locator('#mainMenu [data-panel=inventory]').click()
         r=verify_grid(q,columns)
         equipment=verify_equipment_profile(q,width)
