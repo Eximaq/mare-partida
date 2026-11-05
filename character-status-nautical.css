@@ -1,3 +1,19 @@
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  src: url('assets/ui/character-studio/fonts/barlow-semi-condensed-400.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Barlow Semi Condensed';
+  src: url('assets/ui/character-studio/fonts/barlow-semi-condensed-700.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
 /* Character status only. Keep the appearance editor and creation theme independent. */
 #app #panelOverlay.character-studio-mode:has(.studio-character) {
   --character-rope: url('assets/ui/hud-nautical-v2/rope-frame.png');
@@ -8,6 +24,7 @@
   --character-title: #fff0d0;
   --character-text: #f6e8d1;
   --character-serif: Georgia, serif;
+  --character-sans: 'Barlow Semi Condensed', 'Alegreya Sans', 'Segoe UI', sans-serif;
   --character-gutter: 8px;
   --character-step: 5px;
   padding: 10px;
@@ -79,7 +96,7 @@
     gap: 8px;
     flex: none;
     color: var(--character-text);
-    font-size: 16px;
+    font: 400 16px/1.3 var(--character-sans);
   }
 
   & .studio-character .character-derived { grid-column: auto; }
@@ -109,7 +126,7 @@
   & .studio-character h4 > img { width: 1.15em; height: 1.15em; object-fit: contain; flex: none; }
 
   & .studio-character h4 {
-    font: 700 clamp(16px, 1.2vw, 18px)/1.16 var(--character-serif);
+    font: 700 clamp(17px, 1.3vw, 19px)/1.16 var(--character-sans);
     color: var(--character-title);
   }
 
@@ -132,7 +149,7 @@
     border-image: var(--character-plaque) 12 fill / 5px stretch;
     background: none;
     color: var(--character-title);
-    font: 700 clamp(14px, 1.07vw, 16px)/1.14 var(--character-serif);
+    font: 700 clamp(15px, 1.14vw, 17px)/1.14 var(--character-sans);
   }
 
   & .studio-character #confirmAttributes:disabled { border-image-source: var(--character-plaque); }
@@ -207,8 +224,14 @@
     background: none;
   }
 
-  & .studio-character .character-power > span { font: 700 15px/1.15 var(--character-serif); }
-  & .studio-character #characterPower { font: 700 clamp(23px, 2vw, 29px)/1.05 var(--character-serif); }
+  & .studio-character .character-power > span { font: 700 16px/1.15 var(--character-sans); }
+  & .studio-character #characterPower {
+    margin-inline-start: auto;
+    font: 700 clamp(27px, 2.25vw, 33px)/1 var(--character-sans);
+    font-variant-numeric: lining-nums tabular-nums;
+    letter-spacing: .015em;
+    text-align: right;
+  }
 
   & .character-identity > h4 {
     margin: 6px 0 0;
@@ -227,7 +250,7 @@
   }
   & .studio-skills article:last-child { border-bottom: 0; padding-bottom: 0; }
   & .studio-skills .studio-icon { width: 36px; height: auto; aspect-ratio: 1; border-radius: 4px; }
-  & .studio-skills b { display: block; font: 700 clamp(15px, 1.16vw, 17px)/1.1 var(--character-serif); color: var(--character-title); }
+  & .studio-skills b { display: block; font: 700 clamp(16px, 1.23vw, 18px)/1.1 var(--character-sans); color: var(--character-title); }
   & .studio-skills p { font-size: 14px; line-height: 1.13; margin: 2px 0 0; }
   & .studio-skills small { display: block; margin-top: 2px; font-size: 12px; line-height: 1.15; color: #c8d4d7; }
 
@@ -240,10 +263,10 @@
     background: #041923a0;
   }
   & .studio-character .attribute-budget span {
-    font: 700 clamp(15px, 1.3vw, 18px)/1.15 var(--character-serif);
+    font: 700 clamp(16px, 1.3vw, 18px)/1.15 var(--character-sans);
     text-transform: none;
   }
-  & .studio-character .attribute-budget strong { font: 700 26px/1 'Alegreya Sans', sans-serif; }
+  & .studio-character .attribute-budget strong { font: 700 26px/1 var(--character-sans); font-variant-numeric: lining-nums tabular-nums; }
 
   & .studio-character .allocation-presets { gap: var(--character-step); margin: 0 0 6px; }
   & .studio-character .allocation-presets button { padding: 2px 4px; min-width: 0; }
@@ -261,10 +284,10 @@
   & .studio-character .attribute-row > .studio-icon { width: 100%; height: auto; aspect-ratio: 1; }
   & .studio-character .attribute-row > div { gap: 4px; flex-wrap: wrap; }
   & .studio-character .attribute-row .studio-help { margin-left: 0; }
-  & .studio-character .attribute-row b { font: 700 clamp(15px, 1.25vw, 18px)/1.1 var(--character-serif); color: var(--character-title); overflow-wrap: anywhere; }
-  & .studio-character .attribute-row > strong { font: 700 clamp(16px, 1.2vw, 18px)/1.05 'Alegreya Sans', sans-serif; font-variant-numeric: tabular-nums; }
+  & .studio-character .attribute-row b { font: 700 clamp(16px, 1.28vw, 18px)/1.1 var(--character-sans); color: var(--character-title); overflow-wrap: anywhere; }
+  & .studio-character .attribute-row > strong { font: 700 clamp(16px, 1.2vw, 18px)/1.05 var(--character-sans); font-variant-numeric: lining-nums tabular-nums; }
   & .studio-character .attribute-row > strong em { display: block; }
-  & .studio-character .attribute-row button:not(.studio-help) { width: 34px; min-height: 34px; padding: 0; font: 700 23px/1 'Alegreya Sans', sans-serif; }
+  & .studio-character .attribute-row button:not(.studio-help) { width: 34px; min-height: 34px; padding: 0; font: 700 23px/1 var(--character-sans); }
   & .studio-allocation-status { min-height: 0; margin: 5px 0; color: var(--character-text); }
   & .studio-allocation-actions { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--character-step); }
   & .studio-allocation-actions #confirmAttributes { grid-column: 1/-1; }
@@ -294,8 +317,8 @@
     color: var(--character-text);
   }
   & .studio-character .derived-list b {
-    font-size: clamp(16px, 1.24vw, 18px);
-    font-variant-numeric: tabular-nums;
+    font: 700 clamp(16px, 1.24vw, 18px)/1.1 var(--character-sans);
+    font-variant-numeric: lining-nums tabular-nums;
   }
 
   & .studio-panel-switch { display: none; }
@@ -333,7 +356,7 @@
       border: 5px solid transparent;
       border-image: var(--character-plaque) 12 fill / 5px stretch;
       color: var(--character-title);
-      font: 700 14px/1.15 var(--character-serif);
+      font: 700 15px/1.15 var(--character-sans);
       cursor: pointer;
     }
     & .studio-panel-switch input:checked + label { border-image-source: var(--character-gold-plaque); }
