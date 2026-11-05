@@ -81,3 +81,20 @@ Equipamentos, operação e comparação ocupam três colunas no desktop. Em celu
 O cenário de aprimoramento usa uma bigorna independente da peça e apresenta a arte real de cada equipamento. A bancada e o fogo foram gerados com ImageGen e exportados com transparência para `assets/ui/forge-reference/`. A chama central e as faíscas são animadas no CSS e respeitam a preferência de movimento reduzido. O medidor neon mantém o percentual informado pelo sistema de aprimoramento.
 
 A janela tem limite de 1360 × 790 px no desktop. O aprimoramento concentra a área de rolagem no catálogo e omite os blocos de crescimento e últimas tentativas.
+
+## Molduras medidas
+
+A referência foi medida na forja em 1672 × 940, 1280 × 720, 1024 × 768 e 390 × 844 px. As 39 texturas ficam em `assets/ui/forge-reference/frames/`. Cada PNG tem o dobro da largura e altura medidas no desktop de referência. Os cantos são fatiados no CSS e mantêm tamanho fixo. Só os trechos retos acompanham a largura e altura disponíveis.
+
+| Componente em Aprimorar | Área no desktop | PNG |
+| --- | ---: | ---: |
+| Janela da forja | 1360 × 790 | 2720 × 1580 |
+| Equipamentos | 334 × 647 | 668 × 1294 |
+| Aprimoramento | 588 × 647 | 1176 × 1294 |
+| Comparação | 388 × 647 | 776 × 1294 |
+| Retrato do ferreiro | 362 × 386 | 724 × 772 |
+| Cartão de material | 272 × 62 | 544 × 124 |
+| Aba principal | 327 × 50 | 654 × 100 |
+| Botão Aprimorar | 480 × 51 | 960 × 102 |
+
+A corda usa as peças em alta resolução de `assets/ui/hud-nautical-v2/rope-frame.png`. Os cartões, botões e encaixes usam recortes do inventário. Divisórias, medidores e contornos de raridade conservam a pintura por CSS para acompanhar seus estados.
