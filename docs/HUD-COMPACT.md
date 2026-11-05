@@ -88,3 +88,7 @@ A placa, a bússola e o nó em `assets/ui/location-banner/` são sprites da folh
 ### Canal do Porto
 
 As dez peças transparentes fornecidas pelo proprietário em 04/11/2026 compõem a moldura, a faixa de título, o timão, os botões, as placas e a barra de rolagem. Os sprites de execução ficam em `assets/ui/port-chat/`. A lista usa rolagem nativa. Geral reúne todos os registros, Sistema exibe eventos e Anotações exibe as notas locais do jogador.
+
+### Menu principal
+
+A moldura azul e dourada e os oito ícones vêm da folha transparente de menu fornecida pelo proprietário em 04/11/2026. Cada imagem em `assets/ui/nav-menu/` contém três células de 56 px para repouso, destaque e seleção. As áreas de toque têm pelo menos 44 px. Os avisos de personagem e os convites de grupo exibem os contadores do jogo.

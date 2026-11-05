@@ -76,14 +76,84 @@
 #app.hud-nautical .nautical-profile #hudClassName {font:400 14px/1.2 var(--hud-body); color:var(--hud-muted); text-align:right}
 #app.hud-nautical .nautical-profile :is(#miniLevel,#miniPower,#miniHPText,#miniEnergyText,#miniXPText,#miniGold,#willpowerText) {font-variant-numeric:tabular-nums}
 /* Rails use the central strip of the original transparent illustration. */
-#app.hud-nautical #mainMenu,#app.hud-nautical .world-command button {border:0; border-image:none; border-radius:12px; background:var(--hud-surface); box-shadow:0 4px 10px #00101955}
-#app.hud-nautical #mainMenu::before,#app.hud-nautical .world-command button::before {content:''; position:absolute; display:block; width:auto; height:auto; inset:-3px; transform:none; background:var(--hud-rail) center/100% 260% no-repeat; pointer-events:none; z-index:1}
-#app.hud-nautical #mainMenu {inset:max(var(--hud-edge),env(safe-area-inset-top)) max(var(--hud-edge),env(safe-area-inset-right)) auto auto; display:flex; width:max-content; max-width:none; height:64px; padding:8px 14px; gap:0; margin:0; transform:none; overflow:visible; flex-wrap:nowrap}
-#app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) {position:relative; display:grid; place-items:center; width:46px; height:48px; min-height:44px; margin:0; padding:6px; flex:none; border:0; border-right:1px solid var(--hud-line); border-radius:0; border-image:none; background:none; box-shadow:none; transform:none}
-#app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) img {width:32px; height:32px; image-rendering:auto; object-fit:contain; filter:drop-shadow(0 2px 1px #0008)}
-#app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger):is(:hover,[aria-expanded=true]) {background:linear-gradient(transparent,#bd8b3e40); box-shadow:inset 0 -2px var(--brass-400)}
-#app.hud-nautical #mainMenu :is(.character-menu-anchor,.social-menu-anchor,.captain-menu-anchor) {flex:none; width:auto; position:static}
-#app.hud-nautical #mainMenu .menu-tooltip {font-size:14px; background:#071e2b; color:var(--hud-text); border:1px solid var(--brass-500)}
+#app.hud-nautical .world-command button {border:0; border-image:none; border-radius:12px; background:var(--hud-surface); box-shadow:0 4px 10px #00101955}
+#app.hud-nautical .world-command button::before {content:''; position:absolute; display:block; width:auto; height:auto; inset:-3px; transform:none; background:var(--hud-rail) center/100% 260% no-repeat; pointer-events:none; z-index:1}
+#app.hud-nautical #mainMenu {
+  inset:max(var(--hud-edge),env(safe-area-inset-top)) max(var(--hud-edge),env(safe-area-inset-right)) auto auto;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-wrap:nowrap;
+  width:max-content;
+  max-width:none;
+  height:64px;
+  gap:2px;
+  padding:6px 16px;
+  margin:0;
+  border:0 solid transparent;
+  border-image:url('assets/ui/nav-menu/frame.png') 30 52 fill / 16px 26px stretch;
+  background:none;
+  box-shadow:none;
+  transform:none;
+  overflow:visible;
+}
+#app.hud-nautical #mainMenu::before {content:none}
+#app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) {
+  position:relative;
+  display:grid;
+  place-items:center;
+  flex:none;
+  width:46px;
+  height:48px;
+  min-height:44px;
+  margin:0;
+  padding:0;
+  border:0;
+  border-image:none;
+  border-radius:4px;
+  background:none;
+  backdrop-filter:none;
+  box-shadow:none;
+  transform:none;
+}
+/* Each strip has three square cells: resting, hover and selected. */
+#app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) > img {
+  width:38px;
+  height:38px;
+  max-width:none;
+  border-radius:4px;
+  object-fit:cover;
+  object-position:left center;
+  image-rendering:auto;
+  filter:none;
+}
+@media (hover:hover) {
+  #app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger):hover > img {
+    object-position:center;
+  }
+}
+#app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger):is(:active,:focus-visible,[aria-expanded=true],[aria-pressed=true]) > img {
+  object-position:right center;
+  box-shadow:0 0 5px #d99b4066;
+}
+#app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) > :is(.hud-notification-badge,.party-invite-badge):not([hidden]) {
+  position:absolute;
+  top:0;
+  right:0;
+  z-index:2;
+  display:grid;
+  place-items:center;
+  min-width:17px;
+  height:17px;
+  padding:0 3px;
+  border:1px solid #fcb394;
+  border-radius:5px;
+  color:white;
+  background:linear-gradient(#d93a35,#920d19);
+  box-shadow:0 1px 2px #180909;
+}
+#app.hud-nautical #mainMenu :is(.character-menu-anchor,.social-menu-anchor,.captain-menu-anchor) {display:flex; align-items:center; flex:none; width:auto; height:48px; position:static}
+#app.hud-nautical #mainMenu .menu-tooltip {font:600 14px/1.3 var(--hud-body); background:#071e2b; color:var(--hud-text); border:1px solid var(--brass-500); border-image:none; border-radius:5px}
 #app.hud-nautical #mainMenu .character-quick-menu {top:calc(100% + 8px); bottom:auto; max-height:calc(100dvh - var(--menu-bottom) - 24px)}
 #app.hud-nautical #hudUtilities {position:fixed; inset:var(--hud-edge) auto auto 50%; transform:translateX(-50%); width:440px; max-width:none; gap:8px; align-items:center; margin:0; padding:0}
 /* Separate ornaments keep the compass round and the location and clock live. */
@@ -391,9 +461,9 @@ body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
 }
 @media(max-width:760px) {
   :root {--hud-edge:12px; --hud-profile:min(320px,calc(100vw - 24px)); --hud-chat:calc(100vw - 24px); --hud-side:220px}
-  #app.hud-nautical #mainMenu {top:calc(var(--profile-bottom) + 12px); left:12px; right:12px; width:auto; height:60px; justify-content:space-evenly; padding:6px}
-  #app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) {width:44px; height:48px; padding:6px}
-  #app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) img {width:30px; height:30px}
+  #app.hud-nautical #mainMenu {top:calc(var(--profile-bottom) + 12px); left:12px; right:12px; width:auto; height:60px; justify-content:space-evenly; gap:0; padding:6px}
+  #app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) {width:44px; height:48px; padding:0}
+  #app.hud-nautical #mainMenu :is([data-panel],#socialMenuTrigger) > img {width:34px; height:34px}
   #app.hud-nautical #hudUtilities {top:calc(var(--profile-bottom) + 84px); left:24px; right:12px; width:auto; max-width:none; align-items:flex-end}
   #app.hud-nautical .location-heading {--compass-size:50px; min-height:50px}
   #app.hud-nautical .location-heading #locationName {font-size:clamp(16px,4.55vw,18px)}
@@ -420,6 +490,9 @@ body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
   #app.hud-nautical #targetHud .target-hud-top {font-size:12px}
   #app.hud-nautical #huntXpTracker .hunt-xp-top {display:flex; flex-wrap:wrap; gap:2px}
   #app.hud-nautical #huntXpTracker .hunt-xp-level {display:none}
+}
+@media (min-width:360px) and (max-width:379px) {
+  #app.hud-nautical #mainMenu {left:2px; right:2px; padding-inline:2px}
 }
 @media(max-height:500px) and (min-width:761px) {
   :root {--hud-edge:10px; --hud-profile:300px; --hud-side:240px}
