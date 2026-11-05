@@ -83,7 +83,7 @@ O ensaio histórico `orange_browser.py` falha na expectativa de bloqueio de um p
 
 ### Faixa de localização
 
-A placa, a bússola e o nó em `assets/ui/location-banner/` são sprites da folha RGBA fornecida pelo proprietário em 04/11/2026. Os recortes preservam os pixels originais. O calendário vetorial acompanha a cor do relógio. O nome da área e a hora são os campos atualizados pelo jogo. A faixa abre o mapa pelo mesmo comando do menu, por clique, toque ou teclado.
+A placa mostra o nome da área e uma bússola de 16 px. A moldura de 1 px acompanha o texto. O botão tem pelo menos 44 px de altura para abrir o mapa por toque, clique ou teclado.
 
 ### Canal do Porto
 
