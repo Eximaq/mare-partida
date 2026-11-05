@@ -1,5 +1,6 @@
 import {readFruits} from './fruits.js';
 import {permanentCharacterPower} from './power.js';
+import {readCombatInputs} from './combat-inputs.js';
 import {refreshHierarchyPower} from './hierarchy.js';
 import {readHaki} from './haki.js';
 import {readPrison} from './prison.js';
@@ -38,11 +39,17 @@ export async function readAchievements(client:PoolClient,id:string,state:Charact
 }
 // Called only inside an authorized command or worker transaction, after its mutation.
 // Replay returns before this hook; failure rolls counters back with the economy/receipt.
-export async function observeServerAchievements(client:PoolClient,id:string,before:CharacterState,after:CharacterState,options:{kills?:number;island?:string;powerBefore?:number}={}){
+export async function observeServerAchievements(client:PoolClient,id:string,before:CharacterState,after:CharacterState,options:{kills?:number;island?:string;powerBefore?:number;currentCombatSchema?:true}={}){
  if(!await available(client))return;
  const kills=options.kills??0;if(!Number.isSafeInteger(kills)||kills<0)throw new AuthFault(503,'invalid_achievement_event');
  const delta=BigInt(after.gold)-BigInt(before.gold),gain=delta>0n?Number(delta>1000000n?1000000n:delta):0;
- const currentPower=await permanentCharacterPower(client,id,after);
+ // Workers already require the current schema. Read again AFTER the reward and
+ // level change, on this transaction's locked character: never reuse tick inputs
+ // or temporary combat buffs. Historical command/migration callers keep their
+ // compatibility reader. This option is internal, never part of an HTTP payload.
+ const fresh=options.currentCombatSchema?(await readCombatInputs(client,[id])).get(id):undefined;
+ if(fresh&&(['characterId','version','level','experience','gold'] as const).some(k=>fresh.state[k]!==after[k]))throw new AuthFault(503,'character_state_unavailable');
+ const currentPower=fresh?fresh.permanentPower():await permanentCharacterPower(client,id,after);
  await refreshHierarchyPower(client,id,currentPower);
  const power=Math.max(options.powerBefore??0,Math.min(100000,currentPower));
  await client.query(`INSERT INTO mare_game.achievement_progress(character_id,kills,coins,peak_power) VALUES($1,LEAST(10000,$2::int),LEAST(1000000,$3::int+$4::int),$5)

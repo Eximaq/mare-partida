@@ -1,4 +1,4 @@
-FROM node:24.15.0-bookworm-slim AS build
+FROM node:24.22.2-bookworm-slim AS build
 WORKDIR /app
 COPY package.json package-lock.json tsconfig.base.json ./
 COPY apps/game-server/package.json apps/game-server/package.json
@@ -8,7 +8,7 @@ COPY apps/game-server apps/game-server
 COPY packages/shared packages/shared
 RUN npm run build
 
-FROM node:24.15.0-bookworm-slim AS runtime
+FROM node:24.22.2-bookworm-slim AS runtime
 WORKDIR /app
 ENV NODE_ENV=development
 COPY package.json package-lock.json ./

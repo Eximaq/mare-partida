@@ -69,6 +69,8 @@ export async function mutateDungeon(client:PoolClient,id:string,input:CharacterC
   await inventoryChange(client,id,input,state,stock,{...stock,inventory:result.state.inventory},r.reward.berry,r.reward.xp);
   await client.query('INSERT INTO mare_game.dungeon_claims(character_id,dungeon_id,request_id,experience_delta,gold_delta) VALUES($1,$2,$3,$4,$5)',[id,dungeonId,input.requestId,r.reward.xp,r.reward.berry]);
   // Claim, delivery and relocation share this command's SQL transaction.
+  // Only this member leaves the instance. The other members still own its boss and chests.
+  delete b.partyInstanceId;
   E.changeArea(b,null,now.getTime(),rng);const port=maps().maps.lobby.spawn;Object.assign(w,{mapId:'lobby',area:null,position:{...port},path:[],speed:0,direction:'front',serverNow:now.toISOString(),motionUntil:now.toISOString()});await storeWorld(client,id,w);await storeBattle(client,id,b);
  }else if(input.action==='dungeon.craft'){
   result=D.craft(base,{expectedSeq:input.payload.expectedSeq,defs:getGameCatalog().items,catalog:require('../../../../akuma-system.js').catalog,random:rng,commit:()=>true,now:now.getTime()});

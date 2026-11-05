@@ -104,6 +104,9 @@ with sync_playwright() as p:
     for width,height in [(1600,900),(1366,768),(1024,768),(768,1024),(390,844),(844,390)]:
         page.set_viewport_size(dict(width=width,height=height))
         # Compare responsive geometry at the same live combat frame, without killing the target between sizes.
+        # The ResizeObserver publishes the wrapped action bar height after viewport layout.
+        page.wait_for_function("""() => parseFloat(document.documentElement.style.getPropertyValue('--rpg-action-height'))
+            === Math.ceil(document.querySelector('.action-panel').getBoundingClientRect().height)""", timeout=5000)
         assert page.locator('#targetHud').is_visible(), page.evaluate('()=>{const d=__mareDiagnostics();return {scene:d.scene,auto:d.autoPlay,map:d.map,hp:d.hp,mobs:d.alive}}')
         assert page.locator('#huntXpTracker').is_visible()
         results.append(check_layout(page,f'combat-{width}'))

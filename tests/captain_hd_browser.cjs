@@ -32,7 +32,15 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await page.locator('[data-profile-tab=gear]').click();await page.waitForFunction(()=>document.querySelector('#captainPortraitState')?.hidden);
  assert.equal(await page.locator('.captain-equipment-card').count(),12);
  assert(await page.locator('[data-profile-slot] .captain-equipment-art img').evaluateAll(es=>es.length>0&&es.every(e=>e.getAttribute('src').startsWith('assets/ui/items-hd/'))));
- await page.locator('[data-profile-slot] .captain-equipment-art img').evaluateAll(es=>Promise.all(es.map(e=>e.decode())));
+ // A HUD refresh can replace the slot nodes while Chromium is decoding. Check the exact
+ // displayed resources independently, then require loaded images in the current panel.
+ await page.locator('[data-profile-slot] .captain-equipment-art img').evaluateAll(es=>Promise.all(es.map(e=>{
+  const image=new Image();image.src=e.currentSrc||e.src;return image.decode();
+ })));
+ await page.waitForFunction(()=>{
+  const images=[...document.querySelectorAll('[data-profile-slot] .captain-equipment-art img')];
+  return images.length>0&&images.every(image=>image.complete&&image.naturalWidth>0);
+ });
  await page.locator('[data-profile-slot=weapon]').focus();await page.waitForFunction(()=>!document.querySelector('#gameTooltip').classList.contains('hidden'));
  assert((await page.locator('#gameTooltip').textContent()).includes(await page.evaluate(()=>__captainQA.defs[__captainQA.game.equipment.weapon.def].name)));
  await page.mouse.move(1,1);await page.locator('[data-profile-tab=gear]').focus();await shot('profile-equipment');

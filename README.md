@@ -1,3 +1,13 @@
+**Servidor e carga:** [snapshots autorizados, monstros canônicos, agenda e runtime compilado](docs/architecture/AUTHORIZED-PRESENTATION-SIMULATION.md). Capacidade de 3.000 depende dos ensaios registrados; cobertura funcional não certifica CCU.
+
+**Hardware e contenção:** [diagnóstico do PC, filas e interrupções](docs/architecture/HOST-CONTENTION-DIAGNOSIS.md) e [plano privado para separar o gerador](docs/architecture/PRIVATE-LOAD-GENERATOR-PLAN.md). Capacidade continua reprovada; instalação privada preservada.
+
+**Comparação 6/6 e 8/4:** [comparação controlada, custo da VM e aceite de capacidade](docs/architecture/CONTROLLED-PARTY-CAPACITY.md). Uma correção de CPU não equivale à aprovação da fila de simulação.
+
+**Fila de salas:** [concorrência limitada às conexões existentes e regressão PostgreSQL](docs/architecture/ROOM-QUEUE-CONCURRENCY.md). Resultados funcionais e de capacidade são avaliados separadamente.
+
+**Transações de recompensa:** [leituras agrupadas após a mutação e comparação de carga](docs/architecture/REWARD-TRANSACTION-READS.md). Preserva os registros econômicos e o COMMIT por sala.
+
 **Ciclos de simulação:** [navegação conservadora, orçamento por lote e ensaios de 50/100 jogadores](docs/architecture/SIMULATION-CYCLE-BUDGET.md). Resultados separados para solo e Party; capacidade de 3.000 ainda não certificada.
 
 **Consultas de combate:** [leituras em lote, autorização preservada e limites atuais de carga](docs/architecture/COMBAT-DATABASE-READS.md).

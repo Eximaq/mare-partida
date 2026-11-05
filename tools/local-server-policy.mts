@@ -59,6 +59,8 @@ export function localEnvironment(
     "SESSION_ABSOLUTE_SECONDS",
     "SESSION_IDLE_SECONDS",
     "PROVIDER_RECHECK_SECONDS",
+    "SIMULATION_SOLO_WORKERS",
+    "SIMULATION_PARTY_WORKERS",
   ])
     if (source[k]) env[k] = source[k];
   return {

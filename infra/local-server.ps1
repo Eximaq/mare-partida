@@ -3,6 +3,11 @@ $ErrorActionPreference='Stop'
 $repo=Split-Path -Parent $PSScriptRoot
 Push-Location -LiteralPath $repo
 try {
+ $version=(Get-Content -LiteralPath (Join-Path $repo '.node-version') -Raw).Trim()
+ if($version -notmatch '^24\.\d+\.\d+$'){throw 'Versao Node local invalida'}
+ $portable=Join-Path $env:LOCALAPPDATA ('MarePartida\node-v'+$version+'-win-x64\node.exe')
+ $node=if(Test-Path -LiteralPath $portable){$portable}else{(Get-Command node -CommandType Application -ErrorAction Stop).Source}
+ if($Action -eq 'start' -and (& $node --version).Trim() -ne ('v'+$version)){throw ('Instale Node '+$version+' ou a copia portatil verificada; nenhum servico foi iniciado')}
  if($Action -eq 'start') {
   $probe=New-Object System.Net.Sockets.TcpClient
   $listening=$false
@@ -16,7 +21,7 @@ try {
    if($LASTEXITCODE -ne 0){throw 'PostgreSQL indisponivel'}
   }
  }
- if($Action -eq 'backup'){ & node tools/local-server-backup.mts }
- else { & node tools/local-server.mts $Action }
+ if($Action -eq 'backup'){ & $node tools/local-server-backup.mts }
+ else { & $node tools/local-server.mts $Action }
  exit $LASTEXITCODE
 } finally { Pop-Location }

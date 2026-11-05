@@ -11,6 +11,7 @@ import {readBattle} from '../../apps/game-server/src/characters/battle.js';
 import {readOriginalInventory} from '../../apps/game-server/src/gameplay/inventory.js';
 import {tickWorldBattles} from '../../apps/game-server/src/characters/battle.js';
 import {tickPartyBattles} from '../../apps/game-server/src/characters/party-worker.js';
+import {observeServerAchievements} from '../../apps/game-server/src/characters/achievements.js';
 async function actor(f:any,classId="sword"){
  const s=await f.service.login(randomUUID()+'@example.invalid','fixture'),c=await f.service.createCharacter(s.token,{name:'Batch '+randomUUID().slice(0,8),classId,factionId:'pirate'}),lease=await f.service.acquireControl(s.token,c.id);
  const read=()=>f.service.onlineState(s.token,c.id),command=async(action:any,payload:any={})=>f.service.command(s.token,c.id,{requestId:randomUUID(),expectedVersion:(await f.service.characterState(s.token,c.id)).version,control:lease,action,payload});
@@ -29,6 +30,15 @@ async function party(f:any){
  await a.command('party.prepare',{kind:'hunt',destination:'dawn'});const nonce=(await a.read()).party.group.preparation.nonce;
  for(const u of all)await u.command('party.ready',{nonce,ready:true});await a.command('party.start',{nonce});return all;
 }
+
+test('Party monsters persist once while every member keeps the canonical presentation',async()=>authDatabase(async f=>{
+ const all=await party(f),views=await Promise.all(all.map(a=>a.read())),room=(await f.pool.query('SELECT simulation FROM mare_game.party_instances WHERE id=$1',[views[0].battle.partyInstanceId])).rows[0].simulation;
+ assert(room.mobs.length>0);for(const view of views)assert.deepEqual(view.battle.mobs,room.mobs);
+ const rows=(await f.pool.query('SELECT simulation FROM mare_game.character_battles')).rows;
+ console.log(JSON.stringify({personalBytes:rows.reduce((n,r)=>n+Buffer.byteLength(JSON.stringify(r.simulation)),0),canonicalMonsterBytes:Buffer.byteLength(JSON.stringify(room.mobs))}));
+ for(const row of rows)assert.equal(row.simulation.mobs.length,0,'personal rows must not duplicate the canonical monster timeline');
+}));
+
 test('solo tick stays within 22 database round trips without changing balances',async()=>authDatabase(async f=>{
  const a=await actor(f);await a.command('world.travel',{islandId:'dawn'});const before=await a.read();
  await f.pool.query("UPDATE mare_game.character_battles SET tick_at=clock_timestamp()-interval '250 milliseconds'");
@@ -41,6 +51,58 @@ test('four-member tick writes one canonical room within 52 round trips',async()=
  let roomWrites=0;const n=await countService(f.pool,()=>tickPartyBattles(f.pool),sql=>{if(/^UPDATE mare_game\.party_instances SET simulation=/i.test(sql))roomWrites++;});assert.equal(roomWrites,1,'one durable canonical timeline per transaction');const after=await Promise.all(all.map(a=>a.read()));
  for(let i=0;i<4;i++){assert.deepEqual(after[i].state,before[i].state);assert.deepEqual(after[i].battle.mobs,after[0].battle.mobs);}
  assert.ok(n<=52,`Party tick used ${n} queries`);
+}));
+
+async function prepareSharedReward(f:any,all:any[]){
+ const view=await all[0].read(),instance=view.battle.partyInstanceId;
+ const room=(await f.pool.query('SELECT simulation FROM mare_game.party_instances WHERE id=$1',[instance])).rows[0].simulation,m=room.mobs.find((m:any)=>m.alive);
+ Object.assign(m,{hp:1,defense:0,attackClock:999,engaged:false});
+ for(const a of all){const v=await a.read();v.battle.auto=false;v.battle.autoSkills=false;v.battle.pending={targetId:m.id,remaining:0};
+  await f.pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(v.battle)]);
+  await f.pool.query("UPDATE mare_game.character_world SET x=$2,y=$3,path='[]',speed=0 WHERE character_id=$1",[a.c.id,m.x-20,m.y]);
+ }
+ await f.pool.query("UPDATE mare_game.party_instances SET simulation=$2,tick_at=clock_timestamp()-interval '150 milliseconds' WHERE id=$1",[instance,JSON.stringify(room)]);
+ return instance;
+}
+test('four-member reward avoids repeated permanent-power reads while preserving XP, loot and receipts',async()=>authDatabase(async f=>{
+ const all=await party(f),before=await Promise.all(all.map(a=>a.read())),instance=await prepareSharedReward(f,all);
+ const n=await countService(f.pool,()=>tickPartyBattles(f.pool));
+ const grants=(await f.pool.query('SELECT character_id,amount FROM mare_game.party_experience WHERE instance_id=$1',[instance])).rows;
+ assert.equal(grants.length,4);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.party_deaths WHERE instance_id=$1',[instance])).rows[0].n,1);
+ const c=await f.pool.connect();try{for(let i=0;i<4;i++){
+  const after=await all[i]!.read(),id=all[i]!.c.id;
+  assert.equal(BigInt(after.state.experience)-BigInt(before[i]!.state.experience),BigInt(grants.find(g=>g.character_id===id).amount));
+  const power=await permanentCharacterPower(c,id,after.state),row=(await c.query('SELECT power FROM mare_game.character_hierarchy WHERE character_id=$1',[id])).rows[0];assert.equal(row.power,power);
+  assert.equal((await c.query("SELECT count(*)::int n FROM mare_game.character_commands WHERE character_id=$1 AND result->>'action'='battle.reward'",[id])).rows[0].n,1);
+ }}finally{c.release();}
+ assert.ok(n<=90,`shared reward used ${n} database round trips; repeated power reads delay the next room`);
+}));
+
+test('late achievement persistence failure rolls back every Party reward and simulation together',async()=>authDatabase(async f=>{
+ const all=await party(f);await prepareSharedReward(f,all);
+ const tables=['characters','character_progression','character_battles','character_world','party_instances','party_deaths','party_experience','game_inventory','game_inventory_events','character_commands','achievement_progress','character_hierarchy'];
+ const snapshot=async()=>Promise.all(tables.map(async t=>(await f.pool.query(`SELECT to_jsonb(t) j FROM mare_game.${t} t ORDER BY to_jsonb(t)::text`)).rows));
+ const before=await snapshot();
+ await f.pool.query("CREATE FUNCTION mare_game.reject_reward_achievement() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'fixture late achievement failure'; END $$; CREATE TRIGGER reject_reward_achievement BEFORE INSERT OR UPDATE ON mare_game.achievement_progress FOR EACH ROW EXECUTE FUNCTION mare_game.reject_reward_achievement()");
+ await assert.rejects(tickPartyBattles(f.pool),/party_tick_failed/);assert.deepEqual(await snapshot(),before);
+}));
+
+test('reward power reads post-mutation stats in the same transaction and does not survive rollback',async()=>authDatabase(async f=>{
+ const a=await actor(f,'healer'),initial=await a.read(),c=await f.pool.connect();
+ const snapshot=()=>c.query('SELECT power FROM mare_game.character_hierarchy WHERE character_id=$1',[a.c.id]);
+ try{
+  const original=(await snapshot()).rows;await c.query('BEGIN');
+  await c.query('UPDATE mare_game.character_progression SET level=5,gold=1000 WHERE character_id=$1',[a.c.id]);
+  const after=await readCharacterState(c,a.c.id),expected=await permanentCharacterPower(c,a.c.id,after);
+  assert(expected>await permanentCharacterPower(c,a.c.id,initial.state),'level change must affect the reference calculation');
+  await observeServerAchievements(c,a.c.id,initial.state,after,{kills:1,currentCombatSchema:true});
+  assert.equal((await snapshot()).rows[0].power,expected);
+  const progress=(await c.query('SELECT kills,coins,peak_power FROM mare_game.achievement_progress WHERE character_id=$1',[a.c.id])).rows[0];
+  assert.equal(progress.kills,1);assert.equal(progress.coins,1000);assert.equal(progress.peak_power,Math.min(100000,expected));
+  await assert.rejects(observeServerAchievements(c,a.c.id,initial.state,initial.state,{currentCombatSchema:true}),{code:'character_state_unavailable'});
+  await c.query('ROLLBACK');assert.deepEqual((await snapshot()).rows,original);
+  assert.deepEqual(await readCharacterState(c,a.c.id),initial.state);
+ }finally{await c.query('ROLLBACK');c.release();}
 }));
 test('Party full and motion projections avoid N+1 reads without exposing private inventory',async()=>authDatabase(async f=>{
  const [a]=await party(f);let full:any,frame:any;
