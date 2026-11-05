@@ -80,3 +80,7 @@ Limites: testes Chromium em desktop com viewports móveis; não substituem teste
 Dawn (cinco resoluções, sete rotas, chefe, resgate e rollback), Conchas (cinco resoluções e rotas) e navegação online foram validados após fechar a expedição ao abrir rotas/contratos. Os testes agora abrem explicitamente a janela contextual antes de acessar a rota.
 
 O ensaio histórico `orange_browser.py` falha na expectativa de bloqueio de um personagem nível 20. A mesma expectativa existe na main anterior à HUD; `archipelago.js` já define acesso no nível 11 e `hunt-system.js` faixa 11–15, sem chefe. Nenhum desses arquivos mudou neste PR. Não se alterou gameplay para satisfazer uma fixture antiga. A navegação atual de Orange Town foi verificada separadamente no nível 15, em 1366×768, 390×844 e 844×390: viagem, abertura contextual das rotas e retorno ao porto passaram, sem erros de página. Atualizar as expectativas históricas de progressão/chefe fica fora desta refatoração.
+
+### Faixa de localização
+
+A placa, a bússola e o nó em `assets/ui/location-banner/` são sprites da folha RGBA fornecida pelo proprietário em 04/11/2026. Os recortes preservam os pixels originais. O calendário vetorial acompanha a cor do relógio. O nome da área e a hora são os campos atualizados pelo jogo. A faixa abre o mapa pelo mesmo comando do menu, por clique, toque ou teclado.
