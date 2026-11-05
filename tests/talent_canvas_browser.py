@@ -68,6 +68,7 @@ with sync_playwright() as p:
  # Mouse pan and zoom must not spend points; icons resolve on high-DPI screens.
  for w,h in [(1920,1080),(1366,768),(1280,720),(1024,768),(393,852),(360,800),(320,568)]:
   q.set_viewport_size(dict(width=w,height=h));q.locator('#dialogBody').evaluate('(e)=>e.scrollTop=0')
+  if q.locator('[data-talent-return]').is_visible():q.locator('[data-talent-return]').click()
   q.locator('[data-tree-zoom=root]').click();vp=q.locator('.constellation-viewport');vp.scroll_into_view_if_needed()
   before=q.locator('.talent-budget').inner_text();box=vp.bounding_box()
   q.mouse.move(box['x']+25,box['y']+40);q.mouse.down();q.mouse.move(box['x']+80,box['y']+70,steps=6);q.mouse.up()

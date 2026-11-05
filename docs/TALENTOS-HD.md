@@ -45,3 +45,9 @@ Todos os PNGs em `assets/ui/talents/` foram preservados. Os medalhões HD de 512
 - Capturas ficam fora do versionamento, em diretório temporário. Não incluir saves ou evidências em massa no PR.
 
 Rollback: reverter o commit desta interface; os saves não exigem migração. Não há mudança de balanceamento ou nova mecânica. Aprovação visual permanece a cargo do proprietário.
+
+## Alto-mar — 05/11/2026
+
+A janela tem até 1.120 × 650 px e usa a moldura de corda, placas de latão e fontes Georgia e Barlow Semi Condensed da janela Personagem. O rodapé mantém as ações de prévia e confirmação à vista. Em telas estreitas, os detalhes ocupam o espaço da árvore e os botões Voltar à árvore e Detalhes alternam os painéis. A rolagem interna dos detalhes acomoda requisitos mais longos quando a altura disponível é menor.
+
+`assets/ui/talents-hd/open-sea.jpg` (1.080 × 720) foi gerado com ImageGen, ID `exec-717ea5bd-bcfd-4536-8463-0d5ba33a1020`, e convertido para JPEG. O movimento da água e dos reflexos usa duas camadas CSS independentes da árvore e respeita a preferência de movimento reduzido. Os ícones, as regras de talentos e a escala da árvore foram preservados.

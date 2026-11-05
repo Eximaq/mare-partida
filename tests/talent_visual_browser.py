@@ -18,6 +18,12 @@ def tree(q):
  q.wait_for_function("document.querySelector('.talent-tree-surface').dataset.iconsReady==='true'")
 def scale(q):return int(q.locator('[data-tree-scale]').inner_text().replace('%',''))
 def check_targets(q):
+ dialog=q.locator('#panelOverlay .dialog').bounding_box()
+ if q.viewport_size['width']>=1024:
+  assert dialog['width']<=1120 and dialog['height']<=650,dialog
+ assert q.locator('#dialogBody').evaluate('e=>e.scrollHeight<=e.clientHeight+1&&e.scrollWidth<=e.clientWidth+1')
+ assert q.locator('.talent-sea').count()==1
+
  styles=q.evaluate("""()=>{const h=document.querySelector('.dialog-header'),f=document.querySelector('.talent-actions'),c=document.querySelector('.talent-class-panel'),m=c.querySelector('.talent-class-medallion'),d=document.querySelector('.talent-detail-title'),a=c.getBoundingClientRect(),b=m.getBoundingClientRect();return {wood:getComputedStyle(h).backgroundImage===getComputedStyle(f).backgroundImage,center:Math.abs((a.left+a.right-b.left-b.right)/2),desktop:innerWidth>1024,detail:d?getComputedStyle(d).alignItems:null}}""")
  assert styles['wood'],styles
  if styles['desktop']:assert styles['center']<1,styles
@@ -37,6 +43,20 @@ with sync_playwright() as p:
   seed=copy.deepcopy(template);seed.update(level=100,classId=cls)
   c,q=page_for(b,seed);q.on('pageerror',lambda e:errors.append(str(e)));tree(q)
   check_targets(q)
+  if cls=='sword':
+   sea=q.locator('.talent-sea')
+   assert sea.evaluate(r'''async e=>{
+    const s=getComputedStyle(e,'::before'),image=new Image();
+    image.src=s.backgroundImage.match(/url\("([^"]+)"\)/)[1];
+    await image.decode();
+    const type=await document.fonts.load('700 23px "Barlow Semi Condensed"','23 PT');
+    return image.naturalWidth===1080 && s.animationName==='talent-swell' && type.some(f=>f.status==='loaded');
+   }''')
+   q.emulate_media(reduced_motion='reduce')
+   assert sea.evaluate("(e)=>['::before','::after'].every(p=>getComputedStyle(e,p).animationName==='none')")
+   q.emulate_media(reduced_motion='no-preference')
+   q.mouse.move(1,1)
+   q.screenshot(path=str(OUT/'talentos-alto-mar-desktop.png'))
   # Freeze idle regeneration/autosave while inspecting an uncommitted talent draft.
   q.clock.pause_at(q.evaluate("Date.now()+100"))
   before=saved(q)
@@ -79,7 +99,15 @@ with sync_playwright() as p:
  assert saved(q)==before
  for width,height in [(1920,1080),(1366,768),(1280,720),(393,852),(320,568)]:
   q.set_viewport_size(dict(width=width,height=height))
+  if width<=760:
+   assert q.locator('.talent-inspector').is_visible()
+   q.locator('[data-talent-return]').click()
+   assert not q.locator('.talent-inspector').is_visible()
   q.locator('[data-tree-zoom=fit]').click();assert scale(q)>=58;check_targets(q)
+  if width<=760:
+   q.locator('[data-talent-details]').click()
+   assert q.locator('.talent-inspector').is_visible()
+   if width==393:q.screenshot(path=str(OUT/'talentos-alto-mar-celular.png'))
  # Screenshot of final and intermediate artwork with a single selected node.
  c.close();seed=copy.deepcopy(template);seed.update(level=100,talentVersion=2,talentBuilds={'sword':{'nodes':{'sword-0-'+str(i):10 for i in range(5)},'keystone':'parry','ultimate':None}})
  c,q=page_for(b,seed,(1672,941));q.on('pageerror',lambda e:errors.append(str(e)));tree(q);vp=q.locator('.constellation-viewport');check_targets(q)
