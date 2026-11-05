@@ -180,20 +180,147 @@
 #app.hud-nautical #huntXpTracker .hunt-xp-metrics {font:400 13px/1.2 var(--hud-body)}
 #app.hud-nautical #huntXpTracker .hunt-xp-level {font:400 12px/1.2 var(--hud-body); color:var(--hud-muted)}
 /* Three independent bottom anchors leave the playfield clear. */
-#app.hud-nautical #floatingChat {inset:auto auto var(--hud-edge) var(--hud-edge); width:var(--hud-chat); height:244px; max-height:calc(100dvh - var(--profile-bottom) - 40px); margin:0; padding:var(--hud-panel-padding)}
-#app.hud-nautical #floatingChat .floating-title {min-height:42px; padding:0 0 6px; background:none; border:0; border-bottom:1px solid var(--hud-line); font:700 20px/1.2 var(--hud-heading)}
-#app.hud-nautical #floatingChat .floating-title button {width:36px; height:36px; min-height:36px; border:1px solid var(--hud-line); background:#102e3d; color:var(--hud-text)}
-#app.hud-nautical #floatingChat .chat-tabs {padding:8px 0; gap:8px; border:0}
-#app.hud-nautical #floatingChat .chat-tabs button {height:32px; min-height:32px; padding:4px 12px; border:1px solid var(--hud-line); border-radius:4px; background:#0a2331; color:var(--hud-muted); font-size:14px}
-#app.hud-nautical #floatingChat .chat-tabs button[aria-pressed=true] {background:linear-gradient(#755823,#372b17); border-color:var(--brass-400); color:var(--hud-text)}
+#app.hud-nautical #floatingChat {
+  inset:auto auto var(--hud-edge) var(--hud-edge);
+  width:var(--hud-chat);
+  height:244px;
+  max-height:calc(100dvh - var(--profile-bottom) - 40px);
+  margin:0;
+  padding:3px;
+  border:5px solid transparent;
+  border-image:url('assets/ui/port-chat/frame.png') 25 fill / 10px stretch;
+  background:none;
+  box-shadow:none;
+}
+#app.hud-nautical #floatingChat .floating-title {
+  flex:none;
+  min-height:42px;
+  padding:0 4px 0 6px;
+  border:0;
+  background:url('assets/ui/port-chat/header.png') center / 100% 100% no-repeat;
+  color:var(--hud-text);
+  font:700 20px/1.2 var(--hud-heading);
+}
+#app.hud-nautical #floatingChat .floating-title > span {
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+#app.hud-nautical #floatingChat .floating-title > span::before {
+  content:'';
+  width:32px;
+  height:32px;
+  background:url('assets/ui/port-chat/helm.png') center / contain no-repeat;
+}
+#app.hud-nautical #floatingChat .floating-title button,
+#app.hud-nautical #floatingChat .chat-compose button {
+  flex:none;
+  width:44px;
+  height:44px;
+  min-height:44px;
+  padding:0;
+  border:0;
+  border-image:none;
+  box-shadow:none;
+  font-size:0;
+}
+#app.hud-nautical #floatingChat .floating-title button {
+  background:url('assets/ui/port-chat/close.png') center / 26px 26px no-repeat;
+}
+#app.hud-nautical #floatingChat .chat-tabs {
+  padding:4px 0;
+  gap:5px;
+  border:0;
+}
+#app.hud-nautical #floatingChat .chat-tabs button {
+  flex:1;
+  height:32px;
+  min-height:32px;
+  padding:2px 6px;
+  border:0;
+  border-image:none;
+  box-shadow:none;
+  background:url('assets/ui/port-chat/tab.png') center / 100% 100% no-repeat;
+  color:#d9e1de;
+  font:600 15px/1.2 var(--hud-body);
+}
+#app.hud-nautical #floatingChat .chat-tabs button[aria-pressed=true] {
+  background-image:url('assets/ui/port-chat/tab-active.png');
+  color:#fff6df;
+  text-shadow:0 1px 2px #34200c;
+}
 #app.hud-nautical #floatingChat .journal-block {padding:0; background:none}
-#app.hud-nautical #floatingChat .log-scroller {background:none; border:0; font-size:15px; line-height:1.45; color:var(--hud-text)}
-#app.hud-nautical #floatingChat .log-line {padding:4px 0; border:0; font:400 15px/1.45 var(--hud-body)}
-#app.hud-nautical #floatingChat .log-line time {font-size:13px; color:var(--hud-muted)}
-#app.hud-nautical #floatingChat .chat-compose {margin-top:8px; gap:8px}
-#app.hud-nautical #floatingChat .chat-compose input {height:40px; min-height:40px; border:1px solid #849698; border-image:none; border-radius:5px; background:#112630; color:var(--hud-text); font-size:16px; padding:6px 10px}
-#app.hud-nautical #floatingChat .chat-compose button {width:40px; height:40px; min-height:40px; border:1px solid var(--brass-400); border-image:none; border-radius:5px; background:linear-gradient(#9c752d,#4d3211); color:#fff2d3; font-size:22px}
-#app.hud-nautical #chatCornerToggle {inset:auto auto var(--hud-edge) var(--hud-edge); min-height:44px; padding:8px 14px; border:1px solid var(--brass-500); border-radius:6px; background:var(--hud-surface); font:600 16px/1 var(--hud-body)}
+#app.hud-nautical #floatingChat .log-scroller {
+  padding:3px 6px;
+  border:4px solid transparent;
+  border-image:url('assets/ui/port-chat/messages.png') 22 fill / 8px stretch;
+  background:none;
+  overscroll-behavior:contain;
+  overflow-y:auto;
+  scrollbar-width:auto;
+  scrollbar-color:auto;
+  color:var(--hud-text);
+}
+#app.hud-nautical #floatingChat .log-line {
+  margin:0;
+  padding:3px 0;
+  border:0;
+  font:400 15px/1.35 var(--hud-body);
+  overflow-wrap:anywhere;
+}
+#app.hud-nautical #floatingChat .log-line time {
+  font-size:13px;
+  font-variant-numeric:tabular-nums;
+  color:var(--hud-muted);
+}
+#app.hud-nautical #gameLog::-webkit-scrollbar {width:11px}
+#app.hud-nautical #gameLog::-webkit-scrollbar-track {
+  background:url('assets/ui/port-chat/scroll-track.png') center / 100% 100%;
+}
+#app.hud-nautical #gameLog::-webkit-scrollbar-thumb {
+  min-height:16px;
+  border:1px solid transparent;
+  background:url('assets/ui/port-chat/scroll-thumb.png') center / 100% 100% no-repeat;
+}
+#app.hud-nautical #gameLog::-webkit-scrollbar-button:single-button {
+  display:block;
+  height:11px;
+  background-size:100% 100%;
+}
+#app.hud-nautical #gameLog::-webkit-scrollbar-button:single-button:decrement {
+  background-image:url('assets/ui/port-chat/scroll-up.png');
+}
+#app.hud-nautical #gameLog::-webkit-scrollbar-button:single-button:increment {
+  background-image:url('assets/ui/port-chat/scroll-down.png');
+}
+@supports not selector(::-webkit-scrollbar) {
+  #app.hud-nautical #gameLog {scrollbar-width:thin; scrollbar-color:#be903d #082530}
+}
+#app.hud-nautical #floatingChat .chat-compose {
+  align-items:center;
+  margin:5px 0 0;
+  padding:0;
+  gap:5px;
+  border:0;
+}
+#app.hud-nautical #floatingChat .chat-compose input {
+  height:40px;
+  min-height:40px;
+  padding:4px 8px;
+  border:3px solid transparent;
+  border-image:url('assets/ui/port-chat/input.png') 22 fill / 8px stretch;
+  background:none;
+  color:var(--hud-text);
+  font:400 16px/1.25 var(--hud-body);
+}
+#app.hud-nautical #floatingChat .chat-compose input::placeholder {color:#bfcece; opacity:1}
+#app.hud-nautical #floatingChat .chat-compose button {
+  background:url('assets/ui/port-chat/send.png') center / 38px auto no-repeat;
+}
+@media (hover:hover) {
+  #app.hud-nautical #floatingChat button:hover {filter:brightness(1.16)}
+}
+#app.hud-nautical #chatCornerToggle {inset:auto auto var(--hud-edge) var(--hud-edge); min-height:44px; padding:8px 14px; border:0; border-image:none; background:url('assets/ui/port-chat/tab.png') center / 100% 100% no-repeat; font:600 16px/1 var(--hud-body)}
 body.chat-open #app.hud-nautical #chatCornerToggle {display:none}
 /* One contextual expedition window; the HUD retains only its launcher and hunt pause. */
 #app.hud-nautical #journeyHud {inset:auto var(--hud-edge) calc(var(--hud-edge) + 60px) auto; display:flex; gap:8px; width:auto; height:44px; max-height:none; padding:0; border:0; border-image:none; background:none; box-shadow:none; overflow:visible}

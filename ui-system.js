@@ -100,10 +100,20 @@
     const xpHeading=document.querySelector('#huntXpTracker .hunt-xp-top span');
     if(xpHeading){xpHeading.textContent='XP/h';xpHeading.title='Experiência por hora';}
     const tabBar=document.createElement('nav');tabBar.className='chat-tabs';tabBar.setAttribute('aria-label','Mensagens locais');
-    tabBar.innerHTML='<button type="button" data-chat-channel="all" aria-pressed="true">Sistema</button><button type="button" data-chat-channel="notes" aria-pressed="false">Anotações</button>';
+    tabBar.innerHTML='<button type="button" data-chat-channel="all" aria-pressed="true">Geral</button><button type="button" data-chat-channel="system" aria-pressed="false">Sistema</button><button type="button" data-chat-channel="notes" aria-pressed="false">Anotações</button>';
     chat.querySelector('.floating-title').after(tabBar);
     let channel='all',unread=0;
-    function filter(){for(const line of log.children)line.hidden=channel==='notes'&&!line.textContent.includes('Anotação local:');}
+    function filter(){
+      for(const line of log.children){
+        const note=line.classList.contains('local-note');
+        line.hidden=(channel==='notes' && !note) || (channel==='system' && note);
+      }
+    }
+    document.getElementById('chatForm').addEventListener('submit',()=>{
+      if(channel==='system' && document.getElementById('chatInput').value.trim()){
+        tabBar.querySelector('[data-chat-channel="notes"]').click();
+      }
+    },true);
     tabBar.addEventListener('click',e=>{const b=e.target.closest('[data-chat-channel]');if(!b)return;channel=b.dataset.chatChannel;tabBar.querySelectorAll('button').forEach(t=>t.setAttribute('aria-pressed',String(t===b)));filter();});
     function measure(){
       const r=document.querySelector('.topbar').getBoundingClientRect(),a=document.querySelector('.action-panel').getBoundingClientRect(),m=document.getElementById('mainMenu').getBoundingClientRect();
