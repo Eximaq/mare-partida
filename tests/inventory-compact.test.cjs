@@ -23,7 +23,7 @@ assert.match(css,/image-rendering:pixelated/,'pixel art remains crisp');
 assert.match(css,/\.op-detail-panel\s*\{/,'item details preserved');
 assert.match(css,/\.op-equip-slot\s*\{/,'equipment preserved');
 assert.match(css,/overflow-y:auto/,'long content scrolls');
-assert.match(game,/Array\.from\(\{length:BAG_PER_PAGE-shown\.length\}/,'all page slots are rendered');
+assert.match(game,/Array\.from\(\{length:lastRowSlots-shown\.length\}/,'only the final visible row receives empty slots');
 assert.match(game,/class="op-grid"/,'existing item grid is unchanged');
 let depth=0,comment=false,quote=null;
 for(let i=0;i<css.length;i++){
