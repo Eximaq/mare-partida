@@ -22,12 +22,28 @@ async function loadMigrations(directory: string): Promise<Migration[]> {
 }
 
 function assertHistory(migrations: Migration[], applied: Applied[]) {
-  for (const [index, row] of applied.entries()) {
-    const expected = migrations[index];
+  // PR #232 shipped this immutable repair before main allocated 0040 to contracts.
+  // Keep that receipt intact and recognize only its audited SQL as the 0047 repair.
+  const legacyName = '0040_detach_claimed_dungeon_members.sql';
+  const repairName = '0047_detach_claimed_dungeon_members.sql';
+  const repairChecksum = '87423f59558537c4be6e3dd32d72ee625e1906fa0550436e7cdf3f619efed331';
+  const legacy = applied.find(row => row.name === legacyName);
+  if (legacy && (legacy.checksum !== repairChecksum ||
+      !migrations.some(row => row.name === repairName && row.checksum === repairChecksum))) {
+    throw new Error('Migration history mismatch; unknown private repair');
+  }
+  const expectedHistory = legacy ? migrations.filter(row => row.name !== repairName) : migrations;
+  const canonicalHistory = legacy ? applied.filter(row => row.name !== legacyName) : applied;
+  if (legacy && canonicalHistory.length < migrations.filter(row => row.name < '0040').length) {
+    throw new Error('Migration history mismatch; private repair requires its complete predecessors');
+  }
+  for (const [index, row] of canonicalHistory.entries()) {
+    const expected = expectedHistory[index];
     if (!expected || expected.name !== row.name || expected.checksum !== row.checksum) {
       throw new Error('Migration history mismatch; restore matching files or add a new migration');
     }
   }
+  return new Set(applied.map(row => row.name === legacyName ? repairName : row.name));
 }
 
 export async function applyMigrations(pool: Pool, directory = defaultDirectory): Promise<string[]> {
@@ -44,8 +60,8 @@ export async function applyMigrations(pool: Pool, directory = defaultDirectory):
         name text PRIMARY KEY, checksum text NOT NULL, applied_at timestamptz NOT NULL DEFAULT now()
       )`);
     const applied = await client.query<Applied>('SELECT name, checksum FROM mare_meta.schema_migrations ORDER BY name');
-    assertHistory(migrations, applied.rows);
-    const pending = migrations.slice(applied.rowCount ?? 0);
+    const completed = assertHistory(migrations, applied.rows);
+    const pending = migrations.filter(migration => !completed.has(migration.name));
     for (const migration of pending) {
       await client.query(migration.sql);
       await client.query('INSERT INTO mare_meta.schema_migrations(name,checksum) VALUES($1,$2)', [migration.name, migration.checksum]);
@@ -62,7 +78,7 @@ export async function isDatabaseReady(pool: Pool): Promise<boolean> {
   try {
     const migrations = await loadMigrations(defaultDirectory);
     const applied = await pool.query<Applied>('SELECT name, checksum FROM mare_meta.schema_migrations ORDER BY name');
-    assertHistory(migrations, applied.rows);
-    return applied.rows.length === migrations.length;
+    const completed = assertHistory(migrations, applied.rows);
+    return completed.size === migrations.length;
   } catch { return false; }
 }

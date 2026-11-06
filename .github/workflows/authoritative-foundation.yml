@@ -104,7 +104,7 @@ jobs:
           const pool = new pg.Pool({ connectionString: process.env.DATABASE_URL });
           try {
             assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
-            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 46);
+            assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 47);
             await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
           } finally { await pool.end(); }
@@ -258,6 +258,8 @@ jobs:
           certutil -A -d "sql:$HOME/.pki/nssdb" -n mare-local-test -t 'C,,' -i "$RUNNER_TEMP/mare-ca.crt"
       - name: Two isolated accounts in original port, real HTTPS API and PostgreSQL
         run: NODE_PATH="$RUNNER_TEMP/mare-browser/node_modules" node --import tsx tests/shared-lobby-browser.mts
+      - name: Friend consent and private messages between two real local sessions
+        run: NODE_PATH="$RUNNER_TEMP/mare-browser/node_modules" node --import tsx tests/social-shared-browser.mts
       - name: Distant mouse routes and chase stay within server speed
         run: NODE_PATH="$RUNNER_TEMP/mare-browser/node_modules" node --import tsx tests/online-walking-browser.mts
       - name: Human fruit casting, independent skill slots and stationary ranged attack
@@ -273,6 +275,7 @@ jobs:
           name: shared-lobby-browser-failure
           path: |
             tmp/shared-lobby-browser/
+            tmp/social-shared-browser/
             tmp/online-walking/
             tmp/social-online/
           retention-days: 3

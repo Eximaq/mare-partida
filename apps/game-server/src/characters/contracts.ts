@@ -30,9 +30,18 @@ const profiles=Object.entries(engine.hunt.regions).flatMap(([area,region]:[strin
 async function dailyAvailable(client:PoolClient){
  return !!(await client.query("SELECT to_regclass('mare_game.contract_daily_cycles') present")).rows[0].present;
 }
-type DailyInputs={state:CharacterState;legacyFighter?:()=>Awaited<ReturnType<typeof readFighter>>};
+type DailyInputs={state:CharacterState;legacyFighter?:()=>Awaited<ReturnType<typeof readFighter>>;readOnly?:boolean;schemaAvailable?:boolean|undefined};
+export async function needsDailyContracts(client:PoolClient,id:string){
+ if(!await dailyAvailable(client))return false;
+ return (await client.query(`SELECT EXISTS(SELECT 1 FROM mare_game.game_inventory WHERE character_id=$1)
+  AND NOT EXISTS(SELECT 1 FROM mare_game.contract_daily_cycles WHERE character_id=$1
+   AND cycle=floor(extract(epoch FROM transaction_timestamp())/86400)::int) missing`,[id])).rows[0].missing===true;
+}
+export async function initializeDailyContracts(client:PoolClient,id:string,inputs:DailyInputs){
+ await dailyState(client,id,{...inputs,schemaAvailable:true});
+}
 async function dailyState(client:PoolClient,id:string,inputs?:DailyInputs){
- if(!await dailyAvailable(client))return null;
+ if(!(inputs?.schemaAvailable??await dailyAvailable(client)))return null;
  const clock=(await client.query(`SELECT floor(extract(epoch FROM transaction_timestamp())*1000)::bigint now,
    p.level,c.faction_id,COALESCE(extract(epoch FROM p.xp_boost_until)*1000,0)::bigint boost,d.state
    FROM mare_game.character_progression p JOIN mare_game.characters c ON c.id=p.character_id
@@ -48,6 +57,9 @@ async function dailyState(client:PoolClient,id:string,inputs?:DailyInputs){
   const stats=fighter.stats;
   const seed=createHash('sha256').update(id+':'+cycle).digest().readUInt32BE();
   const daily=contracts.daily({cycle,level:clock.level,seed,profiles,stats,goldFactor:engine.catalog.factions[clock.faction_id].gold});
+  // A midnight crossing can occur after preparation and before the MVCC snapshot.
+  // Project the same deterministic recipe until a later authorized transaction freezes it.
+  if(inputs?.readOnly)return {daily,xpBoostUntil:Number(clock.boost)};
   row=(await client.query('INSERT INTO mare_game.contract_daily_cycles(character_id,cycle,state) VALUES($1,$2,$3) ON CONFLICT DO NOTHING RETURNING state',[id,cycle,JSON.stringify(daily)])).rows[0]
    ??(await client.query('SELECT state FROM mare_game.contract_daily_cycles WHERE character_id=$1 AND cycle=$2',[id,cycle])).rows[0];
  }
@@ -61,7 +73,8 @@ export async function recordDailyProgress(client:PoolClient,id:string,kills:any[
  for(const kill of kills)contracts.applyDaily(entry.daily,kill);
  await client.query('UPDATE mare_game.contract_daily_cycles SET state=$3 WHERE character_id=$1 AND cycle=$2',[id,entry.daily.cycle,JSON.stringify(entry.daily)]);
 }
-export async function boostXp(client:PoolClient,id:string,xp:bigint){
+export async function boostXp(client:PoolClient,id:string,xp:bigint,activeSnapshot?:boolean){
+ if(activeSnapshot!==undefined)return activeSnapshot?xp*BigInt(contracts.dailyRules.xpMultiplier):xp;
  if(xp<=0n||!await dailyAvailable(client))return xp;
  const active=(await client.query('SELECT xp_boost_until>transaction_timestamp() active FROM mare_game.character_progression WHERE character_id=$1',[id])).rows[0]?.active;
  return active?xp*BigInt(contracts.dailyRules.xpMultiplier):xp;
@@ -81,7 +94,7 @@ async function claimDaily(client:PoolClient,id:string){
  await client.query('UPDATE mare_game.characters SET state_version=state_version+1 WHERE id=$1',[id]);
 }
 export async function readContracts(client:PoolClient,id:string,inputs?:DailyInputs){
- // Historical migration fixtures do not yet have this domain. New daily cycles are initialized on first access.
+ // Historical fixtures may not have this domain; presentation prepares daily cycles separately.
  if(!await available(client))return null;
  const {progress,claimed}=(await client.query(`SELECT
    COALESCE((SELECT jsonb_object_agg(contract_id,progress) FROM mare_game.contract_progress WHERE character_id=$1),'{}') progress,

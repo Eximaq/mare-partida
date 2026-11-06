@@ -22,9 +22,9 @@
   const originalSlots=['head','necklace','coat','legs','boots','weapon','cloak','gloves','ring','belt','charm','akuma_no_mi'];
   const instanceId=v=>typeof v==='string'&&/^[a-zA-Z0-9:-]{1,80}$/.test(v);
   function validForge(op){
-    if(!op||typeof op!=='object'||!Number.isSafeInteger(op.expectedSeq)||op.expectedSeq<0)return false;
-    const fields={upgrade:['itemId'],imbue:['itemId','pearlItemId','socket'],remove:['itemId','socket'],fuse:['itemIds'],fuseEquipment:['itemIds','slot'],reforge:['itemId'],reforgeLine:['itemId','line']}[op.type];
-    if(!fields||Object.keys(op).sort().join()!==['type','expectedSeq',...fields].sort().join())return false;
+    if(!op||typeof op!=='object'||typeof op.type!=='string'||!Number.isSafeInteger(op.expectedSeq)||op.expectedSeq<0)return false;
+    const fields={formEpicWeapon:[],upgrade:['itemId'],imbue:['itemId','pearlItemId','socket'],remove:['itemId','socket'],fuse:['itemIds'],fuseEquipment:['itemIds','slot'],reforge:['itemId'],reforgeLine:['itemId','line']}[op.type];
+    if(!Array.isArray(fields)||Object.keys(op).sort().join()!==['type','expectedSeq',...fields].sort().join())return false;
     return fields.every(k=>k==='itemIds'?Array.isArray(op[k])&&op[k].length===5&&new Set(op[k]).size===5&&op[k].every(instanceId):k==='slot'?originalSlots.includes(op[k]):k==='socket'||k==='line'?Number.isInteger(op[k])&&op[k]>=0&&op[k]<=(k==='socket'?4:7):instanceId(op[k]));
   }
   function validIntent(action, p) {
@@ -393,7 +393,7 @@
       acquire,
       async command(action, payload = {}) {
         if (!validIntent(action, payload)) throw fault("invalid_intent");
-        if (pending) throw fault("pending_command");
+        if (pending || busy) throw fault("pending_command");
         if (!available || !control || !data?.character)
           throw fault("control_required");
         const intent = {

@@ -103,10 +103,18 @@ await authDatabase(async f=>{
     await page.waitForFunction(()=>globalThis.MareGameSession.available&&!globalThis.MareGameSession.busy&&!globalThis.MareGameSession.pending&&globalThis.MareGameSession.data.online.world.path.length===0);
   }
   console.log('sustained two-player rate-limit responses',limited);assert.equal(limited,0,'normal two-player walking must fit the shared gateway budget');
-  await q.waitForFunction(()=>globalThis.MareGameSession.available&&!globalThis.MareGameSession.busy&&!globalThis.MareGameSession.pending);
-  console.log('travel start');await q.evaluate(()=>globalThis.MareGameSession.command('world.travel',{islandId:'dawn'}));
+  // Inspect readiness and dispatch in the same browser turn, just like a UI action.
+  // A separate evaluate allows a final keyup/stop to take the slot between calls.
+  const travel=(outbound:boolean)=>q.waitForFunction((outbound:boolean)=>{
+    const session=globalThis.MareGameSession;
+    if(!session.available||!session.controlled||session.busy||session.pending||session.data.online.world.path.length)return false;
+    // Return false synchronously while polling. A Promise resolving to false is already truthy.
+    const command=outbound?session.command('world.travel',{islandId:'dawn'}):session.command('world.return',{});
+    return command.then(()=>true);
+  },outbound,{timeout:35000});
+  console.log('travel start');await travel(true);
   await p.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===0);
-  console.log('return start');await q.waitForFunction(()=>globalThis.MareGameSession.available&&!globalThis.MareGameSession.busy&&!globalThis.MareGameSession.pending);await q.evaluate(()=>globalThis.MareGameSession.command('world.return',{}));
+  console.log('return start');await travel(false);
   await p.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===1);
   await q.evaluate(()=>globalThis.MareGameSession.logout());await p.waitForFunction(()=>globalThis.__mareDiagnostics().sharedLobby.players.length===0);
   assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');

@@ -10,11 +10,12 @@ export async function refreshHierarchyPower(client:PoolClient,id:string,power:nu
  if(!await available(client))return;
  await client.query('INSERT INTO mare_game.character_hierarchy(character_id,power) VALUES($1,$2) ON CONFLICT(character_id) DO UPDATE SET power=EXCLUDED.power WHERE mare_game.character_hierarchy.power<>EXCLUDED.power',[id,power]);
 }
-export async function readHierarchy(client:PoolClient,id:string,state:CharacterState,power?:number){
+export async function readHierarchy(client:PoolClient,id:string,state:CharacterState,power?:number,presentation=false){
  if(!await available(client))return null;
- await refreshHierarchyPower(client,id,power??await permanentCharacterPower(client,id,state));
- const r=(await client.query('SELECT h.tier,h.power,c.faction_id FROM mare_game.character_hierarchy h JOIN mare_game.characters c ON c.id=h.character_id WHERE h.character_id=$1',[id])).rows[0];
- return {rulesetId:'original-hierarchy-v1',tier:r.tier,title:H.title(r.faction_id,r.tier),power:r.power,next:H.next(r.tier,state.level)};
+ const currentPower=power??await permanentCharacterPower(client,id,state);
+ if(!presentation)await refreshHierarchyPower(client,id,currentPower);
+ const r=(await client.query('SELECT coalesce(h.tier,1) tier,coalesce(h.power,0) power,c.faction_id FROM mare_game.characters c LEFT JOIN mare_game.character_hierarchy h ON c.id=h.character_id WHERE c.id=$1',[id])).rows[0];
+ return {rulesetId:'original-hierarchy-v1',tier:r.tier,title:H.title(r.faction_id,r.tier),power:presentation?currentPower:r.power,next:H.next(r.tier,state.level)};
 }
 export async function promoteHierarchy(client:PoolClient,id:string,requestId:string,state:CharacterState,expectedTier:number){
  const view=await readHierarchy(client,id,state);if(!view)throw new AuthFault(503,'hierarchy_unavailable');

@@ -19,6 +19,12 @@ Itens legados recebem apenas identificação de geração v0, sem potencial inve
 
 As diferenças reais de poder estão em [EQUIPMENT-POTENTIAL-COMPARISON.md](EQUIPMENT-POTENTIAL-COMPARISON.md): seis raridades, cinco gaps por raridade, amostra controlada reproduzível. A inversão anterior entre Incomum e Raro foi corrigida pelos pisos compartilhados. Testes percorrem todos os 101 potenciais e comparam raridades/modelos nas sete classes, nos níveis 1, 50 e 100.
 
+### Resgate e síntese no modo online
+
+Ao abrir o baú em Party, somente o personagem que resgatou o prêmio volta ao porto. Ele continua no grupo. Os demais podem abrir seus próprios baús enquanto a sala segue ativa. A migração `0040_detach_claimed_dungeon_members.sql` corrige vínculos antigos quando a posição no porto, o resgate individual e a morte do chefe naquela instância comprovam que o jogador já saiu. A correção altera somente a referência à sala.
+
+Na mochila online, o botão de síntese envia `forge.execute` com `type=formEpicWeapon` e a sequência esperada da forja. O servidor confere os fragmentos do personagem, sorteia a arma e seu potencial e grava a entrega e o consumo na mesma transação. Repetir o mesmo pedido recupera o recibo original.
+
 ## Arte
 
 Fragmento de arma Épica: PNG 128 × 128 RGBA com alfa, gerado no PixelLab AI. Job `5f08dc8c-0a5e-49dc-9027-6d92cd13890a`, candidato 3, asset `37916e8f-0496-54ff-ab01-8afd3b4f2338`. Custo registrado: 10 gerações. Nenhuma recriação dos equipamentos ou animações aprovados.
