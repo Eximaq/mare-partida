@@ -73,13 +73,3 @@ a:focus-visible,[role=button]:focus-visible,[role=tab]:focus-visible,summary:foc
 .ui-hd .hd-frame{border:18px solid transparent;border-image:var(--rpg-hd-panel) 105 / 40px / 0 stretch;background:var(--rpg-hd-wood)}
 .ui-hd .hd-control{border:8px solid transparent;border-image:var(--rpg-hd-button) 25 30 fill / 10px / 0 stretch;background:none;color:#ffe2a1;min-height:40px}
 .ui-hd .hd-control:focus-visible{outline:2px solid #fff1ac;outline-offset:2px}.ui-hd .hd-control:disabled{opacity:.5}
-
-/* The outcome is committed before this short, skippable forge reveal. */
-.forge-presentation-overlay{position:fixed;inset:0;z-index:15000;display:grid;place-items:center;background:#050608bc;padding:16px}
-.forge-presentation{width:min(420px,100%);padding:22px;text-align:center;color:#f8e0a7;border:2px solid #bf8c42;border-radius:8px;background:#19120f url('assets/ui/forge-hd/workshop-surface.png') center/cover;box-shadow:0 12px 45px #000c}
-.forge-presentation h3{margin:8px 0;font-size:22px}.forge-presentation p{min-height:40px;margin:10px 0 16px;color:#f0e2c3}.forge-presentation-art{width:112px;height:112px;margin:auto;display:grid;place-items:center}.forge-presentation-art img{width:100%;height:100%;object-fit:contain;image-rendering:auto}
-.forge-presentation.is-success .forge-presentation-art{animation:forge-reveal 1.4s ease-out both}.forge-presentation.is-failure{border-color:#a86651}
-@keyframes forge-reveal{0%{transform:scale(.65);opacity:.2}45%{transform:scale(1.1);opacity:1}100%{transform:scale(1);filter:none;opacity:1}}
-@media(prefers-reduced-motion:reduce){.forge-presentation-art{animation:none!important}}
-
-.confirmation-overlay.forge-confirmation-hidden{visibility:hidden}.forge-presentation-overlay.is-preparing .forge-presentation-art{display:flex;gap:4px;justify-content:center}.forge-presentation-overlay.is-preparing .forge-presentation-art img{width:48px;height:48px;animation:forge-converge .4s ease-in both}.forge-presentation{max-height:85vh;overflow:auto}.forge-presentation button:focus-visible{outline:2px solid #fff0c0;outline-offset:4px}@keyframes forge-converge{from{transform:translateY(-12px) scale(.75);opacity:.5}to{transform:translateY(12px) scale(.9);opacity:1}}
