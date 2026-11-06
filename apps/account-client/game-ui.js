@@ -258,7 +258,11 @@
     item_protected: 'Desbloqueie o item antes de vender ou modificar.',
     item_class_mismatch: 'Essa arma não pertence à sua classe.',
     inventory_full: 'Libere um espaço na mochila.',
-    potion_not_needed: 'A poção só pode ser usada em combate com vida incompleta.',
+    potion_not_needed: 'A poção exige um personagem vivo com Vida ou Energia abaixo do máximo.',
+    potion_cooldown: 'Aguarde a recarga de 4 segundos das poções.',
+    merchant_out_of_range: 'Aproxime-se do Mercador Donquixote no porto.',
+    merchant_stock_unavailable: 'A Poção de Mana ainda não está disponível neste servidor.',
+    inventory_stock_full: 'A pilha de itens já atingiu seu limite.',
     potion_insufficient: 'Você não possui poções.',
     invalid_server_state: "Não foi possível validar os dados do personagem.",
   };
@@ -461,14 +465,14 @@
           void run(() => action(b.dataset.onlineAction, b));
           return;
         }
-        if (client.data?.online.originalInventory && event.target.closest("#usePotion,#buyPotion"))return;
+        if (client.data?.online.originalInventory && event.target.closest("#usePotion,#useManaPotion"))return;
         if (client.data?.online.battle && event.target.closest('#skill1,#skill2'))return;
         if (client.data?.online.haki && event.target.closest('#hakiKing'))return;
         if (client.data?.online.fruits && event.target.closest('#skill3,#zoanTransform'))return;
         if(client.data?.online.profile&&event.target.closest('#changePath'))return;
         if (
           event.target.closest(
-            "#skill1,#skill2,#skill3,#usePotion,#buyPotion,#zoanTransform,#hakiKing,#changePath",
+            "#skill1,#skill2,#skill3,#usePotion,#useManaPotion,#zoanTransform,#hakiKing,#changePath",
           )
         ) {
           event.preventDefault();

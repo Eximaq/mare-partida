@@ -12,6 +12,7 @@ import {readBattle,storeBattle} from './battle.js';
 import {readWorld,storeWorld} from './world.js';
 import {readFighter} from './fighter.js';
 import {sendOfficialMail} from './mail.js';
+import {rewardWalletBaseline} from './reward-wallet.js';
 const require=createRequire(import.meta.url),D=require('../../../../boss-dungeon-system.js'),E=require('../../../../world-battle.cjs'),maps=require('../../../../world-catalog.cjs').load;
 const rng=()=>randomInt(0,0x100000000)/0x100000000,max=9223372036854775807n;
 export const isDungeonAction=(a:string)=>(dungeonActions as readonly string[]).includes(a);
@@ -38,7 +39,7 @@ export async function lifetimeGold(client:PoolClient,id:string,current:string,pr
  UNION ALL SELECT request_id,gold_delta FROM mare_game.contract_claims WHERE character_id=$1
  UNION ALL SELECT request_id,gold_after-gold_before FROM mare_game.combat_rewards WHERE character_id=$1
  UNION ALL SELECT request_id,gold_after-gold_before FROM mare_game.character_hunt_rewards WHERE character_id=$1
- ) SELECT GREATEST($2::numeric,COALESCE(sum(amount),0))::text earned FROM (SELECT request_id,GREATEST(0,max(amount)) amount FROM events GROUP BY request_id) unique_events`,[id,current])).rows[0];
+ ) SELECT GREATEST($2::numeric,COALESCE(sum(amount),0))::text earned FROM (SELECT request_id,GREATEST(0,max(amount)) amount FROM events GROUP BY request_id) unique_events`,[id,await rewardWalletBaseline(client,id,current)])).rows[0];
  const value=BigInt(row.earned);if(value>BigInt(Number.MAX_SAFE_INTEGER)){if(presentation)return Number.MAX_SAFE_INTEGER;throw new AuthFault(409,'original_currency_limit');}return Number(value);
 }
 async function inventoryChange(client:PoolClient,id:string,input:CharacterCommand,state:CharacterState,before:OriginalInventory,after:OriginalInventory|null,gold=0,xp=0){

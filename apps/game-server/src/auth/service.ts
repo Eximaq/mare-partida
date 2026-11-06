@@ -1,5 +1,6 @@
 import {heartbeatSocialPresence,readPrivateMessages,readSocialContacts,readSocialContactBadge} from '../characters/social-contacts.js';
 import {readSocialMail,readSocialMailCount} from '../characters/mail.js';
+import {marketAvailable,readMarket,readMarketBadge,sweepMarket,type MarketRead} from '../characters/market.js';
 import {reapExpiredTrades,readTrade,readSocialTradeCount} from '../characters/trade.js';
 
 import {readCombatInputs} from '../characters/combat-inputs.js';
@@ -314,13 +315,19 @@ export class AuthService {
     });
   }
   async hierarchyRanking(token:string,faction:string|null){return this.withSession(token,"play",client=>hierarchyRanking(client,faction));}
+  async marketState(token:string,id:string,query:MarketRead){
+    return this.withSession(token,'play',async(client,row)=>{
+      await this.owned(client,row.account_id,id);
+      return readMarket(client,id,query);
+    });
+  }
   async socialState(token:string,id:string,query:SocialRead){
     return this.withSession(token,'play',async(client,row)=>{
       await this.owned(client,row.account_id,id);
       if(!await hasSocial(client))throw new AuthFault(503,'social_unavailable');
       if(query.view==='badge'){
         await heartbeatSocialPresence(client,id,row.id);
-        return {...await readSocialContactBadge(client,id),...await readSocialMailCount(client,id),tradeInvites:await readSocialTradeCount(client,id)};
+        return {...await readSocialContactBadge(client,id),...await readSocialMailCount(client,id),tradeInvites:await readSocialTradeCount(client,id),marketPending:await marketAvailable(client)?(await readMarketBadge(client,id)).pending:0};
       }
       if(query.view==='contacts')return readSocialContacts(client,id,{search:query.search??''});
       if(query.view==='messages')return readPrivateMessages(client,id,query.targetId!,{...(query.before?{before:query.before}:{}),...(query.after?{after:query.after}:{})});
@@ -365,7 +372,7 @@ export class AuthService {
       const battle=await readBattle(client,id),haki=battle?hakiView(battle):null,prison=await readPrison(client,id);
       const fruits=inputs?.fruits??await readFruits(client,id),talents=inputs?.talents??await readTalents(client,id,state),power=inputs?.permanentPower();
       const combatPreview=inputs?.inventory?inputs.fighter(battle):await readFighter(client,id,state);
-      return { sync:{protocol:2}, ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...(await hasSocial(client)?{socialAvailable:true}:{}), state, party, profile, fruits, hierarchy:await readHierarchy(client,id,state,power), haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements:await readAchievements(client,id,state,{power,prison,haki,fruits}), talents, contracts:await readContracts(client,id,{state,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
+      return { sync:{protocol:2}, ...(inputs?.crewAvailable?{crewAvailable:true}:{}), ...(await hasSocial(client)?{socialAvailable:true}:{}), ...(await marketAvailable(client)?{marketAvailable:true}:{}), state, party, profile, fruits, hierarchy:await readHierarchy(client,id,state,power), haki,dungeons, dungeonGoldEarned:dungeons?await lifetimeGold(client,id,state.gold,true):null,prison, achievements:await readAchievements(client,id,state,{power,prison,haki,fruits}), talents, contracts:await readContracts(client,id,{state,...(inputs?.inventory?{legacyFighter:()=>inputs.fighter(battle,true)}:{})}), battle, world,lobby, ...(originalInventory?{originalInventory}:{}), inventory: await readInventory(client,id), itemCatalog: await readItemCatalog(client), combatPreview, attributes: inputs?.attributes??await readAttributes(client,id,state), progression: await readLevelProgression(client,state), journey, hunt: await readHunt(client, id), combat: await readCombat(client, id) };
     });
   }
   private async owned(
@@ -384,7 +391,7 @@ export class AuthService {
     // Ownership is immutable to runtime. Serialize commands and lease changes.
     if (lock)
       await client.query(
-        "SELECT pg_advisory_xact_lock(hashtextextended($1,1296126533))",
+        "SELECT pg_advisory_xact_lock(hashtextextended(($1::uuid)::text,1296126533))",
         [id],
       );
     return character;
@@ -658,5 +665,6 @@ export class AuthService {
       WHERE token_ciphertext<>'' AND (revoked_at IS NOT NULL OR expires_at<now() OR idle_expires_at<now()
       OR account_epoch<>a.auth_epoch) LIMIT 1000 FOR UPDATE OF s SKIP LOCKED)`);
     await reapExpiredTrades(this.options.pool);
+    await sweepMarket(this.options.pool);
   }
 }

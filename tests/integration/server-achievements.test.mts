@@ -12,7 +12,7 @@ import {tickWorldBattles} from '../../apps/game-server/src/characters/battle.js'
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {authDatabase} from './auth-support.mjs';
+import {authDatabase,placeAtMerchant} from './auth-support.mjs';
 import {characterCommandSchema} from '@mare/shared';
 async function actor(service:any,classId='sword'){
  const login=await service.login(randomUUID()+'@example.invalid','fixture');
@@ -63,7 +63,7 @@ test('distinct simultaneous claims cannot pay twice and SQL failure rolls back b
 
 
 test('wealth counts positive earned gold once after spending, sales, contracts and replay',async()=>authDatabase(async({service,pool})=>{
- const a=await actor(service);await pool.query('UPDATE mare_game.character_progression SET gold=9998 WHERE character_id=$1',[a.c.id]);await a.doit('potions.buy');
+ const a=await actor(service);await pool.query('UPDATE mare_game.character_progression SET gold=9998 WHERE character_id=$1',[a.c.id]);await placeAtMerchant(pool,a.c.id);await a.doit('potions.buy');
  const before=await a.read();assert.equal(before.achievements.records.coins,9998);const input=await a.input('items.sell',{itemId:before.originalInventory.inventory[0].id});await a.send(input);const sold=await a.read(),delta=BigInt(sold.state.gold)-BigInt(before.state.gold);
  assert(delta>0n);assert.equal(sold.achievements.records.coins,9998+Number(delta));assert(BigInt(sold.state.gold)<10000n);assert(sold.achievements.entries.find((x:any)=>x.id==='coins-0').ready);
  await a.send(input);assert.equal((await a.read()).achievements.records.coins,sold.achievements.records.coins);
@@ -135,7 +135,7 @@ test('migration reconstructs only authoritative receipts, visits and wealth with
    await a.doit('items.sell',{itemId:(await a.read()).originalInventory.inventory[0].id});await pool.query("INSERT INTO mare_game.contract_progress(character_id,contract_id,progress) VALUES($1,'bandit',5)",[a.c.id]);await a.doit('contract.claim',{contractId:'bandit'});
    await pool.query('UPDATE mare_game.character_progression SET gold=0 WHERE character_id=$1',[a.c.id]);const before=await a.read();
    const income=(await pool.query('SELECT COALESCE(sum(GREATEST(0,gold_delta)),0)::int n FROM mare_game.game_inventory_events WHERE character_id=$1',[a.c.id])).rows[0].n+125;
-   assert.deepEqual(await applyMigrations(pool),['0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql']);assert.deepEqual(await applyMigrations(pool),[]);const after=await a.read();assert.deepEqual(after.state,{...before.state,version:before.state.version+1,experience:"19036"});assert.deepEqual(after.originalInventory,before.originalInventory);assert.deepEqual(after.battle,before.battle);assert.deepEqual(after.talents,before.talents);
+   assert.deepEqual(await applyMigrations(pool),['0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql']);assert.deepEqual(await applyMigrations(pool),[]);const after=await a.read();assert.deepEqual(after.state,{...before.state,version:before.state.version+1,experience:"19036"});assert.deepEqual(after.originalInventory,before.originalInventory);assert.deepEqual(after.battle,before.battle);assert.deepEqual(after.talents,before.talents);
    assert.deepEqual(after.achievements.records.islands,['animais-raros','dawn','orange-town']);assert.equal(after.achievements.records.coins,income);assert.equal(after.achievements.bonus,0);assert.equal(after.achievements.claimed.length,0);
   },dir);
  }finally{assert.equal(dirname(resolve(dir)),resolve(tmpdir()));assert(resolve(dir).startsWith(join(resolve(tmpdir()),'mare-achievement-migrations-')));await rm(dir,{recursive:true,force:true});}

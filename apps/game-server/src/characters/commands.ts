@@ -1,4 +1,5 @@
 import {executeSocialContact,type SocialContactCommand} from './social-contacts.js';
+import {executeMarket} from './market.js';
 import {executeSocialMail} from './mail.js';
 import {mutateTrade,cancelBlockedTrade} from './trade.js';
 import {isPartyAction,mutateParty} from './party.js';
@@ -39,7 +40,7 @@ export async function executeCharacterCommand(
     [characterId, sessionId, digest(input.control.token), input.control.epoch],
   );
   if (!controller.rowCount) throw new AuthFault(409, "control_conflict");
-  const social = /^(friend|contact|message|mail|trade)\./.test(input.action);
+  const social = /^(friend|contact|message|mail|trade|market)\./.test(input.action);
   const party=social?null:await lockParty(client,characterId);
   // Authority is checked on every replay. Credentials are deliberately excluded from storage
   // and identity, so a newly authorized controller can reconcile a lost response.
@@ -58,16 +59,17 @@ export async function executeCharacterCommand(
   if (!social && state.version !== input.expectedVersion) throw new AuthFault(409, "state_version_conflict");
   // Keep immutable receipts for replay; bound request rate, not a player's lifetime.
   const budget = (await client.query<{recent:number}>(
-    "SELECT count(*)::int AS recent FROM mare_game.character_commands WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds' AND result->>'action'<>'battle.reward' AND ((result->>'action') ~ '^(friend|contact|message|mail|trade)[.]')=$2",[characterId,social]
+    "SELECT count(*)::int AS recent FROM mare_game.character_commands WHERE character_id=$1 AND created_at>clock_timestamp()-interval '60 seconds' AND result->>'action'<>'battle.reward' AND ((result->>'action') ~ '^(friend|contact|message|mail|trade|market)[.]')=$2",[characterId,social]
   )).rows[0]!;
   if (budget.recent >= 60) throw new AuthFault(429, "command_rate_limited");
   if(party&&['prison.prepare','prison.enter'].includes(input.action))throw new AuthFault(409,'party_prison_individual');
   if(party&&['world.travel','world.return','dungeon.enter'].includes(input.action)){
    const b=await readBattle(client,characterId);if(b?.partyInstanceId||input.action==='dungeon.enter')throw new AuthFault(409,'party_collective_navigation_required');
   }
-  let mail;
+  let mail, market;
   if(social){
-    if(input.action.startsWith('mail.'))mail=await executeSocialMail(client,characterId,input,state);
+    if(input.action==='market.execute')market=await executeMarket(client,characterId,input);
+    else if(input.action.startsWith('mail.'))mail=await executeSocialMail(client,characterId,input,state);
     else if(input.action.startsWith('trade.'))await mutateTrade(client,characterId,input as Extract<CharacterCommand,{action:`trade.${string}`}>);
     else{
       await executeSocialContact(client,characterId,input as SocialContactCommand);
@@ -123,7 +125,7 @@ export async function executeCharacterCommand(
   if(input.action==="inventory.buy"||input.action==="inventory.sell"||input.action==="equipment.equip"||input.action==="equipment.unequip") {inventory=await mutateInventory(client,characterId,input,state);state=await readCharacterState(client,characterId);}
   if(input.action==="combat.claim") inventory=await readInventory(client,characterId);
   if(!social&&input.action!=='state.sync')await observeServerAchievements(client,characterId,before,state,{powerBefore,...(input.action==='world.travel'?{island:input.payload.islandId}:{}),...(input.action==='combat.claim'?{kills:1}:{})});
-  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(mail ? {mail} : {}), ...(world ? {world} : {}), ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}), ...(inventory ? {inventory} : {}) });
+  const result = characterCommandResultSchema.parse({ requestId: input.requestId, action: input.action, state, ...(mail ? {mail} : {}), ...(market ? {market} : {}), ...(world ? {world} : {}), ...(combat ? {combat} : {}), ...(attributes ? {attributes} : {}), ...(inventory ? {inventory} : {}) });
   await client.query(
     "INSERT INTO mare_game.character_commands(character_id,request_id,request_hash,result) VALUES($1,$2,$3,$4::jsonb)",
     [characterId, input.requestId, hash, JSON.stringify(result)],

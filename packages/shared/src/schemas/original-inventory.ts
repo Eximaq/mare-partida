@@ -85,6 +85,7 @@ export const originalInventorySchema = z.strictObject({
   inventory: z.array(originalItemSchema).max(120),
   equipment,
   potions: count,
+  manaPotions: count.optional(),
   materials: count,
   forgeVersion: z.union([z.literal(4),z.literal(5)]),
   forgeSeq: z.number().int().min(0).max(Number.MAX_SAFE_INTEGER),

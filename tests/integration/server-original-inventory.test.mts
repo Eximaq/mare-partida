@@ -4,7 +4,7 @@ import { once } from "node:events";
 import { test } from "node:test";
 import { createHttpServer } from "../../apps/game-server/src/http.js";
 import { createAuthHandler } from "../../apps/game-server/src/auth/routes.js";
-import { authDatabase } from "./auth-support.mjs";
+import { authDatabase, placeAtMerchant } from "./auth-support.mjs";
 import { createRequire } from "node:module";
 import { readFile } from "node:fs/promises";
 import pg from "pg";
@@ -206,6 +206,7 @@ test("fresh original starter kit is granted exactly once and purchase replay can
     let o = await f.read();
     assert.equal(o.state.gold, "120");
     assert.equal(o.originalInventory.inventory.length, 1);
+    await placeAtMerchant(f.pool, f.c.id);
     const purchase = f.body("potions.buy", {}, 1),
       responses = await Promise.all([f.send(purchase), f.send(purchase)]);
     assert.equal(responses[0].status, 200);
@@ -231,6 +232,64 @@ test("fresh original starter kit is granted exactly once and purchase replay can
         (await f.send(f.body("potions.buy", payload, 3))).status,
         400,
       );
+  }));
+
+test("merchant gates potion purchases and Mana restores 25 percent with the shared four-second cooldown", async () =>
+  fixture(async (f) => {
+    assert.equal((await f.send(f.body("items.initialize"))).status, 200);
+    for (const payload of [{}, {kind: "mana", quantity: 2}])
+      assert.deepEqual(await f.send(f.body("potions.buy", payload, 1)), {
+        status: 409, body: {error: "merchant_out_of_range"},
+      });
+    await placeAtMerchant(f.pool, f.c.id);
+    const purchase = f.body("potions.buy", {kind: "mana", quantity: 2}, 1);
+    const receipt = await f.send(purchase);
+    assert.equal(receipt.status, 200);
+    assert.deepEqual(await f.send(purchase), receipt);
+    let current = await f.read();
+    assert.equal(current.state.gold, "50");
+    assert.equal(current.originalInventory.manaPotions, 2);
+    assert.equal(current.originalInventory.potions, 4);
+    const event = (await f.pool.query(
+      "SELECT gold_delta,outcome FROM mare_game.game_inventory_events WHERE character_id=$1 AND request_id=$2",
+      [f.c.id,purchase.requestId],
+    )).rows[0];
+    assert.equal(String(event.gold_delta), "-70");
+    assert.deepEqual(event.outcome, {itemId: "mana-potion", quantity: 2, unitPrice: 35});
+    assert.deepEqual(await f.send(f.body("potions.buy", {kind: "mana", quantity: 2}, 2)), {
+      status: 409, body: {error: "gold_insufficient"},
+    });
+    assert.equal((await f.send(f.body("battle.start", {}, 2))).status, 200);
+    const simulation = async () => (await f.pool.query(
+      "SELECT simulation FROM mare_game.character_battles WHERE character_id=$1", [f.c.id],
+    )).rows[0].simulation;
+    const maxEnergy = (await simulation()).energy;
+    await f.pool.query(
+      "UPDATE mare_game.character_battles SET simulation=simulation||'{\"hp\":1,\"energy\":1}'::jsonb WHERE character_id=$1", [f.c.id],
+    );
+    const consume = f.body("potions.use", {kind: "mana"}, 3);
+    const consumed = await f.send(consume);
+    assert.equal(consumed.status, 200);
+    assert.deepEqual(await f.send(consume), consumed);
+    current = await f.read();
+    const restored = await simulation();
+    assert.equal(restored.energy, 1 + Math.round(maxEnergy * 0.25));
+    assert.equal(restored.hp, 1);
+    assert.equal(current.originalInventory.manaPotions, 1);
+    assert.equal(current.originalInventory.potions, 4);
+    for (const kind of ["mana", "health"])
+      assert.deepEqual(await f.send(f.body("potions.use", {kind}, 4)), {
+        status: 409, body: {error: "potion_cooldown"},
+      });
+    await f.pool.query(
+      "UPDATE mare_game.character_battles SET simulation=simulation||jsonb_build_object('potionReadyAt',1,'energy',$2::float8) WHERE character_id=$1",
+      [f.c.id, maxEnergy - 1],
+    );
+    assert.equal((await f.send(f.body("potions.use", {kind: "mana"}, 4))).status, 200);
+    assert.equal((await simulation()).energy, maxEnergy);
+    current = await f.read();
+    assert.equal(current.state.gold, "50");
+    assert.equal(current.originalInventory.manaPotions, 0);
   }));
 
 test("original equip, lock, sale and unequip are owned-instance operations with original prices", async () =>
@@ -421,7 +480,7 @@ test("oversized conversion refuses without truncating items, granting a kit or c
     );
   }));
 
-test("potion heals 44 percent of server HP, clamps at max, preserves attack timing and consumes once", async () =>
+test("potion heals 25 percent of server HP, clamps at max, preserves attack timing and consumes once", async () =>
   fixture(async (f) => {
     const init = f.body("items.initialize");
     assert.equal((await f.send(init)).status, 200);
@@ -440,7 +499,7 @@ test("potion heals 44 percent of server HP, clamps at max, preserves attack timi
     assert.equal(after.originalInventory.potions, 3);
     assert.equal(
       after.combat.playerHp,
-      Math.min(fighter.maxHp, 25 + Math.round(fighter.maxHp * 0.44)),
+      Math.min(fighter.maxHp, 25 + Math.round(fighter.maxHp * 0.25)),
     );
     assert.equal(after.combat.nextAttackAt, before);
     assert.equal(after.combat.turn, 0);
@@ -664,7 +723,8 @@ test("a late SQL failure rolls back wallet, inventory, version, journal and rece
     await f.pool.query(
       "CREATE FUNCTION mare_game.fail_inventory_fixture() RETURNS trigger LANGUAGE plpgsql AS $$ BEGIN RAISE EXCEPTION 'isolated rollback fixture'; END $$; CREATE TRIGGER fail_inventory_fixture BEFORE INSERT ON mare_game.game_inventory_events FOR EACH ROW EXECUTE FUNCTION mare_game.fail_inventory_fixture()",
     );
-    const input = f.body("potions.buy", {}, 1);
+    await placeAtMerchant(f.pool, f.c.id);
+    const input = f.body("potions.buy", {kind: "mana"}, 1);
     assert.equal((await f.send(input)).status, 503);
     const after = await f.read();
     assert.deepEqual(
@@ -708,7 +768,8 @@ test("runtime can execute original inventory commands but cannot rewrite its mig
         origin: "https://localhost:9443",
       });
       await service.command(f.a.token, f.c.id, f.body("items.initialize"));
-      const purchase = f.body("potions.buy", {}, 1);
+      await placeAtMerchant(f.pool, f.c.id);
+      const purchase = f.body("potions.buy", {kind: "mana"}, 1);
       await service.command(f.a.token, f.c.id, purchase);
       assert.equal(
         (await service.onlineState(f.a.token, f.c.id)).state.gold,
@@ -785,6 +846,7 @@ test("a full potion stock refuses purchase as a conflict and preserves the walle
       "UPDATE mare_game.game_inventory SET potions=1000000000 WHERE character_id=$1",
       [f.c.id],
     );
+    await placeAtMerchant(f.pool, f.c.id);
     assert.equal((await f.send(f.body("potions.buy", {}, 1))).status, 409);
     assert.equal((await f.read()).state.gold, "120");
   }));

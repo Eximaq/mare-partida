@@ -13,7 +13,7 @@ assert.ok(def.includes("rarity:'legendary',fixedRarity:true"),'Katana keeps the 
 assert.ok(def.includes("icon_path:'assets/ui/items-pixellab/katana-de-maelstrom.png?v=20261022'"),'the static item icon remains available outside slots');
 assert.ok(def.includes("spriteSheet:'assets/ui/items-pixellab/katana-de-maelstrom-animation.png?v=20261023-slot'"),'animation uses the supplied sprite sheet');
 assert.ok(def.includes("frameWidth:64,frameHeight:64,columns:4,rows:4,frames:16,duration:.5,className:'maelstrom-katana-slot-animation'"),'all 16 64px frames use the existing 0.5 second slot timeline');
-assert.ok(game.includes("function invSymbol(entry){return itemIcon(entry.kind==='gear'?entry.item.def:entry.kind,entry.name,true);}"),'the backpack requests animated slot icons');
+assert.match(game,/function invSymbol\(entry\)\{[^\n]*itemIcon\(entry.kind==='gear'\?entry.item.def:[^,]+,entry.name,true\)/,'the backpack requests animated slot icons for gear');
 assert.ok(game.includes('item?itemIcon(item.def,itemBase(item).name,true)'),'equipped slots request animated slot icons');
 assert.ok(game.includes('if(def?.icon_path)return'),'non-slot views retain the static icon');
 

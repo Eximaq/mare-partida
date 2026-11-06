@@ -29,6 +29,9 @@ services:
       NODE_ENV: development
       HOST: 0.0.0.0
       PORT: 8787
+      MARE_MARKET_FEE_BPS: ${MARE_MARKET_FEE_BPS:-1000}
+      MARE_MARKET_MAX_LISTINGS: ${MARE_MARKET_MAX_LISTINGS:-20}
+      MARE_MARKET_PUBLISH_INTERVAL_SECONDS: ${MARE_MARKET_PUBLISH_INTERVAL_SECONDS:-5}
       DATABASE_URL: postgresql://mare_runtime:${MARE_RUNTIME_PASSWORD:?Required}@postgres:5432/mare_dev
     ports:
       - "127.0.0.1:8788:8787"

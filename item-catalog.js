@@ -2,6 +2,12 @@
 /* Canonical catalog assembly shared by the original game and the authoritative server.
    Numeric definition indexes are persisted identities: append only, never reorder. */
 ((root)=>{
+ const potions=Object.freeze({
+   health:Object.freeze({id:"potion",name:"Poção de Vida",resource:"Vida",stock:"potions",price:35,icon:"assets/ui/items-hd/potion.png",key:"Q"}),
+   mana:Object.freeze({id:"mana-potion",name:"Poção de Mana",resource:"Energia",stock:"manaPotions",price:35,icon:"assets/ui/items-hd/mana-potion.svg",key:"E"}),
+ });
+ const potionRules=Object.freeze({restorePercent:25,cooldownMs:4000,maxPurchase:99,maxStock:1000000000,merchantReach:80});
+ const potionRecovery=max=>Math.round(max*potionRules.restorePercent/100);
  function create({forge:MareForge,prison:MarePrison,haki:MareHaki,akuma:MareAkuma,hakiProgression:MareHakiProgression,bossDungeons:BossDungeons=root.MareBossDungeons||(typeof require==='function'?require('./boss-dungeon-system.js'):null)}){
   const itemDefs = [
     {name:'Espada de Ferro Salgado',slot:'weapon',type:'sword',attack:6,defense:0,hp:0,symbol:'⚔',rarity:'common'},
@@ -1227,5 +1233,5 @@
   if(contracts)itemDefs.push(contracts.boost);
   return {items:itemDefs,slotNames,inventorySlotsLeft,inventorySlotsRight,capacity:BAG_CAPACITY,healerWeaponIndex};
  }
- const api={create};root.MareItemCatalog=api;if(typeof module!=='undefined')module.exports=api;
+ const api={create,potions,potionRules,potionRecovery};root.MareItemCatalog=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
