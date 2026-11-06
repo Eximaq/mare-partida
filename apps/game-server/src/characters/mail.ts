@@ -6,7 +6,7 @@ import {event,readOriginalInventory,validateInventoryItem,writeInventory} from '
 
 const pageSize=40;
 const inventoryCapacity=120;
-type Source='dungeon'|'event'|'system';
+type Source='dungeon'|'event'|'system'|'market';
 type OfficialReward={
  source:Source;
  sourceId:string;

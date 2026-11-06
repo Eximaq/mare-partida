@@ -1,6 +1,6 @@
 # Private server synchronization with the current game
 
-This integration combines the main game through `8c41af26` with the unmerged PR #232 revision `857dded7`. It is intended for the owner's existing private two-player installation. It does not certify capacity or authorize a public backend deployment.
+This integration combines the main game through `fb8f3493` with the unmerged PR #232 revision `857dded7`. It is intended for the owner's existing private two-player installation. It does not certify capacity or authorize a public backend deployment.
 
 ## Current feature coverage
 
@@ -9,6 +9,7 @@ This integration combines the main game through `8c41af26` with the unmerged PR 
 | Monster balance, level/XP curve and daily contracts | Existing versioned upgrades; server-generated daily objectives, claims and expiring XP bonus | Contract, progression, battle and reward integration suites |
 | Crews, ship upgrades and weekly professions | Membership permissions, resource costs, activity receipts and server-derived bonuses | Crew and profession PostgreSQL suites; crew HUD browser test |
 | Friends and private conversations | Owned identity, invitations, blocks and conversation access | Social contact integration suite; two-profile browser test with real API/PostgreSQL |
+| Mercado dos Mares and merchant potions | Owned listings, reserved money, proposals, commissions, official mail delivery, HP/Mana consumables and shared cooldown | Market API/transaction suites, custom-role regression and market/inventory browser fixtures |
 | Official mail and item trades | Durable entitlements, once-only claims, consent and offer-version checks | Mail/dungeon and trade integration suites |
 | Nautical confirmations and revised windows | Main frontend files, without a separate alpha replacement | Official Pages artifact and browser checks |
 | PR #232 simulation changes | Batched room simulation, canonical monsters, bounded transaction reads and authorized MVCC presentation | Simulation, Party, presentation and query-budget regressions |
@@ -19,7 +20,7 @@ This integration combines the main game through `8c41af26` with the unmerged PR 
 
 The private branch already applied `0040_detach_claimed_dungeon_members.sql`. Main independently assigned 0040 to daily contracts. Replacing the old receipt or blindly accepting the sequence would undermine migration validation.
 
-The repair is now catalogued as 0047. Only the exact previously shipped SHA-256 is accepted as its legacy alias. The preceding canonical history must be complete; unknown, modified, duplicate and gapped receipts still fail closed. The old receipt is never rewritten. A main-only database applies 0047 once; the private lineage applies the seven missing main migrations. Both paths and rejection cases use real PostgreSQL regression tests.
+The repair is now catalogued as 0049. Main subsequently used 0047 for the market and 0048 for merchant potions. The intermediate private 0047 repair is also recognized, with the exact same audited checksum. Only the exact previously shipped SHA-256 is accepted as its legacy alias. The preceding canonical history must be complete; unknown, modified, duplicate and gapped receipts still fail closed. The old receipt is never rewritten. A main-only database at 0048 applies 0049 once; the original private lineage applies nine missing main migrations. The already restored private Social installation applies only the two market migrations. A database with both private aliases is rejected. Both paths and rejection cases use real PostgreSQL regression tests.
 
 ### Daily objectives in read-only presentation
 
@@ -51,3 +52,18 @@ The private frontend must match the successful Pages artifact byte for byte. Acc
 - The initial complete PostgreSQL run passed 286/290 tests. The four failures were the two query budgets, the migration-list expectation, and the four-player capacity smoke. After correction, the entire three affected integration files passed 28/28, all five migration-lineage tests passed, and the capacity smoke passed in an isolated repeat. This describes the actual runs, not a fictional clean full-suite run.
 - Shared-lobby movement and real two-profile Social browser acceptance passed with disposable local identities. Crew and Social HUD browser fixtures also passed. A temporary static test server's small connection backlog initially refused asset requests; increasing only that disposable server's backlog resolved those harness failures without changing game files.
 - The capacity smoke repeat covers one four-member Party, 32 seconds, real HTTP lease renewals and compiled workers. It is **not** the ten-minute 50 Solo / 48 Party acceptance or certification for 3,000 players; those remain a separate gate. No tick, timeout, gameplay, economy or benchmark threshold was relaxed.
+
+
+## Market compatibility follow-up
+
+Main advanced to fb8f3493 while the first integration was being validated. The final private frontend therefore uses that Pages artifact, including the Mercado dos Mares and merchant changes.
+
+The market migration grants its conventional role, but private installations use a dedicated role. A real PostgreSQL regression reproduced permission denied with a custom role. The installation grant script now grants exactly the same read/execute surface to the substituted runtime role; it grants no direct market writes. The regression publishes, buys and replays through the authorized API and checks that direct table deletes are denied.
+
+The market-adjusted wealth baseline initially added one query per Party member, pushing the four-member reward to 93 round trips. The baseline is now calculated once in a materialized CTE inside the existing achievement write, preserving its cap, numeric precision, transaction and lock. It emits only a fixed, internally selected SQL expression. Existing market wallet, XP receipt and rollback checks remain in place.
+
+Merchant migration adds zero Mana potions to historical inventory. Upgrade assertions explicitly compare that new default and preserve every pre-existing field. Contract overflow tests cover both the new market wallet boundary and the existing BIGINT XP boundary, without changing either rule.
+
+The two-profile Social test waits for command completion before the other profile reads a request or message; opening a thread also writes its read receipt. Artificial request latency exercises that ordering. A first remote run exposed a race in this test, and an earlier lobby-travel timeout passed on repeat; these attempts are retained in the validation evidence.
+
+Local market integration initially passed 66/71. Four failures were missing custom-role grants and an outdated Mana-default expectation; the fifth seeded a wallet beyond the newly established market limit. The targeted correction run passed 28/28; the custom-role/achievement regression run passed 3/3. Market and original inventory/forge browser fixtures, the real API/PostgreSQL two-profile Social run, build and typecheck passed. The market rehearsal preserved all 77 original data tables, five accounts and four characters before live activation.

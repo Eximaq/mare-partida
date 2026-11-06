@@ -9,6 +9,7 @@ import {contractClaimIdSchema} from './contracts.js';
 import {battleActions,battleTargetSchema} from './battle.js';
 import {inventoryTradeSchema,inventorySnapshotSchema,equipmentItemSchema,equipmentSlotSchema} from "./inventory.js";
 import { z } from "zod";
+import {marketPayloadSchema,marketReceiptSchema} from "./market.js";
 import {originalActionSchema,instanceIdSchema,originalSlotSchema,forgeOperationSchema} from './original-inventory.js';
 import { renewControlSchema,characterIdentitySchema } from "./auth.js";
 import { characterStateSchema } from "./character-state.js";
@@ -44,6 +45,7 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
  z.strictObject({...commandEnvelope,action:z.literal('trade.lock'),payload:z.strictObject({tradeId:z.uuid(),expectedOfferVersion:offerVersion,locked:z.boolean()})}),
  z.strictObject({...commandEnvelope,action:z.literal('trade.confirm'),payload:z.strictObject({tradeId:z.uuid(),expectedOfferVersion:offerVersion})}),
  z.strictObject({...commandEnvelope,action:z.literal('trade.cancel'),payload:z.strictObject({tradeId:z.uuid()})}),
+ z.strictObject({...commandEnvelope,action:z.literal('market.execute'),payload:marketPayloadSchema}),
  z.strictObject({...commandEnvelope,action:z.literal('crew.create'),payload:crewCreatePayload}),
  z.strictObject({...commandEnvelope,action:z.enum(['crew.join','crew.apply']),payload:z.strictObject({crewId:z.uuid()})}),
  z.strictObject({...commandEnvelope,action:z.literal('crew.invite'),payload:inviteTarget}),
@@ -88,7 +90,9 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
  z.strictObject({...commandEnvelope,action:z.enum(["inventory.buy","inventory.sell"]),payload:inventoryTradeSchema}),
  z.strictObject({...commandEnvelope,action:z.literal("equipment.equip"),payload:z.strictObject({itemId:equipmentItemSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal("equipment.unequip"),payload:z.strictObject({slot:equipmentSlotSchema})}),
- z.strictObject({...commandEnvelope,action:z.enum(['items.initialize','potions.buy','potions.use']),payload:z.strictObject({})}),
+ z.strictObject({...commandEnvelope,action:z.literal('items.initialize'),payload:z.strictObject({})}),
+ z.strictObject({...commandEnvelope,action:z.literal('potions.buy'),payload:z.strictObject({kind:z.enum(['health','mana']).optional(),quantity:z.number().int().min(1).max(99).optional()})}),
+ z.strictObject({...commandEnvelope,action:z.literal('potions.use'),payload:z.strictObject({kind:z.enum(['health','mana']).optional()})}),
  z.strictObject({...commandEnvelope,action:z.enum(['items.equip','items.sell','items.open-box','items.use-xp-boost']),payload:z.strictObject({itemId:instanceIdSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('items.unequip'),payload:z.strictObject({slot:originalSlotSchema})}),
  z.strictObject({...commandEnvelope,action:z.literal('items.lock'),payload:z.strictObject({itemId:instanceIdSchema,locked:z.boolean()})}),
@@ -104,11 +108,12 @@ export const characterCommandSchema = z.discriminatedUnion("action", [
 ]);
 export const characterCommandResultSchema = z.strictObject({
   requestId: z.uuid(),
-  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
+  action: z.enum(["state.sync", "journey.begin", "hunt.begin", "hunt.claim", "combat.begin", "combat.attack", "combat.claim", "attributes.allocate", "inventory.buy", "inventory.sell", "equipment.equip", "equipment.unequip",...originalActionSchema.options,...partyActions,...crewActions,...socialActions,'market.execute',...worldActions,...battleActions,...prisonActions,...dungeonActions,...hakiActions,'battle.reward','contract.claim','talents.commit','talents.reset','achievement.claim','hierarchy.promote','fruit.register','fruit.cast','fruit.transform','fruit.move','profile.appearance','profile.preferences','profile.identity']),
   world:worldSnapshotSchema.optional(),
   attributes: attributeSnapshotSchema.optional(),
   inventory: inventorySnapshotSchema.optional(),
   mail: z.strictObject({claimed:z.array(z.uuid()),pending:z.array(z.uuid()),reason:z.literal('inventory_full').optional()}).optional(),
+  market: marketReceiptSchema.optional(),
   state: characterStateSchema,
   // Optional so immutable receipts from earlier protocol increments remain valid.
   combat: combatSnapshotSchema.optional(),

@@ -12,6 +12,7 @@ import {
   renewControlSchema,
   characterCommandSchema,messageIdSchema,
 } from "@mare/shared";
+import {parseMarketRead} from "../characters/market.js";
 import { AuthService } from "./service.js";
 import { AuthFault, unauthorized } from "./errors.js";
 import { equal, Vault } from "./vault.js";
@@ -131,7 +132,7 @@ export function createAuthHandler(options: {
         /^\/v1\/characters\/([0-9a-f-]{36})(?:\/(control)(?:\/(renew))?)?$/.exec(
           path,
         );
-      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/(state|online-state|game-catalog|frame|crew|social)$/.exec(path);
+      const stateMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/(state|online-state|game-catalog|frame|crew|social|market)$/.exec(path);
       const commandMatch = /^\/v1\/characters\/([0-9a-f-]{36})\/commands$/.exec(path);
       const known = [
         "/v1/auth/csrf",
@@ -226,6 +227,10 @@ export function createAuthHandler(options: {
           const q=url.searchParams.get('q')??'',view=url.searchParams.get('view');
           if(!stateMatch||q.length>96||(view!==null&&view!=='identity')||(view!==null&&url.searchParams.has('q'))||[...url.searchParams.keys()].some(k=>k!=='q'&&k!=='view')||url.searchParams.getAll('q').length>1||url.searchParams.getAll('view').length>1)throw new AuthFault(400,"invalid_request");
           reply(200,await service.crewState(session,parse(z.uuid(),stateMatch[1]),q,view==='identity'));return;
+        }
+        if(stateMatch?.[2]==='market'){
+          if(request.headers['transfer-encoding']||Number(request.headers['content-length']??0)!==0)throw new AuthFault(400,'invalid_request');
+          reply(200,await service.marketState(session,parse(z.uuid(),stateMatch[1]),parseMarketRead(url.searchParams)));return;
         }
         if(stateMatch?.[2]==='social'){
           if(request.headers["transfer-encoding"]||Number(request.headers["content-length"]??0)!==0)throw new AuthFault(400,'invalid_request');

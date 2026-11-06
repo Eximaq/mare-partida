@@ -3,7 +3,7 @@ import {once} from 'node:events';
 import {readFile,mkdir} from 'node:fs/promises';
 import {resolve} from 'node:path';
 import {createRequire} from 'node:module';
-import {authDatabase} from './integration/auth-support.mjs';
+import {authDatabase,placeAtMerchant} from './integration/auth-support.mjs';
 import {createHttpServer} from '../apps/game-server/src/http.js';
 import {createAuthHandler} from '../apps/game-server/src/auth/routes.js';
 import {createDevGateway} from '../tools/dev-gateway.mjs';
@@ -24,9 +24,10 @@ await authDatabase(async f=>{
   const initial=await p.evaluate(()=>({state:globalThis.MareGameSession.data.online.state,items:globalThis.MareGameSession.data.online.originalInventory}));assert.equal(initial.state.level,1);assert.equal((await f.pool.query('SELECT count(*)::int n FROM mare_game.characters')).rows[0].n,1);
   await p.screenshot({path:resolve(out,'original-port-real-backend.png')});console.log('creation passed');
   // Loss occurs after the real backend committed; no simulated economic response.
+  await placeAtMerchant(f.pool,initial.state.characterId);
   lose=true;
-  await p.locator('#buyPotion').click();await p.waitForFunction(()=>globalThis.MareGameSession.pending&&!globalThis.MareGameSession.busy);await p.keyboard.press('i');await p.locator('[data-online-action=resume]').click();await p.keyboard.press('Escape');await p.waitForFunction(()=>!globalThis.MareGameSession.pending&&!globalThis.MareGameSession.busy);
-  assert.equal((await f.pool.query('SELECT potions FROM mare_game.game_inventory')).rows[0].potions,initial.items.potions+1);assert.equal((await f.pool.query("SELECT count(*)::int n FROM mare_game.character_commands WHERE result->>'action'='potions.buy'")).rows[0].n,1);
+  await p.evaluate(()=>globalThis.MareGameSession.command('potions.buy',{kind:'mana',quantity:1}).catch(()=>{}));await p.waitForFunction(()=>globalThis.MareGameSession.pending&&!globalThis.MareGameSession.busy);await p.keyboard.press('i');await p.locator('[data-online-action=resume]').click();await p.keyboard.press('Escape');await p.waitForFunction(()=>!globalThis.MareGameSession.pending&&!globalThis.MareGameSession.busy);
+  assert.equal((await f.pool.query('SELECT mana_potions FROM mare_game.game_inventory')).rows[0].mana_potions,initial.items.manaPotions+1);assert.equal((await f.pool.query("SELECT count(*)::int n FROM mare_game.character_commands WHERE result->>'action'='potions.buy'")).rows[0].n,1);
   console.log('loss recovery passed');await p.keyboard.press('i');const boots=initial.items.inventory.find((i:any)=>i.def===8);assert(boots);await p.locator('[data-item="'+boots.id+'"]').click();await p.locator('[data-equip="'+boots.id+'"]').click();await p.waitForFunction(()=>!globalThis.MareGameSession.busy&&!!globalThis.MareGameSession.data.online.originalInventory.equipment.boots);await p.keyboard.press('Escape');
   console.log('equipment passed');await p.locator('.location-heading').click();await p.locator('[data-island=dawn]').click();await p.locator('[data-travel-island=dawn]').click();await p.waitForFunction(()=>globalThis.__mareDiagnostics().map.id==='dawn'&&globalThis.__mareDiagnostics().map.navigation.ready);
   console.log('travel passed');interval=setInterval(()=>{if(!stopping&&!tick)tick=tickWorldBattles(f.pool).catch(()=>{errors.push('worker_failure');}).finally(()=>{tick=undefined;});},250);

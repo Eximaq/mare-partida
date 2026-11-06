@@ -1,0 +1,278 @@
+/* The market uses the same brass, dark metal and petroleum-blue materials as Conquistas. */
+#app #panelOverlay.market-mode {
+  --market-metal: #102430;
+  --market-card: #101e28;
+  --market-dark: #07141c;
+  --market-line: #795f3d;
+  --market-faint: #67583e7a;
+  --market-gold: #e2b777;
+  --market-ink: #f8ebd1;
+  --market-muted: #ccc0a6;
+}
+#app #panelOverlay.market-mode .dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(1110px, calc(100vw - 30px));
+  height: min(690px, calc(100dvh - 32px));
+  max-height: calc(100dvh - 32px);
+  padding: 2px;
+  overflow: hidden;
+  color: var(--market-ink);
+  background: linear-gradient(#091820e3,#070f17ed), var(--rpg-workshop-surface) center / 512px;
+  border: 3px double var(--market-gold);
+  border-image: var(--rpg-hd-panel) 28 / 10px stretch;
+  box-shadow: 0 18px 65px #02050cd9;
+}
+#app #panelOverlay.market-mode .dialog-header {
+  flex: none;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  background: linear-gradient(90deg,#101920ef,#061c27df), var(--rpg-workshop-surface) center / 512px;
+  border-bottom: 1px solid var(--market-line);
+}
+#app #panelOverlay.market-mode #dialogTitle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #ffdfa1;
+  font: 700 clamp(21px, 2.4vw, 33px)/1.05 var(--rpg-ui-heading, Georgia, serif);
+  text-shadow: 0 2px 3px #020308;
+}
+#app #panelOverlay.market-mode #dialogTitle::before {
+  content: "";
+  width: 1em;
+  height: 1em;
+  flex: none;
+  background: url('assets/ui/boss-dungeons/berry-reward.png') center / contain no-repeat;
+}
+#app #panelOverlay.market-mode #dialogBody {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  padding: 9px;
+}
+#socialQuickMenu [data-market-open] { position: relative; padding-right: 24px; }
+#socialQuickMenu [data-market-open] > img { width: 28px; height: 28px; object-fit: contain; }
+.market-shell {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  gap: 8px;
+  color: var(--market-ink);
+  font: 14px/1.35 var(--rpg-ui-reading, 'Segoe UI', sans-serif);
+}
+.market-shell h3, .market-shell h4 {
+  margin: 0 0 7px;
+  color: #ffdda1;
+  font: 700 17px/1.1 var(--rpg-ui-heading, Georgia, serif);
+}
+.market-shell .market-item-title { margin: 0; color: var(--item-color, var(--market-ink)); }
+.market-shell p { margin: 0; }
+.market-wallet {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  gap: 6px;
+  margin: 0;
+}
+.market-wallet > div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 2px 6px;
+  min-width: 0;
+  padding: 5px 8px;
+  background: linear-gradient(140deg,#1d3644,#101a23);
+  border: 1px solid var(--market-faint);
+  border-radius: 4px;
+}
+.market-wallet dt, .market-facts dt { color: var(--market-muted); }
+.market-wallet dd { color: #ffe1a3; }
+.market-wallet dd, .market-facts dd {
+  margin: 0;
+  font-weight: 700;
+  text-align: right;
+  overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
+}
+.market-tabs { display: flex; flex-wrap: wrap; gap: 5px; }
+.market-tabs > .market-button { flex: 1; }
+.market-tabs > .market-button:last-child { flex: 0 0 35px; }
+#app #panelOverlay.market-mode .market-button {
+  appearance: none;
+  padding: 5px 9px;
+  min-height: 32px;
+  border: 1px solid var(--market-line);
+  border-radius: 4px;
+  color: #f9e8c8;
+  background: linear-gradient(#173143,#0a1821);
+  box-shadow: inset 0 0 0 1px #02081066;
+  font: 700 13px/1.15 var(--rpg-ui-heading, Georgia, serif);
+  cursor: pointer;
+}
+#app #panelOverlay.market-mode .market-button:is(.market-primary,[aria-pressed="true"]):not(:disabled) {
+  color: #201208;
+  background: linear-gradient(#ffe1a2,#bc8339);
+  border-color: #ffca71;
+  box-shadow: inset 0 0 0 1px #7a4a23, 0 0 8px #ffb34c30;
+}
+#app #panelOverlay.market-mode .market-button:disabled { opacity: .56; cursor: not-allowed; }
+#app #panelOverlay.market-mode .market-button:hover:not(:disabled) { filter: brightness(1.17); }
+.market-shell :is(button,input,select,summary):focus-visible { outline: 2px solid #ffda9a; outline-offset: 2px; }
+.market-scroll { min-height: 0; overflow: auto; overscroll-behavior: contain; scrollbar-color: #bc9056 #0a1821; }
+.market-workspace {
+  display: grid;
+  grid-template-columns: minmax(180px,1fr) minmax(275px,2fr) minmax(230px,1.4fr);
+  gap: 8px;
+  align-items: start;
+}
+.market-frame {
+  min-width: 0;
+  background: linear-gradient(#0c202ced,#091620f0), var(--rpg-workshop-surface) center / 512px;
+  border: 1px solid var(--market-line);
+  border-radius: 5px;
+  padding: 8px;
+}
+.market-inspect { border-color: #ba8c55; }
+.market-filters form, .market-publish-form, .market-filter-extra { display: grid; gap: 7px; }
+.market-shell :is(.market-muted,.market-empty) { color: var(--market-muted); }
+.market-shell :is(.market-muted,.market-active) { font-size: 12px; margin-top: 6px; }
+.market-empty { padding: 13px 7px; }
+.market-shell .market-notice {
+  margin: 0;
+  padding: 5px 8px;
+  border: 1px solid #9d793f;
+  border-radius: 4px;
+  background: #3c2b17;
+  color: #ffe2a8;
+}
+.market-notice[hidden] { display: none !important; }
+.market-actions, .market-mode-actions, .market-offer-form, .market-history-head, .market-paging {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+.market-paging { justify-content: center; margin-top: 9px; color: var(--market-muted); }
+.market-results .market-mode-actions { margin-bottom: 7px; }
+.market-field { display: grid; min-width: 0; gap: 2px; font-size: 12px; color: var(--market-muted); }
+#app #panelOverlay.market-mode .market-field :is(input,select) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 32px;
+  color: var(--market-ink);
+  background: #091820;
+  border: 1px solid var(--market-line);
+  border-radius: 3px;
+  padding: 5px 6px;
+  font: 14px/1.2 var(--rpg-ui-reading, 'Segoe UI', sans-serif);
+}
+.market-field :is(.ui-select,.ui-select-trigger) { width: 100%; min-width: 0; }
+.market-ranges { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px; }
+.market-advanced > summary, .market-proposals > summary, .market-snapshot > summary, .market-notices > summary {
+  color: #ecd4a7;
+  cursor: pointer;
+  padding: 3px 0;
+}
+.market-active b, .market-active span { display: inline-block; }
+.market-active span { margin: 2px 1px; padding: 1px 3px; border: 1px solid var(--market-faint); border-radius: 3px; }
+#app #panelOverlay.market-mode :is(.market-listing,.market-tile) {
+  appearance: none;
+  min-width: 0;
+  width: 100%;
+  border: 1px solid var(--market-faint);
+  border-radius: 4px;
+  background: linear-gradient(135deg,#19323f,#0b1a22);
+  color: var(--market-ink);
+  font: inherit;
+  padding: 5px;
+  text-align: left;
+  cursor: pointer;
+}
+#app #panelOverlay.market-mode :is(.market-listing,.market-tile)[aria-pressed=true] { border-color: #edb86e; background: #213344; }
+#app #panelOverlay.market-mode :is(.market-listing,.market-tile):hover { border-color: #ffe1a5; }
+.market-listing { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-top: 4px; }
+.market-listing-price { flex: none; text-align: right; color: #f9d38d; font-variant-numeric: tabular-nums; }
+.market-listing-price small, .market-identity small { display: block; color: var(--market-muted); font-size: 11px; }
+.market-identity { display: flex; align-items: center; gap: 6px; min-width: 0; overflow-wrap: anywhere; }
+.market-item-art {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 42px;
+  height: 42px;
+  border: 1px solid var(--item-color,#bfa276);
+  border-radius: 4px;
+  background: radial-gradient(ellipse at center,#263747,#091318 78%);
+}
+.market-item-art :is(img,.ui-art,.item-icon) { width: 38px; height: 38px; object-fit: contain; }
+.market-identity .rarity-uncommon { --item-color:#88d4a5; }
+.market-identity .rarity-rare { --item-color:#82c5ef; }
+.market-identity .rarity-epic { --item-color:#cca5f0; }
+.market-identity .rarity-legendary { --item-color:#f5c87b; }
+.market-identity .rarity-supreme { --item-color:#f98b7c; }
+.market-inspect .market-item-art { width: 54px; height: 54px; }
+.market-inspect .market-item-art :is(img,.ui-art,.item-icon) { width: 50px; height: 50px; }
+.market-facts { display: grid; gap: 2px; margin: 6px 0; }
+.market-facts > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  border-bottom: 1px solid var(--market-faint);
+  padding: 2px 0;
+}
+.market-offer-form { align-items: end; margin: 7px 0 2px; }
+.market-offer-form .market-field { flex: 1 1 110px; }
+.market-inventory-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(132px,1fr)); gap: 5px; }
+.market-record { padding: 7px 9px; margin-top: 6px; border: 1px solid var(--market-faint); background: #07151dc9; }
+.market-history-head { justify-content: space-between; }
+.market-history-head h3 { margin: 0; }
+.market-help { margin-bottom: 7px; }
+.market-help ul { margin: 0; padding-left: 17px; }
+.market-proposals > div { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 5px; padding: 5px 0; border-top: 1px solid var(--market-faint); }
+.market-notices { margin-bottom: 7px; }
+.market-notices ul { margin: 4px 0 7px; padding-left: 17px; }
+@media (max-width: 870px) {
+  .market-workspace { grid-template-columns: minmax(150px,1fr) minmax(220px,1.7fr); }
+  .market-inspect { grid-column: 2; }
+}
+@media (max-width: 570px) {
+  #app #panelOverlay.market-mode .dialog { width: calc(100vw - 12px); height: calc(100dvh - 15px); max-height: calc(100dvh - 15px); }
+  #app #panelOverlay.market-mode #dialogBody { padding: 6px; }
+  .market-workspace { grid-template-columns: minmax(0,1fr); }
+  .market-inspect { grid-column: 1; }
+  .market-wallet { font-size: 12px; }
+  .market-tabs > .market-button { flex: 1 1 25%; }
+  .market-tabs > .market-button:last-child { flex: 1 1 25%; }
+  .market-filters form { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .market-filters form > :is(.market-advanced,.market-actions) { grid-column: 1 / -1; }
+  .market-shell { font-size: 13px; }
+}
+@media (max-width: 360px) {
+  .market-listing-price small { display: none; }
+}
+
+/* A second doorway beside the NPC stock points to the same player market. */
+#app #dialogBody .merchant-market-link,
+#app #dialogBody .market-recovery {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding: 7px 9px;
+  border: 1px solid #9d794d;
+  border-radius: 4px;
+  background: #10232d;
+  color: #f6e1b4;
+}
+#app #dialogBody .merchant-market-link { margin-top: 9px; }
+.merchant-market-link span { display: grid; }
+.merchant-market-link small { color: #d1c09b; }
+#app #dialogBody .market-recovery { background: #30261a; }

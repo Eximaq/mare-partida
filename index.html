@@ -153,6 +153,7 @@
   <script defer src="crew-flag.js"></script>
   <script defer src="crew-ui.js"></script>
   <script defer src="social-ui.js"></script>
+  <script defer src="market-online-ui.js"></script>
   <script defer src="game.js"></script>
   <script defer src="audio-system.js"></script>
   <link rel="preload" href="assets/ui/navigator/fonts/alegreya-sans-400.woff2" as="font" type="font/woff2" crossorigin />
@@ -171,6 +172,7 @@
   <link rel="stylesheet" href="party.css">
   <link rel="stylesheet" href="crew-ui.css">
   <link rel="stylesheet" href="social-ui.css">
+  <link rel="stylesheet" href="market-online-ui.css">
   <link rel="stylesheet" href="hud-nautical.css">
   <link rel="stylesheet" href="inventory-reference.css">
   <link rel="stylesheet" href="forge-reference.css">
@@ -277,13 +279,14 @@
              <button class="skill-button zoan-toggle hidden" id="zoanTransform" title="Transformar (T)" aria-keyshortcuts="T" aria-pressed="false"><span class="skill-icon" id="zoanTransformIcon"></span><span class="keycap">T</span></button>
             </div></div><div class="hotbar-divider"></div>
             <button type="button" class="skill-button potion-button" id="usePotion" title="Usar poção (Q)" aria-label="Usar poção de vida" aria-keyshortcuts="Q" aria-describedby="potionCount">
-              <span class="skill-icon"><img src="assets/ui/hud-potions/bottle.png" alt="" draggable="false"></span>
+              <span class="skill-icon"><img src="assets/ui/items-hd/potion.png" alt="" draggable="false"></span>
               <span class="keycap" aria-hidden="true">Q</span>
               <span class="potion-count" id="potionCount">3</span>
             </button>
-            <button type="button" class="shop-potion" id="buyPotion" title="Comprar poção por 35 Berry" aria-label="Comprar uma poção por 35 Berry">
-              <span>+ POÇÃO</span>
-              <small>35 <img src="assets/ui/hud-potions/berry-mark.png" alt="" draggable="false"></small>
+            <button type="button" class="skill-button potion-button hidden" id="useManaPotion" title="Usar Poção de Mana (E)" aria-label="Usar Poção de Mana" aria-keyshortcuts="E" aria-describedby="manaPotionCount">
+              <span class="skill-icon"><img src="assets/ui/items-hd/mana-potion.svg" alt="" draggable="false"></span>
+              <span class="keycap" aria-hidden="true">E</span>
+              <span class="potion-count" id="manaPotionCount">0</span>
             </button>
             <div class="hotbar-divider"></div>
             <button id="autoToggle" class="auto-button active"><span class="auto-orb">●</span><span><strong>AUTO-CAÇADA</strong><small id="autoLabel">ATIVADA</small></span><span class="toggle-pill"><i></i></span></button>

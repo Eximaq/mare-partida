@@ -111,6 +111,7 @@ test('manual potion recovery uses the Doctor bonus without increasing general he
   await pool.query("UPDATE mare_game.crews SET facilities=jsonb_set(facilities,'{infirmary}','5') WHERE id=$1",[crew.group!.id]);
   assert.deepEqual(await fighter(),{...before,sourceVersion:(await a.state()).version});
   await wounded();
+  await pool.query("UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{potionReadyAt}','1') WHERE character_id=$1",[a.id]);
   await a.act('potions.use');
   assert(Math.abs((await hp())-1-ordinary*1.10)<1e-6);
 }));

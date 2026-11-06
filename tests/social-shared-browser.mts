@@ -33,15 +33,24 @@ await authDatabase(async f=>{
    const panel=page.locator('.social-mode #closePanel');if(await panel.isVisible())await panel.click();
    await page.locator('#socialMenuTrigger').click();await page.locator('#socialQuickMenu [data-social-open="'+kind+'"]').click();
   }
+  // Wait for committed commands before inspecting them from the other profile.
+  // Opening a thread also marks it read asynchronously; do not race that command.
+  for(const page of [p,q])await page.route('**/commands',async(r:any)=>{await new Promise(resolve=>setTimeout(resolve,120));await r.continue();});
+  async function command(page:any,perform:()=>Promise<unknown>){
+    await page.waitForFunction(()=>globalThis.MareGameSession.available&&!globalThis.MareGameSession.busy&&!globalThis.MareGameSession.pending);
+    const response=page.waitForResponse((r:any)=>r.request().method()==='POST'&&/\/commands$/.test(r.url()));
+    await perform();assert.equal((await response).status(),200);
+    await page.waitForFunction(()=>!globalThis.MareGameSession.busy&&!globalThis.MareGameSession.pending);
+  }
   await openSocial(p,'friends');await p.locator('#socialFriendSearch').fill('Companheiro');await p.locator('#socialFriendSearch').press('Enter');
-  await p.locator('[data-social-action="add"]').click();
-  await openSocial(q,'friends');await q.locator('[data-social-action="friend-accept"]').click();
+  await command(p,()=>p.locator('[data-social-action="add"]').click());
+  await openSocial(q,'friends');await command(q,()=>q.locator('[data-social-action="friend-accept"]').click());
   await openSocial(p,'friends');await p.locator('[data-social-action="private"]').first().click();
-  await p.locator('#chatInput').fill('<b>Teste em dupla</b>');await p.locator('#chatInput').press('Enter');
+  await p.locator('#chatInput').fill('<b>Teste em dupla</b>');await command(p,()=>p.locator('#chatInput').press('Enter'));
   await openSocial(q,'messages');await q.locator('[data-social-action="private"]').first().click();
   await q.locator('.social-chat-log').getByText('<b>Teste em dupla</b>',{exact:true}).waitFor();
   assert.equal(await q.locator('.social-chat-log article p b').count(),0);
-  await q.locator('#chatInput').fill('Recebido no outro perfil');await q.locator('#chatInput').press('Enter');
+  await q.locator('#chatInput').fill('Recebido no outro perfil');await command(q,()=>q.locator('#chatInput').press('Enter'));
   await p.locator('.social-chat-log').getByText('Recebido no outro perfil',{exact:true}).waitFor();
   await p.screenshot({path:resolve(out,'social-real.png')});
   assert.equal(await p.evaluate(()=>localStorage.getItem('mare-partida-save-v1')),'preserve-demo-final-acceptance');

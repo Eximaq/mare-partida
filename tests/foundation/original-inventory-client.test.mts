@@ -12,7 +12,7 @@ test('a native menu offers control recovery before replay when both control and 
   const elements:any[]=[];
   const element=()=>({dataset:{},classList:{toggle(){},add(){},remove(){}},remove(){},setAttribute(){},querySelector(){return null;},querySelectorAll(){return [];},append(){},prepend(){},parentElement:{querySelector(){return null;}}});
   const dom=new Map(),session={data:{online:{originalInventory:{}}},available:true,controlled:false,busy:false,pending:{requestId:'retained'}};
-  const box:any={ONLINE_GAME:session,onlineUI:{close(){}},game:{gold:50},currentPanel:'shop',characterTab:null,itemIcon:()=>'',fmt:String,$:(id:string)=>{if(!dom.has(id))dom.set(id,element());return dom.get(id);},document:{querySelectorAll:()=>[],createElement:()=>{const e=element();elements.push(e);return e;}}};
+  const box:any={ONLINE_GAME:session,onlineUI:{close(){}},game:{gold:50},currentPanel:'shop',renderMerchantShop(){},marketAvailable(){return false;},characterTab:null,itemIcon:()=>'',fmt:String,$:(id:string)=>{if(!dom.has(id))dom.set(id,element());return dom.get(id);},document:{querySelectorAll:()=>[],createElement:()=>{const e=element();elements.push(e);return e;}}};
   for(const name of ['MareHakiUI','MarePlayerHub','MareVoyageUI','MareCompendium','MareTalentUI'])box[name]={unmount(){}};
   const a=source.indexOf('  function renderPanel('),b=source.indexOf('  function devApply(',a);
   runInNewContext(source.slice(a,b)+';globalThis.render=renderPanel;',box);
@@ -89,6 +89,8 @@ test("client economic intents allow original actions and reject client-supplied 
     ["potions.buy", {}],
     ["potions.use", {}],
     ["forge.execute", { operation: { type: "formEpicWeapon", expectedSeq: 0 } }],
+    ["potions.buy", {kind: "mana", quantity: 2}],
+    ["potions.use", {kind: "mana"}],
     [
       "forge.execute",
       {
@@ -103,6 +105,8 @@ test("client economic intents allow original actions and reject client-supplied 
     assert.equal(validIntent(action, payload), true);
   for (const [action, payload] of [
     ["potions.buy", { price: 0 }],
+    ["potions.buy", { kind: "mana", quantity: 100 }],
+    ["potions.use", { kind: "mana", quantity: 2 }],
     ["items.equip", { itemId: "x", attack: 999 }],
     ["items.sell", { itemId: "x", ownerId: "other" }],
     ["forge.execute", { operation: { type: "formEpicWeapon", expectedSeq: 0, potential: 100 } }],
@@ -143,7 +147,6 @@ test("original online buttons submit intentions without running offline gold, it
     },
   };
   for (const [name, next] of [
-    ["buyPotion", "renderPotion"],
     ["equipItem", "unequip"],
     ["unequip", "sellItem"],
     ["sellItem", "forgeCost"],
@@ -155,11 +158,7 @@ test("original online buttons submit intentions without running offline gold, it
     const end = source.search(
       new RegExp("  (?:async )?function " + next + "\\("),
     );
-    // buyPotion is followed by other presentation helpers; use its single-line declaration.
-    const code =
-      name === "buyPotion"
-        ? source.slice(start, source.indexOf("\n", start))
-        : source.slice(start, end);
+    const code = source.slice(start, end);
     runInNewContext(code + ";globalThis.action=" + name, box);
     await box.action(
       name === "unequip"
@@ -172,7 +171,6 @@ test("original online buttons submit intentions without running offline gold, it
   assert.deepEqual(
     calls.map((c) => c[0]),
     [
-      "potions.buy",
       "items.equip",
       "items.unequip",
       "items.sell",

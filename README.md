@@ -7,6 +7,7 @@
 **Fila de salas:** [concorrência limitada às conexões existentes e regressão PostgreSQL](docs/architecture/ROOM-QUEUE-CONCURRENCY.md). Resultados funcionais e de capacidade são avaliados separadamente.
 
 **Transações de recompensa:** [leituras agrupadas após a mutação e comparação de carga](docs/architecture/REWARD-TRANSACTION-READS.md). Preserva os registros econômicos e o COMMIT por sala.
+**Mercado dos Mares:** [comércio entre jogadores, Correio e loja do mercador](docs/MERCADO-DOS-MARES.md).
 
 **Ciclos de simulação:** [navegação conservadora, orçamento por lote e ensaios de 50/100 jogadores](docs/architecture/SIMULATION-CYCLE-BUDGET.md). Resultados separados para solo e Party; capacidade de 3.000 ainda não certificada.
 

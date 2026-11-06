@@ -16,6 +16,9 @@ on:
       - 'tests/*creation*'
       - 'tests/*harmony*'
       - 'tests/original-inventory-online-browser.cjs'
+      - 'market-online-ui.*'
+      - 'tests/market-online-browser.cjs'
+      - 'tests/social-online-browser.cjs'
       - 'tests/online-world-browser.cjs'
       - 'tests/online-battle-browser.cjs'
       - 'apps/account-client/game-*.js'
@@ -76,6 +79,10 @@ jobs:
           python tests/hud_compact_browser.py
       - name: Original inventory and forge online UI contract (no hosted provider)
         run: python tests/run_honors_hd_browser.py tests/original-inventory-online-browser.cjs --dist --offline
+      - name: Social e Mercado dos Mares no navegador
+        run: |
+          MARE_QA_DIR="$MARE_QA_DIR/social" python tests/run_honors_hd_browser.py tests/social-online-browser.cjs --dist --offline
+          MARE_QA_DIR="$MARE_QA_DIR/market" python tests/run_honors_hd_browser.py tests/market-online-browser.cjs --dist --offline
       - name: Original online world and travel UI contract
         run: python tests/run_honors_hd_browser.py tests/online-world-browser.cjs --dist --offline
       - name: Original online monsters and combat UI contract

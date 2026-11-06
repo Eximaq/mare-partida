@@ -11,11 +11,12 @@ const talents=require('./talent-runtime.cjs'),{T,U,TC}=talents;
 const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
 const Policy=require('./combat-action-policy.js');
-const sources=['combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const {potionRules,potionRecovery}=require('./item-catalog.js');
+const sources=['item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 const balanceVersion=characters.monsterBalance.version;
 const previousBalanceHash='6ec1642796a685e114cdc27e528bc2f9ff82cc18123f6dce68e639ee6bc890a8';
-const priorBalanceHashes=new Set([previousBalanceHash,'c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46','33f5c37bd55b0dc9a052d31c9e7d68f760bb31122337fb1da73058050083fa6a','063ad6d7e40b3146f8542e122e64cff8078b7eb61c49b0722d7e32044be2b461']);
+const priorBalanceHashes=new Set([previousBalanceHash,'79cf407896a79045951d84214601438b80b1b121dea598f6a66619f76935a82f','c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46','33f5c37bd55b0dc9a052d31c9e7d68f760bb31122337fb1da73058050083fa6a','063ad6d7e40b3146f8542e122e64cff8078b7eb61c49b0722d7e32044be2b461']);
 function upgradeBalance(b){
  if(!b||!priorBalanceHashes.has(b.rulesHash))return;
  const prisonSpec=b.prison&&prison.resolveEncounter(b.prison.spec,prisonCatalog);
@@ -210,7 +211,10 @@ function step(b,c){
     b.nextSkillDecision=now+250;autoSkill(b,{...c,now,hero,nav,stats,runtime:rt},g,m);
    }
   if(b.auto&&b.hp>0&&b.area&&!fruitBusy){
-   if(b.hp<stats.maxHP*.4&&potionsUsed<(c.potions||0)){heal(Math.round(stats.maxHP*.44)*(1+(c.potionHealingBonus||0)));potionsUsed++;event(b,'potion');}
+   if(b.hp<stats.maxHP*.4&&potionsUsed<(c.potions||0)&&now>=(b.potionReadyAt||0)){
+      heal(potionRecovery(stats.maxHP)*(1+(c.potionHealingBonus||0)));
+      b.potionReadyAt=Math.ceil(now)+potionRules.cooldownMs;potionsUsed++;event(b,'potion');
+    }
    if(!m){m=b.mobs.filter(m=>live(m)&&!(b.unreachableUntil?.[m.id]>now)).sort((a,z)=>distance(hero,a)-distance(hero,z))[0];b.targetId=m?.id??null;}
    const actionLocked=!!(b.pending||b.skillJob||b.fruit?.job||(b.actionLockUntil||0)>now);
    const warnings=b.mobs.filter(live).map(m=>m.telegraph).filter(Boolean),danger=warnings.some(w=>hunt.danger(w,hero));

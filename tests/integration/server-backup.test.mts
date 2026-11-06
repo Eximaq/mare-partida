@@ -9,7 +9,7 @@ import {AuthService} from "../../apps/game-server/src/auth/service.js";
 import {characterCommandSchema} from "@mare/shared";
 import {createRequire} from "node:module";
 const require=createRequire(import.meta.url),T=require("../../talent-system.js"),A=require("../../character-appearance.js");
-import { authDatabase } from "./auth-support.mjs";
+import { authDatabase, placeAtMerchant } from "./auth-support.mjs";
 import { pgArchive } from "../../tools/pg-archive.mjs";
 import { isDatabaseReady } from "../../apps/game-server/src/db/migrations.js";
 test("native archive restores every table and command receipt into a separate disposable database", async () =>
@@ -42,7 +42,8 @@ test("native archive restores every table and command receipt into a separate di
     await send('profile.preferences',{hideHeadgear:true,hideItems:true,healThreshold:.8});
     await pool.query('INSERT INTO mare_game.talent_legacy_allowances(character_id,budget) VALUES($1,1)',[c.id]);
     await send('talents.commit',{build:{...T.empty(),nodes:{[T.nodes('sword')[0].id]:1}}});
-    const purchase=await input('potions.buy'),purchaseReceipt=await service.command(session.token,c.id,purchase);
+    await placeAtMerchant(pool,c.id);
+    const purchase=await input('potions.buy',{kind:'mana'}),purchaseReceipt=await service.command(session.token,c.id,purchase);
     const original=await read();assert(original.profile&&original.talents&&original.battle&&original.world&&original.originalInventory);
     assert.equal(original.talents.spent,1);assert.equal(original.profile.appearance.hairColor,'blue');
 

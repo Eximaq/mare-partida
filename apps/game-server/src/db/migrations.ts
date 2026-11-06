@@ -22,19 +22,20 @@ async function loadMigrations(directory: string): Promise<Migration[]> {
 }
 
 function assertHistory(migrations: Migration[], applied: Applied[]) {
-  // PR #232 shipped this immutable repair before main allocated 0040 to contracts.
-  // Keep that receipt intact and recognize only its audited SQL as the 0047 repair.
-  const legacyName = '0040_detach_claimed_dungeon_members.sql';
-  const repairName = '0047_detach_claimed_dungeon_members.sql';
+  // Both private names shipped before main allocated their numbers independently.
+  // Preserve their immutable receipts and accept only the same audited SQL.
+  const legacyNames = ['0040_detach_claimed_dungeon_members.sql', '0047_detach_claimed_dungeon_members.sql'];
+  const repairName = '0049_detach_claimed_dungeon_members.sql';
   const repairChecksum = '87423f59558537c4be6e3dd32d72ee625e1906fa0550436e7cdf3f619efed331';
-  const legacy = applied.find(row => row.name === legacyName);
-  if (legacy && (legacy.checksum !== repairChecksum ||
-      !migrations.some(row => row.name === repairName && row.checksum === repairChecksum))) {
-    throw new Error('Migration history mismatch; unknown private repair');
+  const aliases = applied.filter(row => legacyNames.includes(row.name));
+  const legacy = aliases[0];
+  if (aliases.length > 1 || (legacy && (legacy.checksum !== repairChecksum ||
+      !migrations.some(row => row.name === repairName && row.checksum === repairChecksum)))) {
+    throw new Error('Migration history mismatch; unknown or duplicate private repair');
   }
   const expectedHistory = legacy ? migrations.filter(row => row.name !== repairName) : migrations;
-  const canonicalHistory = legacy ? applied.filter(row => row.name !== legacyName) : applied;
-  if (legacy && canonicalHistory.length < migrations.filter(row => row.name < '0040').length) {
+  const canonicalHistory = legacy ? applied.filter(row => row.name !== legacy.name) : applied;
+  if (legacy && canonicalHistory.length < migrations.filter(row => row.name < legacy.name.slice(0,4)).length) {
     throw new Error('Migration history mismatch; private repair requires its complete predecessors');
   }
   for (const [index, row] of canonicalHistory.entries()) {
@@ -43,7 +44,7 @@ function assertHistory(migrations: Migration[], applied: Applied[]) {
       throw new Error('Migration history mismatch; restore matching files or add a new migration');
     }
   }
-  return new Set(applied.map(row => row.name === legacyName ? repairName : row.name));
+  return new Set(applied.map(row => row.name === legacy?.name ? repairName : row.name));
 }
 
 export async function applyMigrations(pool: Pool, directory = defaultDirectory): Promise<string[]> {

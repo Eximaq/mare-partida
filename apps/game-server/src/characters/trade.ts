@@ -1,3 +1,4 @@
+import {itemTradeRestriction,itemTradeQuantity as itemQuantity} from './item-negotiability.js';
 import {randomUUID} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import type {PoolClient} from 'pg';
@@ -33,16 +34,7 @@ export async function tradeAvailable(client:TradeQuery){
   return (await client.query("SELECT to_regclass('mare_game.social_trades') IS NOT NULL available")).rows[0]?.available===true;
 }
 
-function itemQuantity(item:Item){
-  return items[item.def]?.kind==='haki-fragment'?item.qty??1:1;
-}
-
-function tradeEligible(item:Item){
-  const def=items[item.def];
-  return !!def&&!item.locked&&!item.binding&&!item.boundToCharacter
-    &&def.transferable!==false&&def.tradable!==false&&!def.binding&&!def.questOnly
-    &&!['weapon-fragment','akuma-fragment','xp-boost','profession-material','quest'].includes(String(def.kind));
-}
+function tradeEligible(item:Item){return !itemTradeRestriction(item);}
 
 async function closeTrade(client:PoolClient,tradeId:string,status:'declined'|'cancelled'){
   await client.query('UPDATE mare_game.social_trades SET status=$2,ended_at=clock_timestamp() WHERE id=$1',[tradeId,status]);

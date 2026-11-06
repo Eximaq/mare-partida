@@ -79,5 +79,5 @@ test('automatic potions use the Doctor bonus and deployment keeps the ongoing ba
   const step=(b:typeof battle,potionHealingBonus:number)=>engine.step(b,{hero:{...hero},nav,stats,classId:'brawler',factionId:'pirate',level:1,now:1250,dt:.25,rng:()=>.5,potions:1,potionHealingBonus});
   assert.equal(step(without,0).potionsUsed,1);
   assert.equal(step(battle,.10).potionsUsed,1);
-  assert(Math.abs(battle.hp-without.hp-Math.round(stats.maxHP*.44)*.10)<1e-6);
+  assert(Math.abs(battle.hp-without.hp-require('../../item-catalog.js').potionRecovery(stats.maxHP)*.10)<1e-6);
 });

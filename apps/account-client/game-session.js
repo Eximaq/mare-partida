@@ -48,6 +48,27 @@
       if(action==='trade.offer')return keys==='expectedOfferVersion,itemId,quantity,tradeId'&&instanceId(p.itemId)&&Number.isSafeInteger(p.quantity)&&p.quantity>=0&&p.quantity<=99999;
       return action==='trade.lock'?keys==='expectedOfferVersion,locked,tradeId'&&typeof p.locked==='boolean':keys==='expectedOfferVersion,tradeId';
     }
+    if(action==='market.execute'){
+      const whole=(v,max)=>Number.isSafeInteger(v)&&v>=1&&v<=max;
+      const amount=v=>whole(v,1000000000000), version=v=>whole(v,2147483647);
+      const has=(name)=>Object.hasOwn(p,name);
+      const shape=(required,optional=[])=>required.every(has)&&Object.keys(p).every(name=>required.includes(name)||optional.includes(name));
+      if(p.kind==='market_publish'){
+        const base=['kind','itemId','quantity','mode','hours'];
+        if(!instanceId(p.itemId)||!whole(p.quantity,99999)||![24,48,72].includes(p.hours)||(has('feeBps')&&![1000,1500].includes(p.feeBps)))return false;
+        if(p.mode==='direct')return shape([...base,'price'],['feeBps'])&&amount(p.price);
+        return p.mode==='auction'&&shape([...base,'minOffer'],['feeBps','buyNow'])&&amount(p.minOffer)&&(!has('buyNow')||amount(p.buyNow)&&p.buyNow>=p.minOffer);
+      }
+      if(p.kind==='market_collect_all')return keys==='kind';
+      if(p.kind==='market_collect')return keys==='kind,saleId'&&socialId(p.saleId);
+      if(p.kind==='market_read_notices')return keys==='kind,noticeIds'&&Array.isArray(p.noticeIds)&&p.noticeIds.length>0&&p.noticeIds.length<=50&&p.noticeIds.every(socialId);
+      if(!socialId(p.listingId)||!version(p.version))return false;
+      const listing=['kind','listingId','version'];
+      if(p.kind==='market_cancel')return shape(listing);
+      if(p.kind==='market_buy')return shape([...listing,'amount'])&&amount(p.amount);
+      if(p.kind==='market_offer')return shape([...listing,'amount'],['proposalId','proposalVersion'])&&amount(p.amount)&&(!has('proposalVersion')||version(p.proposalVersion))&&(!has('proposalId')||socialId(p.proposalId));
+      return ['market_withdraw','market_reject','market_accept'].includes(p.kind)&&shape([...listing,'proposalId','proposalVersion'])&&socialId(p.proposalId)&&version(p.proposalVersion);
+    }
     if(action.startsWith('crew.')){
       const uuid=v=>typeof v==='string'&&/^[0-9a-f-]{36}$/.test(v);
       const whole=(v,max)=>Number.isSafeInteger(v)&&v>=1&&v<=max;
@@ -106,7 +127,10 @@
     if(['world.initialize','world.stop','world.return'].includes(action))return keys==='';
     if(action==='world.move')return keys==='x,y'&&['x','y'].every(k=>Number.isFinite(p[k])&&p[k]>=0&&p[k]<=100000);
     if(action==='world.travel')return keys==='islandId'&&typeof p.islandId==='string'&&/^[a-z0-9-]{1,40}$/.test(p.islandId);
-    if(['items.initialize','potions.buy','potions.use'].includes(action))return keys==='';
+    if(action==='items.initialize')return keys==='';
+    const potionKind=()=>!Object.hasOwn(p,'kind')||['health','mana'].includes(p.kind);
+    if(action==='potions.buy')return ['', 'kind', 'quantity', 'kind,quantity'].includes(keys)&&potionKind()&&(!Object.hasOwn(p,'quantity')||Number.isInteger(p.quantity)&&p.quantity>=1&&p.quantity<=99);
+    if(action==='potions.use')return ['', 'kind'].includes(keys)&&potionKind();
     if(['items.equip','items.sell','items.open-box','items.use-xp-boost'].includes(action))return keys==='itemId'&&instanceId(p.itemId);
     if(action==='items.lock')return keys==='itemId,locked'&&instanceId(p.itemId)&&typeof p.locked==='boolean';
     if(action==='items.unequip')return keys==='slot'&&originalSlots.includes(p.slot);

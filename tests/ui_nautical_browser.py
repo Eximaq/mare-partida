@@ -9,6 +9,11 @@ with sync_playwright() as p:
     browser=p.chromium.launch(headless=True)
     def page_for(seed=None,size=(1366,768)):
         context=browser.new_context(viewport={'width':size[0],'height':size[1]});context.route('**/__dev_version',lambda route:route.fulfill(body='stable-test'))
+        def merchant_fixture(route):
+            response=route.fetch()
+            source=response.text().replace('  window.__mareDiagnostics=',"  window.__openMerchant=()=>{const npc=npcs.find(n=>n.kind==='shop');Object.assign(world.hero,{x:npc.x,y:npc.y});activateNPC(npc)};window.__mareDiagnostics=")
+            route.fulfill(response=response,body=source)
+        context.route('**/game.js*',merchant_fixture)
         if seed:context.add_init_script("if(!sessionStorage.seeded){localStorage.setItem("+json.dumps(KEY)+","+json.dumps(json.dumps(seed))+");sessionStorage.seeded='1'}")
         page=context.new_page();page.on('pageerror',lambda e:errors.append({'error':str(e),'stack':e.stack,'url':page.url}));page.clock.install();page.goto('http://127.0.0.1:8123/');page.wait_for_load_state('networkidle');return context,page
     def saved(q):return json.loads(q.evaluate('localStorage.getItem('+json.dumps(KEY)+')'))
@@ -70,7 +75,8 @@ with sync_playwright() as p:
         panel(q,'inventory');q.locator('[data-item="gallery-1"]').click();q.locator('[data-equip="gallery-1"]').click();assert saved(q)['equipment']['weapon']['def']==1
         q.locator('[data-inv-lock="gallery-1"]').click();assert saved(q)['equipment']['weapon']['locked'];q.locator('[data-inv-lock="gallery-1"]').click()
         q.locator('#invCategory').select_option('consumables');q.locator('[data-item=virtual-potion]').click();potions=saved(q)['potions'];q.locator('[data-inv-use-potion]').click();assert saved(q)['potions']==potions-1
-        q.locator('[data-panel=shop]').filter(has_text='COMPRAR MAIS').click();q.screenshot(path=str(OUT/f'shop-{w}x{h}.png'));gold=saved(q)['gold'];q.locator('[data-buy-potion]').click();assert saved(q)['gold']==gold-35;close(q)
+        assert q.locator('[data-panel=shop]').filter(has_text='COMPRAR MAIS').count()==0
+        q.evaluate('__openMerchant()');q.screenshot(path=str(OUT/f'shop-{w}x{h}.png'));gold=saved(q)['gold'];q.locator('[data-buy-potion=health]').click();assert saved(q)['gold']==gold-35;close(q)
         panel(q,'forge');plus=saved(q)['equipment']['weapon']['plus'];q.locator('[data-forge=weapon]').click();q.locator('[data-confirm-accept]').click();assert saved(q)['equipment']['weapon']['plus']==plus+1;close(q)
         panel(q,'help');before=saved(q);q.locator('[data-reset]').click();q.screenshot(path=str(OUT/f'confirmation-{w}x{h}.png'));q.locator('[data-confirm-cancel]').click();after=saved(q)
         for key in ['name','classId','factionId','level','xp','gold','inventory','equipment','potions','materials','attributes']:assert after[key]==before[key],(key,before[key],after[key])

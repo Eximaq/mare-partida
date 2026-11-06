@@ -13,11 +13,12 @@ phase='before' if opts.baseline else 'after'
 SIZES=[(1920,1080),(1366,768),(1280,720),(844,390),(390,844)]
 HOOK="""  window.__compactQA={get game(){return game},get session(){return session},stats:getDerived,
 refresh(){updateUI();renderPortrait();drawWorld();presentWorld()},enter:enterHunt,leave:returnLobby,
+openMerchant(){const npc=npcs.find(n=>n.kind==='shop');Object.assign(world.hero,{x:npc.x,y:npc.y});activateNPC(npc)},
 toggle:toggleFloating,defs:itemDefs,newItem,syncFruit:syncFruitVfx};window.__mareDiagnostics="""
 
 def measurements(q):
     return q.evaluate('''() => Object.fromEntries(Object.entries({
-      profile:'.topbar',hotbar:'.action-panel',potion:'#usePotion',buyPotion:'#buyPotion',
+      profile:'.topbar',hotbar:'.action-panel',potion:'#usePotion',
       chat:'#floatingChat',expedition:'#journeyHud',window:'#floatingExpedition',travel:'.world-command'
     }).map(([key,s])=>{const e=document.querySelector(s),r=e.getBoundingClientRect();return [key,{x:r.x,y:r.y,width:r.width,height:r.height,area:r.width*r.height,visible:!!e.getClientRects().length&&getComputedStyle(e).visibility!=='hidden'}]}))''')
 
@@ -111,9 +112,28 @@ with sync_playwright() as p:
         q.locator('#usePotion').click()
         assert q.evaluate('__compactQA.game.potions')==old['potions']-1
         assert q.evaluate('__compactQA.game.hp')>old['hp']
-        q.locator('#buyPotion').click()
-        assert q.evaluate('__compactQA.game.potions')==old['potions']
-        assert q.evaluate('__compactQA.game.gold')==old['gold']-35
+        assert q.locator('#buyPotion').count()==0
+        assert q.evaluate('__compactQA.game.gold')==old['gold']
+        q.evaluate('__compactQA.openMerchant()')
+        health=q.locator('[data-merchant-order=health]')
+        mana=q.locator('[data-merchant-order=mana]')
+        assert '25% de vida' in health.inner_text()
+        assert '25% de energia' in mana.inner_text()
+        assert '35 Berry' in mana.inner_text()
+        mana.locator('input').fill('2')
+        assert mana.locator('[data-merchant-total]').inner_text()=='70 Berry'
+        mana.locator('img').evaluate('e=>e.decode()')
+        assert mana.locator('img').evaluate('e=>e.complete && e.naturalWidth>0')
+        q.screenshot(path=str(OUT/phase/'mercador-pocoes.png'))
+        mana.get_by_role('button',name='Comprar').click()
+        assert q.evaluate('__compactQA.game.gold')==old['gold']-70
+        assert q.evaluate('__compactQA.game.manaPotions')==2
+        q.keyboard.press('Escape')
+        q.clock.run_for(4100)
+        q.evaluate('__compactQA.game.energy=0;__compactQA.refresh()')
+        q.keyboard.press('e')
+        assert q.evaluate('__compactQA.game.manaPotions')==1
+        assert q.evaluate('__compactQA.game.energy')>=q.evaluate('Math.round(__compactQA.stats().maxEnergy*.25)')
         # A self-targeted class skill exercises the real button and cooldown
         # without a timing dependency on enemy navigation.
         q.evaluate('''() => {const x=__compactQA;x.game.equipment.akuma_no_mi=null;

@@ -73,9 +73,15 @@ test('failed receipt storage and overflow roll back reward, level, version and c
  await assert.rejects(a.send(request),{code:'23514'});assert.deepEqual((await a.read()).state,before.state);assert.deepEqual((await a.read()).contracts,before.contracts);
  assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.character_level_ledger')).rows[0].n,0);
  await pool.query('ALTER TABLE mare_game.character_commands DROP CONSTRAINT fail_contract_receipt');
- await pool.query('UPDATE mare_game.character_progression SET gold=9223372036854775807 WHERE character_id=$1',[a.c.id]);await assert.rejects(a.send(request),{code:'progression_limit'});
+ // The market now reserves wallet headroom at the stricter safe-integer boundary.
+ await pool.query('UPDATE mare_game.character_progression SET gold=9007199254740991 WHERE character_id=$1',[a.c.id]);
+ await assert.rejects(a.send(request),{code:'23514',constraint:'market_wallet_limit'});
  assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.contract_claims')).rows[0].n,0);
  await pool.query('UPDATE mare_game.character_progression SET gold=$2 WHERE character_id=$1',[a.c.id,before.state.gold]);
+ await pool.query('UPDATE mare_game.character_progression SET experience=9223372036854775807 WHERE character_id=$1',[a.c.id]);
+ await assert.rejects(a.send(request),{code:'progression_limit'});
+ assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.contract_claims')).rows[0].n,0);
+ await pool.query('UPDATE mare_game.character_progression SET experience=$2 WHERE character_id=$1',[a.c.id,before.state.experience]);
  const paid=await a.send(request);assert.equal(paid.state.experience,'2200');assert(paid.state.level>1);assert.deepEqual(await a.send(request),paid,'lost response replays after completed transaction');
 }));
 test('contract level-up uses original derived stats and restores persisted battle HP and energy',async()=>authDatabase(async({service,pool})=>{
@@ -125,7 +131,7 @@ test('versioned migration backfills only existing server kills and upgrades only
    for(const name of ['0018_battle_profile_compatibility.sql','0019_original_contracts.sql'])await copyFile(new URL(name,source),join(dir,name));
    assert.deepEqual(await applyMigrations(pool,dir),['0018_battle_profile_compatibility.sql','0019_original_contracts.sql']);
    assert.equal((await a.read()).battle.rulesHash,'e8c783982e814f1ea67b0ce8fa11e072c47c3a1f5746e77a9ca2de10a0eedce1');
-   assert.deepEqual(await applyMigrations(pool),['0020_restore_stable_battle_hash.sql','0021_original_talents.sql','0022_talent_battle_compatibility.sql','0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_detach_claimed_dungeon_members.sql']);assert.deepEqual(await applyMigrations(pool),[]);
+   assert.deepEqual(await applyMigrations(pool),['0020_restore_stable_battle_hash.sql','0021_original_talents.sql','0022_talent_battle_compatibility.sql','0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_detach_claimed_dungeon_members.sql']);assert.deepEqual(await applyMigrations(pool),[]);
    const after=await a.read();assert.deepEqual(after.state,before);assert.equal(after.contracts.progress.crab,6);assert.equal(after.contracts.progress['dawn-patrol'],8);assert.deepEqual(after.contracts.claimed,[]);
    assert.deepEqual(after.battle,{...sim,rulesHash:engine.rulesHash});assert.equal((await b.read()).battle.rulesHash,'unknown');assert.equal((await b.read()).contracts.progress.crab,0);
   },dir);
