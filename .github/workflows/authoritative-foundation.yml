@@ -105,6 +105,7 @@ jobs:
           try {
             assert.equal((await pool.query('SELECT current_user')).rows[0].current_user, 'mare_runtime');
             assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 49);
+            assert.equal((await pool.query("SELECT has_column_privilege(current_user,'mare_game.game_inventory','mana_potions','UPDATE') AS ok")).rows[0].ok, true);
             await assert.rejects(pool.query('SELECT * FROM mare_game.accounts'), { code: '42501' });
             await assert.rejects(pool.query('CREATE SCHEMA forbidden'), { code: '42501' });
           } finally { await pool.end(); }

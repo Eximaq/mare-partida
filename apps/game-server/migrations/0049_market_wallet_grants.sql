@@ -42,6 +42,7 @@ REVOKE ALL ON FUNCTION mare_game.market_wallet_headroom(),mare_game.market_propo
 DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname='mare_runtime') THEN
+    GRANT UPDATE (mana_potions) ON mare_game.game_inventory TO mare_runtime;
     GRANT SELECT ON mare_game.market_listings,mare_game.market_proposals,mare_game.market_notifications TO mare_runtime;
     GRANT EXECUTE ON FUNCTION mare_game.market_balance(uuid),mare_game.market_reward_wallet_offset(uuid),
       mare_game.market_expire(integer),mare_game.market_command(uuid,jsonb,integer,integer,integer) TO mare_runtime;
