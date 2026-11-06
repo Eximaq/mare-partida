@@ -5,7 +5,7 @@ Mares**. A loja de Donquixote tem um atalho para a mesma janela e consulta o
 mesmo serviço de mercado. Compras de suprimentos feitas na própria loja
 usam o catálogo do NPC e não são anúncios de jogadores.
 
-O mercado fica disponível em servidores com a migração **0047** aplicada.
+O mercado foi criado na migração **0047**. A **0049** atualiza as permissões e protege o estorno de Berry reservado; aplique-a também em instalações que já usam o mercado.
 A compra de Poção de Mana na loja online requer também a **0048**. O cliente
 estático não habilita o comércio entre personagens no jogo local.
 
