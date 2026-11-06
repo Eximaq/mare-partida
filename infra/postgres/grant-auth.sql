@@ -147,3 +147,15 @@ GRANT SELECT ON mare_game.social_trades,mare_game.social_trade_members,mare_game
 GRANT INSERT(id,initiator_id,target_id,expires_at),UPDATE(status,offer_version,initiator_locked,target_locked,initiator_confirmed,target_confirmed,expires_at,ended_at,receipt) ON mare_game.social_trades TO mare_runtime;
 GRANT INSERT(character_id,trade_id),DELETE ON mare_game.social_trade_members TO mare_runtime;
 GRANT INSERT(character_id,item_id,trade_id,quantity,item),UPDATE(quantity),DELETE ON mare_game.social_trade_reservations TO mare_runtime;
+
+-- Markets apply after Social. Provision these permissions for freshly created
+-- runtime roles as well as databases upgraded with the role already present.
+DO $$
+BEGIN
+  IF to_regclass('mare_game.market_listings') IS NOT NULL THEN
+    GRANT SELECT ON mare_game.market_listings,mare_game.market_proposals,mare_game.market_notifications TO mare_runtime;
+    GRANT EXECUTE ON FUNCTION mare_game.market_balance(uuid),mare_game.market_reward_wallet_offset(uuid),
+      mare_game.market_expire(integer),mare_game.market_command(uuid,jsonb,integer,integer,integer) TO mare_runtime;
+  END IF;
+END
+$$;

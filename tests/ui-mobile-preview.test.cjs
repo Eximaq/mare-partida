@@ -14,6 +14,8 @@ for(const doc of [production,preview]){
   assert.match(doc,/nautical-profile/);
   assert.match(doc,/<link rel="stylesheet" href="hud-nautical\.css"/);
   assert.match(doc,/class="hud-vitals"/);
+  assert.match(doc,/id="useManaPotion"/);
+  assert.doesNotMatch(doc,/id="buyPotion"/);
 }
 assert.match(build,/'hud-nautical\.css'/);
 assert.match(skin,/\.topbar/);
