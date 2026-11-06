@@ -2385,7 +2385,7 @@
     return item?{kind:'gear',item,id:item.id}:null;
   }
   function renderInventory(body){
-    const {pageSize:BAG_PER_PAGE}=MareUI.inventoryGrid(innerWidth);
+    const {columns,pageSize:BAG_PER_PAGE}=MareUI.inventoryGrid(innerWidth);
     if(inventoryUI.pageSize&&inventoryUI.pageSize!==BAG_PER_PAGE)inventoryUI.page=MareUI.inventoryPageAtResize(inventoryUI.page,inventoryUI.pageSize,BAG_PER_PAGE);
     inventoryUI.pageSize=BAG_PER_PAGE;
     if(!invSelected())selectedItem=game.equipment.weapon?.id||game.inventory[0]?.id||(game.potions>0?'virtual-potion':game.manaPotions>0?'virtual-mana-potion':game.materials>0?'virtual-material':null);
@@ -2395,10 +2395,11 @@
     const filterCategories=[['all','Categorias'],['weapons','ARMAS'],['armor','ARMADURAS'],['fruits','AKUMA NO MI'],['consumables','CONSUMÍVEIS'],['materials','MATERIAIS'],['pearls','PÉROLAS']];
     const all=inventoryEntries();const pages=Math.max(1,Math.ceil(all.length/BAG_PER_PAGE));inventoryUI.page=Math.min(inventoryUI.page,pages-1);
     const shown=all.slice(inventoryUI.page*BAG_PER_PAGE,(inventoryUI.page+1)*BAG_PER_PAGE);
+    const lastRowSlots=columns*Math.max(1,Math.ceil(shown.length/columns));
     const slots=shown.map(entry=>{
       const selected=selectedItem===entry.id; const item=entry.item; const icon=invSymbol(entry);
-      return `<button class="op-item rarity-${entry.rarity} ${selected?'selected':''}" type="button" aria-pressed="${selected}" aria-label="${escapeHTML(entry.name)}" data-item="${entry.id}" ${item&&MareAkuma.isFruit(item,itemDefs)?'draggable="true" data-fruit-drag="'+escapeHTML(item.id)+'"':''}><span class="op-item-icon">${icon}</span>${item&&item.plus?`<span class="op-item-refine">+${item.plus}</span>`:''}${item&&item.locked?'<span class="op-item-lock" role="img" aria-label="Item bloqueado"></span>':''}${entry.qty>1?`<span class="op-item-qty">x${entry.qty}</span>`:''}</button>`;
-    }).join('') + Array.from({length:BAG_PER_PAGE-shown.length},()=>'<span class="op-item empty" aria-hidden="true"></span>').join('');
+      return `<button class="op-item rarity-${entry.rarity} ${selected?'selected':''}" type="button" aria-pressed="${selected}" aria-label="${escapeHTML(entry.name)}${rarityNames[entry.rarity]?` · ${rarityNames[entry.rarity]}`:''}" data-item="${entry.id}" ${item&&MareAkuma.isFruit(item,itemDefs)?'draggable="true" data-fruit-drag="'+escapeHTML(item.id)+'"':''}><span class="op-item-icon">${icon}</span>${item&&item.plus?`<span class="op-item-refine">+${item.plus}</span>`:''}${item&&item.locked?'<span class="op-item-lock" role="img" aria-label="Item bloqueado"></span>':''}${entry.qty>1?`<span class="op-item-qty">x${entry.qty}</span>`:''}</button>`;
+    }).join('') + Array.from({length:lastRowSlots-shown.length},()=>'<span class="op-item empty" aria-hidden="true"></span>').join('');
     const sel=invSelected(); const detail=inventoryDetail(sel);
     const left=inventorySlotsLeft.map(invSlotHtml).join('')+'<span class="op-equip-spacer" aria-hidden="true"></span>'; const right=inventorySlotsRight.filter(slot=>slot!=='akuma_no_mi').map(invSlotHtml).join('');
     const tab=inventoryUI.tab,feedback=activeEquipmentFeedback();
