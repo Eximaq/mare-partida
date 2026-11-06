@@ -1,19 +1,263 @@
 /* Shared finishing: the approved workshop metal and existing HD fonts/assets. */
 :root{--rpg-ui-heading:'Inventory Alegreya SC',Georgia,serif;--rpg-ui-reading:'Alegreya Sans','Segoe UI',sans-serif}
-.confirmation-overlay{padding:16px;overscroll-behavior:contain}
-body .confirmation-overlay .confirmation-card{width:min(570px,100%);max-height:calc(100dvh - 32px);padding:16px;gap:12px;display:flex;flex-direction:column;overflow:hidden;color:#f5e4c1;background:linear-gradient(#090b12d9,#090b12ed),var(--rpg-workshop-surface) center/512px 512px;border:1px solid #cf9d47;box-shadow:0 12px 55px #000c,inset 0 0 0 3px #402818;font-family:var(--rpg-ui-reading);text-align:left}
-body .confirmation-overlay .confirmation-card header{border-bottom:1px solid #b58b4555;padding-bottom:8px}body .confirmation-overlay .confirmation-card header>small{font-size:10px;letter-spacing:.08em;color:#c9a66b}body .confirmation-overlay .confirmation-card h2{font:700 26px/1.08 var(--rpg-ui-heading);margin:3px 0 0;color:#ffe3a0;overflow-wrap:anywhere}
-.confirmation-content{overflow:auto;overscroll-behavior:contain;min-height:0;scrollbar-color:#b78a42 #171419;display:grid;gap:10px}body .confirmation-overlay .confirmation-card p{font:400 15px/1.3 var(--rpg-ui-reading);margin:0}body .confirmation-overlay .confirmation-card h3{font:700 15px/1.15 var(--rpg-ui-heading);color:#f5d18c;margin:0 0 7px;letter-spacing:.025em}.confirmation-subject{display:flex;align-items:center;gap:10px;padding:8px;background:#03060966;border:1px solid #96703d66}.confirmation-subject strong{font-size:18px}.confirmation-subject small,.confirmation-resource small{display:block;color:#cabd9f;line-height:1.15}.confirmation-subject .ui-art{width:48px;height:48px;flex:none}
+/* Confirmation dialogs share the brass, rope and petrol-blue surfaces of the game menus. */
+body .confirmation-overlay {
+  display: grid;
+  grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+  padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+    max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  overscroll-behavior: contain;
+  background: #03121bd4;
+  backdrop-filter: blur(3px);
+}
+body .confirmation-overlay .confirmation-card {
+  --confirm-type: 'Barlow Semi Condensed', 'Alegreya Sans', sans-serif;
+  --confirm-text: #f4eddf;
+  --confirm-muted: #b9cdd4;
+  --confirm-gold: #ffdda0;
+  --confirm-rule: #ab855151;
+  --confirm-plate: url('assets/ui/inventory-reference/tab.png');
+  --confirm-plate-active: url('assets/ui/inventory-reference/tab-active.png');
+
+  display: flex;
+  flex-direction: column;
+  width: min(500px, 100%);
+  max-height: 100%;
+  min-height: 0;
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+  border: 8px solid transparent;
+  border-image: url('assets/ui/hud-nautical-v2/rope-frame.png') 150 / 8px round;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #12303c, #081b26 62%) padding-box;
+  box-shadow: 0 16px 44px #000b;
+  color: var(--confirm-text);
+  font: 500 15px/1.25 var(--confirm-type);
+  text-align: left;
+
+  & > header {
+    flex: none;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    align-items: center;
+    column-gap: 9px;
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--confirm-rule);
+    background: linear-gradient(105deg, #193c48, #0b2330 68%, #091923);
+  }
+  & > header::before {
+    content: '';
+    grid-row: span 2;
+    width: 34px;
+    height: 34px;
+    background: url('assets/ui/hud-nautical-v2/helm-crest.png') center / contain no-repeat;
+  }
+  & > header > small {
+    color: #e1bd83;
+    font: 700 10px/1.2 var(--confirm-type);
+    letter-spacing: .1em;
+  }
+  & h2 {
+    margin: 0;
+    color: #ffebc3;
+    font: 700 clamp(19px, 3.7vw, 24px)/1.12 Georgia, serif;
+    overflow-wrap: anywhere;
+  }
+  & h3 {
+    margin: 0 0 4px;
+    color: var(--confirm-gold);
+    font: 700 13px/1.15 var(--confirm-type);
+    letter-spacing: .055em;
+  }
+  & p {
+    margin: 0;
+    color: var(--confirm-muted);
+    font: 500 15px/1.25 var(--confirm-type);
+    overflow-wrap: anywhere;
+  }
+  & .confirmation-content {
+    display: grid;
+    align-content: start;
+    gap: 7px;
+    min-height: 0;
+    padding: 9px 12px;
+    overflow: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    scrollbar-color: #ad874b #081923;
+  }
+  & .confirmation-content:focus-visible { outline: 2px solid #ffe2a1; outline-offset: -2px; }
+  & .confirmation-content > * { min-width: 0; }
+  & :is(.confirmation-subject, .confirmation-costs, .confirmation-changes, .confirmation-result, .confirmation-risk) {
+    padding: 7px 8px;
+    border: 1px solid var(--confirm-rule);
+    border-radius: 7px;
+    background: #061823b3;
+  }
+  & .confirmation-subject {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-color: #5b81917a;
+    background: linear-gradient(110deg, #143845, #0a202c 75%);
+  }
+  & .confirmation-subject strong {
+    color: #ffebc3;
+    font-size: 18px;
+    overflow-wrap: anywhere;
+  }
+  & :is(.confirmation-subject, .confirmation-resource) small {
+    display: block;
+    color: var(--confirm-muted);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+  & .confirmation-subject .ui-art { width: 38px; height: 38px; }
+
+  & .confirmation-costs { --confirm-amounts: repeat(3, minmax(49px, .54fr)); }
+  & :is(.confirmation-cost-labels, .confirmation-cost) {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 1fr) var(--confirm-amounts);
+    gap: 5px;
+    align-items: center;
+    text-align: right;
+  }
+  & .confirmation-cost-labels {
+    padding-block: 2px 4px;
+    color: var(--confirm-muted);
+    font-size: 12px;
+  }
+  & .confirmation-cost-labels span:first-child { grid-column: span 2; text-align: left; }
+  & .confirmation-cost {
+    padding-block: 4px;
+    border-top: 1px solid var(--confirm-rule);
+    font-variant-numeric: tabular-nums;
+  }
+  & .confirmation-cost > .ui-art { width: 24px; height: 24px; }
+  & .confirmation-cost:not(:has(.ui-art)) .confirmation-resource { grid-column: span 2; }
+  & .confirmation-resource { min-width: 0; text-align: left; overflow-wrap: anywhere; }
+  & .confirmation-cost > b { color: var(--confirm-gold); }
+  & .confirmation-cost > span:not(.ui-art) { color: var(--confirm-muted); }
+  & .confirmation-cost > :is(b, span:not(.ui-art)) { overflow-wrap: anywhere; }
+  & .confirmation-cost[data-insufficient] > b { color: #ff9a84; }
+  & .confirmation-changes > div {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding-block: 4px;
+    border-top: 1px solid var(--confirm-rule);
+    overflow-wrap: anywhere;
+  }
+  & .confirmation-changes b { text-align: right; font-variant-numeric: tabular-nums; }
+
+  & .confirmation-result {
+    border-color: #4d8c898c;
+    background: linear-gradient(135deg, #12343b, #0a202a 80%);
+  }
+  & .confirmation-result > strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #e9f8eb;
+    font-size: 17px;
+    overflow-wrap: anywhere;
+  }
+  & .confirmation-chance {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 5px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: #071c25;
+  }
+  & .confirmation-chance b {
+    color: #8bf2b3;
+    font-size: 18px;
+    font-variant-numeric: tabular-nums;
+  }
+  & .confirmation-risk {
+    border-color: #ae644785;
+    background: linear-gradient(135deg, #352728, #1a2028 80%);
+  }
+  & .confirmation-risk :is(h3,p) { color: #ffc9ad; }
+  & :is(.confirmation-note, .ui-notice) {
+    padding: 5px 8px;
+    border-radius: 5px;
+    background: #0a1e2a;
+    color: var(--confirm-gold);
+  }
+  & .ui-notice[data-tone=error] { color: #ffc9ad; }
+
+  & > footer {
+    display: grid;
+    flex: none;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+    margin: 0;
+    padding: 7px 12px 9px;
+    border-top: 1px solid var(--confirm-rule);
+    background: #0b212c;
+  }
+  & > footer .ui-button {
+    min-width: 0;
+    min-height: 40px;
+    margin: 0;
+    padding: 4px 5px;
+    border: 4px solid transparent;
+    border-image: var(--confirm-plate) 12 fill / 4px stretch;
+    border-radius: 6px;
+    background: none;
+    box-shadow: none;
+    color: #ffedc5;
+    font: 700 15px/1.1 var(--confirm-type);
+    white-space: normal;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+  }
+  & > footer .ui-button[data-variant=primary] { border-image-source: var(--confirm-plate-active); }
+  & > footer .ui-button[data-variant=danger] {
+    border: 1px solid #d08464;
+    background: linear-gradient(#773529, #4b2224);
+    box-shadow: inset 0 0 0 2px #2b1418;
+  }
+  & > footer .ui-button:disabled {
+    opacity: .72;
+    filter: grayscale(.8);
+    cursor: not-allowed;
+  }
+  & > footer .ui-button:enabled:hover { filter: brightness(1.23); box-shadow: 0 0 10px #f5bc4e40; }
+  & > footer .ui-button:focus-visible { outline: 2px solid #ffe2a1; outline-offset: 1px; }
+  &[aria-busy=true], &[aria-busy=true] > footer .ui-button { cursor: wait; }
+
+  @media (min-width: 540px) {
+    & .confirmation-content:has(.confirmation-result + .confirmation-risk) {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    & .confirmation-content:has(.confirmation-result + .confirmation-risk) > * { grid-column: 1 / -1; }
+    & .confirmation-content > .confirmation-result:has(+ .confirmation-risk) { grid-column: 1; }
+    & .confirmation-content > .confirmation-result + .confirmation-risk { grid-column: 2; }
+  }
+  @media (max-width: 500px) {
+    & { border-width: 6px; border-image-width: 6px; }
+    & > header, & > footer, & .confirmation-content { padding-inline: 8px; }
+    & .confirmation-cost { font-size: 14px; }
+    & .confirmation-costs { --confirm-amounts: repeat(3, minmax(43px, .54fr)); }
+  }
+  @media (pointer: coarse) {
+    & > footer .ui-button { min-height: var(--rpg-touch-target, 44px); }
+  }
+}
+
+.ui-art{width:48px;height:48px;flex:none}
 .ui-art{display:inline-grid;position:relative;width:32px;height:32px;place-items:center;flex:none}.ui-art img{width:100%;height:100%;object-fit:contain}.ui-art-fallback{display:none}.ui-art[data-art-status=loading] img{opacity:0}.ui-art[data-art-status=error] img{display:none}.ui-art[data-art-status=error] .ui-art-fallback{display:grid;place-items:center;width:100%;height:100%;color:#d7c6a0;border:1px dashed #aa8555}.item-icon[data-art-status=error]{display:none!important}.item-art-missing{display:inline-grid;place-items:center;min-width:28px;min-height:28px;border:1px dashed #9a7742;color:inherit}
-.confirmation-costs,.confirmation-changes,.confirmation-result,.confirmation-risk{padding:10px;border:1px solid #a980414d;background:#02040960}.confirmation-cost-labels{display:grid;grid-template-columns:minmax(0,1fr) repeat(3,65px);gap:5px;font-size:11px;color:#cabd9f;text-align:right;padding-bottom:4px}.confirmation-cost-labels span:first-child{text-align:left}.confirmation-cost{display:grid;grid-template-columns:28px minmax(0,1fr) repeat(3,65px);gap:5px;align-items:center;padding:6px 0;border-top:1px solid #bb9a422c;font-size:15px}.confirmation-cost>.ui-art{width:28px;height:28px}.confirmation-cost:not(:has(.ui-art)) .confirmation-resource{grid-column:span 2}.confirmation-cost>b,.confirmation-cost>span:not(.ui-art){text-align:right;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}.confirmation-resource{min-width:0}.confirmation-resource strong{font-weight:600;overflow-wrap:anywhere}.confirmation-resource small{font-size:11px;overflow-wrap:anywhere}.confirmation-cost[data-insufficient]>b{color:#ff9d83}.confirmation-changes>div{display:flex;justify-content:space-between;gap:12px;padding:4px 0;border-top:1px solid #bb9a422c}.confirmation-changes b{flex:none}.confirmation-result>strong{font-size:17px;color:#ffe3a0}.confirmation-chance{display:flex;justify-content:space-between;padding:5px 0}.confirmation-risk{border-color:#d8825a77}.confirmation-risk p{color:#ffd2b4}.confirmation-note{color:#d8c496}body .confirmation-overlay .confirmation-card footer{display:flex;justify-content:flex-end;gap:8px;flex:none;margin:0}body .confirmation-overlay .confirmation-card footer button{min-height:38px;white-space:normal}
-body .confirmation-overlay .confirmation-card .ui-button,.ui-select-trigger,.ui-select-option{font-family:var(--rpg-ui-heading);color:#ffe8b4;border:1px solid #b58b45;background:linear-gradient(#0809129c,#080912c9),var(--rpg-workshop-surface) center/512px 512px;box-shadow:inset 0 0 0 2px #412d1b;font-weight:700}body .confirmation-overlay .confirmation-card .ui-button[data-variant=primary]{background:#a56a13 var(--rpg-hd-button) center/100% 100%;color:#fff1bd}body .confirmation-overlay .confirmation-card .ui-button[data-variant=danger]{background:linear-gradient(#6c1f1ae8,#441917ed),var(--rpg-workshop-surface) center/512px 512px}body .confirmation-overlay .confirmation-card .ui-button:disabled{opacity:1;color:#bcb5a5;filter:grayscale(.85);border-color:#71644e;cursor:not-allowed}body .confirmation-overlay .confirmation-card [aria-busy=true]{cursor:wait}body .confirmation-overlay .confirmation-card .ui-button:not(:disabled):hover{filter:brightness(1.18)}body .confirmation-overlay .confirmation-card .ui-button:not(:disabled):active{filter:brightness(.9)}
+.ui-select-trigger,.ui-select-option{font-family:var(--rpg-ui-heading);color:#ffe8b4;border:1px solid #b58b45;background:linear-gradient(#0809129c,#080912c9),var(--rpg-workshop-surface) center/512px 512px;box-shadow:inset 0 0 0 2px #412d1b;font-weight:700}
 .op-fragment-facts{margin:8px 0;display:grid;gap:5px}.op-fragment-facts>div{display:flex;justify-content:space-between;gap:12px;border-bottom:1px solid #69431b38;padding-bottom:4px}.op-fragment-facts dt{font-weight:500}.op-fragment-facts dd{margin:0;text-align:right;font-weight:700}.op-fragment-detail .op-actions{display:grid;gap:7px}.op-fragment-detail .op-action{display:flex;align-items:center;justify-content:center;gap:8px}.op-fragment-detail .op-action>.item-icon{width:30px;height:30px;object-fit:contain}.op-fragment-detail .op-detail-head .item-icon{object-fit:contain}
-@media(max-width:500px){body .confirmation-overlay .confirmation-card{padding:12px}body .confirmation-overlay .confirmation-card h2{font-size:23px}.confirmation-cost-labels{grid-template-columns:minmax(0,1fr) repeat(3,51px);font-size:10px}.confirmation-cost{grid-template-columns:24px minmax(0,1fr) repeat(3,51px);font-size:13px}.confirmation-cost>.ui-art{width:24px;height:24px}body .confirmation-overlay .confirmation-card footer>button{flex:1}.confirmation-changes b{flex:0 1 auto;text-align:right}}
 
 .ui-select{position:relative;display:grid;min-width:0;vertical-align:middle;isolation:isolate}.ui-select>select,.ui-select-trigger{grid-area:1/1;min-width:0;width:100%}.ui-select>select.ui-select-native{opacity:0;pointer-events:none}.ui-select-trigger{position:relative;z-index:1;text-align:left;padding:6px 27px 6px 10px;border-radius:3px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:32px;font-size:14px}.ui-select-trigger:after{content:'⌄';position:absolute;right:9px;top:50%;transform:translateY(-55%);color:#eac780}.ui-select-trigger[aria-expanded=true]{border-color:#ffd16e;box-shadow:inset 0 0 0 2px #8c6023}.ui-select-trigger:disabled{color:#b7ad98;filter:grayscale(1);cursor:not-allowed;opacity:1}.ui-select-list{position:fixed;overflow:auto;overscroll-behavior:contain;box-sizing:border-box;padding:4px;border:1px solid #d4a24e;box-shadow:0 8px 28px #000c,inset 0 0 0 2px #45301c;background:linear-gradient(#060811d9,#060811ee),var(--rpg-workshop-surface) center/512px 512px;scrollbar-color:#b78a42 #171419}.ui-select-option{padding:7px 10px;min-height:32px;border:1px solid transparent;box-shadow:none;background:transparent;cursor:pointer;white-space:normal;overflow-wrap:anywhere;font-size:15px;line-height:1.2}.ui-select-option[aria-selected=true]{color:#ffe39b;border-color:#a67b35;background:#ad741927}.ui-select-option.is-focused,.ui-select-option:not([aria-disabled=true]):hover{outline:1px solid #ebbc65;outline-offset:-1px;background:#bd833e38}.ui-select-option[aria-disabled=true]{color:#8b8881;cursor:not-allowed;filter:grayscale(1)}
 
 #app #panelOverlay .ui-select-trigger,body .ui-select .ui-select-trigger{font:700 15px/1.2 var(--rpg-ui-heading);color:#ffe8b4;border:1px solid #b58b45;border-image:none;background:linear-gradient(#080912b3,#080912d1),var(--rpg-workshop-surface) center/512px 512px;box-shadow:inset 0 0 0 2px #412d1b;min-height:32px;}
-body .confirmation-overlay .confirmation-card{border-image:var(--rpg-hd-panel) 28 / 6px;background:linear-gradient(#090b12b8,#090b12d9),var(--rpg-workshop-surface) center/512px 512px;}
 
 /* Receipt area stays anchored by the existing HUD layout. */
 body #lootNotices{position:fixed;inset:auto;top:50%;right:max(12px,var(--rpg-edge,12px));translate:0 -50%;width:min(246px,calc(100vw - 32px));max-width:none;height:42px;overflow:hidden;pointer-events:none;z-index:var(--rpg-z-toast);visibility:hidden}
@@ -41,7 +285,7 @@ body :is(.game-tooltip,.ui-tooltip,.menu-tooltip,.npc-tooltip){background:linear
 #app #panelOverlay .ui-card{background-image:linear-gradient(#090b12c9,#090b12e3),var(--rpg-workshop-surface);background-size:auto,512px}
 #app :is(input[type=checkbox],input[type=radio]){accent-color:#d6a64d}
 
-@media(pointer:coarse){body .confirmation-overlay .confirmation-card footer button,body .ui-select .ui-select-trigger,body .ui-select-option{min-height:var(--rpg-touch-target)}}
+@media(pointer:coarse){body .ui-select .ui-select-trigger,body .ui-select-option{min-height:var(--rpg-touch-target)}}
 
 #app #panelOverlay button.ui-button:disabled{opacity:1;color:#c7c1b4;filter:grayscale(.85) brightness(.8);cursor:not-allowed}body .ui-notice[data-tone=error],body .toast-container>.toast.danger{border-color:#cb8062;color:#ffd5bf}body .toast-container>.toast.good{border-color:#78a589;color:#d5edda}
 
