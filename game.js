@@ -1018,13 +1018,14 @@
   window.addEventListener('mare-zoan-sprite-ready',()=>{if(game){renderPortrait();if($('inventorySprite'))drawCurrentPreview($('inventorySprite'),185);if($('characterSprite'))drawCurrentPreview($('characterSprite'),175,{aura:false});}});
   let impelRun=null,dungeonRun=null,selectedDungeon='alvida',dungeonCraftDraft=null;
   let scene = 'lobby', lobbyDestination = null, lobbyAction = null;
+  const npcWorldHeight=96;
   const npcs = [
     {name:'Capitã luffy',short:'Luffy',x:340,y:206,color:'#e5b87b',kind:'hunt',art:'luffy'},
     {name:'Ferreiro ryuma',short:'Ryuma',x:660,y:404,color:'#d9a782',kind:'forge',art:'ryuma'},
     {name:'nami · Navegadora',short:'Nami',x:660,y:206,color:'#c8a8eb',kind:'contracts',art:'nami'},
     {name:'Mercador ',short:'Donquixote',x:340,y:404,color:'#a5d7bf',kind:'shop',art:'donquixote'}
   ];
-  for(const npc of npcs)Object.assign(npc,(globalThis.MareLobby?.npcs||MareIsland.npcs)[npc.art]);
+  for(const npc of npcs)Object.assign(npc,(globalThis.MareLobby?.npcs||MareIsland.npcs)[npc.art],{visualHeight:npcWorldHeight});
   const islandImages={};
   for(const [key,data] of Object.entries(MareIslandAssets)){
     const image=new Image();image.src=data.url;image.addEventListener('load',()=>{delete expandedAtlas.lobby;});islandImages[key]=image;
@@ -3179,7 +3180,7 @@ ${avatarExtra}
       const art=npcArt[n.art],still=art?.still,idle=art?.idle;
       const animated=idle?.complete&&idle.naturalWidth===npcIdleSize*npcIdleFrames&&idle.naturalHeight===npcIdleSize;
       const ready=still?.complete&&still.naturalWidth;
-      const h=n.art==='ryuma'?72:76,w=Math.min(76,h*(animated?1:ready?still.naturalWidth/still.naturalHeight:.68));
+      const h=npcWorldHeight,w=Math.min(h,h*(animated?1:ready?still.naturalWidth/still.naturalHeight:.68));
       const spriteTop=Math.round(n.y-h),spriteLeft=Math.round(n.x-w/2),spriteWidth=Math.round(w);
       ctx.fillStyle='#08121e8d';ctx.beginPath();ctx.ellipse(n.x,n.y,18,5,0,0,Math.PI*2);ctx.fill();
       if(animated||ready){
