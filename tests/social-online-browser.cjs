@@ -45,7 +45,7 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     await page.route('https://**/*',r=>r.abort());
     await page.route(url,async r=>{
       const response=await r.fetch(),html=await response.text();
-      const scripts='<script defer src="apps/account-client/game-session.js"></script><script defer src="apps/account-client/game-ui.js"></script>';
+      const scripts='<script defer src="/apps/account-client/game-session.js"></script><script defer src="/apps/account-client/game-ui.js"></script>';
       await r.fulfill({response,body:html.includes('account-client/game-session.js')?html:html.replace(/<script defer src="game\.js/,scripts+'<script defer src="game.js')});
     });
     await page.route('**/v1/**',r=>{
