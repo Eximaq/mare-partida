@@ -81,9 +81,11 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     const chatClose=page.locator('#floatingChat.hud-open [data-close-window]');
     if(await chatClose.isVisible())await chatClose.click();
     const open=async(id)=>{
-      const tabs=page.locator('.social-tabs');
-      if(await tabs.isVisible())await tabs.locator('[data-social-open="'+id+'"]').click();
-      else{await page.locator('#socialMenuTrigger').click();await page.locator('#socialQuickMenu [data-social-open="'+id+'"]').click();}
+      const close=page.locator('.social-mode #closePanel');
+      if(await close.isVisible())await close.click();
+      await page.locator('#socialMenuTrigger').click();
+      await page.locator('#socialQuickMenu [data-social-open="'+id+'"]').click();
+      assert.equal(await page.locator('#dialogBody [data-social-open]').count(),0,'Independent Social panel; shortcuts belong only to the main Social menu');
     };
     await page.locator('#socialMenuTrigger').click();
     await page.locator('[data-social-badge="messages"]:not([hidden])').waitFor();
@@ -105,6 +107,7 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     await page.locator('#chatInput').press('Enter');
     await page.getByText('Vamos, tripulação!',{exact:true}).waitFor();
     assert(!commands.some(c=>c.action==='battle.skill'));
+    assert(await page.locator('.social-chat-log').evaluate(el=>el.clientHeight>=76),'Private chat needs room for more than one line');
     await screenshot('03-mensagem-privada.png');
     await page.locator('[data-chat-channel="system"]').click();
     assert.equal(await page.locator('.social-thread').isVisible(),false);

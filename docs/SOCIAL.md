@@ -1,7 +1,7 @@
 # Social online
 
 A HUD Mestre mantém um único menu **Social** com Amigos, Mensagens, Party,
-Tripulação, Correio e Trocas. Os quatro serviços novos dependem das migrações
+Tripulação, Correio e Trocas. Cada atalho abre sua própria tela. Os quatro serviços novos dependem das migrações
 0044–0046; a demonstração local continua independente. O servidor anuncia a
 disponibilidade somente quando as três migrações estão presentes.
 

@@ -18,10 +18,7 @@
 #socialQuickMenu .social-badge{position:absolute;inset:5px 4px auto auto;min-width:15px;padding:2px 3px;text-align:center}
 #socialMenuTrigger .social-attention{position:absolute;right:0;bottom:0;width:9px;height:9px;box-shadow:0 0 6px #e1a65d}
 .social-badge[hidden],.social-attention[hidden],.social-thread[hidden],#gameLog[hidden],.social-notice[hidden]{display:none!important}
-.social-tabs,.social-tools,.social-actions{display:flex;align-items:center;gap:6px;min-width:0}
-.social-tabs{padding:0 0 8px;flex-wrap:wrap}
-.social-tabs button{flex:1 1 105px;display:inline-flex;gap:6px;align-items:center;justify-content:center}
-.social-tabs img{width:19px;height:19px;object-fit:contain}
+.social-tools,.social-actions{display:flex;align-items:center;gap:6px;min-width:0}
 .social-content{overflow:auto;overscroll-behavior:contain;scrollbar-color:#aa7841 #101922;min-height:0;color:#f4e3c3;padding:0 3px 3px;font:14px/1.35 var(--rpg-ui-reading,'Segoe UI',sans-serif)}
 .social-content h3{font:700 16px/1.15 var(--rpg-ui-heading,Georgia,serif);letter-spacing:.02em;color:#f9d793;margin:0 0 7px;text-shadow:0 1px #050200}
 .social-tools-wrap,.social-actions{flex-wrap:wrap}
@@ -81,20 +78,33 @@
 .social-chat-log article.social-self{border-color:#be8e54}
 .social-chat-log time{color:#c2b9a4;font-size:10px}
 .social-chat-log p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
-@media(max-width:550px){.social-line{flex-wrap:wrap}.social-content{font-size:13px}.social-tools{flex-wrap:wrap}.social-offers{gap:4px}.social-group{padding:6px}.social-tab img{width:16px}}
+@media(max-width:550px){.social-line{flex-wrap:wrap}.social-content{font-size:13px}.social-tools{flex-wrap:wrap}.social-offers{gap:4px}.social-group{padding:6px}}
 
 /* Match the established dark metal buttons while retaining clear selection. */
-#app .social-mode .dialog .social-button,
+#app #panelOverlay.social-mode .dialog .social-button,
 #app .floating-chat .social-thread .social-button {
   background:linear-gradient(#202932,#0b1018);color:#f9e4b5;border-color:#94703d;
 }
-#app .social-mode .dialog .social-button:is([aria-pressed=true],.social-primary):not(:disabled) {
+#app #panelOverlay.social-mode .dialog .social-button:is([aria-pressed=true],.social-primary):not(:disabled) {
   background:linear-gradient(#755025,#35200d);border-color:#f3c37b;color:#fff2cc;
 }
-#app .social-mode .dialog .social-button:hover:not(:disabled) {filter:brightness(1.18)}
-#app .social-mode .dialog .social-tile {
+#app #panelOverlay.social-mode .dialog .social-button:hover:not(:disabled) {filter:brightness(1.18)}
+#app #panelOverlay.social-mode .dialog .social-tile {
   border-color:var(--rarity-color,#aa8959);background:radial-gradient(ellipse at center,#26313f,#080e15);
 }
 #app .social-mode .dialog input:is(#socialFriendSearch,#socialFriendsFilter,#socialTradeName,#socialInventorySearch,#socialTradeQuantity) {
   background:linear-gradient(#080d14e8,#10141be8),var(--rpg-hd-wood) center/280px;
+}
+
+/* Leave enough space for actual messages after the private recipient header. */
+#app #floatingChat.hud-open:has(.social-thread:not([hidden])) {
+  height: min(330px, calc(100dvh - var(--profile-bottom, 170px) - var(--rpg-action-height, 72px) - 24px));
+}
+#app #floatingChat .social-thread {flex:1 1 0;min-height:0}
+#app #floatingChat .social-thread > header {flex:none}
+#app #floatingChat .social-chat-log {flex:1 1 0;height:auto;min-height:0}
+@media(max-width:760px){
+  #app #floatingChat.hud-open:has(.social-thread:not([hidden])) {
+    height:min(310px,calc(100dvh - var(--profile-bottom, 170px) - var(--rpg-action-height, 72px) - 100px));
+  }
 }

@@ -164,12 +164,11 @@
     function paint(){
       if(!view)return;
       tileItems.clear();
-      const tabsHtml='<nav class="social-tabs" aria-label="Acessos sociais">'+Object.entries(tabs).map(([id,label])=>'<button type="button" class="social-button" data-social-open="'+id+'" aria-pressed="'+(view===id)+'"><img src="'+icons[id]+'" alt="">'+label+'</button>').join('')+'</nav>';
       const body=profile?group('Perfil do personagem',person(profile,{large:true})+contactActions(profile,{trade:true})+button('Voltar','profile-close')):
         !online()?blank('Entre no servidor para usar este recurso.'):
         failed&&!model?blank('Não foi possível carregar os dados.')+button('Tentar novamente','refresh'):
         !model?blank('Carregando…'):{friends,messages,mail,trade}[view](model);
-      const html=tabsHtml+'<div class="social-content"><p class="social-notice" role="status"'+(!statusText?' hidden':'')+'>'+esc(statusText)+'</p>'+body+'</div>';
+      const html='<div class="social-content"><p class="social-notice" role="status"'+(!statusText?' hidden':'')+'>'+esc(statusText)+'</p>'+body+'</div>';
       if(signature!==html||!o.body.querySelector('.social-content')){signature=html;replace(o.body,html);}
     }
     async function refreshPanel(){
