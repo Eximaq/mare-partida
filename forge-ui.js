@@ -116,5 +116,5 @@
       ${comparison}<div class="forge-hd-art" aria-hidden="true"><img src="assets/ui/forge-reference/smith.png" alt="" draggable="false"></div>
     </aside></div></div></div>`;
   }
-  root.MareForgeUI={render,presentation:Object.freeze({prepareMs:400,revealMs:1000})};if(typeof module!=='undefined')module.exports=root.MareForgeUI;
+  root.MareForgeUI={render,presentation:Object.freeze({prepareMs:400,revealMs:2400})};if(typeof module!=='undefined')module.exports=root.MareForgeUI;
 })(globalThis);

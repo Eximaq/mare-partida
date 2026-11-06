@@ -19,6 +19,7 @@ const requestId='55555555-5555-4555-8555-555555555555';
 const now=new Date().toISOString();
 const item=(name,id,level)=>({id,def:Number(Object.entries(itemCatalog.items).find(([,x])=>x?.name?.includes(name))[0]),level,plus:2,rarity:'rare',potential:72,locked:false,origin:'Teste isolado'});
 const weapon=item('Sabre','dev-sabre',28),armor=item('Casaco','dev-casaco',25),extra=item('Botas','dev-botas',26);
+const stock=Array.from({length:49},(_,index)=>({...([extra,weapon,armor][index%3]),id:'stock-'+index}));
 const equipment=Object.fromEntries([...itemCatalog.inventorySlotsLeft,...itemCatalog.inventorySlotsRight].map(key=>[key,null]));
 const allocated={strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0};
 const stats=classes.derive({classId:'sword',level:45,attributes:allocated},catalog.classes.sword,catalog.factions.pirate,forge.aggregate(equipment,itemCatalog.items));
@@ -34,10 +35,10 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
   const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});
   const page=await browser.newPage({viewport:{width:1440,height:900}});
   const errors=[],commands=[],faults=[];
-  let unread=1, claimed=false, accepted=false, locked=false, confirmed=false, offered=false, offerVersion=2;
+  let unread=1, claimed=false, accepted=false, locked=false, peerLocked=false, confirmed=false, offered=false, completed=false, cancelled=false, offerVersion=2;
   let messages=[{id:'1',senderId:peer.id,body:'<b>Olá!</b> Tudo pronto para zarpar?',sentAt:now}];
   const last=()=>messages.at(-1);
-  const availableTrade=()=>({id:tradeId,status:accepted?'active':'pending',initiatorId:peer.id,partnerId:peer.id,partnerName:peer.name,expiresAt:new Date(Date.now()+80000).toISOString(),offerVersion,ownLocked:locked,peerLocked:locked,ownConfirmed:confirmed,peerConfirmed:false,ownItems:offered?[{item:weapon,quantity:1}]:[],peerItems:accepted?[{item:armor,quantity:1}]:[]});
+  const availableTrade=()=>({id:tradeId,status:accepted?'active':'pending',initiatorId:peer.id,partnerId:peer.id,partnerName:peer.name,expiresAt:new Date(Date.now()+80000).toISOString(),offerVersion,ownLocked:locked,peerLocked,ownConfirmed:confirmed,peerConfirmed:false,ownItems:offered?[{item:weapon,quantity:1}]:[],peerItems:accepted?[{item:armor,quantity:1}]:[]});
   const screenshot=filename=>page.screenshot({path:path.join(out,filename)});
   try{
     page.on('pageerror',e=>{errors.push(e.message);console.error(e.stack);});
@@ -61,7 +62,7 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
         if(view==='contacts')return reply({friends:[peer],incoming:[],outgoing:[],blocked:[],matches:q.get('q')?[{...peer,friendState:'accepted'}]:[],onlineCount:1,conversations:[{character:peer,lastMessage:last(),unread}]});
         if(view==='messages')return reply({character:peer,messages:messages.filter(m=>!q.has('after')||+m.id>+q.get('after')),hasMore:false});
         if(view==='mail')return reply({pending:claimed?0:1,unread:claimed?0:1,nextCursor:null,letters:(q.get('tab')==='claimed')===claimed?[{id:letterId,source:'dungeon',title:'Baú de Morgan',message:'Recompensa por vencer Morgan.',createdAt:now,readAt:null,claimedAt:claimed?now:null,attachments:[armor]}]:[]});
-        if(view==='trade')return reply({trade:availableTrade(),eligibleItems:offered?[extra]:[weapon,extra],invites:[],history:[]});
+        if(view==='trade')return reply({trade:completed||cancelled?null:availableTrade(),eligibleItems:offered?[extra,...stock]:[weapon,extra,...stock],invites:[],history:completed?[{id:tradeId,partnerName:peer.name,completedAt:now,sent:[{item:weapon,quantity:1}],received:[{item:armor,quantity:1}]}]:[]});
       }
       if(p.endsWith('/commands')){
         const c=r.request().postDataJSON();commands.push(c);
@@ -72,6 +73,7 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
         if(c.action==='trade.offer'){offered=true;offerVersion++;}
         if(c.action==='trade.lock')locked=c.payload.locked;
         if(c.action==='trade.confirm')confirmed=true;
+        if(c.action==='trade.cancel')cancelled=true;
         return reply({});
       }
       return reply({});
@@ -118,24 +120,53 @@ const wire={combatPreview:{rulesetId:'original-character-v1',stats,maxHp:stats.m
     await page.getByText('Nenhuma recompensa pendente.',{exact:true}).waitFor();
     await page.getByRole('button',{name:'Resgatadas',exact:true}).click();
     await page.getByText('Baú de Morgan',{exact:true}).waitFor();
-    await open('trade');await page.getByRole('button',{name:'Aceitar',exact:true}).click();
+    await open('trade');
+    await page.locator('.trade-invite[data-trade-tone="proposed"]').waitFor();
+    await page.getByRole('button',{name:'Aceitar',exact:true}).click();
     await page.getByText('Seu inventário negociável',{exact:true}).waitFor();
+    await page.locator('.trade-steps [aria-current="step"]').getByText('Propor itens').waitFor();
+    await page.locator('.social-offer[data-trade-tone="proposed"]').first().waitFor();
+    await screenshot('05a-troca-proposta.png');
+    for(const [width,height] of [[768,1024],[390,844]]){
+      await page.setViewportSize({width,height});
+      assert(await page.locator('.trade-actions').evaluate(el=>el.getBoundingClientRect().bottom<=innerHeight),'Ações visíveis durante a edição');
+      assert(await page.locator('.social-content').evaluate(el=>el.scrollWidth<=el.clientWidth+2),'Troca cabe sem rolagem horizontal');
+      assert(await page.locator('.social-bag-grid').evaluate(el=>el.scrollHeight>el.clientHeight),'Mochila extensa rola dentro da grade');
+      await screenshot('05b-troca-'+width+'.png');
+    }
+    await page.setViewportSize({width:1440,height:900});
     const confirm=page.getByRole('button',{name:'Confirmar troca',exact:true});
     assert.equal(await confirm.isDisabled(),true);
     await page.locator('[data-social-action="offer-add"][data-social-id="dev-sabre"]').click();
     await page.getByRole('button',{name:'Aplicar',exact:true}).click();
     await page.locator('[data-social-action="offer-edit"]').waitFor();
     await page.getByRole('button',{name:'Travar minha oferta',exact:true}).click();
-    await page.getByText('Você entrega:',{exact:true}).waitFor();
+    await page.getByText('Aguardando o outro jogador travar a oferta.').waitFor();
+    assert.equal(await page.locator('.social-offer[data-trade-tone="accepted"]').count(),1);
+    assert.equal(await confirm.isDisabled(),true);
+    peerLocked=true;
+    await page.getByText('Você entrega',{exact:true}).waitFor();
+    await page.locator('.trade-steps [aria-current="step"]').getByText('Confirmar troca').waitFor();
+    assert.equal(await page.locator('.social-bag-grid').count(),0);
     await screenshot('05-troca.png');
     await confirm.click();
-    await page.getByRole('button',{name:'Aguardando outra confirmação'}).waitFor();
+    await page.locator('.social-offer[data-trade-tone="confirmed"]').getByText('Confirmada').waitFor();
     assert.equal(commands.find(c=>c.action==='trade.confirm').payload.expectedOfferVersion,3);
     assert.equal(commands.find(c=>c.action==='message.send').payload.targetId,peer.id);
     await page.setViewportSize({width:430,height:860});
     await page.waitForFunction(()=>document.querySelector('.social-mode .dialog')?.getBoundingClientRect().width<430);
     const fits=await page.locator('.social-content').evaluate(el=>el.scrollWidth<=el.clientWidth+2);assert(fits,'Social content must fit mobile width');
     await screenshot('06-social-mobile.png');
+    completed=true;
+    await page.locator('.trade-outcome[data-trade-tone="confirmed"]').getByText('Troca concluída').waitFor();
+    await page.getByText('Histórico de trocas',{exact:true}).click();
+    await page.locator('.social-receipt').getByText('Lia do Farol',{exact:false}).first().waitFor();
+    completed=false;
+    accepted=false;
+    await page.locator('.trade-invite').getByRole('button',{name:'Recusar',exact:true}).waitFor();
+    await page.getByRole('button',{name:'Aceitar',exact:true}).click();
+    await page.getByRole('button',{name:'Cancelar troca',exact:true}).click();
+    await page.locator('.trade-outcome[data-trade-tone="closed"]').getByText('Negociação encerrada').waitFor();
     assert.deepEqual(errors,[]);assert.deepEqual(faults,[]);
     console.log('Social no Chromium: seis acessos, retrato real, chat e leitura, resgate, oferta/versão, duas etapas de confirmação.');
   }finally{await browser.close();}

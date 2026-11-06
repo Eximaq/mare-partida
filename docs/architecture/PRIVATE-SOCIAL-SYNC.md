@@ -1,6 +1,6 @@
 # Private server synchronization with the current game
 
-This integration combines the main game through `220092a9` with the unmerged PR #232 revision `857dded7`. It is intended for the owner's existing private two-player installation. It does not certify capacity or authorize a public backend deployment.
+This integration combines the main game through `ae481226` with the unmerged PR #232 revision `857dded7`. It is intended for the owner's existing private two-player installation. It does not certify capacity or authorize a public backend deployment.
 
 ## Current feature coverage
 
@@ -81,3 +81,7 @@ Main advanced again to `220092a9` (PR #272): preserve its immutable 0049 wallet 
 The visual talents CI job previously exhausted its ten-minute total budget twice after more than six minutes downloading browser OS dependencies. Its overall job budget is now twenty minutes; test commands, assertions, gameplay timeouts and capacity acceptance limits are unchanged.
 
 The final upstream trigger scopes safe-integer headroom to pending market proposals. Unreserved legacy progression retains its original BIGINT range. The integration restores those original overflow/precision assertions, retains the extra XP overflow rollback test, and keeps the new market reservation/withdrawal guards unchanged. No game rule or limit was changed to satisfy a test.
+
+## November 6 presentation synchronization
+
+Main ae481226 adds nautical windows, the Forge reveal, breathing/scale for the four port NPCs and the redesigned trade HUD (PRs #273–#276). These are presentation changes; trade commands still use the existing authorized server operations, offer versions and consent. The private static package must be replaced with the successful Pages artifact of this exact revision. Startup now waits for PostgreSQL readiness through recovery, while enforcing the same Node version and preserving the existing cluster.

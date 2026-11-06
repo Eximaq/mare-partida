@@ -25,10 +25,29 @@ test('unchanged player status does not rewrite its text and accessibility state 
 });
 test('NPCs outside the viewport skip text and sprite work without clipping labels at the edge',()=>{
  let calls=0;const ctx=new Proxy({}, {get:()=>()=>calls++,set:()=>true});
- const c=vm.createContext({ctx,npcArt:{},MareLobby:{},px(){calls++;},camera:{x:1000,y:1000},W:800,H:600});
+ const c=vm.createContext({ctx,npcArt:{},npcWorldHeight:96,MareLobby:{},px(){calls++;},camera:{x:1000,y:1000},W:800,H:600});
  vm.runInContext(fn('drawNPC'),c);c.n={x:100,y:100,art:'ryuma',kind:'forge',short:'Forja'};
  vm.runInContext('drawNPC(n)',c);assert.equal(calls,0);
  c.n.x=950;c.n.y=1100;vm.runInContext('drawNPC(n)',c);assert.ok(calls>0);
+});
+test('lobby NPCs match the 96 px player scale and keep their foot and nameplate anchors',()=>{
+ const draws=[],labels=[];
+ const ctx=new Proxy({drawImage(...args){draws.push(args);},fillText(...args){labels.push(args);}}, {get:(target,key)=>target[key]||(()=>{}),set:()=>true});
+ const still={complete:true,naturalWidth:96,naturalHeight:96},idle={complete:true,naturalWidth:768,naturalHeight:96};
+ const c=vm.createContext({ctx,npcArt:{},npcWorldHeight:96,npcIdleSize:96,npcIdleFrames:8,npcIdleStep:.3,ambientReduced:()=>false,world:{time:.31},MareLobby:{},px(){},camera:{x:0,y:0},W:800,H:600});
+ vm.runInContext(fn('drawNPC'),c);
+ for(const art of ['luffy','nami','ryuma','donquixote']){
+  c.n={x:200,y:300,art,kind:'forge',short:art};
+  c.npcArt[art]={still,idle,phase:0};
+  vm.runInContext('drawNPC(n)',c);
+  assert.deepEqual(draws.pop(),[idle,96,0,96,96,152,204,96,96]);
+  assert.deepEqual(labels[0],[art+' · Forja',200,196]);
+  labels.length=0;
+  c.npcArt[art].idle={complete:false};
+  vm.runInContext('drawNPC(n)',c);
+  assert.deepEqual(draws.pop(),[still,152,204,96,96]);
+  labels.length=0;
+ }
 });
 test('HUD integer formatting reuses one formatter while preserving Portuguese output',()=>{
  let made=0;const c=vm.createContext({Intl:{NumberFormat:class{constructor(locale){made++;this.f=new Intl.NumberFormat(locale);}format(n){return this.f.format(n);}}}});

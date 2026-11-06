@@ -1018,22 +1018,26 @@
   window.addEventListener('mare-zoan-sprite-ready',()=>{if(game){renderPortrait();if($('inventorySprite'))drawCurrentPreview($('inventorySprite'),185);if($('characterSprite'))drawCurrentPreview($('characterSprite'),175,{aura:false});}});
   let impelRun=null,dungeonRun=null,selectedDungeon='alvida',dungeonCraftDraft=null;
   let scene = 'lobby', lobbyDestination = null, lobbyAction = null;
+  const npcWorldHeight=96;
   const npcs = [
     {name:'Capitã luffy',short:'Luffy',x:340,y:206,color:'#e5b87b',kind:'hunt',art:'luffy'},
     {name:'Ferreiro ryuma',short:'Ryuma',x:660,y:404,color:'#d9a782',kind:'forge',art:'ryuma'},
     {name:'nami · Navegadora',short:'Nami',x:660,y:206,color:'#c8a8eb',kind:'contracts',art:'nami'},
     {name:'Mercador ',short:'Donquixote',x:340,y:404,color:'#a5d7bf',kind:'shop',art:'donquixote'}
   ];
-  for(const npc of npcs)Object.assign(npc,(globalThis.MareLobby?.npcs||MareIsland.npcs)[npc.art]);
+  for(const npc of npcs)Object.assign(npc,(globalThis.MareLobby?.npcs||MareIsland.npcs)[npc.art],{visualHeight:npcWorldHeight});
   const islandImages={};
   for(const [key,data] of Object.entries(MareIslandAssets)){
     const image=new Image();image.src=data.url;image.addEventListener('load',()=>{delete expandedAtlas.lobby;});islandImages[key]=image;
   }
   const islandBuildings=new Image();islandBuildings.src='pixellab-pip-generations/ilha-porto-20261018/port-buildings.png';
   const harborArt=new Image();if(globalThis.MareHarborArt)harborArt.src=MareHarborArt.url;
-  const npcArt={};
-  for(const key of ['donquixote','luffy','nami','ryuma']){
-    const img=new Image();img.src='assets/npcs/'+key+'.png';npcArt[key]=img;
+  const npcArt={},npcIdleSize=96,npcIdleFrames=8,npcIdleStep=.3;
+  for(const [index,key] of ['luffy','nami','ryuma','donquixote'].entries()){
+    const still=new Image(),idle=new Image(),base='assets/npcs/'+key;
+    still.src=base+'.png';
+    idle.src=base+'-idle-south.png';
+    npcArt[key]={still,idle,phase:index*2};
   }
   const seeded = (x,y,extra=0) => { let n = Math.sin(x*127.1+y*311.7+extra*39.81)*43758.5453; return n-Math.floor(n); };
   function newItem(def,level=1,rolled=false,forcedRarity=null){
@@ -2195,22 +2199,43 @@
   let forgeOperationBusy=false;
   async function runForgeOperation(command){
     if(forgeOperationBusy)return false;forgeOperationBusy=true;
-    const beforeIds=new Set(game.inventory.map(i=>i.id)),stock=[...game.inventory,...Object.values(game.equipment).filter(Boolean)],ids=command.itemIds||[command.pearlItemId||command.itemId],inputs=ids.map(id=>stock.find(i=>i.id===id)).filter(Boolean),stage=document.createElement('div'),confirmation=document.querySelector('.confirmation-overlay');stage.className='forge-presentation-overlay';confirmation?.classList.add('forge-confirmation-hidden');
-    stage.innerHTML='<section class="forge-presentation" role="status" aria-live="polite"><div class="forge-presentation-art"></div><h3>Confirmando operação…</h3><p>Aguarde o resultado da Forja.</p><button type="button" class="dialog-button" disabled>AGUARDE</button></section>';document.body.append(stage);
+    const beforeIds=new Set(game.inventory.map(i=>i.id)),stock=[...game.inventory,...Object.values(game.equipment).filter(Boolean)];
+    const ids=['fuse','fuseEquipment'].includes(command.type)?(command.itemIds||[]):[command.pearlItemId||command.itemId];
+    const inputs=ids.map(id=>stock.find(i=>i.id===id)).filter(Boolean);
+    const stage=document.createElement('div'),confirmation=document.querySelector('.confirmation-overlay');
+    stage.className='forge-presentation-overlay';
+    stage.setAttribute('data-ui-modal','');
+    stage.setAttribute('role','dialog');
+    stage.setAttribute('aria-modal','true');
+    stage.setAttribute('aria-labelledby','forgeResultTitle');
+    stage.innerHTML='<section class="forge-presentation"><small class="forge-presentation-eyebrow">Forja das Correntes</small><div class="forge-presentation-art"></div><div class="forge-presentation-copy" aria-live="polite" aria-atomic="true"><h3 id="forgeResultTitle">Confirmando operação…</h3><p>Aguarde o resultado da Forja.</p></div><button type="button" disabled>AGUARDE</button></section>';
+    const card=stage.querySelector('.forge-presentation'),art=stage.querySelector('.forge-presentation-art');
+    const title=stage.querySelector('h3'),description=stage.querySelector('p'),button=stage.querySelector('button');
+    MareUI.bindModal(stage,()=>{if(!button.disabled)button.click();});
+    confirmation?.classList.add('forge-confirmation-hidden');
+    document.body.append(stage);MareUI.syncModals();
     try{
       const ok=await performForgeOperation(command);if(!ok)return false;
       const outcome=forgeOutcome,received=game.inventory.find(i=>!beforeIds.has(i.id)),item=received||[...game.inventory,...Object.values(game.equipment).filter(Boolean)].find(i=>i.id===command.itemId);
-      const art=stage.querySelector('.forge-presentation-art'),button=stage.querySelector('button'),config=MareForgeUI.presentation;let skipped=false;
-      const wait=ms=>new Promise(resolve=>{const timer=setTimeout(resolve,ms);button.onclick=()=>{skipped=true;clearTimeout(timer);resolve();};});
-      stage.querySelector('h3').textContent='Revelando resultado…';stage.classList.add('is-preparing');art.innerHTML=inputs.slice(0,5).map(i=>itemIcon(i.def,MareForge.gearName(i,itemDefs))).join('');button.disabled=false;button.textContent='PULAR ANIMAÇÃO';
-      if(!ambientReduced())await wait(config.prepareMs);
+      const config=MareForgeUI.presentation;
+      const wait=ms=>new Promise(resolve=>{
+        const finish=()=>{clearTimeout(timer);button.onclick=null;resolve();};
+        const timer=setTimeout(finish,ms);
+        button.onclick=finish;button.focus({preventScroll:true});
+      });
+      button.disabled=false;
+      if(!ambientReduced()){
+        title.textContent='Revelando resultado…';stage.classList.add('is-preparing');
+        art.innerHTML=inputs.slice(0,5).map(i=>itemIcon(i.def,MareForge.gearName(i,itemDefs))).join('');
+        button.textContent='PULAR ANIMAÇÃO';await wait(config.prepareMs);
+      }
       stage.classList.remove('is-preparing');art.innerHTML=item?itemIcon(item.def,MareForge.gearName(item,itemDefs)):'';
-      stage.querySelector('h3').textContent=outcome?.success?'Operação concluída':'Tentativa sem sucesso';
-      stage.querySelector('p').textContent=outcome?.message||'Confira o resultado na Forja.';
-      stage.querySelector('.forge-presentation').classList.add(outcome?.success?'is-success':'is-failure');
-      if(!ambientReduced()&&!skipped)await wait(config.revealMs);
+      title.textContent=outcome?.success?'Operação concluída':'Tentativa sem sucesso';
+      description.textContent=outcome?.message||'Confira o resultado na Forja.';
+      card.classList.add(outcome?.success?'is-success':'is-failure');
+      button.textContent='CONTINUAR';await wait(config.revealMs);
       return true;
-    }finally{stage.remove();confirmation?.classList.remove('forge-confirmation-hidden');forgeOperationBusy=false;}
+    }finally{confirmation?.classList.remove('forge-confirmation-hidden');MareUI.destroy(stage);forgeOperationBusy=false;}
   }
   function performForgeOperation(command){
     if(ONLINE_GAME){
@@ -3152,12 +3177,20 @@ ${avatarExtra}
   function drawNPC(n){
       if(n.x+100<camera.x||n.x-100>camera.x+W||n.y+32<camera.y||n.y-150>camera.y+H)return;
       if(!globalThis.MareLobby)drawNPCProps(n);
-      const img=npcArt[n.art],ready=img&&img.complete&&img.naturalWidth;
-      const h=n.art==='ryuma'?72:76,w=Math.min(76,h*(ready?img.naturalWidth/img.naturalHeight:.68));
-      const spriteTop=Math.round(n.y-h);
+      const art=npcArt[n.art],still=art?.still,idle=art?.idle;
+      const animated=idle?.complete&&idle.naturalWidth===npcIdleSize*npcIdleFrames&&idle.naturalHeight===npcIdleSize;
+      const ready=still?.complete&&still.naturalWidth;
+      const h=npcWorldHeight,w=Math.min(h,h*(animated?1:ready?still.naturalWidth/still.naturalHeight:.68));
+      const spriteTop=Math.round(n.y-h),spriteLeft=Math.round(n.x-w/2),spriteWidth=Math.round(w);
       ctx.fillStyle='#08121e8d';ctx.beginPath();ctx.ellipse(n.x,n.y,18,5,0,0,Math.PI*2);ctx.fill();
-      if(ready){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(img,Math.round(n.x-w/2),spriteTop,Math.round(w),h);ctx.restore();}
-      else {px(ctx,n.x-11,n.y-50,22,49,n.color);}
+      if(animated||ready){
+        ctx.save();ctx.imageSmoothingEnabled=false;
+        if(animated){
+          const frame=ambientReduced()?0:(Math.floor(world.time/npcIdleStep)+art.phase)%npcIdleFrames;
+          ctx.drawImage(idle,frame*npcIdleSize,0,npcIdleSize,npcIdleSize,spriteLeft,spriteTop,spriteWidth,h);
+        }else ctx.drawImage(still,spriteLeft,spriteTop,spriteWidth,h);
+        ctx.restore();
+      }else {px(ctx,n.x-11,n.y-50,22,49,n.color);}
       const nameY=spriteTop-8;
       const labelW=154,labelH=20;
       px(ctx,n.x-labelW/2,nameY-14,labelW,labelH,'#0c1220dd');

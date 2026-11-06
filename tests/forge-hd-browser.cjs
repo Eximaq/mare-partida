@@ -146,6 +146,37 @@ await p.locator('[data-forge-clear]').click();
 assert.equal(await snapshot(),before,'fusion previews must not mutate gear, balances or inventory');
 console.log('Live base preview, RNG isolation, lateral result, pearl bonus/chance/materials, textured fields and persistent actions: passed');
 
+await p.setViewportSize({width:390,height:844});
+await p.evaluate(()=>{
+ const q=__forgeQA;
+ q.game.equipment.weapon.plus=9;q.ui.tab='upgrade';q.render();
+ window.__forgeRandom=Math.random;Math.random=()=>.999;
+});
+await p.locator('[data-forge-action=upgrade]').click();
+await p.locator('[data-confirm-accept]').click();
+const failure=p.locator('.forge-presentation.is-failure');
+await failure.waitFor();
+assert.match(await failure.evaluate(e=>getComputedStyle(e).borderImageSource),/hud-nautical-v2\/rope-frame\.png/);
+assert.equal(await failure.locator('.forge-presentation-art').evaluate(e=>getComputedStyle(e,'::after').animationName),'nw-forge-sparks');
+assert.match(await failure.innerText(),/preservado em \+9/);
+assert.equal(await failure.getByRole('button',{name:'CONTINUAR'}).evaluate(e=>document.activeElement===e),true);
+await failure.screenshot({path:path.join(out,'forge-failure-mobile.png')});
+await failure.getByRole('button',{name:'CONTINUAR'}).click();
+await failure.waitFor({state:'hidden'});
+assert.equal(await p.evaluate(()=>__forgeQA.game.equipment.weapon.plus),9);
+await p.evaluate(()=>{Math.random=window.__forgeRandom;delete window.__forgeRandom;});
+await p.emulateMedia({reducedMotion:'reduce'});
+await p.evaluate(()=>{const q=__forgeQA;q.game.equipment.weapon.plus=0;q.render();});
+await p.locator('[data-forge-action=upgrade]').click();
+await p.locator('[data-confirm-accept]').click();
+const success=p.locator('.forge-presentation.is-success');
+await success.waitFor();
+assert.equal(await success.evaluate(e=>e.getAnimations({subtree:true}).length),0);
+await success.getByRole('button',{name:'CONTINUAR'}).click();
+await success.waitFor({state:'hidden'});
+assert.equal(await p.evaluate(()=>__forgeQA.game.equipment.weapon.plus),1);
+await p.emulateMedia({reducedMotion:'no-preference'});
+
 await p.evaluate(()=>{const q=__forgeQA,d=q.defs[q.game.equipment.weapon.def];d.name='Espada Cerimonial das Correntes do Arquipélago de Ventos Ancestrais';q.ui.tab='upgrade';q.render()});
 assert.equal(await p.locator('.forge2-operation-content').evaluate(e=>e.scrollWidth<=e.clientWidth+1),true);
 await p.evaluate(()=>{const q=__forgeQA;q.game.equipment.weapon=q.newItem(q.defs[q.game.equipment.weapon.def],1,false,'common');q.ui.itemId=q.game.equipment.weapon.id;q.ui.tab='imbue';q.render()});

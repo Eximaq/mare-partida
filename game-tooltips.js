@@ -45,7 +45,19 @@
     document.addEventListener('focusout',event=>{if(event.target===target)hide();});
     window.addEventListener('keydown',event=>{if(event.key==='Escape'&&target?.hasAttribute('data-studio-help')){hide();event.preventDefault();event.stopImmediatePropagation();}},true);
     document.addEventListener('click',event=>{const element=event.target.closest?.('[data-studio-help]');if(element)show(element);else if(target?.hasAttribute('data-studio-help'))hide();});
-    document.addEventListener('scroll',()=>{if(target)hide();},true);
+    document.addEventListener('scroll',event=>{
+      if(!target)return;
+      const scroller=event.target;
+      if(target===document.activeElement&&scroller.contains?.(target)){
+        const rect=target.getBoundingClientRect();
+        const bounds=scroller.getBoundingClientRect?.()||{top:0,left:0,bottom:innerHeight,right:innerWidth};
+        if(rect.bottom>bounds.top&&rect.top<bounds.bottom&&rect.right>bounds.left&&rect.left<bounds.right){
+          place(rect.right,Math.max(rect.top,bounds.top));
+          return;
+        }
+      }
+      hide();
+    },true);
     return {hide,refresh(){if(target?.isConnected)show(target);else hide();}};
   }
   root.MareTooltips={potentialHTML,filterCleanStats,itemHTML,skillHTML,helpHTML,compendiumHTML,attach};

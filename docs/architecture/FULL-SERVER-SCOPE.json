@@ -1,6 +1,6 @@
 {
   "scope": "all-current-gameplay",
-  "baseline": "220092a9754a512d307ad4f5d2774d767f90072f",
+  "baseline": "ae48122692e67eaa3b4d13f7d10087974b2f2863",
   "completionRule": "Every current gameplay feature must be implemented with original rules, original UI integration and adversarial tests. A blocked button or isolated alpha substitute is not completion.",
   "features": [
     {

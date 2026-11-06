@@ -1,0 +1,538 @@
+/* Shared nautical finish for the remaining in-game window families. */
+:root {
+  --nw-type: 'Barlow Semi Condensed', 'Alegreya Sans', sans-serif;
+  --nw-ink: #f3eee3;
+  --nw-muted: #b7cbd3;
+  --nw-gold: #ffdda0;
+  --nw-cyan: #7be4ec;
+  --nw-mint: #89efb5;
+  --nw-coral: #ff9f86;
+  --nw-line: #a77e4b70;
+  --nw-surface: linear-gradient(145deg, #112e3b, #081b27 68%);
+  --nw-header: linear-gradient(105deg, #193b48, #0a2431 64%, #081923);
+  --nw-card: linear-gradient(135deg, #12313e, #0a202d 76%);
+  --nw-rope: url('assets/ui/hud-nautical-v2/rope-frame.png');
+  --nw-helm: url('assets/ui/hud-nautical-v2/helm-crest.png');
+  --nw-plate: url('assets/ui/inventory-reference/tab.png');
+  --nw-active: url('assets/ui/inventory-reference/tab-active.png');
+}
+
+/* Original illustrations, parchment and rank insignias keep their own materials. */
+#app #panelOverlay.hud-density:is(
+  .contracts-mode, .hierarchy-hd-mode, .compendium-hd-mode, .captain-hd-mode,
+  .voyage-hd-mode, .boss-dungeons-mode, .party-mode, .crew-mode, .social-mode,
+  [data-ui-panel=modes], [data-ui-panel=dev], [data-ui-panel=shop],
+  [data-ui-panel=help], [data-ui-panel=hunt],
+  :where(:has(> .dialog > #dialogBody > .online-state-note:first-child))
+) {
+  --nw-width: 1120px;
+  --nw-height: min(720px, 91dvh);
+  --honors-heading: var(--nw-type);
+  --honors-body: var(--nw-type);
+  --comp-title: var(--nw-type);
+  --comp-body: var(--nw-type);
+  --exp-title: var(--nw-type);
+  --exp-body: var(--nw-type);
+  padding: 10px;
+  background: #031218a8;
+  backdrop-filter: blur(3px);
+
+  &:is(.contracts-mode, .compendium-hd-mode, .voyage-hd-mode) { --nw-width: 1200px; }
+  &:is(.captain-hd-mode, .social-mode, .party-mode, [data-ui-panel=dev]) { --nw-width: 980px; }
+  &:is([data-ui-panel=modes], [data-ui-panel=shop], [data-ui-panel=help], [data-ui-panel=hunt], .akuma-reveal-mode) {
+    --nw-height: auto;
+  }
+  &[data-ui-panel=shop], &.akuma-reveal-mode { --nw-width: 490px; }
+  &[data-ui-panel=help] { --nw-width: 860px; }
+  &[data-ui-panel=hunt] { --nw-width: 940px; }
+  &:is(.crew-mode, .social-mode, .party-mode) { --nw-height: auto; }
+
+  & > .dialog {
+    display: flex;
+    flex-direction: column;
+    width: min(var(--nw-width), calc(100vw - 24px));
+    height: var(--nw-height);
+    max-width: none;
+    max-height: min(760px, calc(100dvh - 20px));
+    min-height: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 8px solid transparent;
+    border-image: var(--nw-rope) 150 / 8px round;
+    border-radius: 14px;
+    background: var(--nw-surface) padding-box;
+    box-shadow: 0 16px 46px #000b;
+    color: var(--nw-ink);
+    font: 500 16px/1.25 var(--nw-type);
+  }
+  & .dialog-header {
+    align-items: center;
+    flex: none;
+    gap: 8px 12px;
+    min-height: 54px;
+    padding: 5px 9px 5px 12px;
+    margin: 0;
+    border: 0;
+    border-bottom: 1px solid var(--nw-line);
+    background: var(--nw-header);
+  }
+  & .dialog-header::before { content: none; }
+  & .dialog-header > div:first-child { min-width: 0; }
+  & .dialog-header > div:first-child::before {
+    display: none;
+  }
+  & .dialog-header small {
+    color: #dfba7e;
+    font: 700 10px/1.2 var(--nw-type);
+    letter-spacing: .1em;
+  }
+  & #dialogTitle {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin: 0;
+    color: #ffebc1;
+    font: 700 clamp(19px, 2.4vw, 27px)/1.1 Georgia, serif;
+    text-shadow: 0 2px 3px #0009;
+    overflow-wrap: anywhere;
+  }
+  & #dialogTitle::before {
+    content: '';
+    width: 1em;
+    height: 1em;
+    flex: none;
+    background: var(--nw-helm) center / contain no-repeat;
+  }
+  & #closePanel {
+    align-self: center;
+    flex: none;
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0;
+    border: 4px solid transparent;
+    border-image: var(--nw-plate) 12 fill / 4px stretch;
+    border-radius: 6px;
+    background: none;
+    box-shadow: none;
+    color: var(--nw-gold);
+    font: 700 24px/1 var(--nw-type);
+  }
+  & #closePanel:hover { border-image-source: var(--nw-active); }
+  & :is(#closePanel, button, summary):focus-visible { outline: 2px solid var(--nw-gold); outline-offset: -1px; }
+  & #dialogBody {
+    flex: 1;
+    min-height: 0;
+    padding: 8px;
+    background: none;
+    color: var(--nw-ink);
+    font: 500 16px/1.25 var(--nw-type);
+    scrollbar-color: #aa8650 #081a24;
+  }
+
+  & :is(.captain-profile, .captain-journal, .captain-settings, .boss-dungeon-layout, .help-copy, .social-content, .crew-window, .party-layout, .dev-tools) {
+    font: 500 16px/1.25 var(--nw-type);
+  }
+  & :is(.captain-setting-card, .captain-section, .captain-equipment-card, .captain-news-item, .captain-fact,
+        .comp-details, .comp-ranks, .comp-gallery, .comp-rules,
+        .hierarchy-board, .hierarchy-consultation, .hierarchy-ranking, .hierarchy-requirements, .hierarchy-promotion,
+        .contracts-footer, .contracts-art, .dungeon-details,
+        .prison-information, .prison-floor-list, .prison-stage-panel, .prison-bottom-panels > section,
+        .boss-dungeon-details, .dungeon-detail-content, .dungeon-rewards,
+        .social-group, .social-tile, .crew-card, .crew-directory-card, .party-roster, .party-activities,
+        .item-detail, .help-sections > section, .hunt-boss-brief, .hunt-economy, .dev-grid > section) {
+    border: 1px solid var(--nw-line);
+    border-radius: 7px;
+    background: var(--nw-card);
+    box-shadow: inset 0 0 0 2px #05162088;
+    color: var(--nw-ink);
+  }
+  & .voyage-map {
+    border: 5px solid transparent;
+    border-image: var(--nw-rope) 150 / 5px round;
+    background-clip: padding-box;
+  }
+  & .contract-card {
+    border: 1px solid #b98a51;
+    border-radius: 7px;
+  }
+  & .hierarchy-intro {
+    border: 5px solid transparent;
+    border-image: var(--nw-rope) 150 / 5px round;
+    border-radius: 7px;
+    background-clip: padding-box;
+  }
+  & :is(.comp-filters input, .comp-filters select, .comp-filters .ui-select-trigger) {
+    background: #0b2330;
+    border: 1px solid #7494a073;
+    color: var(--nw-ink);
+    font: 600 15px/1.15 var(--nw-type);
+    min-height: 37px;
+  }
+  & :is(.captain-tabs button, .comp-ranks button, .comp-type-tabs button, .hierarchy-factions button,
+        .contract-tab, .contract-claim, .comp-availability, .comp-register-action button, .voyage-region-tabs button, .dungeon-enter,
+        .social-button, .crew-button, .party-primary, .party-destination-tabs button, .party-region-tabs button,
+        .hunt-sectors button, .dialog-button) {
+    border: 4px solid transparent;
+    border-image: var(--nw-plate) 12 fill / 4px stretch;
+    border-radius: 6px;
+    background: none;
+    box-shadow: none;
+    color: var(--nw-gold);
+    font-family: var(--nw-type);
+    font-weight: 700;
+  }
+  & :is(.captain-tabs button, .comp-ranks button, .comp-type-tabs button, .hierarchy-factions button,
+        .contract-tab, .voyage-region-tabs button, .social-button, .crew-button, .party-destination-tabs button,
+        .party-region-tabs button, .hunt-sectors button):is([aria-selected=true], [aria-pressed=true], .active) {
+    border-image-source: var(--nw-active);
+    color: #fff1cb;
+  }
+  & :is(.contract-claim, .comp-register-action button, .dungeon-enter, .party-primary, [data-buy-potion]):enabled {
+    border-image-source: var(--nw-active);
+  }
+  & :is(.captain-tabs button, .comp-ranks button, .comp-type-tabs button, .hierarchy-factions button,
+        .contract-tab, .contract-claim, .voyage-region-tabs button, .dungeon-enter,
+        .social-button, .crew-button, .party-primary, .party-destination-tabs button, .party-region-tabs button,
+        .hunt-sectors button, .dialog-button):enabled:hover { filter: brightness(1.2); }
+
+  & :is(.captain-profile-power strong, .captain-profile-power b, .crew-treasury-balance strong,
+        .voyage-level, .prison-floor-level, .dungeon-recommended, .dungeon-reveal > strong,
+        .party-status, .social-online, .comp-registered-mark, .contract-state) {
+    color: var(--nw-cyan);
+  }
+  & .contract-card .contract-state { color: #12534b; }
+  & .hierarchy-progress > i,
+  & .contracts-footer .contract-progress > i {
+    background: linear-gradient(#9af6db, #17a58a);
+  }
+  & .captain-tabs button { min-height: 42px; font-size: 16px; }
+  & :is(.captain-profile, .captain-journal, .captain-settings) { --captain-text: 16px; gap: 8px; }
+  & .captain-section-head { padding-block: 6px; }
+  & .captain-profile-power strong {
+    font-family: var(--nw-type);
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 0 12px #69ddeb60;
+  }
+  & .help-copy :is(p, li) { font: inherit; }
+  & .help-copy h3 { font: 700 18px/1.15 var(--nw-type); color: var(--nw-gold); }
+  & .item-detail > p strong { color: var(--nw-mint); }
+
+  & #honorsHeaderNote {
+    padding: 5px 7px;
+    max-width: 240px;
+    border: 1px solid var(--nw-line);
+    border-radius: 6px;
+    background: #0b2530;
+    box-shadow: none;
+    transform: none;
+    color: var(--nw-muted);
+    font: 500 13px/1.2 var(--nw-type);
+  }
+  & :is(.comp-heading-subtitle, #expeditionSubtitle) { margin: 3px 0 0; font: 500 14px/1.2 var(--nw-type); }
+  & #expeditionBack { position: static; flex: none; min-height: 32px; background: #0d2a37; }
+  & .comp-fruit-card[aria-pressed=true], & .boss-dungeon-card[aria-pressed=true] {
+    border-color: var(--nw-cyan);
+    box-shadow: inset 0 0 10px #67d4e552, 0 0 7px #67d4e54d;
+  }
+  & .dungeon-reveal > img {
+    width: clamp(72px, 19dvh, 142px);
+    height: clamp(72px, 19dvh, 142px);
+    margin: 7px auto;
+    filter: drop-shadow(0 0 14px #72dfe185);
+    animation: nw-fruit-reveal .65s ease-out both;
+  }
+  & .dungeon-reveal h2 { margin: 7px 0; font-size: 23px; }
+  & .dungeon-reveal { padding: 6px; }
+
+  @media (max-width: 760px) {
+    & > .dialog {
+      width: min(var(--nw-width), calc(100vw - 16px));
+      height: var(--nw-height);
+      max-height: min(760px, calc(100dvh - 16px));
+      border-width: 6px;
+      border-image-width: 6px;
+    }
+    & .dialog-header { gap: 5px; min-height: 47px; padding: 4px 6px; }
+    & #dialogBody { padding: 6px; }
+    & #honorsHeaderNote { display: none; }
+    &.voyage-hd-mode .dialog-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+    }
+    &.voyage-hd-mode .dialog-header > div:first-child { display: contents; }
+    &.voyage-hd-mode .dialog-header small { grid-area: 1 / 1; }
+    &.voyage-hd-mode #dialogTitle { grid-area: 2 / 1; }
+    &.voyage-hd-mode #expeditionBack { grid-area: 1 / 2 / 3; font-size: 12px; padding-inline: 5px; }
+    &.voyage-hd-mode #closePanel { grid-area: 1 / 3 / 3; }
+    &.voyage-hd-mode :is(.voyage-region-tabs, #expeditionSubtitle) {
+      position: static;
+      grid-area: 3 / 1 / 4 / -1;
+      max-width: none;
+      margin: 0;
+    }
+    &.voyage-hd-mode .voyage-region-tabs button {
+      flex: 1;
+      min-width: 0;
+      min-height: 38px;
+      padding: 3px;
+      font-size: 15px;
+    }
+    & .boss-dungeon-list {
+      max-height: min(33dvh, 245px);
+      overflow: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #aa8650 #081a24;
+    }
+    & .boss-dungeon-card { min-height: 126px; height: 126px; }
+    & :is(.captain-profile, .captain-journal, .captain-settings, .party-layout, .crew-window, .social-content) { font-size: 15px; }
+  }
+}
+
+#app #startOverlay.hud-density {
+  background: #031218b8;
+  backdrop-filter: blur(3px);
+
+  & > .creation-dialog {
+    width: min(1200px, calc(100vw - 20px));
+    height: min(790px, calc(100dvh - 20px));
+    border: 8px solid transparent;
+    border-image: var(--nw-rope) 150 / 8px round;
+    border-radius: 12px;
+    background: var(--nw-surface) padding-box;
+    color: var(--nw-ink);
+    font: 500 16px/1.25 var(--nw-type);
+  }
+  & .creation-top h1 { font: 700 clamp(24px, 3vw, 36px)/1.08 Georgia, serif; color: var(--nw-gold); }
+  & :is(.creation-eyebrow, .creation-top p) { font-family: var(--nw-type); }
+  & .creation-top p { color: var(--nw-muted); font-size: 16px; }
+  & .creation-progress {
+    padding-block: 4px;
+    border: 1px solid var(--nw-line);
+    border-radius: 7px;
+    background: var(--nw-card);
+  }
+  & #characterName {
+    height: 40px;
+    padding: 6px 10px;
+    border: 1px solid #7494a073;
+    border-radius: 6px;
+    background: #0a202c;
+    font: 600 17px/1.15 var(--nw-type);
+  }
+  & :is(.faction-choice, .class-choice, .creation-faction-summary, .creation-class-detail) {
+    border: 1px solid var(--nw-line);
+    border-radius: 7px;
+    background: var(--nw-card);
+  }
+  & :is(.faction-choice, .class-choice).chosen {
+    border-color: var(--nw-cyan);
+    background: var(--nw-card);
+    box-shadow: inset 0 0 12px #71d8e34d;
+  }
+  & .faction-art { min-height: 80px; }
+  & .faction-details { min-height: 86px; }
+  & .creation-faction-summary { min-height: 92px; }
+  & .creation-faction-identity > img { width: 70px; height: 70px; }
+  & .creation-faction-benefit strong { color: var(--nw-cyan); font-family: var(--nw-type); }
+  & :is(.creation-actions button, #nextToClass) {
+    border: 4px solid transparent;
+    border-image: var(--nw-plate) 12 fill / 4px stretch;
+    border-radius: 6px;
+    background: none;
+    color: var(--nw-gold);
+    font-family: var(--nw-type);
+  }
+  & :is(.creation-actions .primary-button, #nextToClass) { border-image-source: var(--nw-active); }
+  & :is(.creation-actions button, #nextToClass):enabled:hover { filter: brightness(1.2); }
+
+  @media (max-width: 760px) {
+    & > .creation-dialog {
+      width: calc(100vw - 16px);
+      height: min(790px, calc(100dvh - 16px));
+      border-width: 6px;
+      border-image-width: 6px;
+    }
+  }
+}
+
+/* The generic modal primitive and the standalone Forge result are outside #app. */
+body .ui-modal > .ui-window {
+  border: 8px solid transparent;
+  border-image: var(--nw-rope) 150 / 8px round;
+  border-radius: 12px;
+  background: var(--nw-surface) padding-box;
+  color: var(--nw-ink);
+  font-family: var(--nw-type);
+}
+body .ui-modal .ui-window-header { background: var(--nw-header); border-bottom: 1px solid var(--nw-line); }
+body .ui-modal .ui-window-header h2 { color: var(--nw-gold); font-family: Georgia, serif; }
+
+@keyframes nw-fruit-reveal {
+  from { transform: scale(.88) translateY(6px); opacity: .45; }
+  to { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #app #panelOverlay.hud-density.boss-dungeons-mode .dungeon-reveal > img { animation: none; }
+}
+html[data-mare-motion=reduced] #app #panelOverlay.hud-density.boss-dungeons-mode .dungeon-reveal > img { animation: none; }
+
+/* The result appears only after the Forge transaction has settled. */
+.forge-presentation-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 15000;
+  display: grid;
+  place-items: center;
+  padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right))
+    max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left));
+  background: #03121bd4;
+  backdrop-filter: blur(4px);
+}
+
+.forge-presentation {
+  --forge-tone: var(--nw-gold);
+  display: grid;
+  justify-items: center;
+  gap: 7px;
+  width: min(400px, 100%);
+  max-height: calc(100dvh - 20px);
+  overflow: auto;
+  padding: 13px 14px 11px;
+  border: 8px solid transparent;
+  border-image: var(--nw-rope) 150 / 8px round;
+  border-radius: 13px;
+  background: radial-gradient(ellipse at 50% 33%, color-mix(in srgb, var(--forge-tone) 17%, transparent), transparent 65%),
+    var(--nw-surface) padding-box;
+  box-shadow: 0 16px 44px #000b;
+  color: var(--nw-ink);
+  font: 500 16px/1.3 var(--nw-type);
+  text-align: center;
+}
+.forge-presentation.is-success { --forge-tone: var(--nw-mint); }
+.forge-presentation.is-failure { --forge-tone: var(--nw-coral); }
+
+.forge-presentation-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--nw-gold);
+  font: 700 12px/1 var(--nw-type);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.forge-presentation-eyebrow::before {
+  content: '';
+  width: 21px;
+  height: 21px;
+  background: var(--nw-helm) center / contain no-repeat;
+}
+.forge-presentation-copy { width: 100%; padding: 4px 5px 7px; border-bottom: 1px solid var(--nw-line); }
+.forge-presentation h3 {
+  margin: 0 0 4px;
+  color: var(--forge-tone);
+  font: 700 clamp(20px, 5vw, 25px)/1.1 Georgia, serif;
+  text-shadow: 0 0 12px color-mix(in srgb, var(--forge-tone) 33%, transparent);
+}
+.forge-presentation p { margin: 0; color: var(--nw-muted); overflow-wrap: anywhere; }
+
+.forge-presentation-art {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2px;
+  width: min(260px, 100%);
+  height: clamp(70px, 18dvh, 111px);
+}
+.forge-presentation-art img {
+  width: clamp(70px, 18dvh, 94px);
+  height: clamp(70px, 18dvh, 94px);
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--forge-tone) 45%, transparent));
+}
+.forge-presentation-art::before,
+.forge-presentation-art::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+}
+.forge-presentation-art::before {
+  z-index: -1;
+  width: clamp(62px, 17dvh, 99px);
+  aspect-ratio: 1;
+  border: 1px solid color-mix(in srgb, var(--forge-tone) 50%, transparent);
+  border-radius: 50%;
+  background: #07202b;
+  box-shadow: inset 0 0 18px color-mix(in srgb, var(--forge-tone) 14%, transparent);
+}
+.forge-presentation-art::after {
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 54%, var(--forge-tone) 0 2px, transparent 3px),
+    radial-gradient(circle at 19% 24%, var(--forge-tone) 0 1px, transparent 2px),
+    radial-gradient(circle at 25% 69%, var(--forge-tone) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 37% 9%, var(--forge-tone) 0 1px, transparent 2px),
+    radial-gradient(circle at 67% 22%, var(--forge-tone) 0 1.5px, transparent 2.5px),
+    radial-gradient(circle at 73% 63%, var(--forge-tone) 0 1px, transparent 2px),
+    radial-gradient(circle at 81% 39%, var(--forge-tone) 0 2px, transparent 3px),
+    radial-gradient(circle at 91% 75%, var(--forge-tone) 0 1px, transparent 2px);
+  opacity: .42;
+}
+.forge-presentation-overlay.is-preparing .forge-presentation-art img {
+  width: min(48px, 19%);
+  height: 48px;
+  animation: nw-forge-converge .4s ease-in both;
+}
+.forge-presentation:is(.is-success,.is-failure) .forge-presentation-art img {
+  animation: nw-forge-item .5s ease-out both;
+}
+.forge-presentation:is(.is-success,.is-failure) .forge-presentation-art::after {
+  animation: nw-forge-sparks .95s ease-out both;
+}
+.forge-presentation button {
+  min-width: min(100%, 144px);
+  min-height: 40px;
+  margin: 1px 0 0;
+  padding: 4px 10px;
+  border: 4px solid transparent;
+  border-image: var(--nw-plate) 12 fill / 4px stretch;
+  border-radius: 6px;
+  background: none;
+  color: #ffedc5;
+  font: 700 15px/1.1 var(--nw-type);
+  cursor: pointer;
+}
+.forge-presentation:is(.is-success,.is-failure) button { border-image-source: var(--nw-active); }
+.forge-presentation button:disabled { opacity: .6; cursor: wait; }
+.forge-presentation button:enabled:hover { filter: brightness(1.22); }
+.forge-presentation button:focus-visible { outline: 2px solid var(--nw-gold); outline-offset: 1px; }
+
+.confirmation-overlay.forge-confirmation-hidden { visibility: hidden; }
+
+@keyframes nw-forge-converge {
+  from { transform: translateY(-8px) scale(.82); opacity: .55; }
+  to { transform: translateY(5px) scale(.92); opacity: 1; }
+}
+@keyframes nw-forge-item {
+  from { transform: translateY(5px) scale(.82); opacity: .55; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+@keyframes nw-forge-sparks {
+  0% { transform: scale(.44) translateY(8px); opacity: 0; }
+  27% { opacity: .95; }
+  100% { transform: scale(1.05) translateY(-10px); opacity: .42; }
+}
+
+@media (pointer: coarse) {
+  .forge-presentation button { min-height: 44px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .forge-presentation-overlay .forge-presentation .forge-presentation-art img,
+  .forge-presentation-overlay .forge-presentation .forge-presentation-art::after { animation: none; }
+}
+html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-art img,
+html[data-mare-motion=reduced] .forge-presentation-overlay .forge-presentation-art::after { animation: none; }
