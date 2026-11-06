@@ -26,12 +26,18 @@ const compact=await p.locator('.op-inventory-shell').evaluate(shell=>{
   const rect=selector=>shell.querySelector(selector).getBoundingClientRect();
   const frame=shell.getBoundingClientRect(),title=rect('.op-title-banner img');
   const tray=rect('.op-grid-wrap'),grid=rect('.op-grid'),character=rect('.op-character-panel'),privacy=rect('.op-hide-check');
-  return {slots:shell.querySelector('.op-grid').children.length,columns:MareUI.inventoryGrid(innerWidth).columns,
+  const tab=shell.querySelector('[data-inv-tab=equipment]');
+  const button=tab.getBoundingClientRect();
+  const label=document.createRange();
+  label.selectNodeContents(tab.querySelector('span'));
+  const parts=[tab.querySelector('img').getBoundingClientRect(),...label.getClientRects()];
+  return {slots:shell.querySelector('.op-grid').children.length,pageSize:MareUI.inventoryGrid(innerWidth).pageSize,
+    equipmentFits:parts.every(part=>part.left>=button.left+2&&part.right<=button.right-2&&part.top>=button.top&&part.bottom<=button.bottom),
     trayGap:tray.height-grid.height,profileGap:character.bottom-privacy.bottom,
     crestOverlaps:title.top<frame.top&&title.bottom>frame.top,
     crestOffset:Math.abs(title.left+title.width/2-frame.left-frame.width/2)};
 });
-assert.equal(compact.slots,compact.columns,'No results reserve only one empty row');
+assert.deepEqual({slots:compact.slots,equipmentFits:compact.equipmentFits},{slots:compact.pageSize,equipmentFits:true},'Empty results fill a complete page and the Equipment tab contains its label and icon');
 assert(compact.trayGap<28&&compact.profileGap<32,JSON.stringify(compact));
 assert(compact.crestOverlaps&&compact.crestOffset<3,JSON.stringify(compact));
 const glows=await p.locator('.op-equip-slot.filled').first().evaluate(slot=>{
@@ -73,6 +79,12 @@ await p.locator('[data-unequip="head"]').click();assert.equal(await p.evaluate((
 const countBefore=await p.evaluate(()=>__invQA.game.inventory.length+Object.values(__invQA.game.equipment).filter(Boolean).length);const powerBefore=await p.evaluate(()=>__invQA.stats().power);await p.locator('[data-auto-equip]').click();assert((await p.evaluate(()=>__invQA.stats().power))>=powerBefore);assert.equal(await p.evaluate(()=>__invQA.game.inventory.length+Object.values(__invQA.game.equipment).filter(Boolean).length),countBefore,'Equip best conserves inventory items');
 await p.evaluate(()=>{__invQA.game.hp=1;__invQA.game.potions=4;__invQA.select('virtual-potion')});await p.locator('[data-inv-use-potion]').click();assert((await p.evaluate(()=>__invQA.game.hp))>1);
 await p.evaluate(()=>{const q=__invQA;q.game.inventory=[];q.game.potions=q.game.materials=0;q.renderPanel()});assert.equal(await p.locator('[data-item]').count(),0);assert.match(await p.locator('.op-page-count').innerText(),/0.+0 de 0/);
+const fullPage=await p.evaluate(()=>MareUI.inventoryGrid(innerWidth).pageSize);
+assert.equal(await p.locator('.op-grid > .op-item.empty').count(),fullPage);
+await p.evaluate(()=>{const q=__invQA;q.game.inventory=[q.newItem(q.defs[0],1)];q.renderPanel()});
+assert.equal(await p.locator('.op-grid > .op-item:not(.empty)').count(),1);
+assert.equal(await p.locator('.op-grid > .op-item.empty').count(),fullPage-1);
+await p.screenshot({path:out+'/inventory-partial.png'});
 await p.evaluate(()=>{const q=__invQA;q.game.inventory=Array.from({length:120},(_,n)=>q.newItem(q.defs[n%q.defs.length],20));q.ui.page=0;q.renderPanel()});assert.equal(await p.locator('.op-bag-capacity b').innerText(),'120 / 120');assert(await p.locator('[data-inv-page="1"]').first().isEnabled());
 await p.locator('[data-inv-page="1"]').first().click();assert.equal(await p.evaluate(()=>__invQA.ui.page),1);
 await p.evaluate(()=>{let q=__invQA;q.ui.page=0;q.ui.sort='recent';q.game.inventory=q.defs.filter(x=>x.type==='akuma_no_mi').slice(0,16).concat(q.defs.filter(x=>x.slot&&x.type!=='akuma_no_mi').slice(-49)).map(x=>q.newItem(x,20));q.game.name='Capitão de Nome Bastante Comprido';q.renderPanel();q.select(q.game.equipment.akuma_no_mi.id)});
