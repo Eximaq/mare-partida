@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
+import { createRequire } from "node:module";
 import pg from "pg";
 import { applyMigrations } from "../../apps/game-server/src/db/migrations.js";
 import { AuthService } from "../../apps/game-server/src/auth/service.js";
@@ -103,6 +104,17 @@ export async function authDatabase(
     if (created) await admin.query(`DROP DATABASE "${name}"`);
     await admin.end();
   }
+}
+
+// Use a trusted lobby position without consuming a character command version.
+export async function placeAtMerchant(pool:pg.Pool,characterId:string){
+  assert.match(new URL(pool.options.connectionString!).pathname,/^\/mare_test_[a-f0-9]{32}$/);
+  const require=createRequire(import.meta.url);
+  const merchant=require("../../lobby-world.js").npcs.donquixote;
+  const {rulesHash}=require("../../world-catalog.cjs").load();
+  await pool.query(`INSERT INTO mare_game.character_world(character_id,rules_hash,map_id,area,x,y,path,speed,direction,started_at,motion_until)
+    VALUES($1,$2,'lobby',NULL,$3,$4,'[]',0,'front',statement_timestamp(),statement_timestamp())
+    ON CONFLICT(character_id) DO UPDATE SET rules_hash=EXCLUDED.rules_hash,map_id='lobby',area=NULL,x=EXCLUDED.x,y=EXCLUDED.y,path='[]',speed=0,started_at=EXCLUDED.started_at,motion_until=EXCLUDED.motion_until`,[characterId,rulesHash,merchant.x,merchant.y]);
 }
 
 // Migration fixture only: seed a previously committed 3G hunt before the level tables exist.

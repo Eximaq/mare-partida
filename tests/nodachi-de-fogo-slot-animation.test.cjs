@@ -14,7 +14,7 @@ assert.ok(def.includes("spriteSheet:'assets/ui/items-pixellab/nodachi-de-fogo-an
 assert.ok(def.includes('frameWidth:64,frameHeight:64,columns:4,rows:4,frames:16,duration:.5'),'all 16 64px frames use the expected timeline');
 assert.ok(game.includes("function itemIcon(key,name='',animatedSlot=false)"),'item rendering supports an animated slot variant');
 assert.ok(game.includes('if(animatedSlot&&def?.slotAnimation)'),'animation is opt-in for item slots');
-assert.ok(game.includes("function invSymbol(entry){return itemIcon(entry.kind==='gear'?entry.item.def:entry.kind,entry.name,true);}"),'the bag requests the animated item icon');
+assert.match(game,/function invSymbol\(entry\)\{[^\n]*itemIcon\(entry.kind==='gear'\?entry.item.def:[^,]+,entry.name,true\)/,'the bag requests the animated item icon');
 assert.ok(game.includes('item?itemIcon(item.def,itemBase(item).name,true)'),'the equipped item slot requests the animated icon');
 assert.ok(game.includes('if(def?.icon_path)return'), 'non-slot item views retain the original icon');
 

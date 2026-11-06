@@ -35,7 +35,7 @@ test('all authored islands retain their spawn profiles; automatic hunt crosses r
 test('automatic hunt uses class skills and consumes only the server supplied potion stock',()=>{
  const f=fixture('brawler');f.b.auto=true;f.b.autoSkills=true;f.b.targetId=f.m.id;f.b.hp=f.stats.maxHP*.2;
  const result=f.engine.step(f.b,{hero:f.hero,nav:f.nav,stats:f.stats,classId:'brawler',factionId:'pirate',now:1250,dt:.25,rng:()=>.5,potions:1});
- assert.equal(result.potionsUsed,1);assert(f.b.hp>f.stats.maxHP*.5);assert(f.b.cooldowns.some((v:number)=>v>0));
+ assert.equal(result.potionsUsed,1);assert(f.b.hp>f.stats.maxHP*.42&&f.b.hp<f.stats.maxHP*.5);assert(f.b.cooldowns.some((v:number)=>v>0));
 });
 test('battle protocol refuses client rewards, clock, HP and ownership while accepting only bounded intent',()=>{
  const envelope={requestId:'11111111-1111-4111-8111-111111111111',expectedVersion:0,control:{epoch:1,token:'x'.repeat(43)}};
@@ -84,11 +84,18 @@ test('healer preference controls automatic healing and profile metrics are serve
  const low=run(.25),high=run(.9);assert.equal(low.b.cooldowns[0],0);assert(high.b.cooldowns[0]>0);assert(high.b.hp>low.b.hp);assert(Math.abs(high.b.metrics.seconds-1)<1e-9);assert.equal(high.b.metrics.damage,0);
 });
 
-test('the previous deployed rules migrate once without moving wounded monsters',()=>{
- const f=fixture(),m=f.m;m.hp=Math.floor(m.maxHP/2);const ratio=m.hp/m.maxHP,x=m.x;
- f.b.rulesHash='c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46';delete m.balanceVersion;
- f.engine.upgradeBalance(f.b);assert.equal(f.b.rulesHash,f.engine.rulesHash);assert.equal(m.x,x);
- assert.equal(m.hp,Math.ceil(m.maxHP*ratio));assert.equal(m.balanceVersion,2);
- const saved=structuredClone(f.b);f.engine.upgradeBalance(f.b);assert.deepEqual(f.b,saved);
- f.b.rulesHash='unknown';f.engine.upgradeBalance(f.b);assert.equal(f.b.rulesHash,'unknown');
+test('deployed battle rules migrate once without moving wounded monsters or resetting their potion cooldown',()=>{
+ for(const rulesHash of [
+  'c2892b86769d34771992370021a9a7edc76a89fb18e62d3f44d02900308b5f46',
+  '79cf407896a79045951d84214601438b80b1b121dea598f6a66619f76935a82f',
+ ]){
+  const f=fixture(),m=f.m;m.hp=Math.floor(m.maxHP/2);const ratio=m.hp/m.maxHP,x=m.x;
+  f.b.rulesHash=rulesHash;delete m.balanceVersion;
+  f.b.potionReadyAt=2000;
+  f.engine.upgradeBalance(f.b);assert.equal(f.b.rulesHash,f.engine.rulesHash);assert.equal(m.x,x);
+  assert.equal(m.hp,Math.ceil(m.maxHP*ratio));assert.equal(m.balanceVersion,2);
+  assert.equal(f.b.potionReadyAt,2000);
+  const saved=structuredClone(f.b);f.engine.upgradeBalance(f.b);assert.deepEqual(f.b,saved);
+  f.b.rulesHash='unknown';f.engine.upgradeBalance(f.b);assert.equal(f.b.rulesHash,'unknown');
+ }
 });

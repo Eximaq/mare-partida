@@ -9,6 +9,7 @@ import type {PoolClient} from 'pg';
 import {achievementsSnapshotSchema,type CharacterState} from '@mare/shared';
 import {AuthFault} from '../auth/errors.js';
 import {readTalents} from './talents.js';
+import {rewardWalletBaseline} from './reward-wallet.js';
 const require=createRequire(import.meta.url),A=require('../../../../achievement-system.js');
 const rulesHash=createHash('sha256').update(JSON.stringify(A.catalog)).digest('hex');
 const flags=Object.freeze({prison:false,fruit:false,haki:false,fastTravel:false,bounty:false});
@@ -30,7 +31,7 @@ export async function readAchievements(client:PoolClient,id:string,state:Charact
  const row=(await client.query('SELECT kills,coins,peak_power FROM mare_game.achievement_progress WHERE character_id=$1',[id])).rows[0];
  const claimed=(await client.query('SELECT achievement_id FROM mare_game.achievement_claims WHERE character_id=$1 ORDER BY achievement_id',[id])).rows.map(r=>r.achievement_id);
  const islands=(await client.query('SELECT island_id FROM mare_game.achievement_visits WHERE character_id=$1 ORDER BY island_id',[id])).rows.map(r=>r.island_id);
- const records={coins:Math.max(row?.coins??0,cappedGold(state.gold)),peakPower:Math.max(row?.peak_power??0,Math.min(100000,view.power??await permanentAchievementPower(client,id,state))),islands};
+ const records={coins:Math.max(row?.coins??0,cappedGold(await rewardWalletBaseline(client,id,state.gold))),peakPower:Math.max(row?.peak_power??0,Math.min(100000,view.power??await permanentAchievementPower(client,id,state))),islands};
  const prison=view.prison!==undefined?view.prison:await readPrison(client,id),haki=view.haki!==undefined?view.haki:await readHaki(client,id),fruits=view.fruits!==undefined?view.fruits:await readFruits(client,id);
  const learned=haki?require('../../../../haki-system.js').progression.ids.filter((branch:string)=>require('../../../../haki-system.js').progression.learned({has_haki_unlocked:haki.state.unlocked,haki:haki.state},branch)):[];
  const kills=row?.kills??0,g={level:state.level,stats:{kills},achievements:{claimed,records:{...records,haki:learned,fruits:fruits?.registered||[]}},impelDown:prison??{cleared:0}};
@@ -47,7 +48,7 @@ export async function observeServerAchievements(client:PoolClient,id:string,befo
  const power=Math.max(options.powerBefore??0,Math.min(100000,currentPower));
  await client.query(`INSERT INTO mare_game.achievement_progress(character_id,kills,coins,peak_power) VALUES($1,LEAST(10000,$2::int),LEAST(1000000,$3::int+$4::int),$5)
  ON CONFLICT(character_id) DO UPDATE SET kills=LEAST(10000,mare_game.achievement_progress.kills+$2),
- coins=LEAST(1000000,GREATEST(mare_game.achievement_progress.coins,$3)+$4),peak_power=GREATEST(mare_game.achievement_progress.peak_power,$5)`,[id,Math.min(10000,kills),cappedGold(before.gold),gain,power]);
+ coins=LEAST(1000000,GREATEST(mare_game.achievement_progress.coins,$3)+$4),peak_power=GREATEST(mare_game.achievement_progress.peak_power,$5)`,[id,Math.min(10000,kills),cappedGold(await rewardWalletBaseline(client,id,before.gold)),gain,power]);
  if(options.island){
   if(!A.travelIds.includes(options.island))throw new AuthFault(503,'invalid_achievement_event');
   await client.query('INSERT INTO mare_game.achievement_visits(character_id,island_id) VALUES($1,$2) ON CONFLICT DO NOTHING',[id,options.island]);

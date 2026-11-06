@@ -16,11 +16,14 @@ import { getGameCatalog } from "./catalog.js";
 import { AuthFault } from "../auth/errors.js";
 import {readBattle,storeBattle} from '../characters/battle.js';
 import {readFighter} from '../characters/fighter.js';
+import {readWorld} from '../characters/world.js';
 import {readCharacterCrewBenefits} from '../characters/crew-benefits.js';
 const require = createRequire(import.meta.url),
   forge = require("../../../../forge-system.js");
 const catalog = getGameCatalog(),
   defs = catalog.items;
+const {potions,potionRules,potionRecovery}=require('../../../../item-catalog.js');
+const merchant=require('../../../../lobby-world.js').npcs.donquixote;
 const hash = (v: unknown) =>
   createHash("sha256").update(JSON.stringify(v)).digest("hex");
 const random = () => randomInt(0, 0x100000000) / 0x100000000;
@@ -95,7 +98,7 @@ export async function readOriginalInventory(
 ): Promise<OriginalInventory | undefined> {
   const row = (
     await client.query(
-      "SELECT inventory,equipment,materials,potions,forge_seq,forge_history FROM mare_game.game_inventory WHERE character_id=$1",
+      "SELECT i.inventory,i.equipment,i.materials,i.potions,i.forge_seq,i.forge_history,to_jsonb(i)->'mana_potions' AS mana_potions FROM mare_game.game_inventory i WHERE character_id=$1",
       [id],
     )
   ).rows[0];
@@ -110,6 +113,7 @@ export function originalInventoryView(row:any,id:string){
         equipment: row.equipment,
         materials: row.materials,
         potions: row.potions,
+        ...(row.mana_potions==null?{}:{manaPotions:row.mana_potions}),
         forgeVersion: 5,
         forgeSeq: Number(row.forge_seq),
         forgeHistory: row.forge_history,
@@ -413,36 +417,55 @@ export async function mutateOriginalInventory(
       i.equipment[slot] = null;
       i.inventory.unshift(item);
     } else if (input.action === "potions.buy") {
-      if (i.potions >= 1000000000)
-        throw new AuthFault(409, "inventory_stock_full");
-      delta = -35n;
-      i.potions++;
+      const {kind,quantity=1}=input.payload;
+      const potion=potions[kind??'health'];
+      const world=await readWorld(client,id);
+      if(!world||world.mapId!=='lobby'||world.area!==null||
+          Math.hypot(world.position.x-merchant.x,world.position.y-merchant.y)>potionRules.merchantReach)
+        throw new AuthFault(409,'merchant_out_of_range');
+      if(kind==='mana'&&i.manaPotions===undefined)throw new AuthFault(503,'merchant_stock_unavailable');
+      const stock=kind==='mana'?i.manaPotions!:i.potions;
+      if(stock+quantity>potionRules.maxStock)throw new AuthFault(409,'inventory_stock_full');
+      delta=-BigInt(potion.price)*BigInt(quantity);
+      if(kind==='mana')i.manaPotions=stock+quantity;
+      else i.potions=stock+quantity;
+      outcome={itemId:potion.id,quantity,unitPrice:potion.price};
     } else if (input.action === "potions.use") {
-      if (i.potions === 0) throw new AuthFault(409, "potion_insufficient");
+      const mana=input.payload.kind==='mana';
+      if((mana?i.manaPotions??0:i.potions)===0)throw new AuthFault(409,'potion_insufficient');
+      const now:Date=(await client.query('SELECT clock_timestamp() now')).rows[0].now;
+      const recentUse=async()=>!!(await client.query(
+        "SELECT 1 FROM mare_game.game_inventory_events WHERE character_id=$1 AND action='potions.use' AND occurred_at>$2::timestamptz LIMIT 1",
+        [id,new Date(now.getTime()-potionRules.cooldownMs)],
+      )).rowCount;
       if(battle){
-       const fighter=await readFighter(client,id,state);
-       if(battle.hp<=0||battle.hp>=fighter.maxHp)throw new AuthFault(409,'potion_not_needed');
-       const bonus=(await readCharacterCrewBenefits(client,id)).doctor;
-       const hp=battle.hp;battle.hp=Math.min(fighter.maxHp,battle.hp+Math.round(fighter.maxHp*.44)*(1+(fighter.rulesetId==='original-character-v1'?fighter.stats.healingReceivedPercent:0))*(1+bonus));
-       await storeBattle(client,id,battle);i.potions--;outcome={healed:battle.hp-hp};
+        const fighter=await readFighter(client,id,state);
+        if(mana&&fighter.rulesetId!=='original-character-v1')throw new AuthFault(409,'potion_not_needed');
+        const resource=mana?'energy':'hp';
+        const max=mana&&fighter.rulesetId==='original-character-v1'?fighter.stats.maxEnergy:fighter.maxHp;
+        if(battle.hp<=0||battle[resource]>=max)throw new AuthFault(409,'potion_not_needed');
+        if(now.getTime()<(battle.potionReadyAt||0)||(!battle.potionReadyAt&&await recentUse()))
+          throw new AuthFault(409,'potion_cooldown');
+        const bonus=mana?0:(await readCharacterCrewBenefits(client,id)).doctor;
+        const healing=mana||fighter.rulesetId!=='original-character-v1'?0:fighter.stats.healingReceivedPercent||0;
+        const previous=battle[resource];
+        battle[resource]=Math.min(max,previous+potionRecovery(max)*(1+healing)*(1+bonus));
+        battle.potionReadyAt=now.getTime()+potionRules.cooldownMs;
+        await storeBattle(client,id,battle);
+        outcome=mana?{restoredEnergy:battle.energy-previous}:{healed:battle.hp-previous};
       }else{
-      if (
-        combat?.phase !== "active" ||
-        combat.player_hp <= 0 ||
-        combat.player_hp >= combat.player_max_hp
-      )
-        throw new AuthFault(409, "potion_not_needed");
-      const hp = Math.min(
-        combat.player_max_hp,
-        combat.player_hp + Math.round(combat.player_max_hp * 0.44),
-      );
-      await client.query(
-        "UPDATE mare_game.combat_encounters SET player_hp=$3 WHERE character_id=$1 AND encounter_id=$2",
-        [id, combat.encounter_id, hp],
-      );
-      i.potions--;
-      outcome = { healed: hp - combat.player_hp };
+        if(mana||combat?.phase!=='active'||combat.player_hp<=0||combat.player_hp>=combat.player_max_hp)
+          throw new AuthFault(409,'potion_not_needed');
+        if(await recentUse())throw new AuthFault(409,'potion_cooldown');
+        const hp=Math.min(combat.player_max_hp,combat.player_hp+potionRecovery(combat.player_max_hp));
+        await client.query(
+          "UPDATE mare_game.combat_encounters SET player_hp=$3 WHERE character_id=$1 AND encounter_id=$2",
+          [id,combat.encounter_id,hp],
+        );
+        outcome={healed:hp-combat.player_hp};
       }
+      if(mana)i.manaPotions=i.manaPotions!-1;
+      else i.potions--;
     } else if (input.action === "forge.execute") {
       if (BigInt(state.gold) > BigInt(Number.MAX_SAFE_INTEGER))
         throw new AuthFault(409, "original_currency_limit");
@@ -492,6 +515,8 @@ export async function mutateOriginalInventory(
   )
     throw new AuthFault(409, "state_version_conflict");
   await writeInventory(client, id, i!);
+  if(i!.manaPotions!==before?.manaPotions)
+    await client.query('UPDATE mare_game.game_inventory SET mana_potions=$2 WHERE character_id=$1',[id,i!.manaPotions]);
   await event(
     client,
     id,

@@ -60,7 +60,8 @@
         const b=document.querySelector('[data-social-badge="'+key+'"]'),n=Number(next[name])||0;
         if(b){b.hidden=n===0;b.textContent=n>99?'99+':String(n);b.setAttribute('aria-label',n+' pendências');}
       }
-      const notice=document.querySelector('[data-social-attention]'),has=Object.values(badgeKey).some(k=>Number(next[k])>0);
+      o.marketBadge?.(Number(next.marketPending)||0);
+      const notice=document.querySelector('[data-social-attention]'),has=[...Object.values(badgeKey),'marketPending'].some(k=>Number(next[k])>0);
       if(notice)notice.hidden=!has;
       if(was!==Number(next.unreadMessages)&&chat.classList.contains('hud-open')&&view!=='messages')void refreshInbox();
     }
@@ -119,7 +120,7 @@
       return '<div class="social-tools social-tools-wrap">'+button('A resgatar · '+data.pending,'mail-tab','pending',{primary:current})+
         button('Resgatadas','mail-tab','claimed',{primary:!current})+
         (current?button('Resgatar tudo','mail-claim-all','',{primary:true,disabled:!canWrite()||!data.pending}):button('Arquivar resgatadas','mail-archive-claimed','',{disabled:!canWrite()||!data.letters.length}))+'</div>'+
-        (data.letters.map(l=>'<article class="social-letter"><header><div><b>'+esc(l.title)+'</b><small>'+esc({dungeon:'Masmorra de Chefes',event:'Evento oficial',system:'Sistema'}[l.source]||'Entrega oficial')+' · '+esc(stamp(l.createdAt))+'</small></div><span class="social-tag">'+(l.claimedAt?'Resgatada':l.readAt?'Pendente':'Nova · Pendente')+'</span></header><p>'+esc(l.message)+'</p><div class="social-actions"><div class="social-grid">'+l.attachments.map(item=>tile(item,null,'mail:'+l.id)).join('')+'</div>'+
+        (data.letters.map(l=>'<article class="social-letter"><header><div><b>'+esc(l.title)+'</b><small>'+esc({dungeon:'Masmorra de Chefes',event:'Evento oficial',system:'Sistema',market:'Mercado dos Mares'}[l.source]||'Entrega oficial')+' · '+esc(stamp(l.createdAt))+'</small></div><span class="social-tag">'+(l.claimedAt?'Resgatada':l.readAt?'Pendente':'Nova · Pendente')+'</span></header><p>'+esc(l.message)+'</p><div class="social-actions"><div class="social-grid">'+l.attachments.map(item=>tile(item,null,'mail:'+l.id)).join('')+'</div>'+
           (!l.readAt&&!l.claimedAt?button('Marcar como lida','mail-read',l.id,{disabled:!canWrite()}):'')+
           (l.claimedAt?button('Arquivar','mail-archive',l.id,{disabled:!canWrite()}):button('Resgatar','mail-claim',l.id,{primary:true,disabled:!canWrite()}))+'</div></article>').join('')||blank(current?'Nenhuma recompensa pendente.':'Nenhuma recompensa resgatada.'))+
         (data.nextCursor?button('Carregar mais','mail-more',data.nextCursor):'');
