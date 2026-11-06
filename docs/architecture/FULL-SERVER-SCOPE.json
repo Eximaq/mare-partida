@@ -1,37 +1,434 @@
 {
   "scope": "all-current-gameplay",
-  "baseline": "a533f926760057f2b3bcae253f613f469519c103",
+  "baseline": "fb8f3493dbe9d7ec327bb7a8c4bd2332769388db",
   "completionRule": "Every current gameplay feature must be implemented with original rules, original UI integration and adversarial tests. A blocked button or isolated alpha substitute is not completion.",
   "features": [
-    {"id":"identity","name":"Login, confirmation, recovery, sessions and character ownership","status":"implemented","sources":["apps/game-server/src/auth/service.ts","docs/operations/PHASE-2F-FINAL-ACCEPTANCE.md"]},
-    {"id":"entry","name":"Login directly into original game HUD/map","status":"implemented","sources":["apps/account-client/login.js","game.js","docs/architecture/DIRECT-ONLINE-GAME.md"]},
-    {"id":"catalog","name":"Original 109 definitions (103 preserved plus six bound fragments), 30 fruits, 12 slots and bag capacity120 without changing IDs","status":"implemented","sources":["item-catalog.js","apps/game-server/src/gameplay/catalog.ts","tests/foundation/current-game-catalog.test.mts"]},
-    {"id":"character","name":"Original character creation, appearance, preferences and supported identity edits","status":"implemented","sources":["character-appearance.js","character-system.js","game.js","docs/architecture/ORIGINAL-PROFILE-SERVER.md","apps/game-server/src/characters/profile.ts","tests/integration/server-profile.test.mts"]},
-    {"id":"stats","name":"All seven classes, factions, derived stats and original progression","status":"implemented","sources":["docs/architecture/ORIGINAL-CHARACTER-SERVER.md","character-system.js","character-catalog.js","apps/game-server/src/gameplay/character.ts","tests/integration/server-original-character.test.mts","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"inventory","name":"Original item instances, class equipment, all slots, lock/filter/bag rules and original menus","status":"implemented","sources":["docs/architecture/ORIGINAL-INVENTORY-SERVER.md","apps/game-server/src/gameplay/inventory.ts","game.js","forge-system.js","tests/inventory-rarity-slots.test.cjs","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"economy","name":"Original buy/sell prices, gold/materials and transactional item use","status":"implemented","sources":["docs/architecture/ORIGINAL-INVENTORY-SERVER.md","apps/game-server/src/gameplay/inventory.ts","game.js","forge-system.js","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"potions","name":"Potion purchase/use, original healing and auto-use restrictions","status":"implemented","sources":["docs/architecture/ORIGINAL-BATTLE-SERVER.md","world-battle.cjs","apps/game-server/src/characters/battle.ts","docs/architecture/ORIGINAL-INVENTORY-SERVER.md","apps/game-server/src/gameplay/inventory.ts","game.js","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"forge","name":"Upgrade, reforge, imbue/remove, pearl and equipment fusion, complete original forge UI","status":"implemented","sources":["docs/architecture/ORIGINAL-INVENTORY-SERVER.md","apps/game-server/src/gameplay/inventory.ts","forge-system.js","forge-ui.js","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"loot","name":"Server-generated rarity, affixes, sockets, loot and unique rewards using original rules","status":"implemented","sources":["docs/architecture/ORIGINAL-BATTLE-SERVER.md","world-battle.cjs","apps/game-server/src/characters/battle.ts","forge-system.js","hunt-system.js","game.js","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"world","name":"Original areas, level gates, navigation, collisions, movement and travel authority","status":"implemented","sources":["docs/architecture/ORIGINAL-WORLD-SERVER.md","world-catalog.cjs","apps/game-server/src/characters/world.ts","world-system.js","archipelago.js","game.js","docs/architecture/FINAL-SERVER-ACCEPTANCE.md","tests/foundation/server-navigation.test.mts"]},
-    {"id":"ai","name":"Original monster spawn, patrol, aggro, leash, respawn and bosses","status":"implemented","sources":["docs/architecture/ORIGINAL-BATTLE-SERVER.md","world-battle.cjs","apps/game-server/src/characters/battle.ts","monster-behavior.js","monster-catalog.js","hunt-system.js","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"combat","name":"Original combat loop, range/LOS, hit timing, HP/energy, cooldowns, auto hunt, defeat and recovery","status":"implemented","sources":["docs/architecture/ORIGINAL-BATTLE-SERVER.md","world-battle.cjs","apps/game-server/src/characters/battle.ts","game.js","combat-animation.js","character-system.js","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"class-skills","name":"All original class skills, support, guards and combat effects","status":"implemented","sources":["docs/architecture/ORIGINAL-BATTLE-SERVER.md","world-battle.cjs","apps/game-server/src/characters/battle.ts","game.js","character-system.js","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"hunts","name":"Original sectors, first victory, bosses and hunt progression","status":"implemented","sources":["docs/architecture/ORIGINAL-BATTLE-SERVER.md","world-battle.cjs","apps/game-server/src/characters/battle.ts","hunt-system.js","game.js","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"contracts","name":"All existing contract requirements, counters and single redemption","status":"implemented","sources":["contract-system.js","apps/game-server/src/characters/contracts.ts","docs/architecture/ORIGINAL-CONTRACTS-SERVER.md","tests/integration/server-contracts.test.mts"]},
-    {"id":"prison","name":"Impel Down floors/encounters/bosses, milestone rewards, boxes and retries","status":"implemented","sources":["docs/architecture/ORIGINAL-PRISON-SERVER.md","apps/game-server/src/characters/prison.ts","tests/integration/server-prison.test.mts","prison-system.js","impel-down-world.js","game.js"]},
-    {"id":"boss-dungeons","name":"Original boss dungeons, bound fragments, atomic chest rewards and fruit crafting","status":"implemented","sources":["docs/architecture/ORIGINAL-DUNGEONS-SERVER.md","apps/game-server/src/characters/dungeons.ts","tests/integration/server-dungeons.test.mts","boss-dungeon-system.js","boss-dungeon-ui.js"]},
-    {"id":"talents","name":"Seven talent trees, costs, prerequisites, exclusives, respec, solo runtime effects and server achievement point budget","status":"implemented","sources":["docs/architecture/ORIGINAL-TALENTS-SERVER.md","apps/game-server/src/characters/talents.ts","tests/integration/server-talents.test.mts","talent-system.js","talent-combat.js","talent-ui.js"]},
-    {"id":"ultimates","name":"All original solo final talents and their restrictions/effects","status":"implemented","sources":["docs/architecture/ORIGINAL-TALENTS-SERVER.md","talent-runtime.cjs","tests/foundation/world-talents.test.mts","ultimate-system.js","game.js"]},
-    {"id":"achievements","name":"Original achievements: authoritative counters, fruit registrations, Haki and prison; existing future gates unchanged","status":"implemented","sources":["docs/architecture/ORIGINAL-ACHIEVEMENTS-SERVER.md","apps/game-server/src/characters/achievements.ts","tests/integration/server-achievements.test.mts","achievement-system.js","achievement-ui.js","game.js","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"hierarchy","name":"Original faction hierarchy, promotion requirements and ranking ownership","status":"implemented","sources":["docs/architecture/ORIGINAL-HIERARCHY-SERVER.md","apps/game-server/src/characters/hierarchy.ts","tests/integration/server-hierarchy.test.mts","hierarchy-system.js","game.js"]},
-    {"id":"fruits","name":"Registration/compendium, all30 fruits/passives, transformations and RankE–S skills","status":"implemented","sources":["docs/architecture/ORIGINAL-FRUITS-SERVER.md","apps/game-server/src/characters/fruits.ts","tests/integration/server-fruits.test.mts","akuma-system.js","akuma-passives.js","rank-a-system.js","rank-s-system.js","game.js"]},
-    {"id":"haki","name":"Unlock/book, willpower, three branches, king cooldown and mastery/fragments","status":"implemented","sources":["docs/architecture/ORIGINAL-HAKI-SERVER.md","apps/game-server/src/characters/haki.ts","tests/integration/server-haki.test.mts","haki-system.js","haki-progression.js","game.js"]},
-    {"id":"durability","name":"Original progression survives reconnect/restart, migration and backup without double rewards","status":"implemented","sources":["apps/game-server/src/db/migrations.ts","docs/architecture/ONLINE-ALPHA-HOSTING.md","tests/integration/server-backup.test.mts","docs/architecture/FINAL-SERVER-ACCEPTANCE.md"]},
-    {"id":"abuse","name":"Adversarial tests cover every migrated original action and all legacy service bypasses","status":"implemented","sources":["apps/game-server/src/auth/routes.ts","tests/integration/server-game-client.test.mts","docs/architecture/FULL-SERVER-PARITY.md","docs/architecture/FINAL-SERVER-ACCEPTANCE.md","tests/integration/server-final-acceptance.test.mts"]},
-    {"id":"parity-acceptance","name":"End-to-end original gameplay/UI acceptance with authoritative persistence","status":"implemented","sources":["game.js","docs/architecture/FULL-SERVER-PARITY.md","docs/architecture/FINAL-SERVER-ACCEPTANCE.md","tests/final-online-browser.mts"]}
+    {
+      "id": "identity",
+      "name": "Login, confirmation, recovery, sessions and character ownership",
+      "status": "implemented",
+      "sources": [
+        "apps/game-server/src/auth/service.ts",
+        "docs/operations/PHASE-2F-FINAL-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "entry",
+      "name": "Login directly into original game HUD/map",
+      "status": "implemented",
+      "sources": [
+        "apps/account-client/login.js",
+        "game.js",
+        "docs/architecture/DIRECT-ONLINE-GAME.md"
+      ]
+    },
+    {
+      "id": "catalog",
+      "name": "Original 187 ordered definitions, 30 fruits, 12 slots and bag capacity 120 without changing IDs",
+      "status": "implemented",
+      "sources": [
+        "item-catalog.js",
+        "apps/game-server/src/gameplay/catalog.ts",
+        "tests/foundation/current-game-catalog.test.mts"
+      ]
+    },
+    {
+      "id": "character",
+      "name": "Original character creation, appearance, preferences and supported identity edits",
+      "status": "implemented",
+      "sources": [
+        "character-appearance.js",
+        "character-system.js",
+        "game.js",
+        "docs/architecture/ORIGINAL-PROFILE-SERVER.md",
+        "apps/game-server/src/characters/profile.ts",
+        "tests/integration/server-profile.test.mts"
+      ]
+    },
+    {
+      "id": "stats",
+      "name": "All seven classes, factions, derived stats and original progression",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-CHARACTER-SERVER.md",
+        "character-system.js",
+        "character-catalog.js",
+        "apps/game-server/src/gameplay/character.ts",
+        "tests/integration/server-original-character.test.mts",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "inventory",
+      "name": "Original item instances, class equipment, all slots, lock/filter/bag rules and original menus",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-INVENTORY-SERVER.md",
+        "apps/game-server/src/gameplay/inventory.ts",
+        "game.js",
+        "forge-system.js",
+        "tests/inventory-rarity-slots.test.cjs",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "economy",
+      "name": "Original buy/sell prices, gold/materials and transactional item use",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-INVENTORY-SERVER.md",
+        "apps/game-server/src/gameplay/inventory.ts",
+        "game.js",
+        "forge-system.js",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "potions",
+      "name": "Merchant HP/Mana purchases, original 25-percent recovery and shared cooldown",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-BATTLE-SERVER.md",
+        "world-battle.cjs",
+        "apps/game-server/src/characters/battle.ts",
+        "docs/architecture/ORIGINAL-INVENTORY-SERVER.md",
+        "apps/game-server/src/gameplay/inventory.ts",
+        "game.js",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "forge",
+      "name": "Upgrade, reforge, imbue/remove, pearl and equipment fusion, complete original forge UI",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-INVENTORY-SERVER.md",
+        "apps/game-server/src/gameplay/inventory.ts",
+        "forge-system.js",
+        "forge-ui.js",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "loot",
+      "name": "Server-generated rarity, affixes, sockets, loot and unique rewards using original rules",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-BATTLE-SERVER.md",
+        "world-battle.cjs",
+        "apps/game-server/src/characters/battle.ts",
+        "forge-system.js",
+        "hunt-system.js",
+        "game.js",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "world",
+      "name": "Original areas, level gates, navigation, collisions, movement and travel authority",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-WORLD-SERVER.md",
+        "world-catalog.cjs",
+        "apps/game-server/src/characters/world.ts",
+        "world-system.js",
+        "archipelago.js",
+        "game.js",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md",
+        "tests/foundation/server-navigation.test.mts"
+      ]
+    },
+    {
+      "id": "ai",
+      "name": "Original monster spawn, patrol, aggro, leash, respawn and bosses",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-BATTLE-SERVER.md",
+        "world-battle.cjs",
+        "apps/game-server/src/characters/battle.ts",
+        "monster-behavior.js",
+        "monster-catalog.js",
+        "hunt-system.js",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "combat",
+      "name": "Original combat loop, range/LOS, hit timing, HP/energy, cooldowns, auto hunt, defeat and recovery",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-BATTLE-SERVER.md",
+        "world-battle.cjs",
+        "apps/game-server/src/characters/battle.ts",
+        "game.js",
+        "combat-animation.js",
+        "character-system.js",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "class-skills",
+      "name": "All original class skills, support, guards and combat effects",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-BATTLE-SERVER.md",
+        "world-battle.cjs",
+        "apps/game-server/src/characters/battle.ts",
+        "game.js",
+        "character-system.js",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "hunts",
+      "name": "Original sectors, first victory, bosses and hunt progression",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-BATTLE-SERVER.md",
+        "world-battle.cjs",
+        "apps/game-server/src/characters/battle.ts",
+        "hunt-system.js",
+        "game.js",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "contracts",
+      "name": "Original and deterministic daily contracts, once-only claims and expiring XP boost",
+      "status": "implemented",
+      "sources": [
+        "contract-system.js",
+        "apps/game-server/src/characters/contracts.ts",
+        "docs/architecture/ORIGINAL-CONTRACTS-SERVER.md",
+        "tests/integration/server-contracts.test.mts"
+      ]
+    },
+    {
+      "id": "prison",
+      "name": "Impel Down floors/encounters/bosses, milestone rewards, boxes and retries",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-PRISON-SERVER.md",
+        "apps/game-server/src/characters/prison.ts",
+        "tests/integration/server-prison.test.mts",
+        "prison-system.js",
+        "impel-down-world.js",
+        "game.js"
+      ]
+    },
+    {
+      "id": "boss-dungeons",
+      "name": "Original boss dungeons, bound fragments, atomic chest rewards and fruit crafting",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-DUNGEONS-SERVER.md",
+        "apps/game-server/src/characters/dungeons.ts",
+        "tests/integration/server-dungeons.test.mts",
+        "boss-dungeon-system.js",
+        "boss-dungeon-ui.js"
+      ]
+    },
+    {
+      "id": "talents",
+      "name": "Seven talent trees, costs, prerequisites, exclusives, respec, solo runtime effects and server achievement point budget",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-TALENTS-SERVER.md",
+        "apps/game-server/src/characters/talents.ts",
+        "tests/integration/server-talents.test.mts",
+        "talent-system.js",
+        "talent-combat.js",
+        "talent-ui.js"
+      ]
+    },
+    {
+      "id": "ultimates",
+      "name": "All original solo final talents and their restrictions/effects",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-TALENTS-SERVER.md",
+        "talent-runtime.cjs",
+        "tests/foundation/world-talents.test.mts",
+        "ultimate-system.js",
+        "game.js"
+      ]
+    },
+    {
+      "id": "achievements",
+      "name": "Original achievements: authoritative counters, fruit registrations, Haki and prison; existing future gates unchanged",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-ACHIEVEMENTS-SERVER.md",
+        "apps/game-server/src/characters/achievements.ts",
+        "tests/integration/server-achievements.test.mts",
+        "achievement-system.js",
+        "achievement-ui.js",
+        "game.js",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "hierarchy",
+      "name": "Original faction hierarchy, promotion requirements and ranking ownership",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-HIERARCHY-SERVER.md",
+        "apps/game-server/src/characters/hierarchy.ts",
+        "tests/integration/server-hierarchy.test.mts",
+        "hierarchy-system.js",
+        "game.js"
+      ]
+    },
+    {
+      "id": "fruits",
+      "name": "Registration/compendium, all30 fruits/passives, transformations and RankEâ€“S skills",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-FRUITS-SERVER.md",
+        "apps/game-server/src/characters/fruits.ts",
+        "tests/integration/server-fruits.test.mts",
+        "akuma-system.js",
+        "akuma-passives.js",
+        "rank-a-system.js",
+        "rank-s-system.js",
+        "game.js"
+      ]
+    },
+    {
+      "id": "haki",
+      "name": "Unlock/book, willpower, three branches, king cooldown and mastery/fragments",
+      "status": "implemented",
+      "sources": [
+        "docs/architecture/ORIGINAL-HAKI-SERVER.md",
+        "apps/game-server/src/characters/haki.ts",
+        "tests/integration/server-haki.test.mts",
+        "haki-system.js",
+        "haki-progression.js",
+        "game.js"
+      ]
+    },
+    {
+      "id": "durability",
+      "name": "Original progression survives reconnect/restart, migration and backup without double rewards",
+      "status": "implemented",
+      "sources": [
+        "apps/game-server/src/db/migrations.ts",
+        "docs/architecture/ONLINE-ALPHA-HOSTING.md",
+        "tests/integration/server-backup.test.mts",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md"
+      ]
+    },
+    {
+      "id": "abuse",
+      "name": "Adversarial tests cover every migrated original action and all legacy service bypasses",
+      "status": "implemented",
+      "sources": [
+        "apps/game-server/src/auth/routes.ts",
+        "tests/integration/server-game-client.test.mts",
+        "docs/architecture/FULL-SERVER-PARITY.md",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md",
+        "tests/integration/server-final-acceptance.test.mts"
+      ]
+    },
+    {
+      "id": "parity-acceptance",
+      "name": "End-to-end original gameplay/UI acceptance with authoritative persistence",
+      "status": "implemented",
+      "sources": [
+        "game.js",
+        "docs/architecture/FULL-SERVER-PARITY.md",
+        "docs/architecture/FINAL-SERVER-ACCEPTANCE.md",
+        "tests/final-online-browser.mts"
+      ]
+    },
+    {
+      "id": "party",
+      "name": "Consensual parties, shared authoritative battles and exact personal reward receipts",
+      "status": "implemented",
+      "sources": [
+        "apps/game-server/src/characters/party.ts",
+        "apps/game-server/src/characters/party-worker.ts",
+        "tests/integration/server-party.test.mts"
+      ]
+    },
+    {
+      "id": "shared-lobby",
+      "name": "Owned presence and bounded server movement visible between isolated accounts",
+      "status": "implemented",
+      "sources": [
+        "apps/game-server/src/characters/lobby.ts",
+        "tests/shared-lobby-browser.mts"
+      ]
+    },
+    {
+      "id": "crews",
+      "name": "Crew membership, roles, treasury, ship improvements and activity accounting",
+      "status": "implemented",
+      "sources": [
+        "apps/game-server/src/characters/crew.ts",
+        "tests/integration/server-crews.test.mts",
+        "tests/crew-online-browser.cjs"
+      ]
+    },
+    {
+      "id": "professions",
+      "name": "Server-issued weekly profession objectives and earned bonuses",
+      "status": "implemented",
+      "sources": [
+        "apps/game-server/src/characters/crew-professions.ts",
+        "tests/integration/server-crew-professions.test.mts"
+      ]
+    },
+    {
+      "id": "social",
+      "name": "Friend consent, blocks, private conversations and owned message receipts",
+      "status": "implemented",
+      "sources": [
+        "apps/game-server/src/characters/social-contacts.ts",
+        "tests/integration/server-social-contacts.test.mts",
+        "tests/social-shared-browser.mts"
+      ]
+    },
+    {
+      "id": "mail-trade",
+      "name": "Official mail entitlements and consented, versioned item exchanges",
+      "status": "implemented",
+      "sources": [
+        "apps/game-server/src/characters/mail.ts",
+        "apps/game-server/src/characters/trade.ts",
+        "tests/integration/server-social-trade.test.mts"
+      ]
+    },
+    {
+      "id": "market",
+      "name": "Listings, proposals, reserved money, commissions, once-only settlement and mail delivery",
+      "status": "implemented",
+      "sources": [
+        "apps/game-server/src/characters/market.ts",
+        "tests/integration/server-market-api.test.mts",
+        "tests/integration/server-market-transactions.test.mts",
+        "tests/market-online-browser.cjs"
+      ]
+    }
   ],
-  "clientResponsibilities": ["rendering","audio","input capture","interpolation","presentation-only settings"],
-  "notProofOfCompletion": ["green foundation tests alone","a disabled or missing feature","a smaller replacement game","a new panel replacing the original gameplay","a public frontend deployment","hosting on a VPS"],
-  "futureFeaturesOutsideExistingGameplay": ["shared lobby presence","party/PvP","real player chat not currently implemented"]
+  "clientResponsibilities": [
+    "rendering",
+    "audio",
+    "input capture",
+    "interpolation",
+    "presentation-only settings"
+  ],
+  "notProofOfCompletion": [
+    "green foundation tests alone",
+    "a disabled or missing feature",
+    "a smaller replacement game",
+    "a new panel replacing the original gameplay",
+    "a public frontend deployment",
+    "hosting on a VPS"
+  ],
+  "futureFeaturesOutsideExistingGameplay": [
+    "shared lobby presence",
+    "party/PvP",
+    "real player chat not currently implemented"
+  ]
 }

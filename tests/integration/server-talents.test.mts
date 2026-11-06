@@ -69,7 +69,7 @@ test('reset is port-only, refunds only talent budget and preserves persistent co
  await a.doit('world.return');const before=await a.read(),request=await a.input('talents.reset');
  const [x,y]=await Promise.all([a.send(request),a.send(request)]);assert.deepEqual(x,y);
  const after=await a.read();assert.equal(after.talents.spent,0);assert.equal(after.talents.available,1);assert.equal(after.talents.revision,2);
- assert.equal(after.battle.talentCooldowns.immortalUntil,9999999999999);assert.deepEqual(after.originalInventory,before.originalInventory);assert.deepEqual(after.attributes,before.attributes);assert.equal(after.state.gold,before.state.gold);
+ assert.equal(after.battle.talentCooldowns.immortalUntil,9999999999999);assert.deepEqual(after.originalInventory,{...before.originalInventory,manaPotions:before.originalInventory.manaPotions??0});assert.deepEqual(after.attributes,before.attributes);assert.equal(after.state.gold,before.state.gold);
 }));
 
 test('the real worker applies an earned poison build and persists its damage across transactions',async()=>authDatabase(async({service,pool})=>{
@@ -147,7 +147,7 @@ test('talent migrations preserve existing worlds and battle payloads, upgrade on
    await pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[a.c.id,JSON.stringify(old)]);
    await pool.query('UPDATE mare_game.character_battles SET simulation=$2 WHERE character_id=$1',[b.c.id,JSON.stringify({...old,rulesHash:'unknown'})]);
    assert.deepEqual(await applyMigrations(pool),['0021_original_talents.sql','0022_talent_battle_compatibility.sql','0023_original_achievements.sql','0024_original_prison.sql','0025_original_dungeons.sql','0026_original_haki.sql','0027_original_hierarchy.sql','0028_original_fruits.sql','0029_original_profile.sql','0030_navigation_broadphase.sql','0031_navigation_terminal_edges.sql','0032_parties.sql','0033_navigation_memo.sql','0034_navigation_open_mask.sql','0035_skypiea_catalog.sql','0036_skypiea_map_refresh.sql','0037_achievement_only_talent_points.sql','0038_combat_action_compatibility.sql','0039_equipment_potential_compatibility.sql','0040_daily_contracts.sql', '0041_progression_hud_balance.sql', '0042_crews.sql', '0043_crew_professions.sql', '0044_social_contacts.sql', '0045_social_mail.sql', '0046_social_trade.sql', '0047_market.sql', '0048_merchant_potions.sql', '0049_detach_claimed_dungeon_members.sql']);assert.deepEqual(await applyMigrations(pool),[]);
-   const after=await a.read();assert.deepEqual(after.battle,{...old,rulesHash:engine.rulesHash});assert.deepEqual(after.state,before.state);assert.deepEqual(after.originalInventory,before.originalInventory);assert.deepEqual(after.world.position,before.world.position);assert.equal(after.talents.spent,0);assert.equal((await b.read()).battle.rulesHash,'unknown');
+   const after=await a.read();assert.deepEqual(after.battle,{...old,rulesHash:engine.rulesHash});assert.deepEqual(after.state,before.state);assert.deepEqual(after.originalInventory,{...before.originalInventory,manaPotions:before.originalInventory.manaPotions??0});assert.deepEqual(after.world.position,before.world.position);assert.equal(after.talents.spent,0);assert.equal((await b.read()).battle.rulesHash,'unknown');
    assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.character_talents')).rows[0].n,0);
   },dir);
  }finally{assert.equal(dirname(resolve(dir)),resolve(tmpdir()));assert(resolve(dir).startsWith(join(resolve(tmpdir()),'mare-talent-migrations-')));await rm(dir,{recursive:true,force:true});}

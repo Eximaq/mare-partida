@@ -106,8 +106,8 @@ test("hunt rejects overflow, recovery sessions and superseded controllers; a fre
   const f=await fixture(service); await f.send(f.input("journey.begin",0)); await f.send(f.input("hunt.begin",1)); await mature(pool);
   const claim=f.input("hunt.claim",2);
   for(const field of ["experience","gold"]) {
-    await pool.query(`UPDATE mare_game.character_progression SET ${field}=9223372036854775807`);
-    await assert.rejects(f.send(claim),{code:"progression_limit"});
+    await pool.query(`UPDATE mare_game.character_progression SET ${field}=$1`,[field==="gold"?"9007199254740991":"9223372036854775807"]);
+    await assert.rejects(f.send(claim),field==="gold"?{code:"23514",constraint:"market_wallet_limit"}:{code:"progression_limit"});
     await pool.query(`UPDATE mare_game.character_progression SET ${field}=0`);
   }
   await pool.query("UPDATE mare_game.characters SET state_version=9007199254740991");
@@ -178,17 +178,22 @@ test("hunt migration is additive and repeatable, preserving old account, charact
     await pool.query("UPDATE mare_game.character_progression SET gold=9007199254740993,experience=567");
     const tables=["accounts","characters","character_progression","character_commands","character_journey_ledger"];
     const before=await Promise.all(tables.map(t=>pool.query(`SELECT * FROM mare_game.${t}`)));
-    assert.deepEqual(await applyMigrations(pool),["0006_first_hunt.sql", "0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql", "0014_original_inventory.sql", "0015_original_character.sql", "0016_original_world.sql", "0017_original_battles.sql", "0018_battle_profile_compatibility.sql", "0019_original_contracts.sql", "0020_restore_stable_battle_hash.sql", "0021_original_talents.sql", "0022_talent_battle_compatibility.sql", "0023_original_achievements.sql", "0024_original_prison.sql", "0025_original_dungeons.sql", "0026_original_haki.sql", "0027_original_hierarchy.sql", "0028_original_fruits.sql", "0029_original_profile.sql", "0030_navigation_broadphase.sql", "0031_navigation_terminal_edges.sql","0032_parties.sql","0033_navigation_memo.sql","0034_navigation_open_mask.sql","0035_skypiea_catalog.sql","0036_skypiea_map_refresh.sql","0037_achievement_only_talent_points.sql","0038_combat_action_compatibility.sql","0039_equipment_potential_compatibility.sql","0040_daily_contracts.sql", "0041_progression_hud_balance.sql", "0042_crews.sql", "0043_crew_professions.sql", "0044_social_contacts.sql", "0045_social_mail.sql", "0046_social_trade.sql", "0047_market.sql", "0048_merchant_potions.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
+    assert.deepEqual(await applyMigrations(pool),["0006_first_hunt.sql", "0007_first_combat.sql", "0008_repeatable_encounters.sql", "0009_level_progression.sql", "0010_attribute_allocation.sql", "0011_battle_profiles.sql", "0012_inventory_economy.sql", "0013_continuous_play.sql", "0014_original_inventory.sql", "0015_original_character.sql", "0016_original_world.sql", "0017_original_battles.sql", "0018_battle_profile_compatibility.sql", "0019_original_contracts.sql", "0020_restore_stable_battle_hash.sql", "0021_original_talents.sql", "0022_talent_battle_compatibility.sql", "0023_original_achievements.sql", "0024_original_prison.sql", "0025_original_dungeons.sql", "0026_original_haki.sql", "0027_original_hierarchy.sql", "0028_original_fruits.sql", "0029_original_profile.sql", "0030_navigation_broadphase.sql", "0031_navigation_terminal_edges.sql","0032_parties.sql","0033_navigation_memo.sql","0034_navigation_open_mask.sql","0035_skypiea_catalog.sql","0036_skypiea_map_refresh.sql","0037_achievement_only_talent_points.sql","0038_combat_action_compatibility.sql","0039_equipment_potential_compatibility.sql","0040_daily_contracts.sql", "0041_progression_hud_balance.sql", "0042_crews.sql", "0043_crew_professions.sql", "0044_social_contacts.sql", "0045_social_mail.sql", "0046_social_trade.sql", "0047_market.sql", "0048_merchant_potions.sql", "0049_detach_claimed_dungeon_members.sql"]);assert.deepEqual(await applyMigrations(pool),[]);
     // 3H backfills level 5 from the existing 567 XP, fencing old new-command versions.
     for(const [i,t] of tables.entries()) {
       const expected=before[i]!.rows.map(row=>t==="characters"?{...row,state_version:"2"}:t==="character_progression"?{...row,level:5,level_start_experience:"555",xp_boost_until:null}:row);
       assert.deepEqual((await pool.query(`SELECT * FROM mare_game.${t}`)).rows,expected);
     }
     await f.send(f.input("hunt.begin",2));await mature(pool);
+    // Migration preserves even a historical balance above the new market cap.
+    // Such a balance cannot grow; a rejected claim must not consume its reward.
+    await assert.rejects(f.send(f.input("hunt.claim",3)),{code:"23514",constraint:"market_wallet_limit"});
+    assert.equal((await service.characterState(f.session.token,f.character.id)).gold,"9007199254740993");
+    await pool.query("UPDATE mare_game.character_progression SET gold=9007199254740983");
     const accepted=await f.send(f.input("hunt.claim",3));
-    assert.equal(accepted.state.gold,"9007199254741001");assert.equal(accepted.state.experience,"587");
+    assert.equal(accepted.state.gold,"9007199254740991");assert.equal(accepted.state.experience,"587");
     const ledger=(await pool.query("SELECT gold_before,gold_after,experience_before,experience_after FROM mare_game.character_hunt_rewards")).rows[0];
-    assert.deepEqual(ledger,{gold_before:"9007199254740993",gold_after:"9007199254741001",experience_before:"567",experience_after:"587"});
+    assert.deepEqual(ledger,{gold_before:"9007199254740983",gold_after:"9007199254740991",experience_before:"567",experience_after:"587"});
   },directory);
 });
 
