@@ -113,6 +113,7 @@
   & .op-equip-side .op-equip-slot {height:45px; min-height:45px}
   & .op-equip-slot .op-slot-label {font-size:10.5px}
   &.hud-density .op-avatar-stage, & .op-avatar-stage {height:175px; border:1px solid #94784a; border-radius:5px; background:#08212e url('assets/ui/inventory-reference/avatar-chart.png') center/cover}
+  & .op-avatar-stage [data-headgear-visibility] {right:7px; bottom:7px}
   & .op-avatar-meta strong {border:5px solid transparent; border-image:url('assets/ui/inventory-reference/nameplate.png') 12 16 fill / 6px 8px; padding:0 2px; background:none; box-shadow:none; font-size:19px}
   & .op-avatar-meta strong img {width:15px; height:15px; object-fit:contain; vertical-align:middle}
   & .op-avatar-meta span {color:#e2d9bd; font-size:13px}
