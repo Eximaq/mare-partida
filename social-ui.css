@@ -1,0 +1,110 @@
+#app .social-mode .dialog {
+  width:min(900px,calc(100vw - 24px)); max-height:calc(100dvh - 28px);
+  display:flex; flex-direction:column;
+  background:linear-gradient(#0c141bea,#080d14ee),var(--rpg-workshop-surface) center/512px;
+  border:3px double #ad8247; border-image:var(--rpg-hd-panel) 28 / 9px stretch;
+  box-shadow:0 16px 56px #020409dd;
+}
+#app .social-mode .dialog-header {
+  background:linear-gradient(#160d0873,#120b09de),var(--rpg-hd-wood) center/384px;
+  border-bottom:1px solid #a8793d; min-height:48px;
+}
+#app .social-mode #dialogTitle {color:#ffe3ab;font:700 clamp(21px,3vw,29px)/1 var(--rpg-ui-heading,Georgia,serif)}
+#app .social-mode #dialogBody {display:flex; flex-direction:column; min-height:0; overflow:hidden; padding:10px 12px}
+#socialQuickMenu {max-height:min(75dvh,580px);overflow-y:auto}
+#socialQuickMenu [data-social-open]{position:relative; padding-right:24px}
+#socialQuickMenu [data-social-open] > img{width:28px;height:28px;object-fit:contain}
+.social-badge,.social-attention{border:1px solid #e8bd68;background:#8b3327;color:#fff0c9;border-radius:15px;line-height:1;font-size:11px;font-weight:800}
+#socialQuickMenu .social-badge{position:absolute;inset:5px 4px auto auto;min-width:15px;padding:2px 3px;text-align:center}
+#socialMenuTrigger .social-attention{position:absolute;right:0;bottom:0;width:9px;height:9px;box-shadow:0 0 6px #e1a65d}
+.social-badge[hidden],.social-attention[hidden],.social-thread[hidden],#gameLog[hidden],.social-notice[hidden]{display:none!important}
+.social-tools,.social-actions{display:flex;align-items:center;gap:6px;min-width:0}
+.social-content{overflow:auto;overscroll-behavior:contain;scrollbar-color:#aa7841 #101922;min-height:0;color:#f4e3c3;padding:0 3px 3px;font:14px/1.35 var(--rpg-ui-reading,'Segoe UI',sans-serif)}
+.social-content h3{font:700 16px/1.15 var(--rpg-ui-heading,Georgia,serif);letter-spacing:.02em;color:#f9d793;margin:0 0 7px;text-shadow:0 1px #050200}
+.social-tools-wrap,.social-actions{flex-wrap:wrap}
+.social-tools>label,.social-field{color:#e7c88d;font-size:12px;font-weight:600}
+.social-tools input,.social-field input,.social-field select{min-width:0;max-width:100%;color:#fff0cf;background:linear-gradient(#080d14e8,#10141be8),var(--rpg-hd-wood) center/280px;border:1px solid #896338;border-radius:4px;min-height:33px;padding:5px 7px;font:inherit}
+.social-tools>input{flex:1 1 120px}
+.social-field{display:inline-flex;gap:5px;align-items:center}
+.social-field input{width:clamp(110px,18vw,200px)}
+.social-field select{max-width:140px}
+.social-button{appearance:none;cursor:pointer;color:#f9e4b5;font:700 13px/1.15 var(--rpg-ui-reading,'Segoe UI',sans-serif);background:linear-gradient(#17232d,#0a1018);border:1px solid #94703d;border-radius:4px;padding:6px 9px;min-height:32px;text-shadow:0 1px #120b08}
+.social-button:hover:not(:disabled){background:#29231d;border-color:#e5bb76;color:#fff1cb}
+.social-button:focus-visible,.social-tile:focus-visible{outline:2px solid #ffcf79;outline-offset:2px}
+.social-button[aria-pressed=true],.social-button.social-primary{color:#fff0c6;background:linear-gradient(#65411f,#30200f);border-color:#ecb766;box-shadow:inset 0 0 0 1px #332013,0 0 5px #b16d302d}
+.social-button:disabled{cursor:default;opacity:.5}
+.social-line,.social-group,.social-letter,.social-review,.social-receipt{border:1px solid #785a35;border-radius:5px}
+.social-group,.social-letter,.social-review{background:linear-gradient(#141a20cc,#0a141cd9),var(--rpg-workshop-surface) center/400px;padding:8px 10px;margin-top:8px}
+.social-line{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 7px;margin-top:5px;background:#07131bd9;border-color:#56462f}
+.social-line small,.social-letter small,.social-receipt small{display:block;color:#c6b99e}
+.social-person,.social-person-meta{display:flex;align-items:center;gap:7px;min-width:0}
+.social-person-meta{align-items:flex-start;flex-direction:column;gap:2px}
+.social-person-meta small{font-size:11px;display:flex;align-items:center;gap:4px;color:#c6bdac}
+.social-person-meta small img{width:14px;height:14px;object-fit:contain}
+.social-person-meta small.social-online{color:#a9dfc6}
+.social-person .crew-flag{width:17px;height:17px}
+.social-portrait{background:#0d1923;width:39px;height:42px;flex:none;image-rendering:pixelated;border:1px solid #83613b;border-radius:3px}
+.social-person-large .social-portrait{width:69px;height:74px}
+.social-person-large{margin-bottom:8px}
+.social-empty,.social-notice{margin:5px 0;padding:8px;color:#c9bcaa}
+.social-notice{color:#ffe0a3;background:#422d14;border:1px solid #a77939;border-radius:4px}
+.social-message-summary{flex:1;min-width:0}
+.social-message-summary span{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.social-letter header{display:flex;justify-content:space-between;gap:8px}
+.social-letter p,.social-review p,.social-receipt p,.social-offer p{margin:4px 0 7px;overflow-wrap:anywhere}
+.social-tag{display:inline-block;background:#241b13;border:1px solid #8b6437;padding:2px 6px;border-radius:4px;color:#ffdb95;font-size:11px}
+.social-grid{display:flex;flex-wrap:wrap;gap:5px;min-width:0;align-items:center}
+.social-tile{position:relative;flex:none;width:42px;height:42px;border:1px solid var(--rarity-color,#aa8959);background:radial-gradient(ellipse at center,#26313f,#080e15);border-radius:4px;padding:3px;cursor:pointer;color:#ffe0a1}
+.social-tile.rarity-uncommon{--rarity-color:#5fba81}.social-tile.rarity-rare{--rarity-color:#5ea5d6}.social-tile.rarity-epic{--rarity-color:#b481ef}.social-tile.rarity-legendary{--rarity-color:#f5bd57}.social-tile.rarity-supreme{--rarity-color:#f07968}
+.social-tile img{width:100%;height:100%;object-fit:contain}
+.social-tile small,.social-tile i{position:absolute;right:2px;bottom:1px;color:#fff3ce;background:#100d0a;font:700 10px/1.1 var(--rpg-ui-reading,sans-serif)}
+.social-tile i{right:auto;left:2px}
+.social-bag-grid{max-height:150px;overflow:auto;margin-top:7px;padding:2px}
+.social-offers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.social-offer .social-grid{min-height:43px}
+.social-inventory .social-tools,.social-review + .social-tools{margin-top:6px}
+.social-receipt{padding:5px 7px;margin-top:5px;background:#0b161e}
+.social-receipt summary,.social-thread-menu summary{cursor:pointer}
+.social-help{margin:0;padding-left:19px}
+.floating-chat .chat-tabs:has([data-private-tab]){display:flex;overflow-x:auto;scrollbar-width:thin}
+.floating-chat .chat-tabs [data-private-tab]{white-space:nowrap;flex:0 0 auto;max-width:190px;overflow:hidden;text-overflow:ellipsis}
+.social-thread{display:flex;flex-direction:column;min-height:0;color:#f8e4bf;font:12px/1.35 var(--rpg-ui-reading,'Segoe UI',sans-serif)}
+.social-thread>header{display:flex;align-items:center;gap:5px;padding:5px 4px;border-bottom:1px solid #7b5f3d}
+.social-thread>header .social-person{margin-right:auto}
+.social-thread .social-portrait{width:28px;height:30px}
+.social-thread-menu[open] .social-actions{position:absolute;z-index:1;left:6px;right:6px;background:#101821;border:1px solid #997444;padding:5px}
+.social-chat-log{overflow-y:auto;overscroll-behavior:contain;height:clamp(82px,18vh,185px);scrollbar-width:thin;padding:5px}
+.social-chat-log article{background:#111d26;border-left:2px solid #695133;padding:4px 6px;margin-top:4px}
+.social-chat-log article.social-self{border-color:#be8e54}
+.social-chat-log time{color:#c2b9a4;font-size:10px}
+.social-chat-log p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+@media(max-width:550px){.social-line{flex-wrap:wrap}.social-content{font-size:13px}.social-tools{flex-wrap:wrap}.social-offers{gap:4px}.social-group{padding:6px}}
+
+/* Match the established dark metal buttons while retaining clear selection. */
+#app #panelOverlay.social-mode .dialog .social-button,
+#app .floating-chat .social-thread .social-button {
+  background:linear-gradient(#202932,#0b1018);color:#f9e4b5;border-color:#94703d;
+}
+#app #panelOverlay.social-mode .dialog .social-button:is([aria-pressed=true],.social-primary):not(:disabled) {
+  background:linear-gradient(#755025,#35200d);border-color:#f3c37b;color:#fff2cc;
+}
+#app #panelOverlay.social-mode .dialog .social-button:hover:not(:disabled) {filter:brightness(1.18)}
+#app #panelOverlay.social-mode .dialog .social-tile {
+  border-color:var(--rarity-color,#aa8959);background:radial-gradient(ellipse at center,#26313f,#080e15);
+}
+#app .social-mode .dialog input:is(#socialFriendSearch,#socialFriendsFilter,#socialTradeName,#socialInventorySearch,#socialTradeQuantity) {
+  background:linear-gradient(#080d14e8,#10141be8),var(--rpg-hd-wood) center/280px;
+}
+
+/* Leave enough space for actual messages after the private recipient header. */
+#app #floatingChat.hud-open:has(.social-thread:not([hidden])) {
+  height: min(330px, calc(100dvh - var(--profile-bottom, 170px) - var(--rpg-action-height, 72px) - 24px));
+}
+#app #floatingChat .social-thread {flex:1 1 0;min-height:0}
+#app #floatingChat .social-thread > header {flex:none}
+#app #floatingChat .social-chat-log {flex:1 1 0;height:auto;min-height:0}
+@media(max-width:760px){
+  #app #floatingChat.hud-open:has(.social-thread:not([hidden])) {
+    height:min(310px,calc(100dvh - var(--profile-bottom, 170px) - var(--rpg-action-height, 72px) - 100px));
+  }
+}

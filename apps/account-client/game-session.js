@@ -30,13 +30,30 @@
   function validIntent(action, p) {
     if (!p || typeof p !== "object" || Array.isArray(p)) return false;
     const keys = Object.keys(p).sort().join();
+    const socialId=v=>typeof v==='string'&&/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/.test(v);
+    const namedInvite=(keys==='targetId'&&socialId(p.targetId))||(keys==='name'&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=40);
+    if(['party.invite','crew.invite','trade.invite'].includes(action))return namedInvite;
+    if(['friend.request','friend.remove'].includes(action))return keys==='targetId'&&socialId(p.targetId);
+    if(action==='friend.respond')return keys==='accept,requestId'&&socialId(p.requestId)&&typeof p.accept==='boolean';
+    if(action==='friend.cancel')return keys==='requestId'&&socialId(p.requestId);
+    if(action==='contact.block')return keys==='blocked,targetId'&&socialId(p.targetId)&&typeof p.blocked==='boolean';
+    if(action==='message.send')return keys==='body,targetId'&&socialId(p.targetId)&&typeof p.body==='string'&&p.body.trim().length>0&&p.body.trim().length<=500;
+    if(action==='message.read')return keys==='targetId,throughId'&&socialId(p.targetId)&&typeof p.throughId==='string'&&/^[1-9][0-9]{0,18}$/.test(p.throughId)&&BigInt(p.throughId)<=9223372036854775807n;
+    if(['mail.read','mail.claim','mail.archive'].includes(action))return keys==='mailId'&&socialId(p.mailId);
+    if(['mail.claim-all','mail.archive-claimed'].includes(action))return keys==='';
+    if(action==='trade.respond')return keys==='accept,tradeId'&&socialId(p.tradeId)&&typeof p.accept==='boolean';
+    if(action==='trade.cancel')return keys==='tradeId'&&socialId(p.tradeId);
+    if(['trade.offer','trade.lock','trade.confirm'].includes(action)){
+      if(!socialId(p.tradeId)||!Number.isSafeInteger(p.expectedOfferVersion)||p.expectedOfferVersion<0)return false;
+      if(action==='trade.offer')return keys==='expectedOfferVersion,itemId,quantity,tradeId'&&instanceId(p.itemId)&&Number.isSafeInteger(p.quantity)&&p.quantity>=0&&p.quantity<=99999;
+      return action==='trade.lock'?keys==='expectedOfferVersion,locked,tradeId'&&typeof p.locked==='boolean':keys==='expectedOfferVersion,tradeId';
+    }
     if(action.startsWith('crew.')){
       const uuid=v=>typeof v==='string'&&/^[0-9a-f-]{36}$/.test(v);
       const whole=(v,max)=>Number.isSafeInteger(v)&&v>=1&&v<=max;
       const policy=['open','approval'].includes(p.policy)&&whole(p.minLevel,1000);
       if(action==='crew.create')return keys==='flag,minLevel,name,policy,tag'&&policy&&typeof p.name==='string'&&p.name.trim().length>=3&&p.name.length<=96&&typeof p.tag==='string'&&/^[a-z0-9]{2,6}$/i.test(p.tag.trim())&&typeof p.flag==='string'&&/^[0-9a-f]{1024}$/.test(p.flag);
       if(action==='crew.join'||action==='crew.apply')return keys==='crewId'&&uuid(p.crewId);
-      if(action==='crew.invite')return keys==='name'&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=40;
       if(action==='crew.respond')return keys==='accept,requestId'&&uuid(p.requestId)&&typeof p.accept==='boolean';
       if(action==='crew.recruitment')return keys==='minLevel,policy'&&policy;
       if(action==='crew.role')return keys==='memberId,role'&&uuid(p.memberId)&&['officer','member'].includes(p.role);
@@ -51,7 +68,6 @@
     if(action.startsWith('party.')){
       const uuid=v=>typeof v==='string'&&/^[0-9a-f-]{36}$/.test(v);
       if(['party.create','party.leave'].includes(action))return keys==='';
-      if(action==='party.invite')return keys==='name'&&typeof p.name==='string'&&p.name.trim().length>0&&p.name.length<=40;
       if(action==='party.respond')return keys==='accept,inviteId'&&uuid(p.inviteId)&&typeof p.accept==='boolean';
       if(['party.promote','party.kick'].includes(action))return keys==='memberId'&&uuid(p.memberId);
       if(action==='party.prepare')return keys==='destination,kind'&&['hunt','dungeon'].includes(p.kind)&&typeof p.destination==='string'&&/^[a-z0-9-]{1,40}$/.test(p.destination);
@@ -325,7 +341,7 @@
       busy = true;
       notify();
       try {
-        await api(`/v1/characters/${data.character.id}/commands`, {
+        const receipt=await api(`/v1/characters/${data.character.id}/commands`, {
           requestId: intent.requestId,
           expectedVersion: intent.expectedVersion,
           action: intent.action,
@@ -334,6 +350,7 @@
         });
         discard();
         await read(intent.action!=='profile.identity');
+        return receipt;
       } catch (error) {
         if (error.status && error.status < 500) discard();
         if (error.code === "control_conflict") control = null;
@@ -386,7 +403,7 @@
           action,
           payload: JSON.parse(JSON.stringify(payload)),
         };
-        storage.setItem(key, JSON.stringify(intent));
+        if(action!=='message.send')storage.setItem(key, JSON.stringify(intent));
         pending = intent;
         return send(pending);
       },

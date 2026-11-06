@@ -109,7 +109,7 @@
       }
     }
     document.getElementById('chatForm').addEventListener('submit',()=>{
-      if(channel==='system' && document.getElementById('chatInput').value.trim()){
+      if(channel==='system' && !tabBar.querySelector('[data-private-tab][aria-pressed=true]') && document.getElementById('chatInput').value.trim()){
         tabBar.querySelector('[data-chat-channel="notes"]').click();
       }
     },true);

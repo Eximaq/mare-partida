@@ -25,6 +25,12 @@ test('every command rejects injected authority, foreign character, absent CSRF a
   'crew.role':{memberId:randomUUID(),role:'officer'},'crew.transfer':{memberId:randomUUID()},'crew.kick':{memberId:randomUUID()},
   'crew.leave':{},'crew.dissolve':{confirmed:true},'crew.donate':{amount:100},'crew.upgrade':{facility:'hull',expectedLevel:1},
   'crew.profession':{profession:'navigator'},
+  'friend.request':{targetId:b.c.id},'friend.remove':{targetId:b.c.id},'friend.respond':{requestId:randomUUID(),accept:true},'friend.cancel':{requestId:randomUUID()},
+  'contact.block':{targetId:b.c.id,blocked:true},'message.send':{targetId:b.c.id,body:'Olá'},'message.read':{targetId:b.c.id,throughId:'1'},
+  'mail.read':{mailId:randomUUID()},'mail.claim':{mailId:randomUUID()},'mail.archive':{mailId:randomUUID()},'mail.claim-all':{},'mail.archive-claimed':{},
+  'trade.invite':{targetId:b.c.id},'trade.respond':{tradeId:randomUUID(),accept:true},'trade.cancel':{tradeId:randomUUID()},
+  'trade.offer':{tradeId:randomUUID(),expectedOfferVersion:1,itemId:'fixture-owned-item',quantity:1},'trade.lock':{tradeId:randomUUID(),expectedOfferVersion:1,locked:true},
+  'trade.confirm':{tradeId:randomUUID(),expectedOfferVersion:1},
  });
  const expected=characterCommandSchema.options.flatMap(s=>{const a:any=s.shape.action;return a.options??[a.value];});assert.deepEqual(Object.keys(values).sort(),expected.sort(),'new actions must be added to the adversarial matrix');
  const server=createHttpServer({isReady:async()=>true,handle:createAuthHandler({service:f.service,vault:f.vault,origin:'https://localhost:9443',cookieSeconds:3600})});server.listen(0,'127.0.0.1');await once(server,'listening');const base=`http://127.0.0.1:${(server.address() as any).port}`,before=await a.read();
