@@ -1031,9 +1031,12 @@
   }
   const islandBuildings=new Image();islandBuildings.src='pixellab-pip-generations/ilha-porto-20261018/port-buildings.png';
   const harborArt=new Image();if(globalThis.MareHarborArt)harborArt.src=MareHarborArt.url;
-  const npcArt={};
-  for(const key of ['donquixote','luffy','nami','ryuma']){
-    const img=new Image();img.src='assets/npcs/'+key+'.png';npcArt[key]=img;
+  const npcArt={},npcIdleSize=96,npcIdleFrames=8,npcIdleStep=.3;
+  for(const [index,key] of ['luffy','nami','ryuma','donquixote'].entries()){
+    const still=new Image(),idle=new Image(),base='assets/npcs/'+key;
+    still.src=base+'.png';
+    idle.src=base+'-idle-south.png';
+    npcArt[key]={still,idle,phase:index*2};
   }
   const seeded = (x,y,extra=0) => { let n = Math.sin(x*127.1+y*311.7+extra*39.81)*43758.5453; return n-Math.floor(n); };
   function newItem(def,level=1,rolled=false,forcedRarity=null){
@@ -3173,12 +3176,20 @@ ${avatarExtra}
   function drawNPC(n){
       if(n.x+100<camera.x||n.x-100>camera.x+W||n.y+32<camera.y||n.y-150>camera.y+H)return;
       if(!globalThis.MareLobby)drawNPCProps(n);
-      const img=npcArt[n.art],ready=img&&img.complete&&img.naturalWidth;
-      const h=n.art==='ryuma'?72:76,w=Math.min(76,h*(ready?img.naturalWidth/img.naturalHeight:.68));
-      const spriteTop=Math.round(n.y-h);
+      const art=npcArt[n.art],still=art?.still,idle=art?.idle;
+      const animated=idle?.complete&&idle.naturalWidth===npcIdleSize*npcIdleFrames&&idle.naturalHeight===npcIdleSize;
+      const ready=still?.complete&&still.naturalWidth;
+      const h=n.art==='ryuma'?72:76,w=Math.min(76,h*(animated?1:ready?still.naturalWidth/still.naturalHeight:.68));
+      const spriteTop=Math.round(n.y-h),spriteLeft=Math.round(n.x-w/2),spriteWidth=Math.round(w);
       ctx.fillStyle='#08121e8d';ctx.beginPath();ctx.ellipse(n.x,n.y,18,5,0,0,Math.PI*2);ctx.fill();
-      if(ready){ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(img,Math.round(n.x-w/2),spriteTop,Math.round(w),h);ctx.restore();}
-      else {px(ctx,n.x-11,n.y-50,22,49,n.color);}
+      if(animated||ready){
+        ctx.save();ctx.imageSmoothingEnabled=false;
+        if(animated){
+          const frame=ambientReduced()?0:(Math.floor(world.time/npcIdleStep)+art.phase)%npcIdleFrames;
+          ctx.drawImage(idle,frame*npcIdleSize,0,npcIdleSize,npcIdleSize,spriteLeft,spriteTop,spriteWidth,h);
+        }else ctx.drawImage(still,spriteLeft,spriteTop,spriteWidth,h);
+        ctx.restore();
+      }else {px(ctx,n.x-11,n.y-50,22,49,n.color);}
       const nameY=spriteTop-8;
       const labelW=154,labelH=20;
       px(ctx,n.x-labelW/2,nameY-14,labelW,labelH,'#0c1220dd');
