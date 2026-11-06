@@ -143,8 +143,8 @@ for(const table of ["combat_rewards","character_commands"]) test(`failed combat 
 test("combat refuses reward overflow, exhausted version, recovery sessions and expired control without consuming victory",async()=>authDatabase(async({service,pool})=>{
   const f=await wonFixture(service,pool),command=f.input("combat.claim",5);
   for(const field of ["experience","gold"]) {
-    await pool.query(`UPDATE mare_game.character_progression SET ${field}=$1`,[field==="gold"?"9007199254740991":"9223372036854775807"]);
-    await assert.rejects(f.send(command),field==="gold"?{code:"23514",constraint:"market_wallet_limit"}:{code:"progression_limit"});
+    await pool.query(`UPDATE mare_game.character_progression SET ${field}=9223372036854775807`);
+    await assert.rejects(f.send(command),{code:"progression_limit"});
     await pool.query(`UPDATE mare_game.character_progression SET ${field}=$1`,[field==="gold"?"8":"20"]);
   }
   await pool.query("UPDATE mare_game.characters SET state_version=9007199254740991");

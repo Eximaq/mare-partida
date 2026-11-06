@@ -106,8 +106,8 @@ test("hunt rejects overflow, recovery sessions and superseded controllers; a fre
   const f=await fixture(service); await f.send(f.input("journey.begin",0)); await f.send(f.input("hunt.begin",1)); await mature(pool);
   const claim=f.input("hunt.claim",2);
   for(const field of ["experience","gold"]) {
-    await pool.query(`UPDATE mare_game.character_progression SET ${field}=$1`,[field==="gold"?"9007199254740991":"9223372036854775807"]);
-    await assert.rejects(f.send(claim),field==="gold"?{code:"23514",constraint:"market_wallet_limit"}:{code:"progression_limit"});
+    await pool.query(`UPDATE mare_game.character_progression SET ${field}=9223372036854775807`);
+    await assert.rejects(f.send(claim),{code:"progression_limit"});
     await pool.query(`UPDATE mare_game.character_progression SET ${field}=0`);
   }
   await pool.query("UPDATE mare_game.characters SET state_version=9007199254740991");
@@ -185,15 +185,10 @@ test("hunt migration is additive and repeatable, preserving old account, charact
       assert.deepEqual((await pool.query(`SELECT * FROM mare_game.${t}`)).rows,expected);
     }
     await f.send(f.input("hunt.begin",2));await mature(pool);
-    // Migration preserves even a historical balance above the new market cap.
-    // Such a balance cannot grow; a rejected claim must not consume its reward.
-    await assert.rejects(f.send(f.input("hunt.claim",3)),{code:"23514",constraint:"market_wallet_limit"});
-    assert.equal((await service.characterState(f.session.token,f.character.id)).gold,"9007199254740993");
-    await pool.query("UPDATE mare_game.character_progression SET gold=9007199254740983");
     const accepted=await f.send(f.input("hunt.claim",3));
-    assert.equal(accepted.state.gold,"9007199254740991");assert.equal(accepted.state.experience,"587");
+    assert.equal(accepted.state.gold,"9007199254741001");assert.equal(accepted.state.experience,"587");
     const ledger=(await pool.query("SELECT gold_before,gold_after,experience_before,experience_after FROM mare_game.character_hunt_rewards")).rows[0];
-    assert.deepEqual(ledger,{gold_before:"9007199254740983",gold_after:"9007199254740991",experience_before:"567",experience_after:"587"});
+    assert.deepEqual(ledger,{gold_before:"9007199254740993",gold_after:"9007199254741001",experience_before:"567",experience_after:"587"});
   },directory);
 });
 

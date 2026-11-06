@@ -73,9 +73,9 @@ test('failed receipt storage and overflow roll back reward, level, version and c
  await assert.rejects(a.send(request),{code:'23514'});assert.deepEqual((await a.read()).state,before.state);assert.deepEqual((await a.read()).contracts,before.contracts);
  assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.character_level_ledger')).rows[0].n,0);
  await pool.query('ALTER TABLE mare_game.character_commands DROP CONSTRAINT fail_contract_receipt');
- // The market now reserves wallet headroom at the stricter safe-integer boundary.
- await pool.query('UPDATE mare_game.character_progression SET gold=9007199254740991 WHERE character_id=$1',[a.c.id]);
- await assert.rejects(a.send(request),{code:'23514',constraint:'market_wallet_limit'});
+ // Unreserved legacy wallets retain BIGINT precision; reserved market headroom is tested separately.
+ await pool.query('UPDATE mare_game.character_progression SET gold=9223372036854775807 WHERE character_id=$1',[a.c.id]);
+ await assert.rejects(a.send(request),{code:'progression_limit'});
  assert.equal((await pool.query('SELECT count(*)::int n FROM mare_game.contract_claims')).rows[0].n,0);
  await pool.query('UPDATE mare_game.character_progression SET gold=$2 WHERE character_id=$1',[a.c.id,before.state.gold]);
  await pool.query('UPDATE mare_game.character_progression SET experience=9223372036854775807 WHERE character_id=$1',[a.c.id]);

@@ -72,8 +72,8 @@ test("owned state starts clean, survives reload, denies cross-account reads and 
       assert.deepEqual(await (await get()).json(), initial);
       // Only the disposable database owner sets this fixture; there is no HTTP write path.
       await pool.query("UPDATE mare_game.character_progression SET experience=$1,gold=$2 WHERE character_id=$3",
-        ["9007199254740993", "9007199254740991", character.id]);
-      const stored = { ...initial, experience: "9007199254740993", gold: "9007199254740991" };
+        ["9007199254740993", "9223372036854775807", character.id]);
+      const stored = { ...initial, experience: "9007199254740993", gold: "9223372036854775807" };
       assert.deepEqual(await (await get()).json(), stored, "BIGINT must not lose precision in JSON");
       await service.createCharacter(a.token, input);
       assert.deepEqual(await (await get()).json(), stored, "retry must never reset existing progression");
