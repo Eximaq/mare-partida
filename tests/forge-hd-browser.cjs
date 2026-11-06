@@ -11,6 +11,34 @@ const out=process.env.MARE_FORGE_EVIDENCE||path.join(os.tmpdir(),'mare-forge-hd'
 const errors=[];p.on('pageerror',e=>errors.push(e.message));
 const snapshot=()=>p.evaluate(()=>JSON.stringify({equipment:__forgeQA.game.equipment,inventory:__forgeQA.game.inventory,gold:__forgeQA.game.gold,materials:__forgeQA.game.materials,forgeSeq:__forgeQA.game.forgeSeq}));
 const before=await snapshot();
+const priorUpgrade=await p.evaluate(()=>{
+ const q=__forgeQA, weapon=q.game.equipment.weapon, plus=weapon.plus;
+ weapon.plus=7;q.render();return plus;
+});
+const beforeConfirmation=await snapshot();
+const upgrade=p.locator('[data-forge-action=upgrade]');
+await upgrade.click();
+const confirmation=p.getByRole('alertdialog');
+assert.match(await confirmation.evaluate(e=>getComputedStyle(e).borderImageSource),/hud-nautical-v2\/rope-frame\.png/);
+assert.match(await confirmation.locator('#confirmationMessage').evaluate(e=>getComputedStyle(e).fontFamily),/Barlow Semi Condensed/);
+assert.equal(await confirmation.locator('.confirmation-chance b').innerText(),'75%');
+assert.ok(await confirmation.locator('.confirmation-risk').isVisible());
+for(const [width,height] of [[1440,900],[768,1024],[390,844],[844,390]]){
+ await p.setViewportSize({width,height});
+ const bounds=await confirmation.boundingBox();
+ const action=await confirmation.locator('[data-confirm-accept]').boundingBox();
+ assert.ok(bounds.width<=500&&bounds.x>=0&&bounds.x+bounds.width<=width+1,JSON.stringify(bounds));
+ assert.ok(action.y>=0&&action.y+action.height<=height,JSON.stringify(action));
+ const {vertical,horizontal}=await confirmation.locator('.confirmation-content').evaluate(e=>({vertical:e.scrollHeight-e.clientHeight,horizontal:e.scrollWidth-e.clientWidth}));
+ assert.ok(horizontal<=1);
+ if(height>=844)assert.ok(vertical<=1,JSON.stringify({width,height,vertical}));
+ if(width===1440||width===390)await confirmation.screenshot({path:path.join(out,'confirmation-'+width+'.png')});
+}
+await p.keyboard.press('Escape');
+assert.ok(await confirmation.isHidden());
+assert.equal(await snapshot(),beforeConfirmation,'Cancelling must preserve resources and refinement');
+assert.ok(await upgrade.evaluate(e=>document.activeElement===e));
+await p.evaluate(plus=>{__forgeQA.game.equipment.weapon.plus=plus;__forgeQA.render();},priorUpgrade);
 for(const [width,height] of [[1920,1080],[1672,940],[1448,1086],[1366,768],[1280,720],[1024,768],[768,1024],[390,844],[360,740]]){
  await p.setViewportSize({width,height});
  for(const tab of ['upgrade','imbue','fusion','reforge']){
