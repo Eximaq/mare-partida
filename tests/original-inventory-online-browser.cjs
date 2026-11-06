@@ -105,7 +105,7 @@ refreshFighter();
   assert.equal(await p.locator('#heroPower').textContent(),new Intl.NumberFormat('pt-BR').format(wire.combatPreview.stats.power));
 
   await p.reload();await p.waitForFunction(()=>window.MareGameSession?.controlled&&!document.body.classList.contains('online-session-loading'));
-  assert.equal(await p.locator('#potionCount').textContent(),'5');assert.equal(await p.evaluate(()=>MareGameSession.data.online.attributes.allocated.strength),1);
+  assert.equal(await p.locator('#potionCount').textContent(),String(original.potions));assert.equal(await p.evaluate(()=>MareGameSession.data.online.attributes.allocated.strength),1);
   await p.setViewportSize({width:760,height:900});await p.keyboard.press('i');await p.waitForSelector('#invSearch');
   await p.waitForFunction(()=>window.__mareDiagnostics?.().lobby96.state==='ready',null,{timeout:90000});
   await p.waitForFunction(()=>{const c=document.getElementById('inventorySprite');return c&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0);},null,{timeout:90000});
