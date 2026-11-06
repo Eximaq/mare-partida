@@ -15,7 +15,7 @@
     crew_entry_blocked:'O prazo para entrar em outra tripulação ainda não terminou.', crew_already_member:'Já pertence a uma tripulação.',
     trade_offer_changed:'A oferta mudou. Revise a nova versão.', trade_stale_offer:'A oferta mudou. Revise a nova versão.',
     trade_inventory_full:'Não há espaço para concluir a troca. Nenhum item mudou de dono.', trade_busy:'Já existe uma negociação em andamento.',
-    trade_peer_busy:'O outro jogador está concluindo uma ação. Tente novamente.', trade_peer_offline:'O outro jogador precisa estar online.', trade_empty:'Inclua pelo menos um item antes de confirmar.', trade_item_ineligible:'Este item não pode ser negociado.', trade_already_active:'Um dos jogadores já está em uma troca.', trade_closed:'A sessão foi encerrada. Confira o histórico.', trade_target_missing:'Jogador não encontrado ou nome ambíguo.', mail_reward_pending:'Resgate os anexos antes de arquivar.', trade_expired:'O prazo da negociação terminou.', trade_target_offline:'Este jogador não está online.', trade_target_not_found:'Jogador não encontrado.',
+    trade_peer_busy:'O outro jogador está concluindo uma ação. Tente novamente.', trade_peer_offline:'O outro jogador precisa estar online.', trade_empty:'Inclua pelo menos um item antes de confirmar.', trade_offers_unlocked:'Os dois jogadores precisam travar as ofertas antes de confirmar.', trade_item_ineligible:'Este item não pode ser negociado.', trade_already_active:'Um dos jogadores já está em uma troca.', trade_closed:'A sessão foi encerrada. Confira o histórico.', trade_target_missing:'Jogador não encontrado ou nome ambíguo.', mail_reward_pending:'Resgate os anexos antes de arquivar.', trade_expired:'O prazo da negociação terminou.', trade_target_offline:'Este jogador não está online.', trade_target_not_found:'Jogador não encontrado.',
     trade_unavailable:'Trocas estão indisponíveis no momento.', trade_item_reserved:'Este item está reservado em uma negociação.',
     inventory_full:'A mochila está cheia. As entregas continuam no Correio.', state_version_conflict:'O personagem foi atualizado. Revise e tente novamente.',
     control_required:'Assuma o controle do personagem nesta aba.', control_conflict:'O personagem está sob controle de outra sessão.',
@@ -41,7 +41,7 @@
   function create(o) {
     let view='',viewEpoch=0,model=null,signature='',panelPending=false,badgePending=false,threadPending=false,mutating=false,badges={},statusText='',failed=false;
     let search='',friendsFilter='',mailTab='pending',mailPages=[],target=null,thread=null,privateOn=false,oldestAvailable=false,threadEpoch=0,readThrough=null,readWaitUntil=0;
-    let tradeHelp=false,tradeTarget=null,tradeHistory=[],profile=null,slotEdit=null,inventorySearch='',inventoryCategory='all',inventoryRarity='all',inventorySort='recent',tradeName='';
+    let tradeTarget=null,tradeHistory=[],tradeOutcome=null,profile=null,slotEdit=null,inventorySearch='',inventoryCategory='all',inventoryRarity='all',inventorySort='recent',tradeName='';
     const people=new Map(),tileItems=new Map(),dismissedTabs=new Set();
     const chat=o.chat,bar=chat.querySelector('.chat-tabs'),log=chat.querySelector('#gameLog'),input=chat.querySelector('#chatInput');
     const threadNode=document.createElement('section');threadNode.className='social-thread';threadNode.hidden=true;log.before(threadNode);
@@ -131,34 +131,102 @@
       if(inventorySort==='name')items.sort((a,b)=>o.item(a).name.localeCompare(o.item(b).name,'pt-BR'));
       else if(inventorySort==='rarity'){const order=['common','uncommon','rare','epic','legendary','supreme'];items.sort((a,b)=>order.indexOf(o.item(b).rarity)-order.indexOf(o.item(a).rarity));}
       else items.sort((a,b)=>(b.obtainedAt||0)-(a.obtainedAt||0));
-      const summary=(rows)=>rows.map(({item,quantity})=>esc(o.item(item)?.name||'Item')+' ×'+quantity).join(', ')||'Nenhum item';
-      const offer=(title,who,rows,locked,confirmed,own)=>'<section class="social-group social-offer"'+(own?' data-social-drop':'')+'><h3>'+title+'</h3><p>'+esc(who)+' <span class="social-tag">'+(confirmed?'Confirmada':locked?'Travada':'Em edição')+'</span></p><div class="social-grid">'+(rows.map(row=>tile(row,own&&!locked?'offer-edit':null,own?'own':'peer')).join('')||blank('Oferta vazia.'))+'</div></section>';
-      const edit=slotEdit&&!t?.ownLocked?'<form class="social-tools" data-social-form="quantity"><label for="socialTradeQuantity">Quantidade · '+esc(o.item(slotEdit.item)?.name)+'</label><input id="socialTradeQuantity" name="quantity" type="number" min="0" max="'+slotEdit.max+'" required value="'+slotEdit.value+'"><button class="social-button social-primary"'+(!canWrite()||t?.ownLocked?' disabled':'')+'>Aplicar</button>'+button('Fechar','offer-close')+'</form>':'';
+      const summary=rows=>rows.map(({item,quantity})=>esc(o.item(item)?.name||'Item')+' ×'+quantity).join(', ')||'Nenhum item';
+      const pill=(icon,label)=>'<span class="trade-pill"><span aria-hidden="true">'+icon+'</span> '+label+'</span>';
+      const offer=(title,who,rows,locked,confirmed,own)=>{
+        const tone=confirmed?'confirmed':locked?'accepted':'proposed';
+        const state=confirmed?pill('✓','Confirmada'):locked?pill('◆','Travada'):pill('✎','Em edição');
+        const count=rows.reduce((total,row)=>total+(row.quantity??1),0);
+        return '<section class="social-offer" data-trade-tone="'+tone+'"'+(own&&!locked?' data-social-drop':'')+
+          '><header class="trade-offer-head"><div><h3>'+title+'</h3><p>'+esc(who)+'</p></div>'+state+'</header>'+
+          '<div class="social-grid">'+(rows.map(row=>tile(row,own&&!locked?'offer-edit':null,own?'own':'peer')).join('')||
+          blank(own&&!locked?'Selecione na mochila.':'Nenhum item nesta oferta.'))+'</div>'+
+          '<small class="trade-offer-count">'+count+(count===1?' item':' itens')+'</small></section>';
+      };
+      const edit=slotEdit&&!t?.ownLocked?'<form class="social-tools trade-quantity" data-social-form="quantity">'+
+        '<label for="socialTradeQuantity">Quantidade <strong>'+esc(o.item(slotEdit.item)?.name)+'</strong></label>'+
+        '<input id="socialTradeQuantity" name="quantity" type="number" min="0" max="'+slotEdit.max+'" required value="'+slotEdit.value+'">'+
+        '<button class="social-button social-primary"'+(!canWrite()?' disabled':'')+'>Aplicar</button>'+button('Fechar','offer-close')+
+        (t.ownItems.some(row=>row.item.id===slotEdit.item.id)?'<small>Use 0 para retirar o item.</small>':'')+'</form>':'';
       const selects=(id,label,options,value)=>'<label class="social-field">'+esc(label)+' <select id="'+id+'" data-social-filter="'+id+'">'+options.map(([k,label])=>'<option value="'+k+'"'+(k===value?' selected':'')+'>'+esc(label)+'</option>').join('')+'</select></label>';
-      return '<div class="social-tools social-tools-wrap">'+button('?', 'trade-help','',{label:'Como funciona a troca',title:'Como funciona a troca'})+(!active&&(!t||t.initiatorId!==self())?'<form class="social-tools" data-social-form="trade"><label for="socialTradeName">Convidar jogador</label><input id="socialTradeName" name="name" maxlength="40" required placeholder="Nome público" value="'+esc(tradeName)+'"><button class="social-button social-primary"'+(!canWrite()?' disabled':'')+'>Convidar</button></form>':'')+'</div>'+
-        (tradeHelp?group('Como funciona a troca','<ol class="social-help"><li>Convide e aguarde o aceite.</li><li>Escolha itens negociáveis e revise as quantidades e atributos dos dois lados.</li><li>Os dois jogadores precisam travar a oferta e confirmar a mesma versão.</li><li>Uma alteração invalida as duas confirmações. Antes da conclusão, cancelar mantém os itens com seus donos.</li></ol>'):'')+
-        (active?'<div class="social-offers">'+offer('Sua oferta',o.selfName(),t.ownItems,t.ownLocked,t.ownConfirmed,true)+offer('Oferta do outro jogador',t.partnerName,t.peerItems,t.peerLocked,t.peerConfirmed,false)+'</div>'+
-          '<section class="social-group social-inventory"><h3>Seu inventário negociável</h3><div class="social-tools social-tools-wrap"><label class="social-field">Buscar <input id="socialInventorySearch" type="search" data-social-filter="inventory" maxlength="40" value="'+esc(inventorySearch)+'"></label>'+
-          selects('socialCategory','Tipo',[['all','Tudo'],['weapons','Armas'],['armor','Armaduras'],['fruits','Akuma no Mi'],['consumables','Consumíveis'],['materials','Materiais'],['pearls','Pérolas']],inventoryCategory)+
-          selects('socialRarity','Raridade',[['all','Todas'],['common','Comum'],['uncommon','Incomum'],['rare','Raro'],['epic','Épico'],['legendary','Lendário'],['supreme','Supremo']],inventoryRarity)+
-          selects('socialSort','Ordem',[['recent','Recentes'],['name','Nome'],['rarity','Raridade']],inventorySort)+'</div>'+
-          '<div class="social-grid social-bag-grid">'+(items.map(item=>tile(item,!t.ownLocked?'offer-add':null,'eligible')).join('')||blank('Nenhum item negociável para exibir.'))+'</div>'+edit+'</section>'+
-          (t.ownLocked&&t.peerLocked?'<div class="social-review"><p><b>Você entrega:</b> '+summary(t.ownItems)+'</p><p><b>Você recebe:</b> '+summary(t.peerItems)+'</p></div>':'')+
-          '<div class="social-tools social-tools-wrap">'+button(t.ownLocked?'Destravar minha oferta':'Travar minha oferta','trade-lock',t.id,{disabled:!canWrite(),primary:!t.ownLocked})+
-          button(t.ownConfirmed?'Aguardando outra confirmação':'Confirmar troca','trade-confirm',t.id,{disabled:!canWrite()||!t.ownLocked||!t.peerLocked||t.ownConfirmed,primary:true})+button('Cancelar troca','trade-cancel',t.id,{disabled:!canWrite()})+'</div>':
-          group('Convites',([...(t?[t]:[]),...(data.invites||[]).filter(i=>i.id!==t?.id)]).map(i=>'<div class="social-line"><div><b>'+esc(i.partnerName)+'</b><small>'+esc(i.initiatorId===self()?'Aguardando aceite':'Convite recebido')+' · até '+esc(stamp(i.expiresAt))+'</small></div><div class="social-actions">'+
-          (i.initiatorId===self()?button('Cancelar','trade-cancel',i.id,{disabled:!canWrite()}):button('Aceitar','trade-accept',i.id,{primary:true,disabled:!canWrite()})+button('Recusar','trade-decline',i.id,{disabled:!canWrite()}))+'</div></div>').join('')||blank('Nenhum convite em aberto.')))+
-        group('Histórico de trocas',history.map(r=>'<details class="social-receipt"><summary>'+esc(r.partnerName)+' · '+esc(stamp(r.completedAt))+'</summary><small>Comprovante '+esc(r.id)+'</small><p>Entregou: '+summary(r.sent)+'</p><p>Recebeu: '+summary(r.received)+'</p><div class="social-grid">'+[...r.sent,...r.received].map((row,n)=>tile(row,null,'receipt:'+r.id+':'+n)).join('')+'</div></details>').join('')||blank('Nenhuma troca concluída.'))+(data.nextHistory?button('Mais comprovantes','trade-more',data.nextHistory.id):'');
+      const help='<details class="trade-help" data-trade-details="help"><summary>Como funciona</summary><ol class="social-help">'+
+        '<li>Aceite o convite e escolha os itens que deseja oferecer.</li><li>Revise os dois lados e trave a sua oferta.</li>'+
+        '<li>Os itens só mudam de dono depois que os dois jogadores confirmam. Destravar uma oferta invalida as confirmações.</li></ol></details>';
+      const receipts='<details class="trade-history" data-trade-details="history"><summary>Histórico de trocas</summary>'+
+        (history.map(r=>'<details class="social-receipt" data-trade-tone="confirmed"'+attr('data-trade-details','receipt-'+r.id)+'><summary>'+
+          esc(r.partnerName)+' · '+esc(stamp(r.completedAt))+' '+pill('✓','Concluída')+'</summary><small>Comprovante '+esc(r.id)+'</small><p>Entregou: '+
+          summary(r.sent)+'</p><p>Recebeu: '+summary(r.received)+'</p><div class="social-grid">'+
+          [...r.sent,...r.received].map((row,n)=>tile(row,null,'receipt:'+r.id+':'+n)).join('')+'</div></details>').join('')||
+          blank('Nenhuma troca concluída.'))+(data.nextHistory?button('Mais comprovantes','trade-more',data.nextHistory.id):'')+'</details>';
+
+      if(!active){
+        const inviteForm=(!t||t.initiatorId!==self())?'<form class="social-tools trade-invite-form" data-social-form="trade">'+
+          '<label for="socialTradeName">Convidar jogador</label><input id="socialTradeName" name="name" maxlength="40" required placeholder="Nome público do personagem" value="'+esc(tradeName)+'">'+
+          '<button class="social-button social-primary"'+(!canWrite()?' disabled':'')+'>Enviar convite</button></form>':'';
+        const invites=[...(t?[t]:[]),...(data.invites||[]).filter(i=>i.id!==t?.id)].map(i=>{
+          const sent=i.initiatorId===self();
+          return '<article class="trade-invite" data-trade-tone="proposed"><div><b>'+esc(i.partnerName)+'</b><small>Válido até '+esc(stamp(i.expiresAt))+'</small></div>'+
+            pill('◷',sent?'Aguardando aceite':'Convite recebido')+'<div class="social-actions">'+
+            (sent?button('Cancelar','trade-cancel',i.id,{disabled:!canWrite()}):button('Aceitar','trade-accept',i.id,{primary:true,disabled:!canWrite()})+
+            button('Recusar','trade-decline',i.id,{disabled:!canWrite()}))+'</div></article>';
+        }).join('');
+        const outcome=tradeOutcome?'<div class="trade-outcome" role="status" data-trade-tone="'+tradeOutcome.tone+'">'+
+          '<strong>'+tradeOutcome.title+'</strong><p>'+tradeOutcome.text+'</p></div>':'';
+        return '<div class="trade-desk">'+outcome+'<div class="trade-lobby"><div><h3>Mesa de negociação</h3>'+
+          '<p>Combine uma troca de itens com outro jogador do porto.</p></div>'+help+'</div>'+inviteForm+
+          '<section class="trade-invitations"><h3>Convites</h3>'+(invites||blank('Nenhum convite em aberto.'))+'</section>'+receipts+'</div>';
+      }
+
+      const review=t.ownLocked&&t.peerLocked;
+      const hasItems=t.ownItems.length>0||t.peerItems.length>0;
+      const current=review?2:t.ownLocked||t.peerLocked?1:0;
+      let guidance='Selecione os itens da mochila e trave sua oferta quando estiver pronta.';
+      if(t.ownConfirmed)guidance='Sua confirmação foi registrada. Aguardando a confirmação do outro jogador.';
+      else if(review)guidance=hasItems?'Confira o que você entrega e recebe antes de confirmar.':'Destrave a oferta e inclua pelo menos um item.';
+      else if(t.ownLocked)guidance='Aguardando o outro jogador travar a oferta.';
+      else if(t.peerLocked)guidance='O outro jogador travou a oferta. Revise os itens e trave a sua.';
+      const steps=['Propor itens','Travar ofertas','Confirmar troca'].map((label,n)=>'<li'+
+        (n===current?' aria-current="step"':n<current?' class="trade-step-done"':'')+
+        '><span aria-hidden="true">'+(n<current?'✓':n+1)+'</span>'+label+'</li>').join('');
+      const inventory='<section class="social-inventory trade-stock"><header><h3>Seu inventário negociável</h3><small>'+
+        items.length+(items.length===1?' opção':' opções')+'</small></header><div class="social-tools trade-filters">'+
+        '<label class="social-field">Buscar <input id="socialInventorySearch" type="search" data-social-filter="inventory" maxlength="40" placeholder="Nome do item" value="'+esc(inventorySearch)+'"></label>'+
+        selects('socialCategory','Tipo',[['all','Tudo'],['weapons','Armas'],['armor','Armaduras'],['fruits','Akuma no Mi'],['consumables','Consumíveis'],['materials','Materiais'],['pearls','Pérolas']],inventoryCategory)+
+        selects('socialRarity','Raridade',[['all','Todas'],['common','Comum'],['uncommon','Incomum'],['rare','Raro'],['epic','Épico'],['legendary','Lendário'],['supreme','Supremo']],inventoryRarity)+
+        selects('socialSort','Ordem',[['recent','Recentes'],['name','Nome'],['rarity','Raridade']],inventorySort)+'</div>'+edit+
+        '<div class="social-grid social-bag-grid">'+(items.map(item=>tile(item,!t.ownLocked?'offer-add':null,'eligible')).join('')||
+        blank('Nenhum item negociável para exibir.'))+'</div></section>';
+      const reviewPanel='<section class="social-review trade-review"><div><b>Você entrega</b><p>'+summary(t.ownItems)+
+        '</p></div><div><b>Você recebe</b><p>'+summary(t.peerItems)+'</p></div></section>';
+      const editable=!t.ownLocked;
+      return '<div class="trade-desk trade-desk-active"><ol class="trade-steps" aria-label="Etapas da troca">'+steps+'</ol>'+
+        '<p class="trade-guidance" role="status">'+guidance+'</p><div class="social-offers">'+
+        offer('Sua oferta',o.selfName(),t.ownItems,t.ownLocked,t.ownConfirmed,true)+
+        offer('Outra oferta',t.partnerName,t.peerItems,t.peerLocked,t.peerConfirmed,false)+'</div>'+
+        (review?reviewPanel:inventory)+'<footer class="trade-actions">'+
+        button('Cancelar troca','trade-cancel',t.id,{disabled:!canWrite()})+
+        button(editable?'Travar minha oferta':'Destravar minha oferta','trade-lock',t.id,{disabled:!canWrite(),primary:editable})+
+        button('Confirmar troca','trade-confirm',t.id,{disabled:!canWrite()||!review||!hasItems||t.ownConfirmed,primary:review&&!t.ownConfirmed})+
+        '</footer><div class="trade-links">'+receipts+help+'</div></div>';
     }
     function refreshPortraits(rootNode){for(const c of rootNode.querySelectorAll('[data-social-portrait]')){const p=people.get(c.dataset.socialPortrait);if(p)o.draw(c,p);}}
     function replace(node,html){
       const focus=document.activeElement,focused=node.contains(focus);
       const list=[...node.querySelectorAll('.social-bag-grid, .social-content')],scrolls=list.map(el=>el.scrollTop);
-      const locator=focused&&[...node.querySelectorAll('button,input,select,[tabindex]')].findIndex(el=>el===focus);
+      const controls='button,input,select,summary,[tabindex]';
+      const locator=focused&&[...node.querySelectorAll(controls)].indexOf(focus);
+      const tradeControl=focused&&focus.closest('.trade-desk')?
+        [...focus.attributes].filter(({name})=>['id','data-social-action','data-social-id','data-social-item'].includes(name)).map(({name,value})=>[name,value]):null;
+      const tradeDetails=focused&&focus.matches('summary')?focus.parentElement.dataset.tradeDetails:null;
       const edit=focused&&focus instanceof HTMLInputElement&&focus.id?{id:focus.id,value:focus.value,pos:focus.selectionStart,end:focus.selectionEnd}:null;
+      const openDetails=new Set([...node.querySelectorAll('details[data-trade-details][open]')].map(el=>el.dataset.tradeDetails));
       node.innerHTML=html;
-      const el=edit?document.getElementById(edit.id):focused?node.querySelectorAll('button,input,select,[tabindex]')[locator]:null;
-      if(el&&focused){el.focus({preventScroll:true});if(edit){el.value=edit.value;if(edit.pos!=null)el.setSelectionRange(edit.pos,edit.end);}}
+      for(const details of node.querySelectorAll('details[data-trade-details]'))details.open=openDetails.has(details.dataset.tradeDetails);
+      const nextControls=[...node.querySelectorAll(controls)];
+      const el=tradeDetails?nextControls.find(x=>x.matches('summary')&&x.parentElement.dataset.tradeDetails===tradeDetails):
+        tradeControl?.length?nextControls.find(x=>tradeControl.every(([name,value])=>x.getAttribute(name)===value)):
+        focused?nextControls[locator]:null;
+      if(el&&focused){el.focus({preventScroll:true});if(edit&&el.id===edit.id){el.value=edit.value;if(edit.pos!=null)el.setSelectionRange(edit.pos,edit.end);}}
       [...node.querySelectorAll('.social-bag-grid, .social-content')].forEach((x,n)=>x.scrollTop=scrolls[n]||0);
       refreshPortraits(node);
     }
@@ -181,13 +249,23 @@
         const data=await o.read(query);if(epoch!==viewEpoch)return;
         if(selected==='mail'&&mailPages.length){const seen=new Set(data.letters.map(l=>l.id));data.letters.push(...mailPages.flatMap(p=>p.letters).filter(l=>!seen.has(l.id)));data.nextCursor=mailPages.at(-1).nextCursor;}
         if(selected==='friends'||selected==='messages'){remember(data);inbox=data.conversations||[];updateChatTabs();}
-        if(selected==='trade'){if(model?.trade?.id!==data.trade?.id||model?.trade?.offerVersion!==data.trade?.offerVersion)slotEdit=null;if(tradeHistory.length){const ids=new Set(data.history.map(r=>r.id));data.history.push(...tradeHistory.flatMap(p=>p.history).filter(r=>!ids.has(r.id)));data.nextHistory=tradeHistory.at(-1).nextHistory;}}
+        if(selected==='trade'){
+          const previous=model?.trade;
+          if(data.trade?.ownLocked||previous?.id!==data.trade?.id||previous?.offerVersion!==data.trade?.offerVersion)slotEdit=null;
+          if(data.trade?.status==='active')tradeOutcome=null;
+          else if(previous&&![data.trade,...(data.invites||[])].some(invite=>invite?.id===previous.id)){
+            const completed=(data.history||[]).some(receipt=>receipt.id===previous.id);
+            tradeOutcome=completed?{tone:'confirmed',title:'Troca concluída',text:'Abra o histórico para consultar o comprovante.'}:
+              {tone:'closed',title:'Negociação encerrada',text:'Envie um novo convite para voltar a negociar.'};
+          }
+          if(tradeHistory.length){const ids=new Set(data.history.map(r=>r.id));data.history.push(...tradeHistory.flatMap(p=>p.history).filter(r=>!ids.has(r.id)));data.nextHistory=tradeHistory.at(-1).nextHistory;}
+        }
         if(profile&&people.has(profile.id))profile=people.get(profile.id);
         model=data;failed=false;paint();
       }catch{if(epoch===viewEpoch){failed=true;paint();}}finally{panelPending=false;if(epoch!==viewEpoch&&view)void refreshPanel();}
     }
     function open(id,personToTrade){
-      if(view!==id){view=id;viewEpoch++;model=null;profile=null;statusText='';failed=false;mailPages=[];tradeHistory=[];tradeTarget=null;signature='';}
+      if(view!==id){view=id;viewEpoch++;model=null;profile=null;statusText='';failed=false;mailPages=[];tradeHistory=[];tradeTarget=null;tradeOutcome=null;signature='';}
       if(personToTrade){tradeName=personToTrade.name;tradeTarget=personToTrade;}
       paint();void refreshPanel();
     }
@@ -319,7 +397,6 @@
         try{const page=await o.read({view:'trade',beforeAt:cursor.at,beforeId:cursor.id});if(epoch!==viewEpoch||!model||model.nextHistory?.id!==id)return;tradeHistory.push(page);model.history.push(...page.history);model.nextHistory=page.nextHistory;paint();}catch(error){statusText=errorMessage(error);paint();}
         return;
       }
-      if(key==='trade-help'){tradeHelp=!tradeHelp;paint();return;}
       if(key==='offer-close'){slotEdit=null;paint();return;}
       const t=model?.trade;
       if(['offer-add','offer-edit'].includes(key)&&t&&!t.ownLocked){
