@@ -2195,22 +2195,43 @@
   let forgeOperationBusy=false;
   async function runForgeOperation(command){
     if(forgeOperationBusy)return false;forgeOperationBusy=true;
-    const beforeIds=new Set(game.inventory.map(i=>i.id)),stock=[...game.inventory,...Object.values(game.equipment).filter(Boolean)],ids=command.itemIds||[command.pearlItemId||command.itemId],inputs=ids.map(id=>stock.find(i=>i.id===id)).filter(Boolean),stage=document.createElement('div'),confirmation=document.querySelector('.confirmation-overlay');stage.className='forge-presentation-overlay';confirmation?.classList.add('forge-confirmation-hidden');
-    stage.innerHTML='<section class="forge-presentation" role="status" aria-live="polite"><div class="forge-presentation-art"></div><h3>Confirmando operação…</h3><p>Aguarde o resultado da Forja.</p><button type="button" class="dialog-button" disabled>AGUARDE</button></section>';document.body.append(stage);
+    const beforeIds=new Set(game.inventory.map(i=>i.id)),stock=[...game.inventory,...Object.values(game.equipment).filter(Boolean)];
+    const ids=['fuse','fuseEquipment'].includes(command.type)?(command.itemIds||[]):[command.pearlItemId||command.itemId];
+    const inputs=ids.map(id=>stock.find(i=>i.id===id)).filter(Boolean);
+    const stage=document.createElement('div'),confirmation=document.querySelector('.confirmation-overlay');
+    stage.className='forge-presentation-overlay';
+    stage.setAttribute('data-ui-modal','');
+    stage.setAttribute('role','dialog');
+    stage.setAttribute('aria-modal','true');
+    stage.setAttribute('aria-labelledby','forgeResultTitle');
+    stage.innerHTML='<section class="forge-presentation"><small class="forge-presentation-eyebrow">Forja das Correntes</small><div class="forge-presentation-art"></div><div class="forge-presentation-copy" aria-live="polite" aria-atomic="true"><h3 id="forgeResultTitle">Confirmando operação…</h3><p>Aguarde o resultado da Forja.</p></div><button type="button" disabled>AGUARDE</button></section>';
+    const card=stage.querySelector('.forge-presentation'),art=stage.querySelector('.forge-presentation-art');
+    const title=stage.querySelector('h3'),description=stage.querySelector('p'),button=stage.querySelector('button');
+    MareUI.bindModal(stage,()=>{if(!button.disabled)button.click();});
+    confirmation?.classList.add('forge-confirmation-hidden');
+    document.body.append(stage);MareUI.syncModals();
     try{
       const ok=await performForgeOperation(command);if(!ok)return false;
       const outcome=forgeOutcome,received=game.inventory.find(i=>!beforeIds.has(i.id)),item=received||[...game.inventory,...Object.values(game.equipment).filter(Boolean)].find(i=>i.id===command.itemId);
-      const art=stage.querySelector('.forge-presentation-art'),button=stage.querySelector('button'),config=MareForgeUI.presentation;let skipped=false;
-      const wait=ms=>new Promise(resolve=>{const timer=setTimeout(resolve,ms);button.onclick=()=>{skipped=true;clearTimeout(timer);resolve();};});
-      stage.querySelector('h3').textContent='Revelando resultado…';stage.classList.add('is-preparing');art.innerHTML=inputs.slice(0,5).map(i=>itemIcon(i.def,MareForge.gearName(i,itemDefs))).join('');button.disabled=false;button.textContent='PULAR ANIMAÇÃO';
-      if(!ambientReduced())await wait(config.prepareMs);
+      const config=MareForgeUI.presentation;
+      const wait=ms=>new Promise(resolve=>{
+        const finish=()=>{clearTimeout(timer);button.onclick=null;resolve();};
+        const timer=setTimeout(finish,ms);
+        button.onclick=finish;button.focus({preventScroll:true});
+      });
+      button.disabled=false;
+      if(!ambientReduced()){
+        title.textContent='Revelando resultado…';stage.classList.add('is-preparing');
+        art.innerHTML=inputs.slice(0,5).map(i=>itemIcon(i.def,MareForge.gearName(i,itemDefs))).join('');
+        button.textContent='PULAR ANIMAÇÃO';await wait(config.prepareMs);
+      }
       stage.classList.remove('is-preparing');art.innerHTML=item?itemIcon(item.def,MareForge.gearName(item,itemDefs)):'';
-      stage.querySelector('h3').textContent=outcome?.success?'Operação concluída':'Tentativa sem sucesso';
-      stage.querySelector('p').textContent=outcome?.message||'Confira o resultado na Forja.';
-      stage.querySelector('.forge-presentation').classList.add(outcome?.success?'is-success':'is-failure');
-      if(!ambientReduced()&&!skipped)await wait(config.revealMs);
+      title.textContent=outcome?.success?'Operação concluída':'Tentativa sem sucesso';
+      description.textContent=outcome?.message||'Confira o resultado na Forja.';
+      card.classList.add(outcome?.success?'is-success':'is-failure');
+      button.textContent='CONTINUAR';await wait(config.revealMs);
       return true;
-    }finally{stage.remove();confirmation?.classList.remove('forge-confirmation-hidden');forgeOperationBusy=false;}
+    }finally{confirmation?.classList.remove('forge-confirmation-hidden');MareUI.destroy(stage);forgeOperationBusy=false;}
   }
   function performForgeOperation(command){
     if(ONLINE_GAME){

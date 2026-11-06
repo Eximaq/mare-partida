@@ -4,6 +4,8 @@ const out=process.env.MARE_QA_DIR||path.join(os.tmpdir(),'mare-hud-density');
 const before=process.env.MARE_DENSITY_BEFORE==='1',base=process.env.MARE_DENSITY_BASE||'02d409b';
 const old=p=>cp.execFileSync('git',['show',base+':'+p],{encoding:'utf8',maxBuffer:12000000});
 const panels=[['haki'],['forge'],['inventory'],['character','status'],['character','talents'],['character','achievements'],['character','akuma'],['character','hierarchy'],['contracts'],['map'],['prison'],['myprofile'],['journal'],['settings'],['help'],['shop'],['hunt']];
+const refreshed=new Set(['akuma','hierarchy','contracts','map','prison','myprofile','journal','settings','help','shop','hunt','dev','dungeons','akuma-reveal','party','crew']);
+if(!before)panels.push(...['dev','dungeons','akuma-reveal','party','crew'].map(panel=>[panel]));
 (async()=>{
  fs.mkdirSync(out,{recursive:true});
  const browser=await chromium.launch({headless:true,executablePath:process.env.CHROME_PATH});
@@ -27,6 +29,7 @@ const panels=[['haki'],['forge'],['inventory'],['character','status'],['characte
   if(step==='class')await p.locator('#nextToClass').click();
   if(step==='appearance'){await p.locator('#nextToAppearance').click();await p.waitForFunction(()=>document.querySelector('#creationLookState').textContent.includes('Prévia atualizada'));}
   await p.evaluate(()=>document.fonts.ready);
+  if(!before)assert.match(await p.locator('.creation-dialog').evaluate(e=>getComputedStyle(e).borderImageSource),/hud-nautical-v2\/rope-frame\.png/);
   for(const [w,h] of sizes){await p.setViewportSize({width:w,height:h});await measure('creation-'+step,'.creation-dialog',w,h);const over=await p.locator('.creation-dialog').evaluate(e=>e.scrollWidth-e.clientWidth);assert(over<=2,JSON.stringify({step,w,h,over}));}await p.setViewportSize({width:1920,height:1080});
   if(step==='appearance')fs.writeFileSync(path.join(out,'appearance-layout.json'),JSON.stringify(await p.locator('.studio-look-controls').evaluate(e=>[...e.querySelectorAll('.appearance-field')].map(a=>({html:a.outerHTML.slice(0,280),height:a.getBoundingClientRect().height,css:getComputedStyle(a).gridTemplateRows}))),null,2));await capture('creation-'+step+'.png');
   const next=p.locator(step==='faction'?'#nextToClass':step==='class'?'#nextToAppearance':'#createCharacter');await next.scrollIntoViewIfNeeded();const nextBox=await next.boundingBox();assert(nextBox.y>=0&&nextBox.y+nextBox.height<=1080,'Creation action remains reachable');await p.locator('.creation-dialog').evaluate(e=>e.scrollTop=0);
@@ -49,11 +52,21 @@ const panels=[['haki'],['forge'],['inventory'],['character','status'],['characte
   await p.setViewportSize({width,height});
   for(const [panel,section]of panels){
    const name=section||panel;await p.mouse.move(1,1);await p.evaluate(([a,b])=>__densityQA.open(a,b),[panel,section]);await p.evaluate(()=>document.fonts.ready);await p.waitForTimeout(70);
-   await measure(name,'#panelOverlay .dialog',width,height);
+   const bounds=await measure(name,'#panelOverlay .dialog',width,height);
+   if(!before&&refreshed.has(name)){
+    assert.match(await p.locator('#panelOverlay .dialog').evaluate(e=>getComputedStyle(e).borderImageSource),/hud-nautical-v2\/rope-frame\.png/,name);
+    assert.ok(bounds.width<=1200&&bounds.height<=760,JSON.stringify({name,bounds}));
+   }
+   if(!before&&name==='map'&&width<=760){
+    const tabs=await p.locator('#voyageRegionTabs').boundingBox(),title=await p.locator('#dialogTitle').boundingBox();
+    const close=await p.locator('#closePanel').boundingBox();
+    assert(tabs.y>=Math.max(title.y+title.height,close.y+close.height)-1,'Map tabs sit below the title and close button');
+   }
    const overflow=await p.locator('#dialogBody').evaluate(e=>e.scrollWidth-e.clientWidth);
    assert(overflow<=2,JSON.stringify({name,width,height,overflow}));
    const close=await p.locator('#closePanel:visible,.op-close:visible').first().boundingBox();assert(close&&close.y>=0&&close.x+close.width<=width+1&&close.y+close.height<=height+1,JSON.stringify({name,width,height,close}));
-   if(width===1920||(!before&&['haki','forge','status'].includes(name)&&[393,1280].includes(width)))await capture(name+'-'+width+'.png');
+   const captureResponsive=['haki','forge','status'].includes(name)&&[393,1280].includes(width);
+   if(width===1920||(!before&&(captureResponsive||(refreshed.has(name)&&width===393))))await capture(name+'-'+width+'.png');
   }
  }
  assert.equal(await snapshot(),stable,'Opening, inspecting and resizing cannot mutate progression, gear, balances or Haki');
@@ -110,6 +123,6 @@ const panels=[['haki'],['forge'],['inventory'],['character','status'],['characte
   await p.locator('#closePanel').click();await p.evaluate(()=>__densityQA.open('help'));await p.keyboard.press('Escape');assert(await p.locator('#panelOverlay').evaluate(e=>e.classList.contains('hidden')));
  }
  assert.deepEqual(errors,[]);
- fs.writeFileSync(path.join(out,'measurements.json'),JSON.stringify({phase:before?'before':'after',records,errors},null,2));console.log('Density: all 20 views, eight viewports, read-only navigation and controls passed.');
+ fs.writeFileSync(path.join(out,'measurements.json'),JSON.stringify({phase:before?'before':'after',records,errors},null,2));console.log(`Density: ${panels.length+3} views, eight viewports, read-only navigation and controls passed.`);
  }finally{await browser.close();}
 })().catch(e=>{console.error(e);process.exitCode=1;});
