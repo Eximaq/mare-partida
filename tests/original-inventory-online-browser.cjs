@@ -7,7 +7,7 @@ const chars=require('../character-system.js'),birth=require('../character-catalo
 const make=(def,id)=>forge.normalizeItem({def,id,level:1,plus:0,rarity:'common',locked:false,obtainedAt:1},catalog.items,()=>0);
 const character={id:'11111111-1111-4111-8111-111111111111',name:'Navegante',classId:'sword',factionId:'pirate'};
 const allocated={strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0};
-const original={catalogId:'original-game-v1',inventory:[make(8,'server-boots')],equipment:Object.fromEntries([...catalog.inventorySlotsLeft,...catalog.inventorySlotsRight].map(k=>[k,null])),potions:4,materials:3,forgeVersion:4,forgeSeq:0,forgeHistory:[]};
+const original={catalogId:'original-game-v1',inventory:[make(8,'server-boots')],equipment:Object.fromEntries([...catalog.inventorySlotsLeft,...catalog.inventorySlotsRight].map(k=>[k,null])),potions:4,manaPotions:2,materials:3,forgeVersion:4,forgeSeq:0,forgeHistory:[]};
 original.equipment.weapon=make(0,'server-weapon');original.equipment.coat=make(6,'server-coat');
 original.inventory.push({id:'server-fragments',def:catalog.items.findIndex(d=>d.kind==='weapon-fragment'),materialId:forge.weaponFragment.id,quantity:20,rarity:'epic',level:1,plus:0,locked:false,obtainedAt:1,binding:'character',boundToCharacter:character.id});
 const wire={state:{characterId:character.id,version:1,level:2,experience:'80',gold:'85'},originalInventory:original,inventory:{items:[],equipped:{weapon:null,armor:null}},itemCatalog:[],attributes:{allocated,available:5},progression:{xpIntoLevel:'0',xpForNextLevel:'80'},journey:{started:false},hunt:{status:'locked'},combat:{status:'locked',playerHp:65,playerMaxHp:65},combatPreview:{maxHp:65,attackMin:19,armor:4,cooldownMs:1860,total:{strength:15,dexterity:14,vitality:9,intelligence:6,spirit:6}}};
@@ -107,7 +107,9 @@ refreshFighter();
   assert.equal(await p.locator('#heroPower').textContent(),new Intl.NumberFormat('pt-BR').format(wire.combatPreview.stats.power));
 
   await p.reload();await p.waitForFunction(()=>window.MareGameSession?.controlled&&!document.body.classList.contains('online-session-loading'));
-  assert.equal(await p.locator('#potionCount').textContent(),'4');assert.equal(await p.evaluate(()=>MareGameSession.data.online.attributes.allocated.strength),1);
+  assert.deepEqual(await p.evaluate(()=>{const {potions,manaPotions}=MareGameSession.data.online.originalInventory;return [potions,manaPotions];}),[4,2]);
+  await p.waitForFunction(()=>document.getElementById('potionCount')?.textContent==='4'&&document.getElementById('manaPotionCount')?.textContent==='2');
+  assert.equal(await p.evaluate(()=>MareGameSession.data.online.attributes.allocated.strength),1);
   await p.setViewportSize({width:760,height:900});await p.keyboard.press('i');await p.waitForSelector('#invSearch');
   await p.waitForFunction(()=>window.__mareDiagnostics?.().lobby96.state==='ready',null,{timeout:90000});
   await p.waitForFunction(()=>{const c=document.getElementById('inventorySprite');return c&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0);},null,{timeout:90000});

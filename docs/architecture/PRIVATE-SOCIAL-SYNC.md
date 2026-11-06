@@ -1,6 +1,6 @@
 # Private server synchronization with the current game
 
-This integration combines the main game through `fb8f3493` with the unmerged PR #232 revision `857dded7`. It is intended for the owner's existing private two-player installation. It does not certify capacity or authorize a public backend deployment.
+This integration combines the main game through `220092a9` with the unmerged PR #232 revision `857dded7`. It is intended for the owner's existing private two-player installation. It does not certify capacity or authorize a public backend deployment.
 
 ## Current feature coverage
 
@@ -20,7 +20,7 @@ This integration combines the main game through `fb8f3493` with the unmerged PR 
 
 The private branch already applied `0040_detach_claimed_dungeon_members.sql`. Main independently assigned 0040 to daily contracts. Replacing the old receipt or blindly accepting the sequence would undermine migration validation.
 
-The repair is now catalogued as 0049. Main subsequently used 0047 for the market and 0048 for merchant potions. The intermediate private 0047 repair is also recognized, with the exact same audited checksum. Only the exact previously shipped SHA-256 is accepted as its legacy alias. The preceding canonical history must be complete; unknown, modified, duplicate and gapped receipts still fail closed. The old receipt is never rewritten. A main-only database at 0048 applies 0049 once; the original private lineage applies nine missing main migrations. The already restored private Social installation applies only the two market migrations. A database with both private aliases is rejected. Both paths and rejection cases use real PostgreSQL regression tests.
+The repair is now catalogued as 0050. Main independently allocated 0040 to daily contracts, 0047 to the market and 0049 to wallet trigger/permission repairs. Private repair receipts named 0040, 0047 or 0049 are recognized only with the exact previously shipped SHA-256; at most one alias is accepted. Complete predecessors are required and unknown, modified, duplicate or gapped histories fail closed. No old receipt is rewritten. Official main at 0049 applies 0050 once; the original private lineage applies ten missing main migrations. The installed private market version adds only 0049_market_wallet_grants. All paths and rejection cases have real PostgreSQL regressions.
 
 ### Daily objectives in read-only presentation
 
@@ -72,3 +72,10 @@ Local market integration initially passed 66/71. Four failures were missing cust
 The complete Linux integration run also identified stale upgrade expectations (0049 and the zero Mana default), legacy fixtures above the newly introduced market-wallet ceiling, and the missing market action in the adversarial matrix. The corrected regressions pass locally. All 98 command actions now participate in 392 denied HTTP requests and 1,078 authority-field checks. Historical balances above the new market cap remain unchanged by migration; reward attempts fail atomically until balance headroom exists. No private account had to be clamped or altered. These are test/coverage updates, not relaxed gameplay or benchmark limits.
 
 After the market integration, measured transaction counts are 89 for the four-member reward and 64 for a first solo projection, within the unchanged 90/65 budgets. The scope manifest now records all 34 implemented feature areas against fb8f3493, including Party, shared lobby, crews, professions, Social, mail/trade and market; it is functional coverage, not a load-capacity certificate.
+
+
+## Final upstream wallet repair
+
+Main advanced again to `220092a9` (PR #272): preserve its immutable 0049 wallet trigger repair, explicit Mana privileges, restored reservation guard and mobile-preview correction. The private detached-dungeon repair moves to catalog slot 0050 while accepting its shipped aliases without rewriting database receipts. The seven lineage cases and four market transaction cases passed against isolated PostgreSQL. This integration retains the new upstream overflow/reservation regressions and the custom-role tests.
+
+The visual talents CI job previously exhausted its ten-minute total budget twice after more than six minutes downloading browser OS dependencies. Its overall job budget is now twenty minutes; test commands, assertions, gameplay timeouts and capacity acceptance limits are unchanged.

@@ -213,3 +213,27 @@ test("expiry skips a character held by the game worker and retries without losin
     assert.deepEqual(mail.attachments, [item]);
   })
 );
+
+test("only active reserves protect wallet headroom, and withdrawing returns every Berry", () =>
+  authDatabase(async ({ service, pool }) => {
+    const seller = await actor(service, pool, "Vendedor do Limite", 0);
+    const buyer = await actor(service, pool, "Comprador do Limite", Number.MAX_SAFE_INTEGER);
+    const item = gear();
+    await setStock(pool, seller.id, [item]);
+    const auction = await publish(pool, seller.id, item, { mode: "auction", minOffer: 1_000 });
+    const changeWallet = (delta: number) => pool.query(
+      "UPDATE mare_game.character_progression SET gold=gold+$2 WHERE character_id=$1", [buyer.id, delta],
+    );
+
+    await changeWallet(1); // Existing writers still work on wallets with no proposals.
+    await assert.rejects(listingAction(pool, buyer.id, auction, "offer", { amount: 1_000 }), { message: "market_wallet_limit" });
+    assert.equal((await balance(pool, buyer.id))[1], 0);
+    await changeWallet(-1);
+
+    const held = await listingAction(pool, buyer.id, auction, "offer", { amount: 1_000 });
+    await assert.rejects(changeWallet(1), { message: "market_wallet_limit" });
+    assert.deepEqual(await balance(pool, buyer.id), [Number.MAX_SAFE_INTEGER - 1_000, 1_000, 0]);
+    await listingAction(pool, buyer.id, auction, "withdraw", proposalKey(held));
+    assert.deepEqual(await balance(pool, buyer.id), [Number.MAX_SAFE_INTEGER, 0, 0]);
+  })
+);

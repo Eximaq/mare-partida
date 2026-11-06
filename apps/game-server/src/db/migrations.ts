@@ -22,10 +22,10 @@ async function loadMigrations(directory: string): Promise<Migration[]> {
 }
 
 function assertHistory(migrations: Migration[], applied: Applied[]) {
-  // Both private names shipped before main allocated their numbers independently.
+  // Private names shipped before main allocated their numbers independently.
   // Preserve their immutable receipts and accept only the same audited SQL.
-  const legacyNames = ['0040_detach_claimed_dungeon_members.sql', '0047_detach_claimed_dungeon_members.sql'];
-  const repairName = '0049_detach_claimed_dungeon_members.sql';
+  const legacyNames = ['0040_detach_claimed_dungeon_members.sql', '0047_detach_claimed_dungeon_members.sql', '0049_detach_claimed_dungeon_members.sql'];
+  const repairName = '0050_detach_claimed_dungeon_members.sql';
   const repairChecksum = '87423f59558537c4be6e3dd32d72ee625e1906fa0550436e7cdf3f619efed331';
   const aliases = applied.filter(row => legacyNames.includes(row.name));
   const legacy = aliases[0];

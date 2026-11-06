@@ -8,7 +8,7 @@ import {applyMigrations,isDatabaseReady} from '../../apps/game-server/src/db/mig
 
 const source=new URL('../../apps/game-server/migrations/',import.meta.url);
 const legacy='0040_detach_claimed_dungeon_members.sql';
-const current='0049_detach_claimed_dungeon_members.sql';
+const current='0050_detach_claimed_dungeon_members.sql';
 
 async function history(kind:'private'|'main'){
  const dir=await mkdtemp(join(tmpdir(),'mare-lineage-'));
@@ -27,18 +27,18 @@ test('the private 0040 repair upgrades to current social schema without rewritin
   const before=(await f.pool.query('SELECT * FROM mare_meta.schema_migrations ORDER BY name')).rows;
   assert.equal(before.length,40);
   const added=await applyMigrations(f.pool);
-  assert.equal(added.length,9);
+  assert.equal(added.length,10);
   assert.equal(added[0],'0040_daily_contracts.sql');
-  assert.equal(added.at(-1),'0048_merchant_potions.sql');
+  assert.equal(added.at(-1),'0049_market_wallet_grants.sql');
   for(const row of before)assert.deepEqual((await f.pool.query('SELECT * FROM mare_meta.schema_migrations WHERE name=$1',[row.name])).rows,[row]);
   assert.equal(await isDatabaseReady(f.pool),true);
   assert.deepEqual(await applyMigrations(f.pool),[]);
-  assert.equal((await f.pool.query("SELECT count(*)::int n FROM mare_meta.schema_migrations")).rows[0].n,49);
+  assert.equal((await f.pool.query("SELECT count(*)::int n FROM mare_meta.schema_migrations")).rows[0].n,50);
   assert((await f.pool.query("SELECT to_regclass('mare_game.contract_daily_cycles') present")).rows[0].present);
  },dir);
 });
 
-test('the official 48 migration history receives the dungeon repair exactly once',async()=>{
+test('the official 49 migration history receives the dungeon repair exactly once',async()=>{
  const dir=await history('main');
  await authDatabase(async f=>{
   assert.deepEqual(await applyMigrations(f.pool),[current]);
@@ -85,8 +85,22 @@ test('the intermediate 0047 private repair also upgrades without rewriting its r
  await copyFile(new URL(current,source),join(dir,intermediate));
  await authDatabase(async f=>{
   const before=(await f.pool.query('SELECT * FROM mare_meta.schema_migrations WHERE name=$1',[intermediate])).rows;
-  assert.deepEqual(await applyMigrations(f.pool),['0047_market.sql','0048_merchant_potions.sql']);
+  assert.deepEqual(await applyMigrations(f.pool),['0047_market.sql','0048_merchant_potions.sql','0049_market_wallet_grants.sql']);
   assert.deepEqual((await f.pool.query('SELECT * FROM mare_meta.schema_migrations WHERE name=$1',[intermediate])).rows,before);
+  assert.equal(await isDatabaseReady(f.pool),true);assert.deepEqual(await applyMigrations(f.pool),[]);
+ },dir);
+});
+
+
+test('the installed 0049 private repair upgrades wallet rules without rewriting history',async()=>{
+ const dir=await mkdtemp(join(tmpdir(),'mare-lineage-installed-'));
+ for(const name of await readdir(source))if(name<'0049')await copyFile(new URL(name,source),join(dir,name));
+ const intermediate='0049_detach_claimed_dungeon_members.sql';
+ await copyFile(new URL(current,source),join(dir,intermediate));
+ await authDatabase(async f=>{
+  const before=(await f.pool.query('SELECT * FROM mare_meta.schema_migrations ORDER BY name')).rows;
+  assert.deepEqual(await applyMigrations(f.pool),['0049_market_wallet_grants.sql']);
+  for(const row of before)assert.deepEqual((await f.pool.query('SELECT * FROM mare_meta.schema_migrations WHERE name=$1',[row.name])).rows,[row]);
   assert.equal(await isDatabaseReady(f.pool),true);assert.deepEqual(await applyMigrations(f.pool),[]);
  },dir);
 });
