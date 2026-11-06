@@ -93,6 +93,10 @@ await p.waitForFunction(()=>{
   const body=document.querySelector('.op-body-grid').getBoundingClientRect();
   return bag.top>=body.top-2&&bag.top<body.top+24;
 });
+assert(await p.locator('.op-pagination').evaluate(footer=>{
+  const centerY=selector=>{const r=footer.querySelector(selector).getBoundingClientRect();return r.top+r.height/2;};
+  return Math.abs(centerY('.op-bag-capacity')-centerY('button'))<4&&Math.abs(centerY('.op-page-count')-centerY('button'))<4;
+}),'Capacity, range and pagination share one row on a standard phone');
 await p.screenshot({path:out+'/inventory-mochila-393.png'});
 await p.setViewportSize({width:1366,height:768});
 await p.locator('.op-close').click();for(const faction of ['pirate','marine','revolutionary','government'])for(const level of [49,50,51]){await p.evaluate(({faction,level})=>{__invQA.game.factionId=faction;__invQA.game.level=level;__invQA.refresh()}, {faction,level});await p.evaluate(()=>document.fonts.ready);await p.waitForFunction(()=>[...document.querySelectorAll('.topbar img')].every(i=>i.complete));const snapshot=()=>p.locator('.topbar').evaluate(e=>({text:e.innerText,box:[e.clientWidth,e.clientHeight],styles:[getComputedStyle(e).backgroundImage,getComputedStyle(e).borderImageSource,getComputedStyle(e).fontFamily],images:[...e.querySelectorAll('img')].map(i=>i.getAttribute('src'))}));const pre=await snapshot();await p.evaluate(()=>__invQA.openPanel('inventory'));await p.locator('.op-close').click();assert.deepEqual(await snapshot(),pre,'HUD layout, content and materials preserved '+faction+' '+level);}

@@ -260,6 +260,9 @@
     & .op-panel-head {grid-template-columns:minmax(0,1fr) minmax(65px,.65fr) auto}
     & .op-tool-row {grid-template-columns:repeat(2,minmax(0,1fr))}
     & .op-pagination {gap:4px}
+    & .op-pagination .op-bag-capacity {width:auto; flex:0 0 auto}
+    & .op-pagination .op-bag-capacity .inv-ui-icon {width:18px; height:18px}
+    & .op-pagination .op-page-count {width:auto; flex:1 0 auto; text-align:left; white-space:nowrap}
     & .op-pagination button {min-width:32px; min-height:38px}
   }
   @media(max-width:360px) {
