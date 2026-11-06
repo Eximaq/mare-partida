@@ -1,0 +1,258 @@
+{
+  "reviewOnly": true,
+  "approved": false,
+  "productionEnabled": false,
+  "direction": "south",
+  "garment": "deck-rust",
+  "artworkStatus": "inspection-candidate",
+  "coverage": {
+    "idle": 4,
+    "walk": 8
+  },
+  "sourceReleaseSHA256": "ad4b24da17c189ada00507d5afe971fb8e0494f744eb3e8f3ff5806ba5000194",
+  "reported_usage": {
+    "generations": 10
+  },
+  "frames": [
+    {
+      "action": "idle",
+      "frameIndex": 0,
+      "raw": "raw-00.png",
+      "atlasIndex": 0,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "layerHash": "17ba676c33b84588b653c1a8ca84834cce37e5b11dc7481764937e31f7a58105",
+      "layerPixels": 246
+    },
+    {
+      "action": "idle",
+      "frameIndex": 1,
+      "raw": "raw-01.png",
+      "atlasIndex": 1,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "layerHash": "2119f15098d254870eddd6c2f9df881d25358f45a8f42ba930281cf1870f60ba",
+      "layerPixels": 221
+    },
+    {
+      "action": "idle",
+      "frameIndex": 2,
+      "raw": "raw-02.png",
+      "atlasIndex": 2,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "layerHash": "391da388073d907b94e4a48ced768e65fb8198111707eef07dd8220ada4f2e73",
+      "layerPixels": 247
+    },
+    {
+      "action": "idle",
+      "frameIndex": 3,
+      "raw": "raw-03.png",
+      "atlasIndex": 3,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "layerHash": "cd25008fbdbed7762a25cc31eb8209e60d50d9b580a5b783abbe00ad2633c1ef",
+      "layerPixels": 246
+    },
+    {
+      "action": "walk",
+      "frameIndex": 0,
+      "raw": "raw-04.png",
+      "atlasIndex": 4,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "layerHash": "117b2a267dab16237559317f2549f272b8d764b06c94150564de322bd86d272e",
+      "layerPixels": 223
+    },
+    {
+      "action": "walk",
+      "frameIndex": 1,
+      "raw": "raw-05.png",
+      "atlasIndex": 5,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -1
+      },
+      "layerHash": "1d3e1c14a1c655f648f6f8e9fc629e3b2cf91e1f518525620021de50eaaf6e94",
+      "layerPixels": 217
+    },
+    {
+      "action": "walk",
+      "frameIndex": 2,
+      "raw": "raw-06.png",
+      "atlasIndex": 6,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -3
+      },
+      "layerHash": "6a9f1ad35a2b9c24181a9eb0a4861d69eaa05e99319c0eb200c273fafd0ac9a2",
+      "layerPixels": 213
+    },
+    {
+      "action": "walk",
+      "frameIndex": 3,
+      "raw": "raw-07.png",
+      "atlasIndex": 7,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -3
+      },
+      "layerHash": "10be7d47745685446a90575c41c4ecc594611b921f9c4da0672eb8000cc481d9",
+      "layerPixels": 217
+    },
+    {
+      "action": "walk",
+      "frameIndex": 4,
+      "raw": "raw-08.png",
+      "atlasIndex": 8,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -2
+      },
+      "layerHash": "d6d9703f1dfec3c055075bc21ebc14a0e512739dbc286c2eb88ddceb7fa793a7",
+      "layerPixels": 220
+    },
+    {
+      "action": "walk",
+      "frameIndex": 5,
+      "raw": "raw-09.png",
+      "atlasIndex": 9,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -1
+      },
+      "layerHash": "5edb14c648fbf04d3396cbaa25b4d3b0ffefc867f7ab5f2e35bd7d3f340df973",
+      "layerPixels": 225
+    },
+    {
+      "action": "walk",
+      "frameIndex": 6,
+      "raw": "raw-10.png",
+      "atlasIndex": 10,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -3
+      },
+      "layerHash": "bdfe0162a10e5cb5f82438547702c67e633c2654ee2628e25cc14e32cc420add",
+      "layerPixels": 220
+    },
+    {
+      "action": "walk",
+      "frameIndex": 7,
+      "raw": "raw-11.png",
+      "atlasIndex": 11,
+      "nativePivot": [
+        32,
+        52
+      ],
+      "runtimePivot": [
+        42,
+        65
+      ],
+      "rootOffset": {
+        "x": 0,
+        "y": -3
+      },
+      "layerHash": "7c3e34aebbfb9aaca7f50bbc3f60200de5780415d2e1cdb229fe041303057cc7",
+      "layerPixels": 219
+    }
+  ]
+}
