@@ -117,6 +117,8 @@
     return {...stats,attack:base,physical:base,elemental:base,fruitOffenseVersion:offenseRules.version};
   }
   const castCoefficient=id=>id==='akuma_inu_dachshund'?.85:id==='akuma_uma_uma'?.55:1;
+  if(typeof module!=='undefined')require('./paramecia-rework-data.js');
+  root.MareParameciaReworks?.applyCatalog?.(catalog,supaRules);
   root.MareAkuma={offenseRules,offensiveStats,castCoefficient,ranks,rankRarities,rarityFor,familyFor,slotsPerRank,AkumaNoMiData,catalog,byId,isZoan,isFruit,registered,slotsForRank,passiveCount,register,migrate,itemData,bonusStats,applyGear,activeSkill,activeSkills,cooldownKey,supaRules,supaTargets,retaliate};
   if(typeof module!=='undefined')module.exports=root.MareAkuma;
 })(globalThis);

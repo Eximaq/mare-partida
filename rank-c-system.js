@@ -1,6 +1,7 @@
 'use strict';
 ((root)=>{
  if(typeof module!=='undefined')require('./rank-c-data.js');
+ const reworks=root.MareParameciaReworks||(typeof require==='function'?require('./paramecia-rework-data.js'):null);reworks?.apply('rankC',root.MareRankCData);
  const {rules,effects}=root.MareRankCData,images=new Map();let partyProvider=null;
  const visible=(entity,view)=>!!view&&entity.x>=view.x&&entity.y>=view.y&&entity.x<=view.x+view.width&&entity.y<=view.y+view.height;
  function cleanse(entity){
@@ -34,9 +35,9 @@
   if(p.elapsed>=p.ttl||(!p.homing&&p.travel>=rules.mato.range-1e-8))p.done=true;
  }
  function image(url){if(!images.has(url)){const im=new Image();im.src=url;images.set(url,im);}return images.get(url);}
- function preload(){for(const f of Object.values(effects))image(f.image);}
+ function preload(){for(const f of Object.values(effects))image(f.image);if(reworks)for(const key of ['mark-hold','mark-expire'])image(reworks.art.mato.effects[key].image);}
  function frame(kind,elapsed,loop=true){const fx=effects[kind];if(!loop&&elapsed>=fx.duration)return null;let t=Math.max(0,elapsed)%fx.duration;for(const f of fx.frames){if(t<f.duration)return f;t-=f.duration;}return fx.frames[0];}
- function draw(c,kind,x,y,elapsed,{width=64,height=width,loop=true}={}){const f=frame(kind,elapsed,loop);if(!f)return false;const im=image(effects[kind].image);if(!im.complete||!im.naturalWidth)return false;c.save();c.imageSmoothingEnabled=false;c.drawImage(im,f.x,f.y,f.w,f.h,Math.round(x-width/2),Math.round(y-height/2),width,height);c.restore();return true;}
+ function draw(c,kind,x,y,elapsed,{width=64,height=width,loop=true,charges=null}={}){const mark=kind==='mark'?reworks.markVisual(elapsed):null,legacy=frame(kind,elapsed,loop),f=kind==='mark'?mark?.frame:legacy&&reworks.frame(effects[kind],legacy,elapsed,loop?'loop':'once',kind);if(!f)return false;const im=image(mark?mark.effect.image:effects[kind].image);if(!im.complete||!im.naturalWidth)return false;c.save();c.imageSmoothingEnabled=false;c.drawImage(im,f.x,f.y,f.w,f.h,Math.round(x-width/2),Math.round(y-height/2),width,height);if(kind==='mark'&&charges!==null){const scale=width/128;for(let i=0;i<4;i++){const xx=x+(-21+i*14)*scale,yy=y+48*scale;c.fillStyle=i<charges?'#ffd29c':'#233c4d';c.strokeStyle=i<charges?'#ba4a49':'#67808a';c.lineWidth=1.5*scale;c.beginPath();c.moveTo(xx,yy);c.lineTo(xx+4*scale,yy+5*scale);c.lineTo(xx,yy+10*scale);c.lineTo(xx-4*scale,yy+5*scale);c.closePath();c.fill();c.stroke();}}c.restore();return true;}
  const controlled=(entity,worldTime=0)=>entity.talentControl?.remaining>0||entity.isStunned||entity.isFrozen||entity.isRooted||entity.doruRootUntil>worldTime||entity.stunUntil>Date.now()||entity.frozenUntil>Date.now();
  const api={controlled,rules,effects,visible,cleanse,healParty,mark,marked,clearMark,projectile,stepProjectile,preload,frame,draw,setPartyProvider(provider){if(provider!==null&&typeof provider!=='function')throw TypeError('Party provider must be a function');partyProvider=provider;},partyMembers(context){return partyProvider?.(context)||[];}};
  root.MareRankC=api;if(typeof module!=='undefined')module.exports=api;

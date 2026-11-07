@@ -26,7 +26,7 @@
   const nativeFacing=directions[direction]||direction;
   const facing=action==='hurt'?((entry.dungeonBoss&&entry.clips.hurt?.[nativeFacing])?nativeFacing:'south'):nativeFacing;
   const aliases={dash:'special',charge:'special',finish:'special',headbutt:'special',bite:'special',tail:'special-2'};
-  action=key==='phoenix'&&action==='dash'?'dash':aliases[action]||action;
+  action=key==='phoenix'&&action==='idle'?'walk':key==='phoenix'&&action==='dash'?'dash':aliases[action]||action;
   // Authored locomotion aliases remain valid. Playable forms never borrow an unrelated action.
   const requested=entry.clips[action]?.[facing];
   if(entry.dungeonBoss)return {entry,clip:requested,requested:!!requested,action,facing};

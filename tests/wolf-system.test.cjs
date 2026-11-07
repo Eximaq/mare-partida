@@ -16,20 +16,16 @@ assert.equal(W.cycle(2),.5);assert.equal(W.cycle(2*1.3),1/2.6);
 assert.equal(W.auraActive({equipped:W.rules.id,transformed:true,hp:1,until:6000},5999),true);
 assert.equal(W.auraActive({equipped:W.rules.id,transformed:true,hp:1,until:6000},6000),false);
 assert.equal(W.auraActive({equipped:W.rules.id,transformed:false,hp:1,until:6000},1),false);
-// The aura follows the same feet anchor in every direction, vertically extended behind the shoulders, with its base held at the feet.
+// The approved open-claw aura uses an un-stretched foot anchor and expires with the skill.
 global.Image=class {constructor(){this.complete=true;this.naturalWidth=1024;}addEventListener(){}};
-const calls=[],ctx={save(){},restore(){},drawImage(...args){calls.push(args)}};
+const calls=[],ctx={globalAlpha:1,save(){},restore(){},drawImage(...args){calls.push(args)}};
 assert.equal(W.drawEffect(ctx,'aura',100,200,800),true);
-assert.equal(calls[0][6],Math.round(200+1.6-64*2.3));
-assert.equal(calls[0][5],Math.round(100-32*1.8));
-assert.equal(calls[0][7],Math.round(64*1.8));
-assert.equal(calls[0][8],Math.round(64*2.3));
-assert.ok(Math.abs(calls[0][6]+calls[0][8]-202)<=1,'Aura base stays at the feet');
-for(const kind of ['aura','bleed']){
- const source=require('../assets/akuma/wolf/'+(kind==='aura'?'firelight-take-2':'firelight-take-4')+'.json');
- assert.deepEqual(W.effects[kind].frames,source.frames.map(f=>({...f.frame,duration:f.duration})));
- assert.deepEqual(W.effects[kind].anchor,source.meta.anchor);
-}
+assert.equal(calls[0][6],76);assert.equal(calls[0][5],52);
+assert.equal(calls[0][7],96);assert.equal(calls[0][8],128);
+assert.equal(W.drawEffect(ctx,'aura',100,200,6000),false);
+const source=require('../assets/akuma/wolf/firelight-take-4.json');
+assert.deepEqual(W.effects.bleed.frames,source.frames.map(f=>({...f.frame,duration:f.duration})));
+assert.deepEqual(W.effects.bleed.anchor,source.meta.anchor);
 for(const action of ['idle','attack','charge','finish','walk'])for(const direction of ['front','back','left','right']){
  for(let i=0;i<30;i++)assert.equal(W.drawActor(ctx,100,200,{action,direction,time:i/12,scale:W.visuals.worldScale}),true);
 }
