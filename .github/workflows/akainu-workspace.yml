@@ -10,19 +10,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
         with:
-          node-version: '24.15.0'
-      - run: npm ci --ignore-scripts
-      - name: Empacotar apenas fonte versionado e dependencias de teste
+          fetch-depth: 0
+      - name: Empacotar somente fontes versionados para revisao
         run: |
           mkdir -p /tmp/akainu-workspace
-          git archive --format=tar.gz HEAD > /tmp/akainu-workspace/source.tar.gz
-          tar -czf /tmp/akainu-workspace/node_modules.tar.gz node_modules
-          cp "$(command -v node)" /tmp/akainu-workspace/node
-          git rev-parse HEAD > /tmp/akainu-workspace/source-ref.txt
+          git archive --format=tar.gz HEAD > /tmp/akainu-workspace/branch.tar.gz
+          git archive --format=tar.gz origin/main > /tmp/akainu-workspace/main.tar.gz
+          git rev-parse HEAD > /tmp/akainu-workspace/branch-ref.txt
+          git rev-parse origin/main > /tmp/akainu-workspace/main-ref.txt
+          git diff 8458c468ee929a57b8a4c0f6bf3a9b6327408c8b origin/main --stat > /tmp/akainu-workspace/main-changes.txt
       - uses: actions/upload-artifact@v4
         with:
-          name: akainu-source-workspace
+          name: akainu-source-review
           path: /tmp/akainu-workspace
           retention-days: 1
