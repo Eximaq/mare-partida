@@ -5,6 +5,7 @@
  if(!root.MareRankAExpansion&&typeof module!=='undefined')require('./rank-a-expansion.js');
  if(!root.MareRankS&&typeof module!=='undefined')require('./rank-s-system.js');
  const rankS=root.MareRankS,ext=root.MareRankAExpansion;
+ const reworks=root.MareParameciaReworks||(typeof require==='function'?require('./paramecia-rework-data.js'):null);reworks?.apply('rankA',root.MareRankAData);
  const {rules,effects}=root.MareRankAData,images=new Map(),loads=new Map(),EPS=1e-8;
  const has=id=>!!rankS?.has(id)||Object.values(rules).some(r=>r.id===id),create=()=>({room:null,jobs:[],trails:[]});
  const roomActive=(s,t)=>!!s?.room&&t+EPS>=s.room.started+.25&&t<s.room.until&&(!Number.isFinite(s.room.realUntil)||Date.now()<s.room.realUntil);
@@ -75,9 +76,14 @@
   });
  }
  function clear(s,enemies=[]){if(s.rankS)rankS?.clear(s.rankS,enemies);ext.clear(s,enemies);s.room=null;s.jobs=[];s.trails=[];for(const m of enemies)for(const k of ['rankAStunUntil','petrifiedUntil','rankADefenseUntil'])delete m[k];}
- function preload(id){if(rankS?.has(id))return rankS.preload(id);if(typeof Image!=='function')return Promise.resolve(false);const keys=Object.values(rules).find(r=>r.id===id)?.effectKeys||(id===rules.ope.id?['room','tact','gamma']:['mellow','kiss','rain']);return Promise.all(keys.map(key=>{if(!loads.has(key)){const im=new Image();images.set(key,im);loads.set(key,new Promise(resolve=>{im.onload=()=>resolve(im.naturalWidth>0);im.onerror=()=>resolve(false);im.src=effects[key].image;}));}return loads.get(key);})).then(values=>values.every(Boolean));}
+ function preload(id){if(rankS?.has(id))return rankS.preload(id);if(typeof Image!=='function')return Promise.resolve(false);const keys=Object.values(rules).find(r=>r.id===id)?.effectKeys||(id===rules.ope.id?['room','tact','gamma']:['mellow','kiss','rain']);
+  const entries=keys.map(key=>[key,effects[key].image]);const fruit=id==='akuma_ito_ito'?'ito':id==='akuma_ope_ope'?'ope':id==='akuma_doku_doku'?'doku':null;
+  if(fruit&&reworks)for(const [key,fx]of Object.entries(reworks.art[fruit].effects))if(fruit==='ito'||fruit==='doku'||key==='shambles')entries.push([fruit+':'+key,fx.image]);
+  return Promise.all(entries.map(([key,url])=>{if(!loads.has(key)){const im=new Image();images.set(key,im);loads.set(key,new Promise(resolve=>{im.onload=()=>resolve(im.naturalWidth>0);im.onerror=()=>resolve(false);im.src=url;}));}return loads.get(key);})).then(values=>values.every(Boolean));}
 
- function paint(ctx,key,index,x,y,w,h=w,rotation=0,flip=false,crop=null){const im=images.get(key),f=effects[key].frames[index];if(!im?.complete||!im.naturalWidth||!f)return false;ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(Math.round(x),Math.round(y));ctx.rotate(rotation);if(flip)ctx.scale(-1,1);ctx.drawImage(im,f.x+(crop?.x||0),f.y+(crop?.y||0),crop?.w||f.w,crop?.h||f.h,-w/2,-h/2,w,h);ctx.restore();return true;}
+
+ function paint(ctx,key,index,x,y,w,h=w,rotation=0,flip=false,crop=null){const im=images.get(key),f=reworks.frame(effects[key],effects[key].frames[index],0,'loop',key);if(!im?.complete||!im.naturalWidth||!f)return false;if(effects[key].rework)crop=null;ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(Math.round(x),Math.round(y));ctx.rotate(rotation);if(flip)ctx.scale(-1,1);ctx.drawImage(im,f.x+(crop?.x||0),f.y+(crop?.y||0),crop?.w||f.w,crop?.h||f.h,-w/2,-h/2,w,h);ctx.restore();return true;}
+ function paintRework(ctx,fruit,key,index,x,y,w=null,h=null,rotation=0,anchor=null){const fx=reworks.art[fruit]?.effects[key],im=images.get(fruit+':'+key),f=fx?.frames[Math.max(0,Math.min(fx.frames.length-1,index))];if(!f||!im?.complete||!im.naturalWidth)return false;w=w??f.w;h=h??f.h;let a=anchor||fx.anchor||{x:f.w/2,y:f.h/2};if(a.x<=1&&a.y<=1)a={x:a.x*f.w,y:a.y*f.h};ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(Math.round(x),Math.round(y));ctx.rotate(rotation);ctx.drawImage(im,f.x,f.y,f.w,f.h,-a.x*w/f.w,-a.y*h/f.h,w,h);ctx.restore();return true;}
  function frame(key,ratio){return Math.min(effects[key].frames.length-1,Math.floor(Math.max(0,ratio)*effects[key].frames.length));}
  function layout(j,target,now){
   const progress=Math.min(1,Math.max(0,(now-j.started)/j.duration));
@@ -87,13 +93,13 @@
  }
  function draw(ctx,s,now,enemies,layer='all',hero=null){
   if(s.rankS)rankS?.draw(ctx,s.rankS,now,enemies,layer,hero);
-  ext.draw(ctx,s,now,enemies,layer,paint,effects,hero);
+  ext.draw(ctx,s,now,enemies,layer,paint,effects,hero,paintRework);
   if(layer!=='back'&&s.room&&now<s.room.until){const age=now-s.room.started,grow=Math.min(1,age/.25);ctx.save();ctx.globalAlpha=.55;paint(ctx,'room',roomFrame(age),s.room.x,s.room.y-160*grow,640*grow,640*grow);ctx.restore();}
   for(const j of s.jobs){if(layer==='back'&&j.kind!=='gamma'||layer==='front'&&j.kind==='gamma')continue;const age=now-j.started,t=enemies.find(m=>m.id===j.targetId)||j.point;if(j.kind==='mellow'){const k=Math.min(1,age/j.duration),[dx,dy]=j.direction;paint(ctx,'mellow',frame('mellow',k),j.origin.x+dx*96*k,j.origin.y-30+dy*96*k,192*k,192*k,Math.atan2(dy,dx));}
    else if(j.kind==='kiss'){const angle=t?Math.atan2(t.y-j.origin.y,t.x-j.origin.x):0;paint(ctx,'kiss',j.hit?14+Math.min(10,Math.floor((now-j.impact)/.08)):Math.floor(age/.05)%14,j.x,j.y-32,80,80,angle);}
    else if(t){const p=layout(j,t,now);paint(ctx,j.kind,frame(j.kind,age/j.duration),p.x,p.y,p.width,p.height);}
   }
-  for(const f of layer==='back'?[]:s.trails){ctx.save();ctx.globalAlpha=1-(now-f.started)/.25;ctx.strokeStyle='#72f4ff';ctx.lineWidth=3;ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(f.x,f.y-30);ctx.lineTo(f.to.x,f.to.y-30);ctx.stroke();ctx.restore();}
+  for(const f of layer==='back'?[]:s.trails){if(reworks&&paintRework(ctx,'ope','shambles',3+Math.min(8,Math.floor((now-f.started)/.25*9)),f.x,f.y-38,128,128)){paintRework(ctx,'ope','shambles',3+Math.min(8,Math.floor((now-f.started)/.25*9)),f.to.x,f.to.y-38,128,128);continue;}ctx.save();ctx.globalAlpha=1-(now-f.started)/.25;ctx.strokeStyle='#72f4ff';ctx.lineWidth=3;ctx.setLineDash([7,6]);ctx.beginPath();ctx.moveTo(f.x,f.y-30);ctx.lineTo(f.to.x,f.to.y-30);ctx.stroke();ctx.restore();}
  }
  const api={rules,effects,has,create,roomActive,roomFrame,skill,cooldownKey,stunned,petrified,defenseFactor,valid,cast,step,clear,preload,draw,damage,direction,layout,protect:ext.protect,domeActive:ext.domeActive,attackBlocked:ext.attackBlocked,dragged:(m,t)=>ext.dragged(m,t)||!!rankS?.dragged(m,t),slowFactor:(m,t)=>Math.min(ext.slowFactor(m,t),rankS?.slowFactor(m,t)??1),parasiteFrame:ext.parasiteFrame,cleanseControl:ext.cleanseControl,attackTags:ext.attackTags};root.MareRankA=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);

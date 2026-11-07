@@ -44,7 +44,7 @@ function drawAt(time, moving = false) {
   assert.equal(draws.length, 1);
   return draws[0];
 }
-assert.match(drawAt(10)[0].url, /idle-north\.png$/);
+assert.match(drawAt(10)[0].url, /walk-north\.png$/);
 for (const direction of ['south', 'north', 'east', 'west', 'front', 'back', 'left', 'right']) {
   actor.direction = direction;
   assert.equal(S.hurt(actor, 5, 20), true);
