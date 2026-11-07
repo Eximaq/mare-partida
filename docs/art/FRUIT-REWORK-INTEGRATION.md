@@ -19,7 +19,13 @@ The new assets are from the owner-requested preview packages, generated with Ope
 
 Focused regression tests include Rank S behavior, final ticks, direction/anchoring, cancellation plus recast, and cosmetic tails. Asset rectangles were checked against PNG bounds. Production draw modules were rendered using Node canvas and inspected.
 
-Real browser/gameplay QA is not complete: Chromium aborted with socket operation not permitted, and the connected browser could not reach the local server. Node canvas inspection is not a substitute for browser, mobile, equipment, performance or online end-to-end tests. Run those before merge/publication. Database integration tests require a configured test service and were not claimed as passed.
+Real Chromium CI smoke passed on the release revision 89b6677f: 72 renderer scenarios at 1366px and 393px, 863 Paramecia frame rectangles against decoded images, nonempty Canvas output, and no page errors or failed image/script requests. The artifact includes screenshots and `reworks/summary.json`. This verifies production renderers in a browser, not complete gameplay or performance.
+
+The existing Rank S gameplay fixture reached its reload check, which still expected the retired Mera aura path. That exact expectation was updated to the integrated path. Its earlier field screenshots showed “Preparando o mapa”: freezing RAF also froze the timestamp used to incrementally build navigation. The test now builds navigation and waits for map readiness before every screenshot, with an assertion that simulation time remains unchanged. Fresh CI evidence of the in-game field is still required after this fixture correction.
+
+Captain equipment decoding also needs a fresh CI run. All 179 item-HD PNGs in source and dist decode locally and are unchanged from the base. The test now explicitly requests lazy images, waits for loaded dimensions, and retains strict decode checks with source-URL diagnostics; a missing or corrupt image still fails. The earlier log did not identify the failed image, so a lazy-load race remains a diagnosis to verify rather than a proven asset defect.
+
+Local Chromium still aborts with socket operation not permitted, and the connected browser cannot reach the local server. Database integration tests require a configured test service and were not claimed as passed.
 
 ## Reversibility
 
