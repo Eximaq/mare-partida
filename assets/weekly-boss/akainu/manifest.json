@@ -14,7 +14,7 @@
         "row": 0,
         "anchor": [
           48,
-          88
+          90
         ],
         "fps": 12,
         "loop": true
@@ -26,7 +26,7 @@
         "row": 1,
         "anchor": [
           48,
-          88
+          90
         ],
         "fps": 12,
         "loop": true
@@ -38,7 +38,7 @@
         "row": 2,
         "anchor": [
           48,
-          88
+          90
         ],
         "fps": 12,
         "loop": true
@@ -50,7 +50,7 @@
         "row": 3,
         "anchor": [
           48,
-          88
+          90
         ],
         "fps": 12,
         "loop": true
@@ -59,48 +59,48 @@
     "walk": {
       "south": {
         "image": "assets/weekly-boss/akainu/walk.webp",
-        "size": 96,
+        "size": 128,
         "frames": 4,
         "row": 0,
         "anchor": [
-          48,
-          86
+          64,
+          116
         ],
         "fps": 8,
         "loop": true
       },
       "west": {
         "image": "assets/weekly-boss/akainu/walk.webp",
-        "size": 96,
+        "size": 128,
         "frames": 4,
         "row": 1,
         "anchor": [
-          48,
-          86
+          64,
+          116
         ],
         "fps": 8,
         "loop": true
       },
       "east": {
         "image": "assets/weekly-boss/akainu/walk.webp",
-        "size": 96,
+        "size": 128,
         "frames": 4,
         "row": 2,
         "anchor": [
-          48,
-          86
+          64,
+          116
         ],
         "fps": 8,
         "loop": true
       },
       "north": {
         "image": "assets/weekly-boss/akainu/walk.webp",
-        "size": 96,
+        "size": 128,
         "frames": 4,
         "row": 3,
         "anchor": [
-          48,
-          86
+          64,
+          116
         ],
         "fps": 8,
         "loop": true
@@ -322,5 +322,10 @@
     "source": "hurt",
     "fadeMs": 1200,
     "newAuthoredDeathFrames": false
-  }
+  },
+  "normalizationNotes": [
+    "Native RGB/alpha recovery; no resampling.",
+    "Walk components crossing old row boundaries restored without losing or duplicating alpha; fixed translation per direction.",
+    "Idle reuses the complete authored neutral punch pose; no generated substitute."
+  ]
 }
