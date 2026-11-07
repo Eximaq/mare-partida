@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Recuperar somente blocos completos com caminhos validados
+      - name: Recuperar somente fontes; configuracao CI permanece intacta
         run: |
           python3 - <<'PY'
           import base64,zlib,re,hashlib,subprocess,json
@@ -28,7 +28,7 @@ jobs:
           for i in [1,2,*range(17,48)]:
               block=chunks[i];name=re.search(r'^\+\+\+ b/(.+)$',block,re.M).group(1)
               assert not name.startswith('/') and '..' not in Path(name).parts and not name.endswith(('.env','.png','.webp'))
-              if i==18 or 30<=i<=46:
+              if name.startswith('.github/') or i==18 or 30<=i<=46:
                   pending.append(block);continue
               p=Path('/tmp/recover.patch');p.write_text(block)
               check=subprocess.run(['git','apply','--check','--unidiff-zero',str(p)],capture_output=True,text=True)
@@ -39,7 +39,6 @@ jobs:
               if p.endswith('.json'):json.loads(Path(p).read_text())
               if p.endswith(('.js','.cjs')):subprocess.run(['node','--check',p],check=True)
           pending_path='tools/akainu-recovery-review.patch';Path(pending_path).write_text(''.join(pending));paths.append(pending_path)
-          # Retain the truncated final block for reading only; it is never applied.
           tail='tools/akainu-browser-recovery.txt';Path(tail).write_text(chunks[-1]);paths.append(tail)
           subprocess.run(['git','add','--',*paths],check=True)
           print('Recovered paths:',paths)
