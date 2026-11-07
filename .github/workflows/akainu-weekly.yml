@@ -2,23 +2,23 @@ name: Akainu - evento semanal
 on:
   push:
     branches: [feature/akainu-weekly-boss, main]
-    paths:
-      - 'akainu-*'
-      - 'weekly-boss-*'
-      - 'apps/game-server/**'
-      - 'packages/shared/**'
-      - 'tests/*weekly*'
-      - 'tests/*akainu*'
-      - 'tests/integration/server-weekly-boss.test.mts'
-      - '.github/workflows/akainu-weekly.yml'
+    paths: ['akainu-*', 'weekly-boss-*', 'world-battle.cjs', 'apps/**', 'packages/shared/**', 'tests/**', 'assets/weekly-boss/**', '.github/workflows/akainu-weekly.yml']
   pull_request:
     branches: [main]
 permissions:
   contents: read
 concurrency:
   group: akainu-weekly-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+  cancel-in-progress: true
 jobs:
+  combat:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - run: node --test tests/akainu-combat.test.cjs tests/weekly-boss-battle.test.cjs
   weekly:
     runs-on: ubuntu-latest
     services:
@@ -42,4 +42,6 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run build
+      - run: npm run typecheck
+      - run: node --import tsx --test tests/foundation/weekly-boss-protocol.test.mts
       - run: node --import tsx --test --test-concurrency=1 tests/integration/server-weekly-boss.test.mts
