@@ -1,6 +1,7 @@
 'use strict';
 ((root)=>{
   if(typeof module!=='undefined')require('./doru-data.js');
+ const reworks=root.MareParameciaReworks||(typeof require==='function'?require('./paramecia-rework-data.js'):null);reworks?.apply('doru',root.MareDoruData);
   const {rules,animations}=root.MareDoruData;
   const ranges={'1':{flight:[0,3],burst:[4,8]},'2':{flight:[0,6],root:[7,11],release:[12,12]}};
   function phaseDuration(key,phase){const [a,b]=ranges[key][phase];return animations[key].frames.slice(a,b+1).reduce((sum,f)=>sum+f.duration,0);}
@@ -38,7 +39,7 @@
   function guardNavigation(nav,now){const move=nav.move;nav.move=function(entity,dx,dy){if(isRooted(entity,now())){entity.moving=0;return;}return move.call(this,entity,dx,dy);};return nav;}
   const images=new Map();function image(key){if(!images.has(key)){const im=new Image();im.src=animations[key].image;images.set(key,im);}return images.get(key);}
   function preload(){image('1');image('2');}
-  function draw(c,p){const im=image(p.key);if(!im.complete||!im.naturalWidth||p.done)return false;const data=animations[p.key],f=data.frames[frameIndex(p.key,p.phase,p.elapsed)],rotating=p.phase==='flight',nativeAngle=p.key==='1'?0:-Math.PI/4,angle=rotating?Math.atan2(p.dy,p.dx)-nativeAngle:0,scale=1.25;c.save();if(p.phase==='release')c.globalAlpha*=Math.max(0,1-p.elapsed/phaseDuration(p.key,p.phase));c.imageSmoothingEnabled=false;c.translate(Math.round(p.x),Math.round(p.y-32));if(angle)c.rotate(angle);c.drawImage(im,f.x,f.y,f.w,f.h,-data.anchor.x*scale,-data.anchor.y*scale,f.w*scale,f.h*scale);c.restore();return true;}
+  function draw(c,p){const im=image(p.key);if(!im.complete||!im.naturalWidth||p.done)return false;const data=animations[p.key],f=reworks.frame(data,data.frames[frameIndex(p.key,p.phase,p.elapsed)],p.elapsed,p.phase,p.key),rotating=p.phase==='flight',nativeAngle=p.key==='1'?0:-Math.PI/4,angle=rotating?Math.atan2(p.dy,p.dx)-nativeAngle:0,scale=80/f.w,anchor=data.rework?.anchor||data.anchor;c.save();if(p.phase==='release')c.globalAlpha*=Math.max(0,1-p.elapsed/phaseDuration(p.key,p.phase));c.imageSmoothingEnabled=false;c.translate(Math.round(p.x),Math.round(p.y-32));if(angle)c.rotate(angle);c.drawImage(im,f.x,f.y,f.w,f.h,-anchor.x*scale,-anchor.y*scale,f.w*scale,f.h*scale);c.restore();return true;}
   root.MareDoru={rules,animations,ranges,phaseDuration,frameIndex,damage,targets,isRooted,create,contact,step,guardNavigation,preload,draw};
   if(typeof module!=='undefined')module.exports=root.MareDoru;
 })(globalThis);

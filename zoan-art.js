@@ -51,7 +51,40 @@
     c.drawImage(image,frame*frameSize,0,frameSize,frameSize,Math.round(x-frameSize*scale/2),Math.round(y-foot*scale),Math.round(frameSize*scale),Math.round(frameSize*scale));
     c.restore();return true;
   }
-  function drawVfx(c,fruitId,x,y,{time=0,scale=1,loop=false}={}){
+  const reworks={
+    bite:{file:'mordida-focal',w:48,h:48,cols:8,frames:8,fps:12,duration:2/3,anchor:[24,24]},
+    dust:{file:'poeira',w:128,h:64,cols:8,frames:8,fps:12,duration:2/3,anchor:[105,48],directional:true},
+    leopard:{file:'leopard',w:96,h:96,cols:8,frames:8,fps:8/.15,duration:.15,anchor:[48,48]},
+    'giraffe-back':{file:'furia-atras',w:192,h:160,cols:4,frames:16,fps:24,duration:5,loop:true,anchor:[72,146]},
+    'giraffe-front':{file:'furia-frente',w:192,h:160,cols:4,frames:16,fps:24,duration:5,loop:true,anchor:[72,146]},
+    'giraffe-sweep':{file:'chicote-arco',w:192,h:160,cols:4,frames:16,fps:16/(5/12),duration:5/12,anchor:[72,146],directional:true},
+    'bison-back':{file:'casco-atras',w:160,h:128,cols:4,frames:16,fps:24,duration:30,loop:true,anchor:[80,112]},
+    'bison-front':{file:'casco-frente',w:160,h:128,cols:4,frames:16,fps:24,duration:30,loop:true,anchor:[80,112]},
+    'bison-dust':{file:'investida-poeira',w:160,h:128,cols:4,frames:16,fps:24,duration:.67,loop:true,anchor:[80,112],directional:true}
+  };
+  function drawRework(c,kind,x,y,age,{direction='right',scale=1,index=0}={}){
+    if(kind==='wolf-trail'){
+      if(!Number.isFinite(age)||age<0)return false;c.save();c.translate(x,y);const angle={front:Math.PI/2,south:Math.PI/2,back:-Math.PI/2,north:-Math.PI/2,left:Math.PI,west:Math.PI}[direction]||0;c.rotate(angle);
+      for(let i=0;i<7;i++){const q=(age*3+i/7)%1;c.globalAlpha=(1-q)*.55;c.fillStyle=i%2?'#b89b67':'#729394';c.fillRect(Math.round(-24-q*62),Math.round(-2+(i%3-1)*6),Math.round(8+q*9),2);}c.restore();return true;
+    }
+    const f=reworks[kind];if(!f||!Number.isFinite(age)||age<0||age>=f.duration)return false;
+    const url=`assets/akuma/zoan/reworks/${f.file}.png`;if(!cache.has(url)){const im=new Image();im.src=url;cache.set(url,im);}const im=cache.get(url);if(!im.complete||!im.naturalWidth)return false;
+    const frame=f.loop?Math.floor(age*f.fps)%f.frames:Math.min(f.frames-1,Math.floor(age*f.fps));
+    c.save();c.imageSmoothingEnabled=false;c.translate(Math.round(x),Math.round(y));
+    if(f.directional){const angle={front:Math.PI/2,south:Math.PI/2,back:-Math.PI/2,north:-Math.PI/2,left:Math.PI,west:Math.PI}[direction]||0;c.rotate(angle);}
+    if(kind==='leopard')c.globalAlpha*=Math.sin(Math.PI*age/.15);
+    if(f.loop&&!f.directional)c.globalAlpha*=Math.min(1,age/.1,(f.duration-age)/.14);
+    c.drawImage(im,(frame%f.cols)*f.w,(Math.floor(frame/f.cols)+(kind==='leopard'?index%2:0))*f.h,f.w,f.h,-f.anchor[0]*scale,-f.anchor[1]*scale,f.w*scale,f.h*scale);c.restore();return true;
+  }
+  function drawWind(c,x,y,age,direction='right'){
+    if(!Number.isFinite(age)||age<0||age>=5)return false;c.save();c.translate(x,y);
+    const angle={front:Math.PI/2,south:Math.PI/2,back:-Math.PI/2,north:-Math.PI/2,left:Math.PI,west:Math.PI}[direction]||0;c.rotate(angle);
+    const fade=Math.min(1,age/.15,(5-age)/.2);for(let i=0;i<6;i++){const p=(age*1.6+i/6)%1;c.globalAlpha=fade*Math.sin(p*Math.PI)*.7;c.strokeStyle=i%2?'#b8e5e9':'#67bdcb';c.lineWidth=i%3===0?2:1;c.beginPath();const yy=-15-i*11;c.moveTo(-22-55*p,yy+4);c.bezierCurveTo(-40-55*p,yy+8,-65-55*p,yy-5,-90-55*p,yy);c.stroke();}c.restore();return true;
+  }
+  function drawVfx(c,fruitId,x,y,{time=0,scale=1,loop=false,direction='right'}={}){
+    if(fruitId==='akuma_tori_albatroz')return drawWind(c,x,y,time,direction);
+    if(fruitId==='akuma_uma_uma')return drawRework(c,'dust',x,y,time,{direction});
+    if(fruitId==='akuma_inu_dachshund')return drawRework(c,'bite',x,y,time,{scale});
     const name=names[fruitId];if(!name)return false;
     const url=`assets/akuma/zoan/${name}-skill-vfx.png`;
     if(!cache.has(url)){const image=new Image();image.src=url;cache.set(url,image);}
@@ -72,6 +105,6 @@
     // Timing must stay available without requesting a retired actor sheet.
     return {frames:9,fps:12,impact_frame:4,loop:false};
   }
-  root.MareZoanArt={draw,drawVfx,status,names,attackTiming};
+  root.MareZoanArt={draw,drawVfx,drawRework,status,names,attackTiming};
   if(typeof module!=='undefined')module.exports=root.MareZoanArt;
 })(globalThis);

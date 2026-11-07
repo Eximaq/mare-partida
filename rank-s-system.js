@@ -2,6 +2,10 @@
 /* Rank S timelines reuse the advanced-fruit casting, cooldown and damage gateway. */
 ((root)=>{
  if(!root.MareRankSData&&typeof module!=='undefined')require('./rank-s-data.js');
+ if(typeof module!=='undefined'){require('./rank-s-rework-data.js');require('./rank-s-rework.js');}
+ for(const [fruit,icons]of Object.entries(root.MareRankSReworkIcons||{}))for(const skill of root.MareRankSData.rules[fruit].skills)skill.icon_path=icons[skill.key]||skill.icon_path;
+ Object.assign(root.MareRankSData.effects,root.MareRankSReworkData||{});
+ for(const [name,keys] of Object.entries({hie:['hieBirdDirections'],gura:['guraFracture1','guraFracture2'],phoenix:['phoenixFlame']}))for(const key of keys)if(!root.MareRankSData.rules[name].effectKeys.includes(key))root.MareRankSData.rules[name].effectKeys.push(key);
  const {rules,effects}=root.MareRankSData,EPS=1e-8,images=new Map(),loads=new Map(),tileFrames=new Map();
  const entry=id=>Object.values(rules).find(r=>r.id===id),has=id=>!!entry(id),skill=(id,key)=>entry(id)?.skills.find(s=>s.key===String(key))||null;
  const create=()=>({time:null,jobs:[],burns:[],seq:0,regenAt:null});
@@ -90,22 +94,29 @@
   for(let t=s.time;t<end-EPS;){const next=Math.min(end,t+.05),dt=next-t;t=next;
    for(const b of s.burns){const m=c.enemies.find(m=>m.id===b.targetId);while(live(m)&&b.next<=t+EPS&&b.next<=b.until+EPS){emit(c,b,m,1,'burn:'+(++b.tick),true,b.power);b.next++;}}
    s.burns=s.burns.filter(b=>b.until+EPS>=t&&live(c.enemies.find(m=>m.id===b.targetId)));
-   for(const j of s.jobs)if(t<=j.until+EPS)processJob(s,c,j,t,dt);
+   for(const j of s.jobs){
+    if(t<=j.until+EPS)processJob(s,c,j,t,dt);
+    // Flush the final Phoenix tick before a crossing substep removes its job.
+    // Clamp to the logical end so a late frame cannot extend the final debuff.
+    else if((j.kind==='phoenixEnergy'||j.kind==='phoenixTotem')&&t-dt<j.until)
+     processJob(s,c,j,j.until,Math.max(0,j.until-(t-dt)));
+   }
    s.jobs=s.jobs.filter(j=>t<j.until-EPS);
   }s.time=c.now;
  }
- function clear(s,enemies=[]){s.jobs=[];s.burns=[];s.time=null;for(const m of enemies)for(const k of ['rankSSilenceUntil','rankSPullUntil','rankSHoleSlowUntil','rankSIceSlowUntil','rankSIceAttackUntil','rankSIceHeavyAttackUntil','rankSFreezeUntil','rankSFreezePower','rankSDefenseUntil','rankSPhoenixDefenseUntil','rankSHealDebuffUntil'])delete m[k];}
+ function clear(s,enemies=[]){root.MareRankSRework?.clear(s);s.jobs=[];s.burns=[];s.time=null;for(const m of enemies)for(const k of ['rankSSilenceUntil','rankSPullUntil','rankSHoleSlowUntil','rankSIceSlowUntil','rankSIceAttackUntil','rankSIceHeavyAttackUntil','rankSFreezeUntil','rankSFreezePower','rankSDefenseUntil','rankSPhoenixDefenseUntil','rankSHealDebuffUntil'])delete m[k];}
  function preload(id){const r=entry(id);if(!r||typeof Image!=='function')return Promise.resolve(false);return Promise.all(r.effectKeys.map(key=>{if(!loads.has(key)){const im=new Image();images.set(key,im);loads.set(key,new Promise(resolve=>{im.onload=()=>resolve(im.naturalWidth>0);im.onerror=()=>resolve(false);im.src=effects[key].image}));}return loads.get(key)})).then(a=>a.every(Boolean));}
  const auraFrame=(id,time)=>{const i=Math.floor((Math.max(0,time)+EPS)/.083);return id===rules.gura.id?16+i%5:i%(entry(id)?.auraFrames||effects[entry(id)?.auraKey]?.frames.length||35)};
  const blackHoleFrame=age=>age<.5?Math.min(18,Math.floor(Math.max(0,age)/.5*19)):19+Math.floor((age-.5+EPS)/.083)%22;
- function auraLayout(id,index,x,y,scale=1){const key=entry(id)?.auraKey,f=effects[key]?.frames[index];if(!f)return null;const k=(id===rules.gura.id?184:id===rules.phoenix.id?180:128)*scale/f.w;return {x:x-f.anchor.x*k,y:y-(id===rules.gura.id?56:32)*scale-f.anchor.y*k,width:f.w*k,height:f.h*k,scale:k};}
+ function auraLayout(id,index,x,y,scale=1){if(id===rules.yami.id)return {x:x+scale-64*scale,y:y-119.53719008264463*182/256*scale,width:128*scale,height:119.53719008264463*scale,scale:scale/2};const key=entry(id)?.auraKey,f=effects[key]?.frames[index];if(!f)return null;const k=(id===rules.gura.id?184:id===rules.phoenix.id?180:128)*scale/f.w;return {x:x-f.anchor.x*k,y:y-(id===rules.gura.id?56:32)*scale-f.anchor.y*k,width:f.w*k,height:f.h*k,scale:k};}
  function paint(ctx,key,index,x,y,width,height=width,angle=0,crop=null,anchor=null){const im=images.get(key),f=effects[key]?.frames[index];if(!im?.complete||!im.naturalWidth||!f)return false;ctx.save();ctx.imageSmoothingEnabled=false;ctx.translate(Math.round(x),Math.round(y));ctx.rotate(angle);ctx.drawImage(im,f.x+(crop?.x||0),f.y+(crop?.y||0),crop?.w||f.w,crop?.h||f.h,-width*(anchor?.x??.5),-height*(anchor?.y??.5),width,height);ctx.restore();return true;}
  function areaTiles(radius,predicate=()=>true){const tiles=[];for(let row=-radius;row<=radius;row++)for(let col=-radius;col<=radius;col++)if(col*col+row*row<=radius*radius&&predicate(col,row))tiles.push([col,row]);return tiles;}
  // The same six precomposed fire frames cover every tile without repeating 81 draws each render.
  function totemFireFrame(index){if(tileFrames.has(index))return tileFrames.get(index);const im=images.get('phoenixTotem'),f=effects.phoenixTotem.frames[index];if(!im?.complete||!im.naturalWidth||typeof document==='undefined')return null;const canvas=document.createElement('canvas');canvas.width=canvas.height=704;const c=canvas.getContext('2d');c.imageSmoothingEnabled=false;c.globalAlpha=.42;for(const [col,row]of areaTiles(5))c.drawImage(im,f.x,f.y,f.w,f.h,(col+5)*64,(row+5)*64,64,64);tileFrames.set(index,canvas);return canvas;}
- function drawAura(ctx,id,x,y,time,scale=1,layer='back'){const key=entry(id)?.auraKey,index=auraFrame(id,time),p=auraLayout(id,index,x,y,scale);if(!p)return false;ctx.save();if(id===rules.gura.id)ctx.globalAlpha=.68;else if(id===rules.phoenix.id)ctx.globalAlpha=layer==='front'?.48:.72;if(layer==='front'){ctx.beginPath();ctx.rect(x-p.width/2,y-23*scale,p.width,65*scale);ctx.clip();}const done=paint(ctx,key,index,p.x+p.width/2,p.y+p.height/2,p.width,p.height);ctx.restore();return done;}
+ function drawAura(ctx,id,x,y,time,scale=1,layer='back'){if(root.MareRankSRework?.aura(ctx,id,x,y,time,scale,layer,paint,effects))return true;const key=entry(id)?.auraKey,index=auraFrame(id,time),p=auraLayout(id,index,x,y,scale);if(!p)return false;ctx.save();if(id===rules.gura.id)ctx.globalAlpha=.68;else if(id===rules.phoenix.id)ctx.globalAlpha=layer==='front'?.48:.72;if(layer==='front'){ctx.beginPath();ctx.rect(x-p.width/2,id===rules.yami.id?y:y-23*scale,p.width,65*scale);ctx.clip();}const done=paint(ctx,key,index,p.x+p.width/2,p.y+p.height/2,p.width,p.height);ctx.restore();return done;}
  function draw(ctx,s,now,enemies,layer='all',hero=null){
-  for(const j of s.jobs){const age=Math.max(0,now-j.started);if(layer==='front'&&['vortex','blackHole','liberation','pillar','guraBuff','hieSpears','hieBird'].includes(j.kind)||layer==='back'&&['fireFist','fireRain','hieFreeze','phoenixEnergy'].includes(j.kind))continue;
+  root.MareRankSRework?.observe(s,now);
+  for(const j of s.jobs){const age=Math.max(0,now-j.started);if(root.MareRankSRework?.draw(ctx,j,age,enemies,layer,hero,paint,effects,areaTiles))continue;if(layer==='front'&&['vortex','blackHole','liberation','pillar','guraBuff','hieSpears','hieBird'].includes(j.kind)||layer==='back'&&['fireFist','fireRain','hieFreeze','phoenixEnergy'].includes(j.kind))continue;
    if(['guraCrack','guraSkull','guraBuff','hieSpears','hieBird','hieFreeze','phoenixDash','phoenixTotem','phoenixEnergy'].includes(j.kind)){
     const key=({guraCrack:'guraCrack',guraSkull:'guraSkull',guraBuff:'guraAura',hieSpears:'hieSpears',hieBird:'hieBird',hieFreeze:'hieFreeze',phoenixTotem:'phoenixTotem',phoenixEnergy:'phoenixEnergy'})[j.kind];
      if(key&&(layer==='back'||j.kind==='hieFreeze'||j.kind==='phoenixEnergy'&&layer==='front')){const frames=effects[key].frames,index=j.kind==='guraBuff'?4+Math.floor(age/.083)%11:j.kind==='phoenixTotem'?age>.5?17+Math.floor((age-.5)/.083)%24:Math.min(16,Math.floor(age/.5*17)):Math.min(j.kind==='hieBird'?38:frames.length-1,Math.floor(age/j.duration*(j.kind==='hieBird'?39:frames.length)));const px=j.kind==='hieFreeze'?(enemies.find(m=>m.id===j.targetId)?.x??j.origin.x):j.kind==='guraBuff'?hero?.x??j.x:['hieSpears','hieBird','phoenixEnergy'].includes(j.kind)?j.x:j.origin.x,py=(j.kind==='hieFreeze'?(enemies.find(m=>m.id===j.targetId)?.y??j.origin.y):j.kind==='guraBuff'?hero?.y??j.y:['hieSpears','hieBird','phoenixEnergy'].includes(j.kind)?j.y:j.origin.y)-(j.kind==='guraBuff'?56:32),angle=j.kind==='hieBird'?Math.atan2(j.direction[1],j.direction[0]):j.kind==='hieSpears'?Math.atan2(j.direction[1],j.direction[0])-Math.PI/4:0;paint(ctx,key,index,px,py,j.kind==='phoenixTotem'||j.kind==='phoenixEnergy'?96:j.kind==='guraBuff'?184:Math.min(280,frames[0].w),j.kind==='phoenixEnergy'?96*frames[0].h/frames[0].w:undefined,angle);}
@@ -113,11 +124,12 @@
      if(layer==='front'&&(j.kind==='guraCrack'||j.kind==='guraSkull')){const dust=j.kind==='guraCrack'?'guraDust2':'guraDust1',frames=effects[dust].frames,index=Math.min(frames.length-1,Math.floor(Math.max(0,age-.2)/.6*frames.length));const tiles=j.kind==='guraCrack'?areaTiles(4,(col,row)=>{const along=col*j.direction[0]+row*j.direction[1],side=Math.abs(col*j.direction[1]-row*j.direction[0]);return along>0&&side<=along;}):areaTiles(3);for(const [col,row]of tiles)paint(ctx,dust,index,j.origin.x+col*64,j.origin.y+row*64-16,64);}
    }else if(j.kind==='vortex')paint(ctx,'vortex',Math.min(40,Math.floor(age/.6*41)),hero?.x??j.origin.x,(hero?.y??j.origin.y)-32,rules.yami.vortex.visualWidth*Math.min(1,age/.18));
    else if(j.kind==='blackHole'){ctx.save();ctx.globalAlpha=.75;paint(ctx,'blackHole',blackHoleFrame(age),j.origin.x,j.origin.y,rules.yami.hole.visualWidth*Math.min(1,age/.5));ctx.restore();}
-   else if(j.kind==='liberation')paint(ctx,'liberation',Math.min(40,Math.floor(age/.083)),j.origin.x,j.origin.y,rules.yami.liberation.visualWidth,rules.yami.liberation.visualHeight,0,null,{x:.5,y:100/116});
+   else if(j.kind==='liberation')paint(ctx,'liberation',Math.min(40,Math.floor(age/.083)),j.origin.x,j.origin.y,rules.yami.liberation.visualWidth,rules.yami.liberation.visualHeight,0,null,{x:.5,y:221/256});
    else if(j.kind==='fireFist'){const moving=age<320/900,index=moving?Math.min(26,Math.floor(age/.04)):Math.min(40,27+Math.floor((age-320/900)/.45*14));paint(ctx,'fireFist',index,j.x,j.y-32,150,110,Math.atan2(j.direction[1],j.direction[0]),null,{x:.88,y:.48});}
    else if(j.kind==='fireRain'){for(const shot of j.shots)if(!shot.hit){const k=Math.max(0,Math.min(1,(now-shot.released)/.25)),y=shot.top+(shot.point.y-shot.top)*k;paint(ctx,'fireRain',Math.min(13,Math.floor(k*14)),shot.point.x,y-32,52,58,Math.PI/4,{x:65,y:64,w:56,h:61});}}
    else if(j.kind==='pillar')paint(ctx,'pillar',Math.floor(age/.083)%41,j.x,j.y-rules.mera.pillar.visualOffsetY,rules.mera.pillar.visualWidth,rules.mera.pillar.visualHeight);
   }
+  root.MareRankSRework?.tail(ctx,s,now,enemies,layer,hero,paint,effects,areaTiles);
   if(layer!=='back')for(const b of s.burns){const m=enemies.find(m=>m.id===b.targetId);if(live(m)&&now<b.until)paint(ctx,'burn',Math.floor(Math.max(0,now-b.started)/.083)%41,m.x,m.y-40,32,32);}
  }
  const api={rules,effects,has,skill,create,valid,cast,step,clear,preload,draw,drawAura,auraFrame,auraLayout,blackHoleFrame,areaTiles,silenced,dragged,slowFactor,vortexImpact};root.MareRankS=api;if(typeof module!=='undefined')module.exports=api;

@@ -3,7 +3,10 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const A=require('../akuma-system.js');
 const C=require('../character-system.js');
-assert.deepEqual(A.supaRules,require('../assets/akuma/supa/rules.json'));
+// Artwork paths may change with the approved visual rework; gameplay rules may not.
+const gameplay=rules=>({...rules,skills:rules.skills.map(({icon_path,...skill})=>skill)});
+assert.deepEqual(gameplay(A.supaRules),gameplay(require('../assets/akuma/supa/rules.json')));
+for(const skill of A.supaRules.skills)assert(fs.existsSync(require('node:path').join(__dirname,'..',skill.icon_path)));
 const skills=A.activeSkills('akuma_supa_supa');
 assert.deepEqual(skills.map(s=>[s.key,s.cooldown,s.cost]),[['1',10,20],['2',20,25]]);
 assert.equal(A.activeSkill('akuma_supa_supa','2').name,'Retaliação Metálica');
