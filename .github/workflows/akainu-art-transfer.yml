@@ -1,0 +1,36 @@
+name: Akainu - validar atlas de producao
+on:
+  push:
+    branches: [feature/akainu-weekly-boss]
+    paths: [.github/workflows/akainu-art-transfer.yml]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - run: pip install Pillow
+      - name: Obter somente o atlas autorizado
+        env:
+          ATLAS_URL: 'https://export-download.canva.com/008a8f8e-42e3-4a8a-be17-68ecd06de1ee/0/0001-4169728752430059319.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAQYCGKMUH4R7NKVBA%2F20261106%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20261106T142903Z&X-Amz-Expires=59215&X-Amz-Signature=5dafd7f7419db276a16da2a7d2196a8ac1ca7fe2c89d9649ecb7e90924f76868&X-Amz-SignedHeaders=host%3Bx-amz-expected-bucket-owner&response-expires=Sat%2C%2007%20Nov%202026%2006%3A55%3A58%20GMT'
+        run: |
+          mkdir -p /tmp/atlas
+          python - <<'PY'
+          import os,urllib.request,json,hashlib
+          from PIL import Image
+          p='/tmp/atlas/atlas.png'
+          urllib.request.urlretrieve(os.environ['ATLAS_URL'],p)
+          im=Image.open(p).convert('RGBA')
+          result={'size':im.size,'alpha':im.getchannel('A').getextrema(),'rgbaSha256':hashlib.sha256(im.tobytes()).hexdigest()}
+          open('/tmp/atlas/report.json','w').write(json.dumps(result))
+          print(result)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: akainu-transferred-atlas
+          path: /tmp/atlas
+          retention-days: 1
