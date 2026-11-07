@@ -1,0 +1,46 @@
+name: Akainu - registrar fontes revisados
+on:
+  push:
+    branches: [feature/akainu-weekly-boss]
+    paths: [tools/akainu-source-ready]
+permissions:
+  contents: write
+jobs:
+  import:
+    if: github.ref == 'refs/heads/feature/akainu-weekly-boss'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Verificar e aplicar somente o patch de fonte revisado
+        run: |
+          python3 - <<'PY'
+          import base64,gzip,hashlib,re,subprocess
+          from pathlib import Path
+          parts=sorted(Path('tools').glob('akainu-source-part*.txt'))
+          assert len(parts)==6
+          patch=gzip.decompress(base64.b64decode(''.join(p.read_text().strip() for p in parts),validate=True))
+          assert hashlib.sha256(patch).hexdigest()=='1292b751654f59d0f3699d1f73639abc1df811dd30b7a61f732b7a0859808827'
+          paths=re.findall(r'^\+\+\+ b/(.+)$',patch.decode(),re.M)
+          assert len(paths)==59 and len(set(paths))==59
+          assert all(not p.startswith('/') and '..' not in Path(p).parts and not p.endswith(('.env','.webp','.png')) for p in paths)
+          Path('/tmp/akainu-source.patch').write_bytes(patch)
+          subprocess.run(['git','apply','--check','--unidiff-zero','/tmp/akainu-source.patch'],check=True)
+          subprocess.run(['git','apply','--unidiff-zero','/tmp/akainu-source.patch'],check=True)
+          subprocess.run(['git','add','--',*paths],check=True)
+          PY
+          node --check game.js
+          node --check akainu-combat.js
+          node --test tests/akainu-combat.test.cjs tests/weekly-boss-battle.test.cjs tests/weekly-boss-rules.test.cjs tests/weekly-boss-client.test.cjs
+          git diff --cached --check
+      - run: npm ci --ignore-scripts
+      - run: npm run build
+      - name: Remover somente os transportes temporarios desta tarefa
+        run: |
+          git rm --ignore-unmatch .github/workflows/akainu-workspace.yml .github/workflows/akainu-db-workspace.yml .github/workflows/akainu-art-transfer.yml .github/workflows/akainu-import-source.yml tools/akainu-source-ready tools/akainu-source-part1.txt tools/akainu-source-part2.txt tools/akainu-source-part3.txt tools/akainu-source-part4.txt tools/akainu-source-part5.txt tools/akainu-source-part6.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'feat: prepare disabled Akainu weekly encounter and restricted controls'
+          git push origin HEAD:feature/akainu-weekly-boss
