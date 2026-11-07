@@ -15,3 +15,5 @@ body.online-game #devLauncher { display:none!important; }
 
 #onlinePerformance { position:fixed;left:16px;top:260px;z-index:45;padding:6px 9px;border:1px solid #8d7750;border-radius:4px;background:rgba(8,28,36,.92);color:#f2e5cb;font:12px/1.4 system-ui,sans-serif;font-variant-numeric:tabular-nums;max-width:calc(100vw - 24px); }
 #onlinePerformance[data-stale="true"] { color:#ffb6a9;border-color:#c47c68; }
+/* This read-only meter must not swallow taps on the compact HUD beneath it. */
+@media (max-width:600px) { #onlinePerformance { pointer-events:none; } }
