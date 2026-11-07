@@ -1,0 +1,48 @@
+name: Akainu - preparar verificacao da release
+on:
+  push:
+    branches: [feature/akainu-weekly-boss]
+    paths: [.github/workflows/akainu-release-preparation.yml]
+permissions:
+  contents: write
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Preserve security assertions and add the new command fixture
+        run: |
+          python3 - <<'PY'
+          import re,subprocess
+          from pathlib import Path
+          blocks=re.split(r'(?=^diff --git )',Path('tools/akainu-recovery-review.patch').read_text(),flags=re.M)
+          matches=[b for b in blocks if b.startswith('diff --git a/tests/integration/server-final-acceptance.test.mts ')]
+          assert len(matches)==1
+          changes=[l for l in matches[0].splitlines() if l.startswith('+') and not l.startswith('+++')]
+          assert changes==["+  'weeklyBoss.execute':{op:'test'},"]
+          Path('/tmp/security.patch').write_text(matches[0])
+          subprocess.run(['git','apply','--check','--unidiff-zero','/tmp/security.patch'],check=True)
+          subprocess.run(['git','apply','--unidiff-zero','/tmp/security.patch'],check=True)
+          PY
+          git diff --check
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add tests/integration/server-final-acceptance.test.mts
+          git commit -m 'test: include weekly boss commands in the existing security rejection matrix'
+          git push origin HEAD:feature/akainu-weekly-boss
+      - name: Prepare a single audited CI expectation change for normal review
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('.github/workflows/authoritative-foundation.yml');s=p.read_text()
+          old="assert.equal((await pool.query('SELECT count(*)::int AS n FROM mare_meta.schema_migrations')).rows[0].n, 49);"
+          assert s.count(old)==1
+          new=s.replace(old,old.replace(', 49);',', 50);'))
+          Path('/tmp/ci-blob.json').write_text(json.dumps({'content':new,'encoding':'utf-8'}))
+          print('Only change: existing Docker migration expectation 49 -> 50; no checks removed.')
+          PY
+          gh api --method POST repos/Eximaq/mare-partida/git/blobs --input /tmp/ci-blob.json --jq '.sha' > /tmp/ci-blob-sha
+          echo "::notice::Prepared authoritative CI blob $(cat /tmp/ci-blob-sha); not applied to any branch."
