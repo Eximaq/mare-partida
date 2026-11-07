@@ -32,7 +32,17 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
  await page.locator('[data-profile-tab=gear]').click();await page.waitForFunction(()=>document.querySelector('#captainPortraitState')?.hidden);
  assert.equal(await page.locator('.captain-equipment-card').count(),12);
  assert(await page.locator('[data-profile-slot] .captain-equipment-art img').evaluateAll(es=>es.length>0&&es.every(e=>e.getAttribute('src').startsWith('assets/ui/items-hd/'))));
- await page.locator('[data-profile-slot] .captain-equipment-art img').evaluateAll(es=>Promise.all(es.map(e=>e.decode())));
+ // Lazy images may not have a current request when decode() is called.
+ // Request every equipment card in this fixture, then retain strict decoding.
+ const equipmentImages='[data-profile-slot] .captain-equipment-art img';
+ await page.locator(equipmentImages).evaluateAll(es=>es.forEach(e=>{e.loading='eager'}));
+ try{
+  await page.waitForFunction(selector=>{const images=[...document.querySelectorAll(selector)];return images.length>0&&images.every(e=>e.complete&&e.naturalWidth>0)},equipmentImages);
+  await page.locator(equipmentImages).evaluateAll(es=>Promise.all(es.map(async e=>{try{await e.decode()}catch(error){throw Error('Equipment image decode failed: '+e.src+' ('+error.message+')')}})));
+ }catch(error){
+  const state=await page.locator(equipmentImages).evaluateAll(es=>es.map(e=>({src:e.currentSrc||e.src,complete:e.complete,width:e.naturalWidth,connected:e.isConnected})));
+  throw Error('Equipment images failed: '+JSON.stringify(state)+'; '+error.message);
+ }
  await page.locator('[data-profile-slot=weapon]').focus();await page.waitForFunction(()=>!document.querySelector('#gameTooltip').classList.contains('hidden'));
  assert((await page.locator('#gameTooltip').textContent()).includes(await page.evaluate(()=>__captainQA.defs[__captainQA.game.equipment.weapon.def].name)));
  await page.mouse.move(1,1);await page.locator('[data-profile-tab=gear]').focus();await shot('profile-equipment');
