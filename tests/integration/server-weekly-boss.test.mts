@@ -1,9 +1,7 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {randomUUID} from 'node:crypto';
-import {createRequire} from 'node:module';
 import {authDatabase} from './auth-support.mjs';
-const require=createRequire(import.meta.url);
 async function actor(f:any){
  const login=await f.service.login(randomUUID()+'@example.invalid','fixture');
  const c=await f.service.createCharacter(login.token,{name:'Weekly '+randomUUID().slice(0,8),classId:'sword',factionId:'pirate'});
