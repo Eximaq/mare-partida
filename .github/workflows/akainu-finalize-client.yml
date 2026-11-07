@@ -23,6 +23,8 @@ jobs:
               match=re.search(r'^\+\+\+ b/(.+)$',block,re.M)
               if not match or not match[1].startswith('tests/integration/'):continue
               changes=[line[1:] for line in block.splitlines() if line.startswith('+') and not line.startswith('+++')]
+              if match[1].endswith('/server-final-acceptance.test.mts'):
+                  print('::notice::Security matrix proposed additions: '+str(changes));continue
               assert changes and all('0050_akainu_weekly_boss.sql' in line for line in changes),match[1]
               p=Path('/tmp/migration-tests.patch');p.write_text(block)
               subprocess.run(['git','apply','--check','--unidiff-zero',str(p)],check=True)
