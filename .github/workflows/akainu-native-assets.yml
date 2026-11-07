@@ -1,0 +1,73 @@
+name: Akainu - restaurar arte nativa
+on:
+  push:
+    branches: [feature/akainu-weekly-boss]
+    paths: [.github/workflows/akainu-native-assets.yml]
+permissions:
+  contents: write
+jobs:
+  restore:
+    if: github.ref == 'refs/heads/feature/akainu-weekly-boss'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - run: pip install Pillow
+      - name: Reconstruir somente os pixels nativos e verificar cada quadro
+        run: |
+          python3 - <<'PY'
+          import json,urllib.request,hashlib,io
+          from pathlib import Path
+          from PIL import Image,ImageChops
+          urls=json.loads(Path('tools/akainu-native-recovery.json').read_text())
+          # Correct the single transcription typo against the exact returned URL.
+          urls[0]=urls[0].replace('56cccf5b','56ccf5b')
+          rgb=bytearray();alpha=bytearray();pages=[]
+          out=Path('/tmp/akainu-native');out.mkdir()
+          for i,url in enumerate(urls):
+              raw=urllib.request.urlopen(url,timeout=30).read();im=Image.open(io.BytesIO(raw)).convert('RGB')
+              assert im.size==(600,600),('resampled page',i+1,im.size)
+              colors=im.crop((0,0,300,600));mask=im.crop((300,0,600,600));r,g,b=mask.split()
+              assert not ImageChops.difference(r,g).getbbox() and not ImageChops.difference(r,b).getbbox(),('alpha is not grayscale',i+1)
+              rgb.extend(colors.tobytes());alpha.extend(r.tobytes())
+              pages.append({'page':i+1,'rgbSha256':hashlib.sha256(im.tobytes()).hexdigest()})
+              print('Native page',i+1,'verified',im.size)
+          m=json.loads(Path('assets/weekly-boss/akainu/manifest.json').read_text())
+          clips=[]
+          for action in ['idle','walk','hurt','punch','aoe']:
+              c=m['clips'][action]['south'];clips.append((action,c['size']*c['frames'],c['size']*4,c['size'],c['frames'],4,c['image']))
+          c=m['vfx'];clips.append(('magma-area',c['size']*c['columns'],c['size']*(c['frames']//c['columns']),c['size'],c['columns'],c['frames']//c['columns'],c['image']))
+          offset=0;reports=[];outputs=[]
+          for name,w,h,size,cols,rows,dest in clips:
+              n=w*h;im=Image.frombytes('RGB',(w,h),bytes(rgb[offset*3:(offset+n)*3])).convert('RGBA');im.putalpha(Image.frombytes('L',(w,h),bytes(alpha[offset:offset+n])));offset+=n
+              boxes=[];edge_pixels=0
+              for row in range(rows):
+                  for col in range(cols):
+                      a=im.getchannel('A').crop((col*size,row*size,(col+1)*size,(row+1)*size));box=a.getbbox();assert box,(name,row,col,'empty frame')
+                      boxes.append(box);edge_pixels+=sum(v>0 for v in list(a.crop((0,0,size,1)).getdata())+list(a.crop((0,size-1,size,size)).getdata())+list(a.crop((0,0,1,size)).getdata())+list(a.crop((size-1,0,size,size)).getdata()))
+              print('SHEET',name,'size',im.size,'bounds',boxes,'edge pixels',edge_pixels)
+              im.save(out/(name+'.png'))
+              assert edge_pixels==0,('misaligned sprite payload',name,edge_pixels)
+              outputs.append((dest,im));reports.append({'name':name,'dimensions':[w,h],'rgbaSha256':hashlib.sha256(im.tobytes()).hexdigest(),'frameBounds':boxes})
+          assert not any(alpha[offset:]),'unexpected nonempty payload beyond manifest'
+          for dest,im in outputs:
+              p=Path(dest);p.parent.mkdir(parents=True,exist_ok=True);im.save(p,'WEBP',lossless=True,exact=True,method=6)
+              assert Image.open(p).convert('RGBA').tobytes()==im.tobytes(),('lossy write',dest)
+          Path('assets/weekly-boss/akainu/recovery-provenance.json').write_text(json.dumps({'method':'native RGB and alpha planes; no resize or interpolation','pages':pages,'sheets':reports},indent=2)+'\n')
+          print('Recovered native pixels',offset,'without resampling')
+          PY
+          node --test tests/akainu-assets.test.cjs tests/akainu-art.test.cjs
+          git diff --check
+      - name: Registrar somente os arquivos de arte verificados
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add assets/weekly-boss/akainu/*.webp assets/weekly-boss/akainu/recovery-provenance.json
+          git commit -m 'feat: restore approved Akainu sprite pixels and transparency at native game scale'
+          git push origin HEAD:feature/akainu-weekly-boss
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: akainu-native-sprite-review
+          path: /tmp/akainu-native
+          retention-days: 1
