@@ -1,22 +1,28 @@
-"""One-shot import of the owner's approved Beri preview assets; removed before merge."""
+"""One-shot binary import of approved Beri assets; removed before merge.
+The two original WebP byte streams are packed into RGB pixels in a 200px PNG.
+A native-size image URL avoids any resampling. SHA-256 is checked before writes.
+No external image host is used by the shipped runtime.
+"""
 from pathlib import Path
 from urllib.request import urlopen, Request
 from io import BytesIO
 from PIL import Image
 import hashlib
 
-sources = {
-    'sheet': ('https://media.canva.com/v2/image-resize/format:PNG/height:1152/quality:100/uri:ifs%3A%2F%2FM%2Ffe13473c-8080-4f5b-beda-e2b3a2410f6f/watermark:F/width:1152?csig=AAAAAAAAAAAAAAAAAAAAAOhhkIC3ZGdSHlrLEUQMazqQmVb24Y1eeaX1PS4tVwTi&exp=1794034301&osig=AAAAAAAAAAAAAAAAAAAAACcJb7gVsla05b5XN87_w-TpdbH_GPsMMn8R-f72kd7j&signer=media-rpc&token=AAIAAU0AJGZlMTM0NzNjLTgwODAtNGY1Yi1iZWRhLWUyYjNhMjQxMGY2ZgAAAAABobTG-EgKr5xDbcZCKis52cNlt8-gVC3BQr1ZmsSTWwI16DPGjg&x-canva-quality=thumbnail', (1152,1152), '7d0e11e2b12fb9e05cd7210943512779b0cbf68e5cda6e6caef74419bb3b33b2'),
-    'icon': ('https://media.canva.com/v2/image-resize/format:PNG/height:96/quality:100/uri:ifs%3A%2F%2FM%2Ff2b4e3f2-7757-44cc-93cb-daa1bddb21e6/watermark:F/width:96?csig=AAAAAAAAAAAAAAAAAAAAAGV_kMV2Ew73OfMtZ7nXIWpBr0KfGdje2wt-9WfZuckZ&exp=1794035295&osig=AAAAAAAAAAAAAAAAAAAAAMD65DIHfSHs2zE0jl7tLQy0CqBPnepOJrnQzsmTjswt&signer=media-rpc&token=AAIAAU0AJGYyYjRlM2YyLTc3NTctNDRjYy05M2NiLWRhYTFiZGRiMjFlNgAAAAABobTWIxhxghqINsAdmclvDQJqqqv6a_1pKW80-dG6nrhB4V35Dg&x-canva-quality=thumbnail', (96,96), '7120717f3e05fce4861d8840a83a77063a64dba1b59820f68cfe5b20ca3a7ae0')
-}
-for kind, (url, size, expected) in sources.items():
-    with urlopen(Request(url, headers={'User-Agent':'Kaizoku-asset-import/1.0'}), timeout=45) as response:
-        image = Image.open(BytesIO(response.read())).convert('RGBA')
-    assert image.size == size, (kind, image.size)
-    digest = hashlib.sha256(image.tobytes()).hexdigest()
-    print(kind, image.size, 'RGBA SHA-256:', digest, flush=True)
-    assert digest == expected, 'Refusing to publish changed preview pixels: '+kind
+url = 'https://media.canva.com/v2/image-resize/format:PNG/height:200/quality:100/uri:ifs%3A%2F%2FM%2F05ad9fb8-8fa2-4b89-9b85-3d090c860181/watermark:F/width:200?csig=AAAAAAAAAAAAAAAAAAAAAHEfc0-dqiCIGo_RMYitXXRRs8CoxBWovcvzZKDk_kbv&exp=1794034114&osig=AAAAAAAAAAAAAAAAAAAAALL1OwHpKrzVPolz9tMRYxiJuqM5hl6j6QA6GYs5VL97&signer=media-rpc&token=AAIAAU0AJDA1YWQ5ZmI4LThmYTItNGI4OS05Yjg1LTNkMDkwYzg2MDE4MQAAAAABobTEHdCelw6m2924ZH5Eq2EuDAO9g9OOUljgqZdp1OtnrWKfRw&x-canva-quality=thumbnail'
+with urlopen(Request(url, headers={'User-Agent':'Kaizoku-asset-import/1.0'}), timeout=45) as response:
+    image = Image.open(BytesIO(response.read())).convert('RGB')
+assert image.size == (200,200), image.size
+payload = image.tobytes()
+assert hashlib.sha256(payload).hexdigest() == '61faf1d461f7fc9b097440e865c0302d54f883176e05a77a5595ff86aeee85db', 'Transfer PNG was resampled'
+assets = [('sheet', 84018, 'c5807e67684e2242ae7fbcf973ac1b348f118808cc44755317b5b7d9fbda2ead', (1152,1152)), ('icon', 19200, 'f33bc990bdc5684f8712a7f08f303a89e1b97e20ddd0f24a04d71ca0f6440818', (96,96))]
+offset = 0
+for kind, size, expected, dimensions in assets:
+    data = payload[offset:offset+size]
+    offset += size
+    digest = hashlib.sha256(data).hexdigest()
+    assert digest == expected, ('Refusing modified asset', kind, digest)
+    assert Image.open(BytesIO(data)).size == dimensions
     target = Path('assets/akuma') / ('beri-skill-'+kind+'-v2.webp')
-    image.save(target, lossless=True, quality=100, method=6, exact=True)
-    assert Image.open(target).convert('RGBA').tobytes() == image.tobytes()
-    print('Verified lossless import:', target, target.stat().st_size, flush=True)
+    target.write_bytes(data)
+    print('Verified approved asset:', target, len(data), digest, flush=True)
