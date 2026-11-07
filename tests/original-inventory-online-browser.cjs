@@ -9,6 +9,7 @@ const character={id:'11111111-1111-4111-8111-111111111111',name:'Navegante',clas
 const allocated={strength:0,dexterity:0,vitality:0,intelligence:0,spirit:0};
 const original={catalogId:'original-game-v1',inventory:[make(8,'server-boots')],equipment:Object.fromEntries([...catalog.inventorySlotsLeft,...catalog.inventorySlotsRight].map(k=>[k,null])),potions:4,manaPotions:2,materials:3,forgeVersion:4,forgeSeq:0,forgeHistory:[]};
 original.equipment.weapon=make(0,'server-weapon');original.equipment.coat=make(6,'server-coat');
+original.inventory.push({id:'server-fragments',def:catalog.items.findIndex(d=>d.kind==='weapon-fragment'),materialId:forge.weaponFragment.id,quantity:20,rarity:'epic',level:1,plus:0,locked:false,obtainedAt:1,binding:'character',boundToCharacter:character.id});
 const wire={state:{characterId:character.id,version:1,level:2,experience:'80',gold:'85'},originalInventory:original,inventory:{items:[],equipped:{weapon:null,armor:null}},itemCatalog:[],attributes:{allocated,available:5},progression:{xpIntoLevel:'0',xpForNextLevel:'80'},journey:{started:false},hunt:{status:'locked'},combat:{status:'locked',playerHp:65,playerMaxHp:65},combatPreview:{maxHp:65,attackMin:19,armor:4,cooldownMs:1860,total:{strength:15,dexterity:14,vitality:9,intelligence:6,spirit:6}}};
 function refreshFighter(){
  const stats=chars.derive({classId:'sword',level:wire.state.level,attributes:wire.attributes.allocated},birth.classes.sword,birth.factions.pirate,forge.aggregate(wire.originalInventory.equipment,catalog.items));
@@ -42,9 +43,10 @@ refreshFighter();
      assert.deepEqual(Object.keys(input.payload),['itemId']);const item=wire.originalInventory.inventory.find(i=>i.id===input.payload.itemId);assert(item);
      const slot=catalog.items[item.def].slot,old=wire.originalInventory.equipment[slot];wire.originalInventory.inventory=wire.originalInventory.inventory.filter(i=>i.id!==item.id);wire.originalInventory.equipment[slot]=item;if(old)wire.originalInventory.inventory.push(old);
     }else if(input.action==='forge.execute'){
-     assert.deepEqual(Object.keys(input.payload.operation).sort(),['expectedSeq','itemId','type']);
-     const result=forge.execute({...wire.originalInventory,gold:Number(wire.state.gold),classId:'sword'},input.payload.operation,catalog.items,()=>0,1);assert(result.ok,result.message);
-     const {gold,classId,...next}=result.state;wire.state.gold=String(gold);wire.originalInventory=next;
+     const synthesis=input.payload.operation.type==='formEpicWeapon';
+     assert.deepEqual(Object.keys(input.payload.operation).sort(),synthesis?['expectedSeq','type']:['expectedSeq','itemId','type']);
+     const result=forge.execute({...wire.originalInventory,gold:Number(wire.state.gold),classId:'sword',characterId:character.id,level:wire.state.level},input.payload.operation,catalog.items,()=>0,1);assert(result.ok,result.message);
+     const {gold,classId,characterId,level,...next}=result.state;wire.state.gold=String(gold);wire.originalInventory=next;
     }else if(input.action==='attributes.allocate'){
      assert.deepEqual(input.payload,{allocation:{strength:1,dexterity:0,vitality:0,intelligence:0,spirit:0}});
      wire.attributes.allocated.strength++;wire.attributes.available--;
@@ -113,7 +115,13 @@ refreshFighter();
   await p.waitForFunction(()=>{const c=document.getElementById('inventorySprite');return c&&c.getContext('2d').getImageData(0,0,c.width,c.height).data.some((v,i)=>i%4===3&&v>0);},null,{timeout:90000});
   await p.evaluate(()=>document.fonts.ready);
   await p.screenshot({path:path.join(out,'original-online-inventory.png')});
-  assert.deepEqual(commands.map(c=>c.action),['items.equip','forge.execute','forge.execute','forge.execute','forge.execute','forge.execute','attributes.allocate']);assert.deepEqual(errors,[]);
+  await p.locator('[data-item="server-fragments"]').click();
+  await p.locator('[data-form-epic-weapon]').click();
+  await p.locator('[data-confirm-accept]').click();
+  await p.waitForFunction(()=>!MareGameSession.busy&&MareGameSession.data.online.originalInventory.inventory.some(i=>i.generation?.source==='synthesis'));
+  assert.deepEqual(commands.at(-1).payload,{operation:{type:'formEpicWeapon',expectedSeq:3}});
+  assert.equal(wire.originalInventory.inventory.some(i=>i.id==='server-fragments'),false);
+  assert.deepEqual(commands.map(c=>c.action),['items.equip','forge.execute','forge.execute','forge.execute','forge.execute','forge.execute','attributes.allocate','forge.execute']);assert.deepEqual(errors,[]);
   console.log('Original online HUD contract: native inventory/forge, strict intents, stock, equipment, stale confirmation, rejection, double click, same-request recovery and reload passed. Provider is a UI fixture; PostgreSQL is tested separately.');
   await context.close();
  }catch(error){if(activePage)await activePage.screenshot({path:path.join(out,'original-online-failure.png')}).catch(()=>{});throw error;}finally{await browser.close();}

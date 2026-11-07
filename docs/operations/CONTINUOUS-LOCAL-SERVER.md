@@ -12,8 +12,7 @@ Na área de trabalho, pasta **Maré Partida - Servidor Local**:
 
 1. Abra **Iniciar servidor.cmd**. Aguarde “Servidor iniciado” e feche a janela.
 2. Abra **Abrir jogo.url**. Use sua conta de teste já confirmada e a senha diretamente
-   na página. O login leva direto a `/game`, com HUD/mapa originais. As quatro
-   contas e três personagens anteriores estão preservados. O gameplay existente foi conectado ao servidor; ver
+   na página. O login leva direto a `/game`, com HUD/mapa originais. As contas, personagens e saves existentes são preservados. O gameplay existente foi conectado ao servidor; ver
    `docs/architecture/FINAL-SERVER-ACCEPTANCE.md`.
 3. Para encerrar, abra **Parar servidor.cmd**. Aguarde a confirmação. Isso desliga
    Auth/API/HTTPS; PostgreSQL continua ativo para preservar o uso de outros trabalhos.
@@ -30,8 +29,11 @@ Equivalentes no PowerShell, dentro desta pasta:
 
 Iniciar novamente não duplica processos. Após reiniciar o computador, use Iniciar;
 o launcher inclui uma rotina para iniciar o cluster existente se estiver parado.
-Essa partida fria do cluster compartilhado não foi forçada neste ensaio; o PG
-permaneceu ativo. Ele nunca inicializa ou apaga banco. Fechar o navegador não encerra o servidor. Suspender/desligar o PC
+Após uma interrupção, PostgreSQL pode aceitar TCP antes de concluir a recuperação.
+O inicializador consulta pg_isready e espera até 120 segundos antes de iniciar a API,
+reutilizando o postmaster existente. Não remove locks, não inicializa e não apaga banco.
+Em 06/11/2026, uma recuperação real levou cerca de 53 segundos e excedeu a antiga
+espera de 20 segundos. A versão exata de Node em .node-version continua obrigatória. Fechar o navegador não encerra o servidor. Suspender/desligar o PC
 interrompe acesso; iniciar depois retoma os dados persistidos. Não há início automático
 no login do Windows nesta entrega.
 
@@ -59,17 +61,14 @@ Não limpar dados do navegador para solucionar login nem importar XP/ouro local.
 
 ## Colaborador e lobby
 
-Esta instalação aceita conexões somente deste PC. No computador do colaborador,
-`localhost` se refere ao computador dele. Acesso conjunto exige uma etapa própria
-de rede, HTTPS/origem e autenticação: LAN ou rede privada, com endereço confiável
-comum e URLs de callback aprovadas. Nenhuma porta de roteador/firewall foi aberta,
-nenhum túnel público criado e nenhuma configuração Supabase alterada.
+O atalho Abrir jogo usa a origem configurada nesta instalação. Com Radmin habilitado,
+a origem HTTPS privada permite jogar com o colaborador autorizado na mesma rede VPN.
+Cada pessoa usa a própria conta; presença, movimento no porto, Party e Social já
+possuem implementações autoritativas. O endereço localhost funciona apenas neste PC.
 
-Com acesso compartilhado, contas diferentes terão seus próprios personagens e
-progressão no mesmo backend. Ainda **não existe presença/movimento multiplayer**:
-vocês não se verão no lobby, não lutarão juntos nem terão chat compartilhado.
-O lobby visual da demonstração continua local. Esses recursos exigem sincronização
-autoritativa de presença, mapa e movimentos, incluindo desconexão e reconexão.
+Preservar a lista de IPs autorizados, certificados e callbacks já configurados. Este
+inicializador não altera firewall, DNS, Supabase nem publica o backend na Internet.
+A paridade e os limites conhecidos constam de `docs/architecture/PRIVATE-SOCIAL-SYNC.md`.
 
 ## Validação desta instalação
 

@@ -36,7 +36,9 @@ concurrency:
 jobs:
   talents:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    # Browser OS dependencies can take 7+ minutes on a cold hosted runner.
+    # This job budget includes installation; gameplay/test deadlines are unchanged.
+    timeout-minutes: 20
     env:
       MARE_TALENT_EVIDENCE: /tmp/mare-talent-visual
     steps:

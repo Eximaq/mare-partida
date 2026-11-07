@@ -30,10 +30,14 @@ const random = () => randomInt(0, 0x100000000) / 0x100000000;
 const maxGold = 9223372036854775807n;
 export const isOriginalAction = (action: string) =>
   originalActionSchema.options.includes(action as any);
-export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{xpGrant?:number;monsterBerryBonus?:number;build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number;grant?:OriginalItemInstance|undefined;action?:'prison.reward'|'prison.claim'|'dungeon.battle'}={}){
+/** Captured under the caller's character lock in this transaction, never supplied by HTTP. */
+export type RewardSnapshot={characterId:string;version:number;inventory:OriginalInventory;classId:string;factionId:string;xpBoostActive:boolean};
+export async function awardWorldLoot(client:PoolClient,id:string,requestId:string,state:CharacterState,kills:any[],first?:{area:string;rarity:string;gold:number;level:number;classId:string},potionsUsed=0,passives:{snapshot?:RewardSnapshot|undefined;xpGrant?:number;monsterBerryBonus?:number;build?:TalentBuild|undefined;steals?:{spawnId:string;amount:number}[];rng?:()=>number;grant?:OriginalItemInstance|undefined;action?:'prison.reward'|'prison.claim'|'dungeon.battle'}={}){
  const roll=passives.rng??(()=>randomInt(0,0x100000000)/0x100000000),random=()=>{const r=roll();if(!Number.isFinite(r)||r<0||r>=1)throw new RangeError('Invalid loot RNG');return r;};
- const before=await readOriginalInventory(client,id);if(!before)throw new AuthFault(409,'original_inventory_required');
- const after=structuredClone(before),identity=(await client.query('SELECT class_id,faction_id FROM mare_game.characters WHERE id=$1',[id])).rows[0];
+ const captured=passives.snapshot;
+ if(captured&&(captured.characterId!==id||captured.version!==state.version))throw new AuthFault(503,'reward_snapshot_mismatch');
+ const before=captured?.inventory??await readOriginalInventory(client,id);if(!before)throw new AuthFault(409,'original_inventory_required');
+ const after=structuredClone(before),identity=captured?{class_id:captured.classId,faction_id:captured.factionId}:(await client.query('SELECT class_id,faction_id FROM mare_game.characters WHERE id=$1',[id])).rows[0];
  const T=require('../../../../talent-system.js'),U=require('../../../../ultimate-system.js'),g={classId:identity.class_id,talentBuilds:{[identity.class_id]:passives.build||T.empty()}},underworld=U.selected(g)==='underworld',lootMultiplier=underworld?2:1,rareChance=Math.min(.5,(T.bonuses(g).rareChance||0)+(T.keystone(g)==='lightHands'?.2:0));
  const battle=require('../../../../world-battle.cjs');if(passives.xpGrant!==undefined&&(!Number.isSafeInteger(passives.xpGrant)||passives.xpGrant<0))throw new AuthFault(503,'party_xp_invalid');let xp=BigInt(passives.xpGrant??0),gold=BigInt(first?.gold??0);
  if(!Number.isSafeInteger(potionsUsed)||potionsUsed<0||potionsUsed>after.potions)throw new AuthFault(503,'potion_stock_conflict');after.potions-=potionsUsed;
@@ -59,7 +63,7 @@ export async function awardWorldLoot(client:PoolClient,id:string,requestId:strin
   }
  }
  if(passives.grant){if(after.inventory.length>=120)throw new AuthFault(409,'inventory_full');after.inventory.push(passives.grant);}
- xp=await boostXp(client,id,xp);
+ xp=await boostXp(client,id,xp,captured?.xpBoostActive);
  if(BigInt(state.gold)+gold>maxGold||BigInt(state.experience)+xp>maxGold)throw new AuthFault(409,'progression_limit');
  await writeInventory(client,id,after);
  await client.query('UPDATE mare_game.character_progression SET gold=gold+$2,experience=experience+$3 WHERE character_id=$1',[id,gold.toString(),xp.toString()]);

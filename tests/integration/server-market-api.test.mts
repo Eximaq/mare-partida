@@ -2,8 +2,9 @@ import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
 import { test } from "node:test";
 import { characterCommandSchema, type CharacterCommand, type OriginalItemInstance } from "@mare/shared";
-import type pg from "pg";
-import type { AuthService } from "../../apps/game-server/src/auth/service.js";
+import pg from "pg";
+import {readFile} from "node:fs/promises";
+import { AuthService } from "../../apps/game-server/src/auth/service.js";
 import { marketItemDetails, parseMarketRead } from "../../apps/game-server/src/characters/market.js";
 import { lifetimeGold } from "../../apps/game-server/src/characters/dungeons.js";
 import { readAchievements } from "../../apps/game-server/src/characters/achievements.js";
@@ -158,4 +159,26 @@ test("market filters compose, distinguish fruit rank from rarity and page stable
   assert.equal(second.entries.length, 1);
   assert.equal(second.hasMore, false);
   assert.ok(first.entries.every(e => e.id !== second.entries[0]!.id));
+}));
+
+test("a custom runtime role can publish and buy through the authorized API but cannot rewrite market rows",()=>authDatabase(async f=>{
+ const role='market_'+randomUUID().replaceAll('-',''),password=randomUUID().replaceAll('-','');
+ await f.pool.query(`CREATE ROLE "${role}" LOGIN PASSWORD '${password}' NOSUPERUSER NOCREATEDB NOCREATEROLE NOBYPASSRLS`);
+ let runtime:pg.Pool|undefined;
+ try{
+  await f.pool.query((await readFile(new URL('../../infra/postgres/grant-auth.sql',import.meta.url),'utf8')).replaceAll('mare_runtime','"'+role+'"'));
+  const url=new URL(f.pool.options.connectionString!);url.username=role;url.password=password;runtime=new pg.Pool({connectionString:url.href,max:2});
+  const service=new AuthService({pool:runtime,provider:f.provider,vault:f.vault,policy:{absoluteMs:3600000,idleMs:300000,recheckMs:60000},origin:'https://localhost:9443'});
+  const seller=await createActor(service,f.pool,'Runtime Seller'),buyer=await createActor(service,f.pool,'Runtime Buyer'),weapon=gun();
+  await stock(f.pool,seller.id,[weapon]);
+  const publication=await seller.send(seller.input(direct(weapon)));
+  const listingId=String(publication.market!.listingId),version=Number(publication.market!.version);
+  assert.equal(list(await buyer.query('view=market')).entries.length,1);
+  const command=buyer.input({kind:'market_buy',listingId,version,amount:100});
+  const purchase=await buyer.send(command);assert.deepEqual(await buyer.send(command),purchase);
+  assert.equal((await f.pool.query("SELECT count(*)::int n FROM mare_game.social_mail WHERE source='market' AND source_id=$1",[listingId])).rows[0].n,1);
+  for(const table of ['market_listings','market_proposals','market_commissions','market_notifications']){
+   await assert.rejects(runtime.query('DELETE FROM mare_game.'+table+' WHERE false'),{code:'42501'});
+  }
+ }finally{await runtime?.end();await f.pool.query('DROP OWNED BY "'+role+'"; DROP ROLE "'+role+'"');}
 }));
