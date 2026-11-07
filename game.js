@@ -1144,7 +1144,7 @@
   function initializeSession(){session?.fruitAction?.resolve?.(false);clearRankA();if(session)for(const p of session.combatProjectiles||[])p.phase='done';clearJiki();clearHoya();clearRankB();clearExpansion();clearRankC();clearWolfState();clearRyuState();clearUshiState();clearSupaProtection();travelPath=[];keys.clear();rejectedTargets.clear();pursuit=new WeakMap();session={haki:MareHaki.start(),talents:MareTalentCombat.create(),start:performance.now()/1000,elapsed:0,xp:0,gold:0,recentLoot:[],cooldowns:[0,0,0],fruitCooldown:0,fruitInvulnerable:0,fruitBurst:0,guard:0,blessing:0,skillUses:[0,0,0],skillEnergySpent:0,healingDone:0,respawn:0,spent:0,attackClock:0,lastHit:0,heroKOs:0,bossNotice:0};world={mobs:[],corpses:[],food:[],fx:[],projectiles:[],decor:[],time:0,hero:{x:scene==='lobby'?540:580,y:scene==='lobby'?338:313,facing:1,attackAnim:0,walking:0,visible:true},target:null,spawnClock:0,bossCooldown:0,nextID:Math.floor(Date.now()%1000000)};Object.assign(world.hero,activeMap().spawn,{direction:'front'});syncZoanTransition();camera.update(world.hero,activeMap(),0,true);if(!ONLINE_GAME&&scene==='hunt')for(let i=0;i<7;i++)spawnMob();}
   function startGame(){scene='lobby';initializeSession();syncFruitVfx();if(!ONLINE_GAME){void initAkumaBackend();void syncHierarchy();}$('startOverlay').classList.add('hidden');autoPlay=true;autoSkills=true;setAreaLabels();configureFactionVisual();applySceneHudLayout();updateUI();renderPortrait();log('Bem-vindo ao Porto das Correntes.','good');log('Converse com os NPCs ou inicie sua expedição.');saveGame();void lobby96.ready.then(()=>lobby96.ensure(game)).then(()=>{if(game&&scene==='lobby')prepareRegion(game.area);});}
   function enterHunt(){if(ONLINE_GAME){openPanel(ONLINE_GAME.data?.online.world?'map':'modes');return;}if(!game)return;if(dungeonRun?.unsaved&&!persistBossVictory())return;dungeonRun=null;prepareRegion(game.area);if(impelRun?.pending&&!persistImpelVictory())return;impelRun=null;factionShowcase=false;document.body.classList.remove('faction-showcase-open');$('factionInspection')?.classList.add('hidden');scene='hunt';autoPlay=true;autoSkills=true;lobbyDestination=null;lobbyAction=null;initializeSession();session.attackClock=0;world.target=null;setAreaLabels();applySceneHudLayout();closePanel();updateUI();toast('Expedição iniciada: '+zones[game.area].name,'good');log('Você partiu para '+zones[game.area].name+'.','gold');saveGame();}
-  function returnLobby(){if(ONLINE_GAME?.data?.online.world){void onlineWorldCommand('world.return',{},true);return;}if(!game)return;if(dungeonRun?.unsaved&&!persistBossVictory())return;dungeonRun=null;if(impelRun?.pending&&!persistImpelVictory())return;impelRun=null;scene='lobby';lobbyDestination=null;lobbyAction=null;initializeSession();setAreaLabels();applySceneHudLayout();closePanel();updateUI();toast('Você retornou ao Porto das Correntes.','good');log('De volta ao porto. Seus espólios foram preservados.','good');saveGame();}
+  function returnLobby(){if(ONLINE_GAME?.data?.online.world){void onlineWorldCommand(ONLINE_GAME.data.online.battle?.weeklyBossInstanceId?'weeklyBoss.execute':'world.return',ONLINE_GAME.data.online.battle?.weeklyBossInstanceId?{op:'leave'}:{},true);return;}if(!game)return;if(dungeonRun?.unsaved&&!persistBossVictory())return;dungeonRun=null;if(impelRun?.pending&&!persistImpelVictory())return;impelRun=null;scene='lobby';lobbyDestination=null;lobbyAction=null;initializeSession();setAreaLabels();applySceneHudLayout();closePanel();updateUI();toast('Você retornou ao Porto das Correntes.','good');log('De volta ao porto. Seus espólios foram preservados.','good');saveGame();}
 
   function persistDungeonState(next){
     if(ONLINE_GAME)throw Error('online_action_unavailable');
@@ -1260,7 +1260,7 @@
     game=result.state;renderPanel();updateUI();rewardNotice({item:game.inventory.find(i=>i.id==='impel-milestone-'+floor),eventId:'milestone:'+game.characterId+':'+floor});
   }
   function activateNPC(npc){lobbyAction=null;if(npc.kind==='dungeon-chest'){claimDungeonChest();return;}if(npc.kind==='return'){returnLobby();return;}if(npc.kind==='hunt')openPanel('modes');else openPanel(npc.kind);}
-  function setAreaLabels(){let inLobby=scene==='lobby';let z=inLobby?{name:'Porto das Correntes',sub:'Refúgio dos Navegantes',label:'ÁREA SEGURA · CIDADE'}:dungeonRun?{name:'Masmorra · '+MareBossDungeons.byId[dungeonRun.id].name,sub:'Quest Dungeons',label:'CONCLUSÃO ÚNICA'}:impelRun?{name:'Impel Down',sub:'Andar '+impelRun.currentFloor,label:'DUELO · ANDAR '+impelRun.currentFloor}:zones[game.area];$('locationName').textContent=z.name;$('mapTitle').textContent=z.name.toUpperCase();$('overlayArea').textContent=z.sub.toUpperCase();$('sceneEyebrow').textContent=inLobby?'PORTO PRINCIPAL':'REGIÃO DE CAÇA';$('dangerRating').textContent=z.label;
+  function setAreaLabels(){let inLobby=scene==='lobby';let weekly=ONLINE_GAME?.data?.online.weeklyBoss?.current;let z=!inLobby&&weekly?{name:weekly.mode==='test'?'Akainu · Teste privado':'Marineford · Akainu',sub:weekly.mode==='test'?'Ensaio sem recompensas':'Boss semanal',label:'EVENTO · VIDA COMPARTILHADA'}:inLobby?{name:'Porto das Correntes',sub:'Refúgio dos Navegantes',label:'ÁREA SEGURA · CIDADE'}:dungeonRun?{name:'Masmorra · '+MareBossDungeons.byId[dungeonRun.id].name,sub:'Quest Dungeons',label:'CONCLUSÃO ÚNICA'}:impelRun?{name:'Impel Down',sub:'Andar '+impelRun.currentFloor,label:'DUELO · ANDAR '+impelRun.currentFloor}:zones[game.area];$('locationName').textContent=z.name;$('mapTitle').textContent=z.name.toUpperCase();$('overlayArea').textContent=z.sub.toUpperCase();$('sceneEyebrow').textContent=inLobby?'PORTO PRINCIPAL':'REGIÃO DE CAÇA';$('dangerRating').textContent=z.label;
     $('returnLobby').classList.toggle('hidden',inLobby);$('navLobby').classList.toggle('active',inLobby);$('navHunt').classList.toggle('active',!inLobby);
     $('sceneInfo').textContent=inLobby?'ÁREA SEGURA · CLIQUE PARA CAMINHAR':'COMBATE AUTOMÁTICO ATIVO';$('worldHint').textContent=inLobby?'Clique para caminhar · WASD / setas · Clique nos NPCs para interagir':'Clique no chão para caminhar · Monstro: retomar caçada · WASD / setas';document.body.classList.toggle('scene-lobby',inLobby);document.body.classList.toggle('scene-hunt',!inLobby);}
 
@@ -1298,7 +1298,7 @@
   function refreshContractsBoard(){MareContractsBoard.refresh($('dialogBody'),contractsBoardData());}
   function questProgress(q){return ONLINE_GAME?(ONLINE_GAME.data?.online.contracts?.progress[q?.id]||0):MareContracts.progress(game,q);}
   function updateHuntHUD(){
-    $('huntRoute').classList.toggle('hidden',scene!=='hunt'||!!(impelRun||dungeonRun));if(dungeonRun){$('worldHint').textContent='Derrote o adversário e recolha o baú da arena.';return;}if(impelRun){$('worldHint').textContent='Impel Down · Andar '+impelRun.currentFloor+' · 1 adversário';return;}if(scene!=='hunt')return;
+    $('huntRoute').classList.toggle('hidden',scene!=='hunt'||!!(impelRun||dungeonRun||ONLINE_GAME?.data?.online.battle?.weeklyBossInstanceId));if(ONLINE_GAME?.data?.online.battle?.weeklyBossInstanceId){$('worldHint').textContent='Akainu · Saia do círculo antes da erupção · Retornar encerra sua participação';return;}if(dungeonRun){$('worldHint').textContent='Derrote o adversário e recolha o baú da arena.';return;}if(impelRun){$('worldHint').textContent='Impel Down · Andar '+impelRun.currentFloor+' · 1 adversário';return;}if(scene!=='hunt')return;
     const s=MareHunt.sectorAt(game.area,world.hero,huntAnchors()),progress=game.hunts.areas[game.area];
     $('worldHint').textContent=s.name+' · Nv. '+s.min+'–'+s.max+' · '+(game.level<s.min?'Área perigosa para seu nível':MareHunt.get(game.area).boss&&progress.bosses?'Chefe vencido · confira suas recompensas':'Explore a rota da ilha');
   }
@@ -1337,6 +1337,7 @@
   }
   function combatActorHeight(actor){
     if(actor===world.hero){let height=isRyuForm()?MareRyu.rules.worldSize:isBisonForm()?MareRankCExpansion.rules.bison.visuals.worldSize:isUshiForm()?74+MareUshi.visuals.labelLift:isWolfForm()?74+MareWolf.visuals.labelLift:isNekoForm()?74+MareNeko.visuals.labelLift:74;if(horuBuffActive())height*=MareRankC.rules.horu.scale;if(MareUltimates.selected(game)==='titan')height*=1.35;return height;}
+    if(actor?.source==='weekly-boss')return 114;
     if(actor===session?.genie)return 106*(actor.scale||1);
     const spriteHeight=MareSpriteCombatV2.monsterHeight(actor.type);if(spriteHeight)return spriteHeight;
     if(activeMap().id==='rare'&&actor.type==='cocox')return actor.y-(MareRareRenderer.cocoxHealthBarY(actor)+22);
@@ -1729,14 +1730,14 @@
   }
   function syncOnlineWorld(){
     const w=ONLINE_GAME.data?.online.world;if(!w)return;
-    const nextScene=w.mapId==='lobby'?'lobby':'hunt';
+    const nextScene=w.mapId==='lobby'?'lobby':'hunt',weekly=ONLINE_GAME.data.online.battle?.weeklyBossInstanceId;
     const dungeon=ONLINE_GAME.data.online.battle?.dungeon,prison=ONLINE_GAME.data.online.battle?.prison,oldFloor=impelRun?.currentFloor;
     dungeonRun=dungeon?{id:dungeon.id,runId:dungeon.record.runId,encounterId:dungeon.record.encounterId}:null;
     if(dungeon&&dungeon.record.phase==='running')void MareSpriteCombatV2.prepare(MareBossDungeons.byId[dungeon.id].monster);
     impelRun=prison?{currentFloor:prison.floor,enemy:MarePrison.resolveEncounter(prison.spec,monsterTypes),phase:prison.transitionAt?'cleared':'active'}:null;
     if(scene!==nextScene||onlineWorldFrame?.snapshot.mapId!==w.mapId){
-      scene=nextScene;if(w.area&&!prison&&!dungeon)game.area=w.area;autoPlay=false;autoSkills=false;lobbyDestination=null;lobbyAction=null;travelPath=[];initializeSession();
-      if(w.area&&!prison&&!dungeon)prepareRegion(w.area);applySceneHudLayout();setAreaLabels();resizeViewport();
+      scene=nextScene;if(w.area&&!prison&&!dungeon&&!weekly)game.area=w.area;autoPlay=false;autoSkills=false;lobbyDestination=null;lobbyAction=null;travelPath=[];initializeSession();
+      if(w.area&&!prison&&!dungeon&&!weekly)prepareRegion(w.area);applySceneHudLayout();setAreaLabels();resizeViewport();
     }
     if(prison&&oldFloor!==prison.floor){prisonFloor=prison.floor;setAreaLabels();if(currentPanel==='prison')renderPanel();}
     if(onlineWorldFrame?.snapshot!==w){
@@ -1804,16 +1805,18 @@
   }
   function syncOnlineBattle(){
     const b=ONLINE_GAME.data.online.battle;
+    if(b.weeklyBossInstanceId)globalThis.KaizokuAkainuArt?.sync(ONLINE_GAME.data.online.weeklyBoss?.serverNow);
     if(onlineBattleSnapshot===b)return;onlineBattleSnapshot=b;
     const previous=new Map(world.mobs.map(m=>[m.id,m]));
     world.mobs=b.mobs.map(m=>{
-      const old=previous.get(m.id),skin=activeMap().id==='dawn'?MareEmber.skins.cesar:null;
+      const old=previous.get(m.id),oldHp=old?.hp,skin=m.source!=='weekly-boss'&&activeMap().id==='dawn'?MareEmber.skins.cesar:null;
       const presentation=old?.alive===m.alive&&old.onlinePresentation?old.onlinePresentation:MareOnlineGameUI.createWorldPresentation();
       const w=ONLINE_GAME.data.online.world;
       presentation.update({...w,position:{x:m.x,y:m.y},path:[]},performance.now(),{buffered:true});
       const pose=presentation.sample(performance.now());
       const visualClock=old?.alive===m.alive?old.emberElapsed:0;
-      return Object.assign(old||{},{...MareOnlineGameUI.fruitTimeline(m,b.fruit?.time,world.time),emberElapsed:visualClock||0,x:old?.alive===m.alive?old.x:pose.x,y:old?.alive===m.alive?old.y:pose.y,source:m.source||'world',name:b.prison||b.dungeon?m.name:m.type==='boss'?MareHunt.get(b.area)?.boss:skin?.name||monsterTypes[m.type]?.name,skin:skin?.id,hit:0,onlinePresentation:presentation});
+      const actor=Object.assign(old||{},{...MareOnlineGameUI.fruitTimeline(m,b.fruit?.time,world.time),emberElapsed:visualClock||0,x:old?.alive===m.alive?old.x:pose.x,y:old?.alive===m.alive?old.y:pose.y,source:m.source||'world',name:b.prison||b.dungeon||b.weeklyBossInstanceId?m.name:m.type==='boss'?MareHunt.get(b.area)?.boss:skin?.name||monsterTypes[m.type]?.name,skin:skin?.id,hit:0,onlinePresentation:presentation});
+      if(m.source==='weekly-boss')globalThis.KaizokuAkainuArt?.observe(actor,oldHp);return actor;
     });
     world.target=world.mobs.find(m=>m.id===b.targetId&&m.alive&&!m.returning)||null;
     session.talents={...MareTalentCombat.create(),...(b.talents?structuredClone(b.talents):{}),ultimate:{...MareUltimates.start(),...(b.talents?.ultimate?structuredClone(b.talents.ultimate):{})}};
@@ -3366,6 +3369,7 @@ ${avatarExtra}
     const img=new Image();img.src='assets/monsters/'+id+'.png';mobSprites[id]=img;
   }
   function drawMobArt(m){
+    if(m.source==='weekly-boss'){globalThis.KaizokuAkainuArt?.draw(ctx,m);return true;}
     if(m.source==='boss-dungeon'){MareSpriteCombatV2.monster(ctx,m,world.time);return true;}
     if(MareNewIslandArt.monster(ctx,m,world.time))return true;
     if(activeMap().id==='rare'&&MareRareRenderer.monster(ctx,m,world.time))return true;
@@ -3392,6 +3396,7 @@ ${avatarExtra}
   function drawHuntWarnings(){
     if(scene!=='hunt')return;ctx.save();
     for(const m of livingMobs()){
+      if(m.source==='weekly-boss'){globalThis.KaizokuAkainuArt?.ground(ctx,m);continue;}
       const w=m.telegraph;if(!w)continue;const fill=Math.max(0,1-w.remaining/w.total);
       ctx.strokeStyle='#ffb85c';ctx.fillStyle='#c833433b';ctx.lineWidth=3;
       ctx.beginPath();if(w.shape==='circle')ctx.arc(w.x,w.y,w.radius,0,Math.PI*2);else{const a=Math.atan2(w.to.y-w.y,w.to.x-w.x),dx=Math.sin(a)*w.width/2,dy=-Math.cos(a)*w.width/2;ctx.moveTo(w.x+dx,w.y+dy);ctx.lineTo(w.to.x+dx,w.to.y+dy);ctx.lineTo(w.to.x-dx,w.to.y-dy);ctx.lineTo(w.x-dx,w.y-dy);ctx.closePath();}ctx.fill();ctx.stroke();
@@ -3451,12 +3456,12 @@ ${avatarExtra}
     if(crewIdentity){ctx.save();ctx.font='bold 13px Trebuchet MS';drawCrewFlag(crewIdentity,world.hero.x-ctx.measureText(name).width/2-16,combatHudBox(world.hero,60,name).nameY-11);ctx.restore();}
   }
   function sharedLobbyPlayers(){
-    const group=ONLINE_GAME?.data?.online.party?.group,instance=ONLINE_GAME?.data?.online.battle?.partyInstanceId;
-    const snapshot=scene==='lobby'?ONLINE_GAME?.data?.online?.lobby:instance&&group?.activity?.id===instance?group:null;
+    const group=ONLINE_GAME?.data?.online.party?.group,weekly=ONLINE_GAME?.data?.online.weeklyBoss,instance=ONLINE_GAME?.data?.online.battle?.weeklyBossInstanceId||ONLINE_GAME?.data?.online.battle?.partyInstanceId;
+    const snapshot=scene==='lobby'?ONLINE_GAME?.data?.online?.lobby:weekly?.current?.id===instance?weekly:instance&&group?.activity?.id===instance?group:null;
     if(!ONLINE_GAME?.available||!snapshot){sharedLobbyFrame=null;return [];}
     if(sharedLobbyFrame?.snapshot!==snapshot){
       const previous=new Map(sharedLobbyFrame?.players.map(p=>[p.id,p.presentation])||[]),received=performance.now();
-      sharedLobbyFrame={snapshot,received,players:(snapshot.players||snapshot.members.filter(p=>p.id!==ONLINE_GAME.data.character.id&&p.connected&&p.instanceId===instance&&p.world?.mapId===mapKey())).slice(0,16).map(p=>{
+      sharedLobbyFrame={snapshot,received,players:(snapshot.players||(snapshot.peers||snapshot.members).filter(p=>p.id!==ONLINE_GAME.data.character.id&&p.connected&&p.instanceId===instance&&p.world?.mapId===mapKey())).slice(0,16).map(p=>{
         const presentation=previous.get(p.id)||MareOnlineGameUI.createWorldPresentation({walk:true,route:(from,to)=>navigator().path(from,to)});presentation.update(p.world,received);
         return {...p,presentation};
       })};
@@ -3483,7 +3488,7 @@ ${avatarExtra}
       ...(hoyaActive()?[{kind:'hoya',y:session.genie.y,obj:session.genie}]:[]),
       ...(dungeonRun?MareQuestDungeonWorld.props.map(p=>({kind:'quest-prop',y:p.foot.y+p.foot.h,obj:p})):[]),
       ...MareWorldDepth.regions(activeMap().id).map(p=>({kind:'scenery',y:p.base,obj:p})),
-      ...world.mobs.filter(m=>scene==='hunt'&&m.alive).map(m=>({kind:'mob',y:m.y,obj:m})),
+      ...world.mobs.filter(m=>scene==='hunt'&&(m.alive||m.source==='weekly-boss'&&m.defeatedAt&&globalThis.KaizokuAkainuArt?.now()<m.defeatedAt+1200)).map(m=>({kind:'mob',y:m.y,obj:m})),
       ...(scene==='lobby'?npcs.map(n=>({kind:'npc',y:n.y,obj:n})):[]),
       ...((scene==='lobby'&&factionShowcase&&globalThis.MareFactionSprites)?Object.keys(MareFactionSprites.assets).filter(id=>!MareFactionSprites.assets[id].meta.class_id).map((id,index)=>({kind:'faction',y:800,obj:{id,x:1240+index*80,y:800}})):[])
     ]);
