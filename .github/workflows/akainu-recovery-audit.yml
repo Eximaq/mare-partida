@@ -16,32 +16,32 @@ jobs:
           import base64,zlib,re,json
           from pathlib import Path
           parts=sorted(Path('tools').glob('akainu-source-part*.txt'))
-          text=''.join(p.read_text().strip() for p in parts)
-          data=base64.b64decode(text+'='*((-len(text))%4),validate=True)
-          d=zlib.decompressobj(31)
-          try:
-              source=d.decompress(data)
-          except zlib.error as e:
-              source=b''
-              d=zlib.decompressobj(31)
-              for i in range(0,len(data),100):
-                  try: source+=d.decompress(data[i:i+100])
-                  except zlib.error: break
-              print('Transport error:',str(e))
+          values=[p.read_text().strip() for p in parts]
+          for p,t in zip(parts,values):print(p.name,len(t),'first',t[:12],'last',t[-12:],'padding',t.find('='))
+          correction=Path('tools/akainu-source-correction.txt').read_text().strip()
+          print('Correction length',len(correction))
+          variants={'original':''.join(values),'corrected':''.join(values[:2])+correction+''.join(values[2:])}
           out=Path('/tmp/akainu-audit');out.mkdir()
-          (out/'recovered.patch').write_bytes(source)
-          s=source.decode('utf-8',errors='replace')
-          chunks=re.split(r'(?=^diff --git )',s,flags=re.M)
-          report=[]
-          for i,chunk in enumerate(chunks):
-              if not chunk.strip():continue
-              header=chunk.splitlines()[0]
-              (out/f'patch-{i:03d}.txt').write_text(chunk)
-              report.append({'index':i,'header':header,'bytes':len(chunk),'tail':chunk[-160:]})
-          (out/'manifest.json').write_text(json.dumps(report,indent=2))
-          print('Parts:',[p.name for p in parts]);print('Gzip complete:',d.eof);print('Recovered bytes:',len(source))
-          for r in report:print(r['index'],r['header'],r['bytes'])
-          print('LAST FILE TAIL:',s[-600:])
+          for name,text in variants.items():
+              text=text.rstrip('=')
+              try:data=base64.b64decode(text+'='*((-len(text))%4),validate=True)
+              except Exception as e: print(name,'base64',str(e));continue
+              d=zlib.decompressobj(31);source=b'';error=None
+              for i in range(len(data)):
+                  try: source+=d.decompress(data[i:i+1])
+                  except zlib.error as e: error=str(e);break
+              s=source.decode('utf-8',errors='replace')
+              (out/(name+'.patch')).write_bytes(source)
+              print(name,'gzip complete',d.eof,'bytes',len(source),'error',error)
+              chunks=re.split(r'(?=^diff --git )',s,flags=re.M)
+              report=[]
+              for i,chunk in enumerate(chunks):
+                  if not chunk.strip():continue
+                  (out/f'{name}-{i:03d}.txt').write_text(chunk)
+                  report.append({'index':i,'header':chunk.splitlines()[0],'bytes':len(chunk)})
+              (out/(name+'-manifest.json')).write_text(json.dumps(report,indent=2))
+              for r in report:print(r['index'],r['header'],r['bytes'])
+              print('LAST FILE TAIL:',s[-400:])
           PY
       - uses: actions/upload-artifact@v4
         with:
