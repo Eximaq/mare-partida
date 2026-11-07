@@ -8,37 +8,31 @@ permissions:
 jobs:
   inspect:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - uses: actions/checkout@v4
-      - name: Recuperar prefixo para leitura sem executar ou aplicar codigo
+      - name: Encontrar fronteira de transporte valida sem executar fontes
         run: |
           python3 - <<'PY'
           import base64,zlib,re,json,hashlib
           from pathlib import Path
-          parts=sorted(Path('tools').glob('akainu-source-part*.txt'))
-          values=[p.read_text().strip() for p in parts]
+          v=[p.read_text().strip() for p in sorted(Path('tools').glob('akainu-source-part*.txt'))]
           correction=Path('tools/akainu-source-correction.txt').read_text().strip()
-          pos=values[1].rfind(correction[:4]);assert pos>=0
-          values[1]=values[1][:pos]+correction
-          print('Corrected part2 length',len(values[1]),'overlap',pos)
-          text=''.join(values).rstrip('=')
-          data=base64.b64decode(text+'='*((-len(text))%4),validate=True)
-          d=zlib.decompressobj(31);source=b'';error=None
-          for i in range(len(data)):
-              try: source+=d.decompress(data[i:i+1])
-              except zlib.error as e: error=str(e);break
+          v[1]=v[1][:v[1].rfind(correction[:4])]+correction
           out=Path('/tmp/akainu-audit');out.mkdir()
-          s=source.decode('utf-8',errors='replace');(out/'recovered.patch').write_bytes(source)
-          print('gzip complete',d.eof,'bytes',len(source),'error',error)
-          chunks=re.split(r'(?=^diff --git )',s,flags=re.M)
-          report=[]
-          for i,chunk in enumerate(chunks):
-              if not chunk.strip():continue
-              (out/f'patch-{i:03d}.txt').write_text(chunk)
-              report.append({'index':i,'header':chunk.splitlines()[0],'bytes':len(chunk),'sha256':hashlib.sha256(chunk.encode()).hexdigest()})
-          (out/'manifest.json').write_text(json.dumps(report,indent=2))
-          for r in report:print(r['index'],r['header'],r['bytes'],r['sha256'])
-          print('LAST FILE TAIL:',s[-500:])
+          successes=[]
+          for offset in range(9000,len(v[1])-1):
+              text=v[0]+v[1][:offset]+v[1][offset+2:]+v[2]+v[3]
+              try:
+                  data=base64.b64decode(text,validate=True);d=zlib.decompressobj(31);raw=d.decompress(data);s=raw.decode('utf8')
+              except (zlib.error,UnicodeError,ValueError):continue
+              chunks=re.split(r'(?=^diff --git )',s,flags=re.M)
+              if len(chunks)<25:continue
+              successes.append({'offset':offset,'bytes':len(raw),'files':len(chunks)-1,'complete':d.eof,'sha256':hashlib.sha256(raw).hexdigest()})
+              (out/f'candidate-{offset}.patch').write_bytes(raw)
+              print('CANDIDATE',successes[-1]);print('FILES',[c.splitlines()[0] for c in chunks if c.strip()]);print('TAIL',s[-300:])
+          (out/'candidates.json').write_text(json.dumps(successes,indent=2))
+          print('CANDIDATES',len(successes))
           PY
       - uses: actions/upload-artifact@v4
         with:
