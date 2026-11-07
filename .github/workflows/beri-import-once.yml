@@ -12,26 +12,42 @@ jobs:
   import:
     if: github.ref == 'refs/heads/feature/beri-esferas-vfx'
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Importar os mesmos pixels da previa
+        run: |
+          python3 -m pip install Pillow
+          python3 tools/beri-import-assets.py
+      - name: Confirmar regressao antes da alteracao
+        run: |
+          if node --test tests/beri-visual-v2.test.cjs; then
+            echo 'Expected new layout tests to fail before patch'; exit 1
+          fi
       - name: Aplicar somente o patch visual preparado
         run: |
-          test -f tools/beri-import-ready
-          test -f assets/akuma/beri-skill-sheet-v2.webp
-          test -f assets/akuma/beri-skill-icon-v2.webp
           git apply --check tools/beri-visual-v2.patch
           git apply tools/beri-visual-v2.patch
           node --check game.js
           node --check akuma-system.js
           node --test tests/beri-visual-v2.test.cjs
           git diff --check
+      - name: Testes existentes e build Pages
+        run: |
+          npm ci
+          npm test
+          python3 tests/akuma_backend_test.py
+          python3 tools/build_pages.py
       - name: Registrar fontes aplicadas na mesma branch
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add game.js akuma-system.js
-          git rm tools/beri-visual-v2.patch tools/beri-import-ready
+          git add game.js akuma-system.js assets/akuma/beri-skill-sheet-v2.webp assets/akuma/beri-skill-icon-v2.webp
+          git rm tools/beri-visual-v2.patch tools/beri-import-assets.py tools/beri-import-ready
           git commit -m 'feat: integrate Beri six-sphere visual without changing combat rules'
           git push origin HEAD:feature/beri-esferas-vfx
