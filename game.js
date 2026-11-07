@@ -355,14 +355,18 @@
   function drawFruitFrame(c,x,y,fruitId,frame,scale=1){
     const fruit=MareAkuma.byId(fruitId),image=fruitSkillSheets[fruitId];
     const columns=fruit?.skill_columns||1,frames=fruit?.skill_frames||1;
-    if(!image?.complete||image.naturalWidth<columns*48||image.naturalHeight<Math.ceil(frames/columns)*48)return false;
+    // Optional per-skill layout; existing 48px sheets retain their exact layout.
+    const cell=fruit?.skill_frame_size||48,size=fruit?.skill_render_size||cell;
+    const anchorX=fruit?.skill_anchor_x??.5,anchorY=fruit?.skill_anchor_y??1;
+    if(!image?.complete||image.naturalWidth<columns*cell||image.naturalHeight<Math.ceil(frames/columns)*cell)return false;
     const index=Math.max(0,Math.min(frames-1,frame));
     c.save();c.imageSmoothingEnabled=false;
-    c.drawImage(image,(index%columns)*48,Math.floor(index/columns)*48,48,48,Math.round(x-24*scale),Math.round(y-48*scale),Math.round(48*scale),Math.round(48*scale));
+    c.drawImage(image,(index%columns)*cell,Math.floor(index/columns)*cell,cell,cell,Math.round(x-size*anchorX*scale),Math.round(y-size*anchorY*scale),Math.round(size*scale),Math.round(size*scale));
     c.restore();return true;
   }
   function drawFruitBurst(c,x,y,fruitId,elapsed,scale=1){
-    return drawFruitFrame(c,x,y,fruitId,Math.floor(Math.max(0,elapsed)*FRUIT_VFX_FPS),scale);
+    const fps=MareAkuma.byId(fruitId)?.skill_fps||FRUIT_VFX_FPS;
+    return drawFruitFrame(c,x,y,fruitId,Math.floor(Math.max(0,elapsed)*fps),scale);
   }
   function captureBeriSprite(){
     const canvas=document.createElement('canvas');canvas.width=48;canvas.height=48;
@@ -387,7 +391,11 @@
     });
   }
   function drawBeriSeparation(c,x,y,progress,scale=1){
-    if(drawFruitBurst(c,x,y,'akuma_beri_beri',progress*1.5,scale))return;
+    const fruit=MareAkuma.byId('akuma_beri_beri'),size=fruit?.skill_render_size||48;
+    // Keep the larger world VFX inside the existing portrait/appearance bounds.
+    const compact=c!==ctx,visualScale=compact?scale*48/size:scale;
+    const visualY=compact?y-(1-(fruit?.skill_anchor_y??1))*48*scale:y;
+    if(drawFruitBurst(c,x,visualY,'akuma_beri_beri',progress*1.5,visualScale))return;
     const spheres=session?.beriSpheres;if(!spheres)return;
     const spread=Math.sin(Math.PI*Math.min(1,progress)),radius=3+spread*29;
     c.save();c.imageSmoothingEnabled=false;
