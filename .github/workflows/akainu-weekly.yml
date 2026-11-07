@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: .node-version
-      - run: node --test tests/akainu-combat.test.cjs tests/weekly-boss-battle.test.cjs
+      - run: node --test tests/akainu-combat.test.cjs tests/weekly-boss-battle.test.cjs tests/weekly-boss-rules.test.cjs
   weekly:
     runs-on: ubuntu-latest
     services:
