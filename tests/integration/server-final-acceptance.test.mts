@@ -31,6 +31,7 @@ test('every command rejects injected authority, foreign character, absent CSRF a
   'trade.invite':{targetId:b.c.id},'trade.respond':{tradeId:randomUUID(),accept:true},'trade.cancel':{tradeId:randomUUID()},
   'trade.offer':{tradeId:randomUUID(),expectedOfferVersion:1,itemId:'fixture-owned-item',quantity:1},'trade.lock':{tradeId:randomUUID(),expectedOfferVersion:1,locked:true},
   'trade.confirm':{tradeId:randomUUID(),expectedOfferVersion:1},
+  'weeklyBoss.execute':{op:'test'},
   'market.execute':{kind:'market_publish',itemId:'fixture-owned-item',quantity:1,mode:'direct',price:100,hours:24},
  });
  const expected=characterCommandSchema.options.flatMap(s=>{const a:any=s.shape.action;return a.options??[a.value];});assert.deepEqual(Object.keys(values).sort(),expected.sort(),'new actions must be added to the adversarial matrix');
