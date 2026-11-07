@@ -12,7 +12,7 @@ const catalog=require('./character-catalog.js').create({characters});
 require('./combat-vfx-data.js');const vfx=require('./combat-vfx.js');
 const Policy=require('./combat-action-policy.js');
 const {potionRules,potionRecovery}=require('./item-catalog.js');
-const sources=['item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
+const sources=['item-catalog.js','combat-action-policy.js','zoan-art.js','akuma-system.js','akuma-passives.js','neko-system.js','ushi-system.js','ushi-rules.js','ushi-art-data.js','wolf-system.js','wolf-data.js','doru-system.js','doru-data.js','rank-c-system.js','rank-c-data.js','rank-c-expansion.js','rank-c-expansion-data.js','rank-b-system.js','rank-b-data.js','hoya-system.js','hoya-data.js','jiki-system.js','jiki-data.js','ryu-system.js','ryu-data.js','fruit-summon-runtime.cjs','fruit-lower-runtime.cjs','fruit-runtime.cjs','rank-a-system.js','rank-a-data.js','rank-a-expansion.js','rank-s-system.js','rank-s-data.js','haki-system.js','haki-progression.js','dungeon-timing.cjs','dungeon-boss-art-data.js','boss-dungeon-combat.js','prison-system.js','monster-game-catalog.js','boss-dungeon-system.js','hunt-system.js','archipelago.js','monster-behavior.js','monster-catalog.js','character-system.js','character-catalog.js','combat-vfx.js','combat-vfx-data.js','world-battle.cjs','akainu-combat.js','weekly-boss-rules.cjs','weekly-boss-battle.cjs','party-battle.cjs','party-rules.cjs','talent-system.js','talent-combat.js','ultimate-system.js','talent-runtime.cjs'];
 const rulesHash=createHash('sha256').update(sources.map(f=>f+fs.readFileSync(path.join(__dirname,f),'utf8').replaceAll('\r\n','\n')).join('\0')).digest('hex');
 const balanceVersion=characters.monsterBalance.version;
 const previousBalanceHash='6ec1642796a685e114cdc27e528bc2f9ff82cc18123f6dce68e639ee6bc890a8';
@@ -126,6 +126,7 @@ function step(b,c){
  const clear=(a,z)=>nav.projectileClear(a,z);
  const kill=(m,now)=>{
   if(!m.alive)return;m.alive=false;m.hp=0;m.telegraph=null;
+  if(b.weeklyBossInstanceId&&m.source==='weekly-boss'){m.action=null;m.telegraph=null;kills.push({id:m.id,area:b.area,monster:structuredClone(m),reward:null,weeklyBossId:b.weeklyBossInstanceId});event(b,'kill',{id:m.id});return;}
   if(b.dungeon){kills.push({id:m.id,area:b.area,monster:structuredClone(m),reward:null,dungeonId:b.dungeon.id,runId:m.dungeonRunId,encounterId:m.dungeonEncounterId});cancel(b);event(b,'kill',{id:m.id});return;}
   if(b.prison){kills.push({id:m.id,area:b.area,monster:structuredClone(m),reward:null,prisonFloor:b.prison.floor,prisonToken:b.prison.token});event(b,'kill',{id:m.id});return;}
   m.corpseUntil=now+12000;
@@ -175,7 +176,7 @@ function step(b,c){
  }
  function die(){b.autoRoute=null;resetHaki(b);b.hp=0;b.respawn=4.1;b.actionLockUntil=0;fruits.reset(b);b.pending=null;b.projectiles=[];b.skillJob=null;rt=TC.create();if(c.manualPath)c.manualPath.length=0;if(!c.shared)for(const other of enemies())behavior.disengage(other);event(b,'death');}
  function damage(m,multiplier=1,warning){
-  if(warning?.groundTrap&&b.fruit?.id==='akuma_tori_albatroz'&&b.fruit.transformed&&b.fruit.effects.altitudeUntil>now/1000||b.fruit?.id==='akuma_bomu_bomu'&&warning?.damageType==='explosion')return;const physical=m.type!=='spirit';
+  if(warning?.groundTrap&&b.fruit?.id==='akuma_tori_albatroz'&&b.fruit.transformed&&b.fruit.effects.altitudeUntil>now/1000||b.fruit?.id==='akuma_bomu_bomu'&&warning?.damageType==='explosion')return;const physical=m.type!=='spirit'&&warning?.damageType!=='magma';
   if(b.hp<=0)return;const genie=b.fruit?.effects.genie;if(genie){fruits.genieDamage(genie,now/1000,m.attack*multiplier,physical);if(genie.hp<=0)delete b.fruit.effects.genie;return;}H.touch(hakiGame(b),b.hakiRuntime);stats=combatStats(b,c,rt);
   const raw=characters.incoming(physical?stats:{...stats,defense:stats.magicDefense??stats.defense},m.attack*multiplier*(m.kobuDebuffUntil>now?.8:1)*(m.hakiDebuff>0?.85:1)*(physical?1-(stats.impactResistancePercent||0):1),b.guard>0,.85+rng()*.25,{monster:true});
   const fruitReaction=fruits.incoming(b,{...c,stats,now},m,raw,m.attack*multiplier,physical);if(!fruitReaction.damage)return;
@@ -258,6 +259,7 @@ function step(b,c){
   for(const p of b.projectiles){const t=b.mobs.find(m=>m.id===p.targetId);vfx.step(p,dt,{target:t,origin:p.origin||hero,clear,valid:()=>b.hp>0&&live(t),onHit:()=>p.secondary?land(t,p.damage,now,p.slow):landed(t,p.damage,p.slow,p.contact)});}
   b.projectiles=b.projectiles.filter(p=>p.phase!=='done');if(b.projectiles.length>1024)throw Error('battle_projectile_limit');
   for(const enemy of b.mobs.filter(m=>m.alive)){
+   if(b.weeklyBossInstanceId&&enemy.source==='weekly-boss')continue;
     if(c.shared&&!c.shared.owns(enemy))continue;
    const focus=b.fruit?.effects.genie||hero;
    enemy.hakiDebuff=Math.max(0,(enemy.hakiDebuff||0)-dt);enemy.slow=Math.max(0,enemy.slow-dt);enemy.emberElapsed+=dt;enemy.attackAnim=Math.max(0,enemy.attackAnim-dt);enemy.moving=0;
@@ -277,6 +279,15 @@ function step(b,c){
    if(enemy.attackClock<=0){if(distance(enemy,focus)<=enemy.reach+10&&clear(enemy,focus)){face(enemy,focus);enemy.attackAnim=characters.monsterAttackVisualDuration(enemy.type);enemy.telegraph=hunt.beginWarning(enemy,focus);enemy.attackCount++;if(!enemy.telegraph)damage(enemy);enemy.attackClock=enemy.attackSec;}else enemy.attackClock=.3;}
    if(distance(enemy,focus)>enemy.reach*.75||!clear(enemy,focus))move(enemy,focus,speed*.65,dt,nav);
   }
+ }
+ // Internal worker-only impacts. Strict HTTP schemas never accept this context.
+ if(b.weeklyBossInstanceId&&c.shared&&Array.isArray(c.weeklyDamage))for(const impact of c.weeklyDamage){
+  const source=b.mobs.find(m=>m.id===impact.sourceId&&m.source==='weekly-boss'),action=source?.action;
+  if(!live(source)||b.hp<=0||!action?.impacted||action.id!==impact.attackId||action.kind!==impact.kind||impact.targetId!==c.shared.actorId||b.weeklyLastImpact===impact.attackId||now<action.impactAt||now>action.endAt)continue;
+  const aoe=action.kind==='aoe',origin=aoe?action.center:source;
+  if(!origin||distance(hero,origin)>(aoe?action.radius:source.reach+10)||!clear(origin,hero))continue;
+  b.weeklyLastImpact=impact.attackId;
+  damage(source,aoe?source.profile.aoeMultiplier:1,{damageType:'magma',groundTrap:aoe});
  }
  stats=combatStats(b,{...c,now},rt);b.hp=Math.min(b.hp,stats.maxHP);b.energy=Math.min(b.energy,stats.maxEnergy);
  talents.save(b,rt);return {kills,hero,potionsUsed,talentSteals};

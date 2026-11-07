@@ -73,5 +73,6 @@ CREATE TABLE mare_game.weekly_boss_audit (
 );
 REVOKE ALL ON mare_game.weekly_boss_operators,mare_game.weekly_boss_settings,mare_game.weekly_boss_events,
  mare_game.weekly_boss_members,mare_game.weekly_boss_victories,mare_game.weekly_boss_entitlements,mare_game.weekly_boss_audit FROM PUBLIC;
--- Known predecessor only. No health, inventory, XP or historical receipt is rewritten.
-UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{rulesHash}',to_jsonb('0e7aa4337d8e00807bf9491c2e2b46dc4b27be7863c3902c0f3569947d0475ee'::text)) WHERE simulation->>'rulesHash'='5fcaf57a6a7f3fd3489871528d4ba91a719a3c3851ffca11fad026deee9fb488';
+-- Only the two audited repository predecessors; unknown hashes remain blocked.
+-- No health, inventory, XP or historical receipt is rewritten.
+UPDATE mare_game.character_battles SET simulation=jsonb_set(simulation,'{rulesHash}',to_jsonb('3c3abd53210f73539fe46107f4d91449212ffa6a9ec47f077aba96823e1c1743'::text)) WHERE simulation->>'rulesHash' IN ('5fcaf57a6a7f3fd3489871528d4ba91a719a3c3851ffca11fad026deee9fb488','c6129a2128183184726fcaa7375746ba192117780add77a91867d78a0fc15a1b');
