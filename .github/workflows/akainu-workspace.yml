@@ -1,0 +1,28 @@
+name: Akainu - workspace isolado
+on:
+  push:
+    branches: [feature/akainu-weekly-boss]
+    paths: [.github/workflows/akainu-workspace.yml]
+permissions:
+  contents: read
+jobs:
+  source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.15.0'
+      - run: npm ci --ignore-scripts
+      - name: Empacotar apenas fonte versionado e dependencias de teste
+        run: |
+          mkdir -p /tmp/akainu-workspace
+          git archive --format=tar.gz HEAD > /tmp/akainu-workspace/source.tar.gz
+          tar -czf /tmp/akainu-workspace/node_modules.tar.gz node_modules
+          cp "$(command -v node)" /tmp/akainu-workspace/node
+          git rev-parse HEAD > /tmp/akainu-workspace/source-ref.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: akainu-source-workspace
+          path: /tmp/akainu-workspace
+          retention-days: 1
