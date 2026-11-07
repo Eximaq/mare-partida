@@ -1,0 +1,50 @@
+name: Akainu - auditoria da recuperacao
+on:
+  push:
+    branches: [feature/akainu-weekly-boss]
+    paths: [.github/workflows/akainu-recovery-audit.yml]
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Inspecionar transporte parcial sem executar o conteudo
+        run: |
+          python3 - <<'PY'
+          import base64,zlib,re,json
+          from pathlib import Path
+          parts=sorted(Path('tools').glob('akainu-source-part*.txt'))
+          text=''.join(p.read_text().strip() for p in parts)
+          data=base64.b64decode(text+'='*((-len(text))%4),validate=True)
+          d=zlib.decompressobj(31)
+          try:
+              source=d.decompress(data)
+          except zlib.error as e:
+              source=b''
+              d=zlib.decompressobj(31)
+              for i in range(0,len(data),100):
+                  try: source+=d.decompress(data[i:i+100])
+                  except zlib.error: break
+              print('Transport error:',str(e))
+          out=Path('/tmp/akainu-audit');out.mkdir()
+          (out/'recovered.patch').write_bytes(source)
+          s=source.decode('utf-8',errors='replace')
+          chunks=re.split(r'(?=^diff --git )',s,flags=re.M)
+          report=[]
+          for i,chunk in enumerate(chunks):
+              if not chunk.strip():continue
+              header=chunk.splitlines()[0]
+              (out/f'patch-{i:03d}.txt').write_text(chunk)
+              report.append({'index':i,'header':header,'bytes':len(chunk),'tail':chunk[-160:]})
+          (out/'manifest.json').write_text(json.dumps(report,indent=2))
+          print('Parts:',[p.name for p in parts]);print('Gzip complete:',d.eof);print('Recovered bytes:',len(source))
+          for r in report:print(r['index'],r['header'],r['bytes'])
+          print('LAST FILE TAIL:',s[-600:])
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: akainu-source-audit
+          path: /tmp/akainu-audit
+          retention-days: 1
