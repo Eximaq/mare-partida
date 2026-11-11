@@ -1079,6 +1079,20 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/female111-four-torsos-ew-v3/Manopla111_Feminino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 8036217,
+      "sha256": "a3afd7d6e388e2449ca65f970286b51ecc06422eba97fbad7394af8b8e5295c3",
+      "pngEntries": 200,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/female111-four-torsos-ew-v3/parts/MANIFEST.json",
+        "reconstruct": "weapons/female111-four-torsos-ew-v3/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/female113-116-five-torsos-south-v2/female113_south_five-torsos_corrected-approved-v2.zip",
       "bytes": 5539768,
       "sha256": "57a92d4538b64c09ff53f3018f60553327d2960c2a024c87159f98bf3c741c6a",
@@ -1102,6 +1116,20 @@
         "type": "split-archive",
         "manifest": "weapons/female113116-four-torsos-ew/parts/MANIFEST.json",
         "reconstruct": "weapons/female113116-four-torsos-ew/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/female17-122-four-torsos-ew/Orbes17_122_Femininos_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 11768347,
+      "sha256": "594f3087ebe45565752447294c967719c6de7223dc5f76157ab0156ae7935980",
+      "pngEntries": 200,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/female17-122-four-torsos-ew/parts/MANIFEST.json",
+        "reconstruct": "weapons/female17-122-four-torsos-ew/parts/RECONSTRUCT.py",
         "originalPreservedLocally": true,
         "reconstructionVerified": true
       }
@@ -1212,6 +1240,34 @@
       "productionEnabled": false
     },
     {
+      "path": "weapons/male1-68-four-torsos-ew/Sabre1_Nodachi68_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 18952344,
+      "sha256": "3b3ff09ef98716f5d4b0faff6c9b90c3d3b366a7822c33a137ecb5981056ad84",
+      "pngEntries": 280,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male1-68-four-torsos-ew/parts/MANIFEST.json",
+        "reconstruct": "weapons/male1-68-four-torsos-ew/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/male111-four-torsos-ew-v3/Manopla111_Masculino_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 6356208,
+      "sha256": "9420e8e7a7d6f229ebfb85cf951125ac492e86a98e5eb20d5082bb5733d271a3",
+      "pngEntries": 144,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male111-four-torsos-ew-v3/parts/MANIFEST.json",
+        "reconstruct": "weapons/male111-four-torsos-ew-v3/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
       "path": "weapons/male113116-four-torsos-ew-v2/Rifles113_116_Masculinos_Quatro_Trajes_EW_V2_Backup.zip",
       "bytes": 38991474,
       "sha256": "885cf73d362bca98b98402e1575f521dd36d5af117319e4fab28cfce03d17a68",
@@ -1249,6 +1305,20 @@
         "type": "split-archive",
         "manifest": "weapons/male15-four-torsos-ew/parts/MANIFEST.json",
         "reconstruct": "weapons/male15-four-torsos-ew/parts/RECONSTRUCT.py",
+        "originalPreservedLocally": true,
+        "reconstructionVerified": true
+      }
+    },
+    {
+      "path": "weapons/male17-122-four-torsos-ew/Orbes17_122_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+      "bytes": 12176096,
+      "sha256": "949573ea1f0fafdfc574858338becda9d8cdacf34f1b93883ee560eea96aee85",
+      "pngEntries": 264,
+      "productionEnabled": false,
+      "storage": {
+        "type": "split-archive",
+        "manifest": "weapons/male17-122-four-torsos-ew/parts/MANIFEST.json",
+        "reconstruct": "weapons/male17-122-four-torsos-ew/parts/RECONSTRUCT.py",
         "originalPreservedLocally": true,
         "reconstructionVerified": true
       }

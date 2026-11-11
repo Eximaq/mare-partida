@@ -1,0 +1,35 @@
+{
+  "path": "weapons/male1-68-four-torsos-ew/Sabre1_Nodachi68_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 18952344,
+  "sha256": "3b3ff09ef98716f5d4b0faff6c9b90c3d3b366a7822c33a137ecb5981056ad84",
+  "pngEntries": 280,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+  "weapons": [
+    1,
+    68
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "male",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 128,
+  "manifestHashesVerified": 284,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male1-68-four-torsos-ew/parts/MANIFEST.json",
+    "reconstruct": "weapons/male1-68-four-torsos-ew/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  },
+  "archiveNote": "Exact final presented editable ZIP; no rejected111 variants included."
+}

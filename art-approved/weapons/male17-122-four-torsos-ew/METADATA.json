@@ -1,0 +1,35 @@
+{
+  "path": "weapons/male17-122-four-torsos-ew/Orbes17_122_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 12176096,
+  "sha256": "949573ea1f0fafdfc574858338becda9d8cdacf34f1b93883ee560eea96aee85",
+  "pngEntries": 264,
+  "productionEnabled": false,
+  "approval": "Owner approved the presented complete lateral cycles with four torsos.",
+  "weapons": [
+    17,
+    122
+  ],
+  "outfits": [
+    151,
+    158,
+    165,
+    179
+  ],
+  "gender": "male",
+  "directions": [
+    "EAST",
+    "WEST"
+  ],
+  "finalFrames": 128,
+  "manifestHashesVerified": 270,
+  "runtimeIntegrated": false,
+  "newMovement": false,
+  "storage": {
+    "type": "split-archive",
+    "manifest": "weapons/male17-122-four-torsos-ew/parts/MANIFEST.json",
+    "reconstruct": "weapons/male17-122-four-torsos-ew/parts/RECONSTRUCT.py",
+    "originalPreservedLocally": true,
+    "reconstructionVerified": true
+  },
+  "archiveNote": "Exact final presented editable ZIP; no rejected111 variants included."
+}

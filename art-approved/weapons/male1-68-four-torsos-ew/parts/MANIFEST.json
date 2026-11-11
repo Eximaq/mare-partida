@@ -1,0 +1,137 @@
+{
+  "original": "Sabre1_Nodachi68_Masculinos_Quatro_Trajes_EW_Editavel.zip",
+  "bytes": 18952344,
+  "sha256": "3b3ff09ef98716f5d4b0faff6c9b90c3d3b366a7822c33a137ecb5981056ad84",
+  "parts": [
+    {
+      "path": "archive.part000",
+      "bytes": 750000,
+      "sha256": "c32d4be4c26ec71610855e51b47c6ad30c4fd8f88ab9000831949abef0511396"
+    },
+    {
+      "path": "archive.part001",
+      "bytes": 750000,
+      "sha256": "fd619d89f7c61426e9fe68173ae1ac8bec3425602c3243969df6b7fb3af43c68"
+    },
+    {
+      "path": "archive.part002",
+      "bytes": 750000,
+      "sha256": "3f840a90f3a61dc2764c19407c805f802c625f96ac40f1d2c84c136f4a828ced"
+    },
+    {
+      "path": "archive.part003",
+      "bytes": 750000,
+      "sha256": "f8a00efe99966d09637217340325ad658771c0e80df47f752b6776f7eca65933"
+    },
+    {
+      "path": "archive.part004",
+      "bytes": 750000,
+      "sha256": "a3d1e8297e13cffc9bad5f8fdeec7d7c000ba4b52d6c3d40e635406b997ba8f9"
+    },
+    {
+      "path": "archive.part005",
+      "bytes": 750000,
+      "sha256": "296b5ae42a95b07313a77d0c0b5077d4fb5d71a8d776701030a4742395e8910c"
+    },
+    {
+      "path": "archive.part006",
+      "bytes": 750000,
+      "sha256": "6bfab66f56c0bd72d1045702cfafc24a95a3679861066e2c09fab834901cff87"
+    },
+    {
+      "path": "archive.part007",
+      "bytes": 750000,
+      "sha256": "166c2cee89ff813fb9a5c92623634f9ef372096e0cb2b81c450edfa2175f7d0f"
+    },
+    {
+      "path": "archive.part008",
+      "bytes": 750000,
+      "sha256": "8685a1d4ac00738713bae0a45fb335b01062334ce78e5ea18fb5bfb9926c0f8a"
+    },
+    {
+      "path": "archive.part009",
+      "bytes": 750000,
+      "sha256": "03767c1b80bde0390c99fb3db968632faa33c92649bb25b363700c1c403a88f3"
+    },
+    {
+      "path": "archive.part010",
+      "bytes": 750000,
+      "sha256": "3a8e8f4b6945d17df163a11f67482d667d705698dcaf6dbf5db57e6dc90662db"
+    },
+    {
+      "path": "archive.part011",
+      "bytes": 750000,
+      "sha256": "5bee55eb3b1981f90a7c53b12a1b093be7025386c5f8e1fafbd4183630c07917"
+    },
+    {
+      "path": "archive.part012",
+      "bytes": 750000,
+      "sha256": "2a6c91324f2855965b82a9a453d012d1c66a8232a6893d223adf64be06031fc6"
+    },
+    {
+      "path": "archive.part013",
+      "bytes": 750000,
+      "sha256": "480734490002cee0be6cb8efbd1fba7fc555eecf29193129b3e82cea7a614549"
+    },
+    {
+      "path": "archive.part014",
+      "bytes": 750000,
+      "sha256": "fa0b58c7174c94deda416c0008db19a228fde1af18273d0132eebbfc7832e2e2"
+    },
+    {
+      "path": "archive.part015",
+      "bytes": 750000,
+      "sha256": "ce054f96697e8290411bf228b21b205f59f56f366294795c151ca8eee4710bec"
+    },
+    {
+      "path": "archive.part016",
+      "bytes": 750000,
+      "sha256": "121ed91beba9d4704da0c0e67ed213581c3eb3cbddd4f714921af0ea40a144d1"
+    },
+    {
+      "path": "archive.part017",
+      "bytes": 750000,
+      "sha256": "58b25b704f00617442ae9b2e6d64d27372494a13077720529eee1bac58c62545"
+    },
+    {
+      "path": "archive.part018",
+      "bytes": 750000,
+      "sha256": "88b8074806b563ee172d453f4ebee8d5b2a49575cdd2ad737a3ccf39942fe4b1"
+    },
+    {
+      "path": "archive.part019",
+      "bytes": 750000,
+      "sha256": "895a1026e95ee4189d6c3ffd058661f8f4cebb7a92ace1b8da73c83449d7545a"
+    },
+    {
+      "path": "archive.part020",
+      "bytes": 750000,
+      "sha256": "c37230c88efae345e41409d4cfcab44707e970fd3212a5b65b4601d7200f4a18"
+    },
+    {
+      "path": "archive.part021",
+      "bytes": 750000,
+      "sha256": "245b16dd1e9f35d9056c4f372bfd1ad1d08a7fca10f43248fce558dca9967746"
+    },
+    {
+      "path": "archive.part022",
+      "bytes": 750000,
+      "sha256": "ce6ebbfd0bd32cbf8319645cf1cf8c9eaa60e35242146a3e2dbe88ae596a018a"
+    },
+    {
+      "path": "archive.part023",
+      "bytes": 750000,
+      "sha256": "0908f788004e604b3d20e6f70ff4ea1e91613ed7401ed66e8d1dc838ef749ebc"
+    },
+    {
+      "path": "archive.part024",
+      "bytes": 750000,
+      "sha256": "a98e6909d737085c1ebe8fa9239bbcd7606f7241c3d7673690b29595edfd9739"
+    },
+    {
+      "path": "archive.part025",
+      "bytes": 202344,
+      "sha256": "569a4f0bc5329f69580566d2186e8c48ce80795aa572ca9e28a5e5373fd32546"
+    }
+  ]
+}
